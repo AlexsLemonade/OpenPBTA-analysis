@@ -13,6 +13,17 @@ The project maintainers include scientists from [Alex's Lemonade Stand Foundatio
 
 ### Implementing an Analysis
 
+This section describes the general workflow for implementing analytical code, and more details are [described below](https://github.com/AlexsLemonade/OpenPBTA-analysis#how-to-add-an-analysis).
+The first step is to identify an existing analysis or propose a new analysis, engage with the project maintainers to clarify the goals of the analysis, and then get the go ahead to move forward with the analysis.
+Analyses should be performed within the project's [Docker container](https://github.com/AlexsLemonade/OpenPBTA-analysis#docker-container).
+We use a single monolithic container in these analyses for ease of use.
+If you need software that is not included, please edit the Dockerfile to install the relevant software or file a [new issue on this repository](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/new) requesting assistance.
+You can perform your analyses via a script (R or Python) or via a notebook (R Markdown or Jupyter).
+Your analyses should produce one or more *artifacts*.
+Artifacts include both vector or high-resolution figures sufficient for inclusion in a manuscript as well as new summarizations of the data (tables, etc) that are intended for either use in subsequent analyses or distribution with the manuscript.
+You should file a [Pull Request](https://github.com/AlexsLemonade/OpenPBTA-analysis/compare) to contribute analyses to this repository.
+We are using continuous integration software applied to the supplied test datasets to confirm that the analysis can be carried out successfully within the Docker container.
+
 ## How to Obtain OpenPBTA Data
 
 ### Germ Line Variant Data (Germline SNVs)
