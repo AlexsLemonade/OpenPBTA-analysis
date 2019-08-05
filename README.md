@@ -81,7 +81,6 @@ OpenPBTA-analysis
 │       └── results
 │           └── tabular_summary.csv
 ├── data
-├── existing-analysis-2
 └── scratch
 ```
 
