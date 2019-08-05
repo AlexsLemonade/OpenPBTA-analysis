@@ -65,6 +65,16 @@ Intermediate files that are useful within the processing steps but that do not r
 It is safe to assume that files placed in `../../scratch` will be available to all analyses within the same folder.
 It is not safe to assume that files placed in `../../scratch` will be available from analyses in a different folder.
 
+An example highlighting a `new-analysis` directory is shown below.
+The directory is placed alongside existing analyses within the `analyses` directory.
+In this case, the author of the analysis has run their workflows in R Markdown notebooks.
+This is denoted with the `.Rmd` suffix.
+However, the author could have used Jupyter notebooks, R scripts, or another scriptable solution.
+The author has produced their output figures as `.pdf` files.
+We have a preference for vector graphics as PDF files, though other forms of vector graphics are also appropriate.
+The results folder contains a tabular summary as a comma separated values file.
+We expect that the file suffix (`.csv`, `.tsv`) should accurately denote the format of the files added.
+
 ```
 OpenPBTA-analysis
 ├── CONTRIBUTING.md
