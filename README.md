@@ -53,9 +53,43 @@ We are using continuous integration software applied to the supplied test datase
 
 ### Folder Structure
 
+Our folder structure is designed to separate each analysis into its own set of notebooks that are independent of other analyses.
+Within the analyses directory, create a folder for your analysis.
+Choose a name that is unique from other analyses and somewhat detailed.
+For example, instead of `gene-expression`, choose `gene-expression-clustering` if you are clustering samples by their gene expression values.
+You should assume that any data files that you need to read live in the `../../data` directory and that their file names match what the `data_downloader.sh` script produces.
+These files should be read in at their relative path, so that we can re-run analyses if the underlying data change.
+
+```
+OpenPBTA-analysis
+├── CONTRIBUTING.md
+├── README.md
+├── analyses
+│   ├── existing-analysis-1
+│   ├── existing-analysis-2
+│   └── new-analysis
+│       ├── 00.run_all.sh
+│       ├── 01.preprocess-data.Rmd
+│       ├── 02.run-analyses.Rmd
+│       └── 03.make-figures.Rmd
+└── data
+└── results
+│   └── new-analysis
+│       ├── figure1.pdf
+│       └── figure2.pdf
+└── scratch
+```
+
 ### Analysis Script Numbering
 
+As shown above, analysis scripts within a folder should be numbered from `01` and are intended be run in order.
+If the script produces any intermediate files, these files should be placed in `../../scratch`.
+It is safe to assume that files placed in `../../scratch` will be available to all analyses within the same folder.
+It is not safe to assume that files placed in `../../scratch` will be available from analyses in a different folder.
+
 ### Output Expectations
+
+Analysis scripts that generate outputs that should be kept should produce these results within the `../../results/` directory in a subdirectory named identically to the analysis folder directory.
 
 ### Continuous Integration (CI)
 
