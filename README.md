@@ -22,6 +22,12 @@ When you file a pull request with your solution, you should note that it closes 
 
 ### Proposing a New Analysis
 
+In addition to the planned analyses, we welcome contributors who wish to propose their own analyses of this dataset as part of the OpenPBTA project.
+Check the existing [issues](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues) before proposing an analysis to see if something similar is already planned.
+If there is not a similar planned analysis, create a new issue.
+The ideal issue will describe the scientific goals of the analysis, the planned methods to address the scientific goals, the input data that is required for the planned methods, and a proposed timeline for the analysis.
+Project maintainers will interact on the issue to clarify any questions or raise any potential concerns.
+
 ### Implementing an Analysis
 
 This section describes the general workflow for implementing analytical code, and more details are [described below](https://github.com/AlexsLemonade/OpenPBTA-analysis#how-to-add-an-analysis).
