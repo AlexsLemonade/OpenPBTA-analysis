@@ -47,7 +47,7 @@ This whole chunk may need to be removed be taken out after issue 2 regarding the
 
 These steps are only to make the metadata and MuTect2 and Strelka2 datasets 
 parallel in what samples they contain.  
-There are some samples in the metdata that are not in the MuTect2 and Strelka2
+There are some samples in the metadata that are not in the MuTect2 and Strelka2
 data. 
 
 ```{r}
