@@ -53,9 +53,59 @@ We are using continuous integration software applied to the supplied test datase
 
 ### Folder Structure
 
+Our folder structure is designed to separate each analysis into its own set of notebooks that are independent of other analyses.
+Within the analyses directory, create a folder for your analysis.
+Choose a name that is unique from other analyses and somewhat detailed.
+For example, instead of `gene-expression`, choose `gene-expression-clustering` if you are clustering samples by their gene expression values.
+You should assume that any data files that you need to read live in the `../../data` directory and that their file names match what the `data_downloader.sh` script produces.
+These files should be read in at their relative path, so that we can re-run analyses if the underlying data change.
+Files that are primarily graphic should be placed in a `plots` subdirectory.
+Files that are primarily tabular results files should be placed in a `results` subdirectory.
+Intermediate files that are useful within the processing steps but that do not represent final results should be placed in `../../scratch/`.
+It is safe to assume that files placed in `../../scratch` will be available to all analyses within the same folder.
+It is not safe to assume that files placed in `../../scratch` will be available from analyses in a different folder.
+
+An example highlighting a `new-analysis` directory is shown below.
+The directory is placed alongside existing analyses within the `analyses` directory.
+In this case, the author of the analysis has run their workflows in R Markdown notebooks.
+This is denoted with the `.Rmd` suffix.
+However, the author could have used Jupyter notebooks, R scripts, or another scriptable solution.
+The author has produced their output figures as `.pdf` files.
+We have a preference for vector graphics as PDF files, though other forms of vector graphics are also appropriate.
+The results folder contains a tabular summary as a comma separated values file.
+We expect that the file suffix (`.csv`, `.tsv`) should accurately denote the format of the files added.
+
+```
+OpenPBTA-analysis
+├── CONTRIBUTING.md
+├── README.md
+├── analyses
+│   ├── existing-analysis-1
+│   └── new-analysis
+│       ├── 01.preprocess-data.Rmd
+│       ├── 02.run-analyses.Rmd
+│       ├── 03.make-figures.Rmd
+│       ├── plots
+│       │   ├── figure1.pdf
+│       │   └── figure2.pdf
+│       └── results
+│           └── tabular_summary.csv
+├── data
+└── scratch
+```
+
 ### Analysis Script Numbering
 
+As shown above, analysis scripts within a folder should be numbered from `01` and are intended be run in order.
+If the script produces any intermediate files, these files should be placed in `../../scratch`, which is used as described above.
+
 ### Output Expectations
+
+The CI system that we use will generate, as artifacts, the contents of the `analyses` directory applied over a small test dataset.
+Our goal is to capture all of the outputs that will be used for the [OpenPBTA-manuscript](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) as artifacts.
+Files that are primarily graphic should be placed in a `plots` subdirectory of the analysis's folder.
+Files that are primarily tabular results files should be placed in a `results` subdirectory of the analysis's folder.
+Files that are intermediate, which means that they are useful within an analysis but do not provide outputs intended for tables, figures, or supplementary tables or figures of the [OpenPBTA-manuscript](https://github.com/AlexsLemonade/OpenPBTA-manuscript/), should be placed in `../../scratch`.
 
 ### Continuous Integration (CI)
 
