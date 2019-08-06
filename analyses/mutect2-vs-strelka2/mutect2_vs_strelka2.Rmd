@@ -1,0 +1,317 @@
+---
+title: "Evaluate concordance between Mutect2 and Strelka2"
+output:   
+  html_notebook: 
+    toc: true
+    toc_float: true
+---
+
+Candace Savonen - CCDL for ALSF
+
+This notebook is a first pass in evaluating the concordance between MuTect2 and 
+Strelka2 results.
+
+It addresses [issue \# 30 in OpenPBTA](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/30).
+
+## Set Up
+
+\* Some of these set up steps will be removed once we have a Dockerfile that installs
+maftools automatically. 
+
+```{r}
+# We need maftools - this will be added to the running Docker issue whenever it is up
+if (!('maftools' %in% installed.packages())) {
+  devtools::install_github("PoisonAlien/maftools")
+}
+# Get magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+Create a output directories.
+
+```{r}
+if (!dir.exists("results")) {
+  dir.create("results")
+}
+if (!dir.exists("plots")) {
+  dir.create("plots")
+}
+```
+
+## Read in the metadata information
+This will be changed once the [data download script](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/2) is finalized. 
+
+Prep the metadata to be used as the `clinicalData` for maftools it it hasn't been 
+prepped yet. 
+This whole chunk may need to be removed be taken out after issue 2 regarding the [data download script](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/2) is addressed. 
+
+These steps are only to make the metadata and MuTect2 and Strelka2 datasets 
+parallel in what samples they contain.  
+There are some samples in the metdata that are not in the MuTect2 and Strelka2
+data. 
+
+```{r}
+if (file.exists(file.path("..", "..", "scratch", "metadata_filtered.tsv"))) {
+  metadata <- readr::read_tsv(file.path("..", "..", "scratch", "metadata_filtered.tsv"))
+}
+```
+
+## Read in the Strelka2 and Mutect2 data
+
+Will read in as an `maftools` object from an RDS file, unless `maftools` has not been 
+run on them yet.
+Running `maftools` takes a lot of computing power and time, so be prepared.
+If you trying to run this step in a Docker container, it will likely be out of 
+memory killed, unless you have ~50GB you can allot to Docker. 
+
+```{r}
+# Load in the RDS file if it exists, but if it doesn't exist, load in from 
+# original data file with maftools
+if (!file.exists(file.path("..", "..", "scratch", "strelka2.RDS"))) {
+  strelka <- maftools::read.maf(file.path("..", "..", "data", "strelka2.maf.gz"),
+                                clinicalData = metadata)
+  saveRDS(strelka, file.path("..", "..", "scratch", "strelka2.RDS"))
+} else {
+  strelka2 <- readRDS(file.path("..", "..", "scratch", "strelka2.RDS"))
+}
+
+# Same for MuTect2
+if (!file.exists(file.path("..", "..", "scratch", "mutect2.RDS"))) {
+  mutect2 <- maftools::read.maf(file.path("..", "..", "data", "mutect2.maf.gz"), 
+                                clinicalData = metadata)
+  saveRDS(mutect2, file.path("..", "..", "scratch", "mutect2.RDS"))
+} else {
+  mutect2 <- readRDS(file.path("..", "..", "scratch", "mutect2.RDS"))
+}
+```
+
+This is how I set up `metadata_filtered.tsv`. 
+This should not need to be ran again and won't run again unless 
+`metadata_filtered.tsv` is misplaced from the scratch file. 
+
+```{r}
+if (!file.exists(file.path("..", "..", "scratch", "metadata_filtered.tsv"))) {
+  # Isolate metadata to only the samples that are in the datasets
+  metadata <- metadata %>%
+    dplyr::filter(sample_id %in% mutect2@clinical.data$Tumor_Sample_Barcode) %>%
+    dplyr::distinct(sample_id, .keep_all = TRUE) %>%
+    readr::write_tsv(file.path("..", "..", "scratch", "metadata_filtered.tsv"))
+}
+```
+
+Check that samples are same order in the datasets as they are in the metadata
+
+```{r}
+all.equal(as.factor(metadata$sample_id),
+          strelka2@clinical.data$Tumor_Sample_Barcode)
+
+all.equal(as.factor(metadata$sample_id), 
+          mutect2@clinical.data$Tumor_Sample_Barcode)
+```
+
+## Get summaries and write them to TSVs 
+
+Get gene summaries and write to TSV files. 
+
+```{r}
+strelka2_gene_sum <- maftools::getGeneSummary(strelka2) %>% 
+  readr::write_tsv(file.path("results", 
+                             "strelka2_gene_summary.tsv"))
+
+mutect2_gene_sum <- maftools::getGeneSummary(mutect2) %>% 
+  readr::write_tsv(file.path("results", 
+                             "mutect2_gene_summary.tsv"))
+```
+
+Get sample summaries and write to TSV files. 
+
+```{r}
+strelka2_sample_sum <- maftools::getSampleSummary(strelka2) %>% 
+  readr::write_tsv(file.path("results", 
+                             "strelka2_sample_summary.tsv"))
+
+mutect2_sample_sum <- maftools::getSampleSummary(mutect2) %>% 
+  readr::write_tsv(file.path("results", 
+                             "mutect2_sample_summary.tsv"))
+```
+
+## Number of mutations per gene correlation 
+
+```{r}
+combined_gene <- mutect2_gene_sum %>% 
+  dplyr::inner_join(strelka2_gene_sum, by = 'Hugo_Symbol') %>%
+  reshape2::melt(id = 'Hugo_Symbol') %>% 
+  dplyr::mutate(dataset = as.character(grepl(".x$", variable))) %>%
+  dplyr::mutate(dataset = dplyr::recode(dataset, 
+                                        `TRUE` = "mutect2", 
+                                        `FALSE` = "strelka2")) %>%
+  dplyr::mutate(variable = gsub(".x$|.y$", "", variable)) %>% 
+  tidyr::spread('dataset', 'value')
+```
+
+Make number of mutations per gene scatterplots.
+
+```{r}
+gene_cor <- ggplot2::ggplot(combined_gene, ggplot2::aes(x = mutect2, y = strelka2)) +
+  ggplot2::geom_point() + 
+  ggplot2::facet_wrap(~variable, scales = "free") + 
+  ggplot2::geom_smooth(method = lm) + 
+  ggplot2::theme_classic() + 
+  ggplot2::xlab("Mutect2: Number of mutations per gene") +
+  ggplot2::ylab("Strelka2: Number of mutations per gene") 
+
+# Print out the plot in this notebook
+gene_cor
+```
+
+Save the plot to a PDF.
+
+```{r}
+ggplot2::ggsave(file.path("plots", "gene_cor_mutect2_vs_strelka2.pdf"))
+```
+
+Let's get a correlation test on the genes overall.
+
+**Question 1)** Is this a reasonable amount of concordance for these methods 
+across genes? 
+
+```{r}
+cor.test(combined_gene$mutect2, combined_gene$strelka2, method = "spearman")
+cor.test(combined_gene$mutect2, combined_gene$strelka2, method = "pearson")
+```
+
+## Number of mutations per sample correlation. 
+
+```{r}
+combined_sample <- mutect2_sample_sum %>% 
+  dplyr::inner_join(strelka2_sample_sum, by = 'Tumor_Sample_Barcode') %>%
+  reshape2::melt(id = 'Tumor_Sample_Barcode') %>% 
+  dplyr::mutate(dataset = as.character(grepl(".x$", variable))) %>%
+  dplyr::mutate(dataset = dplyr::recode(dataset, 
+                                        `TRUE` = "mutect2", 
+                                        `FALSE` = "strelka2")) %>%
+  dplyr::mutate(variable = gsub(".x$|.y$", "", variable)) %>% 
+  tidyr::spread('dataset', 'value')
+```
+
+Make number of mutations per sample scatterplots.
+
+```{r}
+sample_cor <- ggplot2::ggplot(combined_sample, ggplot2::aes(x = mutect2, y = strelka2)) +
+  ggplot2::geom_point() + 
+  ggplot2::facet_wrap(~variable, scales = "free") + 
+  ggplot2::geom_smooth(method = lm) + 
+  ggplot2::theme_classic() +
+  ggplot2::xlab("Mutect2: Number of mutations per sample") +
+  ggplot2::ylab("Strelka2: Number of mutations per sample") 
+
+# Print out the plot in this notebook
+sample_cor
+```
+
+Save the plot to a PDF.
+
+```{r}
+ggplot2::ggsave(file.path("plots", "sample_cor_mutect2_vs_strelka2.pdf"))
+```
+
+Let's get a correlation test on the genes overall.
+**Question 2)** Is this a reasonable amount of concordance for these methods 
+across samples? 
+
+```{r}
+cor.test(combined_sample$mutect2, combined_sample$strelka2, method = "spearman")
+cor.test(combined_sample$mutect2, combined_sample$strelka2, method = "pearson")
+```
+
+## Venn Diagrams
+
+Obtain a list of mutations for all samples. 
+
+For both datasets, I am selecting only the gene symbol, the tumor ID, and the HGVS 
+coding mutation variables. 
+I then combine these variables into a new "mutation" variable and that is what 
+I use to compare hits between these two datasets. 
+
+**Question 3)** Is this an acceptable way of looking for overlap between these methods? 
+If not, what variables or data should I be basing this Venn Diagram on? 
+
+```{r}
+strelka2_mutation_list <- strelka2@data %>% 
+  dplyr::select(Hugo_Symbol, Tumor_Sample_Barcode, HGVSc) %>% 
+  dplyr::transmute(mutation = paste0(Hugo_Symbol, "_", Tumor_Sample_Barcode, "_", HGVSc)) %>%
+  dplyr::pull(mutation)
+
+mutect2_mutation_list <- mutect2@data %>% 
+  dplyr::select(Hugo_Symbol, Tumor_Sample_Barcode, HGVSc) %>% 
+  dplyr::transmute(mutation = paste0(Hugo_Symbol, "_", Tumor_Sample_Barcode, "_", HGVSc))  %>%
+  dplyr::pull(mutation)
+```
+
+Combine lists and calculate overlap.
+
+```{r}
+# Combine both mutation lists into one list since VennDiagram likes it that way
+mutation_lists <- list("strelka2" = strelka2_mutation_list, 
+                       "mutect2" = mutect2_mutation_list)
+
+# Calculate the overlap of these lists
+mutation_overlap <- VennDiagram::calculate.overlap(mutation_lists)
+```
+
+Make the Venn diagram of MuTect2 and Strelka2 mutations. 
+
+```{r}
+# Make the Venn diagram
+grid::grid.newpage();
+venn.plot <- VennDiagram::draw.pairwise.venn(
+  area1 = length(mutation_overlap[[1]]),
+  area2 = length(mutation_overlap[[2]]),
+  cross.area = length(mutation_overlap[[3]]),
+  category = c("Strelka2", "MuTect2"),
+  fill = c("blue", "yellow"),
+  cex = 2,
+  cat.cex = 1.5,
+  cat.dist = -0.04,
+  ext.pos = 0,
+  ext.dist = -0.01,
+  ext.length = .8,
+  ext.line.lwd = 2,
+  ext.line.lty = "dashed");
+grid::grid.draw(venn.plot) # Draw plot
+```
+
+Save the Venn Diagram plot to a PDF. 
+
+```{r}
+# Make filename to save plot as
+venn.plot.file <- file.path("plots", 
+                            "strelka2_mutect2_venn_diagram.pdf")
+pdf(venn.plot.file);
+grid::grid.draw(venn.plot);
+dev.off()
+```
+
+## Make somatic interaction plots
+
+These are built in to `maftools`. 
+
+**Question 4)** Any idea why everything appears to be so highly correlated here
+for Strelka2 results but not MuTect2 results look more reasonable? 
+
+Strelka2 Somatic Interactions
+
+```{r}
+maftools::somaticInteractions(strelka2, top = 25, pvalue = c(0.05, 0.1))
+```
+
+MuTect2 Somatic Interactions
+
+```{r}
+maftools::somaticInteractions(mutect2, top = 25, pvalue = c(0.05, 0.1))
+```
+
+Session Info: 
+```{r}
+sessionInfo()
+```
