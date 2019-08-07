@@ -1,0 +1,69 @@
+# markdown-spellcheck spelling configuration file
+# Format - lines beginning # are comments
+# global dictionary is at the start, file overrides afterwards
+# one word per line, to define a file override use ' - filename'
+# where filename is relative to this configuration file
+ccdl
+2019
+chante
+bethell
+Dockerfile
+file.path
+magrittr
+dplyr
+desc
+str_detect
+len
+data.frame
+dir.exists
+dir.create
+read_tsv
+is.na
+group_by
+kable_styling
+bootstrap_options
+full_width
+font_size
+latex_options
+scale_down
+save_kable
+write_tsv
+ggplot
+aes
+geom_col
+theme_bw
+scale_y_continuous
+axis.text.x
+element_text
+hjust
+panel.grid
+element_blank
+geom_text
+nudge_y
+paste0
+ggsave
+NOS
+suprasellar
+sessionInfo
+tidyr
+install.packages
+readr
+ggplot2
+stringr
+knitr
+devtools
+sunburstR
+install_github
+timelyportfolio
+formattable
+kableExtra
+d3r
+treemap
+htmltools
+colorblindr
+colorspace
+ - pbta-analysis-5.R
+2
+brain.location
+ - install-packages.R
+clauswilke
