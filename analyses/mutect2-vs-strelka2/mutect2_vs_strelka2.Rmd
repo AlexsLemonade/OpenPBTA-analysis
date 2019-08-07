@@ -23,6 +23,11 @@ maftools automatically.
 if (!('maftools' %in% installed.packages())) {
   devtools::install_github("PoisonAlien/maftools")
 }
+
+if (!('hexbin' %in% installed.packages())) {
+  install.packages("hexbin")
+}
+
 # Get magrittr pipe
 `%>%` <- dplyr::`%>%`
 ```
@@ -153,7 +158,7 @@ Make number of mutations per gene scatterplots.
 
 ```{r}
 gene_cor <- ggplot2::ggplot(combined_gene, ggplot2::aes(x = mutect2, y = strelka2)) +
-  ggplot2::geom_point() + 
+  ggplot2::geom_hex(bins = 10) + 
   ggplot2::facet_wrap(~variable, scales = "free") + 
   ggplot2::geom_smooth(method = lm) + 
   ggplot2::theme_classic() + 
@@ -198,7 +203,7 @@ Make number of mutations per sample scatterplots.
 
 ```{r}
 sample_cor <- ggplot2::ggplot(combined_sample, ggplot2::aes(x = mutect2, y = strelka2)) +
-  ggplot2::geom_point() + 
+  ggplot2::geom_hex(bins = 10) + 
   ggplot2::facet_wrap(~variable, scales = "free") + 
   ggplot2::geom_smooth(method = lm) + 
   ggplot2::theme_classic() +
@@ -222,6 +227,75 @@ across samples?
 ```{r}
 cor.test(combined_sample$mutect2, combined_sample$strelka2, method = "spearman")
 cor.test(combined_sample$mutect2, combined_sample$strelka2, method = "pearson")
+```
+
+## Calculate VAF
+
+```{r}
+strelka2_vaf <- data.frame(gene = strelka2@data$Hugo_Symbol,
+                           allele = strelka2@data$Allele,
+                           sample = strelka2@data$Tumor_Sample_Barcode,
+                           loc = strelka2@data$Start_Position, 
+                          t_alt_count = as.numeric(strelka2@data$t_alt_count),
+                          t_ref_count = as.numeric(strelka2@data$t_ref_count)) %>%
+  dplyr::mutate(vaf = t_alt_count/(t_ref_count + t_alt_count),
+                gene_allele = paste0(gene, "_", allele, "_", sample, "_", loc)) %>%
+  dplyr::select(gene_allele, vaf)
+
+# Take a look at this df
+strelka2_vaf
+```
+
+```{r}
+mutect2_vaf <- data.frame(gene = mutect2@data$Hugo_Symbol,
+                          allele = mutect2@data$Allele,
+                          sample = mutect2@data$Tumor_Sample_Barcode,
+                          loc = mutect2@data$Start_Position,
+                          t_alt_count = as.numeric(mutect2@data$t_alt_count),
+                          t_ref_count = as.numeric(mutect2@data$t_ref_count)) %>%
+  dplyr::mutate(vaf = t_alt_count/(t_ref_count + t_alt_count), 
+                gene_allele = paste0(gene, "_", allele, "_", sample, "_", loc)) %>%
+  dplyr::select(gene_allele, vaf)
+
+# Take a look at this df
+mutect2_vaf
+```
+
+Combine these to compare.
+
+```{r}
+vaf_df <- strelka2_vaf %>%
+  dplyr::inner_join(mutect2_vaf, by = 'gene_allele', suffix = c(".strelka2", 
+                                                                ".mutect2")) 
+```
+
+Plot this as a scatterplot
+
+```{r}
+ggplot2::ggplot(vaf_df, ggplot2::aes(x = vaf.strelka2, y = vaf.mutect2)) + 
+  ggplot2::geom_point()
+```
+
+Determine genes of interest.
+
+```{r}
+compare <- maftools::mafCompare(strelka2, mutect2, m1Name = "strelka2", 
+                                m2Name = "mutect2")
+
+most_diff_genes <- compare$results %>%
+  dplyr::filter(adjPval < 0.05)
+
+most_diff_genes
+```
+
+```{r}
+most_diff <- vaf_df %>% 
+  dplyr::mutate(gene = stringr::word(gene_allele, sep = "_", 1)) %>%
+  dplyr::filter(gene %in% most_diff_genes$Hugo_Symbol)
+```
+
+```{r}
+
 ```
 
 ## Venn Diagrams
