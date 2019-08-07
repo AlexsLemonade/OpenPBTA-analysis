@@ -232,30 +232,34 @@ cor.test(combined_sample$mutect2, combined_sample$strelka2, method = "pearson")
 ## Calculate VAF
 
 ```{r}
-strelka2_vaf <- data.frame(gene = strelka2@data$Hugo_Symbol,
-                           allele = strelka2@data$Allele,
-                           sample = strelka2@data$Tumor_Sample_Barcode,
-                           loc = strelka2@data$Start_Position, 
-                          t_alt_count = as.numeric(strelka2@data$t_alt_count),
-                          t_ref_count = as.numeric(strelka2@data$t_ref_count)) %>%
-  dplyr::mutate(vaf = t_alt_count/(t_ref_count + t_alt_count),
-                gene_allele = paste0(gene, "_", allele, "_", sample, "_", loc)) %>%
-  dplyr::select(gene_allele, vaf)
+strelka2_vaf <- strelka2@data %>%
+  dplyr::select(Hugo_Symbol, Allele, Tumor_Sample_Barcode, Start_Position, 
+                t_alt_count, t_ref_count) %>%
+  dplyr::filter(!grepl("-", Allele)) %>%
+  dplyr::mutate(vaf = as.numeric(t_alt_count)/(as.numeric(t_ref_count) + 
+                                                 as.numeric(t_alt_count)),
+                mutation = paste0(Hugo_Symbol, "_", 
+                                  Allele, "_", 
+                                  Tumor_Sample_Barcode, "_", 
+                                  Start_Position)) %>%
+  dplyr::select(mutation, vaf)
 
 # Take a look at this df
 strelka2_vaf
 ```
 
 ```{r}
-mutect2_vaf <- data.frame(gene = mutect2@data$Hugo_Symbol,
-                          allele = mutect2@data$Allele,
-                          sample = mutect2@data$Tumor_Sample_Barcode,
-                          loc = mutect2@data$Start_Position,
-                          t_alt_count = as.numeric(mutect2@data$t_alt_count),
-                          t_ref_count = as.numeric(mutect2@data$t_ref_count)) %>%
-  dplyr::mutate(vaf = t_alt_count/(t_ref_count + t_alt_count), 
-                gene_allele = paste0(gene, "_", allele, "_", sample, "_", loc)) %>%
-  dplyr::select(gene_allele, vaf)
+mutect2_vaf <- mutect2@data %>%
+  dplyr::select(Hugo_Symbol, Allele, Tumor_Sample_Barcode, Start_Position, 
+                t_alt_count, t_ref_count) %>%
+  dplyr::filter(!grepl("-", Allele)) %>%
+  dplyr::mutate(vaf = as.numeric(t_alt_count)/(as.numeric(t_ref_count) + 
+                                                 as.numeric(t_alt_count)),
+                mutation = paste0(Hugo_Symbol, "_", 
+                                  Allele, "_", 
+                                  Tumor_Sample_Barcode, "_", 
+                                  Start_Position)) %>%
+  dplyr::select(mutation, vaf)
 
 # Take a look at this df
 mutect2_vaf
@@ -264,89 +268,78 @@ mutect2_vaf
 Combine these to compare.
 
 ```{r}
+# Mutations common to both datasets:
 vaf_df <- strelka2_vaf %>%
-  dplyr::inner_join(mutect2_vaf, by = 'gene_allele', suffix = c(".strelka2", 
-                                                                ".mutect2")) 
+  dplyr::full_join(mutect2_vaf, by = 'mutation', 
+                    suffix = c(".strelka2", ".mutect2")) %>%
+  dplyr::mutate(dataset = dplyr::case_when(
+    is.na(vaf.mutect2) ~ "strelka2_only",
+    is.na(vaf.strelka2) ~ "mutect2_only", 
+    TRUE ~ "both")) 
 ```
 
 Plot this as a scatterplot
 
 ```{r}
-ggplot2::ggplot(vaf_df, ggplot2::aes(x = vaf.strelka2, y = vaf.mutect2)) + 
-  ggplot2::geom_point()
+vaf_df %>%
+ggplot2::ggplot(ggplot2::aes(x = vaf.strelka2, y = vaf.mutect2)) + 
+  ggplot2::geom_hex() +
+  ggplot2::theme_classic() + 
+  ggplot2::xlab("VAF for each mutation for Strelka2") + 
+  ggplot2::ylab("VAF for each mutation for MuTect2") 
 ```
 
-Determine genes of interest.
+```{r}
+vaf_df %>%
+  reshape2::melt() %>% 
+  dplyr::mutate(variable = gsub("^vaf.", "", variable)) %>% 
+  dplyr::mutate(data.group = paste(dataset, ":", variable, "VAF")) %>%
+  dplyr::filter(!is.na(value)) %>%
+# Plot it
+ggplot2::ggplot(ggplot2::aes(data.group, value)) + 
+  ggplot2::geom_violin(fill = "light blue") +
+  ggplot2::theme_classic( ) + 
+  ggplot2::ylab("Density of VAF") + 
+  ggplot2::xlab(" ")
+```
+
+## Determine genes that are discordant.
 
 ```{r}
 compare <- maftools::mafCompare(strelka2, mutect2, m1Name = "strelka2", 
                                 m2Name = "mutect2")
+```
 
-most_diff_genes <- compare$results %>%
+Get a data.frame of the genes that differ most. 
+
+```{r}
+sig_diff_genes <- compare$results %>%
   dplyr::filter(adjPval < 0.05)
-
-most_diff_genes
-```
-
-```{r}
-most_diff <- vaf_df %>% 
-  dplyr::mutate(gene = stringr::word(gene_allele, sep = "_", 1)) %>%
-  dplyr::filter(gene %in% most_diff_genes$Hugo_Symbol)
-```
-
-```{r}
-
 ```
 
 ## Venn Diagrams
 
-Obtain a list of mutations for all samples. 
-
-For both datasets, I am selecting only the gene symbol, the tumor ID, and the HGVS 
-coding mutation variables. 
-I then combine these variables into a new "mutation" variable and that is what 
-I use to compare hits between these two datasets. 
-
-**Question 3)** Is this an acceptable way of looking for overlap between these methods? 
-If not, what variables or data should I be basing this Venn Diagram on? 
-
-```{r}
-strelka2_mutation_list <- strelka2@data %>% 
-  dplyr::select(Hugo_Symbol, Tumor_Sample_Barcode, HGVSc) %>% 
-  dplyr::transmute(mutation = paste0(Hugo_Symbol, "_", Tumor_Sample_Barcode, "_", HGVSc)) %>%
-  dplyr::pull(mutation)
-
-mutect2_mutation_list <- mutect2@data %>% 
-  dplyr::select(Hugo_Symbol, Tumor_Sample_Barcode, HGVSc) %>% 
-  dplyr::transmute(mutation = paste0(Hugo_Symbol, "_", Tumor_Sample_Barcode, "_", HGVSc))  %>%
-  dplyr::pull(mutation)
-```
-
-Combine lists and calculate overlap.
-
-```{r}
-# Combine both mutation lists into one list since VennDiagram likes it that way
-mutation_lists <- list("strelka2" = strelka2_mutation_list, 
-                       "mutect2" = mutect2_mutation_list)
-
-# Calculate the overlap of these lists
-mutation_overlap <- VennDiagram::calculate.overlap(mutation_lists)
-```
-
 Make the Venn diagram of MuTect2 and Strelka2 mutations. 
+
+```{r}
+count <- summary(as.factor(vaf_df$dataset))
+
+# Take a look at this summary
+count
+```
 
 ```{r}
 # Make the Venn diagram
 grid::grid.newpage();
 venn.plot <- VennDiagram::draw.pairwise.venn(
-  area1 = length(mutation_overlap[[1]]),
-  area2 = length(mutation_overlap[[2]]),
-  cross.area = length(mutation_overlap[[3]]),
+  area1 = count[3] + count[1],
+  area2 = count[2] + count[1],
+  cross.area = count[1],
   category = c("Strelka2", "MuTect2"),
   fill = c("blue", "yellow"),
   cex = 2,
   cat.cex = 1.5,
-  cat.dist = -0.04,
+  cat.dist = c(-0.04, -0.031),
   ext.pos = 0,
   ext.dist = -0.01,
   ext.length = .8,
@@ -366,26 +359,8 @@ grid::grid.draw(venn.plot);
 dev.off()
 ```
 
-## Make somatic interaction plots
-
-These are built in to `maftools`. 
-
-**Question 4)** Any idea why everything appears to be so highly correlated here
-for Strelka2 results but not MuTect2 results look more reasonable? 
-
-Strelka2 Somatic Interactions
-
-```{r}
-maftools::somaticInteractions(strelka2, top = 25, pvalue = c(0.05, 0.1))
-```
-
-MuTect2 Somatic Interactions
-
-```{r}
-maftools::somaticInteractions(mutect2, top = 25, pvalue = c(0.05, 0.1))
-```
-
 Session Info: 
+
 ```{r}
 sessionInfo()
 ```
