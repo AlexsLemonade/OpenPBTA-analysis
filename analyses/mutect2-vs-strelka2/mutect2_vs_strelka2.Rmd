@@ -147,7 +147,7 @@ mutect2_sample_sum <- maftools::getSampleSummary(mutect2) %>%
 
 ```{r}
 combined_gene <- mutect2_gene_sum %>% 
-  dplyr::inner_join(strelka2_gene_sum, by = 'Hugo_Symbol') %>%
+  dplyr::full_join(strelka2_gene_sum, by = 'Hugo_Symbol') %>%
   reshape2::melt(id = 'Hugo_Symbol') %>% 
   dplyr::mutate(dataset = as.character(grepl(".x$", variable))) %>%
   dplyr::mutate(dataset = dplyr::recode(dataset, 
@@ -189,7 +189,7 @@ cor.test(combined_gene$mutect2, combined_gene$strelka2, method = "pearson")
 
 ```{r}
 combined_sample <- mutect2_sample_sum %>% 
-  dplyr::inner_join(strelka2_sample_sum, by = 'Tumor_Sample_Barcode') %>%
+  dplyr::full_join(strelka2_sample_sum, by = 'Tumor_Sample_Barcode') %>%
   reshape2::melt(id = 'Tumor_Sample_Barcode') %>% 
   dplyr::mutate(dataset = as.character(grepl(".x$", variable))) %>%
   dplyr::mutate(dataset = dplyr::recode(dataset, 
@@ -235,8 +235,6 @@ Set up data.frame with mutation and VAF for Strelka2.
 
 ```{r}
 strelka2_vaf <- strelka2@data %>%
-  dplyr::select(Hugo_Symbol, Allele, Tumor_Sample_Barcode, Start_Position, 
-                t_alt_count, t_ref_count, Reference_Allele) %>%
   dplyr::filter(!grepl("-", Allele)) %>%
   dplyr::mutate(vaf = as.numeric(t_alt_count)/(as.numeric(t_ref_count) + 
                                                  as.numeric(t_alt_count)),
@@ -244,8 +242,11 @@ strelka2_vaf <- strelka2@data %>%
                                   Allele, "_", 
                                   Tumor_Sample_Barcode, "_", 
                                   Start_Position), 
-                change = paste0(Reference_Allele, ">", Allele)) %>%
-  dplyr::select(mutation, vaf, change)
+                change = paste0(Reference_Allele, ">", Allele),
+                coding = dplyr::case_when( 
+                  BIOTYPE != "protein_coding" ~ "non-coding",
+                  TRUE ~ "protein_coding")) %>%
+    dplyr::select(-which(apply(is.na(.), 2, all)))
 
 # Take a look at this df
 strelka2_vaf
@@ -255,8 +256,6 @@ Set up data.frame with mutation and VAF for MuTect2.
 
 ```{r}
 mutect2_vaf <- mutect2@data %>%
-  dplyr::select(Hugo_Symbol, Allele, Tumor_Sample_Barcode, Start_Position, 
-                t_alt_count, t_ref_count, Reference_Allele) %>%
   dplyr::filter(!grepl("-", Allele)) %>%
   dplyr::mutate(vaf = as.numeric(t_alt_count)/(as.numeric(t_ref_count) + 
                                                  as.numeric(t_alt_count)),
@@ -264,8 +263,11 @@ mutect2_vaf <- mutect2@data %>%
                                   Allele, "_", 
                                   Tumor_Sample_Barcode, "_", 
                                   Start_Position),
-                change = paste0(Reference_Allele, ">", Allele)) %>%
-  dplyr::select(mutation, vaf, change)
+                change = paste0(Reference_Allele, ">", Allele), 
+                coding = dplyr::case_when( 
+                  BIOTYPE != "protein_coding" ~ "non-coding",
+                  TRUE ~ "protein_coding")) %>%
+  dplyr::select(-which(apply(is.na(.), 2, all)))
 
 # Take a look at this df
 mutect2_vaf
@@ -274,17 +276,15 @@ mutect2_vaf
 Combine MuTect2 and Strelka2 VAF data.frames so we can compare.
 
 ```{r}
-# Mutations common to both datasets:
+# Merge these data.frames together
 vaf_df <- strelka2_vaf %>%
   dplyr::full_join(mutect2_vaf, by = 'mutation', 
                     suffix = c(".strelka2", ".mutect2")) %>%
+  # Make a variable that denotes which dataset it is in.
   dplyr::mutate(dataset = dplyr::case_when( 
     is.na(vaf.mutect2) ~ "strelka2_only",
     is.na(vaf.strelka2) ~ "mutect2_only", 
-    TRUE ~ "both")) %>%
-
-# Take a look at this df
-vaf_df
+    TRUE ~ "both")) 
 ```
 
 Plot this as a scatterplot
@@ -310,20 +310,6 @@ ggplot2::ggplot(ggplot2::aes(data.group, vaf)) +
   ggplot2::theme_classic( ) + 
   ggplot2::ylab("Density of VAF") + 
   ggplot2::xlab(" ")
-```
-
-## Determine genes that are discordant.
-
-```{r}
-compare <- maftools::mafCompare(strelka2, mutect2, m1Name = "strelka2", 
-                                m2Name = "mutect2")
-```
-
-Get a data.frame of the genes that differ most. 
-
-```{r}
-sig_diff_genes <- compare$results %>%
-  dplyr::filter(adjPval < 0.05)
 ```
 
 ## Venn Diagrams
@@ -368,21 +354,67 @@ grid::grid.draw(venn.plot);
 dev.off()
 ```
 
-## What types of variants are these?
+## What types of variants are are the most discrepant between the algorithms?
+
+Let's make a wrapper function that will do this for whatever variables we are 
+interested in. 
 
 ```{r}
-vaf_df %>%
-  dplyr::select(change.strelka2, change.mutect2, dataset) %>%
-  tidyr::gather(key = "data", value = "change" , change.strelka2, change.mutect2) %>%
-  dplyr::mutate('data' = gsub("^change.", "", data)) %>%
-  dplyr::group_by(dataset, data, change) %>% 
-  dplyr::summarise(count = n()) %>%
-  dplyr::filter(count > 100, !grepl("^->", change), !is.na(change)) %>%
-  ggplot2::ggplot(ggplot2::aes(x = change, y = count, fill = dataset)) + 
-  ggplot2::geom_bar(position = "dodge", stat="identity") + 
-  ggplot2::theme_classic() +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
-  colorblindr::scale_fill_OkabeIto()
+barplot_var <- function(df, variable_name = NULL, filter_cutoff = 1, 
+                        as_percent = FALSE) {
+  count_df <- vaf_df %>%
+    dplyr::select(paste0(variable_name, c(".strelka2", ".mutect2")),
+                  dataset) %>%
+    tidyr::gather(key = "data", value = "variable" , 
+                  paste0(variable_name, c(".strelka2", ".mutect2"))) %>%
+    dplyr::mutate('data' = gsub(paste0(variable_name, "."), "", data)) 
+  
+  %>%
+    dplyr::group_by(dataset, data, variable) %>% 
+    dplyr::summarise(count = n())
+  
+  totals <- count_df %>%
+    dplyr::group_by(dataset) %>%
+    dplyr::summarise(total = sum(count, na.rm = TRUE)) 
+    
+    
+  count_df %>%
+    dplyr::mutate(percent = count_df$count/totals$total[match(count_df$dataset, totals$dataset)])
+                                  
+    dplyr::filter(count > filter_cutoff, !is.na(variable)) %>%
+    dplyr::mutate(report = ifelse(as_percent, percent, count)) %>%
+    ggplot2::ggplot(ggplot2::aes(x = reorder(variable, -report), 
+                                 y = report, fill = dataset)) + 
+    ggplot2::geom_bar(position = "dodge", stat="identity") + 
+    ggplot2::theme_classic() +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
+    colorblindr::scale_fill_OkabeIto() + 
+    ggplot2::xlab("")
+}
+```
+
+```{r}
+barplot_var(vaf_df, "change", 100)
+```
+
+```{r}
+barplot_var(vaf_df, "coding", 10)
+```
+
+```{r}
+barplot_var(vaf_df, "BIOTYPE", 10)
+```
+
+```{r}
+barplot_var(vaf_df, "Variant_Classification", 10)
+```
+
+```{r}
+barplot_var(vaf_df, "VARIANT_CLASS", 10)
+```
+
+```{r}
+barplot_var(vaf_df, "IMPACT", 10)
 ```
 
 Session Info: 
