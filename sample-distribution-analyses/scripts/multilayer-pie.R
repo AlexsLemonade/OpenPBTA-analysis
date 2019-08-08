@@ -7,8 +7,11 @@
 # Load/install packages. This will be removed once a Dockerfile is established. 
 source(file.path("..", "scripts", "install-packages.R"), print.eval = FALSE)
 
-#Load source script
-source(file.path("pbta-analysis-5.R"))
+# Load source script
+source(file.path("..", "scripts", "pbta-analysis-5.R"))
+
+# Set path to plots directory 
+outputDir <- file.path("..", "plots")
 
 # magrittr pipe
 `%>%` <- dplyr::`%>%`
@@ -17,11 +20,11 @@ source(file.path("pbta-analysis-5.R"))
 color <- colorblindr::palette_OkabeIto
 
 sun.df <- df2 %>% 
-  select(broad_histology, short_histology, disease_type_new) %>%
-  filter(!is.na(disease_type_new)) %>%
-  filter(!is.na(broad_histology)) %>%
-  filter(!is.na(short_histology)) %>%
-  group_by(broad_histology)
+  dplyr::select(broad_histology, short_histology, disease_type_new) %>%
+  dplyr::filter(!is.na(disease_type_new)) %>%
+  dplyr::filter(!is.na(broad_histology)) %>%
+  dplyr::filter(!is.na(short_histology)) %>%
+  dplyr::group_by(broad_histology)
 
 sun.df.sub <- sun.df[,c("broad_histology", "short_histology", "disease_type_new")]
 sun.df.sub$nodes <- paste0(sun.df.sub[[1]], ",", sun.df.sub[[2]], ",", sun.df.sub[[3]])
@@ -29,11 +32,11 @@ sun.df.sub$nodes <- paste0(sun.df.sub[[1]], ",", sun.df.sub[[2]], ",", sun.df.su
 # Make node patterns
 names(sun.df.sub) <- c("level1", "level2", "level3", "nodes")
 
-# Sum each unique parent-node-leaf combination
+# Sum each unique combination
 counts <- sun.df.sub %>% 
-  group_by(nodes) %>%
+  dplyr::group_by(nodes) %>%
   dplyr::summarise(size = n())
-# Remove with no assay
+
 counts <- counts[!grepl("^NA-", counts$nodes), ]
 
 final <- merge(sun.df.sub, counts, all.x = T)
@@ -43,13 +46,13 @@ final <- final[, col.order]
 final$nodes <- NULL 
 
 # Save to tsv file
-write_tsv(final, file.path("..", "results", "sunburst_plot_df.tsv"))
+readr::write_tsv(final, file.path("..", "results", "sunburst_plot_df.tsv"))
 
-tm <- treemap(final, index=c("level1", "level2", "level3"), 
+tm <- treemap::treemap(final, index=c("level1", "level2", "level3"), 
               vSize="size", vColor= color, draw=TRUE)
-tmnest <- d3_nest(tm$tm[, c("level1", "level2", "level3", "vSize")],
+tmnest <- d3r::d3_nest(tm$tm[, c("level1", "level2", "level3", "vSize")],
                   value_cols = c("vSize"))
-sun.plot <- sunburst(
+sun.plot <- sunburstR::sunburst(
   data = tmnest,
   valueField = "vSize",
   count = TRUE,
@@ -57,14 +60,15 @@ sun.plot <- sunburst(
   colors = color
 )
 
-p <- sund2b(
+p <- sunburstR::sund2b(
   tmnest,
   colors = color,
   valueField = "vSize"
 )
 
-p
+p 
 
+mapview::mapshot(p, url = paste0(outputDir, "/histology-pie.html"))
 
 sessionInfo()
 

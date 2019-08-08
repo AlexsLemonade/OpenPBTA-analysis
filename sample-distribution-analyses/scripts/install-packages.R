@@ -59,4 +59,8 @@ if(!require(colorblindr)){
   devtools::install_github("clauswilke/colorblindr")
   library(colorblindr)
 }
+if(!require(mapview)){
+  install.packages("mapview", repos = 'http://cran.us.r-project.org')
+  library(mapview)
+}
 
