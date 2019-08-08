@@ -28,6 +28,9 @@ if (!('hexbin' %in% installed.packages())) {
   install.packages("hexbin")
 }
 
+if (!('colorblindr' %in% installed.packages())) {
+  devtools::install_github("clauswilke/colorblindr")
+}
 # Get magrittr pipe
 `%>%` <- dplyr::`%>%`
 ```
@@ -177,9 +180,6 @@ ggplot2::ggsave(file.path("plots", "gene_cor_mutect2_vs_strelka2.pdf"))
 
 Let's get a correlation test on the genes overall.
 
-**Question 1)** Is this a reasonable amount of concordance for these methods 
-across genes? 
-
 ```{r}
 cor.test(combined_gene$mutect2, combined_gene$strelka2, method = "spearman")
 cor.test(combined_gene$mutect2, combined_gene$strelka2, method = "pearson")
@@ -231,51 +231,60 @@ cor.test(combined_sample$mutect2, combined_sample$strelka2, method = "pearson")
 
 ## Calculate VAF
 
+Set up data.frame with mutation and VAF for Strelka2.
+
 ```{r}
 strelka2_vaf <- strelka2@data %>%
   dplyr::select(Hugo_Symbol, Allele, Tumor_Sample_Barcode, Start_Position, 
-                t_alt_count, t_ref_count) %>%
+                t_alt_count, t_ref_count, Reference_Allele) %>%
   dplyr::filter(!grepl("-", Allele)) %>%
   dplyr::mutate(vaf = as.numeric(t_alt_count)/(as.numeric(t_ref_count) + 
                                                  as.numeric(t_alt_count)),
                 mutation = paste0(Hugo_Symbol, "_", 
                                   Allele, "_", 
                                   Tumor_Sample_Barcode, "_", 
-                                  Start_Position)) %>%
-  dplyr::select(mutation, vaf)
+                                  Start_Position), 
+                change = paste0(Reference_Allele, ">", Allele)) %>%
+  dplyr::select(mutation, vaf, change)
 
 # Take a look at this df
 strelka2_vaf
 ```
 
+Set up data.frame with mutation and VAF for MuTect2.
+
 ```{r}
 mutect2_vaf <- mutect2@data %>%
   dplyr::select(Hugo_Symbol, Allele, Tumor_Sample_Barcode, Start_Position, 
-                t_alt_count, t_ref_count) %>%
+                t_alt_count, t_ref_count, Reference_Allele) %>%
   dplyr::filter(!grepl("-", Allele)) %>%
   dplyr::mutate(vaf = as.numeric(t_alt_count)/(as.numeric(t_ref_count) + 
                                                  as.numeric(t_alt_count)),
                 mutation = paste0(Hugo_Symbol, "_", 
                                   Allele, "_", 
                                   Tumor_Sample_Barcode, "_", 
-                                  Start_Position)) %>%
-  dplyr::select(mutation, vaf)
+                                  Start_Position),
+                change = paste0(Reference_Allele, ">", Allele)) %>%
+  dplyr::select(mutation, vaf, change)
 
 # Take a look at this df
 mutect2_vaf
 ```
 
-Combine these to compare.
+Combine MuTect2 and Strelka2 VAF data.frames so we can compare.
 
 ```{r}
 # Mutations common to both datasets:
 vaf_df <- strelka2_vaf %>%
   dplyr::full_join(mutect2_vaf, by = 'mutation', 
                     suffix = c(".strelka2", ".mutect2")) %>%
-  dplyr::mutate(dataset = dplyr::case_when(
+  dplyr::mutate(dataset = dplyr::case_when( 
     is.na(vaf.mutect2) ~ "strelka2_only",
     is.na(vaf.strelka2) ~ "mutect2_only", 
-    TRUE ~ "both")) 
+    TRUE ~ "both")) %>%
+
+# Take a look at this df
+vaf_df
 ```
 
 Plot this as a scatterplot
@@ -291,12 +300,12 @@ ggplot2::ggplot(ggplot2::aes(x = vaf.strelka2, y = vaf.mutect2)) +
 
 ```{r}
 vaf_df %>%
-  reshape2::melt() %>% 
-  dplyr::mutate(variable = gsub("^vaf.", "", variable)) %>% 
-  dplyr::mutate(data.group = paste(dataset, ":", variable, "VAF")) %>%
-  dplyr::filter(!is.na(value)) %>%
+  tidyr::gather(key = "data", value = "vaf" , vaf.strelka2, vaf.mutect2) %>%
+  dplyr::mutate(data = gsub("^vaf.", "", data)) %>% 
+  dplyr::mutate(data.group = paste(dataset, ":", data, "VAF")) %>%
+  dplyr::filter(!is.na(vaf)) %>%
 # Plot it
-ggplot2::ggplot(ggplot2::aes(data.group, value)) + 
+ggplot2::ggplot(ggplot2::aes(data.group, vaf)) + 
   ggplot2::geom_violin(fill = "light blue") +
   ggplot2::theme_classic( ) + 
   ggplot2::ylab("Density of VAF") + 
@@ -357,6 +366,23 @@ venn.plot.file <- file.path("plots",
 pdf(venn.plot.file);
 grid::grid.draw(venn.plot);
 dev.off()
+```
+
+## What types of variants are these?
+
+```{r}
+vaf_df %>%
+  dplyr::select(change.strelka2, change.mutect2, dataset) %>%
+  tidyr::gather(key = "data", value = "change" , change.strelka2, change.mutect2) %>%
+  dplyr::mutate('data' = gsub("^change.", "", data)) %>%
+  dplyr::group_by(dataset, data, change) %>% 
+  dplyr::summarise(count = n()) %>%
+  dplyr::filter(count > 100, !grepl("^->", change), !is.na(change)) %>%
+  ggplot2::ggplot(ggplot2::aes(x = change, y = count, fill = dataset)) + 
+  ggplot2::geom_bar(position = "dodge", stat="identity") + 
+  ggplot2::theme_classic() +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
+  colorblindr::scale_fill_OkabeIto()
 ```
 
 Session Info: 
