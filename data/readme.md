@@ -7,6 +7,8 @@ This dataset includes all the PBTA somatic mutational and gene expression result
 - SV results: [Annotated Manta TSV](format/manta-tsv-header.md)
 - Gene Expressions: gene and sample matrix
 - Gene Fusions:
+    - [Arriba TSV](format/arriba-tsv-header.md)
+    - [STARFusion TSV](format/starfusion-tsv-header.md)
 
 ## Data Access via CAVATICA
 For any user registered on CAVATICA, the latest release of OpenPBTA data can be accessed from the CAVATICA public projects below:
@@ -24,6 +26,8 @@ data
     ├── md5sum.txt
     ├── pbta-cnv-cnvkit.seg.gz
     ├── pbta-cnv-controlfreec.seg.gz
+    ├── pbta-fusion-arriba.tsv.gz
+    ├── pbta-fusion-starfusion.tsv.gz
     ├── pbta-gene-expression-kallisto.rds
     ├── pbta-histologies.tsv
     ├── pbta-snv-mutect2.vep.maf.gz
