@@ -60,5 +60,3 @@ aws s3 cp s3://kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-hi
 ## curl
 curl -O s3://kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-histologies.tsv
 ```
-
-## Data format
