@@ -1,0 +1,164 @@
+---
+title: "Evaluate concordance between Mutect2 and Strelka2"
+output:   
+  html_notebook: 
+    toc: true
+    toc_float: true
+---
+
+Candace Savonen - CCDL for ALSF
+
+This notebook is the second notebook in this analysis and makes a bunch of plots
+is a first pass in evaluating the concordance between MuTect2 and Strelka2 
+results.
+
+It addresses [issue \# 30 in OpenPBTA](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/30).
+
+## Set Up
+
+```{r}
+# Get magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+Read in the dataset set up in `01-set-up.Rmd`.
+
+```{r}
+vaf_df <- readr::read_tsv(file.path("results", "combined_results.tsv"))
+```
+
+## VAF scatterplot
+
+```{r}
+vaf_df %>%
+ggplot2::ggplot(ggplot2::aes(x = vaf.strelka2, y = vaf.mutect2)) + 
+  ggplot2::geom_hex() +
+  ggplot2::theme_classic() + 
+  ggplot2::xlab("VAF for each mutation for Strelka2") + 
+  ggplot2::ylab("VAF for each mutation for MuTect2") 
+```
+
+## VAF Violin plots
+
+```{r}
+vaf_df %>%
+  tidyr::gather(key = "data", value = "vaf" , vaf.strelka2, vaf.mutect2) %>%
+  dplyr::mutate(data = gsub("^vaf.", "", data)) %>% 
+  dplyr::mutate(data.group = paste(dataset, ":", data, "VAF")) %>%
+  dplyr::filter(!is.na(vaf)) %>%
+# Plot it
+ggplot2::ggplot(ggplot2::aes(data.group, vaf)) + 
+  ggplot2::geom_violin(fill = "light blue") +
+  ggplot2::theme_classic( ) + 
+  ggplot2::ylab("Density of VAF") + 
+  ggplot2::xlab(" ")
+```
+
+## Venn Diagrams
+
+Make the Venn diagram of MuTect2 and Strelka2 mutations. 
+
+```{r}
+count <- summary(as.factor(vaf_df$dataset))
+
+# Take a look at this summary
+count
+```
+
+```{r}
+# Make the Venn diagram
+grid::grid.newpage();
+venn.plot <- VennDiagram::draw.pairwise.venn(
+  area1 = count[3] + count[1],
+  area2 = count[2] + count[1],
+  cross.area = count[1],
+  category = c("Strelka2", "MuTect2"),
+  fill = c("blue", "yellow"),
+  cex = 2,
+  cat.cex = 1.5,
+  cat.dist = c(-0.04, -0.031),
+  ext.pos = 0,
+  ext.dist = -0.01,
+  ext.length = .8,
+  ext.line.lwd = 2,
+  ext.line.lty = "dashed");
+grid::grid.draw(venn.plot) # Draw plot
+```
+
+Save the Venn Diagram plot to a PDF. 
+
+```{r}
+# Make filename to save plot as
+venn.plot.file <- file.path("plots", 
+                            "strelka2_mutect2_venn_diagram.pdf")
+pdf(venn.plot.file);
+grid::grid.draw(venn.plot);
+dev.off()
+```
+
+## What types of variants are are the most discrepant between the algorithms?
+
+Let's make a wrapper function that will do this for whatever variables we are 
+interested in. 
+
+```{r}
+barplot_var <- function(df, variable_name = NULL, filter_cutoff = 1, 
+                        as_percent = FALSE) {
+  count_df <- vaf_df %>%
+    dplyr::select(paste0(variable_name, c(".strelka2", ".mutect2")),
+                  dataset) %>%
+    tidyr::gather(key = "data", value = "variable" , 
+                  paste0(variable_name, c(".strelka2", ".mutect2"))) %>%
+    dplyr::mutate('data' = gsub(paste0(variable_name, "."), "", data)) %>%
+    dplyr::group_by(dataset, data, variable) %>% 
+    dplyr::summarise(count = n())
+  
+  totals <- count_df %>%
+    dplyr::group_by(data, dataset) %>%
+    dplyr::summarise(total = sum(count, na.rm = TRUE)) 
+    
+    
+  count_df %>%
+    dplyr::mutate(percent = count_df$count/totals$total[match(count_df$data, totals$data)])
+                                  
+    dplyr::filter(count > filter_cutoff, !is.na(variable)) %>%
+    dplyr::mutate(report = ifelse(as_percent, percent, count)) %>%
+    ggplot2::ggplot(ggplot2::aes(x = reorder(variable, -report), 
+                                 y = report, fill = dataset)) + 
+    ggplot2::geom_bar(position = "dodge", stat="identity") + 
+    ggplot2::theme_classic() +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
+    colorblindr::scale_fill_OkabeIto() + 
+    ggplot2::xlab("")
+}
+```
+
+```{r}
+barplot_var(vaf_df, "change", 100)
+```
+
+```{r}
+barplot_var(vaf_df, "coding", 10)
+```
+
+```{r}
+barplot_var(vaf_df, "BIOTYPE", 10)
+```
+
+```{r}
+barplot_var(vaf_df, "Variant_Classification", 10)
+```
+
+```{r}
+barplot_var(vaf_df, "VARIANT_CLASS", 10)
+```
+
+```{r}
+barplot_var(vaf_df, "IMPACT", 10)
+```
+
+Session Info: 
+
+```{r}
+sessionInfo()
+```
