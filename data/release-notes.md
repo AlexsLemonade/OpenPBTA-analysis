@@ -10,9 +10,14 @@
   - removed tumor/normal genotype mis-match samples
   - removed consent failed samples
   - clincial infomation updated
-    - harmozneid sample ID and diagnosis for PNOC003 samples
-    - added surivial rate
-    - added medullo subtype infomation
+    - added and harmonized sample ID and diagnosis for PNOC003 samples
+    - added medullo subtype information
+  - CNV
+    - added seg files for CNV data
+    - added CNVkit results  
+  - SV
+    - added LUMPY results
+    - added annotated SV files
 - folder structure:
 ```
 data
