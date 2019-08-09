@@ -42,20 +42,105 @@ You should file a [Pull Request](https://github.com/AlexsLemonade/OpenPBTA-analy
 We are using continuous integration software applied to the supplied test datasets to confirm that the analysis can be carried out successfully within the Docker container.
 
 ## How to Obtain OpenPBTA Data
+This dataset includes all the PBTA somatic mutational and gene expression results in combined tsv or matrix format. We will be releasing this dataset on both [CAVATICA](https://cavatica.sbgenomics.com) and AWS cloud platform moving forward.
 
-### Germ Line Variant Data (Germline SNVs)
+### Data Access via CAVATICA
+For any user registered on CAVATICA, the latest release of OpenPBTA data can be accessed from the CAVATICA public projects below:
+- [Pediatric Brain Tumor Atlas Open Access Data - CBTTC](https://cavatica.sbgenomics.com/u/cavatica/pbta-cbttc/)
+- [Pediatric Brain Tumor Atlas Open Access Data - PNOC003](https://cavatica.sbgenomics.com/u/cavatica/pbta-pnoc003/)
+
+### Accessing Data via AWS S3
+For any other users, OpenPBTA Open Access Data is also organized by a directory structure for each data release under AWS S3 bucket `s3://kf-openaccess-us-east-1-prd-pbta/data/`. Data folders are named following the naming convention of `release-{version}-{date}`.
+
+Example of the data directory structure:
+```
+data
+└── release-v2-20190809
+    ├── release-notes.md
+    ├── md5sum.txt
+    ├── pbta-cnv-cnvkit.seg.gz
+    ├── pbta-cnv-controlfreec.seg.gz
+    ├── pbta-fusion-arriba.tsv.gz
+    ├── pbta-fusion-starfusion.tsv.gz
+    ├── pbta-gene-expression-kallisto.rds
+    ├── pbta-histologies.tsv
+    ├── pbta-snv-mutect2.vep.maf.gz
+    ├── pbta-snv-strelka2.vep.maf.gz
+    ├── pbta-sv-manta.tsv.gz
+    └── readme.md
+```
+
+For the current availabe data, please refer to [doc/release-notes.md](./release-notes.md)
+
+To download data from S3, [aws-cli](https://github.com/aws/aws-cli) is recommened. But other tools like `wget` or `curl` should also work.
+
+Example of download one entire release
+```
+## aws-cli
+aws s3 sync s3://kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/ /path/to/local/folder/
+```
+
+Example of download one single file
+```
+## aws-cli
+aws s3 cp s3://kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-histologies.tsv /path/to/local/folder/
+
+## curl
+wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-histologies.tsv
+curl -O https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-histologies.tsv
+```
 
 ### Somatic Single Nucleotide Variant Data (Somatic SNVs)
+Data format: [Annotated MAF format](doc/format/vep-maf.md)
+Data download links:
+
+```
+wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-snv-mutect2.vep.maf.gz
+wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-snv-strelka2.vep.maf.gz
+```
 
 ### Somatic Copy Number Variant Data (Somatic CNVs)
+Data format: [SEG format](https://software.broadinstitute.org/software/igv/SEG)
+Data download links:
+```
+wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-cnv-cnvkit.seg.gz
+wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-cnv-controlfreec.seg.gz
+```
+
+### Somatic Structural Variant Data (Somatic SV)
+Data format: [Annotated Manta TSV](doc/format/manta-tsv-header.md)
+Data download links:
+```
+wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-sv-manta.tsv.gz
+```
 
 ### Gene Expression Estimates
+Data format: gene and sample matrix
+Data download links:
+```
+wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-gene-expression-kallisto.rds
+```
+
+### Gene Fusions
+Data format 
+    - [Arriba TSV](doc/format/arriba-tsv-header.md)
+    - [STARFusion TSV](doc/format/starfusion-tsv-header.md)
+Data download links:
+```
+wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-fusion-arriba.tsv.gz
+wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-fusion-starfusion.tsv.gz
+```
 
 ### Clinical Data
+
+```
+wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-histologies.tsv
+```
 
 ## How to Add an Analysis
 
 ### Docker Container
+
 
 ### Folder Structure
 
