@@ -43,7 +43,7 @@ We are using continuous integration software applied to the supplied test datase
 
 ## How to Obtain OpenPBTA Data
 
-This dataset includes all the PBTA somatic mutational and gene expression results in combined tsv or matrix format.
+The OpenPBTA dataset includes somatic mutation and gene expression results in combined tsv or matrix format.
 We are releasing this dataset on both [CAVATICA](https://cavatica.sbgenomics.com) and AWS S3.
 
 We have created a shell script that will download the latest release from AWS S3.
@@ -82,7 +82,7 @@ data
     └── readme.md
 ```
 
-For the current availabe data, please refer to [doc/release-notes.md](./release-notes.md)
+For the current available data, please refer to [doc/release-notes.md](./release-notes.md)
 
 To download data from S3, [aws-cli](https://github.com/aws/aws-cli) is recommended.
 But other tools like `wget` or `curl` should also work.
