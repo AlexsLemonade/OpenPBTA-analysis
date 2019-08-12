@@ -59,96 +59,15 @@ For any user registered on CAVATICA, the latest release of OpenPBTA data can be 
 - [Pediatric Brain Tumor Atlas Open Access Data - CBTTC](https://cavatica.sbgenomics.com/u/cavatica/pbta-cbttc/)
 - [Pediatric Brain Tumor Atlas Open Access Data - PNOC003](https://cavatica.sbgenomics.com/u/cavatica/pbta-pnoc003/)
 
-### Accessing Data via AWS S3
+## Data Formats
 
-OpenPBTA Open Access Data is also organized by a directory structure for each data release under the AWS S3 bucket `s3://kf-openaccess-us-east-1-prd-pbta/data/`.
-Data folders are named following the naming convention of `release-{version}-{date}`.
-
-Example of the data directory structure:
-```
-data
-└── release-v2-20190809
-    ├── release-notes.md
-    ├── md5sum.txt
-    ├── pbta-cnv-cnvkit.seg.gz
-    ├── pbta-cnv-controlfreec.seg.gz
-    ├── pbta-fusion-arriba.tsv.gz
-    ├── pbta-fusion-starfusion.tsv.gz
-    ├── pbta-gene-expression-kallisto.rds
-    ├── pbta-histologies.tsv
-    ├── pbta-snv-mutect2.vep.maf.gz
-    ├── pbta-snv-strelka2.vep.maf.gz
-    ├── pbta-sv-manta.tsv.gz
-    └── readme.md
-```
-
-For the current available data, please refer to [doc/release-notes.md](./release-notes.md)
-
-To download data from S3, [aws-cli](https://github.com/aws/aws-cli) is recommended.
-But other tools like `wget` or `curl` should also work.
-
-Example of download one entire release
-```
-## aws-cli
-aws s3 sync s3://kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/ /path/to/local/folder/
-```
-
-Example of download one single file
-```
-## aws-cli
-aws s3 cp s3://kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-histologies.tsv /path/to/local/folder/
-
-## curl
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-histologies.tsv
-curl -O https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-histologies.tsv
-```
-
-### Somatic Single Nucleotide Variant Data (Somatic SNVs)
-Data format: [Annotated MAF format](doc/format/vep-maf.md)
-Data download links:
-
-```
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-snv-mutect2.vep.maf.gz
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-snv-strelka2.vep.maf.gz
-```
-
-### Somatic Copy Number Variant Data (Somatic CNVs)
-Data format: [SEG format](https://software.broadinstitute.org/software/igv/SEG)
-Data download links:
-```
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-cnv-cnvkit.seg.gz
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-cnv-controlfreec.seg.gz
-```
-
-### Somatic Structural Variant Data (Somatic SV)
-Data format: [Annotated Manta TSV](doc/format/manta-tsv-header.md)
-Data download links:
-```
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-sv-manta.tsv.gz
-```
-
-### Gene Expression Estimates
-Data format: gene and sample matrix
-Data download links:
-```
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-gene-expression-kallisto.rds
-```
-
-### Gene Fusions
-Data format
-    - [Arriba TSV](doc/format/arriba-tsv-header.md)
-    - [STARFusion TSV](doc/format/starfusion-tsv-header.md)
-Data download links:
-```
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-fusion-arriba.tsv.gz
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-fusion-starfusion.tsv.gz
-```
-
-### Clinical Data
-
-```
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-histologies.tsv
-```
+The release notes for each release are provided in the `release-notes.md` file that accompanies the data files.
+Somatic Single Nucleotide Variant (SNV) data are provided in [Annotated MAF format](doc/format/vep-maf.md) files for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-single-nucleotide-variant-calling).
+Somatic Copy Number Variant (CNV) data are provided in the [SEG format](https://software.broadinstitute.org/software/igv/SEG) for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-copy-number-variant-calling).
+Somatic Structural Variant Data (Somatic SV) are provided in the [Annotated Manta TSV](doc/format/manta-tsv-header.md) format produced by the [applied software package](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-structural-variant-calling).
+Gene expression estimates from the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#gene-expression-abundance-estimation) are provided as a gene by sample matrix.
+Gene Fusions produced by the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#rna-fusion-calling-and-prioritization) are provided as [Arriba TSV](doc/format/arriba-tsv-header.md) and [STARFusion TSV](doc/format/starfusion-tsv-header.md) respectively.
+[Harmonized clinical data](https://alexslemonade.github.io/OpenPBTA-manuscript/#clinical-data-harmonization) are released as tab separated values.
 
 ## How to Add an Analysis
 
