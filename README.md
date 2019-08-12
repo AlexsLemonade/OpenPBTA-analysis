@@ -42,15 +42,27 @@ You should file a [Pull Request](https://github.com/AlexsLemonade/OpenPBTA-analy
 We are using continuous integration software applied to the supplied test datasets to confirm that the analysis can be carried out successfully within the Docker container.
 
 ## How to Obtain OpenPBTA Data
-This dataset includes all the PBTA somatic mutational and gene expression results in combined tsv or matrix format. We will be releasing this dataset on both [CAVATICA](https://cavatica.sbgenomics.com) and AWS cloud platform moving forward.
+
+This dataset includes all the PBTA somatic mutational and gene expression results in combined tsv or matrix format.
+We are releasing this dataset on both [CAVATICA](https://cavatica.sbgenomics.com) and AWS S3.
+
+We have created a shell script that will download the latest release from AWS S3.
+OS X users must use homebrew to install `md5sha1sum` via the command `brew install md5sha1sum` before running the download script the first time.
+Once this has been done, run `sh download_data.sh` to acquire the latest release.
+This will create symlinks in `data/` to the latest files.
+Whenever you are doing analyses, your code should refer to the symlinks in `data/` and not the release folder.
+If you want to make sure that you've got the most recent version of the data, it's safe to re-run `sh download_data.sh`.
 
 ### Data Access via CAVATICA
+
 For any user registered on CAVATICA, the latest release of OpenPBTA data can be accessed from the CAVATICA public projects below:
 - [Pediatric Brain Tumor Atlas Open Access Data - CBTTC](https://cavatica.sbgenomics.com/u/cavatica/pbta-cbttc/)
 - [Pediatric Brain Tumor Atlas Open Access Data - PNOC003](https://cavatica.sbgenomics.com/u/cavatica/pbta-pnoc003/)
 
 ### Accessing Data via AWS S3
-For any other users, OpenPBTA Open Access Data is also organized by a directory structure for each data release under AWS S3 bucket `s3://kf-openaccess-us-east-1-prd-pbta/data/`. Data folders are named following the naming convention of `release-{version}-{date}`.
+
+OpenPBTA Open Access Data is also organized by a directory structure for each data release under the AWS S3 bucket `s3://kf-openaccess-us-east-1-prd-pbta/data/`.
+Data folders are named following the naming convention of `release-{version}-{date}`.
 
 Example of the data directory structure:
 ```
@@ -72,7 +84,8 @@ data
 
 For the current availabe data, please refer to [doc/release-notes.md](./release-notes.md)
 
-To download data from S3, [aws-cli](https://github.com/aws/aws-cli) is recommened. But other tools like `wget` or `curl` should also work.
+To download data from S3, [aws-cli](https://github.com/aws/aws-cli) is recommended.
+But other tools like `wget` or `curl` should also work.
 
 Example of download one entire release
 ```
@@ -122,7 +135,7 @@ wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-2
 ```
 
 ### Gene Fusions
-Data format 
+Data format
     - [Arriba TSV](doc/format/arriba-tsv-header.md)
     - [STARFusion TSV](doc/format/starfusion-tsv-header.md)
 Data download links:
