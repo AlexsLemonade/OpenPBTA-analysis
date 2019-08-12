@@ -39,10 +39,6 @@ if (!require(treemap)) {
   install.packages("treemap", repos = 'http://cran.us.r-project.org')
   library(treemap)
 }
-if (!require(htmltools)) {
-  install.packages("htmltools", repos = 'http://cran.us.r-project.org')
-  library(htmltools)
-}
 if (!require(colorblindr)) {
   install.packages("colorspace", repos = "http://R-Forge.R-project.org")
   library(colorspace)
