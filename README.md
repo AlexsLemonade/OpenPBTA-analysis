@@ -51,9 +51,9 @@ Users performing analyses, should always refer to the symlinks in the `data/` di
 
 We have created a shell script that will download the latest release from AWS S3.
 OS X users must use [homebrew](https://brew.sh/) to install `md5sha1sum` via the command `brew install md5sha1sum` before running the download script the first time.
-Once this has been done, run `sh download_data.sh` to acquire the latest release.
+Once this has been done, run `bash download-data.sh` to acquire the latest release.
 This will create symlinks in `data/` to the latest files.
-It's safe to re-run `sh download_data.sh` to check that you have the most recent release of the data.
+It's safe to re-run `bash download-data.sh` to check that you have the most recent release of the data.
 We will update the default release number whenever we produce a new release.
 
 ### Data Access via CAVATICA
@@ -92,7 +92,7 @@ Our folder structure is designed to separate each analysis into its own set of n
 Within the analyses directory, create a folder for your analysis.
 Choose a name that is unique from other analyses and somewhat detailed.
 For example, instead of `gene-expression`, choose `gene-expression-clustering` if you are clustering samples by their gene expression values.
-You should assume that any data files are in the `../../data` directory and that their file names match what the `download_data.sh` script produces.
+You should assume that any data files are in the `../../data` directory and that their file names match what the `download-data.sh` script produces.
 These files should be read in at their relative path, so that we can re-run analyses if the underlying data change.
 Files that are primarily graphic should be placed in a `plots` subdirectory.
 Files that are primarily tabular results files should be placed in a `results` subdirectory.
