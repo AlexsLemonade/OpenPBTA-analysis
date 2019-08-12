@@ -74,6 +74,11 @@ Gene expression estimates from the [applied software packages](https://alexslemo
 Gene Fusions produced by the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#rna-fusion-calling-and-prioritization) are provided as [Arriba TSV](doc/format/arriba-tsv-header.md) and [STARFusion TSV](doc/format/starfusion-tsv-header.md) respectively.
 [Harmonized clinical data](https://alexslemonade.github.io/OpenPBTA-manuscript/#clinical-data-harmonization) are released as tab separated values.
 
+### Data Caveats
+The clinical manifest will be updated and versioned as molecular subgroups are identified based on genomic analyses.
+We noticed ControlFreeC does not properly handle aneuploidy well for a subset of samples in that it calls the entire genome gained. We recommend using these results with caution while we continue benchmarking this algorithm.
+
+
 ## How to Add an Analysis
 
 Users performing analyses, should always refer to the symlinks in the `data/` directory and not files within the release folder, as an updated release may be produced before a publication is prepared.
