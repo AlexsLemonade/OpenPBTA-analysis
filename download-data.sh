@@ -18,5 +18,5 @@ cd ../../
 
 for file in "${FILES[@]}"
 do
-  ln -s data/$RELEASE/$file data/$file
+  ln -sfn $RELEASE/$file data/$file
 done
