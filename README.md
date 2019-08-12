@@ -106,6 +106,9 @@ Data download links:
 wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-cnv-cnvkit.seg.gz
 wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-cnv-controlfreec.seg.gz
 ```
+NOTE: We noticed ControlFreeC does not handle aneuploidy properly for a subset of samples in that it calls the entire genome gained. 
+We recommend using these results with caution while we continue benchmarking this algorithm.
+
 
 ### Somatic Structural Variant Data (Somatic SV)
 Data format: [Annotated Manta TSV](doc/format/manta-tsv-header.md)
@@ -119,6 +122,7 @@ Data format: gene and sample matrix
 Data download links:
 ```
 wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-gene-expression-kallisto.rds
+wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-gene-expression-rsem.fpkm.rds
 ```
 
 ### Gene Fusions
