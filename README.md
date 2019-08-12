@@ -51,9 +51,9 @@ Users performing analyses, should always refer to the symlinks in the `data/` di
 
 We have created a shell script that will download the latest release from AWS S3.
 OS X users must use [homebrew](https://brew.sh/) to install `md5sha1sum` via the command `brew install md5sha1sum` before running the download script the first time.
-Once this has been done, run `sh download-data.sh` to acquire the latest release.
+Once this has been done, run `bash download-data.sh` to acquire the latest release.
 This will create symlinks in `data/` to the latest files.
-It's safe to re-run `sh download-data.sh` to check that you have the most recent release of the data.
+It's safe to re-run `bash download-data.sh` to check that you have the most recent release of the data.
 We will update the default release number whenever we produce a new release.
 
 ### Data Access via CAVATICA
