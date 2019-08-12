@@ -1,0 +1,20 @@
+primary_site	number_of_types	max_type	second_max_type
+frontal_lobe	27	High-grade glioma;astrocytoma (WHO grade III/IV)	Low-grade glioma;astrocytoma (WHO grade I/II)
+parietal_lobe	27	Low-grade glioma;astrocytoma (WHO grade I/II)	High-grade glioma;astrocytoma (WHO grade III/IV)
+temporal_lobe	25	Low-grade glioma;astrocytoma (WHO grade I/II)	High-grade glioma;astrocytoma (WHO grade III/IV)
+spinal_cord	22	Schwannoma	Ependymoma
+ventricles	22	Ependymoma	Low-grade glioma;astrocytoma (WHO grade I/II)
+cerebellum	20	Low-grade glioma;astrocytoma (WHO grade I/II)	Medulloblastoma
+occipital_lobe	15	Ependymoma	Ganglioglioma
+suprasellar_hypothalamic_pituitary	13	Craniopharyngioma	Low-grade glioma;astrocytoma (WHO grade I/II)
+skull	12	Chordoma	Langerhans Cell histiocytosis
+brain_stem	10	Brainstem glioma;Diffuse intrinsic pontine glioma	Low-grade glioma;astrocytoma (WHO grade I/II)
+thalamus	8	High-grade glioma;astrocytoma (WHO grade III/IV)	Low-grade glioma;astrocytoma (WHO grade I/II)
+spine	8	Malignant peripheral nerve sheath tumor	Schwannoma
+pons	7	Brainstem glioma;Diffuse intrinsic pontine glioma	Atypical Teratoid Rhabdoid Tumor
+pineal_gland	6	Teratoma	Germinoma
+meninges	6	Meningioma	Atypical Teratoid Rhabdoid Tumor
+basal_ganglia	5	High-grade glioma;astrocytoma (WHO grade III/IV)	Low-grade glioma;astrocytoma (WHO grade I/II)
+optic_pathway	5	Low-grade glioma;astrocytoma (WHO grade I/II)	High-grade glioma;astrocytoma (WHO grade III/IV)
+hippocampus	4	Dysembryoplastic neuroepithelial tumor (DNET);Ganglioglioma	Dysplasia;Gliosis
+cranial_nerves	3	Schwannoma	Atypical Teratoid Rhabdoid Tumor

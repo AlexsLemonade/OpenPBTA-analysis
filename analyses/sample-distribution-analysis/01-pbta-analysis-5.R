@@ -69,7 +69,7 @@ disease_expression$percent <-
 
 # Reorder the columns to be displayed in descending order by count on the plot
 disease_expression$disease_type_new <- with(disease_expression,
-                                            reorder(disease_type_new,-count))
+                                            reorder(disease_type_new, -count))
 
 # Write to tsv file
 readr::write_tsv(disease_expression,
@@ -173,8 +173,7 @@ suprasellar_hypothalamic_pituitary <-
 suprasellar_hypothalamic_pituitary <-
   unique(suprasellar_hypothalamic_pituitary$disease_type_new)
 
-# Make a data_frame containing each unique primary site and the cancer types 
-# therein
+# data.frame containing each unique primary site and the cancer types therein
 primary_sites <-
   make_padded_data_frame(
     list(
@@ -202,5 +201,23 @@ primary_sites <-
 
 # Write to tsv file
 readr::write_tsv(primary_sites, file.path("results", "primary_sites.tsv"))
+
+# data.frame to put together the total number of types per site
+primary_sites_counts <-
+  data.frame(apply(primary_sites, 2, function(x)
+    length(which(!is.na(x))))) %>%
+  dplyr::rename(number_of_types = apply.primary_sites..2..function.x..length.which..is.na.x....) %>%
+  tibble::rownames_to_column("primary_site")
+
+# Add max_type column to give the highest expressed type at each site
+primary_sites_counts$max_type <- as.factor(t(primary_sites[1, ]))
+
+# Add second_max_type column to give the second highest expressed type at 
+# each site. This was done to represent a broader scope of types. 
+primary_sites_counts$second_max_type <- as.factor(t(primary_sites[2,]))
+
+# Write to tsv file
+readr::write_tsv(primary_sites_counts,
+                 file.path("results", "primary_sites_counts.tsv"))
 
 sessionInfo()
