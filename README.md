@@ -47,7 +47,7 @@ The OpenPBTA dataset includes somatic mutation and gene expression results in co
 We are releasing this dataset on both [CAVATICA](https://cavatica.sbgenomics.com) and AWS S3.
 
 We have created a shell script that will download the latest release from AWS S3.
-OS X users must use homebrew to install `md5sha1sum` via the command `brew install md5sha1sum` before running the download script the first time.
+OS X users must use [homebrew](https://brew.sh/) to install `md5sha1sum` via the command `brew install md5sha1sum` before running the download script the first time.
 Once this has been done, run `sh download_data.sh` to acquire the latest release.
 This will create symlinks in `data/` to the latest files.
 Whenever you are doing analyses, your code should refer to the symlinks in `data/` and not the release folder.
