@@ -1,0 +1,79 @@
+---
+title: "Create subset files for CI"
+output: html_notebook
+author: J. Taroni for ALSF CCDL
+date: 2019
+---
+
+```{r}
+if (!("maftools" %in% installed.packages())) {
+  BiocManager::install("maftools", update = FALSE)
+}
+```
+
+Path to the symlinked data obtained via `bash download-data.sh`.
+
+```{r}
+data_dir <- file.path("..", "..", "data")
+```
+
+We'll use `Reduce` + `intersect` on a list that holds the sample identifiers 
+from each file to find identifiers present in _all_ files.
+
+```{r}
+sample_id_list <- list()
+```
+
+### CNV files
+
+The CNV files are in [SEG format](https://software.broadinstitute.org/software/igv/SEG) 
+and are gzipped.
+These are tab-delimited files.
+
+```{r}
+cnvkit <- readr::read_tsv(file.path(data_dir, "pbta-cnv-cnvkit.seg.gz"))
+controlfreec <- readr::read_tsv(file.path(data_dir, "pbta-cnv-controlfreec.seg.gz"))
+```
+
+Extract the identifiers from the SEG files.
+
+```{r}
+sample_id_list$cnvkit <- unique(cnvkit$ID)
+sample_id_list$controlfreec <- unique(controlfreec$ID)
+```
+
+### Fusion
+
+```{r}
+arriba <- readr::read_tsv(file.path(data_dir, "pbta-fusion-arriba.tsv.gz"))
+starfusion <- readr::read_tsv(file.path(data_dir, 
+                                        "pbta-fusion-starfusion.tsv.gz"))
+```
+
+```{r}
+sample_id_list$arriba <- unique(arriba$tumor_id)
+sample_id_list$starfusion <- unique(starfusion$tumor_id)
+```
+
+### Gene expression
+
+```{r}
+kallisto <- readr::read_rds(file.path(data_dir, 
+                                      "pbta-gene-expression-kallisto.rds"))
+rsem <- readr::read_rds(file.path(data_dir, 
+                                  "pbta-gene-expression-rsem.fpkm.rds"))
+```
+
+```{r}
+# the first two columns are transcript and gene identifiers, respectively
+sample_id_list$kallisto <- colnames(kallisto)[3:ncol(kallisto)]
+# the first column contains gene identifiers
+sample_id_list$rsem <- colnames(rsem)[2:ncol(kallisto)]
+```
+
+### SNV
+
+```{r}
+mutect2 <- 
+```
+
