@@ -1,9 +1,16 @@
 ---
 title: "Create subset files for CI"
-output: html_notebook
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
 author: J. Taroni for ALSF CCDL
 date: 2019
 ---
+
+## Setup
+
+#### Packages and functions
 
 ```{r}
 if (!("maftools" %in% installed.packages())) {
@@ -11,10 +18,94 @@ if (!("maftools" %in% installed.packages())) {
 }
 ```
 
+`magrittr` pipe.
+
+```{r}
+`%>%` <- dplyr::`%>%`
+```
+
+This is a custom function for writing information contained in a MAF-class to
+a `maf.gz` file.
+
+```{r}
+# this is a bit of a hack
+write_maf_file <- function(maf_object, file_name, 
+                           version_string = "#version 2.4") {
+  # This function takes maf_object, an object of the MAF-class, and writes it
+  # to an MAF file (a special type of tab-delimited file) at the path supplied
+  # as file_name
+  # 
+  # Args:
+  #  maf_object: a MAF-class object to be written to file
+  #  file_name: output file name, including the full path
+  #  version_string: the version string to be placed at the top of the file
+  #                  being written; "#version 2.4" by default
+  #  
+  # Returns: 
+  #   intended to be used to write to file only
+  
+  # we need a tab-delimited file of the information in the
+  # @data slot of a MAF object--this is a data.table
+  extracted_dt <- maf_object@data
+  
+  # we need a line where the header information is contained
+  header_df <- data.frame(t(colnames(extracted_dt)))
+
+  # version information as a padded data.frame
+  padded_version_df <- data.frame(t(c(version_string,
+                                      rep("", ncol(header_df) - 1 ))))
+  
+  # bind all the rows of the three frames together
+  completed_df <- rbind(padded_version_df, 
+                        header_df,
+                        extracted_dt,
+                        use.names = FALSE)
+
+  # now we're ready to write to the path supplied as the file_name argument
+  readr::write_tsv(completed_df, path = file_name, col_names = FALSE)
+
+}
+```
+
+I can confirm that the file written by `write_maf_file` can be read into R via
+`maftools::read.maf`. 
+It is, however, missing the `maf.silent` information of the 
+[`MAF-class`](https://rdrr.io/bioc/maftools/man/MAF-class.html).
+It is unclear to me if this matters or not.
+
+### Directories and files
+
 Path to the symlinked data obtained via `bash download-data.sh`.
 
 ```{r}
 data_dir <- file.path("..", "..", "data")
+```
+
+We'll put the subset files in a new directory `../../data/testing`.
+
+```{r}
+testing_data_dir <- file.path("..", "..", "data", "testing")
+if (!dir.exists(testing_data_dir)) {
+  dir.create(testing_data_dir, recursive = TRUE)
+}
+```
+
+We want the file names to be consistent between the symlinked data and the
+subset files that will be used for continuous integration, so we'll hardcode
+them here.
+
+```{r}
+cnvkit_file <- "pbta-cnv-cnvkit.seg.gz"
+controlfreec_file <- "pbta-cnv-controlfreec.seg.gz"
+arriba_file <- "pbta-fusion-arriba.tsv.gz"
+starfusion_file <- "pbta-fusion-starfusion.tsv.gz"
+kallisto_file <- "pbta-gene-expression-kallisto.rds"
+rsem_file <- "pbta-gene-expression-rsem.fpkm.rds"
+histologies_file <- "pbta-histologies.tsv"
+mutect2_file <- "pbta-snv-mutect2.vep.maf.gz"
+strelka2_file <- "pbta-snv-strelka2.vep.maf.gz"
+manta_file <- "pbta-sv-manta.tsv.gz"
+#TODO: LUMPY SV file
 ```
 
 We'll use `Reduce` + `intersect` on a list that holds the sample identifiers 
@@ -24,15 +115,15 @@ from each file to find identifiers present in _all_ files.
 sample_id_list <- list()
 ```
 
-### CNV files
+## CNV
 
 The CNV files are in [SEG format](https://software.broadinstitute.org/software/igv/SEG) 
 and are gzipped.
 These are tab-delimited files.
 
 ```{r}
-cnvkit <- readr::read_tsv(file.path(data_dir, "pbta-cnv-cnvkit.seg.gz"))
-controlfreec <- readr::read_tsv(file.path(data_dir, "pbta-cnv-controlfreec.seg.gz"))
+cnvkit <- readr::read_tsv(file.path(data_dir, cnvkit_file))
+controlfreec <- readr::read_tsv(file.path(data_dir, controlfreec_file))
 ```
 
 Extract the identifiers from the SEG files.
@@ -42,12 +133,11 @@ sample_id_list$cnvkit <- unique(cnvkit$ID)
 sample_id_list$controlfreec <- unique(controlfreec$ID)
 ```
 
-### Fusion
+## Fusion
 
 ```{r}
-arriba <- readr::read_tsv(file.path(data_dir, "pbta-fusion-arriba.tsv.gz"))
-starfusion <- readr::read_tsv(file.path(data_dir, 
-                                        "pbta-fusion-starfusion.tsv.gz"))
+arriba <- readr::read_tsv(file.path(data_dir, arriba_file))
+starfusion <- readr::read_tsv(file.path(data_dir, starfusion_file))
 ```
 
 ```{r}
@@ -55,13 +145,11 @@ sample_id_list$arriba <- unique(arriba$tumor_id)
 sample_id_list$starfusion <- unique(starfusion$tumor_id)
 ```
 
-### Gene expression
+## Gene expression
 
 ```{r}
-kallisto <- readr::read_rds(file.path(data_dir, 
-                                      "pbta-gene-expression-kallisto.rds"))
-rsem <- readr::read_rds(file.path(data_dir, 
-                                  "pbta-gene-expression-rsem.fpkm.rds"))
+kallisto <- readr::read_rds(file.path(data_dir, kallisto_file))
+rsem <- readr::read_rds(file.path(data_dir, rsem_file))
 ```
 
 ```{r}
@@ -71,9 +159,200 @@ sample_id_list$kallisto <- colnames(kallisto)[3:ncol(kallisto)]
 sample_id_list$rsem <- colnames(rsem)[2:ncol(kallisto)]
 ```
 
-### SNV
+## SNV
+
+SNV files are in [annotated MAF format](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/doc/format/vep-maf.md).
+
+These are a bit unwieldy to read in, so we'll split up the chunks below.
 
 ```{r}
-mutect2 <- 
+mutect2 <- maftools::read.maf(file.path(data_dir, mutect2_file))
 ```
 
+```{r}
+strelka2 <- maftools::read.maf(file.path(data_dir, strelka2_file))
+```
+
+```{r}
+sample_id_list$mutect2 <- 
+  unique(maftools::getSampleSummary(mutect2)$Tumor_Sample_Barcode)
+sample_id_list$strelka2 <- 
+  unique(maftools::getSampleSummary(strelka2)$Tumor_Sample_Barcode)
+```
+
+## SV 
+
+The Manta SV file is in [annotated Manta TSV format](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/doc/format/manta-tsv-header.md).
+
+```{r}
+manta <- readr::read_tsv(file.path(data_dir, manta_file))
+```
+
+```{r}
+sample_id_list$manta <- unique(manta$Kids.First.Biospecimen.ID.Tumor)
+```
+
+```{r}
+#TODO: LUMPY SV
+```
+
+## Select samples and subset files
+
+### Map to participant identifiers
+
+These sample identifiers are all biospecimen identifiers.
+The tools that use different experiment strategies will have no overlapping
+biospecimen identifiers.
+Thus, we'll need to map _biospecimen_ identifiers to _participant_ identifiers.
+We'll use the histologies file to do this.
+
+```{r}
+histologies_df <- readr::read_tsv(file.path(data_dir, histologies_file))
+```
+
+```{r}
+participant_id_list <- lapply(
+  sample_id_list,
+  function(sample_ids) {
+    histologies_df %>%
+      dplyr::filter(Kids_First_Biospecimen_ID %in% sample_ids) %>% 
+      dplyr::pull(Kids_First_Participant_ID)
+  }
+)
+```
+
+Now we can take the intersection of elements of `participant_id_list` to
+identify participant identifiers represented in each of the files we're trying
+to subset.
+
+```{r}
+participants_in_all <- Reduce(intersect, participant_id_list)
+```
+
+### Select samples
+
+We'll select 5 participant identifiers for the purposes of producing subset
+files (for continuous integration).
+
+```{r}
+# set seed for reproducibility
+set.seed(12345)
+selected_participant_ids <- sample(participants_in_all, 5)
+```
+
+Again, each of the tools use biospecimen identifiers. 
+We'll have to map back to those to accomplish the subsetting task.
+
+```{r}
+selected_biospecimen_df <- histologies_df %>%
+  dplyr::filter(Kids_First_Participant_ID %in% selected_participant_ids)
+```
+
+`selected_biospecimen_df` is our subset of `pbta-histologies.tsv`.
+
+```{r}
+readr::write_tsv(selected_biospecimen_df,
+                 file.path(testing_data_dir, "pbta-histologies.tsv"))
+```
+
+To keep things less verbose below, we'll keep the biospecimen IDs as a vector.
+
+```{r}
+selected_biospecimen_ids <- selected_biospecimen_df %>%
+  dplyr::pull(Kids_First_Biospecimen_ID)
+```
+
+### Subset files
+
+#### CNV
+
+```{r}
+cnvkit_subset <- cnvkit %>%
+  dplyr::filter(ID %in% selected_biospecimen_ids) %>%
+  readr::write_tsv(file.path(testing_data_dir, cnvkit_file))
+```
+
+```{r}
+controlfreec_subset <- controlfreec %>%
+  dplyr::filter(ID %in% selected_biospecimen_ids) %>%
+  readr::write_tsv(file.path(testing_data_dir, controlfreec_file))
+```
+
+#### Fusion
+
+```{r}
+arriba_subset <- arriba %>%
+  dplyr::filter(tumor_id %in% selected_biospecimen_ids) %>%
+  readr::write_tsv(file.path(testing_data_dir, arriba_file))
+```
+
+```{r}
+starfusion_subset <- starfusion %>%
+  dplyr::filter(tumor_id %in% selected_biospecimen_ids) %>%
+  readr::write_tsv(file.path(testing_data_dir, starfusion_file))
+```
+
+#### Gene Expression
+
+```{r}
+# not all the biospecimen ids we've selected will be in the column names because
+# some of them are WGS, so we have to use an indexing strategy here
+kallisto_index <- which(colnames(kallisto) %in% selected_biospecimen_ids)
+kallisto_subset <- kallisto %>%
+  # need the transcript and gene identifiers in columns 1 and 2
+  dplyr::select(c(1, 2, kallisto_index)) %>%
+  readr::write_tsv(file.path(testing_data_dir, kallisto_file))
+```
+
+```{r}
+# similar issue as kallisto above
+rsem_index <- which(colnames(rsem) %in% selected_biospecimen_ids)
+rsem_subset <- rsem %>%
+  # need the gene identifiers in the first column
+  dplyr::select(c(1, rsem_index)) %>%
+  readr::write_tsv(file.path(testing_data_dir, rsem_file))
+```
+
+#### SNV
+
+For the MAF files, we'll use `maftools::subsetMaf` to subset.
+It might get upset when we use barcodes that aren't in the file, so let's get
+only the WGS biospecimen identifiers.
+
+```{r}
+wgs_selected_ids <- selected_biospecimen_df %>%
+  dplyr::filter(experimental_strategy == "WGS") %>%
+  dplyr::pull(Kids_First_Biospecimen_ID)
+```
+
+```{r}
+mutect2_subset <- maftools::subsetMaf(mutect2, tsb = wgs_selected_ids)
+write_maf_file(maf_object = mutect2_subset,
+               file_name = file.path(testing_data_dir, mutect2_file))
+```
+
+```{r}
+strelka2_subset <- maftools::subsetMaf(strelka2, tsb = wgs_selected_ids)
+write_maf_file(maf_object = strelka2_subset,
+               file_name = file.path(testing_data_dir, strelka2_file))
+```
+
+#### SV
+
+We can use the participant identifiers directly to subset the Manta data.frame.
+
+```{r}
+manta_subset <- manta %>%
+  dplyr::filter(Kids.First.Participant.ID %in% selected_participant_ids) %>%
+  readr::write_tsv(file.path(testing_data_dir, manta_file))
+```
+
+```{r}
+#TODO: LUMPY SV
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
