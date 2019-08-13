@@ -39,9 +39,7 @@ if (!dir.exists("plots")) {
 
 # Read in dataset
 df2 <- data.frame(readr::read_tsv(
-  file.path("..", "..", "data",
-            "2019-07-26-pbta-histologies - 2019-07-26-including-germline.tsv"
-  )
+  file.path("..", "..", "data","pbta-histologies.tsv")
 ))
 
 # Remove na's
@@ -117,8 +115,11 @@ brain_location <- df2 %>%
 basal_ganglia <- location_fn("Basal Ganglia")
 basal_ganglia <- unique(basal_ganglia$disease_type_new)
 
-brain_stem <- location_fn("Brain Stem")
-brain_stem <- unique(brain_stem$disease_type_new)
+brain_stem_midbrain <- location_fn("Brain Stem- Midbrain")
+brain_stem_midbrain <- unique(brain_stem_midbrain$disease_type_new)
+
+brain_stem_medulla <- location_fn("Brain Stem-Medulla")
+brain_stem_medulla <- unique(brain_stem_medulla$disease_type_new)
 
 cerebellum <- location_fn("Cerebellum")
 cerebellum <- unique(cerebellum$disease_type_new)
@@ -186,8 +187,9 @@ primary_sites <-
       occipital_lobe = occipital_lobe,
       suprasellar_hypothalamic_pituitary = suprasellar_hypothalamic_pituitary,
       skull = skull,
-      brain_stem = brain_stem,
+      brain_stem_midbrain = brain_stem_midbrain,
       thalamus = thalamus,
+      brain_stem_medulla = brain_stem_medulla,
       spine = spine,
       pons = pons,
       pineal_gland = pineal_gland,
@@ -219,5 +221,5 @@ primary_sites_counts$second_max_type <- as.factor(t(primary_sites[2,]))
 # Write to tsv file
 readr::write_tsv(primary_sites_counts,
                  file.path("results", "primary_sites_counts.tsv"))
-
+  
 sessionInfo()
