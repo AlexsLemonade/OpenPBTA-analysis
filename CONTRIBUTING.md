@@ -14,11 +14,11 @@ We expect participants to actively review pull requests, with a particular focus
 
 ### Filing a pull request from your own branch
 
-Here, we include what might be a _typical_ workflow for filing a pull request to contribute to this project.
+Here, we include a _typical_ workflow for filing a pull request to contribute to this project.
 
 1. Fork this repository to your own account: https://help.github.com/en/articles/fork-a-repo
 2. Treat `AlexsLemonade/OpenPBTA-analysis` as an upstream repository. 
-You can follow these instructions for configuring a remote that points to an upstream repository here: https://help.github.com/en/articles/configuring-a-remote-for-a-fork
+You should follow these instructions for configuring a remote that points to an upstream repository here: https://help.github.com/en/articles/configuring-a-remote-for-a-fork
 3. When you want to make changes and ultimately file a pull request against the `master` branch of this repository, you can start by making a branch from the `master` branch of your fork named for the changes you intend to make. 
 For example, you could name your branch `gene-expression-clustering` 
 Then, [check out the new branch](https://gist.github.com/markSci5/5916003) (e.g., `gene-expression-clustering`).
