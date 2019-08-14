@@ -12,6 +12,17 @@ In this notebook, we subset the files to include full features for 5 matched
 participants.
 The output files are intended to be used for continuous integration.
 
+#### USAGE
+
+To run this from the command line, use:
+
+```
+Rscript -e "rmarkdown::render('analyses/create-subset-files/01-create_subset_files.Rmd', 
+                              clean = TRUE)"
+```
+
+_This assumes you are in the top directory of the repository._
+
 ## Setup
 
 #### Packages and functions
@@ -65,7 +76,8 @@ write_maf_file <- function(maf_df, file_name, version_string) {
 ```
 
 I can confirm that the file written by `write_maf_file` can be read into R via
-`maftools::read.maf`. 
+`maftools::read.maf`.
+See `02-subset_maf_concept` for a proof of concept.
 
 ### Directories and files
 
