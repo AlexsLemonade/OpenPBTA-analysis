@@ -63,7 +63,6 @@ mutect2_full <- maftools::read.maf(file.path(data_dir, mutect2_file))
 Select the tumor sample barcodes that are in the subset file.
 
 ```{r}
-
 subset_tsb <- unique(mutect2_subset@data$Tumor_Sample_Barcode)
 ```
 
@@ -79,4 +78,31 @@ subset with `maftools::subsetMaf` are the same.
 
 ```{r}
 all.equal(mutect2_subset, mutect2_post_subset)
+```
+
+### `data.frame`
+
+Try a different, `data.frame`-based method. 
+
+```{r}
+mutect2_subset_df <- data.table::fread(file.path(testing_data_dir, 
+                                                 mutect2_file),
+                                       skip = 1,  # version info
+                                       data.table = FALSE)
+```
+
+```{r}
+mutect2_full_df <- data.table::fread(file.path(data_dir,
+                                               mutect2_file),
+                                     skip = 1, # version info
+                                     data.table = FALSE)
+```
+
+```{r}
+mutect2_post_df <- mutect2_full_df %>%
+  dplyr::filter(Tumor_Sample_Barcode %in% subset_tsb)
+```
+
+```{r}
+all.equal(mutect2_subset_df, mutect2_post_df)
 ```
