@@ -44,102 +44,49 @@ We are using continuous integration software applied to the supplied test datase
 ## How to Obtain OpenPBTA Data
 This dataset includes all the PBTA somatic mutational and gene expression results in combined tsv or matrix format. We will be releasing this dataset on both [CAVATICA](https://cavatica.sbgenomics.com) and AWS cloud platform moving forward.
 
+The OpenPBTA dataset includes somatic mutation and gene expression results in combined tsv or matrix format.
+We are releasing this dataset on both [CAVATICA](https://cavatica.sbgenomics.com) and AWS S3.
+Users performing analyses, should always refer to the symlinks in the `data/` directory and not files within the release folder, as an updated release may be produced before a publication is prepared.
+
+### Data Access via Download Script
+
+We have created a shell script that will download the latest release from AWS S3.
+OS X users must use [homebrew](https://brew.sh/) to install `md5sha1sum` via the command `brew install md5sha1sum` before running the download script the first time.
+Once this has been done, run `bash download-data.sh` to acquire the latest release.
+This will create symlinks in `data/` to the latest files.
+It's safe to re-run `bash download-data.sh` to check that you have the most recent release of the data.
+We will update the default release number whenever we produce a new release.
+
 ### Data Access via CAVATICA
+
 For any user registered on CAVATICA, the latest release of OpenPBTA data can be accessed from the CAVATICA public projects below:
 - [Pediatric Brain Tumor Atlas Open Access Data - CBTTC](https://cavatica.sbgenomics.com/u/cavatica/pbta-cbttc/)
 - [Pediatric Brain Tumor Atlas Open Access Data - PNOC003](https://cavatica.sbgenomics.com/u/cavatica/pbta-pnoc003/)
 
-### Accessing Data via AWS S3
-For any other users, OpenPBTA Open Access Data is also organized by a directory structure for each data release under AWS S3 bucket `s3://kf-openaccess-us-east-1-prd-pbta/data/`. Data folders are named following the naming convention of `release-{version}-{date}`.
+Users downloading via CAVATICA should place the data files within a `data/release` folder and then create symlinks to those files within `/data`.
 
-Example of the data directory structure:
-```
-data
-└── release-v2-20190809
-    ├── release-notes.md
-    ├── md5sum.txt
-    ├── pbta-cnv-cnvkit.seg.gz
-    ├── pbta-cnv-controlfreec.seg.gz
-    ├── pbta-fusion-arriba.tsv.gz
-    ├── pbta-fusion-starfusion.tsv.gz
-    ├── pbta-gene-expression-kallisto.rds
-    ├── pbta-histologies.tsv
-    ├── pbta-snv-mutect2.vep.maf.gz
-    ├── pbta-snv-strelka2.vep.maf.gz
-    ├── pbta-sv-manta.tsv.gz
-    └── readme.md
-```
+## Data Formats
 
-For the current availabe data, please refer to [doc/release-notes.md](./release-notes.md)
+The release notes for each release are provided in the `release-notes.md` file that accompanies the data files.
+Somatic Single Nucleotide Variant (SNV) data are provided in [Annotated MAF format](doc/format/vep-maf.md) files for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-single-nucleotide-variant-calling).
+Somatic Copy Number Variant (CNV) data are provided in the [SEG format](https://software.broadinstitute.org/software/igv/SEG) for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-copy-number-variant-calling).
+Somatic Structural Variant Data (Somatic SV) are provided in the [Annotated Manta TSV](doc/format/manta-tsv-header.md) format produced by the [applied software package](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-structural-variant-calling).
+Gene expression estimates from the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#gene-expression-abundance-estimation) are provided as a gene by sample matrix.
+Gene Fusions produced by the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#rna-fusion-calling-and-prioritization) are provided as [Arriba TSV](doc/format/arriba-tsv-header.md) and [STARFusion TSV](doc/format/starfusion-tsv-header.md) respectively.
+[Harmonized clinical data](https://alexslemonade.github.io/OpenPBTA-manuscript/#clinical-data-harmonization) are released as tab separated values.
 
-To download data from S3, [aws-cli](https://github.com/aws/aws-cli) is recommened. But other tools like `wget` or `curl` should also work.
+### Data Caveats
+The clinical manifest will be updated and versioned as molecular subgroups are identified based on genomic analyses.
+We noticed ControlFreeC does not properly handle aneuploidy well for a subset of samples in that it calls the entire genome gained. We recommend using these results with caution while we continue benchmarking this algorithm.
 
-Example of download one entire release
-```
-## aws-cli
-aws s3 sync s3://kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/ /path/to/local/folder/
-```
-
-Example of download one single file
-```
-## aws-cli
-aws s3 cp s3://kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-histologies.tsv /path/to/local/folder/
-
-## curl
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-histologies.tsv
-curl -O https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-histologies.tsv
-```
-
-### Somatic Single Nucleotide Variant Data (Somatic SNVs)
-Data format: [Annotated MAF format](doc/format/vep-maf.md)
-Data download links:
-
-```
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-snv-mutect2.vep.maf.gz
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-snv-strelka2.vep.maf.gz
-```
-
-### Somatic Copy Number Variant Data (Somatic CNVs)
-Data format: [SEG format](https://software.broadinstitute.org/software/igv/SEG)
-Data download links:
-```
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-cnv-cnvkit.seg.gz
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-cnv-controlfreec.seg.gz
-```
-
-### Somatic Structural Variant Data (Somatic SV)
-Data format: [Annotated Manta TSV](doc/format/manta-tsv-header.md)
-Data download links:
-```
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-sv-manta.tsv.gz
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-sv-lumpy.tsv.gz
-```
-
-### Gene Expression Estimates
-Data format: gene and sample matrix
-Data download links:
-```
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-gene-expression-kallisto.rds
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-gene-expression-rsem.fpkm.rds
-```
-
-### Gene Fusions
-Data format 
-    - [Arriba TSV](doc/format/arriba-tsv-header.md)
-    - [STARFusion TSV](doc/format/starfusion-tsv-header.md)
-Data download links:
-```
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-fusion-arriba.tsv.gz
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-fusion-starfusion.tsv.gz
-```
-
-### Clinical Data
 
 ```
 wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-histologies.tsv
 ```
 
 ## How to Add an Analysis
+
+Users performing analyses, should always refer to the symlinks in the `data/` directory and not files within the release folder, as an updated release may be produced before a publication is prepared.
 
 ### Docker Container
 
@@ -150,7 +97,7 @@ Our folder structure is designed to separate each analysis into its own set of n
 Within the analyses directory, create a folder for your analysis.
 Choose a name that is unique from other analyses and somewhat detailed.
 For example, instead of `gene-expression`, choose `gene-expression-clustering` if you are clustering samples by their gene expression values.
-You should assume that any data files that you need to read live in the `../../data` directory and that their file names match what the `data_downloader.sh` script produces.
+You should assume that any data files are in the `../../data` directory and that their file names match what the `download-data.sh` script produces.
 These files should be read in at their relative path, so that we can re-run analyses if the underlying data change.
 Files that are primarily graphic should be placed in a `plots` subdirectory.
 Files that are primarily tabular results files should be placed in a `results` subdirectory.
