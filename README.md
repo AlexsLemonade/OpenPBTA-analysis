@@ -112,6 +112,7 @@ Data format: [Annotated Manta TSV](doc/format/manta-tsv-header.md)
 Data download links:
 ```
 wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-sv-manta.tsv.gz
+wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-sv-lumpy.tsv.gz
 ```
 
 ### Gene Expression Estimates
@@ -119,6 +120,7 @@ Data format: gene and sample matrix
 Data download links:
 ```
 wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-gene-expression-kallisto.rds
+wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-gene-expression-rsem.fpkm.rds
 ```
 
 ### Gene Fusions
