@@ -1,0 +1,71 @@
+---
+title: "Subset MAF files: proof of concept"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: J. Taroni for ALSF CCDL
+date: 2019
+---
+
+Does the MAF subsetting strategy in `01-create_subset_files` work?
+
+## Setup
+
+#### Packages and functions
+
+```{r}
+if (!("maftools" %in% installed.packages())) {
+  BiocManager::install("maftools", update = FALSE)
+}
+```
+
+`magrittr` pipe.
+
+```{r}
+`%>%` <- dplyr::`%>%`
+```
+
+#### Directories and files 
+
+```{r}
+data_dir <- file.path("..", "..", "data")
+testing_data_dir <- file.path(data_dir, "testing")
+mutect2_file <- "pbta-snv-mutect2.vep.maf.gz"
+```
+
+## Read in and compare
+
+This is the file that was subset and written to file with a custom function,
+`write_maf_file`.
+
+```{r}
+mutect2_subset <- maftools::read.maf(file.path(testing_data_dir, mutect2_file))
+```
+
+This is the original MuTect2 file.
+
+```{r}
+mutect2_full <- maftools::read.maf(file.path(data_dir, mutect2_file))
+```
+
+Select the tumor sample barcodes that are in the subset file.
+
+```{r}
+
+subset_tsb <- unique(mutect2_subset@data$Tumor_Sample_Barcode)
+```
+
+Use the tumor sample barcodes from the subset file to subset the full object.
+
+```{r}
+mutect2_post_subset <- maftools::subsetMaf(mutect2_full,
+                                           tsb = subset_tsb)
+```
+
+Check if the object read in from the subset file and the MAF object that was
+subset with `maftools::subsetMaf` are the same.
+
+```{r}
+all.equal(mutect2_subset, mutect2_post_subset)
+```
