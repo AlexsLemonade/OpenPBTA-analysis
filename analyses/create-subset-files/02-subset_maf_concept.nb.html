@@ -2940,6 +2940,13 @@ div.tocify {
 
 <!-- rnb-text-begin -->
 <p>Does the MAF subsetting strategy in <code>01-create_subset_files</code> work?</p>
+<div id="usage" class="section level4">
+<h4>USAGE</h4>
+<p>To run this from the command line, use:</p>
+<pre><code>Rscript -e &quot;rmarkdown::render('analyses/create-subset-files/02-subset_maf_concept.Rmd', 
+                              clean = TRUE)&quot;</code></pre>
+<p><em>This assumes you are in the top directory of the repository.</em></p>
+</div>
 <div id="setup" class="section level2">
 <h2>Setup</h2>
 <div id="packages-and-functions" class="section level4">
@@ -2983,14 +2990,14 @@ mutect2_file &lt;- &quot;pbta-snv-mutect2.vep.maf.gz&quot;</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoibXV0ZWN0Ml9zdWJzZXQgPC0gbWFmdG9vbHM6OnJlYWQubWFmKGZpbGUucGF0aCh0ZXN0aW5nX2RhdGFfZGlyLCBtdXRlY3QyX2ZpbGUpKSJ9 -->
 <pre class="r"><code>mutect2_subset &lt;- maftools::read.maf(file.path(testing_data_dir, mutect2_file))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiLVJlYWRpbmdcbi1WYWxpZGF0aW5nXG4tU2lsZW50IHZhcmlhbnRzOiAzMTcxNiBcbi1TdW1tYXJpemluZ1xuLVByb2Nlc3NpbmcgY2xpbmljYWwgZGF0YVxuLS1NaXNzaW5nIGNsaW5pY2FsIGRhdGFcbi1GaW5pc2hlZCBpbiAxLjA2NHMgZWxhcHNlZCAoMS4zNzNzIGNwdSkgXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiLVJlYWRpbmdcbi1WYWxpZGF0aW5nXG4tU2lsZW50IHZhcmlhbnRzOiAzMTcxNiBcbi1TdW1tYXJpemluZ1xuLVByb2Nlc3NpbmcgY2xpbmljYWwgZGF0YVxuLS1NaXNzaW5nIGNsaW5pY2FsIGRhdGFcbi1GaW5pc2hlZCBpbiAxLjE0NHMgZWxhcHNlZCAoMS41MDNzIGNwdSkgXG4ifQ== -->
 <pre><code>-Reading
 -Validating
 -Silent variants: 31716 
 -Summarizing
 -Processing clinical data
 --Missing clinical data
--Finished in 1.064s elapsed (1.373s cpu) </code></pre>
+-Finished in 1.144s elapsed (1.503s cpu) </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3000,7 +3007,7 @@ mutect2_file &lt;- &quot;pbta-snv-mutect2.vep.maf.gz&quot;</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoibXV0ZWN0Ml9mdWxsIDwtIG1hZnRvb2xzOjpyZWFkLm1hZihmaWxlLnBhdGgoZGF0YV9kaXIsIG11dGVjdDJfZmlsZSkpIn0= -->
 <pre class="r"><code>mutect2_full &lt;- maftools::read.maf(file.path(data_dir, mutect2_file))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiLVJlYWRpbmdcbi1WYWxpZGF0aW5nXG4tLVJlbW92ZWQgMzIzIGR1cGxpY2F0ZWQgdmFyaWFudHNcbi1TaWxlbnQgdmFyaWFudHM6IDExNTg4Mzc4IFxuLVN1bW1hcml6aW5nXG4tLVBvc3NpYmxlIEZMQUdTIGFtb25nIHRvcCB0ZW4gZ2VuZXM6XG4gIEFITkFLMlxuICBNVUMxN1xuICBBSE5BS1xuLVByb2Nlc3NpbmcgY2xpbmljYWwgZGF0YVxuLS1NaXNzaW5nIGNsaW5pY2FsIGRhdGFcbi1GaW5pc2hlZCBpbiAwMDowMjo1OCBlbGFwc2VkICgwMDowMzoxMyBjcHUpIFxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiLVJlYWRpbmdcbi1WYWxpZGF0aW5nXG4tLVJlbW92ZWQgMzIzIGR1cGxpY2F0ZWQgdmFyaWFudHNcbi1TaWxlbnQgdmFyaWFudHM6IDExNTg4Mzc4IFxuLVN1bW1hcml6aW5nXG4tLVBvc3NpYmxlIEZMQUdTIGFtb25nIHRvcCB0ZW4gZ2VuZXM6XG4gIEFITkFLMlxuICBNVUMxN1xuICBBSE5BS1xuLVByb2Nlc3NpbmcgY2xpbmljYWwgZGF0YVxuLS1NaXNzaW5nIGNsaW5pY2FsIGRhdGFcbi1GaW5pc2hlZCBpbiAwMDowMjo1OSBlbGFwc2VkICgwMDowMzoxNiBjcHUpIFxuIn0= -->
 <pre><code>-Reading
 -Validating
 --Removed 323 duplicated variants
@@ -3012,7 +3019,7 @@ mutect2_file &lt;- &quot;pbta-snv-mutect2.vep.maf.gz&quot;</code></pre>
   AHNAK
 -Processing clinical data
 --Missing clinical data
--Finished in 00:02:58 elapsed (00:03:13 cpu) </code></pre>
+-Finished in 00:02:59 elapsed (00:03:16 cpu) </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3045,7 +3052,7 @@ mutect2_file &lt;- &quot;pbta-snv-mutect2.vep.maf.gz&quot;</code></pre>
 <!-- rnb-chunk-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiU3Vic2V0IE1BRiBmaWxlczogcHJvb2Ygb2YgY29uY2VwdCIKb3V0cHV0OiAKICBodG1sX25vdGVib29rOgogICAgdG9jOiBUUlVFCiAgICB0b2NfZmxvYXQ6IFRSVUUKYXV0aG9yOiBKLiBUYXJvbmkgZm9yIEFMU0YgQ0NETApkYXRlOiAyMDE5Ci0tLQoKRG9lcyB0aGUgTUFGIHN1YnNldHRpbmcgc3RyYXRlZ3kgaW4gYDAxLWNyZWF0ZV9zdWJzZXRfZmlsZXNgIHdvcms/CgojIyBTZXR1cAoKIyMjIyBQYWNrYWdlcyBhbmQgZnVuY3Rpb25zCgpgYGB7cn0KaWYgKCEoIm1hZnRvb2xzIiAlaW4lIGluc3RhbGxlZC5wYWNrYWdlcygpKSkgewogIEJpb2NNYW5hZ2VyOjppbnN0YWxsKCJtYWZ0b29scyIsIHVwZGF0ZSA9IEZBTFNFKQp9CmBgYAoKYG1hZ3JpdHRyYCBwaXBlLgoKYGBge3J9CmAlPiVgIDwtIGRwbHlyOjpgJT4lYApgYGAKCiMjIyMgRGlyZWN0b3JpZXMgYW5kIGZpbGVzIAoKYGBge3J9CmRhdGFfZGlyIDwtIGZpbGUucGF0aCgiLi4iLCAiLi4iLCAiZGF0YSIpCnRlc3RpbmdfZGF0YV9kaXIgPC0gZmlsZS5wYXRoKGRhdGFfZGlyLCAidGVzdGluZyIpCm11dGVjdDJfZmlsZSA8LSAicGJ0YS1zbnYtbXV0ZWN0Mi52ZXAubWFmLmd6IgpgYGAKCiMjIFJlYWQgaW4gYW5kIGNvbXBhcmUKClRoaXMgaXMgdGhlIGZpbGUgdGhhdCB3YXMgc3Vic2V0IGFuZCB3cml0dGVuIHRvIGZpbGUgd2l0aCBhIGN1c3RvbSBmdW5jdGlvbiwKYHdyaXRlX21hZl9maWxlYC4KCmBgYHtyfQptdXRlY3QyX3N1YnNldCA8LSBtYWZ0b29sczo6cmVhZC5tYWYoZmlsZS5wYXRoKHRlc3RpbmdfZGF0YV9kaXIsIG11dGVjdDJfZmlsZSkpCmBgYAoKVGhpcyBpcyB0aGUgb3JpZ2luYWwgTXVUZWN0MiBmaWxlLgoKYGBge3J9Cm11dGVjdDJfZnVsbCA8LSBtYWZ0b29sczo6cmVhZC5tYWYoZmlsZS5wYXRoKGRhdGFfZGlyLCBtdXRlY3QyX2ZpbGUpKQpgYGAKClNlbGVjdCB0aGUgdHVtb3Igc2FtcGxlIGJhcmNvZGVzIHRoYXQgYXJlIGluIHRoZSBzdWJzZXQgZmlsZS4KCmBgYHtyfQoKc3Vic2V0X3RzYiA8LSB1bmlxdWUobXV0ZWN0Ml9zdWJzZXRAZGF0YSRUdW1vcl9TYW1wbGVfQmFyY29kZSkKYGBgCgpVc2UgdGhlIHR1bW9yIHNhbXBsZSBiYXJjb2RlcyBmcm9tIHRoZSBzdWJzZXQgZmlsZSB0byBzdWJzZXQgdGhlIGZ1bGwgb2JqZWN0LgoKYGBge3J9Cm11dGVjdDJfcG9zdF9zdWJzZXQgPC0gbWFmdG9vbHM6OnN1YnNldE1hZihtdXRlY3QyX2Z1bGwsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0c2IgPSBzdWJzZXRfdHNiKQpgYGAKCkNoZWNrIGlmIHRoZSBvYmplY3QgcmVhZCBpbiBmcm9tIHRoZSBzdWJzZXQgZmlsZSBhbmQgdGhlIE1BRiBvYmplY3QgdGhhdCB3YXMKc3Vic2V0IHdpdGggYG1hZnRvb2xzOjpzdWJzZXRNYWZgIGFyZSB0aGUgc2FtZS4KCmBgYHtyfQphbGwuZXF1YWwobXV0ZWN0Ml9zdWJzZXQsIG11dGVjdDJfcG9zdF9zdWJzZXQpCmBgYAo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiU3Vic2V0IE1BRiBmaWxlczogcHJvb2Ygb2YgY29uY2VwdCIKb3V0cHV0OiAKICBodG1sX25vdGVib29rOgogICAgdG9jOiBUUlVFCiAgICB0b2NfZmxvYXQ6IFRSVUUKYXV0aG9yOiBKLiBUYXJvbmkgZm9yIEFMU0YgQ0NETApkYXRlOiAyMDE5Ci0tLQoKRG9lcyB0aGUgTUFGIHN1YnNldHRpbmcgc3RyYXRlZ3kgaW4gYDAxLWNyZWF0ZV9zdWJzZXRfZmlsZXNgIHdvcms/CgojIyMjIFVTQUdFCgpUbyBydW4gdGhpcyBmcm9tIHRoZSBjb21tYW5kIGxpbmUsIHVzZToKCmBgYApSc2NyaXB0IC1lICJybWFya2Rvd246OnJlbmRlcignYW5hbHlzZXMvY3JlYXRlLXN1YnNldC1maWxlcy8wMi1zdWJzZXRfbWFmX2NvbmNlcHQuUm1kJywgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsZWFuID0gVFJVRSkiCmBgYAoKX1RoaXMgYXNzdW1lcyB5b3UgYXJlIGluIHRoZSB0b3AgZGlyZWN0b3J5IG9mIHRoZSByZXBvc2l0b3J5Ll8KCiMjIFNldHVwCgojIyMjIFBhY2thZ2VzIGFuZCBmdW5jdGlvbnMKCmBgYHtyfQppZiAoISgibWFmdG9vbHMiICVpbiUgaW5zdGFsbGVkLnBhY2thZ2VzKCkpKSB7CiAgQmlvY01hbmFnZXI6Omluc3RhbGwoIm1hZnRvb2xzIiwgdXBkYXRlID0gRkFMU0UpCn0KYGBgCgpgbWFncml0dHJgIHBpcGUuCgpgYGB7cn0KYCU+JWAgPC0gZHBseXI6OmAlPiVgCmBgYAoKIyMjIyBEaXJlY3RvcmllcyBhbmQgZmlsZXMgCgpgYGB7cn0KZGF0YV9kaXIgPC0gZmlsZS5wYXRoKCIuLiIsICIuLiIsICJkYXRhIikKdGVzdGluZ19kYXRhX2RpciA8LSBmaWxlLnBhdGgoZGF0YV9kaXIsICJ0ZXN0aW5nIikKbXV0ZWN0Ml9maWxlIDwtICJwYnRhLXNudi1tdXRlY3QyLnZlcC5tYWYuZ3oiCmBgYAoKIyMgUmVhZCBpbiBhbmQgY29tcGFyZQoKVGhpcyBpcyB0aGUgZmlsZSB0aGF0IHdhcyBzdWJzZXQgYW5kIHdyaXR0ZW4gdG8gZmlsZSB3aXRoIGEgY3VzdG9tIGZ1bmN0aW9uLApgd3JpdGVfbWFmX2ZpbGVgLgoKYGBge3J9Cm11dGVjdDJfc3Vic2V0IDwtIG1hZnRvb2xzOjpyZWFkLm1hZihmaWxlLnBhdGgodGVzdGluZ19kYXRhX2RpciwgbXV0ZWN0Ml9maWxlKSkKYGBgCgpUaGlzIGlzIHRoZSBvcmlnaW5hbCBNdVRlY3QyIGZpbGUuCgpgYGB7cn0KbXV0ZWN0Ml9mdWxsIDwtIG1hZnRvb2xzOjpyZWFkLm1hZihmaWxlLnBhdGgoZGF0YV9kaXIsIG11dGVjdDJfZmlsZSkpCmBgYAoKU2VsZWN0IHRoZSB0dW1vciBzYW1wbGUgYmFyY29kZXMgdGhhdCBhcmUgaW4gdGhlIHN1YnNldCBmaWxlLgoKYGBge3J9CgpzdWJzZXRfdHNiIDwtIHVuaXF1ZShtdXRlY3QyX3N1YnNldEBkYXRhJFR1bW9yX1NhbXBsZV9CYXJjb2RlKQpgYGAKClVzZSB0aGUgdHVtb3Igc2FtcGxlIGJhcmNvZGVzIGZyb20gdGhlIHN1YnNldCBmaWxlIHRvIHN1YnNldCB0aGUgZnVsbCBvYmplY3QuCgpgYGB7cn0KbXV0ZWN0Ml9wb3N0X3N1YnNldCA8LSBtYWZ0b29sczo6c3Vic2V0TWFmKG11dGVjdDJfZnVsbCwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRzYiA9IHN1YnNldF90c2IpCmBgYAoKQ2hlY2sgaWYgdGhlIG9iamVjdCByZWFkIGluIGZyb20gdGhlIHN1YnNldCBmaWxlIGFuZCB0aGUgTUFGIG9iamVjdCB0aGF0IHdhcwpzdWJzZXQgd2l0aCBgbWFmdG9vbHM6OnN1YnNldE1hZmAgYXJlIHRoZSBzYW1lLgoKYGBge3J9CmFsbC5lcXVhbChtdXRlY3QyX3N1YnNldCwgbXV0ZWN0Ml9wb3N0X3N1YnNldCkKYGBgCg==</div>
 
 
 </div>

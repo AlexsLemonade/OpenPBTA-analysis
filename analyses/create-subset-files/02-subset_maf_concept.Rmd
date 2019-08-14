@@ -10,6 +10,17 @@ date: 2019
 
 Does the MAF subsetting strategy in `01-create_subset_files` work?
 
+#### USAGE
+
+To run this from the command line, use:
+
+```
+Rscript -e "rmarkdown::render('analyses/create-subset-files/02-subset_maf_concept.Rmd', 
+                              clean = TRUE)"
+```
+
+_This assumes you are in the top directory of the repository._
+
 ## Setup
 
 #### Packages and functions
