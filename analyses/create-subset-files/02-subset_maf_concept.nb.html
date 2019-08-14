@@ -2946,7 +2946,7 @@ div.tocify {
 <h4>Packages and functions</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWYgKCEoXCJtYWZ0b29sc1wiICVpbiUgaW5zdGFsbGVkLnBhY2thZ2VzKCkpKSB7XG4gIEJpb2NNYW5hZ2VyOjppbnN0YWxsKFwibWFmdG9vbHNcIiwgdXBkYXRlID0gRkFMU0UpXG59XG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiaWYgKCEoXCJtYWZ0b29sc1wiICVpbiUgaW5zdGFsbGVkLnBhY2thZ2VzKCkpKSB7XG4gIEJpb2NNYW5hZ2VyOjppbnN0YWxsKFwibWFmdG9vbHNcIiwgdXBkYXRlID0gRkFMU0UpXG59In0= -->
 <pre class="r"><code>if (!(&quot;maftools&quot; %in% installed.packages())) {
   BiocManager::install(&quot;maftools&quot;, update = FALSE)
 }</code></pre>
@@ -2956,14 +2956,9 @@ div.tocify {
 <p><code>magrittr</code> pipe.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYCU+JWAgPC0gZHBseXI6OmAlPiVgXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYCU+JWAgPC0gZHBseXI6OmAlPiVgIn0= -->
 <pre class="r"><code>`%&gt;%` &lt;- dplyr::`%&gt;%`</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RwbHlyJzpcbiAgbWV0aG9kICAgICAgICAgICBmcm9tXG4gIHByaW50LnJvd3dpc2VfZGYgICAgIFxuIn0= -->
-<pre><code>Registered S3 method overwritten by 'dplyr':
-  method           from
-  print.rowwise_df     </code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -2971,7 +2966,7 @@ div.tocify {
 <h4>Directories and files</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGF0YV9kaXIgPC0gZmlsZS5wYXRoKFwiLi5cIiwgXCIuLlwiLCBcImRhdGFcIilcbnRlc3RpbmdfZGF0YV9kaXIgPC0gZmlsZS5wYXRoKGRhdGFfZGlyLCBcInRlc3RpbmdcIilcbm11dGVjdDJfZmlsZSA8LSBcInBidGEtc252LW11dGVjdDIudmVwLm1hZi5nelwiXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbImRhdGFfZGlyIDwtIGZpbGUucGF0aChcIi4uXCIsIFwiLi5cIiwgXCJkYXRhXCIpIiwidGVzdGluZ19kYXRhX2RpciA8LSBmaWxlLnBhdGgoZGF0YV9kaXIsIFwidGVzdGluZ1wiKSIsIm11dGVjdDJfZmlsZSA8LSBcInBidGEtc252LW11dGVjdDIudmVwLm1hZi5nelwiIl19 -->
 <pre class="r"><code>data_dir &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;data&quot;)
 testing_data_dir &lt;- file.path(data_dir, &quot;testing&quot;)
 mutect2_file &lt;- &quot;pbta-snv-mutect2.vep.maf.gz&quot;</code></pre>
@@ -2985,42 +2980,29 @@ mutect2_file &lt;- &quot;pbta-snv-mutect2.vep.maf.gz&quot;</code></pre>
 <p>This is the file that was subset and written to file with a custom function, <code>write_maf_file</code>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubXV0ZWN0Ml9zdWJzZXQgPC0gbWFmdG9vbHM6OnJlYWQubWFmKGZpbGUucGF0aCh0ZXN0aW5nX2RhdGFfZGlyLCBtdXRlY3QyX2ZpbGUpKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoibXV0ZWN0Ml9zdWJzZXQgPC0gbWFmdG9vbHM6OnJlYWQubWFmKGZpbGUucGF0aCh0ZXN0aW5nX2RhdGFfZGlyLCBtdXRlY3QyX2ZpbGUpKSJ9 -->
 <pre class="r"><code>mutect2_subset &lt;- maftools::read.maf(file.path(testing_data_dir, mutect2_file))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RhdGEudGFibGUnOlxuICBtZXRob2QgICAgICAgICAgIGZyb21cbiAgcHJpbnQuZGF0YS50YWJsZSAgICAgXG4ifQ== -->
-<pre><code>Registered S3 method overwritten by 'data.table':
-  method           from
-  print.data.table     </code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiLVJlYWRpbmdcbi1WYWxpZGF0aW5nXG4tU2lsZW50IHZhcmlhbnRzOiAzMTcxNiBcbi1TdW1tYXJpemluZ1xuLVByb2Nlc3NpbmcgY2xpbmljYWwgZGF0YVxuLS1NaXNzaW5nIGNsaW5pY2FsIGRhdGFcbi1GaW5pc2hlZCBpbiAxLjI2NnMgZWxhcHNlZCAoMS41OTlzIGNwdSkgXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiLVJlYWRpbmdcbi1WYWxpZGF0aW5nXG4tU2lsZW50IHZhcmlhbnRzOiAzMTcxNiBcbi1TdW1tYXJpemluZ1xuLVByb2Nlc3NpbmcgY2xpbmljYWwgZGF0YVxuLS1NaXNzaW5nIGNsaW5pY2FsIGRhdGFcbi1GaW5pc2hlZCBpbiAxLjA2NHMgZWxhcHNlZCAoMS4zNzNzIGNwdSkgXG4ifQ== -->
 <pre><code>-Reading
 -Validating
 -Silent variants: 31716 
 -Summarizing
 -Processing clinical data
 --Missing clinical data
--Finished in 1.266s elapsed (1.599s cpu) </code></pre>
+-Finished in 1.064s elapsed (1.373s cpu) </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>This is the original MuTect2 file.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubXV0ZWN0Ml9mdWxsIDwtIG1hZnRvb2xzOjpyZWFkLm1hZihmaWxlLnBhdGgoZGF0YV9kaXIsIG11dGVjdDJfZmlsZSkpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoibXV0ZWN0Ml9mdWxsIDwtIG1hZnRvb2xzOjpyZWFkLm1hZihmaWxlLnBhdGgoZGF0YV9kaXIsIG11dGVjdDJfZmlsZSkpIn0= -->
 <pre class="r"><code>mutect2_full &lt;- maftools::read.maf(file.path(data_dir, mutect2_file))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiLVJlYWRpbmdcbiJ9 -->
-<pre><code>-Reading</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoifC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfFxufD09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09fFxufC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfFxufD09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09fFxuIn0= -->
-<pre><code>|--------------------------------------------------|
-|==================================================|
-|--------------------------------------------------|
-|==================================================|</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiLVZhbGlkYXRpbmdcbi0tUmVtb3ZlZCAzMjMgZHVwbGljYXRlZCB2YXJpYW50c1xuLVNpbGVudCB2YXJpYW50czogMTE1ODgzNzggXG4tU3VtbWFyaXppbmdcbi0tUG9zc2libGUgRkxBR1MgYW1vbmcgdG9wIHRlbiBnZW5lczpcbiAgQUhOQUsyXG4gIE1VQzE3XG4gIEFITkFLXG4tUHJvY2Vzc2luZyBjbGluaWNhbCBkYXRhXG4tLU1pc3NpbmcgY2xpbmljYWwgZGF0YVxuLUZpbmlzaGVkIGluIDAwOjAzOjA1IGVsYXBzZWQgKDAwOjAzOjIzIGNwdSkgXG4ifQ== -->
-<pre><code>-Validating
+<!-- rnb-output-begin eyJkYXRhIjoiLVJlYWRpbmdcbi1WYWxpZGF0aW5nXG4tLVJlbW92ZWQgMzIzIGR1cGxpY2F0ZWQgdmFyaWFudHNcbi1TaWxlbnQgdmFyaWFudHM6IDExNTg4Mzc4IFxuLVN1bW1hcml6aW5nXG4tLVBvc3NpYmxlIEZMQUdTIGFtb25nIHRvcCB0ZW4gZ2VuZXM6XG4gIEFITkFLMlxuICBNVUMxN1xuICBBSE5BS1xuLVByb2Nlc3NpbmcgY2xpbmljYWwgZGF0YVxuLS1NaXNzaW5nIGNsaW5pY2FsIGRhdGFcbi1GaW5pc2hlZCBpbiAwMDowMjo1OCBlbGFwc2VkICgwMDowMzoxMyBjcHUpIFxuIn0= -->
+<pre><code>-Reading
+-Validating
 --Removed 323 duplicated variants
 -Silent variants: 11588378 
 -Summarizing
@@ -3030,23 +3012,22 @@ mutect2_file &lt;- &quot;pbta-snv-mutect2.vep.maf.gz&quot;</code></pre>
   AHNAK
 -Processing clinical data
 --Missing clinical data
--Finished in 00:03:05 elapsed (00:03:23 cpu) </code></pre>
+-Finished in 00:02:58 elapsed (00:03:13 cpu) </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Select the tumor sample barcodes that are in the subset file.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5zdWJzZXRfdHNiIDwtIHVuaXF1ZShtdXRlY3QyX3N1YnNldEBkYXRhJFR1bW9yX1NhbXBsZV9CYXJjb2RlKVxuYGBgIn0= -->
-<pre class="r"><code>
-subset_tsb &lt;- unique(mutect2_subset@data$Tumor_Sample_Barcode)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoic3Vic2V0X3RzYiA8LSB1bmlxdWUobXV0ZWN0Ml9zdWJzZXRAZGF0YSRUdW1vcl9TYW1wbGVfQmFyY29kZSkifQ== -->
+<pre class="r"><code>subset_tsb &lt;- unique(mutect2_subset@data$Tumor_Sample_Barcode)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Use the tumor sample barcodes from the subset file to subset the full object.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubXV0ZWN0Ml9wb3N0X3N1YnNldCA8LSBtYWZ0b29sczo6c3Vic2V0TWFmKG11dGVjdDJfZnVsbCxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0c2IgPSBzdWJzZXRfdHNiKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoibXV0ZWN0Ml9wb3N0X3N1YnNldCA8LSBtYWZ0b29sczo6c3Vic2V0TWFmKG11dGVjdDJfZnVsbCxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0c2IgPSBzdWJzZXRfdHNiKSJ9 -->
 <pre class="r"><code>mutect2_post_subset &lt;- maftools::subsetMaf(mutect2_full,
                                            tsb = subset_tsb)</code></pre>
 <!-- rnb-source-end -->
@@ -3055,7 +3036,7 @@ subset_tsb &lt;- unique(mutect2_subset@data$Tumor_Sample_Barcode)</code></pre>
 <p>Check if the object read in from the subset file and the MAF object that was subset with <code>maftools::subsetMaf</code> are the same.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxsLmVxdWFsKG11dGVjdDJfc3Vic2V0LCBtdXRlY3QyX3Bvc3Rfc3Vic2V0KVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYWxsLmVxdWFsKG11dGVjdDJfc3Vic2V0LCBtdXRlY3QyX3Bvc3Rfc3Vic2V0KSJ9 -->
 <pre class="r"><code>all.equal(mutect2_subset, mutect2_post_subset)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIFRSVUVcbiJ9 -->
