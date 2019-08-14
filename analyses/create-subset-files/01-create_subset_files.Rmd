@@ -328,11 +328,11 @@ write_maf_file(maf_df = mutect2_subset,
 strelka2_subset <- strelka2 %>%
   dplyr::filter(Tumor_Sample_Barcode %in% selected_biospecimen_ids)
 
-# write compressed mutect2 subset file
+# write compressed strelka2 subset file
 write_maf_file(maf_df = strelka2_subset,
                file_name = file.path(testing_data_dir, strelka2_file),
                # we'll get the version string directly from the original 
-               # mutect2 file
+               # strelka2 file
                version_string = readLines(file.path(data_dir, strelka2_file), 
                                           n = 1))
 ```
