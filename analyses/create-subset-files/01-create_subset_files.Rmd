@@ -8,13 +8,18 @@ author: J. Taroni for ALSF CCDL
 date: 2019
 ---
 
+In this notebook, we subset the files to include full features for 5 matched 
+participants.
+The output files are intended to be used for continuous integration.
+
 ## Setup
 
 #### Packages and functions
 
 ```{r}
-if (!("maftools" %in% installed.packages())) {
-  BiocManager::install("maftools", update = FALSE)
+# R.utils is required to gzip files here
+if (!("R.utils" %in% installed.packages())) {
+  install.packages("R.utils")
 }
 ```
 
@@ -24,54 +29,43 @@ if (!("maftools" %in% installed.packages())) {
 `%>%` <- dplyr::`%>%`
 ```
 
-This is a custom function for writing information contained in a MAF-class to
-a `maf.gz` file.
+Custom function for writing gzipped MAF files.
 
 ```{r}
-# this is a bit of a hack
-write_maf_file <- function(maf_object, file_name, 
-                           version_string = "#version 2.4") {
-  # This function takes maf_object, an object of the MAF-class, and writes it
-  # to an MAF file (a special type of tab-delimited file) at the path supplied
-  # as file_name
+write_maf_file <- function(maf_df, file_name, version_string) {
+  # Given a data.frame that contains the fields for a MAF file, write a gzipped
+  # MAF file and include the version information provided in version_string.
   # 
+  # Note: if file_name exists, it will be overwritten
+  #
   # Args:
-  #  maf_object: a MAF-class object to be written to file
-  #  file_name: output file name, including the full path
-  #  version_string: the version string to be placed at the top of the file
-  #                  being written; "#version 2.4" by default
-  #  
-  # Returns: 
-  #   intended to be used to write to file only
+  #   maf_df: A data.frame that contains the MAF info.
+  #   file_name: Output file name, including the full path.
+  #   version_string: the version string that will be written to the first line
+  #                   of the file at file_name
+  #
+  # Returns: intended to be used to write files only
   
-  # we need a tab-delimited file of the information in the
-  # @data slot of a MAF object--this is a data.table
-  extracted_dt <- maf_object@data
+  # if the file name supplied to this function ends in `.gz`, take it out for
+  # the purposes of writeLines, etc.
+  # we'll gzip it at the end with R.utils::gzip and this extension is not needed
+  if (grepl(".gz", file_name)) {
+    file_name <- sub(".gz", "", file_name)
+  }
   
-  # we need a line where the header information is contained
-  header_df <- data.frame(t(colnames(extracted_dt)))
-
-  # version information as a padded data.frame
-  padded_version_df <- data.frame(t(c(version_string,
-                                      rep("", ncol(header_df) - 1 ))))
+  # write the version string to the top of the file
+  writeLines(version_string, con = file_name)
   
-  # bind all the rows of the three frames together
-  completed_df <- rbind(padded_version_df, 
-                        header_df,
-                        extracted_dt,
-                        use.names = FALSE)
-
-  # now we're ready to write to the path supplied as the file_name argument
-  readr::write_tsv(completed_df, path = file_name, col_names = FALSE)
-
+  # write the tabular data of maf_df
+  readr::write_tsv(maf_df, path = file_name, append = TRUE, col_names = TRUE)
+  
+  # now gzip the file
+  R.utils::gzip(file_name, overwrite = TRUE)
 }
 ```
 
 I can confirm that the file written by `write_maf_file` can be read into R via
 `maftools::read.maf`. 
-It is, however, missing the `maf.silent` information of the 
-[`MAF-class`](https://rdrr.io/bioc/maftools/man/MAF-class.html).
-It is unclear to me if this matters or not.
 
 ### Directories and files
 
@@ -166,18 +160,20 @@ SNV files are in [annotated MAF format](https://github.com/AlexsLemonade/OpenPBT
 These are a bit unwieldy to read in, so we'll split up the chunks below.
 
 ```{r}
-mutect2 <- maftools::read.maf(file.path(data_dir, mutect2_file))
+mutect2 <- data.table::fread(file.path(data_dir, mutect2_file),
+                             skip = 1,  # skip version string
+                             data.table = FALSE)
 ```
 
 ```{r}
-strelka2 <- maftools::read.maf(file.path(data_dir, strelka2_file))
+strelka2 <- data.table::fread(file.path(data_dir, strelka2_file),
+                              skip = 1,  # skip version string
+                              data.table = FALSE)
 ```
 
 ```{r}
-sample_id_list$mutect2 <- 
-  unique(maftools::getSampleSummary(mutect2)$Tumor_Sample_Barcode)
-sample_id_list$strelka2 <- 
-  unique(maftools::getSampleSummary(strelka2)$Tumor_Sample_Barcode)
+sample_id_list$mutect2 <- unique(mutect2$Tumor_Sample_Barcode)
+sample_id_list$strelka2 <- unique(strelka2$Tumor_Sample_Barcode)
 ```
 
 ## SV 
@@ -295,46 +291,50 @@ starfusion_subset <- starfusion %>%
 #### Gene Expression
 
 ```{r}
-# not all the biospecimen ids we've selected will be in the column names because
-# some of them are WGS, so we have to use an indexing strategy here
-kallisto_index <- which(colnames(kallisto) %in% selected_biospecimen_ids)
+# extract the RNA-seq biospecimen IDs, specifically to use with dplyr::select
+rnaseq_selected_ids <- rlang::quos(selected_biospecimen_df %>%
+  dplyr::filter(experimental_strategy == "RNA-Seq") %>%
+  dplyr::pull(Kids_First_Biospecimen_ID))
+```
+
+```{r}
 kallisto_subset <- kallisto %>%
-  # need the transcript and gene identifiers in columns 1 and 2
-  dplyr::select(c(1, 2, kallisto_index)) %>%
+  dplyr::select(transcript_id, gene_id, !!!rnaseq_selected_ids) %>%
   readr::write_tsv(file.path(testing_data_dir, kallisto_file))
 ```
 
 ```{r}
-# similar issue as kallisto above
-rsem_index <- which(colnames(rsem) %in% selected_biospecimen_ids)
 rsem_subset <- rsem %>%
-  # need the gene identifiers in the first column
-  dplyr::select(c(1, rsem_index)) %>%
+  dplyr::select(gene_id, !!!rnaseq_selected_ids) %>%
   readr::write_tsv(file.path(testing_data_dir, rsem_file))
 ```
 
 #### SNV
 
-For the MAF files, we'll use `maftools::subsetMaf` to subset.
-It might get upset when we use barcodes that aren't in the file, so let's get
-only the WGS biospecimen identifiers.
-
 ```{r}
-wgs_selected_ids <- selected_biospecimen_df %>%
-  dplyr::filter(experimental_strategy == "WGS") %>%
-  dplyr::pull(Kids_First_Biospecimen_ID)
+mutect2_subset <- mutect2 %>%
+  dplyr::filter(Tumor_Sample_Barcode %in% selected_biospecimen_ids)
+
+# write compressed mutect2 subset file
+write_maf_file(maf_df = mutect2_subset,
+               file_name = file.path(testing_data_dir, mutect2_file),
+               # we'll get the version string directly from the original 
+               # mutect2 file
+               version_string = readLines(file.path(data_dir, mutect2_file), 
+                                          n = 1))
 ```
 
 ```{r}
-mutect2_subset <- maftools::subsetMaf(mutect2, tsb = wgs_selected_ids)
-write_maf_file(maf_object = mutect2_subset,
-               file_name = file.path(testing_data_dir, mutect2_file))
-```
+strelka2_subset <- strelka2 %>%
+  dplyr::filter(Tumor_Sample_Barcode %in% selected_biospecimen_ids)
 
-```{r}
-strelka2_subset <- maftools::subsetMaf(strelka2, tsb = wgs_selected_ids)
-write_maf_file(maf_object = strelka2_subset,
-               file_name = file.path(testing_data_dir, strelka2_file))
+# write compressed mutect2 subset file
+write_maf_file(maf_df = strelka2_subset,
+               file_name = file.path(testing_data_dir, strelka2_file),
+               # we'll get the version string directly from the original 
+               # mutect2 file
+               version_string = readLines(file.path(data_dir, strelka2_file), 
+                                          n = 1))
 ```
 
 #### SV
