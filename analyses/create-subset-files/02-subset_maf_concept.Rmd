@@ -106,3 +106,9 @@ mutect2_post_df <- mutect2_full_df %>%
 ```{r}
 all.equal(mutect2_subset_df, mutect2_post_df)
 ```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```

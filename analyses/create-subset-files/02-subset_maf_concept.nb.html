@@ -2953,7 +2953,7 @@ div.tocify {
 <h4>Packages and functions</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWYgKCEoXCJtYWZ0b29sc1wiICVpbiUgaW5zdGFsbGVkLnBhY2thZ2VzKCkpKSB7XG4gIEJpb2NNYW5hZ2VyOjppbnN0YWxsKFwibWFmdG9vbHNcIiwgdXBkYXRlID0gRkFMU0UpXG59XG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiaWYgKCEoXCJtYWZ0b29sc1wiICVpbiUgaW5zdGFsbGVkLnBhY2thZ2VzKCkpKSB7XG4gIEJpb2NNYW5hZ2VyOjppbnN0YWxsKFwibWFmdG9vbHNcIiwgdXBkYXRlID0gRkFMU0UpXG59In0= -->
 <pre class="r"><code>if (!(&quot;maftools&quot; %in% installed.packages())) {
   BiocManager::install(&quot;maftools&quot;, update = FALSE)
 }</code></pre>
@@ -2963,7 +2963,7 @@ div.tocify {
 <p><code>magrittr</code> pipe.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYCU+JWAgPC0gZHBseXI6OmAlPiVgXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYCU+JWAgPC0gZHBseXI6OmAlPiVgIn0= -->
 <pre class="r"><code>`%&gt;%` &lt;- dplyr::`%&gt;%`</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -2973,7 +2973,7 @@ div.tocify {
 <h4>Directories and files</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGF0YV9kaXIgPC0gZmlsZS5wYXRoKFwiLi5cIiwgXCIuLlwiLCBcImRhdGFcIilcbnRlc3RpbmdfZGF0YV9kaXIgPC0gZmlsZS5wYXRoKGRhdGFfZGlyLCBcInRlc3RpbmdcIilcbm11dGVjdDJfZmlsZSA8LSBcInBidGEtc252LW11dGVjdDIudmVwLm1hZi5nelwiXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbImRhdGFfZGlyIDwtIGZpbGUucGF0aChcIi4uXCIsIFwiLi5cIiwgXCJkYXRhXCIpIiwidGVzdGluZ19kYXRhX2RpciA8LSBmaWxlLnBhdGgoZGF0YV9kaXIsIFwidGVzdGluZ1wiKSIsIm11dGVjdDJfZmlsZSA8LSBcInBidGEtc252LW11dGVjdDIudmVwLm1hZi5nelwiIl19 -->
 <pre class="r"><code>data_dir &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;data&quot;)
 testing_data_dir &lt;- file.path(data_dir, &quot;testing&quot;)
 mutect2_file &lt;- &quot;pbta-snv-mutect2.vep.maf.gz&quot;</code></pre>
@@ -2987,37 +2987,32 @@ mutect2_file &lt;- &quot;pbta-snv-mutect2.vep.maf.gz&quot;</code></pre>
 <p>This is the file that was subset and written to file with a custom function, <code>write_maf_file</code>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubXV0ZWN0Ml9zdWJzZXQgPC0gbWFmdG9vbHM6OnJlYWQubWFmKGZpbGUucGF0aCh0ZXN0aW5nX2RhdGFfZGlyLCBtdXRlY3QyX2ZpbGUpKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoibXV0ZWN0Ml9zdWJzZXQgPC0gbWFmdG9vbHM6OnJlYWQubWFmKGZpbGUucGF0aCh0ZXN0aW5nX2RhdGFfZGlyLCBtdXRlY3QyX2ZpbGUpKSJ9 -->
 <pre class="r"><code>mutect2_subset &lt;- maftools::read.maf(file.path(testing_data_dir, mutect2_file))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiLVJlYWRpbmdcbi1WYWxpZGF0aW5nXG4tU2lsZW50IHZhcmlhbnRzOiAzMTcxNiBcbi1TdW1tYXJpemluZ1xuLVByb2Nlc3NpbmcgY2xpbmljYWwgZGF0YVxuLS1NaXNzaW5nIGNsaW5pY2FsIGRhdGFcbi1GaW5pc2hlZCBpbiAxLjU3OXMgZWxhcHNlZCAoMS45MTdzIGNwdSkgXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiLVJlYWRpbmdcbi1WYWxpZGF0aW5nXG4tLVJlbW92ZWQgMyBkdXBsaWNhdGVkIHZhcmlhbnRzXG4tU2lsZW50IHZhcmlhbnRzOiA1NjQyMCBcbi1TdW1tYXJpemluZ1xuLS1Qb3NzaWJsZSBGTEFHUyBhbW9uZyB0b3AgdGVuIGdlbmVzOlxuICBNVUM1QlxuLVByb2Nlc3NpbmcgY2xpbmljYWwgZGF0YVxuLS1NaXNzaW5nIGNsaW5pY2FsIGRhdGFcbi1GaW5pc2hlZCBpbiAxLjczM3MgZWxhcHNlZCAoMi4xNzBzIGNwdSkgXG4ifQ== -->
 <pre><code>-Reading
 -Validating
--Silent variants: 31716 
+--Removed 3 duplicated variants
+-Silent variants: 56420 
 -Summarizing
+--Possible FLAGS among top ten genes:
+  MUC5B
 -Processing clinical data
 --Missing clinical data
--Finished in 1.579s elapsed (1.917s cpu) </code></pre>
+-Finished in 1.733s elapsed (2.170s cpu) </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>This is the original MuTect2 file.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubXV0ZWN0Ml9mdWxsIDwtIG1hZnRvb2xzOjpyZWFkLm1hZihmaWxlLnBhdGgoZGF0YV9kaXIsIG11dGVjdDJfZmlsZSkpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoibXV0ZWN0Ml9mdWxsIDwtIG1hZnRvb2xzOjpyZWFkLm1hZihmaWxlLnBhdGgoZGF0YV9kaXIsIG11dGVjdDJfZmlsZSkpIn0= -->
 <pre class="r"><code>mutect2_full &lt;- maftools::read.maf(file.path(data_dir, mutect2_file))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiLVJlYWRpbmdcbiJ9 -->
-<pre><code>-Reading</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoifC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfFxufD09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09fFxufC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfFxufD09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09fFxuIn0= -->
-<pre><code>|--------------------------------------------------|
-|==================================================|
-|--------------------------------------------------|
-|==================================================|</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiLVZhbGlkYXRpbmdcbi0tUmVtb3ZlZCAzMjMgZHVwbGljYXRlZCB2YXJpYW50c1xuLVNpbGVudCB2YXJpYW50czogMTE1ODgzNzggXG4tU3VtbWFyaXppbmdcbi0tUG9zc2libGUgRkxBR1MgYW1vbmcgdG9wIHRlbiBnZW5lczpcbiAgQUhOQUsyXG4gIE1VQzE3XG4gIEFITkFLXG4tUHJvY2Vzc2luZyBjbGluaWNhbCBkYXRhXG4tLU1pc3NpbmcgY2xpbmljYWwgZGF0YVxuLUZpbmlzaGVkIGluIDAwOjAzOjEzIGVsYXBzZWQgKDAwOjAzOjMxIGNwdSkgXG4ifQ== -->
-<pre><code>-Validating
+<!-- rnb-output-begin eyJkYXRhIjoiLVJlYWRpbmdcbi1WYWxpZGF0aW5nXG4tLVJlbW92ZWQgMzIzIGR1cGxpY2F0ZWQgdmFyaWFudHNcbi1TaWxlbnQgdmFyaWFudHM6IDExNTg4Mzc4IFxuLVN1bW1hcml6aW5nXG4tLVBvc3NpYmxlIEZMQUdTIGFtb25nIHRvcCB0ZW4gZ2VuZXM6XG4gIEFITkFLMlxuICBNVUMxN1xuICBBSE5BS1xuLVByb2Nlc3NpbmcgY2xpbmljYWwgZGF0YVxuLS1NaXNzaW5nIGNsaW5pY2FsIGRhdGFcbi1GaW5pc2hlZCBpbiAwMDowMzowMyBlbGFwc2VkICgwMDowMzoyMCBjcHUpIFxuIn0= -->
+<pre><code>-Reading
+-Validating
 --Removed 323 duplicated variants
 -Silent variants: 11588378 
 -Summarizing
@@ -3027,14 +3022,14 @@ mutect2_file &lt;- &quot;pbta-snv-mutect2.vep.maf.gz&quot;</code></pre>
   AHNAK
 -Processing clinical data
 --Missing clinical data
--Finished in 00:03:13 elapsed (00:03:31 cpu) </code></pre>
+-Finished in 00:03:03 elapsed (00:03:20 cpu) </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Select the tumor sample barcodes that are in the subset file.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3Vic2V0X3RzYiA8LSB1bmlxdWUobXV0ZWN0Ml9zdWJzZXRAZGF0YSRUdW1vcl9TYW1wbGVfQmFyY29kZSlcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoic3Vic2V0X3RzYiA8LSB1bmlxdWUobXV0ZWN0Ml9zdWJzZXRAZGF0YSRUdW1vcl9TYW1wbGVfQmFyY29kZSkifQ== -->
 <pre class="r"><code>subset_tsb &lt;- unique(mutect2_subset@data$Tumor_Sample_Barcode)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -3042,7 +3037,7 @@ mutect2_file &lt;- &quot;pbta-snv-mutect2.vep.maf.gz&quot;</code></pre>
 <p>Use the tumor sample barcodes from the subset file to subset the full object.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubXV0ZWN0Ml9wb3N0X3N1YnNldCA8LSBtYWZ0b29sczo6c3Vic2V0TWFmKG11dGVjdDJfZnVsbCxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0c2IgPSBzdWJzZXRfdHNiKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoibXV0ZWN0Ml9wb3N0X3N1YnNldCA8LSBtYWZ0b29sczo6c3Vic2V0TWFmKG11dGVjdDJfZnVsbCxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0c2IgPSBzdWJzZXRfdHNiKSJ9 -->
 <pre class="r"><code>mutect2_post_subset &lt;- maftools::subsetMaf(mutect2_full,
                                            tsb = subset_tsb)</code></pre>
 <!-- rnb-source-end -->
@@ -3051,7 +3046,7 @@ mutect2_file &lt;- &quot;pbta-snv-mutect2.vep.maf.gz&quot;</code></pre>
 <p>Check if the object read in from the subset file and the MAF object that was subset with <code>maftools::subsetMaf</code> are the same.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxsLmVxdWFsKG11dGVjdDJfc3Vic2V0LCBtdXRlY3QyX3Bvc3Rfc3Vic2V0KVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYWxsLmVxdWFsKG11dGVjdDJfc3Vic2V0LCBtdXRlY3QyX3Bvc3Rfc3Vic2V0KSJ9 -->
 <pre class="r"><code>all.equal(mutect2_subset, mutect2_post_subset)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIFRSVUVcbiJ9 -->
@@ -3064,33 +3059,32 @@ mutect2_file &lt;- &quot;pbta-snv-mutect2.vep.maf.gz&quot;</code></pre>
 <p>Try a different, <code>data.frame</code>-based method.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubXV0ZWN0Ml9zdWJzZXRfZGYgPC0gZGF0YS50YWJsZTo6ZnJlYWQoZmlsZS5wYXRoKHRlc3RpbmdfZGF0YV9kaXIsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG11dGVjdDJfZmlsZSksXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBza2lwID0gMSwgICMgdmVyc2lvbiBpbmZvXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhLnRhYmxlID0gRkFMU0UpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoibXV0ZWN0Ml9zdWJzZXRfZGYgPC0gZGF0YS50YWJsZTo6ZnJlYWQoZmlsZS5wYXRoKHRlc3RpbmdfZGF0YV9kaXIsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG11dGVjdDJfZmlsZSksXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBza2lwID0gMSwgICMgdmVyc2lvbiBpbmZvXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhLnRhYmxlID0gRkFMU0UpIn0= -->
 <pre class="r"><code>mutect2_subset_df &lt;- data.table::fread(file.path(testing_data_dir, 
                                                  mutect2_file),
                                        skip = 1,  # version info
                                        data.table = FALSE)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ1Iub28nOlxuICBtZXRob2QgICAgICAgIGZyb20gICAgICAgXG4gIHRocm93LmRlZmF1bHQgUi5tZXRob2RzUzNcbiJ9 -->
+<pre><code>Registered S3 method overwritten by 'R.oo':
+  method        from       
+  throw.default R.methodsS3</code></pre>
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubXV0ZWN0Ml9mdWxsX2RmIDwtIGRhdGEudGFibGU6OmZyZWFkKGZpbGUucGF0aChkYXRhX2RpcixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbXV0ZWN0Ml9maWxlKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBza2lwID0gMSwgIyB2ZXJzaW9uIGluZm9cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhLnRhYmxlID0gRkFMU0UpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoibXV0ZWN0Ml9mdWxsX2RmIDwtIGRhdGEudGFibGU6OmZyZWFkKGZpbGUucGF0aChkYXRhX2RpcixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbXV0ZWN0Ml9maWxlKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBza2lwID0gMSwgIyB2ZXJzaW9uIGluZm9cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhLnRhYmxlID0gRkFMU0UpIn0= -->
 <pre class="r"><code>mutect2_full_df &lt;- data.table::fread(file.path(data_dir,
                                                mutect2_file),
                                      skip = 1, # version info
                                      data.table = FALSE)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoifC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfFxufD09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09fFxufC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfFxufD09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09fFxuIn0= -->
-<pre><code>|--------------------------------------------------|
-|==================================================|
-|--------------------------------------------------|
-|==================================================|</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubXV0ZWN0Ml9wb3N0X2RmIDwtIG11dGVjdDJfZnVsbF9kZiAlPiVcbiAgZHBseXI6OmZpbHRlcihUdW1vcl9TYW1wbGVfQmFyY29kZSAlaW4lIHN1YnNldF90c2IpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoibXV0ZWN0Ml9wb3N0X2RmIDwtIG11dGVjdDJfZnVsbF9kZiAlPiVcbiAgZHBseXI6OmZpbHRlcihUdW1vcl9TYW1wbGVfQmFyY29kZSAlaW4lIHN1YnNldF90c2IpIn0= -->
 <pre class="r"><code>mutect2_post_df &lt;- mutect2_full_df %&gt;%
   dplyr::filter(Tumor_Sample_Barcode %in% subset_tsb)</code></pre>
 <!-- rnb-source-end -->
@@ -3098,17 +3092,68 @@ mutect2_file &lt;- &quot;pbta-snv-mutect2.vep.maf.gz&quot;</code></pre>
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxsLmVxdWFsKG11dGVjdDJfc3Vic2V0X2RmLCBtdXRlY3QyX3Bvc3RfZGYpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYWxsLmVxdWFsKG11dGVjdDJfc3Vic2V0X2RmLCBtdXRlY3QyX3Bvc3RfZGYpIn0= -->
 <pre class="r"><code>all.equal(mutect2_subset_df, mutect2_post_df)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIFRSVUVcbiJ9 -->
 <pre><code>[1] TRUE</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 </div>
+</div>
+<div id="session-info" class="section level2">
+<h2>Session Info</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoic2Vzc2lvbkluZm8oKSJ9 -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgIFxuIFszXSBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgIFxuWzExXSBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5sb2FkZWQgdmlhIGEgbmFtZXNwYWNlIChhbmQgbm90IGF0dGFjaGVkKTpcbiBbMV0gdGlkeXNlbGVjdF8wLjIuNSAgIHdvcmRjbG91ZF8yLjYgICAgICB4ZnVuXzAuOCAgICAgICAgICBcbiBbNF0gcHVycnJfMC4zLjIgICAgICAgIHJlc2hhcGUyXzEuNC4zICAgICBzcGxpbmVzXzMuNi4wICAgICBcbiBbN10gbGF0dGljZV8wLjIwLTM4ICAgIGNvbG9yc3BhY2VfMS40LTEgICBodG1sdG9vbHNfMC4zLjYgICBcblsxMF0geWFtbF8yLjIuMCAgICAgICAgIE5NRl8wLjIxLjAgICAgICAgICBiYXNlNjRlbmNfMC4xLTMgICBcblsxM10gc3Vydml2YWxfMi40NC0xLjEgIHJsYW5nXzAuNC4wICAgICAgICBSLm9vXzEuMjIuMCAgICAgICBcblsxNl0gcGlsbGFyXzEuNC4yICAgICAgIGdsdWVfMS4zLjEgICAgICAgICB3aXRocl8yLjEuMiAgICAgICBcblsxOV0gUi51dGlsc18yLjkuMCAgICAgIFJDb2xvckJyZXdlcl8xLjEtMiByZWdpc3RyeV8wLjUtMSAgICBcblsyMl0gcm5ndG9vbHNfMS40ICAgICAgIGZvcmVhY2hfMS40LjcgICAgICBwbHlyXzEuOC40ICAgICAgICBcblsyNV0gc3RyaW5ncl8xLjQuMCAgICAgIHBrZ21ha2VyXzAuMjcgICAgICBtdW5zZWxsXzAuNS4wICAgICBcblsyOF0gZ3RhYmxlXzAuMy4wICAgICAgIFIubWV0aG9kc1MzXzEuNy4xICBjb2RldG9vbHNfMC4yLTE2ICBcblszMV0gZXZhbHVhdGVfMC4xNCAgICAgIGtuaXRyXzEuMjMgICAgICAgICBkb1BhcmFsbGVsXzEuMC4xNSBcblszNF0gcGFyYWxsZWxfMy42LjAgICAgIFJjcHBfMS4wLjEgICAgICAgICB4dGFibGVfMS44LTQgICAgICBcblszN10gc2NhbGVzXzEuMC4wICAgICAgIGpzb25saXRlXzEuNiAgICAgICBnZ3Bsb3QyXzMuMi4wICAgICBcbls0MF0gZGlnZXN0XzAuNi4yMCAgICAgIHN0cmluZ2lfMS40LjMgICAgICBkcGx5cl8wLjguMyAgICAgICBcbls0M10gbWFmdG9vbHNfMi4wLjE1ICAgIGdyaWRfMy42LjAgICAgICAgICBiaWJ0ZXhfMC40LjIgICAgICBcbls0Nl0gdG9vbHNfMy42LjAgICAgICAgIG1hZ3JpdHRyXzEuNSAgICAgICBsYXp5ZXZhbF8wLjIuMiAgICBcbls0OV0gdGliYmxlXzIuMS4zICAgICAgIGNsdXN0ZXJfMi4wLjggICAgICBjcmF5b25fMS4zLjQgICAgICBcbls1Ml0gcGtnY29uZmlnXzIuMC4yICAgIE1hdHJpeF8xLjItMTcgICAgICBncmlkQmFzZV8wLjQtNyAgICBcbls1NV0gZGF0YS50YWJsZV8xLjEyLjIgIGFzc2VydHRoYXRfMC4yLjEgICBybWFya2Rvd25fMS4xMyAgICBcbls1OF0gaXRlcmF0b3JzXzEuMC4xMiAgIFI2XzIuNC4wICAgICAgICAgICBjb21waWxlcl8zLjYuMCAgICBcbiJ9 -->
+<pre><code>R version 3.6.0 (2019-04-26)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Debian GNU/Linux 9 (stretch)
+
+Matrix products: default
+BLAS/LAPACK: /usr/lib/libopenblasp-r0.2.19.so
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_0.2.5   wordcloud_2.6      xfun_0.8          
+ [4] purrr_0.3.2        reshape2_1.4.3     splines_3.6.0     
+ [7] lattice_0.20-38    colorspace_1.4-1   htmltools_0.3.6   
+[10] yaml_2.2.0         NMF_0.21.0         base64enc_0.1-3   
+[13] survival_2.44-1.1  rlang_0.4.0        R.oo_1.22.0       
+[16] pillar_1.4.2       glue_1.3.1         withr_2.1.2       
+[19] R.utils_2.9.0      RColorBrewer_1.1-2 registry_0.5-1    
+[22] rngtools_1.4       foreach_1.4.7      plyr_1.8.4        
+[25] stringr_1.4.0      pkgmaker_0.27      munsell_0.5.0     
+[28] gtable_0.3.0       R.methodsS3_1.7.1  codetools_0.2-16  
+[31] evaluate_0.14      knitr_1.23         doParallel_1.0.15 
+[34] parallel_3.6.0     Rcpp_1.0.1         xtable_1.8-4      
+[37] scales_1.0.0       jsonlite_1.6       ggplot2_3.2.0     
+[40] digest_0.6.20      stringi_1.4.3      dplyr_0.8.3       
+[43] maftools_2.0.15    grid_3.6.0         bibtex_0.4.2      
+[46] tools_3.6.0        magrittr_1.5       lazyeval_0.2.2    
+[49] tibble_2.1.3       cluster_2.0.8      crayon_1.3.4      
+[52] pkgconfig_2.0.2    Matrix_1.2-17      gridBase_0.4-7    
+[55] data.table_1.12.2  assertthat_0.2.1   rmarkdown_1.13    
+[58] iterators_1.0.12   R6_2.4.0           compiler_3.6.0    </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiU3Vic2V0IE1BRiBmaWxlczogcHJvb2Ygb2YgY29uY2VwdCIKb3V0cHV0OiAKICBodG1sX25vdGVib29rOgogICAgdG9jOiBUUlVFCiAgICB0b2NfZmxvYXQ6IFRSVUUKYXV0aG9yOiBKLiBUYXJvbmkgZm9yIEFMU0YgQ0NETApkYXRlOiAyMDE5Ci0tLQoKRG9lcyB0aGUgTUFGIHN1YnNldHRpbmcgc3RyYXRlZ3kgaW4gYDAxLWNyZWF0ZV9zdWJzZXRfZmlsZXNgIHdvcms/CgojIyMjIFVTQUdFCgpUbyBydW4gdGhpcyBmcm9tIHRoZSBjb21tYW5kIGxpbmUsIHVzZToKCmBgYApSc2NyaXB0IC1lICJybWFya2Rvd246OnJlbmRlcignYW5hbHlzZXMvY3JlYXRlLXN1YnNldC1maWxlcy8wMi1zdWJzZXRfbWFmX2NvbmNlcHQuUm1kJywgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsZWFuID0gVFJVRSkiCmBgYAoKX1RoaXMgYXNzdW1lcyB5b3UgYXJlIGluIHRoZSB0b3AgZGlyZWN0b3J5IG9mIHRoZSByZXBvc2l0b3J5Ll8KCiMjIFNldHVwCgojIyMjIFBhY2thZ2VzIGFuZCBmdW5jdGlvbnMKCmBgYHtyfQppZiAoISgibWFmdG9vbHMiICVpbiUgaW5zdGFsbGVkLnBhY2thZ2VzKCkpKSB7CiAgQmlvY01hbmFnZXI6Omluc3RhbGwoIm1hZnRvb2xzIiwgdXBkYXRlID0gRkFMU0UpCn0KYGBgCgpgbWFncml0dHJgIHBpcGUuCgpgYGB7cn0KYCU+JWAgPC0gZHBseXI6OmAlPiVgCmBgYAoKIyMjIyBEaXJlY3RvcmllcyBhbmQgZmlsZXMgCgpgYGB7cn0KZGF0YV9kaXIgPC0gZmlsZS5wYXRoKCIuLiIsICIuLiIsICJkYXRhIikKdGVzdGluZ19kYXRhX2RpciA8LSBmaWxlLnBhdGgoZGF0YV9kaXIsICJ0ZXN0aW5nIikKbXV0ZWN0Ml9maWxlIDwtICJwYnRhLXNudi1tdXRlY3QyLnZlcC5tYWYuZ3oiCmBgYAoKIyMgUmVhZCBpbiBhbmQgY29tcGFyZQoKVGhpcyBpcyB0aGUgZmlsZSB0aGF0IHdhcyBzdWJzZXQgYW5kIHdyaXR0ZW4gdG8gZmlsZSB3aXRoIGEgY3VzdG9tIGZ1bmN0aW9uLApgd3JpdGVfbWFmX2ZpbGVgLgoKYGBge3J9Cm11dGVjdDJfc3Vic2V0IDwtIG1hZnRvb2xzOjpyZWFkLm1hZihmaWxlLnBhdGgodGVzdGluZ19kYXRhX2RpciwgbXV0ZWN0Ml9maWxlKSkKYGBgCgpUaGlzIGlzIHRoZSBvcmlnaW5hbCBNdVRlY3QyIGZpbGUuCgpgYGB7cn0KbXV0ZWN0Ml9mdWxsIDwtIG1hZnRvb2xzOjpyZWFkLm1hZihmaWxlLnBhdGgoZGF0YV9kaXIsIG11dGVjdDJfZmlsZSkpCmBgYAoKU2VsZWN0IHRoZSB0dW1vciBzYW1wbGUgYmFyY29kZXMgdGhhdCBhcmUgaW4gdGhlIHN1YnNldCBmaWxlLgoKYGBge3J9CnN1YnNldF90c2IgPC0gdW5pcXVlKG11dGVjdDJfc3Vic2V0QGRhdGEkVHVtb3JfU2FtcGxlX0JhcmNvZGUpCmBgYAoKVXNlIHRoZSB0dW1vciBzYW1wbGUgYmFyY29kZXMgZnJvbSB0aGUgc3Vic2V0IGZpbGUgdG8gc3Vic2V0IHRoZSBmdWxsIG9iamVjdC4KCmBgYHtyfQptdXRlY3QyX3Bvc3Rfc3Vic2V0IDwtIG1hZnRvb2xzOjpzdWJzZXRNYWYobXV0ZWN0Ml9mdWxsLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdHNiID0gc3Vic2V0X3RzYikKYGBgCgpDaGVjayBpZiB0aGUgb2JqZWN0IHJlYWQgaW4gZnJvbSB0aGUgc3Vic2V0IGZpbGUgYW5kIHRoZSBNQUYgb2JqZWN0IHRoYXQgd2FzCnN1YnNldCB3aXRoIGBtYWZ0b29sczo6c3Vic2V0TWFmYCBhcmUgdGhlIHNhbWUuCgpgYGB7cn0KYWxsLmVxdWFsKG11dGVjdDJfc3Vic2V0LCBtdXRlY3QyX3Bvc3Rfc3Vic2V0KQpgYGAKCiMjIyBgZGF0YS5mcmFtZWAKClRyeSBhIGRpZmZlcmVudCwgYGRhdGEuZnJhbWVgLWJhc2VkIG1ldGhvZC4gCgpgYGB7cn0KbXV0ZWN0Ml9zdWJzZXRfZGYgPC0gZGF0YS50YWJsZTo6ZnJlYWQoZmlsZS5wYXRoKHRlc3RpbmdfZGF0YV9kaXIsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbXV0ZWN0Ml9maWxlKSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2tpcCA9IDEsICAjIHZlcnNpb24gaW5mbwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhLnRhYmxlID0gRkFMU0UpCmBgYAoKYGBge3J9Cm11dGVjdDJfZnVsbF9kZiA8LSBkYXRhLnRhYmxlOjpmcmVhZChmaWxlLnBhdGgoZGF0YV9kaXIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbXV0ZWN0Ml9maWxlKSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNraXAgPSAxLCAjIHZlcnNpb24gaW5mbwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGF0YS50YWJsZSA9IEZBTFNFKQpgYGAKCmBgYHtyfQptdXRlY3QyX3Bvc3RfZGYgPC0gbXV0ZWN0Ml9mdWxsX2RmICU+JQogIGRwbHlyOjpmaWx0ZXIoVHVtb3JfU2FtcGxlX0JhcmNvZGUgJWluJSBzdWJzZXRfdHNiKQpgYGAKCmBgYHtyfQphbGwuZXF1YWwobXV0ZWN0Ml9zdWJzZXRfZGYsIG11dGVjdDJfcG9zdF9kZikKYGBgCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiU3Vic2V0IE1BRiBmaWxlczogcHJvb2Ygb2YgY29uY2VwdCIKb3V0cHV0OiAKICBodG1sX25vdGVib29rOgogICAgdG9jOiBUUlVFCiAgICB0b2NfZmxvYXQ6IFRSVUUKYXV0aG9yOiBKLiBUYXJvbmkgZm9yIEFMU0YgQ0NETApkYXRlOiAyMDE5Ci0tLQoKRG9lcyB0aGUgTUFGIHN1YnNldHRpbmcgc3RyYXRlZ3kgaW4gYDAxLWNyZWF0ZV9zdWJzZXRfZmlsZXNgIHdvcms/CgojIyMjIFVTQUdFCgpUbyBydW4gdGhpcyBmcm9tIHRoZSBjb21tYW5kIGxpbmUsIHVzZToKCmBgYApSc2NyaXB0IC1lICJybWFya2Rvd246OnJlbmRlcignYW5hbHlzZXMvY3JlYXRlLXN1YnNldC1maWxlcy8wMi1zdWJzZXRfbWFmX2NvbmNlcHQuUm1kJywgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsZWFuID0gVFJVRSkiCmBgYAoKX1RoaXMgYXNzdW1lcyB5b3UgYXJlIGluIHRoZSB0b3AgZGlyZWN0b3J5IG9mIHRoZSByZXBvc2l0b3J5Ll8KCiMjIFNldHVwCgojIyMjIFBhY2thZ2VzIGFuZCBmdW5jdGlvbnMKCmBgYHtyfQppZiAoISgibWFmdG9vbHMiICVpbiUgaW5zdGFsbGVkLnBhY2thZ2VzKCkpKSB7CiAgQmlvY01hbmFnZXI6Omluc3RhbGwoIm1hZnRvb2xzIiwgdXBkYXRlID0gRkFMU0UpCn0KYGBgCgpgbWFncml0dHJgIHBpcGUuCgpgYGB7cn0KYCU+JWAgPC0gZHBseXI6OmAlPiVgCmBgYAoKIyMjIyBEaXJlY3RvcmllcyBhbmQgZmlsZXMgCgpgYGB7cn0KZGF0YV9kaXIgPC0gZmlsZS5wYXRoKCIuLiIsICIuLiIsICJkYXRhIikKdGVzdGluZ19kYXRhX2RpciA8LSBmaWxlLnBhdGgoZGF0YV9kaXIsICJ0ZXN0aW5nIikKbXV0ZWN0Ml9maWxlIDwtICJwYnRhLXNudi1tdXRlY3QyLnZlcC5tYWYuZ3oiCmBgYAoKIyMgUmVhZCBpbiBhbmQgY29tcGFyZQoKVGhpcyBpcyB0aGUgZmlsZSB0aGF0IHdhcyBzdWJzZXQgYW5kIHdyaXR0ZW4gdG8gZmlsZSB3aXRoIGEgY3VzdG9tIGZ1bmN0aW9uLApgd3JpdGVfbWFmX2ZpbGVgLgoKYGBge3J9Cm11dGVjdDJfc3Vic2V0IDwtIG1hZnRvb2xzOjpyZWFkLm1hZihmaWxlLnBhdGgodGVzdGluZ19kYXRhX2RpciwgbXV0ZWN0Ml9maWxlKSkKYGBgCgpUaGlzIGlzIHRoZSBvcmlnaW5hbCBNdVRlY3QyIGZpbGUuCgpgYGB7cn0KbXV0ZWN0Ml9mdWxsIDwtIG1hZnRvb2xzOjpyZWFkLm1hZihmaWxlLnBhdGgoZGF0YV9kaXIsIG11dGVjdDJfZmlsZSkpCmBgYAoKU2VsZWN0IHRoZSB0dW1vciBzYW1wbGUgYmFyY29kZXMgdGhhdCBhcmUgaW4gdGhlIHN1YnNldCBmaWxlLgoKYGBge3J9CnN1YnNldF90c2IgPC0gdW5pcXVlKG11dGVjdDJfc3Vic2V0QGRhdGEkVHVtb3JfU2FtcGxlX0JhcmNvZGUpCmBgYAoKVXNlIHRoZSB0dW1vciBzYW1wbGUgYmFyY29kZXMgZnJvbSB0aGUgc3Vic2V0IGZpbGUgdG8gc3Vic2V0IHRoZSBmdWxsIG9iamVjdC4KCmBgYHtyfQptdXRlY3QyX3Bvc3Rfc3Vic2V0IDwtIG1hZnRvb2xzOjpzdWJzZXRNYWYobXV0ZWN0Ml9mdWxsLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdHNiID0gc3Vic2V0X3RzYikKYGBgCgpDaGVjayBpZiB0aGUgb2JqZWN0IHJlYWQgaW4gZnJvbSB0aGUgc3Vic2V0IGZpbGUgYW5kIHRoZSBNQUYgb2JqZWN0IHRoYXQgd2FzCnN1YnNldCB3aXRoIGBtYWZ0b29sczo6c3Vic2V0TWFmYCBhcmUgdGhlIHNhbWUuCgpgYGB7cn0KYWxsLmVxdWFsKG11dGVjdDJfc3Vic2V0LCBtdXRlY3QyX3Bvc3Rfc3Vic2V0KQpgYGAKCiMjIyBgZGF0YS5mcmFtZWAKClRyeSBhIGRpZmZlcmVudCwgYGRhdGEuZnJhbWVgLWJhc2VkIG1ldGhvZC4gCgpgYGB7cn0KbXV0ZWN0Ml9zdWJzZXRfZGYgPC0gZGF0YS50YWJsZTo6ZnJlYWQoZmlsZS5wYXRoKHRlc3RpbmdfZGF0YV9kaXIsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbXV0ZWN0Ml9maWxlKSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2tpcCA9IDEsICAjIHZlcnNpb24gaW5mbwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhLnRhYmxlID0gRkFMU0UpCmBgYAoKYGBge3J9Cm11dGVjdDJfZnVsbF9kZiA8LSBkYXRhLnRhYmxlOjpmcmVhZChmaWxlLnBhdGgoZGF0YV9kaXIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbXV0ZWN0Ml9maWxlKSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNraXAgPSAxLCAjIHZlcnNpb24gaW5mbwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGF0YS50YWJsZSA9IEZBTFNFKQpgYGAKCmBgYHtyfQptdXRlY3QyX3Bvc3RfZGYgPC0gbXV0ZWN0Ml9mdWxsX2RmICU+JQogIGRwbHlyOjpmaWx0ZXIoVHVtb3JfU2FtcGxlX0JhcmNvZGUgJWluJSBzdWJzZXRfdHNiKQpgYGAKCmBgYHtyfQphbGwuZXF1YWwobXV0ZWN0Ml9zdWJzZXRfZGYsIG11dGVjdDJfcG9zdF9kZikKYGBgCgojIyBTZXNzaW9uIEluZm8KCmBgYHtyfQpzZXNzaW9uSW5mbygpCmBgYAo=</div>
 
 
 </div>
