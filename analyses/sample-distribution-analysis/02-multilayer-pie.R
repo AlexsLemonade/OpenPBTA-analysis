@@ -10,7 +10,7 @@
 source("00-install-packages.R", print.eval = FALSE)
 
 # Load source script
-source("01-pbta-analysis-5.R")
+source("01-filter-across-types.R")
 
 # Set path to plots directory
 outputDir <- file.path("/plots")
