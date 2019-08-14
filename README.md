@@ -43,19 +43,48 @@ We are using continuous integration software applied to the supplied test datase
 
 ## How to Obtain OpenPBTA Data
 
-### Germ Line Variant Data (Germline SNVs)
+The OpenPBTA dataset includes somatic mutation and gene expression results in combined tsv or matrix format.
+We are releasing this dataset on both [CAVATICA](https://cavatica.sbgenomics.com) and AWS S3.
+Users performing analyses, should always refer to the symlinks in the `data/` directory and not files within the release folder, as an updated release may be produced before a publication is prepared.
 
-### Somatic Single Nucleotide Variant Data (Somatic SNVs)
+### Data Access via Download Script
 
-### Somatic Copy Number Variant Data (Somatic CNVs)
+We have created a shell script that will download the latest release from AWS S3.
+OS X users must use [homebrew](https://brew.sh/) to install `md5sha1sum` via the command `brew install md5sha1sum` before running the download script the first time.
+Once this has been done, run `bash download-data.sh` to acquire the latest release.
+This will create symlinks in `data/` to the latest files.
+It's safe to re-run `bash download-data.sh` to check that you have the most recent release of the data.
+We will update the default release number whenever we produce a new release.
 
-### Gene Expression Estimates
+### Data Access via CAVATICA
 
-### Clinical Data
+For any user registered on CAVATICA, the latest release of OpenPBTA data can be accessed from the CAVATICA public projects below:
+- [Pediatric Brain Tumor Atlas Open Access Data - CBTTC](https://cavatica.sbgenomics.com/u/cavatica/pbta-cbttc/)
+- [Pediatric Brain Tumor Atlas Open Access Data - PNOC003](https://cavatica.sbgenomics.com/u/cavatica/pbta-pnoc003/)
+
+Users downloading via CAVATICA should place the data files within a `data/release` folder and then create symlinks to those files within `/data`.
+
+## Data Formats
+
+The release notes for each release are provided in the `release-notes.md` file that accompanies the data files.
+Somatic Single Nucleotide Variant (SNV) data are provided in [Annotated MAF format](doc/format/vep-maf.md) files for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-single-nucleotide-variant-calling).
+Somatic Copy Number Variant (CNV) data are provided in the [SEG format](https://software.broadinstitute.org/software/igv/SEG) for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-copy-number-variant-calling).
+Somatic Structural Variant Data (Somatic SV) are provided in the [Annotated Manta TSV](doc/format/manta-tsv-header.md) format produced by the [applied software package](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-structural-variant-calling).
+Gene expression estimates from the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#gene-expression-abundance-estimation) are provided as a gene by sample matrix.
+Gene Fusions produced by the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#rna-fusion-calling-and-prioritization) are provided as [Arriba TSV](doc/format/arriba-tsv-header.md) and [STARFusion TSV](doc/format/starfusion-tsv-header.md) respectively.
+[Harmonized clinical data](https://alexslemonade.github.io/OpenPBTA-manuscript/#clinical-data-harmonization) are released as tab separated values.
+
+### Data Caveats
+The clinical manifest will be updated and versioned as molecular subgroups are identified based on genomic analyses.
+We noticed ControlFreeC does not properly handle aneuploidy well for a subset of samples in that it calls the entire genome gained. We recommend using these results with caution while we continue benchmarking this algorithm.
+
 
 ## How to Add an Analysis
 
+Users performing analyses, should always refer to the symlinks in the `data/` directory and not files within the release folder, as an updated release may be produced before a publication is prepared.
+
 ### Docker Container
+
 
 ### Folder Structure
 
@@ -63,7 +92,7 @@ Our folder structure is designed to separate each analysis into its own set of n
 Within the analyses directory, create a folder for your analysis.
 Choose a name that is unique from other analyses and somewhat detailed.
 For example, instead of `gene-expression`, choose `gene-expression-clustering` if you are clustering samples by their gene expression values.
-You should assume that any data files that you need to read live in the `../../data` directory and that their file names match what the `data_downloader.sh` script produces.
+You should assume that any data files are in the `../../data` directory and that their file names match what the `download-data.sh` script produces.
 These files should be read in at their relative path, so that we can re-run analyses if the underlying data change.
 Files that are primarily graphic should be placed in a `plots` subdirectory.
 Files that are primarily tabular results files should be placed in a `results` subdirectory.
