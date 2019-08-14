@@ -90,7 +90,7 @@ data_dir <- file.path("..", "..", "data")
 We'll put the subset files in a new directory `../../data/testing`.
 
 ```{r}
-testing_data_dir <- file.path("..", "..", "data", "testing")
+testing_data_dir <- file.path(data_dir, "testing")
 if (!dir.exists(testing_data_dir)) {
   dir.create(testing_data_dir, recursive = TRUE)
 }
@@ -111,7 +111,7 @@ histologies_file <- "pbta-histologies.tsv"
 mutect2_file <- "pbta-snv-mutect2.vep.maf.gz"
 strelka2_file <- "pbta-snv-strelka2.vep.maf.gz"
 manta_file <- "pbta-sv-manta.tsv.gz"
-#TODO: LUMPY SV file
+lumpy_file <- "pbta-sv-lumpy.tsv.gz"
 ```
 
 We'll use `Reduce` + `intersect` on a list that holds the sample identifiers 
@@ -168,6 +168,7 @@ sample_id_list$rsem <- colnames(rsem)[2:ncol(kallisto)]
 ## SNV
 
 SNV files are in [annotated MAF format](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/doc/format/vep-maf.md).
+See also: https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/
 
 These are a bit unwieldy to read in, so we'll split up the chunks below.
 
@@ -194,14 +195,12 @@ The Manta SV file is in [annotated Manta TSV format](https://github.com/AlexsLem
 
 ```{r}
 manta <- readr::read_tsv(file.path(data_dir, manta_file))
+lumpy <- readr::read_tsv(file.path(data_dir, lumpy_file))
 ```
 
 ```{r}
 sample_id_list$manta <- unique(manta$Kids.First.Biospecimen.ID.Tumor)
-```
-
-```{r}
-#TODO: LUMPY SV
+sample_id_list$lumpy <- unique(lumpy$Kids.First.Biospecimen.ID.Tumor)
 ```
 
 ## Select samples and subset files
@@ -234,7 +233,7 @@ identify participant identifiers represented in each of the files we're trying
 to subset.
 
 ```{r}
-participants_in_all <- Reduce(intersect, participant_id_list)
+participants_in_all <- base::Reduce(intersect, participant_id_list)
 ```
 
 ### Select samples
@@ -360,7 +359,9 @@ manta_subset <- manta %>%
 ```
 
 ```{r}
-#TODO: LUMPY SV
+lumpy_subset <- lumpy %>%
+  dplyr::filter(Kids.First.Participant.ID %in% selected_participant_ids) %>%
+  readr::write_tsv(file.path(testing_data_dir, lumpy_file))
 ```
 
 ## Session Info
