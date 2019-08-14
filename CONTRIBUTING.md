@@ -39,7 +39,7 @@ git merge upstream/master
 # push the changes to your master branch to the remote repository
 git push
 ```
-You most likely do not want to commit changes to your `master` branch, any changes to your `master` branch should come from the upstream `master` branch.
+You do not want to commit changes to your `master` branch, any changes to your `master` branch should come from the upstream `master` branch.
 
 ## Authorship
 
