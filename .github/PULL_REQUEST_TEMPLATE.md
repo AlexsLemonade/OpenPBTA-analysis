@@ -3,9 +3,8 @@
 #### Purpose/implementation
 
 _What scientific question is your analysis addressing? 
-What was your approach?_
-
-_If this is not adding an analysis, describe your changes here._
+What was your approach?
+If this is not adding an analysis, describe your changes in this section._
 
 #### Issue
 
