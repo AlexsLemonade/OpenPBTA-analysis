@@ -42,6 +42,7 @@ You should file a [Pull Request](https://github.com/AlexsLemonade/OpenPBTA-analy
 We are using continuous integration software applied to the supplied test datasets to confirm that the analysis can be carried out successfully within the Docker container.
 
 ## How to Obtain OpenPBTA Data
+
 The OpenPBTA dataset includes somatic mutation and gene expression results in combined tsv or matrix format.
 We are releasing this dataset on both [CAVATICA](https://cavatica.sbgenomics.com) and AWS S3.
 Users performing analyses, should always refer to the symlinks in the `data/` directory and not files within the release folder, as an updated release may be produced before a publication is prepared.
