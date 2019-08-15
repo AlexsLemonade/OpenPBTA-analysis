@@ -112,9 +112,26 @@ Let's make a wrapper function that will do this for whatever variables we are
 interested in. 
 
 ```{r}
-barplot_var <- function(df, variable_name = NULL, filter_cutoff = .02, 
+barplot_var <- function(df = vaf_df, variable_name = "change", filter_cutoff = 0, 
                         as_percent = TRUE, omit.na = FALSE) {
-  count_df <- vaf_df %>%
+  # Creates a ggplot barplot for the numbers of mutations that fall into each 
+  # category of the variable selected. 
+  #
+  # Args:
+  #   df: combined data.frame with both datasets (vaf_df)
+  #   variable_name: a character string that indicates the base variable name 
+  #                  from the original MAF file
+  #   filter_cutoff: variable categories with less than this cutoff will be removed
+  #   as_percent: If true, will report numbers as percentages of the group they 
+  #               are from
+  #   omit.na: If true, will remove NA's as a category
+  #
+  # Returns:
+  #   ggplot2 grouped barplot with mutect_only, strelka2_only, and both as groups
+  
+  # Reconfigure dataset based on chosen variable, get numbers of mutations for 
+  # each dataset and variable category
+  count_df <- df %>%
     dplyr::select(paste0(variable_name, c(".strelka2", ".mutect2")),
                   dataset) %>%
     tidyr::gather(key = "data", value = "variable" , 
@@ -123,52 +140,60 @@ barplot_var <- function(df, variable_name = NULL, filter_cutoff = .02,
     dplyr::group_by(dataset, data, variable) %>% 
     dplyr::summarise(count = dplyr::n())
   
+  # Calculate sum totals for each data group
   totals <- count_df %>%
     dplyr::group_by(dataset) %>%
     dplyr::summarise(total = sum(count, na.rm = TRUE)) 
-    
-  count_df %>%
+   
+  # Calculate percentages based on totals and apply filter_cutoff 
+  count_df <- count_df %>%
     as.data.frame() %>%
     dplyr::mutate("percent" = count_df$count/totals$total[match(count_df$dataset, 
                                                                 totals$dataset)]) %>%
     dplyr::mutate(report = ifelse(rep(as_percent, nrow(count_df)), percent, count)) %>%
-    dplyr::filter(report > filter_cutoff) %>%
-    ggplot2::ggplot(ggplot2::aes(x = reorder(variable, -report), 
+    dplyr::filter(report > filter_cutoff) 
+  
+  # Omit NAs if that was specified
+  if (omit.na){
+    count_df <- dplyr::filter(count_df, !is.na(variable))
+  }
+
+    # Plot this!
+    ggplot2::ggplot(count_df, ggplot2::aes(x = reorder(variable, -report), 
                                  y = report, fill = dataset)) + 
     ggplot2::geom_bar(position = "dodge", stat="identity") + 
     ggplot2::theme_classic() +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
     colorblindr::scale_fill_OkabeIto() + 
-    ggplot2::xlab("")
+    ggplot2::xlab("") +
+    ggplot2::ylab(ifelse(as_percent, "Percent of Data Group", "Count"))
 }
 ```
 
 ```{r}
-barplot_var(df = "vaf_df", variable_name = "change", filter_cutoff = .01, 
-                        as_percent = TRUE)
+barplot_var(df = vaf_df, variable_name = "change", 
+            as_percent = FALSE, omit.na = TRUE, filter_cutoff = 0)
 ```
 
 ```{r}
-barplot_var(df = "vaf_df", variable_name = "coding", filter_cutoff = .01, 
-                        as_percent = TRUE)
+barplot_var(df = vaf_df, variable_name = "change", filter_cutoff = 0, 
+            as_percent = TRUE, omit.na = TRUE)
 ```
 
 ```{r}
-barplot_var(vaf_df, "BIOTYPE", 10)
+barplot_var(df = vaf_df, variable_name = "coding", filter_cutoff = .001, 
+            as_percent = TRUE, omit.na = TRUE)
 ```
 
 ```{r}
-barplot_var(vaf_df, "Variant_Classification", 10)
+barplot_var(df = vaf_df, variable_name = "IMPACT", filter_cutoff = .001, 
+            as_percent = TRUE, omit.na = TRUE)
 ```
 
 ```{r}
-barplot_var(vaf_df, "VARIANT_CLASS", 10)
+barplot_var(df = vaf_df, variable_name = "Allele", filter_cutoff = .001, 
+            as_percent = TRUE, omit.na = TRUE)
 ```
-
-```{r}
-barplot_var(vaf_df, "IMPACT", 10)
-```
-
 Session Info: 
 
 ```{r}

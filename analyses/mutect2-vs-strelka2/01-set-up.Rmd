@@ -206,6 +206,16 @@ cor.test(combined_sample$mutect2, combined_sample$strelka2, method = "spearman")
 cor.test(combined_sample$mutect2, combined_sample$strelka2, method = "pearson")
 ```
 
+## Plot Transition/Transversions
+
+```{r}
+maftools::plotTiTv(maftools::titv(strelka2))
+```
+
+```{r}
+maftools::plotTiTv(maftools::titv(mutect2))
+```
+
 ## Set up new variables
 
 Here we will make these new variables for both Mutect2 and Strelka2 dataset:
@@ -219,18 +229,24 @@ Let's do this for Strelka2 first.
 strelka2_vaf <- strelka2@data %>%
   dplyr::mutate(vaf = as.numeric(t_alt_count)/(as.numeric(t_ref_count) + 
                                                  as.numeric(t_alt_count)),
-                mutation = paste0(Hugo_Symbol, "_", 
-                                  Allele, "_", 
-                                  Tumor_Sample_Barcode, "_", 
-                                  Start_Position), 
-                change = paste0(Reference_Allele, ">", Allele),
+                base_change = paste0(Reference_Allele, ">", Allele), 
                 coding = dplyr::case_when( 
                   BIOTYPE != "protein_coding" ~ "non-coding",
                   TRUE ~ "protein_coding")) %>%
+    dplyr::mutate(change = dplyr::case_when(
+      grepl("^-", base_change) ~ "insertion",
+      grepl("-$", base_change) ~ "deletion",
+      nchar(base_change) > 3 ~ "long_change",
+      TRUE ~ base_change)) %>%
+    dplyr::mutate(mutation_id = paste0(Hugo_Symbol, "_", 
+                                       change, "_", 
+                                       Start_Position, "_",
+                                       Tumor_Sample_Barcode),
+                  general_id = paste0(Hugo_Symbol, "_", Tumor_Sample_Barcode)) %>%
     dplyr::select(-which(apply(is.na(.), 2, all)))
 
 # Take a look at this df
-strelka2_vaf
+strelka2_vaf  
 ```
 
 Now we will do the same for MuTect2.
@@ -239,15 +255,21 @@ Now we will do the same for MuTect2.
 mutect2_vaf <- mutect2@data %>%
   dplyr::mutate(vaf = as.numeric(t_alt_count)/(as.numeric(t_ref_count) + 
                                                  as.numeric(t_alt_count)),
-                mutation = paste0(Hugo_Symbol, "_", 
-                                  Allele, "_", 
-                                  Tumor_Sample_Barcode, "_", 
-                                  Start_Position),
-                change = paste0(Reference_Allele, ">", Allele), 
-                coding = dplyr::case_when( 
+                base_change = paste0(Reference_Allele, ">", Allele), 
+                coding = dplyr::case_when(
                   BIOTYPE != "protein_coding" ~ "non-coding",
                   TRUE ~ "protein_coding")) %>%
-  dplyr::select(-which(apply(is.na(.), 2, all)))
+    dplyr::mutate(change = dplyr::case_when( 
+      grepl("^-", base_change) ~ "insertion",
+      grepl("-$", base_change) ~ "deletion",
+      nchar(base_change) > 3 ~ "long_change",
+      TRUE ~ base_change)) %>%
+    dplyr::mutate(mutation_id = paste0(Hugo_Symbol, "_", 
+                                       change, "_", 
+                                       Start_Position, "_",
+                                       Tumor_Sample_Barcode),
+                  general_id = paste0(Hugo_Symbol, "_", Tumor_Sample_Barcode)) %>%
+    dplyr::select(-which(apply(is.na(.), 2, all)))
 
 # Take a look at this df
 mutect2_vaf
@@ -260,12 +282,12 @@ Save to a TSV file.
 ```{r}
 # Merge these data.frames together
 vaf_df <- strelka2_vaf %>%
-  dplyr::full_join(mutect2_vaf, by = 'mutation', 
+  dplyr::full_join(mutect2_vaf, by = 'mutation_id', 
                     suffix = c(".strelka2", ".mutect2")) %>%
   # Make a variable that denotes which dataset it is in.
   dplyr::mutate(dataset = dplyr::case_when( 
-    is.na(vaf.mutect2) ~ "strelka2_only",
-    is.na(vaf.strelka2) ~ "mutect2_only", 
+    is.na(Allele.mutect2) ~ "strelka2_only",
+    is.na(Allele.strelka2) ~ "mutect2_only", 
     TRUE ~ "both")) %>%
   readr::write_tsv(file.path("results", "combined_results.tsv"))
 ```
