@@ -20,7 +20,8 @@ Is the analysis in a mature enough form that the resulting figure(s) and/or tabl
 #### Results
 
 _If your pull request includes code that produces scientific results, please summarize the results here.
-This can help facilitate discussion around interpretation._
+This can help facilitate discussion around interpretation.
+Please state what kinds of results are included (e.g., table, figure)._
 
 #### Docker and continuous integration
 
