@@ -255,7 +255,7 @@ mutect2_vaf
 
 ## Combine MuTect2 and Strelka2 data.frames into one data.frame
 
-Save to a TSV file
+Save to a TSV file.
 
 ```{r}
 # Merge these data.frames together

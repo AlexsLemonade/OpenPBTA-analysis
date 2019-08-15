@@ -14,6 +14,16 @@ results.
 
 It addresses [issue \# 30 in OpenPBTA](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/30).
 
+## Usage
+
+To run this from the command line, use:
+```
+Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/01-set-up.Rmd', 
+                              clean = TRUE)"
+```
+
+ _This assumes you are in the top directory of the repository._
+ 
 ## Set Up
 
 ```{r}
@@ -102,8 +112,8 @@ Let's make a wrapper function that will do this for whatever variables we are
 interested in. 
 
 ```{r}
-barplot_var <- function(df, variable_name = NULL, filter_cutoff = 1, 
-                        as_percent = FALSE) {
+barplot_var <- function(df, variable_name = NULL, filter_cutoff = .02, 
+                        as_percent = TRUE, omit.na = FALSE) {
   count_df <- vaf_df %>%
     dplyr::select(paste0(variable_name, c(".strelka2", ".mutect2")),
                   dataset) %>%
@@ -111,18 +121,18 @@ barplot_var <- function(df, variable_name = NULL, filter_cutoff = 1,
                   paste0(variable_name, c(".strelka2", ".mutect2"))) %>%
     dplyr::mutate('data' = gsub(paste0(variable_name, "."), "", data)) %>%
     dplyr::group_by(dataset, data, variable) %>% 
-    dplyr::summarise(count = n())
+    dplyr::summarise(count = dplyr::n())
   
   totals <- count_df %>%
-    dplyr::group_by(data, dataset) %>%
+    dplyr::group_by(dataset) %>%
     dplyr::summarise(total = sum(count, na.rm = TRUE)) 
     
-    
   count_df %>%
-    dplyr::mutate(percent = count_df$count/totals$total[match(count_df$data, totals$data)])
-                                  
-    dplyr::filter(count > filter_cutoff, !is.na(variable)) %>%
-    dplyr::mutate(report = ifelse(as_percent, percent, count)) %>%
+    as.data.frame() %>%
+    dplyr::mutate("percent" = count_df$count/totals$total[match(count_df$dataset, 
+                                                                totals$dataset)]) %>%
+    dplyr::mutate(report = ifelse(rep(as_percent, nrow(count_df)), percent, count)) %>%
+    dplyr::filter(report > filter_cutoff) %>%
     ggplot2::ggplot(ggplot2::aes(x = reorder(variable, -report), 
                                  y = report, fill = dataset)) + 
     ggplot2::geom_bar(position = "dodge", stat="identity") + 
@@ -134,11 +144,13 @@ barplot_var <- function(df, variable_name = NULL, filter_cutoff = 1,
 ```
 
 ```{r}
-barplot_var(vaf_df, "change", 100)
+barplot_var(df = "vaf_df", variable_name = "change", filter_cutoff = .01, 
+                        as_percent = TRUE)
 ```
 
 ```{r}
-barplot_var(vaf_df, "coding", 10)
+barplot_var(df = "vaf_df", variable_name = "coding", filter_cutoff = .01, 
+                        as_percent = TRUE)
 ```
 
 ```{r}
