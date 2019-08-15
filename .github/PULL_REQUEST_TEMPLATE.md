@@ -14,7 +14,8 @@ _What GitHub issue does your pull request address?_
 
 _Tell potential reviewers what kind of feedback you are soliciting. 
 Are there particular areas that need a closer look?
-Is there something you want to discuss further?_
+Is there something you want to discuss further?
+Is the analysis in a mature enough form that the resulting figure(s) and/or table(s) are ready for review?_
 
 #### Results
 
