@@ -8,15 +8,22 @@ output:
 
 Candace Savonen - CCDL for ALSF
 
-This notebook is a first pass in evaluating the concordance between MuTect2 and 
-Strelka2 results.
+This notebook is sets up the MAF data files for comparison and does some first 
+line analyses
 
-It addresses [issue \# 30 in OpenPBTA](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/30).
+It is the first notebook in this series which addresses [issue \# 30 in OpenPBTA](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/30).
+
+## Usage
+
+To run this from the command line, use:
+```
+Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/01-set-up.Rmd', 
+                              clean = TRUE)"
+```
+
+ _This assumes you are in the top directory of the repository._
 
 ## Set Up
-
-\* Some of these set up steps will be removed once we have a Dockerfile that installs
-maftools automatically. 
 
 ```{r}
 # We need maftools - this will be added to the running Docker issue whenever it is up
@@ -31,11 +38,24 @@ if (!('hexbin' %in% installed.packages())) {
 if (!('colorblindr' %in% installed.packages())) {
   devtools::install_github("clauswilke/colorblindr")
 }
-# Get magrittr pipe
+```
+
+Get `magrittr` pipe
+
+```{r}
 `%>%` <- dplyr::`%>%`
 ```
 
-Create a output directories.
+### Directories and files
+
+Path to the symlinked data obtained via `bash download-data.sh`.
+
+```{r}
+data_dir <- file.path("..", "..", "data")
+scratch_dir <- file.path("..", "..", "scratch")
+```
+
+Create output directories in this analysis folder.
 
 ```{r}
 if (!dir.exists("results")) {
@@ -47,74 +67,75 @@ if (!dir.exists("plots")) {
 ```
 
 ## Read in the metadata information
-This will be changed once the [data download script](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/2) is finalized. 
 
-Prep the metadata to be used as the `clinicalData` for maftools it it hasn't been 
-prepped yet. 
-This whole chunk may need to be removed be taken out after issue 2 regarding the [data download script](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/2) is addressed. 
+Running `maftools::read.maf` takes a lot of computing power and time, so to 
+avoid having to run this for both datasets everytime we want to re-run this 
+notebook or the analyses in the other notebook, I've set this up to save the 
+`MAF` objects as `RDS` files.
 
-These steps are only to make the metadata and MuTect2 and Strelka2 datasets 
-parallel in what samples they contain.  
-There are some samples in the metadata that are not in the MuTect2 and Strelka2
-data. 
+First let's establish the file paths.
 
 ```{r}
-if (file.exists(file.path("..", "..", "scratch", "metadata_filtered.tsv"))) {
-  metadata <- readr::read_tsv(file.path("..", "..", "scratch", "metadata_filtered.tsv"))
-}
+# File paths for the needed files for this analysis
+metadata_dir <- file.path(scratch_dir, "metadata_filtered_maf_samples.tsv")
+strelka2_dir <- file.path(scratch_dir, "strelka2.RDS")
+mutect2_dir <- file.path(scratch_dir, "mutect2.RDS")
 ```
 
 ## Read in the Strelka2 and Mutect2 data
 
 Will read in as an `maftools` object from an RDS file, unless `maftools` has not been 
 run on them yet.
-Running `maftools` takes a lot of computing power and time, so be prepared.
-If you trying to run this step in a Docker container, it will likely be out of 
-memory killed, unless you have ~50GB you can allot to Docker. 
+Establish whether the files we need for this already exist before running it 
+again. 
+
+If you trying to run the set up step in a Docker container, it will likely be 
+out of memory killed, unless you have ~50GB you can allot to Docker. 
+
+Prep the metadata to be used as the `clinicalData` for maftools it it hasn't been 
+prepped yet. 
 
 ```{r}
-# Load in the RDS file if it exists, but if it doesn't exist, load in from 
-# original data file with maftools
-if (!file.exists(file.path("..", "..", "scratch", "strelka2.RDS"))) {
-  strelka <- maftools::read.maf(file.path("..", "..", "data", "strelka2.maf.gz"),
-                                clinicalData = metadata)
-  saveRDS(strelka, file.path("..", "..", "scratch", "strelka2.RDS"))
-} else {
-  strelka2 <- readRDS(file.path("..", "..", "scratch", "strelka2.RDS"))
-}
+# Get a vector of whether these exist
+files_needed <- file.exists(metadata_dir, strelka2_dir, mutect2_dir)
 
-# Same for MuTect2
-if (!file.exists(file.path("..", "..", "scratch", "mutect2.RDS"))) {
-  mutect2 <- maftools::read.maf(file.path("..", "..", "data", "mutect2.maf.gz"), 
-                                clinicalData = metadata)
-  saveRDS(mutect2, file.path("..", "..", "scratch", "mutect2.RDS"))
-} else {
-  mutect2 <- readRDS(file.path("..", "..", "scratch", "mutect2.RDS"))
-}
-```
+if (all(files_needed)) {
+  # Read the ready-to-go files if these files exist
+  metadata <-   metadata <- readr::read_tsv(metadata_dir)
+  strelka2 <- readRDS(strelka2_dir)
+  mutect2 <- readRDS(mutect2_dir)
+  
+} else { # If any of the needed files don't exist, rerun this process: 
+  # Only import the sample names 
+  strelka2_samples <- data.table::fread(file.path(data_dir, "pbta-snv-strelka2.vep.maf.gz"),
+                                      select = "Tumor_Sample_Barcode", 
+                                      skip = 1, 
+                                      data.table = FALSE)
 
-This is how I set up `metadata_filtered.tsv`. 
-This should not need to be ran again and won't run again unless 
-`metadata_filtered.tsv` is misplaced from the scratch file. 
+  mutect2_samples <- data.table::fread(file.path(data_dir, "pbta-snv-mutect2.vep.maf.gz"),
+                                      select = "Tumor_Sample_Barcode", 
+                                      skip = 1, 
+                                      data.table = FALSE)
 
-```{r}
-if (!file.exists(file.path("..", "..", "scratch", "metadata_filtered.tsv"))) {
   # Isolate metadata to only the samples that are in the datasets
-  metadata <- metadata %>%
-    dplyr::filter(sample_id %in% mutect2@clinical.data$Tumor_Sample_Barcode) %>%
-    dplyr::distinct(sample_id, .keep_all = TRUE) %>%
-    readr::write_tsv(file.path("..", "..", "scratch", "metadata_filtered.tsv"))
+  metadata <- readr::read_tsv(data_dir, "pbta-histologies.tsv") %>%
+    dplyr::filter(Kids_First_Biospecimen_ID %in% c(strelka2_samples, mutect2_samples)) %>%
+    dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
+    dplyr::arrange() %>%
+    readr::write_tsv(file.path(scratch_dir, "metadata_filtered_maf_samples.tsv"))
+  
+  # Read in original strelka file with maftools
+  strelka <- maftools::read.maf(file.path(data_dir, "pbta-snv-strelka2.vep.maf.gz"), 
+                                clinicalData = metadata)
+  
+  # Save to RDS so we don't have to run this again
+  saveRDS(strelka, strelka2_dir)
+
+  # Same for MuTect2
+  mutect2 <- maftools::read.maf(file.path(data_dir, "pbta-snv-mutect2.vep.maf.gz"),
+                                clinicalData = metadata)
+  saveRDS(mutect2, mutect2_dir)
 }
-```
-
-Check that samples are same order in the datasets as they are in the metadata
-
-```{r}
-all.equal(as.factor(metadata$sample_id),
-          strelka2@clinical.data$Tumor_Sample_Barcode)
-
-all.equal(as.factor(metadata$sample_id), 
-          mutect2@clinical.data$Tumor_Sample_Barcode)
 ```
 
 ## Get summaries and write them to TSVs 
