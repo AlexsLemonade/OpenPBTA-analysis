@@ -21,6 +21,6 @@ _What methods do you plan to use to accomplish the scientific goals?_
 
 _What input data will you use for this analysis?_
 
-#### Propose timeline
+#### Propose a timeline
 
 _What is the timeline for the analysis?_
