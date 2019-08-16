@@ -45,9 +45,10 @@ disease_expression <- df2 %>%
 # Calculate the total count of the dataset
 sum_count <- sum(disease_expression$count)
 
-# Create a percent variable
+# Create a percent variable and round to 4 decimal places 
+# (so values will have 2 decimal places as percentages) 
 disease_expression <- disease_expression %>%
-  dplyr::mutate(percent = paste0(((count / sum_count) * 100), "%"))
+  dplyr::mutate(percent = paste0((round(count / sum_count, 4) * 100), "%"))
 
 # Reorder the columns to be displayed in descending order by count on the plot
 disease_expression$disease_type_new <- with(disease_expression,
