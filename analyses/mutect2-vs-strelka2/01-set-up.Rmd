@@ -8,8 +8,8 @@ output:
 
 Candace Savonen - CCDL for ALSF
 
-This notebook is sets up the MAF data files for comparison and does some first 
-line analyses
+This notebook sets up the MAF data files for comparison and does some first 
+line analyses.
 
 It is the first notebook in this series which addresses [issue \# 30 in OpenPBTA](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/30).
 
@@ -27,16 +27,8 @@ Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/01-set-up.Rmd',
 
 ```{r}
 # We need maftools - this will be added to the running Docker issue whenever it is up
-if (!('maftools' %in% installed.packages())) {
+if (!("maftools" %in% installed.packages())) {
   devtools::install_github("PoisonAlien/maftools")
-}
-
-if (!('hexbin' %in% installed.packages())) {
-  install.packages("hexbin")
-}
-
-if (!('colorblindr' %in% installed.packages())) {
-  devtools::install_github("clauswilke/colorblindr")
 }
 ```
 
@@ -77,15 +69,15 @@ First let's establish the file paths.
 
 ```{r}
 # File paths for the needed files for this analysis
-metadata_dir <- file.path(scratch_dir, "metadata_filtered_maf_samples.tsv")
+  metadata_dir <- file.path(scratch_dir, "metadata_filtered_maf_samples.tsv")
 strelka2_dir <- file.path(scratch_dir, "strelka2.RDS")
 mutect2_dir <- file.path(scratch_dir, "mutect2.RDS")
 ```
 
 ## Read in the Strelka2 and Mutect2 data
 
-Will read in as an `maftools` object from an RDS file, unless `maftools` has not been 
-run on them yet.
+Will read in as an `maftools` object from an RDS file, unless `maftools` has not
+been run on them yet.
 Establish whether the files we need for this already exist before running it 
 again. 
 
@@ -101,21 +93,28 @@ files_needed <- file.exists(metadata_dir, strelka2_dir, mutect2_dir)
 
 if (all(files_needed)) {
   # Read the ready-to-go files if these files exist
-  metadata <-   metadata <- readr::read_tsv(metadata_dir)
+  metadata <- metadata <- readr::read_tsv(metadata_dir)
   strelka2 <- readRDS(strelka2_dir)
   mutect2 <- readRDS(mutect2_dir)
-  
-} else { # If any of the needed files don't exist, rerun this process: 
-  # Only import the sample names 
-  strelka2_samples <- data.table::fread(file.path(data_dir, "pbta-snv-strelka2.vep.maf.gz"),
-                                      select = "Tumor_Sample_Barcode", 
-                                      skip = 1, 
-                                      data.table = FALSE)
+} else { # If any of the needed files don't exist, rerun this process:
+  # Only import the sample names
+  strelka2_samples <- data.table::fread(file.path(
+    data_dir,
+    "pbta-snv-strelka2.vep.maf.gz"
+  ),
+  select = "Tumor_Sample_Barcode",
+  skip = 1,
+  data.table = FALSE
+  )
 
-  mutect2_samples <- data.table::fread(file.path(data_dir, "pbta-snv-mutect2.vep.maf.gz"),
-                                      select = "Tumor_Sample_Barcode", 
-                                      skip = 1, 
-                                      data.table = FALSE)
+  mutect2_samples <- data.table::fread(file.path(
+    data_dir,
+    "pbta-snv-mutect2.vep.maf.gz"
+  ),
+  select = "Tumor_Sample_Barcode",
+  skip = 1,
+  data.table = FALSE
+  )
 
   # Isolate metadata to only the samples that are in the datasets
   metadata <- readr::read_tsv(data_dir, "pbta-histologies.tsv") %>%
@@ -123,17 +122,19 @@ if (all(files_needed)) {
     dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
     dplyr::arrange() %>%
     readr::write_tsv(file.path(scratch_dir, "metadata_filtered_maf_samples.tsv"))
-  
+
   # Read in original strelka file with maftools
-  strelka <- maftools::read.maf(file.path(data_dir, "pbta-snv-strelka2.vep.maf.gz"), 
-                                clinicalData = metadata)
-  
+  strelka <- maftools::read.maf(file.path(data_dir, "pbta-snv-strelka2.vep.maf.gz"),
+    clinicalData = metadata
+  )
+
   # Save to RDS so we don't have to run this again
   saveRDS(strelka, strelka2_dir)
 
   # Same for MuTect2
   mutect2 <- maftools::read.maf(file.path(data_dir, "pbta-snv-mutect2.vep.maf.gz"),
-                                clinicalData = metadata)
+    clinicalData = metadata
+  )
   saveRDS(mutect2, mutect2_dir)
 }
 ```
@@ -143,39 +144,48 @@ if (all(files_needed)) {
 Get gene summaries and write to TSV files. 
 
 ```{r}
-strelka2_gene_sum <- maftools::getGeneSummary(strelka2) %>% 
-  readr::write_tsv(file.path("results", 
-                             "strelka2_gene_summary.tsv"))
+strelka2_gene_sum <- maftools::getGeneSummary(strelka2) %>%
+  readr::write_tsv(file.path(
+    "results",
+    "strelka2_gene_summary.tsv"
+  ))
 
-mutect2_gene_sum <- maftools::getGeneSummary(mutect2) %>% 
-  readr::write_tsv(file.path("results", 
-                             "mutect2_gene_summary.tsv"))
+mutect2_gene_sum <- maftools::getGeneSummary(mutect2) %>%
+  readr::write_tsv(file.path(
+    "results",
+    "mutect2_gene_summary.tsv"
+  ))
 ```
 
 Get sample summaries and write to TSV files. 
 
 ```{r}
-strelka2_sample_sum <- maftools::getSampleSummary(strelka2) %>% 
-  readr::write_tsv(file.path("results", 
-                             "strelka2_sample_summary.tsv"))
+strelka2_sample_sum <- maftools::getSampleSummary(strelka2) %>%
+  readr::write_tsv(file.path(
+    "results",
+    "strelka2_sample_summary.tsv"
+  ))
 
-mutect2_sample_sum <- maftools::getSampleSummary(mutect2) %>% 
-  readr::write_tsv(file.path("results", 
-                             "mutect2_sample_summary.tsv"))
+mutect2_sample_sum <- maftools::getSampleSummary(mutect2) %>%
+  readr::write_tsv(file.path(
+    "results",
+    "mutect2_sample_summary.tsv"
+  ))
 ```
 
 ## Number of mutations per gene correlation 
 
 ```{r}
-combined_gene <- mutect2_gene_sum %>% 
-  dplyr::full_join(strelka2_gene_sum, by = 'Hugo_Symbol') %>%
-  reshape2::melt(id = 'Hugo_Symbol') %>% 
+combined_gene <- mutect2_gene_sum %>%
+  dplyr::full_join(strelka2_gene_sum, by = "Hugo_Symbol") %>%
+  reshape2::melt(id = "Hugo_Symbol") %>%
   dplyr::mutate(dataset = as.character(grepl(".x$", variable))) %>%
-  dplyr::mutate(dataset = dplyr::recode(dataset, 
-                                        `TRUE` = "mutect2", 
-                                        `FALSE` = "strelka2")) %>%
-  dplyr::mutate(variable = gsub(".x$|.y$", "", variable)) %>% 
-  tidyr::spread('dataset', 'value')
+  dplyr::mutate(dataset = dplyr::recode(dataset,
+    `TRUE` = "mutect2",
+    `FALSE` = "strelka2"
+  )) %>%
+  dplyr::mutate(variable = gsub(".x$|.y$", "", variable)) %>%
+  tidyr::spread("dataset", "value")
 ```
 
 Let's get a correlation test on the genes overall.
@@ -188,15 +198,16 @@ cor.test(combined_gene$mutect2, combined_gene$strelka2, method = "pearson")
 ## Number of mutations per sample correlation. 
 
 ```{r}
-combined_sample <- mutect2_sample_sum %>% 
-  dplyr::full_join(strelka2_sample_sum, by = 'Tumor_Sample_Barcode') %>%
-  reshape2::melt(id = 'Tumor_Sample_Barcode') %>% 
+combined_sample <- mutect2_sample_sum %>%
+  dplyr::full_join(strelka2_sample_sum, by = "Tumor_Sample_Barcode") %>%
+  reshape2::melt(id = "Tumor_Sample_Barcode") %>%
   dplyr::mutate(dataset = as.character(grepl(".x$", variable))) %>%
-  dplyr::mutate(dataset = dplyr::recode(dataset, 
-                                        `TRUE` = "mutect2", 
-                                        `FALSE` = "strelka2")) %>%
-  dplyr::mutate(variable = gsub(".x$|.y$", "", variable)) %>% 
-  tidyr::spread('dataset', 'value')
+  dplyr::mutate(dataset = dplyr::recode(dataset,
+    `TRUE` = "mutect2",
+    `FALSE` = "strelka2"
+  )) %>%
+  dplyr::mutate(variable = gsub(".x$|.y$", "", variable)) %>%
+  tidyr::spread("dataset", "value")
 ```
 
 Let's get a correlation test on the genes overall.
@@ -227,49 +238,65 @@ Let's do this for Strelka2 first.
 
 ```{r}
 strelka2_vaf <- strelka2@data %>%
-  dplyr::mutate(vaf = as.numeric(t_alt_count)/(as.numeric(t_ref_count) + 
-                                                 as.numeric(t_alt_count)),
-                base_change = paste0(Reference_Allele, ">", Allele), 
-                coding = dplyr::case_when( 
-                  BIOTYPE != "protein_coding" ~ "non-coding",
-                  TRUE ~ "protein_coding")) %>%
-    dplyr::mutate(change = dplyr::case_when(
-      grepl("^-", base_change) ~ "insertion",
-      grepl("-$", base_change) ~ "deletion",
-      nchar(base_change) > 3 ~ "long_change",
-      TRUE ~ base_change)) %>%
-    dplyr::mutate(mutation_id = paste0(Hugo_Symbol, "_", 
-                                       change, "_", 
-                                       Start_Position, "_",
-                                       Tumor_Sample_Barcode),
-                  general_id = paste0(Hugo_Symbol, "_", Tumor_Sample_Barcode)) %>%
-    dplyr::select(-which(apply(is.na(.), 2, all)))
+  dplyr::mutate(
+    vaf = as.numeric(t_alt_count) / (as.numeric(t_ref_count) +
+      as.numeric(t_alt_count)),
+    base_change = paste0(Reference_Allele, ">", Allele),
+    coding = dplyr::case_when(
+      BIOTYPE != "protein_coding" ~ "non-coding",
+      TRUE ~ "protein_coding"
+    )
+  ) %>%
+  dplyr::mutate(change = dplyr::case_when(
+    grepl("^-", base_change) ~ "insertion",
+    grepl("-$", base_change) ~ "deletion",
+    nchar(base_change) > 3 ~ "long_change",
+    TRUE ~ base_change
+  )) %>%
+  dplyr::mutate(
+    mutation_id = paste0(
+      Hugo_Symbol, "_",
+      change, "_",
+      Start_Position, "_",
+      Tumor_Sample_Barcode
+    ),
+    general_id = paste0(Hugo_Symbol, "_", Tumor_Sample_Barcode)
+  ) %>%
+  dplyr::select(-which(apply(is.na(.), 2, all)))
 
 # Take a look at this df
-strelka2_vaf  
+strelka2_vaf
 ```
 
 Now we will do the same for MuTect2.
 
 ```{r}
 mutect2_vaf <- mutect2@data %>%
-  dplyr::mutate(vaf = as.numeric(t_alt_count)/(as.numeric(t_ref_count) + 
-                                                 as.numeric(t_alt_count)),
-                base_change = paste0(Reference_Allele, ">", Allele), 
-                coding = dplyr::case_when(
-                  BIOTYPE != "protein_coding" ~ "non-coding",
-                  TRUE ~ "protein_coding")) %>%
-    dplyr::mutate(change = dplyr::case_when( 
-      grepl("^-", base_change) ~ "insertion",
-      grepl("-$", base_change) ~ "deletion",
-      nchar(base_change) > 3 ~ "long_change",
-      TRUE ~ base_change)) %>%
-    dplyr::mutate(mutation_id = paste0(Hugo_Symbol, "_", 
-                                       change, "_", 
-                                       Start_Position, "_",
-                                       Tumor_Sample_Barcode),
-                  general_id = paste0(Hugo_Symbol, "_", Tumor_Sample_Barcode)) %>%
-    dplyr::select(-which(apply(is.na(.), 2, all)))
+  dplyr::mutate(
+    vaf = as.numeric(t_alt_count) / (as.numeric(t_ref_count) +
+      as.numeric(t_alt_count)),
+    base_change = paste0(Reference_Allele, ">", Allele),
+    coding = dplyr::case_when(
+      BIOTYPE != "protein_coding" ~ "non-coding",
+      TRUE ~ "protein_coding"
+    )
+  ) %>%
+  dplyr::mutate(change = dplyr::case_when(
+    grepl("^-", base_change) ~ "insertion",
+    grepl("-$", base_change) ~ "deletion",
+    nchar(base_change) > 3 ~ "long_change",
+    TRUE ~ base_change
+  )) %>%
+  dplyr::mutate(
+    mutation_id = paste0(
+      Hugo_Symbol, "_",
+      change, "_",
+      Start_Position, "_",
+      Tumor_Sample_Barcode
+    ),
+    general_id = paste0(Hugo_Symbol, "_", Tumor_Sample_Barcode)
+  ) %>%
+  dplyr::select(-which(apply(is.na(.), 2, all)))
 
 # Take a look at this df
 mutect2_vaf
@@ -282,13 +309,16 @@ Save to a TSV file.
 ```{r}
 # Merge these data.frames together
 vaf_df <- strelka2_vaf %>%
-  dplyr::full_join(mutect2_vaf, by = 'mutation_id', 
-                    suffix = c(".strelka2", ".mutect2")) %>%
+  dplyr::full_join(mutect2_vaf,
+    by = "mutation_id",
+    suffix = c(".strelka2", ".mutect2")
+  ) %>%
   # Make a variable that denotes which dataset it is in.
-  dplyr::mutate(dataset = dplyr::case_when( 
+  dplyr::mutate(dataset = dplyr::case_when(
     is.na(Allele.mutect2) ~ "strelka2_only",
-    is.na(Allele.strelka2) ~ "mutect2_only", 
-    TRUE ~ "both")) %>%
+    is.na(Allele.strelka2) ~ "mutect2_only",
+    TRUE ~ "both"
+  )) %>%
   readr::write_tsv(file.path("results", "combined_results.tsv"))
 ```
 
