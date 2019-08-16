@@ -8,27 +8,141 @@ output:
 
 Candace Savonen - CCDL for ALSF
 
-This notebook is the second notebook in this analysis and makes a bunch of plots
-is a first pass in evaluating the concordance between MuTect2 and Strelka2 
-results.
-
+This notebook is the second notebook in this analysis and analyzes the overlap
+and distinctions between between MuTect2 and Strelka2 results.
 It addresses [issue \# 30 in OpenPBTA](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/30).
+
+### Summary of Findings:
+
+Overall conclusion: 
+Due to some of the findings here with Mutect2 data, I suggest we should move 
+forward with only Strelka2 data OR move forward with the variants that are 
+detected by both algorithms. 
+
+*Notable Findings:*
+
+- MuTect2 and Strelka2 register [55,808 of the same mutations](#venn-diagrams). 
+If moving forward we want only the most reliably called variants, this set of 
+55,808 mutations would give us plenty to work with. 
+
+- MuTect2 and Strelka2 highly agree in their [VAF calculations](#variant-allele-frequency-scatterplot). 
+This is good regardless of our choices moving forward. 
+
+- Variants detected only by MuTect2 have a particularly low VAF compared to
+mutations detected only by Strelka2. (See [VAF Violin plots](#vaf-violin-plots)). 
+These density plots suggest some of these MuTect2 calls may be noise. 
+Although these low-VAF of MuTect2 could be identifying true variants, our further
+analyses would probably benefit from a more robust, higher confidence set of 
+variants. 
+
+- MuTect2 also registers dinucleotide and larger mutations where Strelka2 seems 
+to break these mutations into their single nucleotide changes.
+In these analyses, these base changes have been grouped together and collectively
+called [`long_changes`](#characterizing-the-mutations-identified). 
+The higher base resolution of Strelka2, and its ability to parse apart the SNVs
+from each other, is more useful to us for this particular analyses, as the larger structural variants are better detected in the Manta or
+LUMPY analyses.
+
+### Outline of analyses completed:
+
+- Venn Diagram of Mutations detected
+- Variant Allele Frequency correlation and hex plot. 
+- Violin plot of VAF grouped by what algorithm(s) detected the mutation
+- Characterization of mutations being detected by one or both of the algorithms.
 
 ## Usage
 
 To run this from the command line, use:
 ```
-Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/01-set-up.Rmd', 
+Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', 
                               clean = TRUE)"
 ```
 
- _This assumes you are in the top directory of the repository._
+_This assumes you are in the top directory of the repository._
  
 ## Set Up
 
 ```{r}
+# Will need hexbin for the hex plot
+if (!("hexbin" %in% installed.packages())) {
+  install.packages("hexbin")
+}
+
+# Will use colorblindr to make the plots colorblind-friendly
+if (!("colorblindr" %in% installed.packages())) {
+  devtools::install_github("clauswilke/colorblindr")
+}
+
 # Get magrittr pipe
 `%>%` <- dplyr::`%>%`
+```
+
+Barplot wrapper function.
+
+```{r}
+barplot_var <- function(df = vaf_df, variable_name = NULL, filter_cutoff = 0,
+                        as_percent = TRUE, omit.na = FALSE) {
+  # Creates a ggplot barplot for the numbers of mutations that fall into each
+  # category of the variable selected.
+  #
+  # Args:
+  #   df: combined data.frame with both datasets (vaf_df)
+  #   variable_name: a character string that indicates the base variable name
+  #                  from the original MAF file
+  #   filter_cutoff: variable categories with less than this cutoff will be removed
+  #   as_percent: If true, will report numbers as percentages of the group they
+  #               are from
+  #   omit.na: If true, will remove NA's as a category
+  #
+  # Returns:
+  #   ggplot2 grouped barplot with mutect_only, strelka2_only, and both as groups
+
+  # Reconfigure dataset based on chosen variable, get numbers of mutations for
+  # each dataset and variable category
+  count_df <- df %>%
+    dplyr::select(
+      paste0(variable_name, c(".strelka2", ".mutect2")),
+      dataset
+    ) %>%
+    tidyr::gather(
+      key = "data", value = "variable",
+      paste0(variable_name, c(".strelka2", ".mutect2"))
+    ) %>%
+    dplyr::mutate("data" = gsub(paste0(variable_name, "."), "", data)) %>%
+    dplyr::group_by(dataset, data, variable) %>%
+    dplyr::summarise(count = dplyr::n())
+
+  # Calculate sum totals for each data group
+  totals <- count_df %>%
+    dplyr::group_by(dataset) %>%
+    dplyr::summarise(total = sum(count, na.rm = TRUE))
+
+  # Calculate percentages based on totals and apply filter_cutoff
+  count_df <- count_df %>%
+    as.data.frame() %>%
+    dplyr::mutate("percent" = count_df$count / totals$total[match(
+      count_df$dataset,
+      totals$dataset
+    )]) %>%
+    dplyr::mutate(report = ifelse(rep(as_percent, nrow(count_df)), percent, count)) %>%
+    dplyr::filter(report > filter_cutoff)
+
+  # Omit NAs if that was specified
+  if (omit.na) {
+    count_df <- dplyr::filter(count_df, !is.na(variable))
+  }
+  # Plot this!
+  ggplot2::ggplot(count_df, ggplot2::aes(
+    x = reorder(variable, -report),
+    y = report, fill = dataset
+  )) +
+    ggplot2::geom_bar(position = "dodge", stat = "identity") +
+    ggplot2::theme_classic() +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
+    colorblindr::scale_fill_OkabeIto() +
+    ggplot2::xlab("") +
+    ggplot2::ylab(ifelse(as_percent, "Percent of Data Group", "Count"))
+}
 ```
 
 Read in the dataset set up in `01-set-up.Rmd`.
@@ -37,47 +151,20 @@ Read in the dataset set up in `01-set-up.Rmd`.
 vaf_df <- readr::read_tsv(file.path("results", "combined_results.tsv"))
 ```
 
-## VAF scatterplot
-
-```{r}
-vaf_df %>%
-ggplot2::ggplot(ggplot2::aes(x = vaf.strelka2, y = vaf.mutect2)) + 
-  ggplot2::geom_hex() +
-  ggplot2::theme_classic() + 
-  ggplot2::xlab("VAF for each mutation for Strelka2") + 
-  ggplot2::ylab("VAF for each mutation for MuTect2") 
-```
-
-## VAF Violin plots
-
-```{r}
-vaf_df %>%
-  tidyr::gather(key = "data", value = "vaf" , vaf.strelka2, vaf.mutect2) %>%
-  dplyr::mutate(data = gsub("^vaf.", "", data)) %>% 
-  dplyr::mutate(data.group = paste(dataset, ":", data, "VAF")) %>%
-  dplyr::filter(!is.na(vaf)) %>%
-# Plot it
-ggplot2::ggplot(ggplot2::aes(data.group, vaf)) + 
-  ggplot2::geom_violin(fill = "light blue") +
-  ggplot2::theme_classic( ) + 
-  ggplot2::ylab("Density of VAF") + 
-  ggplot2::xlab(" ")
-```
-
 ## Venn Diagrams
 
-Make the Venn diagram of MuTect2 and Strelka2 mutations. 
+How many mutations do both MuTect2 and Strelka2 agree on?
 
 ```{r}
+# Get the total count for mutations found by each algorithm or by both.
 count <- summary(as.factor(vaf_df$dataset))
-
-# Take a look at this summary
-count
 ```
+
+Use the count object from above to make a Venn Diagram
 
 ```{r}
 # Make the Venn diagram
-grid::grid.newpage();
+grid::grid.newpage()
 venn.plot <- VennDiagram::draw.pairwise.venn(
   area1 = count[3] + count[1],
   area2 = count[2] + count[1],
@@ -91,7 +178,8 @@ venn.plot <- VennDiagram::draw.pairwise.venn(
   ext.dist = -0.01,
   ext.length = .8,
   ext.line.lwd = 2,
-  ext.line.lty = "dashed");
+  ext.line.lty = "dashed"
+)
 grid::grid.draw(venn.plot) # Draw plot
 ```
 
@@ -99,101 +187,126 @@ Save the Venn Diagram plot to a PDF.
 
 ```{r}
 # Make filename to save plot as
-venn.plot.file <- file.path("plots", 
-                            "strelka2_mutect2_venn_diagram.pdf")
-pdf(venn.plot.file);
-grid::grid.draw(venn.plot);
+venn.plot.file <- file.path(
+  "plots",
+  "strelka2_mutect2_venn_diagram.pdf"
+)
+pdf(venn.plot.file)
+grid::grid.draw(venn.plot)
 dev.off()
 ```
 
-## What types of variants are are the most discrepant between the algorithms?
+## Variant Allele Frequency Scatterplot
 
-Let's make a wrapper function that will do this for whatever variables we are 
+For mutations identified in both datasets, are the VAF's  similar? 
+
+```{r}
+# Calculate Pearson's correlation
+pearson_r <- cor.test(vaf_df$vaf.strelka2, vaf_df$vaf.mutect2)
+
+# Plot these data as a hex plot
+vaf_df %>%
+  ggplot2::ggplot(ggplot2::aes(x = vaf.strelka2, y = vaf.mutect2)) +
+  ggplot2::geom_hex() +
+  ggplot2::theme_classic() +
+  ggplot2::xlab("VAF for each mutation for Strelka2") +
+  ggplot2::ylab("VAF for each mutation for MuTect2") +
+  ggplot2::ggtitle(
+    label = "",
+    subtitle = paste("R = ", round(pearson_r$estimate, 3))
+  )
+```
+
+Overall, the VAF are highly correlated between the two algorithms.
+
+## VAF Violin plots
+
+How do the VAF distributions of MuTect2, Strelka2 look for mutations found by
+both algorithms, versus mutations found only by one algorithm? 
+
+```{r}
+# Set up the VAF data for the density plot
+vaf_df %>%
+  tidyr::gather(key = "data", value = "vaf", vaf.strelka2, vaf.mutect2) %>%
+  dplyr::mutate(data = gsub("^vaf.", "", data)) %>%
+  dplyr::mutate(data.group = paste0(dataset, ":", data, " VAF")) %>%
+  dplyr::filter(!is.na(vaf)) %>%
+  # Plot it
+  ggplot2::ggplot(ggplot2::aes(data.group, vaf)) +
+  ggplot2::geom_violin(fill = "light blue") +
+  ggplot2::theme_classic() +
+  ggplot2::ylab("Density of VAF") +
+  ggplot2::xlab(" ")
+```
+
+Mutations that are only detected by Mutect2 appear to be particularly low VAF, 
+even compared to mutations only detected by Strelka2.
+This may indicate it's picking up noise. 
+
+## Characterizing the mutations identified
+
+What types of variants are are the most discrepant between the algorithms as 
+compared to variants that are detected by both consistently?
+We will make a series of grouped bar plots to try to get an overall picture of 
+these mutations.
+First I'll make a wrapper function that will do this for whatever variables we are 
 interested in. 
 
-```{r}
-barplot_var <- function(df = vaf_df, variable_name = "change", filter_cutoff = 0, 
-                        as_percent = TRUE, omit.na = FALSE) {
-  # Creates a ggplot barplot for the numbers of mutations that fall into each 
-  # category of the variable selected. 
-  #
-  # Args:
-  #   df: combined data.frame with both datasets (vaf_df)
-  #   variable_name: a character string that indicates the base variable name 
-  #                  from the original MAF file
-  #   filter_cutoff: variable categories with less than this cutoff will be removed
-  #   as_percent: If true, will report numbers as percentages of the group they 
-  #               are from
-  #   omit.na: If true, will remove NA's as a category
-  #
-  # Returns:
-  #   ggplot2 grouped barplot with mutect_only, strelka2_only, and both as groups
-  
-  # Reconfigure dataset based on chosen variable, get numbers of mutations for 
-  # each dataset and variable category
-  count_df <- df %>%
-    dplyr::select(paste0(variable_name, c(".strelka2", ".mutect2")),
-                  dataset) %>%
-    tidyr::gather(key = "data", value = "variable" , 
-                  paste0(variable_name, c(".strelka2", ".mutect2"))) %>%
-    dplyr::mutate('data' = gsub(paste0(variable_name, "."), "", data)) %>%
-    dplyr::group_by(dataset, data, variable) %>% 
-    dplyr::summarise(count = dplyr::n())
-  
-  # Calculate sum totals for each data group
-  totals <- count_df %>%
-    dplyr::group_by(dataset) %>%
-    dplyr::summarise(total = sum(count, na.rm = TRUE)) 
-   
-  # Calculate percentages based on totals and apply filter_cutoff 
-  count_df <- count_df %>%
-    as.data.frame() %>%
-    dplyr::mutate("percent" = count_df$count/totals$total[match(count_df$dataset, 
-                                                                totals$dataset)]) %>%
-    dplyr::mutate(report = ifelse(rep(as_percent, nrow(count_df)), percent, count)) %>%
-    dplyr::filter(report > filter_cutoff) 
-  
-  # Omit NAs if that was specified
-  if (omit.na){
-    count_df <- dplyr::filter(count_df, !is.na(variable))
-  }
+*Plot base change as counts.*
 
-    # Plot this!
-    ggplot2::ggplot(count_df, ggplot2::aes(x = reorder(variable, -report), 
-                                 y = report, fill = dataset)) + 
-    ggplot2::geom_bar(position = "dodge", stat="identity") + 
-    ggplot2::theme_classic() +
-    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
-    colorblindr::scale_fill_OkabeIto() + 
-    ggplot2::xlab("") +
-    ggplot2::ylab(ifelse(as_percent, "Percent of Data Group", "Count"))
-}
-```
+Note that `long_change` category is a combination of all base changes that are
+more than a single nucleotide.
+Note that only MuTect2 reports these data as multiple base changes as opposed to 
+parsing these changes a part as single base changes at a time. 
+Due to the lower base resolution lack of discernment of MuTect2 in this regard, 
+this is another reason avoid using MuTect2 calls alone. 
 
 ```{r}
-barplot_var(df = vaf_df, variable_name = "change", 
-            as_percent = FALSE, omit.na = TRUE, filter_cutoff = 0)
+barplot_var(
+  df = vaf_df, variable_name = "change",
+  as_percent = FALSE, omit.na = TRUE, filter_cutoff = 0
+)
 ```
 
-```{r}
-barplot_var(df = vaf_df, variable_name = "change", filter_cutoff = 0, 
-            as_percent = TRUE, omit.na = TRUE)
-```
+*Plot base change as percent.* 
+
+This is the same plot as above except normalized to be the percent of each data
+group (`mutect2_only`, `strelka2_only`, or `both`).
+
+MuTect2 shows a disproportional amount of deletions. 
+It appears C>T and G>A changes are easiest for both algorithms to detect. 
 
 ```{r}
-barplot_var(df = vaf_df, variable_name = "coding", filter_cutoff = .001, 
-            as_percent = TRUE, omit.na = TRUE)
+barplot_var(
+  df = vaf_df, variable_name = "change", filter_cutoff = 0,
+  as_percent = TRUE, omit.na = TRUE
+)
 ```
 
-```{r}
-barplot_var(df = vaf_df, variable_name = "IMPACT", filter_cutoff = .001, 
-            as_percent = TRUE, omit.na = TRUE)
-```
+*Plot mutations of these groups as percent coding or non-coding.* 
+
+It's not surprising that these are mostly coding mutations detected, however, 
+there doesn't appear to be any strong biases between the groups. 
 
 ```{r}
-barplot_var(df = vaf_df, variable_name = "Allele", filter_cutoff = .001, 
-            as_percent = TRUE, omit.na = TRUE)
+barplot_var(
+  df = vaf_df, variable_name = "coding", filter_cutoff = 0,
+  as_percent = TRUE, omit.na = TRUE
+)
 ```
+
+*Plot percent of variant type.*
+
+Only MuTect2 appears to record changes as DNP's or TNP's. 
+Again we see MuTect2 shows more deletions. 
+
+```{r}
+barplot_var(
+  df = vaf_df, variable_name = "Variant_Type", filter_cutoff = 0,
+  as_percent = TRUE, omit.na = TRUE
+)
+```
+
 Session Info: 
 
 ```{r}
