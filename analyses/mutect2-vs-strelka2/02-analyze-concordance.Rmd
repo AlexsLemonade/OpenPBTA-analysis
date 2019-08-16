@@ -8,47 +8,53 @@ output:
 
 Candace Savonen - CCDL for ALSF
 
-This notebook is the second notebook in this analysis and analyzes the overlap
-and distinctions between between MuTect2 and Strelka2 results.
+This notebook analyzes the overlap and distinctions between between MuTect2 and 
+Strelka2 results after having set the data up in 01-set-up.Rmd.
 It addresses [issue \# 30 in OpenPBTA](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/30).
 
 ### Summary of Findings:
 
-Overall conclusion: 
 Due to some of the findings here with Mutect2 data, I suggest we should move 
-forward with only Strelka2 data OR move forward with the variants that are 
+forward with only Strelka2 data *OR* move forward with the variants that are 
 detected by both algorithms. 
 
-*Notable Findings:*
+*Notable Findings:*  
 
-- MuTect2 and Strelka2 register [55,808 of the same mutations](#venn-diagrams). 
+- MuTect2 and Strelka2 detect [55,808 of the same variants](#venn-diagrams). 
+This as defined by having the same Hugo gene symbol, base change, chromosomal 
+start site, and sample of origin (see notebook [01-set-up.Rmd](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/mutect2-vs-strelka2/01-set-up.Rmd) 
+for more details.
 If moving forward we want only the most reliably called variants, this set of 
-55,808 mutations would give us plenty to work with. 
+55,808 variants would give us plenty to work with. 
 
-- MuTect2 and Strelka2 highly agree in their [VAF calculations](#variant-allele-frequency-scatterplot). 
+- MuTect2 and Strelka2 highly agree in their [Variant allele frequency (VAF) calculations](#variant-allele-frequency-scatterplot). 
 This is good regardless of our choices moving forward. 
 
 - Variants detected only by MuTect2 have a particularly low VAF compared to
-mutations detected only by Strelka2. (See [VAF Violin plots](#vaf-violin-plots)). 
+variants detected only by Strelka2. (See [VAF Violin plots](#vaf-violin-plots)). 
 These density plots suggest some of these MuTect2 calls may be noise. 
 Although these low-VAF of MuTect2 could be identifying true variants, our further
 analyses would probably benefit from a more robust, higher confidence set of 
 variants. 
 
-- MuTect2 also registers dinucleotide and larger mutations where Strelka2 seems 
-to break these mutations into their single nucleotide changes.
+- MuTect2 also registers dinucleotide and larger variants where Strelka2 seems 
+to break these variants into their single nucleotide changes.
 In these analyses, these base changes have been grouped together and collectively
-called [`long_changes`](#characterizing-the-mutations-identified). 
+called [`long_changes`](#characterizing-the-variants-identified). 
 The higher base resolution of Strelka2, and its ability to parse apart the SNVs
-from each other, is more useful to us for this particular analyses, as the larger structural variants are better detected in the Manta or
-LUMPY analyses.
+from each other, is more useful to us for this particular analyses, as the larger 
+structural variants are better detected in the Manta or LUMPY analyses.
 
 ### Outline of analyses completed:
 
-- Venn Diagram of Mutations detected
-- Variant Allele Frequency correlation and hex plot. 
-- Violin plot of VAF grouped by what algorithm(s) detected the mutation
-- Characterization of mutations being detected by one or both of the algorithms.
+- [Venn diagram of variants detected](#venn-diagrams)  
+- [VAF correlation hex plot](#variant-allele-frequency-scatterplot)   
+- [Violin plot of VAF from MuTect2 or Strelka2 when they were detected by one or both algorithms](#vaf-violin-plots)  
+- [Characterization of variants detected by one or both algorithms](#characterizing-the-variants-identified)  
+  - [Number of base changes detected](#number-of-variants-categorized-by-their-base-change)  
+  - [Percent of base changes detected](#percent-of-variants-by-their-base-change)  
+  - [Percents of variants detected in coding versus non-coding regions](#percent-of-variants-that-are-in-coding-or-non-coding-regions)  
+  - [Percent of variant type detected](#percent-of-variant-type)  
 
 ## Usage
 
@@ -57,7 +63,6 @@ To run this from the command line, use:
 Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', 
                               clean = TRUE)"
 ```
-
 _This assumes you are in the top directory of the repository._
  
 ## Set Up
@@ -80,9 +85,9 @@ if (!("colorblindr" %in% installed.packages())) {
 Barplot wrapper function.
 
 ```{r}
-barplot_var <- function(df = vaf_df, variable_name = NULL, filter_cutoff = 0,
-                        as_percent = TRUE, omit.na = FALSE) {
-  # Creates a ggplot barplot for the numbers of mutations that fall into each
+barplot_maf_var <- function(df = vaf_df, variable_name = NULL, filter_cutoff = 0,
+                            as_percent = TRUE, omit.na = FALSE) {
+  # Creates a ggplot barplot for the numbers of variants that fall into each
   # category of the variable selected.
   #
   # Args:
@@ -97,7 +102,7 @@ barplot_var <- function(df = vaf_df, variable_name = NULL, filter_cutoff = 0,
   # Returns:
   #   ggplot2 grouped barplot with mutect_only, strelka2_only, and both as groups
 
-  # Reconfigure dataset based on chosen variable, get numbers of mutations for
+  # Reconfigure dataset based on chosen variable, get numbers of variants for
   # each dataset and variable category
   count_df <- df %>%
     dplyr::select(
@@ -145,7 +150,18 @@ barplot_var <- function(df = vaf_df, variable_name = NULL, filter_cutoff = 0,
 }
 ```
 
-Read in the dataset set up in `01-set-up.Rmd`.
+Read in the combined dataset that was set up in `01-set-up.Rmd`, 
+'combined_results.tsv'.
+This file has been zipped so it can be shared on GitHub more easily. 
+If no unzipped version exists, we will unzip this.
+
+```{r}
+if (!file.exists(file.path("results", "combined_results.tsv"))) {
+  unzip(file.path("results", "combined_results.tsv.zip"))
+}
+```
+
+Read in the combined dataset, 'combined_results.tsv.'
 
 ```{r}
 vaf_df <- readr::read_tsv(file.path("results", "combined_results.tsv"))
@@ -153,10 +169,15 @@ vaf_df <- readr::read_tsv(file.path("results", "combined_results.tsv"))
 
 ## Venn Diagrams
 
-How many mutations do both MuTect2 and Strelka2 agree on?
+How many variants do both MuTect2 and Strelka2 agree on? Here we define a variant
+as being identical in both datasets if its Hugo gene symbol, base change, 
+chromosomal start site, and sample of origin. 
+The variable `mutation_id` contains this information for each sample in a 
+concatenated form, e.g. "ZMYND19_T>G_137590214_BS_5ZRZC3ZM".
+It was previously set up in [01-set-up.Rmd](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/mutect2-vs-strelka2/01-set-up.Rmd).
 
 ```{r}
-# Get the total count for mutations found by each algorithm or by both.
+# Get the total count for variants found by each algorithm or by both.
 count <- summary(as.factor(vaf_df$dataset))
 ```
 
@@ -183,7 +204,7 @@ venn.plot <- VennDiagram::draw.pairwise.venn(
 grid::grid.draw(venn.plot) # Draw plot
 ```
 
-Save the Venn Diagram plot to a PDF. 
+Save the Venn diagram plot to a PDF. 
 
 ```{r}
 # Make filename to save plot as
@@ -196,9 +217,13 @@ grid::grid.draw(venn.plot)
 dev.off()
 ```
 
-## Variant Allele Frequency Scatterplot
+## Variant allele frequency scatterplot
 
-For mutations identified in both datasets, are the VAF's  similar? 
+For variants identified in both datasets, are the VAF's similar? 
+The VAFs for each mutation in each dataset were calculated by 
+`t_alt_count) / (t_ref_count + t_alt_count) `, as following the [code used in 
+`maftools`](https://github.com/PoisonAlien/maftools/blob/master/R/plot_vaf.R)
+(See [01-set-up.Rmd](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/mutect2-vs-strelka2/01-set-up.Rmd)).
 
 ```{r}
 # Calculate Pearson's correlation
@@ -221,8 +246,8 @@ Overall, the VAF are highly correlated between the two algorithms.
 
 ## VAF Violin plots
 
-How do the VAF distributions of MuTect2, Strelka2 look for mutations found by
-both algorithms, versus mutations found only by one algorithm? 
+How do the VAF distributions of MuTect2, Strelka2 look for variants found by
+both algorithms, versus variants found only by one algorithm? 
 
 ```{r}
 # Set up the VAF data for the density plot
@@ -239,36 +264,36 @@ vaf_df %>%
   ggplot2::xlab(" ")
 ```
 
-Mutations that are only detected by Mutect2 appear to be particularly low VAF, 
-even compared to mutations only detected by Strelka2.
+Variants that are only detected by MuTect2 appear to be particularly low VAF, 
+even compared to variants only detected by Strelka2.
 This may indicate it's picking up noise. 
 
-## Characterizing the mutations identified
+## Characterizing the variants identified
 
 What types of variants are are the most discrepant between the algorithms as 
 compared to variants that are detected by both consistently?
 We will make a series of grouped bar plots to try to get an overall picture of 
-these mutations.
-First I'll make a wrapper function that will do this for whatever variables we are 
-interested in. 
+these variants.
+I made the 
 
-*Plot base change as counts.*
+### Number of variants categorized by their base change
 
 Note that `long_change` category is a combination of all base changes that are
-more than a single nucleotide.
+more than a single nucleotide (See [01-set-up.Rmd](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/mutect2-vs-strelka2/01-set-up.Rmd)
+for the code on how this was set up). 
 Note that only MuTect2 reports these data as multiple base changes as opposed to 
-parsing these changes a part as single base changes at a time. 
+parsing these changes a part as single base changes at a time.
 Due to the lower base resolution lack of discernment of MuTect2 in this regard, 
 this is another reason avoid using MuTect2 calls alone. 
 
 ```{r}
-barplot_var(
+barplot_maf_var(
   df = vaf_df, variable_name = "change",
   as_percent = FALSE, omit.na = TRUE, filter_cutoff = 0
 )
 ```
 
-*Plot base change as percent.* 
+### Percent of variants by their base change
 
 This is the same plot as above except normalized to be the percent of each data
 group (`mutect2_only`, `strelka2_only`, or `both`).
@@ -277,31 +302,31 @@ MuTect2 shows a disproportional amount of deletions.
 It appears C>T and G>A changes are easiest for both algorithms to detect. 
 
 ```{r}
-barplot_var(
+barplot_maf_var(
   df = vaf_df, variable_name = "change", filter_cutoff = 0,
   as_percent = TRUE, omit.na = TRUE
 )
 ```
 
-*Plot mutations of these groups as percent coding or non-coding.* 
+### Percent of variants that are in coding or non-coding regions
 
-It's not surprising that these are mostly coding mutations detected, however, 
+It's not surprising that these are mostly coding variants detected, however, 
 there doesn't appear to be any strong biases between the groups. 
 
 ```{r}
-barplot_var(
+barplot_maf_var(
   df = vaf_df, variable_name = "coding", filter_cutoff = 0,
   as_percent = TRUE, omit.na = TRUE
 )
 ```
 
-*Plot percent of variant type.*
+### Percent of variant type 
 
 Only MuTect2 appears to record changes as DNP's or TNP's. 
 Again we see MuTect2 shows more deletions. 
 
 ```{r}
-barplot_var(
+barplot_maf_var(
   df = vaf_df, variable_name = "Variant_Type", filter_cutoff = 0,
   as_percent = TRUE, omit.na = TRUE
 )

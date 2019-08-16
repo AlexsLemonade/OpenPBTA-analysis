@@ -8,10 +8,41 @@ output:
 
 Candace Savonen - CCDL for ALSF
 
-This notebook sets up the MAF data files for comparison and does some first 
-line analyses.
+This notebook sets up the [MAF data files as a combined file for ready comparison in 02-analyze-concordance.Rmd](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd)
+and also does some first line analyses from ready-made `maftools` functions.
 
 It is the first notebook in this series which addresses [issue \# 30 in OpenPBTA](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/30).
+
+### Summary of the Set Up:  
+
+For both the Strelka2 and MuTect2 datasets, the data is imported by 
+`maftools::read.maf` and the corresponding clinical data from 
+`pbta-histologies.tsv` is added to the object. 
+This is only done once as written (as the `read.maf` is very memory intensive)
+and each MuTect2 and Strelka2 are saved to an RDS file for faster and ready 
+reloading.
+
+For both Strelka2 and MuTect2 data, the following variables are calculated
+and added into the combined dataset for analysis in [02-analyze-concordance.Rmd](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd).
+
+#### Variables created:  
+- `vaf` : Variant Allele Frequency = `(t_alt_count) / (t_ref_count + t_alt_count)`.  
+- `mutation_id`: Used to determine whether two variants calls are identical 
+in both datasets. 
+It is a concatenation of: `Hugo_Symbol`, `change`, `Start_Position`, and 
+`Tumor_Sample_Barcode` (the sample ID).   
+- `base_change`: variable that indicates the exact change in bases (e.g. 'T>C').  
+- `change`: indicates the `base_change` information but groups together 
+deletions, insertions, and long (more than a SNV) as their own groups.  
+- `coding`: Summarize the `BIOTYPE` variable for whether or not it is a coding gene.  
+
+#### The output files from this notebook:
+- `scratch/strelka2.RDS`  
+- `scratch/mutect2.RDS`  
+- `scratch/metadata_filtered_maf_samples.tsv`  
+- `analyses/mutect2-vs-strelka2/plots/sample_cor_mutect2_vs_strelka2.pdf`
+- `analyses/mutect2-vs-strelka2/plots/sample_cor_mutect2_vs_strelka2.pdf`
+- `analyses/mutect2-vs-strelka2/results/combined_results.tsv`  
 
 ## Usage
 
@@ -20,7 +51,6 @@ To run this from the command line, use:
 Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/01-set-up.Rmd', 
                               clean = TRUE)"
 ```
-
  _This assumes you are in the top directory of the repository._
 
 ## Set Up
@@ -28,7 +58,10 @@ Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/01-set-up.Rmd',
 ```{r}
 # We need maftools - this will be added to the running Docker issue whenever it is up
 if (!("maftools" %in% installed.packages())) {
-  devtools::install_github("PoisonAlien/maftools")
+  if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+  }
+  BiocManager::install("maftools")
 }
 ```
 
@@ -69,23 +102,19 @@ First let's establish the file paths.
 
 ```{r}
 # File paths for the needed files for this analysis
-  metadata_dir <- file.path(scratch_dir, "metadata_filtered_maf_samples.tsv")
+metadata_dir <- file.path(scratch_dir, "metadata_filtered_maf_samples.tsv")
 strelka2_dir <- file.path(scratch_dir, "strelka2.RDS")
 mutect2_dir <- file.path(scratch_dir, "mutect2.RDS")
 ```
 
 ## Read in the Strelka2 and Mutect2 data
 
-Will read in as an `maftools` object from an RDS file, unless `maftools` has not
-been run on them yet.
-Establish whether the files we need for this already exist before running it 
-again. 
-
-If you trying to run the set up step in a Docker container, it will likely be 
+Will read in the data as `maftools` objects from an RDS file, unless `maftools` 
+has not been run on them yet.
+We will use `metadata` as the `clinicalData` for the `maftools` object. 
+ 
+Note: If you trying to run the initialset up step in a Docker container, it will likely be 
 out of memory killed, unless you have ~50GB you can allot to Docker. 
-
-Prep the metadata to be used as the `clinicalData` for maftools it it hasn't been 
-prepped yet. 
 
 ```{r}
 # Get a vector of whether these exist
@@ -230,11 +259,21 @@ maftools::plotTiTv(maftools::titv(mutect2))
 ## Set up new variables
 
 Here we will make these new variables for both Mutect2 and Strelka2 dataset:
-- Calculate VAF for each
-- Make a mutation ID by concatenating gene name, allele, tumor ID, and start position
-- Summarize the biotype variable for whether or not it is a coding gene. 
+- Calculate VAF for each. 
+The VAFs for each variation in each dataset are calculated by 
+`t_alt_count) / (t_ref_count + t_alt_count) `, as following the [code used in 
+`maftools`](https://github.com/PoisonAlien/maftools/blob/master/R/plot_vaf.R)  
+- Create a `base_change` variable that indicates the exact change in bases.  
+- Create a `change` variable for each which indicates the `base_change`
+information but groups together deletions, insertions, and long (more than a 
+SNV) as their own groups.  
+- Make a mutation id by concatenating `Hugo_Symbol`, `change`, `Start_Position`,
+and `Tumor_Sample_Barcode` (the sample ID).   
+We will use this variable to determine whether two variants calls are identical 
+in both datasets. 
+- Summarize the `BIOTYPE` variable for whether or not it is a coding gene.   
 
-Let's do this for Strelka2 first. 
+Let's set up Strelka2's variables first. 
 
 ```{r}
 strelka2_vaf <- strelka2@data %>%
@@ -259,8 +298,7 @@ strelka2_vaf <- strelka2@data %>%
       change, "_",
       Start_Position, "_",
       Tumor_Sample_Barcode
-    ),
-    general_id = paste0(Hugo_Symbol, "_", Tumor_Sample_Barcode)
+    )
   ) %>%
   dplyr::select(-which(apply(is.na(.), 2, all)))
 
@@ -293,8 +331,7 @@ mutect2_vaf <- mutect2@data %>%
       change, "_",
       Start_Position, "_",
       Tumor_Sample_Barcode
-    ),
-    general_id = paste0(Hugo_Symbol, "_", Tumor_Sample_Barcode)
+    )
   ) %>%
   dplyr::select(-which(apply(is.na(.), 2, all)))
 
@@ -304,7 +341,8 @@ mutect2_vaf
 
 ## Combine MuTect2 and Strelka2 data.frames into one data.frame
 
-Save to a TSV file.
+Join these datasets based on the `mutation_id` created above. 
+Save to a TSV file to be used in the subsequent notebook.
 
 ```{r}
 # Merge these data.frames together
@@ -320,6 +358,13 @@ vaf_df <- strelka2_vaf %>%
     TRUE ~ "both"
   )) %>%
   readr::write_tsv(file.path("results", "combined_results.tsv"))
+```
+
+Make a zipped up version that can be stored on GitHub.
+
+```{r}
+zip(file.path("results", "combined_results.tsv.zip"),
+    file.path("results", "combined_results.tsv"))
 ```
 
 Session Info: 
