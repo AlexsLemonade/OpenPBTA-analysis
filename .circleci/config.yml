@@ -8,8 +8,12 @@ jobs:
       - checkout
 
       - run:
+          name: Data Download
+          command: URL=https://open-pbta.s3.amazonaws.com/data RELEASE=testing download-data.sh
+
+      - run:
           name: Analysis 1
-          command: ./scripts/run_in_docker.sh 'echo "Hello, working directory!"'
+          command: ./scripts/run_in_docker.sh 'ls data/testing'
 
 workflows:
   version: 2
