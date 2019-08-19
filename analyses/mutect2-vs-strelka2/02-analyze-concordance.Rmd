@@ -23,7 +23,7 @@ detected by both algorithms.
 - MuTect2 and Strelka2 detect [55,808 of the same variants](#venn-diagrams). 
 This as defined by having the same Hugo gene symbol, base change, chromosomal 
 start site, and sample of origin (see notebook [01-set-up.Rmd](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/mutect2-vs-strelka2/01-set-up.Rmd) 
-for more details.
+for more details).
 If moving forward we want only the most reliably called variants, this set of 
 55,808 variants would give us plenty to work with. 
 
