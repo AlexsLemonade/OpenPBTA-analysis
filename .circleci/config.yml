@@ -8,4 +8,4 @@ jobs:
 
       - run:
           name: Analysis 1
-          command: ./scripts/run_in_docker.sh 'echo "Hello, World!"'
+          command: ./scripts/run_in_docker.sh 'echo "Hello, working directory!"'
