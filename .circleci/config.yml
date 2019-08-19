@@ -12,7 +12,7 @@ jobs:
           command: URL=https://open-pbta.s3.amazonaws.com/data RELEASE=testing ./download-data.sh
 
       - run:
-          name: Analysis 1
+          name: List Data Directory Contents
           command: ./scripts/run_in_docker.sh 'ls data/testing'
 
   deploy:
