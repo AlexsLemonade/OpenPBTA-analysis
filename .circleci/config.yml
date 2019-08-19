@@ -15,8 +15,27 @@ jobs:
           name: Analysis 1
           command: ./scripts/run_in_docker.sh 'ls data/testing'
 
+  deploy:
+    machine: 
+      docker_layer_caching: true
+    working_directory: ~/OpenPBTA-analysis
+    steps:
+      - checkout
+      - run: ./scripts/run_in_docker.sh 'echo Building image!'
+      - run: docker login --username $DOCKER_ID --password $DOCKER_PASSWD
+      - run: docker tag open-pbta ccdl/open-pbta:latest
+      - run: docker push ccdl/open-pbta:latest
+
 workflows:
   version: 2
   test-and-deploy:
     jobs:
       - run_tests
+
+      - deploy:
+          requires:
+            - run_tests
+          filters:
+            # No branch commit will ever trigger this job.
+            branches:
+              only: master
