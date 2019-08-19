@@ -1,58 +1,42 @@
 # Install required packages
-if (!require(dplyr)) {
-  install.packages("dplyr", repos = 'http://cran.us.r-project.org')
-  library(dplyr)
+if (!("dplyr" %in% installed.packages())) {
+    install.packages("dplyr", repos = "http://cran.us.r-project.org")
 }
-if (!require(readr)) {
-  install.packages("readr", repos = 'http://cran.us.r-project.org')
-  library(readr)
+if (!("readr" %in% installed.packages())) {
+    install.packages("readr", repos = "http://cran.us.r-project.org")
 }
-if (!require(ggplot2)) {
-  install.packages("ggplot2", repos = 'http://cran.us.r-project.org')
-  library(ggplot2)
+if (!("ggplot2" %in% installed.packages())) {
+    install.packages("ggplot2", repos = "http://cran.us.r-project.org")
 }
-if (!require(stringr)) {
-  install.packages("stringr", repos = 'http://cran.us.r-project.org')
-  library(stringr)
+if (!("stringr" %in% installed.packages())) {
+    install.packages("stringr", repos = "http://cran.us.r-project.org")
 }
-if (!require(knitr)) {
-  install.packages("knitr", repos = 'http://cran.us.r-project.org')
-  library(knitr)
+if (!("knitr" %in% installed.packages())) {
+    install.packages("knitr", repos = "http://cran.us.r-project.org")
 }
-if (!require(devtools)) {
-  install.packages("devtools", repos = 'http://cran.us.r-project.org')
-  library(devtools)
+if (!("devtools" %in% installed.packages())) {
+    install.packages("devtools", repos = "http://cran.us.r-project.org")
 }
-if (!require(sunburstR)) {
-  devtools::install_github("timelyportfolio/sunburstR")
-  library(sunburstR)
+if (!("sunburstR" %in% installed.packages())) {
+    devtools::install_github("timelyportfolio/sunburstR")
 }
-if (!require(formattable)) {
-  install.packages("formattable", repos = 'http://cran.us.r-project.org')
-  library(formattable)
+if (!("d3r" %in% installed.packages())) {
+    install.packages("d3r", repos = "http://cran.us.r-project.org")
 }
-if (!require(d3r)) {
-  install.packages("d3r", repos = 'http://cran.us.r-project.org')
-  library(d3r)
+if (!("treemap" %in% installed.packages())) {
+    install.packages("treemap", repos = "http://cran.us.r-project.org")
 }
-if (!require(treemap)) {
-  install.packages("treemap", repos = 'http://cran.us.r-project.org')
-  library(treemap)
+if (!("colorspace" %in% installed.packages())) {
+    install.packages("colorspace", repos = "http://R-Forge.R-project.org")
 }
-if (!require(colorblindr)) {
-  install.packages("colorspace", repos = "http://R-Forge.R-project.org")
-  library(colorspace)
+if (!("colorblindr" %in% installed.packages())) {
+    devtools::install_github("clauswilke/colorblindr")
 }
-if (!require(colorblindr)) {
-  devtools::install_github("clauswilke/colorblindr")
-  library(colorblindr)
+if (!("mapview" %in% installed.packages())) {
+    install.packages("mapview", repos = "http://cran.us.r-project.org")
 }
-if (!require(mapview)) {
-  install.packages("mapview", repos = 'http://cran.us.r-project.org')
-  library(mapview)
+if (!("d3treeR" %in% installed.packages())) {
+    devtools::install_github("timelyportfolio/d3treeR")
 }
-if (!require(d3treeR)) {
-  devtools::install_github("timelyportfolio/d3treeR")
-  library(d3treeR)
-}
+
 
