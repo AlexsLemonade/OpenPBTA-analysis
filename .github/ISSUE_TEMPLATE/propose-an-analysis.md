@@ -24,3 +24,7 @@ _What input data will you use for this analysis?_
 #### Proposed timeline
 
 _What is the timeline for the analysis?_
+
+#### Relevant literature
+
+_If there is relevant scientific literature, put links to those items here._
