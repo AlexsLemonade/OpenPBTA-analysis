@@ -134,7 +134,8 @@ if (all(files_needed)) {
   select = "Tumor_Sample_Barcode",
   skip = 1,
   data.table = FALSE
-  )
+  ) %>%
+    dplyr::pull("Tumor_Sample_Barcode")
 
   mutect2_samples <- data.table::fread(file.path(
     data_dir,
@@ -143,22 +144,25 @@ if (all(files_needed)) {
   select = "Tumor_Sample_Barcode",
   skip = 1,
   data.table = FALSE
-  )
+  ) %>%
+    dplyr::pull("Tumor_Sample_Barcode")
 
   # Isolate metadata to only the samples that are in the datasets
-  metadata <- readr::read_tsv(data_dir, "pbta-histologies.tsv") %>%
+  metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) %>%
     dplyr::filter(Kids_First_Biospecimen_ID %in% c(strelka2_samples, mutect2_samples)) %>%
     dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
     dplyr::arrange() %>%
+    dplyr::mutate("Tumor_Sample_Barcode" = Kids_First_Biospecimen_ID) %>%
+    dplyr::select(-Kids_First_Biospecimen_ID) %>%
     readr::write_tsv(file.path(scratch_dir, "metadata_filtered_maf_samples.tsv"))
 
   # Read in original strelka file with maftools
-  strelka <- maftools::read.maf(file.path(data_dir, "pbta-snv-strelka2.vep.maf.gz"),
+  strelka2 <- maftools::read.maf(file.path(data_dir, "pbta-snv-strelka2.vep.maf.gz"),
     clinicalData = metadata
   )
 
   # Save to RDS so we don't have to run this again
-  saveRDS(strelka, strelka2_dir)
+  saveRDS(strelka2, strelka2_dir)
 
   # Same for MuTect2
   mutect2 <- maftools::read.maf(file.path(data_dir, "pbta-snv-mutect2.vep.maf.gz"),
@@ -258,7 +262,7 @@ maftools::plotTiTv(maftools::titv(mutect2))
 
 ## Set up new variables
 
-Here we will make these new variables for both Mutect2 and Strelka2 dataset:
+Here we will make these new variables for both MuTect2 and Strelka2 dataset:
 - Calculate VAF for each. 
 The VAFs for each variation in each dataset are calculated by 
 `t_alt_count) / (t_ref_count + t_alt_count) `, as following the [code used in 
@@ -363,8 +367,10 @@ vaf_df <- strelka2_vaf %>%
 Make a zipped up version that can be stored on GitHub.
 
 ```{r}
-zip(file.path("results", "combined_results.tsv.zip"),
-    file.path("results", "combined_results.tsv"))
+zip(
+  file.path("results", "combined_results.tsv.zip"),
+  file.path("results", "combined_results.tsv")
+)
 ```
 
 Session Info: 
