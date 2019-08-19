@@ -13,7 +13,7 @@ jobs:
 
       - run:
           name: List Data Directory Contents
-          command: ./scripts/run_in_docker.sh 'ls data'
+          command: ./scripts/run_in_docker.sh ls data/testing
 
   deploy:
     machine: 
