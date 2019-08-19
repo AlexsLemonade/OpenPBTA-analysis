@@ -33,4 +33,4 @@ fi
 
 docker run \
        --volume "$(pwd)/data":/home/user/data \
-       -it "open-pbta" bash -c "$@"
+       -it "open-pbta" "$@"
