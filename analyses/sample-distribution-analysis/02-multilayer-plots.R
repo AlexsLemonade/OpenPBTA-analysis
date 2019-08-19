@@ -29,6 +29,8 @@ final_df <- df2 %>%
   dplyr::group_by(broad_histology, short_histology, disease_type_new) %>%
   # Add the count to a column named size
   dplyr::add_count(name = "size") %>%
+  # Place the value 1 in a column named counter for treemap and sunburt plots
+  dplyr::mutate(counter= c(1)) %>%
   # Change the column names
   dplyr::rename(level1 = broad_histology, 
                 level2 = short_histology,
@@ -39,14 +41,14 @@ final_df <- df2 %>%
   as.data.frame()
 
 # Save to tsv file
-readr::write_tsv(final_df, file.path("results", "sunburst_plot_df.tsv"))
+readr::write_tsv(final_df, file.path("results", "plots_df.tsv"))
 
 # Create a treemap 
 tm <-
   treemap::treemap(
     final_df,
     index = c("level1", "level2", "level3"),
-    vSize = "size",
+    vSize = "counter",
     vColor = color,
     draw = TRUE
   )
@@ -76,7 +78,6 @@ sun_plot <-
 
 # Create an interactive sund2b plot 
 p <- sunburstR::sund2b(tmnest, colors = color, valueField = "vSize")
-print(p)
 
 # Create HTML outputs for the interactive plots 
 mapview::mapshot(interactive_tm, url = file.path(outputDir, "histology-treemap.html"))
