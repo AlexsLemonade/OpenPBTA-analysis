@@ -3,10 +3,6 @@
 #
 # Chante Bethell for CCDL 2019
 
-
-# Load/install packages. This will be removed once a Dockerfile is established.
-source("00-install-packages.R")
-
 # magrittr pipe
 `%>%` <- dplyr::`%>%`
 
@@ -144,4 +140,4 @@ primary_sites_counts <- reshape2::melt(cancer_types_counts,
 # Write to tsv file
 readr::write_tsv(primary_sites_counts,
                  file.path("results", "primary_sites_counts.tsv"))
-sessionInfo()
+
