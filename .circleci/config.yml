@@ -1,16 +1,11 @@
 version: 2
 jobs:
-  build:
-    docker:
-      - image: rocker/tidyverse:3.6.0
-
+  run_tests:
+    machine: true
+    working_directory: ~/OpenPBTA-analysis
     steps:
       - checkout
 
       - run:
-          name: Greeting
-          command: echo Hello, world.
-
-      - run:
-          name: Print the Current Time
-          command: date
+          name: Analysis 1
+          command: ./scripts/run_in_docker.sh 'echo "Hello, World!"'
