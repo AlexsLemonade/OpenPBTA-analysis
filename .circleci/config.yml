@@ -9,3 +9,9 @@ jobs:
       - run:
           name: Analysis 1
           command: ./scripts/run_in_docker.sh 'echo "Hello, working directory!"'
+
+workflows:
+  version: 2
+  test-and-deploy:
+    jobs:
+      - run_tests
