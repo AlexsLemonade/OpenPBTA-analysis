@@ -361,13 +361,13 @@ summary.
 #### Strelka2 transition/transversion plot.
 
 ```{r}
-maftools::plotTiTv(maftools::titv(strelka2))
+maftools::plotTiTv(maftools::titv(strelka2), plotType = 'box')
 ```
 
 #### MuTect2 transition/transversion plot.
 
 ```{r}
-maftools::plotTiTv(maftools::titv(mutect2))
+maftools::plotTiTv(maftools::titv(mutect2), plotType = 'box')
 ```
 
 ## Compare number of mutations per gene
