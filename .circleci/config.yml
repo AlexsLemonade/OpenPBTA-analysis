@@ -13,7 +13,7 @@ jobs:
 
       - run:
           name: List Data Directory Contents
-          command: ./scripts/run_in_docker.sh ls data/testing
+          command: ./scripts/run_in_ci.sh ls data/testing
 
   deploy:
     machine: 
@@ -21,7 +21,7 @@ jobs:
     working_directory: ~/OpenPBTA-analysis
     steps:
       - checkout
-      - run: ./scripts/run_in_docker.sh echo 'Building image!'
+      - run: ./scripts/run_in_ci.sh echo 'Building image!'
       - run: docker login --username $DOCKER_ID --password $DOCKER_PASSWD
       - run: docker tag open-pbta ccdlopenpbta/open-pbta:latest
       - run: docker push ccdlopenpbta/open-pbta:latest

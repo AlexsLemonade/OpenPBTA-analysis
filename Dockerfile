@@ -9,4 +9,3 @@ RUN apt-get install dialog apt-utils -y
 
 RUN groupadd user && useradd --create-home --home-dir /home/user -g user user
 WORKDIR /home/user
-
