@@ -81,10 +81,40 @@ We noticed ControlFreeC does not properly handle aneuploidy well for a subset of
 
 ## How to Add an Analysis
 
-Users performing analyses, should always refer to the symlinks in the `data/` directory and not files within the release folder, as an updated release may be produced before a publication is prepared.
+Users performing analyses, should **always** refer to the symlinks in the `data/` directory and not files within the release folder, as an updated release may be produced before a publication is prepared.
 
-### Docker Container
+### Docker Image
 
+We build our project Docker image from a versioned [`tidyverse`](https://hub.docker.com/r/rocker/tidyverse) image from the [Rocker Project](https://www.rocker-project.org/) (v3.6.0).
+
+To add dependencies that are required for your analysis to the project Docker image, you must alter the project [`Dockerfile`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/Dockerfile).
+Note: R packages installed on this image will be installed from an [MRAN snapshot](https://mran.microsoft.com/documents/rro/reproducibility#reproducibility) corresponding to the last day that R 3.6.0 was the most recent release ([ref](https://hub.docker.com/r/rocker/tidyverse)).
+
+If you need assistance adding a dependency to the Dockerfile, [file a new issue on this repository](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/new) to request help.
+
+#### Development in the Project Docker Container
+
+The most recent version of the project Docker image, which is pushed to Docker Hub after a pull request gets merged into the master branch, can be obtained via the command line with:
+
+```
+docker pull ccdlopenpbta/open-pbta:latest
+```
+
+##### RStudio
+
+Using `rocker/tidyverse:3.6.0` as our base image allows for development via RStudio in the project Docker container. 
+If you'd like to develop in this manner, you may do so by running the following and changing `<password>` to a password of you choosing at the command line:
+
+```
+docker run -e PASSWORD=<password> -p 8787:8787 ccdlopenpbta/open-pbta:latest
+```
+
+You can change the volume that the Docker container points to either via the [Kitematic GUI](https://docs.docker.com/kitematic/userguide/) or the [`--volume` flag](https://docs.docker.com/storage/volumes/) to `docker run`.
+
+Once you've set the volume, you can navigate to `localhost:8787` in your browser if you are a Linux or Mac OS X user. 
+The username will for login will be `rstudio` and the password will be whatever password you set with the `docker run` command above.
+
+If you are a new user, you may find [these instructions](https://github.com/AlexsLemonade/RNA-Seq-Exercises/blob/master/docker-pull.md) for a setting up a different Docker container or [this guide](https://www.andrewheiss.com/blog/2017/04/27/super-basic-practical-guide-to-docker-and-rstudio/) from Andrew Heiss helpful.
 
 ### Folder Structure
 
@@ -144,4 +174,35 @@ Files that are intermediate, which means that they are useful within an analysis
 
 ### Continuous Integration (CI)
 
-### Adding Analyses to CI
+We use continuous integration (CI) to ensure that the project Docker image will build if there are any changes introduced to the [`Dockerfile`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/Dockerfile) and that all analysis code will execute.
+
+We have put together data files specifically for the purpose of CI that contain all of the features of the full data files for only a small subset of samples. 
+You can see how this was done by viewing [this notebook](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/create-subset-files/01-create_subset_files.nb.html).
+We use the subset files to cut down on the computational resources and time required for testing.
+Provided that your analytical code points to the symlinks in the `data/` directory per [the instructions above](#how-to-add-an-analysis), adding the analysis to the CI (see below) will run your analysis on this subset of the data.
+Do not hardcode sample names in your analytical code: there is no guarantee that those samples will be present in the subset files.
+
+#### Adding Analyses to CI
+
+For an analysis to be run in CI, it must be added to the Circle CI configuration file, [`.circleci/config.yml`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/.circleci/config.yml). 
+A new analysis should be added as the last step of the `run_analyses` section.
+
+Here is an example analysis that simply lists the contents of the data directory that contains the files for the test:
+
+```
+      - run:
+          name: List Data Directory Contents
+          command: ./scripts/run_in_ci.sh ls data/testing
+```
+
+Using `./scripts/run_in_ci.sh` allows you to run your analyses in the project Docker container.
+
+If you wanted to add running an Rscript called `cluster-samples.R` that was in an analysis folder called `gene-expression-structure`, you would add this script to continuous integration with:
+
+```
+      - run:
+          name: Cluster Samples
+          command: ./scripts/run_in_ci.sh Rscript analyses/gene-expression-structure/cluster-samples.R
+```
+
+This would run the `cluster-samples.R` on the subset files that are specifically designed to be used for CI.
