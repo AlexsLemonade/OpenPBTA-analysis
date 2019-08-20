@@ -185,7 +185,7 @@ This field has the translation effect of the variant, e.g. "Frame_Shift_Del".
 ```{r}
 correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL, 
                                     maf1_name = "maf1", maf2_name = "maf2", 
-                                    summarize_by = "gene") {
+                                    summarize_by = "gene", cor_method = "pearson") {
   # Takes two maf files, summarizes them by gene or sample, combines them by 
   # a full join, and correlates the summaries using Pearson's and Spearman's
   # correlations. 
@@ -201,6 +201,8 @@ correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL,
   #       This will indicate whether to summarize compare by gene or sample. 
   #       "gene" will summarize both maf1 and maf2 using maftools::getGeneSummary
   #       "sample" will summarize both maf1 and maf2 using maftools::getSampleSummary
+  #   cor_method: a character string indicating the correlation method argument 
+  #               to be passed to "method" in cor.test() function 
   # Returns:
   #   a data.frame that contains the correlation r and p values for both 
   #   maf1 and maf2 based on the numbers of variants of each class.
@@ -218,7 +220,7 @@ correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL,
   }
   
   # Do a full join of both summaries.
-  maf1_sum %>%
+  combine_df <- maf1_sum %>%
     dplyr::full_join(maf2_sum, by = key) %>%
     # Melt this data.frame so we can make it long format
     reshape2::melt(id = key) %>%
@@ -231,14 +233,33 @@ correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL,
     # Gets rid of the ".x" and ".y" specifications of the column names
     dplyr::mutate(variable = gsub(".x$|.y$", "", variable)) %>%
     # Spreads the data based on the new dataset variable
-    tidyr::spread("dataset", "value") %>%  
+    tidyr::spread("dataset", "value")   
     
-    # Get correlations by each type of variant classification
+  # Get correlations by each type of variant classification
+  cors <- combine_df %>%
     dplyr::group_by(variable) %>%
-    dplyr::summarize(pearson.cor = cor.test(strelka2, mutect2, method = "pearson")$estimate,
-                     pearson.pval = cor.test(strelka2, mutect2, method = "pearson")$p.value,
-                     spearman.cor = cor.test(strelka2, mutect2, method = "spearman")$estimate,
-                     spearman.pval = cor.test(strelka2, mutect2, method = "pearson")$p.value) 
+    dplyr::summarize(cor = cor.test(
+      # This `eval(parse(text =` piece is so that cor.test will correlate the 
+      # numeric vectors not the character strings themselves 
+      eval(parse(text = maf1_name)), 
+      eval(parse(text = maf2_name)),
+      method = cor.method)$estimate) 
+  
+  # Add the r values to the data labels
+  combine_df <- combine_df %>%
+      dplyr::mutate(variable_w_cor = paste(variable, 
+                                            "r =", 
+                                            round(cors$cor, 3)))
+  
+  # Plot this as a facet_wrapped scatterplot
+  ggplot2::ggplot(combine_df, ggplot2::aes(x = eval(parse(text = maf1_name)),
+                                           y =  eval(parse(text = maf2_name)))) +
+    ggplot2::geom_hex(bins = 10) + 
+    ggplot2::facet_wrap(~ variable_w_cor, scales = "free") +
+    ggplot2::xlab(maf1_name) + 
+    ggplot2::ylab(maf2_name) +
+    ggplot2::theme_classic() +
+    ggplot2::theme(strip.text = ggplot2::element_text(size = 8))
 }
 ```
 
@@ -331,18 +352,12 @@ correlations between the algorithms on the gene-level.
 These correlations across variant classifications are plotted as a barplot. 
 
 ```{r}
-gene_cors <- correlate_maf_summaries(maf1 = strelka2, 
-                                     maf2 = mutect2, 
-                                     maf1_name = "strelka2", 
-                                     maf2_name = "mutect2",
-                                     summarize_by = "gene")
-
-# Print out this data.frame
-gene_cors %>%
-  ggplot2::ggplot(ggplot2::aes(x = variable, y = pearson.cor)) +
-  ggplot2::geom_bar(stat = "identity") +
-  ggplot2::theme_classic() +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1))  
+correlate_maf_summaries(maf1 = strelka2, 
+                        maf2 = mutect2, 
+                        maf1_name = "strelka2", 
+                        maf2_name = "mutect2",
+                        summarize_by = "gene", 
+                        cor_method = "pearson")
 ```
 
 ## Compare number of mutations per sample
@@ -352,18 +367,12 @@ to evaluate correlations between the algorithms on the sample-level.
 These correlations across variant classifications are plotted as a barplot. 
 
 ```{r}
-sample_cors <- correlate_maf_summaries(maf1 = strelka2, 
-                                       maf2 = mutect2, 
-                                       maf1_name = "strelka2", 
-                                       maf2_name = "mutect2",
-                                       summarize_by = "sample")
-
-# Print out this data.frame
-sample_cors %>%
-  ggplot2::ggplot(ggplot2::aes(x = variable, y = pearson.cor)) +
-  ggplot2::geom_bar(stat = "identity") +
-  ggplot2::theme_classic() +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1))  
+correlate_maf_summaries(maf1 = strelka2, 
+                        maf2 = mutect2, 
+                        maf1_name = "strelka2", 
+                        maf2_name = "mutect2",
+                        summarize_by = "sample", 
+                        cor_method = "pearson")
 ```
 
 ## Plot Transition/Transversions
