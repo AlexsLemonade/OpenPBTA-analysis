@@ -345,6 +345,24 @@ if (all(files_needed)) {
 }
 ```
 
+## Plot Transition/Transversions
+
+These built in maftools functions plot the overall presence of transitions and 
+transversions and is recommended by the [maftools vignette](https://bioconductor.org/packages/devel/bioc/vignettes/maftools/inst/doc/maftools.html#74_transition_and_transversions) as a method of obtaining an overall base change
+summary. 
+
+#### Strelka2 transition/transversion plot.
+
+```{r}
+maftools::plotTiTv(maftools::titv(strelka2))
+```
+
+#### MuTect2 transition/transversion plot.
+
+```{r}
+maftools::plotTiTv(maftools::titv(mutect2))
+```
+
 ## Compare number of mutations per gene
 
 We will our pre-made function, `correlate_maf_summaries`, to evaluate initial 
@@ -373,24 +391,6 @@ correlate_maf_summaries(maf1 = strelka2,
                         maf2_name = "mutect2",
                         summarize_by = "sample", 
                         cor_method = "pearson")
-```
-
-## Plot Transition/Transversions
-
-These built in maftools functions plot the overall presence of transitions and 
-transversions and is recommended by the [maftools vignette](https://bioconductor.org/packages/devel/bioc/vignettes/maftools/inst/doc/maftools.html#74_transition_and_transversions) as a method of obtaining an overall base change
-summary. 
-
-#### Strelka2 transition/transversion plot.
-
-```{r}
-maftools::plotTiTv(maftools::titv(strelka2))
-```
-
-#### MuTect2 transition/transversion plot.
-
-```{r}
-maftools::plotTiTv(maftools::titv(mutect2))
 ```
 
 ## Set up new variables
