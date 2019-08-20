@@ -401,8 +401,9 @@ Let's set up Strelka2's variables first.
 # Use the premade function to create our new variables
 strelka2_vaf <- set_up_variables(strelka2)
 
-# Take a look at this df
-strelka2_vaf
+# Take a look at the new variables:
+strelka2_vaf %>% 
+  dplyr::select(vaf, base_change, coding, change, mutation_id)
 ```
 
 Now we will do the same for MuTect2.
@@ -411,8 +412,9 @@ Now we will do the same for MuTect2.
 # Use the premade function to create our new variables
 mutect2_vaf <- set_up_variables(mutect2)
 
-# Take a look at this df
-mutect2_vaf
+# Take a look at the new variables
+mutect2_vaf %>% 
+  dplyr::select(vaf, base_change, coding, change, mutation_id)
 ```
 
 ## Combine MuTect2 and Strelka2 data.frames into one data.frame
