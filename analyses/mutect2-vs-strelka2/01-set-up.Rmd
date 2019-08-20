@@ -103,6 +103,7 @@ if (!dir.exists("plots")) {
 Set up the function that will create the new variables from the maf objects. 
 
 #### Description of variables 
+
 The function, `set_up_variables`, will calculate the following variables from a maf object:  
 - Calculate VAF for each. 
 The VAFs for each variation in each dataset are calculated by 
@@ -177,7 +178,7 @@ set_up_variables <- function(maf = NULL) {
 This function uses the maftools summary functions, `maftools::getGeneSummary` or
 `maftools::getSampleSummary`, to summarize and compare two maf objects.
 These `maftools` summary functions obtain the number of variants of each 
-classification type on either a gene or sample level (this is taked from the 
+classification type on either a gene or sample level (this is taken from the 
 information in the [`Variant_Classification` field in the original maf file](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/).)
 This field has the translation effect of the variant, e.g. "Frame_Shift_Del".
 
@@ -325,6 +326,10 @@ if (all(files_needed)) {
 
 ## Compare number of mutations per gene
 
+We will our pre-made function, `correlate_maf_summaries`, to evaluate initial 
+correlations between the algorithms on the gene-level.
+These correlations across variant classifications are plotted as a barplot. 
+
 ```{r}
 gene_cors <- correlate_maf_summaries(maf1 = strelka2, 
                                      maf2 = mutect2, 
@@ -341,6 +346,10 @@ gene_cors %>%
 ```
 
 ## Compare number of mutations per sample
+
+Similar to above, we will use our pre-made function, `correlate_maf_summaries`, 
+to evaluate correlations between the algorithms on the sample-level.
+These correlations across variant classifications are plotted as a barplot. 
 
 ```{r}
 sample_cors <- correlate_maf_summaries(maf1 = strelka2, 
