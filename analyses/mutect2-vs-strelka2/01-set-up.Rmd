@@ -104,7 +104,8 @@ Set up the function that will create the new variables from the maf objects.
 
 #### Description of variables 
 
-The function, `set_up_variables`, will calculate the following variables from a maf object:  
+The function, `set_up_variables`, will calculate the following variables from a
+maf object:  
 - Calculate VAF for each. 
 The VAFs for each variation in each dataset are calculated by 
 `t_alt_count) / (t_ref_count + t_alt_count) `, as following the [code used in 
@@ -121,28 +122,28 @@ in both datasets.
 
 ```{r}
 set_up_variables <- function(maf = NULL) {
-  # Creates these new variables from a maf object provided: VAF, mutation_id, 
+  # Creates these new variables from a maf object provided: VAF, mutation_id,
   # base_change, change, coding.
   #
   # Args:
   #   maf: a maf object to create new variables from
   #
   # Returns:
-  #   a data.frame with all the original information in the `@data` part of the 
-  #   maf object but with these new variables: VAF, mutation_id, base_change, 
+  #   a data.frame with all the original information in the `@data` part of the
+  #   maf object but with these new variables: VAF, mutation_id, base_change,
   #   change, coding.
 
-  # Extract the data part of the maf object, put it through a dplyr pipe. 
+  # Extract the data part of the maf object, put it through a dplyr pipe.
   df <- maf@data
   df %>%
     dplyr::mutate(
       # Calculate the variant allele frequency
       vaf = as.numeric(t_alt_count) / (as.numeric(t_ref_count) +
-                                         as.numeric(t_alt_count)),
+        as.numeric(t_alt_count)),
       # Create a base_change variable
       base_change = paste0(Reference_Allele, ">", Allele),
-      
-      # Create a variable that notes whether the variant is in a 
+
+      # Create a variable that notes whether the variant is in a
       # coding/non-coding region
       coding = dplyr::case_when(
         BIOTYPE != "protein_coding" ~ "non-coding",
@@ -150,17 +151,18 @@ set_up_variables <- function(maf = NULL) {
       )
     ) %>%
     dplyr::mutate(
-      # From the base_change variable, summarize insertions, deletions, and 
+      # From the base_change variable, summarize insertions, deletions, and
       # changes that are more than one base into their own groups.
       change = dplyr::case_when(
-      grepl("^-", base_change) ~ "insertion",
-      grepl("-$", base_change) ~ "deletion",
-      nchar(base_change) > 3 ~ "long_change",
-      TRUE ~ base_change
-    )) %>%
+        grepl("^-", base_change) ~ "insertion",
+        grepl("-$", base_change) ~ "deletion",
+        nchar(base_change) > 3 ~ "long_change",
+        TRUE ~ base_change
+      )
+    ) %>%
     dplyr::mutate(
-      # Create the mutation id based on the change variable as well as the 
-      # gene symbol, start position, and sample ID. 
+      # Create the mutation id based on the change variable as well as the
+      # gene symbol, start position, and sample ID.
       mutation_id = paste0(
         Hugo_Symbol, "_",
         change, "_",
@@ -173,7 +175,7 @@ set_up_variables <- function(maf = NULL) {
 }
 ```
 
-#### Summarize and compare `maf` objects function 
+#### Summarize and compare maf objects function 
 
 This function uses the maftools summary functions, `maftools::getGeneSummary` or
 `maftools::getSampleSummary`, to summarize and compare two maf objects.
@@ -183,30 +185,30 @@ information in the [`Variant_Classification` field in the original maf file](htt
 This field has the translation effect of the variant, e.g. "Frame_Shift_Del".
 
 ```{r}
-correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL, 
-                                    maf1_name = "maf1", maf2_name = "maf2", 
+correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL,
+                                    maf1_name = "maf1", maf2_name = "maf2",
                                     summarize_by = "gene", cor_method = "pearson") {
-  # Takes two maf files, summarizes them by gene or sample, combines them by 
+  # Takes two maf files, summarizes them by gene or sample, combines them by
   # a full join, and correlates the summaries using Pearson's and Spearman's
-  # correlations. 
+  # correlations.
   #
   # Args:
   #   maf1: a first maf object to summarize and compare to maf2
   #   maf2: a second maf object to summarize and compare to maf1
-  #   maf1_name: a character string that indicates what label you would like to 
-  #   use for maf1's data. 
-  #   maf2_name: a character string that indicates what label you would like to 
-  #   use for maf2's data. 
+  #   maf1_name: a character string that indicates what label you would like to
+  #   use for maf1's data.
+  #   maf2_name: a character string that indicates what label you would like to
+  #   use for maf2's data.
   #   summarize_by: a single character string signifying either "gene" or "sample"
-  #       This will indicate whether to summarize compare by gene or sample. 
+  #       This will indicate whether to summarize compare by gene or sample.
   #       "gene" will summarize both maf1 and maf2 using maftools::getGeneSummary
   #       "sample" will summarize both maf1 and maf2 using maftools::getSampleSummary
-  #   cor_method: a character string indicating the correlation method argument 
-  #               to be passed to "method" in cor.test() function 
+  #   cor_method: a character string indicating the correlation method argument
+  #               to be passed to "method" in cor.test() function
   # Returns:
-  #   a data.frame that contains the correlation r and p values for both 
+  #   a data.frame that contains the correlation r and p values for both
   #   maf1 and maf2 based on the numbers of variants of each class.
-  
+
   # Summarize the maf objects by the specified argument
   if (summarize_by == "gene") {
     maf1_sum <- maftools::getGeneSummary(maf1)
@@ -218,7 +220,7 @@ correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL,
     maf2_sum <- maftools::getSampleSummary(maf2)
     key <- "Tumor_Sample_Barcode"
   }
-  
+
   # Do a full join of both summaries.
   combine_df <- maf1_sum %>%
     dplyr::full_join(maf2_sum, by = key) %>%
@@ -233,30 +235,35 @@ correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL,
     # Gets rid of the ".x" and ".y" specifications of the column names
     dplyr::mutate(variable = gsub(".x$|.y$", "", variable)) %>%
     # Spreads the data based on the new dataset variable
-    tidyr::spread("dataset", "value")   
-    
+    tidyr::spread("dataset", "value")
+
   # Get correlations by each type of variant classification
   cors <- combine_df %>%
     dplyr::group_by(variable) %>%
     dplyr::summarize(cor = cor.test(
-      # This `eval(parse(text =` piece is so that cor.test will correlate the 
-      # numeric vectors not the character strings themselves 
-      eval(parse(text = maf1_name)), 
+      # This `eval(parse(text =` piece is so that cor.test will correlate the
+      # numeric vectors not the character strings themselves
+      eval(parse(text = maf1_name)),
       eval(parse(text = maf2_name)),
-      method = cor.method)$estimate) 
-  
+      method = cor.method
+    )$estimate)
+
   # Add the r values to the data labels
   combine_df <- combine_df %>%
-      dplyr::mutate(variable_w_cor = paste(variable, 
-                                            "r =", 
-                                            round(cors$cor, 3)))
-  
+    dplyr::mutate(variable_w_cor = paste(
+      variable,
+      "r =",
+      round(cors$cor, 3)
+    ))
+
   # Plot this as a facet_wrapped scatterplot
-  ggplot2::ggplot(combine_df, ggplot2::aes(x = eval(parse(text = maf1_name)),
-                                           y =  eval(parse(text = maf2_name)))) +
-    ggplot2::geom_hex(bins = 10) + 
-    ggplot2::facet_wrap(~ variable_w_cor, scales = "free") +
-    ggplot2::xlab(maf1_name) + 
+  ggplot2::ggplot(combine_df, ggplot2::aes(
+    x = eval(parse(text = maf1_name)),
+    y = eval(parse(text = maf2_name))
+  )) +
+    ggplot2::geom_hex(bins = 10) +
+    ggplot2::facet_wrap(~variable_w_cor, scales = "free") +
+    ggplot2::xlab(maf1_name) +
     ggplot2::ylab(maf2_name) +
     ggplot2::theme_classic() +
     ggplot2::theme(strip.text = ggplot2::element_text(size = 8))
@@ -365,32 +372,36 @@ maftools::plotTiTv(maftools::titv(mutect2))
 
 ## Compare number of mutations per gene
 
-We will our pre-made function, `correlate_maf_summaries`, to evaluate initial 
+We will our premade function, `correlate_maf_summaries`, to evaluate initial 
 correlations between the algorithms on the gene-level.
 These correlations across variant classifications are plotted as a barplot. 
 
 ```{r}
-correlate_maf_summaries(maf1 = strelka2, 
-                        maf2 = mutect2, 
-                        maf1_name = "strelka2", 
-                        maf2_name = "mutect2",
-                        summarize_by = "gene", 
-                        cor_method = "pearson")
+correlate_maf_summaries(
+  maf1 = strelka2,
+  maf2 = mutect2,
+  maf1_name = "strelka2",
+  maf2_name = "mutect2",
+  summarize_by = "gene",
+  cor_method = "pearson"
+)
 ```
 
 ## Compare number of mutations per sample
 
-Similar to above, we will use our pre-made function, `correlate_maf_summaries`, 
+Similar to above, we will use our premade function, `correlate_maf_summaries`, 
 to evaluate correlations between the algorithms on the sample-level.
 These correlations across variant classifications are plotted as a barplot. 
 
 ```{r}
-correlate_maf_summaries(maf1 = strelka2, 
-                        maf2 = mutect2, 
-                        maf1_name = "strelka2", 
-                        maf2_name = "mutect2",
-                        summarize_by = "sample", 
-                        cor_method = "pearson")
+correlate_maf_summaries(
+  maf1 = strelka2,
+  maf2 = mutect2,
+  maf1_name = "strelka2",
+  maf2_name = "mutect2",
+  summarize_by = "sample",
+  cor_method = "pearson"
+)
 ```
 
 ## Set up new variables
@@ -402,7 +413,7 @@ Let's set up Strelka2's variables first.
 strelka2_vaf <- set_up_variables(strelka2)
 
 # Take a look at the new variables:
-strelka2_vaf %>% 
+strelka2_vaf %>%
   dplyr::select(vaf, base_change, coding, change, mutation_id)
 ```
 
@@ -413,7 +424,7 @@ Now we will do the same for MuTect2.
 mutect2_vaf <- set_up_variables(mutect2)
 
 # Take a look at the new variables
-mutect2_vaf %>% 
+mutect2_vaf %>%
   dplyr::select(vaf, base_change, coding, change, mutation_id)
 ```
 
