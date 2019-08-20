@@ -219,7 +219,7 @@ correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL,
   # Do a full join of both summaries.
   maf1_sum %>%
     dplyr::full_join(maf2_sum, by = key) %>%
-    # Melt this data.frame so we can make it long format for ggplot2 use.
+    # Melt this data.frame so we can make it long format
     reshape2::melt(id = key) %>%
     dplyr::mutate(dataset = as.character(grepl(".x$", variable))) %>%
     # Make a new column that specifies what maf object the data is from
@@ -333,7 +333,11 @@ gene_cors <- correlate_maf_summaries(maf1 = strelka2,
                                      summarize_by = "gene")
 
 # Print out this data.frame
-gene_cors
+gene_cors %>%
+  ggplot2::ggplot(ggplot2::aes(x = variable, y = pearson.cor)) +
+  ggplot2::geom_bar(stat = "identity") +
+  ggplot2::theme_classic() +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1))  
 ```
 
 ## Compare number of mutations per sample
@@ -346,7 +350,11 @@ sample_cors <- correlate_maf_summaries(maf1 = strelka2,
                                        summarize_by = "sample")
 
 # Print out this data.frame
-sample_cors
+sample_cors %>%
+  ggplot2::ggplot(ggplot2::aes(x = variable, y = pearson.cor)) +
+  ggplot2::geom_bar(stat = "identity") +
+  ggplot2::theme_classic() +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1))  
 ```
 
 ## Plot Transition/Transversions
