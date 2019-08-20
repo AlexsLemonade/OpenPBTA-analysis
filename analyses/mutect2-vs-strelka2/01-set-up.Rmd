@@ -26,6 +26,7 @@ For both Strelka2 and MuTect2 data, the following variables are calculated
 and added into the combined dataset for analysis in [02-analyze-concordance.Rmd](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd).
 
 #### Variables created:  
+
 - `vaf` : Variant Allele Frequency = `(t_alt_count) / (t_ref_count + t_alt_count)`.  
 - `mutation_id`: Used to determine whether two variants calls are identical 
 in both datasets. 
@@ -37,6 +38,7 @@ deletions, insertions, and long (more than a SNV) as their own groups.
 - `coding`: Summarize the `BIOTYPE` variable for whether or not it is a coding gene.  
 
 #### The output files from this notebook:
+
 - `scratch/strelka2.RDS`  
 - `scratch/mutect2.RDS`  
 - `scratch/metadata_filtered_maf_samples.tsv`  
@@ -62,6 +64,11 @@ if (!("maftools" %in% installed.packages())) {
     install.packages("BiocManager")
   }
   BiocManager::install("maftools")
+}
+
+# Will need hexbin for the hex plot
+if (!("hexbin" %in% installed.packages())) {
+  install.packages("hexbin")
 }
 ```
 
@@ -91,6 +98,150 @@ if (!dir.exists("plots")) {
 }
 ```
 
+### Functions
+
+Set up the function that will create the new variables from the maf objects. 
+
+#### Description of variables 
+The function, `set_up_variables`, will calculate the following variables from a maf object:  
+- Calculate VAF for each. 
+The VAFs for each variation in each dataset are calculated by 
+`t_alt_count) / (t_ref_count + t_alt_count) `, as following the [code used in 
+`maftools`](https://github.com/PoisonAlien/maftools/blob/1d0270e35c2e0f49309eba08b62343ac0db10560/R/plot_vaf.R#L39)  
+- Create a `base_change` variable that indicates the exact change in bases.  
+- Create a `change` variable for each which indicates the `base_change`
+information but groups together deletions, insertions, and long (more than a 
+SNV) as their own groups.  
+- Make a mutation id by concatenating `Hugo_Symbol`, `change`, `Start_Position`,
+and `Tumor_Sample_Barcode` (the sample ID).   
+We will use this variable to determine whether two variants calls are identical 
+in both datasets. 
+- Summarize the `BIOTYPE` variable for whether or not it is a coding gene.   
+
+```{r}
+set_up_variables <- function(maf = NULL) {
+  # Creates these new variables from a maf object provided: VAF, mutation_id, 
+  # base_change, change, coding.
+  #
+  # Args:
+  #   maf: a maf object to create new variables from
+  #
+  # Returns:
+  #   a data.frame with all the original information in the `@data` part of the 
+  #   maf object but with these new variables: VAF, mutation_id, base_change, 
+  #   change, coding.
+
+  # Extract the data part of the maf object, put it through a dplyr pipe. 
+  df <- maf@data
+  df %>%
+    dplyr::mutate(
+      # Calculate the variant allele frequency
+      vaf = as.numeric(t_alt_count) / (as.numeric(t_ref_count) +
+                                         as.numeric(t_alt_count)),
+      # Create a base_change variable
+      base_change = paste0(Reference_Allele, ">", Allele),
+      
+      # Create a variable that notes whether the variant is in a 
+      # coding/non-coding region
+      coding = dplyr::case_when(
+        BIOTYPE != "protein_coding" ~ "non-coding",
+        TRUE ~ "protein_coding"
+      )
+    ) %>%
+    dplyr::mutate(
+      # From the base_change variable, summarize insertions, deletions, and 
+      # changes that are more than one base into their own groups.
+      change = dplyr::case_when(
+      grepl("^-", base_change) ~ "insertion",
+      grepl("-$", base_change) ~ "deletion",
+      nchar(base_change) > 3 ~ "long_change",
+      TRUE ~ base_change
+    )) %>%
+    dplyr::mutate(
+      # Create the mutation id based on the change variable as well as the 
+      # gene symbol, start position, and sample ID. 
+      mutation_id = paste0(
+        Hugo_Symbol, "_",
+        change, "_",
+        Start_Position, "_",
+        Tumor_Sample_Barcode
+      )
+    ) %>%
+    # Get rid of any variables that have completely NAs.
+    dplyr::select(-which(apply(is.na(.), 2, all)))
+}
+```
+
+#### Summarize and compare `maf` objects function 
+
+This function uses the maftools summary functions, `maftools::getGeneSummary` or
+`maftools::getSampleSummary`, to summarize and compare two maf objects.
+These `maftools` summary functions obtain the number of variants of each 
+classification type on either a gene or sample level (this is taked from the 
+information in the [`Variant_Classification` field in the original maf file](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/).)
+This field has the translation effect of the variant, e.g. "Frame_Shift_Del".
+
+```{r}
+correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL, 
+                                    maf1_name = "maf1", maf2_name = "maf2", 
+                                    summarize_by = "gene") {
+  # Takes two maf files, summarizes them by gene or sample, combines them by 
+  # a full join, and correlates the summaries using Pearson's and Spearman's
+  # correlations. 
+  #
+  # Args:
+  #   maf1: a first maf object to summarize and compare to maf2
+  #   maf2: a second maf object to summarize and compare to maf1
+  #   maf1_name: a character string that indicates what label you would like to 
+  #   use for maf1's data. 
+  #   maf2_name: a character string that indicates what label you would like to 
+  #   use for maf2's data. 
+  #   summarize_by: a single character string signifying either "gene" or "sample"
+  #       This will indicate whether to summarize compare by gene or sample. 
+  #       "gene" will summarize both maf1 and maf2 using maftools::getGeneSummary
+  #       "sample" will summarize both maf1 and maf2 using maftools::getSampleSummary
+  # Returns:
+  #   a data.frame that contains the correlation r and p values for both 
+  #   maf1 and maf2 based on the numbers of variants of each class.
+  
+  # Summarize the maf objects by the specified argument
+  if (summarize_by == "gene") {
+    maf1_sum <- maftools::getGeneSummary(maf1)
+    maf2_sum <- maftools::getGeneSummary(maf2)
+    key <- "Hugo_Symbol"
+  }
+  if (summarize_by == "sample") {
+    maf1_sum <- maftools::getSampleSummary(maf1)
+    maf2_sum <- maftools::getSampleSummary(maf2)
+    key <- "Tumor_Sample_Barcode"
+  }
+  
+  # Do a full join of both summaries.
+  maf1_sum %>%
+    dplyr::full_join(maf2_sum, by = key) %>%
+    # Melt this data.frame so we can make it long format for ggplot2 use.
+    reshape2::melt(id = key) %>%
+    dplyr::mutate(dataset = as.character(grepl(".x$", variable))) %>%
+    # Make a new column that specifies what maf object the data is from
+    dplyr::mutate(dataset = dplyr::recode(dataset,
+      `TRUE` = maf1_name,
+      `FALSE` = maf2_name,
+    )) %>%
+    # Gets rid of the ".x" and ".y" specifications of the column names
+    dplyr::mutate(variable = gsub(".x$|.y$", "", variable)) %>%
+    # Spreads the data based on the new dataset variable
+    tidyr::spread("dataset", "value") %>%  
+    
+    # Get correlations by each type of variant classification
+    dplyr::group_by(variable) %>%
+    dplyr::summarize(pearson.cor = cor.test(strelka2, mutect2, method = "pearson")$estimate,
+                     pearson.pval = cor.test(strelka2, mutect2, method = "pearson")$p.value,
+                     spearman.cor = cor.test(strelka2, mutect2, method = "spearman")$estimate,
+                     spearman.pval = cor.test(strelka2, mutect2, method = "pearson")$p.value) 
+}
+```
+
+
 ## Read in the metadata information
 
 Running `maftools::read.maf` takes a lot of computing power and time, so to 
@@ -109,12 +260,13 @@ mutect2_dir <- file.path(scratch_dir, "mutect2.RDS")
 
 ## Read in the Strelka2 and Mutect2 data
 
-Will read in the data as `maftools` objects from an RDS file, unless `maftools` 
-has not been run on them yet.
+We will read in the data as `maftools` objects from an RDS file, unless 
+`maftools` has not been run on them yet.
 We will use `metadata` as the `clinicalData` for the `maftools` object. 
  
-Note: If you trying to run the initialset up step in a Docker container, it will likely be 
-out of memory killed, unless you have ~50GB you can allot to Docker. 
+Note: If you trying to run the initial set up step in a Docker container, it 
+will likely be out of memory killed, unless you have ~50GB you can allocate to 
+Docker. 
 
 ```{r}
 # Get a vector of whether these exist
@@ -152,8 +304,7 @@ if (all(files_needed)) {
     dplyr::filter(Kids_First_Biospecimen_ID %in% c(strelka2_samples, mutect2_samples)) %>%
     dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
     dplyr::arrange() %>%
-    dplyr::mutate("Tumor_Sample_Barcode" = Kids_First_Biospecimen_ID) %>%
-    dplyr::select(-Kids_First_Biospecimen_ID) %>%
+    dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID) %>%
     readr::write_tsv(file.path(scratch_dir, "metadata_filtered_maf_samples.tsv"))
 
   # Read in original strelka file with maftools
@@ -172,89 +323,45 @@ if (all(files_needed)) {
 }
 ```
 
-## Get summaries and write them to TSVs 
-
-Get gene summaries and write to TSV files. 
+## Compare number of mutations per gene
 
 ```{r}
-strelka2_gene_sum <- maftools::getGeneSummary(strelka2) %>%
-  readr::write_tsv(file.path(
-    "results",
-    "strelka2_gene_summary.tsv"
-  ))
+gene_cors <- correlate_maf_summaries(maf1 = strelka2, 
+                                     maf2 = mutect2, 
+                                     maf1_name = "strelka2", 
+                                     maf2_name = "mutect2",
+                                     summarize_by = "gene")
 
-mutect2_gene_sum <- maftools::getGeneSummary(mutect2) %>%
-  readr::write_tsv(file.path(
-    "results",
-    "mutect2_gene_summary.tsv"
-  ))
+# Print out this data.frame
+gene_cors
 ```
 
-Get sample summaries and write to TSV files. 
+## Compare number of mutations per sample
 
 ```{r}
-strelka2_sample_sum <- maftools::getSampleSummary(strelka2) %>%
-  readr::write_tsv(file.path(
-    "results",
-    "strelka2_sample_summary.tsv"
-  ))
+sample_cors <- correlate_maf_summaries(maf1 = strelka2, 
+                                       maf2 = mutect2, 
+                                       maf1_name = "strelka2", 
+                                       maf2_name = "mutect2",
+                                       summarize_by = "sample")
 
-mutect2_sample_sum <- maftools::getSampleSummary(mutect2) %>%
-  readr::write_tsv(file.path(
-    "results",
-    "mutect2_sample_summary.tsv"
-  ))
-```
-
-## Number of mutations per gene correlation 
-
-```{r}
-combined_gene <- mutect2_gene_sum %>%
-  dplyr::full_join(strelka2_gene_sum, by = "Hugo_Symbol") %>%
-  reshape2::melt(id = "Hugo_Symbol") %>%
-  dplyr::mutate(dataset = as.character(grepl(".x$", variable))) %>%
-  dplyr::mutate(dataset = dplyr::recode(dataset,
-    `TRUE` = "mutect2",
-    `FALSE` = "strelka2"
-  )) %>%
-  dplyr::mutate(variable = gsub(".x$|.y$", "", variable)) %>%
-  tidyr::spread("dataset", "value")
-```
-
-Let's get a correlation test on the genes overall.
-
-```{r}
-cor.test(combined_gene$mutect2, combined_gene$strelka2, method = "spearman")
-cor.test(combined_gene$mutect2, combined_gene$strelka2, method = "pearson")
-```
-
-## Number of mutations per sample correlation. 
-
-```{r}
-combined_sample <- mutect2_sample_sum %>%
-  dplyr::full_join(strelka2_sample_sum, by = "Tumor_Sample_Barcode") %>%
-  reshape2::melt(id = "Tumor_Sample_Barcode") %>%
-  dplyr::mutate(dataset = as.character(grepl(".x$", variable))) %>%
-  dplyr::mutate(dataset = dplyr::recode(dataset,
-    `TRUE` = "mutect2",
-    `FALSE` = "strelka2"
-  )) %>%
-  dplyr::mutate(variable = gsub(".x$|.y$", "", variable)) %>%
-  tidyr::spread("dataset", "value")
-```
-
-Let's get a correlation test on the genes overall.
-
-```{r}
-cor.test(combined_sample$mutect2, combined_sample$strelka2, method = "spearman")
-cor.test(combined_sample$mutect2, combined_sample$strelka2, method = "pearson")
+# Print out this data.frame
+sample_cors
 ```
 
 ## Plot Transition/Transversions
 
+These built in maftools functions plot the overall presence of transitions and 
+transversions and is recommended by the [maftools vignette](https://bioconductor.org/packages/devel/bioc/vignettes/maftools/inst/doc/maftools.html#74_transition_and_transversions) as a method of obtaining an overall base change
+summary. 
+
+#### Strelka2 transition/transversion plot.
+
 ```{r}
 maftools::plotTiTv(maftools::titv(strelka2))
 ```
+
+#### MuTect2 transition/transversion plot.
 
 ```{r}
 maftools::plotTiTv(maftools::titv(mutect2))
@@ -262,49 +369,11 @@ maftools::plotTiTv(maftools::titv(mutect2))
 
 ## Set up new variables
 
-Here we will make these new variables for both MuTect2 and Strelka2 dataset:
-- Calculate VAF for each. 
-The VAFs for each variation in each dataset are calculated by 
-`t_alt_count) / (t_ref_count + t_alt_count) `, as following the [code used in 
-`maftools`](https://github.com/PoisonAlien/maftools/blob/master/R/plot_vaf.R)  
-- Create a `base_change` variable that indicates the exact change in bases.  
-- Create a `change` variable for each which indicates the `base_change`
-information but groups together deletions, insertions, and long (more than a 
-SNV) as their own groups.  
-- Make a mutation id by concatenating `Hugo_Symbol`, `change`, `Start_Position`,
-and `Tumor_Sample_Barcode` (the sample ID).   
-We will use this variable to determine whether two variants calls are identical 
-in both datasets. 
-- Summarize the `BIOTYPE` variable for whether or not it is a coding gene.   
-
 Let's set up Strelka2's variables first. 
 
 ```{r}
-strelka2_vaf <- strelka2@data %>%
-  dplyr::mutate(
-    vaf = as.numeric(t_alt_count) / (as.numeric(t_ref_count) +
-      as.numeric(t_alt_count)),
-    base_change = paste0(Reference_Allele, ">", Allele),
-    coding = dplyr::case_when(
-      BIOTYPE != "protein_coding" ~ "non-coding",
-      TRUE ~ "protein_coding"
-    )
-  ) %>%
-  dplyr::mutate(change = dplyr::case_when(
-    grepl("^-", base_change) ~ "insertion",
-    grepl("-$", base_change) ~ "deletion",
-    nchar(base_change) > 3 ~ "long_change",
-    TRUE ~ base_change
-  )) %>%
-  dplyr::mutate(
-    mutation_id = paste0(
-      Hugo_Symbol, "_",
-      change, "_",
-      Start_Position, "_",
-      Tumor_Sample_Barcode
-    )
-  ) %>%
-  dplyr::select(-which(apply(is.na(.), 2, all)))
+# Use the premade function to create our new variables
+strelka2_vaf <- set_up_variables(strelka2)
 
 # Take a look at this df
 strelka2_vaf
@@ -313,31 +382,8 @@ strelka2_vaf
 Now we will do the same for MuTect2.
 
 ```{r}
-mutect2_vaf <- mutect2@data %>%
-  dplyr::mutate(
-    vaf = as.numeric(t_alt_count) / (as.numeric(t_ref_count) +
-      as.numeric(t_alt_count)),
-    base_change = paste0(Reference_Allele, ">", Allele),
-    coding = dplyr::case_when(
-      BIOTYPE != "protein_coding" ~ "non-coding",
-      TRUE ~ "protein_coding"
-    )
-  ) %>%
-  dplyr::mutate(change = dplyr::case_when(
-    grepl("^-", base_change) ~ "insertion",
-    grepl("-$", base_change) ~ "deletion",
-    nchar(base_change) > 3 ~ "long_change",
-    TRUE ~ base_change
-  )) %>%
-  dplyr::mutate(
-    mutation_id = paste0(
-      Hugo_Symbol, "_",
-      change, "_",
-      Start_Position, "_",
-      Tumor_Sample_Barcode
-    )
-  ) %>%
-  dplyr::select(-which(apply(is.na(.), 2, all)))
+# Use the premade function to create our new variables
+mutect2_vaf <- set_up_variables(mutect2)
 
 # Take a look at this df
 mutect2_vaf
@@ -345,7 +391,8 @@ mutect2_vaf
 
 ## Combine MuTect2 and Strelka2 data.frames into one data.frame
 
-Join these datasets based on the `mutation_id` created above. 
+Join these datasets based on the `mutation_id` created by the `set_up_variables`
+function. 
 Save to a TSV file to be used in the subsequent notebook.
 
 ```{r}
