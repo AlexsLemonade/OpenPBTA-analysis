@@ -174,4 +174,36 @@ Files that are intermediate, which means that they are useful within an analysis
 
 ### Continuous Integration (CI)
 
-### Adding Analyses to CI
+We continuous integration (CI) to ensure that all analysis code will execute and that the project Docker image will build if there are any changes introduced to the [`Dockerfile`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/Dockerfile).
+
+We have put together files specifically for the purpose of CI that contain the full features in a data file, but only for a small subset of samples. 
+(You can see how this was done by viewing [this notebook](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/create-subset-files/01-create_subset_files.nb.html).)
+We use the subset files to cut down on the computational resources and time required for testing.
+Provided that your analytical code points to the symlinks in the `data/` directory per [the instructions above](#how-to-add-an-analysis), adding the analysis to the CI will run on these subset files (see below).
+Note that if you hardcode sample names in your analytical code and those samples are not present in the subset files, this may cause errors.
+
+#### Adding Analyses to CI
+
+For an analysis to be run in CI, it must be added to the Circle CI configuration file, [`.circleci/config.yml`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/.circleci/config.yml). 
+A new analysis should be added as the last step of the `run_analyses` job.
+
+Here is an example analysis that simply lists the contents of the data directory that contains the files for the test:
+
+```
+      - run:
+          name: List Data Directory Contents
+          command: ./scripts/run_in_ci.sh ls data/testing
+```
+
+Using `./scripts/run_in_ci.sh` allows you to run your analyses in the project Docker container.
+
+If you wanted to add running an Rscript called `cluster-samples.R` that was in an analysis folder called `gene-expression-structure`. 
+You would add this script to continuous integration with:
+
+```
+      - run:
+          name: Cluster Samples
+          command: ./scripts/run_in_ci.sh Rscript analyses/gene-expression-structure/cluster-samples.R
+```
+
+This would run the `cluster-samples.R` on the subset files that are specifically designed to be used for CI.
