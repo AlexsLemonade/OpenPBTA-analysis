@@ -87,7 +87,7 @@ Users performing analyses, should **always** refer to the symlinks in the `data/
 
 We build our project Docker image from a versioned [`tidyverse`](https://hub.docker.com/r/rocker/tidyverse) image from the [Rocker Project](https://www.rocker-project.org/) (v3.6.0).
 
-To add dependencies that are required to your analysis to the project Docker image, you
+To add dependencies that are required for your analysis to the project Docker image, you
 must alter the project [`Dockerfile`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/Dockerfile).
 Note: R packages installed on this image will be installed from an [MRAN snapshot](https://mran.microsoft.com/documents/rro/reproducibility#reproducibility) corresponding to the last day that R 3.6.0 was the most recent release ([ref](https://hub.docker.com/r/rocker/tidyverse)).
 
@@ -95,7 +95,7 @@ If you need assistance adding a dependency to the Dockerfile, [file a new issue 
 
 #### Development in the Project Docker Container
 
-The most recent version of the project Docker image, which is pushed to Docker Hub after a pull request gets merged into the master branch, can be obtain via the command line with:
+The most recent version of the project Docker image, which is pushed to Docker Hub after a pull request gets merged into the master branch, can be obtained via the command line with:
 
 ```
 docker pull ccdlopenpbta/open-pbta:latest
