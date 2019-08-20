@@ -197,8 +197,7 @@ Here is an example analysis that simply lists the contents of the data directory
 
 Using `./scripts/run_in_ci.sh` allows you to run your analyses in the project Docker container.
 
-If you wanted to add running an Rscript called `cluster-samples.R` that was in an analysis folder called `gene-expression-structure`. 
-You would add this script to continuous integration with:
+If you wanted to add running an Rscript called `cluster-samples.R` that was in an analysis folder called `gene-expression-structure`, you would add this script to continuous integration with:
 
 ```
       - run:
