@@ -81,10 +81,41 @@ We noticed ControlFreeC does not properly handle aneuploidy well for a subset of
 
 ## How to Add an Analysis
 
-Users performing analyses, should always refer to the symlinks in the `data/` directory and not files within the release folder, as an updated release may be produced before a publication is prepared.
+Users performing analyses, should **always** refer to the symlinks in the `data/` directory and not files within the release folder, as an updated release may be produced before a publication is prepared.
 
-### Docker Container
+### Docker Image
 
+We build our project Docker image from a versioned [`tidyverse`](https://hub.docker.com/r/rocker/tidyverse) image from the [Rocker Project](https://www.rocker-project.org/) (v3.6.0).
+
+To add dependencies that are required to your analysis to the project Docker image, you
+must alter the project [`Dockerfile`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/Dockerfile).
+Note: R packages installed on this image will be installed from an [MRAN snapshot](https://mran.microsoft.com/documents/rro/reproducibility#reproducibility) corresponding to the last day that R 3.6.0 was the most recent release ([ref](https://hub.docker.com/r/rocker/tidyverse)).
+
+If you need assistance adding a dependency to the Dockerfile, [file a new issue on this repository](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/new) to request help.
+
+#### Development in the Project Docker Container
+
+The most recent version of the project Docker image, which is pushed to Docker Hub after a pull request gets merged into the master branch, can be obtain via the command line with:
+
+```
+docker pull ccdlopenpbta/open-pbta:latest
+```
+
+##### RStudio
+
+Using `rocker/tidyverse:3.6.0` as our base image allows for development via RStudio in the project Docker container. 
+If you'd like to develop in this manner, you may do so by running the following and changing `<password>` to a password of you choosing at the command line:
+
+```
+docker run -e PASSWORD=<password> -p 8787:8787 ccdlopenpbta/open-pbta:latest
+```
+
+You can change the volume that the Docker container points to either via the [Kitematic GUI](https://docs.docker.com/kitematic/userguide/) or the [`--volume` flag](https://docs.docker.com/storage/volumes/) to `docker run`.
+
+Once you've set the volume, you can navigate to `localhost:8787` in your browser if you are a Linux or Mac OS X user. 
+The username will for login will be `rstudio` and the password will be whatever password you set with the `docker run` command above.
+
+If you are a new user, you may find [these instructions](https://github.com/AlexsLemonade/RNA-Seq-Exercises/blob/master/docker-pull.md) for a setting up a different Docker container or [this guide](https://www.andrewheiss.com/blog/2017/04/27/super-basic-practical-guide-to-docker-and-rstudio/) from Andrew Heiss helpful.
 
 ### Folder Structure
 
