@@ -32,6 +32,5 @@ if [ $finished != 0 ] && [ $attempts -ge 3 ]; then
 fi
 
 docker run \
-       --user user \
-       --volume "$(pwd)/data":/home/user/data \
+       --volume "$(pwd)":/rocker-build/ \
        -it "open-pbta" "$@"
