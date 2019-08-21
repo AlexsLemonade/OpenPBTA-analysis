@@ -11,9 +11,9 @@ RUN apt-get install dialog apt-utils -y
 
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
-    --deps TRUE \
-    d3r \      # This is needed to convert a data.frame into a d3.js hierarchy object
     treemap \  # This is needed to create a still treemap
+    && --deps TRUE \
+    d3r \      # This is needed to convert a data.frame into a d3.js hierarchy object
     mapview \  # This is needed to create HTML outputs of the interactive plots
     gridExta \ # This is needed to arrange multiple plots into a grid 
     R.utils
