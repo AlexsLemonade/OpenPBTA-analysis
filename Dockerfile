@@ -12,7 +12,6 @@ RUN apt-get install dialog apt-utils -y
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
     --deps TRUE \
-    readr \    # This is needed to read in the dataset files
     d3r \      # This is needed to convert a data.frame into a d3.js hierarchy object
     treemap \  # This is needed to create a still treemap
     mapview \  # This is needed to create HTML outputs of the interactive plots
@@ -20,7 +19,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     R.utils
 
 # This is needed to create the interactive pie chart
-RUN R -e "devtools::install_github('timelyportfolio/sunburstR', dependencies = TRUE)"
+RUN R -e "devtools::install_github('timelyportfolio/sunburstR', ref = 'd40d7ed71ee87ca4fbb9cb8b7cf1e198a23605a9', dependencies = TRUE)"
 
 # This is needed to create the interactive treemap
-RUN R -e "devtools::install_github('timelyportfolio/d3treeR', dependencies = TRUE)"
+RUN R -e "devtools::install_github('timelyportfolio/d3treeR', ref = '0eaba7f1c6438e977f8a5c082f1474408ac1fd80', dependencies = TRUE)"
