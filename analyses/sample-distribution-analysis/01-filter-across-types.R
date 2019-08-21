@@ -25,7 +25,7 @@ if (!dir.exists("plots")) {
 
 # Read in dataset
 df2 <- data.frame(readr::read_tsv(
-  file.path("..", "..", "data", "pbta-histologies.tsv")
+  file.path("data", "pbta-histologies.tsv")
 ))
 
 # Remove na's
