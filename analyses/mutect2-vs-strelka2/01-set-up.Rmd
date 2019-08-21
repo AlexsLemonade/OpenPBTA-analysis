@@ -242,13 +242,13 @@ correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL,
   # Get correlations by each type of variant classification
   cors <- combine_df %>%
     dplyr::group_by(variable) %>%
-    dplyr::summarize(cor = cor.test(
+    dplyr::summarize(cor = cor(
       # This `eval(parse(text =` piece is so that cor.test will correlate the
       # numeric vectors not the character strings themselves
       eval(parse(text = maf1_name)),
       eval(parse(text = maf2_name)),
       method = cor_method
-    )$estimate)
+    ))
 
   # Add the r values to the data labels
   combine_df <- combine_df %>%
