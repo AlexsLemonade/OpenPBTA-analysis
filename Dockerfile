@@ -14,7 +14,8 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
     --deps TRUE \
-    hexbin
+    hexbin \
+    R.utils
 
 # Use maftools for reading MAF files
 RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
