@@ -6,21 +6,35 @@ RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 RUN apt-get install dialog apt-utils -y
 
 #### Please install your dependencies here
-
 #### Add a comment to indicate what analysis it is required for
 
+# Required for installing mapview for interactive sample distribution plots
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
-    treemap \  # This is needed to create a still treemap
-    mapview \  # This is needed to create HTML outputs of the interactive plots
-    R.utils
+    libgdal-dev \
+    libudunits2-dev
 
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+# Required forinteractive sample distribution plots
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
     && install2.r --error \
     --deps TRUE \
-    d3r \      # This is needed to convert a data.frame into a d3.js hierarchy object
-    gridExta \ # This is needed to arrange multiple plots into a grid 
-    R.utils
+    gdalUtils \
+    leafem \
+    lwgeom \
+    stars \
+    leafpop \
+    plainview \
+    sf \
+    # This is needed to create HTML outputs of the interactive plots
+    mapview
+
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
+    && install2.r --error \
+    --deps TRUE \
+    R.utils \
+    # This is needed to create a still treemap
+    treemap \
+    # This is needed to convert a data.frame into a d3.js hierarchy object
+    d3r
 
 # This is needed to create the interactive pie chart
 RUN R -e "devtools::install_github('timelyportfolio/sunburstR', ref = 'd40d7ed71ee87ca4fbb9cb8b7cf1e198a23605a9', dependencies = TRUE)"
