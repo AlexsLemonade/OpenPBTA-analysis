@@ -68,6 +68,11 @@ if (!("maftools" %in% installed.packages())) {
 if (!("hexbin" %in% installed.packages())) {
   install.packages("hexbin")
 }
+
+# Will need R.utils for zipping up the results file
+if (!("hexbin" %in% installed.packages())) {
+  install.packages("hexbin")
+}
 ```
 
 Get `magrittr` pipe
@@ -242,7 +247,7 @@ correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL,
       # numeric vectors not the character strings themselves
       eval(parse(text = maf1_name)),
       eval(parse(text = maf2_name)),
-      method = cor.method
+      method = cor_method
     )$estimate)
 
   # Add the r values to the data labels
