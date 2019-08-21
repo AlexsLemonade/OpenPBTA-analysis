@@ -243,7 +243,7 @@ correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL,
   cors <- combine_df %>%
     dplyr::group_by(variable) %>%
     dplyr::summarize(cor = cor(
-      # This `eval(parse(text =` piece is so that cor.test will correlate the
+      # This `eval(parse(text =` piece is so that `cor` will correlate the
       # numeric vectors not the character strings themselves
       eval(parse(text = maf1_name)),
       eval(parse(text = maf2_name)),
@@ -268,7 +268,7 @@ correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL,
     ggplot2::xlab(maf1_name) +
     ggplot2::ylab(maf2_name) +
     ggplot2::theme_classic() +
-    ggplot2::theme(strip.text = ggplot2::element_text(size = 8))
+    ggplot2::theme(strip.text = ggplot2::element_text(size = 5))
 }
 ```
 
@@ -357,26 +357,26 @@ if (all(files_needed)) {
 ## Plot Transition/Transversions
 
 These built in maftools functions plot the overall presence of transitions and 
-transversions and is recommended by the [maftools vignette](https://bioconductor.org/packages/devel/bioc/vignettes/maftools/inst/doc/maftools.html#74_transition_and_transversions) as a method of obtaining an overall base change
-summary. 
+transversions and is recommended by the [maftools vignette](https://bioconductor.org/packages/devel/bioc/vignettes/maftools/inst/doc/maftools.html#74_transition_and_transversions) as a method of obtaining an overall base 
+change summary. 
 
 #### Strelka2 transition/transversion plot.
 
 ```{r}
-maftools::plotTiTv(maftools::titv(strelka2), plotType = 'box')
+maftools::plotTiTv(maftools::titv(strelka2, plot = FALSE), plotType = 'box')
 ```
 
 #### MuTect2 transition/transversion plot.
 
 ```{r}
-maftools::plotTiTv(maftools::titv(mutect2), plotType = 'box')
+maftools::plotTiTv(maftools::titv(mutect2, plot = FALSE), plotType = 'box')
 ```
 
 ## Compare number of mutations per gene
 
 We will our use our premade function, `correlate_maf_summaries`, to evaluate 
 initial correlations between the algorithms on the gene-level.
-These correlations across variant classifications are plotted as a barplot. 
+These correlations are shown across variant classifications. 
 
 ```{r}
 # Correlate the gene summaries
@@ -397,7 +397,7 @@ ggplot2::ggsave(file.path("plots", "gene_summary_cor_strelka-vs-mutect2.pdf"))
 
 Similar to above, we will use our premade function, `correlate_maf_summaries`, 
 to evaluate correlations between the algorithms on the sample-level.
-These correlations across variant classifications are plotted as a barplot. 
+These correlations are shown across variant classifications. 
 
 ```{r}
 # Correlate the sample summaries
