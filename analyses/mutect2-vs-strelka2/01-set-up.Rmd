@@ -27,11 +27,9 @@ and added into the combined dataset for analysis in [02-analyze-concordance.Rmd]
 
 #### Variables created:  
 
-- `vaf` : Variant Allele Frequency = `(t_alt_count) / (t_ref_count + t_alt_count)`.  
+- `vaf` : Variant Allele Frequency. 
 - `mutation_id`: Used to determine whether two variants calls are identical 
 in both datasets. 
-It is a concatenation of: `Hugo_Symbol`, `change`, `Start_Position`, and 
-`Tumor_Sample_Barcode` (the sample ID).   
 - `base_change`: variable that indicates the exact change in bases (e.g. 'T>C').  
 - `change`: indicates the `base_change` information but groups together 
 deletions, insertions, and long (more than a SNV) as their own groups.  
@@ -42,8 +40,8 @@ deletions, insertions, and long (more than a SNV) as their own groups.
 - `scratch/strelka2.RDS`  
 - `scratch/mutect2.RDS`  
 - `scratch/metadata_filtered_maf_samples.tsv`  
-- `analyses/mutect2-vs-strelka2/plots/sample_cor_mutect2_vs_strelka2.pdf`
-- `analyses/mutect2-vs-strelka2/plots/sample_cor_mutect2_vs_strelka2.pdf`
+- `analyses/mutect2-vs-strelka2/plots/gene_summary_cor_strelka-vs-mutect2.pdf`  
+- `analyses/mutect2-vs-strelka2/plots/sample_summary_cor_strelka-vs-mutect2.pdf`  
 - `analyses/mutect2-vs-strelka2/results/combined_results.tsv`  
 
 ## Usage
@@ -134,8 +132,7 @@ set_up_variables <- function(maf = NULL) {
   #   change, coding.
 
   # Extract the data part of the maf object, put it through a dplyr pipe.
-  df <- maf@data
-  df %>%
+  maf@data %>%
     dplyr::mutate(
       # Calculate the variant allele frequency
       vaf = as.numeric(t_alt_count) / (as.numeric(t_ref_count) +
@@ -189,8 +186,8 @@ correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL,
                                     maf1_name = "maf1", maf2_name = "maf2",
                                     summarize_by = "gene", cor_method = "pearson") {
   # Takes two maf files, summarizes them by gene or sample, combines them by
-  # a full join, and correlates the summaries using Pearson's and Spearman's
-  # correlations.
+  # a full join, and correlates the variant classification summaries using 
+  # Pearson's or Spearman's correlations.
   #
   # Args:
   #   maf1: a first maf object to summarize and compare to maf2
@@ -256,7 +253,7 @@ correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL,
       round(cors$cor, 3)
     ))
 
-  # Plot this as a facet_wrapped scatterplot
+  # Plot this as a facet_wrapped scatterplot with the r values in the label
   ggplot2::ggplot(combine_df, ggplot2::aes(
     x = eval(parse(text = maf1_name)),
     y = eval(parse(text = maf2_name))
@@ -372,11 +369,12 @@ maftools::plotTiTv(maftools::titv(mutect2), plotType = 'box')
 
 ## Compare number of mutations per gene
 
-We will our premade function, `correlate_maf_summaries`, to evaluate initial 
-correlations between the algorithms on the gene-level.
+We will our use our premade function, `correlate_maf_summaries`, to evaluate 
+initial correlations between the algorithms on the gene-level.
 These correlations across variant classifications are plotted as a barplot. 
 
 ```{r}
+# Correlate the gene summaries
 correlate_maf_summaries(
   maf1 = strelka2,
   maf2 = mutect2,
@@ -385,6 +383,9 @@ correlate_maf_summaries(
   summarize_by = "gene",
   cor_method = "pearson"
 )
+
+# Save to a PDF
+ggplot2::ggsave(file.path("plots", "gene_summary_cor_strelka-vs-mutect2.pdf"))
 ```
 
 ## Compare number of mutations per sample
@@ -394,6 +395,7 @@ to evaluate correlations between the algorithms on the sample-level.
 These correlations across variant classifications are plotted as a barplot. 
 
 ```{r}
+# Correlate the sample summaries
 correlate_maf_summaries(
   maf1 = strelka2,
   maf2 = mutect2,
@@ -402,6 +404,9 @@ correlate_maf_summaries(
   summarize_by = "sample",
   cor_method = "pearson"
 )
+
+# Save to a PDF
+ggplot2::ggsave(file.path("plots", "sample_summary_cor_strelka-vs-mutect2.pdf"))
 ```
 
 ## Set up new variables
