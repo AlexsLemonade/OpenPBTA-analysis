@@ -70,8 +70,8 @@ if (!("hexbin" %in% installed.packages())) {
 }
 
 # Will need R.utils for zipping up the results file
-if (!("hexbin" %in% installed.packages())) {
-  install.packages("hexbin")
+if (!("R.utils" %in% installed.packages())) {
+  install.packages("R.utils")
 }
 ```
 
