@@ -2,12 +2,28 @@
 # of key variables within the dataset.
 #
 # Chante Bethell for CCDL 2019
+# 
+# #### USAGE
+# This script is intended to be run via the command line from the top directory of the repository as follows:
+# Rscript analyses/sample-distribution-analysis/01-filter-across-types.R
 
 # magrittr pipe
 `%>%` <- dplyr::`%>%`
 
 # Function to filter based on primary_site 
 location_fn <- function(location) {
+  # Given the name of a primary site, create a vector containing the disease 
+  # types expressed within the primary site.
+  # 
+  # Note: the disease types found at all instances of the location substring 
+  #       will be included 
+  #
+  # Args:
+  #   location: the name of a primary site found within the dataset
+  #
+  # Returns:
+  #   disease_type_vector: the vector of disease types expressed at the 
+  #                        named primary site
   disease_type_vector <- brain_location %>%
     dplyr::arrange(dplyr::desc(n)) %>%
     dplyr::filter(stringr::str_detect(primary_site, location)) %>%
@@ -15,12 +31,15 @@ location_fn <- function(location) {
   unique(disease_type_vector)
 }
 
+# Define the file.path to output directories
+outputDir <- file.path("analyses", "sample-distribution-analysis")
+
 # Create directories to hold the output.
-if (!dir.exists("results")) {
-  dir.create("results")
+if (!dir.exists(file.path(outputDir, "results"))) {
+  dir.create(file.path(outputDir, "results"))
 }
-if (!dir.exists("plots")) {
-  dir.create("plots")
+if (!dir.exists(file.path(outputDir, "plots"))) {
+  dir.create(file.path(outputDir, "plots"))
 }
 
 # Read in dataset
@@ -52,7 +71,7 @@ disease_expression$disease_type_new <- with(disease_expression,
 
 # Write to tsv file
 readr::write_tsv(disease_expression,
-                 file.path("results",
+                 file.path(outputDir, "results",
                            "disease_expression.tsv"))
 
 # Create a bar plot of sample distribution across cancer types
@@ -63,19 +82,19 @@ gg_types <- disease_expression %>%
   ggplot2::labs(x = "Cancer Types", y = "Count",
                 title = "Sample Distribution Across Cancer Types") +
   ggplot2::scale_y_continuous(breaks = seq(0, 500, by = 100)) +
-  ggplot2::theme(axis.text.x = element_text(
+  ggplot2::theme(axis.text.x = ggplot2::element_text(
     angle = 75,
     hjust = 1,
     size = 8
   ),
-  panel.grid = element_blank()) +
+  panel.grid = ggplot2::element_blank()) +
   ggplot2::geom_text(nudge_y = 6.5, size = 2,
                      ggplot2::aes(label = paste0(disease_expression$percent)))
 
 # Save plot
 ggplot2::ggsave(
   gg_types,
-  file = file.path("plots", "distribution_across_cancer_types.pdf"),
+  file = file.path(outputDir, "plots", "distribution_across_cancer_types.pdf"),
   width = 22,
   height = 10
 )
@@ -139,5 +158,5 @@ primary_sites_counts <- reshape2::melt(cancer_types_counts,
 
 # Write to tsv file
 readr::write_tsv(primary_sites_counts,
-                 file.path("results", "primary_sites_counts.tsv"))
+                 file.path(outputDir, "results", "primary_sites_counts.tsv"))
 

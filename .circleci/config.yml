@@ -16,7 +16,7 @@ jobs:
           command: ./scripts/run_in_ci.sh ls data/testing
           
       - run:
-          name: Multilayer Histology Plots
+          name: Filter Across Types
           command: ./scripts/run_in_ci.sh Rscript analyses/sample-distribution-analysis/01-filter-across-types.R
 
     #### Add your analysis here ####
