@@ -33,13 +33,15 @@ location_fn <- function(location) {
 
 # Define the file.path to output directories
 outputDir <- file.path("analyses", "sample-distribution-analysis")
+results_dir <- file.path(outputDir, "results")
+plots_dir <- file.path(outputDir, "plots")
 
 # Create directories to hold the output.
-if (!dir.exists(file.path(outputDir, "results"))) {
-  dir.create(file.path(outputDir, "results"))
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
 }
-if (!dir.exists(file.path(outputDir, "plots"))) {
-  dir.create(file.path(outputDir, "plots"))
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir)
 }
 
 # Read in dataset
@@ -71,7 +73,7 @@ disease_expression$disease_type_new <- with(disease_expression,
 
 # Write to tsv file
 readr::write_tsv(disease_expression,
-                 file.path(outputDir, "results",
+                 file.path(results_dir,
                            "disease_expression.tsv"))
 
 # Create a bar plot of sample distribution across cancer types
@@ -94,7 +96,7 @@ gg_types <- disease_expression %>%
 # Save plot
 ggplot2::ggsave(
   gg_types,
-  file = file.path(outputDir, "plots", "distribution_across_cancer_types.pdf"),
+  file = file.path(plots_dir, "distribution_across_cancer_types.pdf"),
   width = 22,
   height = 10
 )
@@ -158,5 +160,5 @@ primary_sites_counts <- reshape2::melt(cancer_types_counts,
 
 # Write to tsv file
 readr::write_tsv(primary_sites_counts,
-                 file.path(outputDir, "results", "primary_sites_counts.tsv"))
+                 file.path(results_dir, "primary_sites_counts.tsv"))
 
