@@ -14,8 +14,3 @@ jobs:
       - run:
           name: Print the Current Time
           command: date
-          
-      - run:
-          name: Multilayer Histology Plots
-          command: ./scripts/run_in_ci.sh Rscript analyses/sample-distribution-analysis/02-multilayer-plots.R
-          
