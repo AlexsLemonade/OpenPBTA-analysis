@@ -5,15 +5,21 @@
 # visualizations.
 #
 # Chante Bethell for CCDL 2019
+#
+# #### USAGE
+# This script is intended to be run via the command line from the top directory of the repository as follows:
+# Rscript analyses/sample-distribution-analysis/02-multilayer-plots.R
 
-# Set path to plots directory
-outputDir <- "plots"
+# Set paths to output directories
+outputDir <- file.path("analyses", "sample-distribution-analysis")
+results_dir <- file.path(outputDir, "results")
+plots_dir <- file.path(outputDir, "plots")
 
 # magrittr pipe
 `%>%` <- dplyr::`%>%`
 
 # Read in dataset 
-df2 <- readr::read_tsv(file.path("..", "..", "data",
+df2 <- readr::read_tsv(file.path("data",
                                  "pbta-histologies.tsv"))
 
 # Create a colorblind-friendly color vector
@@ -41,7 +47,7 @@ final_df <- df2 %>%
   as.data.frame()
 
 # Save to tsv file
-readr::write_tsv(final_df, file.path("results", "plots_df.tsv"))
+readr::write_tsv(final_df, file.path(results_dir, "plots_df.tsv"))
 
 # Create a treemap 
 tm <-
@@ -80,8 +86,8 @@ sun_plot <-
 p <- sunburstR::sund2b(tmnest, colors = color, valueField = "vSize")
 
 # Create HTML outputs for the interactive plots 
-mapview::mapshot(interactive_tm, url = file.path(outputDir, "histology-treemap.html"))
-mapview::mapshot(p, url = file.path(outputDir, "histology-pie.html"))
+mapview::mapshot(interactive_tm, url = file.path(plots_dir, "histology-treemap.html"))
+mapview::mapshot(p, url = file.path(plots_dir, "histology-pie.html"))
 
 
 
