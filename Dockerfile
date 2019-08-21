@@ -12,6 +12,9 @@ RUN apt-get install dialog apt-utils -y
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
     treemap \  # This is needed to create a still treemap
+
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    && install2.r --error \
     --deps TRUE \
     d3r \      # This is needed to convert a data.frame into a d3.js hierarchy object
     treemap \  # This is needed to create a still treemap
