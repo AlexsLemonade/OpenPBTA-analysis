@@ -19,7 +19,7 @@ The structure of this folder is as follows:
 sample-distribution-analysis
 ├── README.md
 ├── 01-filter-across-types.R
-├── 02-multilayer-pie.R
+├── 02-multilayer-plots.R
 ├── plots
 │   ├── distribution_across_cancer_types.pdf
 │   ├── histology-pie.html
