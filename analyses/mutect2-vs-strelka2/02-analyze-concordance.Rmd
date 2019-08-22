@@ -337,6 +337,15 @@ barplot_maf_var(
 )
 ```
 
+### Percent of estimated clinical effect
+
+```{r}
+barplot_maf_var(
+  df = vaf_df, variable_name = "PolyPhen_category", filter_cutoff = 0,
+  as_percent = TRUE, omit.na = TRUE
+)
+```
+
 Session Info: 
 
 ```{r}
