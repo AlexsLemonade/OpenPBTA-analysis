@@ -57,12 +57,12 @@ tm <-
     vSize = "counter",
     vColor = color,
     draw = TRUE
-  )
+  )$tm
 
 # Convert the tm data.frame into a d3.js hierarchy object which is needed
 # for the sund2b plot 
 tmnest <-
-  d3r::d3_nest(tm$tm[, c("level1", "level2", "level3", "vSize")],
+  d3r::d3_nest(tm[, c("level1", "level2", "level3", "vSize")],
                value_cols = c("vSize"))
 
 # Create an interactive treemap 
