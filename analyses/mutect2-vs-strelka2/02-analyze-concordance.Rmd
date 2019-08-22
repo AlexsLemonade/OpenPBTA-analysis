@@ -83,6 +83,11 @@ if (!("R.utils" %in% installed.packages())) {
   install.packages("R.utils")
 }
 
+# Will need VennDiagrams
+if (!("VennDiagrams" %in% installed.packages())) {
+  install.packages("VennDiagrams")
+}
+
 # Get magrittr pipe
 `%>%` <- dplyr::`%>%`
 ```
