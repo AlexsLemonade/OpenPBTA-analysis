@@ -19,8 +19,12 @@ jobs:
           name: Filter Across Types
           command: ./scripts/run_in_ci.sh Rscript analyses/sample-distribution-analysis/01-filter-across-types.R
 
-    #### Add your analysis here ####
-    
+      - run:
+          name: Mutect2 vs Strelka2
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/01-set-up.Rmd', clean = TRUE)"
+                
+        #### Add your analysis here ####
+        
   deploy:
     machine: 
       docker_layer_caching: true
