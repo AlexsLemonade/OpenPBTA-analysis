@@ -34,6 +34,9 @@ in both datasets.
 - `change`: indicates the `base_change` information but groups together 
 deletions, insertions, and long (more than a SNV) as their own groups.  
 - `coding`: Summarize the `BIOTYPE` variable for whether or not it is a coding gene.  
+- `PolyPhen_numeric`: Separate out the numeric score from `PolyPhen`. 
+This field reports the estimated damage from a particular mutation. 
+- `PolyPhen_category`: Separate out the category from `PolyPhen`.  
 
 #### The output files from this notebook:
 
@@ -88,13 +91,14 @@ Path to the symlinked data obtained via `bash download-data.sh`.
 ```{r}
 data_dir <- file.path("..", "..", "data")
 scratch_dir <- file.path("..", "..", "scratch")
+results_dir <- "results"
 ```
 
 Create output directories in this analysis folder.
 
 ```{r}
-if (!dir.exists("results")) {
-  dir.create("results")
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
 }
 if (!dir.exists("plots")) {
   dir.create("plots")
@@ -122,6 +126,10 @@ and `Tumor_Sample_Barcode` (the sample ID).
 We will use this variable to determine whether two variants calls are identical 
 in both datasets. 
 - Summarize the `BIOTYPE` variable for whether or not it is a coding gene.   
+- `PolyPhen_numeric`: Separate out the numeric score from `PolyPhen` maf field. 
+This field reports the estimated damage from a particular mutation.   
+- `PolyPhen_category`: Separate out the category from `PolyPhen`, e.g. 
+"possibly_damaging".  
 
 ```{r}
 set_up_variables <- function(maf = NULL) {
@@ -137,7 +145,7 @@ set_up_variables <- function(maf = NULL) {
   #   change, coding.
 
   # Extract the data part of the maf object, put it through a dplyr pipe.
-  maf@data %>%
+  maf@data  %>%
     dplyr::mutate(
       # Calculate the variant allele frequency
       vaf = as.numeric(t_alt_count) / (as.numeric(t_ref_count) +
@@ -150,7 +158,13 @@ set_up_variables <- function(maf = NULL) {
       coding = dplyr::case_when(
         BIOTYPE != "protein_coding" ~ "non-coding",
         TRUE ~ "protein_coding"
-      )
+      ),
+      
+      # Create a numeric portion of the PolyPhen score
+      PolyPhen_numeric = as.numeric(stringr::word(PolyPhen, 2, sep = "\\(|\\)")),
+      
+      # Create a categorical portion of the PolyPhen score
+      PolyPhen_category = stringr::word(PolyPhen, 1, sep = "\\(")
     ) %>%
     dplyr::mutate(
       # From the base_change variable, summarize insertions, deletions, and
@@ -187,9 +201,13 @@ information in the [`Variant_Classification` field in the original maf file](htt
 This field has the translation effect of the variant, e.g. "Frame_Shift_Del".
 
 ```{r}
-correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL,
-                                    maf1_name = "maf1", maf2_name = "maf2",
-                                    summarize_by = "gene", cor_method = "pearson") {
+correlate_maf_summaries <- function(maf1 = NULL, 
+                                    maf2 = NULL,
+                                    maf1_name = "maf1", 
+                                    maf2_name = "maf2",
+                                    summarize_by = "gene", 
+                                    cor_method = "pearson",
+                                    main_title = NULL) {
   # Takes two maf files, summarizes them by gene or sample, combines them by
   # a full join, and correlates the variant classification summaries using 
   # Pearson's or Spearman's correlations.
@@ -207,6 +225,7 @@ correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL,
   #       "sample" will summarize both maf1 and maf2 using maftools::getSampleSummary
   #   cor_method: a character string indicating the correlation method argument
   #               to be passed to "method" in cor.test() function
+  #   main_title: will be given to ggplot2::ggtitle for the main title of the plot
   # Returns:
   #   a data.frame that contains the correlation r and p values for both
   #   maf1 and maf2 based on the numbers of variants of each class.
@@ -242,12 +261,13 @@ correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL,
   # Get correlations by each type of variant classification
   cors <- combine_df %>%
     dplyr::group_by(variable) %>%
-    dplyr::summarize(cor = cor(
+    dplyr::summarize(corr = cor(
       # This `eval(parse(text =` piece is so that `cor` will correlate the
       # numeric vectors not the character strings themselves
       eval(parse(text = maf1_name)),
       eval(parse(text = maf2_name)),
-      method = cor_method
+      method = cor_method,
+      use = "na.or.complete"
     ))
 
   # Add the r values to the data labels
@@ -255,7 +275,7 @@ correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL,
     dplyr::mutate(variable_w_cor = paste(
       variable,
       "r =",
-      round(cors$cor, 3)
+      round(cors$corr, 3)
     ))
 
   # Plot this as a facet_wrapped scatterplot with the r values in the label
@@ -268,6 +288,7 @@ correlate_maf_summaries <- function(maf1 = NULL, maf2 = NULL,
     ggplot2::xlab(maf1_name) +
     ggplot2::ylab(maf2_name) +
     ggplot2::theme_classic() +
+    ggplot2::ggtitle(main_title) +
     ggplot2::theme(strip.text = ggplot2::element_text(size = 5))
 }
 ```
@@ -314,9 +335,9 @@ if (all(files_needed)) {
     data_dir,
     "pbta-snv-strelka2.vep.maf.gz"
   ),
-  select = "Tumor_Sample_Barcode",
-  skip = 1,
-  data.table = FALSE
+    select = "Tumor_Sample_Barcode",
+    skip = 1,
+    data.table = FALSE
   ) %>%
     dplyr::pull("Tumor_Sample_Barcode")
 
@@ -324,9 +345,9 @@ if (all(files_needed)) {
     data_dir,
     "pbta-snv-mutect2.vep.maf.gz"
   ),
-  select = "Tumor_Sample_Barcode",
-  skip = 1,
-  data.table = FALSE
+    select = "Tumor_Sample_Barcode",
+    skip = 1,
+    data.table = FALSE
   ) %>%
     dplyr::pull("Tumor_Sample_Barcode")
 
@@ -372,11 +393,13 @@ maftools::plotTiTv(maftools::titv(strelka2, plot = FALSE), plotType = 'box')
 maftools::plotTiTv(maftools::titv(mutect2, plot = FALSE), plotType = 'box')
 ```
 
-## Compare number of mutations per gene
+## Compare number of variant calls per gene
 
 We will our use our premade function, `correlate_maf_summaries`, to evaluate 
 initial correlations between the algorithms on the gene-level.
 These correlations are shown across variant classifications. 
+The thing to note here is that the correlations, though all significant, are
+varying in their strength for different mutation types. 
 
 ```{r}
 # Correlate the gene summaries
@@ -386,18 +409,20 @@ correlate_maf_summaries(
   maf1_name = "strelka2",
   maf2_name = "mutect2",
   summarize_by = "gene",
-  cor_method = "pearson"
+  cor_method = "spearman", 
+  main_title = "Gene-Level Number of Variants Correlation"
 )
 
 # Save to a PDF
 ggplot2::ggsave(file.path("plots", "gene_summary_cor_strelka-vs-mutect2.pdf"))
 ```
 
-## Compare number of mutations per sample
+## Compare number of variant calls per sample
 
 Similar to above, we will use our premade function, `correlate_maf_summaries`, 
 to evaluate correlations between the algorithms on the sample-level.
 These correlations are shown across variant classifications. 
+Here we see a similar finding for the samples.
 
 ```{r}
 # Correlate the sample summaries
@@ -407,7 +432,8 @@ correlate_maf_summaries(
   maf1_name = "strelka2",
   maf2_name = "mutect2",
   summarize_by = "sample",
-  cor_method = "pearson"
+  cor_method = "pearson",
+  main_title = "Sample-Level Number of Variants Correlation"
 )
 
 # Save to a PDF
@@ -424,7 +450,8 @@ strelka2_vaf <- set_up_variables(strelka2)
 
 # Take a look at the new variables:
 strelka2_vaf %>%
-  dplyr::select(vaf, base_change, coding, change, mutation_id)
+  dplyr::select(vaf, base_change, coding, change, mutation_id, PolyPhen_numeric, 
+                PolyPhen_category)
 ```
 
 Now we will do the same for MuTect2.
@@ -435,7 +462,8 @@ mutect2_vaf <- set_up_variables(mutect2)
 
 # Take a look at the new variables
 mutect2_vaf %>%
-  dplyr::select(vaf, base_change, coding, change, mutation_id)
+  dplyr::select(vaf, base_change, coding, change, mutation_id, PolyPhen_numeric, 
+                PolyPhen_category)
 ```
 
 ## Combine MuTect2 and Strelka2 data.frames into one data.frame
@@ -457,19 +485,19 @@ vaf_df <- strelka2_vaf %>%
     is.na(Allele.strelka2) ~ "mutect2_only",
     TRUE ~ "both"
   )) %>%
-  readr::write_tsv(file.path("results", "combined_results.tsv"))
+  readr::write_tsv(file.path(results_dir, "combined_results.tsv"))
 ```
 
 Make a zipped up version that can be stored on GitHub.
 
 ```{r}
 zip(
-  file.path("results", "combined_results.tsv.zip"),
-  file.path("results", "combined_results.tsv")
+  file.path(results_dir, "combined_results.tsv.zip"),
+  file.path(results_dir, "combined_results.tsv")
 )
 ```
 
-Session Info: 
+## Session Info
 
 ```{r}
 sessionInfo()
