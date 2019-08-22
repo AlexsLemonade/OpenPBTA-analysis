@@ -35,8 +35,9 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     treemap \
     # This is needed to convert a data.frame into a d3.js hierarchy object
     d3r \
-    hexbin \ # Need hexbin for making a hex plot 
-    VennDiagram # for Venn diagram
+    # Need hexbin for making a hex plot 
+    hexbin \ 
+    VennDiagram 
 
 # Use maftools for reading MAF files
 RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
