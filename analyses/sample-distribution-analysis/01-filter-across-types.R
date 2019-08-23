@@ -7,6 +7,10 @@
 # This script is intended to be run via the command line from the top directory of the repository as follows:
 # Rscript analyses/sample-distribution-analysis/01-filter-across-types.R
 
+# This will set the working directory to the root of the project by
+# detecting the .git folder -- this ensures that this executes properly
+setwd(rprojroot::find_root(rprojroot::has_dir(".git")))
+
 # magrittr pipe
 `%>%` <- dplyr::`%>%`
 

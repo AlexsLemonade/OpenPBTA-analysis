@@ -10,6 +10,10 @@
 # This script is intended to be run via the command line from the top directory of the repository as follows:
 # Rscript analyses/sample-distribution-analysis/02-multilayer-plots.R
 
+# This will set the working directory to the root of the project by
+# detecting the .git folder -- this ensures that this executes properly
+setwd(rprojroot::find_root(rprojroot::has_dir(".git")))
+
 # Set paths to output directories
 outputDir <- file.path("analyses", "sample-distribution-analysis")
 results_dir <- file.path(outputDir, "results")
@@ -88,6 +92,3 @@ p <- sunburstR::sund2b(tmnest, colors = color, valueField = "vSize")
 # Create HTML outputs for the interactive plots 
 mapview::mapshot(interactive_tm, url = file.path(plots_dir, "histology-treemap.html"))
 mapview::mapshot(p, url = file.path(plots_dir, "histology-pie.html"))
-
-
-
