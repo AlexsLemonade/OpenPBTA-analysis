@@ -5,7 +5,7 @@
 To run the scripts in this module from the command line, use:
 
 ```
-bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
+bash run-sample-distribution.sh
 
 ```
 ## Folder content
