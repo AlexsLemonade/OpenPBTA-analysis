@@ -11,7 +11,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     libgdal-dev \
     libudunits2-dev \
     # This is needed for coloblindr to install
-    libmagick++-dev 
+    libmagick++-dev
 
 # Required forinteractive sample distribution plots
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
@@ -36,7 +36,8 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     # This is needed to convert a data.frame into a d3.js hierarchy object
     d3r \
     # Need hexbin for making a hex plot 
-    hexbin
+    hexbin \
+    rprojroot
 
 # Use maftools for reading MAF files
 RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
