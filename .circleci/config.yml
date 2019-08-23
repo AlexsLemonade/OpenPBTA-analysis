@@ -17,7 +17,7 @@ jobs:
     
       - run:
           name: Sample Distribution Analyses
-          command: ./scripts/run_in_ci.sh bash run-sample-distribution.sh
+          command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
 
       - run:
           name: Mutect2 vs Strelka2
