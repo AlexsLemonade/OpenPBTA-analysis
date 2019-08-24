@@ -7,13 +7,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 RUN apt-get install dialog apt-utils -y
 
 # Required for installing mapview for interactive sample distribution plots
+# libmagick++-dev is needed for coloblindr to install
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     libgdal-dev \
     libudunits2-dev \
-    # This is needed for coloblindr to install
     libmagick++-dev
 
 # Required forinteractive sample distribution plots
+# map view is needed to create HTML outputs of the interactive plots
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
     && install2.r --error \
     --deps TRUE \
@@ -24,18 +25,15 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     leafpop \
     plainview \
     sf \
-    # This is needed to create HTML outputs of the interactive plots
     mapview
 
+# Installs packages needed for still treemap, interactive plots, and hex plots
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
     && install2.r --error \
     --deps TRUE \
     R.utils \
-    # This is needed to create a still treemap
     treemap \
-    # This is needed to convert a data.frame into a d3.js hierarchy object
     d3r \
-    # Need hexbin for making a hex plot 
     hexbin \
     rprojroot
 
