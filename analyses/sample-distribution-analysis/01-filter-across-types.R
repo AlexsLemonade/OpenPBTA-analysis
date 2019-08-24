@@ -4,12 +4,10 @@
 # Chante Bethell for CCDL 2019
 # 
 # #### USAGE
-# This script is intended to be run via the command line from the top directory of the repository as follows:
+# This script is intended to be run via the command line from the top directory 
+# of the repository as follows:
+#
 # Rscript analyses/sample-distribution-analysis/01-filter-across-types.R
-
-# This will set the working directory to the root of the project by
-# detecting the .git folder -- this ensures that this executes properly
-setwd(rprojroot::find_root(rprojroot::has_dir(".git")))
 
 # magrittr pipe
 `%>%` <- dplyr::`%>%`
@@ -35,10 +33,15 @@ location_fn <- function(location) {
   unique(disease_type_vector)
 }
 
+# Detect the ".git" folder -- this will in the project root directory.
+# Use this as the root directory to ensure proper execution, no matter where
+# it is called from.
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
 # Define the file.path to output directories
-outputDir <- file.path("analyses", "sample-distribution-analysis")
-results_dir <- file.path(outputDir, "results")
-plots_dir <- file.path(outputDir, "plots")
+output_dir <- file.path(root_dir, "analyses", "sample-distribution-analysis")
+results_dir <- file.path(output_dir, "results")
+plots_dir <- file.path(output_dir, "plots")
 
 # Create directories to hold the output.
 if (!dir.exists(results_dir)) {
@@ -50,7 +53,7 @@ if (!dir.exists(plots_dir)) {
 
 # Read in dataset
 df2 <- data.frame(readr::read_tsv(
-  file.path("data", "pbta-histologies.tsv")
+  file.path(root_dir, "data", "pbta-histologies.tsv")
 ))
 
 # Remove na's
@@ -165,4 +168,3 @@ primary_sites_counts <- reshape2::melt(cancer_types_counts,
 # Write to tsv file
 readr::write_tsv(primary_sites_counts,
                  file.path(results_dir, "primary_sites_counts.tsv"))
-
