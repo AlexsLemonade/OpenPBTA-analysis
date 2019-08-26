@@ -124,14 +124,15 @@ OpenPBTA-analysis
 ├── analyses
 │   ├── existing-analysis-1
 │   └── new-analysis
-│       ├── 01.preprocess-data.Rmd
-│       ├── 02.run-analyses.Rmd
-│       ├── 03.make-figures.Rmd
+│       ├── 01-preprocess-data.Rmd
+│       ├── 02-run-analyses.Rmd
+│       ├── 03-make-figures.Rmd
 │       ├── plots
 │       │   ├── figure1.pdf
 │       │   └── figure2.pdf
-│       └── results
-│           └── tabular_summary.csv
+│       ├── results
+│       │   └── tabular_summary.csv
+│       └── run-new-analysis.sh
 ├── data
 └── scratch
 ```
@@ -140,6 +141,8 @@ OpenPBTA-analysis
 
 As shown above, analysis scripts within a folder should be numbered from `01` and are intended be run in order.
 If the script produces any intermediate files, these files should be placed in `../../scratch`, which is used as described above.
+A shell script that runs all analytical code in the intended order should be added to the analysis directory (e.g. `run-new-analysis.sh` above).
+See the [continuous integration instructions for adding analyses with multiple steps](#adding-analyses-with-multiple-steps) for more information.
 
 ### Output Expectations
 
@@ -207,12 +210,73 @@ Here is an example analysis that simply lists the contents of the data directory
 
 Using `./scripts/run_in_ci.sh` allows you to run your analyses in the project Docker container.
 
-If you wanted to add running an Rscript called `cluster-samples.R` that was in an analysis folder called `gene-expression-structure`, you would add this script to continuous integration with:
+If you wanted to add running an Rscript called `cluster-samples.R` that was in an analysis folder called `gene-expression-clustering`, you would add this script to continuous integration with:
 
 ```
       - run:
           name: Cluster Samples
-          command: ./scripts/run_in_ci.sh Rscript analyses/gene-expression-structure/cluster-samples.R
+          command: ./scripts/run_in_ci.sh Rscript analyses/gene-expression-clustering/cluster-samples.R
 ```
 
 This would run the `cluster-samples.R` on the subset files that are specifically designed to be used for CI.
+
+#### Adding Analyses with Multiple Steps
+
+There is a different procedure for adding an analysis comprised of multiple scripts or notebooks to CI.
+Per [the contribution guidelines](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/CONTRIBUTING.md#size-and-composition-of-pull-requests), each script or notebook should be added via a separate pull request.
+For each of these pull requests, the individual script or notebook should be added as its own run in the `.circleci/config.yml` file.
+This validates that the code being added can be executed at the time of review.
+
+Once all code for an analysis has been reviewed and merged, a final pull request for the analysis that is comprised of the following changes should be filed:
+
+* A shell script that will run all script and/or notebooks in the analysis module.
+* The multiple runs from the module that are in the `config.yml` file are replaced with a single run that runs the shell script.
+
+If the `gene-expression-clustering` analysis above instead required two scripts run sequentially (`01-filter-samples.R` and `02-cluster-heatmap.R`), we would follow the procedure below.
+
+##### 1. File and merge a pull request for adding `01-filter-samples.R` to the repository.
+	
+In this pull request, we would add the following change to `.circleci/config.yml`.
+	
+```
+      - run:
+          name: Filter Samples
+          command: ./scripts/run_in_ci.sh Rscript analyses/gene-expression-clustering/01-filter-samples.R
+```
+
+##### 2. File and merge a pull request for adding `02-cluster-heatmap.R` to the repository.
+
+In this pull request, we would add the following change to `.circleci/config.yml`.
+This would be added _below_ the `Filter Samples` run.
+	
+```
+      - run:
+          name: Cluster Samples and Plot Heatmap
+          command: ./scripts/run_in_ci.sh Rscript analyses/gene-expression-clustering/02-cluster-heatmap.R
+```
+
+##### 3. File and merge a pull request for the shell script that runs the entirety of `gene-expression-clustering`.
+
+In this pull request, we would add a shell script that runs `01-filter-samples.R` and `02-cluster-heatmap.R`.
+Let's call this shell script `run-gene-expression-clustering.sh` and place it in the analysis directory `analyses/gene-expression-clustering`.
+
+The contents of `analyses/gene-expression-clustering/run-gene-expression-clustering.sh` may look like:
+
+```
+#!/bin/bash
+# This script runs the gene-expression-clustering analysis
+# Author's Name 2019
+
+Rscript --vanilla analyses/gene-expression-clustering/01-filter-samples.R
+Rscript --vanilla analyses/gene-expression-clustering/02-cluster-heatmap.R
+```
+
+We would remove the runs `Filter Samples` and `Cluster Samples and Plot Heatmap` from `.circleci/config.yml` and instead replace them with a single run:
+
+```
+      - run:
+          name: Cluster Samples and Plot Heatmap
+          command: ./scripts/run_in_ci.sh bash analyses/gene-expression-clustering/run-gene-expression-clustering.sh
+```
+
+<!--TODO: Add instructions for running scripts from anywhere in the project?-->
