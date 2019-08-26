@@ -124,6 +124,10 @@ barplot_maf_var <- function(df = vaf_df, variable_name = NULL, filter_cutoff = 0
       paste0(variable_name, c(".strelka2", ".mutect2"))
     ) %>%
     dplyr::mutate("data" = gsub(paste0(variable_name, "."), "", data)) %>%
+    # Filter out NAs that are only there because the dataset doesn't have 
+    # that mutation. Keep NAs that are what the original label was.
+    dplyr::filter(!grepl("strelka2_only mutect2|mutect2_only strelka2", 
+                         paste(dataset, data))) %>%
     dplyr::group_by(dataset, data, variable) %>%
     dplyr::summarise(count = dplyr::n())
 
@@ -141,8 +145,8 @@ barplot_maf_var <- function(df = vaf_df, variable_name = NULL, filter_cutoff = 0
     )]) %>%
     dplyr::mutate(report = ifelse(rep(as_percent, nrow(count_df)), percent, count)) %>%
     dplyr::filter(report > filter_cutoff)
-
-  # Omit NAs if that was specified
+  
+  # Omit NA category if that was specified
   if (omit.na) {
     count_df <- dplyr::filter(count_df, !is.na(variable))
   }
@@ -299,7 +303,7 @@ this is another reason avoid using MuTect2 calls alone.
 ```{r}
 barplot_maf_var(
   df = vaf_df, variable_name = "change",
-  as_percent = FALSE, omit.na = TRUE, filter_cutoff = 0
+  as_percent = FALSE, omit.na = FALSE, filter_cutoff = 0
 )
 ```
 
@@ -314,7 +318,7 @@ It appears C>T and G>A changes are easiest for both algorithms to detect.
 ```{r}
 barplot_maf_var(
   df = vaf_df, variable_name = "change", filter_cutoff = 0,
-  as_percent = TRUE, omit.na = TRUE
+  as_percent = TRUE, omit.na = FALSE
 )
 ```
 
@@ -326,7 +330,7 @@ there doesn't appear to be any strong biases between the groups.
 ```{r}
 barplot_maf_var(
   df = vaf_df, variable_name = "coding", filter_cutoff = 0,
-  as_percent = TRUE, omit.na = TRUE
+  as_percent = TRUE, omit.na = FALSE
 )
 ```
 
@@ -338,7 +342,7 @@ Again we see MuTect2 shows more deletions.
 ```{r}
 barplot_maf_var(
   df = vaf_df, variable_name = "Variant_Type", filter_cutoff = 0,
-  as_percent = TRUE, omit.na = TRUE
+  as_percent = TRUE, omit.na = FALSE
 )
 ```
 
@@ -347,7 +351,16 @@ barplot_maf_var(
 ```{r}
 barplot_maf_var(
   df = vaf_df, variable_name = "PolyPhen_category", filter_cutoff = 0,
-  as_percent = TRUE, omit.na = TRUE
+  as_percent = TRUE, omit.na = FALSE
+)
+```
+
+### Number of estimated clinical effect
+
+```{r}
+barplot_maf_var(
+  df = vaf_df, variable_name = "PolyPhen_category", filter_cutoff = 0,
+  as_percent = FALSE, omit.na = FALSE
 )
 ```
 
