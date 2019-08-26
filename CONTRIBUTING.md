@@ -12,6 +12,8 @@ Participants who wish to perform an analysis of the data as part of this effort 
 Contributions to the analysis repository operate on a pull request model.
 We expect participants to actively review pull requests, with a particular focus on pull requests that include analyses within their areas of expertise.
 
+_If you are new to git and GitHub, check out [this Hello World guide](https://guides.github.com/activities/hello-world/) and [the GitHub documentation for reviewing changes in pull requests](https://help.github.com/en/articles/reviewing-changes-in-pull-requests)._
+
 ### Filing a pull request from your own branch
 
 Here, we include a _typical_ workflow for filing a pull request to contribute to this project.
