@@ -1,2 +1,4 @@
 histology-pie_files
 histology-treemap_files
+# The nonessential output produced when we run run-sample-distribution.sh
+/Rplots.pdf
