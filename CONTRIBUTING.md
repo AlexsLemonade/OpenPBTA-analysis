@@ -47,17 +47,19 @@ You do not want to commit changes to your `master` branch, any changes to your `
 
 An ideal pull request is small enough for reviewers to review the code in detail and focused on a single area or, if adding a new file entirely, a single file.
 Implementing an analysis will often require more than one notebook or script to be added to the repository.
-In these cases, it is desirable to submit _multiple pull requests_ for an analysis rather than a single, large pull request when an analysis is completed.
-This both facilitates scientific discussion and reduces the burden on reviewers (see [Peer review](#peer-review)).
+It is best to submit _multiple pull requests_ for these analyses rather than a single, large pull request when an analysis is completed.
+This facilitates scientific discussion and reduces the burden on reviewers (see [Peer review](#peer-review)).
 
 As the author of a pull request, consider what reviewers who have not been working on the analysis need to know to perform an effective review. 
 We've put together a [pull request template](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/.github/PULL_REQUEST_TEMPLATE.md) to help.
 
 #### Creating stacked pull requests
 
-If you find that the changes on your branch include multiple files and a large number of lines of code have been changed, you may want to file a [**draft pull request**](https://help.github.com/en/articles/about-pull-requests#draft-pull-requests) to get feedback on splitting up the changes into multiple pull requests. You can read more about how to split up pull requests [here](https://graysonkoonce.com/stacked-pull-requests-keeping-github-diffs-small/) and in the ["4 Git strategies for Pull Requests splitting" section](https://www.thedroidsonroids.com/blog/splitting-pull-request#4-git-strategies-for-pull-requests-splitting) of this article. We include a simple example, adapted from the first link, below.
+If you find that the changes on your branch include multiple files and a large number of lines of code have been changed, you may want to file a [**draft pull request**](https://help.github.com/en/articles/about-pull-requests#draft-pull-requests) to get feedback on splitting up the changes into multiple pull requests.
+You can read more about how to split up pull requests [here](https://graysonkoonce.com/stacked-pull-requests-keeping-github-diffs-small/) and in the ["4 Git strategies for Pull Requests splitting" section](https://www.thedroidsonroids.com/blog/splitting-pull-request#4-git-strategies-for-pull-requests-splitting) of this article.
+We include a simple example, adapted from the first link, below.
 
-Say I have a new analysis on a branch called `new-analysis` that includes three scripts: `01-first-script.R`, `02-second-script.R`, and `03-third-script.R`.
+I have a new analysis on a branch called `new-analysis` that includes three scripts: `01-first-script.R`, `02-second-script.R`, and `03-third-script.R`.
 All three scripts have been committed to the `new-analysis` branch.
 To file three pull requests, one for each script, I could take the following approach:
 
