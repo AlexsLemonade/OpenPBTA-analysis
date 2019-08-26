@@ -245,7 +245,7 @@ This would be added _below_ the `Filter Samples` run.
           command: ./scripts/run_in_ci.sh Rscript analyses/gene-expression-clustering/02-cluster-heatmap.R
 ```
 
-##### 3. File an merge a pull request for the shell script that runs the entirety of `gene-expression-clustering`.
+##### 3. File and merge a pull request for the shell script that runs the entirety of `gene-expression-clustering`.
 
 In this pull request, we would add a shell script that runs `01-filter-samples.R` and `02-cluster-heatmap.R`.
 Let's call this shell script `run-gene-expression-clustering.sh` and place it in the analysis directory `analyses/gene-expression-clustering`.
