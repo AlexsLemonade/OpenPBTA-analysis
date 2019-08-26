@@ -1,7 +1,15 @@
 # OpenPBTA sample-distribution-analysis
 
+## Usage
+
+To run the scripts in this module from the command line, use:
+
+```
+bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
+
+```
 ## Folder content
-This folder contains scripts tasked to analyze the distribution of samples across cancer types and histologies in the PBTA dataset.     
+This folder contains scripts tasked to analyze the distribution of samples across cancer types and histologies in the PBTA dataset.
 
 `01-filter-across-types.R` is a script written to perform the initial analyses on the PBTA dataset (as discussed in [issue #5](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/5)).  
 This script produces TSV files containing the counts and percentages of samples across each unique cancer type, and the types sorted in order of descending expression at each unique brain location.   

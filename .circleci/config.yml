@@ -14,10 +14,10 @@ jobs:
       - run:
           name: List Data Directory Contents
           command: ./scripts/run_in_ci.sh ls data/testing
-          
+    
       - run:
-          name: Filter Across Types
-          command: ./scripts/run_in_ci.sh Rscript analyses/sample-distribution-analysis/01-filter-across-types.R
+          name: Sample Distribution Analyses
+          command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
 
       - run:
           name: Mutect2 vs Strelka2
