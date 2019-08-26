@@ -92,30 +92,43 @@ if (!("VennDiagrams" %in% installed.packages())) {
 `%>%` <- dplyr::`%>%`
 ```
 
-Barplot wrapper function.
+Declare names of output directories.
 
 ```{r}
-barplot_maf_var <- function(df = vaf_df, variable_name = NULL, filter_cutoff = 0,
-                            as_percent = TRUE, omit.na = FALSE) {
-  # Creates a ggplot barplot for the numbers of variants that fall into each
-  # category of the variable selected.
-  #
-  # Args:
-  #   df: combined data.frame with both datasets (vaf_df)
-  #   variable_name: a character string that indicates the base variable name
-  #                  from the original MAF file
-  #   filter_cutoff: variable categories with less than this cutoff will be removed
-  #   as_percent: If true, will report numbers as percentages of the group they
-  #               are from
-  #   omit.na: If true, will remove NA's as a category
-  #
-  # Returns:
-  #   ggplot2 grouped barplot with mutect_only, strelka2_only, and both as groups
+results_dir <- "results"
+plots_dir <- "plots"
+```
 
-  # Reconfigure dataset based on chosen variable, get numbers of variants for
-  # each dataset and variable category
-  count_df <- df %>%
-    dplyr::select(
+Create output directories in this analysis folder if they weren't made 
+
+```{r}
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir)
+}
+```
+
+Make a function that turns a selected variable from the original MAF file into 
+a long format that is ready for downstream purposes. 
+
+```{r}
+make_long_format <- function(df, variable_name = NULL, 
+                             other_variables = "mutation_id") {
+  # Reconfigure data.frame into long format with a column that indicates which 
+  # algorithm or if both contain a particular variant
+  # Args:
+  #   df: vaf_df data.frame that contains the combined data for each algorithm
+  #       with each algorithm having it's own column e.g. vaf.strelka2 and vaf.mutect2
+  #   variable_name: a character string that indicates the base variable name
+  #             from the original MAF file that you would like to make into
+  #             long format
+  #   other_variables: a character string or vector of characters that indicates
+  #                    other columns you would like to be kept. Default is to 
+  #                    keep the mutation_id.
+  long_df <- df %>%
+    dplyr::select(other_variables,
       paste0(variable_name, c(".strelka2", ".mutect2")),
       dataset
     ) %>%
@@ -127,7 +140,40 @@ barplot_maf_var <- function(df = vaf_df, variable_name = NULL, filter_cutoff = 0
     # Filter out NAs that are only there because the dataset doesn't have 
     # that mutation. Keep NAs that are what the original label was.
     dplyr::filter(!grepl("strelka2_only mutect2|mutect2_only strelka2", 
-                         paste(dataset, data))) %>%
+                         paste(dataset, data)))
+  return(long_df)
+}
+```
+
+Barplot wrapper function.
+
+```{r}
+barplot_maf_var <- function(df, variable_name = NULL, filter_cutoff = 0,
+                            as_percent = TRUE, omit.na = FALSE) {
+  # Creates a ggplot barplot for the numbers of variants that fall into each
+  # category of the variable selected.
+  #
+  # Args:
+  #   df: combined data.frame that contains the MAF data for both algorithms. 
+  #       (noted here as vaf_df)
+  #   variable_name: a character string that indicates the base variable name
+  #                  from the original MAF file that is indicated in "variable"
+  #                  column. 
+  #   filter_cutoff: variable categories with less than this cutoff will be removed
+  #   as_percent: If true, will report numbers as percentages of the group they
+  #               are from
+  #   omit.na: If true, will remove NA's as a category
+  #
+  # Returns:
+  #   ggplot2 grouped barplot with mutect_only, strelka2_only, and both as groups
+  #   
+  # Reconfigure data.frame into long format with a column that indicates which 
+  # algorithm or if both contain a particular variant
+  long_df <- make_long_format(df, variable_name = variable_name)
+  
+  # Summarize by the number of time each category appears by the data group
+  # i.e. (`mutect2_only`, `strelka2_only`, or `both`).
+  count_df <- long_df %>%
     dplyr::group_by(dataset, data, variable) %>%
     dplyr::summarise(count = dplyr::n())
 
@@ -170,15 +216,15 @@ This file has been zipped so it can be shared on GitHub more easily.
 If no unzipped version exists, we will unzip this.
 
 ```{r}
-if (!file.exists(file.path("results", "combined_results.tsv"))) {
-  unzip(file.path("results", "combined_results.tsv.zip"))
+if (!file.exists(file.path(results_dir, "combined_results.tsv"))) {
+  unzip(file.path(results_dir, "combined_results.tsv.zip"))
 }
 ```
 
 Read in the combined dataset, 'combined_results.tsv.'
 
 ```{r}
-vaf_df <- readr::read_tsv(file.path("results", "combined_results.tsv"))
+vaf_df <- readr::read_tsv(file.path(results_dir, "combined_results.tsv"))
 ```
 
 ## Venn Diagrams
@@ -223,7 +269,7 @@ Save the Venn diagram plot to a PDF.
 ```{r}
 # Make filename to save plot as
 venn.plot.file <- file.path(
-  "plots",
+  plots_dir,
   "strelka2_mutect2_venn_diagram.pdf"
 )
 pdf(venn.plot.file)
@@ -254,6 +300,9 @@ vaf_df %>%
     label = "",
     subtitle = paste("R = ", round(pearson_r$estimate, 3))
   )
+
+# Save this plot to a PDF
+ggplot2::ggsave(file.path(plots_dir, "VAF_scatterplot.PDF"))
 ```
 
 Overall, the VAF are highly correlated between the two algorithms.
@@ -276,6 +325,9 @@ vaf_df %>%
   ggplot2::theme_classic() +
   ggplot2::ylab("Density of VAF") +
   ggplot2::xlab(" ")
+
+# Save this plot to a PDF
+ggplot2::ggsave(file.path(plots_dir, "VAF_violin_plots.PDF"))
 ```
 
 Variants that are only detected by MuTect2 appear to be particularly low VAF, 
@@ -362,6 +414,87 @@ barplot_maf_var(
   df = vaf_df, variable_name = "PolyPhen_category", filter_cutoff = 0,
   as_percent = FALSE, omit.na = FALSE
 )
+```
+
+## Write possibly/probably damaging variants to files for further analysis
+
+```{r}
+# Get a data.frame of only the damaging variants and which algorithms detected
+# them
+damaging_variants <- vaf_df %>%
+  dplyr::filter(grepl("possibly_damaging|probably_damaging", 
+                      paste0(PolyPhen_category.strelka2, PolyPhen_category.mutect2))) %>%
+  make_long_format(variable_name = "PolyPhen_category") 
+```
+
+Make mutation id lists for each data group from the above data.frame. 
+
+```{r}
+strelka2_only_ids <- damaging_variants %>%
+  dplyr::filter(dataset == "strelka2_only") %>%
+  dplyr::pull(mutation_id)
+  
+mutect2_only_ids <- damaging_variants %>%
+  dplyr::filter(dataset == "mutect2_only") %>%
+  dplyr::pull(mutation_id)
+
+both_detected_ids <- damaging_variants %>%
+  dplyr::filter(dataset == "both") %>%
+  dplyr::pull(mutation_id)
+```
+
+We will collect the sample ID, chromosomal coordinates and base change for each
+mutation in we identified in the lists above. 
+
+```{r}
+# Here are the variables we will need
+var_select <- c("Tumor_Sample_Barcode", "Chromosome", "Start_Position", 
+                "End_Position", "base_change")
+```
+
+Get rid of dataset specific suffix (e.g. ".strelka2"), then write this to a TSV 
+file. 
+
+```{r}
+strelka2_only <- vaf_df %>%
+  # Keep only the mutation_id's identifed as only in strelka2
+  dplyr::filter(mutation_id %in% strelka2_only_ids) %>%
+  # We want the strelka2 versions of these variables
+  dplyr::select(paste0(var_select, ".strelka2")) %>% 
+  # But now we need to drop the suffix
+  dplyr::rename_all(dplyr::funs(stringr::str_replace(., ".strelka2", ""))) %>%
+  # Write to a TSV
+  readr::write_tsv(file.path(results_dir, "variants_strelka2_only.tsv"))
+```
+
+Do same for MuTect2.
+
+```{r}
+mutect2_only <- vaf_df %>%
+  # Keep only the mutation_id's identifed as only in mutect2
+  dplyr::filter(mutation_id %in% mutect2_only_ids) %>%
+  # We want the mutect2 versions of these variables
+  dplyr::select(paste0(var_select, ".mutect2")) %>% 
+  # But now we need to drop the suffix
+  dplyr::rename_all(dplyr::funs(stringr::str_replace(., ".mutect2", ""))) %>%
+  # Write to a TSV
+  readr::write_tsv(file.path(results_dir, "variants_mutect2_only.tsv"))
+```
+
+Write the same information to a file for variants identified by both algorithms. 
+Note that it doesn't matter whether we take Strelka2 or MuTect2's variables for
+the coordinates and tumor sample ID; they are identical for these fields. 
+To ensure this, I tested this by isolating using ".strelka2" and ".mutect2" 
+variables and used `all.equal` and saw they were identical. 
+
+```{r}
+both_detected <- vaf_df %>%
+  dplyr::filter(mutation_id %in% both_detected_ids) %>%
+  # It doesn't matter whether we take strelka or mutect variables here
+  dplyr::select(paste0(var_select, ".mutect2")) %>% 
+  # But now we need to drop the suffix
+  dplyr::rename_all(dplyr::funs(stringr::str_replace(., ".mutect2", ""))) %>%
+  readr::write_tsv(file.path(results_dir, "variants_both_detected.tsv"))
 ```
 
 Session Info: 
