@@ -1,4 +1,4 @@
 .DS_Store
 .Rhistory
-.spelling  # The dictionary of words accrued by `mdspell` for spellcheck
-/Rplots.pdf  # The nonessential output produced in the root directory of this repository when we run `analyses/sample-distribution-analysis/run-sample-distribution.sh`
+# The dictionary of words accrued by `mdspell` for spellcheck
+.spelling

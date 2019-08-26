@@ -2,13 +2,16 @@
 
 ## Usage
 
-To run the scripts in this module from the command line, use:
+To run all of the Rscripts in this module from the command line sequentially, use:
 
 ```
-bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
-
+bash run-sample-distribution.sh
 ```
+
+`run-sample-distribution.sh` is designed to be run as if it was called from this module directory even when called from outside of this directory.
+
 ## Folder content
+
 This folder contains scripts tasked to analyze the distribution of samples across cancer types and histologies in the PBTA dataset.
 
 `01-filter-across-types.R` is a script written to perform the initial analyses on the PBTA dataset (as discussed in [issue #5](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/5)).  
