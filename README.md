@@ -30,15 +30,25 @@ Project maintainers will interact on the issue to clarify any questions or raise
 
 ### Implementing an Analysis
 
-This section describes the general workflow for implementing analytical code, and more details are [described below](https://github.com/AlexsLemonade/OpenPBTA-analysis#how-to-add-an-analysis).
+This section describes the general workflow for implementing analytical code, and more details are [described below](#how-to-add-an-analysis).
 The first step is to identify an existing analysis or propose a new analysis, engage with the project maintainers to clarify the goals of the analysis, and then get the go ahead to move forward with the analysis.
-Analyses should be performed within the project's [Docker container](https://github.com/AlexsLemonade/OpenPBTA-analysis#docker-container).
-We use a single monolithic container in these analyses for ease of use.
-If you need software that is not included, please edit the Dockerfile to install the relevant software or file a [new issue on this repository](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/new) requesting assistance.
+
+#### Analytical Code and Output
+
 You can perform your analyses via a script (R or Python) or via a notebook (R Markdown or Jupyter).
 Your analyses should produce one or more *artifacts*.
 Artifacts include both vector or high-resolution figures sufficient for inclusion in a manuscript as well as new summarizations of the data (tables, etc) that are intended for either use in subsequent analyses or distribution with the manuscript.
-You should file a [Pull Request](https://github.com/AlexsLemonade/OpenPBTA-analysis/compare) to contribute analyses to this repository.
+
+#### Software Dependencies
+
+Analyses should be performed within the project's [Docker container](https://github.com/AlexsLemonade/OpenPBTA-analysis#docker-container).
+We use a single monolithic container in these analyses for ease of use.
+If you need software that is not included, please edit the Dockerfile to install the relevant software or file a [new issue on this repository](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/new) requesting assistance.
+
+#### Pull Request Model
+
+Analyses are added to this repository via [Pull Requests](https://github.com/AlexsLemonade/OpenPBTA-analysis/compare).
+**Please read the [Pull Request section of the contribution guidelines](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/CONTRIBUTING.md#pull-requests) carefully.**
 We are using continuous integration software applied to the supplied test datasets to confirm that the analysis can be carried out successfully within the Docker container.
 
 ## How to Obtain OpenPBTA Data
@@ -75,46 +85,13 @@ Gene Fusions produced by the [applied software packages](https://alexslemonade.g
 [Harmonized clinical data](https://alexslemonade.github.io/OpenPBTA-manuscript/#clinical-data-harmonization) are released as tab separated values.
 
 ### Data Caveats
+
 The clinical manifest will be updated and versioned as molecular subgroups are identified based on genomic analyses.
 We noticed ControlFreeC does not properly handle aneuploidy well for a subset of samples in that it calls the entire genome gained. We recommend using these results with caution while we continue benchmarking this algorithm.
-
 
 ## How to Add an Analysis
 
 Users performing analyses, should **always** refer to the symlinks in the `data/` directory and not files within the release folder, as an updated release may be produced before a publication is prepared.
-
-### Docker Image
-
-We build our project Docker image from a versioned [`tidyverse`](https://hub.docker.com/r/rocker/tidyverse) image from the [Rocker Project](https://www.rocker-project.org/) (v3.6.0).
-
-To add dependencies that are required for your analysis to the project Docker image, you must alter the project [`Dockerfile`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/Dockerfile).
-Note: R packages installed on this image will be installed from an [MRAN snapshot](https://mran.microsoft.com/documents/rro/reproducibility#reproducibility) corresponding to the last day that R 3.6.0 was the most recent release ([ref](https://hub.docker.com/r/rocker/tidyverse)).
-
-If you need assistance adding a dependency to the Dockerfile, [file a new issue on this repository](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/new) to request help.
-
-#### Development in the Project Docker Container
-
-The most recent version of the project Docker image, which is pushed to Docker Hub after a pull request gets merged into the master branch, can be obtained via the command line with:
-
-```
-docker pull ccdlopenpbta/open-pbta:latest
-```
-
-##### RStudio
-
-Using `rocker/tidyverse:3.6.0` as our base image allows for development via RStudio in the project Docker container. 
-If you'd like to develop in this manner, you may do so by running the following and changing `<password>` to a password of you choosing at the command line:
-
-```
-docker run -e PASSWORD=<password> -p 8787:8787 ccdlopenpbta/open-pbta:latest
-```
-
-You can change the volume that the Docker container points to either via the [Kitematic GUI](https://docs.docker.com/kitematic/userguide/) or the [`--volume` flag](https://docs.docker.com/storage/volumes/) to `docker run`.
-
-Once you've set the volume, you can navigate to `localhost:8787` in your browser if you are a Linux or Mac OS X user. 
-The username will for login will be `rstudio` and the password will be whatever password you set with the `docker run` command above.
-
-If you are a new user, you may find [these instructions](https://github.com/AlexsLemonade/RNA-Seq-Exercises/blob/master/docker-pull.md) for a setting up a different Docker container or [this guide](https://www.andrewheiss.com/blog/2017/04/27/super-basic-practical-guide-to-docker-and-rstudio/) from Andrew Heiss helpful.
 
 ### Folder Structure
 
@@ -174,6 +151,39 @@ Our goal is to capture all of the outputs that will be used for the [OpenPBTA-ma
 Files that are primarily graphic should be placed in a `plots` subdirectory of the analysis's folder.
 Files that are primarily tabular results files should be placed in a `results` subdirectory of the analysis's folder.
 Files that are intermediate, which means that they are useful within an analysis but do not provide outputs intended for tables, figures, or supplementary tables or figures of the [OpenPBTA-manuscript](https://github.com/AlexsLemonade/OpenPBTA-manuscript/), should be placed in `../../scratch`.
+
+### Docker Image
+
+We build our project Docker image from a versioned [`tidyverse`](https://hub.docker.com/r/rocker/tidyverse) image from the [Rocker Project](https://www.rocker-project.org/) (v3.6.0).
+
+To add dependencies that are required for your analysis to the project Docker image, you must alter the project [`Dockerfile`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/Dockerfile).
+Note: R packages installed on this image will be installed from an [MRAN snapshot](https://mran.microsoft.com/documents/rro/reproducibility#reproducibility) corresponding to the last day that R 3.6.0 was the most recent release ([ref](https://hub.docker.com/r/rocker/tidyverse)).
+
+If you need assistance adding a dependency to the Dockerfile, [file a new issue on this repository](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/new) to request help.
+
+#### Development in the Project Docker Container
+
+The most recent version of the project Docker image, which is pushed to Docker Hub after a pull request gets merged into the master branch, can be obtained via the command line with:
+
+```
+docker pull ccdlopenpbta/open-pbta:latest
+```
+
+##### RStudio
+
+Using `rocker/tidyverse:3.6.0` as our base image allows for development via RStudio in the project Docker container. 
+If you'd like to develop in this manner, you may do so by running the following and changing `<password>` to a password of you choosing at the command line:
+
+```
+docker run -e PASSWORD=<password> -p 8787:8787 ccdlopenpbta/open-pbta:latest
+```
+
+You can change the volume that the Docker container points to either via the [Kitematic GUI](https://docs.docker.com/kitematic/userguide/) or the [`--volume` flag](https://docs.docker.com/storage/volumes/) to `docker run`.
+
+Once you've set the volume, you can navigate to `localhost:8787` in your browser if you are a Linux or Mac OS X user. 
+The username will for login will be `rstudio` and the password will be whatever password you set with the `docker run` command above.
+
+If you are a new user, you may find [these instructions](https://github.com/AlexsLemonade/RNA-Seq-Exercises/blob/master/docker-pull.md) for a setting up a different Docker container or [this guide](https://www.andrewheiss.com/blog/2017/04/27/super-basic-practical-guide-to-docker-and-rstudio/) from Andrew Heiss helpful.
 
 ### Continuous Integration (CI)
 
