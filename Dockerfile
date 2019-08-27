@@ -34,7 +34,8 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     R.utils \
     treemap \
     d3r \
-    hexbin \
+    hexbin \ 
+    VennDiagram \
     rprojroot
 
 # Use maftools for reading MAF files
