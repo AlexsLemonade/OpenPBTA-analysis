@@ -28,6 +28,8 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     mapview
 
 # Installs packages needed for still treemap, interactive plots, and hex plots
+# lemon is needed to extract the legend from a ggplot 
+# Rtsne and umap are required for dimension reduction analyses 
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
     && install2.r --error \
     --deps TRUE \
@@ -35,6 +37,9 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     treemap \
     d3r \
     hexbin \
+    lemon \
+    Rtsne \
+    umap \
     rprojroot
 
 # Use maftools for reading MAF files
@@ -48,6 +53,9 @@ RUN R -e "devtools::install_github('timelyportfolio/d3treeR', ref = '0eaba7f1c64
 
 # Need this package to make plots colorblind friendly
 RUN R -e "devtools::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
+
+# This is needed to remove batch effects 
+RUN R -e "BiocManager::install(c('limma'), update = FALSE)"
 
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
