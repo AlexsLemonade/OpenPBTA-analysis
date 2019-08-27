@@ -7,9 +7,14 @@ output:
     toc_float: true
 ---
 
-This notebook demonstrates samples in the PBTA cluster by experimental strategy and cancer type using dimensionality reduction techniques, namely, [Principal Component Analysis](https://www.rdocumentation.org/packages/stats/versions/3.6.0/topics/prcomp) (PCA), [t-Distributed Stochastic Neighbor Embedding](https://cran.r-project.org/web/packages/Rtsne/Rtsne.pdf) (t-SNE), and [Uniform Manifold Approximation and Projection](https://cran.r-project.org/web/packages/umap/vignettes/umap.html) (UMAP).
+This notebook demonstrates samples in the PBTA cluster by experimental strategy
+and cancer type using dimensionality reduction techniques, namely, 
+[Principal Component Analysis](https://www.rdocumentation.org/packages/stats/versions/3.6.0/topics/prcomp) (PCA), 
+[t-Distributed Stochastic Neighbor Embedding](https://cran.r-project.org/web/packages/Rtsne/Rtsne.pdf) (t-SNE), 
+and [Uniform Manifold Approximation and Projection](https://cran.r-project.org/web/packages/umap/vignettes/umap.html) (UMAP).
 
-It addresses [issue #9](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/9) in the Open-PBTA analysis repository. 
+It addresses [issue #9](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/9)
+in the Open-PBTA analysis repository. 
 
 ## Output files:
 - `analyses/unsupervised transcriptomic-analysis/plots/meta_grid_kallisto_method.pdf`
@@ -26,34 +31,28 @@ It addresses [issue #9](https://github.com/AlexsLemonade/OpenPBTA-analysis/issue
 This script is intended to be run via the command line from the top directory of the repository as follows: 
 ```
 Rscript -e "rmarkdown::render('analyses/unsupervised-transcriptomic-analysis/01-transcriptomic-analysis.Rmd', clean = TRUE)"
-
 ```
 
 # Set Up
-Set up the functions and output directories.
-Read the metadata into a data.frame named `df2`.
-Read the expression data into data.frames named `exp_kallisto` and `exp_rsem`, respectively.
 
-```{r}
-
+Install packages.
+```{r, warning = FALSE, message = FALSE}
 # This is needed to extract the legend of a ggplot
 if (!("lemon" %in% installed.packages())) {
   install.packages("lemon")
 }
-# This is needed for batch effect correction 
-if (!("limma" %in%installed.packages())) {
-  install.packages("BiocManager")
-  BiocManager::install("limma")
-}
-# This is needed for running the t-SNE analysis 
+# This is needed for running the t-SNE analysis
 if (!("Rtsne" %in% installed.packages())) {
   install.packages("Rtsne")
 }
-# This is needed for running the umap analysis 
+# This is needed for running the umap analysis
 if (!("umap" %in% installed.packages())) {
   install.packages("umap")
 }
+```
 
+Assign functions. 
+```{r}
 # magrittr pipe
 `%>%` <- dplyr::`%>%`
 
@@ -62,28 +61,29 @@ reduction_fn <- function(name, id) {
   # technique, align the metadata and add the variables `type` and
   # `experimental_strategy` to the data.frame in preparation for plotting.
   #
-  # Note: The rownames provided in the id argument are synonymous with the 
+  # Note: The rownames provided in the id argument are synonymous with the
   # metadata's `Kids_First_Biospecimen_ID`
   #
   # Args:
-  #   name: Name of the data.frame containing dimension reduction scores 
-  #   id: Vector containing Biospecimen IDs extracted from the transposed expression data
+  #   name: Name of the data.frame containing dimension reduction scores
+  #   id: Vector containing Biospecimen IDs extracted from the transposed
+  #       expression data
   #
   # Returns:
-  #   name: A data.frame containing the dimension reduction scores along with four 
-  #         new variables as follows:
+  #   name: A data.frame containing the dimension reduction scores along with
+  #         four new variables as follows:
   #         ID: Values that correspond with `Kids_First_Biospecimen_ID`
   #         type: The cancer types that correspond with `disease_type_new`
   #         participant: Values that correspond with `Kids_First_Participant_ID`
   #         method: The experimental strategy used to sequence the data
-  
+
   # Assign the relevant rownames(Kids_First_Biospecimen_ID) to column named `ID`
   name$ID <- id
   # Align the metadata with the `ID` variable in the data.frame
   metadata <- df2 %>%
     dplyr::filter(Kids_First_Biospecimen_ID %in% name$ID) %>%
     dplyr::filter(!duplicated(Kids_First_Biospecimen_ID))
-  # Filter the data.frame to contain only the `ID` values common 
+  # Filter the data.frame to contain only the `ID` values common
   # to the metadata
   name <- name %>%
     dplyr::filter(ID %in% metadata$Kids_First_Biospecimen_ID)
@@ -96,105 +96,80 @@ reduction_fn <- function(name, id) {
     dplyr::filter(!duplicated(participant))
   # Filter for the participant ids found in `name` data.frame
   metadata <- df2 %>%
-    dplyr::select(Kids_First_Biospecimen_ID, Kids_First_Participant_ID, experimental_strategy) %>%
-    dplyr::filter(Kids_First_Participant_ID %in% name$participant) 
+    dplyr::select(
+      Kids_First_Biospecimen_ID,
+      Kids_First_Participant_ID,
+      experimental_strategy
+    ) %>%
+    dplyr::filter(Kids_First_Participant_ID %in% name$participant)
   # Filter the metadata for unique cases of `Kids_First_Participant_ID`
   metadata <- metadata %>%
     dplyr::filter(!duplicated(metadata$Kids_First_Participant_ID))
-  # Assign the `experimental_strategy` variable from the metadata to `method` 
+  # Assign the `experimental_strategy` variable from the metadata to `method`
   # column in `name` data.frame
-  name$method <- as.character(metadata$experimental_strategy) 
-  # Rename "RNA-Seq" values in name$method to "Unknown" 
+  name$method <- as.character(metadata$experimental_strategy)
+  # Rename "RNA-Seq" values in name$method to "Unknown"
   # (we do not know the exact RNA sequencing method)
   name$method[name$method == "RNA-Seq"] <- "Unknown"
   # Reassign the values of name$method to as factors
-  name$method <- as.factor(name$method) 
-  
+  name$method <- as.factor(name$method)
   return(name)
 }
+```
 
-correct_batch_effects <- function(name) {
-  # Given a data.frame that has been align with the metadata, 
-  # correct for batch effects.
-  #
-  # Args:
-  #   name: data.frame aligned with the metadata but not yet 
-  #         corrected for batch effects
-  #
-  # Returns:
-  #   name2: the now batch effect corrected data.frame 
-  
-  # Create a data.frame with just the dimension reduction scores and the 
-  # experimental strategy
-  name2 <- data.frame(name[, 1:2], method = name[, 6])
-  
-  # Treat the experimental strategies as characters
-  name2$method <- as.character(name2$method)
-  # Now replace each strategy with a unique batch number
-  name2$method[name2$method == "Unknown"] <- "1"
-  name2$method[name2$method == "WGS"] <- "2"
-  name2$method[name2$method == "WXS"] <- "3"
-  name2$method[name2$method == "Panel"] <- "4"
-  # Now make these numbers factors 
-  name2$method <- as.factor(name2$method)
-  # Assign the batch numbers to a variable `batch`
-  batch = name2$method
-  # Correct batch effects
-  name2 <- limma::removeBatchEffect(t(name2[, 1:2]), batch)
-  # Tailor the new data.frame (free from batch effects) to include the 
-  # additional variables we want to include, namely, the experimental strategy, 
-  # the cancer type, the Kids_First_Biospecimen_ID, and the 
-  # Kids_First_Participant_ID.
-  name2 <- data.frame(t(name2))
-  name2$method <- name$method
-  name2$type <- name$type
-  name2$ID <- name$ID
-  name2$participant <- name$participant
-  
-  return(name2)
-}
+Assign names of the output directories.
+```{r}
+# Detect the ".git" folder -- this will in the project root directory.
+# Use this as the root directory to ensure proper execution, no matter where
+# it is called from.
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # Assign name of output directory
-plots_dir <- "plots"
+output_dir <-
+  file.path(root_dir, "analyses", "unsupervised-transcriptomic-analysis")
+plots_dir <- file.path(output_dir, "plots")
 
 # Create directory to hold the output plots.
 if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
 }
+```
 
+Read the metadata into a data.frame named `df2`.
+Read the expression data into data.frames named `exp_kallisto` and `exp_rsem`, 
+respectively.
+```{r}
 # Read in dataset
-df2 <- data.frame(readr::read_tsv(
-  file.path("..", "..", "data", "pbta-histologies.tsv")
-))
+df2 <- data.frame(readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv")))
 
-# Read in kallisto expression data 
+# Read in kallisto expression data
 exp_kallisto <- data.frame(readr::read_rds(
-  file.path("..", "..", "data", "pbta-gene-expression-kallisto.rds")
+  file.path(root_dir, "data", "pbta-gene-expression-kallisto.rds")
 ))
 
-# Read in RSEM expression data 
+# Read in RSEM expression data
 exp_rsem <- data.frame(readr::read_rds(
-  file.path("..", "..", "data", "pbta-gene-expression-rsem.fpkm.rds")
+  file.path(root_dir, "data", "pbta-gene-expression-rsem.fpkm.rds")
 ))
 ```
 
 # Prep Data
-Make the expression data.frame all numeric by transforming the non-numeric `gene_id` column into rownames. 
-Transpose the data and save the rownames of the transposed data.frames for alignment to the metadata. 
+Make the expression data.frame all numeric by transforming the non-numeric
+`gene_id` column into rownames. 
+Transpose the data and save the rownames of the transposed data.frames for 
+alignment to the metadata. 
 
 ```{r}
-# Transform the non-numeric "gene_id" column into rownames 
+# Transform the non-numeric "gene_id" column into rownames
 exp_kallisto <- exp_kallisto[, -1] %>%
   dplyr::filter(!duplicated(gene_id)) %>%
   tibble::column_to_rownames("gene_id")
-
 exp_rsem <- exp_rsem %>%
   tibble::column_to_rownames("gene_id") %>%
   na.omit()
 
-# Transpose the data 
+# Transpose the data
 transposed_rsem_data <- t(exp_rsem)
-
 transposed_kallisto_data <- t(exp_kallisto)
 
 # Save rownames as a vector
@@ -207,47 +182,33 @@ kallisto_ID <- rownames(transposed_kallisto_data)
 ## Run PCA
 
 ```{r}
-# Run PCA on RSEM 
+# Run PCA on RSEM
 rsem_pca <- prcomp(transposed_rsem_data)
 # Make a data.frame with PCA scores
 rsem_pca_data <- data.frame(rsem_pca$x[, 1:2])
 # Run the reduction_fn which aligns metadata and prepares data.frame for ggplot
 rsem_pca_data <- reduction_fn(rsem_pca_data, rsem_ID)
-# Plot the PCA scores and color by cancer type 
-rsem_pca_plot <- ggplot2::ggplot(rsem_pca_data,
-                                 ggplot2::aes(x = rsem_pca_data[, 1],
-                                              y = rsem_pca_data[, 2],
-                                              color = type)) +
+# Plot the PCA scores and color by cancer type
+rsem_pca_plot <- ggplot2::ggplot(
+  rsem_pca_data,
+  ggplot2::aes(
+    x = rsem_pca_data[, 1],
+    y = rsem_pca_data[, 2],
+    color = type
+  )
+) +
   ggplot2::geom_point() +
   ggplot2::theme(legend.position = "none")
 
 # Plot the PCA scores and color by method
-rsem_pca_plot_method <- ggplot2::ggplot(rsem_pca_data,
-                                             ggplot2::aes(x = rsem_pca_data[, 1],
-                                                          y = rsem_pca_data[, 2],
-                                                          color = method)) +
-  ggplot2::geom_point() +
-  ggplot2::theme(legend.position = "none")
-```
-
-## PCA Batch Effects Corrected
-
-```{r}
-# Run the correct_batch_effects function which corrects for batch effects and prepares data.frame for ggplot
-rsem_pca_data <- correct_batch_effects(rsem_pca_data)
-# Plot the PCA scores and color by cancer type 
-rsem_pca_plot_2 <- ggplot2::ggplot(rsem_pca_data,
-                                 ggplot2::aes(x = rsem_pca_data[, 1],
-                                              y = rsem_pca_data[, 2],
-                                              color = type)) +
-  ggplot2::geom_point() +
-  ggplot2::theme(legend.position = "none")
-
-# Plot the PCA scores and color by method
-rsem_pca_plot_method_2 <- ggplot2::ggplot(rsem_pca_data,
-                                             ggplot2::aes(x = rsem_pca_data[, 1],
-                                                          y = rsem_pca_data[, 2],
-                                                          color = method)) +
+rsem_pca_plot_method <- ggplot2::ggplot(
+  rsem_pca_data,
+  ggplot2::aes(
+    x = rsem_pca_data[, 1],
+    y = rsem_pca_data[, 2],
+    color = method
+  )
+) +
   ggplot2::geom_point() +
   ggplot2::theme(legend.position = "none")
 ```
@@ -261,40 +222,27 @@ rsem_tsne <- Rtsne::Rtsne(transposed_rsem_data)
 rsem_tsne_data <- data.frame(rsem_tsne$Y)
 # Run the reduction_fn which aligns metadata and prepares data.frame for ggplot
 rsem_tsne_data <- reduction_fn(rsem_tsne_data, rsem_ID)
-# Plot the t-SNE scores and color by cancer type 
-rsem_tsne_plot <- ggplot2::ggplot(rsem_tsne_data,
-                                  ggplot2::aes(x = rsem_tsne_data[, 1],
-                                               y = rsem_tsne_data[, 2],
-                                               color = type)) +
-  ggplot2::geom_point() +
-  ggplot2::theme(legend.position = "none")
-
-# Plot the t-SNE scores and color by method 
-rsem_tsne_plot_method <- ggplot2::ggplot(rsem_tsne_data,
-                                              ggplot2::aes(x = rsem_tsne_data[, 1],
-                                                           y = rsem_tsne_data[, 2],
-                                                           color = method)) +
-  ggplot2::geom_point() +
-  ggplot2::theme(legend.position = "none")
-```
-## t-SNE Batch Effects Corrected
-
-```{r}
-# Run the correct_batch_effects function which corrects for batch effects and prepares data.frame for ggplot
-rsem_tsne_data <- correct_batch_effects(rsem_tsne_data)
-# Plot the PCA scores and color by cancer type 
-rsem_tsne_plot_2 <- ggplot2::ggplot(rsem_tsne_data,
-                                 ggplot2::aes(x = rsem_tsne_data[, 1],
-                                              y = rsem_tsne_data[, 2],
-                                              color = type)) +
+# Plot the t-SNE scores and color by cancer type
+rsem_tsne_plot <- ggplot2::ggplot(
+  rsem_tsne_data,
+  ggplot2::aes(
+    x = rsem_tsne_data[, 1],
+    y = rsem_tsne_data[, 2],
+    color = type
+  )
+) +
   ggplot2::geom_point() +
   ggplot2::theme(legend.position = "none")
 
 # Plot the t-SNE scores and color by method
-rsem_tsne_plot_method_2 <- ggplot2::ggplot(rsem_tsne_data,
-                                             ggplot2::aes(x = rsem_tsne_data[, 1],
-                                                          y = rsem_tsne_data[, 2],
-                                                          color = method)) +
+rsem_tsne_plot_method <- ggplot2::ggplot(
+  rsem_tsne_data,
+  ggplot2::aes(
+    x = rsem_tsne_data[, 1],
+    y = rsem_tsne_data[, 2],
+    color = method
+  )
+) +
   ggplot2::geom_point() +
   ggplot2::theme(legend.position = "none")
 ```
@@ -308,100 +256,83 @@ rsem_umap <- umap::umap(transposed_rsem_data)
 rsem_umap_data <- data.frame(rsem_umap$layout)
 # Run the reduction_fn which aligns metadata and prepares data.frame for ggplot
 rsem_umap_data <- reduction_fn(rsem_umap_data, rsem_ID)
-
-# Plot the umap scores and color by cancer type 
-rsem_umap_plot <- ggplot2::ggplot(rsem_umap_data,
-                                  ggplot2::aes(x = rsem_umap_data[, 1],
-                                               y = rsem_umap_data[, 2],
-                                               color = type)) +
+# Plot the umap scores and color by cancer type
+rsem_umap_plot <- ggplot2::ggplot(
+  rsem_umap_data,
+  ggplot2::aes(
+    x = rsem_umap_data[, 1],
+    y = rsem_umap_data[, 2],
+    color = type
+  )
+) +
   ggplot2::geom_point() +
-  ggplot2::theme(legend.position = "bottom", legend.text = ggplot2::element_text(size = 4))
+  ggplot2::theme(
+    legend.position = "bottom",
+    legend.text = ggplot2::element_text(size = 4)
+  )
 
 # Extract the plot legend
 legend <- lemon::g_legend(rsem_umap_plot)
 
-# Plot the umap scores and color by method 
-rsem_umap_plot_method <- ggplot2::ggplot(rsem_umap_data,
-                                              ggplot2::aes(x = rsem_umap_data[, 1],
-                                                           y = rsem_umap_data[, 2],
-                                                           color = method)) +
+# Plot the umap scores and color by method
+rsem_umap_plot_method <- ggplot2::ggplot(
+  rsem_umap_data,
+  ggplot2::aes(
+    x = rsem_umap_data[, 1],
+    y = rsem_umap_data[, 2],
+    color = method
+  )
+) +
   ggplot2::geom_point() +
-  ggplot2::theme(legend.position = "bottom", legend.text = ggplot2::element_text(size = 14))
-
-#Extract the plot legend
-legend2 <- lemon::g_legend(rsem_umap_plot_method)
-```
-## UMAP Batch Effects Corrected
-
-```{r}
-# Run the correct_batch_effects function which corrects for batch effects and prepares data.frame for ggplot
-rsem_umap_data <- correct_batch_effects(rsem_umap_data)
-# Plot the PCA scores and color by cancer type 
-rsem_umap_plot_2 <- ggplot2::ggplot(rsem_umap_data,
-                                 ggplot2::aes(x = rsem_umap_data[, 1],
-                                              y = rsem_umap_data[, 2],
-                                              color = type)) +
-  ggplot2::geom_point() +
-  ggplot2::theme(legend.position = "bottom", legend.text = ggplot2::element_text(size = 4))
+  ggplot2::theme(
+    legend.position = "bottom",
+    legend.text = ggplot2::element_text(size = 14)
+  )
 
 # Extract the plot legend
-legend_batch <- lemon::g_legend(rsem_umap_plot_2)
-
-# Plot the umap scores and color by method
-rsem_umap_plot_method_2 <- ggplot2::ggplot(rsem_umap_data,
-                                             ggplot2::aes(x = rsem_umap_data[, 1],
-                                                          y = rsem_umap_data[, 2],
-                                                          color = method)) +
-  ggplot2::geom_point() +
-  ggplot2::theme(legend.position = "bottom", legend.text = ggplot2::element_text(size = 14))
-
-#Extract the plot legend
-legend2_batch <- lemon::g_legend(rsem_umap_plot_method_2)
+legend2 <- lemon::g_legend(rsem_umap_plot_method)
 ```
 
 ## RSEM Plots Grid 
-The grid of plots below shows the dimension reductions scores for the RSEM data, colored by experimental sequencing strategy and tumor type, respectively.  
-The top set of plots represent the data before batch effects were corrected, while the bottom set of plots represent the data after batch effects were corrected.
-When comparing the plots, the presence of batch effects does not appear to be very significant. 
+The grid of plots below shows the dimension reductions scores for the RSEM data,
+colored by experimental sequencing strategy and tumor type, respectively.  
+These plots seem to suggest the presence of batch effects, which is likely due 
+to the need for normalization across the two batches of RNA-Seq preparation 
+(poly-A versus stranded).
 
 ```{r, fig.width = 17, fig.height = 14}
 # Plot grid with RSEM data colored by method vs tumor type
-meta_grid_rsem_method <- gridExtra::grid.arrange(rsem_pca_plot_method,
-                                     rsem_tsne_plot_method,
-                                     rsem_umap_plot_method + 
-                                       ggplot2::theme(legend.position = 'hidden'),
-                                     nrow = 2,
-                                     legend2,
-                                     top = "Experimental Strategy (RSEM)")
+meta_grid_rsem_method <-
+  gridExtra::grid.arrange(
+    rsem_pca_plot_method,
+    rsem_tsne_plot_method,
+    rsem_umap_plot_method +
+      ggplot2::theme(legend.position = "hidden"),
+    nrow = 2,
+    legend2,
+    top = "Experimental Strategy (RSEM)"
+  )
+meta_grid_rsem_type <- gridExtra::grid.arrange(
+  rsem_pca_plot,
+  rsem_tsne_plot,
+  rsem_umap_plot +
+    ggplot2::theme(legend.position = "hidden"),
+  nrow = 3,
+  legend,
+  top = "Expressed Tumor Types (RSEM)"
+)
 
-meta_grid_rsem_method_2 <- gridExtra::grid.arrange(rsem_pca_plot_method_2,
-                                     rsem_tsne_plot_method_2,
-                                     rsem_umap_plot_method_2 + 
-                                       ggplot2::theme(legend.position = 'hidden'),
-                                     nrow = 2,
-                                     legend2_batch,
-                                     top = "Experimental Strategy - Batch Effects Corrected (RSEM)")
-
-meta_grid_rsem_type <- gridExtra::grid.arrange(rsem_pca_plot,
-                                     rsem_tsne_plot,
-                                     rsem_umap_plot + 
-                                       ggplot2::theme(legend.position = 'hidden'),
-                                     nrow = 3,
-                                     legend,
-                                     top = "Expressed Tumor Types (RSEM)")
-
-meta_grid_rsem_type_2 <- gridExtra::grid.arrange(rsem_pca_plot_2,
-                                     rsem_tsne_plot_2,
-                                     rsem_umap_plot_2 + 
-                                       ggplot2::theme(legend.position = 'hidden'),
-                                     nrow = 3,
-                                     legend_batch,
-                                     top = "Expressed Tumor Types - Batch Effects Corrected (RSEM)")
 # Save grid
-ggplot2::ggsave(file.path(plots_dir, "meta_grid_rsem_method.pdf"), meta_grid_rsem_method, width = 12, height = 18)
-ggplot2::ggsave(file.path(plots_dir, "meta_grid_rsem_type.pdf"), meta_grid_rsem_type, width = 12, height = 18)
-ggplot2::ggsave(file.path(plots_dir, "no_batch_grid_rsem_method.pdf"), meta_grid_rsem_method_2, width = 12, height = 18)
-ggplot2::ggsave(file.path(plots_dir, "no_batch_grid_rsem_type.pdf"), meta_grid_rsem_type_2, width = 12, height = 18)
+ggplot2::ggsave(file.path(plots_dir, "meta_grid_rsem_method.pdf"),
+                meta_grid_rsem_method,
+                width = 12,
+                height = 18
+)
+ggplot2::ggsave(file.path(plots_dir, "meta_grid_rsem_type.pdf"),
+                meta_grid_rsem_type,
+                width = 12,
+                height = 18
+)
 ```
 
 
@@ -416,41 +347,27 @@ kallisto_pca <- prcomp(transposed_kallisto_data)
 kallisto_pca_data <- data.frame(kallisto_pca$x[, 1:2])
 # Run the reduction_fn which aligns metadata and prepares data.frame for ggplot
 kallisto_pca_data <- reduction_fn(kallisto_pca_data, kallisto_ID)
-# Plot the PCA scores and color by cancer type 
-kallisto_pca_plot <- ggplot2::ggplot(kallisto_pca_data,
-                                     ggplot2::aes(x = kallisto_pca_data[, 1],
-                                                  y = kallisto_pca_data[, 2],
-                                                  color = type)) +
+# Plot the PCA scores and color by cancer type
+kallisto_pca_plot <- ggplot2::ggplot(
+  kallisto_pca_data,
+  ggplot2::aes(
+    x = kallisto_pca_data[, 1],
+    y = kallisto_pca_data[, 2],
+    color = type
+  )
+) +
   ggplot2::geom_point() +
   ggplot2::theme(legend.position = "none")
 
 # Plot the PCA scores and color by method
-kallisto_pca_plot_method <- ggplot2::ggplot(kallisto_pca_data,
-                                                 ggplot2::aes(x = kallisto_pca_data[, 1],
-                                                              y = kallisto_pca_data[, 2],
-                                                              color = method)) +
-  ggplot2::geom_point() +
-  ggplot2::theme(legend.position = "none")
-```
-
-## PCA Batch Effects Corrected
-
-```{r}
-# Run the correct_batch_effects function which corrects for batch effects and prepares data.frame for ggplot
-kallisto_pca_data <- correct_batch_effects(kallisto_pca_data)
-# Plot the PCA scores and color by cancer type 
-kallisto_pca_plot_2 <- ggplot2::ggplot(kallisto_pca_data,
-                                 ggplot2::aes(x = kallisto_pca_data[, 1],
-                                              y = kallisto_pca_data[, 2],
-                                              color = type)) +
-  ggplot2::geom_point() +
-  ggplot2::theme(legend.position = "none")
-
-# Plot the PCA scores and color by method
-kallisto_pca_plot_method_2 <- ggplot2::ggplot(kallisto_pca_data,
-                                             ggplot2::aes(x = kallisto_pca_data[, 1],
-                                                          y = kallisto_pca_data[, 2],
-                                                          color = method)) +
+kallisto_pca_plot_method <- ggplot2::ggplot(
+  kallisto_pca_data,
+  ggplot2::aes(
+    x = kallisto_pca_data[, 1],
+    y = kallisto_pca_data[, 2],
+    color = method
+  )
+) +
   ggplot2::geom_point() +
   ggplot2::theme(legend.position = "none")
 ```
@@ -464,41 +381,27 @@ kallisto_tsne <- Rtsne::Rtsne(transposed_kallisto_data)
 kallisto_tsne_data <- data.frame(kallisto_tsne$Y)
 # Run the reduction_fn which aligns metadata and prepares data.frame for ggplot
 kallisto_tsne_data <- reduction_fn(kallisto_tsne_data, kallisto_ID)
-# Plot the t-SNE scores and color by cancer type 
-kallisto_tsne_plot <- ggplot2::ggplot(kallisto_tsne_data,
-                                      ggplot2::aes(x = kallisto_tsne_data[, 1],
-                                                   y = kallisto_tsne_data[, 2],
-                                                   color = type)) +
-  ggplot2::geom_point() +
-  ggplot2::theme(legend.position = "none")
-
-# Plot the t-SNE scores and color by method 
-kallisto_tsne_plot_method <- ggplot2::ggplot(kallisto_tsne_data,
-                                                  ggplot2::aes(x = kallisto_tsne_data[, 1],
-                                                               y = kallisto_tsne_data[, 2],
-                                                               color = method)) +
-  ggplot2::geom_point() +
-  ggplot2::theme(legend.position = "none")
-```
-
-## t-SNE Batch Effects Corrected
-
-```{r}
-# Run the correct_batch_effects function which corrects for batch effects and prepares data.frame for ggplot
-kallisto_tsne_data <- correct_batch_effects(kallisto_tsne_data)
-# Plot the PCA scores and color by cancer type 
-kallisto_tsne_plot_2 <- ggplot2::ggplot(kallisto_tsne_data,
-                                 ggplot2::aes(x = kallisto_tsne_data[, 1],
-                                              y = kallisto_tsne_data[, 2],
-                                              color = type)) +
+# Plot the t-SNE scores and color by cancer type
+kallisto_tsne_plot <- ggplot2::ggplot(
+  kallisto_tsne_data,
+  ggplot2::aes(
+    x = kallisto_tsne_data[, 1],
+    y = kallisto_tsne_data[, 2],
+    color = type
+  )
+) +
   ggplot2::geom_point() +
   ggplot2::theme(legend.position = "none")
 
 # Plot the t-SNE scores and color by method
-kallisto_tsne_plot_method_2 <- ggplot2::ggplot(kallisto_tsne_data,
-                                             ggplot2::aes(x = kallisto_tsne_data[, 1],
-                                                          y = kallisto_tsne_data[, 2],
-                                                          color = method)) +
+kallisto_tsne_plot_method <- ggplot2::ggplot(
+  kallisto_tsne_data,
+  ggplot2::aes(
+    x = kallisto_tsne_data[, 1],
+    y = kallisto_tsne_data[, 2],
+    color = method
+  )
+) +
   ggplot2::geom_point() +
   ggplot2::theme(legend.position = "none")
 ```
@@ -512,100 +415,78 @@ kallisto_umap <- umap::umap(transposed_kallisto_data)
 kallisto_umap_data <- data.frame(kallisto_umap$layout)
 # Run the reduction_fn which aligns metadata and prepares data.frame for ggplot
 kallisto_umap_data <- reduction_fn(kallisto_umap_data, kallisto_ID)
-# Plot the umap scores and color by cancer type 
-kallisto_umap_plot <- ggplot2::ggplot(kallisto_umap_data,
-                                      ggplot2::aes(x = kallisto_umap_data[, 1],
-                                                   y = kallisto_umap_data[, 2],
-                                                   color = type)) +
-  ggplot2::geom_point() +
-  ggplot2::theme(legend.position = "bottom", legend.text = ggplot2::element_text(size = 4))
-
-#Extract the plot legend
-legend <- lemon::g_legend(kallisto_umap_plot)
-
-# Plot the umap scores and color by method
-kallisto_umap_plot_method <- ggplot2::ggplot(kallisto_umap_data,
-                                                  ggplot2::aes(x = kallisto_umap_data[, 1],
-                                                               y = kallisto_umap_data[, 2],
-                                                               color = method)) +
-  ggplot2::geom_point() +
-  ggplot2::theme(legend.position = "bottom", legend.text = ggplot2::element_text(size = 14))
-
-# Extract the plot legend 
-legend2 <- lemon::g_legend(kallisto_umap_plot_method)
-```
-
-## UMAP Batch Effects Corrected
-
-```{r}
-# Run the correct_batch_effects function which corrects for batch effects and prepares data.frame for ggplot
-kallisto_umap_data <- correct_batch_effects(kallisto_umap_data)
-# Plot the PCA scores and color by cancer type 
-kallisto_umap_plot_2 <- ggplot2::ggplot(kallisto_umap_data,
-                                 ggplot2::aes(x = kallisto_umap_data[, 1],
-                                              y = kallisto_umap_data[, 2],
-                                              color = type)) +
+# Plot the umap scores and color by cancer type
+kallisto_umap_plot <- ggplot2::ggplot(
+  kallisto_umap_data,
+  ggplot2::aes(
+    x = kallisto_umap_data[, 1],
+    y = kallisto_umap_data[, 2],
+    color = type
+  )
+) +
   ggplot2::geom_point() +
   ggplot2::theme(legend.position = "bottom", legend.text = ggplot2::element_text(size = 4))
 
 # Extract the plot legend
-legend_batch <- lemon::g_legend(kallisto_umap_plot_2)
+legend <- lemon::g_legend(kallisto_umap_plot)
 
 # Plot the umap scores and color by method
-kallisto_umap_plot_method_2 <- ggplot2::ggplot(kallisto_umap_data,
-                                             ggplot2::aes(x = kallisto_umap_data[, 1],
-                                                          y = kallisto_umap_data[, 2],
-                                                          color = method)) +
+kallisto_umap_plot_method <- ggplot2::ggplot(
+  kallisto_umap_data,
+  ggplot2::aes(
+    x = kallisto_umap_data[, 1],
+    y = kallisto_umap_data[, 2],
+    color = method
+  )
+) +
   ggplot2::geom_point() +
   ggplot2::theme(legend.position = "bottom", legend.text = ggplot2::element_text(size = 14))
 
-#Extract the plot legend
-legend2_batch <- lemon::g_legend(kallisto_umap_plot_method_2)
+# Extract the plot legend
+legend2 <- lemon::g_legend(kallisto_umap_plot_method)
 ```
 
 ## Kallisto Plots Grid
-The grid of plots below shows the dimension reductions scores for the kallisto data, colored by experimental sequencing strategy and tumor type, respectively. 
-The top set of plots represent the data before batch effects were corrected, while the bottom set of plots represent the data after batch effects were corrected.
-When comparing the plots, the presence of batch effects does not appear to be very significant. 
+The grid of plots below shows the dimension reductions scores for the kallisto 
+data, colored by experimental sequencing strategy and tumor type, respectively. 
+These plots seem to suggest the presence of batch effects, which is likely due 
+to the need for normalization across the two batches of RNA-Seq preparation 
+(poly-A versus stranded).
 
 ```{r, fig.width = 17, fig.height = 14}
 # Plot grid with kallisto data colored by method vs tumor type
-meta_grid_kallisto_method <- gridExtra::grid.arrange(kallisto_pca_plot_method,
-                                              kallisto_tsne_plot_method,
-                                              kallisto_umap_plot_method + 
-                                                ggplot2::theme(legend.position = 'hidden'),
-                                              legend2, 
-                                              nrow = 2,
-                                              top = "Experimental Strategy (kallisto)")
+meta_grid_kallisto_method <-
+  gridExtra::grid.arrange(
+    kallisto_pca_plot_method,
+    kallisto_tsne_plot_method,
+    kallisto_umap_plot_method +
+      ggplot2::theme(legend.position = "hidden"),
+    legend2,
+    nrow = 2,
+    top = "Experimental Strategy (kallisto)"
+  )
+meta_grid_kallisto_type <-
+  gridExtra::grid.arrange(
+    kallisto_pca_plot,
+    kallisto_tsne_plot,
+    kallisto_umap_plot +
+      ggplot2::theme(legend.position = "hidden"),
+    legend,
+    nrow = 3,
+    top = "Expressed Tumor Types (kallisto)"
+  )
 
-meta_grid_kallisto_method_2 <- gridExtra::grid.arrange(kallisto_pca_plot_method_2,
-                                     kallisto_tsne_plot_method_2,
-                                     kallisto_umap_plot_method_2 + 
-                                       ggplot2::theme(legend.position = 'hidden'),
-                                     nrow = 2,
-                                     legend2_batch,
-                                     top = "Experimental Strategy - Batch Effects Corrected (kallisto)")
-
-meta_grid_kallisto_type <- gridExtra::grid.arrange(kallisto_pca_plot,
-                                              kallisto_tsne_plot,
-                                              kallisto_umap_plot + 
-                                                ggplot2::theme(legend.position = 'hidden'),
-                                              legend,
-                                              nrow = 3,
-                                              top = "Expressed Tumor Types (kallisto)")
-
-meta_grid_kallisto_type_2 <- gridExtra::grid.arrange(kallisto_pca_plot_2,
-                                     kallisto_tsne_plot_2,
-                                     kallisto_umap_plot_2 + 
-                                       ggplot2::theme(legend.position = 'hidden'),
-                                     nrow = 3,
-                                     legend_batch,
-                                     top = "Expressed Tumor Types - Batch Effects Corrected (kallisto)")
 # Save grid
-ggplot2::ggsave(file.path(plots_dir, "meta_grid_kallisto_method.pdf"), meta_grid_kallisto_method, width = 12, height = 19)
-ggplot2::ggsave(file.path(plots_dir, "meta_grid_kallisto_type.pdf"), meta_grid_kallisto_type, width = 12, height = 19)
-ggplot2::ggsave(file.path(plots_dir, "no_batch_grid_kallisto_method.pdf"), meta_grid_kallisto_method_2, width = 12, height = 18)
-ggplot2::ggsave(file.path(plots_dir, "no_batch_grid_kallisto_type.pdf"), meta_grid_kallisto_type_2, width = 12, height = 18)
+ggplot2::ggsave(file.path(plots_dir, "meta_grid_kallisto_method.pdf"),
+                meta_grid_kallisto_method,
+                width = 12,
+                height = 19
+)
+ggplot2::ggsave(file.path(plots_dir, "meta_grid_kallisto_type.pdf"),
+                meta_grid_kallisto_type,
+                width = 12,
+                height = 19
+)
 ```
 
 # Session Info
