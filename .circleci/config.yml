@@ -24,6 +24,10 @@ jobs:
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/01-set-up.Rmd', clean = TRUE);
                                                       rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', clean = TRUE)"
                                
+      - run:
+          name: Unsupervised Transcriptomic Analysis
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/unsupervised-transcriptomic-analysis/01-transcriptomic-analysis.Rmd', clean = TRUE)"
+                
         #### Add your analysis here ####
         
   deploy:
