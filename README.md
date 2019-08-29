@@ -52,7 +52,6 @@ Analyses are added to this repository via [Pull Requests](https://github.com/Ale
 We are using continuous integration software applied to the supplied test datasets to confirm that the analysis can be carried out successfully within the Docker container.
 
 ## How to Obtain OpenPBTA Data
-This dataset includes all the PBTA somatic mutational and gene expression results in combined tsv or matrix format. We will be releasing this dataset on both [CAVATICA](https://cavatica.sbgenomics.com) and AWS cloud platform moving forward.
 
 The OpenPBTA dataset includes somatic mutation and gene expression results in combined tsv or matrix format.
 We are releasing this dataset on both [CAVATICA](https://cavatica.sbgenomics.com) and AWS S3.
@@ -89,11 +88,6 @@ Gene Fusions produced by the [applied software packages](https://alexslemonade.g
 
 The clinical manifest will be updated and versioned as molecular subgroups are identified based on genomic analyses.
 We noticed ControlFreeC does not properly handle aneuploidy well for a subset of samples in that it calls the entire genome gained. We recommend using these results with caution while we continue benchmarking this algorithm.
-
-
-```
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v3-20190829/pbta-histologies.tsv
-```
 
 ## How to Add an Analysis
 

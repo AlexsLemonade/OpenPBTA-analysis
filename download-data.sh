@@ -4,7 +4,7 @@ set -o pipefail
 
 # Use the OpenPBTA bucket as the default.
 URL=${URL:-https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data}
-RELEASE=${RELEASE:-release-v3-20190829}
+RELEASE=${RELEASE:-release-v2-20190809}
 
 # The md5sum file provides our single point of truth for which files are in a release.
 curl --create-dirs $URL/$RELEASE/md5sum.txt -o data/$RELEASE/md5sum.txt -z data/$RELEASE/md5sum.txt
