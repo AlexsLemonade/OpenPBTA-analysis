@@ -11,6 +11,25 @@
     - overall survival status (living/deceased)
     - RNA_library type
     - edited previous sex variable to be reported_gender
+- folder structure:
+```
+data
+└── release-v3-20190829
+    ├── CHANGELOG.md
+    ├── md5sum.txt
+    ├── pbta-cnv-cnvkit.seg.gz
+    ├── pbta-cnv-controlfreec.seg.gz
+    ├── pbta-fusion-arriba.tsv.gz
+    ├── pbta-fusion-starfusion.tsv.gz
+    ├── pbta-gene-expression-kallisto.rds
+    ├── pbta-gene-expression-rsem.fpkm.rds
+    ├── pbta-histologies.tsv
+    ├── pbta-snv-mutect2.vep.maf.gz
+    ├── pbta-snv-strelka2.vep.maf.gz
+    ├── pbta-sv-lumpy.tsv.gz
+    ├── pbta-sv-manta.tsv.gz
+    └── README.md
+```
 
 ## archived release
 ### release-v2-20190809
