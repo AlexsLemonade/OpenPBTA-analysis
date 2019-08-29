@@ -92,7 +92,7 @@ We noticed ControlFreeC does not properly handle aneuploidy well for a subset of
 
 
 ```
-wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v2-20190809/pbta-histologies.tsv
+wget https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data/release-v3-20190829/pbta-histologies.tsv
 ```
 
 ## How to Add an Analysis
