@@ -1,5 +1,18 @@
 # release notes
 ## current release
+### release-v3-20190829
+- release date: 2019-08-29
+- status: available
+- changes:
+  - Arriba fusions run with https://github.com/FusionAnnotator/CTAT_HumanFusionLib/wiki#red-herrings-fusion-pairs-that-may-not-be-relevant-to-cancer-and-potential-false-positives to match STAR-fusion results
+  - Clinical data sheet, added information for:
+    - germline_sex_estimate
+    - overall survival (days)
+    - overall survival status (living/deceased)
+    - RNA_library type
+    - edited previous sex variable to be reported_gender
+
+## archived release
 ### release-v2-20190809
 - release date: 2019-08-09
 - status: available
@@ -37,7 +50,7 @@ data
     ├── pbta-sv-manta.tsv.gz
     └── README.md
 ```
-## archived release
+
 ### release-v1-20190730
 - release date: 2019-07-30
 - status: not-available as it contains consent/qc failed samples
