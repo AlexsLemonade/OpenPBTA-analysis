@@ -63,7 +63,7 @@ RUN R -e "install.packages("ggpubr")"
 RUN R -e "install.packages("RColorBrewer")"
 
 #Needed formatting
-RUN R -e "install.packages(c("data.table","reshape2","qdapRegex"))"
+RUN R -e "install.packages(c("data.table","reshape2","qdapRegex","org.Hs.eg.db"))"
 
 
 
