@@ -1,9 +1,5 @@
 #!/bin/bash
 
-#gunzip merged files for input 
-gunzip ../../data/release-v2-20190809/pbta-fusion-arriba.tsv.gz
-gunzip ../../data/release-v3/pbta-fusion-starfusion.tsv.gz
-
 #download fusion filtering git repo to access the scripts and refernce files
 cd ../../scratch
 git clone https://github.com/d3b-center/fusion_filtering_pipeline.git
