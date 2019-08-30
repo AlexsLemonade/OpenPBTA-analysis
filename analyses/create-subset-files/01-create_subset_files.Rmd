@@ -31,7 +31,7 @@ This variable controls the number of participants that are included in the
 subset files.
 
 ```{r}
-num_matched_participants <- 5
+num_matched_participants <- 50
 ```
 
 This is used to set the seed when selecting participant ids.
