@@ -8,7 +8,7 @@ library(tidyr)
 library(R.utils)
 
 # star fusion
-sf<-read.delim(gzfile(paste0(file.path("../../data/pbta-fusion-starfusion.tsv.gz"))),stringsAsFactors=F,,header=T,sep="\t")
+sf<-read.delim(gzfile(file.path("..", "..", "data","pbta-fusion-starfusion.tsv.gz")),stringsAsFactors=F,,header=T,sep="\t")
 #head(sf)
 sf<-sf[-which(sf$SpanningFragCount-sf$JunctionReadCount >10|sf$JunctionReadCount==0|sf$LargeAnchorSupport == "NO_LDAS"),]
 sf$LeftBreakpoint <- gsub('^chr','',sf$LeftBreakpoint)
@@ -34,7 +34,7 @@ sf.total$FusionName<-sub("IGL@","IGLC6",sf.total$FusionName)
 sf.total$FusionName<-sub("IGL-@","IGLC6",sf.total$FusionName)
 
 # arriba fusion
-ar <- read.delim(gzfile(paste0(file.path("../../data/pbta-fusion-arriba.tsv.gz"))),stringsAsFactors=F,,header=T,sep="\t")
+ar <- read.delim(gzfile(file.path("..", "..", "data","pbta-fusion-arriba.tsv.gz")),stringsAsFactors=F,,header=T,sep="\t")
 #remove false positives through supporting reads
 ar<-ar[-(which(ar$discordant_mates-(ar$split_reads1+ar$split_reads2) >10 |ar$split_reads1+ar$split_reads2==0)),]
 ar$LeftBreakpoint <- gsub('^chr','',ar$breakpoint1)
@@ -78,7 +78,7 @@ rts <- unique(c(rts, rts.rev))
 all.callers<-rbind(ar.total, sf.total)
 
 #histology
-clin<-read.delim(paste0(file.path("../../data/pbta-histologies.tsv")),stringsAsFactors = F,sep="\t")
+clin<-read.delim(file.path("..", "..", "data","pbta-histologies.tsv"),stringsAsFactors = F,sep="\t")
 clin$sample_id<-clin$Kids_First_Biospecimen_ID
 
 #merge callers and clinical information
