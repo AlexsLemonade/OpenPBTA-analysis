@@ -93,10 +93,10 @@ nrow(all.callers)
 
 
 #public databases to gather putative driver fusion calls
-tsgs<-read.delim('scratch/fusion_filtering_pipeline/references/tsgs.txt', header = T,stringsAsFactors = F)
-onco<-read.delim('scratch/fusion_filtering_pipeline/references/allOnco_Feb2017.tsv', header = T,stringsAsFactors = F)
-tcga<-read.delim('scratch/fusion_filtering_pipeline/references/pancanfus.txt', header = T,stringsAsFactors = F)
-cosmic<-read.delim('scratch/fusion_filtering_pipeline/references/Cosmic_gene_census.csv',header=T,stringsAsFactors=F,sep=",")
+tsgs<-read.delim('analyses/fusion_filtering/references/tsgs.txt', header = T,stringsAsFactors = F)
+onco<-read.delim('analyses/fusion_filtering/references/allOnco_Feb2017.tsv', header = T,stringsAsFactors = F)
+tcga<-read.delim('analyses/fusion_filtering/references/pancanfus.txt', header = T,stringsAsFactors = F)
+cosmic<-read.delim('analyses/fusion_filtering/references/Cosmic_gene_census.csv',header=T,stringsAsFactors=F,sep=",")
 tcga$TCGA_fusions<-paste(tcga$Gene_A,tcga$Gene_B,sep="--")
 head(tcga)
 
@@ -165,12 +165,12 @@ res$note<-"recurrently fused in a histology"
 total <- unique(rbind(all.callers.summary, sample.count, res))
 
 #add TF and Kinase gene fusions
-curatedtf <- read.delim(paste0('scratch/fusion_filtering_pipeline/','references/curatedTF_attribute_list_entries.txt'), header = T)
-predictedtf<-read.delim(paste0('scratch/fusion_filtering_pipeline/','references/predictedTF_attribute_list_entries.txt'), header = T)
+curatedtf <- read.delim(paste0('analyses/fusion_filtering/','references/curatedTF_attribute_list_entries.txt'), header = T)
+predictedtf<-read.delim(paste0('analyses/fusion_filtering/','references/predictedTF_attribute_list_entries.txt'), header = T)
 tf<-rbind(curatedtf,predictedtf)
 
 
-kinase <- read.delim(paste0('scratch/fusion_filtering_pipeline/','/references/Kincat_Hsap.08.02.txt'),sep="\t",stringsAsFactors = F)
+kinase <- read.delim(paste0('analyses/fusion_filtering/','/references/Kincat_Hsap.08.02.txt'),sep="\t",stringsAsFactors = F)
 kinase <- kinase[-which(kinase$Entrez_Symbol == ""),]
 
 genes.to.search <- c(paste0('^',kinase$Entrez_Symbol,'-'), paste0('-',kinase$Entrez_Symbol,'$'),paste0('^',tf$GeneSym,'-'), paste0('-',tf$GeneSym,'$'))
