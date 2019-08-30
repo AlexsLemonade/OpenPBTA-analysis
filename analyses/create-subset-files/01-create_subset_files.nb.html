@@ -2953,7 +2953,31 @@ div.tocify {
 <h4>Packages and functions</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JpdGVfbWFmX2ZpbGUgPC0gZnVuY3Rpb24obWFmX2RmLCBmaWxlX25hbWUsIHZlcnNpb25fc3RyaW5nKSB7XG4gICMgR2l2ZW4gYSBkYXRhLmZyYW1lIHRoYXQgY29udGFpbnMgdGhlIGZpZWxkcyBmb3IgYSBNQUYgZmlsZSwgd3JpdGUgYSBnemlwcGVkXG4gICMgTUFGIGZpbGUgYW5kIGluY2x1ZGUgdGhlIHZlcnNpb24gaW5mb3JtYXRpb24gcHJvdmlkZWQgaW4gdmVyc2lvbl9zdHJpbmcuXG4gICMgXG4gICMgTm90ZTogaWYgZmlsZV9uYW1lIGV4aXN0cywgaXQgd2lsbCBiZSBvdmVyd3JpdHRlblxuICAjXG4gICMgQXJnczpcbiAgIyAgIG1hZl9kZjogQSBkYXRhLmZyYW1lIHRoYXQgY29udGFpbnMgdGhlIE1BRiBpbmZvLlxuICAjICAgZmlsZV9uYW1lOiBPdXRwdXQgZmlsZSBuYW1lLCBpbmNsdWRpbmcgdGhlIGZ1bGwgcGF0aC5cbiAgIyAgIHZlcnNpb25fc3RyaW5nOiB0aGUgdmVyc2lvbiBzdHJpbmcgdGhhdCB3aWxsIGJlIHdyaXR0ZW4gdG8gdGhlIGZpcnN0IGxpbmVcbiAgIyAgICAgICAgICAgICAgICAgICBvZiB0aGUgZmlsZSBhdCBmaWxlX25hbWVcbiAgI1xuICAjIFJldHVybnM6IGludGVuZGVkIHRvIGJlIHVzZWQgdG8gd3JpdGUgZmlsZXMgb25seVxuICBcbiAgIyBpZiB0aGUgZmlsZSBuYW1lIHN1cHBsaWVkIHRvIHRoaXMgZnVuY3Rpb24gZW5kcyBpbiBgLmd6YCwgdGFrZSBpdCBvdXQgZm9yXG4gICMgdGhlIHB1cnBvc2VzIG9mIHdyaXRlTGluZXMsIGV0Yy5cbiAgIyB3ZSdsbCBnemlwIGl0IGF0IHRoZSBlbmQgd2l0aCBSLnV0aWxzOjpnemlwIGFuZCB0aGlzIGV4dGVuc2lvbiBpcyBub3QgbmVlZGVkXG4gIGlmIChncmVwbChcXC5nelxcLCBmaWxlX25hbWUpKSB7XG4gICAgZmlsZV9uYW1lIDwtIHN1YihcXC5nelxcLCBcXFxcLCBmaWxlX25hbWUpXG4gIH1cbiAgXG4gICMgd3JpdGUgdGhlIHZlcnNpb24gc3RyaW5nIHRvIHRoZSB0b3Agb2YgdGhlIGZpbGVcbiAgd3JpdGVMaW5lcyh2ZXJzaW9uX3N0cmluZywgY29uID0gZmlsZV9uYW1lKVxuICBcbiAgIyB3cml0ZSB0aGUgdGFidWxhciBkYXRhIG9mIG1hZl9kZlxuICByZWFkcjo6d3JpdGVfdHN2KG1hZl9kZiwgcGF0aCA9IGZpbGVfbmFtZSwgYXBwZW5kID0gVFJVRSwgY29sX25hbWVzID0gVFJVRSlcbiAgXG4gICMgbm93IGd6aXAgdGhlIGZpbGVcbiAgUi51dGlsczo6Z3ppcChmaWxlX25hbWUsIG92ZXJ3cml0ZSA9IFRSVUUpXG59XG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBSLnV0aWxzIGlzIHJlcXVpcmVkIHRvIGd6aXAgZmlsZXMgaGVyZVxuaWYgKCEoXCJSLnV0aWxzXCIgJWluJSBpbnN0YWxsZWQucGFja2FnZXMoKSkpIHtcbiAgaW5zdGFsbC5wYWNrYWdlcyhcIlIudXRpbHNcIilcbn1cbmBgYCJ9 -->
+<pre class="r"><code># R.utils is required to gzip files here
+if (!(&quot;R.utils&quot; %in% installed.packages())) {
+  install.packages(&quot;R.utils&quot;)
+}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p><code>magrittr</code> pipe.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYCU+JWAgPC0gZHBseXI6OmAlPiVgXG5gYGAifQ== -->
+<pre class="r"><code>`%&gt;%` &lt;- dplyr::`%&gt;%`</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RwbHlyJzpcbiAgbWV0aG9kICAgICAgICAgICBmcm9tXG4gIHByaW50LnJvd3dpc2VfZGYgICAgIFxuIn0= -->
+<pre><code>Registered S3 method overwritten by 'dplyr':
+  method           from
+  print.rowwise_df     </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Custom function for writing gzipped MAF files.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JpdGVfbWFmX2ZpbGUgPC0gZnVuY3Rpb24obWFmX2RmLCBmaWxlX25hbWUsIHZlcnNpb25fc3RyaW5nKSB7XG4gICMgR2l2ZW4gYSBkYXRhLmZyYW1lIHRoYXQgY29udGFpbnMgdGhlIGZpZWxkcyBmb3IgYSBNQUYgZmlsZSwgd3JpdGUgYSBnemlwcGVkXG4gICMgTUFGIGZpbGUgYW5kIGluY2x1ZGUgdGhlIHZlcnNpb24gaW5mb3JtYXRpb24gcHJvdmlkZWQgaW4gdmVyc2lvbl9zdHJpbmcuXG4gICMgXG4gICMgTm90ZTogaWYgZmlsZV9uYW1lIGV4aXN0cywgaXQgd2lsbCBiZSBvdmVyd3JpdHRlblxuICAjXG4gICMgQXJnczpcbiAgIyAgIG1hZl9kZjogQSBkYXRhLmZyYW1lIHRoYXQgY29udGFpbnMgdGhlIE1BRiBpbmZvLlxuICAjICAgZmlsZV9uYW1lOiBPdXRwdXQgZmlsZSBuYW1lLCBpbmNsdWRpbmcgdGhlIGZ1bGwgcGF0aC5cbiAgIyAgIHZlcnNpb25fc3RyaW5nOiB0aGUgdmVyc2lvbiBzdHJpbmcgdGhhdCB3aWxsIGJlIHdyaXR0ZW4gdG8gdGhlIGZpcnN0IGxpbmVcbiAgIyAgICAgICAgICAgICAgICAgICBvZiB0aGUgZmlsZSBhdCBmaWxlX25hbWVcbiAgI1xuICAjIFJldHVybnM6IGludGVuZGVkIHRvIGJlIHVzZWQgdG8gd3JpdGUgZmlsZXMgb25seVxuICBcbiAgIyBpZiB0aGUgZmlsZSBuYW1lIHN1cHBsaWVkIHRvIHRoaXMgZnVuY3Rpb24gZW5kcyBpbiBgLmd6YCwgdGFrZSBpdCBvdXQgZm9yXG4gICMgdGhlIHB1cnBvc2VzIG9mIHdyaXRlTGluZXMsIGV0Yy5cbiAgIyB3ZSdsbCBnemlwIGl0IGF0IHRoZSBlbmQgd2l0aCBSLnV0aWxzOjpnemlwIGFuZCB0aGlzIGV4dGVuc2lvbiBpcyBub3QgbmVlZGVkXG4gIGlmIChncmVwbChcIi5nelwiLCBmaWxlX25hbWUpKSB7XG4gICAgZmlsZV9uYW1lIDwtIHN1YihcIi5nelwiLCBcIlwiLCBmaWxlX25hbWUpXG4gIH1cbiAgXG4gICMgd3JpdGUgdGhlIHZlcnNpb24gc3RyaW5nIHRvIHRoZSB0b3Agb2YgdGhlIGZpbGVcbiAgd3JpdGVMaW5lcyh2ZXJzaW9uX3N0cmluZywgY29uID0gZmlsZV9uYW1lKVxuICBcbiAgIyB3cml0ZSB0aGUgdGFidWxhciBkYXRhIG9mIG1hZl9kZlxuICByZWFkcjo6d3JpdGVfdHN2KG1hZl9kZiwgcGF0aCA9IGZpbGVfbmFtZSwgYXBwZW5kID0gVFJVRSwgY29sX25hbWVzID0gVFJVRSlcbiAgXG4gICMgbm93IGd6aXAgdGhlIGZpbGVcbiAgUi51dGlsczo6Z3ppcChmaWxlX25hbWUsIG92ZXJ3cml0ZSA9IFRSVUUpXG59XG5gYGAifQ== -->
 <pre class="r"><code>write_maf_file &lt;- function(maf_df, file_name, version_string) {
   # Given a data.frame that contains the fields for a MAF file, write a gzipped
   # MAF file and include the version information provided in version_string.
@@ -2971,8 +2995,8 @@ div.tocify {
   # if the file name supplied to this function ends in `.gz`, take it out for
   # the purposes of writeLines, etc.
   # we'll gzip it at the end with R.utils::gzip and this extension is not needed
-  if (grepl(\.gz\, file_name)) {
-    file_name &lt;- sub(\.gz\, \\, file_name)
+  if (grepl(&quot;.gz&quot;, file_name)) {
+    file_name &lt;- sub(&quot;.gz&quot;, &quot;&quot;, file_name)
   }
   
   # write the version string to the top of the file
@@ -2987,25 +3011,6 @@ div.tocify {
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p><code>magrittr</code> pipe.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGF0YV9kaXIgPC0gZmlsZS5wYXRoKFxcLi5cXCwgXFwuLlxcLCBcXGRhdGFcXClcbmBgYCJ9 -->
-<pre class="r"><code>data_dir &lt;- file.path(\..\, \..\, \data\)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Custom function for writing gzipped MAF files.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGVzdGluZ19kYXRhX2RpciA8LSBmaWxlLnBhdGgoZGF0YV9kaXIsIFxcdGVzdGluZ1xcKVxuaWYgKCFkaXIuZXhpc3RzKHRlc3RpbmdfZGF0YV9kaXIpKSB7XG4gIGRpci5jcmVhdGUodGVzdGluZ19kYXRhX2RpciwgcmVjdXJzaXZlID0gVFJVRSlcbn1cbmBgYCJ9 -->
-<pre class="r"><code>testing_data_dir &lt;- file.path(data_dir, \testing\)
-if (!dir.exists(testing_data_dir)) {
-  dir.create(testing_data_dir, recursive = TRUE)
-}</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
 <p>I can confirm that the file written by <code>write_maf_file</code> can be read into R via <code>maftools::read.maf</code>. See <code>02-subset_maf_concept</code> for a proof of concept.</p>
 </div>
 <div id="directories-and-files" class="section level3">
@@ -3013,44 +3018,45 @@ if (!dir.exists(testing_data_dir)) {
 <p>Path to the symlinked data obtained via <code>bash download-data.sh</code>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY252a2l0X2ZpbGUgPC0gXFxwYnRhLWNudi1jbnZraXQuc2VnLmd6XFxcbmNvbnRyb2xmcmVlY19maWxlIDwtIFxccGJ0YS1jbnYtY29udHJvbGZyZWVjLnNlZy5nelxcXG5hcnJpYmFfZmlsZSA8LSBcXHBidGEtZnVzaW9uLWFycmliYS50c3YuZ3pcXFxuc3RhcmZ1c2lvbl9maWxlIDwtIFxccGJ0YS1mdXNpb24tc3RhcmZ1c2lvbi50c3YuZ3pcXFxua2FsbGlzdG9fZmlsZSA8LSBcXHBidGEtZ2VuZS1leHByZXNzaW9uLWthbGxpc3RvLnJkc1xcXG5yc2VtX2ZpbGUgPC0gXFxwYnRhLWdlbmUtZXhwcmVzc2lvbi1yc2VtLmZwa20ucmRzXFxcbmhpc3RvbG9naWVzX2ZpbGUgPC0gXFxwYnRhLWhpc3RvbG9naWVzLnRzdlxcXG5tdXRlY3QyX2ZpbGUgPC0gXFxwYnRhLXNudi1tdXRlY3QyLnZlcC5tYWYuZ3pcXFxuc3RyZWxrYTJfZmlsZSA8LSBcXHBidGEtc252LXN0cmVsa2EyLnZlcC5tYWYuZ3pcXFxubWFudGFfZmlsZSA8LSBcXHBidGEtc3YtbWFudGEudHN2Lmd6XFxcbmx1bXB5X2ZpbGUgPC0gXFxwYnRhLXN2LWx1bXB5LnRzdi5nelxcXG5gYGAifQ== -->
-<pre class="r"><code>cnvkit_file &lt;- \pbta-cnv-cnvkit.seg.gz\
-controlfreec_file &lt;- \pbta-cnv-controlfreec.seg.gz\
-arriba_file &lt;- \pbta-fusion-arriba.tsv.gz\
-starfusion_file &lt;- \pbta-fusion-starfusion.tsv.gz\
-kallisto_file &lt;- \pbta-gene-expression-kallisto.rds\
-rsem_file &lt;- \pbta-gene-expression-rsem.fpkm.rds\
-histologies_file &lt;- \pbta-histologies.tsv\
-mutect2_file &lt;- \pbta-snv-mutect2.vep.maf.gz\
-strelka2_file &lt;- \pbta-snv-strelka2.vep.maf.gz\
-manta_file &lt;- \pbta-sv-manta.tsv.gz\
-lumpy_file &lt;- \pbta-sv-lumpy.tsv.gz\</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGF0YV9kaXIgPC0gZmlsZS5wYXRoKFwiLi5cIiwgXCIuLlwiLCBcImRhdGFcIilcbmBgYCJ9 -->
+<pre class="r"><code>data_dir &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;data&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>We’ll put the subset files in a new directory <code>../../data/testing</code>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2FtcGxlX2lkX2xpc3QgPC0gbGlzdCgpXG5gYGAifQ== -->
-<pre class="r"><code>sample_id_list &lt;- list()</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGVzdGluZ19kYXRhX2RpciA8LSBmaWxlLnBhdGgoZGF0YV9kaXIsIFwidGVzdGluZ1wiKVxuaWYgKCFkaXIuZXhpc3RzKHRlc3RpbmdfZGF0YV9kaXIpKSB7XG4gIGRpci5jcmVhdGUodGVzdGluZ19kYXRhX2RpciwgcmVjdXJzaXZlID0gVFJVRSlcbn1cbmBgYCJ9 -->
+<pre class="r"><code>testing_data_dir &lt;- file.path(data_dir, &quot;testing&quot;)
+if (!dir.exists(testing_data_dir)) {
+  dir.create(testing_data_dir, recursive = TRUE)
+}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>We want the file names to be consistent between the symlinked data and the subset files that will be used for continuous integration, so we’ll hardcode them here.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY252a2l0IDwtIHJlYWRyOjpyZWFkX3RzdihmaWxlLnBhdGgoZGF0YV9kaXIsIGNudmtpdF9maWxlKSlcbmNvbnRyb2xmcmVlYyA8LSByZWFkcjo6cmVhZF90c3YoZmlsZS5wYXRoKGRhdGFfZGlyLCBjb250cm9sZnJlZWNfZmlsZSkpXG5gYGAifQ== -->
-<pre class="r"><code>cnvkit &lt;- readr::read_tsv(file.path(data_dir, cnvkit_file))
-controlfreec &lt;- readr::read_tsv(file.path(data_dir, controlfreec_file))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY252a2l0X2ZpbGUgPC0gXCJwYnRhLWNudi1jbnZraXQuc2VnLmd6XCJcbmNvbnRyb2xmcmVlY19maWxlIDwtIFwicGJ0YS1jbnYtY29udHJvbGZyZWVjLnNlZy5nelwiXG5hcnJpYmFfZmlsZSA8LSBcInBidGEtZnVzaW9uLWFycmliYS50c3YuZ3pcIlxuc3RhcmZ1c2lvbl9maWxlIDwtIFwicGJ0YS1mdXNpb24tc3RhcmZ1c2lvbi50c3YuZ3pcIlxua2FsbGlzdG9fZmlsZSA8LSBcInBidGEtZ2VuZS1leHByZXNzaW9uLWthbGxpc3RvLnJkc1wiXG5yc2VtX2ZpbGUgPC0gXCJwYnRhLWdlbmUtZXhwcmVzc2lvbi1yc2VtLmZwa20ucmRzXCJcbmhpc3RvbG9naWVzX2ZpbGUgPC0gXCJwYnRhLWhpc3RvbG9naWVzLnRzdlwiXG5tdXRlY3QyX2ZpbGUgPC0gXCJwYnRhLXNudi1tdXRlY3QyLnZlcC5tYWYuZ3pcIlxuc3RyZWxrYTJfZmlsZSA8LSBcInBidGEtc252LXN0cmVsa2EyLnZlcC5tYWYuZ3pcIlxubWFudGFfZmlsZSA8LSBcInBidGEtc3YtbWFudGEudHN2Lmd6XCJcbmx1bXB5X2ZpbGUgPC0gXCJwYnRhLXN2LWx1bXB5LnRzdi5nelwiXG5gYGAifQ== -->
+<pre class="r"><code>cnvkit_file &lt;- &quot;pbta-cnv-cnvkit.seg.gz&quot;
+controlfreec_file &lt;- &quot;pbta-cnv-controlfreec.seg.gz&quot;
+arriba_file &lt;- &quot;pbta-fusion-arriba.tsv.gz&quot;
+starfusion_file &lt;- &quot;pbta-fusion-starfusion.tsv.gz&quot;
+kallisto_file &lt;- &quot;pbta-gene-expression-kallisto.rds&quot;
+rsem_file &lt;- &quot;pbta-gene-expression-rsem.fpkm.rds&quot;
+histologies_file &lt;- &quot;pbta-histologies.tsv&quot;
+mutect2_file &lt;- &quot;pbta-snv-mutect2.vep.maf.gz&quot;
+strelka2_file &lt;- &quot;pbta-snv-strelka2.vep.maf.gz&quot;
+manta_file &lt;- &quot;pbta-sv-manta.tsv.gz&quot;
+lumpy_file &lt;- &quot;pbta-sv-lumpy.tsv.gz&quot;</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>We’ll use <code>Reduce</code> + <code>intersect</code> on a list that holds the sample identifiers from each file to find identifiers present in <em>all</em> files.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2FtcGxlX2lkX2xpc3QkY252a2l0IDwtIHVuaXF1ZShjbnZraXQkSUQpXG5zYW1wbGVfaWRfbGlzdCRjb250cm9sZnJlZWMgPC0gdW5pcXVlKGNvbnRyb2xmcmVlYyRJRClcbmBgYCJ9 -->
-<pre class="r"><code>sample_id_list$cnvkit &lt;- unique(cnvkit$ID)
-sample_id_list$controlfreec &lt;- unique(controlfreec$ID)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2FtcGxlX2lkX2xpc3QgPC0gbGlzdCgpXG5gYGAifQ== -->
+<pre class="r"><code>sample_id_list &lt;- list()</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3061,13 +3067,82 @@ sample_id_list$controlfreec &lt;- unique(controlfreec$ID)</code></pre>
 <p>The CNV files are in <a href="https://software.broadinstitute.org/software/igv/SEG">SEG format</a> and are gzipped. These are tab-delimited files.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYXJyaWJhIDwtIHJlYWRyOjpyZWFkX3RzdihmaWxlLnBhdGgoZGF0YV9kaXIsIGFycmliYV9maWxlKSlcbnN0YXJmdXNpb24gPC0gcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2Rpciwgc3RhcmZ1c2lvbl9maWxlKSlcbmBgYCJ9 -->
-<pre class="r"><code>arriba &lt;- readr::read_tsv(file.path(data_dir, arriba_file))
-starfusion &lt;- readr::read_tsv(file.path(data_dir, starfusion_file))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY252a2l0IDwtIHJlYWRyOjpyZWFkX3RzdihmaWxlLnBhdGgoZGF0YV9kaXIsIGNudmtpdF9maWxlKSlcbmBgYCJ9 -->
+<pre class="r"><code>cnvkit &lt;- readr::read_tsv(file.path(data_dir, cnvkit_file))</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBJRCA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBjaHJvbSA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBsb2Muc3RhcnQgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgbG9jLmVuZCA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBudW0ubWFyayA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBzZWcubWVhbiA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltXG4pXG4ifQ== -->
+<pre><code>Parsed with column specification:
+cols(
+  ID = [31mcol_character()[39m,
+  chrom = [31mcol_character()[39m,
+  loc.start = [32mcol_double()[39m,
+  loc.end = [32mcol_double()[39m,
+  num.mark = [32mcol_double()[39m,
+  seg.mean = [32mcol_double()[39m
+)</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29udHJvbGZyZWVjIDwtIHJlYWRyOjpyZWFkX3RzdihmaWxlLnBhdGgoZGF0YV9kaXIsIGNvbnRyb2xmcmVlY19maWxlKSlcbmBgYCJ9 -->
+<pre class="r"><code>controlfreec &lt;- readr::read_tsv(file.path(data_dir, controlfreec_file))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBJRCA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBjaHJvbSA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBsb2Muc3RhcnQgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgbG9jLmVuZCA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBudW0ubWFyayA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBzZWcubWVhbiA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltXG4pXG4ifQ== -->
+<pre><code>Parsed with column specification:
+cols(
+  ID = [31mcol_character()[39m,
+  chrom = [31mcol_character()[39m,
+  loc.start = [32mcol_double()[39m,
+  loc.end = [32mcol_double()[39m,
+  num.mark = [32mcol_double()[39m,
+  seg.mean = [32mcol_double()[39m
+)</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Extract the identifiers from the SEG files.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2FtcGxlX2lkX2xpc3QkY252a2l0IDwtIHVuaXF1ZShjbnZraXQkSUQpXG5zYW1wbGVfaWRfbGlzdCRjb250cm9sZnJlZWMgPC0gdW5pcXVlKGNvbnRyb2xmcmVlYyRJRClcbmBgYCJ9 -->
+<pre class="r"><code>sample_id_list$cnvkit &lt;- unique(cnvkit$ID)
+sample_id_list$controlfreec &lt;- unique(controlfreec$ID)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="fusion" class="section level2">
+<h2>Fusion</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYXJyaWJhIDwtIHJlYWRyOjpyZWFkX3RzdihmaWxlLnBhdGgoZGF0YV9kaXIsIGFycmliYV9maWxlKSlcbmBgYCJ9 -->
+<pre class="r"><code>arriba &lt;- readr::read_tsv(file.path(data_dir, arriba_file))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgc3BsaXRfcmVhZHMxID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIHNwbGl0X3JlYWRzMiA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBkaXNjb3JkYW50X21hdGVzID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIGNvdmVyYWdlMSA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBjb3ZlcmFnZTIgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
+<pre><code>Parsed with column specification:
+cols(
+  .default = col_character(),
+  split_reads1 = [32mcol_double()[39m,
+  split_reads2 = [32mcol_double()[39m,
+  discordant_mates = [32mcol_double()[39m,
+  coverage1 = [32mcol_double()[39m,
+  coverage2 = [32mcol_double()[39m
+)
+See spec(...) for full column specifications.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RhcmZ1c2lvbiA8LSByZWFkcjo6cmVhZF90c3YoZmlsZS5wYXRoKGRhdGFfZGlyLCBzdGFyZnVzaW9uX2ZpbGUpKVxuYGBgIn0= -->
+<pre class="r"><code>starfusion &lt;- readr::read_tsv(file.path(data_dir, starfusion_file))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgSnVuY3Rpb25SZWFkQ291bnQgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgU3Bhbm5pbmdGcmFnQ291bnQgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgRkZQTSA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBMZWZ0QnJlYWtFbnRyb3B5ID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIFJpZ2h0QnJlYWtFbnRyb3B5ID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW1cbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuIn0= -->
+<pre><code>Parsed with column specification:
+cols(
+  .default = col_character(),
+  JunctionReadCount = [32mcol_double()[39m,
+  SpanningFragCount = [32mcol_double()[39m,
+  FFPM = [32mcol_double()[39m,
+  LeftBreakEntropy = [32mcol_double()[39m,
+  RightBreakEntropy = [32mcol_double()[39m
+)
+See spec(...) for full column specifications.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2FtcGxlX2lkX2xpc3QkYXJyaWJhIDwtIHVuaXF1ZShhcnJpYmEkdHVtb3JfaWQpXG5zYW1wbGVfaWRfbGlzdCRzdGFyZnVzaW9uIDwtIHVuaXF1ZShzdGFyZnVzaW9uJHR1bW9yX2lkKVxuYGBgIn0= -->
@@ -3077,8 +3152,8 @@ sample_id_list$starfusion &lt;- unique(starfusion$tumor_id)</code></pre>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="fusion" class="section level2">
-<h2>Fusion</h2>
+<div id="gene-expression" class="section level2">
+<h2>Gene expression</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxua2FsbGlzdG8gPC0gcmVhZHI6OnJlYWRfcmRzKGZpbGUucGF0aChkYXRhX2Rpciwga2FsbGlzdG9fZmlsZSkpXG5yc2VtIDwtIHJlYWRyOjpyZWFkX3JkcyhmaWxlLnBhdGgoZGF0YV9kaXIsIHJzZW1fZmlsZSkpXG5gYGAifQ== -->
@@ -3098,8 +3173,10 @@ sample_id_list$rsem &lt;- colnames(rsem)[2:ncol(kallisto)]</code></pre>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="gene-expression" class="section level2">
-<h2>Gene expression</h2>
+<div id="snv" class="section level2">
+<h2>SNV</h2>
+<p>SNV files are in <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/doc/format/vep-maf.md">annotated MAF format</a>. See also: <a href="https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/" class="uri">https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/</a></p>
+<p>These are a bit unwieldy to read in, so we’ll split up the chunks below.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubXV0ZWN0MiA8LSBkYXRhLnRhYmxlOjpmcmVhZChmaWxlLnBhdGgoZGF0YV9kaXIsIG11dGVjdDJfZmlsZSksXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNraXAgPSAxLCAgIyBza2lwIHZlcnNpb24gc3RyaW5nXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEudGFibGUgPSBGQUxTRSlcbmBgYCJ9 -->
@@ -3107,6 +3184,18 @@ sample_id_list$rsem &lt;- colnames(rsem)[2:ncol(kallisto)]</code></pre>
                              skip = 1,  # skip version string
                              data.table = FALSE)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RhdGEudGFibGUnOlxuICBtZXRob2QgICAgICAgICAgIGZyb21cbiAgcHJpbnQuZGF0YS50YWJsZSAgICAgXG5SZWdpc3RlcmVkIFMzIG1ldGhvZCBvdmVyd3JpdHRlbiBieSAnUi5vbyc6XG4gIG1ldGhvZCAgICAgICAgZnJvbSAgICAgICBcbiAgdGhyb3cuZGVmYXVsdCBSLm1ldGhvZHNTM1xufC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfFxufD09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09fFxufC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfFxufD09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09fFxuIn0= -->
+<pre><code>Registered S3 method overwritten by 'data.table':
+  method           from
+  print.data.table     
+Registered S3 method overwritten by 'R.oo':
+  method        from       
+  throw.default R.methodsS3
+|--------------------------------------------------|
+|==================================================|
+|--------------------------------------------------|
+|==================================================|</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -3116,13 +3205,14 @@ sample_id_list$rsem &lt;- colnames(rsem)[2:ncol(kallisto)]</code></pre>
                               skip = 1,  # skip version string
                               data.table = FALSE)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoifC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfFxufD09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09fFxufC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfFxufD09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09fFxuIn0= -->
+<pre><code>|--------------------------------------------------|
+|==================================================|
+|--------------------------------------------------|
+|==================================================|</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-</div>
-<div id="snv" class="section level2">
-<h2>SNV</h2>
-<p>SNV files are in <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/doc/format/vep-maf.md">annotated MAF format</a>. See also: <a href="https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/" class="uri">https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/</a></p>
-<p>These are a bit unwieldy to read in, so we’ll split up the chunks below.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2FtcGxlX2lkX2xpc3QkbXV0ZWN0MiA8LSB1bmlxdWUobXV0ZWN0MiRUdW1vcl9TYW1wbGVfQmFyY29kZSlcbnNhbXBsZV9pZF9saXN0JHN0cmVsa2EyIDwtIHVuaXF1ZShzdHJlbGthMiRUdW1vcl9TYW1wbGVfQmFyY29kZSlcbmBgYCJ9 -->
@@ -3131,12 +3221,83 @@ sample_id_list$strelka2 &lt;- unique(strelka2$Tumor_Sample_Barcode)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+</div>
+<div id="sv" class="section level2">
+<h2>SV</h2>
+<p>The Manta SV file is in <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/doc/format/manta-tsv-header.md">annotated Manta TSV format</a>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWFudGEgPC0gcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpciwgbWFudGFfZmlsZSkpXG5sdW1weSA8LSByZWFkcjo6cmVhZF90c3YoZmlsZS5wYXRoKGRhdGFfZGlyLCBsdW1weV9maWxlKSlcbmBgYCJ9 -->
-<pre class="r"><code>manta &lt;- readr::read_tsv(file.path(data_dir, manta_file))
-lumpy &lt;- readr::read_tsv(file.path(data_dir, lumpy_file))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWFudGEgPC0gcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpciwgbWFudGFfZmlsZSkpXG5gYGAifQ== -->
+<pre class="r"><code>manta &lt;- readr::read_tsv(file.path(data_dir, manta_file))</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgU1Yuc3RhcnQgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgU1YuZW5kID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIFNWLmxlbmd0aCA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBOTSA9IFx1MDAxYlszM21jb2xfbG9naWNhbCgpXHUwMDFiWzM5bSxcbiAgQ0RTLmxlbmd0aCA9IFx1MDAxYlszM21jb2xfbG9naWNhbCgpXHUwMDFiWzM5bSxcbiAgdHgubGVuZ3RoID0gXHUwMDFiWzMzbWNvbF9sb2dpY2FsKClcdTAwMWJbMzltLFxuICBsb2NhdGlvbiA9IFx1MDAxYlszM21jb2xfbG9naWNhbCgpXHUwMDFiWzM5bSxcbiAgaW50ZXJzZWN0U3RhcnQgPSBcdTAwMWJbMzNtY29sX2xvZ2ljYWwoKVx1MDAxYlszOW0sXG4gIGludGVyc2VjdEVuZCA9IFx1MDAxYlszM21jb2xfbG9naWNhbCgpXHUwMDFiWzM5bSxcbiAgREdWX0dBSU5fbl9zYW1wbGVzX3dpdGhfU1YgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgREdWX0dBSU5fbl9zYW1wbGVzX3Rlc3RlZCA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBER1ZfR0FJTl9GcmVxdWVuY3kgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgREdWX0xPU1Nfbl9zYW1wbGVzX3dpdGhfU1YgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgREdWX0xPU1Nfbl9zYW1wbGVzX3Rlc3RlZCA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBER1ZfTE9TU19GcmVxdWVuY3kgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgWDEwMDBnX0FGID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIFgxMDAwZ19tYXhfQUYgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgSU1IX0FGID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIEFDTUcgPSBcdTAwMWJbMzNtY29sX2xvZ2ljYWwoKVx1MDAxYlszOW0sXG4gIEhJX0NHc2NvcmUgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bVxuICAjIC4uLiB3aXRoIDE3IG1vcmUgY29sdW1uc1xuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
+<pre><code>Parsed with column specification:
+cols(
+  .default = col_character(),
+  SV.start = [32mcol_double()[39m,
+  SV.end = [32mcol_double()[39m,
+  SV.length = [32mcol_double()[39m,
+  NM = [33mcol_logical()[39m,
+  CDS.length = [33mcol_logical()[39m,
+  tx.length = [33mcol_logical()[39m,
+  location = [33mcol_logical()[39m,
+  intersectStart = [33mcol_logical()[39m,
+  intersectEnd = [33mcol_logical()[39m,
+  DGV_GAIN_n_samples_with_SV = [32mcol_double()[39m,
+  DGV_GAIN_n_samples_tested = [32mcol_double()[39m,
+  DGV_GAIN_Frequency = [32mcol_double()[39m,
+  DGV_LOSS_n_samples_with_SV = [32mcol_double()[39m,
+  DGV_LOSS_n_samples_tested = [32mcol_double()[39m,
+  DGV_LOSS_Frequency = [32mcol_double()[39m,
+  X1000g_AF = [32mcol_double()[39m,
+  X1000g_max_AF = [32mcol_double()[39m,
+  IMH_AF = [32mcol_double()[39m,
+  ACMG = [33mcol_logical()[39m,
+  HI_CGscore = [32mcol_double()[39m
+  # ... with 17 more columns
+)
+See spec(...) for full column specifications.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubHVtcHkgPC0gcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpciwgbHVtcHlfZmlsZSkpXG5gYGAifQ== -->
+<pre class="r"><code>lumpy &lt;- readr::read_tsv(file.path(data_dir, lumpy_file))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgYFNWIGNocm9tYCA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBgU1Ygc3RhcnRgID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIGBTViBlbmRgID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIGBTViBsZW5ndGhgID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIE5NID0gXHUwMDFiWzMzbWNvbF9sb2dpY2FsKClcdTAwMWJbMzltLFxuICBgQ0RTIGxlbmd0aGAgPSBcdTAwMWJbMzNtY29sX2xvZ2ljYWwoKVx1MDAxYlszOW0sXG4gIGB0eCBsZW5ndGhgID0gXHUwMDFiWzMzbWNvbF9sb2dpY2FsKClcdTAwMWJbMzltLFxuICBsb2NhdGlvbiA9IFx1MDAxYlszM21jb2xfbG9naWNhbCgpXHUwMDFiWzM5bSxcbiAgaW50ZXJzZWN0U3RhcnQgPSBcdTAwMWJbMzNtY29sX2xvZ2ljYWwoKVx1MDAxYlszOW0sXG4gIGludGVyc2VjdEVuZCA9IFx1MDAxYlszM21jb2xfbG9naWNhbCgpXHUwMDFiWzM5bSxcbiAgREdWX0dBSU5fbl9zYW1wbGVzX3dpdGhfU1YgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgREdWX0dBSU5fbl9zYW1wbGVzX3Rlc3RlZCA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBER1ZfR0FJTl9GcmVxdWVuY3kgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgREdWX0xPU1Nfbl9zYW1wbGVzX3dpdGhfU1YgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgREdWX0xPU1Nfbl9zYW1wbGVzX3Rlc3RlZCA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBER1ZfTE9TU19GcmVxdWVuY3kgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgYDEwMDBnX0FGYCA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBgMTAwMGdfbWF4X0FGYCA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBJTUhfQUYgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgQUNNRyA9IFx1MDAxYlszM21jb2xfbG9naWNhbCgpXHUwMDFiWzM5bVxuICAjIC4uLiB3aXRoIDE4IG1vcmUgY29sdW1uc1xuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4zNDkwMDAgcGFyc2luZyBmYWlsdXJlcy5cbiAgcm93ICAgICAgICAgIGNvbCAgICAgICAgICAgZXhwZWN0ZWQgYWN0dWFsICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZmlsZVxuMTUwMDcgVHJpU19DR3Njb3JlIDEvMC9UL0YvVFJVRS9GQUxTRSAgICAgIDIgJy4uLy4uL2RhdGEvcGJ0YS1zdi1sdW1weS50c3YuZ3onXG4xNTAwOCBUcmlTX0NHc2NvcmUgMS8wL1QvRi9UUlVFL0ZBTFNFICAgICAgMiAnLi4vLi4vZGF0YS9wYnRhLXN2LWx1bXB5LnRzdi5neidcbjE5NjA0IFRyaVNfQ0dzY29yZSAxLzAvVC9GL1RSVUUvRkFMU0UgICAgICAzICcuLi8uLi9kYXRhL3BidGEtc3YtbHVtcHkudHN2Lmd6J1xuMjEyNDkgVHJpU19DR3Njb3JlIDEvMC9UL0YvVFJVRS9GQUxTRSAgICAgIDMgJy4uLy4uL2RhdGEvcGJ0YS1zdi1sdW1weS50c3YuZ3onXG4yMTMwNCBUcmlTX0NHc2NvcmUgMS8wL1QvRi9UUlVFL0ZBTFNFICAgICAgMyAnLi4vLi4vZGF0YS9wYnRhLXN2LWx1bXB5LnRzdi5neidcbi4uLi4uIC4uLi4uLi4uLi4uLiAuLi4uLi4uLi4uLi4uLi4uLi4gLi4uLi4uIC4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLlxuU2VlIHByb2JsZW1zKC4uLikgZm9yIG1vcmUgZGV0YWlscy5cbiJ9 -->
+<pre><code>Parsed with column specification:
+cols(
+  .default = col_character(),
+  `SV chrom` = [32mcol_double()[39m,
+  `SV start` = [32mcol_double()[39m,
+  `SV end` = [32mcol_double()[39m,
+  `SV length` = [32mcol_double()[39m,
+  NM = [33mcol_logical()[39m,
+  `CDS length` = [33mcol_logical()[39m,
+  `tx length` = [33mcol_logical()[39m,
+  location = [33mcol_logical()[39m,
+  intersectStart = [33mcol_logical()[39m,
+  intersectEnd = [33mcol_logical()[39m,
+  DGV_GAIN_n_samples_with_SV = [32mcol_double()[39m,
+  DGV_GAIN_n_samples_tested = [32mcol_double()[39m,
+  DGV_GAIN_Frequency = [32mcol_double()[39m,
+  DGV_LOSS_n_samples_with_SV = [32mcol_double()[39m,
+  DGV_LOSS_n_samples_tested = [32mcol_double()[39m,
+  DGV_LOSS_Frequency = [32mcol_double()[39m,
+  `1000g_AF` = [32mcol_double()[39m,
+  `1000g_max_AF` = [32mcol_double()[39m,
+  IMH_AF = [32mcol_double()[39m,
+  ACMG = [33mcol_logical()[39m
+  # ... with 18 more columns
+)
+See spec(...) for full column specifications.
+349000 parsing failures.
+  row          col           expected actual                              file
+15007 TriS_CGscore 1/0/T/F/TRUE/FALSE      2 '../../data/pbta-sv-lumpy.tsv.gz'
+15008 TriS_CGscore 1/0/T/F/TRUE/FALSE      2 '../../data/pbta-sv-lumpy.tsv.gz'
+19604 TriS_CGscore 1/0/T/F/TRUE/FALSE      3 '../../data/pbta-sv-lumpy.tsv.gz'
+21249 TriS_CGscore 1/0/T/F/TRUE/FALSE      3 '../../data/pbta-sv-lumpy.tsv.gz'
+21304 TriS_CGscore 1/0/T/F/TRUE/FALSE      3 '../../data/pbta-sv-lumpy.tsv.gz'
+..... ............ .................. ...... .................................
+See problems(...) for more details.</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -3148,14 +3309,25 @@ sample_id_list$lumpy &lt;- unique(lumpy$Kids.First.Biospecimen.ID.Tumor)</code><
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="sv" class="section level2">
-<h2>SV</h2>
-<p>The Manta SV file is in <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/doc/format/manta-tsv-header.md">annotated Manta TSV format</a>.</p>
+<div id="select-samples-and-subset-files" class="section level2">
+<h2>Select samples and subset files</h2>
+<div id="map-to-participant-identifiers" class="section level3">
+<h3>Map to participant identifiers</h3>
+<p>These sample identifiers are all biospecimen identifiers. The tools that use different experiment strategies will have no overlapping biospecimen identifiers. Thus, we’ll need to map <em>biospecimen</em> identifiers to <em>participant</em> identifiers. We’ll use the histologies file to do this.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlzdG9sb2dpZXNfZGYgPC0gcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpciwgaGlzdG9sb2dpZXNfZmlsZSkpXG5gYGAifQ== -->
 <pre class="r"><code>histologies_df &lt;- readr::read_tsv(file.path(data_dir, histologies_file))</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgYWdlX2F0X2RpYWdub3NpcyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBPU19kYXlzID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW1cbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuIn0= -->
+<pre><code>Parsed with column specification:
+cols(
+  .default = col_character(),
+  age_at_diagnosis = [32mcol_double()[39m,
+  OS_days = [32mcol_double()[39m
+)
+See spec(...) for full column specifications.</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -3172,34 +3344,11 @@ sample_id_list$lumpy &lt;- unique(lumpy$Kids.First.Biospecimen.ID.Tumor)</code><
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-</div>
-<div id="select-samples-and-subset-files" class="section level2">
-<h2>Select samples and subset files</h2>
-<div id="map-to-participant-identifiers" class="section level3">
-<h3>Map to participant identifiers</h3>
-<p>These sample identifiers are all biospecimen identifiers. The tools that use different experiment strategies will have no overlapping biospecimen identifiers. Thus, we’ll need to map <em>biospecimen</em> identifiers to <em>participant</em> identifiers. We’ll use the histologies file to do this.</p>
+<p>Now we can take the intersection of elements of <code>participant_id_list</code> to identify participant identifiers represented in each of the files we’re trying to subset.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydGljaXBhbnRzX2luX2FsbCA8LSBiYXNlOjpSZWR1Y2UoaW50ZXJzZWN0LCBwYXJ0aWNpcGFudF9pZF9saXN0KVxuYGBgIn0= -->
 <pre class="r"><code>participants_in_all &lt;- base::Reduce(intersect, participant_id_list)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBzZXQgc2VlZCBmb3IgcmVwcm9kdWNpYmlsaXR5XG5zZXQuc2VlZCgxMjM0NSlcbnNlbGVjdGVkX3BhcnRpY2lwYW50X2lkcyA8LSBzYW1wbGUocGFydGljaXBhbnRzX2luX2FsbCwgNSlcbmBgYCJ9 -->
-<pre class="r"><code># set seed for reproducibility
-set.seed(12345)
-selected_participant_ids &lt;- sample(participants_in_all, 5)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Now we can take the intersection of elements of <code>participant_id_list</code> to identify participant identifiers represented in each of the files we’re trying to subset.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2VsZWN0ZWRfYmlvc3BlY2ltZW5fZGYgPC0gaGlzdG9sb2dpZXNfZGYgJT4lXG4gIGRwbHlyOjpmaWx0ZXIoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCAlaW4lIHNlbGVjdGVkX3BhcnRpY2lwYW50X2lkcylcbmBgYCJ9 -->
-<pre class="r"><code>selected_biospecimen_df &lt;- histologies_df %&gt;%
-  dplyr::filter(Kids_First_Participant_ID %in% selected_participant_ids)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3209,13 +3358,32 @@ selected_participant_ids &lt;- sample(participants_in_all, 5)</code></pre>
 <p>We’ll select 5 participant identifiers for the purposes of producing subset files (for continuous integration).</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVhZHI6OndyaXRlX3RzdihzZWxlY3RlZF9iaW9zcGVjaW1lbl9kZixcbiAgICAgICAgICAgICAgICAgZmlsZS5wYXRoKHRlc3RpbmdfZGF0YV9kaXIsIFxccGJ0YS1oaXN0b2xvZ2llcy50c3ZcXCkpXG5gYGAifQ== -->
-<pre class="r"><code>readr::write_tsv(selected_biospecimen_df,
-                 file.path(testing_data_dir, \pbta-histologies.tsv\))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBzZXQgc2VlZCBmb3IgcmVwcm9kdWNpYmlsaXR5XG5zZXQuc2VlZCgxMjM0NSlcbnNlbGVjdGVkX3BhcnRpY2lwYW50X2lkcyA8LSBzYW1wbGUocGFydGljaXBhbnRzX2luX2FsbCwgNSlcbmBgYCJ9 -->
+<pre class="r"><code># set seed for reproducibility
+set.seed(12345)
+selected_participant_ids &lt;- sample(participants_in_all, 5)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Again, each of the tools use biospecimen identifiers. We’ll have to map back to those to accomplish the subsetting task.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2VsZWN0ZWRfYmlvc3BlY2ltZW5fZGYgPC0gaGlzdG9sb2dpZXNfZGYgJT4lXG4gIGRwbHlyOjpmaWx0ZXIoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCAlaW4lIHNlbGVjdGVkX3BhcnRpY2lwYW50X2lkcylcbmBgYCJ9 -->
+<pre class="r"><code>selected_biospecimen_df &lt;- histologies_df %&gt;%
+  dplyr::filter(Kids_First_Participant_ID %in% selected_participant_ids)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p><code>selected_biospecimen_df</code> is our subset of <code>pbta-histologies.tsv</code>.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVhZHI6OndyaXRlX3RzdihzZWxlY3RlZF9iaW9zcGVjaW1lbl9kZixcbiAgICAgICAgICAgICAgICAgZmlsZS5wYXRoKHRlc3RpbmdfZGF0YV9kaXIsIFwicGJ0YS1oaXN0b2xvZ2llcy50c3ZcIikpXG5gYGAifQ== -->
+<pre class="r"><code>readr::write_tsv(selected_biospecimen_df,
+                 file.path(testing_data_dir, &quot;pbta-histologies.tsv&quot;))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>To keep things less verbose below, we’ll keep the biospecimen IDs as a vector.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2VsZWN0ZWRfYmlvc3BlY2ltZW5faWRzIDwtIHNlbGVjdGVkX2Jpb3NwZWNpbWVuX2RmICU+JVxuICBkcGx5cjo6cHVsbChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKVxuYGBgIn0= -->
@@ -3224,7 +3392,11 @@ selected_participant_ids &lt;- sample(participants_in_all, 5)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p><code>selected_biospecimen_df</code> is our subset of <code>pbta-histologies.tsv</code>.</p>
+</div>
+<div id="subset-files" class="section level3">
+<h3>Subset files</h3>
+<div id="cnv-1" class="section level4">
+<h4>CNV</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY252a2l0X3N1YnNldCA8LSBjbnZraXQgJT4lXG4gIGRwbHlyOjpmaWx0ZXIoSUQgJWluJSBzZWxlY3RlZF9iaW9zcGVjaW1lbl9pZHMpICU+JVxuICByZWFkcjo6d3JpdGVfdHN2KGZpbGUucGF0aCh0ZXN0aW5nX2RhdGFfZGlyLCBjbnZraXRfZmlsZSkpXG5gYGAifQ== -->
@@ -3234,7 +3406,6 @@ selected_participant_ids &lt;- sample(participants_in_all, 5)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>To keep things less verbose below, we’ll keep the biospecimen IDs as a vector.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29udHJvbGZyZWVjX3N1YnNldCA8LSBjb250cm9sZnJlZWMgJT4lXG4gIGRwbHlyOjpmaWx0ZXIoSUQgJWluJSBzZWxlY3RlZF9iaW9zcGVjaW1lbl9pZHMpICU+JVxuICByZWFkcjo6d3JpdGVfdHN2KGZpbGUucGF0aCh0ZXN0aW5nX2RhdGFfZGlyLCBjb250cm9sZnJlZWNfZmlsZSkpXG5gYGAifQ== -->
@@ -3245,10 +3416,8 @@ selected_participant_ids &lt;- sample(participants_in_all, 5)</code></pre>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="subset-files" class="section level3">
-<h3>Subset files</h3>
-<div id="cnv-1" class="section level4">
-<h4>CNV</h4>
+<div id="fusion-1" class="section level4">
+<h4>Fusion</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYXJyaWJhX3N1YnNldCA8LSBhcnJpYmEgJT4lXG4gIGRwbHlyOjpmaWx0ZXIodHVtb3JfaWQgJWluJSBzZWxlY3RlZF9iaW9zcGVjaW1lbl9pZHMpICU+JVxuICByZWFkcjo6d3JpdGVfdHN2KGZpbGUucGF0aCh0ZXN0aW5nX2RhdGFfZGlyLCBhcnJpYmFfZmlsZSkpXG5gYGAifQ== -->
@@ -3268,39 +3437,39 @@ selected_participant_ids &lt;- sample(participants_in_all, 5)</code></pre>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="fusion-1" class="section level4">
-<h4>Fusion</h4>
+<div id="gene-expression-1" class="section level4">
+<h4>Gene Expression</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBleHRyYWN0IHRoZSBSTkEtc2VxIGJpb3NwZWNpbWVuIElEcywgc3BlY2lmaWNhbGx5IHRvIHVzZSB3aXRoIGRwbHlyOjpzZWxlY3RcbnJuYXNlcV9zZWxlY3RlZF9pZHMgPC0gcmxhbmc6OnF1b3Moc2VsZWN0ZWRfYmlvc3BlY2ltZW5fZGYgJT4lXG4gIGRwbHlyOjpmaWx0ZXIoZXhwZXJpbWVudGFsX3N0cmF0ZWd5ID09IFxcUk5BLVNlcVxcKSAlPiVcbiAgZHBseXI6OnB1bGwoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBleHRyYWN0IHRoZSBSTkEtc2VxIGJpb3NwZWNpbWVuIElEcywgc3BlY2lmaWNhbGx5IHRvIHVzZSB3aXRoIGRwbHlyOjpzZWxlY3RcbnJuYXNlcV9zZWxlY3RlZF9pZHMgPC0gcmxhbmc6OnF1b3Moc2VsZWN0ZWRfYmlvc3BlY2ltZW5fZGYgJT4lXG4gIGRwbHlyOjpmaWx0ZXIoZXhwZXJpbWVudGFsX3N0cmF0ZWd5ID09IFwiUk5BLVNlcVwiKSAlPiVcbiAgZHBseXI6OnB1bGwoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkpXG5gYGAifQ== -->
 <pre class="r"><code># extract the RNA-seq biospecimen IDs, specifically to use with dplyr::select
 rnaseq_selected_ids &lt;- rlang::quos(selected_biospecimen_df %&gt;%
-  dplyr::filter(experimental_strategy == \RNA-Seq\) %&gt;%
+  dplyr::filter(experimental_strategy == &quot;RNA-Seq&quot;) %&gt;%
   dplyr::pull(Kids_First_Biospecimen_ID))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxua2FsbGlzdG9fc3Vic2V0IDwtIGthbGxpc3RvICU+JVxuICBkcGx5cjo6c2VsZWN0KHRyYW5zY3JpcHRfaWQsIGdlbmVfaWQsICEhIXJuYXNlcV9zZWxlY3RlZF9pZHMpICU+JVxuICByZWFkcjo6d3JpdGVfdHN2KGZpbGUucGF0aCh0ZXN0aW5nX2RhdGFfZGlyLCBrYWxsaXN0b19maWxlKSlcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxua2FsbGlzdG9fc3Vic2V0IDwtIGthbGxpc3RvICU+JVxuICBkcGx5cjo6c2VsZWN0KHRyYW5zY3JpcHRfaWQsIGdlbmVfaWQsICEhIXJuYXNlcV9zZWxlY3RlZF9pZHMpICU+JVxuICByZWFkcjo6d3JpdGVfcmRzKGZpbGUucGF0aCh0ZXN0aW5nX2RhdGFfZGlyLCBrYWxsaXN0b19maWxlKSlcbmBgYCJ9 -->
 <pre class="r"><code>kallisto_subset &lt;- kallisto %&gt;%
   dplyr::select(transcript_id, gene_id, !!!rnaseq_selected_ids) %&gt;%
-  readr::write_tsv(file.path(testing_data_dir, kallisto_file))</code></pre>
+  readr::write_rds(file.path(testing_data_dir, kallisto_file))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucnNlbV9zdWJzZXQgPC0gcnNlbSAlPiVcbiAgZHBseXI6OnNlbGVjdChnZW5lX2lkLCAhISFybmFzZXFfc2VsZWN0ZWRfaWRzKSAlPiVcbiAgcmVhZHI6OndyaXRlX3JkcyhmaWxlLnBhdGgodGVzdGluZ19kYXRhX2RpciwgcnNlbV9maWxlKSlcbmBgYCJ9 -->
+<pre class="r"><code>rsem_subset &lt;- rsem %&gt;%
+  dplyr::select(gene_id, !!!rnaseq_selected_ids) %&gt;%
+  readr::write_rds(file.path(testing_data_dir, rsem_file))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="gene-expression-1" class="section level4">
-<h4>Gene Expression</h4>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucnNlbV9zdWJzZXQgPC0gcnNlbSAlPiVcbiAgZHBseXI6OnNlbGVjdChnZW5lX2lkLCAhISFybmFzZXFfc2VsZWN0ZWRfaWRzKSAlPiVcbiAgcmVhZHI6OndyaXRlX3RzdihmaWxlLnBhdGgodGVzdGluZ19kYXRhX2RpciwgcnNlbV9maWxlKSlcbmBgYCJ9 -->
-<pre class="r"><code>rsem_subset &lt;- rsem %&gt;%
-  dplyr::select(gene_id, !!!rnaseq_selected_ids) %&gt;%
-  readr::write_tsv(file.path(testing_data_dir, rsem_file))</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
+<div id="snv-1" class="section level4">
+<h4>SNV</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubXV0ZWN0Ml9zdWJzZXQgPC0gbXV0ZWN0MiAlPiVcbiAgZHBseXI6OmZpbHRlcihUdW1vcl9TYW1wbGVfQmFyY29kZSAlaW4lIHNlbGVjdGVkX2Jpb3NwZWNpbWVuX2lkcylcblxuIyB3cml0ZSBjb21wcmVzc2VkIG11dGVjdDIgc3Vic2V0IGZpbGVcbndyaXRlX21hZl9maWxlKG1hZl9kZiA9IG11dGVjdDJfc3Vic2V0LFxuICAgICAgICAgICAgICAgZmlsZV9uYW1lID0gZmlsZS5wYXRoKHRlc3RpbmdfZGF0YV9kaXIsIG11dGVjdDJfZmlsZSksXG4gICAgICAgICAgICAgICAjIHdlJ2xsIGdldCB0aGUgdmVyc2lvbiBzdHJpbmcgZGlyZWN0bHkgZnJvbSB0aGUgb3JpZ2luYWwgXG4gICAgICAgICAgICAgICAjIG11dGVjdDIgZmlsZVxuICAgICAgICAgICAgICAgdmVyc2lvbl9zdHJpbmcgPSByZWFkTGluZXMoZmlsZS5wYXRoKGRhdGFfZGlyLCBtdXRlY3QyX2ZpbGUpLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG4gPSAxKSlcbmBgYCJ9 -->
@@ -3334,8 +3503,9 @@ write_maf_file(maf_df = strelka2_subset,
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="snv-1" class="section level4">
-<h4>SNV</h4>
+<div id="sv-1" class="section level4">
+<h4>SV</h4>
+<p>We can use the participant identifiers directly to subset the Manta data.frame.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWFudGFfc3Vic2V0IDwtIG1hbnRhICU+JVxuICBkcGx5cjo6ZmlsdGVyKEtpZHMuRmlyc3QuUGFydGljaXBhbnQuSUQgJWluJSBzZWxlY3RlZF9wYXJ0aWNpcGFudF9pZHMpICU+JVxuICByZWFkcjo6d3JpdGVfdHN2KGZpbGUucGF0aCh0ZXN0aW5nX2RhdGFfZGlyLCBtYW50YV9maWxlKSlcbmBgYCJ9 -->
@@ -3343,58 +3513,6 @@ write_maf_file(maf_df = strelka2_subset,
   dplyr::filter(Kids.First.Participant.ID %in% selected_participant_ids) %&gt;%
   readr::write_tsv(file.path(testing_data_dir, manta_file))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubHVtcHlfc3Vic2V0IDwtIGx1bXB5ICU+JVxuICBkcGx5cjo6ZmlsdGVyKEtpZHMuRmlyc3QuUGFydGljaXBhbnQuSUQgJWluJSBzZWxlY3RlZF9wYXJ0aWNpcGFudF9pZHMpICU+JVxuICByZWFkcjo6d3JpdGVfdHN2KGZpbGUucGF0aCh0ZXN0aW5nX2RhdGFfZGlyLCBsdW1weV9maWxlKSlcbmBgYCJ9 -->
-<pre class="r"><code>lumpy_subset &lt;- lumpy %&gt;%
-  dplyr::filter(Kids.First.Participant.ID %in% selected_participant_ids) %&gt;%
-  readr::write_tsv(file.path(testing_data_dir, lumpy_file))</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="sv-1" class="section level4">
-<h4>SV</h4>
-<p>We can use the participant identifiers directly to subset the Manta data.frame.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
-<pre class="r"><code>sessionInfo()</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgIFxuIFszXSBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgIFxuWzExXSBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5sb2FkZWQgdmlhIGEgbmFtZXNwYWNlIChhbmQgbm90IGF0dGFjaGVkKTpcbiBbMV0gUmNwcF8xLjAuMSAgICAgICAga25pdHJfMS4yMyAgICAgICAgbWFncml0dHJfMS41ICAgICBcbiBbNF0gaG1zXzAuNC4yICAgICAgICAgdGlkeXNlbGVjdF8wLjIuNSAgUjZfMi40LjAgICAgICAgICBcbiBbN10gcmxhbmdfMC40LjAgICAgICAgc3RyaW5ncl8xLjQuMCAgICAgZHBseXJfMC44LjMgICAgICBcblsxMF0gdG9vbHNfMy42LjAgICAgICAgZGF0YS50YWJsZV8xLjEyLjIgeGZ1bl8wLjggICAgICAgICBcblsxM10gUi5vb18xLjIyLjAgICAgICAgaHRtbHRvb2xzXzAuMy42ICAgeWFtbF8yLjIuMCAgICAgICBcblsxNl0gZGlnZXN0XzAuNi4yMCAgICAgYXNzZXJ0dGhhdF8wLjIuMSAgdGliYmxlXzIuMS4zICAgICBcblsxOV0gY3JheW9uXzEuMy40ICAgICAgcHVycnJfMC4zLjIgICAgICAgcmVhZHJfMS4zLjEgICAgICBcblsyMl0gUi51dGlsc18yLjkuMCAgICAgYmFzZTY0ZW5jXzAuMS0zICAgZ2x1ZV8xLjMuMSAgICAgICBcblsyNV0gZXZhbHVhdGVfMC4xNCAgICAgcm1hcmtkb3duXzEuMTMgICAgc3RyaW5naV8xLjQuMyAgICBcblsyOF0gY29tcGlsZXJfMy42LjAgICAgcGlsbGFyXzEuNC4yICAgICAgUi5tZXRob2RzUzNfMS43LjFcblszMV0ganNvbmxpdGVfMS42ICAgICAgcGtnY29uZmlnXzIuMC4yICBcbiJ9 -->
-<pre><code>R version 3.6.0 (2019-04-26)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Debian GNU/Linux 9 (stretch)
-
-Matrix products: default
-BLAS/LAPACK: /usr/lib/libopenblasp-r0.2.19.so
-
-locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
-
-attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
-
-loaded via a namespace (and not attached):
- [1] Rcpp_1.0.1        knitr_1.23        magrittr_1.5     
- [4] hms_0.4.2         tidyselect_0.2.5  R6_2.4.0         
- [7] rlang_0.4.0       stringr_1.4.0     dplyr_0.8.3      
-[10] tools_3.6.0       data.table_1.12.2 xfun_0.8         
-[13] R.oo_1.22.0       htmltools_0.3.6   yaml_2.2.0       
-[16] digest_0.6.20     assertthat_0.2.1  tibble_2.1.3     
-[19] crayon_1.3.4      purrr_0.3.2       readr_1.3.1      
-[22] R.utils_2.9.0     base64enc_0.1-3   glue_1.3.1       
-[25] evaluate_0.14     rmarkdown_1.13    stringi_1.4.3    
-[28] compiler_3.6.0    pillar_1.4.2      R.methodsS3_1.7.1
-[31] jsonlite_1.6      pkgconfig_2.0.2  </code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -3416,6 +3534,30 @@ loaded via a namespace (and not attached):
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgICBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgIFxuIFs0XSBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgICBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgICBMQ19BRERSRVNTPUMgICAgICAgICAgICAgIFxuWzEwXSBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgICBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5sb2FkZWQgdmlhIGEgbmFtZXNwYWNlIChhbmQgbm90IGF0dGFjaGVkKTpcbiBbMV0gUmNwcF8xLjAuMSAgICAgICAgY3JheW9uXzEuMy40ICAgICAgZHBseXJfMC44LjMgICAgICAgYXNzZXJ0dGhhdF8wLjIuMSAgUi5tZXRob2RzUzNfMS43LjFcbiBbNl0gUjZfMi40LjAgICAgICAgICAgbWFncml0dHJfMS41ICAgICAgcGlsbGFyXzEuNC4yICAgICAgcmxhbmdfMC40LjAgICAgICAgZGF0YS50YWJsZV8xLjEyLjJcblsxMV0gcnN0dWRpb2FwaV8wLjEwICAgUi5vb18xLjIyLjAgICAgICAgUi51dGlsc18yLjkuMCAgICAgdG9vbHNfMy42LjAgICAgICAgcmVhZHJfMS4zLjEgICAgICBcblsxNl0gZ2x1ZV8xLjMuMSAgICAgICAgcHVycnJfMC4zLjIgICAgICAgaG1zXzAuNC4yICAgICAgICAgeGZ1bl8wLjggICAgICAgICAgY29tcGlsZXJfMy42LjAgICBcblsyMV0gcGtnY29uZmlnXzIuMC4yICAga25pdHJfMS4yMyAgICAgICAgdGlkeXNlbGVjdF8wLjIuNSAgdGliYmxlXzIuMS4zICAgICBcbiJ9 -->
+<pre><code>R version 3.6.0 (2019-04-26)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Debian GNU/Linux 9 (stretch)
+
+Matrix products: default
+BLAS/LAPACK: /usr/lib/libopenblasp-r0.2.19.so
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C               LC_TIME=en_US.UTF-8       
+ [4] LC_COLLATE=en_US.UTF-8     LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                  LC_ADDRESS=C              
+[10] LC_TELEPHONE=C             LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.1        crayon_1.3.4      dplyr_0.8.3       assertthat_0.2.1  R.methodsS3_1.7.1
+ [6] R6_2.4.0          magrittr_1.5      pillar_1.4.2      rlang_0.4.0       data.table_1.12.2
+[11] rstudioapi_0.10   R.oo_1.22.0       R.utils_2.9.0     tools_3.6.0       readr_1.3.1      
+[16] glue_1.3.1        purrr_0.3.2       hms_0.4.2         xfun_0.8          compiler_3.6.0   
+[21] pkgconfig_2.0.2   knitr_1.23        tidyselect_0.2.5  tibble_2.1.3     </code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 </div>
 
