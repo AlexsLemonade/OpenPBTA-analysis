@@ -311,13 +311,13 @@ rnaseq_selected_ids <- rlang::quos(selected_biospecimen_df %>%
 ```{r}
 kallisto_subset <- kallisto %>%
   dplyr::select(transcript_id, gene_id, !!!rnaseq_selected_ids) %>%
-  readr::write_tsv(file.path(testing_data_dir, kallisto_file))
+  readr::write_rds(file.path(testing_data_dir, kallisto_file))
 ```
 
 ```{r}
 rsem_subset <- rsem %>%
   dplyr::select(gene_id, !!!rnaseq_selected_ids) %>%
-  readr::write_tsv(file.path(testing_data_dir, rsem_file))
+  readr::write_rds(file.path(testing_data_dir, rsem_file))
 ```
 
 #### SNV
