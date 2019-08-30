@@ -8,8 +8,8 @@ author: J. Taroni for ALSF CCDL
 date: 2019
 ---
 
-In this notebook, we subset the files to include full features for 5 matched 
-participants.
+In this notebook, we subset the files to include full features for some number 
+of matched participants.
 The output files are intended to be used for continuous integration.
 
 #### USAGE
@@ -24,6 +24,21 @@ Rscript -e "rmarkdown::render('analyses/create-subset-files/01-create_subset_fil
 _This assumes you are in the top directory of the repository._
 
 ## Setup
+
+#### Number of participants and seed
+
+This variable controls the number of participants that are included in the 
+subset files.
+
+```{r}
+num_matched_participants <- 5
+```
+
+This is used to set the seed when selecting participant ids.
+
+```{r}
+seed <- 12345
+```
 
 #### Packages and functions
 
@@ -243,8 +258,9 @@ files (for continuous integration).
 
 ```{r}
 # set seed for reproducibility
-set.seed(12345)
-selected_participant_ids <- sample(participants_in_all, 5)
+set.seed(seed)
+selected_participant_ids <- sample(participants_in_all, 
+                                   num_matched_participants)
 ```
 
 Again, each of the tools use biospecimen identifiers. 
