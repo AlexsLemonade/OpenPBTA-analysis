@@ -25,8 +25,8 @@ jobs:
                                                       rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', clean = TRUE)"
       
       - run:
-          name fusion filtering
-          command ./script/run_in_ci.sh Rscript analyses/fusion_filtering/01-fusion-filtering.R
+          name: fusion filtering
+          command: ./script/run_in_ci.sh Rscript analyses/fusion_filtering/01-fusion-filtering.R
                          
         #### Add your analysis here ####
         
