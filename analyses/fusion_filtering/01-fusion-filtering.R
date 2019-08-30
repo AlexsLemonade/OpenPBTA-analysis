@@ -8,7 +8,7 @@ library(tidyr)
 library(R.utils)
 
 # star fusion
-sf<-read.delim(gzfile(file.path("..", "..", "data","pbta-fusion-starfusion.tsv.gz")),stringsAsFactors=F,,header=T,sep="\t")
+sf<-read.delim(gzfile(file.path("data","pbta-fusion-starfusion.tsv.gz")),stringsAsFactors=F,,header=T,sep="\t")
 #head(sf)
 sf<-sf[-which(sf$SpanningFragCount-sf$JunctionReadCount >10|sf$JunctionReadCount==0|sf$LargeAnchorSupport == "NO_LDAS"),]
 sf$LeftBreakpoint <- gsub('^chr','',sf$LeftBreakpoint)
@@ -34,7 +34,7 @@ sf.total$FusionName<-sub("IGL@","IGLC6",sf.total$FusionName)
 sf.total$FusionName<-sub("IGL-@","IGLC6",sf.total$FusionName)
 
 # arriba fusion
-ar <- read.delim(gzfile(file.path("..", "..", "data","pbta-fusion-arriba.tsv.gz")),stringsAsFactors=F,,header=T,sep="\t")
+ar <- read.delim(gzfile(file.path("data","pbta-fusion-arriba.tsv.gz")),stringsAsFactors=F,,header=T,sep="\t")
 #remove false positives through supporting reads
 ar<-ar[-(which(ar$discordant_mates-(ar$split_reads1+ar$split_reads2) >10 |ar$split_reads1+ar$split_reads2==0)),]
 ar$LeftBreakpoint <- gsub('^chr','',ar$breakpoint1)
@@ -78,7 +78,7 @@ rts <- unique(c(rts, rts.rev))
 all.callers<-rbind(ar.total, sf.total)
 
 #histology
-clin<-read.delim(file.path("..", "..", "data","pbta-histologies.tsv"),stringsAsFactors = F,sep="\t")
+clin<-read.delim(file.path("data","pbta-histologies.tsv"),stringsAsFactors = F,sep="\t")
 clin$sample_id<-clin$Kids_First_Biospecimen_ID
 
 #merge callers and clinical information
@@ -93,10 +93,10 @@ nrow(all.callers)
 
 
 #public databases to gather putative driver fusion calls
-tsgs<-read.delim('../../scratch/fusion_filtering_pipeline/references/tsgs.txt', header = T,stringsAsFactors = F)
-onco<-read.delim('../../scratch/fusion_filtering_pipeline/references/allOnco_Feb2017.tsv', header = T,stringsAsFactors = F)
-tcga<-read.delim('../../scratch/fusion_filtering_pipeline/references/pancanfus.txt', header = T,stringsAsFactors = F)
-cosmic<-read.delim('../../scratch/fusion_filtering_pipeline/references/Cosmic_gene_census.csv',header=T,stringsAsFactors=F,sep=",")
+tsgs<-read.delim('scratch/fusion_filtering_pipeline/references/tsgs.txt', header = T,stringsAsFactors = F)
+onco<-read.delim('scratch/fusion_filtering_pipeline/references/allOnco_Feb2017.tsv', header = T,stringsAsFactors = F)
+tcga<-read.delim('scratch/fusion_filtering_pipeline/references/pancanfus.txt', header = T,stringsAsFactors = F)
+cosmic<-read.delim('scratch/fusion_filtering_pipeline/references/Cosmic_gene_census.csv',header=T,stringsAsFactors=F,sep=",")
 tcga$TCGA_fusions<-paste(tcga$Gene_A,tcga$Gene_B,sep="--")
 head(tcga)
 
@@ -165,12 +165,12 @@ res$note<-"recurrently fused in a histology"
 total <- unique(rbind(all.callers.summary, sample.count, res))
 
 #add TF and Kinase gene fusions
-curatedtf <- read.delim(paste0('../../scratch/fusion_filtering_pipeline/','references/curatedTF_attribute_list_entries.txt'), header = T)
-predictedtf<-read.delim(paste0('../../scratch/fusion_filtering_pipeline/','references/predictedTF_attribute_list_entries.txt'), header = T)
+curatedtf <- read.delim(paste0('scratch/fusion_filtering_pipeline/','references/curatedTF_attribute_list_entries.txt'), header = T)
+predictedtf<-read.delim(paste0('scratch/fusion_filtering_pipeline/','references/predictedTF_attribute_list_entries.txt'), header = T)
 tf<-rbind(curatedtf,predictedtf)
 
 
-kinase <- read.delim(paste0('../../scratch/fusion_filtering_pipeline/','/references/Kincat_Hsap.08.02.txt'),sep="\t",stringsAsFactors = F)
+kinase <- read.delim(paste0('scratch/fusion_filtering_pipeline/','/references/Kincat_Hsap.08.02.txt'),sep="\t",stringsAsFactors = F)
 kinase <- kinase[-which(kinase$Entrez_Symbol == ""),]
 
 genes.to.search <- c(paste0('^',kinase$Entrez_Symbol,'-'), paste0('-',kinase$Entrez_Symbol,'$'),paste0('^',tf$GeneSym,'-'), paste0('-',tf$GeneSym,'$'))
@@ -241,7 +241,7 @@ total_multifused<-unique(total_multifused)
 
 
 #filtered fusion through filtering strategy
-saveRDS(total,"../../scratch/fusion_all_list_filt.rds")
+saveRDS(total,"scratch/fusion_all_list_filt.rds")
 
 #merge filtered fusion through literature and not multi_fused status
 to.add$Caller_type<-paste(to.add$Caller,to.add$Fusion_Type,to.add$Confidence,sep="_")
@@ -250,7 +250,7 @@ final<-unique(final)
 
 
 # save literature fused genes to run through expression filtering
-saveRDS(final,"../../scratch/fusion_driver_list.rds")
+saveRDS(final,"scratch/fusion_driver_list.rds")
 
 
 
