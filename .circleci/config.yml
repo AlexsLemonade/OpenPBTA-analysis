@@ -3,7 +3,7 @@ jobs:
   run_analyses:
     machine:
       docker_layer_caching: true
-    resource_class: xlarge
+    resource_class: large
     working_directory: ~/OpenPBTA-analysis
     steps:
       - checkout
