@@ -31,7 +31,7 @@ This variable controls the number of participants that are included in the
 subset files.
 
 ```{r}
-num_matched_participants <- 50
+num_matched_participants <- 90
 ```
 
 This is used to set the seed when selecting participant ids.
@@ -236,9 +236,10 @@ histologies_df <- readr::read_tsv(file.path(data_dir, histologies_file))
 participant_id_list <- lapply(
   sample_id_list,
   function(sample_ids) {
-    histologies_df %>%
+    participant_ids <-  histologies_df %>%
       dplyr::filter(Kids_First_Biospecimen_ID %in% sample_ids) %>% 
       dplyr::pull(Kids_First_Participant_ID)
+    unique(participant_ids)
   }
 )
 ```
