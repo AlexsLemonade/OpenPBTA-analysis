@@ -28,7 +28,6 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     mapview
 
 # Installs packages needed for still treemap, interactive plots, and hex plots
-# lemon is needed to extract the legend from a ggplot 
 # Rtsne and umap are required for dimension reduction analyses 
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
     && install2.r --error \
@@ -38,7 +37,6 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     d3r \
     hexbin \
     VennDiagram \
-    lemon \
     Rtsne \
     umap \
     rprojroot
