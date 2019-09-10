@@ -26,9 +26,8 @@ jobs:
                                                       rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', clean = TRUE)"
                                
       - run:
-          name: Unsupervised Transcriptomic Analysis
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/transcriptomic-dimension-reduction/01-transcriptomic-analysis-prep.Rmd', clean = TRUE);
-                                                      rmarkdown::render('analyses/transcriptomic-dimension-reduction/02-transcriptomic-analysis-plotting.Rmd', clean = TRUE)"
+          name: Unsupervised Transcriptomic Analysis - Plotting
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/transcriptomic-dimension-reduction/02-transcriptomic-analysis-plotting.Rmd', clean = TRUE)"
                 
         #### Add your analysis here ####
         
