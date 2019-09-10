@@ -31,7 +31,7 @@ This variable controls the number of participants that are included in the
 subset files.
 
 ```{r}
-num_matched_participants <- 90
+num_matched_participants <- 25
 ```
 
 This is used to set the seed when selecting participant ids.
@@ -210,7 +210,7 @@ The Manta SV file is in [annotated Manta TSV format](https://github.com/AlexsLem
 
 ```{r}
 manta <- readr::read_tsv(file.path(data_dir, manta_file))
-lumpy <- readr::read_tsv(file.path(data_dir, lumpy_file))
+lumpy <- data.table::fread(file.path(data_dir, lumpy_file), data.table = FALSE)
 ```
 
 ```{r}
