@@ -26,7 +26,7 @@ jobs:
       
       - run:
           name: fusion filtering
-          command: ./scripts/run_in_ci.sh Rscript 01-fusion-standardization.R -f "data/pbta-fusion-starfusion.tsv.gz" -c "STARfusion" -o "scratch/star.RDS" 
+          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/01-fusion-standardization.R -f "data/pbta-fusion-starfusion.tsv.gz" -c "STARfusion" -o "scratch/star.RDS" 
                          
         #### Add your analysis here ####
         
