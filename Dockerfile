@@ -51,7 +51,7 @@ RUN R -e "devtools::install_github('timelyportfolio/d3treeR', ref = '0eaba7f1c64
 RUN R -e "devtools::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
 
 #Need this to read command args
-RUN R -e "install.packages('optparse') 
+RUN R -e "install.packages('optparse')" 
 
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
