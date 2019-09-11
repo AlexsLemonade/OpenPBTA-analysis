@@ -10,7 +10,7 @@ RELEASE=${RELEASE:-release-v4-20190909}
 curl --create-dirs $URL/$RELEASE/md5sum.txt -o data/$RELEASE/md5sum.txt -z data/$RELEASE/md5sum.txt
 
 # Consider the filenames in the md5sum file + release-notes.md
-FILES=(`tr -s ' ' < data/$RELEASE/md5sum.txt | cut -d ' ' -f 2` release-notes.md)
+FILES=(`tr -s ' ' < data/$RELEASE/md5sum.txt | cut -d ' ' -f 2` CHANGELOG.md)
 
 # Download the items in FILES if newer than what's on server
 for file in "${FILES[@]}"
