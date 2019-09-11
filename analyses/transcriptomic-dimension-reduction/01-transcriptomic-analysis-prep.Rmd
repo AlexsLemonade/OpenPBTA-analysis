@@ -18,20 +18,18 @@ It addresses [issue #9](https://github.com/AlexsLemonade/OpenPBTA-analysis/issue
 in the Open-PBTA analysis repository. 
 
 ## Output files:
-- `analysis/transcriptomic-dimension-reduction/results/15.17_PCA_scores.tsv`
-- `analysis/transcriptomic-dimension-reduction/results/15.17_t-SNE_scores.tsv`
-- `analysis/transcriptomic-dimension-reduction/results/15.17_UMAP_scores.tsv`
-- `analysis/transcriptomic-dimension-reduction/results/109.299_PCA_scores.tsv`
-- `analysis/transcriptomic-dimension-reduction/results/109.299_t-SNE_scores.tsv`
-- `analysis/transcriptomic-dimension-reduction/results/109.299_UMAP_scores.tsv`
-- `analysis/transcriptomic-dimension-reduction/results/rsem_pca_model.RDS`
-- `analysis/transcriptomic-dimension-reduction/results/rsem_tsne_model.RDS`
-- `analysis/transcriptomic-dimension-reduction/results/rsem_umap_model.RDS`
-- `analysis/transcriptomic-dimension-reduction/results/kallisto_pca_model.RDS`
-- `analysis/transcriptomic-dimension-reduction/results/kallisto_tsne_model.RDS`
-- `analysis/transcriptomic-dimension-reduction/results/kallisto_umap_model.RDS`
-
-_Note that the tsv files holding the dimension reduction scores represent the scores for the RSEM (denoted by the output tsv files beginning with 15.17) and Kallisto expression data (denoted by the output tsv files beginning with 109.299)._
+- `analysis/transcriptomic-dimension-reduction/models/rsem_pca_scores.rds`
+- `analysis/transcriptomic-dimension-reduction/models/rsem_tsne_scores.rds`
+- `analysis/transcriptomic-dimension-reduction/models/rsem_umap_scores.rds`
+- `analysis/transcriptomic-dimension-reduction/models/kallisto_pca_scores.rds`
+- `analysis/transcriptomic-dimension-reduction/models/kallisto_tsne_scores.rds`
+- `analysis/transcriptomic-dimension-reduction/models/kallisto_umap_scores.rds`
+- `analysis/transcriptomic-dimension-reduction/results/rsem_pca_scores_aligned.tsv`
+- `analysis/transcriptomic-dimension-reduction/results/rsem_tsne_scores_aligned.tsv`
+- `analysis/transcriptomic-dimension-reduction/results/rsem_umap_scores_aligned.tsv`
+- `analysis/transcriptomic-dimension-reduction/results/kallisto_pca_scores_aligned.tsv`
+- `analysis/transcriptomic-dimension-reduction/results/kallisto_tsne_scores_aligned.tsv`
+- `analysis/transcriptomic-dimension-reduction/results/kallisto_umap_scores_aligned.tsv`
 
 # Usage
 
@@ -64,102 +62,119 @@ Assign functions.
 # magrittr pipe
 `%>%` <- dplyr::`%>%`
 
-perform_dimension_reduction <- function(transposed_expression_matrix, method, seed = 2019) {
-  # Given a data.frame that containes the transposed expression matrix and the
-  # name of a dimension reduction method, perform the dimension reduction 
-  # technique on the transposed matrix
-  # Args:
-  #   transposed_expression_matrix: transposed `RSEM` or `Kallisto` expression
-  #                                 matrix
-  #   method: dimension reduction method to be performed
-  #   seed: seed set to a default of 2019
-  #
-  # Returns:
-  #   dimension_reduction_df: data.frame containing the resulting scores of the
-  #                           dimension reduction technique, with a column that
-  #                           includes sample identifiers
-  
-  # Set seed for reproducibility
-  set.seed(seed)
-  
-  # Save rownames as a vector
-  ID <- rownames(transposed_expression_matrix)
-  # Perform dimension reduction 
-  if (method == "PCA" ){
-  prcomp_results <- prcomp(transposed_expression_matrix)
-  dimension_reduction_df <- data.frame(prcomp_results$x[, 1:2])
-  } else if (method == "t-SNE" ) {
-  tsne_results <- Rtsne::Rtsne(transposed_expression_matrix, perplexity = 15)
-  dimension_reduction_df <- data.frame(tsne_results$Y)
-  } else if (method == "UMAP" ) {
-  umap_results <- umap::umap(transposed_expression_matrix)
-  dimension_reduction_df <- data.frame(umap_results$layout)
-  } else {
-    print ("Error")
+perform_dimension_reduction <-
+  function(transposed_expression_matrix,
+           method,
+           seed = 2019,
+           filename) {
+    # Given a data.frame that containes the transposed expression matrix and the
+    # name of a dimension reduction method, perform the dimension reduction
+    # technique on the transposed matrix
+    # Args:
+    #   transposed_expression_matrix: Transposed `RSEM` or `Kallisto` expression
+    #                                 matrix
+    #   method: Dimension reduction method to be performed
+    #   seed: Seed set to a default of 2019
+    #   filename: Name of the output file
+    #
+    # Returns:
+    #   dimension_reduction_df: data.frame containing the resulting scores of the
+    #                           dimension reduction technique, with a column that
+    #                           includes sample identifiers
+    
+    # Set seed for reproducibility
+    set.seed(seed)
+    
+    # Save rownames as a vector
+    ID <- rownames(transposed_expression_matrix)
+    # Perform dimension reduction
+    if (method == "PCA") {
+      prcomp_results <- prcomp(transposed_expression_matrix)
+      dimension_reduction_df <- data.frame(prcomp_results$x[, 1:2])
+    } else if (method == "t-SNE") {
+      tsne_results <-
+        Rtsne::Rtsne(transposed_expression_matrix, perplexity = 15)
+      dimension_reduction_df <- data.frame(tsne_results$Y)
+    } else if (method == "UMAP") {
+      umap_results <- umap::umap(transposed_expression_matrix)
+      dimension_reduction_df <- data.frame(umap_results$layout)
+    } else {
+      stop("method is not a supported argument")
+    }
+    
+    # Assign the relevant rownames(Kids_First_Biospecimen_ID) to a column
+    dimension_reduction_df$Kids_First_Biospecimen_ID <- ID
+    # Write the resulting model to a rds file
+    readr::write_rds(dimension_reduction_df, file.path("models", paste(filename, ".rds", sep = "")))
+    
+    return(dimension_reduction_df)
+    
   }
-  
-  # To set the tsv filename 
-  matrix_name <- as.name(transposed_expression_matrix)
-  # Assign the relevant rownames(Kids_First_Biospecimen_ID) to a column
-  dimension_reduction_df$Kids_First_Biospecimen_ID <- ID
-  # Write the resulting data.frame to a tsv file
-  readr::write_tsv(dimension_reduction_df, 
-                   file.path(results_dir, file = paste(matrix_name, method, "scores.tsv", sep = "_")))
-  
-  return(dimension_reduction_df)
-}
-align_metadata <- function(dimension_reduction_df, metadata_df, filename) {
-  # Given a data.frame that contains scores from a dimensionality reduction
-  # technique, align the metadata to the data.frame in preparation for plotting
-  #
-  # Note: The rownames provided in the id argument are synonymous with the
-  # metadata's `Kids_First_Biospecimen_ID`
-  #
-  # Args:
-  #   dimension_reduction_df: Name of the data.frame containing dimension reduction scores
-  #   metadata_df : Name of the data.frame containing the relevant metadata
-  #
-  # Returns:
-  #   aligned_scores_df: A data.frame containing the dimension reduction scores along with
-  #         the variables from `metadata_df`
-  
-  # Join the dimension reductions scores data.frame and the metadata data.frame 
-  aligned_scores_df <- dimension_reduction_df %>%
-    dplyr::inner_join(metadata_df, by = c("Kids_First_Biospecimen_ID")) 
-  
-  # Write the resulting metadata aligned data.frame to a RDS file
-  readr::write_rds(aligned_scores_df, 
-                   file.path(results_dir, file = filename))
-  
-  return(aligned_scores_df)
-}
+align_metadata <-
+  function(dimension_reduction_df,
+           metadata_df,
+           filename) {
+    # Given a data.frame that contains scores from a dimensionality reduction
+    # technique, align the metadata to the data.frame in preparation for plotting
+    #
+    # Note: The rownames provided in the id argument are synonymous with the
+    # metadata's `Kids_First_Biospecimen_ID`
+    #
+    # Args:
+    #   dimension_reduction_df: Name of the data.frame containing dimension reduction scores
+    #   metadata_df : Name of the data.frame containing the relevant metadata
+    #   filename: Name of the output file
+    #
+    # Returns:
+    #   aligned_scores_df: A data.frame containing the dimension reduction scores along with
+    #         the variables from `metadata_df`
+    
+    # Join the dimension reductions scores data.frame and the metadata data.frame
+    aligned_scores_df <- dimension_reduction_df %>%
+      dplyr::inner_join(metadata_df, by = c("Kids_First_Biospecimen_ID"))
+    
+    # Write the resulting metadata aligned data.frame to a tsv file
+    readr::write_tsv(aligned_scores_df,
+                     file.path("results", paste(filename, "_aligned.tsv", sep = "")))
+    
+    return(aligned_scores_df)
+    
+  }
 
-dimension_reduction_wrapper <- function(transposed_expression_matrix, method, seed = 2019, metadata_df, filename){
-  # Given a transposed expression matrix, the metadata data.frame, the name of 
-  # the dimension reduction method to be performed and a seed with a default 
-  # value, perform the dimension reduction, and align the metadata with the 
-  # resulting scores
-  # 
-  # Args:
-  #   transposed_expression_matrix: transposed `RSEM` or `Kallisto` expression
-  #                                 matrix
-  #   method: dimension reduction method to be performed
-  #   seed: seed set to default 2019
-  #   metadata_df: Name of the data.frame containing the relevant metadata
-  #   filename: Filename for the RDS output file
-  #
-  # Returns:
-  #   aligned_scores_df: data.frame containing dimension reduction scores and
-  #                      aligned metadata variables
-  #                              
-  
-  # Run `perform_dimension_reduction` function 
-  dimension_reduction_df <- perform_dimension_reduction(transposed_expression_matrix, method, seed = 2019)
-  # Run `align_metadata` function
-  aligned_scores_df <- align_metadata(dimension_reduction_df, metadata_df, filename)
-  
-  return(aligned_scores_df)
-}
+dimension_reduction_wrapper <-
+  function(transposed_expression_matrix,
+           method,
+           seed = 2019,
+           metadata_df,
+           filename) {
+    # Given a transposed expression matrix, the metadata data.frame, the name of
+    # the dimension reduction method to be performed and a seed with a default
+    # value, perform the dimension reduction, and align the metadata with the
+    # resulting scores
+    #
+    # Args:
+    #   transposed_expression_matrix: transposed `RSEM` or `Kallisto` expression
+    #                                 matrix
+    #   method: dimension reduction method to be performed
+    #   seed: seed set to default 2019
+    #   metadata_df: Name of the data.frame containing the relevant metadata
+    #   filename: Filename for the RDS output file
+    #
+    # Returns:
+    #   aligned_scores_df: data.frame containing dimension reduction scores and
+    #                      aligned metadata variables
+    #
+    
+    # Run `perform_dimension_reduction` function
+    dimension_reduction_df <-
+      perform_dimension_reduction(transposed_expression_matrix, method, seed = seed, filename)
+    # Run `align_metadata` function
+    aligned_scores_df <-
+      align_metadata(dimension_reduction_df, metadata_df, filename)
+    
+    return(aligned_scores_df)
+    
+  }
 
 ```
 
@@ -167,12 +182,12 @@ Assign names of the output directories.
 ```{r}
 # Assign name of output directory
 data_dir <- file.path("..", "..", "data")
-plots_dir <- "plots"
+models_dir <- "models"
 results_dir <- "results"
 
 # Create directory to hold the output.
-if (!dir.exists(plots_dir)) {
-  dir.create(plots_dir)
+if (!dir.exists(models_dir)) {
+  dir.create(models_dir)
 }
 if (!dir.exists(results_dir)) {
   dir.create(results_dir)
@@ -207,7 +222,7 @@ alignment to the metadata.
 
 ```{r}
 # Transform the non-numeric "gene_id" column into rownames
-exp_kallisto <- exp_kallisto[, -1] %>%
+exp_kallisto <- exp_kallisto[,-1] %>%
   dplyr::filter(!duplicated(gene_id)) %>%
   dplyr::filter(complete.cases(.)) %>%
   tibble::column_to_rownames("gene_id")
@@ -220,10 +235,10 @@ exp_rsem <- exp_rsem %>%
 gene_count_threshold <- 100
 
 kallisto_genes_to_keep <- rowSums(exp_kallisto) >= gene_count_threshold
-exp_kallisto <- exp_kallisto[kallisto_genes_to_keep, ]
+exp_kallisto <- exp_kallisto[kallisto_genes_to_keep,]
 
 rsem_genes_to_keep <- rowSums(exp_rsem) >= gene_count_threshold
-exp_rsem  <- exp_rsem[rsem_genes_to_keep, ]
+exp_rsem  <- exp_rsem[rsem_genes_to_keep,]
 
 # Transpose the data
 transposed_rsem_data <- t(exp_rsem)
@@ -237,36 +252,36 @@ transposed_kallisto_data <- t(exp_kallisto)
 
 ```{r}
 # Run `dimension_reduction_wrapper` function 
-rsem_pca_model <-
+rsem_pca_aligned_scores <-
   dimension_reduction_wrapper(transposed_rsem_data,
                               "PCA",
                               seed = 2019,
                               metadata_df,
-                              "rsem_pca_model.RDS")
+                              "rsem_pca_scores")
 ```
 
 ## Run t-SNE
 
 ```{r}
 # Run `dimension_reduction_wrapper` function 
-rsem_tsne_model <-
+rsem_tsne_aligned_scores <-
   dimension_reduction_wrapper(transposed_rsem_data,
                               "t-SNE",
                               seed = 2019,
                               metadata_df,
-                              "rsem_tsne_model.RDS")
+                              "rsem_tsne_scores")
 ```
 
 ## Run UMAP
 
 ```{r}
 # Run `dimension_reduction_wrapper` function 
-rsem_umap_model <-
+rsem_umap_aligned_scores <-
   dimension_reduction_wrapper(transposed_rsem_data,
                               "UMAP",
                               seed = 2019,
                               metadata_df,
-                              "rsem_umap_model.RDS")
+                              "rsem_umap_scores")
 ```
 
 
@@ -276,36 +291,36 @@ rsem_umap_model <-
 
 ```{r}
 # Run `dimension_reduction_wrapper` function 
-kallisto_pca_model <-
+kallisto_pca_aligned_scores <-
   dimension_reduction_wrapper(transposed_kallisto_data,
                               "PCA",
                               seed = 2019,
                               metadata_df,
-                              "kallisto_pca_model.RDS")
+                              "kallisto_pca_scores")
 ```
 
 ## Run t-SNE 
 
 ```{r}
 # Run `dimension_reduction_wrapper` function 
-kallisto_tsne_model <-
+kallisto_tsne_aligned_scores <-
   dimension_reduction_wrapper(transposed_kallisto_data,
                               "t-SNE",
                               seed = 2019,
                               metadata_df,
-                              "kallisto_tsne_model.RDS")
+                              "kallisto_tsne_scores")
 ```
 
 ## Run UMAP 
 
 ```{r}
 # Run `dimension_reduction_wrapper` function 
-kallisto_umap_model <-
+kallisto_umap_aligned_scores <-
   dimension_reduction_wrapper(transposed_kallisto_data,
                               "UMAP",
                               seed = 2019,
                               metadata_df,
-                              "kallisto_umap_model.RDS")
+                              "kallisto_umap_scores")
 ```
 
 # Session Info
