@@ -7,7 +7,7 @@ output:
     toc_float: true
 ---
 
-This notebook is the second of the two notebooks that demonstrate samples in the 
+This notebook is the second part of an analysis that demonstrate samples in the 
 PBTA cluster by cancer type using dimensionality reduction techniques,
 [Principal Component Analysis](https://www.rdocumentation.org/packages/stats/versions/3.6.0/topics/prcomp) (PCA), 
 [t-Distributed Stochastic Neighbor Embedding](https://cran.r-project.org/web/packages/Rtsne/Rtsne.pdf) (t-SNE), 
@@ -49,60 +49,80 @@ Assign functions.
 # magrittr pipe
 `%>%` <- dplyr::`%>%`
 
-plot_dimension_reduction <- function(aligned_scores_df, point_color) {
-  # Given a data.frame that contains the scores of a dimension reduction
-  # analysis and the information we want from the metadata, make a scatterplot.
-  #
-  # Args:
-  #   dimension_reduction_df: data.frame containing dimension reduction scores, and
-  #              relative information from the metadata
-  #   point_color: the variable whose information will be used to color
-  #                the points on the plot
-  #
-  # Returns:
-  #   dimension_reduction_plot: the plot representing the dimension reduction
-  #                             scores in the given data.frame, using the values
-  #                             in `point_color` as symbols to color the points
-  
-  # transform the strings in `point_color` into symbols for plotting
-  color_sym <- rlang::sym(point_color)
-  
-  dimension_reduction_plot <- ggplot2::ggplot(aligned_scores_df,
-                                              ggplot2::aes(
-                                                x = aligned_scores_df[, 1],
-                                                y = aligned_scores_df[, 2],
-                                                color = !!color_sym
-                                              )) +
-    ggplot2::geom_point(size = 0.5)
-}
+plot_dimension_reduction <-
+  function(aligned_scores_df, point_color) {
+    # Given a data.frame that contains the scores of a dimension reduction
+    # analysis and the information we want from the metadata, make a scatterplot.
+    #
+    # Args:
+    #   dimension_reduction_df: data.frame containing dimension reduction scores, and
+    #              relative information from the metadata
+    #   point_color: the variable whose information will be used to color
+    #                the points on the plot
+    #
+    # Returns:
+    #   dimension_reduction_plot: the plot representing the dimension reduction
+    #                             scores in the given data.frame, using the values
+    #                             in `point_color` as symbols to color the points
+
+    # transform the strings in `point_color` into symbols for plotting
+    color_sym <- rlang::sym(point_color)
+
+    dimension_reduction_plot <- ggplot2::ggplot(
+      aligned_scores_df,
+      ggplot2::aes(
+        x = aligned_scores_df[, 1],
+        y = aligned_scores_df[, 2],
+        color = !!color_sym
+      )
+    ) +
+      ggplot2::geom_point(size = 0.5)
+
+    return(dimension_reduction_plot)
+    
+  }
 ```
 
-Assign names of the output directories.
+Assign name of the output directories.
 ```{r}
-# Assign name of output directory
-data_dir <- file.path("..", "..", "data")
-plots_dir <- "plots"
+# Assign names of output directories
 results_dir <- "results"
+plots_dir <- "plots"
 
 # Create directory to hold the output.
 if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
 }
-if (!dir.exists(results_dir)) {
-  dir.create(results_dir)
-}
 ```
 
-Read in the RDS models produced in `01-transcriptomic-analysis-prep.Rmd`.
+Read in the tsv files containing the dimension reduction scores aligned with 
+the metadata, which were produced in `01-transcriptomic-analysis-prep.R`.
 ```{r}
-rsem_pca_aligned_df <- readr::read_rds(file.path(results_dir, "rsem_pca_model.RDS"))
-rsem_tsne_aligned_df <- readr::read_rds(file.path(results_dir, "rsem_tsne_model.RDS"))
-rsem_umap_aligned_df <- readr::read_rds(file.path(results_dir, "rsem_umap_model.RDS"))
+rsem_pca_aligned_df <-
+  data.frame(readr::read_tsv(file.path(
+    results_dir, "rsem_pca_scores_aligned.tsv"
+  )))
+rsem_tsne_aligned_df <-
+  data.frame(readr::read_tsv(file.path(
+    results_dir, "rsem_tsne_scores_aligned.tsv"
+  )))
+rsem_umap_aligned_df <-
+  data.frame(readr::read_tsv(file.path(
+    results_dir, "rsem_umap_scores_aligned.tsv"
+  )))
 
-kallisto_pca_aligned_df <- readr::read_rds(file.path(results_dir, "kallisto_pca_model.RDS"))
-kallisto_tsne_aligned_df <- readr::read_rds(file.path(results_dir, "kallisto_tsne_model.RDS"))
-kallisto_umap_aligned_df <- readr::read_rds(file.path(results_dir, "kallisto_umap_model.RDS"))
-
+kallisto_pca_aligned_df <-
+  data.frame(readr::read_tsv(file.path(
+    results_dir, "kallisto_pca_scores_aligned.tsv"
+  )))
+kallisto_tsne_aligned_df <-
+  data.frame(readr::read_tsv(file.path(
+    results_dir, "kallisto_tsne_scores_aligned.tsv"
+  )))
+kallisto_umap_aligned_df <-
+  data.frame(readr::read_tsv(file.path(
+    results_dir, "kallisto_umap_scores_aligned.tsv"
+  )))
 ```
 
 
@@ -113,23 +133,30 @@ The grid of plots below shows the dimension reductions scores for the RSEM
 expression data, colored by tumor type.  
 These plots seem to suggest the presence of batch effects, which is likely due 
 to the need for normalization across the two batches of RNA-Seq preparation 
-(poly-A versus stranded).
+(poly-A selection versus ribosomal depletion).
 This can be further determined using the `experimental_strategy` column of the
 metadata to attempt to correct batch effects. 
 
 ```{r, fig.width = 10, fig.height = 20}
 # Run the `plot_dimension_reduction` function to plot each set of dimension
 # reduction scores
-rsem_pca_plot <- plot_dimension_reduction(rsem_pca_aligned_df, "disease_type_new")
-rsem_tsne_plot <- plot_dimension_reduction(rsem_tsne_aligned_df, "disease_type_new")
-rsem_umap_plot <- plot_dimension_reduction(rsem_umap_aligned_df, "disease_type_new")
+rsem_pca_plot <-
+  plot_dimension_reduction(rsem_pca_aligned_df, "disease_type_new")
+rsem_tsne_plot <-
+  plot_dimension_reduction(rsem_tsne_aligned_df, "disease_type_new")
+rsem_umap_plot <-
+  plot_dimension_reduction(rsem_umap_aligned_df, "disease_type_new")
 
-# Extract the legend from one of the plots 
-legend_a <- cowplot::get_legend(rsem_umap_plot + 
-                                  ggplot2::theme(legend.direction = "vertical",
-                                                 legend.position = c(0.05, 0.45),
-                                                 legend.key.width = ggplot2::unit(0.1, "cm"),
-                                                 text = ggplot2::element_text(size = 9)))
+# Extract the legend from one of the plots
+legend_a <- cowplot::get_legend(
+  rsem_umap_plot +
+    ggplot2::theme(
+      legend.direction = "vertical",
+      legend.position = c(0.05, 0.40),
+      legend.key.width = ggplot2::unit(0.1, "cm"),
+      text = ggplot2::element_text(size = 9)
+    )
+)
 # Plot grid with RSEM data colored by cancer type
 rsem_grid <- cowplot::plot_grid(
   rsem_pca_plot + ggplot2::theme(legend.position = "none") +
@@ -147,17 +174,18 @@ rsem_grid <- cowplot::plot_grid(
 )
 
 # Add the legend to the cowplot
-rsem_grid <- cowplot::plot_grid(rsem_grid, legend_a, rel_heights = c(2, .2))
+rsem_grid <-
+  cowplot::plot_grid(rsem_grid, legend_a, rel_heights = c(2, .2))
 
-# Save plot grid 
+# Save plot grid
 ggplot2::ggsave(
-  file.path(plots_dir, "meta_grid_rsem_type.pdf"),
+  file.path("plots", "meta_grid_rsem_type.pdf"),
   rsem_grid,
   width = 12,
   height = 18
 )
 
-# Display the plot grid 
+# Display the plot grid
 rsem_grid
 ```
 ## Kallisto Plots Grid
@@ -165,23 +193,30 @@ The grid of plots below shows the dimension reductions scores for the Kallisto
 expression data, colored by tumor type.  
 These plots seem to suggest the presence of batch effects, which is likely due 
 to the need for normalization across the two batches of RNA-Seq preparation 
-(poly-A versus stranded).
+(poly-A selection versus ribosomal depletion).
 This can be further determined using the `experimental_strategy` column of the
 metadata to attempt to correct batch effects. 
 
 ```{r, fig.width = 10, fig.height = 20}
 # Run the `plot_dimension_reduction` function to plot each set of dimension
 # reduction scores
-kallisto_pca_plot <- plot_dimension_reduction(kallisto_pca_aligned_df, "disease_type_new")
-kallisto_tsne_plot <- plot_dimension_reduction(kallisto_tsne_aligned_df, "disease_type_new")
-kallisto_umap_plot <- plot_dimension_reduction(kallisto_umap_aligned_df, "disease_type_new")
+kallisto_pca_plot <-
+  plot_dimension_reduction(kallisto_pca_aligned_df, "disease_type_new")
+kallisto_tsne_plot <-
+  plot_dimension_reduction(kallisto_tsne_aligned_df, "disease_type_new")
+kallisto_umap_plot <-
+  plot_dimension_reduction(kallisto_umap_aligned_df, "disease_type_new")
 
-# Extract the legend from one of the plots 
-legend_b <- cowplot::get_legend(kallisto_umap_plot + 
-                                  ggplot2::theme(legend.direction = "vertical",
-                                                 legend.position = c(0.05, 0.45),
-                                                 legend.key.width = ggplot2::unit(0.1, "cm"),
-                                                 text = ggplot2::element_text(size = 9)))
+# Extract the legend from one of the plots
+legend_b <- cowplot::get_legend(
+  kallisto_umap_plot +
+    ggplot2::theme(
+      legend.direction = "vertical",
+      legend.position = c(0.05, 0.40),
+      legend.key.width = ggplot2::unit(0.1, "cm"),
+      text = ggplot2::element_text(size = 9)
+    )
+)
 # Plot grid with Kallisto data colored by cancer type
 kallisto_grid <- cowplot::plot_grid(
   kallisto_pca_plot + ggplot2::theme(legend.position = "none") +
@@ -199,11 +234,12 @@ kallisto_grid <- cowplot::plot_grid(
 )
 
 # Add the legend to the cowplot
-kallisto_grid <- cowplot::plot_grid(kallisto_grid, legend_b, rel_heights = c(2, .2))
+kallisto_grid <-
+  cowplot::plot_grid(kallisto_grid, legend_b, rel_heights = c(2, .2))
 
 # Save plot grid
 ggplot2::ggsave(
-  file.path(plots_dir, "meta_grid_kallisto_type.pdf"),
+  file.path("plots", "meta_grid_kallisto_type.pdf"),
   kallisto_grid,
   width = 12,
   height = 18
