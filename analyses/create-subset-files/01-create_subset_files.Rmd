@@ -8,8 +8,8 @@ author: J. Taroni for ALSF CCDL
 date: 2019
 ---
 
-In this notebook, we subset the files to include full features for 5 matched 
-participants.
+In this notebook, we subset the files to include full features for some number 
+of matched participants.
 The output files are intended to be used for continuous integration.
 
 #### USAGE
@@ -24,6 +24,21 @@ Rscript -e "rmarkdown::render('analyses/create-subset-files/01-create_subset_fil
 _This assumes you are in the top directory of the repository._
 
 ## Setup
+
+#### Number of participants and seed
+
+This variable controls the number of participants that are included in the 
+subset files.
+
+```{r}
+num_matched_participants <- 25
+```
+
+This is used to set the seed when selecting participant ids.
+
+```{r}
+seed <- 12345
+```
 
 #### Packages and functions
 
@@ -195,7 +210,7 @@ The Manta SV file is in [annotated Manta TSV format](https://github.com/AlexsLem
 
 ```{r}
 manta <- readr::read_tsv(file.path(data_dir, manta_file))
-lumpy <- readr::read_tsv(file.path(data_dir, lumpy_file))
+lumpy <- data.table::fread(file.path(data_dir, lumpy_file), data.table = FALSE)
 ```
 
 ```{r}
@@ -221,9 +236,10 @@ histologies_df <- readr::read_tsv(file.path(data_dir, histologies_file))
 participant_id_list <- lapply(
   sample_id_list,
   function(sample_ids) {
-    histologies_df %>%
+    participant_ids <-  histologies_df %>%
       dplyr::filter(Kids_First_Biospecimen_ID %in% sample_ids) %>% 
       dplyr::pull(Kids_First_Participant_ID)
+    unique(participant_ids)
   }
 )
 ```
@@ -243,8 +259,9 @@ files (for continuous integration).
 
 ```{r}
 # set seed for reproducibility
-set.seed(12345)
-selected_participant_ids <- sample(participants_in_all, 5)
+set.seed(seed)
+selected_participant_ids <- sample(participants_in_all, 
+                                   num_matched_participants)
 ```
 
 Again, each of the tools use biospecimen identifiers. 
@@ -311,13 +328,13 @@ rnaseq_selected_ids <- rlang::quos(selected_biospecimen_df %>%
 ```{r}
 kallisto_subset <- kallisto %>%
   dplyr::select(transcript_id, gene_id, !!!rnaseq_selected_ids) %>%
-  readr::write_tsv(file.path(testing_data_dir, kallisto_file))
+  readr::write_rds(file.path(testing_data_dir, kallisto_file))
 ```
 
 ```{r}
 rsem_subset <- rsem %>%
   dplyr::select(gene_id, !!!rnaseq_selected_ids) %>%
-  readr::write_tsv(file.path(testing_data_dir, rsem_file))
+  readr::write_rds(file.path(testing_data_dir, rsem_file))
 ```
 
 #### SNV
