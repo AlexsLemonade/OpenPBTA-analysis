@@ -30,14 +30,17 @@
 if (!("Rtsne" %in% installed.packages())) {
   install.packages("Rtsne")
 }
+
 # This is needed for running the umap analysis
 if (!("umap" %in% installed.packages())) {
   install.packages("umap")
 }
+
 # This is needed for taking arguments from the command line
 if (!("optparse" %in% installed.packages())) {
   install.packages("optparse")
 }
+
 # magrittr pipe
 `%>%` <- dplyr::`%>%`
 
@@ -98,7 +101,7 @@ perform_dimension_reduction <-
     #   filename: Name of the output file
     #   output_directory: file.path to the output directory
     #   perplexity_parameter: integer defining the perplexity parameter for t-SNE
-    #   neighbors_parameter: integere defining the n_neighbors parameter for UMAP
+    #   neighbors_parameter: integer defining the n_neighbors parameter for UMAP
     #
     # Returns:
     #   dimension_reduction_df: data.frame containing the resulting scores of the
@@ -201,7 +204,7 @@ dimension_reduction_wrapper <-
     #   filename: Filename for the RDS output file
     #   output_directory: file.path to the output directory
     #   perplexity_parameter: integer defining the perplexity parameter for t-SNE
-    #   neighbors_parameter: integere defining the n_neighbors parameter for UMAP
+    #   neighbors_parameter: integer defining the n_neighbors parameter for UMAP
     #
     # Returns:
     #   aligned_scores_df: data.frame containing dimension reduction scores and
@@ -295,6 +298,7 @@ rsem_pca_aligned_scores <-
     perplexity_parameter,
     neighbors_parameter
   )
+
 # Run `dimension_reduction_wrapper` function using t-SNE
 rsem_tsne_aligned_scores <-
   dimension_reduction_wrapper(transposed_rsem_data,
@@ -306,6 +310,7 @@ rsem_tsne_aligned_scores <-
     perplexity_parameter,
     neighbors_parameter
   )
+
 # Run `dimension_reduction_wrapper` function using UMAP
 rsem_umap_aligned_scores <-
   dimension_reduction_wrapper(transposed_rsem_data,
@@ -330,6 +335,7 @@ kallisto_pca_aligned_scores <-
     perplexity_parameter,
     neighbors_parameter
   )
+
 # Run `dimension_reduction_wrapper` function using t-SNE
 kallisto_tsne_aligned_scores <-
   dimension_reduction_wrapper(transposed_kallisto_data,
@@ -341,6 +347,7 @@ kallisto_tsne_aligned_scores <-
     perplexity_parameter,
     neighbors_parameter
   )
+
 # Run `dimension_reduction_wrapper` function using UMAP
 kallisto_umap_aligned_scores <-
   dimension_reduction_wrapper(transposed_kallisto_data,
