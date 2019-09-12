@@ -79,26 +79,28 @@ perform_dimension_reduction <- function(transposed_expression_matrix,
   
   # Save rownames as a vector
   ID <- rownames(transposed_expression_matrix)
+  
   # Perform dimension reduction
   if (method == "PCA") {
-    prcomp_results <- prcomp(transposed_expression_matrix)
-    dimension_reduction_df <- data.frame(prcomp_results$x[, 1:2])
+    dimension_reduction_results <- prcomp(transposed_expression_matrix)
+    dimension_reduction_df <- data.frame(dimension_reduction_results$x[, 1:2])
   } else if (method == "t-SNE") {
-    tsne_results <-
+    dimension_reduction_results <-
       Rtsne::Rtsne(transposed_expression_matrix, perplexity = perplexity_parameter)
-    dimension_reduction_df <- data.frame(tsne_results$Y)
+    dimension_reduction_df <- data.frame(dimension_reduction_results$Y)
   } else if (method == "UMAP") {
-    umap_results <- umap::umap(transposed_expression_matrix, n_neighbors = neighbors_parameter)
-    dimension_reduction_df <- data.frame(umap_results$layout)
+    dimension_reduction_results <- umap::umap(transposed_expression_matrix, n_neighbors = neighbors_parameter)
+    dimension_reduction_df <- data.frame(dimension_reduction_results$layout)
   } else {
     stop("method is not a supported argument")
   }
   
   # Assign the relevant rownames(Kids_First_Biospecimen_ID) to a column
   dimension_reduction_df$Kids_First_Biospecimen_ID <- ID
+  
   # Write the resulting model to a rds file
   readr::write_rds(
-    dimension_reduction_df,
+    dimension_reduction_results,
     file.path(
       output_directory,
       paste(filename, "_model.rds", sep = "")
