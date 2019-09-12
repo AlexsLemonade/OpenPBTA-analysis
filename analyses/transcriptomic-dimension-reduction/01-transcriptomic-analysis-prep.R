@@ -21,7 +21,7 @@
 # This script is intended to be run via the command line from the top directory 
 # of the repository as follows:
 #
-# Rscript --vanilla analyses/transcriptomic-dimension-reduction/01-transcriptomic-analysis-prep.R --perplexity 10 --neighbors 15
+# Rscript --vanilla analyses/transcriptomic-dimension-reduction/01-transcriptomic-analysis-prep.R --perplexity 5 --neighbors 15
 #
 # where the integers can be replaced with other integers to change the 
 # perplexity paramater for t-SNE and the neighbors parameter for UMAP. 
@@ -83,7 +83,7 @@ perform_dimension_reduction <- function(transposed_expression_matrix,
   # Perform dimension reduction
   if (method == "PCA") {
     dimension_reduction_results <- prcomp(transposed_expression_matrix)
-    dimension_reduction_df <- data.frame(dimension_reduction_results$x[, 1:2])
+    dimension_reduction_df <- data.frame(dimension_reduction_results$x)
   } else if (method == "t-SNE") {
     dimension_reduction_results <-
       Rtsne::Rtsne(transposed_expression_matrix, perplexity = perplexity_parameter)

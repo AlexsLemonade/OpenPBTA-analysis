@@ -24,16 +24,15 @@ Upon plotting the dimension reduction scores produced by each of the three
 unique techniques mentioned above, it was noticed that there may be batch 
 effects present.
 
-- The `experimental_strategy` variable within the metadata may be useful in 
-  correcting said batch effects. 
-- The value in the `experimental_strategy` column for all of the 
-  `Kids_First_Biospecimen_ID`'s in the expression data is equal to `RNA-Seq`. 
-  Matching the `Kids_First_Biospecimen_ID` with `Kids_First_Participant_ID`
-  gives the true method of sequencing. 
+- The `RNA_library` variable within the metadata may be useful in 
+  correcting said batch effects as suggested by the strategy selection plots 
+  for both sets of expression data.
 
 ## Output Files:
 - `analyses/transcriptomic-dimension-reduction/plots/meta_grid_kallisto_type.pdf`
+- `analyses/transcriptomic-dimension-reduction/plots/meta_grid_kallisto_strategy.pdf`
 - `analyses/transcriptomic-dimension-reduction/plots/meta_grid_rsem_type.pdf`
+- `analyses/transcriptomic-dimension-reduction/plots/meta_grid_rsem_strategy.pdf`
 
 # Usage
 
@@ -46,19 +45,21 @@ Rscript -e "rmarkdown::render('analyses/transcriptomic-dimension-reduction/02-tr
 
 Assign functions. 
 ```{r}
-# magrittr pipe
-`%>%` <- dplyr::`%>%`
-
+# Function to plot 
 plot_dimension_reduction <-
-  function(aligned_scores_df, point_color) {
+  function(aligned_scores_df, point_color, score1, score2) {
     # Given a data.frame that contains the scores of a dimension reduction
     # analysis and the information we want from the metadata, make a scatterplot.
     #
     # Args:
-    #   dimension_reduction_df: data.frame containing dimension reduction scores, and
-    #              relative information from the metadata
+    #   dimension_reduction_df: data.frame containing dimension reduction scores,
+    #                           and relative information from the metadata
     #   point_color: the variable whose information will be used to color
     #                the points on the plot
+    #   score1: the column number of the first dimension reduction score that we 
+    #           want to plot 
+    #   score2: the column number of the second dimension reduction score that
+    #           we want to plot 
     #
     # Returns:
     #   dimension_reduction_plot: the plot representing the dimension reduction
@@ -71,12 +72,12 @@ plot_dimension_reduction <-
     dimension_reduction_plot <- ggplot2::ggplot(
       aligned_scores_df,
       ggplot2::aes(
-        x = aligned_scores_df[, 1],
-        y = aligned_scores_df[, 2],
+        x = aligned_scores_df[, score1],
+        y = aligned_scores_df[, score2],
         color = !!color_sym
       )
     ) +
-      ggplot2::geom_point(size = 0.5)
+      ggplot2::geom_point()
 
     return(dimension_reduction_plot)
     
@@ -97,7 +98,7 @@ if (!dir.exists(plots_dir)) {
 
 Read in the tsv files containing the dimension reduction scores aligned with 
 the metadata, which were produced in `01-transcriptomic-analysis-prep.R`.
-```{r}
+```{r, message = FALSE}
 rsem_pca_aligned_df <-
   data.frame(readr::read_tsv(file.path(
     results_dir, "rsem_pca_scores_aligned.tsv"
@@ -130,26 +131,36 @@ kallisto_umap_aligned_df <-
 
 ## RSEM Plots Grid
 The grid of plots below shows the dimension reductions scores for the RSEM 
-expression data, colored by tumor type.  
+expression data, colored by tumor type and selection strategy.
 These plots seem to suggest the presence of batch effects, which is likely due 
 to the need for normalization across the two batches of RNA-Seq preparation 
-(poly-A selection versus ribosomal depletion).
-This can be further determined using the `experimental_strategy` column of the
-metadata to attempt to correct batch effects. 
+(poly-A selection versus stranded(ribosomal depletion)).
+This can be further determined using the `RNA_library` column of the
+metadata to attempt to correct batch effects as suggested by the selection
+strategy grid of plots.
 
-```{r, fig.width = 10, fig.height = 20}
+```{r, fig.width = 10, fig.height = 18}
 # Run the `plot_dimension_reduction` function to plot each set of dimension
-# reduction scores
-rsem_pca_plot <-
-  plot_dimension_reduction(rsem_pca_aligned_df, "disease_type_new")
-rsem_tsne_plot <-
-  plot_dimension_reduction(rsem_tsne_aligned_df, "disease_type_new")
-rsem_umap_plot <-
-  plot_dimension_reduction(rsem_umap_aligned_df, "disease_type_new")
+# reduction scores using `disease_type_new` to color points
+rsem_pca_plot_type <-
+  plot_dimension_reduction(rsem_pca_aligned_df, "disease_type_new", 1, 5)
+rsem_tsne_plot_type <-
+  plot_dimension_reduction(rsem_tsne_aligned_df, "disease_type_new", 1, 2)
+rsem_umap_plot_type <-
+  plot_dimension_reduction(rsem_umap_aligned_df, "disease_type_new", 1, 2)
 
-# Extract the legend from one of the plots
+# Run the `plot_dimension_reduction` function to plot each set of dimension
+# reduction scores using `RNA_library` to color points
+rsem_pca_plot_strategy <-
+  plot_dimension_reduction(rsem_pca_aligned_df, "RNA_library", 1, 5)
+rsem_tsne_plot_strategy <-
+  plot_dimension_reduction(rsem_tsne_aligned_df, "RNA_library", 1, 2)
+rsem_umap_plot_strategy <-
+  plot_dimension_reduction(rsem_umap_aligned_df, "RNA_library", 1, 2)
+
+# Extract the legend from one of the cancer type plots
 legend_a <- cowplot::get_legend(
-  rsem_umap_plot +
+  rsem_umap_plot_type +
     ggplot2::theme(
       legend.direction = "vertical",
       legend.position = c(0.05, 0.40),
@@ -157,14 +168,25 @@ legend_a <- cowplot::get_legend(
       text = ggplot2::element_text(size = 9)
     )
 )
+
+# Extract the legend from one of the selection strategy plots
+legend_b <- cowplot::get_legend(
+  rsem_umap_plot_strategy +
+    ggplot2::theme(
+      legend.direction = "vertical",
+      legend.key.width = ggplot2::unit(0.1, "cm"),
+      text = ggplot2::element_text(size = 15)
+    )
+)
+
 # Plot grid with RSEM data colored by cancer type
-rsem_grid <- cowplot::plot_grid(
-  rsem_pca_plot + ggplot2::theme(legend.position = "none") +
-    ggplot2::labs(x = "PC1", y = "PC2") +
+rsem_grid_type <- cowplot::plot_grid(
+  rsem_pca_plot_type + ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(x = "PC1", y = "PC5") +
     ggplot2::ggtitle("Cancer Types (RSEM)"),
-  rsem_tsne_plot + ggplot2::theme(legend.position = "none") +
+  rsem_tsne_plot_type + ggplot2::theme(legend.position = "none") +
     ggplot2::labs(x = "t-SNE1", y = "t-SNE2"),
-  rsem_umap_plot + ggplot2::theme(legend.position = "none") +
+  rsem_umap_plot_type + ggplot2::theme(legend.position = "none") +
     ggplot2::labs(x = "UMAP1", y = "UMAP2"),
   labels = "AUTO",
   align = "vh",
@@ -173,43 +195,83 @@ rsem_grid <- cowplot::plot_grid(
   nrow = 7
 )
 
-# Add the legend to the cowplot
-rsem_grid <-
-  cowplot::plot_grid(rsem_grid, legend_a, rel_heights = c(2, .2))
-
-# Save plot grid
-ggplot2::ggsave(
-  file.path("plots", "meta_grid_rsem_type.pdf"),
-  rsem_grid,
-  width = 12,
-  height = 18
+# Plot grid with RSEM data colored by selection strategy
+rsem_grid_strategy <- cowplot::plot_grid(
+  rsem_pca_plot_strategy + ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(x = "PC1", y = "PC5") +
+    ggplot2::ggtitle("Selection Strategy (RSEM)"),
+  rsem_tsne_plot_strategy + ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(x = "t-SNE1", y = "t-SNE2"),
+  rsem_umap_plot_strategy + ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(x = "UMAP1", y = "UMAP2"),
+  labels = "AUTO",
+  align = "vh",
+  axis = "b",
+  ncol = 1,
+  nrow = 5
 )
 
-# Display the plot grid
-rsem_grid
+# Add the appropriate legends to the cowplots
+rsem_grid_type <-
+  cowplot::plot_grid(rsem_grid_type, legend_a, rel_heights = c(2, .2))
+
+rsem_grid_strategy <- 
+  cowplot::plot_grid(rsem_grid_strategy, legend_b, rel_heights = c(2, 2))
+
+# Save cancer type plot grid
+ggplot2::ggsave(
+   file.path("plots", "meta_grid_rsem_type.pdf"),
+   rsem_grid_type,
+   width = 12,
+   height = 15
+ )
+
+ # Save selection strategy plot grid
+ ggplot2::ggsave(
+   file.path("plots", "meta_grid_rsem_strategy.pdf"),
+   rsem_grid_strategy,
+   width = 12,
+   height = 15
+ )
+
+# Display the plot grid across cancer types 
+rsem_grid_type
+
+# Display the plot grid across selection strategy 
+rsem_grid_strategy
 ```
 ## Kallisto Plots Grid
 The grid of plots below shows the dimension reductions scores for the Kallisto 
-expression data, colored by tumor type.  
+expression data, colored by tumor type and selection strategy.
 These plots seem to suggest the presence of batch effects, which is likely due 
 to the need for normalization across the two batches of RNA-Seq preparation 
-(poly-A selection versus ribosomal depletion).
-This can be further determined using the `experimental_strategy` column of the
-metadata to attempt to correct batch effects. 
+(poly-A selection versus stranded(ribosomal depletion)).
+This can be further determined using the `RNA_library` column of the
+metadata to attempt to correct batch effects as suggested by the selection 
+strategy grid of plots.
 
-```{r, fig.width = 10, fig.height = 20}
+```{r, fig.width = 10, fig.height = 18}
 # Run the `plot_dimension_reduction` function to plot each set of dimension
-# reduction scores
-kallisto_pca_plot <-
-  plot_dimension_reduction(kallisto_pca_aligned_df, "disease_type_new")
-kallisto_tsne_plot <-
-  plot_dimension_reduction(kallisto_tsne_aligned_df, "disease_type_new")
-kallisto_umap_plot <-
-  plot_dimension_reduction(kallisto_umap_aligned_df, "disease_type_new")
+# reduction scores using `disease_type_new` to color points
+kallisto_pca_plot_type <-
+  plot_dimension_reduction(kallisto_pca_aligned_df, "disease_type_new", 1, 5)
+kallisto_tsne_plot_type <-
+  plot_dimension_reduction(kallisto_tsne_aligned_df, "disease_type_new", 1, 2)
+kallisto_umap_plot_type <-
+  plot_dimension_reduction(kallisto_umap_aligned_df, "disease_type_new", 1, 2)
 
-# Extract the legend from one of the plots
-legend_b <- cowplot::get_legend(
-  kallisto_umap_plot +
+# Run the `plot_dimension_reduction` function to plot each set of dimension
+# reduction scores using `RNA_library` to color points
+kallisto_pca_plot_strategy <-
+  plot_dimension_reduction(kallisto_pca_aligned_df, "RNA_library", 1, 5)
+kallisto_tsne_plot_strategy <-
+  plot_dimension_reduction(kallisto_tsne_aligned_df, "RNA_library", 1, 2)
+kallisto_umap_plot_strategy <-
+  plot_dimension_reduction(kallisto_umap_aligned_df, "RNA_library", 1, 2)
+
+# Extract the legend from one of the cancer type plots
+legend_a <- cowplot::get_legend(
+  kallisto_umap_plot_type +
     ggplot2::theme(
       legend.direction = "vertical",
       legend.position = c(0.05, 0.40),
@@ -217,14 +279,25 @@ legend_b <- cowplot::get_legend(
       text = ggplot2::element_text(size = 9)
     )
 )
+
+# Extract the legend from one of the selection strategy plots
+legend_b <- cowplot::get_legend(
+  kallisto_umap_plot_strategy +
+    ggplot2::theme(
+      legend.direction = "vertical",
+      legend.key.width = ggplot2::unit(0.1, "cm"),
+      text = ggplot2::element_text(size = 15)
+    )
+)
+
 # Plot grid with Kallisto data colored by cancer type
-kallisto_grid <- cowplot::plot_grid(
-  kallisto_pca_plot + ggplot2::theme(legend.position = "none") +
-    ggplot2::labs(x = "PC1", y = "PC2") +
+kallisto_grid_type <- cowplot::plot_grid(
+  kallisto_pca_plot_type + ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(x = "PC1", y = "PC5") +
     ggplot2::ggtitle("Cancer Types (Kallisto)"),
-  kallisto_tsne_plot + ggplot2::theme(legend.position = "none") +
+  kallisto_tsne_plot_type + ggplot2::theme(legend.position = "none") +
     ggplot2::labs(x = "t-SNE1", y = "t-SNE2"),
-  kallisto_umap_plot + ggplot2::theme(legend.position = "none") +
+  kallisto_umap_plot_type + ggplot2::theme(legend.position = "none") +
     ggplot2::labs(x = "UMAP1", y = "UMAP2"),
   labels = "AUTO",
   align = "vh",
@@ -233,20 +306,50 @@ kallisto_grid <- cowplot::plot_grid(
   nrow = 7
 )
 
-# Add the legend to the cowplot
-kallisto_grid <-
-  cowplot::plot_grid(kallisto_grid, legend_b, rel_heights = c(2, .2))
-
-# Save plot grid
-ggplot2::ggsave(
-  file.path("plots", "meta_grid_kallisto_type.pdf"),
-  kallisto_grid,
-  width = 12,
-  height = 18
+# Plot grid with Kallisto data colored by selection strategy
+kallisto_grid_strategy <- cowplot::plot_grid(
+  kallisto_pca_plot_strategy + ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(x = "PC1", y = "PC5") +
+    ggplot2::ggtitle("Selection Strategy (Kallisto)"),
+  kallisto_tsne_plot_strategy + ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(x = "t-SNE1", y = "t-SNE2"),
+  kallisto_umap_plot_strategy + ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(x = "UMAP1", y = "UMAP2"),
+  labels = "AUTO",
+  align = "vh",
+  axis = "b",
+  ncol = 1,
+  nrow = 5
 )
 
-# Display the plot grid
-kallisto_grid
+# Add the appropriate legends to the cowplots
+kallisto_grid_type <-
+  cowplot::plot_grid(kallisto_grid_type, legend_a, rel_heights = c(2, .2))
+
+kallisto_grid_strategy <- 
+  cowplot::plot_grid(kallisto_grid_strategy, legend_b, rel_heights = c(2, 2))
+
+ # Save cancer type plot grid
+ ggplot2::ggsave(
+   file.path("plots", "meta_grid_kallisto_type.pdf"),
+   kallisto_grid_type,
+   width = 12,
+   height = 15
+ )
+
+ # Save selection strategy plot grid
+ ggplot2::ggsave(
+   file.path("plots", "meta_grid_kallisto_strategy.pdf"),
+   kallisto_grid_strategy,
+   width = 12,
+   height = 15
+ )
+
+# Display the plot grid across cancer types 
+kallisto_grid_type
+
+# Display the plot grid across selection strategy 
+kallisto_grid_strategy
 ```
 
 # Session Info
