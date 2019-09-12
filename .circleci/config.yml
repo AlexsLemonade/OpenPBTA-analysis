@@ -25,6 +25,10 @@ jobs:
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/01-set-up.Rmd', clean = TRUE);
                                                       rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', clean = TRUE)"
                                
+      - run:
+          name: Unsupervised Transcriptomic Analysis - Data Prep
+          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/transcriptomic-dimension-reduction/01-transcriptomic-analysis-prep.R --perplexity 2 --neighbors 15
+                
         #### Add your analysis here ####
         
   deploy:
