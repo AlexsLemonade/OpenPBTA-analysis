@@ -20,13 +20,11 @@
 # # Usage
 # This script is intended to be run via the command line from the top directory of the repository as follows:
 #
-# Rscript --vanilla analyses/transcriptomic-dimension-reduction/01-transcriptomic-analysis-prep.R -p 10
+# Rscript --vanilla analyses/transcriptomic-dimension-reduction/01-transcriptomic-analysis-prep.R --perplexity 10 --neighbors 15
 #
-# where `10` can be replaced with another integer to change the perplexity paramater for t-SNE
+# where the integers can be replaced with other integers to change the 
+# perplexity paramater for t-SNE and the neighbors parameter for UMAP. 
 
-
-# Set seed for reproducibility
-set.seed(2019)
 
 # This is needed for running the t-SNE analysis
 if (!("Rtsne" %in% installed.packages())) {
@@ -46,10 +44,24 @@ if (!("optparse" %in% installed.packages())) {
 # Declare command line options
 option_list <- list(
   optparse::make_option(
-    c("-p", "--perplexity_parameter"),
+    c("-p", "--perplexity"),
     type = "integer",
     default = 10,
-    help = "perplexity parameter integer",
+    help = "t-SNE perplexity parameter integer",
+    metavar = "integer"
+  ),
+  optparse::make_option(
+    c("-s", "--seed"),
+    type = "integer",
+    default = 2019,
+    help = "seed integer",
+    metavar = "integer"
+  ),
+  optparse::make_option(
+    c("-n", "--neighbors"),
+    type = "integer",
+    default = 15,
+    help = "UMAP neighbors parameter integer",
     metavar = "integer"
   )
 )
@@ -57,23 +69,24 @@ option_list <- list(
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
-# Define perplexity_parameter as the parameter passed via command line
-perplexity_parameter <- opt$perplexity_parameter
+# Define perplexity parameter as the parameter passed via command line
+perplexity_parameter <- opt$perplexity
 
-# Print help statement if the argument is not passed via command line
-if (is.null(perplexity_parameter)) {
-  optparse::print_help(opt_parser)
-  stop("At least one argument must be supplied (perplexity_parameter)")
-}
+# Define seed as the parmeter passed via the command line 
+seed <- opt$seed 
+
+# Define neighbors parameter as the parameter passed via command line
+neighbors_parameter <- opt$neighbors
 
 # Assign function to perform the dimension reduction techniques
 perform_dimension_reduction <-
   function(transposed_expression_matrix,
-             method,
-             seed = 2019,
-             filename,
-             output_directory,
-             perplexity_parameter) {
+           method,
+           seed,
+           filename,
+           output_directory,
+           perplexity_parameter,
+           neighbors_parameter) {
     # Given a data.frame that containes the transposed expression matrix and the
     # name of a dimension reduction method, perform the dimension reduction
     # technique on the transposed matrix
@@ -104,7 +117,7 @@ perform_dimension_reduction <-
         Rtsne::Rtsne(transposed_expression_matrix, perplexity = perplexity_parameter)
       dimension_reduction_df <- data.frame(tsne_results$Y)
     } else if (method == "UMAP") {
-      umap_results <- umap::umap(transposed_expression_matrix)
+      umap_results <- umap::umap(transposed_expression_matrix, n_neighbors = neighbors_parameter)
       dimension_reduction_df <- data.frame(umap_results$layout)
     } else {
       stop("method is not a supported argument")
@@ -167,12 +180,13 @@ align_metadata <-
 # Assign wrapper function to execute the two functions above
 dimension_reduction_wrapper <-
   function(transposed_expression_matrix,
-             method,
-             seed = 2019,
-             metadata_df,
-             filename,
-             output_directory,
-             perplexity_parameter) {
+           method,
+           seed,
+           metadata_df,
+           filename,
+           output_directory,
+           perplexity_parameter,
+           neighbors_parameter) {
     # Given a transposed expression matrix, the metadata data.frame, the name of
     # the dimension reduction method to be performed and a seed with a default
     # value, perform the dimension reduction, and align the metadata with the
@@ -200,7 +214,8 @@ dimension_reduction_wrapper <-
         seed = seed,
         filename,
         output_directory,
-        perplexity_parameter
+        perplexity_parameter,
+        neighbors_parameter
       )
     # Run `align_metadata` function
     aligned_scores_df <-
@@ -276,31 +291,34 @@ transposed_kallisto_data <- t(exp_kallisto)
 rsem_pca_aligned_scores <-
   dimension_reduction_wrapper(transposed_rsem_data,
     "PCA",
-    seed = 2019,
+    seed,
     metadata_df,
     "rsem_pca",
     output_dir,
-    perplexity_parameter
+    perplexity_parameter,
+    neighbors_parameter
   )
 # Run `dimension_reduction_wrapper` function using t-SNE
 rsem_tsne_aligned_scores <-
   dimension_reduction_wrapper(transposed_rsem_data,
     "t-SNE",
-    seed = 2019,
+    seed,
     metadata_df,
     "rsem_tsne",
     output_dir,
-    perplexity_parameter
+    perplexity_parameter,
+    neighbors_parameter
   )
 # Run `dimension_reduction_wrapper` function using UMAP
 rsem_umap_aligned_scores <-
   dimension_reduction_wrapper(transposed_rsem_data,
     "UMAP",
-    seed = 2019,
+    seed,
     metadata_df,
     "rsem_umap",
     output_dir,
-    perplexity_parameter
+    perplexity_parameter,
+    neighbors_parameter
   )
 
 # Kallisto
@@ -308,29 +326,32 @@ rsem_umap_aligned_scores <-
 kallisto_pca_aligned_scores <-
   dimension_reduction_wrapper(transposed_kallisto_data,
     "PCA",
-    seed = 2019,
+    seed,
     metadata_df,
     "kallisto_pca",
     output_dir,
-    perplexity_parameter
+    perplexity_parameter,
+    neighbors_parameter
   )
 # Run `dimension_reduction_wrapper` function using t-SNE
 kallisto_tsne_aligned_scores <-
   dimension_reduction_wrapper(transposed_kallisto_data,
     "t-SNE",
-    seed = 2019,
+    seed,
     metadata_df,
     "kallisto_tsne",
     output_dir,
-    perplexity_parameter
+    perplexity_parameter,
+    neighbors_parameter
   )
 # Run `dimension_reduction_wrapper` function using UMAP
 kallisto_umap_aligned_scores <-
   dimension_reduction_wrapper(transposed_kallisto_data,
     "UMAP",
-    seed = 2019,
+    seed,
     metadata_df,
     "kallisto_umap",
     output_dir,
-    perplexity_parameter
+    perplexity_parameter,
+    neighbors_parameter
   )
