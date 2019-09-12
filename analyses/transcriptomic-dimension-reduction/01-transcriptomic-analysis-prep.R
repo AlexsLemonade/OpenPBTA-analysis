@@ -1,9 +1,9 @@
 # Unsupervised Analysis of Transcriptomic Differences - Data Prep
 # Chante Bethell for CCDL 2019
 #
-# This notebook is the first part of an analysis that demonstrates samples in the
-# PBTA cluster by cancer type using dimensionality reduction techniques, namely,
-# Principal Component Analysis (PCA),
+# This notebook is the first part of an analysis that demonstrates samples in 
+# the PBTA cluster by cancer type using dimensionality reduction techniques,
+# namely, Principal Component Analysis (PCA),
 # t-Distributed Stochastic Neighbor Embedding (t-SNE),
 # and Uniform Manifold Approximation and Projection (UMAP).
 #
@@ -18,7 +18,8 @@
 # above, as well as tsv files containing these scores aligned with the metadata.
 #
 # # Usage
-# This script is intended to be run via the command line from the top directory of the repository as follows:
+# This script is intended to be run via the command line from the top directory 
+# of the repository as follows:
 #
 # Rscript --vanilla analyses/transcriptomic-dimension-reduction/01-transcriptomic-analysis-prep.R --perplexity 10 --neighbors 15
 #
