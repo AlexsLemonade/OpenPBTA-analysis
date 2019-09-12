@@ -97,6 +97,8 @@ perform_dimension_reduction <-
     #   seed: Seed set to a default of 2019
     #   filename: Name of the output file
     #   output_directory: file.path to the output directory
+    #   perplexity_parameter: integer defining the perplexity parameter for t-SNE
+    #   neighbors_parameter: integere defining the n_neighbors parameter for UMAP
     #
     # Returns:
     #   dimension_reduction_df: data.frame containing the resulting scores of the
@@ -130,7 +132,6 @@ perform_dimension_reduction <-
       dimension_reduction_df,
       file.path(
         output_directory,
-        "models",
         paste(filename, "_model.rds", sep = "")
       )
     )
@@ -169,7 +170,6 @@ align_metadata <-
       aligned_scores_df,
       file.path(
         output_directory,
-        "results",
         paste(filename, "_scores_aligned.tsv", sep = "")
       )
     )
@@ -200,6 +200,8 @@ dimension_reduction_wrapper <-
     #   metadata_df: Name of the data.frame containing the relevant metadata
     #   filename: Filename for the RDS output file
     #   output_directory: file.path to the output directory
+    #   perplexity_parameter: integer defining the perplexity parameter for t-SNE
+    #   neighbors_parameter: integere defining the n_neighbors parameter for UMAP
     #
     # Returns:
     #   aligned_scores_df: data.frame containing dimension reduction scores and
@@ -235,17 +237,12 @@ dimension_reduction_wrapper <-
 # it is called from.
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
-# Define the file.path to output directories
-output_dir <- file.path(root_dir, "analyses", "transcriptomic-dimension-reduction")
-models_dir <- file.path(output_dir, "models")
-results_dir <- file.path(output_dir, "results")
+# Define the file.path to output directory
+output_dir <- file.path(root_dir, "analyses", "transcriptomic-dimension-reduction", "results")
 
-# Create directories to hold the output.
-if (!dir.exists(models_dir)) {
-  dir.create(models_dir)
-}
-if (!dir.exists(results_dir)) {
-  dir.create(results_dir)
+# Create directory to hold the output.
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir)
 }
 
 # Read in metadata
