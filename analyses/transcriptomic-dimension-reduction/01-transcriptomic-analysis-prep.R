@@ -20,7 +20,7 @@
 # # Usage
 # This script is intended to be run via the command line from the top directory of the repository as follows:
 #
-# Rscript --vanilla analyses/transcriptomic-dimension-reduction/01-transcriptomic-analysis-prep.R -pp 10
+# Rscript --vanilla analyses/transcriptomic-dimension-reduction/01-transcriptomic-analysis-prep.R -p 10
 #
 # where `10` can be replaced with another integer to change the perplexity paramater for t-SNE
 
@@ -46,16 +46,16 @@ if (!("optparse" %in% installed.packages())) {
 # Declare command line options
 option_list <- list(
   optparse::make_option(
-    c("-pp", "--perplexity_parameter"),
+    c("-p", "--perplexity_parameter"),
     type = "integer",
-    default = NULL,
+    default = 10,
     help = "perplexity parameter integer",
     metavar = "integer"
   )
 )
 # Read the arguments passed
 opt_parser <- optparse::OptionParser(option_list = option_list)
-opt <- optparse::parse_args(opt_parser, args = c("--perplexity_parameter", 10))
+opt <- optparse::parse_args(opt_parser)
 
 # Define perplexity_parameter as the parameter passed via command line
 perplexity_parameter <- opt$perplexity_parameter
@@ -123,6 +123,7 @@ perform_dimension_reduction <-
     )
 
     return(dimension_reduction_df)
+    
   }
 # Assign function to align the metadata with the dimension reduction scores
 align_metadata <-
@@ -161,6 +162,7 @@ align_metadata <-
     )
 
     return(aligned_scores_df)
+    
   }
 # Assign wrapper function to execute the two functions above
 dimension_reduction_wrapper <-
@@ -210,6 +212,7 @@ dimension_reduction_wrapper <-
       )
 
     return(aligned_scores_df)
+    
   }
 
 # Detect the ".git" folder -- this will in the project root directory.

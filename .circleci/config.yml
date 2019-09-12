@@ -27,7 +27,7 @@ jobs:
                                
       - run:
           name: Unsupervised Transcriptomic Analysis - Data Prep
-          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/transcriptomic-dimension-reduction/01-transcriptomic-analysis-prep.R -pp 2
+          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/transcriptomic-dimension-reduction/01-transcriptomic-analysis-prep.R -p 2
                 
         #### Add your analysis here ####
         
