@@ -8,7 +8,7 @@ output:
 ---
 
 This notebook is the second part of an analysis that demonstrate samples in the 
-PBTA cluster by cancer type using dimensionality reduction techniques,
+PBTA cluster by cancer histology using dimensionality reduction techniques,
 [Principal Component Analysis](https://www.rdocumentation.org/packages/stats/versions/3.6.0/topics/prcomp) (PCA), 
 [t-Distributed Stochastic Neighbor Embedding](https://cran.r-project.org/web/packages/Rtsne/Rtsne.pdf) (t-SNE), 
 and [Uniform Manifold Approximation and Projection](https://cran.r-project.org/web/packages/umap/vignettes/umap.html) (UMAP).
@@ -25,15 +25,23 @@ unique techniques mentioned above, it was noticed that there may be batch
 effects present.
 
 - The `RNA_library` variable within the metadata may be useful in 
-  correcting said batch effects as suggested by the strategy selection plots 
-  for both sets of expression data.
+  correcting said batch effects as suggested by the selection strategy plots 
+  for both sets of expression data. That being said, we would want to repeat 
+  analyses with the data separated by the selection strategy method applied. 
+- When plotting the data points colored by `disease_type_new`, it seemed that
+  they are too many distinct values (cancer types) in this variable to be
+  informative in the plots below. The variable `broad_histology` was used to 
+  replace `disease_type_new` for this reason. 
 
 ## Output Files:
-- `analyses/transcriptomic-dimension-reduction/plots/meta_grid_kallisto_type.pdf`
+- `analyses/transcriptomic-dimension-reduction/plots/meta_grid_kallisto_histology.pdf`
 - `analyses/transcriptomic-dimension-reduction/plots/meta_grid_kallisto_strategy.pdf`
-- `analyses/transcriptomic-dimension-reduction/plots/meta_grid_rsem_type.pdf`
+- `analyses/transcriptomic-dimension-reduction/plots/meta_grid_poly_kallisto_histology.pdf`
+- `analyses/transcriptomic-dimension-reduction/plots/meta_grid_rsem_histology.pdf`
 - `analyses/transcriptomic-dimension-reduction/plots/meta_grid_rsem_strategy.pdf`
-
+- `analyses/transcriptomic-dimension-reduction/plots/meta_grid_poly_rsem_histology.pdf`
+- `analyses/transcriptomic-dimension-reduction/plots/meta_grid_stranded_kallisto_histology.pdf`
+- `analyses/transcriptomic-dimension-reduction/plots/meta_grid_stranded_rsem_histology.pdf`
 # Usage
 
 This script is intended to be run via the command line from the top directory of the repository as follows: 
@@ -52,14 +60,14 @@ plot_dimension_reduction <-
     # analysis and the information we want from the metadata, make a scatterplot.
     #
     # Args:
-    #   dimension_reduction_df: data.frame containing dimension reduction scores,
+    #   aligned_scores_df: data.frame containing dimension reduction scores,
     #                           and relative information from the metadata
     #   point_color: the variable whose information will be used to color
     #                the points on the plot
-    #   score1: the column number of the first dimension reduction score that we 
-    #           want to plot 
+    #   score1: the column number of the first dimension reduction score that we
+    #           want to plot
     #   score2: the column number of the second dimension reduction score that
-    #           we want to plot 
+    #           we want to plot
     #
     # Returns:
     #   dimension_reduction_plot: the plot representing the dimension reduction
@@ -72,15 +80,21 @@ plot_dimension_reduction <-
     dimension_reduction_plot <- ggplot2::ggplot(
       aligned_scores_df,
       ggplot2::aes(
-        x = aligned_scores_df[, score1],
-        y = aligned_scores_df[, score2],
+        x = dplyr::pull(aligned_scores_df, score1),
+        y = dplyr::pull(aligned_scores_df, score2),
         color = !!color_sym
       )
     ) +
-      ggplot2::geom_point()
+      ggplot2::geom_point(alpha = 0.3) +
+      ggplot2::scale_color_manual(values = (c("#2b3fff", "#ec102f", "#235e31", 
+                                              "#1a6587", "#11e38c", "#a22f80", 
+                                              "#fe5900", "#1945c5", "#51f310", 
+                                              "#8b20d3", "#799d10", "#881c23", 
+                                              "#3fc6f8", "#fe5cde", "#0a7fb2", 
+                                              "#f2945a", "#6b4472", "#f4d403", 
+                                              "#76480d", "#a6b6f9")))      
 
     return(dimension_reduction_plot)
-    
   }
 ```
 
@@ -99,39 +113,89 @@ if (!dir.exists(plots_dir)) {
 Read in the tsv files containing the dimension reduction scores aligned with 
 the metadata, which were produced in `01-transcriptomic-analysis-prep.R`.
 ```{r, message = FALSE}
+### RSEM -----------------------------------------------------------------------
+poly_rsem_pca_aligned_df <-
+  (readr::read_tsv(file.path(
+    results_dir, "poly_rsem_pca_scores_aligned.tsv"
+  )))
+stranded_rsem_pca_aligned_df <-
+  (readr::read_tsv(file.path(
+    results_dir, "stranded_rsem_pca_scores_aligned.tsv"
+  )))
 rsem_pca_aligned_df <-
-  data.frame(readr::read_tsv(file.path(
+  (readr::read_tsv(file.path(
     results_dir, "rsem_pca_scores_aligned.tsv"
   )))
+poly_rsem_tsne_aligned_df <-
+  (readr::read_tsv(file.path(
+    results_dir, "poly_rsem_tsne_scores_aligned.tsv"
+  )))
+stranded_rsem_tsne_aligned_df <-
+  (readr::read_tsv(file.path(
+    results_dir, "stranded_rsem_tsne_scores_aligned.tsv"
+  )))
 rsem_tsne_aligned_df <-
-  data.frame(readr::read_tsv(file.path(
+  (readr::read_tsv(file.path(
     results_dir, "rsem_tsne_scores_aligned.tsv"
   )))
+poly_rsem_umap_aligned_df <-
+  (readr::read_tsv(file.path(
+    results_dir, "poly_rsem_umap_scores_aligned.tsv"
+  )))
+stranded_rsem_umap_aligned_df <-
+  (readr::read_tsv(file.path(
+    results_dir, "stranded_rsem_umap_scores_aligned.tsv"
+  )))
 rsem_umap_aligned_df <-
-  data.frame(readr::read_tsv(file.path(
+  (readr::read_tsv(file.path(
     results_dir, "rsem_umap_scores_aligned.tsv"
   )))
 
+### Kallisto -------------------------------------------------------------------
+poly_kallisto_pca_aligned_df <-
+  (readr::read_tsv(file.path(
+    results_dir, "poly_kallisto_pca_scores_aligned.tsv"
+  )))
+stranded_kallisto_pca_aligned_df <-
+  (readr::read_tsv(file.path(
+    results_dir, "stranded_kallisto_pca_scores_aligned.tsv"
+  )))
 kallisto_pca_aligned_df <-
-  data.frame(readr::read_tsv(file.path(
+  (readr::read_tsv(file.path(
     results_dir, "kallisto_pca_scores_aligned.tsv"
   )))
+poly_kallisto_tsne_aligned_df <-
+  (readr::read_tsv(file.path(
+    results_dir, "poly_kallisto_tsne_scores_aligned.tsv"
+  )))
+stranded_kallisto_tsne_aligned_df <-
+  (readr::read_tsv(file.path(
+    results_dir, "stranded_kallisto_tsne_scores_aligned.tsv"
+  )))
 kallisto_tsne_aligned_df <-
-  data.frame(readr::read_tsv(file.path(
+  (readr::read_tsv(file.path(
     results_dir, "kallisto_tsne_scores_aligned.tsv"
   )))
+poly_kallisto_umap_aligned_df <-
+  (readr::read_tsv(file.path(
+    results_dir, "poly_kallisto_umap_scores_aligned.tsv"
+  )))
+stranded_kallisto_umap_aligned_df <-
+  (readr::read_tsv(file.path(
+    results_dir, "stranded_kallisto_umap_scores_aligned.tsv"
+  )))
 kallisto_umap_aligned_df <-
-  data.frame(readr::read_tsv(file.path(
+  (readr::read_tsv(file.path(
     results_dir, "kallisto_umap_scores_aligned.tsv"
   )))
 ```
 
 
-# Plot 
+# Plot RSEM
 
-## RSEM Plots Grid
+## Combined RSEM Plots Grid
 The grid of plots below shows the dimension reductions scores for the RSEM 
-expression data, colored by tumor type and selection strategy.
+expression data, colored by broad histology and selection strategy.
 These plots seem to suggest the presence of batch effects, which is likely due 
 to the need for normalization across the two batches of RNA-Seq preparation 
 (poly-A selection versus stranded(ribosomal depletion)).
@@ -141,13 +205,14 @@ strategy grid of plots.
 
 ```{r, fig.width = 10, fig.height = 18}
 # Run the `plot_dimension_reduction` function to plot each set of dimension
-# reduction scores using `disease_type_new` to color points
-rsem_pca_plot_type <-
-  plot_dimension_reduction(rsem_pca_aligned_df, "disease_type_new", 1, 5)
-rsem_tsne_plot_type <-
-  plot_dimension_reduction(rsem_tsne_aligned_df, "disease_type_new", 1, 2)
-rsem_umap_plot_type <-
-  plot_dimension_reduction(rsem_umap_aligned_df, "disease_type_new", 1, 2)
+# reduction scores using `broad_histology` to color points
+rsem_pca_plot_histology <-
+  plot_dimension_reduction(rsem_pca_aligned_df, "broad_histology", 1, 5)
+rsem_tsne_plot_histology <-
+  plot_dimension_reduction(rsem_tsne_aligned_df, "broad_histology", 1, 2)
+rsem_umap_plot_histology <-
+  plot_dimension_reduction(rsem_umap_aligned_df, "broad_histology", 1, 2)
+
 
 # Run the `plot_dimension_reduction` function to plot each set of dimension
 # reduction scores using `RNA_library` to color points
@@ -158,14 +223,14 @@ rsem_tsne_plot_strategy <-
 rsem_umap_plot_strategy <-
   plot_dimension_reduction(rsem_umap_aligned_df, "RNA_library", 1, 2)
 
-# Extract the legend from one of the cancer type plots
+# Extract the legend from one of the broad histology plots
 legend_a <- cowplot::get_legend(
-  rsem_umap_plot_type +
+  rsem_umap_plot_histology +
     ggplot2::theme(
       legend.direction = "vertical",
       legend.position = c(0.05, 0.40),
       legend.key.width = ggplot2::unit(0.1, "cm"),
-      text = ggplot2::element_text(size = 9)
+      text = ggplot2::element_text(size = 15)
     )
 )
 
@@ -179,14 +244,14 @@ legend_b <- cowplot::get_legend(
     )
 )
 
-# Plot grid with RSEM data colored by cancer type
-rsem_grid_type <- cowplot::plot_grid(
-  rsem_pca_plot_type + ggplot2::theme(legend.position = "none") +
+# Plot grid with RSEM data colored by broad histology
+rsem_grid_histology <- cowplot::plot_grid(
+  rsem_pca_plot_histology + ggplot2::theme(legend.position = "none") +
     ggplot2::labs(x = "PC1", y = "PC5") +
-    ggplot2::ggtitle("Cancer Types (RSEM)"),
-  rsem_tsne_plot_type + ggplot2::theme(legend.position = "none") +
+    ggplot2::ggtitle("Broad Histology (RSEM)"),
+  rsem_tsne_plot_histology + ggplot2::theme(legend.position = "none") +
     ggplot2::labs(x = "t-SNE1", y = "t-SNE2"),
-  rsem_umap_plot_type + ggplot2::theme(legend.position = "none") +
+  rsem_umap_plot_histology + ggplot2::theme(legend.position = "none") +
     ggplot2::labs(x = "UMAP1", y = "UMAP2"),
   labels = "AUTO",
   align = "vh",
@@ -212,16 +277,16 @@ rsem_grid_strategy <- cowplot::plot_grid(
 )
 
 # Add the appropriate legends to the cowplots
-rsem_grid_type <-
-  cowplot::plot_grid(rsem_grid_type, legend_a, rel_heights = c(2, .2))
+rsem_grid_histology <-
+  cowplot::plot_grid(rsem_grid_histology, legend_a, rel_heights = c(2, .2))
 
-rsem_grid_strategy <- 
+rsem_grid_strategy <-
   cowplot::plot_grid(rsem_grid_strategy, legend_b, rel_heights = c(2, 2))
 
-# Save cancer type plot grid
+# Save broad histology plot grid
 ggplot2::ggsave(
-   file.path("plots", "meta_grid_rsem_type.pdf"),
-   rsem_grid_type,
+   file.path("plots", "meta_grid_rsem_histology.pdf"),
+   rsem_grid_histology,
    width = 12,
    height = 15
  )
@@ -234,15 +299,128 @@ ggplot2::ggsave(
    height = 15
  )
 
-# Display the plot grid across cancer types 
-rsem_grid_type
+# Display the plot grid across broad histologies
+rsem_grid_histology
 
 # Display the plot grid across selection strategy 
 rsem_grid_strategy
 ```
-## Kallisto Plots Grid
+## Poly-A RSEM Plots Grid 
+The grid of plots below represents the RSEM data, filtered for the `poly-A`
+selection strategy, with data points colored by broad histology. 
+
+```{r, fig.width = 10, fig.height = 18}
+# Run the `plot_dimension_reduction` function to plot each set of dimension
+# reduction scores using `broad_histology` to color points
+poly_rsem_pca_plot_histology <-
+  plot_dimension_reduction(poly_rsem_pca_aligned_df, "broad_histology", 1, 7)
+poly_rsem_tsne_plot_histology <-
+  plot_dimension_reduction(poly_rsem_tsne_aligned_df, "broad_histology", 1, 2)
+poly_rsem_umap_plot_histology <-
+  plot_dimension_reduction(poly_rsem_umap_aligned_df, "broad_histology", 1, 2)
+
+# Plot grid with RSEM data colored by broad histology
+poly_rsem_grid_histology <- cowplot::plot_grid(
+  poly_rsem_pca_plot_histology + ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(x = "PC1", y = "PC7") +
+    ggplot2::ggtitle("Broad Histology (RSEM - Poly-A)"),
+  poly_rsem_tsne_plot_histology + ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(x = "t-SNE1", y = "t-SNE2"),
+  poly_rsem_umap_plot_histology + ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(x = "UMAP1", y = "UMAP2"),
+  labels = "AUTO",
+  align = "vh",
+  axis = "b",
+  ncol = 1,
+  nrow = 6
+)
+
+# Extract the legend from one of the plots
+legend_a <- cowplot::get_legend(
+  poly_rsem_umap_plot_histology +
+    ggplot2::theme(
+      legend.direction = "vertical",
+      legend.position = c(0.001, 0.45),
+      legend.key.width = ggplot2::unit(0.1, "cm"),
+      text = ggplot2::element_text(size = 15)
+    )
+)
+
+# Add the appropriate legend to the cowplot
+poly_rsem_grid_histology <-
+  cowplot::plot_grid(poly_rsem_grid_histology, legend_a, rel_heights = c(2, .2))
+
+# Save plot grid
+ggplot2::ggsave(
+  file.path("plots", "meta_grid_poly_rsem_histology.pdf"),
+  poly_rsem_grid_histology,
+  width = 12,
+  height = 15
+)
+# Display the plot grid across broad histologies
+poly_rsem_grid_histology
+```
+
+## Stranded RSEM Plots Grid
+The grid of plots below represents the RSEM data, filtered for the `stranded`
+selection strategy, with data points colored by broad histology. 
+
+```{r, fig.width = 10, fig.height = 18}
+# Run the `plot_dimension_reduction` function to plot each set of dimension
+# reduction scores using `broad_histology` to color points
+stranded_rsem_pca_plot_histology <-
+  plot_dimension_reduction(stranded_rsem_pca_aligned_df, "broad_histology", 2, 10)
+stranded_rsem_tsne_plot_histology <-
+  plot_dimension_reduction(stranded_rsem_tsne_aligned_df, "broad_histology", 1, 2)
+stranded_rsem_umap_plot_histology <-
+  plot_dimension_reduction(stranded_rsem_umap_aligned_df, "broad_histology", 1, 2)
+
+# Extract the legend from one of the plots
+legend_b <- cowplot::get_legend(
+  stranded_rsem_umap_plot_histology +
+    ggplot2::theme(
+      legend.direction = "vertical",
+      legend.position = c(0.05, 0.35),
+      legend.key.width = ggplot2::unit(0.1, "cm"),
+      text = ggplot2::element_text(size = 9)
+    )
+)
+
+# Plot grid with RSEM data colored by broad histology
+stranded_rsem_grid_histology <- cowplot::plot_grid(
+  stranded_rsem_pca_plot_histology + ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(x = "PC2", y = "PC10") +
+    ggplot2::ggtitle("Broad Histology (RSEM - Stranded)"),
+  stranded_rsem_tsne_plot_histology + ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(x = "t-SNE1", y = "t-SNE2"),
+  stranded_rsem_umap_plot_histology + ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(x = "UMAP1", y = "UMAP2"),
+  labels = "AUTO",
+  align = "vh",
+  axis = "b",
+  ncol = 1,
+  nrow = 6
+)
+
+# Add the appropriate legend to the cowplot
+stranded_rsem_grid_histology <-
+  cowplot::plot_grid(stranded_rsem_grid_histology, legend_b, rel_heights = c(2, .2))
+
+# Save plot grid
+ggplot2::ggsave(
+  file.path("plots", "meta_grid_stranded_rsem_histology.pdf"),
+  stranded_rsem_grid_histology,
+  width = 12,
+  height = 15
+)
+# Display the plot grid across broad histologies
+stranded_rsem_grid_histology
+```
+# Plot Kallisto
+
+## Combined Kallisto Plots Grid
 The grid of plots below shows the dimension reductions scores for the Kallisto 
-expression data, colored by tumor type and selection strategy.
+expression data, colored by the broad histology and selection strategy.
 These plots seem to suggest the presence of batch effects, which is likely due 
 to the need for normalization across the two batches of RNA-Seq preparation 
 (poly-A selection versus stranded(ribosomal depletion)).
@@ -252,13 +430,13 @@ strategy grid of plots.
 
 ```{r, fig.width = 10, fig.height = 18}
 # Run the `plot_dimension_reduction` function to plot each set of dimension
-# reduction scores using `disease_type_new` to color points
-kallisto_pca_plot_type <-
-  plot_dimension_reduction(kallisto_pca_aligned_df, "disease_type_new", 1, 5)
-kallisto_tsne_plot_type <-
-  plot_dimension_reduction(kallisto_tsne_aligned_df, "disease_type_new", 1, 2)
-kallisto_umap_plot_type <-
-  plot_dimension_reduction(kallisto_umap_aligned_df, "disease_type_new", 1, 2)
+# reduction scores using `broad_histology` to color points
+kallisto_pca_plot_histology <-
+  plot_dimension_reduction(kallisto_pca_aligned_df, "broad_histology", 1, 5)
+kallisto_tsne_plot_histology <-
+  plot_dimension_reduction(kallisto_tsne_aligned_df, "broad_histology", 1, 2)
+kallisto_umap_plot_histology <-
+  plot_dimension_reduction(kallisto_umap_aligned_df, "broad_histology", 1, 2)
 
 # Run the `plot_dimension_reduction` function to plot each set of dimension
 # reduction scores using `RNA_library` to color points
@@ -269,9 +447,9 @@ kallisto_tsne_plot_strategy <-
 kallisto_umap_plot_strategy <-
   plot_dimension_reduction(kallisto_umap_aligned_df, "RNA_library", 1, 2)
 
-# Extract the legend from one of the cancer type plots
+# Extract the legend from one of the broad histology plots
 legend_a <- cowplot::get_legend(
-  kallisto_umap_plot_type +
+  kallisto_umap_plot_histology +
     ggplot2::theme(
       legend.direction = "vertical",
       legend.position = c(0.05, 0.40),
@@ -290,14 +468,14 @@ legend_b <- cowplot::get_legend(
     )
 )
 
-# Plot grid with Kallisto data colored by cancer type
-kallisto_grid_type <- cowplot::plot_grid(
-  kallisto_pca_plot_type + ggplot2::theme(legend.position = "none") +
+# Plot grid with Kallisto data colored by broad histology
+kallisto_grid_histology <- cowplot::plot_grid(
+  kallisto_pca_plot_histology + ggplot2::theme(legend.position = "none") +
     ggplot2::labs(x = "PC1", y = "PC5") +
-    ggplot2::ggtitle("Cancer Types (Kallisto)"),
-  kallisto_tsne_plot_type + ggplot2::theme(legend.position = "none") +
+    ggplot2::ggtitle("Broad Histology (Kallisto)"),
+  kallisto_tsne_plot_histology + ggplot2::theme(legend.position = "none") +
     ggplot2::labs(x = "t-SNE1", y = "t-SNE2"),
-  kallisto_umap_plot_type + ggplot2::theme(legend.position = "none") +
+  kallisto_umap_plot_histology + ggplot2::theme(legend.position = "none") +
     ggplot2::labs(x = "UMAP1", y = "UMAP2"),
   labels = "AUTO",
   align = "vh",
@@ -323,16 +501,16 @@ kallisto_grid_strategy <- cowplot::plot_grid(
 )
 
 # Add the appropriate legends to the cowplots
-kallisto_grid_type <-
-  cowplot::plot_grid(kallisto_grid_type, legend_a, rel_heights = c(2, .2))
+kallisto_grid_histology <-
+  cowplot::plot_grid(kallisto_grid_histology, legend_a, rel_heights = c(2, .2))
 
 kallisto_grid_strategy <- 
   cowplot::plot_grid(kallisto_grid_strategy, legend_b, rel_heights = c(2, 2))
 
- # Save cancer type plot grid
+ # Save broad histology plot grid
  ggplot2::ggsave(
-   file.path("plots", "meta_grid_kallisto_type.pdf"),
-   kallisto_grid_type,
+   file.path("plots", "meta_grid_kallisto_histology.pdf"),
+   kallisto_grid_histology,
    width = 12,
    height = 15
  )
@@ -345,13 +523,126 @@ kallisto_grid_strategy <-
    height = 15
  )
 
-# Display the plot grid across cancer types 
-kallisto_grid_type
+# Display the plot grid across broad histologies
+kallisto_grid_histology
 
 # Display the plot grid across selection strategy 
 kallisto_grid_strategy
 ```
 
+## Poly-A Kallisto Plots Grid 
+The grid of plots below represents the Kallisto data filtered for the `poly-A`
+selection strategy, with data points colored by broad histology. 
+
+```{r, fig.width = 10, fig.height = 18}
+# Run the `plot_dimension_reduction` function to plot each set of dimension
+# reduction scores using `broad_histology` to color points
+poly_kallisto_pca_plot_histology <-
+  plot_dimension_reduction(poly_kallisto_pca_aligned_df, "broad_histology", 1, 7)
+poly_kallisto_tsne_plot_histology <-
+  plot_dimension_reduction(poly_kallisto_tsne_aligned_df, "broad_histology", 1, 2)
+poly_kallisto_umap_plot_histology <-
+  plot_dimension_reduction(poly_kallisto_umap_aligned_df, "broad_histology", 1, 2)
+
+# Plot grid with Kallisto data colored by cancer histology
+poly_kallisto_grid_histology <- cowplot::plot_grid(
+  poly_kallisto_pca_plot_histology + ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(x = "PC1", y = "PC7") +
+    ggplot2::ggtitle("Broad Histology (Kallisto - Poly-A)"),
+  poly_kallisto_tsne_plot_histology + ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(x = "t-SNE1", y = "t-SNE2"),
+  poly_kallisto_umap_plot_histology + ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(x = "UMAP1", y = "UMAP2"),
+  labels = "AUTO",
+  align = "vh",
+  axis = "b",
+  ncol = 1,
+  nrow = 7
+)
+
+# Extract the legend from one of the plots
+legend_a <- cowplot::get_legend(
+  poly_kallisto_umap_plot_histology +
+    ggplot2::theme(
+      legend.direction = "vertical",
+      legend.position = c(0.001, 0.45),
+      legend.key.width = ggplot2::unit(0.1, "cm"),
+      text = ggplot2::element_text(size = 15)
+    )
+)
+
+# Add the appropriate legend to the cowplot
+poly_kallisto_grid_histology <-
+  cowplot::plot_grid(poly_kallisto_grid_histology, legend_a, rel_heights = c(2, .2))
+
+# Save plot grid
+ggplot2::ggsave(
+  file.path("plots", "meta_grid_poly_kallisto_histology.pdf"),
+  poly_kallisto_grid_histology,
+  width = 12,
+  height = 15
+)
+
+# Display the plot grid across broad histologies
+poly_kallisto_grid_histology
+```
+
+## Stranded Kallisto Plots Grid
+The grid of plots below represents the Kallisto data filtered for the `stranded`
+selection strategy, with data points colored by broad histology. 
+
+```{r, fig.width = 10, fig.height = 18}
+# Run the `plot_dimension_reduction` function to plot each set of dimension
+# reduction scores using `broad_histology` to color points
+stranded_kallisto_pca_plot_histology <-
+  plot_dimension_reduction(stranded_kallisto_pca_aligned_df, "broad_histology", 4, 7)
+stranded_kallisto_tsne_plot_histology <-
+  plot_dimension_reduction(stranded_kallisto_tsne_aligned_df, "broad_histology", 1, 2)
+stranded_kallisto_umap_plot_histology <-
+  plot_dimension_reduction(stranded_kallisto_umap_aligned_df, "broad_histology", 1, 2)
+
+# Extract the legend from one of the plots
+legend_b <- cowplot::get_legend(
+  stranded_kallisto_umap_plot_histology +
+    ggplot2::theme(
+      legend.direction = "vertical",
+      legend.position = c(0.05, 0.35),
+      legend.key.width = ggplot2::unit(0.1, "cm"),
+      text = ggplot2::element_text(size = 9)
+    )
+)
+
+# Plot grid with Kallisto data colored by broad histology
+stranded_kallisto_grid_histology <- cowplot::plot_grid(
+  stranded_kallisto_pca_plot_histology + ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(x = "PC4", y = "PC7") +
+    ggplot2::ggtitle("Broad Histology (Kallisto - Stranded)"),
+  stranded_kallisto_tsne_plot_histology + ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(x = "t-SNE1", y = "t-SNE2"),
+  stranded_kallisto_umap_plot_histology + ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(x = "UMAP1", y = "UMAP2"),
+  labels = "AUTO",
+  align = "vh",
+  axis = "b",
+  ncol = 1,
+  nrow = 7
+)
+
+# Add the appropriate legend to the cowplot
+stranded_kallisto_grid_histology <-
+  cowplot::plot_grid(stranded_kallisto_grid_histology, legend_b, rel_heights = c(2, .2))
+
+# Save plot grid
+ggplot2::ggsave(
+  file.path("plots", "meta_grid_stranded_kallisto_histology.pdf"),
+  stranded_kallisto_grid_histology,
+  width = 12,
+  height = 15
+)
+
+# Display the plot grid across broad histologies
+stranded_kallisto_grid_histology
+```
 # Session Info
 ```{r}
 sessionInfo()
