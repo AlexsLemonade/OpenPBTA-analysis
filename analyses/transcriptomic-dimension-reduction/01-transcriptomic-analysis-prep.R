@@ -1,7 +1,7 @@
 # Unsupervised Analysis of Transcriptomic Differences - Data Prep
 # Chante Bethell for CCDL 2019
 #
-# This notebook is the first part of an analysis that demonstrates samples in 
+# This script is the first part of an analysis that demonstrates samples in 
 # the PBTA cluster by cancer type using dimensionality reduction techniques,
 # namely, Principal Component Analysis (PCA),
 # t-Distributed Stochastic Neighbor Embedding (t-SNE),
@@ -21,7 +21,7 @@
 # This script is intended to be run via the command line from the top directory 
 # of the repository as follows:
 #
-# Rscript --vanilla analyses/transcriptomic-dimension-reduction/01-transcriptomic-analysis-prep.R --perplexity 5 --neighbors 15
+# Rscript --vanilla analyses/transcriptomic-dimension-reduction/01-transcriptomic-analysis-prep.R --perplexity 10 --neighbors 15
 #
 # where the integers can be replaced with other integers to change the 
 # perplexity paramater for t-SNE and the neighbors parameter for UMAP. 
@@ -52,7 +52,7 @@ if (!("optparse" %in% installed.packages())) {
 perform_dimension_reduction <- function(transposed_expression_matrix,
                                         method,
                                         seed,
-                                        filename,
+                                        model_filename,
                                         output_directory,
                                         perplexity_parameter,
                                         neighbors_parameter) {
@@ -64,7 +64,7 @@ perform_dimension_reduction <- function(transposed_expression_matrix,
   #                                 matrix
   #   method: Dimension reduction method to be performed
   #   seed: Seed set to a default of 2019
-  #   filename: Name of the output file
+  #   model_filename: Name of the output model file
   #   output_directory: file.path to the output directory
   #   perplexity_parameter: integer defining the perplexity parameter for t-SNE
   #   neighbors_parameter: integer defining the n_neighbors parameter for UMAP
@@ -83,14 +83,20 @@ perform_dimension_reduction <- function(transposed_expression_matrix,
   # Perform dimension reduction
   if (method == "PCA") {
     dimension_reduction_results <- prcomp(transposed_expression_matrix)
-    dimension_reduction_df <- data.frame(dimension_reduction_results$x)
+    dimension_reduction_df <-
+      data.frame(dimension_reduction_results$x)
   } else if (method == "t-SNE") {
     dimension_reduction_results <-
-      Rtsne::Rtsne(transposed_expression_matrix, perplexity = perplexity_parameter)
-    dimension_reduction_df <- data.frame(dimension_reduction_results$Y)
+      Rtsne::Rtsne(transposed_expression_matrix,
+                   perplexity = perplexity_parameter)
+    dimension_reduction_df <-
+      data.frame(dimension_reduction_results$Y)
   } else if (method == "UMAP") {
-    dimension_reduction_results <- umap::umap(transposed_expression_matrix, n_neighbors = neighbors_parameter)
-    dimension_reduction_df <- data.frame(dimension_reduction_results$layout)
+    dimension_reduction_results <-
+      umap::umap(transposed_expression_matrix,
+                 n_neighbors = neighbors_parameter)
+    dimension_reduction_df <-
+      data.frame(dimension_reduction_results$layout)
   } else {
     stop("method is not a supported argument")
   }
@@ -103,7 +109,7 @@ perform_dimension_reduction <- function(transposed_expression_matrix,
     dimension_reduction_results,
     file.path(
       output_directory,
-      paste(filename, "_model.rds", sep = "")
+      paste(model_filename, "_model.rds", sep = "")
     )
   )
   
@@ -114,8 +120,9 @@ perform_dimension_reduction <- function(transposed_expression_matrix,
 # Assign function to align the metadata with the dimension reduction scores
 align_metadata <- function(dimension_reduction_df,
                            metadata_df,
-                           filename,
-                           output_directory) {
+                           scores_filename,
+                           output_directory,
+                           strategy) {
   # Given a data.frame that contains scores from a dimensionality reduction
   # technique, align the metadata to the data.frame in preparation for plotting
   #
@@ -126,7 +133,7 @@ align_metadata <- function(dimension_reduction_df,
   #   dimension_reduction_df: Name of the data.frame containing dimension 
   #   reduction scores
   #   metadata_df : Name of the data.frame containing the relevant metadata
-  #   filename: Name of the output file
+  #   scores_filename: Name of the output scores tsv file
   #   output_directory: file.path to the output directory
   #
   # Returns:
@@ -135,14 +142,15 @@ align_metadata <- function(dimension_reduction_df,
   
   # Join the dimension reductions scores data.frame and the metadata data.frame
   aligned_scores_df <- dimension_reduction_df %>%
-    dplyr::inner_join(metadata_df, by = c("Kids_First_Biospecimen_ID"))
+    dplyr::inner_join(metadata_df, by = c("Kids_First_Biospecimen_ID")) %>%
+    dplyr::filter(RNA_library %in% strategy)
   
   # Write the resulting metadata aligned data.frame to a tsv file
   readr::write_tsv(
     aligned_scores_df,
     file.path(
       output_directory,
-      paste(filename, "_scores_aligned.tsv", sep = "")
+      paste(scores_filename, "_scores_aligned.tsv", sep = "")
     )
   )
   
@@ -155,8 +163,10 @@ dimension_reduction_wrapper <- function(transposed_expression_matrix,
                                         method,
                                         seed,
                                         metadata_df,
-                                        filename,
+                                        model_filename,
+                                        scores_filename,
                                         output_directory,
+                                        strategy,
                                         perplexity_parameter,
                                         neighbors_parameter) {
   # Given a transposed expression matrix, the metadata data.frame, the name of
@@ -170,7 +180,8 @@ dimension_reduction_wrapper <- function(transposed_expression_matrix,
   #   method: Dimension reduction method to be performed
   #   seed: seed set to default 2019
   #   metadata_df: Name of the data.frame containing the relevant metadata
-  #   filename: Filename for the RDS output file
+  #   model_filename: Filename for the model RDS output file
+  #   scores_filename: Filename for the scores tsv output file
   #   output_directory: file.path to the output directory
   #   perplexity_parameter: integer defining the perplexity parameter for t-SNE
   #   neighbors_parameter: integer defining the n_neighbors parameter for UMAP
@@ -186,7 +197,7 @@ dimension_reduction_wrapper <- function(transposed_expression_matrix,
       transposed_expression_matrix,
       method,
       seed,
-      filename,
+      model_filename,
       output_directory,
       perplexity_parameter,
       neighbors_parameter
@@ -197,8 +208,9 @@ dimension_reduction_wrapper <- function(transposed_expression_matrix,
     align_metadata(
       dimension_reduction_df,
       metadata_df,
-      filename,
-      output_directory
+      scores_filename,
+      output_directory,
+      strategy
     )
   
   return(aligned_scores_df)
@@ -304,37 +316,121 @@ transposed_kallisto_data <- t(exp_kallisto)
 #### RSEM ----------------------------------------------------------------------
 
 # Run `dimension_reduction_wrapper` function using PCA
-rsem_pca_aligned_scores <-
-  dimension_reduction_wrapper(transposed_rsem_data,
+rsem_pca_aligned_scores_poly <-
+  dimension_reduction_wrapper(
+    transposed_rsem_data,
     "PCA",
     seed,
     metadata_df,
     "rsem_pca",
+    "poly_rsem_pca",
     output_dir,
+    c("poly-A"),
+    perplexity_parameter,
+    neighbors_parameter
+  )
+rsem_pca_aligned_scores_stranded <-
+  dimension_reduction_wrapper(
+    transposed_rsem_data,
+    "PCA",
+    seed,
+    metadata_df,
+    "rsem_pca",
+    "stranded_rsem_pca",
+    output_dir,
+    c("stranded"),
+    perplexity_parameter,
+    neighbors_parameter
+  )
+rsem_pca_aligned_scores <-
+  dimension_reduction_wrapper(
+    transposed_rsem_data,
+    "PCA",
+    seed,
+    metadata_df,
+    "rsem_pca",
+    "rsem_pca",
+    output_dir,
+    c("poly-A", "stranded"),
     perplexity_parameter,
     neighbors_parameter
   )
 
 # Run `dimension_reduction_wrapper` function using t-SNE
-rsem_tsne_aligned_scores <-
+rsem_tsne_aligned_scores_poly <-
   dimension_reduction_wrapper(transposed_rsem_data,
     "t-SNE",
     seed,
     metadata_df,
     "rsem_tsne",
+    "poly_rsem_tsne",
     output_dir,
+    c("poly-A"),
     perplexity_parameter,
     neighbors_parameter
   )
-
+rsem_tsne_aligned_scores_stranded <-
+  dimension_reduction_wrapper(
+    transposed_rsem_data,
+    "t-SNE",
+    seed,
+    metadata_df,
+    "rsem_tsne",
+    "stranded_rsem_tsne",
+    output_dir,
+    c("stranded"),
+    perplexity_parameter,
+    neighbors_parameter
+  )
+rsem_tsne_aligned_scores <-
+  dimension_reduction_wrapper(
+    transposed_rsem_data,
+    "t-SNE",
+    seed,
+    metadata_df,
+    "rsem_tsne",
+    "rsem_tsne",
+    output_dir,
+    c("poly-A", "stranded"),
+    perplexity_parameter,
+    neighbors_parameter
+  )
 # Run `dimension_reduction_wrapper` function using UMAP
-rsem_umap_aligned_scores <-
+rsem_umap_aligned_scores_poly <-
   dimension_reduction_wrapper(transposed_rsem_data,
     "UMAP",
     seed,
     metadata_df,
     "rsem_umap",
+    "poly_rsem_umap",
     output_dir,
+    c("poly-A"),
+    perplexity_parameter,
+    neighbors_parameter
+  )
+rsem_umap_aligned_scores_stranded <-
+  dimension_reduction_wrapper(
+    transposed_rsem_data,
+    "UMAP",
+    seed,
+    metadata_df,
+    "rsem_umap",
+    "stranded_rsem_umap",
+    output_dir,
+    c("stranded"),
+    perplexity_parameter,
+    neighbors_parameter
+  )
+rsem_umap_aligned_scores <-
+  dimension_reduction_wrapper(
+    transposed_rsem_data,
+    "UMAP",
+    seed,
+    metadata_df,
+    "rsem_umap",
+    "rsem_umap",
+    output_dir,
+    c("poly-A", "stranded"),
     perplexity_parameter,
     neighbors_parameter
   )
@@ -342,37 +438,119 @@ rsem_umap_aligned_scores <-
 #### Kallisto ------------------------------------------------------------------
 
 # Run `dimension_reduction_wrapper` function using PCA
-kallisto_pca_aligned_scores <-
+kallisto_pca_aligned_scores_poly <-
   dimension_reduction_wrapper(transposed_kallisto_data,
     "PCA",
     seed,
     metadata_df,
     "kallisto_pca",
+    "poly_kallisto_pca",
     output_dir,
+    c("poly-A"),
     perplexity_parameter,
     neighbors_parameter
   )
-
+kallisto_pca_aligned_scores_stranded <-
+  dimension_reduction_wrapper(
+    transposed_kallisto_data,
+    "PCA",
+    seed,
+    metadata_df,
+    "kallisto_pca",
+    "stranded_kallisto_pca",
+    output_dir,
+    c("stranded"),
+    perplexity_parameter,
+    neighbors_parameter
+  )
+kallisto_pca_aligned_scores <-
+  dimension_reduction_wrapper(
+    transposed_kallisto_data,
+    "PCA",
+    seed,
+    metadata_df,
+    "kallisto_pca",
+    "kallisto_pca",
+    output_dir,
+    c("poly-A", "stranded"),
+    perplexity_parameter,
+    neighbors_parameter
+  )
 # Run `dimension_reduction_wrapper` function using t-SNE
-kallisto_tsne_aligned_scores <-
+kallisto_tsne_aligned_scores_poly <-
   dimension_reduction_wrapper(transposed_kallisto_data,
     "t-SNE",
     seed,
     metadata_df,
     "kallisto_tsne",
+    "poly_kallisto_tsne",
     output_dir,
+    c("poly-A"),
     perplexity_parameter,
     neighbors_parameter
   )
-
+kallisto_tsne_aligned_scores_stranded <-
+  dimension_reduction_wrapper(
+    transposed_kallisto_data,
+    "t-SNE",
+    seed,
+    metadata_df,
+    "kallisto_tsne",
+    "stranded_kallisto_tsne",
+    output_dir,
+    c("stranded"),
+    perplexity_parameter,
+    neighbors_parameter
+  )
+kallisto_tsne_aligned_scores <-
+  dimension_reduction_wrapper(
+    transposed_kallisto_data,
+    "t-SNE",
+    seed,
+    metadata_df,
+    "kallisto_tsne",
+    "kallisto_tsne",
+    output_dir,
+    c("poly-A", "stranded"),
+    perplexity_parameter,
+    neighbors_parameter
+  )
 # Run `dimension_reduction_wrapper` function using UMAP
-kallisto_umap_aligned_scores <-
+kallisto_umap_aligned_scores_poly <-
   dimension_reduction_wrapper(transposed_kallisto_data,
     "UMAP",
     seed,
     metadata_df,
     "kallisto_umap",
+    "poly_kallisto_umap",
     output_dir,
+    c("poly-A"),
+    perplexity_parameter,
+    neighbors_parameter
+  )
+kallisto_umap_aligned_scores_stranded <-
+  dimension_reduction_wrapper(
+    transposed_kallisto_data,
+    "UMAP",
+    seed,
+    metadata_df,
+    "kallisto_umap",
+    "stranded_kallisto_umap",
+    output_dir,
+    c("stranded"),
+    perplexity_parameter,
+    neighbors_parameter
+  )
+kallisto_umap_aligned_scores <-
+  dimension_reduction_wrapper(
+    transposed_kallisto_data,
+    "UMAP",
+    seed,
+    metadata_df,
+    "kallisto_umap",
+    "kallisto_umap",
+    output_dir,
+    c("poly-A", "stranded"),
     perplexity_parameter,
     neighbors_parameter
   )
