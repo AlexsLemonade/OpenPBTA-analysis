@@ -21,7 +21,7 @@
 # This script is intended to be run via the command line from the top directory
 # of the repository as follows:
 #
-# Rscript --vanilla analyses/transcriptomic-dimension-reduction/01-transcriptomic-analysis-prep.R --perplexity 10 --neighbors 15
+# Rscript --vanilla --max-ppsize=500000 analyses/transcriptomic-dimension-reduction/01-transcriptomic-analysis-prep.R --perplexity 10 --neighbors 15
 #
 # where the integers can be replaced with other integers to change the
 # perplexity paramater for t-SNE and the neighbors parameter for UMAP.
@@ -55,7 +55,9 @@ perform_dimension_reduction <- function(transposed_expression_matrix,
                                         model_filename,
                                         output_directory,
                                         perplexity_parameter,
-                                        neighbors_parameter) {
+                                        neighbors_parameter,
+                                        metadata_df,
+                                        strategy) {
   # Given a data.frame that containes the transposed expression matrix and the
   # name of a dimension reduction method, perform the dimension reduction
   # technique on the transposed matrix
@@ -76,10 +78,22 @@ perform_dimension_reduction <- function(transposed_expression_matrix,
 
   # Set seed for reproducibility
   set.seed(seed)
-
+  
+  # Filter for selection strategy 
+  metadata_df2 <- metadata_df %>%
+    dplyr::filter(RNA_library %in% strategy)
+  
+  transposed_expression_matrix <- transposed_expression_matrix %>%
+    as.data.frame() %>%
+    tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
+    dplyr::filter(Kids_First_Biospecimen_ID %in% metadata_df2$Kids_First_Biospecimen_ID)
+  
+  transposed_expression_matrix <- transposed_expression_matrix %>%
+    tibble::column_to_rownames("Kids_First_Biospecimen_ID")
+  
   # Save rownames as a vector
   ID <- rownames(transposed_expression_matrix)
-
+  
   # Perform dimension reduction
   if (method == "PCA") {
     dimension_reduction_results <- prcomp(transposed_expression_matrix)
@@ -114,13 +128,14 @@ perform_dimension_reduction <- function(transposed_expression_matrix,
       paste(model_filename, "_model.rds", sep = "")
     )
   )
-
-  return(dimension_reduction_df)
+  
+  dimension_list <- (list(dimension_reduction_df, metadata_df2))
+  
+  return(dimension_list)
 }
 
 # Assign function to align the metadata with the dimension reduction scores
-align_metadata <- function(dimension_reduction_df,
-                           metadata_df,
+align_metadata <- function(dimension_list,
                            scores_filename,
                            output_directory,
                            strategy) {
@@ -141,11 +156,10 @@ align_metadata <- function(dimension_reduction_df,
   # Returns:
   #   aligned_scores_df: A data.frame containing the dimension reduction scores
   #         along with the variables from `metadata_df`
-
+  
   # Join the dimension reductions scores data.frame and the metadata data.frame
-  aligned_scores_df <- dimension_reduction_df %>%
-    dplyr::inner_join(metadata_df, by = c("Kids_First_Biospecimen_ID")) %>%
-    dplyr::filter(RNA_library %in% strategy)
+  aligned_scores_df <- dimension_list[[1]] %>%
+    dplyr::inner_join(dimension_list[[2]], by = c("Kids_First_Biospecimen_ID")) 
 
   # Write the resulting metadata aligned data.frame to a tsv file
   readr::write_tsv(
@@ -194,7 +208,7 @@ dimension_reduction_wrapper <- function(transposed_expression_matrix,
   #
 
   # Run `perform_dimension_reduction` function
-  dimension_reduction_df <-
+  dimension_list <-
     perform_dimension_reduction(
       transposed_expression_matrix,
       method,
@@ -202,14 +216,15 @@ dimension_reduction_wrapper <- function(transposed_expression_matrix,
       model_filename,
       output_directory,
       perplexity_parameter,
-      neighbors_parameter
+      neighbors_parameter,
+      metadata_df,
+      strategy
     )
 
   # Run `align_metadata` function
   aligned_scores_df <-
     align_metadata(
-      dimension_reduction_df,
-      metadata_df,
+      dimension_list,
       scores_filename,
       output_directory,
       strategy
