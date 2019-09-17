@@ -14,6 +14,7 @@ cd "$script_directory" || exit
 SEED=2019
 PERPLEXITY=10
 NEIGHBORS=15
+COUNT_THRESHOLD=100
 METADATA="../../data/pbta-histologies.tsv"
 OUTPUT="results"
 
@@ -26,7 +27,8 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --output_directory ${OUTPUT} \
   --seed ${SEED} \
   --perplexity ${PERPLEXITY} \
-  --neighbors ${NEIGHBORS}
+  --neighbors ${NEIGHBORS} \
+  --low_count_threshold ${COUNT_THRESHOLD}
 
 Rscript --vanilla scripts/run-dimension-reduction.R \
   --expression ../../scratch/pbta-gene-expression-rsem_stranded.fpkm.rds \
@@ -35,7 +37,8 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --output_directory ${OUTPUT} \
   --seed ${SEED} \
   --perplexity ${PERPLEXITY} \
-  --neighbors ${NEIGHBORS}
+  --neighbors ${NEIGHBORS} \
+  --low_count_threshold ${COUNT_THRESHOLD}
 
 Rscript --vanilla scripts/run-dimension-reduction.R \
   --expression ../../scratch/pbta-gene-expression-rsem_polyA.fpkm.rds \
@@ -44,7 +47,8 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --output_directory ${OUTPUT} \
   --seed ${SEED} \
   --perplexity ${PERPLEXITY} \
-  --neighbors ${NEIGHBORS}
+  --neighbors ${NEIGHBORS} \
+  --low_count_threshold ${COUNT_THRESHOLD}
   
 #### kallisto ------------------------------------------------------------------
 
@@ -55,7 +59,8 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --output_directory ${OUTPUT} \
   --seed ${SEED} \
   --perplexity ${PERPLEXITY} \
-  --neighbors ${NEIGHBORS}
+  --neighbors ${NEIGHBORS} \
+  --low_count_threshold ${COUNT_THRESHOLD}
 
 Rscript --vanilla scripts/run-dimension-reduction.R \
   --expression ../../scratch/pbta-gene-expression-kallisto_stranded.rds \
@@ -64,7 +69,8 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --output_directory ${OUTPUT} \
   --seed ${SEED} \
   --perplexity ${PERPLEXITY} \
-  --neighbors ${NEIGHBORS}
+  --neighbors ${NEIGHBORS} \
+  --low_count_threshold ${COUNT_THRESHOLD}
 
 Rscript --vanilla scripts/run-dimension-reduction.R \
   --expression ../../scratch/pbta-gene-expression-kallisto_polyA.rds \
@@ -73,4 +79,5 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --output_directory ${OUTPUT} \
   --seed ${SEED} \
   --perplexity ${PERPLEXITY} \
-  --neighbors ${NEIGHBORS}
+  --neighbors ${NEIGHBORS} \
+  --low_count_threshold ${COUNT_THRESHOLD}
