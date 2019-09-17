@@ -31,7 +31,7 @@ jobs:
                                                 
       - run:
           name: Unsupervised Transcriptomic Analysis - Data Prep
-          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/transcriptomic-dimension-reduction/01-transcriptomic-analysis-prep.R --perplexity 2 --neighbors 15
+          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/transcriptomic-dimension-reduction/01-transcriptomic-analysis-prep.R --perplexity 1 --neighbors 15
                 
       - run:
           name: Unsupervised Transcriptomic Analysis - Plotting
