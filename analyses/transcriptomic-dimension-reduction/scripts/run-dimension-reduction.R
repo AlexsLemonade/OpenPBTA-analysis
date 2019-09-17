@@ -26,6 +26,7 @@
 #   --seed 2019 \
 #   --perplexity 10 \
 #   --neighbors 15 \
+#   --low_count_threshold 100 \
 #   --skip_tsne
 
 #### Install packages ----------------------------------------------------------
