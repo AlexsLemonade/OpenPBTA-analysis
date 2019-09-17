@@ -336,19 +336,19 @@ transposed_kallisto_data <- t(exp_kallisto)
 #### RSEM ----------------------------------------------------------------------
 
 # Run `dimension_reduction_wrapper` function using PCA
-rsem_pca_aligned_scores_polyA <-
-  dimension_reduction_wrapper(
-    transposed_rsem_data,
-    "PCA",
-    seed,
-    metadata_df,
-    "rsem_pca",
-    "polyA_rsem_pca",
-    output_dir,
-    c("poly-A"),
-    perplexity_parameter,
-    neighbors_parameter
-  )
+# rsem_pca_aligned_scores_polyA <-
+#   dimension_reduction_wrapper(
+#     transposed_rsem_data,
+#     "PCA",
+#     seed,
+#     metadata_df,
+#     "rsem_pca",
+#     "polyA_rsem_pca",
+#     output_dir,
+#     c("poly-A"),
+#     perplexity_parameter,
+#     neighbors_parameter
+#   )
 rsem_pca_aligned_scores_stranded <-
   dimension_reduction_wrapper(
     transposed_rsem_data,
@@ -377,19 +377,19 @@ rsem_pca_aligned_scores <-
   )
 
 # Run `dimension_reduction_wrapper` function using t-SNE
-rsem_tsne_aligned_scores_polyA <-
-  dimension_reduction_wrapper(
-    transposed_rsem_data,
-    "t-SNE",
-    seed,
-    metadata_df,
-    "rsem_tsne",
-    "polyA_rsem_tsne",
-    output_dir,
-    c("poly-A"),
-    perplexity_parameter,
-    neighbors_parameter
-  )
+# rsem_tsne_aligned_scores_polyA <-
+#   dimension_reduction_wrapper(
+#     transposed_rsem_data,
+#     "t-SNE",
+#     seed,
+#     metadata_df,
+#     "rsem_tsne",
+#     "polyA_rsem_tsne",
+#     output_dir,
+#     c("poly-A"),
+#     perplexity_parameter,
+#     neighbors_parameter
+#   )
 rsem_tsne_aligned_scores_stranded <-
   dimension_reduction_wrapper(
     transposed_rsem_data,
@@ -417,19 +417,19 @@ rsem_tsne_aligned_scores <-
     neighbors_parameter
   )
 # Run `dimension_reduction_wrapper` function using UMAP
-rsem_umap_aligned_scores_polyA <-
-  dimension_reduction_wrapper(
-    transposed_rsem_data,
-    "UMAP",
-    seed,
-    metadata_df,
-    "rsem_umap",
-    "polyA_rsem_umap",
-    output_dir,
-    c("poly-A"),
-    perplexity_parameter,
-    neighbors_parameter
-  )
+# rsem_umap_aligned_scores_polyA <-
+#   dimension_reduction_wrapper(
+#     transposed_rsem_data,
+#     "UMAP",
+#     seed,
+#     metadata_df,
+#     "rsem_umap",
+#     "polyA_rsem_umap",
+#     output_dir,
+#     c("poly-A"),
+#     perplexity_parameter,
+#     neighbors_parameter
+#   )
 rsem_umap_aligned_scores_stranded <-
   dimension_reduction_wrapper(
     transposed_rsem_data,
@@ -460,19 +460,19 @@ rsem_umap_aligned_scores <-
 #### Kallisto ------------------------------------------------------------------
 
 # Run `dimension_reduction_wrapper` function using PCA
-kallisto_pca_aligned_scores_polyA <-
-  dimension_reduction_wrapper(
-    transposed_kallisto_data,
-    "PCA",
-    seed,
-    metadata_df,
-    "kallisto_pca",
-    "polyA_kallisto_pca",
-    output_dir,
-    c("poly-A"),
-    perplexity_parameter,
-    neighbors_parameter
-  )
+# kallisto_pca_aligned_scores_polyA <-
+#   dimension_reduction_wrapper(
+#     transposed_kallisto_data,
+#     "PCA",
+#     seed,
+#     metadata_df,
+#     "kallisto_pca",
+#     "polyA_kallisto_pca",
+#     output_dir,
+#     c("poly-A"),
+#     perplexity_parameter,
+#     neighbors_parameter
+#   )
 kallisto_pca_aligned_scores_stranded <-
   dimension_reduction_wrapper(
     transposed_kallisto_data,
@@ -500,19 +500,19 @@ kallisto_pca_aligned_scores <-
     neighbors_parameter
   )
 # Run `dimension_reduction_wrapper` function using t-SNE
-kallisto_tsne_aligned_scores_polyA <-
-  dimension_reduction_wrapper(
-    transposed_kallisto_data,
-    "t-SNE",
-    seed,
-    metadata_df,
-    "kallisto_tsne",
-    "polyA_kallisto_tsne",
-    output_dir,
-    c("poly-A"),
-    perplexity_parameter,
-    neighbors_parameter
-  )
+# kallisto_tsne_aligned_scores_polyA <-
+#   dimension_reduction_wrapper(
+#     transposed_kallisto_data,
+#     "t-SNE",
+#     seed,
+#     metadata_df,
+#     "kallisto_tsne",
+#     "polyA_kallisto_tsne",
+#     output_dir,
+#     c("poly-A"),
+#     perplexity_parameter,
+#     neighbors_parameter
+#   )
 kallisto_tsne_aligned_scores_stranded <-
   dimension_reduction_wrapper(
     transposed_kallisto_data,
@@ -540,19 +540,19 @@ kallisto_tsne_aligned_scores <-
     neighbors_parameter
   )
 # Run `dimension_reduction_wrapper` function using UMAP
-kallisto_umap_aligned_scores_polyA <-
-  dimension_reduction_wrapper(
-    transposed_kallisto_data,
-    "UMAP",
-    seed,
-    metadata_df,
-    "kallisto_umap",
-    "polyA_kallisto_umap",
-    output_dir,
-    c("poly-A"),
-    perplexity_parameter,
-    neighbors_parameter
-  )
+# kallisto_umap_aligned_scores_polyA <-
+#   dimension_reduction_wrapper(
+#     transposed_kallisto_data,
+#     "UMAP",
+#     seed,
+#     metadata_df,
+#     "kallisto_umap",
+#     "polyA_kallisto_umap",
+#     output_dir,
+#     c("poly-A"),
+#     perplexity_parameter,
+#     neighbors_parameter
+#   )
 kallisto_umap_aligned_scores_stranded <-
   dimension_reduction_wrapper(
     transposed_kallisto_data,
