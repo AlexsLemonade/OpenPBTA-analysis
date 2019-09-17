@@ -31,16 +31,11 @@ jobs:
                                                 
       - run:
           name: Unsupervised Transcriptomic Analysis - Subset by Strategy          
-          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/transcriptomic-dimension-reduction/01-subset-expression-by-strategy.R
+          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/transcriptomic-dimension-reduction/01-subset-by-strategy.R
     
       - run:
           name: Unsupervised Transcriptomic Analysis - Run Dimension Reduction         
-          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/transcriptomic-dimension-reduction/scripts/run-dimension-reduction.R \
-                                            --expression data/pbta-gene-expression-rsem.fpkm.rds \
-                                            --metadata data/pbta-histologies.tsv \
-                                            --filename_lead rsem_all \
-                                            --output_directory analyses/transcriptomic-dimension-reduction/results \
-                                            --skip_tsne
+          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/transcriptomic-dimension-reduction/scripts/run-dimension-reduction.R  --expression data/pbta-gene-expression-rsem.fpkm.rds --metadata data/pbta-histologies.tsv --filename_lead rsem_all --output_directory analyses/transcriptomic-dimension-reduction/results --skip_tsne
                 
         #### Add your analysis here ####
         
