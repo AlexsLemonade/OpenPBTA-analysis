@@ -1,4 +1,4 @@
-# Unsupervised Analysis of Transcriptomic Differences - Data Prep
+# Unsupervised Analysis of Transcriptomic Differences - Run Dimension Reduction 
 # Chante Bethell for CCDL 2019
 #
 # This script is the first part of an analysis that demonstrates samples in
