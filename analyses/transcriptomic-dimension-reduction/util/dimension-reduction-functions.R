@@ -192,7 +192,7 @@ plot_dimension_reduction <- function(aligned_scores_df,
     #                             values in `point_color` as symbols to color 
     #                             the points
     
-    if (!(point_colour %in% colnames(aligned_scores_df))) {
+    if (!(point_color %in% colnames(aligned_scores_df))) {
       stop(paste(point_color, "is not column in aligned_scores_df"))
     }
   
