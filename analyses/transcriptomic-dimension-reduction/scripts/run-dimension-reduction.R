@@ -1,14 +1,10 @@
 # Unsupervised Analysis of Transcriptomic Differences - Run Dimension Reduction 
 # Chante Bethell for CCDL 2019
 #
-# This script is the first part of an analysis that demonstrates samples in
-# the PBTA cluster by cancer type using dimensionality reduction techniques,
-# namely, Principal Component Analysis (PCA), Uniform Manifold Approximation 
+# This script runs dimensionality reduction techniques: 
+# Principal Component Analysis (PCA), Uniform Manifold Approximation 
 # and Projection (UMAP), and optionally t-Distributed Stochastic Neighbor 
 # Embedding (t-SNE). It will perform t-SNE by default.
-#
-# This script focuses on the preparation of the expression data and the
-# execution of the dimension reduction techniques.
 #
 # It addresses issue #9 (https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/9)
 # in the Open-PBTA analysis repository.
