@@ -1,7 +1,2 @@
 # Dimension reduction model files are too large to push to github 
-results/kallisto_pca_model.rds
-results/kallisto_tsne_model.rds
-results/kallisto_umap_model.rds
-results/rsem_pca_model.rds
-results/rsem_tsne_model.rds
-results/rsem_umap_model.rds
+results/*_model.rds
