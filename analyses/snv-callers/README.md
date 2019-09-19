@@ -66,7 +66,8 @@ Mutations are assigned all annotations that they overlap (using
 
 ### Tumor Mutation Burden Calculation
 
-To calculate TMB, WXS or WGS BED regions are used as the denominator, depending on the sample's processing strategy.
+To calculate TMB, the sum of the bases included in the WXS or WGS BED regions
+are used as the denominator, depending on the sample's processing strategy.
 
 ```
 TMBwxs = sum(mutation_w-in_bedwxs)/(wxs_genome_size/1000000)
