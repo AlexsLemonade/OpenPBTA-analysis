@@ -30,7 +30,7 @@ jobs:
  
       - run:
           name: fusion filtering
-          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/02-fusion-filtering.R -S scratch/arriba.tsv -e data/pbta-gene-expression-rsem.fpkm.rds -r FALSE -a "NEIGHBORS|GTEx|HGNC_GENEFAM|DGD_PARALOGS|Normal|BodyMap|ConjoinG" -j 1 -s 10 -i "inframe|frameshift|other" -p "allOnco_Feb2017.tsv,tsgs.txt,pancanfus.txt,Census_allTue Sep 17 18_59_30 2019.tsv"  -f "predictedTF_attribute_list_entries.txt,curatedTF_attribute_list_entries.txt,Kincat_Hsap.08.02.txt"  -R analyses/fusion_filtering/references -o scratch/arriba_QC_filter.rds -t 1 
+          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/02-fusion-filtering.R -S scratch/arriba.tsv -e data/pbta-gene-expression-rsem.fpkm.rds -r FALSE -a "NEIGHBORS|GTEx|HGNC_GENEFAM|DGD_PARALOGS|Normal|BodyMap|ConjoinG" -j 1 -s 10 -i "inframe|frameshift|other" -p "allOnco_Feb2017.tsv,tsgs.txt,pancanfus.txt,Census_allTue Sep 17 18_59_30 2019.tsv"  -f "predictedTF_attribute_list_entries.txt,curatedTF_attribute_list_entries.txt,Kincat_Hsap.08.02.txt"  -R analyses/fusion_filtering/references/ -o scratch/arriba_QC_filter.rds -t 1 
 
                          
         #### Add your analysis here ####
