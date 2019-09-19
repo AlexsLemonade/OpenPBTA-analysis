@@ -79,7 +79,7 @@ genome_size = sum(End_Position - Start_Position)
 ```
 
 BED regions for WXS samples can be [found here](https://raw.githubusercontent.com/AstraZeneca-NGS/reference_data/master/hg38/bed/Exome-AZ_V2.bed).
-BED regions used for WGS samples are caller specific and provided by ___
+BED regions used for WGS samples are caller specific are from <unknown as of now>
 The sample-wise TMB calculations written to a TSV ending in `_tmb.tsv` in the
 caller's results folder.
 
