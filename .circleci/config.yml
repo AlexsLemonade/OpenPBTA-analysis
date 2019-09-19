@@ -3,7 +3,6 @@ jobs:
   run_analyses:
     machine:
       docker_layer_caching: true
-    resource_class: large
     working_directory: ~/OpenPBTA-analysis
     steps:
       - checkout
@@ -24,19 +23,16 @@ jobs:
           name: Mutect2 vs Strelka2
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/01-set-up.Rmd', clean = TRUE);
                                                       rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', clean = TRUE)"
-      
+     
       - run:
           name: fusion filtering
-          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/01-fusion-standardization.R -f "data/pbta-fusion-starfusion.tsv.gz" -c "STARfusion" -o "scratch/star.RDS" 
-                                                
+          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/01-fusion-standardization.R -f "data/pbta-fusion-arriba.tsv.gz" -c "arriba" -o "scratch/arriba.tsv" 
+ 
       - run:
-          name: Unsupervised Transcriptomic Analysis - Subset by Strategy          
-          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/transcriptomic-dimension-reduction/01-subset-expression-by-strategy.R
-    
-      - run:
-          name: Unsupervised Transcriptomic Analysis - Run Dimension Reduction         
-          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/transcriptomic-dimension-reduction/scripts/run-dimension-reduction.R  --expression data/pbta-gene-expression-rsem.fpkm.rds --metadata data/pbta-histologies.tsv --filename_lead rsem_all --output_directory analyses/transcriptomic-dimension-reduction/results --skip_tsne
-                
+          name: fusion filtering
+          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/02-fusion-filtering.R -S scratch/arriba.tsv -e data/pbta-gene-expression-rsem.fpkm.rds -r FALSE -a "NEIGHBORS|GTEx|HGNC_GENEFAM|DGD_PARALOGS|Normal|BodyMap|ConjoinG" -j 1 -s 10 -i "inframe|frameshift|other" -p "allOnco_Feb2017.tsv,tsgs.txt,pancanfus.txt,Census_allTue Sep 17 18_59_30 2019.tsv"  -f "predictedTF_attribute_list_entries.txt,curatedTF_attribute_list_entries.txt,Kincat_Hsap.08.02.txt"  -R analyses/fusion_filtering/references/ -o scratch/arriba_QC_filter.rds -t 1 
+
+                         
         #### Add your analysis here ####
         
   deploy:
