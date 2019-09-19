@@ -82,7 +82,7 @@ standardFusioncalls <- cbind(standardFusioncalls, colsplit(standardFusioncalls$G
 
 # gather gene and fusion list from reference folder
 # tab delimited gene of interest merge with filename for putativeDriver
-putDriverReferenceDataTab<- tibble(filename = c(paste0("/Users/gaonkark/Documents/OpenPBTA-analysis/analyses/fusion_filtering/references/",unlist(strsplit(putativeDriverGeneList,","))))) %>% 
+putDriverReferenceDataTab<- tibble(filename = c(paste0(opt$referenceFolder,unlist(strsplit(putativeDriverGeneList,","))))) %>% 
   # create a data frame
   # holding the file names
   mutate(file_contents = map(filename,read.delim,stringsAsFactor=FALSE,sep="\t")) # a new data column
@@ -93,7 +93,7 @@ putDriverReferenceDataTab<-data.frame("GeneName"=c(putDriverReferenceDataTab$sym
 
 
 # tab delimited gene of interest merge with filename for filter fusion with genes other than putative driver gene list
-filtFusionrReferenceDataTab<- tibble(filename = c(paste0("/Users/gaonkark/Documents/OpenPBTA-analysis/analyses/fusion_filtering/references/",unlist(strsplit(filterGeneList,","))))) %>% 
+filtFusionrReferenceDataTab<- tibble(filename = c(paste0(opt$referenceFolder,unlist(strsplit(filterGeneList,","))))) %>% 
   # create a data frame
   # holding the file names
   mutate(file_contents = map(filename,read.delim,stringsAsFactor=FALSE,sep="\t")) # a new data column
