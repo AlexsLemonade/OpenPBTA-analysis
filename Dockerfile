@@ -56,6 +56,3 @@ RUN R -e "install.packages('optparse')"
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
 
-#Needed formatting
-RUN R -e "install.packages('reshape2')"
-
