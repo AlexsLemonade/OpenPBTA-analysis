@@ -1,7 +1,6 @@
 # SNV caller comparison analysis
 
-This analysis evaluates [MAF files](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/)
-from different SNV callers and compares their output.
+This analysis evaluates [MAF files](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from different SNV callers and compares their output.
 The GDC has [good documentation on the fields](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) contained in a standard MAF file.
 
 **Table of Contents**
@@ -14,13 +13,11 @@ The GDC has [good documentation on the fields](https://docs.gdc.cancer.gov/Data/
 * Comparison analysis - in development
  * [Mutation IDs](#mutation-ids)
 * [Overall file structure](#overall-file-structure)
-* [Summary of functions](#summary-of-special-functions)
+* [Summary of functions](#summary-of-custom-functions)
 ## Individual Caller Evaluation
 
-The first step in this analysis is an individual evaluation of each MAF from
-each caller.
-This analysis prints out a report that is further subdivided by the WGS and WXS
-samples.
+The first step in this analysis is an individual evaluation of each MAF from each caller.
+This analysis prints out a report that is further subdivided by the WGS and WXS samples.
 
 Overall reports for each caller and strategy can be found:
 * `results/<caller_name>/<caller_name>_wgs_report.html`
@@ -44,10 +41,9 @@ Calculate variant allele fraction (VAF) for each variant.
 ```
 vaf = (t_alt_count) / (t_ref_count + t_alt_count)
 ```
- This is following the [code used in
+This is following the [code used in
 `maftools`](https://github.com/PoisonAlien/maftools/blob/1d0270e35c2e0f49309eba08b62343ac0db10560/R/plot_vaf.R#L39).
-The VAF calculations and other special variables are added to the MAF fields
- and written to a TSV ending in `_vaf.tsv` in the caller's results folder.
+The VAF calculations and other special variables are added to the MAF fields and written to a TSV ending in `_vaf.tsv` in the caller's results folder.
 
  *Output for this analysiss*
  * `results/<caller_name>/<caller_name>_vaf.tsv`
@@ -56,9 +52,9 @@ The VAF calculations and other special variables are added to the MAF fields
 ### Genomic Regional Analyses
 
 To analyze what genomic regions the variants are from, I used [Annotatr
-package](https://bioconductor.org/packages/release/bioc/vignettes/annotatr/inst/doc/annotatr-vignette.html) to obtain hg38 genome annotations. This Annotatr object is stored as an RDS file: `hg38_genomic_region_annotations.rds` in the `scratch` directory.
-Mutations are assigned all annotations that they overlap (using  
-  `GenomicRanges::overlap`).
+package](https://bioconductor.org/packages/release/bioc/vignettes/annotatr/inst/doc/annotatr-vignette.html) to obtain hg38 genome annotations. 
+This Annotatr object is stored as an RDS file: `hg38_genomic_region_annotations.rds` in the `scratch` directory.
+Mutations are assigned all annotations that they overlap (using `GenomicRanges::overlap`).
 
 *Output for this analysis*
 * `results/<caller_name>/<caller_name>_regions.tsv`
@@ -66,8 +62,7 @@ Mutations are assigned all annotations that they overlap (using
 
 ### Tumor Mutation Burden Calculation
 
-To calculate TMB, the sum of the bases included in the WXS or WGS BED regions
-are used as the denominator, depending on the sample's processing strategy.
+To calculate TMB, the sum of the bases included in the WXS or WGS BED regions are used as the denominator, depending on the sample's processing strategy.
 
 ```
 TMBwxs = sum(mutation_w-in_bedwxs)/(wxs_genome_size/1000000)
@@ -81,8 +76,7 @@ genome_size = sum(End_Position - Start_Position)
 
 BED regions for WXS samples can be [found here](https://raw.githubusercontent.com/AstraZeneca-NGS/reference_data/master/hg38/bed/Exome-AZ_V2.bed).
 BED regions used for WGS samples are caller specific are from <unknown as of now>
-The sample-wise TMB calculations written to a TSV ending in `_tmb.tsv` in the
-caller's results folder.
+The sample-wise TMB calculations written to a TSV ending in `_tmb.tsv` in the caller's results folder.
 
 *Output for this analysis*
 * `results/<caller_name>/<caller_name>_tmb.tsv`
@@ -92,14 +86,11 @@ caller's results folder.
 
 The COSMIC mutation data were obtained from https://cancer.sanger.ac.uk/cosmic/download
 *To run this analysis, you need to obtain these data.*
-The full, unfiltered somatic mutations file `CosmicMutantExport.tsv` for grch38
-is used here and the genomic coordinates is arranged to be in BED format.
-COSMIC mutations are overlapped with the present data's mutations using
-GenomicRanges. The outcome of this overlap is added to the VAF data.frame with
-two TRUE/FALS columns: `overlap_w_cosmic` is TRUE for mutations that overlap
-with COSMIC mutations, while `same_as_cosmic` is TRUE when the base change
-summary is also identical. The VAF for mutations that are or are not overlapping
-with COSMIC mutations are then plotted in a violin plot.
+The full, unfiltered somatic mutations file `CosmicMutantExport.tsv` for grch38 is used here and the genomic coordinates is arranged to be in BED format.
+COSMIC mutations are overlapped with the present data's mutations using `GenomicRanges`. 
+The outcome of this overlap is added to the VAF data.frame with two `TRUE/FALSE` columns: 
+`overlap_w_cosmic` is TRUE for mutations that overlap with COSMIC mutations, while `same_as_cosmic` is TRUE when the base change summary is also identical. 
+The VAF for mutations that are or are not overlapping with COSMIC mutations are then plotted in a violin plot.
 
 *Output for this analysis*
 * `results/<caller_name>/<caller_name>_vaf.tsv`
@@ -109,8 +100,7 @@ with COSMIC mutations are then plotted in a violin plot.
 
 ### Mutation IDs  
 
-In order to compare mutations across callers, I created a `mutation_id` from
-combining information from standard MAF fields.
+In order to compare mutations across callers, I created a `mutation_id` from combining information from standard MAF fields.
 
 `mutation_id` is a concatenation of:  
 * `Hugo_Symbol`  
@@ -130,7 +120,7 @@ OpenPBTA-analysis
 │       │   ├── 00-set-up.R
 │       │   ├── 01-calculate_vaf_tmb.R
 │       │   └── 02-run_eval.R
-│       ├── functions
+│       ├── util
 │       │    ├── plot_functions.R
 │       │    └── wrangle_functions.R
 │       ├── bed_regions
@@ -184,7 +174,7 @@ OpenPBTA-analysis
 │    └── hg38_genomic_region_annotations.rds
 ```
 
-## Summary of special functions
+## Summary of custom functions
 
 ### Wrangling functions
 |Function Name|Output created|Main Arguments|
