@@ -57,5 +57,5 @@ RUN R -e "install.packages('optparse')"
 #### Add a comment to indicate what analysis it is required for
 
 #Needed formatting
-RUN R -e "install.packages(c('reshape2'))"
+RUN R -e "install.packages('reshape2')"
 
