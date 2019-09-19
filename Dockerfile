@@ -56,15 +56,6 @@ RUN R -e "install.packages('optparse')"
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
 
-#Need this for publication theme 
-RUN R -e "devtools::install_github("jrnold/ggthemes",dependencies = TRUE)"
-
-#Need this for publication theme 
-RUN R -e "install.packages("ggpubr")"
-
-#Needed for colors 
-RUN R -e "install.packages("RColorBrewer")"
-
 #Needed formatting
-RUN R -e "install.packages(c("data.table","reshape2","qdapRegex"))"
+RUN R -e "install.packages(c('reshape2'))"
 
