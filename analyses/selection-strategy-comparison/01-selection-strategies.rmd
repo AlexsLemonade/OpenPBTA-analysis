@@ -285,7 +285,7 @@ One more principled effort would be to see if we can apply ComBat and get anythi
 
 For the combat model we will create a model matrix with our factors of interest, which in this case will be disease type.
 We will go with the parametric adjustment first, to see if that is effective at all.
-If wanted, we could try non-parametric, but that takes much longer.
+If wanted, we could try non-parametric, but that takes *much* longer.
 
 ```{r}
 combat_model <- model.matrix(~as.factor(disease_type_new), 
