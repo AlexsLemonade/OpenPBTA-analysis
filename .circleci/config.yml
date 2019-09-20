@@ -30,14 +30,21 @@ jobs:
           command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/01-fusion-standardization.R -f "data/pbta-fusion-starfusion.tsv.gz" -c "STARfusion" -o "scratch/star.RDS" 
                                                 
       - run:
-          name: Unsupervised Transcriptomic Analysis - Data Prep
-          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/transcriptomic-dimension-reduction/01-transcriptomic-analysis-prep.R --perplexity 1 --neighbors 15
-                
+          name: Unsupervised Transcriptomic Analysis - Subset by Strategy          
+          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/transcriptomic-dimension-reduction/01-subset-expression-by-strategy.R
+    
       - run:
-          name: Unsupervised Transcriptomic Analysis - Plotting
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/transcriptomic-dimension-reduction/02-transcriptomic-analysis-plotting.Rmd', clean = TRUE)"
-                
-
+          name: Unsupervised Transcriptomic Analysis - Run Dimension Reduction         
+          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/transcriptomic-dimension-reduction/scripts/run-dimension-reduction.R  --expression data/pbta-gene-expression-rsem.fpkm.rds --metadata data/pbta-histologies.tsv --filename_lead rsem_all --output_directory analyses/transcriptomic-dimension-reduction/results --perplexity 5
+    
+      - run:
+          name: Unsupervised Transcriptomic Analysis - Generate Plot Lists         
+          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/transcriptomic-dimension-reduction/scripts/get-plot-list.R  --input_directory analyses/transcriptomic-dimension-reduction/results --filename_lead rsem_all --output_directory analyses/transcriptomic-dimension-reduction/plots --color_variable RNA_library
+          
+      - run:
+          name: Unsupervised Transcriptomic Analysis - Multipanel Plots      
+          command: ./scripts/run_in_ci.sh bash analyses/transcriptomic-dimension-reduction/04-multipanel-plots.sh
+          
         #### Add your analysis here ####
         
   deploy:
