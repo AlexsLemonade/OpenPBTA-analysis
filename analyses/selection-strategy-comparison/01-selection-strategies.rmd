@@ -45,7 +45,7 @@ set.seed(2019)
 
 output_dir <- here::here("analyses", 
                         "selection-strategy-comparison", 
-                        "results")
+                        "plots")
 
 # Create directory to hold the output.
 if (!dir.exists(output_dir)) {
