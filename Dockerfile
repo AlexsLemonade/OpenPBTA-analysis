@@ -46,6 +46,12 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 # Use maftools for reading MAF files
 RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
 
+# Use preprocessCore for expression normalization
+RUN R -e "BiocManager::install(c('preprocessCore'), update = FALSE)"
+
+# Use sva for batch correction
+RUN R -e "BiocManager::install(c('sva'), update = FALSE)"
+
 # This is needed to create the interactive pie chart
 RUN R -e "devtools::install_github('timelyportfolio/sunburstR', ref = 'd40d7ed71ee87ca4fbb9cb8b7cf1e198a23605a9', dependencies = TRUE)"
 
