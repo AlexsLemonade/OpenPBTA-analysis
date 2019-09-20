@@ -106,7 +106,7 @@ strategy_counts
 
 Looks like there is possible comparison among the gliomas, if those might cluster together on some scale. Focus on those first to see how they compare in analyses.
 
-First, add comparables as their own column to the metadata table for later use.
+First, add a flag for comparable datasets (those disease types with both polyA and stranded samples) to the metadata table for later use.
 ```{r add to metadata}
 metadata_df <- metadata_df %>%
   dplyr::mutate(comparable = disease_type_new %in% polyA_diseases, 
@@ -117,7 +117,7 @@ metadata_df <- metadata_df %>%
 
 ## Raw clustering
 
-To start, we will reproduce an naive dimensionality reduction analysis to show the problem of selection method that we are facing. Sinc UMAP seems to work well overall, that is what we will focus on first.
+To start, we will reproduce an naive dimensionality reduction analysis to show the problem of selection method that we are facing. Since UMAP seems to work well overall, that is what we will focus on first.
 
 ```{r raw clustering}
 # remove low counts
@@ -174,9 +174,9 @@ plot_raw
 ```
 
 
-So even with more dimensions, we are not suprised to see that the PolyA samples are still clustering together.
+So even with more dimensions, we are not surprised to see that the polyA samples are still clustering together.
 
-## Removing PolyA depleted genes
+## Removing Pol Ya depleted genes
 
 ### Any expression at all
 As a first pass, lets see what happens when we remove genes are simply not expressed in the polyA samples (or vice versa?).
@@ -281,7 +281,7 @@ Either way though the polyA and stranded samples are well separated in any compo
 
 ## ComBat
 
-One more principaled effort would be to see if we can apply ComBat and get anything reasonable.
+One more principled effort would be to see if we can apply ComBat and get anything reasonable.
 
 For the combat model we will create a model matrix with our factors of interest, which in this case will be disease type.
 We will go with the parametric adjustment first, to see if that is effective at all.
@@ -313,8 +313,8 @@ This seems to be more effective than anything else, in that it pulls the astrocy
 
 ## Conclusions
 While with a (much) larger data set, and perhaps more balanced arrangements among the tumor types, it might be possible to implement a principled correction for different library selection methods, it seems unlikely that this will be done with the current data set.
-It is possible that some specific analyses may be salvageable with ComBat or a similar method, but the overall reccomendation is likely to be to do most of the expression analysis treating the stranded and polyA selected libraries separately, and not attempt to draw conclusions about comparsions between these two sets.
+It is possible that some specific analyses may be salvageable with ComBat or a similar method, but the overall recommendation is likely to be to do most of the expression analysis treating the stranded and polyA selected libraries separately, and not attempt to draw conclusions about comparisons between these two sets.
 
 It would be ideal if there were sufficient additional tissue and resources to perform stranded RNAseq on the polyA selected samples, but note that we might still be concerned about batch effects. 
 Indeed, batch effects are potentially a larger problem in general.
-Information on the technical processing of the samples (including dates, kits, illumina model, etc.) should be included in the metadata to allow examination and/or mitigation of some of these more subtle effects.
+Information on the technical processing of the samples (including dates, kits, Illumina model, etc.) should be included in the metadata to allow examination and/or mitigation of some of these more subtle effects.
