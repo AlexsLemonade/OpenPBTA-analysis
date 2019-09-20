@@ -11,7 +11,7 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 INPUT="results"
-OUTPUT="plots"
+OUTPUT="plots/plot_data"
 
 #### Broad histology plots -----------------------------------------------------
 
