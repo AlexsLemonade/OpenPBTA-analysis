@@ -1,0 +1,168 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+RNA-Seq data is in pbta-gene-expression-kallisto.rds.
+
+```{r}
+
+ge <- readRDS("../../data/pbta-gene-expression-kallisto.rds")
+
+
+```
+
+Metadata is in pbta-histologies.tsv.  reported_gender is our target variable. Kids_First_Biospecimen_ID is the unique identifier for each sample. 
+
+```{r}
+hist <- read.delim("../../data/pbta-histologies.tsv", header=TRUE, sep="\t", stringsAsFactors = FALSE)
+
+missing_reported_gender_samples <- hist[which(hist[, "reported_gender"] == ""), "Kids_First_Biospecimen_ID"]
+
+```
+
+Calculate the median absolute deviation for each transcript.
+
+```{r}
+library(stats)
+
+mads <- apply(ge[ , 3:1030], 1, function(x) mad(x, high=TRUE))
+
+mads_lo_hi <- sort(mads, index.return=TRUE)
+
+```
+
+Let's try a model with the top 25% highest mads.
+Start a df with just the rows of ge corresponding to the top 25% highest mads.  Call it ge_top.
+transpopse ge_top[, 3:1030]. Call it df.
+Set colnames(df) to transcript IDs.
+Set rownames(df) to sample names.
+
+```{r}
+tail_percent = 0.75
+ge_top <- ge[mads_lo_hi$ix[floor(tail_percent*length(mads)):length(mads)], ]
+df <- t(ge_top[, 3:1030])
+
+colnames(df) <- ge_top[, 1]
+
+rownames(df) <- colnames(ge_top[, 3:1030])
+
+
+```
+
+Eliminate rows of df corresponding to samples with missing reported_gender.
+```{r}
+
+df <- df[!rownames(df) %in% missing_reported_gender_samples, ]
+
+```
+
+Use reported_gender column from hist as the response.
+
+Extract reported_gender values from reported_gender column of hist.  Put these value in a two-column dataframe
+  c("Kids_First_Biospecimen_ID", "reported_gender").
+
+```{r}
+
+reported_gender <- hist[hist$Kids_First_Biospecimen_ID %in% rownames(df), c("Kids_First_Biospecimen_ID", "reported_gender")]
+
+```
+
+Check sequence of rownames(df) and reported_gender[, 1].  reported_gender_response holds the reported_gender values in the same Kids_First_Biospecimen_ID sequence as rownames(df).
+
+```{r}
+
+match_index <- unlist(sapply(rownames(df), function(x) which(reported_gender[, 1] == x)))
+
+reported_gender_response <- reported_gender[match_index, 2]
+```
+
+Some values in reported_gender_response = "Not Available".  Eliminate from both reported_gender_response and df.
+
+```{r}
+reported_gender_response_hold <- reported_gender_response
+reported_gender_response <- reported_gender_response[reported_gender_response != "Not Available"]
+df <- df[reported_gender_response_hold != "Not Available", ]
+```
+
+
+Build predictive model for reported_gender_response.
+Hold out 30% of the samples to test accuracy after cross-validation tuning of 
+  lambda and alpha regularization parameters.
+
+```{r}
+
+library(glmnet)
+library(glmnetUtils)
+
+train_percent <- 0.70
+train_set <- sample(1:nrow(df), floor(train_percent*nrow(df)))
+test_set <- setdiff(1:nrow(df), train_set)
+
+ptm <- proc.time()
+sex.cva <- cva.glmnet(df[train_set, ], reported_gender_response[train_set], standardize=TRUE, 
+                      alpha = seq(0, 1, len = 11)^3, family="binomial")
+proc.time() - ptm
+```
+
+Plot Deviance vs. log(lambda), one curve for each value of alpha.
+
+```{r}
+plot(sex.cva)
+```
+
+Plot CVloss against alpha.
+
+```{r}
+minlossplot(sex.cva, cv.type="min")
+```
+
+Although Hastie recommends against looking into the cva object, I could not retrieve optimal
+  values of lambda and alpha through code without doing so.
+
+the cva object contains a list, called modlist, of 11 objects, one for each of the alpha values tested.
+The CVloss plotted above is the minimum cvm value for each of the 11 objects in cva$modlist.
+The alpha corresponding to the minimum of these minimum cvm values is optimal.
+
+```{r}
+best_cvm_values <- sapply(sex.cva$modlist, function(x) min(x$cvm))
+best_alpha_index <- which(best_cvm_values == min(best_cvm_values))
+
+# look at sex.cva$alpha[best_alpha_index] to find the tuned value of alpha
+
+```
+
+The cva.modlist object corresponds to a given alpha value, and contains results for all the lambda values 
+  tested for the corresponding alpha value.
+
+The best performing lambda value is stored within the modlist object as lambda.min.
+
+We carry forward the predictors with non-zero coefficients in the optimal (minimum CVloss) model.
+
+```{r}
+best_fit <- sex.cva$modlist[[best_alpha_index]]
+
+#look at best_fit$lambda.min to find best lambda corresponding to tuned alpha
+
+non_zero_features <- which(coef(best_fit, s = best_fit$lambda.min) != 0)
+
+```
+```{r}
+
+# look at coef(best_fit, s=best_fit$lambda.min)[non_zero_features] for coefficients
+
+```
+
+```{r}
+# look at colnames(df)[non_zero_features] for transcript IDs
+```
+
+Determine model accuracy on the holdout sample.
+
+```{r}
+p <- predict(best_fit, newx = df[test_set, ], type = "class", s = best_fit$lambda.min)
+test_accuracy <- length(which(p == reported_gender_response[test_set]))/length(p)
+# look at which(p == reported_gender_response[test_set]) for successful calls
+# look at which(p != reported_gender_response[test_set]) for unsuccessful calls
+```
+
