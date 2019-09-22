@@ -28,15 +28,20 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     mapview
 
 # Installs packages needed for still treemap, interactive plots, and hex plots
+# Rtsne and umap are required for dimension reduction analyses 
+# optparse is needed for passing arguments from the command line to R script
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
     && install2.r --error \
     --deps TRUE \
     R.utils \
     treemap \
     d3r \
-    hexbin \ 
+    hexbin \
     VennDiagram \
-    rprojroot
+    Rtsne \
+    umap \
+    rprojroot \
+    optparse
 
 # Use maftools for reading MAF files
 RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
@@ -49,6 +54,9 @@ RUN R -e "devtools::install_github('timelyportfolio/d3treeR', ref = '0eaba7f1c64
 
 # Need this package to make plots colorblind friendly
 RUN R -e "devtools::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
+
+#Need this to read command args
+RUN R -e "install.packages('optparse')" 
 
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
