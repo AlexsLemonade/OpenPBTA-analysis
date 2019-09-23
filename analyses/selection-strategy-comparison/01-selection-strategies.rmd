@@ -79,7 +79,7 @@ metadata_df <- readr::read_tsv(file.path(root_dir,
 
 ## Sample info
 
-Looking at metadata first, separating out the polyA and stranded samples.
+Looking at metadata first, separating out the poly-A and stranded samples.
 
 ```{r}
 polyA_meta_df <- metadata_df %>% 
@@ -112,7 +112,7 @@ strategy_counts
 
 Looks like there is possible comparison among the gliomas, if those might cluster together on some scale. Focus on those first to see how they compare in analyses.
 
-First, add a flag for comparable datasets (those disease types with both polyA and stranded samples) to the metadata table for later use.
+First, add a flag for comparable datasets (those disease types with both poly-A and stranded samples) to the metadata table for later use.
 
 ```{r add to metadata}
 metadata_df <- metadata_df %>%
@@ -131,7 +131,7 @@ To start, we will reproduce an naive dimensionality reduction analysis to show t
 dm_set <- exp_rsem_t[, colSums(exp_rsem_t) > 100]
 
 neighbors <- 15
-rsem_umap_raw <- umap::umap(exp_rsem_t, n_neighbors = neighbors)
+rsem_umap_raw <- umap::umap(dm_set, n_neighbors = neighbors)
 
 ```
 
@@ -145,12 +145,13 @@ rsem_umap_raw <- umap::umap(exp_rsem_t, n_neighbors = neighbors)
 #' 
 #' @param umap_model A umap model object output from [umap::umap]
 #' @param metadata A data frame of metadata for the samples. Must contain a 
-#'   column of `disease_type_new` and `RNA_library` as in the 
+#'   column of `disease_comparable` and `RNA_library` as in the 
 #'   "pbta-histologies.tsv" file.
 #' @param sample_id The name of the column containing sample ids. Defaults to 
 #'   "Kids_First_Biospecimen_ID", as in the "pbta-histologies.tsv" file.
-#' @param comparable A vector of TRUE/FALSE values for samples to include in the 
-#'   plot.
+#' @param comparable Boolean to determine whether to include only diseases 
+#'   present in both strategies in plots. Requires the presence of a 
+#'   `comparable` column in the metadata function.
 #' @param filename File for writinge the output plot. Default `NA` will not 
 #'   write to a file, but still returns the plot.
 #' 
@@ -158,7 +159,7 @@ rsem_umap_raw <- umap::umap(exp_rsem_t, n_neighbors = neighbors)
 umap_plot <- function(umap_model, 
                       metadata, 
                       sample_id = "Kids_First_Biospecimen_ID", 
-                      comparable = TRUE,
+                      filter_comparable = TRUE,
                       filename = NA){
   
   layout <- data.frame(umap_model$layout) %>% 
@@ -166,14 +167,17 @@ umap_plot <- function(umap_model,
     tibble::rownames_to_column(var = sample_id)
   
   plot_data <- layout %>%
-    dplyr::left_join(metadata_df, by = sample_id) %>%
-    dplyr::filter(comparable)
+    dplyr::left_join(metadata, by = sample_id) 
+  if (filter_comparable) {
+    plot_data <- plot_data %>% dplyr::filter(comparable)
+  }  
+  
   
   u_plot <- ggplot(plot_data, 
-                      aes(x = UMAP1, 
-                          y = UMAP2, 
-                          color = disease_type_new, 
-                          shape = RNA_library)) +
+                   aes(x = UMAP1, 
+                       y = UMAP2, 
+                       color = disease_comparable, 
+                       shape = RNA_library)) +
     geom_point(alpha = 0.3) +
     labs(color = "Disease Type",
          shape = "Selection Method")
@@ -192,6 +196,7 @@ umap_plot <- function(umap_model,
 
 
 ```{r plot raw}
+
 plot_raw <- umap_plot(rsem_umap_raw, 
                       metadata_df,
                       filename = file.path(output_dir, "umap_raw.png"))
@@ -200,13 +205,13 @@ plot_raw
 ```
 
 
-So even with more dimensions, we are not surprised to see that the polyA samples are still clustering together.
+So even with more dimensions, we are not surprised to see that the poly-A samples are still clustering together.
 
-## Removing Pol Ya depleted genes
+## Removing poly-A depleted genes
 
 ### Any expression at all
 
-As a first pass, lets see what happens when we remove genes are simply not expressed in the polyA samples (or vice versa?).
+As a first pass, lets see what happens when we remove genes are simply not expressed in the poly-A samples (or vice versa?).
 
 
 ```{r get polyA exp}
@@ -231,9 +236,9 @@ plot_polyA <- umap_plot(rsem_umap_polyA,
 plot_polyA
 ```
 
-### Remove low-expressed in polyA
+### Remove low-expressed in poly-A
 
-Arbitrary cutoff of expression level 1 to start. If a genes has fpkm expression of 1 or larger in at least 10 polyA samples, we will keep it.
+Arbitrary cutoff of expression level 1 to start. If a genes has fpkm expression of 1 or larger in at least 10 poly-A samples, we will keep it.
 
 ```{r}
 polyA_gene_filter_high <- colSums(polyA_exp >= 1) > 10
@@ -242,7 +247,7 @@ polyA_expressed_high <- exp_rsem_t[, polyA_gene_filter_high]
 ncol(polyA_expressed_high)
 ```
 
-This seems to yield a larger gene set than removing genes with no expression in at least one polyA samples, and a very similar distribution.
+This seems to yield a larger gene set than removing genes with no expression in at least one poly-A samples, and a very similar distribution.
 
 ```{r}
 rsem_umap_polyA_high <- umap::umap(polyA_expressed_high, n_neighbors = neighbors)
@@ -259,7 +264,7 @@ plot_polyA
 ## Normalize data
 
 Since simple elimination of samples doesn't work, lets see what happens with some simple normalization. 
-Using the polyA expressed data set as the base.
+Using the poly-A expressed data set as the base.
 
 ### Ranks
 
@@ -285,7 +290,7 @@ plot_polyA_rank
 ```
 
 
-This substantially improves clustering by cancer type, but polyA is still a quite divergent cluster.
+This substantially improves clustering by cancer type, but poly-A is still a quite divergent cluster.
 
 ### Quantile normalization
 
@@ -311,7 +316,7 @@ plot_polyA_norm
 
 That is surprisingly worse than the raw ranks. 
 I would have expected similar results to the ranks, but this actually seems to perform somewhat worse, especially in differentiating different disease types.
-Either way though the polyA and stranded samples are well separated in any component.
+Either way though the poly-A and stranded samples are well separated in any component.
 
 ## ComBat
 
@@ -348,8 +353,8 @@ This seems to be more effective than anything else, in that it pulls the astrocy
 ## Conclusions
 
 While with a (much) larger data set, and perhaps more balanced arrangements among the tumor types, it might be possible to implement a principled correction for different library selection methods, it seems unlikely that this will be done with the current data set.
-It is possible that some specific analyses may be salvageable with ComBat or a similar method, but the overall recommendation is likely to be to do most of the expression analysis treating the stranded and polyA selected libraries separately, and not attempt to draw conclusions about comparisons between these two sets.
+It is possible that some specific analyses may be salvageable with ComBat or a similar method, but the overall recommendation is likely to be to do most of the expression analysis treating the stranded and poly-A selected libraries separately, and not attempt to draw conclusions about comparisons between these two sets.
 
-It would be ideal if there were sufficient additional tissue and resources to perform stranded RNAseq on the polyA selected samples, but note that we might still be concerned about batch effects. 
+It would be ideal if there were sufficient additional tissue and resources to perform stranded RNAseq on the poly-A selected samples, but note that we might still be concerned about batch effects. 
 Indeed, batch effects are potentially a larger problem in general.
 Information on the technical processing of the samples (including dates, kits, Illumina model, etc.) should be included in the metadata to allow examination and/or mitigation of some of these more subtle effects.
