@@ -9,19 +9,18 @@
 
 base_change_plot <- function(vaf_df, exp_strategy = "BOTH", filter_cutoff = 0) {
   # Plot the number of base changes as a barplot. Need a MAF data.frame that
-  # that has `base_change` and `experimental_strategy` columns that are added
-  # with the `set_up_maf` function.
+  # that has `vaf`, `base_change` and `experimental_strategy` columns that are
+  # added with the `set_up_maf` function.
   #
   # Args:
   #   vaf_df: MAF formatted data that has been turned into a data.frame and has
-  #           been run through `set_up_maf` and has the `experimental_strategy`
-  #           column.
+  #           been run through `set_up_maf`.
   #   exp_strategy: argument to specify whether to plot `wgs`, `wxs` samples or
   #                 `both` Case insensitive.
   #   filter_cutoff: A numeric number to only keep groups larger than it.
   #
-  # Returns: 
-  # A barplot with the number of mutations with each type of base change noted 
+  # Returns:
+  # A barplot with the number of mutations with each type of base change noted
   # in the `base_change` column made in `set_up_maf`
   # Make this argument case insensitive
   exp_strategy <- toupper(exp_strategy)
@@ -121,10 +120,10 @@ snv_region_plot <- function(maf_annot, exp_strategy = "BOTH", filter_cutoff = 0)
   #   `both`.
   #   filter_cutoff: A numeric number to only keep groups larger than it.
   #
-  # Returns: 
-  # A barplot with the number of mutations that are found within each type of 
-  # genomic region in the `type` column 
-  # 
+  # Returns:
+  # A barplot with the number of mutations that are found within each type of
+  # genomic region in the `type` column
+  #
   # Make this argument case insensitive
   exp_strategy <- toupper(exp_strategy)
 
@@ -177,20 +176,20 @@ cosmic_plot <- function(vaf_df, exp_strategy = "BOTH", cosmic_clean_file = NULL)
   # Plot the VAF for COSMIC vs non-COSMIC mutations
   #
   # Args:
-  #   vaf_df: MAF formatted data that has been turned into a data.frame and has
-  #           been run through with metadata (specifically the
-  #           `experimental_strategy` column added.
+  #   vaf_df: Need a MAF data.frame that has `vaf`, `base_change` and
+  #           `experimental_strategy` columns that are added with the
+              `set_up_maf` function.
   #   exp_strategy: argument to specify whether to plot `wgs`, `wxs` samples or
   #   `both`.
   #   cosmic_clean_file: a file path to a TSV of COSMIC mutations that has been
   #                     been cleaned up to have the genomic coordinates separated
   #                     into Chr, Start, and End columns. This is passed to the
-  #                     `find_cosmic_overlap` function. 
-  #                     
+  #                     `find_cosmic_overlap` function.
+  #
   # Returns:
-  #  A violin plot with VAF plotted by whether or not it is overlapping with the 
-  #  COSMIC mutation set. 
-  #  
+  #  A violin plot with VAF plotted by whether or not it is overlapping with the
+  #  COSMIC mutation set.
+  #
   # Make this argument case insensitive
   exp_strategy <- toupper(exp_strategy)
 
@@ -235,11 +234,11 @@ tmb_plot <- function(tmb_df, exp_strategy = "BOTH", x_axis = "short_histology") 
   #   `both`.
   #   x_axis: what variable you would like to use to plot on the x-axis. Default
   #           is `short_histology` column.
-  #   
-  # Returns: 
+  #
+  # Returns:
   # A jitterplot that plots the TMB stats by the argument specified in x_axis
   # argument.
-  # 
+  #
   # Make this argument case insensitive
   exp_strategy <- toupper(exp_strategy)
 
