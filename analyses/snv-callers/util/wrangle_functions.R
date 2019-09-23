@@ -127,8 +127,8 @@ wxs_bed_filter <- function(maf_df, wxs_bed_file = NULL, bp_window = 0) {
   #              to GenomicRanges::findOverlaps's `maxgap` argument.
   #
   # Returns:
-  # The same MAF formatted data.frame given but having filtered out the WXS
-  # mutations that lie outside the supplied WXS BED regions.
+  # The same MAF formatted data.frame with the WXS mutations that lie outside
+  # the supplied WXS BED regions filtered out.
 
   # Read in the BED regions file and make sure the column names are the same
   # as the MAF column format names
@@ -145,7 +145,7 @@ wxs_bed_filter <- function(maf_df, wxs_bed_file = NULL, bp_window = 0) {
 
   # Error catcher in case there are no `WXS` samples
   if (nrow(maf_wxs) == 0) {
-    warning("No WXS samples found underneath column 'experimental_strategy'
+    stop("No WXS samples found underneath column 'experimental_strategy'
             double check filtering steps and data.")
   }
 
@@ -241,7 +241,7 @@ annotr_maf <- function(maf_df, annotation_file = NULL, bp_window = 0) {
   # overlaps. Genomic region types are noted in the `type` column.
   #
   # Read in the genomic regions annotation object
-  annotation_ranges <- readr::read_rds(annot_rds)
+  annotation_ranges <- readr::read_rds(annotation_file)
 
   # Use custom function to turn our MAF data into a GRanges
   maf_ranges <- maf_to_granges(maf_df)
@@ -261,7 +261,11 @@ annotr_maf <- function(maf_df, annotation_file = NULL, bp_window = 0) {
     maf_ranges[annot_matches@to]@elementMetadata@listData, # Extract matching MAF ranges data.frame info
     stringsAsFactors = FALSE
   ) %>%
-    dplyr::rename_at(dplyr::vars(dplyr::starts_with("mcols.")), substr, 7, 10000) %>%
+    # We will rename all columns that start with `mcols` and drop the `mcols` string
+    # Because `mcols.` has 6 characters, we start at 7, and want to make to get all the
+    # characters in the original name, so we just say a number that is much bigger than
+    # the longest column name (like 100)
+    dplyr::rename_at(dplyr::vars(dplyr::starts_with("mcols.")), substr, 7, 100) %>%
     dplyr::mutate("type" = as.factor(gsub("^hg38_genes_", "", type)))
 
   return(annot)
