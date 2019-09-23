@@ -40,7 +40,11 @@ jobs:
       - run:
           name: Unsupervised Transcriptomic Analysis - Generate Plot Lists         
           command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/transcriptomic-dimension-reduction/scripts/get-plot-list.R  --input_directory analyses/transcriptomic-dimension-reduction/results --filename_lead rsem_all --output_directory analyses/transcriptomic-dimension-reduction/plots --color_variable RNA_library
-    
+          
+      - run:
+          name: Unsupervised Transcriptomic Analysis - Multipanel Plots      
+          command: ./scripts/run_in_ci.sh bash analyses/transcriptomic-dimension-reduction/04-multipanel-plots.sh
+          
         #### Add your analysis here ####
         
   deploy:

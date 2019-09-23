@@ -49,7 +49,7 @@ color_variable <- opt$color_variable
 # Create the output directory if it does not exist
 output_directory <- opt$output_directory 
 if (!dir.exists(output_directory)) {
-  dir.create(output_directory)
+  dir.create(output_directory, recursive = TRUE)
 }
 
 #### Function ------------------------------------------------------------------

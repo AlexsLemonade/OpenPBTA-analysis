@@ -217,7 +217,8 @@ plot_dimension_reduction <- function(aligned_scores_df,
         "#f2945a", "#6b4472", "#f4d403",
         "#76480d", "#a6b6f9"
       ))) +
-      ggplot2::labs(x = x_label, y = y_label)
+      ggplot2::labs(x = x_label, y = y_label) +
+      ggplot2::theme_bw()
     
     return(dimension_reduction_plot)
 }
