@@ -25,7 +25,7 @@ base_change_plot <- function(vaf_df, exp_strategy = "BOTH", filter_cutoff = 0) {
   # Make this argument case insensitive
   exp_strategy <- toupper(exp_strategy)
 
-  # Filter out based on experimental stategy ifspecified
+  # Filter out based on experimental stategy if specified
   if (exp_strategy != "BOTH") {
     vaf_df <- vaf_df %>%
       dplyr::filter(experimental_strategy == exp_strategy)
