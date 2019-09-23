@@ -9,15 +9,15 @@
 
 base_change_plot <- function(vaf_df, exp_strategy = "BOTH", filter_cutoff = 0) {
   # Plot the number of base changes as a barplot. Need a MAF data.frame that
-  # that has `base_change` column set up with `set_up_maf` with metadata
-  # (specifically the `experimental_strategy column added).
+  # that has `base_change` and `experimental_strategy` columns that are added
+  # with the `set_up_maf` function.
   #
   # Args:
   #   vaf_df: MAF formatted data that has been turned into a data.frame and has
   #           been run through `set_up_maf` and has the `experimental_strategy`
   #           column.
   #   exp_strategy: argument to specify whether to plot `wgs`, `wxs` samples or
-  #   `both` Case insensitive.
+  #                 `both` Case insensitive.
   #   filter_cutoff: A numeric number to only keep groups larger than it.
   #
   # Returns: 
