@@ -68,7 +68,7 @@ original_metadata <- file.path(data_dir, "pbta-histologies.tsv")
 # These data are available if you register.
 # The full, unfiltered somatic mutations file CosmicMutantExport.tsv for grch38
 # is used here.
-cosmic_file <- file.path("CosmicMutantExport.tsv")
+cosmic_file <- file.path(snv_dir, "CosmicMutantExport.tsv")
 
 # This is the cleaned version that only contains the genomic coordinates and
 # base changes from the original file. 
@@ -128,7 +128,7 @@ if (!file.exists(cosmic_clean_file)) {
   message("Setting up COSMIC mutation file. Only need to do this once.")
 
   # Read in original file
-  cosmic_variants <- readr::read_tsv(cosmic_file) %>%
+  cosmic_variants <- data.table::fread(cosmic_file, data.table = FALSE) %>%
     # Get rid of spaces in column names
     dplyr::rename_all(dplyr::funs(stringr::str_replace_all(., " ", "_"))) %>%
     # Separate the genome coordinates into their own BED like variables
