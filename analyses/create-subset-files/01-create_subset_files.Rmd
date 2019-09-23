@@ -254,14 +254,61 @@ participants_in_all <- base::Reduce(intersect, participant_id_list)
 
 ### Select samples
 
-We'll select 5 participant identifiers for the purposes of producing subset
-files (for continuous integration).
+We'll select `r num_matched_participants` participant identifiers for the 
+purposes of producing subset files (for continuous integration).
+
+We want to make sure that the numbers of poly-A RNA-seq samples and WXS samples
+are over-represented (vs. what is in the full dataset).
+
+```{r}
+all_histologies_df <- histologies_df %>%
+  dplyr::filter(Kids_First_Participant_ID %in% participants_in_all)
+```
+
+```{r}
+num_polya_to_select <- ceiling(0.2 * num_matched_participants)
+```
+
+```{r}
+polya_participant_ids <- all_histologies_df %>%
+  dplyr::filter(RNA_library == "poly-A") %>%
+  dplyr::pull(Kids_First_Participant_ID)
+```
+
+Given the experimental set up at the moment, we can use participant IDs that
+meet both conditions: poly-A for RNA-seq and WXS
+
+```{r}
+polya_and_wxs_participant_ids <- unique(
+  all_histologies_df %>%
+  dplyr::filter(Kids_First_Participant_ID %in% polya_participant_ids) %>%
+  dplyr::filter(experimental_strategy == "WXS") %>%
+  dplyr::pull(Kids_First_Participant_ID)
+)
+```
+
+Exclude `polya_and_wxs_participants` + any other participants that meet
+_either_ condition.
+
+```{r}
+other_participant_ids_in_all <- unique(setdiff(participants_in_all, 
+                                               polya_and_wxs_participant_ids))
+other_participant_ids_in_all <- all_histologies_df %>% 
+  dplyr::filter(Kids_First_Participant_ID %in% other_participant_ids_in_all,
+                RNA_library %in% c(NA, "stranded"),
+                experimental_strategy %in% c("WGS", "RNA-Seq")) %>%
+  dplyr::pull(Kids_First_Participant_ID)
+```
+
 
 ```{r}
 # set seed for reproducibility
 set.seed(seed)
-selected_participant_ids <- sample(participants_in_all, 
-                                   num_matched_participants)
+selected_participant_ids <- c(
+  sample(polya_and_wxs_participant_ids, num_polya_to_select),
+  sample(other_participant_ids_in_all, 
+         (num_matched_participants - num_polya_to_select))
+)
 ```
 
 Again, each of the tools use biospecimen identifiers. 
