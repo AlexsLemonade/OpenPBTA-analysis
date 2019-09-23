@@ -5,9 +5,12 @@
 #
 # Purpose: Set up for analyzing MAF files
 #
+# Establish base dir
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
 # Import special functions
-source(file.path("util", "wrangle_functions.R"))
-source(file.path("util", "plot_functions.R"))
+source(file.path(root_dir, "analyses", "snv-callers", "util", "wrangle_functions.R"))
+source(file.path(root_dir, "analyses", "snv-callers", "util", "plot_functions.R"))
 
 #################################### Set Up ####################################
 
@@ -22,6 +25,7 @@ if (!("optparse" %in% installed.packages())) {
 if (!("R.utils" %in% installed.packages())) {
   install.packages("R.utils", repos = "http://cran.us.r-project.org")
 }
+
 # Install package if not installed
 if (!("annotatr" %in% installed.packages())) {
   BiocManager::install("annotatr")
@@ -33,14 +37,15 @@ if (!("data.table" %in% installed.packages())) {
 
 ##################### Set base directories common file paths ###################
 # Declare base directory names
-scratch_dir <- file.path("..", "..", "scratch")
-data_dir <- file.path("..", "..", "data")
+scratch_dir <- file.path(root_dir, "scratch")
+data_dir <- file.path(root_dir, "data")
+snv_dir <- file.path(root_dir, "analyses", "snv-callers")
 
 # Directories that we will need
-bed_dir <- "bed_regions"
-base_results_dir <- "results"
-base_plots_dir <- "plots"
-cosmic_dir <- "cosmic"
+bed_dir <- file.path(snv_dir, "bed_regions")
+base_results_dir <- file.path(snv_dir, "results")
+base_plots_dir <- file.path(snv_dir, "plots")
+cosmic_dir <- file.path(snv_dir, "cosmic")
 
 # Create these folders if they haven't been created yet
 if (!dir.exists(bed_dir)) {
@@ -138,7 +143,7 @@ if (!file.exists(cosmic_clean_file)) {
       base_change = substr(Mutation_CDS, nchar(Mutation_CDS) - 2, 100)
     ) %>%
     dplyr::rename(Strand = Mutation_strand) %>%
-    dplyr::select("Chromosome", "Start_Position", "End_Position", "base_change")
+    dplyr::select("Chromosome", "Start_Position", "End_Position", "base_change") %>% 
     # Write to a TSV file
     readr::write_tsv(cosmic_clean_file)
 }
