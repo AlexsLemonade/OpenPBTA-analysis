@@ -61,8 +61,6 @@ if (!dir.exists(output_dir)) {
 For now we will read in only the rsem data; we may examine the kallisto data later.
 
 ```{r read data}
-
-
 exp_rsem <- readr::read_rds(file.path(root_dir, 
                                       "data", 
                                       "pbta-gene-expression-rsem.fpkm.rds")) %>%
@@ -138,12 +136,31 @@ rsem_umap_raw <- umap::umap(exp_rsem_t, n_neighbors = neighbors)
 ```
 
 ```{r umap plotting function}
-
+#' Plot of a umap model
+#' 
+#' The umap_plot function takes a umap model and associated metadata and 
+#' returns a ggplot object that plots the first two UMAP components,
+#' colored by disease type and with shapes determined by selection method. 
+#' Optionally writes the plot to a file.
+#' 
+#' @param umap_model A umap model object output from [umap::umap]
+#' @param metadata A data frame of metadata for the samples. Must contain a 
+#'   column of `disease_type_new` and `RNA_library` as in the 
+#'   "pbta-histologies.tsv" file.
+#' @param sample_id The name of the column containing sample ids. Defaults to 
+#'   "Kids_First_Biospecimen_ID", as in the "pbta-histologies.tsv" file.
+#' @param comparable A vector of TRUE/FALSE values for samples to include in the 
+#'   plot.
+#' @param filename File for writinge the output plot. Default `NA` will not 
+#'   write to a file, but still returns the plot.
+#' 
+#' @return A ggplot object
 umap_plot <- function(umap_model, 
                       metadata, 
                       sample_id = "Kids_First_Biospecimen_ID", 
                       comparable = TRUE,
                       filename = NA){
+  
   layout <- data.frame(umap_model$layout) %>% 
     dplyr::rename_all(.funs = gsub, pattern = "^X", replacement = "UMAP") %>%
     tibble::rownames_to_column(var = sample_id)
