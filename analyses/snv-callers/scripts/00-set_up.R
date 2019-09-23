@@ -40,8 +40,9 @@ data_dir <- file.path("..", "..", "data")
 bed_dir <- "bed_regions"
 base_results_dir <- "results"
 base_plots_dir <- "plots"
+cosmic_dir <- "cosmic"
 
-# Create this folder for storing BED regions files
+# Create these folders if they haven't been created yet
 if (!dir.exists(bed_dir)) {
   dir.create(bed_dir)
 }
@@ -51,12 +52,27 @@ if (!dir.exists(base_results_dir )) {
 if (!dir.exists(base_plots_dir)) {
   dir.create(base_plots_dir)
 }
+if (!dir.exists(cosmic_dir)) {
+  dir.create(cosmic_dir)
+}
 
 # Declare reference file names
 original_metadata <- file.path(data_dir, "pbta-histologies.tsv")
-cosmic_file <- file.path("example_grch38_cosmic", "CosmicMutantExport.tsv")
-cosmic_clean_file <- file.path(scratch_dir, "cosmic_variants_cleaned.tsv")
+
+# These data were obtained from https://cancer.sanger.ac.uk/cosmic/download
+# These data are available if you register.
+# The full, unfiltered somatic mutations file CosmicMutantExport.tsv for grch38
+# is used here.
+cosmic_file <- file.path("CosmicMutantExport.tsv")
+
+# This is the cleaned version that only contains the genomic coordinates and
+# base changes from the original file. 
+cosmic_clean_file <- file.path(cosmic_dir, "cosmic_variants_cleaned.tsv")
+
+# Will set up this annotation file below
 annot_rds <- file.path(scratch_dir, "hg38_genomic_region_annotation.rds")
+
+# This will be used for all samples, but WGS bed regions are caller-specific
 wxs_bed_file <- file.path(bed_dir, "wxs_bed_regions_all.tsv")
 
 ######################## Set up WXS BED regions file ###########################
@@ -98,10 +114,10 @@ if (!file.exists(annot_rds)) {
 }
 
 ######################## Set up COSMIC Mutations file ###########################
-# These data were obtained from https://cancer.sanger.ac.uk/cosmic/download
-# These data are available if you register.
-# The full, unfiltered somatic mutations file CosmicMutantExport.tsv for grch38
-# is used here.
+# This set up will not be run unless you obtain the original data file
+# from https://cancer.sanger.ac.uk/cosmic/download , these data are available 
+# if you register. The full, unfiltered somatic mutations file 
+# CosmicMutantExport.tsv for grch38 is used here.
 if (!file.exists(cosmic_clean_file)) {
   # Print progress message
   message("Setting up COSMIC mutation file. Only need to do this once.")
@@ -122,12 +138,12 @@ if (!file.exists(cosmic_clean_file)) {
       base_change = substr(Mutation_CDS, nchar(Mutation_CDS) - 2, 100)
     ) %>%
     dplyr::rename(Strand = Mutation_strand) %>%
+    dplyr::select("Chromosome", "Start_Position", "End_Position", "base_change")
     # Write to a TSV file
     readr::write_tsv(cosmic_clean_file)
 }
 
-
-###################Set up caller-specific WGS BED regions files ################
+################### Set up caller-specific WGS BED regions files ###############
 # **NOTE:** this section cannot be completed until we receive the WGS files for 
 # the other callers.
 
