@@ -11,11 +11,9 @@ output:
 ## Setup
 
 ### R setup
+
 ```{r setup}
 # install packages 
-if (!("here" %in% installed.packages())) {
-  install.packages("here")
-}
 
 if (!("umap" %in% installed.packages())) {
   install.packages("umap")
@@ -41,9 +39,12 @@ set.seed(2019)
 ```
 
 ### Directories
-```{r}
 
-output_dir <- here::here("analyses", 
+```{r}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+output_dir <- file.path(root_dir,
+                        "analyses", 
                         "selection-strategy-comparison", 
                         "plots")
 
@@ -60,14 +61,20 @@ if (!dir.exists(output_dir)) {
 For now we will read in only the rsem data; we may examine the kallisto data later.
 
 ```{r read data}
-exp_rsem <- readr::read_rds(here::here("data", "pbta-gene-expression-rsem.fpkm.rds")) %>%
+
+
+exp_rsem <- readr::read_rds(file.path(root_dir, 
+                                      "data", 
+                                      "pbta-gene-expression-rsem.fpkm.rds")) %>%
   dplyr::filter(complete.cases(.))
 
 # transpose the expression values to a matrix
 exp_rsem_t <- t(exp_rsem[,-1])
 colnames(exp_rsem_t) <- exp_rsem[[1]]
 
-metadata_df <- readr::read_tsv(here::here("data", "pbta-histologies.tsv")) %>%
+metadata_df <- readr::read_tsv(file.path(root_dir,
+                                         "data",
+                                         "pbta-histologies.tsv")) %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in% rownames(exp_rsem_t))
 
 ```
@@ -75,6 +82,7 @@ metadata_df <- readr::read_tsv(here::here("data", "pbta-histologies.tsv")) %>%
 ## Sample info
 
 Looking at metadata first, separating out the polyA and stranded samples.
+
 ```{r}
 polyA_meta_df <- metadata_df %>% 
   dplyr::filter(RNA_library == "poly-A") 
@@ -107,6 +115,7 @@ strategy_counts
 Looks like there is possible comparison among the gliomas, if those might cluster together on some scale. Focus on those first to see how they compare in analyses.
 
 First, add a flag for comparable datasets (those disease types with both polyA and stranded samples) to the metadata table for later use.
+
 ```{r add to metadata}
 metadata_df <- metadata_df %>%
   dplyr::mutate(comparable = disease_type_new %in% polyA_diseases, 
@@ -123,7 +132,7 @@ To start, we will reproduce an naive dimensionality reduction analysis to show t
 # remove low counts
 dm_set <- exp_rsem_t[, colSums(exp_rsem_t) > 100]
 
-neighbors = 15
+neighbors <- 15
 rsem_umap_raw <- umap::umap(exp_rsem_t, n_neighbors = neighbors)
 
 ```
@@ -152,7 +161,7 @@ umap_plot <- function(umap_model,
     labs(color = "Disease Type",
          shape = "Selection Method")
   
-  if(is.character(filename)){
+  if (is.character(filename)) {
     ggsave(filename, 
            u_plot,
            width = 11,
@@ -179,6 +188,7 @@ So even with more dimensions, we are not surprised to see that the polyA samples
 ## Removing Pol Ya depleted genes
 
 ### Any expression at all
+
 As a first pass, lets see what happens when we remove genes are simply not expressed in the polyA samples (or vice versa?).
 
 
@@ -207,12 +217,14 @@ plot_polyA
 ### Remove low-expressed in polyA
 
 Arbitrary cutoff of expression level 1 to start. If a genes has fpkm expression of 1 or larger in at least 10 polyA samples, we will keep it.
+
 ```{r}
 polyA_gene_filter_high <- colSums(polyA_exp >= 1) > 10
 
 polyA_expressed_high <- exp_rsem_t[, polyA_gene_filter_high]
 ncol(polyA_expressed_high)
 ```
+
 This seems to yield a larger gene set than removing genes with no expression in at least one polyA samples, and a very similar distribution.
 
 ```{r}
@@ -233,7 +245,9 @@ Since simple elimination of samples doesn't work, lets see what happens with som
 Using the polyA expressed data set as the base.
 
 ### Ranks
+
 First, just trying a simple ranking of genes by expression per sample.
+
 ```{r rank normalize}
 polyA_expressed_rank <- t(apply(polyA_expressed, 1, rank))
 
@@ -257,7 +271,9 @@ plot_polyA_rank
 This substantially improves clustering by cancer type, but polyA is still a quite divergent cluster.
 
 ### Quantile normalization
+
 An alternative to the simple ranking is to do quantile normalization, which might have different results.
+
 ```{r quantile normalize}
 polyA_expressed_norm <- t(preprocessCore::normalize.quantiles(t(polyA_expressed)))
 # normalize.quantiles strips names
@@ -275,6 +291,7 @@ plot_polyA_norm <- umap_plot(rsem_umap_polyA_norm,
 
 plot_polyA_norm
 ```
+
 That is surprisingly worse than the raw ranks. 
 I would have expected similar results to the ranks, but this actually seems to perform somewhat worse, especially in differentiating different disease types.
 Either way though the polyA and stranded samples are well separated in any component.
@@ -291,7 +308,7 @@ If wanted, we could try non-parametric, but that takes *much* longer.
 combat_model <- model.matrix(~as.factor(disease_type_new), 
                              data = metadata_df)
 
-combat_exp <- sva::ComBat(dat=t(polyA_expressed), 
+combat_exp <- sva::ComBat(dat = t(polyA_expressed), 
                           batch = metadata_df$RNA_library, 
                           mod = combat_model, 
                           par.prior = TRUE) # parametric adjustment
@@ -312,6 +329,7 @@ plot_polyA_combat
 This seems to be more effective than anything else, in that it pulls the astrocytomas together, but it still leaves the DIPG quite separated.
 
 ## Conclusions
+
 While with a (much) larger data set, and perhaps more balanced arrangements among the tumor types, it might be possible to implement a principled correction for different library selection methods, it seems unlikely that this will be done with the current data set.
 It is possible that some specific analyses may be salvageable with ComBat or a similar method, but the overall recommendation is likely to be to do most of the expression analysis treating the stranded and polyA selected libraries separately, and not attempt to draw conclusions about comparisons between these two sets.
 
