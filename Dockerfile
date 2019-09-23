@@ -61,7 +61,7 @@ RUN R -e "install.packages('optparse')"
 # Required for sex prediction from RNA-seq data
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
     && install2.r --error \
-    --deps TRUE
+    --deps TRUE \
     glmnet \
     glmnetUtils
 
