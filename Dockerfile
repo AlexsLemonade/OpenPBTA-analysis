@@ -58,5 +58,11 @@ RUN R -e "devtools::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad
 #Need this to read command args
 RUN R -e "install.packages('optparse')" 
 
+# Required for sex prediction from RNA-seq data
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
+    && install2.r --error \
+    glmnet \
+    glmnetUtils
+
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
