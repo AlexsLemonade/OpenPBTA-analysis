@@ -52,7 +52,7 @@ The VAF calculations and other special variables are added to the MAF fields and
 ### Genomic Regional Analyses
 
 To analyze what genomic regions the variants are from, I used [Annotatr
-package](https://bioconductor.org/packages/release/bioc/vignettes/annotatr/inst/doc/annotatr-vignette.html) to obtain hg38 genome annotations. 
+package](https://bioconductor.org/packages/release/bioc/vignettes/annotatr/inst/doc/annotatr-vignette.html) to obtain hg38 genome annotations.
 This Annotatr object is stored as an RDS file: `hg38_genomic_region_annotations.rds` in the `scratch` directory.
 Mutations are assigned all annotations that they overlap (using `GenomicRanges::overlap`).
 
@@ -87,9 +87,9 @@ The sample-wise TMB calculations written to a TSV ending in `_tmb.tsv` in the ca
 The COSMIC mutation data were obtained from https://cancer.sanger.ac.uk/cosmic/download
 *To run this analysis, you need to obtain these data.*
 The full, unfiltered somatic mutations file `CosmicMutantExport.tsv` for grch38 is used here and the genomic coordinates is arranged to be in BED format.
-COSMIC mutations are overlapped with the present data's mutations using `GenomicRanges`. 
-The outcome of this overlap is added to the VAF data.frame with two `TRUE/FALSE` columns: 
-`overlap_w_cosmic` is TRUE for mutations that overlap with COSMIC mutations, while `same_as_cosmic` is TRUE when the base change summary is also identical. 
+COSMIC mutations are overlapped with the present data's mutations using `GenomicRanges`.
+The outcome of this overlap is added to the VAF data.frame with two `TRUE/FALSE` columns:
+`overlap_w_cosmic` is TRUE for mutations that overlap with COSMIC mutations, while `same_as_cosmic` is TRUE when the base change summary is also identical.
 The VAF for mutations that are or are not overlapping with COSMIC mutations are then plotted in a violin plot.
 
 *Output for this analysis*
@@ -179,12 +179,12 @@ OpenPBTA-analysis
 ### Wrangling functions
 |Function Name|Output created|Main Arguments|
 |-------------|--------------|---------|
-|`calculate_vaf`|Columns: VAF, mutation_id, base_change, change| A MAF formatted data.frame|
+|`set_up_maf`|Columns: VAF, mutation_id, base_change, change| A MAF formatted data.frame|
 |`maf_to_granges`|A `GenomicRanges` format object|A MAF formatted data.frame|
 |`wxs_bed_filter`|A filtered MAF df with only mutations within the provided BED regions|A MAF formatted data.frame and a BED formatted data.frame|
 |`calculate_tmb`|A data.frame with TMB stat per sample |A `wxs_bed_filter`ed MAF formatted data.frame, a WGS and WXS genome sizes|
 |`annotr_maf`|A data.frame with genomic annotations for the provided MAF data.frame|A MAF formatted data.frame and a [built AnnotatR annotation object](https://rdrr.io/bioc/annotatr/man/build_annotations.html)|
-|`find_cosmic_overlap`|Find overlap with [COSMIC](https://cancer.sanger.ac.uk/cosmic) mutations|A MAF formatted data.frame with `change` and variable from the `calculate_vaf` function|
+|`find_cosmic_overlap`|Find overlap with [COSMIC](https://cancer.sanger.ac.uk/cosmic) mutations|A MAF formatted data.frame with `change` and variable from the `set_up_maf` function|
 
 ### Plotting functions
 
@@ -194,8 +194,8 @@ both.
 
 |Function Name|Plot output|Main Arguments|
 |-------------|-----------|---------|
-|`base_change_plot`|Base change ggplot barplot|A MAF formatted data.frame with the `change` column from `calculate_vaf` function|
-|`depth_vs_vaf_plot`|A scatterplot of depth vs VAF|A MAF formatted data.frame with the `change` column from `calculate_vaf` function|
+|`base_change_plot`|Base change ggplot barplot|A MAF formatted data.frame with the `change` column from `set_up_maf` function|
+|`depth_vs_vaf_plot`|A scatterplot of depth vs VAF|A MAF formatted data.frame with the `change` column from `set_up_maf` function|
 |`snv_region_plot`|Genomic region ggplot barplot|An genomic region annotated MAF data.frame and has from `annotr_maf`|
-|`cosmic_plot`|A violin plot of overlapping COSMIC vs non-COSMIC mutations|A MAF formatted data.frame with the `vaf` column from `calculate_vaf` function|
+|`cosmic_plot`|A violin plot of overlapping COSMIC vs non-COSMIC mutations|A MAF formatted data.frame with the `vaf` column from `set_up_maf` function|
 |`tmb_plot`|Plot Tumor Mutational Burden as a jitter plot|A data.frame with the tmb stats calculated from `calculate_tmb` function, `x_axis` to specify what variable to plot on the x-axis|
