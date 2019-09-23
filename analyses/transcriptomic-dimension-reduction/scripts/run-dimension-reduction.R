@@ -65,7 +65,6 @@ option_list <- list(
     type = "character",
     default = NULL,
     help = "full path to expression data RDS file",
-    metavar = "integer"
   ),
   optparse::make_option(
     c("-m", "--metadata"),
