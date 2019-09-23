@@ -1,26 +1,32 @@
 # Set up and calculate functions for handling MAF data
 #
 # C. Savonen for ALSF - CCDL
+#
 # 2019
 #
 ################################################################################
 ########################### Setting Up Functions ###############################
 ################################################################################
 
-calculate_vaf <- function(maf_df) {
+set_up_maf <- function(maf_df, metadata_df = NULL) {
   # Creates these new variables from a MAF formatted data.frame provided: VAF,
-  # mutation_id, base_change, change.
+  # mutation_id, base_change, change. Optionally can tack on metadata columns
+  # which will be matched using a `Tumor_Sample_Barcode` field. Lastly, any
+  # columns that contain all `NA` values will be removed.
   #
   # Args:
   #   maf_df: a maf formatted data.frame
+  #   metadata: a data.frame with metadata that you would like to merge with the
+  #             maf_df and it's newly calculated variables. (Optional)
   #
   # Returns:
-  #   a data.frame with all the original information in the `@data` part of the
+  #   a data.frame with all the original information from the MAF data.frame
   #   maf object but with these new variables: VAF, mutation_id, base_change,
-  #   change, coding.
+  #   change, coding. If metadata_df is specified, then it will also have
+  #   those columns added.
 
   # Extract the data part of the maf object, put it through a dplyr pipe.
-  maf_df %>%
+  maf_df <- maf_df %>%
     dplyr::mutate(
       # Calculate the variant allele frequency
       vaf = as.numeric(t_alt_count) / (as.numeric(t_ref_count) +
@@ -55,77 +61,109 @@ calculate_vaf <- function(maf_df) {
         Start_Position, "_",
         Tumor_Sample_Barcode
       ),
-    )
+    ) %>%
+    # Get rid of any variables that have completely NAs.
+    dplyr::select(-which(apply(is.na(.), 2, all)))
+
+  # If metadata_df was specified:
+  if (!is.null(metadata_df)) {
+    # Tack on the metadata so we have this info
+    maf_df <- maf_df %>%
+      dplyr::left_join(metadata, by = "Tumor_Sample_Barcode") %>%
+      # Get rid of any variables that have completely NAs.
+      dplyr::select(-which(apply(is.na(.), 2, all)))
+  }
 }
 
-maf_to_granges <- function(maf_df) {
+maf_to_granges <- function(maf_df, strand = FALSE) {
   # Turn MAF data.frame into a GRanges object. All of the original data.frame will
-  # be stored in the `mcols` slot of the GRanges object.
+  # be stored in the `mcols` slot of the GRanges object. This original data
+  # frame in the `mcols` slots can be extracted later using
+  # @elementMetadata@listData.
   #
   # Args:
   #   maf_df: A MAF formatted data.frame with `Chromosome`, `Start_Position`,
-  #           `End_Position`, and `Strand`.
+  #           `End_Position`, and maybe `Strand`.
+  #   strand: specify if the column `Strand` exists.
   #
-  # Create the GRanges object
-  GenomicRanges::GRanges(
-    seqnames = maf_df$Chromosome,
-    ranges = IRanges::IRanges(
-      start = maf_df$Start_Position,
-      end = maf_df$End_Position
-    ),
-    strand = maf_df$Strand,
-    mcols = maf_df
-  )
+  # Returns:
+  # A Genomic Ranges formatted object.
+  #
+  if (strand) {
+    # Create the GRanges object with the strand
+    GenomicRanges::GRanges(
+      seqnames = maf_df$Chromosome,
+      ranges = IRanges::IRanges(
+        start = maf_df$Start_Position,
+        end = maf_df$End_Position
+      ),
+      strand = maf_df$Strand,
+      mcols = maf_df
+    )
+  } else {
+    # Create the GRanges object with the strand
+    GenomicRanges::GRanges(
+      seqnames = maf_df$Chromosome,
+      ranges = IRanges::IRanges(
+        start = maf_df$Start_Position,
+        end = maf_df$End_Position
+      ),
+      mcols = maf_df
+    )
+  }
 }
 
-wxs_bed_filter <- function(maf_df, wxs_bed = NULL, bp_window = 0) {
+wxs_bed_filter <- function(maf_df, wxs_bed_file = NULL, bp_window = 0) {
   # Given a MAF formatted data.frame and a BED regions data.frame; filter out
   # any variants of the MAF df that are not within the BED regions.
   #
   # Args:
   #   maf_df: maf data that has been turned into a data.frame. Can be a maf object
   #           that is subsetted using `@data`.
-  #   wxs_bed: a data.frame that has the windows to be used for TMB calculation.
-  #            BED formatted columns with chromosome, start, end positions in
-  #            that order.
+  #   wxs_bed_file: a file path to TSV file that has BED formatted columns with
+  #                 chromosome, start, end positions in that order.
   #   bp_window: how many base pairs away can it be from the BED region to still
   #              be included? Default is 0 bp. This argument gets forwarded
   #              to GenomicRanges::findOverlaps's `maxgap` argument.
+  #
+  # Returns:
+  # The same MAF formatted data.frame given but having filtered out the WXS
+  # mutations that lie outside the supplied WXS BED regions.
+
+  # Read in the BED regions file and make sure the column names are the same
+  # as the MAF column format names
+  wxs_bed_ranges <- readr::read_tsv(wxs_bed_file, col_names = FALSE) %>%
+    dplyr::rename(Chromosome = X1, Start_Position = X2, End_Position = X3)
 
   # Turn the WXS bed regions into a GRanges object
-  wxs_bed_granges <- GenomicRanges::GRanges(
-    seqnames = wxs_bed$X1,
-    ranges = IRanges::IRanges(
-      start = wxs_bed$X2,
-      end = wxs_bed$X3
-    )
-  )
+  wxs_bed_granges <- maf_to_granges(wxs_bed_ranges, strand = FALSE)
 
-  # Obtain a MAF data.frame of only the WXS samples
+  # Obtain a MAF data.frame of only the WXS samples since this filter will only
+  # be applied to those samples.
   maf_wxs <- maf_df %>%
     dplyr::filter(experimental_strategy == "WXS")
 
-  # Error catcher
+  # Error catcher in case there are no `WXS` samples
   if (nrow(maf_wxs) == 0) {
     warning("No WXS samples found underneath column 'experimental_strategy'
             double check filtering steps and data.")
   }
 
-  # Find the overlap of the BED regions and the mutations.
-  wxs_maf_granges <- GenomicRanges::GRanges(
-    seqnames = maf_wxs$Chromosome,
-    ranges = IRanges::IRanges(
-      start = maf_wxs$Start_Position,
-      end = maf_wxs$End_Position
-    )
-  )
+  # Turn the MAF WXS sample mutations into a GRanges object
+  wxs_maf_granges <- maf_to_granges(maf_wxs)
 
-  # Find the overlap of the BED regions and the mutations.
-  overlap <- GenomicRanges::findOverlaps(wxs_maf_granges, wxs_bed_granges,
+  # Find the overlap of the BED regions and the mutations This outputs a
+  # special GenomicRanges object that contains indices of each of these
+  # ranges that overlap
+  overlap <- GenomicRanges::findOverlaps(
+    wxs_maf_granges,
+    wxs_bed_granges,
     maxgap = bp_window
   )
 
-  # Calculate of ratio of variants in this BED
+  # Calculate of ratio of variants in this BED using the @from slot which
+  # indicates the indices of the ranges in `wxs_maf_ranges` that have overlaps
+  # with `wxs_bed_ranges`
   ratio <- length(overlap@from) / nrow(maf_wxs)
 
   # What fraction of mutations are in these bed regions?
@@ -134,15 +172,15 @@ wxs_bed_filter <- function(maf_df, wxs_bed = NULL, bp_window = 0) {
     "Ratio of variants being filtered out:", 1 - ratio
   )
 
-  # Only keep those in the BED regions
+  # Only keep those in the BED regions that overlap the `wxs_bed_granges`
   maf_wxs <- maf_wxs[unique(overlap@from), ]
 
-  # Tack these back on to the WGS samples
+  # Tack these back on to the WGS samples which remain unfiltered
   filt_maf_df <- maf_df %>%
     dplyr::filter(experimental_strategy == "WGS") %>%
     dplyr::bind_rows(maf_wxs)
 
-  # Return this filtered matrix
+  # Return this matrix with the WXS mutations filtered but WGS the same
   return(filt_maf_df)
 }
 
@@ -154,10 +192,16 @@ calculate_tmb <- function(maf_df, wgs_size, wxs_size) {
   # TMB = # variants / size of the genome or exome surveyed
   #
   # Args:
-  #   maf_df: maf data.frame that has been turned into a data.frame and has
-  #           WXS mutations filtered using `wxs_bed_filter` function.
+  #   maf_df: maf data.frame that has been turned into a data.frame, has had
+  #           the experimental_stategy column added from the metadata (can be
+  #           done with the `set_up_maf` function) and has WXS mutations filtered
+  #           using `wxs_bed_filter` function (If the situation calls for it).
   #   wgs_size: genome size in bp to be used for WGS samples
   #   wxs_size: genome size in bp to be used for WGS samples
+  #
+  # Returns:
+  # A sample-wise data.frame with Tumor Mutation Burden statistics calculated
+  # using the given WGS and WXS sizes.
   #
   # Make a genome size variable
   tmb <- maf_df %>%
@@ -177,32 +221,44 @@ calculate_tmb <- function(maf_df, wgs_size, wxs_size) {
   return(tmb)
 }
 
-annotr_maf <- function(maf_df, annotation_obj = annotations, bp_window = 0) {
+annotr_maf <- function(maf_df, annotation_file = NULL, bp_window = 0) {
   # Annotate the genomic regions mutations are in from a MAF formatted data.
-  # frame with AnnotatR object.
+  # frame with AnnotatR object. Because any given region can have multiple
+  # region labels, a single mutation in a can have a single label, multiple
+  # labels or no labels. Generally this data.frame ends up being very large
+  # because many mutations have several labels.
   #
   # Args:
   #   maf_df: maf data that has been turned into a data.frame.
-  #   annotation_obj: an annotation object with the desired annotations.
+  #   annotation_file: a file path to a .RDS object containing the desired annotation
+  #                    from AnnotatR build function.
   #   bp_window: how many base pairs away can it be from the BED region to still
   #              be included? Default is 0 bp. This argument gets forwarded
   #              to GenomicRanges::findOverlaps's `maxgap` argument.
   #
+  # Returns:
+  # A large data.frame that contains every mutation and every region type it
+  # overlaps. Genomic region types are noted in the `type` column.
+  #
   # Read in the genomic regions annotation object
-  annotations <- readr::read_rds(annot_rds)
+  annotation_ranges <- readr::read_rds(annot_rds)
 
   # Use custom function to turn our MAF data into a GRanges
   maf_ranges <- maf_to_granges(maf_df)
 
-  # Intersect the regions we read in with the annotations
-  annot_matches <- GenomicRanges::findOverlaps(annotation_obj, maf_ranges,
+  # Intersect the regions we read in with the annotations.
+  # This outputs a special GenomicRanges object that contains indices of
+  # each of these ranges that overlap
+  annot_matches <- GenomicRanges::findOverlaps(
+    annotation_ranges,
+    maf_ranges,
     maxgap = bp_window
   )
 
-  # Extract the annotation from the regions that overlap the mut
+  # Extract the annotation from the regions that overlap the mutations
   annot <- data.frame(
-    annotation_obj[annot_matches@from]@elementMetadata@listData,
-    maf_ranges[annot_matches@to]@elementMetadata@listData,
+    annotation_ranges[annot_matches@from]@elementMetadata@listData, # Extract matching annotation ranges info
+    maf_ranges[annot_matches@to]@elementMetadata@listData, # Extract matching MAF ranges data.frame info
     stringsAsFactors = FALSE
   ) %>%
     dplyr::rename_at(dplyr::vars(dplyr::starts_with("mcols.")), substr, 7, 10000) %>%
@@ -211,24 +267,42 @@ annotr_maf <- function(maf_df, annotation_obj = annotations, bp_window = 0) {
   return(annot)
 }
 
-find_cosmic_overlap <- function(maf_df, bp_window = 0) {
+find_cosmic_overlap <- function(maf_df, cosmic_clean_file, bp_window = 0) {
   # Find how much overlap a MAF formatted data.frame has with COSMIC mutations
-  # Return a column in the MAF data.frame that says whether or not it is also
+  # Return columns in the MAF data.frame that say whether or not it is also
   # in the COSMIC mutations set.
   #
   # Args:
   #   maf_df: MAF formatted data that has been turned into a data.frame and has
   #           been run through `set_up_variables`
+  #   cosmic_clean_file: a file path to a TSV of COSMIC mutations that has been
+  #                     been cleaned up to have the genomic coordinates separated
+  #                     into Chr, Start, and End columns.
   #   bp_window: how many base pairs away can it be from the BED region to still
   #              be included? Default is 0 bp. This argument gets forwarded
   #              to GenomicRanges::findOverlaps's `maxgap` argument.
   #
-  # Turn both these datasets into GRanges
+  # Returns:
+  # The original MAF data.frame is returned with two added columns, called
+  # overlap_cosmic and `same_cosmic`. These columns are logical type and
+  # indicate whether the mutation was overlapping a COSMIC mutation
+  # (`overlap_cosmic`) and whether it was overlapping a COSMIC mutation and also
+  # contained the same overall base change (`same_cosmic`).
+  #
+  # Read in the cosmic file and turn it into a GRanges object
+  cosmic_granges <- maf_to_granges(readr::read_tsv(cosmic_clean_file,
+    col_type = readr::cols()
+  ))
+
+  # Turn the MAF data.frame into a GRanges object
   maf_granges <- maf_to_granges(maf_df)
-  cosmic_granges <- maf_to_granges(suppressMessages(readr::read_tsv(cosmic_clean_file)))
 
   # Find the overlap of the MAF and COSMIC mutations.
-  overlap <- GenomicRanges::findOverlaps(maf_granges, cosmic_granges,
+  # This outputs a special GenomicRanges object that contains indices of
+  # each of these ranges that overlap
+  overlap <- GenomicRanges::findOverlaps(
+    maf_granges,
+    cosmic_granges,
     maxgap = bp_window
   )
 
