@@ -45,6 +45,8 @@ data
     ├── pbta-gene-expression-rsem-fpkm.stranded.rds
     ├── pbta-gene-counts-rsem-expected_count.polya.rds
     ├── pbta-gene-counts-rsem-expected_count.stranded.rds
+    ├── pbta-isoform-counts-rsem-expected_count.polya.rds
+    ├── pbta-isoform-counts-rsem-expected_count.stranded.rds
     ├── pbta-snv-lancet.vep.maf.gz
     └── pbta-snv-vardict.vep.maf.gz
 ```
