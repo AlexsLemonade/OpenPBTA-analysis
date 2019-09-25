@@ -24,30 +24,27 @@ data
 └── release-v5-20190924
     ├── CHANGELOG.md
     ├── md5sum.txt
+    ├── WGS.hg38.lancet.300bp_padded.bed
+    ├── WGS.hg38.lancet.unpadded.bed
+    ├── WGS.hg38.mutect2.unpadded.bed
+    ├── WGS.hg38.strelka2.unpadded.bed
+    ├── WGS.hg38.vardict.100bp_padded.bed
+    ├── WXS.hg38.100bp_padded.bed
     ├── pbta-cnv-cnvkit.seg.gz
     ├── pbta-cnv-controlfreec.seg.gz
     ├── pbta-fusion-arriba.tsv.gz
     ├── pbta-fusion-starfusion.tsv.gz
-    ├── pbta-gene-expression-kallisto.rds
-    ├── pbta-gene-expression-rsem.fpkm.rds
     ├── pbta-histologies.tsv
     ├── pbta-snv-mutect2.vep.maf.gz
     ├── pbta-snv-strelka2.vep.maf.gz
     ├── pbta-sv-lumpy.tsv.gz
     ├── pbta-sv-manta.tsv.gz
-    ├── WGS.hg38.lancet.300bp_padded.bed
-    ├── WGS.hg38.lancet.unpadded.bed
-    ├── WGS.hg38.mutect2.unpadded.bed
-    ├── WGS.hg38.strelka2.unpadded.bed
-    ├── WXS.hg38.100bp_padded.bed
-    ├── pbta-rsem-gene-counts.polyA.rds 
-    ├── pbta-rsem-gene-counts.stranded.rds
-    ├── pbta-rsem-transcript-counts.polyA.rds
-    ├── pbta-rsem-transcript-counts.stranded.rds
     ├── pbta-gene-expression-kallisto.polya.rds
     ├── pbta-gene-expression-kallisto.stranded.rds
     ├── pbta-gene-expression-rsem-fpkm.polya.rds
     ├── pbta-gene-expression-rsem-fpkm.stranded.rds
+    ├── pbta-gene-counts-rsem-expected_count.polya.rds
+    ├── pbta-gene-counts-rsem-expected_count.stranded.rds
     ├── pbta-snv-lancet.vep.maf.gz
     └── pbta-snv-vardict.vep.maf.gz
 ```
