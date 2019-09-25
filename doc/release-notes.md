@@ -1,5 +1,57 @@
 # release notes
 ## current release
+### release-v5-20190924
+- release date: 2019-09-24
+- status: available
+- changes:
+  - [Separated RNA-Seq files](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/121):
+    - Created separate RDS files for stranded and polyA RNA-Seq samples
+  - [new RNA-Seq counts files](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/14):
+    - Added RSEM count matrices for genes and transcripts
+  - [new ARRIBA file](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/92#discussion_r324873300):
+    - Add `annots` column header which was removed during FusionAnnotator run
+  - [new SNV files](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/114):
+    - Add Lancet VEP-annotated MAF
+    - Add VarDict VEP-annotated MAF
+  - [new BED interval files](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/3):
+    - Add WXS BED (same file used for each variant caller)
+    - Add WGS BED files for each variant caller
+    - Methods described [here](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md).
+
+- folder structure:
+```
+data
+└── release-v5-20190924
+    ├── CHANGELOG.md
+    ├── md5sum.txt
+    ├── WGS.hg38.lancet.300bp_padded.bed
+    ├── WGS.hg38.lancet.unpadded.bed
+    ├── WGS.hg38.mutect2.unpadded.bed
+    ├── WGS.hg38.strelka2.unpadded.bed
+    ├── WGS.hg38.vardict.100bp_padded.bed
+    ├── WXS.hg38.100bp_padded.bed
+    ├── pbta-cnv-cnvkit.seg.gz
+    ├── pbta-cnv-controlfreec.seg.gz
+    ├── pbta-fusion-arriba.tsv.gz
+    ├── pbta-fusion-starfusion.tsv.gz
+    ├── pbta-histologies.tsv
+    ├── pbta-snv-mutect2.vep.maf.gz
+    ├── pbta-snv-strelka2.vep.maf.gz
+    ├── pbta-sv-lumpy.tsv.gz
+    ├── pbta-sv-manta.tsv.gz
+    ├── pbta-gene-expression-kallisto.polya.rds
+    ├── pbta-gene-expression-kallisto.stranded.rds
+    ├── pbta-gene-expression-rsem-fpkm.polya.rds
+    ├── pbta-gene-expression-rsem-fpkm.stranded.rds
+    ├── pbta-gene-counts-rsem-expected_count.polya.rds
+    ├── pbta-gene-counts-rsem-expected_count.stranded.rds
+    ├── pbta-isoform-counts-rsem-expected_count.polya.rds
+    ├── pbta-isoform-counts-rsem-expected_count.stranded.rds
+    ├── pbta-snv-lancet.vep.maf.gz
+    └── pbta-snv-vardict.vep.maf.gz
+```
+
+## archived release
 ### release-v4-20190909
 - release date: 2019-09-10
 - status: available
@@ -28,7 +80,8 @@ data
     ├── pbta-snv-mutect2.vep.maf.gz
     ├── pbta-snv-strelka2.vep.maf.gz
     ├── pbta-sv-lumpy.tsv.gz
-    └── pbta-sv-manta.tsv.gz
+    ├── pbta-sv-manta.tsv.gz
+    └── README.md
 ```
 
 ## archived release
@@ -104,3 +157,7 @@ data
     ├── strelka2.maf.gz
     └── tumor-normal-pair.tsv
 ```
+
+
+
+
