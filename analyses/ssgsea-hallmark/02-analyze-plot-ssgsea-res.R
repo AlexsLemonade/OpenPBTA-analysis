@@ -6,7 +6,8 @@
 
 
 #Call libraries
-library("GSVA");
-library("GSEABase");
+library("tidyverse");
 
-
+#Read in data
+clinData <- read.delim("../../data/pbta-histologies.tsv");
+geneSetExpMat <- readRDS("results/GeneSetExpressionMatrix.RDS")
