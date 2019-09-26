@@ -19,7 +19,7 @@ source(file.path(root_dir, "analyses", "snv-callers", "util", "plot_functions.R"
 
 # Will need R.utils for zipping up the results file
 if (!("optparse" %in% installed.packages())) {
-  install.packages("optparse", repos='http://cran.us.r-project.org')
+  install.packages("optparse", repos = "http://cran.us.r-project.org")
 }
 # Will need R.utils for zipping up the results file
 if (!("R.utils" %in% installed.packages())) {
@@ -50,8 +50,8 @@ cosmic_dir <- file.path(snv_dir, "cosmic")
 if (!dir.exists(bed_dir)) {
   dir.create(bed_dir)
 }
-if (!dir.exists(base_results_dir )) {
-  dir.create(base_results_dir )
+if (!dir.exists(base_results_dir)) {
+  dir.create(base_results_dir)
 }
 if (!dir.exists(base_plots_dir)) {
   dir.create(base_plots_dir)
@@ -84,7 +84,7 @@ wxs_bed_file <- file.path(bed_dir, "wxs_bed_regions_all.tsv")
 if (!file.exists(wxs_bed_file)) {
   # This is a link to the exome BED file provided by
   wxs_bed_url <- "https://raw.githubusercontent.com/AstraZeneca-NGS/reference_data/master/hg38/bed/Exome-AZ_V2.bed"
-  
+
   # Download the file with these regions
   download.file(wxs_bed_url, destfile = wxs_bed_file)
 }
@@ -94,7 +94,7 @@ if (!file.exists(wxs_bed_file)) {
 if (!file.exists(annot_rds)) {
   # Print progress message
   message("Setting up genomic region annotation file. Only need to do this once.")
-  
+
   # Here we are specifying what types of annotation we would like
   annots <- c(
     "hg38_basicgenes",
@@ -106,14 +106,14 @@ if (!file.exists(annot_rds)) {
     "hg38_genes_introns",
     "hg38_genes_3UTRs"
   )
-  
+
   # Build all the annotations into GRanges object
   annotations <- annotatr::build_annotations(genome = "hg38", annotations = annots)
-  
+
   # Write this object so we don't have to write it again
   readr::write_rds(annotations,
-                   annot_rds,
-                   compress = "gz"
+    annot_rds,
+    compress = "gz"
   )
 }
 
@@ -121,37 +121,41 @@ if (!file.exists(annot_rds)) {
 # This set up will not be run unless you obtain the original data file
 # from https://cancer.sanger.ac.uk/cosmic/download , these data are available
 # if you register. The full, unfiltered somatic mutations file
-# CosmicMutantExport.tsv for grch38 is used here but only mutations from brain 
+# CosmicMutantExport.tsv for grch38 is used here but only mutations from brain
 # related samples are kept.
 if (!file.exists(cosmic_clean_file)) {
   # Print progress message
   message("Setting up COSMIC mutation file. Only need to do this once.")
-  
+
   # Read in original file
-  cosmic_variants <- data.table::fread(cosmic_file, 
-                                       data.table = FALSE) %>% 
-  # Keep only brain mutations so the file is smaller
-  dplyr::filter(`Site subtype 1` == "brain") 
+  cosmic_variants <- data.table::fread(cosmic_file,
+    data.table = FALSE
+  ) %>%
+    # Keep only brain mutations so the file is smaller
+    dplyr::filter(`Site subtype 1` == "brain")
   # Get rid of spaces in column names
-  cosmic_variants <- cosmic_variants %>% 
+  cosmic_variants <- cosmic_variants %>%
     dplyr::rename_all(dplyr::funs(stringr::str_replace_all(., " ", "_"))) %>%
-  # Separate the genome coordinates into their own BED like variables
-  dplyr::mutate(
-    Chromosome = paste0(
-      "chr",
-      stringr::word(Mutation_genome_position, sep = ":", 1)),
-    Start_Position = stringr::word(Mutation_genome_position, sep = ":|-", 1),
-    End_Position = stringr::word(Mutation_genome_position, sep = "-", 2),
-    # Make a base_change variable so we can compare to our set up for PBTA data
-    base_change = substr(Mutation_CDS, nchar(Mutation_CDS) - 2, 10)
+    # Separate the genome coordinates into their own BED like variables
+    dplyr::mutate(
+      Chromosome = paste0(
+        "chr",
+        stringr::word(Mutation_genome_position, sep = ":", 1)
+      ),
+      Start_Position = stringr::word(Mutation_genome_position, sep = ":|-", 1),
+      End_Position = stringr::word(Mutation_genome_position, sep = "-", 2),
+      # Make a base_change variable so we can compare to our set up for PBTA data
+      base_change = substr(Mutation_CDS, nchar(Mutation_CDS) - 2, 10)
     ) %>%
-  # Carry over the Strand info,  but rename 
-  dplyr::rename(Strand = Mutation_strand) %>%
-  # Narrow down to just the needed columns
-  dplyr::select("Chromosome", "Start_Position", "End_Position", "Strand", 
-                "base_change") %>%
-  # Write to a TSV file
-  readr::write_tsv(cosmic_clean_file)
+    # Carry over the Strand info,  but rename
+    dplyr::rename(Strand = Mutation_strand) %>%
+    # Narrow down to just the needed columns
+    dplyr::select(
+      "Chromosome", "Start_Position", "End_Position", "Strand",
+      "base_change"
+    ) %>%
+    # Write to a TSV file
+    readr::write_tsv(cosmic_clean_file)
 }
 
 ################### Set up caller-specific WGS BED regions files ###############
@@ -162,17 +166,20 @@ if (!file.exists(cosmic_clean_file)) {
 if (!file.exists(file.path(bed_dir, "strelka2_wgs_bed_regions.tsv"))) {
   # Get the strelka2 regions
   tmp <- readLines("https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/3#issuecomment-530583149")
-  
+
   # Write them to a file.
   text <- grep("^chr", tmp, value = TRUE)
   text <- substr(text, 1, nchar(text) - 1)
-  
-  data.frame(stringr::word(text, sep = "\t"),
-             stringr::word(text, sep = "\t", 2),
-             stringr::word(text, sep = "\t", 3)) %>%
+
+  data.frame(
+    stringr::word(text, sep = "\t"),
+    stringr::word(text, sep = "\t", 2),
+    stringr::word(text, sep = "\t", 3)
+  ) %>%
     readr::write_tsv(file.path(bed_dir, "strelka2_wgs_bed_regions.tsv"),
-                     col_names = FALSE)
-  
+      col_names = FALSE
+    )
+
   # Get rid of temporary object
   rm(tmp)
 }
@@ -181,7 +188,7 @@ if (!file.exists(file.path(bed_dir, "strelka2_wgs_bed_regions.tsv"))) {
 if (!file.exists(file.path(bed_dir, "mutect2_wgs_bed_regions.tsv"))) {
   # This is a link to the BED regions file from @migbro.
   bed_url <- "https://github.com/AlexsLemonade/OpenPBTA-analysis/files/3602922/wgs_canonical_calling_regions.hg38.txt"
-  
+
   # Download the file with these regions
   download.file(bed_url, destfile = file.path(bed_dir, "mutect2_wgs_bed_regions.tsv"))
 }
