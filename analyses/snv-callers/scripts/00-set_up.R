@@ -41,15 +41,11 @@ data_dir <- file.path(root_dir, "data")
 snv_dir <- file.path(root_dir, "analyses", "snv-callers")
 
 # Directories that we will need
-bed_dir <- file.path(snv_dir, "bed_regions")
 base_results_dir <- file.path(snv_dir, "results")
 base_plots_dir <- file.path(snv_dir, "plots")
 cosmic_dir <- file.path(snv_dir, "cosmic")
 
 # Create these folders if they haven't been created yet
-if (!dir.exists(bed_dir)) {
-  dir.create(bed_dir)
-}
 if (!dir.exists(base_results_dir)) {
   dir.create(base_results_dir)
 }
@@ -76,18 +72,8 @@ cosmic_clean_file <- file.path(cosmic_dir, "brain_cosmic_variants_coordinates.ts
 # Will set up this annotation file below
 annot_rds <- file.path(scratch_dir, "hg38_genomic_region_annotation.rds")
 
-# This will be used for all samples, but WGS bed regions are caller-specific
-wxs_bed_file <- file.path(bed_dir, "wxs_bed_regions_all.tsv")
-
-######################## Set up WXS BED regions file ###########################
-# WGS BED regions files are caller specific so will be set up separately
-if (!file.exists(wxs_bed_file)) {
-  # This is a link to the exome BED file provided by
-  wxs_bed_url <- "https://raw.githubusercontent.com/AstraZeneca-NGS/reference_data/master/hg38/bed/Exome-AZ_V2.bed"
-
-  # Download the file with these regions
-  download.file(wxs_bed_url, destfile = wxs_bed_file)
-}
+# This will be used for all WXS samples, but WGS bed regions are caller-specific
+wxs_bed_file <- file.path(data_dir, "WXS.hg38.100bp_padded.bed")
 
 ################################ Build Annotation ##############################
 # We will only run this if it hasn't been run before
@@ -116,7 +102,6 @@ if (!file.exists(annot_rds)) {
     compress = "gz"
   )
 }
-
 ######################## Set up COSMIC Mutations file ###########################
 # This set up will not be run unless you obtain the original data file
 # from https://cancer.sanger.ac.uk/cosmic/download , these data are available
@@ -147,7 +132,7 @@ if (!file.exists(cosmic_clean_file)) {
       # Make a base_change variable so we can compare to our set up for PBTA data
       base_change = substr(Mutation_CDS, nchar(Mutation_CDS) - 2, 10)
     ) %>%
-    # Carry over the Strand info,  but rename
+    # Carry over the strand info, but rename to match our PBTA set up
     dplyr::rename(Strand = Mutation_strand) %>%
     # Narrow down to just the needed columns
     dplyr::select(
@@ -156,39 +141,4 @@ if (!file.exists(cosmic_clean_file)) {
     ) %>%
     # Write to a TSV file
     readr::write_tsv(cosmic_clean_file)
-}
-
-################### Set up caller-specific WGS BED regions files ###############
-# **NOTE:** this section cannot be completed until we receive the WGS files for
-# the other callers.
-
-# Set up strelka2 WGS bed regions file
-if (!file.exists(file.path(bed_dir, "strelka2_wgs_bed_regions.tsv"))) {
-  # Get the strelka2 regions
-  tmp <- readLines("https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/3#issuecomment-530583149")
-
-  # Write them to a file.
-  text <- grep("^chr", tmp, value = TRUE)
-  text <- substr(text, 1, nchar(text) - 1)
-
-  data.frame(
-    stringr::word(text, sep = "\t"),
-    stringr::word(text, sep = "\t", 2),
-    stringr::word(text, sep = "\t", 3)
-  ) %>%
-    readr::write_tsv(file.path(bed_dir, "strelka2_wgs_bed_regions.tsv"),
-      col_names = FALSE
-    )
-
-  # Get rid of temporary object
-  rm(tmp)
-}
-
-# Set up mutect2 WGS bed regions file
-if (!file.exists(file.path(bed_dir, "mutect2_wgs_bed_regions.tsv"))) {
-  # This is a link to the BED regions file from @migbro.
-  bed_url <- "https://github.com/AlexsLemonade/OpenPBTA-analysis/files/3602922/wgs_canonical_calling_regions.hg38.txt"
-
-  # Download the file with these regions
-  download.file(bed_url, destfile = file.path(bed_dir, "mutect2_wgs_bed_regions.tsv"))
 }
