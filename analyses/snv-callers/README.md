@@ -87,6 +87,8 @@ The sample-wise TMB calculations written to a TSV ending in `_tmb.tsv` in the ca
 The COSMIC mutation data were obtained from https://cancer.sanger.ac.uk/cosmic/download
 *To run this analysis, you need to obtain these data.*
 The full, unfiltered somatic mutations file `CosmicMutantExport.tsv` for grch38 is used here and the genomic coordinates is arranged to be in BED format.
+The COSMIC set is unfiltered down to only mutations detected in brain-related
+samples using the `Site subtype 1` field.
 COSMIC mutations are overlapped with the present data's mutations using `GenomicRanges`.
 The outcome of this overlap is added to the VAF data.frame with two `TRUE/FALSE` columns:
 `overlap_w_cosmic` is TRUE for mutations that overlap with COSMIC mutations, while `same_as_cosmic` is TRUE when the base change summary is also identical.
@@ -166,6 +168,8 @@ OpenPBTA-analysis
 │       │   │   └── ...
 │       │   └── vardict
 │       │       └── ...
+│       ├── cosmic
+│       │   └── brain_cosmic_variants_coordinates.tsv
 │       └── template
 │           └── variant_caller_report_template.Rmd
 ├── data
