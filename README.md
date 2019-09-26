@@ -185,6 +185,16 @@ The username will for login will be `rstudio` and the password will be whatever 
 
 If you are a new user, you may find [these instructions](https://github.com/AlexsLemonade/RNA-Seq-Exercises/blob/master/docker-pull.md) for a setting up a different Docker container or [this guide](https://www.andrewheiss.com/blog/2017/04/27/super-basic-practical-guide-to-docker-and-rstudio/) from Andrew Heiss helpful.
 
+### Local Development
+
+While we encourage development within the Docker container, it is also possible to conduct analysis without Docker if that is desired. 
+In  this case, it is important to ensure that local or personal settings such as file paths or installed packages and libraries are not assumed in the analysis. 
+
+#### RStudio 
+
+We have supplied an RStudio project (`OpenPBTA-analysis.Rproj`) file at the root of the project to aid in organization and encourage reproducible defaults for analysis.
+In particular, we do not source `.Rprofile` files in new sessions or save/restore workspaces.
+
 ### Continuous Integration (CI)
 
 We use continuous integration (CI) to ensure that the project Docker image will build if there are any changes introduced to the [`Dockerfile`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/Dockerfile) and that all analysis code will execute.
