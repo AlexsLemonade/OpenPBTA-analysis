@@ -54,26 +54,95 @@ if (!dir.exists(output_dir)) {
 }
 ```
 
+### Functions
 
+```{r umap plotting function}
+#' Plot of a umap model
+#' 
+#' The umap_plot function takes a umap model and associated metadata and 
+#' returns a ggplot object that plots the first two UMAP components,
+#' colored by disease type and with shapes determined by selection method. 
+#' Optionally writes the plot to a file.
+#' 
+#' @param umap_model A umap model object output from [umap::umap]
+#' @param metadata A data frame of metadata for the samples. Must contain a 
+#'   column of `disease_comparable` and `RNA_library` as in the 
+#'   "pbta-histologies.tsv" file.
+#' @param sample_id The name of the column containing sample ids. Defaults to 
+#'   "Kids_First_Biospecimen_ID", as in the "pbta-histologies.tsv" file.
+#' @param comparable Boolean to determine whether to include only diseases 
+#'   present in both strategies in plots. Requires the presence of a 
+#'   `comparable` column in the metadata function.
+#' @param filename File for writinge the output plot. Default `NA` will not 
+#'   write to a file, but still returns the plot.
+#' 
+#' @return A ggplot object containing a plot of the first two UMAP components
+umap_plot <- function(umap_model, 
+                      metadata, 
+                      sample_id = "Kids_First_Biospecimen_ID", 
+                      filter_comparable = TRUE,
+                      filename = NA){
+  
+  layout <- data.frame(umap_model$layout) %>% 
+    dplyr::rename_all(.funs = gsub, pattern = "^X", replacement = "UMAP") %>%
+    tibble::rownames_to_column(var = sample_id)
+  
+  plot_data <- layout %>%
+    dplyr::left_join(metadata, by = sample_id) 
+  if (filter_comparable) {
+    plot_data <- plot_data %>% dplyr::filter(comparable)
+  }  
+  
+  
+  u_plot <- ggplot(plot_data, 
+                   aes(x = UMAP1, 
+                       y = UMAP2, 
+                       color = disease_comparable, 
+                       shape = RNA_library)) +
+    geom_point(alpha = 0.3) +
+    labs(color = "Disease Type",
+         shape = "Selection Method")
+  
+  if (is.character(filename)) {
+    ggsave(filename, 
+           u_plot,
+           width = 11,
+           height = 7)
+  }
+  
+  return(u_plot)
+}
+
+```
 
 ## Read Data
 
 For now we will read in only the rsem data; we may examine the kallisto data later.
 
 ```{r read data}
-exp_rsem <- readr::read_rds(file.path(root_dir, 
-                                      "data", 
-                                      "pbta-gene-expression-rsem.fpkm.rds")) %>%
+exp_rsem_polyA <- readRDS(file.path(root_dir, 
+                                    "data", 
+                                    "pbta-gene-expression-rsem-fpkm.polya.rds"))
+exp_rsem_stranded <- readRDS(file.path(root_dir, 
+                                       "data", 
+                                       "pbta-gene-expression-rsem-fpkm.stranded.rds"))
+
+# join polyA and stranded data together
+exp_rsem <- dplyr::bind_cols(exp_rsem_polyA,
+                             exp_rsem_stranded[,-1]) %>%
   dplyr::filter(complete.cases(.))
 
 # transpose the expression values to a matrix
 exp_rsem_t <- t(exp_rsem[,-1])
 colnames(exp_rsem_t) <- exp_rsem[[1]]
 
+
+
 metadata_df <- readr::read_tsv(file.path(root_dir,
-                                         "data",
-                                         "pbta-histologies.tsv")) %>%
-  dplyr::filter(Kids_First_Biospecimen_ID %in% rownames(exp_rsem_t))
+                                        "data",
+                                        "pbta-histologies.tsv")) %>%
+  dplyr::right_join(dplyr::tibble(Kids_First_Biospecimen_ID = rownames(exp_rsem_t)), 
+                    by = "Kids_First_Biospecimen_ID")
 
 ```
 
@@ -130,76 +199,17 @@ To start, we will reproduce an naive dimensionality reduction analysis to show t
 # remove low counts
 dm_set <- exp_rsem_t[, colSums(exp_rsem_t) > 100]
 
-neighbors <- 15
+neighbors <- 10
 rsem_umap_raw <- umap::umap(dm_set, n_neighbors = neighbors)
 
 ```
-
-```{r umap plotting function}
-#' Plot of a umap model
-#' 
-#' The umap_plot function takes a umap model and associated metadata and 
-#' returns a ggplot object that plots the first two UMAP components,
-#' colored by disease type and with shapes determined by selection method. 
-#' Optionally writes the plot to a file.
-#' 
-#' @param umap_model A umap model object output from [umap::umap]
-#' @param metadata A data frame of metadata for the samples. Must contain a 
-#'   column of `disease_comparable` and `RNA_library` as in the 
-#'   "pbta-histologies.tsv" file.
-#' @param sample_id The name of the column containing sample ids. Defaults to 
-#'   "Kids_First_Biospecimen_ID", as in the "pbta-histologies.tsv" file.
-#' @param comparable Boolean to determine whether to include only diseases 
-#'   present in both strategies in plots. Requires the presence of a 
-#'   `comparable` column in the metadata function.
-#' @param filename File for writinge the output plot. Default `NA` will not 
-#'   write to a file, but still returns the plot.
-#' 
-#' @return A ggplot object
-umap_plot <- function(umap_model, 
-                      metadata, 
-                      sample_id = "Kids_First_Biospecimen_ID", 
-                      filter_comparable = TRUE,
-                      filename = NA){
-  
-  layout <- data.frame(umap_model$layout) %>% 
-    dplyr::rename_all(.funs = gsub, pattern = "^X", replacement = "UMAP") %>%
-    tibble::rownames_to_column(var = sample_id)
-  
-  plot_data <- layout %>%
-    dplyr::left_join(metadata, by = sample_id) 
-  if (filter_comparable) {
-    plot_data <- plot_data %>% dplyr::filter(comparable)
-  }  
-  
-  
-  u_plot <- ggplot(plot_data, 
-                   aes(x = UMAP1, 
-                       y = UMAP2, 
-                       color = disease_comparable, 
-                       shape = RNA_library)) +
-    geom_point(alpha = 0.3) +
-    labs(color = "Disease Type",
-         shape = "Selection Method")
-  
-  if (is.character(filename)) {
-    ggsave(filename, 
-           u_plot,
-           width = 11,
-           height = 7)
-  }
-  
-  return(u_plot)
-}
-
-```
-
 
 ```{r plot raw}
 
 plot_raw <- umap_plot(rsem_umap_raw, 
                       metadata_df,
-                      filename = file.path(output_dir, "umap_raw.png"))
+                      filename = file.path(output_dir, 
+                                           "umap_raw.png"))
 
 plot_raw
 ```
@@ -232,7 +242,8 @@ rsem_umap_polyA <- umap::umap(polyA_expressed, n_neighbors = neighbors)
 ```{r plot polyA}
 plot_polyA <- umap_plot(rsem_umap_polyA, 
                         metadata_df, 
-                        filename = file.path(output_dir, "umap_polyA.png"))
+                        filename = file.path(output_dir, 
+                                             "umap_polyA.png"))
 plot_polyA
 ```
 
@@ -256,7 +267,8 @@ rsem_umap_polyA_high <- umap::umap(polyA_expressed_high, n_neighbors = neighbors
 ```{r}
 plot_polyA_high <- umap_plot(rsem_umap_polyA_high, 
                              metadata_df, 
-                             filename = file.path(output_dir, "umap_polyA_high.png"))
+                             filename = file.path(output_dir,
+                                                  "umap_polyA_high.png"))
 
 plot_polyA
 ```
@@ -283,7 +295,8 @@ rsem_umap_polyA_rank <- umap::umap(polyA_expressed_rank, n_neighbors = neighbors
 ```{r}
 plot_polyA_rank <- umap_plot(rsem_umap_polyA_rank, 
                              metadata_df, 
-                             filename = file.path(output_dir, "umap_polyA_ranks.png"))
+                             filename = file.path(output_dir, 
+                                                  "umap_polyA_ranks.png"))
 
 plot_polyA_rank
 
@@ -309,7 +322,8 @@ rsem_umap_polyA_norm <- umap::umap(polyA_expressed_norm, n_neighbors = neighbors
 ```{r}
 plot_polyA_norm <- umap_plot(rsem_umap_polyA_norm, 
                              metadata_df,
-                             filename = file.path(output_dir, "umap_polyA_normalized.png"))
+                             filename = file.path(output_dir,
+                                                  "umap_polyA_normalized.png"))
 
 plot_polyA_norm
 ```
@@ -343,12 +357,13 @@ rsem_umap_polyA_combat <- umap::umap(t(combat_exp), n_neighbors = neighbors)
 ```{r}
 plot_polyA_combat <- umap_plot(rsem_umap_polyA_combat, 
                                metadata_df,
-                               filename = file.path(output_dir, "umap_polyA_combat.png"))
+                               filename = file.path(output_dir,
+                                                    "umap_polyA_combat.png"))
 
 plot_polyA_combat
 ```
 
-This seems to be more effective than anything else, in that it pulls the astrocytomas together, but it still leaves the DIPG quite separated.
+This seems to be more effective than anything else, in that it pulls the astrocytomas together (though the poly-A remain far more mightly clustered), but it still leaves the poly-A DIPG samples quite distinct.
 
 ## Conclusions
 
