@@ -25,7 +25,6 @@ if (!("optparse" %in% installed.packages())) {
 if (!("R.utils" %in% installed.packages())) {
   install.packages("R.utils", repos = "http://cran.us.r-project.org")
 }
-
 # Install package if not installed
 if (!("annotatr" %in% installed.packages())) {
   BiocManager::install("annotatr")
@@ -71,8 +70,8 @@ original_metadata <- file.path(data_dir, "pbta-histologies.tsv")
 cosmic_file <- file.path(snv_dir, "CosmicMutantExport.tsv.gz")
 
 # This is the cleaned version that only contains the genomic coordinates and
-# base changes from the original file.
-cosmic_clean_file <- file.path(cosmic_dir, "cosmic_variants_cleaned.tsv")
+# base changes from the original file for brain sample mutations only.
+cosmic_clean_file <- file.path(cosmic_dir, "brain_cosmic_variants_coordinates.tsv")
 
 # Will set up this annotation file below
 annot_rds <- file.path(scratch_dir, "hg38_genomic_region_annotation.rds")
@@ -122,34 +121,37 @@ if (!file.exists(annot_rds)) {
 # This set up will not be run unless you obtain the original data file
 # from https://cancer.sanger.ac.uk/cosmic/download , these data are available
 # if you register. The full, unfiltered somatic mutations file
-# CosmicMutantExport.tsv for grch38 is used here.
+# CosmicMutantExport.tsv for grch38 is used here but only mutations from brain 
+# related samples are kept.
 if (!file.exists(cosmic_clean_file)) {
   # Print progress message
   message("Setting up COSMIC mutation file. Only need to do this once.")
   
   # Read in original file
-  cosmic_variants <- data.table::fread(cosmic_file, data.table = FALSE) 
-  
+  cosmic_variants <- data.table::fread(cosmic_file, 
+                                       data.table = FALSE) %>% 
+  # Keep only brain mutations so the file is smaller
+  dplyr::filter(`Site subtype 1` == "brain") 
   # Get rid of spaces in column names
-  colnames(cosmic_variants) <- gsub(" ", "_", colnames(cosmic_variants))
-  
   cosmic_variants <- cosmic_variants %>% 
-    # Separate the genome coordinates into their own BED like variables
-    dplyr::mutate(
-      Chromosome = paste0(
-        "chr",
-        stringr::word(Mutation_genome_position, sep = ":", 1)
-      ),
-      Start_Position = stringr::word(Mutation_genome_position, sep = ":|-", 1),
-      End_Position = stringr::word(Mutation_genome_position, sep = "-", 2),
-      # Make a base_change variable
-      base_change = substr(Mutation_CDS, nchar(Mutation_CDS) - 2, 100)
+    dplyr::rename_all(dplyr::funs(stringr::str_replace_all(., " ", "_"))) %>%
+  # Separate the genome coordinates into their own BED like variables
+  dplyr::mutate(
+    Chromosome = paste0(
+      "chr",
+      stringr::word(Mutation_genome_position, sep = ":", 1)),
+    Start_Position = stringr::word(Mutation_genome_position, sep = ":|-", 1),
+    End_Position = stringr::word(Mutation_genome_position, sep = "-", 2),
+    # Make a base_change variable so we can compare to our set up for PBTA data
+    base_change = substr(Mutation_CDS, nchar(Mutation_CDS) - 2, 10)
     ) %>%
-    dplyr::rename(Strand = Mutation_strand) %>%
-    # Narrow down to just the needed columns
-    dplyr::select("Chromosome", "Start_Position", "End_Position", "base_change") %>%
-    # Write to a TSV file
-    readr::write_tsv(cosmic_clean_file)
+  # Carry over the Strand info,  but rename 
+  dplyr::rename(Strand = Mutation_strand) %>%
+  # Narrow down to just the needed columns
+  dplyr::select("Chromosome", "Start_Position", "End_Position", "Strand", 
+                "base_change") %>%
+  # Write to a TSV file
+  readr::write_tsv(cosmic_clean_file)
 }
 
 ################### Set up caller-specific WGS BED regions files ###############
