@@ -201,12 +201,12 @@ saveRDS(QCExpFilteredstandardFusioncalls,paste0(opt$outputfile,"_QC_expression_f
 
 ###############annotation############
 # column 1 as GeneName 2 source file 3 Type; collapse to summarize type
-geneListReferenceDataTab<-read.delim(paste(referenceFolder,"genelistreference.txt"),stringsAsFactors = FALSE)
+geneListReferenceDataTab<-read.delim(paste0(referenceFolder,"genelistreference.txt"),stringsAsFactors = FALSE)
 geneListReferenceDataTab<-geneListReferenceDataTab %>% group_by(Gene_Symbol) %>% mutate(type = toString(type)) %>% as.data.frame()
 geneListReferenceDataTab<-unique(geneListReferenceDataTab[,c("Gene_Symbol","type")])
 
 # column 1 as FusionName 2 source file 3 Type; collapse to summarize type
-fusionReferenceDataTab<-read.delim(paste(referenceFolder,"fusionreference.txt"),stringsAsFactors = FALSE)
+fusionReferenceDataTab<-read.delim(paste0(referenceFolder,"fusionreference.txt"),stringsAsFactors = FALSE)
 fusionReferenceDataTab<-unique(fusionReferenceDataTab[,c("FusionName","type")])
 
 fusion_annotation_list<-function(standardFusioncalls=standardFusioncalls,geneListReference=geneListReference,fusionReference=fusionReference){
