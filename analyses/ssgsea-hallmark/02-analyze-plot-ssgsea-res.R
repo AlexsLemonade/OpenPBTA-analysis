@@ -60,7 +60,7 @@ diseaseTypeFilt[,"DiseaseX"] <- ifelse(diseaseTypeFilt[,"diff"]>0, as.character(
 diseaseTypeFilt[,"DiseaseY"] <- ifelse(diseaseTypeFilt[,"diff"]>0, as.character(diseaseTypeFilt[,"VarY"]), as.character(diseaseTypeFilt[,"VarX"]))
 diseaseTypeFilt <- diseaseTypeFilt[-1:-2]
 diseaseTypeFilt <- diseaseTypeFilt[, c("DiseaseX", "DiseaseY", colnames(diseaseTypeFilt)[1:8])]
-write.table(diseaseTypeFilt, "tables/DiseaseCorrelationPathway.txt", sep="\t", row.names=F)
+write.table(diseaseTypeFilt, "results/DiseaseCorrelationPathway.txt", sep="\t", row.names=F)
 
 #Now get diseases highly associated with a certain pathway
 diseaseTableTmp <- data.frame(table(diseaseTypeFilt[,c("DiseaseX", "Pathway")]));
