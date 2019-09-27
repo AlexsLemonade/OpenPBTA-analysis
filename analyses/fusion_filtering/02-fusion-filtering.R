@@ -6,7 +6,9 @@
 #
 #
 # Command line arguments
-# 
+#
+# standardFusionFile		:Standardized fusion calls from [STAR|ARRIBA] from 01-fusion-standardization.R 
+#				or user input files in the correct format 
 # expressionFilter		:Integer threshold of expression for both gene in fusion  partners with FPKM<1
 # junctionReadCountFilter	:Integer threshold for JunctionReadCount per fusion to remove false calls with 0 
 #				supporting junction reads
@@ -15,13 +17,19 @@
 # reathroughFilter		:Boolean value to remove predicted read-through from caller 
 # artifactFilter		:Comma separated values to remove fusions annotated as potential red flag as per
 #				annotation in "annots" column (in OpenPBTA annotation is from FusionAnnotator)
+# readingFrameFilter		:Reading frame to keep in final set of QC fusion calls ( regex to capture inframe|frameshift|other)
 # putativeDriverGeneList	:Comma separated putative driver gene list (in OpenPBTA putative gene list are 
 #				TSGs,Cosmic,Oncogenic,TCGA fusion list)
-# inFrame			:Boolean value to remove In-frame fusions is called by standardized fusion calls
 # filterGeneList		:Comma separated gene list to capture as additional genes of interest other than 
 #				putative driver list (in OpenPBTA additional filter list are Kinase, TF list)
+# referenceFolder		:Path to folder with all reference gene list files 
+# outputfile			:Filename prefix for QC filtered and gene of interest annotated fusion calls (prefix for _QC_expression_filtered_annotated.RDS)")
 #
-#
+
+  
+				
+				
+				
 
 library("optparse")
 library("dplyr")
@@ -35,9 +43,9 @@ option_list <- list(
   make_option(c("-e","--expressionMatrix"),type="character",
               help="Matrix of expression for samples in standardFusion file (.RDS) "),
   make_option(c("-r", "--reathroughFilter"), type="character",
-              help="readthrough filter"),
+              help="Boolean to filter readthrough",default=TRUE),
   make_option(c("-t","--expressionFilter"), type="integer",
-              help="threshold for TPM/FPKM filter"),
+              help="threshold for TPM/FPKM filter",default=1),
   make_option(c("-a","--artifactFilter"),type="character",
               help="red flag filter from Annotation ; in OpenPBTA annotation is from FusionAnnotator"),
   make_option(c("-j","--junctionReadCountFilter"), type="integer",
@@ -53,7 +61,7 @@ option_list <- list(
   make_option(c("-R","--referenceFolder"),type="character",
                 help="reference folder with required gene lists"),
   make_option(c("-o","--outputfile"),type="character",
-              help="Filtered fusion calls (prefix for _putDriver.RDS and _filtFusion.RDS)")
+              help="Filtered fusion calls (prefix for _QC_expression_filtered_annotated.RDS)")
 )
 
 
@@ -76,55 +84,23 @@ readingFrameFilter<-opt$readingFrameFilter
 standardFusioncalls<-read.delim(standardFusionFile,stringsAsFactors=FALSE)
 # to obtain geneA and geneB for gene search below
 standardFusioncalls <- cbind(standardFusioncalls, colsplit(standardFusioncalls$FusionName, pattern = '--', names = c("GeneA","GeneB")))
+# Intergenic fusion will have Gene1A,Gene2A,Gene1B,Gene2B
 standardFusioncalls <- cbind(standardFusioncalls, colsplit(standardFusioncalls$GeneA, pattern = '/', names = c("Gene1A","Gene2A")))
 standardFusioncalls <- cbind(standardFusioncalls, colsplit(standardFusioncalls$GeneB, pattern = '/', names = c("Gene1B","Gene2B")))
 
-
-# gather gene and fusion list from reference folder
-# tab delimited gene of interest merge with filename for putativeDriver
-putDriverReferenceDataTab<- tibble(filename = c(paste0(opt$referenceFolder,unlist(strsplit(putativeDriverGeneList,","))))) %>% 
-  # create a data frame
-  # holding the file names
-  mutate(file_contents = map(filename,read.delim,stringsAsFactor=FALSE,sep="\t")) # a new data column
-putDriverReferenceDataTab<-tidyr::unnest(putDriverReferenceDataTab) %>% as.data.frame()
-
-#gather column 1 as GeneName 2 as FusionName and 3 as source
-putDriverReferenceDataTab<-data.frame("GeneName"=c(putDriverReferenceDataTab$symbol[!is.na(putDriverReferenceDataTab$symbol)],putDriverReferenceDataTab$GeneSymbol[!is.na(putDriverReferenceDataTab$GeneSymbol)],putDriverReferenceDataTab$Gene.Symbol[!is.na(putDriverReferenceDataTab$Gene.Symbol)],putDriverReferenceDataTab$Gene_A[!is.na(putDriverReferenceDataTab$Gene_A)],putDriverReferenceDataTab$Gene_B[!is.na(putDriverReferenceDataTab$Gene_B)]),"FusionName"=NA,"source"=c(putDriverReferenceDataTab$filename[!is.na(putDriverReferenceDataTab$symbol)],putDriverReferenceDataTab$filename[!is.na(putDriverReferenceDataTab$GeneSymbol)],putDriverReferenceDataTab$filename[!is.na(putDriverReferenceDataTab$Gene.Symbol)],putDriverReferenceDataTab$filename[!is.na(putDriverReferenceDataTab$Gene_A)],putDriverReferenceDataTab$filename[!is.na(putDriverReferenceDataTab$Gene_B)]),stringsAsFactors = FALSE)
+#formatting dataframe for filtering
+standardFusioncalls<-standardFusioncalls %>% 
+  #For annotation later
+  mutate (Gene1A_anno=NA,Gene2A_anno=NA,Gene1B_anno=NA,Gene2B_anno=NA) %>% 
+  #remove distance to fusion breakpoint from gene names in intergenic fusions
+  mutate(Gene1A=gsub("[(].*","",standardFusioncalls$Gene1A),
+         Gene2A=gsub("[(].*","",standardFusioncalls$Gene2A),
+         Gene1B=gsub("[(].*","",standardFusioncalls$Gene1B),
+         Gene2B=gsub("[(].*","",standardFusioncalls$Gene2B))
 
 
-# tab delimited gene of interest merge with filename for filter fusion with genes other than putative driver gene list
-filtFusionrReferenceDataTab<- tibble(filename = c(paste0(opt$referenceFolder,unlist(strsplit(filterGeneList,","))))) %>% 
-  # create a data frame
-  # holding the file names
-  mutate(file_contents = map(filename,read.delim,stringsAsFactor=FALSE,sep="\t")) # a new data column
-filtFusionrReferenceDataTab<-tidyr::unnest(filtFusionrReferenceDataTab) %>% as.data.frame()
 
-#gather column 1 as GeneName 2 as FusionName and 3 as source
-filtFusionrReferenceDataTab<-data.frame("GeneName"=c(filtFusionrReferenceDataTab$Name[!is.na(filtFusionrReferenceDataTab$Name)],filtFusionrReferenceDataTab$GeneSym[!is.na(filtFusionrReferenceDataTab$GeneSym)]),"FusionName"=NA,"source"=c(filtFusionrReferenceDataTab$filename[!is.na(filtFusionrReferenceDataTab$Name)],filtFusionrReferenceDataTab$filename[!is.na(filtFusionrReferenceDataTab$GeneSym)]),stringsAsFactors = FALSE)
-
-fusion_filtering_Genelist<-function(standardFusioncalls=standardFusioncalls,putativeDriverGeneList=putativeDriverGeneList,filterGeneList=filterGeneList){
-  # @param standardFusioncalls A dataframe from star fusion or arriba standardized to run through the filtering steps
-  # @param putativeDriverGeneList A dataframe of genes of interest and fusions of interest ; columns 1 : GeneNames 2: FusionName 3: Source (optional)
-  # @param filterGeneList A dataframe of genes of interest and fusions of interest other than putative driver list ; columns 1 : GeneNames 2: FusionName 3: Source (optional)
-  # @return Standardized fusion calls filtered for genes of interest as putativeDriver and filteredFusion calls
-  
-  #putative driver gene and fusion list column 1 : GeneNames 2: FusionName 3: source
-  putDriverFusioncalls<- standardFusioncalls %>% dplyr::filter(
-    (GeneA %in% putDriverReferenceDataTab$GeneName | GeneB %in% putDriverReferenceDataTab$GeneName | FusionName %in% putDriverReferenceDataTab$FusionName)
-  )
-  
-  #filter gene and fusion list column 1 : GeneNames 2: FusionName 3: source
-  filteredFusionvcalls<- standardFusioncalls %>% dplyr::filter(
-    (GeneA %in% filtFusionrReferenceDataTab$GeneName | GeneB %in% filtFusionrReferenceDataTab$GeneName | FusionName %in% filtFusionrReferenceDataTab$FusionName)
-  )
-  genefiltercalls<-list("filterFusion"=filteredFusionvcalls,"putDriver"=putDriverFusioncalls)
-  return(genefiltercalls)
-  
-}
-
-
-geneFiltered<-fusion_filtering_Genelist(standardFusioncalls = standardFusioncalls,putativeDriverGeneList = putDriverReferenceDataTab,filterGeneList = filtFusionrReferenceDataTab)
-
+#############artifactFiltering#############
 
 
 fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFrameFilter=readingFrameFilter,artifactFilter=artifactFilter,junctionReadCountFilter=junctionReadCountFilter,spanningFragCountFilter=spanningFragCountFilter,reathroughFilter=reathroughFilter){
@@ -137,7 +113,7 @@ fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFra
   # @param expressionFilter An integer threshold for TPM/FPKM filter
   # @return Standardized fusion calls filtered to pass QC and remove calls with insufficient read-support and annotation red-flags
   
-  if( reathroughFilter==TRUE & nrow(standardFusioncalls[grep('read.*through|NEIGHBORS',standardFusioncalls$annots,ignore.case = TRUE),]) > 0){
+  if( reathroughFilter!=FALSE & nrow(standardFusioncalls[grep('read.*through|NEIGHBORS',standardFusioncalls$annots,ignore.case = TRUE),]) > 0){
     # Gather read throughs from standardized fusion calls  
     rts <- standardFusioncalls[grep('read.*through|NEIGHBORS',standardFusioncalls$annots,ignore.case = TRUE),"FusionName"]
     # Reverse of read throughs to capture 
@@ -168,11 +144,8 @@ fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFra
   return(standardFusioncalls)
 }
 
-# Putative Driver
-putDriverQCGenelistFiltered<-fusion_filtering_QC(standardFusioncalls = geneFiltered$putDriver,junctionReadCountFilter = junctionReadCountFilter,spanningFragCountFilter = spanningFragCountFilter,readingFrameFilter = readingFrameFilter,artifactFilter = artifactFilter,reathroughFilter = reathroughFilter)
-
-# Filtered Fusion
-filtFusionQCGenelistFiltered<-fusion_filtering_QC(standardFusioncalls = geneFiltered$filterFusion,junctionReadCountFilter = junctionReadCountFilter,spanningFragCountFilter = spanningFragCountFilter,readingFrameFilter = readingFrameFilter,artifactFilter = artifactFilter,reathroughFilter = reathroughFilter)
+# QC filter: artifact and read support
+QCFiltered<-fusion_filtering_QC(standardFusioncalls = standardFusioncalls,junctionReadCountFilter = junctionReadCountFilter,spanningFragCountFilter = spanningFragCountFilter,readingFrameFilter = readingFrameFilter,artifactFilter = artifactFilter,reathroughFilter = reathroughFilter)
 
 
 # load expressionMatrix RDS for expression based filtering for less than given threshold
@@ -183,7 +156,7 @@ expressionMatrix <- cbind(expressionMatrix, colsplit(expressionMatrix$gene_id, p
 fusion_filtering_expression<-function(Sample=Sample,standardFusioncalls=standardFusioncalls,expressionFilter=expressionFilter){
   print(Sample)  
   #gene region fusions
-  standardFusioncallsGeneRegion<-standardFusioncalls[is.na(standardFusioncalls$Gene2A) & is.na(standardFusioncalls$Gene2B) ,]  
+  standardFusioncallsGeneRegion<-standardFusioncalls[which(standardFusioncalls$Gene2A=="" & standardFusioncalls$Gene2B=="") ,]  
   #add column with expression for geneA
   standardFusioncallsGeneA<-merge(standardFusioncallsGeneRegion[which(standardFusioncallsGeneRegion$Sample==Sample),],expressionMatrix[,c("GeneSymbol",Sample)],by.x="GeneA",by.y="GeneSymbol")
   #add column with expression for geneB
@@ -215,23 +188,61 @@ fusion_filtering_expression<-function(Sample=Sample,standardFusioncalls=standard
   }
   
   #get unique fusion calls 
-  standardFusioncalls <- unique(standardFusioncalls[,c('LeftBreakpoint','RightBreakpoint','FusionName' , 'Sample' , 'Caller' ,'Fusion_Type' , 'JunctionReadCount' , 'SpanningFragCount' , 'Confidence' ,'annots')])
+  standardFusioncalls <- unique(standardFusioncalls[,c('LeftBreakpoint','RightBreakpoint','FusionName' , 'Sample' , 'Caller' ,'Fusion_Type' , 'JunctionReadCount' , 'SpanningFragCount' , 'Confidence' ,'annots','Gene1A','Gene2A','Gene1B','Gene2B')])
   
   return(standardFusioncalls)
   
 }
 
 #get sample list
-sampleList<-unique(c(putDriverQCGenelistFiltered$Sample,filtFusionQCGenelistFiltered$Sample))
+sampleList<-unique(QCFiltered$Sample)
 
-# run per sample and merge putative Driver fusions
-standardFusioncallsPerSample<-lapply(as.character(sampleList),function(x) fusion_filtering_expression(Sample = x,expressionFilter = 1,standardFusioncalls = putDriverQCGenelistFiltered))
-putDriverstandardFusioncalls <- Reduce(function(x, y) rbind (x,y), standardFusioncallsPerSample)
-saveRDS(putDriverstandardFusioncalls,paste0(opt$outputfile,"_putDriver.RDS"))
+# run per sample on standard fusion calls
+standardFusioncallsPerSample<-lapply(as.character(sampleList),function(x) fusion_filtering_expression(Sample = x,expressionFilter = expressionFilter,standardFusioncalls = QCFiltered))
 
-# run per sample and merge putative Driver fusions
-standardFusioncallsPerSample<-lapply(as.character(sampleList),function(x) fusion_filtering_expression(Sample = x,expressionFilter = 1,standardFusioncalls = filtFusionQCGenelistFiltered))
-filtFusionstandardFusioncalls <- Reduce(function(x, y) rbind (x,y), standardFusioncallsPerSample)
-saveRDS(filtFusionstandardFusioncalls,paste0(opt$outputfile,"_filtFusion.RDS"))
+QCExpFilteredstandardFusioncalls <- Reduce(function(x, y) rbind (x,y), standardFusioncallsPerSample)
+saveRDS(QCExpFilteredstandardFusioncalls,paste0(opt$outputfile,"_QC_expression_filtered.RDS"))
 
+#####################################
+
+
+###############annotation############
+# column 1 as GeneName 2 source file 3 Type; collapse to summarize type
+geneListReferenceDataTab<-read.delim("~/Documents/OpenPBTA-analysis/analyses/fusion_filtering/references/genelistreference.txt",stringsAsFactors = FALSE)
+geneListReferenceDataTab<-geneListReferenceDataTab %>% group_by(Gene_Symbol) %>% mutate(type = toString(type)) %>% as.data.frame()
+geneListReferenceDataTab<-unique(geneListReferenceDataTab[,c("Gene_Symbol","type")])
+
+# column 1 as FusionName 2 source file 3 Type; collapse to summarize type
+fusionReferenceDataTab<-read.delim("~/Documents/OpenPBTA-analysis/analyses/fusion_filtering/references/fusionreference.txt",stringsAsFactors = FALSE)
+fusionReferenceDataTab<-unique(fusionReferenceDataTab[,c("FusionName","type")])
+
+fusion_annotation_list<-function(standardFusioncalls=standardFusioncalls,geneListReference=geneListReference,fusionReference=fusionReference){
+  # @param standardFusioncalls A dataframe from star fusion or arriba standardized and QC filtered 
+  # @param geneListReference A dataframe of genes of interest ; columns 1 : GeneNames 2: Source file 3: Type
+  # @param fusionReference A dataframe of fusion of interest ; columns 1 : FusionName 2: Source file 3: Type
+  # @return Standardized and QC filtered fusion calls annotated with gene list and fusion calls from reference lists
+  
+#Gene annotation
+standardFusioncallsGOI<-standardFusioncalls %>% 
+           mutate(Gene1A_anno=lapply(standardFusioncalls$Gene1A,function(x) geneListReferenceDataTab[which(geneListReferenceDataTab$Gene_Symbol==x),"type"]),
+           Gene2A_anno=lapply(standardFusioncalls$Gene2A,function(x) geneListReferenceDataTab[which(geneListReferenceDataTab$Gene_Symbol==x),"type"]),
+           Gene1B_anno=lapply(standardFusioncalls$Gene1B,function(x) geneListReferenceDataTab[which(geneListReferenceDataTab$Gene_Symbol==x),"type"]),
+           Gene2B_anno=lapply(standardFusioncalls$Gene2B,function(x) geneListReferenceDataTab[which(geneListReferenceDataTab$Gene_Symbol==x),"type"]))
+  
+#Fusion annotation  
+standardFusioncallsFOI<-standardFusioncalls %>% 
+  mutate(Fusion_anno=lapply(standardFusioncalls$FusionName,function(x) fusionReferenceDataTab[which(fusionReferenceDataTab$FusionName==x),"type"]))
+
+standardFusioncalls<-list("geneAnnotion"=standardFusioncallsGOI,"fusionAnnottaion"=standardFusioncallsFOI)
+
+return(standardFusioncalls)
+}
+
+
+standardFusioncallsAnnotated<-fusion_annotation_list(standardFusioncalls = standardFusioncalls,geneListReference=geneListReference,fusionReference=fusionReference)
+
+saveRDS(standardFusioncallsAnnotated,paste0(opt$outputfile,"_QC_expression_filtered_annotated.RDS"))
+
+
+######################################
 
