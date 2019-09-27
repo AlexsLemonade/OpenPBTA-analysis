@@ -7,23 +7,21 @@
 #
 # Command line arguments
 #
-# standardFusionFile		:Standardized fusion calls from [STAR|ARRIBA] from 01-fusion-standardization.R 
-#				or user input files in the correct format 
-# expressionFilter		:Integer threshold of expression for both gene in fusion  partners with FPKM<1
+# standardFusionFile      :Standardized fusion calls from [STAR|ARRIBA] from 01-fusion-standardization.R 
+#				                   or user input files in the correct format 
+# expressionFilter        :Integer threshold of expression for both gene in fusion  partners with FPKM<1
 # junctionReadCountFilter	:Integer threshold for JunctionReadCount per fusion to remove false calls with 0 
-#				supporting junction reads
+#				                   supporting junction reads
 # spanningFragCountFilter	:Integer threashold for (SpanningFragCount-JunctionReadCount) to remove false 
-#				positives where breakpoints are towards to begining or ends of the transcript 
-# reathroughFilter		:Boolean value to remove predicted read-through from caller 
-# artifactFilter		:Comma separated values to remove fusions annotated as potential red flag as per
-#				annotation in "annots" column (in OpenPBTA annotation is from FusionAnnotator)
-# readingFrameFilter		:Reading frame to keep in final set of QC fusion calls ( regex to capture inframe|frameshift|other)
-# putativeDriverGeneList	:Comma separated putative driver gene list (in OpenPBTA putative gene list are 
-#				TSGs,Cosmic,Oncogenic,TCGA fusion list)
-# filterGeneList		:Comma separated gene list to capture as additional genes of interest other than 
-#				putative driver list (in OpenPBTA additional filter list are Kinase, TF list)
-# referenceFolder		:Path to folder with all reference gene list files 
-# outputfile			:Filename prefix for QC filtered and gene of interest annotated fusion calls (prefix for _QC_expression_filtered_annotated.RDS)")
+#				                   positives where breakpoints are towards to begining or ends of the transcript 
+# reathroughFilter		    :Boolean value to remove predicted read-through from caller 
+# artifactFilter		      :Comma separated values to remove fusions annotated as potential red flag as per
+#				                   annotation in "annots" column (in OpenPBTA annotation is from FusionAnnotator)
+# readingFrameFilter		  :Reading frame to keep in final set of QC fusion calls ( regex to capture inframe|frameshift|other)
+# referenceFolder		      :Path to folder with all reference gene list and fusion file list with the following files 
+#                          genelistreference.txt A dataframe of genes of interest ; columns 1 : GeneNames 2: Source file 3: Type
+#                          fusionreference.txt A dataframe of fusion of interest ; columns 1 : FusionName 2: Source file 3: Type
+# outputfile			        :Filename prefix for QC filtered and gene of interest annotated fusion calls (prefix for _QC_expression_filtered_annotated.RDS)")
 #
 
   
@@ -54,10 +52,6 @@ option_list <- list(
               help="threshold for (SpanningFragCount - JunctionReadCount)"),
   make_option(c("-i","--readingFrameFilter"),type="character",
                help="reading frame filtering ( regex to capture inframe|frameshift|other)"),
-  make_option(c("-p","--putativeDriverGeneList"),type="character",
-                help="Comma separated filename for putative driver gene filter"),
-  make_option(c("-f","--filterGeneList"),type="character",
-                help="Comma separated filename to filter fusion with gene of interest other than putative driver list"),
   make_option(c("-R","--referenceFolder"),type="character",
                 help="reference folder with required gene lists"),
   make_option(c("-o","--outputfile"),type="character",
@@ -76,8 +70,7 @@ expressionFilter<-opt$expressionFilter
 artifactFilter<-opt$artifactFilter
 junctionReadCountFilter<-opt$junctionReadCountFilter
 spanningFragCountFilter<-opt$spanningFragCountFilter
-putativeDriverGeneList<-opt$putativeDriverGeneList
-filterGeneList<-opt$filterGeneList
+referenceFolder<-opt$referenceFolder
 readingFrameFilter<-opt$readingFrameFilter
 
 # read standardized fusion calls
@@ -208,12 +201,12 @@ saveRDS(QCExpFilteredstandardFusioncalls,paste0(opt$outputfile,"_QC_expression_f
 
 ###############annotation############
 # column 1 as GeneName 2 source file 3 Type; collapse to summarize type
-geneListReferenceDataTab<-read.delim("~/Documents/OpenPBTA-analysis/analyses/fusion_filtering/references/genelistreference.txt",stringsAsFactors = FALSE)
+geneListReferenceDataTab<-read.delim(paste(referenceFolder,"genelistreference.txt"),stringsAsFactors = FALSE)
 geneListReferenceDataTab<-geneListReferenceDataTab %>% group_by(Gene_Symbol) %>% mutate(type = toString(type)) %>% as.data.frame()
 geneListReferenceDataTab<-unique(geneListReferenceDataTab[,c("Gene_Symbol","type")])
 
 # column 1 as FusionName 2 source file 3 Type; collapse to summarize type
-fusionReferenceDataTab<-read.delim("~/Documents/OpenPBTA-analysis/analyses/fusion_filtering/references/fusionreference.txt",stringsAsFactors = FALSE)
+fusionReferenceDataTab<-read.delim(paste(referenceFolder,"fusionreference.txt"),stringsAsFactors = FALSE)
 fusionReferenceDataTab<-unique(fusionReferenceDataTab[,c("FusionName","type")])
 
 fusion_annotation_list<-function(standardFusioncalls=standardFusioncalls,geneListReference=geneListReference,fusionReference=fusionReference){
