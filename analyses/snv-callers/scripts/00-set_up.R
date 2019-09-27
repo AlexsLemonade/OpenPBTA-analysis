@@ -17,7 +17,7 @@ source(file.path(root_dir, "analyses", "snv-callers", "util", "plot_functions.R"
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
-# Will need R.utils for zipping up the results file
+# Will need optparse for collecting options
 if (!("optparse" %in% installed.packages())) {
   install.packages("optparse", repos = "http://cran.us.r-project.org")
 }
@@ -130,7 +130,7 @@ if (!file.exists(cosmic_clean_file)) {
       Start_Position = stringr::word(Mutation_genome_position, sep = ":|-", 1),
       End_Position = stringr::word(Mutation_genome_position, sep = "-", 2),
       # Make a base_change variable so we can compare to our set up for PBTA data
-      base_change = substr(Mutation_CDS, nchar(Mutation_CDS) - 2, 10)
+      base_change = substr(Mutation_CDS, nchar(Mutation_CDS) - 2, nchar(Mutation_CDS))
     ) %>%
     # Carry over the strand info, but rename to match our PBTA set up
     dplyr::rename(Strand = Mutation_strand) %>%
