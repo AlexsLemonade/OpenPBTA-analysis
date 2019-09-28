@@ -3,6 +3,8 @@
 # 
 # Usage: bash 03-get-dimension-reduction-plot-lists.sh
 
+COLORVAR=${COLOR:-broad_histology}
+
 # This script should always run as if it were being called from
 # the directory it lives in.
 script_directory="$(perl -e 'use File::Basename;
@@ -23,5 +25,5 @@ do
     --input_directory ${INPUT} \
     --filename_lead ${filename_lead} \
     --output_directory ${OUTPUT} \
-    --color_variable broad_histology
+    --color_variable ${COLORVAR}
 done
