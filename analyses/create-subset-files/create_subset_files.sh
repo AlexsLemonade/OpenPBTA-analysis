@@ -35,9 +35,6 @@ Rscript --vanilla 02-subset_files.R \
 
 #### copy files that are not being subset --------------------------------------
 
-# Changelog
-cp $FULL_DIRECTORY/CHANGELOG.md $SUBSET_DIRECTORY
-
 # histologies file
 cp $FULL_DIRECTORY/pbta-histologies.tsv $SUBSET_DIRECTORY
 
@@ -49,3 +46,7 @@ rm -f $SUBSET_DIRECTORY/md5sum.txt
 # create a new md5sum.txt file
 cd $SUBSET_DIRECTORY
 md5sum * > md5sum.txt
+
+# Changelog does not get tracked
+cd ../../..
+cp $FULL_DIRECTORY/CHANGELOG.md $SUBSET_DIRECTORY
