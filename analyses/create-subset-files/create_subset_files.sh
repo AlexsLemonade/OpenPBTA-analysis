@@ -48,5 +48,5 @@ cd $SUBSET_DIRECTORY
 md5sum * > md5sum.txt
 
 # Changelog does not get tracked
-cd ../../..
+cd ../../../analyses/create-subset-files
 cp $FULL_DIRECTORY/CHANGELOG.md $SUBSET_DIRECTORY
