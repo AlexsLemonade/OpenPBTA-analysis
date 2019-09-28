@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# J. Taroni for CCDL 2019
+# Bethell and Taroni for CCDL 2019
 # Run the dimension reduction plotting pipeline. Samples will be colored by
 # broad histology.
 
