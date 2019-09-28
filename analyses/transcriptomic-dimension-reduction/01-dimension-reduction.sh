@@ -21,9 +21,9 @@ OUTPUT="results"
 #### RSEM ----------------------------------------------------------------------
 
 Rscript --vanilla scripts/run-dimension-reduction.R \
-  --expression ../../data/pbta-gene-expression-rsem.fpkm.rds \
+  --expression ../../data/pbta-gene-expression-rsem-fpkm.polya.rds \
   --metadata ${METADATA} \
-  --filename_lead rsem_all \
+  --filename_lead rsem_polyA \
   --output_directory ${OUTPUT} \
   --seed ${SEED} \
   --perplexity ${PERPLEXITY} \
@@ -31,7 +31,7 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --low_count_threshold ${COUNT_THRESHOLD}
 
 Rscript --vanilla scripts/run-dimension-reduction.R \
-  --expression ../../scratch/pbta-gene-expression-rsem_stranded.fpkm.rds \
+  --expression ../../data/pbta-gene-expression-rsem-fpkm.stranded.rds \
   --metadata ${METADATA} \
   --filename_lead rsem_stranded \
   --output_directory ${OUTPUT} \
@@ -40,42 +40,22 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --neighbors ${NEIGHBORS} \
   --low_count_threshold ${COUNT_THRESHOLD}
 
-Rscript --vanilla scripts/run-dimension-reduction.R \
-  --expression ../../scratch/pbta-gene-expression-rsem_polyA.fpkm.rds \
-  --metadata ${METADATA} \
-  --filename_lead rsem_polyA \
-  --output_directory ${OUTPUT} \
-  --seed ${SEED} \
-  --perplexity ${PERPLEXITY} \
-  --neighbors ${NEIGHBORS} \
-  --low_count_threshold ${COUNT_THRESHOLD}
-  
 #### kallisto ------------------------------------------------------------------
 
 Rscript --vanilla scripts/run-dimension-reduction.R \
-  --expression ../../data/pbta-gene-expression-kallisto.rds \
-  --metadata ${METADATA} \
-  --filename_lead kallisto_all \
-  --output_directory ${OUTPUT} \
-  --seed ${SEED} \
-  --perplexity ${PERPLEXITY} \
-  --neighbors ${NEIGHBORS} \
-  --low_count_threshold ${COUNT_THRESHOLD}
-
-Rscript --vanilla scripts/run-dimension-reduction.R \
-  --expression ../../scratch/pbta-gene-expression-kallisto_stranded.rds \
-  --metadata ${METADATA} \
-  --filename_lead kallisto_stranded \
-  --output_directory ${OUTPUT} \
-  --seed ${SEED} \
-  --perplexity ${PERPLEXITY} \
-  --neighbors ${NEIGHBORS} \
-  --low_count_threshold ${COUNT_THRESHOLD}
-
-Rscript --vanilla scripts/run-dimension-reduction.R \
-  --expression ../../scratch/pbta-gene-expression-kallisto_polyA.rds \
+  --expression ../../data/pbta-gene-expression-kallisto.polya.rds \
   --metadata ${METADATA} \
   --filename_lead kallisto_polyA \
+  --output_directory ${OUTPUT} \
+  --seed ${SEED} \
+  --perplexity ${PERPLEXITY} \
+  --neighbors ${NEIGHBORS} \
+  --low_count_threshold ${COUNT_THRESHOLD}
+
+Rscript --vanilla scripts/run-dimension-reduction.R \
+  --expression ../../data/pbta-gene-expression-kallisto.stranded.rds \
+  --metadata ${METADATA} \
+  --filename_lead kallisto_stranded \
   --output_directory ${OUTPUT} \
   --seed ${SEED} \
   --perplexity ${PERPLEXITY} \
