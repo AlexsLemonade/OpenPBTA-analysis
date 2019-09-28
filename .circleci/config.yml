@@ -10,11 +10,11 @@ jobs:
 
       - run:
           name: Data Download
-          command: URL=https://open-pbta.s3.amazonaws.com/data RELEASE=testing ./download-data.sh
+          command: URL=https://open-pbta.s3.amazonaws.com/data RELEASE=testing/release-v5-20190924 ./download-data.sh
 
       - run:
           name: List Data Directory Contents
-          command: ./scripts/run_in_ci.sh ls data/testing
+          command: ./scripts/run_in_ci.sh ls data
     
       - run:
           name: Sample Distribution Analyses
