@@ -103,7 +103,7 @@ subset_files <- function(filename, biospecimen_ids, output_directory) {
     # in a column 'Kids.First.Biospecimen.ID.Tumor'
     sv_file <- data.table::fread(filename, data.table = FALSE)
     sv_file %>%
-      dplyr::filter(Kids.First.Participant.ID %in% biospecimen_ids) %>%
+      dplyr::filter(Kids.First.Biospecimen.ID.Tumor %in% biospecimen_ids) %>%
       readr::write_tsv(output_file)
     
   } else if (grepl(".rds", filename)) {
