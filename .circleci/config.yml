@@ -1,22 +1,3 @@
-Skip to content
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@PichaiRaman 
-11
-511AlexsLemonade/OpenPBTA-analysis 
- Code Issues 27 Pull requests 6
- ZenHub Actions Projects 0 Wiki Security Insights
-OpenPBTA-analysis/.circleci/config.yml
-@cansav09 cansav09 Part 4 of n: SNV Caller Analysis: Set Up Script (#126)
-fa17d0f 3 hours ago
-@jaclyn-taroni@cbethell@cansav09@cgreene@kgaonkar6
-62 lines (51 sloc)  1.98 KB
-  
 version: 2
 jobs:
   run_analyses:
