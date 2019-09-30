@@ -41,10 +41,14 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     Rtsne \
     umap \
     rprojroot \
-    optparse
+    optparse \
+    data.table
 
-# Use maftools for reading MAF files
+# maftools for proof of concept in create-subset-files
 RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
+
+# These packages are for the genomic region analysis for snv-callers
+RUN R -e "BiocManager::install(c('annotatr', 'TxDb.Hsapiens.UCSC.hg38.knownGene', 'org.Hs.eg.db'), update = FALSE)"
 
 # This is needed to create the interactive pie chart
 RUN R -e "devtools::install_github('timelyportfolio/sunburstR', ref = 'd40d7ed71ee87ca4fbb9cb8b7cf1e198a23605a9', dependencies = TRUE)"
@@ -54,9 +58,6 @@ RUN R -e "devtools::install_github('timelyportfolio/d3treeR', ref = '0eaba7f1c64
 
 # Need this package to make plots colorblind friendly
 RUN R -e "devtools::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
-
-#Need this to read command args
-RUN R -e "install.packages('optparse')" 
 
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
