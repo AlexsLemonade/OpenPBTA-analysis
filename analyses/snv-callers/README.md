@@ -19,7 +19,7 @@ The GDC has [good documentation on the fields](https://docs.gdc.cancer.gov/Data/
 
 **Run evaluations of each MAF file**
 
-To run the initial evaluations of all the SNV callers, call the base script:
+To run the initial evaluations of all the SNV callers, call the bash script:
 
 ```
 bash run_caller_evals.sh
@@ -31,7 +31,7 @@ everything that is returned.)
 
 **Run comparison analysis of the callers**
 
-*Coming soon* 
+*Coming soon*
 
 ## Individual Caller Evaluation
 
