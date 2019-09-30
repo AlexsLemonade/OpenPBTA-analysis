@@ -101,6 +101,7 @@ To add multipanel plots with points colored by `short_histology` (must be a colu
 ```sh
 # Change the point color variable when
 COLOR=short_histology bash 02-get-dimension-reduction-plot-lists.sh
+
 # This will make plots for anything with data
 bash 03-multipanel-plots.sh
 ```
@@ -116,8 +117,10 @@ If we wanted to plot additional PCs for the RSEM stranded data in R, we can take
 ```R
 # load the required custom functions
 source("util/dimension-reduction-functions.R")
+
 # read in the data.frame that has the PCA info and the metadata
 pca_df <- readr::read_tsv("results/rsem_stranded_pca_scores_aligned.tsv")
+
 # plot itself - PC7 and PC10
 plot_dimension_reduction(aligned_scores_df = pca_df,
                          point_color = "broad_histology",
