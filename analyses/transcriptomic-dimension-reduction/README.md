@@ -127,4 +127,4 @@ plot_dimension_reduction(aligned_scores_df = pca_df,
                          score2 = 10)
 ```
 
-The `point_color` argument of `plot_dimension_reduction` can be changed to any variable that is in the TSV file read in.
+The `point_color` argument of `plot_dimension_reduction` can be changed to any variable that is a column in the original TSV file.
