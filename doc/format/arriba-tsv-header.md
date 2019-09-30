@@ -1,0 +1,29 @@
+```
+     1	gene1
+     2	gene2
+     3	strand1.gene.fusion.
+     4	strand2.gene.fusion.
+     5	breakpoint1
+     6	breakpoint2
+     7	site1
+     8	site2
+     9	type
+    10	direction1
+    11	direction2
+    12	split_reads1
+    13	split_reads2
+    14	discordant_mates
+    15	coverage1
+    16	coverage2
+    17	confidence
+    18	closest_genomic_breakpoint1
+    19	closest_genomic_breakpoint2
+    20	filters
+    21	fusion_transcript
+    22	reading_frame
+    23	peptide_sequence
+    24	read_identifiers
+    25	tumor_id
+    26	gene1--gene2
+    27	annots
+```

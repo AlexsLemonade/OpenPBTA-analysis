@@ -11,7 +11,7 @@ library("GSEABase");
 
 
 #Read in data 
-expData <- readRDS("../../data/pbta-gene-expression-rsem.fpkm.rds");
+expData <- readRDS("../../data/pbta-gene-counts-rsem-expected_count.stranded.rds");
 
 #Format RNA-Seq data
 #Get to just one gene symbol per row
