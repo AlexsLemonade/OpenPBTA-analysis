@@ -13,7 +13,7 @@ library("viridis")
 
 #Read in data
 clinData <- read.delim("../../data/pbta-histologies.tsv", stringsAsFactors=F);
-geneSetExpMat <- readRDS("results/GeneSetExpressionMatrix.RDS")
+geneSetExpMat <- readRDS("../../scratch/GeneSetExpressionMatrix.RDS")
 
 #Choose Clinical Samples corresponding to samples in Gene Set Matrix
 clinData <- clinData[clinData[,"experimental_strategy"]=="RNA-Seq",]
@@ -76,6 +76,10 @@ rownames(geneSetExpMat) <- gsub("HALLMARK", "", rownames(geneSetExpMat))
 rownames(geneSetExpMat) <- gsub("_", " ", rownames(geneSetExpMat))
 rownames(geneSetExpMat) <- trimws(rownames(geneSetExpMat))
 
+#Let's printout the current size of the matrix
+print(paste("The Gene Set Matrix has", nrow(geneSetExpMat), "rows"));
+print(paste("The Gene Set Matrix has", ncol(geneSetExpMat), "columns"));
+
 #Heatmap across all samples, only significant pathways
 png("plots/HeatmapPathwaysGenes_all.png", width=1080, height=720)
 pheatmap(geneSetExpMat[keepPathways,],
@@ -102,7 +106,7 @@ createBox <- function(myPathway=NULL)
 	tmpDat <- cbind(tmpClinData, geneSetExpMat[myPathway,]);
 	colnames(tmpDat)[3] <- "Score"
 	ggplot(tmpDat, aes(Histology, Score))+geom_boxplot()+theme_bw()+coord_flip()+ggtitle(paste(myPathway, "- GSVA Scores"));
-	ggsave(paste("plots/", gsub("_", " ", myPathway), "_GSVA_Boxplot.png", sep=""))
+	ggsave(paste("plots/", gsub("_", " ", myPathway), " GSVA_Boxplot.png", sep=""))
 
 }
 

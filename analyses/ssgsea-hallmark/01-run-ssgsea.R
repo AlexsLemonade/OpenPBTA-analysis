@@ -35,4 +35,5 @@ hallmarkSets <- geneIds(hallmarkSets);
 #Run GSVA
 GeneSetExprsMat <- gsva(expData, hallmarkSets, abs.ranking=F, min.sz=1, max.sz=500, parallel.sz=1, mx.diff=F, );
 saveRDS(GeneSetExprsMat, "results/GeneSetExpressionMatrix.RDS")
+saveRDS(GeneSetExprsMat, "../../scratch/GeneSetExpressionMatrix.RDS")
 
