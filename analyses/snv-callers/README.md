@@ -20,7 +20,6 @@ The GDC has [good documentation on the fields](https://docs.gdc.cancer.gov/Data/
 **Run evaluations of each MAF file**
 
 To run the initial evaluations of all the SNV callers, call the bash script:
-
 ```
 bash run_caller_evals.sh
 ```
@@ -106,7 +105,7 @@ The sample-wise TMB calculations written to a TSV ending in `_tmb.tsv` in the ca
 The COSMIC mutation data were obtained from https://cancer.sanger.ac.uk/cosmic/download
 *To run this analysis, you need to obtain these data.*
 The full, unfiltered somatic mutations file `CosmicMutantExport.tsv` for grch38 is used here and the genomic coordinates is arranged to be in BED format.
-The COSMIC set is unfiltered down to only mutations detected in brain-related
+The COSMIC set is filtered down to only mutations detected in brain-related
 samples using the `Site subtype 1` field.
 COSMIC mutations are overlapped with the present data's mutations using `GenomicRanges`.
 The outcome of this overlap is added to the VAF data.frame with two `TRUE/FALSE` columns:
