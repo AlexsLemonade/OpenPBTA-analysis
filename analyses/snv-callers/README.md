@@ -4,6 +4,7 @@ This analysis evaluates [MAF files](https://docs.gdc.cancer.gov/Data/File_Format
 The GDC has [good documentation on the fields](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) contained in a standard MAF file.
 
 **Table of Contents**
+* [Usage](#usage)
 * [Individual caller evaluation](#individual-caller-evaluation)  
   * [Base change analysis](#base-change-analysis)  
   * [Variant allele fraction calculation](#variant-allele-fraction-calculation)  
