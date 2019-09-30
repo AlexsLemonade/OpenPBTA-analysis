@@ -2,14 +2,14 @@
 
 This module runs dimension reduction—namely PCA, UMAP, and t-SNE—on gene expression data from kallisto and RSEM.
 
-To the run the whole pipeline and produce 4 plots with panels for all three approaches
+To the run the whole pipeline and produce 4 plots
 
 1. RSEM stranded data
 2. RSEM poly-A data
 3. kallisto stranded data
 4. kallisto poly-A data
 
-with points colored by broad histology, simply run:
+with panels for PCA, UMAP, and t-SNE that have points colored by broad histology, simply run:
 
 ```
 ./dimension-reduction-plots.sh
