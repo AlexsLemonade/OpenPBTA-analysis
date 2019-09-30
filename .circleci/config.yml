@@ -31,7 +31,7 @@ jobs:
  
       - run:
           name: fusion filtering
-          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/02-fusion-filtering.R -S scratch/arriba.tsv -e data/pbta-gene-expression-rsem.fpkm.rds -r FALSE -a "NEIGHBORS|GTEx|HGNC_GENEFAM|DGD_PARALOGS|Normal|BodyMap|ConjoinG" -j 1 -s 10 -i "inframe|frameshift|other" -R analyses/fusion_filtering/references/ -o scratch/arriba -t 1                         
+          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/02-fusion-filtering.R -S scratch/arriba.tsv -e data/pbta-gene-expression-rsem.fpkm.rds -r -a "NEIGHBORS|GTEx|HGNC_GENEFAM|DGD_PARALOGS|Normal|BodyMap|ConjoinG" -j 1 -s 10 -i "inframe|frameshift|other" -R analyses/fusion_filtering/references/ -o scratch/arriba -t 1                         
         #### Add your analysis here ####
         
   deploy:
