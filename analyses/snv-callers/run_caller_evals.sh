@@ -23,5 +23,3 @@ for dataset in ${datasets[@]}
   -b data/${wgs_files[$i]} \
   -l ${dataset}
   done
-
-########################## Create plots and a report ###########################
