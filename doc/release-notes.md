@@ -80,8 +80,7 @@ data
     ├── pbta-snv-mutect2.vep.maf.gz
     ├── pbta-snv-strelka2.vep.maf.gz
     ├── pbta-sv-lumpy.tsv.gz
-    ├── pbta-sv-manta.tsv.gz
-    └── README.md
+    └── pbta-sv-manta.tsv.gz
 ```
 
 ## archived release
