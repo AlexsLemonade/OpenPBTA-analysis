@@ -8,7 +8,7 @@
 # Change directory
 cd kitematic
 
-# The files named in these arrays will be ran in the ana,ysis. 
+# The files named in these arrays will be ran in the analysis. 
 declare -a datasets=("strelka2" "mutect2" "lancet" "vardict")
 declare -a wgs_files=("WGS.hg38.strelka2.unpadded.bed" "WGS.hg38.mutect2.unpadded.bed" "WGS.hg38.lancet.unpadded.bed" "WGS.hg38.vardict.100bp_padded.bed")
 
