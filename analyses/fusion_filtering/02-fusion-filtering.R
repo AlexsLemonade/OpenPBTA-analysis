@@ -40,7 +40,7 @@ option_list <- list(
               help="Standardized fusion calls from (.TSV) "),
   make_option(c("-e","--expressionMatrix"),type="character",
               help="Matrix of expression for samples in standardFusion file (.RDS) "),
-  make_option(c("-r", "--reathroughFilter"), type="character",
+  make_option(c("-r", "--reathroughFilter"), type="character",action = "store_true",
               help="Boolean to filter readthrough",default=TRUE),
   make_option(c("-t","--expressionFilter"), type="integer",
               help="threshold for TPM/FPKM filter",default=1),
@@ -106,7 +106,7 @@ fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFra
   # @param expressionFilter An integer threshold for TPM/FPKM filter
   # @return Standardized fusion calls filtered to pass QC and remove calls with insufficient read-support and annotation red-flags
   
-  if( reathroughFilter!=FALSE & nrow(standardFusioncalls[grep('read.*through|NEIGHBORS',standardFusioncalls$annots,ignore.case = TRUE),]) > 0){
+  if( reathroughFilter & any(grepl('read.*through|NEIGHBORS',standardFusioncalls$annots,ignore.case = TRUE))){
     # Gather read throughs from standardized fusion calls  
     rts <- standardFusioncalls[grep('read.*through|NEIGHBORS',standardFusioncalls$annots,ignore.case = TRUE),"FusionName"]
     # Reverse of read throughs to capture 
@@ -120,7 +120,7 @@ fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFra
     standardFusioncalls <- standardFusioncalls[grep(readingFrameFilter,standardFusioncalls$Fusion_Type),]
   }
   
-  if( !missing(artifactFilter) & nrow(standardFusioncalls[grep(artifactFilter,standardFusioncalls$annots),])>0 ) {
+  if( !missing(artifactFilter) & any(grepl(artifactFilter,standardFusioncalls$annots)) ) {
     standardFusioncalls <- standardFusioncalls[-grep(artifactFilter,standardFusioncalls$annots),]
   }
 
@@ -140,6 +140,9 @@ fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFra
 # QC filter: artifact and read support
 QCFiltered<-fusion_filtering_QC(standardFusioncalls = standardFusioncalls,junctionReadCountFilter = junctionReadCountFilter,spanningFragCountFilter = spanningFragCountFilter,readingFrameFilter = readingFrameFilter,artifactFilter = artifactFilter,reathroughFilter = reathroughFilter)
 
+############################################
+
+########### Expression filtering ###########
 
 # load expressionMatrix RDS for expression based filtering for less than given threshold
 expressionMatrix<-readRDS(expressionMatrix)
@@ -147,9 +150,18 @@ expressionMatrix <- cbind(expressionMatrix, colsplit(expressionMatrix$gene_id, p
 
 
 fusion_filtering_expression<-function(Sample=Sample,standardFusioncalls=standardFusioncalls,expressionFilter=expressionFilter){
-  print(Sample)  
+  # @param Sample              A sampleID which is present in both the standardFusioncalls and the expressionMatrix loaded before this function is called
+  #                            expressionMatrix should have column GeneSymbol equivalent to the Gene1A/Gene1B/Gene2A/Gene2B in the standardFusioncalls
+  # @param standardFusioncalls A dataframe from star fusion or arriba standardized and QC filtered
+  # @param expressionFilter    An integer to set as a threshold to determine expresses/not-expressed 
+  # @return                    Standardized fusion calls filtered to pass QC and remove calls with insufficient read-support and annotation red-flags
+  
+
   #gene region fusions
-  standardFusioncallsGeneRegion<-standardFusioncalls[which(standardFusioncalls$Gene2A=="" & standardFusioncalls$Gene2B=="") ,]  
+  standardFusioncallsGeneRegion<-standardFusioncalls[which(is.na(standardFusioncalls$Gene2A) & is.na(standardFusioncalls$Gene2B)) ,]  
+  
+  if(any(grepl(Sample,colnames(expressionMatrix)))){
+  print(Sample)  
   #add column with expression for geneA
   standardFusioncallsGeneA<-merge(standardFusioncallsGeneRegion[which(standardFusioncallsGeneRegion$Sample==Sample),],expressionMatrix[,c("GeneSymbol",Sample)],by.x="GeneA",by.y="GeneSymbol")
   #add column with expression for geneB
@@ -175,15 +187,20 @@ fusion_filtering_expression<-function(Sample=Sample,standardFusioncalls=standard
   #merge gene and intergenic fusions
   standardFusioncalls<-rbind(standardFusioncallsGeneRegion,standardFusioncallsIntergeneRegion)
   
+  
   #filter < expressionthreshold
-  if( !missing(expressionFilter ) ){
+  if( missing(expressionFilter ) ){
+    stop("expressionFilter is required, should be an integer value to determine if gene is expressed ")  
+  }else{  
     standardFusioncalls <- standardFusioncalls[which(as.integer(standardFusioncalls[,Sample]) > expressionFilter),]
   }
   
-  #get unique fusion calls 
-  standardFusioncalls <- unique(standardFusioncalls[,c('LeftBreakpoint','RightBreakpoint','FusionName' , 'Sample' , 'Caller' ,'Fusion_Type' , 'JunctionReadCount' , 'SpanningFragCount' , 'Confidence' ,'annots','Gene1A','Gene2A','Gene1B','Gene2B')])
-  
-  return(standardFusioncalls)
+  #get unique fusion calls and global variable 
+  standardFusioncallsExpFilter <- unique(standardFusioncalls[,c('LeftBreakpoint','RightBreakpoint','FusionName' , 'Sample' , 'Caller' ,'Fusion_Type' , 'JunctionReadCount' , 'SpanningFragCount' , 'Confidence' ,'annots','Gene1A','Gene2A','Gene1B','Gene2B')])
+  return(standardFusioncallsExpFilter)
+  }else{
+    warnings(paste(Sample,"was not found in expressionMatrix"))
+  }
   
 }
 
@@ -196,10 +213,10 @@ standardFusioncallsPerSample<-lapply(as.character(sampleList),function(x) fusion
 QCExpFilteredstandardFusioncalls <- Reduce(function(x, y) rbind (x,y), standardFusioncallsPerSample)
 saveRDS(QCExpFilteredstandardFusioncalls,paste0(opt$outputfile,"_QC_expression_filtered.RDS"))
 
-#####################################
+########################################
 
 
-###############annotation############
+###############annotation###############
 # column 1 as GeneName 2 source file 3 Type; collapse to summarize type
 geneListReferenceDataTab<-read.delim(paste0(referenceFolder,"genelistreference.txt"),stringsAsFactors = FALSE)
 geneListReferenceDataTab<-geneListReferenceDataTab %>% group_by(Gene_Symbol) %>% mutate(type = toString(type)) %>% as.data.frame()
@@ -209,10 +226,10 @@ geneListReferenceDataTab<-unique(geneListReferenceDataTab[,c("Gene_Symbol","type
 fusionReferenceDataTab<-read.delim(paste0(referenceFolder,"fusionreference.txt"),stringsAsFactors = FALSE)
 fusionReferenceDataTab<-unique(fusionReferenceDataTab[,c("FusionName","type")])
 
-fusion_annotation_list<-function(standardFusioncalls=standardFusioncalls,geneListReference=geneListReference,fusionReference=fusionReference){
+fusion_annotation_list<-function(standardFusioncalls=standardFusioncalls,geneListReferenceDataTab=geneListReferenceDataTab,fusionReferenceDataTab=fusionReferenceDataTab){
   # @param standardFusioncalls A dataframe from star fusion or arriba standardized and QC filtered 
-  # @param geneListReference A dataframe of genes of interest ; columns 1 : GeneNames 2: Source file 3: Type
-  # @param fusionReference A dataframe of fusion of interest ; columns 1 : FusionName 2: Source file 3: Type
+  # @param geneListReferenceDataTab A dataframe of genes of interest ; columns 1 : GeneNames 2: Source file 3: Type
+  # @param fusionReferenceDataTab A dataframe of fusion of interest ; columns 1 : FusionName 2: Source file 3: Type
   # @return Standardized and QC filtered fusion calls annotated with gene list and fusion calls from reference lists
   
 #Gene annotation
@@ -226,13 +243,13 @@ standardFusioncallsGOI<-standardFusioncalls %>%
 standardFusioncallsFOI<-standardFusioncalls %>% 
   mutate(Fusion_anno=lapply(standardFusioncalls$FusionName,function(x) fusionReferenceDataTab[which(fusionReferenceDataTab$FusionName==x),"type"]))
 
-standardFusioncalls<-list("geneAnnotion"=standardFusioncallsGOI,"fusionAnnottaion"=standardFusioncallsFOI)
+standardFusioncalls<-list("geneAnnotation"=standardFusioncallsGOI,"fusionAnnotation"=standardFusioncallsFOI)
 
 return(standardFusioncalls)
 }
 
 
-standardFusioncallsAnnotated<-fusion_annotation_list(standardFusioncalls = standardFusioncalls,geneListReference=geneListReference,fusionReference=fusionReference)
+standardFusioncallsAnnotated<-fusion_annotation_list(standardFusioncalls = standardFusioncalls,geneListReferenceDataTab=geneListReferenceDataTab,fusionReferenceDataTab =fusionReferenceDataTab)
 
 saveRDS(standardFusioncallsAnnotated,paste0(opt$outputfile,"_QC_expression_filtered_annotated.RDS"))
 
