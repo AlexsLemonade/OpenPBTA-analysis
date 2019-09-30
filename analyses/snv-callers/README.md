@@ -14,6 +14,25 @@ The GDC has [good documentation on the fields](https://docs.gdc.cancer.gov/Data/
  * [Mutation IDs](#mutation-ids)
 * [Overall file structure](#overall-file-structure)
 * [Summary of functions](#summary-of-custom-functions)
+
+## Usage
+
+**Run evaluations of each MAF file**
+
+To run the initial evaluations of all the SNV callers, call the base script:
+
+```
+bash run_caller_evals.sh
+```
+This script will return results for each caller in the `plots` and `results` folder.
+To see an overall summary report, look in the `results` folder for that caller.
+(See [Overall File Structure](#overall-file-structure) for more details on
+everything that is returned.)
+
+**Run comparison analysis of the callers**
+
+*Coming soon* 
+
 ## Individual Caller Evaluation
 
 The first step in this analysis is an individual evaluation of each MAF from each caller.
