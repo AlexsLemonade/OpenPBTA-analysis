@@ -42,6 +42,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     umap \
     rprojroot \
     optparse \
+    pheatmap \
     data.table
 
 # maftools for proof of concept in create-subset-files
