@@ -43,6 +43,8 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     rprojroot \
     optparse \
     pheatmap \
+    RColorBrewer \
+    viridis \
     data.table
 
 # maftools for proof of concept in create-subset-files
@@ -50,6 +52,9 @@ RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
 
 # These packages are for the genomic region analysis for snv-callers
 RUN R -e "BiocManager::install(c('annotatr', 'TxDb.Hsapiens.UCSC.hg38.knownGene', 'org.Hs.eg.db'), update = FALSE)"
+
+# These packages are for single-sample GSEA analysis
+RUN R -e "BiocManager::install(c('GSEABase', 'GSVA'), update = FALSE)"
 
 # This is needed to create the interactive pie chart
 RUN R -e "devtools::install_github('timelyportfolio/sunburstR', ref = 'd40d7ed71ee87ca4fbb9cb8b7cf1e198a23605a9', dependencies = TRUE)"
