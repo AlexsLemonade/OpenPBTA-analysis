@@ -15,7 +15,7 @@ with panels for PCA, UMAP, and t-SNE that have points colored by broad histology
 ./dimension-reduction-plots.sh
 ```
 
-## Notes on further applications
+## General usage
 
 To document this module beyond what is in the individual files, we list some example applications or extensions below.
 
