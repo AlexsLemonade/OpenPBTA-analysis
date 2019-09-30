@@ -102,7 +102,7 @@ createBox <- function(myPathway=NULL)
 	tmpDat <- cbind(tmpClinData, geneSetExpMat[myPathway,]);
 	colnames(tmpDat)[3] <- "Score"
 	ggplot(tmpDat, aes(Histology, Score))+geom_boxplot()+theme_bw()+coord_flip()+ggtitle(paste(myPathway, "- GSVA Scores"));
-	ggsave(paste("plots/", gsub("_", " ", myPathway), "GSVA_Boxplot.png", sep=""))
+	ggsave(paste("plots/", gsub("_", " ", myPathway), "_GSVA_Boxplot.png", sep=""))
 
 }
 
