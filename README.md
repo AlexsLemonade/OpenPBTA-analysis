@@ -11,7 +11,7 @@ The project maintainers include scientists from [Alex's Lemonade Stand Foundatio
 <p style="margin-top: 20px;"> </p>
 <p><b>Have general questions or need help getting started using GitHub?</b>
 You can join the <a href = "https://join.slack.com/t/cancer-data-science/shared_invite/enQtNzc4NTI2Nzg0ODY5LWQyODI0NmJmZDgzMzhiMzE1NGUyMmFhYzAxMWE0NmFkMTVjNWRhZDNlNGZhZDY5NzZmZWFjNzViNmFlOWIwMzE"> Cancer Data Science Slack</a> to connect with OpenPBTA organizers and other project participants.
-Sign up and join the <strong>#open-pbta</strong> channel to get started!</p><br>
+Sign up and join the <strong>#open-pbta</strong> channel to get started!</p>
 
 ## How to Participate
 
