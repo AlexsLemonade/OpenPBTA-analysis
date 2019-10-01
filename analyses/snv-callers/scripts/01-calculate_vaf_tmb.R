@@ -174,8 +174,7 @@ if (!opt$overwrite) {
 message(paste("Reading in", opt$maf, "MAF data..."))
 
 # Read in this MAF, skip the version number
-#maf_df <- data.table::fread(opt$maf, skip = 1, data.table = FALSE)
-maf_df <- data.table::fread(opt$maf, data.table = FALSE)
+maf_df <- data.table::fread(opt$maf, skip = 1, data.table = FALSE)
 
 # Print progress message
 message(paste("Setting up", opt$label, "metadata..."))
