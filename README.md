@@ -212,7 +212,7 @@ In particular, we do not source `.Rprofile` files in new sessions or save/restor
 We use continuous integration (CI) to ensure that the project Docker image will build if there are any changes introduced to the [`Dockerfile`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/Dockerfile) and that all analysis code will execute.
 
 We have put together data files specifically for the purpose of CI that contain all of the features of the full data files for only a small subset of samples. 
-You can see how this was done by viewing [this module](https://github.com/AlexsLemonade/OpenPBTA-analysis/analyses/create-subset-files/).
+You can see how this was done by viewing [this module](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/create-subset-files).
 We use the subset files to cut down on the computational resources and time required for testing.
 
 If you would like to work with the files used in CI locally, you can obtain them with:
