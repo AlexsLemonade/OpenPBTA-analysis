@@ -6,88 +6,129 @@
 #
 # Option descriptions
 #
-# -m : Path to MAF file to be analyzed. Can be .gz compressed. Give path relative
-#      to top directory, 'OpenPBTA-analysis'.
-# -b : File path that specifies the caller specific WGS BED regions file that is
-#      saved as a TSV but has CHR, start, and stop as it's first three columns
-#      Note that column names are ignored. Give path relative to top directory, 
-#      'OpenPBTA-analysis'.
-# -l : Label to be used for folder and all output. eg. 'strelka2'. Optional.
-#      Default is 'maf'
+# -label : Label to be used for folder and all output. eg. 'strelka2'. Default is 'maf'.
+# -output : File path that specifies the folder where the output should go.
+#           New folder will be created if it doesn't exist. Assumes file path is
+#           given from top directory of 'OpenPBTA-analysis'.
+# --maf :  Relative file path to MAF file to be analyzed. Can be .gz compressed.
+#          Assumes file path is given from top directory of 'OpenPBTA-analysis'.
+# --metadata : Relative file path to MAF file to be analyzed. Can be .gz compressed.
+#              Assumes file path is given from top directory of 'OpenPBTA-analysis'.
+# --annot_rds : Relative file path to annotation object RDS file to be analyzed.
+#               Assumes file path is given from top directory of 'OpenPBTA-analysis'.
+# --bed_wgs : File path that specifies the caller-specific BED regions file.
+#             Assumes from top directory, 'OpenPBTA-analysis'.
+# --bed_wxs : File path that specifies the WXS BED regions file. Assumes file path
+#             is given from top directory of 'OpenPBTA-analysis'
+# --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
 #
 # Command line example:
 #
-# Rscript 01-calculate_vaf_tmb.R \
-# -m data/pbta-snv-strelka2.vep.maf.gz \
-# -b data/WGS.hg38.strelka2.unpadded.bed \
-# -l strelka2
+# Rscript analyses/snv-callers/scripts/01-calculate_vaf_tmb.R \
+# --label strelka2 \
+# --output analyses/snv-callers/results \
+# --maf scratch/snv_dummy_data/strelka2 \
+# --metadata data/pbta-histologies.tsv \
+# --bed_wgs data/WGS.hg38.mutect2.unpadded.bed \
+# --bed_wxs data/WXS.hg38.100bp_padded.bed \
+# --annot_rds scratch/hg38_genomic_region_annotation.rds
 
+################################ Initial Set Up ################################
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
-# Run set up script
-source(file.path(root_dir, "analyses", "snv-callers", "scripts", "00-set_up.R"))
+# Import special functions
+source(file.path(root_dir, "analyses", "snv-callers", "util", "wrangle_functions.R"))
+
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
 
 # Load library:
 library(optparse)
 
 ################################ Set up options ################################
-
 # Set up optparse options
 option_list <- list(
-  make_option(opt_str = c("-m", "--maf"), type = "character", default = "none",
-              help = "Relative file path (assuming from top directory of 
+  make_option(
+    opt_str = c("-l", "--label"), type = "character",
+    default = "maf", help = "Label to be used for folder and all
+                output. eg. 'strelka2'. Default is 'maf'",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = c("-o", "--output"), type = "character", default = "none",
+    help = "File path that specifies the folder where the output should 
+              go. Assumes from top directory, 'OpenPBTA-analysis'. New folder 
+              will be created if it doesn't exist.",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = "--maf", type = "character", default = "none",
+    help = "Relative file path (assuming from top directory of 
               'OpenPBTA-analysis') to MAF file to be analyzed. Can be .gz compressed.",
-              metavar = "character"),
-  make_option(opt_str = c("-b", "--bed_wgs"), type = "character",
-              default = "none", help = "File path that specifies the caller specific
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = "--metadata", type = "character", default = "none",
+    help = "Relative file path (assuming from top directory of 
+              'OpenPBTA-analysis') to MAF file to be analyzed. Can be .gz compressed.",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = c("-a", "--annot_rds"), type = "character", default = "none",
+    help = "Relative file path (assuming from top directory of 
+              'OpenPBTA-analysis') to annotation object RDS file to be analyzed.",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = "--bed_wgs", type = "character", default = "none",
+    help = "File path that specifies the caller-specific
                 BED regions file. Assumes from top directory, 'OpenPBTA-analysis'",
-              metavar = "character"),
-  make_option(opt_str = c("-l", "--label"), type = "character",
-              default = "maf", help = "Label to be used for folder and all
-                output. eg. 'strelka2'. Optional. Default is 'maf'",
-              metavar = "character")
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = "--bed_wxs", type = "character", default = "none",
+    help = "File path that specifies the WXS BED regions file. Assumes
+              from top directory, 'OpenPBTA-analysis'",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = "--overwrite", action = "store_true",
+    default = FALSE, help = "If TRUE, will overwrite any files of
+              the same name. Default is FALSE",
+    metavar = "character"
+  )
 )
 
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
+########### Check that the files we need are in the paths specified ############
+needed_files <- c(opt$maf, opt$metadata, opt$bed_wgs, opt$bed_wxs, opt$annot_rds, 
+                  opt$cosmic)
+
 # Add root directory to the file paths
-opt$maf <- file.path(root_dir, opt$maf)
-opt$bed_wgs <- file.path(root_dir, opt$bed_wgs)
-
-# Stop if no input data is specified
-if (opt$maf == "none") {
-  stop("Error: no specified MAF file to analyze at this file path. Use -m
-         to give a file path. Remember that this file path must be relative to 
-         top directory of 'OpenPBTA-analysis'")
-}
-
-# Stop if no input data is specified
-if (opt$bed_wgs == "none") {
-  stop("Error: no specified BED file to analyze at this file path. Use -b
-         to give a file path. Remember that this file path must be relative to 
-         top directory of 'OpenPBTA-analysis'")
-}
-
-# Check that the files we need are in the paths specified
-needed_files <- c(original_metadata, wxs_bed_file, opt$maf, opt$bed_wgs)
+needed_files <- file.path(root_dir, needed_files)
 
 # Get list of which files were found
 files_found <- file.exists(needed_files)
 
 # Report error if any of them aren't found
 if (!all(files_found)) {
-  stop(paste("\n This needed file wasn't found:", 
-              needed_files[which(!files_found)], 
-              "Check your options and set up.", sep = "\n"))
+  stop(paste("\n This needed file wasn't found:",
+    needed_files[which(!files_found)],
+    "Check your options and set up.",
+    sep = "\n"
+  ))
 }
-################## Create output directories for this caller ###################
-caller_results_dir <- file.path(base_results_dir, opt$label)
+
+################## Create output directories for this caller ##################
+# Caller specific results directory path
+caller_results_dir <- file.path(root_dir, opt$output)
 
 # Make caller specific results folder
 if (!dir.exists(caller_results_dir)) {
-  dir.create(caller_results_dir)
+  dir.create(caller_results_dir, recursive = TRUE)
 }
 
 ####################### File paths for files we will create ####################
@@ -96,22 +137,50 @@ region_annot_file <- file.path(caller_results_dir, paste0(opt$label, "_region.ts
 tmb_file <- file.path(caller_results_dir, paste0(opt$label, "_tmb.tsv"))
 
 # Declare metadata file name for this caller
-metadata_file <- file.path(caller_results_dir, 
-                           paste0(opt$label, "_metadata_filtered.tsv"))
+metadata_file <- file.path(
+  caller_results_dir,
+  paste0(opt$label, "_metadata_filtered.tsv")
+)
+
+##################### Check for files if overwrite is FALSE ####################
+# If overwrite is set to FALSE, check if these exist before continuing
+if (!opt$overwrite) {
+  # Make a list of the output files
+  output_files <- c(vaf_file, region_annot_file, tmb_file)
+
+  # Find out which of these exist
+  existing_files <- file.exists(output_files)
+
+  # If all files exist; stop
+  if (all(existing_files)) {
+    stop(cat(
+      "Stopping; --overwrite is not being used and all output files already exist: \n",
+      vaf_file, "\n",
+      region_annot_file, "\n",
+      tmb_file
+    ))
+  }
+  # If some files exist, print a warning:
+  if (any(existing_files)) {
+    warning(cat(
+      "Some output files already exist and will not be overwritten unless you use --overwrite: \n",
+      paste0(output_files[which(existing_files)], "\n")
+    ))
+  }
+}
 
 ########################### Set up this caller's data ##########################
 # Print progress message
 message(paste("Reading in", opt$maf, "MAF data..."))
 
 # Read in this MAF, skip the version number
-#maf_df <- data.table::fread(opt$maf, skip = 1, data.table = FALSE)
-maf_df <- data.table::fread(opt$maf, data.table = FALSE)
+maf_df <- data.table::fread(opt$maf, skip = 1, data.table = FALSE)
 
 # Print progress message
 message(paste("Setting up", opt$label, "metadata..."))
 
 # Isolate metadata to only the samples that are in the datasets
-metadata <- readr::read_tsv(original_metadata) %>%
+metadata <- readr::read_tsv(opt$metadata) %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in% maf_df$Tumor_Sample_Barcode) %>%
   dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
   dplyr::arrange() %>%
@@ -119,7 +188,7 @@ metadata <- readr::read_tsv(original_metadata) %>%
   readr::write_tsv(metadata_file)
 
 # Print out completion message
-message(paste0("Filtered metadata file saved to:", metadata_file))
+message(paste("Filtered metadata file saved to: \n", metadata_file))
 
 # Make sure that we have metadata for all these samples.
 if (!all(unique(maf_df$Tumor_Sample_Barcode) %in% metadata$Tumor_Sample_Barcode)) {
@@ -127,51 +196,99 @@ if (!all(unique(maf_df$Tumor_Sample_Barcode) %in% metadata$Tumor_Sample_Barcode)
 }
 
 ################## Calculate VAF and set up other variables ####################
-message(paste("Calculating VAF for", opt$label, "MAF data..."))
+# If the file doesn't exist or the overwrite option is being used, run this.
+if (any(c(!file.exists(vaf_file), opt$overwrite))) {
 
-# Use the premade function to calculate VAF this will also merge the metadata
-vaf_df <- set_up_maf(maf_df, metadata) %>%
-  readr::write_tsv(vaf_file)
+  # Print out warning if this file is going to be overwritten
+  if (all(c(opt$overwrite, file.exists(vaf_file)))) {
+    warning("Overwriting existing VAF file.")
+  }
+  # Print out progress message
+  message(paste("Calculating VAF for", opt$label, "MAF data..."))
 
-# Print out completion message
-message(paste0("VAF calculations saved to:", vaf_file))
+  # Use the premade function to calculate VAF this will also merge the metadata
+  vaf_df <- set_up_maf(maf_df, metadata) %>%
+    readr::write_tsv(vaf_file)
 
+  # Print out completion message
+  message(paste("VAF calculations saved to: \n", vaf_file))
+} else {
+  # Stop if this file exists and overwrite is set to FALSE
+  warning(cat(
+    "The VAF file already exists: \n",
+    vaf_file, "\n",
+    "Use --overwrite if you want to overwrite it."
+  ))
+}
 ######################### Annotate genomic regions #############################
-message(paste("Annotating genomic regions for", opt$label, "MAF data..."))
+# If the file doesn't exist or the overwrite option is being used, run this.
+if (any(c(!file.exists(region_annot_file), opt$overwrite))) {
 
-# Annotation genomic regions
-maf_annot <- annotr_maf(vaf_df, annotation_file = annot_rds) %>%
-  readr::write_tsv(region_annot_file)
+  # Print out warning if this file is going to be overwritten
+  if (all(c(opt$overwrite, file.exists(vaf_file)))) {
+    warning("Overwriting existing regional annotation file.")
+  }
+  # Print out progress message
+  message(paste("Annotating genomic regions for", opt$label, "MAF data..."))
 
-# Print out completion message
-message(paste0("Genomic region annotations saved to:", region_annot_file))
+  # Annotation genomic regions
+  maf_annot <- annotr_maf(vaf_df, annotation_file = opt$annot_rds) %>%
+    readr::write_tsv(region_annot_file)
 
+  # Print out completion message
+  message(paste("Genomic region annotations saved to:", region_annot_file))
+} else {
+  # Stop if this file exists and overwrite is set to FALSE
+  warning(cat(
+    "The regional annotation file already exists: \n",
+    region_annot_file, "\n",
+    "Use --overwrite if you want to overwrite it."
+  ))
+}
 ############################# Calculate TMB ####################################
-message(paste("Calculating TMB for", opt$label, "MAF data..."))
+# If the file doesn't exist or the overwrite option is being used, run this.
+if (any(c(!file.exists(region_annot_file), opt$overwrite))) {
 
-### Set up BED region files for TMB calculations
-wgs_bed <- readr::read_tsv(opt$bed_wgs, col_names = FALSE)
-wxs_bed <- readr::read_tsv(wxs_bed_file, col_names = FALSE)
+  # Print out warning if this file is going to be overwritten
+  if (all(c(opt$overwrite, file.exists(vaf_file)))) {
+    warning("Overwriting existing TMB file.")
+  }
+  # Print out progress message
+  message(paste("Calculating TMB for", opt$label, "MAF data..."))
 
-# Calculate size of genome surveyed
-wgs_genome_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
-wxs_exome_size <- sum(wxs_bed[, 3] - wxs_bed[, 2])
+  # Set up BED region files for TMB calculations
+  wgs_bed <- readr::read_tsv(opt$bed_wgs, col_names = FALSE)
+  wxs_bed <- readr::read_tsv(opt$bed_wxs, col_names = FALSE)
 
-# Print out these genome sizes
-cat(
-  "WGS size in bp:", wgs_genome_size,
-  "WXS size in bp:", wxs_exome_size
-)
+  # Calculate size of genome surveyed
+  wgs_genome_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
+  wxs_exome_size <- sum(wxs_bed[, 3] - wxs_bed[, 2])
 
-# Filter out mutations for WXS that are outside of these BED regions.
-maf_wxs_filtered <- wxs_bed_filter(vaf_df, wxs_bed_file = wxs_bed_file)
+  # Print out these genome sizes
+  cat(
+    " WGS size in bp:", wgs_genome_size,
+    "\n",
+    "WXS size in bp:", wxs_exome_size,
+    "\n"
+  )
 
-# Calculate TMBs and write to TMB file
-tmb_df <- calculate_tmb(maf_wxs_filtered,
-                        wgs_size = wgs_genome_size,
-                        wxs_size = wxs_exome_size
-) %>%
-  readr::write_tsv(tmb_file)
+  # Filter out mutations for WXS that are outside of these BED regions.
+  maf_wxs_filtered <- wxs_bed_filter(vaf_df, wxs_bed_file = opt$bed_wxs)
 
-# Print out completion message
-message(paste0("TMB calculations saved to:", tmb_file))
+  # Calculate TMBs and write to TMB file
+  tmb_df <- calculate_tmb(maf_wxs_filtered,
+    wgs_size = wgs_genome_size,
+    wxs_size = wxs_exome_size
+  ) %>%
+    readr::write_tsv(tmb_file)
+
+  # Print out completion message
+  message(paste("TMB calculations saved to:", tmb_file))
+} else {
+  # Stop if this file exists and overwrite is set to FALSE
+  warning(cat(
+    "The Tumor Mutation Burden file already exists: \n",
+    tmb_file, "\n",
+    "Use --overwrite if you want to overwrite it."
+  ))
+}

@@ -2,24 +2,58 @@
 # C. Savonen
 # CCDL for ALSF 2019
 
-# Purpose: 1) Run an intial evaluation of each variant caller's MAF file
-#          2) Compare the variant callers to each other. (Coming soon)
+# Purpose:Run an intial evaluation of each variant caller's MAF file
 
 # Change directory
 cd kitematic
 
 # The files named in these arrays will be ran in the analysis. 
-declare -a datasets=("strelka2" "mutect2" "lancet" "vardict")
-declare -a wgs_files=("WGS.hg38.strelka2.unpadded.bed" "WGS.hg38.mutect2.unpadded.bed" "WGS.hg38.lancet.unpadded.bed" "WGS.hg38.vardict.100bp_padded.bed")
+datasets=("strelka2" "mutect2" "lancet" "vardict")
+wgs_files=("WGS.hg38.strelka2.unpadded.bed" "WGS.hg38.mutect2.unpadded.bed" "WGS.hg38.lancet.unpadded.bed" "WGS.hg38.vardict.100bp_padded.bed")
 
-########################## Calculate and Set Up Data ###########################
+# Reference file paths
+cosmic=analyses/snv-callers/brain_cosmic_variants_coordinates.tsv
+annot_rds=scratch/hg38_genomic_region_annotation.rds
+
+############################ Set Up Reference Files ############################
+# The original COSMIC file is obtained from: https://cancer.sanger.ac.uk/cosmic/download
+# These data are available if you register. The full, unfiltered somatic mutations 
+# file CosmicMutantExport.tsv.gz for grch38 is used here.
+Rscript analyses/snv-callers/scripts/00-set_up.R \
+  --annot_rds $annot_rds \
+  --cosmic_og scratch/CosmicMutantExport.tsv.gz \
+  --cosmic_clean $cosmic
+  
+########################## Calculate and Set Up Data ##########################
+# Create files that contain calculated VAF, TMB, and regional analyses.
 i=-1
 for dataset in ${datasets[@]}
   do
   let i=${i}+1
   echo "Processing dataset: ${dataset}"
   Rscript analyses/snv-callers/scripts/01-calculate_vaf_tmb.R \
-  -m data/pbta-snv-${dataset}.vep.maf.gz \
-  -b data/${wgs_files[$i]} \
-  -l ${dataset}
+  --label ${dataset} \
+  --output analyses/snv-callers/results/${dataset} \
+  --maf scratch/snv_dummy_data/${dataset} \
+  --metadata data/pbta-histologies.tsv \
+  --bed_wgs data/${wgs_files[$i]} \
+  --bed_wxs data/WXS.hg38.100bp_padded.bed \
+  --annot_rds $annot_rds
   done
+    #--maf data/pbta-snv-${dataset}.vep.maf.gz \
+
+######################## Plot the data and create reports ######################
+i=-1
+for dataset in ${datasets[@]}
+  do
+  let i=${i}+1
+  echo "Processing dataset: ${dataset}"
+  echo Rscript analyses/snv-callers/scripts/02-run_eval.R \
+  --label ${dataset} \
+  --vaf analyses/snv-callers/results/${dataset} \
+  --plot_type png \
+  --output analyses/snv-callers/plots/${dataset} \
+  --cosmic $cosmic \
+  --strategy wgs,wxs,both
+  done
+

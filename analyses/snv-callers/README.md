@@ -4,7 +4,8 @@ This analysis evaluates [MAF files](https://docs.gdc.cancer.gov/Data/File_Format
 The GDC has [good documentation on the fields](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) contained in a standard MAF file.
 
 **Table of Contents**
-* [Usage](#usage)
+* [How to run this pipeline](#how-to-run-this-pipeline)
+* [General usage of scripts](#general-usage-of-scripts)
 * [Individual caller evaluation](#individual-caller-evaluation)  
   * [Base change analysis](#base-change-analysis)  
   * [Variant allele fraction calculation](#variant-allele-fraction-calculation)  
@@ -16,7 +17,7 @@ The GDC has [good documentation on the fields](https://docs.gdc.cancer.gov/Data/
 * [Overall file structure](#overall-file-structure)
 * [Summary of functions](#summary-of-custom-functions)
 
-## Usage
+## How to run this pipeline
 
 **Run evaluations of each MAF file**
 
@@ -33,7 +34,78 @@ everything that is returned.)
 
 *Coming soon*
 
-## Individual Caller Evaluation
+## General usage of scripts
+
+**Overall notes about these scripts:**
+- The scripts are sequential as noted by their number.
+- All file path-related options assume the file path given is relative to `OpenPBTA-analysis`.
+- By default, the scripts will not overwrite existing files of the same name. However,
+this can be overridden with `--overwrite` option.
+
+### 00-set_up.R
+
+00-set_up.R creates the [annotation RDS file](#genomic-regional-analyses) and [COSMIC mutations file](#cosmic-mutation-overlap) that are used by
+the subsequent scripts.
+This set up script only needs to be run once and its three options are all relating to where the reference files should be stored.
+
+**Option descriptions**
+```
+ --annot_rds : File path to where you would like the annotation_rds file to be
+               stored
+ --cosmic_og : Path to original COSMIC file. Can be .gz compressed. Will need to
+               download this from COSMIC at https://cancer.sanger.ac.uk/cosmic/download
+               These data are available if you register.
+ --cosmic_clean : File path specifying where you would like the cleaned brain-related
+                  COSMIC mutations file to be stored. This file is provided to you in
+                  GitHub. Only coordinates are needed.
+```
+
+### 01-calculate_vaf_tmb.R
+
+This script sets up the given MAF file and outputs three files ([VAF](#variant-allele-fraction-calculation),
+[TMB](#tumor-mutation-burden-calculation), and [Regional analysis](#genomic-regional-analyses))
+that are used to make an overall evaluation report in `02-run_eval.R`.
+
+**Option descriptions**
+```
+ -label : Label to be used for folder and all output. eg. 'strelka2'. Default is 'maf'.
+ -output : File path that specifies the folder where the output should go.
+           New folder will be created if it doesn't exist.
+ --maf :  Relative file path to MAF file to be analyzed. Can be .gz compressed.
+ --metadata : Relative file path to original metadata file.
+ --annot_rds : Relative file path to annotation object RDS file to be analyzed.
+ --bed_wgs : File path that specifies the caller-specific BED regions file.
+ --bed_wxs : File path that specifies the WXS BED regions file.
+ --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
+```
+
+### 02-run_eval.R
+
+This script takes the files output by `01-calculate_vaf_tmb.R` and makes five
+plots (base_change cosmic_plot depth_vs_vaf snv_region tmb_plot) that are put
+into an overall report.
+
+**Option descriptions**
+```
+# --label : Label to be used for folder and all output. eg. 'strelka2'. Optional.
+#           Default is 'maf'
+# --plot_type : Specify what kind of plots you want printed out. Must be
+#               compatible with ggsave. eg pdf. Default is png
+# --vaf : Folder from 01-calculate_vaf_tmb.R following files:
+#                                             <caller_name>_vaf.tsv
+#                                             <caller_name>_region.tsv
+#                                             <caller_name>_tmb.tsv
+# --output : Where you would like the output from this script to be stored.
+# --strategy : Specify whether you would like WXS and WGS separated for the plots.
+#              Analysis is still done on all data in the MAF file regardless.
+#              Acceptable options are 'wgs', 'wxs' or 'both', both for if you
+#              don't want to separate them. Default is both.
+# --cosmic : Relative file path to COSMIC file to be analyzed.
+# --overwrite : If TRUE, will overwrite any reports of the same name. Default is
+#              FALSE
+```
+
+# Individual Caller Evaluation
 
 The first step in this analysis is an individual evaluation of each MAF from each caller.
 This analysis prints out a report that is further subdivided by the WGS and WXS samples.
