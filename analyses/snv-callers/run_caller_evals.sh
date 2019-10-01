@@ -8,9 +8,7 @@
 cd kitematic
 
 # The files named in these arrays will be ran in the analysis. 
-#datasets=("strelka2" "mutect2" "lancet" "vardict")
-datasets=("11111.tsv" "12345.tsv" "22222.tsv" "54321.tsv")
-
+datasets=("strelka2" "mutect2" "lancet" "vardict")
 wgs_files=("WGS.hg38.strelka2.unpadded.bed" "WGS.hg38.mutect2.unpadded.bed" "WGS.hg38.lancet.unpadded.bed" "WGS.hg38.vardict.100bp_padded.bed")
 
 # Reference file paths
@@ -34,20 +32,17 @@ do
   Rscript analyses/snv-callers/scripts/01-calculate_vaf_tmb.R \
   --label ${datasets[$i]} \
   --output analyses/snv-callers/results/${datasets[$i]} \
-  --maf scratch/snv_dummy_data/${datasets[$i]} \
+  --maf data/pbta-snv-${dataset[$i]}.vep.maf.gz \
   --metadata data/pbta-histologies.tsv \
   --bed_wgs data/${wgs_files[$i]} \
   --bed_wxs data/WXS.hg38.100bp_padded.bed \
   --annot_rds $annot_rds \
   --overwrite
 done
-  #--maf data/pbta-snv-${dataset}.vep.maf.gz \  
 
 ######################## Plot the data and create reports ######################
-i=-1
 for dataset in ${datasets[@]}
 do
-  let i=${i}+1
   echo "Processing dataset: ${dataset}"
   Rscript analyses/snv-callers/scripts/02-run_eval.R \
   --label ${dataset} \
