@@ -5,6 +5,14 @@ This is an open analysis effort that is organized on GitHub.
 There is a [companion OpenPBTA-manuscript repository](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) that is being used to author a collaborative manuscript describing the effort.
 The project maintainers include scientists from [Alex's Lemonade Stand Foundation's Childhood Cancer Data Lab](https://www.ccdatalab.org/) and the [Center for Data-Driven Discovery in Biomedicine at the Children's Hospital of Philadelphia](https://d3b.center/).
 
+### Join the Cancer Data Science Slack
+
+<p><img style = "padding: 0 15px; float: left;" src = logo/slack-cancer-data-science-logo.png width = 75></p>
+<p style="margin-top: 20px;"> </p>
+**Have general questions or need help getting started using GitHub?**
+You can join the [Cancer Data Science Slack](https://www.ccdatalab.org/slack) to connect with OpenPBTA organizers and other project participants.
+Fill out the linked form to receive an invite and join the `#open-pbta` channel to get started!<br>
+
 ## How to Participate
 
 ### Planned Analyses
