@@ -26,34 +26,31 @@ Rscript analyses/snv-callers/scripts/00-set_up.R \
   
 ########################## Calculate and Set Up Data ##########################
 # Create files that contain calculated VAF, TMB, and regional analyses.
-i=-1
-for dataset in ${datasets[@]}
-  do
+for ((i=0;i<${#datasets[*]};i++)); 
+do
   let i=${i}+1
   echo "Processing dataset: ${dataset}"
   Rscript analyses/snv-callers/scripts/01-calculate_vaf_tmb.R \
   --label ${dataset} \
   --output analyses/snv-callers/results/${dataset} \
-  --maf scratch/snv_dummy_data/${dataset} \
+  --maf data/pbta-snv-${dataset}.vep.maf.gz \  
   --metadata data/pbta-histologies.tsv \
   --bed_wgs data/${wgs_files[$i]} \
   --bed_wxs data/WXS.hg38.100bp_padded.bed \
   --annot_rds $annot_rds
-  done
-    #--maf data/pbta-snv-${dataset}.vep.maf.gz \
+done
 
 ######################## Plot the data and create reports ######################
 i=-1
 for dataset in ${datasets[@]}
-  do
+do
   let i=${i}+1
   echo "Processing dataset: ${dataset}"
-  echo Rscript analyses/snv-callers/scripts/02-run_eval.R \
+  Rscript analyses/snv-callers/scripts/02-run_eval.R \
   --label ${dataset} \
   --vaf analyses/snv-callers/results/${dataset} \
   --plot_type png \
   --output analyses/snv-callers/plots/${dataset} \
   --cosmic $cosmic \
   --strategy wgs,wxs,both
-  done
-
+done
