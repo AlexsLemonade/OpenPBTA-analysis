@@ -177,7 +177,7 @@ The most recent version of the project Docker image, which is pushed to Docker H
 docker pull ccdlopenpbta/open-pbta:latest
 ```
 
-**If you are a Mac or Windows user, the default limits for memory available to Docker is 2 GB. 
+**If you are a Mac or Windows user, the default limit for memory available to Docker is 2 GB. 
 You will likely need to increase this limit for local development.** 
 [[Mac documentation](https://docs.docker.com/docker-for-mac/#resources), [Windows documentation](https://docs.docker.com/docker-for-windows/#advanced)]
 
