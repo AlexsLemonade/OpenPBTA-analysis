@@ -76,11 +76,9 @@ rownames(geneSetExpMat) <- gsub("HALLMARK", "", rownames(geneSetExpMat))
 rownames(geneSetExpMat) <- gsub("_", " ", rownames(geneSetExpMat))
 rownames(geneSetExpMat) <- trimws(rownames(geneSetExpMat))
 
-#Let's printout the current size of the matrix
-print(paste("The Gene Set Matrix has", nrow(geneSetExpMat), "rows"));
-print(paste("The Gene Set Matrix has", ncol(geneSetExpMat), "columns"));
-
 #Heatmap across all samples, only significant pathways
+if(length(keepPathways)>10)
+{
 png("plots/HeatmapPathwaysGenes_all.png", width=1080, height=720)
 pheatmap(geneSetExpMat[keepPathways,],
 border_color="black",
@@ -101,6 +99,29 @@ color=inferno(length(geneSetExpMat) - 1),
 annotation_col=tmpClinData[c("Histology")],
 show_colnames=F)
 dev.off()
+}
+
+if(length(keepPathways)<10)
+{
+png("plots/HeatmapPathwaysGenes_all.png", width=1080, height=720)
+pheatmap(geneSetExpMat,
+border_color="black",
+color=inferno(length(geneSetExpMat) - 1), 
+annotation_col=tmpClinData[c("Histology")],
+show_colnames=F)
+dev.off()
+
+#Heatmap across significant histologies, and pathways
+png("plots/HeatmapPathwaysGenes_Sig.png", width=1080, height=720)
+pheatmap(geneSetExpMat,
+border_color="black",
+color=inferno(length(geneSetExpMat) - 1), 
+annotation_col=tmpClinData[c("Histology")],
+show_colnames=F)
+dev.off()
+}
+
+
 
 #Function to create boxplot for certain pathways
 createBox <- function(myPathway=NULL)
