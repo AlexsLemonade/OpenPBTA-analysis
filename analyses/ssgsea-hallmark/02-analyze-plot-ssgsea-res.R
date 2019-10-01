@@ -92,6 +92,8 @@ dev.off()
 #Heatmap across significant histologies, and pathways
 tmpClinDataTmp  <- tmpClinData[tmpClinData[,"Histology"]%in%keepDisease,]
 tmpGeneSetMat <- geneSetExpMat[keepPathways,rownames(tmpClinDataTmp)]
+print(paste("The Filtered Gene Set Matrix has", nrow(tmpGeneSetMat), "rows"));
+print(paste("The Filtered Gene Set Matrix has", ncol(tmpGeneSetMat), "columns"));
 png("plots/HeatmapPathwaysGenes_Sig.png", width=1080, height=720)
 pheatmap(tmpGeneSetMat,
 border_color="black",
