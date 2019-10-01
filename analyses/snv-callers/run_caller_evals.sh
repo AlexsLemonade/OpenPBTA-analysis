@@ -8,7 +8,9 @@
 cd kitematic
 
 # The files named in these arrays will be ran in the analysis. 
-datasets=("strelka2" "mutect2" "lancet" "vardict")
+#datasets=("strelka2" "mutect2" "lancet" "vardict")
+datasets=("11111.tsv" "12345.tsv" "22222.tsv" "54321.tsv")
+
 wgs_files=("WGS.hg38.strelka2.unpadded.bed" "WGS.hg38.mutect2.unpadded.bed" "WGS.hg38.lancet.unpadded.bed" "WGS.hg38.vardict.100bp_padded.bed")
 
 # Reference file paths
@@ -28,17 +30,18 @@ Rscript analyses/snv-callers/scripts/00-set_up.R \
 # Create files that contain calculated VAF, TMB, and regional analyses.
 for ((i=0;i<${#datasets[*]};i++)); 
 do
-  let i=${i}+1
-  echo "Processing dataset: ${dataset}"
+  echo "Processing dataset: ${datasets[$i]}"
   Rscript analyses/snv-callers/scripts/01-calculate_vaf_tmb.R \
-  --label ${dataset} \
-  --output analyses/snv-callers/results/${dataset} \
-  --maf data/pbta-snv-${dataset}.vep.maf.gz \  
+  --label ${datasets[$i]} \
+  --output analyses/snv-callers/results/${datasets[$i]} \
+  --maf scratch/snv_dummy_data/${datasets[$i]} \
   --metadata data/pbta-histologies.tsv \
   --bed_wgs data/${wgs_files[$i]} \
   --bed_wxs data/WXS.hg38.100bp_padded.bed \
-  --annot_rds $annot_rds
+  --annot_rds $annot_rds \
+  --overwrite
 done
+  #--maf data/pbta-snv-${dataset}.vep.maf.gz \  
 
 ######################## Plot the data and create reports ######################
 i=-1
