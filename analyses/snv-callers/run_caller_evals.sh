@@ -26,7 +26,7 @@ Rscript analyses/snv-callers/scripts/00-set_up.R \
   
 ########################## Calculate and Set Up Data ##########################
 # Create files that contain calculated VAF, TMB, and regional analyses.
-for ((i=0;i<${#datasets[+]};i++)); 
+for ((i=0;i<${#datasets[@]};i++)); 
 do
   echo "Processing dataset: ${datasets[$i]}"
   Rscript analyses/snv-callers/scripts/01-calculate_vaf_tmb.R \
