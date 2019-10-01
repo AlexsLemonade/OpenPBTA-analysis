@@ -82,8 +82,7 @@ that are used to make an overall evaluation report in `02-run_eval.R`.
 ### 02-run_eval.R
 
 This script takes the files output by `01-calculate_vaf_tmb.R` and makes five
-plots (base_change cosmic_plot depth_vs_vaf snv_region tmb_plot) that are put
-into an overall report.
+plots ([base_change](#base-change-analysis), [depth_vs_vaf](#variant-allele-fraction-calculation), [cosmic_plot](#cosmic-mutation-overlap), [snv_region](#genomic-regional-analyses), and [tmb_plot](#tumor-mutation-burden-calculation)) that are put into an overall report.
 
 **Option descriptions**
 ```
@@ -136,7 +135,7 @@ This is following the [code used in
 `maftools`](https://github.com/PoisonAlien/maftools/blob/1d0270e35c2e0f49309eba08b62343ac0db10560/R/plot_vaf.R#L39).
 The VAF calculations and other special variables are added to the MAF fields and written to a TSV ending in `_vaf.tsv` in the caller's results folder.
 
- *Output for this analysiss*
+ *Output for this analysis*
  * `results/<caller_name>/<caller_name>_vaf.tsv`
  * `plots/<caller_name>/<caller_name>_<strategy>_depth_vs_vaf.png`
 

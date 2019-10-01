@@ -39,16 +39,3 @@ do
   --annot_rds $annot_rds \
   --overwrite
 done
-
-######################## Plot the data and create reports ######################
-for dataset in ${datasets[@]}
-do
-  echo "Processing dataset: ${dataset}"
-  Rscript analyses/snv-callers/scripts/02-run_eval.R \
-  --label ${dataset} \
-  --vaf analyses/snv-callers/results/${dataset} \
-  --plot_type png \
-  --output analyses/snv-callers/plots/${dataset} \
-  --cosmic $cosmic \
-  --strategy wgs,wxs,both
-done

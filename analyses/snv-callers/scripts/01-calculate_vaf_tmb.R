@@ -57,26 +57,26 @@ option_list <- list(
   ),
   make_option(
     opt_str = c("-o", "--output"), type = "character", default = "none",
-    help = "File path that specifies the folder where the output should 
-              go. Assumes from top directory, 'OpenPBTA-analysis'. New folder 
+    help = "File path that specifies the folder where the output should
+              go. Assumes from top directory, 'OpenPBTA-analysis'. New folder
               will be created if it doesn't exist.",
     metavar = "character"
   ),
   make_option(
     opt_str = "--maf", type = "character", default = "none",
-    help = "Relative file path (assuming from top directory of 
+    help = "Relative file path (assuming from top directory of
               'OpenPBTA-analysis') to MAF file to be analyzed. Can be .gz compressed.",
     metavar = "character"
   ),
   make_option(
     opt_str = "--metadata", type = "character", default = "none",
-    help = "Relative file path (assuming from top directory of 
+    help = "Relative file path (assuming from top directory of
               'OpenPBTA-analysis') to MAF file to be analyzed. Can be .gz compressed.",
     metavar = "character"
   ),
   make_option(
     opt_str = c("-a", "--annot_rds"), type = "character", default = "none",
-    help = "Relative file path (assuming from top directory of 
+    help = "Relative file path (assuming from top directory of
               'OpenPBTA-analysis') to annotation object RDS file to be analyzed.",
     metavar = "character"
   ),
@@ -104,7 +104,7 @@ option_list <- list(
 opt <- parse_args(OptionParser(option_list = option_list))
 
 ########### Check that the files we need are in the paths specified ############
-needed_files <- c(opt$maf, opt$metadata, opt$bed_wgs, opt$bed_wxs, opt$annot_rds, 
+needed_files <- c(opt$maf, opt$metadata, opt$bed_wgs, opt$bed_wxs, opt$annot_rds,
                   opt$cosmic)
 
 # Add root directory to the file paths
@@ -115,7 +115,7 @@ files_found <- file.exists(needed_files)
 
 # Report error if any of them aren't found
 if (!all(files_found)) {
-  stop(paste("\n This needed file wasn't found:",
+  stop(paste("\n Could not find needed file(s):",
     needed_files[which(!files_found)],
     "Check your options and set up.",
     sep = "\n"
