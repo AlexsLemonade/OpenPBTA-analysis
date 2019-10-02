@@ -299,6 +299,9 @@ The contents of `analyses/gene-expression-clustering/run-gene-expression-cluster
 # This script runs the gene-expression-clustering analysis
 # Author's Name 2019
 
+set -e
+set -o pipefail
+
 Rscript --vanilla analyses/gene-expression-clustering/01-filter-samples.R
 Rscript --vanilla analyses/gene-expression-clustering/02-cluster-heatmap.R
 ```
