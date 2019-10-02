@@ -72,7 +72,7 @@ keepPathways <- unique(diseaseTableTmp[,"Pathway"]);
 keepDisease <- unique(diseaseTableTmp[,"DiseaseX"]);
 tmpClinData <- clinData[c("short_histology", "broad_histology")];
 colnames(tmpClinData)[1] <- "Histology" 
-rownames(geneSetExpMat) <- gsub("HALLMARK", "", rownames(geneSetExpMat))
+rownames(geneSetExpMat) <- gsub("HALLMARK|_", "", rownames(geneSetExpMat))
 rownames(geneSetExpMat) <- gsub("_", " ", rownames(geneSetExpMat))
 rownames(geneSetExpMat) <- trimws(rownames(geneSetExpMat))
 
