@@ -27,7 +27,8 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --metadata ../../data/pbta-histologies.tsv \
   --filename_lead kallisto_polyA \
   --output_directory results \
-  --skip_tsne
+  --skip_tsne \
+  --neighbors 2
 
 # generate plot lists for both cases above
 Rscript --vanilla scripts/get-plot-list.R  \
