@@ -33,7 +33,7 @@ hallmarkSets <- getGmt("references/h.all.v7.0.symbols.gmt", collectionType=Broad
 hallmarkSets <- geneIds(hallmarkSets);
 
 #Run GSVA
-GeneSetExprsMat <- gsva(expData, hallmarkSets, abs.ranking=F, min.sz=1, max.sz=500, parallel.sz=1, mx.diff=F, );
+GeneSetExprsMat <- gsva(expData, hallmarkSets, abs.ranking=F, min.sz=1, max.sz=500, parallel.sz=1, mx.diff=F);
 saveRDS(GeneSetExprsMat, "results/GeneSetExpressionMatrix.RDS")
 saveRDS(GeneSetExprsMat, "../../scratch/GeneSetExpressionMatrix.RDS")
 
