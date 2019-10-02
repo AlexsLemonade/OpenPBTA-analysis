@@ -20,7 +20,7 @@ getGene <- function(x)
     strsplit(x, split="_")[[1]][2]
 }
 expData[,"max"] <- apply(expData[-1], FUN=max, MARGIN=1);
-expData[,"Gene"] <- sapply(as.character(expData[,1]), FUN=getGene);
+expData[,"Gene"] <- stringr::word(as.character(expData[,1]), 2, sep = "_")
 expData <- expData[order(-expData[,"max"]),]
 expData <- expData[!duplicated(expData[,"Gene"]),]
 rownames(expData) <- expData[,"Gene"]
