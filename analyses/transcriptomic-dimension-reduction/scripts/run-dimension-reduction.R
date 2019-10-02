@@ -1,16 +1,16 @@
-# Unsupervised Analysis of Transcriptomic Differences - Run Dimension Reduction
+# Unsupervised Analysis of Transcriptomic Differences - Run Dimension Reduction 
 # Chante Bethell for CCDL 2019
 #
-# This script runs dimensionality reduction techniques:
-# Principal Component Analysis (PCA), Uniform Manifold Approximation
-# and Projection (UMAP), and optionally t-Distributed Stochastic Neighbor
+# This script runs dimensionality reduction techniques: 
+# Principal Component Analysis (PCA), Uniform Manifold Approximation 
+# and Projection (UMAP), and optionally t-Distributed Stochastic Neighbor 
 # Embedding (t-SNE). It will perform t-SNE by default.
 #
 # It addresses issue #9 (https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/9)
 # in the Open-PBTA analysis repository.
 #
 # Usage
-#
+# 
 # This script is intended to be run via the command line from the top directory
 # of the repository as follows (for all RSEM samples, with t-SNE skipped):
 #
@@ -53,7 +53,7 @@ if (!("optparse" %in% installed.packages())) {
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # source the functions for dimension reduction
-source(file.path(root_dir, "analyses", "transcriptomic-dimension-reduction",
+source(file.path(root_dir, "analyses", "transcriptomic-dimension-reduction", 
                  "util", "dimension-reduction-functions.R"))
 
 #### Command line arguments/options --------------------------------------------
@@ -117,12 +117,6 @@ option_list <- list(
     action = "store_true",
     default = FALSE,
     help = "If used, t-SNE will be skipped"
-  ),
-  optparse::make_option(
-    "--log2_transform",
-    action = "store_true",
-    default = FALSE,
-    help = "If used, log2(x + 1) transformation will be performed prior to dimension reduction"
   )
 )
 
@@ -178,10 +172,6 @@ expression_data <- expression_data %>%
 # Filter out low count genes
 genes_to_keep <- rowSums(expression_data) >= gene_count_threshold
 expression_data <- expression_data[genes_to_keep, ]
-
-if (opt$log2_transform) {
-  expression_data <- log2(expression_data + 1)
-}
 
 # Transpose the data
 transposed_exp_data <- t(expression_data)
