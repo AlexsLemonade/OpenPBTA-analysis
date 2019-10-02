@@ -95,6 +95,10 @@ formatHallmark <- function(x)
 rownames(geneSetExpMat) <- formatHallmark(rownames(geneSetExpMat))
 keepPathways <- formatHallmark(keepPathways)
 
+#Pathways to keep
+print(paste("Number of pathways is", dim(geneSetExpMat[keepPathways,])))
+print(keepPathways)
+
 #Heatmap across all samples, only significant pathways
 png("plots/HeatmapPathwaysGenes_all.png", width=1080, height=720)
 pheatmap::pheatmap(geneSetExpMat[keepPathways,],
