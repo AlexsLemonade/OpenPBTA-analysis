@@ -42,10 +42,13 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     umap \
     rprojroot \
     optparse \
-    data.table
+    data.table 
 
 # maftools for proof of concept in create-subset-files
 RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
+
+# This is needed for the CNV frequency and proportion aberration plots
+RUN R -e "BiocManager::install(c('GenVisR'), update = FALSE)"
 
 # These packages are for the genomic region analysis for snv-callers
 RUN R -e "BiocManager::install(c('annotatr', 'TxDb.Hsapiens.UCSC.hg38.knownGene', 'org.Hs.eg.db'), update = FALSE)"

@@ -35,7 +35,11 @@ jobs:
         
       - run:
           name: SNV Caller Set Up    
-          command: ./scripts/run_in_ci.sh Rscript analyses/snv-callers/scripts/00-set_up.R      
+          command: ./scripts/run_in_ci.sh Rscript analyses/snv-callers/scripts/00-set_up.R     
+
+      - run:
+          name: CNV Caller Comparison  
+          command: ./scripts/run_in_ci.sh Rscript analyses/cnv-comparison/01-cnv-comparison-plotting.R      
 
         #### Add your analysis here ####
         
