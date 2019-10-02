@@ -63,7 +63,7 @@ diseaseType <- lapply(rownames(geneSetExpMat), FUN=compareClinVarToPathway, clin
 diseaseType <- do.call("rbind", diseaseType)
 
 #Filter to significant entries
-diseaseTypeFilt <- diseaseType %>% dplyr::filter( AOV_P < aovParam, p.adj < padjParam)
+diseaseTypeFilt <- diseaseType %>% dplyr::filter( AOV_P <= aovParam, p.adj <= padjParam)
 
 #Now make all comparisons the same direction & write out results
 diseaseTypeFilt[,"DiseaseX"] <- ifelse(diseaseTypeFilt[,"diff"]>0, as.character(diseaseTypeFilt[,"VarX"]), as.character(diseaseTypeFilt[,"VarY"]))
