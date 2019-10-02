@@ -25,7 +25,7 @@ expData <- expData[order(-expData[,"max"]),]
 expData <- expData[!duplicated(expData[,"Gene"]),]
 rownames(expData) <- expData[,"Gene"]
 expData <- expData[expData[,"max"]>0,]
-expData <- expData[1:(ncol(expData)-2)]
+expData <- dplyr::select(expData, dplyr::starts_with("BS_"))
 expData <- expData[-1];
 expData <- as.matrix(log2(expData+1));
 #Read Hallmark Gene Sets & Format
