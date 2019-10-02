@@ -52,7 +52,7 @@ diseaseType <- lapply(rownames(geneSetExpMat), FUN=compareClinVarToPathway, clin
 diseaseType <- do.call("rbind", diseaseType)
 
 #Filter to significant entries
-diseaseTypeFilt <- diseaseType[diseaseType[,"AOV_P"]<0.01,]
+diseaseTypeFilt <- diseaseType %>% dplyr::filter( AOV_P <0.01, p.adj < 0.05)
 diseaseTypeFilt <- diseaseType[diseaseType[,"p.adj"]<0.05,] 
 
 #Now make all comparisons the same direction & write out results
