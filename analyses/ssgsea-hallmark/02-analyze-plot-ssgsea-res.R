@@ -6,8 +6,8 @@
 
 #Parameters for analysis
 args = commandArgs(trailingOnly=TRUE) 
-aovParam <- ifelse(is.na(args[1]), 0.01, args[1])
-padjParam <- ifelse(is.na(args[2]), 0.05, args[2])
+aovParam <- ifelse(is.na(args[1]), 0.01, as.numeric(args[1]))
+padjParam <- ifelse(is.na(args[2]), 0.05, as.numeric(args[2]))
 print(paste("anova P-value threshold is", aovParam))
 print(paste("Tukey HSD Adjusted P-value threshold is", padjParam))
 

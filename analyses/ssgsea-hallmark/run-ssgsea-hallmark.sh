@@ -13,4 +13,4 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 Rscript --vanilla 01-run-ssgsea.R
-Rscript --vanilla 02-analyze-plot-ssgsea-res.R
+Rscript --vanilla 02-analyze-plot-ssgsea-res.R 1 1
