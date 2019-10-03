@@ -103,6 +103,15 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
+opt$label <- "lancet" 
+opt$output <- "analyses/snv-callers/results/lancet"
+opt$maf <- "data/pbta-snv-lancet.vep.maf.gz" 
+opt$metadata <- "data/pbta-histologies.tsv" 
+opt$bed_wgs <- "data/WGS.hg38.lancet.300bp_padded.bed" 
+opt$bed_wxs <- "data/WXS.hg38.100bp_padded.bed" 
+opt$annot_rds <- "scratch/hg38_genomic_region_annotation.rds"
+opt$overwrite <- TRUE
+
 ########### Check that the files we need are in the paths specified ############
 needed_files <- c(opt$maf, opt$metadata, opt$bed_wgs, opt$bed_wxs, opt$annot_rds,
                   opt$cosmic)
@@ -275,10 +284,13 @@ if (file.exists(region_annot_file) && !opt$overwrite) {
     "WXS size in bp:", wxs_exome_size,
     "\n"
   )
-
-  # Filter out mutations for WXS that are outside of these BED regions.
-  maf_wxs_filtered <- wxs_bed_filter(vaf_df, wxs_bed_file = opt$bed_wxs)
-
+  
+  # Only do this step if you have WXS samples
+  if (any(experimental_strategy == "WXS")) {
+    # Filter out mutations for WXS that are outside of these BED regions.
+    maf_wxs_filtered <- wxs_bed_filter(vaf_df, wxs_bed_file = opt$bed_wxs)
+  }
+  
   # Calculate TMBs and write to TMB file
   tmb_df <- calculate_tmb(maf_wxs_filtered,
     wgs_size = wgs_genome_size,
