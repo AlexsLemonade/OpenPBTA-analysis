@@ -1,0 +1,101 @@
+---
+output: 
+    html_document:
+        theme: spacelab
+        toc: true
+        toc_float: true
+        code_folding: show
+    pdf_document:
+        toc: true
+always_allow_html: yes
+editor_options: 
+    chunk_output_type: console
+title: "`r paste(opt$label,'variant call report for: ', strategy)`"
+date: "`r Sys.Date()`"
+author: C. Savonen - CCDL for ALSF
+---
+
+```{r prep, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+knitr::opts_knit$set(progress = FALSE, verbose = FALSE)
+```
+
+### Options used for report
+
+```{r}
+cat("Options: \n", 
+    paste0("--", names(opt), " : ", unlist(opt), "\n"))
+```
+
+## Base call barplot
+
+To evaluate base changes standard MAF fields were summarized as two new variables: 
+The `base_change` variable indicates the exact change in bases from concatenating
+`Reference_Allele`, `>`, and `Allele`. 
+The `change` variable is made from the `base_change` variable but groups together 
+deletions, insertions, and long (more than a SNV) as their own groups.
+
+```{r}
+knitr::include_graphics(plot_paths[1])
+```
+
+## Read depth and VAF
+
+Compare read depth and VAF calculations. 
+```
+vaf = (t_alt_count) / (t_ref_count + t_alt_count)
+```
+This is following the [code used in
+`maftools`](https://github.com/PoisonAlien/maftools/blob/1d0270e35c2e0f49309eba08b62343ac0db10560/R/plot_vaf.R#L39).
+The VAF calculations and other special variables are added to the MAF fields and
+written to a TSV ending in `_vaf.tsv` in the caller's results folder.
+
+```{r}
+knitr::include_graphics(plot_paths[2])
+```
+
+## Genomic regional analyses
+
+To analyze what genomic regions the variants are from, [Annotatr
+package](https://bioconductor.org/packages/release/bioc/vignettes/annotatr/inst/doc/annotatr-vignette.html)
+hg38 genome annotations were used. 
+Mutations are assigned all annotations that they overlap (using 
+`GenomicRanges::overlap`).
+
+```{r}
+knitr::include_graphics(plot_paths[3])
+```
+
+## Percent variants in COSMIC
+
+The [COSMIC mutation data](https://cancer.sanger.ac.uk/cosmic/download) used 
+here are the full, unfiltered somatic mutations from `CosmicMutantExport.tsv`, 
+grch38.
+COSMIC mutations are overlapped with the present data's mutations using `GenomicRanges`. 
+The mutations that overlap with COSMIC mutations are plotted here. 
+
+```{r}
+knitr::include_graphics(plot_paths[4])
+```
+
+## TMB by histology
+
+To calculate TMB, the sum of the bases (in Mb) included in the WXS or WGS BED regions 
+are used as the denominator, depending on the sample's processing strategy.
+```
+TMBwxs = sum(mutation_w-in_bedwxs)/(wxs_genome_size/1000000)
+TMBwgs = sum(all_mutations)/(wgs_genome_size/1000000)
+```
+BED regions used for WGS samples are caller specific, while the WXS samples are
+calculated using the same BED file for all. 
+
+```{r}
+knitr::include_graphics(plot_paths[5])
+```
+
+## Session info
+
+```{r}
+sessionInfo()
+```
+
