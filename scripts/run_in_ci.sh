@@ -32,5 +32,6 @@ if [ $finished != 0 ] && [ $attempts -ge 3 ]; then
 fi
 
 docker run \
+       -e "PRINTME=$PRINTME" \
        --volume "$(pwd)":/rocker-build/ \
        -it "open-pbta" "$@"
