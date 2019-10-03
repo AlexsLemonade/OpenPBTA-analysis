@@ -12,6 +12,7 @@ library("stringr")
 
 #Read in data 
 expData <- readRDS("../../data/pbta-gene-counts-rsem-expected_count.stranded.rds")
+print(colnames(expData))
 
 #Format RNA-Seq data and get one gene symbol per row as there is a many-to-one mapping
 #of gene symbols and Ensembl ID's

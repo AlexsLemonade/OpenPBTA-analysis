@@ -8,8 +8,10 @@
 args = commandArgs(trailingOnly=TRUE) 
 aovParam <- ifelse(is.na(args[1]), 0.01, as.numeric(args[1]))
 padjParam <- ifelse(is.na(args[2]), 0.05, as.numeric(args[2]))
-print(paste("anova P-value threshold is", aovParam))
+percKeep <- ifelse(is.na(args[3]), 0.25, as.numeric(args[3]))
+print(paste("ANOVA P-value threshold is", aovParam))
 print(paste("Tukey HSD Adjusted P-value threshold is", padjParam))
+print(paste("Top Percentage to keep ", percKeep*100, "%", sep=""))
 
 #Call libraries
 library("tidyverse")
@@ -74,7 +76,7 @@ write.table(diseaseTypeFilt, "results/DiseaseCorrelationPathway.txt", sep="\t", 
 
 #Now get diseases highly associated with a certain pathway
 diseaseTableTmp <- data.frame(table(diseaseTypeFilt[,c("DiseaseX", "Pathway")]))
-diseaseTableTmp <- diseaseTableTmp[diseaseTableTmp[,"Freq"]>(nrow(geneSetExpMat)*.25),]
+diseaseTableTmp <- diseaseTableTmp[diseaseTableTmp[,"Freq"]>(nrow(geneSetExpMat)*(1-percKeep)),]
 diseaseTableTmp <- diseaseTableTmp[order(-diseaseTableTmp[,"Freq"]),]
 
 #Now set up to create heatmaps
