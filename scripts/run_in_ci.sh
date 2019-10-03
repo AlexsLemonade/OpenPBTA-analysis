@@ -31,7 +31,11 @@ if [ $finished != 0 ] && [ $attempts -ge 3 ]; then
     exit 1
 fi
 
+for var in "${!OPENPBTA_@}"; do
+    printf '%s=%s\n' "$var" "${!var}" > open_pbta_envs.txt
+done
+
 docker run \
-       -e "PRINTME=$PRINTME" \
+       --env-file=open_pbta_envs.txt \
        --volume "$(pwd)":/rocker-build/ \
        -it "open-pbta" "$@"
