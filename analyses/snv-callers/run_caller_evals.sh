@@ -30,12 +30,12 @@ for ((i=0;i<${#datasets[@]};i++));
 do
   echo "Processing dataset: ${datasets[$i]}"
   Rscript analyses/snv-callers/scripts/01-calculate_vaf_tmb.R \
-  --label ${datasets[$i]} \
-  --output analyses/snv-callers/results/${datasets[$i]} \
-  --maf data/pbta-snv-${datasets[$i]}.vep.maf.gz \
-  --metadata data/pbta-histologies.tsv \
-  --bed_wgs data/${wgs_files[$i]} \
-  --bed_wxs data/WXS.hg38.100bp_padded.bed \
-  --annot_rds $annot_rds \
-  --overwrite
+    --label ${datasets[$i]} \
+    --output analyses/snv-callers/results/${datasets[$i]} \
+    --maf data/pbta-snv-${datasets[$i]}.vep.maf.gz \
+    --metadata data/pbta-histologies.tsv \
+    --bed_wgs data/${wgs_files[$i]} \
+    --bed_wxs data/WXS.hg38.100bp_padded.bed \
+    --annot_rds $annot_rds \
+    --overwrite
 done

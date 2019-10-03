@@ -25,13 +25,13 @@
 # Command line example:
 #
 # Rscript analyses/snv-callers/scripts/01-calculate_vaf_tmb.R \
-# --label strelka2 \
-# --output analyses/snv-callers/results \
-# --maf scratch/snv_dummy_data/strelka2 \
-# --metadata data/pbta-histologies.tsv \
-# --bed_wgs data/WGS.hg38.mutect2.unpadded.bed \
-# --bed_wxs data/WXS.hg38.100bp_padded.bed \
-# --annot_rds scratch/hg38_genomic_region_annotation.rds
+#   --label strelka2 \
+#   --output analyses/snv-callers/results \
+#   --maf scratch/snv_dummy_data/strelka2 \
+#   --metadata data/pbta-histologies.tsv \
+#   --bed_wgs data/WGS.hg38.mutect2.unpadded.bed \
+#   --bed_wxs data/WXS.hg38.100bp_padded.bed \
+#   --annot_rds scratch/hg38_genomic_region_annotation.rds
 
 ################################ Initial Set Up ################################
 # Establish base dir
@@ -197,10 +197,16 @@ if (!all(unique(maf_df$Tumor_Sample_Barcode) %in% metadata$Tumor_Sample_Barcode)
 
 ################## Calculate VAF and set up other variables ####################
 # If the file doesn't exist or the overwrite option is being used, run this.
-if (any(c(!file.exists(vaf_file), opt$overwrite))) {
-
+if (file.exists(vaf_file) && !opt$overwrite) {
+  # Stop if this file exists and overwrite is set to FALSE
+  warning(cat(
+    "The VAF file already exists: \n",
+    vaf_file, "\n",
+    "Use --overwrite if you want to overwrite it."
+  ))
+} else {
   # Print out warning if this file is going to be overwritten
-  if (all(c(opt$overwrite, file.exists(vaf_file)))) {
+  if (file.exists(vaf_file)) {
     warning("Overwriting existing VAF file.")
   }
   # Print out progress message
@@ -212,20 +218,19 @@ if (any(c(!file.exists(vaf_file), opt$overwrite))) {
 
   # Print out completion message
   message(paste("VAF calculations saved to: \n", vaf_file))
-} else {
-  # Stop if this file exists and overwrite is set to FALSE
-  warning(cat(
-    "The VAF file already exists: \n",
-    vaf_file, "\n",
-    "Use --overwrite if you want to overwrite it."
-  ))
 }
 ######################### Annotate genomic regions #############################
 # If the file doesn't exist or the overwrite option is being used, run this.
-if (any(c(!file.exists(region_annot_file), opt$overwrite))) {
-
+if (file.exists(region_annot_file) && !opt$overwrite) {
+  # Stop if this file exists and overwrite is set to FALSE
+  warning(cat(
+    "The regional annotation file already exists: \n",
+    region_annot_file, "\n",
+    "Use --overwrite if you want to overwrite it."
+  ))
+} else {
   # Print out warning if this file is going to be overwritten
-  if (all(c(opt$overwrite, file.exists(vaf_file)))) {
+  if (file.exists(vaf_file)) {
     warning("Overwriting existing regional annotation file.")
   }
   # Print out progress message
@@ -237,20 +242,19 @@ if (any(c(!file.exists(region_annot_file), opt$overwrite))) {
 
   # Print out completion message
   message(paste("Genomic region annotations saved to:", region_annot_file))
-} else {
-  # Stop if this file exists and overwrite is set to FALSE
-  warning(cat(
-    "The regional annotation file already exists: \n",
-    region_annot_file, "\n",
-    "Use --overwrite if you want to overwrite it."
-  ))
 }
 ############################# Calculate TMB ####################################
-# If the file doesn't exist or the overwrite option is being used, run this.
-if (any(c(!file.exists(region_annot_file), opt$overwrite))) {
-
+# If the file exists or the overwrite option is not being used, run TMB calculations
+if (file.exists(region_annot_file) && !opt$overwrite) {
+  # Stop if this file exists and overwrite is set to FALSE
+  warning(cat(
+    "The Tumor Mutation Burden file already exists: \n",
+    tmb_file, "\n",
+    "Use --overwrite if you want to overwrite it."
+  ))
+} else {
   # Print out warning if this file is going to be overwritten
-  if (all(c(opt$overwrite, file.exists(vaf_file)))) {
+  if (file.exists(vaf_file)) {
     warning("Overwriting existing TMB file.")
   }
   # Print out progress message
@@ -284,11 +288,4 @@ if (any(c(!file.exists(region_annot_file), opt$overwrite))) {
 
   # Print out completion message
   message(paste("TMB calculations saved to:", tmb_file))
-} else {
-  # Stop if this file exists and overwrite is set to FALSE
-  warning(cat(
-    "The Tumor Mutation Burden file already exists: \n",
-    tmb_file, "\n",
-    "Use --overwrite if you want to overwrite it."
-  ))
 }
