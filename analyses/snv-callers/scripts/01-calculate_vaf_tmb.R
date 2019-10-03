@@ -196,7 +196,7 @@ if (!all(unique(maf_df$Tumor_Sample_Barcode) %in% metadata$Tumor_Sample_Barcode)
 }
 
 ################## Calculate VAF and set up other variables ####################
-# If the file doesn't exist or the overwrite option is being used, run this.
+# If the file exists or the overwrite option is not being used, calculate VAF 
 if (file.exists(vaf_file) && !opt$overwrite) {
   # Stop if this file exists and overwrite is set to FALSE
   warning(cat(
@@ -220,7 +220,7 @@ if (file.exists(vaf_file) && !opt$overwrite) {
   message(paste("VAF calculations saved to: \n", vaf_file))
 }
 ######################### Annotate genomic regions #############################
-# If the file doesn't exist or the overwrite option is being used, run this.
+# If the file exists or the overwrite option is not being used, run regional annotation analysis
 if (file.exists(region_annot_file) && !opt$overwrite) {
   # Stop if this file exists and overwrite is set to FALSE
   warning(cat(
