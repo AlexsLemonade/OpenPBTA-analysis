@@ -103,15 +103,6 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
-opt$label <- "lancet" 
-opt$output <- "analyses/snv-callers/results/lancet"
-opt$maf <- "data/pbta-snv-lancet.vep.maf.gz" 
-opt$metadata <- "data/pbta-histologies.tsv" 
-opt$bed_wgs <- "data/WGS.hg38.lancet.300bp_padded.bed" 
-opt$bed_wxs <- "data/WXS.hg38.100bp_padded.bed" 
-opt$annot_rds <- "scratch/hg38_genomic_region_annotation.rds"
-opt$overwrite <- TRUE
-
 ########### Check that the files we need are in the paths specified ############
 needed_files <- c(opt$maf, opt$metadata, opt$bed_wgs, opt$bed_wxs, opt$annot_rds,
                   opt$cosmic)
