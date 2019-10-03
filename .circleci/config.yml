@@ -17,7 +17,7 @@ jobs:
 
       - run:
           name: env sh hold my env
-          command: PRINTME=21 ./scripts/run_in_ci.sh bash analyses/hold-my-env/env-printer.sh
+          command: OPENPBTA_PRINTME=21 ./scripts/run_in_ci.sh bash analyses/hold-my-env/env-printer.sh
         #### Add your analysis here ####
 
   deploy:
