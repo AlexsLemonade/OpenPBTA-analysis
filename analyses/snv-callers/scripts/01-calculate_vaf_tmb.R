@@ -279,11 +279,11 @@ if (file.exists(region_annot_file) && !opt$overwrite) {
   # Only do this step if you have WXS samples
   if (any(metadata$experimental_strategy == "WXS")) {
     # Filter out mutations for WXS that are outside of these BED regions.
-    maf_wxs_filtered <- wxs_bed_filter(vaf_df, wxs_bed_file = opt$bed_wxs)
+    vaf_df <- wxs_bed_filter(vaf_df, wxs_bed_file = opt$bed_wxs)
   }
   
   # Calculate TMBs and write to TMB file
-  tmb_df <- calculate_tmb(maf_wxs_filtered,
+  tmb_df <- calculate_tmb(vaf_df,
     wgs_size = wgs_genome_size,
     wxs_size = wxs_exome_size
   ) %>%
