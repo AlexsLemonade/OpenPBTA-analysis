@@ -277,7 +277,7 @@ if (file.exists(region_annot_file) && !opt$overwrite) {
   )
   
   # Only do this step if you have WXS samples
-  if (any(experimental_strategy == "WXS")) {
+  if (any(metadata$experimental_strategy == "WXS")) {
     # Filter out mutations for WXS that are outside of these BED regions.
     maf_wxs_filtered <- wxs_bed_filter(vaf_df, wxs_bed_file = opt$bed_wxs)
   }
