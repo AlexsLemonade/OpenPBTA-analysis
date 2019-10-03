@@ -4,19 +4,41 @@
 #Date: 9/23/2019
 ##########################################
 
-#Parameters for analysis
-args = commandArgs(trailingOnly=TRUE) 
-aovParam <- ifelse(is.na(args[1]), 0.01, as.numeric(args[1]))
-padjParam <- ifelse(is.na(args[2]), 0.05, as.numeric(args[2]))
-percKeep <- ifelse(is.na(args[3]), 0.25, as.numeric(args[3]))
-print(paste("ANOVA P-value threshold is", aovParam))
-print(paste("Tukey HSD Adjusted P-value threshold is", padjParam))
-print(paste("Top Percentage to keep ", percKeep*100, "%", sep=""))
-
 #Call libraries
 library("tidyverse")
 library("pheatmap")
 library("viridis")
+library("optparse")
+
+# Declare command line options
+option_list <- list(
+  optparse::make_option(
+    c("-a", "--anova_pvalue"),
+    type = "double",
+    default = 0.01,
+    help = "ANOVA P-value threshold",
+  ),
+  optparse::make_option(
+    c("-t", "--tukey_pvalue"),
+    type = "double",
+    default = 0.05,
+    help = "Tukey HSD Adjusted P-value threshold"
+  ),
+  optparse::make_option(
+    c("-p", "--perc_keep"),
+    type = "double",
+    default = .25,
+    help = "Percentage of pathways used as a threshold"
+  )
+)
+
+#Read the arguments passed
+opt_parser <- optparse::OptionParser(option_list = option_list)
+opt <- optparse::parse_args(opt_parser)
+
+aovParam <- opt$anova_pvalue
+padjParam <- opt$tukey_pvalue
+percKeep <- opt$perc_keep
 
 #Read in data
 clinData <- read.delim("../../data/pbta-histologies.tsv", stringsAsFactors=F)
