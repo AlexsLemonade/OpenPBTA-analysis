@@ -4,6 +4,9 @@
 # Run the dimension reduction plotting pipeline. Samples will be colored by
 # user-specified variable. It will be broad_histology by default.
 
+set -e
+set -o pipefail
+
 COLORVAR=${COLOR:-broad_histology}
 
 # This script should always run as if it were being called from
