@@ -3,44 +3,18 @@ jobs:
   run_analyses:
     machine:
       docker_layer_caching: true
-    resource_class: large
     working_directory: ~/OpenPBTA-analysis
     steps:
       - checkout
 
       - run:
-          name: Data Download
-          command: URL=https://open-pbta.s3.amazonaws.com/data RELEASE=testing ./download-data.sh
-
-      - run:
-          name: List Data Directory Contents
-          command: ./scripts/run_in_ci.sh ls data/testing
-    
-      - run:
-          name: Sample Distribution Analyses
-          command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
-
-      - run:
-          name: Mutect2 vs Strelka2
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/01-set-up.Rmd', clean = TRUE);
-                                                      rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', clean = TRUE)"
-      
-      - run:
-          name: fusion filtering
-          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/01-fusion-standardization.R -f "data/pbta-fusion-starfusion.tsv.gz" -c "STARfusion" -o "scratch/star.RDS" 
-          
-      - run:
-          name: Transcriptome dimensionality reduction
-          command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
-        
-      - run:
-          name: SNV Caller Set Up    
-          command: ./scripts/run_in_ci.sh Rscript analyses/snv-callers/scripts/00-set_up.R      
+          name: hold my env
+          command: ./scripts/run_in_ci.sh Rscript analyses/hold-my-env/env-print.R
 
         #### Add your analysis here ####
-        
+
   deploy:
-    machine: 
+    machine:
       docker_layer_caching: true
     working_directory: ~/OpenPBTA-analysis
     steps:
