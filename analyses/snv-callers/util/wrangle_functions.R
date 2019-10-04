@@ -280,17 +280,17 @@ find_cosmic_overlap <- function(maf_df, cosmic_clean_file, bp_window = 0) {
   # indicate whether the mutation was overlapping a COSMIC mutation
   # (`overlap_cosmic`) and whether it was overlapping a COSMIC mutation and also
   # contained the same overall base change (`same_cosmic`).
-  
+
   # Read in the data
   cosmic_df <- readr::read_tsv(cosmic_clean_file)
-  
+
   # Identify which rows have NAs
   cosmic_na <- apply(is.na(cosmic_df[, 1:4]), 1, sum)
-  
+
   # Keep only the mutations with adequate information about their locations
-  cosmic_df <- cosmic_df %>% 
+  cosmic_df <- cosmic_df %>%
     dplyr::filter(cosmic_na < 1)
-  
+
   # Read in the cosmic file and turn it into a GRanges object
   cosmic_granges <- maf_to_granges(cosmic_df)
 

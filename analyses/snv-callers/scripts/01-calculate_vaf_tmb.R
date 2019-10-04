@@ -104,8 +104,10 @@ option_list <- list(
 opt <- parse_args(OptionParser(option_list = option_list))
 
 ########### Check that the files we need are in the paths specified ############
-needed_files <- c(opt$maf, opt$metadata, opt$bed_wgs, opt$bed_wxs, opt$annot_rds,
-                  opt$cosmic)
+needed_files <- c(
+  opt$maf, opt$metadata, opt$bed_wgs, opt$bed_wxs, opt$annot_rds,
+  opt$cosmic
+)
 
 # Add root directory to the file paths
 needed_files <- file.path(root_dir, needed_files)
@@ -196,7 +198,7 @@ if (!all(unique(maf_df$Tumor_Sample_Barcode) %in% metadata$Tumor_Sample_Barcode)
 }
 
 ################## Calculate VAF and set up other variables ####################
-# If the file exists or the overwrite option is not being used, calculate VAF 
+# If the file exists or the overwrite option is not being used, calculate VAF
 if (file.exists(vaf_file) && !opt$overwrite) {
   # Stop if this file exists and overwrite is set to FALSE
   warning(cat(
@@ -281,7 +283,7 @@ if (file.exists(region_annot_file) && !opt$overwrite) {
     # Filter out mutations for WXS that are outside of these BED regions.
     vaf_df <- wxs_bed_filter(vaf_df, wxs_bed_file = opt$bed_wxs)
   }
-  
+
   # Calculate TMBs and write to TMB file
   tmb_df <- calculate_tmb(vaf_df,
     wgs_size = wgs_genome_size,

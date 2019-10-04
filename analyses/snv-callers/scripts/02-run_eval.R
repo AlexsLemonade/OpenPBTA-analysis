@@ -182,15 +182,17 @@ ind_strategies <- grep("wgs|wxs", opt$strategy, value = TRUE)
 # Check that these strategies exist in this file
 strategies_found <- ind_strategies %in% tolower(vaf_df$experimental_strategy)
 
-# If any of the strategies wasn't found, exclude them from the report list and 
-# don't try to make a "both" report. 
+# If any of the strategies wasn't found, exclude them from the report list and
+# don't try to make a "both" report.
 if (any(!strategies_found)) {
   # Print out warning:
-  warning(paste("Only samples that are", toupper(ind_strategies[strategies_found]),
-                "were found. Only a", toupper(ind_strategies[strategies_found]), 
-                "will be made."))
-  
-  # Make the original strategies list only the ones that were found. 
+  warning(paste(
+    "Only samples that are", toupper(ind_strategies[strategies_found]),
+    "were found. Only a", toupper(ind_strategies[strategies_found]),
+    "will be made."
+  ))
+
+  # Make the original strategies list only the ones that were found.
   opt$strategy <- ind_strategies[strategies_found]
 }
 #################### Run this for each experimental strategy ###################

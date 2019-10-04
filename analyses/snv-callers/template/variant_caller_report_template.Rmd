@@ -23,8 +23,10 @@ knitr::opts_knit$set(progress = FALSE, verbose = FALSE)
 ### Options used for report
 
 ```{r}
-cat("Options: \n", 
-    paste0("--", names(opt), " : ", unlist(opt), "\n"))
+cat(
+  "Options: \n",
+  paste0("--", names(opt), " : ", unlist(opt), "\n")
+)
 ```
 
 ## Base call barplot

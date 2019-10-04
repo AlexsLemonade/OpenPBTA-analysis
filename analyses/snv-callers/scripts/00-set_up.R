@@ -123,7 +123,7 @@ if (opt$cosmic_clean != "none") {
     ) %>%
       # Keep only brain mutations so the file is smaller
       dplyr::filter(`Site subtype 1` == "brain") %>%
-    # Get rid of spaces in column names
+      # Get rid of spaces in column names
       dplyr::rename_all(dplyr::funs(stringr::str_replace_all(., " ", "_"))) %>%
       # Separate the genome coordinates into their own BED like variables
       dplyr::mutate(
