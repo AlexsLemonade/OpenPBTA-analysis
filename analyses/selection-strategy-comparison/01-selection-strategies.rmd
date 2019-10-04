@@ -373,3 +373,9 @@ It is possible that some specific analyses may be salvageable with ComBat or a s
 It would be ideal if there were sufficient additional tissue and resources to perform stranded RNAseq on the poly-A selected samples, but note that we might still be concerned about batch effects. 
 Indeed, batch effects are potentially a larger problem in general.
 Information on the technical processing of the samples (including dates, kits, Illumina model, etc.) should be included in the metadata to allow examination and/or mitigation of some of these more subtle effects.
+
+### Session info
+
+```{r}
+sessionInfo()
+```
