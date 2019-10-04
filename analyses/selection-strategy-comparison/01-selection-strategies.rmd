@@ -265,31 +265,6 @@ plot_polyA <- umap_plot(rsem_umap_polyA,
 plot_polyA
 ```
 
-### Remove low-expressed in poly-A
-
-Arbitrary cutoff of expression level 1 to start. If a genes has fpkm expression of 1 or larger in at least 10 poly-A samples, we will keep it.
-
-```{r}
-polyA_gene_filter_high <- colSums(polyA_exp >= 1) > 10
-
-polyA_expressed_high <- exp_rsem_t[, polyA_gene_filter_high]
-ncol(polyA_expressed_high)
-```
-
-This seems to yield a larger gene set than removing genes with no expression in at least one poly-A samples, and a very similar distribution.
-
-```{r}
-rsem_umap_polyA_high <- umap::umap(polyA_expressed_high, n_neighbors = neighbors)
-```
-
-```{r}
-plot_polyA_high <- umap_plot(rsem_umap_polyA_high, 
-                             metadata_df, 
-                             filename = file.path(output_dir,
-                                                  "umap_polyA_high.png"))
-
-plot_polyA
-```
 
 ## Normalize data
 
