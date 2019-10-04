@@ -38,13 +38,6 @@ set.seed(2019)
 
 ```
 
-### Environment
-
-Get the UNIX environment for CI options.
-```{r unix environment}
-ENV <- Sys.getenv()
-UMAPN <- as.numeric(ENV['UMAPN'])
-```
 
 
 ### Directories
@@ -206,12 +199,7 @@ To start, we will reproduce an naive dimensionality reduction analysis to show t
 
 ```{r neighbors}
 # set neighbors parameter
-if (is.finite(UMAPN)) {
-  neighbors <- UMAPN
-}else{
-  neighbors <- 15
-}
-neighbors
+neighbors <- 15
 ```
 
 ```{r raw clustering}
