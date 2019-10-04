@@ -98,7 +98,7 @@ option_list <- list(
 )
 
 # Parse options
-opt <- parse_args(OptionParser(option_list = option_list))\
+opt <- parse_args(OptionParser(option_list = option_list))
 
 ########################### Check options specified ############################
 # Normalize this file path
