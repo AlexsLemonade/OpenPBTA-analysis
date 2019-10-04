@@ -69,7 +69,7 @@ set_up_maf <- function(maf_df, metadata_df = NULL) {
   if (!is.null(metadata_df)) {
     # Tack on the metadata so we have this info
     maf_df <- maf_df %>%
-      dplyr::left_join(metadata, by = "Tumor_Sample_Barcode") %>%
+      dplyr::left_join(metadata_df, by = "Tumor_Sample_Barcode") %>%
       # Get rid of any variables that have completely NAs.
       dplyr::select(-which(apply(is.na(.), 2, all)))
   }
@@ -157,7 +157,7 @@ wxs_bed_filter <- function(maf_df, wxs_bed_file = NULL, bp_window = 0) {
   # What fraction of mutations are in these bed regions?
   cat(
     "Ratio of variants in this BED:", ratio, "\n",
-    "Ratio of variants being filtered out:", 1 - ratio
+    "Ratio of variants being filtered out:", 1 - ratio, "\n"
   )
 
   # Only keep those in the BED regions that overlap the `wxs_bed_granges`
@@ -322,7 +322,7 @@ find_cosmic_overlap <- function(maf_df, cosmic_clean_file, bp_window = 0) {
   # What fraction of mutations are in these bed regions?
   cat(
     " Ratio of variants overlapping with COSMIC:", ratio, "\n",
-    "Number of mutations with same base_change:", sum(same_change)
+    "Number of mutations with same base_change:", sum(same_change), "\n"
   )
 
   # Make this a new column
