@@ -1,10 +1,10 @@
 ---
 title: "Exploration of RNA selection strategy effects"
 author: "Joshua Shapiro for CCDL"
-output: 
+output:
   html_notebook:
-    toc: true
-    toc_float: true
+    toc: yes
+    toc_float: yes
 ---
 
 
@@ -38,9 +38,18 @@ set.seed(2019)
 
 ```
 
+### Environment
+
+Get the UNIX environment for CI options.
+```{r unix environment}
+ENV <- Sys.getenv()
+UMAPN <- as.numeric(ENV['UMAPN'])
+```
+
+
 ### Directories
 
-```{r}
+```{r directory setup}
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 output_dir <- file.path(root_dir,
@@ -195,11 +204,20 @@ metadata_df <- metadata_df %>%
 
 To start, we will reproduce an naive dimensionality reduction analysis to show the problem of selection method that we are facing. Since UMAP seems to work well overall, that is what we will focus on first.
 
+```{r neighbors}
+# set neighbors parameter
+if (is.finite(UMAPN)) {
+  neighbors <- UMAPN
+}else{
+  neighbors <- 15
+}
+neighbors
+```
+
 ```{r raw clustering}
 # remove low counts
 dm_set <- exp_rsem_t[, colSums(exp_rsem_t) > 100]
 
-neighbors <- 10
 rsem_umap_raw <- umap::umap(dm_set, n_neighbors = neighbors)
 
 ```
