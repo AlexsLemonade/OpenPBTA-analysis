@@ -98,14 +98,7 @@ option_list <- list(
 )
 
 # Parse options
-opt <- parse_args(OptionParser(option_list = option_list))
-
-opt$label <- "11111.tsv"	
-opt$vaf <- "analyses/snv-callers/results/11111.tsv"	
-opt$plot_type <- "png" 	
-opt$output <- "analyses/snv-callers/plots/11111.tsv"	
-opt$strategy <- "wgs,wxs,both"	
-opt$cosmic <- "analyses/snv-callers/brain_cosmic_variants_coordinates.tsv"
+opt <- parse_args(OptionParser(option_list = option_list))\
 
 ########################### Check options specified ############################
 # Normalize this file path
