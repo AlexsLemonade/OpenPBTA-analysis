@@ -100,6 +100,13 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
+opt$label <- "11111.tsv"	
+opt$vaf <- "analyses/snv-callers/results/11111.tsv"	
+opt$plot_type <- "png" 	
+opt$output <- "analyses/snv-callers/plots/11111.tsv"	
+opt$strategy <- "wgs,wxs,both"	
+opt$cosmic <- "analyses/snv-callers/brain_cosmic_variants_coordinates.tsv"
+
 ########################### Check options specified ############################
 # Normalize this file path
 opt$vaf <- file.path(root_dir, opt$vaf)
@@ -145,15 +152,6 @@ if (!(opt$plot_type %in% acceptable_plot_types)) {
 # Add the period
 opt$plot_type <- paste0(".", opt$plot_type)
 
-# Reformat the strategy option into lower case and vector
-opt$strategy <- tolower(unlist(strsplit(opt$strategy, ",")))
-
-# Check strategy options
-if (!all(opt$strategy %in% c("wgs", "wxs", "both"))) {
-  stop("Error: unrecognized --strategy option. Acceptable options are 'wgs',
-       'wxs' or 'both'. Multiple can be specified at once.")
-}
-
 ################################### Set Up #####################################
 # Set and make the plots directory
 opt$output <- file.path(root_dir, opt$output)
@@ -174,9 +172,36 @@ vaf_df <- readr::read_tsv(grep("_vaf.tsv$", file_list, value = TRUE))
 tmb_df <- readr::read_tsv(grep("_tmb.tsv$", file_list, value = TRUE))
 maf_annot <- readr::read_tsv(grep("_region.tsv$", file_list, value = TRUE))
 
+######################## Check VAF file for each strategy ######################
+
+# Reformat the strategy option into lower case and vector
+opt$strategy <- tolower(unlist(strsplit(opt$strategy, ",")))
+
+# Check strategy options
+if (!all(opt$strategy %in% c("wgs", "wxs", "both"))) {
+  stop("Error: unrecognized --strategy option. Acceptable options are 'wgs',
+       'wxs' or 'both'. Multiple can be specified at once.")
+}
+
+# Only check for WGS or WXS, make them capitalized
+ind_strategies <- grep("wgs|wxs", opt$strategy, value = TRUE)
+
+# Check that these strategies exist in this file
+strategies_found <- ind_strategies %in% tolower(vaf_df$experimental_strategy)
+
+# If any of the strategies wasn't found, exclude them from the report list and 
+# don't try to make a "both" report. 
+if (any(!strategies_found)) {
+  # Print out warning:
+  warning(paste("Only samples that are", toupper(ind_strategies[strategies_found]),
+                "were found. Only a", toupper(ind_strategies[strategies_found]), 
+                "will be made."))
+  
+  # Make the original strategies list only the ones that were found. 
+  opt$strategy <- ind_strategies[strategies_found]
+}
 #################### Run this for each experimental strategy ###################
 for (strategy in opt$strategy) {
-
   # File paths plots we will create
   plot_paths <- file.path(
     opt$output,
