@@ -7,7 +7,7 @@
 # Option descriptions
 # --label : Label to be used for folder and all output. eg. 'strelka2'. Optional.
 #      Default is 'maf'
-# --plot_type : Specify what kind of plots you want printed out. Must be 
+# --plot_type : Specify what kind of plots you want printed out. Must be
 #               compatible with ggsave. eg pdf. Default is png
 # --vaf : Folder from 01-calculate_vaf_tmb.R following files:
 #                                             <caller_name>_vaf.tsv
@@ -16,11 +16,11 @@
 # --output : Where you would like the output from this script to be stored.
 # --strategy : Specify whether you would like WXS and WGS separated for the plots.
 #              Analysis is still done on all data in the MAF file regardless.
-#              Acceptable options are 'wgs', 'wxs' or 'both', both for if you 
+#              Acceptable options are 'wgs', 'wxs' or 'both', both for if you
 #              don't want to separate them. Default is both.
 # --cosmic : Relative file path to COSMIC file to be analyzed. Assumes file path
 #            is given from top directory of 'OpenPBTA-analysis'.
-# --overwrite : If TRUE, will overwrite any reports of the same name. Default is 
+# --overwrite : If TRUE, will overwrite any reports of the same name. Default is
 #              FALSE
 #
 # Command line example:
@@ -63,14 +63,14 @@ option_list <- list(
   ),
   make_option(
     opt_str = c("-v", "--vaf"), type = "character",
-    default = NULL, help = "Path to folder with the output files 
-              from 01-calculate_vaf_tmb. Should include the VAF, TMB, and 
+    default = NULL, help = "Path to folder with the output files
+              from 01-calculate_vaf_tmb. Should include the VAF, TMB, and
               region TSV files",
     metavar = "character"
   ),
   make_option(
     opt_str = c("-o", "--output"), type = "character",
-    default = NULL, help = "Path to folder where you would like the 
+    default = NULL, help = "Path to folder where you would like the
               output from this script to be stored.",
     metavar = "character"
   ),
@@ -85,7 +85,7 @@ option_list <- list(
   ),
   make_option(
     opt_str = c("-c", "--cosmic"), type = "character", default = "none",
-    help = "Relative file path (assuming from top directory of 
+    help = "Relative file path (assuming from top directory of
               'OpenPBTA-analysis') to COSMIC file to be analyzed.",
     metavar = "character"
   ),
@@ -99,13 +99,6 @@ option_list <- list(
 
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
-
-opt$label <- "11111.tsv"
-opt$vaf <- "analyses/snv-callers/results/11111.tsv"
-opt$plot_type <- "png" 
-opt$output <- "analyses/snv-callers/plots/11111.tsv"
-opt$strategy <- "wgs,wxs,both"
-opt$cosmic <- "analyses/snv-callers/brain_cosmic_variants_coordinates.tsv"
 
 ########################### Check options specified ############################
 # Normalize this file path
