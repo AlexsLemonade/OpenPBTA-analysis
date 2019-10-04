@@ -8,8 +8,8 @@
 cd kitematic
 
 # The files named in these arrays will be ran in the analysis. 
-datasets=("strelka2" "mutect2" "lancet" "vardict")
-wgs_files=("WGS.hg38.strelka2.unpadded.bed" "WGS.hg38.mutect2.unpadded.bed" "WGS.hg38.lancet.unpadded.bed" "WGS.hg38.vardict.100bp_padded.bed")
+datasets=("strelka2" "mutect2" "lancet")
+wgs_files=("WGS.hg38.strelka2.unpadded.bed" "WGS.hg38.mutect2.unpadded.bed" "WGS.hg38.lancet.300bp_padded.bed")
 
 # Reference file paths
 cosmic=analyses/snv-callers/brain_cosmic_variants_coordinates.tsv

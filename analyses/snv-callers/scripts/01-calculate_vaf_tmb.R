@@ -196,7 +196,7 @@ if (!all(unique(maf_df$Tumor_Sample_Barcode) %in% metadata$Tumor_Sample_Barcode)
 }
 
 ################## Calculate VAF and set up other variables ####################
-# If the file doesn't exist or the overwrite option is being used, run this.
+# If the file exists or the overwrite option is not being used, calculate VAF 
 if (file.exists(vaf_file) && !opt$overwrite) {
   # Stop if this file exists and overwrite is set to FALSE
   warning(cat(
@@ -220,7 +220,8 @@ if (file.exists(vaf_file) && !opt$overwrite) {
   message(paste("VAF calculations saved to: \n", vaf_file))
 }
 ######################### Annotate genomic regions #############################
-# If the file doesn't exist or the overwrite option is being used, run this.
+# If the file exists or the overwrite option is not being used, run regional annotation analysis
+
 if (file.exists(region_annot_file) && !opt$overwrite) {
   # Stop if this file exists and overwrite is set to FALSE
   warning(cat(
@@ -275,12 +276,14 @@ if (file.exists(region_annot_file) && !opt$overwrite) {
     "WXS size in bp:", wxs_exome_size,
     "\n"
   )
-
-  # Filter out mutations for WXS that are outside of these BED regions.
-  maf_wxs_filtered <- wxs_bed_filter(vaf_df, wxs_bed_file = opt$bed_wxs)
-
+  # Only do this step if you have WXS samples
+  if (any(metadata$experimental_strategy == "WXS")) {
+    # Filter out mutations for WXS that are outside of these BED regions.
+    vaf_df <- wxs_bed_filter(vaf_df, wxs_bed_file = opt$bed_wxs)
+  }
+  
   # Calculate TMBs and write to TMB file
-  tmb_df <- calculate_tmb(maf_wxs_filtered,
+  tmb_df <- calculate_tmb(vaf_df,
     wgs_size = wgs_genome_size,
     wxs_size = wxs_exome_size
   ) %>%
