@@ -50,11 +50,8 @@ RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
 # These packages are for the genomic region analysis for snv-callers
 RUN R -e "BiocManager::install(c('annotatr', 'TxDb.Hsapiens.UCSC.hg38.knownGene', 'org.Hs.eg.db'), update = FALSE)"
 
-# Use preprocessCore for expression normalization
-RUN R -e "BiocManager::install(c('preprocessCore'), update = FALSE)"
-
-# Use sva for batch correction
-RUN R -e "BiocManager::install(c('sva'), update = FALSE)"
+# Packages for expression normalization and batch correction
+RUN R -e "BiocManager::install(c('preprocessCore', 'sva'), update = FALSE)"
 
 # This is needed to create the interactive pie chart
 RUN R -e "devtools::install_github('timelyportfolio/sunburstR', ref = 'd40d7ed71ee87ca4fbb9cb8b7cf1e198a23605a9', dependencies = TRUE)"
