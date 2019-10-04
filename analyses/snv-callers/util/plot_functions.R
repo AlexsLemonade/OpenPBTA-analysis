@@ -180,7 +180,7 @@ cosmic_plot <- function(vaf_df, exp_strategy = "BOTH", cosmic_clean_file = NULL)
   # Args:
   #   vaf_df: Need a MAF data.frame that has `vaf`, `base_change` and
   #           `experimental_strategy` columns that are added with the
-              `set_up_maf` function.
+  #            `set_up_maf` function.
   #   exp_strategy: argument to specify whether to plot `wgs`, `wxs` samples or
   #   `both`.
   #   cosmic_clean_file: a file path to a TSV of COSMIC mutations that has been
