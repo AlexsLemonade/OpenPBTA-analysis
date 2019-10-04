@@ -3,7 +3,9 @@
 # Events such as polymerase read-throughs, mis-mapping due to gene homology, and fusions occurring in healthy normal 
 # tissue require stringent filtering, making it difficult for researchers and clinicians to discern true underlying 
 # oncogenic drivers of a tumor and in some cases, appropriate therapy
-#
+
+# Example run:
+# Rscript analyses/fusion_filtering/02-fusion-filtering.R -S scratch/arriba.tsv --expressionMatrix data/pbta-gene-expression-rsem-fpkm.stranded.rds --reathroughFilter --artifactFilter "GTEx|HGNC_GENEFAM|DGD_PARALOGS|Normal|BodyMap|ConjoinG" --junctionReadCountFilter 1 --spanningFragCountFilter 10 --readingFrameFilter "in-frame|frameshift|other" --referenceFolder analyses/fusion_filtering/references/ --outputfile scratch/arriba_stranded_V2 -t 1
 #
 # Command line arguments
 #
@@ -30,10 +32,8 @@
 				
 
 library("optparse")
-library("dplyr")
-library("tidyr")
-library("purrr")
 library("reshape2")
+library("tidyverse")
 
 option_list <- list(
   make_option(c("-S", "--standardFusionFile"),type="character",
@@ -73,31 +73,33 @@ spanningFragCountFilter<-opt$spanningFragCountFilter
 referenceFolder<-opt$referenceFolder
 readingFrameFilter<-opt$readingFrameFilter
 
-# read standardized fusion calls
-standardFusioncalls<-read.delim(standardFusionFile,stringsAsFactors=FALSE)
-# to obtain geneA and geneB for gene search below
-standardFusioncalls <- cbind(standardFusioncalls, colsplit(standardFusioncalls$FusionName, pattern = '--', names = c("GeneA","GeneB")))
-# Intergenic fusion will have Gene1A,Gene2A,Gene1B,Gene2B
-standardFusioncalls <- cbind(standardFusioncalls, colsplit(standardFusioncalls$GeneA, pattern = '/', names = c("Gene1A","Gene2A")))
-standardFusioncalls <- cbind(standardFusioncalls, colsplit(standardFusioncalls$GeneB, pattern = '/', names = c("Gene1B","Gene2B")))
+standardFusioncalls<-readr::read_tsv(standardFusionFile)
 
 #formatting dataframe for filtering
-standardFusioncalls<-standardFusioncalls %>% 
-  #remove distance to fusion breakpoint from gene names in intergenic fusions
-  mutate(Gene1A=gsub("[(].*","",standardFusioncalls$Gene1A),
-         Gene2A=gsub("[(].*","",standardFusioncalls$Gene2A),
-         Gene1B=gsub("[(].*","",standardFusioncalls$Gene1B),
-         Gene2B=gsub("[(].*","",standardFusioncalls$Gene2B))
+standardFusioncalls<-standardFusioncalls %>%
+  # to obtain geneA and geneB for gene search below
+  bind_cols(colsplit(standardFusioncalls$FusionName, pattern = '--', names = c("GeneA","GeneB"))) %>%
+  # Intergenic fusion will have Gene1A,Gene2A,Gene1B,Gene2B
+  separate(GeneA,sep = "/",into =c("Gene1A","Gene2A"),remove=FALSE) %>%
+  separate(GeneB,sep = "/",into =c("Gene1B","Gene2B"),remove=FALSE) %>%
+  #remove distance to fusion breakpoint from gene names in intergenic fusion
+  mutate(Gene1A=gsub("[(].*","",Gene1A),
+         Gene2A=gsub("[(].*","",Gene2A),
+         Gene1B=gsub("[(].*","",Gene1B),
+         Gene2B=gsub("[(].*","",Gene2B)) %>%
+  as.data.frame()
 
 
 
-#############artifactFiltering#############
+
+
+############# artifactFiltering #############
 
 
 fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFrameFilter=readingFrameFilter,artifactFilter=artifactFilter,junctionReadCountFilter=junctionReadCountFilter,spanningFragCountFilter=spanningFragCountFilter,reathroughFilter=reathroughFilter){
   # @param standardFusioncalls A dataframe from star fusion or arriba standardized to run through the filtering steps
   # @param expressionMatrix A rds with expression data (RSEM/TPM counts) for the same cohort/GTEX
-  # @param readingFramFilter A regex to capture readingframe (eg. inframe|frameshift|other)
+  # @param readingFramFilter A regex to capture readingframe (eg. in-frame|frameshift|other)
   # @param artifactFilter A red flag filter from Annotation ; in OpenPBTA annotation is from FusionAnnotator column: "annots"
   # @param junctionReadCountFilter An integer threshold for JunctionReadCount
   # @param spanningFragCountFilter An integer threshold for (SpanningFragCount - JunctionReadCount)
@@ -115,12 +117,21 @@ fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFra
   }
 
   if( !missing(readingFrameFilter ) ){
-    #TODO check for values
+    # Error handling
+    readingFrameTypes<-c("in-frame","frameshift","other")
     standardFusioncalls <- standardFusioncalls[grep(readingFrameFilter,standardFusioncalls$Fusion_Type),]
+    if(!all(readingFrameTypes %in% standardFusioncalls$Fusion_Type)){
+      warning(paste("No fusion calls with readingframe:",readingFrameTypes[-which(readingFrameTypes %in% standardFusioncalls$Fusion_Type)]))
+    }
   }
   
   if( !missing(artifactFilter) & any(grepl(artifactFilter,standardFusioncalls$annots)) ) {
-    #TODO check for values
+    # Error handling
+    artifactFilterTypes<-unlist(strsplit(artifactFilter,"|",fixed=TRUE))
+    if(any(unlist(lapply(artifactFilterTypes, function(x) !any(str_detect(as.character(standardFusioncalls$annots),x)))))){
+      artifactFilterTypesNotFound<-artifactFilterTypes[unlist(lapply(artifactFilterTypes, function(x) !any(str_detect(as.character(standardFusioncalls$annots),x))))]
+      warning(paste("No fusion calls with annotation:",artifactFilterTypesNotFound))
+    }
     standardFusioncalls <- standardFusioncalls[-grep(artifactFilter,standardFusioncalls$annots),]
   }
 
@@ -170,13 +181,17 @@ fusion_sample_gene_df <- QCFiltered %>%
 
 expression_long_df <- expressionMatrix %>%
   # Keep the gene symbols and the samples themselves
-  dplyr::select(GeneSymbol, dplyr::starts_with("BS_")) %>%
+  dplyr::select(-one_of("gene_id","EnsembleID")) %>%
   # Get the data into long format
   reshape2::melt(variable.name = "Sample",
                  value.name = "expression_value") %>%
   # Remove rows with expression that is too low
   dplyr::filter(expression_value > expressionFilter)
 
+# Error handling
+if (!all(fusion_sample_gene_df$Sample %in% expression_long_df$Sample)) {
+  warning("Not all samples in expression file. Only returning fusions for samples in expressionMatrix.")
+}
 
 expression_filtered_fusions <- fusion_sample_gene_df %>%
   # join the filtered expression values to the data frame keeping track of symbols
@@ -202,47 +217,43 @@ expression_filtered_fusions <- fusion_sample_gene_df %>%
 
 
 ###############annotation###############
-# column 1 as GeneName 2 source file 3 Type; collapse to summarize type
-geneListReferenceDataTab<-read.delim(paste0(referenceFolder,"genelistreference.txt"),stringsAsFactors = FALSE)
-geneListReferenceDataTab<-geneListReferenceDataTab %>% dplyr::group_by(Gene_Symbol) %>% dplyr::mutate(type = toString(type)) %>% as.data.frame()
-geneListReferenceDataTab<-unique(geneListReferenceDataTab[,c("Gene_Symbol","type")])
+# column 1 as GeneName 2 source file 3 type; collapse to summarize type
+geneListReferenceDataTab<-read.delim(file.path(referenceFolder,"genelistreference.txt"),stringsAsFactors = FALSE)
+geneListReferenceDataTab<-geneListReferenceDataTab %>% dplyr::group_by(Gene_Symbol) %>% dplyr::mutate(type = toString(type)) %>% 
+  dplyr::distinct(Gene_Symbol, type) %>% as.data.frame()
 
-# column 1 as FusionName 2 source file 3 Type; collapse to summarize type
-fusionReferenceDataTab<-read.delim(paste0(referenceFolder,"fusionreference.txt"),stringsAsFactors = FALSE)
-fusionReferenceDataTab<-unique(fusionReferenceDataTab[,c("FusionName","type")])
+# column 1 as FusionName 2 source file 3 type; collapse to summarize type
+fusionReferenceDataTab<-read.delim(file.path(referenceFolder,"fusionreference.txt"),stringsAsFactors = FALSE)
+fusionReferenceDataTab<-fusionReferenceDataTab %>%
+  dplyr::distinct(FusionName,type) %>% as.data.frame()
+  
 
+annotate_fusion_calls<-function(standardFusioncalls=standardFusioncalls,geneListReferenceDataTab=geneListReferenceDataTab,fusionReferenceDataTab=fusionReferenceDataTab){
+  # @param standardFusioncalls A dataframe from star fusion or arriba standardized to run through the filtering steps
+  # @param geneListReferenceDataTab A dataframe with column 1 as GeneName 2 source file 3 type; collapse to summarize type
+  # @param fusionReferenceDataTab A dataframe with column 1 as FusionName 2 source file 3 type; collapse to summarize type
+  # @return Standardized fusion calls annotated with gene list and fusion list provided in reference folder
+  annotated_filtered_fusions<-standardFusioncalls %>% 
+    # annotate Gene1A
+    dplyr::left_join(geneListReferenceDataTab,by=c("Gene1A"="Gene_Symbol")) %>% dplyr::rename(Gene1A_anno=type) %>% 
+    # annotate Gene1B
+    dplyr::left_join(geneListReferenceDataTab,by=c("Gene1B"="Gene_Symbol")) %>% dplyr::rename(Gene1B_anno=type) %>% 
+    # annotate Gene2A
+    dplyr::left_join(geneListReferenceDataTab,by=c("Gene2A"="Gene_Symbol")) %>% dplyr::rename(Gene2A_anno=type) %>% 
+    # annotate Gene2B
+    dplyr::left_join(geneListReferenceDataTab,by=c("Gene2B"="Gene_Symbol")) %>% dplyr::rename(Gene2B_anno=type) %>% 
+    # annotate FusionName
+    dplyr::left_join(fusionReferenceDataTab,by=c("FusionName"="FusionName")) %>% dplyr::rename(Fusion_anno=type) %>%
+    as.data.frame()
+  return(annotated_filtered_fusions)
+}
 
 # Annotate QC filtered fusion calls
-annotated_filtered_fusions<-expression_filtered_fusions %>% 
-  # annotate Gene1A
-  dplyr::left_join(geneListReferenceDataTab,by=c("Gene1A"="Gene_Symbol")) %>% dplyr::rename(Gene1A_anno=type) %>% 
-  # annotate Gene1B
-  dplyr::left_join(geneListReferenceDataTab,by=c("Gene1B"="Gene_Symbol")) %>% dplyr::rename(Gene1B_anno=type) %>% 
-  # annotate Gene2A
-  dplyr::left_join(geneListReferenceDataTab,by=c("Gene2A"="Gene_Symbol")) %>% dplyr::rename(Gene2A_anno=type) %>% 
-  # annotate Gene2B
-  dplyr::left_join(geneListReferenceDataTab,by=c("Gene2B"="Gene_Symbol")) %>% dplyr::rename(Gene2B_anno=type) %>% 
-  # annotate FusionName
-  dplyr::left_join(fusionReferenceDataTab,by=c("FusionName"="FusionName")) %>% dplyr::rename(Fusion_anno=type) %>%
-  as.data.frame()
-
+annotated_filtered_fusions<-annotate_fusion_calls(standardFusioncalls = expression_filtered_fusions,geneListReferenceDataTab = geneListReferenceDataTab ,fusionReferenceDataTab = fusionReferenceDataTab )
 saveRDS(annotated_filtered_fusions,paste0(opt$outputfile,"_QC_expression_filtered_annotated.RDS"))
 
 # Annotate standardized fusion calls for project specific gene list filtering
-annotated_unfiltered_fusions<-standardFusioncalls %>% 
-  # annotate Gene1A
-  dplyr::left_join(geneListReferenceDataTab,by=c("Gene1A"="Gene_Symbol")) %>% dplyr::rename(Gene1A_anno=type) %>% 
-  # annotate Gene1B
-  dplyr::left_join(geneListReferenceDataTab,by=c("Gene1B"="Gene_Symbol")) %>% dplyr::rename(Gene1B_anno=type) %>% 
-  # annotate Gene2A
-  dplyr::left_join(geneListReferenceDataTab,by=c("Gene2A"="Gene_Symbol")) %>% dplyr::rename(Gene2A_anno=type) %>% 
-  # annotate Gene2B
-  dplyr::left_join(geneListReferenceDataTab,by=c("Gene2B"="Gene_Symbol")) %>% dplyr::rename(Gene2B_anno=type) %>% 
-  # annotate FusionName
-  dplyr::left_join(fusionReferenceDataTab,by=c("FusionName"="FusionName")) %>% dplyr::rename(Fusion_anno=type) %>%
-  as.data.frame()
-
-
+annotated_unfiltered_fusions<-annotate_fusion_calls(standardFusioncalls = standardFusioncalls,geneListReferenceDataTab = geneListReferenceDataTab ,fusionReferenceDataTab = fusionReferenceDataTab )
 saveRDS(annotated_unfiltered_fusions,paste0(opt$outputfile,"_unfiltered_annotated.RDS"))
 
 
