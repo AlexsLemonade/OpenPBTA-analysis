@@ -28,6 +28,14 @@ jobs:
       - run:
           name: fusion filtering
           command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/01-fusion-standardization.R -f "data/pbta-fusion-starfusion.tsv.gz" -c "STARfusion" -o "scratch/star.RDS" 
+     
+      - run:
+          name: Transcriptome dimensionality reduction
+          command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
+
+      - run:
+          name: SNV Caller Analysis 
+          command: ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_evals.sh    
 
       - run:
           name: Selection Strategy Comparison
