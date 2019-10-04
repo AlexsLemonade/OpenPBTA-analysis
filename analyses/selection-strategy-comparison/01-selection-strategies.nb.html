@@ -2961,12 +2961,10 @@ if (!(&quot;sva&quot; %in% installed.packages())) {
 # load packages
 library(ggplot2)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RwbHlyJzpcbiAgbWV0aG9kICAgICAgICAgICBmcm9tXG4gIHByaW50LnJvd3dpc2VfZGYgICAgIFxuV2FudCB0byB1bmRlcnN0YW5kIGhvdyBhbGwgdGhlIHBpZWNlcyBmaXQgdG9nZXRoZXI/IFNlZSB0aGUgUiBmb3IgRGF0YSBTY2llbmNlIGJvb2s6XG5odHRwOi8vcjRkcy5oYWQuY28ubnovXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RwbHlyJzpcbiAgbWV0aG9kICAgICAgICAgICBmcm9tXG4gIHByaW50LnJvd3dpc2VfZGYgICAgIFxuIn0= -->
 <pre><code>Registered S3 method overwritten by 'dplyr':
   method           from
-  print.rowwise_df     
-Want to understand how all the pieces fit together? See the R for Data Science book:
-http://r4ds.had.co.nz/</code></pre>
+  print.rowwise_df     </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBtYWdyaXR0ciBwaXBlXG5gJT4lYCA8LSBkcGx5cjo6YCU+JWBcblxuIyBzZXQgc2VlZFxuc2V0LnNlZWQoMjAxOSlcblxuYGBgIn0= -->
 <pre class="r"><code># magrittr pipe
@@ -3174,18 +3172,10 @@ strategy_counts &lt;- dplyr::left_join(polyA_counts, stranded_counts)</code></pr
 <p>To start, we will reproduce an naive dimensionality reduction analysis to show the problem of selection method that we are facing. Since UMAP seems to work well overall, that is what we will focus on first.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBzZXQgbmVpZ2hib3JzIHBhcmFtZXRlclxuaWYgKGlzLmZpbml0ZShVTUFQTikpIHtcbiAgbmVpZ2hib3JzIDwtIFVNQVBOXG59ZWxzZXtcbiAgbmVpZ2hib3JzIDwtIDE1XG59XG5uZWlnaGJvcnNcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBzZXQgbmVpZ2hib3JzIHBhcmFtZXRlclxubmVpZ2hib3JzIDwtIDE1XG5gYGAifQ== -->
 <pre class="r"><code># set neighbors parameter
-if (is.finite(UMAPN)) {
-  neighbors &lt;- UMAPN
-}else{
-  neighbors &lt;- 15
-}
-neighbors</code></pre>
+neighbors &lt;- 15</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDE1XG4ifQ== -->
-<pre><code>[1] 15</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -3402,7 +3392,7 @@ plot_polyA_combat</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgICBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgICBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgICBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBnZ3Bsb3QyXzMuMi4wXG5cbmxvYWRlZCB2aWEgYSBuYW1lc3BhY2UgKGFuZCBub3QgYXR0YWNoZWQpOlxuIFsxXSBSY3BwXzEuMC4xICAgICAgICAgICAgbGF0dGljZV8wLjIwLTM4ICAgICAgIGFzc2VydHRoYXRfMC4yLjEgICAgICBycHJvanJvb3RfMS4zLTIgICAgICAgZGlnZXN0XzAuNi4yMCAgICAgICAgXG4gWzZdIFJTcGVjdHJhXzAuMTUtMCAgICAgICBSNl8yLjQuMCAgICAgICAgICAgICAgYmFja3BvcnRzXzEuMS40ICAgICAgIHN0YXRzNF8zLjYuMCAgICAgICAgICBSU1FMaXRlXzIuMS4xICAgICAgICBcblsxMV0gZXZhbHVhdGVfMC4xNCAgICAgICAgIHN2YV8zLjMyLjEgICAgICAgICAgICBwaWxsYXJfMS40LjIgICAgICAgICAgcmxhbmdfMC40LjAgICAgICAgICAgIGxhenlldmFsXzAuMi4yICAgICAgIFxuWzE2XSByc3R1ZGlvYXBpXzAuMTAgICAgICAgYW5ub3RhdGVfMS42Mi4wICAgICAgIGJsb2JfMS4xLjEgICAgICAgICAgICBTNFZlY3RvcnNfMC4yMi4xICAgICAgTWF0cml4XzEuMi0xNyAgICAgICAgXG5bMjFdIHByZXByb2Nlc3NDb3JlXzEuNDYuMCByZXRpY3VsYXRlXzEuMTIgICAgICAgcm1hcmtkb3duXzEuMTMgICAgICAgIGxhYmVsaW5nXzAuMyAgICAgICAgICBzcGxpbmVzXzMuNi4wICAgICAgICBcblsyNl0gQmlvY1BhcmFsbGVsXzEuMTguMSAgIHJlYWRyXzEuMy4xICAgICAgICAgICBzdHJpbmdyXzEuNC4wICAgICAgICAgUkN1cmxfMS45NS00LjEyICAgICAgIGJpdF8xLjEtMTQgICAgICAgICAgIFxuWzMxXSBtdW5zZWxsXzAuNS4wICAgICAgICAgdW1hcF8wLjIuMi4wICAgICAgICAgIGNvbXBpbGVyXzMuNi4wICAgICAgICB4ZnVuXzAuOCAgICAgICAgICAgICAgcGtnY29uZmlnXzIuMC4yICAgICAgXG5bMzZdIEJpb2NHZW5lcmljc18wLjMwLjAgICBiYXNlNjRlbmNfMC4xLTMgICAgICAgbWdjdl8xLjgtMjggICAgICAgICAgIGh0bWx0b29sc18wLjMuNiAgICAgICB0aWR5c2VsZWN0XzAuMi41ICAgICBcbls0MV0gdGliYmxlXzIuMS4zICAgICAgICAgIElSYW5nZXNfMi4xOC4zICAgICAgICBtYXRyaXhTdGF0c18wLjU1LjAgICAgWE1MXzMuOTgtMS4yMCAgICAgICAgIGNyYXlvbl8xLjMuNCAgICAgICAgIFxuWzQ2XSBkcGx5cl8wLjguMyAgICAgICAgICAgd2l0aHJfMi4xLjIgICAgICAgICAgIGJpdG9wc18xLjAtNiAgICAgICAgICBncmlkXzMuNi4wICAgICAgICAgICAgbmxtZV8zLjEtMTM5ICAgICAgICAgXG5bNTFdIGpzb25saXRlXzEuNiAgICAgICAgICB4dGFibGVfMS44LTQgICAgICAgICAgZ3RhYmxlXzAuMy4wICAgICAgICAgIERCSV8xLjAuMCAgICAgICAgICAgICBtYWdyaXR0cl8xLjUgICAgICAgICBcbls1Nl0gc2NhbGVzXzEuMC4wICAgICAgICAgIHN0cmluZ2lfMS40LjMgICAgICAgICBnZW5lZmlsdGVyXzEuNjYuMCAgICAgbGltbWFfMy40MC42ICAgICAgICAgIHRvb2xzXzMuNi4wICAgICAgICAgIFxuWzYxXSBiaXQ2NF8wLjktNyAgICAgICAgICAgQmlvYmFzZV8yLjQ0LjAgICAgICAgIGdsdWVfMS4zLjEgICAgICAgICAgICBwdXJycl8wLjMuMiAgICAgICAgICAgaG1zXzAuNC4yICAgICAgICAgICAgXG5bNjZdIHBhcmFsbGVsXzMuNi4wICAgICAgICBzdXJ2aXZhbF8yLjQ0LTEuMSAgICAgeWFtbF8yLjIuMCAgICAgICAgICAgIEFubm90YXRpb25EYmlfMS40Ni4xICBjb2xvcnNwYWNlXzEuNC0xICAgICBcbls3MV0gbWVtb2lzZV8xLjEuMCAgICAgICAgIGtuaXRyXzEuMjMgICAgICAgICAgIFxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgICBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgICBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgICBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBnZ3Bsb3QyXzMuMi4wXG5cbmxvYWRlZCB2aWEgYSBuYW1lc3BhY2UgKGFuZCBub3QgYXR0YWNoZWQpOlxuIFsxXSByZXRpY3VsYXRlXzEuMTIgICAgICAgZ2VuZWZpbHRlcl8xLjY2LjAgICAgIHRpZHlzZWxlY3RfMC4yLjUgICAgICB4ZnVuXzAuOCAgICAgICAgICAgICAgcHVycnJfMC4zLjIgICAgICAgICAgXG4gWzZdIHNwbGluZXNfMy42LjAgICAgICAgICBsYXR0aWNlXzAuMjAtMzggICAgICAgY29sb3JzcGFjZV8xLjQtMSAgICAgIHN0YXRzNF8zLjYuMCAgICAgICAgICBtZ2N2XzEuOC0yOCAgICAgICAgICBcblsxMV0gc3Vydml2YWxfMi40NC0xLjEgICAgIGJsb2JfMS4xLjEgICAgICAgICAgICBYTUxfMy45OC0xLjIwICAgICAgICAgcmxhbmdfMC40LjAgICAgICAgICAgIHBpbGxhcl8xLjQuMiAgICAgICAgIFxuWzE2XSBnbHVlXzEuMy4xICAgICAgICAgICAgd2l0aHJfMi4xLjIgICAgICAgICAgIERCSV8xLjAuMCAgICAgICAgICAgICBCaW9jUGFyYWxsZWxfMS4xOC4xICAgQmlvY0dlbmVyaWNzXzAuMzAuMCAgXG5bMjFdIGJpdDY0XzAuOS03ICAgICAgICAgICBtYXRyaXhTdGF0c18wLjU1LjAgICAgc3ZhXzMuMzIuMSAgICAgICAgICAgIHVtYXBfMC4yLjIuMCAgICAgICAgICBtdW5zZWxsXzAuNS4wICAgICAgICBcblsyNl0gZ3RhYmxlXzAuMy4wICAgICAgICAgIG1lbW9pc2VfMS4xLjAgICAgICAgICBsYWJlbGluZ18wLjMgICAgICAgICAgQmlvYmFzZV8yLjQ0LjAgICAgICAgIGtuaXRyXzEuMjMgICAgICAgICAgIFxuWzMxXSBJUmFuZ2VzXzIuMTguMyAgICAgICAgcGFyYWxsZWxfMy42LjAgICAgICAgIEFubm90YXRpb25EYmlfMS40Ni4xICBwcmVwcm9jZXNzQ29yZV8xLjQ2LjAgUmNwcF8xLjAuMSAgICAgICAgICAgXG5bMzZdIHh0YWJsZV8xLjgtNCAgICAgICAgICByZWFkcl8xLjMuMSAgICAgICAgICAgc2NhbGVzXzEuMC4wICAgICAgICAgIGJhY2twb3J0c18xLjEuNCAgICAgICBsaW1tYV8zLjQwLjYgICAgICAgICBcbls0MV0gUzRWZWN0b3JzXzAuMjIuMSAgICAgIGpzb25saXRlXzEuNiAgICAgICAgICBhbm5vdGF0ZV8xLjYyLjAgICAgICAgYml0XzEuMS0xNCAgICAgICAgICAgIFJTcGVjdHJhXzAuMTUtMCAgICAgIFxuWzQ2XSBobXNfMC40LjIgICAgICAgICAgICAgZGlnZXN0XzAuNi4yMCAgICAgICAgIGRwbHlyXzAuOC4zICAgICAgICAgICBncmlkXzMuNi4wICAgICAgICAgICAgcnByb2pyb290XzEuMy0yICAgICAgXG5bNTFdIHRvb2xzXzMuNi4wICAgICAgICAgICBiaXRvcHNfMS4wLTYgICAgICAgICAgbWFncml0dHJfMS41ICAgICAgICAgIGxhenlldmFsXzAuMi4yICAgICAgICBSQ3VybF8xLjk1LTQuMTIgICAgICBcbls1Nl0gdGliYmxlXzIuMS4zICAgICAgICAgIFJTUUxpdGVfMi4xLjEgICAgICAgICBjcmF5b25fMS4zLjQgICAgICAgICAgcGtnY29uZmlnXzIuMC4yICAgICAgIE1hdHJpeF8xLjItMTcgICAgICAgIFxuWzYxXSBhc3NlcnR0aGF0XzAuMi4xICAgICAgcnN0dWRpb2FwaV8wLjEwICAgICAgIFI2XzIuNC4wICAgICAgICAgICAgICBubG1lXzMuMS0xMzkgICAgICAgICAgY29tcGlsZXJfMy42LjAgICAgICAgXG4ifQ== -->
 <pre><code>R version 3.6.0 (2019-04-26)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Debian GNU/Linux 9 (stretch)
@@ -3422,21 +3412,19 @@ other attached packages:
 [1] ggplot2_3.2.0
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.1            lattice_0.20-38       assertthat_0.2.1      rprojroot_1.3-2       digest_0.6.20        
- [6] RSpectra_0.15-0       R6_2.4.0              backports_1.1.4       stats4_3.6.0          RSQLite_2.1.1        
-[11] evaluate_0.14         sva_3.32.1            pillar_1.4.2          rlang_0.4.0           lazyeval_0.2.2       
-[16] rstudioapi_0.10       annotate_1.62.0       blob_1.1.1            S4Vectors_0.22.1      Matrix_1.2-17        
-[21] preprocessCore_1.46.0 reticulate_1.12       rmarkdown_1.13        labeling_0.3          splines_3.6.0        
-[26] BiocParallel_1.18.1   readr_1.3.1           stringr_1.4.0         RCurl_1.95-4.12       bit_1.1-14           
-[31] munsell_0.5.0         umap_0.2.2.0          compiler_3.6.0        xfun_0.8              pkgconfig_2.0.2      
-[36] BiocGenerics_0.30.0   base64enc_0.1-3       mgcv_1.8-28           htmltools_0.3.6       tidyselect_0.2.5     
-[41] tibble_2.1.3          IRanges_2.18.3        matrixStats_0.55.0    XML_3.98-1.20         crayon_1.3.4         
-[46] dplyr_0.8.3           withr_2.1.2           bitops_1.0-6          grid_3.6.0            nlme_3.1-139         
-[51] jsonlite_1.6          xtable_1.8-4          gtable_0.3.0          DBI_1.0.0             magrittr_1.5         
-[56] scales_1.0.0          stringi_1.4.3         genefilter_1.66.0     limma_3.40.6          tools_3.6.0          
-[61] bit64_0.9-7           Biobase_2.44.0        glue_1.3.1            purrr_0.3.2           hms_0.4.2            
-[66] parallel_3.6.0        survival_2.44-1.1     yaml_2.2.0            AnnotationDbi_1.46.1  colorspace_1.4-1     
-[71] memoise_1.1.0         knitr_1.23           </code></pre>
+ [1] reticulate_1.12       genefilter_1.66.0     tidyselect_0.2.5      xfun_0.8              purrr_0.3.2          
+ [6] splines_3.6.0         lattice_0.20-38       colorspace_1.4-1      stats4_3.6.0          mgcv_1.8-28          
+[11] survival_2.44-1.1     blob_1.1.1            XML_3.98-1.20         rlang_0.4.0           pillar_1.4.2         
+[16] glue_1.3.1            withr_2.1.2           DBI_1.0.0             BiocParallel_1.18.1   BiocGenerics_0.30.0  
+[21] bit64_0.9-7           matrixStats_0.55.0    sva_3.32.1            umap_0.2.2.0          munsell_0.5.0        
+[26] gtable_0.3.0          memoise_1.1.0         labeling_0.3          Biobase_2.44.0        knitr_1.23           
+[31] IRanges_2.18.3        parallel_3.6.0        AnnotationDbi_1.46.1  preprocessCore_1.46.0 Rcpp_1.0.1           
+[36] xtable_1.8-4          readr_1.3.1           scales_1.0.0          backports_1.1.4       limma_3.40.6         
+[41] S4Vectors_0.22.1      jsonlite_1.6          annotate_1.62.0       bit_1.1-14            RSpectra_0.15-0      
+[46] hms_0.4.2             digest_0.6.20         dplyr_0.8.3           grid_3.6.0            rprojroot_1.3-2      
+[51] tools_3.6.0           bitops_1.0-6          magrittr_1.5          lazyeval_0.2.2        RCurl_1.95-4.12      
+[56] tibble_2.1.3          RSQLite_2.1.1         crayon_1.3.4          pkgconfig_2.0.2       Matrix_1.2-17        
+[61] assertthat_0.2.1      rstudioapi_0.10       R6_2.4.0              nlme_3.1-139          compiler_3.6.0       </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 </div>
