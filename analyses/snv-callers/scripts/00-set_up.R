@@ -122,9 +122,8 @@ if (opt$cosmic_clean != "none") {
       data.table = FALSE
     ) %>%
       # Keep only brain mutations so the file is smaller
-      dplyr::filter(`Site subtype 1` == "brain")
+      dplyr::filter(`Site subtype 1` == "brain") %>%
     # Get rid of spaces in column names
-    cosmic_variants <- cosmic_variants %>%
       dplyr::rename_all(dplyr::funs(stringr::str_replace_all(., " ", "_"))) %>%
       # Separate the genome coordinates into their own BED like variables
       dplyr::mutate(
@@ -132,7 +131,7 @@ if (opt$cosmic_clean != "none") {
           "chr",
           stringr::word(Mutation_genome_position, sep = ":", 1)
         ),
-        Start_Position = stringr::word(Mutation_genome_position, sep = ":|-", 1),
+        Start_Position = stringr::word(Mutation_genome_position, sep = ":|-", 2),
         End_Position = stringr::word(Mutation_genome_position, sep = "-", 2),
         # Make a base_change variable so we can compare to our set up for PBTA data
         base_change = substr(Mutation_CDS, nchar(Mutation_CDS) - 2, nchar(Mutation_CDS))
