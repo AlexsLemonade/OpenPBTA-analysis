@@ -12,7 +12,6 @@ library("stringr")
 
 #Read in data 
 expData <- readRDS("../../data/pbta-gene-counts-rsem-expected_count.stranded.rds")
-print(colnames(expData))
 
 #Format RNA-Seq data and get one gene symbol per row as there is a many-to-one mapping
 #of gene symbols and Ensembl ID's
@@ -27,12 +26,12 @@ expData <- dplyr::select(expData, dplyr::starts_with("BS_")) #Now we have on sym
 #Log-Tranform for input into GSVA
 expData <- as.matrix(log2(expData+1))
 
-#Read Hallmark Gene Sets (function getGMT from GSEABase) & Format
+#Read Hallmark Gene Sets (function getGMT from GSEABase) and use geneIDs function for input into GSVA
 hallmarkSets <- GSEABase::getGmt("references/h.all.v7.0.symbols.gmt", collectionType=BroadCollection(), geneIdType= SymbolIdentifier())
 hallmarkSets <- GSEABase::geneIds(hallmarkSets)
 
-#Run GSVA
+#Run GSVA to get Hallmark pathway level scores for each sample
 GeneSetExprsMat <- GSVA::gsva(expData, hallmarkSets, abs.ranking=F, min.sz=1, max.sz=500, parallel.sz=1, mx.diff=F)
-saveRDS(GeneSetExprsMat, "results/GeneSetExpressionMatrix.RDS")
-saveRDS(GeneSetExprsMat, "../../scratch/GeneSetExpressionMatrix.RDS")
+saveRDS(GeneSetExprsMat, "results/GeneSetExpressionMatrix.RDS") #Write to results 
+saveRDS(GeneSetExprsMat, "../../scratch/GeneSetExpressionMatrix.RDS") #Write to scratch for use in next function
 
