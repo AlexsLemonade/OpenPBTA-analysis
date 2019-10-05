@@ -53,6 +53,9 @@ RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
 # These packages are for the genomic region analysis for snv-callers
 RUN R -e "BiocManager::install(c('annotatr', 'TxDb.Hsapiens.UCSC.hg38.knownGene', 'org.Hs.eg.db'), update = FALSE)"
 
+# Packages for expression normalization and batch correction
+RUN R -e "BiocManager::install(c('preprocessCore', 'sva'), update = FALSE)"
+
 # These packages are for single-sample GSEA analysis
 RUN R -e "BiocManager::install(c('GSEABase', 'GSVA'), update = FALSE)"
 
