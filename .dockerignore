@@ -1,2 +1,4 @@
 # we don't want to build the data into the image
 data
+# analyses are also large now
+analyses
