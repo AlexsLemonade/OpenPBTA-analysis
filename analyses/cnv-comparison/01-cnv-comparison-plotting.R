@@ -35,7 +35,7 @@ set.seed(2019)
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # Source custom functions script
-source(file.path(root_dir, "analyses", "cnv-comparison", "util", 
+source(file.path(root_dir, "analyses", "cnv-comparison", "util",
                  "cnv-comparison-functions.R"))
 
 #### Set up file paths ---------------------------------------------------------
@@ -52,39 +52,23 @@ if (!dir.exists(output_directory)) {
 #### Read in data --------------------- ----------------------------------------
 
 # Read in metadata
-metadata <- readr::read_tsv(file.path(input_directory, "pbta-histologies.tsv"))
+metadata <-
+  readr::read_tsv(file.path(input_directory, "pbta-histologies.tsv"))
 
 # Read in cnvkit data
-cnvkit <-
-  read.table(gzfile(
-    file.path(input_directory, "pbta-cnv-cnvkit.seg.gz")
-  ), header = TRUE)
-cnvkit <-
-  cnvkit[c("chrom", "loc.start", "loc.end", "ID", "num.mark", "seg.mean")]
+cnvkit <- read_in_cnv(input_directory, "pbta-cnv-cnvkit.seg.gz")
 
 # Read in cnvkit subset data
 cnvkit_subset <-
-  read.table(gzfile(
-    file.path(input_directory, "testing", "pbta-cnv-cnvkit.seg.gz")
-  ), header = TRUE)
-cnvkit_subset <-
-  cnvkit_subset[c("chrom", "loc.start", "loc.end", "ID", "num.mark", "seg.mean")]
+  read_in_cnv(input_directory, "testing/pbta-cnv-cnvkit.seg.gz")
 
 # Read in controlfreec data
 controlfreec <-
-  read.table(gzfile(
-    file.path(input_directory, "pbta-cnv-controlfreec.seg.gz")
-  ), header = TRUE)
-controlfreec <-
-  controlfreec[c("chrom", "loc.start", "loc.end", "ID", "num.mark", "seg.mean")]
+  read_in_cnv(input_directory, "pbta-cnv-controlfreec.seg.gz")
 
 # Read in controlfreec subset data
 controlfreec_subset <-
-  read.table(gzfile(
-    file.path(input_directory, "testing", "pbta-cnv-controlfreec.seg.gz")
-  ), header = TRUE)
-controlfreec_subset <-
-  controlfreec_subset[c("chrom", "loc.start", "loc.end", "ID", "num.mark", "seg.mean")]
+  read_in_cnv(input_directory, "testing/pbta-cnv-controlfreec.seg.gz")
 
 #### Filter data ---------------------------------------------------------------
 
@@ -138,16 +122,16 @@ plot_cowplot(
 #### Plot boxplots using ggplot2 -----------------------------------------------
 
 # Run `plot_boxplot` on cnvkit
-cnvkit_diff_boxplot <- plot_boxplot(cnvkit_format, "CNVkit boxplot")
+cnvkit_boxplot <- plot_boxplot(cnvkit_format, "CNVkit boxplot")
 
 # Run `plot_boxplot` on controlfreec
-controlfreec_diff_boxplot <-
+controlfreec_boxplot <-
   plot_boxplot(controlfreec_format, "Control-FREEC boxplot")
 
 # Save the plot combining the cnvkit and controlfreec boxplots
 plot_cowplot(
-  cnvkit_diff_boxplot,
-  controlfreec_diff_boxplot,
+  cnvkit_boxplot,
+  controlfreec_boxplot,
   output_directory,
   "compare_cnv_output_boxplot.pdf"
 )
@@ -172,6 +156,7 @@ cnvkit_annotated_barplot_aberration <-
 controlfreec_annotated_barplot_aberration <-
   plot_aberration_barplot(controlfreec_format,
                          "Control-FREEC")
+
 # Save the plot combining the cnvkit and controlfreec barplots
 plot_cowplot(
   cnvkit_annotated_barplot_histology,
