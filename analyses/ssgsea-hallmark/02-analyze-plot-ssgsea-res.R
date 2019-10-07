@@ -53,9 +53,9 @@ clinData <- clinData[clinData[,"experimental_strategy"]=="RNA-Seq",]
 rownames(clinData) <- clinData[,"Kids_First_Biospecimen_ID"]
 clinData <- clinData[colnames(geneSetExpMat),]
 
-#Function to split pathway names from TukeyHSD into vector of 2 elements
-#i.e. Tukey HSD outputs Pathway1-Pathway2 and this will spitout c(Pathway1, Pathway2)
-#Will be used so that we can tell quickly which pathways are consistently upregulated vs other pathways
+#Function to split variable names from TukeyHSD into vector of 2 elements
+#i.e. Tukey HSD outputs variable1-variable2 and this will spitout c(variable1, variable2)
+#This will make for easier filtering and/or summarization on one variable
 getVarNames <- function(x)
 {
 	tmp <- strsplit(x, split="-")[[1]]
@@ -79,7 +79,7 @@ compareClinVarToPathway <- function(pathwayName=NULL, clinVarName=NULL)
 	posthoc[,"AOV_P"] <- aovOutNamed["Pr(>F)1"]
 	posthoc[,"Pathway"] <- pathwayName
 	posthoc[,"ClinVar"] <- clinVarName
-	posthoc <- cbind(t(sapply(rownames(posthoc), FUN=getVarNames)), posthoc) #Pulls out disease names 
+	posthoc <- cbind(t(sapply(rownames(posthoc), FUN=getVarNames)), posthoc) #Pulls out clinical variable names 
 	colnames(posthoc)[1:2] <- c("VarX", "VarY")
 	return(posthoc)
 }
@@ -100,7 +100,7 @@ write.table(diseaseTypeFilt, "results/DiseaseCorrelationPathway.txt", sep="\t", 
 
 #We would like to filter to cases where a histology is significantly higher than other histologies (and the corresponding pathways)
 #This is for the heatmap so we may focus a bit on the more interesting results
-#The issue here is that Tukey will write out the pathways in some particular order
+#The issue here is that Tukey will write out the histologies in some particular order
 #If we are interested in finding if a Histology A is significantly upregulated compared to at least X% of
 #other histologies this may present a problem because Tukey may write out the following
 #HistologyA-HistologyB ~ Fold-change = 1
@@ -108,8 +108,8 @@ write.table(diseaseTypeFilt, "results/DiseaseCorrelationPathway.txt", sep="\t", 
 #HistologyD-HistologyA ~ Fold-change = -1
 #if the first histology is in column 1 and the second is in column 2 and the FC is in column 3 of a data frame we would be required
 #to check the FC in order to determine if Histology Y is in fact > or < another histology. Hence a bit of logic below to get counts. 
-diseaseTypeFilt[,"DiseaseTmpX"] <- ifelse(diseaseTypeFilt[,"diff"]>0, as.character(diseaseTypeFilt[,"DiseaseX"]), as.character(diseaseTypeFilt[,"DiseaseY"]))
-diseaseTableTmp <- data.frame(table(diseaseTypeFilt[,c("DiseaseX", "Pathway")])) #This gets the counts per disease/pathway, i.e. number of other diseases it's greater than
+diseaseTypeFilt[,"DiseaseWithHigherAvgScore"] <- ifelse(diseaseTypeFilt[,"diff"]>0, as.character(diseaseTypeFilt[,"DiseaseX"]), as.character(diseaseTypeFilt[,"DiseaseY"]))
+diseaseTableTmp <- data.frame(table(diseaseTypeFilt[,c("DiseaseWithHigherAvgScore", "Pathway")])) 
 
 #Now get diseases highly associated with a certain pathway based on a cutoff, which is based on the number of histologies in general
 diseaseTableTmp <- diseaseTableTmp[diseaseTableTmp[,"Freq"]>(n_distinct(clinData[,"short_histology"])*percKeep),]
@@ -117,7 +117,7 @@ diseaseTableTmp <- diseaseTableTmp[order(-diseaseTableTmp[,"Freq"]),]
 
 #Now set up to create heatmaps
 keepPathways <- unique(as.character(diseaseTableTmp[,"Pathway"]))
-keepDisease <- unique(as.character(diseaseTableTmp[,"DiseaseX"]))
+keepDisease <- unique(as.character(diseaseTableTmp[,"DiseaseWithHigherAvgScore"]))
 tmpClinData <- clinData[c("short_histology", "broad_histology")]
 colnames(tmpClinData)[1] <- "Histology" 
 
