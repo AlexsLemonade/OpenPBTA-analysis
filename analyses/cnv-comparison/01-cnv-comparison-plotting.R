@@ -23,9 +23,6 @@ if (!("cowplot" %in% installed.packages())) {
 
 ##### Set up functions ---------------------------------------------------------
 
-# Set seed
-set.seed(2019)
-
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
