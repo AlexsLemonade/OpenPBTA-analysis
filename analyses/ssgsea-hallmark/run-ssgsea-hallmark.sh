@@ -8,6 +8,9 @@
 # This script should always run as if it were being called from
 # the directory it lives in.
 
+set -e
+set -o pipefail
+
 ANOVAPVALUE=${OPENPBTA_ANOVAPVALUE:-0.01}
 TUKEYPVALUE=${OPENPBTA_TUKEYPVALUE:-0.05}
 PERCKEEP=${OPENPBTA_PERCKEEP:-0.25}
