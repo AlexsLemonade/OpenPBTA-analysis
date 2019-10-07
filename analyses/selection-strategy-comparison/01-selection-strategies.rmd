@@ -1,0 +1,362 @@
+---
+title: "Exploration of RNA selection strategy effects"
+author: "Joshua Shapiro for CCDL"
+output:
+  html_notebook:
+    toc: yes
+    toc_float: yes
+---
+
+
+## Setup
+
+### R setup
+
+```{r setup}
+# install packages 
+
+if (!("umap" %in% installed.packages())) {
+  install.packages("umap")
+}
+
+if (!("preprocessCore" %in% installed.packages())) {
+  BiocManager::install("preprocessCore", update = FALSE)
+}
+
+if (!("sva" %in% installed.packages())) {
+  BiocManager::install("sva", update = FALSE)
+}
+
+# load packages
+library(ggplot2)
+
+# magrittr pipe
+`%>%` <- dplyr::`%>%`
+
+# set seed
+set.seed(2019)
+
+```
+
+
+
+### Directories
+
+```{r directory setup}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+output_dir <- file.path(root_dir,
+                        "analyses", 
+                        "selection-strategy-comparison", 
+                        "plots")
+
+# Create directory to hold the output.
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir)
+}
+```
+
+### Functions
+
+```{r umap plotting function}
+#' Plot of a umap model
+#' 
+#' The umap_plot function takes a umap model and associated metadata and 
+#' returns a ggplot object that plots the first two UMAP components,
+#' colored by disease type and with shapes determined by selection method. 
+#' Optionally writes the plot to a file.
+#' 
+#' @param umap_model A umap model object output from [umap::umap]
+#' @param metadata A data frame of metadata for the samples. Must contain a 
+#'   column of `disease_comparable` and `RNA_library` as in the 
+#'   "pbta-histologies.tsv" file.
+#' @param sample_id The name of the column containing sample ids. Defaults to 
+#'   "Kids_First_Biospecimen_ID", as in the "pbta-histologies.tsv" file.
+#' @param comparable Boolean to determine whether to include only diseases 
+#'   present in both strategies in plots. Requires the presence of a 
+#'   `comparable` column in the metadata function.
+#' @param filename File for writinge the output plot. Default `NA` will not 
+#'   write to a file, but still returns the plot.
+#' 
+#' @return A ggplot object containing a plot of the first two UMAP components
+umap_plot <- function(umap_model, 
+                      metadata, 
+                      sample_id = "Kids_First_Biospecimen_ID", 
+                      filter_comparable = TRUE,
+                      filename = NA){
+  
+  layout <- data.frame(umap_model$layout) %>% 
+    dplyr::rename_all(.funs = gsub, pattern = "^X", replacement = "UMAP") %>%
+    tibble::rownames_to_column(var = sample_id)
+  
+  plot_data <- layout %>%
+    dplyr::left_join(metadata, by = sample_id) 
+  if (filter_comparable) {
+    plot_data <- plot_data %>% dplyr::filter(comparable)
+  }  
+  
+  
+  u_plot <- ggplot(plot_data, 
+                   aes(x = UMAP1, 
+                       y = UMAP2, 
+                       color = disease_comparable, 
+                       shape = RNA_library)) +
+    geom_point(alpha = 0.3) +
+    labs(color = "Disease Type",
+         shape = "Selection Method")
+  
+  if (is.character(filename)) {
+    ggsave(filename, 
+           u_plot,
+           width = 11,
+           height = 7)
+  }
+  
+  return(u_plot)
+}
+
+```
+
+## Read Data
+
+For now we will read in only the rsem data; we may examine the kallisto data later.
+
+```{r read data}
+exp_rsem_polyA <- readRDS(file.path(root_dir, 
+                                    "data", 
+                                    "pbta-gene-expression-rsem-fpkm.polya.rds"))
+exp_rsem_stranded <- readRDS(file.path(root_dir, 
+                                       "data", 
+                                       "pbta-gene-expression-rsem-fpkm.stranded.rds"))
+
+# join polyA and stranded data together
+exp_rsem <- dplyr::bind_cols(exp_rsem_polyA,
+                             exp_rsem_stranded[,-1]) %>%
+  dplyr::filter(complete.cases(.))
+
+# transpose the expression values to a matrix
+exp_rsem_t <- t(exp_rsem[,-1])
+colnames(exp_rsem_t) <- exp_rsem[[1]]
+
+
+
+metadata_df <- readr::read_tsv(file.path(root_dir,
+                                        "data",
+                                        "pbta-histologies.tsv")) %>%
+  dplyr::right_join(dplyr::tibble(Kids_First_Biospecimen_ID = rownames(exp_rsem_t)), 
+                    by = "Kids_First_Biospecimen_ID")
+
+```
+
+## Sample info
+
+Looking at metadata first, separating out the poly-A and stranded samples.
+
+```{r}
+polyA_meta_df <- metadata_df %>% 
+  dplyr::filter(RNA_library == "poly-A") 
+
+stranded_meta_df <- metadata_df %>% 
+  dplyr::filter(RNA_library == "stranded") 
+
+```
+
+There are `r nrow(polyA_meta_df)` samples and `r nrow(stranded_meta_df)` stranded samples, so the chances of much meaningful comparison seem slim. But just to compare the kinds of samples between the two:
+
+```{r sample types}
+polyA_counts <- polyA_meta_df %>% 
+  dplyr::group_by(disease_type_new) %>%
+  dplyr::summarise(polyA_n = dplyr::n())
+
+polyA_diseases <- polyA_counts$disease_type_new
+
+stranded_counts <- stranded_meta_df %>% 
+  dplyr::group_by(disease_type_new) %>%
+  dplyr::summarise(stranded_n = dplyr::n())
+
+strategy_counts <- dplyr::left_join(polyA_counts, stranded_counts)
+
+strategy_counts
+
+```
+
+
+Looks like there is possible comparison among the gliomas, if those might cluster together on some scale. Focus on those first to see how they compare in analyses.
+
+First, add a flag for comparable datasets (those disease types with both poly-A and stranded samples) to the metadata table for later use.
+
+```{r add to metadata}
+metadata_df <- metadata_df %>%
+  dplyr::mutate(comparable = disease_type_new %in% polyA_diseases, 
+                disease_comparable = ifelse(comparable, disease_type_new, "other"))
+
+```
+
+
+## Raw clustering
+
+To start, we will reproduce an naive dimensionality reduction analysis to show the problem of selection method that we are facing. Since UMAP seems to work well overall, that is what we will focus on first.
+
+```{r neighbors}
+# set neighbors parameter
+neighbors <- 15
+```
+
+```{r raw clustering}
+# remove low counts
+dm_set <- exp_rsem_t[, colSums(exp_rsem_t) > 100]
+
+rsem_umap_raw <- umap::umap(dm_set, n_neighbors = neighbors)
+
+```
+
+```{r plot raw}
+
+plot_raw <- umap_plot(rsem_umap_raw, 
+                      metadata_df,
+                      filename = file.path(output_dir, 
+                                           "umap_raw.png"))
+
+plot_raw
+```
+
+
+So even with more dimensions, we are not surprised to see that the poly-A samples are still clustering together.
+
+## Removing poly-A depleted genes
+
+### Any expression at all
+
+As a first pass, lets see what happens when we remove genes are simply not expressed in the poly-A samples (or vice versa?).
+
+
+```{r get polyA exp}
+polyA_samples <- rownames(exp_rsem_t) %in% polyA_meta_df$Kids_First_Biospecimen_ID
+polyA_exp <- exp_rsem_t[polyA_samples, ]
+
+# get genes expressed at all in all samples
+polyA_gene_filter <- colSums(polyA_exp <= 0) == 0
+
+polyA_expressed <- exp_rsem_t[, polyA_gene_filter]
+ncol(polyA_expressed)
+```
+
+```{r}
+rsem_umap_polyA <- umap::umap(polyA_expressed, n_neighbors = neighbors)
+```
+
+```{r plot polyA}
+plot_polyA <- umap_plot(rsem_umap_polyA, 
+                        metadata_df, 
+                        filename = file.path(output_dir, 
+                                             "umap_polyA.png"))
+plot_polyA
+```
+
+
+## Normalize data
+
+Since simple elimination of samples doesn't work, lets see what happens with some simple normalization. 
+Using the poly-A expressed data set as the base.
+
+### Ranks
+
+First, just trying a simple ranking of genes by expression per sample.
+
+```{r rank normalize}
+polyA_expressed_rank <- t(apply(polyA_expressed, 1, rank))
+
+```
+
+
+```{r}
+rsem_umap_polyA_rank <- umap::umap(polyA_expressed_rank, n_neighbors = neighbors)
+```
+
+```{r}
+plot_polyA_rank <- umap_plot(rsem_umap_polyA_rank, 
+                             metadata_df, 
+                             filename = file.path(output_dir, 
+                                                  "umap_polyA_ranks.png"))
+
+plot_polyA_rank
+
+```
+
+
+This substantially improves clustering by cancer type, but poly-A is still a quite divergent cluster.
+
+### Quantile normalization
+
+An alternative to the simple ranking is to do quantile normalization, which might have different results.
+
+```{r quantile normalize}
+polyA_expressed_norm <- t(preprocessCore::normalize.quantiles(t(polyA_expressed)))
+# normalize.quantiles strips names
+rownames(polyA_expressed_norm) <- rownames(polyA_expressed)
+```
+
+```{r}
+rsem_umap_polyA_norm <- umap::umap(polyA_expressed_norm, n_neighbors = neighbors)
+```
+
+```{r}
+plot_polyA_norm <- umap_plot(rsem_umap_polyA_norm, 
+                             metadata_df,
+                             filename = file.path(output_dir,
+                                                  "umap_polyA_normalized.png"))
+
+plot_polyA_norm
+```
+
+That is surprisingly worse than the raw ranks. 
+I would have expected similar results to the ranks, but this actually seems to perform somewhat worse, especially in differentiating different disease types.
+Either way though the poly-A and stranded samples are well separated in any component.
+
+## ComBat
+
+One more principled effort would be to see if we can apply ComBat and get anything reasonable.
+
+For the combat model we will create a model matrix with our factors of interest, which in this case will be disease type.
+We will go with the parametric adjustment first, to see if that is effective at all.
+If wanted, we could try non-parametric, but that takes *much* longer.
+
+```{r}
+combat_model <- model.matrix(~as.factor(disease_type_new), 
+                             data = metadata_df)
+
+combat_exp <- sva::ComBat(dat = t(polyA_expressed), 
+                          batch = metadata_df$RNA_library, 
+                          mod = combat_model, 
+                          par.prior = TRUE) # parametric adjustment
+```
+
+```{r}
+rsem_umap_polyA_combat <- umap::umap(t(combat_exp), n_neighbors = neighbors)
+```
+
+```{r}
+plot_polyA_combat <- umap_plot(rsem_umap_polyA_combat, 
+                               metadata_df,
+                               filename = file.path(output_dir,
+                                                    "umap_polyA_combat.png"))
+
+plot_polyA_combat
+```
+
+This seems to be more effective than anything else, in that it pulls the astrocytomas together (though the poly-A remain far more mightly clustered), but it still leaves the poly-A DIPG samples quite distinct.
+
+## Conclusions
+
+While with a (much) larger data set, and perhaps more balanced arrangements among the tumor types, it might be possible to implement a principled correction for different library selection methods, it seems unlikely that this will be done with the current data set.
+It is possible that some specific analyses may be salvageable with ComBat or a similar method, but the overall recommendation is likely to be to do most of the expression analysis treating the stranded and poly-A selected libraries separately, and not attempt to draw conclusions about comparisons between these two sets.
+
+It would be ideal if there were sufficient additional tissue and resources to perform stranded RNAseq on the poly-A selected samples, but note that we might still be concerned about batch effects. 
+Indeed, batch effects are potentially a larger problem in general.
+Information on the technical processing of the samples (including dates, kits, Illumina model, etc.) should be included in the metadata to allow examination and/or mitigation of some of these more subtle effects.
+
+### Session info
+
+```{r}
+sessionInfo()
+```

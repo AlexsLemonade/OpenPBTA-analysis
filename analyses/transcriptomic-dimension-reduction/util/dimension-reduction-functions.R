@@ -163,3 +163,62 @@ dimension_reduction_wrapper <- function(transposed_expression_matrix,
     )
   
 }
+
+# Function to plot
+plot_dimension_reduction <- function(aligned_scores_df, 
+                                     point_color,
+                                     x_label,
+                                     y_label,
+                                     score1 = 1, 
+                                     score2 = 2) {
+    # Given a data.frame that contains the scores of a dimension reduction
+    # analysis and the information we want from the metadata, make a scatterplot.
+    #
+    # Args:
+    #   aligned_scores_df: data.frame containing dimension reduction scores,
+    #                           and relative information from the metadata
+    #   point_color: the variable whose information will be used to color
+    #                the points on the plot
+    #   x_label: the x-axis label, character
+    #   y_label: the y-axis label, character
+    #   score1: the column number of the first dimension reduction score that we
+    #           want to plot, 1 by default
+    #   score2: the column number of the second dimension reduction score that
+    #           we want to plot, 2 by default
+    #
+    # Returns:
+    #   dimension_reduction_plot: the plot representing the dimension reduction
+    #                             scores in the given data.frame, using the 
+    #                             values in `point_color` as symbols to color 
+    #                             the points
+    
+    if (!(point_color %in% colnames(aligned_scores_df))) {
+      stop(paste(point_color, "is not column in aligned_scores_df"))
+    }
+  
+    # transform the strings in `point_color` into symbols for plotting
+    color_sym <- rlang::sym(point_color)
+    
+    dimension_reduction_plot <- ggplot2::ggplot(
+      aligned_scores_df,
+      ggplot2::aes(
+        x = dplyr::pull(aligned_scores_df, score1),
+        y = dplyr::pull(aligned_scores_df, score2),
+        color = !!color_sym
+      )
+    ) +
+      ggplot2::geom_point(alpha = 0.3) +
+      ggplot2::scale_color_manual(values = (c(
+        "#2b3fff", "#ec102f", "#235e31",
+        "#1a6587", "#11e38c", "#a22f80",
+        "#fe5900", "#1945c5", "#51f310",
+        "#8b20d3", "#799d10", "#881c23",
+        "#3fc6f8", "#fe5cde", "#0a7fb2",
+        "#f2945a", "#6b4472", "#f4d403",
+        "#76480d", "#a6b6f9"
+      ))) +
+      ggplot2::labs(x = x_label, y = y_label) +
+      ggplot2::theme_bw()
+    
+    return(dimension_reduction_plot)
+}
