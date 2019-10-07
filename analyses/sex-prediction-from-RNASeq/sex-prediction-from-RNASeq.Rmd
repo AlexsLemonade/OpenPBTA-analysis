@@ -1,13 +1,24 @@
 ---
 title: "R Notebook"
-output: html_notebook
+title: :"Sex Prediction from RNA-Seq"
+author: Bill Amadio
+date: 2019
 ---
+Library calls
+```{r}
+
+library(stats)
+library(glmnet)
+library(glmnetUtils)
+
+```
+
 
 RNA-Seq data is in pbta-gene-expression-kallisto.rds.
 
 ```{r}
 
-ge <- readRDS("../../data/pbta-gene-expression-kallisto.rds")
+ge <- readRDS("../../data/pbta-gene-expression-kallisto.stranded.rds")
 
 
 ```
@@ -15,56 +26,46 @@ ge <- readRDS("../../data/pbta-gene-expression-kallisto.rds")
 Metadata is in pbta-histologies.tsv.  reported_gender is our target variable. Kids_First_Biospecimen_ID is the unique identifier for each sample. 
 
 ```{r}
-hist <- read.delim("../../data/pbta-histologies.tsv", header=TRUE, sep="\t", stringsAsFactors = FALSE)
+histologies <- read.delim("../../data/pbta-histologies.tsv", header=TRUE, sep="\t", stringsAsFactors = FALSE)
 
-missing_reported_gender_samples <- hist[which(hist[, "reported_gender"] == ""), "Kids_First_Biospecimen_ID"]
-
-```
-
-Calculate the median absolute deviation for each transcript.
-
-```{r}
-library(stats)
-
-mads <- apply(ge[ , 3:1030], 1, function(x) mad(x, high=TRUE))
-
-mads_lo_hi <- sort(mads, index.return=TRUE)
+missing_reported_gender_samples <- histologies[which(histologies[, "reported_gender"] == ""), "Kids_First_Biospecimen_ID"]
 
 ```
+
 
 Let's try a model with the top 25% highest mads.
-Start a df with just the rows of ge corresponding to the top 25% highest mads.  Call it ge_top.
-transpopse ge_top[, 3:1030]. Call it df.
-Set colnames(df) to transcript IDs.
-Set rownames(df) to sample names.
 
 ```{r}
-tail_percent = 0.75
-ge_top <- ge[mads_lo_hi$ix[floor(tail_percent*length(mads)):length(mads)], ]
-df <- t(ge_top[, 3:1030])
+tail_percent <- 0.75
 
-colnames(df) <- ge_top[, 1]
+# dropping the gene and transcript identifiers and creating a matrix
 
-rownames(df) <- colnames(ge_top[, 3:1030])
+gene_expression_mat <- as.matrix(ge[ , -c(1,2)])
+rownames(gene_expression_mat) <- ge[ , 1]
 
+# calculate mean absolute variance for each transcript
+
+tx_mads <- apply(gene_expression_mat, 1, function(x) mad(x, high = TRUE))
+df <- t(gene_expression_mat[which(tx_mads >= quantile(tx_mads, tail_percent)), ])
 
 ```
 
 Eliminate rows of df corresponding to samples with missing reported_gender.
+
 ```{r}
 
 df <- df[!rownames(df) %in% missing_reported_gender_samples, ]
 
 ```
 
-Use reported_gender column from hist as the response.
+Use reported_gender column from histologies as the response.
 
-Extract reported_gender values from reported_gender column of hist.  Put these value in a two-column dataframe
+Extract reported_gender values from reported_gender column of histologies.  Put these value in a two-column dataframe
   c("Kids_First_Biospecimen_ID", "reported_gender").
 
 ```{r}
 
-reported_gender <- hist[hist$Kids_First_Biospecimen_ID %in% rownames(df), c("Kids_First_Biospecimen_ID", "reported_gender")]
+reported_gender <- histologies[histologies$Kids_First_Biospecimen_ID %in% rownames(df), c("Kids_First_Biospecimen_ID", "reported_gender")]
 
 ```
 
@@ -92,10 +93,9 @@ Hold out 30% of the samples to test accuracy after cross-validation tuning of
 
 ```{r}
 
-library(glmnet)
-library(glmnetUtils)
-
 train_percent <- 0.70
+set.seed(36354)
+
 train_set <- sample(1:nrow(df), floor(train_percent*nrow(df)))
 test_set <- setdiff(1:nrow(df), train_set)
 
@@ -149,12 +149,12 @@ non_zero_features <- which(coef(best_fit, s = best_fit$lambda.min) != 0)
 ```
 ```{r}
 
-# look at coef(best_fit, s=best_fit$lambda.min)[non_zero_features] for coefficients
+non_zero_coef <- coef(best_fit, s=best_fit$lambda.min)[non_zero_features]
 
 ```
 
 ```{r}
-# look at colnames(df)[non_zero_features] for transcript IDs
+non_zero_transcripts <- colnames(df)[non_zero_features]
 ```
 
 Determine model accuracy on the holdout sample.
