@@ -47,7 +47,7 @@ jobs:
 
       - run:
           name: ssGSEA Analysis
-          command: ./scripts/run_in_ci.sh sh analyses/ssgsea-hallmark/run-ssgsea-hallmark.sh
+          command: ./scripts/run_in_ci.sh OPENPBTA_ANOVAPVALUE=0.25 OPENPBTA_TUKEYPVALUE=0.50 OPENPBTA_PERCKEEP=0.50 bash analyses/ssgsea-hallmark/run-ssgsea-hallmark.sh
 
         #### Add your analysis here ####
         
