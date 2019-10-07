@@ -92,9 +92,7 @@ standard_fusion <- function(fusion_calls=fusion_calls,caller=caller) {
       dplyr::rename(Fusion_Type = reading_frame,
                     Confidence = confidence,
                     # SpanningFragCount is equivalent to discordant_mates in Arriba
-                    SpanningFragCount = discordant_mates,
-                    # TODO: remove once FusionAnnotator column name is updated
-                    annots = `X..`) %>%
+                    SpanningFragCount = discordant_mates) %>%
       dplyr::mutate(
         LeftBreakpoint = gsub('^chr', '', breakpoint1),
         RightBreakpoint = gsub('^chr', '', breakpoint2),
