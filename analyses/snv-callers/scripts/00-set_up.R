@@ -112,8 +112,7 @@ if (opt$annot_rds != "none" && !file.exists(opt$annot_rds)) {
 # if you register. The full, unfiltered somatic mutations file
 # CosmicMutantExport.tsv for grch38 is used here but only mutations from brain
 # related samples are kept.
-if (opt$cosmic_clean != "none") {
-  if (!file.exists(opt$cosmic_clean)) {
+if (opt$cosmic_clean != "none" && !file.exists(opt$cosmic_clean)) {
     # Print progress message
     message("Setting up COSMIC mutation file. Only need to do this once.")
 
@@ -146,6 +145,6 @@ if (opt$cosmic_clean != "none") {
       # Write to a TSV file
       readr::write_tsv(opt$cosmic_clean)
   } else {
-    stop("Original COSMIC Mutation file not found. Specify with --cosmic_og")
-  }
+    stop("A cleaned COSMIC Mutation file was already found with this name. Delete this if you 
+         wanted to re-run this step.")
 }
