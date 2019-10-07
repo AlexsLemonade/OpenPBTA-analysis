@@ -81,7 +81,7 @@ opt$annot_rds <- file.path(root_dir, opt$annot_rds)
 
 ################################ Build Annotation ##############################
 # We will only run this if it hasn't been run before
-if (opt$annot_rds != "none") {
+if (opt$annot_rds != "none" && !file.exists(opt$annot_rds)) {
   # Print progress message
   message("Setting up genomic region annotation file. Only need to do this once.")
 
@@ -113,7 +113,7 @@ if (opt$annot_rds != "none") {
 # CosmicMutantExport.tsv for grch38 is used here but only mutations from brain
 # related samples are kept.
 if (opt$cosmic_clean != "none") {
-  if (file.exists(opt$cosmic_og)) {
+  if (!file.exists(opt$cosmic_clean)) {
     # Print progress message
     message("Setting up COSMIC mutation file. Only need to do this once.")
 
