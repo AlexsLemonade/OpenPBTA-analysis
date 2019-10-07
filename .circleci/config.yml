@@ -30,6 +30,7 @@ jobs:
           command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/01-fusion-standardization.R -f "data/pbta-fusion-starfusion.tsv.gz" -c "STARfusion" -o "scratch/star.RDS" 
           
       - run:
+HEAD
           name: Transcriptome dimensionality reduction
           command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
         
@@ -37,6 +38,14 @@ jobs:
           name: SNV Caller Set Up    
           command: ./scripts/run_in_ci.sh Rscript analyses/snv-callers/scripts/00-set_up.R      
 
+          name: Unsupervised Transcriptomic Analysis - Multipanel Plots      
+          command: ./scripts/run_in_ci.sh bash analyses/transcriptomic-dimension-reduction/04-multipanel-plots.sh
+
+      - run:
+          name: Sex prediction from RNA-seq
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/sex-prediction-from-RNASeq/sex-prediction-from-RNASeq.Rmd', clean = TRUE)" 
+          
+a7cdde62f0cc617a3257749146357ae493a5b7b5
         #### Add your analysis here ####
         
   deploy:
