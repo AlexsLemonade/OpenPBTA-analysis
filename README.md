@@ -177,13 +177,13 @@ The most recent version of the project Docker image, which is pushed to Docker H
 docker pull ccdlopenpbta/open-pbta:latest
 ```
 
-**If you are a Mac or Windows user, the default limit for memory available to Docker is 2 GB. 
-You will likely need to increase this limit for local development.** 
+**If you are a Mac or Windows user, the default limit for memory available to Docker is 2 GB.
+You will likely need to increase this limit for local development.**
 [[Mac documentation](https://docs.docker.com/docker-for-mac/#resources), [Windows documentation](https://docs.docker.com/docker-for-windows/#advanced)]
 
 ##### RStudio
 
-Using `rocker/tidyverse:3.6.0` as our base image allows for development via RStudio in the project Docker container. 
+Using `rocker/tidyverse:3.6.0` as our base image allows for development via RStudio in the project Docker container.
 If you'd like to develop in this manner, you may do so by running the following and changing `<password>` to a password of you choosing at the command line:
 
 ```
@@ -192,17 +192,17 @@ docker run -e PASSWORD=<password> -p 8787:8787 ccdlopenpbta/open-pbta:latest
 
 You can change the volume that the Docker container points to either via the [Kitematic GUI](https://docs.docker.com/kitematic/userguide/) or the [`--volume` flag](https://docs.docker.com/storage/volumes/) to `docker run`.
 
-Once you've set the volume, you can navigate to `localhost:8787` in your browser if you are a Linux or Mac OS X user. 
+Once you've set the volume, you can navigate to `localhost:8787` in your browser if you are a Linux or Mac OS X user.
 The username will for login will be `rstudio` and the password will be whatever password you set with the `docker run` command above.
 
 If you are a new user, you may find [these instructions](https://github.com/AlexsLemonade/RNA-Seq-Exercises/blob/master/docker-pull.md) for a setting up a different Docker container or [this guide](https://www.andrewheiss.com/blog/2017/04/27/super-basic-practical-guide-to-docker-and-rstudio/) from Andrew Heiss helpful.
 
 ### Local Development
 
-While we encourage development within the Docker container, it is also possible to conduct analysis without Docker if that is desired. 
-In  this case, it is important to ensure that local or personal settings such as file paths or installed packages and libraries are not assumed in the analysis. 
+While we encourage development within the Docker container, it is also possible to conduct analysis without Docker if that is desired.
+In  this case, it is important to ensure that local or personal settings such as file paths or installed packages and libraries are not assumed in the analysis.
 
-#### RStudio 
+#### RStudio
 
 We have supplied an RStudio project (`OpenPBTA-analysis.Rproj`) file at the root of the project to aid in organization and encourage reproducible defaults for analysis.
 In particular, we do not source `.Rprofile` files in new sessions or save/restore workspaces.
@@ -211,7 +211,7 @@ In particular, we do not source `.Rprofile` files in new sessions or save/restor
 
 We use continuous integration (CI) to ensure that the project Docker image will build if there are any changes introduced to the [`Dockerfile`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/Dockerfile) and that all analysis code will execute.
 
-We have put together data files specifically for the purpose of CI that contain all of the features of the full data files for only a small subset of samples. 
+We have put together data files specifically for the purpose of CI that contain all of the features of the full data files for only a small subset of samples.
 You can see how this was done by viewing [this module](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/create-subset-files).
 We use the subset files to cut down on the computational resources and time required for testing.
 
@@ -229,7 +229,7 @@ Do not hardcode sample names in your analytical code: there is no guarantee that
 
 #### Adding Analyses to CI
 
-For an analysis to be run in CI, it must be added to the Circle CI configuration file, [`.circleci/config.yml`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/.circleci/config.yml). 
+For an analysis to be run in CI, it must be added to the Circle CI configuration file, [`.circleci/config.yml`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/.circleci/config.yml).
 A new analysis should be added as the last step of the `run_analyses` section.
 
 Here is an example analysis that simply lists the contents of the data directory that contains the files for the test:
@@ -267,9 +267,9 @@ Once all code for an analysis has been reviewed and merged, a final pull request
 If the `gene-expression-clustering` analysis above instead required two scripts run sequentially (`01-filter-samples.R` and `02-cluster-heatmap.R`), we would follow the procedure below.
 
 ##### 1. File and merge a pull request for adding `01-filter-samples.R` to the repository.
-	
+
 In this pull request, we would add the following change to `.circleci/config.yml`.
-	
+
 ```
       - run:
           name: Filter Samples
@@ -280,7 +280,7 @@ In this pull request, we would add the following change to `.circleci/config.yml
 
 In this pull request, we would add the following change to `.circleci/config.yml`.
 This would be added _below_ the `Filter Samples` run.
-	
+
 ```
       - run:
           name: Cluster Samples and Plot Heatmap
@@ -313,5 +313,46 @@ We would remove the runs `Filter Samples` and `Cluster Samples and Plot Heatmap`
           name: Cluster Samples and Plot Heatmap
           command: ./scripts/run_in_ci.sh bash analyses/gene-expression-clustering/run-gene-expression-clustering.sh
 ```
+
+#### Passing variables only in CI
+
+The analyses run in CI use only a small portion of the data so that tests can be run quickly.
+For some analyses there will not be enough samples to fully test code without altering certain parameters passed to methods.
+The preferred way to handle these is to run these analyses through a shell script that specifies default parameters using environment variables.
+The default parameters should be the ones that are most appropriate for the full set of data.
+In CI, these will be replaced.
+
+We might decide that it makes the most sense to run an analysis using a more permissive statistical significance threshold in CI so that some "significant" pathways still appear and subsequent code that examines them can be tested.
+We'd first write code capable of taking command line parameters.
+In R, we could use `optparse` to specify these in a script - imagine it's called `pathway_sig.R`:
+```
+option_list <- list(
+  optparse::make_option(
+    c("-a", "--alpha"),
+    type = "double",
+    help = "pathway significance threshold",
+  )
+)
+```
+
+Then we would create a shell script (perhaps `run_pathway_sig.sh`) that uses a default environment variable. If `OPENPBTA_PATHSIG` is defined, it will be used. Otherwise, a value of 0.05 is used.
+```
+PATHSIG=${OPENPBTA_PATHSIG:-0.05}
+
+Rscript analyses/my-path/pathway_sig.R --alpha $PATHSIG
+```
+
+We can override this by passing environment variables in `.circleci/config.yml`.
+For testing, we might want to use an alpha level of 0.75 so that at least some "significant" pathways appear, which allows testing subsequent code that depends on them.
+The run command in the `.circleci/config.yml` is used to specify these parameters.
+```
+- run:
+    name: run pathway significance tests
+    command: OPENPBTA_PATHSIG=0.75 ./scripts/run_in_ci.sh bash analyses/my-path/run_pathway_sig.sh
+```
+
+In this example `OPENPBTA_PATHSIG=0.75` species an environment variable `OPENPBTA_PATHSIG` that is set to 0.75.
+Any environment variables prefixed with `OPENPBTA_` are passed to the specified shell script.
+Environment variables without this prefix are not passed.
 
 <!--TODO: Add instructions for running scripts from anywhere in the project?-->
