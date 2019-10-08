@@ -18,10 +18,8 @@
 # zscoreFilter	: Zscore value to use as threshold for annotation of differential expression
 # gtexGroupID : Column name from GTEx matrix to use to filter for sample with value= gtecGroupValue
 # gtexGroupValue : Value in GTEx matrix column ID== gtexGroupID to filter samples from norm
-# gtexMatrix : Rdata with  [1] "normData" with expression data (FPKM) for GTEx samples (colnames) and 
+# gtexMatrix : rds with  with expression data (FPKM) for GTEx samples (colnames) and 
 #                               GeneSymbol( rownames)      
-#                          [2] "normDataAnnot" with annotation to match GTEx samples (colnames) and 
-#                               columnID used to filter GTEx samples
 # expressionMatrix : expression matrix (FPKM for samples that need to be zscore normalized)
 # saveZscoredMatrix : path to save zscored matrix from GTEx normalization
 # outputfile	: Output file is a standardized fusion call set with standard
@@ -56,7 +54,7 @@ option_list <- list(
   make_option(c("-s","--saveZscoredMatrix"),type="character",
               help="path to save zscored matrix from GTEx normalization (.RDS)"),
   make_option(c("-g","--gtexMatrix"),type="character",
-              help="GTEx normalization FPKM expression data in normData and annotation in normDataAnnot  (.RData)"),
+              help="GTEx normalization FPKM expression data to compare (.rds)"),
   make_option(c("-o","--outputfile"),type="character",
               help="Standardized fusion calls with additional annotation from GTEx zscore comparison (.TSV)")
 )
@@ -71,9 +69,9 @@ saveZscoredMatrix<-opt$saveZscoredMatrix
 gtexMatrix<-opt$gtexMatrix
 
 # load GTEx data
-load(gtexMatrix)
+gtexMatrix<-readRDS(gtexMatrix)
 # [1] "normData"      "normDataAnnot"
-normData$GeneSymbol<-rownames(normData)
+gtexMatrix$GeneSymbol<-rownames(gtexMatrix)
 
 # load standardaized fusion calls cohort
 standardFusionCalls<-readRDS(standardFusionCalls)
@@ -102,12 +100,12 @@ GTExZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFi
   expressionMatrixGTExMatchedRowMeansSD <- expressionMatrix %>% 
     # join because GTEx matrix is Gene level 
     # group and summarize to sum multiple rows for a gene with multiple Ensemble IDs in orig df
-    left_join(normData,by=c("GeneSymbol")) %>% group_by(GeneSymbol)  %>% 
+    left_join(gtexMatrix,by=c("GeneSymbol")) %>% group_by(GeneSymbol)  %>% 
     # log transform data for z score calc.
     summarise_if(is.numeric,sum) %>% mutate_if(is.numeric, function(x) log2(x+1)) %>% 
     # RowMeans and Standard Deviation(SD) from a GTEx tissue group
-    mutate(RowMeans=rowMeans(.[,which(colnames(.) %in% as.character(normDataAnnot$SAMPID[grep(gtexGroupValue, normDataAnnot[,gtexGroupID])]))]),
-           SD=apply(.[,which(colnames(.) %in% as.character(normDataAnnot$SAMPID[grep(gtexGroupValue, normDataAnnot[,gtexGroupID])]))],1,sd)) %>%
+    mutate(RowMeans=rowMeans(.[,-which(colnames(.) %in% c("GeneSymbol","RowMeans","SD"))]),
+           SD=apply(.[,-which(colnames(.) %in% c("GeneSymbol","RowMeans","SD"))],1,sd)) %>%
     # Remove GTEX samples
     select(-starts_with("GTEX"))
   
