@@ -255,7 +255,11 @@ annotr_maf <- function(maf_df, annotation_file = NULL, bp_window = 0) {
     # the longest column name (like 100)
     dplyr::rename_at(dplyr::vars(dplyr::starts_with("mcols.")), substr, 7, 100) %>%
     dplyr::mutate("type" = as.factor(gsub("^hg38_genes_", "", type)))
-
+  
+  # Remove the annotation ranges file to conserve memory burden
+  rm(annotation_ranges)
+  
+  # Return annotated mutations
   return(annot)
 }
 
@@ -325,7 +329,11 @@ find_cosmic_overlap <- function(maf_df, cosmic_clean_file, bp_window = 0) {
     " Ratio of variants overlapping with COSMIC:", ratio, "\n",
     "Number of mutations with same base_change:", sum(same_change), "\n"
   )
-
+  
+  # Remove these files to reduce memory burden
+  rm(cosmic_df)
+  rm(cosmic_na)
+  
   # Make this a new column
   maf_df %>%
     dplyr::mutate(
