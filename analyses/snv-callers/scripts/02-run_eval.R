@@ -100,6 +100,12 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
+opt$label <- "11111.tsv"
+opt$vaf <- "analyses/snv-callers/results/11111.tsv" 
+opt$plot_type <- "png"
+opt$output <- "analyses/snv-callers/plots/11111.tsv"
+opt$cosmic <-"analyses/snv-callers/brain_cosmic_variants_coordinates.tsv"
+opt$strategy <- "wgs,wxs,both"
 ########################### Check options specified ############################
 # Normalize this file path
 opt$vaf <- file.path(root_dir, opt$vaf)
@@ -176,7 +182,7 @@ if (!all(opt$strategy %in% c("wgs", "wxs", "both"))) {
        'wxs' or 'both'. Multiple can be specified at once.")
 }
 
-# Only check for WGS or WXS, make them capitalized
+# Check for WGS or WXS samples
 ind_strategies <- grep("wgs|wxs", opt$strategy, value = TRUE)
 
 # Check that these strategies exist in this file
@@ -202,27 +208,29 @@ for (strategy in opt$strategy) {
     opt$output,
     paste0(opt$label, "_", strategy, plot_names)
   )
+  # Bring along the plot names
+  names(plot_paths) <- plot_names
 
   ################## Plot the data using special functions #####################
   # Base call barplot
   base_change_plot(vaf_df, exp_strategy = strategy)
-  ggplot2::ggsave(plot_paths[1])
+  ggplot2::ggsave(plot_paths["_base_change.png"])
 
   # Read depth and VAF
   depth_vs_vaf_plot(vaf_df, exp_strategy = strategy)
-  ggplot2::ggsave(plot_paths[2])
+  ggplot2::ggsave(plot_paths["_depth_vs_vaf.png"])
 
   # Genomic region breakdown
   snv_region_plot(maf_annot, exp_strategy = strategy)
-  ggplot2::ggsave(plot_paths[3])
+  ggplot2::ggsave(plot_paths["_snv_region.png"])
 
   # Percent variants in COSMIC
   cosmic_plot(vaf_df, exp_strategy = strategy, opt$cosmic)
-  ggplot2::ggsave(plot_paths[4])
+  ggplot2::ggsave(plot_paths["_cosmic_plot.png"])
 
   # TMB by histology
   tmb_plot(tmb_df, x_axis = "short_histology", exp_strategy = strategy)
-  ggplot2::ggsave(plot_paths[5])
+  ggplot2::ggsave(plot_paths["_tmb_plot.png"])
 
   ######################## Make plots into a report ############################
   # Make a summary report about the variant caller and strategy

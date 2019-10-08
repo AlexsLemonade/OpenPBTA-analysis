@@ -128,10 +128,10 @@ if (opt$cosmic_clean != "none" && !file.exists(opt$cosmic_clean)) {
       dplyr::mutate(
         Chromosome = paste0(
           "chr",
-          stringr::word(Mutation_genome_position, sep = ":", 1)
+          stringr::word(Mutation_genome_position, sep = ":|-", 1)
         ),
         Start_Position = stringr::word(Mutation_genome_position, sep = ":|-", 2),
-        End_Position = stringr::word(Mutation_genome_position, sep = "-", 2),
+        End_Position = stringr::word(Mutation_genome_position, sep = ":|-", 3),
         # Make a base_change variable so we can compare to our set up for PBTA data
         base_change = substr(Mutation_CDS, nchar(Mutation_CDS) - 2, nchar(Mutation_CDS))
       ) %>%

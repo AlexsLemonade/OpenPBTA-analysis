@@ -38,7 +38,7 @@ The `change` variable is made from the `base_change` variable but groups togethe
 deletions, insertions, and long (more than a SNV) as their own groups.
 
 ```{r}
-knitr::include_graphics(plot_paths[1])
+knitr::include_graphics(plot_paths["_base_change.png"])
 ```
 
 ## Read depth and VAF
@@ -53,7 +53,7 @@ The VAF calculations and other special variables are added to the MAF fields and
 written to a TSV ending in `_vaf.tsv` in the caller's results folder.
 
 ```{r}
-knitr::include_graphics(plot_paths[2])
+knitr::include_graphics(plot_paths["_depth_vs_vaf.png"])
 ```
 
 ## Genomic regional analyses
@@ -65,7 +65,7 @@ Mutations are assigned all annotations that they overlap (using
 `GenomicRanges::overlap`).
 
 ```{r}
-knitr::include_graphics(plot_paths[3])
+knitr::include_graphics(plot_paths["_snv_region.png"])
 ```
 
 ## Percent variants in COSMIC
@@ -77,7 +77,7 @@ COSMIC mutations are overlapped with the present data's mutations using `Genomic
 The mutations that overlap with COSMIC mutations are plotted here. 
 
 ```{r}
-knitr::include_graphics(plot_paths[4])
+knitr::include_graphics(plot_paths["_cosmic_plot.png"])
 ```
 
 ## TMB by histology
@@ -92,7 +92,7 @@ BED regions used for WGS samples are caller specific, while the WXS samples are
 calculated using the same BED file for all. 
 
 ```{r}
-knitr::include_graphics(plot_paths[5])
+knitr::include_graphics(plot_paths["_tmb_plot.png"])
 ```
 
 ## Session info

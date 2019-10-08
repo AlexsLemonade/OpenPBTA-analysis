@@ -4,12 +4,16 @@
 
 # Purpose:Run an intial evaluation of each variant caller's MAF file
 
+# Set this so the whole loop stops if there is an error
+set -e
+set -o pipefail
+
 # Change directory
 cd kitematic
 
 # The files named in these arrays will be ran in the analysis. 
-datasets=("strelka2" "mutect2" "lancet")
-wgs_files=("WGS.hg38.strelka2.unpadded.bed" "WGS.hg38.mutect2.unpadded.bed" "WGS.hg38.lancet.300bp_padded.bed")
+datasets=("strelka2" "mutect2" "lancet" "vardict")
+wgs_files=("WGS.hg38.strelka2.unpadded.bed" "WGS.hg38.mutect2.unpadded.bed" "WGS.hg38.lancet.300bp_padded.bed" "WGS.hg38.vardict.100bp_padded.bed")
 
 # Reference file paths
 cosmic=analyses/snv-callers/brain_cosmic_variants_coordinates.tsv
@@ -45,10 +49,10 @@ for dataset in ${datasets[@]}
 do
   echo "Processing dataset: ${dataset}"
   Rscript analyses/snv-callers/scripts/02-run_eval.R \
-  --label ${dataset} \
-  --vaf analyses/snv-callers/results/${dataset} \
-  --plot_type png \
-  --output analyses/snv-callers/plots/${dataset} \
-  --cosmic $cosmic \
-  --strategy wgs,wxs,both
+    --label ${dataset} \
+    --vaf analyses/snv-callers/results/${dataset} \
+    --plot_type png \
+    --output analyses/snv-callers/plots/${dataset} \
+    --cosmic $cosmic \
+    --strategy wgs,wxs,both
 done

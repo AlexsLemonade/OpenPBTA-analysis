@@ -311,7 +311,8 @@ find_cosmic_overlap <- function(maf_df, cosmic_clean_file, bp_window = 0) {
     cosmic_granges@elementMetadata@listData$mcols.base_change[overlap@to]
 
   # Make a list of mutation ids that overlap COSMIC mutations
-  overlap_w_cosmic <- maf_granges@elementMetadata@listData$mcols.mutation_id[overlap@from]
+  overlap_w_cosmic <- 
+    maf_granges@elementMetadata@listData$mcols.mutation_id[overlap@from]
 
   #  Make a list of mutation ids that also have the same base_change
   same_as_cosmic <- overlap_w_cosmic[which(same_change)]
