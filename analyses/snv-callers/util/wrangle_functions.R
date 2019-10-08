@@ -29,8 +29,8 @@ set_up_maf <- function(maf_df, metadata_df = NULL) {
   maf_df <- maf_df %>%
     dplyr::mutate(
       # Calculate the variant allele frequency
-      vaf = as.numeric(t_alt_count) / (as.numeric(t_ref_count) +
-        as.numeric(t_alt_count)),
+      vaf = as.numeric(t_alt_count) / 
+        (as.numeric(t_ref_count) + as.numeric(t_alt_count)),
       # Create a base_change variable
       base_change = paste0(Reference_Allele, ">", Allele),
 
