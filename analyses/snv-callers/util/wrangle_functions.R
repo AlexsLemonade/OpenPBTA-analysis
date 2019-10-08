@@ -56,7 +56,7 @@ set_up_maf <- function(maf_df, metadata_df = NULL) {
         change, "_",
         Start_Position, "_",
         Tumor_Sample_Barcode
-      ),
+      )
     ) %>%
     # Get rid of any variables that have completely NAs.
     dplyr::select(-which(apply(is.na(.), 2, all)))
