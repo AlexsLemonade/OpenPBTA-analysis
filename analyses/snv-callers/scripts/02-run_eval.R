@@ -208,23 +208,23 @@ for (strategy in opt$strategy) {
   ################## Plot the data using special functions #####################
   # Base call barplot
   base_change_plot(vaf_df, exp_strategy = strategy)
-  ggplot2::ggsave(filename = plot_paths["_base_change.png"], plot = last_plot())
+  ggplot2::ggsave(filename = plot_paths["_base_change.png"], plot = ggplot2::last_plot())
 
   # Read depth and VAF
   depth_vs_vaf_plot(vaf_df, exp_strategy = strategy)
-  ggplot2::ggsave(filename = plot_paths["_depth_vs_vaf.png"], plot = last_plot())
+  ggplot2::ggsave(filename = plot_paths["_depth_vs_vaf.png"], plot = ggplot2::last_plot())
 
   # Genomic region breakdown
   snv_region_plot(maf_annot, exp_strategy = strategy)
-  ggplot2::ggsave(filename = plot_paths["_snv_region.png"], plot = last_plot())
+  ggplot2::ggsave(filename = plot_paths["_snv_region.png"], plot = ggplot2::last_plot())
 
   # Percent variants in COSMIC
   cosmic_plot(vaf_df, exp_strategy = strategy, opt$cosmic)
-  ggplot2::ggsave(filename = plot_paths["_cosmic_plot.png"], plot = last_plot())
+  ggplot2::ggsave(filename = plot_paths["_cosmic_plot.png"], plot = ggplot2::last_plot())
 
   # TMB by histology
   tmb_plot(tmb_df, x_axis = "short_histology", exp_strategy = strategy)
-  ggplot2::ggsave(filename = plot_paths["_tmb_plot.png"], plot = last_plot())
+  ggplot2::ggsave(filename = plot_paths["_tmb_plot.png"], plot = ggplot2::last_plot())
 
   ######################## Make plots into a report ############################
   # Make a summary report about the variant caller and strategy
