@@ -8,9 +8,6 @@
 set -e
 set -o pipefail
 
-# Change directory
-cd kitematic
-
 # The files named in these arrays will be ran in the analysis. 
 datasets=("strelka2" "mutect2" "lancet" "vardict")
 wgs_files=("WGS.hg38.strelka2.unpadded.bed" "WGS.hg38.mutect2.unpadded.bed" "WGS.hg38.lancet.300bp_padded.bed" "WGS.hg38.vardict.100bp_padded.bed")
