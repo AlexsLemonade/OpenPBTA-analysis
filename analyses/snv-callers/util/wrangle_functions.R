@@ -40,9 +40,7 @@ set_up_maf <- function(maf_df, metadata_df = NULL) {
       # Create a categorical portion of the PolyPhen score
       PolyPhen_category = stringr::word(PolyPhen, 1, sep = "\\("),
 
-      Variant_Classification = as.factor(Variant_Classification)
-    ) %>%
-    dplyr::mutate(
+      Variant_Classification = as.factor(Variant_Classification),
       # From the base_change variable, summarize insertions, deletions, and
       # changes that are more than one base into their own groups.
       change = dplyr::case_when(
@@ -50,9 +48,7 @@ set_up_maf <- function(maf_df, metadata_df = NULL) {
         grepl("-$", base_change) ~ "del",
         nchar(base_change) > 3 ~ "long_change",
         TRUE ~ base_change
-      )
-    ) %>%
-    dplyr::mutate(
+      ),
       # Create the mutation id based on the change variable as well as the
       # gene symbol, start position, and sample ID.
       mutation_id = paste0(
