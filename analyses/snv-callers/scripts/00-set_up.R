@@ -145,6 +145,6 @@ if (opt$cosmic_clean != "none" && !file.exists(opt$cosmic_clean)) {
       # Write to a TSV file
       readr::write_tsv(opt$cosmic_clean)
   } else {
-    stop("A cleaned COSMIC Mutation file was already found with this name. Delete this if you 
+    warning("A cleaned COSMIC Mutation file was already found with this name. Delete this if you 
          wanted to re-run this step.")
 }
