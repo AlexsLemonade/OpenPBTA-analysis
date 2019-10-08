@@ -48,122 +48,76 @@ if (!dir.exists(output_directory)) {
 
 #### Read in data --------------------- ----------------------------------------
 
+# Create list of file paths to the CNV data 
+cnv_list <-
+  list(
+    file.path(input_directory, "pbta-cnv-cnvkit.seg.gz"),
+    file.path(input_directory, "pbta-cnv-controlfreec.seg.gz")
+  )
+
+# Read in list of CNV data
+cnv_data <- lapply(cnv_list, read_in_cnv)
+
 # Read in metadata
 metadata <-
   readr::read_tsv(file.path(input_directory, "pbta-histologies.tsv"))
 
-# Read in cnvkit data
-cnvkit <- read_in_cnv(input_directory, "pbta-cnv-cnvkit.seg.gz")
-
-# Read in cnvkit subset data
-cnvkit_subset <-
-  read_in_cnv(input_directory, "testing/pbta-cnv-cnvkit.seg.gz")
-
-# Read in controlfreec data
-controlfreec <-
-  read_in_cnv(input_directory, "pbta-cnv-controlfreec.seg.gz")
-
-# Read in controlfreec subset data
-controlfreec_subset <-
-  read_in_cnv(input_directory, "testing/pbta-cnv-controlfreec.seg.gz")
-
 #### Filter data ---------------------------------------------------------------
 
-# Filter the cnvkit data by cutoff segmean in preparation for plotting
-cnvkit_format <- filter_segmean(cnvkit)
-
-# Filter the cnvkit subset data by cutoff segmean in preparation for plotting
-cnvkit_subset <- filter_segmean(cnvkit_subset)
-
-# Filter the controlfreec data by cutoff segmean in preparation for plotting
-controlfreec_format <- filter_segmean(controlfreec)
-
-# Filter the controlfreec subset data for cutoff in preparation for plotting
-controlfreec_subset <- filter_segmean(controlfreec_subset)
+# Filter CNV data by cutoff segmean using `filter_segmean`
+cnv_filtered <-
+  lapply(cnv_data, filter_segmean, segmean_cutoff = 0.5)
 
 #### Plot frequency and proportion using GenVisR -------------------------------
 
-# Run `plot_cnFreq` for cnvkit (has to be run with subset because
-# original dataset is too large for function)
-cnvkit_prop_plot <-
-  plot_cnFreq(cnvkit_format, "proportion", "CNVkit proportion")
-cnvkit_freq_plot <-
-  plot_cnFreq(cnvkit_format, "frequency", "CNVkit frequency")
-
-# Run `plot_cnFreq` for controlfreec
-controlfreec_prop_plot <-
-  plot_cnFreq(controlfreec_format,
-              "proportion",
-              "Control-FREEC proportion")
-controlfreec_freq_plot <-
-  plot_cnFreq(controlfreec_format,
-              "frequency",
-              "Control-FREEC frequency")
+# Run `plot_cnFreq` 
+cnv_proportion_plot <- lapply(cnv_filtered, plot_cn_freq, 0, .2, "proportion")
+cnv_frequency_plot <- lapply(cnv_filtered, plot_cn_freq, 0, .2, "frequency")
 
 # Plot cowplot of frequency plots and save
 plot_cowplot(
-  cnvkit_freq_plot,
-  controlfreec_freq_plot,
-  output_directory,
-  "compare_cnv_output_frequency.pdf"
-)
-
-# Plot cowplot of proportion plots and save
-plot_cowplot(
-  cnvkit_prop_plot,
-  controlfreec_prop_plot,
+  cnv_proportion_plot,
   output_directory,
   "compare_cnv_output_proportion.pdf"
 )
 
+# Plot cowplot of proportion plots and save
+plot_cowplot(
+  cnv_frequency_plot,
+  output_directory,
+  "compare_cnv_output_frequency.pdf"
+)
+
 #### Plot boxplots using ggplot2 -----------------------------------------------
 
-# Run `plot_boxplot` on cnvkit
-cnvkit_boxplot <- plot_boxplot(cnvkit_format, "CNVkit boxplot")
-
-# Run `plot_boxplot` on controlfreec
-controlfreec_boxplot <-
-  plot_boxplot(controlfreec_format, "Control-FREEC boxplot")
+# Run `plot_violin` on CNV data
+cnv_violin_plots <- lapply(cnv_filtered, plot_violin)
 
 # Save the plot combining the cnvkit and controlfreec boxplots
 plot_cowplot(
-  cnvkit_boxplot,
-  controlfreec_boxplot,
+  cnv_violin_plots,
   output_directory,
-  "compare_cnv_output_boxplot.pdf"
+  "compare_cnv_output_violin_plot.pdf"
 )
 
 ##### Plot barplots using ggplot2 ----------------------------------------------
 
-# Run `plot_histology_barplot` on cnvkit
-cnvkit_annotated_barplot_histology <-
-  plot_histology_barplot(cnvkit_format, metadata, "CNVkit")
+# Run `plot_histology_barplot`
+cnv_histology_barplots <-
+  lapply(cnv_filtered, plot_histology_barplot, metadata)
 
-# Run `plot_histology_barplot` on controlfreec
-controlfreec_annotated_barplot_histology <-
-  plot_histology_barplot(controlfreec_format,
-               metadata,
-               "Control-FREEC")
-
-# Run `plot_aberration_barplot` on cnvkit
-cnvkit_annotated_barplot_aberration <-
-  plot_aberration_barplot(cnvkit_format, "CNVkit")
-
-# Run `plot_abberration_barplot` on controlfreec
-controlfreec_annotated_barplot_aberration <-
-  plot_aberration_barplot(controlfreec_format,
-                         "Control-FREEC")
+# Run `plot_aberration_barplot`
+cnv_aberration_barplots <-
+  lapply(cnv_filtered, plot_aberration_barplot)
 
 # Save the plot combining the cnvkit and controlfreec barplots
 plot_cowplot(
-  cnvkit_annotated_barplot_histology,
-  controlfreec_annotated_barplot_histology,
+  cnv_histology_barplots,
   output_directory,
   "compare_cnv_output_barplot_histology.pdf"
 )
 plot_cowplot(
-  cnvkit_annotated_barplot_aberration,
-  controlfreec_annotated_barplot_aberration,
+  cnv_aberration_barplots,
   output_directory,
   "compare_cnv_output_barplot_aberration.pdf"
 )

@@ -9,41 +9,40 @@
 #
 # Rscript analyses/cnv-comparison/util/cnv-comparison-functions.R
 
-read_in_cnv <- function(input_directory, file_path){
+read_in_cnv <- function(file_path){
   # Given the file path of the CNV data, read in the data.
   #
   # Arg:
-  #   input_directory: file path of input directory
   #   file_path: file path of input data
   #
   # Return:
-  #   dataframe: the data frame containing the input data
+  #   cnv_df: the data frame containing the input data
 
   # Read in cnv data
-  dataframe <-
-    read.table(gzfile(file.path(input_directory, file_path)), header = TRUE)
+  cnv_df <-
+    read.table(gzfile(file_path), header = TRUE)
 
-  # Rename the columns
-  dataframe <-
-    dataframe[c("chrom", "loc.start", "loc.end", "ID", "num.mark", "seg.mean")]
+  # Rearrange the columns
+  cnv_df <- cnv_df %>%
+    dplyr::select("chrom", "loc.start", "loc.end", "ID", "num.mark", "seg.mean")
 
-  return(dataframe)
+  return(cnv_df)
 
 }
 
-filter_segmean <- function(dataframe){
+filter_segmean <- function(cnv_df, segmean_cutoff){
   # Given the data.frame containing CNV caller output, return a data.frame with
   # a column with the values 0 and 1 to represent loss and gain, respectively.
   #
   # Args:
-  #   dataframe: data.frame containing CNV caller output
+  #   cnv_df: data.frame containing CNV caller output
   #
   # Return:
-  #   cnv_matrix: the data.frame given, returned with a column containing an
+  #   filtered_cnv_df: the data.frame given, returned with a column containing an
   #               aberration label for loss or gain
-
+  
   # Rename columns for GenVisR function downstream
-  colnames(dataframe) <-
+  colnames(cnv_df) <-
     c("chromosome",
       "start",
       "end",
@@ -51,27 +50,28 @@ filter_segmean <- function(dataframe){
       "probes",
       "segmean")
 
-  cnv_matrix <- dataframe %>%
-    dplyr::mutate(aberration = "NA") %>%
-    dplyr::mutate(aberration = dplyr::case_when(segmean < -0.5 ~ 0,
-                                  segmean > 0.5 ~ 1)) %>%
+  filtered_cnv_df <- cnv_df %>%
+    dplyr::mutate(aberration = dplyr::case_when(segmean < -segmean_cutoff ~ 0,
+                                  segmean > segmean_cutoff ~ 1)) %>%
     dplyr::filter(!is.na(aberration))
 
-  return(cnv_matrix)
+  return(filtered_cnv_df)
 
 }
 
-plot_cnFreq <-
-  function(filtered_dataframe,
-           plot_type,
-           plot_title) {
+plot_cn_freq <-
+  function(filtered_cnv_df,
+           low_cutoff,
+           high_cutoff,
+           plot_type) {
     # Given the data.frame filtered for size of aberrations, plot the proportion
     # or frequency (denoted by the plot_type argument) of aberrations across
     # chromosomes with `GenVisR::cnFreq`
     #
     # Args:
-    #   filtered_dataframe: data.frame filtered for cutoff size of aberrations
-    #   plot_type: the type of plot (proportion or frequency)
+    #   filtered_cnv_df: data.frame filtered for cutoff size of aberrations
+    #   plot_type: the type of plot options are character strings of either
+    #              `proportion` or `frequency`
     #   plot_title: a title string for the plot produced
     #
     # Return:
@@ -79,11 +79,10 @@ plot_cnFreq <-
     #                    chromosomes
 
     aberration_plot <- GenVisR::cnFreq(
-      filtered_dataframe,
+      filtered_cnv_df,
       genome = "hg38",
-      CN_low_cutoff = 0,
-      CN_high_cutoff = .2,
-      plot_title = toupper(plot_title),
+      CN_low_cutoff = low_cutoff,
+      CN_high_cutoff = high_cutoff,
       plotType = plot_type
     )
 
@@ -91,49 +90,47 @@ plot_cnFreq <-
 
   }
 
-plot_boxplot <- function(dataframe, plot_title) {
+plot_violin <- function(filtered_cnv_df) {
   # Given the data.frame filtered for size of aberrations, plot the proportion
   # or frequency (denoted by the plot_type argument) of aberrations across
-  # chromosomes with `geom_boxplot`
+  # chromosomes with `geom_violin`
   #
   # Args:
-  #   dataframe: data.frame filtered for cutoff size of aberrations
+  #   filtered_cnv_df: data.frame filtered for cutoff size of aberrations
   #   plot_title: a title string for the plot produced
   #
   # Return:
-  #   boxplot: boxplot depicting the log2 transformed sizes of aberrations
-  #            detected across chromosomes
+  #   violin_plot: violin plot depicting the log2 transformed sizes of
+  #                aberrations detected across chromosomes
 
-  # Create boxplot where the y-axis represents the log2 transformed segmean
-  boxplot <- ggplot2::ggplot(dataframe,
+  # Create violin plot where the y-axis represents the log2 transformed segmean
+  violin_plot <- ggplot2::ggplot(filtered_cnv_df,
                              ggplot2::aes(x = chromosome,
                                           y = (log2(segmean) + 1))) +
-    ggplot2::geom_boxplot() +
+    ggplot2::geom_violin() +
     ggplot2::theme_bw() +
-    ggplot2::ylab("Log transformed segmean values") +
-    ggplot2::ggtitle(toupper(plot_title))
-
-  return(boxplot)
+    ggplot2::ylab("Log transformed segmean values")
+  
+  return(violin_plot)
 
 }
 
-plot_histology_barplot <- function(dataframe, metadata, plot_title) {
-  # Given the data.frame filtered by cutoff segmean value, plot the proportion
-  # of aberrations across chromosomes with `geom_barplot`
+plot_histology_barplot <- function(filtered_cnv_df, metadata) {
+  # Given the data.frame filtered by cutoff segmean value with `filter_segmean`,
+  # plot the proportion of aberrations across chromosomes with `geom_barplot`
   #
   # Args:
-  #   dataframe: data.frame filtered for cutoff size of aberrations and
-  #              joined with the metadata
+  #   filtered_cnv_df: data.frame filtered for cutoff size of aberrations and
+  #                    joined with the metadata
   #   metadata: the relevant metadata data.frame
-  #   plot_title: a title string for the plot produced
   #
   # Return:
   #   barplot: barplot depicting the proportion of aberrations detected across
-  #            chromosomes, annoated by the broad_histology variable in the
+  #            chromosomes, annotated by the `broad_histology`` variable in the
   #            metadata
 
   # Create a data.frame with the filtered dataframe joined with the metadata
-  meta_joined <- dataframe %>%
+  meta_joined <- filtered_cnv_df %>%
     dplyr::inner_join(metadata, by = c("sample" = "Kids_First_Biospecimen_ID"))
 
   # Create barplot where the y-axis represents the size of aberration
@@ -143,20 +140,18 @@ plot_histology_barplot <- function(dataframe, metadata, plot_title) {
                                           fill = broad_histology)) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::theme_bw() +
-    ggplot2::theme(axis.text.y = ggplot2::element_blank()) +
-    ggplot2::ggtitle(toupper(plot_title))
+    ggplot2::theme(axis.text.y = ggplot2::element_blank())
 
   return(barplot)
 
 }
 
-plot_aberration_barplot <- function(dataframe, plot_title) {
-  # Given the data.frame filtered by cutoff segmean value, plot the proportion
-  # of aberrations across chromosomes with `geom_barplot`
+plot_aberration_barplot <- function(filtered_cnv_df) {
+  # Given the data.frame filtered by cutoff segmean value with `filter_segmean`, 
+  # plot the proportion of aberrations across chromosomes with `geom_barplot`
   #
   # Args:
-  #   dataframe: data.frame filtered by cutoff segmean value
-  #   plot_title: a title string for the plot produced
+  #   filtered_cnv_df: data.frame filtered by cutoff segmean value
   #
   # Return:
   #   barplot: barplot depicting the proportion of aberrations detected across
@@ -164,31 +159,36 @@ plot_aberration_barplot <- function(dataframe, plot_title) {
 
 
   # Create barplot where the y-axis represents the size of aberration
-  barplot <- ggplot2::ggplot(dataframe,
+  barplot <- ggplot2::ggplot(filtered_cnv_df,
                              ggplot2::aes(x = chromosome,
                                           y = as.factor(aberration),
                                           fill = as.factor(aberration))) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::theme_bw() +
     ggplot2::ylab("Proportion of Aberrations") +
-    ggplot2::labs(fill = "Loss(0)/Gain(1)") +
-    ggplot2::ggtitle(toupper(plot_title))
+    ggplot2::labs(fill = "Loss(0)/Gain(1)")
 
   return(barplot)
 
 }
 
-plot_cowplot <- function(plot_a, plot_b, output_path, plot_name){
+plot_cowplot <- function(plot_list, output_path, plot_name){
   # Given two plots, create a combined cowplot and save as a PDF in the
   # specified directory
   # Args:
-  #   plot_a: the first plot, which will be positioned on top
-  #   plot_b: the second plot, which will be positioned below the first
+  #   plot_list: list of plots
   #   output_path: the file.path to the output directory
   #   plot_name: the name the plot should be saved as
 
   # Save a combined cowplot plot of the cnvkit and controlfreec plots
-  grid <- cowplot::plot_grid(plot_a, plot_b, ncol = 1)
+  grid <-
+    cowplot::plot_grid(
+      plot_list[[1]],
+      plot_list[[2]],
+      ncol = 1,
+      labels = c("CNVkit", "ControlFREEC"),
+      label_y = 1.05
+    ) + ggplot2::theme(plot.margin = ggplot2::unit(c(1, 1, 1, 2), "cm"))
 
   cowplot::save_plot(
     file.path(output_path, plot_name),
