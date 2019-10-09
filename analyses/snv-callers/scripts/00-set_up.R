@@ -81,7 +81,7 @@ opt$annot_rds <- file.path(root_dir, opt$annot_rds)
 
 ################################ Build Annotation ##############################
 # We will only run this if it hasn't been run before
-if (opt$annot_rds != "none") {
+if (opt$annot_rds != "none" && !file.exists(opt$annot_rds)) {
   # Print progress message
   message("Setting up genomic region annotation file. Only need to do this once.")
 
@@ -112,8 +112,7 @@ if (opt$annot_rds != "none") {
 # if you register. The full, unfiltered somatic mutations file
 # CosmicMutantExport.tsv for grch38 is used here but only mutations from brain
 # related samples are kept.
-if (opt$cosmic_clean != "none") {
-  if (file.exists(opt$cosmic_og)) {
+if (opt$cosmic_clean != "none" && !file.exists(opt$cosmic_clean)) {
     # Print progress message
     message("Setting up COSMIC mutation file. Only need to do this once.")
 
@@ -122,18 +121,17 @@ if (opt$cosmic_clean != "none") {
       data.table = FALSE
     ) %>%
       # Keep only brain mutations so the file is smaller
-      dplyr::filter(`Site subtype 1` == "brain")
-    # Get rid of spaces in column names
-    cosmic_variants <- cosmic_variants %>%
+      dplyr::filter(`Site subtype 1` == "brain") %>%
+      # Get rid of spaces in column names
       dplyr::rename_all(dplyr::funs(stringr::str_replace_all(., " ", "_"))) %>%
       # Separate the genome coordinates into their own BED like variables
       dplyr::mutate(
         Chromosome = paste0(
           "chr",
-          stringr::word(Mutation_genome_position, sep = ":", 1)
+          stringr::word(Mutation_genome_position, sep = ":|-", 1)
         ),
-        Start_Position = stringr::word(Mutation_genome_position, sep = ":|-", 1),
-        End_Position = stringr::word(Mutation_genome_position, sep = "-", 2),
+        Start_Position = stringr::word(Mutation_genome_position, sep = ":|-", 2),
+        End_Position = stringr::word(Mutation_genome_position, sep = ":|-", 3),
         # Make a base_change variable so we can compare to our set up for PBTA data
         base_change = substr(Mutation_CDS, nchar(Mutation_CDS) - 2, nchar(Mutation_CDS))
       ) %>%
@@ -147,6 +145,6 @@ if (opt$cosmic_clean != "none") {
       # Write to a TSV file
       readr::write_tsv(opt$cosmic_clean)
   } else {
-    stop("Original COSMIC Mutation file not found. Specify with --cosmic_og")
-  }
+    warning("A cleaned COSMIC Mutation file was already found with this name. Delete this if you 
+         wanted to re-run this step.")
 }
