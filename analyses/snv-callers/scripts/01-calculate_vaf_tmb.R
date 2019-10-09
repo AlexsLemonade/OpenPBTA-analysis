@@ -20,8 +20,8 @@
 #             Assumes from top directory, 'OpenPBTA-analysis'.
 # --bed_wxs : File path that specifies the WXS BED regions file. Assumes file path
 #             is given from top directory of 'OpenPBTA-analysis'
-# --vaf_filter: Optional Variant Allele Fraction filter. Specify a number; any 
-#               mutations with a VAF that are NA or below this number will be 
+# --vaf_filter: Optional Variant Allele Fraction filter. Specify a number; any
+#               mutations with a VAF that are NA or below this number will be
 #               removed from the vaf data.frame before it is saved to a TSV file.
 # --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
 #
@@ -98,8 +98,8 @@ option_list <- list(
   ),
   make_option(
     opt_str = "--vaf_filter", type = "numeric", default = 0,
-    help = "Optional Variant Allele Fraction filter. Specify a number; any 
-            mutations with a VAF that are NA or below this number will be 
+    help = "Optional Variant Allele Fraction filter. Specify a number; any
+            mutations with a VAF that are NA or below this number will be
             removed from the vaf data.frame before it is saved to a TSV file.",
     metavar = "numeric"
   ),
@@ -207,7 +207,7 @@ if (!all(unique(maf_df$Tumor_Sample_Barcode) %in% metadata$Tumor_Sample_Barcode)
 }
 
 ################## Calculate VAF and set up other variables ####################
-# If the file doesn't exist or the overwrite option is being used, run this.
+# If the file exists or the overwrite option is not being used, calculate VAF
 if (file.exists(vaf_file) && !opt$overwrite) {
   # Stop if this file exists and overwrite is set to FALSE
   warning(cat(
@@ -224,17 +224,17 @@ if (file.exists(vaf_file) && !opt$overwrite) {
   message(paste("Calculating VAF for", opt$label, "MAF data..."))
 
   # Use the premade function to calculate VAF this will also merge the metadata
-  vaf_df <- set_up_maf(maf_df, metadata) 
-  
+  vaf_df <- set_up_maf(maf_df, metadata)
+
   if (opt$vaf_filter != 0) {
     # Give message
     message("--vaf_filter is being applied")
-    
+
     # If a VAF filter is set, filter out NA VAFs or VAFs less than this cutoff.
-    vaf_df <- vaf_df %>% 
-    dplyr::filter(vaf > opt$vaf_filter, 
+    vaf_df <- vaf_df %>%
+    dplyr::filter(vaf > opt$vaf_filter,
                   !is.na(vaf))
-    
+
     # Report how many mutations are left
     message(paste(nrow(vaf_df), "number of mutations left after vaf_filter."))
   }
@@ -246,7 +246,7 @@ if (file.exists(vaf_file) && !opt$overwrite) {
   message(paste("VAF calculations saved to: \n", vaf_file))
 }
 ######################### Annotate genomic regions #############################
-# If the file doesn't exist or the overwrite option is being used, run this.
+# If the file exists or the overwrite option is not being used, run regional annotation analysis
 if (file.exists(region_annot_file) && !opt$overwrite) {
   # Stop if this file exists and overwrite is set to FALSE
   warning(cat(
@@ -302,11 +302,14 @@ if (file.exists(tmb_file) && !opt$overwrite) {
     "\n"
   )
 
-  # Filter out mutations for WXS that are outside of these BED regions.
-  maf_wxs_filtered <- wxs_bed_filter(vaf_df, wxs_bed_file = opt$bed_wxs)
+  # Only do this step if you have WXS samples
+  if (any(metadata$experimental_strategy == "WXS")) {
+    # Filter out mutations for WXS that are outside of these BED regions.
+    vaf_df <- wxs_bed_filter(vaf_df, wxs_bed_file = opt$bed_wxs)
+  }
 
   # Calculate TMBs and write to TMB file
-  tmb_df <- calculate_tmb(maf_wxs_filtered,
+  tmb_df <- calculate_tmb(vaf_df,
     wgs_size = wgs_genome_size,
     wxs_size = wxs_exome_size
   ) %>%
