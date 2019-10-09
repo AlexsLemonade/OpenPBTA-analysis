@@ -336,7 +336,7 @@ option_list <- list(
 ```
 
 Then we would create a shell script (perhaps `run_pathway_sig.sh`) that uses a default environment variable. If `OPENPBTA_PATHSIG` is defined, it will be used. Otherwise, a value of 0.05 is used.
-Note: the `-` before the `0.05` below is necessary notation and *not* designating a negative 0.05.
+Note: the `-` before the `0.05` below is necessary notation for a default parameter and *not* designating a negative 0.05.
 ```
 PATHSIG=${OPENPBTA_PATHSIG:-0.05}
 
