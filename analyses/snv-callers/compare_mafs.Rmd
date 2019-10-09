@@ -86,16 +86,19 @@ vaf <- lapply(vaf_files, function(file)
 names(vaf) <- caller_names
 vaf_df <- dplyr::bind_rows(vaf, .id = "caller") 
 
+# Make a mutation ID list object from this
+mutation_ids <- lapply(vaf, function(df) dplyr::select(df, mutation_id) %>% 
+                         dplyr::pull(mutation_id))
+```
+
+Take a look the density plot of VAFs for each caller. 
+
+```{r}
 ggplot2::ggplot(vaf_df, ggplot2::aes(x = vaf, color = caller)) +
   ggplot2::geom_density() + 
   ggplot2::theme_classic() + 
   ggplot2::xlab("VAF") + 
   ggplot2::ylab("Density") 
-
-
-# Make a mutation ID list object from this
-mutation_ids <- lapply(vaf, function(df) dplyr::select(df, mutation_id) %>% 
-                         dplyr::pull(mutation_id))
 ```
 
 Make a big tmb data.frame
