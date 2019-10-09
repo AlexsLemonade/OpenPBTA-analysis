@@ -16,6 +16,9 @@ wgs_files=("WGS.hg38.strelka2.unpadded.bed" "WGS.hg38.mutect2.unpadded.bed" "WGS
 cosmic=analyses/snv-callers/brain_cosmic_variants_coordinates.tsv
 annot_rds=scratch/hg38_genomic_region_annotation.rds
 
+# Set a default for the VAF filter if none is specified
+vaf_cutoff=${OPENPBTA_VAF_CUTOFF:0}
+
 ############################ Set Up Reference Files ############################
 # The original COSMIC file is obtained from: https://cancer.sanger.ac.uk/cosmic/download
 # These data are available if you register. The full, unfiltered somatic mutations 
@@ -38,6 +41,7 @@ do
     --bed_wgs data/${wgs_files[$i]} \
     --bed_wxs data/WXS.hg38.100bp_padded.bed \
     --annot_rds $annot_rds \
+    --vaf_filter $vaf_cutoff \
     --overwrite
 done
 
