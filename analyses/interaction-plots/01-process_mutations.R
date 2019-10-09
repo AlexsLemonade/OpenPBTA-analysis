@@ -27,8 +27,8 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
-# Load library:
-
+# Load libraries:
+library(ggplot2)
 
 #### Set up options 
 library(optparse)
@@ -152,17 +152,33 @@ gene_pair_summary <- gene_pair_counts %>%
                    mut01 = sum(muts1 == 0 & muts2 > 0), 
                    mut00 = sum(muts1 == 0 & muts2 ==0))
 
-# calculate fishers exact test
+### calculate fishers exact test
 
 row_fisher <- function(w, x, y, z){
+# function to calculate fisher test from row elements
   mat <- matrix(c(w, x, y, z), ncol = 2)
   fisher <- fisher.test(mat)
   return(fisher$p.value)
 }
 
 gene_pair_summary <- gene_pair_summary %>%
-  dplyr::rowwise() %>%
   dplyr::mutate(odds_ratio = (mut11 * mut00) / (mut10 * mut01),
-                p = row_fisher(mut11, mut10, mut01, mut00))
+                cooccur_sign = ifelse(odds_ratio > 1, 1, -1)) %>%
+  dplyr::rowwise() %>%
+  dplyr::mutate(p = row_fisher(mut11, mut10, mut01, mut00), 
+                cooccur_score = cooccur_sign * -log10(p))
 
+
+### make plot
+ggplot(gene_pair_summary, aes(x = gene1, y = gene2, fill = cooccur_score))+
+  geom_tile(color = "white", size = 1) +
+  xlab('') + 
+  ylab('') +
+  scale_x_discrete(position = "top") +
+  scale_fill_distiller(type = "div", palette = 5, 
+                       limits = c(-20, 20), 
+                       oob = scales::squish) +
+  theme_classic() + 
+  theme(axis.text.x = element_text(angle = -45, hjust = 1), 
+        axis.line = element_blank())
 
