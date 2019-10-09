@@ -317,14 +317,14 @@ We would remove the runs `Filter Samples` and `Cluster Samples and Plot Heatmap`
 #### Passing variables only in CI
 
 The analyses run in CI use only a small portion of the data so that tests can be run quickly.
-For some analyses there will not be enough samples to fully test code without altering certain parameters passed to methods.
+For some analyses, there will not be enough samples to fully test code without altering certain parameters passed to methods.
 The preferred way to handle these is to run these analyses through a shell script that specifies default parameters using environment variables.
 The default parameters should be the ones that are most appropriate for the full set of data.
 In CI, these will be replaced.
 
 We might decide that it makes the most sense to run an analysis using a more permissive statistical significance threshold in CI so that some "significant" pathways still appear and subsequent code that examines them can be tested.
 We'd first write code capable of taking command line parameters.
-In R, we could use `optparse` to specify these in a script - imagine it's called `pathway_sig.R`:
+In R, we could use `optparse` to specify these in a script - imagine it's called `pathway_sig.R` and it contains an option list:
 ```
 option_list <- list(
   optparse::make_option(
@@ -336,6 +336,7 @@ option_list <- list(
 ```
 
 Then we would create a shell script (perhaps `run_pathway_sig.sh`) that uses a default environment variable. If `OPENPBTA_PATHSIG` is defined, it will be used. Otherwise, a value of 0.05 is used.
+Note: the `-` before the `0.05` below is necessary notation and *not* designating a negative 0.05.
 ```
 PATHSIG=${OPENPBTA_PATHSIG:-0.05}
 
