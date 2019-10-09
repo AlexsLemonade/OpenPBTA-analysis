@@ -36,8 +36,9 @@ base_change_plot <- function(vaf_df, exp_strategy = "BOTH", filter_cutoff = 0) {
   base_count_df <- vaf_df %>%
     dplyr::group_by(change, experimental_strategy) %>%
     dplyr::summarise(base_count = dplyr::n()) %>%
-    dplyr::filter(base_count > filter_cutoff)
-
+    dplyr::filter(base_count > filter_cutoff) %>% 
+    dplyr::mutate(change = reorder(c(grep("ins|del", levels(reorder), value = TRUE, invert = TRUE), "ins", "del")))
+    
   # Plot this as a barplot
   barplot <- ggplot2::ggplot(
     base_count_df,
