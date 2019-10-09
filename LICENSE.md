@@ -1,4 +1,4 @@
-Copyright (c) 2019 Alex's Lemonade Stand Foundation
+Copyright (c) 2019 OpenPBTA Project Maintainers & Contributors
 
 * All content is available for re-use under the CC-BY 4.0 license ([see section](#creative-commons-attribution-40-international) below).
 
@@ -166,7 +166,7 @@ Creative Commons may be contacted at creativecommons.org
 
 # BSD 3-Clause License
 
-_Copyright (c) 2019, Alex's Lemonade Stand Foundation_
+_Copyright (c) 2019, OpenPBTA Project Maintainers & Contributors_
 _All rights reserved._
 
 Redistribution and use in source and binary forms, with or without
