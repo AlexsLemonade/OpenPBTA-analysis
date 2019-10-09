@@ -35,7 +35,7 @@ jobs:
 
       - run:
           name: Fusion annotation
-          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/03-GTEx-zscoring.R -S scratch/arriba_QC_expression_filtered_annotated.RDS -e data/pbta-gene-expression-rsem-fpkm.stranded.rds -s data/pbta-gene-expression-rsem-zscore-GTEX.stranded.rds -g analyses/fusion_filtering/references/Gtex_FPKM_BrainData.rds -o scratch/arriba_QC_expression_filtered
+          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/03-Calc-zscore-annotate.R -S scratch/arriba_QC_expression_filtered_annotated.RDS -e data/pbta-gene-expression-rsem-fpkm.stranded.rds -s data/pbta-gene-expression-rsem-zscore-GTEX.stranded.rds -g analyses/fusion_filtering/references/Gtex_FPKM_BrainData.rds -o scratch/arriba_QC_expression_filtered
 
       - run:
           name: Transcriptome dimensionality reduction
