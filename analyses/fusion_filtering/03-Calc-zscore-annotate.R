@@ -1,7 +1,7 @@
 # K. S. Gaonkar 2019
 # Annotates standardizes fusion calls from callers [STARfusion| Arriba] or QC filtered fusion 
-# calls with GTex zscored expression value . The input should have the following standardized 
-# columns to run through this GTEx normalization function
+# calls with zscored expression value from either GTEx/cohort . The input should have the following standardized 
+# columns to run through this GTEx/cohort normalization function
 # "Sample"  Unique SampleIDs used in your RNAseq dataset 
 # "LeftBreakpoint" Genomic location of breakpoint on the left 
 # "RightBreakpoint" Genomic location of breakpoint on the right 
@@ -16,18 +16,16 @@
 # Command line arguments
 # fusionfile	: Merged fusion calls from [STARfusion| Arriba] or QC filtered fusion
 # zscoreFilter	: Zscore value to use as threshold for annotation of differential expression
-# gtexGroupID : Column name from GTEx matrix to use to filter for sample with value= gtecGroupValue
-# gtexGroupValue : Value in GTEx matrix column ID== gtexGroupID to filter samples from norm
-# gtexMatrix : rds with  with expression data (FPKM) for GTEx samples (colnames) and 
-#                               GeneSymbol( rownames)      
+# gtexMatrix : Rds will be saved as "normData" with expression data (FPKM) for samples (colnames) and 
+#                               GeneSymbol( rownames) to be used to normalize samples     
 # expressionMatrix : expression matrix (FPKM for samples that need to be zscore normalized)
 # saveZscoredMatrix : path to save zscored matrix from GTEx normalization
 # outputfile	: Output file is a standardized fusion call set with standard
 # column headers with additional columns below from expression annotation
-# zscore_Gene1A : zscore from GTEx normalization for Gene1A
-# zscore_Gene1B : zscore from GTEx normalization for Gene1B
-# zscore_Gene2A : zscore from GTEx normalization for Gene2A
-# zscore_Gene2B : zscore from GTEx normalization for Gene2B
+# zscore_Gene1A : zscore from GTEx/cohort normalization for Gene1A
+# zscore_Gene1B : zscore from GTEx/cohort normalization for Gene1B
+# zscore_Gene2A : zscore from GTEx/cohort normalization for Gene2A
+# zscore_Gene2B : zscore from GTEx/cohort normalization for Gene2B
 # note_expression_Gene1A : differentially expressed or no change in expression for Gene1A
 # note_expression_Gene1B : differentially expressed or no change in expression for Gene1B
 # note_expression_Gene2A : differentially expressed or no change in expression for Gene2A
@@ -45,10 +43,6 @@ option_list <- list(
               help="Standardized fusion calls (.RDS) "),
   make_option(c("-c", "--zscoreFilter"), type="integer",default=2,
               help="zscore value to use as threshold for annotation of differential expression"),
-  make_option(c("-i","--gtexGroupID"),type="character",default="SMTS",
-              help="Column name from GTEx matrix to use to filter for sample with value= gtecGroupValue"),
-  make_option(c("-v","--gtexGroupValue"),type="character",default="Brain",
-              help="Value in GTEx matrix column ID== gtexGroupID to filter samples from norm"),
   make_option(c("-e","--expressionMatrix"),type="character",
               help="expression matrix (FPKM for samples that need to be zscore normalized .RDS)"),
   make_option(c("-s","--saveZscoredMatrix"),type="character",
@@ -62,29 +56,14 @@ option_list <- list(
 opt <- parse_args(OptionParser(option_list=option_list))
 standardFusionCalls<-opt$standardFusionCalls
 expressionMatrix<-opt$expressionMatrix
-gtexGroupValue<-opt$gtexGroupValue
-gtexGroupID<-opt$gtexGroupID
 zscoreFilter<- opt$zscoreFilter
 saveZscoredMatrix<-opt$saveZscoredMatrix
 gtexMatrix<-opt$gtexMatrix
 
-# load GTEx data
-gtexMatrix<-readRDS(gtexMatrix)
-# [1] "normData"      "normDataAnnot"
-gtexMatrix$GeneSymbol<-rownames(gtexMatrix)
 
-# load standardaized fusion calls cohort
-standardFusionCalls<-readRDS(standardFusionCalls)
-
-# load expression Matrix for cohort
-expressionMatrix<-readRDS(expressionMatrix)
-expressionMatrix <- cbind(expressionMatrix, colsplit(expressionMatrix$gene_id, pattern = '_', names = c("EnsembleID","GeneSymbol")))
-
-GTExZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter=zscoreFilter,gtexGroupValue=gtexGroupValue,gtexGroupID=gtexGroupID,saveZscoredMatrix=saveZscoredMatrix){
+ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter=zscoreFilter,saveZscoredMatrix=saveZscoredMatrix,normData=normData,expressionMatrix=expressionMatrix){
   #  @param standardFusionCalls : Annotates standardizes fusion calls from callers [STARfusion| Arriba] or QC filtered fusion 
   #  @param zscoreFilter : Zscore value to use as threshold for annotation of differential expression
-  #  @param gtexGroupValue : Column name from GTEx matrix to use to filter for sample with value= gtecGroupValue
-  #  @param  gtexGroupID : Value in GTEx matrix column ID== gtexGroupID to filter samples from norm
   #  @results : expression_annotated_fusions is a standardized fusion call set with standard
               # column headers with additional columns below from expression annotation
               # zscore_Gene1A : zscore from GTEx normalization for Gene1A
@@ -96,30 +75,35 @@ GTExZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFi
               # note_expression_Gene2A : differentially expressed or no change in expression for Gene2A
               # note_expression_Gene2B : differentially expressed or no change in expression for Gene2B
   
+  # rename normData to have colnames starting with "norm" to remove later 
+  # helpfull for external matrix zscoring
+  normData<-normData %>%
+    rename_at(vars( -matches("GeneSymbol") ), ~paste0(., ".norm"))
+  
   #calculate GTEx rowmeans and Standard Deviation
-  expressionMatrixGTExMatchedRowMeansSD <- expressionMatrix %>% 
+  expressionMatrixMatchedRowMeansSD <- expressionMatrix %>% 
     # join because GTEx matrix is Gene level 
     # group and summarize to sum multiple rows for a gene with multiple Ensemble IDs in orig df
-    left_join(gtexMatrix,by=c("GeneSymbol")) %>% group_by(GeneSymbol)  %>% 
+    left_join(normData,by=c("GeneSymbol")) %>% group_by(GeneSymbol)  %>% 
     # log transform data for z score calc.
     summarise_if(is.numeric,sum) %>% mutate_if(is.numeric, function(x) log2(x+1)) %>% 
     # RowMeans and Standard Deviation(SD) from a GTEx tissue group
-    mutate(RowMeans=rowMeans(.[,-which(colnames(.) %in% c("GeneSymbol","RowMeans","SD"))]),
-           SD=apply(.[,-which(colnames(.) %in% c("GeneSymbol","RowMeans","SD"))],1,sd)) %>%
-    # Remove GTEX samples
-    select(-starts_with("GTEX"))
+    mutate(RowMeans=rowMeans(.[,grep("norm",colnames(.))]),
+           SD=apply(.[,grep("norm",colnames(.))],1,sd)) %>%
+    # Remove GTEX/cohort samples used
+    select(-ends_with(".norm"))
   
   # Get z scores
-  expressionMatrixGTExzscored<-(select(expressionMatrixGTExMatchedRowMeansSD,-one_of("GeneSymbol","RowMeans","SD"))-expressionMatrixGTExMatchedRowMeansSD$RowMeans)/expressionMatrixGTExMatchedRowMeansSD$SD
-  expressionMatrixGTExzscored$GeneSymbol<-expressionMatrixGTExMatchedRowMeansSD$GeneSymbol
+  expressionMatrixzscored<-(select(expressionMatrixMatchedRowMeansSD,-one_of("GeneSymbol","RowMeans","SD"))-expressionMatrixMatchedRowMeansSD$RowMeans)/expressionMatrixMatchedRowMeansSD$SD
+  expressionMatrixzscored$GeneSymbol<-expressionMatrixMatchedRowMeansSD$GeneSymbol
   
-  # To save GTEx scored matrix
+  # To save GTEx/cohort scored matrix
   if(!missing(saveZscoredMatrix)){
-    saveRDS(expressionMatrixGTExzscored,saveZscoredMatrix)
+    saveRDS(expressionMatrixzscored,saveZscoredMatrix)
   }
   
   # get long format to compare to expression
-  expression_long_df <- expressionMatrixGTExzscored %>%
+  expression_long_df <- expressionMatrixzscored %>%
     # Get the data into long format
     reshape2::melt(variable.name = "Sample",
                    value.name = "zscore_value")
@@ -164,12 +148,28 @@ GTExZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFi
   return (expression_annotated_fusions)
 }
 
-GTExZscoredAnnotation_filtered_fusions<- GTExZscoredAnnotation(standardFusionCalls ,zscoreFilter,gtexGroupValue = gtexGroupValue,gtexGroupID = gtexGroupID,saveZscoredMatrix = saveZscoredMatrix)
+# example run using GTEx
+# load GTEx data
+normData<-readRDS(gtexMatrix)
 
+
+# load standardaized fusion calls cohort
+standardFusionCalls<-readRDS(standardFusionCalls)
+
+# load expression Matrix for cohort
+expressionMatrix<-readRDS(expressionMatrix)
+expressionMatrix <- cbind(expressionMatrix, colsplit(expressionMatrix$gene_id, pattern = '_', names = c("EnsembleID","GeneSymbol")))
+
+# for cohort level run the expressionMatrix divided by broad_histology will be provided to the function as normData and expressionMatrix
+
+GTExZscoredAnnotation_filtered_fusions<- ZscoredAnnotation(standardFusionCalls ,zscoreFilter,normData=normData,expressionMatrix = expressionMatrix)
 write.table(GTExZscoredAnnotation_filtered_fusions,paste0(opt$outputfile,"_GTExComparison_annotated.RDS"))
 
-# probably source the function to a new file for annotation from GTEx normalization cohort level normalization and genelist+fusionlist annotation as 03-fusion-annotation.R?
-# Unfiltered fusion annotation with GTEx Brain samples
-# GTExZscoredAnnotation_unfiltered_fusions<- GTExZscoredAnnotation(annotated_unfiltered_fusions,2,gtexGroupValue = gtexGroupValue,gtexGroupID = gtexGroupID)
+
+
+
+
+
+
 
 
