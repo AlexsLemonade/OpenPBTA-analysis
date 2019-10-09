@@ -166,7 +166,7 @@ Creative Commons may be contacted at creativecommons.org
 
 # BSD 3-Clause License
 
-_Copyright (c) 2018, Alex's Lemonade Stand Foundation_
+_Copyright (c) 2019, Alex's Lemonade Stand Foundation_
 _All rights reserved._
 
 Redistribution and use in source and binary forms, with or without
