@@ -151,6 +151,7 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter
 # example run using GTEx
 # load GTEx data
 normData<-readRDS(gtexMatrix)
+normData$GeneSymbol<-rownames(normData)
 
 
 # load standardaized fusion calls cohort
