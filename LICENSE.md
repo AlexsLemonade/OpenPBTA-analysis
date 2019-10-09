@@ -2,7 +2,7 @@ Copyright (c) 2019 Alex's Lemonade Stand Foundation
 
 * All content is available for re-use under the CC-BY 4.0 license ([see section](#creative-commons-attribution-40-international) below).
 
-* Code blocks contained within any computational notebooks are also available for re-use under the BSD 3-Clause License ([see section](#bsd-3-clause-license) below).
+* Code blocks contained within any computational notebooks or source code files (\*.R, \*.sh or \*.py) are also available for re-use under the BSD 3-Clause License ([see section](#bsd-3-clause-license) below).
 
 # Creative Commons Attribution 4.0 International
 
