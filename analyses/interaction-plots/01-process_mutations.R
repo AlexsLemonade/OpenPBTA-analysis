@@ -118,57 +118,68 @@ gene_counts <- gene_sample_counts %>%
 top_count_genes <- gene_counts %>%
   dplyr::arrange(desc(mutant_samples),
                  desc(muts_per_sample)) %>%
-  head(20)
-
-
-#### Calculate co-occurence for top genes
-
-gene_pairs <- t(combn(top_count_genes$gene, m = 2)) %>%
-  tibble::as.tibble() %>%
-  dplyr::rename(gene1 = V1, gene2 = V2) 
-
-all_sample_counts <- expand.grid(gene = top_count_genes$gene,
-                                 sample = samples, 
-                                 stringsAsFactors = FALSE) %>%
-  dplyr::left_join(gene_sample_counts) %>%
-  tidyr::replace_na(list(mutations = 0)) %>%
-
-gene_pair_counts <- gene_pairs %>% 
-  dplyr::left_join(all_sample_counts,
-                   by = c("gene1" = "gene")) %>%
-  dplyr::rename(muts1 = mutations) %>%
-  dplyr::left_join(all_sample_counts,
-                   by = c("gene2" = "gene", 
-                          "sample" = "sample")) %>%
-  dplyr::rename(muts2 = mutations) %>%
-  # use factors to preserve order later
-  dplyr::mutate(gene1 = factor(gene1, levels = top_count_genes$gene),
-                gene2 = factor(gene2, levels = top_count_genes$gene))
-
-gene_pair_summary <- gene_pair_counts %>%
-  dplyr::group_by(gene1, gene2) %>%
-  dplyr::summarize(mut11 = sum(muts1 > 0  & muts2 > 0), 
-                   mut10 = sum(muts1 > 0  & muts2 == 0), 
-                   mut01 = sum(muts1 == 0 & muts2 > 0), 
-                   mut00 = sum(muts1 == 0 & muts2 ==0))
+  head(30)
 
 ### calculate fishers exact test
 
 row_fisher <- function(w, x, y, z){
-# function to calculate fisher test from row elements
+  # function to calculate fisher test from row elements
   mat <- matrix(c(w, x, y, z), ncol = 2)
   fisher <- fisher.test(mat)
   return(fisher$p.value)
 }
 
-gene_pair_summary <- gene_pair_summary %>%
-  dplyr::mutate(odds_ratio = (mut11 * mut00) / (mut10 * mut01),
-                cooccur_sign = ifelse(odds_ratio > 1, 1, -1)) %>%
-  dplyr::rowwise() %>%
-  dplyr::mutate(p = row_fisher(mut11, mut10, mut01, mut00), 
-                cooccur_score = cooccur_sign * -log10(p))
 
+#### Calculate co-occurence for top genes
 
+coocurrence <- function(gene_sample_df, 
+                        gene_list = sample(unique(gene_sample_df$gene), 100), 
+                        sample_list = unique(gene_sample_df$sample)){
+  # gene_list in order of interest
+  #
+  # get all pairs of genes
+  gene_pairs <- t(combn(gene_list, m = 2)) %>%
+    tibble::as_tibble() %>%
+    dplyr::rename(gene1 = V1, gene2 = V2) 
+  
+  # get mutation counts for all genes/sample pairs in gene list
+  # fills in any missing values with 0
+  all_sample_counts <- expand.grid(gene = gene_list,
+                                   sample = sample_list, 
+                                   stringsAsFactors = FALSE) %>%
+    dplyr::left_join(gene_sample_df) %>%
+    tidyr::replace_na(list(mutations = 0))
+  
+  gene_pair_counts <- gene_pairs %>% 
+    dplyr::left_join(all_sample_counts,
+                     by = c("gene1" = "gene")) %>%
+    dplyr::rename(muts1 = mutations) %>%
+    dplyr::left_join(all_sample_counts,
+                     by = c("gene2" = "gene", 
+                            "sample" = "sample")) %>%
+    dplyr::rename(muts2 = mutations) %>%
+    dplyr::mutate(gene1 = factor(gene1, levels = gene_list),
+                  gene2 = factor(gene2, levels = gene_list))
+  
+  gene_pair_summary <- gene_pair_counts %>%
+    dplyr::group_by(gene1, gene2) %>%
+    dplyr::summarize(mut11 = sum(muts1 > 0  & muts2 > 0), 
+                     mut10 = sum(muts1 > 0  & muts2 == 0), 
+                     mut01 = sum(muts1 == 0 & muts2 > 0),
+                     mut00 = sum(muts1 == 0 & muts2 ==0),
+                     odds_ratio = (mut11 * mut00) / (mut10 * mut01),
+                     cooccur_sign = ifelse(odds_ratio > 1, 1, -1)) %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(p = row_fisher(mut11, mut10, mut01, mut00), 
+                  cooccur_score = cooccur_sign * -log10(p))
+  
+  return(gene_pair_summary)
+}
+  
+
+gene_pair_summary <- coocurrence(gene_sample_counts)
+
+ 
 ### make plot
 ggplot(gene_pair_summary, aes(x = gene1, y = gene2, fill = cooccur_score))+
   geom_tile(color = "white", size = 1) +
@@ -176,9 +187,13 @@ ggplot(gene_pair_summary, aes(x = gene1, y = gene2, fill = cooccur_score))+
   ylab('') +
   scale_x_discrete(position = "top") +
   scale_fill_distiller(type = "div", palette = 5, 
-                       limits = c(-20, 20), 
+                       limits = c(-20, 20),
                        oob = scales::squish) +
   theme_classic() + 
   theme(axis.text.x = element_text(angle = -45, hjust = 1), 
-        axis.line = element_blank())
+        axis.line = element_blank(), 
+        axis.ticks = element_blank(),
+        legend.justification=c(1,0), 
+        legend.position=c(1,0),
+        legend.key.size = unit(2, "char"))
 
