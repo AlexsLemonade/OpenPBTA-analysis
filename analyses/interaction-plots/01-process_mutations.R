@@ -23,16 +23,20 @@
 #### Initial Set Up
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+script_root <- file.path(root_dir, "analyses", "interaction-plots")
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
 # Load libraries:
+library(optparse)
 library(ggplot2)
 
-#### Set up options 
-library(optparse)
 
+# Load functions
+source(file.path(script_root, "cooccur_functions.R"))
+
+#### Set up options 
 option_list <- list(
   make_option(
     opt_str = "--maf", type = "character", 
@@ -97,6 +101,15 @@ maf_df <- maf_df %>%
 samples <- unique(maf_df$Tumor_Sample_Barcode)
 genes <- unique(maf_df$Hugo_Symbol)
 
+sample_meta <- meta_df %>%
+  dplyr::filter(Kids_First_Biospecimen_ID %in% samples)
+
+# get initial samples only (perhaps change to min age for each individual)
+initial_samples <- sample_meta %>%
+  dplyr::filter(tumor_descriptor == "Initial CNS Tumor") %>%
+  dplyr::pull(Kids_First_Biospecimen_ID) %>%
+  unique() # there is a duplicate, for now
+
 #### Create gene by sample summary table 
 
 gene_sample_counts <- maf_df %>%
@@ -108,6 +121,7 @@ gene_sample_counts <- maf_df %>%
 
 
 gene_counts <- gene_sample_counts %>%
+  dplyr::filter(sample %in% initial_samples) %>%
   dplyr::group_by(gene) %>%
   dplyr::summarize(mutant_samples = dplyr::n(), 
                    total_muts = sum(mutations),
@@ -120,64 +134,9 @@ top_count_genes <- gene_counts %>%
                  desc(muts_per_sample)) %>%
   head(30)
 
-### calculate fishers exact test
 
-row_fisher <- function(w, x, y, z){
-  # function to calculate fisher test from row elements
-  mat <- matrix(c(w, x, y, z), ncol = 2)
-  fisher <- fisher.test(mat)
-  return(fisher$p.value)
-}
-
-
-#### Calculate co-occurence for top genes
-
-coocurrence <- function(gene_sample_df, 
-                        gene_list = sample(unique(gene_sample_df$gene), 25), 
-                        sample_list = unique(gene_sample_df$sample)){
-  # gene_list in order of interest
-  #
-  # get all pairs of genes
-  gene_pairs <- t(combn(gene_list, m = 2))
-  colnames(gene_pairs) <- c("gene1", "gene2")
-  
-  # get mutation counts for all genes/sample pairs in gene list
-  # fills in any missing values with 0
-  all_sample_counts <- expand.grid(gene = gene_list,
-                                   sample = sample_list, 
-                                   stringsAsFactors = FALSE) %>%
-    dplyr::left_join(gene_sample_df, by = c("gene", "sample")) %>%
-    tidyr::replace_na(list(mutations = 0))
-  
-  gene_pair_counts <- gene_pairs %>% 
-    tibble::as_tibble() %>%
-    dplyr::left_join(all_sample_counts,
-                     by = c("gene1" = "gene")) %>%
-    dplyr::rename(muts1 = mutations) %>%
-    dplyr::left_join(all_sample_counts,
-                     by = c("gene2" = "gene", 
-                            "sample" = "sample")) %>%
-    dplyr::rename(muts2 = mutations) %>%
-    dplyr::mutate(gene1 = factor(gene1, levels = gene_list),
-                  gene2 = factor(gene2, levels = gene_list))
-  
-  gene_pair_summary <- gene_pair_counts %>%
-    dplyr::group_by(gene1, gene2) %>%
-    dplyr::summarize(mut11 = sum(muts1 > 0  & muts2 > 0), 
-                     mut10 = sum(muts1 > 0  & muts2 == 0), 
-                     mut01 = sum(muts1 == 0 & muts2 > 0),
-                     mut00 = sum(muts1 == 0 & muts2 ==0),
-                     odds_ratio = (mut11 * mut00) / (mut10 * mut01),
-                     cooccur_sign = ifelse(odds_ratio > 1, 1, -1)) %>%
-    dplyr::rowwise() %>%
-    dplyr::mutate(p = row_fisher(mut11, mut10, mut01, mut00), 
-                  cooccur_score = cooccur_sign * -log10(p))
-  
-  return(gene_pair_summary)
-}
-  
-
-gene_pair_summary <- coocurrence(gene_sample_counts)
+gene_pair_summary <- coocurrence(gene_sample_counts, 
+                                 samples= initial_samples)
 
  
 ### make plot
