@@ -133,24 +133,24 @@ row_fisher <- function(w, x, y, z){
 #### Calculate co-occurence for top genes
 
 coocurrence <- function(gene_sample_df, 
-                        gene_list = sample(unique(gene_sample_df$gene), 100), 
+                        gene_list = sample(unique(gene_sample_df$gene), 25), 
                         sample_list = unique(gene_sample_df$sample)){
   # gene_list in order of interest
   #
   # get all pairs of genes
-  gene_pairs <- t(combn(gene_list, m = 2)) %>%
-    tibble::as_tibble() %>%
-    dplyr::rename(gene1 = V1, gene2 = V2) 
+  gene_pairs <- t(combn(gene_list, m = 2))
+  colnames(gene_pairs) <- c("gene1", "gene2")
   
   # get mutation counts for all genes/sample pairs in gene list
   # fills in any missing values with 0
   all_sample_counts <- expand.grid(gene = gene_list,
                                    sample = sample_list, 
                                    stringsAsFactors = FALSE) %>%
-    dplyr::left_join(gene_sample_df) %>%
+    dplyr::left_join(gene_sample_df, by = c("gene", "sample")) %>%
     tidyr::replace_na(list(mutations = 0))
   
   gene_pair_counts <- gene_pairs %>% 
+    tibble::as_tibble() %>%
     dplyr::left_join(all_sample_counts,
                      by = c("gene1" = "gene")) %>%
     dplyr::rename(muts1 = mutations) %>%
