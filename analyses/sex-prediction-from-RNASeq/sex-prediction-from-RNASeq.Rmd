@@ -3,12 +3,32 @@ title: :"Sex Prediction from RNA-Seq"
 author: Bill Amadio
 date: 2019
 ---
-Library calls
+Library calls and run parameters.  Modify the assignments as needed for subsequent runs.
 ```{r}
 
 library(stats)
 library(glmnet)
 library(glmnetUtils)
+library(dplyr)
+library(tibble)
+
+#We filter transcripts by median absolute deviation (mad).  The filter removes all transcripts with mad
+#below the tail_percent percentile.
+
+tail_percent <- 0.75
+
+# We tune our predictive parameters using cross-validation on a training set and test the predictive accuracy
+# of the optimal model on a holdout test set.
+# train_percent represents the train/test partition; the seed is used to select training samples randomly.
+# The test set is whatever did not get selected for the training set.
+
+train_percent <- 0.70
+set.seed(36354)
+
+# Several gene expression files can serve as input to this analysis.
+# Assign the file name for this run to gene_expression_file_name below.
+
+gene_expression_file_name <- "pbta-gene-expression-kallisto.stranded.rds"
 
 ```
 
@@ -17,7 +37,7 @@ RNA-Seq data is in pbta-gene-expression-kallisto.rds.
 
 ```{r}
 
-ge <- readRDS("../../data/pbta-gene-expression-kallisto.stranded.rds")
+ge <- readRDS(paste("../../data/", gene_expression_file_name, sep=""))
 
 
 ```
@@ -35,12 +55,19 @@ missing_reported_gender_samples <- histologies[which(histologies[, "reported_gen
 Let's try a model with the top 25% highest mads.
 
 ```{r}
-tail_percent <- 0.75
 
 # dropping the gene and transcript identifiers and creating a matrix
+# the first column will be either transcript or column ids
+feature_identifier <- colnames(ge)[1]
 
-gene_expression_mat <- as.matrix(ge[ , -c(1,2)])
-rownames(gene_expression_mat) <- ge[ , 1]
+# drop any columns that contain other identifers
+ge <- ge %>%
+  dplyr::select(!!rlang::sym(feature_identifier), dplyr::starts_with("BS_")) %>%
+  dplyr::filter(complete.cases(.)) %>%
+  tibble::column_to_rownames(var = feature_identifier)
+
+# create a matrix
+gene_expression_mat <- as.matrix(ge)
 
 # calculate mean absolute variance for each transcript
 
@@ -92,9 +119,6 @@ Hold out 30% of the samples to test accuracy after cross-validation tuning of
 
 ```{r}
 
-train_percent <- 0.70
-set.seed(36354)
-
 train_set <- sample(1:nrow(df), floor(train_percent*nrow(df)))
 test_set <- setdiff(1:nrow(df), train_set)
 
@@ -141,14 +165,15 @@ We carry forward the predictors with non-zero coefficients in the optimal (minim
 ```{r}
 best_fit <- sex.cva$modlist[[best_alpha_index]]
 
-#look at best_fit$lambda.min to find best lambda corresponding to tuned alpha
+#look at best_fit$lambda.1se to find best predicting lambda corresponding to tuned alpha
 
-non_zero_features <- which(coef(best_fit, s = best_fit$lambda.min) != 0)
+non_zero_features <- which(coef(best_fit, s = best_fit$lambda.1se) != 0)
 
 ```
+
 ```{r}
 
-non_zero_coef <- coef(best_fit, s=best_fit$lambda.min)[non_zero_features]
+non_zero_coef <- coef(best_fit, s=best_fit$lambda.1se)[non_zero_features]
 
 ```
 
@@ -159,7 +184,7 @@ non_zero_transcripts <- colnames(df)[non_zero_features]
 Determine model accuracy on the holdout sample.
 
 ```{r}
-p <- predict(best_fit, newx = df[test_set, ], type = "class", s = best_fit$lambda.min)
+p <- predict(best_fit, newx = df[test_set, ], type = "class", s = best_fit$lambda.1se)
 test_accuracy <- length(which(p == reported_gender_response[test_set]))/length(p)
 # look at which(p == reported_gender_response[test_set]) for successful calls
 # look at which(p != reported_gender_response[test_set]) for unsuccessful calls
