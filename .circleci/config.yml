@@ -42,9 +42,13 @@ jobs:
           command: OPENPBTA_VAF_CUTOFF=0.10 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_evals.sh    
 
       - run:
+          name: Sex prediction from RNA-seq
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/sex-prediction-from-RNASeq/sex-prediction-from-RNASeq.Rmd', clean = TRUE)"
+          
+      - run:
           name: Selection Strategy Comparison
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/selection-strategy-comparison/01-selection-strategies.rmd', clean = TRUE)"          
-
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/selection-strategy-comparison/01-selection-strategies.rmd', clean = TRUE)"
+          
       - run:
           name: ssGSEA Analysis
           command: OPENPBTA_ANOVAPVALUE=0.25 OPENPBTA_TUKEYPVALUE=0.50 OPENPBTA_PERCKEEP=0.50 ./scripts/run_in_ci.sh bash analyses/ssgsea-hallmark/run-ssgsea-hallmark.sh
