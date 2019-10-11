@@ -3,9 +3,11 @@
 # calls with zscored expression value from either GTEx/cohort . The input should have the following standardized 
 # columns to run through this GTEx/cohort normalization function
 # "Sample"  Unique SampleIDs used in your RNAseq dataset 
+# "FusionName" GeneA--GeneB ,or if fusion is intergenic then Gene1A/Gene2A--GeneB
+# 
+# Optional
 # "LeftBreakpoint" Genomic location of breakpoint on the left 
 # "RightBreakpoint" Genomic location of breakpoint on the right 
-# "FusionName" GeneA--GeneB ,or if fusion is intergenic then Gene1A/Gene2A--GeneB
 # "Fusion_Type" Type of fusion prediction from caller "inframe","frameshift","other"
 # "Caller" Name of caller used for fusion prediction
 # "JunctionReadCount" synonymous with split reads, provide evidence for the specific breakpoint
@@ -75,27 +77,30 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter
               # note_expression_Gene2A : differentially expressed or no change in expression for Gene2A
               # note_expression_Gene2B : differentially expressed or no change in expression for Gene2B
   
-  # rename normData to have colnames starting with "norm" to remove later 
-  # helpfull for external matrix zscoring
-  normData<-normData %>%
-    rename_at(vars( -matches("GeneSymbol") ), ~paste0(., ".norm"))
+  # expressionMatrix collapsed at gene level like Gtex max rowMean
+  expressionMatrixMatched <- expressionMatrix %>% 
+    unique() %>% 
+    # means for each row per each gene_id
+    dplyr::mutate(means = rowMeans(select(.,-GeneSymbol,-gene_id,-EnsembleID))) %>% 
+    # arrange descending mean
+    arrange(desc(means)) %>%
+    # to keep only first occurence ie. max rowMean per GeneSymbol
+    distinct(GeneSymbol, .keep_all = TRUE) %>% 
+    ungroup() %>% 
+    dplyr::select(-means,-gene_id,-EnsembleID)
+
+  # gene matched 
+  expressionMatrixMatched<-expressionMatrixMatched[match(normData$GeneSymbol,expressionMatrixMatched$GeneSymbol),] %>% mutate_if(is.numeric, function(x) log2(x+1))
   
-  #calculate GTEx rowmeans and Standard Deviation
-  expressionMatrixMatchedRowMeansSD <- expressionMatrix %>% 
-    # join because GTEx matrix is Gene level 
-    # group and summarize to sum multiple rows for a gene with multiple Ensemble IDs in orig df
-    left_join(normData,by=c("GeneSymbol")) %>% group_by(GeneSymbol)  %>% 
-    # log transform data for z score calc.
-    summarise_if(is.numeric,sum) %>% mutate_if(is.numeric, function(x) log2(x+1)) %>% 
-    # RowMeans and Standard Deviation(SD) from a GTEx tissue group
-    mutate(RowMeans=rowMeans(.[,grep("norm",colnames(.))]),
-           SD=apply(.[,grep("norm",colnames(.))],1,sd)) %>%
-    # Remove GTEX/cohort samples used
-    select(-ends_with(".norm"))
   
-  # Get z scores
-  expressionMatrixzscored<-(select(expressionMatrixMatchedRowMeansSD,-one_of("GeneSymbol","RowMeans","SD"))-expressionMatrixMatchedRowMeansSD$RowMeans)/expressionMatrixMatchedRowMeansSD$SD
-  expressionMatrixzscored$GeneSymbol<-expressionMatrixMatchedRowMeansSD$GeneSymbol
+  #normData mean and sd
+  normData_means <- normData %>% mutate_if(is.numeric, function(x) log2(x+1)) %>% select (-GeneSymbol) %>% rowMeans( na.rm = TRUE)
+  normData_sd <- normData %>% mutate_if(is.numeric, function(x) log2(x+1)) %>% select (-GeneSymbol) %>% apply(1, sd, na.rm = TRUE)
+  # subtract mean
+  expressionMatrixzscored <- sweep(select(expressionMatrixMatched,-GeneSymbol), 1, normData_means, FUN = "-")
+  # divide by SD
+  expressionMatrixzscored <- sweep(expressionMatrixzscored, 1,normData_sd, FUN = "/") %>% mutate(GeneSymbol=expressionMatrixMatched$GeneSymbol) %>% na.omit()
+  
   
   # To save GTEx/cohort scored matrix
   if(!missing(saveZscoredMatrix)){
@@ -125,7 +130,7 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter
   expression_annotated_fusions <- fusion_sample_gene_df %>%
     # join the filtered expression values to the data frame keeping track of symbols
     # for each sample-fusion name pair
-    dplyr::left_join(expression_long_df, by = c("Sample", "GeneSymbol"))  %>%
+    dplyr::left_join(expression_long_df, by = c("Sample", "GeneSymbol")) %>%
     # for each sample-fusion name pair, are all genes under the expression threshold?
     dplyr::group_by(FusionName, Sample) %>%
     dplyr::select(FusionName, Sample,zscore_value,gene_position) %>%
@@ -153,7 +158,6 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter
 normData<-readRDS(gtexMatrix)
 normData$GeneSymbol<-rownames(normData)
 
-
 # load standardaized fusion calls cohort
 standardFusionCalls<-readRDS(standardFusionCalls)
 
@@ -165,12 +169,6 @@ expressionMatrix <- cbind(expressionMatrix, colsplit(expressionMatrix$gene_id, p
 
 GTExZscoredAnnotation_filtered_fusions<- ZscoredAnnotation(standardFusionCalls ,zscoreFilter,normData=normData,expressionMatrix = expressionMatrix)
 write.table(GTExZscoredAnnotation_filtered_fusions,paste0(opt$outputfile,"_GTExComparison_annotated.RDS"))
-
-
-
-
-
-
 
 
 
