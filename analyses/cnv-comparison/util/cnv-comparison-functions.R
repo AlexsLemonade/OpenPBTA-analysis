@@ -20,14 +20,12 @@ read_in_cnv <- function(file_path){
 
   # Read in cnv data
   cnv_df <-
-    read.table(gzfile(file_path), header = TRUE)
+    read.table(gzfile(file_path), header = TRUE, stringsAsFactors = FALSE)
 
   # Rearrange the columns
   cnv_df <- cnv_df %>%
-    dplyr::select("chrom", "loc.start", "loc.end", "ID", "num.mark", "seg.mean")
-  
-  # Reorder chromosome levels 
-  levels(cnv_df$chrom) <- c(paste0("chr", c(1:22, "X", "Y")))
+    dplyr::select("chrom", "loc.start", "loc.end", "ID", "num.mark", "seg.mean") %>%
+    dplyr::mutate(chrom = factor(chrom, levels = paste0("chr", c(1:22, "X", "Y"))))
 
   return(cnv_df)
 
@@ -41,9 +39,9 @@ filter_segmean <- function(cnv_df, segmean_cutoff){
   #   cnv_df: data.frame containing CNV caller output
   #
   # Return:
-  #   filtered_cnv_df: the data.frame given, returned with a column containing an
-  #               aberration label for loss or gain
-  
+  #   filtered_cnv_df: the data.frame given, returned with a column containing
+  #                    an aberration label for loss or gain
+
   # Rename columns for GenVisR function downstream
   colnames(cnv_df) <-
     c("chromosome",
@@ -74,7 +72,7 @@ plot_violin <- function(filtered_cnv_df) {
   # Return:
   #   violin_plot: violin plot depicting the log2 transformed sizes of
   #                aberrations detected across chromosomes
-  
+
   # Create violin plot where the y-axis represents the log2 transformed segmean
   violin_plot <- ggplot2::ggplot(filtered_cnv_df,
                              ggplot2::aes(x = chromosome,
@@ -82,7 +80,7 @@ plot_violin <- function(filtered_cnv_df) {
     ggplot2::geom_violin() +
     ggplot2::theme_bw() +
     ggplot2::ylab("Log transformed segmean values")
-  
+
   return(violin_plot)
 
 }
@@ -104,7 +102,7 @@ plot_histology_barplot <- function(filtered_cnv_df, metadata) {
   # Create a data.frame with the filtered dataframe joined with the metadata
   meta_joined <- filtered_cnv_df %>%
     dplyr::inner_join(metadata, by = c("sample" = "Kids_First_Biospecimen_ID"))
-  
+
   # Create barplot where the y-axis represents the size of aberration
   barplot <- ggplot2::ggplot(meta_joined,
                              ggplot2::aes(x = chromosome,
@@ -119,7 +117,7 @@ plot_histology_barplot <- function(filtered_cnv_df, metadata) {
 }
 
 plot_aberration_barplot <- function(filtered_cnv_df) {
-  # Given the data.frame filtered by cutoff segmean value with `filter_segmean`, 
+  # Given the data.frame filtered by cutoff segmean value with `filter_segmean`,
   # plot the proportion of aberrations across chromosomes with `geom_barplot`
   #
   # Args:
@@ -128,7 +126,7 @@ plot_aberration_barplot <- function(filtered_cnv_df) {
   # Return:
   #   barplot: barplot depicting the proportion of aberrations detected across
   #            chromosomes
-  
+
   # Create barplot where the y-axis represents the size of aberration
   barplot <- ggplot2::ggplot(filtered_cnv_df,
                              ggplot2::aes(x = chromosome,
