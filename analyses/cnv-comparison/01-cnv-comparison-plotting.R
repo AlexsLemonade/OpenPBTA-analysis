@@ -70,9 +70,24 @@ cnv_filtered <-
 
 #### Plot frequency and proportion using GenVisR -------------------------------
 
-# Run `plot_cnFreq` 
-cnv_proportion_plot <- lapply(cnv_filtered, plot_cn_freq, 0, .2, "proportion")
-cnv_frequency_plot <- lapply(cnv_filtered, plot_cn_freq, 0, .2, "frequency")
+# Run `GenVisR::cnFreq` 
+cnv_proportion_plot <-
+  lapply(
+    cnv_filtered,
+    GenVisR::cnFreq,
+    genome = "hg38",
+    CN_low_cutoff = 0,
+    CN_high_cutoff = .2,
+    plotType = "proportion"
+  )
+cnv_frequency_plot <- lapply(
+  cnv_filtered,
+  GenVisR::cnFreq,
+  genome = "hg38",
+  CN_low_cutoff = 0,
+  CN_high_cutoff = .2,
+  plotType = "frequency"
+)
 
 # Plot cowplot of frequency plots and save
 plot_cowplot(
