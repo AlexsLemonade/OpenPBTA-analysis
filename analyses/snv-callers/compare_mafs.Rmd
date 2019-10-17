@@ -31,7 +31,12 @@ Read in set up script.
 if (!("ggupset" %in% installed.packages())) {
   install.packages("ggupset", repos='http://cran.us.r-project.org')
 }
-
+if (!("UpSetR" %in% installed.packages())) {
+  install.packages("UpSetR", repos='http://cran.us.r-project.org')
+}
+if (!("GGally" %in% installed.packages())) {
+  install.packages("GGally", repos='http://cran.us.r-project.org')
+}
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 ```
@@ -62,8 +67,6 @@ if (!dir.exists(compare_plots_dir)) {
 ## Import data 
 
 ```{r}
-caller_names <- c("strelka2", "mutect2", "lancet", "vardict")
-
 dir(base_results_dir)
 ```
 
@@ -79,72 +82,92 @@ region_annot_files <- list.files(base_results_dir, pattern = "_region.tsv$", rec
                         full.names = TRUE) 
 ```
 
+
+```{r}
+# Get the caller names
+caller_names <- stringr::word(vaf_files, sep = "/", 2)
+```
+
 Make a big VAF data.frame
 
 ```{r}
-vaf <- lapply(vaf_files, function(file) 
+vaf_list <- lapply(vaf_files, function(file) {
   readr::read_tsv(file) %>%
-    dplyr::select("mutation_id", "vaf")
-)
-names(vaf) <- caller_names
-vaf_df <- dplyr::bind_rows(vaf, .id = "caller") 
+    dplyr::select("mutation_id", "vaf", "base_change", "change")
+})
+names(vaf_list) <- caller_names
 
-# Make a mutation ID list object from this
-mutation_ids <- lapply(vaf, function(df) dplyr::select(df, mutation_id) %>% 
-                         dplyr::pull(mutation_id))
+vaf_df <- dplyr::bind_rows(vaf_list, .id = "caller") %>% 
+  dplyr::mutate(caller = factor(caller))
 ```
 
 Take a look the density plot of VAFs for each caller. 
 
 ```{r}
-ggplot2::ggplot(vaf_df, ggplot2::aes(x = vaf, color = caller)) +
-  ggplot2::geom_density() + 
+ggplot2::ggplot(vaf_df, ggplot2::aes(x = vaf, fill = caller, color = caller)) +
+  ggplot2::geom_density(alpha = 0.15) + 
   ggplot2::theme_classic() + 
   ggplot2::xlab("VAF") + 
-  ggplot2::ylab("Density") 
+  ggplot2::ylab("Density") +
+  colorblindr::scale_fill_OkabeIto() +
+  colorblindr::scale_color_OkabeIto()
 ```
 
 Make a big tmb data.frame
 
 ```{r}
-tmb <- lapply(tmb_files, readr::read_tsv)
-names(tmb) <- caller_names
-tmb_df <- dplyr::bind_rows(tmb, .id = "caller") 
+tmb_list <- lapply(tmb_files, readr::read_tsv)
+names(tmb_list) <- caller_names
+tmb_df <- dplyr::bind_rows(tmb_list, .id = "caller") %>% 
+  dplyr::mutate(caller = factor(caller))
+```
 
-ggplot2::ggplot(tmb_df, ggplot2::aes(x = tmb, color = caller)) +
-  ggplot2::geom_density() + 
+Make a density plot of the TMB data. 
+
+```{r}
+ggplot2::ggplot(tmb_df, ggplot2::aes(x = tmb, fill = caller, color = caller)) +
+  ggplot2::geom_density(alpha = 0.15) + 
   ggplot2::theme_classic() + 
   ggplot2::xlab("TMB") + 
-  ggplot2::ylab("Density") 
+  ggplot2::ylab("Density") +
+    colorblindr::scale_fill_OkabeIto() +
+  colorblindr::scale_color_OkabeIto()
 ```
 
 Make a big genomic region data.frame
 
 ```{r}
-region_annot <- lapply(region_annot_files, readr::read_tsv)
+region_annot <- lapply(region_annot_files,function(file) {
+  readr::read_tsv(file) %>%
+    dplyr::select("vaf", "base_change", "mutation_id", "change", "type")
+})
 names(region_annot) <- caller_names
-region_annot_df <- dplyr::bind_rows(region_annot, .id = "caller") 
+region_annot_df <- dplyr::bind_rows(region_annot, .id = "caller") %>% 
+  dplyr::mutate(caller = factor(caller))
 ```
 
-## UpsettR
+## Upsett graph
 
 ```{r}
-ggplot2::ggplot(dplyr::distinct(vaf_df, mutation_id, caller), ggplot2::aes(x = caller)) +
-  ggplot2::geom_bar() +
-  ggupset::scale_x_upset()
-```
+mutation_id_list <- lapply(vaf_list, function(caller) caller$mutation_id)
 
-## Venn Diagram
-
-```{r}
-overlap <- VennDiagram::calculate.overlap(mutation_ids)
-ggplot2::ggplot(vaf_df)
+UpSetR::upset(UpSetR::fromList(mutation_id_list), order.by = "freq")
 ```
 
 ## Base Changes 
 
 ```{r}
-
+region_annot_df %>% 
+  dplyr::group_by(change, caller) %>% 
+  dplyr::summarize(count = dplyr::n()) %>%
+  ggplot2::ggplot(ggplot2::aes(x = change, y = count)) + 
+  ggplot2::theme_classic() + 
+  ggplot2::geom_bar(position = "dodge", stat = "identity",
+        ggplot2::aes(fill = caller)) + 
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
+  ggplot2::xlab("") +
+  ggplot2::ylab("Count") +
+  colorblindr::scale_fill_OkabeIto()
 ```
 
 ## VAF distributions
@@ -170,21 +193,35 @@ tmb_df %>%
 ## VAF correlations
 
 ```{r}
-vaf_df %>% 
-  tidyr::spread(key = "caller", value = "vaf", drop = TRUE)
+vaf_long <- vaf_df %>% 
+  dplyr::group_by(mutation_id, caller) %>% 
+  dplyr::summarize(vaf = mean(vaf)) %>% 
+  dplyr::distinct(mutation_id, caller, vaf, .keep_all = TRUE) %>% 
+  tidyr::spread(caller, vaf) %>% 
+  tibble::column_to_rownames("mutation_id")
+```
 
+Make the plot with ggpairs. 
 
-  ggplot2::ggplot(ggplot2::aes(x = vaf, y = vaf)) + 
-  ggplot2::geom_point() + 
-  ggplot2::theme_classic() + 
-  colorblindr::scale_fill_OkabeIto() + 
-  ggplot2::facet_wrap(~caller)
+```{r}
+GGally::ggpairs(vaf_long, mapping = ggplot2::aes(alpha = 0.05)) +
+  ggplot2::theme_classic()
 ``` 
 
 ## TMB correlations
 
 ```{r}
+tmb_long <- tmb_df %>% 
+  dplyr::distinct(Tumor_Sample_Barcode, caller, tmb) %>% 
+  tidyr::spread(caller, tmb) %>% 
+  tibble::column_to_rownames("Tumor_Sample_Barcode")
+```
 
+Make the TMB correlation plot.
+
+```{r}
+GGally::ggpairs(tmb_long, mapping = ggplot2::aes(alpha = 0.05)) +
+  ggplot2::theme_classic()
 ```
 
 ## Genomic regions 
