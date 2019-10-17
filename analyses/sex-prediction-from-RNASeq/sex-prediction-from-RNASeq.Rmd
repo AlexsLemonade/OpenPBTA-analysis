@@ -1,0 +1,192 @@
+---
+title: :"Sex Prediction from RNA-Seq"
+author: Bill Amadio
+date: 2019
+---
+Library calls and run parameters.  Modify the assignments as needed for subsequent runs.
+```{r}
+
+library(stats)
+library(glmnet)
+library(glmnetUtils)
+library(dplyr)
+library(tibble)
+
+#We filter transcripts by median absolute deviation (mad).  The filter removes all transcripts with mad
+#below the tail_percent percentile.
+
+tail_percent <- 0.75
+
+# We tune our predictive parameters using cross-validation on a training set and test the predictive accuracy
+# of the optimal model on a holdout test set.
+# train_percent represents the train/test partition; the seed is used to select training samples randomly.
+# The test set is whatever did not get selected for the training set.
+
+train_percent <- 0.70
+set.seed(36354)
+
+# Several gene expression files can serve as input to this analysis.
+# Assign the file name for this run to gene_expression_file_name below.
+
+gene_expression_file_name <- "pbta-gene-expression-kallisto.stranded.rds"
+
+```
+
+
+RNA-Seq data is in pbta-gene-expression-kallisto.rds.
+
+```{r}
+
+ge <- readRDS(paste("../../data/", gene_expression_file_name, sep=""))
+
+
+```
+
+Metadata is in pbta-histologies.tsv.  reported_gender is our target variable. Kids_First_Biospecimen_ID is the unique identifier for each sample. 
+
+```{r}
+histologies <- read.delim("../../data/pbta-histologies.tsv", header=TRUE, sep="\t", stringsAsFactors = FALSE)
+
+missing_reported_gender_samples <- histologies[which(histologies[, "reported_gender"] == ""), "Kids_First_Biospecimen_ID"]
+
+```
+
+
+Let's try a model with the top 25% highest mads.
+
+```{r}
+
+# dropping the gene and transcript identifiers and creating a matrix
+# the first column will be either transcript or column ids
+feature_identifier <- colnames(ge)[1]
+
+# drop any columns that contain other identifers
+ge <- ge %>%
+  dplyr::select(!!rlang::sym(feature_identifier), dplyr::starts_with("BS_")) %>%
+  dplyr::filter(complete.cases(.)) %>%
+  tibble::column_to_rownames(var = feature_identifier)
+
+# create a matrix
+gene_expression_mat <- as.matrix(ge)
+
+# calculate mean absolute variance for each transcript
+
+tx_mads <- apply(gene_expression_mat, 1, function(x) mad(x, high = TRUE))
+df <- t(gene_expression_mat[which(tx_mads >= quantile(tx_mads, tail_percent)), ])
+
+```
+
+Eliminate rows of df corresponding to samples with missing reported_gender.
+
+```{r}
+
+df <- df[!rownames(df) %in% missing_reported_gender_samples, ]
+
+```
+
+Use reported_gender column from histologies as the response.
+
+Extract reported_gender values from reported_gender column of histologies.  Put these value in a two-column dataframe
+  c("Kids_First_Biospecimen_ID", "reported_gender").
+
+```{r}
+
+reported_gender <- histologies[histologies$Kids_First_Biospecimen_ID %in% rownames(df), c("Kids_First_Biospecimen_ID", "reported_gender")]
+
+```
+
+Check sequence of rownames(df) and reported_gender[, 1].  reported_gender_response holds the reported_gender values in the same Kids_First_Biospecimen_ID sequence as rownames(df).
+
+```{r}
+
+match_index <- unlist(sapply(rownames(df), function(x) which(reported_gender[, 1] == x)))
+
+reported_gender_response <- reported_gender[match_index, 2]
+```
+
+Some values in reported_gender_response = "Not Available".  Eliminate from both reported_gender_response and df.
+
+```{r}
+reported_gender_response_hold <- reported_gender_response
+reported_gender_response <- reported_gender_response[reported_gender_response != "Not Available"]
+df <- df[reported_gender_response_hold != "Not Available", ]
+```
+
+
+Build predictive model for reported_gender_response.
+Hold out 30% of the samples to test accuracy after cross-validation tuning of 
+  lambda and alpha regularization parameters.
+
+```{r}
+
+train_set <- sample(1:nrow(df), floor(train_percent*nrow(df)))
+test_set <- setdiff(1:nrow(df), train_set)
+
+ptm <- proc.time()
+sex.cva <- cva.glmnet(df[train_set, ], reported_gender_response[train_set], standardize=TRUE, 
+                      alpha = seq(0, 1, len = 11)^3, family="binomial")
+proc.time() - ptm
+```
+
+Plot Deviance vs. log(lambda), one curve for each value of alpha.
+
+```{r}
+plot(sex.cva)
+```
+
+Plot CVloss against alpha.
+
+```{r}
+minlossplot(sex.cva, cv.type="min")
+```
+
+Although Hastie recommends against looking into the cva object, I could not retrieve optimal
+  values of lambda and alpha through code without doing so.
+
+the cva object contains a list, called modlist, of 11 objects, one for each of the alpha values tested.
+The CVloss plotted above is the minimum cvm value for each of the 11 objects in cva$modlist.
+The alpha corresponding to the minimum of these minimum cvm values is optimal.
+
+```{r}
+best_cvm_values <- sapply(sex.cva$modlist, function(x) min(x$cvm))
+best_alpha_index <- which(best_cvm_values == min(best_cvm_values))
+
+# look at sex.cva$alpha[best_alpha_index] to find the tuned value of alpha
+
+```
+
+The cva.modlist object corresponds to a given alpha value, and contains results for all the lambda values 
+  tested for the corresponding alpha value.
+
+The best performing lambda value is stored within the modlist object as lambda.min.
+
+We carry forward the predictors with non-zero coefficients in the optimal (minimum CVloss) model.
+
+```{r}
+best_fit <- sex.cva$modlist[[best_alpha_index]]
+
+#look at best_fit$lambda.1se to find best predicting lambda corresponding to tuned alpha
+
+non_zero_features <- which(coef(best_fit, s = best_fit$lambda.1se) != 0)
+
+```
+
+```{r}
+
+non_zero_coef <- coef(best_fit, s=best_fit$lambda.1se)[non_zero_features]
+
+```
+
+```{r}
+non_zero_transcripts <- colnames(df)[non_zero_features]
+```
+
+Determine model accuracy on the holdout sample.
+
+```{r}
+p <- predict(best_fit, newx = df[test_set, ], type = "class", s = best_fit$lambda.1se)
+test_accuracy <- length(which(p == reported_gender_response[test_set]))/length(p)
+# look at which(p == reported_gender_response[test_set]) for successful calls
+# look at which(p != reported_gender_response[test_set]) for unsuccessful calls
+```
+
