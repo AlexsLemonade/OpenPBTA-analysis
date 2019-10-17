@@ -1,5 +1,17 @@
-### calculate fishers exact test
+# cooccur_function.R
+# Functions for calculating co-occurence between mutations
 
+#' Calculate Fisher's exact test for row-wise data
+#' 
+#' Data order follows a two by two matrix, filled by rows or columns
+#' (as these are equivalent). Not vectorized!
+#' 
+#' @param w row 1 column 1 value
+#' @param x row 2 column 1 value
+#' @param y row 1 column 2 value
+#' @param z row 2 column 2 value
+#' 
+#' @return p-value from a Fisher's exact test
 row_fisher <- function(w, x, y, z){
   # function to calculate fisher test from row elements
   mat <- matrix(c(w, x, y, z), ncol = 2)
@@ -8,8 +20,26 @@ row_fisher <- function(w, x, y, z){
 }
 
 
-#### Calculate co-occurence for top genes
-
+#' Calculate co-occurence relationships for a list of genes
+#' 
+#' @param gene_sample_df a data frame with columns `gene`, `sample`, and 
+#'   `mutations` where each row represents a gene mutated in the named 
+#'   sample, and `mutations` is the number of mutations in that gene-sample 
+#'   combination.
+#' @param genes a vector of genes for which co-occurence data is to be calculated.
+#'   Default is to pick a random subset, though this is almost never what 
+#'   is wanted! (Note that all-by-all comparisons is likely to be extremely 
+#'   slow). 
+#' @param samples Which samples should the comparison include. Defaults to all
+#'   samples present in the data frame.
+#'        
+#' @return A data frame summarizing the co-occurence of pairs of genes in the
+#'   gene list with columns `gene1`; `gene2`; counts of each mutations in 
+#'   each category of sharing (`mut11`: both mutated; `mut10`: mutated in
+#'   the first but not second gene, etc.); `odds_ratio` for co-occurence,
+#'   `cooccur_sign`: 1 if co-occurence greater than by chance, -1 if less
+#'   frequent than expected; `p` the fisher's exact test p value; and a 
+#'   `cooccur_score` calucated as `cooccur_sign * -log10(p)`.
 coocurrence <- function(gene_sample_df, 
                         genes= sample(unique(gene_sample_df$gene), 25), 
                         samples = unique(gene_sample_df$sample)){
