@@ -13,12 +13,9 @@
 #
 # Command line example:
 #
-# Rscript analyses/interaction-plots/01-cprocess-mutations.R \
-#   --maf scratch/snv_dummy_data/strelka2 \
-#   --metadata data/pbta-histologies.tsv \
-#   --bed_wgs data/WGS.hg38.mutect2.unpadded.bed \
-#   --bed_wxs data/WXS.hg38.100bp_padded.bed \
-#   --annot_rds scratch/hg38_genomic_region_annotation.rds
+# Rscript analyses/interaction-plots/01-process-mutations.R \
+#   --maf data/pbta-snv-lancet.vep.maf.gz
+#   --metadata data/pbta-histologies.tsv 
 
 #### Initial Set Up
 # Establish base dir
