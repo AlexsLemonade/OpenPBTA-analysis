@@ -17,8 +17,7 @@ if (!("GenVisR" %in% installed.packages())) {
 }
 
 if (!("cowplot" %in% installed.packages())) {
-  install.packages("BiocManager")
-  BiocManager::install("cowplot")
+  install.packages("cowplot")
 }
 
 ##### Set up functions ---------------------------------------------------------
