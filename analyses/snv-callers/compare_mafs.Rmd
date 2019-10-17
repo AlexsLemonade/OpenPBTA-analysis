@@ -1,5 +1,5 @@
 ---
-title: "Compare Variant Caller"
+title: "Compare Variant Callers"
 output: 
   html_notebook:
     toc: TRUE
@@ -31,6 +31,9 @@ Read in set up script.
 if (!("ggupset" %in% installed.packages())) {
   install.packages("ggupset", repos='http://cran.us.r-project.org')
 }
+
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
 ```
 
 Set up output directories. 
@@ -107,6 +110,12 @@ Make a big tmb data.frame
 tmb <- lapply(tmb_files, readr::read_tsv)
 names(tmb) <- caller_names
 tmb_df <- dplyr::bind_rows(tmb, .id = "caller") 
+
+ggplot2::ggplot(tmb_df, ggplot2::aes(x = tmb, color = caller)) +
+  ggplot2::geom_density() + 
+  ggplot2::theme_classic() + 
+  ggplot2::xlab("TMB") + 
+  ggplot2::ylab("Density") 
 ```
 
 Make a big genomic region data.frame
