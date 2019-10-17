@@ -154,6 +154,23 @@ mutation_id_list <- lapply(vaf_list, function(caller) caller$mutation_id)
 UpSetR::upset(UpSetR::fromList(mutation_id_list), order.by = "freq")
 ```
 
+Graph VAFs by 
+
+```{r}
+callers_per_mutation <- vaf_df %>% 
+  dplyr::select(mutation_id, caller) %>% 
+  reshape2::melt() %>% 
+  dplyr::group_by(mutation_id) %>% 
+  dplyr::summarize(callers = paste0(caller, collapse = "-"),
+                   med_vaf = median(vaf))
+
+callers_per_mutation %>%
+  ggplot2::ggplot(ggplot2::aes(x = callers, y = med_vaf)) +
+  ggplot2::geom_violin() +
+  ggupset::scale_x_mergelist(sep = "-") +
+  ggupset::axis_combmatrix(sep = "-")
+```
+
 ## Base Changes 
 
 ```{r}
