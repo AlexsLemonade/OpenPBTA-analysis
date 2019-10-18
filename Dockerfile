@@ -30,6 +30,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 # Installs packages needed for still treemap, interactive plots, and hex plots
 # Rtsne and umap are required for dimension reduction analyses 
 # optparse is needed for passing arguments from the command line to R script
+# ggupset, UpSetR, and GGally are needed for snv-caller comparison 
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
     && install2.r --error \
     --deps TRUE \
@@ -45,7 +46,10 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     pheatmap \
     RColorBrewer \
     viridis \
-    data.table
+    data.table \
+    ggupset \
+    UpSetR \
+    GGally
 
 # maftools for proof of concept in create-subset-files
 RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
