@@ -154,7 +154,7 @@ mutation_id_list <- lapply(vaf_list, function(caller) caller$mutation_id)
 UpSetR::upset(UpSetR::fromList(mutation_id_list), order.by = "freq")
 ```
 
-Graph VAFs by 
+Graph mutations by combinations of callers and plot the VAF density.
 
 ```{r}
 callers_per_mutation <- vaf_df %>% 
@@ -191,20 +191,19 @@ region_annot_df %>%
 
 ```{r}
 vaf_df %>% 
-  ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, fill = caller)) + 
-  ggplot2::geom_violin() + 
+  ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, color = caller)) + 
+  ggforce::geom_sina(alpha = 0.05) + 
   ggplot2::theme_classic() + 
-  colorblindr::scale_fill_OkabeIto()
+  colorblindr::scale_color_OkabeIto()
 ```
 
 ## TMB distributions
 
 ```{r}
 tmb_df %>% 
-  ggplot2::ggplot(ggplot2::aes(x = caller, y = tmb, fill = caller)) + 
-  ggplot2::geom_violin() + 
-  ggplot2::theme_classic() + 
-  colorblindr::scale_fill_OkabeIto()
+  ggplot2::ggplot(ggplot2::aes(x = caller, y = tmb, color = short_histology)) + 
+  ggforce::geom_sina() + 
+  ggplot2::theme_classic() 
 ```
 
 ## VAF correlations
@@ -255,6 +254,19 @@ region_annot_df %>%
   ggplot2::xlab("") +
   ggplot2::ylab("Count") +
   colorblindr::scale_fill_OkabeIto()
+```
+
+
+```{r}
+region_annot_df %>% 
+  ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf)) + 
+  ggplot2::theme_classic() + 
+  ggforce::geom_sina(alpha = 0.1) + 
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
+  ggplot2::xlab("") +
+  ggplot2::ylab("VAF") +
+  colorblindr::scale_fill_OkabeIto() + 
+  ggplot2::facet_wrap(~type)
 ```
 
 ## Session Info
