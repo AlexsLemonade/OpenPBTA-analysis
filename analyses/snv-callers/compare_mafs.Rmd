@@ -151,8 +151,15 @@ region_annot_df <- dplyr::bind_rows(region_annot, .id = "caller") %>%
 
 ```{r}
 mutation_id_list <- lapply(vaf_list, function(caller) caller$mutation_id)
+```
 
-UpSetR::upset(UpSetR::fromList(mutation_id_list), order.by = "freq")
+Make the upset plot. 
+
+```{r}
+upset <- UpSetR::upset(UpSetR::fromList(mutation_id_list), order.by = "freq")
+
+# Print this out
+upset
 ```
 
 Graph mutations by combinations of callers and plot the VAF density.
