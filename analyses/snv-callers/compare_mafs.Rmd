@@ -29,13 +29,13 @@ Read in set up script.
 
 ```{r}
 if (!("ggupset" %in% installed.packages())) {
-  install.packages("ggupset", repos='http://cran.us.r-project.org')
+  install.packages("ggupset", repos = "http://cran.us.r-project.org")
 }
 if (!("UpSetR" %in% installed.packages())) {
-  install.packages("UpSetR", repos='http://cran.us.r-project.org')
+  install.packages("UpSetR", repos = "http://cran.us.r-project.org")
 }
 if (!("GGally" %in% installed.packages())) {
-  install.packages("GGally", repos='http://cran.us.r-project.org')
+  install.packages("GGally", repos = "http://cran.us.r-project.org")
 }
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
@@ -74,12 +74,18 @@ Get the lists of each type of file.
 
 ```{r}
 # Get the lists of each type of file
-vaf_files <- list.files(base_results_dir, pattern = "_vaf.tsv$", recursive = TRUE, 
-                        full.names = TRUE) 
-tmb_files <- list.files(base_results_dir, pattern = "_tmb.tsv$", recursive = TRUE, 
-                        full.names = TRUE) 
-region_annot_files <- list.files(base_results_dir, pattern = "_region.tsv$", recursive = TRUE, 
-                        full.names = TRUE) 
+vaf_files <- list.files(base_results_dir,
+  pattern = "_vaf.tsv$", recursive = TRUE,
+  full.names = TRUE
+)
+tmb_files <- list.files(base_results_dir,
+  pattern = "_tmb.tsv$", recursive = TRUE,
+  full.names = TRUE
+)
+region_annot_files <- list.files(base_results_dir,
+  pattern = "_region.tsv$", recursive = TRUE,
+  full.names = TRUE
+)
 ```
 
 
@@ -93,12 +99,12 @@ Make a big VAF data.frame
 ```{r}
 vaf_list <- lapply(vaf_files, function(file) {
   readr::read_tsv(file) %>%
-    dplyr::select("mutation_id", "vaf", "base_change", "change") %>% 
+    dplyr::select("mutation_id", "vaf", "base_change", "change") %>%
     dplyr::distinct(mutation_id, .keep_all = TRUE)
 })
 names(vaf_list) <- caller_names
 
-vaf_df <- dplyr::bind_rows(vaf_list, .id = "caller") %>% 
+vaf_df <- dplyr::bind_rows(vaf_list, .id = "caller") %>%
   dplyr::mutate(caller = factor(caller))
 ```
 
@@ -106,9 +112,9 @@ Take a look the density plot of VAFs for each caller.
 
 ```{r}
 ggplot2::ggplot(vaf_df, ggplot2::aes(x = vaf, fill = caller, color = caller)) +
-  ggplot2::geom_density(alpha = 0.15) + 
-  ggplot2::theme_classic() + 
-  ggplot2::xlab("VAF") + 
+  ggplot2::geom_density(alpha = 0.15) +
+  ggplot2::theme_classic() +
+  ggplot2::xlab("VAF") +
   ggplot2::ylab("Density") +
   colorblindr::scale_fill_OkabeIto() +
   colorblindr::scale_color_OkabeIto()
@@ -119,7 +125,7 @@ Make a big tmb data.frame
 ```{r}
 tmb_list <- lapply(tmb_files, readr::read_tsv)
 names(tmb_list) <- caller_names
-tmb_df <- dplyr::bind_rows(tmb_list, .id = "caller") %>% 
+tmb_df <- dplyr::bind_rows(tmb_list, .id = "caller") %>%
   dplyr::mutate(caller = factor(caller))
 ```
 
@@ -127,23 +133,23 @@ Make a density plot of the TMB data.
 
 ```{r}
 ggplot2::ggplot(tmb_df, ggplot2::aes(x = tmb, fill = caller, color = caller)) +
-  ggplot2::geom_density(alpha = 0.15) + 
-  ggplot2::theme_classic() + 
-  ggplot2::xlab("TMB") + 
+  ggplot2::geom_density(alpha = 0.15) +
+  ggplot2::theme_classic() +
+  ggplot2::xlab("TMB") +
   ggplot2::ylab("Density") +
-    colorblindr::scale_fill_OkabeIto() +
+  colorblindr::scale_fill_OkabeIto() +
   colorblindr::scale_color_OkabeIto()
 ```
 
 Make a big genomic region data.frame
 
 ```{r}
-region_annot <- lapply(region_annot_files,function(file) {
+region_annot <- lapply(region_annot_files, function(file) {
   readr::read_tsv(file) %>%
     dplyr::select("vaf", "base_change", "mutation_id", "change", "type")
 })
 names(region_annot) <- caller_names
-region_annot_df <- dplyr::bind_rows(region_annot, .id = "caller") %>% 
+region_annot_df <- dplyr::bind_rows(region_annot, .id = "caller") %>%
   dplyr::mutate(caller = factor(caller))
 ```
 
@@ -167,19 +173,23 @@ Graph mutations by combinations of callers and plot the VAF density.
 Get list of callers per mutation and the median vaf for each. 
 
 ```{r}
-callers_per_mutation <- tapply(vaf_df$caller, 
-                               vaf_df$mutation_id,
-                               paste0, collapse = "-") %>% 
-  as.data.frame() %>% 
+callers_per_mutation <- tapply(vaf_df$caller,
+  vaf_df$mutation_id,
+  paste0,
+  collapse = "-"
+) %>%
+  as.data.frame() %>%
   tibble::rownames_to_column("mutation_id")
 
-vaf_med <- tapply(vaf_df$vaf, 
-                  vaf_df$mutation_id,
-                  median) %>% 
-  as.data.frame() %>% 
+vaf_med <- tapply(
+  vaf_df$vaf,
+  vaf_df$mutation_id,
+  median
+) %>%
+  as.data.frame() %>%
   tibble::rownames_to_column("mutation_id")
 
-callers_per_mutation <- callers_per_mutation %>% 
+callers_per_mutation <- callers_per_mutation %>%
   dplyr::inner_join(vaf_med, by = "mutation_id")
 
 colnames(callers_per_mutation) <- c("mutation_id", "caller_combo", "median_vaf")
@@ -194,21 +204,23 @@ callers_per_mutation %>%
   ggplot2::theme_classic() +
   ggupset::scale_x_mergelist(sep = "-") +
   ggupset::axis_combmatrix(sep = "-") +
-  ggplot2::xlab("")  + 
+  ggplot2::xlab("") +
   ggplot2::ylab("Median VAF Across Callers")
 ```
 
 ## Base Changes 
 
 ```{r}
-region_annot_df %>% 
+region_annot_df %>%
   dplyr::filter(!(base_change %in% c("G>G", "A>A", "N>A", "N>T"))) %>%
-  dplyr::group_by(change, caller) %>% 
+  dplyr::group_by(change, caller) %>%
   dplyr::summarize(count = dplyr::n()) %>%
-  ggplot2::ggplot(ggplot2::aes(x = reorder(change, -count), y = count)) + 
-  ggplot2::theme_classic() + 
-  ggplot2::geom_bar(position = "dodge", stat = "identity",
-        ggplot2::aes(fill = caller)) + 
+  ggplot2::ggplot(ggplot2::aes(x = reorder(change, -count), y = count)) +
+  ggplot2::theme_classic() +
+  ggplot2::geom_bar(
+    position = "dodge", stat = "identity",
+    ggplot2::aes(fill = caller)
+  ) +
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
   ggplot2::xlab("") +
   ggplot2::ylab("Count") +
@@ -218,30 +230,30 @@ region_annot_df %>%
 ## VAF distributions
 
 ```{r}
-vaf_df %>% 
-  ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, color = caller)) + 
-  ggforce::geom_sina(alpha = 0.05) + 
-  ggplot2::theme_classic() + 
+vaf_df %>%
+  ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, color = caller)) +
+  ggforce::geom_sina(alpha = 0.05) +
+  ggplot2::theme_classic() +
   colorblindr::scale_color_OkabeIto()
 ```
 
 ## TMB distributions
 
 ```{r}
-tmb_df %>% 
-  ggplot2::ggplot(ggplot2::aes(x = caller, y = tmb, color = short_histology)) + 
-  ggforce::geom_sina() + 
-  ggplot2::theme_classic() 
+tmb_df %>%
+  ggplot2::ggplot(ggplot2::aes(x = caller, y = tmb, color = short_histology)) +
+  ggforce::geom_sina() +
+  ggplot2::theme_classic()
 ```
 
 ## VAF correlations
 
 ```{r}
-vaf_long <- vaf_df %>% 
-  dplyr::group_by(mutation_id, caller) %>% 
-  dplyr::summarize(vaf = mean(vaf)) %>% 
-  dplyr::distinct(mutation_id, caller, vaf, .keep_all = TRUE) %>% 
-  tidyr::spread(caller, vaf) %>% 
+vaf_long <- vaf_df %>%
+  dplyr::group_by(mutation_id, caller) %>%
+  dplyr::summarize(vaf = mean(vaf)) %>%
+  dplyr::distinct(mutation_id, caller, vaf, .keep_all = TRUE) %>%
+  tidyr::spread(caller, vaf) %>%
   tibble::column_to_rownames("mutation_id")
 ```
 
@@ -255,9 +267,9 @@ GGally::ggpairs(vaf_long, mapping = ggplot2::aes(alpha = 0.05)) +
 ## TMB correlations
 
 ```{r}
-tmb_long <- tmb_df %>% 
-  dplyr::distinct(Tumor_Sample_Barcode, caller, tmb) %>% 
-  tidyr::spread(caller, tmb) %>% 
+tmb_long <- tmb_df %>%
+  dplyr::distinct(Tumor_Sample_Barcode, caller, tmb) %>%
+  tidyr::spread(caller, tmb) %>%
   tibble::column_to_rownames("Tumor_Sample_Barcode")
 ```
 
@@ -271,13 +283,15 @@ GGally::ggpairs(tmb_long, mapping = ggplot2::aes(alpha = 0.05)) +
 ## Genomic regions 
 
 ```{r}
-region_annot_df %>% 
-  dplyr::group_by(type, caller) %>% 
+region_annot_df %>%
+  dplyr::group_by(type, caller) %>%
   dplyr::summarize(count = dplyr::n()) %>%
-  ggplot2::ggplot(ggplot2::aes(x = reorder(type, -count), y = count)) + 
-  ggplot2::theme_classic() + 
-  ggplot2::geom_bar(position = "dodge", stat = "identity",
-        ggplot2::aes(fill = caller)) + 
+  ggplot2::ggplot(ggplot2::aes(x = reorder(type, -count), y = count)) +
+  ggplot2::theme_classic() +
+  ggplot2::geom_bar(
+    position = "dodge", stat = "identity",
+    ggplot2::aes(fill = caller)
+  ) +
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
   ggplot2::xlab("") +
   ggplot2::ylab("Count") +
@@ -286,14 +300,14 @@ region_annot_df %>%
 
 
 ```{r}
-region_annot_df %>% 
-  ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf)) + 
-  ggplot2::theme_classic() + 
-  ggforce::geom_sina(alpha = 0.1, ggplot2::aes(color = caller)) + 
+region_annot_df %>%
+  ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf)) +
+  ggplot2::theme_classic() +
+  ggforce::geom_sina(alpha = 0.1, ggplot2::aes(color = caller)) +
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
   ggplot2::xlab("") +
   ggplot2::ylab("VAF") +
-  colorblindr::scale_color_OkabeIto() + 
+  colorblindr::scale_color_OkabeIto() +
   ggplot2::facet_wrap(~type)
 ```
 

@@ -234,8 +234,10 @@ for (strategy in opt$strategy) {
   )
 
   # Path to the template file
-  template_file <- file.path(root_dir, "analyses", "snv-callers", "template", 
-                             "variant_caller_report_template.Rmd")
+  template_file <- file.path(
+    root_dir, "analyses", "snv-callers", "template",
+    "variant_caller_report_template.Rmd"
+  )
 
   # Make copy of template
   if (file.exists(template_file)) {
@@ -243,7 +245,7 @@ for (strategy in opt$strategy) {
   } else {
     stop(cat("The Rmd template file ", template_file, " does not exist."))
   }
-  
+
   # Run this notebook
   rmarkdown::render(output_file, "html_document")
 }

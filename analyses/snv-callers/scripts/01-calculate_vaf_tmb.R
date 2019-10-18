@@ -115,8 +115,10 @@ option_list <- list(
 opt <- parse_args(OptionParser(option_list = option_list))
 
 ########### Check that the files we need are in the paths specified ############
-needed_files <- c(opt$maf, opt$metadata, opt$bed_wgs, opt$bed_wxs, opt$annot_rds,
-                  opt$cosmic)
+needed_files <- c(
+  opt$maf, opt$metadata, opt$bed_wgs, opt$bed_wxs, opt$annot_rds,
+  opt$cosmic
+)
 
 # Add root directory to the file paths
 needed_files <- file.path(root_dir, needed_files)
@@ -232,8 +234,10 @@ if (file.exists(vaf_file) && !opt$overwrite) {
 
     # If a VAF filter is set, filter out NA VAFs or VAFs less than this cutoff.
     vaf_df <- vaf_df %>%
-    dplyr::filter(vaf > opt$vaf_filter,
-                  !is.na(vaf))
+      dplyr::filter(
+        vaf > opt$vaf_filter,
+        !is.na(vaf)
+      )
 
     # Report how many mutations are left
     message(paste(nrow(vaf_df), "number of mutations left after vaf_filter."))
