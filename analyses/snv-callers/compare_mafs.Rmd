@@ -93,7 +93,8 @@ Make a big VAF data.frame
 ```{r}
 vaf_list <- lapply(vaf_files, function(file) {
   readr::read_tsv(file) %>%
-    dplyr::select("mutation_id", "vaf", "base_change", "change")
+    dplyr::select("mutation_id", "vaf", "base_change", "change") %>% 
+    dplyr::distinct(mutation_id, .keep_all = TRUE)
 })
 names(vaf_list) <- caller_names
 
@@ -156,28 +157,48 @@ UpSetR::upset(UpSetR::fromList(mutation_id_list), order.by = "freq")
 
 Graph mutations by combinations of callers and plot the VAF density.
 
-```{r}
-callers_per_mutation <- vaf_df %>% 
-  dplyr::select(mutation_id, caller) %>% 
-  reshape2::melt() %>% 
-  dplyr::group_by(mutation_id) %>% 
-  dplyr::summarize(callers = paste0(caller, collapse = "-"),
-                   med_vaf = median(vaf))
+Get list of callers per mutation and the median vaf for each. 
 
+```{r}
+callers_per_mutation <- tapply(vaf_df$caller, 
+                               vaf_df$mutation_id,
+                               paste0, collapse = "-") %>% 
+  as.data.frame() %>% 
+  tibble::rownames_to_column("mutation_id")
+
+vaf_med <- tapply(vaf_df$vaf, 
+                  vaf_df$mutation_id,
+                  median) %>% 
+  as.data.frame() %>% 
+  tibble::rownames_to_column("mutation_id")
+
+callers_per_mutation <- callers_per_mutation %>% 
+  dplyr::inner_join(vaf_med, by = "mutation_id")
+
+colnames(callers_per_mutation) <- c("mutation_id", "caller_combo", "median_vaf")
+```
+
+Graph this.
+
+```{r}
 callers_per_mutation %>%
-  ggplot2::ggplot(ggplot2::aes(x = callers, y = med_vaf)) +
-  ggplot2::geom_violin() +
+  ggplot2::ggplot(ggplot2::aes(x = caller_combo, y = median_vaf)) +
+  ggforce::geom_sina(alpha = 0.05) +
+  ggplot2::theme_classic() +
   ggupset::scale_x_mergelist(sep = "-") +
-  ggupset::axis_combmatrix(sep = "-")
+  ggupset::axis_combmatrix(sep = "-") +
+  ggplot2::xlab("")  + 
+  ggplot2::ylab("Median VAF Across Callers")
 ```
 
 ## Base Changes 
 
 ```{r}
 region_annot_df %>% 
+  dplyr::filter(!(base_change %in% c("G>G", "A>A", "N>A", "N>T"))) %>%
   dplyr::group_by(change, caller) %>% 
   dplyr::summarize(count = dplyr::n()) %>%
-  ggplot2::ggplot(ggplot2::aes(x = change, y = count)) + 
+  ggplot2::ggplot(ggplot2::aes(x = reorder(change, -count), y = count)) + 
   ggplot2::theme_classic() + 
   ggplot2::geom_bar(position = "dodge", stat = "identity",
         ggplot2::aes(fill = caller)) + 
@@ -246,7 +267,7 @@ GGally::ggpairs(tmb_long, mapping = ggplot2::aes(alpha = 0.05)) +
 region_annot_df %>% 
   dplyr::group_by(type, caller) %>% 
   dplyr::summarize(count = dplyr::n()) %>%
-  ggplot2::ggplot(ggplot2::aes(x = type, y = count)) + 
+  ggplot2::ggplot(ggplot2::aes(x = reorder(type, -count), y = count)) + 
   ggplot2::theme_classic() + 
   ggplot2::geom_bar(position = "dodge", stat = "identity",
         ggplot2::aes(fill = caller)) + 
