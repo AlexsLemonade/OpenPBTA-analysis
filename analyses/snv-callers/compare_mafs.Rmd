@@ -261,11 +261,11 @@ region_annot_df %>%
 region_annot_df %>% 
   ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf)) + 
   ggplot2::theme_classic() + 
-  ggforce::geom_sina(alpha = 0.1) + 
+  ggforce::geom_sina(alpha = 0.1, ggplot2::aes(color = caller)) + 
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
   ggplot2::xlab("") +
   ggplot2::ylab("VAF") +
-  colorblindr::scale_fill_OkabeIto() + 
+  colorblindr::scale_color_OkabeIto() + 
   ggplot2::facet_wrap(~type)
 ```
 
