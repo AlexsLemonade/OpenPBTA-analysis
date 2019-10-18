@@ -113,6 +113,7 @@ if (opt$annot_rds != "none" && !file.exists(opt$annot_rds)) {
 # CosmicMutantExport.tsv for grch38 is used here but only mutations from brain
 # related samples are kept.
 if (opt$cosmic_clean != "none" && !file.exists(opt$cosmic_clean)) {
+
   # Print progress message
   message("Setting up COSMIC mutation file. Only need to do this once.")
 

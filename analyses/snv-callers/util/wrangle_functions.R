@@ -254,7 +254,7 @@ annotr_maf <- function(maf_df, annotation_file = NULL, bp_window = 0) {
 
   # Remove the annotation ranges file to conserve memory burden
   rm(annotation_ranges)
-
+  
   # Return annotated mutations
   return(annot)
 }

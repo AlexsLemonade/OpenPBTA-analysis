@@ -34,6 +34,7 @@ base_change_plot <- function(vaf_df, exp_strategy = "BOTH", filter_cutoff = 0) {
 
   # Count the number of each type of base change
   base_count_df <- vaf_df %>%
+
     dplyr::mutate(
       change = as.factor(change),
       # Change factor level order so ins and del are at the end
@@ -41,8 +42,8 @@ base_change_plot <- function(vaf_df, exp_strategy = "BOTH", filter_cutoff = 0) {
     ) %>%
     dplyr::group_by(change, experimental_strategy) %>%
     dplyr::summarise(base_count = dplyr::n()) %>%
-    dplyr::filter(base_count > filter_cutoff)
-
+    dplyr::filter(base_count > filter_cutoff) 
+    
   # Plot this as a barplot
   barplot <- ggplot2::ggplot(
     base_count_df,
