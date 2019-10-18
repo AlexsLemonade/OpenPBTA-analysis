@@ -46,7 +46,9 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     pheatmap \
     RColorBrewer \
     viridis \
-    data.table \
+    data.table \ 
+    rJava \
+    scagnostics \
     ggupset \
     UpSetR \
     GGally

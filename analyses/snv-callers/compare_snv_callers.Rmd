@@ -15,7 +15,7 @@ combines the output from those calculations and compares them.
 
 To run this from the command line, use:
 ```
-Rscript -e "rmarkdown::render('analyses/tmb-calculations/compare_variant_callers.Rmd', 
+Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers.Rmd', 
                               clean = TRUE)"
 ```
 
