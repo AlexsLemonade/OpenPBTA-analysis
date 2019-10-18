@@ -72,5 +72,12 @@ RUN R -e "devtools::install_github('timelyportfolio/d3treeR', ref = '0eaba7f1c64
 # Need this package to make plots colorblind friendly
 RUN R -e "devtools::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
 
+# Required for sex prediction from RNA-seq data
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
+    && install2.r --error \
+    --deps TRUE \
+    glmnet \
+    glmnetUtils
+
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for

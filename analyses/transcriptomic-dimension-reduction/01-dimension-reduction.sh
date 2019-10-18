@@ -1,7 +1,7 @@
 # Bethell and Taroni for CCDL 2019
 # Run dimension reduction for all subsets of gene expression for both methods:
 # RSEM and kallisto
-# 
+#
 # Usage: bash 02-dimension-reduction.sh
 
 # This script should always run as if it were being called from
@@ -23,7 +23,28 @@ OUTPUT="results"
 Rscript --vanilla scripts/run-dimension-reduction.R \
   --expression ../../data/pbta-gene-expression-rsem-fpkm.polya.rds \
   --metadata ${METADATA} \
-  --filename_lead rsem_polyA \
+  --filename_lead rsem_polyA_none \
+  --output_directory ${OUTPUT} \
+  --seed ${SEED} \
+  --perplexity ${PERPLEXITY} \
+  --neighbors ${NEIGHBORS} \
+  --low_count_threshold ${COUNT_THRESHOLD}
+
+Rscript --vanilla scripts/run-dimension-reduction.R \
+  --expression ../../data/pbta-gene-expression-rsem-fpkm.polya.rds \
+  --metadata ${METADATA} \
+  --filename_lead rsem_polyA_log \
+  --output_directory ${OUTPUT} \
+  --seed ${SEED} \
+  --perplexity ${PERPLEXITY} \
+  --neighbors ${NEIGHBORS} \
+  --low_count_threshold ${COUNT_THRESHOLD} \
+  --log2_transform
+
+Rscript --vanilla scripts/run-dimension-reduction.R \
+  --expression ../../data/pbta-gene-expression-rsem-fpkm.stranded.rds \
+  --metadata ${METADATA} \
+  --filename_lead rsem_stranded_none \
   --output_directory ${OUTPUT} \
   --seed ${SEED} \
   --perplexity ${PERPLEXITY} \
@@ -33,19 +54,41 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
 Rscript --vanilla scripts/run-dimension-reduction.R \
   --expression ../../data/pbta-gene-expression-rsem-fpkm.stranded.rds \
   --metadata ${METADATA} \
-  --filename_lead rsem_stranded \
+  --filename_lead rsem_stranded_log \
   --output_directory ${OUTPUT} \
   --seed ${SEED} \
   --perplexity ${PERPLEXITY} \
   --neighbors ${NEIGHBORS} \
-  --low_count_threshold ${COUNT_THRESHOLD}
+  --low_count_threshold ${COUNT_THRESHOLD} \
+  --log2_transform
 
 #### kallisto ------------------------------------------------------------------
 
 Rscript --vanilla scripts/run-dimension-reduction.R \
   --expression ../../data/pbta-gene-expression-kallisto.polya.rds \
   --metadata ${METADATA} \
-  --filename_lead kallisto_polyA \
+  --filename_lead kallisto_polyA_none \
+  --output_directory ${OUTPUT} \
+  --seed ${SEED} \
+  --perplexity ${PERPLEXITY} \
+  --neighbors ${NEIGHBORS} \
+  --low_count_threshold ${COUNT_THRESHOLD}
+
+Rscript --vanilla scripts/run-dimension-reduction.R \
+  --expression ../../data/pbta-gene-expression-kallisto.polya.rds \
+  --metadata ${METADATA} \
+  --filename_lead kallisto_polyA_log \
+  --output_directory ${OUTPUT} \
+  --seed ${SEED} \
+  --perplexity ${PERPLEXITY} \
+  --neighbors ${NEIGHBORS} \
+  --low_count_threshold ${COUNT_THRESHOLD} \
+  --log2_transform
+
+Rscript --vanilla scripts/run-dimension-reduction.R \
+  --expression ../../data/pbta-gene-expression-kallisto.stranded.rds \
+  --metadata ${METADATA} \
+  --filename_lead kallisto_stranded_none \
   --output_directory ${OUTPUT} \
   --seed ${SEED} \
   --perplexity ${PERPLEXITY} \
@@ -55,9 +98,11 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
 Rscript --vanilla scripts/run-dimension-reduction.R \
   --expression ../../data/pbta-gene-expression-kallisto.stranded.rds \
   --metadata ${METADATA} \
-  --filename_lead kallisto_stranded \
+  --filename_lead kallisto_stranded_log \
   --output_directory ${OUTPUT} \
   --seed ${SEED} \
   --perplexity ${PERPLEXITY} \
   --neighbors ${NEIGHBORS} \
-  --low_count_threshold ${COUNT_THRESHOLD}
+  --low_count_threshold ${COUNT_THRESHOLD} \
+  --log2_transform
+

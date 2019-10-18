@@ -239,6 +239,7 @@ for (strategy in opt$strategy) {
     "variant_caller_report_template.Rmd"
   )
 
+
   # Make copy of template
   if (file.exists(template_file)) {
     file.copy(from = template_file, to = output_file, overwrite = opt$overwrite)
