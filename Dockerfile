@@ -27,13 +27,6 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     sf \
     mapview
 
-# Install java and rJava
-RUN apt-get -y update && apt-get install -y \
-   default-jdk \
-   r-cran-rjava \
-   && apt-get clean \
-   && rm -rf /var/lib/apt/lists/
-
 # Installs packages needed for still treemap, interactive plots, and hex plots
 # Rtsne and umap are required for dimension reduction analyses 
 # optparse is needed for passing arguments from the command line to R script
@@ -53,10 +46,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     pheatmap \
     RColorBrewer \
     viridis \
-    data.table \ 
-    ggupset \
-    UpSetR \
-    GGally
+    data.table 
 
 # maftools for proof of concept in create-subset-files
 RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
@@ -69,6 +59,18 @@ RUN R -e "BiocManager::install(c('preprocessCore', 'sva'), update = FALSE)"
 
 # These packages are for single-sample GSEA analysis
 RUN R -e "BiocManager::install(c('GSEABase', 'GSVA'), update = FALSE)"
+
+# Install java and rJava for some of the snv plotting comparison packages
+RUN apt-get -y update && apt-get install -y \
+   default-jdk \
+   r-cran-rjava \
+   && apt-get clean \
+   && rm -rf /var/lib/apt/lists/
+
+# Install for SNV comparison plots
+RUN R -e "devtools::install_github('hms-dbmi/UpSetR', dependencies = TRUE)"
+RUN R -e "devtools::install_github('const-ae/ggupset', dependencies = TRUE)"
+RUN R -e "devtools::install_github('ggobi/ggally', dependencies = TRUE)"
 
 # This is needed to create the interactive pie chart
 RUN R -e "devtools::install_github('timelyportfolio/sunburstR', ref = 'd40d7ed71ee87ca4fbb9cb8b7cf1e198a23605a9', dependencies = TRUE)"
