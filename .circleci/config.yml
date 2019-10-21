@@ -55,7 +55,7 @@ jobs:
 
       - run:
           name: CNV Caller Comparison  
-          command: ./scripts/run_in_ci.sh Rscript analyses/cnv-comparison/01-cnv-comparison-plotting.R      
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-comparison/01-cnv-comparison-plotting.Rmd', clean = TRUE)"     
 
         #### Add your analysis here ####
         
