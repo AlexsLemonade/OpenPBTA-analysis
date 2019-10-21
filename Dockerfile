@@ -59,26 +59,6 @@ RUN R -e "BiocManager::install(c('preprocessCore', 'sva'), update = FALSE)"
 # These packages are for single-sample GSEA analysis
 RUN R -e "BiocManager::install(c('GSEABase', 'GSVA'), update = FALSE)"
 
-# Install java and rJava for some of the snv plotting comparison packages
-RUN apt-get -y update && apt-get install -y \
-   default-jdk \
-   r-cran-rjava \
-   && apt-get clean \
-   && rm -rf /var/lib/apt/lists/
-
-# Install for SNV comparison plots
-RUN R -e "devtools::install_github('hms-dbmi/UpSetR', dependencies = TRUE)"
-RUN R -e "devtools::install_github('const-ae/ggupset', dependencies = TRUE)"
-
-# GGally and its required packages
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
-    && install2.r --error \
-    lattice \
-    rpart \
-    class \
-    MASS \
-    GGally
-
 # This is needed to create the interactive pie chart
 RUN R -e "devtools::install_github('timelyportfolio/sunburstR', ref = 'd40d7ed71ee87ca4fbb9cb8b7cf1e198a23605a9', dependencies = TRUE)"
 
@@ -94,6 +74,26 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     --deps TRUE \
     glmnet \
     glmnetUtils
+
+# Install java and rJava for some of the snv plotting comparison packages
+RUN apt-get -y update && apt-get install -y \
+   default-jdk \
+   r-cran-rjava \
+   && apt-get clean \
+   && rm -rf /var/lib/apt/lists/
+
+# Install for SNV comparison plots
+RUN R -e "devtools::install_github('hms-dbmi/UpSetR', ref = 'd5f8f9a3a4d14df95eb823eba37f0285bec3953d', dependencies = TRUE)"
+RUN R -e "devtools::install_github('const-ae/ggupset', ref = '7a33263cc5fafdd72a5bfcbebe5185fafe050c73', dependencies = TRUE)"
+
+# GGally and its required packages
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
+    && install2.r --error \
+    lattice \
+    rpart \
+    class \
+    MASS \
+    GGally
 
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
