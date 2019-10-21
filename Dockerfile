@@ -27,6 +27,13 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     sf \
     mapview
 
+# Install java and rJava
+RUN apt-get -y update && apt-get install -y \
+   default-jdk \
+   r-cran-rjava \
+   && apt-get clean \
+   && rm -rf /var/lib/apt/lists/
+
 # Installs packages needed for still treemap, interactive plots, and hex plots
 # Rtsne and umap are required for dimension reduction analyses 
 # optparse is needed for passing arguments from the command line to R script
@@ -47,8 +54,6 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     RColorBrewer \
     viridis \
     data.table \ 
-    rJava \
-    scagnostics \
     ggupset \
     UpSetR \
     GGally
