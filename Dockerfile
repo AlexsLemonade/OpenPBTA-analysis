@@ -30,7 +30,6 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 # Installs packages needed for still treemap, interactive plots, and hex plots
 # Rtsne and umap are required for dimension reduction analyses 
 # optparse is needed for passing arguments from the command line to R script
-# ggupset, UpSetR, and GGally are needed for snv-caller comparison 
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
     && install2.r --error \
     --deps TRUE \
@@ -46,9 +45,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     pheatmap \
     RColorBrewer \
     viridis \
-    data.table \
-    lattice \
-    rpart
+    data.table 
 
 # maftools for proof of concept in create-subset-files
 RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
@@ -72,7 +69,15 @@ RUN apt-get -y update && apt-get install -y \
 # Install for SNV comparison plots
 RUN R -e "devtools::install_github('hms-dbmi/UpSetR', dependencies = TRUE)"
 RUN R -e "devtools::install_github('const-ae/ggupset', dependencies = TRUE)"
-RUN R -e "devtools::install_github('ggobi/ggally', ref= '29aed8afb9180d8f90dc17c1dccfc2103bf55acc', dependencies = TRUE)"
+
+# GGally and its required packages
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
+    && install2.r --error \
+    lattice \
+    rpart \
+    class \
+    MASS \
+    GGally
 
 # This is needed to create the interactive pie chart
 RUN R -e "devtools::install_github('timelyportfolio/sunburstR', ref = 'd40d7ed71ee87ca4fbb9cb8b7cf1e198a23605a9', dependencies = TRUE)"
