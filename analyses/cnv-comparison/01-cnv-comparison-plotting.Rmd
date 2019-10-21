@@ -1,0 +1,178 @@
+---
+title: "CNV Comparison Plots"
+output:   
+  html_notebook: 
+    toc: true
+    toc_float: true
+---
+
+This notebook plots and compares detected CNV aberrations given CNVkit and 
+Control-FREEC output.
+
+## Output Files
+
+- `analyses/cnv-comparison/plots/compare_cnv_output_proportion.pdf`
+- `analyses/cnv-comparison/plots/compare_cnv_output_frequency.pdf`
+- `analyses/cnv-comparison/plots/compare_cnv_output_violin_plot.pdf`
+- `analyses/cnv-comparison/plots/compare_cnv_output_barplot_histology.pdf`
+- `analyses/cnv-comparison/plots/compare_cnv_output_barplot_aberration.pdf`
+
+## Usage
+
+This script is intended to be run via the command line from the top directory
+of the repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/cnv-comparison/01-cnv-comparison-plotting.Rmd', 
+                              clean = TRUE)"
+```
+
+# Set Up
+
+```{r}
+# This will be needed to create the frequency and proportion aberration plots 
+if (!("GenVisR" %in% installed.packages())) {
+  install.packages("BiocManager")
+  BiocManager::install("GenVisR")
+}
+
+# This will be need to combine plots 
+if (!("cowplot" %in% installed.packages())) {
+  install.packages("cowplot")
+}
+
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+
+# Source custom functions script
+source(file.path("util", "cnv-comparison-functions.R"))
+```
+
+# Directories and Files
+
+```{r}
+# Path to input directory
+input_directory <- file.path("..", "..", "data")
+
+# Path to output directory
+output_directory <- "plots"
+
+# Create the output directory if it does not exist
+if (!dir.exists(output_directory)) {
+  dir.create(output_directory, recursive = TRUE)
+}
+
+# List of file paths to the CNV data 
+cnv_list <-
+  list(
+    file.path(input_directory, "pbta-cnv-cnvkit.seg.gz"),
+    file.path(input_directory, "pbta-cnv-controlfreec.seg.gz")
+  )
+```
+
+# Read in data 
+
+```{r}
+# Read in list of CNV data using custom `read_in_cnv` function
+cnv_data <- lapply(cnv_list, read_in_cnv)
+
+# Read in metadata
+metadata <-
+  readr::read_tsv(file.path(input_directory, "pbta-histologies.tsv"))
+```
+
+# Filter data
+
+```{r}
+# Filter CNV data by cutoff segmean using custom `filter_segmean` function
+cnv_filtered <-
+  lapply(cnv_data, filter_segmean, segmean_cutoff = 0.5)
+
+# Bind rows of dataframes in cnv_filtered
+combined_cnv_filtered <- dplyr::bind_rows(cnv_filtered, .id = "cnv_caller") 
+combined_cnv_filtered$cnv_caller <- gsub("1", "cnvkit", combined_cnv_filtered$cnv_caller)
+combined_cnv_filtered$cnv_caller <- gsub("2", "controlfreec", combined_cnv_filtered$cnv_caller)
+```
+
+# GenVisR plots
+
+```{r, fig.height = 25, fig.width = 40}
+# Run `GenVisR::cnFreq` 
+cnv_proportion_plot <-
+  lapply(
+    cnv_filtered,
+    GenVisR::cnFreq,
+    genome = "hg38",
+    CN_low_cutoff = 0,
+    CN_high_cutoff = .2,
+    plotType = "proportion"
+  )
+cnv_frequency_plot <- lapply(
+  cnv_filtered,
+  GenVisR::cnFreq,
+  genome = "hg38",
+  CN_low_cutoff = 0,
+  CN_high_cutoff = .2,
+  plotType = "frequency"
+)
+
+# Plot cowplot of frequency plots and save
+plot_cowplot(
+  cnv_proportion_plot,
+  output_directory,
+  "compare_cnv_output_proportion.pdf"
+)
+
+# Plot cowplot of proportion plots and save
+plot_cowplot(
+  cnv_frequency_plot,
+  output_directory,
+  "compare_cnv_output_frequency.pdf"
+)
+```
+
+# Violin plots
+
+These plots represent the size of aberrations. In other words, there is no 
+differention between gain and loss. 
+```{r, fig.height = 25, fig.width = 40}
+# Run `plot_violin` on CNV data
+cnv_violin_plots <- plot_violin(combined_cnv_filtered)
+
+# Save plot
+pdf(file.path("plots", "compare_cnv_output_violin_plot.pdf"), height = 12, width = 30)
+cnv_violin_plots
+dev.off()
+
+cnv_violin_plots
+```
+
+# Barplots
+
+```{r, fig.height = 25, fig.width = 40}
+# Run `plot_histology_barplot`
+cnv_histology_barplots <- plot_histology_barplot(combined_cnv_filtered, metadata)
+
+# Save plot
+pdf(file.path("plots", "compare_cnv_output_barplot_histology.pdf"), height = 12, width = 30)
+cnv_histology_barplots
+dev.off()
+
+# Run `plot_aberration_barplot`
+cnv_aberration_barplots <- plot_aberration_barplot(combined_cnv_filtered)
+
+# Save plot
+pdf(file.path("plots", "compare_cnv_output_barplot_aberration.pdf"), height = 12, width = 30)
+cnv_aberration_barplots
+dev.off()
+
+cnv_histology_barplots
+cnv_aberration_barplots
+```
+
+# Session Info
+
+```{r}
+sessionInfo()
+```
+

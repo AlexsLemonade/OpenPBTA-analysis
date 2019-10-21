@@ -37,6 +37,7 @@ filter_segmean <- function(cnv_df, segmean_cutoff){
   #
   # Args:
   #   cnv_df: data.frame containing CNV caller output
+  #   segmean_cutoff: segment mean value cutoff 
   #
   # Return:
   #   filtered_cnv_df: the data.frame given, returned with a column containing
@@ -51,11 +52,15 @@ filter_segmean <- function(cnv_df, segmean_cutoff){
       "probes",
       "segmean")
 
+  # Define an aberration column 
   filtered_cnv_df <- cnv_df %>%
     dplyr::mutate(aberration = dplyr::case_when(segmean < -segmean_cutoff ~ 0,
                                   segmean > segmean_cutoff ~ 1)) %>%
     dplyr::filter(!is.na(aberration))
 
+  filtered_cnv_df$aberration <- 
+    factor(filtered_cnv_df$aberration, labels = c("Loss", "Gain"))
+  
   return(filtered_cnv_df)
 
 }
@@ -67,7 +72,6 @@ plot_violin <- function(filtered_cnv_df) {
   #
   # Args:
   #   filtered_cnv_df: data.frame filtered for cutoff size of aberrations
-  #   plot_title: a title string for the plot produced
   #
   # Return:
   #   violin_plot: violin plot depicting the log2 transformed sizes of
@@ -76,11 +80,13 @@ plot_violin <- function(filtered_cnv_df) {
   # Create violin plot where the y-axis represents the log2 transformed segmean
   violin_plot <- ggplot2::ggplot(filtered_cnv_df,
                              ggplot2::aes(x = chromosome,
-                                          y = (log2(segmean) + 1))) +
+                                          y = (log2(abs(segmean)) + 1))) +
     ggplot2::geom_violin() +
     ggplot2::theme_bw() +
-    ggplot2::ylab("Log transformed segmean values")
-
+    ggplot2::facet_grid(cnv_caller ~ .) +
+    ggplot2::ylab("Log transformed segmean values") +
+    ggplot2::theme(strip.text.y = ggplot2::element_text(size = 14))
+    
   return(violin_plot)
 
 }
@@ -106,12 +112,13 @@ plot_histology_barplot <- function(filtered_cnv_df, metadata) {
   # Create barplot where the y-axis represents the size of aberration
   barplot <- ggplot2::ggplot(meta_joined,
                              ggplot2::aes(x = chromosome,
-                                          y = broad_histology,
                                           fill = broad_histology)) +
-    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::geom_bar() +
     ggplot2::theme_bw() +
-    ggplot2::theme(axis.text.y = ggplot2::element_blank())
-
+    ggplot2::facet_grid(cnv_caller~aberration) +
+    ggplot2::theme(strip.text.x = ggplot2::element_text(size = 14),
+                   strip.text.y = ggplot2::element_text(size = 14))
+  
   return(barplot)
 
 }
@@ -126,16 +133,17 @@ plot_aberration_barplot <- function(filtered_cnv_df) {
   # Return:
   #   barplot: barplot depicting the proportion of aberrations detected across
   #            chromosomes
-
+  
   # Create barplot where the y-axis represents the size of aberration
   barplot <- ggplot2::ggplot(filtered_cnv_df,
                              ggplot2::aes(x = chromosome,
-                                          y = as.factor(aberration),
-                                          fill = as.factor(aberration))) +
-    ggplot2::geom_bar(stat = "identity") +
+                                          fill = aberration)) +
+    ggplot2::geom_bar() +
     ggplot2::theme_bw() +
+    ggplot2::facet_grid(cnv_caller~aberration) +
     ggplot2::ylab("Proportion of Aberrations") +
-    ggplot2::labs(fill = "Loss(0)/Gain(1)")
+    ggplot2::theme(strip.text.x = ggplot2::element_text(size = 14),
+                   strip.text.y = ggplot2::element_text(size = 14))
 
   return(barplot)
 
@@ -165,5 +173,7 @@ plot_cowplot <- function(plot_list, output_path, plot_name){
     base_height = 12,
     base_width = 30
   )
-
+  
+  return(grid)
+  
 }
