@@ -46,7 +46,9 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     pheatmap \
     RColorBrewer \
     viridis \
-    data.table 
+    data.table \
+    lattice \
+    rpart
 
 # maftools for proof of concept in create-subset-files
 RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
@@ -70,7 +72,7 @@ RUN apt-get -y update && apt-get install -y \
 # Install for SNV comparison plots
 RUN R -e "devtools::install_github('hms-dbmi/UpSetR', dependencies = TRUE)"
 RUN R -e "devtools::install_github('const-ae/ggupset', dependencies = TRUE)"
-RUN R -e "devtools::install_github('ggobi/ggally', dependencies = TRUE)"
+RUN R -e "devtools::install_github('ggobi/ggally', ref= '29aed8afb9180d8f90dc17c1dccfc2103bf55acc', dependencies = TRUE)"
 
 # This is needed to create the interactive pie chart
 RUN R -e "devtools::install_github('timelyportfolio/sunburstR', ref = 'd40d7ed71ee87ca4fbb9cb8b7cf1e198a23605a9', dependencies = TRUE)"

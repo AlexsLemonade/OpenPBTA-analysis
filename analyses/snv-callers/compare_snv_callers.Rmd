@@ -242,7 +242,7 @@ vaf_df %>%
 ```{r}
 tmb_df %>%
   ggplot2::ggplot(ggplot2::aes(x = caller, y = tmb, color = short_histology)) +
-  ggforce::geom_sina() +
+  ggforce::geom_sina(alpha = 0.2) +
   ggplot2::theme_classic()
 ```
 
