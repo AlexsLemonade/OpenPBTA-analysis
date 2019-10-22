@@ -93,6 +93,10 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter
     dplyr::select(-means,-gene_id,-EnsembleID) %>%
     dplyr::filter(GeneSymbol %in% normData$GeneSymbol) %>%
     tibble::column_to_rownames("GeneSymbol")
+  
+  # remove 0s 
+  expressionMatrixMatched<-expressionMatrixMatched[rowMeans(expressionMatrixMatched)!=0,]
+  # log2 transformation
   expressionMatrixMatched<-log2(expressionMatrixMatched+1)
 
 
@@ -102,7 +106,9 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter
   normData <- normData %>%
     tibble::column_to_rownames("GeneSymbol") %>%
     as.matrix()
+  # rearrange to order with expressionMatrix
   normData <- normData[rownames(expressionMatrixMatched), ]
+  # log2 transformation
   normData <- log2(normData + 1)
 
   #normData mean and sd
@@ -110,8 +116,8 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter
   normData_sd <- apply(normData, 1, sd, na.rm = TRUE)
   # subtract mean
   expressionMatrixzscored <- sweep(expressionMatrixMatched, 1, normData_means, FUN = "-")
-  # divide by SD
-  expressionMatrixzscored <- sweep(expressionMatrixzscored, 1,normData_sd, FUN = "/") %>% mutate(GeneSymbol=rownames(.)) %>% na.omit()
+  # divide by SD remove NAs and Inf values from zscore for genes with 0 in normData
+  expressionMatrixzscored <- sweep(expressionMatrixzscored, 1,normData_sd, FUN = "/") %>% mutate(GeneSymbol=rownames(.)) %>% na_if(Inf) %>% na.omit()
 
 
   # To save GTEx/cohort scored matrix
@@ -123,9 +129,9 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter
   expression_long_df <- expressionMatrixzscored %>%
     # Get the data into long format
     reshape2::melt(variable.name = "Sample",
-                   value.name = "zscore_value")
+                   value.name = "zscore_value") 
 
-    # fusion calls
+  # fusion calls
   fusion_sample_gene_df <- standardFusionCalls %>%
     # We want to keep track of the gene symbols for each sample-fusion pair
     dplyr::select(Sample, FusionName, Gene1A, Gene1B, Gene2A, Gene2B) %>%
@@ -138,6 +144,9 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter
     # Retain only distinct rows
     dplyr::distinct()
 
+ # check columns for Gene1A,Gene2A,Gene1B and Gene2B
+ cols<-c(Gene1A=NA, Gene1B=NA, Gene2A=NA, Gene2B=NA)
+
   expression_annotated_fusions <- fusion_sample_gene_df %>%
     # join the filtered expression values to the data frame keeping track of symbols
     # for each sample-fusion name pair
@@ -148,7 +157,7 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter
     # cast to keep zscore and gene position
     reshape2::dcast(FusionName+Sample ~gene_position,value.var = "zscore_value") %>%
     # incase Gene2A/B dont exist like in STARfusion calls
-    # add_column(Gene2A=ifelse(length(.$Gene2A)==0,NA,.$Gene2A),Gene2B=ifelse(length(.$Gene2B)==0,NA,.$Gene2B)) %>%
+    add_column(!!!cols[setdiff(names(cols),names(.))]) %>%
     # get annotation from z score
     dplyr::mutate(note_expression_Gene1A = ifelse((Gene1A>zscoreFilter| Gene1A< -zscoreFilter),"differentially expressed","no change"),
                   note_expression_Gene1B = ifelse((Gene1B>zscoreFilter| Gene1B< -zscoreFilter),"differentially expressed","no change"),
