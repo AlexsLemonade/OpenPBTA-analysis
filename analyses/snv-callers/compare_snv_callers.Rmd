@@ -217,10 +217,12 @@ Make the upset plot.
 
 ```{r}
 # Make the plot
-upset <- UpSetR::upset(UpSetR::fromList(mutation_id_list), order.by = "freq")
+upset <- UpSetR::upset(UpSetR::fromList(mutation_id_list), 
+                       order.by = "freq", 
+                       text.scale = 2)
 
 # Save this plot
-png(file.path(compare_plots_dir, "upset_plot.png"))
+png(file.path(compare_plots_dir, "upset_plot.png"), width = 900, height = 900)
 upset
 dev.off()
 
@@ -297,7 +299,7 @@ that are each type of change.
 perc_change_df %>%
   ggplot2::ggplot(ggplot2::aes(x = reorder(change, -percent), y = percent)) +
   ggplot2::theme_classic() +
-  ggplot2::geom_bar(
+  ggplot2::geom_violin(
     position = "dodge", stat = "identity",
     ggplot2::aes(fill = caller)
   ) +
@@ -317,7 +319,7 @@ ggplot2::ggsave(file.path(compare_plots_dir, "perc_base_change_plot.png"))
 ```{r}
 vaf_df %>%
   ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, color = caller)) +
-  ggforce::geom_sina(alpha = 0.05) +
+  ggforce::geom_boxplot(alpha = 0.05) +
   ggplot2::theme_classic() +
   colorblindr::scale_color_OkabeIto()
 ```
@@ -382,7 +384,33 @@ GGally::ggpairs(tmb_long, mapping = ggplot2::aes(alpha = 0.05)) +
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(file.path(compare_plots_dir, "vaf_correlations_plot.png"))
+ggplot2::ggsave(file.path(compare_plots_dir, "tmb_correlations_plot.png"))
+```
+
+Do correlations amongst TMB statistics improve as we increase VAF? 
+We need to re-calculate TMB statistics with various vaf_cutoffs
+```{bash}
+datasets=("strelka2" "mutect2" "lancet" "vardict")
+vaf_cutoff=("0.05" "0.10" "0.15" "0.20")
+wgs_files=("WGS.hg38.strelka2.unpadded.bed" "WGS.hg38.mutect2.unpadded.bed" "WGS.hg38.lancet.300bp_padded.bed" "WGS.hg38.vardict.100bp_padded.bed")
+
+for ((i=0;i<${#vaf_cutoff[@]};i++)); 
+  do
+  for ((j=0;j<${#datasets[@]};j++)); 
+  do
+    echo "Processing dataset: ${datasets[$j]}"
+    Rscript analyses/snv-callers/scripts/01-calculate_vaf_tmb.R \
+      --label ${datasets[$j]} \
+      --output analyses/snv-callers/results/vaf_filter/cutoff_${vaf_cutoff[$i]} \
+      --maf data/testing/release-v5-20190924/pbta-snv-${datasets[$j]}.vep.maf.gz \
+      --metadata data/pbta-histologies.tsv \
+      --bed_wgs data/${wgs_files[$j]} \
+      --bed_wxs data/WXS.hg38.100bp_padded.bed \
+      --vaf_filter ${vaf_cutoff[$i]} \
+      --overwrite \
+      --no_region
+  done
+  done
 ```
 
 ## Genomic regions analysis
@@ -432,6 +460,16 @@ region_annot_df %>%
 ```{r}
 # Save this plot
 ggplot2::ggsave(file.path(compare_plots_dir, "vaf_by_region_plot.png"))
+```
+
+## Save consensus mutation calls
+
+```{r}
+summary(as.factor(callers_per_mutation$caller_combo))
+consen_mutations <- callers_per_mutation %>% 
+  dplyr::filter(caller_combo == "lancet-mutect2-strelka2")
+
+consen_mutations
 ```
 
 ## Session Info

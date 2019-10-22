@@ -135,7 +135,8 @@ needed_files <- c(
 )
 
 # Only if regional analysis is being done do we need the annotation file
-if (!opt$no_region) {
+if (opt$no_region) {
+  opt$annot_rds <- file.path(root_dir, opt$annot_rds)
   needed_files <- c(needed_files, opt$annot_rds)
 }
 
@@ -266,28 +267,30 @@ if (file.exists(vaf_file) && !opt$overwrite) {
   message(paste("VAF calculations saved to: \n", vaf_file))
 }
 ######################### Annotate genomic regions #############################
-# If the file exists or the overwrite option is not being used, run regional annotation analysis
-if (file.exists(region_annot_file) && !opt$overwrite && opt$no_region) {
-  # Stop if this file exists and overwrite is set to FALSE
-  warning(cat(
-    "The regional annotation file already exists: \n",
-    region_annot_file, "\n",
-    "Use --overwrite if you want to overwrite it."
-  ))
-} else {
-  # Print out warning if this file is going to be overwritten
-  if (file.exists(region_annot_file)) {
-    warning("Overwriting existing regional annotation file.")
+if (opt$no_region) {
+  # If the file exists or the overwrite option is not being used, run regional annotation analysis
+  if (file.exists(region_annot_file) && !opt$overwrite) {
+    # Stop if this file exists and overwrite is set to FALSE
+    warning(cat(
+      "The regional annotation file already exists: \n",
+      region_annot_file, "\n",
+      "Use --overwrite if you want to overwrite it."
+    ))
+  } else {
+    # Print out warning if this file is going to be overwritten
+    if (file.exists(region_annot_file)) {
+      warning("Overwriting existing regional annotation file.")
+    }
+    # Print out progress message
+    message(paste("Annotating genomic regions for", opt$label, "MAF data..."))
+
+    # Annotation genomic regions
+    maf_annot <- annotr_maf(vaf_df, annotation_file = opt$annot_rds) %>%
+      readr::write_tsv(region_annot_file)
+
+    # Print out completion message
+    message(paste("Genomic region annotations saved to:", region_annot_file))
   }
-  # Print out progress message
-  message(paste("Annotating genomic regions for", opt$label, "MAF data..."))
-
-  # Annotation genomic regions
-  maf_annot <- annotr_maf(vaf_df, annotation_file = opt$annot_rds) %>%
-    readr::write_tsv(region_annot_file)
-
-  # Print out completion message
-  message(paste("Genomic region annotations saved to:", region_annot_file))
 }
 ############################# Calculate TMB ####################################
 # If the file exists or the overwrite option is not being used, run TMB calculations
