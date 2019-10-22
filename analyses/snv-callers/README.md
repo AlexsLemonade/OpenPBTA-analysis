@@ -19,7 +19,7 @@ The GDC has [good documentation on the fields](https://docs.gdc.cancer.gov/Data/
 
 ## How to run this pipeline
 
-**Run evaluations of each MAF file**
+**1) Run evaluations of each MAF file**
 
 To run the initial evaluations of all the SNV callers, call the bash script:
 ```
@@ -30,9 +30,14 @@ To see an overall summary report, look in the `results` folder for that caller.
 (See [Overall File Structure](#overall-file-structure) for more details on
 everything that is returned.)
 
-**Run comparison analysis of the callers**
+**2) Run comparison analysis of the callers**
 
-*Coming soon*
+After the data have been set up by the `run_caller_evals.sh` script, you can
+run the notebook that will compare the callers using the following command:  
+```
+Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers.Rmd',
+                              clean = TRUE)"
+```
 
 ## General usage of scripts
 

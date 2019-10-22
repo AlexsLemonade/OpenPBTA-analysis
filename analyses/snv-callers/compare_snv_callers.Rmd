@@ -216,7 +216,13 @@ mutation_id_list <- lapply(vaf_list, function(caller) caller$mutation_id)
 Make the upset plot. 
 
 ```{r}
+# Make the plot
 upset <- UpSetR::upset(UpSetR::fromList(mutation_id_list), order.by = "freq")
+
+# Save this plot
+png(file.path(compare_plots_dir, "upset_plot.png"))
+upset
+dev.off()
 
 # Print this out
 upset
@@ -259,6 +265,7 @@ colnames(callers_per_mutation) <- c("mutation_id", "caller_combo", "median_vaf")
 Graph the median VAF for each combination of callers.
 
 ```{r}
+# Make this plot
 callers_per_mutation %>%
   ggplot2::ggplot(ggplot2::aes(x = caller_combo, y = median_vaf)) +
   ggforce::geom_sina(alpha = 0.05) +
@@ -267,6 +274,11 @@ callers_per_mutation %>%
   ggupset::axis_combmatrix(sep = "-") +
   ggplot2::xlab("") +
   ggplot2::ylab("Median VAF Across Callers")
+```
+
+```{r}
+# Save this plot
+ggplot2::ggsave(file.path(compare_plots_dir, "upset_median_vaf_plot.png"))
 ```
 
 ## Base Changes 
@@ -295,6 +307,11 @@ perc_change_df %>%
   colorblindr::scale_fill_OkabeIto()
 ```
 
+```{r}
+# Save this plot
+ggplot2::ggsave(file.path(compare_plots_dir, "perc_base_change_plot.png"))
+```
+
 ## VAF distributions
 
 ```{r}
@@ -305,6 +322,11 @@ vaf_df %>%
   colorblindr::scale_color_OkabeIto()
 ```
 
+```{r}
+# Save this plot
+ggplot2::ggsave(file.path(compare_plots_dir, "vaf_sina_plot.png"))
+```
+
 ## TMB distributions
 
 ```{r}
@@ -312,6 +334,11 @@ tmb_df %>%
   ggplot2::ggplot(ggplot2::aes(x = caller, y = tmb, color = short_histology)) +
   ggforce::geom_sina(alpha = 0.25) +
   ggplot2::theme_classic()
+```
+
+```{r}
+# Save this plot
+ggplot2::ggsave(file.path(compare_plots_dir, "tmb_sina_plot.png"))
 ```
 
 ## VAF correlations
@@ -332,6 +359,11 @@ GGally::ggpairs(vaf_long, mapping = ggplot2::aes(alpha = 0.05)) +
   ggplot2::theme_classic()
 ``` 
 
+```{r}
+# Save this plot
+ggplot2::ggsave(file.path(compare_plots_dir, "vaf_correlations_plot.png"))
+```
+
 ## TMB correlations
 
 ```{r}
@@ -348,7 +380,14 @@ GGally::ggpairs(tmb_long, mapping = ggplot2::aes(alpha = 0.05)) +
   ggplot2::theme_classic()
 ```
 
-## Genomic regions 
+```{r}
+# Save this plot
+ggplot2::ggsave(file.path(compare_plots_dir, "vaf_correlations_plot.png"))
+```
+
+## Genomic regions analysis
+
+Calculate the percent of mutations in each type of genomic region per caller.
 
 ```{r}
 # Summarize by the number of times each base change shows up in each category. 
@@ -371,6 +410,12 @@ perc_region_df %>%
   colorblindr::scale_fill_OkabeIto()
 ```
 
+```{r}
+# Save this plot
+ggplot2::ggsave(file.path(compare_plots_dir, "perc_genomic_regions_plot.png"))
+```
+
+Plot the VAF for each type of genomic region. 
 
 ```{r}
 region_annot_df %>%
@@ -382,6 +427,11 @@ region_annot_df %>%
   ggplot2::ylab("VAF") +
   colorblindr::scale_color_OkabeIto() +
   ggplot2::facet_wrap(~type)
+```
+
+```{r}
+# Save this plot
+ggplot2::ggsave(file.path(compare_plots_dir, "vaf_by_region_plot.png"))
 ```
 
 ## Session Info
