@@ -34,7 +34,7 @@ jobs:
           command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/02-fusion-filtering.R -S scratch/arriba.tsv -e data/pbta-gene-expression-rsem-fpkm.polya.rds -r -a "GTEx|HGNC_GENEFAM|DGD_PARALOGS|Normal|BodyMap|ConjoinG" -j 1 -s 10 -i "in-frame|frameshift|other" -R analyses/fusion_filtering/references/ -o scratch/arriba -t 1
 
       - run:
-          name: Fusion annotation
+          name: Fusion Annotation
           command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/03-Calc-zscore-annotate.R -S scratch/arriba_QC_expression_filtered_annotated.RDS -e data/pbta-gene-expression-rsem-fpkm.polya.rds -s data/pbta-gene-expression-rsem-zscore-GTEX.polya.rds -g analyses/fusion_filtering/references/Brain_FPKM_hg38_matrix.txt.zip -o scratch/arriba_QC_expression_filtered
 
       - run:
