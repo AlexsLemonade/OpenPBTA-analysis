@@ -115,7 +115,7 @@ plot_histology_barplot <- function(filtered_cnv_df, metadata) {
                                           fill = broad_histology)) +
     ggplot2::geom_bar() +
     ggplot2::theme_bw() +
-    ggplot2::facet_grid(cnv_caller~aberration) +
+    ggplot2::facet_grid(cnv_caller ~ aberration) +
     ggplot2::theme(strip.text.x = ggplot2::element_text(size = 14),
                    strip.text.y = ggplot2::element_text(size = 14))
   
@@ -140,7 +140,7 @@ plot_aberration_barplot <- function(filtered_cnv_df) {
                                           fill = aberration)) +
     ggplot2::geom_bar() +
     ggplot2::theme_bw() +
-    ggplot2::facet_grid(cnv_caller~aberration) +
+    ggplot2::facet_grid(cnv_caller ~ aberration) +
     ggplot2::ylab("Proportion of Aberrations") +
     ggplot2::theme(strip.text.x = ggplot2::element_text(size = 14),
                    strip.text.y = ggplot2::element_text(size = 14))

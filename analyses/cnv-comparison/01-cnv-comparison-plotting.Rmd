@@ -65,8 +65,8 @@ if (!dir.exists(output_directory)) {
 # List of file paths to the CNV data 
 cnv_list <-
   list(
-    file.path(input_directory, "pbta-cnv-cnvkit.seg.gz"),
-    file.path(input_directory, "pbta-cnv-controlfreec.seg.gz")
+    cnvkit = file.path(input_directory, "pbta-cnv-cnvkit.seg.gz"),
+    controlfreec = file.path(input_directory, "pbta-cnv-controlfreec.seg.gz")
   )
 ```
 
@@ -88,10 +88,9 @@ metadata <-
 cnv_filtered <-
   lapply(cnv_data, filter_segmean, segmean_cutoff = 0.5)
 
-# Bind rows of dataframes in cnv_filtered
-combined_cnv_filtered <- dplyr::bind_rows(cnv_filtered, .id = "cnv_caller") 
-combined_cnv_filtered$cnv_caller <- gsub("1", "cnvkit", combined_cnv_filtered$cnv_caller)
-combined_cnv_filtered$cnv_caller <- gsub("2", "controlfreec", combined_cnv_filtered$cnv_caller)
+# Bind rows of dataframes in cnv_filtered for use with ggplots
+combined_cnv_filtered <-
+  dplyr::bind_rows(cnv_filtered, .id = "cnv_caller")
 ```
 
 # GenVisR plots
@@ -140,7 +139,11 @@ differention between gain and loss.
 cnv_violin_plots <- plot_violin(combined_cnv_filtered)
 
 # Save plot
-pdf(file.path("plots", "compare_cnv_output_violin_plot.pdf"), height = 12, width = 30)
+pdf(
+  file.path("plots", "compare_cnv_output_violin_plot.pdf"),
+  height = 12,
+  width = 30
+)
 cnv_violin_plots
 dev.off()
 
@@ -151,10 +154,15 @@ cnv_violin_plots
 
 ```{r, fig.height = 25, fig.width = 40}
 # Run `plot_histology_barplot`
-cnv_histology_barplots <- plot_histology_barplot(combined_cnv_filtered, metadata)
+cnv_histology_barplots <-
+  plot_histology_barplot(combined_cnv_filtered, metadata)
 
 # Save plot
-pdf(file.path("plots", "compare_cnv_output_barplot_histology.pdf"), height = 12, width = 30)
+pdf(
+  file.path("plots", "compare_cnv_output_barplot_histology.pdf"),
+  height = 12,
+  width = 30
+)
 cnv_histology_barplots
 dev.off()
 
@@ -162,7 +170,11 @@ dev.off()
 cnv_aberration_barplots <- plot_aberration_barplot(combined_cnv_filtered)
 
 # Save plot
-pdf(file.path("plots", "compare_cnv_output_barplot_aberration.pdf"), height = 12, width = 30)
+pdf(
+  file.path("plots", "compare_cnv_output_barplot_aberration.pdf"),
+  height = 12,
+  width = 30
+)
 cnv_aberration_barplots
 dev.off()
 
