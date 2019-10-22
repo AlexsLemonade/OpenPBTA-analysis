@@ -11,6 +11,36 @@ date: 2019
 Purpose: After running the initial analyses of each variant caller, this notebook 
 combines the output from those calculations and compares them. 
 
+### Summary of Findings:
+
+Due to some of the findings here, I suggest we should move 
+forward with mutations called by Strelka2, Mutect2, and Lancet. And, due to it's 
+oversensitivity that VarDict's data can be dropped entirely. 
+
+#### Individual Caller's Reports 
+
+- [Lancet](./plots/lancet/lancet_both_report.html)
+- [MuTect2](./plots/mutect2/mutect2_both_report.html)
+- [Strelka2](./plots/strelka2/strelka2_both_report.html)
+- [Vardict](./plots/vardict/vardict_both_report.html)
+
+*Notable Findings:*  
+
+- [VarDict calls more mutations](#upset-graph) than any of the other callers. 
+Many of these have [very low ](#vaf-distributions) suggesting that some may be sequencing errors. 
+
+- 
+
+### Outline of analyses completed:
+
+- [Upset graph](#upset-graph)  
+- [Base changes by caller](#base-changes)
+- [VAF distributions by caller](#vaf-distributions)
+- [TMB distributions by caller](#tmb-distributions)
+- [VAF correlations between callers](#vaf-correlations)
+- [TMB correlations between callers](#tmb-correlations)
+- [Genomic region of mutations from each caller](#genomic-regions)
+
 #### Usage
 
 To run this from the command line, use:
@@ -66,6 +96,8 @@ if (!dir.exists(compare_plots_dir)) {
 
 ## Import data 
 
+Look at the existing folders within the results folder. 
+
 ```{r}
 dir(base_results_dir)
 ```
@@ -88,6 +120,7 @@ region_annot_files <- list.files(base_results_dir,
 )
 ```
 
+Obtain the caller names from the file paths. 
 
 ```{r}
 # Get the caller names
@@ -96,7 +129,7 @@ caller_names <- stringr::word(vaf_files, sep = "/", 2)
 
 Make a big VAF data.frame
 
-```{r}
+```{r include=FALSE}
 vaf_list <- lapply(vaf_files, function(file) {
   readr::read_tsv(file) %>%
     dplyr::select("mutation_id", "vaf", "base_change", "change") %>%
@@ -108,42 +141,18 @@ vaf_df <- dplyr::bind_rows(vaf_list, .id = "caller") %>%
   dplyr::mutate(caller = factor(caller))
 ```
 
-Take a look the density plot of VAFs for each caller. 
-
-```{r}
-ggplot2::ggplot(vaf_df, ggplot2::aes(x = vaf, fill = caller, color = caller)) +
-  ggplot2::geom_density(alpha = 0.15) +
-  ggplot2::theme_classic() +
-  ggplot2::xlab("VAF") +
-  ggplot2::ylab("Density") +
-  colorblindr::scale_fill_OkabeIto() +
-  colorblindr::scale_color_OkabeIto()
-```
-
 Make a big tmb data.frame
 
-```{r}
+```{r include=FALSE}
 tmb_list <- lapply(tmb_files, readr::read_tsv)
 names(tmb_list) <- caller_names
 tmb_df <- dplyr::bind_rows(tmb_list, .id = "caller") %>%
   dplyr::mutate(caller = factor(caller))
 ```
 
-Make a density plot of the TMB data. 
-
-```{r}
-ggplot2::ggplot(tmb_df, ggplot2::aes(x = tmb, fill = caller, color = caller)) +
-  ggplot2::geom_density(alpha = 0.15) +
-  ggplot2::theme_classic() +
-  ggplot2::xlab("TMB") +
-  ggplot2::ylab("Density") +
-  colorblindr::scale_fill_OkabeIto() +
-  colorblindr::scale_color_OkabeIto()
-```
-
 Make a big genomic region data.frame
 
-```{r}
+```{r include=FALSE}
 region_annot <- lapply(region_annot_files, function(file) {
   readr::read_tsv(file) %>%
     dplyr::select("vaf", "base_change", "mutation_id", "change", "type")
@@ -153,7 +162,7 @@ region_annot_df <- dplyr::bind_rows(region_annot, .id = "caller") %>%
   dplyr::mutate(caller = factor(caller))
 ```
 
-## Upsett graph
+## Upset graph
 
 ```{r}
 mutation_id_list <- lapply(vaf_list, function(caller) caller$mutation_id)
@@ -195,7 +204,7 @@ callers_per_mutation <- callers_per_mutation %>%
 colnames(callers_per_mutation) <- c("mutation_id", "caller_combo", "median_vaf")
 ```
 
-Graph this.
+Graph the median VAF for each combination of callers.
 
 ```{r}
 callers_per_mutation %>%
