@@ -66,6 +66,9 @@ gtexMatrix<-opt$gtexMatrix
 ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter=zscoreFilter,saveZscoredMatrix=saveZscoredMatrix,normData=normData,expressionMatrix=expressionMatrix){
   #  @param standardFusionCalls : Annotates standardizes fusion calls from callers [STARfusion| Arriba] or QC filtered fusion
   #  @param zscoreFilter : Zscore value to use as threshold for annotation of differential expression
+  #  @param normData: normalizing expression dataset to calculate zscore
+  #  @param expressionMatrix: Expression matrix associated with the fusion calls
+  #  @param saveZscoredMatrix: File to save zscored matrix calculated for the normalized data and expression matrix
   #  @results : expression_annotated_fusions is a standardized fusion call set with standard
               # column headers with additional columns below from expression annotation
               # zscore_Gene1A : zscore from GTEx normalization for Gene1A
@@ -131,7 +134,6 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter
                   key = gene_position, value = GeneSymbol) %>%
     # Remove columns without gene symbols
     dplyr::filter(GeneSymbol != "") %>%
-    # This is for illustrations sake, only
     dplyr::arrange(Sample, FusionName) %>%
     # Retain only distinct rows
     dplyr::distinct()
@@ -145,6 +147,8 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter
     dplyr::select(FusionName, Sample,zscore_value,gene_position) %>%
     # cast to keep zscore and gene position
     reshape2::dcast(FusionName+Sample ~gene_position,value.var = "zscore_value") %>%
+    # incase Gene2A/B dont exist like in STARfusion calls
+    # add_column(Gene2A=ifelse(length(.$Gene2A)==0,NA,.$Gene2A),Gene2B=ifelse(length(.$Gene2B)==0,NA,.$Gene2B)) %>%
     # get annotation from z score
     dplyr::mutate(note_expression_Gene1A = ifelse((Gene1A>zscoreFilter| Gene1A< -zscoreFilter),"differentially expressed","no change"),
                   note_expression_Gene1B = ifelse((Gene1B>zscoreFilter| Gene1B< -zscoreFilter),"differentially expressed","no change"),
@@ -176,7 +180,7 @@ expressionMatrix <- cbind(expressionMatrix, colsplit(expressionMatrix$gene_id, p
 # for cohort level run the expressionMatrix divided by broad_histology will be provided to the function as normData and expressionMatrix
 
 GTExZscoredAnnotation_filtered_fusions<- ZscoredAnnotation(standardFusionCalls ,zscoreFilter,normData=normData,expressionMatrix = expressionMatrix)
-write.table(GTExZscoredAnnotation_filtered_fusions,paste0(opt$outputfile,"_GTExComparison_annotated.RDS"))
+saveRDS(GTExZscoredAnnotation_filtered_fusions,paste0(opt$outputfile,"_GTExComparison_annotated.RDS"))
 
 
 
