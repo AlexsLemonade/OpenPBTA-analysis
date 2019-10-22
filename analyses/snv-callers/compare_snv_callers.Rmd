@@ -29,7 +29,7 @@ oversensitivity that VarDict's data can be dropped entirely.
 - [VarDict calls more mutations](#upset-graph) than any of the other callers. 
 Many of these have [very low ](#vaf-distributions) suggesting that some may be sequencing errors. 
 
-- Mutect2, Strelka2, and Lancet do have [plenty of mutations in common](](#upset-graph). 
+- Mutect2, Strelka2, and Lancet do have [plenty of mutations in common](#upset-graph). 
 
 ### Outline of analyses completed:
 
