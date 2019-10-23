@@ -1,8 +1,10 @@
 # Mutect2 vs Strelka2: SNV caller comparison analysis
 
-This original analysis evaluated Mutect2 and Strelka2 mutation calls by comparing their [MAF files](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) but has since been superseded by the [SNV Caller comparison analysis](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers).
+This original analysis evaluated Mutect2 and Strelka2 mutation calls by comparing their [MAF files](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) but has since been superseded by the more [comprehensive analysis for all four SNV Callers](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers).
 The original issue for this analysis is [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/30).
-The findings of this analysis led to the addition of two other mutation callers, [VarDict and Lancet](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/103) which are all four callers are evaluated and compared in [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers).
+The findings of this analysis led to the addition of two other mutation callers, [VarDict and Lancet](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/103).
+
+Note that this analysis uses `maftools::read.maf` which by defauly only uses coding and nonsynonymous mutations. 
 
 ## Summary of findings:
 
@@ -12,9 +14,7 @@ start site, and sample of origin (see notebook [01-set-up.Rmd](https://github.co
 for more details).
 If moving forward we want only the most reliably called variants, this set of
 55,808 variants would give us plenty to work with.
-
 ![Strelka and Mutect2 Venn Diagram](/plots/strelka2_mutect2_venn_diagram.png)
-
 
 - MuTect2 and Strelka2 highly agree in their Variant allele frequency (VAF) calculations.
 This is good regardless of our choices moving forward.
@@ -35,6 +35,14 @@ called `long_changes`.
 The higher base resolution of Strelka2, and its ability to parse apart the SNVs
 from each other, is more useful to us for this particular analyses, as the larger
 structural variants are better detected in the Manta or LUMPY analyses.
+
+### Gene Summary
+
+![](/plots/gene_summary_cor_strelka-vs-mutect2.png)
+
+### Sample summary
+
+![](/plots/sample_summary_cor_strelka-vs-mutect2.png)
 
 ## Usage
 
