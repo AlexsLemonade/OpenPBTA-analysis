@@ -30,7 +30,7 @@ jobs:
           command: ./scripts/run_in_ci.sh "analyses/fusion_filtering/run_fusion_filtering.sh"
 
       - run:
-	  name: check scratch files
+          name: check scratch files
           command: ./scripts/run_in_ci.sh "ls scratch"
 
 #      - run:
