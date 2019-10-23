@@ -31,7 +31,7 @@ jobs:
 
       - run:
           name: check scratch files
-          command: ./scripts/run_in_ci.sh "ls scratch"
+          command: ./scripts/run_in_ci.sh ls scratch
 
 #      - run:
 #          name: Project specific filtering
