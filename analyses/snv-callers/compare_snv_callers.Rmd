@@ -154,6 +154,18 @@ vaf_files <- list.files(base_results_dir,
   full.names = TRUE
 )
 
+# Make a list of the vaf filter experiment vaf files
+filter_vaf_files <- list.files(file.path(base_results_dir, "vaf_filter"),
+  pattern = "_vaf.tsv$", recursive = TRUE,
+  full.names = TRUE
+)
+
+# Exclude the vaf_filter ones from the final list
+vaf_files <- setdiff(vaf_files, filter_vaf_files)
+vaf_files
+```
+
+```{r}
 # Get list of all tmb files
 tmb_files <- list.files(base_results_dir,
   pattern = "_tmb.tsv$", recursive = TRUE,
@@ -168,7 +180,10 @@ filter_tmb_files <- list.files(file.path(base_results_dir, "vaf_filter"),
 
 # Exclude the vaf_filter ones from the final list
 tmb_files <- setdiff(tmb_files, filter_tmb_files)
+tmb_files
+```
 
+```{r}
 region_annot_files <- list.files(base_results_dir,
   pattern = "_region.tsv$", recursive = TRUE,
   full.names = TRUE
@@ -208,7 +223,7 @@ tmb_df <- dplyr::bind_rows(tmb_list, .id = "caller") %>%
 
 Make a big genomic region data.frame
 
-```{r include=FALSE}
+```{r include=FALSE, eval=FALSE}
 region_annot <- lapply(region_annot_files, function(file) {
   readr::read_tsv(file) %>%
     # The file is large so we will cut down on its size by only keeping the columns we need
@@ -301,7 +316,13 @@ Set up the summarized form of the base change information.
 
 ```{r}
 # Summarize by the number of times each base change shows up in each category. 
-perc_change_df <- perc_mutation_by_caller(vaf_df , var = "change")
+perc_change_df <- perc_mutation_by_caller(vaf_df , var = "change") %>% 
+  dplyr::filter(!grepl("G>G|A>A|N>A|N>T", change))
+
+# Need to rearrange the order of the base change categories
+perc_change_df <- perc_change_df %>% 
+  dplyr::mutate(change = as.factor(change),
+    change = factor(change, c(grep("ins|del|long_change", levels(change), value = TRUE, invert = TRUE), "ins", "del", "long_change")))
 ```
 
 Make a barplot illustrating the percent of the mutations for each caller that 
@@ -309,9 +330,9 @@ that are each type of change.
 
 ```{r}
 perc_change_df %>%
-  ggplot2::ggplot(ggplot2::aes(x = reorder(change, -percent), y = percent)) +
+  ggplot2::ggplot(ggplot2::aes(x = change, y = percent)) +
   ggplot2::theme_classic() +
-  ggplot2::geom_violin(
+  ggplot2::geom_bar(
     position = "dodge", stat = "identity",
     ggplot2::aes(fill = caller)
   ) +
@@ -331,14 +352,14 @@ ggplot2::ggsave(file.path(compare_plots_dir, "perc_base_change_plot.png"))
 ```{r}
 vaf_df %>%
   ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, color = caller)) +
-  ggforce::geom_boxplot() +
+  ggplot2::geom_violin() +
   ggplot2::theme_classic() +
   colorblindr::scale_color_OkabeIto()
 ```
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(file.path(compare_plots_dir, "vaf_sina_plot.png"))
+ggplot2::ggsave(file.path(compare_plots_dir, "vaf_violin_plot.png"))
 ```
 
 ## TMB distributions
@@ -346,13 +367,13 @@ ggplot2::ggsave(file.path(compare_plots_dir, "vaf_sina_plot.png"))
 ```{r}
 tmb_df %>%
   ggplot2::ggplot(ggplot2::aes(x = caller, y = tmb, color = short_histology)) +
-  ggforce::geom_sina(alpha = 0.25) +
+  ggplot2::geom_boxplot() +
   ggplot2::theme_classic()
 ```
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(file.path(compare_plots_dir, "tmb_sina_plot.png"))
+ggplot2::ggsave(file.path(compare_plots_dir, "tmb_boxplot_histology_plot.png"))
 ```
 
 ## VAF correlations
