@@ -17,7 +17,7 @@ This is particularly important for analyses such as mutation co-occurence, where
 library(dplyr)
 
 # source sample selection funciton
-source("independent_samples.R")
+source("independent-samples.R")
 
 set.seed(201910)
 ```
