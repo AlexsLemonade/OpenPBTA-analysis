@@ -38,10 +38,7 @@ params:
     label: "Max number of groups found in"
     value: 5
     input: integer   
-  expressionMatrix:
-    label: "Expression matrix for the sample cohort"
-    value: data/pbta-gene-expression-rsem-fpkm.stranded.rds
-    input: file
+
     
 ---
 
@@ -97,12 +94,6 @@ numSample<-params$numSample
 
 # Max number of groups 
 numGroup<-params$numGroup
-
-# Expression matrix
-expressionMatrix<-params$expressionMatrix
-
-# External matrix
-extExpressionMatrix<-params$extExpressionMatrix
 
 print("Raw calls from STARfusion and Arriba for PBTA")
 table(fusion_calls$Caller)
