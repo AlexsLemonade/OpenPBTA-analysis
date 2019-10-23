@@ -4,6 +4,9 @@
 
 # Run fusion_filtering
 
+set -e
+set -o pipefail
+
 # Run Fusion standardization
 Rscript analyses/fusion_filtering/01-fusion-standardization.R -f "data/pbta-fusion-arriba.tsv.gz" -c "arriba" -o "scratch/arriba.tsv"
 Rscript analyses/fusion_filtering/01-fusion-standardization.R -f "data/pbta-fusion-starfusion.tsv.gz" -c "starfusion" -o "scratch/starfusion.tsv"
