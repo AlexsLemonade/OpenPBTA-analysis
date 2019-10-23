@@ -14,11 +14,11 @@ start site, and sample of origin (see notebook [01-set-up.Rmd](https://github.co
 for more details).
 If moving forward we want only the most reliably called variants, this set of
 55,808 variants would give us plenty to work with.
-![Strelka and Mutect2 Venn Diagram](/plots/strelka2_mutect2_venn_diagram.png)
+![Strelka and Mutect2 Venn Diagram](plots/strelka2_mutect2_venn_diagram.png)
 
 - MuTect2 and Strelka2 highly agree in their Variant allele frequency (VAF) calculations.
 This is good regardless of our choices moving forward.
-![Strelka and Mutect2 VAF Scatterplot](/plots/VAF_scatterplot.png)
+![Strelka and Mutect2 VAF Scatterplot](plots/VAF_scatterplot.png)
 
 - Variants detected only by MuTect2 have a particularly low VAF compared to
 variants detected only by Strelka2.
@@ -26,7 +26,7 @@ These density plots suggest some of these MuTect2 calls may be noise.
 Although these low-VAF of MuTect2 could be identifying true variants, our further
 analyses would probably benefit from a more robust, higher confidence set of
 variants.
-![Strelka and Mutect2 VAF Violin Plot](/plots/VAF_violin_plots.png)
+![Strelka and Mutect2 VAF Violin Plot](plots/VAF_violin_plots.png)
 
 - MuTect2 also registers dinucleotide and larger variants where Strelka2 seems
 to break these variants into their single nucleotide changes.
@@ -38,11 +38,11 @@ structural variants are better detected in the Manta or LUMPY analyses.
 
 ### Gene Summary
 
-![](/plots/gene_summary_cor_strelka-vs-mutect2.png)
+![](plots/gene_summary_cor_strelka-vs-mutect2.png)
 
 ### Sample summary
 
-![](/plots/sample_summary_cor_strelka-vs-mutect2.png)
+![](plots/sample_summary_cor_strelka-vs-mutect2.png)
 
 ## Usage
 
