@@ -13,15 +13,6 @@ filter?
 
 ### Summary of Findings:
 
-
-*Notable Findings:*  
-
-- 
-
-### Outline of analyses completed:
-
-- [Upset graph](#upset-graph)  
-
 #### Usage
 
 To run this from the command line, use:
@@ -53,8 +44,8 @@ base_plots_dir <- "plots"
 Make new directories for the comparison analysis.
 
 ```{r}
-compare_results_dir <- file.path(base_results_dir, "comparisons")
-compare_plots_dir <- file.path(base_plots_dir, "comparisons")
+compare_results_dir <- file.path(base_results_dir, "comparisons", "vaf_cutoff")
+compare_plots_dir <- file.path(base_plots_dir, "comparisons", "vaf_cutoff")
 
 # Make caller specific plots folder
 if (!dir.exists(compare_results_dir)) {
@@ -66,27 +57,50 @@ if (!dir.exists(compare_plots_dir)) {
 }
 ```
 
-Special functions for calculating stats. 
+Function for creating a TMB correlation matrix amongst the callers for a particular cutoff.
 
 ```{r}
 cor_matrix_plot <- function(cutoff) {
+  # For a given VAF cutoff, calculate TMB correlations amongst the callers and plot it using 
+  # GGally::ggpairs
+  #
+  # Args:
+  #   cutoff: The VAF cutoff set to analyze
+  #
+  # Returns:
+  #   A correlation matrix plot amongst the callers 
+  
+  # Isolate the TMB stats for this cutoff
   cutoff_df <- tmb_filter_long %>% 
     dplyr::filter(vaf_filter == cutoff) %>% 
     dplyr::select(-Tumor_Sample_Barcode, -vaf_filter)
   
+  # Make the plot
   cor_plot <- GGally::ggpairs(cutoff_df, mapping = ggplot2::aes(alpha = 0.05)) +
     ggplot2::theme_classic() +
     ggplot2::ggtitle(paste0("VAF cutoff: ", cutoff))
+  
   # Save this plot
   ggplot2::ggsave(file.path(compare_plots_dir,
                             paste0("vaf_", cutoff, "_tmb_correlations_plot.png")), 
                   plot = cor_plot)
+  # Return the plot
   return(cor_plot)
 }
 ```
 
+Function for correlating TMB statistics for each VAF cutoff set. 
+
 ```{r}
 corr_by_vaf <- function(cutoff = 0.05) {
+  # For a given VAF cutoff, isolate the TMB statistics and correlate them. 
+  #
+  # Args:
+  #   cutoff: the VAF cutoff to calculate the correlation by. 
+  #
+  # Returns:
+  #   R values for Spearman's correlation amongst the callers
+  
   cutoff_df <- tmb_filter_long %>% 
     dplyr::filter(vaf_filter == cutoff) %>% 
     dplyr::select(-Tumor_Sample_Barcode, -vaf_filter)
@@ -101,12 +115,24 @@ corr_by_vaf <- function(cutoff = 0.05) {
   cor_df <- reshape2::melt(cor_res, na.rm=TRUE, value.name = "cor") %>% 
     dplyr::mutate(compare = paste0(Var1, "-", Var2), 
                   vaf_cutoff = cutoff)
+  
+  # Return a data.frame ready for being added to the bigger data.frame for plotting.
   return(cor_df)
 }
 ```
 
+Calculate variance for a sample for a given caller amongst the different VAF cutoffs.
+
 ```{r}
 var_by_sample <- function(sample = "BS_0ATJ22QA") {
+  # For a given sample ID, isolate the TMB statistics and calculate the variance. 
+  #
+  # Args:
+  #   sample: Tumor_Sample_Barcode of the sample you would like the variance for. 
+  #
+  # Returns:
+  #   Variance for that sample for each caller. 
+  
   sample_df <- tmb_filter_long %>% 
     dplyr::filter(Tumor_Sample_Barcode == sample) %>% 
     dplyr::select(-Tumor_Sample_Barcode, -vaf_filter)
@@ -114,15 +140,14 @@ var_by_sample <- function(sample = "BS_0ATJ22QA") {
   # Do correlations between callers
   var_by_caller <- data.frame(t(apply(sample_df, 2, var)), 
                               sample)
-
+ 
   return(var_by_caller)
 }
 ```
 
 ## Run the data with different VAF filter cutoffs
 
-Do correlations amongst TMB statistics improve as we increase VAF? 
-We need to re-calculate TMB statistics with various vaf_cutoffs
+We need to re-calculate TMB statistics with various VAF filter cutoffs.
 
 ```{bash}
 datasets=("strelka2" "mutect2" "lancet" "vardict")
@@ -182,14 +207,22 @@ caller_filter <- gsub("_tmb.tsv", "", caller_filter)
 caller_filter
 ```
 
+Read in the data. 
+Name each with their caller and VAF filter cutoff. 
 ```{r}
 filter_tmb_list <- lapply(filter_tmb_files, readr::read_tsv)
 names(filter_tmb_list) <- paste0(caller_filter, "_", vaf_filter)
+```
 
+Turn this into a data.frame
+
+```{r}
 tmb_filter_df <- dplyr::bind_rows(filter_tmb_list, .id = "NAME") %>%
   dplyr::mutate(caller = stringr::word(NAME, sep = "_", 1) , 
                 vaf_filter = as.numeric(stringr::word(NAME, sep = "_", 2)))
 ```
+
+Make this into a long form data.frame for plotting purposes. 
 
 ```{r}
 tmb_filter_long <- tmb_filter_df %>%
@@ -200,26 +233,10 @@ tmb_filter_long <- tmb_filter_df %>%
 ## Make the TMB correlation plots
 
 ```{r}
-cor_matrix_plot <- function(cutoff) {
-  cutoff_df <- tmb_filter_long %>% 
-    dplyr::filter(vaf_filter == cutoff) %>% 
-    dplyr::select(-Tumor_Sample_Barcode, -vaf_filter)
-  
-  cor_plot <- GGally::ggpairs(cutoff_df, mapping = ggplot2::aes(alpha = 0.05)) +
-    ggplot2::theme_classic() +
-    ggplot2::ggtitle(paste0("VAF cutoff: ", cutoff))
-  # Save this plot
-  ggplot2::ggsave(file.path(compare_plots_dir,
-                            paste0("vaf_", cutoff, "_tmb_correlations_plot.png")), 
-                  plot = cor_plot)
-  return(cor_plot)
-}
-
 lapply(unique(vaf_filter), cor_matrix_plot)
 ```
 
-
-Get the variance for each sample across this experiment
+Get the variance for each sample across this experiment.
 
 ```{r}
 # Run this on each set
