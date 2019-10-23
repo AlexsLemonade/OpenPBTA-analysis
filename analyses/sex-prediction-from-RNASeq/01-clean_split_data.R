@@ -17,38 +17,104 @@
 library(dplyr)
 library(tibble)
 library(readr)
+library(optparse)
 
 # We tune our predictive parameters using cross-validation on a training set and test the predictive accuracy
 # of the optimal model on a holdout test set.
 # train_percent represents the train/test partition; the seed is used to select training samples randomly.
 # The test set is whatever did not get selected for the training set.
-
-train_percent <- 0.70
-set.seed(36354)
+# train/test partition percentage and the seed are specified as command line arguments --train_percent and --seed and
+# assigned to variables train_percent and seed below.
 
 # Several gene expression files can serve as input to this analysis.
-# Assign the file name for this run to gene_expression_file_name below.
+# The file name for this run is specified as command line argument --expression and assigned to gene_expression_file_name below.
 
-gene_expression_file_name <- "pbta-gene-expression-kallisto.stranded.rds"
-
-# training and test data files are saved into the directory named below.
+# The output directory is specified as command line arument --output_directory and assigned to output_directory below.
+# training and test data files are saved into the output directory.
 # A TSV file that contains the biospecimen ID, reported_gender, and germline_sex_estimate 
-# information that has been cleaned is also saved to this directory.
+# information that has been cleaned is also saved to the output directory.
+# The lead portion of the output file names is specified as command line argument --filename_lead
+# The training set is saved as paste(opt$filename_lead, seed, "train.RDS", sep = "_")
+# The test set is saved as paste(opt$filename_lead, seed, "test.RDS", sep = "_")
+# The targets TSV file is saved as paste(opt$filename_lead, seed, "targets.tsv", sep = "_")
 
-output_directory <- "scratch"
+# Declare command line options
+option_list <- list(
+  optparse::make_option(
+    c("-i", "--expression"),
+    type = "character",
+    default = NULL,
+    help = "full path to expression data RDS file",
+  ),
+  optparse::make_option(
+    c("-m", "--metadata"),
+    type = "character",
+    default = NULL,
+    help = "full path to metadata TSV file"
+  ),
+  optparse::make_option(
+    c("-o", "--output_directory"),
+    type = "character",
+    default = NULL,
+    help = "output directory"
+  ),
+  optparse::make_option(
+    c("-f", "--filename_lead"),
+    type = "character",
+    default = NULL,
+    help = "A character vector that will be used to name output files"
+  ),
+  optparse::make_option(
+    c("-s", "--seed"),
+    type = "integer",
+    default = 36354,
+    help = "seed integer",
+    metavar = "integer"
+  ),
+  optparse::make_option(
+    c("-t", "--train_percent"),
+    type = "double",
+    default = 0.7,
+    help = "The proportion of samples that should be in the training set when splitting into training and testing sets",
+    metavar = "double"
+  )
+)
+
+
+# Read the arguments passed
+opt_parser <- optparse::OptionParser(option_list = option_list)
+opt <- optparse::parse_args(opt_parser)
+
+#set the run parameter variables from the command line arguments
+
+train_percent <- opt$train_percent
+seed <- opt$seed
+set.seed(seed)
+
+gene_expression_file_name <- opt$expression
+histologies_file_name <- opt$metadata
+
+# Create specified output directory if it does not yet exist
+output_directory <- opt$output_directory
+if (!dir.exists(output_directory)) {
+  dir.create(output_directory, recursive = TRUE)
+}
+
+
+
 #--------
 
 #--------Read input data files
 
 #RNA-Seq data is in pbta-gene-expression-kallisto.rds.
 
-ge <- readRDS(paste("../../data/", gene_expression_file_name, sep=""))
+ge <- readRDS(gene_expression_file_name)
 
 
 #Metadata is in pbta-histologies.tsv.  reported_gender is our target variable. 
 #Kids_First_Biospecimen_ID is the unique identifier for each sample. 
 
-histologies <- read.delim("../../data/pbta-histologies.tsv", header=TRUE, sep="\t", stringsAsFactors = FALSE)
+histologies <- read.delim(histologies_file_name, header=TRUE, sep="\t", stringsAsFactors = FALSE)
 
 valid_reported_gender_samples <- histologies[which(toupper(histologies[, "reported_gender"]) == "MALE" | 
               toupper(histologies[, "reported_gender"]) == "FEMALE"), "Kids_First_Biospecimen_ID"]
@@ -113,11 +179,16 @@ if (train_percent < 1) {
 #--------Save train, (test, if used) and targets files to output directory
 
 if (train_percent < 1) {
-  save(train_set, test_set, file=paste("../../", output_directory, "/", "train_test_data.RData", sep=""))
+  train_file <- file.path(output_directory, paste(opt$filename_lead, seed, "train.RDS", sep = "_"))
+  test_file <- file.path(output_directory, paste(opt$filename_lead, seed, "test.RDS", sep = "_"))
+  saveRDS(train_set, train_file)
+  saveRDS(test_set, test_file)
 } else {
-  save(train_set, file=paste("../../", output_directory, "/", "train_data.RData", sep=""))
+  train_file <- file.path(output_directory, paste(opt$filename_lead, seed, "train.RDS", sep = "_"))
+  saveRDS(train_set, train_file)
 }
 
-write_tsv(targets, paste("../../", output_directory, "/", "targets.tsv", sep=""),
+targets_file <- file.path(output_directory, paste(opt$filename_lead, seed, "targets.tsv", sep = "_"))
+write_tsv(targets, targets_file,
           na = "NA", append = FALSE, col_names = TRUE, quote_escape = "double")
 
