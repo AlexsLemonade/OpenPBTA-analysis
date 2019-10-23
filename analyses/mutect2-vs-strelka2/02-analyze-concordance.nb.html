@@ -2964,11 +2964,6 @@ if (!(&quot;VennDiagrams&quot; %in% installed.packages())) {
 <pre class="r"><code># Get magrittr pipe
 `%&gt;%` &lt;- dplyr::`%&gt;%`</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RwbHlyJzpcbiAgbWV0aG9kICAgICAgICAgICBmcm9tXG4gIHByaW50LnJvd3dpc2VfZGYgICAgIFxuIn0= -->
-<pre><code>Registered S3 method overwritten by &#39;dplyr&#39;:
-  method           from
-  print.rowwise_df     </code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Declare names of output directories.</p>
@@ -3440,20 +3435,6 @@ var_select &lt;- c(&quot;Tumor_Sample_Barcode&quot;, &quot;Chromosome&quot;, &qu
   # Write to a TSV
   readr::write_tsv(file.path(results_dir, &quot;variants_strelka2_only.tsv&quot;))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiZnVucygpIGlzIHNvZnQgZGVwcmVjYXRlZCBhcyBvZiBkcGx5ciAwLjguMFxuUGxlYXNlIHVzZSBhIGxpc3Qgb2YgZWl0aGVyIGZ1bmN0aW9ucyBvciBsYW1iZGFzOiBcblxuICAjIFNpbXBsZSBuYW1lZCBsaXN0OiBcbiAgbGlzdChtZWFuID0gbWVhbiwgbWVkaWFuID0gbWVkaWFuKVxuXG4gICMgQXV0byBuYW1lZCB3aXRoIGB0aWJibGU6OmxzdCgpYDogXG4gIHRpYmJsZTo6bHN0KG1lYW4sIG1lZGlhbilcblxuICAjIFVzaW5nIGxhbWJkYXNcbiAgbGlzdCh+IG1lYW4oLiwgdHJpbSA9IC4yKSwgfiBtZWRpYW4oLiwgbmEucm0gPSBUUlVFKSlcblx1MDAxYls5MG1UaGlzIHdhcm5pbmcgaXMgZGlzcGxheWVkIG9uY2UgcGVyIHNlc3Npb24uXHUwMDFiWzM5bVxuIn0= -->
-<pre><code>funs() is soft deprecated as of dplyr 0.8.0
-Please use a list of either functions or lambdas: 
-
-  # Simple named list: 
-  list(mean = mean, median = median)
-
-  # Auto named with `tibble::lst()`: 
-  tibble::lst(mean, median)
-
-  # Using lambdas
-  list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
-[90mThis warning is displayed once per session.[39m</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Do same for MuTect2.</p>
@@ -3492,7 +3473,7 @@ Please use a list of either functions or lambdas:
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4xICgyMDE5LTA3LTA1KVxuUGxhdGZvcm06IHg4Nl82NC1hcHBsZS1kYXJ3aW4xNS42LjAgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IG1hY09TIE1vamF2ZSAxMC4xNC41XG5cbk1hdHJpeCBwcm9kdWN0czogZGVmYXVsdFxuQkxBUzogICAvU3lzdGVtL0xpYnJhcnkvRnJhbWV3b3Jrcy9BY2NlbGVyYXRlLmZyYW1ld29yay9WZXJzaW9ucy9BL0ZyYW1ld29ya3MvdmVjTGliLmZyYW1ld29yay9WZXJzaW9ucy9BL2xpYkJMQVMuZHlsaWJcbkxBUEFDSzogL0xpYnJhcnkvRnJhbWV3b3Jrcy9SLmZyYW1ld29yay9WZXJzaW9ucy8zLjYvUmVzb3VyY2VzL2xpYi9saWJSbGFwYWNrLmR5bGliXG5cbmxvY2FsZTpcblsxXSBlbl9VUy5VVEYtOC9lbl9VUy5VVEYtOC9lbl9VUy5VVEYtOC9DL2VuX1VTLlVURi04L2VuX1VTLlVURi04XG5cbmF0dGFjaGVkIGJhc2UgcGFja2FnZXM6XG5bMV0gc3RhdHMgICAgIGdyYXBoaWNzICBnckRldmljZXMgdXRpbHMgICAgIGRhdGFzZXRzICBtZXRob2RzICAgYmFzZSAgICAgXG5cbmxvYWRlZCB2aWEgYSBuYW1lc3BhY2UgKGFuZCBub3QgYXR0YWNoZWQpOlxuIFsxXSBSY3BwXzEuMC4yICAgICAgICAgICBwaWxsYXJfMS40LjIgICAgICAgICBjb21waWxlcl8zLjYuMSAgICAgICBmb3JtYXRSXzEuNyAgICAgICAgIFxuIFs1XSBmdXRpbGUubG9nZ2VyXzEuNC4zICBmdXRpbGUub3B0aW9uc18xLjAuMSB0b29sc18zLjYuMSAgICAgICAgICB6ZWFsbG90XzAuMS4wICAgICAgIFxuIFs5XSBkaWdlc3RfMC42LjIxICAgICAgICB0aWJibGVfMi4xLjMgICAgICAgICBsaWZlY3ljbGVfMC4xLjAgICAgICBndGFibGVfMC4zLjAgICAgICAgIFxuWzEzXSBsYXR0aWNlXzAuMjAtMzggICAgICBwa2djb25maWdfMi4wLjMgICAgICBybGFuZ18wLjQuMCAgICAgICAgICByc3R1ZGlvYXBpXzAuMTAgICAgIFxuWzE3XSBWZW5uRGlhZ3JhbV8xLjYuMjAgICBoZXhiaW5fMS4yNy4zICAgICAgICB4ZnVuXzAuMTAgICAgICAgICAgICBzdHJpbmdyXzEuNC4wICAgICAgIFxuWzIxXSBjb2xvcmJsaW5kcl8wLjEuMCAgICBkcGx5cl8wLjguMyAgICAgICAgICBrbml0cl8xLjI1ICAgICAgICAgICB2Y3Ryc18wLjIuMCAgICAgICAgIFxuWzI1XSBobXNfMC41LjEgICAgICAgICAgICBncmlkXzMuNi4xICAgICAgICAgICB0aWR5c2VsZWN0XzAuMi41ICAgICBnbHVlXzEuMy4xICAgICAgICAgIFxuWzI5XSBSNl8yLjQuMCAgICAgICAgICAgICByZWFkcl8xLjMuMSAgICAgICAgICBwdXJycl8wLjMuMiAgICAgICAgICBnZ3Bsb3QyXzMuMi4xICAgICAgIFxuWzMzXSB0aWR5cl8xLjAuMCAgICAgICAgICBsYW1iZGEucl8xLjIuNCAgICAgICBtYWdyaXR0cl8xLjUgICAgICAgICBlbGxpcHNpc18wLjMuMCAgICAgIFxuWzM3XSBiYWNrcG9ydHNfMS4xLjQgICAgICBzY2FsZXNfMS4wLjAgICAgICAgICBhc3NlcnR0aGF0XzAuMi4xICAgICBjb2xvcnNwYWNlXzEuNC0xICAgIFxuWzQxXSBsYWJlbGluZ18wLjMgICAgICAgICBzdHJpbmdpXzEuNC4zICAgICAgICBsYXp5ZXZhbF8wLjIuMiAgICAgICBtdW5zZWxsXzAuNS4wICAgICAgIFxuWzQ1XSBjcmF5b25fMS4zLjQgICAgICAgIFxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4xICgyMDE5LTA3LTA1KVxuUGxhdGZvcm06IHg4Nl82NC1hcHBsZS1kYXJ3aW4xNS42LjAgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IG1hY09TIE1vamF2ZSAxMC4xNC41XG5cbk1hdHJpeCBwcm9kdWN0czogZGVmYXVsdFxuQkxBUzogICAvU3lzdGVtL0xpYnJhcnkvRnJhbWV3b3Jrcy9BY2NlbGVyYXRlLmZyYW1ld29yay9WZXJzaW9ucy9BL0ZyYW1ld29ya3MvdmVjTGliLmZyYW1ld29yay9WZXJzaW9ucy9BL2xpYkJMQVMuZHlsaWJcbkxBUEFDSzogL0xpYnJhcnkvRnJhbWV3b3Jrcy9SLmZyYW1ld29yay9WZXJzaW9ucy8zLjYvUmVzb3VyY2VzL2xpYi9saWJSbGFwYWNrLmR5bGliXG5cbmxvY2FsZTpcblsxXSBlbl9VUy5VVEYtOC9lbl9VUy5VVEYtOC9lbl9VUy5VVEYtOC9DL2VuX1VTLlVURi04L2VuX1VTLlVURi04XG5cbmF0dGFjaGVkIGJhc2UgcGFja2FnZXM6XG5bMV0gcGFyYWxsZWwgIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgXG5bOF0gYmFzZSAgICAgXG5cbm90aGVyIGF0dGFjaGVkIHBhY2thZ2VzOlxuWzFdIEJpb2Jhc2VfMi40NC4wICAgICAgQmlvY0dlbmVyaWNzXzAuMzAuMFxuXG5sb2FkZWQgdmlhIGEgbmFtZXNwYWNlIChhbmQgbm90IGF0dGFjaGVkKTpcbiBbMV0gZnNfMS4zLjEgICAgICAgICAgICAgdXNldGhpc18xLjUuMSAgICAgICAgZGV2dG9vbHNfMi4yLjEgICAgICBcbiBbNF0gZG9QYXJhbGxlbF8xLjAuMTUgICAgUkNvbG9yQnJld2VyXzEuMS0yICAgcnByb2pyb290XzEuMy0yICAgICBcbiBbN10gdG9vbHNfMy42LjEgICAgICAgICAgYmFja3BvcnRzXzEuMS40ICAgICAgUjZfMi40LjAgICAgICAgICAgICBcblsxMF0gbGF6eWV2YWxfMC4yLjIgICAgICAgY29sb3JzcGFjZV8xLjQtMSAgICAgd2l0aHJfMi4xLjIgICAgICAgICBcblsxM10gdGlkeXNlbGVjdF8wLjIuNSAgICAgcHJldHR5dW5pdHNfMS4wLjIgICAgcHJvY2Vzc3hfMy40LjEgICAgICBcblsxNl0gY29tcGlsZXJfMy42LjEgICAgICAgVmVubkRpYWdyYW1fMS42LjIwICAgY2xpXzEuMS4wICAgICAgICAgICBcblsxOV0gZm9ybWF0Ul8xLjcgICAgICAgICAgZGVzY18xLjIuMCAgICAgICAgICAgcGtnbWFrZXJfMC4yNyAgICAgICBcblsyMl0gbGFiZWxpbmdfMC4zICAgICAgICAgc2NhbGVzXzEuMC4wICAgICAgICAgaGV4YmluXzEuMjcuMyAgICAgICBcblsyNV0gcmVhZHJfMS4zLjEgICAgICAgICAgY2FsbHJfMy4zLjIgICAgICAgICAgTk1GXzAuMjEuMCAgICAgICAgICBcblsyOF0gc3RyaW5ncl8xLjQuMCAgICAgICAgZGlnZXN0XzAuNi4yMSAgICAgICAgcm1hcmtkb3duXzEuMTYgICAgICBcblszMV0gUi51dGlsc18yLjkuMCAgICAgICAgYmFzZTY0ZW5jXzAuMS0zICAgICAgcGtnY29uZmlnXzIuMC4zICAgICBcblszNF0gaHRtbHRvb2xzXzAuMy42ICAgICAgYmlidGV4XzAuNC4yICAgICAgICAgc2Vzc2lvbmluZm9fMS4xLjEgICBcblszN10gcmxhbmdfMC40LjAgICAgICAgICAgcnN0dWRpb2FwaV8wLjEwICAgICAganNvbmxpdGVfMS42ICAgICAgICBcbls0MF0gZHBseXJfMC44LjMgICAgICAgICAgUi5vb18xLjIyLjAgICAgICAgICAgbWFncml0dHJfMS41ICAgICAgICBcbls0M10gd29yZGNsb3VkXzIuNiAgICAgICAgZnV0aWxlLmxvZ2dlcl8xLjQuMyAgTWF0cml4XzEuMi0xNyAgICAgICBcbls0Nl0gUmNwcF8xLjAuMiAgICAgICAgICAgbXVuc2VsbF8wLjUuMCAgICAgICAgbGlmZWN5Y2xlXzAuMS4wICAgICBcbls0OV0gUi5tZXRob2RzUzNfMS43LjEgICAgc3RyaW5naV8xLjQuMyAgICAgICAgeWFtbF8yLjIuMCAgICAgICAgICBcbls1Ml0gcGtnYnVpbGRfMS4wLjUgICAgICAgcGx5cl8xLjguNCAgICAgICAgICAgZ3JpZF8zLjYuMSAgICAgICAgICBcbls1NV0gY3JheW9uXzEuMy40ICAgICAgICAgbGF0dGljZV8wLjIwLTM4ICAgICAgc3BsaW5lc18zLjYuMSAgICAgICBcbls1OF0gaG1zXzAuNS4xICAgICAgICAgICAgemVhbGxvdF8wLjEuMCAgICAgICAga25pdHJfMS4yNSAgICAgICAgICBcbls2MV0gcHNfMS4zLjAgICAgICAgICAgICAgcGlsbGFyXzEuNC4yICAgICAgICAgcm5ndG9vbHNfMS40ICAgICAgICBcbls2NF0gcmVzaGFwZTJfMS40LjMgICAgICAgY29kZXRvb2xzXzAuMi0xNiAgICAgcGtnbG9hZF8xLjAuMiAgICAgICBcbls2N10gZnV0aWxlLm9wdGlvbnNfMS4wLjEgZ2x1ZV8xLjMuMSAgICAgICAgICAgZXZhbHVhdGVfMC4xNCAgICAgICBcbls3MF0gbGFtYmRhLnJfMS4yLjQgICAgICAgZGF0YS50YWJsZV8xLjEyLjIgICAgcmVtb3Rlc18yLjEuMCAgICAgICBcbls3M10gY29sb3JibGluZHJfMC4xLjAgICAgdmN0cnNfMC4yLjAgICAgICAgICAgZm9yZWFjaF8xLjQuNyAgICAgICBcbls3Nl0gdGVzdHRoYXRfMi4yLjEgICAgICAgZ3RhYmxlXzAuMy4wICAgICAgICAgcHVycnJfMC4zLjIgICAgICAgICBcbls3OV0gdGlkeXJfMS4wLjAgICAgICAgICAgYXNzZXJ0dGhhdF8wLjIuMSAgICAgZ2dwbG90Ml8zLjIuMSAgICAgICBcbls4Ml0geGZ1bl8wLjEwICAgICAgICAgICAgZ3JpZEJhc2VfMC40LTcgICAgICAgeHRhYmxlXzEuOC00ICAgICAgICBcbls4NV0gc3Vydml2YWxfMi40NC0xLjEgICAgdGliYmxlXzIuMS4zICAgICAgICAgaXRlcmF0b3JzXzEuMC4xMiAgICBcbls4OF0gcmVnaXN0cnlfMC41LTEgICAgICAgbWVtb2lzZV8xLjEuMCAgICAgICAgbWFmdG9vbHNfMi4wLjE2ICAgICBcbls5MV0gY2x1c3Rlcl8yLjEuMCAgICAgICAgZWxsaXBzaXNfMC4zLjAgICAgICBcbiJ9 -->
 <pre><code>R version 3.6.1 (2019-07-05)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
 Running under: macOS Mojave 10.14.5
@@ -3505,21 +3486,44 @@ locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
+[1] parallel  stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+[1] Biobase_2.44.0      BiocGenerics_0.30.0
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.2           pillar_1.4.2         compiler_3.6.1       formatR_1.7         
- [5] futile.logger_1.4.3  futile.options_1.0.1 tools_3.6.1          zeallot_0.1.0       
- [9] digest_0.6.21        tibble_2.1.3         lifecycle_0.1.0      gtable_0.3.0        
-[13] lattice_0.20-38      pkgconfig_2.0.3      rlang_0.4.0          rstudioapi_0.10     
-[17] VennDiagram_1.6.20   hexbin_1.27.3        xfun_0.10            stringr_1.4.0       
-[21] colorblindr_0.1.0    dplyr_0.8.3          knitr_1.25           vctrs_0.2.0         
-[25] hms_0.5.1            grid_3.6.1           tidyselect_0.2.5     glue_1.3.1          
-[29] R6_2.4.0             readr_1.3.1          purrr_0.3.2          ggplot2_3.2.1       
-[33] tidyr_1.0.0          lambda.r_1.2.4       magrittr_1.5         ellipsis_0.3.0      
-[37] backports_1.1.4      scales_1.0.0         assertthat_0.2.1     colorspace_1.4-1    
-[41] labeling_0.3         stringi_1.4.3        lazyeval_0.2.2       munsell_0.5.0       
-[45] crayon_1.3.4        </code></pre>
+ [1] fs_1.3.1             usethis_1.5.1        devtools_2.2.1      
+ [4] doParallel_1.0.15    RColorBrewer_1.1-2   rprojroot_1.3-2     
+ [7] tools_3.6.1          backports_1.1.4      R6_2.4.0            
+[10] lazyeval_0.2.2       colorspace_1.4-1     withr_2.1.2         
+[13] tidyselect_0.2.5     prettyunits_1.0.2    processx_3.4.1      
+[16] compiler_3.6.1       VennDiagram_1.6.20   cli_1.1.0           
+[19] formatR_1.7          desc_1.2.0           pkgmaker_0.27       
+[22] labeling_0.3         scales_1.0.0         hexbin_1.27.3       
+[25] readr_1.3.1          callr_3.3.2          NMF_0.21.0          
+[28] stringr_1.4.0        digest_0.6.21        rmarkdown_1.16      
+[31] R.utils_2.9.0        base64enc_0.1-3      pkgconfig_2.0.3     
+[34] htmltools_0.3.6      bibtex_0.4.2         sessioninfo_1.1.1   
+[37] rlang_0.4.0          rstudioapi_0.10      jsonlite_1.6        
+[40] dplyr_0.8.3          R.oo_1.22.0          magrittr_1.5        
+[43] wordcloud_2.6        futile.logger_1.4.3  Matrix_1.2-17       
+[46] Rcpp_1.0.2           munsell_0.5.0        lifecycle_0.1.0     
+[49] R.methodsS3_1.7.1    stringi_1.4.3        yaml_2.2.0          
+[52] pkgbuild_1.0.5       plyr_1.8.4           grid_3.6.1          
+[55] crayon_1.3.4         lattice_0.20-38      splines_3.6.1       
+[58] hms_0.5.1            zeallot_0.1.0        knitr_1.25          
+[61] ps_1.3.0             pillar_1.4.2         rngtools_1.4        
+[64] reshape2_1.4.3       codetools_0.2-16     pkgload_1.0.2       
+[67] futile.options_1.0.1 glue_1.3.1           evaluate_0.14       
+[70] lambda.r_1.2.4       data.table_1.12.2    remotes_2.1.0       
+[73] colorblindr_0.1.0    vctrs_0.2.0          foreach_1.4.7       
+[76] testthat_2.2.1       gtable_0.3.0         purrr_0.3.2         
+[79] tidyr_1.0.0          assertthat_0.2.1     ggplot2_3.2.1       
+[82] xfun_0.10            gridBase_0.4-7       xtable_1.8-4        
+[85] survival_2.44-1.1    tibble_2.1.3         iterators_1.0.12    
+[88] registry_0.5-1       memoise_1.1.0        maftools_2.0.16     
+[91] cluster_2.1.0        ellipsis_0.3.0      </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 </div>
