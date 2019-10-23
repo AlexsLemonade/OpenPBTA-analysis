@@ -24,6 +24,7 @@
 #               mutations with a VAF that are NA or below this number will be
 #               removed from the vaf data.frame before it is saved to a TSV file.
 # --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
+# --no_region : If used, regional analysis will not be done. 
 #
 # Command line example:
 #
@@ -35,7 +36,8 @@
 #   --bed_wgs data/WGS.hg38.mutect2.unpadded.bed \
 #   --bed_wxs data/WXS.hg38.100bp_padded.bed \
 #   --annot_rds scratch/hg38_genomic_region_annotation.rds \
-#   --vaf_filter .10
+#   --vaf_filter .10 \
+#   --no_region
 
 ################################ Initial Set Up ################################
 # Establish base dir
