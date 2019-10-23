@@ -20,11 +20,10 @@ jobs:
           name: Sample Distribution Analyses
           command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
       
-      # This is removed from the tests because SNV Caller analysis covers these questions more completely.
-      #- run:
-      #    name: Mutect2 vs Strelka2
-      #    command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/01-set-up.Rmd', clean = TRUE);
-      #                                                rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', clean = TRUE)"
+      - run:
+          name: Mutect2 vs Strelka2
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/01-set-up.Rmd', clean = TRUE);
+                                                      rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', clean = TRUE)"
      
       - run:
           name: Fusion standardization
