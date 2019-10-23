@@ -14,7 +14,7 @@
 #'   primary tumors when available, but fall back to other types, or "any" to 
 #'   randomly select among all available specimens.
 #' 
-#' @return a vector of biospecimen ids
+#' @return a data frame of participant ids and biospecimen ids
 independent_samples <- function(sample_df, 
                            tumor_types = c("primary", "prefer_primary", "any")){
   tumor_types <- match.arg(tumor_types)
@@ -49,8 +49,7 @@ independent_samples <- function(sample_df,
   # Choose randomly among specimens from the same participant 
   early_ind <- early_samples %>%
     dplyr::group_by(Kids_First_Participant_ID) %>%
-    dplyr::summarize(Kids_First_Biospecimen_ID = sample(Kids_First_Biospecimen_ID, 1)) %>%
-    dplyr::pull(Kids_First_Biospecimen_ID)
+    dplyr::summarize(Kids_First_Biospecimen_ID = sample(Kids_First_Biospecimen_ID, 1)) 
   
   return(early_ind)
 }
