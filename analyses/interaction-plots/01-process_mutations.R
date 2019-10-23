@@ -98,14 +98,43 @@ maf_df <- maf_df %>%
 samples <- unique(maf_df$Tumor_Sample_Barcode)
 genes <- unique(maf_df$Hugo_Symbol)
 
+# reduce metadata to only samples
 sample_meta <- meta_df %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in% samples)
 
-# get initial samples only (perhaps change to min age for each individual)
+# get initial tumors only
+
 initial_samples <- sample_meta %>%
+  dplyr::filter(composition = "Solid Tissue") %>% # remove cell lines
   dplyr::filter(tumor_descriptor == "Initial CNS Tumor") %>%
   dplyr::pull(Kids_First_Biospecimen_ID) %>%
   unique() # there is a duplicate, for now
+
+# check that these are all from separate samples
+initial_participants <- sample_meta %>% 
+  dplyr::filter(Kids_First_Biospecimen_ID %in% initial_samples) %>%
+  dplyr::pull(Kids_First_Participant_ID)
+initial_dups <- initial_participants[duplicated(initial_participants)]
+
+
+
+
+# Get earliest age sample for each participant
+
+early_samples <- sample_meta %>%
+  dplyr::group_by(Kids_First_Participant_ID) %>%
+  dplyr::summarize(age_at_diagnosis_days = min(age_at_diagnosis_days)) %>%
+  dplyr::left_join(sample_meta) %>%
+  dplyr::pull(Kids_First_Biospecimen_ID) %>%
+  unique()
+
+early_participants <- sample_meta %>% 
+  dplyr::filter(Kids_First_Biospecimen_ID %in% early_samples) %>%
+  dplyr::pull(Kids_First_Participant_ID)
+early_dups <- early_participants[duplicated(early_participants)]
+
+
+
 
 #### Create gene by sample summary table 
 
@@ -133,7 +162,7 @@ top_count_genes <- gene_counts %>%
 
 
 gene_pair_summary <- coocurrence(gene_sample_counts, 
-                                 samples= initial_samples)
+                                 samples = initial_samples)
 
  
 ### make plot
