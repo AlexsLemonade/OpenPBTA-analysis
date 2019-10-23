@@ -4,7 +4,7 @@ This original analysis evaluated Mutect2 and Strelka2 mutation calls by comparin
 The original issue for this analysis is [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/30).
 The findings of this analysis led to the addition of two other mutation callers, [VarDict and Lancet](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/103).
 
-Note that this analysis uses `maftools::read.maf` which by defauly only uses coding and nonsynonymous mutations. 
+Note that this analysis uses `maftools::read.maf` which by default only uses coding and nonsynonymous mutations. 
 
 ## Summary of findings:
 
