@@ -43,8 +43,8 @@ This field reports the estimated damage from a particular mutation.
 - `scratch/strelka2.RDS`  
 - `scratch/mutect2.RDS`  
 - `scratch/metadata_filtered_maf_samples.tsv`  
-- `analyses/mutect2-vs-strelka2/plots/gene_summary_cor_strelka-vs-mutect2.pdf`  
-- `analyses/mutect2-vs-strelka2/plots/sample_summary_cor_strelka-vs-mutect2.pdf`  
+- `analyses/mutect2-vs-strelka2/plots/gene_summary_cor_strelka-vs-mutect2.png`  
+- `analyses/mutect2-vs-strelka2/plots/sample_summary_cor_strelka-vs-mutect2.png`  
 - `analyses/mutect2-vs-strelka2/results/combined_results.tsv`  
 
 ## Usage
@@ -92,6 +92,7 @@ Path to the symlinked data obtained via `bash download-data.sh`.
 data_dir <- file.path("..", "..", "data")
 scratch_dir <- file.path("..", "..", "scratch")
 results_dir <- "results"
+plots_dir <- "plots"
 ```
 
 Create output directories in this analysis folder.
@@ -100,8 +101,8 @@ Create output directories in this analysis folder.
 if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
-if (!dir.exists("plots")) {
-  dir.create("plots")
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir)
 }
 ```
 
@@ -413,8 +414,8 @@ correlate_maf_summaries(
   main_title = "Gene-Level Number of Variants Correlation"
 )
 
-# Save to a PDF
-ggplot2::ggsave(file.path("plots", "gene_summary_cor_strelka-vs-mutect2.pdf"))
+# Save to a png
+ggplot2::ggsave(file.path(plots_dir, "gene_summary_cor_strelka-vs-mutect2.png"))
 ```
 
 ## Compare number of variant calls per sample
@@ -436,8 +437,8 @@ correlate_maf_summaries(
   main_title = "Sample-Level Number of Variants Correlation"
 )
 
-# Save to a PDF
-ggplot2::ggsave(file.path("plots", "sample_summary_cor_strelka-vs-mutect2.pdf"))
+# Save to a png
+ggplot2::ggsave(file.path(plots_dir, "sample_summary_cor_strelka-vs-mutect2.png"))
 ```
 
 ## Set up new variables
