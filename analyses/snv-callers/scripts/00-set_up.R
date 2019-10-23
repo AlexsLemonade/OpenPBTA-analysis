@@ -1,21 +1,29 @@
-# SNV Caller set up and functions
-#
+# SNV-caller set up
 # 2019
 # C. Savonen for ALSF - CCDL
 #
-# Purpose: Set up for analyzing MAF files
+# Purpose: Set up for reference files that are used by 01-calculate_vaf_tmb.R
+#          script.
 #
+# Option descriptions
+# --annot_rds : File path to where you would like the annotation_rds file to be
+#               stored
+# --cosmic_og : Path to original COSMIC file. Can be .gz compressed. Give path relative
+#               to top directory, 'OpenPBTA-analysis'. Will need to download this from
+#               COSMIC at https://cancer.sanger.ac.uk/cosmic/download.
+#               These data are available if you register.
+# --cosmic_clean : File path specifying where you would like the cleaned brain-related
+#                  COSMIC mutations file to be stored.
+#
+#################################### Set Up ####################################
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
-# Import special functions
-source(file.path(root_dir, "analyses", "snv-callers", "util", "wrangle_functions.R"))
-source(file.path(root_dir, "analyses", "snv-callers", "util", "plot_functions.R"))
-
-#################################### Set Up ####################################
-
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
+
+# Load the optparse library
+library(optparse)
 
 # Will need optparse for collecting options
 if (!("optparse" %in% installed.packages())) {
@@ -34,50 +42,46 @@ if (!("data.table" %in% installed.packages())) {
   install.packages("data.table", repos = "http://cran.us.r-project.org")
 }
 
+################################ Set up options ################################
+# Set up optparse options
+option_list <- list(
+  make_option(
+    opt_str = "--cosmic_og", type = "character", default = "none",
+    help = "Relative file path (assuming from top directory of 
+              'OpenPBTA-analysis') to where the COSMIC mutation file is stored. 
+              Will need to download this from COSMIC at 
+              https://cancer.sanger.ac.uk/cosmic/download
+              These data are available if you register.",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = "--cosmic_clean", type = "character", default = "none",
+    help = "Relative file path (assuming from top directory of 
+              'OpenPBTA-analysis') where you would like the cleaned COSMIC file
+              to be stored.",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = "--annot_rds", type = "character",
+    default = "none", help = "Relative file path (assuming from top 
+              directory of 'OpenPBTA-analysis') that specifies where you would
+              like the annotation_rds file to be stored.",
+    metavar = "character"
+  )
+)
+
+# Parse options
+opt <- parse_args(OptionParser(option_list = option_list))
+
 ##################### Set base directories common file paths ###################
-# Declare base directory names
-scratch_dir <- file.path(root_dir, "scratch")
-data_dir <- file.path(root_dir, "data")
-snv_dir <- file.path(root_dir, "analyses", "snv-callers")
-
-# Directories that we will need
-base_results_dir <- file.path(snv_dir, "results")
-base_plots_dir <- file.path(snv_dir, "plots")
-cosmic_dir <- file.path(snv_dir, "cosmic")
-
-# Create these folders if they haven't been created yet
-if (!dir.exists(base_results_dir)) {
-  dir.create(base_results_dir)
-}
-if (!dir.exists(base_plots_dir)) {
-  dir.create(base_plots_dir)
-}
-if (!dir.exists(cosmic_dir)) {
-  dir.create(cosmic_dir)
-}
-
-# Declare reference file names
-original_metadata <- file.path(data_dir, "pbta-histologies.tsv")
-
-# These data were obtained from https://cancer.sanger.ac.uk/cosmic/download
-# These data are available if you register.
-# The full, unfiltered somatic mutations file CosmicMutantExport.tsv.gz for grch38
-# is used here.
-cosmic_file <- file.path(snv_dir, "CosmicMutantExport.tsv.gz")
-
-# This is the cleaned version that only contains the genomic coordinates and
-# base changes from the original file for brain sample mutations only.
-cosmic_clean_file <- file.path(cosmic_dir, "brain_cosmic_variants_coordinates.tsv")
-
-# Will set up this annotation file below
-annot_rds <- file.path(scratch_dir, "hg38_genomic_region_annotation.rds")
-
-# This will be used for all WXS samples, but WGS bed regions are caller-specific
-wxs_bed_file <- file.path(data_dir, "WXS.hg38.100bp_padded.bed")
+# Make all base names relative to root_dir
+opt$cosmic_og <- file.path(root_dir, opt$cosmic_og)
+opt$cosmic_clean <- file.path(root_dir, opt$cosmic_clean)
+opt$annot_rds <- file.path(root_dir, opt$annot_rds)
 
 ################################ Build Annotation ##############################
 # We will only run this if it hasn't been run before
-if (!file.exists(annot_rds)) {
+if (opt$annot_rds != "none" && !file.exists(opt$annot_rds)) {
   # Print progress message
   message("Setting up genomic region annotation file. Only need to do this once.")
 
@@ -98,7 +102,7 @@ if (!file.exists(annot_rds)) {
 
   # Write this object so we don't have to write it again
   readr::write_rds(annotations,
-    annot_rds,
+    opt$annot_rds,
     compress = "gz"
   )
 }
@@ -108,37 +112,39 @@ if (!file.exists(annot_rds)) {
 # if you register. The full, unfiltered somatic mutations file
 # CosmicMutantExport.tsv for grch38 is used here but only mutations from brain
 # related samples are kept.
-if (!file.exists(cosmic_clean_file)) {
-  # Print progress message
-  message("Setting up COSMIC mutation file. Only need to do this once.")
+if (opt$cosmic_clean != "none" && !file.exists(opt$cosmic_clean)) {
+    # Print progress message
+    message("Setting up COSMIC mutation file. Only need to do this once.")
 
-  # Read in original file
-  cosmic_variants <- data.table::fread(cosmic_file,
-    data.table = FALSE
-  ) %>%
-    # Keep only brain mutations so the file is smaller
-    dplyr::filter(`Site subtype 1` == "brain")
-  # Get rid of spaces in column names
-  cosmic_variants <- cosmic_variants %>%
-    dplyr::rename_all(dplyr::funs(stringr::str_replace_all(., " ", "_"))) %>%
-    # Separate the genome coordinates into their own BED like variables
-    dplyr::mutate(
-      Chromosome = paste0(
-        "chr",
-        stringr::word(Mutation_genome_position, sep = ":", 1)
-      ),
-      Start_Position = stringr::word(Mutation_genome_position, sep = ":|-", 1),
-      End_Position = stringr::word(Mutation_genome_position, sep = "-", 2),
-      # Make a base_change variable so we can compare to our set up for PBTA data
-      base_change = substr(Mutation_CDS, nchar(Mutation_CDS) - 2, nchar(Mutation_CDS))
+    # Read in original file
+    cosmic_variants <- data.table::fread(opt$cosmic_og,
+      data.table = FALSE
     ) %>%
-    # Carry over the strand info, but rename to match our PBTA set up
-    dplyr::rename(Strand = Mutation_strand) %>%
-    # Narrow down to just the needed columns
-    dplyr::select(
-      "Chromosome", "Start_Position", "End_Position", "Strand",
-      "base_change"
-    ) %>%
-    # Write to a TSV file
-    readr::write_tsv(cosmic_clean_file)
+      # Keep only brain mutations so the file is smaller
+      dplyr::filter(`Site subtype 1` == "brain") %>%
+      # Get rid of spaces in column names
+      dplyr::rename_all(dplyr::funs(stringr::str_replace_all(., " ", "_"))) %>%
+      # Separate the genome coordinates into their own BED like variables
+      dplyr::mutate(
+        Chromosome = paste0(
+          "chr",
+          stringr::word(Mutation_genome_position, sep = ":|-", 1)
+        ),
+        Start_Position = stringr::word(Mutation_genome_position, sep = ":|-", 2),
+        End_Position = stringr::word(Mutation_genome_position, sep = ":|-", 3),
+        # Make a base_change variable so we can compare to our set up for PBTA data
+        base_change = substr(Mutation_CDS, nchar(Mutation_CDS) - 2, nchar(Mutation_CDS))
+      ) %>%
+      # Carry over the strand info, but rename to match our PBTA set up
+      dplyr::rename(Strand = Mutation_strand) %>%
+      # Narrow down to just the needed columns
+      dplyr::select(
+        "Chromosome", "Start_Position", "End_Position", "Strand",
+        "base_change"
+      ) %>%
+      # Write to a TSV file
+      readr::write_tsv(opt$cosmic_clean)
+  } else {
+    warning("A cleaned COSMIC Mutation file was already found with this name. Delete this if you 
+         wanted to re-run this step.")
 }
