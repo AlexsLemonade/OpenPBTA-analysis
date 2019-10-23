@@ -30,7 +30,7 @@ sample_df <- readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv")
 ```
 
 ## WGS and WXS samples
-Sort to just WGS samples of tumors
+Sort to just sequencing samples of tumors
 ```{r}
 seq_samples <- sample_df %>%
   filter(experimental_strategy %in% c("WGS", "WXS"), 
@@ -122,7 +122,7 @@ WXS_participants <- seq_samples %>%
   unique() 
 
 WGS_participants <- seq_samples %>%
-  filter(experimental_strategy == "WXS") %>%
+  filter(experimental_strategy == "WGS") %>%
   pull(Kids_First_Participant_ID) %>%
   unique() 
 
@@ -131,7 +131,7 @@ No_WGS <- WXS_participants[!(WXS_participants %in% WGS_participants)]
 length(No_WGS)
 ```
 
-There are no WXS samples for which we do not have WGS, so we should be able to simply remove WXS samples.
+So there are currently 16 samples with missing WGS data, but that should change in a future release.
 
 Just to check, is this still true when we restrict to early samples?
 ```{r}
@@ -142,7 +142,7 @@ WXS_participants <- seq_samples %>%
   unique() 
 
 WGS_participants <- seq_samples %>%
-  filter(experimental_strategy == "WXS", 
+  filter(experimental_strategy == "WGS", 
          Kids_First_Biospecimen_ID %in% early_samples) %>%
   pull(Kids_First_Participant_ID) %>%
   unique() 
@@ -152,7 +152,7 @@ No_WGS <- WXS_participants[!(WXS_participants %in% WGS_participants)]
 length(No_WGS)
 ```
 
-Yes, good.
+No change. For now, we will look only at WGS samples, but this could be adjusted in future analysis.
 
 
 

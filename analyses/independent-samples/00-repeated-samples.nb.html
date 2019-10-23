@@ -2926,7 +2926,7 @@ See spec(...) for full column specifications.</code></pre>
 </div>
 <div id="wgs-and-wxs-samples" class="section level2">
 <h2>WGS and WXS samples</h2>
-<p>Sort to just WGS samples of tumors</p>
+<p>Sort to just sequencing samples of tumors</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2VxX3NhbXBsZXMgPC0gc2FtcGxlX2RmICU+JVxuICBmaWx0ZXIoZXhwZXJpbWVudGFsX3N0cmF0ZWd5ICVpbiUgYyhcIldHU1wiLCBcIldYU1wiKSwgXG4gICAgICAgICBzYW1wbGVfdHlwZSA9PSBcIlR1bW9yXCIpXG5gYGAifQ== -->
@@ -3059,14 +3059,14 @@ seq_samples %&gt;%
 <h2>WGS vs WXS</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuV1hTX3BhcnRpY2lwYW50cyA8LSBzZXFfc2FtcGxlcyAlPiVcbiAgZmlsdGVyKGV4cGVyaW1lbnRhbF9zdHJhdGVneSA9PSBcIldYU1wiKSAlPiVcbiAgcHVsbChLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEKSAlPiVcbiAgdW5pcXVlKCkgXG5cbldHU19wYXJ0aWNpcGFudHMgPC0gc2VxX3NhbXBsZXMgJT4lXG4gIGZpbHRlcihleHBlcmltZW50YWxfc3RyYXRlZ3kgPT0gXCJXWFNcIikgJT4lXG4gIHB1bGwoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCkgJT4lXG4gIHVuaXF1ZSgpIFxuXG5Ob19XR1MgPC0gV1hTX3BhcnRpY2lwYW50c1shKFdYU19wYXJ0aWNpcGFudHMgJWluJSBXR1NfcGFydGljaXBhbnRzKV1cblxubGVuZ3RoKE5vX1dHUylcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuV1hTX3BhcnRpY2lwYW50cyA8LSBzZXFfc2FtcGxlcyAlPiVcbiAgZmlsdGVyKGV4cGVyaW1lbnRhbF9zdHJhdGVneSA9PSBcIldYU1wiKSAlPiVcbiAgcHVsbChLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEKSAlPiVcbiAgdW5pcXVlKCkgXG5cbldHU19wYXJ0aWNpcGFudHMgPC0gc2VxX3NhbXBsZXMgJT4lXG4gIGZpbHRlcihleHBlcmltZW50YWxfc3RyYXRlZ3kgPT0gXCJXR1NcIikgJT4lXG4gIHB1bGwoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCkgJT4lXG4gIHVuaXF1ZSgpIFxuXG5Ob19XR1MgPC0gV1hTX3BhcnRpY2lwYW50c1shKFdYU19wYXJ0aWNpcGFudHMgJWluJSBXR1NfcGFydGljaXBhbnRzKV1cblxubGVuZ3RoKE5vX1dHUylcbmBgYCJ9 -->
 <pre class="r"><code>WXS_participants &lt;- seq_samples %&gt;%
   filter(experimental_strategy == &quot;WXS&quot;) %&gt;%
   pull(Kids_First_Participant_ID) %&gt;%
   unique() 
 
 WGS_participants &lt;- seq_samples %&gt;%
-  filter(experimental_strategy == &quot;WXS&quot;) %&gt;%
+  filter(experimental_strategy == &quot;WGS&quot;) %&gt;%
   pull(Kids_First_Participant_ID) %&gt;%
   unique() 
 
@@ -3074,16 +3074,16 @@ No_WGS &lt;- WXS_participants[!(WXS_participants %in% WGS_participants)]
 
 length(No_WGS)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDBcbiJ9 -->
-<pre><code>[1] 0</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDE2XG4ifQ== -->
+<pre><code>[1] 16</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>There are no WXS samples for which we do not have WGS, so we should be able to simply remove WXS samples.</p>
+<p>So there are currently 16 samples with missing WGS data, but that should change in a future release.</p>
 <p>Just to check, is this still true when we restrict to early samples?</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuV1hTX3BhcnRpY2lwYW50cyA8LSBzZXFfc2FtcGxlcyAlPiVcbiAgZmlsdGVyKGV4cGVyaW1lbnRhbF9zdHJhdGVneSA9PSBcIldYU1wiLCBcbiAgICAgICAgIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSBlYXJseV9zYW1wbGVzKSAlPiVcbiAgcHVsbChLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEKSAlPiVcbiAgdW5pcXVlKCkgXG5cbldHU19wYXJ0aWNpcGFudHMgPC0gc2VxX3NhbXBsZXMgJT4lXG4gIGZpbHRlcihleHBlcmltZW50YWxfc3RyYXRlZ3kgPT0gXCJXWFNcIiwgXG4gICAgICAgICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiUgZWFybHlfc2FtcGxlcykgJT4lXG4gIHB1bGwoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCkgJT4lXG4gIHVuaXF1ZSgpIFxuXG5Ob19XR1MgPC0gV1hTX3BhcnRpY2lwYW50c1shKFdYU19wYXJ0aWNpcGFudHMgJWluJSBXR1NfcGFydGljaXBhbnRzKV1cblxubGVuZ3RoKE5vX1dHUylcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuV1hTX3BhcnRpY2lwYW50cyA8LSBzZXFfc2FtcGxlcyAlPiVcbiAgZmlsdGVyKGV4cGVyaW1lbnRhbF9zdHJhdGVneSA9PSBcIldYU1wiLCBcbiAgICAgICAgIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSBlYXJseV9zYW1wbGVzKSAlPiVcbiAgcHVsbChLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEKSAlPiVcbiAgdW5pcXVlKCkgXG5cbldHU19wYXJ0aWNpcGFudHMgPC0gc2VxX3NhbXBsZXMgJT4lXG4gIGZpbHRlcihleHBlcmltZW50YWxfc3RyYXRlZ3kgPT0gXCJXR1NcIiwgXG4gICAgICAgICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiUgZWFybHlfc2FtcGxlcykgJT4lXG4gIHB1bGwoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCkgJT4lXG4gIHVuaXF1ZSgpIFxuXG5Ob19XR1MgPC0gV1hTX3BhcnRpY2lwYW50c1shKFdYU19wYXJ0aWNpcGFudHMgJWluJSBXR1NfcGFydGljaXBhbnRzKV1cblxubGVuZ3RoKE5vX1dHUylcbmBgYCJ9 -->
 <pre class="r"><code>WXS_participants &lt;- seq_samples %&gt;%
   filter(experimental_strategy == &quot;WXS&quot;, 
          Kids_First_Biospecimen_ID %in% early_samples) %&gt;%
@@ -3091,7 +3091,7 @@ length(No_WGS)</code></pre>
   unique() 
 
 WGS_participants &lt;- seq_samples %&gt;%
-  filter(experimental_strategy == &quot;WXS&quot;, 
+  filter(experimental_strategy == &quot;WGS&quot;, 
          Kids_First_Biospecimen_ID %in% early_samples) %&gt;%
   pull(Kids_First_Participant_ID) %&gt;%
   unique() 
@@ -3100,12 +3100,12 @@ No_WGS &lt;- WXS_participants[!(WXS_participants %in% WGS_participants)]
 
 length(No_WGS)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDBcbiJ9 -->
-<pre><code>[1] 0</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDE2XG4ifQ== -->
+<pre><code>[1] 16</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Yes, good.</p>
+<p>No change. For now, we will look only at WGS samples, but this could be adjusted in future analysis.</p>
 </div>
 <div id="summarize-repeated-samples" class="section level2">
 <h2>Summarize repeated samples</h2>
