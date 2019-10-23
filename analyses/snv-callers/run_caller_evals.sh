@@ -42,8 +42,7 @@ do
     --bed_wxs data/WXS.hg38.100bp_padded.bed \
     --annot_rds $annot_rds \
     --vaf_filter $vaf_cutoff \
-    --overwrite \
-    --no_region
+    --overwrite 
 done
 
 ######################## Plot the data and create reports ######################

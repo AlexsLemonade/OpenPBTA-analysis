@@ -221,9 +221,9 @@ tmb_df <- dplyr::bind_rows(tmb_list, .id = "caller") %>%
   dplyr::mutate(caller = factor(caller))
 ```
 
-Make a big genomic region data.frame
+Make a big genomic region data frame.
 
-```{r include=FALSE, eval=FALSE}
+```{r include=FALSE}
 region_annot <- lapply(region_annot_files, function(file) {
   readr::read_tsv(file) %>%
     # The file is large so we will cut down on its size by only keeping the columns we need
