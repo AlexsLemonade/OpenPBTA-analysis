@@ -1,17 +1,25 @@
 ---
-title: "Sample Descriptions"
+title: "Repeated Sample analysis"
 output: html_notebook
 editor_options: 
   chunk_output_type: inline
 ---
 
 ## Purpose
-There are many speciments in the full dataset that are replicate samples from the same participants.
-This workbook is a quick summary of those samples, so that we can better select a unique set of samples for downstream analysis.
+
+There are many specimens in the full dataset that are repeated samples from the same participants.
+This workbook is a quick summary of those samples, so that we can better select a unique set of specimens for downstream analysis. 
+This is particularly important for analyses such as mutation co-occurence, where repeated sampling will inflate apparent co-ocurrence measures.
 
 
 ```{r setup}
+# load libraries
 library(dplyr)
+
+# source sample selection funciton
+source("independent_samples.R")
+
+set.seed(201910)
 ```
 
 
@@ -147,7 +155,7 @@ Yes, good.
 
 
 
-## Summarize repeat samples
+## Summarize repeated samples
 
 ```{r}
 repeat_samples <- seq_samples %>% 
@@ -166,3 +174,47 @@ repeat_samples %>%
   )
 ```
 
+
+## Select independent samples
+
+Using the information described above, I created a function `independent_samples()`
+to select the earliest biospecimen from each participant, or in the case of more 
+than one with the same date, randomly select among the available samples.
+
+An example of this function is below, applied to the WGS Solid Tissue tumor samples.
+Note that in this case, only tumors designated as primary will be included, 
+though this can be adjusted with `tumor_types = "prefer_primary"` or 
+`tumor_types = "any"` if we want to be less presecriptive. 
+
+In the accompanying script, I generate both `primary_only` and `primary_plus` 
+sets using the `"primary"` and `"prefer_primary"` resepectively.
+
+
+
+```{r}
+independents <- sample_df %>%
+  filter(experimental_strategy == "WGS",
+         sample_type == "Tumor", 
+         composition == "Solid Tissue"
+         ) %>%
+  independent_samples(tumor_types = "primary")
+
+length(independents)
+```
+
+Just for reference, lets see what tumor types we end up with in this set:
+
+```{r}
+sample_df %>% 
+  filter(Kids_First_Biospecimen_ID %in% independents) %>%
+  group_by(tumor_descriptor) %>%
+  summarize(n = n())
+```
+
+
+
+### Session info
+
+```{r}
+sessionInfo()
+```
