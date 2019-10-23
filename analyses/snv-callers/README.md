@@ -12,8 +12,9 @@ The GDC has [good documentation on the fields](https://docs.gdc.cancer.gov/Data/
   * [Genomic regional analyses](#genomic-regional-analyses)  
   * [Tumor mutation burden](#tumor-mutation-burden-calculation)
   * [COSMIC mutation overlap](#cosmic-mutation-overlap)  
-* Comparison analysis - in development
+* [Comparison analysis](#comparison-of-callers)
  * [Mutation IDs](#mutation-ids)
+ * [Combinations of callers]()
 * [Overall file structure](#overall-file-structure)
 * [Summary of functions](#summary-of-custom-functions)
 
@@ -193,7 +194,7 @@ The VAF for mutations that are or are not overlapping with COSMIC mutations are 
 * `results/<caller_name>/<caller_name>_vaf.tsv`
 * `plots/<caller_name>/<caller_name>_<strategy>_cosmic_plot.png`
 
-## Comparison of Callers - coming soon
+## Comparison of Callers
 
 ### Mutation IDs  
 
@@ -206,6 +207,10 @@ In order to compare mutations across callers, I created a `mutation_id` from com
 * `Tumor_Sample_Barcode` (the sample ID)  
 
 If mutation_id's are identical among MAF files, they are considered the same.
+
+### Comparisons of callers
+
+
 
 ## Overall file structure
 ```
