@@ -1,6 +1,8 @@
 ---
-title: "Repeated Sample analysis"
+title: "Repeated sample analysis"
 output: html_notebook
+    toc: yes
+    toc_float: yes
 editor_options: 
   chunk_output_type: inline
 ---
