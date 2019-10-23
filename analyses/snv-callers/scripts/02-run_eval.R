@@ -252,7 +252,7 @@ for (strategy in opt$strategy) {
 
   # Path to the template file
   template_folder <- file.path(
-    root_dir, "analyses", "snv-callers", "template",
+    root_dir, "analyses", "snv-callers", "template"
   )
   
   # Designate which template file name
