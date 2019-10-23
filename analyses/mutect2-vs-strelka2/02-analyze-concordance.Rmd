@@ -264,15 +264,15 @@ venn.plot <- VennDiagram::draw.pairwise.venn(
 grid::grid.draw(venn.plot) # Draw plot
 ```
 
-Save the Venn diagram plot to a PDF. 
+Save the Venn diagram plot to a png. 
 
 ```{r}
 # Make filename to save plot as
 venn.plot.file <- file.path(
   plots_dir,
-  "strelka2_mutect2_venn_diagram.pdf"
+  "strelka2_mutect2_venn_diagram.png"
 )
-pdf(venn.plot.file)
+png(venn.plot.file)
 grid::grid.draw(venn.plot)
 dev.off()
 ```
@@ -301,8 +301,8 @@ vaf_df %>%
     subtitle = paste("R = ", round(pearson_r$estimate, 3))
   )
 
-# Save this plot to a PDF
-ggplot2::ggsave(file.path(plots_dir, "VAF_scatterplot.PDF"))
+# Save this plot to a png
+ggplot2::ggsave(file.path(plots_dir, "VAF_scatterplot.png"))
 ```
 
 Overall, the VAF are highly correlated between the two algorithms.
@@ -326,8 +326,8 @@ vaf_df %>%
   ggplot2::ylab("Density of VAF") +
   ggplot2::xlab(" ")
 
-# Save this plot to a PDF
-ggplot2::ggsave(file.path(plots_dir, "VAF_violin_plots.PDF"))
+# Save this plot to a png
+ggplot2::ggsave(file.path(plots_dir, "VAF_violin_plots.png"))
 ```
 
 Variants that are only detected by MuTect2 appear to be particularly low VAF, 
