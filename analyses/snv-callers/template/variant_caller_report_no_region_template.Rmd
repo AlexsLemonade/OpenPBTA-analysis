@@ -84,18 +84,6 @@ calculated using the same BED file for all.
 knitr::include_graphics(plot_paths["_tmb_plot.png"])
 ```
 
-## Genomic regional analyses
-
-To analyze what genomic regions the variants are from, [Annotatr
-package](https://bioconductor.org/packages/release/bioc/vignettes/annotatr/inst/doc/annotatr-vignette.html)
-hg38 genome annotations were used. 
-Mutations are assigned all annotations that they overlap (using 
-`GenomicRanges::overlap`).
-
-```{r}
-knitr::include_graphics(plot_paths["_snv_region.png"])
-```
-
 ## Session info
 
 ```{r}
