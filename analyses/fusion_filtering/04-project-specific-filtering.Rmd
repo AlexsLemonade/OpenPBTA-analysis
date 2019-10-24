@@ -12,19 +12,19 @@ params:
     input: string
   dataStrandedSTARFUSION:
     label: "Input filtered fusion dataframe"
-    value: scratch/starfusionStranded_QC_expression_filtered_GTExComparison_annotated.RDS
+    value: scratch/starfusionStranded_QC_expression_GTExComparison_annotated.RDS
     input: file
   dataStrandedARRIBA:
     label: "Input filtered fusion dataframe"
-    value: scratch/arribaStranded_QC_expression_filtered_GTExComparison_annotated.RDS
+    value: scratch/arribaStranded_QC_expression_GTExComparison_annotated.RDS
     input: file
   dataPolyaSTARFUSION:
     label: "Input filtered fusion dataframe"
-    value: scratch/starfusionPolya_QC_expression_filtered_GTExComparison_annotated.RDS
+    value: scratch/starfusionPolya_QC_expression_GTExComparison_annotated.RDS
     input: file
   dataPolyaARRIBA:
     label: "Input filtered fusion dataframe"
-    value: scratch/arribaPolya_QC_expression_filtered_GTExComparison_annotated.RDS
+    value: scratch/arribaPolya_QC_expression_GTExComparison_annotated.RDS
     input: file    
   numCaller:
     label: "Least Number of callers to have called fusion"
