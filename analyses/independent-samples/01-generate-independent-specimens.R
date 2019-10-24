@@ -1,4 +1,19 @@
 # 01-generate-independent-specimens.R
+#
+# Josh Shapiro for CCDL 2019
+# 
+# Purpose: Generate tables of independent specimens where no two specimens are 
+#   chosen from the same individual.
+#
+# Option descriptions
+# -f, --histology_file : File path to where you would like the annotation_rds file to be
+#               stored
+# -o,--output_directory : Output directory
+# 
+# example invocation:
+# Rscript analyses/independent-samples/01-generate-independent-specimens.R \
+#   -f data/pbta-histologies.tsv \
+#   -o analyses/independent-samples/results
 
 
 # Base directories
