@@ -242,25 +242,12 @@ if (file.exists(vaf_file) && !opt$overwrite) {
     warning("Overwriting existing VAF file.")
   }
   # Print out progress message
-  message(paste("Calculating VAF for", opt$label, "MAF data..."))
+  message(paste("Calculating, sampling, and merging VAF for", opt$label, "MAF data..."))
 
   # Use the premade function to calculate VAF this will also merge the metadata
-  vaf_df <- set_up_maf(maf_df, metadata)
+  vaf_df <- set_up_maf(maf_df, metadata, opt$vaf_filter)
 
-  if (opt$vaf_filter != 0) {
-    # Give message
-    message("--vaf_filter is being applied")
-
-    # If a VAF filter is set, filter out NA VAFs or VAFs less than this cutoff.
-    vaf_df <- vaf_df %>%
-      dplyr::filter(
-        vaf > opt$vaf_filter,
-        !is.na(vaf)
-      )
-
-    # Report how many mutations are left
-    message(paste(nrow(vaf_df), "number of mutations left after vaf_filter."))
-  }
+  message(paste(nrow(vaf_df), "mutations left after filter and merge"))
 
   # Write this to a TSV file
   vaf_df %>% readr::write_tsv(vaf_file)
