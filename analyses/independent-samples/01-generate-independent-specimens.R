@@ -36,23 +36,58 @@ option_list <- list(
 opts <- parse_args(OptionParser(option_list = option_list))
 
 # set output files
+out_dir <- file.path(root_dir, opts$output_directory)
+if (!dir.exists(out_dir)){
+  dir.create(out_dir, recursive = TRUE)
+}
 
+wgs_primary_file <- file.path(out_dir, 
+                              "independent-specimens.wgs.primary.tsv")
+wgs_primplus_file <- file.path(out_dir, 
+                               "independent-specimens.wgs.primary-plus.tsv")
+wgswxs_primary_file <- file.path(out_dir, 
+                                 "independent-specimens.wgswxs.primary.tsv")
+wgswxs_primplus_file <- file.path(out_dir, 
+                                  "independent-specimens.wgswxs.primary-plus.tsv")
 
 # Read histology file
-sample_df <- readr::read_tsv(file.path(root_dir, opts$histology_file))
+sample_df <- readr::read_tsv(file.path(root_dir, opts$histology_file), 
+                             col_types = readr::cols()) # suppress parse message
 
 
-# Filter to only WGS samples from tumors, where composition is known to be Solid Tissue
+# Filter to only samples from tumors, where composition is known to be Solid Tissue
 # Note that there are some samples with unknown composition, but these will be ignored for now.
-wgs_samples <- sample_df %>%
-  dplyr::filter(experimental_strategy == "WGS",
-                sample_type == "Tumor", 
-                composition == "Solid Tissue")
+tumor_samples <- sample_df %>%
+  dplyr::filter(sample_type == "Tumor", 
+                composition == "Solid Tissue", 
+                experimental_strategy %in% c("WGS", "WXS"))
 
-primary_only <- independent_samples(wgs_samples, tumor_types = "primary")
+# Generate WGS independent samples
+wgs_samples <- tumor_samples %>%
+  dplyr::filter(experimental_strategy == "WGS")
 
-primary_plus <- independent_samples(wgs_samples, tumor_types = "prefer_primary")
+wgs_primary <- independent_samples(wgs_samples, tumor_types = "primary")
+wgs_primary_plus <- independent_samples(wgs_samples, tumor_types = "prefer_primary")
 
+# Generate lists for WXS only samples
+wxs_only_samples <-  tumor_samples %>% 
+  dplyr::filter(!(Kids_First_Participant_ID %in% 
+                    wgs_samples$Kids_First_Participant_ID))
 
-         
-  
+wxs_primary <- independent_samples(wxs_only_samples, tumor_types = "primary")
+wxs_primary_plus <- independent_samples(wxs_only_samples, tumor_types = "prefer_primary")
+
+# write files
+message(paste(nrow(wgs_primary), "WGS primary specimens"))
+readr::write_tsv(wgs_primary, wgs_primary_file)
+
+message(paste(nrow(wgs_primary_plus), "WGS specimens (including non-primary)"))
+readr::write_tsv(wgs_primary_plus, wgs_primplus_file)
+
+message(paste(nrow(wgs_primary) + nrow(wxs_primary), "WGS+WXS primary specimens"))
+readr::write_tsv(dplyr::bind_rows(wgs_primary, wxs_primary),
+                 wgswxs_primary_file)
+
+message(paste(nrow(wgs_primary_plus) + nrow(wxs_primary_plus), "WGS+WXS specimens (including non-primary)"))
+readr::write_tsv(dplyr::bind_rows(wgs_primary_plus, wxs_primary_plus),
+                 wgswxs_primplus_file)
