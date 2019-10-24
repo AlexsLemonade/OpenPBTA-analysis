@@ -10,9 +10,11 @@
 #' @param sample_df A data frame of samples, with columns corresponding to those
 #'   in `pbta-histologies.tsv`
 #' @param tumor_types Designates which types of tumors will be included. Options
-#'   are "primary" to include only primary tumores, "prefer_primary" to include 
-#'   primary tumors when available, but fall back to other types, or "any" to 
-#'   randomly select among all available specimens.
+#'   are "primary" to include only primary tumors, "prefer_primary" to include
+#'   primary tumors when available, but fall back to other types, or "any" to
+#'   randomly select among all available specimens. As of v5, primary tumors
+#'   defined as those designated "Initial CNS Tumor" or "Diagnosis" in the
+#'   `tumor_descriptor` field.
 #' 
 #' @return a vector of biospecimen ids
 independent_samples <- function(sample_df, 
