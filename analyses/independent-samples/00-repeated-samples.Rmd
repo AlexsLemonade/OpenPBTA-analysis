@@ -185,9 +185,11 @@ than one with the same date, randomly select among the available samples.
 An example of this function is below, applied to the WGS Solid Tissue tumor samples.
 Note that in this case, only tumors designated as primary will be included, 
 though this can be adjusted with `tumor_types = "prefer_primary"` or 
-`tumor_types = "any"` if we want to be less presecriptive. 
+`tumor_types = "any"` if we want to be less presecriptive. As of v5, primary tumors
+are defined as those designated "Initial CNS Tumor" or "Diagnosis" in the
+`tumor_descriptor` field.
 
-In the accompanying script, I generate both `primary_only` and `primary_plus` 
+In the accompanying script, I will generate both `primary_only` and `primary_plus` 
 sets using the `"primary"` and `"prefer_primary"` resepectively.
 
 

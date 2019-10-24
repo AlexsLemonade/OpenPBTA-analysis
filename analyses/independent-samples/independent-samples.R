@@ -13,7 +13,7 @@
 #'   are "primary" to include only primary tumors, "prefer_primary" to include
 #'   primary tumors when available, but fall back to other types, or "any" to
 #'   randomly select among all available specimens. As of v5, primary tumors
-#'   defined as those designated "Initial CNS Tumor" or "Diagnosis" in the
+#'   are defined as those designated "Initial CNS Tumor" or "Diagnosis" in the
 #'   `tumor_descriptor` field.
 #' @param seed An optional random number seed. 
 #' 
