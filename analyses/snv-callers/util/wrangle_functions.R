@@ -8,7 +8,7 @@
 ########################### Setting Up Functions ###############################
 ################################################################################
 
-set_up_maf <- function(maf_df, metadata_df = NULL) {
+set_up_maf <- function(maf_df, metadata_df = NULL, vaf_cutoff = 0) {
   # Creates these new variables from a MAF formatted data.frame provided: VAF,
   # mutation_id, base_change, change. Optionally can tack on metadata columns
   # which will be matched using a `Tumor_Sample_Barcode` field. Lastly, any
@@ -30,7 +30,11 @@ set_up_maf <- function(maf_df, metadata_df = NULL) {
     dplyr::mutate(
       # Calculate the variant allele frequency
       vaf = as.numeric(t_alt_count) / 
-        (as.numeric(t_ref_count) + as.numeric(t_alt_count)),
+        (as.numeric(t_ref_count) + as.numeric(t_alt_count))) %>%
+    #filter by vaf; if cutoff is 0 leave everything, 
+    dplyr::filter(vaf_cutoff == 0 | is.finite(vaf), 
+                  vaf > vaf_cutoff) %>%
+    dplyr::mutate(
       # Create a base_change variable
       base_change = paste0(Reference_Allele, ">", Allele),
 
