@@ -15,11 +15,15 @@
 #'   randomly select among all available specimens. As of v5, primary tumors
 #'   defined as those designated "Initial CNS Tumor" or "Diagnosis" in the
 #'   `tumor_descriptor` field.
+#' @param seed An optional random number seed. 
 #' 
 #' @return a vector of biospecimen ids
 independent_samples <- function(sample_df, 
-                           tumor_types = c("primary", "prefer_primary", "any")){
+                                tumor_types = c("primary", "prefer_primary", "any"), 
+                                seed){
   tumor_types <- match.arg(tumor_types)
+  if(!missing(seed)){set.seed(seed)}
+  
   primary_descs <- c("Initial CNS Tumor", "Diagnosis")
   
   if(tumor_types == "prefer_primary"){
