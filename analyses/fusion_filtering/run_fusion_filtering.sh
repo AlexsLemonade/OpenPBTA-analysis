@@ -28,4 +28,4 @@ Rscript analyses/fusion_filtering/03-Calc-zscore-annotate.R -S scratch/arribaStr
 
 Rscript analyses/fusion_filtering/03-Calc-zscore-annotate.R -S scratch/starfusionPolya_QC_expression_filtered_annotated.RDS -e data/pbta-gene-expression-rsem-fpkm.polya.rds -g analyses/fusion_filtering/references/Brain_FPKM_hg38_matrix.txt.zip -o scratch/starfusionPolya_QC_expression
 
-Rscript analyses/fusion_filtering/03-Calc-zscore-annotate.R -S scratch/starfusionStranded_QC_expression_filtered_annotated.RDS -e data/pbta-gene-expression-rsem-fpkm.polya.rds -g analyses/fusion_filtering/references/Brain_FPKM_hg38_matrix.txt.zip -o scratch/strafusionStranded_QC_expression
+Rscript analyses/fusion_filtering/03-Calc-zscore-annotate.R -S scratch/starfusionStranded_QC_expression_filtered_annotated.RDS -e data/pbta-gene-expression-rsem-fpkm.polya.rds -g analyses/fusion_filtering/references/Brain_FPKM_hg38_matrix.txt.zip -o scratch/starfusionStranded_QC_expression
