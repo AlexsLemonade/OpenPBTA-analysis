@@ -120,8 +120,10 @@ file_suffix <- tolower(opt$file_format)
 
 # Check that the file format is supported
 if (!(file_suffix %in% c('rds', 'tsv'))) {
-  stop("Option used for file format (-f) is not supported. Only 'tsv' or 'rds'
-       files are supported.")
+  warning("Option used for file format (-f) is not supported. Only 'tsv' or 'rds'
+          files are supported. Defaulting to rds.")
+  opt$file_format <- "rds"
+  file_suffix <- "rds"
 }
 
 ########################### Check options specified ############################
