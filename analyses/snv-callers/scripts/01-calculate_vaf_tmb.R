@@ -238,12 +238,12 @@ metadata <- readr::read_tsv(opt$metadata) %>%
   dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID)
 
 # Write the metadata file
-if (opt$file_format == "rds") {
-  metadata %>%
-    readr::write_rds(metadata_file)
-} else {
+if (opt$file_format == "tsv") {
   metadata %>%
     readr::write_tsv(metadata_file)
+} else {
+  metadata %>%
+    readr::write_rds(metadata_file)
 }
 
 # Print out completion message
@@ -277,12 +277,12 @@ if (file.exists(vaf_file) && !opt$overwrite) {
   message(paste(nrow(vaf_df), "mutations left after filter and merge"))
 
   # Write the vaf file
-  if (opt$file_format == "rds") {
-    vaf_df %>%
-      readr::write_rds(vaf_file)
-  } else {
+  if (opt$file_format == "tsv") {
     vaf_df %>%
       readr::write_tsv(vaf_file)
+  } else {
+    vaf_df %>%
+      readr::write_rds(vaf_file)
   }
   # Print out completion message
   message(paste("VAF calculations saved to: \n", vaf_file))
@@ -359,12 +359,12 @@ if (file.exists(tmb_file) && !opt$overwrite) {
   )
 
   # Write the tmb file
-  if (opt$file_format == "rds") {
-    tmb_df %>%
-      readr::write_rds(tmb_file)
-  } else {
+  if (opt$file_format == "tsv") {
     tmb_df %>%
       readr::write_tsv(tmb_file)
+  } else {
+    tmb_df %>%
+      readr::write_rds(tmb_file)
   }
 
   # Print out completion message
