@@ -14,7 +14,6 @@ The GDC has [good documentation on the fields](https://docs.gdc.cancer.gov/Data/
   * [COSMIC mutation overlap](#cosmic-mutation-overlap)  
 * [Comparison analysis](#comparison-of-callers)
  * [Mutation IDs](#mutation-ids)
- * [Combinations of callers]()
 * [Overall file structure](#overall-file-structure)
 * [Summary of functions](#summary-of-custom-functions)
 
