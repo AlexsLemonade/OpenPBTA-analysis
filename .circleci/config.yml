@@ -72,7 +72,7 @@ jobs:
           
       - run:
           name: Oncoprint plotting  
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/oncoprint-landscape/01-plot-oncoprint.Rmd', clean = TRUE)"           
+          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"           
 
                 
   deploy:
