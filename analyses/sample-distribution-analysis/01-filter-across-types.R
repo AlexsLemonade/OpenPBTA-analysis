@@ -2,9 +2,9 @@
 # of key variables within the dataset.
 #
 # Chante Bethell for CCDL 2019
-# 
+#
 # #### USAGE
-# This script is intended to be run via the command line from the top directory 
+# This script is intended to be run via the command line from the top directory
 # of the repository as follows:
 #
 # Rscript analyses/sample-distribution-analysis/01-filter-across-types.R
@@ -12,19 +12,19 @@
 # magrittr pipe
 `%>%` <- dplyr::`%>%`
 
-# Function to filter based on primary_site 
+# Function to filter based on primary_site
 location_fn <- function(location) {
-  # Given the name of a primary site, create a vector containing the disease 
+  # Given the name of a primary site, create a vector containing the disease
   # types expressed within the primary site.
-  # 
-  # Note: the disease types found at all instances of the location substring 
-  #       will be included 
+  #
+  # Note: the disease types found at all instances of the location substring
+  #       will be included
   #
   # Args:
   #   location: the name of a primary site found within the dataset
   #
   # Returns:
-  #   disease_type_vector: the vector of disease types expressed at the 
+  #   disease_type_vector: the vector of disease types expressed at the
   #                        named primary site
   disease_type_vector <- brain_location %>%
     dplyr::arrange(dplyr::desc(n)) %>%
@@ -51,17 +51,25 @@ if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
 }
 
-# Read in dataset
-df2 <- data.frame(readr::read_tsv(
-  file.path(root_dir, "data", "pbta-histologies.tsv")
-))
-
-# Remove na's
-df2 <- df2 %>%
+# Read in dataset and remove NAs
+histologies_df <-
+  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv")) %>%
+  as.data.frame() %>%
   dplyr::filter(!is.na(disease_type_new))
 
+# Filter the histologies file to account for multiple samples from the same
+# individual and the fact that multiple experimental strategies are in this
+# data.frame
+
+# Retain only tumors for this analysis
+histologies_df <- histologies_df %>%
+  dplyr::filter(sample_type == "Tumor",
+                composition == "Solid Tissue")
+
 # data.frame with the count of each unique cancer type expression
-disease_expression <- df2 %>%
+disease_expression <- histologies_df %>%
+  # some recurrences can have different disease_type_new values
+  dplyr::distinct(Kids_First_Participant_ID, disease_type_new) %>%
   dplyr::group_by(disease_type_new) %>%
   dplyr::count(name = "count") %>%
   dplyr::arrange(dplyr::desc(count))
@@ -69,8 +77,8 @@ disease_expression <- df2 %>%
 # Calculate the total count of the dataset
 sum_count <- sum(disease_expression$count)
 
-# Create a percent variable and round to 4 decimal places 
-# (so values will have 2 decimal places as percentages) 
+# Create a percent variable and round to 4 decimal places
+# (so values will have 2 decimal places as percentages)
 disease_expression <- disease_expression %>%
   dplyr::mutate(percent = paste0((round(count / sum_count, 4) * 100), "%"))
 
@@ -108,15 +116,17 @@ ggplot2::ggsave(
   height = 10
 )
 
-# data.frame with the location where each cancer type in the dataset is 
+# data.frame with the location where each cancer type in the dataset is
 # expressed, sorted to show highest expression
-brain_location <- df2 %>%
+brain_location <- histologies_df %>%
+  dplyr::distinct(Kids_First_Participant_ID, disease_type_new,
+                  primary_site) %>%
   dplyr::select(disease_type_new, primary_site) %>%
   dplyr::group_by(disease_type_new, primary_site) %>%
   dplyr::tally() %>%
   dplyr::arrange(dplyr::desc(n))
 
-# Make a vector of primary sites 
+# Make a vector of primary sites
 primary_sites_vector <- c(
   "Basal Ganglia",
   "Brain Stem- Midbrain",
@@ -143,11 +153,11 @@ primary_sites_vector <- c(
 # This step helps us with melting
 names(primary_sites_vector) <- primary_sites_vector
 
-# For each string in primary sites vector use location_fn to get the vector of 
-# disease types it's sorted by 
+# For each string in primary sites vector use location_fn to get the vector of
+# disease types it's sorted by
 cancer_types_list <- lapply(primary_sites_vector, location_fn)
 
-# Count the disease types for each primary site by taking the length of each 
+# Count the disease types for each primary site by taking the length of each
 # element of the list
 cancer_types_counts <- lapply(cancer_types_list, length)
 
