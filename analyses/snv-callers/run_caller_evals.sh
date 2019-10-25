@@ -37,7 +37,7 @@ do
     --label ${datasets[$i]} \
     --output analyses/snv-callers/results/${datasets[$i]} \
     --file_format rds \
-    --maf data/pbta-snv-${datasets[$i]}.vep.maf.gz \
+    --maf data/testing/release-v5-20190924/pbta-snv-${datasets[$i]}.vep.maf.gz \
     --metadata data/pbta-histologies.tsv \
     --bed_wgs data/${wgs_files[$i]} \
     --bed_wxs data/WXS.hg38.100bp_padded.bed \

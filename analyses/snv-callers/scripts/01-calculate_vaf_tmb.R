@@ -184,12 +184,12 @@ if (!dir.exists(caller_results_dir)) {
 ####################### File paths for files we will create ####################
 vaf_file <- file.path(caller_results_dir, paste0(opt$label, "_vaf.", file_suffix))
 region_annot_file <- file.path(caller_results_dir, paste0(opt$label, "_region.", file_suffix))
-tmb_file <- file.path(caller_results_dir, paste0(opt$label, "_tmb.tsv", file_suffix))
+tmb_file <- file.path(caller_results_dir, paste0(opt$label, "_tmb.", file_suffix))
 
 # Declare metadata file name for this caller
 metadata_file <- file.path(
   caller_results_dir,
-  paste0(opt$label, "_metadata_filtered", file_suffix)
+  paste0(opt$label, "_metadata_filtered.", file_suffix)
 )
 
 ##################### Check for files if overwrite is FALSE ####################
@@ -360,7 +360,7 @@ if (file.exists(tmb_file) && !opt$overwrite) {
   # Write the tmb file
   if (opt$file_format == "rds") {
     tmb_df %>%
-      readr::write_tsv(tmb_file)
+      readr::write_rds(tmb_file)
   } else {
     tmb_df %>%
       readr::write_tsv(tmb_file)
