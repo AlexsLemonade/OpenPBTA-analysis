@@ -63,8 +63,19 @@ jobs:
           name: CNV Caller Comparison  
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-comparison/01-cnv-comparison-plotting.Rmd', clean = TRUE)"     
 
-        #### Add your analysis here ####
-        
+      - run:
+          name: Independent samples
+          command: ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh 
+ 
+         ################################
+         #### Add your analysis here ####
+         ################################
+
+      - run:
+          name: SNV Caller Analysis 
+          command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_evals.sh    
+
+                
   deploy:
     machine: 
       docker_layer_caching: true
