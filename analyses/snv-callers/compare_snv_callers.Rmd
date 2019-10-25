@@ -40,7 +40,6 @@ Many of these have [very low ](#vaf-distributions) suggesting that some may be s
 - [TMB distributions by caller](#tmb-distributions)
 - [VAF correlations between callers](#vaf-correlations)
 - [TMB correlations between callers](#tmb-correlations)
-- [Genomic region of mutations from each caller](#genomic-regions)
 
 #### Usage
 
@@ -224,19 +223,6 @@ Make a big tmb data.frame
 
 ```{r}
 tmb_df <- dplyr::bind_rows(tmb_list, .id = "caller") %>%
-  dplyr::mutate(caller = factor(caller))
-```
-
-Make a big genomic region data frame.
-
-```{r include=FALSE}
-region_annot <- lapply(region_annot_files, function(file) {
-  readr::read_tsv(file) %>%
-    # The file is large so we will cut down on its size by only keeping the columns we need
-    dplyr::select("vaf", "base_change", "mutation_id", "change", "type")
-})
-names(region_annot) <- caller_names
-region_annot_df <- dplyr::bind_rows(region_annot, .id = "caller") %>%
   dplyr::mutate(caller = factor(caller))
 ```
 
