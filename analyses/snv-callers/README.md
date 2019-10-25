@@ -20,7 +20,7 @@ The GDC has [good documentation on the fields](https://docs.gdc.cancer.gov/Data/
 
 ## How to run this pipeline
 
-** Run evaluations of each MAF file **
+**Run evaluations of each MAF file**
 
 To run the initial evaluations of all the SNV callers, call the bash script:
 ```
@@ -100,7 +100,7 @@ plots ([base_change](#base-change-analysis), [depth_vs_vaf](#variant-allele-frac
  --cosmic : Relative file path to COSMIC file to be analyzed.
  --overwrite : If TRUE, will overwrite any reports of the same name. Default is
               FALSE
-  --no_region : If used, regional analysis will not be done. 
+  --no_region : If used, regional analysis will not be done.
 ```
 
 # Individual Caller Evaluation
