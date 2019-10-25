@@ -10,6 +10,8 @@
 # -output : File path that specifies the folder where the output should go.
 #           New folder will be created if it doesn't exist. Assumes file path is
 #           given from top directory of 'OpenPBTA-analysis'.
+# --file_format: What type of file format would you like the output as? Options are
+#               "rds" or "tsv". Default is "rds".
 # --maf :  Relative file path to MAF file to be analyzed. Can be .gz compressed.
 #          Assumes file path is given from top directory of 'OpenPBTA-analysis'.
 # --metadata : Relative file path to MAF file to be analyzed. Can be .gz compressed.
@@ -25,6 +27,7 @@
 #               removed from the vaf data.frame before it is saved to a TSV file.
 # --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
 # --no_region : If used, regional analysis will not be done. 
+# --file_type
 #
 # Command line example:
 #
@@ -66,6 +69,12 @@ option_list <- list(
     help = "File path that specifies the folder where the output should
               go. Assumes from top directory, 'OpenPBTA-analysis'. New folder
               will be created if it doesn't exist.",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = c("-f", "--file_format"), type = "character", default = "rds",
+    help = "What type of file format would you like the output as? Options are
+            'rds' or 'tsv'. Default is 'rds'.",
     metavar = "character"
   ),
   make_option(
@@ -131,6 +140,15 @@ opt$bed_wgs <- file.path(root_dir, opt$bed_wgs)
 opt$bed_wxs <- file.path(root_dir, opt$bed_wxs)
 opt$cosmic <- file.path(root_dir, opt$cosmic)
 
+# Bring along the file suffix. Make to lower. 
+file_suffix <- tolower(opt$file_format)
+
+# Check that the file format is supported
+if (!(file_suffix %in% c('rds', 'tsv'))) {
+  stop("Option used for file format (-f) is not supported. Only 'tsv' or 'rds'
+       files are supported.")
+}
+
 ########### Check that the files we need are in the paths specified ############
 needed_files <- c(
   opt$maf, opt$metadata, opt$bed_wgs, opt$bed_wxs, opt$cosmic
@@ -164,14 +182,14 @@ if (!dir.exists(caller_results_dir)) {
 }
 
 ####################### File paths for files we will create ####################
-vaf_file <- file.path(caller_results_dir, paste0(opt$label, "_vaf.tsv"))
-region_annot_file <- file.path(caller_results_dir, paste0(opt$label, "_region.tsv"))
-tmb_file <- file.path(caller_results_dir, paste0(opt$label, "_tmb.tsv"))
+vaf_file <- file.path(caller_results_dir, paste0(opt$label, "_vaf.", file_suffix))
+region_annot_file <- file.path(caller_results_dir, paste0(opt$label, "_region.", file_suffix))
+tmb_file <- file.path(caller_results_dir, paste0(opt$label, "_tmb.tsv", file_suffix))
 
 # Declare metadata file name for this caller
 metadata_file <- file.path(
   caller_results_dir,
-  paste0(opt$label, "_metadata_filtered.tsv")
+  paste0(opt$label, "_metadata_filtered", file_suffix)
 )
 
 ##################### Check for files if overwrite is FALSE ####################
@@ -216,8 +234,16 @@ metadata <- readr::read_tsv(opt$metadata) %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in% maf_df$Tumor_Sample_Barcode) %>%
   dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
   dplyr::arrange() %>%
-  dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID) %>%
-  readr::write_tsv(metadata_file)
+  dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID) 
+
+# Write the metadata file
+if (opt$file_format == "rds") {
+  metadata %>%
+    readr::write_rds(metadata_file)
+} else {
+  metadata %>%
+    readr::write_tsv(metadata_file)
+}
 
 # Print out completion message
 message(paste("Filtered metadata file saved to: \n", metadata_file))
@@ -249,9 +275,14 @@ if (file.exists(vaf_file) && !opt$overwrite) {
 
   message(paste(nrow(vaf_df), "mutations left after filter and merge"))
 
-  # Write this to a TSV file
-  vaf_df %>% readr::write_tsv(vaf_file)
-
+  # Write the vaf file
+  if (opt$file_format == "rds") {
+    vaf_df %>% 
+      readr::write_rds(vaf_file)
+  } else {
+    vaf_df %>% 
+      readr::write_tsv(vaf_file)
+  }
   # Print out completion message
   message(paste("VAF calculations saved to: \n", vaf_file))
 }
@@ -324,8 +355,16 @@ if (file.exists(tmb_file) && !opt$overwrite) {
   tmb_df <- calculate_tmb(vaf_df,
     wgs_size = wgs_genome_size,
     wxs_size = wxs_exome_size
-  ) %>%
-    readr::write_tsv(tmb_file)
+  ) 
+  
+  # Write the tmb file
+  if (opt$file_format == "rds") {
+    tmb_df %>%
+      readr::write_tsv(tmb_file)
+  } else {
+    tmb_df %>%
+      readr::write_tsv(tmb_file)
+  }
 
   # Print out completion message
   message(paste("TMB calculations saved to:", tmb_file))

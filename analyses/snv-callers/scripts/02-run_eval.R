@@ -10,9 +10,11 @@
 # --plot_type : Specify what kind of plots you want printed out. Must be
 #               compatible with ggsave. eg pdf. Default is png
 # --vaf : Folder from 01-calculate_vaf_tmb.R following files:
-#                                             <caller_name>_vaf.tsv
-#                                             <caller_name>_region.tsv
-#                                             <caller_name>_tmb.tsv
+#                                             <caller_name>_vaf.<file_format>
+#                                             <caller_name>_region.<file_format>
+#                                             <caller_name>_tmb.<file_format>
+# --file_format: What type of file format would you like the output as? Options are
+#               "rds" or "tsv". Default is "rds".
 # --output : Where you would like the output from this script to be stored.
 # --strategy : Specify whether you would like WXS and WGS separated for the plots.
 #              Analysis is still done on all data in the MAF file regardless.
@@ -70,6 +72,12 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
+    opt_str = c("-f", "--file_format"), type = "character", default = "rds",
+    help = "What type of file format were the vaf and tmb files saved as? 
+            Options are 'rds' or 'tsv'. Default is 'rds'.",
+    metavar = "character"
+  ),
+  make_option(
     opt_str = c("-o", "--output"), type = "character",
     default = NULL, help = "Path to folder where you would like the
               output from this script to be stored.",
@@ -106,6 +114,15 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
+# Bring along the file suffix. Make to lower. 
+file_suffix <- tolower(opt$file_format)
+
+# Check that the file format is supported
+if (!(file_suffix %in% c('rds', 'tsv'))) {
+  stop("Option used for file format (-f) is not supported. Only 'tsv' or 'rds'
+       files are supported.")
+}
+
 ########################### Check options specified ############################
 # Normalize this file path
 opt$vaf <- file.path(root_dir, opt$vaf)
@@ -119,10 +136,10 @@ if (!dir.exists(opt$vaf)) {
 file_list <- dir(opt$vaf)
 
 # The list of needed file suffixes
-needed_files <- c("_vaf.tsv$", "_tmb.tsv$", opt$cosmic)
+needed_files <- c(paste0("_vaf.", file_suffix), paste0("_tmb.", file_suffix), opt$cosmic)
 
 if (opt$no_region){
- needed_files <- c(needed_files, "_region.tsv$")
+ needed_files <- c(needed_files, paste0("_region.", file_suffix))
 }
 # Get list of which files were found
 files_found <- sapply(needed_files, function(file_suffix) {
@@ -173,12 +190,22 @@ if (opt$no_region){
 # Make the plot names with specified prefix
 plot_names <- paste0(plot_suffixes, opt$plot_type)
 
-# Read in these data.frames
-vaf_df <- readr::read_tsv(grep("_vaf.tsv$", file_list, value = TRUE))
-tmb_df <- readr::read_tsv(grep("_tmb.tsv$", file_list, value = TRUE))
+# Read in these data
+if (opt$file_format == "tsv"){
+  vaf_df <- readr::read_tsv(grep("_vaf.tsv$", file_list, value = TRUE))
+  tmb_df <- readr::read_tsv(grep("_tmb.tsv$", file_list, value = TRUE))
+} else {
+  vaf_df <- readr::read_rds(grep("_vaf.rds$", file_list, value = TRUE))
+  tmb_df <- readr::read_rds(grep("_tmb.rds$", file_list, value = TRUE))
+}
 
+# Only read in the regional things if that is necessary
 if (opt$no_region) {
-  maf_annot <- readr::read_tsv(grep("_region.tsv$", file_list, value = TRUE))
+  if (opt$file_format  == "tsv"){
+    maf_annot <- readr::read_tsv(grep("_region.tsv$", file_list, value = TRUE))
+  } else {
+    maf_annot <- readr::read_rds(grep("_region.rds$", file_list, value = TRUE))
+  }
 }
 ######################## Check VAF file for each strategy ######################
 
