@@ -1,0 +1,496 @@
+---
+title: "Compare Variant Callers"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: C. Savonen for ALSF CCDL
+date: 2019
+---
+
+Purpose: After running the initial analyses of each variant caller, this notebook 
+combines the output from those calculations and compares them. 
+
+### Summary of Findings:
+
+Due to some of the findings here, I suggest we should move 
+forward with mutations called by Strelka2, Mutect2, and Lancet. And, due to it's 
+oversensitivity that VarDict's data can be dropped entirely. 
+
+#### Individual Caller's Reports 
+
+- [Lancet](./plots/lancet/lancet_both_report.html)
+- [MuTect2](./plots/mutect2/mutect2_both_report.html)
+- [Strelka2](./plots/strelka2/strelka2_both_report.html)
+- [Vardict](./plots/vardict/vardict_both_report.html)
+
+*Notable Findings:*  
+
+- [VarDict calls more mutations](#upset-graph) than any of the other callers. 
+Many of these have [very low ](#vaf-distributions) suggesting that some may be sequencing errors. 
+
+- Mutect2, Strelka2, and Lancet do have [plenty of mutations in common](#upset-graph). 
+
+### Outline of analyses completed:
+
+- [Upset graph](#upset-graph)  
+- [VAF of combinations of callers](#vaf-for-combination-sets-of-callers)
+- [Base changes by caller](#base-changes)
+- [VAF distributions by caller](#vaf-distributions)
+- [TMB distributions by caller](#tmb-distributions)
+- [VAF correlations between callers](#vaf-correlations)
+- [TMB correlations between callers](#tmb-correlations)
+- [Genomic region of mutations from each caller](#genomic-regions)
+
+#### Usage
+
+To run this from the command line, use:
+```
+Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers.Rmd', 
+                              clean = TRUE)"
+```
+
+_This assumes you are in the top directory of the repository._
+
+## Setup
+
+#### Packages and functions
+
+Read in set up script.
+
+```{r}
+if (!("ggupset" %in% installed.packages())) {
+  install.packages("ggupset", repos = "http://cran.us.r-project.org")
+}
+if (!("UpSetR" %in% installed.packages())) {
+  install.packages("UpSetR", repos = "http://cran.us.r-project.org")
+}
+if (!("GGally" %in% installed.packages())) {
+  install.packages("GGally", repos = "http://cran.us.r-project.org")
+}
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+Set up a function for calculating the percent off mutations of a caller for a 
+given variable. 
+
+```{r}
+perc_mutation_by_caller <- function(df, var) {
+  # Summarizes a variable and calculates the percent of mutations for a caller
+  # for each category
+  #
+  # Args:
+  #   df: a data.frame with `caller` as a column.
+  #   var: a string identifying the column of the variable you need to summarize by.
+  #
+  # Returns:
+  #   a data.frame with a summarized percent of caller mutations calculated in
+  #   the `percent` column.
+
+  # Summarize by the number of times each category shows up
+  count_df <- df %>%
+    dplyr::group_by(caller, eval(parse(text = var))) %>%
+    dplyr::summarise(count = dplyr::n())
+
+  # Calculate sum totals for each caller
+  totals <- count_df %>%
+    dplyr::group_by(caller) %>%
+    dplyr::summarise(total = sum(count, na.rm = TRUE))
+
+  # Calculate percentages based on totals
+  count_df <- count_df %>%
+    as.data.frame() %>%
+    dplyr::mutate("percent" = count_df$count / totals$total[match(
+      count_df$caller,
+      totals$caller
+    )])
+
+  # Rename the column as what it was before
+  colnames(count_df)[2] <- var
+
+  # Return this data.frame
+  return(count_df)
+}
+```
+
+Set up output directories. 
+
+```{r}
+base_results_dir <- "results"
+base_plots_dir <- "plots"
+```
+
+Make new directories for the comparison analysis.
+
+```{r}
+compare_results_dir <- file.path(base_results_dir, "comparisons")
+compare_plots_dir <- file.path(base_plots_dir, "comparisons")
+
+# Make caller specific plots folder
+if (!dir.exists(compare_results_dir)) {
+  dir.create(compare_results_dir)
+}
+# Make caller specific plots folder
+if (!dir.exists(compare_plots_dir)) {
+  dir.create(compare_plots_dir)
+}
+```
+
+## Import data 
+
+Look at the existing folders within the results folder. 
+
+```{r}
+dir(base_results_dir)
+```
+
+Get the lists of each type of file. 
+
+```{r}
+# Get the lists of each type of file
+vaf_files <- list.files(base_results_dir,
+  pattern = "_vaf.tsv$", recursive = TRUE,
+  full.names = TRUE
+)
+
+# Make a list of the vaf filter experiment vaf files
+filter_vaf_files <- list.files(file.path(base_results_dir, "vaf_filter"),
+  pattern = "_vaf.tsv$", recursive = TRUE,
+  full.names = TRUE
+)
+
+# Exclude the vaf_filter ones from the final list
+vaf_files <- setdiff(vaf_files, filter_vaf_files)
+vaf_files
+```
+
+```{r}
+# Get list of all tmb files
+tmb_files <- list.files(base_results_dir,
+  pattern = "_tmb.tsv$", recursive = TRUE,
+  full.names = TRUE
+)
+
+# Make a list of the vaf filter experiment tmb files
+filter_tmb_files <- list.files(file.path(base_results_dir, "vaf_filter"),
+  pattern = "_tmb.tsv$", recursive = TRUE,
+  full.names = TRUE
+)
+
+# Exclude the vaf_filter ones from the final list
+tmb_files <- setdiff(tmb_files, filter_tmb_files)
+tmb_files
+```
+
+Obtain the caller names from the file paths. 
+
+```{r}
+# Get the caller names
+caller_names <- stringr::word(vaf_files, sep = "/", 2)
+```
+
+Read in VAF files. 
+
+```{r include=FALSE}
+vaf_list <- lapply(vaf_files, function(file) {
+  readr::read_tsv(file) %>%
+    # The file is large so we will cut down on its size by only keeping the columns we need
+    dplyr::select("mutation_id", "vaf", "base_change", "change") %>%
+    dplyr::distinct(mutation_id, .keep_all = TRUE)
+})
+
+# Carry over the callers' names
+names(vaf_list) <- caller_names
+```
+
+Make a big VAF data.frame
+
+```{r}
+vaf_df <- dplyr::bind_rows(vaf_list, .id = "caller") %>%
+  dplyr::mutate(caller = factor(caller))
+```
+
+Read in TMB files. 
+
+```{r include=FALSE}
+tmb_list <- lapply(tmb_files, readr::read_tsv)
+
+# Carry over the callers' names
+names(tmb_list) <- caller_names
+```
+
+Make a big tmb data.frame
+
+```{r}
+tmb_df <- dplyr::bind_rows(tmb_list, .id = "caller") %>%
+  dplyr::mutate(caller = factor(caller))
+```
+
+Make a big genomic region data frame.
+
+```{r include=FALSE}
+region_annot <- lapply(region_annot_files, function(file) {
+  readr::read_tsv(file) %>%
+    # The file is large so we will cut down on its size by only keeping the columns we need
+    dplyr::select("vaf", "base_change", "mutation_id", "change", "type")
+})
+names(region_annot) <- caller_names
+region_annot_df <- dplyr::bind_rows(region_annot, .id = "caller") %>%
+  dplyr::mutate(caller = factor(caller))
+```
+
+## Upset graph
+
+```{r}
+mutation_id_list <- lapply(vaf_list, function(caller) caller$mutation_id)
+```
+
+Make the upset plot. 
+
+```{r}
+# Make the plot
+upset <- UpSetR::upset(UpSetR::fromList(mutation_id_list),
+  order.by = "freq",
+  text.scale = 2
+)
+
+# Save this plot
+png(file.path(compare_plots_dir, "upset_plot.png"), width = 900, height = 900)
+upset
+dev.off()
+
+# Print this out
+upset
+```
+
+## VAF for combination sets of callers
+
+Graph mutations by combinations of callers and plot the VAF density.
+Get list of callers per mutation and the median vaf for each. 
+
+```{r}
+# Make a string that says what callers call each mutation
+callers_per_mutation <- tapply(vaf_df$caller,
+  vaf_df$mutation_id,
+  paste0,
+  collapse = "-"
+) %>%
+  # Make into a data.frame
+  as.data.frame() %>%
+  tibble::rownames_to_column("mutation_id")
+
+# Obtain the median VAF for each mutation
+vaf_med <- tapply(
+  vaf_df$vaf,
+  vaf_df$mutation_id,
+  median
+) %>%
+  # Make into a data.frame
+  as.data.frame() %>%
+  tibble::rownames_to_column("mutation_id")
+
+# Join the median VAF and the callers that call that mutation into one data.frame
+callers_per_mutation <- callers_per_mutation %>%
+  dplyr::inner_join(vaf_med, by = "mutation_id")
+
+# Make the column names more sensible
+colnames(callers_per_mutation) <- c("mutation_id", "caller_combo", "median_vaf")
+```
+
+Graph the median VAF for each combination of callers.
+
+```{r}
+# Make this plot
+callers_per_mutation %>%
+  ggplot2::ggplot(ggplot2::aes(x = caller_combo, y = median_vaf)) +
+  ggforce::geom_sina(alpha = 0.05) +
+  ggplot2::theme_classic() +
+  ggupset::scale_x_mergelist(sep = "-") +
+  ggupset::axis_combmatrix(sep = "-") +
+  ggplot2::xlab("") +
+  ggplot2::ylab("Median VAF Across Callers")
+```
+
+```{r}
+# Save this plot
+ggplot2::ggsave(file.path(compare_plots_dir, "upset_median_vaf_plot.png"))
+```
+
+## Base Changes 
+
+Set up the summarized form of the base change information. 
+
+```{r}
+# Summarize by the number of times each base change shows up in each category.
+perc_change_df <- perc_mutation_by_caller(vaf_df, var = "change") %>%
+  dplyr::filter(!grepl("G>G|A>A|N>A|N>T", change))
+
+# Need to rearrange the order of the base change categories
+perc_change_df <- perc_change_df %>%
+  dplyr::mutate(
+    change = as.factor(change),
+    change = factor(change, c(grep("ins|del|long_change", levels(change), value = TRUE, invert = TRUE), "ins", "del", "long_change"))
+  )
+```
+
+Make a barplot illustrating the percent of the mutations for each caller that 
+that are each type of change. 
+
+```{r}
+perc_change_df %>%
+  ggplot2::ggplot(ggplot2::aes(x = change, y = percent)) +
+  ggplot2::theme_classic() +
+  ggplot2::geom_bar(
+    position = "dodge", stat = "identity",
+    ggplot2::aes(fill = caller)
+  ) +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
+  ggplot2::xlab("") +
+  ggplot2::ylab("Percent of callers' mutations") +
+  colorblindr::scale_fill_OkabeIto()
+```
+
+```{r}
+# Save this plot
+ggplot2::ggsave(file.path(compare_plots_dir, "perc_base_change_plot.png"))
+```
+
+## VAF distributions
+
+```{r}
+vaf_df %>%
+  ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, color = caller)) +
+  ggplot2::geom_violin() +
+  ggplot2::theme_classic() +
+  colorblindr::scale_color_OkabeIto()
+```
+
+```{r}
+# Save this plot
+ggplot2::ggsave(file.path(compare_plots_dir, "vaf_violin_plot.png"))
+```
+
+## TMB distributions
+
+```{r}
+tmb_df %>%
+  ggplot2::ggplot(ggplot2::aes(x = caller, y = tmb, color = short_histology)) +
+  ggplot2::geom_boxplot() +
+  ggplot2::theme_classic()
+```
+
+```{r}
+# Save this plot
+ggplot2::ggsave(file.path(compare_plots_dir, "tmb_boxplot_histology_plot.png"))
+```
+
+## VAF correlations
+
+```{r}
+vaf_long <- vaf_df %>%
+  dplyr::group_by(mutation_id, caller) %>%
+  dplyr::summarize(vaf = mean(vaf)) %>%
+  dplyr::distinct(mutation_id, caller, vaf, .keep_all = TRUE) %>%
+  tidyr::spread(caller, vaf) %>%
+  tibble::column_to_rownames("mutation_id")
+```
+
+Make the plot with ggpairs. 
+
+```{r}
+GGally::ggpairs(vaf_long, mapping = ggplot2::aes(alpha = 0.05)) +
+  ggplot2::theme_classic()
+``` 
+
+```{r}
+# Save this plot
+ggplot2::ggsave(file.path(compare_plots_dir, "vaf_correlations_plot.png"))
+```
+
+## TMB correlations
+
+```{r}
+tmb_long <- tmb_df %>%
+  dplyr::distinct(Tumor_Sample_Barcode, caller, tmb) %>%
+  tidyr::spread(caller, tmb) %>%
+  tibble::column_to_rownames("Tumor_Sample_Barcode")
+```
+
+Make the TMB correlation plot.
+
+```{r}
+GGally::ggpairs(tmb_long, mapping = ggplot2::aes(alpha = 0.05)) +
+  ggplot2::theme_classic()
+```
+
+```{r}
+# Save this plot
+ggplot2::ggsave(file.path(compare_plots_dir, "tmb_correlations_plot.png"))
+```
+
+## Save consensus mutation calls
+
+Get an idea of how many mutations per group. 
+
+```{r}
+summary(as.factor(callers_per_mutation$caller_combo))
+```
+
+Get the mutation ids for these. 
+
+```{r}
+consen_mutations <- callers_per_mutation %>%
+  dplyr::filter(caller_combo == "lancet-mutect2-strelka2") %>%
+  dplyr::select(-caller_combo) %>%
+  dplyr::pull(mutation_id)
+```
+
+Isolate the mutations to only these mutations, use the Strelka2 stats. 
+
+```{r}
+consen_mutation <- vaf_df %>%
+  dplyr::filter(
+    caller == "strelka2",
+    mutation_id %in% consen_mutations
+  ) %>%
+  readr::write_tsv(file.path(compare_results_dir, "conensensus_mutation.maf.tsv"))
+```
+
+Zip this file up. 
+
+```{r}
+zip(
+  file.path(compare_results_dir, "conensensus_mutation.maf.tsv.zip"),
+  file.path(compare_results_dir, "conensensus_mutation.maf.tsv")
+)
+```
+
+Re-calculate TMB statistics using Strelka2. 
+
+```{r}
+# Set up BED region files for TMB calculations
+wgs_bed <- readr::read_tsv(file.path("..", "..", "data", "WGS.hg38.strelka2.unpadded.bed"),
+  col_names = FALSE
+)
+wxs_bed <- readr::read_tsv(file.path("..", "..", "data", "WXS.hg38.100bp_padded.bed"),
+  col_names = FALSE
+)
+
+# Calculate size of genome surveyed
+wgs_genome_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
+wxs_exome_size <- sum(wxs_bed[, 3] - wxs_bed[, 2])
+
+# Calculate TMBs and write to TMB file
+tmb_df <- calculate_tmb(vaf_df,
+  wgs_size = wgs_genome_size,
+  wxs_size = wxs_exome_size
+) %>%
+  readr::write_tsv(file.path(compare_results_dir, "consensus_mutation_tmb.tsv"))
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
