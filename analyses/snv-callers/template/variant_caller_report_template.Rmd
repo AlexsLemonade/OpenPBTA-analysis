@@ -56,17 +56,6 @@ written to a TSV ending in `_vaf.tsv` in the caller's results folder.
 knitr::include_graphics(plot_paths["_depth_vs_vaf.png"])
 ```
 
-## Genomic regional analyses
-
-To analyze what genomic regions the variants are from, [Annotatr
-package](https://bioconductor.org/packages/release/bioc/vignettes/annotatr/inst/doc/annotatr-vignette.html)
-hg38 genome annotations were used. 
-Mutations are assigned all annotations that they overlap (using 
-`GenomicRanges::overlap`).
-
-```{r}
-knitr::include_graphics(plot_paths["_snv_region.png"])
-```
 
 ## Percent variants in COSMIC
 
@@ -93,6 +82,18 @@ calculated using the same BED file for all.
 
 ```{r}
 knitr::include_graphics(plot_paths["_tmb_plot.png"])
+```
+
+## Genomic regional analyses
+
+To analyze what genomic regions the variants are from, [Annotatr
+package](https://bioconductor.org/packages/release/bioc/vignettes/annotatr/inst/doc/annotatr-vignette.html)
+hg38 genome annotations were used. 
+Mutations are assigned all annotations that they overlap (using 
+`GenomicRanges::overlap`).
+
+```{r}
+knitr::include_graphics(plot_paths["_snv_region.png"])
 ```
 
 ## Session info

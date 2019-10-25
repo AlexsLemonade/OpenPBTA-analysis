@@ -42,7 +42,8 @@ do
     --bed_wxs data/WXS.hg38.100bp_padded.bed \
     --annot_rds $annot_rds \
     --vaf_filter $vaf_cutoff \
-    --overwrite
+    --no_region \
+    --overwrite 
 done
 
 ######################## Plot the data and create reports ######################
@@ -55,5 +56,6 @@ do
     --plot_type png \
     --output analyses/snv-callers/plots/${dataset} \
     --cosmic $cosmic \
-    --strategy wgs,wxs,both
+    --strategy wgs,wxs,both \
+    --no_region
 done
