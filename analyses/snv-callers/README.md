@@ -20,7 +20,7 @@ The GDC has [good documentation on the fields](https://docs.gdc.cancer.gov/Data/
 
 ## How to run this pipeline
 
-**1) Run evaluations of each MAF file**
+** Run evaluations of each MAF file **
 
 To run the initial evaluations of all the SNV callers, call the bash script:
 ```
@@ -30,15 +30,6 @@ This script will return results for each caller in the `plots` and `results` fol
 To see an overall summary report, look in the `results` folder for that caller.
 (See [Overall File Structure](#overall-file-structure) for more details on
 everything that is returned.)
-
-**2) Run comparison analysis of the callers**
-
-After the data have been set up by the `run_caller_evals.sh` script, you can
-run the notebook that will compare the callers using the following command:  
-```
-Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers.Rmd',
-                              clean = TRUE)"
-```
 
 ## General usage of scripts
 
@@ -196,6 +187,8 @@ The VAF for mutations that are or are not overlapping with COSMIC mutations are 
 
 ## Comparison of Callers
 
+**coming soon**
+
 ### Mutation IDs  
 
 In order to compare mutations across callers, I created a `mutation_id` from combining information from standard MAF fields.
@@ -207,10 +200,6 @@ In order to compare mutations across callers, I created a `mutation_id` from com
 * `Tumor_Sample_Barcode` (the sample ID)  
 
 If mutation_id's are identical among MAF files, they are considered the same.
-
-### Comparisons of callers
-
-
 
 ## Overall file structure
 ```
