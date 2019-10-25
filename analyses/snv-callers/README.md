@@ -20,7 +20,7 @@ The GDC has [good documentation on the fields](https://docs.gdc.cancer.gov/Data/
 
 ## How to run this pipeline
 
-** Run evaluations of each MAF file **
+**1) Run evaluations of each MAF file**
 
 To run the initial evaluations of all the SNV callers, call the bash script:
 ```
@@ -30,6 +30,15 @@ This script will return results for each caller in the `plots` and `results` fol
 To see an overall summary report, look in the `results` folder for that caller.
 (See [Overall File Structure](#overall-file-structure) for more details on
 everything that is returned.)
+
+**2) Compare caller output and save consensus file**
+
+To run the second part of the analysis, run this notebook:
+```
+Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers.Rmd', clean = TRUE)"
+```
+This will save a consensus file `conensensus_mutation.maf.tsv` to the `comparison`
+results folder with mutations to move forward with.
 
 ## General usage of scripts
 
@@ -100,7 +109,7 @@ plots ([base_change](#base-change-analysis), [depth_vs_vaf](#variant-allele-frac
  --cosmic : Relative file path to COSMIC file to be analyzed.
  --overwrite : If TRUE, will overwrite any reports of the same name. Default is
               FALSE
-  --no_region : If used, regional analysis will not be done. 
+  --no_region : If used, regional analysis will not be done.
 ```
 
 # Individual Caller Evaluation
@@ -189,11 +198,15 @@ The VAF for mutations that are or are not overlapping with COSMIC mutations are 
 
 ## Comparison of Callers
 
-**coming soon**
+After running an initial evaluation and set up of each of the callers' MAF files,
+the `compare_snv_callers.Rmd` notebook can be run to get final results on consensus
+mutation calls.  
 
 ### Mutation IDs  
 
 In order to compare mutations across callers, I created a `mutation_id` from combining information from standard MAF fields.
+This was done in the `01-calculate_vaf_tmb.R` script using the `set_up_maf `
+function.
 
 `mutation_id` is a concatenation of:  
 * `Hugo_Symbol`  
@@ -202,6 +215,11 @@ In order to compare mutations across callers, I created a `mutation_id` from com
 * `Tumor_Sample_Barcode` (the sample ID)  
 
 If mutation_id's are identical among MAF files, they are considered the same.
+
+### Consensus mutation call
+
+After the comparisons amongst the callers, VarDict proved to be too unreliable and called low VAF mutations.
+Moving forward, mutations that were identified by Lancet, Mutect2 and Strelka2 were included in the final list of mutations for each sample. 
 
 ## Overall file structure
 ```
@@ -223,6 +241,8 @@ OpenPBTA-analysis
 │       │   ├── strelka2_wgs_bed_regions.tsv
 │       │   └── vardict_wgs_bed_regions.tsv
 │       ├── results
+│       │   ├── comparisons
+│       │   │   └── consensus_mutation.maf.tsv
 │       │   ├── lancet
 │       │   │   ├── lancet_vaf.tsv
 │       │   │   ├── lancet_vaf.tsv.zip
