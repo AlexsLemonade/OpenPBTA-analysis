@@ -13,7 +13,7 @@
 #                                             <caller_name>_vaf.<file_format>
 #                                             <caller_name>_region.<file_format>
 #                                             <caller_name>_tmb.<file_format>
-# --file_format: What type of file format would you like the output as? Options are
+# --file_format: What type of file format were the vaf and tmb files saved as? Options are
 #               "rds" or "tsv". Default is "rds".
 # --output : Where you would like the output from this script to be stored.
 # --strategy : Specify whether you would like WXS and WGS separated for the plots.
@@ -24,7 +24,7 @@
 #            is given from top directory of 'OpenPBTA-analysis'.
 # --overwrite : If TRUE, will overwrite any reports of the same name. Default is
 #              FALSE
-# --no_region : If used, regional analysis will not be done. 
+# --no_region : If used, regional analysis will not be done.
 #
 # Command line example:
 #
@@ -73,7 +73,7 @@ option_list <- list(
   ),
   make_option(
     opt_str = c("-f", "--file_format"), type = "character", default = "rds",
-    help = "What type of file format were the vaf and tmb files saved as? 
+    help = "What type of file format were the vaf and tmb files saved as?
             Options are 'rds' or 'tsv'. Default is 'rds'.",
     metavar = "character"
   ),
@@ -114,7 +114,7 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
-# Bring along the file suffix. Make to lower. 
+# Bring along the file suffix. Make to lower.
 file_suffix <- tolower(opt$file_format)
 
 # Check that the file format is supported
@@ -255,7 +255,7 @@ for (strategy in opt$strategy) {
   # Read depth and VAF
   depth_vs_vaf_plot(vaf_df, exp_strategy = strategy)
   ggplot2::ggsave(filename = plot_paths["_depth_vs_vaf.png"], plot = ggplot2::last_plot())
-  
+
   # Percent variants in COSMIC
   cosmic_plot(vaf_df, exp_strategy = strategy, opt$cosmic)
   ggplot2::ggsave(filename = plot_paths["_cosmic_plot.png"], plot = ggplot2::last_plot())
@@ -269,7 +269,7 @@ for (strategy in opt$strategy) {
     snv_region_plot(maf_annot, exp_strategy = strategy)
     ggplot2::ggsave(filename = plot_paths["_snv_region.png"], plot = ggplot2::last_plot())
   }
-  
+
   ######################## Make plots into a report ############################
   # Make a summary report about the variant caller and strategy
   output_file <- file.path(
@@ -281,7 +281,7 @@ for (strategy in opt$strategy) {
   template_folder <- file.path(
     root_dir, "analyses", "snv-callers", "template"
   )
-  
+
   # Designate which template file name
   if (opt$no_region) {
     template_file <- file.path(template_folder, "variant_caller_report_template.Rmd")

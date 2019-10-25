@@ -26,8 +26,7 @@
 #               mutations with a VAF that are NA or below this number will be
 #               removed from the vaf data.frame before it is saved to a TSV file.
 # --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
-# --no_region : If used, regional analysis will not be done. 
-# --file_type
+# --no_region : If used, regional analysis will not be done.
 #
 # Command line example:
 #
@@ -131,7 +130,7 @@ option_list <- list(
 opt <- parse_args(OptionParser(option_list = option_list))
 
 # Coerce to numeric
-opt$vaf_filter <- as.numeric(opt$vaf_filter) 
+opt$vaf_filter <- as.numeric(opt$vaf_filter)
 
 # Make everything relative to root path
 opt$maf <- file.path(root_dir, opt$maf)
@@ -140,7 +139,7 @@ opt$bed_wgs <- file.path(root_dir, opt$bed_wgs)
 opt$bed_wxs <- file.path(root_dir, opt$bed_wxs)
 opt$cosmic <- file.path(root_dir, opt$cosmic)
 
-# Bring along the file suffix. Make to lower. 
+# Bring along the file suffix. Make to lower.
 file_suffix <- tolower(opt$file_format)
 
 # Check that the file format is supported
@@ -234,7 +233,7 @@ metadata <- readr::read_tsv(opt$metadata) %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in% maf_df$Tumor_Sample_Barcode) %>%
   dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
   dplyr::arrange() %>%
-  dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID) 
+  dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID)
 
 # Write the metadata file
 if (opt$file_format == "rds") {
@@ -277,10 +276,10 @@ if (file.exists(vaf_file) && !opt$overwrite) {
 
   # Write the vaf file
   if (opt$file_format == "rds") {
-    vaf_df %>% 
+    vaf_df %>%
       readr::write_rds(vaf_file)
   } else {
-    vaf_df %>% 
+    vaf_df %>%
       readr::write_tsv(vaf_file)
   }
   # Print out completion message
@@ -355,8 +354,8 @@ if (file.exists(tmb_file) && !opt$overwrite) {
   tmb_df <- calculate_tmb(vaf_df,
     wgs_size = wgs_genome_size,
     wxs_size = wxs_exome_size
-  ) 
-  
+  )
+
   # Write the tmb file
   if (opt$file_format == "rds") {
     tmb_df %>%
