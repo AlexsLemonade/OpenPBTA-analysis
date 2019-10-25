@@ -84,7 +84,8 @@ wgs_samples <- tumor_samples %>%
 wgs_primary <- independent_samples(wgs_samples, tumor_types = "primary")
 wgs_primary_plus <- independent_samples(wgs_samples, tumor_types = "prefer_primary")
 
-# Generate lists for WXS only samples
+# Generate lists for WXS only samples 
+# WGS is generally preferred, so we will only include those where WGS is not available
 wxs_only_samples <-  tumor_samples %>% 
   dplyr::filter(!(Kids_First_Participant_ID %in% 
                     wgs_samples$Kids_First_Participant_ID))
