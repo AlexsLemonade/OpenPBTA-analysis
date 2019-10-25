@@ -156,7 +156,7 @@ var_by_sample <- function(sample) {
 
 We need to re-calculate TMB statistics with various VAF filter cutoffs.
 
-```{bash eval=FALSE}
+```{bash}
 # VAF cutoffs to use
 vaf_cutoff=("0.10" "0.20" "0.30" "0.40")
 
@@ -171,10 +171,10 @@ for ((i=0;i<${#vaf_cutoff[@]};i++));
   for ((j=0;j<${#datasets[@]};j++)); 
   do
     echo "Processing dataset: ${datasets[$j]}"
-    Rscript analyses/snv-callers/scripts/01-calculate_vaf_tmb.R \
+    Rscript scripts/01-calculate_vaf_tmb.R \
       --label ${datasets[$j]} \
       --output analyses/snv-callers/results/vaf_filter/cutoff_${vaf_cutoff[$i]} \
-      --maf data/testing/release-v5-20190924/pbta-snv-${datasets[$j]}.vep.maf.gz \
+      --maf data/pbta-snv-${datasets[$j]}.vep.maf.gz \
       --metadata data/pbta-histologies.tsv \
       --bed_wgs data/${wgs_files[$j]} \
       --bed_wxs data/WXS.hg38.100bp_padded.bed \
