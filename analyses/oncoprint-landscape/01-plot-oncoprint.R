@@ -21,7 +21,7 @@ if (!("maftools" %in% installed.packages())) {
 library(maftools)
 
 # Define a color vector for plots 
-colores = c("Missense_Mutation" = "#35978f", 
+colores <- c("Missense_Mutation" = "#35978f", 
             "Nonsense_Mutation" = "#000000",
             "Frame_Shift_Del" = "#56B4E9", 
             "Frame_Shift_Ins" = "#FFBBFF", 
@@ -59,7 +59,7 @@ plot_oncoplot <- function(maf_object, filename){
   # Plot and save the oncoprint 
   png(
     file.path(plots_dir, filename),
-    width = 60,
+    width = 65,
     height = 30,
     units = "cm",
     res = 300
@@ -72,7 +72,7 @@ plot_oncoplot <- function(maf_object, filename){
              "tumor_descriptor",
              "molecular_subtype"
            ),
-           genes = goi_ordered_N$Hugo_Symbol,
+           genes = genes,
            logColBar = TRUE,
            sortByAnnotation = TRUE,
            showTumorSampleBarcodes = TRUE,
@@ -102,6 +102,7 @@ if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
 }
 
+genes <- NULL
 #### Command line options ------------------------------------------------------
 
 # Declare command line options
@@ -125,6 +126,14 @@ option_list <- list(
     type = "character",
     default = NULL,
     help = "file path to file that contains fusion information"
+  ),
+  optparse::make_option(
+    c("-g", "--goi_list"),
+    action = "store_true",
+    type = "character",
+    default = NULL,
+    help = "file path to file that contains list of genes to include on 
+            oncoprint"
   )
 )
 
@@ -221,20 +230,9 @@ maf_object <-
 
 #### Specify genes -------------------------------------------------------------
 
+if (!is.null(opt$goi_list)){
 # Read in gene list
-goi_list <-
-  read.delim(
-    file.path(
-      root_dir,
-      "analyses",
-      "oncoprint-landscape",
-      "driver-lists",
-      "brain-goi-list-long.txt"
-    ),
-    sep = "\t",
-    header = F,
-    as.is = T
-  )
+goi_list <- read.delim(opt$goi_list, sep = "\t", header = F, as.is = T)
 
 # Get top mutated this data and goi list
 gene_sum <- mafSummary(maf_object)$gene.summary  
@@ -248,6 +246,8 @@ goi_ordered <- subset_gene_sum[order(subset_gene_sum$AlteredSamples, decreasing 
 # Select N top genes
 N <- ifelse(nrow(goi_ordered) > 20, 20, nrow(goi_ordered))
 goi_ordered_N <- goi_ordered[1:N,]
+genes <- goi_ordered_N$Hugo_Symbol
+}
 
 #### Plot and Save Oncoprint ---------------------------------------------------
 

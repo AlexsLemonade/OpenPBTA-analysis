@@ -16,4 +16,5 @@ wget --directory-prefix=driver-lists -O driver-lists/brain-goi-list-short.txt ht
 
 Rscript --vanilla 01-plot-oncoprint.R \
 	--maf_file ../../data/pbta-snv-mutect2.vep.maf.gz \
-	--fusion_file ../../data/pbta-fusion-arriba.tsv.gz 
+	--fusion_file ../../data/pbta-fusion-arriba.tsv.gz \
+	--goi_list driver-lists/brain-goi-list-long.txt
