@@ -1,0 +1,177 @@
+---
+title: "Oncoprints"
+output:   
+  html_notebook: 
+    toc: true
+    toc_float: true
+---
+
+Chante Bethell for CCDL 2019
+
+This notebooks creates oncoprints given the relevant metadata and output MAF 
+files from the snv callers strelka2, mutect2, lancet, and vardict. It 
+addresses [issue #6 in OpenPBTA](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/6).
+
+## Output Files
+
+- `analyses/oncoprint-landscape/plots/combined_maf_oncoprint.png`
+- `analyses/oncoprint-landscape/plots/strelka2_oncoprint.png`
+- `analyses/oncoprint-landscape/plots/mutect2_oncoprint.png`
+- `analyses/oncoprint-landscape/plots/lancet_oncoprint.png`
+- `analyses/oncoprint-landscape/plots/vardict_oncoprint.png`
+
+# Usage
+
+This script is intended to be run via the command line from the top directory
+of the repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/oncoprint-landscape/01-plot-oncoprint.Rmd', 
+                              clean = TRUE)"
+```
+
+# Set Up
+
+```{r, warning = FALSE}
+# Install maftools
+if (!("maftools" %in% installed.packages())) {
+  if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+  }
+  BiocManager::install("maftools")
+}
+library(maftools)
+
+# Get `magrittr` pipe
+`%>%` <- dplyr::`%>%`
+
+# Define a color vector for plots 
+colores = c("Missense_Mutation" = "#35978f", 
+        "Nonsense_Mutation" = "#191970",
+        "Frame_Shift_Del" = "#56B4E9", 
+        "Frame_Shift_Ins" = "#FFBBFF", 
+        "Splice_Site" = "#F0E442",
+        "Nonstop_Mutation" = "#56B4E9",
+        "In_Frame_Del" = "#CAE1FF",
+        "In_Frame_Ins" = "#FFE4E1",
+        "Multi_Hit" = "#f46d43")
+```
+
+# Create function to plot oncoprints
+
+```{r}
+plot_oncoplot <- function(maf_file, filename){
+  # Given a maf file and a filename, plot an oncoprint of the variants in the 
+  # dataset, save as a png file and display.
+  # Args:
+  #   maf_file: name or path to a maf file
+  #   filename: name to save the png file as 
+  # Return:
+  #   oncoprint: plot produced using the maftools `oncoplot` function
+  
+  # Plot and save the oncoprint 
+  png(file.path(plots_dir, filename), width = 60, height = 30, units = "cm", res = 300)
+  oncoplot(maf_file,
+  clinicalFeatures = c(
+    "broad_histology",
+    "short_histology",
+    "reported_gender",
+    "tumor_descriptor"
+  ),
+  logColBar = TRUE,
+  sortByAnnotation = TRUE,
+  showTumorSampleBarcodes = TRUE,
+  removeNonMutated = FALSE,
+  annotationFontSize = 0.7,
+  SampleNamefontSize = 0.5,
+  fontSize = 0.7,
+  colors = colores
+  )
+  dev.off()
+  
+  # Display saved oncoprint
+  knitr::include_graphics(file.path(plots_dir, filename))
+}
+```
+
+# Directories and Files
+
+```{r}
+# Path to the data obtained via `bash download-data.sh`.
+data_dir <- file.path("..", "..", "data")
+
+# Path to output directory for plots produced
+plots_dir <- "plots"
+
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir)
+}
+```
+
+
+# Read in data
+
+```{r, message = FALSE, warning = FALSE, results = "hide"}
+# Read in metadata
+metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
+
+# Rename for maftools function
+metadata <- metadata %>%
+  dplyr::rename("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")
+
+# Read maf files into a list
+maf_list <- list(
+  strelka2 = read.maf(
+    file.path(data_dir, "pbta-snv-strelka2.vep.maf.gz"),
+    clinicalData = metadata,
+    verbose = FALSE
+  ),
+  mutect2 = read.maf(
+    file.path(data_dir, "pbta-snv-mutect2.vep.maf.gz"),
+    clinicalData = metadata,
+    verbose = FALSE
+  ),
+  lancet = read.maf(
+    file.path(data_dir, "pbta-snv-lancet.vep.maf.gz"),
+    clinicalData = metadata,
+    verbose = FALSE
+  ),
+  vardict = read.maf(
+    file.path(data_dir, "pbta-snv-vardict.vep.maf.gz"),
+    clinicalData = metadata,
+    verbose = FALSE
+  ),
+  combined = read.maf(
+    file.path("data", "pbta-snv-combined.vep.maf.gz"),
+    clinicalData = metadata,
+    verbose = FALSE
+  )
+)
+```
+
+# Plot, Display, and Save Oncoprints
+
+```{r out.width = "15%"}
+# Plot oncoprint using combined maf output data and save. This combined data 
+# was created using the `cat` function via command line to combine the data from
+# strelka2, mutect2, lancet, and vardict.
+plot_oncoplot(maf_list$combined, "combined_maf_oncoprint.png")
+
+# Plot oncoprint using Strelka2 output data and save
+plot_oncoplot(maf_list$strelka2, "strelka2_oncoprint.png")
+
+# Plot oncoprint using Mutect2 output data and save
+plot_oncoplot(maf_list$mutect2, "mutect2_oncoprint.png")
+
+# Plot oncoprint using Lancet output data and save
+plot_oncoplot(maf_list$lancet, "lancet_oncoprint.png")
+
+# Plot oncoprint using Vardict output data and save
+plot_oncoplot(maf_list$vardict, "vardict_oncoprint.png")
+```
+
+# Session Info
+```{r}
+sessionInfo()
+```
+
