@@ -47,11 +47,11 @@ colores = c("Missense_Mutation" = "#35978f",
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
-plot_oncoplot <- function(maf_file, filename){
+plot_oncoplot <- function(maf_object, filename){
   # Given a maf file and a filename, plot an oncoprint of the variants in the 
   # dataset, save as a png file and display.
   # Args:
-  #   maf_file: name or path to a maf file
+  #   maf_object: name or path to a maf object
   #   filename: name to save the png file as 
   # Return:
   #   oncoprint: plot produced using the maftools `oncoplot` function
@@ -64,7 +64,7 @@ plot_oncoplot <- function(maf_file, filename){
     units = "cm",
     res = 300
   )
-  oncoplot(maf_file,
+  oncoplot(maf_object,
            clinicalFeatures = c(
              "broad_histology",
              "short_histology",
@@ -114,12 +114,14 @@ option_list <- list(
   ),
   optparse::make_option(
     c("-c", "--cnv_file"),
+    action = "store_true",
     type = "character",
     default = NULL,
     help = "file path to SEG file that contains cnv information"
   ),
   optparse::make_option(
     c("-f", "--fusion_file"),
+    action = "store_true",
     type = "character",
     default = NULL,
     help = "file path to file that contains fusion information"
@@ -131,8 +133,14 @@ opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
 maf <- opt$maf_file
-cnv <- opt$cnv_file
-fusion <- opt$fusion_file
+
+if (!is.null(opt$cnv_file)) {
+  cnv <- opt$cnv_file
+}
+
+if (!is.null(opt$fusion_file)) {
+  fusion <- opt$fusion_file
+}
 
 #### Read in data --------------------------------------------------------------
 
@@ -147,11 +155,47 @@ metadata <- metadata %>%
 # Read in MAF file
 maf_df <- data.table::fread(maf, stringsAsFactors = FALSE)
 
-# Read in cnv file
-cnv_file <- data.table::fread(cnv, stringsAsFactors = FALSE)
 
+# Read in cnv file
+if (!is.null(opt$cnv_file)) {
+  cnv_file <- data.table::fread(cnv, stringsAsFactors = FALSE)
+} 
 # Read in fusion file
-fusion_file <- data.table::fread(fusion, stringsAsFactors = FALSE)
+if (!is.null(opt$fusion_file)) {
+  fusion_file <- data.table::fread(fusion, stringsAsFactors = FALSE)
+}
+
+#### Incorporate Fusion Data ---------------------------------------------------
+
+if (!is.null(opt$fusion_file)) {
+fus <- fusion_file
+
+fus <- fus %>%
+  dplyr::rename(Fusion = "gene1--gene2")
+
+# Separate fusion gene partners and add variant classification and center
+fus_sep <- fus %>%
+  tidyr::separate(Fusion, c("5'-gene", "3'-gene"), sep = "--")
+
+# Determine which samples have mult-fused fusions
+multi <- fus_sep[,c("tumor_id", "5'-gene", "3'-gene")]
+multi$ID <- paste0(multi$tumor_id, ";", multi$`5'-gene`)
+reformat_multi <- multi %>%
+  dplyr::group_by(ID) %>%
+  dplyr::summarise(tumor_id = dplyr::n()) %>%
+  as.data.frame()
+
+reformat_multi$Variant_Classification <-
+  ifelse(reformat_multi$tumor_id == 1, "Fusion", "Multi_Hit_Fusion")
+reformat_multi <- reformat_multi %>%
+  tidyr::separate(ID, c("Tumor_Sample_Barcode", "Hugo_Symbol"), sep = ";")
+reformat_multi$tumor_id <- NULL
+reformat_multi$Variant_Type <- "OTHER"
+
+# Merge with MAF
+maf_df <- dplyr::bind_rows(maf_df, reformat_multi)
+
+}
 
 #### Convert into MAF object ---------------------------------------------------
 
