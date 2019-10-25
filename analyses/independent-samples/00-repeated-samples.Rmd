@@ -1,0 +1,223 @@
+---
+title: "Repeated sample analysis"
+output: 
+  html_notebook:
+    toc: true
+    toc_float: true
+---
+
+## Purpose
+
+There are many specimens in the full dataset that are repeated samples from the same participants.
+This workbook is a quick summary of those samples, so that we can better select a unique set of specimens for downstream analysis. 
+This is particularly important for analyses such as mutation co-occurence, where repeated sampling will inflate apparent co-ocurrence measures.
+
+
+```{r setup}
+# load libraries
+library(dplyr)
+
+# source sample selection funciton
+source("independent-samples.R")
+
+set.seed(201910)
+```
+
+
+```{r load files}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+sample_df <- readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"))
+```
+
+## WGS and WXS samples
+Sort to just sequencing samples of tumors
+```{r}
+seq_samples <- sample_df %>%
+  filter(experimental_strategy %in% c("WGS", "WXS"), 
+         sample_type == "Tumor")
+```
+
+How many WGS, how many WXS, summarize #s of samples and participants by 
+```{r}
+seq_samples %>%
+  group_by(experimental_strategy, composition, tumor_descriptor) %>%
+  summarise(samples = length(unique(Kids_First_Biospecimen_ID)),
+            participants = length(unique(Kids_First_Participant_ID)), 
+  ) 
+```
+
+What if we reduce to the earliest sample for each participant?
+
+```{r}
+early_samples <- seq_samples %>%
+  group_by(Kids_First_Participant_ID) %>%
+  summarize(age_at_diagnosis_days = min(age_at_diagnosis_days)) %>%
+  left_join(seq_samples) %>%
+  pull(Kids_First_Biospecimen_ID) %>%
+  unique()
+
+seq_samples %>% 
+  filter(Kids_First_Biospecimen_ID %in% early_samples) %>%
+  group_by(experimental_strategy, composition, tumor_descriptor) %>%
+  summarise(samples = length(unique(Kids_First_Biospecimen_ID)),
+            participants = length(unique(Kids_First_Participant_ID)), 
+  )
+```
+
+There are still many samples for which there are more samples than participants, indicating duplicates, even among the earliest samples.
+
+
+## Derived cell lines
+
+Are there any samples for which we only have derived cell lines?
+
+```{r}
+derived_participants <- seq_samples %>%
+  filter(composition == "Derived Cell Line") %>%
+  pull(Kids_First_Participant_ID) %>%
+  unique() 
+
+non_derived_participants <- seq_samples %>% 
+  filter(composition != "Derived Cell Line") %>%
+  pull(Kids_First_Participant_ID) %>%
+  unique() 
+
+notissue_participants  <- derived_participants[!(derived_participants %in% non_derived_participants)]
+length(notissue_participants)
+
+```
+
+Looks like there is a cell line sample with no corresponding tumor.
+
+```{r}
+seq_samples %>%
+  filter(Kids_First_Participant_ID %in% notissue_participants)
+```
+
+Since this is only one sample it seems like the best move will be to remove all derived cell lines.
+
+## Unlabeled composition samples
+
+9 samples are listed as "Not Reported" for `composition`. 
+What are these, and do we have correponding samples for which composition is known?
+
+```{r}
+notreported_participants <- seq_samples %>%
+  filter(composition == "Not Reported") %>%
+  pull(Kids_First_Participant_ID) %>%
+  unique() 
+
+seq_samples %>% 
+  filter(Kids_First_Participant_ID %in% notreported_participants)
+```
+
+In one case (`PT_N8W26H19`), we do have Solid Tissue samples, but not for the others.
+Should these samples be included in further analysis?
+
+## WGS vs WXS
+```{r}
+WXS_participants <- seq_samples %>%
+  filter(experimental_strategy == "WXS") %>%
+  pull(Kids_First_Participant_ID) %>%
+  unique() 
+
+WGS_participants <- seq_samples %>%
+  filter(experimental_strategy == "WGS") %>%
+  pull(Kids_First_Participant_ID) %>%
+  unique() 
+
+No_WGS <- WXS_participants[!(WXS_participants %in% WGS_participants)]
+
+length(No_WGS)
+```
+
+So there are currently 16 samples with missing WGS data, but that should change in a future release.
+
+Just to check, is this still true when we restrict to early samples?
+```{r}
+WXS_participants <- seq_samples %>%
+  filter(experimental_strategy == "WXS", 
+         Kids_First_Biospecimen_ID %in% early_samples) %>%
+  pull(Kids_First_Participant_ID) %>%
+  unique() 
+
+WGS_participants <- seq_samples %>%
+  filter(experimental_strategy == "WGS", 
+         Kids_First_Biospecimen_ID %in% early_samples) %>%
+  pull(Kids_First_Participant_ID) %>%
+  unique() 
+
+No_WGS <- WXS_participants[!(WXS_participants %in% WGS_participants)]
+
+length(No_WGS)
+```
+
+No change. For now, we will look only at WGS samples, but this could be adjusted in future analysis.
+
+
+
+## Summarize repeated samples
+
+```{r}
+repeat_samples <- seq_samples %>% 
+  dplyr::filter(Kids_First_Biospecimen_ID %in% early_samples, 
+                experimental_strategy == "WGS") %>%
+  dplyr::filter(composition != "Derived Cell Line") %>%
+  dplyr::filter(Kids_First_Participant_ID %in% 
+                  Kids_First_Participant_ID[duplicated(Kids_First_Participant_ID)])
+
+repeat_samples %>% 
+  group_by(Kids_First_Participant_ID) %>%
+  summarise(samples = paste(Kids_First_Biospecimen_ID, collapse = ", "), 
+         descriptors = paste(sort(unique(tumor_descriptor)),  collapse = ", "),
+         age_diagnosis = paste(sort(unique(age_at_diagnosis_days)), collapse = ", "),
+         experimental_stragegy = paste(sort(unique(experimental_strategy)), collapse = ", ")
+  )
+```
+
+
+## Select independent samples
+
+Using the information described above, I created a function `independent_samples()`
+to select the earliest biospecimen from each participant, or in the case of more 
+than one with the same date, randomly select among the available samples.
+
+An example of this function is below, applied to the WGS Solid Tissue tumor samples.
+Note that in this case, only tumors designated as primary will be included, 
+though this can be adjusted with `tumor_types = "prefer_primary"` or 
+`tumor_types = "any"` if we want to be less presecriptive. As of v5, primary tumors
+are defined as those designated "Initial CNS Tumor" or "Diagnosis" in the
+`tumor_descriptor` field.
+
+In the accompanying script, I will generate both `primary_only` and `primary_plus` 
+sets using the `"primary"` and `"prefer_primary"` resepectively.
+
+
+
+```{r}
+independents <- sample_df %>%
+  filter(experimental_strategy == "WGS",
+         sample_type == "Tumor", 
+         composition == "Solid Tissue"
+         ) %>%
+  independent_samples(tumor_types = "primary")
+
+length(independents)
+```
+
+Just for reference, lets see what tumor types we end up with in this set:
+
+```{r}
+sample_df %>% 
+  filter(Kids_First_Biospecimen_ID %in% independents) %>%
+  group_by(tumor_descriptor) %>%
+  summarize(n = n())
+```
+
+
+
+### Session info
+
+```{r}
+sessionInfo()
+```
