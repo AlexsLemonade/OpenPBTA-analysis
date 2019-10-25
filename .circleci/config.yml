@@ -61,14 +61,15 @@ jobs:
       - run:
           name: Independent samples
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/independent-samples/00-repeated-samples.Rmd', clean = TRUE)"
- 
-         ################################
-         #### Add your analysis here ####
-         ################################
 
       - run:
           name: SNV Caller Analysis 
-          command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_evals.sh    
+          command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_evals.sh \
+                   Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)"
+
+         ################################
+         #### Add your analysis here ####
+         ################################
 
                 
   deploy:
