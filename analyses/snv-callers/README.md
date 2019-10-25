@@ -74,6 +74,7 @@ that are used to make an overall evaluation report in `02-run_eval.R`.
  --bed_wgs : File path that specifies the caller-specific BED regions file.
  --bed_wxs : File path that specifies the WXS BED regions file.
  --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
+ --no_region : If used, regional analysis will not be done.
 ```
 
 ### 02-run_eval.R
@@ -83,22 +84,23 @@ plots ([base_change](#base-change-analysis), [depth_vs_vaf](#variant-allele-frac
 
 **Option descriptions**
 ```
-# --label : Label to be used for folder and all output. eg. 'strelka2'. Optional.
-#           Default is 'maf'
-# --plot_type : Specify what kind of plots you want printed out. Must be
-#               compatible with ggsave. eg pdf. Default is png
-# --vaf : Folder from 01-calculate_vaf_tmb.R following files:
-#                                             <caller_name>_vaf.tsv
-#                                             <caller_name>_region.tsv
-#                                             <caller_name>_tmb.tsv
-# --output : Where you would like the output from this script to be stored.
-# --strategy : Specify whether you would like WXS and WGS separated for the plots.
-#              Analysis is still done on all data in the MAF file regardless.
-#              Acceptable options are 'wgs', 'wxs' or 'both', both for if you
-#              don't want to separate them. Default is both.
-# --cosmic : Relative file path to COSMIC file to be analyzed.
-# --overwrite : If TRUE, will overwrite any reports of the same name. Default is
-#              FALSE
+ --label : Label to be used for folder and all output. eg. 'strelka2'. Optional.
+           Default is 'maf'
+ --plot_type : Specify what kind of plots you want printed out. Must be
+               compatible with ggsave. eg pdf. Default is png
+ --vaf : Folder from 01-calculate_vaf_tmb.R following files:
+                                             <caller_name>_vaf.tsv
+                                             <caller_name>_region.tsv
+                                             <caller_name>_tmb.tsv
+ --output : Where you would like the output from this script to be stored.
+ --strategy : Specify whether you would like WXS and WGS separated for the plots.
+              Analysis is still done on all data in the MAF file regardless.
+              Acceptable options are 'wgs', 'wxs' or 'both', both for if you
+              don't want to separate them. Default is both.
+ --cosmic : Relative file path to COSMIC file to be analyzed.
+ --overwrite : If TRUE, will overwrite any reports of the same name. Default is
+              FALSE
+  --no_region : If used, regional analysis will not be done. 
 ```
 
 # Individual Caller Evaluation
