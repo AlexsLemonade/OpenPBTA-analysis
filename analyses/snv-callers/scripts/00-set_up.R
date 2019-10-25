@@ -113,38 +113,40 @@ if (opt$annot_rds != "none" && !file.exists(opt$annot_rds)) {
 # CosmicMutantExport.tsv for grch38 is used here but only mutations from brain
 # related samples are kept.
 if (opt$cosmic_clean != "none" && !file.exists(opt$cosmic_clean)) {
-    # Print progress message
-    message("Setting up COSMIC mutation file. Only need to do this once.")
 
-    # Read in original file
-    cosmic_variants <- data.table::fread(opt$cosmic_og,
-      data.table = FALSE
-    ) %>%
-      # Keep only brain mutations so the file is smaller
-      dplyr::filter(`Site subtype 1` == "brain") %>%
-      # Get rid of spaces in column names
-      dplyr::rename_all(dplyr::funs(stringr::str_replace_all(., " ", "_"))) %>%
-      # Separate the genome coordinates into their own BED like variables
-      dplyr::mutate(
-        Chromosome = paste0(
-          "chr",
-          stringr::word(Mutation_genome_position, sep = ":|-", 1)
+  # Print progress message
+  message("Setting up COSMIC mutation file. Only need to do this once.")
+
+  # Read in original file
+  cosmic_variants <- data.table::fread(opt$cosmic_og,
+    data.table = FALSE
+  ) %>%
+    # Keep only brain mutations so the file is smaller
+    dplyr::filter(`Site subtype 1` == "brain") %>%
+    # Get rid of spaces in column names
+    dplyr::rename_all(dplyr::funs(stringr::str_replace_all(., " ", "_"))) %>%
+    # Separate the genome coordinates into their own BED like variables
+    dplyr::mutate(
+      Chromosome = paste0(
+        "chr",
+        stringr::word(Mutation_genome_position, sep = ":|-", 1) %>%
+          stringr::str_replace_all(c("23" = "X", "24" = "Y"))
         ),
-        Start_Position = stringr::word(Mutation_genome_position, sep = ":|-", 2),
-        End_Position = stringr::word(Mutation_genome_position, sep = ":|-", 3),
-        # Make a base_change variable so we can compare to our set up for PBTA data
-        base_change = substr(Mutation_CDS, nchar(Mutation_CDS) - 2, nchar(Mutation_CDS))
-      ) %>%
-      # Carry over the strand info, but rename to match our PBTA set up
-      dplyr::rename(Strand = Mutation_strand) %>%
-      # Narrow down to just the needed columns
-      dplyr::select(
-        "Chromosome", "Start_Position", "End_Position", "Strand",
-        "base_change"
-      ) %>%
-      # Write to a TSV file
-      readr::write_tsv(opt$cosmic_clean)
-  } else {
-    warning("A cleaned COSMIC Mutation file was already found with this name. Delete this if you 
+      Start_Position = stringr::word(Mutation_genome_position, sep = ":|-", 2),
+      End_Position = stringr::word(Mutation_genome_position, sep = ":|-", 3),
+      # Make a base_change variable so we can compare to our set up for PBTA data
+      base_change = substr(Mutation_CDS, nchar(Mutation_CDS) - 2, nchar(Mutation_CDS))
+    ) %>%
+    # Carry over the strand info, but rename to match our PBTA set up
+    dplyr::rename(Strand = Mutation_strand) %>%
+    # Narrow down to just the needed columns
+    dplyr::select(
+      "Chromosome", "Start_Position", "End_Position", "Strand",
+      "base_change"
+    ) %>%
+    # Write to a TSV file
+    readr::write_tsv(opt$cosmic_clean)
+} else {
+  warning("A cleaned COSMIC Mutation file was already found with this name. Delete this if you 
          wanted to re-run this step.")
 }

@@ -202,7 +202,7 @@ independents <- sample_df %>%
          ) %>%
   independent_samples(tumor_types = "primary")
 
-length(independents)
+nrow(independents)
 ```
 
 Just for reference, lets see what tumor types we end up with in this set:
