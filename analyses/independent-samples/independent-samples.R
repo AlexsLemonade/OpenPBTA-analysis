@@ -17,7 +17,7 @@
 #'   `tumor_descriptor` field.
 #' @param seed An optional random number seed. 
 #' 
-#' @return a vector of biospecimen ids
+#' @return a data frame of Participant and Specimen IDs, each present only once.
 independent_samples <- function(sample_df, 
                                 tumor_types = c("primary", "prefer_primary", "any"), 
                                 seed){
@@ -55,8 +55,7 @@ independent_samples <- function(sample_df,
   # Choose randomly among specimens from the same participant 
   early_ind <- early_samples %>%
     dplyr::group_by(Kids_First_Participant_ID) %>%
-    dplyr::summarize(Kids_First_Biospecimen_ID = sample(Kids_First_Biospecimen_ID, 1)) %>%
-    dplyr::pull(Kids_First_Biospecimen_ID)
+    dplyr::summarize(Kids_First_Biospecimen_ID = sample(Kids_First_Biospecimen_ID, 1)) 
   
   return(early_ind)
 }

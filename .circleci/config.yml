@@ -60,7 +60,7 @@ jobs:
 
       - run:
           name: Independent samples
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/independent-samples/00-repeated-samples.Rmd', clean = TRUE)"
+          command: ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh 
 
       - run:
           name: SNV Caller Analysis 

@@ -100,7 +100,7 @@ plots ([base_change](#base-change-analysis), [depth_vs_vaf](#variant-allele-frac
  --cosmic : Relative file path to COSMIC file to be analyzed.
  --overwrite : If TRUE, will overwrite any reports of the same name. Default is
               FALSE
-  --no_region : If used, regional analysis will not be done. 
+  --no_region : If used, regional analysis will not be done.
 ```
 
 # Individual Caller Evaluation
