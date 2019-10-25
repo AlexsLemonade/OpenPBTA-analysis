@@ -7,7 +7,6 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="C. Savonen for ALSF CCDL" />
@@ -2560,7 +2559,7 @@ window.initializeCodeFolding = function(show) {
 
     // create a collapsable div to wrap the code in
     var div = $('<div class="collapse r-code-collapse"></div>');
-    if (show || $(this)[0].classList.contains('fold-show'))
+    if (show)
       div.addClass('in');
     var id = 'rcode-643E0F36' + currentIndex++;
     div.attr('id', id);
@@ -2690,6 +2689,7 @@ code {
 }
 img {
   max-width:100%;
+  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -2787,12 +2787,57 @@ summary {
 }
 </style>
 
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
 <!-- code folding -->
 <style type="text/css">
 .code-folding-btn { margin-bottom: 4px; }
 </style>
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("vaf_cutoff_experiment.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
 
 
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <style type="text/css">
 
@@ -2900,7 +2945,7 @@ div.tocify {
 <div id="usage" class="section level4">
 <h4>Usage</h4>
 <p>To run this from the command line, use:</p>
-<pre><code>Rscript -e &quot;rmarkdown::render(&#39;analyses/snv-callers/vaf_cutoff_experiment.Rmd&#39;, 
+<pre><code>Rscript -e &quot;rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', 
                               clean = TRUE)&quot;</code></pre>
 <p><em>This assumes you are in the top directory of the repository.</em></p>
 </div>
@@ -2912,97 +2957,142 @@ div.tocify {
 <p>Read in set up script.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuY29tcGFyZV9yZXN1bHRzX2RpciA8LSBmaWxlLnBhdGgoYmFzZV9yZXN1bHRzX2RpciwgXFxjb21wYXJpc29uc1xcLCBcXHZhZl9jdXRvZmZcXClcbmNvbXBhcmVfcGxvdHNfZGlyIDwtIGZpbGUucGF0aChiYXNlX3Bsb3RzX2RpciwgXFxjb21wYXJpc29uc1xcLCBcXHZhZl9jdXRvZmZcXClcblxuIyBNYWtlIGNhbGxlciBzcGVjaWZpYyBwbG90cyBmb2xkZXJcbmlmICghZGlyLmV4aXN0cyhjb21wYXJlX3Jlc3VsdHNfZGlyKSkge1xuICBkaXIuY3JlYXRlKGNvbXBhcmVfcmVzdWx0c19kaXIpXG59XG4jIE1ha2UgY2FsbGVyIHNwZWNpZmljIHBsb3RzIGZvbGRlclxuaWYgKCFkaXIuZXhpc3RzKGNvbXBhcmVfcGxvdHNfZGlyKSkge1xuICBkaXIuY3JlYXRlKGNvbXBhcmVfcGxvdHNfZGlyKVxufVxuYGBgXG5gYGAifQ== -->
-<p><code>r</code>r compare_results_dir &lt;- file.path(base_results_dir, , _cutoff) compare_plots_dir &lt;- file.path(base_plots_dir, , _cutoff)</p>
-</div>
-</div>
-<div id="make-caller-specific-plots-folder" class="section level1">
-<h1>Make caller specific plots folder</h1>
-<p>if (!dir.exists(compare_results_dir)) { dir.create(compare_results_dir) } # Make caller specific plots folder if (!dir.exists(compare_plots_dir)) { dir.create(compare_plots_dir) }</p>
-<pre><code></code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBNYWdyaXR0ciBwaXBlXG5gJT4lYCA8LSBkcGx5cjo6YCU+JWBcbmBgYCJ9 -->
+<pre class="r"><code># Magrittr pipe
+`%&gt;%` &lt;- dplyr::`%&gt;%`</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Set up output directories.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuY29yX21hdHJpeF9wbG90IDwtIGZ1bmN0aW9uKGN1dG9mZikge1xuICAjIEZvciBhIGdpdmVuIFZBRiBjdXRvZmYsIGNhbGN1bGF0ZSBUTUIgY29ycmVsYXRpb25zIGFtb25nc3QgdGhlIGNhbGxlcnMgYW5kIHBsb3QgaXQgdXNpbmdcbiAgIyBHR2FsbHk6OmdncGFpcnNcbiAgI1xuICAjIEFyZ3M6XG4gICMgICBjdXRvZmY6IFRoZSBWQUYgY3V0b2ZmIHNldCB0byBhbmFseXplXG4gICNcbiAgIyBSZXR1cm5zOlxuICAjICAgQSBjb3JyZWxhdGlvbiBtYXRyaXggcGxvdCBhbW9uZ3N0IHRoZSBjYWxsZXJzXG5cbiAgIyBJc29sYXRlIHRoZSBUTUIgc3RhdHMgZm9yIHRoaXMgY3V0b2ZmXG4gIGN1dG9mZl9kZiA8LSB0bWJfZmlsdGVyX2xvbmcgJT4lXG4gICAgZHBseXI6OmZpbHRlcih2YWZfY3V0b2ZmID09IGN1dG9mZikgJT4lXG4gICAgZHBseXI6OnNlbGVjdCgtVHVtb3JfU2FtcGxlX0JhcmNvZGUsIC12YWZfY3V0b2ZmKVxuXG4gICMgTWFrZSB0aGUgcGxvdFxuICBjb3JfcGxvdCA8LSBHR2FsbHk6OmdncGFpcnMoY3V0b2ZmX2RmLCBtYXBwaW5nID0gZ2dwbG90Mjo6YWVzKGFscGhhID0gMC4wNSkpICtcbiAgICBnZ3Bsb3QyOjp0aGVtZV9jbGFzc2ljKCkgK1xuICAgIGdncGxvdDI6OmdndGl0bGUocGFzdGUwKFxcVkFGIGN1dG9mZjogXFwsIGN1dG9mZikpXG5cbiAgIyBTYXZlIHRoaXMgcGxvdFxuICBnZ3Bsb3QyOjpnZ3NhdmUoZmlsZS5wYXRoKFxuICAgIGNvbXBhcmVfcGxvdHNfZGlyLFxuICAgIHBhc3RlMChcXHZhZl9cXCwgY3V0b2ZmLCBcXF90bWJfY29ycmVsYXRpb25zX3Bsb3QucG5nXFwpXG4gICksXG4gIHBsb3QgPSBjb3JfcGxvdFxuICApXG4gICMgUmV0dXJuIHRoZSBwbG90XG4gIHJldHVybihjb3JfcGxvdClcbn1cbmBgYFxuYGBgIn0= -->
-<p><code>r</code>r cor_matrix_plot &lt;- function(cutoff) { # For a given VAF cutoff, calculate TMB correlations amongst the callers and plot it using # GGally::ggpairs # # Args: # cutoff: The VAF cutoff set to analyze # # Returns: # A correlation matrix plot amongst the callers</p>
-<p># Isolate the TMB stats for this cutoff cutoff_df &lt;- tmb_filter_long %&gt;% dplyr::filter(vaf_cutoff == cutoff) %&gt;% dplyr::select(-Tumor_Sample_Barcode, -vaf_cutoff)</p>
-<p># Make the plot cor_plot &lt;- GGally::ggpairs(cutoff_df, mapping = ggplot2::aes(alpha = 0.05)) + ggplot2::theme_classic() + ggplot2::ggtitle(paste0(cutoff: , cutoff))</p>
-<p># Save this plot ggplot2::ggsave(file.path( compare_plots_dir, paste0(_, cutoff, _tmb_correlations_plot.png) ), plot = cor_plot ) # Return the plot return(cor_plot) }</p>
-<pre><code></code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYmFzZV9yZXN1bHRzX2RpciA8LSBcInJlc3VsdHNcIlxuYmFzZV9wbG90c19kaXIgPC0gXCJwbG90c1wiXG5gYGAifQ== -->
+<pre class="r"><code>base_results_dir &lt;- &quot;results&quot;
+base_plots_dir &lt;- &quot;plots&quot;</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Make new directories for the comparison analysis.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuY29yX2J5X3ZhZiA8LSBmdW5jdGlvbihjdXRvZmYgPSAwLjEpIHtcbiAgIyBGb3IgYSBnaXZlbiBWQUYgY3V0b2ZmLCBpc29sYXRlIHRoZSBUTUIgc3RhdGlzdGljcyBhbmQgY29ycmVsYXRlIHRoZW0uXG4gICNcbiAgIyBBcmdzOlxuICAjICAgY3V0b2ZmOiB0aGUgVkFGIGN1dG9mZiB0byBjYWxjdWxhdGUgdGhlIGNvcnJlbGF0aW9uIGJ5LlxuICAjXG4gICMgUmV0dXJuczpcbiAgIyAgIFIgdmFsdWVzIGZvciBTcGVhcm1hbidzIGNvcnJlbGF0aW9uIGFtb25nc3QgdGhlIGNhbGxlcnNcblxuICBjdXRvZmZfZGYgPC0gdG1iX2ZpbHRlcl9sb25nICU+JVxuICAgIGRwbHlyOjpmaWx0ZXIodmFmX2N1dG9mZiA9PSBjdXRvZmYpICU+JVxuICAgIGRwbHlyOjpzZWxlY3QoLVR1bW9yX1NhbXBsZV9CYXJjb2RlLCAtdmFmX2N1dG9mZilcblxuICAjIERvIGNvcnJlbGF0aW9ucyBiZXR3ZWVuIGNhbGxlcnNcbiAgY29yX3JlcyA8LSBjb3IoY3V0b2ZmX2RmLCBtZXRob2QgPSBcXHNwZWFybWFuXFwsIHVzZSA9IFxcbmEub3IuY29tcGxldGVcXClcblxuICAjIFRoaXMgaXMgdG8gcmVtb3ZlIHJlZHVuZGFuY3kgYXMgdXBwZXIgY29ycmVsYXRpb24gbWF0cml4ID09IGxvd2VyXG4gIGNvcl9yZXNbdXBwZXIudHJpKGNvcl9yZXMsIGRpYWcgPSBUUlVFKV0gPC0gTkFcblxuICAjIEZvcm1hdCBpbnRvIGxvbmcgZm9ybWF0IGRhdGEuZnJhbWVcbiAgY29yX2RmIDwtIHJlc2hhcGUyOjptZWx0KGNvcl9yZXMsIG5hLnJtID0gVFJVRSwgdmFsdWUubmFtZSA9IFxcY29yXFwpICU+JVxuICAgIGRwbHlyOjptdXRhdGUoXG4gICAgICBjb21wYXJlID0gcGFzdGUwKFZhcjEsIFxcLVxcLCBWYXIyKSxcbiAgICAgIGN1dG9mZlxuICAgIClcblxuICAjIFJldHVybiBhIGRhdGEuZnJhbWUgcmVhZHkgZm9yIGJlaW5nIGFkZGVkIHRvIHRoZSBiaWdnZXIgZGF0YS5mcmFtZSBmb3IgcGxvdHRpbmcuXG4gIHJldHVybihjb3JfZGYpXG59XG5gYGBcbmBgYCJ9 -->
-<p><code>r</code>r cor_by_vaf &lt;- function(cutoff = 0.1) { # For a given VAF cutoff, isolate the TMB statistics and correlate them. # # Args: # cutoff: the VAF cutoff to calculate the correlation by. # # Returns: # R values for Spearman’s correlation amongst the callers</p>
-<p>cutoff_df &lt;- tmb_filter_long %&gt;% dplyr::filter(vaf_cutoff == cutoff) %&gt;% dplyr::select(-Tumor_Sample_Barcode, -vaf_cutoff)</p>
-<p># Do correlations between callers cor_res &lt;- cor(cutoff_df, method = , use = .or.complete)</p>
-<p># This is to remove redundancy as upper correlation matrix == lower cor_res[upper.tri(cor_res, diag = TRUE)] &lt;- NA</p>
-<p># Format into long format data.frame cor_df &lt;- reshape2::melt(cor_res, na.rm = TRUE, value.name = ) %&gt;% dplyr::mutate( compare = paste0(Var1, -, Var2), cutoff )</p>
-<p># Return a data.frame ready for being added to the bigger data.frame for plotting. return(cor_df) }</p>
-<pre><code></code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29tcGFyZV9yZXN1bHRzX2RpciA8LSBmaWxlLnBhdGgoYmFzZV9yZXN1bHRzX2RpciwgXCJjb21wYXJpc29uc1wiLCBcInZhZl9jdXRvZmZcIilcbmNvbXBhcmVfcGxvdHNfZGlyIDwtIGZpbGUucGF0aChiYXNlX3Bsb3RzX2RpciwgXCJjb21wYXJpc29uc1wiLCBcInZhZl9jdXRvZmZcIilcblxuIyBNYWtlIGNhbGxlciBzcGVjaWZpYyBwbG90cyBmb2xkZXJcbmlmICghZGlyLmV4aXN0cyhjb21wYXJlX3Jlc3VsdHNfZGlyKSkge1xuICBkaXIuY3JlYXRlKGNvbXBhcmVfcmVzdWx0c19kaXIpXG59XG4jIE1ha2UgY2FsbGVyIHNwZWNpZmljIHBsb3RzIGZvbGRlclxuaWYgKCFkaXIuZXhpc3RzKGNvbXBhcmVfcGxvdHNfZGlyKSkge1xuICBkaXIuY3JlYXRlKGNvbXBhcmVfcGxvdHNfZGlyKVxufVxuYGBgIn0= -->
+<pre class="r"><code>compare_results_dir &lt;- file.path(base_results_dir, &quot;comparisons&quot;, &quot;vaf_cutoff&quot;)
+compare_plots_dir &lt;- file.path(base_plots_dir, &quot;comparisons&quot;, &quot;vaf_cutoff&quot;)
+
+# Make caller specific plots folder
+if (!dir.exists(compare_results_dir)) {
+  dir.create(compare_results_dir)
+}
+# Make caller specific plots folder
+if (!dir.exists(compare_plots_dir)) {
+  dir.create(compare_plots_dir)
+}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Function for creating a TMB correlation matrix amongst the callers for a particular cutoff.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxudmFyX2J5X3NhbXBsZSA8LSBmdW5jdGlvbihzYW1wbGUpIHtcbiAgIyBGb3IgYSBnaXZlbiBzYW1wbGUgSUQsIGlzb2xhdGUgdGhlIFRNQiBzdGF0aXN0aWNzIGFuZCBjYWxjdWxhdGUgdGhlIHZhcmlhbmNlLlxuICAjXG4gICMgQXJnczpcbiAgIyAgIHNhbXBsZTogVHVtb3JfU2FtcGxlX0JhcmNvZGUgb2YgdGhlIHNhbXBsZSB5b3Ugd291bGQgbGlrZSB0aGUgdmFyaWFuY2UgZm9yLlxuICAjXG4gICMgUmV0dXJuczpcbiAgIyAgIFZhcmlhbmNlIGZvciB0aGF0IHNhbXBsZSBmb3IgZWFjaCBjYWxsZXIuXG5cbiAgc2FtcGxlX2RmIDwtIHRtYl9maWx0ZXJfbG9uZyAlPiVcbiAgICBkcGx5cjo6ZmlsdGVyKFR1bW9yX1NhbXBsZV9CYXJjb2RlID09IHNhbXBsZSkgJT4lXG4gICAgZHBseXI6OnNlbGVjdCgtVHVtb3JfU2FtcGxlX0JhcmNvZGUsIC12YWZfY3V0b2ZmKVxuXG4gICMgRG8gY29ycmVsYXRpb25zIGJldHdlZW4gY2FsbGVyc1xuICB2YXJfYnlfY2FsbGVyIDwtIGRhdGEuZnJhbWUoXG4gICAgdChhcHBseShzYW1wbGVfZGYsIDIsIHZhcikpLFxuICAgIHNhbXBsZVxuICApXG5cbiAgcmV0dXJuKHZhcl9ieV9jYWxsZXIpXG59XG5gYGBcbmBgYCJ9 -->
-<p><code>r</code>r var_by_sample &lt;- function(sample) { # For a given sample ID, isolate the TMB statistics and calculate the variance. # # Args: # sample: Tumor_Sample_Barcode of the sample you would like the variance for. # # Returns: # Variance for that sample for each caller.</p>
-<p>sample_df &lt;- tmb_filter_long %&gt;% dplyr::filter(Tumor_Sample_Barcode == sample) %&gt;% dplyr::select(-Tumor_Sample_Barcode, -vaf_cutoff)</p>
-<p># Do correlations between callers var_by_caller &lt;- data.frame( t(apply(sample_df, 2, var)), sample )</p>
-<p>return(var_by_caller) }</p>
-<pre><code></code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29yX21hdHJpeF9wbG90IDwtIGZ1bmN0aW9uKGN1dG9mZikge1xuICAjIEZvciBhIGdpdmVuIFZBRiBjdXRvZmYsIGNhbGN1bGF0ZSBUTUIgY29ycmVsYXRpb25zIGFtb25nc3QgdGhlIGNhbGxlcnMgYW5kIHBsb3QgaXQgdXNpbmdcbiAgIyBHR2FsbHk6OmdncGFpcnNcbiAgI1xuICAjIEFyZ3M6XG4gICMgICBjdXRvZmY6IFRoZSBWQUYgY3V0b2ZmIHNldCB0byBhbmFseXplXG4gICNcbiAgIyBSZXR1cm5zOlxuICAjICAgQSBjb3JyZWxhdGlvbiBtYXRyaXggcGxvdCBhbW9uZ3N0IHRoZSBjYWxsZXJzXG5cbiAgIyBJc29sYXRlIHRoZSBUTUIgc3RhdHMgZm9yIHRoaXMgY3V0b2ZmXG4gIGN1dG9mZl9kZiA8LSB0bWJfZmlsdGVyX2xvbmcgJT4lXG4gICAgZHBseXI6OmZpbHRlcih2YWZfY3V0b2ZmID09IGN1dG9mZikgJT4lXG4gICAgZHBseXI6OnNlbGVjdCgtVHVtb3JfU2FtcGxlX0JhcmNvZGUsIC12YWZfY3V0b2ZmKVxuXG4gICMgTWFrZSB0aGUgcGxvdFxuICBjb3JfcGxvdCA8LSBHR2FsbHk6OmdncGFpcnMoY3V0b2ZmX2RmLCBtYXBwaW5nID0gZ2dwbG90Mjo6YWVzKGFscGhhID0gMC4wNSkpICtcbiAgICBnZ3Bsb3QyOjp0aGVtZV9jbGFzc2ljKCkgK1xuICAgIGdncGxvdDI6OmdndGl0bGUocGFzdGUwKFwiVkFGIGN1dG9mZjogXCIsIGN1dG9mZikpXG5cbiAgIyBTYXZlIHRoaXMgcGxvdFxuICBnZ3Bsb3QyOjpnZ3NhdmUoZmlsZS5wYXRoKFxuICAgIGNvbXBhcmVfcGxvdHNfZGlyLFxuICAgIHBhc3RlMChcInZhZl9cIiwgY3V0b2ZmLCBcIl90bWJfY29ycmVsYXRpb25zX3Bsb3QucG5nXCIpXG4gICksXG4gIHBsb3QgPSBjb3JfcGxvdFxuICApXG4gICMgUmV0dXJuIHRoZSBwbG90XG4gIHJldHVybihjb3JfcGxvdClcbn1cbmBgYCJ9 -->
+<pre class="r"><code>cor_matrix_plot &lt;- function(cutoff) {
+  # For a given VAF cutoff, calculate TMB correlations amongst the callers and plot it using
+  # GGally::ggpairs
+  #
+  # Args:
+  #   cutoff: The VAF cutoff set to analyze
+  #
+  # Returns:
+  #   A correlation matrix plot amongst the callers
+
+  # Isolate the TMB stats for this cutoff
+  cutoff_df &lt;- tmb_filter_long %&gt;%
+    dplyr::filter(vaf_cutoff == cutoff) %&gt;%
+    dplyr::select(-Tumor_Sample_Barcode, -vaf_cutoff)
+
+  # Make the plot
+  cor_plot &lt;- GGally::ggpairs(cutoff_df, mapping = ggplot2::aes(alpha = 0.05)) +
+    ggplot2::theme_classic() +
+    ggplot2::ggtitle(paste0(&quot;VAF cutoff: &quot;, cutoff))
+
+  # Save this plot
+  ggplot2::ggsave(file.path(
+    compare_plots_dir,
+    paste0(&quot;vaf_&quot;, cutoff, &quot;_tmb_correlations_plot.png&quot;)
+  ),
+  plot = cor_plot
+  )
+  # Return the plot
+  return(cor_plot)
+}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Function for correlating TMB statistics for each VAF cutoff set.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBWQUYgY3V0b2ZmcyB0byB1c2VcbnZhZl9jdXRvZmY9KFxcMC4xMFxcIFxcMC4yMFxcIFxcMC4zMFxcIFxcMC40MFxcKVxuXG4jIFNhbWUgZmlsZXMgYXMgb3JpZ2luYWxseSBydW5cbmRhdGFzZXRzPShcXHN0cmVsa2EyXFwgXFxtdXRlY3QyXFwgXFxsYW5jZXRcXCBcXHZhcmRpY3RcXClcblxuIyBXR1MgZmlsZXMgZm9yIGVhY2ggY2FsbGVyXG53Z3NfZmlsZXM9KFxcV0dTLmhnMzguc3RyZWxrYTIudW5wYWRkZWQuYmVkXFwgXFxXR1MuaGczOC5tdXRlY3QyLnVucGFkZGVkLmJlZFxcIFxcV0dTLmhnMzgubGFuY2V0LjMwMGJwX3BhZGRlZC5iZWRcXCBcXFdHUy5oZzM4LnZhcmRpY3QuMTAwYnBfcGFkZGVkLmJlZFxcKVxuXG5mb3IgKChpPTA7aTwkeyN2YWZfY3V0b2ZmW0BdfTtpKyspKTsgXG4gIGRvXG4gIGZvciAoKGo9MDtqPCR7I2RhdGFzZXRzW0BdfTtqKyspKTsgXG4gIGRvXG4gICAgZWNobyBcXFByb2Nlc3NpbmcgZGF0YXNldDogJHtkYXRhc2V0c1skal19XFxcbiAgICBSc2NyaXB0IGFuYWx5c2VzL3Nudi1jYWxsZXJzL3NjcmlwdHMvMDEtY2FsY3VsYXRlX3ZhZl90bWIuUiBcXFxuICAgICAgLS1sYWJlbCAke2RhdGFzZXRzWyRqXX0gXFxcbiAgICAgIC0tb3V0cHV0IGFuYWx5c2VzL3Nudi1jYWxsZXJzL3Jlc3VsdHMvdmFmX2ZpbHRlci9jdXRvZmZfJHt2YWZfY3V0b2ZmWyRpXX0gXFxcbiAgICAgIC0tbWFmIGRhdGEvdGVzdGluZy9yZWxlYXNlLXY1LTIwMTkwOTI0L3BidGEtc252LSR7ZGF0YXNldHNbJGpdfS52ZXAubWFmLmd6IFxcXG4gICAgICAtLW1ldGFkYXRhIGRhdGEvcGJ0YS1oaXN0b2xvZ2llcy50c3YgXFxcbiAgICAgIC0tYmVkX3dncyBkYXRhLyR7d2dzX2ZpbGVzWyRqXX0gXFxcbiAgICAgIC0tYmVkX3d4cyBkYXRhL1dYUy5oZzM4LjEwMGJwX3BhZGRlZC5iZWQgXFxcbiAgICAgIC0tdmFmX2ZpbHRlciAke3ZhZl9jdXRvZmZbJGldfSBcXFxuICAgICAgLS1vdmVyd3JpdGUgXFxcbiAgICAgIC0tbm9fcmVnaW9uXG4gIGRvbmVcbiAgZG9uZVxuYGBgIn0= -->
-<pre class="r"><code># VAF cutoffs to use
-vaf_cutoff=(\0.10\ \0.20\ \0.30\ \0.40\)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29yX2J5X3ZhZiA8LSBmdW5jdGlvbihjdXRvZmYgPSAwLjEpIHtcbiAgIyBGb3IgYSBnaXZlbiBWQUYgY3V0b2ZmLCBpc29sYXRlIHRoZSBUTUIgc3RhdGlzdGljcyBhbmQgY29ycmVsYXRlIHRoZW0uXG4gICNcbiAgIyBBcmdzOlxuICAjICAgY3V0b2ZmOiB0aGUgVkFGIGN1dG9mZiB0byBjYWxjdWxhdGUgdGhlIGNvcnJlbGF0aW9uIGJ5LlxuICAjXG4gICMgUmV0dXJuczpcbiAgIyAgIFIgdmFsdWVzIGZvciBTcGVhcm1hbidzIGNvcnJlbGF0aW9uIGFtb25nc3QgdGhlIGNhbGxlcnNcblxuICBjdXRvZmZfZGYgPC0gdG1iX2ZpbHRlcl9sb25nICU+JVxuICAgIGRwbHlyOjpmaWx0ZXIodmFmX2N1dG9mZiA9PSBjdXRvZmYpICU+JVxuICAgIGRwbHlyOjpzZWxlY3QoLVR1bW9yX1NhbXBsZV9CYXJjb2RlLCAtdmFmX2N1dG9mZilcblxuICAjIERvIGNvcnJlbGF0aW9ucyBiZXR3ZWVuIGNhbGxlcnNcbiAgY29yX3JlcyA8LSBjb3IoY3V0b2ZmX2RmLCBtZXRob2QgPSBcInNwZWFybWFuXCIsIHVzZSA9IFwibmEub3IuY29tcGxldGVcIilcblxuICAjIFRoaXMgaXMgdG8gcmVtb3ZlIHJlZHVuZGFuY3kgYXMgdXBwZXIgY29ycmVsYXRpb24gbWF0cml4ID09IGxvd2VyXG4gIGNvcl9yZXNbdXBwZXIudHJpKGNvcl9yZXMsIGRpYWcgPSBUUlVFKV0gPC0gTkFcblxuICAjIEZvcm1hdCBpbnRvIGxvbmcgZm9ybWF0IGRhdGEuZnJhbWVcbiAgY29yX2RmIDwtIHJlc2hhcGUyOjptZWx0KGNvcl9yZXMsIG5hLnJtID0gVFJVRSwgdmFsdWUubmFtZSA9IFwiY29yXCIpICU+JVxuICAgIGRwbHlyOjptdXRhdGUoXG4gICAgICBjb21wYXJlID0gcGFzdGUwKFZhcjEsIFwiLVwiLCBWYXIyKSxcbiAgICAgIGN1dG9mZlxuICAgIClcblxuICAjIFJldHVybiBhIGRhdGEuZnJhbWUgcmVhZHkgZm9yIGJlaW5nIGFkZGVkIHRvIHRoZSBiaWdnZXIgZGF0YS5mcmFtZSBmb3IgcGxvdHRpbmcuXG4gIHJldHVybihjb3JfZGYpXG59XG5gYGAifQ== -->
+<pre class="r"><code>cor_by_vaf &lt;- function(cutoff = 0.1) {
+  # For a given VAF cutoff, isolate the TMB statistics and correlate them.
+  #
+  # Args:
+  #   cutoff: the VAF cutoff to calculate the correlation by.
+  #
+  # Returns:
+  #   R values for Spearman's correlation amongst the callers
 
-# Same files as originally run
-datasets=(\strelka2\ \mutect2\ \lancet\ \vardict\)
+  cutoff_df &lt;- tmb_filter_long %&gt;%
+    dplyr::filter(vaf_cutoff == cutoff) %&gt;%
+    dplyr::select(-Tumor_Sample_Barcode, -vaf_cutoff)
 
-# WGS files for each caller
-wgs_files=(\WGS.hg38.strelka2.unpadded.bed\ \WGS.hg38.mutect2.unpadded.bed\ \WGS.hg38.lancet.300bp_padded.bed\ \WGS.hg38.vardict.100bp_padded.bed\)
+  # Do correlations between callers
+  cor_res &lt;- cor(cutoff_df, method = &quot;spearman&quot;, use = &quot;na.or.complete&quot;)
 
-for ((i=0;i&lt;${#vaf_cutoff[@]};i++)); 
-  do
-  for ((j=0;j&lt;${#datasets[@]};j++)); 
-  do
-    echo \Processing dataset: ${datasets[$j]}\
-    Rscript analyses/snv-callers/scripts/01-calculate_vaf_tmb.R \
-      --label ${datasets[$j]} \
-      --output analyses/snv-callers/results/vaf_filter/cutoff_${vaf_cutoff[$i]} \
-      --maf data/testing/release-v5-20190924/pbta-snv-${datasets[$j]}.vep.maf.gz \
-      --metadata data/pbta-histologies.tsv \
-      --bed_wgs data/${wgs_files[$j]} \
-      --bed_wxs data/WXS.hg38.100bp_padded.bed \
-      --vaf_filter ${vaf_cutoff[$i]} \
-      --overwrite \
-      --no_region
-  done
-  done</code></pre>
+  # This is to remove redundancy as upper correlation matrix == lower
+  cor_res[upper.tri(cor_res, diag = TRUE)] &lt;- NA
+
+  # Format into long format data.frame
+  cor_df &lt;- reshape2::melt(cor_res, na.rm = TRUE, value.name = &quot;cor&quot;) %&gt;%
+    dplyr::mutate(
+      compare = paste0(Var1, &quot;-&quot;, Var2),
+      cutoff
+    )
+
+  # Return a data.frame ready for being added to the bigger data.frame for plotting.
+  return(cor_df)
+}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Calculate variance for a sample for a given caller amongst the different VAF cutoffs.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBNYWtlIGEgbGlzdCBvZiB0aGUgdmFmIGZpbHRlciBleHBlcmltZW50IHRtYiBmaWxlc1xuZmlsdGVyX3RtYl9maWxlcyA8LSBsaXN0LmZpbGVzKGZpbGUucGF0aChiYXNlX3Jlc3VsdHNfZGlyLCBcXHZhZl9maWx0ZXJcXCksXG4gIHBhdHRlcm4gPSBcXF90bWIudHN2JFxcLCByZWN1cnNpdmUgPSBUUlVFLFxuICBmdWxsLm5hbWVzID0gVFJVRVxuKVxuYGBgXG5gYGAifQ== -->
-<p><code>r</code>r # Make a list of the vaf filter experiment tmb files filter_tmb_files &lt;- list.files(file.path(base_results_dir, _filter), pattern = _tmb.tsv$, recursive = TRUE, full.names = TRUE )</p>
-<pre><code></code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudmFyX2J5X3NhbXBsZSA8LSBmdW5jdGlvbihzYW1wbGUpIHtcbiAgIyBGb3IgYSBnaXZlbiBzYW1wbGUgSUQsIGlzb2xhdGUgdGhlIFRNQiBzdGF0aXN0aWNzIGFuZCBjYWxjdWxhdGUgdGhlIHZhcmlhbmNlLlxuICAjXG4gICMgQXJnczpcbiAgIyAgIHNhbXBsZTogVHVtb3JfU2FtcGxlX0JhcmNvZGUgb2YgdGhlIHNhbXBsZSB5b3Ugd291bGQgbGlrZSB0aGUgdmFyaWFuY2UgZm9yLlxuICAjXG4gICMgUmV0dXJuczpcbiAgIyAgIFZhcmlhbmNlIGZvciB0aGF0IHNhbXBsZSBmb3IgZWFjaCBjYWxsZXIuXG5cbiAgc2FtcGxlX2RmIDwtIHRtYl9maWx0ZXJfbG9uZyAlPiVcbiAgICBkcGx5cjo6ZmlsdGVyKFR1bW9yX1NhbXBsZV9CYXJjb2RlID09IHNhbXBsZSkgJT4lXG4gICAgZHBseXI6OnNlbGVjdCgtVHVtb3JfU2FtcGxlX0JhcmNvZGUsIC12YWZfY3V0b2ZmKVxuXG4gICMgRG8gY29ycmVsYXRpb25zIGJldHdlZW4gY2FsbGVyc1xuICB2YXJfYnlfY2FsbGVyIDwtIGRhdGEuZnJhbWUoXG4gICAgdChhcHBseShzYW1wbGVfZGYsIDIsIHZhcikpLFxuICAgIHNhbXBsZVxuICApXG5cbiAgcmV0dXJuKHZhcl9ieV9jYWxsZXIpXG59XG5gYGAifQ== -->
+<pre class="r"><code>var_by_sample &lt;- function(sample) {
+  # For a given sample ID, isolate the TMB statistics and calculate the variance.
+  #
+  # Args:
+  #   sample: Tumor_Sample_Barcode of the sample you would like the variance for.
+  #
+  # Returns:
+  #   Variance for that sample for each caller.
+
+  sample_df &lt;- tmb_filter_long %&gt;%
+    dplyr::filter(Tumor_Sample_Barcode == sample) %&gt;%
+    dplyr::select(-Tumor_Sample_Barcode, -vaf_cutoff)
+
+  # Do correlations between callers
+  var_by_caller &lt;- data.frame(
+    t(apply(sample_df, 2, var)),
+    sample
+  )
+
+  return(var_by_caller)
+}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+</div>
+</div>
 <div id="run-the-data-with-different-vaf-filter-cutoffs" class="section level2">
 <h2>Run the data with different VAF filter cutoffs</h2>
 <p>We need to re-calculate TMB statistics with various VAF filter cutoffs.</p>
@@ -3036,16 +3126,12 @@ for ((i=0;i&lt;${#vaf_cutoff[@]};i++));
   done
   done</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUHJvY2Vzc2luZyBkYXRhc2V0OiBzdHJlbGthMlxuXG4gICBGaWxlIC9Vc2Vycy9jYW5kYWNlc2F2b25lbi8uUmVudmlyb24gY29udGFpbnMgaW52YWxpZCBsaW5lKHMpXG4gICAgICBHSVRIVUJfUEFUYmIwYmY3ZjBjODg3YTNkMGU1YjY4ZGRiODc0OWJiMzA5ODZjYTY5ZlxuICAgVGhleSB3ZXJlIGlnbm9yZWRcbiJ9 -->
-<pre><code>Processing dataset: strelka2
-
-   File /Users/candacesavonen/.Renviron contains invalid line(s)
-      GITHUB_PATbb0bf7f0c887a3d0e5b68ddb8749bb30986ca69f
-   They were ignored</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiUHJvY2Vzc2luZyBkYXRhc2V0OiBzdHJlbGthMlxuIn0= -->
+<pre><code>Processing dataset: strelka2</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmVhZGluZyBpbiAvVXNlcnMvY2FuZGFjZXNhdm9uZW4vRGVza3RvcC9HaXRSZXBvcy9PcGVuUEJUQS1hbmFseXNpcy9kYXRhL3BidGEtc252LXN0cmVsa2EyLnZlcC5tYWYuZ3ogTUFGIGRhdGEuLi5cblJlZ2lzdGVyZWQgUzMgbWV0aG9kIG92ZXJ3cml0dGVuIGJ5ICdSLm9vJzpcbiAgbWV0aG9kICAgICAgICBmcm9tICAgICAgIFxuICB0aHJvdy5kZWZhdWx0IFIubWV0aG9kc1MzXG4ifQ== -->
-<pre><code>Reading in /Users/candacesavonen/Desktop/GitRepos/OpenPBTA-analysis/data/pbta-snv-strelka2.vep.maf.gz MAF data...
-Registered S3 method overwritten by &#39;R.oo&#39;:
+<!-- rnb-output-begin eyJkYXRhIjoiUmVhZGluZyBpbiAvaG9tZS9yc3R1ZGlvL2tpdGVtYXRpYy9PcGVuUEJUQS1hbmFseXNpcy9kYXRhL3BidGEtc252LXN0cmVsa2EyLnZlcC5tYWYuZ3ogTUFGIGRhdGEuLi5cblJlZ2lzdGVyZWQgUzMgbWV0aG9kIG92ZXJ3cml0dGVuIGJ5ICdSLm9vJzpcbiAgbWV0aG9kICAgICAgICBmcm9tICAgICAgIFxuICB0aHJvdy5kZWZhdWx0IFIubWV0aG9kc1MzXG4ifQ== -->
+<pre><code>Reading in /home/rstudio/kitematic/OpenPBTA-analysis/data/pbta-snv-strelka2.vep.maf.gz MAF data...
+Registered S3 method overwritten by 'R.oo':
   method        from       
   throw.default R.methodsS3</code></pre>
 <!-- rnb-output-end -->
@@ -3061,55 +3147,37 @@ Registered S3 method overwritten by &#39;R.oo&#39;:
 <p><code>r</code>r vaf_filter &lt;- stringr::word(filter_tmb_files, sep = /, 3) vaf_filter &lt;- as.numeric(gsub(_, \, vaf_filter)) vaf_filter</p>
 <pre><code></code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSAwLjEgMC4xIDAuMSAwLjEgMC4yIDAuMiAwLjIgMC4yIDAuMyAwLjMgMC4zIDAuMyAwLjQgMC40IDAuNCAwLjRcbiJ9 -->
-<pre><code> [1] 0.1 0.1 0.1 0.1 0.2 0.2 0.2 0.2 0.3 0.3 0.3 0.3 0.4 0.4 0.4 0.4</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Take a look at the TMBs fromo different VAF filter cutoffs.</p>
+<p>Take a look at the TMBs from different VAF filter cutoffs.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuY2FsbGVyX2ZpbHRlciA8LSBzdHJpbmdyOjp3b3JkKGZpbHRlcl90bWJfZmlsZXMsIHNlcCA9IFxcL1xcLCA0KVxuY2FsbGVyX2ZpbHRlciA8LSBnc3ViKFxcX3RtYi50c3ZcXCwgXFxcXCwgY2FsbGVyX2ZpbHRlcilcbmNhbGxlcl9maWx0ZXJcbmBgYFxuYGBgIn0= -->
-<p><code>r</code>r caller_filter &lt;- stringr::word(filter_tmb_files, sep = /, 4) caller_filter &lt;- gsub(_tmb.tsv, \, caller_filter) caller_filter</p>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuYGBgclxudG1iX2ZpbHRlcl9kZiA8LSBkcGx5cjo6YmluZF9yb3dzKGZpbHRlcl90bWJfbGlzdCwgLmlkID0gXFxOQU1FXFwpICU+JVxuICBkcGx5cjo6bXV0YXRlKFxuICAgIGNhbGxlciA9IHN0cmluZ3I6OndvcmQoTkFNRSwgc2VwID0gXFxfXFwsIDEpLFxuICAgIHZhZl9jdXRvZmYgPSBhcy5udW1lcmljKHN0cmluZ3I6OndvcmQoTkFNRSwgc2VwID0gXFxfXFwsIDIpKVxuICApXG5gYGBcbmBgYFxuYGBgIn0= -->
+<p><code>r</code>r</p>
+<pre class="r"><code>tmb_filter_df &lt;- dplyr::bind_rows(filter_tmb_list, .id = \NAME\) %&gt;%
+  dplyr::mutate(
+    caller = stringr::word(NAME, sep = \_\, 1),
+    vaf_cutoff = as.numeric(stringr::word(NAME, sep = \_\, 2))
+  )</code></pre>
 <pre><code></code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcXGxhbmNldFxcICAgXFxtdXRlY3QyXFwgIFxcc3RyZWxrYTJcXCBcXHZhcmRpY3RcXCAgXFxsYW5jZXRcXCAgIFxcbXV0ZWN0MlxcICBcXHN0cmVsa2EyXFwgXFx2YXJkaWN0XFwgIFxcbGFuY2V0XFwgIFxuWzEwXSBcXG11dGVjdDJcXCAgXFxzdHJlbGthMlxcIFxcdmFyZGljdFxcICBcXGxhbmNldFxcICAgXFxtdXRlY3QyXFwgIFxcc3RyZWxrYTJcXCBcXHZhcmRpY3RcXCBcbiJ9 -->
-<pre><code> [1] \lancet\   \mutect2\  \strelka2\ \vardict\  \lancet\   \mutect2\  \strelka2\ \vardict\  \lancet\  
-[10] \mutect2\  \strelka2\ \vardict\  \lancet\   \mutect2\  \strelka2\ \vardict\ </code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Convert the VAF cutoffs into their own vector.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudmFmX2ZpbHRlciA8LSBzdHJpbmdyOjp3b3JkKGZpbHRlcl90bWJfZmlsZXMsIHNlcCA9IFwiL1wiLCAzKVxudmFmX2ZpbHRlciA8LSBhcy5udW1lcmljKGdzdWIoXCJjdXRvZmZfXCIsIFwiXCIsIHZhZl9maWx0ZXIpKVxudmFmX2ZpbHRlclxuYGBgIn0= -->
-<pre class="r"><code>vaf_filter &lt;- stringr::word(filter_tmb_files, sep = &quot;/&quot;, 3)
-vaf_filter &lt;- as.numeric(gsub(&quot;cutoff_&quot;, &quot;&quot;, vaf_filter))
-vaf_filter</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Get caller information as a vector.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxudG1iX2ZpbHRlcl9kZiA8LSBkcGx5cjo6YmluZF9yb3dzKGZpbHRlcl90bWJfbGlzdCwgLmlkID0gXFxOQU1FXFwpICU+JVxuICBkcGx5cjo6bXV0YXRlKFxuICAgIGNhbGxlciA9IHN0cmluZ3I6OndvcmQoTkFNRSwgc2VwID0gXFxfXFwsIDEpLFxuICAgIHZhZl9jdXRvZmYgPSBhcy5udW1lcmljKHN0cmluZ3I6OndvcmQoTkFNRSwgc2VwID0gXFxfXFwsIDIpKVxuICApXG5gYGBcbmBgYCJ9 -->
-<p><code>r</code>r tmb_filter_df &lt;- dplyr::bind_rows(filter_tmb_list, .id = ) %&gt;% dplyr::mutate( caller = stringr::word(NAME, sep = _, 1), vaf_cutoff = as.numeric(stringr::word(NAME, sep = _, 2)) )</p>
-<pre><code></code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Read in the data. Name each with their caller and VAF filter cutoff.</p>
-<!-- rnb-text-end -->
-<!-- rnb-text-begin -->
-<p>Turn this into a data.frame</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxubGFwcGx5KHVuaXF1ZSh2YWZfZmlsdGVyKSwgY29yX21hdHJpeF9wbG90KVxuYGBgXG5gYGAifQ== -->
-<p><code>r</code>r lapply(unique(vaf_filter), cor_matrix_plot)</p>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuYGBgclxubGFwcGx5KHVuaXF1ZSh2YWZfZmlsdGVyKSwgY29yX21hdHJpeF9wbG90KVxuYGBgXG5gYGBcbmBgYCJ9 -->
+<p><code>r</code>r</p>
+<pre class="r"><code>lapply(unique(vaf_filter), cor_matrix_plot)</code></pre>
 <pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ0dHYWxseSc6XG4gIG1ldGhvZCBmcm9tICAgXG4gICsuZ2cgICBnZ3Bsb3QyXG5TYXZpbmcgNyB4IDcgaW4gaW1hZ2VcbltbMV1dXG5cbltbMl1dXG5cbltbM11dXG5cbltbNF1dXG4ifQ== -->
-<pre><code>Registered S3 method overwritten by &#39;GGally&#39;:
+<pre><code>Registered S3 method overwritten by 'GGally':
   method from   
   +.gg   ggplot2
 Saving 7 x 7 in image
@@ -3135,26 +3203,24 @@ Saving 7 x 7 in image
 <!-- rnb-plot-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Make this into a long form data.frame for plotting purposes.</p>
+<p>Read in the data. Name each with their caller and VAF filter cutoff.</p>
 <!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBSdW4gdGhpcyBvbiBlYWNoIHNldFxudmFyX2J5X3NhbXBsZV9kZiA8LSBkby5jYWxsKFxuICBcXHJiaW5kLmRhdGEuZnJhbWVcXCxcbiAgbGFwcGx5KHVuaXF1ZSh0bWJfZmlsdGVyX2xvbmckVHVtb3JfU2FtcGxlX0JhcmNvZGUpLCB2YXJfYnlfc2FtcGxlKVxuKSAlPiVcbiAgcmVzaGFwZTI6Om1lbHQoKVxuYGBgXG5gYGAifQ== -->
-<p><code>r</code>r # Run this on each set var_by_sample_df &lt;- do.call( .data.frame, lapply(unique(tmb_filter_long$Tumor_Sample_Barcode), var_by_sample) ) %&gt;% reshape2::melt()</p>
-<pre><code></code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiVXNpbmcgc2FtcGxlIGFzIGlkIHZhcmlhYmxlc1xuIn0= -->
-<pre><code>Using sample as id variables</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-</div>
-<div id="make-the-tmb-correlation-plots" class="section level2">
-<h2>Make the TMB correlation plots</h2>
+<p>Turn this into a data.frame</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZ2dwbG90Mjo6Z2dwbG90KHZhcl9ieV9zYW1wbGVfZGYsIGdncGxvdDI6OmFlcyh4ID0gdmFyaWFibGUsIHkgPSB2YWx1ZSkpICtcbiAgZ2dwbG90Mjo6Z2VvbV9ib3hwbG90KG91dGxpZXIuY29sb3IgPSBOQSkgK1xuICBnZ3Bsb3QyOjpnZW9tX2ppdHRlcihnZ3Bsb3QyOjphZXMoY29sb3IgPSBzYW1wbGUpKSArXG4gIGdncGxvdDI6OnRoZW1lX2NsYXNzaWMoKSArXG4gIGdncGxvdDI6OnhsYWIoXFxcXCkgK1xuICBnZ3Bsb3QyOjp5bGFiKFxcU2FtcGxlIFZhcmlhbmNlIEFjcm9zcyBWQUYgRmlsdGVyIEN1dG9mZnNcXCkgK1xuICBnZ3Bsb3QyOjp0aGVtZShcbiAgICBheGlzLnRleHQueCA9IGdncGxvdDI6OmVsZW1lbnRfdGV4dChhbmdsZSA9IDQ1LCBoanVzdCA9IDEpLFxuICAgIGxlZ2VuZC5wb3NpdGlvbiA9IFxcbm9uZVxcXG4gIClcbmBgYFxuYGBgIn0= -->
-<p><code>r</code>r ggplot2::ggplot(var_by_sample_df, ggplot2::aes(x = variable, y = value)) + ggplot2::geom_boxplot(outlier.color = NA) + ggplot2::geom_jitter(ggplot2::aes(color = sample)) + ggplot2::theme_classic() + ggplot2::xlab(\) + ggplot2::ylab(Variance Across VAF Filter Cutoffs) + ggplot2::theme( axis.text.x = ggplot2::element_text(angle = 45, hjust = 1), legend.position = <br />
-)</p>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuYGBgclxuZ2dwbG90Mjo6Z2dwbG90KHZhcl9ieV9zYW1wbGVfZGYsIGdncGxvdDI6OmFlcyh4ID0gdmFyaWFibGUsIHkgPSB2YWx1ZSkpICtcbiAgZ2dwbG90Mjo6Z2VvbV9ib3hwbG90KG91dGxpZXIuY29sb3IgPSBOQSkgK1xuICBnZ3Bsb3QyOjpnZW9tX2ppdHRlcihnZ3Bsb3QyOjphZXMoY29sb3IgPSBzYW1wbGUpKSArXG4gIGdncGxvdDI6OnRoZW1lX2NsYXNzaWMoKSArXG4gIGdncGxvdDI6OnhsYWIoXFxcXCkgK1xuICBnZ3Bsb3QyOjp5bGFiKFxcU2FtcGxlIFZhcmlhbmNlIEFjcm9zcyBWQUYgRmlsdGVyIEN1dG9mZnNcXCkgK1xuICBnZ3Bsb3QyOjp0aGVtZShcbiAgICBheGlzLnRleHQueCA9IGdncGxvdDI6OmVsZW1lbnRfdGV4dChhbmdsZSA9IDQ1LCBoanVzdCA9IDEpLFxuICAgIGxlZ2VuZC5wb3NpdGlvbiA9IFxcbm9uZVxcXG4gIClcbmBgYFxuYGBgXG5gYGAifQ== -->
+<p><code>r</code>r</p>
+<pre class="r"><code>ggplot2::ggplot(var_by_sample_df, ggplot2::aes(x = variable, y = value)) +
+  ggplot2::geom_boxplot(outlier.color = NA) +
+  ggplot2::geom_jitter(ggplot2::aes(color = sample)) +
+  ggplot2::theme_classic() +
+  ggplot2::xlab(\\) +
+  ggplot2::ylab(\Sample Variance Across VAF Filter Cutoffs\) +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+    legend.position = \none\
+  )</code></pre>
 <pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-plot-begin -->
@@ -3162,20 +3228,35 @@ Saving 7 x 7 in image
 <!-- rnb-plot-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Get the variance for each sample across this experiment.</p>
+<p>Make this into a long form data.frame for plotting purposes.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBSdW4gdGhpcyBvbiBlYWNoIHNldFxuY29yX2J5X3ZhZl9kZiA8LSBkby5jYWxsKFxuICBcXHJiaW5kLmRhdGEuZnJhbWVcXCxcbiAgbGFwcGx5KHVuaXF1ZSh2YWZfZmlsdGVyKSwgY29yX2J5X3ZhZilcbilcbmBgYFxuYGBgIn0= -->
-<p><code>r</code>r # Run this on each set cor_by_vaf_df &lt;- do.call( .data.frame, lapply(unique(vaf_filter), cor_by_vaf) )</p>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuYGBgclxuIyBSdW4gdGhpcyBvbiBlYWNoIHNldFxuY29yX2J5X3ZhZl9kZiA8LSBkby5jYWxsKFxuICBcXHJiaW5kLmRhdGEuZnJhbWVcXCxcbiAgbGFwcGx5KHVuaXF1ZSh2YWZfZmlsdGVyKSwgY29yX2J5X3ZhZilcbilcbmBgYFxuYGBgXG5gYGAifQ== -->
+<p><code>r</code>r</p>
+<pre class="r"><code># Run this on each set
+cor_by_vaf_df &lt;- do.call(
+  \rbind.data.frame\,
+  lapply(unique(vaf_filter), cor_by_vaf)
+)</code></pre>
 <pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Plot the variance for each sample.</p>
+</div>
+<div id="make-the-tmb-correlation-plots" class="section level2">
+<h2>Make the TMB correlation plots</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZ2dwbG90Mjo6Z2dwbG90KGNvcl9ieV92YWZfZGYsIGdncGxvdDI6OmFlcyh4ID0gcmVvcmRlcihjb21wYXJlLCAtY29yKSwgZmlsbCA9IGFzLmZhY3RvcihjdXRvZmYpLCB5ID0gY29yKSkgK1xuICBnZ3Bsb3QyOjpnZW9tX3BvaW50KHNoYXBlID0gMjEsIHNpemUgPSAyLjUsIHN0cm9rZSA9IC43NSwgY29sb3IgPSBcXGJsYWNrXFwpICtcbiAgZ2dwbG90Mjo6dGhlbWVfY2xhc3NpYygpICtcbiAgZ2d1cHNldDo6c2NhbGVfeF9tZXJnZWxpc3Qoc2VwID0gXFwtXFwpICtcbiAgZ2d1cHNldDo6YXhpc19jb21ibWF0cml4KHNlcCA9IFxcLVxcKSArXG4gIGdncGxvdDI6OnhsYWIoXFxcXCkgK1xuICBnZ3Bsb3QyOjp5bGFiKFxcVE1CIFNwZWFybWFuIENvcnJlbGF0aW9uXFwpICtcbiAgZ2dwbG90Mjo6c2NhbGVfZmlsbF9icmV3ZXIoXFxWQUYgRmlsdGVyIEN1dG9mZlxcLCBwYWxldHRlID0gXFxZbEduQnVcXClcbmBgYFxuYGBgIn0= -->
-<p><code>r</code>r ggplot2::ggplot(cor_by_vaf_df, ggplot2::aes(x = reorder(compare, -cor), fill = as.factor(cutoff), y = cor)) + ggplot2::geom_point(shape = 21, size = 2.5, stroke = .75, color = ) + ggplot2::theme_classic() + ggupset::scale_x_mergelist(sep = -) + ggupset::axis_combmatrix(sep = -) + ggplot2::xlab(\) + ggplot2::ylab(Spearman Correlation) + ggplot2::scale_fill_brewer(Filter Cutoff, palette = )</p>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuYGBgclxuZ2dwbG90Mjo6Z2dwbG90KGNvcl9ieV92YWZfZGYsIGdncGxvdDI6OmFlcyh4ID0gcmVvcmRlcihjb21wYXJlLCAtY29yKSwgZmlsbCA9IGFzLmZhY3RvcihjdXRvZmYpLCB5ID0gY29yKSkgK1xuICBnZ3Bsb3QyOjpnZW9tX3BvaW50KHNoYXBlID0gMjEsIHNpemUgPSAyLjUsIHN0cm9rZSA9IC43NSwgY29sb3IgPSBcXGJsYWNrXFwpICtcbiAgZ2dwbG90Mjo6dGhlbWVfY2xhc3NpYygpICtcbiAgZ2d1cHNldDo6c2NhbGVfeF9tZXJnZWxpc3Qoc2VwID0gXFwtXFwpICtcbiAgZ2d1cHNldDo6YXhpc19jb21ibWF0cml4KHNlcCA9IFxcLVxcKSArXG4gIGdncGxvdDI6OnhsYWIoXFxcXCkgK1xuICBnZ3Bsb3QyOjp5bGFiKFxcVE1CIFNwZWFybWFuIENvcnJlbGF0aW9uXFwpICtcbiAgZ2dwbG90Mjo6c2NhbGVfZmlsbF9icmV3ZXIoXFxWQUYgRmlsdGVyIEN1dG9mZlxcLCBwYWxldHRlID0gXFxZbEduQnVcXClcbmBgYFxuYGBgXG5gYGAifQ== -->
+<p><code>r</code>r</p>
+<pre class="r"><code>ggplot2::ggplot(cor_by_vaf_df, ggplot2::aes(x = reorder(compare, -cor), fill = as.factor(cutoff), y = cor)) +
+  ggplot2::geom_point(shape = 21, size = 2.5, stroke = .75, color = \black\) +
+  ggplot2::theme_classic() +
+  ggupset::scale_x_mergelist(sep = \-\) +
+  ggupset::axis_combmatrix(sep = \-\) +
+  ggplot2::xlab(\\) +
+  ggplot2::ylab(\TMB Spearman Correlation\) +
+  ggplot2::scale_fill_brewer(\VAF Filter Cutoff\, palette = \YlGnBu\)</code></pre>
 <pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-plot-begin -->
@@ -3183,11 +3264,12 @@ Saving 7 x 7 in image
 <!-- rnb-plot-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Get correlations by vaf cutoff.</p>
+<p>Get the variance for each sample across this experiment.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgXG5gYGAifQ== -->
-<p><code>r</code>r sessionInfo()</p>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgXG5gYGBcbmBgYCJ9 -->
+<p><code>r</code>r</p>
+<pre class="r"><code>sessionInfo()</code></pre>
 <pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4xICgyMDE5LTA3LTA1KVxuUGxhdGZvcm06IHg4Nl82NC1hcHBsZS1kYXJ3aW4xNS42LjAgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IG1hY09TIE1vamF2ZSAxMC4xNC41XG5cbk1hdHJpeCBwcm9kdWN0czogZGVmYXVsdFxuQkxBUzogICAvU3lzdGVtL0xpYnJhcnkvRnJhbWV3b3Jrcy9BY2NlbGVyYXRlLmZyYW1ld29yay9WZXJzaW9ucy9BL0ZyYW1ld29ya3MvdmVjTGliLmZyYW1ld29yay9WZXJzaW9ucy9BL2xpYkJMQVMuZHlsaWJcbkxBUEFDSzogL0xpYnJhcnkvRnJhbWV3b3Jrcy9SLmZyYW1ld29yay9WZXJzaW9ucy8zLjYvUmVzb3VyY2VzL2xpYi9saWJSbGFwYWNrLmR5bGliXG5cbmxvY2FsZTpcblsxXSBlbl9VUy5VVEYtOC9lbl9VUy5VVEYtOC9lbl9VUy5VVEYtOC9DL2VuX1VTLlVURi04L2VuX1VTLlVURi04XG5cbmF0dGFjaGVkIGJhc2UgcGFja2FnZXM6XG5bMV0gc3RhdHMgICAgIGdyYXBoaWNzICBnckRldmljZXMgdXRpbHMgICAgIGRhdGFzZXRzICBtZXRob2RzICAgYmFzZSAgICAgXG5cbmxvYWRlZCB2aWEgYSBuYW1lc3BhY2UgKGFuZCBub3QgYXR0YWNoZWQpOlxuIFsxXSBSY3BwXzEuMC4yICAgICAgICAgcGx5cl8xLjguNCAgICAgICAgIHBpbGxhcl8xLjQuMiAgICAgICBjb21waWxlcl8zLjYuMSAgICAgUkNvbG9yQnJld2VyXzEuMS0yXG4gWzZdIHByZXR0eXVuaXRzXzEuMC4yICBwcm9ncmVzc18xLjIuMiAgICAgYmFzZTY0ZW5jXzAuMS0zICAgIHRvb2xzXzMuNi4xICAgICAgICB6ZWFsbG90XzAuMS4wICAgICBcblsxMV0gZGlnZXN0XzAuNi4yMSAgICAgIGpzb25saXRlXzEuNiAgICAgICBldmFsdWF0ZV8wLjE0ICAgICAgdGliYmxlXzIuMS4zICAgICAgIGxpZmVjeWNsZV8wLjEuMCAgIFxuWzE2XSBndGFibGVfMC4zLjAgICAgICAgcGtnY29uZmlnXzIuMC4zICAgIHJsYW5nXzAuNC4wICAgICAgICByc3R1ZGlvYXBpXzAuMTAgICAgR0dhbGx5XzEuNC4wICAgICAgXG5bMjFdIHhmdW5fMC4xMCAgICAgICAgICBkcGx5cl8wLjguMyAgICAgICAgc3RyaW5ncl8xLjQuMCAgICAgIGtuaXRyXzEuMjUgICAgICAgICB2Y3Ryc18wLjIuMCAgICAgICBcblsyNl0gaG1zXzAuNS4xICAgICAgICAgIGdyaWRfMy42LjEgICAgICAgICB0aWR5c2VsZWN0XzAuMi41ICAgcmVzaGFwZV8wLjguOCAgICAgIGdsdWVfMS4zLjEgICAgICAgIFxuWzMxXSBSNl8yLjQuMCAgICAgICAgICAgcm1hcmtkb3duXzEuMTYgICAgIHJlc2hhcGUyXzEuNC4zICAgICByZWFkcl8xLjMuMSAgICAgICAgcHVycnJfMC4zLjIgICAgICAgXG5bMzZdIHRpZHlyXzEuMC4wICAgICAgICBnZ3Bsb3QyXzMuMi4xICAgICAgbWFncml0dHJfMS41ICAgICAgIGJhY2twb3J0c18xLjEuNCAgICBzY2FsZXNfMS4wLjAgICAgICBcbls0MV0gaHRtbHRvb2xzXzAuMy42ICAgIGdndXBzZXRfMC4xLjAgICAgICBhc3NlcnR0aGF0XzAuMi4xICAgY29sb3JzcGFjZV8xLjQtMSAgIGxhYmVsaW5nXzAuMyAgICAgIFxuWzQ2XSBzdHJpbmdpXzEuNC4zICAgICAgbGF6eWV2YWxfMC4yLjIgICAgIG11bnNlbGxfMC41LjAgICAgICBjcmF5b25fMS4zLjQgICAgICBcbiJ9 -->
@@ -3219,19 +3301,27 @@ loaded via a namespace (and not attached):
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>Plot the variance for each sample.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZ2dwbG90Mjo6Z2dwbG90KGNvcl9ieV92YWZfZGYsIGdncGxvdDI6OmFlcyh4ID0gcmVvcmRlcihjb21wYXJlLCAtY29yKSwgZmlsbCA9IGFzLmZhY3RvcihjdXRvZmYpLCB5ID0gY29yKSkgK1xuICBnZ3Bsb3QyOjpnZW9tX3BvaW50KHNoYXBlID0gMjEsIHNpemUgPSAyLjUsIHN0cm9rZSA9IC43NSwgY29sb3IgPSBcXGJsYWNrXFwpICtcbiAgZ2dwbG90Mjo6dGhlbWVfY2xhc3NpYygpICtcbiAgZ2d1cHNldDo6c2NhbGVfeF9tZXJnZWxpc3Qoc2VwID0gXFwtXFwpICtcbiAgZ2d1cHNldDo6YXhpc19jb21ibWF0cml4KHNlcCA9IFxcLVxcKSArXG4gIGdncGxvdDI6OnhsYWIoXFxcXCkgK1xuICBnZ3Bsb3QyOjp5bGFiKFxcVE1CIFNwZWFybWFuIENvcnJlbGF0aW9uXFwpICtcbiAgZ2dwbG90Mjo6c2NhbGVfZmlsbF9icmV3ZXIoXFxWQUYgRmlsdGVyIEN1dG9mZlxcLCBwYWxldHRlID0gXFxZbEduQnVcXClcbmBgYFxuYGBgIn0= -->
+<p><code>r</code>r ggplot2::ggplot(cor_by_vaf_df, ggplot2::aes(x = reorder(compare, -cor), fill = as.factor(cutoff), y = cor)) + ggplot2::geom_point(shape = 21, size = 2.5, stroke = .75, color = ) + ggplot2::theme_classic() + ggupset::scale_x_mergelist(sep = -) + ggupset::axis_combmatrix(sep = -) + ggplot2::xlab(\) + ggplot2::ylab(Spearman Correlation) + ggplot2::scale_fill_brewer(Filter Cutoff, palette = )</p>
+<pre><code></code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Get correlations by vaf cutoff.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgXG5gYGAifQ== -->
+<p><code>r</code>r sessionInfo()</p>
+<pre><code></code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <p>Plot the correlations and the vaf_cutoff per each caller combination.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ2dwbG90Mjo6Z2dwbG90KGNvcl9ieV92YWZfZGYsIGdncGxvdDI6OmFlcyh4ID0gcmVvcmRlcihjb21wYXJlLCAtY29yKSwgZmlsbCA9IGFzLmZhY3RvcihjdXRvZmYpLCB5ID0gY29yKSkgK1xuICBnZ3Bsb3QyOjpnZW9tX3BvaW50KHNoYXBlID0gMjEsIHNpemUgPSAyLjUsIHN0cm9rZSA9IC43NSwgY29sb3IgPSBcImJsYWNrXCIpICtcbiAgZ2dwbG90Mjo6dGhlbWVfY2xhc3NpYygpICtcbiAgZ2d1cHNldDo6c2NhbGVfeF9tZXJnZWxpc3Qoc2VwID0gXCItXCIpICtcbiAgZ2d1cHNldDo6YXhpc19jb21ibWF0cml4KHNlcCA9IFwiLVwiKSArXG4gIGdncGxvdDI6OnhsYWIoXCJcIikgK1xuICBnZ3Bsb3QyOjp5bGFiKFwiVE1CIFNwZWFybWFuIENvcnJlbGF0aW9uXCIpICtcbiAgZ2dwbG90Mjo6c2NhbGVfZmlsbF9icmV3ZXIoXCJWQUYgRmlsdGVyIEN1dG9mZlwiLCBwYWxldHRlID0gXCJZbEduQnVcIilcbmBgYCJ9 -->
-<pre class="r"><code>ggplot2::ggplot(cor_by_vaf_df, ggplot2::aes(x = reorder(compare, -cor), fill = as.factor(cutoff), y = cor)) +
-  ggplot2::geom_point(shape = 21, size = 2.5, stroke = .75, color = &quot;black&quot;) +
-  ggplot2::theme_classic() +
-  ggupset::scale_x_mergelist(sep = &quot;-&quot;) +
-  ggupset::axis_combmatrix(sep = &quot;-&quot;) +
-  ggplot2::xlab(&quot;&quot;) +
-  ggplot2::ylab(&quot;TMB Spearman Correlation&quot;) +
-  ggplot2::scale_fill_brewer(&quot;VAF Filter Cutoff&quot;, palette = &quot;YlGnBu&quot;)</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -3239,14 +3329,10 @@ loaded via a namespace (and not attached):
 <h2>Session Info</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
-<pre class="r"><code>sessionInfo()</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 </div>
-</div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiVkFGIEN1dG9mZnMgYW5kIFRNQiBDYWxjdWxhdGlvbiIKb3V0cHV0OiAKICBodG1sX25vdGVib29rOgogICAgdG9jOiBUUlVFCiAgICB0b2NfZmxvYXQ6IFRSVUUKYXV0aG9yOiBDLiBTYXZvbmVuIGZvciBBTFNGIENDREwKZGF0ZTogMjAxOQotLS0KClB1cnBvc2U6IEhvdyBkbyB0aGUgVE1CIGNhbGN1bGF0aW9ucyBjaGFuZ2Ugd2l0aCBhZGp1c3RtZW50cyB0byB0aGUgVkFGIGN1dG9mZgpmaWx0ZXI/IAoKIyMjIFN1bW1hcnkgb2YgRmluZGluZ3M6CgojIyMjIFVzYWdlCgpUbyBydW4gdGhpcyBmcm9tIHRoZSBjb21tYW5kIGxpbmUsIHVzZToKYGBgClJzY3JpcHQgLWUgInJtYXJrZG93bjo6cmVuZGVyKCdhbmFseXNlcy9zbnYtY2FsbGVycy92YWZfY3V0b2ZmX2V4cGVyaW1lbnQuUm1kJywgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsZWFuID0gVFJVRSkiCmBgYAoKX1RoaXMgYXNzdW1lcyB5b3UgYXJlIGluIHRoZSB0b3AgZGlyZWN0b3J5IG9mIHRoZSByZXBvc2l0b3J5Ll8KCiMjIFNldHVwCgojIyMjIFBhY2thZ2VzIGFuZCBmdW5jdGlvbnMKClJlYWQgaW4gc2V0IHVwIHNjcmlwdC4KCmBgYHtyfQojIE1hZ3JpdHRyIHBpcGUKYCU+JWAgPC0gZHBseXI6OmAlPiVgCmBgYAoKU2V0IHVwIG91dHB1dCBkaXJlY3Rvcmllcy4gCgpgYGB7cn0KYmFzZV9yZXN1bHRzX2RpciA8LSAicmVzdWx0cyIKYmFzZV9wbG90c19kaXIgPC0gInBsb3RzIgpgYGAKCk1ha2UgbmV3IGRpcmVjdG9yaWVzIGZvciB0aGUgY29tcGFyaXNvbiBhbmFseXNpcy4KCmBgYHtyfQpjb21wYXJlX3Jlc3VsdHNfZGlyIDwtIGZpbGUucGF0aChiYXNlX3Jlc3VsdHNfZGlyLCAiY29tcGFyaXNvbnMiLCAidmFmX2N1dG9mZiIpCmNvbXBhcmVfcGxvdHNfZGlyIDwtIGZpbGUucGF0aChiYXNlX3Bsb3RzX2RpciwgImNvbXBhcmlzb25zIiwgInZhZl9jdXRvZmYiKQoKIyBNYWtlIGNhbGxlciBzcGVjaWZpYyBwbG90cyBmb2xkZXIKaWYgKCFkaXIuZXhpc3RzKGNvbXBhcmVfcmVzdWx0c19kaXIpKSB7CiAgZGlyLmNyZWF0ZShjb21wYXJlX3Jlc3VsdHNfZGlyKQp9CiMgTWFrZSBjYWxsZXIgc3BlY2lmaWMgcGxvdHMgZm9sZGVyCmlmICghZGlyLmV4aXN0cyhjb21wYXJlX3Bsb3RzX2RpcikpIHsKICBkaXIuY3JlYXRlKGNvbXBhcmVfcGxvdHNfZGlyKQp9CmBgYAoKRnVuY3Rpb24gZm9yIGNyZWF0aW5nIGEgVE1CIGNvcnJlbGF0aW9uIG1hdHJpeCBhbW9uZ3N0IHRoZSBjYWxsZXJzIGZvciBhIHBhcnRpY3VsYXIgY3V0b2ZmLgoKYGBge3J9CmNvcl9tYXRyaXhfcGxvdCA8LSBmdW5jdGlvbihjdXRvZmYpIHsKICAjIEZvciBhIGdpdmVuIFZBRiBjdXRvZmYsIGNhbGN1bGF0ZSBUTUIgY29ycmVsYXRpb25zIGFtb25nc3QgdGhlIGNhbGxlcnMgYW5kIHBsb3QgaXQgdXNpbmcKICAjIEdHYWxseTo6Z2dwYWlycwogICMKICAjIEFyZ3M6CiAgIyAgIGN1dG9mZjogVGhlIFZBRiBjdXRvZmYgc2V0IHRvIGFuYWx5emUKICAjCiAgIyBSZXR1cm5zOgogICMgICBBIGNvcnJlbGF0aW9uIG1hdHJpeCBwbG90IGFtb25nc3QgdGhlIGNhbGxlcnMKCiAgIyBJc29sYXRlIHRoZSBUTUIgc3RhdHMgZm9yIHRoaXMgY3V0b2ZmCiAgY3V0b2ZmX2RmIDwtIHRtYl9maWx0ZXJfbG9uZyAlPiUKICAgIGRwbHlyOjpmaWx0ZXIodmFmX2N1dG9mZiA9PSBjdXRvZmYpICU+JQogICAgZHBseXI6OnNlbGVjdCgtVHVtb3JfU2FtcGxlX0JhcmNvZGUsIC12YWZfY3V0b2ZmKQoKICAjIE1ha2UgdGhlIHBsb3QKICBjb3JfcGxvdCA8LSBHR2FsbHk6OmdncGFpcnMoY3V0b2ZmX2RmLCBtYXBwaW5nID0gZ2dwbG90Mjo6YWVzKGFscGhhID0gMC4wNSkpICsKICAgIGdncGxvdDI6OnRoZW1lX2NsYXNzaWMoKSArCiAgICBnZ3Bsb3QyOjpnZ3RpdGxlKHBhc3RlMCgiVkFGIGN1dG9mZjogIiwgY3V0b2ZmKSkKCiAgIyBTYXZlIHRoaXMgcGxvdAogIGdncGxvdDI6Omdnc2F2ZShmaWxlLnBhdGgoCiAgICBjb21wYXJlX3Bsb3RzX2RpciwKICAgIHBhc3RlMCgidmFmXyIsIGN1dG9mZiwgIl90bWJfY29ycmVsYXRpb25zX3Bsb3QucG5nIikKICApLAogIHBsb3QgPSBjb3JfcGxvdAogICkKICAjIFJldHVybiB0aGUgcGxvdAogIHJldHVybihjb3JfcGxvdCkKfQpgYGAKCkZ1bmN0aW9uIGZvciBjb3JyZWxhdGluZyBUTUIgc3RhdGlzdGljcyBmb3IgZWFjaCBWQUYgY3V0b2ZmIHNldC4gCgpgYGB7cn0KY29yX2J5X3ZhZiA8LSBmdW5jdGlvbihjdXRvZmYgPSAwLjEpIHsKICAjIEZvciBhIGdpdmVuIFZBRiBjdXRvZmYsIGlzb2xhdGUgdGhlIFRNQiBzdGF0aXN0aWNzIGFuZCBjb3JyZWxhdGUgdGhlbS4KICAjCiAgIyBBcmdzOgogICMgICBjdXRvZmY6IHRoZSBWQUYgY3V0b2ZmIHRvIGNhbGN1bGF0ZSB0aGUgY29ycmVsYXRpb24gYnkuCiAgIwogICMgUmV0dXJuczoKICAjICAgUiB2YWx1ZXMgZm9yIFNwZWFybWFuJ3MgY29ycmVsYXRpb24gYW1vbmdzdCB0aGUgY2FsbGVycwoKICBjdXRvZmZfZGYgPC0gdG1iX2ZpbHRlcl9sb25nICU+JQogICAgZHBseXI6OmZpbHRlcih2YWZfY3V0b2ZmID09IGN1dG9mZikgJT4lCiAgICBkcGx5cjo6c2VsZWN0KC1UdW1vcl9TYW1wbGVfQmFyY29kZSwgLXZhZl9jdXRvZmYpCgogICMgRG8gY29ycmVsYXRpb25zIGJldHdlZW4gY2FsbGVycwogIGNvcl9yZXMgPC0gY29yKGN1dG9mZl9kZiwgbWV0aG9kID0gInNwZWFybWFuIiwgdXNlID0gIm5hLm9yLmNvbXBsZXRlIikKCiAgIyBUaGlzIGlzIHRvIHJlbW92ZSByZWR1bmRhbmN5IGFzIHVwcGVyIGNvcnJlbGF0aW9uIG1hdHJpeCA9PSBsb3dlcgogIGNvcl9yZXNbdXBwZXIudHJpKGNvcl9yZXMsIGRpYWcgPSBUUlVFKV0gPC0gTkEKCiAgIyBGb3JtYXQgaW50byBsb25nIGZvcm1hdCBkYXRhLmZyYW1lCiAgY29yX2RmIDwtIHJlc2hhcGUyOjptZWx0KGNvcl9yZXMsIG5hLnJtID0gVFJVRSwgdmFsdWUubmFtZSA9ICJjb3IiKSAlPiUKICAgIGRwbHlyOjptdXRhdGUoCiAgICAgIGNvbXBhcmUgPSBwYXN0ZTAoVmFyMSwgIi0iLCBWYXIyKSwKICAgICAgY3V0b2ZmCiAgICApCgogICMgUmV0dXJuIGEgZGF0YS5mcmFtZSByZWFkeSBmb3IgYmVpbmcgYWRkZWQgdG8gdGhlIGJpZ2dlciBkYXRhLmZyYW1lIGZvciBwbG90dGluZy4KICByZXR1cm4oY29yX2RmKQp9CmBgYAoKQ2FsY3VsYXRlIHZhcmlhbmNlIGZvciBhIHNhbXBsZSBmb3IgYSBnaXZlbiBjYWxsZXIgYW1vbmdzdCB0aGUgZGlmZmVyZW50IFZBRiBjdXRvZmZzLgoKYGBge3J9CnZhcl9ieV9zYW1wbGUgPC0gZnVuY3Rpb24oc2FtcGxlKSB7CiAgIyBGb3IgYSBnaXZlbiBzYW1wbGUgSUQsIGlzb2xhdGUgdGhlIFRNQiBzdGF0aXN0aWNzIGFuZCBjYWxjdWxhdGUgdGhlIHZhcmlhbmNlLgogICMKICAjIEFyZ3M6CiAgIyAgIHNhbXBsZTogVHVtb3JfU2FtcGxlX0JhcmNvZGUgb2YgdGhlIHNhbXBsZSB5b3Ugd291bGQgbGlrZSB0aGUgdmFyaWFuY2UgZm9yLgogICMKICAjIFJldHVybnM6CiAgIyAgIFZhcmlhbmNlIGZvciB0aGF0IHNhbXBsZSBmb3IgZWFjaCBjYWxsZXIuCgogIHNhbXBsZV9kZiA8LSB0bWJfZmlsdGVyX2xvbmcgJT4lCiAgICBkcGx5cjo6ZmlsdGVyKFR1bW9yX1NhbXBsZV9CYXJjb2RlID09IHNhbXBsZSkgJT4lCiAgICBkcGx5cjo6c2VsZWN0KC1UdW1vcl9TYW1wbGVfQmFyY29kZSwgLXZhZl9jdXRvZmYpCgogICMgRG8gY29ycmVsYXRpb25zIGJldHdlZW4gY2FsbGVycwogIHZhcl9ieV9jYWxsZXIgPC0gZGF0YS5mcmFtZSgKICAgIHQoYXBwbHkoc2FtcGxlX2RmLCAyLCB2YXIpKSwKICAgIHNhbXBsZQogICkKCiAgcmV0dXJuKHZhcl9ieV9jYWxsZXIpCn0KYGBgCgojIyBSdW4gdGhlIGRhdGEgd2l0aCBkaWZmZXJlbnQgVkFGIGZpbHRlciBjdXRvZmZzCgpXZSBuZWVkIHRvIHJlLWNhbGN1bGF0ZSBUTUIgc3RhdGlzdGljcyB3aXRoIHZhcmlvdXMgVkFGIGZpbHRlciBjdXRvZmZzLgoKYGBge2Jhc2h9CiMgVkFGIGN1dG9mZnMgdG8gdXNlCnZhZl9jdXRvZmY9KCIwLjEwIiAiMC4yMCIgIjAuMzAiICIwLjQwIikKCiMgU2FtZSBmaWxlcyBhcyBvcmlnaW5hbGx5IHJ1bgpkYXRhc2V0cz0oInN0cmVsa2EyIiAibXV0ZWN0MiIgImxhbmNldCIgInZhcmRpY3QiKQoKIyBXR1MgZmlsZXMgZm9yIGVhY2ggY2FsbGVyCndnc19maWxlcz0oIldHUy5oZzM4LnN0cmVsa2EyLnVucGFkZGVkLmJlZCIgIldHUy5oZzM4Lm11dGVjdDIudW5wYWRkZWQuYmVkIiAiV0dTLmhnMzgubGFuY2V0LjMwMGJwX3BhZGRlZC5iZWQiICJXR1MuaGczOC52YXJkaWN0LjEwMGJwX3BhZGRlZC5iZWQiKQoKZm9yICgoaT0wO2k8JHsjdmFmX2N1dG9mZltAXX07aSsrKSk7IAogIGRvCiAgZm9yICgoaj0wO2o8JHsjZGF0YXNldHNbQF19O2orKykpOyAKICBkbwogICAgZWNobyAiUHJvY2Vzc2luZyBkYXRhc2V0OiAke2RhdGFzZXRzWyRqXX0iCiAgICBSc2NyaXB0IHNjcmlwdHMvMDEtY2FsY3VsYXRlX3ZhZl90bWIuUiBcCiAgICAgIC0tbGFiZWwgJHtkYXRhc2V0c1skal19IFwKICAgICAgLS1vdXRwdXQgYW5hbHlzZXMvc252LWNhbGxlcnMvcmVzdWx0cy92YWZfZmlsdGVyL2N1dG9mZl8ke3ZhZl9jdXRvZmZbJGldfSBcCiAgICAgIC0tbWFmIGRhdGEvcGJ0YS1zbnYtJHtkYXRhc2V0c1skal19LnZlcC5tYWYuZ3ogXAogICAgICAtLW1ldGFkYXRhIGRhdGEvcGJ0YS1oaXN0b2xvZ2llcy50c3YgXAogICAgICAtLWJlZF93Z3MgZGF0YS8ke3dnc19maWxlc1skal19IFwKICAgICAgLS1iZWRfd3hzIGRhdGEvV1hTLmhnMzguMTAwYnBfcGFkZGVkLmJlZCBcCiAgICAgIC0tdmFmX2ZpbHRlciAke3ZhZl9jdXRvZmZbJGldfSBcCiAgICAgIC0tb3ZlcndyaXRlIFwKICAgICAgLS1ub19yZWdpb24KICBkb25lCiAgZG9uZQpgYGAKCiMjIEltcG9ydCBkYXRhIAoKR2V0IHRoZSBsaXN0cyBvZiBlYWNoIHR5cGUgb2YgZmlsZS4gCgpgYGB7cn0KIyBNYWtlIGEgbGlzdCBvZiB0aGUgdmFmIGZpbHRlciBleHBlcmltZW50IHRtYiBmaWxlcwpmaWx0ZXJfdG1iX2ZpbGVzIDwtIGxpc3QuZmlsZXMoZmlsZS5wYXRoKGJhc2VfcmVzdWx0c19kaXIsICJ2YWZfZmlsdGVyIiksCiAgcGF0dGVybiA9ICJfdG1iLnRzdiQiLCByZWN1cnNpdmUgPSBUUlVFLAogIGZ1bGwubmFtZXMgPSBUUlVFCikKYGBgCgpUYWtlIGEgbG9vayBhdCB0aGUgVE1CcyBmcm9tbyBkaWZmZXJlbnQgVkFGIGZpbHRlciBjdXRvZmZzLiAKCmBgYHtyfQpmaWx0ZXJfdG1iX2ZpbGVzCmBgYAoKQ29udmVydCB0aGUgVkFGIGN1dG9mZnMgaW50byB0aGVpciBvd24gdmVjdG9yLiAKCmBgYHtyfQp2YWZfZmlsdGVyIDwtIHN0cmluZ3I6OndvcmQoZmlsdGVyX3RtYl9maWxlcywgc2VwID0gIi8iLCAzKQp2YWZfZmlsdGVyIDwtIGFzLm51bWVyaWMoZ3N1YigiY3V0b2ZmXyIsICIiLCB2YWZfZmlsdGVyKSkKdmFmX2ZpbHRlcgpgYGAKCkdldCBjYWxsZXIgaW5mb3JtYXRpb24gYXMgYSB2ZWN0b3IuIAoKYGBge3J9CmNhbGxlcl9maWx0ZXIgPC0gc3RyaW5ncjo6d29yZChmaWx0ZXJfdG1iX2ZpbGVzLCBzZXAgPSAiLyIsIDQpCmNhbGxlcl9maWx0ZXIgPC0gZ3N1YigiX3RtYi50c3YiLCAiIiwgY2FsbGVyX2ZpbHRlcikKY2FsbGVyX2ZpbHRlcgpgYGAKClJlYWQgaW4gdGhlIGRhdGEuIApOYW1lIGVhY2ggd2l0aCB0aGVpciBjYWxsZXIgYW5kIFZBRiBmaWx0ZXIgY3V0b2ZmLiAKYGBge3IgaW5jbHVkZT1GQUxTRX0KZmlsdGVyX3RtYl9saXN0IDwtIGxhcHBseShmaWx0ZXJfdG1iX2ZpbGVzLCByZWFkcjo6cmVhZF90c3YpCm5hbWVzKGZpbHRlcl90bWJfbGlzdCkgPC0gcGFzdGUwKGNhbGxlcl9maWx0ZXIsICJfIiwgdmFmX2ZpbHRlcikKYGBgCgpUdXJuIHRoaXMgaW50byBhIGRhdGEuZnJhbWUKCmBgYHtyfQp0bWJfZmlsdGVyX2RmIDwtIGRwbHlyOjpiaW5kX3Jvd3MoZmlsdGVyX3RtYl9saXN0LCAuaWQgPSAiTkFNRSIpICU+JQogIGRwbHlyOjptdXRhdGUoCiAgICBjYWxsZXIgPSBzdHJpbmdyOjp3b3JkKE5BTUUsIHNlcCA9ICJfIiwgMSksCiAgICB2YWZfY3V0b2ZmID0gYXMubnVtZXJpYyhzdHJpbmdyOjp3b3JkKE5BTUUsIHNlcCA9ICJfIiwgMikpCiAgKQpgYGAKCk1ha2UgdGhpcyBpbnRvIGEgbG9uZyBmb3JtIGRhdGEuZnJhbWUgZm9yIHBsb3R0aW5nIHB1cnBvc2VzLiAKCmBgYHtyfQp0bWJfZmlsdGVyX2xvbmcgPC0gdG1iX2ZpbHRlcl9kZiAlPiUKICBkcGx5cjo6ZGlzdGluY3QoVHVtb3JfU2FtcGxlX0JhcmNvZGUsIGNhbGxlciwgdG1iLCB2YWZfY3V0b2ZmKSAlPiUKICB0aWR5cjo6c3ByZWFkKGNhbGxlciwgdG1iKQpgYGAKCiMjIE1ha2UgdGhlIFRNQiBjb3JyZWxhdGlvbiBwbG90cwoKYGBge3J9CmxhcHBseSh1bmlxdWUodmFmX2ZpbHRlciksIGNvcl9tYXRyaXhfcGxvdCkKYGBgCgpHZXQgdGhlIHZhcmlhbmNlIGZvciBlYWNoIHNhbXBsZSBhY3Jvc3MgdGhpcyBleHBlcmltZW50LgoKYGBge3J9CiMgUnVuIHRoaXMgb24gZWFjaCBzZXQKdmFyX2J5X3NhbXBsZV9kZiA8LSBkby5jYWxsKAogICJyYmluZC5kYXRhLmZyYW1lIiwKICBsYXBwbHkodW5pcXVlKHRtYl9maWx0ZXJfbG9uZyRUdW1vcl9TYW1wbGVfQmFyY29kZSksIHZhcl9ieV9zYW1wbGUpCikgJT4lCiAgcmVzaGFwZTI6Om1lbHQoKQpgYGAKClBsb3QgdGhlIHZhcmlhbmNlIGZvciBlYWNoIHNhbXBsZS4KCmBgYHtyfQpnZ3Bsb3QyOjpnZ3Bsb3QodmFyX2J5X3NhbXBsZV9kZiwgZ2dwbG90Mjo6YWVzKHggPSB2YXJpYWJsZSwgeSA9IHZhbHVlKSkgKwogIGdncGxvdDI6Omdlb21fYm94cGxvdChvdXRsaWVyLmNvbG9yID0gTkEpICsKICBnZ3Bsb3QyOjpnZW9tX2ppdHRlcihnZ3Bsb3QyOjphZXMoY29sb3IgPSBzYW1wbGUpKSArCiAgZ2dwbG90Mjo6dGhlbWVfY2xhc3NpYygpICsKICBnZ3Bsb3QyOjp4bGFiKCIiKSArCiAgZ2dwbG90Mjo6eWxhYigiU2FtcGxlIFZhcmlhbmNlIEFjcm9zcyBWQUYgRmlsdGVyIEN1dG9mZnMiKSArCiAgZ2dwbG90Mjo6dGhlbWUoCiAgICBheGlzLnRleHQueCA9IGdncGxvdDI6OmVsZW1lbnRfdGV4dChhbmdsZSA9IDQ1LCBoanVzdCA9IDEpLAogICAgbGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiCiAgKQpgYGAKCkdldCBjb3JyZWxhdGlvbnMgYnkgdmFmIGN1dG9mZi4gCgpgYGB7cn0KIyBSdW4gdGhpcyBvbiBlYWNoIHNldApjb3JfYnlfdmFmX2RmIDwtIGRvLmNhbGwoCiAgInJiaW5kLmRhdGEuZnJhbWUiLAogIGxhcHBseSh1bmlxdWUodmFmX2ZpbHRlciksIGNvcl9ieV92YWYpCikKYGBgCgpQbG90IHRoZSBjb3JyZWxhdGlvbnMgYW5kIHRoZSB2YWZfY3V0b2ZmIHBlciBlYWNoIGNhbGxlciBjb21iaW5hdGlvbi4gCgpgYGB7cn0KZ2dwbG90Mjo6Z2dwbG90KGNvcl9ieV92YWZfZGYsIGdncGxvdDI6OmFlcyh4ID0gcmVvcmRlcihjb21wYXJlLCAtY29yKSwgZmlsbCA9IGFzLmZhY3RvcihjdXRvZmYpLCB5ID0gY29yKSkgKwogIGdncGxvdDI6Omdlb21fcG9pbnQoc2hhcGUgPSAyMSwgc2l6ZSA9IDIuNSwgc3Ryb2tlID0gLjc1LCBjb2xvciA9ICJibGFjayIpICsKICBnZ3Bsb3QyOjp0aGVtZV9jbGFzc2ljKCkgKwogIGdndXBzZXQ6OnNjYWxlX3hfbWVyZ2VsaXN0KHNlcCA9ICItIikgKwogIGdndXBzZXQ6OmF4aXNfY29tYm1hdHJpeChzZXAgPSAiLSIpICsKICBnZ3Bsb3QyOjp4bGFiKCIiKSArCiAgZ2dwbG90Mjo6eWxhYigiVE1CIFNwZWFybWFuIENvcnJlbGF0aW9uIikgKwogIGdncGxvdDI6OnNjYWxlX2ZpbGxfYnJld2VyKCJWQUYgRmlsdGVyIEN1dG9mZiIsIHBhbGV0dGUgPSAiWWxHbkJ1IikKYGBgCgojIyBTZXNzaW9uIEluZm8KCmBgYHtyfQpzZXNzaW9uSW5mbygpCmBgYAo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiVkFGIEN1dG9mZnMgYW5kIFRNQiBDYWxjdWxhdGlvbiIKb3V0cHV0OiAKICBodG1sX25vdGVib29rOgogICAgdG9jOiBUUlVFCiAgICB0b2NfZmxvYXQ6IFRSVUUKYXV0aG9yOiBDLiBTYXZvbmVuIGZvciBBTFNGIENDREwKZGF0ZTogMjAxOQotLS0KClB1cnBvc2U6IEhvdyBkbyB0aGUgVE1CIGNhbGN1bGF0aW9ucyBjaGFuZ2Ugd2l0aCBhZGp1c3RtZW50cyB0byB0aGUgVkFGIGN1dG9mZgpmaWx0ZXI/IAoKIyMjIFN1bW1hcnkgb2YgRmluZGluZ3M6CgojIyMjIFVzYWdlCgpUbyBydW4gdGhpcyBmcm9tIHRoZSBjb21tYW5kIGxpbmUsIHVzZToKYGBgClJzY3JpcHQgLWUgInJtYXJrZG93bjo6cmVuZGVyKCdhbmFseXNlcy9zbnYtY2FsbGVycy92YWZfY3V0b2ZmX2V4cGVyaW1lbnQuUm1kJywgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsZWFuID0gVFJVRSkiCmBgYAoKX1RoaXMgYXNzdW1lcyB5b3UgYXJlIGluIHRoZSB0b3AgZGlyZWN0b3J5IG9mIHRoZSByZXBvc2l0b3J5Ll8KCiMjIFNldHVwCgojIyMjIFBhY2thZ2VzIGFuZCBmdW5jdGlvbnMKClJlYWQgaW4gc2V0IHVwIHNjcmlwdC4KCmBgYHtyfQojIE1hZ3JpdHRyIHBpcGUKYCU+JWAgPC0gZHBseXI6OmAlPiVgCmBgYAoKU2V0IHVwIG91dHB1dCBkaXJlY3Rvcmllcy4gCgpgYGB7cn0KYmFzZV9yZXN1bHRzX2RpciA8LSAicmVzdWx0cyIKYmFzZV9wbG90c19kaXIgPC0gInBsb3RzIgpgYGAKCk1ha2UgbmV3IGRpcmVjdG9yaWVzIGZvciB0aGUgY29tcGFyaXNvbiBhbmFseXNpcy4KCmBgYHtyfQpjb21wYXJlX3Jlc3VsdHNfZGlyIDwtIGZpbGUucGF0aChiYXNlX3Jlc3VsdHNfZGlyLCAiY29tcGFyaXNvbnMiLCAidmFmX2N1dG9mZiIpCmNvbXBhcmVfcGxvdHNfZGlyIDwtIGZpbGUucGF0aChiYXNlX3Bsb3RzX2RpciwgImNvbXBhcmlzb25zIiwgInZhZl9jdXRvZmYiKQoKIyBNYWtlIGNhbGxlciBzcGVjaWZpYyBwbG90cyBmb2xkZXIKaWYgKCFkaXIuZXhpc3RzKGNvbXBhcmVfcmVzdWx0c19kaXIpKSB7CiAgZGlyLmNyZWF0ZShjb21wYXJlX3Jlc3VsdHNfZGlyKQp9CiMgTWFrZSBjYWxsZXIgc3BlY2lmaWMgcGxvdHMgZm9sZGVyCmlmICghZGlyLmV4aXN0cyhjb21wYXJlX3Bsb3RzX2RpcikpIHsKICBkaXIuY3JlYXRlKGNvbXBhcmVfcGxvdHNfZGlyKQp9CmBgYAoKRnVuY3Rpb24gZm9yIGNyZWF0aW5nIGEgVE1CIGNvcnJlbGF0aW9uIG1hdHJpeCBhbW9uZ3N0IHRoZSBjYWxsZXJzIGZvciBhIHBhcnRpY3VsYXIgY3V0b2ZmLgoKYGBge3J9CmNvcl9tYXRyaXhfcGxvdCA8LSBmdW5jdGlvbihjdXRvZmYpIHsKICAjIEZvciBhIGdpdmVuIFZBRiBjdXRvZmYsIGNhbGN1bGF0ZSBUTUIgY29ycmVsYXRpb25zIGFtb25nc3QgdGhlIGNhbGxlcnMgYW5kIHBsb3QgaXQgdXNpbmcKICAjIEdHYWxseTo6Z2dwYWlycwogICMKICAjIEFyZ3M6CiAgIyAgIGN1dG9mZjogVGhlIFZBRiBjdXRvZmYgc2V0IHRvIGFuYWx5emUKICAjCiAgIyBSZXR1cm5zOgogICMgICBBIGNvcnJlbGF0aW9uIG1hdHJpeCBwbG90IGFtb25nc3QgdGhlIGNhbGxlcnMKCiAgIyBJc29sYXRlIHRoZSBUTUIgc3RhdHMgZm9yIHRoaXMgY3V0b2ZmCiAgY3V0b2ZmX2RmIDwtIHRtYl9maWx0ZXJfbG9uZyAlPiUKICAgIGRwbHlyOjpmaWx0ZXIodmFmX2N1dG9mZiA9PSBjdXRvZmYpICU+JQogICAgZHBseXI6OnNlbGVjdCgtVHVtb3JfU2FtcGxlX0JhcmNvZGUsIC12YWZfY3V0b2ZmKQoKICAjIE1ha2UgdGhlIHBsb3QKICBjb3JfcGxvdCA8LSBHR2FsbHk6OmdncGFpcnMoY3V0b2ZmX2RmLCBtYXBwaW5nID0gZ2dwbG90Mjo6YWVzKGFscGhhID0gMC4wNSkpICsKICAgIGdncGxvdDI6OnRoZW1lX2NsYXNzaWMoKSArCiAgICBnZ3Bsb3QyOjpnZ3RpdGxlKHBhc3RlMCgiVkFGIGN1dG9mZjogIiwgY3V0b2ZmKSkKCiAgIyBTYXZlIHRoaXMgcGxvdAogIGdncGxvdDI6Omdnc2F2ZShmaWxlLnBhdGgoCiAgICBjb21wYXJlX3Bsb3RzX2RpciwKICAgIHBhc3RlMCgidmFmXyIsIGN1dG9mZiwgIl90bWJfY29ycmVsYXRpb25zX3Bsb3QucG5nIikKICApLAogIHBsb3QgPSBjb3JfcGxvdAogICkKICAjIFJldHVybiB0aGUgcGxvdAogIHJldHVybihjb3JfcGxvdCkKfQpgYGAKCkZ1bmN0aW9uIGZvciBjb3JyZWxhdGluZyBUTUIgc3RhdGlzdGljcyBmb3IgZWFjaCBWQUYgY3V0b2ZmIHNldC4gCgpgYGB7cn0KY29yX2J5X3ZhZiA8LSBmdW5jdGlvbihjdXRvZmYgPSAwLjEpIHsKICAjIEZvciBhIGdpdmVuIFZBRiBjdXRvZmYsIGlzb2xhdGUgdGhlIFRNQiBzdGF0aXN0aWNzIGFuZCBjb3JyZWxhdGUgdGhlbS4KICAjCiAgIyBBcmdzOgogICMgICBjdXRvZmY6IHRoZSBWQUYgY3V0b2ZmIHRvIGNhbGN1bGF0ZSB0aGUgY29ycmVsYXRpb24gYnkuCiAgIwogICMgUmV0dXJuczoKICAjICAgUiB2YWx1ZXMgZm9yIFNwZWFybWFuJ3MgY29ycmVsYXRpb24gYW1vbmdzdCB0aGUgY2FsbGVycwoKICBjdXRvZmZfZGYgPC0gdG1iX2ZpbHRlcl9sb25nICU+JQogICAgZHBseXI6OmZpbHRlcih2YWZfY3V0b2ZmID09IGN1dG9mZikgJT4lCiAgICBkcGx5cjo6c2VsZWN0KC1UdW1vcl9TYW1wbGVfQmFyY29kZSwgLXZhZl9jdXRvZmYpCgogICMgRG8gY29ycmVsYXRpb25zIGJldHdlZW4gY2FsbGVycwogIGNvcl9yZXMgPC0gY29yKGN1dG9mZl9kZiwgbWV0aG9kID0gInNwZWFybWFuIiwgdXNlID0gIm5hLm9yLmNvbXBsZXRlIikKCiAgIyBUaGlzIGlzIHRvIHJlbW92ZSByZWR1bmRhbmN5IGFzIHVwcGVyIGNvcnJlbGF0aW9uIG1hdHJpeCA9PSBsb3dlcgogIGNvcl9yZXNbdXBwZXIudHJpKGNvcl9yZXMsIGRpYWcgPSBUUlVFKV0gPC0gTkEKCiAgIyBGb3JtYXQgaW50byBsb25nIGZvcm1hdCBkYXRhLmZyYW1lCiAgY29yX2RmIDwtIHJlc2hhcGUyOjptZWx0KGNvcl9yZXMsIG5hLnJtID0gVFJVRSwgdmFsdWUubmFtZSA9ICJjb3IiKSAlPiUKICAgIGRwbHlyOjptdXRhdGUoCiAgICAgIGNvbXBhcmUgPSBwYXN0ZTAoVmFyMSwgIi0iLCBWYXIyKSwKICAgICAgY3V0b2ZmCiAgICApCgogICMgUmV0dXJuIGEgZGF0YS5mcmFtZSByZWFkeSBmb3IgYmVpbmcgYWRkZWQgdG8gdGhlIGJpZ2dlciBkYXRhLmZyYW1lIGZvciBwbG90dGluZy4KICByZXR1cm4oY29yX2RmKQp9CmBgYAoKQ2FsY3VsYXRlIHZhcmlhbmNlIGZvciBhIHNhbXBsZSBmb3IgYSBnaXZlbiBjYWxsZXIgYW1vbmdzdCB0aGUgZGlmZmVyZW50IFZBRiBjdXRvZmZzLgoKYGBge3J9CnZhcl9ieV9zYW1wbGUgPC0gZnVuY3Rpb24oc2FtcGxlKSB7CiAgIyBGb3IgYSBnaXZlbiBzYW1wbGUgSUQsIGlzb2xhdGUgdGhlIFRNQiBzdGF0aXN0aWNzIGFuZCBjYWxjdWxhdGUgdGhlIHZhcmlhbmNlLgogICMKICAjIEFyZ3M6CiAgIyAgIHNhbXBsZTogVHVtb3JfU2FtcGxlX0JhcmNvZGUgb2YgdGhlIHNhbXBsZSB5b3Ugd291bGQgbGlrZSB0aGUgdmFyaWFuY2UgZm9yLgogICMKICAjIFJldHVybnM6CiAgIyAgIFZhcmlhbmNlIGZvciB0aGF0IHNhbXBsZSBmb3IgZWFjaCBjYWxsZXIuCgogIHNhbXBsZV9kZiA8LSB0bWJfZmlsdGVyX2xvbmcgJT4lCiAgICBkcGx5cjo6ZmlsdGVyKFR1bW9yX1NhbXBsZV9CYXJjb2RlID09IHNhbXBsZSkgJT4lCiAgICBkcGx5cjo6c2VsZWN0KC1UdW1vcl9TYW1wbGVfQmFyY29kZSwgLXZhZl9jdXRvZmYpCgogICMgRG8gY29ycmVsYXRpb25zIGJldHdlZW4gY2FsbGVycwogIHZhcl9ieV9jYWxsZXIgPC0gZGF0YS5mcmFtZSgKICAgIHQoYXBwbHkoc2FtcGxlX2RmLCAyLCB2YXIpKSwKICAgIHNhbXBsZQogICkKCiAgcmV0dXJuKHZhcl9ieV9jYWxsZXIpCn0KYGBgCgojIyBSdW4gdGhlIGRhdGEgd2l0aCBkaWZmZXJlbnQgVkFGIGZpbHRlciBjdXRvZmZzCgpXZSBuZWVkIHRvIHJlLWNhbGN1bGF0ZSBUTUIgc3RhdGlzdGljcyB3aXRoIHZhcmlvdXMgVkFGIGZpbHRlciBjdXRvZmZzLgoKYGBge2Jhc2h9CiMgVkFGIGN1dG9mZnMgdG8gdXNlCnZhZl9jdXRvZmY9KCIwLjEwIiAiMC4yMCIgIjAuMzAiICIwLjQwIikKCiMgU2FtZSBmaWxlcyBhcyBvcmlnaW5hbGx5IHJ1bgpkYXRhc2V0cz0oInN0cmVsa2EyIiAibXV0ZWN0MiIgImxhbmNldCIgInZhcmRpY3QiKQoKIyBXR1MgZmlsZXMgZm9yIGVhY2ggY2FsbGVyCndnc19maWxlcz0oIldHUy5oZzM4LnN0cmVsa2EyLnVucGFkZGVkLmJlZCIgIldHUy5oZzM4Lm11dGVjdDIudW5wYWRkZWQuYmVkIiAiV0dTLmhnMzgubGFuY2V0LjMwMGJwX3BhZGRlZC5iZWQiICJXR1MuaGczOC52YXJkaWN0LjEwMGJwX3BhZGRlZC5iZWQiKQoKZm9yICgoaT0wO2k8JHsjdmFmX2N1dG9mZltAXX07aSsrKSk7IAogIGRvCiAgZm9yICgoaj0wO2o8JHsjZGF0YXNldHNbQF19O2orKykpOyAKICBkbwogICAgZWNobyAiUHJvY2Vzc2luZyBkYXRhc2V0OiAke2RhdGFzZXRzWyRqXX0iCiAgICBSc2NyaXB0IHNjcmlwdHMvMDEtY2FsY3VsYXRlX3ZhZl90bWIuUiBcCiAgICAgIC0tbGFiZWwgJHtkYXRhc2V0c1skal19IFwKICAgICAgLS1vdXRwdXQgYW5hbHlzZXMvc252LWNhbGxlcnMvcmVzdWx0cy92YWZfZmlsdGVyL2N1dG9mZl8ke3ZhZl9jdXRvZmZbJGldfSBcCiAgICAgIC0tbWFmIGRhdGEvcGJ0YS1zbnYtJHtkYXRhc2V0c1skal19LnZlcC5tYWYuZ3ogXAogICAgICAtLW1ldGFkYXRhIGRhdGEvcGJ0YS1oaXN0b2xvZ2llcy50c3YgXAogICAgICAtLWJlZF93Z3MgZGF0YS8ke3dnc19maWxlc1skal19IFwKICAgICAgLS1iZWRfd3hzIGRhdGEvV1hTLmhnMzguMTAwYnBfcGFkZGVkLmJlZCBcCiAgICAgIC0tdmFmX2ZpbHRlciAke3ZhZl9jdXRvZmZbJGldfSBcCiAgICAgIC0tb3ZlcndyaXRlIFwKICAgICAgLS1ub19yZWdpb24KICBkb25lCiAgZG9uZQpgYGAKCiMjIEltcG9ydCBkYXRhIAoKR2V0IHRoZSBsaXN0cyBvZiBlYWNoIHR5cGUgb2YgZmlsZS4gCgpgYGB7cn0KIyBNYWtlIGEgbGlzdCBvZiB0aGUgdmFmIGZpbHRlciBleHBlcmltZW50IHRtYiBmaWxlcwpmaWx0ZXJfdG1iX2ZpbGVzIDwtIGxpc3QuZmlsZXMoZmlsZS5wYXRoKGJhc2VfcmVzdWx0c19kaXIsICJ2YWZfZmlsdGVyIiksCiAgcGF0dGVybiA9ICJfdG1iLnRzdiQiLCByZWN1cnNpdmUgPSBUUlVFLAogIGZ1bGwubmFtZXMgPSBUUlVFCikKYGBgCgpUYWtlIGEgbG9vayBhdCB0aGUgVE1CcyBmcm9tIGRpZmZlcmVudCBWQUYgZmlsdGVyIGN1dG9mZnMuIAoKYGBge3J9CmZpbHRlcl90bWJfZmlsZXMKYGBgCgpDb252ZXJ0IHRoZSBWQUYgY3V0b2ZmcyBpbnRvIHRoZWlyIG93biB2ZWN0b3IuIAoKYGBge3J9CnZhZl9maWx0ZXIgPC0gc3RyaW5ncjo6d29yZChmaWx0ZXJfdG1iX2ZpbGVzLCBzZXAgPSAiLyIsIDMpCnZhZl9maWx0ZXIgPC0gYXMubnVtZXJpYyhnc3ViKCJjdXRvZmZfIiwgIiIsIHZhZl9maWx0ZXIpKQp2YWZfZmlsdGVyCmBgYAoKR2V0IGNhbGxlciBpbmZvcm1hdGlvbiBhcyBhIHZlY3Rvci4gCgpgYGB7cn0KY2FsbGVyX2ZpbHRlciA8LSBzdHJpbmdyOjp3b3JkKGZpbHRlcl90bWJfZmlsZXMsIHNlcCA9ICIvIiwgNCkKY2FsbGVyX2ZpbHRlciA8LSBnc3ViKCJfdG1iLnRzdiIsICIiLCBjYWxsZXJfZmlsdGVyKQpjYWxsZXJfZmlsdGVyCmBgYAoKUmVhZCBpbiB0aGUgZGF0YS4gCk5hbWUgZWFjaCB3aXRoIHRoZWlyIGNhbGxlciBhbmQgVkFGIGZpbHRlciBjdXRvZmYuIAoKYGBge3IgaW5jbHVkZT1GQUxTRX0KZmlsdGVyX3RtYl9saXN0IDwtIGxhcHBseShmaWx0ZXJfdG1iX2ZpbGVzLCByZWFkcjo6cmVhZF90c3YpCm5hbWVzKGZpbHRlcl90bWJfbGlzdCkgPC0gcGFzdGUwKGNhbGxlcl9maWx0ZXIsICJfIiwgdmFmX2ZpbHRlcikKYGBgCgpUdXJuIHRoaXMgaW50byBhIGRhdGEuZnJhbWUKCmBgYHtyfQp0bWJfZmlsdGVyX2RmIDwtIGRwbHlyOjpiaW5kX3Jvd3MoZmlsdGVyX3RtYl9saXN0LCAuaWQgPSAiTkFNRSIpICU+JQogIGRwbHlyOjptdXRhdGUoCiAgICBjYWxsZXIgPSBzdHJpbmdyOjp3b3JkKE5BTUUsIHNlcCA9ICJfIiwgMSksCiAgICB2YWZfY3V0b2ZmID0gYXMubnVtZXJpYyhzdHJpbmdyOjp3b3JkKE5BTUUsIHNlcCA9ICJfIiwgMikpCiAgKQpgYGAKCk1ha2UgdGhpcyBpbnRvIGEgbG9uZyBmb3JtIGRhdGEuZnJhbWUgZm9yIHBsb3R0aW5nIHB1cnBvc2VzLiAKCmBgYHtyfQp0bWJfZmlsdGVyX2xvbmcgPC0gdG1iX2ZpbHRlcl9kZiAlPiUKICBkcGx5cjo6ZGlzdGluY3QoVHVtb3JfU2FtcGxlX0JhcmNvZGUsIGNhbGxlciwgdG1iLCB2YWZfY3V0b2ZmKSAlPiUKICB0aWR5cjo6c3ByZWFkKGNhbGxlciwgdG1iKQpgYGAKCiMjIE1ha2UgdGhlIFRNQiBjb3JyZWxhdGlvbiBwbG90cwoKYGBge3J9CmxhcHBseSh1bmlxdWUodmFmX2ZpbHRlciksIGNvcl9tYXRyaXhfcGxvdCkKYGBgCgpHZXQgdGhlIHZhcmlhbmNlIGZvciBlYWNoIHNhbXBsZSBhY3Jvc3MgdGhpcyBleHBlcmltZW50LgoKYGBge3J9CiMgUnVuIHRoaXMgb24gZWFjaCBzZXQKdmFyX2J5X3NhbXBsZV9kZiA8LSBkby5jYWxsKAogICJyYmluZC5kYXRhLmZyYW1lIiwKICBsYXBwbHkodW5pcXVlKHRtYl9maWx0ZXJfbG9uZyRUdW1vcl9TYW1wbGVfQmFyY29kZSksIHZhcl9ieV9zYW1wbGUpCikgJT4lCiAgcmVzaGFwZTI6Om1lbHQoKQpgYGAKClBsb3QgdGhlIHZhcmlhbmNlIGZvciBlYWNoIHNhbXBsZS4KCmBgYHtyfQpnZ3Bsb3QyOjpnZ3Bsb3QodmFyX2J5X3NhbXBsZV9kZiwgZ2dwbG90Mjo6YWVzKHggPSB2YXJpYWJsZSwgeSA9IHZhbHVlKSkgKwogIGdncGxvdDI6Omdlb21fYm94cGxvdChvdXRsaWVyLmNvbG9yID0gTkEpICsKICBnZ3Bsb3QyOjpnZW9tX2ppdHRlcihnZ3Bsb3QyOjphZXMoY29sb3IgPSBzYW1wbGUpKSArCiAgZ2dwbG90Mjo6dGhlbWVfY2xhc3NpYygpICsKICBnZ3Bsb3QyOjp4bGFiKCIiKSArCiAgZ2dwbG90Mjo6eWxhYigiU2FtcGxlIFZhcmlhbmNlIEFjcm9zcyBWQUYgRmlsdGVyIEN1dG9mZnMiKSArCiAgZ2dwbG90Mjo6dGhlbWUoCiAgICBheGlzLnRleHQueCA9IGdncGxvdDI6OmVsZW1lbnRfdGV4dChhbmdsZSA9IDQ1LCBoanVzdCA9IDEpLAogICAgbGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiCiAgKQpgYGAKCkdldCBjb3JyZWxhdGlvbnMgYnkgdmFmIGN1dG9mZi4gCgpgYGB7cn0KIyBSdW4gdGhpcyBvbiBlYWNoIHNldApjb3JfYnlfdmFmX2RmIDwtIGRvLmNhbGwoCiAgInJiaW5kLmRhdGEuZnJhbWUiLAogIGxhcHBseSh1bmlxdWUodmFmX2ZpbHRlciksIGNvcl9ieV92YWYpCikKYGBgCgpQbG90IHRoZSBjb3JyZWxhdGlvbnMgYW5kIHRoZSB2YWZfY3V0b2ZmIHBlciBlYWNoIGNhbGxlciBjb21iaW5hdGlvbi4gCgpgYGB7cn0KZ2dwbG90Mjo6Z2dwbG90KGNvcl9ieV92YWZfZGYsIGdncGxvdDI6OmFlcyh4ID0gcmVvcmRlcihjb21wYXJlLCAtY29yKSwgZmlsbCA9IGFzLmZhY3RvcihjdXRvZmYpLCB5ID0gY29yKSkgKwogIGdncGxvdDI6Omdlb21fcG9pbnQoc2hhcGUgPSAyMSwgc2l6ZSA9IDIuNSwgc3Ryb2tlID0gLjc1LCBjb2xvciA9ICJibGFjayIpICsKICBnZ3Bsb3QyOjp0aGVtZV9jbGFzc2ljKCkgKwogIGdndXBzZXQ6OnNjYWxlX3hfbWVyZ2VsaXN0KHNlcCA9ICItIikgKwogIGdndXBzZXQ6OmF4aXNfY29tYm1hdHJpeChzZXAgPSAiLSIpICsKICBnZ3Bsb3QyOjp4bGFiKCIiKSArCiAgZ2dwbG90Mjo6eWxhYigiVE1CIFNwZWFybWFuIENvcnJlbGF0aW9uIikgKwogIGdncGxvdDI6OnNjYWxlX2ZpbGxfYnJld2VyKCJWQUYgRmlsdGVyIEN1dG9mZiIsIHBhbGV0dGUgPSAiWWxHbkJ1IikKYGBgCgojIyBTZXNzaW9uIEluZm8KCmBgYHtyfQpzZXNzaW9uSW5mbygpCmBgYAo=</div>
 
 
 </div>
@@ -3276,55 +3362,6 @@ $(document).ready(function () {
   });
 });
 
-</script>
-
-<!-- tabsets -->
-
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
-<!-- code folding -->
-<script>
-$(document).ready(function () {
-  window.initializeSourceEmbed("vaf_cutoff_experiment.Rmd");
-  window.initializeCodeFolding("show" === "show");
-});
-</script>
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

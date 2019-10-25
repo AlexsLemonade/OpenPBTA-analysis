@@ -197,7 +197,7 @@ filter_tmb_files <- list.files(file.path(base_results_dir, "vaf_filter"),
 )
 ```
 
-Take a look at the TMBs fromo different VAF filter cutoffs. 
+Take a look at the TMBs from different VAF filter cutoffs. 
 
 ```{r}
 filter_tmb_files
@@ -221,6 +221,7 @@ caller_filter
 
 Read in the data. 
 Name each with their caller and VAF filter cutoff. 
+
 ```{r include=FALSE}
 filter_tmb_list <- lapply(filter_tmb_files, readr::read_tsv)
 names(filter_tmb_list) <- paste0(caller_filter, "_", vaf_filter)
