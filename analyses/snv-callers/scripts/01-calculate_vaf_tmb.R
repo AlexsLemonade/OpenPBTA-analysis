@@ -306,9 +306,16 @@ if (opt$no_region) {
     message(paste("Annotating genomic regions for", opt$label, "MAF data..."))
 
     # Annotation genomic regions
-    maf_annot <- annotr_maf(vaf_df, annotation_file = opt$annot_rds) %>%
-      readr::write_tsv(region_annot_file)
-
+    maf_annot <- annotr_maf(vaf_df, annotation_file = opt$annot_rds) 
+    
+    # Write the region file
+    if (opt$file_format == "tsv") {
+      maf_annot %>%
+        readr::write_tsv(region_annot_file)
+    } else {
+      maf_annot %>%
+        readr::write_rds(region_annot_file)
+    }
     # Print out completion message
     message(paste("Genomic region annotations saved to:", region_annot_file))
   }
