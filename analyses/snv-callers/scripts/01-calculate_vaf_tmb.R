@@ -26,6 +26,7 @@
 #               mutations with a VAF that are NA or below this number will be
 #               removed from the vaf data.frame before it is saved to a TSV file.
 # --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
+
 # --no_region : If used, regional analysis will not be done.
 #
 # Command line example:
@@ -131,6 +132,7 @@ opt <- parse_args(OptionParser(option_list = option_list))
 
 # Coerce to numeric
 opt$vaf_filter <- as.numeric(opt$vaf_filter)
+
 
 # Make everything relative to root path
 opt$maf <- file.path(root_dir, opt$maf)
