@@ -13,8 +13,8 @@ datasets=("strelka2" "mutect2" "lancet" "vardict")
 wgs_files=("WGS.hg38.strelka2.unpadded.bed" "WGS.hg38.mutect2.unpadded.bed" "WGS.hg38.lancet.300bp_padded.bed" "WGS.hg38.vardict.100bp_padded.bed")
 
 # Reference file paths
-cosmic=analyses/snv-callers/brain_cosmic_variants_coordinates.tsv
-annot_rds=scratch/hg38_genomic_region_annotation.rds
+cosmic=analyses/snv-callers/ref_files/brain_cosmic_variants_coordinates.tsv
+annot_rds=analyses/snv-callers/ref_files/hg38_genomic_region_annotation.rds
 
 # Set a default for the VAF filter if none is specified
 vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}
