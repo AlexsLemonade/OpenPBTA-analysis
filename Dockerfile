@@ -79,7 +79,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     glmnetUtils
 
 # Required for easy easy regex functions
-RUN R -e "devtools::install(c('qdapRegex'),update=FALSE)"
+RUN R -e "devtools::install_github('trinker/qdapRegex',dependencies = TRUE)"
 
 
 
