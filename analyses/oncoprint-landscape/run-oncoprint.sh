@@ -11,10 +11,11 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 mkdir driver-lists
-wget --directory-prefix=driver-lists -O driver-lists/brain-goi-list-long.txt https://github.com/marislab/create-pptc-pdx-oncoprints/raw/2c9ed2a2331bcef3003d6aa25a130485d76a3535/data/brain-goi-list-old.txt 
-wget --directory-prefix=driver-lists -O driver-lists/brain-goi-list-short.txt https://github.com/marislab/create-pptc-pdx-oncoprints/raw/2c9ed2a2331bcef3003d6aa25a130485d76a3535/data/brain-goi-list.txt
+wget --no-clobber --directory-prefix=driver-lists -O driver-lists/brain-goi-list-long.txt https://github.com/marislab/create-pptc-pdx-oncoprints/raw/2c9ed2a2331bcef3003d6aa25a130485d76a3535/data/brain-goi-list-old.txt 
+wget --no-clobber --directory-prefix=driver-lists -O driver-lists/brain-goi-list-short.txt https://github.com/marislab/create-pptc-pdx-oncoprints/raw/2c9ed2a2331bcef3003d6aa25a130485d76a3535/data/brain-goi-list.txt
 
 Rscript --vanilla 01-plot-oncoprint.R \
 	--maf_file ../../data/pbta-snv-mutect2.vep.maf.gz \
-	--fusion_file ../../data/pbta-fusion-arriba.tsv.gz \
-	--goi_list driver-lists/brain-goi-list-long.txt
+	--fusion_file ../../scratch/arriba.tsv \
+	--goi_list driver-lists/brain-goi-list-long.txt \
+	--png_name maf_oncoprint.png
