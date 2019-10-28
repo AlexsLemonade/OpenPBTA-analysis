@@ -155,7 +155,7 @@ var_by_sample <- function(sample) {
 ## Run the data with different VAF filter cutoffs
 
 We need to re-calculate TMB statistics with various VAF filter cutoffs. 
-Run this script to do it. 
+We will run this script to do it: `system("bash scripts/run_caller_evals_vaf_filter_exp.sh")`
 
 ```{r include=FALSE}
 system("bash scripts/run_caller_evals_vaf_filter_exp.sh")
