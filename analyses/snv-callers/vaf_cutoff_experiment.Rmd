@@ -205,7 +205,7 @@ filter_tmb_list <- lapply(filter_tmb_files, function(file_name) {
 names(filter_tmb_list) <- paste0(caller_filter, "_", vaf_filter)
 ```
 
-Turn this into a data.frame
+Turn this into a data frame.
 
 ```{r}
 tmb_filter_df <- dplyr::bind_rows(filter_tmb_list, .id = "NAME") %>%
