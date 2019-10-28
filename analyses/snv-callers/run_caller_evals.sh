@@ -36,6 +36,7 @@ do
   Rscript analyses/snv-callers/scripts/01-calculate_vaf_tmb.R \
     --label ${datasets[$i]} \
     --output analyses/snv-callers/results/${datasets[$i]} \
+    --file_format rds \
     --maf data/pbta-snv-${datasets[$i]}.vep.maf.gz \
     --metadata data/pbta-histologies.tsv \
     --bed_wgs data/${wgs_files[$i]} \
@@ -54,6 +55,7 @@ do
     --label ${dataset} \
     --vaf analyses/snv-callers/results/${dataset} \
     --plot_type png \
+    --file_format rds \
     --output analyses/snv-callers/plots/${dataset} \
     --cosmic $cosmic \
     --strategy wgs,wxs,both \
