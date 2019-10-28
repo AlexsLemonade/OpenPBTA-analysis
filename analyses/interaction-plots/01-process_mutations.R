@@ -1,6 +1,6 @@
 # Process mutations for interaction plot from  MAF file.
 #
-# J Shapiro for ALSF - CCDL
+# JA Shapiro for ALSF - CCDL
 #
 # 2019
 #
@@ -63,6 +63,13 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
+    opt_str = "--outfile", type = "character", 
+    default = file.path("analyses", "interaction-plots", "results", "cooccurance.tsv"),
+    help = "Relative file path (from top directory of 'OpenPBTA-analysis')
+            where output table will be placed.",
+    metavar = "character"
+  ),
+  make_option(
     opt_str = "--specimen_list", type = "character", 
     default = NA,
     help = "Relative file path (from top directory of 'OpenPBTA-analysis')
@@ -70,9 +77,22 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
+    opt_str = "--n_genes", type = "numeric", 
+    default = 50,
+    help = "Number of genes to include in figure. Will be filtered by number of
+            mutations, so the n most mutated genes will have their co-occurence
+            calculated and will appear in the resulting figure.",
+    metavar = "character"
+  ),
+  make_option(
     opt_str = "--include_syn", action = "store_true", 
     default = FALSE,
     help = "Include synonymous mutations"
+  ),  
+  make_option(
+    opt_str = "--include_intron", action = "store_true", 
+    default = FALSE,
+    help = "Include intron mutations"
   ),
   make_option(
     opt_str = "--vaf", type = "numeric", 
@@ -88,9 +108,9 @@ opts <- parse_args(OptionParser(option_list = option_list))
 # File locations
 
 maf_file <- file.path(root_dir, opts$maf)
-seg_file <- file.append(root_dir, opts$seg)
+seg_file <- file.path(root_dir, opts$seg)
 meta_file <- file.path(root_dir, opts$metadata)
-if(!is.na(opts.specimen_list)){
+if(!is.na(opts$specimen_list)){
   specimen_file <- file.path(root_dir, opts$specimen_list)
 }
 
@@ -102,7 +122,7 @@ if(!is.na(opts.specimen_list)){
 maf_df <- data.table::fread(maf_file, data.table = FALSE)
 seg_df <- data.table::fread(seg_file, data.table = FALSE)
 meta_df <- data.table::fread(meta_file, data.table = FALSE)
-if(exists(specimen_file)){
+if(exists("specimen_file")){
   specimen_df <- data.table::fread(specimen_file, data.table = FALSE)
 }
 
@@ -131,7 +151,7 @@ maf_df <- maf_df %>%
   )  
 
 # get sample and gene lists
-if (exits(specimen_df)){
+if (exists("specimen_df")){
   samples <- specimen_df$Kids_First_Biospecimen_ID
 } else {
   samples <- unique(maf_df$Tumor_Sample_Barcode)
@@ -142,8 +162,8 @@ genes <- unique(maf_df$Hugo_Symbol)
 sample_meta <- meta_df %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in% samples)
 
-# reduce maf to chosen samples & calculat VAF
-sample_maf_df <- maf_df %>%
+# reduce maf to chosen samples & calculate VAF
+sample_maf <- maf_df %>%
   dplyr::filter(Tumor_Sample_Barcode %in% samples) %>%
   dplyr::mutate(vaf = t_alt_count / (t_ref_count + t_alt_count))
 
@@ -156,8 +176,8 @@ sample_maf_filtered <- sample_maf %>%
                    exclude_consequence = exclusions)
 
 # count mutations by gene/sample pair and syn
-gene_sample_counts <- sample_maf_df %>%
-  dplyr::filter(Entrez_Gene_Id > 0) %>% #filter unknowns
+gene_sample_counts <- sample_maf_filtered %>%
+  dplyr::filter(Entrez_Gene_Id > 0) %>% # remove unknowns
   dplyr::group_by(gene = Hugo_Symbol, sample = Tumor_Sample_Barcode) %>%
   dplyr::tally(name = "mutations")
 
@@ -173,26 +193,11 @@ gene_counts <- gene_sample_counts %>%
                  desc(muts_per_sample))
 
 # get most often mutated genes
-top_count_genes <- head(gene_counts, 50)
+top_count_genes <- head(gene_counts, opts$n_genes)
 
 
-gene_pair_summary <- coocurrence(gene_sample_counts, top_count_genes)
+cooccur_summary <- coocurrence(gene_sample_counts, top_count_genes)
 
+readr::write_tsv(cooccur_summary, cooccur_file)
  
-### make plot
-ggplot(gene_pair_summary, aes(x = gene1, y = gene2, fill = cooccur_score))+
-  geom_tile(color = "white", size = 1) +
-  xlab('') + 
-  ylab('') +
-  scale_x_discrete(position = "top") +
-  scale_fill_distiller(type = "div", palette = 5, 
-                       limits = c(-20, 20),
-                       oob = scales::squish) +
-  theme_classic() + 
-  theme(axis.text.x = element_text(angle = -45, hjust = 1), 
-        axis.line = element_blank(), 
-        axis.ticks = element_blank(),
-        legend.justification=c(1,0), 
-        legend.position=c(1,0),
-        legend.key.size = unit(2, "char"))
 
