@@ -23,11 +23,6 @@ if (!("maftools" %in% installed.packages())) {
 }
 library(maftools)
 
-# Source the color palette for plots
-source(file.path("util", "oncoplot-palette.R"))
-
-#### Functions -----------------------------------------------------------------
-
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
@@ -49,8 +44,16 @@ if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
 }
 
-genes <- NULL
-cnv_file <- NULL
+# Source the color palette for plots
+source(
+  file.path(
+    root_dir,
+    "analyses",
+    "oncoprint-landscape",
+    "util",
+    "oncoplot-palette.R"
+  )
+)
 
 #### Command line options ------------------------------------------------------
 
@@ -64,21 +67,18 @@ option_list <- list(
   ),
   optparse::make_option(
     c("-c", "--cnv_file"),
-    action = "store_true",
     type = "character",
     default = NULL,
     help = "file path to SEG file that contains cnv information"
   ),
   optparse::make_option(
     c("-f", "--fusion_file"),
-    action = "store_true",
     type = "character",
     default = NULL,
     help = "file path to file that contains fusion information"
   ),
   optparse::make_option(
     c("-g", "--goi_list"),
-    action = "store_true",
     type = "character",
     default = NULL,
     help = "file path to file that contains list of genes to include on
@@ -97,6 +97,10 @@ opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
 maf <- opt$maf_file
+
+# Define cnv_file object here as it still needs to be defined for the `read.maf`
+# function, even if it is NULL
+cnv_file <- opt$cnv_file
 
 #### Read in data --------------------------------------------------------------
 
@@ -155,7 +159,7 @@ maf_object <-
     maf = maf_df,
     clinicalData = metadata,
     cnTable = cnv_file,
-    removeDuplicatedVariants = F,
+    removeDuplicatedVariants = FALSE,
     vc_nonSyn = c(
       "Frame_Shift_Del",
       "Frame_Shift_Ins",
@@ -177,10 +181,10 @@ if (!is.null(opt$goi_list)) {
   # Read in gene list
   goi_list <-
     read.delim(
-      file.path("driver-lists", "brain-goi-list-long.txt"),
+      file.path(opt$goi_list),
       sep = "\t",
-      header = F,
-      as.is = T
+      header = FALSE,
+      as.is = TRUE
     )
 
   # Get top mutated this data and goi list
@@ -191,12 +195,12 @@ if (!is.null(opt$goi_list)) {
 
   # Get top altered genes
   goi_ordered <-
-    subset_gene_sum[order(subset_gene_sum$AlteredSamples, decreasing = T), ]
+    subset_gene_sum[order(subset_gene_sum$AlteredSamples, decreasing = TRUE), ]
 
-  # Select N top genes
-  N <- ifelse(nrow(goi_ordered) > 20, 20, nrow(goi_ordered))
-  goi_ordered_N <- goi_ordered[1:N, ]
-  genes <- goi_ordered_N$Hugo_Symbol
+  # Select n top genes
+  num_genes <- ifelse(nrow(goi_ordered) > 20, 20, nrow(goi_ordered))
+  goi_ordered_num <- goi_ordered[1:num_genes, ]
+  genes <- goi_ordered_num$Hugo_Symbol
 
 } else {
   # If a gene list is not supplied, we do not want the `oncoplot` function to

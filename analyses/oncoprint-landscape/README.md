@@ -26,13 +26,15 @@ The structure of this folder is as follows:
 
 ```
 oncoprint-landscape
-├── README.md
-├── run-oncoprint.sh
 ├── 01-plot-oncoprint.R
+├── README.md
 ├── driver-lists
-│   ├── brain-goi-list-long.txt
+│   ├── brain-goi-list-long.txt
 │   └── brain-goi-list-short.txt
 ├── plots
 │   └── maf_oncoprint.png
-
+├── run-oncoprint.sh
+└── util
+    └── oncoplot-palette.R
+    
 ```
