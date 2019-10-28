@@ -30,6 +30,12 @@ _This assumes you are in the top directory of the repository._
 Read in set up script.
 
 ```{r}
+if (!(installed.packages() %in% "GGally")) {
+  install.packages("GGally")
+}
+if (!(installed.packages() %in% "ggupset")) {
+  install.packages("ggupset")
+}
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 ```
@@ -73,10 +79,10 @@ cor_matrix_plot <- function(cutoff) {
   # Isolate the TMB stats for this cutoff
   cutoff_df <- tmb_filter_long %>%
     dplyr::filter(vaf_cutoff == cutoff) %>%
-    dplyr::select(-Tumor_Sample_Barcode, -vaf_cutoff)
+    dplyr::select("lancet", "mutect2", "strelka2", "vardict")
 
   # Make the plot
-  cor_plot <- GGally::ggpairs(cutoff_df, mapping = ggplot2::aes(alpha = 0.05), cardinality_threshold = NULL) +
+  cor_plot <- GGally::ggpairs(cutoff_df, mapping = ggplot2::aes(alpha = 0.05)) +
     ggplot2::theme_classic() +
     ggplot2::ggtitle(paste0("VAF cutoff: ", cutoff))
 
@@ -199,7 +205,9 @@ Read in the data.
 Name each with their caller and VAF filter cutoff. 
 
 ```{r include=FALSE}
-filter_tmb_list <- lapply(filter_tmb_files, readr::read_rds)
+filter_tmb_list <- lapply(filter_tmb_files, function(file_name) {
+  readr::read_rds(file_name) %>% dplyr::ungroup()
+})
 names(filter_tmb_list) <- paste0(caller_filter, "_", vaf_filter)
 ```
 
