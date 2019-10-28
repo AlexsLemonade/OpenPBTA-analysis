@@ -124,19 +124,19 @@ fusion_caller.summary <- fusion_calls %>%
 # aggregate by read count
 fusion_read.summary <- fusion_calls %>%
   dplyr::filter(Fusion_Type != "other") %>%
-  dplyr::select(-Caller) %>%
+  dplyr::select(Sample,FusionName,JunctionReadCount,SpanningFragCount) %>%
   group_by(FusionName, Sample ) %>%
   unique() %>%
   dplyr::mutate(JunctionReadCount=sum(JunctionReadCount),SpanningFragCount=sum(SpanningFragCount))
 
 
-fusion_calls<-full_join(fusion_caller.summary,fusion_read.summary,by=(c("Sample","FusionName","Fusion_Type","Gene1A","Gene2A","Gene1B","Gene2B","Gene1A_anno","Gene1B_anno", "Gene2A_anno", "Gene2B_anno", "Fusion_anno")))
+fusion_calls<-full_join(fusion_caller.summary,fusion_read.summary,by=(c("Sample","FusionName")))
 
 #merge with histology file
 fusion_calls<-merge(fusion_calls,clinical,by.x="Sample",by.y="Kids_First_Biospecimen_ID")
 
 # remove fusion within 50000 distance local rearrangement
-fusion_calls$Distance<-unlist(lapply(fusion_calls$annots.x,function(x) ex_between(x, "LOCAL_REARRANGEMENT:-:[", "]")[[1]]))
+fusion_calls$Distance<-unlist(lapply(fusion_calls$annots,function(x) ex_between(x, "LOCAL_REARRANGEMENT:-:[", "]")[[1]]))
 fusion_calls<-fusion_calls %>% dplyr::filter(Distance>50000|is.na(Distance))
 
 ```
