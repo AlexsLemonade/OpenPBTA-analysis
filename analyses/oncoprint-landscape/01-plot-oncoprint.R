@@ -123,7 +123,7 @@ if (!is.null(opt$cnv_file)) {
 if (!is.null(opt$fusion_file)) {
   fusion_file <- data.table::fread(opt$fusion_file, stringsAsFactors = FALSE)
 
-#### Incorporate Fusion Data ---------------------------------------------------
+  #### Incorporate Fusion Data -------------------------------------------------
 
   # Separate fusion gene partners and add variant classification and center
   fus_sep <- fusion_file %>%
