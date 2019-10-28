@@ -67,6 +67,8 @@ that are used to make an overall evaluation report in `02-run_eval.R`.
  -label : Label to be used for folder and all output. eg. 'strelka2'. Default is 'maf'.
  -output : File path that specifies the folder where the output should go.
            New folder will be created if it doesn't exist.
+ --file_format: What type of file format would you like the output as? Options are
+               "rds" or "tsv". Default is "rds".
  --maf :  Relative file path to MAF file to be analyzed. Can be .gz compressed.
  --metadata : Relative file path to original metadata file.
  --annot_rds : Relative file path to annotation object RDS file to be analyzed.
@@ -88,9 +90,11 @@ plots ([base_change](#base-change-analysis), [depth_vs_vaf](#variant-allele-frac
  --plot_type : Specify what kind of plots you want printed out. Must be
                compatible with ggsave. eg pdf. Default is png
  --vaf : Folder from 01-calculate_vaf_tmb.R following files:
-                                             <caller_name>_vaf.tsv
-                                             <caller_name>_region.tsv
-                                             <caller_name>_tmb.tsv
+                                             <caller_name>_vaf.<file_format>
+                                             <caller_name>_region.<file_format>
+                                             <caller_name>_tmb.<file_format>
+ --file_format: What type of file format were the vaf and tmb files saved as? Options are
+                "rds" or "tsv". Default is "rds".
  --output : Where you would like the output from this script to be stored.
  --strategy : Specify whether you would like WXS and WGS separated for the plots.
               Analysis is still done on all data in the MAF file regardless.
