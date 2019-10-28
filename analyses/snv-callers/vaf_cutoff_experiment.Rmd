@@ -30,10 +30,10 @@ _This assumes you are in the top directory of the repository._
 Read in set up script.
 
 ```{r}
-if (!(installed.packages() %in% "GGally")) {
+if (!("GGally" %in% installed.packages())) {
   install.packages("GGally")
 }
-if (!(installed.packages() %in% "ggupset")) {
+if (!("ggupset" %in% installed.packages())) {
   install.packages("ggupset")
 }
 # Magrittr pipe
