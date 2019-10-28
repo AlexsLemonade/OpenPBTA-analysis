@@ -19,6 +19,56 @@ row_fisher <- function(w, x, y, z){
   return(fisher$p.value)
 }
 
+#' Filter mutations based on VAF and effect
+#' 
+#' @param maf_df a data frame of a maf file or subset of one. Minimally includes
+#'   `Consequence` column and either `vaf` or both `t_ref_count`` and `t_alt_count`.
+#' @param min_vaf The minimum VAF to include.
+#' @param exclude_consequence A vector of consequences (as strings) that should 
+#'   be excluded in the filtered results. Note that if a mutation has multiple 
+#'   consequences, it will not be excluded unless ALL consequences are excluded.
+#' @param include_consequence A vector of consequences (as strings) that should
+#'   be included in the filtered results.
+#'        
+#' @return A filtered data frame, with the same columns as the input `maf_df`, 
+#'   with VAF added if not already present.
+filter_mutations <- function(maf_df,
+                             min_vaf = 0,
+                             exclude_consequence = c(),
+                             include_consequence = c()){
+  if (length(exclude_consequence) > 0 && length(include_consequence) > 0){
+    warning("Both excluding and including consequences at the same time may have unexpected results.")
+  }
+  if (!("vaf" %in% colnames(maf_df))){
+    maf_df <- maf_df %>%
+      dplyr::mutate(vaf = t_alt_count / (t_ref_count + t_alt_count))
+  }
+  # filter on vaf
+  maf_df <- maf_df %>% 
+    dplyr::filter(vaf >= min_vaf)
+  
+  # split consequences where there are multiples.
+  maf_df <- maf_df %>%
+    mutate(consequence_single = stringr::str_split(Consequence, ",")) %>%
+    tidyr::unnest(consequence_single)
+  
+  # filter by excluded/included mutations
+  maf_df <- maf_df %>% 
+    dplyr::filter(!(consequence_single %in% exclude_consequence))
+  if (length(include_consequence) > 0){
+    maf_df <- maf_df %>% 
+      dplyr::filter(consequence_single %in% include_consequence)
+  }
+  # remove consequence_single and collapse duplicates
+  maf_df <- maf_df %>% 
+    dplyr::select(-consequence_single) %>%
+    dplyr::distinct()
+  
+  return(maf_df)
+}
+                             
+
+
 
 #' Calculate co-occurence relationships for a list of genes
 #' 
@@ -83,3 +133,4 @@ coocurrence <- function(gene_sample_df,
   
   return(gene_pair_summary)
 }
+
