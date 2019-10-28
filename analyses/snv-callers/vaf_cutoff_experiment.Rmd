@@ -91,7 +91,7 @@ cor_matrix_plot <- function(cutoff) {
     compare_plots_dir,
     paste0("vaf_", cutoff, "_tmb_correlations_plot.png")
   ),
-  plot = cor_plot
+  plot = ggplot2::last_plot()
   )
   # Return the plot
   return(cor_plot)
@@ -163,7 +163,7 @@ var_by_sample <- function(sample) {
 We need to re-calculate TMB statistics with various VAF filter cutoffs. 
 Run this script to do it. 
 
-```{r}
+```{r include=FALSE}
 system("bash scripts/run_caller_evals-vaf_filter_exp.sh")
 ```
 
