@@ -76,7 +76,7 @@ cor_matrix_plot <- function(cutoff) {
     dplyr::select(-Tumor_Sample_Barcode, -vaf_cutoff)
 
   # Make the plot
-  cor_plot <- GGally::ggpairs(cutoff_df, mapping = ggplot2::aes(alpha = 0.05)) +
+  cor_plot <- GGally::ggpairs(cutoff_df, mapping = ggplot2::aes(alpha = 0.05), cardinality_threshold = NULL) +
     ggplot2::theme_classic() +
     ggplot2::ggtitle(paste0("VAF cutoff: ", cutoff))
 
