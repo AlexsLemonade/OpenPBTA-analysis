@@ -135,7 +135,9 @@ fusion_calls<-full_join(fusion_caller.summary,fusion_read.summary,by=(c("Sample"
 #merge with histology file
 fusion_calls<-merge(fusion_calls,clinical,by.x="Sample",by.y="Kids_First_Biospecimen_ID")
 
-
+# remove fusion within 50000 distance local rearrangement
+fusion_calls$Distance<-unlist(lapply(fusion_calls$annots.x,function(x) ex_between(x, "LOCAL_REARRANGEMENT:-:[", "]")[[1]]))
+fusion_calls<-fusion_calls %>% dplyr::filter(Distance>50000|is.na(Distance))
 
 ```
 
