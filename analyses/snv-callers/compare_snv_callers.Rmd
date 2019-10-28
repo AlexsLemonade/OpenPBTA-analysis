@@ -1,5 +1,5 @@
 ---
-title: "Compare Variant Callers"
+title: "Determine Variant Caller Consensus"
 output: 
   html_notebook:
     toc: TRUE
@@ -9,7 +9,8 @@ date: 2019
 ---
 
 Purpose: After running the initial analyses of each variant caller, this notebook 
-combines the output from those calculations and compares them. 
+combines the output from those calculations, compares them, and outputs the consensus 
+for the mutation callers. 
 
 ### Summary of Findings:
 
@@ -69,6 +70,9 @@ if (!("GGally" %in% installed.packages())) {
 }
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
+
+# Import this for the recalculation of TMB for the consensus mutation calls
+source(file.path("util", "wrangle_functions.R"))
 ```
 
 Set up a function for calculating the percent off mutations of a caller for a 
@@ -123,16 +127,16 @@ base_plots_dir <- "plots"
 Make new directories for the comparison analysis.
 
 ```{r}
-compare_results_dir <- file.path(base_results_dir, "comparisons")
-compare_plots_dir <- file.path(base_plots_dir, "comparisons")
+compare_results_dir <- file.path(base_results_dir, "consensus")
+compare_plots_dir <- file.path(base_plots_dir, "consensus")
 
 # Make caller specific plots folder
 if (!dir.exists(compare_results_dir)) {
   dir.create(compare_results_dir)
 }
 # Make caller specific plots folder
-if (!dir.exists(compare_plots_dir)) {
-  dir.create(compare_plots_dir)
+if (!dir.exists(consensus_plots_dir)) {
+  dir.create(consensus_plots_dir)
 }
 ```
 
@@ -192,10 +196,13 @@ caller_names <- stringr::word(vaf_files, sep = "/", 2)
 Read in VAF files. 
 
 ```{r include=FALSE}
+file <- vaf_files[[1]] 
+# Read in the other files to match the first
 vaf_list <- lapply(vaf_files, function(file) {
-  readr::read_rds(file) %>%
-    # The file is large so we will cut down on its size by only keeping the columns we need
-    dplyr::select("mutation_id", "vaf", "base_change", "change") %>%
+  # Read in the file
+  df <- readr::read_rds(file) %>%
+    dplyr::mutate_at(dplyr::vars(which(!is.na(as.numeric(t(df[1,]))))), as.numeric) %>% 
+    dplyr::select(-dplyr::contains("AF", ignore.case = FALSE), -"variant_qual") %>% 
     dplyr::distinct(mutation_id, .keep_all = TRUE)
 })
 
@@ -205,7 +212,7 @@ names(vaf_list) <- caller_names
 
 Make a big VAF data.frame
 
-```{r}
+```{r include=FALSE}
 vaf_df <- dplyr::bind_rows(vaf_list, .id = "caller") %>%
   dplyr::mutate(caller = factor(caller))
 ```
@@ -221,7 +228,7 @@ names(tmb_list) <- caller_names
 
 Make a big tmb data.frame
 
-```{r}
+```{r include=FALSE}
 tmb_df <- dplyr::bind_rows(tmb_list, .id = "caller") %>%
   dplyr::mutate(caller = factor(caller))
 ```
@@ -242,7 +249,7 @@ upset <- UpSetR::upset(UpSetR::fromList(mutation_id_list),
 )
 
 # Save this plot
-png(file.path(compare_plots_dir, "upset_plot.png"), width = 900, height = 900)
+png(file.path(consensus_plots_dir, "upset_plot.png"), width = 900, height = 900)
 upset
 dev.off()
 
@@ -290,7 +297,7 @@ Graph the median VAF for each combination of callers.
 # Make this plot
 callers_per_mutation %>%
   ggplot2::ggplot(ggplot2::aes(x = caller_combo, y = median_vaf)) +
-  ggforce::geom_sina(alpha = 0.05) +
+  ggplot2::geom_violin() +
   ggplot2::theme_classic() +
   ggupset::scale_x_mergelist(sep = "-") +
   ggupset::axis_combmatrix(sep = "-") +
@@ -300,7 +307,7 @@ callers_per_mutation %>%
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(file.path(compare_plots_dir, "upset_median_vaf_plot.png"))
+ggplot2::ggsave(file.path(consensus_plots_dir, "upset_median_vaf_plot.png"))
 ```
 
 ## Base Changes 
@@ -339,7 +346,7 @@ perc_change_df %>%
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(file.path(compare_plots_dir, "perc_base_change_plot.png"))
+ggplot2::ggsave(file.path(consensus_plots_dir, "perc_base_change_plot.png"))
 ```
 
 ## VAF distributions
@@ -354,7 +361,7 @@ vaf_df %>%
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(file.path(compare_plots_dir, "vaf_violin_plot.png"))
+ggplot2::ggsave(file.path(consensus_plots_dir, "vaf_violin_plot.png"))
 ```
 
 ## TMB distributions
@@ -368,7 +375,7 @@ tmb_df %>%
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(file.path(compare_plots_dir, "tmb_boxplot_histology_plot.png"))
+ggplot2::ggsave(file.path(consensus_plots_dir, "tmb_boxplot_histology_plot.png"))
 ```
 
 ## VAF correlations
@@ -391,39 +398,37 @@ GGally::ggpairs(vaf_long, mapping = ggplot2::aes(alpha = 0.05)) +
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(file.path(compare_plots_dir, "vaf_correlations_plot.png"))
+ggplot2::ggsave(file.path(consensus_plots_dir, "vaf_correlations_plot.png"))
 ```
 
 ## TMB correlations
 
 ```{r}
 tmb_long <- tmb_df %>%
+  dplyr::ungroup() %>%
+  dplyr::select(-genome_size, -experimental_strategy) %>%
   dplyr::distinct(Tumor_Sample_Barcode, caller, tmb) %>%
-  tidyr::spread(caller, tmb) %>%
-  tibble::column_to_rownames("Tumor_Sample_Barcode")
+  tidyr::spread(caller, tmb) %>% 
+  dplyr::select(-Tumor_Sample_Barcode)
 ```
 
 Make the TMB correlation plot.
 
 ```{r}
-GGally::ggpairs(tmb_long, mapping = ggplot2::aes(alpha = 0.05)) +
+GGally::ggpairs(tmb_long, mapping = ggplot2::aes(alpha = 0.05), cardinality_threshold = NULL) +
   ggplot2::theme_classic()
 ```
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(file.path(compare_plots_dir, "tmb_correlations_plot.png"))
+ggplot2::ggsave(file.path(consensus_plots_dir, "tmb_correlations_plot.png"))
 ```
 
 ## Save consensus mutation calls
 
-Get an idea of how many mutations per group. 
-
-```{r}
-summary(as.factor(callers_per_mutation$caller_combo))
-```
-
-Get the mutation ids for these. 
+Because of VarDict's oversensitivity, we will ignore VarDict's calls and keep mutations that
+are agreed upon by Lancet, Mutect2, and Strelka2. 
+Let's get the mutation ids for these. 
 
 ```{r}
 consen_mutations <- callers_per_mutation %>%
@@ -440,15 +445,15 @@ consen_mutation <- vaf_df %>%
     caller == "strelka2",
     mutation_id %in% consen_mutations
   ) %>%
-  readr::write_tsv(file.path(compare_results_dir, "conensensus_mutation.maf.tsv"))
+  readr::write_tsv(file.path(consensus_results_dir, "conensensus_mutation.maf.tsv"))
 ```
 
 Zip this file up. 
 
 ```{r}
 zip(
-  file.path(compare_results_dir, "conensensus_mutation.maf.tsv.zip"),
-  file.path(compare_results_dir, "conensensus_mutation.maf.tsv")
+  file.path(consensus_results_dir, "conensensus_mutation.maf.tsv.zip"),
+  file.path(consensus_results_dir, "conensensus_mutation.maf.tsv")
 )
 ```
 
@@ -472,7 +477,7 @@ tmb_df <- calculate_tmb(vaf_df,
   wgs_size = wgs_genome_size,
   wxs_size = wxs_exome_size
 ) %>%
-  readr::write_tsv(file.path(compare_results_dir, "consensus_mutation_tmb.tsv"))
+  readr::write_tsv(file.path(consensus_results_dir, "consensus_mutation_tmb.tsv"))
 ```
 
 ## Session Info
