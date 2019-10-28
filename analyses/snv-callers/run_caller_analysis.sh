@@ -61,3 +61,7 @@ do
     --strategy wgs,wxs,both \
     --no_region
 done
+
+######## Run comparison notebook to create consensus mutation call file ########
+
+Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers.Rmd', clean = TRUE)"

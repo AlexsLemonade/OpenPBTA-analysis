@@ -43,11 +43,6 @@ jobs:
           command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
 
       - run:
-          name: SNV Caller Analysis 
-          command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_evals.sh \
-                   Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers.Rmd', clean = TRUE)"
-
-      - run:
           name: Sex prediction from RNA-seq
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/sex-prediction-from-RNASeq/sex-prediction-from-RNASeq.Rmd', clean = TRUE)"
           
@@ -73,7 +68,7 @@ jobs:
 
       - run:
           name: SNV Caller Analysis 
-          command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_evals.sh    
+          command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_analysis.sh    
 
                 
   deploy:
