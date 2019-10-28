@@ -26,7 +26,7 @@ for ((i=0;i<${#vaf_cutoff[@]};i++));
     echo "Processing dataset: ${datasets[$j]}"
     Rscript analyses/snv-callers/scripts/01-calculate_vaf_tmb.R \
       --label ${datasets[$j]} \
-      --output analyses/snv-callers/results/vaf_filter/cutoff_${vaf_cutoff[$i]} \
+      --output analyses/snv-callers/results/vaf_cutoff_data/cutoff_${vaf_cutoff[$i]} \
       --file_format rds \
       --maf data/pbta-snv-${datasets[$j]}.vep.maf.gz \
       --metadata data/pbta-histologies.tsv \
