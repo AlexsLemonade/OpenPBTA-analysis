@@ -149,13 +149,13 @@ Get the lists of each type of file.
 ```{r}
 # Get the lists of each type of file
 vaf_files <- list.files(base_results_dir,
-  pattern = "_vaf.tsv$", recursive = TRUE,
+  pattern = "_vaf.rds$", recursive = TRUE,
   full.names = TRUE
 )
 
 # Make a list of the vaf filter experiment vaf files
 filter_vaf_files <- list.files(file.path(base_results_dir, "vaf_filter"),
-  pattern = "_vaf.tsv$", recursive = TRUE,
+  pattern = "_vaf.rds$", recursive = TRUE,
   full.names = TRUE
 )
 
@@ -167,13 +167,13 @@ vaf_files
 ```{r}
 # Get list of all tmb files
 tmb_files <- list.files(base_results_dir,
-  pattern = "_tmb.tsv$", recursive = TRUE,
+  pattern = "_tmb.rds$", recursive = TRUE,
   full.names = TRUE
 )
 
 # Make a list of the vaf filter experiment tmb files
 filter_tmb_files <- list.files(file.path(base_results_dir, "vaf_filter"),
-  pattern = "_tmb.tsv$", recursive = TRUE,
+  pattern = "_tmb.rds$", recursive = TRUE,
   full.names = TRUE
 )
 
@@ -193,7 +193,7 @@ Read in VAF files.
 
 ```{r include=FALSE}
 vaf_list <- lapply(vaf_files, function(file) {
-  readr::read_tsv(file) %>%
+  readr::read_rds(file) %>%
     # The file is large so we will cut down on its size by only keeping the columns we need
     dplyr::select("mutation_id", "vaf", "base_change", "change") %>%
     dplyr::distinct(mutation_id, .keep_all = TRUE)
@@ -213,7 +213,7 @@ vaf_df <- dplyr::bind_rows(vaf_list, .id = "caller") %>%
 Read in TMB files. 
 
 ```{r include=FALSE}
-tmb_list <- lapply(tmb_files, readr::read_tsv)
+tmb_list <- lapply(tmb_files, readr::read_rds)
 
 # Carry over the callers' names
 names(tmb_list) <- caller_names
