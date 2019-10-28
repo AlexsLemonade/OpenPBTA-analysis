@@ -86,13 +86,6 @@ cor_matrix_plot <- function(cutoff) {
     ggplot2::theme_classic() +
     ggplot2::ggtitle(paste0("VAF cutoff: ", cutoff))
 
-  # Save this plot
-  ggplot2::ggsave(file.path(
-    compare_plots_dir,
-    paste0("vaf_", cutoff, "_tmb_correlations_plot.png")
-  ),
-  plot = ggplot2::last_plot()
-  )
   # Return the plot
   return(cor_plot)
 }
