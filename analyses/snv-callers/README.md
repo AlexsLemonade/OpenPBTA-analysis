@@ -1,4 +1,4 @@
-# SNV caller comparison analysis
+rds# SNV caller comparison analysis
 
 This analysis evaluates [MAF files](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from different SNV callers and compares their output.
 The GDC has [good documentation on the fields](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) contained in a standard MAF file.
@@ -14,31 +14,25 @@ The GDC has [good documentation on the fields](https://docs.gdc.cancer.gov/Data/
   * [COSMIC mutation overlap](#cosmic-mutation-overlap)  
 * [Comparison analysis](#comparison-of-callers)
  * [Mutation IDs](#mutation-ids)
- * [Combinations of callers]()
+ * [Consensus mutation calls](#consensus-mutation-calls)
 * [Overall file structure](#overall-file-structure)
 * [Summary of functions](#summary-of-custom-functions)
 
-## How to run this pipeline
+## How to run the caller consensus analysis
 
-**1) Run evaluations of each MAF file**
-
-To run the initial evaluations of all the SNV callers, call the bash script:
+To run the evaluations and comparisons of all the SNV callers, call the bash script:
 ```
-bash run_caller_evals.sh
+bash run_caller_analysis.sh
 ```
 This script will return results for each caller in the `plots` and `results` folder.
 To see an overall summary report, look in the `results` folder for that caller.
 (See [Overall File Structure](#overall-file-structure) for more details on
 everything that is returned.)
 
-**2) Compare caller output and save consensus file**
-
-To run the second part of the analysis, run this notebook:
-```
-Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers.Rmd', clean = TRUE)"
-```
-This will save a consensus file `conensensus_mutation.maf.tsv` to the `comparison`
-results folder with mutations to move forward with.
+The final results for the caller consensus are in the form of a notebook, `compare_snv_callers.nb.html`.
+The consensus mutations themselves are saved to a pseudo-MAF file `consensus_mutation.maf.tsv.zip` to the `consensus`
+results folder.
+These are the mutations dubbed reliable enough to move forward with.
 
 ## General usage of scripts
 
@@ -223,14 +217,17 @@ If mutation_id's are identical among MAF files, they are considered the same.
 ### Consensus mutation call
 
 After the comparisons amongst the callers, VarDict proved to be too unreliable and called low VAF mutations.
-Moving forward, mutations that were identified by Lancet, Mutect2 and Strelka2 were included in the final list of mutations for each sample. 
+Moving forward, mutations that were identified by Lancet, Mutect2 and Strelka2 were included in the final list of mutations for each sample.
+The consensus mutations themselves are saved to a pseudo-MAF file `consensus_mutation.maf.tsv.zip` to the `consensus`.
+It is being called a "pseudo" MAF file because it has many of the same fields as a MAF file but does not contain the version string in the first row and some more extraneous annotation data has been removed.
 
 ## Overall file structure
 ```
 OpenPBTA-analysis
 ├── analyses
 │   └── snv-callers
-│       ├── run_variant_caller_reports.R
+│       ├── run_caller_analysis.R
+│       ├── compare_snv_callers.Rmd
 │       ├── scripts
 │       │   ├── 00-set-up.R
 │       │   ├── 01-calculate_vaf_tmb.R
@@ -238,27 +235,22 @@ OpenPBTA-analysis
 │       ├── util
 │       │    ├── plot_functions.R
 │       │    └── wrangle_functions.R
-│       ├── bed_regions
-│       │   ├── wxs_bed_regions_all.tsv
-│       │   ├── lancet_wgs_bed_regions.tsv
-│       │   ├── mutect2_wgs_bed_regions.tsv
-│       │   ├── strelka2_wgs_bed_regions.tsv
-│       │   └── vardict_wgs_bed_regions.tsv
 │       ├── results
-│       │   ├── comparisons
+│       │   ├── consensus
+│       │   │   ├── consensus_mutation_tmb.tsv
 │       │   │   └── consensus_mutation.maf.tsv
 │       │   ├── lancet
-│       │   │   ├── lancet_vaf.tsv
-│       │   │   ├── lancet_vaf.tsv.zip
-│       │   │   ├── lancet_tmb.tsv
-│       │   │   ├── lancet_tmb.tsv.zip
-│       │   │   ├── lancet_region.tsv
-│       │   │   ├── lancet_region.tsv.zip
+│       │   │   ├── lancet_vaf.rds
+│       │   │   ├── lancet_vaf.rds.zip
+│       │   │   ├── lancet_tmb.rds
+│       │   │   ├── lancet_tmb.rds.zip
+│       │   │   ├── lancet_region.rds
+│       │   │   ├── lancet_region.rds.zip
 │       │   │   ├── lancet_wxs_report.html
 │       │   │   ├── lancet_wxs_report.Rmd
 │       │   │   ├── lancet_wgs_report.html
 │       │   │   ├── lancet_wgs_report.Rmd
-│       │   │   └── lancet_metadata_filtered.tsv
+│       │   │   └── lancet_metadata_filtered.rds
 │       │   ├── mutect2
 │       │   │   └── ...
 │       │   ├── strelka2
@@ -284,7 +276,7 @@ OpenPBTA-analysis
 │       │   └── vardict
 │       │       └── ...
 │       ├── cosmic
-│       │   └── brain_cosmic_variants_coordinates.tsv
+│       │   └── brain_cosmic_variants_coordinates.rds
 │       └── template
 │           └── variant_caller_report_template.Rmd
 ├── data
