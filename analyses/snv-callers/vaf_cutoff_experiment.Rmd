@@ -154,36 +154,11 @@ var_by_sample <- function(sample) {
 
 ## Run the data with different VAF filter cutoffs
 
-We need to re-calculate TMB statistics with various VAF filter cutoffs.
+We need to re-calculate TMB statistics with various VAF filter cutoffs. 
+Run this script to do it. 
 
-```{bash}
-# VAF cutoffs to use
-vaf_cutoff=("0.10" "0.20" "0.30" "0.40")
-
-# Same files as originally run
-datasets=("strelka2" "mutect2" "lancet" "vardict")
-
-# WGS files for each caller
-wgs_files=("WGS.hg38.strelka2.unpadded.bed" "WGS.hg38.mutect2.unpadded.bed" "WGS.hg38.lancet.300bp_padded.bed" "WGS.hg38.vardict.100bp_padded.bed")
-
-for ((i=0;i<${#vaf_cutoff[@]};i++)); 
-  do
-  for ((j=0;j<${#datasets[@]};j++)); 
-  do
-    echo "Processing dataset: ${datasets[$j]}"
-    Rscript scripts/01-calculate_vaf_tmb.R \
-      --label ${datasets[$j]} \
-      --output analyses/snv-callers/results/vaf_filter/cutoff_${vaf_cutoff[$i]} \
-      --file_format rds \
-      --maf data/pbta-snv-${datasets[$j]}.vep.maf.gz \
-      --metadata data/pbta-histologies.tsv \
-      --bed_wgs data/${wgs_files[$j]} \
-      --bed_wxs data/WXS.hg38.100bp_padded.bed \
-      --vaf_filter ${vaf_cutoff[$i]} \
-      --overwrite \
-      --no_region
-  done
-  done
+```{r}
+system("bash scripts/run_caller_evals-vaf_filter_exp.sh")
 ```
 
 ## Import data 
@@ -193,7 +168,7 @@ Get the lists of each type of file.
 ```{r}
 # Make a list of the vaf filter experiment tmb files
 filter_tmb_files <- list.files(file.path(base_results_dir, "vaf_filter"),
-  pattern = "_tmb.tsv$", recursive = TRUE,
+  pattern = "_tmb.rds$", recursive = TRUE,
   full.names = TRUE
 )
 ```
@@ -216,7 +191,7 @@ Get caller information as a vector.
 
 ```{r}
 caller_filter <- stringr::word(filter_tmb_files, sep = "/", 4)
-caller_filter <- gsub("_tmb.tsv", "", caller_filter)
+caller_filter <- gsub("_tmb.rds", "", caller_filter)
 caller_filter
 ```
 
@@ -224,7 +199,7 @@ Read in the data.
 Name each with their caller and VAF filter cutoff. 
 
 ```{r include=FALSE}
-filter_tmb_list <- lapply(filter_tmb_files, readr::read_tsv)
+filter_tmb_list <- lapply(filter_tmb_files, readr::read_rds)
 names(filter_tmb_list) <- paste0(caller_filter, "_", vaf_filter)
 ```
 
