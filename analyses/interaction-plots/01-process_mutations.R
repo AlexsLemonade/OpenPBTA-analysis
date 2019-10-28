@@ -7,15 +7,21 @@
 # Option descriptions
 #
 # --maf :  Relative file path to MAF file to be analyzed. Can be .gz compressed.
-#          Assumes file path is given from top directory of 'OpenPBTA-analysis'.
+#       File path is given from top directory of 'OpenPBTA-analysis'.
 # --metadata : Relative file path to MAF file to be analyzed. Can be .gz compressed.
-#              Assumes file path is given from top directory of 'OpenPBTA-analysis'.
+#       File path is given from top directory of 'OpenPBTA-analysis'.
+# --specimen_list: A file of specimens to include. Ideally, this list should consist
+#       of independent samples (at most one from each individual). File path is given
+#       from the top directory of 'OpenPBTA-analysis'.
+# --vaf: Minimum Variant allele fraction of mutations to include.
+#                 
 #
 # Command line example:
 #
 # Rscript analyses/interaction-plots/01-process-mutations.R \
 #   --maf data/pbta-snv-lancet.vep.maf.gz
 #   --metadata data/pbta-histologies.tsv 
+#   --specimen_list analysis/independent-samples/results/independent-specimens.wgs.primary.tsv
 
 #### Initial Set Up
 # Establish base dir
@@ -38,22 +44,41 @@ option_list <- list(
   make_option(
     opt_str = "--maf", type = "character", 
     default = file.path("data", "pbta-snv-lancet.vep.maf.gz"),
-    help = "Relative file path (assuming from top directory of
-              'OpenPBTA-analysis') to MAF file to be analyzed. Can be .gz compressed.",
+    help = "Relative file path (from top directory of 'OpenPBTA-analysis') 
+              to MAF file to be analyzed. Can be .gz compressed.",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = "--seg", type = "character", 
+    default = file.path("data", "pbta-cnv-cnvkit.seg.gz"),
+    help = "Relative file path (from top directory of 'OpenPBTA-analysis') 
+            to CNV file to be analyzed in seg format. Can be .gz compressed.",
     metavar = "character"
   ),
   make_option(
     opt_str = "--metadata", type = "character", 
     default = file.path("data", "pbta-histologies.tsv"),
-    help = "Relative file path (assuming from top directory of
-              'OpenPBTA-analysis') to MAF file to be analyzed. Can be .gz compressed.",
+    help = "Relative file path (from top directory of 'OpenPBTA-analysis')
+            to MAF file to be analyzed. Can be .gz compressed.",
     metavar = "character"
+  ),
+  make_option(
+    opt_str = "--specimen_list", type = "character", 
+    default = NA,
+    help = "Relative file path (from top directory of 'OpenPBTA-analysis')
+            to MAF file to be analyzed. Can be .gz compressed.",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = "--include_syn", action = "store_true", 
+    default = FALSE,
+    help = "Include synonymous mutations"
   ),
   make_option(
     opt_str = "--vaf", type = "numeric", 
     default = 0.2,
-    help = "Minimum variant allele fraction",
-    metavar = "character"
+    help = "Minimum variant allele fraction to include",
+    metavar = "numeric"
   )
 )
 
@@ -63,17 +88,28 @@ opts <- parse_args(OptionParser(option_list = option_list))
 # File locations
 
 maf_file <- file.path(root_dir, opts$maf)
+seg_file <- file.append(root_dir, opts$seg)
 meta_file <- file.path(root_dir, opts$metadata)
+if(!is.na(opts.specimen_list)){
+  specimen_file <- file.path(root_dir, opts$specimen_list)
+}
+
 
 
 #### Read files
 
 
 maf_df <- data.table::fread(maf_file, data.table = FALSE)
+seg_df <- data.table::fread(seg_file, data.table = FALSE)
 meta_df <- data.table::fread(meta_file, data.table = FALSE)
+if(exists(specimen_file)){
+  specimen_df <- data.table::fread(specimen_file, data.table = FALSE)
+}
 
 
-### Reduce MAF to a smaller set of relevant columns and add vaf
+
+
+### Reduce MAF to a smaller set of relevant columns
 
 maf_df <- maf_df %>% 
   dplyr::select(Hugo_Symbol, 
@@ -92,77 +128,55 @@ maf_df <- maf_df %>%
                 t_ref_count,
                 t_alt_count,
                 Consequence,
-  ) %>%
-  dplyr::mutate(vaf = t_alt_count / (t_ref_count + t_alt_count)) 
+  )  
 
-samples <- unique(maf_df$Tumor_Sample_Barcode)
+# get sample and gene lists
+if (exits(specimen_df)){
+  samples <- specimen_df$Kids_First_Biospecimen_ID
+} else {
+  samples <- unique(maf_df$Tumor_Sample_Barcode)
+}
 genes <- unique(maf_df$Hugo_Symbol)
 
-# reduce metadata to only samples
+# reduce metadata to only chosen samples
 sample_meta <- meta_df %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in% samples)
 
-# get initial tumors only
+# reduce maf to chosen samples & calculat VAF
+sample_maf_df <- maf_df %>%
+  dplyr::filter(Tumor_Sample_Barcode %in% samples) %>%
+  dplyr::mutate(vaf = t_alt_count / (t_ref_count + t_alt_count))
 
-initial_samples <- sample_meta %>%
-  dplyr::filter(composition = "Solid Tissue") %>% # remove cell lines
-  dplyr::filter(tumor_descriptor == "Initial CNS Tumor") %>%
-  dplyr::pull(Kids_First_Biospecimen_ID) %>%
-  unique() # there is a duplicate, for now
+# generate consequence lists and filter
+exclusions <- c("intergenic_variant")
+if (!opts$include_syn){exclusions <- c(exclusions, "synonymous_variant")}
+if (!opts$include_intron){exclusions <- c(exclusions, "intron_variant")}
+sample_maf_filtered <- sample_maf %>%
+  filter_mutations(min_vaf = opts$vaf,
+                   exclude_consequence = exclusions)
 
-# check that these are all from separate samples
-initial_participants <- sample_meta %>% 
-  dplyr::filter(Kids_First_Biospecimen_ID %in% initial_samples) %>%
-  dplyr::pull(Kids_First_Participant_ID)
-initial_dups <- initial_participants[duplicated(initial_participants)]
-
-
-
-
-# Get earliest age sample for each participant
-
-early_samples <- sample_meta %>%
-  dplyr::group_by(Kids_First_Participant_ID) %>%
-  dplyr::summarize(age_at_diagnosis_days = min(age_at_diagnosis_days)) %>%
-  dplyr::left_join(sample_meta) %>%
-  dplyr::pull(Kids_First_Biospecimen_ID) %>%
-  unique()
-
-early_participants <- sample_meta %>% 
-  dplyr::filter(Kids_First_Biospecimen_ID %in% early_samples) %>%
-  dplyr::pull(Kids_First_Participant_ID)
-early_dups <- early_participants[duplicated(early_participants)]
-
-
-
-
-#### Create gene by sample summary table 
-
-gene_sample_counts <- maf_df %>%
-  dplyr::filter(vaf > opts$vaf,
-                Consequence != "intergenic_variant", 
-                Entrez_Gene_Id > 0) %>% #filter unknowns
+# count mutations by gene/sample pair and syn
+gene_sample_counts <- sample_maf_df %>%
+  dplyr::filter(Entrez_Gene_Id > 0) %>% #filter unknowns
   dplyr::group_by(gene = Hugo_Symbol, sample = Tumor_Sample_Barcode) %>%
-  dplyr::summarize(mutations = dplyr::n())
+  dplyr::tally(name = "mutations")
 
-
+# count # of samples mutated by gene
 gene_counts <- gene_sample_counts %>%
-  dplyr::filter(sample %in% initial_samples) %>%
+  dplyr::filter(sample %in% samples) %>%
   dplyr::group_by(gene) %>%
   dplyr::summarize(mutant_samples = dplyr::n(), 
                    total_muts = sum(mutations),
                    muts_per_sample = mean(mutations)
-            )
-
-# get top genes
-top_count_genes <- gene_counts %>%
+                   ) %>%
   dplyr::arrange(desc(mutant_samples),
-                 desc(muts_per_sample)) %>%
-  head(30)
+                 desc(muts_per_sample))
+
+# get most often mutated genes
+top_count_genes <- head(gene_counts, 50)
 
 
-gene_pair_summary <- coocurrence(gene_sample_counts, 
-                                 samples = initial_samples)
+gene_pair_summary <- coocurrence(gene_sample_counts, top_count_genes)
 
  
 ### make plot
