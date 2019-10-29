@@ -52,7 +52,7 @@ filter_mutations <- function(maf_df,
     
   if (length(include_consequence) > 0){
     maf_df <- maf_df %>% 
-      dplyr::filter(any(unlist(consequence_list) %in% exclude_consequence))
+      dplyr::filter(any(unlist(consequence_list) %in% include_consequence))
   }
 
   # remove consequence_single and collapse duplicates
