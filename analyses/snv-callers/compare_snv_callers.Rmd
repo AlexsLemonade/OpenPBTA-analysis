@@ -46,7 +46,7 @@ Many of these have [very low ](#vaf-distributions) suggesting that some may be s
 
 To run this from the command line, use:
 ```
-Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers.Rmd', 
+Rscript -e "rmarkdown::render('analyses/snv-callers/consensus_snv_callers.Rmd', 
                               clean = TRUE)"
 ```
 
@@ -131,8 +131,8 @@ consensus_results_dir <- file.path(base_results_dir, "consensus")
 consensus_plots_dir <- file.path(base_plots_dir, "consensus")
 
 # Make caller specific plots folder
-if (!dir.exists(compare_results_dir)) {
-  dir.create(compare_results_dir)
+if (!dir.exists(consensus_results_dir)) {
+  dir.create(consensus_results_dir)
 }
 # Make caller specific plots folder
 if (!dir.exists(consensus_plots_dir)) {
@@ -158,7 +158,7 @@ vaf_files <- list.files(base_results_dir,
 )
 
 # Make a list of the vaf filter experiment vaf files
-filter_vaf_files <- list.files(file.path(base_results_dir, "vaf_filter"),
+filter_vaf_files <- list.files(file.path(base_results_dir, "vaf_cutoff_data"),
   pattern = "_vaf.rds$", recursive = TRUE,
   full.names = TRUE
 )
@@ -176,7 +176,7 @@ tmb_files <- list.files(base_results_dir,
 )
 
 # Make a list of the vaf filter experiment tmb files
-filter_tmb_files <- list.files(file.path(base_results_dir, "vaf_filter"),
+filter_tmb_files <- list.files(file.path(base_results_dir, "vaf_cutoff_data"),
   pattern = "_tmb.rds$", recursive = TRUE,
   full.names = TRUE
 )
@@ -196,13 +196,17 @@ caller_names <- stringr::word(vaf_files, sep = "/", 2)
 Read in VAF files. 
 
 ```{r include=FALSE}
-file <- vaf_files[[1]] 
 # Read in the other files to match the first
 vaf_list <- lapply(vaf_files, function(file) {
   # Read in the file
-  df <- readr::read_rds(file) %>%
+  df <- readr::read_rds(file) 
+  
+  # Make it so it is more easily combined with the other files
+  df %>%
     dplyr::mutate_at(dplyr::vars(which(!is.na(as.numeric(t(df[1,]))))), as.numeric) %>% 
+    dplyr::mutate(aliquot_id = as.character(aliquot_id)) %>% 
     dplyr::select(-dplyr::contains("AF", ignore.case = FALSE), -"variant_qual") %>% 
+    # Get rid of the few if any duplicate entries. 
     dplyr::distinct(mutation_id, .keep_all = TRUE)
 })
 
