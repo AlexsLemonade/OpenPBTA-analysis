@@ -71,9 +71,6 @@ if (!("GGally" %in% installed.packages())) {
 if (!("grid" %in% installed.packages())) {
   install.packages("grid", repos = "http://cran.us.r-project.org")
 }
-# Attach grid library 
-library(grid)
-
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
