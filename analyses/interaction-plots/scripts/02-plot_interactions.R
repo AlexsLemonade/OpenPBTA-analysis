@@ -29,14 +29,12 @@ library(ggplot2)
 option_list <- list(
   make_option(
     opt_str = "--infile", type = "character", 
-    default = file.path("analyses", "interaction-plots", "results", "cooccurence.tsv"),
     help = "Relative file path (from top directory of 'OpenPBTA-analysis')
             where cooccurence summary table is located",
     metavar = "character"
   ),
   make_option(
     opt_str = "--outfile", type = "character", 
-    default = file.path("analyses", "interaction-plots", "results", "cooccurence.png"),
     help = "Relative file path (from top directory of 'OpenPBTA-analysis')
             where output plot will be located. Extension specifies format of plot",
     metavar = "character"
@@ -60,14 +58,19 @@ cooccur_df <- cooccur_df %>%
 ### make plot
 ggplot(cooccur_df, aes(x = gene1, y = gene2, fill = cooccur_score))+
   geom_tile(color = "white", size = 1) +
-  xlab('') + 
-  ylab('') +
+
   scale_x_discrete(position = "top") +
   scale_fill_distiller(type = "div", palette = 5, 
                        limits = c(-20, 20),
-                       oob = scales::squish) +
+                       oob = scales::squish, 
+                       ) +
+  labs(x = '',
+       y = '',
+       fill = "Co-occurence\nscore"
+  ) +
   theme_classic() + 
-  theme(axis.text.x = element_text(angle = -45, hjust = 1), 
+  theme(axis.text.x = element_text(angle = -45, hjust = 1, size = 6), 
+        axis.text.y = element_text(size = 6),
         axis.line = element_blank(), 
         axis.ticks = element_blank(),
         legend.justification=c(1,0), 

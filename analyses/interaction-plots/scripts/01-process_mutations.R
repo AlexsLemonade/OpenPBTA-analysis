@@ -4,6 +4,9 @@
 #
 # 2019
 #
+# Generates a table of gene by gene co-occurence data with p values from Fisher's exact test.
+# By default, performs analysis of the top 50 most mutated genes.
+#
 # Option descriptions
 #
 # --maf :  Relative file path to MAF file to be analyzed. Can be .gz compressed.
@@ -13,7 +16,9 @@
 # --specimen_list: A file of specimens to include. Ideally, this list should consist
 #       of independent samples (at most one from each individual). File path is given
 #       from the top directory of 'OpenPBTA-analysis'.
-# --vaf: Minimum Variant allele fraction of mutations to include.
+# --vaf: Minimum variant allele fraction of mutations to include.
+# --n_genes: number of genes to plot interation data for (uses the most mutated n genes)
+# --out: Output file location
 #                 
 #
 # Command line example:
@@ -26,7 +31,7 @@
 #### Initial Set Up
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-script_root <- file.path(root_dir, "analyses", "interaction-plots")
+script_root <- file.path(root_dir, "analyses", "interaction-plots", "scripts")
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
