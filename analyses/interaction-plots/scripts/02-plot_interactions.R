@@ -51,7 +51,7 @@ opts <- parse_args(OptionParser(option_list = option_list))
 cooccur_file <- file.path(root_dir, opts$infile)
 plot_file <- file.path(root_dir, opts$outfile)
 
-cooccur_df <- readr::read_tsv(cooccur_file)
+cooccur_df <- readr::read_tsv(cooccur_file, col_types = readr::cols())
 genes <- unique(c(cooccur_df$gene1, cooccur_df$gene2))
 
 cooccur_df <- cooccur_df %>%

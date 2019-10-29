@@ -1,6 +1,10 @@
 # cooccur_function.R
 # Functions for calculating co-occurence between mutations
 
+if (!("qvalue" %in% installed.packages())) {
+  BiocManager::install("qvalue", update = FALSE)
+}
+
 #' Calculate Fisher's exact test for row-wise data
 #' 
 #' Data order follows a two by two matrix, filled by rows or columns
@@ -47,7 +51,7 @@ filter_mutations <- function(maf_df,
   maf_df <- maf_df %>% 
     dplyr::filter(vaf >= min_vaf) %>%
     dplyr::mutate(consequence_list = stringr::str_split(Consequence, ",")) %>% 
-    dplyr::rowwise() %>%
+    
     dplyr::filter(!all(unlist(consequence_list) %in% exclude_consequence))
     
   if (length(include_consequence) > 0){
@@ -123,7 +127,9 @@ coocurrence <- function(gene_sample_df,
                      odds_ratio = (mut11 * mut00) / (mut10 * mut01),
                      cooccur_sign = ifelse(odds_ratio > 1, 1, -1)) %>%
     dplyr::rowwise() %>%
-    dplyr::mutate(p = row_fisher(mut11, mut10, mut01, mut00), 
+    dplyr::mutate(p = row_fisher(mut11, mut10, mut01, mut00)) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(q = qvalue::qvalue(p, lfdr.out = FALSE)$qvalues,
                   cooccur_score = cooccur_sign * -log10(p))
   
   return(gene_pair_summary)

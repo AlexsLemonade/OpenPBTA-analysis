@@ -78,5 +78,8 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     glmnet \
     glmnetUtils
 
+# Required for multiple testing correction
+RUN R -e "BiocManager::install('qvalue', update = FALSE)"
+
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
