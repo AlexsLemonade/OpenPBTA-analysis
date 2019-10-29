@@ -151,44 +151,30 @@ if (!dir.exists(consensus_plots_dir)) {
 Look at the existing folders within the results folder. 
 
 ```{r}
-dir(base_results_dir)
+# Exclude the non-caller directories
+caller_dirs <- grep("vaf_cutoff|consensus", dir(base_results_dir, full.names = TRUE), invert = TRUE, value = TRUE)
+
+# Print this out to check
+caller_dirs
 ```
 
 Get the lists of each type of file. 
 
 ```{r}
-# Get the lists of each type of file
-vaf_files <- list.files(base_results_dir,
-  pattern = "_vaf.rds$", recursive = TRUE,
-  full.names = TRUE
-)
+# Get a list of vaf files
+vaf_files <- sapply(caller_dirs, 
+                    list.files, pattern = "_vaf", recursive = TRUE, full.names = TRUE)
 
-# Make a list of the vaf filter experiment vaf files
-filter_vaf_files <- list.files(file.path(base_results_dir, "vaf_cutoff_data"),
-  pattern = "_vaf.rds$", recursive = TRUE,
-  full.names = TRUE
-)
-
-# Exclude the vaf_filter ones from the final list
-vaf_files <- setdiff(vaf_files, filter_vaf_files)
+# Print this out to check
 vaf_files
 ```
 
 ```{r}
-# Get list of all tmb files
-tmb_files <- list.files(base_results_dir,
-  pattern = "_tmb.rds$", recursive = TRUE,
-  full.names = TRUE
-)
+# Get a list of tmb files
+tmb_files <- sapply(caller_dirs, 
+                    list.files, pattern = "_tmb", recursive = TRUE, full.names = TRUE)
 
-# Make a list of the vaf filter experiment tmb files
-filter_tmb_files <- list.files(file.path(base_results_dir, "vaf_cutoff_data"),
-  pattern = "_tmb.rds$", recursive = TRUE,
-  full.names = TRUE
-)
-
-# Exclude the vaf_filter ones from the final list
-tmb_files <- setdiff(tmb_files, filter_tmb_files)
+# Print this out to check
 tmb_files
 ```
 
@@ -209,9 +195,13 @@ vaf_list <- lapply(vaf_files, function(vaf_file) {
   
   # Make it so it is more easily combined with the other files
   df %>%
+    # Attempt to make numeric columns where that doesn' kick back an "NA"
     dplyr::mutate_at(dplyr::vars(which(!is.na(as.numeric(t(df[1,]))))), as.numeric) %>% 
-    dplyr::mutate(aliquot_id = as.character(aliquot_id)) %>% 
-    dplyr::select(-dplyr::contains("AF", ignore.case = FALSE), -"variant_qual") %>% 
+    # Aliquot id sometimes contains letters and sometimes numbers across the callers
+    dplyr::mutate(aliquot_id = as.character(aliquot_id), 
+                  variant_qual = as.character(variant_qual)) %>% 
+    # Turn these columns into characters because otherwise they cause trouble.
+    dplyr::mutate_at(dplyr::vars(dplyr::contains("AF", ignore.case = FALSE)), as.character) %>% 
     # Get rid of the few if any duplicate entries. 
     dplyr::distinct(mutation_id, .keep_all = TRUE)
 })
