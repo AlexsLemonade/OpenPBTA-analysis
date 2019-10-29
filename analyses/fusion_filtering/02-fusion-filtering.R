@@ -124,9 +124,10 @@ fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFra
     rts.rev <- unique(unlist(lapply(strsplit(rts, '--'), FUN = function(x) paste0(x[2],'--',x[1]))))
     # Combine read through and reverse fusion genes
     rts <- unique(c(rts, rts.rev))
-    standardFusioncalls <- standardFusioncalls[-which(standardFusioncalls$FusionName %in% rts),]
+    # remove read throughs even if distance is not same in intergenic fusions
     rts<-unlist(lapply(rts,function(x) rm_between(x, "(", ")", extract = F)))
     rts<-data.frame("readThroughs"=rts)
+    standardFusioncalls<-standardFusioncalls[-which(unlist(lapply(standardFusioncalls$FusionName,function(x) rm_between(x, "(", ")", extract = F))) %in% rts$readThroughs),]
 
     # TO-DO
     # Get readthroughs from other callers
