@@ -10,21 +10,13 @@ params:
     label: "Grouping variable"
     value: broad_histology
     input: string
-  dataStrandedSTARFUSION:
+  dataStranded:
     label: "Input filtered fusion dataframe"
-    value: scratch/starfusionStranded_QC_expression_GTExComparison_annotated.RDS
+    value: scratch/standardFusionStrandedExp_QC_expression_GTExComparison_annotated.RDS
     input: file
-  dataStrandedARRIBA:
+  dataPolya:
     label: "Input filtered fusion dataframe"
-    value: scratch/arribaStranded_QC_expression_GTExComparison_annotated.RDS
-    input: file
-  dataPolyaSTARFUSION:
-    label: "Input filtered fusion dataframe"
-    value: scratch/starfusionPolya_QC_expression_GTExComparison_annotated.RDS
-    input: file
-  dataPolyaARRIBA:
-    label: "Input filtered fusion dataframe"
-    value: scratch/arribaPolya_QC_expression_GTExComparison_annotated.RDS
+    value: scratch/standardFusionPolyaExp_QC_expression_GTExComparison_annotated.RDS
     input: file    
   numCaller:
     label: "Least Number of callers to have called fusion"
@@ -72,12 +64,10 @@ suppressPackageStartupMessages(library("reshape2"))
 suppressPackageStartupMessages(library("qdapRegex"))
 
 #read filtFusion files
-arribaStrandedQCGeneFiltered_filtFusion<-readRDS(params$dataStrandedARRIBA)
-starfusionStrandedQCGeneFiltered_filtFusion<-readRDS(params$dataStrandedSTARFUSION)
-arribaPolyaQCGeneFiltered_filtFusion<-readRDS(params$dataPolyaARRIBA)
-starfusionPolyaQCGeneFiltered_filtFusion<-readRDS(params$dataPolyaSTARFUSION)
+strandedQCGeneFiltered_filtFusion<-readRDS(params$dataStranded)
+polyaQCGeneFiltered_filtFusion<-readRDS(params$dataPolya)
 
-QCGeneFiltered_filtFusion<-rbind(starfusionStrandedQCGeneFiltered_filtFusion,arribaStrandedQCGeneFiltered_filtFusion,starfusionPolyaQCGeneFiltered_filtFusion,arribaPolyaQCGeneFiltered_filtFusion)
+QCGeneFiltered_filtFusion<-rbind(strandedQCGeneFiltered_filtFusion,polyaQCGeneFiltered_filtFusion)
 
 # subset for recurrent fusion detection and multifused genes QC
 fusion_calls<-unique(QCGeneFiltered_filtFusion)
@@ -102,9 +92,6 @@ numGroup<-params$numGroup
 
 # Max number of times gene can be fused per sample
 limitMultiFused<-params$limitMultiFused
-
-# remove read-throughs from all callers
-readthrough<-read_tsv("scratch/readthroughs.tsv")
 
 print("Raw calls from STARfusion and Arriba for PBTA")
 table(fusion_calls$Caller)
@@ -223,8 +210,7 @@ setwd(outputfolder)
 # filter QCGeneFiltered_recFusion to remove fusions found in more than 1 group 
 
 QCGeneFiltered_recFusionUniq<-QCGeneFiltered_recFusion %>%
-  dplyr::filter(!FusionName %in% group.count$FusionName) %>%
-  dplyr::filter(!FusionName %in% readthrough$readThroughs)
+  dplyr::filter(!FusionName %in% group.count$FusionName) 
 
 
 write.table(QCGeneFiltered_recFusionUniq,"FilteredFusion.tsv",sep="\t",quote=FALSE,row.names = FALSE)
@@ -244,8 +230,7 @@ putative_driver_fusions <- fusion_calls %>%
                   !Gene2A %in% fusion_recurrent5_per_sample$GeneSymbol |
                   !Gene1B %in% fusion_recurrent5_per_sample$GeneSymbol | 
                   !Gene2B %in% fusion_recurrent5_per_sample$GeneSymbol) %>%
-  dplyr::filter(!is.na(Gene1A_anno) | !is.na(Gene1B_anno) | !is.na(Gene2A_anno) | !is.na(Gene2B_anno)) %>%
-  dplyr::filter(!FusionName %in% readthrough$readThroughs)
+  dplyr::filter(!is.na(Gene1A_anno) | !is.na(Gene1B_anno) | !is.na(Gene2A_anno) | !is.na(Gene2B_anno))
   
   
 

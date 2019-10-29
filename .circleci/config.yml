@@ -28,7 +28,7 @@ jobs:
      
       - run:
           name: Fusion general filtering
-          command: ./scripts/run_in_ci.sh "analyses/fusion_filtering/run_fusion_filtering.sh"
+          command: ./scripts/run_in_ci.sh "analyses/fusion_filtering/run_fusion_merged.sh"
 
       - run:
           name: check scratch files
