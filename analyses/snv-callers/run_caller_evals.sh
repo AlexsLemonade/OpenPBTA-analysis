@@ -36,13 +36,15 @@ do
   Rscript analyses/snv-callers/scripts/01-calculate_vaf_tmb.R \
     --label ${datasets[$i]} \
     --output analyses/snv-callers/results/${datasets[$i]} \
+    --file_format rds \
     --maf data/pbta-snv-${datasets[$i]}.vep.maf.gz \
     --metadata data/pbta-histologies.tsv \
     --bed_wgs data/${wgs_files[$i]} \
     --bed_wxs data/WXS.hg38.100bp_padded.bed \
     --annot_rds $annot_rds \
     --vaf_filter $vaf_cutoff \
-    --overwrite
+    --no_region \
+    --overwrite 
 done
 
 ######################## Plot the data and create reports ######################
@@ -53,7 +55,9 @@ do
     --label ${dataset} \
     --vaf analyses/snv-callers/results/${dataset} \
     --plot_type png \
+    --file_format rds \
     --output analyses/snv-callers/plots/${dataset} \
     --cosmic $cosmic \
-    --strategy wgs,wxs,both
+    --strategy wgs,wxs,both \
+    --no_region
 done

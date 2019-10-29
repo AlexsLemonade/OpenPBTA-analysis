@@ -12,7 +12,7 @@ The GDC has [good documentation on the fields](https://docs.gdc.cancer.gov/Data/
   * [Genomic regional analyses](#genomic-regional-analyses)  
   * [Tumor mutation burden](#tumor-mutation-burden-calculation)
   * [COSMIC mutation overlap](#cosmic-mutation-overlap)  
-* Comparison analysis - in development
+* [Comparison analysis](#comparison-of-callers)
  * [Mutation IDs](#mutation-ids)
 * [Overall file structure](#overall-file-structure)
 * [Summary of functions](#summary-of-custom-functions)
@@ -29,10 +29,6 @@ This script will return results for each caller in the `plots` and `results` fol
 To see an overall summary report, look in the `results` folder for that caller.
 (See [Overall File Structure](#overall-file-structure) for more details on
 everything that is returned.)
-
-**Run comparison analysis of the callers**
-
-*Coming soon*
 
 ## General usage of scripts
 
@@ -71,12 +67,15 @@ that are used to make an overall evaluation report in `02-run_eval.R`.
  -label : Label to be used for folder and all output. eg. 'strelka2'. Default is 'maf'.
  -output : File path that specifies the folder where the output should go.
            New folder will be created if it doesn't exist.
+ --file_format: What type of file format would you like the output as? Options are
+               "rds" or "tsv". Default is "rds".
  --maf :  Relative file path to MAF file to be analyzed. Can be .gz compressed.
  --metadata : Relative file path to original metadata file.
  --annot_rds : Relative file path to annotation object RDS file to be analyzed.
  --bed_wgs : File path that specifies the caller-specific BED regions file.
  --bed_wxs : File path that specifies the WXS BED regions file.
  --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
+ --no_region : If used, regional analysis will not be done.
 ```
 
 ### 02-run_eval.R
@@ -86,22 +85,25 @@ plots ([base_change](#base-change-analysis), [depth_vs_vaf](#variant-allele-frac
 
 **Option descriptions**
 ```
-# --label : Label to be used for folder and all output. eg. 'strelka2'. Optional.
-#           Default is 'maf'
-# --plot_type : Specify what kind of plots you want printed out. Must be
-#               compatible with ggsave. eg pdf. Default is png
-# --vaf : Folder from 01-calculate_vaf_tmb.R following files:
-#                                             <caller_name>_vaf.tsv
-#                                             <caller_name>_region.tsv
-#                                             <caller_name>_tmb.tsv
-# --output : Where you would like the output from this script to be stored.
-# --strategy : Specify whether you would like WXS and WGS separated for the plots.
-#              Analysis is still done on all data in the MAF file regardless.
-#              Acceptable options are 'wgs', 'wxs' or 'both', both for if you
-#              don't want to separate them. Default is both.
-# --cosmic : Relative file path to COSMIC file to be analyzed.
-# --overwrite : If TRUE, will overwrite any reports of the same name. Default is
-#              FALSE
+ --label : Label to be used for folder and all output. eg. 'strelka2'. Optional.
+           Default is 'maf'
+ --plot_type : Specify what kind of plots you want printed out. Must be
+               compatible with ggsave. eg pdf. Default is png
+ --vaf : Folder from 01-calculate_vaf_tmb.R following files:
+                                             <caller_name>_vaf.<file_format>
+                                             <caller_name>_region.<file_format>
+                                             <caller_name>_tmb.<file_format>
+ --file_format: What type of file format were the vaf and tmb files saved as? Options are
+                "rds" or "tsv". Default is "rds".
+ --output : Where you would like the output from this script to be stored.
+ --strategy : Specify whether you would like WXS and WGS separated for the plots.
+              Analysis is still done on all data in the MAF file regardless.
+              Acceptable options are 'wgs', 'wxs' or 'both', both for if you
+              don't want to separate them. Default is both.
+ --cosmic : Relative file path to COSMIC file to be analyzed.
+ --overwrite : If TRUE, will overwrite any reports of the same name. Default is
+              FALSE
+  --no_region : If used, regional analysis will not be done.
 ```
 
 # Individual Caller Evaluation
@@ -188,7 +190,9 @@ The VAF for mutations that are or are not overlapping with COSMIC mutations are 
 * `results/<caller_name>/<caller_name>_vaf.tsv`
 * `plots/<caller_name>/<caller_name>_<strategy>_cosmic_plot.png`
 
-## Comparison of Callers - coming soon
+## Comparison of Callers
+
+**coming soon**
 
 ### Mutation IDs  
 
