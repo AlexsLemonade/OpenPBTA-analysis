@@ -11,7 +11,7 @@
 #
 # --maf :  Relative file path to MAF file to be analyzed. Can be .gz compressed.
 #       File path is given from top directory of 'OpenPBTA-analysis'.
-# --metadata : Relative file path to MAF file to be analyzed. Can be .gz compressed.
+# --metadata : Relative file path to metadata with sample information. 
 #       File path is given from top directory of 'OpenPBTA-analysis'.
 # --specimen_list: A file of specimens to include. Ideally, this list should consist
 #       of independent samples (at most one from each individual). File path is given

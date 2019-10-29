@@ -6,18 +6,22 @@
 #
 # Option descriptions
 #
-# --infile
-#                 
+# --infile The input file location (relative to root) with a summaries of
+#   gene-gene mutation co-occurence, minimally including gene1, gene2, and
+#   cooccur_score columns.
+#
+# --outfile The output plot location. Specify type of file with the extension
+#   (.png or .pdf, most likely).
 #
 # Command line example:
 #
 # Rscript analyses/interaction-plots/02-plot_interactions.R \
-#   --infile 
+#   --infile analysis/interaction-plots/results/cooccur.tsv \
+#   --outfile analysis/interaction-plots/results/cooccur.png
 
 #### Initial Set Up
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-script_root <- file.path(root_dir, "analyses", "interaction-plots")
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
@@ -44,7 +48,6 @@ option_list <- list(
 # Parse options
 opts <- parse_args(OptionParser(option_list = option_list))
 
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 cooccur_file <- file.path(root_dir, opts$infile)
 plot_file <- file.path(root_dir, opts$outfile)
 
