@@ -44,6 +44,7 @@ option_list <- list(
 # Parse options
 opts <- parse_args(OptionParser(option_list = option_list))
 
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 cooccur_file <- file.path(root_dir, opts$infile)
 plot_file <- file.path(root_dir, opts$outfile)
 
@@ -56,7 +57,8 @@ cooccur_df <- cooccur_df %>%
 
   
 ### make plot
-ggplot(cooccur_df, aes(x = gene1, y = gene2, fill = cooccur_score))+
+cooccur_plot <- ggplot(cooccur_df, 
+                       aes(x = gene1, y = gene2, fill = cooccur_score))+
   geom_tile(color = "white", size = 1) +
 
   scale_x_discrete(position = "top") +
@@ -77,4 +79,4 @@ ggplot(cooccur_df, aes(x = gene1, y = gene2, fill = cooccur_score))+
         legend.position=c(1,0),
         legend.key.size = unit(2, "char"))
 
-ggsave(filename = plot_file)
+ggsave(cooccur_plot, filename = plot_file)
