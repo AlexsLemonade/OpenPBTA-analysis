@@ -43,26 +43,21 @@ filter_mutations <- function(maf_df,
     maf_df <- maf_df %>%
       dplyr::mutate(vaf = t_alt_count / (t_ref_count + t_alt_count))
   }
-  # filter on vaf
+  # filter on vaf and consequence (for single Consequence cases)
   maf_df <- maf_df %>% 
-    dplyr::filter(vaf >= min_vaf)
-  
-  # split consequences where there are multiples.
-  maf_df <- maf_df %>%
-    mutate(consequence_single = stringr::str_split(Consequence, ",")) %>%
-    tidyr::unnest(consequence_single)
-  
-  # filter by excluded/included mutations
-  maf_df <- maf_df %>% 
-    dplyr::filter(!(consequence_single %in% exclude_consequence))
+    dplyr::filter(vaf >= min_vaf) %>%
+    dplyr::mutate(consequence_list = stringr::str_split(Consequence, ",")) %>% 
+    dplyr::rowwise() %>%
+    dplyr::filter(!all(unlist(consequence_list) %in% exclude_consequence))
+    
   if (length(include_consequence) > 0){
     maf_df <- maf_df %>% 
-      dplyr::filter(consequence_single %in% include_consequence)
+      dplyr::filter(any(unlist(consequence_list) %in% exclude_consequence))
   }
+
   # remove consequence_single and collapse duplicates
   maf_df <- maf_df %>% 
-    dplyr::select(-consequence_single) %>%
-    dplyr::distinct()
+    dplyr::select(-consequence_list) 
   
   return(maf_df)
 }
