@@ -86,7 +86,11 @@ RUN apt-get -y update && apt-get install -y \
    && rm -rf /var/lib/apt/lists/
 
 # Install for SNV comparison plots
-RUN R -e "devtools::install_github('hms-dbmi/UpSetR', ref = '49f0ab0432754d84be9f111d3b2896637466c8c1', dependencies = TRUE)"
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
+    && install2.r --error \
+    --deps TRUE \
+    UpSetR
+
 RUN R -e "devtools::install_github('const-ae/ggupset', ref = '7a33263cc5fafdd72a5bfcbebe5185fafe050c73', dependencies = TRUE)"
 
 # GGally and its required packages
