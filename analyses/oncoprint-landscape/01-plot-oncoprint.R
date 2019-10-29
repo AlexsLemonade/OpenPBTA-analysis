@@ -125,31 +125,39 @@ if (!is.null(opt$cnv_file)) {
 
 # Read in fusion file
 if (!is.null(opt$fusion_file)) {
-  fusion_file <- data.table::fread(opt$fusion_file, stringsAsFactors = FALSE)
+  fusion_file <-
+    data.table::fread(opt$fusion_file,
+                      data.table = FALSE,
+                      stringsAsFactors = FALSE)
 
   #### Incorporate Fusion Data -------------------------------------------------
-
+  # TODO: Once the consensus calls of the fusion data are obtained, this section
+  # will need to be adapted to the format of the fusion input file. For example,
+  # the way we separate the genes out of `FusionName` may need to be adapted. 
+  
   # Separate fusion gene partners and add variant classification and center
   fus_sep <- fusion_file %>%
-    tidyr::separate(FusionName, c("5'-gene", "3'-gene"), sep = "--")
-
-  # Determine which samples have multi-fused fusions
-  multi <- fus_sep[, c("Sample", "5'-gene", "3'-gene")]
-  multi$ID <- paste0(multi$Sample, ";", multi$`5'-gene`)
-  reformat_multi <- multi %>%
-    dplyr::group_by(ID) %>%
-    dplyr::summarise(Sample = dplyr::n()) %>%
-    as.data.frame()
-
-  reformat_multi$Variant_Classification <-
-    ifelse(reformat_multi$Sample == 1, "Fusion", "Multi_Hit_Fusion")
-  reformat_multi <- reformat_multi %>%
-    tidyr::separate(ID, c("Tumor_Sample_Barcode", "Hugo_Symbol"), sep = ";")
-  reformat_multi$Sample <- NULL
-  reformat_multi$Variant_Type <- "OTHER"
+    # Separate the 5' and 3' genes
+    tidyr::separate(FusionName, c("Gene1", "Gene2"), sep = "--") %>%  
+    dplyr::select(Sample, Gene1, Gene2)
+  
+  reformat_fusion <- fus_sep %>% 
+    # Here we want to tally how many times the 5' gene shows up as a fusion hit 
+    # in a sample
+    dplyr::group_by(Sample, Gene1) %>%
+    dplyr::tally() %>%
+    # If the sample-5' gene pair shows up more than once, call it a multi hit 
+    # fusion
+    dplyr::mutate(Variant_Classification = 
+                    dplyr::if_else(n == 1, "Fusion", "Multi_Hit_Fusion"),
+                  # Required column for joining with MAF
+                  Variant_Type = "OTHER") %>%
+    # Correct format for joining with MAF
+    dplyr::rename(Tumor_Sample_Barcode = Sample, Hugo_Symbol = Gene1) %>%
+    dplyr::select(-n)
 
   # Merge with MAF
-  maf_df <- dplyr::bind_rows(maf_df, reformat_multi)
+  maf_df <- dplyr::bind_rows(maf_df, reformat_fusion)
 }
 
 #### Convert into MAF object ---------------------------------------------------
