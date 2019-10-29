@@ -1,0 +1,236 @@
+---
+title: "VAF Cutoffs and TMB Calculation"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: C. Savonen for ALSF CCDL
+date: 2019
+---
+
+**Purpose:** How do the TMB calculations change with adjustments to the VAF cutoff
+filter? More specifically, if we increase VAF filter cutoff, do the callers' TMB stats 
+relate to each other more? 
+
+### Summary of Findings:
+
+VarDict is the least related to the other callers, but increasing the VAF filter cutoff does somewhat
+recover how its TMB stats relate to the other callers' TMB stats. 
+Regardless, VarDict's data should still be dropped as it is too aberrant from the other callers as 
+well as overly sensitive. 
+
+#### Usage
+
+To run this from the command line, use:
+```
+Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', 
+                              clean = TRUE)"
+```
+
+_This assumes you are in the top directory of the repository._
+
+## Setup
+
+#### Packages and functions
+
+Read in set up script.
+
+```{r}
+if (!("GGally" %in% installed.packages())) {
+  install.packages("GGally")
+}
+if (!("ggupset" %in% installed.packages())) {
+  install.packages("ggupset")
+}
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+Set up output directories. 
+
+```{r}
+base_results_dir <- "results"
+base_plots_dir <- "plots"
+```
+
+Make new directories for the comparison analysis.
+
+```{r}
+vaf_cutoff_results_dir <- file.path(base_results_dir, "vaf_cutoff_data")
+
+# Make caller specific plots folder
+if (!dir.exists(vaf_cutoff_results_dir)) {
+  dir.create(vaf_cutoff_results_dir)
+}
+```
+
+Function for creating a TMB correlation matrix amongst the callers for a particular cutoff.
+
+```{r}
+cor_matrix_plot <- function(cutoff) {
+  # For a given VAF cutoff, calculate TMB correlations amongst the callers and plot it using
+  # GGally::ggpairs
+  #
+  # Args:
+  #   cutoff: The VAF cutoff set to analyze
+  #
+  # Returns:
+  #   A correlation matrix plot amongst the callers
+
+  # Isolate the TMB stats for this cutoff
+  cutoff_df <- tmb_filter_long %>%
+    dplyr::filter(vaf_cutoff == cutoff) %>%
+    dplyr::select("lancet", "mutect2", "strelka2", "vardict")
+
+  # Make the plot
+  cor_plot <- GGally::ggpairs(cutoff_df, mapping = ggplot2::aes(alpha = 0.05)) +
+    ggplot2::theme_classic() +
+    ggplot2::ggtitle(paste0("VAF cutoff: ", cutoff))
+
+  # Return the plot
+  return(cor_plot)
+}
+```
+
+Function for correlating TMB statistics for each VAF cutoff set. 
+
+```{r}
+cor_by_vaf <- function(cutoff = 0.1) {
+  # For a given VAF cutoff, isolate the TMB statistics and correlate them.
+  #
+  # Args:
+  #   cutoff: the VAF cutoff to calculate the correlation by.
+  #
+  # Returns:
+  #   R values for Spearman's correlation amongst the callers
+
+  cutoff_df <- tmb_filter_long %>%
+    dplyr::filter(vaf_cutoff == cutoff) %>%
+    dplyr::select(-Tumor_Sample_Barcode, -vaf_cutoff)
+
+  # Do correlations between callers
+  cor_res <- cor(cutoff_df, method = "spearman", use = "na.or.complete")
+
+  # This is to remove redundancy as upper correlation matrix == lower
+  cor_res[upper.tri(cor_res, diag = TRUE)] <- NA
+
+  # Format into long format data.frame
+  cor_df <- reshape2::melt(cor_res, na.rm = TRUE, value.name = "cor") %>%
+    dplyr::mutate(
+      compare = paste0(Var1, "-", Var2),
+      cutoff
+    )
+
+  # Return a data.frame ready for being added to the bigger data.frame for plotting.
+  return(cor_df)
+}
+```
+
+## Run the data with different VAF filter cutoffs
+
+We need to re-calculate TMB statistics with various VAF filter cutoffs. 
+We will run this script to do it: `system("bash scripts/run_caller_evals_vaf_filter_exp.sh")`
+
+```{r include=FALSE}
+system("bash scripts/run_caller_evals_vaf_filter_exp.sh")
+```
+
+## Import data 
+
+Get the lists of each type of file. 
+
+```{r}
+# Make a list of the vaf filter experiment tmb files
+filter_tmb_files <- list.files(vaf_cutoff_results_dir,
+  pattern = "_tmb.rds$", recursive = TRUE,
+  full.names = TRUE
+)
+```
+
+Take a look at the TMBs from different VAF filter cutoffs. 
+
+```{r}
+filter_tmb_files
+```
+
+Convert the VAF cutoffs into their own vector. 
+
+```{r}
+vaf_filter <- stringr::word(filter_tmb_files, sep = "/", 3)
+vaf_filter <- as.numeric(gsub("cutoff_", "", vaf_filter))
+vaf_filter
+```
+
+Get caller information as a vector. 
+
+```{r}
+caller_filter <- stringr::word(filter_tmb_files, sep = "/", 4)
+caller_filter <- gsub("_tmb.rds", "", caller_filter)
+caller_filter
+```
+
+Read in the data. 
+Name each with their caller and VAF filter cutoff. 
+
+```{r include=FALSE}
+filter_tmb_list <- lapply(filter_tmb_files, function(file_name) {
+  readr::read_rds(file_name) %>% dplyr::ungroup()
+})
+names(filter_tmb_list) <- paste0(caller_filter, "_", vaf_filter)
+```
+
+Turn this into a data frame.
+
+```{r}
+tmb_filter_df <- dplyr::bind_rows(filter_tmb_list, .id = "NAME") %>%
+  dplyr::mutate(
+    caller = stringr::word(NAME, sep = "_", 1),
+    vaf_cutoff = as.numeric(stringr::word(NAME, sep = "_", 2))
+  )
+```
+
+Make this into a long form data.frame for plotting purposes. 
+
+```{r}
+tmb_filter_long <- tmb_filter_df %>%
+  dplyr::distinct(Tumor_Sample_Barcode, caller, tmb, vaf_cutoff) %>%
+  tidyr::spread(caller, tmb)
+```
+
+## TMB correlations across callers
+
+First we'll make a series of corrletion matrix plots. 
+
+```{r}
+lapply(unique(vaf_filter), cor_matrix_plot)
+```
+
+Let's make a summary plot of the Spearman's correlations. 
+Get correlations by vaf cutoff. 
+
+```{r}
+# Run this on each set
+cor_by_vaf_df <- do.call(
+  "rbind.data.frame",
+  lapply(unique(vaf_filter), cor_by_vaf)
+)
+```
+
+Plot the correlations and the vaf_cutoff per each caller combination. 
+
+```{r}
+ggplot2::ggplot(cor_by_vaf_df, ggplot2::aes(x = reorder(compare, -cor), fill = as.factor(cutoff), y = cor)) +
+  ggplot2::geom_point(shape = 21, size = 2.5, stroke = .75, color = "black") +
+  ggplot2::theme_classic() +
+  ggupset::scale_x_mergelist(sep = "-") +
+  ggupset::axis_combmatrix(sep = "-") +
+  ggplot2::xlab("") +
+  ggplot2::ylab("TMB Spearman Correlation") +
+  ggplot2::scale_fill_brewer("VAF Filter Cutoff", palette = "YlGnBu")
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
