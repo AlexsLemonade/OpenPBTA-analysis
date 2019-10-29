@@ -1,7 +1,7 @@
-rds# SNV caller comparison analysis
+# SNV caller comparison analysis
 
-This analysis evaluates [MAF files](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from different SNV callers and compares their output.
-The GDC has [good documentation on the fields](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) contained in a standard MAF file.
+This analysis evaluates [MAF files](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from different SNV callers, compares their output, and creates a [consensus mutation file](./results/consensus/consensus_mutation.maf.tsv.zip).
+This consensus mutation file is [MAF-like](#consensus-mutation-call) meaning it is TSV file that contains many of the fields of a [MAF file](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) but also some added calculations like [Variant Allele Fraction](#variant-allele-fraction-calculation) and some sample metadata information.
 
 **Table of Contents**
 * [How to run this pipeline](#how-to-run-this-pipeline)
@@ -30,7 +30,7 @@ To see an overall summary report, look in the `results` folder for that caller.
 everything that is returned.)
 
 The final results for the caller consensus are in the form of a notebook, `compare_snv_callers.nb.html`.
-The consensus mutations themselves are saved to a pseudo-MAF file `consensus_mutation.maf.tsv.zip` to the `consensus`
+The consensus mutations themselves are saved to a [MAF-like file](#consensus-mutation-call) `consensus_mutation.maf.tsv.zip` to the `results/consensus`
 results folder.
 These are the mutations dubbed reliable enough to move forward with.
 
@@ -128,7 +128,7 @@ The `change` variable is made from the `base_change` variable but groups
 together deletions, insertions, and long (more than a SNV) as their own groups.
 
 *Output for this analysis*
-* `results/<caller_name>/<caller_name>_vaf.tsv`
+* `results/<caller_name>/<caller_name>_vaf.rds`
 * `plots/<caller_name>/<caller_name>_<strategy>_base_change.png`
 
 ### Variant Allele Fraction Calculation
@@ -139,10 +139,10 @@ vaf = (t_alt_count) / (t_ref_count + t_alt_count)
 ```
 This is following the [code used in
 `maftools`](https://github.com/PoisonAlien/maftools/blob/1d0270e35c2e0f49309eba08b62343ac0db10560/R/plot_vaf.R#L39).
-The VAF calculations and other special variables are added to the MAF fields and written to a TSV ending in `_vaf.tsv` in the caller's results folder.
+The VAF calculations and other special variables are added to the MAF fields and written to a TSV ending in `_vaf` in the caller's results folder.
 
  *Output for this analysis*
- * `results/<caller_name>/<caller_name>_vaf.tsv`
+ * `results/<caller_name>/<caller_name>_vaf.rds`
  * `plots/<caller_name>/<caller_name>_<strategy>_depth_vs_vaf.png`
 
 ### Genomic Regional Analyses
@@ -153,7 +153,7 @@ This Annotatr object is stored as an RDS file: `hg38_genomic_region_annotations.
 Mutations are assigned all annotations that they overlap (using `GenomicRanges::overlap`).
 
 *Output for this analysis*
-* `results/<caller_name>/<caller_name>_regions.tsv`
+* `results/<caller_name>/<caller_name>_regions.rds`
 * `plots/<caller_name>/<caller_name>_<strategy>_snv_regions.png`
 
 ### Tumor Mutation Burden Calculation
@@ -172,10 +172,10 @@ genome_size = sum(End_Position - Start_Position)
 
 BED regions for WXS samples can be [found here](https://raw.githubusercontent.com/AstraZeneca-NGS/reference_data/master/hg38/bed/Exome-AZ_V2.bed).
 BED regions used for WGS samples are caller specific are from <unknown as of now>
-The sample-wise TMB calculations written to a TSV ending in `_tmb.tsv` in the caller's results folder.
+The sample-wise TMB calculations written to a TSV ending in `_tmb` in the caller's results folder.
 
 *Output for this analysis*
-* `results/<caller_name>/<caller_name>_tmb.tsv`
+* `results/<caller_name>/<caller_name>_tmb.rds`
 * `plots/<caller_name>/<caller_name>_<strategy>_tmb_plot.png`
 
 ### COSMIC Mutation Overlap
@@ -191,7 +191,7 @@ The outcome of this overlap is added to the VAF data.frame with two `TRUE/FALSE`
 The VAF for mutations that are or are not overlapping with COSMIC mutations are then plotted in a violin plot.
 
 *Output for this analysis*
-* `results/<caller_name>/<caller_name>_vaf.tsv`
+* `results/<caller_name>/<caller_name>_vaf.rds`
 * `plots/<caller_name>/<caller_name>_<strategy>_cosmic_plot.png`
 
 ## Comparison of Callers
@@ -218,15 +218,18 @@ If mutation_id's are identical among MAF files, they are considered the same.
 
 After the comparisons amongst the callers, VarDict proved to be too unreliable and called low VAF mutations.
 Moving forward, mutations that were identified by Lancet, Mutect2 and Strelka2 were included in the final list of mutations for each sample.
-The consensus mutations themselves are saved to a pseudo-MAF file `consensus_mutation.maf.tsv.zip` to the `consensus`.
-It is being called a "pseudo" MAF file because it has many of the same fields as a MAF file but does not contain the version string in the first row and some more extraneous annotation data has been removed.
+The consensus mutations themselves are saved to a MAF-like file `consensus_mutation.maf.tsv.zip` to the `consensus`.
+It is being called a "MAF-like" file because it has many of the same fields as a MAF file but..  
+  - Does not contain the version string in the first row   
+  - Has extraneous annotation data has been removed (columns with all `NA`s)  
+  - Has VAF calculations and other variables that are calculated by the [`set_up_maf` function](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/util/wrangle_functions.R#L11).
 
 ## Overall file structure
 ```
 OpenPBTA-analysis
 ├── analyses
 │   └── snv-callers
-│       ├── run_caller_analysis.R
+│       ├── run_caller_analysis.sh
 │       ├── compare_snv_callers.Rmd
 │       ├── scripts
 │       │   ├── 00-set-up.R
@@ -275,14 +278,13 @@ OpenPBTA-analysis
 │       │   │   └── ...
 │       │   └── vardict
 │       │       └── ...
-│       ├── cosmic
-│       │   └── brain_cosmic_variants_coordinates.rds
+│       ├── ref_files
+│       │   ├── hg38_genomic_region_annotation.rds
+│       │   └── brain_cosmic_variants_coordinates.tsv
 │       └── template
+│           ├── variant_caller_report_no_region_template.Rmd
 │           └── variant_caller_report_template.Rmd
 ├── data
-├── scratch
-│    ├── cosmic_variants_cleaned.tsv
-│    └── hg38_genomic_region_annotations.rds
 ```
 
 ## Summary of custom functions
