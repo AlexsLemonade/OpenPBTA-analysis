@@ -61,10 +61,15 @@ jobs:
       - run:
           name: Independent samples
           command: ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh 
-
+     
+      - run:
+          name: Oncoprint plotting
+          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
+         
          ################################
          #### Add your analysis here ####
          ################################
+         
       - run:
           name: SNV Caller Evaluation
           command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_evals.sh 
@@ -72,7 +77,7 @@ jobs:
       - run:
           name: SNV Caller VAF Cutoff Experiment
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)"
-  
+                
   deploy:
     machine: 
       docker_layer_caching: true
