@@ -30,6 +30,10 @@ _This assumes you are in the top directory of the repository._
 Read in set up script.
 
 ```{r}
+if (!("deconstructSigs" %in% installed.packages())) {
+  install.packages("deconstructSigs")
+}
+
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 ```
