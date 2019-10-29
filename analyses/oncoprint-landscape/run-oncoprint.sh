@@ -17,5 +17,7 @@ wget --no-clobber --directory-prefix=driver-lists -O driver-lists/brain-goi-list
 Rscript --vanilla 01-plot-oncoprint.R \
 	--maf_file ../../data/pbta-snv-mutect2.vep.maf.gz \
 	--fusion_file ../../scratch/arriba.tsv \
+	--cnv_file ../../data/testing/pbta-cnv-cnvkit.seg.gz \
 	--goi_list driver-lists/brain-goi-list-long.txt \
-	--png_name maf_oncoprint.png
+	--png_name maf_oncoprint.png \
+	--low_segmean_cutoff 0.2

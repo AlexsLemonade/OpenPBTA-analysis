@@ -11,7 +11,7 @@
 
 # Define a color vector for plots 
 color_palette <- c("Missense_Mutation" = "#35978f", 
-                   "Nonsense_Mutation" = "#000000",
+                   "Nonsense_Mutation" = "#002F6C",
                    "Frame_Shift_Del" = "#56B4E9", 
                    "Frame_Shift_Ins" = "#FFBBFF", 
                    "Splice_Site" = "#F0E442",
