@@ -68,6 +68,12 @@ if (!("UpSetR" %in% installed.packages())) {
 if (!("GGally" %in% installed.packages())) {
   install.packages("GGally", repos = "http://cran.us.r-project.org")
 }
+if (!("grid" %in% installed.packages())) {
+  install.packages("grid", repos = "http://cran.us.r-project.org")
+}
+# Attach grid library 
+library(grid)
+
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
@@ -197,9 +203,9 @@ Read in VAF files.
 
 ```{r include=FALSE}
 # Read in the other files to match the first
-vaf_list <- lapply(vaf_files, function(file) {
+vaf_list <- lapply(vaf_files, function(vaf_file) {
   # Read in the file
-  df <- readr::read_rds(file) 
+  df <- readr::read_rds(vaf_file) 
   
   # Make it so it is more easily combined with the other files
   df %>%
