@@ -15,9 +15,9 @@ wget --no-clobber --directory-prefix=driver-lists -O driver-lists/brain-goi-list
 wget --no-clobber --directory-prefix=driver-lists -O driver-lists/brain-goi-list-short.txt https://github.com/marislab/create-pptc-pdx-oncoprints/raw/2c9ed2a2331bcef3003d6aa25a130485d76a3535/data/brain-goi-list.txt
 
 Rscript --vanilla 01-plot-oncoprint.R \
-	--maf_file ../../data/pbta-snv-mutect2.vep.maf.gz \
+	--maf_file ../../data/pbta-snv-lancet.vep.maf.gz \
 	--fusion_file ../../scratch/arriba.tsv \
-	--cnv_file ../../data/testing/pbta-cnv-cnvkit.seg.gz \
+	--cnv_file ../../data/pbta-cnv-cnvkit.seg.gz \
 	--goi_list driver-lists/brain-goi-list-long.txt \
 	--png_name maf_oncoprint.png \
 	--low_segmean_cutoff 0.2
