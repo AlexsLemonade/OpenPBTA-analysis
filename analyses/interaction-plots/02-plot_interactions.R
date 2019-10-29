@@ -29,30 +29,36 @@ library(ggplot2)
 option_list <- list(
   make_option(
     opt_str = "--infile", type = "character", 
-    default = file.path("analyses", "interaction-plots", "results", "cooccurance.tsv"),
+    default = file.path("analyses", "interaction-plots", "results", "cooccurence.tsv"),
     help = "Relative file path (from top directory of 'OpenPBTA-analysis')
             where cooccurence summary table is located",
     metavar = "character"
   ),
   make_option(
     opt_str = "--outfile", type = "character", 
-    default = file.path("analyses", "interaction-plots", "results", "cooccurance.png"),
+    default = file.path("analyses", "interaction-plots", "results", "cooccurence.png"),
     help = "Relative file path (from top directory of 'OpenPBTA-analysis')
             where output plot will be located. Extension specifies format of plot",
     metavar = "character"
-  ),
+  )
 )
 
 # Parse options
 opts <- parse_args(OptionParser(option_list = option_list))
 
 cooccur_file <- file.path(root_dir, opts$infile)
-plot_file <- file.path(root_dir, opts$infile)
+plot_file <- file.path(root_dir, opts$outfile)
 
 cooccur_df <- readr::read_tsv(cooccur_file)
+genes <- unique(c(cooccur_df$gene1, cooccur_df$gene2))
+
+cooccur_df <- cooccur_df %>%
+  dplyr::mutate(gene1 = factor(gene1, levels = genes), 
+                gene2  = factor(gene2, levels = genes))
+
   
 ### make plot
-ggplot(cooccurence_df, aes(x = gene1, y = gene2, fill = cooccur_score))+
+ggplot(cooccur_df, aes(x = gene1, y = gene2, fill = cooccur_score))+
   geom_tile(color = "white", size = 1) +
   xlab('') + 
   ylab('') +

@@ -63,15 +63,15 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
-    opt_str = "--outfile", type = "character", 
-    default = file.path("analyses", "interaction-plots", "results", "cooccurance.tsv"),
+    opt_str = "--out", type = "character", 
+    default = file.path("analyses", "interaction-plots", "results", "cooccurence.tsv"),
     help = "Relative file path (from top directory of 'OpenPBTA-analysis')
             where output table will be placed.",
     metavar = "character"
   ),
   make_option(
     opt_str = "--specimen_list", type = "character", 
-    default = NA,
+    default = file.path("analyses", "independent-samples", "results", "independent-specimens.wgs.primary.tsv"),
     help = "Relative file path (from top directory of 'OpenPBTA-analysis')
             to MAF file to be analyzed. Can be .gz compressed.",
     metavar = "character"
@@ -110,6 +110,7 @@ opts <- parse_args(OptionParser(option_list = option_list))
 maf_file <- file.path(root_dir, opts$maf)
 seg_file <- file.path(root_dir, opts$seg)
 meta_file <- file.path(root_dir, opts$metadata)
+out_file <- file.path(root_dir, opts$out)
 if(!is.na(opts$specimen_list)){
   specimen_file <- file.path(root_dir, opts$specimen_list)
 }
@@ -163,7 +164,7 @@ sample_meta <- meta_df %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in% samples)
 
 # reduce maf to chosen samples & calculate VAF
-sample_maf <- maf_df %>%
+maf_df <- maf_df %>%
   dplyr::filter(Tumor_Sample_Barcode %in% samples) %>%
   dplyr::mutate(vaf = t_alt_count / (t_ref_count + t_alt_count))
 
@@ -171,12 +172,12 @@ sample_maf <- maf_df %>%
 exclusions <- c("intergenic_variant")
 if (!opts$include_syn){exclusions <- c(exclusions, "synonymous_variant")}
 if (!opts$include_intron){exclusions <- c(exclusions, "intron_variant")}
-sample_maf_filtered <- sample_maf %>%
+maf_filtered <- maf_df %>%
   filter_mutations(min_vaf = opts$vaf,
                    exclude_consequence = exclusions)
 
-# count mutations by gene/sample pair and syn
-gene_sample_counts <- sample_maf_filtered %>%
+# count mutations by gene/sample pair
+gene_sample_counts <- maf_filtered %>%
   dplyr::filter(Entrez_Gene_Id > 0) %>% # remove unknowns
   dplyr::group_by(gene = Hugo_Symbol, sample = Tumor_Sample_Barcode) %>%
   dplyr::tally(name = "mutations")
@@ -193,11 +194,11 @@ gene_counts <- gene_sample_counts %>%
                  desc(muts_per_sample))
 
 # get most often mutated genes
-top_count_genes <- head(gene_counts, opts$n_genes)
+top_count_genes <- head(gene_counts, opts$n_genes)$gene
 
 
 cooccur_summary <- coocurrence(gene_sample_counts, top_count_genes)
 
-readr::write_tsv(cooccur_summary, cooccur_file)
+readr::write_tsv(cooccur_summary, out_file)
  
 
