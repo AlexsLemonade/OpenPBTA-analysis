@@ -1,0 +1,59 @@
+---
+title: "Mutation Signatures"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: C. Savonen for ALSF CCDL
+date: 2019
+---
+
+**Purpose:**
+
+### Summary of Findings:
+
+
+#### Usage
+
+To run this from the command line, use:
+```
+Rscript -e "rmarkdown::render('analyses/mutation-signatures/mutation_signatures.Rmd', 
+                              clean = TRUE)"
+```
+
+_This assumes you are in the top directory of the repository._
+
+## Setup
+
+#### Packages and functions
+
+Read in set up script.
+
+```{r}
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+Set up output directories. 
+
+```{r}
+results_dir <- "results"
+plots_dir <- "plots"
+```
+
+Make new directories for the results. 
+
+```{r}
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir)
+}
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
