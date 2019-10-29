@@ -126,32 +126,6 @@ cor_by_vaf <- function(cutoff = 0.1) {
 }
 ```
 
-Calculate variance for a sample for a given caller amongst the different VAF cutoffs.
-
-```{r}
-var_by_sample <- function(sample) {
-  # For a given sample ID, isolate the TMB statistics and calculate the variance.
-  #
-  # Args:
-  #   sample: Tumor_Sample_Barcode of the sample you would like the variance for.
-  #
-  # Returns:
-  #   Variance for that sample for each caller.
-
-  sample_df <- tmb_filter_long %>%
-    dplyr::filter(Tumor_Sample_Barcode == sample) %>%
-    dplyr::select(-Tumor_Sample_Barcode, -vaf_cutoff)
-
-  # Do correlations between callers
-  var_by_caller <- data.frame(
-    t(apply(sample_df, 2, var)),
-    sample
-  )
-
-  return(var_by_caller)
-}
-```
-
 ## Run the data with different VAF filter cutoffs
 
 We need to re-calculate TMB statistics with various VAF filter cutoffs. 
@@ -223,38 +197,15 @@ tmb_filter_long <- tmb_filter_df %>%
   tidyr::spread(caller, tmb)
 ```
 
-## Make the TMB correlation plots
+## TMB correlations across callers
+
+First we'll make a series of corrletion matrix plots. 
 
 ```{r}
 lapply(unique(vaf_filter), cor_matrix_plot)
 ```
 
-Get the variance for each sample across this experiment.
-
-```{r}
-# Run this on each set
-var_by_sample_df <- do.call(
-  "rbind.data.frame",
-  lapply(unique(tmb_filter_long$Tumor_Sample_Barcode), var_by_sample)
-) %>%
-  reshape2::melt()
-```
-
-Plot the variance for each sample.
-
-```{r}
-ggplot2::ggplot(var_by_sample_df, ggplot2::aes(x = variable, y = value)) +
-  ggplot2::geom_boxplot(outlier.color = NA) +
-  ggplot2::geom_jitter(ggplot2::aes(color = sample)) +
-  ggplot2::theme_classic() +
-  ggplot2::xlab("") +
-  ggplot2::ylab("Sample Variance Across VAF Filter Cutoffs") +
-  ggplot2::theme(
-    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
-    legend.position = "none"
-  )
-```
-
+Let's make a summary plot of the Spearman's correlations. 
 Get correlations by vaf cutoff. 
 
 ```{r}
