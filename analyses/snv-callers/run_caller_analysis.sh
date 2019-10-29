@@ -62,6 +62,11 @@ do
     --no_region
 done
 
+######################## Merge callers' files into total files #################
+
+Rscript -e analyses/snv-callers/scripts/03-merge_callers.R \
+
+
 ######## Run comparison notebook to create consensus mutation call file ########
 
 Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers.Rmd', clean = TRUE)"
