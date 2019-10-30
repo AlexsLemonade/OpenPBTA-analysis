@@ -68,14 +68,8 @@ if (!("UpSetR" %in% installed.packages())) {
 if (!("GGally" %in% installed.packages())) {
   install.packages("GGally", repos = "http://cran.us.r-project.org")
 }
-if (!("grid" %in% installed.packages())) {
-  install.packages("grid", repos = "http://cran.us.r-project.org")
-}
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
-
-# Import this for the recalculation of TMB for the consensus mutation calls
-source(file.path("util", "wrangle_functions.R"))
 ```
 
 Set up a function for calculating the percent off mutations of a caller for a 
@@ -93,27 +87,13 @@ perc_mutation_by_caller <- function(df, var) {
   # Returns:
   #   a data.frame with a summarized percent of caller mutations calculated in
   #   the `percent` column.
-
   # Summarize by the number of times each category shows up
   count_df <- df %>%
-    dplyr::group_by(caller, eval(parse(text = var))) %>%
-    dplyr::summarise(count = dplyr::n())
-
-  # Calculate sum totals for each caller
-  totals <- count_df %>%
-    dplyr::group_by(caller) %>%
-    dplyr::summarise(total = sum(count, na.rm = TRUE))
-
-  # Calculate percentages based on totals
-  count_df <- count_df %>%
-    as.data.frame() %>%
-    dplyr::mutate("percent" = count_df$count / totals$total[match(
-      count_df$caller,
-      totals$caller
-    )])
-
-  # Rename the column as what it was before
-  colnames(count_df)[2] <- var
+    dplyr::count(caller, eval(parse(text = var)), name = "count") %>%
+    dplyr::add_count(caller, wt = count) %>%
+    dplyr::mutate(percent = count/n) %>% 
+    # Rename the column as what it was before
+    dplyr::rename(var = 'eval(parse(text = var))')
 
   # Return this data.frame
   return(count_df)
@@ -145,96 +125,23 @@ if (!dir.exists(consensus_plots_dir)) {
 
 ## Import data 
 
-Look at the existing folders within the results folder. 
+Load in the merged data.frames from `03-merge_callers.R` output. 
 
 ```{r}
-# Exclude the non-caller directories
-caller_dirs <- grep("vaf_cutoff|consensus", dir(base_results_dir, full.names = TRUE), invert = TRUE, value = TRUE)
+# Master VAF data.frame
+vaf_df <- readr::read_rds(file.path(results_dir, "all_callers_vaf.rds"))
 
-# Print this out to check
-caller_dirs
-```
+# Master TMB data.frame
+tmb_df <- readr::read_rds(file.path(results_dir, "all_callers_tmb.rds"))
 
-Get the lists of each type of file. 
+# Full mutation list
+mutation_id_list <- readr::rds(file.path(results_dir, "mutation_id_list.rds"))
 
-```{r}
-# Get a list of vaf files
-vaf_files <- sapply(caller_dirs, 
-                    list.files, pattern = "_vaf", recursive = TRUE, full.names = TRUE)
-
-# Print this out to check
-vaf_files
-```
-
-```{r}
-# Get a list of tmb files
-tmb_files <- sapply(caller_dirs, 
-                    list.files, pattern = "_tmb", recursive = TRUE, full.names = TRUE)
-
-# Print this out to check
-tmb_files
-```
-
-Obtain the caller names from the file paths. 
-
-```{r}
-# Get the caller names
-caller_names <- stringr::word(vaf_files, sep = "/", 2)
-```
-
-Read in VAF files. 
-
-```{r include=FALSE}
-# Read in the other files to match the first
-vaf_list <- lapply(vaf_files, function(vaf_file) {
-  # Read in the file
-  df <- readr::read_rds(vaf_file) 
-  
-  # Make it so it is more easily combined with the other files
-  df %>%
-    # Attempt to make numeric columns where that doesn' kick back an "NA"
-    dplyr::mutate_at(dplyr::vars(which(!is.na(as.numeric(t(df[1,]))))), as.numeric) %>% 
-    # Aliquot id sometimes contains letters and sometimes numbers across the callers
-    dplyr::mutate(aliquot_id = as.character(aliquot_id), 
-                  variant_qual = as.character(variant_qual)) %>% 
-    # Turn these columns into characters because otherwise they cause trouble.
-    dplyr::mutate_at(dplyr::vars(dplyr::contains("AF", ignore.case = FALSE)), as.character) %>% 
-    # Get rid of the few if any duplicate entries. 
-    dplyr::distinct(mutation_id, .keep_all = TRUE)
-})
-
-# Carry over the callers' names
-names(vaf_list) <- caller_names
-```
-
-Make a big VAF data.frame
-
-```{r include=FALSE}
-vaf_df <- dplyr::bind_rows(vaf_list, .id = "caller") %>%
-  dplyr::mutate(caller = factor(caller))
-```
-
-Read in TMB files. 
-
-```{r include=FALSE}
-tmb_list <- lapply(tmb_files, readr::read_rds)
-
-# Carry over the callers' names
-names(tmb_list) <- caller_names
-```
-
-Make a big tmb data.frame
-
-```{r include=FALSE}
-tmb_df <- dplyr::bind_rows(tmb_list, .id = "caller") %>%
-  dplyr::mutate(caller = factor(caller))
+# Callers per mutation data.frame
+callers_per_mutation <- readr::rds(file.path(results_dir, "callers_per_mutation.rds"))
 ```
 
 ## Upset graph
-
-```{r}
-mutation_id_list <- lapply(vaf_list, function(caller) caller$mutation_id)
-```
 
 Make the upset plot. 
 
@@ -419,62 +326,6 @@ GGally::ggpairs(tmb_long, mapping = ggplot2::aes(alpha = 0.05), cardinality_thre
 ```{r}
 # Save this plot
 ggplot2::ggsave(file.path(consensus_plots_dir, "tmb_correlations_plot.png"))
-```
-
-## Save consensus mutation calls
-
-Because of VarDict's oversensitivity, we will ignore VarDict's calls and keep mutations that
-are agreed upon by Lancet, Mutect2, and Strelka2. 
-Let's get the mutation ids for these. 
-
-```{r}
-consen_mutations <- callers_per_mutation %>%
-  dplyr::filter(caller_combo == "lancet-mutect2-strelka2") %>%
-  dplyr::select(-caller_combo) %>%
-  dplyr::pull(mutation_id)
-```
-
-Isolate the mutations to only these mutations, use the Strelka2 stats. 
-
-```{r}
-consen_mutation <- vaf_df %>%
-  dplyr::filter(
-    caller == "strelka2",
-    mutation_id %in% consen_mutations
-  ) %>%
-  readr::write_tsv(file.path(consensus_results_dir, "consensus_mutation.maf.tsv"))
-```
-
-Zip this file up. 
-
-```{r}
-zip(
-  file.path(consensus_results_dir, "consensus_mutation.maf.tsv.zip"),
-  file.path(consensus_results_dir, "consensus_mutation.maf.tsv")
-)
-```
-
-Re-calculate TMB statistics using Strelka2. 
-
-```{r}
-# Set up BED region files for TMB calculations
-wgs_bed <- readr::read_tsv(file.path("..", "..", "data", "WGS.hg38.strelka2.unpadded.bed"),
-  col_names = FALSE
-)
-wxs_bed <- readr::read_tsv(file.path("..", "..", "data", "WXS.hg38.100bp_padded.bed"),
-  col_names = FALSE
-)
-
-# Calculate size of genome surveyed
-wgs_genome_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
-wxs_exome_size <- sum(wxs_bed[, 3] - wxs_bed[, 2])
-
-# Calculate TMBs and write to TMB file
-tmb_df <- calculate_tmb(vaf_df,
-  wgs_size = wgs_genome_size,
-  wxs_size = wxs_exome_size
-) %>%
-  readr::write_tsv(file.path(consensus_results_dir, "consensus_mutation_tmb.tsv"))
 ```
 
 ## Session Info

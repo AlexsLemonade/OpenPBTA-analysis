@@ -16,8 +16,12 @@ wgs_files=("WGS.hg38.strelka2.unpadded.bed" "WGS.hg38.mutect2.unpadded.bed" "WGS
 cosmic=analyses/snv-callers/ref_files/brain_cosmic_variants_coordinates.tsv
 annot_rds=analyses/snv-callers/ref_files/hg38_genomic_region_annotation.rds
 
+# Choose TSV or RDS
+format=rds
+
 # Set a default for the VAF filter if none is specified
 vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}
+run_plots_nb=${OPENPBTA_PLOTS:-FALSE}
 
 ############################ Set Up Reference Files ############################
 # The original COSMIC file is obtained from: https://cancer.sanger.ac.uk/cosmic/download
@@ -36,7 +40,7 @@ do
   Rscript analyses/snv-callers/scripts/01-calculate_vaf_tmb.R \
     --label ${datasets[$i]} \
     --output analyses/snv-callers/results/${datasets[$i]} \
-    --file_format rds \
+    --file_format $format \
     --maf data/pbta-snv-${datasets[$i]}.vep.maf.gz \
     --metadata data/pbta-histologies.tsv \
     --bed_wgs data/${wgs_files[$i]} \
@@ -55,18 +59,44 @@ do
     --label ${dataset} \
     --vaf analyses/snv-callers/results/${dataset} \
     --plot_type png \
-    --file_format rds \
+    --file_format $format \
     --output analyses/snv-callers/plots/${dataset} \
     --cosmic $cosmic \
     --strategy wgs,wxs,both \
     --no_region
 done
 
-######################## Merge callers' files into total files #################
+##################### Merge callers' files into total files ####################
+Rscript analyses/snv-callers/scripts/03-merge_callers.R \
+  --vaf analyses/snv-callers/results \
+  --output analyses/snv-callers/results/consensus \
+  --file_format $format \
+  --overwrite
 
-Rscript -e analyses/snv-callers/scripts/03-merge_callers.R \
+###################### Plot snv callers in comparison notebook #################
+if [ ! $run_plots_nb ]; then
+  Rscript -e "rmarkdown::render('analyses/snv-callers/plot_snv_caller_comparison.Rmd', clean = TRUE)"
+fi
 
+##################### Merge callers' files into total files ####################
 
-######## Run comparison notebook to create consensus mutation call file ########
+Rscript analyses/snv-callers/scripts/04-create_consensus_mut_files.R \
+ --merged_files analyses/snv-callers/results/consensus \
+ --combo lancet-mutect2-strelka2 \
+ --output analyses/snv-callers/results/consensus \
+ --vaf strelka2 \
+ --bed_wgs <- data/WGS.hg38.strelka2.unpadded.bed \
+ --bed_wxs data/WXS.hg38.100bp_padded.bed \
+ --overwrite
 
-Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers.Rmd', clean = TRUE)"
+opt$vaf <- "analyses/snv-callers/results"
+opt$file_format <- "rds"
+opt$overwrite <- TRUE
+opt$output <- "analyses/snv-callers/results/consensus"
+
+opt$merged_files <- "analyses/snv-callers/results/consensus"
+opt$combo <- "lancet-mutect2-strelka2"
+opt$output <- "analyses/snv-callers/results/consensus"
+opt$overwrite <- TRUE
+opt$bed_wgs <- data/
+opt$bed_wxs <-  "data/WXS.hg38.100bp_padded.bed"

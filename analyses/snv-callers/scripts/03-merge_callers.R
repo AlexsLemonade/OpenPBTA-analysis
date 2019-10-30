@@ -1,13 +1,13 @@
-# Consensus mutation file creation
+# Merge the caller VAF and TMB files
+#
 # 2019
+#
 # C. Savonen for ALSF - CCDL
 #
 # Purpose: Merge callers' TMB and VAF files into total files with a column `caller`
 # to designate their origin
 
 # Option descriptions
-# --label : Label to be used for folder and all output. eg. 'strelka2'. Optional.
-#      Default is 'maf'
 # --vaf : Parent folder containing the vaf and tmb files for each folder.
 #                                             <caller_name>_vaf.<file_format>
 #                                             <caller_name>_tmb.<file_format>
@@ -21,9 +21,8 @@
 #
 # Command line example:
 #
-# Rscript 02-run_eval.R \
-# -l strelka2 \
-# -v
+# Rscript 03-merge_callers.R \
+# -v results \
 # -o strelka2 \
 # -s wxs \
 # -w
@@ -44,12 +43,6 @@ library(optparse)
 # Set up optparse options
 option_list <- list(
   make_option(
-    opt_str = c("-l", "--label"), type = "character",
-    default = "maf", help = "Label to be used for folder and all
-                output. eg. 'strelka2'. Optional. Default is 'maf'",
-    metavar = "character"
-  ),
-  make_option(
     opt_str = c("-v", "--vaf"), type = "character",
     default = NULL, help = "Path to folder with the output files
               from 01-calculate_vaf_tmb. Should include the VAF, TMB, and
@@ -69,7 +62,7 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
-    opt_str = c("-w", "--overwrite"), action = "store_true",
+    opt_str = c("--overwrite"), action = "store_true",
     default = FALSE, help = "If TRUE, will overwrite any reports of
               the same name. Default is FALSE",
     metavar = "character"
@@ -79,6 +72,7 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
+########################### Check options specified ############################
 # Bring along the file suffix. Make to lower.
 file_suffix <- tolower(opt$file_format)
 
@@ -89,7 +83,7 @@ if (!(file_suffix %in% c('rds', 'tsv'))) {
   opt$file_format <- "rds"
   file_suffix <- "rds"
 }
-########################### Check options specified ############################
+
 # Normalize this file path
 opt$vaf <- file.path(root_dir, opt$vaf)
 
@@ -105,33 +99,23 @@ caller_dirs <- grep("vaf_cutoff|consensus",
                     value = TRUE)
 
 # Print this out to check
-message("These are the callers whose files will be merged:", caller_dirs)
-
-# The list of needed file suffixes
-needed_files <- c(paste0(caller_dirs, "_vaf.", file_suffix),
-                  paste0(caller_dirs,"_tmb.", file_suffix))
-
-# Print the files we need
-message(paste("Looking for these files:", needed_files))
+message("Will merge all VAF and TMB files in these folders: \n", paste0(caller_dirs, "\n"))
 
 # Get a list of vaf files
 vaf_files <- sapply(caller_dirs,
                     list.files, pattern = paste0("_vaf.", file_suffix),
                      recursive = TRUE, full.names = TRUE)
 
+# Print this out to check
+message("Merging these VAF files: \n", paste0(vaf_files, "\n"))
+
 # Get a list of tmb files
 tmb_files <- sapply(caller_dirs,
                     list.files, pattern = paste0("_tmb.", file_suffix),
                      recursive = TRUE, full.names = TRUE)
 
-# Report error if any of them aren't found
-if(length(tmb_files) < length(caller_dirs)) {
-  empty_dir <- caller_dirs[]
-  stop(paste0(empty_dir, "does not have a ", "_tmb.", file_suffix, " file."))
-}
-
-# Specify the exact paths of these files
-file_list <- file.path(opt$vaf, files_found)
+# Print this out to check
+message("Merging these TMB files: \n", paste0(tmb_files, "\n"))
 
 ################################### Set Up #####################################
 # Set and make the plots directory
@@ -142,15 +126,19 @@ if (!dir.exists(opt$output)) {
   dir.create(opt$output, recursive = TRUE)
 }
 
-################################################################################
+########################### Make Master VAF file ###############################
 # Get the caller names
-caller_names <- stringr::word(vaf_files, sep = "/", 2)
+caller_names <- stringr::word(vaf_files, sep = "/", -2)
+
+# Read in vaf files for all callers
+if (opt$file_format  == "tsv"){
+  vaf_list <- lapply(vaf_files, readr::read_tsv)
+} else {
+  vaf_list <- lapply(vaf_files, readr::read_rds)
+}
 
 # Read in the other files to match the first
-vaf_list <- lapply(vaf_files, function(vaf_file) {
-  # Read in the file
-  df <- readr::read_rds(vaf_file)
-
+vaf_list <- lapply(vaf_list, function(df) {
   # Make it so it is more easily combined with the other files
   df %>%
     # Attempt to make numeric columns where that doesn' kick back an "NA"
@@ -167,25 +155,39 @@ vaf_list <- lapply(vaf_files, function(vaf_file) {
 # Carry over the callers' names
 names(vaf_list) <- caller_names
 
-# Make master VAF
-vaf_df <- dplyr::bind_rows(vaf_list, .id = "caller") %>%
-  dplyr::mutate(caller = factor(caller)) %>%
-  readr::write_rds(file.path(results_dir, "all_callers_vaf.rds"))
+# Print progress message
+message("Saving master VAF file to: \n", file.path(opt$output, "all_callers_vaf.rds"))
 
+# Combine and save VAF file
+vaf_df <- dplyr::bind_rows(vaf_list, .id = "caller") %>% 
+  dplyr::mutate(caller = factor(caller)) %>%
+  # Write to RDS file
+  readr::write_rds(file.path(opt$output, "all_callers_vaf.rds"))
+
+########################### Make Master TMB file ###############################
 # Read in TMB files for all callers
-tmb_list <- lapply(tmb_files, readr::read_rds)
+if (opt$file_format  == "tsv"){
+  tmb_list <- lapply(tmb_files, readr::read_tsv)
+} else {
+  tmb_list <- lapply(tmb_files, readr::read_rds)
+}
 
 # Carry over the callers' names
 names(tmb_list) <- caller_names
 
+# Print progress message
+message("Saving master TMB file to: \n", file.path(opt$output, "all_callers_tmb.rds"))
+
+# Combine and save TMB file
 tmb_df <- dplyr::bind_rows(tmb_list, .id = "caller") %>%
   dplyr::mutate(caller = factor(caller)) %>%
-  readr::write_rds(file.path(results_dir, "all_callers_tmb.rds"))
+  readr::write_rds(file.path(opt$output, "all_callers_tmb.rds"))
 
-# Make mutation id list
+############################# Make mutation id list ############################
 mutation_id_list <- lapply(vaf_list, function(caller) caller$mutation_id)
-readr::write_rds(mutation_id_list, file.path(results_dir, "mutation_id_list.rds"))
+readr::write_rds(mutation_id_list, file.path(opt$output, "mutation_id_list.rds"))
 
+############################# Callers per mutation df ##########################
 # Make a string that says what callers call each mutation
 callers_per_mutation <- tapply(vaf_df$caller,
   vaf_df$mutation_id,
@@ -208,7 +210,7 @@ vaf_med <- tapply(
 
 # Join the median VAF and the callers that call that mutation into one data.frame
 callers_per_mutation <- callers_per_mutation %>%
-  dplyr::inner_join(vaf_med, by = "mutation_id")
-
-# Make the column names more sensible
-colnames(callers_per_mutation) <- c("mutation_id", "caller_combo", "median_vaf")
+  dplyr::inner_join(vaf_med, by = "mutation_id") %>% 
+  # Make column names more sensible
+  dplyr::rename(caller_combo = "..x", median_vaf = "..y") %>%
+  readr::write_rds(file.path(opt$output, "callers_per_mutation.rds"))
