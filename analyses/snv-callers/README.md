@@ -114,6 +114,12 @@ plots ([base_change](#base-change-analysis), [depth_vs_vaf](#variant-allele-frac
 
 This script merges the callers' TMB and VAF files into total files with a column
 `caller` to designate their origin.
+This script output 4 files:
+
+- `all_callers_vaf.rds` - contains all the VAF file information for all callers.
+- `all_callers_tmb.rds` - contains all the TMB file information for all callers.
+- `mutation_id_list.rds` - a full list of the mutations that can be used for an UpSetR graph
+- `callers_per_mutation.rds` - contains a breakdown for each mutation of what callers called it. Will be used to identify the consensus mutations.
 
 **Option descriptions**
 ```
@@ -130,6 +136,9 @@ This script merges the callers' TMB and VAF files into total files with a column
 ### 04-create_consensus_mut_files.R
 
 This script takes the merged output of 03-merge_callers.R and saves the final consensus mutation calls to a MAF-like file.
+This script outputs two main files:  
+- `consensus_mutation_vaf.tsv` - contains the consensus mutations and their associated variables.
+- `consensus_mutation_tmb.tsv` - contains the re-calculated TMBs based on the conensus mutations only.
 
 **Option descriptions**
 ```

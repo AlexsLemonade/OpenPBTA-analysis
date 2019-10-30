@@ -5,7 +5,15 @@
 # C. Savonen for ALSF - CCDL
 #
 # Purpose: Merge callers' TMB and VAF files into total files with a column `caller`
-# to designate their origin
+# to designate their origin. 
+
+# Files Output: 
+# "all_callers_vaf.<file_format>" - contains all the VAF file information for all callers.
+# "all_callers_tmb.<file_format>" - contains all the TMB file information for all callers.
+# "mutation_id_list.<file_format>" - a full list of the mutations that can be 
+#                                    used for an UpSetR graph
+# "callers_per_mutation.<file_format>" - contains a breakdown for each mutation of what callers
+#                                        called it. Will be used to identify the consensus mutations.
 
 # Option descriptions
 # --vaf : Parent folder containing the vaf and tmb files for each folder.
@@ -165,7 +173,7 @@ names(vaf_list) <- caller_names
 message("Saving master VAF file to: \n", file.path(opt$output, "all_callers_vaf.rds"))
 
 # Combine and save VAF file
-vaf_df <- dplyr::bind_rows(vaf_list, .id = "caller") %>%
+vaf_df <- suppressWarnings(dplyr::bind_rows(vaf_list, .id = "caller")) %>%
   dplyr::mutate(caller = factor(caller)) %>%
   # Write to RDS file
   readr::write_rds(file.path(opt$output, "all_callers_vaf.rds"))
