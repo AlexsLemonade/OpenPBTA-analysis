@@ -42,9 +42,10 @@ jobs:
           name: Transcriptome dimensionality reduction
           command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
 
-      - run:
-          name: Sex prediction from RNA-seq
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/sex-prediction-from-RNASeq/sex-prediction-from-RNASeq.Rmd', clean = TRUE)"
+# this is getting split up into scripts
+#      - run:
+#          name: Sex prediction from RNA-seq
+#          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/sex-prediction-from-RNASeq/sex-prediction-from-RNASeq.Rmd', clean = TRUE)"
 
       - run:
           name: Sex prediction from RNA-seq - Data cleaning
@@ -58,9 +59,10 @@ jobs:
           name: ssGSEA Analysis
           command: OPENPBTA_ANOVAPVALUE=0.25 OPENPBTA_TUKEYPVALUE=0.50 OPENPBTA_PERCKEEP=0.50 ./scripts/run_in_ci.sh bash analyses/ssgsea-hallmark/run-ssgsea-hallmark.sh
 
-      - run:
-          name: CNV Caller Comparison  
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-comparison/01-cnv-comparison-plotting.Rmd', clean = TRUE)"
+# The second method - ControlFREEC - was not included as of v6, so the comparison can no longer be performed
+#      - run:
+#          name: CNV Caller Comparison  
+#          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-comparison/01-cnv-comparison-plotting.Rmd', clean = TRUE)"
   
       - run:
           name: Independent samples
@@ -77,10 +79,11 @@ jobs:
          ################################
          #### Add your analysis here ####
          ################################
-         
-      - run:
-          name: SNV Caller Analysis 
-          command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_analysis.sh
+
+# Breaking changes in the clinical file        
+#      - run:
+#          name: SNV Caller Analysis 
+#          command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_analysis.sh
           
        # This analysis was a side concept question and no longer needs to be run. 
        # - run:
