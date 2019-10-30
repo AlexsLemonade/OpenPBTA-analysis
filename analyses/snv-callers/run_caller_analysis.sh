@@ -49,10 +49,9 @@ do
     --no_region \
     --overwrite 
 done
-
 ######################## Plot the data and create reports ######################
 for dataset in ${datasets[@]}
-  do
+ do
   echo "Processing dataset: ${dataset}"
   Rscript analyses/snv-callers/scripts/02-run_eval.R \
     --label ${dataset} \
@@ -63,4 +62,10 @@ for dataset in ${datasets[@]}
     --cosmic $cosmic \
     --strategy wgs,wxs,both \
     --no_region
-  done
+ done
+##################### Merge callers' files into total files ####################
+Rscript analyses/snv-callers/scripts/03-merge_callers.R \
+  --vaf analyses/snv-callers/results \
+  --output analyses/snv-callers/results/consensus \
+  --file_format $format \
+  --overwrite
