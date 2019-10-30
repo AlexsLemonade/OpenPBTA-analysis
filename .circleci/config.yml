@@ -61,6 +61,10 @@ jobs:
       - run:
           name: Independent samples
           command: ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh 
+      
+      - run:
+          name: Interaction plot
+          command: ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh     
      
       - run:
           name: Oncoprint plotting
