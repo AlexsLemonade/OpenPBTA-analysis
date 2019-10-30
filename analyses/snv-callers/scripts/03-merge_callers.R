@@ -154,7 +154,8 @@ if (!opt$overwrite) {
   if (all(existing_files)) {
     stop(cat(
       "Stopping; --overwrite is not being used and all output files already exist
-      in the designated --output directory."))
+      in the designated --output directory."
+    ))
   }
   # If some files exist, print a warning:
   if (any(existing_files)) {
@@ -176,44 +177,44 @@ if (file.exists(all_vaf_file) && !opt$overwrite) {
     "Use --overwrite if you want to overwrite it."
   ))
 } else {
-# Get the caller names
-caller_names <- stringr::word(vaf_files, sep = "/", -2)
+  # Get the caller names
+  caller_names <- stringr::word(vaf_files, sep = "/", -2)
 
-# Read in vaf files for all callers
-if (opt$file_format == "tsv") {
-  vaf_list <- lapply(vaf_files, readr::read_tsv)
-} else {
-  vaf_list <- lapply(vaf_files, readr::read_rds)
-}
+  # Read in vaf files for all callers
+  if (opt$file_format == "tsv") {
+    vaf_list <- lapply(vaf_files, readr::read_tsv)
+  } else {
+    vaf_list <- lapply(vaf_files, readr::read_rds)
+  }
 
-# Read in the other files to match the first
-vaf_list <- lapply(vaf_list, function(df) {
-  # Make it so it is more easily combined with the other files
-  df %>%
-    # Attempt to make numeric columns where that doesn' kick back an "NA"
-    dplyr::mutate_at(dplyr::vars(which(!is.na(as.numeric(t(df[1, ]))))), as.numeric) %>%
-    # Aliquot id sometimes contains letters and sometimes numbers across the callers
-    dplyr::mutate(
-      aliquot_id = as.character(aliquot_id),
-      variant_qual = as.character(variant_qual)
-    ) %>%
-    # Turn these columns into characters because otherwise they cause trouble.
-    dplyr::mutate_at(dplyr::vars(dplyr::contains("AF", ignore.case = FALSE)), as.character) %>%
-    # Get rid of the few if any duplicate entries.
-    dplyr::distinct(mutation_id, .keep_all = TRUE)
-})
+  # Read in the other files to match the first
+  vaf_list <- lapply(vaf_list, function(df) {
+    # Make it so it is more easily combined with the other files
+    df %>%
+      # Attempt to make numeric columns where that doesn' kick back an "NA"
+      dplyr::mutate_at(dplyr::vars(which(!is.na(as.numeric(t(df[1, ]))))), as.numeric) %>%
+      # Aliquot id sometimes contains letters and sometimes numbers across the callers
+      dplyr::mutate(
+        aliquot_id = as.character(aliquot_id),
+        variant_qual = as.character(variant_qual)
+      ) %>%
+      # Turn these columns into characters because otherwise they cause trouble.
+      dplyr::mutate_at(dplyr::vars(dplyr::contains("AF", ignore.case = FALSE)), as.character) %>%
+      # Get rid of the few if any duplicate entries.
+      dplyr::distinct(mutation_id, .keep_all = TRUE)
+  })
 
-# Carry over the callers' names
-names(vaf_list) <- caller_names
+  # Carry over the callers' names
+  names(vaf_list) <- caller_names
 
-# Print progress message
-message("Saving master VAF file to: \n", all_vaf_file)
+  # Print progress message
+  message("Saving master VAF file to: \n", all_vaf_file)
 
-# Combine and save VAF file
-vaf_df <- suppressWarnings(dplyr::bind_rows(vaf_list, .id = "caller")) %>%
-  dplyr::mutate(caller = factor(caller)) %>%
-  # Write to RDS file
-  readr::write_rds(all_vaf_file)
+  # Combine and save VAF file
+  vaf_df <- suppressWarnings(dplyr::bind_rows(vaf_list, .id = "caller")) %>%
+    dplyr::mutate(caller = factor(caller)) %>%
+    # Write to RDS file
+    readr::write_rds(all_vaf_file)
 }
 ########################### Make Master TMB file ###############################
 # If the file exists or the overwrite option is not being used, do not write the
@@ -226,22 +227,22 @@ if (file.exists(all_tmb_file) && !opt$overwrite) {
     "Use --overwrite if you want to overwrite it."
   ))
 } else {
-if (opt$file_format == "tsv") {
-  tmb_list <- lapply(tmb_files, readr::read_tsv)
-} else {
-  tmb_list <- lapply(tmb_files, readr::read_rds)
-}
+  if (opt$file_format == "tsv") {
+    tmb_list <- lapply(tmb_files, readr::read_tsv)
+  } else {
+    tmb_list <- lapply(tmb_files, readr::read_rds)
+  }
 
-# Carry over the callers' names
-names(tmb_list) <- caller_names
+  # Carry over the callers' names
+  names(tmb_list) <- caller_names
 
-# Print progress message
-message("Saving master TMB file to: \n", all_tmb_file)
+  # Print progress message
+  message("Saving master TMB file to: \n", all_tmb_file)
 
-# Combine and save TMB file
-tmb_df <- dplyr::bind_rows(tmb_list, .id = "caller") %>%
-  dplyr::mutate(caller = factor(caller)) %>%
-  readr::write_rds(all_tmb_file)
+  # Combine and save TMB file
+  tmb_df <- dplyr::bind_rows(tmb_list, .id = "caller") %>%
+    dplyr::mutate(caller = factor(caller)) %>%
+    readr::write_rds(all_tmb_file)
 }
 ############################# Make mutation id list ############################
 # If the file exists or the overwrite option is not being used, do not write mutation id file.
@@ -253,12 +254,12 @@ if (file.exists(mut_id_file) && !opt$overwrite) {
     "Use --overwrite if you want to overwrite it."
   ))
 } else {
-mutation_id_list <- lapply(vaf_list, function(caller) caller$mutation_id)
+  mutation_id_list <- lapply(vaf_list, function(caller) caller$mutation_id)
 
-# Print progress message
-message("Saving: \n", mut_id_file)
+  # Print progress message
+  message("Saving: \n", mut_id_file)
 
-readr::write_rds(mutation_id_list, mut_id_file)
+  readr::write_rds(mutation_id_list, mut_id_file)
 }
 ############################# Callers per mutation df ##########################
 # If the file exists or the overwrite option is not being used, do not write the
@@ -271,33 +272,33 @@ if (file.exists(call_per_mut_file) && !opt$overwrite) {
     "Use --overwrite if you want to overwrite it."
   ))
 } else {
-# Make a string that says what callers call each mutation
-callers_per_mutation <- tapply(vaf_df$caller,
-  vaf_df$mutation_id,
-  paste0,
-  collapse = "-"
-) %>%
-  # Make into a data.frame
-  as.data.frame() %>%
-  tibble::rownames_to_column("mutation_id")
+  # Make a string that says what callers call each mutation
+  callers_per_mutation <- tapply(vaf_df$caller,
+    vaf_df$mutation_id,
+    paste0,
+    collapse = "-"
+  ) %>%
+    # Make into a data.frame
+    as.data.frame() %>%
+    tibble::rownames_to_column("mutation_id")
 
-# Obtain the median VAF for each mutation
-vaf_med <- tapply(
-  vaf_df$vaf,
-  vaf_df$mutation_id,
-  median
-) %>%
-  # Make into a data.frame
-  as.data.frame() %>%
-  tibble::rownames_to_column("mutation_id")
+  # Obtain the median VAF for each mutation
+  vaf_med <- tapply(
+    vaf_df$vaf,
+    vaf_df$mutation_id,
+    median
+  ) %>%
+    # Make into a data.frame
+    as.data.frame() %>%
+    tibble::rownames_to_column("mutation_id")
 
-# Print progress message
-message("Saving: \n", call_per_mut_file)
+  # Print progress message
+  message("Saving: \n", call_per_mut_file)
 
-# Join the median VAF and the callers that call that mutation into one data.frame
-callers_per_mutation <- callers_per_mutation %>%
-  dplyr::inner_join(vaf_med, by = "mutation_id") %>%
-  # Make column names more sensible
-  dplyr::rename(caller_combo = "..x", median_vaf = "..y") %>%
-  readr::write_rds(call_per_mut_file)
+  # Join the median VAF and the callers that call that mutation into one data.frame
+  callers_per_mutation <- callers_per_mutation %>%
+    dplyr::inner_join(vaf_med, by = "mutation_id") %>%
+    # Make column names more sensible
+    dplyr::rename(caller_combo = "..x", median_vaf = "..y") %>%
+    readr::write_rds(call_per_mut_file)
 }
