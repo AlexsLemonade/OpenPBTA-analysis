@@ -123,14 +123,14 @@ This script output 4 files:
 
 **Option descriptions**
 ```
-# --vaf : Parent folder containing the vaf and tmb files for each folder.
-#                                             <caller_name>_vaf.<file_format>
-#                                             <caller_name>_tmb.<file_format>
-# --file_format: What type of file format were the vaf and tmb files saved as? Options are
-#               "rds" or "tsv". Default is "rds".
-# --output : Where you would like the output from this script to be stored.
-# --overwrite : If TRUE, will overwrite any reports of the same name. Default is
-#              FALSE
+ --vaf : Parent folder containing the vaf and tmb files for each folder.
+                                             <caller_name>_vaf.<file_format>
+                                             <caller_name>_tmb.<file_format>
+ --file_format: What type of file format were the vaf and tmb files saved as? Options are
+               "rds" or "tsv". Default is "rds".
+ --output : Where you would like the output from this script to be stored.
+ --overwrite : If TRUE, will overwrite any reports of the same name. Default is
+               FALSE
 ```
 
 ### 04-create_consensus_mut_files.R
