@@ -129,7 +129,7 @@ coocurrence <- function(gene_sample_df,
     dplyr::rowwise() %>%
     dplyr::mutate(p = row_fisher(mut11, mut10, mut01, mut00)) %>%
     dplyr::ungroup() %>%
-    dplyr::mutate(q = qvalue::qvalue(p, lfdr.out = FALSE)$qvalues,
+    dplyr::mutate(q = p.adjust(p, method = "BH"),
                   cooccur_score = cooccur_sign * -log10(p))
   
   return(gene_pair_summary)
