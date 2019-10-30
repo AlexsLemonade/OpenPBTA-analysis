@@ -199,6 +199,10 @@ tmb_df <- dplyr::bind_rows(tmb_list, .id = "caller") %>%
 
 ############################# Make mutation id list ############################
 mutation_id_list <- lapply(vaf_list, function(caller) caller$mutation_id)
+
+# Print progress message
+message("Saving: \n", file.path(opt$output, "mutation_id_list.rds"))
+
 readr::write_rds(mutation_id_list, file.path(opt$output, "mutation_id_list.rds"))
 
 ############################# Callers per mutation df ##########################
@@ -221,6 +225,9 @@ vaf_med <- tapply(
   # Make into a data.frame
   as.data.frame() %>%
   tibble::rownames_to_column("mutation_id")
+
+# Print progress message
+message("Saving: \n", file.path(opt$output, "callers_per_mutation.rds"))
 
 # Join the median VAF and the callers that call that mutation into one data.frame
 callers_per_mutation <- callers_per_mutation %>%

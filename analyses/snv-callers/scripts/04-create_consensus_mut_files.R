@@ -45,7 +45,7 @@ library(optparse)
 option_list <- list(
   make_option(
     opt_str = c("-m", "--merged_files"), type = "character",
-    default = "", help = "File path to where the merged files were sent in 
+    default = "", help = "File path to where the merged files were sent in
                           03-merge_callers.R",
     metavar = "character"
   ),
@@ -63,13 +63,13 @@ option_list <- list(
   ),
   make_option(
     opt_str = c("--vaf"), type = "character",
-    default = FALSE, help = "What VAF should be used when combining callers? 
+    default = FALSE, help = "What VAF should be used when combining callers?
     Options are 'median' or one of the caller names.",
     metavar = "character"
   ),
   make_option(
     opt_str = c("--combo"), type = "character",
-    default = FALSE, help = "What combination of callers need to detect a 
+    default = FALSE, help = "What combination of callers need to detect a
     mutation for it to be considered real and placed in the consensus file?
     List the callers that need to be considered in alphabetical order with '-'
     in between. eg. 'lancet-mutect2-strelka2'",
@@ -97,14 +97,6 @@ option_list <- list(
 
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
-
-opt$merged_files <- "analyses/snv-callers/results/consensus"
-opt$combo <- "lancet-mutect2-strelka2"
-opt$vaf <- "strelka2"
-opt$output <- "analyses/snv-callers/results/consensus"
-opt$overwrite <- TRUE
-opt$bed_wgs <- "data/WGS.hg38.strelka2.unpadded.bed"
-opt$bed_wxs <- "data/WXS.hg38.100bp_padded.bed"
 
 ########################### Check options specified ############################
 # Normalize these file paths
@@ -166,7 +158,7 @@ consen_mutations <- callers_per_mutation %>%
 # Stop if no mutations are found
 if (length(consen_mutations) == 0) {
   stop("No mutations had this combination of callers call it. Double check that
-       the combination you specified with --combo is spelled exactly right and 
+       the combination you specified with --combo is spelled exactly right and
        the callers are in alphabetical order. ")
 }
 

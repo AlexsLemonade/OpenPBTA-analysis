@@ -52,20 +52,21 @@ do
 done
 
 ######################## Plot the data and create reports ######################
-for dataset in ${datasets[@]}
-do
-  echo "Processing dataset: ${dataset}"
-  Rscript analyses/snv-callers/scripts/02-run_eval.R \
-    --label ${dataset} \
-    --vaf analyses/snv-callers/results/${dataset} \
-    --plot_type png \
-    --file_format $format \
-    --output analyses/snv-callers/plots/${dataset} \
-    --cosmic $cosmic \
-    --strategy wgs,wxs,both \
-    --no_region
-done
-
+#if [ ! $run_plots_nb ]; then
+  for dataset in ${datasets[@]}
+  do
+    echo "Processing dataset: ${dataset}"
+    Rscript analyses/snv-callers/scripts/02-run_eval.R \
+      --label ${dataset} \
+      --vaf analyses/snv-callers/results/${dataset} \
+      --plot_type png \
+      --file_format $format \
+      --output analyses/snv-callers/plots/${dataset} \
+      --cosmic $cosmic \
+      --strategy wgs,wxs,both \
+      --no_region
+  done
+#fi
 ##################### Merge callers' files into total files ####################
 Rscript analyses/snv-callers/scripts/03-merge_callers.R \
   --vaf analyses/snv-callers/results \
@@ -74,29 +75,17 @@ Rscript analyses/snv-callers/scripts/03-merge_callers.R \
   --overwrite
 
 ###################### Plot snv callers in comparison notebook #################
-if [ ! $run_plots_nb ]; then
-  Rscript -e "rmarkdown::render('analyses/snv-callers/plot_snv_caller_comparison.Rmd', clean = TRUE)"
-fi
+#if [ ! $run_plots_nb ]; then
+Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots.Rmd', clean = TRUE)"
+#fi
 
 ##################### Merge callers' files into total files ####################
-
 Rscript analyses/snv-callers/scripts/04-create_consensus_mut_files.R \
  --merged_files analyses/snv-callers/results/consensus \
  --combo lancet-mutect2-strelka2 \
  --output analyses/snv-callers/results/consensus \
  --vaf strelka2 \
- --bed_wgs <- data/WGS.hg38.strelka2.unpadded.bed \
+ --bed_wgs data/WGS.hg38.strelka2.unpadded.bed \
  --bed_wxs data/WXS.hg38.100bp_padded.bed \
  --overwrite
-
-opt$vaf <- "analyses/snv-callers/results"
-opt$file_format <- "rds"
-opt$overwrite <- TRUE
-opt$output <- "analyses/snv-callers/results/consensus"
-
-opt$merged_files <- "analyses/snv-callers/results/consensus"
-opt$combo <- "lancet-mutect2-strelka2"
-opt$output <- "analyses/snv-callers/results/consensus"
-opt$overwrite <- TRUE
-opt$bed_wgs <- data/
-opt$bed_wxs <-  "data/WXS.hg38.100bp_padded.bed"
+ 
