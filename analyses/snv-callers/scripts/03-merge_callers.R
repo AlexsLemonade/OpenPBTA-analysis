@@ -25,13 +25,14 @@
 # --overwrite : If TRUE, will overwrite any reports of the same name. Default is
 #              FALSE
 #
+#
 # Command line example:
 #
 # Rscript 03-merge_callers.R \
 # -v results \
-# -o strelka2 \
-# -s wxs \
-# -w
+# -o results/consensus \
+# -f rds \
+# --overwrite
 #
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -48,8 +49,7 @@ option_list <- list(
   make_option(
     opt_str = c("-v", "--vaf"), type = "character",
     default = NULL, help = "Path to folder with the output files
-              from 01-calculate_vaf_tmb. Should include the VAF, TMB, and
-              region TSV files",
+              from 01-calculate_vaf_tmb. Should include the VAF and TMB files",
     metavar = "character"
   ),
   make_option(
@@ -65,7 +65,7 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
-    opt_str = c("--overwrite"), action = "store_true",
+    opt_str = "--overwrite", action = "store_true",
     default = FALSE, help = "If TRUE, will overwrite any reports of
               the same name. Default is FALSE",
     metavar = "character"
@@ -90,7 +90,7 @@ if (!(file_suffix %in% c("rds", "tsv"))) {
 # Normalize this file path
 opt$vaf <- file.path(root_dir, opt$vaf)
 
-# Check the output directory exists
+# Check that the input directory exists
 if (!dir.exists(opt$vaf)) {
   stop(paste("Error:", opt$vaf, "does not exist"))
 }
@@ -129,7 +129,7 @@ message("Merging these TMB files: \n", paste0(tmb_files, "\n"))
 # Set and make the plots directory
 opt$output <- file.path(root_dir, opt$output)
 
-# Make caller specific plots folder
+# Make output folder
 if (!dir.exists(opt$output)) {
   dir.create(opt$output, recursive = TRUE)
 }
@@ -164,6 +164,7 @@ if (!opt$overwrite) {
     ))
   }
 }
+
 ########################### Make Master VAF file ###############################
 # If the file exists or the overwrite option is not being used, do not write the
 # merged VAF file.
@@ -209,6 +210,9 @@ if (file.exists(all_vaf_file) && !opt$overwrite) {
   message("Saving master VAF file to: \n", all_vaf_file)
 
   # Combine and save VAF file
+  # Here `suppressWarnings` is being used because some caller VAF files do not have
+  # certain annotation columns and their `NA`s or empty strings need to be coerced
+  # so that they can be combined with the other callers.
   vaf_df <- suppressWarnings(dplyr::bind_rows(vaf_list, .id = "caller")) %>%
     dplyr::mutate(caller = factor(caller)) %>%
     # Write to RDS file

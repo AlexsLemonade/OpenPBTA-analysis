@@ -49,10 +49,9 @@ do
     --no_region \
     --overwrite 
 done
-
 ######################## Plot the data and create reports ######################
 for dataset in ${datasets[@]}
-  do
+ do
   echo "Processing dataset: ${dataset}"
   Rscript analyses/snv-callers/scripts/02-run_eval.R \
     --label ${dataset} \
