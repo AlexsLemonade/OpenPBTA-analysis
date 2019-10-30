@@ -26,7 +26,17 @@
 #             is given from top directory of 'OpenPBTA-analysis'
 # --overwrite : If TRUE, will overwrite any reports of the same name. Default is
 #              FALSE
-
+#
+# Command line example:
+# Rscript 04-create_consensus_mut_files.R \
+# --merged_files results/consensus \
+# --combo lancet-mutect2-strelka2 \
+# --output analyses/snv-callers/results/consensus \
+# --vaf strelka2 \
+# --bed_wgs data/WGS.hg38.strelka2.unpadded.bed \
+# --bed_wxs data/WXS.hg38.100bp_padded.bed \
+# --overwrite
+#
 #################################### Set Up ####################################
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -88,7 +98,7 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
-    opt_str = c("--overwrite"), action = "store_true",
+    opt_str = "--overwrite", action = "store_true",
     default = FALSE, help = "If TRUE, will overwrite any reports of
               the same name. Default is FALSE",
     metavar = "character"
@@ -138,7 +148,7 @@ if (any(is.na(files_found))) {
 # Set and make the plots directory
 opt$output <- file.path(root_dir, opt$output)
 
-# Make caller specific plots folder
+# Make output folder
 if (!dir.exists(opt$output)) {
   dir.create(opt$output, recursive = TRUE)
 }
