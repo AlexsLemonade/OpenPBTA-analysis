@@ -155,40 +155,70 @@ input_mat <- t(gene_expression_mat)
 targets_unsorted <- histologies[histologies$Kids_First_Biospecimen_ID %in% rownames(input_mat), 
                                c("Kids_First_Biospecimen_ID", "reported_gender", "germline_sex_estimate")]
 
-#Check sequence of rownames(input_mat) and targets[, 1].  
-#reported_gender_response holds the reported_gender values in the same Kids_First_Biospecimen_ID sequence as rownames(df).
+#Match sequence of rownames(input_mat) and targets[, 1].  
+#targets holds the reported_gender values in the same Kids_First_Biospecimen_ID sequence as rownames(input_mat).
 
 match_index <- unlist(sapply(rownames(input_mat), function(x) which(targets_unsorted[, 1] == x)))
 
 targets <- targets_unsorted[match_index, c(1:ncol(targets_unsorted))]
 #--------
 
-#--------Partition input_mat into train and test sets
+#--------Partition input_mat and targets into train and test sets
+# depending on train_percent argument generate four files: train_expression, test_expression, train_targets, test_targets
+# or two files: train_expression, train_targets
 
 if (train_percent < 1) {
   train_set_index <- sample(1:nrow(input_mat), floor(train_percent*nrow(input_mat)))
   test_set_index <- setdiff(1:nrow(input_mat), train_set_index)
   
-  train_set <- input_mat[train_set_index, ]
-  test_set <- input_mat[test_set_index, ]
+  train_expression <- input_mat[train_set_index, ]
+  test_expression <- input_mat[test_set_index, ]
+  
+  train_targets <- targets[train_set_index, ]
+  test_targets <- targets[test_set_index, ]
+  
+  # Fill a column in targets that designates which set a sample is in (train vs. test).
+  targets$train_or_test <- NA
+  targets[train_set_index, "train_or_test"] <- "train"
+  targets[test_set_index, "train_or_test"] <- "test"
 } else {
-  train_set <- input_mat
+  train_expression <- input_mat
+  train_targets <- targets
+  
+  # all smaples are in train set here
+  targets$train_or_test <- "train"  
 }
 #--------
 
 #--------Save train, (test, if used) and targets files to output directory
 
 if (train_percent < 1) {
-  train_file <- file.path(output_directory, paste(opt$filename_lead, seed, "train.RDS", sep = "_"))
-  test_file <- file.path(output_directory, paste(opt$filename_lead, seed, "test.RDS", sep = "_"))
-  saveRDS(train_set, train_file)
-  saveRDS(test_set, test_file)
+  train_file <- file.path(output_directory, paste(opt$filename_lead, seed, "train_expression.RDS", sep = "_"))
+  test_file <- file.path(output_directory, paste(opt$filename_lead, seed, "test_expression.RDS", sep = "_"))
+  saveRDS(train_expression, train_file)
+  saveRDS(test_expression, test_file)
 } else {
-  train_file <- file.path(output_directory, paste(opt$filename_lead, seed, "train.RDS", sep = "_"))
-  saveRDS(train_set, train_file)
+  train_file <- file.path(output_directory, paste(opt$filename_lead, seed, "train_expression.RDS", sep = "_"))
+  saveRDS(train_expression, train_file)
 }
 
-targets_file <- file.path(output_directory, paste(opt$filename_lead, seed, "targets.tsv", sep = "_"))
-write_tsv(targets, targets_file,
-          na = "NA", append = FALSE, col_names = TRUE, quote_escape = "double")
-
+if (train_percent < 1) {
+  targets_file <- file.path(output_directory, paste(opt$filename_lead, seed, "targets.tsv", sep = "_"))
+  train_targets_file <- file.path(output_directory, paste(opt$filename_lead, seed, "train_targets.tsv", sep = "_"))
+  test_targets_file <- file.path(output_directory, paste(opt$filename_lead, seed, "test_targets.tsv", sep = "_"))
+  
+  write_tsv(targets, targets_file,
+            na = "NA", append = FALSE, col_names = TRUE, quote_escape = "double")
+  write_tsv(train_targets, train_targets_file,
+            na = "NA", append = FALSE, col_names = TRUE, quote_escape = "double")
+  write_tsv(test_targets, test_targets_file,
+            na = "NA", append = FALSE, col_names = TRUE, quote_escape = "double")
+} else {
+  targets_file <- file.path(output_directory, paste(opt$filename_lead, seed, "targets.tsv", sep = "_"))
+  train_targets_file <- file.path(output_directory, paste(opt$filename_lead, seed, "train_targets.tsv", sep = "_"))
+  
+  write_tsv(targets, targets_file,
+            na = "NA", append = FALSE, col_names = TRUE, quote_escape = "double")
+  write_tsv(train_targets, train_targets_file,
+            na = "NA", append = FALSE, col_names = TRUE, quote_escape = "double")
+}
