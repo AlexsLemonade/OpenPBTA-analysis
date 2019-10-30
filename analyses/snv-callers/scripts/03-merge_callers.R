@@ -30,7 +30,8 @@
 #
 # Rscript 03-merge_callers.R \
 # -v results \
-# -o strelka2 \
+# -o results/consensus \
+# -f rds \
 # -s wxs \
 # --overwrite
 #
