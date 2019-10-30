@@ -5,12 +5,12 @@
 # C. Savonen for ALSF - CCDL
 #
 # Purpose: Merge callers' TMB and VAF files into total files with a column `caller`
-# to designate their origin. 
+# to designate their origin.
 
-# Files Output: 
+# Files Output:
 # "all_callers_vaf.<file_format>" - contains all the VAF file information for all callers.
 # "all_callers_tmb.<file_format>" - contains all the TMB file information for all callers.
-# "mutation_id_list.<file_format>" - a full list of the mutations that can be 
+# "mutation_id_list.<file_format>" - a full list of the mutations that can be
 #                                    used for an UpSetR graph
 # "callers_per_mutation.<file_format>" - contains a breakdown for each mutation of what callers
 #                                        called it. Will be used to identify the consensus mutations.
@@ -25,7 +25,6 @@
 # --overwrite : If TRUE, will overwrite any reports of the same name. Default is
 #              FALSE
 #
-#
 # Command line example:
 #
 # Rscript 03-merge_callers.R \
@@ -39,9 +38,6 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
-
-# Import special functions
-source(file.path(root_dir, "analyses", "snv-callers", "util", "merge_functions.R"))
 
 # Load library:
 library(optparse)
