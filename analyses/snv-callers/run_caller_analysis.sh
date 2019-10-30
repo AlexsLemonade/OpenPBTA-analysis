@@ -64,9 +64,3 @@ for dataset in ${datasets[@]}
     --strategy wgs,wxs,both \
     --no_region
   done
-##################### Merge callers' files into total files ####################
-Rscript analyses/snv-callers/scripts/03-merge_callers.R \
-  --vaf analyses/snv-callers/results \
-  --output analyses/snv-callers/results/consensus \
-  --file_format $format \
-  --overwrite
