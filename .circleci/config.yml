@@ -41,7 +41,7 @@ jobs:
       - run:
           name: Transcriptome dimensionality reduction
           command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
-          
+
 # this is getting split up into scripts
 #      - run:
 #          name: Sex prediction from RNA-seq
@@ -59,9 +59,10 @@ jobs:
           name: ssGSEA Analysis
           command: OPENPBTA_ANOVAPVALUE=0.25 OPENPBTA_TUKEYPVALUE=0.50 OPENPBTA_PERCKEEP=0.50 ./scripts/run_in_ci.sh bash analyses/ssgsea-hallmark/run-ssgsea-hallmark.sh
 
-      - run:
-          name: CNV Caller Comparison  
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-comparison/01-cnv-comparison-plotting.Rmd', clean = TRUE)"
+# The second method - ControlFREEC - was not included as of v6, so the comparison can no longer be performed
+#      - run:
+#          name: CNV Caller Comparison  
+#          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-comparison/01-cnv-comparison-plotting.Rmd', clean = TRUE)"
   
       - run:
           name: Independent samples
