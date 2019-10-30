@@ -92,12 +92,21 @@ standard_fusion <- function(fusion_calls=fusion_calls,caller=caller) {
       dplyr::rename(Fusion_Type = reading_frame,
                     Confidence = confidence,
                     # SpanningFragCount is equivalent to discordant_mates in Arriba
+<<<<<<< HEAD
                     SpanningFragCount = discordant_mates,
                     # TODO: remove once FusionAnnotator column name is updated
                     annots = `X..`) %>%
       dplyr::mutate(
         LeftBreakpoint = gsub('^chr', '', breakpoint1),
         RightBreakpoint = gsub('^chr', '', breakpoint2),
+=======
+                    SpanningFragCount = discordant_mates) %>%
+      dplyr::mutate(
+        LeftBreakpoint = gsub('^chr', '', breakpoint1),
+        RightBreakpoint = gsub('^chr', '', breakpoint2),
+        #readthrough information from arriba 
+        annots = paste(annots,type,sep=","),
+>>>>>>> upstream/master
         # Intergenic gene fusion breakpoints in arriba are annotated as
         # "gene1A,gene1B". As comma is used as a common delimiter in files changing
         # it to "/"
