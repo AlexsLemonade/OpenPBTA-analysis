@@ -17,7 +17,7 @@
 #           considered real and placed in the consensus file? List the callers
 #           that need to be considered in alphabetical order with '-'
 #           in between. eg. 'lancet-mutect2-strelka2'
-# --file_format: What type of file format were the vaf and tmb files saved as?
+# --file_format: What type of file format were the merged files saved as?
 #                Options are "rds" or "tsv". Default is "rds".
 # --output : Where you would like the output from this script to be stored.
 # --bed_wgs : File path that specifies the caller-specific BED regions file.
@@ -108,6 +108,14 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
+opt$merged_files <- "analyses/snv-callers/results/consensus"
+opt$combo <- "lancet-mutect2-strelka2"
+opt$output <- "analyses/snv-callers/results/consensus"
+opt$vaf <- "strelka2"
+opt$bed_wgs <- "data/WGS.hg38.strelka2.unpadded.bed"
+opt$bed_wxs <- "data/WXS.hg38.100bp_padded.bed"
+opt$overwrite <- TRUE
+
 ########################### Check options specified ############################
 # Normalize these file paths
 opt$merged_files <- file.path(root_dir, opt$merged_files)
@@ -190,7 +198,7 @@ vaf_df <- readr::read_rds(file.path(
 
 # If the caller chosen for the VAF reported isn't in the column, stop.
 if (!(opt$vaf %in% vaf_df$caller)) {
-  stop("Caller chosen with --vaf does not exist in the callers column in the
+  stop("Caller chosen with --vaf does not exist in the 'callers column in the
   master VAF file.")
 }
 tmb_df <- readr::read_rds(file.path(
@@ -228,7 +236,7 @@ if (file.exists(consensus_mut_file) && !opt$overwrite) {
   # Isolate the mutations to only these mutations, use the Strelka2 stats.
   consen_mutation <- vaf_df %>%
     dplyr::filter(
-      caller == eval(parse(text = opt$vaf)),
+      caller == opt$vaf,
       mutation_id %in% consen_mutations
     ) %>%
     readr::write_tsv(consensus_mut_file)

@@ -74,6 +74,7 @@ Rscript analyses/snv-callers/scripts/03-merge_callers.R \
 Rscript analyses/snv-callers/scripts/04-create_consensus_mut_files.R \
  --merged_files analyses/snv-callers/results/consensus \
  --combo lancet-mutect2-strelka2 \
+ --file_format $format \
  --output analyses/snv-callers/results/consensus \
  --vaf strelka2 \
  --bed_wgs data/WGS.hg38.strelka2.unpadded.bed \
