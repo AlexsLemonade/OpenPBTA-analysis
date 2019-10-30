@@ -52,7 +52,7 @@ do
 done
 
 ######################## Plot the data and create reports ######################
-#if [ ! $run_plots_nb ]; then
+if [ ! $run_plots_nb ]; then
   for dataset in ${datasets[@]}
   do
     echo "Processing dataset: ${dataset}"
@@ -66,7 +66,7 @@ done
       --strategy wgs,wxs,both \
       --no_region
   done
-#fi
+fi
 ##################### Merge callers' files into total files ####################
 Rscript analyses/snv-callers/scripts/03-merge_callers.R \
   --vaf analyses/snv-callers/results \
@@ -75,9 +75,9 @@ Rscript analyses/snv-callers/scripts/03-merge_callers.R \
   --overwrite
 
 ###################### Plot snv callers in comparison notebook #################
-#if [ ! $run_plots_nb ]; then
-Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots.Rmd', clean = TRUE)"
-#fi
+if [ ! $run_plots_nb ]; then
+  Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots.Rmd', clean = TRUE)"
+fi
 
 ##################### Merge callers' files into total files ####################
 Rscript analyses/snv-callers/scripts/04-create_consensus_mut_files.R \
