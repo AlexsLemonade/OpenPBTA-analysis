@@ -90,7 +90,7 @@ if (!(file_suffix %in% c("rds", "tsv"))) {
 # Normalize this file path
 opt$vaf <- file.path(root_dir, opt$vaf)
 
-# Check the output directory exists
+# Check that the input directory exists
 if (!dir.exists(opt$vaf)) {
   stop(paste("Error:", opt$vaf, "does not exist"))
 }
@@ -129,7 +129,7 @@ message("Merging these TMB files: \n", paste0(tmb_files, "\n"))
 # Set and make the plots directory
 opt$output <- file.path(root_dir, opt$output)
 
-# Make caller specific plots folder
+# Make output folder
 if (!dir.exists(opt$output)) {
   dir.create(opt$output, recursive = TRUE)
 }
@@ -210,6 +210,9 @@ if (file.exists(all_vaf_file) && !opt$overwrite) {
   message("Saving master VAF file to: \n", all_vaf_file)
 
   # Combine and save VAF file
+  # Here `suppressWarnings` is being used because some caller VAF files do not have
+  # certain annotation columns and their `NA`s or empty strings need to be coerced
+  # so that they can be combined with the other callers.
   vaf_df <- suppressWarnings(dplyr::bind_rows(vaf_list, .id = "caller")) %>%
     dplyr::mutate(caller = factor(caller)) %>%
     # Write to RDS file
