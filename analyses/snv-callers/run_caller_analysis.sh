@@ -51,16 +51,25 @@ do
 done
 
 ######################## Plot the data and create reports ######################
-for dataset in ${datasets[@]}
+#if [ ! $run_plots_nb ]; then
+  for dataset in ${datasets[@]}
   do
-  echo "Processing dataset: ${dataset}"
-  Rscript analyses/snv-callers/scripts/02-run_eval.R \
-    --label ${dataset} \
-    --vaf analyses/snv-callers/results/${dataset} \
-    --plot_type png \
-    --file_format $format \
-    --output analyses/snv-callers/plots/${dataset} \
-    --cosmic $cosmic \
-    --strategy wgs,wxs,both \
-    --no_region
+    echo "Processing dataset: ${dataset}"
+    Rscript analyses/snv-callers/scripts/02-run_eval.R \
+      --label ${dataset} \
+      --vaf analyses/snv-callers/results/${dataset} \
+      --plot_type png \
+      --file_format $format \
+      --output analyses/snv-callers/plots/${dataset} \
+      --cosmic $cosmic \
+      --strategy wgs,wxs,both \
+      --no_region
   done
+#fi
+##################### Merge callers' files into total files ####################
+Rscript analyses/snv-callers/scripts/03-merge_callers.R \
+  --vaf analyses/snv-callers/results \
+  --output analyses/snv-callers/results/consensus \
+  --file_format $format \
+  --overwrite
+ 
