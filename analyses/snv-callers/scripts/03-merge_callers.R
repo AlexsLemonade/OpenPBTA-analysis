@@ -32,7 +32,7 @@
 # -v results \
 # -o strelka2 \
 # -s wxs \
-# -w
+# --overwrite
 #
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -66,7 +66,7 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
-    opt_str = c("--overwrite"), action = "store_true",
+    opt_str = "--overwrite", action = "store_true",
     default = FALSE, help = "If TRUE, will overwrite any reports of
               the same name. Default is FALSE",
     metavar = "character"
