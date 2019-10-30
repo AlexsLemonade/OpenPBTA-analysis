@@ -11,14 +11,14 @@
 #                  Files required: "all_callers_vaf.<file_format>"
 #                                  "all_callers_tmb.<file_format>"
 #                                  "mutation_id_list.<file_format>"
-# --vaf : What VAF should be used when combining callers? Options are 'median' or
+# --vaf : What VAF should be used when combining callers? Options are
 #         one of the caller names."
 # --combo : What combination of callers need to detect a mutation for it to be
 #           considered real and placed in the consensus file? List the callers
 #           that need to be considered in alphabetical order with '-'
 #           in between. eg. 'lancet-mutect2-strelka2'
-# --file_format: What type of file format were the vaf and tmb files saved as? Options are
-#               "rds" or "tsv". Default is "rds".
+# --file_format: What type of file format were the vaf and tmb files saved as?
+#                Options are "rds" or "tsv". Default is "rds".
 # --output : Where you would like the output from this script to be stored.
 # --bed_wgs : File path that specifies the caller-specific BED regions file.
 #             Assumes from top directory, 'OpenPBTA-analysis'.
@@ -74,7 +74,7 @@ option_list <- list(
   make_option(
     opt_str = c("--vaf"), type = "character",
     default = FALSE, help = "What VAF should be used when combining callers?
-    Options are 'median' or one of the caller names.",
+    Options one of the caller names.",
     metavar = "character"
   ),
   make_option(
@@ -187,6 +187,12 @@ vaf_df <- readr::read_rds(file.path(
   opt$merged_files,
   paste0("all_callers_vaf.", opt$file_format)
 ))
+
+# If the caller chosen for the VAF reported isn't in the column, stop.
+if (!(opt$vaf %in% vaf_df$caller)) {
+  stop("Caller chosen with --vaf does not exist in the callers column in the
+  master VAF file.")
+}
 tmb_df <- readr::read_rds(file.path(
   opt$merged_files,
   paste0("all_callers_tmb.", opt$file_format)
@@ -222,7 +228,7 @@ if (file.exists(consensus_mut_file) && !opt$overwrite) {
   # Isolate the mutations to only these mutations, use the Strelka2 stats.
   consen_mutation <- vaf_df %>%
     dplyr::filter(
-      caller == "strelka2",
+      caller == eval(parse(text = opt$vaf)),
       mutation_id %in% consen_mutations
     ) %>%
     readr::write_tsv(consensus_mut_file)
