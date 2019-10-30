@@ -45,7 +45,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     pheatmap \
     RColorBrewer \
     viridis \
-    data.table
+    data.table 
 
 # maftools for proof of concept in create-subset-files
 RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
@@ -77,6 +77,30 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     --deps TRUE \
     glmnet \
     glmnetUtils
+
+# Install java and rJava for some of the snv plotting comparison packages
+RUN apt-get -y update && apt-get install -y \
+   default-jdk \
+   r-cran-rjava \
+   && apt-get clean \
+   && rm -rf /var/lib/apt/lists/
+
+# Install for SNV comparison plots
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
+    && install2.r --error \
+    --deps TRUE \
+    UpSetR
+
+RUN R -e "devtools::install_github('const-ae/ggupset', ref = '7a33263cc5fafdd72a5bfcbebe5185fafe050c73', dependencies = TRUE)"
+
+# GGally and its required packages
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
+    && install2.r --error \
+    lattice \
+    rpart \
+    class \
+    MASS \
+    GGally
 
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for

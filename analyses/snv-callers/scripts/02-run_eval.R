@@ -10,9 +10,11 @@
 # --plot_type : Specify what kind of plots you want printed out. Must be
 #               compatible with ggsave. eg pdf. Default is png
 # --vaf : Folder from 01-calculate_vaf_tmb.R following files:
-#                                             <caller_name>_vaf.tsv
-#                                             <caller_name>_region.tsv
-#                                             <caller_name>_tmb.tsv
+#                                             <caller_name>_vaf.<file_format>
+#                                             <caller_name>_region.<file_format>
+#                                             <caller_name>_tmb.<file_format>
+# --file_format: What type of file format were the vaf and tmb files saved as? Options are
+#               "rds" or "tsv". Default is "rds".
 # --output : Where you would like the output from this script to be stored.
 # --strategy : Specify whether you would like WXS and WGS separated for the plots.
 #              Analysis is still done on all data in the MAF file regardless.
@@ -22,6 +24,8 @@
 #            is given from top directory of 'OpenPBTA-analysis'.
 # --overwrite : If TRUE, will overwrite any reports of the same name. Default is
 #              FALSE
+# --no_region : If used, regional analysis will not be done.
+
 #
 # Command line example:
 #
@@ -69,6 +73,12 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
+    opt_str = c("-f", "--file_format"), type = "character", default = "rds",
+    help = "What type of file format were the vaf and tmb files saved as?
+            Options are 'rds' or 'tsv'. Default is 'rds'.",
+    metavar = "character"
+  ),
+  make_option(
     opt_str = c("-o", "--output"), type = "character",
     default = NULL, help = "Path to folder where you would like the
               output from this script to be stored.",
@@ -94,11 +104,27 @@ option_list <- list(
     default = FALSE, help = "If TRUE, will overwrite any reports of
               the same name. Default is FALSE",
     metavar = "character"
+  ),
+  make_option(
+    opt_str = "--no_region", action = "store_false",
+    default = TRUE, help = "If used, regional analysis will not be run.",
+    metavar = "character"
   )
 )
 
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
+
+# Bring along the file suffix. Make to lower.
+file_suffix <- tolower(opt$file_format)
+
+# Check that the file format is supported
+if (!(file_suffix %in% c("rds", "tsv"))) {
+  warning("Option used for file format (-f) is not supported. Only 'tsv' or 'rds'
+          files are supported. Defaulting to rds.")
+  opt$file_format <- "rds"
+  file_suffix <- "rds"
+}
 
 ########################### Check options specified ############################
 # Normalize this file path
@@ -113,8 +139,11 @@ if (!dir.exists(opt$vaf)) {
 file_list <- dir(opt$vaf)
 
 # The list of needed file suffixes
-needed_files <- c("_vaf.tsv$", "_region.tsv$", "_tmb.tsv$", opt$cosmic)
+needed_files <- c(paste0("_vaf.", file_suffix), paste0("_tmb.", file_suffix), opt$cosmic)
 
+if (opt$no_region) {
+  needed_files <- c(needed_files, paste0("_region.", file_suffix))
+}
 # Get list of which files were found
 files_found <- sapply(needed_files, function(file_suffix) {
   grep(file_suffix, file_list, value = TRUE)
@@ -154,17 +183,33 @@ if (!dir.exists(opt$output)) {
   dir.create(opt$output, recursive = TRUE)
 }
 
+# Make a list of the plot suffixes
+plot_suffixes <- c("_base_change", "_depth_vs_vaf", "_cosmic_plot", "_tmb_plot")
+
+if (opt$no_region) {
+  plot_suffixes <- c(plot_suffixes, "_snv_region")
+}
+
 # Make the plot names with specified prefix
-plot_names <- paste0(c(
-  "_base_change", "_depth_vs_vaf", "_snv_region",
-  "_cosmic_plot", "_tmb_plot"
-), opt$plot_type)
+plot_names <- paste0(plot_suffixes, opt$plot_type)
 
-# Read in these data.frames
-vaf_df <- readr::read_tsv(grep("_vaf.tsv$", file_list, value = TRUE))
-tmb_df <- readr::read_tsv(grep("_tmb.tsv$", file_list, value = TRUE))
-maf_annot <- readr::read_tsv(grep("_region.tsv$", file_list, value = TRUE))
+# Read in these data
+if (opt$file_format == "tsv") {
+  vaf_df <- readr::read_tsv(grep("_vaf.tsv$", file_list, value = TRUE))
+  tmb_df <- readr::read_tsv(grep("_tmb.tsv$", file_list, value = TRUE))
+} else {
+  vaf_df <- readr::read_rds(grep("_vaf.rds$", file_list, value = TRUE))
+  tmb_df <- readr::read_rds(grep("_tmb.rds$", file_list, value = TRUE))
+}
 
+# Only read in the regional things if that is necessary
+if (opt$no_region) {
+  if (opt$file_format == "tsv") {
+    maf_annot <- readr::read_tsv(grep("_region.tsv$", file_list, value = TRUE))
+  } else {
+    maf_annot <- readr::read_rds(grep("_region.rds$", file_list, value = TRUE))
+  }
+}
 ######################## Check VAF file for each strategy ######################
 
 # Reformat the strategy option into lower case and vector
@@ -214,10 +259,6 @@ for (strategy in opt$strategy) {
   depth_vs_vaf_plot(vaf_df, exp_strategy = strategy)
   ggplot2::ggsave(filename = plot_paths["_depth_vs_vaf.png"], plot = ggplot2::last_plot())
 
-  # Genomic region breakdown
-  snv_region_plot(maf_annot, exp_strategy = strategy)
-  ggplot2::ggsave(filename = plot_paths["_snv_region.png"], plot = ggplot2::last_plot())
-
   # Percent variants in COSMIC
   cosmic_plot(vaf_df, exp_strategy = strategy, opt$cosmic)
   ggplot2::ggsave(filename = plot_paths["_cosmic_plot.png"], plot = ggplot2::last_plot())
@@ -225,6 +266,12 @@ for (strategy in opt$strategy) {
   # TMB by histology
   tmb_plot(tmb_df, x_axis = "short_histology", exp_strategy = strategy)
   ggplot2::ggsave(filename = plot_paths["_tmb_plot.png"], plot = ggplot2::last_plot())
+
+  if (opt$no_region) {
+    # Genomic region breakdown
+    snv_region_plot(maf_annot, exp_strategy = strategy)
+    ggplot2::ggsave(filename = plot_paths["_snv_region.png"], plot = ggplot2::last_plot())
+  }
 
   ######################## Make plots into a report ############################
   # Make a summary report about the variant caller and strategy
@@ -234,8 +281,16 @@ for (strategy in opt$strategy) {
   )
 
   # Path to the template file
-  template_file <- file.path(root_dir, "analyses", "snv-callers", "template", 
-                             "variant_caller_report_template.Rmd")
+  template_folder <- file.path(
+    root_dir, "analyses", "snv-callers", "template"
+  )
+
+  # Designate which template file name
+  if (opt$no_region) {
+    template_file <- file.path(template_folder, "variant_caller_report_template.Rmd")
+  } else {
+    template_file <- file.path(template_folder, "variant_caller_report_no_region_template.Rmd")
+  }
 
   # Make copy of template
   if (file.exists(template_file)) {
@@ -243,7 +298,7 @@ for (strategy in opt$strategy) {
   } else {
     stop(cat("The Rmd template file ", template_file, " does not exist."))
   }
-  
+
   # Run this notebook
   rmarkdown::render(output_file, "html_document")
 }

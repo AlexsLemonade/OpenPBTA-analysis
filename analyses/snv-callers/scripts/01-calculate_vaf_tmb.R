@@ -10,6 +10,8 @@
 # -output : File path that specifies the folder where the output should go.
 #           New folder will be created if it doesn't exist. Assumes file path is
 #           given from top directory of 'OpenPBTA-analysis'.
+# --file_format: What type of file format would you like the output as? Options are
+#               "rds" or "tsv". Default is "rds".
 # --maf :  Relative file path to MAF file to be analyzed. Can be .gz compressed.
 #          Assumes file path is given from top directory of 'OpenPBTA-analysis'.
 # --metadata : Relative file path to MAF file to be analyzed. Can be .gz compressed.
@@ -24,6 +26,8 @@
 #               mutations with a VAF that are NA or below this number will be
 #               removed from the vaf data.frame before it is saved to a TSV file.
 # --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
+
+# --no_region : If used, regional analysis will not be done.
 #
 # Command line example:
 #
@@ -35,7 +39,8 @@
 #   --bed_wgs data/WGS.hg38.mutect2.unpadded.bed \
 #   --bed_wxs data/WXS.hg38.100bp_padded.bed \
 #   --annot_rds scratch/hg38_genomic_region_annotation.rds \
-#   --vaf_filter .10
+#   --vaf_filter .10 \
+#   --no_region
 
 ################################ Initial Set Up ################################
 # Establish base dir
@@ -64,6 +69,12 @@ option_list <- list(
     help = "File path that specifies the folder where the output should
               go. Assumes from top directory, 'OpenPBTA-analysis'. New folder
               will be created if it doesn't exist.",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = c("-f", "--file_format"), type = "character", default = "rds",
+    help = "What type of file format would you like the output as? Options are
+            'rds' or 'tsv'. Default is 'rds'.",
     metavar = "character"
   ),
   make_option(
@@ -97,16 +108,21 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
-    opt_str = "--vaf_filter", type = "numeric", default = 0,
+    opt_str = "--vaf_filter", type = "character", default = "0",
     help = "Optional Variant Allele Fraction filter. Specify a number; any
             mutations with a VAF that are NA or below this number will be
             removed from the vaf data.frame before it is saved to a TSV file.",
-    metavar = "numeric"
+    metavar = "character"
   ),
   make_option(
     opt_str = "--overwrite", action = "store_true",
     default = FALSE, help = "If TRUE, will overwrite any files of
               the same name. Default is FALSE",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = "--no_region", action = "store_false",
+    default = TRUE, help = "If used, regional analysis will not be run.",
     metavar = "character"
   )
 )
@@ -114,12 +130,38 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
-########### Check that the files we need are in the paths specified ############
-needed_files <- c(opt$maf, opt$metadata, opt$bed_wgs, opt$bed_wxs, opt$annot_rds,
-                  opt$cosmic)
+# Coerce to numeric
+opt$vaf_filter <- as.numeric(opt$vaf_filter)
 
-# Add root directory to the file paths
-needed_files <- file.path(root_dir, needed_files)
+
+# Make everything relative to root path
+opt$maf <- file.path(root_dir, opt$maf)
+opt$metadata <- file.path(root_dir, opt$metadata)
+opt$bed_wgs <- file.path(root_dir, opt$bed_wgs)
+opt$bed_wxs <- file.path(root_dir, opt$bed_wxs)
+opt$cosmic <- file.path(root_dir, opt$cosmic)
+
+# Bring along the file suffix. Make to lower.
+file_suffix <- tolower(opt$file_format)
+
+# Check that the file format is supported
+if (!(file_suffix %in% c("rds", "tsv"))) {
+  warning("Option used for file format (-f) is not supported. Only 'tsv' or 'rds'
+          files are supported. Defaulting to rds")
+  opt$file_format <- "rds"
+  file_suffix <- "rds"
+}
+
+########### Check that the files we need are in the paths specified ############
+needed_files <- c(
+  opt$maf, opt$metadata, opt$bed_wgs, opt$bed_wxs, opt$cosmic
+)
+
+# Only if regional analysis is being done do we need the annotation file
+if (opt$no_region) {
+  opt$annot_rds <- file.path(root_dir, opt$annot_rds)
+  needed_files <- c(needed_files, opt$annot_rds)
+}
 
 # Get list of which files were found
 files_found <- file.exists(needed_files)
@@ -143,14 +185,14 @@ if (!dir.exists(caller_results_dir)) {
 }
 
 ####################### File paths for files we will create ####################
-vaf_file <- file.path(caller_results_dir, paste0(opt$label, "_vaf.tsv"))
-region_annot_file <- file.path(caller_results_dir, paste0(opt$label, "_region.tsv"))
-tmb_file <- file.path(caller_results_dir, paste0(opt$label, "_tmb.tsv"))
+vaf_file <- file.path(caller_results_dir, paste0(opt$label, "_vaf.", file_suffix))
+region_annot_file <- file.path(caller_results_dir, paste0(opt$label, "_region.", file_suffix))
+tmb_file <- file.path(caller_results_dir, paste0(opt$label, "_tmb.", file_suffix))
 
 # Declare metadata file name for this caller
 metadata_file <- file.path(
   caller_results_dir,
-  paste0(opt$label, "_metadata_filtered.tsv")
+  paste0(opt$label, "_metadata_filtered.", file_suffix)
 )
 
 ##################### Check for files if overwrite is FALSE ####################
@@ -195,8 +237,16 @@ metadata <- readr::read_tsv(opt$metadata) %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in% maf_df$Tumor_Sample_Barcode) %>%
   dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
   dplyr::arrange() %>%
-  dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID) %>%
-  readr::write_tsv(metadata_file)
+  dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID)
+
+# Write the metadata file
+if (opt$file_format == "tsv") {
+  metadata %>%
+    readr::write_tsv(metadata_file)
+} else {
+  metadata %>%
+    readr::write_rds(metadata_file)
+}
 
 # Print out completion message
 message(paste("Filtered metadata file saved to: \n", metadata_file))
@@ -221,53 +271,56 @@ if (file.exists(vaf_file) && !opt$overwrite) {
     warning("Overwriting existing VAF file.")
   }
   # Print out progress message
-  message(paste("Calculating VAF for", opt$label, "MAF data..."))
+  message(paste("Calculating, sampling, and merging VAF for", opt$label, "MAF data..."))
 
   # Use the premade function to calculate VAF this will also merge the metadata
-  vaf_df <- set_up_maf(maf_df, metadata)
+  vaf_df <- set_up_maf(maf_df, metadata, opt$vaf_filter)
 
-  if (opt$vaf_filter != 0) {
-    # Give message
-    message("--vaf_filter is being applied")
+  message(paste(nrow(vaf_df), "mutations left after filter and merge"))
 
-    # If a VAF filter is set, filter out NA VAFs or VAFs less than this cutoff.
-    vaf_df <- vaf_df %>%
-    dplyr::filter(vaf > opt$vaf_filter,
-                  !is.na(vaf))
-
-    # Report how many mutations are left
-    message(paste(nrow(vaf_df), "number of mutations left after vaf_filter."))
+  # Write the vaf file
+  if (opt$file_format == "tsv") {
+    vaf_df %>%
+      readr::write_tsv(vaf_file)
+  } else {
+    vaf_df %>%
+      readr::write_rds(vaf_file)
   }
-
-  # Write this to a TSV file
-  vaf_df %>% readr::write_tsv(vaf_file)
-
   # Print out completion message
   message(paste("VAF calculations saved to: \n", vaf_file))
 }
 ######################### Annotate genomic regions #############################
-# If the file exists or the overwrite option is not being used, run regional annotation analysis
-if (file.exists(region_annot_file) && !opt$overwrite) {
-  # Stop if this file exists and overwrite is set to FALSE
-  warning(cat(
-    "The regional annotation file already exists: \n",
-    region_annot_file, "\n",
-    "Use --overwrite if you want to overwrite it."
-  ))
-} else {
-  # Print out warning if this file is going to be overwritten
-  if (file.exists(region_annot_file)) {
-    warning("Overwriting existing regional annotation file.")
+if (opt$no_region) {
+  # If the file exists or the overwrite option is not being used, run regional annotation analysis
+  if (file.exists(region_annot_file) && !opt$overwrite) {
+    # Stop if this file exists and overwrite is set to FALSE
+    warning(cat(
+      "The regional annotation file already exists: \n",
+      region_annot_file, "\n",
+      "Use --overwrite if you want to overwrite it."
+    ))
+  } else {
+    # Print out warning if this file is going to be overwritten
+    if (file.exists(region_annot_file)) {
+      warning("Overwriting existing regional annotation file.")
+    }
+    # Print out progress message
+    message(paste("Annotating genomic regions for", opt$label, "MAF data..."))
+
+    # Annotation genomic regions
+    maf_annot <- annotr_maf(vaf_df, annotation_file = opt$annot_rds)
+
+    # Write the region file
+    if (opt$file_format == "tsv") {
+      maf_annot %>%
+        readr::write_tsv(region_annot_file)
+    } else {
+      maf_annot %>%
+        readr::write_rds(region_annot_file)
+    }
+    # Print out completion message
+    message(paste("Genomic region annotations saved to:", region_annot_file))
   }
-  # Print out progress message
-  message(paste("Annotating genomic regions for", opt$label, "MAF data..."))
-
-  # Annotation genomic regions
-  maf_annot <- annotr_maf(vaf_df, annotation_file = opt$annot_rds) %>%
-    readr::write_tsv(region_annot_file)
-
-  # Print out completion message
-  message(paste("Genomic region annotations saved to:", region_annot_file))
 }
 ############################# Calculate TMB ####################################
 # If the file exists or the overwrite option is not being used, run TMB calculations
@@ -312,8 +365,16 @@ if (file.exists(tmb_file) && !opt$overwrite) {
   tmb_df <- calculate_tmb(vaf_df,
     wgs_size = wgs_genome_size,
     wxs_size = wxs_exome_size
-  ) %>%
-    readr::write_tsv(tmb_file)
+  )
+
+  # Write the tmb file
+  if (opt$file_format == "tsv") {
+    tmb_df %>%
+      readr::write_tsv(tmb_file)
+  } else {
+    tmb_df %>%
+      readr::write_rds(tmb_file)
+  }
 
   # Print out completion message
   message(paste("TMB calculations saved to:", tmb_file))
