@@ -145,7 +145,7 @@ opt$cosmic <- file.path(root_dir, opt$cosmic)
 file_suffix <- tolower(opt$file_format)
 
 # Check that the file format is supported
-if (!(file_suffix %in% c('rds', 'tsv'))) {
+if (!(file_suffix %in% c("rds", "tsv"))) {
   warning("Option used for file format (-f) is not supported. Only 'tsv' or 'rds'
           files are supported. Defaulting to rds")
   opt$file_format <- "rds"
@@ -308,8 +308,8 @@ if (opt$no_region) {
     message(paste("Annotating genomic regions for", opt$label, "MAF data..."))
 
     # Annotation genomic regions
-    maf_annot <- annotr_maf(vaf_df, annotation_file = opt$annot_rds) 
-    
+    maf_annot <- annotr_maf(vaf_df, annotation_file = opt$annot_rds)
+
     # Write the region file
     if (opt$file_format == "tsv") {
       maf_annot %>%
