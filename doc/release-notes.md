@@ -1,5 +1,71 @@
 # release notes
 ## current release
+### release-v6-20191030
+- release date: 2019-10-30
+- status: available
+- changes:
+  - Clinical file updates:
+    - Missing `aliquot_id` and `sample_id` added
+    - Updated `broad_composition` to `cell line` for WGS samples denoted as Cell line
+    - Removed duplicate `BS_4M0ZMCDC` with wrong age at diagnosis
+    - Add `cohort` column for CBTTC or PNOC003 samples
+    - Tumor specimens missing `composition` were changed to `Solid Tumor`
+    - Blood specimens missing `primary_site` were changed to `Peripheral Whole Blood`
+    - Updated `age_at_diagnosis` to earliest age reported (same age used in OS calculations)
+    - Updated `OS_days` and `OS_status` based on updated clinical data
+    - Added `cancer_predispositions` information
+    - Added `seq_center` (could not add seq_instrument at this time due to multiple entries for BS_IDs)
+    - Harmonized `Diagnosis` and `Initial CNS Tumor` for `tumor_descriptor` field
+    - Changed `Relapse` sample to `Progressive` (DIPG sample truly progressive, not relapse)
+    - Add tumor purity derived from Theta2 (`normal_fraction` and `tumor_fraction`)
+    - Add `glioma_brain_region` for low- and high-grade gliomas
+    ​
+  - SV:
+    - Removed LUMPY data, as additional benchmarking to remove normal SVs needs to be done. We may not include this in a future release.
+    ​
+  - SNV:
+    - Re-ran BS_7KR13R3P using targeted panel bed files; removed WXS calls from MAFs
+    - Added WXS calls to all MAFs
+    - Added targeted panel bed and padded bed files
+    ​
+  - CNV:
+    - Re-ran ControlFreeC and CNVkit with optional BAF inputs; Added Theta2 purity correction to CNVkit
+    - Added copy number to CNVkit and ControlFreeC seg file
+- folder structure:
+```
+data
+└── release-v6-20191030
+    ├── CHANGELOG.md
+    ├── StrexomeLite_Targets_CrossMap_hg38_filtered_chr_prefixed.bed
+    ├── StrexomeLite_hg38_liftover_100bp_padded.bed
+    ├── WGS.hg38.lancet.300bp_padded.bed
+    ├── WGS.hg38.lancet.unpadded.bed
+    ├── WGS.hg38.mutect2.unpadded.bed
+    ├── WGS.hg38.strelka2.unpadded.bed
+    ├── WGS.hg38.vardict.100bp_padded.bed
+    ├── WXS.hg38.100bp_padded.bed
+    ├── md5sum.txt
+    ├── pbta-cnv-cnvkit.seg.gz
+    ├── pbta-cnv-controlfreec.seg.gz
+    ├── pbta-fusion-arriba.tsv.gz
+    ├── pbta-fusion-starfusion.tsv.gz
+    ├── pbta-gene-counts-rsem-expected_count.polya.rds
+    ├── pbta-gene-counts-rsem-expected_count.stranded.rds
+    ├── pbta-gene-expression-kallisto.polya.rds
+    ├── pbta-gene-expression-kallisto.stranded.rds
+    ├── pbta-gene-expression-rsem-fpkm.polya.rds
+    ├── pbta-gene-expression-rsem-fpkm.stranded.rds
+    ├── pbta-histologies.tsv
+    ├── pbta-isoform-counts-rsem-expected_count.polya.rds
+    ├── pbta-isoform-counts-rsem-expected_count.stranded.rds
+    ├── pbta-snv-lancet.vep.maf.gz
+    ├── pbta-snv-mutect2.vep.maf.gz
+    ├── pbta-snv-strelka2.vep.maf.gz
+    ├── pbta-snv-vardict.vep.maf.gz
+    └── pbta-sv-manta.tsv.gz
+```
+
+## archived release
 ### release-v5-20190924
 - release date: 2019-09-24
 - status: available
@@ -51,7 +117,6 @@ data
     └── pbta-snv-vardict.vep.maf.gz
 ```
 
-## archived release
 ### release-v4-20190909
 - release date: 2019-09-10
 - status: available
@@ -80,7 +145,8 @@ data
     ├── pbta-snv-mutect2.vep.maf.gz
     ├── pbta-snv-strelka2.vep.maf.gz
     ├── pbta-sv-lumpy.tsv.gz
-    └── pbta-sv-manta.tsv.gz
+    ├── pbta-sv-manta.tsv.gz
+    └── README.md
 ```
 
 ## archived release
