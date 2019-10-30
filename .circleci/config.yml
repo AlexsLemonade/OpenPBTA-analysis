@@ -41,10 +41,11 @@ jobs:
       - run:
           name: Transcriptome dimensionality reduction
           command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
-
-      - run:
-          name: Sex prediction from RNA-seq
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/sex-prediction-from-RNASeq/sex-prediction-from-RNASeq.Rmd', clean = TRUE)"
+          
+# this is getting split up into scripts
+#      - run:
+#          name: Sex prediction from RNA-seq
+#          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/sex-prediction-from-RNASeq/sex-prediction-from-RNASeq.Rmd', clean = TRUE)"
 
       - run:
           name: Sex prediction from RNA-seq - Data cleaning
