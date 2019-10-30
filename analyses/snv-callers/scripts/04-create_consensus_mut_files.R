@@ -134,7 +134,44 @@ if (any(is.na(files_found))) {
     "necessary file(s):", names(files_found)[which(!files_found)]
   ))
 }
+################################### Set Up #####################################
+# Set and make the plots directory
+opt$output <- file.path(root_dir, opt$output)
 
+# Make caller specific plots folder
+if (!dir.exists(opt$output)) {
+  dir.create(opt$output, recursive = TRUE)
+}
+
+# Declare output file paths
+consensus_mut_file <- file.path(opt$output, "consensus_mutation.maf.tsv")
+consensus_mut_zip_file <- file.path(opt$output, "consensus_mutation.maf.tsv.zip")
+consensus_tmb_file <- file.path(opt$output, "consensus_mutation.tmb.tsv")
+
+##################### Check for files if overwrite is FALSE ####################
+# If overwrite is set to FALSE, check if these exist before continuing
+if (!opt$overwrite) {
+  # Make a list of the output files
+  output_files <- c(consensus_mut_file, consensus_mut_zip_file, consensus_tmb_file)
+
+  # Find out which of these exist
+  existing_files <- file.exists(output_files)
+
+  # If all files exist; stop
+  if (all(existing_files)) {
+    stop(cat(
+      "Stopping; --overwrite is not being used and all output files already exist
+      in the designated --output directory."
+    ))
+  }
+  # If some files exist, print a warning:
+  if (any(existing_files)) {
+    warning(cat(
+      "Some output files already exist and will not be overwritten unless you use --overwrite: \n",
+      paste0(output_files[which(existing_files)], "\n")
+    ))
+  }
+}
 ############################### Read in the files ##############################
 vaf_df <- readr::read_rds(file.path(
   opt$merged_files,
@@ -149,48 +186,77 @@ callers_per_mutation <- readr::read_rds(file.path(
   paste0("callers_per_mutation.", opt$file_format)
 ))
 
-# Let's get the mutation ids for combination of
-consen_mutations <- callers_per_mutation %>%
-  dplyr::filter(caller_combo == dplyr::sym(opt$combo)) %>%
-  dplyr::select(-caller_combo) %>%
-  dplyr::pull(mutation_id)
+# If the file exists or the overwrite option is not being used, do not write the
+# consensus mutation file.
+if (file.exists(consensus_mut_file) && !opt$overwrite) {
+  # Stop if this file exists and overwrite is set to FALSE
+  warning(cat(
+    "A consensus mutation file already exists: \n",
+    consensus_mut_file, "\n",
+    "Use --overwrite if you want to overwrite it."
+  ))
+} else {
+  # Let's get the mutation ids for combination of
+  consen_mutations <- callers_per_mutation %>%
+    dplyr::filter(caller_combo == dplyr::sym(opt$combo)) %>%
+    dplyr::select(-caller_combo) %>%
+    dplyr::pull(mutation_id)
 
-# Stop if no mutations are found
-if (length(consen_mutations) == 0) {
-  stop("No mutations had this combination of callers call it. Double check that
+  # Stop if no mutations are found
+  if (length(consen_mutations) == 0) {
+    stop("No mutations had this combination of callers call it. Double check that
        the combination you specified with --combo is spelled exactly right and
        the callers are in alphabetical order. ")
+  }
+
+  # Isolate the mutations to only these mutations, use the Strelka2 stats.
+  consen_mutation <- vaf_df %>%
+    dplyr::filter(
+      caller == "strelka2",
+      mutation_id %in% consen_mutations
+    ) %>%
+    readr::write_tsv(consensus_mut_file)
 }
 
-# Isolate the mutations to only these mutations, use the Strelka2 stats.
-consen_mutation <- vaf_df %>%
-  dplyr::filter(
-    caller == "strelka2",
-    mutation_id %in% consen_mutations
-  ) %>%
-  readr::write_tsv(file.path(opt$output, "consensus_mutation.maf.tsv"))
-
-# Zip this file up.
-zip(
-  file.path(opt$output, "consensus_mutation.maf.tsv.zip"),
-  file.path(opt$output, "consensus_mutation.maf.tsv")
-)
-
+# If the file exists or the overwrite option is not being used, do not zip the
+# consensus mutation file.
+if (file.exists(consensus_mut_zip_file) && !opt$overwrite) {
+  # Stop if this file exists and overwrite is set to FALSE
+  warning(cat(
+    "A zipped consensus mutation file already exists: \n",
+    consensus_mut_zip_file, "\n",
+    "Use --overwrite if you want to overwrite it."
+  ))
+} else {
+  # Zip this file up.
+  zip(consensus_mut_zip_file, consensus_mut_file)
+}
 ############################### Re-calculate TMB ###############################
-# Set up BED region files for TMB calculations
-wgs_bed <- readr::read_tsv(file.path(opt$bed_wgs), col_names = FALSE)
-wxs_bed <- readr::read_tsv(file.path(opt$bed_wxs), col_names = FALSE)
+# If the file exists or the overwrite option is not being used, do not create
+# the consensus TMB file
+if (file.exists(consensus_tmb_file) && !opt$overwrite) {
+  # Stop if this file exists and overwrite is set to FALSE
+  warning(cat(
+    "A consensus TMB file already exists: \n",
+    consensus_tmb_file, "\n",
+    "Use --overwrite if you want to overwrite it."
+  ))
+} else {
+  # Set up BED region files for TMB calculations
+  wgs_bed <- readr::read_tsv(file.path(opt$bed_wgs), col_names = FALSE)
+  wxs_bed <- readr::read_tsv(file.path(opt$bed_wxs), col_names = FALSE)
 
-# Calculate size of genome surveyed
-wgs_genome_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
-wxs_exome_size <- sum(wxs_bed[, 3] - wxs_bed[, 2])
+  # Calculate size of genome surveyed
+  wgs_genome_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
+  wxs_exome_size <- sum(wxs_bed[, 3] - wxs_bed[, 2])
 
-# Calculate TMBs and write to TMB file
-tmb_df <- calculate_tmb(vaf_df,
-  wgs_size = wgs_genome_size,
-  wxs_size = wxs_exome_size
-) %>%
-  readr::write_tsv(file.path(opt$output, "consensus_mutation_tmb.tsv"))
+  # Calculate TMBs and write to TMB file
+  tmb_df <- calculate_tmb(vaf_df,
+    wgs_size = wgs_genome_size,
+    wxs_size = wxs_exome_size
+  ) %>%
+    readr::write_tsv(file.path(opt$output, "consensus_mutation_tmb.tsv"))
 
-# Give message
-message("Consensus mutations and TMB re-calculations saved in: \n", opt$output)
+  # Give message
+  message("Consensus mutations and TMB re-calculations saved in: \n", opt$output)
+}
