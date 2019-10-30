@@ -30,7 +30,7 @@
     ​
   - CNV:
     - Re-ran ControlFreeC and CNVkit with optional BAF inputs; Added Theta2 purity correction to CNVkit
-    - Added copy number to CNVkit and ControlFreeC seg file
+    - Added copy number to CNVkit and removed ControlFreeC seg file
 - folder structure:
 ```
 data
@@ -46,7 +46,6 @@ data
     ├── WXS.hg38.100bp_padded.bed
     ├── md5sum.txt
     ├── pbta-cnv-cnvkit.seg.gz
-    ├── pbta-cnv-controlfreec.seg.gz
     ├── pbta-fusion-arriba.tsv.gz
     ├── pbta-fusion-starfusion.tsv.gz
     ├── pbta-gene-counts-rsem-expected_count.polya.rds
