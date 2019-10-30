@@ -32,7 +32,6 @@
 # -v results \
 # -o results/consensus \
 # -f rds \
-# -s wxs \
 # --overwrite
 #
 # Establish base dir
@@ -50,8 +49,7 @@ option_list <- list(
   make_option(
     opt_str = c("-v", "--vaf"), type = "character",
     default = NULL, help = "Path to folder with the output files
-              from 01-calculate_vaf_tmb. Should include the VAF, TMB, and
-              region TSV files",
+              from 01-calculate_vaf_tmb. Should include the VAF and TMB files",
     metavar = "character"
   ),
   make_option(
