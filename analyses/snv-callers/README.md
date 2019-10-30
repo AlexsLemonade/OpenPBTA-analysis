@@ -300,7 +300,6 @@ OpenPBTA-analysis
 │       │   ├── lancet
 │       │   │   ├── lancet_vaf.rds
 │       │   │   ├── lancet_tmb.rds
-│       │   │   ├── lancet_tmb.rds.zip
 │       │   │   ├── lancet_region.rds
 │       │   │   ├── lancet_wxs_report.html
 │       │   │   ├── lancet_wxs_report.Rmd
