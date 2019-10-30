@@ -21,6 +21,7 @@ format=rds
 
 # Set a default for the VAF filter if none is specified
 vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}
+run_plots_nb=${OPENPBTA_PLOTS:-FALSE}
 
 ############################ Set Up Reference Files ############################
 # The original COSMIC file is obtained from: https://cancer.sanger.ac.uk/cosmic/download
@@ -51,19 +52,21 @@ do
 done
 
 ######################## Plot the data and create reports ######################
-for dataset in ${datasets[@]}
+if [ ! $run_plots_nb ]; then
+  for dataset in ${datasets[@]}
   do
-  echo "Processing dataset: ${dataset}"
-  Rscript analyses/snv-callers/scripts/02-run_eval.R \
-    --label ${dataset} \
-    --vaf analyses/snv-callers/results/${dataset} \
-    --plot_type png \
-    --file_format $format \
-    --output analyses/snv-callers/plots/${dataset} \
-    --cosmic $cosmic \
-    --strategy wgs,wxs,both \
-    --no_region
+    echo "Processing dataset: ${dataset}"
+    Rscript analyses/snv-callers/scripts/02-run_eval.R \
+      --label ${dataset} \
+      --vaf analyses/snv-callers/results/${dataset} \
+      --plot_type png \
+      --file_format $format \
+      --output analyses/snv-callers/plots/${dataset} \
+      --cosmic $cosmic \
+      --strategy wgs,wxs,both \
+      --no_region
   done
+fi
 ##################### Merge callers' files into total files ####################
 Rscript analyses/snv-callers/scripts/03-merge_callers.R \
   --vaf analyses/snv-callers/results \
@@ -71,7 +74,12 @@ Rscript analyses/snv-callers/scripts/03-merge_callers.R \
   --file_format $format \
   --overwrite
 
-##################### Create final mutation consensus file #####################
+###################### Plot snv callers in comparison notebook #################
+if [ ! $run_plots_nb ]; then
+  Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots.Rmd', clean = TRUE)"
+fi
+
+##################### Merge callers' files into total files ####################
 Rscript analyses/snv-callers/scripts/04-create_consensus_mut_files.R \
  --merged_files analyses/snv-callers/results/consensus \
  --combo lancet-mutect2-strelka2 \
