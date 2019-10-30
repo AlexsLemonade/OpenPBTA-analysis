@@ -110,6 +110,50 @@ plots ([base_change](#base-change-analysis), [depth_vs_vaf](#variant-allele-frac
   --no_region : If used, regional analysis will not be done.
 ```
 
+### 03-merge_callers.R
+
+This script merges the callers' TMB and VAF files into total files with a column
+`caller` to designate their origin.
+
+**Option descriptions**
+```
+# --vaf : Parent folder containing the vaf and tmb files for each folder.
+#                                             <caller_name>_vaf.<file_format>
+#                                             <caller_name>_tmb.<file_format>
+# --file_format: What type of file format were the vaf and tmb files saved as? Options are
+#               "rds" or "tsv". Default is "rds".
+# --output : Where you would like the output from this script to be stored.
+# --overwrite : If TRUE, will overwrite any reports of the same name. Default is
+#              FALSE
+```
+
+### 04-create_consensus_mut_files.R
+
+This script takes the merged output of 03-merge_callers.R and saves the final consensus mutation calls to a MAF-like file.
+
+**Option descriptions**
+```
+ --merged_files : File path to where the 03-merged_callers.R output can be found.
+                  Files required: "all_callers_vaf.<file_format>"
+                                  "all_callers_tmb.<file_format>"
+                                  "mutation_id_list.<file_format>"
+ --vaf : What VAF should be used when combining callers? Options are 'median' or
+         one of the caller names."
+ --combo : What combination of callers need to detect a mutation for it to be
+           considered real and placed in the consensus file? List the callers
+           that need to be considered in alphabetical order with '-'
+           in between. eg. 'lancet-mutect2-strelka2'
+ --file_format: What type of file format were the vaf and tmb files saved as? Options are
+               "rds" or "tsv". Default is "rds".
+ --output : Where you would like the output from this script to be stored.
+ --bed_wgs : File path that specifies the caller-specific BED regions file.
+             Assumes from top directory, 'OpenPBTA-analysis'.
+ --bed_wxs : File path that specifies the WXS BED regions file. Assumes file path
+             is given from top directory of 'OpenPBTA-analysis'
+ --overwrite : If TRUE, will overwrite any reports of the same name. Default is
+             FALSE
+```
+
 # Individual Caller Evaluation
 
 The first step in this analysis is an individual evaluation of each MAF from each caller.

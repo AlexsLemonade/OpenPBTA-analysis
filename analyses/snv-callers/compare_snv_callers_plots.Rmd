@@ -91,9 +91,9 @@ perc_mutation_by_caller <- function(df, var) {
   count_df <- df %>%
     dplyr::count(caller, eval(parse(text = var)), name = "count") %>%
     dplyr::add_count(caller, wt = count) %>%
-    dplyr::mutate(percent = count/n) %>% 
+    dplyr::mutate(percent = count / n) %>%
     # Rename the column as what it was before
-    dplyr::rename(var = 'eval(parse(text = var))')
+    dplyr::rename(var = "eval(parse(text = var))")
 
   # Return this data.frame
   return(count_df)
@@ -129,16 +129,16 @@ Load in the merged data.frames from `03-merge_callers.R` output.
 
 ```{r}
 # Master VAF data.frame
-vaf_df <- readr::read_rds(file.path(results_dir, "all_callers_vaf.rds"))
+vaf_df <- readr::read_rds(file.path(consensus_results_dir, "all_callers_vaf.rds"))
 
 # Master TMB data.frame
-tmb_df <- readr::read_rds(file.path(results_dir, "all_callers_tmb.rds"))
+tmb_df <- readr::read_rds(file.path(consensus_results_dir, "all_callers_tmb.rds"))
 
 # Full mutation list
-mutation_id_list <- readr::rds(file.path(results_dir, "mutation_id_list.rds"))
+mutation_id_list <- readr::read_rds(file.path(consensus_results_dir, "mutation_id_list.rds"))
 
 # Callers per mutation data.frame
-callers_per_mutation <- readr::rds(file.path(results_dir, "callers_per_mutation.rds"))
+callers_per_mutation <- readr::read_rds(file.path(consensus_results_dir, "callers_per_mutation.rds"))
 ```
 
 ## Upset graph
@@ -165,36 +165,6 @@ upset
 
 Graph mutations by combinations of callers and plot the VAF density.
 Get list of callers per mutation and the median vaf for each. 
-
-```{r}
-# Make a string that says what callers call each mutation
-callers_per_mutation <- tapply(vaf_df$caller,
-  vaf_df$mutation_id,
-  paste0,
-  collapse = "-"
-) %>%
-  # Make into a data.frame
-  as.data.frame() %>%
-  tibble::rownames_to_column("mutation_id")
-
-# Obtain the median VAF for each mutation
-vaf_med <- tapply(
-  vaf_df$vaf,
-  vaf_df$mutation_id,
-  median
-) %>%
-  # Make into a data.frame
-  as.data.frame() %>%
-  tibble::rownames_to_column("mutation_id")
-
-# Join the median VAF and the callers that call that mutation into one data.frame
-callers_per_mutation <- callers_per_mutation %>%
-  dplyr::inner_join(vaf_med, by = "mutation_id")
-
-# Make the column names more sensible
-colnames(callers_per_mutation) <- c("mutation_id", "caller_combo", "median_vaf")
-```
-
 Graph the median VAF for each combination of callers.
 
 ```{r}
@@ -220,7 +190,10 @@ Set up the summarized form of the base change information.
 
 ```{r}
 # Summarize by the number of times each base change shows up in each category.
-perc_change_df <- perc_mutation_by_caller(vaf_df, var = "change") %>%
+perc_change_df <- vaf_df %>%
+  dplyr::count(caller, change, name = "count") %>%
+  dplyr::add_count(caller, wt = count) %>%
+  dplyr::mutate(percent = count / n) %>%
   dplyr::filter(!grepl("G>G|A>A|N>A|N>T", change))
 
 # Need to rearrange the order of the base change categories
@@ -312,7 +285,7 @@ tmb_long <- tmb_df %>%
   dplyr::ungroup() %>%
   dplyr::select(-genome_size, -experimental_strategy) %>%
   dplyr::distinct(Tumor_Sample_Barcode, caller, tmb) %>%
-  tidyr::spread(caller, tmb) %>% 
+  tidyr::spread(caller, tmb) %>%
   dplyr::select(-Tumor_Sample_Barcode)
 ```
 

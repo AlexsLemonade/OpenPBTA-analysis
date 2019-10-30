@@ -119,7 +119,7 @@ opt <- parse_args(OptionParser(option_list = option_list))
 file_suffix <- tolower(opt$file_format)
 
 # Check that the file format is supported
-if (!(file_suffix %in% c('rds', 'tsv'))) {
+if (!(file_suffix %in% c("rds", "tsv"))) {
   warning("Option used for file format (-f) is not supported. Only 'tsv' or 'rds'
           files are supported. Defaulting to rds.")
   opt$file_format <- "rds"
@@ -141,8 +141,8 @@ file_list <- dir(opt$vaf)
 # The list of needed file suffixes
 needed_files <- c(paste0("_vaf.", file_suffix), paste0("_tmb.", file_suffix), opt$cosmic)
 
-if (opt$no_region){
- needed_files <- c(needed_files, paste0("_region.", file_suffix))
+if (opt$no_region) {
+  needed_files <- c(needed_files, paste0("_region.", file_suffix))
 }
 # Get list of which files were found
 files_found <- sapply(needed_files, function(file_suffix) {
@@ -186,7 +186,7 @@ if (!dir.exists(opt$output)) {
 # Make a list of the plot suffixes
 plot_suffixes <- c("_base_change", "_depth_vs_vaf", "_cosmic_plot", "_tmb_plot")
 
-if (opt$no_region){
+if (opt$no_region) {
   plot_suffixes <- c(plot_suffixes, "_snv_region")
 }
 
@@ -194,7 +194,7 @@ if (opt$no_region){
 plot_names <- paste0(plot_suffixes, opt$plot_type)
 
 # Read in these data
-if (opt$file_format == "tsv"){
+if (opt$file_format == "tsv") {
   vaf_df <- readr::read_tsv(grep("_vaf.tsv$", file_list, value = TRUE))
   tmb_df <- readr::read_tsv(grep("_tmb.tsv$", file_list, value = TRUE))
 } else {
@@ -204,7 +204,7 @@ if (opt$file_format == "tsv"){
 
 # Only read in the regional things if that is necessary
 if (opt$no_region) {
-  if (opt$file_format  == "tsv"){
+  if (opt$file_format == "tsv") {
     maf_annot <- readr::read_tsv(grep("_region.tsv$", file_list, value = TRUE))
   } else {
     maf_annot <- readr::read_rds(grep("_region.rds$", file_list, value = TRUE))

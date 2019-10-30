@@ -7,14 +7,14 @@
 # Purpose: Save consensus mutation calls to a MAF-like file.
 #
 # Option descriptions
-# --merged_files : File path to where the 03-merged_callers.R output can be found. 
-#                  Files required: "all_callers_vaf.<file_format>" 
-#                                  "all_callers_tmb.<file_format>" 
+# --merged_files : File path to where the 03-merged_callers.R output can be found.
+#                  Files required: "all_callers_vaf.<file_format>"
+#                                  "all_callers_tmb.<file_format>"
 #                                  "mutation_id_list.<file_format>"
-# --vaf : What VAF should be used when combining callers? Options are 'median' or 
+# --vaf : What VAF should be used when combining callers? Options are 'median' or
 #         one of the caller names."
-# --combo : What combination of callers need to detect a mutation for it to be 
-#           considered real and placed in the consensus file? List the callers 
+# --combo : What combination of callers need to detect a mutation for it to be
+#           considered real and placed in the consensus file? List the callers
 #           that need to be considered in alphabetical order with '-'
 #           in between. eg. 'lancet-mutect2-strelka2'
 # --file_format: What type of file format were the vaf and tmb files saved as? Options are
@@ -66,15 +66,15 @@ option_list <- list(
     default = FALSE, help = "What VAF should be used when combining callers? 
     Options are 'median' or one of the caller names.",
     metavar = "character"
-  ),  
+  ),
   make_option(
-    opt_str = c("--combo"),  type = "character",
+    opt_str = c("--combo"), type = "character",
     default = FALSE, help = "What combination of callers need to detect a 
     mutation for it to be considered real and placed in the consensus file?
     List the callers that need to be considered in alphabetical order with '-'
     in between. eg. 'lancet-mutect2-strelka2'",
     metavar = "character"
-  ),    
+  ),
   make_option(
     opt_str = "--bed_wgs", type = "character", default = "none",
     help = "File path that specifies the caller-specific
@@ -104,7 +104,7 @@ opt$vaf <- "strelka2"
 opt$output <- "analyses/snv-callers/results/consensus"
 opt$overwrite <- TRUE
 opt$bed_wgs <- "data/WGS.hg38.strelka2.unpadded.bed"
-opt$bed_wxs <-  "data/WXS.hg38.100bp_padded.bed"
+opt$bed_wxs <- "data/WXS.hg38.100bp_padded.bed"
 
 ########################### Check options specified ############################
 # Normalize these file paths
@@ -119,14 +119,18 @@ if (!dir.exists(opt$merged_files)) {
 }
 
 # The list of needed file suffixes
-needed_files <- c("all_callers_vaf.", 
-                  "all_callers_tmb.", 
-                  "mutation_id_list.",
-                  "callers_per_mutation.")
+needed_files <- c(
+  "all_callers_vaf.",
+  "all_callers_tmb.",
+  "mutation_id_list.",
+  "callers_per_mutation."
+)
 
-needed_files <- c(file.path(root_dir, opt$merged_files, paste0(needed_files, opt$file_format)), 
-                  opt$bed_wgs, 
-                  opt$bed_wxs)
+needed_files <- c(
+  file.path(root_dir, opt$merged_files, paste0(needed_files, opt$file_format)),
+  opt$bed_wgs,
+  opt$bed_wxs
+)
 
 # Get list of which files were found
 files_found <- sapply(needed_files, file.exists)
@@ -140,14 +144,20 @@ if (any(is.na(files_found))) {
 }
 
 ############################### Read in the files ##############################
-vaf_df <- readr::read_rds(file.path(opt$merged_files, 
-                                    paste0("all_callers_vaf.", opt$file_format)))
-tmb_df <- readr::read_rds(file.path(opt$merged_files, 
-                                    paste0("all_callers_tmb.", opt$file_format)))
-callers_per_mutation <- readr::read_rds(file.path(opt$merged_files, 
-                                    paste0("callers_per_mutation.", opt$file_format)))
+vaf_df <- readr::read_rds(file.path(
+  opt$merged_files,
+  paste0("all_callers_vaf.", opt$file_format)
+))
+tmb_df <- readr::read_rds(file.path(
+  opt$merged_files,
+  paste0("all_callers_tmb.", opt$file_format)
+))
+callers_per_mutation <- readr::read_rds(file.path(
+  opt$merged_files,
+  paste0("callers_per_mutation.", opt$file_format)
+))
 
-# Let's get the mutation ids for combination of 
+# Let's get the mutation ids for combination of
 consen_mutations <- callers_per_mutation %>%
   dplyr::filter(caller_combo == dplyr::sym(opt$combo)) %>%
   dplyr::select(-caller_combo) %>%

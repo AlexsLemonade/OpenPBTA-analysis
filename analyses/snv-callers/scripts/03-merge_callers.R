@@ -16,8 +16,7 @@
 # --output : Where you would like the output from this script to be stored.
 # --overwrite : If TRUE, will overwrite any reports of the same name. Default is
 #              FALSE
-# --no_region : If used, regional analysis will not be done.
-
+#
 #
 # Command line example:
 #
@@ -77,7 +76,7 @@ opt <- parse_args(OptionParser(option_list = option_list))
 file_suffix <- tolower(opt$file_format)
 
 # Check that the file format is supported
-if (!(file_suffix %in% c('rds', 'tsv'))) {
+if (!(file_suffix %in% c("rds", "tsv"))) {
   warning("Option used for file format (-f) is not supported. Only 'tsv' or 'rds'
           files are supported. Defaulting to rds.")
   opt$file_format <- "rds"
@@ -94,25 +93,30 @@ if (!dir.exists(opt$vaf)) {
 
 # Exclude the non-caller directories
 caller_dirs <- grep("vaf_cutoff|consensus",
-                    dir(opt$vaf, full.names = TRUE),
-                    invert = TRUE,
-                    value = TRUE)
+  dir(opt$vaf, full.names = TRUE),
+  invert = TRUE,
+  value = TRUE
+)
 
 # Print this out to check
 message("Will merge all VAF and TMB files in these folders: \n", paste0(caller_dirs, "\n"))
 
 # Get a list of vaf files
 vaf_files <- sapply(caller_dirs,
-                    list.files, pattern = paste0("_vaf.", file_suffix),
-                     recursive = TRUE, full.names = TRUE)
+  list.files,
+  pattern = paste0("_vaf.", file_suffix),
+  recursive = TRUE, full.names = TRUE
+)
 
 # Print this out to check
 message("Merging these VAF files: \n", paste0(vaf_files, "\n"))
 
 # Get a list of tmb files
 tmb_files <- sapply(caller_dirs,
-                    list.files, pattern = paste0("_tmb.", file_suffix),
-                     recursive = TRUE, full.names = TRUE)
+  list.files,
+  pattern = paste0("_tmb.", file_suffix),
+  recursive = TRUE, full.names = TRUE
+)
 
 # Print this out to check
 message("Merging these TMB files: \n", paste0(tmb_files, "\n"))
@@ -131,7 +135,7 @@ if (!dir.exists(opt$output)) {
 caller_names <- stringr::word(vaf_files, sep = "/", -2)
 
 # Read in vaf files for all callers
-if (opt$file_format  == "tsv"){
+if (opt$file_format == "tsv") {
   vaf_list <- lapply(vaf_files, readr::read_tsv)
 } else {
   vaf_list <- lapply(vaf_files, readr::read_rds)
@@ -142,10 +146,12 @@ vaf_list <- lapply(vaf_list, function(df) {
   # Make it so it is more easily combined with the other files
   df %>%
     # Attempt to make numeric columns where that doesn' kick back an "NA"
-    dplyr::mutate_at(dplyr::vars(which(!is.na(as.numeric(t(df[1,]))))), as.numeric) %>%
+    dplyr::mutate_at(dplyr::vars(which(!is.na(as.numeric(t(df[1, ]))))), as.numeric) %>%
     # Aliquot id sometimes contains letters and sometimes numbers across the callers
-    dplyr::mutate(aliquot_id = as.character(aliquot_id),
-                  variant_qual = as.character(variant_qual)) %>%
+    dplyr::mutate(
+      aliquot_id = as.character(aliquot_id),
+      variant_qual = as.character(variant_qual)
+    ) %>%
     # Turn these columns into characters because otherwise they cause trouble.
     dplyr::mutate_at(dplyr::vars(dplyr::contains("AF", ignore.case = FALSE)), as.character) %>%
     # Get rid of the few if any duplicate entries.
@@ -159,14 +165,14 @@ names(vaf_list) <- caller_names
 message("Saving master VAF file to: \n", file.path(opt$output, "all_callers_vaf.rds"))
 
 # Combine and save VAF file
-vaf_df <- dplyr::bind_rows(vaf_list, .id = "caller") %>% 
+vaf_df <- dplyr::bind_rows(vaf_list, .id = "caller") %>%
   dplyr::mutate(caller = factor(caller)) %>%
   # Write to RDS file
   readr::write_rds(file.path(opt$output, "all_callers_vaf.rds"))
 
 ########################### Make Master TMB file ###############################
 # Read in TMB files for all callers
-if (opt$file_format  == "tsv"){
+if (opt$file_format == "tsv") {
   tmb_list <- lapply(tmb_files, readr::read_tsv)
 } else {
   tmb_list <- lapply(tmb_files, readr::read_rds)
@@ -210,7 +216,7 @@ vaf_med <- tapply(
 
 # Join the median VAF and the callers that call that mutation into one data.frame
 callers_per_mutation <- callers_per_mutation %>%
-  dplyr::inner_join(vaf_med, by = "mutation_id") %>% 
+  dplyr::inner_join(vaf_med, by = "mutation_id") %>%
   # Make column names more sensible
   dplyr::rename(caller_combo = "..x", median_vaf = "..y") %>%
   readr::write_rds(file.path(opt$output, "callers_per_mutation.rds"))
