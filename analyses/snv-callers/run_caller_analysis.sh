@@ -52,7 +52,7 @@ done
 
 ######################## Plot the data and create reports ######################
 for dataset in ${datasets[@]}
-do
+  do
   echo "Processing dataset: ${dataset}"
   Rscript analyses/snv-callers/scripts/02-run_eval.R \
     --label ${dataset} \
@@ -63,7 +63,7 @@ do
     --cosmic $cosmic \
     --strategy wgs,wxs,both \
     --no_region
-done
+  done
 ##################### Merge callers' files into total files ####################
 Rscript analyses/snv-callers/scripts/03-merge_callers.R \
   --vaf analyses/snv-callers/results \
@@ -71,7 +71,7 @@ Rscript analyses/snv-callers/scripts/03-merge_callers.R \
   --file_format $format \
   --overwrite
 
-##################### Merge callers' files into total files ####################
+##################### Create final mutation consensus file #####################
 Rscript analyses/snv-callers/scripts/04-create_consensus_mut_files.R \
  --merged_files analyses/snv-callers/results/consensus \
  --combo lancet-mutect2-strelka2 \
@@ -80,4 +80,3 @@ Rscript analyses/snv-callers/scripts/04-create_consensus_mut_files.R \
  --bed_wgs data/WGS.hg38.strelka2.unpadded.bed \
  --bed_wxs data/WXS.hg38.100bp_padded.bed \
  --overwrite
- 

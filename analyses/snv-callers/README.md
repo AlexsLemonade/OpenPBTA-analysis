@@ -192,7 +192,7 @@ vaf = (t_alt_count) / (t_ref_count + t_alt_count)
 ```
 This is following the [code used in
 `maftools`](https://github.com/PoisonAlien/maftools/blob/1d0270e35c2e0f49309eba08b62343ac0db10560/R/plot_vaf.R#L39).
-The VAF calculations and other special variables are added to the MAF fields and written to a TSV ending in `_vaf` in the caller's results folder.
+The VAF calculations and other special variables are added to the MAF fields and written to a file ending in `_vaf` in the caller's results folder.
 
  *Output for this analysis*
  * `results/<caller_name>/<caller_name>_vaf.rds`
@@ -225,7 +225,7 @@ genome_size = sum(End_Position - Start_Position)
 
 BED regions for WXS samples can be [found here](https://raw.githubusercontent.com/AstraZeneca-NGS/reference_data/master/hg38/bed/Exome-AZ_V2.bed).
 BED regions used for WGS samples are caller specific are from <unknown as of now>
-The sample-wise TMB calculations written to a TSV ending in `_tmb` in the caller's results folder.
+The sample-wise TMB calculations written to a file ending in `_tmb` in the caller's results folder.
 
 *Output for this analysis*
 * `results/<caller_name>/<caller_name>_tmb.rds`
@@ -287,7 +287,9 @@ OpenPBTA-analysis
 │       ├── scripts
 │       │   ├── 00-set-up.R
 │       │   ├── 01-calculate_vaf_tmb.R
-│       │   └── 02-run_eval.R
+│       │   ├── 02-run_eval.R
+│       │   ├── 03-merge_callers.R
+│       │   └── 04-create_consensus_mut_files.R
 │       ├── util
 │       │    ├── plot_functions.R
 │       │    └── wrangle_functions.R
@@ -297,11 +299,8 @@ OpenPBTA-analysis
 │       │   │   └── consensus_mutation.maf.tsv
 │       │   ├── lancet
 │       │   │   ├── lancet_vaf.rds
-│       │   │   ├── lancet_vaf.rds.zip
 │       │   │   ├── lancet_tmb.rds
-│       │   │   ├── lancet_tmb.rds.zip
 │       │   │   ├── lancet_region.rds
-│       │   │   ├── lancet_region.rds.zip
 │       │   │   ├── lancet_wxs_report.html
 │       │   │   ├── lancet_wxs_report.Rmd
 │       │   │   ├── lancet_wgs_report.html
