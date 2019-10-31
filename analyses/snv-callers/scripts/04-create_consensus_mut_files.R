@@ -174,7 +174,7 @@ if (!opt$overwrite) {
 }
 ############################### Read in the files ##############################
 # Read in merged VAF_df
-vaf_df <- readr::read_rds(input_files[[1]])
+vaf_df <- readr::read_rds(needed_files[[1]])
 
 # If the caller chosen for the VAF reported isn't in the column, stop.
 if (!(opt$vaf %in% vaf_df$caller)) {
@@ -182,10 +182,10 @@ if (!(opt$vaf %in% vaf_df$caller)) {
   master VAF file.")
 }
 # Read in merged TMB file
-tmb_df <- readr::read_rds(input_files[[2]])
+tmb_df <- readr::read_rds(needed_files[[2]])
 
 # Read in caller per mutation file
-callers_per_mutation <- readr::read_rds(input_files[[3]])
+callers_per_mutation <- readr::read_rds(needed_files[[3]])
 
 # If the file exists or the overwrite option is not being used, do not write the
 # consensus mutation file.
