@@ -54,7 +54,7 @@ opt <- optparse::parse_args(opt_parser)
 #### Directories and Files -----------------------------------------------------
 
 results_dir <- "results"
-if(!dir.exists(results_dir)) {
+if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
 
@@ -85,11 +85,6 @@ annotations <- annotatr::build_annotations(genome = "hg38",
 # annotations 
 overlaps <- IRanges::mergeByOverlaps(seg_gr, annotations)
 
-# Remove redundant chr (takes some time, may not be completely necessary)
-# overlaps$seg_gr <- gsub("^chr", "", overlaps$seg_gr)
-# overlaps$annotations <- gsub("^chr", "", overlaps$annotations)
-# overlaps$markers <- NULL
-
 overlaps_df <- as.data.frame(overlaps)
 
 cn_short <- overlaps_df %>%
@@ -114,4 +109,5 @@ annotated_cn <- cn_short %>%
   dplyr::distinct() %>%
   dplyr::select(gene_symbol, biospecimen_id, label, copy_number)
 
+# Save final data.frame to a tsv file
 readr::write_tsv(annotated_cn, file.path(results_dir, "annotated_cn.tsv"))
