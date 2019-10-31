@@ -45,7 +45,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     pheatmap \
     RColorBrewer \
     viridis \
-    data.table 
+    data.table
 
 # maftools for proof of concept in create-subset-files
 RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
@@ -61,6 +61,9 @@ RUN R -e "BiocManager::install(c('preprocessCore', 'sva'), update = FALSE)"
 
 # These packages are for single-sample GSEA analysis
 RUN R -e "BiocManager::install(c('GSEABase', 'GSVA'), update = FALSE)"
+
+# These packages are needed for focal CN file preparation
+RUN R -e "BiocManager::install(c('IRanges', 'GenomicRanges'), update = FALSE)"
 
 # This is needed to create the interactive pie chart
 RUN R -e "devtools::install_github('timelyportfolio/sunburstR', ref = 'd40d7ed71ee87ca4fbb9cb8b7cf1e198a23605a9', dependencies = TRUE)"
