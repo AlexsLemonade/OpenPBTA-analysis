@@ -107,14 +107,6 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
-opt$label <- "strelka2"
-opt$vaf <- "analyses/snv-callers/results/strelka2"
-opt$plot_type <- "png"
-opt$output <- "analyses/snv-callers/plots/strelka2"
-opt$cosmic <- "analyses/snv-callers/ref_files/brain_cosmic_variants_coordinates.tsv" 
-opt$strategy <- "wgs,wxs,both"
-opt$no_region <- TRUE
-
 ########################### Check options specified ############################
 # Normalize this file path
 opt$vaf <- file.path(root_dir, opt$vaf)
@@ -142,7 +134,7 @@ input_files <- sapply(needed_files, function(file_name) {
   list.files(opt$vaf, pattern = file_name, full.names = TRUE)
 })
 
-# Find out which 
+# Find out which
 files_not_found <- which(sapply(input_files, length) == 0)
 
 # Report error if any of them aren't found
