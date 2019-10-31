@@ -54,9 +54,13 @@ get_biospecimen_ids <- function(filename, id_mapping_df) {
                                   data.table = FALSE)
     biospecimen_ids <- unique(snv_file$Tumor_Sample_Barcode)
   } else if (grepl("pbta-cnv", filename)) {
-    # in a column 'ID'
+    # the two CNV files now have different structures
     cnv_file <- read_tsv(filename)
-    biospecimen_ids <- unique(cnv_file$ID)
+    if (grepl("controlfreec", filename)) {
+      biospecimen_ids <- unique(cnv_file$tumor)
+    } else {
+      biospecimen_ids <- unique(cnv_file$ID)
+    }
   } else if (grepl("pbta-fusion", filename)) {
     # in a column 'tumor_id'
     fusion_file <- read_tsv(filename)
