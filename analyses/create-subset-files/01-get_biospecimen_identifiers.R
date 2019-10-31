@@ -167,6 +167,9 @@ participant_id_list <- purrr::map(files_to_subset,
                                   ~ get_biospecimen_ids(.x, id_mapping_df)) %>%
   stats::setNames(files_to_subset)
 
+# explicitly perform garbage collection here
+gc(verbose = FALSE)
+
 # split up information for poly-A and stranded expression data vs. all else
 polya_participant_list <- purrr::keep(
   participant_id_list,
