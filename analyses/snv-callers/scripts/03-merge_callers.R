@@ -194,11 +194,6 @@ if (file.exists(all_vaf_file) && !opt$overwrite) {
 
   # Read in the other files to match the first
   vaf_list <- lapply(vaf_list, function(df) {
-    # Get rid of problematic variant_qual column for the callers that have it.
-    if ("variant_qual" %in% colnames(df)) {
-      df <- df %>%
-        dplyr::select(-variant_qual)
-    }
     # Make it so it is more easily combined with the other files
     df <- df %>%
       # Only keep the columns that all the callers have
