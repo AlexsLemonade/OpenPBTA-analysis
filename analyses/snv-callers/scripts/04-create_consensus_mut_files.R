@@ -120,26 +120,18 @@ if (!file.exists(opt$bed_wxs)) {
   stop(paste("Error:", opt$bed_wxs, "does not exist"))
 }
 
-# The list of needed file suffixes
-needed_files <- c(
-  "all_callers_vaf.",
-  "all_callers_tmb.",
-  "callers_per_mutation."
-)
-
-# Get list of which files were found
-input_files <- sapply(needed_files, function(file_name) {
-  grep(file_name, dir(opt$merged_dir), value = TRUE)
-})
-
-# Find out which 
-files_not_found <- which(sapply(input_files, length) == 0)
+# The list of needed file names but without their suffix
+needed_files <- file.path(opt$merged_dir, c(
+  "all_callers_vaf.rds",
+  "all_callers_tmb.rds",
+  "callers_per_mutation.rds"
+))
 
 # Report error if any of them aren't found
-if (length(files_not_found) != 0) {
+if (any(!file.exists(needed_files))) {
   stop(
     "Error: the directory specified with --output, doesn't have the ",
-    "necessary file(s): \n", paste(names(files_not_found), "\n")
+    "necessary file(s): \n", paste(needed_files[!file.exists(needed_files)], "\n")
   )
 }
 ################################### Set Up #####################################
@@ -256,6 +248,9 @@ if (file.exists(consensus_tmb_file) && !opt$overwrite) {
   wxs_bed <- readr::read_tsv(file.path(opt$bed_wxs), col_names = FALSE)
 
   # Calculate size of genome surveyed
+  # These files are BED files where the third column is the End position and 
+  # the second column is the Start position. 
+  # So End - Start gives the size of each range. Sum the gives the total size in bp.
   wgs_genome_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
   wxs_exome_size <- sum(wxs_bed[, 3] - wxs_bed[, 2])
 
