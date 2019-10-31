@@ -147,7 +147,6 @@ if (!opt$overwrite) {
     ))
   }
 }
-
 ########################### Make Master VAF file ###############################
 # If the file exists or the overwrite option is not being used, do not write the
 # merged VAF file.
