@@ -74,10 +74,7 @@ option_list <- list(
 
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
-opt$vaf <- "analyses/snv-callers/results"
-opt$output <- "analyses/snv-callers/results/consensus"
-opt$file_format <- "rds"
-opt$overwrite <- TRUE
+
 ########################### Check options specified ############################
 # Bring along the file suffix. Make to lower.
 file_suffix <- tolower(opt$file_format)
@@ -197,9 +194,9 @@ if (file.exists(all_vaf_file) && !opt$overwrite) {
 
   # Read in the other files to match the first
   vaf_list <- lapply(vaf_list, function(df) {
-    # Get rid of problematic variant_qual column for the callers that have it. 
+    # Get rid of problematic variant_qual column for the callers that have it.
     if ("variant_qual" %in% colnames(df)) {
-      df <- df %>% 
+      df <- df %>%
         dplyr::select(-variant_qual)
     }
     # Make it so it is more easily combined with the other files

@@ -108,14 +108,6 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
-opt$merged_files <- "analyses/snv-callers/results/consensus"
-opt$combo <- "lancet-mutect2-strelka2"
-opt$output <- "analyses/snv-callers/results/consensus"
-opt$vaf <- "strelka2"
-opt$bed_wgs <- "data/WGS.hg38.strelka2.unpadded.bed"
-opt$bed_wxs <- "data/WXS.hg38.100bp_padded.bed"
-opt$overwrite <- TRUE
-
 ########################### Check options specified ############################
 # Normalize these file paths
 opt$merged_files <- file.path(root_dir, opt$merged_files)
