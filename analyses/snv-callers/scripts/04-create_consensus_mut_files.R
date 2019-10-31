@@ -8,17 +8,15 @@
 #
 # Option descriptions
 # --merged_files : File path to where the 03-merged_callers.R output can be found.
-#                  Files required: "all_callers_vaf.<file_format>"
-#                                  "all_callers_tmb.<file_format>"
-#                                  "mutation_id_list.<file_format>"
+#                  Files required: "all_callers_vaf.rds"
+#                                  "all_callers_tmb.rds"
+#                                  "callers_per_mutation.rds"
 # --vaf : What VAF should be used when combining callers? Options are
 #         one of the caller names."
 # --combo : What combination of callers need to detect a mutation for it to be
 #           considered real and placed in the consensus file? List the callers
 #           that need to be considered in alphabetical order with '-'
 #           in between. eg. 'lancet-mutect2-strelka2'
-# --file_format: What type of file format were the merged files saved as?
-#                Options are "rds" or "tsv". Default is "rds".
 # --output : Where you would like the output from this script to be stored.
 # --bed_wgs : File path that specifies the caller-specific BED regions file.
 #             Assumes from top directory, 'OpenPBTA-analysis'.
@@ -57,12 +55,6 @@ option_list <- list(
     opt_str = c("-m", "--merged_files"), type = "character",
     default = "", help = "File path to where the merged files were sent in
                           03-merge_callers.R",
-    metavar = "character"
-  ),
-  make_option(
-    opt_str = c("-f", "--file_format"), type = "character", default = "rds",
-    help = "What type of file format were the files saved as?
-            Options are 'rds' or 'tsv'. Default is 'rds'.",
     metavar = "character"
   ),
   make_option(
@@ -119,29 +111,32 @@ opt$bed_wxs <- file.path(root_dir, opt$bed_wxs)
 if (!dir.exists(opt$merged_files)) {
   stop(paste("Error:", opt$merged_files, "does not exist"))
 }
+# Check for BED files
+if (!file.exists(opt$bed_wgs)) {
+  stop(paste("Error:", opt$bed_wgs, "does not exist"))
+}
+# Check for BED files
+if (!file.exists(opt$bed_wxs)) {
+  stop(paste("Error:", opt$bed_wxs, "does not exist"))
+}
 
 # The list of needed file suffixes
 needed_files <- c(
   "all_callers_vaf.",
   "all_callers_tmb.",
-  "mutation_id_list.",
   "callers_per_mutation."
 )
 
-needed_files <- c(
-  file.path(root_dir, opt$merged_files, paste0(needed_files, opt$file_format)),
-  opt$bed_wgs,
-  opt$bed_wxs
-)
-
 # Get list of which files were found
-files_found <- sapply(needed_files, file.exists)
+input_files <- sapply(needed_files, function(file_name) {
+  grep(file_name, dir(opt$merged_files), value = TRUE)
+})
 
 # Report error if any of them aren't found
-if (any(is.na(files_found))) {
+if (any(is.na(input_files))) {
   stop(paste0(
     "Error: the directory specified with --output, doesn't have the",
-    "necessary file(s):", names(files_found)[which(!files_found)]
+    "necessary file(s):", names(input_files)[which(!input_files)]
   ))
 }
 ################################### Set Up #####################################
@@ -183,24 +178,19 @@ if (!opt$overwrite) {
   }
 }
 ############################### Read in the files ##############################
-vaf_df <- readr::read_rds(file.path(
-  opt$merged_files,
-  paste0("all_callers_vaf.", opt$file_format)
-))
+# Read in merged VAF_df
+vaf_df <- readr::read_rds(input_files[[1]])
 
 # If the caller chosen for the VAF reported isn't in the column, stop.
 if (!(opt$vaf %in% vaf_df$caller)) {
   stop("Caller chosen with --vaf does not exist in the 'callers column in the
   master VAF file.")
 }
-tmb_df <- readr::read_rds(file.path(
-  opt$merged_files,
-  paste0("all_callers_tmb.", opt$file_format)
-))
-callers_per_mutation <- readr::read_rds(file.path(
-  opt$merged_files,
-  paste0("callers_per_mutation.", opt$file_format)
-))
+# Read in merged TMB file
+tmb_df <- readr::read_rds(input_files[[2]])
+
+# Read in caller per mutation file
+callers_per_mutation <- readr::read_rds(input_files[[3]])
 
 # If the file exists or the overwrite option is not being used, do not write the
 # consensus mutation file.
