@@ -39,6 +39,10 @@ if (!("TxDb.Hsapiens.UCSC.hg38.knownGene" %in% installed.packages())) {
   BiocManager::install("TxDb.Hsapiens.UCSC.hg38.knownGene", update = FALSE)
 }
 
+if (!("org.Hs.eg.db" %in% installed.packages())) {
+  BiocManager::install("org.Hs.eg.db", update = FALSE)
+}
+
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
