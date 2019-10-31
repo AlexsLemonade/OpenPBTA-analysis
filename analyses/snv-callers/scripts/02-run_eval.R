@@ -110,6 +110,7 @@ opt <- parse_args(OptionParser(option_list = option_list))
 ########################### Check options specified ############################
 # Normalize this file path
 opt$vaf <- file.path(root_dir, opt$vaf)
+opt$cosmic <- file.path(root_dir, opt$cosmic)
 
 # Check the output directory exists
 if (!dir.exists(opt$vaf)) {
@@ -263,9 +264,9 @@ for (strategy in opt$strategy) {
 
   # Designate which template file name
   if (opt$no_region) {
-    template_file <- file.path(template_folder, "variant_caller_report_no_region_template.Rmd")
-  } else {
     template_file <- file.path(template_folder, "variant_caller_report_template.Rmd")
+  } else {
+    template_file <- file.path(template_folder, "variant_caller_report_no_region_template.Rmd")
   }
 
   # Make copy of template
