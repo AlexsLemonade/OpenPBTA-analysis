@@ -190,7 +190,7 @@ if (file.exists(all_vaf_file) && !opt$overwrite) {
   vaf_list_cols <- lapply(vaf_list, colnames)
 
   # Get the intersection of these column names
-  vaf_list_cols <- Reduce(intersect, vaf_list_cols)
+  vaf_list_cols <- base::Reduce(intersect, vaf_list_cols)
 
   # Read in the other files to match the first
   vaf_list <- lapply(vaf_list, function(df) {
