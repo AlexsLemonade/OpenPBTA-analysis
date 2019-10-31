@@ -31,7 +31,7 @@
 # -l strelka2 \
 # -p png \
 # -o strelka2 \
-# -s wxs \
+# -s wxs 
 #
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -125,7 +125,7 @@ if (!file.exists(opt$cosmic)) {
 needed_files <- c("_vaf.", "_tmb.")
 
 # Tack on region file if that's been requested
-if (!opt$no_region) {
+if (opt$no_region) {
   needed_files <- c(needed_files, "_region.")
 }
 
@@ -171,7 +171,7 @@ if (!dir.exists(opt$output)) {
 # Make a list of the plot suffixes
 plot_suffixes <- c("_base_change", "_depth_vs_vaf", "_cosmic_plot", "_tmb_plot")
 
-if (!opt$no_region) {
+if (opt$no_region) {
   plot_suffixes <- c(plot_suffixes, "_snv_region")
 }
 
@@ -183,7 +183,7 @@ vaf_df <- read_tsv_or_rds(grep("_vaf.", input_files, value = TRUE))
 tmb_df <- read_tsv_or_rds(grep("_tmb.", input_files, value = TRUE))
 
 # Only read in the regional things if that is necessary
-if (!opt$no_region) {
+if (opt$no_region) {
   maf_annot <- read_tsv_or_rds(grep("_region", input_files, value = TRUE))
 }
 ######################## Check VAF file for each strategy ######################
@@ -243,7 +243,7 @@ for (strategy in opt$strategy) {
   tmb_plot(tmb_df, x_axis = "short_histology", exp_strategy = strategy)
   ggplot2::ggsave(filename = plot_paths["_tmb_plot.png"], plot = ggplot2::last_plot())
 
-  if (!opt$no_region) {
+  if (opt$no_region) {
     # Genomic region breakdown
     snv_region_plot(maf_annot, exp_strategy = strategy)
     ggplot2::ggsave(filename = plot_paths["_snv_region.png"], plot = ggplot2::last_plot())
@@ -262,7 +262,7 @@ for (strategy in opt$strategy) {
   )
 
   # Designate which template file name
-  if (!opt$no_region) {
+  if (opt$no_region) {
     template_file <- file.path(template_folder, "variant_caller_report_no_region_template.Rmd")
   } else {
     template_file <- file.path(template_folder, "variant_caller_report_template.Rmd")
