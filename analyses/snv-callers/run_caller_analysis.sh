@@ -67,3 +67,13 @@ Rscript analyses/snv-callers/scripts/03-merge_callers.R \
   --vaf analyses/snv-callers/results \
   --output analyses/snv-callers/results/consensus \
   --overwrite
+
+##################### Create final mutation consensus file #####################
+Rscript analyses/snv-callers/scripts/04-create_consensus_mut_files.R \
+ --merged_dir analyses/snv-callers/results/consensus \
+ --combo lancet-mutect2-strelka2 \
+ --output analyses/snv-callers/results/consensus \
+ --vaf strelka2 \
+ --bed_wgs data/WGS.hg38.strelka2.unpadded.bed \
+ --bed_wxs data/WXS.hg38.100bp_padded.bed \
+ --overwrite
