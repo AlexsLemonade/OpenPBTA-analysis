@@ -270,7 +270,7 @@ tmb_plot <- function(tmb_df, exp_strategy = "BOTH", x_axis = "short_histology") 
       ggplot2::theme(legend.position = "none")
   } else {
     jitterplot <- jitterplot +
-      ggplot2::geom_jitter(ggplot2::aes(fill = experimental_strategy))
+      ggplot2::geom_jitter(ggplot2::aes(color = experimental_strategy))
   }
 
   # Add some aesthetics

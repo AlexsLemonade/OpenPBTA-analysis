@@ -74,10 +74,7 @@ option_list <- list(
 
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
-opt$vaf <- "analyses/snv-callers/results"
-opt$output <- "analyses/snv-callers/results/consensus"
-opt$file_format <- "rds"
-opt$overwrite <- TRUE
+
 ########################### Check options specified ############################
 # Bring along the file suffix. Make to lower.
 file_suffix <- tolower(opt$file_format)
@@ -189,21 +186,23 @@ if (file.exists(all_vaf_file) && !opt$overwrite) {
     vaf_list <- lapply(vaf_files, readr::read_rds)
   }
 
+  # Get the column names
+  vaf_list_cols <- lapply(vaf_list, colnames)
+
+  # Get the intersection of these column names
+  vaf_list_cols <- Reduce(intersect, vaf_list_cols)
+
   # Read in the other files to match the first
   vaf_list <- lapply(vaf_list, function(df) {
-    # Get rid of problematic variant_qual column for the callers that have it. 
-    if ("variant_qual" %in% colnames(df)) {
-      df <- df %>% 
-        dplyr::select(-variant_qual)
-    }
     # Make it so it is more easily combined with the other files
+    df <- df %>%
+      # Only keep the columns that all the callers have
+      dplyr::select(!!vaf_list_cols)
     df %>%
       # Attempt to make numeric columns where that doesn' kick back an "NA"
       dplyr::mutate_at(dplyr::vars(which(!is.na(as.numeric(t(df[1, ]))))), as.numeric) %>%
-      # Aliquot id sometimes contains letters and sometimes numbers across the callers
-      dplyr::mutate(
-        aliquot_id = as.character(aliquot_id)
-      ) %>%
+      # For some callers, aliquot id has characters, so we need all of them to be converted to chr
+      dplyr::mutate(aliquot_id = as.character(aliquot_id)) %>%
       # Turn these columns into characters because otherwise they cause trouble.
       dplyr::mutate_at(dplyr::vars(dplyr::contains("AF", ignore.case = FALSE)), as.character) %>%
       # Get rid of the few if any duplicate entries.
