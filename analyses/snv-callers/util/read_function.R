@@ -21,7 +21,7 @@ read_tsv_or_rds <- function(file_name) {
 
   # Read in if its TSV
   if (file_suffix  == "tsv") {
-    return(readr::read_tsv(file))
+    return(readr::read_tsv(file_name))
   }
   # Read in if its RDS
   if (file_suffix == "rds") {
