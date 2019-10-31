@@ -43,6 +43,10 @@ if (!("org.Hs.eg.db" %in% installed.packages())) {
   BiocManager::install("org.Hs.eg.db", update = FALSE)
 }
 
+if (!("AnnotationDbi" %in% installed.packages())) {
+  BiocManager::install("AnnotationDbi", update = FALSE)
+}
+
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
@@ -77,7 +81,6 @@ if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
 
-# Read in data from seg file
 seg_df <-
   data.table::fread(
     opt$seg_file,
@@ -87,10 +90,11 @@ seg_df <-
 
 #### Format seg file and overlap with hg38 genome annotations ------------------
 
-# Exclude the X and Y chromosomes and rearrange ID column to be the last column
+# Exclude the X and Y chromosomes, exclude `copy.num` == 2, and rearrange 
+# ID column to be the last column
 seg_no_xy <- seg_df %>%
-  dplyr::filter(!(chrom %in% c("chrX", "chrY"))) %>%
-  dplyr::select(-ID, dplyr::everything())
+  dplyr::filter(!(chrom %in% c("chrX", "chrY")), (copy.num != 2)) %>%
+  dplyr::select(-ID, dplyr::everything()) 
 
 # Make seg data.frame a GRanges object 
 seg_gr <- seg_no_xy %>%
@@ -98,32 +102,39 @@ seg_gr <- seg_no_xy %>%
                                           starts.in.df.are.0based = FALSE)
 
 # Define the annotations for the hg38 genome
-annotations <- annotatr::build_annotations(genome = "hg38",
-                                           annotations = "hg38_genes_exons")
+txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
+genes <- GenomicFeatures::genes(txdb)
 
 # Create a data.frame with the overlaps between the seg file and hg38 genome 
 # annotations 
-overlaps <- IRanges::mergeByOverlaps(seg_gr, annotations)
+overlaps <- IRanges::mergeByOverlaps(seg_gr, genes)
 
-overlaps_df <- as.data.frame(overlaps)
-
-cn_short <- overlaps_df %>%
-  dplyr::select(symbol, ID, copy.num) %>%
-  dplyr::filter(!is.na(symbol)) %>%
-  dplyr::rename(
-    "gene_symbol" = "symbol",
-    "biospecimen_id" = "ID",
-    "copy_number" = "copy.num"
+overlapSymbols <-
+  AnnotationDbi::mapIds(
+    org.Hs.eg.db,
+    keys = overlaps$gene_id,
+    column = "SYMBOL",
+    keytype = "ENTREZID"
   )
+
+overlaps$gene_id <- overlapSymbols
+
+# Create a data.frame with selected columns from the `overlaps` object
+cn_short <- data.frame(
+  gene_symbol = overlaps$gene_id,
+  biospecimen_id = overlaps$ID,
+  copy_number = overlaps$copy.num) %>%
+  dplyr::filter(!(is.na(gene_symbol)))
 
 # Create a `label` column with values specifying the type of CN aberration and
 # save as a data.frame with `gene_symbol`, `biospecimen_id`, and `copy_number`
 annotated_cn <- cn_short %>%
   dplyr::distinct() %>%
   dplyr::mutate(label = dplyr::case_when(
-    copy_number >= 2 & copy_number <= 6  ~ "Amplification",
+    copy_number == 3 | copy_number == 4  ~ "Gain",
     copy_number == 0 ~ "Hom_Deletion",
-    copy_number == 1 ~ "Hem_Deletion")) %>%
+    copy_number == 1 ~ "Hem_Deletion",
+    copy_number >= 5 ~ "Amplification")) %>%
   dplyr::select(gene_symbol, biospecimen_id, label, copy_number)
 
 # Save final data.frame to a tsv file
