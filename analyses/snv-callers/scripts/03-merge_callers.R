@@ -69,10 +69,6 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
-opt$vaf <- "analyses/snv-callers/results"
-opt$output <- "analyses/snv-callers/results/consensus"
-opt$overwrite <- TRUE
-
 ########################### Check options specified ############################
 # Normalize this file path
 opt$vaf <- file.path(root_dir, opt$vaf)
@@ -217,7 +213,7 @@ if (file.exists(all_tmb_file) && !opt$overwrite) {
     all_tmb_file, "\n",
     "Use --overwrite if you want to overwrite it."
   ))
-}
+} else {
   tmb_list <- lapply(tmb_files, read_tsv_or_rds)
 
   # Carry over the callers' names
