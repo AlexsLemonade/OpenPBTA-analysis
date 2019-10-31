@@ -16,7 +16,7 @@
 
 # We require bioconductor
 if (!("BiocManager" %in% installed.packages())) {
-  install.packages("BiocManager", update = FALSE)
+  install.packages("BiocManager")
 }
 
 # Install GenomicRanges
