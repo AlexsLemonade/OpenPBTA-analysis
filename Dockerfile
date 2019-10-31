@@ -102,5 +102,8 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     MASS \
     GGally
 
+# Required for summarizing the RNA-seq matrices
+RUN Rscript -e "install.packages('reshape2')"
+
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
