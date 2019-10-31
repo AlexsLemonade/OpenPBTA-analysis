@@ -37,7 +37,7 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
-# Read in RDS/TSV read in function 
+# Read in RDS/TSV read in function
 source(file.path(root_dir, "analyses", "snv-callers", "util", "read_function.R"))
 
 # Load library:
@@ -168,7 +168,7 @@ if (file.exists(all_vaf_file) && !opt$overwrite) {
 
   # Read in vaf files for all callers
   vaf_list <- lapply(vaf_files, read_tsv_or_rds)
-  
+
   # Get the column names
   vaf_list_cols <- lapply(vaf_list, colnames)
 
@@ -217,12 +217,8 @@ if (file.exists(all_tmb_file) && !opt$overwrite) {
     all_tmb_file, "\n",
     "Use --overwrite if you want to overwrite it."
   ))
-} else {
-  if (opt$file_format == "tsv") {
-    tmb_list <- lapply(tmb_files, readr::read_tsv)
-  } else {
-    tmb_list <- lapply(tmb_files, readr::read_rds)
-  }
+}
+  tmb_list <- lapply(tmb_files, read_tsv_or_rds)
 
   # Carry over the callers' names
   names(tmb_list) <- caller_names
