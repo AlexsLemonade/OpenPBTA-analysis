@@ -23,7 +23,7 @@ if (!("GenomicRanges" %in% installed.packages())) {
 # Install IRanges
 if (!("IRanges" %in% installed.packages())) {
   install.packages("BiocManager")
-  BiocManager::install("Iranges")
+  BiocManager::install("IRanges")
 }
 
 # Install annotatr 
