@@ -53,24 +53,33 @@ opt <- optparse::parse_args(opt_parser)
 
 #### Directories and Files -----------------------------------------------------
 
-results_dir <- "results"
+# Detect the ".git" folder -- this will in the project root directory.
+# Use this as the root directory to ensure proper sourcing of functions no
+# matter where this is called from
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+# Set path to results directory 
+results_dir <-
+  file.path(root_dir, "analyses", "focal-cn-file-preparation", "results")
+
 if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
 
-seg_file <-
+# Read in data from seg file
+seg_df <-
   data.table::fread(
-    file.path(opt$seg_file),
+    opt$seg_file,
     data.table = FALSE,
     stringsAsFactors = FALSE
   )
 
 #### Format seg file and overlap with hg38 genome annotations ------------------
 
-# Exclude the X and Y chromosomes
-seg_no_xy <- subset(seg_file, chrom != "Y" & chrom != "X")
-seg_no_xy <- seg_no_xy[, c(2:ncol(seg_no_xy), 1)]
-# names(seg_no_xy) <- c("chr", "start", "end", "markers", "CN", "Model")
+# Exclude the X and Y chromosomes and rearrange ID column to be the last column
+seg_no_xy <- seg_df %>%
+  dplyr::filter(!(chrom %in% c("chrX", "chrY"))) %>%
+  dplyr::select(-ID, dplyr::everything())
 
 # Make seg data.frame a GRanges object 
 seg_gr <- seg_no_xy %>%
@@ -79,7 +88,7 @@ seg_gr <- seg_no_xy %>%
 
 # Define the annotations for the hg38 genome
 annotations <- annotatr::build_annotations(genome = "hg38",
-                                           annotations = "hg38_basicgenes")
+                                           annotations = "hg38_genes_exons")
 
 # Create a data.frame with the overlaps between the seg file and hg38 genome 
 # annotations 
@@ -96,17 +105,14 @@ cn_short <- overlaps_df %>%
     "copy_number" = "copy.num"
   )
 
+# Create a `label` column with values specifying the type of CN aberration and
+# save as a data.frame with `gene_symbol`, `biospecimen_id`, and `copy_number`
 annotated_cn <- cn_short %>%
-  dplyr::mutate(label = ifelse(
-    copy_number >= 2 & copy_number <= 6,
-    "Amplification",
-    ifelse(
-      copy_number == 0,
-      "Hom_Deletion",
-      ifelse(copy_number == 1, "Hem_Deletion", copy_number)
-    )
-  )) %>%
   dplyr::distinct() %>%
+  dplyr::mutate(label = dplyr::case_when(
+    copy_number >= 2 & copy_number <= 6  ~ "Amplification",
+    copy_number == 0 ~ "Hom_Deletion",
+    copy_number == 1 ~ "Hem_Deletion")) %>%
   dplyr::select(gene_symbol, biospecimen_id, label, copy_number)
 
 # Save final data.frame to a tsv file
