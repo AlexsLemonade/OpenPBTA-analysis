@@ -132,12 +132,15 @@ input_files <- sapply(needed_files, function(file_name) {
   grep(file_name, dir(opt$merged_files), value = TRUE)
 })
 
+# Find out which 
+files_not_found <- which(sapply(input_files, length) == 0)
+
 # Report error if any of them aren't found
-if (any(is.na(input_files))) {
-  stop(paste0(
-    "Error: the directory specified with --output, doesn't have the",
-    "necessary file(s):", names(input_files)[which(!input_files)]
-  ))
+if (length(files_not_found) != 0) {
+  stop(
+    "Error: the directory specified with --output, doesn't have the ",
+    "necessary file(s): \n", paste(names(files_not_found), "\n")
+  )
 }
 ################################### Set Up #####################################
 # Set and make the plots directory
