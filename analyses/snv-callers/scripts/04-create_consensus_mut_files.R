@@ -217,18 +217,7 @@ if (file.exists(consensus_mut_file) && !opt$overwrite) {
       mutation_id %in% consen_mutations
     ) %>%
     readr::write_tsv(consensus_mut_file)
-}
 
-# If the file exists or the overwrite option is not being used, do not zip the
-# consensus mutation file.
-if (file.exists(consensus_mut_zip_file) && !opt$overwrite) {
-  # Stop if this file exists and overwrite is set to FALSE
-  warning(cat(
-    "A zipped consensus mutation file already exists: \n",
-    consensus_mut_zip_file, "\n",
-    "Use --overwrite if you want to overwrite it."
-  ))
-} else {
   # Zip this file up.
   zip(consensus_mut_zip_file, consensus_mut_file)
 }
@@ -248,14 +237,14 @@ if (file.exists(consensus_tmb_file) && !opt$overwrite) {
   wxs_bed <- readr::read_tsv(file.path(opt$bed_wxs), col_names = FALSE)
 
   # Calculate size of genome surveyed
-  # These files are BED files where the third column is the End position and 
-  # the second column is the Start position. 
+  # These files are BED files where the third column is the End position and
+  # the second column is the Start position.
   # So End - Start gives the size of each range. Sum the gives the total size in bp.
   wgs_genome_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
   wxs_exome_size <- sum(wxs_bed[, 3] - wxs_bed[, 2])
 
   # Calculate TMBs and write to TMB file
-  tmb_df <- calculate_tmb(vaf_df,
+  tmb_df <- calculate_tmb(consen_mutation,
     wgs_size = wgs_genome_size,
     wxs_size = wxs_exome_size
   ) %>%
