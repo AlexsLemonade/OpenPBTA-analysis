@@ -71,7 +71,7 @@ Rscript analyses/snv-callers/scripts/03-merge_callers.R \
 
 ##################### Create final mutation consensus file #####################
 Rscript analyses/snv-callers/scripts/04-create_consensus_mut_files.R \
- --merged_files analyses/snv-callers/results/consensus \
+ --merged_dir analyses/snv-callers/results/consensus \
  --combo lancet-mutect2-strelka2 \
  --output analyses/snv-callers/results/consensus \
  --vaf strelka2 \

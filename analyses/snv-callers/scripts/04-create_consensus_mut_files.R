@@ -7,7 +7,7 @@
 # Purpose: Save consensus mutation calls to a MAF-like file.
 #
 # Option descriptions
-# --merged_files : File path to where the 03-merged_callers.R output can be found.
+# --merged_dir : File path to where the 03-merged_callers.R output can be found.
 #                  Files required: "all_callers_vaf.rds"
 #                                  "all_callers_tmb.rds"
 #                                  "callers_per_mutation.rds"
@@ -27,7 +27,7 @@
 #
 # Command line example:
 # Rscript 04-create_consensus_mut_files.R \
-# --merged_files results/consensus \
+# --merged_dir results/consensus \
 # --combo lancet-mutect2-strelka2 \
 # --output analyses/snv-callers/results/consensus \
 # --vaf strelka2 \
@@ -52,7 +52,7 @@ library(optparse)
 # Set up optparse options
 option_list <- list(
   make_option(
-    opt_str = c("-m", "--merged_files"), type = "character",
+    opt_str = c("-m", "--merged_dir"), type = "character",
     default = "", help = "File path to where the merged files were sent in
                           03-merge_callers.R",
     metavar = "character"
@@ -102,14 +102,14 @@ opt <- parse_args(OptionParser(option_list = option_list))
 
 ########################### Check options specified ############################
 # Normalize these file paths
-opt$merged_files <- file.path(root_dir, opt$merged_files)
+opt$merged_dir <- file.path(root_dir, opt$merged_dir)
 opt$output <- file.path(root_dir, opt$output)
 opt$bed_wgs <- file.path(root_dir, opt$bed_wgs)
 opt$bed_wxs <- file.path(root_dir, opt$bed_wxs)
 
 # Check the output directory exists
-if (!dir.exists(opt$merged_files)) {
-  stop(paste("Error:", opt$merged_files, "does not exist"))
+if (!dir.exists(opt$merged_dir)) {
+  stop(paste("Error:", opt$merged_dir, "does not exist"))
 }
 # Check for BED files
 if (!file.exists(opt$bed_wgs)) {
@@ -129,7 +129,7 @@ needed_files <- c(
 
 # Get list of which files were found
 input_files <- sapply(needed_files, function(file_name) {
-  grep(file_name, dir(opt$merged_files), value = TRUE)
+  grep(file_name, dir(opt$merged_dir), value = TRUE)
 })
 
 # Find out which 
