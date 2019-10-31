@@ -27,7 +27,7 @@ data
     ├── WXS.hg38.100bp_padded.bed
     ├── md5sum.txt
     ├── pbta-cnv-cnvkit.seg.gz
-    ├── ppbta-cnv-controlfreec.tsv.gz
+    ├── pbta-cnv-controlfreec.tsv.gz
     ├── pbta-fusion-arriba.tsv.gz
     ├── pbta-fusion-starfusion.tsv.gz
     ├── pbta-gene-counts-rsem-expected_count.polya.rds
