@@ -21,6 +21,8 @@ format=rds
 
 # Set a default for the VAF filter if none is specified
 vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}
+
+# Unless told to run the plots, the default is to skip them
 run_plots_nb=${OPENPBTA_PLOTS:-FALSE}
 
 ############################ Set Up Reference Files ############################
@@ -50,7 +52,6 @@ do
     --no_region \
     --overwrite 
 done
-
 ######################## Plot the data and create reports ######################
 if [ ! $run_plots_nb ]; then
   for dataset in ${datasets[@]}
@@ -78,13 +79,3 @@ Rscript analyses/snv-callers/scripts/03-merge_callers.R \
 if [ ! $run_plots_nb ]; then
   Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots.Rmd', clean = TRUE)"
 fi
-
-##################### Merge callers' files into total files ####################
-Rscript analyses/snv-callers/scripts/04-create_consensus_mut_files.R \
- --merged_files analyses/snv-callers/results/consensus \
- --combo lancet-mutect2-strelka2 \
- --output analyses/snv-callers/results/consensus \
- --vaf strelka2 \
- --bed_wgs data/WGS.hg38.strelka2.unpadded.bed \
- --bed_wxs data/WXS.hg38.100bp_padded.bed \
- --overwrite
