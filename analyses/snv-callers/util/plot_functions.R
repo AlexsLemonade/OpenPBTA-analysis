@@ -279,7 +279,7 @@ tmb_plot <- function(tmb_df, exp_strategy = "BOTH", x_axis = "short_histology") 
     ggplot2::ylab("Tumor Mutational Burden") +
     ggplot2::xlab(x_axis) +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
-    colorblindr::scale_fill_OkabeIto()
+    colorblindr::scale_color_OkabeIto()
 
   return(jitterplot)
 }
