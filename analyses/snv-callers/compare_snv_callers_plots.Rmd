@@ -125,7 +125,7 @@ Make the upset plot.
 # Make the plot
 upset <- UpSetR::upset(UpSetR::fromList(mutation_id_list),
   order.by = "freq",
-  text.scale = 2
+  text.scale = 1.5
 )
 
 # Save this plot
