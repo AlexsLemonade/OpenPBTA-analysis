@@ -111,7 +111,7 @@ overlaps <- IRanges::mergeByOverlaps(seg_gr, genes)
 
 overlapSymbols <-
   AnnotationDbi::mapIds(
-    org.Hs.eg.db,
+    org.Hs.eg.db::org.Hs.eg.db,
     keys = overlaps$gene_id,
     column = "SYMBOL",
     keytype = "ENTREZID"
