@@ -14,22 +14,29 @@
 
 #### Set Up --------------------------------------------------------------------
 
+# We require bioconductor
+if (!("BiocManager" %in% installed.packages())) {
+  install.packages("BiocManager", update = FALSE)
+}
+
 # Install GenomicRanges
 if (!("GenomicRanges" %in% installed.packages())) {
-  install.packages("BiocManager")
-  BiocManager::install("GenomicRanges")
+  BiocManager::install("GenomicRanges", update = FALSE)
 }
 
 # Install IRanges
 if (!("IRanges" %in% installed.packages())) {
-  install.packages("BiocManager")
-  BiocManager::install("IRanges")
+  BiocManager::install("IRanges", update = FALSE)
 }
 
 # Install annotatr 
 if (!("annotatr" %in% installed.packages())) {
-  install.packages("BiocManager")
-  BiocManager::install("annotatr")
+  BiocManager::install("annotatr", update = FALSE)
+}
+
+# hg38 genome annotations
+if (!("TxDb.Hsapiens.UCSC.hg38.knownGene" %in% installed.packages())) {
+  BiocManager::install("TxDb.Hsapiens.UCSC.hg38.knownGene", update = FALSE)
 }
 
 # Get `magrittr` pipe
