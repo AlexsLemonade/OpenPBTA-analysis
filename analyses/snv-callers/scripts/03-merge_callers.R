@@ -8,19 +8,17 @@
 # to designate their origin.
 
 # Files Output:
-# "all_callers_vaf.<file_format>" - contains all the VAF file information for all callers.
-# "all_callers_tmb.<file_format>" - contains all the TMB file information for all callers.
-# "mutation_id_list.<file_format>" - a full list of the mutations that can be
+# "all_callers_vaf.rds" - contains all the VAF file information for all callers.
+# "all_callers_tmb.rds" - contains all the TMB file information for all callers.
+# "mutation_id_list.rds" - a full list of the mutations that can be
 #                                    used for an UpSetR graph
-# "callers_per_mutation.<file_format>" - contains a breakdown for each mutation of what callers
+# "callers_per_mutation.rds" - contains a breakdown for each mutation of what callers
 #                                        called it. Will be used to identify the consensus mutations.
 
 # Option descriptions
 # --vaf : Parent folder containing the vaf and tmb files for each folder.
 #                                             <caller_name>_vaf.<file_format>
 #                                             <caller_name>_tmb.<file_format>
-# --file_format: What type of file format were the vaf and tmb files saved as? Options are
-#               "rds" or "tsv". Default is "rds".
 # --output : Where you would like the output from this script to be stored.
 # --overwrite : If TRUE, will overwrite any reports of the same name. Default is
 #              FALSE
@@ -31,7 +29,6 @@
 # Rscript 03-merge_callers.R \
 # -v results \
 # -o results/consensus \
-# -f rds \
 # --overwrite
 #
 # Establish base dir
@@ -39,6 +36,9 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
+
+# Read in RDS/TSV read in function
+source(file.path(root_dir, "analyses", "snv-callers", "util", "read_function.R"))
 
 # Load library:
 library(optparse)
@@ -50,12 +50,6 @@ option_list <- list(
     opt_str = c("-v", "--vaf"), type = "character",
     default = NULL, help = "Path to folder with the output files
               from 01-calculate_vaf_tmb. Should include the VAF and TMB files",
-    metavar = "character"
-  ),
-  make_option(
-    opt_str = c("-f", "--file_format"), type = "character", default = "rds",
-    help = "What type of file format were the vaf and tmb files saved as?
-            Options are 'rds' or 'tsv'. Default is 'rds'.",
     metavar = "character"
   ),
   make_option(
@@ -76,17 +70,6 @@ option_list <- list(
 opt <- parse_args(OptionParser(option_list = option_list))
 
 ########################### Check options specified ############################
-# Bring along the file suffix. Make to lower.
-file_suffix <- tolower(opt$file_format)
-
-# Check that the file format is supported
-if (!(file_suffix %in% c("rds", "tsv"))) {
-  warning("Option used for file format (-f) is not supported. Only 'tsv' or 'rds'
-          files are supported. Defaulting to rds.")
-  opt$file_format <- "rds"
-  file_suffix <- "rds"
-}
-
 # Normalize this file path
 opt$vaf <- file.path(root_dir, opt$vaf)
 
@@ -108,7 +91,7 @@ message("Will merge all VAF and TMB files in these folders: \n", paste0(caller_d
 # Get a list of vaf files
 vaf_files <- sapply(caller_dirs,
   list.files,
-  pattern = paste0("_vaf.", file_suffix),
+  pattern = "_vaf.",
   recursive = TRUE, full.names = TRUE
 )
 
@@ -118,7 +101,7 @@ message("Merging these VAF files: \n", paste0(vaf_files, "\n"))
 # Get a list of tmb files
 tmb_files <- sapply(caller_dirs,
   list.files,
-  pattern = paste0("_tmb.", file_suffix),
+  pattern = "_tmb.",
   recursive = TRUE, full.names = TRUE
 )
 
@@ -164,7 +147,6 @@ if (!opt$overwrite) {
     ))
   }
 }
-
 ########################### Make Master VAF file ###############################
 # If the file exists or the overwrite option is not being used, do not write the
 # merged VAF file.
@@ -180,23 +162,25 @@ if (file.exists(all_vaf_file) && !opt$overwrite) {
   caller_names <- stringr::word(vaf_files, sep = "/", -2)
 
   # Read in vaf files for all callers
-  if (opt$file_format == "tsv") {
-    vaf_list <- lapply(vaf_files, readr::read_tsv)
-  } else {
-    vaf_list <- lapply(vaf_files, readr::read_rds)
-  }
+  vaf_list <- lapply(vaf_files, read_tsv_or_rds)
+
+  # Get the column names
+  vaf_list_cols <- lapply(vaf_list, colnames)
+
+  # Get the intersection of these column names
+  vaf_list_cols <- base::Reduce(intersect, vaf_list_cols)
 
   # Read in the other files to match the first
   vaf_list <- lapply(vaf_list, function(df) {
     # Make it so it is more easily combined with the other files
+    df <- df %>%
+      # Only keep the columns that all the callers have
+      dplyr::select(!!vaf_list_cols)
     df %>%
       # Attempt to make numeric columns where that doesn' kick back an "NA"
       dplyr::mutate_at(dplyr::vars(which(!is.na(as.numeric(t(df[1, ]))))), as.numeric) %>%
-      # Aliquot id sometimes contains letters and sometimes numbers across the callers
-      dplyr::mutate(
-        aliquot_id = as.character(aliquot_id),
-        variant_qual = as.character(variant_qual)
-      ) %>%
+      # For some callers, aliquot id has characters, so we need all of them to be converted to chr
+      dplyr::mutate(aliquot_id = as.character(aliquot_id)) %>%
       # Turn these columns into characters because otherwise they cause trouble.
       dplyr::mutate_at(dplyr::vars(dplyr::contains("AF", ignore.case = FALSE)), as.character) %>%
       # Get rid of the few if any duplicate entries.
@@ -229,11 +213,7 @@ if (file.exists(all_tmb_file) && !opt$overwrite) {
     "Use --overwrite if you want to overwrite it."
   ))
 } else {
-  if (opt$file_format == "tsv") {
-    tmb_list <- lapply(tmb_files, readr::read_tsv)
-  } else {
-    tmb_list <- lapply(tmb_files, readr::read_rds)
-  }
+  tmb_list <- lapply(tmb_files, read_tsv_or_rds)
 
   # Carry over the callers' names
   names(tmb_list) <- caller_names
