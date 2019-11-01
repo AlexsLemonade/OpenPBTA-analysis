@@ -94,6 +94,11 @@ The release notes for each release are provided in the `release-notes.md` file t
 * Gene expression estimates from the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#gene-expression-abundance-estimation) are provided as a gene by sample matrix.
 * Gene Fusions produced by the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#rna-fusion-calling-and-prioritization) are provided as [Arriba TSV](doc/format/arriba-tsv-header.md) and [STARFusion TSV](doc/format/starfusion-tsv-header.md) respectively.
 * [Harmonized clinical data](https://alexslemonade.github.io/OpenPBTA-manuscript/#clinical-data-harmonization) are released as tab separated values.
+* [Independent specimen lists](https://alexslemonade.github.io/OpenPBTA-manuscript/#selection-of-independent-samples): For many participants there are multiple tumor specimens in the data set. 
+For analyses such as co-occurence, where these replicates samples might cause bias, we have produced `independent-specimens*` files as tab separated values, with columns for participant ID and specimen ID.  
+There are four of these files, depending on need, including all combinations of: 
+  1. only WGS (`*.wgs.*`) or WGS + WXS when WGS is unavailable (`*.wgswxs.*`), and 
+  2. only primary tumors (`*.primary.tsv`) or all available individuals (`*.primary-plus.tsv`).
 
 ### Data Caveats
 
