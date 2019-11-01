@@ -10,6 +10,8 @@ date: 2019
 
 **Purpose:**
 
+Plot mutation signatures for all samples using COSMIC and Alexandrov et al, 2013 mutational signatures. 
+
 ### Summary of Findings:
 
 
@@ -38,6 +40,7 @@ if (!("deconstructSigs" %in% installed.packages())) {
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
+# Load this library
 library(deconstructSigs)
 ```
 
@@ -65,52 +68,88 @@ if (!dir.exists(plots_dir)) {
 maf <- data.table::fread("consensus_mutation.maf.tsv")
 ```
 
+Determine how many mutations we have per sample.
+
+```{r}
+mut_per_sample <- maf %>% 
+  dplyr::group_by(Tumor_Sample_Barcode) %>% 
+  dplyr::tally() %>% 
+  dplyr::arrange(n)
+
+summary(mut_per_sample$n)
+```
+
+Graph this.
+
+```{r}
+  ggplot2::ggplot(mut_per_sample, ggplot2::aes(x = n, geom = "density")) + 
+  ggplot2::geom_density() + 
+  ggplot2::theme_classic() 
+```
+
 Make mutation data into `deconstructSigs` input format.
 
 ```{r}
 # Convert to deconstructSigs input
-sigs.input <- mut.to.sigs.input(mut.ref = maf[1:100, ], 
+sigs_input <- mut.to.sigs.input(mut.ref = maf, 
                                 sample.id = "Tumor_Sample_Barcode", 
                                 chr = "Chromosome", 
                                 pos = "Start_Position", 
                                 ref = "Reference_Allele", 
                                 alt = "Allele", 
                                 bsg = BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38)
-
-head(sample.mut.ref)
 ```
 
-```{r}
-sample_ids <- unique(maf$Tumor_Sample_Barcode)
+## Determine Signatures for COSMIC and Alexandrov et al, 2013
 
+Get list of tumor sample ids. 
+
+```{r}
+sample_ids <- maf %>%
+  dplyr::filter(Tumor_Sample_Barcode %in% rownames(sigs_input)) %>%
+  dplyr::distinct(Tumor_Sample_Barcode) %>%
+  dplyr::pull(Tumor_Sample_Barcode)
+```
+
+Get [COSMIC signatures](https://cancer.sanger.ac.uk/cosmic) for each sample. 
+
+```{r}
 sample_sigs_cosmic <- lapply(sample_ids, function(sample_id) {
   # Determine the signatures contributing to the sample
-  whichSignatures(tumor.ref = sigs.input, 
+  whichSignatures(tumor.ref = sigs_input, 
                   signatures.ref = signatures.cosmic, 
                   sample.id = sample_id, 
                   contexts.needed = TRUE,
                   tri.counts.method = 'default')
 })
+```
 
+Get [Alexandrov et al, 2013](https://www.ncbi.nlm.nih.gov/pubmed/23945592) signatures for each sample. 
+
+```{r}
 sample_sigs_nature <- lapply(sample_ids, function(sample_id) {
   # Determine the signatures contributing to the sample
-  whichSignatures(tumor.ref = sigs.input, 
+  whichSignatures(tumor.ref = sigs_input, 
                   signatures.ref = signatures.nature2013, 
                   sample.id = sample_id, 
                   contexts.needed = TRUE,
                   tri.counts.method = 'default')
 })
-
-# Plot example
-plot_example <- whichSignatures(tumor.ref = randomly.generated.tumors, 
-                       signatures.ref = signatures.nature2013, 
-                       sample.id = 13)
-
-# Plot output
-plotSignatures(plot_example, sub = 'example')
-
 ```
 
+### COSMIC Signature Plots
+
+```{r}
+for(sample_num in 1:length(sample_sigs_cosmic)) {
+  plotSignatures(sample_sigs_cosmic[[sample_num]], sub = sample_ids[sample_num])
+}
+```
+
+### Alexandrov et al, 2013 Signature Plots
+
+```{r}
+plotSignatures(sample_sigs_nature, sub = 'Nature Signatures')
+```
 
 ## Session Info
 
