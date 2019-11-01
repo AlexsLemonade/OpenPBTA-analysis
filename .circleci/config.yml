@@ -42,10 +42,15 @@ jobs:
           name: Transcriptome dimensionality reduction
           command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
 
+# this is getting split up into scripts
+#      - run:
+#          name: Sex prediction from RNA-seq
+#          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/sex-prediction-from-RNASeq/sex-prediction-from-RNASeq.Rmd', clean = TRUE)"
+
       - run:
-          name: Sex prediction from RNA-seq
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/sex-prediction-from-RNASeq/sex-prediction-from-RNASeq.Rmd', clean = TRUE)"
-          
+          name: Sex prediction from RNA-seq - Data cleaning
+          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/sex-prediction-from-RNASeq/01-clean_split_data.R --expression data/pbta-gene-expression-kallisto.stranded.rds --metadata data/pbta-histologies.tsv --output_directory scratch --filename_lead kallisto_stranded
+
       - run:
           name: Selection Strategy Comparison
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/selection-strategy-comparison/01-selection-strategies.rmd', clean = TRUE)"
@@ -54,13 +59,18 @@ jobs:
           name: ssGSEA Analysis
           command: OPENPBTA_ANOVAPVALUE=0.25 OPENPBTA_TUKEYPVALUE=0.50 OPENPBTA_PERCKEEP=0.50 ./scripts/run_in_ci.sh bash analyses/ssgsea-hallmark/run-ssgsea-hallmark.sh
 
-      - run:
-          name: CNV Caller Comparison  
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-comparison/01-cnv-comparison-plotting.Rmd', clean = TRUE)"     
-
+# The second method - ControlFREEC - was not included as of v6, so the comparison can no longer be performed
+#      - run:
+#          name: CNV Caller Comparison  
+#          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-comparison/01-cnv-comparison-plotting.Rmd', clean = TRUE)"
+  
       - run:
           name: Independent samples
           command: ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh 
+      
+      - run:
+          name: Interaction plot
+          command: ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh     
      
       - run:
           name: Oncoprint plotting
@@ -69,14 +79,15 @@ jobs:
          ################################
          #### Add your analysis here ####
          ################################
-         
+              
       - run:
-          name: SNV Caller Evaluation
-          command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_evals.sh 
-
-      - run:
-          name: SNV Caller VAF Cutoff Experiment
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)"
+          name: SNV Caller Analysis 
+          command: OPENPBTA_VAF_CUTOFF=0.5 OPENPBTA_PLOTS=TRUE ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_analysis.sh
+          
+       # This analysis was a side concept question and no longer needs to be run. 
+       # - run:
+          # name: SNV Caller VAF Cutoff Experiment
+          # command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)"
                 
   deploy:
     machine: 

@@ -131,7 +131,7 @@ if (opt$cosmic_clean != "none" && !file.exists(opt$cosmic_clean)) {
         "chr",
         stringr::word(Mutation_genome_position, sep = ":|-", 1) %>%
           stringr::str_replace_all(c("23" = "X", "24" = "Y"))
-        ),
+      ),
       Start_Position = stringr::word(Mutation_genome_position, sep = ":|-", 2),
       End_Position = stringr::word(Mutation_genome_position, sep = ":|-", 3),
       # Make a base_change variable so we can compare to our set up for PBTA data
