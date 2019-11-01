@@ -31,11 +31,14 @@ Read in set up script.
 
 ```{r}
 if (!("deconstructSigs" %in% installed.packages())) {
+  BiocManager::install("BSgenome.Hsapiens.UCSC.hg38")
   install.packages("deconstructSigs")
 }
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
+
+library(deconstructSigs)
 ```
 
 Set up output directories. 
@@ -56,11 +59,58 @@ if (!dir.exists(plots_dir)) {
 }
 ```
 
+## Set up data
+
 ```{r}
 maf <- data.table::fread("consensus_mutation.maf.tsv")
-
-summary(as.factor(maf$Tumor_Sample_Barcode))
 ```
+
+Make mutation data into `deconstructSigs` input format.
+
+```{r}
+# Convert to deconstructSigs input
+sigs.input <- mut.to.sigs.input(mut.ref = maf[1:100, ], 
+                                sample.id = "Tumor_Sample_Barcode", 
+                                chr = "Chromosome", 
+                                pos = "Start_Position", 
+                                ref = "Reference_Allele", 
+                                alt = "Allele", 
+                                bsg = BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38)
+
+head(sample.mut.ref)
+```
+
+```{r}
+sample_ids <- unique(maf$Tumor_Sample_Barcode)
+
+sample_sigs_cosmic <- lapply(sample_ids, function(sample_id) {
+  # Determine the signatures contributing to the sample
+  whichSignatures(tumor.ref = sigs.input, 
+                  signatures.ref = signatures.cosmic, 
+                  sample.id = sample_id, 
+                  contexts.needed = TRUE,
+                  tri.counts.method = 'default')
+})
+
+sample_sigs_nature <- lapply(sample_ids, function(sample_id) {
+  # Determine the signatures contributing to the sample
+  whichSignatures(tumor.ref = sigs.input, 
+                  signatures.ref = signatures.nature2013, 
+                  sample.id = sample_id, 
+                  contexts.needed = TRUE,
+                  tri.counts.method = 'default')
+})
+
+# Plot example
+plot_example <- whichSignatures(tumor.ref = randomly.generated.tumors, 
+                       signatures.ref = signatures.nature2013, 
+                       sample.id = 13)
+
+# Plot output
+plotSignatures(plot_example, sub = 'example')
+
+```
+
 
 ## Session Info
 
