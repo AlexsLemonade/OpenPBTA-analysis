@@ -1,6 +1,6 @@
 # Bethell and Taroni for CCDL 2019
 # Generates lists of scatter plots for dimension reduction techniques.
-# 
+#
 # Usage: bash 03-get-dimension-reduction-plot-lists.sh
 
 COLORVAR=${COLOR:-broad_histology}
@@ -17,7 +17,7 @@ OUTPUT="plots/plot_data"
 
 #### Broad histology plots -----------------------------------------------------
 
-declare -a arr=("rsem_stranded" "rsem_polyA" "kallisto_stranded" "kallisto_polyA")
+declare -a arr=("rsem_stranded_none" "rsem_stranded_log" "rsem_polyA_none" "rsem_polyA_log" "kallisto_stranded_none" "kallisto_stranded_log" "kallisto_polyA_none" "kallisto_polyA_log")
 
 for filename_lead in "${arr[@]}"
 do

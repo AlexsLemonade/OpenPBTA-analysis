@@ -152,10 +152,6 @@ files_to_subset <- list.files(data_directory,
                               pattern = supported_files_string,
                               full.names = TRUE)
 
-# TODO: remove this step if VarDict file gets updated
-# https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/135
-files_to_subset <- files_to_subset[-grep("vardict", files_to_subset)]
-
 # get the participant ID to biospecimen ID
 id_mapping_df <- read_tsv(file.path(data_directory, "pbta-histologies.tsv")) %>%
   dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID) %>%

@@ -7,7 +7,7 @@
 # Chante Bethell for CCDL 2019
 #
 # #### USAGE
-# This script is intended to be run via the command line from the top directory 
+# This script is intended to be run via the command line from the top directory
 # of the repository as follows:
 #
 # Rscript analyses/sample-distribution-analysis/02-multilayer-plots.R
@@ -25,15 +25,19 @@ output_dir <- file.path(root_dir, "analyses", "sample-distribution-analysis")
 results_dir <- file.path(output_dir, "results")
 plots_dir <- file.path(output_dir, "plots")
 
-# Read in dataset 
-df2 <- readr::read_tsv(file.path(root_dir, "data",
+# Read in dataset
+histologies_df <- readr::read_tsv(file.path(root_dir, "data",
                                  "pbta-histologies.tsv"))
 
 # Create a colorblind-friendly color vector
 color <- colorblindr::palette_OkabeIto
 
 # Create final data.frame prepped for treemap and sunburst functions
-final_df <- df2 %>%
+final_df <- histologies_df %>%
+  dplyr::filter(sample_type == "Tumor",
+                composition == "Solid Tissue") %>%
+  dplyr::distinct(Kids_First_Participant_ID, broad_histology,
+                  short_histology, disease_type_new) %>%
   # Select our 3 columns of interest
   dplyr::select(broad_histology, short_histology, disease_type_new) %>%
   # Remove any row that has an NA
@@ -45,7 +49,7 @@ final_df <- df2 %>%
   # Place the value 1 in a column named counter for treemap and sunburt plots
   dplyr::mutate(counter= c(1)) %>%
   # Change the column names
-  dplyr::rename(level1 = broad_histology, 
+  dplyr::rename(level1 = broad_histology,
                 level2 = short_histology,
                 level3 = disease_type_new) %>%
   # Reorder the rows according to the 3 levels
@@ -56,7 +60,7 @@ final_df <- df2 %>%
 # Save to tsv file
 readr::write_tsv(final_df, file.path(results_dir, "plots_df.tsv"))
 
-# Create a treemap 
+# Create a treemap
 tm <-
   treemap::treemap(
     final_df,
@@ -67,19 +71,19 @@ tm <-
   )$tm
 
 # Convert the tm data.frame into a d3.js hierarchy object which is needed
-# for the sund2b plot 
+# for the sund2b plot
 tmnest <-
   d3r::d3_nest(tm[, c("level1", "level2", "level3", "vSize")],
                value_cols = c("vSize"))
 
-# Create an interactive treemap 
+# Create an interactive treemap
 interactive_tm <-
   d3treeR::d3tree(tm,
                   rootname = "Cancer Histologies Treemap",
                   width = 1200,
                   height = 700)
 
-# Create a sunburst plot 
+# Create a sunburst plot
 sun_plot <-
   sunburstR::sunburst(
     data = tmnest,
@@ -89,10 +93,10 @@ sun_plot <-
     colors = color
   )
 
-# Create an interactive sund2b plot 
+# Create an interactive sund2b plot
 p <- sunburstR::sund2b(tmnest, colors = color, valueField = "vSize")
 
-# Create HTML outputs for the interactive plots 
-mapview::mapshot(interactive_tm, url = file.path(plots_dir, 
+# Create HTML outputs for the interactive plots
+mapview::mapshot(interactive_tm, url = file.path(plots_dir,
                                                  "histology-treemap.html"))
 mapview::mapshot(p, url = file.path(plots_dir, "histology-pie.html"))

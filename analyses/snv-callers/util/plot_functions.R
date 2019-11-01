@@ -34,14 +34,31 @@ base_change_plot <- function(vaf_df, exp_strategy = "BOTH", filter_cutoff = 0) {
 
   # Count the number of each type of base change
   base_count_df <- vaf_df %>%
+    dplyr::mutate(
+      change = as.factor(change),
+      # Change factor level order so ins and del are at the end
+      change = forcats::fct_relevel(change, "ins", "del", "long_change", after = Inf)
+    ) 
+  
+  if (exp_strategy != "BOTH") {
+  base_count_df <- base_count_df %>%
     dplyr::group_by(change, experimental_strategy) %>%
-    dplyr::summarise(base_count = dplyr::n()) %>%
-    dplyr::filter(base_count > filter_cutoff)
-
+    dplyr::summarise(report = dplyr::n()) %>%
+    dplyr::filter(report > filter_cutoff)
+  } else {
+  base_count_df <- base_count_df %>%
+    dplyr::count(experimental_strategy, change, name = "count") %>%
+    dplyr::add_count(experimental_strategy, wt = count) %>%
+    dplyr::mutate(report = count / n)
+  }
+  
   # Plot this as a barplot
   barplot <- ggplot2::ggplot(
     base_count_df,
-    ggplot2::aes(x = change, y = base_count)
+    ggplot2::aes(
+      x = change,
+      y = report
+    )
   )
 
   # Get rid of legend if both data aren't being plotted
@@ -51,20 +68,20 @@ base_change_plot <- function(vaf_df, exp_strategy = "BOTH", filter_cutoff = 0) {
         position = "dodge", stat = "identity",
         fill = "navyblue"
       ) +
+      ggplot2::ylab("Count") +
       ggplot2::theme(legend.position = "none")
   } else {
     barplot <- barplot +
       ggplot2::geom_bar(
         position = "dodge", stat = "identity",
         ggplot2::aes(fill = experimental_strategy)
-      )
+      ) +
+      ggplot2::ylab("Percent of Total Mutations for Strategy") 
   }
   # Add some other aesthetics
   barplot <- barplot +
     ggplot2::theme_classic() +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
-    ggplot2::xlab("Base Change") +
-    ggplot2::ylab("Count") +
     colorblindr::scale_fill_OkabeIto()
 
   return(barplot)
@@ -261,7 +278,7 @@ tmb_plot <- function(tmb_df, exp_strategy = "BOTH", x_axis = "short_histology") 
       ggplot2::theme(legend.position = "none")
   } else {
     jitterplot <- jitterplot +
-      ggplot2::geom_jitter(ggplot2::aes(fill = experimental_strategy))
+      ggplot2::geom_jitter(ggplot2::aes(color = experimental_strategy))
   }
 
   # Add some aesthetics
@@ -270,7 +287,7 @@ tmb_plot <- function(tmb_df, exp_strategy = "BOTH", x_axis = "short_histology") 
     ggplot2::ylab("Tumor Mutational Burden") +
     ggplot2::xlab(x_axis) +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
-    colorblindr::scale_fill_OkabeIto()
+    colorblindr::scale_color_OkabeIto()
 
   return(jitterplot)
 }

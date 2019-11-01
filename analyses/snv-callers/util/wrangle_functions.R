@@ -8,7 +8,7 @@
 ########################### Setting Up Functions ###############################
 ################################################################################
 
-set_up_maf <- function(maf_df, metadata_df = NULL) {
+set_up_maf <- function(maf_df, metadata_df = NULL, vaf_cutoff = 0) {
   # Creates these new variables from a MAF formatted data.frame provided: VAF,
   # mutation_id, base_change, change. Optionally can tack on metadata columns
   # which will be matched using a `Tumor_Sample_Barcode` field. Lastly, any
@@ -29,8 +29,12 @@ set_up_maf <- function(maf_df, metadata_df = NULL) {
   maf_df <- maf_df %>%
     dplyr::mutate(
       # Calculate the variant allele frequency
-      vaf = as.numeric(t_alt_count) / (as.numeric(t_ref_count) +
-        as.numeric(t_alt_count)),
+      vaf = as.numeric(t_alt_count) / 
+        (as.numeric(t_ref_count) + as.numeric(t_alt_count))) %>%
+    #filter by vaf; if cutoff is 0 leave everything, 
+    dplyr::filter(vaf_cutoff == 0 | is.finite(vaf), 
+                  vaf > vaf_cutoff) %>%
+    dplyr::mutate(
       # Create a base_change variable
       base_change = paste0(Reference_Allele, ">", Allele),
 
@@ -40,9 +44,7 @@ set_up_maf <- function(maf_df, metadata_df = NULL) {
       # Create a categorical portion of the PolyPhen score
       PolyPhen_category = stringr::word(PolyPhen, 1, sep = "\\("),
 
-      Variant_Classification = as.factor(Variant_Classification)
-    ) %>%
-    dplyr::mutate(
+      Variant_Classification = as.factor(Variant_Classification),
       # From the base_change variable, summarize insertions, deletions, and
       # changes that are more than one base into their own groups.
       change = dplyr::case_when(
@@ -50,9 +52,7 @@ set_up_maf <- function(maf_df, metadata_df = NULL) {
         grepl("-$", base_change) ~ "del",
         nchar(base_change) > 3 ~ "long_change",
         TRUE ~ base_change
-      )
-    ) %>%
-    dplyr::mutate(
+      ),
       # Create the mutation id based on the change variable as well as the
       # gene symbol, start position, and sample ID.
       mutation_id = paste0(
@@ -60,7 +60,7 @@ set_up_maf <- function(maf_df, metadata_df = NULL) {
         change, "_",
         Start_Position, "_",
         Tumor_Sample_Barcode
-      ),
+      )
     ) %>%
     # Get rid of any variables that have completely NAs.
     dplyr::select(-which(apply(is.na(.), 2, all)))
@@ -69,13 +69,13 @@ set_up_maf <- function(maf_df, metadata_df = NULL) {
   if (!is.null(metadata_df)) {
     # Tack on the metadata so we have this info
     maf_df <- maf_df %>%
-      dplyr::left_join(metadata, by = "Tumor_Sample_Barcode") %>%
+      dplyr::left_join(metadata_df, by = "Tumor_Sample_Barcode") %>%
       # Get rid of any variables that have completely NAs.
       dplyr::select(-which(apply(is.na(.), 2, all)))
   }
 }
 
-maf_to_granges <- function(maf_df, strand = FALSE) {
+maf_to_granges <- function(maf_df) {
   # Turn MAF data.frame into a GRanges object. All of the original data.frame will
   # be stored in the `mcols` slot of the GRanges object. This original data
   # frame in the `mcols` slots can be extracted later using
@@ -89,28 +89,16 @@ maf_to_granges <- function(maf_df, strand = FALSE) {
   # Returns:
   # A Genomic Ranges formatted object.
   #
-  if (strand) {
-    # Create the GRanges object with the strand
-    GenomicRanges::GRanges(
-      seqnames = maf_df$Chromosome,
-      ranges = IRanges::IRanges(
-        start = maf_df$Start_Position,
-        end = maf_df$End_Position
-      ),
-      strand = maf_df$Strand,
-      mcols = maf_df
-    )
-  } else {
-    # Create the GRanges object with the strand
-    GenomicRanges::GRanges(
-      seqnames = maf_df$Chromosome,
-      ranges = IRanges::IRanges(
-        start = maf_df$Start_Position,
-        end = maf_df$End_Position
-      ),
-      mcols = maf_df
-    )
-  }
+  # Create the GRanges object with the strand
+  GenomicRanges::GRanges(
+    seqnames = maf_df$Chromosome,
+    ranges = IRanges::IRanges(
+      start = maf_df$Start_Position,
+      end = maf_df$End_Position
+    ),
+    strand = maf_df$Strand,
+    mcols = maf_df
+  )
 }
 
 wxs_bed_filter <- function(maf_df, wxs_bed_file = NULL, bp_window = 0) {
@@ -136,7 +124,7 @@ wxs_bed_filter <- function(maf_df, wxs_bed_file = NULL, bp_window = 0) {
     dplyr::rename(Chromosome = X1, Start_Position = X2, End_Position = X3)
 
   # Turn the WXS bed regions into a GRanges object
-  wxs_bed_granges <- maf_to_granges(wxs_bed_ranges, strand = FALSE)
+  wxs_bed_granges <- maf_to_granges(wxs_bed_ranges)
 
   # Obtain a MAF data.frame of only the WXS samples since this filter will only
   # be applied to those samples.
@@ -168,8 +156,8 @@ wxs_bed_filter <- function(maf_df, wxs_bed_file = NULL, bp_window = 0) {
 
   # What fraction of mutations are in these bed regions?
   cat(
-    "Ratio of variants in this BED:", ratio,
-    "Ratio of variants being filtered out:", 1 - ratio
+    "Ratio of variants in this BED:", ratio, "\n",
+    "Ratio of variants being filtered out:", 1 - ratio, "\n"
   )
 
   # Only keep those in the BED regions that overlap the `wxs_bed_granges`
@@ -268,6 +256,10 @@ annotr_maf <- function(maf_df, annotation_file = NULL, bp_window = 0) {
     dplyr::rename_at(dplyr::vars(dplyr::starts_with("mcols.")), substr, 7, 100) %>%
     dplyr::mutate("type" = as.factor(gsub("^hg38_genes_", "", type)))
 
+  # Remove the annotation ranges file to conserve memory burden
+  rm(annotation_ranges)
+  
+  # Return annotated mutations
   return(annot)
 }
 
@@ -292,11 +284,19 @@ find_cosmic_overlap <- function(maf_df, cosmic_clean_file, bp_window = 0) {
   # indicate whether the mutation was overlapping a COSMIC mutation
   # (`overlap_cosmic`) and whether it was overlapping a COSMIC mutation and also
   # contained the same overall base change (`same_cosmic`).
-  #
+
+  # Read in the data
+  cosmic_df <- readr::read_tsv(cosmic_clean_file)
+
+  # Identify which rows have NAs
+  cosmic_na <- apply(is.na(cosmic_df[, 1:4]), 1, sum)
+
+  # Keep only the mutations with adequate information about their locations
+  cosmic_df <- cosmic_df %>%
+    dplyr::filter(cosmic_na < 1)
+
   # Read in the cosmic file and turn it into a GRanges object
-  cosmic_granges <- maf_to_granges(readr::read_tsv(cosmic_clean_file,
-    col_type = readr::cols()
-  ))
+  cosmic_granges <- maf_to_granges(cosmic_df)
 
   # Turn the MAF data.frame into a GRanges object
   maf_granges <- maf_to_granges(maf_df)
@@ -315,7 +315,8 @@ find_cosmic_overlap <- function(maf_df, cosmic_clean_file, bp_window = 0) {
     cosmic_granges@elementMetadata@listData$mcols.base_change[overlap@to]
 
   # Make a list of mutation ids that overlap COSMIC mutations
-  overlap_w_cosmic <- maf_granges@elementMetadata@listData$mcols.mutation_id[overlap@from]
+  overlap_w_cosmic <-
+    maf_granges@elementMetadata@listData$mcols.mutation_id[overlap@from]
 
   #  Make a list of mutation ids that also have the same base_change
   same_as_cosmic <- overlap_w_cosmic[which(same_change)]
@@ -326,8 +327,12 @@ find_cosmic_overlap <- function(maf_df, cosmic_clean_file, bp_window = 0) {
   # What fraction of mutations are in these bed regions?
   cat(
     " Ratio of variants overlapping with COSMIC:", ratio, "\n",
-    "Number of mutations with same base_change:", sum(same_change)
+    "Number of mutations with same base_change:", sum(same_change), "\n"
   )
+
+  # Remove these files to reduce memory burden
+  rm(cosmic_df)
+  rm(cosmic_na)
 
   # Make this a new column
   maf_df %>%

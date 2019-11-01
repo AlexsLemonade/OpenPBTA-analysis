@@ -20,34 +20,78 @@ jobs:
           name: Sample Distribution Analyses
           command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
 
+      # The analysis no longer needs to be tested as it has been retired and is better covered by 'SNV Caller Analysis' below.
+      #- run:
+      #    name: Mutect2 vs Strelka2
+      #    command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/01-set-up.Rmd', clean = TRUE);
+      #                                                rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', clean = TRUE)"
+     
       - run:
-          name: Mutect2 vs Strelka2
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/01-set-up.Rmd', clean = TRUE);
-                                                      rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', clean = TRUE)"
-      
+          name: Fusion standardization
+          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/01-fusion-standardization.R -f "data/pbta-fusion-arriba.tsv.gz" -c "arriba" -o "scratch/arriba.tsv" 
+
       - run:
-          name: fusion filtering
-          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/01-fusion-standardization.R -f "data/pbta-fusion-starfusion.tsv.gz" -c "STARfusion" -o "scratch/star.RDS" 
-          
+          name: Fusion general filtering
+          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/02-fusion-filtering.R -S scratch/arriba.tsv -e data/pbta-gene-expression-rsem-fpkm.polya.rds -r -a "GTEx|HGNC_GENEFAM|DGD_PARALOGS|Normal|BodyMap|ConjoinG" -j 1 -s 10 -i "in-frame|frameshift|other" -R analyses/fusion_filtering/references/ -o scratch/arriba -t 1
+
+      - run:
+          name: Fusion Annotation
+          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/03-Calc-zscore-annotate.R -S scratch/arriba_QC_expression_filtered_annotated.RDS -e data/pbta-gene-expression-rsem-fpkm.polya.rds -s data/pbta-gene-expression-rsem-zscore-GTEX.polya.rds -g analyses/fusion_filtering/references/Brain_FPKM_hg38_matrix.txt.zip -o scratch/arriba_QC_expression_filtered
+
       - run:
 HEAD
           name: Transcriptome dimensionality reduction
           command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
-        
-      - run:
-          name: SNV Caller Set Up    
-          command: ./scripts/run_in_ci.sh Rscript analyses/snv-callers/scripts/00-set_up.R      
 
-          name: Unsupervised Transcriptomic Analysis - Multipanel Plots      
-          command: ./scripts/run_in_ci.sh bash analyses/transcriptomic-dimension-reduction/04-multipanel-plots.sh
+# this is getting split up into scripts
+#      - run:
+#          name: Sex prediction from RNA-seq
+#          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/sex-prediction-from-RNASeq/sex-prediction-from-RNASeq.Rmd', clean = TRUE)"
 
       - run:
-          name: Sex prediction from RNA-seq
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/sex-prediction-from-RNASeq/sex-prediction-from-RNASeq.Rmd', clean = TRUE)" 
+          name: Sex prediction from RNA-seq - Data cleaning
+          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/sex-prediction-from-RNASeq/01-clean_split_data.R --expression data/pbta-gene-expression-kallisto.stranded.rds --metadata data/pbta-histologies.tsv --output_directory scratch --filename_lead kallisto_stranded
+
+      - run:
+          name: Selection Strategy Comparison
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/selection-strategy-comparison/01-selection-strategies.rmd', clean = TRUE)"
           
-a7cdde62f0cc617a3257749146357ae493a5b7b5
-        #### Add your analysis here ####
-        
+      - run:
+          name: ssGSEA Analysis
+          command: OPENPBTA_ANOVAPVALUE=0.25 OPENPBTA_TUKEYPVALUE=0.50 OPENPBTA_PERCKEEP=0.50 ./scripts/run_in_ci.sh bash analyses/ssgsea-hallmark/run-ssgsea-hallmark.sh
+
+
+# The second method - ControlFREEC - was not included as of v6, so the comparison can no longer be performed
+#      - run:
+#          name: CNV Caller Comparison  
+#          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-comparison/01-cnv-comparison-plotting.Rmd', clean = TRUE)"
+  
+      - run:
+          name: Independent samples
+          command: ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh 
+      
+      - run:
+          name: Interaction plot
+          command: ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh     
+     
+      - run:
+          name: Oncoprint plotting
+          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
+         
+         ################################
+         #### Add your analysis here ####
+         ################################
+              
+      - run:
+          name: SNV Caller Analysis 
+          command: OPENPBTA_VAF_CUTOFF=0.5 OPENPBTA_PLOTS=TRUE ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_analysis.sh
+          
+       # This analysis was a side concept question and no longer needs to be run. 
+       # - run:
+          # name: SNV Caller VAF Cutoff Experiment
+          # command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)"
+                
+
   deploy:
     machine: 
       docker_layer_caching: true
