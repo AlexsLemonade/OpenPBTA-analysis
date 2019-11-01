@@ -102,5 +102,8 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     MASS \
     GGally
 
+# for easy regex functions
+RUN R -e "BiocManager::install('qdapRegex', update = FALSE)"
+
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
