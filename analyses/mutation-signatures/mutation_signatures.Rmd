@@ -56,6 +56,12 @@ if (!dir.exists(plots_dir)) {
 }
 ```
 
+```{r}
+maf <- data.table::fread("consensus_mutation.maf.tsv")
+
+summary(as.factor(maf$Tumor_Sample_Barcode))
+```
+
 ## Session Info
 
 ```{r}
