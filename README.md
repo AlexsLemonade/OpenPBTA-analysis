@@ -68,7 +68,9 @@ Users performing analyses, should always refer to the symlinks in the `data/` di
 ### Data Access via Download Script
 
 We have created a shell script that will download the latest release from AWS S3.
-OS X users must use [homebrew](https://brew.sh/) to install `md5sha1sum` via the command `brew install md5sha1sum` before running the download script the first time.
+macOS users must install `md5sum` before running the download script the first time. 
+This installed with [homebrew](https://brew.sh/) via the command `brew install md5sha1sum` or [conda/miniconda](https://docs.conda.io/projects/conda/en/latest/) via the command `conda install -c conda-forge coreutils`.
+
 Once this has been done, run `bash download-data.sh` to acquire the latest release.
 This will create symlinks in `data/` to the latest files.
 It's safe to re-run `bash download-data.sh` to check that you have the most recent release of the data.
@@ -94,6 +96,14 @@ The release notes for each release are provided in the `release-notes.md` file t
 * Gene expression estimates from the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#gene-expression-abundance-estimation) are provided as a gene by sample matrix.
 * Gene Fusions produced by the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#rna-fusion-calling-and-prioritization) are provided as [Arriba TSV](doc/format/arriba-tsv-header.md) and [STARFusion TSV](doc/format/starfusion-tsv-header.md) respectively.
 * [Harmonized clinical data](https://alexslemonade.github.io/OpenPBTA-manuscript/#clinical-data-harmonization) are released as tab separated values.
+* For participants with multiple tumor specimens, [Independent specimen lists](https://alexslemonade.github.io/OpenPBTA-manuscript/#selection-of-independent-samples) are provided as TSV files with columns for participant ID and specimen ID. 
+These files are used for analyses such as mutation co-occurence, where repeated samples might cause bias.
+There are four of these files:
+  1. `independent-specimens.wgs.primary.tsv` with WGS samples and only primary tumors
+  2. `independent-specimens.wgs.primary-plus.tsv` as above, but including non-primary tumors where a primary tumor samples is not available
+  3. `independent-specimens.wgswxs.primary.tsv` Only primary tumors, but with WXS where WGS is not available 
+  4. `independent-specimens.wgswxs.primary-plus.tsv` as above, but including non-primary tumors where primary tumor sample are not available.
+  
 
 ### Data Caveats
 
