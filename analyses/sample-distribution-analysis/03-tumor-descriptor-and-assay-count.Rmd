@@ -74,7 +74,8 @@ tumor_descriptor_df <- tumor_df %>%
 
 ### Genomic assays
 
-Setting aside the `Panel` sample for the moment.
+Setting aside the `Panel` sample for the moment and only looking at WXS and WGS assays.
+We're collapsing the different values in `tumor_descriptor` to form a single descriptor when there are multiple types of tumors from the same individual.
 
 ```{r}
 genomic_df <- tumor_descriptor_df %>%
@@ -98,6 +99,8 @@ genomic_df %>%
 Only primary samples is the most common case for genomic assays.
 
 ### Transcriptomic assays
+
+Looking only at RNA-seq samples and performing the same collapsing of the `tumor_descriptor` column.
 
 ```{r}
 transcriptomic_df <- tumor_descriptor_df %>%
@@ -130,10 +133,6 @@ How many participants have paired genomic and transcriptomic samples for the sam
 paired_df <-
   full_join(genomic_df, transcriptomic_df,
                    by = c("Kids_First_Participant_ID", "descriptors"))
-
-head(paired_df, 10) %>% 
-  regulartable() %>%
-  fontsize(size = 12, part = "all")
 ```
 
 #### All paired
@@ -221,7 +220,7 @@ tumor_df %>%
   tally() %>%
   arrange(desc(n)) %>% 
   regulartable() %>%
-  fontsize(size = 12, part="all")
+  fontsize(size = 12, part = "all")
 ```
 
 ### Disease type - descriptors pairs
@@ -239,7 +238,7 @@ disease_types_descriptors <- tumor_df %>%
 
 disease_types_descriptors %>% 
   regulartable() %>%
-  fontsize(size = 12, part="all")
+  fontsize(size = 12, part = "all")
 ```
 
 #### Remove primary only
@@ -248,7 +247,7 @@ disease_types_descriptors %>%
 disease_types_descriptors %>%
   filter(descriptors != "Initial CNS Tumor")  %>% 
   regulartable() %>%
-  fontsize(size = 12, part="all")
+  fontsize(size = 12, part = "all")
 ```
 
 What about when the primary tumor is present and paired with another point in time?
@@ -258,6 +257,6 @@ disease_types_descriptors %>%
   filter(descriptors != "Initial CNS Tumor")  %>% 
   filter(grepl("Initial CNS Tumor", descriptors)) %>%
   regulartable() %>%
-  fontsize(size = 12, part="all")
+  fontsize(size = 12, part = "all")
 ```
 
