@@ -94,7 +94,7 @@ The release notes for each release are provided in the `release-notes.md` file t
   * The ControlFreeC TSV file is a merge of `*_CNVs` files produced from the algorithm, and columns are described [here](http://boevalab.inf.ethz.ch/FREEC/tutorial.html#OUTPUT).
   * NOTE: The _copy number_ annotated in the CNVkit SEG file is annotated with respect to ploidy 2, however, the _copy number_ annotated in the ControlFreeC TSV file is annotated with respect to inferred ploidy from the algorithm, which is recorded in the `pbta_histologies.tsv` file. See the table below for examples of possible interpretations.
 
-  | Ploidy | Copy Number | Gain/Loss Interpretation     |
+| Ploidy | Copy Number | Gain/Loss Interpretation     |
 |--------|-------------|------------------------------|
 | 2      | 0           | Loss; homozygous deletion    |
 | 2      | 1           | Loss; hemizygous deletion    |
