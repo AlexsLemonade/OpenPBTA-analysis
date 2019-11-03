@@ -92,6 +92,32 @@ The release notes for each release are provided in the `release-notes.md` file t
 * Somatic Copy Number Variant (CNV) data are provided in a modified [SEG format](https://software.broadinstitute.org/software/igv/SEG) for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-copy-number-variant-calling).
   * The CNVkit SEG file has an additional column `copy.num` to denote copy number of each segment, derived from the CNS file output of the algorithm described [here](https://cnvkit.readthedocs.io/en/stable/fileformats.html).
   * The ControlFreeC TSV file is a merge of `*_CNVs` files produced from the algorithm, and columns are described [here](http://boevalab.inf.ethz.ch/FREEC/tutorial.html#OUTPUT).
+  * NOTE: The _copy number_ annotated in the CNVkit SEG file is annotated with respect to ploidy 2, however, the _copy number_ annotated in the ControlFreeC TSV file is annotated with respect to inferred ploidy from the algorithm, which is recorded in the `pbta_histologies.tsv` file. See the table below for examples of possible interpretations.
+
+  | Ploidy | Copy Number | Gain/Loss Interpretation     |
+|--------|-------------|------------------------------|
+| 2      | 0           | Loss; homozygous deletion    |
+| 2      | 1           | Loss; hemizygous deletion    |
+| 2      | 2           | Copy neutral                 |
+| 2      | 3           | Gain; one copy gain          |
+| 2      | 4           | Gain; two copy gain          |
+| 2      | 5+          | Gain; possible amplification |
+| 3      | 0           | Loss; 3 copy loss            |
+| 3      | 1           | Loss; 2 copy loss            |
+| 3      | 2           | Loss; 1 copy loss            |
+| 3      | 3           | Copy neutral                 |
+| 3      | 4           | Gain; one copy gain          |
+| 3      | 5           | Gain; two copy gain          |
+| 3      | 6+          | Gain; possible amplification |
+| 4      | 0           | Loss; 4 copy loss            |
+| 4      | 1           | Loss; 3 copy loss            |
+| 4      | 2           | Loss; 2 copy loss            |
+| 4      | 3           | Loss; 1 copy loss            |
+| 4      | 4           | Copy neutral                 |
+| 4      | 5           | Gain; one copy gain          |
+| 4      | 6           | Gain; two copy gain          |
+| 4      | 7+          | Gain; possible amplification |
+
 * Somatic Structural Variant Data (Somatic SV) are provided in the [Annotated Manta TSV](doc/format/manta-tsv-header.md) format produced by the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-structural-variant-calling).
 * Gene expression estimates from the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#gene-expression-abundance-estimation) are provided as a gene by sample matrix.
 * Gene Fusions produced by the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#rna-fusion-calling-and-prioritization) are provided as [Arriba TSV](doc/format/arriba-tsv-header.md) and [STARFusion TSV](doc/format/starfusion-tsv-header.md) respectively.
