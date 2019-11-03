@@ -250,3 +250,14 @@ disease_types_descriptors %>%
   regulartable() %>%
   fontsize(size = 12, part="all")
 ```
+
+What about when the primary tumor is present and paired with another point in time?
+
+```{r}
+disease_types_descriptors %>%
+  filter(descriptors != "Initial CNS Tumor")  %>% 
+  filter(grepl("Initial CNS Tumor", descriptors)) %>%
+  regulartable() %>%
+  fontsize(size = 12, part="all")
+```
+
