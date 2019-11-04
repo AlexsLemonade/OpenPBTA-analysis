@@ -66,10 +66,10 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
-    opt_str = "--histology",
+    opt_str = "--disease",
     type = "character",
-    default = "Any",
-    help = "Disease type, as found in the `short_histology` column",
+    default = "All",
+    help = "Disease type, as found in the `disease_type_new` column of the histology file.",
     metavar = "character"
   )
 )
@@ -93,8 +93,8 @@ specimen_df <- readr::read_tsv(specimen_file, col_types = readr::cols())
 
 disease_df <- meta_df %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in% specimen_df$Kids_First_Biospecimen_ID) %>%
-  dplyr::filter(tolower(opts$histology) == "any" |
-                tolower(short_histology) == tolower(opts$histology)) %>%
+  dplyr::filter(tolower(opts$disease) == "all" |
+                tolower(disease_type_new) == tolower(opts$disease)) %>%
   dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID)
 
 readr::write_tsv(disease_df, out_file)
