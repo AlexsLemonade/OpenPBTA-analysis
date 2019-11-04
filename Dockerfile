@@ -140,6 +140,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
     bedr
 
+# Check to make sure the binaries are available by loading the bedr library
 RUN Rscript -e "library(bedr)"
 
 #### Please install your dependencies here
