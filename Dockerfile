@@ -15,7 +15,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 
 # Required forinteractive sample distribution plots
 # map view is needed to create HTML outputs of the interactive plots
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
     --deps TRUE \
     gdalUtils \
@@ -28,9 +28,9 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     mapview
 
 # Installs packages needed for still treemap, interactive plots, and hex plots
-# Rtsne and umap are required for dimension reduction analyses 
+# Rtsne and umap are required for dimension reduction analyses
 # optparse is needed for passing arguments from the command line to R script
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
     --deps TRUE \
     R.utils \
@@ -45,7 +45,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     pheatmap \
     RColorBrewer \
     viridis \
-    data.table 
+    data.table
 
 # maftools for proof of concept in create-subset-files
 RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
@@ -72,7 +72,7 @@ RUN R -e "devtools::install_github('timelyportfolio/d3treeR', ref = '0eaba7f1c64
 RUN R -e "devtools::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
 
 # Required for sex prediction from RNA-seq data
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
     --deps TRUE \
     glmnet \
@@ -86,7 +86,7 @@ RUN apt-get -y update && apt-get install -y \
    && rm -rf /var/lib/apt/lists/
 
 # Install for SNV comparison plots
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
     --deps TRUE \
     UpSetR
@@ -94,7 +94,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 RUN R -e "devtools::install_github('const-ae/ggupset', ref = '7a33263cc5fafdd72a5bfcbebe5185fafe050c73', dependencies = TRUE)"
 
 # GGally and its required packages
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
     lattice \
     rpart \
@@ -102,8 +102,10 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     MASS \
     GGally
 
-# Required for summarizing the RNA-seq matrices
-RUN Rscript -e "install.packages('reshape2')"
+# Help display tables in R Notebooks
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    && install2.r --error \
+    flextable
 
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for

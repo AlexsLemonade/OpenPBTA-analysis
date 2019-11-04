@@ -1,5 +1,105 @@
 # release notes
 ## current release
+### release-v8-20191104
+- release date: 2019-11-04
+- status: available
+- changes:
+  - Updated clinical file
+    - fixed error in `primary_site`: [#214](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/214)
+  - Updated ControlFreeC TSV file
+    - added `tumor_ploidy` and updated `genotype` to `segment_genotype`: [PR comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/216#discussion_r341868007)
+  - Updated RNA-Seq FPKM merge files
+    - fixed ID merge error: [#221](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/221) 
+- folder structure:
+```
+data
+└── release-v8-20191104
+    ├── CHANGELOG.md
+    ├── StrexomeLite_Targets_CrossMap_hg38_filtered_chr_prefixed.bed
+    ├── StrexomeLite_hg38_liftover_100bp_padded.bed
+    ├── WGS.hg38.lancet.300bp_padded.bed
+    ├── WGS.hg38.lancet.unpadded.bed
+    ├── WGS.hg38.mutect2.unpadded.bed
+    ├── WGS.hg38.strelka2.unpadded.bed
+    ├── WGS.hg38.vardict.100bp_padded.bed
+    ├── WXS.hg38.100bp_padded.bed
+    ├── md5sum.txt
+    ├── pbta-cnv-cnvkit.seg.gz
+    ├── pbta-cnv-controlfreec.tsv.gz
+    ├── pbta-fusion-arriba.tsv.gz
+    ├── pbta-fusion-starfusion.tsv.gz
+    ├── pbta-gene-counts-rsem-expected_count.polya.rds
+    ├── pbta-gene-counts-rsem-expected_count.stranded.rds
+    ├── pbta-gene-expression-kallisto.polya.rds
+    ├── pbta-gene-expression-kallisto.stranded.rds
+    ├── pbta-gene-expression-rsem-fpkm.polya.rds
+    ├── pbta-gene-expression-rsem-fpkm.stranded.rds
+    ├── pbta-histologies.tsv
+    ├── pbta-isoform-counts-rsem-expected_count.polya.rds
+    ├── pbta-isoform-counts-rsem-expected_count.stranded.rds
+    ├── pbta-snv-lancet.vep.maf.gz
+    ├── pbta-snv-mutect2.vep.maf.gz
+    ├── pbta-snv-strelka2.vep.maf.gz
+    ├── pbta-snv-vardict.vep.maf.gz
+    ├── pbta-sv-manta.tsv.gz
+    ├── independent-specimens.wgs.primary-plus.tsv
+    ├── independent-specimens.wgs.primary.tsv
+    ├── independent-specimens.wgswxs.primary-plus.tsv
+    └── independent-specimens.wgswxs.primary.tsv
+```
+
+## archived release
+### release-v7-20191031
+- release date: 2019-10-31 :jack_o_lantern:
+- status: available
+- changes:
+  - update molecular_subtype for the clinical file
+  - Add ControlFreeC CNV merged TSV file. [data format](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/doc/format/controlfreec-tsv.md)
+  - Add ControlFreeC ploidy to clinical file.
+  - Add sample lists for analyses requiring unique patient specimens. [issues/155](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/155)
+    - independent-specimens.wgs.primary-plus.tsv
+    - independent-specimens.wgswxs.primary-plus.tsv
+    - independent-specimens.wgs.primary.tsv
+    - independent-specimens.wgswxs.primary.tsv
+
+- folder structure:
+```
+data
+└── release-v7-20191031
+    ├── CHANGELOG.md
+    ├── StrexomeLite_Targets_CrossMap_hg38_filtered_chr_prefixed.bed
+    ├── StrexomeLite_hg38_liftover_100bp_padded.bed
+    ├── WGS.hg38.lancet.300bp_padded.bed
+    ├── WGS.hg38.lancet.unpadded.bed
+    ├── WGS.hg38.mutect2.unpadded.bed
+    ├── WGS.hg38.strelka2.unpadded.bed
+    ├── WGS.hg38.vardict.100bp_padded.bed
+    ├── WXS.hg38.100bp_padded.bed
+    ├── md5sum.txt
+    ├── pbta-cnv-cnvkit.seg.gz
+    ├── pbta-cnv-controlfreec.tsv.gz
+    ├── pbta-fusion-arriba.tsv.gz
+    ├── pbta-fusion-starfusion.tsv.gz
+    ├── pbta-gene-counts-rsem-expected_count.polya.rds
+    ├── pbta-gene-counts-rsem-expected_count.stranded.rds
+    ├── pbta-gene-expression-kallisto.polya.rds
+    ├── pbta-gene-expression-kallisto.stranded.rds
+    ├── pbta-gene-expression-rsem-fpkm.polya.rds
+    ├── pbta-gene-expression-rsem-fpkm.stranded.rds
+    ├── pbta-histologies.tsv
+    ├── pbta-isoform-counts-rsem-expected_count.polya.rds
+    ├── pbta-isoform-counts-rsem-expected_count.stranded.rds
+    ├── pbta-snv-lancet.vep.maf.gz
+    ├── pbta-snv-mutect2.vep.maf.gz
+    ├── pbta-snv-strelka2.vep.maf.gz
+    ├── pbta-snv-vardict.vep.maf.gz
+    ├── pbta-sv-manta.tsv.gz
+    ├── independent-specimens.wgs.primary-plus.tsv
+    ├── independent-specimens.wgs.primary.tsv
+    ├── independent-specimens.wgswxs.primary-plus.tsv
+    └── independent-specimens.wgswxs.primary.tsv
+```
+
 ### release-v6-20191030
 - release date: 2019-10-30
 - status: available
@@ -64,7 +164,6 @@ data
     └── pbta-sv-manta.tsv.gz
 ```
 
-## archived release
 ### release-v5-20190924
 - release date: 2019-09-24
 - status: available
