@@ -107,5 +107,38 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
     flextable
 
+# Required for mapping segments to genes
+# Add bedtools
+RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.28.0/bedtools-2.28.0.tar.gz
+RUN tar -zxvf bedtools-2.28.0.tar.gz
+RUN cd bedtools2 && \
+    make && \
+    mv bin/* /usr/local/bin
+
+# Required for installing htslib
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    zlib-dev \
+    libbz2-dev \
+    liblzma-dev
+
+# Add bedops per the BEDOPS documentation
+RUN wget https://github.com/bedops/bedops/releases/download/v2.4.37/bedops_linux_x86_64-v2.4.37.tar.bz2
+RUN tar -jxvf bedops_linux_x86_64-v2.4.37.tar.bz2
+RUN cp bin/* /usr/local/bin
+
+# HTSlib
+RUN wget https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar.bz2
+RUN tar -jxvf htslib-1.9.tar.bz2
+RUN cd htslib-1.9 && \
+    ./configure && \
+    make && \
+    make install
+RUN mv bin/* /usr/local/bin
+
+# bedr package
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    && install2.r --error \
+    bedr
+
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
