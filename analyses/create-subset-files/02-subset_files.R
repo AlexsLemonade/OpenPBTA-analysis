@@ -184,32 +184,33 @@ if (!dir.exists(output_directory)) {
   dir.create(output_directory, recursive = TRUE)
 }
 
-# if the selected_files option is used, we need to subset the list of
-# biospecimen IDs to only the selected files and use the new release if it
-# was provided
+# split up the file names that are the names of the biospecimen id lists
+# into different parts of the path using the system file separator
+filename_split <- stringr::str_split(names(biospecimen_ids_list),
+                                     pattern = .Platform$file.sep,
+                                     simplify = TRUE)
 
+# extract the release identifier position in the path
+release_column <- grep("release-v", filename_split[1, ])
+# here we're assuming all the release strings are the same and just taking
+# the first one
+current_id_release <- filename_split[1, release_column]
+
+# will use the new release in the file path if it is supplied as an argument
+# or just use the current release
+if (is.null(opt$new_release)) {
+  release <- current_id_release
+} else {
+  release <- opt$new_release
+}
+
+# if the selected_files option is used, we need to subset the list of
+# biospecimen IDs to only the selected files
 if (!is.null(opt$selected_files)) {
   # split the comma-separated values from the argument
   selected_files <- stringr::str_split(opt$selected_files,
                                        pattern = ",",
                                        simplify = TRUE)[1, ]
-  # split up the file names that are the names of the biospecimen id lists
-  # into different parts of the path using the system file separator
-  filename_split <- stringr::str_split(names(biospecimen_ids_list),
-                                       pattern = .Platform$file.sep,
-                                       simplify = TRUE)
-  # extract the current release identifier from the path
-  # we're assuming all the release values are the same and are picking the
-  # first one
-  release_column <- grep("release-v", filename_split[1, ])
-  current_id_release <- filename_split[1, release_column]
-
-  # will use the new release in the file path if it is supplied as an argument
-  if (is.null(opt$new_release)) {
-    release <- current_id_release
-  } else {
-    release <- opt$new_release
-  }
 
   # if some of the selected files are missing from the list of identifiers,
   # throw an error
@@ -224,13 +225,14 @@ if (!is.null(opt$selected_files)) {
     grepl(paste(selected_files, collapse = "|"), names(biospecimen_ids_list))
   )
 
-  # replace the release in the paths as stored as the names of the biospecimen
-  # id list
-  names(biospecimen_ids_list) <- sub(names(biospecimen_ids_list),
-                                     pattern = current_id_release,
-                                     replacement = release)
-
 }
+
+# replace the release in the paths as stored as the names of the biospecimen
+# id list -- if there is no difference between release and current release,
+# that's fine
+names(biospecimen_ids_list) <- sub(names(biospecimen_ids_list),
+                                   pattern = current_id_release,
+                                   replacement = release)
 
 # create a list from the names of the biospecimen_ids_list
 # this will correspond to the filenames
