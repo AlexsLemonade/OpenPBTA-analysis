@@ -17,6 +17,7 @@
 #       of independent samples (at most one from each individual). File path is given
 #       from the top directory of 'OpenPBTA-analysis'.
 # --vaf: Minimum variant allele fraction of mutations to include.
+# --min_depth: Minimum sequencing depth to call mutations.
 # --n_genes: number of genes to plot interation data for (uses the most mutated n genes)
 # --out: Output file location
 #                 
@@ -92,17 +93,28 @@ option_list <- list(
   make_option(
     opt_str = "--include_syn", action = "store_true", 
     default = FALSE,
-    help = "Include synonymous mutations"
+    help = "Include synonymous coding mutations"
   ),  
   make_option(
-    opt_str = "--include_intron", action = "store_true", 
+    opt_str = "--include_noncoding", action = "store_true", 
     default = FALSE,
-    help = "Include intron mutations"
+    help = "Include noncoding mutations (within transcript)"
+  ),
+  make_option(
+    opt_str = "--include_nontranscribed", action = "store_true", 
+    default = FALSE,
+    help = "Include nontranscribed (upstream & downstream) mutations"
   ),
   make_option(
     opt_str = "--vaf", type = "numeric", 
     default = 0.2,
     help = "Minimum variant allele fraction to include",
+    metavar = "numeric"
+  ),
+  make_option(
+    opt_str = "--min_depth", type = "numeric", 
+    default = 0,
+    help = "Minimum sequencing depth for called mutations",
     metavar = "numeric"
   )
 )
@@ -123,7 +135,6 @@ if(!is.na(opts$specimen_list)){
 
 
 #### Read files
-
 
 maf_df <- data.table::fread(maf_file, data.table = FALSE)
 seg_df <- data.table::fread(seg_file, data.table = FALSE)
@@ -174,12 +185,54 @@ maf_df <- maf_df %>%
   dplyr::mutate(vaf = t_alt_count / (t_ref_count + t_alt_count))
 
 # generate consequence lists and filter
-exclusions <- c("intergenic_variant")
-if (!opts$include_syn){exclusions <- c(exclusions, "synonymous_variant")}
-if (!opts$include_intron){exclusions <- c(exclusions, "intron_variant")}
+
+intergenic <- c("intergenic_variant")
+
+nontranscribed <-c("downstream_gene_variant", 
+                   "upstream_gene_variant",
+                   "regulatory_region_variant", 
+                   "TF_binding_site_variant", 
+                   "TFBS_ablation"
+                   )
+
+noncoding <- c("3_prime_UTR_variant",
+               "5_prime_UTR_variant",
+               "intron_variant",
+               "mature_miRNA_variant", 
+               "NMD_transcript_variant", 
+               "non_coding_transcript_exon_variant", 
+               "non_coding_transcript_variant"
+               )
+
+synonymous <- c("start_retained_variant", 
+                "stop_retained_variant", 
+                "synonymous_variant"
+                )
+
+nonsynonymous <- c("frameshift_variant",
+                   "incomplete_terminal_codon_variant",
+                   "inframe_deletion",
+                   "inframe_insertion",
+                   "missense_variant",
+                   "protein_altering_variant", 
+                   "splice_acceptor_variant", 
+                   "splice_donor_variant", 
+                   "start_lost", 
+                   "stop_gained", 
+                   "stop_lost", 
+                   "transcript_ablation"
+                   )
+
+
+include <- nonsynonymous # always want nonsyn
+if (opts$include_syn){include <- c(include, synonymous)}
+if (opts$include_noncoding){include <- c(include, noncoding)}
+if (opts$include_nontranscribed){include <- c(include, nontranscribed)}
+
 maf_filtered <- maf_df %>%
   filter_mutations(min_vaf = opts$vaf,
-                   exclude_consequence = exclusions)
+                   min_depth = opts$min_depth,
+                   include_consequence = include)
 
 # count mutations by gene/sample pair
 gene_sample_counts <- maf_filtered %>%

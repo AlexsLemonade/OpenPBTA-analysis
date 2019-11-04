@@ -28,6 +28,7 @@ row_fisher <- function(w, x, y, z){
 #' @param maf_df a data frame of a maf file or subset of one. Minimally includes
 #'   `Consequence` column and either `vaf` or both `t_ref_count`` and `t_alt_count`.
 #' @param min_vaf The minimum VAF to include.
+#' @param min_depth The minimum sequencing depth to include.
 #' @param exclude_consequence A vector of consequences (as strings) that should 
 #'   be excluded in the filtered results. Note that if a mutation has multiple 
 #'   consequences, it will not be excluded unless ALL consequences are excluded.
@@ -38,6 +39,7 @@ row_fisher <- function(w, x, y, z){
 #'   with VAF added if not already present.
 filter_mutations <- function(maf_df,
                              min_vaf = 0,
+                             min_depth = 0,
                              exclude_consequence = c(),
                              include_consequence = c()){
   if (length(exclude_consequence) > 0 && length(include_consequence) > 0){
@@ -49,7 +51,8 @@ filter_mutations <- function(maf_df,
   }
   # filter on vaf and consequence (for single Consequence cases)
   maf_df <- maf_df %>% 
-    dplyr::filter(vaf >= min_vaf) %>%
+    dplyr::filter(vaf >= min_vaf, 
+                  (t_ref_count + t_alt_count) > min_depth) %>%
     dplyr::mutate(consequence_list = stringr::str_split(Consequence, ",")) %>% 
     
     dplyr::filter(!all(unlist(consequence_list) %in% exclude_consequence))
@@ -90,7 +93,7 @@ filter_mutations <- function(maf_df,
 #'   frequent than expected; `p` the fisher's exact test p value; and a 
 #'   `cooccur_score` calucated as `cooccur_sign * -log10(p)`.
 coocurrence <- function(gene_sample_df, 
-                        genes= sample(unique(gene_sample_df$gene), 25), 
+                        genes = sample(unique(gene_sample_df$gene), 25), 
                         samples = unique(gene_sample_df$sample)){
   # gene_list in order of interest
   #
