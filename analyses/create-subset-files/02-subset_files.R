@@ -60,6 +60,12 @@ subset_files <- function(filename, biospecimen_ids, output_directory) {
 
   message(paste("Reading in and subsetting", filename, "..."))
 
+  # we have introduced opportunities for typos in file paths with the
+  # new_release command line option
+  if (!file.exists(filename)) {
+    stop(paste(filename, "doesn't exist!"))
+  }
+
   # the filename argument contains path information for the file we're reading
   # *in* -- we need to conserve the file name itself but change the path for
   # *output*
