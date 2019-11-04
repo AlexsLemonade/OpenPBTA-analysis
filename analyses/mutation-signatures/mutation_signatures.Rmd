@@ -49,13 +49,18 @@ Set up output directories.
 ```{r}
 results_dir <- "results"
 plots_dir <- "plots"
+cosmic_plots <- file.path(plots_dir, "cosmic")
+nature_plots <- file.path(plots_dir, "cosmic")
 ```
 
 Make new directories for the results. 
 
 ```{r}
-if (!dir.exists(results_dir)) {
-  dir.create(results_dir)
+if (!dir.exists(cosmic_plots)) {
+  dir.create(cosmic_plots, recursive = TRUE)
+}
+if (!dir.exists(nature_plots)) {
+  dir.create(nature_plots, recursive = TRUE)
 }
 if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
@@ -141,16 +146,64 @@ sample_sigs_nature <- lapply(sample_ids, function(sample_id) {
 
 ```{r}
 for(sample_num in 1:length(sample_sigs_cosmic)) {
+  png(file.path(cosmic_plots, paste0(sample_ids[sample_num], "_cosmic_mutation_sig.png")))
   plotSignatures(sample_sigs_cosmic[[sample_num]], sub = sample_ids[sample_num])
+  dev.off()
 }
 ```
 
 ### Alexandrov et al, 2013 Signature Plots
 
 ```{r}
-plotSignatures(sample_sigs_nature, sub = 'Nature Signatures')
+for(sample_num in 1:length(sample_sigs_nature)) {
+  png(file.path(nature_plots, paste0(sample_ids[sample_num], "_nature_mutation_sig.png")))
+  plotSignatures(sample_sigs_nature[[sample_num]], sub = sample_ids[sample_num])
+  dev.off()
+}
 ```
 
+### Plot weights of samples and signatures 
+
+```{r}
+# Pull out the signature weights and make into matrix
+cosmic_weights <- do.call("rbind.data.frame", 
+        lapply(sample_sigs_cosmic, function(sample_data) sample_data$weights)
+) %>% 
+  tibble::rownames_to_column("Tumor_Sample_Barcode") %>% 
+  dplyr::inner_join(dplyr::select(maf, "Tumor_Sample_Barcode", "short_histology"), by = "Tumor_Sample_Barcode")  %>% 
+  reshape2::melt() %>% 
+  dplyr::distinct(Tumor_Sample_Barcode, variable, .keep_all = TRUE)
+
+# Reshape into long format for plotting
+grouped_cosmic_weights <- cosmic_weights %>% 
+  dplyr::arrange(variable) %>%
+  dplyr::group_by(short_histology, variable) %>%
+  dplyr::summarize(num_tumors = sum(value > 0), 
+                   mean_weight = mean(value)) 
+```
+
+```{r}
+ggplot2::ggplot(grouped_cosmic_weights, ggplot2::aes(x = short_histology, y = forcats::fct_rev(variable))) +      
+  ggplot2::geom_point(ggplot2::aes(color = mean_weight, size = num_tumors)) +
+  ggplot2::scale_size("Number of Samples", range = c(0, 10)) +    
+  ggplot2::scale_color_distiller("Mean Weight", palette = "YlGnBu") +
+  ggplot2::theme_classic() +
+  ggplot2::scale_x_discrete(position = "top") +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 55, hjust = -.01),
+                 axis.text.y = ggplot2::element_text(size = ggplot2::rel(.75)),
+                 legend.key.size = ggplot2::unit(.5, "cm")) +
+  ggplot2::xlab("") +
+  ggplot2::ylab("") +
+  ggplot2::scale_x_discrete(position = "top") 
+```
+
+
+```{r}
+cosmic_weights %>% 
+  dplyr::filter(short_histology == "HGAT") %>%
+ggplot2::ggplot(ggplot2::aes(x = reorder(Tumor_Sample_Barcode, -value), y = value)) +
+  ggplot2::geom_bar( stat = "identity", ggplot2::aes(fill = variable))
+```
 ## Session Info
 
 ```{r}
