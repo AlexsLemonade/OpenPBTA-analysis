@@ -1,6 +1,6 @@
 #!/bin/bash
 # J. Taroni for CCDL 2019
-# Create subset files for continuous integration
+# Create subset files for continuous integration using all files in a release
 
 set -e
 set -o pipefail
