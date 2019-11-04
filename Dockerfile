@@ -117,7 +117,7 @@ RUN cd bedtools2 && \
 
 # Required for installing htslib
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    zlib-dev \
+    zlib1g \
     libbz2-dev \
     liblzma-dev
 
