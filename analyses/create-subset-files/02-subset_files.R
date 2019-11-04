@@ -1,9 +1,9 @@
 # J. Taroni for CCDL 2019
-# This script is the second step in generating subset files for continous 
-# integration. It takes the output of 01-get_biospecimen_identifiers.R and 
+# This script is the second step in generating subset files for continous
+# integration. It takes the output of 01-get_biospecimen_identifiers.R and
 # subsets the OpenPBTA files and writes the new subset files to a user-specified
 # directory.
-# 
+#
 # EXAMPLE USAGE:
 #   Rscript analyses/create-subset-files/02-subset_files.R \
 #     --biospecimen_file analyses/create-subset-files/biospecimen_ids_for_subset.RDS \
@@ -16,7 +16,7 @@ library(optparse)
 write_maf_file <- function(maf_df, file_name, version_string) {
   # Given a data.frame that contains the fields for a MAF file, write a gzipped
   # MAF file and include the version information provided in version_string.
-  # 
+  #
   # Note: if file_name exists, it will be overwritten
   #
   # Args:
@@ -26,20 +26,20 @@ write_maf_file <- function(maf_df, file_name, version_string) {
   #                   of the file at file_name
   #
   # Returns: intended to be used to write files only
-  
+
   # if the file name supplied to this function ends in `.gz`, take it out for
   # the purposes of writeLines, etc.
   # we'll gzip it at the end with R.utils::gzip and this extension is not needed
   if (grepl(".gz", file_name)) {
     file_name <- sub(".gz", "", file_name)
   }
-  
+
   # write the version string to the top of the file
   writeLines(version_string, con = file_name)
-  
+
   # write the tabular data of maf_df
   readr::write_tsv(maf_df, path = file_name, append = TRUE, col_names = TRUE)
-  
+
   # now gzip the file
   R.utils::gzip(file_name, overwrite = TRUE)
 }
@@ -48,28 +48,28 @@ subset_files <- function(filename, biospecimen_ids, output_directory) {
   # given the full path to a file to be subset and the list of biospecimen ids
   # to use for subsetting, write a file of the same name to the output directory
   # that has been subset using the IDs
-  # 
+  #
   # Args:
   #   filename: full path to file to be subset
   #   biospecimen_ids: vector of identifiers to use for subsetting the file
   #   output_directory: directory to write the subset file to
-  #   
+  #
   # Returns: writes a subset file to output_directory
-  
+
   `%>%` <- dplyr::`%>%`
-  
+
   message(paste("Reading in and subsetting", filename, "..."))
-  
+
   # the filename argument contains path information for the file we're reading
   # *in* -- we need to conserve the file name itself but change the path for
   # *output*
   output_file <- sub(paste0(".*", .Platform$file.sep), "", filename)
   output_file <- file.path(output_directory, output_file)
-  
+
   # filtering strategy depends on the file type, mostly because how the sample
   # IDs change based on the file type -- that's why this logic is required
   if (grepl("pbta-snv", filename)) {
-    
+
     # in a column 'Tumor_Sample_Barcode'
     snv_file <- data.table::fread(filename,
                                   skip = 1,  # skip version string
@@ -79,50 +79,50 @@ subset_files <- function(filename, biospecimen_ids, output_directory) {
     # filter + write to file with custom function
     snv_file %>%
       dplyr::filter(Tumor_Sample_Barcode %in% biospecimen_ids) %>%
-      write_maf_file(file_name = output_file, 
+      write_maf_file(file_name = output_file,
                      version_string = version_string)
-    
+
   } else if (grepl("pbta-cnv", filename)) {
-    
+
     # in a column 'ID'
     cnv_file <- readr::read_tsv(filename)
     biospecimen_column <- intersect(colnames(cnv_file), c("ID", "tumor"))
     cnv_file %>%
       dplyr::filter(!!rlang::sym(biospecimen_column) %in% biospecimen_ids) %>%
       readr::write_tsv(output_file)
-    
+
   } else if (grepl("pbta-fusion", filename)) {
-    
+
     # in a column 'tumor_id'
     fusion_file <- readr::read_tsv(filename)
     fusion_file %>%
       dplyr::filter(tumor_id %in% biospecimen_ids) %>%
       readr::write_tsv(output_file)
-    
+
   } else if (grepl("pbta-sv", filename)) {
-    
+
     # in a column 'Kids.First.Biospecimen.ID.Tumor'
     sv_file <- data.table::fread(filename, data.table = FALSE)
     sv_file %>%
       dplyr::filter(Kids.First.Biospecimen.ID.Tumor %in% biospecimen_ids) %>%
       readr::write_tsv(output_file)
-    
+
   } else if (grepl(".rds", filename)) {
-    
+
     # any column name that contains 'BS_' is a biospecimen ID
-    expression_file <- readr::read_rds(filename) 
+    expression_file <- readr::read_rds(filename)
     # because we're selecting columns, we have to include this steps
     biospecimen_ids <- intersect(colnames(expression_file), biospecimen_ids)
-    expression_file %>% 
-      dplyr::select(dplyr::ends_with("_id"), 
+    expression_file %>%
+      dplyr::select(dplyr::ends_with("_id"),
                     !!!rlang::quos(biospecimen_ids)) %>%
       readr::write_rds(output_file)
-    
+
   } else {
     # error-handling
     stop("File type unrecognized by 'subset_files'")
   }
-  
+
 }
 
 #### command line arguments ----------------------------------------------------
@@ -139,12 +139,34 @@ option_list <- list(
     type = "character",
     default = NULL,
     help = "output directory for subset files"
+  ),
+  make_option(
+    c("-s", "--selected_files",
+      type = "character",
+      default = NULL,
+      help = "comma-separated values of filenames to subset using the RDS file,
+              e.g., 'pbta-cnv-controlfreec.tsv.gz,pbta-gene-expression-rsem-fpkm.polya.rds'")
+  ),
+  make_option(
+    c("-n", "--new_release"),
+    type = "character",
+    default = NULL,
+    help = "if using select files, the new release version, e.g.,
+            'release-v7-20191031'"
   )
 )
 
 # Read the arguments passed
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
+
+# if only using the selected files option with no new release specified,
+# warn because that's not what we would necessarily expect!
+only_selected_files <- (!is.null(opt$selected_files) & is.null(opt$new_release))
+if (only_selected_files) {
+  warning("Using the selected files option but without the new release option.
+          Using the release from the biospecimen IDs list.")
+}
 
 #### subset the files ----------------------------------------------------------
 
@@ -156,12 +178,60 @@ if (!dir.exists(output_directory)) {
   dir.create(output_directory, recursive = TRUE)
 }
 
+# if the selected_files option is used, we need to subset the list of
+# biospecimen IDs to only the selected files and use the new release if it
+# was provided
+
+if (!is.null(opt$selected_files)) {
+  # split the comma-separated values from the argument
+  selected_files <- stringr::str_split(opt$selected_files,
+                                       pattern = ",",
+                                       simplify = TRUE)[1, ]
+  # split up the file names that are the names of the biospecimen id lists
+  # into different parts of the path using the system file separator
+  filename_split <- stringr::str_split(names(biospecimen_ids_list),
+                                       pattern = .Platform$file.sep,
+                                       simplify = TRUE)
+  # extract the current release identifier from the path
+  # we're assuming all the release values are the same and are picking the
+  # first one
+  release_column <- grep("release-v", filename_split[1, ])
+  current_id_release <- filename_split[1, release_column]
+
+  # will use the new release in the file path if it is supplied as an argument
+  if (is.null(opt$new_release)) {
+    release <- current_id_release
+  } else {
+    release <- opt$new_release
+  }
+
+  # if some of the selected files are missing from the list of identifiers,
+  # throw an error
+  if (!all(selected_files %in% filename_split[, ncol(filename_split)])) {
+    stop("Not all selected files are available in the current biospecimen
+         ID list!")
+  }
+
+  # keep only the elements of biospecimen id list
+  biospecimen_ids_list <- purrr::keep(
+    biospecimen_ids_list,
+    grepl(paste(selected_files, collapse = "|"), names(biospecimen_ids_list))
+  )
+
+  # replace the release in the paths as stored as the names of the biospecimen
+  # id list
+  names(biospecimen_ids_list) <- sub(names(biospecimen_ids_list),
+                                     pattern = current_id_release,
+                                     replacement = release)
+
+}
+
 # create a list from the names of the biospecimen_ids_list
 # this will correspond to the filenames
 filename_list <- as.list(names(biospecimen_ids_list))
 
 # "loop" through the files to create subset files
-purrr::map2(filename_list, biospecimen_ids_list, 
-            ~ subset_files(filename = .x, 
+purrr::map2(filename_list, biospecimen_ids_list,
+            ~ subset_files(filename = .x,
                            biospecimen_ids = .y,
                            output_directory = output_directory))
