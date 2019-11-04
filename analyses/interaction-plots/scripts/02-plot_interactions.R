@@ -54,20 +54,27 @@ cooccur_file <- file.path(root_dir, opts$infile)
 plot_file <- file.path(root_dir, opts$outfile)
 
 cooccur_df <-
-  readr::read_tsv(cooccur_file, col_types = readr::cols())
-genes <- unique(c(cooccur_df$gene1, cooccur_df$gene2))
+  readr::read_tsv(cooccur_file, col_types = readr::cols()) %>%
+  dplyr::mutate(
+         mut1 = mut11 + mut10,
+         mut2 = mut11 + mut01,
+         label1 = paste0(gene1, " (", mut1, ")"),
+         label2 = paste0(gene2, " (", mut2, ")")
+  )
+
+labels <- unique(c(cooccur_df$label1, cooccur_df$label2))
 
 cooccur_df <- cooccur_df %>%
   dplyr::mutate(
-    gene1 = factor(gene1, levels = genes),
-    gene2 = factor(gene2, levels = genes)
+    label1 = factor(label1, levels = labels),
+    label2 = factor(label2, levels = labels)
   )
 
 
 ### make plot
 cooccur_plot <- ggplot(
   cooccur_df,
-  aes(x = gene1, y = gene2, fill = cooccur_score)
+  aes(x = label1, y = label2, fill = cooccur_score)
 ) +
   geom_tile(color = "white", size = 1) +
 
@@ -86,7 +93,7 @@ cooccur_plot <- ggplot(
   theme_classic() +
   theme(
     axis.text.x = element_text(
-      angle = -45,
+      angle = -90,
       hjust = 1,
       size = 6
     ),
