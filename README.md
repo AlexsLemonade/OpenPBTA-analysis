@@ -126,9 +126,9 @@ The release notes for each release are provided in the `release-notes.md` file t
 These files are used for analyses such as mutation co-occurence, where repeated samples might cause bias.
 There are four of these files:
   1. `independent-specimens.wgs.primary.tsv` with WGS samples and only primary tumors
-  2. `independent-specimens.wgs.primary-plus.tsv` as above, but including non-primary tumors where a primary tumor samples is not available
+  2. `independent-specimens.wgs.primary-plus.tsv` as above, but including non-primary tumors where a primary tumor sample is not available
   3. `independent-specimens.wgswxs.primary.tsv` Only primary tumors, but with WXS where WGS is not available 
-  4. `independent-specimens.wgswxs.primary-plus.tsv` as above, but including non-primary tumors where primary tumor sample are not available.
+  4. `independent-specimens.wgswxs.primary-plus.tsv` as above, but including non-primary tumors where a primary tumor sample is not available.
   
 
 ### Data Caveats
