@@ -32,7 +32,7 @@ jobs:
 
       - run:
           name: Fusion standardization
-          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/01-fusion-standardization.R -f "data/pbta-fusion-starfusion.tsv.gz" -c "arriba" -o "scratch/starfusion.tsv" 
+          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/01-fusion-standardization.R -f "data/pbta-fusion-starfusion.tsv.gz" -c "starfusion" -o "scratch/starfusion.tsv" 
 
       - run:
           name: Fusion general filtering
