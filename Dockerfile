@@ -140,5 +140,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
     bedr
 
+RUN Rscript -e "library(bedr)"
+
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
