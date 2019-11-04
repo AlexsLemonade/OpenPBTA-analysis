@@ -84,9 +84,7 @@ option_list <- list(
     opt_str = "--specimen_list",
     type = "character",
     default = file.path(
-      "analyses",
-      "independent-samples",
-      "results",
+      "data",
       "independent-specimens.wgs.primary.tsv"
     ),
     help = "Relative file path (from top directory of 'OpenPBTA-analysis')

@@ -13,7 +13,7 @@ results_dir=${base_dir}/results
 plot_dir=${base_dir}/plots
 
 
-ind_samples=analyses/independent-samples/results/independent-specimens.wgs.primary-plus.tsv
+ind_samples=data/independent-specimens.wgs.primary-plus.tsv
 
 # make output directories if they don't exist
 mkdir -p $results_dir
