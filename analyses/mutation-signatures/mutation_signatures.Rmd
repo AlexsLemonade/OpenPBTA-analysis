@@ -31,14 +31,13 @@ _This assumes you are in the top directory of the repository._
 
 #### Packages and functions
 
-Read in set up script.
+Import necessary functions.
 
 ```{r}
 if (!("deconstructSigs" %in% installed.packages())) {
   BiocManager::install("BSgenome.Hsapiens.UCSC.hg38")
   install.packages("deconstructSigs")
 }
-
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
@@ -49,7 +48,7 @@ source(file.path("util", "mut_sig_functions.R"))
 library(deconstructSigs)
 ```
 
-Set up output directories. 
+Set up directory paths. 
 
 ```{r}
 data_dir <- file.path("..", "..", "data")
@@ -70,9 +69,6 @@ if (!dir.exists(cosmic_plots)) {
 }
 if (!dir.exists(nature_plots)) {
   dir.create(nature_plots, recursive = TRUE)
-}
-if (!dir.exists(plots_dir)) {
-  dir.create(plots_dir)
 }
 ```
 
@@ -263,6 +259,9 @@ ggplot2::ggsave(file.path(nature_plots, paste0("bubble_matrix_nature_mutation_si
 
 ## Mutation signature grouped bar plots for each histology group
 
+We will make these plots for primary tumor samples only. 
+Let's make these for COSMIC mutation signatures first. 
+
 ```{r}
 # Keep only primary tumors
 cosmic_sigs_primary <- cosmic_sigs_df %>%
@@ -272,11 +271,12 @@ cosmic_sigs_primary <- cosmic_sigs_df %>%
 lapply(unique(cosmic_sigs_primary$short_histology),
   grouped_sig_barplot,
   sig_num_df = cosmic_sigs_primary,
-  output_dir = cosmic_plots,
+  output_dir = file.path(cosmic_plots, "signature_grouped_barplots"), 
   label = "cosmic"
 )
 ```
 
+Make these plots for Alexandrov et al, 2013 signatures. 
 
 ```{r}
 # Keep only primary tumors
@@ -287,7 +287,7 @@ nature_sigs_primary <- nature_sigs_df %>%
 lapply(unique(nature_sigs_primary$short_histology),
   grouped_sig_barplot,
   sig_num_df = nature_sigs_primary,
-  output_dir = nature_plots,
+  output_dir = file.path(nature_plots, "signature_grouped_barplots"),
   label = "nature"
 )
 ```

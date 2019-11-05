@@ -2,7 +2,10 @@
 #
 # C. Savonen for ALSF - CCDL
 # 2019
-#
+
+# Load this library
+library(deconstructSigs)
+
 ################################################################################
 sample_mut_sig_plot <- function(which_sig_list, label = "none", output_dir = getwd(),
                                 sample_ids) {
@@ -14,8 +17,8 @@ sample_mut_sig_plot <- function(which_sig_list, label = "none", output_dir = get
   #   which_sig_list: a list of `whichSignature` output for each sample
   #   label: the label you would like associated with the plot as a character string.
   #   sample_ids: vector of the sample ids.
-  #   output_dir: where the plots should be saved. If this directory doesn' exist,
-  #               will create it. Default is current directory.
+  #   output_dir: where the plots should be saved. If this directory doesn't exist,
+  #               this will create it. Default is current directory.
   # Returns:
   #   Saved png mutation signature plots to the specified directory.
 
@@ -24,7 +27,9 @@ sample_mut_sig_plot <- function(which_sig_list, label = "none", output_dir = get
   }
 
   for (sample_num in 1:length(which_sig_list)) {
+    # Set up png
     png(file.path(output_dir, paste0(sample_ids[sample_num], "_", label, "_mutation_sig.png")))
+    # Use the deconstructSigs function 
     plotSignatures(which_sig_list[[sample_num]], sub = sample_ids[sample_num])
     dev.off()
   }
@@ -44,7 +49,8 @@ calc_mut_per_sig <- function(which_sig_list,
   #   muts_per_sample: a vector with the total mutation signature counts for each sample
   #   wgs_genome_size: size of the WGS genome in bp
   #   wxs_genome_size: size of the WXS exome in bp
-  #   maf_df: a data.frame with `short_histology` and `experimental strategy` information columns
+  #   maf_df: a data.frame with `short_histology` and `experimental strategy`  
+  #           information columns
   #
   # Returns:
   #   A data.frame that is samples x signatures and has the number of mutations
