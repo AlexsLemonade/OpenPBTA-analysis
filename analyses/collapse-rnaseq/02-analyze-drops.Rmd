@@ -1,6 +1,5 @@
 ---
 title: "Summary of Ensembl identifiers for RNA-seq matrices"
-runtime: shiny
 output: html_notebook
 params: 
   polya.annot.table: 
@@ -17,7 +16,6 @@ getOption(x = 'DT.warn.size', default = FALSE)
 ```{r load_packages, echo = FALSE}
 # load libraries
 suppressPackageStartupMessages(library(knitr))
-suppressPackageStartupMessages(library(shiny))
 suppressPackageStartupMessages(library(DT))
 ```
 
