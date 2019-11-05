@@ -27,6 +27,14 @@ jobs:
       #                                                rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', clean = TRUE)"
      
       - run:
+          name: Collapse RSEM
+          command: ./scripts/run_in_ci.sh Rscript analyses/collapse-rnaseq/01-summarize_matrices.R -e data/pbta-gene-expression-rsem-fpkm.stranded.rds -o data/pbta-gene-expression-collapsed-rsem-fpkm.stranded.rds
+
+      - run:
+          name: Analyze RNA-seq dropped genes
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/collapse-rnaseq/02-analyze-drops.Rmd', clean = TRUE)"
+
+      - run:
           name: Fusion standardization
           command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/01-fusion-standardization.R -f "data/pbta-fusion-arriba.tsv.gz" -c "arriba" -o "scratch/arriba.tsv" 
 
