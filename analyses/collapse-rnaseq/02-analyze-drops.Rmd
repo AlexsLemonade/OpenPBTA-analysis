@@ -1,41 +1,112 @@
 ---
-title: "Summary of collapsed symbols"
+title: "Summary of Ensembl identifiers for RNA-seq matrices"
+runtime: shiny
 output: html_notebook
+params: 
+  polya.annot.table: 
+    value: ''
+  stranded.annot.table:
+    value: ''
 ---
 
-```{r}
+```{r include = FALSE}
+knitr::opts_chunk$set(comment = NA)
+getOption(x = 'DT.warn.size', default = FALSE)
+```
+
+```{r load_packages, echo = FALSE}
 # load libraries
-library(tidyverse)
-library(reshape2)
-library(refGenome)
+suppressPackageStartupMessages(library(knitr))
+suppressPackageStartupMessages(library(shiny))
+suppressPackageStartupMessages(library(DT))
+```
 
-# actual code
-print("Generating input matrix...!")
-expr <- readRDS(input.dat)
-  
-# reduce dataframe
-expr <- expr[which(rowSums(expr[,2:ncol(expr)]) > 0),] # remove all genes with no expression
-expr <- expr[grep('_PAR_', expr$gene_id, invert = T),] # discard PAR_* chromosomes from analysis
+```{r dt_function, echo = FALSE}
+# custom datatable function
+viewDataTable <- function(dat){
+  DT::datatable(dat,
+                rownames = FALSE,
+                filter = "bottom",
+                class = 'cell-border stripe',
+                options = list(pageLength = 5,
+                               searchHighlight = TRUE,
+                               scrollX = TRUE,
+                               dom = 'tpi',
+                               initComplete = JS("function(settings, json) {",
+                                            "$(this.api().table().header()).css({'background-color':
+                                            '#004467', 'color': '#fff'});","}"))
+                )
+}
+```
 
-# collapse to matrix of HUGO symbols x Sample identifiers
-# take mean per row and use the max value for duplicated gene symbols
-expr.collapsed <- expr %>% 
-  separate(gene_id, c("gene_id", "gene_symbol"), sep = "\\_", extra = "merge") %>%
-  pivot_longer(-c(gene_id, gene_symbol), 
-               names_to = "sample_name", values_to = "fpkm") %>% 
-  group_by(gene_id) %>%
-  mutate(means = mean(fpkm)) %>% 
-  group_by(gene_symbol) %>%
-  filter(means == max(means)) %>% 
-  select(-gene_id) %>% unique()
+```{r example_run, echo = FALSE}
+# Example Run:
+# rmarkdown::render(input = '02-analyze-drops.Rmd', 
+#                   params = list(polya.annot.table = '~/Projects/OpenPBTA-analysis-local/data/pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds', 
+#                                 stranded.annot.table = '~/Projects/OpenPBTA-analysis-local/data/pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds'))
+```
 
-# matrix of HUGO symbols x Sample identifiers
-expr.input <- acast(expr.collapsed, gene_symbol~sample_name, value.var = 'fpkm')
-print(dim(expr.input))
+## {.tabset .tabset-fade}
 
-# save matrix
-saveRDS(object = expr.input, file = output.mat)
-print("Matrix generated. Done!!")
+### PolyA RNA-seq
+#### Annotation Table
 
+```{r, echo = FALSE, warning = FALSE}
+# view full gene annotation for polya data
+polya.annot.table <- readRDS(params$polya.annot.table)
+viewDataTable(polya.annot.table)
+```
+
+#### Summary of biotypes that are dropped due to zero expression:
+
+```{r, echo = FALSE, warning = FALSE}
+# view table of dropped identifiers because of zero expression
+dat <- polya.annot.table %>% 
+  filter(expressed == "No") %>%
+  group_by(gene_type)  %>%
+  summarise(count = n()) 
+viewDataTable(dat)
+```
+
+#### Summary of biotypes that are dropped due to merging multiple Ensembl identifiers:
+
+```{r, echo = FALSE, warning = FALSE}
+# view table of dropped identifiers by removing duplicates
+dat <- polya.annot.table %>% 
+  filter(ensembl_id == "Multiple" & keep == "No") %>%
+  group_by(gene_type)  %>%
+  summarise(count = n()) 
+viewDataTable(dat)
+```
+
+### Stranded RNA-seq 
+#### Annotation Table
+
+```{r, echo = FALSE, warning = FALSE}
+# view full gene annotation for stranded data
+stranded.annot.table <- readRDS(params$stranded.annot.table)
+viewDataTable(stranded.annot.table)
+```
+
+#### Summary of biotypes that are dropped due to low expression:
+
+```{r, echo = FALSE, warning = FALSE}
+# view table of dropped identifiers because of zero expression
+dat <- stranded.annot.table %>% 
+  filter(expressed == "No") %>%
+  group_by(gene_type)  %>%
+  summarise(count = n()) 
+viewDataTable(dat)
+```
+
+#### Summary of biotypes that are dropped due to merging multiple Ensembl identifiers:
+
+```{r, echo = FALSE, warning = FALSE}
+# view table of dropped identifiers by removing duplicates
+dat <- stranded.annot.table %>% 
+  filter(ensembl_id == "Multiple" & keep == "No") %>%
+  group_by(gene_type)  %>%
+  summarise(count = n()) 
+viewDataTable(dat)
 ```
 
