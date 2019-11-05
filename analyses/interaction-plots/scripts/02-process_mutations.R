@@ -19,7 +19,7 @@
 # --vaf: Minimum variant allele fraction of mutations to include.
 # --min_depth: Minimum sequencing depth to call mutations.
 # --min_mutated: Minimum number of mutated samples required to include a gene in the plot
-# --n_genes: number of genes to plot interation data for (uses the most mutated n genes)
+# --max_genes: Maximum number of genes to plot interation data for (uses the most mutated n genes)
 # --out: Output file location
 #
 #
@@ -93,10 +93,10 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
-    opt_str = "--n_genes",
+    opt_str = "--max_genes",
     type = "numeric",
-    default = 60,
-    help = "Number of genes to include in figure. Will be filtered by number of
+    default = 50,
+    help = "Maximum number of genes to include in figure. Will be filtered by number of
             mutations, so the n most mutated genes will have their co-occurence
             calculated and will appear in the resulting figure.",
     metavar = "character"
@@ -292,7 +292,7 @@ gene_counts <- gene_sample_counts %>%
                 dplyr::row_number() <= 2) # keep at least 2 genes 
 
 # get most often mutated genes
-top_count_genes <- head(gene_counts, opts$n_genes)$gene
+top_count_genes <- head(gene_counts, opts$max_genes)$gene
 
 cooccur_summary <- coocurrence(gene_sample_counts, top_count_genes)
 
