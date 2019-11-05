@@ -50,7 +50,7 @@ Set up output directories.
 results_dir <- "results"
 plots_dir <- "plots"
 cosmic_plots <- file.path(plots_dir, "cosmic")
-nature_plots <- file.path(plots_dir, "cosmic")
+nature_plots <- file.path(plots_dir, "nature")
 ```
 
 Make new directories for the results. 
@@ -67,10 +67,143 @@ if (!dir.exists(plots_dir)) {
 }
 ```
 
+Custom functions 
+
+```{r}
+sample_mut_sig_plot <- function(which_sig_list, label = "none", output_dir = getwd(), 
+                                sample_ids) {
+  # Given a list of `deconstructSigs::WhichSignature` output, make plots for each sample using 
+  # deconstructSigs::plotSignatures
+  #
+  # Args:
+  # 
+  #   which_sig_list: a list of `whichSignature` output
+  #   label: the label you would like associated with the plot as a character string.
+  #   sample_ids: vector of the sample ids. 
+  #   output_dir: where the plots should be saved. If this directory doesn' exist, 
+  #               will create it. Default is current directory.
+  # Returns:
+  #   Saved png mutation signature plots to the specified directory. 
+  
+  if (!dir.exists(output_dir)) {
+    dir.create(output_dir, recursive = TRUE)
+  }
+
+  for(sample_num in 1:length(which_sig_list)) {
+    png(file.path(output_dir, paste0(sample_ids[sample_num], "_", label, "_mutation_sig.png")))
+    plotSignatures(which_sig_list[[sample_num]], sub = sample_ids[sample_num])
+    dev.off()
+  }
+}
+```
+
+```{r}
+calc_mut_per_sig <- function(which_sig_list, 
+                             muts_per_sample, 
+                             wgs_genome_size, 
+                             wxs_exome_size)
+  # Given a list of `deconstructSigs::WhichSignature` output, calculate the 
+  # mutations per signature per Mb of the genome/exome.
+  #
+  # Args:
+  # 
+  #   which_sig_list: a list of `whichSignature` output
+  #   
+  #   output_dir: where the plots should be saved. If this directory doesn' exist, 
+  #               will create it. Default is current directory.
+  # Returns:
+  #   Saved png mutation signature plots to the specified directory. 
+  
+  # Count the total number of signature mutations for each sample
+  total_muts <- apply(sigs_input, 1, sum)
+
+  # Pull out the signature weights and make into matrix
+  sig_weights <- do.call("rbind.data.frame", 
+          lapply(which_sig_list, function(sample_data) sample_data$weights)
+          ) %>% 
+    tibble::rownames_to_column("Tumor_Sample_Barcode") 
+
+# Calculate the number of mutations contributing to each signature
+cosmic_num <- apply(cosmic_weights[, -1], 2, function(row_weights) row_weights*total_muts) %>%
+  as.data.frame() %>% 
+  dplyr::mutate(Tumor_Sample_Barcode = cosmic_weights$Tumor_Sample_Barcode) %>% 
+  dplyr::inner_join(dplyr::select(maf, "Tumor_Sample_Barcode", "short_histology", "experimental_strategy"), 
+                    by = "Tumor_Sample_Barcode")  %>% 
+  dplyr::filter(experimental_strategy != "Panel") %>%
+  reshape2::melt() %>% 
+  dplyr::distinct(Tumor_Sample_Barcode, variable, .keep_all = TRUE) %>%
+    dplyr::mutate(genome_size = dplyr::recode(experimental_strategy,
+      "WGS" = wgs_size,
+      "WXS" = wxs_size
+    ), 
+    mut_per_mb = value/(genome_size/10^6))
+
+
+# Reshape into long format for plotting
+grouped_cosmic_num <- cosmic_num %>% 
+  dplyr::arrange(variable) %>%
+  dplyr::group_by(short_histology, variable) %>%
+  dplyr::summarize(num_tumors = sum(value > 0), 
+                   mean_num = median(mut_per_mb)) 
+
+
+```
+
+```{r}
+ function(hist) {
+  histology_df <- cosmic_num %>% 
+    dplyr::filter(short_histology == hist, mut_per_mb > 0) %>% 
+    dplyr::mutate("Signatures" = droplevels(variable))
+  
+    barplot <- histology_df %>%
+    ggplot2::ggplot(ggplot2::aes(x = reorder(Tumor_Sample_Barcode, -mut_per_mb), y = mut_per_mb)) +
+    ggplot2::geom_bar(stat = "identity", ggplot2::aes(fill = Signatures)) + 
+    ggplot2::ylab("Mutations per Mb") + 
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 55, hjust = 1)) +
+    ggplot2::xlab("Sample") + 
+    ggplot2::theme_classic() + 
+    ggplot2::scale_fill_discrete(drop = TRUE) + 
+    ggplot2::ggtitle(hist)
+  ggplot2::ggsave(file.path(cosmic_plots, paste0("barplot_", hist, "_cosmic_mutation_sig.png")))
+}
+```
+
+
+```{r}
+ggplot2::ggplot(grouped_cosmic_num, ggplot2::aes(x = short_histology, y = forcats::fct_rev(variable))) +      
+  ggplot2::geom_point(ggplot2::aes(color = mean_num, size = num_tumors)) +
+  ggplot2::scale_size("Number of Samples", range = c(0, 10)) +    
+  ggplot2::scale_color_distiller("Median Number of Mutations per Mb", palette = "YlGnBu") +
+  ggplot2::theme_classic() +
+  ggplot2::scale_x_discrete(position = "top") +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 55, hjust = -.01),
+                 axis.text.y = ggplot2::element_text(size = ggplot2::rel(.75)),
+                 legend.key.size = ggplot2::unit(.5, "cm")) +
+  ggplot2::xlab("") +
+  ggplot2::ylab("") +
+  ggplot2::scale_x_discrete(position = "top") 
+```
+
 ## Set up data
 
 ```{r}
 maf <- data.table::fread("consensus_mutation.maf.tsv")
+```
+
+
+```{r}
+# Set up BED region files for TMB calculations
+wgs_bed <- readr::read_tsv(file.path("..", "..", "data", "release-v8-20191104", "WGS.hg38.strelka2.unpadded.bed"),
+                           col_names = FALSE)
+wxs_bed <- readr::read_tsv(file.path("..", "..", "data", "release-v8-20191104", "WXS.hg38.100bp_padded.bed"), 
+                           col_names = FALSE)
+
+# Calculate size of genome surveyed
+# These files are BED files where the third column is the End position and
+# the second column is the Start position.
+# So End - Start gives the size of each range. Sum the gives the total size in bp.
+wgs_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
+wxs_size <- sum(wxs_bed[, 3] - wxs_bed[, 2])
 ```
 
 Determine how many mutations we have per sample.
@@ -105,12 +238,19 @@ sigs_input <- mut.to.sigs.input(mut.ref = maf,
                                 bsg = BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38)
 ```
 
+Add total mutations per sample. 
+
+```{r}
+# Count the total number of signature mutations for each sample
+total_muts <- apply(sigs_input, 1, sum)
+```
+
 ## Determine Signatures for COSMIC and Alexandrov et al, 2013
 
 Get list of tumor sample ids. 
 
 ```{r}
-sample_ids <- maf %>%
+tumor_sample_ids <- maf %>%
   dplyr::filter(Tumor_Sample_Barcode %in% rownames(sigs_input)) %>%
   dplyr::distinct(Tumor_Sample_Barcode) %>%
   dplyr::pull(Tumor_Sample_Barcode)
@@ -123,9 +263,7 @@ sample_sigs_cosmic <- lapply(sample_ids, function(sample_id) {
   # Determine the signatures contributing to the sample
   whichSignatures(tumor.ref = sigs_input, 
                   signatures.ref = signatures.cosmic, 
-                  sample.id = sample_id, 
-                  contexts.needed = TRUE,
-                  tri.counts.method = 'default')
+                  sample.id = sample_id)
 })
 ```
 
@@ -136,74 +274,51 @@ sample_sigs_nature <- lapply(sample_ids, function(sample_id) {
   # Determine the signatures contributing to the sample
   whichSignatures(tumor.ref = sigs_input, 
                   signatures.ref = signatures.nature2013, 
-                  sample.id = sample_id, 
-                  contexts.needed = TRUE,
-                  tri.counts.method = 'default')
+                  sample.id = sample_id)
 })
 ```
 
 ### COSMIC Signature Plots
 
 ```{r}
-for(sample_num in 1:length(sample_sigs_cosmic)) {
-  png(file.path(cosmic_plots, paste0(sample_ids[sample_num], "_cosmic_mutation_sig.png")))
-  plotSignatures(sample_sigs_cosmic[[sample_num]], sub = sample_ids[sample_num])
-  dev.off()
-}
+sample_mut_sig_plot(sample_sigs_cosmic, 
+                    label = "cosmic", 
+                    output_dir = file.path(cosmic_plots, "individ_mutation_sig"), 
+                    sample_ids = tumor_sample_ids)
 ```
 
 ### Alexandrov et al, 2013 Signature Plots
 
 ```{r}
-for(sample_num in 1:length(sample_sigs_nature)) {
-  png(file.path(nature_plots, paste0(sample_ids[sample_num], "_nature_mutation_sig.png")))
-  plotSignatures(sample_sigs_nature[[sample_num]], sub = sample_ids[sample_num])
-  dev.off()
-}
+sample_mut_sig_plot(sample_sigs_nature, 
+                    label = "nature", 
+                    output_dir = file.path(nature_plots, "individ_mutation_sig"), 
+                    sample_ids = tumor_sample_ids)
 ```
 
 ### Plot weights of samples and signatures 
 
 ```{r}
-# Pull out the signature weights and make into matrix
-cosmic_weights <- do.call("rbind.data.frame", 
-        lapply(sample_sigs_cosmic, function(sample_data) sample_data$weights)
-) %>% 
-  tibble::rownames_to_column("Tumor_Sample_Barcode") %>% 
-  dplyr::inner_join(dplyr::select(maf, "Tumor_Sample_Barcode", "short_histology"), by = "Tumor_Sample_Barcode")  %>% 
-  reshape2::melt() %>% 
-  dplyr::distinct(Tumor_Sample_Barcode, variable, .keep_all = TRUE)
-
 # Reshape into long format for plotting
-grouped_cosmic_weights <- cosmic_weights %>% 
+grouped_cosmic_num <- cosmic_num %>% 
   dplyr::arrange(variable) %>%
   dplyr::group_by(short_histology, variable) %>%
   dplyr::summarize(num_tumors = sum(value > 0), 
-                   mean_weight = mean(value)) 
+                   mean_num = median(mut_per_mb)) 
 ```
 
 ```{r}
-ggplot2::ggplot(grouped_cosmic_weights, ggplot2::aes(x = short_histology, y = forcats::fct_rev(variable))) +      
-  ggplot2::geom_point(ggplot2::aes(color = mean_weight, size = num_tumors)) +
-  ggplot2::scale_size("Number of Samples", range = c(0, 10)) +    
-  ggplot2::scale_color_distiller("Mean Weight", palette = "YlGnBu") +
-  ggplot2::theme_classic() +
-  ggplot2::scale_x_discrete(position = "top") +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 55, hjust = -.01),
-                 axis.text.y = ggplot2::element_text(size = ggplot2::rel(.75)),
-                 legend.key.size = ggplot2::unit(.5, "cm")) +
-  ggplot2::xlab("") +
-  ggplot2::ylab("") +
-  ggplot2::scale_x_discrete(position = "top") 
-```
 
+```
 
 ```{r}
-cosmic_weights %>% 
-  dplyr::filter(short_histology == "HGAT") %>%
-ggplot2::ggplot(ggplot2::aes(x = reorder(Tumor_Sample_Barcode, -value), y = value)) +
-  ggplot2::geom_bar( stat = "identity", ggplot2::aes(fill = variable))
+ggplot2::ggsave(file.path(cosmic_plots, paste0("bubble_matrix_cosmic_mutation_sig.png")))
 ```
+
+```{r}
+lapply(unique(cosmic_num$short_histology), grouped)
+```
+
 ## Session Info
 
 ```{r}
