@@ -48,6 +48,7 @@ library(deconstructSigs)
 Set up output directories. 
 
 ```{r}
+data_dir <- file.path("..", "..", "data")
 results_dir <- "results"
 plots_dir <- "plots"
 cosmic_plots <- file.path(plots_dir, "cosmic")
@@ -185,7 +186,7 @@ bubble_matrix_plot <- function(sig_num_df, label = "none") {
   grouped_sig_num <- sig_num_df %>% 
     dplyr::arrange(variable) %>%
     dplyr::group_by(short_histology, variable) %>%
-    dplyr::summarize(num_tumors = sum(value > 0), 
+    dplyr::summarize(num_tumors = sum(value > 0)/length(value), 
                      mean_num = median(mut_per_mb)) 
  
   # Make the bubble matrix plot
@@ -254,12 +255,23 @@ grouped_sig_barplot <- function(hist_groups, sig_num_df, output_dir = getwd(),
 }
 ```
 
-## Set up data
+## Read in data
+
+Read in the consensus MAF file. 
 
 ```{r}
 maf <- data.table::fread("consensus_mutation.maf.tsv")
 ```
 
+Read in this list so we can make sure we keep only primary tumors for the 
+grouped bar plots.
+
+```{r}
+ind_samples <- readr::read_tsv(file.path(data_dir, 
+                                         "independent-specimens.wgswxs.primary.tsv"))
+```
+
+Read in the WGS and WXS regions so they can be used for the Mb denominator. 
 
 ```{r}
 # Set up BED region files for TMB calculations
@@ -275,6 +287,8 @@ wxs_bed <- readr::read_tsv(file.path("..", "..", "data", "release-v8-20191104", 
 wgs_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
 wxs_size <- sum(wxs_bed[, 3] - wxs_bed[, 2])
 ```
+
+## Set up data
 
 Determine how many mutations we have per sample.
 
