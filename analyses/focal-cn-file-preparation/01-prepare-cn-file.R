@@ -29,7 +29,7 @@ if (!("IRanges" %in% installed.packages())) {
   BiocManager::install("IRanges", update = FALSE)
 }
 
-# Install annotatr 
+# Install annotatr
 if (!("annotatr" %in% installed.packages())) {
   BiocManager::install("annotatr", update = FALSE)
 }
@@ -73,7 +73,7 @@ opt <- optparse::parse_args(opt_parser)
 # matter where this is called from
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
-# Set path to results directory 
+# Set path to results directory
 results_dir <-
   file.path(root_dir, "analyses", "focal-cn-file-preparation", "results")
 
@@ -90,24 +90,31 @@ seg_df <-
 
 #### Format seg file and overlap with hg38 genome annotations ------------------
 
-# Exclude the X and Y chromosomes, exclude `copy.num` == 2, and rearrange 
+# Exclude the X and Y chromosomes, exclude `copy.num` == 2, and rearrange
 # ID column to be the last column
 seg_no_xy <- seg_df %>%
-  dplyr::filter(!(chrom %in% c("chrX", "chrY")), (copy.num != 2)) %>%
-  dplyr::select(-ID, dplyr::everything()) 
+  dplyr::filter(!(chrom %in% c("chrX", "chrY"))) %>%
+  dplyr::select(-ID, dplyr::everything())
 
-# Make seg data.frame a GRanges object 
+# Make seg data.frame a GRanges object
 seg_gr <- seg_no_xy %>%
   GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE,
                                           starts.in.df.are.0based = FALSE)
 
 # Define the annotations for the hg38 genome
 txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
-genes <- GenomicFeatures::genes(txdb)
 
-# Create a data.frame with the overlaps between the seg file and hg38 genome 
-# annotations 
-overlaps <- IRanges::mergeByOverlaps(seg_gr, genes)
+# we'll only look at genes on chromosomes 1:22 -- this will get rid of things
+# like alternates
+chroms <- paste0("chr", 1:22)
+chrom_filter <- list(tx_chrom = chroms)
+
+# extract the genes using the chromosome filter
+chr_genes <- GenomicFeatures::genes(txdb,  filter = chrom_filter)
+
+# Create a data.frame with the overlaps between the seg file and hg38 genome
+# annotations
+overlaps <- IRanges::mergeByOverlaps(seg_gr, chr_genes)
 
 overlapSymbols <-
   AnnotationDbi::mapIds(
