@@ -18,6 +18,7 @@
 #       from the top directory of 'OpenPBTA-analysis'.
 # --vaf: Minimum variant allele fraction of mutations to include.
 # --min_depth: Minimum sequencing depth to call mutations.
+# --min_mutated: Minimum number of mutated samples required to include a gene in the plot
 # --n_genes: number of genes to plot interation data for (uses the most mutated n genes)
 # --out: Output file location
 #
@@ -57,7 +58,7 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
-    opt_str = "--seg",
+    opt_str = "--cnv",
     type = "character",
     default = file.path("data", "pbta-cnv-cnvkit.seg.gz"),
     help = "Relative file path (from top directory of 'OpenPBTA-analysis')
@@ -94,10 +95,18 @@ option_list <- list(
   make_option(
     opt_str = "--n_genes",
     type = "numeric",
-    default = 50,
+    default = 60,
     help = "Number of genes to include in figure. Will be filtered by number of
             mutations, so the n most mutated genes will have their co-occurence
             calculated and will appear in the resulting figure.",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = "--min_mutated",
+    type = "numeric",
+    default = 5,
+    help = "Number of samples that must be mutated for a given gene to be included the 
+            co-occurence calculations",
     metavar = "character"
   ),
   make_option(
@@ -141,7 +150,7 @@ opts <- parse_args(OptionParser(option_list = option_list))
 # File locations
 
 maf_file <- file.path(root_dir, opts$maf)
-seg_file <- file.path(root_dir, opts$seg)
+cnv_file <- file.path(root_dir, opts$cnv)
 meta_file <- file.path(root_dir, opts$metadata)
 out_file <- file.path(root_dir, opts$out)
 if (!is.na(opts$specimen_list)) {
@@ -153,7 +162,7 @@ if (!is.na(opts$specimen_list)) {
 #### Read files
 
 maf_df <- data.table::fread(maf_file, data.table = FALSE)
-seg_df <- data.table::fread(seg_file, data.table = FALSE)
+cnv_df <- data.table::fread(cnv_file, data.table = FALSE)
 meta_df <- data.table::fread(meta_file, data.table = FALSE)
 if (exists("specimen_file")) {
   specimen_df <- data.table::fread(specimen_file, data.table = FALSE)
@@ -278,11 +287,12 @@ gene_counts <- gene_sample_counts %>%
   dplyr::arrange(
     desc(mutant_samples),
     desc(muts_per_sample)
-  )
+  ) %>%
+  dplyr::filter(mutant_samples >= opts$min_mutated | 
+                dplyr::row_number() <= 2) # keep at least 2 genes 
 
 # get most often mutated genes
 top_count_genes <- head(gene_counts, opts$n_genes)$gene
-
 
 cooccur_summary <- coocurrence(gene_sample_counts, top_count_genes)
 

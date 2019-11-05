@@ -45,7 +45,6 @@ mkdir -p $plot_dir
 
 for disease_id in "${!disease[@]}"; do
   echo $disease_id
-  echo ${disease[$disease_id]}
   Rscript ${script_dir}/01-disease-specimen-lists.R \
     --metadata ${metadata} \
     --specimen_list ${ind_samples} \
@@ -61,5 +60,6 @@ for disease_id in "${!disease[@]}"; do
   
   Rscript ${script_dir}/03-plot_interactions.R \
     --infile ${cooccur}.${disease_id}.tsv \
-    --outfile ${plot}.${disease_id}.png
+    --outfile ${plot}.${disease_id}.png \
+    --plotsize 50
 done
