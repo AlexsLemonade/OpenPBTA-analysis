@@ -40,11 +40,6 @@ atrt_specimens <- histologies_df %>%
 # containing 'SMARC'
 annotation_cn %>%
   dplyr::filter(biospecimen_id %in% atrt_specimens,
-                grepl("SMARC", gene_symbol))
+                grepl("SMARCB1", gene_symbol))
 ```
 
-Are there any segments that got mapped to _SMARCB1_ in the file?
-
-```{r}
-sum(annotation_cn$gene_symbol == "SMARCB1")
-```
