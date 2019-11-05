@@ -13,6 +13,7 @@ results_dir=${base_dir}/results
 plot_dir=${base_dir}/plots
 temp_dir=scratch
 
+ALL=${OPENPBTA_ALL:-1}
 
 ind_samples=data/independent-specimens.wgs.primary-plus.tsv
 metadata=data/pbta-histologies.tsv
@@ -26,13 +27,15 @@ plot=${plot_dir}/lancet_top50
 declare -A disease
 disease[All]="All"
 disease[LGAT]="Low-grade glioma;astrocytoma (WHO grade I/II)"
-disease[Medulloblastoma]="Medulloblastoma"
-disease[Ependymoma]="Ependymoma"
-disease[HGAT]="High-grade glioma;astrocytoma (WHO grade III/IV)"
-disease[DIPG]="Brainstem glioma- Diffuse intrinsic pontine glioma"
-disease[Ganglioglioma]="Ganglioglioma"
-disease[Craniopharyngioma]="Craniopharyngioma"
-disease[ATRT]="Atypical Teratoid Rhabdoid Tumor"
+if [ "$ALL" -gt "0" ]; then
+  disease[Medulloblastoma]="Medulloblastoma"
+  disease[Ependymoma]="Ependymoma"
+  disease[HGAT]="High-grade glioma;astrocytoma (WHO grade III/IV)"
+  disease[DIPG]="Brainstem glioma- Diffuse intrinsic pontine glioma"
+  disease[Ganglioglioma]="Ganglioglioma"
+  disease[Craniopharyngioma]="Craniopharyngioma"
+  disease[ATRT]="Atypical Teratoid Rhabdoid Tumor"
+fi
 
 
 # make output directories if they don't exist

@@ -1,10 +1,6 @@
 # cooccur_function.R
 # Functions for calculating co-occurence between mutations
 
-if (!("qvalue" %in% installed.packages())) {
-  BiocManager::install("qvalue", update = FALSE)
-}
-
 #' Calculate Fisher's exact test for row-wise data
 #'
 #' Data order follows a two by two matrix, filled by rows or columns
