@@ -64,7 +64,6 @@ filter_mutations <- function(maf_df,
     maf_df <- maf_df %>%
       dplyr::filter(Variant_Classification %in% include_var_class)
   }
-
 }
 
 

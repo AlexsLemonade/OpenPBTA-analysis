@@ -13,7 +13,7 @@
 # --specimen_list: A file of specimens to include. Ideally, this list should consist
 #     of independent samples (at most one from each individual). File path is given
 #     from the top directory of 'OpenPBTA-analysis'.
-# --disease: The name of the disease to be analyzed (in quotes). 
+# --disease: The name of the disease to be analyzed (in quotes).
 #     "All" for any disease type.
 # --outfile: The file path for output (relative to top of OpenPBTA-analysis)
 #
@@ -56,7 +56,7 @@ option_list <- list(
     help = "Relative file path (from top directory of 'OpenPBTA-analysis')
             to MAF file to be analyzed. Can be .gz compressed.",
     metavar = "character"
-  ),  
+  ),
   make_option(
     opt_str = "--outfile",
     type = "character",
@@ -94,7 +94,7 @@ specimen_df <- readr::read_tsv(specimen_file, col_types = readr::cols())
 disease_df <- meta_df %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in% specimen_df$Kids_First_Biospecimen_ID) %>%
   dplyr::filter(tolower(opts$disease) == "all" |
-                tolower(disease_type_new) == tolower(opts$disease)) %>%
+    tolower(disease_type_new) == tolower(opts$disease)) %>%
   dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID)
 
 readr::write_tsv(disease_df, out_file)
