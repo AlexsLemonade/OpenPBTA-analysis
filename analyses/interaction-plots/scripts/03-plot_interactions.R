@@ -13,6 +13,9 @@
 # --outfile The output plot location. Specify type of file with the extension
 #   (.png or .pdf, most likely).
 #
+# --plotsize The number of rows and columns in the expected plot, for scaling. 
+#   Larger numbers will create smaller boxes for the heatmap tiles.
+#
 # Command line example:
 #
 # Rscript analyses/interaction-plots/02-plot_interactions.R \
@@ -44,6 +47,13 @@ option_list <- list(
     help = "Relative file path (from top directory of 'OpenPBTA-analysis')
             where output plot will be located. Extension specifies format of plot",
     metavar = "character"
+  ),
+  make_option(
+    opt_str = "--plotsize",
+    default = "50",
+    type = "numeric",
+    help = "Relative size of plots; number of rows and columns to be plotted",
+    metavar = "character"
   )
 )
 
@@ -70,6 +80,15 @@ cooccur_df <- cooccur_df %>%
     label2 = factor(label2, levels = labels)
   )
 
+# create scales for consistent sizing
+xscale <- cooccur_df$label1 %>%
+  as.character() %>%
+  unique() %>%
+  c(1:(opts$plotsize - length(.))) 
+yscale <- cooccur_df$label2 %>%
+  as.character() %>%
+  unique() %>%
+  c(1:(opts$plotsize - length(.)), .)
 
 ### make plot
 cooccur_plot <- ggplot(
@@ -77,12 +96,15 @@ cooccur_plot <- ggplot(
   aes(x = label1, y = label2, fill = cooccur_score)
 ) +
   geom_tile(color = "white", size = 1) +
-
-  scale_x_discrete(position = "top") +
+  scale_x_discrete(position = "top", 
+                   limits = xscale, 
+                   breaks = unique(cooccur_df$label1)) + # blank unused sections.
+  scale_y_discrete(limits = yscale, 
+                   breaks = unique(cooccur_df$label2)) +
   scale_fill_distiller(
     type = "div",
     palette = 5,
-    limits = c(-20, 20),
+    limits = c(-10, 10),
     oob = scales::squish,
   ) +
   labs(
