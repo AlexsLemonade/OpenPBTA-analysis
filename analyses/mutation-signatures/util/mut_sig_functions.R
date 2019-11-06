@@ -7,16 +7,14 @@
 library(deconstructSigs)
 
 ################################################################################
-sample_mut_sig_plot <- function(which_sig_list, label = "none", output_dir = getwd(),
-                                sample_ids) {
+sample_mut_sig_plot <- function(which_sig_list, label = "none", output_dir = getwd()) {
   # Given a list of `deconstructSigs::WhichSignature` output, make plots for each sample using
   # deconstructSigs::plotSignatures
   #
   # Args:
   #
-  #   which_sig_list: a list of `whichSignature` output for each sample
+  #   which_sig_list: a list of `whichSignature` output for each sample.
   #   label: the label you would like associated with the plot as a character string.
-  #   sample_ids: vector of the sample ids.
   #   output_dir: where the plots should be saved. If this directory doesn't exist,
   #               this will create it. Default is current directory.
   # Returns:
@@ -26,11 +24,11 @@ sample_mut_sig_plot <- function(which_sig_list, label = "none", output_dir = get
     dir.create(output_dir, recursive = TRUE)
   }
 
-  for (sample_num in 1:length(which_sig_list)) {
+  for (sample_id in names(which_sig_list)) {
     # Set up png
-    png(file.path(output_dir, paste0(sample_ids[sample_num], "_", label, "_mutation_sig.png")))
+    png(file.path(output_dir, paste0(sample_id, "_", label, "_mutation_sig.png")))
     # Use the deconstructSigs function 
-    plotSignatures(which_sig_list[[sample_num]], sub = sample_ids[sample_num])
+    plotSignatures(which_sig_list[[sample_id]], sub = sample_id)
     dev.off()
   }
 }
@@ -65,16 +63,13 @@ calc_mut_per_sig <- function(which_sig_list,
     "rbind.data.frame",
     lapply(which_sig_list, function(sample_data) sample_data$weights)
   ) %>%
-    tibble::rownames_to_column("Tumor_Sample_Barcode")
+    tibble::rownames_to_column("Tumor_Sample_Barcode") %>%
 
   # Calculate the number of mutations contributing to each signature
   # Here the weight is multiplied by the total number of signature mutations. 
-  sig_num_df <- apply(sig_weights[, -1], 2, function(row_weights) row_weights * total_muts) %>%
+  dplyr::mutate_at(dplyr::vars(-Tumor_Sample_Barcode), ~ . * total_muts) %>%
     as.data.frame() %>%
-
-    # Add back the sample ids
-    dplyr::mutate(Tumor_Sample_Barcode = sig_weights$Tumor_Sample_Barcode) %>%
-
+    
     # Join the short_histology and experimental stategy information
     dplyr::inner_join(dplyr::select(
       maf_df,
@@ -84,14 +79,15 @@ calc_mut_per_sig <- function(which_sig_list,
     ),
     by = "Tumor_Sample_Barcode"
     ) %>%
+
     # Get rid of Panel samples
     dplyr::filter(experimental_strategy != "Panel") %>%
-
+    
     # Reformat for plotting
     reshape2::melt() %>%
 
     # Only keep distinct
-    dplyr::distinct(Tumor_Sample_Barcode, variable, .keep_all = TRUE) %>%
+    dplyr::distinct(Tumor_Sample_Barcode, signature, .keep_all = TRUE) %>%
 
     # Add genome size and calculate the mutation per this column
     dplyr::mutate(
@@ -125,17 +121,17 @@ bubble_matrix_plot <- function(sig_num_df, label = "none") {
   #
   # Summarize the mut_per_mb column by histology
   grouped_sig_num <- sig_num_df %>%
-    dplyr::arrange(variable) %>%
-    dplyr::group_by(short_histology, variable) %>%
+    dplyr::arrange(signature) %>%
+    dplyr::group_by(short_histology, signature) %>%
     dplyr::summarize(
       # Calculate the proportion of tumors with a non-zero weight for each signature
-      prop_tumors = sum(value > 0) / length(value),
+      prop_tumors = sum(num_mutations > 0) / length(num_mutations),
       # Calculate the median number of mutations per Md
       med_num = median(mut_per_mb)
     )
 
   # Make the bubble matrix plot
-  ggplot2::ggplot(grouped_sig_num, ggplot2::aes(x = short_histology, y = forcats::fct_rev(variable))) +
+  ggplot2::ggplot(grouped_sig_num, ggplot2::aes(x = short_histology, y = forcats::fct_rev(signature))) +
     ggplot2::geom_point(ggplot2::aes(color = med_num, size = prop_tumors)) +
     ggplot2::scale_size("Proportion of Samples", range = c(0, 4)) +
     ggplot2::scale_color_distiller("Median Number of Mutations per Mb", palette = "YlGnBu") +
@@ -170,7 +166,7 @@ grouped_sig_barplot <- function(hist_groups, sig_num_df, output_dir = getwd(),
   #          png name and ggtitle.
   #
   # Returns:
-  #  A grouped barplot saved as png with themutations per Mb for each sample
+  #  A grouped barplot saved as png with the mutations per Mb for each sample
   #  from each signature. 
 
   # Make the output directory if it doesn't exist
@@ -182,13 +178,12 @@ grouped_sig_barplot <- function(hist_groups, sig_num_df, output_dir = getwd(),
   for (hist_group in hist_groups) {
     # Narrow the df down to just this histology's group
     histology_df <- sig_num_df %>%
-      dplyr::filter(short_histology == hist_group, mut_per_mb > 0) %>%
-      dplyr::mutate("Signatures" = droplevels(variable))
+      dplyr::filter(short_histology == hist_group, mut_per_mb > 0) 
 
     # Make the grouped bar plot
     histology_df %>%
       ggplot2::ggplot(ggplot2::aes(x = reorder(Tumor_Sample_Barcode, -mut_per_mb), y = mut_per_mb)) +
-      ggplot2::geom_bar(stat = "identity", ggplot2::aes(fill = Signatures)) +
+      ggplot2::geom_bar(stat = "identity", ggplot2::aes(fill = signature)) +
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 55, hjust = 1)) +
       ggplot2::ylab("Mutations per Mb") +
       ggplot2::xlab("") +

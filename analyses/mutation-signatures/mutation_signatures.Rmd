@@ -175,6 +175,8 @@ sample_sigs_cosmic <- lapply(tumor_sample_ids, function(sample_id) {
     contexts.needed = TRUE
   )
 })
+# Bring along the names
+names(sample_sigs_cosmic) <- tumor_sample_ids
 ```
 
 Get [Alexandrov et al, 2013](https://www.ncbi.nlm.nih.gov/pubmed/23945592) signatures for each sample. 
@@ -189,6 +191,8 @@ sample_sigs_nature <- lapply(tumor_sample_ids, function(sample_id) {
     contexts.needed = TRUE
   )
 })
+# Bring along the names
+names(sample_sigs_nature) <- tumor_sample_ids
 ```
 
 ### COSMIC signature plots
@@ -196,8 +200,7 @@ sample_sigs_nature <- lapply(tumor_sample_ids, function(sample_id) {
 ```{r}
 sample_mut_sig_plot(sample_sigs_cosmic,
   label = "cosmic",
-  output_dir = file.path(cosmic_plots, "individual_mutation_sig"),
-  sample_ids = tumor_sample_ids
+  output_dir = file.path(cosmic_plots, "individual_mutation_sig")
 )
 ```
 
@@ -206,8 +209,7 @@ sample_mut_sig_plot(sample_sigs_cosmic,
 ```{r}
 sample_mut_sig_plot(sample_sigs_nature,
   label = "nature",
-  output_dir = file.path(nature_plots, "individual_mutation_sig"),
-  sample_ids = tumor_sample_ids
+  output_dir = file.path(nature_plots, "individual_mutation_sig")
 )
 ```
 
@@ -252,7 +254,7 @@ ggplot2::ggsave(file.path(cosmic_plots, paste0("bubble_matrix_cosmic_mutation_si
 ```
 
 ```{r}
-bubble_matrix_plot(nature_sigs_df, label = "Alexandrov et al, 2013")
+bubble_matrix_plot(nature_sigs_df, label = "Alexandrov et al, 2013 signatures")
 ```
 
 ```{r}
