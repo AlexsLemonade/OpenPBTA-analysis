@@ -36,7 +36,7 @@ jobs:
 
       - run:
           name: Analyze drops from both polyA and stranded data
-          command: Rscript -e "rmarkdown::render(input = 'analyses/collapse-rnaseq/02-analyze-drops.Rmd', params = list(polya.annot.table = 'data/pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds', stranded.annot.table = 'data/pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds'), clean = TRUE)"
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render(input = 'analyses/collapse-rnaseq/02-analyze-drops.Rmd', params = list(polya.annot.table = 'data/pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds', stranded.annot.table = 'data/pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds'), clean = TRUE)"
 
       - run:
           name: Analyze RNA-seq dropped genes
