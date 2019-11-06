@@ -116,6 +116,9 @@ ggplot2::ggsave(
   height = 10
 )
 
+# TODO: rerun this when the primary_site column gets fixed
+# https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/214
+
 # data.frame with the location where each cancer type in the dataset is
 # expressed, sorted to show highest expression
 brain_location <- histologies_df %>%
