@@ -28,11 +28,11 @@ jobs:
      
       - run:
           name: Collapse RSEM (polyA RNA-seq)
-          command: ./scripts/run_in_ci.sh Rscript analyses/collapse-rnaseq/01-summarize_matrices.R -i data/pbta-gene-expression-rsem-fpkm.polya.rds -g scratch/gencode.v27.primary_assembly.annotation.gtf -m data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds -t data/pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds
+          command: ./scripts/run_in_ci.sh Rscript analyses/collapse-rnaseq/01-summarize_matrices.R -i data/pbta-gene-expression-rsem-fpkm.polya.rds -g analyses/collapse-rnaseq/gencode.v27.primary_assembly.annotation.gtf.gz -m data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds -t data/pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds
 
       - run:
           name: Collapse RSEM (stranded RNA-seq)
-          command: ./scripts/run_in_ci.sh Rscript analyses/collapse-rnaseq/01-summarize_matrices.R -i data/pbta-gene-expression-rsem-fpkm.stranded.rds -g scratch/gencode.v27.primary_assembly.annotation.gtf -m data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds -t data/pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds
+          command: ./scripts/run_in_ci.sh Rscript analyses/collapse-rnaseq/01-summarize_matrices.R -i data/pbta-gene-expression-rsem-fpkm.stranded.rds -g analyses/collapse-rnaseq/gencode.v27.primary_assembly.annotation.gtf.gz -m data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds -t data/pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds
 
       - run:
           name: Analyze drops from both polyA and stranded data
