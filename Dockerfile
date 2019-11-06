@@ -144,7 +144,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 RUN Rscript -e "library(bedr)"
 
 # Install for mutation signature analysis
-RUN R -e "BiocManager::install(c('BSgenome.Hsapiens.UCSC.hg19', 'BSgenome.Hsapiens.UCSC.hg38')"
+RUN R -e "BiocManager::install(c('BSgenome.Hsapiens.UCSC.hg19', 'BSgenome.Hsapiens.UCSC.hg38'))"
 
 # Also install for mutation signature analysis
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
