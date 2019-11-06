@@ -80,6 +80,10 @@ jobs:
           name: Oncoprint plotting
           command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
           
+      - run:  
+          name: Focal CN RNA expression visualization
+          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/oncoprint-landscape/rna-expression-validation.R
+          
          ################################
          #### Add your analysis here ####
          ################################
