@@ -144,7 +144,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 RUN Rscript -e "library(bedr)"
 
 # packages required for collapsing RNA-seq data by removing duplicated gene symbols
-RUN R -e "install.packages(c('knitr', 'DT'), dependencies = TRUE, repos = 'http://cran.rstudio.com/')"
+RUN R -e "install.packages('DT', dependencies = TRUE)"
 RUN R -e "BiocManager::install(c('rtracklayer'), update = FALSE)"
 
 #### Please install your dependencies here
