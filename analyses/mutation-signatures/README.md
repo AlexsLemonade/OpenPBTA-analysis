@@ -6,6 +6,10 @@ Here the signatures from [COSMIC signatures](https://cancer.sanger.ac.uk/cosmic)
 and[Alexandrov et al, 2013](https://www.ncbi.nlm.nih.gov/pubmed/23945592) are
 evaluated for all samples using [deconstructSigs](https://github.com/raerose01/deconstructSigs).
 
+## Summary of Results:
+
+Coming soon.
+
 **Table of Contents**
 * [How to run this analysis](#how-to-run-the-mutation-signatures-analysis)
 * [Summary of the calculations](#summary-of-the-calculations)
@@ -28,9 +32,13 @@ This notebook, in addition to its `nb.html` output, will return plots return res
 
 The weights from [`deconstructSigs::whichSignatures`](https://www.rdocumentation.org/packages/deconstructSigs/versions/1.8.0/topics/whichSignatures) are multiplied by each sample's sum of mutations as provided by [`deconstructSigs::mut.to.sigs.input`](https://www.rdocumentation.org/packages/deconstructSigs/versions/1.8.0/topics/mut.to.sigs.input).
 These numbers are saved to the `_signatures_results.tsv` files in the `results` folder.
+For more information, see the [`calc_mut_per_sig`]() code.
 
-### Number of
+### Proportion of tumors with a signature
 
+A tumor is considered to have a particular signature if its weight is non-zero.
+This is divided by the number of tumor samples in that particular histology group.
+For more information, see the [`bubble_matrix_plot`]() code.
 
 ## Overall file structure
 ```
