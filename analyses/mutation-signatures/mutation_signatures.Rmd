@@ -113,10 +113,10 @@ Read in the WGS and WXS regions so they can be used for the Mb denominator.
 
 ```{r}
 # Set up BED region files for TMB calculations
-wgs_bed <- readr::read_tsv(file.path("..", "..", "data", "release-v8-20191104", "WGS.hg38.strelka2.unpadded.bed"),
+wgs_bed <- readr::read_tsv(file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed"),
   col_names = FALSE
 )
-wxs_bed <- readr::read_tsv(file.path("..", "..", "data", "release-v8-20191104", "WXS.hg38.100bp_padded.bed"),
+wxs_bed <- readr::read_tsv(file.path(data_dir, "WXS.hg38.100bp_padded.bed"),
   col_names = FALSE
 )
 
