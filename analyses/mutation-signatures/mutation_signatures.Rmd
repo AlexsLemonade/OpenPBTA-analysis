@@ -166,12 +166,13 @@ tumor_sample_ids <- maf %>%
 Get [COSMIC signatures](https://cancer.sanger.ac.uk/cosmic) for each sample. 
 
 ```{r}
-sample_sigs_cosmic <- lapply(sample_ids, function(sample_id) {
+sample_sigs_cosmic <- lapply(tumor_sample_ids, function(sample_id) {
   # Determine the signatures contributing to the sample
   whichSignatures(
     tumor.ref = sigs_input,
     signatures.ref = signatures.cosmic,
-    sample.id = sample_id
+    sample.id = sample_id,
+    contexts.needed = TRUE
   )
 })
 ```
@@ -179,12 +180,13 @@ sample_sigs_cosmic <- lapply(sample_ids, function(sample_id) {
 Get [Alexandrov et al, 2013](https://www.ncbi.nlm.nih.gov/pubmed/23945592) signatures for each sample. 
 
 ```{r}
-sample_sigs_nature <- lapply(sample_ids, function(sample_id) {
+sample_sigs_nature <- lapply(tumor_sample_ids, function(sample_id) {
   # Determine the signatures contributing to the sample
   whichSignatures(
     tumor.ref = sigs_input,
     signatures.ref = signatures.nature2013,
-    sample.id = sample_id
+    sample.id = sample_id,
+    contexts.needed = TRUE
   )
 })
 ```
