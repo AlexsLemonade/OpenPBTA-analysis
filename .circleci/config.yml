@@ -82,7 +82,7 @@ jobs:
           
       - run:  
           name: Focal CN RNA expression visualization
-          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/oncoprint-landscape/rna-expression-validation.R
+          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/focal-cn-file-preparation/rna-expression-validation.R
           
          ################################
          #### Add your analysis here ####
