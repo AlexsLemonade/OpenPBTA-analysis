@@ -74,10 +74,19 @@ if (!dir.exists(nature_plots)) {
 
 ## Read in data
 
-Read in the consensus MAF file. 
+Download and read in the consensus MAF file. 
 
 ```{r}
-maf <- data.table::fread("consensus_mutation.maf.tsv")
+# Download the file
+download.file("https://open-pbta.s3.amazonaws.com/data/snv-consensus/snv-consensus_1112019.zip", 
+              destfile = file.path(data_dir, "snv-consensus_1112019.zip"))
+
+# Get the files in this zip file
+unzip(file.path(data_dir, "snv-consensus_1112019.zip"),
+      exdir = data_dir)
+
+# Read in the file
+maf <- data.table::fread(file.path(data_dir, "consensus_mutation.maf.tsv"))
 ```
 
 Read in this list so we can make sure we keep only primary tumors for the 
