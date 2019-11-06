@@ -27,8 +27,16 @@ jobs:
       #                                                rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', clean = TRUE)"
      
       - run:
-          name: Collapse RSEM
-          command: ./scripts/run_in_ci.sh Rscript analyses/collapse-rnaseq/01-summarize_matrices.R -e data/pbta-gene-expression-rsem-fpkm.stranded.rds -o data/pbta-gene-expression-collapsed-rsem-fpkm.stranded.rds
+          name: Collapse RSEM (polyA RNA-seq)
+          command: ./scripts/run_in_ci.sh Rscript analyses/collapse-rnaseq/01-summarize_matrices.R -e data/pbta-gene-expression-rsem-fpkm.polya.rds -g scratch/gencode.v27.primary_assembly.annotation.gtf -m data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds -t data/pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds
+
+      - run:
+          name: Collapse RSEM (stranded RNA-seq)
+          command: ./scripts/run_in_ci.sh Rscript analyses/collapse-rnaseq/01-summarize_matrices.R -e data/pbta-gene-expression-rsem-fpkm.stranded.rds -g scratch/gencode.v27.primary_assembly.annotation.gtf -m data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds -t data/pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds
+
+      - run:
+          name: Analyze drops from both polyA and stranded data
+          command: Rscript -e "rmarkdown::render(input = 'analyses/collapse-rnaseq/02-analyze-drops.Rmd', params = list(polya.annot.table = 'data/pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds', stranded.annot.table = 'data/pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds'), clean = TRUE)"
 
       - run:
           name: Analyze RNA-seq dropped genes
