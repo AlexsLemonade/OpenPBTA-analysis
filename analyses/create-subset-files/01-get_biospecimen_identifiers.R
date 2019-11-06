@@ -54,9 +54,13 @@ get_biospecimen_ids <- function(filename, id_mapping_df) {
                                   data.table = FALSE)
     biospecimen_ids <- unique(snv_file$Tumor_Sample_Barcode)
   } else if (grepl("pbta-cnv", filename)) {
-    # in a column 'ID'
+    # the two CNV files now have different structures
     cnv_file <- read_tsv(filename)
-    biospecimen_ids <- unique(cnv_file$ID)
+    if (grepl("controlfreec", filename)) {
+      biospecimen_ids <- unique(cnv_file$tumor)
+    } else {
+      biospecimen_ids <- unique(cnv_file$ID)
+    }
   } else if (grepl("pbta-fusion", filename)) {
     # in a column 'tumor_id'
     fusion_file <- read_tsv(filename)
@@ -162,6 +166,9 @@ id_mapping_df <- read_tsv(file.path(data_directory, "pbta-histologies.tsv")) %>%
 participant_id_list <- purrr::map(files_to_subset,
                                   ~ get_biospecimen_ids(.x, id_mapping_df)) %>%
   stats::setNames(files_to_subset)
+
+# explicitly perform garbage collection here
+gc(verbose = FALSE)
 
 # split up information for poly-A and stranded expression data vs. all else
 polya_participant_list <- purrr::keep(
