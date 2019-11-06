@@ -46,7 +46,8 @@ calc_mut_per_sig <- function(which_sig_list,
   # Args:
   #
   #   which_sig_list: a list of `whichSignature` output
-  #   muts_per_sample: a vector with the total mutation signature counts for each sample
+  #   muts_per_sample: a vector with the total mutation signature counts for each 
+  #                    sample as calculated by deconstructSigs::mut.to.sigs.input 
   #   wgs_genome_size: size of the WGS genome in bp
   #   wxs_genome_size: size of the WXS exome in bp
   #   maf_df: a data.frame with `short_histology` and `experimental strategy`  
@@ -99,7 +100,9 @@ calc_mut_per_sig <- function(which_sig_list,
         "WXS" = wxs_size
       ),
       mut_per_mb = value / (genome_size / 10^6)
-    )
+    ) %>% 
+    dplyr::rename(num_mutations = value, 
+                  signature = variable)
   
   return(sig_num_df)
 }

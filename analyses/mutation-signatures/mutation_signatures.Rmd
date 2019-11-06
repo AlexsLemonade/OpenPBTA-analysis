@@ -196,7 +196,7 @@ sample_sigs_nature <- lapply(tumor_sample_ids, function(sample_id) {
 ```{r}
 sample_mut_sig_plot(sample_sigs_cosmic,
   label = "cosmic",
-  output_dir = file.path(cosmic_plots, "individ_mutation_sig"),
+  output_dir = file.path(cosmic_plots, "individual_mutation_sig"),
   sample_ids = tumor_sample_ids
 )
 ```
@@ -206,7 +206,7 @@ sample_mut_sig_plot(sample_sigs_cosmic,
 ```{r}
 sample_mut_sig_plot(sample_sigs_nature,
   label = "nature",
-  output_dir = file.path(nature_plots, "individ_mutation_sig"),
+  output_dir = file.path(nature_plots, "individual_mutation_sig"),
   sample_ids = tumor_sample_ids
 )
 ```
@@ -222,7 +222,7 @@ cosmic_sigs_df <- calc_mut_per_sig(sample_sigs_cosmic,
   wxs_exome_size = wxs_size,
   maf_df = maf
 ) %>%
-  readr::write_tsv(results_dir, "cosmic_signatures_results.tsv")
+  readr::write_tsv(file.path(results_dir, "cosmic_signatures_results.tsv"))
 cosmic_sigs_df
 ```
 
@@ -235,7 +235,7 @@ nature_sigs_df <- calc_mut_per_sig(sample_sigs_nature,
   wxs_exome_size = wxs_size,
   maf_df = maf
 ) %>%
-  readr::write_tsv(results_dir, "nature_signatures_results.tsv")
+  readr::write_tsv(file.path(results_dir, "nature_signatures_results.tsv"))
 
 # Print it out here
 nature_sigs_df
