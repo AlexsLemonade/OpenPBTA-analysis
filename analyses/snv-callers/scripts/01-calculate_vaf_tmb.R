@@ -10,7 +10,7 @@
 # -output : File path that specifies the folder where the output should go.
 #           New folder will be created if it doesn't exist. Assumes file path is
 #           given from top directory of 'OpenPBTA-analysis'.
-# --file_format: What type of file format would you like the output as? Options are
+# --file_save: What type of file format would you like the output as? Options are
 #               "rds" or "tsv". Default is "rds".
 # --maf :  Relative file path to MAF file to be analyzed. Can be .gz compressed.
 #          Assumes file path is given from top directory of 'OpenPBTA-analysis'.
@@ -25,7 +25,6 @@
 #               mutations with a VAF that are NA or below this number will be
 #               removed from the vaf data.frame before it is saved to a TSV file.
 # --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
-
 # --no_region : If used, regional analysis will not be done.
 #
 # Command line example:
@@ -71,9 +70,11 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
-    opt_str = c("-f", "--file_format"), type = "character", default = "rds",
-    help = "What type of file format would you like the output as? Options are
-            'rds' or 'tsv'. Default is 'rds'.",
+    opt_str = c("-f", "--file_save"), type = "character", default = "none",
+    help = "If you would like the file saved separately besides the sql file, 
+            specify what you would like the output as. Options are
+            'rds' or 'tsv'. Default is to not save any file besides the sqlite
+            file.",
     metavar = "character"
   ),
   make_option(
@@ -130,7 +131,7 @@ opt <- parse_args(OptionParser(option_list = option_list))
 
 opt$label <- "strelka2"
 opt$output <- "analyses/snv-callers/results/strelka2"
-opt$file_format <- "rds"
+opt$file_save <- "none"
 opt$maf <-  "data/testing/release-v9-20191105/pbta-snv-strelka2.vep.maf.gz"
 opt$sql_file <- "analyses/snv-callers/ref_files/maf.sqlite"
 opt$bed_wgs <- "data/WGS.hg38.strelka2.unpadded.bed"
@@ -150,19 +151,20 @@ opt$bed_wgs <- file.path(root_dir, opt$bed_wgs)
 opt$bed_wxs <- file.path(root_dir, opt$bed_wxs)
 
 # Bring along the file suffix. Make to lower.
-file_suffix <- tolower(opt$file_format)
+file_suffix <- tolower(opt$file_save)
 
 # Check that the file format is supported
-if (!(file_suffix %in% c("rds", "tsv"))) {
+if (!(file_suffix %in% c("rds", "tsv", "none"))) {
   warning("Option used for file format (-f) is not supported. Only 'tsv' or 'rds'
-          files are supported. Defaulting to rds")
-  opt$file_format <- "rds"
-  file_suffix <- "rds"
+          files are supported. Defaulting to not save any file besides the sqlite
+          file.")
+  opt$file_save <- "none"
+  file_suffix <- "none"
 }
 
 ########### Check that the files we need are in the paths specified ############
 needed_files <- c(
-  opt$maf, opt$metadata, opt$bed_wgs, opt$bed_wxs
+  opt$maf, opt$sql_file, opt$bed_wgs, opt$bed_wxs
 )
 
 # Only if regional analysis is being done do we need the annotation file
@@ -193,6 +195,7 @@ if (!dir.exists(caller_results_dir)) {
 }
 
 ####################### File paths for files we will create ####################
+if (opt$)
 vaf_file <- file.path(caller_results_dir, paste0(opt$label, "_vaf.", file_suffix))
 region_annot_file <- file.path(caller_results_dir, paste0(opt$label, "_region.", file_suffix))
 tmb_file <- file.path(caller_results_dir, paste0(opt$label, "_tmb.", file_suffix))
@@ -257,15 +260,17 @@ if (file.exists(vaf_file) && !opt$overwrite) {
   message(paste(nrow(vaf_df), "mutations left after filter and merge"))
 
   # Write the vaf file
-  if (opt$file_format == "tsv") {
+  if (opt$file_save == "tsv") {
     vaf_df %>%
       readr::write_tsv(vaf_file)
-  } else {
+  if (opt$file_save == "rds") {
     vaf_df %>%
       readr::write_rds(vaf_file)
   }
-  # Print out completion message
-  message(paste("VAF calculations saved to: \n", vaf_file))
+  if (opt$file_save != "none")
+    # Print out saved message
+    message(paste("VAF calculations saved to: \n", vaf_file))
+  }
 }
 ######################### Annotate genomic regions #############################
 if (opt$no_region) {
@@ -289,15 +294,19 @@ if (opt$no_region) {
     maf_annot <- annotr_maf(vaf_df, annotation_file = opt$annot_rds)
 
     # Write the region file
-    if (opt$file_format == "tsv") {
+    if (opt$file_save == "tsv") {
       maf_annot %>%
         readr::write_tsv(region_annot_file)
-    } else {
+    }
+    if (opt$file_save == "rds") {
       maf_annot %>%
         readr::write_rds(region_annot_file)
     }
-    # Print out completion message
-    message(paste("Genomic region annotations saved to:", region_annot_file))
+
+    if (opt$file_save != "none") {
+      # Print out completion message
+      message(paste("Region annotation file saved to:", region_annot_file))
+    }
   }
 }
 ############################# Calculate TMB ####################################
@@ -346,14 +355,17 @@ if (file.exists(tmb_file) && !opt$overwrite) {
   )
 
   # Write the tmb file
-  if (opt$file_format == "tsv") {
+  if (opt$file_save == "tsv") {
     tmb_df %>%
       readr::write_tsv(tmb_file)
-  } else {
+  }
+  if (opt$file_save == "rds") {
     tmb_df %>%
       readr::write_rds(tmb_file)
   }
-
-  # Print out completion message
-  message(paste("TMB calculations saved to:", tmb_file))
+  
+  if (opt$file_save != "none") {
+    # Print out completion message
+    message(paste("TMB calculations saved to:", tmb_file))
+  }
 }

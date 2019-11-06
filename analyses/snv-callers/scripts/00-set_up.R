@@ -47,7 +47,7 @@ if (!("data.table" %in% installed.packages())) {
 # Set up optparse options
 option_list <- list(
   make_option(
-    opt_str = "--sql_file", type = "character", default = "none",
+    opt_str = "--sql_file", type = "character", default = "maf.sq",
     help = "File path to where you would like the SQL file to be saved.",
     metavar = "character"
   ),
@@ -84,11 +84,17 @@ option_list <- list(
     opt_str = "--overwrite", action = "store_true",
     default = FALSE, help = "If TRUE, will overwrite the SQL file",
     metavar = "character"
-  ),
+  )
 )
 
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
+
+opt$sql_file <- "analyses/snv-callers/ref_files/maf.sqlite"
+opt$metadata <- "data/pbta-histologies.tsv"
+opt$annot_rds <- "analyses/snv-callers/ref_files/hg38_genomic_region_annotation.rds"
+opt$cosmic_og <- "scratch/CosmicMutantExport.tsv.gz"
+opt$cosmic_clean <- "analyses/snv-callers/ref_files/brain_cosmic_variants_coordinates.tsv"
 
 ##################### Set base directories common file paths ###################
 # Make all base names relative to root_dir
