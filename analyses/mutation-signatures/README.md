@@ -21,8 +21,10 @@ To run the mutation signature evaluations, use this in command line:
 Rscript -e "rmarkdown::render('analyses/mutation-signatures/mutation_signatures.Rmd',
                               clean = TRUE)"
 ```
+_This assumes you are in the top directory of the repository._
 
-This notebook, in addition to its `nb.html` output, will return plots return results for each caller in the `plots` and `results` folder.
+This notebook, in addition to its `nb.html` output, will return results for each caller in the `plots` and `results` folder.
+
 
 ## Summary of the calculations
 
@@ -68,6 +70,6 @@ OpenPBTA-analysis
 |Function Name|Summary|
 |-------------|-----------|
 |`sample_mut_sig_plot`|Saves traditional mutation signature plots for each sample|
-|`calc_mut_per_sig`|Given `deconstructSigs::whichSignature` output, formats the sample_data into a data.frame and calculates the mutations per Mb for each sample and each signature|
+|`calc_mut_per_sig`|Given `deconstructSigs::whichSignature` output, formats the sample data into a data.frame and calculates the mutations per Mb for each sample and each signature|
 |`bubble_matrix_plot`|Groups together data by histology and makes the bubble matrix plot|
 |`grouped_sig_barplot`|Creates signature grouped barplots for histology group provided and only uses primary tumors' data|
