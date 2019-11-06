@@ -59,7 +59,7 @@ calc_mut_per_sig <- function(which_sig_list,
   total_muts <- apply(sigs_input, 1, sum)
 
   # Pull out the signature weights and make into matrix
-  sig_weights <- do.call(
+  sig_num_df <- do.call(
     "rbind.data.frame",
     lapply(which_sig_list, function(sample_data) sample_data$weights)
   ) %>%
@@ -87,7 +87,7 @@ calc_mut_per_sig <- function(which_sig_list,
     reshape2::melt() %>%
 
     # Only keep distinct
-    dplyr::distinct(Tumor_Sample_Barcode, signature, .keep_all = TRUE) %>%
+    dplyr::distinct(Tumor_Sample_Barcode, variable, .keep_all = TRUE) %>%
 
     # Add genome size and calculate the mutation per this column
     dplyr::mutate(
