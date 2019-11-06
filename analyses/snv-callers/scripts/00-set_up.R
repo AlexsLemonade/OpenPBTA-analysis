@@ -6,6 +6,7 @@
 #          script.
 #
 # Option descriptions
+# --sql_file : File path to where you would like the SQL file to be saved.
 # --annot_rds : File path to where you would like the annotation_rds file to be
 #               stored
 # --cosmic_og : Path to original COSMIC file. Can be .gz compressed. Give path relative
@@ -46,12 +47,23 @@ if (!("data.table" %in% installed.packages())) {
 # Set up optparse options
 option_list <- list(
   make_option(
+    opt_str = "--sql_file", type = "character", default = "none",
+    help = "File path to where you would like the SQL file to be saved.",
+    metavar = "character"
+  ),
+  make_option(
     opt_str = "--cosmic_og", type = "character", default = "none",
     help = "Relative file path (assuming from top directory of 
               'OpenPBTA-analysis') to where the COSMIC mutation file is stored. 
               Will need to download this from COSMIC at 
               https://cancer.sanger.ac.uk/cosmic/download
               These data are available if you register.",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = "--metadata", type = "character", default = "none",
+    help = "Relative file path (assuming from top directory of
+              'OpenPBTA-analysis') to MAF file to be analyzed. Can be .gz compressed.",
     metavar = "character"
   ),
   make_option(
@@ -67,7 +79,12 @@ option_list <- list(
               directory of 'OpenPBTA-analysis') that specifies where you would
               like the annotation_rds file to be stored.",
     metavar = "character"
-  )
+  ),
+  make_option(
+    opt_str = "--overwrite", action = "store_true",
+    default = FALSE, help = "If TRUE, will overwrite the SQL file",
+    metavar = "character"
+  ),
 )
 
 # Parse options
@@ -75,9 +92,28 @@ opt <- parse_args(OptionParser(option_list = option_list))
 
 ##################### Set base directories common file paths ###################
 # Make all base names relative to root_dir
+opt$sql_file <- file.path(root_dir, opt$sql_file)
+opt$metadata <- file.path(root_dir, opt$metadata)
 opt$cosmic_og <- file.path(root_dir, opt$cosmic_og)
 opt$cosmic_clean <- file.path(root_dir, opt$cosmic_clean)
 opt$annot_rds <- file.path(root_dir, opt$annot_rds)
+
+################### ####Make SQL File with the Metadata ########################
+# Read in the metadata, rename its Sample ID column so it matches
+metadata <- readr::read_tsv(opt$metadata) %>%
+  dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
+  dplyr::arrange() %>%
+  dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID)
+
+# Save to SQL Lite file
+con <- DBI::dbConnect(RSQLite::SQLite(), opt$sql_file)
+
+# Read in metadata and save data to SQL
+dplyr::copy_to(con, metadata, name = "metadata", temporary = FALSE, 
+               overwrite = TRUE)
+
+# Disconnect 
+DBI::dbDisconnect(con)
 
 ################################ Build Annotation ##############################
 # We will only run this if it hasn't been run before

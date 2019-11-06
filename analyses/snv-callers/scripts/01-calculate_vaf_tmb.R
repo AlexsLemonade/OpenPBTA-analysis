@@ -14,8 +14,7 @@
 #               "rds" or "tsv". Default is "rds".
 # --maf :  Relative file path to MAF file to be analyzed. Can be .gz compressed.
 #          Assumes file path is given from top directory of 'OpenPBTA-analysis'.
-# --metadata : Relative file path to MAF file to be analyzed. Can be .gz compressed.
-#              Assumes file path is given from top directory of 'OpenPBTA-analysis'.
+# --sql_file : File path to where the SQL file was saved in 00-set_up.R.
 # --annot_rds : Relative file path to annotation object RDS file to be analyzed.
 #               Assumes file path is given from top directory of 'OpenPBTA-analysis'.
 # --bed_wgs : File path that specifies the caller-specific BED regions file.
@@ -84,9 +83,8 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
-    opt_str = "--metadata", type = "character", default = "none",
-    help = "Relative file path (assuming from top directory of
-              'OpenPBTA-analysis') to MAF file to be analyzed. Can be .gz compressed.",
+    opt_str = "--sql_file", type = "character", default = "none",
+    help = "File path to where the SQL file was saved in 00-set_up.R",
     metavar = "character"
   ),
   make_option(
@@ -130,16 +128,26 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
+opt$label <- "strelka2"
+opt$output <- "analyses/snv-callers/results/strelka2"
+opt$file_format <- "rds"
+opt$maf <-  "data/testing/release-v9-20191105/pbta-snv-strelka2.vep.maf.gz"
+opt$sql_file <- "analyses/snv-callers/ref_files/maf.sqlite"
+opt$bed_wgs <- "data/WGS.hg38.strelka2.unpadded.bed"
+opt$bed_wxs <- "data/WXS.hg38.100bp_padded.bed"
+opt$annot_rds <- "analyses/snv-callers/ref_files/hg38_genomic_region_annotation.rds"
+opt$no_region <- TRUE
+opt$overwrite <- TRUE
+
 # Coerce to numeric
 opt$vaf_filter <- as.numeric(opt$vaf_filter)
 
-
 # Make everything relative to root path
 opt$maf <- file.path(root_dir, opt$maf)
+opt$sql_file <- file.path(root_dir, opt$sql_file)
 opt$metadata <- file.path(root_dir, opt$metadata)
 opt$bed_wgs <- file.path(root_dir, opt$bed_wgs)
 opt$bed_wxs <- file.path(root_dir, opt$bed_wxs)
-opt$cosmic <- file.path(root_dir, opt$cosmic)
 
 # Bring along the file suffix. Make to lower.
 file_suffix <- tolower(opt$file_format)
@@ -154,7 +162,7 @@ if (!(file_suffix %in% c("rds", "tsv"))) {
 
 ########### Check that the files we need are in the paths specified ############
 needed_files <- c(
-  opt$maf, opt$metadata, opt$bed_wgs, opt$bed_wxs, opt$cosmic
+  opt$maf, opt$metadata, opt$bed_wgs, opt$bed_wxs
 )
 
 # Only if regional analysis is being done do we need the annotation file
@@ -222,40 +230,6 @@ if (!opt$overwrite) {
   }
 }
 
-########################### Set up this caller's data ##########################
-# Print progress message
-message(paste("Reading in", opt$maf, "MAF data..."))
-
-# Read in this MAF, skip the version number
-maf_df <- data.table::fread(opt$maf, skip = 1, data.table = FALSE)
-
-# Print progress message
-message(paste("Setting up", opt$label, "metadata..."))
-
-# Isolate metadata to only the samples that are in the datasets
-metadata <- readr::read_tsv(opt$metadata) %>%
-  dplyr::filter(Kids_First_Biospecimen_ID %in% maf_df$Tumor_Sample_Barcode) %>%
-  dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
-  dplyr::arrange() %>%
-  dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID)
-
-# Write the metadata file
-if (opt$file_format == "tsv") {
-  metadata %>%
-    readr::write_tsv(metadata_file)
-} else {
-  metadata %>%
-    readr::write_rds(metadata_file)
-}
-
-# Print out completion message
-message(paste("Filtered metadata file saved to: \n", metadata_file))
-
-# Make sure that we have metadata for all these samples.
-if (!all(unique(maf_df$Tumor_Sample_Barcode) %in% metadata$Tumor_Sample_Barcode)) {
-  stop("There are samples in this MAF file that are not in the metadata.")
-}
-
 ################## Calculate VAF and set up other variables ####################
 # If the file exists or the overwrite option is not being used, calculate VAF
 if (file.exists(vaf_file) && !opt$overwrite) {
@@ -273,8 +247,12 @@ if (file.exists(vaf_file) && !opt$overwrite) {
   # Print out progress message
   message(paste("Calculating, sampling, and merging VAF for", opt$label, "MAF data..."))
 
+  # Print progress message
+  message(paste("Reading in", opt$maf, "MAF data..."))
+  
   # Use the premade function to calculate VAF this will also merge the metadata
-  vaf_df <- set_up_maf(maf_df, metadata, opt$vaf_filter)
+  vaf_df <- set_up_maf(opt$maf, opt$sql_file, opt$label, opt$overwrite,
+                       vaf_cutoff = opt$vaf_filter)
 
   message(paste(nrow(vaf_df), "mutations left after filter and merge"))
 

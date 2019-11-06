@@ -7,44 +7,68 @@
 ################################################################################
 ########################### Setting Up Functions ###############################
 ################################################################################
-
-set_up_maf <- function(maf_df, metadata_df = NULL, vaf_cutoff = 0) {
-  # Creates these new variables from a MAF formatted data.frame provided: VAF,
-  # mutation_id, base_change, change. Optionally can tack on metadata columns
-  # which will be matched using a `Tumor_Sample_Barcode` field. Lastly, any
-  # columns that contain all `NA` values will be removed.
+set_up_maf <- function(maf_path = opt$maf, 
+                       sql_file = opt$sql_file, 
+                       label = opt$label, 
+                       overwrite_it = opt$overwrite,
+                       vaf_cutoff = 0) {
+  # Calculates and filters by VAF
   #
   # Args:
-  #   maf_df: a maf formatted data.frame
+  #   maf_path: a maf formatted data.frame.
+  #   sql_file: path to sql file that the metadata is saved to. 
+  #   label: what the dataset should be called in the SQL file.
   #   metadata: a data.frame with metadata that you would like to merge with the
   #             maf_df and it's newly calculated variables. (Optional)
+  #   
   #
   # Returns:
   #   a data.frame with all the original information from the MAF data.frame
   #   maf object but with these new variables: VAF, mutation_id, base_change,
   #   change, coding. If metadata_df is specified, then it will also have
   #   those columns added.
-
+  #   
+  # Save to SQL Lite file
+  con <- DBI::dbConnect(RSQLite::SQLite(), sql_file)
+  
+  # Read in and save data to 
+  dplyr::copy_to(con, 
+                 data.table::fread(maf_path, skip = 1, data.table = FALSE), 
+                 name = label, 
+                 temporary = FALSE, 
+                 overwrite = overwrite_it)
+  
+  # Let's make the SQL table its own object
+  maf_df_db <- dplyr::tbl(con, label)
+  
+  # We will do the same for the metadata
+  # This should have been set up in 00-set_up.R
+  metadata_db <- dplyr::tbl(con, "metadata")
+  
   # Extract the data part of the maf object, put it through a dplyr pipe.
-  maf_df <- maf_df %>%
+  maf_df_db <- maf_df_db %>%
+    # Make these numeric
+    dplyr::mutate(t_alt_count = as.numeric(t_alt_count), 
+                  t_ref_count = as.numeric(t_ref_count), 
+                  t_alt_count = as.numeric(t_alt_count)
+                  ) %>%
+    # Calculate the variant allele frequency
     dplyr::mutate(
-      # Calculate the variant allele frequency
-      vaf = as.numeric(t_alt_count) / 
-        (as.numeric(t_ref_count) + as.numeric(t_alt_count))) %>%
-    #filter by vaf; if cutoff is 0 leave everything, 
-    dplyr::filter(vaf_cutoff == 0 | is.finite(vaf), 
-                  vaf > vaf_cutoff) %>%
+      vaf = t_alt_count / 
+        (t_ref_count + t_alt_count)) %>% 
+    # Make the base_change variable
     dplyr::mutate(
-      # Create a base_change variable
-      base_change = paste0(Reference_Allele, ">", Allele),
+      base_change = paste0(Reference_Allele, ">", Allele)) %>% 
+    # Filter by VAF
+    dplyr::filter(vaf > vaf_cutoff, 
+                 !is.na(vaf)) %>%
+      dplyr::left_join(metadata_db, by = "Tumor_Sample_Barcode")
 
-      # Create a numeric portion of the PolyPhen score
-      PolyPhen_numeric = as.numeric(stringr::word(PolyPhen, 2, sep = "\\(|\\)")),
-
-      # Create a categorical portion of the PolyPhen score
-      PolyPhen_category = stringr::word(PolyPhen, 1, sep = "\\("),
-
-      Variant_Classification = as.factor(Variant_Classification),
+  # Collect the resulting data as a data.frame and return it back
+  maf_df_db %>% 
+    dplyr::collect() %>% 
+    # This last step can't be done in SQL, so needs to be done here
+    dplyr::mutate(
       # From the base_change variable, summarize insertions, deletions, and
       # changes that are more than one base into their own groups.
       change = dplyr::case_when(
@@ -52,27 +76,7 @@ set_up_maf <- function(maf_df, metadata_df = NULL, vaf_cutoff = 0) {
         grepl("-$", base_change) ~ "del",
         nchar(base_change) > 3 ~ "long_change",
         TRUE ~ base_change
-      ),
-      # Create the mutation id based on the change variable as well as the
-      # gene symbol, start position, and sample ID.
-      mutation_id = paste0(
-        Hugo_Symbol, "_",
-        change, "_",
-        Start_Position, "_",
-        Tumor_Sample_Barcode
-      )
-    ) %>%
-    # Get rid of any variables that have completely NAs.
-    dplyr::select(-which(apply(is.na(.), 2, all)))
-
-  # If metadata_df was specified:
-  if (!is.null(metadata_df)) {
-    # Tack on the metadata so we have this info
-    maf_df <- maf_df %>%
-      dplyr::left_join(metadata_df, by = "Tumor_Sample_Barcode") %>%
-      # Get rid of any variables that have completely NAs.
-      dplyr::select(-which(apply(is.na(.), 2, all)))
-  }
+      )) 
 }
 
 maf_to_granges <- function(maf_df) {

@@ -13,6 +13,7 @@ datasets=("strelka2" "mutect2" "lancet" "vardict")
 wgs_files=("WGS.hg38.strelka2.unpadded.bed" "WGS.hg38.mutect2.unpadded.bed" "WGS.hg38.lancet.300bp_padded.bed" "WGS.hg38.vardict.100bp_padded.bed")
 
 # Reference file paths
+sqlite=analyses/snv-callers/ref_files/maf.sqlite
 cosmic=analyses/snv-callers/ref_files/brain_cosmic_variants_coordinates.tsv
 annot_rds=analyses/snv-callers/ref_files/hg38_genomic_region_annotation.rds
 
@@ -30,6 +31,8 @@ run_plots_nb=${OPENPBTA_PLOTS:-FALSE}
 # These data are available if you register. The full, unfiltered somatic mutations
 # file CosmicMutantExport.tsv.gz for grch38 is used here.
 Rscript analyses/snv-callers/scripts/00-set_up.R \
+  --sql_file $sqlite \
+  --metadata data/pbta-histologies.tsv \
   --annot_rds $annot_rds \
   --cosmic_og scratch/CosmicMutantExport.tsv.gz \
   --cosmic_clean $cosmic
@@ -43,8 +46,8 @@ do
     --label ${datasets[$i]} \
     --output analyses/snv-callers/results/${datasets[$i]} \
     --file_format $format \
-    --maf data/pbta-snv-${datasets[$i]}.vep.maf.gz \
-    --metadata data/pbta-histologies.tsv \
+    --maf data/testing/release-v9-20191105/pbta-snv-${datasets[$i]}.vep.maf.gz \
+    --sql_file $sqlite \
     --bed_wgs data/${wgs_files[$i]} \
     --bed_wxs data/WXS.hg38.100bp_padded.bed \
     --annot_rds $annot_rds \
@@ -60,6 +63,7 @@ if [ $run_plots_nb ]; then
     Rscript analyses/snv-callers/scripts/02-run_eval.R \
       --label ${dataset} \
       --vaf analyses/snv-callers/results/${dataset} \
+      --sql_file $sqlite \
       --plot_type png \
       --output analyses/snv-callers/plots/${dataset} \
       --cosmic $cosmic \
@@ -69,6 +73,7 @@ if [ $run_plots_nb ]; then
 fi
 ##################### Merge callers' files into total files ####################
 Rscript analyses/snv-callers/scripts/03-merge_callers.R \
+  --sql_file $sqlite \
   --vaf analyses/snv-callers/results \
   --output analyses/snv-callers/results/consensus \
   --overwrite
