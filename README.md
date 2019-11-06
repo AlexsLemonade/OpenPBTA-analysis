@@ -68,7 +68,9 @@ Users performing analyses, should always refer to the symlinks in the `data/` di
 ### Data Access via Download Script
 
 We have created a shell script that will download the latest release from AWS S3.
-OS X users must use [homebrew](https://brew.sh/) to install `md5sha1sum` via the command `brew install md5sha1sum` before running the download script the first time.
+macOS users must install `md5sum` before running the download script the first time. 
+This installed with [homebrew](https://brew.sh/) via the command `brew install md5sha1sum` or [conda/miniconda](https://docs.conda.io/projects/conda/en/latest/) via the command `conda install -c conda-forge coreutils`.
+
 Once this has been done, run `bash download-data.sh` to acquire the latest release.
 This will create symlinks in `data/` to the latest files.
 It's safe to re-run `bash download-data.sh` to check that you have the most recent release of the data.
@@ -85,13 +87,49 @@ Users downloading via CAVATICA should place the data files within a `data/releas
 ## Data Formats
 
 The release notes for each release are provided in the `release-notes.md` file that accompanies the data files.
-Somatic Single Nucleotide Variant (SNV) data are provided in [Annotated MAF format](doc/format/vep-maf.md) files for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-single-nucleotide-variant-calling).
-Somatic Copy Number Variant (CNV) data are provided in a modified [SEG format](https://software.broadinstitute.org/software/igv/SEG) for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-copy-number-variant-calling).
-- CNVkit SEG files have an additional column `copy.num` to denote copy number of each segment, derived from the CNS file output of the algorithm.
-Somatic Structural Variant Data (Somatic SV) are provided in the [Annotated Manta TSV](doc/format/manta-tsv-header.md) format produced by the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-structural-variant-calling).
-Gene expression estimates from the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#gene-expression-abundance-estimation) are provided as a gene by sample matrix.
-Gene Fusions produced by the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#rna-fusion-calling-and-prioritization) are provided as [Arriba TSV](doc/format/arriba-tsv-header.md) and [STARFusion TSV](doc/format/starfusion-tsv-header.md) respectively.
-[Harmonized clinical data](https://alexslemonade.github.io/OpenPBTA-manuscript/#clinical-data-harmonization) are released as tab separated values.
+
+* Somatic Single Nucleotide Variant (SNV) data are provided in [Annotated MAF format](doc/format/vep-maf.md) files for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-single-nucleotide-variant-calling).
+* Somatic Copy Number Variant (CNV) data are provided in a modified [SEG format](https://software.broadinstitute.org/software/igv/SEG) for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-copy-number-variant-calling).
+  * The CNVkit SEG file has an additional column `copy.num` to denote copy number of each segment, derived from the CNS file output of the algorithm described [here](https://cnvkit.readthedocs.io/en/stable/fileformats.html).
+  * The ControlFreeC TSV file is a merge of `*_CNVs` files produced from the algorithm, and columns are described [here](http://boevalab.inf.ethz.ch/FREEC/tutorial.html#OUTPUT).
+  * NOTE: The _copy number_ annotated in the CNVkit SEG file is annotated with respect to ploidy 2, however, the _status_ annotated in the ControlFreeC TSV file is annotated with respect to inferred ploidy from the algorithm, which is recorded in the `pbta_histologies.tsv` file. See the table below for examples of possible interpretations.
+
+| Ploidy | Copy Number | Gain/Loss Interpretation     |
+|--------|-------------|------------------------------|
+| 2      | 0           | Loss; homozygous deletion    |
+| 2      | 1           | Loss; hemizygous deletion    |
+| 2      | 2           | Copy neutral                 |
+| 2      | 3           | Gain; one copy gain          |
+| 2      | 4           | Gain; two copy gain          |
+| 2      | 5+          | Gain; possible amplification |
+| 3      | 0           | Loss; 3 copy loss            |
+| 3      | 1           | Loss; 2 copy loss            |
+| 3      | 2           | Loss; 1 copy loss            |
+| 3      | 3           | Copy neutral                 |
+| 3      | 4           | Gain; one copy gain          |
+| 3      | 5           | Gain; two copy gain          |
+| 3      | 6+          | Gain; possible amplification |
+| 4      | 0           | Loss; 4 copy loss            |
+| 4      | 1           | Loss; 3 copy loss            |
+| 4      | 2           | Loss; 2 copy loss            |
+| 4      | 3           | Loss; 1 copy loss            |
+| 4      | 4           | Copy neutral                 |
+| 4      | 5           | Gain; one copy gain          |
+| 4      | 6           | Gain; two copy gain          |
+| 4      | 7+          | Gain; possible amplification |
+
+* Somatic Structural Variant Data (Somatic SV) are provided in the [Annotated Manta TSV](doc/format/manta-tsv-header.md) format produced by the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-structural-variant-calling).
+* Gene expression estimates from the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#gene-expression-abundance-estimation) are provided as a gene by sample matrix.
+* Gene Fusions produced by the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#rna-fusion-calling-and-prioritization) are provided as [Arriba TSV](doc/format/arriba-tsv-header.md) and [STARFusion TSV](doc/format/starfusion-tsv-header.md) respectively.
+* [Harmonized clinical data](https://alexslemonade.github.io/OpenPBTA-manuscript/#clinical-data-harmonization) are released as tab separated values.
+* For participants with multiple tumor specimens, [Independent specimen lists](https://alexslemonade.github.io/OpenPBTA-manuscript/#selection-of-independent-samples) are provided as TSV files with columns for participant ID and specimen ID. 
+These files are used for analyses such as mutation co-occurence, where repeated samples might cause bias.
+There are four of these files:
+  1. `independent-specimens.wgs.primary.tsv` with WGS samples and only primary tumors
+  2. `independent-specimens.wgs.primary-plus.tsv` as above, but including non-primary tumors where a primary tumor sample is not available
+  3. `independent-specimens.wgswxs.primary.tsv` Only primary tumors, but with WXS where WGS is not available 
+  4. `independent-specimens.wgswxs.primary-plus.tsv` as above, but including non-primary tumors where a primary tumor sample is not available.
+  
 
 ### Data Caveats
 
