@@ -100,7 +100,8 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     rpart \
     class \
     MASS \
-    GGally
+    GGally \
+    Matrix
 
 # Help display tables in R Notebooks
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
