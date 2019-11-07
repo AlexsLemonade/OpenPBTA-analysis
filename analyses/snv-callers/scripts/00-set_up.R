@@ -120,17 +120,8 @@ con <- DBI::dbConnect(RSQLite::SQLite(), opt$sql_file)
 dplyr::copy_to(con, metadata, name = "metadata", temporary = FALSE, 
                overwrite = TRUE)
 
-# Disconnect 
-DBI::dbDisconnect(con)
-
-# Make and arkdb 
-tmp <- tempdir()
-new_db <- dplyr::src_sqlite(fs::path(tmp, "maf.sqlite"), create = TRUE)
-dir <- fs::dir_create(fs::path(tmp, "metadata"))
-arkdb::ark(new_db, dir, lines = 50000)
-
-# Print out the info about this arkdb
-fs::dir_info(dir) 
+# Unark the metadata
+arkdb::unark(opt$metadata, con, tablenames = "metadata")
 
 ################################ Build Annotation ##############################
 # We will only run this if it hasn't been run before
