@@ -34,12 +34,12 @@ set_up_maf <- function(maf_path = opt$maf,
   # Read in and save data to 
   dplyr::copy_to(con, 
                  data.table::fread(maf_path, skip = 1, data.table = FALSE), 
-                 name = label, 
+                 name = paste0(label, "_vaf"), 
                  temporary = FALSE, 
                  overwrite = overwrite_it)
   
   # Let's make the SQL table its own object
-  maf_df_db <- dplyr::tbl(con, label)
+  maf_df_db <- dplyr::tbl(con, paste0(label, "_vaf"))
   
   # We will do the same for the metadata
   # This should have been set up in 00-set_up.R
@@ -65,7 +65,7 @@ set_up_maf <- function(maf_path = opt$maf,
       dplyr::left_join(metadata_db, by = "Tumor_Sample_Barcode")
 
   # Collect the resulting data as a data.frame and return it back
-  maf_df_db %>% 
+  maf_df <- maf_df_db %>% 
     dplyr::collect() %>% 
     # This last step can't be done in SQL, so needs to be done here
     dplyr::mutate(
@@ -77,6 +77,16 @@ set_up_maf <- function(maf_path = opt$maf,
         nchar(base_change) > 3 ~ "long_change",
         TRUE ~ base_change
       )) 
+  
+  # Read in and save data to 
+  dplyr::copy_to(con, 
+                 maf_df, 
+                 name = paste0(label, "_vaf"),
+                 temporary = FALSE, 
+                 overwrite = overwrite_it)
+  
+  # Disconnect 
+  DBI::dbDisconnect(con)
 }
 
 maf_to_granges <- function(maf_df) {
@@ -176,7 +186,10 @@ wxs_bed_filter <- function(maf_df, wxs_bed_file = NULL, bp_window = 0) {
   return(filt_maf_df)
 }
 
-calculate_tmb <- function(maf_df, wgs_size, wxs_size) {
+calculate_tmb <- function(maf_df, wgs_size, wxs_size, 
+                          sql_file = opt$sql_file, 
+                          label = opt$label, 
+                          overwrite_it = opt$overwrite,) {
   # Calculate Tumor Mutational Burden for each sample given their WGS or WXS
   # sizes in bp. Ideally have filtered the WXS mutations previously using the
   # `wxs_bed_filter` function.
@@ -194,9 +207,14 @@ calculate_tmb <- function(maf_df, wgs_size, wxs_size) {
   # Returns:
   # A sample-wise data.frame with Tumor Mutation Burden statistics calculated
   # using the given WGS and WXS sizes.
-  #
+  # Save to SQL Lite file
+  con <- DBI::dbConnect(RSQLite::SQLite(), sql_file)
+  
+  # Let's make the SQL table its own object
+  maf_df_db <- dplyr::tbl(con, label)
+  
   # Make a genome size variable
-  tmb <- maf_df %>%
+  tmb_db <- maf_df_db %>%
     dplyr::mutate(genome_size = dplyr::recode(experimental_strategy,
       "WGS" = wgs_size,
       "WXS" = wxs_size
@@ -209,11 +227,27 @@ calculate_tmb <- function(maf_df, wgs_size, wxs_size) {
     dplyr::summarize(mutation_count = dplyr::n()) %>%
     # Calculate TMB
     dplyr::mutate(tmb = mutation_count / (genome_size / 1000000))
-
-  return(tmb)
+ 
+  # Save to SQL Lite file
+  con <- DBI::dbConnect(RSQLite::SQLite(), sql_file)
+  
+  # Read in and save data to 
+  dplyr::copy_to(con, 
+                 tmb_db, 
+                 name = paste0(label, "_tmb"),
+                 temporary = FALSE, 
+                 overwrite = overwrite_it)
+  
+  # Disconnect 
+  DBI::dbDisconnect(con)
+  
+  return(tmb_db %>% collect())
 }
 
-annotr_maf <- function(maf_df, annotation_file = NULL, bp_window = 0) {
+annotr_maf <- function(maf_df, annotation_file = NULL, 
+                       sql_file = opt$sql_file, 
+                       label = opt$label, 
+                       overwrite_it = opt$overwrite, bp_window = 0) {
   # Annotate the genomic regions mutations are in from a MAF formatted data.
   # frame with AnnotatR object. Because any given region can have multiple
   # region labels, a single mutation in a can have a single label, multiple
@@ -259,7 +293,20 @@ annotr_maf <- function(maf_df, annotation_file = NULL, bp_window = 0) {
     # the longest column name (like 100)
     dplyr::rename_at(dplyr::vars(dplyr::starts_with("mcols.")), substr, 7, 100) %>%
     dplyr::mutate("type" = as.factor(gsub("^hg38_genes_", "", type)))
-
+   
+  # Save to SQL Lite file
+  con <- DBI::dbConnect(RSQLite::SQLite(), sql_file)
+  
+  # Read in and save data to 
+  dplyr::copy_to(con, 
+                 annot, 
+                 name = paste0(label, "_annot"), 
+                 temporary = FALSE, 
+                 overwrite = overwrite_it) 
+  
+  # Disconnect 
+  DBI::dbDisconnect(con)
+  
   # Remove the annotation ranges file to conserve memory burden
   rm(annotation_ranges)
   

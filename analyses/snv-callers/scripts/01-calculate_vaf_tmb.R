@@ -33,7 +33,7 @@
 #   --label strelka2 \
 #   --output analyses/snv-callers/results \
 #   --maf scratch/snv_dummy_data/strelka2 \
-#   --metadata data/pbta-histologies.tsv \
+#   --sql_file maf.sqlite \
 #   --bed_wgs data/WGS.hg38.mutect2.unpadded.bed \
 #   --bed_wxs data/WXS.hg38.100bp_padded.bed \
 #   --annot_rds scratch/hg38_genomic_region_annotation.rds \
@@ -137,7 +137,7 @@ opt$sql_file <- "analyses/snv-callers/ref_files/maf.sqlite"
 opt$bed_wgs <- "data/WGS.hg38.strelka2.unpadded.bed"
 opt$bed_wxs <- "data/WXS.hg38.100bp_padded.bed"
 opt$annot_rds <- "analyses/snv-callers/ref_files/hg38_genomic_region_annotation.rds"
-opt$no_region <- TRUE
+opt$no_region <- FALSE
 opt$overwrite <- TRUE
 
 # Coerce to numeric
@@ -146,7 +146,6 @@ opt$vaf_filter <- as.numeric(opt$vaf_filter)
 # Make everything relative to root path
 opt$maf <- file.path(root_dir, opt$maf)
 opt$sql_file <- file.path(root_dir, opt$sql_file)
-opt$metadata <- file.path(root_dir, opt$metadata)
 opt$bed_wgs <- file.path(root_dir, opt$bed_wgs)
 opt$bed_wxs <- file.path(root_dir, opt$bed_wxs)
 
@@ -195,79 +194,56 @@ if (!dir.exists(caller_results_dir)) {
 }
 
 ####################### File paths for files we will create ####################
-if (opt$)
-vaf_file <- file.path(caller_results_dir, paste0(opt$label, "_vaf.", file_suffix))
-region_annot_file <- file.path(caller_results_dir, paste0(opt$label, "_region.", file_suffix))
-tmb_file <- file.path(caller_results_dir, paste0(opt$label, "_tmb.", file_suffix))
-
-# Declare metadata file name for this caller
-metadata_file <- file.path(
-  caller_results_dir,
-  paste0(opt$label, "_metadata_filtered.", file_suffix)
-)
-
-##################### Check for files if overwrite is FALSE ####################
-# If overwrite is set to FALSE, check if these exist before continuing
-if (!opt$overwrite) {
-  # Make a list of the output files
-  output_files <- c(vaf_file, region_annot_file, tmb_file)
-
-  # Find out which of these exist
-  existing_files <- file.exists(output_files)
-
-  # If all files exist; stop
-  if (all(existing_files)) {
-    stop(cat(
-      "Stopping; --overwrite is not being used and all output files already exist: \n",
-      vaf_file, "\n",
-      region_annot_file, "\n",
-      tmb_file
-    ))
-  }
-  # If some files exist, print a warning:
-  if (any(existing_files)) {
-    warning(cat(
-      "Some output files already exist and will not be overwritten unless you use --overwrite: \n",
-      paste0(output_files[which(existing_files)], "\n")
-    ))
-  }
+# Specify file names if options are set to save to rds or tsv files
+if (opt$file_save != "none") {
+  vaf_file <- file.path(caller_results_dir, paste0(opt$label, "_vaf.", file_suffix))
+  region_annot_file <- file.path(caller_results_dir, paste0(opt$label, "_region.", file_suffix))
+  tmb_file <- file.path(caller_results_dir, paste0(opt$label, "_tmb.", file_suffix))
+  
+  # Declare metadata file name for this caller
+  metadata_file <- file.path(
+    caller_results_dir,
+    paste0(opt$label, "_metadata_filtered.", file_suffix)
+  )
 }
 
 ################## Calculate VAF and set up other variables ####################
-# If the file exists or the overwrite option is not being used, calculate VAF
-if (file.exists(vaf_file) && !opt$overwrite) {
-  # Stop if this file exists and overwrite is set to FALSE
-  warning(cat(
-    "The VAF file already exists: \n",
-    vaf_file, "\n",
-    "Use --overwrite if you want to overwrite it."
-  ))
-} else {
-  # Print out warning if this file is going to be overwritten
-  if (file.exists(vaf_file)) {
-    warning("Overwriting existing VAF file.")
-  }
-  # Print out progress message
-  message(paste("Calculating, sampling, and merging VAF for", opt$label, "MAF data..."))
+# Print out warning if this file is going to be overwritten
+if (file.exists(vaf_file)) {
+  warning("Overwriting existing VAF file.")
+}
+# Print out progress message
+message(paste("Calculating, sampling, and merging VAF for", opt$label, "MAF data..."))
 
-  # Print progress message
-  message(paste("Reading in", opt$maf, "MAF data..."))
-  
-  # Use the premade function to calculate VAF this will also merge the metadata
-  vaf_df <- set_up_maf(opt$maf, opt$sql_file, opt$label, opt$overwrite,
-                       vaf_cutoff = opt$vaf_filter)
+# Print progress message
+message(paste("Reading in", opt$maf, "MAF data..."))
 
-  message(paste(nrow(vaf_df), "mutations left after filter and merge"))
+# Use the premade function to calculate VAF this will also merge the metadata
+vaf_df <- set_up_maf(opt$maf, opt$sql_file, opt$label, opt$overwrite,
+                     vaf_cutoff = opt$vaf_filter)
 
-  # Write the vaf file
-  if (opt$file_save == "tsv") {
-    vaf_df %>%
-      readr::write_tsv(vaf_file)
-  if (opt$file_save == "rds") {
-    vaf_df %>%
-      readr::write_rds(vaf_file)
-  }
-  if (opt$file_save != "none")
+message(paste(nrow(vaf_df), "mutations left after filter and merge"))
+
+# Only if the file is being saved besides the SQL files
+if (opt$file_save != "none") {
+  # If the file exists or the overwrite option is not being used, calculate VAF
+  if (file.exists(vaf_file) && !opt$overwrite) {
+    # Stop if this file exists and overwrite is set to FALSE
+    warning(cat(
+      "The VAF file already exists: \n",
+      vaf_file, "\n",
+      "Use --overwrite if you want to overwrite it."
+    ))
+  } else {
+    # Write the vaf file
+    if (opt$file_save == "tsv") {
+      vaf_df %>%
+        readr::write_tsv(vaf_file)
+    }
+    if (opt$file_save == "rds") {
+      vaf_df %>%
+        readr::write_rds(vaf_file)
+    }
     # Print out saved message
     message(paste("VAF calculations saved to: \n", vaf_file))
   }
@@ -293,6 +269,7 @@ if (opt$no_region) {
     # Annotation genomic regions
     maf_annot <- annotr_maf(vaf_df, annotation_file = opt$annot_rds)
 
+ if (opt$file_save != "none") {
     # Write the region file
     if (opt$file_save == "tsv") {
       maf_annot %>%
@@ -302,8 +279,6 @@ if (opt$no_region) {
       maf_annot %>%
         readr::write_rds(region_annot_file)
     }
-
-    if (opt$file_save != "none") {
       # Print out completion message
       message(paste("Region annotation file saved to:", region_annot_file))
     }

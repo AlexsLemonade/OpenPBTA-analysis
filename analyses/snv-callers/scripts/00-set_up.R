@@ -7,6 +7,8 @@
 #
 # Option descriptions
 # --sql_file : File path to where you would like the SQL file to be saved.
+# --metadata : File path that specifies the metadata file that will be loaded into 
+#              the sql_file as a table. 
 # --annot_rds : File path to where you would like the annotation_rds file to be
 #               stored
 # --cosmic_og : Path to original COSMIC file. Can be .gz compressed. Give path relative
@@ -52,18 +54,18 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
+    opt_str = "--metadata", type = "character", default = "none",
+    help = "Relative file path (assuming from top directory of
+              'OpenPBTA-analysis') to MAF file to be analyzed. Can be .gz compressed.",
+    metavar = "character"
+  ),
+  make_option(
     opt_str = "--cosmic_og", type = "character", default = "none",
     help = "Relative file path (assuming from top directory of 
               'OpenPBTA-analysis') to where the COSMIC mutation file is stored. 
               Will need to download this from COSMIC at 
               https://cancer.sanger.ac.uk/cosmic/download
               These data are available if you register.",
-    metavar = "character"
-  ),
-  make_option(
-    opt_str = "--metadata", type = "character", default = "none",
-    help = "Relative file path (assuming from top directory of
-              'OpenPBTA-analysis') to MAF file to be analyzed. Can be .gz compressed.",
     metavar = "character"
   ),
   make_option(
