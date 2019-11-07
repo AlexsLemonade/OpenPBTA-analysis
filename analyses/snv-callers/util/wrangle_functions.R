@@ -7,6 +7,56 @@
 ################################################################################
 ########################### Setting Up Functions ###############################
 ################################################################################
+save_to_sql <- function(df, 
+                        sql_file = opt$sql_file, 
+                        tbl_name, 
+                        overwrite_it = opt$overwrite) {
+  # Saves a data.frame as an SQL file
+  #
+  # Args:
+  #   df: the data.frame you would like to save to the SQLite file. 
+  #   sql_file: path to sql file where the table is saved. 
+  #   tbl_name: The name of the table to extract
+  #   overwrite_it: should it be overwritten in the SQL file? 
+
+  # Save to SQL Lite file
+  con <- DBI::dbConnect(RSQLite::SQLite(), sql_file)
+
+  # Read in and save data to 
+  dplyr::copy_to(con, 
+                 df, 
+                 name = tbl_name, 
+                 temporary = FALSE, 
+                 overwrite = overwrite_it)
+  
+  # Disconnect 
+  DBI::dbDisconnect(con)
+}
+
+sql_to_df <- function(sql_file = opt$sql_file, 
+                      tbl_name) {
+  # Converts a SQL table to a data.frame
+  #
+  # Args:
+  #   sql_file: path to sql file where the table is saved. 
+  #   tbl_name: The name of the table to extract
+  
+  # Save to SQL Lite file
+  con <- DBI::dbConnect(RSQLite::SQLite(), sql_file)
+  
+  # Let's make the SQL table its own object
+  sql_table <- dplyr::tbl(con, tbl_name)
+  
+  # Extract MAF file from the 
+  df <- sql_table %>% 
+    dplyr::collect()
+  
+  # Disconnect 
+  DBI::dbDisconnect(con)
+  
+  return(df)
+}
+
 set_up_maf <- function(maf_path = opt$maf, 
                        sql_file = opt$sql_file, 
                        label = opt$label, 
@@ -20,7 +70,6 @@ set_up_maf <- function(maf_path = opt$maf,
   #   label: what the dataset should be called in the SQL file.
   #   metadata: a data.frame with metadata that you would like to merge with the
   #             maf_df and it's newly calculated variables. (Optional)
-  #   
   #
   # Returns:
   #   a data.frame with all the original information from the MAF data.frame
@@ -28,15 +77,13 @@ set_up_maf <- function(maf_path = opt$maf,
   #   change, coding. If metadata_df is specified, then it will also have
   #   those columns added.
   #   
-  # Save to SQL Lite file
-  con <- DBI::dbConnect(RSQLite::SQLite(), sql_file)
+  # Save the original 
+  save_to_sql(data.table::fread(file.path(opt$maf), skip = 1), 
+              sql_file = sql_file, 
+              tbl_name = paste0(opt$label, "_vaf"))
   
-  # Read in and save data to 
-  dplyr::copy_to(con, 
-                 data.table::fread(maf_path, skip = 1, data.table = FALSE), 
-                 name = paste0(label, "_vaf"), 
-                 temporary = FALSE, 
-                 overwrite = overwrite_it)
+  # Establish connection
+  con <- DBI::dbConnect(RSQLite::SQLite(), sql_file)
   
   # Let's make the SQL table its own object
   maf_df_db <- dplyr::tbl(con, paste0(label, "_vaf"))
@@ -56,18 +103,21 @@ set_up_maf <- function(maf_path = opt$maf,
     dplyr::mutate(
       vaf = t_alt_count / 
         (t_ref_count + t_alt_count)) %>% 
+    
     # Make the base_change variable
     dplyr::mutate(
       base_change = paste0(Reference_Allele, ">", Allele)) %>% 
+    
     # Filter by VAF
     dplyr::filter(vaf > vaf_cutoff, 
                  !is.na(vaf)) %>%
-      dplyr::left_join(metadata_db, by = "Tumor_Sample_Barcode")
+      dplyr::left_join(metadata_db, by = "Tumor_Sample_Barcode") 
 
   # Collect the resulting data as a data.frame and return it back
   maf_df <- maf_df_db %>% 
     dplyr::collect() %>% 
-    # This last step can't be done in SQL, so needs to be done here
+    
+    # This last step can't be done in SQL, so needs to be done in the R env
     dplyr::mutate(
       # From the base_change variable, summarize insertions, deletions, and
       # changes that are more than one base into their own groups.
@@ -78,15 +128,13 @@ set_up_maf <- function(maf_path = opt$maf,
         TRUE ~ base_change
       )) 
   
-  # Read in and save data to 
-  dplyr::copy_to(con, 
-                 maf_df, 
-                 name = paste0(label, "_vaf"),
-                 temporary = FALSE, 
-                 overwrite = overwrite_it)
+  # Save the original 
+  save_to_sql(maf_df, 
+              sql_file = sql_file, 
+              tbl_name = paste0(opt$label, "_vaf"))
   
-  # Disconnect 
-  DBI::dbDisconnect(con)
+  # Return the data.frame
+  return(maf_df)
 }
 
 maf_to_granges <- function(maf_df) {
@@ -98,11 +146,10 @@ maf_to_granges <- function(maf_df) {
   # Args:
   #   maf_df: A MAF formatted data.frame with `Chromosome`, `Start_Position`,
   #           `End_Position`, and maybe `Strand`.
-  #   strand: specify if the column `Strand` exists.
   #
   # Returns:
   # A Genomic Ranges formatted object.
-  #
+
   # Create the GRanges object with the strand
   GenomicRanges::GRanges(
     seqnames = maf_df$Chromosome,
@@ -115,7 +162,11 @@ maf_to_granges <- function(maf_df) {
   )
 }
 
-wxs_bed_filter <- function(maf_df, wxs_bed_file = NULL, bp_window = 0) {
+wxs_bed_filter <- function(sql_file = opt$sql_file, 
+                           label = opt$label, 
+                           overwrite_it = opt$overwrite,
+                           wxs_bed_file = NULL, 
+                           bp_window = 0) {
   # Given a MAF formatted data.frame and a BED regions data.frame; filter out
   # any variants of the MAF df that are not within the BED regions.
   #
@@ -140,6 +191,10 @@ wxs_bed_filter <- function(maf_df, wxs_bed_file = NULL, bp_window = 0) {
   # Turn the WXS bed regions into a GRanges object
   wxs_bed_granges <- maf_to_granges(wxs_bed_ranges)
 
+  # Extract the df from SQL file
+  maf_df <- sql_to_df(sql_file = sql_file, 
+                      tbl_name = paste0(opt$label, "_vaf"))
+  
   # Obtain a MAF data.frame of only the WXS samples since this filter will only
   # be applied to those samples.
   maf_wxs <- maf_df %>%
@@ -181,15 +236,21 @@ wxs_bed_filter <- function(maf_df, wxs_bed_file = NULL, bp_window = 0) {
   filt_maf_df <- maf_df %>%
     dplyr::filter(experimental_strategy == "WGS") %>%
     dplyr::bind_rows(maf_wxs)
-
+ 
+  # Save this to the SQL file
+  save_to_sql(filt_maf_df, 
+              sql_file = sql_file, 
+              tbl_name = paste0(opt$label, "_vaf"))
+  
   # Return this matrix with the WXS mutations filtered but WGS the same
   return(filt_maf_df)
 }
 
-calculate_tmb <- function(maf_df, wgs_size, wxs_size, 
-                          sql_file = opt$sql_file, 
-                          label = opt$label, 
-                          overwrite_it = opt$overwrite,) {
+calculate_tmb <- function(sql_file = opt$sql_file, 
+                          label = opt$label,
+                          wgs_size, 
+                          wxs_size, 
+                          overwrite_it = opt$overwrite) {
   # Calculate Tumor Mutational Burden for each sample given their WGS or WXS
   # sizes in bp. Ideally have filtered the WXS mutations previously using the
   # `wxs_bed_filter` function.
@@ -211,7 +272,7 @@ calculate_tmb <- function(maf_df, wgs_size, wxs_size,
   con <- DBI::dbConnect(RSQLite::SQLite(), sql_file)
   
   # Let's make the SQL table its own object
-  maf_df_db <- dplyr::tbl(con, label)
+  maf_df_db <- dplyr::tbl(con, paste0(label, "_vaf"))
   
   # Make a genome size variable
   tmb_db <- maf_df_db %>%
@@ -228,26 +289,18 @@ calculate_tmb <- function(maf_df, wgs_size, wxs_size,
     # Calculate TMB
     dplyr::mutate(tmb = mutation_count / (genome_size / 1000000))
  
-  # Save to SQL Lite file
-  con <- DBI::dbConnect(RSQLite::SQLite(), sql_file)
-  
-  # Read in and save data to 
-  dplyr::copy_to(con, 
-                 tmb_db, 
-                 name = paste0(label, "_tmb"),
-                 temporary = FALSE, 
-                 overwrite = overwrite_it)
-  
-  # Disconnect 
-  DBI::dbDisconnect(con)
-  
-  return(tmb_db %>% collect())
+  # Save this to the SQL file
+  save_to_sql(tmb_db, 
+              sql_file = sql_file, 
+              tbl_name = paste0(opt$label, "_tmb"))
 }
 
-annotr_maf <- function(maf_df, annotation_file = NULL, 
+annotr_maf <- function(maf_df, 
+                       annotation_file = NULL, 
                        sql_file = opt$sql_file, 
                        label = opt$label, 
-                       overwrite_it = opt$overwrite, bp_window = 0) {
+                       overwrite_it = opt$overwrite, 
+                       bp_window = 0) {
   # Annotate the genomic regions mutations are in from a MAF formatted data.
   # frame with AnnotatR object. Because any given region can have multiple
   # region labels, a single mutation in a can have a single label, multiple
@@ -265,10 +318,14 @@ annotr_maf <- function(maf_df, annotation_file = NULL,
   # Returns:
   # A large data.frame that contains every mutation and every region type it
   # overlaps. Genomic region types are noted in the `type` column.
-  #
+
   # Read in the genomic regions annotation object
   annotation_ranges <- readr::read_rds(annotation_file)
 
+  # Read in the maf_df
+  maf_df <- sql_to_df(sql_file = sql_file, 
+                      tbl_name = paste0(opt$label, "_vaf"))
+  
   # Use custom function to turn our MAF data into a GRanges
   maf_ranges <- maf_to_granges(maf_df)
 
@@ -292,29 +349,29 @@ annotr_maf <- function(maf_df, annotation_file = NULL,
     # characters in the original name, so we just say a number that is much bigger than
     # the longest column name (like 100)
     dplyr::rename_at(dplyr::vars(dplyr::starts_with("mcols.")), substr, 7, 100) %>%
-    dplyr::mutate("type" = as.factor(gsub("^hg38_genes_", "", type)))
+    dplyr::mutate("type" = as.factor(gsub("^hg38_genes_", "", type))) %>% 
+    # SQL doesn't like having two symbol columns even though one is capitalized and the 
+    # other isn't. 
+    dplyr::select(-SYMBOL)
    
-  # Save to SQL Lite file
-  con <- DBI::dbConnect(RSQLite::SQLite(), sql_file)
-  
-  # Read in and save data to 
-  dplyr::copy_to(con, 
-                 annot, 
-                 name = paste0(label, "_annot"), 
-                 temporary = FALSE, 
-                 overwrite = overwrite_it) 
-  
-  # Disconnect 
-  DBI::dbDisconnect(con)
+  # Save this to the SQL file
+  save_to_sql(annot, 
+              sql_file = sql_file, 
+              tbl_name = paste0(opt$label, "_annot"))
   
   # Remove the annotation ranges file to conserve memory burden
   rm(annotation_ranges)
+  rm(annot)
   
   # Return annotated mutations
   return(annot)
 }
 
-find_cosmic_overlap <- function(maf_df, cosmic_clean_file, bp_window = 0) {
+find_cosmic_overlap <- function(cosmic_clean_file, 
+                                sql_file = opt$sql_file,
+                                label = opt$label, 
+                                overwrite_it = opt$overwrite,
+                                bp_window = 0) {
   # Find how much overlap a MAF formatted data.frame has with COSMIC mutations
   # Return columns in the MAF data.frame that say whether or not it is also
   # in the COSMIC mutations set.
@@ -336,6 +393,10 @@ find_cosmic_overlap <- function(maf_df, cosmic_clean_file, bp_window = 0) {
   # (`overlap_cosmic`) and whether it was overlapping a COSMIC mutation and also
   # contained the same overall base change (`same_cosmic`).
 
+  # Read in the maf_df
+  maf_df <- sql_to_df(sql_file = sql_file, 
+                      tbl_name = paste0(opt$label, "_vaf"))
+  
   # Read in the data
   cosmic_df <- readr::read_tsv(cosmic_clean_file)
 
@@ -391,4 +452,9 @@ find_cosmic_overlap <- function(maf_df, cosmic_clean_file, bp_window = 0) {
       overlap_cosmic = (mutation_id %in% overlap_w_cosmic),
       same_cosmic = (mutation_id %in% same_as_cosmic)
     )
+  
+  # Save this to the SQL file
+  save_to_sql(maf_df, 
+              sql_file = sql_file, 
+              tbl_name = paste0(opt$label, "_vaf"))
 }
