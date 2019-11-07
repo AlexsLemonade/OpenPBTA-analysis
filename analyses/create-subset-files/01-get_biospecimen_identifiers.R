@@ -57,7 +57,7 @@ get_biospecimen_ids <- function(filename, id_mapping_df) {
     # the two CNV files now have different structures
     cnv_file <- read_tsv(filename)
     if (grepl("controlfreec", filename)) {
-      biospecimen_ids <- unique(cnv_file$tumor)
+      biospecimen_ids <- unique(cnv_file$Kids_First_Biospecimen_ID)
     } else {
       biospecimen_ids <- unique(cnv_file$ID)
     }
