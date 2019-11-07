@@ -55,27 +55,29 @@ metadata <-
 #### Custom Function -----------------------------------------------------------
 
 merge_expression <-
-  function(copy_number_df, expression_df, metadata) {
-    # Given the focal copy number data.frame already annotated with the metadata,
-    # the RNA-seq expression data.frame, and the metadata, combine the data into one
-    # data.frame and plot expression values.
+  function (copy_number_df, expression_df, metadata, filename){
+    # Given the focal copy number data.frame already annotated with the
+    # metadata, the RNA-seq expression data.frame, and the metadata, combine
+    # the data into one data.frame and save data.frame as tsv file. 
     #
     # Args:
     #   copy_number_df: focal copy number data.frame annotated with the metadata
     #   expression_df: RNA-seq expression data.frame
     #   metadata: the relevant metadata data.frame
+    #   filename: filename of the output tsv file
     #
     # Returns:
-    #   combined_df: data.frame with information from the focal CN, the
-    #                RNA-seq expression, and metadata data.frames
-    
+    #   combined_subset_df: data.frame with information from the focal CN, the
+    #                       RNA-seq expression, and metadata data.frames, which
+    #                       has been subsetted for plotting
+
     # Change expression data.frame to long tidy format
     long_expression <- expression_df %>%
-      tidyr::gather(biospecimen_id, expression_value,-gene_id) %>%
+      tidyr::gather(biospecimen_id, expression_value, -gene_id) %>%
       dplyr::distinct()
     long_expression$gene_id <-
       gsub(".*\\_", "", long_expression$gene_id)
-    
+
     # Annotate expression data with metadata
     expression_metadata <- long_expression %>%
       dplyr::inner_join(metadata,
@@ -88,7 +90,7 @@ merge_expression <-
         tumor_descriptor
       ) %>%
       dplyr::distinct()
-    
+
     # Merge Focal CN data.frame with RNA expression data.frame
     combined_df <- copy_number_df %>%
       dplyr::distinct() %>%
@@ -99,13 +101,29 @@ merge_expression <-
           "gene_symbol" = "gene_id",
           "tumor_descriptor"
         )
-      )
+      ) %>%
+      dplyr::rename(biospecimen_id_cn = biospecimen_id.x, 
+                    biospecimen_id_expression = biospecimen_id.y) %>%
+      dplyr::mutate(log_expression_value = (log2(expression_value) + 1)) %>%
+      dplyr::mutate(expression_class = dplyr::case_when(
+        expression_value == 0 ~ "0",
+        expression_value > 0 & expression_value <= 10 ~ "0-10",
+        expression_value > 10 & expression_value <= 100 ~ "10-100",
+        expression_value > 100 ~ ">100"))
+
+    # Save results
+    readr::write_tsv(combined_df, file.path(results_dir, filename))
+
+    # Subset data.frame for plotting
+    combined_subset_df <- combined_df %>%
+      dplyr::filter(!(expression_class == ">100"))
   }
 
 #### Join data -----------------------------------------------------------------
 
 # Add metadata to focal CN data.frame
 cn_df_metadata <- cn_df %>%
+  dplyr::filter(label %in% c("Hom_Deletion", "Hem_Deletion")) %>%
   dplyr::inner_join(metadata,
                     by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
   dplyr::select(
@@ -113,54 +131,45 @@ cn_df_metadata <- cn_df %>%
     biospecimen_id,
     label,
     copy_number,
+    tumor_ploidy,
     Kids_First_Participant_ID,
-    tumor_descriptor,
-    tumor_ploidy
-  ) %>%
-  dplyr::filter(label %in% c("Hom_Deletion", "Hem_Deletion"))
+    tumor_descriptor
+  )
 
 # Merge Focal CN data.frame with RNA expression data.frame using
 # `merge_expression` custom function
 rsem_combined_polyA_df <-
-  merge_expression(cn_df_metadata, rsem_expression_polyA, metadata)
+  merge_expression(cn_df_metadata,
+                   rsem_expression_polyA,
+                   metadata,
+                   "annotated_cn_polyA.tsv.gz")
 
 rsem_combined_stranded_df <-
-  merge_expression(cn_df_metadata, rsem_expression_stranded, metadata)
+  merge_expression(cn_df_metadata,
+                   rsem_expression_stranded,
+                   metadata,
+                   "annotated_cn_stranded.tsv.gz")
 
 #### Plot and Save -------------------------------------------------------------
 
 png(
   file.path(plots_dir, "cn_loss_expression_polyA.png"),
-  width = 1200,
-  height = 600
+  width = 1500,
+  height = 900,
+  res = 120
 )
 ggplot2::ggplot(rsem_combined_polyA_df,
-                ggplot2::aes(x = gene_symbol, y = expression_value)) +
-  ggplot2::geom_bar(stat = "identity", ggplot2::aes(col = label)) +
-  ggplot2::theme(
-    axis.text.x = ggplot2::element_text(
-      angle = 90,
-      hjust = 1,
-      size = 0.2
-    ),
-    title = ggplot2::element_text("Focal CN polyA expression")
-  )
+                ggplot2::aes(x = label, fill = expression_class)) +
+  ggplot2::geom_bar()
 dev.off()
 
 png(
   file.path(plots_dir, "cn_loss_expression_stranded.png"),
-  width = 1200,
-  height = 600
+  width = 1500,
+  height = 900,
+  res = 120
 )
 ggplot2::ggplot(rsem_combined_stranded_df,
-                ggplot2::aes(x = gene_symbol, y = expression_value)) +
-  ggplot2::geom_point(ggplot2::aes(col = label), size = 0.6, alpha = 0.5) +
-  ggplot2::theme(
-    axis.text.x = ggplot2::element_text(
-      angle = 90,
-      hjust = 1,
-      size = 0.5
-    ),
-    title = ggplot2::element_text("Focal CN stranded expression")
-  )
+                ggplot2::aes(x = label, fill = expression_class)) +
+  ggplot2::geom_bar()
 dev.off()
