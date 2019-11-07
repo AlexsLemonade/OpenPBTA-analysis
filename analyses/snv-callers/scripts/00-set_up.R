@@ -106,7 +106,7 @@ opt$cosmic_og <- file.path(root_dir, opt$cosmic_og)
 opt$cosmic_clean <- file.path(root_dir, opt$cosmic_clean)
 opt$annot_rds <- file.path(root_dir, opt$annot_rds)
 
-################### ####Make SQL File with the Metadata ########################
+#######################Make SQL File with the Metadata ########################
 # Read in the metadata, rename its Sample ID column so it matches
 metadata <- readr::read_tsv(opt$metadata) %>%
   dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
@@ -122,6 +122,15 @@ dplyr::copy_to(con, metadata, name = "metadata", temporary = FALSE,
 
 # Disconnect 
 DBI::dbDisconnect(con)
+
+# Make and arkdb 
+tmp <- tempdir()
+new_db <- dplyr::src_sqlite(fs::path(tmp, "maf.sqlite"), create = TRUE)
+dir <- fs::dir_create(fs::path(tmp, "metadata"))
+arkdb::ark(new_db, dir, lines = 50000)
+
+# Print out the info about this arkdb
+fs::dir_info(dir) 
 
 ################################ Build Annotation ##############################
 # We will only run this if it hasn't been run before

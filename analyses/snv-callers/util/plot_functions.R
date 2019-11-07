@@ -6,6 +6,11 @@
 ################################################################################
 ############################# Plotting Functions ###############################
 ################################################################################
+# Establish base dir
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+# Import special functions
+source(file.path(root_dir, "analyses", "snv-callers", "util", "sql_functions.R"))
 
 base_change_plot <- function(vaf_df, exp_strategy = "BOTH", filter_cutoff = 0) {
   # Plot the number of base changes as a barplot. Need a MAF data.frame that
