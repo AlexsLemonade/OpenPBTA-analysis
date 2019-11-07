@@ -45,8 +45,7 @@ do
   Rscript analyses/snv-callers/scripts/01-calculate_vaf_tmb.R \
     --label ${datasets[$i]} \
     --output analyses/snv-callers/results/${datasets[$i]} \
-    --file_format $format \
-    --maf data/testing/release-v9-20191105/pbta-snv-${datasets[$i]}.vep.maf.gz \
+    --maf data/pbta-snv-${datasets[$i]}.vep.maf.gz \
     --sql_file $sqlite \
     --bed_wgs data/${wgs_files[$i]} \
     --bed_wxs data/WXS.hg38.100bp_padded.bed \

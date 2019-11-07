@@ -9,11 +9,8 @@
 #      Default is 'maf'
 # --plot_type : Specify what kind of plots you want printed out. Must be
 #               compatible with ggsave. eg pdf. Default is png
-# --vaf : Folder from 01-calculate_vaf_tmb.R following files:
-#                                             <caller_name>_vaf.<file_format>
-#                                             <caller_name>_region.<file_format>
-#                                             <caller_name>_tmb.<file_format>
 # --output : Where you would like the output from this script to be stored.
+# --sql_file : File path to where the SQL file was saved in 00-set_up.R.
 # --strategy : Specify whether you would like WXS and WGS separated for the plots.
 #              Analysis is still done on all data in the MAF file regardless.
 #              Acceptable options are 'wgs', 'wxs' or 'both', both for if you
@@ -42,7 +39,6 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 # Import special functions
 source(file.path(root_dir, "analyses", "snv-callers", "util", "wrangle_functions.R"))
 source(file.path(root_dir, "analyses", "snv-callers", "util", "plot_functions.R"))
-source(file.path(root_dir, "analyses", "snv-callers", "util", "read_function.R"))
 
 # Load library:
 library(optparse)
@@ -64,10 +60,8 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
-    opt_str = c("-v", "--vaf"), type = "character",
-    default = NULL, help = "Path to folder with the output files
-              from 01-calculate_vaf_tmb. Should include the VAF, TMB, and
-              region TSV files",
+    opt_str = "--sql_file", type = "character", default = "none",
+    help = "File path to where the SQL file was saved in 00-set_up.R",
     metavar = "character"
   ),
   make_option(
@@ -96,11 +90,6 @@ option_list <- list(
     default = FALSE, help = "If TRUE, will overwrite any reports of
               the same name. Default is FALSE",
     metavar = "character"
-  ),
-  make_option(
-    opt_str = "--no_region", action = "store_false",
-    default = TRUE, help = "If used, regional analysis will not be run.",
-    metavar = "character"
   )
 )
 
@@ -109,12 +98,12 @@ opt <- parse_args(OptionParser(option_list = option_list))
 
 ########################### Check options specified ############################
 # Normalize this file path
-opt$vaf <- file.path(root_dir, opt$vaf)
+opt$sql_file <- file.path(root_dir, opt$sql_file)
 opt$cosmic <- file.path(root_dir, opt$cosmic)
 
 # Check the output directory exists
-if (!dir.exists(opt$vaf)) {
-  stop(paste("Error:", opt$vaf, "does not exist"))
+if (!dir.exists(opt$sql_file)) {
+  stop(paste("Error:", opt$sql_file, "does not exist"))
 }
 
 # Check for COSMIC file
@@ -123,27 +112,18 @@ if (!file.exists(opt$cosmic)) {
 }
 
 # The list of needed file suffixes
-needed_files <- c("_vaf.", "_tmb.")
-
-# Tack on region file if that's been requested
-if (opt$no_region) {
-  needed_files <- c(needed_files, "_region.")
-}
+needed_files <- c(opt$sql_file, opt$cosmic)
 
 # Get list of which files were found
-input_files <- sapply(needed_files, function(file_name) {
-  list.files(opt$vaf, pattern = file_name, full.names = TRUE)
-})
-
-# Find out which
-files_not_found <- which(sapply(input_files, length) == 0)
+files_found <- file.exists(needed_files)
 
 # Report error if any of them aren't found
-if (length(files_not_found) != 0) {
-  stop(
-    "Error: the directory specified with --output, doesn't have the ",
-    "necessary file(s): \n", paste0(opt$label, names(files_not_found), "\n")
-  )
+if (!all(files_found)) {
+  stop(paste("\n Could not find needed file(s):",
+             needed_files[which(!files_found)],
+             "Check your options and set up.",
+             sep = "\n"
+  ))
 }
 
 # List plot types we can take. This is base on ggsave's documentation
@@ -179,16 +159,7 @@ if (opt$no_region) {
 # Make the plot names with specified prefix
 plot_names <- paste0(plot_suffixes, opt$plot_type)
 
-# Read in these data
-vaf_df <- read_tsv_or_rds(grep("_vaf.", input_files, value = TRUE))
-tmb_df <- read_tsv_or_rds(grep("_tmb.", input_files, value = TRUE))
-
-# Only read in the regional things if that is necessary
-if (opt$no_region) {
-  maf_annot <- read_tsv_or_rds(grep("_region", input_files, value = TRUE))
-}
-######################## Check VAF file for each strategy ######################
-
+############################ Check strategy option #############################
 # Reformat the strategy option into lower case and vector
 opt$strategy <- tolower(unlist(strsplit(opt$strategy, ",")))
 
@@ -198,25 +169,6 @@ if (!all(opt$strategy %in% c("wgs", "wxs", "both"))) {
        'wxs' or 'both'. Multiple can be specified at once.")
 }
 
-# Check for WGS or WXS samples
-ind_strategies <- grep("wgs|wxs", opt$strategy, value = TRUE)
-
-# Check that these strategies exist in this file
-strategies_found <- ind_strategies %in% tolower(vaf_df$experimental_strategy)
-
-# If any of the strategies wasn't found, exclude them from the report list and
-# don't try to make a "both" report.
-if (any(!strategies_found)) {
-  # Print out warning:
-  warning(paste(
-    "Only samples that are", toupper(ind_strategies[strategies_found]),
-    "were found. Only a", toupper(ind_strategies[strategies_found]),
-    "will be made."
-  ))
-
-  # Make the original strategies list only the ones that were found.
-  opt$strategy <- ind_strategies[strategies_found]
-}
 #################### Run this for each experimental strategy ###################
 for (strategy in opt$strategy) {
   # File paths plots we will create

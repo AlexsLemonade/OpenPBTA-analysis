@@ -7,55 +7,11 @@
 ################################################################################
 ########################### Setting Up Functions ###############################
 ################################################################################
-save_to_sql <- function(df, 
-                        sql_file = opt$sql_file, 
-                        tbl_name, 
-                        overwrite_it = opt$overwrite) {
-  # Saves a data.frame as an SQL file
-  #
-  # Args:
-  #   df: the data.frame you would like to save to the SQLite file. 
-  #   sql_file: path to sql file where the table is saved. 
-  #   tbl_name: The name of the table to extract
-  #   overwrite_it: should it be overwritten in the SQL file? 
+# Establish base dir
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
-  # Save to SQL Lite file
-  con <- DBI::dbConnect(RSQLite::SQLite(), sql_file)
-
-  # Read in and save data to 
-  dplyr::copy_to(con, 
-                 df, 
-                 name = tbl_name, 
-                 temporary = FALSE, 
-                 overwrite = overwrite_it)
-  
-  # Disconnect 
-  DBI::dbDisconnect(con)
-}
-
-sql_to_df <- function(sql_file = opt$sql_file, 
-                      tbl_name) {
-  # Converts a SQL table to a data.frame
-  #
-  # Args:
-  #   sql_file: path to sql file where the table is saved. 
-  #   tbl_name: The name of the table to extract
-  
-  # Save to SQL Lite file
-  con <- DBI::dbConnect(RSQLite::SQLite(), sql_file)
-  
-  # Let's make the SQL table its own object
-  sql_table <- dplyr::tbl(con, tbl_name)
-  
-  # Extract MAF file from the 
-  df <- sql_table %>% 
-    dplyr::collect()
-  
-  # Disconnect 
-  DBI::dbDisconnect(con)
-  
-  return(df)
-}
+# Import special functions
+source(file.path(root_dir, "analyses", "snv-callers", "util", "sql_functions.R"))
 
 set_up_maf <- function(maf_path = opt$maf, 
                        sql_file = opt$sql_file, 
@@ -68,8 +24,8 @@ set_up_maf <- function(maf_path = opt$maf,
   #   maf_path: a maf formatted data.frame.
   #   sql_file: path to sql file that the metadata is saved to. 
   #   label: what the dataset should be called in the SQL file.
-  #   metadata: a data.frame with metadata that you would like to merge with the
-  #             maf_df and it's newly calculated variables. (Optional)
+  #   overwrite_it: should it be overwritten in the SQL file? 
+  #   vaf_cutoff: what is the minimum VAF that should be kept?
   #
   # Returns:
   #   a data.frame with all the original information from the MAF data.frame
@@ -134,7 +90,7 @@ set_up_maf <- function(maf_path = opt$maf,
               tbl_name = paste0(opt$label, "_vaf"))
   
   # Return the data.frame
-  return(maf_df)
+  message(paste(nrow(maf_df), "mutations left after filter and merge"))
 }
 
 maf_to_granges <- function(maf_df) {
@@ -165,20 +121,21 @@ maf_to_granges <- function(maf_df) {
 wxs_bed_filter <- function(sql_file = opt$sql_file, 
                            label = opt$label, 
                            overwrite_it = opt$overwrite,
-                           wxs_bed_file = NULL, 
+                           wxs_bed_file = opt$bed_wxs, 
                            bp_window = 0) {
   # Given a MAF formatted data.frame and a BED regions data.frame; filter out
   # any variants of the MAF df that are not within the BED regions.
   #
   # Args:
-  #   maf_df: maf data that has been turned into a data.frame. Can be a maf object
-  #           that is subsetted using `@data`.
+  #   sql_file: path to sql file that the metadata is saved to. 
+  #   label: what the dataset should be called in the SQL file.
   #   wxs_bed_file: a file path to TSV file that has BED formatted columns with
   #                 chromosome, start, end positions in that order.
   #   bp_window: how many base pairs away can it be from the BED region to still
   #              be included? Default is 0 bp. This argument gets forwarded
   #              to GenomicRanges::findOverlaps's `maxgap` argument.
-  #
+  #   overwrite_it: should it be overwritten in the SQL file? 
+  #   
   # Returns:
   # The same MAF formatted data.frame with the WXS mutations that lie outside
   # the supplied WXS BED regions filtered out.
@@ -194,7 +151,7 @@ wxs_bed_filter <- function(sql_file = opt$sql_file,
   # Extract the df from SQL file
   maf_df <- sql_to_df(sql_file = sql_file, 
                       tbl_name = paste0(opt$label, "_vaf"))
-  
+
   # Obtain a MAF data.frame of only the WXS samples since this filter will only
   # be applied to those samples.
   maf_wxs <- maf_df %>%
@@ -241,9 +198,6 @@ wxs_bed_filter <- function(sql_file = opt$sql_file,
   save_to_sql(filt_maf_df, 
               sql_file = sql_file, 
               tbl_name = paste0(opt$label, "_vaf"))
-  
-  # Return this matrix with the WXS mutations filtered but WGS the same
-  return(filt_maf_df)
 }
 
 calculate_tmb <- function(sql_file = opt$sql_file, 
@@ -258,12 +212,11 @@ calculate_tmb <- function(sql_file = opt$sql_file,
   # TMB = # variants / size of the genome or exome surveyed
   #
   # Args:
-  #   maf_df: maf data.frame that has been turned into a data.frame, has had
-  #           the experimental_stategy column added from the metadata (can be
-  #           done with the `set_up_maf` function) and has WXS mutations filtered
-  #           using `wxs_bed_filter` function (If the situation calls for it).
+  #   sql_file: path to sql file that the metadata is saved to. 
+  #   label: what the dataset should be called in the SQL file.
   #   wgs_size: genome size in bp to be used for WGS samples
   #   wxs_size: genome size in bp to be used for WGS samples
+  #   overwrite_it: should it be overwritten in the SQL file? 
   #
   # Returns:
   # A sample-wise data.frame with Tumor Mutation Burden statistics calculated
@@ -295,8 +248,7 @@ calculate_tmb <- function(sql_file = opt$sql_file,
               tbl_name = paste0(opt$label, "_tmb"))
 }
 
-annotr_maf <- function(maf_df, 
-                       annotation_file = NULL, 
+annotr_maf <- function(annotation_file = opt$annot_rds, 
                        sql_file = opt$sql_file, 
                        label = opt$label, 
                        overwrite_it = opt$overwrite, 
@@ -308,12 +260,14 @@ annotr_maf <- function(maf_df,
   # because many mutations have several labels.
   #
   # Args:
-  #   maf_df: maf data that has been turned into a data.frame.
+  #   sql_file: path to sql file that the metadata is saved to. 
+  #   label: what the dataset should be called in the SQL file.
   #   annotation_file: a file path to a .RDS object containing the desired annotation
   #                    from AnnotatR build function.
   #   bp_window: how many base pairs away can it be from the BED region to still
   #              be included? Default is 0 bp. This argument gets forwarded
   #              to GenomicRanges::findOverlaps's `maxgap` argument.
+  #   overwrite_it: should it be overwritten in the SQL file? 
   #
   # Returns:
   # A large data.frame that contains every mutation and every region type it
@@ -377,11 +331,13 @@ find_cosmic_overlap <- function(cosmic_clean_file,
   # in the COSMIC mutations set.
   #
   # Args:
-  #   maf_df: MAF formatted data that has been turned into a data.frame and has
-  #           been run through `set_up_variables`
   #   cosmic_clean_file: a file path to a TSV of COSMIC mutations that has been
   #                     been cleaned up to have the genomic coordinates separated
   #                     into Chr, Start, and End columns.
+  #   sql_file: path to sql file that the metadata is saved to. 
+  #   label: what the dataset should be called in the SQL file.
+  #   overwrite_it: should it be overwritten in the SQL file? 
+  #   vaf_cutoff: what is the minimum VAF that should be kept?
   #   bp_window: how many base pairs away can it be from the BED region to still
   #              be included? Default is 0 bp. This argument gets forwarded
   #              to GenomicRanges::findOverlaps's `maxgap` argument.

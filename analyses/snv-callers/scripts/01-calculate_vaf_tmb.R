@@ -7,9 +7,6 @@
 # Option descriptions
 #
 # -label : Label to be used for folder and all output. eg. 'strelka2'. Default is 'maf'.
-# -output : File path that specifies the folder where the output should go.
-#           New folder will be created if it doesn't exist. Assumes file path is
-#           given from top directory of 'OpenPBTA-analysis'.
 # --maf :  Relative file path to MAF file to be analyzed. Can be .gz compressed.
 #          Assumes file path is given from top directory of 'OpenPBTA-analysis'.
 # --sql_file : File path to where the SQL file was saved in 00-set_up.R.
@@ -118,15 +115,6 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
-opt$label <- "strelka2"
-opt$maf <-  "data/testing/release-v9-20191105/pbta-snv-strelka2.vep.maf.gz"
-opt$sql_file <- "analyses/snv-callers/ref_files/maf.sqlite"
-opt$bed_wgs <- "data/WGS.hg38.strelka2.unpadded.bed"
-opt$bed_wxs <- "data/WXS.hg38.100bp_padded.bed"
-opt$annot_rds <- "analyses/snv-callers/ref_files/hg38_genomic_region_annotation.rds"
-opt$no_region <- FALSE
-opt$overwrite <- TRUE
-
 # Coerce to numeric
 opt$vaf_filter <- as.numeric(opt$vaf_filter)
 
@@ -164,10 +152,8 @@ if (!all(files_found)) {
 message(paste("Calculating, sampling, and merging VAF for", opt$label, "MAF data..."))
   
 # Use the premade function to calculate VAF this will also merge the metadata
-vaf_df <- set_up_maf(opt$maf, opt$sql_file, opt$label, opt$overwrite, 
+set_up_maf(opt$maf, opt$sql_file, opt$label, opt$overwrite, 
            vaf_cutoff = opt$vaf_filter)
-
-message(paste(nrow(vaf_df), "mutations left after filter and merge"))
 
 # Print out saved message
 message(paste("VAF calculations saved to: \n", opt$sql_file))
@@ -178,8 +164,8 @@ if (opt$no_region) {
   message(paste("Annotating genomic regions for", opt$label, "MAF data..."))
 
   # Annotation genomic regions
-  annotr_maf(vaf_df, annotation_file = opt$annot_rds)
-
+  annotr_maf(annotation_file = opt$annot_rds)
+  
   # Print out completion message
   message(paste("Region annotation file saved to:", opt$sql_file))
 }
@@ -204,16 +190,14 @@ cat(
   "\n"
 )
 
-# Only do this step if you have WXS samples
-if (any(metadata$experimental_strategy == "WXS")) {
-  # Filter out mutations for WXS that are outside of these BED regions.
-  vaf_df <- wxs_bed_filter(vaf_df, wxs_bed_file = opt$bed_wxs)
-}
+# Filter out mutations for WXS that are outside of these BED regions.
+wxs_bed_filter(wxs_bed_file = opt$bed_wxs)
 
 # Calculate TMBs and write to SQL file
-calculate_tmb(vaf_df,
+calculate_tmb(
   wgs_size = wgs_genome_size,
-  wxs_size = wxs_exome_size)
+  wxs_size = wxs_exome_size
+)
 
 # Print out completion message
 message(paste("TMB calculations saved to:", opt$sql_file))
