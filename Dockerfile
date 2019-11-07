@@ -157,5 +157,19 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 RUN R -e "install.packages('DT', dependencies = TRUE)"
 RUN R -e "BiocManager::install(c('rtracklayer'), update = FALSE)"
 
+# Also install for mutation signature analysis
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
+    && install2.r --error \
+    --deps TRUE \
+    survival \
+    nlme \
+    cluster \
+    foreign \
+    nnet \
+    mgcv
+
+# maftools for proof of concept in create-subset-files
+RUN R -e "BiocManager::install(c('TCGAbiolinks'), update = FALSE)"
+
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
