@@ -101,7 +101,6 @@ maf <- opt$maf_file
 # Define cnv_file object here as it still needs to be defined for the `read.maf`
 # function, even if it is NULL
 cnv_file <- opt$cnv_file
-
 #### Read in data --------------------------------------------------------------
 
 # Read in metadata
@@ -117,10 +116,14 @@ maf_df <- data.table::fread(maf, stringsAsFactors = FALSE)
 
 # Read in cnv file
 if (!is.null(opt$cnv_file)) {
-  cnv_file <- data.table::fread(opt$cnv_file, stringsAsFactors = FALSE)
-  # TODO: Filter and set up `cnv_file` to be in the column format -
+  cnv_file <- data.table::fread(cnv_file, stringsAsFactors = FALSE)
+  # Set up `cnv_file` to be in the column format -
   # "Hugo_Symbol, Tumor_Sample_Barcode, Variant_Classification" as required by
   # the `read.maf function`
+  cnv_file <- cnv_file %>%
+    dplyr::select(Hugo_Symbol = gene_symbol, 
+           Tumor_Sample_Barcode = biospecimen_id, 
+           Variant_Classification = label)
 }
 
 # Read in fusion file
@@ -179,7 +182,12 @@ maf_object <-
       "Missense_Mutation",
       "Fusion",
       "Multi_Hit",
-      "Multi_Hit_Fusion"
+      "Multi_Hit_Fusion",
+      "Hom_Deletion",
+      "Hem_Deletion", 
+      "Amplification", 
+      "Gain",
+      "Loss"
     )
   )
 
