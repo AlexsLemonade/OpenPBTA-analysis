@@ -237,28 +237,38 @@ sample_mut_sig_plot(sample_sigs_nature,
 Do this for COSMIC mutation signatures.
 
 ```{r}
+# Calculate mutations per signature
 cosmic_sigs_df <- calc_mut_per_sig(sample_sigs_cosmic,
   muts_per_sample = total_muts,
   wgs_genome_size = wgs_size,
   wxs_exome_size = wxs_size,
   maf_df = maf
-) %>%
-  readr::write_tsv(file.path(results_dir, "cosmic_signatures_results.tsv"))
+) 
+
+# Write this to a file  
+readr::write_tsv(cosmic_sigs_df, 
+                 file.path(results_dir, "cosmic_signatures_results.tsv"))
+
+# Print out a preview
 cosmic_sigs_df
 ```
 
 Do this for Alexandrov et al, 2013 mutation signatures.
 
 ```{r}
+# Calculate mutations per signature
 nature_sigs_df <- calc_mut_per_sig(sample_sigs_nature,
   muts_per_sample = total_muts,
   wgs_genome_size = wgs_size,
   wxs_exome_size = wxs_size,
   maf_df = maf
-) %>%
-  readr::write_tsv(file.path(results_dir, "nature_signatures_results.tsv"))
+) 
 
-# Print it out here
+# Write this to a file  
+readr::write_tsv(nature_sigs_df, 
+                 file.path(results_dir, "nature_signatures_results.tsv"))
+
+# Print out a preview
 nature_sigs_df
 ```
 

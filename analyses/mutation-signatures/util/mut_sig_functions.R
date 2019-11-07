@@ -68,15 +68,15 @@ calc_mut_per_sig <- function(which_sig_list,
   # Calculate the number of mutations contributing to each signature
   # Here the weight is multiplied by the total number of signature mutations. 
   dplyr::mutate_at(dplyr::vars(-Tumor_Sample_Barcode), ~ . * total_muts) %>%
-    as.data.frame() %>%
     
     # Join the short_histology and experimental stategy information
-    dplyr::inner_join(dplyr::select(
+    dplyr::left_join(dplyr::select(
       maf_df,
       "Tumor_Sample_Barcode",
       "short_histology",
       "experimental_strategy"
-    ),
+    ) %>% 
+      dplyr::distinct(Tumor_Sample_Barcode,.keep_all = TRUE),
     by = "Tumor_Sample_Barcode"
     ) %>%
 
@@ -84,10 +84,7 @@ calc_mut_per_sig <- function(which_sig_list,
     dplyr::filter(experimental_strategy != "Panel") %>%
     
     # Reformat for plotting
-    reshape2::melt() %>%
-
-    # Only keep distinct
-    dplyr::distinct(Tumor_Sample_Barcode, variable, .keep_all = TRUE) %>%
+    reshape2::melt(value.name = "num_mutations") %>%
 
     # Add genome size and calculate the mutation per this column
     dplyr::mutate(
@@ -95,10 +92,13 @@ calc_mut_per_sig <- function(which_sig_list,
         "WGS" = wgs_size,
         "WXS" = wxs_size
       ),
-      mut_per_mb = value / (genome_size / 10^6)
+      mut_per_mb = num_mutations / (genome_size / 10^6)
     ) %>% 
-    dplyr::rename(num_mutations = value, 
-                  signature = variable)
+    # Rename variable as signature
+    dplyr::rename("signature" = variable) %>% 
+    
+    # Make this a factor but make sure the levels stay in order
+    dplyr::mutate(signature = factor(signature, levels = unique(signature)))
   
   return(sig_num_df)
 }
@@ -121,7 +121,6 @@ bubble_matrix_plot <- function(sig_num_df, label = "none") {
   #
   # Summarize the mut_per_mb column by histology
   grouped_sig_num <- sig_num_df %>%
-    dplyr::arrange(signature) %>%
     dplyr::group_by(short_histology, signature) %>%
     dplyr::summarize(
       # Calculate the proportion of tumors with a non-zero weight for each signature
