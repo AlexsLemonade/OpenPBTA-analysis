@@ -3,9 +3,9 @@ title: "Summary of Ensembl identifiers for RNA-seq matrices"
 output: html_notebook
 params: 
   polya.annot.table: 
-    value: ''
+    value: 'pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds'
   stranded.annot.table:
-    value: ''
+    value: 'pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds'
 ---
 
 ```{r include = FALSE}
