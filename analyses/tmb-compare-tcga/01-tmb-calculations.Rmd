@@ -1,0 +1,107 @@
+---
+title: "Tumor Mutation Burden"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: C. Savonen for ALSF CCDL
+date: 2019
+---
+
+
+#### Usage
+
+To run this from the command line, use:
+```
+Rscript -e "rmarkdown::render('analyses/tmb-calculations/01-tmb-calculations.Rmd', 
+                              clean = TRUE)"
+```
+
+_This assumes you are in the top directory of the repository._
+
+## Setup
+
+#### Packages and functions
+
+```{r}
+if (!("R.utils" %in% installed.packages())) {
+  install.packages("R.utils")
+}
+```
+
+`magrittr` pipe.
+
+```{r}
+`%>%` <- dplyr::`%>%`
+```
+
+Declare names of output directories.
+
+```{r}
+data_dir <- file.path("..", "..", "data")
+scratch_dir <- file.path("..", "..", "scratch")
+results_dir <- "results"
+plots_dir <- "plots"
+```
+
+Create output directories in this analysis folder if they weren't made 
+
+```{r}
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir)
+}
+```
+
+## Read in data
+
+Download and read in the consensus MAF file. 
+
+```{r}
+# Declare file path for consensus file
+consensus_file <- file.path(data_dir, "snv-consensus", "consensus_mutation_tmb.tsv")
+
+# If this file hasn't been downloaded, download and unzip it.
+if (!file.exists(consensus_file)) {
+# Download the file
+download.file("https://open-pbta.s3.amazonaws.com/data/snv-consensus/snv-consensus_1112019.zip", 
+              destfile = file.path(data_dir, "snv-consensus_1112019.zip"))
+
+# Get the files in this zip file
+unzip(file.path(data_dir, "snv-consensus_1112019.zip"),
+      exdir = data_dir)
+}
+```
+
+Read in the consensus MAF file. 
+
+```{r}
+# Read in the file
+tmb <- data.table::fread(consensus_file)
+```
+
+```{r}
+tmb %>% 
+  ggplot2::ggplot(ggplot2::aes(x = experimental_strategy, y = tmb)) + 
+  ggplot2::geom_violin(ggplot2::aes(color = experimental_strategy)) + 
+  ggplot2::theme_classic()
+```
+
+```{r}
+tmb %>% 
+  ggplot2::ggplot(ggplot2::aes(x = short_histology, y = tmb)) + 
+  ggplot2::geom_jitter(ggplot2::aes(color = short_histology)) + 
+  ggplot2::theme_classic() + 
+  ggplot2::ylab("Number of Mutations per Mb") +
+  ggplot2::xlab("") +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1), 
+                 legend.position = "none") 
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
