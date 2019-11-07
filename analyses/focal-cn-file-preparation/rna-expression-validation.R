@@ -7,7 +7,7 @@
 # This script is intended to be run via the command line from the top directory
 # of the repository as follows:
 #
-# Rscript 'analyses/oncoprint-landscape/rna-expression-validation.R'
+# Rscript 'analyses/focal-cn-file-preparation/rna-expression-validation.R'
 
 #### Set Up --------------------------------------------------------------------
 
