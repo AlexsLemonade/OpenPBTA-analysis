@@ -84,6 +84,7 @@ calc_mut_per_sig <- function(which_sig_list,
     dplyr::filter(experimental_strategy != "Panel") %>%
     
     # Reformat for plotting
+
     reshape2::melt(value.name = "num_mutations") %>%
 
     # Add genome size and calculate the mutation per this column

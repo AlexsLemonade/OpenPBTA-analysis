@@ -19,8 +19,9 @@ To run the mutation signature evaluations, use this in command line:
 Rscript -e "rmarkdown::render('analyses/mutation-signatures/mutation_signatures.Rmd',
                               clean = TRUE)"
 ```
+_This assumes you are in the top directory of the repository._
 
-This notebook, in addition to its `nb.html` output, will return plots return results for each caller in the `plots` and `results` folder.
+This notebook, in addition to its `nb.html` output, will return results for each caller in the `plots` and `results` folder.
 
 ## Summary of the calculations
 
@@ -29,8 +30,13 @@ This notebook, in addition to its `nb.html` output, will return plots return res
 The weights from [`deconstructSigs::whichSignatures`](https://www.rdocumentation.org/packages/deconstructSigs/versions/1.8.0/topics/whichSignatures) are multiplied by each sample's sum of mutations as provided by [`deconstructSigs::mut.to.sigs.input`](https://www.rdocumentation.org/packages/deconstructSigs/versions/1.8.0/topics/mut.to.sigs.input).
 These numbers are saved to the `_signatures_results.tsv` files in the `results` folder.
 
-### Number of
+For more information, see the [`calc_mut_per_sig`]() code.
 
+### Proportion of tumors with a signature
+
+A tumor is considered to have a particular signature if its weight is non-zero.
+This is divided by the number of tumor samples in that particular histology group.
+For more information, see the [`bubble_matrix_plot`]() code.
 
 ## Overall file structure
 ```
@@ -59,10 +65,9 @@ OpenPBTA-analysis
 
 ## Summary of custom functions
 
-|Function Name|Plot output|Main Arguments|
-|-------------|-----------|---------|
+|Function Name|Summary|
+|-------------|-----------|
 |`sample_mut_sig_plot`|Saves traditional mutation signature plots for each sample|
-|`calc_mut_per_sig`|Given `deconstructSigs::whichSignature` output, formats the sample_data into a data.frame and calculates the mutations per Mb for each sample and
-each signature|
+|`calc_mut_per_sig`|Given `deconstructSigs::whichSignature` output, formats the sample data into a data.frame and calculates the mutations per Mb for each sample and each signature|
 |`bubble_matrix_plot`|Groups together data by histology and makes the bubble matrix plot|
 |`grouped_sig_barplot`|Creates signature grouped barplots for histology group provided and only uses primary tumors' data|
