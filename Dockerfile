@@ -100,7 +100,8 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     rpart \
     class \
     MASS \
-    GGally
+    GGally \
+    Matrix
 
 # Help display tables in R Notebooks
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
@@ -142,6 +143,19 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 
 # Check to make sure the binaries are available by loading the bedr library
 RUN Rscript -e "library(bedr)"
+
+# Install for mutation signature analysis
+RUN R -e "BiocManager::install(c('BSgenome.Hsapiens.UCSC.hg19', 'BSgenome.Hsapiens.UCSC.hg38'))"
+
+# Also install for mutation signature analysis
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
+    && install2.r --error \
+    --deps TRUE \
+    deconstructSigs
+    
+# packages required for collapsing RNA-seq data by removing duplicated gene symbols
+RUN R -e "install.packages('DT', dependencies = TRUE)"
+RUN R -e "BiocManager::install(c('rtracklayer'), update = FALSE)"
 
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
