@@ -61,10 +61,10 @@ option_list <- list(
     help = "file path to file that contains CNV information"
   ),
   optparse::make_option(
-    c("--metadata"),
+    c("--gtf_file"),
     type = "character",
     default = NULL,
-    help = "file path to file that contains the sample metadata"
+    help = "file path to human genome GTF file"
   ),
   optparse::make_option(
     c("--filename_lead"),
@@ -158,7 +158,7 @@ cnv_no_xy_gr <- cnv_no_xy %>%
                                           starts.in.df.are.0based = FALSE)
 
 # Define the annotations for the hg38 genome
-txdb <- GenomicFeatures::makeTxDBFromGFF(
+txdb <- GenomicFeatures::makeTxDbFromGFF(
   file = opt$gtf_file,
   format = "gtf"
 )
@@ -169,48 +169,45 @@ chroms <- paste0("chr", 1:22)
 chrom_filter <- list(tx_chrom = chroms)
 
 # extract the genes using the chromosome filter
-chr_exons <- GenomicFeatures::exons(txdb,  filter = chrom_filter)
+chr_exons <- GenomicFeatures::exons(txdb,
+                                    filter = chrom_filter,
+                                    columns = "gene_id")
 
 # Create a data.frame with the overlaps between the seg file and hg38 genome
 # annotations
 overlaps <- IRanges::mergeByOverlaps(cnv_no_xy_gr, chr_exons)
 
-overlap_symbols <-
-  AnnotationDbi::mapIds(
-    org.Hs.eg.db::org.Hs.eg.db,
-    keys = overlaps$gene_id,
-    column = "SYMBOL",
-    keytype = "ENTREZID"
-  )
-
-overlaps_cytoband <-
-  AnnotationDbi::mapIds(
-    org.Hs.eg.db::org.Hs.eg.db,
-    keys = overlaps$gene_id,
-    column = "MAP",
-    keytype = "ENTREZID"
-  )
-
-overlaps$gene_id <- overlap_symbols
-overlaps$cytoband <- overlaps_cytoband
+# remove what we no longer need from the environment
+rm(chr_exons, chroms, chrom_filter, cnv_no_xy_gr, cnv_no_xy)
 
 # Create a data.frame with selected columns from the `overlaps` object
-cn_short <- data.frame(
-  gene_symbol = overlaps$gene_id,
-  biospecimen_id = overlaps$ID,
-  copy_number = overlaps$copy.num) %>%
-  dplyr::filter(!(is.na(gene_symbol)))
-
-# Create a `label` column with values specifying the type of CN aberration and
-# save as a data.frame with `gene_symbol`, `biospecimen_id`, and `copy_number`
-annotated_cn <- cn_short %>%
+annotated_cn <- data.frame(ensembl = unlist(overlaps$gene_id),
+                           biospecimen_id = overlaps$Kids_First_Biospecimen_ID,
+                           status = overlaps$status,
+                           copy_number = overlaps$copy_number,
+                           ploidy = overlaps$tumor_ploidy) %>%
   dplyr::distinct() %>%
-  dplyr::mutate(label = dplyr::case_when(
-    copy_number == 3 | copy_number == 4  ~ "Gain",
-    copy_number == 0 ~ "Hom_Deletion",
-    copy_number == 1 ~ "Hem_Deletion",
-    copy_number >= 5 ~ "Amplification")) %>%
-  dplyr::select(gene_symbol, biospecimen_id, label, copy_number)
+  # Discard the gene version information in order to get gene symbols and
+  # cytoband mappings
+  dplyr::mutate(ensembl = gsub("\\..*", "", ensembl))
+
+annotated_cn <- annotated_cn %>%
+  dplyr::mutate(
+    gene_symbol = AnnotationDbi::mapIds(org.Hs.eg.db::org.Hs.eg.db,
+                                        keys = ensembl,
+                                        column = "SYMBOL",
+                                        keytype = "ENSEMBL"),
+    cytoband = AnnotationDbi::mapIds(org.Hs.eg.db::org.Hs.eg.db,
+                                     keys = ensembl,
+                                     column = "MAP",
+                                     keytype = "ENSEMBL")
+  ) %>%
+  dplyr::filter(!is.na(gene_symbol)) %>%
+  # put the ensembl identifiers last
+  dplyr::select(-ensembl, dplyr::everything())
+
+# Output file name
+output_file <- paste0(opt$filename_lead, "_autosomes.tsv")
 
 # Save final data.frame to a tsv file
-readr::write_tsv(annotated_cn, file.path(results_dir, "annotated_cn.tsv"))
+readr::write_tsv(annotated_cn, file.path(results_dir, output_file))
