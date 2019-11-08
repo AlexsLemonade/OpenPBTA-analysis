@@ -121,9 +121,11 @@ if (!is.null(opt$cnv_file)) {
   # "Hugo_Symbol, Tumor_Sample_Barcode, Variant_Classification" as required by
   # the `read.maf function`
   cnv_file <- cnv_file %>%
-    dplyr::select(Hugo_Symbol = gene_symbol, 
-           Tumor_Sample_Barcode = biospecimen_id, 
-           Variant_Classification = label)
+    dplyr::select(
+      Hugo_Symbol = gene_symbol,
+      Tumor_Sample_Barcode = biospecimen_id,
+      Variant_Classification = label
+    )
 }
 
 # Read in fusion file
