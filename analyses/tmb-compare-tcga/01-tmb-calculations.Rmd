@@ -58,9 +58,9 @@ Calculating the TMB for TCGA.
 
 ```{r}
 calc_tmb <- function(maf_df,
-                           bed_granges = wgs_bed_granges, 
-                           genome_size = wgs_genome_size,
-                           bp_window = 0) {
+                     bed_granges = wgs_bed_granges, 
+                     genome_size = wgs_genome_size,
+                     bp_window = 0) {
   # Given a MAF formatted dta.frame and a BED regions data.frame; filter out
   # any variants of the MAF df that are not within the BED regions.
   #
@@ -112,7 +112,7 @@ calc_tmb <- function(maf_df,
 }
 ```
 
-## Read in data
+## Read in and set up data
 
 Download and read in the consensus MAF file. 
 
@@ -136,15 +136,10 @@ Read in the consensus MAF file.
 
 ```{r}
 # Read in the file
-tmb <- data.table::fread(consensus_file)
+tmb_pbta <- data.table::fread(consensus_file)
 ```
 
-Read in the TCGA data. 
-
-```{r}
-gbm_maf <- TCGAbiolinks::GDCquery_Maf("GBM", pipelines = "mutect")
-lgg_maf <- TCGAbiolinks::GDCquery_Maf("LGG", pipelines = "mutect")
-```
+Set up the WGS data for applying to TCGA data for calculating TMB. 
 
 ```{r}
 wgs_bed_file <- file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed")
@@ -160,6 +155,8 @@ wgs_genome_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
 wgs_bed_granges <- maf_to_granges(wgs_bed)
 ```
 
+Set up the TCGA data. 
+
 ```{r}
 maf <- list(
   TCGAbiolinks::GDCquery_Maf("LGG", pipelines = "mutect"),
@@ -167,21 +164,83 @@ maf <- list(
 )
 ```
 
-```{r}
-tmb_tcga <- lapply(maf, calc_tmb) 
-```
+Set up the TCGA metadata so we can get histology groups. 
 
 ```{r}
-tmb %>% 
-  ggplot2::ggplot(ggplot2::aes(x = short_histology, y = tmb)) + 
-  ggplot2::geom_jitter(ggplot2::aes(color = short_histology)) + 
-  ggplot2::theme_classic() + 
-  ggplot2::ylab("Number of Mutations per Mb") +
-  ggplot2::xlab("") +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1), 
-                 legend.position = "none") +
-  ggplot2::stat_summary(fun = "mean", geom = "crossbar",
-                        width = .5, color = "black")
+clinical <- list(
+  TCGAbiolinks::GDCquery_clinic(project = "TCGA-LGG", type = "clinical"),
+  TCGAbiolinks::GDCquery_clinic(project = "TCGA-GBM", type = "clinical")
+)
+# Bind the data together
+clinical <- dplyr::bind_rows(clinical) 
+```
+
+Calculate TMB and set up the TCGA data with its histology. 
+
+```{r}
+# Calculate TMB
+tmb_tcga <- lapply(maf, calc_tmb) 
+
+# Get the patient barcode from the Tumor Sample Barcode category
+tmb_tcga <- dplyr::bind_rows(tmb_tcga) %>% 
+  dplyr::mutate(bcr_patient_barcode = substr(Tumor_Sample_Barcode, 0, 12)) %>% 
+  # Add on the histology group 
+  dplyr::left_join(dplyr::select(clinical, primary_diagnosis, bcr_patient_barcode), 
+                   by =  "bcr_patient_barcode") %>% 
+  # Rename so it matches PBTA data
+  dplyr::rename(short_histology = primary_diagnosis)
+```
+
+## Combine the TCGA and PBTA data
+
+```{r}
+all_tmb <- dplyr::bind_rows(tmb_tcga, tmb_pbta, .id = "dataset") %>% 
+  # Recode the dataset so we know which data is from which
+  dplyr::mutate(dataset = dplyr::recode(dataset, `1` = "TCGA", `2` = "PBTA")) %>% 
+  dplyr::filter(!is.na(short_histology)) 
+```
+
+## Plot the TMB as a jitterplot 
+
+```{r}
+jitter_plot <- function(data, colour = NULL, title) {
+  data %>% 
+    ggplot2::ggplot(ggplot2::aes(x = short_histology, y = tmb))+ 
+    ggplot2::geom_jitter(color = colour, alpha = 0.5) + 
+    ggplot2::stat_summary(fun.y = mean, fun.ymin = mean, fun.ymax = mean, 
+                          geom = "crossbar", 
+                          width = 0.6, size = 0.15) +
+    ggplot2::theme_classic() + 
+    ggplot2::ylab("Number of Mutations per Mb") +
+    ggplot2::xlab("") +
+    ggplot2::ylim(c(0, 30)) + 
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 60, hjust = 1), 
+                 legend.position = "none") + 
+    ggplot2::ggtitle(title)
+}
+
+# Make TCGA plot and get rid of y axis 
+tcga_plot <- jitter_plot(tmb_tcga, colour = "darkred", title = "TCGA (Adult)") + 
+  ggplot2::theme(axis.title.y  = ggplot2::element_blank(),
+                 axis.text.y  = ggplot2::element_blank(),
+                 axis.ticks.y = ggplot2::element_blank(), 
+                 axis.line.y = ggplot2::element_blank()) 
+  
+# Make the plot for PBTA
+pbta_plot <- jitter_plot(tmb_pbta, colour = "blue", title = "PBTA")
+
+# Put the plots together
+tmb_plot <- cowplot::plot_grid(pbta_plot, tcga_plot, align="h", axis = "left", 
+                               rel_widths = c(2.75, 1),
+                               label_size = 12)
+# Print out tmb plot 
+tmb_plot
+```
+
+
+```{r}
+# Save the plot to a png
+cowplot::save_plot(file.path(plots_dir, "tmb_tcga_and_pbta_plot.png"), plot = tmb_plot)
 ```
 
 ## Session Info
