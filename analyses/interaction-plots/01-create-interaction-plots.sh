@@ -3,6 +3,9 @@
 # JA Shapiro for CCDL 2019
 #
 # Runs scripts/01-process_mutations.R with some default settings.
+# Takes one enviroment variable, `OPENPBTA_ALL`, which if 0 runs only 
+# the full dataset and the largest disease set (for testing). If 1 or more, 
+# all samples ar run (this is also the default behavior if unset)
 
 set -e
 set -o pipefail
@@ -24,6 +27,8 @@ maf=data/pbta-snv-lancet.vep.maf.gz
 cooccur=${results_dir}/lancet_top50
 plot=${plot_dir}/lancet_top50
 
+# associative array of diseases to test; chosen by those that are most common
+# in the openPBTA dataset
 declare -A disease
 disease[All]="All"
 disease[LGAT]="Low-grade glioma;astrocytoma (WHO grade I/II)"
