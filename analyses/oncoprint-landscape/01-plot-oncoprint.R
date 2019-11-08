@@ -248,7 +248,7 @@ oncoplot(
   logColBar = TRUE,
   sortByAnnotation = TRUE,
   showTumorSampleBarcodes = TRUE,
-  removeNonMutated = FALSE,
+  removeNonMutated = TRUE,
   annotationFontSize = 0.7,
   SampleNamefontSize = 0.5,
   fontSize = 0.7,
