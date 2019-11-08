@@ -13,7 +13,7 @@ Here, I'm looking at the output of `01-prepare-cn-file.R` to see if we recover t
 We're going to get the data from a pull request/branch that is currently open.
 This will get whatever the current files are for that branch.
 
-```{sh}
+```{sh, results = 'hide'}
 wget -N -P results https://raw.githubusercontent.com/jaclyn-taroni/OpenPBTA-analysis/186-both-formats/analyses/focal-cn-file-preparation/results/cnvkit_annotated_cn_autosomes.tsv.gz
 wget -N -P results https://raw.githubusercontent.com/jaclyn-taroni/OpenPBTA-analysis/186-both-formats/analyses/focal-cn-file-preparation/results/controlfreec_annotated_cn_autosomes.tsv.gz 
 ```
