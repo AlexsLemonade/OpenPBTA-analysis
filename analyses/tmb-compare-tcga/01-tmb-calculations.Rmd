@@ -24,15 +24,14 @@ _This assumes you are in the top directory of the repository._
 #### Packages and functions
 
 ```{r}
-if (!("R.utils" %in% installed.packages())) {
-  install.packages("R.utils")
+if (!("TCGAbiolinks" %in% installed.packages())) {
+  install.packages("TCGAbiolinks")
 }
-```
-
-`magrittr` pipe.
-
-```{r}
+# magrittr pipe
 `%>%` <- dplyr::`%>%`
+
+
+source(file.path("..", "snv-callers", "util", "wrangle_functions.R"))
 ```
 
 Declare names of output directories.
@@ -82,11 +81,23 @@ Read in the consensus MAF file.
 tmb <- data.table::fread(consensus_file)
 ```
 
+Read in the regions for the PBTA data to used for calculating TMB for TCGA data. 
+
 ```{r}
-tmb %>% 
-  ggplot2::ggplot(ggplot2::aes(x = experimental_strategy, y = tmb)) + 
-  ggplot2::geom_violin(ggplot2::aes(color = experimental_strategy)) + 
-  ggplot2::theme_classic()
+# Set up BED region files for TMB calculations
+wgs_bed <- readr::read_tsv(opt$bed_wgs, col_names = FALSE)
+
+# Calculate size of genome surveyed
+wgs_genome_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
+
+# Filter out mutations for WXS that are outside of these BED regions.
+vaf_df <- wxs_bed_filter(vaf_df, wxs_bed_file = opt$bed_wgs)
+
+```
+
+```{r}
+gbm_maf <- TCGAbiolinks::GDCquery_Maf("GBM", pipelines = "mutect")
+lgg_maf <- TCGAbiolinks::GDCquery_Maf("LGG", pipelines = "mutect")
 ```
 
 ```{r}
@@ -97,7 +108,9 @@ tmb %>%
   ggplot2::ylab("Number of Mutations per Mb") +
   ggplot2::xlab("") +
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1), 
-                 legend.position = "none") 
+                 legend.position = "none") +
+  ggplot2::stat_summary(fun = "mean", geom = "crossbar",
+                        width = .5, color = "black")
 ```
 
 ## Session Info
