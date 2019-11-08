@@ -168,7 +168,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     nnet \
     mgcv
 
-# maftools for proof of concept in create-subset-files
+# TCGAbiolinks for TMB compare analysis
 RUN R -e "BiocManager::install(c('TCGAbiolinks'), update = FALSE)"
 
 #### Please install your dependencies here

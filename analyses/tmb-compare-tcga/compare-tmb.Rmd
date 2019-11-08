@@ -46,7 +46,7 @@ results_dir <- "results"
 plots_dir <- "plots"
 ```
 
-Create output directories in this analysis folder if they weren't made 
+Create output directories for this analysis. 
 
 ```{r}
 if (!dir.exists(results_dir)) {
@@ -57,7 +57,7 @@ if (!dir.exists(plots_dir)) {
 }
 ```
 
-Custom plot for plotting the TMB. 
+Custom function for plotting the TMB. 
 
 ```{r}
 sina_plot <- function(data, colour = NULL, title) {
@@ -91,9 +91,9 @@ sina_plot <- function(data, colour = NULL, title) {
 }
 ```
 
-## Read in and set up PBTA data
+## Set up consensus SNV PBTA data
 
-Download and consensus SNV files. 
+Download consensus SNV files. 
 
 ```{r}
 # Declare file path for consensus file
@@ -120,7 +120,7 @@ Read in the consensus TMB file.
 tmb_pbta <- data.table::fread(consensus_file)
 ```
 
-Set up the WGS BED region data for strelka2 for applying to TCGA data for calculating TMB. 
+Set up the WGS BED region data for Strelka2 for applying to TCGA data for calculating TMB. 
 Here we are using Strelka2 because the consensus mutation data uses it. 
 
 ```{r}
@@ -133,7 +133,7 @@ wgs_bed <- readr::read_tsv(wgs_bed_file, col_names = FALSE) %>%
 # Calculate size of genome surveyed
 wgs_genome_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
 
-# Turn the WXS bed regions into a GRanges object
+# Turn the bed regions into a GRanges object
 wgs_bed_granges <- maf_to_granges(wgs_bed)
 ```
 
