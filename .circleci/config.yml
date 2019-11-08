@@ -86,7 +86,7 @@ jobs:
                 
       - run:
           name: Interaction plot
-          command: ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh     
+          command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh     
     
       - run:
           name: Oncoprint plotting
