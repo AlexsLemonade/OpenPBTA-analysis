@@ -94,7 +94,7 @@ jobs:
 
       - run:
           name: Tumor mutation burden with TCGA
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-calculations/compare-tmb.Rmd', clean = TRUE)"
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
 
          ################################
          #### Add your analysis here ####

@@ -16,7 +16,7 @@ Plot the consensus tumor mutation burden statistics for PBTA in comparison to TC
 
 To run this from the command line, use:
 ```
-Rscript -e "rmarkdown::render('analyses/tmb-calculations/compare-tmb.Rmd', 
+Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', 
                               clean = TRUE)"
 ```
 
