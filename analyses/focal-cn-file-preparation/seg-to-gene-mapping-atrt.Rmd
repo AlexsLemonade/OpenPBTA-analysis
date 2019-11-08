@@ -10,7 +10,13 @@ From [this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/182#
 > may advise starting with ATRT's and SMARCB1 deletions
 
 Here, I'm looking at the output of `01-prepare-cn-file.R` to see if we recover that information in the segment to gene mapping.
-The CNVkit SEG file was used for `results/annotated_cn.tsv`.
+We're going to get the data from a pull request/branch that is currently open.
+This will get whatever the current files are for that branch.
+
+```{sh}
+wget -N -P results https://raw.githubusercontent.com/jaclyn-taroni/OpenPBTA-analysis/186-both-formats/analyses/focal-cn-file-preparation/results/cnvkit_annotated_cn_autosomes.tsv.gz
+wget -N -P results https://raw.githubusercontent.com/jaclyn-taroni/OpenPBTA-analysis/186-both-formats/analyses/focal-cn-file-preparation/results/controlfreec_annotated_cn_autosomes.tsv.gz 
+```
 
 ```{r}
 `%>%` <- dplyr::`%>%`
@@ -20,7 +26,10 @@ The CNVkit SEG file was used for `results/annotated_cn.tsv`.
 
 ```{r}
 # read in the output of `01-prepare-cn-file.R`
-annotation_cn <- readr::read_tsv(file.path("results", "annotated_cn.tsv"))
+cnvkit_df <- readr::read_tsv(file.path("results", 
+                                       "cnvkit_annotated_cn_autosomes.tsv.gz"))
+controlfreec_df <- readr::read_tsv(file.path("results",
+                                             "controlfreec_annotated_cn_autosomes.tsv.gz"))
 # read in the clinical file that has the disease type information
 histologies_df <- readr::read_tsv(file.path("..", "..", "data", 
                                             "pbta-histologies.tsv"))
@@ -35,10 +44,20 @@ atrt_specimens <- histologies_df %>%
   dplyr::pull(Kids_First_Biospecimen_ID)
 ```
 
+#### CNVkit
+
 ```{r}
 # filter the gene-level CN information to ATRT samples and gene symbols
 # containing 'SMARC'
-annotation_cn %>%
+cnvkit_df %>%
+  dplyr::filter(biospecimen_id %in% atrt_specimens,
+                grepl("SMARCB1", gene_symbol))
+```
+
+#### ControlFreeC
+
+```{r}
+controlfreec_df %>%
   dplyr::filter(biospecimen_id %in% atrt_specimens,
                 grepl("SMARCB1", gene_symbol))
 ```
