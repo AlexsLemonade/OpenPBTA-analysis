@@ -93,7 +93,7 @@ sina_plot <- function(data, colour = NULL, title) {
 
 ## Read in and set up PBTA data
 
-Download and read in the consensus MAF file. 
+Download and consensus SNV files. 
 
 ```{r}
 # Declare file path for consensus file
@@ -113,7 +113,7 @@ if (!file.exists(consensus_file)) {
 }
 ```
 
-Read in the consensus MAF file. 
+Read in the consensus TMB file. 
 
 ```{r}
 # Read in the file

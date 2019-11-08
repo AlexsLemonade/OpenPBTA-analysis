@@ -157,7 +157,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 RUN R -e "install.packages('DT', dependencies = TRUE)"
 RUN R -e "BiocManager::install(c('rtracklayer'), update = FALSE)"
 
-# Also install for mutation signature analysis
+# Needed to install TCGAbiolinks
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
     && install2.r --error \
     --deps TRUE \
