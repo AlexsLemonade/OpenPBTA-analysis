@@ -192,7 +192,7 @@ maf_df <- maf_df %>%
     t_depth,
     t_ref_count,
     t_alt_count,
-    Consequence,
+    Consequence
   )
 
 # get sample and gene lists
