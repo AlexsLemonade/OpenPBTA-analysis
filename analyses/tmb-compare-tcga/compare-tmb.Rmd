@@ -38,7 +38,7 @@ if (!("TCGAbiolinks" %in% installed.packages())) {
 source(file.path("..", "snv-callers", "util", "wrangle_functions.R"))
 ```
 
-Declare names of output directories.
+Declare names of input and output directories.
 
 ```{r}
 data_dir <- file.path("..", "..", "data")
@@ -57,7 +57,7 @@ if (!dir.exists(plots_dir)) {
 }
 ```
 
-Custom plot for plottting the TMB. 
+Custom plot for plotting the TMB. 
 
 ```{r}
 sina_plot <- function(data, colour = NULL, title) {
@@ -91,7 +91,7 @@ sina_plot <- function(data, colour = NULL, title) {
 }
 ```
 
-## Read in and set up data
+## Read in and set up PBTA data
 
 Download and read in the consensus MAF file. 
 
@@ -120,7 +120,8 @@ Read in the consensus MAF file.
 tmb_pbta <- data.table::fread(consensus_file)
 ```
 
-Set up the WGS data for applying to TCGA data for calculating TMB. 
+Set up the WGS BED region data for strelka2 for applying to TCGA data for calculating TMB. 
+Here we are using Strelka2 because the consensus mutation data uses it. 
 
 ```{r}
 wgs_bed_file <- file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed")
@@ -136,15 +137,15 @@ wgs_genome_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
 wgs_bed_granges <- maf_to_granges(wgs_bed)
 ```
 
-Set up the TCGA data. 
+## Set up the TCGA data. 
 
-We will only use the brain related TCGA projects, so we are specifying them here. 
+We will only use the brain related TCGA projects, so we are specifying the project abbreviations here. 
 
 ```{r}
 tcga_datasets <- c("LGG", "GBM", "PCPG")
 ```
 
-Download and read each of these MAF files using `TCGAbiolinks`. 
+Download and read each of these TCGA project's MAF files using `TCGAbiolinks`. 
 
 ```{r}
 maf <- lapply(tcga_datasets, function(dataset) {
@@ -158,7 +159,7 @@ maf <- lapply(tcga_datasets, function(dataset) {
 maf_df <- dplyr::bind_rows(maf)
 ```
 
-Calculate overlap with these BED ranges and the TCGA mutations
+Calculate overlap with these BED ranges and the TCGA mutations. 
 
 ```{r}
 maf_granges <- maf_to_granges(maf_df)
@@ -173,15 +174,14 @@ overlap <- GenomicRanges::findOverlaps(
 )
 ```
 
-Report the ratio of mutations that are within this window. 
+Report the ratio of mutations that are within these BED windows. 
 
 ```{r}
-# Calculate of ratio of variants in this BED using the @from slot which
-# indicates the indices of the ranges in `wxs_maf_ranges` that have overlaps
-# with `wxs_bed_ranges`
+# Calculate of ratio of TCGA variants in this Strelka2 BED using the @from slot which
+# indicates the indices of the ranges
 length(overlap@from) / nrow(maf_df)
 ```
-All of these mutations are within this window, so we don't need to filter them out. 
+All of these mutations are within the Strelka2 windows, so we don't need to filter the TCGA data. 
 
 ## Calculate TCGA tumor mutation burden
 
@@ -228,6 +228,7 @@ tmb_tcga <- tmb_tcga %>%
 
 ## Plot the TMB as a sina plot
 
+Plot the TCGA data. 
 ```{r}
 # Make TCGA plot and get rid of y axis
 tcga_plot <- sina_plot(tmb_tcga, colour = "darkred", title = "TCGA (Adult)") +
@@ -238,10 +239,18 @@ tcga_plot <- sina_plot(tmb_tcga, colour = "darkred", title = "TCGA (Adult)") +
     axis.line.y = ggplot2::element_blank(),
     axis.text.x = ggplot2::element_text(size = 6.5)
   )
+```
 
+Plot the PBTA data. 
+
+```{r}
 # Make the plot for PBTA
 pbta_plot <- sina_plot(tmb_pbta, colour = "blue", title = "PBTA")
+```
 
+Use cowplot to put them together. 
+
+```{r}
 # Put the plots together
 tmb_plot <- cowplot::plot_grid(pbta_plot, tcga_plot,
   align = "v",
@@ -253,6 +262,7 @@ tmb_plot <- cowplot::plot_grid(pbta_plot, tcga_plot,
 tmb_plot
 ```
 
+Save this final plot to a png file.
 
 ```{r}
 # Save the plot to a png
