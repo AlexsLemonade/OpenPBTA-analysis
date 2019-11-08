@@ -54,6 +54,64 @@ if (!dir.exists(plots_dir)) {
 }
 ```
 
+Calculating the TMB for TCGA. 
+
+```{r}
+calc_tmb <- function(maf_df,
+                           bed_granges = wgs_bed_granges, 
+                           genome_size = wgs_genome_size,
+                           bp_window = 0) {
+  # Given a MAF formatted dta.frame and a BED regions data.frame; filter out
+  # any variants of the MAF df that are not within the BED regions.
+  #
+  # Args:
+  #   maf_df: A MAF formattted data.frame
+  #   wgs_bed_granges: a file path to TSV file that has BED formatted columns with
+  #                 chromosome, start, end positions in that order.
+  #   bp_window: how many base pairs away can it be from the BED region to still
+  #              be included? Default is 0 bp. This argument gets forwarded
+  #              to GenomicRanges::findOverlaps's `maxgap` argument.
+  #
+  # Returns:
+  # The same MAF formatted data.frame with the mutations that lie outside
+  # the supplied BED regions filtered out.
+  # Turn the MAF WXS sample mutations into a GRanges object
+  maf_granges <- maf_to_granges(maf_df)
+
+  # Find the overlap of the BED regions and the mutations This outputs a
+  # special GenomicRanges object that contains indices of each of these
+  # ranges that overlap
+  overlap <- GenomicRanges::findOverlaps(
+    maf_granges,
+    bed_granges,
+    maxgap = bp_window
+  )
+
+  # Calculate of ratio of variants in this BED using the @from slot which
+  # indicates the indices of the ranges in `wxs_maf_ranges` that have overlaps
+  # with `wxs_bed_ranges`
+  ratio <- length(overlap@from) / nrow(maf_df)
+
+  # What fraction of mutations are in these bed regions?
+  cat(
+    "Ratio of variants in this BED:", ratio, "\n",
+    "Ratio of variants being filtered out:", 1 - ratio, "\n"
+  )
+  
+  # Only keep those in the BED regions that overlap the `wxs_bed_granges`
+  maf_df <- maf_df[unique(overlap@from), ] %>%
+    dplyr::group_by(Tumor_Sample_Barcode) %>%
+    
+    # Count number of mutations for that sample
+    dplyr::summarize(mutation_count = dplyr::n()) %>%
+    
+    # Calculate TMB
+    dplyr::mutate(tmb = mutation_count / (genome_size / 1000000))
+  
+  return(maf_df)
+}
+```
+
 ## Read in data
 
 Download and read in the consensus MAF file. 
@@ -81,23 +139,36 @@ Read in the consensus MAF file.
 tmb <- data.table::fread(consensus_file)
 ```
 
-Read in the regions for the PBTA data to used for calculating TMB for TCGA data. 
-
-```{r}
-# Set up BED region files for TMB calculations
-wgs_bed <- readr::read_tsv(opt$bed_wgs, col_names = FALSE)
-
-# Calculate size of genome surveyed
-wgs_genome_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
-
-# Filter out mutations for WXS that are outside of these BED regions.
-vaf_df <- wxs_bed_filter(vaf_df, wxs_bed_file = opt$bed_wgs)
-
-```
+Read in the TCGA data. 
 
 ```{r}
 gbm_maf <- TCGAbiolinks::GDCquery_Maf("GBM", pipelines = "mutect")
 lgg_maf <- TCGAbiolinks::GDCquery_Maf("LGG", pipelines = "mutect")
+```
+
+```{r}
+wgs_bed_file <- file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed")
+
+# Set up BED region files for TMB calculations
+wgs_bed <- readr::read_tsv(wgs_bed_file, col_names = FALSE) %>%
+    dplyr::rename(Chromosome = X1, Start_Position = X2, End_Position = X3)
+
+# Calculate size of genome surveyed
+wgs_genome_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
+
+# Turn the WXS bed regions into a GRanges object
+wgs_bed_granges <- maf_to_granges(wgs_bed)
+```
+
+```{r}
+maf <- list(
+  TCGAbiolinks::GDCquery_Maf("LGG", pipelines = "mutect"),
+  TCGAbiolinks::GDCquery_Maf("GBM", pipelines = "mutect")
+)
+```
+
+```{r}
+tmb_tcga <- lapply(maf, calc_tmb) 
 ```
 
 ```{r}
