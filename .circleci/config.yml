@@ -91,7 +91,11 @@ jobs:
       - run:
           name: Oncoprint plotting
           command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
-          
+
+      - run:
+          name: Tumor mutation burden with TCGA
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-calculations/compare-tmb.Rmd', clean = TRUE)"
+
          ################################
          #### Add your analysis here ####
          ################################
