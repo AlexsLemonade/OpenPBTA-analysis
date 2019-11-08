@@ -10,11 +10,22 @@ script_directory="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
-# mkdir -p annotation_files
-# wget --no-clobber --directory-prefix=annotation_files ftp://ftp.ensembl.org/pub/release-84/gtf/homo_sapiens/Homo_sapiens.GRCh38.84.gtf.gz
-# gunzip annotation_files/Homo_sapiens.GRCh38.84.gtf.gz
-
-# per https://www.biostars.org/p/206342/
-# awk '{ if ($0 ~ "transcript_id") print $0; else print $0" transcript_id \"\";"; }' annotation_files/Homo_sapiens.GRCh38.84.gtf | gtf2bed - > annotation_files/Homo_sapiens.GRCh38.84.bed
-
+# Prep the CNVkit data
 Rscript --vanilla -e "rmarkdown::render('00-add-ploidy-cnvkit.Rmd', clean = TRUE)"
+
+# Run annotation step for CNVkit
+Rscript --vanilla 01-prepare-cn-file.R \
+  --cnv_file ../../scratch/cnvkit_with_status.tsv \
+  --gtf_file ../collapse-rnaseq/gencode.v27.primary_assembly.annotation.gtf.gz \
+  --filename_lead "cnvkit_annotated_cn" \
+  --cnvkit
+
+# Run annotation step for ControlFreeC
+Rscript --vanilla 01-prepare-cn-file.R \
+  --cnv_file ../../data/pbta-cnv-controlfreec.tsv.gz \
+  --gtf_file ../collapse-rnaseq/gencode.v27.primary_assembly.annotation.gtf.gz \
+  --filename_lead "controlfreec_annotated_cn" \
+  --controlfreec
+
+# gzip everything in the results folder
+gzip -r results
