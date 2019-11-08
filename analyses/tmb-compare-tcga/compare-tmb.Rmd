@@ -71,17 +71,16 @@ sina_plot <- function(data, colour = NULL, title) {
   #
   # Returns:
   #   A sina plot by histology group
-
   data %>%
-    ggplot2::ggplot(ggplot2::aes(x = short_histology, y = log2(tmb))) +
+    ggplot2::ggplot(ggplot2::aes(x = reorder(short_histology, tmb, mean), y = log10(tmb))) +
     ggforce::geom_sina(color = colour, alpha = 0.3) +
     ggplot2::stat_summary(
       fun.y = mean, fun.ymin = mean, fun.ymax = mean,
       geom = "crossbar",
-      width = 0.8, size = 0.15
+      width = 0.95, size = 0.15
     ) +
     ggplot2::theme_classic() +
-    ggplot2::ylab("Number of Mutations per Mb") +
+    ggplot2::ylab("log10 (Number of Mutations per Mb)") +
     ggplot2::xlab("") +
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(angle = 60, hjust = 1),
@@ -236,8 +235,7 @@ tcga_plot <- sina_plot(tmb_tcga, colour = "darkred", title = "TCGA (Adult)") +
     axis.title.y = ggplot2::element_blank(),
     axis.text.y = ggplot2::element_blank(),
     axis.ticks.y = ggplot2::element_blank(),
-    axis.line.y = ggplot2::element_blank(),
-    axis.text.x = ggplot2::element_text(size = 6.5)
+    axis.text.x = ggplot2::element_text(size = 7)
   )
 ```
 
