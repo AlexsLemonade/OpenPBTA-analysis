@@ -55,16 +55,52 @@ if (!("AnnotationDbi" %in% installed.packages())) {
 # Declare command line options
 option_list <- list(
   optparse::make_option(
-    c("-f", "--seg_file"),
+    c("--cnv_file"),
     type = "character",
     default = NULL,
-    help = "file path to SEG file that contains cnv information"
+    help = "file path to file that contains CNV information"
+  ),
+  optparse::make_option(
+    c("--metadata"),
+    type = "character",
+    default = NULL,
+    help = "file path to file that contains the sample metadata"
+  ),
+  optparse::make_option(
+    c("--filename_lead"),
+    type = "character",
+    default = "annotated_cn",
+    help = "used in file names"
+  ),
+  optparse::make_option(
+    c("--controlfreec"),
+    type = "logical",
+    action = "store_true",
+    default = FALSE,
+    help = "flag used to indicate if the CNV file is the output of ControlFreeC"
+  ),
+  optparse::make_option(
+    c("--cnvkit"),
+    type = "logical",
+    action = "store_true",
+    default = FALSE,
+    help = "flag used to indicate if the CNV file is the output of CNVkit"
   )
 )
 
 # Read the arguments passed
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
+
+# error handling related to specifying the CNV method
+if (all(opt$controlfreec, opt$cnvkit)) {
+  stop("--controlfreec and --cnvkit are mutually exclusive")
+}
+
+if (!any(opt$controlfreec, opt$cnvkit)) {
+  stop("You must specify the CNV file format by using --controlfreec or
+       --cnvkit")
+}
 
 #### Directories and Files -----------------------------------------------------
 
@@ -81,28 +117,51 @@ if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
 
-seg_df <-
-  data.table::fread(
-    opt$seg_file,
-    data.table = FALSE,
-    stringsAsFactors = FALSE
-  )
+#### Format CNV file and overlap with hg38 genome annotations ------------------
 
-#### Format seg file and overlap with hg38 genome annotations ------------------
+# we want to standardize the formats between the two methods here and drop
+# columns we won't need to
+if (opt$cnvkit) {
+  cnv_df <- readr::read_tsv(opt$cnv_file) %>%
+    dplyr::rename(chr = chrom, start = loc.start, end = loc.end,
+                  copy_number = copy.num) %>%
+    dplyr::select(-num.mark, -seg.mean) %>%
+    dplyr::select(-Kids_First_Biospecimen_ID, dplyr::everything())
+}
 
-# Exclude the X and Y chromosomes, exclude `copy.num` == 2, and rearrange
-# ID column to be the last column
-seg_no_xy <- seg_df %>%
-  dplyr::filter(!(chrom %in% c("chrX", "chrY"))) %>%
-  dplyr::select(-ID, dplyr::everything())
+if (opt$controlfreec) {
+  # TODO: filter based on the p-values rather than just dropping them?
+  cnv_df <- readr::read_tsv(opt$cnv_file) %>%
+    dplyr::rename(copy_number = copy.number) %>%
+    dplyr::mutate(chr = paste0("chr", chr)) %>%
+    dplyr::select(-segment_genotype, -uncertainty, -WilcoxonRankSumTestPvalue,
+                  -KolmogorovSmirnovPvalue) %>%
+    dplyr::select(-Kids_First_Biospecimen_ID, dplyr::everything())
+}
+
+# Remove neutral copy number calls and mark possible amplifcation
+cnv_df <- cnv_df %>%
+  dplyr::filter(status != "neutral") %>%
+  dplyr::mutate(status = dplyr::case_when(
+    copy_number > (2 * tumor_ploidy) ~ "amplification",
+    TRUE ~ status
+  ))
+
+# Addressing autosomes first
+# Exclude the X and Y chromosomes
+cnv_no_xy <- cnv_df %>%
+  dplyr::filter(!(chr %in% c("chrX", "chrY")))
 
 # Make seg data.frame a GRanges object
-seg_gr <- seg_no_xy %>%
+cnv_no_xy_gr <- cnv_no_xy %>%
   GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE,
                                           starts.in.df.are.0based = FALSE)
 
 # Define the annotations for the hg38 genome
-txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
+txdb <- GenomicFeatures::makeTxDBFromGFF(
+  file = opt$gtf_file,
+  format = "gtf"
+)
 
 # we'll only look at genes on chromosomes 1:22 -- this will get rid of things
 # like alternates
@@ -110,13 +169,13 @@ chroms <- paste0("chr", 1:22)
 chrom_filter <- list(tx_chrom = chroms)
 
 # extract the genes using the chromosome filter
-chr_genes <- GenomicFeatures::genes(txdb,  filter = chrom_filter)
+chr_exons <- GenomicFeatures::exons(txdb,  filter = chrom_filter)
 
 # Create a data.frame with the overlaps between the seg file and hg38 genome
 # annotations
-overlaps <- IRanges::mergeByOverlaps(seg_gr, chr_genes)
+overlaps <- IRanges::mergeByOverlaps(cnv_no_xy_gr, chr_exons)
 
-overlapSymbols <-
+overlap_symbols <-
   AnnotationDbi::mapIds(
     org.Hs.eg.db::org.Hs.eg.db,
     keys = overlaps$gene_id,
@@ -124,7 +183,16 @@ overlapSymbols <-
     keytype = "ENTREZID"
   )
 
-overlaps$gene_id <- overlapSymbols
+overlaps_cytoband <-
+  AnnotationDbi::mapIds(
+    org.Hs.eg.db::org.Hs.eg.db,
+    keys = overlaps$gene_id,
+    column = "MAP",
+    keytype = "ENTREZID"
+  )
+
+overlaps$gene_id <- overlap_symbols
+overlaps$cytoband <- overlaps_cytoband
 
 # Create a data.frame with selected columns from the `overlaps` object
 cn_short <- data.frame(
