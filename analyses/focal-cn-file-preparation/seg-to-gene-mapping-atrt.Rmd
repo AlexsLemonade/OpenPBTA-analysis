@@ -49,16 +49,53 @@ atrt_specimens <- histologies_df %>%
 ```{r}
 # filter the gene-level CN information to ATRT samples and gene symbols
 # containing 'SMARC'
-cnvkit_df %>%
+cnvkit_atrt <- cnvkit_df %>%
   dplyr::filter(biospecimen_id %in% atrt_specimens,
                 grepl("SMARCB1", gene_symbol))
+cnvkit_atrt
+```
+
+```{r}
+table(cnvkit_atrt$status)
 ```
 
 #### ControlFreeC
 
 ```{r}
-controlfreec_df %>%
+controlfreec_atrt <- controlfreec_df %>%
   dplyr::filter(biospecimen_id %in% atrt_specimens,
                 grepl("SMARCB1", gene_symbol))
+controlfreec_atrt
 ```
 
+```{r}
+table(controlfreec_atrt$status)
+```
+
+#### Cursory comparison
+
+Find the one sample that reports a `gain` in ControlFreeC and look at that sample in CNVkit.
+
+```{r}
+controlfreec_gain_sample <- controlfreec_atrt %>%
+  dplyr::filter(status == "gain") %>%
+  dplyr::pull(biospecimen_id)
+
+cnvkit_atrt %>% dplyr::filter(biospecimen_id == controlfreec_gain_sample)
+```
+
+CNVkit marks this as a loss.
+
+Check which samples are in both.
+
+```{r}
+intersect(controlfreec_atrt$biospecimen_id, cnvkit_atrt$biospecimen_id)
+```
+
+```{r}
+length(unique(cnvkit_atrt$biospecimen_id))
+```
+
+```{r}
+length(unique(controlfreec_atrt$biospecimen_id))
+```
