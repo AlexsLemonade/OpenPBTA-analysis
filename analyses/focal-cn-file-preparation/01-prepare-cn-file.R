@@ -163,29 +163,23 @@ txdb <- GenomicFeatures::makeTxDbFromGFF(
   format = "gtf"
 )
 
-# we'll only look at genes on chromosomes 1:22 -- this will get rid of things
-# like alternates
-chroms <- paste0("chr", 1:22)
-chrom_filter <- list(tx_chrom = chroms)
-
-# extract the genes using the chromosome filter
-chr_exons <- GenomicFeatures::exons(txdb,
-                                    filter = chrom_filter,
-                                    columns = "gene_id")
+# extract the exons but include ensembl gene identifiers
+tx_exons <- GenomicFeatures::exons(txdb, columns = "gene_id")
 
 # Create a data.frame with the overlaps between the seg file and hg38 genome
 # annotations
-overlaps <- IRanges::mergeByOverlaps(cnv_no_xy_gr, chr_exons)
+overlaps <- IRanges::mergeByOverlaps(cnv_no_xy_gr, tx_exons)
 
 # remove what we no longer need from the environment
-rm(chr_exons, chroms, chrom_filter, cnv_no_xy_gr, cnv_no_xy)
+rm(tx_exons, cnv_no_xy_gr, cnv_no_xy)
 
 # Create a data.frame with selected columns from the `overlaps` object
-annotated_cn <- data.frame(ensembl = unlist(overlaps$gene_id),
-                           biospecimen_id = overlaps$Kids_First_Biospecimen_ID,
+annotated_cn <- data.frame(biospecimen_id = overlaps$Kids_First_Biospecimen_ID,
                            status = overlaps$status,
                            copy_number = overlaps$copy_number,
-                           ploidy = overlaps$tumor_ploidy) %>%
+                           ploidy = overlaps$tumor_ploidy,
+                           ensembl = unlist(overlaps$gene_id),
+                           stringsAsFactors = FALSE) %>%
   dplyr::distinct() %>%
   # Discard the gene version information in order to get gene symbols and
   # cytoband mappings
@@ -202,9 +196,7 @@ annotated_cn <- annotated_cn %>%
                                      column = "MAP",
                                      keytype = "ENSEMBL")
   ) %>%
-  dplyr::filter(!is.na(gene_symbol)) %>%
-  # put the ensembl identifiers last
-  dplyr::select(-ensembl, dplyr::everything())
+  dplyr::filter(!is.na(gene_symbol))
 
 # Output file name
 output_file <- paste0(opt$filename_lead, "_autosomes.tsv")
