@@ -117,6 +117,16 @@ if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
 
+# this is the output of GenomicFeatures::makeTxDbFromGFF
+# TODO: possibly update this when the GTF file gets included in the data
+#       download; may also remove the --gtf_file option and hardcode it?
+annotation_directory <- file.path(root_dir,
+                                  "analyses",
+                                  "focal-cn-file-preparation",
+                                  "annotation_files")
+annotation_file <- file.path(annotation_directory,
+                             "txdb_from_gencode.v27.gtf.db")
+
 #### Format CNV file and overlap with hg38 genome annotations ------------------
 
 # we want to standardize the formats between the two methods here and drop
@@ -157,11 +167,19 @@ cnv_no_xy_gr <- cnv_no_xy %>%
   GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE,
                                           starts.in.df.are.0based = FALSE)
 
-# Define the annotations for the hg38 genome
-txdb <- GenomicFeatures::makeTxDbFromGFF(
-  file = opt$gtf_file,
-  format = "gtf"
-)
+if (!file.exists(annotation_file)) {
+  # Define the annotations for the hg38 genome
+  txdb <- GenomicFeatures::makeTxDbFromGFF(
+    file = opt$gtf_file,
+    format = "gtf"
+  )
+  # can do this even if the directory exists
+  dir.create(annotation_directory, showWarnings = FALSE)
+  # write this to file to save time next time
+  AnnotationDbi::saveDb(txdb, annotation_file)
+} else {
+  txdb <- AnnotationDbi::loadDb(annotation_file)
+}
 
 # extract the exons but include ensembl gene identifiers
 tx_exons <- GenomicFeatures::exons(txdb, columns = "gene_id")
