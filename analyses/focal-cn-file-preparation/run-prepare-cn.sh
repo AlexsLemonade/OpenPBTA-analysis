@@ -30,4 +30,4 @@ Rscript --vanilla 01-prepare-cn-file.R \
   --controlfreec
 
 # gzip everything in the results folder
-gzip -r results
+gzip -f -r results
