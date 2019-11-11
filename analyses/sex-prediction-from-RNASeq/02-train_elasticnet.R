@@ -67,15 +67,13 @@ targets_set_file_name <- file.path(opt$input_directory, paste(opt$filename_lead,
 
 # print error and quit if not found.
 if (!file.exists(train_set_file_name)) {
-  print(paste("training set", train_set_file_name, "does not exist. Check all arguments.", sep=" "))
-  quit(ask="no")
+  stop(paste("training set", train_set_file_name, "does not exist. Check all arguments."))
 }
 
 print("training set found!")
 
 if (!file.exists(targets_set_file_name)) {
-  print(paste("targets set", targets_set_file_name, "does not exist. Check all arguments.", sep=" "))
-  quit(ask="no")
+  stop(paste("targets set", targets_set_file_name, "does not exist. Check all arguments.", sep=" "))
 }
 
 print("targets set found!")
@@ -90,8 +88,7 @@ targets_set <- read.delim(targets_set_file_name, header=TRUE, sep="\t", stringsA
 #--------test sample ID sequence of train_set matches sample ID sequence of targets set
 
 if (!(sum(rownames(train_set) == targets_set[ , "Kids_First_Biospecimen_ID"]) == nrow(train_set))) {
-  print("train set sample IDs are out of sequence with targets set sample IDs.  Aborting run.")
-  quit(ask="no")
+  stop("train set sample IDs are out of sequence with targets set sample IDs.  Aborting run.")
 }
 
 print("train set sample ID sequence matches targets set sample ID sequence.  Proceeding to filtering training set columns.")
