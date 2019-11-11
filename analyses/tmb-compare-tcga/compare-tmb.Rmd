@@ -268,7 +268,7 @@ Save this final plot to a png file.
 
 ```{r}
 # Save the plot to a png
-cowplot::save_plot(file.path(plots_dir, "tmb_tcga_and_pbta_plot.png"), plot = tmb_plot)
+cowplot::save_plot(file.path(plots_dir, "tmb_tcga_and_pbta_plot.png"), plot = tmb_plot, base_width = 35, base_height = 20, unit = "cm")
 ```
 
 ## Session Info
