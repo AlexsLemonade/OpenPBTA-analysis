@@ -16,7 +16,7 @@ assignees: ''
 
 
 
-#### Put a link to the relevant section of the [OpenPBTA-manuscript](https://github.com/AlexsLemonade/OpenPBTA-manuscript/)
+#### Put a link to the relevant section of the [OpenPBTA-manuscript](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) here.
 
 
 
