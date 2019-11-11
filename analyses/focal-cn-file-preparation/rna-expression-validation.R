@@ -33,7 +33,7 @@ if (!dir.exists(plots_dir)) {
 }
 
 # Read in data from tsv file (produced in `01-prepare-cn-file.R`)
-cn_df <- readr::read_tsv(file.path(results_dir, "annotated_cn.tsv"))
+cn_df <- readr::read_tsv(file.path(results_dir, "cnvkit_annotated_cn_autosomes.tsv.gz"))
 
 # Read in RNA-seq expression data
 rsem_expression_polyA <-
@@ -91,6 +91,10 @@ merge_expression <-
       ) %>%
       dplyr::distinct()
 
+    # Define mean and standard deviation for calculation of z-score
+    mean <- mean(expression_metadata$expression_value)
+    standard_deviation <- sd(expression_metadata$expression_value)
+    
     # Merge Focal CN data.frame with RNA expression data.frame
     combined_df <- copy_number_df %>%
       dplyr::distinct() %>%
@@ -104,32 +108,40 @@ merge_expression <-
       ) %>%
       dplyr::rename(biospecimen_id_cn = biospecimen_id.x, 
                     biospecimen_id_expression = biospecimen_id.y) %>%
-      dplyr::mutate(log_expression_value = (log2(expression_value) + 1)) %>%
+      dplyr::mutate(z_score = (expression_value - mean / standard_deviation))
+    
+    # Define cutoffs for z_score
+    z_minimum <- min(combined_df$z_score)
+    z_median <- median(combined_df$z_score)
+    z_mean <- mean(combined_df$z_score)
+    z_third_quantile <- quantile(combined_df$z_score, prob = 0.75)
+    z_maximun <- max(combined_df$z_score)
+    
+    combined_df <- combined_df %>%
       dplyr::mutate(expression_class = dplyr::case_when(
-        expression_value == 0 ~ "0",
-        expression_value > 0 & expression_value <= 10 ~ "0-10",
-        expression_value > 10 & expression_value <= 100 ~ "10-100",
-        expression_value > 100 ~ ">100"))
+        z_score >= z_minimum & z_score < 0 ~ "Min-to-0",
+        z_score == 0 ~ "0",
+        z_score > 0 & z_score <= z_median ~ "0-to-Median",
+        z_score > z_median & z_score <= z_third_quantile ~ "Median-to-3rd-Quantile",
+        z_score > z_third_quantile & z_score <= z_mean ~ "3rd-Quantile-to-Mean",
+        z_score > z_mean ~ "Mean-to-Max"))
 
     # Save results
     readr::write_tsv(combined_df, file.path(results_dir, filename))
-
-    # Subset data.frame for plotting
-    combined_subset_df <- combined_df %>%
-      dplyr::filter(!(expression_class == ">100"))
+    
   }
 
 #### Join data -----------------------------------------------------------------
 
 # Add metadata to focal CN data.frame
 cn_df_metadata <- cn_df %>%
-  dplyr::filter(label %in% c("Hom_Deletion", "Hem_Deletion")) %>%
+  dplyr::filter(status %in% c("loss")) %>%
   dplyr::inner_join(metadata,
                     by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
   dplyr::select(
     gene_symbol,
     biospecimen_id,
-    label,
+    status,
     copy_number,
     tumor_ploidy,
     Kids_First_Participant_ID,
@@ -152,24 +164,44 @@ rsem_combined_stranded_df <-
 
 #### Plot and Save -------------------------------------------------------------
 
-png(
-  file.path(plots_dir, "cn_loss_expression_polyA.png"),
-  width = 1500,
-  height = 900,
-  res = 120
-)
-ggplot2::ggplot(rsem_combined_polyA_df,
-                ggplot2::aes(x = label, fill = expression_class)) +
-  ggplot2::geom_bar()
-dev.off()
+# Read in gene list
+goi_list <-
+  read.delim(
+    file.path(
+      root_dir,
+      "analyses",
+      "oncoprint-lanscape",
+      "driver-lists",
+      "brain-goi-list-long.txt"
+    ),
+    sep = "\t",
+    header = FALSE,
+    as.is = TRUE
+  )
 
-png(
-  file.path(plots_dir, "cn_loss_expression_stranded.png"),
-  width = 1500,
-  height = 900,
-  res = 120
-)
-ggplot2::ggplot(rsem_combined_stranded_df,
-                ggplot2::aes(x = label, fill = expression_class)) +
-  ggplot2::geom_bar()
-dev.off()
+# Filter for wanted gene symbols 
+rsem_combined_polyA_df <- rsem_combined_polyA_df %>%
+  dplyr::filter(gene_symbol %in% goi_list$V1)
+
+rsem_combined_stranded_df <- rsem_combined_stranded_df %>%
+  dplyr::filter(gene_symbol %in% goi_list$V1)
+
+# Plot and save using polyA expression data 
+polyA_plot <- ggplot2::ggplot(rsem_combined_polyA_df,
+                              ggplot2::aes(x = status, fill = expression_class)) +
+  ggplot2::geom_bar(position = ggplot2::position_fill(reverse = TRUE)) +
+  ggplot2::ylab("Proportion of called genes") +
+  ggplot2::facet_wrap(~ gene_symbol)
+
+ggplot2::ggsave(file.path(plots_dir, "cn_loss_expression_polyA.pdf"),
+                polyA_plot)
+
+# Plot and save using stranded expression data 
+stranded_plot <- ggplot2::ggplot(rsem_combined_stranded_df,
+                                 ggplot2::aes(x = status, fill = expression_class)) +
+  ggplot2::geom_bar(position = ggplot2::position_fill(reverse = TRUE)) +
+  ggplot2::ylab("Proportion of called genes") +
+  ggplot2::facet_wrap(~ gene_symbol)
+
+ggplot2::ggsave(file.path(plots_dir, "cn_loss_expression_stranded.pdf"),
+                stranded_plot)
