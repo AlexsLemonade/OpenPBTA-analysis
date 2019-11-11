@@ -129,6 +129,9 @@ bubble_matrix_plot <- function(sig_num_df, label = "none") {
       # Calculate the median number of mutations per Md
       med_num = median(mut_per_mb)
     )
+  
+  # Turn 0's into NAs so they are not actually plotted
+  grouped_sig_num$prop_tumors[which(grouped_sig_num$prop_tumors == 0)] <-  NA
 
   # Make the bubble matrix plot
   ggplot2::ggplot(grouped_sig_num, ggplot2::aes(x = short_histology, y = forcats::fct_rev(signature))) +
