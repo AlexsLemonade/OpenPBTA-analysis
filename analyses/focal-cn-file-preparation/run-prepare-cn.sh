@@ -6,7 +6,7 @@
 set -e
 set -o pipefail
 
-XYFLAG={OPENPBTA_XY:-1}
+XYFLAG=${OPENPBTA_XY:-1}
 
 # This script should always run as if it were being called from
 # the directory it lives in.
