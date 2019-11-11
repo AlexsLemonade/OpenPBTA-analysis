@@ -158,6 +158,13 @@ option_list <- list(
     action = "store_true",
     default = FALSE,
     help = "flag used to indicate if the CNV file is the output of CNVkit"
+  ),
+  optparse::make_option(
+    c("--xy"),
+    type = "integer",
+    default = 1,
+    help = "integer used to indicate if sex chromosome steps should be skipped (0)
+            or run (1)"
   )
 )
 
@@ -174,6 +181,9 @@ if (!any(opt$controlfreec, opt$cnvkit)) {
   stop("You must specify the CNV file format by using --controlfreec or
        --cnvkit")
 }
+
+# convert xy flag to logical
+xy_flag <- as.logical(opt$xy)
 
 #### Directories and Files -----------------------------------------------------
 
@@ -269,25 +279,27 @@ readr::write_tsv(autosome_annotated_cn,
 
 #### X&Y -----------------------------------------------------------------------
 
-# Filter to just the X and Y chromosomes
-cnv_sex_chrom <- cnv_df %>%
-  dplyr::filter(chr %in% c("chrX", "chrY"))
+if (xy_flag) {
+  # Filter to just the X and Y chromosomes
+  cnv_sex_chrom <- cnv_df %>%
+    dplyr::filter(chr %in% c("chrX", "chrY"))
 
-# Merge and annotated no X&Y
-sex_chrom_annotated_cn <- process_annotate_overlaps(cnv_df = cnv_sex_chrom,
-                                                    txdb_exons = tx_exons)
+  # Merge and annotated no X&Y
+  sex_chrom_annotated_cn <- process_annotate_overlaps(cnv_df = cnv_sex_chrom,
+                                                      txdb_exons = tx_exons)
 
-# Add germline sex estimate into this data.frame
-sex_chrom_annotated_cn <- sex_chrom_annotated_cn %>%
-  dplyr::inner_join(dplyr::select(histologies_df,
-                                  Kids_First_Biospecimen_ID,
-                                  germline_sex_estimate),
-                    by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
-  dplyr::select(-germline_sex_estimate, dplyr::everything())
+  # Add germline sex estimate into this data.frame
+  sex_chrom_annotated_cn <- sex_chrom_annotated_cn %>%
+    dplyr::inner_join(dplyr::select(histologies_df,
+                                    Kids_First_Biospecimen_ID,
+                                    germline_sex_estimate),
+                      by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
+    dplyr::select(-germline_sex_estimate, dplyr::everything())
 
-# Output file name
-sex_chrom_output_file <- paste0(opt$filename_lead, "_x_and_y.tsv")
+  # Output file name
+  sex_chrom_output_file <- paste0(opt$filename_lead, "_x_and_y.tsv")
 
-# Save final data.frame to a tsv file
-readr::write_tsv(sex_chrom_annotated_cn,
-                 file.path(results_dir, sex_chrom_output_file))
+  # Save final data.frame to a tsv file
+  readr::write_tsv(sex_chrom_annotated_cn,
+                   file.path(results_dir, sex_chrom_output_file))
+}

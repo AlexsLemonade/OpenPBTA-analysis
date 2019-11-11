@@ -6,6 +6,8 @@
 set -e
 set -o pipefail
 
+XYFLAG={OPENPBTA_XY:-1}
+
 # This script should always run as if it were being called from
 # the directory it lives in.
 script_directory="$(perl -e 'use File::Basename;
@@ -32,6 +34,7 @@ Rscript --vanilla 01-prepare-cn-file.R \
   --gtf_file ../collapse-rnaseq/gencode.v27.primary_assembly.annotation.gtf.gz \
   --metadata ../../data/pbta-histologies.tsv \
   --filename_lead "controlfreec_annotated_cn" \
+  --xy $XYFLAG \
   --controlfreec
 
 # gzip the four files in the results folder, overwriting without prompt
