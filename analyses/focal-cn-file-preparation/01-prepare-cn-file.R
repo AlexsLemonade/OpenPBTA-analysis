@@ -212,13 +212,9 @@ if (opt$controlfreec) {
     dplyr::select(-Kids_First_Biospecimen_ID, dplyr::everything())
 }
 
-# Remove neutral copy number calls and mark possible amplifcation
+# Remove neutral copy number calls
 cnv_df <- cnv_df %>%
-  dplyr::filter(status != "neutral") %>%
-  dplyr::mutate(status = dplyr::case_when(
-    copy_number > (2 * tumor_ploidy) ~ "amplification",
-    TRUE ~ status
-  ))
+  dplyr::filter(status != "neutral")
 
 #### Read in metadata file -----------------------------------------------------
 
@@ -261,7 +257,12 @@ cnv_no_xy <- cnv_df %>%
 
 # Merge and annotated no X&Y
 autosome_annotated_cn <- process_annotate_overlaps(cnv_df = cnv_no_xy,
-                                                   txdb_exons = tx_exons)
+                                                   txdb_exons = tx_exons) %>%
+  # mark possible amplifications in autosomes
+  dplyr::mutate(status = dplyr::case_when(
+    copy_number > (2 * tumor_ploidy) ~ "amplification",
+    TRUE ~ status
+  ))
 
 # Output file name
 autosome_output_file <- paste0(opt$filename_lead, "_autosomes.tsv")
