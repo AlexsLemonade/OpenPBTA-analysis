@@ -158,11 +158,14 @@ RUN R -e "install.packages('DT', dependencies = TRUE)"
 RUN R -e "BiocManager::install(c('rtracklayer'), update = FALSE)"
 
 # Install python3 data science basics (pandas)
-RUN apt-get -y update && apt-get install -y \
-   python3-numpy \
-   python3-matplotlib \
-   python3-scipy \
-   python3-pandas
+# using pip to get more current versions
+RUN apt-get update -qq && apt-get -y --no-install-recommends install python3-pip 
+RUN pip3 install "numpy==1.17.3" && \
+   pip3 install "six==1.13.0" "setuptools==41.6.0" && \
+   pip3 install "cycler==0.10.0" "kiwisolver==1.1.0" "pyparsing==2.4.5" "python-dateutil==2.8.1" "pytz==2019.3" && \
+   pip3 install "matplotlib==3.0.3" && \
+   pip3 install "scipy==1.3.2" && \
+   pip3 install "pandas==0.25.3"
 
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
