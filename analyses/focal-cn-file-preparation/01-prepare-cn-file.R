@@ -212,10 +212,6 @@ if (opt$controlfreec) {
     dplyr::select(-Kids_First_Biospecimen_ID, dplyr::everything())
 }
 
-# Remove neutral copy number calls
-cnv_df <- cnv_df %>%
-  dplyr::filter(status != "neutral")
-
 #### Read in metadata file -----------------------------------------------------
 
 histologies_df <- readr::read_tsv(opt$metadata)
@@ -253,7 +249,7 @@ tx_exons <- GenomicFeatures::exons(txdb, columns = "gene_id")
 
 # Exclude the X and Y chromosomes
 cnv_no_xy <- cnv_df %>%
-  dplyr::filter(!(chr %in% c("chrX", "chrY")))
+  dplyr::filter(!(chr %in% c("chrX", "chrY")), status != "neutral")
 
 # Merge and annotated no X&Y
 autosome_annotated_cn <- process_annotate_overlaps(cnv_df = cnv_no_xy,
