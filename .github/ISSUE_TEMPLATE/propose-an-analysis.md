@@ -21,7 +21,7 @@ assignees: ''
 
 
 
-#### When do you expect to complete the analysis? Will it be a multi-step analysis?
+#### How long do you expect is needed to complete the analysis? Will it be a multi-step analysis?
 
 
 
