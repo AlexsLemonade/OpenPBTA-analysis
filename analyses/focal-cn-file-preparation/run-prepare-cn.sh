@@ -41,4 +41,7 @@ Rscript --vanilla 01-prepare-cn-file.R \
 gzip -f results/cnvkit_annotated_cn_autosomes.tsv
 gzip -f results/controlfreec_annotated_cn_autosomes.tsv
 gzip -f results/cnvkit_annotated_cn_x_and_y.tsv
-gzip -f results/controlfreec_annotated_cn_x_and_y.tsv
+
+if [ "$XYFLAG" -gt "0" ]; then
+  gzip -f results/controlfreec_annotated_cn_x_and_y.tsv
+fi
