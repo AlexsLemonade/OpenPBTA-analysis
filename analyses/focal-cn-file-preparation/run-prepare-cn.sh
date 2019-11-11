@@ -34,6 +34,8 @@ Rscript --vanilla 01-prepare-cn-file.R \
   --filename_lead "controlfreec_annotated_cn" \
   --controlfreec
 
-# gzip the two files in the results folder, overwriting without prompt
+# gzip the four files in the results folder, overwriting without prompt
 gzip -f results/cnvkit_annotated_cn_autosomes.tsv
 gzip -f results/controlfreec_annotated_cn_autosomes.tsv
+gzip -f results/cnvkit_annotated_cn_x_and_y.tsv
+gzip -f results/controlfreec_annotated_cn_x_and_y.tsv
