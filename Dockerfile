@@ -157,15 +157,12 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 RUN R -e "install.packages('DT', dependencies = TRUE)"
 RUN R -e "BiocManager::install(c('rtracklayer'), update = FALSE)"
 
-# Install latest python and pandas
+# Install python3 data science basics (pandas)
 RUN apt-get -y update && apt-get install -y \
-   python3 \
    python3-numpy \
    python3-matplotlib \
    python3-scipy \
-   python3-pandas \
-   ipython3 \
-   ipython3-notebook
+   python3-pandas
 
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
