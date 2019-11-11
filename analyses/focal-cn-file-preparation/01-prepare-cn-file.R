@@ -256,7 +256,7 @@ autosome_annotated_cn <- process_annotate_overlaps(cnv_df = cnv_no_xy,
                                                    txdb_exons = tx_exons) %>%
   # mark possible amplifications in autosomes
   dplyr::mutate(status = dplyr::case_when(
-    copy_number > (2 * tumor_ploidy) ~ "amplification",
+    copy_number > (2 * ploidy) ~ "amplification",
     TRUE ~ status
   ))
 
