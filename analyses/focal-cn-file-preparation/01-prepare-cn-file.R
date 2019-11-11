@@ -73,13 +73,6 @@ option_list <- list(
     help = "used in file names"
   ),
   optparse::make_option(
-    c("--chrom_filter"),
-    type = "integer",
-    default = 0,
-    help = "integer (0/1) that will be converted into a logical that indicates
-            whether or not filtering to exons on chr 1:22 will be performed."
-  ),
-  optparse::make_option(
     c("--controlfreec"),
     type = "logical",
     action = "store_true",
@@ -108,9 +101,6 @@ if (!any(opt$controlfreec, opt$cnvkit)) {
   stop("You must specify the CNV file format by using --controlfreec or
        --cnvkit")
 }
-
-# convert the chromosome filter command line
-chrom_filter <- as.logical(opt$chrom_filter)
 
 #### Directories and Files -----------------------------------------------------
 
@@ -191,20 +181,8 @@ if (!file.exists(annotation_file)) {
   txdb <- AnnotationDbi::loadDb(annotation_file)
 }
 
-# if the chromosome filter is on, then we will only look at exons on chr 1:22
-if (chrom_filter) {
-  # we'll only look at exons on chromosomes 1:22 -- this will get rid of things
-  # like alternates
-  message("Filtering to exons on chromosomes 1:22...")
-  chroms <- paste0("chr", 1:22)
-  chrom_filter <- list(tx_chrom = chroms)
-  tx_exons <- GenomicFeatures::exons(txdb,
-                                     filter = chrom_filter,
-                                     columns = "gene_id")
-} else {
-  # extract the exons but include ensembl gene identifiers
-  tx_exons <- GenomicFeatures::exons(txdb, columns = "gene_id")
-}
+# extract the exons but include ensembl gene identifiers
+tx_exons <- GenomicFeatures::exons(txdb, columns = "gene_id")
 
 # Create a data.frame with the overlaps between the seg file and hg38 genome
 # annotations

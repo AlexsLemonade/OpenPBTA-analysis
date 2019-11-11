@@ -6,9 +6,6 @@
 set -e
 set -o pipefail
 
-# by default we will not filter to exons on chr 1:22, but this will save us
-# time in CI
-CHROMFILT=${OPENPBTA_FILT:-0}
 
 # This script should always run as if it were being called from
 # the directory it lives in.
@@ -26,7 +23,6 @@ Rscript --vanilla 01-prepare-cn-file.R \
   --cnv_file ../../scratch/cnvkit_with_status.tsv \
   --gtf_file ../collapse-rnaseq/gencode.v27.primary_assembly.annotation.gtf.gz \
   --filename_lead "cnvkit_annotated_cn" \
-  --chrom_filter $CHROMFILT \
   --cnvkit
 
 # Run annotation step for ControlFreeC
@@ -35,7 +31,6 @@ Rscript --vanilla 01-prepare-cn-file.R \
   --cnv_file ../../data/pbta-cnv-controlfreec.tsv.gz \
   --gtf_file ../collapse-rnaseq/gencode.v27.primary_assembly.annotation.gtf.gz \
   --filename_lead "controlfreec_annotated_cn" \
-  --chrom_filter $CHROMFILT \
   --controlfreec
 
 # gzip the two files in the results folder, overwriting without prompt
