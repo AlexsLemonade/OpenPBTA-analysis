@@ -114,7 +114,7 @@ if (!file.exists(consensus_file)) {
 
 Read in the consensus TMB file. 
 
-```{r}
+```{r include=FALSE}
 # Read in the file
 tmb_pbta <- data.table::fread(consensus_file)
 ```
