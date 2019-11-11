@@ -88,7 +88,7 @@ sina_plot <- function(data, colour = NULL, title) {
     ) +
     ggplot2::ggtitle(title) + 
     ggplot2::theme(
-    panel.grid.major.x = ggplot2::element_line(colour = c("lightsteelblue1", "white"), size = 9)
+    panel.grid.major.x = ggplot2::element_line(colour = c("gray93", "white"), size = 9)
 )
 }
 ```
@@ -233,13 +233,13 @@ tmb_tcga <- tmb_tcga %>%
 Plot the TCGA data. 
 ```{r}
 # Make TCGA plot and get rid of y axis
-tcga_plot <- sina_plot(tmb_tcga, colour = "darkred", title = "TCGA (Adult)") +
+tcga_plot <- sina_plot(tmb_tcga, colour = "#3BC8A2", title = "TCGA (Adult)") +
   ggplot2::theme(
     axis.title.y = ggplot2::element_blank(),
     axis.text.y = ggplot2::element_blank(),
     axis.ticks.y = ggplot2::element_blank(),
     axis.text.x = ggplot2::element_text(size = 7),
-    panel.grid.major.x = ggplot2::element_line(colour = c("lightsteelblue1", "white"), size = 9)
+    panel.grid.major.x = ggplot2::element_line(colour = c("gray93", "white"), size = 9)
   )
 ```
 
@@ -247,7 +247,7 @@ Plot the PBTA data.
 
 ```{r}
 # Make the plot for PBTA
-pbta_plot <- sina_plot(tmb_pbta, colour = "blue", title = "PBTA")
+pbta_plot <- sina_plot(tmb_pbta, colour = "#630882", title = "PBTA")
 ```
 
 Use cowplot to put them together. 
