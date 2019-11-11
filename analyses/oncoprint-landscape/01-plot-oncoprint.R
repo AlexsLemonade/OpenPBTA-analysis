@@ -271,7 +271,7 @@ if (!is.null(opt$goi_list)) {
 # Given a maf file, plot an oncoprint of the variants in the
 # dataset and save as a png file.
 png(
-  file.path(plots_dir, "maf_oncoprint.png"),
+  file.path(plots_dir, opt$png_name),
   width = 65,
   height = 30,
   units = "cm",
