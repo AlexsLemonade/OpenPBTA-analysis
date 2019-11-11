@@ -9,22 +9,25 @@ assignees: ''
 
 <!--Hi there! Please take a moment to fill out the template below.-->
 
-#### Scientific goals
+#### What are the scientific goals of the analysis?
 
-_What are the scientific goals of the analysis?_
 
-#### Proposed methods
 
-_What methods do you plan to use to accomplish the scientific goals?_
+#### What methods do you plan to use to accomplish the scientific goals?
 
-#### Required input data
 
-_What input data will you use for this analysis?_
 
-#### Proposed timeline
+#### What input data are required for this analysis?
 
-_What is the timeline for the analysis?_
 
-#### Relevant literature
 
-_If there is relevant scientific literature, put links to those items here._
+#### How long do you expect is needed to complete the analysis? Will it be a multi-step analysis?
+
+
+#### Who will complete the analysis (please add a GitHub handle here if relevant)?
+
+
+
+#### What relevant scientific literature relates to this analysis?
+
+
