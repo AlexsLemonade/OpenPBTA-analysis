@@ -11,19 +11,24 @@ assignees: ''
 
 #### What analysis module should be updated and why?
 
-_Please link to the current version of the analysis here._
-_Explain your rationale for the update._
 
-#### Proposed changes
 
-_What changes need to be made?_
-_Please include a level of detail that will allow another participant to make the update._
+#### Why should the module be updated?
 
-#### Required input data and release version
 
-_What input data will you use for this analysis?_
-_If you know which data release was used for the current version of the analysis, please report that here._
 
-#### Proposed timeline
+#### What changes need to be made? Please provide enough detail for another participant to make the update.
 
-_To help others understand the scope of the changes, please report the expected timeline._
+
+
+#### What input data should be used? Which data were used in the version being updated?
+
+
+
+#### When do you expect the revised analysis will be completed?
+
+
+
+#### Who will complete the updated analysis?
+
+
