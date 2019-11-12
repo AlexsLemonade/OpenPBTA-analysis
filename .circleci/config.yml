@@ -98,7 +98,7 @@ jobs:
 
       - run:
           name: Mutation Signatures 
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutation-signatures/mutation_signatures.Rmd', clean = TRUE)" 
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutational-signatures/mutational_signatures.Rmd', clean = TRUE)" 
 
          ################################
          #### Add your analysis here ####

@@ -187,10 +187,10 @@ grouped_sig_barplot <- function(hist_groups, sig_num_df, output_dir = getwd(),
     histology_df %>%
       ggplot2::ggplot(ggplot2::aes(x = reorder(Tumor_Sample_Barcode, -mut_per_mb), y = mut_per_mb)) +
       ggplot2::geom_bar(stat = "identity", ggplot2::aes(fill = signature)) +
+      ggplot2::theme_classic() +
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 55, hjust = 1)) +
       ggplot2::ylab("Mutations per Mb") +
       ggplot2::xlab("") +
-      ggplot2::theme_classic() +
       ggplot2::ggtitle(paste(hist_group, label, "signatures"))
 
     # Save the plot

@@ -1,6 +1,6 @@
-# Mutation Signatures
+# Mutational Signatures
 
-This analysis evaluates mutation signatures of the [consensus SNV callers file](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers#consensus-mutation-call).
+This analysis evaluates mutational signatures of the [consensus SNV callers file](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers#consensus-mutation-call).
 
 Here the signatures from [COSMIC signatures](https://cancer.sanger.ac.uk/cosmic)
 and[Alexandrov et al, 2013](https://www.ncbi.nlm.nih.gov/pubmed/23945592) are
@@ -12,9 +12,9 @@ evaluated for all samples using [deconstructSigs](https://github.com/raerose01/d
 * [Overall file structure](#overall-file-structure)
 * [Summary of functions](#summary-of-custom-functions)
 
-## How to run the mutation signatures analysis
+## How to run the mutational signatures analysis
 
-To run the mutation signature evaluations, use this in command line:
+To run the mutational signature evaluations, use this in command line:
 ```
 Rscript -e "rmarkdown::render('analyses/mutation-signatures/mutation_signatures.Rmd',
                               clean = TRUE)"
@@ -42,8 +42,8 @@ For more information, see the [`bubble_matrix_plot`]() code.
 ```
 OpenPBTA-analysis
 ├── analyses
-│   └── mutation-signatures
-│       ├── mutation_signatures.Rmd
+│   └── mutational-signatures
+│       ├── mutational_signatures.Rmd
 │       ├── util
 │       │    └── mut_sig_functions.R
 │       ├── results
@@ -67,7 +67,7 @@ OpenPBTA-analysis
 
 |Function Name|Summary|
 |-------------|-----------|
-|`sample_mut_sig_plot`|Saves traditional mutation signature plots for each sample|
+|`sample_mut_sig_plot`|Saves traditional mutational signature plots for each sample|
 |`calc_mut_per_sig`|Given `deconstructSigs::whichSignature` output, formats the sample data into a data.frame and calculates the mutations per Mb for each sample and each signature|
 |`bubble_matrix_plot`|Groups together data by histology and makes the bubble matrix plot|
 |`grouped_sig_barplot`|Creates signature grouped barplots for histology group provided and only uses primary tumors' data|

@@ -1,5 +1,5 @@
 ---
-title: "Mutation Signatures"
+title: "Mutational Signatures"
 output: 
   html_notebook:
     toc: TRUE
@@ -10,7 +10,7 @@ date: 2019
 
 **Purpose:**
 
-Calculate and plot mutation signatures for all samples using [COSMIC signatures](https://cancer.sanger.ac.uk/cosmic) and 
+Calculate and plot mutational signatures for all samples using [COSMIC signatures](https://cancer.sanger.ac.uk/cosmic) and 
 [Alexandrov et al, 2013](https://www.ncbi.nlm.nih.gov/pubmed/23945592) mutational signatures. 
 
 ### Summary of Findings:
@@ -21,7 +21,7 @@ Coming soon.
 
 To run this from the command line, use:
 ```
-Rscript -e "rmarkdown::render('analyses/mutation-signatures/mutation_signatures.Rmd', 
+Rscript -e "rmarkdown::render('analyses/mutational-signatures/mutation_signatures.Rmd', 
                               clean = TRUE)"
 ```
 
@@ -295,7 +295,7 @@ ggplot2::ggsave(file.path(nature_plots, paste0("bubble_matrix_nature_mutation_si
 We will make these plots for primary tumor samples only. 
 Let's make these for COSMIC mutation signatures first. 
 
-```{r include=FALSE}
+```{r}
 # Keep only primary tumors
 cosmic_sigs_primary <- cosmic_sigs_df %>%
   dplyr::filter(Tumor_Sample_Barcode %in% ind_samples$Kids_First_Biospecimen_ID)
@@ -311,7 +311,7 @@ lapply(unique(cosmic_sigs_primary$short_histology),
 
 Make these plots for Alexandrov et al, 2013 signatures. 
 
-```{r include=FALSE}
+```{r}
 # Keep only primary tumors
 nature_sigs_primary <- nature_sigs_df %>%
   dplyr::filter(Tumor_Sample_Barcode %in% ind_samples$Kids_First_Biospecimen_ID)
