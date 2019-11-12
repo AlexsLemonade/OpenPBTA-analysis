@@ -42,9 +42,14 @@ parser.add_argument(
     dest='meta_file',
     help="Path of the metadata/histology data file (TSV)."
 )
+parser.add_argument(
+    '--overwrite',
+    action='store_true',
+    help="Flag for whether to overwrite tables that may already exist."
+)
 args = parser.parse_args()
 
-# types for all known MAF fields.
+# types for all expected MAF fields.
 maf_types = [
     ('Hugo_Symbol', 'TEXT'),
     ('Entrez_Gene_Id', 'INTEGER'),
@@ -239,10 +244,12 @@ callers = [
 for table_name, maf_file in callers:
     if not maf_file:
         continue
-    if table_name == 'strelka':
+    if table_name in ('strelka', 'lancet'): # we need 2 full tables for consensus with one missing
         table_types = maf_types
     else:
         table_types = needed_types
+    if args.overwrite:
+        con.execute("DROP TABLE IF EXISTS {}".format(table_name))
     maf_table_def = ", ".join([" ".join(col) for col in table_types])
     maf_create = "CREATE TABLE {}('index' INTEGER, {})".format(
         table_name, maf_table_def)
@@ -270,5 +277,7 @@ for table_name, maf_file in callers:
         chunk.to_sql(table_name, con, if_exists='append')
 
 # Read the metadata file and load into a table called "samples"
+if args.overwrite:
+    con.execute("DROP TABLE IF EXISTS samples")
 metadata_df = pd.read_table(args.meta_file)
 metadata_df.to_sql("samples", con)
