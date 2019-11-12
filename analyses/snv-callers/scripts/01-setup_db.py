@@ -281,13 +281,6 @@ for table_name, maf_file in callers:
     maf_create = "CREATE TABLE {}('index' INTEGER, {})".format(
         table_name, maf_table_def)
     con.execute(maf_create)
-    for index_name, fields in maf_indexes:
-        index_statement = "CREATE INDEX {table}_{name} ON {table}({field})".format(
-            name=index_name,
-            table=table_name,
-            field=", ".join(fields)
-        )
-        con.execute(index_statement)
     # read and fill maf table
     maf_chunks = pd.read_table(maf_file,
                                dtype=maf_dtypes,
@@ -302,6 +295,14 @@ for table_name, maf_file in callers:
         if table_name != 'strelka':
             chunk = chunk[needed_cols]
         chunk.to_sql(table_name, con, if_exists='append')
+    # create indexes
+    for index_name, fields in maf_indexes:
+        index_statement = "CREATE INDEX {table}_{name} ON {table}({field})".format(
+            name=index_name,
+            table=table_name,
+            field=", ".join(fields)
+        )
+        con.execute(index_statement)
 
 # Read the metadata file and load into a table called "samples"
 if args.meta_file:
