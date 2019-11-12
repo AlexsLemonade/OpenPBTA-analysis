@@ -88,11 +88,13 @@ maf_df <- readr::read_tsv(opt$maf_file)
 cnv_df <- readr::read_tsv(opt$cnv_file)
 fusion_df <- readr::read_tsv(opt$fusion_file)
 
-#### Get rid of problem and non-tumor samples ----------------------------------
+#### Get rid of ambiguous and non-tumor samples --------------------------------
 
-# A problem sample_id will have more than 2 rows associated with it in the
-# histologies file when looking at tumor samples
-problem_sample_ids <- histologies_df %>%
+# An ambiguous sample_id will have more than 2 rows associated with it in the
+# histologies file when looking at tumor samples -- that means we won't be able
+# to determine when an WGS/WXS assay maps to an RNA-seq assay for the purpose of
+# the oncoprint plot
+ambiguous_sample_ids <- histologies_df %>%
   filter(sample_type == "Tumor",
          composition == "Solid Tissue") %>%
   group_by(sample_id) %>%
@@ -100,17 +102,17 @@ problem_sample_ids <- histologies_df %>%
   filter(n > 2) %>%
   pull(sample_id)
 
-problem_biospecimens <- histologies_df %>%
-  filter(sample_id %in% problem_sample_ids) %>%
+ambiguous_biospecimens <- histologies_df %>%
+  filter(sample_id %in% ambiguous_sample_ids) %>%
   pull(Kids_First_Biospecimen_ID)
 
-# we're going to get rid of the tumor samples
+# we're only going to look at tumor samples in the oncoprint plot
 not_tumor_biospecimens <- histologies_df %>%
   filter(sample_type != "Tumor",
          composition != "Solid Tissue") %>%
   pull(Kids_First_Biospecimen_ID)
 
-biospecimens_to_remove <- unique(c(problem_biospecimens,
+biospecimens_to_remove <- unique(c(ambiguous_biospecimens,
                                    not_tumor_biospecimens))
 
 # Filter the files!
