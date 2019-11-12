@@ -308,7 +308,7 @@ for table_name, maf_file in callers:
 
 # Read the metadata file and load into a table called "samples"
 if args.meta_file:
-    print("Reading file {} to table 'samples'".format(args.metafile))
+    print("Reading file {} to table 'samples'".format(args.meta_file))
     if args.overwrite:
         con.execute("DROP TABLE IF EXISTS samples")
     metadata_df = pd.read_table(args.meta_file)
