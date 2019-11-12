@@ -33,7 +33,7 @@ if (!dir.exists(plots_dir)) {
 }
 
 # Read in data from tsv file (produced in `01-prepare-cn-file.R`)
-cn_df <- readr::read_tsv(file.path(results_dir, "cnvkit_annotated_cn_autosomes.tsv.gz"))
+cn_df <- readr::read_tsv(file.path(results_dir, "controlfreec_annotated_cn_autosomes.tsv.gz"))
 
 # Read in RNA-seq expression data
 rsem_expression_polyA <-
@@ -170,7 +170,7 @@ goi_list <-
     file.path(
       root_dir,
       "analyses",
-      "oncoprint-lanscape",
+      "oncoprint-landscape",
       "driver-lists",
       "brain-goi-list-long.txt"
     ),
