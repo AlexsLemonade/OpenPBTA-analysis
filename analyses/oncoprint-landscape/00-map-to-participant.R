@@ -1,10 +1,25 @@
-
-# takes:
-# cnv file
-# fusion file
-# snv file
-# metadata file
-# optionally, the independent specimens list
+# J. Taroni for ALSF CCDL 2019
+# This script processes MAF, focal CN (from focal-cn-file-preparation),
+# standardized fusion files and prepares them for oncoprint plotting.
+#
+# NOTES:
+#   * The `Tumor_Sample_Barcode` will now corresponds to the `sample_id` column
+#     in the histologies file
+#   * We remove ambiguous `sample_id` -- i.e., where there are more than two
+#     tumor biospecimens that map to the same sample id
+#   * Filtering via an independent specimen file is optional, but highly
+#     recommended
+#
+# EXAMPLE USAGE:
+#
+# Rscript --vanilla 00-map-to-participant.R \
+#   --maf_file snv-consensus_11122019/consensus_mutation.maf.tsv \
+#   --cnv_file ../focal-cn-file-preparation/results/controlfreec_annotated_cn_autosomes.tsv.gz \
+#   --fusion_file ../../scratch/arriba.tsv \
+#   --metadata_file ../../data/pbta-histologies.tsv \
+#   --output_directory ../../scratch/oncoprint_files \
+#   --filename_lead "all_participants_primary_only" \
+#   --independent_specimens ../../data/independent-specimens.wgswxs.primary.tsv
 
 library(dplyr)
 
@@ -15,13 +30,13 @@ option_list <- list(
     c("--maf_file"),
     type = "character",
     default = NULL,
-    help = "file path to MAF file that contains snv information",
+    help = "file path to MAF file that contains SNV information",
   ),
   optparse::make_option(
     c("--cnv_file"),
     type = "character",
     default = NULL,
-    help = "file path to SEG file that contains cnv information"
+    help = "file path to file that contains CNV information"
   ),
   optparse::make_option(
     c("--fusion_file"),
@@ -70,15 +85,41 @@ if (!dir.exists(output_dir)) {
 
 histologies_df <- readr::read_tsv(opt$metadata_file)
 maf_df <- readr::read_tsv(opt$maf_file)
+cnv_df <- readr::read_tsv(opt$cnv_file)
+fusion_df <- readr::read_tsv(opt$fusion_file)
+
+#### Get rid of problem and non-tumor samples ----------------------------------
+
+# A problem sample_id will have more than 2 rows associated with it in the
+# histologies file when looking at tumor samples
+problem_sample_ids <- histologies_df %>%
+  filter(sample_type == "Tumor",
+         composition == "Solid Tissue") %>%
+  group_by(sample_id) %>%
+  tally() %>%
+  filter(n > 2) %>%
+  pull(sample_id)
+
+problem_biospecimens <- histologies_df %>%
+  filter(sample_id %in% problem_sample_ids) %>%
+  pull(Kids_First_Biospecimen_ID)
+
+# we're going to get rid of the tumor samples
+not_tumor_biospecimens <- histologies_df %>%
+  filter(sample_type != "Tumor",
+         composition != "Solid Tissue") %>%
+  pull(Kids_First_Biospecimen_ID)
 
 biospecimens_to_remove <- unique(c(problem_biospecimens,
                                    not_tumor_biospecimens))
 
+# Filter the files!
 maf_df <- maf_df %>%
   dplyr::filter(!(Tumor_Sample_Barcode %in% biospecimens_to_remove))
-
-cnv_df <- readr::read_tsv(opt$cnv_file)
-fusion_df <- readr::read_tsv(opt$fusion_file)
+cnv_df <- cnv_df %>%
+  dplyr::filter(!(biospecimen_id %in% biospecimens_to_remove))
+fusion_df <- fusion_df %>%
+  dplyr::filter(!(Sample %in% biospecimens_to_remove))
 
 #### Filter to independent specimens (optional) --------------------------------
 
@@ -95,25 +136,42 @@ if (!is.null(opt$independent_specimens)) {
   cnv_df <- cnv_df %>%
     filter(biospecimen_id %in% ind_biospecimen)
 
+  # for the RNA-seq samples, we need to map from the sample identifier
+  # associated with the independent specimen and back to a biospecimen ID
+  ind_sample_id <- histologies_df %>%
+    filter(Kids_First_Biospecimen_ID %in% ind_biospecimen) %>%
+    pull(sample_id)
+
+  # get the corresponding biospecimen ID to be used
+  rnaseq_ind <- histologies_df %>%
+    filter(sample_id %in% ind_sample_id,
+           experimental_strategy == "RNA-Seq") %>%
+    pull(Kids_First_Biospecimen_ID)
+
+  # finally filter the fusions
+  fusion_df <- fusion_df %>%
+    filter(Sample %in% rnaseq_ind)
+
 }
 
 #### MAF file preparation ------------------------------------------------------
 
-# we need to add the participant ID and sample_id, we will paste these together
-# to use as the Tumor_Sample_Barcode
+message("Preparing MAF file...")
+
+# MAF files already capture sample IDs
 maf_df <- maf_df %>%
-  inner_join(select(histologies_df,
-                    Kids_First_Biospecimen_ID,
-                    sample_id),
-             by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
-  rename(Tumor_Sample_Barcode = sample_id)
+  mutate(Tumor_Sample_Barcode = sample_id)
 
 # Write MAF to file
 maf_output <- file.path(output_dir, paste0(opt$filename_lead, "_maf.tsv"))
 readr::write_tsv(maf_df, maf_output)
 
 #### Fusion file preparation ---------------------------------------------------
+# TODO: Once the consensus calls of the fusion data are obtained, this section
+# will need to be adapted to the format of the fusion input file. For example,
+# the way we separate the genes out of `FusionName` may need to be adapted.
 
+message("Preparing fusion file...")
 # Separate fusion gene partners and add variant classification and center
 fus_sep <- fusion_df %>%
   # Separate the 5' and 3' genes
@@ -131,15 +189,16 @@ reformat_fusion <- fus_sep %>%
            if_else(n == 1, "Fusion", "Multi_Hit_Fusion"),
          # Required column for joining with MAF
          Variant_Type = "OTHER") %>%
+  select(-n) %>%
+  ungroup() %>%
   # Correct format for joining with MAF
   rename(Tumor_Sample_Barcode = Sample, Hugo_Symbol = Gene1) %>%
   # Create a new identifier from participant ID + sample_id
-  ungroup() %>%
   inner_join(select(histologies_df,
                     Kids_First_Biospecimen_ID,
                     sample_id),
              by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
-  rename(Tumor_Sample_Barcode = sample_id)
+  mutate(Tumor_Sample_Barcode = sample_id)
 
 # Write to file
 fusion_output <- file.path(output_dir, paste0(opt$filename_lead,
@@ -148,13 +207,14 @@ readr::write_tsv(reformat_fusion, fusion_output)
 
 #### CNV file preparation ------------------------------------------------------
 
+message("Preparing CNV file...")
 cnv_df <- cnv_df %>%
   inner_join(select(histologies_df,
                     Kids_First_Biospecimen_ID,
                     sample_id),
              by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
-  rename(Tumor_Sample_Barcode =  sample_id,
-         Variant_Classification = status,
+  mutate(Tumor_Sample_Barcode =  sample_id) %>%
+  rename(Variant_Classification = status,
          Hugo_Symbol = gene_symbol) %>%
   select(Hugo_Symbol, Tumor_Sample_Barcode, Variant_Classification)
 
