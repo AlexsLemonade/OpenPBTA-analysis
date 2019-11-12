@@ -71,11 +71,11 @@ if (!dir.exists(output_dir)) {
 histologies_df <- readr::read_tsv(opt$metadata_file)
 maf_df <- readr::read_tsv(opt$maf_file)
 
-# TODO: remove once consensus files no longer contain metadata
-# https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/262
-relevant_columns <- setdiff(colnames(maf_df), colnames(histologies_df))
+biospecimens_to_remove <- unique(c(problem_biospecimens,
+                                   not_tumor_biospecimens))
+
 maf_df <- maf_df %>%
-  select(relevant_columns)
+  dplyr::filter(!(Tumor_Sample_Barcode %in% biospecimens_to_remove))
 
 cnv_df <- readr::read_tsv(opt$cnv_file)
 fusion_df <- readr::read_tsv(opt$fusion_file)

@@ -15,8 +15,9 @@ wget --no-clobber --directory-prefix=driver-lists -O driver-lists/brain-goi-list
 wget --no-clobber --directory-prefix=driver-lists -O driver-lists/brain-goi-list-short.txt https://github.com/marislab/create-pptc-pdx-oncoprints/raw/2c9ed2a2331bcef3003d6aa25a130485d76a3535/data/brain-goi-list.txt
 
 # TODO: remove once the consensus files are included in the data download
-wget -N https://open-pbta.s3.amazonaws.com/data/snv-consensus/snv-consensus_1112019.zip
-unzip snv-consensus_1112019.zip
+# wget only the newer files
+wget -N https://open-pbta.s3.amazonaws.com/data/snv-consensus/snv-consensus_11122019.zip
+unzip -u snv-consensus_11122019.zip
 # remove the mac specific directory included in the zip file
 rm -r __MACOSX
 
