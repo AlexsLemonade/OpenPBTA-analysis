@@ -39,7 +39,7 @@ genes_list=driver-lists/brain-goi-list-long.txt
 
 #### Primary only oncoprint
 
-Rscript --vanilla 00-map-to-participant.R \
+Rscript --vanilla 00-map-to-sample_id.R \
   --maf_file ${maf_consensus} \
   --cnv_file ${controlfreec_autosomes} \
   --fusion_file ${arriba_file} \
@@ -65,7 +65,7 @@ Rscript --vanilla 01-plot-oncoprint.R \
 
 #### Primary plus samples oncoprint
 
-Rscript --vanilla 00-map-to-participant.R \
+Rscript --vanilla 00-map-to-sample_id.R \
   --maf_file ${maf_consensus} \
   --cnv_file ${controlfreec_autosomes} \
   --fusion_file ${arriba_file} \

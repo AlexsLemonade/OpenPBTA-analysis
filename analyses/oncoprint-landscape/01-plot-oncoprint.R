@@ -1,6 +1,6 @@
 # This script displays an oncoprint displaying the landscape across PBTA given
 # the relevant metadata. It addresses issue #6 in the OpenPBTA-analysis
-# github repository. It uses the output of 00-map-to-participant.R.
+# github repository. It uses the output of 00-map-to-sample_id.R.
 #
 # Code adapted from the PPTC PDX Oncoprint Generation repository here:
 # https://github.com/marislab/create-pptc-pdx-oncoprints/tree/master/R
