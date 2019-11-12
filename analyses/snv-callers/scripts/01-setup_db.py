@@ -270,6 +270,7 @@ callers = [
 for table_name, maf_file in callers:
     if not maf_file:
         continue
+    print("Reading file {} to table '{}'.".format(maf_file, table_name, ))
     # we need 2 full tables for consensus with one missing
     if table_name in ('strelka', 'lancet'):
         table_types = maf_types
@@ -296,6 +297,7 @@ for table_name, maf_file in callers:
             chunk = chunk[needed_cols]
         chunk.to_sql(table_name, con, if_exists='append')
     # create indexes
+    print("Indexing table '{}'".format(table_name))
     for index_name, fields in maf_indexes:
         index_statement = "CREATE INDEX {table}_{name} ON {table}({field})".format(
             name=index_name,
@@ -306,6 +308,7 @@ for table_name, maf_file in callers:
 
 # Read the metadata file and load into a table called "samples"
 if args.meta_file:
+    print("Reading file {} to table 'samples'".format(args.metafile))
     if args.overwrite:
         con.execute("DROP TABLE IF EXISTS samples")
     metadata_df = pd.read_table(args.meta_file)
