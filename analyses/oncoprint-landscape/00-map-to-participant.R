@@ -12,43 +12,43 @@ library(dplyr)
 
 option_list <- list(
   optparse::make_option(
-    c("-m", "--maf_file"),
+    c("--maf_file"),
     type = "character",
     default = NULL,
     help = "file path to MAF file that contains snv information",
   ),
   optparse::make_option(
-    c("-c", "--cnv_file"),
+    c("--cnv_file"),
     type = "character",
     default = NULL,
     help = "file path to SEG file that contains cnv information"
   ),
   optparse::make_option(
-    c("-f", "--fusion_file"),
+    c("--fusion_file"),
     type = "character",
     default = NULL,
     help = "file path to file that contains fusion information"
   ),
   optparse::make_option(
-    c("-h", "--metadata_file"),
+    c("--metadata_file"),
     type = "character",
     default = NULL,
     help = "file path to clinical file"
   ),
   optparse::make_option(
-    c("-l", "--filename_lead"),
+    c("--filename_lead"),
     type = "character",
     default = NULL,
     help = ""
   ),
   optparse::make_option(
-    c("-o", "--output_directory"),
+    c("--output_directory"),
     type = "character",
     default = NULL,
     help = "output directory for files that are prepared in this script"
   ),
   optparse::make_option(
-    c("-i", "--independent_specimens"),
+    c("--independent_specimens"),
     type = "character",
     default = NULL,
     help = "optional file path to independent specimens list"
@@ -103,13 +103,10 @@ if (!is.null(opt$independent_specimens)) {
 # to use as the Tumor_Sample_Barcode
 maf_df <- maf_df %>%
   inner_join(select(histologies_df,
-                    Kids_First_Participant_ID,
                     Kids_First_Biospecimen_ID,
                     sample_id),
              by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
-  mutate(Tumor_Sample_Barcode = paste(Kids_First_Participant_ID,
-                                      sample_id,
-                                      sep = "_"))
+  rename(Tumor_Sample_Barcode = sample_id)
 
 # Write MAF to file
 maf_output <- file.path(output_dir, paste0(opt$filename_lead, "_maf.tsv"))
@@ -139,13 +136,10 @@ reformat_fusion <- fus_sep %>%
   # Create a new identifier from participant ID + sample_id
   ungroup() %>%
   inner_join(select(histologies_df,
-                    Kids_First_Participant_ID,
                     Kids_First_Biospecimen_ID,
                     sample_id),
              by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
-  mutate(Tumor_Sample_Barcode = paste(Kids_First_Participant_ID,
-                                      sample_id,
-                                      sep = "_"))
+  rename(Tumor_Sample_Barcode = sample_id)
 
 # Write to file
 fusion_output <- file.path(output_dir, paste0(opt$filename_lead,
@@ -156,14 +150,12 @@ readr::write_tsv(reformat_fusion, fusion_output)
 
 cnv_df <- cnv_df %>%
   inner_join(select(histologies_df,
-                    Kids_First_Participant_ID,
                     Kids_First_Biospecimen_ID,
                     sample_id),
              by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
-  mutate(Tumor_Sample_Barcode = paste(Kids_First_Participant_ID,
-                                      sample_id,
-                                      sep = "_")) %>%
-  rename(Variant_Classification = status, Hugo_Symbol = gene_symbol) %>%
+  rename(Tumor_Sample_Barcode =  sample_id,
+         Variant_Classification = status,
+         Hugo_Symbol = gene_symbol) %>%
   select(Hugo_Symbol, Tumor_Sample_Barcode, Variant_Classification)
 
 # Write to file
