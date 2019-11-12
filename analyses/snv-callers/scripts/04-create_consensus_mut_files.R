@@ -219,6 +219,12 @@ if (file.exists(consensus_mut_file) && !opt$overwrite) {
        the combination you specified with --combo is spelled exactly right and
        the callers are in alphabetical order. ")
   }
+  # Isolate the mutations to only these mutations, use the Strelka2 stats.
+  consen_mutation <- vaf_df %>%
+    dplyr::filter(
+      caller == opt$vaf,
+      mutation_id %in% consen_mutations
+    )
 
 ############################### Re-calculate TMB ###############################
 # If the file exists or the overwrite option is not being used, do not create
@@ -258,12 +264,8 @@ meta_cols <- colnames(readr::read_tsv(opt$metadata, n_max = 1))
 
 ########################### Write consensus file ###############################
 # Isolate the mutations to only these mutations, use the Strelka2 stats.
-consen_mutation <- vaf_df %>%
+consen_mutation <- consen_mutation %>%
   dplyr::select(-!(colnames(vaf_df) %in% meta_cols)) %>%
-  dplyr::filter(
-    caller == opt$vaf,
-    mutation_id %in% consen_mutations
-  ) %>%
   readr::write_tsv(consensus_mut_file)
 
 # Zip this file up.
