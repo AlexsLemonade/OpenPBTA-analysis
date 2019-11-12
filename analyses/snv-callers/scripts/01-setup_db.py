@@ -1,5 +1,32 @@
 #!/bin/env python
 
+# 01-setup_db.py
+#
+# Creates and/or fills a database of variant calls.
+# Note: requires pandas to be installed, and expects python3
+#
+# All arguments are optional; only the included tables will be affected.
+#
+# Arguments:
+#   -d DB_FILE, --db-file DB_FILE
+#     Path of the database file to use or create. Defaults to `data.sqlite`.
+#   --strelka-file STRELKA_FILE
+#     Path of the MAF formatted data file from the strelka2 caller(TSV).
+#   --mutect-file MUTECT_FILE
+#     Path of the MAF formatted data file from the mutect2 caller(TSV).
+#   --lancet-file LANCET_FILE
+#     Path of the MAF formatted data file from the lancet caller(TSV).
+#   --vardict-file VARDICT_FILE
+#     Path of the MAF formatted data file from the vardict caller(TSV).
+#   --meta-file META_FILE, --hist-file META_FILE
+#     Path of the metadata/histology data file(TSV).
+#   --overwrite           Overwrite tables that may already exist.
+#
+#
+# Example invocation:
+# python3 01-setup_db.py --db-file snv.sqlite --strelka-file strelka.maf --meta-file samples.tsv
+
+
 import os
 import sqlite3
 import argparse
@@ -13,7 +40,7 @@ parser.add_argument(
     '--db-file',
     dest='db_file',
     default='data.sqlite',
-    help="Path of the database file to use or create."
+    help="Path of the database file to use or create. Defaults to `data.sqlite`."
 )
 parser.add_argument(
     '--strelka-file',
@@ -243,7 +270,8 @@ callers = [
 for table_name, maf_file in callers:
     if not maf_file:
         continue
-    if table_name in ('strelka', 'lancet'): # we need 2 full tables for consensus with one missing
+    # we need 2 full tables for consensus with one missing
+    if table_name in ('strelka', 'lancet'):
         table_types = maf_types
     else:
         table_types = needed_types
@@ -276,7 +304,8 @@ for table_name, maf_file in callers:
         chunk.to_sql(table_name, con, if_exists='append')
 
 # Read the metadata file and load into a table called "samples"
-if args.overwrite:
-    con.execute("DROP TABLE IF EXISTS samples")
-metadata_df = pd.read_table(args.meta_file)
-metadata_df.to_sql("samples", con)
+if args.meta_file:
+    if args.overwrite:
+        con.execute("DROP TABLE IF EXISTS samples")
+    metadata_df = pd.read_table(args.meta_file)
+    metadata_df.to_sql("samples", con)
