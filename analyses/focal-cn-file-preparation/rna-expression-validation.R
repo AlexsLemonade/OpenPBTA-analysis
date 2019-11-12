@@ -56,7 +56,15 @@ metadata <-
 #### Custom Functions ----------------------------------------------------------
 
 # Source script with custom functions
-source(file.path("util", "rna-expression-functions.R"))
+source(
+  file.path(
+    root_dir,
+    "analyses",
+    "focal-cn-file-preparation",
+    "util",
+    "rna-expression-functions.R"
+  )
+)
 
 #### Join data -----------------------------------------------------------------
 
@@ -95,13 +103,13 @@ rsem_combined_polyA_loss_df <-
   merge_expression(cn_df_loss_metadata,
                    rsem_expression_polyA,
                    metadata,
-                   "annotated_cn_polyA.tsv.gz")
+                   "annotated_cn_polyA_loss.tsv.gz")
 
 rsem_combined_stranded_loss_df <-
   merge_expression(cn_df_loss_metadata,
                    rsem_expression_stranded,
                    metadata,
-                   "annotated_cn_stranded.tsv.gz")
+                   "annotated_cn_stranded_loss.tsv.gz")
 
 rsem_combined_polyA_non_loss_df <-
   merge_expression(cn_df_non_loss_metadata,
