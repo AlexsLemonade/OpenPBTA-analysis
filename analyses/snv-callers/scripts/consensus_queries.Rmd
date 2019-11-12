@@ -1,0 +1,67 @@
+---
+title: "Example queries for finding the consensus calls from the snv database"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+##Setup
+```{r}
+library(dplyr)
+```
+
+# Files and directories
+```{r}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+db_file <- file.path(root_dir, "scratch", "snv_db.sqlite")
+```
+
+### Connect to the database
+
+```{r}
+con <- DBI::dbConnect(RSQLite::SQLite(), db_file)
+DBI::dbListTables(con)
+```
+
+## Using dbplyr
+
+### Set up tables
+```{r}
+meta <- tbl(con, "samples")
+strelka <- tbl(con, "strelka")
+lancet <- tbl(con, "lancet")
+mutect <- tbl(con, "mutect")
+vardict <- tbl(con, "vardict")
+```
+
+### Find intersection of all
+Note that running the block below does no actual processing, it just sets up the query.
+Processing will be only be done when we try to look at it.
+
+```{r}
+join_cols = c("Chromosome", 
+              "Start_Position", 
+              "Reference_Allele", 
+              "Allele",
+              "Tumor_Sample_Barcode")
+
+full_consensus <- strelka %>%
+  inner_join(lancet, 
+             by = join_cols, 
+             suffix = c("s", "l")) %>%
+  inner_join(mutect, 
+             by = join_cols,
+             suffix = c("s", "m")) %>%
+  inner_join(vardict, by = join_cols, 
+             suffix = c("s", "v")) %>%
+  select(join_cols)
+```
+
+
+Print part of the results we just prepared. 
+**Now** we are hitting the db and processing.
+
+```{r}
+full_consensus %>% head(20)
+```
+
