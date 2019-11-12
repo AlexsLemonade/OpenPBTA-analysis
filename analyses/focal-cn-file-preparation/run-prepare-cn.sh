@@ -3,6 +3,13 @@
 #
 # Usage: bash run-prepare-cn.sh
 
+set -e
+set -o pipefail
+
+# by default we will not filter to exons on chr 1:22, but this will save us
+# time in CI
+CHROMFILT=${OPENPBTA_FILT:-0}
+
 # This script should always run as if it were being called from
 # the directory it lives in.
 script_directory="$(perl -e 'use File::Basename;
@@ -10,5 +17,27 @@ script_directory="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
+# Prep the CNVkit data
+Rscript --vanilla -e "rmarkdown::render('00-add-ploidy-cnvkit.Rmd', clean = TRUE)"
+
+# Run annotation step for CNVkit
+# TODO: update once GTF file is included with download
 Rscript --vanilla 01-prepare-cn-file.R \
-	--seg_file ../../data/pbta-cnv-cnvkit.seg.gz
+  --cnv_file ../../scratch/cnvkit_with_status.tsv \
+  --gtf_file ../collapse-rnaseq/gencode.v27.primary_assembly.annotation.gtf.gz \
+  --filename_lead "cnvkit_annotated_cn" \
+  --chrom_filter $CHROMFILT \
+  --cnvkit
+
+# Run annotation step for ControlFreeC
+# TODO: update once GTF file is included with download
+Rscript --vanilla 01-prepare-cn-file.R \
+  --cnv_file ../../data/pbta-cnv-controlfreec.tsv.gz \
+  --gtf_file ../collapse-rnaseq/gencode.v27.primary_assembly.annotation.gtf.gz \
+  --filename_lead "controlfreec_annotated_cn" \
+  --chrom_filter $CHROMFILT \
+  --controlfreec
+
+# gzip the two files in the results folder, overwriting without prompt
+gzip -f results/cnvkit_annotated_cn_autosomes.tsv
+gzip -f results/controlfreec_annotated_cn_autosomes.tsv
