@@ -252,7 +252,6 @@ if (file.exists(consensus_tmb_file) && !opt$overwrite) {
   # Give message
   message("Consensus mutations and TMB re-calculations saved in: \n", opt$output)
 }
-vaf_df <- readr::read_tsv(file.path("data", "consensus_mutation.maf.tsv"))
 
 ###################### Determine what the metadata columns are #################
 meta_cols <- colnames(readr::read_tsv(opt$metadata, n_max = 1))
