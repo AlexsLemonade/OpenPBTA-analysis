@@ -12,29 +12,9 @@ bash run-oncoprint.sh
 
 ## Folder content
 
-This folder contains a script tasked to produce an oncoprint displaying the lanscape of the genetic lesions in the PBTA dataset.
+* `00-map-to-participant.R` prepares MAF, focal CN (the output of the `focal-cn-file-preparation` module), and standardized fusion files for use with `01-plot-oncoprint.R`. 
+  * The `Tumor_Sample_Barcode` column in the output corresponds to the `sample_id` column in the histologies file
+  * We remove ambiguous `sample_id` -- i.e., where there are more than two tumor biospecimens that map to the same sample identifier.
+  * Filtering via an independent specimen file is optional, but highly recommended.
+* `01-plot-oncoprint.R` takes the files from above and optionally a gene list and creates an oncoprint.
 
-`01-plot-oncoprint.R` is a script written produce an oncoprint displaying the lanscape of the genetic lesions in the PBTA dataset (as discussed in [issue #6](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/6)).  
-This script produces an oncoprint plot containing SNV information, as well as the optional CNV and fusion information.   
-
-_The oncoprint can be viewed below:_
-![Oncoprint](plots/maf_oncoprint.png)
-
-## Folder structure 
-
-The structure of this folder is as follows:
-
-```
-oncoprint-landscape
-├── 01-plot-oncoprint.R
-├── README.md
-├── driver-lists
-│   ├── brain-goi-list-long.txt
-│   └── brain-goi-list-short.txt
-├── plots
-│   └── maf_oncoprint.png
-├── run-oncoprint.sh
-└── util
-    └── oncoplot-palette.R
-    
-```
