@@ -1775,9 +1775,6 @@ db_file &lt;- file.path(root_dir, &quot;scratch&quot;, &quot;snv_db.sqlite&quot;
 <pre class="r"><code>con &lt;- DBI::dbConnect(RSQLite::SQLite(), db_file)
 DBI::dbListTables(con)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwibGFuY2V0XCIgIFwibXV0ZWN0XCIgIFwic2FtcGxlc1wiIFwic3RyZWxrYVwiIFwidmFyZGljdFwiXG4ifQ== -->
-<pre><code>[1] &quot;lancet&quot;  &quot;mutect&quot;  &quot;samples&quot; &quot;strelka&quot; &quot;vardict&quot;</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -1802,33 +1799,49 @@ vardict &lt;- tbl(con, &quot;vardict&quot;)</code></pre>
 <p>Note that running the block below does no actual processing, it just sets up the query. Processing will be only be done when we try to look at it.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuam9pbl9jb2xzID0gYyhcIkNocm9tb3NvbWVcIiwgXG4gICAgICAgICAgICAgIFwiU3RhcnRfUG9zaXRpb25cIiwgXG4gICAgICAgICAgICAgIFwiUmVmZXJlbmNlX0FsbGVsZVwiLCBcbiAgICAgICAgICAgICAgXCJBbGxlbGVcIixcbiAgICAgICAgICAgICAgXCJUdW1vcl9TYW1wbGVfQmFyY29kZVwiKVxuXG5mdWxsX2NvbnNlbnN1cyA8LSBzdHJlbGthICU+JVxuICBpbm5lcl9qb2luKGxhbmNldCwgXG4gICAgICAgICAgICAgYnkgPSBqb2luX2NvbHMsIFxuICAgICAgICAgICAgIHN1ZmZpeCA9IGMoXCJzXCIsIFwibFwiKSkgJT4lXG4gIGlubmVyX2pvaW4obXV0ZWN0LCBcbiAgICAgICAgICAgICBieSA9IGpvaW5fY29scyxcbiAgICAgICAgICAgICBzdWZmaXggPSBjKFwic1wiLCBcIm1cIikpICU+JVxuICBpbm5lcl9qb2luKHZhcmRpY3QsIGJ5ID0gam9pbl9jb2xzLCBcbiAgICAgICAgICAgICBzdWZmaXggPSBjKFwic1wiLCBcInZcIikpICU+JVxuICBzZWxlY3Qoam9pbl9jb2xzKVxuYGBgIn0= -->
-<pre class="r"><code>join_cols = c(&quot;Chromosome&quot;, 
-              &quot;Start_Position&quot;, 
-              &quot;Reference_Allele&quot;, 
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuam9pbl9jb2xzID0gYyhcIkNocm9tb3NvbWVcIixcbiAgICAgICAgICAgICAgXCJTdGFydF9Qb3NpdGlvblwiLFxuICAgICAgICAgICAgICBcIlJlZmVyZW5jZV9BbGxlbGVcIixcbiAgICAgICAgICAgICAgXCJBbGxlbGVcIixcbiAgICAgICAgICAgICAgXCJUdW1vcl9TYW1wbGVfQmFyY29kZVwiKVxuXG5mdWxsX2NvbnNlbnN1cyA8LSBzdHJlbGthICU+JVxuICBpbm5lcl9qb2luKGxhbmNldCxcbiAgICAgICAgICAgICBieSA9IGpvaW5fY29scyxcbiAgICAgICAgICAgICBzdWZmaXggPSBjKFwic1wiLCBcImxcIikpICU+JVxuICBpbm5lcl9qb2luKG11dGVjdCxcbiAgICAgICAgICAgICBieSA9IGpvaW5fY29scyxcbiAgICAgICAgICAgICBzdWZmaXggPSBjKFwic1wiLCBcIm1cIikpICU+JVxuICBpbm5lcl9qb2luKHZhcmRpY3QsIGJ5ID0gam9pbl9jb2xzLFxuICAgICAgICAgICAgIHN1ZmZpeCA9IGMoXCJzXCIsIFwidlwiKSkgJT4lXG4gIHNlbGVjdChqb2luX2NvbHMpIFxuYGBgIn0= -->
+<pre class="r"><code>join_cols = c(&quot;Chromosome&quot;,
+              &quot;Start_Position&quot;,
+              &quot;Reference_Allele&quot;,
               &quot;Allele&quot;,
               &quot;Tumor_Sample_Barcode&quot;)
 
 full_consensus &lt;- strelka %&gt;%
-  inner_join(lancet, 
-             by = join_cols, 
+  inner_join(lancet,
+             by = join_cols,
              suffix = c(&quot;s&quot;, &quot;l&quot;)) %&gt;%
-  inner_join(mutect, 
+  inner_join(mutect,
              by = join_cols,
              suffix = c(&quot;s&quot;, &quot;m&quot;)) %&gt;%
-  inner_join(vardict, by = join_cols, 
+  inner_join(vardict, by = join_cols,
              suffix = c(&quot;s&quot;, &quot;v&quot;)) %&gt;%
-  select(join_cols)</code></pre>
+  select(join_cols) </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Print part of the results we just prepared. <strong>Now</strong> we are hitting the db and processing.</p>
+<p>Lets check that SQLite is doing what we might expect (using indexes)</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZnVsbF9jb25zZW5zdXMgJT4lIGV4cGxhaW4oKVxuYGBgIn0= -->
+<pre class="r"><code>full_consensus %&gt;% explain()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibmNvbCI6NCwibnJvdyI6NH0sInJkZiI6Ikg0c0lBQUFBQUFBQUE3VlR6MC9DTUJUdXhnQlo0by9FazdlZWpCNVlZcng0TVdZQ0NnbFp6QWFHRzZsYmtZVnVKVzNuajNqeEwwYzdhQkVhdk9tU3BuM2ZlOTk3WDk5ZXcvYm8waDI1QUlBS3FOUXNVS25LSTZnT0IzZk5Ld0FjV3hvV2NFQ2ozTjlrMExFOE9ITHRxMzFQcnBKOUt0ZnRCbTUrditGSFMzeFY0Q1JxK1FFYytMZjlEdVNDWVRKRDBJOWd2eHVwZ1BlbzQ0ZXRyZ29oS0kreEtDUENiZ1NIVVMrNGg3MmczUmtwenpnS0h1RlphOHBvUmpuTjhQVU45SU0yakFSaVl2eEFlU3BTbWlzd3hCUE1zR1NOZlVJdzBiSGFPTjhwSUNzRWpuY0tXSG4rUWNESGxvQVh4SkowdHdMbCtsTUoyK05RelZHR3VmRUw3VFJScDlvY3lXUkNXZldjaW9ManRUUEJBcVhFeU5oZzlOWFRXY3VCc1Q5WFErS1lwV09DdUM2dFFUZEJBbmtUSnZuU1doaVVPcDJYVjVVa3V4emhta0cybUFFY0ZubXBKR25HMHlLZk5TOE10ek5ORTZ4RzM5b1ljV3ZqZVZnL3l1MHZ4YS9wQnVEOE9jMnh2ZzlCVDVob3BRenpnZ2l1ekFQWmxHVlB2RGxMMS8xMEpjbzlRUVhTTkRlbVJDUEw2NFBGTjVCazk1N2NBd0FBIn0= -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["id"],"name":[1],"type":["int"],"align":["right"]},{"label":["parent"],"name":[2],"type":["int"],"align":["right"]},{"label":["notused"],"name":[3],"type":["int"],"align":["right"]},{"label":["detail"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"8","2":"0","3":"0","4":"SCAN TABLE strelka AS LHS"},{"1":"10","2":"0","3":"0","4":"SEARCH TABLE lancet AS RHS USING INDEX lancet_SNV (Chromosome=? AND Start_Position=? AND Reference_Allele=? AND Allele=?)"},{"1":"38","2":"0","3":"0","4":"SEARCH TABLE mutect AS RHS USING INDEX mutect_SNV (Chromosome=? AND Start_Position=? AND Reference_Allele=? AND Allele=?)"},{"1":"66","2":"0","3":"0","4":"SEARCH TABLE vardict AS RHS USING INDEX vardict_SNV (Chromosome=? AND Start_Position=? AND Reference_Allele=? AND Allele=?)"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[4]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>It is using the SNV indexes, so that is good.</p>
+<p>Print part of the query we just prepared. <strong>Now</strong> we are hitting the db and actually doing the processing.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZnVsbF9jb25zZW5zdXMgJT4lIGhlYWQoMjApXG5gYGAifQ== -->
 <pre class="r"><code>full_consensus %&gt;% head(20)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9TUUxpdGVDb25uZWN0aW9uIiwidGJsX2RiaSIsInRibF9zcWwiLCJ0YmxfbGF6eSIsInRibCJdLCJuY29sIjo1LCJucm93IjpbXX0sInJkZiI6Ikg0c0lBQUFBQUFBQUF3dHlpVERtaXVCaVlHQmdabUJtWTJSZ1pnVXlHVmhEUTl4MExSZ1lXSmlBSEVZR0ZnWk9FRjBCVkNRTWtnVmlBU0FXZ1Vxd0pHY1VHWTRJTmdNREw4amZqRFZiSmpGSmVGa3hIY2lLWUQ3dzh4U0x5TGRITE10ZTNHYzUxMjNCOG56UlpKYTN4NkpacmJzWldTOC8zOHptOWFPWExhVHhEVHVYVkRON3lTTmh6cElXVDY3ZytoTmM5eGUyY0g5dXorZUo3OHRDQzA5R1p3eUdPMjRSUjl3TVRIT2NNZFM0NHpZUWo2VklERFMzaCtCMkRseEtGOE9ZRU53T0RNRmc0UEU2SHUzWXdnblY3ZHhPd2ZFUkhxWmVBUll1VHFOQzlCSkNMV1JZOHhKelU0dWhFY01LRmVSeXppakt6ODB2enM5TmhZcndCWmNrRnBYRUIrUVhaNVprNXVkQlJRV0NVdE5TaTFMemtsUGpIWE55VW5OZ3F0bFFlQ0locGJuNVJmSEJpYmtGT2FueFRvbEZ5ZmtwcWVqT1NNNUpMSVk1QXliSWxaSllrcWlYVmdSMElacHl6cUw4Y2oyWXkwRkZCRk1Ea1BqLy8vOGJJUFVQVFRGN2ZnSEl6VUNsVE1pbEtieVlMVUlUNEMvTkF4bWRvcHVjVVpxWHJXc0VjZ2xZR2dKQTFqRTJJTEVoWm9Lc1pQcVBGcEJzcVhucG1YbXdnR0ROU1V4S3pZR0ZLTkFMWUIvb0ZSUmw1cFhBdkF3VUxkWXJ5UzlKaEtualNzN1BnWW1BL2Nid0R3REJGUW10UkFZQUFBPT0ifQ== -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9TUUxpdGVDb25uZWN0aW9uIiwidGJsX2RiaSIsInRibF9zcWwiLCJ0YmxfbGF6eSIsInRibCJdLCJuY29sIjo1LCJucm93IjpbXX0sInJkZiI6Ikg0c0lBQUFBQUFBQUF3dHlpVERtaXVCaVlHQmdabUJtWTJSZ1pnVXlHVmhEUTl4MExSZ1lXSmlBSEVZR0ZnWk9FRjBCVkNRTWtnVmlBU0FXZ1Vxd0pHY1VHWTRJTmdNREw4amZqRFZiSmpGSmVGa3hIY2lLWUQ3dzh4U0x5TGRITE10ZTNHYzUxMjNCOG56UlpKYTN4NkpacmJzWldTOC8zOHptOWFPWExhVHhEVHVYVkRON3lTTmh6cElXVDY3ZytoTmM5eGUyY0g5dXorZUo3OHRDQzA5R1p3eUdPMjRSUjl3TVRIT2NNZFM0NHpZUWo2VklERFMzaCtCMkRseEtGOE9ZRU53T0RNRmc0UEU2SHUzWXdnblY3ZHhPd2ZFUkhxWmVBUll1VHFOQzlCSkNMV1JZOHhKelU0dWhFY01LRmVSeXppakt6ODB2enM5TmhZcndCWmNrRnBYRUIrUVhaNVprNXVkQlJRV0NVdE5TaTFMemtsUGpIWE55VW5OZ3F0bFFlQ0locGJuNVJmSEJpYmtGT2FueFRvbEZ5ZmtwcWVqT1NNNUpMSVk1QXliSWxaSllrcWlYVmdSMElacHl6cUw4Y2oyWXkwRkZCRk1Ea1BqLy8vOGJJUFVQVFRGN2ZnSEl6VUNsVE1pbEtieVlMVUlUNEMvTkF4bWRvcHVjVVpxWHJXc01jZ2xZR2dKQTFqRTJJTEVoWm9Lc1pQcVBGcEJzcVhucG1YbXdnR0ROU1V4S3pZR0ZLTkFMWUIvb0ZSUmw1cFhBdkF3VUxkWXJ5UzlKaEtualNzN1BnWW1BL2Nid0R3RGpOMWZPUkFZQUFBPT0ifQ== -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["Chromosome"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Start_Position"],"name":[2],"type":["int"],"align":["right"]},{"label":["Reference_Allele"],"name":[3],"type":["chr"],"align":["left"]},{"label":["Allele"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Tumor_Sample_Barcode"],"name":[5],"type":["chr"],"align":["left"]}],"data":[{"1":"chr1","2":"24949906","3":"C","4":"T","5":"BS_XH5JP8DB"},{"1":"chr1","2":"35146298","3":"C","4":"A","5":"BS_XH5JP8DB"},{"1":"chr1","2":"46164568","3":"G","4":"A","5":"BS_XH5JP8DB"},{"1":"chr1","2":"62978506","3":"C","4":"T","5":"BS_XH5JP8DB"},{"1":"chr1","2":"68482786","3":"G","4":"-","5":"BS_XH5JP8DB"},{"1":"chr1","2":"78047455","3":"A","4":"G","5":"BS_XH5JP8DB"},{"1":"chr1","2":"80644920","3":"A","4":"T","5":"BS_XH5JP8DB"},{"1":"chr1","2":"82289299","3":"A","4":"C","5":"BS_XH5JP8DB"},{"1":"chr1","2":"82691675","3":"C","4":"A","5":"BS_XH5JP8DB"},{"1":"chr1","2":"87788289","3":"C","4":"T","5":"BS_XH5JP8DB"},{"1":"chr1","2":"97773491","3":"C","4":"T","5":"BS_XH5JP8DB"},{"1":"chr1","2":"105576589","3":"A","4":"G","5":"BS_XH5JP8DB"},{"1":"chr1","2":"106201580","3":"G","4":"A","5":"BS_XH5JP8DB"},{"1":"chr1","2":"118102659","3":"G","4":"A","5":"BS_XH5JP8DB"},{"1":"chr1","2":"125100563","3":"A","4":"C","5":"BS_XH5JP8DB"},{"1":"chr1","2":"158630985","3":"G","4":"A","5":"BS_XH5JP8DB"},{"1":"chr1","2":"173244360","3":"C","4":"T","5":"BS_XH5JP8DB"},{"1":"chr1","2":"182428036","3":"G","4":"A","5":"BS_XH5JP8DB"},{"1":"chr1","2":"200509295","3":"G","4":"A","5":"BS_XH5JP8DB"},{"1":"chr1","2":"207588970","3":"G","4":"A","5":"BS_XH5JP8DB"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":["NA"]},"pages":{}}}
@@ -1837,12 +1850,72 @@ full_consensus &lt;- strelka %&gt;%
 <!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+</div>
+<div id="sql-equivalent" class="section level3">
+<h3>SQL equivalent</h3>
+<p>The full query is pretty long and ugly in SQL, but a two sample consensus is shown below.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29uc2Vuc3VzX3F1ZXJ5IDwtIFwiXG4gIFNFTEVDVCBgU2AuYENocm9tb3NvbWVgLFxuICAgIGBTYC5gU3RhcnRfUG9zaXRpb25gLFxuICAgIGBTYC5gUmVmZXJlbmNlX0FsbGVsZWAsXG4gICAgYFNgLmBBbGxlbGVgLFxuICAgIGBTYC5gVHVtb3JfU2FtcGxlX0JhcmNvZGVgXG4gIEZST00gYHN0cmVsa2FgIGFzIGBTYFxuICBJTk5FUiBKT0lOIGBsYW5jZXRgIEFTIGBMYFxuICBPTiBgU2AuYENocm9tb3NvbWVgID0gYExgLmBDaHJvbW9zb21lYFxuICAgICAgQU5EIGBTYC5gU3RhcnRfUG9zaXRpb25gID0gYExgLmBTdGFydF9Qb3NpdGlvbmBcbiAgICAgIEFORCBgU2AuYFJlZmVyZW5jZV9BbGxlbGVgID0gYExgLmBSZWZlcmVuY2VfQWxsZWxlYFxuICAgICAgQU5EIGBTYC5gQWxsZWxlYCA9IGBMYC5gQWxsZWxlYFxuICAgICAgQU5EIGBTYC5gVHVtb3JfU2FtcGxlX0JhcmNvZGVgID0gYExgLmBUdW1vcl9TYW1wbGVfQmFyY29kZWBcbiAgTElNSVQgMjBcbiAgXCJcblxuY29uc2Vuc3VzX3Jlc3VsdCA8LSBEQkk6OmRiR2V0UXVlcnkoY29uLCBjb25zZW5zdXNfcXVlcnkpXG5jb25zZW5zdXNfcmVzdWx0XG5gYGAifQ== -->
+<pre class="r"><code>consensus_query &lt;- &quot;
+  SELECT `S`.`Chromosome`,
+    `S`.`Start_Position`,
+    `S`.`Reference_Allele`,
+    `S`.`Allele`,
+    `S`.`Tumor_Sample_Barcode`
+  FROM `strelka` as `S`
+  INNER JOIN `lancet` AS `L`
+  ON `S`.`Chromosome` = `L`.`Chromosome`
+      AND `S`.`Start_Position` = `L`.`Start_Position`
+      AND `S`.`Reference_Allele` = `L`.`Reference_Allele`
+      AND `S`.`Allele` = `L`.`Allele`
+      AND `S`.`Tumor_Sample_Barcode` = `L`.`Tumor_Sample_Barcode`
+  LIMIT 20
+  &quot;
+
+consensus_result &lt;- DBI::dbGetQuery(con, consensus_query)
+consensus_result</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibmNvbCI6NSwibnJvdyI6MjB9LCJyZGYiOiJINHNJQUFBQUFBQUFBd3R5aVREbWl1QmlZR0JnWm1CbVkyUmdaZ1V5R1ZoRFE5eDBMUmdZV0ppQUhFWUdGZ1pPRUYwQlZDUU1rZ1ZpQVNBV2dVcXdKR2NVR1k0SU5nTURMOGpmakRWYkpqRkplRmt4SGNpS1lEN3c4eFNMeUxkSExBWThKMW1XdmJqUGNxN2JndVg1b3Nrc2I0OUZzMXAzTTdKZWZyNlp6ZXRITDF0STR4dDJMcWxtOXBKSHdwd2xMWjVjd2ZVbnVPNHZiT0hlMHJBWExUd1puVEVZN3JoRmRHRU1SOXdNVEFPZE1kUzRZekF3cGJEWmp1YjJFTnl1Q01Gd2NnaUdlU0c0SFJpQ1d4Y2VIMk5xaDRrd2hUaWlPWjdiS1RnK3dzUFVLOERDeFdsVWlGNUNxS1VNYTE1aWJtb3hOR0pZb1lKY3pobEYrYm41eGZtNXFWQVJ2dUNTeEtLUytJRDg0c3lTelB3OHFLaEFVR3BhYWxGcVhuSnF2R05PVG1vT1REVWJDazhrcERRM3Z5ZytPREczSUNjMTNpbXhLRGsvSlJYTkdaeEYrZVY2TUtlQU1qMVRBd01ZaUtDN056a25zUmptWHBnZ1YwcGlTYUplV2hGUVA1RDNEMDBMZTM0QnlNMUFUVXpJeFNtOG5DMUNFK0F2elFPNUpFVTNPYU0wTDFzWFZBeHhnYVVoZ0JmS0ZrRmlzMEtzWlBxUEZwQnNxWG5wbVhtd2dHRE5TVXhLellHRktOREhZQS9yRlJSbDVwWEFmQUlVTGRZcnlTOUpoS25qU3M3UGdZbUEvY2J3RHdDWHdVbHVSUVlBQUE9PSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Chromosome"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Start_Position"],"name":[2],"type":["int"],"align":["right"]},{"label":["Reference_Allele"],"name":[3],"type":["chr"],"align":["left"]},{"label":["Allele"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Tumor_Sample_Barcode"],"name":[5],"type":["chr"],"align":["left"]}],"data":[{"1":"chr1","2":"24949906","3":"C","4":"T","5":"BS_XH5JP8DB"},{"1":"chr1","2":"35146298","3":"C","4":"A","5":"BS_XH5JP8DB"},{"1":"chr1","2":"46164568","3":"G","4":"A","5":"BS_XH5JP8DB"},{"1":"chr1","2":"62978506","3":"C","4":"T","5":"BS_XH5JP8DB"},{"1":"chr1","2":"68482786","3":"G","4":"-","5":"BS_XH5JP8DB"},{"1":"chr1","2":"70257865","3":"-","4":"T","5":"BS_XH5JP8DB"},{"1":"chr1","2":"78047455","3":"A","4":"G","5":"BS_XH5JP8DB"},{"1":"chr1","2":"80644920","3":"A","4":"T","5":"BS_XH5JP8DB"},{"1":"chr1","2":"82289299","3":"A","4":"C","5":"BS_XH5JP8DB"},{"1":"chr1","2":"82691675","3":"C","4":"A","5":"BS_XH5JP8DB"},{"1":"chr1","2":"87788289","3":"C","4":"T","5":"BS_XH5JP8DB"},{"1":"chr1","2":"97773491","3":"C","4":"T","5":"BS_XH5JP8DB"},{"1":"chr1","2":"105576589","3":"A","4":"G","5":"BS_XH5JP8DB"},{"1":"chr1","2":"106201580","3":"G","4":"A","5":"BS_XH5JP8DB"},{"1":"chr1","2":"118102659","3":"G","4":"A","5":"BS_XH5JP8DB"},{"1":"chr1","2":"125100563","3":"A","4":"C","5":"BS_XH5JP8DB"},{"1":"chr1","2":"158630985","3":"G","4":"A","5":"BS_XH5JP8DB"},{"1":"chr1","2":"173244360","3":"C","4":"T","5":"BS_XH5JP8DB"},{"1":"chr1","2":"182428036","3":"G","4":"A","5":"BS_XH5JP8DB"},{"1":"chr1","2":"196378813","3":"-","4":"TA","5":"BS_XH5JP8DB"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[20]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>If you want to see the full query created by <code>dplyr</code>, you can use <code>dplyr::show_query()</code> to see the very long (but correct!) queries that it creates.</p>
+<p>Note that if you want to update the database (i.e. to store the results of a query for posterity), the best way to do so is likely to write the SQL. That could be something like the following (not run):</p>
+<pre><code>CREATE TABLE `consensus` AS (
+  SELECT `S`.`Chromosome`,
+    `S`.`Start_Position`,
+    `S`.`Reference_Allele`,
+    `S`.`Allele`,
+    `S`.`Tumor_Sample_Barcode`
+  FROM `strelka` as `S`
+  INNER JOIN `lancet` AS `L`
+  ON `S`.`Chromosome` = `L`.`Chromosome`
+      AND `S`.`Start_Position` = `L`.`Start_Position`
+      AND `S`.`Reference_Allele` = `L`.`Reference_Allele`
+      AND `S`.`Allele` = `L`.`Allele`
+      AND `S`.`Tumor_Sample_Barcode` = `L`.`Tumor_Sample_Barcode`
+)</code></pre>
+<p>To run this in R, you could use <code>DBI::dbExecute()</code></p>
+<p>Note that for the query above, it would probably be a good idea to add on an index equivalent to the ones present when the MAF tables were created:</p>
+<pre><code>CREATE INDEX `consensus_SNV` 
+  ON consensus(
+    `Chromosome`,
+    `Start_Position`,
+    `Reference_Allele`,
+    `Allele`
+  )</code></pre>
 <!-- rnb-text-end -->
 </div>
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiRXhhbXBsZSBxdWVyaWVzIGZvciBmaW5kaW5nIHRoZSBjb25zZW5zdXMgY2FsbHMgZnJvbSB0aGUgc252IGRhdGFiYXNlIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKZWRpdG9yX29wdGlvbnM6IAogIGNodW5rX291dHB1dF90eXBlOiBpbmxpbmUKLS0tCgojI1NldHVwCmBgYHtyfQpsaWJyYXJ5KGRwbHlyKQpgYGAKCiMgRmlsZXMgYW5kIGRpcmVjdG9yaWVzCmBgYHtyfQpyb290X2RpciA8LSBycHJvanJvb3Q6OmZpbmRfcm9vdChycHJvanJvb3Q6Omhhc19kaXIoIi5naXQiKSkKZGJfZmlsZSA8LSBmaWxlLnBhdGgocm9vdF9kaXIsICJzY3JhdGNoIiwgInNudl9kYi5zcWxpdGUiKQpgYGAKCiMjIyBDb25uZWN0IHRvIHRoZSBkYXRhYmFzZQoKYGBge3J9CmNvbiA8LSBEQkk6OmRiQ29ubmVjdChSU1FMaXRlOjpTUUxpdGUoKSwgZGJfZmlsZSkKREJJOjpkYkxpc3RUYWJsZXMoY29uKQpgYGAKCiMjIFVzaW5nIGRicGx5cgoKIyMjIFNldCB1cCB0YWJsZXMKYGBge3J9Cm1ldGEgPC0gdGJsKGNvbiwgInNhbXBsZXMiKQpzdHJlbGthIDwtIHRibChjb24sICJzdHJlbGthIikKbGFuY2V0IDwtIHRibChjb24sICJsYW5jZXQiKQptdXRlY3QgPC0gdGJsKGNvbiwgIm11dGVjdCIpCnZhcmRpY3QgPC0gdGJsKGNvbiwgInZhcmRpY3QiKQpgYGAKCiMjIyBGaW5kIGludGVyc2VjdGlvbiBvZiBhbGwKTm90ZSB0aGF0IHJ1bm5pbmcgdGhlIGJsb2NrIGJlbG93IGRvZXMgbm8gYWN0dWFsIHByb2Nlc3NpbmcsIGl0IGp1c3Qgc2V0cyB1cCB0aGUgcXVlcnkuClByb2Nlc3Npbmcgd2lsbCBiZSBvbmx5IGJlIGRvbmUgd2hlbiB3ZSB0cnkgdG8gbG9vayBhdCBpdC4KCmBgYHtyfQpqb2luX2NvbHMgPSBjKCJDaHJvbW9zb21lIiwgCiAgICAgICAgICAgICAgIlN0YXJ0X1Bvc2l0aW9uIiwgCiAgICAgICAgICAgICAgIlJlZmVyZW5jZV9BbGxlbGUiLCAKICAgICAgICAgICAgICAiQWxsZWxlIiwKICAgICAgICAgICAgICAiVHVtb3JfU2FtcGxlX0JhcmNvZGUiKQoKZnVsbF9jb25zZW5zdXMgPC0gc3RyZWxrYSAlPiUKICBpbm5lcl9qb2luKGxhbmNldCwgCiAgICAgICAgICAgICBieSA9IGpvaW5fY29scywgCiAgICAgICAgICAgICBzdWZmaXggPSBjKCJzIiwgImwiKSkgJT4lCiAgaW5uZXJfam9pbihtdXRlY3QsIAogICAgICAgICAgICAgYnkgPSBqb2luX2NvbHMsCiAgICAgICAgICAgICBzdWZmaXggPSBjKCJzIiwgIm0iKSkgJT4lCiAgaW5uZXJfam9pbih2YXJkaWN0LCBieSA9IGpvaW5fY29scywgCiAgICAgICAgICAgICBzdWZmaXggPSBjKCJzIiwgInYiKSkgJT4lCiAgc2VsZWN0KGpvaW5fY29scykKYGBgCgoKUHJpbnQgcGFydCBvZiB0aGUgcmVzdWx0cyB3ZSBqdXN0IHByZXBhcmVkLiAKKipOb3cqKiB3ZSBhcmUgaGl0dGluZyB0aGUgZGIgYW5kIHByb2Nlc3NpbmcuCgpgYGB7cn0KZnVsbF9jb25zZW5zdXMgJT4lIGhlYWQoMjApCmBgYAoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRXhhbXBsZSBxdWVyaWVzIGZvciBmaW5kaW5nIHRoZSBjb25zZW5zdXMgY2FsbHMgZnJvbSB0aGUgc252IGRhdGFiYXNlIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKZWRpdG9yX29wdGlvbnM6IAogIGNodW5rX291dHB1dF90eXBlOiBpbmxpbmUKLS0tCgojI1NldHVwCmBgYHtyfQpsaWJyYXJ5KGRwbHlyKQpgYGAKCiMgRmlsZXMgYW5kIGRpcmVjdG9yaWVzCmBgYHtyfQpyb290X2RpciA8LSBycHJvanJvb3Q6OmZpbmRfcm9vdChycHJvanJvb3Q6Omhhc19kaXIoIi5naXQiKSkKZGJfZmlsZSA8LSBmaWxlLnBhdGgocm9vdF9kaXIsICJzY3JhdGNoIiwgInNudl9kYi5zcWxpdGUiKQpgYGAKCiMjIyBDb25uZWN0IHRvIHRoZSBkYXRhYmFzZQoKYGBge3J9CmNvbiA8LSBEQkk6OmRiQ29ubmVjdChSU1FMaXRlOjpTUUxpdGUoKSwgZGJfZmlsZSkKREJJOjpkYkxpc3RUYWJsZXMoY29uKQpgYGAKCiMjIFVzaW5nIGRicGx5cgoKIyMjIFNldCB1cCB0YWJsZXMKYGBge3J9Cm1ldGEgPC0gdGJsKGNvbiwgInNhbXBsZXMiKQpzdHJlbGthIDwtIHRibChjb24sICJzdHJlbGthIikKbGFuY2V0IDwtIHRibChjb24sICJsYW5jZXQiKQptdXRlY3QgPC0gdGJsKGNvbiwgIm11dGVjdCIpCnZhcmRpY3QgPC0gdGJsKGNvbiwgInZhcmRpY3QiKQpgYGAKCiMjIyBGaW5kIGludGVyc2VjdGlvbiBvZiBhbGwKTm90ZSB0aGF0IHJ1bm5pbmcgdGhlIGJsb2NrIGJlbG93IGRvZXMgbm8gYWN0dWFsIHByb2Nlc3NpbmcsIGl0IGp1c3Qgc2V0cyB1cCB0aGUgcXVlcnkuClByb2Nlc3Npbmcgd2lsbCBiZSBvbmx5IGJlIGRvbmUgd2hlbiB3ZSB0cnkgdG8gbG9vayBhdCBpdC4KCmBgYHtyfQpqb2luX2NvbHMgPSBjKCJDaHJvbW9zb21lIiwKICAgICAgICAgICAgICAiU3RhcnRfUG9zaXRpb24iLAogICAgICAgICAgICAgICJSZWZlcmVuY2VfQWxsZWxlIiwKICAgICAgICAgICAgICAiQWxsZWxlIiwKICAgICAgICAgICAgICAiVHVtb3JfU2FtcGxlX0JhcmNvZGUiKQoKZnVsbF9jb25zZW5zdXMgPC0gc3RyZWxrYSAlPiUKICBpbm5lcl9qb2luKGxhbmNldCwKICAgICAgICAgICAgIGJ5ID0gam9pbl9jb2xzLAogICAgICAgICAgICAgc3VmZml4ID0gYygicyIsICJsIikpICU+JQogIGlubmVyX2pvaW4obXV0ZWN0LAogICAgICAgICAgICAgYnkgPSBqb2luX2NvbHMsCiAgICAgICAgICAgICBzdWZmaXggPSBjKCJzIiwgIm0iKSkgJT4lCiAgaW5uZXJfam9pbih2YXJkaWN0LCBieSA9IGpvaW5fY29scywKICAgICAgICAgICAgIHN1ZmZpeCA9IGMoInMiLCAidiIpKSAlPiUKICBzZWxlY3Qoam9pbl9jb2xzKSAKYGBgCgoKTGV0cyBjaGVjayB0aGF0IFNRTGl0ZSBpcyBkb2luZyB3aGF0IHdlIG1pZ2h0IGV4cGVjdCAodXNpbmcgaW5kZXhlcykKYGBge3IsIHJlc3VsdHMgPSAnaGlkZSd9CmZ1bGxfY29uc2Vuc3VzICU+JSBleHBsYWluKCkKYGBgCkl0IGlzIHVzaW5nIHRoZSBTTlYgaW5kZXhlcywgc28gdGhhdCBpcyBnb29kLiAKCgpQcmludCBwYXJ0IG9mIHRoZSBxdWVyeSB3ZSBqdXN0IHByZXBhcmVkLiAKKipOb3cqKiB3ZSBhcmUgaGl0dGluZyB0aGUgZGIgYW5kIGFjdHVhbGx5IGRvaW5nIHRoZSBwcm9jZXNzaW5nLgoKYGBge3J9CmZ1bGxfY29uc2Vuc3VzICU+JSBoZWFkKDIwKQpgYGAKCgojIyMgU1FMIGVxdWl2YWxlbnQKClRoZSBmdWxsIHF1ZXJ5IGlzIHByZXR0eSBsb25nIGFuZCB1Z2x5IGluIFNRTCwgYnV0IGEgdHdvIHNhbXBsZSBjb25zZW5zdXMgaXMgc2hvd24gYmVsb3cuCgpgYGB7cn0KY29uc2Vuc3VzX3F1ZXJ5IDwtICIKICBTRUxFQ1QgYFNgLmBDaHJvbW9zb21lYCwKICAgIGBTYC5gU3RhcnRfUG9zaXRpb25gLAogICAgYFNgLmBSZWZlcmVuY2VfQWxsZWxlYCwKICAgIGBTYC5gQWxsZWxlYCwKICAgIGBTYC5gVHVtb3JfU2FtcGxlX0JhcmNvZGVgCiAgRlJPTSBgc3RyZWxrYWAgYXMgYFNgCiAgSU5ORVIgSk9JTiBgbGFuY2V0YCBBUyBgTGAKICBPTiBgU2AuYENocm9tb3NvbWVgID0gYExgLmBDaHJvbW9zb21lYAogICAgICBBTkQgYFNgLmBTdGFydF9Qb3NpdGlvbmAgPSBgTGAuYFN0YXJ0X1Bvc2l0aW9uYAogICAgICBBTkQgYFNgLmBSZWZlcmVuY2VfQWxsZWxlYCA9IGBMYC5gUmVmZXJlbmNlX0FsbGVsZWAKICAgICAgQU5EIGBTYC5gQWxsZWxlYCA9IGBMYC5gQWxsZWxlYAogICAgICBBTkQgYFNgLmBUdW1vcl9TYW1wbGVfQmFyY29kZWAgPSBgTGAuYFR1bW9yX1NhbXBsZV9CYXJjb2RlYAogIExJTUlUIDIwCiAgIgoKY29uc2Vuc3VzX3Jlc3VsdCA8LSBEQkk6OmRiR2V0UXVlcnkoY29uLCBjb25zZW5zdXNfcXVlcnkpCmNvbnNlbnN1c19yZXN1bHQKYGBgCgpJZiB5b3Ugd2FudCB0byBzZWUgdGhlIGZ1bGwgcXVlcnkgY3JlYXRlZCBieSBgZHBseXJgLCB5b3UgY2FuIHVzZSBgZHBseXI6OnNob3dfcXVlcnkoKWAgdG8gc2VlIHRoZSB2ZXJ5IGxvbmcgKGJ1dCBjb3JyZWN0ISkgcXVlcmllcyB0aGF0IGl0IGNyZWF0ZXMuCgpOb3RlIHRoYXQgaWYgeW91IHdhbnQgdG8gdXBkYXRlIHRoZSBkYXRhYmFzZSAoaS5lLiB0byBzdG9yZSB0aGUgcmVzdWx0cyBvZiBhIHF1ZXJ5IGZvciBwb3N0ZXJpdHkpLCAKdGhlIGJlc3Qgd2F5IHRvIGRvIHNvIGlzIGxpa2VseSB0byB3cml0ZSB0aGUgU1FMLiAKVGhhdCBjb3VsZCBiZSBzb21ldGhpbmcgbGlrZSB0aGUgZm9sbG93aW5nIChub3QgcnVuKToKCmBgYApDUkVBVEUgVEFCTEUgYGNvbnNlbnN1c2AgQVMgKAogIFNFTEVDVCBgU2AuYENocm9tb3NvbWVgLAogICAgYFNgLmBTdGFydF9Qb3NpdGlvbmAsCiAgICBgU2AuYFJlZmVyZW5jZV9BbGxlbGVgLAogICAgYFNgLmBBbGxlbGVgLAogICAgYFNgLmBUdW1vcl9TYW1wbGVfQmFyY29kZWAKICBGUk9NIGBzdHJlbGthYCBhcyBgU2AKICBJTk5FUiBKT0lOIGBsYW5jZXRgIEFTIGBMYAogIE9OIGBTYC5gQ2hyb21vc29tZWAgPSBgTGAuYENocm9tb3NvbWVgCiAgICAgIEFORCBgU2AuYFN0YXJ0X1Bvc2l0aW9uYCA9IGBMYC5gU3RhcnRfUG9zaXRpb25gCiAgICAgIEFORCBgU2AuYFJlZmVyZW5jZV9BbGxlbGVgID0gYExgLmBSZWZlcmVuY2VfQWxsZWxlYAogICAgICBBTkQgYFNgLmBBbGxlbGVgID0gYExgLmBBbGxlbGVgCiAgICAgIEFORCBgU2AuYFR1bW9yX1NhbXBsZV9CYXJjb2RlYCA9IGBMYC5gVHVtb3JfU2FtcGxlX0JhcmNvZGVgCikKYGBgCgpUbyBydW4gdGhpcyBpbiBSLCB5b3UgY291bGQgdXNlIGBEQkk6OmRiRXhlY3V0ZSgpYAoKTm90ZSB0aGF0IGZvciB0aGUgcXVlcnkgYWJvdmUsIGl0IHdvdWxkIHByb2JhYmx5IGJlIGEgZ29vZCBpZGVhIHRvIGFkZCBvbiBhbiBpbmRleCBlcXVpdmFsZW50IHRvIHRoZSBvbmVzIHByZXNlbnQgd2hlbiB0aGUgTUFGIHRhYmxlcyB3ZXJlIGNyZWF0ZWQ6CgpgYGAKQ1JFQVRFIElOREVYIGBjb25zZW5zdXNfU05WYCAKICBPTiBjb25zZW5zdXMoCiAgICBgQ2hyb21vc29tZWAsCiAgICBgU3RhcnRfUG9zaXRpb25gLAogICAgYFJlZmVyZW5jZV9BbGxlbGVgLAogICAgYEFsbGVsZWAKICApCmBgYA==</div>
 
 
 
