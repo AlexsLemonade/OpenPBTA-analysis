@@ -190,18 +190,22 @@ rsem_combined_stranded_df <- rsem_combined_stranded_df %>%
 polyA_plot <- ggplot2::ggplot(rsem_combined_polyA_df,
                               ggplot2::aes(x = status, fill = expression_class)) +
   ggplot2::geom_bar(position = ggplot2::position_fill(reverse = TRUE)) +
-  ggplot2::ylab("Proportion of called genes") +
-  ggplot2::facet_wrap(~ gene_symbol)
-
+  ggplot2::ylab("Proportion of called genes") 
 ggplot2::ggsave(file.path(plots_dir, "cn_loss_expression_polyA.pdf"),
                 polyA_plot)
+
+polyA_plot_per_gene <- polyA_plot + ggplot2::facet_wrap(~ gene_symbol)
+ggplot2::ggsave(file.path(plots_dir, "cn_loss_expression_per_gene_polyA.pdf"),
+                polyA_plot_per_gene)
 
 # Plot and save using stranded expression data 
 stranded_plot <- ggplot2::ggplot(rsem_combined_stranded_df,
                                  ggplot2::aes(x = status, fill = expression_class)) +
   ggplot2::geom_bar(position = ggplot2::position_fill(reverse = TRUE)) +
-  ggplot2::ylab("Proportion of called genes") +
-  ggplot2::facet_wrap(~ gene_symbol)
-
+  ggplot2::ylab("Proportion of called genes")
 ggplot2::ggsave(file.path(plots_dir, "cn_loss_expression_stranded.pdf"),
                 stranded_plot)
+
+stranded_plot_per_gene <- stranded_plot + ggplot2::facet_wrap(~ gene_symbol)
+ggplot2::ggsave(file.path(plots_dir, "cn_loss_expression_per_gene_stranded.pdf"),
+                stranded_plot_per_gene)
