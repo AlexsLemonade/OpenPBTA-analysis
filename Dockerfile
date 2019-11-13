@@ -45,7 +45,8 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     pheatmap \
     RColorBrewer \
     viridis \
-    data.table 
+    data.table \
+    qdapRegex 
 
 # maftools for proof of concept in create-subset-files
 RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"

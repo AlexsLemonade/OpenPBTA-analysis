@@ -9,10 +9,7 @@
 #
 # Command line arguments
 #
-# standardFusionFileSTARFusion      :Standardized fusion calls from STARFusion from 01-fusion-standardization.R
-#				                   or user input files in the correct format
-# standardFusionFileArriba      :Standardized fusion calls from Arriba from 01-fusion-standardization.R
-#				                   or user input files in the correct format
+# standardFusionFiles  :Standardized fusion calls from STARFusion and Arriba from 01-fusion-standardization.R as comma separated file names
 # expressionFilter        :Integer threshold of expression for both gene in fusion  partners with FPKM<1
 # junctionReadCountFilter	:Integer threshold for JunctionReadCount per fusion to remove false calls with 0
 #				                   supporting junction reads
@@ -39,14 +36,12 @@ library("tidyverse")
 library("qdapRegex")
 
 option_list <- list(
-  make_option(c("-S", "--standardFusionFileSTARFusion"),type="character",
-              help="Standardized fusion calls from STARFusion (.TSV) "),
-  make_option(c("-A", "--standardFusionFileArriba"),type="character",
-              help="Standardized fusion calls from Arriba (.TSV) "),
+  make_option(c("-S", "--standardFusionFiles"),type="character",
+              help="Standardized fusion calls from STARFusion (.TSV), Arriba (.TSV) "),
   make_option(c("-e","--expressionMatrix"),type="character",
               help="Matrix of expression for samples in standardFusion file (.RDS) "),
   make_option(c("-r", "--readthroughFilter"),action = "store_true",
-              help="Boolean to filter readthrough",default=TRUE),
+              help="Boolean to filter readthrough",default=FALSE),
   make_option(c("-t","--expressionFilter"), type="integer",
               help="threshold for TPM/FPKM filter",default=1),
   make_option(c("-a","--artifactFilter"),type="character",
@@ -70,8 +65,7 @@ opt <- parse_args(OptionParser(option_list=option_list))
 
 # TO-DO
 # multiple opt values for each caller and output name from input fusion calls and expression Matrix?
-standardFusionFileSTARFusion<-opt$standardFusionFileSTARFusion
-standardFusionFileArriba<-opt$standardFusionFileArriba
+standardFusionFiles<-unlist(strsplit(opt$standardFusionFiles,","))
 expressionMatrix<-opt$expressionMatrix
 readthroughFilter<-opt$readthroughFilter
 expressionFilter<-opt$expressionFilter
@@ -81,11 +75,15 @@ spanningFragCountFilter<-opt$spanningFragCountFilter
 referenceFolder<-opt$referenceFolder
 readingFrameFilter<-opt$readingFrameFilter
 
-standardFusioncallsSTARFusion<-readr::read_tsv(standardFusionFileSTARFusion)
-standardFusioncallsArriba<-readr::read_tsv(standardFusionFileArriba)
+# standardFusioncallsSTARFusion<-readr::read_tsv(standardFusionFileSTARFusion)
+# standardFusioncallsArriba<-readr::read_tsv(standardFusionFileArriba)
+# 
+# # combine callers
+# standardFusioncalls<-rbind(standardFusioncallsArriba,standardFusioncallsSTARFusion)
 
-# combine callers
-standardFusioncalls<-rbind(standardFusioncallsArriba,standardFusioncallsSTARFusion)
+standardFusioncalls<-lapply(standardFusionFiles,function(x) readr::read_tsv(x))
+standardFusioncalls <- ldply(standardFusioncalls, data.frame) 
+
 
 #formatting dataframe for filtering
 standardFusioncalls<-standardFusioncalls %>%
@@ -129,14 +127,6 @@ fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFra
     rts<-unlist(lapply(rts,function(x) rm_between(x, "(", ")", extract = F)))
     rts<-data.frame("readThroughs"=rts)
     standardFusioncalls<-standardFusioncalls[-which(unlist(lapply(standardFusioncalls$FusionName,function(x) rm_between(x, "(", ")", extract = F))) %in% rts$readThroughs),]
-
-    # TO-DO
-    # Get readthroughs from other callers
-    if (!file.exists("scratch/readthroughs.tsv")){
-      write.table(rts,"scratch/readthroughs.tsv",sep="\t",quote=FALSE,row.names = FALSE)
-    } else{
-      write.table(rts,"scratch/readthroughs.tsv",append = TRUE,sep="\t",quote=FALSE,row.names = FALSE)
-    }
   }
 
   if( !missing(readingFrameFilter ) ){
@@ -280,9 +270,6 @@ annotate_fusion_calls<-function(standardFusioncalls=standardFusioncalls,geneList
 annotated_filtered_fusions<-annotate_fusion_calls(standardFusioncalls = expression_filtered_fusions,geneListReferenceDataTab = geneListReferenceDataTab ,fusionReferenceDataTab = fusionReferenceDataTab )
 saveRDS(annotated_filtered_fusions,paste0(opt$outputfile,"_QC_expression_filtered_annotated.RDS"))
 
-# Annotate standardized fusion calls for project specific gene list filtering
-annotated_unfiltered_fusions<-annotate_fusion_calls(standardFusioncalls = QCFiltered,geneListReferenceDataTab = geneListReferenceDataTab ,fusionReferenceDataTab = fusionReferenceDataTab )
-saveRDS(annotated_unfiltered_fusions,paste0(opt$outputfile,"_unfiltered_annotated.RDS"))
 
 
 ############################################################################################
