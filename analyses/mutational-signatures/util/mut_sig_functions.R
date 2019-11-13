@@ -27,7 +27,7 @@ sample_mut_sig_plot <- function(which_sig_list, label = "none", output_dir = get
   for (sample_id in names(which_sig_list)) {
     # Set up png
     png(file.path(output_dir, paste0(sample_id, "_", label, "_mutation_sig.png")),
-        width = 20, height = 15, unit = "cm")
+        width = 800, height = 500)
     # Use the deconstructSigs function 
     plotSignatures(which_sig_list[[sample_id]], sub = sample_id)
     dev.off()

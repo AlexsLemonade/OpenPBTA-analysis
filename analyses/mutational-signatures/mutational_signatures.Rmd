@@ -191,6 +191,7 @@ tumor_sample_ids <- maf %>%
 ```
 
 Get [COSMIC signatures](https://cancer.sanger.ac.uk/cosmic) for each sample. 
+This step will take some time. 
 
 ```{r}
 sample_sigs_cosmic <- lapply(tumor_sample_ids, function(sample_id) {
@@ -250,7 +251,7 @@ cosmic_sigs_df <- calc_mut_per_sig(sample_sigs_cosmic,
   muts_per_sample = total_muts,
   wgs_genome_size = wgs_size,
   wxs_exome_size = wxs_size,
-  maf_df = maf
+  metadata = metadata_df
 ) 
 
 # Write this to a file  
@@ -269,7 +270,7 @@ nature_sigs_df <- calc_mut_per_sig(sample_sigs_nature,
   muts_per_sample = total_muts,
   wgs_genome_size = wgs_size,
   wxs_exome_size = wxs_size,
-  maf_df = maf
+  metadata = metadata_df
 ) 
 
 # Write this to a file  
