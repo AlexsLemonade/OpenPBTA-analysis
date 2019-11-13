@@ -54,7 +54,7 @@ option_list <- list(
     c("--filename_lead"),
     type = "character",
     default = NULL,
-    help = ""
+    help = "character string used at the beginning of output file names"
   ),
   optparse::make_option(
     c("--output_directory"),
@@ -74,12 +74,19 @@ option_list <- list(
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
-#### Directory set up ----------------------------------------------------------
+#### Directory and output file set up ------------------------------------------
 
 output_dir <- opt$output_directory
 if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }
+
+# All of the output files will use the filename lead supplied as an argument
+# followed by what kind of data they contain
+maf_output <- file.path(output_dir, paste0(opt$filename_lead, "_maf.tsv"))
+fusion_output <- file.path(output_dir, paste0(opt$filename_lead,
+                                              "_fusions.tsv"))
+cnv_output <- file.path(output_dir, paste0(opt$filename_lead, "_cnv.tsv"))
 
 #### Read in data --------------------------------------------------------------
 
@@ -127,8 +134,7 @@ fusion_df <- fusion_df %>%
 
 if (!is.null(opt$independent_specimens)) {
 
-  independent_df <- readr::read_tsv(opt$independent_specimens)
-  ind_biospecimen <- independent_df %>%
+  ind_biospecimen <- readr::read_tsv(opt$independent_specimens) %>%
     pull(Kids_First_Biospecimen_ID)
 
   # filter the genome data, e.g., SNV and CNV data, to only include biospecimen
@@ -162,10 +168,9 @@ message("Preparing MAF file...")
 
 # MAF files already capture sample IDs
 maf_df <- maf_df %>%
-  mutate(Tumor_Sample_Barcode = sample_id)
+  rename(Tumor_Sample_Barcode = sample_id)
 
 # Write MAF to file
-maf_output <- file.path(output_dir, paste0(opt$filename_lead, "_maf.tsv"))
 readr::write_tsv(maf_df, maf_output)
 
 #### Fusion file preparation ---------------------------------------------------
@@ -203,8 +208,6 @@ reformat_fusion <- fus_sep %>%
   mutate(Tumor_Sample_Barcode = sample_id)
 
 # Write to file
-fusion_output <- file.path(output_dir, paste0(opt$filename_lead,
-                                              "_fusions.tsv"))
 readr::write_tsv(reformat_fusion, fusion_output)
 
 #### CNV file preparation ------------------------------------------------------
@@ -221,6 +224,4 @@ cnv_df <- cnv_df %>%
   select(Hugo_Symbol, Tumor_Sample_Barcode, Variant_Classification)
 
 # Write to file
-cnv_output <- file.path(output_dir, paste0(opt$filename_lead,
-                                           "_cnv.tsv"))
 readr::write_tsv(cnv_df, cnv_output)

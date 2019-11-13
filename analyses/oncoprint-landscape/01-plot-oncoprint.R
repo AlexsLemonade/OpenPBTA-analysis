@@ -1,6 +1,8 @@
 # This script displays an oncoprint displaying the landscape across PBTA given
 # the relevant metadata. It addresses issue #6 in the OpenPBTA-analysis
-# github repository. It uses the output of 00-map-to-sample_id.R.
+# github repository. It uses the output of 00-map-to-sample_id.R. It can
+# accept a gene list (via --goi_list) that restricts plotting to those genes.
+# Gene lists should be a single column with no header and use gene symbols.
 #
 # Code adapted from the PPTC PDX Oncoprint Generation repository here:
 # https://github.com/marislab/create-pptc-pdx-oncoprints/tree/master/R
@@ -16,7 +18,6 @@
 #  --metadata_file ../../data/pbta-histologies.tsv \
 #  --goi_list ${genes_list} \
 #  --png_name ${primary_filename}_goi_oncoprint.png
-
 
 
 #### Set Up --------------------------------------------------------------------

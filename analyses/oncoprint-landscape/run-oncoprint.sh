@@ -55,6 +55,7 @@ Rscript --vanilla 01-plot-oncoprint.R \
   --metadata_file ${histologies_file} \
   --png_name ${primary_filename}_oncoprint.png
 
+# Genes of interest only version of oncoprint
 Rscript --vanilla 01-plot-oncoprint.R \
   --maf_file ${intermediate_directory}/${primary_filename}_maf.tsv \
   --cnv_file ${intermediate_directory}/${primary_filename}_cnv.tsv \
@@ -81,6 +82,7 @@ Rscript --vanilla 01-plot-oncoprint.R \
   --metadata_file ${histologies_file} \
   --png_name ${primaryplus_filename}_oncoprint.png
 
+# Genes of interest only version of oncoprint
 Rscript --vanilla 01-plot-oncoprint.R \
   --maf_file ${intermediate_directory}/${primaryplus_filename}_maf.tsv \
   --cnv_file ${intermediate_directory}/${primaryplus_filename}_cnv.tsv \
