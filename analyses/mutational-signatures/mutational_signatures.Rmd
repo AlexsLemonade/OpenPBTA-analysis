@@ -78,7 +78,7 @@ Download and read in the consensus MAF file.
 
 ```{r}
 # Declare file path for consensus file
-consensus_file <- file.path(data_dir, "snv-consensus", "consensus_mutation.maf.tsv")
+consensus_file <- file.path(data_dir, "snv-consensus_11122019", "consensus_mutation.maf.tsv")
 
 # If this file hasn't been downloaded, download and unzip it.
 if (!file.exists(consensus_file)) {
