@@ -1,0 +1,136 @@
+---
+title: "Example queries for finding the consensus calls from the snv database"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+##Setup
+```{r}
+library(dplyr)
+```
+
+# Files and directories
+```{r}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+db_file <- file.path(root_dir, "scratch", "snv_db.sqlite")
+```
+
+### Connect to the database
+
+```{r}
+con <- DBI::dbConnect(RSQLite::SQLite(), db_file)
+DBI::dbListTables(con)
+```
+
+## Using dbplyr
+
+### Set up tables
+```{r}
+meta <- tbl(con, "samples")
+strelka <- tbl(con, "strelka")
+lancet <- tbl(con, "lancet")
+mutect <- tbl(con, "mutect")
+vardict <- tbl(con, "vardict")
+```
+
+### Find intersection of all
+Note that running the block below does no actual processing, it just sets up the query.
+Processing will be only be done when we try to look at it.
+
+```{r}
+join_cols = c("Chromosome",
+              "Start_Position",
+              "Reference_Allele",
+              "Allele",
+              "Tumor_Sample_Barcode")
+
+full_consensus <- strelka %>%
+  inner_join(lancet,
+             by = join_cols,
+             suffix = c("s", "l")) %>%
+  inner_join(mutect,
+             by = join_cols,
+             suffix = c("s", "m")) %>%
+  inner_join(vardict, by = join_cols,
+             suffix = c("s", "v")) %>%
+  select(join_cols) 
+```
+
+
+Lets check that SQLite is doing what we might expect (using indexes)
+```{r, results = 'hide'}
+full_consensus %>% explain()
+```
+It is using the SNV indexes, so that is good. 
+
+
+Print part of the query we just prepared. 
+**Now** we are hitting the db and actually doing the processing.
+
+```{r}
+full_consensus %>% head(20)
+```
+
+
+### SQL equivalent
+
+The full query is pretty long and ugly in SQL, but a two sample consensus is shown below.
+
+```{r}
+consensus_query <- "
+  SELECT `S`.`Chromosome`,
+    `S`.`Start_Position`,
+    `S`.`Reference_Allele`,
+    `S`.`Allele`,
+    `S`.`Tumor_Sample_Barcode`
+  FROM `strelka` as `S`
+  INNER JOIN `lancet` AS `L`
+  ON `S`.`Chromosome` = `L`.`Chromosome`
+      AND `S`.`Start_Position` = `L`.`Start_Position`
+      AND `S`.`Reference_Allele` = `L`.`Reference_Allele`
+      AND `S`.`Allele` = `L`.`Allele`
+      AND `S`.`Tumor_Sample_Barcode` = `L`.`Tumor_Sample_Barcode`
+  LIMIT 20
+  "
+
+consensus_result <- DBI::dbGetQuery(con, consensus_query)
+consensus_result
+```
+
+If you want to see the full query created by `dplyr`, you can use `dplyr::show_query()` to see the very long (but correct!) queries that it creates.
+
+Note that if you want to update the database (i.e. to store the results of a query for posterity), 
+the best way to do so is likely to write the SQL. 
+That could be something like the following (not run):
+
+```
+CREATE TABLE `consensus` AS (
+  SELECT `S`.`Chromosome`,
+    `S`.`Start_Position`,
+    `S`.`Reference_Allele`,
+    `S`.`Allele`,
+    `S`.`Tumor_Sample_Barcode`
+  FROM `strelka` as `S`
+  INNER JOIN `lancet` AS `L`
+  ON `S`.`Chromosome` = `L`.`Chromosome`
+      AND `S`.`Start_Position` = `L`.`Start_Position`
+      AND `S`.`Reference_Allele` = `L`.`Reference_Allele`
+      AND `S`.`Allele` = `L`.`Allele`
+      AND `S`.`Tumor_Sample_Barcode` = `L`.`Tumor_Sample_Barcode`
+)
+```
+
+To run this in R, you could use `DBI::dbExecute()`
+
+Note that for the query above, it would probably be a good idea to add on an index equivalent to the ones present when the MAF tables were created:
+
+```
+CREATE INDEX `consensus_SNV` 
+  ON consensus(
+    `Chromosome`,
+    `Start_Position`,
+    `Reference_Allele`,
+    `Allele`
+  )
+```

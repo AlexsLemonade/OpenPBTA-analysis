@@ -86,7 +86,7 @@ jobs:
 
       - run:
           name: Focal CN Preparation
-          command: OPENPBTA_FILT=1 ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
+          command: OPENPBTA_XY=0 ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
                 
       - run:
           name: Interaction plot
@@ -95,7 +95,10 @@ jobs:
       - run:
           name: Oncoprint plotting
           command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
-          
+      
+      - run:
+          name: SNV database 
+          command: ./scripts/run_in_ci.sh bash analyses/snv-callers/run_db_setup.sh   
          ################################
          #### Add your analysis here ####
          ################################
