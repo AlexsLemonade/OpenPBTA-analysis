@@ -86,8 +86,9 @@ subset_files <- function(filename, biospecimen_ids, output_directory) {
     
     # in a column 'ID'
     cnv_file <- readr::read_tsv(filename)
+    biospecimen_column <- intersect(colnames(cnv_file), c("ID", "tumor"))
     cnv_file %>%
-      dplyr::filter(ID %in% biospecimen_ids) %>%
+      dplyr::filter(!!rlang::sym(biospecimen_column) %in% biospecimen_ids) %>%
       readr::write_tsv(output_file)
     
   } else if (grepl("pbta-fusion", filename)) {
