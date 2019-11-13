@@ -82,7 +82,7 @@ readingFrameFilter<-opt$readingFrameFilter
 # standardFusioncalls<-rbind(standardFusioncallsArriba,standardFusioncallsSTARFusion)
 
 standardFusioncalls<-lapply(standardFusionFiles,function(x) readr::read_tsv(x))
-standardFusioncalls <- ldply(standardFusioncalls, data.frame) 
+standardFusioncalls <- plyr::ldply(standardFusioncalls, data.frame) 
 
 
 #formatting dataframe for filtering
