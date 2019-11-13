@@ -83,11 +83,11 @@ consensus_file <- file.path(data_dir, "snv-consensus", "consensus_mutation.maf.t
 # If this file hasn't been downloaded, download and unzip it.
 if (!file.exists(consensus_file)) {
 # Download the file
-download.file("https://open-pbta.s3.amazonaws.com/data/snv-consensus/snv-consensus_1112019.zip", 
-              destfile = file.path(data_dir, "snv-consensus_1112019.zip"))
+download.file("https://open-pbta.s3.amazonaws.com/data/snv-consensus/snv-consensus_11122019.zip", 
+              destfile = file.path(data_dir, "snv-consensus_11122019.zip"))
 
 # Get the files in this zip file
-unzip(file.path(data_dir, "snv-consensus_1112019.zip"),
+unzip(file.path(data_dir, "snv-consensus_11122019.zip"),
       exdir = data_dir)
 }
 ```
@@ -97,6 +97,14 @@ Read in the consensus MAF file.
 ```{r}
 # Read in the file
 maf <- data.table::fread(consensus_file)
+```
+
+Read in the metadata. 
+
+```{r}
+metadata_df <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) %>% 
+  dplyr::rename(Tumor_Sample_Barcode = "Kids_First_Biospecimen_ID") %>%
+  dplyr::select("Tumor_Sample_Barcode", "experimental_strategy", "short_histology")
 ```
 
 Read in this list so we can make sure we keep only primary tumors for the 

@@ -26,7 +26,8 @@ sample_mut_sig_plot <- function(which_sig_list, label = "none", output_dir = get
 
   for (sample_id in names(which_sig_list)) {
     # Set up png
-    png(file.path(output_dir, paste0(sample_id, "_", label, "_mutation_sig.png")))
+    png(file.path(output_dir, paste0(sample_id, "_", label, "_mutation_sig.png")),
+        width = 20, height = 15, unit = "cm")
     # Use the deconstructSigs function 
     plotSignatures(which_sig_list[[sample_id]], sub = sample_id)
     dev.off()
@@ -37,7 +38,7 @@ calc_mut_per_sig <- function(which_sig_list,
                              muts_per_sample,
                              wgs_genome_size,
                              wxs_exome_size,
-                             maf_df) {
+                             metadata_df) {
   # Given a list of `deconstructSigs::whichSignature` output, calculate the
   # mutations per signature per Mb of the genome/exome.
   #
@@ -48,7 +49,7 @@ calc_mut_per_sig <- function(which_sig_list,
   #                    sample as calculated by deconstructSigs::mut.to.sigs.input 
   #   wgs_genome_size: size of the WGS genome in bp
   #   wxs_genome_size: size of the WXS exome in bp
-  #   maf_df: a data.frame with `short_histology` and `experimental strategy`  
+  #   metadata_df: a data.frame with `short_histology` and `experimental strategy`  
   #           information columns
   #
   # Returns:
@@ -70,12 +71,7 @@ calc_mut_per_sig <- function(which_sig_list,
   dplyr::mutate_at(dplyr::vars(-Tumor_Sample_Barcode), ~ . * total_muts) %>%
     
     # Join the short_histology and experimental stategy information
-    dplyr::left_join(dplyr::select(
-      maf_df,
-      "Tumor_Sample_Barcode",
-      "short_histology",
-      "experimental_strategy"
-    ) %>% 
+    dplyr::left_join(metadata_df %>% 
       dplyr::distinct(Tumor_Sample_Barcode,.keep_all = TRUE),
     by = "Tumor_Sample_Barcode"
     ) %>%
@@ -84,7 +80,6 @@ calc_mut_per_sig <- function(which_sig_list,
     dplyr::filter(experimental_strategy != "Panel") %>%
     
     # Reformat for plotting
-
     reshape2::melt(value.name = "num_mutations") %>%
 
     # Add genome size and calculate the mutation per this column
