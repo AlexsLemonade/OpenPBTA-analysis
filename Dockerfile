@@ -71,12 +71,14 @@ RUN R -e "devtools::install_github('timelyportfolio/d3treeR', ref = '0eaba7f1c64
 # Need this package to make plots colorblind friendly
 RUN R -e "devtools::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
 
+
 # Required for sex prediction from RNA-seq data
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
     --deps TRUE \
     glmnet \
     glmnetUtils
+
 
 # Install java and rJava for some of the snv plotting comparison packages
 RUN apt-get -y update && apt-get install -y \
@@ -100,7 +102,8 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     rpart \
     class \
     MASS \
-    GGally
+    GGally \
+    Matrix
 
 # Help display tables in R Notebooks
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
@@ -142,6 +145,29 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 
 # Check to make sure the binaries are available by loading the bedr library
 RUN Rscript -e "library(bedr)"
+
+# Install for mutation signature analysis
+RUN R -e "BiocManager::install(c('BSgenome.Hsapiens.UCSC.hg19', 'BSgenome.Hsapiens.UCSC.hg38'))"
+
+# Also install for mutation signature analysis
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
+    && install2.r --error \
+    --deps TRUE \
+    deconstructSigs
+    
+# packages required for collapsing RNA-seq data by removing duplicated gene symbols
+RUN R -e "install.packages('DT', dependencies = TRUE)"
+RUN R -e "BiocManager::install(c('rtracklayer'), update = FALSE)"
+
+# Install python3 data science basics (pandas)
+# using pip to get more current versions
+RUN apt-get update -qq && apt-get -y --no-install-recommends install python3-pip 
+RUN pip3 install "numpy==1.17.3" && \
+   pip3 install "six==1.13.0" "setuptools==41.6.0" && \
+   pip3 install "cycler==0.10.0" "kiwisolver==1.1.0" "pyparsing==2.4.5" "python-dateutil==2.8.1" "pytz==2019.3" && \
+   pip3 install "matplotlib==3.0.3" && \
+   pip3 install "scipy==1.3.2" && \
+   pip3 install "pandas==0.25.3"
 
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
