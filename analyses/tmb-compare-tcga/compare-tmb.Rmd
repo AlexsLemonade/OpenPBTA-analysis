@@ -42,6 +42,7 @@ Declare names of input and output directories.
 
 ```{r}
 data_dir <- file.path("..", "..", "data")
+scratch_dir <- file.path("..", "..", "scratch")
 results_dir <- "results"
 plots_dir <- "plots"
 ```
@@ -82,6 +83,7 @@ sina_plot <- function(data, colour = NULL, title) {
     ggplot2::theme_classic() +
     ggplot2::ylab("log10 (Number of Mutations per Mb)") +
     ggplot2::xlab("") +
+    ggplot2::ylim(c(-3, 3)) +
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(angle = 60, hjust = 1),
       legend.position = "none"
@@ -104,12 +106,12 @@ consensus_file <- file.path(data_dir, "snv-consensus", "consensus_mutation_tmb.t
 # If this file hasn't been downloaded, download and unzip it.
 if (!file.exists(consensus_file)) {
   # Download the file
-  download.file("https://open-pbta.s3.amazonaws.com/data/snv-consensus/snv-consensus_1112019.zip",
-    destfile = file.path(data_dir, "snv-consensus_1112019.zip")
+  download.file("https://open-pbta.s3.amazonaws.com/data/snv-consensus/snv-consensus_11122019.zip",
+    destfile = file.path(data_dir, "snv-consensus_11122019.zip")
   )
 
   # Get the files in this zip file
-  unzip(file.path(data_dir, "snv-consensus_1112019.zip"),
+  unzip(file.path(data_dir, "snv-consensus_11122019.zip"),
     exdir = data_dir
   )
 }
@@ -122,75 +124,83 @@ Read in the consensus TMB file.
 tmb_pbta <- data.table::fread(consensus_file)
 ```
 
-Set up the WGS BED region data for Strelka2 for applying to TCGA data for calculating TMB. 
-Here we are using Strelka2 because the consensus mutation data uses it. 
-
-```{r}
-wgs_bed_file <- file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed")
-
-# Set up BED region files for TMB calculations
-wgs_bed <- readr::read_tsv(wgs_bed_file, col_names = FALSE) %>%
-  dplyr::rename(Chromosome = X1, Start_Position = X2, End_Position = X3)
-
-# Calculate size of genome surveyed
-wgs_genome_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
-
-# Turn the bed regions into a GRanges object
-wgs_bed_granges <- maf_to_granges(wgs_bed)
-```
-
 ## Set up the TCGA data. 
 
-We will only use the brain related TCGA projects, so we are specifying the project abbreviations here. 
+We will only use the brain related TCGA projects, so we are setting up a file using the MC3 data but subset 
+that to only the brain-related TCGA projects: LGG GBM, and PCPG. 
+The MC3 data can be obtained [here](https://gdc.cancer.gov/about-data/publications/mc3-2017). 
 
 ```{r}
-tcga_datasets <- c("LGG", "GBM", "PCPG")
+# Designate the name of the brain related TCGA file
+mc3_brain_maf_file <- file.path(scratch_dir, "tcga_mc3_brain_related.RDS")
+
+if (file.exists(mc3_brain_maf_file)) {
+  # Read in the file if it already exists
+  mc3_maf_brain <- readr::read_rds(mc3_brain_maf_file)
+    
+} else { # Only run this if it hasn't been set up yet
+  # Designate the file path to the original MC3 file
+  mc3_maf_file <- file.path(scratch_dir, "mc3.v0.2.8.PUBLIC.maf.gz")
+  
+  # Download the original MC3 maf file 
+  if (!file.exists(mc3_maf_file)) {
+    download.file("https://api.gdc.cancer.gov/data/1c8cfe5f-e52d-41ba-94da-f15ea1337efc", 
+                  destfile = mc3_maf_file)
+  }
+
+  # Read in data and set up sample ID from the Tumor Sample Barcode info
+  mc3_maf <- data.table::fread(mc3_maf_file) %>% 
+    dplyr::mutate(sample_id = substr(Tumor_Sample_Barcode, 0, 12))
+
+  # Get the TCGA metadata for these brain related projects.
+  tcga_datasets <- c("LGG", "GBM", "PCPG")
+
+  # Download the clinical info for these projects  
+  clinical <- lapply(tcga_datasets, function(dataset) {
+    TCGAbiolinks::GDCquery_clinic(project = paste0("TCGA-", dataset), type = "clinical") %>%
+      dplyr::select(primary_diagnosis, bcr_patient_barcode)
+  })
+  
+  # Bind the clinical data together
+  clinical <- dplyr::bind_rows(clinical)
+  
+  # Do a inner join so we append the diagnosis info but only keep samples that are in the 
+  # brain-related clinical information
+  mc3_maf_brain <- mc3_maf %>% 
+    dplyr::inner_join(clinical, by = c("sample_id" = "bcr_patient_barcode"))
+  
+  # Save this to RDS
+  readr::write_rds(mc3_maf_brain, mc3_brain_maf_file)
+}
 ```
 
-Download and read each of these TCGA project's MAF files using `TCGAbiolinks`. 
+Download the Target BED region file for these data. 
+Although not shown, all mutations are within these ranges so no filtering was needed. 
 
 ```{r}
-maf <- lapply(tcga_datasets, function(dataset) {
-  TCGAbiolinks::GDCquery_Maf(dataset, pipelines = "mutect") %>%
-    dplyr::select(
-      "Chromosome", "Start_Position", "End_Position",
-      "Tumor_Sample_Barcode", "Strand"
-    )
-})
-# Bind data together
-maf_df <- dplyr::bind_rows(maf)
+wgs_bed_file <- file.path(scratch_dir, "gencode.v19.basic.exome.bed")
+
+if (!file.exists(wgs_bed_file)) {
+  download.file("https://api.gdc.cancer.gov/data/7f0d3ab9-8bef-4e3b-928a-6090caae885b", 
+              destfile = wgs_bed_file)
+}
+
+# Set up BED region files for TMB calculations
+wgs_bed <- readr::read_tsv(wgs_bed_file, col_names = FALSE, col_types = list(readr::col_character(), 
+                                                                             readr::col_double(), 
+                                                                             readr::col_double()))
+
+# Calculate size of genome surveyed
+# The second and third column of the bed file have the Start and End coordinates of the genome window
+wgs_genome_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
 ```
-
-Calculate overlap with these BED ranges and the TCGA mutations. 
-
-```{r}
-maf_granges <- maf_to_granges(maf_df)
-
-# Find the overlap of the BED regions and the mutations This outputs a
-# special GenomicRanges object that contains indices of each of these
-# ranges that overlap
-overlap <- GenomicRanges::findOverlaps(
-  maf_granges,
-  wgs_bed_granges,
-  maxgap = 0
-)
-```
-
-Report the ratio of mutations that are within these BED windows. 
-
-```{r}
-# Calculate of ratio of TCGA variants in this Strelka2 BED using the @from slot which
-# indicates the indices of the ranges
-length(overlap@from) / nrow(maf_df)
-```
-All of these mutations are within the Strelka2 windows, so we don't need to filter the TCGA data. 
 
 ## Calculate TCGA tumor mutation burden
 
 ```{r}
 # Calculate the TMB for TCGA samples
-tmb_tcga <- maf_df %>%
-  dplyr::group_by(Tumor_Sample_Barcode) %>%
+tmb_tcga <- mc3_maf_brain %>%
+  dplyr::group_by(Tumor_Sample_Barcode, primary_diagnosis) %>%
 
   # Count number of mutations for that sample
   dplyr::summarize(mutation_count = dplyr::n()) %>%
@@ -199,27 +209,11 @@ tmb_tcga <- maf_df %>%
   dplyr::mutate(tmb = mutation_count / (wgs_genome_size / 1000000))
 ```
 
-Get the TCGA metadata for these projects and extract histology groups. 
-
-```{r}
-clinical <- lapply(tcga_datasets, function(dataset) {
-  TCGAbiolinks::GDCquery_clinic(project = paste0("TCGA-", dataset), type = "clinical") %>%
-    dplyr::select(primary_diagnosis, bcr_patient_barcode)
-})
-# Bind the data together
-clinical <- dplyr::bind_rows(clinical)
-```
-
 Set up TCGA TMB data with its histology. 
 
 ```{r}
 # Get the patient barcode from the Tumor Sample Barcode category
 tmb_tcga <- tmb_tcga %>%
-  dplyr::mutate(bcr_patient_barcode = substr(Tumor_Sample_Barcode, 0, 12)) %>%
-
-  # Add on the histology group
-  dplyr::left_join(clinical, by = "bcr_patient_barcode") %>%
-
   # Rename so it matches PBTA data
   dplyr::rename(short_histology = primary_diagnosis) %>%
 
@@ -231,6 +225,7 @@ tmb_tcga <- tmb_tcga %>%
 ## Plot the TMB as a sina plot
 
 Plot the TCGA data. 
+
 ```{r}
 # Make TCGA plot and get rid of y axis
 tcga_plot <- sina_plot(tmb_tcga, colour = "#3BC8A2", title = "TCGA (Adult)") +
