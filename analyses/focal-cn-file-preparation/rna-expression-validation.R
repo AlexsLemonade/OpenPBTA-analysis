@@ -144,15 +144,15 @@ goi_list <-
 polyA_loss_plot_df <-
   plot_stacked_expression(
     rsem_combined_polyA_loss_df,
-    "cn_loss_expression_polyA.pdf",
-    "cn_loss_expression_per_gene_polyA.pdf"
+    "cn_loss_expression_polyA.png",
+    "cn_loss_expression_per_gene_polyA.png"
   )
 
 polyA_non_loss_plot_df <-
   plot_stacked_expression(
     rsem_combined_polyA_non_loss_df,
-    "cn_non_loss_expression_polyA.pdf",
-    "cn_non_loss_expression_per_gene_polyA.pdf"
+    "cn_non_loss_expression_polyA.png",
+    "cn_non_loss_expression_per_gene_polyA.png"
   )
 
 # Plot and save using `plot_stacked_expression` custom function on stranded
@@ -160,15 +160,15 @@ polyA_non_loss_plot_df <-
 stranded_loss_plot_df <-
   plot_stacked_expression(
     rsem_combined_stranded_loss_df,
-    "cn_loss_expression_stranded.pdf",
-    "cn_loss_expression_per_gene_stranded.pdf"
+    "cn_loss_expression_stranded.png",
+    "cn_loss_expression_per_gene_stranded.png"
   )
 
 stranded_non_loss_plot_df <-
   plot_stacked_expression(
     rsem_combined_stranded_non_loss_df,
-    "cn_non_loss_expression_stranded.pdf",
-    "cn_non_loss_expression_per_gene_stranded.pdf"
+    "cn_non_loss_expression_stranded.png",
+    "cn_non_loss_expression_per_gene_stranded.png"
   )
 
 # Plot and save scatterplot showing mean expression of deletions compared to 
@@ -178,12 +178,12 @@ mean_polyA_plot <-
   plot_mean_expression(
     polyA_loss_plot_df,
     polyA_non_loss_plot_df,
-    "mean_scatterplot_polyA.pdf"
+    "mean_scatterplot_polyA.png"
   )
 
 mean_stranded_plot <-
   plot_mean_expression(
     stranded_loss_plot_df,
     stranded_non_loss_plot_df,
-    "mean_scatterplot_stranded.pdf"
+    "mean_scatterplot_stranded.png"
   )
