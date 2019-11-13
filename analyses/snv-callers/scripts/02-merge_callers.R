@@ -7,7 +7,7 @@
 # Purpose: Merge callers' data files into consensus MAF-like file
 #
 # Option descriptions
-# 
+#
 # --db_file : Path to sqlite database file made from 01-setup_db.py
 # --output : Where you would like the output from this script to be stored.
 # --vaf_filter: Optional Variant Allele Fraction filter. Specify a number; any
@@ -74,10 +74,10 @@ if (!file.exists(opt$db_file)) {
   stop(paste("Error:", opt$db_file, "does not exist"))
 }
 
-# Start up connection 
+# Start up connection
 con <- DBI::dbConnect(RSQLite::SQLite(), opt$db_file)
 
-###############################Set Up Output #####################################
+############################### Set Up Output #####################################
 # Set and make the plots directory
 opt$output <- file.path(root_dir, opt$output)
 
@@ -108,24 +108,28 @@ mutect <- dplyr::tbl(con, "mutect")
 
 # We won't use VarDicts calls for the consensus
 # vardict <- dplyr::tbl(con, "vardict")
-  
+
 # Specify the columns to join by
-join_cols = c("Chromosome",
-              "Start_Position",
-              "Reference_Allele",
-              "Allele",
-              "Tumor_Sample_Barcode")
-  
+join_cols <- c(
+  "Chromosome",
+  "Start_Position",
+  "Reference_Allele",
+  "Allele",
+  "Tumor_Sample_Barcode"
+)
+
 # Create the consensus
 consensus_df <- strelka %>%
   dplyr::inner_join(lancet,
-             by = join_cols,
-             suffix = c("s", "l")) %>%
+    by = join_cols,
+    suffix = c("s", "l")
+  ) %>%
   dplyr::inner_join(mutect,
-             by = join_cols,
-             suffix = c("s", "m"))
+    by = join_cols,
+    suffix = c("s", "m")
+  )
 
 # Write consensus to output file
-consensus_df %>% 
-  as.data.frame() %>% 
+consensus_df %>%
+  as.data.frame() %>%
   readr::write_tsv(consensus_maf_file)
