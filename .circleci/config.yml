@@ -96,16 +96,13 @@ jobs:
           name: Oncoprint plotting
           command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
       
-      - run:
-          name: SNV database 
-          command: ./scripts/run_in_ci.sh bash analyses/snv-callers/run_db_setup.sh   
          ################################
          #### Add your analysis here ####
          ################################
               
       - run:
           name: SNV Caller Analysis 
-          command: OPENPBTA_VAF_CUTOFF=0.5 OPENPBTA_PLOTS=TRUE ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_analysis.sh
+          command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis.sh
           
        # This analysis was a side concept question and no longer needs to be run. 
        # - run:
