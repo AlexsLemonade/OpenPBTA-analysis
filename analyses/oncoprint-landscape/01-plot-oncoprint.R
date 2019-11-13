@@ -1,18 +1,24 @@
 # This script displays an oncoprint displaying the landscape across PBTA given
-# the relevant metadata and output MAF files from the snv callers strelka2,
-# mutect2, lancet, and vardict. It addresses issue #6 in the OpenPBTA-analysis
-# github repository.
+# the relevant metadata. It addresses issue #6 in the OpenPBTA-analysis
+# github repository. It uses the output of 00-map-to-sample_id.R. It can
+# accept a gene list (via --goi_list) that restricts plotting to those genes.
+# Gene lists should be a single column with no header and use gene symbols.
 #
 # Code adapted from the PPTC PDX Oncoprint Generation repository here:
 # https://github.com/marislab/create-pptc-pdx-oncoprints/tree/master/R
 #
 # Chante Bethell for CCDL 2019 and Jo Lynne Rokita
 #
-# #### USAGE
-# This script is intended to be run via the command line from the top directory
-# of the repository as follows:
+# EXAMPLE USAGE:
 #
-# Rscript 'analyses/oncoprint-landscape/01-plot-oncoprint.R'
+# Rscript --vanilla 01-plot-oncoprint.R \
+#  --maf_file ../../scratch/all_primary_samples_maf.tsv \
+#  --cnv_file ../../scratch/all_primary_samples_cnv.tsv \
+#  --fusion_file ../../scratch/all_primary_samples_fusions.tsv \
+#  --metadata_file ../../data/pbta-histologies.tsv \
+#  --goi_list ${genes_list} \
+#  --png_name ${primary_filename}_goi_oncoprint.png
+
 
 #### Set Up --------------------------------------------------------------------
 
@@ -63,19 +69,25 @@ option_list <- list(
     c("-m", "--maf_file"),
     type = "character",
     default = NULL,
-    help = "file path to MAF file that contains snv information",
+    help = "file path to MAF file that contains SNV information",
   ),
   optparse::make_option(
     c("-c", "--cnv_file"),
     type = "character",
     default = NULL,
-    help = "file path to SEG file that contains cnv information"
+    help = "file path to file that contains CNV information"
   ),
   optparse::make_option(
     c("-f", "--fusion_file"),
     type = "character",
     default = NULL,
     help = "file path to file that contains fusion information"
+  ),
+  optparse::make_option(
+    c("-s", "--metadata_file"),
+    type = "character",
+    default = NULL,
+    help = "file path to the histologies file"
   ),
   optparse::make_option(
     c("-g", "--goi_list"),
@@ -96,8 +108,6 @@ option_list <- list(
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
-maf <- opt$maf_file
-
 # Define cnv_file object here as it still needs to be defined for the `read.maf`
 # function, even if it is NULL
 cnv_file <- opt$cnv_file
@@ -105,59 +115,23 @@ cnv_file <- opt$cnv_file
 #### Read in data --------------------------------------------------------------
 
 # Read in metadata
-metadata <-
-  readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
-
-# Rename for maftools function
-metadata <- metadata %>%
-  dplyr::rename("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")
+metadata <- readr::read_tsv(opt$metadata_file) %>%
+  dplyr::rename(Tumor_Sample_Barcode = sample_id)
 
 # Read in MAF file
-maf_df <- data.table::fread(maf, stringsAsFactors = FALSE)
+maf_df <- data.table::fread(opt$maf_file,
+                            stringsAsFactors = FALSE,
+                            data.table = FALSE)
 
 # Read in cnv file
 if (!is.null(opt$cnv_file)) {
-  cnv_file <- data.table::fread(opt$cnv_file, stringsAsFactors = FALSE)
-  # TODO: Filter and set up `cnv_file` to be in the column format -
-  # "Hugo_Symbol, Tumor_Sample_Barcode, Variant_Classification" as required by
-  # the `read.maf function`
+  cnv_file <- readr::read_tsv(cnv_file)
 }
 
-# Read in fusion file
+# Read in fusion file and join
 if (!is.null(opt$fusion_file)) {
-  fusion_file <-
-    data.table::fread(opt$fusion_file,
-                      data.table = FALSE,
-                      stringsAsFactors = FALSE)
-
-  #### Incorporate Fusion Data -------------------------------------------------
-  # TODO: Once the consensus calls of the fusion data are obtained, this section
-  # will need to be adapted to the format of the fusion input file. For example,
-  # the way we separate the genes out of `FusionName` may need to be adapted. 
-  
-  # Separate fusion gene partners and add variant classification and center
-  fus_sep <- fusion_file %>%
-    # Separate the 5' and 3' genes
-    tidyr::separate(FusionName, c("Gene1", "Gene2"), sep = "--") %>%  
-    dplyr::select(Sample, Gene1, Gene2)
-  
-  reformat_fusion <- fus_sep %>% 
-    # Here we want to tally how many times the 5' gene shows up as a fusion hit 
-    # in a sample
-    dplyr::group_by(Sample, Gene1) %>%
-    dplyr::tally() %>%
-    # If the sample-5' gene pair shows up more than once, call it a multi hit 
-    # fusion
-    dplyr::mutate(Variant_Classification = 
-                    dplyr::if_else(n == 1, "Fusion", "Multi_Hit_Fusion"),
-                  # Required column for joining with MAF
-                  Variant_Type = "OTHER") %>%
-    # Correct format for joining with MAF
-    dplyr::rename(Tumor_Sample_Barcode = Sample, Hugo_Symbol = Gene1) %>%
-    dplyr::select(-n)
-
-  # Merge with MAF
-  maf_df <- dplyr::bind_rows(maf_df, reformat_fusion)
+  fusion_file <- readr::read_tsv(opt$fusion_file)
+  maf_df <- dplyr::bind_rows(maf_df, fusion_file)
 }
 
 #### Convert into MAF object ---------------------------------------------------
@@ -179,7 +153,12 @@ maf_object <-
       "Missense_Mutation",
       "Fusion",
       "Multi_Hit",
-      "Multi_Hit_Fusion"
+      "Multi_Hit_Fusion",
+      "Hom_Deletion",
+      "Hem_Deletion",
+      "amplification",
+      "gain",
+      "loss"
     )
   )
 
@@ -212,7 +191,7 @@ if (!is.null(opt$goi_list)) {
 
 } else {
   # If a gene list is not supplied, we do not want the `oncoplot` function to
-  # filter the genes to be plotted, so we assign NULL to the `genes`` object.
+  # filter the genes to be plotted, so we assign NULL to the `genes` object.
   genes <- NULL
 }
 
@@ -240,7 +219,7 @@ oncoplot(
   logColBar = TRUE,
   sortByAnnotation = TRUE,
   showTumorSampleBarcodes = TRUE,
-  removeNonMutated = FALSE,
+  removeNonMutated = TRUE,
   annotationFontSize = 0.7,
   SampleNamefontSize = 0.5,
   fontSize = 0.7,
