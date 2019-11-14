@@ -63,6 +63,11 @@ parser.add_argument(
     help="Path of the MAF formatted data file from the vardict caller (TSV)."
 )
 parser.add_argument(
+    '--consensus-file',
+    dest='consensus_file',
+    help="Path of the MAF-like TSV file with consensus SNV calls."
+)
+parser.add_argument(
     '--meta-file',
     '--hist-file',
     dest='meta_file',
@@ -265,6 +270,7 @@ callers = [
     ('mutect', args.mutect_file),
     ('lancet', args.lancet_file),
     ('vardict', args.vardict_file)
+    ('consensus', args.consensus_file)
 ]
 
 for table_name, maf_file in callers:
@@ -272,7 +278,7 @@ for table_name, maf_file in callers:
         continue
     print("Reading file {} to table '{}'.".format(maf_file, table_name, ))
     # we need 2 full tables for consensus with one missing
-    if table_name in ('strelka', 'lancet'):
+    if table_name in ('strelka', 'lancet', 'consensus'):
         table_types = maf_types
     else:
         table_types = needed_types
@@ -293,7 +299,7 @@ for table_name, maf_file in callers:
         # process the chunk
         chunk['VAF'] = (chunk['t_alt_count'] /
                         (chunk['t_ref_count'] + chunk['t_alt_count']))
-        if table_name != 'strelka':
+        if table_name not in ('strelka', 'lancet', 'consensus'):
             chunk = chunk[needed_cols]
         chunk.to_sql(table_name, con, if_exists='append')
     # create indexes

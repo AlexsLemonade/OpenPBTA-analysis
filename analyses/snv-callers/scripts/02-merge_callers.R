@@ -9,7 +9,8 @@
 # Option descriptions
 #
 # --db_file : Path to sqlite database file made from 01-setup_db.py
-# --output : Where you would like the output from this script to be stored.
+# --output_file : File path and file name of where you would like the MAF-like 
+#                 output from this script to be stored.
 # --vaf_filter: Optional Variant Allele Fraction filter. Specify a number; any
 #               mutations with a VAF that are NA or below this number will be
 #               removed from the vaf data.frame before it is saved to a TSV file.
@@ -43,13 +44,13 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
-    opt_str = c("-o", "--output"), type = "character",
-    default = NULL, help = "Path to folder where you would like the
-              output MAF-like file from this script to be stored.",
+    opt_str = c("-o", "--output_file"), type = "character",
+    default = NULL, help = "File path and file name of where you would like the 
+                            MAF-like output from this script to be stored.",
     metavar = "character"
   ),
   make_option(
-    opt_str = "--vaf_filter", type = "character", default = "0",
+    opt_str = "--vaf_filter", type = "double", default = "0",
     help = "Optional Variant Allele Fraction filter. Specify a number; any
             mutations with a VAF that are NA or below this number will be
             removed from the vaf data.frame before it is saved to a TSV file.",
@@ -66,9 +67,6 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
-# Turn this into a numeric value
-opt$vaf_filter <- as.numeric(opt$vaf_filter)
-
 ############################## Connect to database #############################
 # Normalize this file path
 opt$db_file <- file.path(root_dir, opt$db_file)
@@ -82,25 +80,25 @@ if (!file.exists(opt$db_file)) {
 con <- DBI::dbConnect(RSQLite::SQLite(), opt$db_file)
 
 ############################### Set Up Output #####################################
-# Set and make the plots directory
-opt$output <- file.path(root_dir, opt$output)
+# Normalize file path
+opt$output_file <- file.path(root_dir, opt$output)
+
+# Make sure the folder is made
+output_dir <- stringr::word(opt$output_file, sep = "/", start = 1, end = -1)
 
 # Make output folder
 if (!dir.exists(opt$output)) {
   dir.create(opt$output, recursive = TRUE)
 }
 
-# Declare output file paths
-consensus_maf_file <- file.path(opt$output, "consensus_snv.maf.tsv")
-
 ########################### Check for output file ###############################
 # If the file exists or the overwrite option is not being used, do not write the
 # merged VAF file.
-if (file.exists(consensus_maf_file) && !opt$overwrite) {
+if (file.exists(opt$output_file) && !opt$overwrite) {
   # Stop if this file exists and overwrite is set to FALSE
   stop(cat(
     "The merged consensus file already exists in the output directory: \n",
-    opt$output, "\n",
+    opt$output_file, "\n",
     "Use --overwrite if you want to overwrite it."
   ))
 }
@@ -136,4 +134,4 @@ consensus_df %>%
   # Filter with --vaf_filter option 
   dplyr::filter(VAF > opt$vaf_filter) %>% 
   # Write to a TSV file
-  readr::write_tsv(consensus_maf_file)
+  readr::write_tsv(opt$output_file)

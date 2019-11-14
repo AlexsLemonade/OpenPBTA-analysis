@@ -11,6 +11,9 @@ set -o pipefail
 # The sqlite database made from the callers will be called:
 dbfile=scratch/snv_db.sqlite
 
+# Designate output file 
+consensus_file=analyses/snv-callers/results/consensus/consensus_snv.maf.tsv
+
 # Reference file paths
 cosmic=analyses/snv-callers/ref_files/brain_cosmic_variants_coordinates.tsv
 annot_rds=analyses/snv-callers/ref_files/hg38_genomic_region_annotation.rds
@@ -39,9 +42,14 @@ python3 analyses/snv-callers/scripts/01-setup_db.py \
 ##################### Merge callers' files into total files ####################
 Rscript analyses/snv-callers/scripts/02-merge_callers.R \
   --db_file $dbfile \
-  --output analyses/snv-callers/results/consensus \
+  --output_file $consensus_file \
   --vaf_filter $vaf_cutoff \
   --overwrite
+
+########################## Add consensus to db ################################
+python3 analyses/snv-callers/scripts/01-setup_db.py \
+  --db-file $dbfile \
+  --consensus-file $consensus_file \
   
 ######################### Calculate consensus TMB ##############################
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
