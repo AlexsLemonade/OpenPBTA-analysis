@@ -34,7 +34,10 @@ if (!dir.exists(plots_dir)) {
 
 # Read in data from tsv file (produced in `01-prepare-cn-file.R`)
 cn_df <-
-  readr::read_tsv(file.path("results",
+  readr::read_tsv(file.path(root_dir, 
+                            "analyses", 
+                            "focal-cn-file-preparation", 
+                            "results",
                             "controlfreec_annotated_cn_autosomes.tsv.gz"))
 
 # Read in RNA-seq expression data
