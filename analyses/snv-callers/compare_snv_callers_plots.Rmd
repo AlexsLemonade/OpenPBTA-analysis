@@ -68,6 +68,7 @@ if (!("GGally" %in% installed.packages())) {
 Set up output directories. 
 
 ```{r}
+scratch_dir <- file.path("..", "..", "scratch")
 base_results_dir <- "results"
 base_plots_dir <- "plots"
 ```
@@ -85,7 +86,8 @@ Connect to SQLite database.
 
 ```{r}
 # Start up connection
-con <- DBI::dbConnect(RSQLite::SQLite(), opt$db_file)
+con <- DBI::dbConnect(RSQLite::SQLite(), 
+                      file.path(scratch_dir, "testing_snv_db.sqlite"))
 ```
 
 Set up tables from the database.
@@ -96,9 +98,18 @@ strelka <- dplyr::tbl(con, "strelka")
 lancet <- dplyr::tbl(con, "lancet")
 mutect <- dplyr::tbl(con, "mutect")
 vardict <- dplyr::tbl(con, "vardict")
-
-# Designate 
 ```
+
+```{r}
+# Designate consensus table
+consensus <- dplyr::tbl(con, "consensus")
+```
+
+```{r}
+# Designate consensus table
+metadata <- dplyr::tbl(con, "samples")
+```
+
 ## Upset graph
 
 Make the upset plot. 
