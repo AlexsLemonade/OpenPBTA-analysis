@@ -269,7 +269,7 @@ callers = [
     ('strelka', args.strelka_file),
     ('mutect', args.mutect_file),
     ('lancet', args.lancet_file),
-    ('vardict', args.vardict_file)
+    ('vardict', args.vardict_file),
     ('consensus', args.consensus_file)
 ]
 
