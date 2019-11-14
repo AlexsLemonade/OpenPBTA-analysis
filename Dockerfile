@@ -148,10 +148,12 @@ RUN Rscript -e "library(bedr)"
 RUN R -e "BiocManager::install(c('BSgenome.Hsapiens.UCSC.hg19', 'BSgenome.Hsapiens.UCSC.hg38'))"
 
 # Also install for mutation signature analysis
+# qdapRegex is for the fusion analysis
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
     && install2.r --error \
     --deps TRUE \
-    deconstructSigs
+    deconstructSigs \
+    qdapRegex 
     
 # packages required for collapsing RNA-seq data by removing duplicated gene symbols
 RUN R -e "install.packages('DT', dependencies = TRUE)"
@@ -166,12 +168,6 @@ RUN pip3 install "numpy==1.17.3" && \
    pip3 install "matplotlib==3.0.3" && \
    pip3 install "scipy==1.3.2" && \
    pip3 install "pandas==0.25.3"
-
-# for easy regex functions for the fusion pipeline
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
-    --deps TRUE \
-    qdapRegex 
 
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
