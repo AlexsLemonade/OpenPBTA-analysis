@@ -131,19 +131,25 @@ message(paste("Reading in", opt$consensus, "MAF data..."))
 maf_df <- data.table::fread(opt$consensus, data.table = FALSE)
 
 # Print progress message
-message(paste("Setting up", opt$label, "metadata..."))
+message("Setting up metadata...")
 
 # Isolate metadata to only the samples that are in the datasets
 metadata <- readr::read_tsv(opt$metadata) %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in% maf_df$Tumor_Sample_Barcode) %>%
   dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
-  dplyr::arrange() %>%
   dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID)
 
 # Make sure that we have metadata for all these samples.
 if (!all(unique(maf_df$Tumor_Sample_Barcode) %in% metadata$Tumor_Sample_Barcode)) {
   stop("There are samples in this MAF file that are not in the metadata.")
 }
+
+# Add the experimental strategy column on the data.frame for calculating purposes
+maf_df <- maf_df %>%
+  dplyr::inner_join(metadata %>% 
+                      dplyr::select(Tumor_Sample_Barcode, 
+                                    experimental_strategy, 
+                                    short_histology))
 
 ############################# Calculate TMB ####################################
 # If the file exists or the overwrite option is not being used, run TMB calculations
@@ -181,8 +187,7 @@ if (file.exists(tmb_file) && !opt$overwrite) {
   # Only do this step if you have WXS samples
   if (any(metadata$experimental_strategy == "WXS")) {
     # Filter out mutations for WXS that are outside of these BED regions.
-    vaf_df <- wxs_bed_filter(maf_df, wxs_bed_file = opt$bed_wxs, 
-                             exp_strategy = metadata$experimental_strategy)
+    maf_df <- wxs_bed_filter(maf_df, wxs_bed_file = opt$bed_wxs)
   }
 
   # Calculate TMBs and write to TMB file
