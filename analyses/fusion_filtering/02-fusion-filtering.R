@@ -119,8 +119,12 @@ fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFra
   if( readthroughFilter & any(grepl('read.*through|NEIGHBORS',standardFusioncalls$annots,ignore.case = TRUE))){
     # Gather read throughs from standardized fusion calls
     rts <- standardFusioncalls[grep('read.*through|NEIGHBORS',standardFusioncalls$annots,ignore.case = TRUE),c("FusionName","annots")]
-    #dont remove if fusion in mitelman (cancer fusion specific fusion database)
-    rts <- rts[-grep("mitelman",rts$annots,ignore.case = TRUE),"FusionName"]
+    if(length(grep("mitelman",rts$annots,ignore.case = TRUE))>0){
+      #dont remove if fusion in mitelman (cancer fusion specific fusion database)
+      rts <- rts[-grep("mitelman",rts$annots,ignore.case = TRUE),"FusionName"]
+    }else{
+      rts<-as.character(rts$FusionName)
+    }
     # Reverse of read throughs to capture
     rts.rev <- unique(unlist(lapply(strsplit(rts, '--'), FUN = function(x) paste0(x[2],'--',x[1]))))
     # Combine read through and reverse fusion genes
