@@ -49,7 +49,7 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
-    opt_str = "--vaf_filter", type = "character", default = "0",
+    opt_str = "--vaf_filter", type = "double", default = "0",
     help = "Optional Variant Allele Fraction filter. Specify a number; any
             mutations with a VAF that are NA or below this number will be
             removed from the vaf data.frame before it is saved to a TSV file.",
@@ -65,9 +65,6 @@ option_list <- list(
 
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
-
-# Turn this into a numeric value
-opt$vaf_filter <- as.numeric(opt$vaf_filter)
 
 ############################## Connect to database #############################
 # Normalize this file path
