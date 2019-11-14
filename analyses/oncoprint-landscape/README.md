@@ -1,5 +1,17 @@
 # OpenPBTA Oncoprint
 
+## Work in progress
+
+This module is a work in progress.
+The code was written to be updated as consensus, filtered, and/or prioritized data becomes available.
+**The plots included as PNGs should be regarded as proof of concept, rather than for interpretation.**
+
+In particular, the following are likely to change:
+
+* The final fusion lists ([#39](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/39)) will be used in this figure.
+  The current plots use the output of the [fusion standardization step](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/9c68671a4cba89681046c026eb1658794165e836/analyses/fusion_filtering/01-fusion-standardization.R), prior to QC and filtering.
+* The plot will use consensus copy number calls ([#128](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/128)).
+
 ## Usage
 
 To run the Rscript in this module from the command line as intended, use:
@@ -12,29 +24,9 @@ bash run-oncoprint.sh
 
 ## Folder content
 
-This folder contains a script tasked to produce an oncoprint displaying the lanscape of the genetic lesions in the PBTA dataset.
+* `00-map-to-sample_id.R` prepares MAF, focal CN (the output of the `focal-cn-file-preparation` module), and standardized fusion files for use with `01-plot-oncoprint.R`. 
+  * The `Tumor_Sample_Barcode` column in the output corresponds to the `sample_id` column in the histologies file
+  * We remove ambiguous `sample_id` -- i.e., where there are more than two tumor biospecimens that map to the same sample identifier.
+  * Filtering via an [independent specimen file](https://alexslemonade.github.io/OpenPBTA-manuscript/#selection-of-independent-samples) is optional, but highly recommended.
+* `01-plot-oncoprint.R` takes the files from above and optionally a gene list and creates an oncoprint.
 
-`01-plot-oncoprint.R` is a script written produce an oncoprint displaying the lanscape of the genetic lesions in the PBTA dataset (as discussed in [issue #6](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/6)).  
-This script produces an oncoprint plot containing SNV information, as well as the optional CNV and fusion information.   
-
-_The oncoprint can be viewed below:_
-![Oncoprint](plots/maf_oncoprint.png)
-
-## Folder structure 
-
-The structure of this folder is as follows:
-
-```
-oncoprint-landscape
-├── 01-plot-oncoprint.R
-├── README.md
-├── driver-lists
-│   ├── brain-goi-list-long.txt
-│   └── brain-goi-list-short.txt
-├── plots
-│   └── maf_oncoprint.png
-├── run-oncoprint.sh
-└── util
-    └── oncoplot-palette.R
-    
-```
