@@ -49,8 +49,8 @@ option_list <- list(
               help="expression matrix (FPKM for samples that need to be zscore normalized .RDS)"),
   make_option(c("-s","--saveZscoredMatrix"),type="character",
               help="path to save zscored matrix from GTEx normalization (.RDS)"),
-  make_option(c("-g","--gtexMatrix"),type="character",
-              help="GTEx normalization FPKM expression data to compare (.rds)"),
+  make_option(c("-n","--normalExpressionMatrix"),type="character",
+              help="normalization FPKM expression data to compare (.rds)"),
   make_option(c("-o","--outputfile"),type="character",
               help="Standardized fusion calls with additional annotation from GTEx zscore comparison (.TSV)")
 )
@@ -60,8 +60,9 @@ standardFusionCalls<-opt$standardFusionCalls
 expressionMatrix<-opt$expressionMatrix
 zscoreFilter<- opt$zscoreFilter
 saveZscoredMatrix<-opt$saveZscoredMatrix
-gtexMatrix<-opt$gtexMatrix
+gtexMatrix<-opt$normalExpressionMatrix
 
+print(gtexMatrix)
 
 ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter=zscoreFilter,saveZscoredMatrix=saveZscoredMatrix,normData=normData,expressionMatrix=expressionMatrix){
   #  @param standardFusionCalls : Annotates standardizes fusion calls from callers [STARfusion| Arriba] or QC filtered fusion
