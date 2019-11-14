@@ -1,4 +1,4 @@
-# Run variant caller evaluation for a given MAF file.
+# Calculate TMB for a given MAF file
 #
 # C. Savonen for ALSF - CCDL
 #
@@ -81,13 +81,6 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
-opt$consensus <- "analyses/snv-callers/results/consensus/consensus_snv.maf.tsv"
-opt$output <- "analyses/snv-callers/results/consensus/"
-opt$metadata <- "data/pbta-histologies.tsv"
-opt$bed_wgs <- "data/WGS.hg38.strelka2.unpadded.bed"
-opt$bed_wxs <- "data/WXS.hg38.100bp_padded.bed"
-opt$overwrite <- TRUE
-
 # Make everything relative to root path
 opt$consensus <- file.path(root_dir, opt$consensus)
 opt$metadata <- file.path(root_dir, opt$metadata)
@@ -146,10 +139,12 @@ if (!all(unique(maf_df$Tumor_Sample_Barcode) %in% metadata$Tumor_Sample_Barcode)
 
 # Add the experimental strategy column on the data.frame for calculating purposes
 maf_df <- maf_df %>%
-  dplyr::inner_join(metadata %>% 
-                      dplyr::select(Tumor_Sample_Barcode, 
-                                    experimental_strategy, 
-                                    short_histology))
+  dplyr::inner_join(metadata %>%
+    dplyr::select(
+      Tumor_Sample_Barcode,
+      experimental_strategy,
+      short_histology
+    ))
 
 ############################# Calculate TMB ####################################
 # If the file exists or the overwrite option is not being used, run TMB calculations

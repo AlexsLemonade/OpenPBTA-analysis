@@ -46,8 +46,8 @@ Rscript analyses/snv-callers/scripts/02-merge_callers.R \
 ######################### Calculate consensus TMB ##############################
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --consensus analyses/snv-callers/results/consensus/consensus_snv.maf.tsv \
+  --output analyses/snv-callers/results/consensus \
+  --metadata data/pbta-histologies.tsv \
   --bed_wgs data/WGS.hg38.strelka2.unpadded.bed \
   --bed_wxs data/WXS.hg38.100bp_padded.bed \
   --overwrite
-  
-  
