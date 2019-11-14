@@ -213,17 +213,17 @@ plot_stacked_expression <- function (cn_expression_loss_df,
     cn_neutral_expression_plot_per_gene
   )
   
-  cn_zero_expression_plot_per_gene <-
-    cn_zero_expression_plot +
-    ggplot2::facet_wrap(~ gene_id) +
-    ggplot2::labs(title = toupper(gsub(
-      ".png", "", zero_per_gene_stacked_plot_name
-    )))
-  
-  ggplot2::ggsave(
-    file.path(plots_dir, zero_per_gene_stacked_plot_name),
-    cn_zero_expression_plot_per_gene
-  )
+  # cn_zero_expression_plot_per_gene <-
+  #   cn_zero_expression_plot +
+  #   ggplot2::facet_wrap(~ gene_id) +
+  #   ggplot2::labs(title = toupper(gsub(
+  #     ".png", "", zero_per_gene_stacked_plot_name
+  #   )))
+  # 
+  # ggplot2::ggsave(
+  #   file.path(plots_dir, zero_per_gene_stacked_plot_name),
+  #   cn_zero_expression_plot_per_gene
+  #)
   
 } 
 

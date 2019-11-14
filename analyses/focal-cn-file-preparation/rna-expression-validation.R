@@ -72,6 +72,7 @@ source(
 
 #### Get rid of ambiguous and non-tumor samples --------------------------------
 
+# Below code is adapted from: analyses/oncoprint-landscape/00-map-to-sample_id.R
 # An ambiguous sample_id will have more than 2 rows associated with it in the
 # histologies file when looking at tumor samples -- that means we won't be able
 # to determine when an WGS/WXS assay maps to an RNA-seq assay for the purpose of
@@ -104,6 +105,7 @@ cn_df <- cn_df %>%
 
 #### Determine independent specimens -------------------------------------------
 
+# Below code is adapted from: analyses/oncoprint-landscape/00-map-to-sample_id.R
 # Read in the primary indepedent specimens file
 ind_biospecimen <-
   readr::read_tsv(file.path(root_dir,
