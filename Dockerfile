@@ -45,8 +45,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     pheatmap \
     RColorBrewer \
     viridis \
-    data.table \
-    qdapRegex 
+    data.table
 
 # maftools for proof of concept in create-subset-files
 RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
@@ -101,15 +100,78 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     rpart \
     class \
     MASS \
-    GGally
+    GGally \
+    Matrix
 
 # Help display tables in R Notebooks
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
     flextable
 
-# for easy regex functions
-RUN R -e "BiocManager::install('qdapRegex', update = FALSE)"
+# Required for mapping segments to genes
+# Add bedtools
+RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.28.0/bedtools-2.28.0.tar.gz
+RUN tar -zxvf bedtools-2.28.0.tar.gz
+RUN cd bedtools2 && \
+    make && \
+    mv bin/* /usr/local/bin
+
+# Required for installing htslib
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    zlib1g \
+    libbz2-dev \
+    liblzma-dev
+
+# Add bedops per the BEDOPS documentation
+RUN wget https://github.com/bedops/bedops/releases/download/v2.4.37/bedops_linux_x86_64-v2.4.37.tar.bz2
+RUN tar -jxvf bedops_linux_x86_64-v2.4.37.tar.bz2
+RUN cp bin/* /usr/local/bin
+
+# HTSlib
+RUN wget https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar.bz2
+RUN tar -jxvf htslib-1.9.tar.bz2
+RUN cd htslib-1.9 && \
+    ./configure && \
+    make && \
+    make install
+RUN mv bin/* /usr/local/bin
+
+# bedr package
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    && install2.r --error \
+    bedr
+
+# Check to make sure the binaries are available by loading the bedr library
+RUN Rscript -e "library(bedr)"
+
+# Install for mutation signature analysis
+RUN R -e "BiocManager::install(c('BSgenome.Hsapiens.UCSC.hg19', 'BSgenome.Hsapiens.UCSC.hg38'))"
+
+# Also install for mutation signature analysis
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
+    && install2.r --error \
+    --deps TRUE \
+    deconstructSigs
+    
+# packages required for collapsing RNA-seq data by removing duplicated gene symbols
+RUN R -e "install.packages('DT', dependencies = TRUE)"
+RUN R -e "BiocManager::install(c('rtracklayer'), update = FALSE)"
+
+# Install python3 data science basics (pandas)
+# using pip to get more current versions
+RUN apt-get update -qq && apt-get -y --no-install-recommends install python3-pip 
+RUN pip3 install "numpy==1.17.3" && \
+   pip3 install "six==1.13.0" "setuptools==41.6.0" && \
+   pip3 install "cycler==0.10.0" "kiwisolver==1.1.0" "pyparsing==2.4.5" "python-dateutil==2.8.1" "pytz==2019.3" && \
+   pip3 install "matplotlib==3.0.3" && \
+   pip3 install "scipy==1.3.2" && \
+   pip3 install "pandas==0.25.3"
+
+# for easy regex functions for the fusion pipeline
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    && install2.r --error \
+    --deps TRUE \
+    qdapRegex 
 
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for

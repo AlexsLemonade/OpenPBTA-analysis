@@ -70,6 +70,11 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
+    opt_str = c("--metadata"), type = "character",
+    default = FALSE, help = "What metadata file was used? columns should be removed",
+    metavar = "character"
+  ),
+  make_option(
     opt_str = c("--combo"), type = "character",
     default = FALSE, help = "What combination of callers need to detect a
     mutation for it to be considered real and placed in the consensus file?
@@ -104,12 +109,17 @@ opt <- parse_args(OptionParser(option_list = option_list))
 # Normalize these file paths
 opt$merged_dir <- file.path(root_dir, opt$merged_dir)
 opt$output <- file.path(root_dir, opt$output)
+opt$metadata <- file.path(root_dir, opt$metadata)
 opt$bed_wgs <- file.path(root_dir, opt$bed_wgs)
 opt$bed_wxs <- file.path(root_dir, opt$bed_wxs)
 
 # Check the output directory exists
 if (!dir.exists(opt$merged_dir)) {
   stop(paste("Error:", opt$merged_dir, "does not exist"))
+}
+# Check for metadata
+if (!file.exists(opt$metadata)) {
+  stop(paste("Error:", opt$metadata, "does not exist"))
 }
 # Check for BED files
 if (!file.exists(opt$bed_wgs)) {
@@ -209,18 +219,13 @@ if (file.exists(consensus_mut_file) && !opt$overwrite) {
        the combination you specified with --combo is spelled exactly right and
        the callers are in alphabetical order. ")
   }
-
   # Isolate the mutations to only these mutations, use the Strelka2 stats.
   consen_mutation <- vaf_df %>%
     dplyr::filter(
       caller == opt$vaf,
       mutation_id %in% consen_mutations
-    ) %>%
-    readr::write_tsv(consensus_mut_file)
+    )
 
-  # Zip this file up.
-  zip(consensus_mut_zip_file, consensus_mut_file)
-}
 ############################### Re-calculate TMB ###############################
 # If the file exists or the overwrite option is not being used, do not create
 # the consensus TMB file
@@ -252,4 +257,17 @@ if (file.exists(consensus_tmb_file) && !opt$overwrite) {
 
   # Give message
   message("Consensus mutations and TMB re-calculations saved in: \n", opt$output)
+}
+
+###################### Determine what the metadata columns are #################
+meta_cols <- colnames(readr::read_tsv(opt$metadata, n_max = 1))
+
+########################### Write consensus file ###############################
+# Isolate the mutations to only these mutations, use the Strelka2 stats.
+consen_mutation <- consen_mutation %>%
+  dplyr::select(-!(colnames(vaf_df) %in% meta_cols)) %>%
+  readr::write_tsv(consensus_mut_file)
+
+# Zip this file up.
+zip(consensus_mut_zip_file, consensus_mut_file)
 }

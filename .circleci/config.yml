@@ -27,6 +27,18 @@ jobs:
       #                                                rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', clean = TRUE)"
      
       - run:
+          name: Collapse RSEM (polyA RNA-seq)
+          command: ./scripts/run_in_ci.sh Rscript analyses/collapse-rnaseq/01-summarize_matrices.R -i data/pbta-gene-expression-rsem-fpkm.polya.rds -g analyses/collapse-rnaseq/gencode.v27.primary_assembly.annotation.gtf.gz -m data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds -t analyses/collapse-rnaseq/pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds
+
+      - run:
+          name: Collapse RSEM (stranded RNA-seq)
+          command: ./scripts/run_in_ci.sh Rscript analyses/collapse-rnaseq/01-summarize_matrices.R -i data/pbta-gene-expression-rsem-fpkm.stranded.rds -g analyses/collapse-rnaseq/gencode.v27.primary_assembly.annotation.gtf.gz -m data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds -t analyses/collapse-rnaseq/pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds
+
+      - run:
+          name: Analyze RNA-seq dropped genes from both polyA and stranded data
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render(input = 'analyses/collapse-rnaseq/02-analyze-drops.Rmd', params = list(polya.annot.table = 'pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds', stranded.annot.table = 'pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds'), clean = TRUE)"
+
+      - run:
           name: Fusion standardization - Arriba
           command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/01-fusion-standardization.R -f "data/pbta-fusion-arriba.tsv.gz" -c "arriba" -o "scratch/arriba.tsv"
 
@@ -54,6 +66,10 @@ jobs:
       - run:
           name: Sex prediction from RNA-seq - Data cleaning
           command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/sex-prediction-from-RNASeq/01-clean_split_data.R --expression data/pbta-gene-expression-kallisto.stranded.rds --metadata data/pbta-histologies.tsv --output_directory scratch --filename_lead kallisto_stranded
+      
+      - run:
+          name: Sex prediction from RNA-seq - Train elasticnet
+          command: ./scripts/run_in_ci.sh Rscript --vanilla  analyses/sex-prediction-from-RNASeq/02-train_elasticnet.R --input_directory scratch --output_directory scratch --filename_lead kallisto_stranded
 
       - run:
           name: Selection Strategy Comparison
@@ -71,15 +87,19 @@ jobs:
       - run:
           name: Independent samples
           command: ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh 
-      
+
+      - run:
+          name: Focal CN Preparation
+          command: OPENPBTA_XY=0 ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
+                
       - run:
           name: Interaction plot
-          command: ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh     
-     
+          command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh     
+          
       - run:
-          name: Oncoprint plotting
-          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
-         
+          name: SNV database 
+          command: ./scripts/run_in_ci.sh bash analyses/snv-callers/run_db_setup.sh   
+          
          ################################
          #### Add your analysis here ####
          ################################
@@ -92,7 +112,13 @@ jobs:
        # - run:
           # name: SNV Caller VAF Cutoff Experiment
           # command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)"
+      
+      # Without the subset mutation consensus files, this takes a long time to run
+      - run:
+          name: Oncoprint plotting
+          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"   
                 
+
   deploy:
     machine: 
       docker_layer_caching: true

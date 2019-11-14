@@ -1,21 +1,21 @@
 primary_site	number_of_types	max_type	second_max_type
-Basal Ganglia	0	NA	NA
-Brain Stem- Midbrain	0	NA	NA
-Brain Stem-Medulla	0	NA	NA
-Cerebellum	0	NA	NA
-Frontal Lobe	0	NA	NA
-Parietal Lobe	0	NA	NA
-Temporal Lobe	0	NA	NA
-Occipital Lobe	0	NA	NA
-Spinal Cord	0	NA	NA
-Ventricles	0	NA	NA
-Thalamus	0	NA	NA
-Cranial Nerves NOS	0	NA	NA
-Hippocampus	0	NA	NA
-Meninges	0	NA	NA
-Optic Pathway	0	NA	NA
-Pineal Gland	0	NA	NA
-Pons	0	NA	NA
-Skull	0	NA	NA
-Spine NOS	0	NA	NA
-Suprasellar/Hypothalamic/Pituitary	0	NA	NA
+Frontal Lobe	26	High-grade glioma;astrocytoma (WHO grade III/IV)	Low-grade glioma;astrocytoma (WHO grade I/II)
+Parietal Lobe	25	Low-grade glioma;astrocytoma (WHO grade I/II)	High-grade glioma;astrocytoma (WHO grade III/IV)
+Temporal Lobe	25	Ganglioglioma	Low-grade glioma;astrocytoma (WHO grade I/II)
+Ventricles	22	Ependymoma	Choroid plexus papilloma
+Spinal Cord	21	Ependymoma	Neurofibroma;Plexiform
+Cerebellum	20	Low-grade glioma;astrocytoma (WHO grade I/II)	Medulloblastoma
+Occipital Lobe	14	Ependymoma	Ganglioglioma
+Suprasellar/Hypothalamic/Pituitary	13	Craniopharyngioma	Low-grade glioma;astrocytoma (WHO grade I/II)
+Skull	12	Langerhans Cell histiocytosis	Atypical Teratoid Rhabdoid Tumor
+Brain Stem- Midbrain	7	Low-grade glioma;astrocytoma (WHO grade I/II)	High-grade glioma;astrocytoma (WHO grade III/IV)
+Thalamus	7	High-grade glioma;astrocytoma (WHO grade III/IV)	Low-grade glioma;astrocytoma (WHO grade I/II)
+Brain Stem-Medulla	6	High-grade glioma;astrocytoma (WHO grade III/IV)	Low-grade glioma;astrocytoma (WHO grade I/II)
+Meninges	6	Meningioma	Atypical Teratoid Rhabdoid Tumor
+Pineal Gland	6	Teratoma	Germinoma
+Pons	6	Brainstem glioma- Diffuse intrinsic pontine glioma	Atypical Teratoid Rhabdoid Tumor
+Spine NOS	6	Schwannoma	Ependymoma
+Basal Ganglia	5	High-grade glioma;astrocytoma (WHO grade III/IV)	Low-grade glioma;astrocytoma (WHO grade I/II)
+Optic Pathway	5	Low-grade glioma;astrocytoma (WHO grade I/II)	Germinoma
+Cranial Nerves NOS	3	Schwannoma	Atypical Teratoid Rhabdoid Tumor
+Hippocampus	3	Dysembryoplastic neuroepithelial tumor (DNET);Ganglioglioma	High-grade glioma;astrocytoma (WHO grade III/IV)
