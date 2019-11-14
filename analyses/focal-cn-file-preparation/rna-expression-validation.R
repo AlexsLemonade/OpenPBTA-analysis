@@ -34,9 +34,9 @@ if (!dir.exists(plots_dir)) {
 
 # Read in data from tsv file (produced in `01-prepare-cn-file.R`)
 cn_df <-
-  readr::read_tsv(file.path(root_dir, 
-                            "analyses", 
-                            "focal-cn-file-preparation", 
+  readr::read_tsv(file.path(root_dir,
+                            "analyses",
+                            "focal-cn-file-preparation",
                             "results",
                             "controlfreec_annotated_cn_autosomes.tsv.gz"))
 
@@ -135,7 +135,7 @@ rnaseq_ind <- metadata %>%
 # Filter expression data to include independent sample and calculate z-scores by 
 # gene using `calculate_z_score` custom function
 expression_df_polyA <- calculate_z_score(rsem_expression_polyA, rnaseq_ind)
-expression_df_stranded <- calculate_z_score(rsem_expression_stranded, 
+expression_df_stranded <- calculate_z_score(rsem_expression_stranded,
                                             rnaseq_ind)
 
 # Merge Focal CN data.frame with RNA expression data.frame using
@@ -153,10 +153,10 @@ rsem_combined_stranded_df <-
                    "annotated_focal_cn_expression_stranded.tsv.gz")
 
 # Coerce `expression_class` into factor variable
-rsem_combined_polyA_df$expression_class <- 
+rsem_combined_polyA_df$expression_class <-
   as.factor(rsem_combined_polyA_df$expression_class)
 
-rsem_combined_stranded_df$expression_class <- 
+rsem_combined_stranded_df$expression_class <-
   as.factor(rsem_combined_stranded_df$expression_class)
 
 # Read in gene list
