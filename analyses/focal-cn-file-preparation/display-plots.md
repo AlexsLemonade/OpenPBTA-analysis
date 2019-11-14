@@ -25,20 +25,9 @@ The plot using the polyA RSEM expression data is below:
 ![](plots/cn_neutral_expression_polyA.png)
 ![](plots/cn_zero_expression_polyA.png)
 
-The facetted plot displaying the polyA RSEM expression data per gene is below:
-
-![](plots/cn_loss_expression_per_gene_polyA.png)
-![](plots/cn_neutral_expression_per_gene_polyA.png)
-![](plots/cn_zero_expression_per_gene_polyA.png)
-
 The plot using the stranded RSEM expression data is below:
 
 ![](plots/cn_loss_expression_stranded.png)
 ![](plots/cn_neutral_expression_stranded.png)
 ![](plots/cn_zero_expression_stranded.png)
 
-The facetted plot displaying the stranded RSEM expression data per gene is below:
-
-![](plots/cn_loss_expression_per_gene_stranded.png)
-![](plots/cn_neutral_expression_per_gene_stranded.png)
-![](plots/cn_zero_expression_per_gene_stranded.png)

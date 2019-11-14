@@ -152,7 +152,12 @@ rsem_combined_stranded_df <-
                    metadata,
                    "annotated_focal_cn_expression_stranded.tsv.gz")
 
-#### Plot and Save -------------------------------------------------------------
+# Coerce `expression_class` into factor variable
+rsem_combined_polyA_df$expression_class <- 
+  as.factor(rsem_combined_polyA_df$expression_class)
+
+rsem_combined_stranded_df$expression_class <- 
+  as.factor(rsem_combined_stranded_df$expression_class)
 
 # Read in gene list
 goi_list <-
@@ -169,12 +174,15 @@ goi_list <-
     as.is = TRUE
   )
 
-# Filter for wanted gene symbols 
+# Add `is_driver_gene` column denoting whether or not the gene is found in the
+# `goi_list` of driver genes
 rsem_combined_polyA_df <- rsem_combined_polyA_df %>%
-  dplyr::filter(gene_id %in% goi_list$V1)
+  dplyr::mutate(is_driver_gene = ifelse(gene_id %in% goi_list$V1, "Yes", "No"))
 
 rsem_combined_stranded_df <- rsem_combined_stranded_df %>%
-  dplyr::filter(gene_id %in% goi_list$V1)
+  dplyr::mutate(is_driver_gene = ifelse(gene_id %in% goi_list$V1, "Yes", "No"))
+
+#### Plot and Save -------------------------------------------------------------
 
 # Filter for loss CN calls
 cn_loss_polyA_df <- rsem_combined_polyA_df %>%
@@ -206,10 +214,7 @@ polyA_loss_plot_df <-
     cn_zero_polyA_df,
     "cn_loss_expression_polyA.png",
     "cn_neutral_expression_polyA.png",
-    "cn_zero_expression_polyA.png",
-    "cn_loss_expression_per_gene_polyA.png",
-    "cn_neutral_expression_per_gene_polyA.png",
-    "cn_zero_expression_per_gene_polyA.png"
+    "cn_zero_expression_polyA.png"
   )
 
 stranded_loss_plot_df <-
@@ -219,10 +224,7 @@ stranded_loss_plot_df <-
     cn_zero_stranded_df,
     "cn_loss_expression_stranded.png",
     "cn_neutral_expression_stranded.png",
-    "cn_zero_expression_stranded.png",
-    "cn_loss_expression_per_gene_stranded.png",
-    "cn_neutral_expression_per_gene_stranded.png",
-    "cn_zero_expression_per_gene_stranded.png"
+    "cn_zero_expression_stranded.png"
   )
 
 # Plot and save scatterplot showing mean expression of deletions compared to 

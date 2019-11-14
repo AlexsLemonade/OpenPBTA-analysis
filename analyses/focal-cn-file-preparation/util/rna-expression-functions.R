@@ -117,10 +117,7 @@ plot_stacked_expression <- function (cn_expression_loss_df,
                                      cn_expression_zero_df,
                                      loss_all_stacked_plot_name, 
                                      neutral_all_stacked_plot_name, 
-                                     zero_all_stacked_plot_name, 
-                                     loss_per_gene_stacked_plot_name,
-                                     neutral_per_gene_stacked_plot_name,
-                                     zero_per_gene_stacked_plot_name) {
+                                     zero_all_stacked_plot_name) {
   # Given a data.frame with annotated CN and RNA expression data, produce 
   # stacked barplots.
   #
@@ -141,15 +138,6 @@ plot_stacked_expression <- function (cn_expression_loss_df,
   #                                  calls
   #   zero_all_stacked_plot_name: name to save the third stacked plot displaying
   #                               expression levels of `copy_number` = 0
-  #   loss_per_gene_stacked_plot_name: name to save the fourth stacked plot 
-  #                                    displaying expression levels of loss 
-  #                                    calls for each gene
-  #   neutral_per_gene_stacked_plot_name: name to save the fifth stacked plot 
-  #                                       displaying expression levels of neutral 
-  #                                       calls for each gene
-  #   zero_per_gene_stacked_plot_name: name to save the sixth stacked plot 
-  #                                    displaying expression levels of 
-  #                                    `copy_number` = 0 for each gene
   #
   # Returns: 
   #   The above named plots are saved in `plots_dir`
@@ -188,43 +176,6 @@ plot_stacked_expression <- function (cn_expression_loss_df,
   ggplot2::ggsave(file.path(plots_dir, zero_all_stacked_plot_name),
                   cn_zero_expression_plot)
   
-  # Plot per gene and save
-  cn_loss_expression_plot_per_gene <-
-    cn_loss_expression_plot +
-    ggplot2::facet_wrap(~ gene_id) +
-    ggplot2::labs(title = toupper(gsub(
-      ".png", "", loss_per_gene_stacked_plot_name
-    )))
-  
-  ggplot2::ggsave(
-    file.path(plots_dir, loss_per_gene_stacked_plot_name),
-    cn_loss_expression_plot_per_gene
-  )
-  
-  cn_neutral_expression_plot_per_gene <-
-    cn_neutral_expression_plot +
-    ggplot2::facet_wrap(~ gene_id) +
-    ggplot2::labs(title = toupper(gsub(
-      ".png", "", neutral_per_gene_stacked_plot_name
-    )))
-  
-  ggplot2::ggsave(
-    file.path(plots_dir, neutral_per_gene_stacked_plot_name),
-    cn_neutral_expression_plot_per_gene
-  )
-  
-  # cn_zero_expression_plot_per_gene <-
-  #   cn_zero_expression_plot +
-  #   ggplot2::facet_wrap(~ gene_id) +
-  #   ggplot2::labs(title = toupper(gsub(
-  #     ".png", "", zero_per_gene_stacked_plot_name
-  #   )))
-  # 
-  # ggplot2::ggsave(
-  #   file.path(plots_dir, zero_per_gene_stacked_plot_name),
-  #   cn_zero_expression_plot_per_gene
-  #)
-  
 } 
 
 plot_mean_expression <- function (cn_expression_loss_df, 
@@ -255,30 +206,31 @@ plot_mean_expression <- function (cn_expression_loss_df,
   
   # Calculate the mean of log2 expression values
   mean_loss <- cn_expression_loss_df %>%
-    dplyr::group_by(gene_id) %>%
+    dplyr::group_by(gene_id, is_driver_gene) %>%
     dplyr::summarise(mean_loss_log_expression = mean(log2_exp))
   
   mean_neutral <- cn_expression_neutral_df %>%
-    dplyr::group_by(gene_id) %>%
+    dplyr::group_by(gene_id, is_driver_gene) %>%
     dplyr::summarise(mean_neutral_log_expression = mean(log2_exp))
   
   mean_zero <- cn_expression_zero_df %>%
-    dplyr::group_by(gene_id) %>%
+    dplyr::group_by(gene_id, is_driver_gene) %>%
     dplyr::summarise(mean_zero_log_expression = mean(log2_exp))
   
   # Combine the mean values to be plotted
   mean_combined_loss_neutral <- mean_loss %>%
-    dplyr::inner_join(mean_neutral, by = "gene_id")
+    dplyr::inner_join(mean_neutral, by = c("gene_id", "is_driver_gene"))
   
   mean_combined_zero_neutral <- mean_zero %>%
-    dplyr::inner_join(mean_neutral, by = "gene_id")
+    dplyr::inner_join(mean_neutral, by = c("gene_id", "is_driver_gene"))
   
   # Plot neutral/loss mean values
   mean_combined_plot_loss <-
     ggplot2::ggplot(
       mean_combined_loss_neutral,
       ggplot2::aes(x = mean_neutral_log_expression,
-                   y = mean_loss_log_expression)
+                   y = mean_loss_log_expression,
+                   col = is_driver_gene)
     ) +
     ggplot2::geom_point() +
     ggplot2::geom_abline() +
@@ -291,7 +243,8 @@ plot_mean_expression <- function (cn_expression_loss_df,
     ggplot2::ggplot(
       mean_combined_zero_neutral,
       ggplot2::aes(x = mean_neutral_log_expression,
-                   y = mean_zero_log_expression)
+                   y = mean_zero_log_expression,
+                   col = is_driver_gene)
     ) +
     ggplot2::geom_point() +
     ggplot2::geom_abline() +
