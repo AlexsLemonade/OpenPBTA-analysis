@@ -9,7 +9,7 @@ set -e
 set -o pipefail
 
 # The sqlite database made from the callers will be called:
-dbfile=scratch/snv_db.sqlite
+dbfile=scratch/testing_snv_db.sqlite
 
 # Designate output file 
 consensus_file=analyses/snv-callers/results/consensus/consensus_snv.maf.tsv
@@ -49,7 +49,8 @@ Rscript analyses/snv-callers/scripts/02-merge_callers.R \
 ########################## Add consensus to db ################################
 python3 analyses/snv-callers/scripts/01-setup_db.py \
   --db-file $dbfile \
-  --consensus-file $consensus_file 
+  --consensus-file $consensus_file \
+  --overwrite
   
 ######################### Calculate consensus TMB ##############################
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \

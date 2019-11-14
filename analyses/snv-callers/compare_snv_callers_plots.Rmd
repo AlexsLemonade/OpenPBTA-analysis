@@ -8,22 +8,15 @@ author: C. Savonen for ALSF CCDL
 date: 2019
 ---
 
-Purpose: After running the initial analyses of each variant caller and merging
-the data with `03-merge_callers.R`, this notebook plots these data in a series
-of plots to compare the performance of the callers. 
+Purpose: After creating a consensus file with `02-merge_callers.R`, this notebook 
+plots these data in a series of plots to compare the consensus calls to the individual 
+callers. 
 
 ### Summary of Findings:
 
-Due to some of the findings here, I suggest we should move 
-forward with mutations called by Strelka2, Mutect2, and Lancet. And, due to it's 
-oversensitivity that VarDict's data can be dropped entirely. 
 
 #### Individual Caller's Reports 
 
-- [Lancet](https://cansavvy.github.io/openpbta-notebook-concept/snv-callers/lancet_both_report.html)
-- [MuTect2](https://cansavvy.github.io/openpbta-notebook-concept/snv-callers/mutect2_both_report.html)
-- [Strelka2](https://cansavvy.github.io/openpbta-notebook-concept/snv-callers/strelka2_both_report.html)
-- [Vardict](https://cansavvy.github.io/openpbta-notebook-concept/snv-callers/vardict_both_report.html)
 
 *Notable Findings:*  
 
@@ -84,39 +77,28 @@ Make new directories for the comparison analysis.
 ```{r}
 consensus_results_dir <- file.path(base_results_dir, "consensus")
 consensus_plots_dir <- file.path(base_plots_dir, "consensus")
-
-# Make caller specific plots folder
-if (!dir.exists(consensus_results_dir)) {
-  dir.create(consensus_results_dir)
-}
-# Make caller specific plots folder
-if (!dir.exists(consensus_plots_dir)) {
-  dir.create(consensus_plots_dir)
-}
 ```
 
-## Import data 
+## Connect to database
 
-Load in the merged data.frames from `03-merge_callers.R` output. 
+Connect to SQLite database.
 
 ```{r}
-# Master VAF data.frame
-vaf_df <- readr::read_rds(file.path(consensus_results_dir, 
-                                    "all_callers_vaf.rds"))
-
-# Master TMB data.frame
-tmb_df <- readr::read_rds(file.path(consensus_results_dir, 
-                                    "all_callers_tmb.rds"))
-
-# Full mutation list
-mutation_id_list <- readr::read_rds(file.path(consensus_results_dir, 
-                                              "mutation_id_list.rds"))
-
-# Callers per mutation data.frame
-callers_per_mutation <- readr::read_rds(file.path(consensus_results_dir, 
-                                                  "callers_per_mutation.rds"))
+# Start up connection
+con <- DBI::dbConnect(RSQLite::SQLite(), opt$db_file)
 ```
 
+Set up tables from the database.
+
+```{r}
+# Designate caller tables from SQL file
+strelka <- dplyr::tbl(con, "strelka")
+lancet <- dplyr::tbl(con, "lancet")
+mutect <- dplyr::tbl(con, "mutect")
+vardict <- dplyr::tbl(con, "vardict")
+
+# Designate 
+```
 ## Upset graph
 
 Make the upset plot. 

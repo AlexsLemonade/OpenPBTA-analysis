@@ -292,7 +292,7 @@ for table_name, maf_file in callers:
     maf_chunks = pd.read_table(maf_file,
                                dtype=maf_dtypes,
                                na_values=["."],
-                               skiprows=1,
+                               comment="#",
                                chunksize=chunksize)
 
     for chunk in maf_chunks:
