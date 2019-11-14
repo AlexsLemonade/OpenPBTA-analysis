@@ -45,3 +45,10 @@ Rscript analyses/snv-callers/scripts/02-merge_callers.R \
   --output_file $consensus_file \
   --vaf_filter $vaf_cutoff \
   --overwrite
+  
+########################## Add consensus to db ################################
+python3 analyses/snv-callers/scripts/01-setup_db.py \
+  --db-file $dbfile \
+  --consensus-file $consensus_file \
+  --overwrite
+  
