@@ -22,6 +22,7 @@
 # Rscript 01-merge_callers.R \
 # --db_file results \
 # --output results/consensus \
+# --vaf_filter 0.15 \
 # --overwrite
 #
 # Establish base dir
@@ -64,6 +65,9 @@ option_list <- list(
 
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
+
+# Turn this into a numeric value
+opt$vaf_filter <- as.numeric(opt$vaf_filter)
 
 ############################## Connect to database #############################
 # Normalize this file path
@@ -119,17 +123,17 @@ join_cols <- c(
 )
 
 # Create the consensus
-consensus_df <- strelka %>%
+consensus_df <- mutect %>%
   dplyr::inner_join(lancet,
-    by = join_cols,
-    suffix = c("s", "l")
+                    by = join_cols,
   ) %>%
-  dplyr::inner_join(mutect,
-    by = join_cols,
-    suffix = c("s", "m")
-  )
+  dplyr::select(join_cols) %>%
+  dplyr::inner_join(strelka) 
 
 # Write consensus to output file
 consensus_df %>%
   as.data.frame() %>%
+  # Filter with --vaf_filter option 
+  dplyr::filter(VAF > opt$vaf_filter) %>% 
+  # Write to a TSV file
   readr::write_tsv(consensus_maf_file)

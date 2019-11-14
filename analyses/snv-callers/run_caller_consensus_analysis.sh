@@ -38,7 +38,7 @@ python3 analyses/snv-callers/scripts/01-setup_db.py \
 
 ##################### Merge callers' files into total files ####################
 Rscript analyses/snv-callers/scripts/02-merge_callers.R \
-  --db-file $dbfile \
+  --db_file $dbfile \
   --output analyses/snv-callers/results/consensus \
   --vaf_filter $vaf_cutoff \
   --overwrite
