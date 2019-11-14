@@ -61,20 +61,24 @@ if (!dir.exists(plots_dir)) {
 Custom function for plotting the TMB. 
 
 ```{r}
-sina_plot <- function(data, colour = NULL, title) {
-  # Given a data.frame with `short_histology` and `tmb` information, make a sina plot from it
+sina_plot <- function(data, colour = NULL, x_axis = "short_histology", title) {
+  # Given a data.frame with metadata and `tmb` information, make a sina plot from it
   #
   # Args:
   #
-  # data : a data.frame with `short_histology` and `tmb` as columns
+  # data : a data.frame with `tmb` as columns
+  # x_axis : A name of a column in data that you would like to make the x_axis from
+  #           Given as a character string. 
   # colour: the color you would like the points to be
   # title: The title for the plot. To be passed to `ggtitle`
   #
   # Returns:
   #   A sina plot by histology group
   data %>%
-    ggplot2::ggplot(ggplot2::aes(x = reorder(short_histology, tmb, mean), y = log10(tmb))) +
-    ggforce::geom_sina(color = colour, alpha = 0.3) +
+    # eval parse bit will treat the variable as the text it has stored
+    ggplot2::ggplot(ggplot2::aes(x = reorder(eval(parse(text = x_axis)), tmb, mean), 
+                                 y = log10(tmb))) +
+    ggforce::geom_sina(color = colour, alpha = 0.3, maxwidth = 0.9) +
     ggplot2::stat_summary(
       fun.y = mean, fun.ymin = mean, fun.ymax = mean,
       geom = "crossbar",
@@ -150,6 +154,8 @@ if (file.exists(mc3_brain_maf_file)) {
 
   # Read in data and set up sample ID from the Tumor Sample Barcode info
   mc3_maf <- data.table::fread(mc3_maf_file) %>% 
+    # The patient ID information is the first 12 character of the sample ID so we
+    # can link this information to the clinical data if we make a new variable from it. 
     dplyr::mutate(sample_id = substr(Tumor_Sample_Barcode, 0, 12))
 
   # Get the TCGA metadata for these brain related projects.
@@ -255,16 +261,18 @@ tmb_plot <- cowplot::plot_grid(pbta_plot, tcga_plot,
   rel_widths = c(2.5, 1),
   label_size = 12
 )
-# Print out tmb plot
-tmb_plot
 ```
 
 Save this final plot to a png file.
 
 ```{r}
 # Save the plot to a png
-cowplot::save_plot(file.path(plots_dir, "tmb_tcga_and_pbta_plot.png"), plot = tmb_plot, base_width = 35, base_height = 20, unit = "cm")
+cowplot::save_plot(file.path(plots_dir, "tmb_tcga_and_pbta_plot.png"), 
+                   plot = tmb_plot, base_width = 35, base_height = 20, unit = "cm")
 ```
+
+Print from png so rendering is smoother
+![TMB Plot](./plots/tmb_tcga_and_pbta_plot.png)
 
 ## Session Info
 
