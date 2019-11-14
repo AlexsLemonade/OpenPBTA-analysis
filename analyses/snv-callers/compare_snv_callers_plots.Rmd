@@ -95,14 +95,30 @@ con <- DBI::dbConnect(RSQLite::SQLite(),
                       file.path(scratch_dir, "testing_snv_db.sqlite"))
 ```
 
-Set up tables from the database.
+Note what columns we will join by.
 
 ```{r}
-# Designate caller tables from SQL file
-strelka <- dplyr::tbl(con, "strelka")
-lancet <- dplyr::tbl(con, "lancet")
-mutect <- dplyr::tbl(con, "mutect")
-vardict <- dplyr::tbl(con, "vardict")
+join_cols = c("Chromosome",
+              "Start_Position",
+              "Reference_Allele",
+              "Allele",
+              "Tumor_Sample_Barcode")
+```
+
+Set up tables from the database but only call the columns we need.
+
+```{r}
+strelka <- dplyr::tbl(con, "strelka") %>% 
+  dplyr::select(join_cols, "VAF")
+
+lancet <- dplyr::tbl(con, "lancet") %>% 
+  dplyr::select(join_cols, "VAF")
+
+mutect <- dplyr::tbl(con, "mutect") %>% 
+  dplyr::select(join_cols, "VAF") 
+
+vardict <- dplyr::tbl(con, "vardict") %>% 
+  dplyr::select(join_cols, "VAF") 
 ```
 
 ```{r}
@@ -115,19 +131,94 @@ consensus <- dplyr::tbl(con, "consensus")
 metadata <- dplyr::tbl(con, "samples")
 ```
 
+Because `DBI` does not support full_join, we had to use a series of `left_join` and
+`union_all` calls in order to get a full join of all the callers. 
+
+```{r}
+# Join Strelka with Lancet data
+# Union of two left joins
+union_strelka_lancet <- dplyr::union_all(
+ dplyr::left_join(lancet, strelka,
+           by = join_cols,
+           suffix = c("_lancet", "_strelka")) %>%
+   # Want to keep the VAFs from each caller
+   dplyr::select(join_cols, "VAF_lancet", "VAF_strelka"),
+ dplyr::left_join(strelka, lancet,
+           by = join_cols,
+           suffix = c("_strelka", "_lancet")) %>%
+   dplyr::select(join_cols, "VAF_lancet", "VAF_strelka") %>% 
+   # VAFs for lancet will already be included in the previous left_join
+   dplyr::filter(is.na(VAF_lancet))
+) 
+
+# Join Mutect with VarDict data
+union_mutect_vardict <- dplyr::union_all(
+ dplyr::left_join(vardict, mutect,
+           by = join_cols,
+           suffix = c("_vardict", "_mutect")) %>%
+   dplyr::select(join_cols, "VAF_vardict", "VAF_mutect"),
+ dplyr::left_join(mutect, vardict,
+           by = join_cols,
+           suffix = c("_mutect", "_vardict")) %>%
+   dplyr::select(join_cols, "VAF_vardict", "VAF_mutect") %>% 
+   dplyr::filter(is.na(VAF_vardict))
+) 
+
+# Join both combinations made above into one big data set
+all_caller <- dplyr::union_all(
+ dplyr::left_join(union_strelka_lancet, union_mutect_vardict,
+           by = join_cols) %>%
+   dplyr::select(join_cols, "VAF_lancet", "VAF_strelka", "VAF_vardict", "VAF_mutect"),
+ dplyr::left_join(union_mutect_vardict, union_strelka_lancet,
+           by = join_cols) %>%
+   dplyr::select(join_cols, "VAF_lancet", "VAF_strelka", "VAF_vardict", "VAF_mutect") %>% 
+   dplyr::filter(is.na(VAF_strelka) && is.na(VAF_lancet))
+) 
+
+# Check that this looks right
+head(all_caller)
+```
+
+```{r}
+vaf_df <- all_caller %>% 
+  dplyr::select("VAF_lancet", "VAF_strelka", "VAF_vardict", "VAF_mutect") %>%
+  as.data.frame() %>% 
+  dplyr::mutate(index = factor(1:nrow(.))) %>% 
+  tidyr::gather(key = "caller", value = "vaf", -index) %>% 
+  dplyr::mutate(caller = gsub("VAF_", "", caller))
+  
+callers_per_mutation <- tapply(vaf_df$caller,
+    vaf_df$index,
+    paste0,
+    collapse = "-"
+  ) %>% 
+  as.data.frame() %>%
+  tibble::rownames_to_column("index")
+
+vaf_med <- tapply(
+    vaf_df$vaf,
+    vaf_df$index,
+    median
+  ) %>% 
+  as.data.frame() %>%
+  tibble::rownames_to_column("index")
+
+med_vaf <- dplyr::inner_join(callers_per_mutation, vaf_med)
+```
+
 ## Upset graph
 
 Make the upset plot. 
 
 ```{r}
 # Make the plot
-upset <- UpSetR::upset(UpSetR::fromList(mutation_id_list),
+upset <- UpSetR::upset(callers_per_mutation,
   order.by = "freq",
   text.scale = 1.5
 )
 
 # Save this plot
-png(file.path(consensus_plots_dir, "upset_plot.png"), width = 900, height = 900)
+png(file.path(plots_dir, "upset_plot.png"), width = 900, height = 900)
 upset
 dev.off()
 
@@ -202,9 +293,11 @@ ggplot2::ggsave(file.path(consensus_plots_dir, "perc_base_change_plot.png"))
 
 ## VAF distributions
 
+Make a violin plot of each caller. 
+
 ```{r}
 vaf_df %>%
-  ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, color = caller)) +
+  ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, color = caller)) +f
   ggplot2::geom_violin() +
   ggplot2::theme_classic() +
   colorblindr::scale_color_OkabeIto()
@@ -244,6 +337,7 @@ Make the plot with ggpairs.
 
 ```{r}
 GGally::ggpairs(vaf_long, mapping = ggplot2::aes(alpha = 0.05)) +
+  ggplot2::geom_hex() + 
   ggplot2::theme_classic()
 ``` 
 
