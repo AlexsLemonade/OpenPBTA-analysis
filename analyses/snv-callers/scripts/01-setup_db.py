@@ -301,6 +301,11 @@ for table_name, maf_file in callers:
                         (chunk['t_ref_count'] + chunk['t_alt_count']))
         if table_name not in ('strelka', 'lancet', 'consensus'):
             chunk = chunk[needed_cols]
+        # temporary fix for MAF format woes
+        # TODO: remove when MAF is consistent between files.
+        if table_name == 'lancet':
+            chunk = chunk.rename(columns = {'variant_id': 'vcf_id', 
+                                            'variant_qual': 'vcf_qual'})
         chunk.to_sql(table_name, con, if_exists='append')
     # create indexes
     print("Indexing table '{}'".format(table_name))
