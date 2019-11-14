@@ -94,15 +94,7 @@ jobs:
                 
       - run:
           name: Interaction plot
-          command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh     
-    
-      - run:
-          name: Oncoprint plotting
-          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
-      
-      - run:
-          name: SNV database 
-          command: ./scripts/run_in_ci.sh bash analyses/snv-callers/run_db_setup.sh   
+          command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh
     
       - run:  
           name: Focal CN RNA expression visualization
