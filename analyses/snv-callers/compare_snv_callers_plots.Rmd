@@ -69,15 +69,20 @@ Set up output directories.
 
 ```{r}
 scratch_dir <- file.path("..", "..", "scratch")
-base_results_dir <- "results"
-base_plots_dir <- "plots"
 ```
 
 Make new directories for the comparison analysis.
 
 ```{r}
-consensus_results_dir <- file.path(base_results_dir, "consensus")
-consensus_plots_dir <- file.path(base_plots_dir, "consensus")
+results_dir <- file.path("results", "comparison")
+plots_dir <- file.path("plots", "comparison")
+
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir)
+}
 ```
 
 ## Connect to database
