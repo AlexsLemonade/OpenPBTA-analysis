@@ -87,8 +87,8 @@ opt$output_file <- file.path(root_dir, opt$output)
 output_dir <- stringr::word(opt$output_file, sep = "/", start = 1, end = -1)
 
 # Make output folder
-if (!dir.exists(opt$output)) {
-  dir.create(opt$output, recursive = TRUE)
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir, recursive = TRUE)
 }
 
 ########################### Check for output file ###############################
