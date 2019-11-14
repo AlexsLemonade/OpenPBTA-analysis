@@ -81,10 +81,10 @@ con <- DBI::dbConnect(RSQLite::SQLite(), opt$db_file)
 
 ############################### Set Up Output #####################################
 # Normalize file path
-opt$output_file <- file.path(root_dir, opt$output)
+opt$output_file <- file.path(root_dir, opt$output_file)
 
 # Make sure the folder is made
-output_dir <- stringr::word(opt$output_file, sep = "/", start = 1, end = -1)
+output_dir <- stringr::word(opt$output_file, sep = "/", start = 1, end = -2)
 
 # Make output folder
 if (!dir.exists(output_dir)) {
@@ -111,6 +111,9 @@ mutect <- dplyr::tbl(con, "mutect")
 # We won't use VarDicts calls for the consensus
 # vardict <- dplyr::tbl(con, "vardict")
 
+# Use this so we can make columns back to traditional MAF order after join
+full_col_order <- colnames(strelka)
+
 # Specify the columns to join by
 join_cols <- c(
   "Chromosome",
@@ -126,12 +129,13 @@ consensus_df <- mutect %>%
                     by = join_cols,
   ) %>%
   dplyr::select(join_cols) %>%
-  dplyr::inner_join(strelka) 
+  dplyr::inner_join(strelka) %>% 
+  dplyr::select(full_col_order, -index)
 
 # Write consensus to output file
 consensus_df %>%
   as.data.frame() %>%
   # Filter with --vaf_filter option 
   dplyr::filter(VAF > opt$vaf_filter) %>% 
-  # Write to a TSV file
-  readr::write_tsv(opt$output_file)
+  # Write to a TSV file, change NAs back to "."
+  readr::write_tsv(opt$output_file, na = ".")
