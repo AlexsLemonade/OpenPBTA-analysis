@@ -31,9 +31,7 @@ Many of these have [very low ](#vaf-distributions) suggesting that some may be s
 - [VAF of combinations of callers](#vaf-for-combination-sets-of-callers)
 - [Base changes by caller](#base-changes)
 - [VAF distributions by caller](#vaf-distributions)
-- [TMB distributions by caller](#tmb-distributions)
 - [VAF correlations between callers](#vaf-correlations)
-- [TMB correlations between callers](#tmb-correlations)
 
 #### Usage
 
@@ -65,15 +63,10 @@ if (!("GGally" %in% installed.packages())) {
 `%>%` <- dplyr::`%>%`
 ```
 
-Set up output directories. 
+Set up directories. 
 
 ```{r}
 scratch_dir <- file.path("..", "..", "scratch")
-```
-
-Make new directories for the comparison analysis.
-
-```{r}
 results_dir <- file.path("results", "comparison")
 plots_dir <- file.path("plots", "comparison")
 
@@ -126,11 +119,6 @@ vardict <- dplyr::tbl(con, "vardict") %>%
 consensus <- dplyr::tbl(con, "consensus")
 ```
 
-```{r}
-# Designate consensus table
-metadata <- dplyr::tbl(con, "samples")
-```
-
 Because `DBI` does not support full_join, we had to use a series of `left_join` and
 `union_all` calls in order to get a full join of all the callers. 
 
@@ -143,17 +131,23 @@ head(all_caller)
 ```
 
 ```{r}
+# Set up the data as a data.frame
 vaf_df <- all_caller %>% 
   dplyr::select("VAF_lancet", "VAF_strelka", "VAF_vardict", "VAF_mutect") %>%
-  as.data.frame() %>% 
+  as.data.frame() 
+
+# Make this long form for plotting and 
+long_vaf_df <- vaf_df %>% 
   dplyr::mutate(index = factor(1:nrow(.))) %>% 
   tidyr::gather(key = "caller", value = "vaf", -index) %>% 
-  dplyr::mutate(caller = gsub("VAF_", "", caller))
+  dplyr::mutate(caller = gsub("VAF_", "", caller)) %>% 
+  dplyr::filter(!is.na(vaf))
 ```
 
 Get median vaf for each mutation with each caller combination. 
 
 ```{r}
+# Determine the combination of callers for each mutation
 callers_per_mutation <- tapply(vaf_df$caller,
     vaf_df$index,
     paste0,
@@ -162,6 +156,7 @@ callers_per_mutation <- tapply(vaf_df$caller,
   as.data.frame() %>%
   tibble::rownames_to_column("index")
 
+# Determine Median VAF for each mutation 
 vaf_med <- tapply(
     vaf_df$vaf,
     vaf_df$index,
@@ -182,19 +177,22 @@ vaf_med <- tapply(
 Make the upset plot. 
 
 ```{r}
-# Make the plot
-upset <- UpSetR::upset(callers_per_mutation,
-  order.by = "freq",
-  text.scale = 1.5
-)
+callers_per_mutation %>% 
+  dplyr::group_by(caller_combo) %>%
+  dplyr::tally() %>% 
+  ggplot2::ggplot(ggplot2::aes(x = reorder(caller_combo, -n), y = n)) +
+  ggplot2::geom_bar(
+        position = "dodge", stat = "identity") +
+  ggplot2::theme_classic() +
+  ggupset::scale_x_mergelist(sep = "-") +
+  ggupset::axis_combmatrix(sep = "-") +
+  ggplot2::xlab("") +
+  ggplot2::ylab("")
+```
 
+```{r}
 # Save this plot
-png(file.path(plots_dir, "upset_plot.png"), width = 900, height = 900)
-upset
-dev.off()
-
-# Print this out
-upset
+ggplot2::ggsave(file.path(plots_dir, "upset_plot.png"))
 ```
 
 ## VAF for combination sets of callers
@@ -217,27 +215,49 @@ callers_per_mutation %>%
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(file.path(consensus_plots_dir, "upset_median_vaf_plot.png"))
+ggplot2::ggsave(file.path(plots_dir, "upset_median_vaf_plot.png"))
 ```
 
 ## Base Changes 
 
-Set up the summarized form of the base change information. 
+Summarize base change information per caller. 
 
 ```{r}
 # Summarize by the number of times each base change shows up in each category.
-perc_change_df <- vaf_df %>%
+perc_change_df <- all_caller %>% 
+  dplyr::mutate(base_change = paste0(Allele, ">", Reference_Allele)) %>%
+  # Case when only works for df not sql, so we will convert now
+  as.data.frame() %>%
+  dplyr::mutate(
+  # From the base_change variable, summarize insertions, deletions, and
+  # changes that are more than one base into their own groups.
+  change = dplyr::case_when(
+    grepl("^-", base_change) ~ "ins",
+    grepl("-$", base_change) ~ "del",
+    nchar(base_change) > 3 ~ "long_change",
+    TRUE ~ base_change
+  )) %>% 
+  dplyr::select(-Allele, -Reference_Allele, -Chromosome, -base_change, 
+                -Tumor_Sample_Barcode, -Start_Position) %>%
+  # Make this long form
+  tidyr::gather(key = "caller", value = "vaf", -change) %>% 
+  # Drop the prefix
+  dplyr::mutate(caller = gsub("VAF_", "", caller)) %>% 
+  # Get rid of NA rows
+  dplyr::filter(!is.na(vaf)) %>%
+  # Summarize the number of mutations per caller
   dplyr::count(caller, change, name = "count") %>%
   dplyr::add_count(caller, wt = count) %>%
+  # Calculate the percent of each 
   dplyr::mutate(percent = count / n) %>%
-  dplyr::filter(!grepl("G>G|A>A|N>A|N>T", change))
-
-# Need to rearrange the order of the base change categories
-perc_change_df <- perc_change_df %>%
+  # Drop nonsensical change
+  dplyr::filter(!grepl("G>G|A>A|N>A|N>T|T>N|A>N", change), 
+                !is.na(change)) %>%
   dplyr::mutate(
     change = as.factor(change),
-    change = factor(change, c(grep("ins|del|long_change", levels(change), value = TRUE, invert = TRUE), "ins", "del", "long_change"))
-  )
+    # Change factor level order so ins and del are at the end
+    change = forcats::fct_relevel(change, "ins", "del", "long_change", after = Inf)
+  ) 
 ```
 
 Make a barplot illustrating the percent of the mutations for each caller that 
@@ -259,7 +279,7 @@ perc_change_df %>%
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(file.path(consensus_plots_dir, "perc_base_change_plot.png"))
+ggplot2::ggsave(file.path(plots_dir, "perc_base_change_plot.png"))
 ```
 
 ## VAF distributions
@@ -268,7 +288,9 @@ Make a violin plot of each caller.
 
 ```{r}
 vaf_df %>%
-  ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, color = caller)) +f
+  as.data.frame() %>% 
+  
+  ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, color = caller)) +
   ggplot2::geom_violin() +
   ggplot2::theme_classic() +
   colorblindr::scale_color_OkabeIto()
@@ -276,68 +298,21 @@ vaf_df %>%
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(file.path(consensus_plots_dir, "vaf_violin_plot.png"))
-```
-
-## TMB distributions
-
-```{r}
-tmb_df %>%
-  ggplot2::ggplot(ggplot2::aes(x = caller, y = tmb, color = short_histology)) +
-  ggplot2::geom_boxplot() +
-  ggplot2::theme_classic()
-```
-
-```{r}
-# Save this plot
-ggplot2::ggsave(file.path(consensus_plots_dir, "tmb_boxplot_histology_plot.png"))
+ggplot2::ggsave(file.path(plots_dir, "vaf_violin_plot.png"))
 ```
 
 ## VAF correlations
 
-```{r}
-vaf_long <- vaf_df %>%
-  dplyr::group_by(mutation_id, caller) %>%
-  dplyr::summarize(vaf = mean(vaf)) %>%
-  dplyr::distinct(mutation_id, caller, vaf, .keep_all = TRUE) %>%
-  tidyr::spread(caller, vaf) %>%
-  tibble::column_to_rownames("mutation_id")
-```
-
 Make the plot with ggpairs. 
 
 ```{r}
-GGally::ggpairs(vaf_long, mapping = ggplot2::aes(alpha = 0.05)) +
-  ggplot2::geom_hex() + 
+GGally::ggpairs(vaf_df, mapping = ggplot2::aes(alpha = 0.05)) +
   ggplot2::theme_classic()
 ``` 
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(file.path(consensus_plots_dir, "vaf_correlations_plot.png"))
-```
-
-## TMB correlations
-
-```{r}
-tmb_long <- tmb_df %>%
-  dplyr::ungroup() %>%
-  dplyr::select(-genome_size, -experimental_strategy) %>%
-  dplyr::distinct(Tumor_Sample_Barcode, caller, tmb) %>%
-  tidyr::spread(caller, tmb) %>%
-  dplyr::select(-Tumor_Sample_Barcode)
-```
-
-Make the TMB correlation plot.
-
-```{r}
-GGally::ggpairs(tmb_long, mapping = ggplot2::aes(alpha = 0.05), cardinality_threshold = NULL) +
-  ggplot2::theme_classic()
-```
-
-```{r}
-# Save this plot
-ggplot2::ggsave(file.path(consensus_plots_dir, "tmb_correlations_plot.png"))
+ggplot2::ggsave(file.path(plots_dir, "vaf_correlations_plot.png"))
 ```
 
 ## Session Info
