@@ -135,45 +135,8 @@ Because `DBI` does not support full_join, we had to use a series of `left_join` 
 `union_all` calls in order to get a full join of all the callers. 
 
 ```{r}
-# Join Strelka with Lancet data
-# Union of two left joins
-union_strelka_lancet <- dplyr::union_all(
- dplyr::left_join(lancet, strelka,
-           by = join_cols,
-           suffix = c("_lancet", "_strelka")) %>%
-   # Want to keep the VAFs from each caller
-   dplyr::select(join_cols, "VAF_lancet", "VAF_strelka"),
- dplyr::left_join(strelka, lancet,
-           by = join_cols,
-           suffix = c("_strelka", "_lancet")) %>%
-   dplyr::select(join_cols, "VAF_lancet", "VAF_strelka") %>% 
-   # VAFs for lancet will already be included in the previous left_join
-   dplyr::filter(is.na(VAF_lancet))
-) 
-
-# Join Mutect with VarDict data
-union_mutect_vardict <- dplyr::union_all(
- dplyr::left_join(vardict, mutect,
-           by = join_cols,
-           suffix = c("_vardict", "_mutect")) %>%
-   dplyr::select(join_cols, "VAF_vardict", "VAF_mutect"),
- dplyr::left_join(mutect, vardict,
-           by = join_cols,
-           suffix = c("_mutect", "_vardict")) %>%
-   dplyr::select(join_cols, "VAF_vardict", "VAF_mutect") %>% 
-   dplyr::filter(is.na(VAF_vardict))
-) 
-
-# Join both combinations made above into one big data set
-all_caller <- dplyr::union_all(
- dplyr::left_join(union_strelka_lancet, union_mutect_vardict,
-           by = join_cols) %>%
-   dplyr::select(join_cols, "VAF_lancet", "VAF_strelka", "VAF_vardict", "VAF_mutect"),
- dplyr::left_join(union_mutect_vardict, union_strelka_lancet,
-           by = join_cols) %>%
-   dplyr::select(join_cols, "VAF_lancet", "VAF_strelka", "VAF_vardict", "VAF_mutect") %>% 
-   dplyr::filter(is.na(VAF_strelka) && is.na(VAF_lancet))
-) 
+# This script will do the full join of the data for us
+source(file.path("util", "full_join_callers.R"))
 
 # Check that this looks right
 head(all_caller)
@@ -186,7 +149,11 @@ vaf_df <- all_caller %>%
   dplyr::mutate(index = factor(1:nrow(.))) %>% 
   tidyr::gather(key = "caller", value = "vaf", -index) %>% 
   dplyr::mutate(caller = gsub("VAF_", "", caller))
-  
+```
+
+Get median vaf for each mutation with each caller combination. 
+
+```{r}
 callers_per_mutation <- tapply(vaf_df$caller,
     vaf_df$index,
     paste0,
@@ -203,7 +170,11 @@ vaf_med <- tapply(
   as.data.frame() %>%
   tibble::rownames_to_column("index")
 
-med_vaf <- dplyr::inner_join(callers_per_mutation, vaf_med)
+# Join the median VAF and the callers that call that mutation into one data.frame
+  callers_per_mutation <- callers_per_mutation %>%
+    dplyr::inner_join(vaf_med, by = "index") %>%
+    # Make column names more sensible
+    dplyr::rename(caller_combo = "..x", median_vaf = "..y") 
 ```
 
 ## Upset graph
