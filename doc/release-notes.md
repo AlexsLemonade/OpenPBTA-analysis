@@ -1,7 +1,7 @@
 # release notes
 ## current release
-### release-v9-20191105
-- release date: 2019-11-05
+### release-v10-20191115
+- release date: 2019-11-15
 - status: available
 - changes:
   - Add RNA-Seq GTF and fasta files per ticket [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/241)
