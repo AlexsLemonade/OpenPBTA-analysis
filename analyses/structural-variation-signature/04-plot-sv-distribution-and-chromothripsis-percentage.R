@@ -42,7 +42,7 @@ stats$LOGSUM <- 0
 # read sv files one by one
 for (i in 1:length(bioid)) {
   id <- bioid[i]
-  file <- read.delim(paste("D:/Project/Signature/PBTA/V7/sv/",id,".vcf",sep = ""))
+  file <- read.delim(paste(id,".vcf",sep = ""))
   stats$DUP[i] <- nrow(file[file$SVtype == "DUP",])
   stats$DEL[i] <- nrow(file[file$SVtype == "DEL",])
   stats$INV[i] <- nrow(file[(file$SVtype == "h2hINV" |file$SVtype == "t2tINV"),])
