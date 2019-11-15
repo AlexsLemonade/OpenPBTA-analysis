@@ -3,17 +3,21 @@
 ##### The scatterplots below show the correlation between the mean expression of loss and neutral CN calls across genes, separated by polyA and stranded RNA expression data. 
 
 Loss/neutral calls correlation plot using polyA RSEM expression data:
+
 ![](plots/loss_correlation_scatterplot_polyA.png)
 
 Loss/neutral calls correlation plot using stranded RSEM expression data:
+
 ![](plots/loss_correlation_scatterplot_stranded.png)
 
 ##### The scatterplots below show the correlation between the mean expression of loss CN calls and instances where CN equals to zero across genes, separated by polyA and stranded RNA expression data. 
 
 Zero/neutral calls correlation plot using polyA RSEM expression data:
+
 ![](plots/zero_correlation_scatterplot_polyA.png)
 
 Zero/neutral calls correlation plot using stranded RSEM expression data:
+
 ![](plots/zero_correlation_scatterplot_stranded.png)
 
 
@@ -21,13 +25,10 @@ Zero/neutral calls correlation plot using stranded RSEM expression data:
 
 The plot using the polyA RSEM expression data is below:
 
-![](plots/cn_loss_expression_polyA.png)
-![](plots/cn_neutral_expression_polyA.png)
-![](plots/cn_zero_expression_polyA.png)
+![](plots/focal_cn_stacked_expression_polyA.png)
 
 The plot using the stranded RSEM expression data is below:
 
-![](plots/cn_loss_expression_stranded.png)
-![](plots/cn_neutral_expression_stranded.png)
-![](plots/cn_zero_expression_stranded.png)
+![](plots/focal_cn_stacked_expression_stranded.png)
+
 

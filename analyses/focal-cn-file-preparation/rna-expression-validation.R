@@ -152,13 +152,6 @@ rsem_combined_stranded_df <-
                    metadata,
                    "annotated_focal_cn_expression_stranded.tsv.gz")
 
-# Coerce `expression_class` into factor variable
-rsem_combined_polyA_df$expression_class <-
-  as.factor(rsem_combined_polyA_df$expression_class)
-
-rsem_combined_stranded_df$expression_class <-
-  as.factor(rsem_combined_stranded_df$expression_class)
-
 # Read in gene list
 goi_list <-
   read.delim(
@@ -212,9 +205,7 @@ polyA_loss_plot_df <-
     cn_loss_polyA_df,
     cn_neutral_polyA_df,
     cn_zero_polyA_df,
-    "cn_loss_expression_polyA.png",
-    "cn_neutral_expression_polyA.png",
-    "cn_zero_expression_polyA.png"
+    "focal_cn_stacked_expression_polyA.png"
   )
 
 stranded_loss_plot_df <-
@@ -222,9 +213,7 @@ stranded_loss_plot_df <-
     cn_loss_stranded_df,
     cn_neutral_stranded_df,
     cn_zero_stranded_df,
-    "cn_loss_expression_stranded.png",
-    "cn_neutral_expression_stranded.png",
-    "cn_zero_expression_stranded.png"
+    "focal_cn_stacked_expression_stranded.png"
   )
 
 # Plot and save scatterplot showing mean expression of deletions compared to 
