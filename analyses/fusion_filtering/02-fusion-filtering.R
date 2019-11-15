@@ -1,55 +1,55 @@
 # K. S. Gaonkar 2019
 # Filters standardized fusion calls to remove artifacts and false positives.
-# Events such as polymerase read-throughs, mis-mapping due to gene homology, and fusions occurring in healthy normal 
-# tissue require stringent filtering, making it difficult for researchers and clinicians to discern true underlying 
+# Events such as polymerase read-throughs, mis-mapping due to gene homology, and fusions occurring in healthy normal
+# tissue require stringent filtering, making it difficult for researchers and clinicians to discern true underlying
 # oncogenic drivers of a tumor and in some cases, appropriate therapy
 
 # Example run:
-# Rscript analyses/fusion_filtering/02-fusion-filtering.R -S scratch/arriba.tsv --expressionMatrix data/pbta-gene-expression-rsem-fpkm.stranded.rds --reathroughFilter --artifactFilter "GTEx|HGNC_GENEFAM|DGD_PARALOGS|Normal|BodyMap|ConjoinG" --junctionReadCountFilter 1 --spanningFragCountFilter 10 --readingFrameFilter "in-frame|frameshift|other" --referenceFolder analyses/fusion_filtering/references/ --outputfile scratch/arriba_stranded_V2 -t 1
+# Rscript analyses/fusion_filtering/02-fusion-filtering.R -S scratch/arriba.tsv --expressionMatrix data/pbta-gene-expression-rsem-fpkm.stranded.rds --readthroughFilter --artifactFilter "GTEx|HGNC_GENEFAM|DGD_PARALOGS|Normal|BodyMap|ConjoinG" --junctionReadCountFilter 1 --spanningFragCountFilter 10 --readingFrameFilter "in-frame|frameshift|other" --referenceFolder analyses/fusion_filtering/references/ --outputfile scratch/arriba_stranded_V2 -t 1
 #
 # Command line arguments
 #
-# standardFusionFile      :Standardized fusion calls from [STAR|ARRIBA] from 01-fusion-standardization.R 
-#				                   or user input files in the correct format 
+# standardFusionFiles  :Standardized fusion calls from STARFusion and Arriba from 01-fusion-standardization.R as comma separated file names
 # expressionFilter        :Integer threshold of expression for both gene in fusion  partners with FPKM<1
-# junctionReadCountFilter	:Integer threshold for JunctionReadCount per fusion to remove false calls with 0 
+# junctionReadCountFilter	:Integer threshold for JunctionReadCount per fusion to remove false calls with 0
 #				                   supporting junction reads
-# spanningFragCountFilter	:Integer threashold for (SpanningFragCount-JunctionReadCount) to remove false 
-#				                   positives where breakpoints are towards to begining or ends of the transcript 
-# reathroughFilter		    :Boolean value to remove predicted read-through from caller 
+# spanningFragCountFilter	:Integer threashold for (SpanningFragCount-JunctionReadCount) to remove false
+#				                   positives where breakpoints are towards to begining or ends of the transcript
+# readthroughFilter		    :Boolean value to remove predicted read-through from caller
 # artifactFilter		      :Comma separated values to remove fusions annotated as potential red flag as per
 #				                   annotation in "annots" column (in OpenPBTA annotation is from FusionAnnotator)
 # readingFrameFilter		  :Reading frame to keep in final set of QC fusion calls ( regex to capture inframe|frameshift|other)
-# referenceFolder		      :Path to folder with all reference gene list and fusion file list with the following files 
+# referenceFolder		      :Path to folder with all reference gene list and fusion file list with the following files
 #                          genelistreference.txt A dataframe of genes of interest ; columns 1 : GeneNames 2: Source file 3: Type
 #                          fusionreference.txt A dataframe of fusion of interest ; columns 1 : FusionName 2: Source file 3: Type
 # outputfile			        :Filename prefix for QC filtered and gene of interest annotated fusion calls (prefix for _QC_expression_filtered_annotated.RDS)")
 #
 
-  
-				
-				
-				
+
+
+
+
 
 library("optparse")
 library("reshape2")
 library("tidyverse")
+library("qdapRegex")
 
 option_list <- list(
-  make_option(c("-S", "--standardFusionFile"),type="character",
-              help="Standardized fusion calls from (.TSV) "),
+  make_option(c("-S", "--standardFusionFiles"),type="character",
+              help="Standardized fusion calls from STARFusion (.TSV), Arriba (.TSV) "),
   make_option(c("-e","--expressionMatrix"),type="character",
               help="Matrix of expression for samples in standardFusion file (.RDS) "),
-  make_option(c("-r", "--reathroughFilter"), type="character",action = "store_true",
-              help="Boolean to filter readthrough",default=TRUE),
+  make_option(c("-r", "--readthroughFilter"),action = "store_true",
+              help="Boolean to filter readthrough",default=FALSE),
   make_option(c("-t","--expressionFilter"), type="integer",
               help="threshold for TPM/FPKM filter",default=1),
   make_option(c("-a","--artifactFilter"),type="character",
               help="red flag filter from Annotation ; in OpenPBTA annotation is from FusionAnnotator"),
   make_option(c("-j","--junctionReadCountFilter"), type="integer",
-              help="threshold for JunctionReadCount"),
+              help="threshold for junctionReadCount",default=1),
   make_option(c("-s","--spanningFragCountFilter"),type="integer",
-              help="threshold for (SpanningFragCount - JunctionReadCount)"),
+              help="threshold for  (SpanningFragCount - JunctionReadCount)",default=10),
   make_option(c("-i","--readingFrameFilter"),type="character",
                help="reading frame filtering ( regex to capture inframe|frameshift|other)"),
   make_option(c("-R","--referenceFolder"),type="character",
@@ -63,9 +63,11 @@ option_list <- list(
 
 opt <- parse_args(OptionParser(option_list=option_list))
 
-standardFusionFile<-opt$standardFusionFile
+# TO-DO
+# multiple opt values for each caller and output name from input fusion calls and expression Matrix?
+standardFusionFiles<-unlist(strsplit(opt$standardFusionFiles,","))
 expressionMatrix<-opt$expressionMatrix
-reathroughFilter<-opt$reathroughFilter
+readthroughFilter<-opt$readthroughFilter
 expressionFilter<-opt$expressionFilter
 artifactFilter<-opt$artifactFilter
 junctionReadCountFilter<-opt$junctionReadCountFilter
@@ -73,7 +75,15 @@ spanningFragCountFilter<-opt$spanningFragCountFilter
 referenceFolder<-opt$referenceFolder
 readingFrameFilter<-opt$readingFrameFilter
 
-standardFusioncalls<-readr::read_tsv(standardFusionFile)
+# standardFusioncallsSTARFusion<-readr::read_tsv(standardFusionFileSTARFusion)
+# standardFusioncallsArriba<-readr::read_tsv(standardFusionFileArriba)
+# 
+# # combine callers
+# standardFusioncalls<-rbind(standardFusioncallsArriba,standardFusioncallsSTARFusion)
+
+standardFusioncalls<-lapply(standardFusionFiles,function(x) readr::read_tsv(x))
+standardFusioncalls <- plyr::ldply(standardFusioncalls, data.frame) 
+
 
 #formatting dataframe for filtering
 standardFusioncalls<-standardFusioncalls %>%
@@ -96,7 +106,7 @@ standardFusioncalls<-standardFusioncalls %>%
 ############# artifactFiltering #############
 
 
-fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFrameFilter=readingFrameFilter,artifactFilter=artifactFilter,junctionReadCountFilter=junctionReadCountFilter,spanningFragCountFilter=spanningFragCountFilter,reathroughFilter=reathroughFilter){
+fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFrameFilter=readingFrameFilter,artifactFilter=artifactFilter,junctionReadCountFilter=junctionReadCountFilter,spanningFragCountFilter=spanningFragCountFilter,readthroughFilter=readthroughFilter){
   # @param standardFusioncalls A dataframe from star fusion or arriba standardized to run through the filtering steps
   # @param expressionMatrix A rds with expression data (RSEM/TPM counts) for the same cohort/GTEX
   # @param readingFramFilter A regex to capture readingframe (eg. in-frame|frameshift|other)
@@ -105,15 +115,24 @@ fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFra
   # @param spanningFragCountFilter An integer threshold for (SpanningFragCount - JunctionReadCount)
   # @param expressionFilter An integer threshold for TPM/FPKM filter
   # @return Standardized fusion calls filtered to pass QC and remove calls with insufficient read-support and annotation red-flags
-  
-  if( reathroughFilter & any(grepl('read.*through|NEIGHBORS',standardFusioncalls$annots,ignore.case = TRUE))){
-    # Gather read throughs from standardized fusion calls  
-    rts <- standardFusioncalls[grep('read.*through|NEIGHBORS',standardFusioncalls$annots,ignore.case = TRUE),"FusionName"]
-    # Reverse of read throughs to capture 
+
+  if( readthroughFilter & any(grepl('read.*through|NEIGHBORS',standardFusioncalls$annots,ignore.case = TRUE))){
+    # Gather read throughs from standardized fusion calls
+    rts <- standardFusioncalls[grep('read.*through|NEIGHBORS',standardFusioncalls$annots,ignore.case = TRUE),c("FusionName","annots")]
+    if(length(grep("mitelman",rts$annots,ignore.case = TRUE))>0){
+      #dont remove if fusion in mitelman (cancer fusion specific fusion database)
+      rts <- rts[-grep("mitelman",rts$annots,ignore.case = TRUE),"FusionName"]
+    }else{
+      rts<-as.character(rts$FusionName)
+    }
+    # Reverse of read throughs to capture
     rts.rev <- unique(unlist(lapply(strsplit(rts, '--'), FUN = function(x) paste0(x[2],'--',x[1]))))
-    # Combine read through and reverse fusion genes 
+    # Combine read through and reverse fusion genes
     rts <- unique(c(rts, rts.rev))
-    standardFusioncalls <- standardFusioncalls[-which(standardFusioncalls$FusionName %in% rts),]
+    # remove read throughs even if distance is not same in intergenic fusions
+    rts<-unlist(lapply(rts,function(x) rm_between(x, "(", ")", extract = F)))
+    rts<-data.frame("readThroughs"=rts)
+    standardFusioncalls<-standardFusioncalls[-which(unlist(lapply(standardFusioncalls$FusionName,function(x) rm_between(x, "(", ")", extract = F))) %in% rts$readThroughs),]
   }
 
   if( !missing(readingFrameFilter ) ){
@@ -124,7 +143,7 @@ fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFra
       warning(paste("No fusion calls with readingframe:",readingFrameTypes[-which(readingFrameTypes %in% standardFusioncalls$Fusion_Type)]))
     }
   }
-  
+
   if( !missing(artifactFilter) & any(grepl(artifactFilter,standardFusioncalls$annots)) ) {
     # Error handling
     artifactFilterTypes<-unlist(strsplit(artifactFilter,"|",fixed=TRUE))
@@ -144,12 +163,12 @@ fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFra
     # to remove these calls we are implementing this condition below
     standardFusioncalls <- standardFusioncalls[which( (standardFusioncalls$SpanningFragCount - standardFusioncalls$JunctionReadCount ) <= spanningFragCountFilter),]
   }
-  
+
   return(standardFusioncalls)
 }
 
 # QC filter: artifact and read support
-QCFiltered<-fusion_filtering_QC(standardFusioncalls = standardFusioncalls,junctionReadCountFilter = junctionReadCountFilter,spanningFragCountFilter = spanningFragCountFilter,readingFrameFilter = readingFrameFilter,artifactFilter = artifactFilter,reathroughFilter = reathroughFilter)
+QCFiltered<-fusion_filtering_QC(standardFusioncalls = standardFusioncalls,junctionReadCountFilter = junctionReadCountFilter,spanningFragCountFilter = spanningFragCountFilter,readingFrameFilter = readingFrameFilter,artifactFilter = artifactFilter,readthroughFilter = readthroughFilter)
 
 ############################################
 
@@ -160,7 +179,7 @@ expressionMatrix<-readRDS(expressionMatrix)
 expressionMatrix <- cbind(expressionMatrix, colsplit(expressionMatrix$gene_id, pattern = '_', names = c("EnsembleID","GeneSymbol")))
 
 
-# The idea from @jaclyn-taroni 
+# The idea from @jaclyn-taroni
 # Generate two data frames that keep track of all gene symbols involved for each sample-fusion name pair and contain a sample's expression value for a gene symbol in long format. Use these to  filter all the available fusions to just the ones with either gene from the fusion pair to have expression above the threshold.
 
 fusion_sample_gene_df <- QCFiltered %>%
@@ -169,7 +188,7 @@ fusion_sample_gene_df <- QCFiltered %>%
   # We want a single column that contains the gene symbols
   tidyr::gather(Gene1A, Gene1B, Gene2A, Gene2B,
                 key = gene_position, value = GeneSymbol) %>%
-  # Get rid of the Gene1A, Gene1B, Gene2A, Gene2B information              
+  # Get rid of the Gene1A, Gene1B, Gene2A, Gene2B information
   dplyr::select(-gene_position) %>%
   # Remove columns without gene symbols
   dplyr::filter(GeneSymbol != "") %>%
@@ -207,11 +226,11 @@ expression_filtered_fusions <- fusion_sample_gene_df %>%
   dplyr::select(FusionName, Sample) %>%
   # unique FusionName-Sample rows
   dplyr::distinct() %>%
-  # use this to filter the QC filtered fusion data frame 
-  dplyr::inner_join(QCFiltered, by = c("FusionName", "Sample")) %>% 
+  # use this to filter the QC filtered fusion data frame
+  dplyr::inner_join(QCFiltered, by = c("FusionName", "Sample")) %>%
   # retain the same columns as merge method
-  dplyr::select(c('LeftBreakpoint','RightBreakpoint','FusionName' , 'Sample' , 
-                  'Caller' ,'Fusion_Type' , 'JunctionReadCount' ,'SpanningFragCount' , 
+  dplyr::select(c('LeftBreakpoint','RightBreakpoint','FusionName' , 'Sample' ,
+                  'Caller' ,'Fusion_Type' , 'JunctionReadCount' ,'SpanningFragCount' ,
                   'Confidence' ,'annots','Gene1A','Gene2A','Gene1B','Gene2B'))
 
 
@@ -219,29 +238,34 @@ expression_filtered_fusions <- fusion_sample_gene_df %>%
 ###############annotation###############
 # column 1 as GeneName 2 source file 3 type; collapse to summarize type
 geneListReferenceDataTab<-read.delim(file.path(referenceFolder,"genelistreference.txt"),stringsAsFactors = FALSE)
-geneListReferenceDataTab<-geneListReferenceDataTab %>% dplyr::group_by(Gene_Symbol) %>% dplyr::mutate(type = toString(type)) %>% 
+geneListReferenceDataTab<-geneListReferenceDataTab %>%
+  # upper case because some genes have a/b/c etc
+  mutate(Gene_Symbol=toupper(Gene_Symbol)) %>%
+  dplyr::group_by(Gene_Symbol) %>%
+  #collapse the gene type to have unique lines per gene
+  dplyr::mutate(type = toString(type)) %>%
   dplyr::distinct(Gene_Symbol, type) %>% as.data.frame()
 
 # column 1 as FusionName 2 source file 3 type; collapse to summarize type
 fusionReferenceDataTab<-read.delim(file.path(referenceFolder,"fusionreference.txt"),stringsAsFactors = FALSE)
 fusionReferenceDataTab<-fusionReferenceDataTab %>%
   dplyr::distinct(FusionName,type) %>% as.data.frame()
-  
+
 
 annotate_fusion_calls<-function(standardFusioncalls=standardFusioncalls,geneListReferenceDataTab=geneListReferenceDataTab,fusionReferenceDataTab=fusionReferenceDataTab){
   # @param standardFusioncalls A dataframe from star fusion or arriba standardized to run through the filtering steps
   # @param geneListReferenceDataTab A dataframe with column 1 as GeneName 2 source file 3 type; collapse to summarize type
   # @param fusionReferenceDataTab A dataframe with column 1 as FusionName 2 source file 3 type; collapse to summarize type
   # @return Standardized fusion calls annotated with gene list and fusion list provided in reference folder
-  annotated_filtered_fusions<-standardFusioncalls %>% 
+  annotated_filtered_fusions<-standardFusioncalls %>%
     # annotate Gene1A
-    dplyr::left_join(geneListReferenceDataTab,by=c("Gene1A"="Gene_Symbol")) %>% dplyr::rename(Gene1A_anno=type) %>% 
+    dplyr::left_join(geneListReferenceDataTab,by=c("Gene1A"="Gene_Symbol")) %>% dplyr::rename(Gene1A_anno=type) %>%
     # annotate Gene1B
-    dplyr::left_join(geneListReferenceDataTab,by=c("Gene1B"="Gene_Symbol")) %>% dplyr::rename(Gene1B_anno=type) %>% 
+    dplyr::left_join(geneListReferenceDataTab,by=c("Gene1B"="Gene_Symbol")) %>% dplyr::rename(Gene1B_anno=type) %>%
     # annotate Gene2A
-    dplyr::left_join(geneListReferenceDataTab,by=c("Gene2A"="Gene_Symbol")) %>% dplyr::rename(Gene2A_anno=type) %>% 
+    dplyr::left_join(geneListReferenceDataTab,by=c("Gene2A"="Gene_Symbol")) %>% dplyr::rename(Gene2A_anno=type) %>%
     # annotate Gene2B
-    dplyr::left_join(geneListReferenceDataTab,by=c("Gene2B"="Gene_Symbol")) %>% dplyr::rename(Gene2B_anno=type) %>% 
+    dplyr::left_join(geneListReferenceDataTab,by=c("Gene2B"="Gene_Symbol")) %>% dplyr::rename(Gene2B_anno=type) %>%
     # annotate FusionName
     dplyr::left_join(fusionReferenceDataTab,by=c("FusionName"="FusionName")) %>% dplyr::rename(Fusion_anno=type) %>%
     as.data.frame()
@@ -252,9 +276,6 @@ annotate_fusion_calls<-function(standardFusioncalls=standardFusioncalls,geneList
 annotated_filtered_fusions<-annotate_fusion_calls(standardFusioncalls = expression_filtered_fusions,geneListReferenceDataTab = geneListReferenceDataTab ,fusionReferenceDataTab = fusionReferenceDataTab )
 saveRDS(annotated_filtered_fusions,paste0(opt$outputfile,"_QC_expression_filtered_annotated.RDS"))
 
-# Annotate standardized fusion calls for project specific gene list filtering
-annotated_unfiltered_fusions<-annotate_fusion_calls(standardFusioncalls = standardFusioncalls,geneListReferenceDataTab = geneListReferenceDataTab ,fusionReferenceDataTab = fusionReferenceDataTab )
-saveRDS(annotated_unfiltered_fusions,paste0(opt$outputfile,"_unfiltered_annotated.RDS"))
 
 
 ############################################################################################
