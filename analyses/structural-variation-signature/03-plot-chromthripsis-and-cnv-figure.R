@@ -8,6 +8,8 @@
 # this file is used to choose independent specimens
 # 3. pbta-cnv-cnvkit.seg
 # we will plot cnv 
+# 4. BSID.vcf
+# this is the sv file generated from script "01-process-sv-file.R"
 #
 # Output files:
 # jpeg figures for each chromothripsis event
@@ -21,20 +23,20 @@ library(ggforce)
 `%!in%` = Negate(`%in%`)
 
 ## ===================== Load Shatterseek_link file ===================== 
-list <- read.csv("D:/Project/Shatterseek/PBTA_v7/PBTA_chromothripsis_newlink_region.csv")
+list <- read.csv("PBTA_chromothripsis_newlink_region.csv")
 # read file
 list=list[order(list$cluster_id,as.numeric(list$chr)),]
 # unique cluster
 listuni <-  list[!duplicated(list[,c('cluster_id')]),]
 
 ## ===================== Load  Independent specimen list =====================
-independent_specimen_list <- read.table("D:/Data/PBTA/release-v7-20191031/independent-specimens.wgs.primary-plus.tsv",header = TRUE,sep = "\t")
+independent_specimen_list <- read.table("independent-specimens.wgs.primary-plus.tsv",header = TRUE,sep = "\t")
 # bioid including all sample's names will be used later
 bioid <- unique(independent_specimen_list$Kids_First_Biospecimen_ID)
 
 
 ## ===================== Load cnv file =====================
-cnv_file <- read.table("D:/Data/PBTA/release-v7-20191031/pbta-cnv-cnvkit.seg/pbta-cnv-cnvkit.seg",header = TRUE,sep = "\t")
+cnv_file <- read.table("pbta-cnv-cnvkit.seg",header = TRUE,sep = "\t")
 # choose independent specimens
 cnv_analysis <-  cnv_file[cnv_file$ID %in% bioid & cnv_file$chrom != "chrY",]
 # remove "chr", because shatterseek can't recognize it
@@ -65,7 +67,7 @@ for (j in 1:length(listuni$sample)){
   cnv <- cnv[cnv$chrom %in% seq,]
   
   # read sv file
-  sv.data <- read.delim(paste("D:/Project/Signature/PBTA/V7/sv/",sample,".vcf",sep = ""))
+  sv.data <- read.delim(paste(sample,".vcf",sep = ""))
   
   # XY to 23 24
   sv.data$chrom1 <- gsub("X","23",sv.data$chrom1)
