@@ -78,6 +78,21 @@ if (!dir.exists(plots_dir)) {
 }
 ```
 
+```{r}
+upset_plot <- function(callers_per_mutation_df) {
+callers_per_mutation_df %>% 
+  dplyr::group_by(caller_combo) %>%
+  dplyr::tally() %>% 
+  ggplot2::ggplot(ggplot2::aes(x = reorder(caller_combo, -n), y = n)) +
+  ggplot2::geom_bar(
+        position = "dodge", stat = "identity") +
+  ggplot2::theme_classic() +
+  ggupset::scale_x_mergelist(sep = "-") +
+  ggupset::axis_combmatrix(sep = "-") +
+  ggplot2::xlab("") +
+  ggplot2::ylab("")
+}
+```
 ## Connect to database
 
 Connect to SQLite database.
@@ -182,6 +197,9 @@ vaf_med <- tapply(
 # Join the median VAF and the callers that call that mutation into one data.frame
 callers_per_mutation <- callers_per_mutation %>%
   dplyr::inner_join(vaf_med, by = "index") %>%
+  dplyr::left_join(long_caller_df %>% 
+                      dplyr::select(Variant_Classification, index), 
+                   by = "index") %>%
   # Make column names more sensible
   dplyr::rename(caller_combo = "..x", median_vaf = "..y") 
 ```
@@ -192,21 +210,28 @@ Make the upset plot.
 
 ```{r}
 callers_per_mutation %>% 
-  dplyr::group_by(caller_combo) %>%
-  dplyr::tally() %>% 
-  ggplot2::ggplot(ggplot2::aes(x = reorder(caller_combo, -n), y = n)) +
-  ggplot2::geom_bar(
-        position = "dodge", stat = "identity") +
-  ggplot2::theme_classic() +
-  ggupset::scale_x_mergelist(sep = "-") +
-  ggupset::axis_combmatrix(sep = "-") +
-  ggplot2::xlab("") +
-  ggplot2::ylab("")
+  upset_plot()
 ```
 
 ```{r}
 # Save this plot
 ggplot2::ggsave(file.path(plots_dir, "upset_plot.png"))
+```
+
+Transcripts only upset plot. 
+
+```{r}
+callers_per_mutation %>% 
+  dplyr::filter(!(Variant_Classification %in% c("5'Flank", "3'Flank", "IGR", "Intron"))) %>%
+  upset_plot()
+```
+
+Non transcript upset plot. 
+
+```{r}
+callers_per_mutation %>% 
+  dplyr::filter(Variant_Classification %in% c("5'Flank", "3'Flank", "IGR", "Intron")) %>%
+  upset_plot()
 ```
 
 ## VAF for combination sets of callers
@@ -251,7 +276,7 @@ perc_change_df <- all_caller_df %>%
       TRUE ~ base_change
     )
   ) %>%
-  # Widdle down to necessary columns
+  # Whittle down to necessary columns
   dplyr::select(change, dplyr::starts_with("VAF_")) %>% 
   # Make this long form
   tidyr::gather(key = "caller", value = "vaf", -change) %>% 
@@ -347,16 +372,15 @@ that are each type of change.
 
 ```{r}
 perc_var_df %>%
-  ggplot2::ggplot(ggplot2::aes(x = Variant_Classification, y = percent)) +
+  ggplot2::ggplot(ggplot2::aes(x = caller, y = percent)) +
   ggplot2::theme_classic() +
   ggplot2::geom_bar(
-    position = "dodge", stat = "identity",
-    ggplot2::aes(fill = caller)
+    position = "stack", stat = "identity",
+    ggplot2::aes(fill = Variant_Classification)
   ) +
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
   ggplot2::xlab("") +
-  ggplot2::ylab("Percent of callers' mutations") +
-  colorblindr::scale_fill_OkabeIto()
+  ggplot2::ylab("Percent of callers' mutations")
 ```
 
 ```{r}
