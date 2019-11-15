@@ -95,7 +95,8 @@ join_cols = c("Chromosome",
               "Start_Position",
               "Reference_Allele",
               "Allele",
-              "Tumor_Sample_Barcode")
+              "Tumor_Sample_Barcode", 
+              "Variant_Classification")
 ```
 
 Set up tables from the database but only call the columns we need.
@@ -114,11 +115,6 @@ vardict <- dplyr::tbl(con, "vardict") %>%
   dplyr::select(join_cols, "VAF") 
 ```
 
-```{r}
-# Designate consensus table
-consensus <- dplyr::tbl(con, "consensus")
-```
-
 Because `DBI` does not support full_join, we had to use a series of `left_join` and
 `union_all` calls in order to get a full join of all the callers. 
 
@@ -126,27 +122,33 @@ Because `DBI` does not support full_join, we had to use a series of `left_join` 
 # This script will do the full join of the data for us
 source(file.path("util", "full_join_callers.R"))
 
-# Check that this looks right
-head(all_caller)
+# Bring out the data.frame
+all_caller_df <- all_caller %>%
+  as.data.frame
+
+# Take a peek at what this looks like
+head(all_caller_df)
 ```
 
 ```{r}
 # Set up the data as a data.frame
-vaf_df <- all_caller %>% 
-  dplyr::select("VAF_lancet", "VAF_strelka", "VAF_vardict", "VAF_mutect") %>%
-  as.data.frame() %>%
+vaf_df <- all_caller_df %>% 
+  dplyr::select("VAF_lancet", "VAF_strelka", "VAF_vardict", "VAF_mutect",
+                "Variant_Classification") %>%
   dplyr::mutate(VAF_consensus = VAF_strelka)     
  
-# Which should be part of the consensus
-consensus_index <- which(apply(!is.na(vaf_df[, -3]), 1, sum) < 3)
- 
+# Determine which mutations are part of the consensus
+consensus_index <- vaf_df %>%
+  dplyr::select(-c(VAF_vardict, VAF_consensus, Variant_Classification)) %>%
+  rowSums(is.na(.)) > 0
+
 # Make non consensus VAF into an NA
 vaf_df$VAF_consensus[consensus_index] <- NA
 
 # Make this long form for plotting and 
 long_vaf_df <- vaf_df %>% 
   dplyr::mutate(index = factor(1:nrow(.))) %>% 
-  tidyr::gather(key = "caller", value = "vaf", -index) %>% 
+  tidyr::gather(key = "caller", value = "vaf", -index, -Variant_Classification) %>% 
   dplyr::mutate(caller = gsub("VAF_", "", caller)) %>% 
   dplyr::filter(!is.na(vaf))
 ```
@@ -236,21 +238,21 @@ Summarize base change information per caller.
 
 ```{r}
 # Summarize by the number of times each base change shows up in each category.
-perc_change_df <- all_caller %>% 
-  dplyr::mutate(base_change = paste0(Allele, ">", Reference_Allele)) %>%
-  # Case when only works for df not sql, so we will convert now
-  as.data.frame() %>%
+perc_change_df <- all_caller_df %>% 
+  # Make change variable
+  dplyr::mutate(base_change = paste0(Allele, ">", Reference_Allele)) %>% 
   dplyr::mutate(
-  # From the base_change variable, summarize insertions, deletions, and
-  # changes that are more than one base into their own groups.
-  change = dplyr::case_when(
-    grepl("^-", base_change) ~ "ins",
-    grepl("-$", base_change) ~ "del",
-    nchar(base_change) > 3 ~ "long_change",
-    TRUE ~ base_change
-  )) %>% 
-  dplyr::select(-Allele, -Reference_Allele, -Chromosome, -base_change, 
-                -Tumor_Sample_Barcode, -Start_Position) %>%
+    # From the base_change variable, summarize insertions, deletions, and
+    # changes that are more than one base into their own groups.
+    change = dplyr::case_when(
+      grepl("^-", base_change) ~ "ins",
+      grepl("-$", base_change) ~ "del",
+      nchar(base_change) > 3 ~ "long_change",
+      TRUE ~ base_change
+    )
+  ) %>%
+  # Widdle down to necessary columns
+  dplyr::select(change, dplyr::starts_with("VAF_")) %>% 
   # Make this long form
   tidyr::gather(key = "caller", value = "vaf", -change) %>% 
   # Drop the prefix
@@ -300,7 +302,6 @@ Make a violin plot of each caller.
 
 ```{r}
 long_vaf_df %>%
-  as.data.frame() %>% 
   ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, color = caller)) +
   ggplot2::geom_violin() +
   ggplot2::theme_classic() +
@@ -317,7 +318,7 @@ ggplot2::ggsave(file.path(plots_dir, "vaf_violin_plot.png"))
 Make the plot with ggpairs. 
 
 ```{r}
-GGally::ggpairs(vaf_df %>% dplyr::select(-VAF_consensus), 
+GGally::ggpairs(vaf_df %>% dplyr::select(-VAF_consensus, -Variant_Classification), 
                 mapping = ggplot2::aes(alpha = 0.05)) +
   ggplot2::theme_classic()
 ``` 
@@ -325,6 +326,42 @@ GGally::ggpairs(vaf_df %>% dplyr::select(-VAF_consensus),
 ```{r}
 # Save this plot
 ggplot2::ggsave(file.path(plots_dir, "vaf_correlations_plot.png"))
+```
+
+## Mutation Region barplot
+
+Summarize `Variant_Classification` information per caller. 
+
+```{r}
+# Summarize by the number of times each base change shows up in each category.
+perc_var_df <- long_vaf_df %>% 
+  # Summarize the number of mutations per caller
+  dplyr::count(caller, Variant_Classification, name = "count") %>%
+  dplyr::add_count(caller, wt = count) %>%
+  # Calculate the percent of each 
+  dplyr::mutate(percent = count / n)
+```
+
+Make a barplot illustrating the percent of the mutations for each caller that 
+that are each type of change. 
+
+```{r}
+perc_var_df %>%
+  ggplot2::ggplot(ggplot2::aes(x = Variant_Classification, y = percent)) +
+  ggplot2::theme_classic() +
+  ggplot2::geom_bar(
+    position = "dodge", stat = "identity",
+    ggplot2::aes(fill = caller)
+  ) +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
+  ggplot2::xlab("") +
+  ggplot2::ylab("Percent of callers' mutations") +
+  colorblindr::scale_fill_OkabeIto()
+```
+
+```{r}
+# Save this plot
+ggplot2::ggsave(file.path(plots_dir, "variant_classification_plot.png"))
 ```
 
 ## Session Info
