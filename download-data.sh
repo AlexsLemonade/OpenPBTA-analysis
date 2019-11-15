@@ -21,6 +21,14 @@ do
   curl --create-dirs $URL/$RELEASE/$file -o data/$RELEASE/$file -z data/$RELEASE/$file
 done
 
+# Download reference and gencode file from public ftp
+REFERENCE="ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/GRCh38.primary_assembly.genome.fa.gz"
+GENCODE="ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/gencode.v27.primary_assembly.annotation.gtf.gz"
+cd data/$RELEASE
+curl -JO $REFERENCE
+curl -JO $GENCODE
+cd -
+
 # Check the md5s for everything we downloaded except CHANGELOG.md
 cd data/$RELEASE
 md5sum -c md5sum.txt
