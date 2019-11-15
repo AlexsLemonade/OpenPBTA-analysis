@@ -125,6 +125,8 @@ merge_expression <-
     # Save results
     readr::write_tsv(combined_df, file.path(results_dir, filename))
     
+    return(combined_df)
+    
   }
 
 plot_stacked_expression <- function (cn_expression_loss_df,
