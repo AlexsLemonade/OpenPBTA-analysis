@@ -66,5 +66,6 @@ Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   
 ############################# Comparison Plots #################################
 if [$run_plots_nb]
+then
  Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots.Rmd', clean = TRUE)"
 fi
