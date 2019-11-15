@@ -134,7 +134,14 @@ head(all_caller)
 # Set up the data as a data.frame
 vaf_df <- all_caller %>% 
   dplyr::select("VAF_lancet", "VAF_strelka", "VAF_vardict", "VAF_mutect") %>%
-  as.data.frame() 
+  as.data.frame() %>%
+  dplyr::mutate(VAF_consensus = VAF_strelka)     
+ 
+# Which should be part of the consensus
+consensus_index <- which(apply(!is.na(vaf_df[, -3]), 1, sum) < 3)
+ 
+# Make non consensus VAF into an NA
+vaf_df$VAF_consensus[consensus_index] <- NA
 
 # Make this long form for plotting and 
 long_vaf_df <- vaf_df %>% 
@@ -147,9 +154,14 @@ long_vaf_df <- vaf_df %>%
 Get median vaf for each mutation with each caller combination. 
 
 ```{r}
+# Take out the consensus VAF for this combination
+long_caller_df <- long_vaf_df %>% 
+  dplyr::filter(caller != "consensus")
+
 # Determine the combination of callers for each mutation
-callers_per_mutation <- tapply(vaf_df$caller,
-    vaf_df$index,
+callers_per_mutation <- tapply(
+    long_caller_df$caller,
+    long_caller_df$index,
     paste0,
     collapse = "-"
   ) %>% 
@@ -158,18 +170,18 @@ callers_per_mutation <- tapply(vaf_df$caller,
 
 # Determine Median VAF for each mutation 
 vaf_med <- tapply(
-    vaf_df$vaf,
-    vaf_df$index,
+    long_caller_df$vaf,
+    long_caller_df$index,
     median
   ) %>% 
   as.data.frame() %>%
   tibble::rownames_to_column("index")
 
 # Join the median VAF and the callers that call that mutation into one data.frame
-  callers_per_mutation <- callers_per_mutation %>%
-    dplyr::inner_join(vaf_med, by = "index") %>%
-    # Make column names more sensible
-    dplyr::rename(caller_combo = "..x", median_vaf = "..y") 
+callers_per_mutation <- callers_per_mutation %>%
+  dplyr::inner_join(vaf_med, by = "index") %>%
+  # Make column names more sensible
+  dplyr::rename(caller_combo = "..x", median_vaf = "..y") 
 ```
 
 ## Upset graph
@@ -287,9 +299,8 @@ ggplot2::ggsave(file.path(plots_dir, "perc_base_change_plot.png"))
 Make a violin plot of each caller. 
 
 ```{r}
-vaf_df %>%
+long_vaf_df %>%
   as.data.frame() %>% 
-  
   ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, color = caller)) +
   ggplot2::geom_violin() +
   ggplot2::theme_classic() +
@@ -306,7 +317,8 @@ ggplot2::ggsave(file.path(plots_dir, "vaf_violin_plot.png"))
 Make the plot with ggpairs. 
 
 ```{r}
-GGally::ggpairs(vaf_df, mapping = ggplot2::aes(alpha = 0.05)) +
+GGally::ggpairs(vaf_df %>% dplyr::select(-VAF_consensus), 
+                mapping = ggplot2::aes(alpha = 0.05)) +
   ggplot2::theme_classic()
 ``` 
 
