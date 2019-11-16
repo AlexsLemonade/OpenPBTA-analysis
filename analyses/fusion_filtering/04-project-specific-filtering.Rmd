@@ -55,7 +55,7 @@ This notebook assumes you are in OpenPBTA-analysis project folder structure.
 
 
 ```{r}
-inputfolder<-file.path("~/Documents/OpenPBTA-analysis/")
+inputfolder<-file.path("..", "..")
 setwd(inputfolder)
 #load required packages
 suppressPackageStartupMessages(library("readr"))
