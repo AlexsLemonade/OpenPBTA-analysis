@@ -195,6 +195,10 @@ files_to_subset <-
   files_to_subset[which(!(files_to_subset %in% c(polya_rsem_files[-1],
                                                  stranded_rsem_files[-1])))]
 
+# TODO: REMOVE THIS once you are no longer testing locally!
+# this is removing the larger 2 of the 4 MAF files
+files_to_subset <- files_to_subset[-grepl("vardict|mutect2", files_to_subset)]
+
 # get the participant ID to biospecimen ID
 id_mapping_df <- read_tsv(file.path(data_directory, "pbta-histologies.tsv")) %>%
   dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID) %>%
