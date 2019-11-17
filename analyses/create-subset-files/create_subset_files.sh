@@ -46,10 +46,21 @@ cp $FULL_DIRECTORY/independent-specimens*.tsv $SUBSET_DIRECTORY
 # all bed files
 cp $FULL_DIRECTORY/*.bed $SUBSET_DIRECTORY
 
-# if the md5sum.txt file already exists, get rid of it
-rm -f $SUBSET_DIRECTORY/md5sum.txt
-# create a new md5sum.txt file
+# create a directory that will hold the SNV consensus files
+mkdir -p $SUBSET_DIRECTORY/snv-consensus_11122019
+# copy the README from the zipped consensus files to the subset directory
+cp ../../data/snv-consensus_11122019/README.md $SUBSET_DIRECTORY/snv-consensus_11122019
+# move the subset consensus files to the directory
+mv $SUBSET_DIRECTORY/consensus_mutation* $SUBSET_DIRECTORY/snv-consensus_11122019
+
+# zip up the folder and then remove
 cd $SUBSET_DIRECTORY
+zip pbta-snv-consensus_11122019.zip snv-consensus_11122019/*
+rm -rf snv-consensus_11122019
+
+# if the md5sum.txt file already exists, get rid of it
+rm -f md5sum.txt
+# create a new md5sum.txt file
 md5sum * > md5sum.txt
 
 # Changelog does not get tracked
