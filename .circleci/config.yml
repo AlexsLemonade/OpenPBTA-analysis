@@ -51,7 +51,6 @@ jobs:
           command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/03-Calc-zscore-annotate.R -S scratch/arriba_QC_expression_filtered_annotated.RDS -e data/pbta-gene-expression-rsem-fpkm.polya.rds -s data/pbta-gene-expression-rsem-zscore-GTEX.polya.rds -g analyses/fusion_filtering/references/Brain_FPKM_hg38_matrix.txt.zip -o scratch/arriba_QC_expression_filtered
 
       - run:
-HEAD
           name: Transcriptome dimensionality reduction
           command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
 
@@ -67,6 +66,10 @@ HEAD
       - run:
           name: Sex prediction from RNA-seq - Train elasticnet
           command: ./scripts/run_in_ci.sh Rscript --vanilla  analyses/sex-prediction-from-RNASeq/02-train_elasticnet.R --input_directory scratch --output_directory scratch --filename_lead kallisto_stranded
+          
+      - run:
+          name: Sex prediction from RNA-seq - Evaluate model
+          command: ./scripts/run_in_ci.sh Rscript --vanilla  analyses/sex-prediction-from-RNASeq/03-evaluate_model.R --test_set_input_directory scratch --model_input_directory scratch --output_directory scratch --filename_lead kallisto_stranded
 
       - run:
           name: Selection Strategy Comparison
