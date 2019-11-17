@@ -7,7 +7,7 @@ set -o pipefail
 
 # Set defaults for release and biospecimen file name
 BIOSPECIMEN_FILE=${BIOSPECIMEN_FILE:-biospecimen_ids_for_subset.RDS}
-RELEASE=${RELEASE:-release-v9-20191105}
+RELEASE=${RELEASE:-release-v10-20191115}
 NUM_MATCHED=${NUM_MATCHED:-15}
 
 # This script should always run as if it were being called from
