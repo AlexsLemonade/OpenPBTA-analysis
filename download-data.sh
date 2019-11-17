@@ -32,6 +32,7 @@ cd -
 # Check the md5s for everything we downloaded except CHANGELOG.md
 cd data/$RELEASE
 md5sum -c md5sum.txt
+mv pbta-snv-consensus_11122019.zip ../
 cd ../../
 
 # Make symlinks in data/ to the files in the just downloaded release folder.
