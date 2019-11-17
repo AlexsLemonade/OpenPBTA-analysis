@@ -24,7 +24,7 @@ done
 # Download reference and gencode file from public ftp
 REFERENCE="ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/GRCh38.primary_assembly.genome.fa.gz"
 GENCODE="ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/gencode.v27.primary_assembly.annotation.gtf.gz"
-cd data/$RELEASE
+cd data
 curl -JO $REFERENCE
 curl -JO $GENCODE
 cd -
