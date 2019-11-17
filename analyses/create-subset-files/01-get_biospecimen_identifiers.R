@@ -53,6 +53,10 @@ get_biospecimen_ids <- function(filename, id_mapping_df) {
                                   skip = 1,  # skip version string
                                   data.table = FALSE)
     biospecimen_ids <- unique(snv_file$Tumor_Sample_Barcode)
+  } else if (grepl("consensus_mutation", filename)) {
+    consensus_mut_file <- data.table::fread(filename,
+                                            data.table = FALSE)
+    biospecimen_ids <- unique(consensus_mut_file$Tumor_Sample_Barcode)
   } else if (grepl("pbta-cnv", filename)) {
     # the two CNV files now have different structures
     cnv_file <- read_tsv(filename)
@@ -106,7 +110,7 @@ option_list <- list(
   make_option(
     c("-r", "--supported_string"),
     type = "character",
-    default = "pbta-snv|pbta-cnv|pbta-fusion|pbta-isoform|pbta-sv|pbta-gene",
+    default = "pbta-snv|pbta-cnv|pbta-fusion|pbta-isoform|pbta-sv|pbta-gene|consensus_mutation",
     help = "string for pattern matching used to subset to only supported files"
   ),
   make_option(
@@ -151,10 +155,45 @@ set.seed(opt$seed)
 
 #### Get IDs -------------------------------------------------------------------
 
-# list all files we are interested in subsetting and can support
+# unzip the consensus mutation files
+consensus_zip <-  list.files(data_directory,
+                             pattern = "pbta-snv-consensus.*zip",
+                             full.names = TRUE)
+
+# list the contents of the zip folder and only extract the ones that we support
+consensus_zip_contents <- utils::unzip(consensus_zip, list = TRUE)
+zip_files_to_extract <- consensus_zip_contents %>%
+  dplyr::filter(grepl(supported_files_string, Name),
+                !grepl("__MACOSX", Name)) %>%
+  dplyr::pull(Name)
+
+# now we're ready to unzip
+utils::unzip(consensus_zip,
+             files = zip_files_to_extract,
+             junkpaths = TRUE,
+             exdir = data_directory)
+
+# list all files we are interested in subsetting and can support, with the
+# exception of the zipped consensus files
 files_to_subset <- list.files(data_directory,
                               pattern = supported_files_string,
                               full.names = TRUE)
+files_to_subset <- files_to_subset[-grep(consensus_zip, files_to_subset)]
+
+# there are 6 RSEM files per library strategy, which we will assume contain the
+# same samples
+polya_rsem_files <- files_to_subset[grep("rsem.*polya", files_to_subset)]
+stranded_rsem_files <- files_to_subset[grep("rsem.*stranded", files_to_subset)]
+
+# we're going to remove 5 out of six of each set of files and use those samples
+# for each of the six files later
+kept_polya_rsem <- polya_rsem_files[1]
+kept_stranded_rsem <- stranded_rsem_files[1]
+
+# drop the unneeded files for each
+files_to_subset <-
+  files_to_subset[which(!(files_to_subset %in% c(polya_rsem_files[-1],
+                                                 stranded_rsem_files[-1])))]
 
 # get the participant ID to biospecimen ID
 id_mapping_df <- read_tsv(file.path(data_directory, "pbta-histologies.tsv")) %>%
@@ -165,7 +204,7 @@ id_mapping_df <- read_tsv(file.path(data_directory, "pbta-histologies.tsv")) %>%
 # biospecimen IDs and then mapping back to
 participant_id_list <- purrr::map(files_to_subset,
                                   ~ get_biospecimen_ids(.x, id_mapping_df)) %>%
-  stats::setNames(files_to_subset)
+  purrr::set_names(files_to_subset)
 
 # explicitly perform garbage collection here
 gc(verbose = FALSE)
@@ -217,7 +256,7 @@ participant_ids_for_subset <- purrr::map2(matched_for_subset,
                                           nonmatched_for_subset,
                                           c)
 
-# map back to biospecimen ids + save to file
+# map back to biospecimen ids
 biospecimen_ids_for_subset <- purrr::map(
   participant_ids_for_subset,
   function(x) {
@@ -225,5 +264,26 @@ biospecimen_ids_for_subset <- purrr::map(
       dplyr::filter(Kids_First_Participant_ID %in% x) %>%
       dplyr::pull(Kids_First_Biospecimen_ID)
   }
-) %>%
+)
+
+# now for the other RSEM files, we need to use the same identifiers as the
+# same file we included
+polya_rsem_ids <-
+  biospecimen_ids_for_subset[[grep(kept_polya_rsem,
+                                   names(biospecimen_ids_for_subset))]]
+stranded_rsem_ids <-
+  biospecimen_ids_for_subset[[grep(kept_stranded_rsem,
+                                   names(biospecimen_ids_for_subset))]]
+
+# create lists that contain the same identifiers
+rest_polya_rsem <- lapply(polya_rsem_files[-1], function(x) polya_rsem_ids) %>%
+  purrr::set_names(polya_rsem_files[-1])
+rest_stranded_rsem <- lapply(stranded_rsem_files[-1],
+                             function(x) stranded_rsem_ids) %>%
+  purrr::set_names(stranded_rsem_files[-1])
+
+# append the other RSEM elements to the list of all ids and write to file
+biospecimen_ids_for_subset %>%
+  append(rest_polya_rsem) %>%
+  append(rest_stranded_rsem) %>%
   write_rds(output_file)
