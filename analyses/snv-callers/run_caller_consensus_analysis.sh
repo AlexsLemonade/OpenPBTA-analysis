@@ -52,8 +52,7 @@ Rscript analyses/snv-callers/scripts/02-merge_callers.R \
 ########################## Add consensus to db ################################
 python3 analyses/snv-callers/scripts/01-setup_db.py \
   --db-file $dbfile \
-  --consensus-file $consensus_file \
-  --overwrite
+  --consensus-file $consensus_file
   
 ######################### Calculate consensus TMB ##############################
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
