@@ -2,7 +2,7 @@
 #
 # 2019
 #
-# C. Savonen for ALSF - CCDL
+# C. Savonen & J. Shapiro for ALSF - CCDL
 #
 # Purpose: Merge callers' data files into consensus MAF-like file
 #
