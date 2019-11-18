@@ -197,7 +197,7 @@ files_to_subset <-
 
 # TODO: REMOVE THIS once you are no longer testing locally!
 # this is removing the larger 2 of the 4 MAF files
-files_to_subset <- files_to_subset[-grepl("vardict|mutect2", files_to_subset)]
+files_to_subset <- files_to_subset[-grep("vardict|mutect2", files_to_subset)]
 
 # get the participant ID to biospecimen ID
 id_mapping_df <- read_tsv(file.path(data_directory, "pbta-histologies.tsv")) %>%
