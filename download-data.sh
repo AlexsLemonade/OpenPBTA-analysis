@@ -32,14 +32,13 @@ cd -
 # Check the md5s for everything we downloaded except CHANGELOG.md
 cd data/$RELEASE
 md5sum -c md5sum.txt
-mv pbta-snv-consensus_11122019.zip ../
 cd ../../
-
-# Unzip any zip files in the data directory using the update flag
-unzip -u -d data data/*.zip 
 
 # Make symlinks in data/ to the files in the just downloaded release folder.
 for file in "${FILES[@]}"
 do
   ln -sfn $RELEASE/$file data/$file
 done
+
+# Unzip any zip files in the data directory using the update flag
+unzip -u -d data data/*.zip 
