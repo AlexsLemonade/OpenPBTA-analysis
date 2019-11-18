@@ -248,6 +248,7 @@ needed_types = [col for col in maf_types if col[0] in needed_cols]
 # indexes to create. lists to handle multiple column indexes.
 maf_indexes = [
     ('SNV', ['Chromosome', 'Start_Position', 'Reference_Allele', 'Allele']),
+    ('LOC', ['Chromosome', 'Start_Postion']),
     ('sample', ['Tumor_Sample_Barcode'])
 ]
 
