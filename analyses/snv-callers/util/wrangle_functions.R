@@ -133,8 +133,8 @@ wxs_bed_filter <- function(maf_df, wxs_bed_file = NULL, bp_window = 0) {
 
   # Error catcher in case there are no `WXS` samples
   if (nrow(maf_wxs) == 0) {
-    stop("No WXS samples found underneath column 'experimental_strategy'
-            double check filtering steps and data.")
+    stop("No WXS samples in the 'experimental_strategy' column
+         double check filtering steps and data.")
   }
 
   # Turn the MAF WXS sample mutations into a GRanges object
