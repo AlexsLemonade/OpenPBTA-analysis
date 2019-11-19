@@ -69,7 +69,7 @@ opt <- parse_args(OptionParser(option_list = option_list))
 
 vaf_filter <- opt$vaf_filter # get out of opt list for sql
 
-############################## Custom Functions ################################
+############################## Custom Function #################################
 
 #' Split multinucleotide variants into single nucleotide calls
 #'
