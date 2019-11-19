@@ -3,8 +3,8 @@ set -e
 set -o pipefail
 
 # Use the OpenPBTA bucket as the default.
-URL=${URL:-https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data}
-RELEASE=${RELEASE:-release-v10-20191115}
+URL=${OPENPBTA_URL:-https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data}
+RELEASE=${OPENPBTA_RELEASE:-release-v10-20191115}
 
 # Remove symlinks in data
 find data -type l -delete
@@ -30,8 +30,7 @@ curl -JO $GENCODE
 # because it is considerably faster to do so
 
 if [ "$RELEASE" == "testing" ]; then
-  Rscript -e "BSgenome::export(BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38, 'GRCh38.primary_assembly.genome.fa')"
-  gzip GRCh38.primary_assembly.genome.fa
+  Rscript -e "BSgenome::export(BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38, 'GRCh38.primary_assembly.genome.fa.gz', compress = 'gzip')"
 else
   REFERENCE="ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/GRCh38.primary_assembly.genome.fa.gz"
   curl -JO $REFERENCE
