@@ -232,7 +232,7 @@ for chunk in maf_chunks:
     # process the chunk
     chunk['VAF'] = (chunk['t_alt_count'] /
                     (chunk['t_ref_count'] + chunk['t_alt_count']))
-    chunk.to_sql(table_name, con, if_exists='append')
+    chunk.to_sql('consensus', con, if_exists='append')
 # create indexes
 print("Indexing table 'consensus'")
 for index_name, fields in maf_indexes:

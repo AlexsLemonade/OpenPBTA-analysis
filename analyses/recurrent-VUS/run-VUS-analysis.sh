@@ -6,10 +6,10 @@ set -o pipefail
 
 # The sqlite database made from the callers will be called:
 dbfile=scratch/vus_db.sqlite
-consensus=data/snv-consensus_11122019/consensus_mutation.maf.tsv
+consensus=data/pbta-snv-lancet.vep.maf.gz
 metadata=data/pbta-histologies.tsv
 
 python3 analyses/recurrent-VUS/scripts/01-setup_db.py \
   --db-file $dbfile \
-  --conensus-file $consensus
+  --consensus-file $consensus
   --meta-file $metadata
