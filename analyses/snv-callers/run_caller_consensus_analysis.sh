@@ -21,6 +21,9 @@ annot_rds=analyses/snv-callers/ref_files/hg38_genomic_region_annotation.rds
 # Set a default for the VAF filter if none is specified
 vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}
 
+# Unless told to run the plots, the default is to skip them
+run_plots_nb=${OPENPBTA_PLOTS:-FALSE}
+
 ############################ Set Up Reference Files ############################
 # The original COSMIC file is obtained from: https://cancer.sanger.ac.uk/cosmic/download
 # These data are available if you register. The full, unfiltered somatic mutations
@@ -59,3 +62,9 @@ Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --bed_wgs data/WGS.hg38.strelka2.unpadded.bed \
   --bed_wxs data/WXS.hg38.100bp_padded.bed \
   --overwrite
+  
+############################# Comparison Plots #################################
+if [$run_plots_nb]
+then
+ Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots.Rmd', clean = TRUE)"
+fi

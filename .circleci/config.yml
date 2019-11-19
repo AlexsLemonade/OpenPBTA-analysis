@@ -62,10 +62,11 @@ jobs:
       - run:
           name: Selection Strategy Comparison
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/selection-strategy-comparison/01-selection-strategies.rmd', clean = TRUE)"
-          
-      - run:
-          name: ssGSEA Analysis
-          command: OPENPBTA_ANOVAPVALUE=0.25 OPENPBTA_TUKEYPVALUE=0.50 OPENPBTA_PERCKEEP=0.50 ./scripts/run_in_ci.sh bash analyses/ssgsea-hallmark/run-ssgsea-hallmark.sh
+
+# TODO: fix when this gets updated to use the collapsed matrix https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/235          
+#      - run:
+#          name: ssGSEA Analysis
+#          command: OPENPBTA_ANOVAPVALUE=0.25 OPENPBTA_TUKEYPVALUE=0.50 OPENPBTA_PERCKEEP=0.50 ./scripts/run_in_ci.sh bash analyses/ssgsea-hallmark/run-ssgsea-hallmark.sh
 
 # The second method - ControlFREEC - was not included as of v6, so the comparison can no longer be performed
 #      - run:
@@ -82,7 +83,11 @@ jobs:
                 
       - run:
           name: Interaction plot
-          command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh     
+          command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh
+    
+      - run:  
+          name: Focal CN RNA expression visualization
+          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/focal-cn-file-preparation/rna-expression-validation.R
 
       - run:
           name: Mutational Signatures 
