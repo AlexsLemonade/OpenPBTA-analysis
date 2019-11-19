@@ -21,7 +21,7 @@ Coming soon.
 
 To run this from the command line, use:
 ```
-Rscript -e "rmarkdown::render('analyses/mutational-signatures/mutation_signatures.Rmd', 
+Rscript -e "rmarkdown::render('analyses/mutational-signatures/mutational_signatures.Rmd', 
                               clean = TRUE)"
 ```
 
