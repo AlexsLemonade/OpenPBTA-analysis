@@ -183,5 +183,8 @@ RUN pip3 install "numpy==1.17.3" && \
    pip3 install "scipy==1.3.2" && \
    pip3 install "pandas==0.25.3"
 
+# Add curl
+RUN apt-get update && apt-get install -y --no-install-recommends curl
+
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
