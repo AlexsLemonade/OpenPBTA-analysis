@@ -10,7 +10,7 @@ jobs:
 
       - run:
           name: Data Download
-          command: URL=https://open-pbta.s3.amazonaws.com/data RELEASE=testing ./download-data.sh
+          command: OPENPBTA_URL=https://open-pbta.s3.amazonaws.com/data OPENPBTA_RELEASE=testing ./scripts/run_in_ci.sh bash download-data.sh
 
       - run:
           name: List Data Directory Contents
@@ -94,10 +94,18 @@ jobs:
           name: Focal CN RNA expression visualization
           command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/focal-cn-file-preparation/rna-expression-validation.R
 
+      - run:
+          name: Mutational Signatures 
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutational-signatures/mutational_signatures.Rmd', clean = TRUE)" 
+      
+      - run:
+          name: Tumor mutation burden with TCGA
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
+          
          ################################
          #### Add your analysis here ####
          ################################
-              
+         
       - run:
           name: SNV Caller Analysis 
           command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis.sh

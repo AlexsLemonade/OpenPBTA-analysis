@@ -21,14 +21,7 @@ wget -N --directory-prefix=driver-lists -O driver-lists/brain-goi-list-short.txt
 
 #### Download consensus mutation files
 
-# TODO: remove once the consensus files are included in the data download
-# wget only the newer files
-wget -N https://open-pbta.s3.amazonaws.com/data/snv-consensus/snv-consensus_11122019.zip
-unzip -u snv-consensus_11122019.zip
-# remove the mac specific directory included in the zip file
-rm -r __MACOSX
-
-maf_consensus=snv-consensus_11122019/consensus_mutation.maf.tsv
+maf_consensus=../../data/snv-consensus_11122019/consensus_mutation.maf.tsv
 controlfreec_autosomes=../focal-cn-file-preparation/results/controlfreec_annotated_cn_autosomes.tsv.gz
 arriba_file=../../scratch/arriba.tsv
 histologies_file=../../data/pbta-histologies.tsv

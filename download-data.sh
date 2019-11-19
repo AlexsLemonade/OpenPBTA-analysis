@@ -3,8 +3,8 @@ set -e
 set -o pipefail
 
 # Use the OpenPBTA bucket as the default.
-URL=${URL:-https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data}
-RELEASE=${RELEASE:-release-v10-20191115}
+URL=${OPENPBTA_URL:-https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data}
+RELEASE=${OPENPBTA_RELEASE:-release-v10-20191115}
 
 # Remove symlinks in data
 find data -type l -delete
@@ -22,11 +22,19 @@ do
 done
 
 # Download reference and gencode file from public ftp
-# REFERENCE="ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/GRCh38.primary_assembly.genome.fa.gz"
 GENCODE="ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/gencode.v27.primary_assembly.annotation.gtf.gz"
 cd data
-# curl -JO $REFERENCE
 curl -JO $GENCODE
+
+# if in CI, then we want to generate the reference FASTA from the BSgenome.Hsapiens.UCSC.hg38 R package
+# because it is considerably faster to do so
+
+if [ "$RELEASE" == "testing" ]; then
+  Rscript -e "BSgenome::export(BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38, 'GRCh38.primary_assembly.genome.fa.gz', compress = 'gzip', format = 'fasta')"
+else
+  REFERENCE="ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/GRCh38.primary_assembly.genome.fa.gz"
+  curl -JO $REFERENCE
+fi
 cd -
 
 # Check the md5s for everything we downloaded except CHANGELOG.md
