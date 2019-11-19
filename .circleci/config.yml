@@ -89,6 +89,10 @@ jobs:
           name: Focal CN RNA expression visualization
           command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/focal-cn-file-preparation/rna-expression-validation.R
 
+      - run:
+          name: Tumor mutation burden with TCGA
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
+          
          ################################
          #### Add your analysis here ####
          ################################

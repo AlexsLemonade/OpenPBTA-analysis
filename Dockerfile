@@ -159,6 +159,20 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 RUN R -e "install.packages('DT', dependencies = TRUE)"
 RUN R -e "BiocManager::install(c('rtracklayer'), update = FALSE)"
 
+# Needed to install TCGAbiolinks
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
+    && install2.r --error \
+    --deps TRUE \
+    survival \
+    nlme \
+    cluster \
+    foreign \
+    nnet \
+    mgcv
+
+# TCGAbiolinks for TMB compare analysis
+RUN R -e "BiocManager::install(c('TCGAbiolinks'), update = FALSE)"
+
 # Install python3 data science basics (pandas)
 # using pip to get more current versions
 RUN apt-get update -qq && apt-get -y --no-install-recommends install python3-pip 
