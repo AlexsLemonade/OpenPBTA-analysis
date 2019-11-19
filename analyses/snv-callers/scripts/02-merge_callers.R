@@ -69,7 +69,7 @@ opt <- parse_args(OptionParser(option_list = option_list))
 
 vaf_filter <- opt$vaf_filter # get out of opt list for sql
 
-############################## Custom Functions ################################
+############################## Custom Function #################################
 
 #' Split multinucleotide variants into single nucleotide calls
 #'
@@ -81,9 +81,11 @@ split_mnv <- function(mnv_tbl) {
   mnv_df <- mnv_tbl %>%
     dplyr::filter(Variant_Type %in% c("DNP", "TNP", "ONP")) %>%
     as.data.frame() %>%
-    # temp_id is not currently used, but will be handy for reconstituting MNVs
+    # add a temp_id for calculating positions, and for potential later 
+    # reconstitution of MNVs.
     dplyr::mutate(temp_id = dplyr::row_number()) %>%
-    # lancet adds a base to the start of MNV Allele Calls
+    # lancet adds a base to the start of MNV `Allele` fields, so check for that 
+    # and remove the extra base.
     dplyr::mutate(
       Allele = dplyr::case_when(
         stringr::str_length(Allele) == stringr::str_length(Reference_Allele) ~
@@ -92,7 +94,9 @@ split_mnv <- function(mnv_tbl) {
           stringr::str_sub(Allele, 2)
       )
     )
-  # separate into individual rows
+  # separate multibase calls into individual rows
+  # Some tables have the `Norm_Seq_Allele`s, so we will preserve and split those
+  # if necessary
   if ("Match_Norm_Seq_Allele1" %in% colnames(mnv_df)) {
     mnv_df <- mnv_df %>%
       tidyr::separate_rows(
