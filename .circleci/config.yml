@@ -93,6 +93,9 @@ jobs:
           name: Mutational Signatures 
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutational-signatures/mutational_signatures.Rmd', clean = TRUE)" 
       
+          name: Tumor mutation burden with TCGA
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
+          
          ################################
          #### Add your analysis here ####
          ################################
