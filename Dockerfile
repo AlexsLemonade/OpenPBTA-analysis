@@ -71,7 +71,6 @@ RUN R -e "devtools::install_github('timelyportfolio/d3treeR', ref = '0eaba7f1c64
 # Need this package to make plots colorblind friendly
 RUN R -e "devtools::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
 
-
 # Required for sex prediction from RNA-seq data
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
@@ -80,7 +79,6 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     glmnetUtils \
     caret \
     e1071
-
 
 # Install java and rJava for some of the snv plotting comparison packages
 RUN apt-get -y update && apt-get install -y \
@@ -152,10 +150,12 @@ RUN Rscript -e "library(bedr)"
 RUN R -e "BiocManager::install(c('BSgenome.Hsapiens.UCSC.hg19', 'BSgenome.Hsapiens.UCSC.hg38'))"
 
 # Also install for mutation signature analysis
+# qdapRegex is for the fusion analysis
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \    
     && install2.r --error \
     --deps TRUE \
-    deconstructSigs
+    deconstructSigs \
+    qdapRegex 
     
 # packages required for collapsing RNA-seq data by removing duplicated gene symbols
 RUN R -e "install.packages('DT', dependencies = TRUE)"
