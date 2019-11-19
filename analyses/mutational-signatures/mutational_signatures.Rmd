@@ -74,7 +74,7 @@ if (!dir.exists(nature_plots)) {
 
 ## Read in data
 
-Download and read in the consensus MAF file. 
+Read in the consensus MAF file. 
 
 ```{r}
 # Declare file path for consensus file
@@ -85,7 +85,7 @@ Read in the consensus MAF file.
 
 ```{r}
 # Read in the file
-maf <- data.table::fread(consensus_file)
+maf <- data.table::fread(consensus_file, data.table = FALSE)
 ```
 
 Read in the metadata. 
@@ -293,7 +293,7 @@ ggplot2::ggsave(file.path(nature_plots, paste0("bubble_matrix_nature_mutation_si
 We will make these plots for primary tumor samples only. 
 Let's make these for COSMIC mutation signatures first. 
 
-```{r}
+```{r, results = "hide"}
 # Keep only primary tumors
 cosmic_sigs_primary <- cosmic_sigs_df %>%
   dplyr::filter(Tumor_Sample_Barcode %in% ind_samples$Kids_First_Biospecimen_ID)
@@ -309,7 +309,7 @@ lapply(unique(cosmic_sigs_primary$short_histology),
 
 Make these plots for Alexandrov et al, 2013 signatures. 
 
-```{r}
+```{r, results = "hide"}
 # Keep only primary tumors
 nature_sigs_primary <- nature_sigs_df %>%
   dplyr::filter(Tumor_Sample_Barcode %in% ind_samples$Kids_First_Biospecimen_ID)
