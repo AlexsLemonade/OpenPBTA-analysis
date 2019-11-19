@@ -1,5 +1,62 @@
 # release notes
 ## current release
+### release-v10-20191115
+- release date: 2019-11-15
+- status: available
+- changes:
+  - Add RNA-Seq GTF and fasta files per ticket [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/241)
+  - Add [RSEM gene TPM and isoform matrices](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/229)
+  - Add [SNV consensus files](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/207)
+  - Add [new MAFs for lancet, vardict, mutect2](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/255)
+    -reran VCF2MAF to harmonize columns
+  - Add [Collapsed RNA matrices](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/248)
+- folder structure:
+```
+data
+└── release-v10-20191115
+    ├── CHANGELOG.md
+    ├── StrexomeLite_Targets_CrossMap_hg38_filtered_chr_prefixed.bed
+    ├── StrexomeLite_hg38_liftover_100bp_padded.bed
+    ├── WGS.hg38.lancet.300bp_padded.bed
+    ├── WGS.hg38.lancet.unpadded.bed
+    ├── WGS.hg38.mutect2.unpadded.bed
+    ├── WGS.hg38.strelka2.unpadded.bed
+    ├── WGS.hg38.vardict.100bp_padded.bed
+    ├── WXS.hg38.100bp_padded.bed
+    ├── md5sum.txt
+    ├── pbta-cnv-cnvkit.seg.gz
+    ├── pbta-cnv-controlfreec.tsv.gz
+    ├── pbta-fusion-arriba.tsv.gz
+    ├── pbta-fusion-starfusion.tsv.gz
+    ├── pbta-gene-counts-rsem-expected_count.polya.rds
+    ├── pbta-gene-counts-rsem-expected_count.stranded.rds
+    ├── pbta-gene-expression-kallisto.polya.rds
+    ├── pbta-gene-expression-kallisto.stranded.rds
+    ├── pbta-gene-expression-rsem-fpkm.polya.rds
+    ├── pbta-gene-expression-rsem-fpkm.stranded.rds
+    ├── pbta-histologies.tsv
+    ├── pbta-isoform-counts-rsem-expected_count.polya.rds
+    ├── pbta-isoform-counts-rsem-expected_count.stranded.rds
+    ├── pbta-snv-lancet.vep.maf.gz
+    ├── pbta-snv-mutect2.vep.maf.gz
+    ├── pbta-snv-strelka2.vep.maf.gz
+    ├── pbta-snv-vardict.vep.maf.gz
+    ├── pbta-sv-manta.tsv.gz
+    ├── independent-specimens.wgs.primary-plus.tsv
+    ├── independent-specimens.wgs.primary.tsv
+    ├── independent-specimens.wgswxs.primary-plus.tsv
+    ├── independent-specimens.wgswxs.primary.tsv
+    ├── pbta-gene-expression-rsem-fpkm-collapsed_table.polya.rds
+    ├── pbta-gene-expression-rsem-fpkm-collapsed_table.stranded.rds
+    ├── pbta-gene-expression-rsem-tpm.polya.rds
+    ├── pbta-gene-expression-rsem-tpm.stranded.rds
+    ├── pbta-isoform-expression-rsem-tpm.polya.rds
+    ├── pbta-isoform-expression-rsem-tpm.stranded.rds
+    └── pbta-snv-consensus_11122019.zip
+
+```
+
+## archived release
 ### release-v9-20191105
 - release date: 2019-11-05
 - status: available
@@ -44,7 +101,6 @@ data
     └── independent-specimens.wgswxs.primary.tsv
 ```
 
-## archived release
 ### release-v8-20191104
 - release date: 2019-11-04
 - status: available
@@ -55,7 +111,7 @@ data
     - added `tumor_ploidy` and updated `genotype` to `segment_genotype`: [PR comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/216#discussion_r341868007)
   - Updated RNA-Seq FPKM merge files
     - fixed ID merge error: [#221](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/221) 
-- folder structure: same to current release
+- folder structure: same to release-v9-20191105
 
 ### release-v7-20191031
 - release date: 2019-10-31 :jack_o_lantern:
@@ -70,7 +126,7 @@ data
     - independent-specimens.wgs.primary.tsv
     - independent-specimens.wgswxs.primary.tsv
 
-- folder structure: same to current release
+- folder structure: same to release-v9-20191105
 
 ### release-v6-20191030
 - release date: 2019-10-30
