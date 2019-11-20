@@ -22,13 +22,13 @@
 library(stringr)   
 
 ## ===================== Load  Independent Specimen List =====================
-independent_specimen_list <- read.table("independent-specimens.wgs.primary-plus.tsv",header = TRUE,sep = "\t")
+independent_specimen_list <- read.table("../../data/independent-specimens.wgs.primary-plus.tsv",header = TRUE,sep = "\t")
 # bioid including all sample's names will be used later
 bioid <- unique(independent_specimen_list$Kids_First_Biospecimen_ID)
 
 
 ## ===================== Load SV File =====================
-sv_file <- read.table("pbta-sv-manta.tsv",header = TRUE,sep = "\t")
+sv_file <- read.table("../../data/pbta-sv-manta.tsv",header = TRUE,sep = "\t")
 # choose independent specimens
 sv_analysis <-  sv_file[sv_file$Kids.First.Biospecimen.ID.Tumor %in% bioid,]
 
