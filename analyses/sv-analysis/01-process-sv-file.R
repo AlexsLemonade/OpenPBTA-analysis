@@ -1,5 +1,4 @@
 # Yang Yang 2019
-#
 # This script is for generating sv file in shatterseek-read/signature-read input format
 # 
 # input files are:
