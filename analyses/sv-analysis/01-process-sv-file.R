@@ -21,14 +21,26 @@
 
 library(stringr)   
 
+# Detect the ".git" folder -- this will in the project root directory.
+# Use this as the root directory to ensure proper sourcing of functions no
+# matter where this is called from
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+## =====================  Create A Subdirectory to Hold All The Output Files ===================== 
+output_directory <- file.path(root_dir, "scratch/sv-vcf")
+if (!dir.exists(output_directory)) {
+  dir.create(output_directory, recursive = TRUE)
+}
+
 ## ===================== Load  Independent Specimen List =====================
-independent_specimen_list <- read.table("../../data/independent-specimens.wgs.primary-plus.tsv",header = TRUE,sep = "\t")
+independent_specimen_list <-  read.table(file.path(root_dir, "data/independent-specimens.wgs.primary-plus.tsv"), header = TRUE, sep = "\t")
+
 # bioid including all sample's names will be used later
 bioid <- unique(independent_specimen_list$Kids_First_Biospecimen_ID)
 
 
 ## ===================== Load SV File =====================
-sv_file <- read.table("../../data/pbta-sv-manta.tsv",header = TRUE,sep = "\t")
+sv_file <- read.table("data/independent-specimens.wgs.primary-plus.tsv",header = TRUE,sep = "\t")
 # choose independent specimens
 sv_analysis <-  sv_file[sv_file$Kids.First.Biospecimen.ID.Tumor %in% bioid,]
 
@@ -174,10 +186,12 @@ for (i in bioid) {
   sv_merge <- rbind(dups_file, dels_file, invs_file, bnds_file)
   sv_merge <- sv_merge[is.na(sv_merge[, 1]) == FALSE & is.na(sv_merge[, 3]) == FALSE, ]
   outputname_sv_merge <- paste(i,".vcf",sep = "")
+  outputname_sv_merge  <- file.path(output_directory,outputname_sv_merge)
   
   ## Shatterseek only accept file with chrom1-22,X, so remove chrY and ChrM
   sv_merge_withoutY_withoutM <- sv_merge[sv_merge[,1] != "Y" & sv_merge[,3] != "Y" & sv_merge[,1] != "M" & sv_merge[,3] != "M",]
   outputname_sv_merge_withoutY_withoutM <- paste(i,"_withoutYandM.vcf",sep = "")
+  outputname_sv_merge_withoutY_withoutM <- file.path(output_directory,outputname_sv_merge_withoutY_withoutM)
   
   ## output files
   write.table(sv_merge,file = outputname_sv_merge,sep = "\t",quote = FALSE,row.names = TRUE,col.names = NA)
