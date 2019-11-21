@@ -33,7 +33,11 @@ params:
   limitMultiFused:
     label: "Max number of times gene can be fused per sample"
     value: 5
-    input: integer     
+    input: integer  
+  outputfolder:
+    label: "results folder for *tsv files"
+    value: results
+    input: string     
 
     
 ---
@@ -82,6 +86,7 @@ group<-params$group
 
 # get histology file
 clinical<-read.delim(params$histology,stringsAsFactors = FALSE)
+clinical<-clinical[,c("Kids_First_Biospecimen_ID","Kids_First_Participant_ID","broad_histology")]
 
 # Least number of callers
 numCaller<-params$numCaller
@@ -94,6 +99,9 @@ numGroup<-params$numGroup
 
 # Max number of times gene can be fused per sample
 limitMultiFused<-params$limitMultiFused
+
+# results folder
+outputfolder<-params$outputfolder
 
 print("Raw calls from STARfusion and Arriba for PBTA")
 table(fusion_calls$Caller)
@@ -110,17 +118,6 @@ fusion_caller.summary <- fusion_calls %>%
   unique() %>%
   dplyr::mutate(CalledBy = toString(Caller), caller.count = n()) %>%
   dplyr::select(-Caller)
-  
-# # aggregate by read count
-#  fusion_read.summary <- fusion_calls %>%
-#    dplyr::filter(Fusion_Type != "other") %>%
-#    dplyr::select(Sample,FusionName,JunctionReadCount,SpanningFragCount) %>%
-#    group_by(FusionName, Sample ) %>%
-#    unique() %>%
-#    dplyr::mutate(JunctionReadCountSum=sum(JunctionReadCount),SpanningFragCountSum=sum(SpanningFragCount))
-# 
-# fusion_summary<-left_join(fusion_caller.summary,fusion_read.summary,by=c("Sample","FusionName"))
-#  
 
 # remove fusion within local rearrangement
 fusion_calls <- fusion_calls %>%
@@ -219,17 +216,16 @@ fusion_recurrent5_per_sample <- fusion_calls  %>%
 
 ```{r}
 
-
-outputfolder<-"results"
-setwd(outputfolder)
 # filter QCGeneFiltered_recFusion to remove fusions found in more than 1 group 
+
+recurrent_symbols <- fusion_recurrent5_per_sample$GeneSymbol
 
 QCGeneFiltered_recFusionUniq<-QCGeneFiltered_recFusion %>%
   dplyr::filter(!FusionName %in% group.count$FusionName) %>%
-  dplyr::filter(!Gene1A %in% fusion_recurrent5_per_sample$GeneSymbol |
-                  !Gene2A %in% fusion_recurrent5_per_sample$GeneSymbol |
-                  !Gene1B %in% fusion_recurrent5_per_sample$GeneSymbol | 
-                  !Gene2B %in% fusion_recurrent5_per_sample$GeneSymbol) %>%
+  dplyr::filter(!Gene1A %in% recurrent_symbols |
+                  !Gene2A %in% recurrent_symbols |
+                  !Gene1B %in% recurrent_symbols | 
+                  !Gene2B %in% recurrent_symbols) %>%
   unique()
 
 
@@ -242,21 +238,18 @@ QCGeneFiltered_recFusionUniq<-QCGeneFiltered_recFusion %>%
 
 
 ```{r}
-setwd(outputfolder)
 
 # filter for putative driver genes and mutifused genes per sample
 putative_driver_annotated_fusions <- fusion_calls %>%
-  # dplyr::filter(!Gene1A %in% fusion_recurrent5_per_sample$GeneSymbol |
-  #                 !Gene2A %in% fusion_recurrent5_per_sample$GeneSymbol |
-  #                 !Gene1B %in% fusion_recurrent5_per_sample$GeneSymbol | 
-  #                 !Gene2B %in% fusion_recurrent5_per_sample$GeneSymbol) %>%
   dplyr::filter(!is.na(Gene1A_anno) | !is.na(Gene1B_anno) | !is.na(Gene2A_anno) | !is.na(Gene2B_anno)) %>%
   unique()
   
 # merge putative annotated oncogenic and scavenged back non-oncogenic annotated, recurrent fusions
-putative_driver_fusions<-rbind(QCGeneFiltered_recFusionUniq,putative_driver_annotated_fusions)  
+putative_driver_fusions<-rbind(QCGeneFiltered_recFusionUniq,putative_driver_annotated_fusions) %>%
+  unique() %>%
+  as.data.frame()
 
-write.table(putative_driver_fusions,"PutativeDriverFusion.tsv",sep="\t",quote=FALSE,row.names = FALSE)
+write.table(putative_driver_fusions,file.path(outputfolder,"PutativeDriverFusion.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
 
 ```
 
