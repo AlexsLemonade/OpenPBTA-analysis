@@ -10,7 +10,7 @@ jobs:
 
       - run:
           name: Data Download
-          command: URL=https://open-pbta.s3.amazonaws.com/data RELEASE=testing ./download-data.sh
+          command: OPENPBTA_URL=https://open-pbta.s3.amazonaws.com/data OPENPBTA_RELEASE=testing ./scripts/run_in_ci.sh bash download-data.sh
 
       - run:
           name: List Data Directory Contents
@@ -66,10 +66,11 @@ jobs:
       - run:
           name: Selection Strategy Comparison
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/selection-strategy-comparison/01-selection-strategies.rmd', clean = TRUE)"
-          
-      - run:
-          name: ssGSEA Analysis
-          command: OPENPBTA_ANOVAPVALUE=0.25 OPENPBTA_TUKEYPVALUE=0.50 OPENPBTA_PERCKEEP=0.50 ./scripts/run_in_ci.sh bash analyses/ssgsea-hallmark/run-ssgsea-hallmark.sh
+
+# TODO: fix when this gets updated to use the collapsed matrix https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/235          
+#      - run:
+#          name: ssGSEA Analysis
+#          command: OPENPBTA_ANOVAPVALUE=0.25 OPENPBTA_TUKEYPVALUE=0.50 OPENPBTA_PERCKEEP=0.50 ./scripts/run_in_ci.sh bash analyses/ssgsea-hallmark/run-ssgsea-hallmark.sh
 
 # The second method - ControlFREEC - was not included as of v6, so the comparison can no longer be performed
 #      - run:
@@ -86,12 +87,24 @@ jobs:
                 
       - run:
           name: Interaction plot
-          command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh     
+          command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh
+    
+      - run:  
+          name: Focal CN RNA expression visualization
+          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/focal-cn-file-preparation/rna-expression-validation.R
 
+      - run:
+          name: Mutational Signatures 
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutational-signatures/mutational_signatures.Rmd', clean = TRUE)" 
+      
+      - run:
+          name: Tumor mutation burden with TCGA
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
+          
          ################################
          #### Add your analysis here ####
          ################################
-              
+         
       - run:
           name: SNV Caller Analysis 
           command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis.sh
