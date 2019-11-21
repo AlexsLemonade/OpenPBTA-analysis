@@ -104,7 +104,6 @@ stranded_expression <-
     file.path(
       root_dir,
       "data",
-      "release-v10-20191115",
       "pbta-gene-expression-rsem-fpkm.stranded.rds"
     )
   )
@@ -126,7 +125,6 @@ tmb_df <-
     file.path(
       root_dir,
       "data",
-      "release-v10-20191115",
       "snv-consensus_11122019",
       "consensus_mutation_tmb.tsv"
     )
