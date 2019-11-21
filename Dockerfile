@@ -175,7 +175,7 @@ RUN R -e "BiocManager::install(c('TCGAbiolinks'), update = FALSE)"
 
 # Install python3 data science basics (pandas)
 # using pip to get more current versions
-RUN apt-get update -qq && apt-get -y --no-install-recommends install python3-pip
+RUN apt-get update -qq && apt-get -y --no-install-recommends install python3-pip  python3-dev 
 RUN pip3 install "numpy==1.17.3" && \
    pip3 install "six==1.13.0" "setuptools==41.6.0" && \
    pip3 install "cycler==0.10.0" "kiwisolver==1.1.0" "pyparsing==2.4.5" "python-dateutil==2.8.1" "pytz==2019.3" && \
