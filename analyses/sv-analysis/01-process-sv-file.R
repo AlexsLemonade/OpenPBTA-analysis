@@ -18,8 +18,9 @@
 # alt1 and alt2 were used to infer strand， you can ignore them
 # homolen and inserlen will be used in signature analysis
 
-
-library(stringr)   
+library(stringr) 
+library(rprojroot)
+library(readr)
 
 # Detect the ".git" folder -- this will in the project root directory.
 # Use this as the root directory to ensure proper sourcing of functions no
@@ -40,7 +41,7 @@ bioid <- unique(independent_specimen_list$Kids_First_Biospecimen_ID)
 
 
 ## ===================== Load SV File =====================
-sv_file <- read.table("data/independent-specimens.wgs.primary-plus.tsv",header = TRUE,sep = "\t")
+sv_file <- read_tsv("data/pbta-sv-manta.tsv.gz")
 # choose independent specimens
 sv_analysis <-  sv_file[sv_file$Kids.First.Biospecimen.ID.Tumor %in% bioid,]
 
