@@ -44,6 +44,12 @@ option_list <- list(
     help = "A character vector that will be used to name output files"
   ),
   optparse::make_option(
+    c("-c", "--target_column"),
+    type = "character",
+    default = "reported_gender",
+    help = "A character vector identifying column being predicted"
+  ),
+  optparse::make_option(
     c("-s", "--seed"),
     type = "integer",
     default = 36354,
@@ -90,6 +96,12 @@ print("targets set found!")
 test_expression <- readRDS(test_expression_file_name)
 test_targets <- read.delim(test_targets_file_name, header=TRUE, sep="\t", stringsAsFactors = FALSE)
 
+# check for presence of --target_column
+if (!(opt$target_column %in% colnames(test_targets))) {
+  stop(paste("target column ", opt$target_column, "does not exist. Check all arguments."))
+}
+
+print("target column found!")
 #--------
 
 #--------test for the existence of the expected model and transcript index files
@@ -122,10 +134,10 @@ model_transcripts <- readRDS(transcript_index_file_name)
 predict_class <- predict(best_fit, newx = test_expression[, model_transcripts], type = "class", s = best_fit$lambda.1se)
 predict_prob <- predict(best_fit, newx = test_expression[, model_transcripts], type = "response", s = best_fit$lambda.1se)
 
-cm_set <- data.frame(obs = test_targets[, "reported_gender"])
+cm_set <- data.frame(obs = test_targets[, opt$target_column])
 cm_set$Male = unname(predict_prob)
 cm_set$Female = 1 - unname(predict_prob)
-cm_set$pred <- factor(ifelse(cm_set$Male >= .5, "Male", "Female"))
+cm_set$pred <- factor(unname(predict_class))
 cm_set$sample <- test_targets[, "Kids_First_Biospecimen_ID"]
 
 cm <- confusionMatrix(data = cm_set$pred, reference = cm_set$obs)
@@ -149,13 +161,6 @@ saveRDS(cm, cm_file)
 summary_file <- file.path(opt$output_directory, paste(opt$filename_lead, opt$seed, opt$transcript_tail_percent, 
                                                       "two_class_summary.RDS", sep = "_"))
 saveRDS(two_class_summary, summary_file)
-
-
-#--------
-
-
-#-------- evaluate using caret lift functions
-
 
 
 #--------
