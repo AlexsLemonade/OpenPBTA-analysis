@@ -186,5 +186,20 @@ RUN pip3 install "numpy==1.17.3" && \
 # Add curl
 RUN apt-get update && apt-get install -y --no-install-recommends curl
 
-#### Please install your dependencies here
-#### Add a comment to indicate what analysis it is required for
+
+# Add virtualenv to install Snakemake for CNV_consensus_call Pipeline
+
+RUN pip3 install virtualenv
+
+# Complete install of header files and static libraries for python-dev
+
+RUN sudo apt-get install python3-dev -y
+
+# Install Snakemake
+
+RUN git clone https://github.com/snakemake/snakemake.git && \
+   cd snakemake && \
+   virtualenv -p python3 .venv && \
+   /bin/bash -c "source .venv/bin/activate" && \
+   python3 setup.py install
+
