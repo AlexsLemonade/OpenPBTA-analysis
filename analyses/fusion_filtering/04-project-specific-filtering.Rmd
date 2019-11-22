@@ -68,7 +68,7 @@ suppressPackageStartupMessages(library("qdapRegex"))
 
 #read filtFusion files
 strandedQCGeneFiltered_filtFusion<-readRDS(file.path(root_dir, params$dataStranded))
-polyaQCGeneFiltered_filtFusion<-readRDS(params$dataPolya)
+polyaQCGeneFiltered_filtFusion<-readRDS(file.path(root_dir, params$dataPolya))
 
 QCGeneFiltered_filtFusion<-rbind(strandedQCGeneFiltered_filtFusion,polyaQCGeneFiltered_filtFusion)
 
@@ -251,7 +251,6 @@ putative_driver_fusions<-rbind(QCGeneFiltered_recFusionUniq,putative_driver_anno
 write.table(putative_driver_fusions,file.path(outputfolder,"PutativeDriverFusion.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
 
 ```
-
 
 
 
