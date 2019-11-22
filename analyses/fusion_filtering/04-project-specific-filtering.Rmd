@@ -84,7 +84,7 @@ fusion_calls$FusionName<-unlist(lapply(fusion_calls$FusionName,function(x) rm_be
 group<-params$group
 
 # get histology file
-clinical<-read.delim(params$histology,stringsAsFactors = FALSE)
+clinical<-read.delim(file.path(root_dir, params$histology), stringsAsFactors = FALSE)
 clinical<-clinical[,c("Kids_First_Biospecimen_ID","Kids_First_Participant_ID","broad_histology")]
 
 # Least number of callers
@@ -251,7 +251,6 @@ putative_driver_fusions<-rbind(QCGeneFiltered_recFusionUniq,putative_driver_anno
 write.table(putative_driver_fusions,file.path(outputfolder,"PutativeDriverFusion.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
 
 ```
-
 
 
 
