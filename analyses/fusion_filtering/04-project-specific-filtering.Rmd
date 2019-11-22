@@ -60,7 +60,6 @@ This notebook assumes you are in OpenPBTA-analysis project folder structure.
 
 ```{r}
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-setwd(root_dir)
 #load required packages
 suppressPackageStartupMessages(library("readr"))
 suppressPackageStartupMessages(library("tidyverse"))
@@ -252,7 +251,6 @@ putative_driver_fusions<-rbind(QCGeneFiltered_recFusionUniq,putative_driver_anno
 write.table(putative_driver_fusions,file.path(outputfolder,"PutativeDriverFusion.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
 
 ```
-
 
 
 
