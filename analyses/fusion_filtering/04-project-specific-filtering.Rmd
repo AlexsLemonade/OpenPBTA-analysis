@@ -70,6 +70,8 @@ suppressPackageStartupMessages(library("qdapRegex"))
 strandedQCGeneFiltered_filtFusion<-readRDS(file.path(root_dir, params$dataStranded))
 polyaQCGeneFiltered_filtFusion<-readRDS(file.path(root_dir, params$dataPolya))
 
+# results folder
+outputfolder<-params$outputfolder
 QCGeneFiltered_filtFusion<-rbind(strandedQCGeneFiltered_filtFusion,polyaQCGeneFiltered_filtFusion)
 
 write.table(QCGeneFiltered_filtFusion, file.path(outputfolder, "FilteredFusion.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
@@ -99,8 +101,6 @@ numGroup<-params$numGroup
 # Max number of times gene can be fused per sample
 limitMultiFused<-params$limitMultiFused
 
-# results folder
-outputfolder<-params$outputfolder
 
 print("Raw calls from STARfusion and Arriba for PBTA")
 table(fusion_calls$Caller)
