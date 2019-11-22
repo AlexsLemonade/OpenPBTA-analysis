@@ -37,6 +37,12 @@ option_list <- list(
     help = "A character vector that will be used to name output files"
   ),
   optparse::make_option(
+    c("-c", "--target_column"),
+    type = "character",
+    default = "reported_gender",
+    help = "A character vector identifying column being predicted"
+  ),
+  optparse::make_option(
     c("-s", "--seed"),
     type = "integer",
     default = 36354,
@@ -83,6 +89,13 @@ print("targets set found!")
 train_set <- readRDS(train_set_file_name)
 targets_set <- read.delim(targets_set_file_name, header=TRUE, sep="\t", stringsAsFactors = FALSE)
 
+# check for presence of --target_column
+if (!(opt$target_column %in% colnames(targets_set))) {
+  stop(paste("target column ", opt$target_column, "does not exist. Check all arguments."))
+}
+
+print("target column found!")
+
 #--------
 
 #--------test sample ID sequence of train_set matches sample ID sequence of targets set
@@ -109,7 +122,7 @@ print(paste("Model build begun at", Sys.time(), sep=" "))
 
 #--------Build elastic net logistic regression model
 
-sex.cva <- cva.glmnet(train_set, targets_set[, "reported_gender"], standardize=TRUE, 
+sex.cva <- cva.glmnet(train_set, targets_set[, opt$target_column], standardize=TRUE, 
                       alpha = seq(0, 1, len = 11)^3, family="binomial")
 
 print(paste("Model build complete at", Sys.time(), sep=" "))

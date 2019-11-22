@@ -76,7 +76,9 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
     --deps TRUE \
     glmnet \
-    glmnetUtils
+    glmnetUtils \
+    caret \
+    e1071
 
 # Install java and rJava for some of the snv plotting comparison packages
 RUN apt-get -y update && apt-get install -y \
