@@ -245,7 +245,7 @@ putative_driver_annotated_fusions <- fusion_calls %>%
   
 # merge putative annotated oncogenic and scavenged back non-oncogenic annotated, recurrent fusions
 putative_driver_fusions<-rbind(QCGeneFiltered_recFusionUniq,putative_driver_annotated_fusions) %>%
-  unique() %>%
+  unique() %>% select (-broad_histology) %>%
   as.data.frame()
 
 write.table(putative_driver_fusions,file.path(outputfolder,"PutativeDriverFusion.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
