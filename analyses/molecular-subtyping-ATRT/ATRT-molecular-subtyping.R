@@ -8,20 +8,10 @@
 #
 # Rscript 'analyses/molecular-subtyping-ATRT/ATRT-molecular-subtyping.R'
 
-
 #### Set Up --------------------------------------------------------------------
 
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
-
-# Load in ComplexHeatMap
-if (!("ComplexHeatmap" %in% installed.packages())) {
-  install.packages("ComplexHeatmap")
-}
-library(ComplexHeatmap)
-if (!("RColorBrewer" %in% installed.packages())) {
-  install.packages("RColorBrewer")
-}
 
 #### Directories and Files -----------------------------------------------------
 
@@ -100,13 +90,11 @@ ssGSEA <-
 
 # Read in RNA expression data
 stranded_expression <-
-  readr::read_rds(
-    file.path(
-      root_dir,
-      "data",
-      "pbta-gene-expression-rsem-fpkm.stranded.rds"
-    )
-  )
+  readr::read_rds(file.path(
+    root_dir,
+    "data",
+    "pbta-gene-expression-rsem-fpkm.stranded.rds"
+  ))
 
 # Read in focal CN data
 cn_df <- readr::read_tsv(
@@ -165,205 +153,123 @@ stranded_expression_df <- stranded_expression %>%
   as.data.frame() %>%
   dplyr::select(column_names$.)
 
-# Create a correlation matrix of the expression data
-pearson_mat <- cor(stranded_expression_df, method = "pearson")
-
-
-# Create an annotation data.frame for the relevant annotation data
-annotation_df <- atrt_df %>%
-  tibble::column_to_rownames("Kids_First_Biospecimen_ID") %>%
-  dplyr::select(-c(
-    Kids_First_Participant_ID,
-    primary_site,
-    age_at_diagnosis_days
-  ))
-
-# Make the annotation data.frame a Heatmap Annotation object
-ha_column <- HeatmapAnnotation(df = annotation_df)
-
-# Plot and save the Heatmap
-pdf(file.path(plots_dir, "initial_heatmap.pdf"), width = 10)
-Heatmap(
-  pearson_mat,
-  heatmap_legend_param = list(title = "correlation"),
-  top_annotation = ha_column
-)
-dev.off()
-
 #### Join data -----------------------------------------------------------------
 
-# # Format expression data into long format
-# long_stranded_expression <- stranded_expression %>%
-#   tidyr::gather(biospecimen_id, expression_value,-gene_id) %>%
-#   dplyr::distinct() %>%
-#   dplyr::mutate(gene_id = gsub(".*\\_", "", gene_id)) # Trim the gene ids to include only the gene symbol
-# 
-# # Calculate log2 expression and z-scores of expression values
-# long_stranded_expression <- long_stranded_expression %>%
-#   dplyr::group_by(gene_id) %>%
-#   dplyr::mutate(log2_exp = log2(expression_value + 1),
-#                 z_score = (log2_exp - mean(log2_exp) / sd(log2_exp)))
-# 
-# expression_metadata <- long_stranded_expression %>%
-#   dplyr::left_join(metadata, by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
-#   dplyr::select(biospecimen_id, Kids_First_Participant_ID, z_score, gene_id)
-# 
-# # Join expression data with metadata filtered for `ATRT`
-# atrt_expression_df <- atrt_df %>%
-#   dplyr::inner_join(expression_metadata,
-#                     by = "Kids_First_Participant_ID") %>%
-#   dplyr::select(-gene_id)
-# 
-# # Define overexpressed gene vectors
-# tyr_genes <-
-#   paste(c("TYR", "MITF", "DCT", "VEGFA", "DNAH11", "SPEF1"), collapse = "|")
-# shh_genes <-
-#   paste(c("MYCN", "GLI2", "CDK6", "ASCL1", "HES5/6", "DLL1/3"),
-#         collapse = "|")
-# myc_genes <- paste(c("MYC", "HOTAIR", "HOX"), collapse = "|")
-# 
-# # Join focal CN data with metadata
-# cn_metadata <- cn_df %>%
-#   dplyr::left_join(metadata,
-#                    by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
-#   dplyr::select(gene_symbol,
-#                 Kids_First_Participant_ID,
-#                 biospecimen_id,
-#                 status) %>%
-#   dplyr::filter(Kids_First_Participant_ID %in% atrt_expression_df$Kids_First_Participant_ID) %>%
-#   dplyr::mutate(
-#     SMARCB1_focal_status = dplyr::case_when(gene_symbol == "SMARCB1" ~ status,
-#                                             TRUE ~ "neutral"),
-#     SMARCA4_focal_status = dplyr::case_when(gene_symbol == "SMARCA4" ~ status,
-#                                             TRUE ~ "neutral"),
-#     Overexpressed_gene_sets = dplyr::case_when(
-#       stringr::str_detect(gene_symbol, tyr_genes) &
-#         status != "loss" ~ "TYR_genes",
-#       stringr::str_detect(gene_symbol, shh_genes) &
-#         status != "loss" ~ "SHH_genes",
-#       stringr::str_detect(gene_symbol, myc_genes) &
-#         status != "loss" ~ "MYC_genes",
-#       TRUE ~ "NA"
-#     )
-#   ) %>%
-#   dplyr::select(-gene_symbol) %>%
-#   dplyr::distinct()
-# 
-# # Join ATRT expression data with focal CN data
-# atrt_expression_cn_df <- atrt_expression_df %>%
-#   dplyr::inner_join(cn_metadata, by = "Kids_First_Participant_ID") %>%
-#   dplyr::select(-status)
-# 
-# # Transpose and filter ssGSEA pathway data
-# transposed_ssgsea <- t(ssGSEA) %>%
-#   as.data.frame() %>%
-#   tibble::rownames_to_column("biospecimen_id") %>%
-#   dplyr::filter(biospecimen_id %in% atrt_expression_df$Kids_First_Biospecimen_ID) %>%
-#   dplyr::select(
-#     biospecimen_id,
-#     HALLMARK_MYC_TARGETS_V1,
-#     HALLMARK_MYC_TARGETS_V2,
-#     HALLMARK_NOTCH_SIGNALING
-#   )
-# 
-# # Join ATRT expression and focal CN data with transposed ssGSEA data, calculate
-# # z-scores for each pathway variable
-# atrt_expression_cn_df <- atrt_expression_cn_df %>%
-#   dplyr::inner_join(transposed_ssgsea,
-#                     by = c("Kids_First_Biospecimen_ID" = "biospecimen_id")) %>%
-#   dplyr::mutate(
-#     MYC_V1_ssgsea_score = HALLMARK_MYC_TARGETS_V1 - mean(HALLMARK_MYC_TARGETS_V1) / sd(HALLMARK_MYC_TARGETS_V1),
-#     MYC_V2_ssgsea_score = HALLMARK_MYC_TARGETS_V2 - mean(HALLMARK_MYC_TARGETS_V2) / sd(HALLMARK_MYC_TARGETS_V2),
-#     Notch_ssgsea_score = HALLMARK_NOTCH_SIGNALING - mean(HALLMARK_NOTCH_SIGNALING) / sd(HALLMARK_NOTCH_SIGNALING)
-#   ) %>%
-#   dplyr::select(
-#     -c(
-#       "HALLMARK_MYC_TARGETS_V1",
-#       "HALLMARK_MYC_TARGETS_V2",
-#       "HALLMARK_NOTCH_SIGNALING"
-#     )
-#   )
-# 
-# # Join tumor mutuation data with metadata
-# tmb_df <- tmb_df %>%
-#   dplyr::left_join(metadata,
-#                    by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
-#   dplyr::select(Tumor_Sample_Barcode, Kids_First_Participant_ID, tmb)
-# 
-# atrt_expression_cn_tmb_df <- atrt_expression_cn_df %>%
-#   dplyr::left_join(tmb_df, by = "Kids_First_Participant_ID")
-# 
-# ## TODO: Add a column to this data.frame denoting `chr22q` loss using the SV
-# # data.
-# 
-# #### Plot annotated heatmap ----------------------------------------------------
-# 
-# # Create a numeric expression matrix for plotting
-# atrt_expression_mat <- atrt_expression_cn_tmb_df %>%
-#   dplyr::select(
-#     Kids_First_Biospecimen_ID,
-#     z_score,
-#     MYC_V1_ssgsea_score,
-#     MYC_V2_ssgsea_score,
-#     Notch_ssgsea_score,
-#     tmb
-#   ) %>%
-#   dplyr::group_by(Kids_First_Biospecimen_ID) %>%
-#   dplyr::summarise(
-#     z_score = mean(!is.na(z_score)),
-#     MYC_V1_ssgsea_score = mean(MYC_V1_ssgsea_score),
-#     MYC_V2_ssgsea_score = mean(MYC_V2_ssgsea_score),
-#     Notch_ssgsea_score = mean(Notch_ssgsea_score),
-#     tmb = mean(tmb)
-#   ) %>%
-#   tibble::column_to_rownames("Kids_First_Biospecimen_ID") %>%
-#   t()
-# 
-# atrt_expression_mat <- cor(atrt_expression_mat, method = "pearson")
-# 
-# # Create an annotation matrix for the atrt expression data
-# annotation_mat <- atrt_expression_cn_tmb_df %>%
-#   dplyr::select(
-#     Kids_First_Biospecimen_ID,
-#     location_summary,
-#     SMARCB1_focal_status,
-#     SMARCA4_focal_status,
-#     Overexpressed_gene_sets
-#   ) %>%
-#   dplyr::group_by(Kids_First_Biospecimen_ID) %>%
-#   dplyr::distinct() %>%
-#   dplyr::summarise(
-#     SMARCB1_focal_status = dplyr::first(SMARCB1_focal_status, order_by = SMARCB1_focal_status),
-#     location_summary = dplyr::first(location_summary, order_by = location_summary),
-#     SMARCA4_focal_status = dplyr::first(SMARCA4_focal_status, order_by = SMARCA4_focal_status),
-#     Overexpressed_gene_sets = Overexpressed_gene_sets
-#     # Used the `dplyr::first` function above to solve the
-#     # `Column must be length 1 (a summary value)` error, but not entirely sure
-#     # this is the right fix here
-#   ) %>%
-#   tibble::column_to_rownames("Kids_First_Biospecimen_ID")
-# 
-# # Make the annotation matrix a Heatmap Annotation object
-# ha_atrt <- HeatmapAnnotation(df = annotation_mat)
-# 
-# # Plot and save heatmap
-# pdf(file.path(plots_dir, "final_annotated_heatmap.pdf"), width = 10)
-# Heatmap(
-#   atrt_expression_mat,
-#   heatmap_legend_param = list(title = "correlation"),
-#   top_annotation = ha_atrt
-# )
-# dev.off()
-# 
-# # Save final data.frame
-# final_df <- atrt_expression_cn_tmb_df %>%
-#   dplyr::select(-c(
-#     "biospecimen_id.x",
-#     "biospecimen_id.y",
-#     "Tumor_Sample_Barcode"
-#   )) %>%
-#   dplyr::distinct() %>%
-#   dplyr::arrange(desc(tmb))
-# 
-# readr::write_tsv(final_df,
-#                  file.path(results_dir, "ATRT_molecular_subtypes.tsv.gz"))
+# Format expression data into long format
+long_stranded_expression <- stranded_expression %>%
+  tidyr::gather(biospecimen_id, expression_value, -gene_id) %>%
+  dplyr::distinct() %>%
+  dplyr::mutate(gene_id = gsub(".*\\_", "", gene_id)) # Trim the gene ids to include only the gene symbol
+
+# Calculate log2 expression and z-scores of expression values
+long_stranded_expression <- long_stranded_expression %>%
+  dplyr::group_by(gene_id) %>%
+  dplyr::mutate(log2_exp = log2(expression_value + 1),
+                z_score = (log2_exp - mean(log2_exp) / sd(log2_exp)))
+
+expression_metadata <- long_stranded_expression %>%
+  dplyr::left_join(metadata, by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
+  dplyr::select(biospecimen_id, Kids_First_Participant_ID, z_score, gene_id)
+
+# Join expression data with metadata filtered for `ATRT`
+atrt_expression_df <- atrt_df %>%
+  dplyr::inner_join(expression_metadata,
+                    by = "Kids_First_Participant_ID") %>%
+  dplyr::select(-gene_id)
+
+# Define target overexpressed gene vectors
+tyr_genes <-
+  paste(c("TYR", "MITF", "DCT", "VEGFA", "DNAH11", "SPEF1"), collapse = "|")
+shh_genes <-
+  paste(c("MYCN", "GLI2", "CDK6", "ASCL1", "HES5/6", "DLL1/3"),
+        collapse = "|")
+myc_genes <- paste(c("MYC", "HOTAIR", "HOX"), collapse = "|")
+
+# Join focal CN data with metadata
+cn_metadata <- cn_df %>%
+  dplyr::left_join(metadata,
+                   by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
+  dplyr::select(gene_symbol,
+                Kids_First_Participant_ID,
+                biospecimen_id,
+                status) %>%
+  dplyr::filter(Kids_First_Participant_ID %in% atrt_expression_df$Kids_First_Participant_ID) %>%
+  dplyr::mutate(
+    SMARCB1_focal_status = dplyr::case_when(gene_symbol == "SMARCB1" ~ status,
+                                            TRUE ~ "neutral"),
+    SMARCA4_focal_status = dplyr::case_when(gene_symbol == "SMARCA4" ~ status,
+                                            TRUE ~ "neutral"),
+    Overexpressed_gene_sets = dplyr::case_when(
+      stringr::str_detect(gene_symbol, tyr_genes) &
+        status != "loss" ~ "TYR_genes",
+      stringr::str_detect(gene_symbol, shh_genes) &
+        status != "loss" ~ "SHH_genes",
+      stringr::str_detect(gene_symbol, myc_genes) &
+        status != "loss" ~ "MYC_genes",
+      TRUE ~ "NA"
+    )
+  ) %>%
+  dplyr::select(-gene_symbol) %>%
+  dplyr::distinct()
+
+# Join ATRT expression data with focal CN data
+atrt_expression_cn_df <- atrt_expression_df %>%
+  dplyr::inner_join(cn_metadata, by = "Kids_First_Participant_ID") %>%
+  dplyr::select(-status)
+
+# Transpose and filter ssGSEA pathway data
+transposed_ssgsea <- t(ssGSEA) %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("biospecimen_id") %>%
+  dplyr::filter(biospecimen_id %in% atrt_expression_df$Kids_First_Biospecimen_ID) %>%
+  dplyr::select(
+    biospecimen_id,
+    HALLMARK_MYC_TARGETS_V1,
+    HALLMARK_MYC_TARGETS_V2,
+    HALLMARK_NOTCH_SIGNALING
+  )
+
+# Join ATRT expression and focal CN data with transposed ssGSEA data, calculate
+# z-scores for each pathway variable
+atrt_expression_cn_df <- atrt_expression_cn_df %>%
+  dplyr::inner_join(transposed_ssgsea,
+                    by = c("Kids_First_Biospecimen_ID" = "biospecimen_id")) %>%
+  dplyr::mutate(
+    MYC_V1_ssgsea_score = HALLMARK_MYC_TARGETS_V1 - mean(HALLMARK_MYC_TARGETS_V1) / sd(HALLMARK_MYC_TARGETS_V1),
+    MYC_V2_ssgsea_score = HALLMARK_MYC_TARGETS_V2 - mean(HALLMARK_MYC_TARGETS_V2) / sd(HALLMARK_MYC_TARGETS_V2),
+    Notch_ssgsea_score = HALLMARK_NOTCH_SIGNALING - mean(HALLMARK_NOTCH_SIGNALING) / sd(HALLMARK_NOTCH_SIGNALING)
+  ) %>%
+  dplyr::select(
+    -c(
+      "HALLMARK_MYC_TARGETS_V1",
+      "HALLMARK_MYC_TARGETS_V2",
+      "HALLMARK_NOTCH_SIGNALING"
+    )
+  )
+
+# Join tumor mutuation data with metadata
+tmb_df <- tmb_df %>%
+  dplyr::left_join(metadata,
+                   by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
+  dplyr::select(Tumor_Sample_Barcode, Kids_First_Participant_ID, tmb)
+
+atrt_expression_cn_tmb_df <- atrt_expression_cn_df %>%
+  dplyr::left_join(tmb_df, by = "Kids_First_Participant_ID")
+
+## TODO: Add a column to this data.frame denoting `chr22q` loss using the SV
+# data.
+
+#### Save results --------------------------------------------------------------
+
+# Save final data.frame
+final_df <- atrt_expression_cn_tmb_df %>%
+  dplyr::select(-c(
+    "biospecimen_id.x",
+    "biospecimen_id.y",
+    "Tumor_Sample_Barcode"
+  )) %>%
+  dplyr::distinct() %>%
+  dplyr::arrange(desc(tmb))
+
+readr::write_tsv(final_df,
+                 file.path(results_dir, "ATRT_molecular_subtypes.tsv.gz"))
