@@ -85,7 +85,12 @@ initial_annotation_df <- atrt_df %>%
 intial_ha_atrt <- HeatmapAnnotation(df = initial_annotation_df)
 
 # Plot and save the Heatmap
-pdf(file.path(plots_dir, "initial_heatmap.pdf"), width = 10)
+png(
+  file.path(plots_dir, "initial_heatmap.png"),
+  width = 820,
+  height = 604,
+  units = "px"
+)
 Heatmap(
   initial_mat,
   heatmap_legend_param = list(title = "correlation"),
@@ -142,7 +147,12 @@ annotation_mat <- atrt_expression_cn_tmb_df %>%
 ha_atrt <- HeatmapAnnotation(df = annotation_mat)
 
 # Plot and save heatmap
-pdf(file.path(plots_dir, "final_annotated_heatmap.pdf"), width = 10)
+png(
+  file.path(plots_dir, "final_annotated_heatmap.png"),
+  width = 820,
+  height = 604,
+  units = "px"
+)
 Heatmap(
   atrt_expression_mat,
   heatmap_legend_param = list(title = "correlation"),
