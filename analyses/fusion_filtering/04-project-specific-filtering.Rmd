@@ -72,7 +72,7 @@ polyaQCGeneFiltered_filtFusion<-readRDS(file.path(root_dir, params$dataPolya))
 
 QCGeneFiltered_filtFusion<-rbind(strandedQCGeneFiltered_filtFusion,polyaQCGeneFiltered_filtFusion)
 
-write.table(QCGeneFiltered_filtFusion,"analyses/fusion_filtering/results/FilteredFusion.tsv",sep="\t",quote=FALSE,row.names = FALSE)
+write.table(QCGeneFiltered_filtFusion, file.path(outputfolder, "FilteredFusion.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
 
 # subset for recurrent fusion detection and multifused genes QC
 fusion_calls<-unique(QCGeneFiltered_filtFusion)
@@ -251,7 +251,6 @@ putative_driver_fusions<-rbind(QCGeneFiltered_recFusionUniq,putative_driver_anno
 write.table(putative_driver_fusions,file.path(outputfolder,"PutativeDriverFusion.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
 
 ```
-
 
 
 
