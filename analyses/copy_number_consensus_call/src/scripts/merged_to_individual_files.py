@@ -36,6 +36,8 @@ parser.add_argument('--cnvkit', required=True,
                     help='path to the cnvkit file')
 parser.add_argument('--freec', required=True,
                     help='path to the freec file')
+parser.add_argument('--snake', required=True,
+                                        help='path new snakemake file')
 parser.add_argument('--maxcnvs', default=2500,
                     help='samples with more than 2500 cnvs are set to blank')
 parser.add_argument('--cnvsize', default=3000,
@@ -105,18 +107,19 @@ for sample in all_samples:
 
 
 ## Make the Snakemake config file. Write all of the sample names into the config file
-print("samples:")
-for sample in all_samples:
-    print("  " + str(sample) + ":")
+with open(args.snake, 'w') as file:
+    file.write('samples:' + '\n')
+    for sample in all_samples:
+        file.write('  ' + str(sample) + ':' + '\n')
 
-## Define the extension for the config file
-print('manta_ext: ' + MANTA_EXT)
-print('cnvkit_ext: ' + CNVKIT_EXT)
-print('freec_ext: ' + FREEC_EXT)
+    ## Define the extension for the config file
+    file.write('manta_ext: ' + MANTA_EXT + '\n')
+    file.write('cnvkit_ext: ' + CNVKIT_EXT + '\n')
+    file.write('freec_ext: ' + FREEC_EXT + '\n')
 
-## Define location for python scripts (assumed to be the one with this script)
-print('scripts: ' + os.path.dirname(os.path.realpath(__file__)))
+    ## Define location for python scripts
+    file.write('scripts: ' + os.path.dirname(os.path.realpath(__file__)) + '\n')
 
-## Define the size cutoff and freec's pval cut off.
-print('size_cutoff: ' + str(args.cnvsize))
-print('freec_pval: ' + str(args.freecp))
+    ## Define the size cutoff and freec's pval cut off.
+    file.write('size_cutoff: ' + str(args.cnvsize) + '\n')
+    file.write('freec_pval: ' + str(args.freecp) + '\n')
