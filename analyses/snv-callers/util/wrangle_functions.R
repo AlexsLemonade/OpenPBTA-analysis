@@ -83,8 +83,7 @@ maf_to_granges <- function(maf_df) {
   #
   # Args:
   #   maf_df: A MAF formatted data.frame with `Chromosome`, `Start_Position`,
-  #           `End_Position`, and maybe `Strand`.
-  #   strand: specify if the column `Strand` exists.
+  #           `End_Position`
   #
   # Returns:
   # A Genomic Ranges formatted object.
@@ -96,7 +95,7 @@ maf_to_granges <- function(maf_df) {
       start = maf_df$Start_Position,
       end = maf_df$End_Position
     ),
-    strand = maf_df$Strand,
+    # strand = maf_df$Strand,
     mcols = maf_df
   )
 }
