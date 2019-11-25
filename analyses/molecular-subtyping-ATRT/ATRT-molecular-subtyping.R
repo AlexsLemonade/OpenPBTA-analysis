@@ -129,7 +129,7 @@ atrt_df <- metadata %>%
     Kids_First_Participant_ID,
     Kids_First_Biospecimen_ID,
     age_at_diagnosis_days,
-    reported_gender,
+    germline_sex_estimate,
     primary_site
   ) %>%
   dplyr::mutate(
