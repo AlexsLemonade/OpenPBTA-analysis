@@ -11,5 +11,5 @@ metadata=data/pbta-histologies.tsv
 
 python3 analyses/recurrent-VUS/scripts/01-setup_db.py \
   --db-file $dbfile \
-  --consensus-file $consensus
+  --consensus-file $consensus \
   --meta-file $metadata
