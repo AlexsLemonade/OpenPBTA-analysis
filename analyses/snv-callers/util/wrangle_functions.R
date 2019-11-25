@@ -88,13 +88,17 @@ maf_to_granges <- function(maf_df) {
   # Returns:
   # A Genomic Ranges formatted object.
   #
-  # Create the GRanges object with the strand
+  # Create the GRanges object
   GenomicRanges::GRanges(
     seqnames = maf_df$Chromosome,
     ranges = IRanges::IRanges(
       start = maf_df$Start_Position,
       end = maf_df$End_Position
     ),
+    # I don't think any of the uses here (MAF & WXS bed files) use `Strand` info
+    # in any functional way (MAF is always `+` & WXS bed files don't include it)
+    # so I am commenting the line below out. -JAS
+    
     # strand = maf_df$Strand,
     mcols = maf_df
   )
