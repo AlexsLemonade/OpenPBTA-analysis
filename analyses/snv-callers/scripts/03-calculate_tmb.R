@@ -190,7 +190,8 @@ if (file.exists(tmb_file) && !opt$overwrite) {
     wgs_size = wgs_genome_size,
     wxs_size = wxs_exome_size
   )
-
+  readr::write_tsv(tmb_df, tmb_file)
+  
   # Print out completion message
   message(paste("TMB calculations saved to:", tmb_file))
 }
