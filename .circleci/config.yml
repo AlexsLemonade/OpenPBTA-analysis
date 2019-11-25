@@ -10,7 +10,7 @@ jobs:
 
       - run:
           name: Data Download
-          command: URL=https://open-pbta.s3.amazonaws.com/data RELEASE=testing ./download-data.sh
+          command: OPENPBTA_URL=https://open-pbta.s3.amazonaws.com/data OPENPBTA_RELEASE=testing ./scripts/run_in_ci.sh bash download-data.sh
 
       - run:
           name: List Data Directory Contents
@@ -43,6 +43,10 @@ jobs:
           command: ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
 
       - run:
+          name: Project specific filtering
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/fusion_filtering/04-project-specific-filtering.Rmd')"
+
+      - run:
           name: Transcriptome dimensionality reduction
           command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
 
@@ -58,6 +62,10 @@ jobs:
       - run:
           name: Sex prediction from RNA-seq - Train elasticnet
           command: ./scripts/run_in_ci.sh Rscript --vanilla  analyses/sex-prediction-from-RNASeq/02-train_elasticnet.R --input_directory scratch --output_directory scratch --filename_lead kallisto_stranded
+          
+      - run:
+          name: Sex prediction from RNA-seq - Evaluate model
+          command: ./scripts/run_in_ci.sh Rscript --vanilla  analyses/sex-prediction-from-RNASeq/03-evaluate_model.R --test_set_input_directory scratch --model_input_directory scratch --output_directory scratch --filename_lead kallisto_stranded
 
       - run:
           name: Selection Strategy Comparison
@@ -67,6 +75,7 @@ jobs:
 #      - run:
 #          name: ssGSEA Analysis
 #          command: OPENPBTA_ANOVAPVALUE=0.25 OPENPBTA_TUKEYPVALUE=0.50 OPENPBTA_PERCKEEP=0.50 ./scripts/run_in_ci.sh bash analyses/ssgsea-hallmark/run-ssgsea-hallmark.sh
+
 
 # The second method - ControlFREEC - was not included as of v6, so the comparison can no longer be performed
 #      - run:
