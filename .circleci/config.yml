@@ -47,7 +47,6 @@ jobs:
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/fusion_filtering/04-project-specific-filtering.Rmd')"
 
       - run:
-HEAD
           name: Transcriptome dimensionality reduction
           command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
 
@@ -57,16 +56,9 @@ HEAD
 #          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/sex-prediction-from-RNASeq/sex-prediction-from-RNASeq.Rmd', clean = TRUE)"
 
       - run:
-          name: Sex prediction from RNA-seq - Data cleaning
-          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/sex-prediction-from-RNASeq/01-clean_split_data.R --expression data/pbta-gene-expression-kallisto.stranded.rds --metadata data/pbta-histologies.tsv --output_directory scratch --filename_lead kallisto_stranded
-      
-      - run:
-          name: Sex prediction from RNA-seq - Train elasticnet
-          command: ./scripts/run_in_ci.sh Rscript --vanilla  analyses/sex-prediction-from-RNASeq/02-train_elasticnet.R --input_directory scratch --output_directory scratch --filename_lead kallisto_stranded
-          
-      - run:
-          name: Sex prediction from RNA-seq - Evaluate model
-          command: ./scripts/run_in_ci.sh Rscript --vanilla  analyses/sex-prediction-from-RNASeq/03-evaluate_model.R --test_set_input_directory scratch --model_input_directory scratch --output_directory scratch --filename_lead kallisto_stranded
+          name: Sex prediction from RNA-seq - Clean data-train elasticnet-evaluate model
+          command: ./scripts/run_in_ci.sh bash analyses/sex-prediction-from-RNASeq/run-sex-prediction-from-RNASeq.sh
+
 
       - run:
           name: Selection Strategy Comparison

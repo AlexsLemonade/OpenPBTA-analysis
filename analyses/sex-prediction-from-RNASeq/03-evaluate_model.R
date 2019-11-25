@@ -1,5 +1,7 @@
 #--------Library calls
 
+cat(paste("\n\nStart script 03-evaluate_model at", Sys.time(), "\n", sep=" "))
+
 library(glmnet)
 library(glmnetUtils)
 library(readr)
@@ -31,7 +33,8 @@ option_list <- list(
     type = "character",
     default = NULL,
     help = "input directory"
-  ),  optparse::make_option(
+  ),  
+  optparse::make_option(
     c("-o", "--output_directory"),
     type = "character",
     default = NULL,
@@ -70,6 +73,12 @@ option_list <- list(
 # Read the arguments passed
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
+
+# Create specified output directory if it does not yet exist
+output_directory <- opt$output_directory
+if (!dir.exists(output_directory)) {
+  dir.create(output_directory, recursive = TRUE)
+}
 
 #--------
 
@@ -165,4 +174,4 @@ saveRDS(two_class_summary, summary_file)
 
 #--------
 
-cat("\n\nmodel evaluation is complete")
+cat(paste("\n\nEnd script 03-evaluate_model at", Sys.time(), "\n", sep=" "))

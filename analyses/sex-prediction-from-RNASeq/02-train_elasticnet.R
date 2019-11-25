@@ -1,5 +1,7 @@
 #--------Library calls
 
+cat(paste("\n\nStart script 02-train_elasticnet at", Sys.time(), "\n", sep=" "))
+
 library(glmnet)
 library(glmnetUtils)
 library(readr)
@@ -64,6 +66,12 @@ option_list <- list(
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
+# Create specified output directory if it does not yet exist
+output_directory <- opt$output_directory
+if (!dir.exists(output_directory)) {
+  dir.create(output_directory, recursive = TRUE)
+}
+
 #--------
 
 #--------test for the existence of the expected training and target value sets. 
@@ -118,6 +126,7 @@ print(paste("MAD filtering is complete.  train_set dimension = ", nrow(train_set
 print(paste("Model build begun at", Sys.time(), sep=" "))
 
 #--------
+
 
 
 #--------Build elastic net logistic regression model
@@ -185,4 +194,4 @@ write_tsv(model_coefs, model_coefs_file,
 
 #--------
 
-
+cat(paste("\n\nEnd script 02-train_elasticnet at", Sys.time(), "\n", sep=" "))

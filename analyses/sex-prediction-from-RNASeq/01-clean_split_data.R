@@ -14,6 +14,8 @@
 
 #--------Library calls and run parameters.  Modify the assignments as needed for subsequent runs.
 
+cat(paste("\n\nStart script 01_clean_split_data at", Sys.time(), "\n", sep=" "))
+
 library(dplyr)
 library(tibble)
 library(readr)
@@ -222,3 +224,6 @@ if (train_percent < 1) {
   write_tsv(train_targets, train_targets_file,
             na = "NA", append = FALSE, col_names = TRUE, quote_escape = "double")
 }
+
+
+cat(paste("\n\nEnd script 01_clean_split_data at", Sys.time(), "\n", sep=" "))
