@@ -6,7 +6,6 @@
 suppressPackageStartupMessages(library(optparse))
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(pheatmap))
-# suppressPackageStartupMessages(library(reshape2))
 suppressPackageStartupMessages(library(corrplot))
 
 # source plotting theme
@@ -51,7 +50,7 @@ create.heatmap <- function(deconv.method, title) {
     group_by(cell_type, label) %>%
     summarise(mean = mean(fraction)) %>%
     # convert into matrix of cell type vs histology
-    pivot_wider(names_from = label, values_from = mean) %>% 
+    spread(key = label, value = mean) %>% 
     column_to_rownames('cell_type')
   
   # remove rows with all zeros (not allowed because we are scaling by row)
@@ -94,7 +93,7 @@ total <- merge(total, total.labels, by = 'broad_histology')
 total <- total %>% 
   group_by(cell_type, label) %>%
   dplyr::summarise(corr = cor(xcell, cibersort)) %>%
-  pivot_wider(names_from = label, values_from = corr) %>% 
+  spread(key = label, value = corr) %>% 
   column_to_rownames('cell_type') %>%
   replace(is.na(.), 0)
 
