@@ -29,7 +29,7 @@ FREEC_ID_HEADER = 'Kids_First_Biospecimen_ID'
 parser = argparse.ArgumentParser(description="""This script splits CNV files
                                                 into one per sample. It also
                                                 prints a snakemake config file
-                                                to stdout.""")
+                                                to the specified filename.""")
 parser.add_argument('--manta', required=True,
                     help='path to the manta file')
 parser.add_argument('--cnvkit', required=True,
