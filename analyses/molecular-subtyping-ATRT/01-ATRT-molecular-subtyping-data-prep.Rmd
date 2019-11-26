@@ -1,0 +1,395 @@
+---
+title: "ATRT Molecular Subtyping - Data Prep"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell for ALSF CCDL
+date: 2019
+---
+
+This notebook addresses the issue of molecular subtyping ATRT samples. 
+
+# Usage
+
+This script is intended to be run via the command line from the top directory
+of the repository as follows:
+
+`Rscript 'analyses/molecular-subtyping-ATRT/ATRT-molecular-subtyping.R'`
+
+# Set Up
+
+```{r}
+# Get `magrittr` pipe
+`%>%` <- dplyr::`%>%`
+
+# Install `flextable` package for displaying tables
+if (!("flextable" %in% installed.packages())) {
+  install.packages("flextable")
+}
+library(flextable)
+```
+
+## Directories and Files
+
+```{r}
+# Detect the ".git" folder -- this will in the project root directory.
+# Use this as the root directory to ensure proper sourcing of functions no
+# matter where this is called from
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+# File path to plots directory
+plots_dir <-
+  file.path(root_dir, "analyses", "molecular-subtyping-ATRT", "plots")
+
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir)
+}
+
+# File path to results directory
+results_dir <-
+  file.path(root_dir, "analyses", "molecular-subtyping-ATRT", "results")
+
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+
+# Read in metadata
+metadata <-
+  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"))
+
+# Select wanted columns in metadata for merging and assign to a new object
+select_metadata <- metadata %>%
+  dplyr::select(sample_id, Kids_First_Participant_ID, Kids_First_Biospecimen_ID)
+
+# Read in ssGSEA pathway information
+ssGSEA <-
+  as.data.frame(readr::read_rds(
+    file.path(
+      root_dir,
+      "analyses",
+      "ssgsea-hallmark",
+      "results",
+      "GeneSetExpressionMatrix.RDS"
+    )
+  ))
+
+# Read in RNA expression data
+stranded_expression <-
+  readr::read_rds(file.path(
+    root_dir,
+    "data",
+    "pbta-gene-expression-rsem-fpkm.stranded.rds"
+  ))
+
+# Read in focal CN data
+## TODO: This section will be updated to read in focal CN data derived from 
+##       copy number consensus calls.
+cn_df <- readr::read_tsv(
+  file.path(
+    root_dir,
+    "analyses",
+    "focal-cn-file-preparation",
+    "results",
+    "controlfreec_annotated_cn_autosomes.tsv.gz"
+  )
+)
+
+# Read in consensus mutation data
+tmb_df <-
+  data.table::fread(
+    file.path(
+      root_dir,
+      "data",
+      "snv-consensus_11122019",
+      "consensus_mutation_tmb.tsv"
+    )
+  )
+```
+
+# Filter Data
+
+## Filter metadata
+
+```{r}
+# Define regions of the brain (using Anatomy of the Brain figure found at
+# https://www.ncbi.nlm.nih.gov/books/NBK65903/figure/CDR0000574573__205/)
+supratentorial <-
+  c(
+    "Skull",
+    "Thalamus",
+    "Temporal Lobe",
+    "Frontal Lobe",
+    "Parietal Lobe",
+    "Cerebrum",
+    "Basal Ganglia",
+    "Cranial Nerves NOS",
+    "Basal Ganglia;Temporal Lobe",
+    "Frontal Lobe;Parietal Lobe;Temporal Lobe",
+    "Parietal Lobe;Temporal Lobe",
+    "Frontal Lobe;Parietal Lobe",
+    "Frontal Lobe;Meninges/Dura;Parietal Lobe;Spinal Cord- Cervical;Spinal Cord- Lumbar/Thecal Sac;Spinal Cord- Thoracic;Temporal Lobe;Ventricles"
+    # Not sure how the line above should be broken up as `Frontal Lobe` is
+    # supratentorial, while `Spinal Cord` is not
+  )
+
+infratentorial <-
+  c(
+    "Cerebellum/Posterior Fossa",
+    "Brain Stem- Pons;Cerebellum/Posterior Fossa",
+    "Cerebellum/Posterior Fossa;Other locations NOS",
+    "Brain Stem",
+    "Brain Stem- Midbrain/Tectum;Ventricles",
+    "Cerebellum/Posterior Fossa;Ventricles",
+    "Cerebellum/Posterior Fossa;Spinal Cord- Cervical;Spinal Cord- Lumbar/Thecal Sac;Spinal Cord- Thoracic",
+    "Other locations NOS;Spinal Cord- Lumbar/Thecal Sac;Spinal Cord- Thoracic;Ventricles",
+    "Other locations NOS;Spinal Cord- Lumbar/Thecal Sac;Spinal Cord- Thoracic;Temporal Lobe"
+    # Not sure how the line above should be broken up as `Temporal Lobe` is
+    # supratentorial, while the `Spinal Cord` is not
+  )
+
+# Filter metadata for `ATRT` and define `location_summary` based on values in
+# `primary_site`
+atrt_df <- metadata %>%
+  dplyr::filter(short_histology == "ATRT",
+                experimental_strategy == "RNA-Seq") %>%
+  dplyr::mutate(
+    location_summary = dplyr::case_when(
+      primary_site %in% infratentorial ~ "infratentorial",
+      primary_site %in% supratentorial ~ "supratentorial",
+      TRUE ~ as.character(primary_site)
+    )
+  ) %>%
+  dplyr::group_by(sample_id) %>%
+  dplyr::summarize(Kids_First_Biospecimen_ID = paste(sort(unique(
+    Kids_First_Biospecimen_ID
+  )),
+  collapse = ", "),
+  Kids_First_Participant_ID,
+  location_summary,
+  age_at_diagnosis_days,
+  germline_sex_estimate, 
+  primary_site) 
+
+# Display `atrt_df`
+atrt_df %>%
+  head(n = 15) %>%
+  regulartable() %>%
+  fontsize(size = 12, part = "all")
+```
+
+## Filter RNA expression, CN, TMB, and ssGSEA data by merging with `sample_id`
+
+### RNA expression data 
+
+```{r}
+# Define target overexpressed gene vectors
+tyr_genes <- c("TYR", "MITF", "DCT", "VEGFA", "DNAH11", "SPEF1")
+shh_genes <- c("MYCN", "GLI2", "CDK6", "ASCL1", "HES5/6", "DLL1/3")
+myc_genes <- c("MYC", "HOTAIR", "HOX")
+
+# Filter expression data for target overexpressed genes
+stranded_expression_wide_df <- stranded_expression %>%
+  as.data.frame() %>%
+  dplyr::mutate(gene_id = gsub(".*\\_", "", gene_id)) %>% # Trim the gene ids to include only the gene symbol
+  dplyr::filter(gene_id %in% tyr_genes | gene_id %in% shh_genes | gene_id %in% myc_genes) %>%
+  tibble::column_to_rownames("gene_id")
+
+# Log2 transformation
+norm_expression <- log2(stranded_expression_wide_df + 1)
+
+# normData mean and sd
+norm_expression_means <- rowMeans(norm_expression, na.rm = TRUE)
+norm_expression_sd <- apply(norm_expression, 1, sd, na.rm = TRUE)
+
+# Subtract mean
+expression_zscored <- sweep(stranded_expression_wide_df, 1, norm_expression_means, FUN = "-")
+
+# Divide by SD remove NAs and Inf values from zscore for genes with 0 in normData
+expression_zscored <- sweep(expression_zscored, 1, norm_expression_sd, FUN = "/") %>% 
+  dplyr::na_if(Inf) %>% 
+  na.omit()
+
+# Transpose
+long_stranded_expression <- t(expression_zscored)
+
+# Merge metadata with expression data 
+expression_metadata <- long_stranded_expression %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
+  dplyr::left_join(select_metadata, by = "Kids_First_Biospecimen_ID")
+
+# Display `expression_metadata`
+expression_metadata %>%
+  head(n = 15) %>%
+  regulartable() %>%
+  fontsize(size = 12, part = "all")
+
+# Join expression data with metadata filtered for `ATRT`
+atrt_expression_df <- atrt_df %>%
+  dplyr::left_join(expression_metadata,
+                    by = "sample_id")
+```
+
+### CN data
+
+```{r}
+#Collapse target overexpressed gene vectors
+tyr_genes <- paste(tyr_genes, collapse = "|")
+shh_genes <- paste(shh_genes, collapse = "|")
+myc_genes <- paste(myc_genes, collapse = "|")
+
+# Join focal CN data with metadata
+cn_metadata <- cn_df %>%
+  dplyr::left_join(metadata,
+                   by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
+  dplyr::select(gene_symbol,
+                sample_id,
+                Kids_First_Participant_ID,
+                biospecimen_id,
+                status) %>%
+  dplyr::filter(sample_id %in% atrt_expression_df$sample_id) %>%
+  dplyr::mutate(
+    SMARCB1_focal_status = dplyr::case_when(gene_symbol == "SMARCB1" ~ status,
+                                            TRUE ~ "neutral"),
+    SMARCA4_focal_status = dplyr::case_when(gene_symbol == "SMARCA4" ~ status,
+                                            TRUE ~ "neutral"),
+    Overexpressed_gene_sets = dplyr::case_when(
+      stringr::str_detect(gene_symbol, tyr_genes) &
+        status != "loss" ~ "TYR_genes",
+      stringr::str_detect(gene_symbol, shh_genes) &
+        status != "loss" ~ "SHH_genes",
+      stringr::str_detect(gene_symbol, myc_genes) &
+        status != "loss" ~ "MYC_genes",
+      TRUE ~ "NA"
+    )
+  ) %>%
+  dplyr::select(-gene_symbol) %>%
+  dplyr::distinct()
+
+#Display `cn_metadata`
+cn_metadata %>%
+  head(n = 15) %>%
+  regulartable() %>%
+  fontsize(size = 12, part = "all")
+
+# Join ATRT expression data with focal CN data
+atrt_expression_cn_df <- atrt_expression_df %>%
+  dplyr::left_join(cn_metadata, by = "sample_id") %>%
+  dplyr::select(-status)
+```
+
+### ssGSEA data
+
+```{r}
+# Filter and transpose ssGSEA pathway data
+# log2 transformation
+norm_ssGSEA <- log2(ssGSEA + 1)
+
+# Norm ssGSEA mean and sd
+norm_ssGSEA_means <- rowMeans(norm_ssGSEA, na.rm = TRUE)
+norm_ssGSEA_sd <- apply(norm_ssGSEA, 1, sd, na.rm = TRUE)
+
+# Subtract mean
+ssGSEA_zscored <- sweep(ssGSEA, 1, norm_ssGSEA_means, FUN = "-")
+
+# Divide by SD remove NAs and Inf values from zscore for genes with 0 in normData
+ssGSEA_zscored <- sweep(ssGSEA_zscored, 1,norm_ssGSEA_sd, FUN = "/") %>% 
+  dplyr::na_if(Inf) %>% 
+  na.omit()
+
+# Transpose
+transposed_ssGSEA <- t(ssGSEA_zscored)
+
+# Select wanted pathways and merge metadata 
+transposed_ssGSEA <- transposed_ssGSEA %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
+  dplyr::select(
+    Kids_First_Biospecimen_ID,
+    HALLMARK_MYC_TARGETS_V1,
+    HALLMARK_MYC_TARGETS_V2,
+    HALLMARK_NOTCH_SIGNALING
+  ) %>%
+  dplyr::left_join(select_metadata, by = "Kids_First_Biospecimen_ID")
+
+#Display `transposed_ssGSEA`
+transposed_ssGSEA %>%
+  head(n = 15) %>%
+  regulartable() %>%
+  fontsize(size = 12, part = "all")
+
+# Join ATRT expression and focal CN data with transposed ssGSEA data
+atrt_expression_cn_df <- atrt_expression_cn_df %>%
+  dplyr::left_join(transposed_ssGSEA,
+                    by = "sample_id")
+```
+
+### Tumor mutation burden data
+
+```{r}
+# Join tumor mutuation data with metadata
+tmb_df <- tmb_df %>%
+  dplyr::select(Tumor_Sample_Barcode, tmb) %>%
+  dplyr::inner_join(select_metadata,
+                   by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID"))
+
+#Display `tmb_df`
+tmb_df %>%
+  head(n = 15) %>%
+  regulartable() %>%
+  fontsize(size = 12, part = "all")
+
+# Join ATRT expression, focal CN data and transposed ssGSEA data with tumor 
+# mutation burden data
+atrt_expression_cn_tmb_df <- atrt_expression_cn_df %>%
+  dplyr::left_join(tmb_df, by = "sample_id")
+
+## TODO: Add a column to this data.frame denoting `chr22q` loss using the SV
+# data.
+```
+
+# Save results
+
+```{r}
+# Save final data.frame
+final_df <- atrt_expression_cn_tmb_df %>%
+  dplyr::group_by(sample_id) %>%
+  dplyr::summarise(Kids_First_Biospecimen_ID = paste(sort(unique(
+    Kids_First_Biospecimen_ID.x
+  )), collapse = ", "),
+  Kids_First_Participant_ID = paste(sort(unique(Kids_First_Participant_ID.x)), collapse = ", "),
+  location_summary = paste(sort(unique(location_summary)), collapse = ", "),
+  age_at_diagnosis_days = paste(sort(unique(age_at_diagnosis_days)), collapse = ", "),
+  germline_sex_estimate = paste(sort(unique(germline_sex_estimate)), collapse = ", "),
+  SMARCB1_focal_status = paste(sort(unique(SMARCB1_focal_status)), collapse = ", "),
+  SMARCA4_focal_status = paste(sort(unique(SMARCA4_focal_status)), collapse = ", "),
+  Overexpressed_gene_sets = paste(sort(unique(Overexpressed_gene_sets)), collapse = ", "),
+  HALLMARK_MYC_TARGETS_V1 = mean(HALLMARK_MYC_TARGETS_V1),
+  HALLMARK_MYC_TARGETS_V2 = mean(HALLMARK_MYC_TARGETS_V2),
+  HALLMARK_NOTCH_SIGNALLING = mean(HALLMARK_NOTCH_SIGNALING),
+  tmb = mean(tmb),
+  GLI2 = mean(GLI2),
+  TYR = mean(TYR),
+  DCT = mean(DCT),
+  SPEF1 = mean(SPEF1),
+  CDK6 = mean(CDK6),
+  DNAH11 = mean(DNAH11),
+  VEGFA = mean(VEGFA),
+  MYCN = mean(MYCN),
+  MYC = mean(MYC),
+  ASCL1 = mean(ASCL1),
+  MITF = mean(MITF),
+  HOTAIR = mean(HOTAIR)
+  ) %>%
+  dplyr::distinct()
+
+readr::write_tsv(final_df,
+                 file.path(results_dir, "ATRT_molecular_subtypes.tsv.gz"))
+
+# Display `final_df`
+final_df %>%
+  regulartable() %>%
+  fontsize(size = 12, part = "all")
+```
+

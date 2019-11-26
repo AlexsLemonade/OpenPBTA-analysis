@@ -108,7 +108,7 @@ jobs:
 
       - run:  
           name: Molecular Subtyping - ATRT
-          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/molecular-subtyping-ATRT/ATRT-molecular-subtyping.R
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-ATRT/01-ATRT-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
           
          ################################
          #### Add your analysis here ####
