@@ -39,6 +39,14 @@ jobs:
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render(input = 'analyses/collapse-rnaseq/02-analyze-drops.Rmd', params = list(polya.annot.table = 'pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds', stranded.annot.table = 'pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds'), clean = TRUE)"
 
       - run:
+          name: Immune deconvolution using immunedeconv R package
+          command: ./scripts/run_in_ci.sh Rscript analyses/immune-deconv/01-immune-deconv.R -p 'data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds' -s 'data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds' -c 'data/pbta-histologies.tsv' -b 'analyses/immune-deconv/CIBERSORT.R' -m 'analyses/immune-deconv/LM22.txt' -o 'analyses/immune-deconv/deconv-output.RData'
+
+      - run:
+          name: Summary plots for xCell and CIBERSORT
+          command: ./scripts/run_in_ci.sh Rscript analyses/immune-deconv/02-summary-plots.R -i 'analyses/immune-deconv/deconv-output.RData' -o 'analyses/immune-deconv/deconv-summary.pdf'
+
+      - run:
           name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded expression
           command: ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
 
