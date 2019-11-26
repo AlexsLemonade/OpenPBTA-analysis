@@ -50,8 +50,8 @@ data
     ├── pbta-gene-expression-rsem-tpm.stranded.rds
     ├── pbta-isoform-expression-rsem-tpm.polya.rds
     ├── pbta-isoform-expression-rsem-tpm.stranded.rds
-    └── pbta-snv-consensus-20191125.zip
-
+    ├── pbta-snv-consensus-mutation.maf.tsv.zip
+    └── pbta-snv-consensus-mutation-tmb.tsv
 ```
 
 ## archived release
@@ -108,6 +108,7 @@ data
     ├── pbta-isoform-expression-rsem-tpm.polya.rds
     ├── pbta-isoform-expression-rsem-tpm.stranded.rds
     └── pbta-snv-consensus_11122019.zip
+
 ```
 
 ### release-v9-20191105
