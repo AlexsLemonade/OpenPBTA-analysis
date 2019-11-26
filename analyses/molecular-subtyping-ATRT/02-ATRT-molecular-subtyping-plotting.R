@@ -8,7 +8,7 @@
 # This script is intended to be run via the command line from the top directory
 # of the repository as follows:
 #
-# Rscript 'analyses/molecular-subtyping-ATRT/ATRT-molecular-subtyping-plotting.R'
+# Rscript 'analyses/molecular-subtyping-ATRT/02-ATRT-molecular-subtyping-plotting.R'
 
 #### Set Up --------------------------------------------------------------------
 
@@ -57,13 +57,6 @@ stranded_expression <-
 # Read in output file produced in `01-ATRT-molecular-subtyping-data-prep.Rmd`
 atrt_expression_cn_tmb_df <-
   readr::read_tsv(file.path(results_dir, "ATRT_molecular_subtypes.tsv.gz"))
-
-#### Custom function -----------------------------------------------------------
-
-get_mode <- function(x){
-  x <- gsub("NULL", "NA", x)
-  return(names(sort(table(x), decreasing = T, na.last = T)[1]))
-}
 
 #### Filter for ATRT and plot initial heatmap ----------------------------------
 
