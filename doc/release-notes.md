@@ -1,5 +1,60 @@
 # release notes
 ## current release
+### release-v11-20191126
+- release date: 2019-11-26
+- status: available
+- changes:
+  - Add putative oncogenic fusions from [fusion filtering and prioritization analysis](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/fusion_filtering)
+  - Update consensus SNV/indels to contain [consensus MNVs](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/275)
+  - Add RNA-Seq [collapsed matrices](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/287) - wrong files (tables of transcripts removed) were included with [V10](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/273)
+- folder structure:
+```
+data
+└── release-v11-20191126
+    ├── CHANGELOG.md
+    ├── StrexomeLite_Targets_CrossMap_hg38_filtered_chr_prefixed.bed
+    ├── StrexomeLite_hg38_liftover_100bp_padded.bed
+    ├── WGS.hg38.lancet.300bp_padded.bed
+    ├── WGS.hg38.lancet.unpadded.bed
+    ├── WGS.hg38.mutect2.unpadded.bed
+    ├── WGS.hg38.strelka2.unpadded.bed
+    ├── WGS.hg38.vardict.100bp_padded.bed
+    ├── WXS.hg38.100bp_padded.bed
+    ├── md5sum.txt
+    ├── pbta-cnv-cnvkit.seg.gz
+    ├── pbta-cnv-controlfreec.tsv.gz
+    ├── pbta-fusion-arriba.tsv.gz
+    ├── pbta-fusion-starfusion.tsv.gz
+    ├── pbta-fusion-putative-oncogenic.tsv
+    ├── pbta-gene-counts-rsem-expected_count.polya.rds
+    ├── pbta-gene-counts-rsem-expected_count.stranded.rds
+    ├── pbta-gene-expression-kallisto.polya.rds
+    ├── pbta-gene-expression-kallisto.stranded.rds
+    ├── pbta-gene-expression-rsem-fpkm.polya.rds
+    ├── pbta-gene-expression-rsem-fpkm.stranded.rds
+    ├── pbta-histologies.tsv
+    ├── pbta-isoform-counts-rsem-expected_count.polya.rds
+    ├── pbta-isoform-counts-rsem-expected_count.stranded.rds
+    ├── pbta-snv-lancet.vep.maf.gz
+    ├── pbta-snv-mutect2.vep.maf.gz
+    ├── pbta-snv-strelka2.vep.maf.gz
+    ├── pbta-snv-vardict.vep.maf.gz
+    ├── pbta-sv-manta.tsv.gz
+    ├── independent-specimens.wgs.primary-plus.tsv
+    ├── independent-specimens.wgs.primary.tsv
+    ├── independent-specimens.wgswxs.primary-plus.tsv
+    ├── independent-specimens.wgswxs.primary.tsv
+    ├── pbta-gene-expression-rsem-fpkm-collapsed.polya.rds
+    ├── pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds
+    ├── pbta-gene-expression-rsem-tpm.polya.rds
+    ├── pbta-gene-expression-rsem-tpm.stranded.rds
+    ├── pbta-isoform-expression-rsem-tpm.polya.rds
+    ├── pbta-isoform-expression-rsem-tpm.stranded.rds
+    └── pbta-snv-consensus-20191125.zip
+
+```
+
+## archived release
 ### release-v10-20191115
 - release date: 2019-11-15
 - status: available
@@ -53,10 +108,8 @@ data
     ├── pbta-isoform-expression-rsem-tpm.polya.rds
     ├── pbta-isoform-expression-rsem-tpm.stranded.rds
     └── pbta-snv-consensus_11122019.zip
-
 ```
 
-## archived release
 ### release-v9-20191105
 - release date: 2019-11-05
 - status: available
