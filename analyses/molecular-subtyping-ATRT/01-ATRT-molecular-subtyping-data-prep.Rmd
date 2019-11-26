@@ -234,7 +234,7 @@ atrt_expression_df <- atrt_df %>%
 ### CN data
 
 ```{r}
-#Collapse target overexpressed gene vectors
+# Collapse target overexpressed gene vectors
 tyr_genes <- paste(tyr_genes, collapse = "|")
 shh_genes <- paste(shh_genes, collapse = "|")
 myc_genes <- paste(myc_genes, collapse = "|")
@@ -282,19 +282,15 @@ atrt_expression_cn_df <- atrt_expression_df %>%
 ### ssGSEA data
 
 ```{r}
-# Filter and transpose ssGSEA pathway data
-# log2 transformation
-norm_ssGSEA <- log2(ssGSEA + 1)
-
-# Norm ssGSEA mean and sd
-norm_ssGSEA_means <- rowMeans(norm_ssGSEA, na.rm = TRUE)
-norm_ssGSEA_sd <- apply(norm_ssGSEA, 1, sd, na.rm = TRUE)
+# Calculate ssGSEA mean and sd
+ssGSEA_means <- rowMeans(ssGSEA, na.rm = TRUE)
+ssGSEA_sd <- apply(ssGSEA, 1, sd, na.rm = TRUE)
 
 # Subtract mean
-ssGSEA_zscored <- sweep(ssGSEA, 1, norm_ssGSEA_means, FUN = "-")
+ssGSEA_zscored <- sweep(ssGSEA, 1, ssGSEA_means, FUN = "-")
 
 # Divide by SD remove NAs and Inf values from zscore for genes with 0 in normData
-ssGSEA_zscored <- sweep(ssGSEA_zscored, 1,norm_ssGSEA_sd, FUN = "/") %>% 
+ssGSEA_zscored <- sweep(ssGSEA_zscored, 1, ssGSEA_sd, FUN = "/") %>% 
   dplyr::na_if(Inf) %>% 
   na.omit()
 
