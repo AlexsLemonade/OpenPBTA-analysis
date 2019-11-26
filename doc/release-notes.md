@@ -50,7 +50,7 @@ data
     ├── pbta-gene-expression-rsem-tpm.stranded.rds
     ├── pbta-isoform-expression-rsem-tpm.polya.rds
     ├── pbta-isoform-expression-rsem-tpm.stranded.rds
-    ├── pbta-snv-consensus-mutation.maf.tsv.zip
+    ├── pbta-snv-consensus-mutation.maf.tsv.gz
     └── pbta-snv-consensus-mutation-tmb.tsv
 ```
 
