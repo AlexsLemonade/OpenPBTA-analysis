@@ -8,14 +8,14 @@
 # Rscript analyses/collapse-rnaseq/01-summarize_matrices.R \
 # -i data/pbta-gene-expression-rsem-fpkm.polya.rds \
 # -g data/gencode.v27.primary_assembly.annotation.gtf.gz \
-# -m data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
+# -m analyses/collapse-rnaseq/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
 # -t analyses/collapse-rnaseq/pbta-gene-expression-rsem-fpkm-collapsed_table.polya.rds
 
 # Example run: Stranded RNA-seq
 # Rscript analyses/collapse-rnaseq/01-summarize_matrices.R \
 # -i data/pbta-gene-expression-rsem-fpkm.stranded.rds \
 # -g data/gencode.v27.primary_assembly.annotation.gtf.gz \
-# -m data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
+# -m analyses/collapse-rnaseq/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
 # -t analyses/collapse-rnaseq/pbta-gene-expression-rsem-fpkm-collapsed_table.stranded.rds
 
 suppressPackageStartupMessages(library(optparse))
