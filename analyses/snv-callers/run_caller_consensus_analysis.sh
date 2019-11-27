@@ -22,7 +22,8 @@ annot_rds=analyses/snv-callers/ref_files/hg38_genomic_region_annotation.rds
 vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}
 
 # Unless told to run the plots, the default is to skip them
-run_plots_nb=${OPENPBTA_PLOTS:-FALSE}
+# To run plots, set OPENPBTA_PLOTS to 1 or more
+run_plots_nb=${OPENPBTA_PLOTS:-0}
 
 ############################ Set Up Reference Files ############################
 # The original COSMIC file is obtained from: https://cancer.sanger.ac.uk/cosmic/download
@@ -64,7 +65,7 @@ Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --overwrite
   
 ############################# Comparison Plots #################################
-if [$run_plots_nb]
+if [ "$run_plots_nb" -gt "0" ]
 then
  Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots.Rmd', clean = TRUE)"
 fi
