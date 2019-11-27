@@ -1,53 +1,64 @@
 ## Nhat Duong
 ## November, 22 2019
 
-import numpy as np
-import pandas as pd
+######### ASSUMPTIONS ########
+# ../../scratch is available to store intermediate files
+##############################
+
+# Imports in the pep8 order https://www.python.org/dev/peps/pep-0008/#imports
+# Standard library
+import argparse
 import subprocess
 import sys
 import os
 
-######### ASSUMPTIONS ########
-# 1) Files are feed into stdout as manta, cnvkit, then freec
-# 2) That the ../../scratch directory are always available to store intermediate files
-# 3) Single sample with more than 2500 CNVs are not taken into account because that's a lot of CNVs. Empty file will be created
-# 4) CNV size cut-off is 3000 bp
-# 5) pval to filter out for freec is 0.01
+# Related third party
+import numpy as np
+import pandas as pd
 
+## Define the extensions
+MANTA_EXT = '.manta'
+CNVKIT_EXT = '.cnvkit'
+FREEC_EXT = '.freec'
 
-## Get the list of file names from stdin
-list_of_files = []
-for a in sys.argv[1:]:
-    list_of_files += [a]
+# Define the column headers for IDs
+MANTA_ID_HEADER = 'Kids.First.Biospecimen.ID.Tumor'
+CNVKIT_ID_HEADER = 'ID'
+FREEC_ID_HEADER = 'Kids_First_Biospecimen_ID'
 
-## Check if there are 3 files, if not, abort mission
-if len(list_of_files) != 3:
-    sys.stderr.write('Need 3 input files for the code to work on. Please check and retry\n')
-    sys.exit()
+parser = argparse.ArgumentParser(description="""This script splits CNV files
+                                                into one per sample. It also
+                                                prints a snakemake config file
+                                                to the specified filename.""")
+parser.add_argument('--manta', required=True,
+                    help='path to the manta file')
+parser.add_argument('--cnvkit', required=True,
+                    help='path to the cnvkit file')
+parser.add_argument('--freec', required=True,
+                    help='path to the freec file')
+parser.add_argument('--snake', required=True,
+                                        help='path new snakemake file')
+parser.add_argument('--maxcnvs', default=2500,
+                    help='samples with more than 2500 cnvs are set to blank')
+parser.add_argument('--cnvsize', default=3000,
+                    help='cnv cutoff size in base pairs')
+parser.add_argument('--freecp', default=0.01,
+                    help='p-value cutoff for freec')
+args = parser.parse_args()
 
-
-## Define the extension based on the order of manta, cnvkit, and freec
-manta_ext = '.manta'
-cnvkit_ext = '.cnvkit'
-freec_ext = '.freec'
-
-
-## Assign the files from stdin
-manta_gz_file = list_of_files[0]
-cnvkit_gz_file = list_of_files[1]
-freec_gz_file = list_of_files[2]
 
 ## Pandas load/read files in
-merged_manta = pd.read_csv(manta_gz_file,delimiter='\t')
-merged_cnvkit = pd.read_csv(cnvkit_gz_file,delimiter='\t')
-merged_freec = pd.read_csv(freec_gz_file,delimiter='\t')
+merged_manta = pd.read_csv(args.manta, delimiter='\t')
+merged_cnvkit = pd.read_csv(args.cnvkit, delimiter='\t')
+merged_freec = pd.read_csv(args.freec, delimiter='\t')
+
 
 
 ## Extract the samples for each files to merge them all together. This takes into account uneven
 ## numbers of samples per file
-manta_samples = np.unique(merged_manta['Kids.First.Biospecimen.ID.Tumor'])
-cnvkit_samples = np.unique(merged_cnvkit['ID'])
-freec_samples = np.unique(merged_freec['Kids_First_Biospecimen_ID'])
+manta_samples = np.unique(merged_manta[MANTA_ID_HEADER])
+cnvkit_samples = np.unique(merged_cnvkit[CNVKIT_ID_HEADER])
+freec_samples = np.unique(merged_freec[FREEC_ID_HEADER])
 
 
 ## Merged and take the unique samples. Any method without a certain sample will get an empty file
@@ -71,44 +82,44 @@ if not os.path.exists(freec_d):
 for sample in all_samples:
 
     ## Pull out the CNVs with that sample name
-    manta_export = merged_manta.loc[merged_manta['Kids.First.Biospecimen.ID.Tumor'] == sample]
+    manta_export = merged_manta.loc[merged_manta[MANTA_ID_HEADER] == sample]
 
-    ## Open up a file and write to it if the number of CNVs are less than 2500
-    with open((manta_d + '/' + sample + manta_ext), 'w') as file_out:
-        if manta_export.shape[0] <= 2500:
+    ## Write cnvs to file if less than maxcnvs / otherwise empty file
+    with open((manta_d + '/' + sample + MANTA_EXT), 'w') as file_out:
+        if manta_export.shape[0] <= args.maxcnvs:
             manta_export.to_csv(file_out, sep='\t', index=False)
         else:
             pass
 
-    cnvkit_export = merged_cnvkit.loc[merged_cnvkit['ID'] == sample]
-    with open((cnvkit_d + '/' + sample + cnvkit_ext), 'w') as file_out:
-        if cnvkit_export.shape[0] <= 2500:
+    cnvkit_export = merged_cnvkit.loc[merged_cnvkit[CNVKIT_ID_HEADER] == sample]
+    with open((cnvkit_d + '/' + sample + CNVKIT_EXT), 'w') as file_out:
+        if cnvkit_export.shape[0] <= args.maxcnvs:
             cnvkit_export.to_csv(file_out, sep='\t', index=False)
         else:
             pass
 
-    freec_export = merged_freec.loc[merged_freec['Kids_First_Biospecimen_ID'] == sample]
-    with open((freec_d + '/' + sample + freec_ext), 'w') as file_out:
-        if freec_export.shape[0] <= 2500:
+    freec_export = merged_freec.loc[merged_freec[FREEC_ID_HEADER] == sample]
+    with open((freec_d + '/' + sample + FREEC_EXT), 'w') as file_out:
+        if freec_export.shape[0] <= args.maxcnvs:
             freec_export.to_csv(file_out, sep='\t', index=False)
         else:
             pass
 
 
 ## Make the Snakemake config file. Write all of the sample names into the config file
-with open('../../scratch/config_snakemake.yaml', 'w') as file:
+with open(args.snake, 'w') as file:
     file.write('samples:' + '\n')
     for sample in all_samples:
         file.write('  ' + str(sample) + ':' + '\n')
 
-## Define the extension for the config file
-    file.write('manta_ext: ' + manta_ext + '\n')
-    file.write('cnvkit_ext: ' + cnvkit_ext + '\n')
-    file.write('freec_ext: ' + freec_ext + '\n')
+    ## Define the extension for the config file
+    file.write('manta_ext: ' + MANTA_EXT + '\n')
+    file.write('cnvkit_ext: ' + CNVKIT_EXT + '\n')
+    file.write('freec_ext: ' + FREEC_EXT + '\n')
 
-## Define location for python scripts
-    file.write('scripts: src/scripts/' + '\n')
+    ## Define location for python scripts
+    file.write('scripts: ' + os.path.dirname(os.path.realpath(__file__)) + '\n')
 
-## Define the size cutoff and freec's pval cut off.
-    file.write('size_cutoff: 3000' + '\n')
-    file.write('freec_pval: 0.01' + '\n')
+    ## Define the size cutoff and freec's pval cut off.
+    file.write('size_cutoff: ' + str(args.cnvsize) + '\n')
+    file.write('freec_pval: ' + str(args.freecp) + '\n')
