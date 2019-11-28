@@ -30,6 +30,13 @@ if (!("DT" %in% installed.packages())) {
 if (!("htmlwidgets" %in% installed.packages())) {
   install.packages("htmlwidgets")
 }
+
+# Install `ComplexHeatmap` package for creating Heatmap annotation objects
+if (!("Complexheatmap" %in% installed.packages())) {
+  install.packages("BiocManager")
+  BiocManager::install("ComplexHeatmap")
+}
+library(ComplexHeatmap)
 ```
 
 ## Directories and Files
@@ -517,3 +524,10 @@ readr::write_rds(final_ha_atrt,
                  file.path(results_dir, "final_heatmap_annotation.RDS"))
 
 ```
+
+# Session Info
+
+```{r}
+sessionInfo()
+```
+
