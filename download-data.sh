@@ -5,6 +5,7 @@ set -o pipefail
 # Use the OpenPBTA bucket as the default.
 URL=${OPENPBTA_URL:-https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data}
 RELEASE=${OPENPBTA_RELEASE:-release-v11-20191126}
+PREVIOUS=${OPENPBTA_RELEASE:-release-v10-20191115}
 
 # Remove symlinks in data
 find data -type l -delete
@@ -15,16 +16,41 @@ curl --create-dirs $URL/$RELEASE/md5sum.txt -o data/$RELEASE/md5sum.txt -z data/
 # Consider the filenames in the md5sum file + CHANGELOG.md
 FILES=(`tr -s ' ' < data/$RELEASE/md5sum.txt | cut -d ' ' -f 2` CHANGELOG.md)
 
-# Download the items in FILES if newer than what's on server
+if [ -d "data/$PREVIOUS" ]
+then
+  # Find unchanged files
+  echo "Checking for unchanged files..."
+  cd data/$PREVIOUS
+  UNCHANGED=(`md5sum -c ../$RELEASE/md5sum.txt --ignore-missing| grep OK |cut -d ':' -f 1  || true`)
+  echo $UNCHANGED
+  cd ../../
+
+  # Hard link unchanged files
+  for oldfile in "${UNCHANGED[@]}"
+  do
+    echo "Hard linking $oldfile"
+    ln data/$PREVIOUS/$oldfile data/$RELEASE/$oldfile
+  done
+fi
+
+# Download the items in FILES if not already present
 for file in "${FILES[@]}"
 do
-  curl --create-dirs $URL/$RELEASE/$file -o data/$RELEASE/$file -z data/$RELEASE/$file
+  if [ ! -e "data/$RELEASE/$file" ]
+  then
+    echo "Downloading $file"
+    curl $URL/$RELEASE/$file -o data/$RELEASE/$file
+  fi
 done
 
-# Download reference and gencode file from public ftp
+# Download reference and gencode file from public ftp if it does not already exist
 GENCODE="ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/gencode.v27.primary_assembly.annotation.gtf.gz"
 cd data
-curl -JO $GENCODE
+if [ ! -e ${GENCODE##*/} ]
+then
+  echo "Downloading ${GENCODE##*/}"
+  curl -O $GENCODE
+fi
 
 # if in CI, then we want to generate the reference FASTA from the BSgenome.Hsapiens.UCSC.hg38 R package
 # because it is considerably faster to do so
@@ -33,7 +59,11 @@ if [ "$RELEASE" == "testing" ]; then
   Rscript -e "BSgenome::export(BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38, 'GRCh38.primary_assembly.genome.fa.gz', compress = 'gzip', format = 'fasta')"
 else
   REFERENCE="ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/GRCh38.primary_assembly.genome.fa.gz"
-  curl -JO $REFERENCE
+  if [ ! -e ${REFERENCE##*/} ]
+  then
+    echo "Downloading ${REFERENCE##*/}"
+    curl -O $REFERENCE
+  fi
 fi
 cd -
 
