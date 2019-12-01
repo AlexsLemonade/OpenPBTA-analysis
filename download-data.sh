@@ -19,7 +19,7 @@ then
   # Find unchanged files
   echo "Checking for unchanged files..."
   cd data/$PREVIOUS
-  UNCHANGED=(`md5sum -c ../$RELEASE/md5sum.txt --ignore-missing| grep OK |cut -d ':' -f 1  || true`)
+  UNCHANGED=(`md5sum -c ../$RELEASE/md5sum.txt --ignore-missing 2>/dev/null | grep OK |cut -d ':' -f 1  || true`)
   echo $UNCHANGED
   cd ../../
 
@@ -70,6 +70,7 @@ cd -
 
 # Check the md5s for everything we downloaded except CHANGELOG.md
 cd data/$RELEASE
+echo "Checking MD5 hashes..."
 md5sum -c md5sum.txt
 cd ../../
 
