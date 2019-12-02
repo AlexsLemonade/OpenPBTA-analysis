@@ -38,28 +38,37 @@ These are the mutations dubbed reliable enough to move forward with.
 - By default, the scripts will not overwrite existing files of the same name. However,
 this can be overridden with `--overwrite` option.
 
-### 00-set_up.R
-
-00-set_up.R creates the [annotation RDS file](#genomic-regional-analyses) and [COSMIC mutations file](#cosmic-mutation-overlap) that are used by
-the subsequent scripts.
-This set up script only needs to be run once and its three options are all relating to where the reference files should be stored.
-
-**Option descriptions**
-```
- --annot_rds : File path to where you would like the annotation_rds file to be
-               stored
- --cosmic_og : Path to original COSMIC file. Can be .gz compressed. Will need to
-               download this from COSMIC at https://cancer.sanger.ac.uk/cosmic/download
-               These data are available if you register.
- --cosmic_clean : File path specifying where you would like the cleaned brain-related
-                  COSMIC mutations file to be stored. This file is provided to you in
-                  GitHub. Only coordinates are needed.
-```
-
 ### 01-setup_db.py
+
+**Argument descriptions**
+```
+  -d DB_FILE, --db-file DB_FILE
+     Path of the database file to use or create. Defaults to `data.sqlite`.
+   --strelka-file STRELKA_FILE
+     Path of the MAF formatted data file from the strelka2 caller(TSV).
+   --mutect-file MUTECT_FILE
+     Path of the MAF formatted data file from the mutect2 caller(TSV).
+   --lancet-file LANCET_FILE
+     Path of the MAF formatted data file from the lancet caller(TSV).
+   --vardict-file VARDICT_FILE
+     Path of the MAF formatted data file from the vardict caller(TSV).
+   --meta-file META_FILE, --hist-file META_FILE
+     Path of the metadata/histology data file(TSV).
+   --overwrite           Overwrite tables that may already exist.
+```
 
 ### 02-merge_callers.R
 
+```
+ --db_file : Path to sqlite database file made from 01-setup_db.py
+ --output_file : File path and file name of where you would like the MAF-like
+                 output from this script to be stored.
+ --vaf_filter: Optional Variant Allele Fraction filter. Specify a number; any
+               mutations with a VAF that are NA or below this number will be
+               removed from the vaf data.frame before it is saved to a TSV file.
+ --overwrite : If TRUE, will overwrite any reports of the same name. Default is
+              FALSE
+```
 ### 03-calculate_tmb.R
 
 This script sets up the given MAF file and outputs three files ([VAF](#variant-allele-fraction-calculation),
@@ -68,18 +77,14 @@ that are used to make an overall evaluation report in `02-run_eval.R`.
 
 **Option descriptions**
 ```
- -label : Label to be used for folder and all output. eg. 'strelka2'. Default is 'maf'.
- -output : File path that specifies the folder where the output should go.
-           New folder will be created if it doesn't exist.
- --file_format: What type of file format would you like the output as? Options are
-               "rds" or "tsv". Default is "rds".
- --maf :  Relative file path to MAF file to be analyzed. Can be .gz compressed.
- --metadata : Relative file path to original metadata file.
- --annot_rds : Relative file path to annotation object RDS file to be analyzed.
+ --consensus : File path to the MAF-like file.
+ --metadata : Relative file path to MAF file to be analyzed. Can be .gz compressed.
+              Assumes file path is given from top directory of 'OpenPBTA-analysis'.
  --bed_wgs : File path that specifies the caller-specific BED regions file.
- --bed_wxs : File path that specifies the WXS BED regions file.
+             Assumes from top directory, 'OpenPBTA-analysis'.
+ --bed_wxs : File path that specifies the WXS BED regions file. Assumes file path
+             is given from top directory of 'OpenPBTA-analysis'
  --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
- --no_region : If used, regional analysis will not be done.
 ```
 ### Base change analysis
 
@@ -89,34 +94,17 @@ concatenating `Reference_Allele`, `>`, and `Allele`.
 The `change` variable is made from the `base_change` variable but groups
 together deletions, insertions, and long (more than a SNV) as their own groups.
 
-*Output for this analysis*
-* `results/<caller_name>/<caller_name>_vaf.rds`
-* `plots/<caller_name>/<caller_name>_<strategy>_base_change.png`
-
 ### Variant Allele Fraction Calculation
 
 Calculate variant allele fraction (VAF) for each variant.
+This is done in `03-calculate_tmb.R`.
+
 ```
 vaf = (t_alt_count) / (t_ref_count + t_alt_count)
 ```
 This is following the [code used in
 `maftools`](https://github.com/PoisonAlien/maftools/blob/1d0270e35c2e0f49309eba08b62343ac0db10560/R/plot_vaf.R#L39).
 The VAF calculations and other special variables are added to the MAF fields and written to a file ending in `_vaf` in the caller's results folder.
-
- *Output for this analysis*
- * `results/<caller_name>/<caller_name>_vaf.rds`
- * `plots/<caller_name>/<caller_name>_<strategy>_depth_vs_vaf.png`
-
-### Genomic Regional Analyses
-
-To analyze what genomic regions the variants are from, I used [Annotatr
-package](https://bioconductor.org/packages/release/bioc/vignettes/annotatr/inst/doc/annotatr-vignette.html) to obtain hg38 genome annotations.
-This Annotatr object is stored as an RDS file: `hg38_genomic_region_annotations.rds` in the `scratch` directory.
-Mutations are assigned all annotations that they overlap (using `GenomicRanges::overlap`).
-
-*Output for this analysis*
-* `results/<caller_name>/<caller_name>_regions.rds`
-* `plots/<caller_name>/<caller_name>_<strategy>_snv_regions.png`
 
 ### Tumor Mutation Burden Calculation
 
@@ -131,31 +119,6 @@ Where genome size is calculated from the respective BED file as:
 ```
 genome_size = sum(End_Position - Start_Position)
 ```
-
-BED regions for WXS samples can be [found here](https://raw.githubusercontent.com/AstraZeneca-NGS/reference_data/master/hg38/bed/Exome-AZ_V2.bed).
-BED regions used for WGS samples are caller specific are from <unknown as of now>
-The sample-wise TMB calculations written to a file ending in `_tmb` in the caller's results folder.
-
-*Output for this analysis*
-* `results/<caller_name>/<caller_name>_tmb.rds`
-* `plots/<caller_name>/<caller_name>_<strategy>_tmb_plot.png`
-
-### COSMIC Mutation Overlap
-
-The COSMIC mutation data were obtained from https://cancer.sanger.ac.uk/cosmic/download
-*To run this analysis, you need to obtain these data.*
-The full, unfiltered somatic mutations file `CosmicMutantExport.tsv` for grch38 is used here and the genomic coordinates is arranged to be in BED format.
-The COSMIC set is filtered down to only mutations detected in brain-related
-samples using the `Site subtype 1` field.
-COSMIC mutations are overlapped with the present data's mutations using `GenomicRanges`.
-The outcome of this overlap is added to the VAF data.frame with two `TRUE/FALSE` columns:
-`overlap_w_cosmic` is TRUE for mutations that overlap with COSMIC mutations, while `same_as_cosmic` is TRUE when the base change summary is also identical.
-The VAF for mutations that are or are not overlapping with COSMIC mutations are then plotted in a violin plot.
-
-*Output for this analysis*
-* `results/<caller_name>/<caller_name>_vaf.rds`
-* `plots/<caller_name>/<caller_name>_<strategy>_cosmic_plot.png`
-
 ## Comparison of Callers
 
 After running an initial evaluation and set up of each of the callers' MAF files,
@@ -164,89 +127,25 @@ mutation calls.
 
 ### Mutation IDs  
 
-In order to compare mutations across callers, I created a `mutation_id` from combining information from standard MAF fields.
-This was done in the `01-calculate_vaf_tmb.R` script using the `set_up_maf `
-function.
+In order to compare mutations across callers, the data tables for each caller
+were indexed by: `Chromosome` `Start_Position` `Reference_Allele` and `Allele`.
+Meaning that across callers, if all these fields were identical, they were considered to be the same mutation.
+This was done in the `01-setup_db.py` script using the function.
 
-`mutation_id` is a concatenation of:  
-* `Hugo_Symbol`  
-* [`change`](#base-change-analysis)  
-* `Start_Position`  
-* `Tumor_Sample_Barcode` (the sample ID)  
+### Summary of consensus files:
 
-If mutation_id's are identical among MAF files, they are considered the same.
+- `consensus_mutation.maf.tsv` - Mutations that were called by all three of these callers for a given sample are saved to this file.
+This file is [MAF-like](#consensus-mutation-call) meaning it is TSV file that contains many of the fields of a [MAF file](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) but also some added calculations like [Variant Allele Fraction](#variant-allele-fraction-calculation) and some sample metadata information.
+These files combine the [MAF file data](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from 3 different SNV callers: [Mutect2](https://software.broadinstitute.org/cancer/cga/mutect), [Strelka2](https://github.com/Illumina/strelka), and [Lancet](https://github.com/nygenome/lancet).
+See the methods on the callers' settings [here](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#somatic-single-nucleotide-variant-calling) and see the methods of this caller analysis and comparison [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers).
 
-### Consensus mutation call
-
-After the comparisons amongst the callers, VarDict proved to be too unreliable and called low VAF mutations.
-Moving forward, mutations that were identified by Lancet, Mutect2 and Strelka2 were included in the final list of mutations for each sample.
-The consensus mutations themselves are saved to a MAF-like file `consensus_mutation.maf.tsv.zip` to the `consensus`.
-It is being called a "MAF-like" file because it has many of the same fields as a MAF file but..  
+It is "MAF-like" file because it has many of the same fields as a MAF file but..  
   - Does not contain the version string in the first row   
   - Has extraneous annotation data has been removed (columns with all `NA`s)  
   - Has VAF calculations and other variables that are calculated by the [`set_up_maf` function](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/util/wrangle_functions.R#L11).
 
-## Overall file structure
-```
-OpenPBTA-analysis
-├── analyses
-│   └── snv-callers
-│       ├── run_caller_analysis.sh
-│       ├── compare_snv_callers.Rmd
-│       ├── scripts
-│       │   ├── 00-set-up.R
-│       │   ├── 01-calculate_vaf_tmb.R
-│       │   ├── 02-run_eval.R
-│       │   ├── 03-merge_callers.R
-│       │   └── 04-create_consensus_mut_files.R
-│       ├── util
-│       │    ├── plot_functions.R
-│       │    └── wrangle_functions.R
-│       ├── results
-│       │   ├── consensus
-│       │   │   ├── consensus_mutation_tmb.tsv
-│       │   │   └── consensus_mutation.maf.tsv
-│       │   ├── lancet
-│       │   │   ├── lancet_vaf.rds
-│       │   │   ├── lancet_tmb.rds
-│       │   │   ├── lancet_region.rds
-│       │   │   ├── lancet_wxs_report.html
-│       │   │   ├── lancet_wxs_report.Rmd
-│       │   │   ├── lancet_wgs_report.html
-│       │   │   ├── lancet_wgs_report.Rmd
-│       │   │   └── lancet_metadata_filtered.rds
-│       │   ├── mutect2
-│       │   │   └── ...
-│       │   ├── strelka2
-│       │   │   └── ...
-│       │   └── vardict
-│       │       └── ...
-│       ├── plots
-│       │   ├── lancet
-│       │   │   ├── lancet_wgs_base_change.png
-│       │   │   ├── lancet_wgs_cosmic_plot.png
-│       │   │   ├── lancet_wgs_depth_vs_vaf.png
-│       │   │   ├── lancet_wgs_snv_region.png
-│       │   │   ├── lancet_wgs_tmb_plot.png
-│       │   │   ├── lancet_wxs_base_change.png
-│       │   │   ├── lancet_wxs_cosmic_plot.png
-│       │   │   ├── lancet_wxs_depth_vs_vaf.png
-│       │   │   ├── lancet_wxs_snv_region.png
-│       │   │   └── lancet_wxs_tmb_plot.png
-│       │   ├── mutect2
-│       │   │   └── ...
-│       │   ├── strelka2
-│       │   │   └── ...
-│       │   └── vardict
-│       │       └── ...
-│       ├── ref_files
-│       │   ├── hg38_genomic_region_annotation.rds
-│       │   └── brain_cosmic_variants_coordinates.tsv
-│       └── template
-│           ├── variant_caller_report_no_region_template.Rmd
-│           └── variant_caller_report_template.Rmd
-├── data
-```
+- `consensus_mutation_tmb.tsv` - After the consensus mutations were identified, Tumor mutation burden was recalculated for each sample from this mutation set.
+See this [analysis' folder](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers#tumor-mutation-burden-calculation) for details on these methods.
 
 ## Summary of custom functions
 
