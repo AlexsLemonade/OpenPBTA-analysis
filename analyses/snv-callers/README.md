@@ -8,10 +8,6 @@ This consensus mutation file is [MAF-like](#consensus-mutation-call) meaning it 
 * [General usage of scripts](#general-usage-of-scripts)
 * [Individual caller evaluation](#individual-caller-evaluation)  
   * [Base change analysis](#base-change-analysis)  
-  * [Variant allele fraction calculation](#variant-allele-fraction-calculation)  
-  * [Genomic regional analyses](#genomic-regional-analyses)  
-  * [Tumor mutation burden](#tumor-mutation-burden-calculation)
-  * [COSMIC mutation overlap](#cosmic-mutation-overlap)  
 * [Comparison analysis](#comparison-of-callers)
  * [Mutation IDs](#mutation-ids)
  * [Consensus mutation calls](#consensus-mutation-calls)
@@ -60,7 +56,11 @@ This set up script only needs to be run once and its three options are all relat
                   GitHub. Only coordinates are needed.
 ```
 
-### 01-calculate_vaf_tmb.R
+### 01-setup_db.py
+
+### 02-merge_callers.R
+
+### 03-calculate_tmb.R
 
 This script sets up the given MAF file and outputs three files ([VAF](#variant-allele-fraction-calculation),
 [TMB](#tumor-mutation-burden-calculation), and [Regional analysis](#genomic-regional-analyses))
@@ -81,97 +81,6 @@ that are used to make an overall evaluation report in `02-run_eval.R`.
  --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
  --no_region : If used, regional analysis will not be done.
 ```
-
-### 02-run_eval.R
-
-This script takes the files output by `01-calculate_vaf_tmb.R` and makes five
-plots ([base_change](#base-change-analysis), [depth_vs_vaf](#variant-allele-fraction-calculation), [cosmic_plot](#cosmic-mutation-overlap), [snv_region](#genomic-regional-analyses), and [tmb_plot](#tumor-mutation-burden-calculation)) that are put into an overall report.
-
-**Option descriptions**
-```
- --label : Label to be used for folder and all output. eg. 'strelka2'. Optional.
-           Default is 'maf'
- --plot_type : Specify what kind of plots you want printed out. Must be
-               compatible with ggsave. eg pdf. Default is png
- --vaf : Folder from 01-calculate_vaf_tmb.R following files:
-                                             <caller_name>_vaf.<file_format>
-                                             <caller_name>_region.<file_format>
-                                             <caller_name>_tmb.<file_format>
- --file_format: What type of file format were the vaf and tmb files saved as? Options are
-                "rds" or "tsv". Default is "rds".
- --output : Where you would like the output from this script to be stored.
- --strategy : Specify whether you would like WXS and WGS separated for the plots.
-              Analysis is still done on all data in the MAF file regardless.
-              Acceptable options are 'wgs', 'wxs' or 'both', both for if you
-              don't want to separate them. Default is both.
- --cosmic : Relative file path to COSMIC file to be analyzed.
- --overwrite : If TRUE, will overwrite any reports of the same name. Default is
-              FALSE
-  --no_region : If used, regional analysis will not be done.
-```
-
-### 03-merge_callers.R
-
-This script merges the callers' TMB and VAF files into total files with a column
-`caller` to designate their origin.
-This script output 4 files:
-
-- `all_callers_vaf.rds` - contains all the VAF file information for all callers.
-- `all_callers_tmb.rds` - contains all the TMB file information for all callers.
-- `mutation_id_list.rds` - a full list of the mutations that can be used for an UpSetR graph
-- `callers_per_mutation.rds` - contains a breakdown for each mutation of what callers called it. Will be used to identify the consensus mutations.
-
-**Option descriptions**
-```
- --vaf : Parent folder containing the vaf and tmb files for each folder.
-                                             <caller_name>_vaf.<file_format>
-                                             <caller_name>_tmb.<file_format>
- --file_format: What type of file format were the vaf and tmb files saved as? Options are
-               "rds" or "tsv". Default is "rds".
- --output : Where you would like the output from this script to be stored.
- --overwrite : If TRUE, will overwrite any reports of the same name. Default is
-               FALSE
-```
-
-### 04-create_consensus_mut_files.R
-
-This script takes the merged output of 03-merge_callers.R and saves the final consensus mutation calls to a MAF-like file.
-This script outputs two main files:  
-- `consensus_mutation_vaf.tsv` - contains the consensus mutations and their associated variables.
-- `consensus_mutation_tmb.tsv` - contains the re-calculated TMBs based on the conensus mutations only.
-
-**Option descriptions**
-```
- --merged_files : File path to where the 03-merged_callers.R output can be found.
-                  Files required: "all_callers_vaf.<file_format>"
-                                  "all_callers_tmb.<file_format>"
-                                  "mutation_id_list.<file_format>"
- --vaf : What VAF should be used when combining callers? Options are 'median' or
-         one of the caller names."
- --combo : What combination of callers need to detect a mutation for it to be
-           considered real and placed in the consensus file? List the callers
-           that need to be considered in alphabetical order with '-'
-           in between. eg. 'lancet-mutect2-strelka2'
- --file_format: What type of file format were the vaf and tmb files saved as? Options are
-               "rds" or "tsv". Default is "rds".
- --output : Where you would like the output from this script to be stored.
- --bed_wgs : File path that specifies the caller-specific BED regions file.
-             Assumes from top directory, 'OpenPBTA-analysis'.
- --bed_wxs : File path that specifies the WXS BED regions file. Assumes file path
-             is given from top directory of 'OpenPBTA-analysis'
- --overwrite : If TRUE, will overwrite any reports of the same name. Default is
-             FALSE
-```
-
-# Individual Caller Evaluation
-
-The first step in this analysis is an individual evaluation of each MAF from each caller.
-This analysis prints out a report that is further subdivided by the WGS and WXS samples.
-
-Overall reports for each caller and strategy can be found:
-* `results/<caller_name>/<caller_name>_wgs_report.html`
-* `results/<caller_name>/<caller_name>_ws_report.html`
-
 ### Base change analysis
 
 To evaluate base changes I summarized standard MAF fields as two new variables:
