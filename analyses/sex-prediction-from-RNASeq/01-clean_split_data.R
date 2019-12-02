@@ -1,3 +1,5 @@
+.libPaths(c("C:/Users/Amadio/Documents/R/win-library/3.6", .libPaths()))
+
 #Functionality/purpose:
   
 #This will clean the gene expression data -- i.e., it drops anything with invalid labels 
@@ -35,10 +37,6 @@ library(optparse)
 # training and test data files are saved into the output directory.
 # A TSV file that contains the biospecimen ID, reported_gender, and germline_sex_estimate 
 # information that has been cleaned is also saved to the output directory.
-# The lead portion of the output file names is specified as command line argument --filename_lead
-# The training set is saved as paste(opt$filename_lead, seed, "train.RDS", sep = "_")
-# The test set is saved as paste(opt$filename_lead, seed, "test.RDS", sep = "_")
-# The targets TSV file is saved as paste(opt$filename_lead, seed, "targets.tsv", sep = "_")
 
 # Declare command line options
 option_list <- list(
@@ -61,7 +59,31 @@ option_list <- list(
     help = "output directory"
   ),
   optparse::make_option(
-    c("-f", "--filename_lead"),
+    c("-f", "--train_expression_file_name"),
+    type = "character",
+    default = NULL,
+    help = "A character vector that will be used to name output files"
+  ),
+  optparse::make_option(
+    c("-a", "--test_expression_file_name"),
+    type = "character",
+    default = NULL,
+    help = "A character vector that will be used to name output files"
+  ),
+  optparse::make_option(
+    c("-b", "--train_targets_file_name"),
+    type = "character",
+    default = NULL,
+    help = "A character vector that will be used to name output files"
+  ),
+  optparse::make_option(
+    c("-c", "--test_targets_file_name"),
+    type = "character",
+    default = NULL,
+    help = "A character vector that will be used to name output files"
+  ),
+  optparse::make_option(
+    c("-d", "--full_targets_file_name"),
     type = "character",
     default = NULL,
     help = "A character vector that will be used to name output files"
@@ -195,19 +217,19 @@ if (train_percent < 1) {
 #--------Save train, (test, if used) and targets files to output directory
 
 if (train_percent < 1) {
-  train_file <- file.path(output_directory, paste(opt$filename_lead, seed, "train_expression.RDS", sep = "_"))
-  test_file <- file.path(output_directory, paste(opt$filename_lead, seed, "test_expression.RDS", sep = "_"))
+  train_file <- file.path(opt$train_expression_file_name)
+  test_file <- file.path(opt$test_expression_file_name)
   saveRDS(train_expression, train_file)
   saveRDS(test_expression, test_file)
 } else {
-  train_file <- file.path(output_directory, paste(opt$filename_lead, seed, "train_expression.RDS", sep = "_"))
+  train_file <- file.path(opt$train_expression_file_name)
   saveRDS(train_expression, train_file)
 }
 
 if (train_percent < 1) {
-  targets_file <- file.path(output_directory, paste(opt$filename_lead, seed, "targets.tsv", sep = "_"))
-  train_targets_file <- file.path(output_directory, paste(opt$filename_lead, seed, "train_targets.tsv", sep = "_"))
-  test_targets_file <- file.path(output_directory, paste(opt$filename_lead, seed, "test_targets.tsv", sep = "_"))
+  targets_file <- file.path(opt$full_targets_file_name)
+  train_targets_file <- file.path(opt$train_targets_file_name)
+  test_targets_file <- file.path(opt$test_targets_file_name)
   
   write_tsv(targets, targets_file,
             na = "NA", append = FALSE, col_names = TRUE, quote_escape = "double")
@@ -216,8 +238,8 @@ if (train_percent < 1) {
   write_tsv(test_targets, test_targets_file,
             na = "NA", append = FALSE, col_names = TRUE, quote_escape = "double")
 } else {
-  targets_file <- file.path(output_directory, paste(opt$filename_lead, seed, "targets.tsv", sep = "_"))
-  train_targets_file <- file.path(output_directory, paste(opt$filename_lead, seed, "train_targets.tsv", sep = "_"))
+  targets_file <- file.path(opt$full_targets_file_name)
+  train_targets_file <- file.path(opt$train_targets_file_name)
   
   write_tsv(targets, targets_file,
             na = "NA", append = FALSE, col_names = TRUE, quote_escape = "double")

@@ -1,3 +1,5 @@
+.libPaths(c("C:/Users/Amadio/Documents/R/win-library/3.6", .libPaths()))
+
 #--------Library calls
 
 cat(paste("\n\nStart script 02-train_elasticnet at", Sys.time(), "\n", sep=" "))
@@ -21,10 +23,16 @@ library(readr)
 
 option_list <- list(
   optparse::make_option(
-    c("-i", "--input_directory"),
+    c("-i", "--train_expression_file_name"),
     type = "character",
     default = NULL,
-    help = "input directory"
+    help = "input expression file"
+  ),
+  optparse::make_option(
+    c("-g", "--train_targets_file_name"),
+    type = "character",
+    default = NULL,
+    help = "input targets file"
   ),
   optparse::make_option(
     c("-o", "--output_directory"),
@@ -33,24 +41,29 @@ option_list <- list(
     help = "output directory"
   ),
   optparse::make_option(
-    c("-f", "--filename_lead"),
+    c("-f", "--model_object_file_name"),
     type = "character",
     default = NULL,
-    help = "A character vector that will be used to name output files"
+    help = "output model object file"
   ),
   optparse::make_option(
-    c("-c", "--target_column"),
+    c("-t", "--model_transcripts_file_name"),
+    type = "character",
+    default = NULL,
+    help = "output model tarnscripts file"
+  ),
+  optparse::make_option(
+    c("-c", "--model_coefs_file_name"),
+    type = "character",
+    default = NULL,
+    help = "output model tarnscripts file"
+  ),  
+  optparse::make_option(
+    c("-r", "--train_target_column"),
     type = "character",
     default = "reported_gender",
     help = "A character vector identifying column being predicted"
   ),
-  optparse::make_option(
-    c("-s", "--seed"),
-    type = "integer",
-    default = 36354,
-    help = "seed integer",
-    metavar = "integer"
-  ),  
   optparse::make_option(
     c("-p", "--transcript_tail_percent"),
     type = "double",
@@ -76,8 +89,8 @@ if (!dir.exists(output_directory)) {
 
 #--------test for the existence of the expected training and target value sets. 
 
-train_set_file_name <- file.path(opt$input_directory, paste(opt$filename_lead, opt$seed, "train_expression.RDS", sep = "_"))
-targets_set_file_name <- file.path(opt$input_directory, paste(opt$filename_lead, opt$seed, "train_targets.tsv", sep = "_"))
+train_set_file_name <- file.path(opt$train_expression_file_name)
+targets_set_file_name <- file.path(opt$train_targets_file_name)
 
 # print error and quit if not found.
 if (!file.exists(train_set_file_name)) {
@@ -97,9 +110,9 @@ print("targets set found!")
 train_set <- readRDS(train_set_file_name)
 targets_set <- read.delim(targets_set_file_name, header=TRUE, sep="\t", stringsAsFactors = FALSE)
 
-# check for presence of --target_column
-if (!(opt$target_column %in% colnames(targets_set))) {
-  stop(paste("target column ", opt$target_column, "does not exist. Check all arguments."))
+# check for presence of --train_target_column
+if (!(opt$train_target_column %in% colnames(targets_set))) {
+  stop(paste("target column ", opt$train_target_column, "does not exist. Check all arguments."))
 }
 
 print("target column found!")
@@ -131,7 +144,7 @@ print(paste("Model build begun at", Sys.time(), sep=" "))
 
 #--------Build elastic net logistic regression model
 
-sex.cva <- cva.glmnet(train_set, targets_set[, opt$target_column], standardize=TRUE, 
+sex.cva <- cva.glmnet(train_set, targets_set[, opt$train_target_column], standardize=TRUE, 
                       alpha = seq(0, 1, len = 11)^3, family="binomial")
 
 print(paste("Model build complete at", Sys.time(), sep=" "))
@@ -156,12 +169,10 @@ best_fit <- sex.cva$modlist[[best_alpha_index]]
 
 #--------Save best_fit model object and filtered transcript indexes
 
-best_fit_file <- file.path(opt$output_directory, paste(opt$filename_lead, opt$seed, opt$transcript_tail_percent, 
-                                                       "model_object.RDS", sep = "_"))
+best_fit_file <- file.path(opt$model_object_file_name)
 saveRDS(best_fit, best_fit_file)
 
-model_transcripts_file <- file.path(opt$output_directory, paste(opt$filename_lead, opt$seed, opt$transcript_tail_percent, 
-                                                       "model_transcripts.RDS", sep = "_"))
+model_transcripts_file <- file.path(opt$model_transcripts_file_name)
 saveRDS(filtered_txs, model_transcripts_file)
 
 #--------
@@ -183,8 +194,7 @@ non_zero_coef <- coef(best_fit, s=best_fit$lambda.1se)[non_zero_features]
 non_zero_transcripts <- colnames(train_set)[non_zero_features]
 
 
-model_coefs_file <- file.path(opt$output_directory, paste(opt$filename_lead, opt$seed, opt$transcript_tail_percent, 
-                                                       "model_coefs.tsv", sep = "_"))
+model_coefs_file <- file.path(opt$model_coefs_file_name)
 
 model_coefs <- data.frame(non_zero_transcripts, non_zero_coef)
 
