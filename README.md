@@ -107,7 +107,7 @@ Users performing analyses, should always refer to the symlinks in the `data/` di
 
 We have created a shell script that will download the latest release from AWS S3.
 macOS users must install `md5sum` before running the download script the first time. 
-This installed with [homebrew](https://brew.sh/) via the command `brew install coreutils` or [conda/miniconda](https://docs.conda.io/projects/conda/en/latest/) via the command `conda install -c conda-forge coreutils`.
+This can be installed with [homebrew](https://brew.sh/) via the command `brew install coreutils` or [conda/miniconda](https://docs.conda.io/projects/conda/en/latest/) via the command `conda install -c conda-forge coreutils`.
 _Note: the `download-data.sh` script now has the ability to skip downloads of unchanged files, but if you previously installed md5sum via brew you'll need to run `brew unlink md5sha1sum && brew install coreutils` first to take advantage of this new feature._
 
 Once this has been done, run `bash download-data.sh` to acquire the latest release.
