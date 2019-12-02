@@ -1,3 +1,41 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [OpenPBTA-analysis](#openpbta-analysis)
+    - [Join the Cancer Data Science Slack](#join-the-cancer-data-science-slack)
+  - [How to Participate](#how-to-participate)
+    - [Planned Analyses](#planned-analyses)
+    - [Proposing a New Analysis](#proposing-a-new-analysis)
+    - [Implementing an Analysis](#implementing-an-analysis)
+      - [Analytical Code and Output](#analytical-code-and-output)
+      - [Software Dependencies](#software-dependencies)
+      - [Pull Request Model](#pull-request-model)
+  - [How to Obtain OpenPBTA Data](#how-to-obtain-openpbta-data)
+    - [Data Access via Download Script](#data-access-via-download-script)
+    - [Data Access via CAVATICA](#data-access-via-cavatica)
+  - [Data Formats](#data-formats)
+    - [Data Caveats](#data-caveats)
+  - [How to Add an Analysis](#how-to-add-an-analysis)
+    - [Folder Structure](#folder-structure)
+    - [Analysis Script Numbering](#analysis-script-numbering)
+    - [Output Expectations](#output-expectations)
+    - [Docker Image](#docker-image)
+      - [Development in the Project Docker Container](#development-in-the-project-docker-container)
+        - [RStudio](#rstudio)
+    - [Local Development](#local-development)
+      - [RStudio](#rstudio-1)
+    - [Continuous Integration (CI)](#continuous-integration-ci)
+      - [Working with the subset files used in CI locally](#working-with-the-subset-files-used-in-ci-locally)
+      - [Adding Analyses to CI](#adding-analyses-to-ci)
+      - [Adding Analyses with Multiple Steps](#adding-analyses-with-multiple-steps)
+        - [1. File and merge a pull request for adding `01-filter-samples.R` to the repository.](#1-file-and-merge-a-pull-request-for-adding-01-filter-samplesr-to-the-repository)
+        - [2. File and merge a pull request for adding `02-cluster-heatmap.R` to the repository.](#2-file-and-merge-a-pull-request-for-adding-02-cluster-heatmapr-to-the-repository)
+        - [3. File and merge a pull request for the shell script that runs the entirety of `gene-expression-clustering`.](#3-file-and-merge-a-pull-request-for-the-shell-script-that-runs-the-entirety-of-gene-expression-clustering)
+      - [Passing variables only in CI](#passing-variables-only-in-ci)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # OpenPBTA-analysis
 
 The Open Pediatric Brain Tumor Atlas (OpenPBTA) Project is an effort to describe the landscape of tumors in the [Children's Brain Tumor Tissue Consortium](https://cbttc.org/) and the PNOC003 DIPG clinical trial from the [Pediatric Pacific Neuro-oncology Consortium](http://www.pnoc.us/).
@@ -69,7 +107,8 @@ Users performing analyses, should always refer to the symlinks in the `data/` di
 
 We have created a shell script that will download the latest release from AWS S3.
 macOS users must install `md5sum` before running the download script the first time. 
-This installed with [homebrew](https://brew.sh/) via the command `brew install md5sha1sum` or [conda/miniconda](https://docs.conda.io/projects/conda/en/latest/) via the command `conda install -c conda-forge coreutils`.
+This can be installed with [homebrew](https://brew.sh/) via the command `brew install coreutils` or [conda/miniconda](https://docs.conda.io/projects/conda/en/latest/) via the command `conda install -c conda-forge coreutils`.
+_Note: the `download-data.sh` script now has the ability to skip downloads of unchanged files, but if you previously installed md5sum via brew you'll need to run `brew unlink md5sha1sum && brew install coreutils` first to take advantage of this new feature._
 
 Once this has been done, run `bash download-data.sh` to acquire the latest release.
 This will create symlinks in `data/` to the latest files.

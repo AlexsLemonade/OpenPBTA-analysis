@@ -41,4 +41,4 @@ do
 done
 
 # Unzip any zip files in the data directory using the update flag
-unzip -u -d data data/*.zip
+unzip -o -d data data/*.zip
