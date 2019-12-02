@@ -1,7 +1,7 @@
 # SNV caller comparison analysis
 
 This analysis evaluates [MAF files](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from different SNV callers, compares their output, and creates a [consensus mutation file](./results/consensus/consensus_mutation.maf.tsv.zip).
-This consensus mutation file is [MAF-like](#consensus-mutation-call) meaning it is TSV file that contains many of the fields of a [MAF file](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) but also some added calculations like [Variant Allele Fraction](#variant-allele-fraction-calculation) and some sample metadata information.
+This consensus mutation file is [MAF-like](#consensus-mutation-call) meaning it is TSV file that contains many of the fields of a [MAF file](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) but also has [VAF](#variant-allele-fraction-calculation)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -64,14 +64,13 @@ This was done in the `01-setup_db.py` script using the function.
 ### Variant Allele Fraction Calculation
 
 Calculate variant allele fraction (VAF) for each variant.
-This is done in `03-calculate_tmb.R`.
+This is done in `01-setup_db.py`.
 
 ```
 vaf = (t_alt_count) / (t_ref_count + t_alt_count)
 ```
 This is following the [code used in
 `maftools`](https://github.com/PoisonAlien/maftools/blob/1d0270e35c2e0f49309eba08b62343ac0db10560/R/plot_vaf.R#L39).
-The VAF calculations and other special variables are added to the MAF fields and written to a file ending in `_vaf` in the caller's results folder.
 
 ### Tumor Mutation Burden Calculation
 
