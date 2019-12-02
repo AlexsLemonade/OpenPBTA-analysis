@@ -93,6 +93,8 @@ The release notes for each release are provided in the `release-notes.md` file t
   Multinucleotide variant calls from Mutect2 and Lancet were separated into consecutive SNVs before merging.
   All columns in the included file are derived from the Strelka2 calls.
   Note that this file is not strictly a MAF file, as it adds a Variant Allele Frequency (`VAF`) column and does not contain a version comment as the first line.
+  * Tumor mutation burden statistics are calculated based on the mutations included in `pbta-snv-consensus-mutation.maf.tsv.gz` file and by using Strelka2 counts and BED window sizes.
+  These values are saved to `pbta-snv-consensus-mutation-tmb.tsv`
 * Somatic Copy Number Variant (CNV) data are provided in a modified [SEG format](https://software.broadinstitute.org/software/igv/SEG) for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-copy-number-variant-calling).
   * The CNVkit SEG file has an additional column `copy.num` to denote copy number of each segment, derived from the CNS file output of the algorithm described [here](https://cnvkit.readthedocs.io/en/stable/fileformats.html).
   * The ControlFreeC TSV file is a merge of `*_CNVs` files produced from the algorithm, and columns are described [here](http://boevalab.inf.ethz.ch/FREEC/tutorial.html#OUTPUT).
