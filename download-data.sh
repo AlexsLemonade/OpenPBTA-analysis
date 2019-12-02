@@ -19,7 +19,7 @@ then
   # Find unchanged files
   echo "Checking for unchanged files..."
   cd data/$PREVIOUS
-  UNCHANGED=(`md5sum -c ../$RELEASE/md5sum.txt --ignore-missing 2>/dev/null | grep OK |cut -d ':' -f 1  || true`)
+  UNCHANGED=(`md5sum -c ../$RELEASE/md5sum.txt 2>/dev/null | grep OK |cut -d ':' -f 1  || true`)
   echo $UNCHANGED
   cd ../../
 
