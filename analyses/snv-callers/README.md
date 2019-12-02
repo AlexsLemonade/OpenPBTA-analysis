@@ -3,6 +3,8 @@
 This analysis evaluates [MAF files](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from different SNV callers, compares their output, and creates a [consensus mutation file](./results/consensus/consensus_mutation.maf.tsv.zip).
 This consensus mutation file is [MAF-like](#consensus-mutation-call) meaning it is TSV file that contains many of the fields of a [MAF file](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) but also has [VAF](#variant-allele-fraction-calculation)
 
+See the comparison results plots [here](https://cansavvy.github.io/openpbta-notebook-concept/snv-callers/compare_snv_callers_plots.nb.html).
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
@@ -27,30 +29,27 @@ To run the evaluations and comparisons of all the SNV callers, call the bash scr
 ```
 bash run_caller_analysis.sh
 ```
-This script will return results for each caller in the `plots` and `results` folder.
-To see an overall summary report, look in the `results` folder for that caller.
-(See [Overall File Structure](#overall-file-structure) for more details on
-everything that is returned.)
+This bash script will return:
 
-The final results for the caller consensus are in the form of a notebook, `compare_snv_callers.nb.html`.
-The consensus mutations themselves are saved to a [MAF-like file](#consensus-mutation-call) `consensus_mutation.maf.tsv.zip` to the `results/consensus`
-results folder.
-These are the mutations dubbed reliable enough to move forward with.
+- Comparison plots in a notebook: [`compare_snv_callers_plots.nb.html`](https://cansavvy.github.io/openpbta-notebook-concept/snv-callers/compare_snv_callers_plots.nb.html).
+- A zip file containing:
+  - The consensus mutations themselves, saved to [MAF-like file](#consensus-mutation-call) `consensus_mutation.maf.tsv`.
+  - Tumor Mutation burden calculations in `consensus_mutation_tmb.tsv`.
 
 ### Summary of consensus files:
 
 - `consensus_mutation.maf.tsv` - Mutations that were called by all three of these callers for a given sample are saved to this file.
-This file is [MAF-like](#consensus-mutation-call) meaning it is TSV file that contains many of the fields of a [MAF file](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) but also some added calculations like [Variant Allele Fraction](#variant-allele-fraction-calculation) and some sample metadata information.
+This file is MAF-like meaning it is TSV file that contains many of the fields of a [MAF file](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) but also some added calculations like [Variant Allele Fraction](#variant-allele-fraction-calculation) and some sample metadata information.
 These files combine the [MAF file data](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from 3 different SNV callers: [Mutect2](https://software.broadinstitute.org/cancer/cga/mutect), [Strelka2](https://github.com/Illumina/strelka), and [Lancet](https://github.com/nygenome/lancet).
-See the methods on the callers' settings [here](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#somatic-single-nucleotide-variant-calling) and see the methods of this caller analysis and comparison [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers).
+See the methods on the callers' settings [here](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#somatic-single-nucleotide-variant-calling) and see [the methods of this caller analysis and comparison below](#summary-of-methods).
 
 It is "MAF-like" file because it has many of the same fields as a MAF file but..  
   - Does not contain the version string in the first row   
-  - Has extraneous annotation data has been removed (columns with all `NA`s)  
-  - Has VAF calculations and other variables that are calculated by the [`set_up_maf` function](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/util/wrangle_functions.R#L11).
+  - Extraneous annotation data has been removed (columns with all `NA`s)  
+  - Has VAF calculations
 
 - `consensus_mutation_tmb.tsv` - After the consensus mutations were identified, Tumor mutation burden was recalculated for each sample from this mutation set.
-See this [analysis' folder](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers#tumor-mutation-burden-calculation) for details on these methods.
+See this [analysis' folder](#tumor-mutation-burden-calculation) for details on these methods.
 
 ## Summary of Methods
 
