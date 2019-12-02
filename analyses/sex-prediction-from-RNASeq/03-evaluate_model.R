@@ -1,4 +1,3 @@
-.libPaths(c("C:/Users/Amadio/Documents/R/win-library/3.6", .libPaths()))
 
 #--------Library calls
 
