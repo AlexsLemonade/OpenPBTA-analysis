@@ -7,6 +7,8 @@ URL=${OPENPBTA_URL:-https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/da
 RELEASE=${OPENPBTA_RELEASE:-release-v11-20191126}
 PREVIOUS=${OPENPBTA_RELEASE:-release-v10-20191115}
 
+# Remove old symlinks in data
+find data -type l -delete
 
 # The md5sum file provides our single point of truth for which files are in a release.
 curl --create-dirs $URL/$RELEASE/md5sum.txt -o data/$RELEASE/md5sum.txt -z data/$RELEASE/md5sum.txt
@@ -73,9 +75,6 @@ cd data/$RELEASE
 echo "Checking MD5 hashes..."
 md5sum -c md5sum.txt
 cd ../../
-
-# Remove old symlinks in data
-find data -type l -delete
 
 # Make symlinks in data/ to the files in the just downloaded release folder.
 for file in "${FILES[@]}"
