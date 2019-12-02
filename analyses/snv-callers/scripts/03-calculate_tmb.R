@@ -114,7 +114,8 @@ if (!dir.exists(opt$output)) {
 }
 
 # Declare output file paths
-tmb_file <- file.path(opt$output, "consensus_snv_tmb.tsv")
+tmb_coding_file <- file.path(opt$output, "consensus_snv_tmb_coding_only.tsv")
+tmb_all_file <- file.path(opt$output, "consensus_snv_tmb_all.tsv")
 
 ########################### Set up this caller's data ##########################
 # Print progress message
@@ -148,16 +149,16 @@ maf_df <- maf_df %>%
 
 ############################# Calculate TMB ####################################
 # If the file exists or the overwrite option is not being used, run TMB calculations
-if (file.exists(tmb_file) && !opt$overwrite) {
+if (file.exists(tmb_coding_file) && !opt$overwrite) {
   # Stop if this file exists and overwrite is set to FALSE
   warning(cat(
     "The Tumor Mutation Burden file already exists: \n",
-    tmb_file, "\n",
+    tmb_coding_file, "\n",
     "Use --overwrite if you want to overwrite it."
   ))
 } else {
   # Print out warning if this file is going to be overwritten
-  if (file.exists(tmb_file)) {
+  if (file.exists(tmb_coding_file)) {
     warning("Overwriting existing TMB file.")
   }
   # Print out progress message
@@ -186,12 +187,24 @@ if (file.exists(tmb_file) && !opt$overwrite) {
   }
 
   # Calculate TMBs and write to TMB file
-  tmb_df <- calculate_tmb(maf_df,
+  tmb_all_df <- calculate_tmb(maf_df,
     wgs_size = wgs_genome_size,
     wxs_size = wxs_exome_size
   )
-  readr::write_tsv(tmb_df, tmb_file)
-  
+  readr::write_tsv(tmb_df, tmb_all_file)
+
   # Print out completion message
-  message(paste("TMB calculations saved to:", tmb_file))
+  message(paste("TMB 'all' calculations saved to:", tmb_all_file))
+
+  coding_maf_df <- maf_df %>%
+    dplyr::filter(Variant_Classification == "")
+  # Calculate TMBs and write to TMB file
+  tmb_coding_df <- calculate_tmb(maf_df,
+    wgs_size = wgs_genome_size,
+    wxs_size = wxs_exome_size
+  )
+  readr::write_tsv(tmb_df, tmb_all_file)
+
+  # Print out completion message
+  message(paste("TMB 'all' calculations saved to:", tmb_all_file))
 }
