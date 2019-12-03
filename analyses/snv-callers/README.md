@@ -33,17 +33,11 @@ This bash script will return:
 
 - Comparison plots in a notebook: [`compare_snv_callers_plots.nb.html`](https://cansavvy.github.io/openpbta-notebook-concept/snv-callers/compare_snv_callers_plots.nb.html).
 - A zip file containing:
-  - The consensus mutations themselves, saved to [MAF-like file](#consensus-mutation-call) `consensus_mutation.maf.tsv`.
-  - Tumor Mutation burden calculations in `consensus_mutation_tmb.tsv`.
-
-### Summary of consensus files:
-
-- `consensus_mutation.maf.tsv` - is MAF-like file that contains the mutations that were called by all three of these callers for a given sample are saved to this file.
-These files combine the [MAF file data](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from 3 different SNV callers: [Mutect2](https://software.broadinstitute.org/cancer/cga/mutect), [Strelka2](https://github.com/Illumina/strelka), and [Lancet](https://github.com/nygenome/lancet).
-See the methods on the callers' settings [here](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#somatic-single-nucleotide-variant-calling) and see [the methods of this caller analysis and comparison below](#summary-of-methods).
-
-- `consensus_mutation_tmb.tsv` - After the consensus mutations were identified, Tumor mutation burden was recalculated for each sample from this mutation set.
-See this [analysis' folder](#tumor-mutation-burden-calculation) for details on these methods.
+  - `consensus_snv.maf.tsv` - is  [MAF-like file](#consensus-mutation-call) that contains the snvs that were called by all three of these callers for a given sample are saved to this file.
+  These files combine the [MAF file data](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from 3 different SNV callers: [Mutect2](https://software.broadinstitute.org/cancer/cga/mutect), [Strelka2](https://github.com/Illumina/strelka), and [Lancet](https://github.com/nygenome/lancet).
+  See the methods on the callers' settings [here](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#somatic-single-nucleotide-variant-calling) and see [the methods of this caller analysis and comparison below](#summary-of-methods).  
+  - `consensus_snv_tmb_coding_only.tsv` - Tumor Mutation burden calculations using *coding only* mutations use the consensus of Lancet, Mutect2, and Strelka2. 
+  - `consensus_snv_tmb_all.tsv` - Tumor Mutation burden calculations using *all* mutations use the consensus of Mutect2, and Strelka2. (Lancet was excluded because it has a coding region bias).
 
 ## Summary of Methods
 
@@ -129,10 +123,12 @@ Using the database created by `01-setup_db.py`, merge callers' data files into c
 
 Using the consensus file created in `02-merge_callers.R`, calculate TMB for all
 WGS and WXS samples.
+Two TMB files are created, one including *all snv* called by Strelka2 and Mutect2 (Lancet is excluded from this TMB calculation consensus because of a coding region bias), and a *coding snvs only* TMB calculation. 
 
 **Argument descriptions**
 ```
  --consensus : File path to the MAF-like file.
+ --db_file : Path to sqlite database file made from 01-setup_db.py
  --metadata : Relative file path to MAF file to be analyzed. Can be .gz compressed.
               Assumes file path is given from top directory of 'OpenPBTA-analysis'.
  --bed_wgs : File path that specifies the caller-specific BED regions file.
