@@ -252,7 +252,8 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
                           "Tumor_Sample_Barcode",
                           "experimental_strategy",
                           "short_histology"
-                        )) %>% 
+                        ), 
+                      copy = TRUE) %>% 
     as.data.frame()
   
   # Calculate TMBs and write to TMB file
