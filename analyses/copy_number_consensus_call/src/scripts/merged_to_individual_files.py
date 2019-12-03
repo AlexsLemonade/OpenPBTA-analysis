@@ -85,7 +85,7 @@ for sample in all_samples:
     manta_export = merged_manta.loc[merged_manta[MANTA_ID_HEADER] == sample]
 
     ## Write cnvs to file if less than maxcnvs / otherwise empty file
-    with open((manta_d + '/' + sample + MANTA_EXT), 'w') as file_out:
+    with open(os.path.join(manta_d, sample + MANTA_EXT), 'w') as file_out:
         if manta_export.shape[0] <= args.maxcnvs:
             manta_export.to_csv(file_out, sep='\t', index=False)
         else:
