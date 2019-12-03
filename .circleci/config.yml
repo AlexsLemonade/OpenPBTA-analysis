@@ -15,7 +15,11 @@ jobs:
       - run:
           name: List Data Directory Contents
           command: ./scripts/run_in_ci.sh ls data/testing
-    
+      
+      - run:
+          name: Write md5sum
+          command: ./scripts/run_in_ci.sh cd data && md5sum * > md5sum.txt
+ 
       - run:
           name: Sample Distribution Analyses
           command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"

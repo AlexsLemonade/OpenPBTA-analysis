@@ -86,5 +86,3 @@ done
 if [ "$RELEASE" == "testing" ]; then
   chmod u-wx data
 fi
-
-if [ -w "/data" ]; then echo "WRITABLE"; else echo "NOT WRITABLE"; fi
