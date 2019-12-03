@@ -88,14 +88,6 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
-opt$consensus <- "data/consensus_mutation.maf.tsv"
-opt$db_file <- "scratch/testing_snv_db.sqlite"
-opt$output <- "analyses/snv-callers/results/consensus"
-opt$metadata <- "data/pbta-histologies.tsv"
-opt$bed_wgs <- "data/WGS.hg38.strelka2.unpadded.bed"
-opt$bed_wxs <- "data/WXS.hg38.100bp_padded.bed"
-opt$overwrite <- TRUE
-
 # Make everything relative to root path
 opt$consensus <- file.path(root_dir, opt$consensus)
 opt$db_file <- file.path(root_dir, opt$db_file)
@@ -238,13 +230,6 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   
   # Create the consensus for non-MNVs
   strelka_mutect_maf_df <- strelka %>%
-    dplyr::inner_join(metadata %>%
-                        dplyr::select(
-                          "Tumor_Sample_Barcode",
-                          "experimental_strategy",
-                          "short_histology"
-                        ), 
-                      copy = TRUE) %>% 
     dplyr::inner_join(mutect, by = join_cols) 
   
   # Get Multi-nucleotide calls from mutect as SNVs
@@ -262,6 +247,12 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   strelka_mutect_maf_df <- strelka_mutect_maf_df  %>%
     dplyr::union_all(strelka_mutect_mnv, 
                      copy = TRUE) %>%
+    dplyr::inner_join(metadata %>%
+                        dplyr::select(
+                          "Tumor_Sample_Barcode",
+                          "experimental_strategy",
+                          "short_histology"
+                        )) %>% 
     as.data.frame()
   
   # Calculate TMBs and write to TMB file
@@ -273,5 +264,5 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   
   # Print out completion message
   message(paste("TMB 'all' calculations saved to:", tmb_all_file))
-  
+
 }
