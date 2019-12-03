@@ -280,7 +280,7 @@ norm_expression_sd <- apply(norm_expression, 1, sd, na.rm = TRUE)
 
 # Subtract mean
 expression_zscored <-
-  sweep(stranded_expression_df, 1, norm_expression_means, FUN = "-")
+  sweep(norm_expression, 1, norm_expression_means, FUN = "-")
 
 # Divide by SD remove NAs and Inf values from zscore for genes with 0 in normData
 expression_zscored <-
@@ -319,6 +319,7 @@ cn_metadata <- cn_df %>%
                 Kids_First_Participant_ID,
                 biospecimen_id,
                 status) %>%
+  dplyr::filter(gene_symbol %in% c("SMARCB1", "SMARCA4")) %>%
   dplyr::mutate(
     SMARCB1_focal_status = dplyr::case_when(gene_symbol == "SMARCB1" ~ status,
                                             TRUE ~ "neutral"),
@@ -417,10 +418,11 @@ final_df <- atrt_expression_cn_tmb_df %>%
   dplyr::group_by(sample_id) %>%
   dplyr::mutate(
     Kids_First_Biospecimen_ID = paste(sort(
-      unique(Kids_First_Biospecimen_ID.x, Kids_First_Biospecimen_ID.y)
+      unique(c(Kids_First_Biospecimen_ID.x, Kids_First_Biospecimen_ID.y,
+             Tumor_Sample_Barcode))
     ), collapse = ", "),
     Kids_First_Participant_ID = paste(sort(
-      unique(Kids_First_Participant_ID.x, Kids_First_Participant_ID.y)
+      unique(c(Kids_First_Participant_ID.x, Kids_First_Participant_ID.y))
     ), collapse = ", ")
   ) %>%
   dplyr::select(
