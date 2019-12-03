@@ -105,6 +105,10 @@ jobs:
       - run:
           name: Tumor mutation burden with TCGA
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
+
+      - run:  
+          name: Molecular Subtyping - ATRT
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-ATRT/01-ATRT-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
           
          ################################
          #### Add your analysis here ####
