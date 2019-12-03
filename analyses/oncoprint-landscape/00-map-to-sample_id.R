@@ -166,8 +166,13 @@ if (!is.null(opt$independent_specimens)) {
 
 message("Preparing MAF file...")
 
-# MAF files already capture sample IDs
+# join the sample_id information to the MAF file and then set as the tumor
+# sample barcode
 maf_df <- maf_df %>%
+  inner_join(select(histologies_df,
+                    Kids_First_Biospecimen_ID,
+                    sample_id),
+             by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
   rename(Tumor_Sample_Barcode = sample_id)
 
 # Write MAF to file
