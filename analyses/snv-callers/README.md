@@ -41,13 +41,6 @@ This bash script will return:
 
 ## Summary of Methods
 
-### Mutation Comparisons
-
-In order to compare mutations across callers, the data tables for each caller
-were indexed by: `Chromosome` `Start_Position` `Reference_Allele` and `Allele`.
-Meaning that across callers, if all these fields were identical, they were considered to be the same mutation.
-This was done in the `01-setup_db.py` script using the function.
-
 ### Variant Allele Fraction Calculation
 
 Calculate variant allele fraction (VAF) for each variant.
@@ -58,6 +51,13 @@ vaf = (t_alt_count) / (t_ref_count + t_alt_count)
 ```
 This is following the [code used in
 `maftools`](https://github.com/PoisonAlien/maftools/blob/1d0270e35c2e0f49309eba08b62343ac0db10560/R/plot_vaf.R#L39).
+
+### Mutation Comparisons
+
+The default consensus mutations called are those that are shared among all of Strelka2, Mutect2, and Lancet.
+Mutations were considered to be the same if they were identical in the following field: `Chromosome`, `Start_Position`, `Reference_Allele`,  `Allele`, and `Tumor_Sample_Barcode`.
+As Strelka2 does not call multinucleotide variants (MNV), but instead calls each component SNV as a separate mutation, MNV calls from Mutect2 and Lancet were separated into consecutive SNVs before comparison with Strelka2.
+
 
 ### Tumor Mutation Burden Calculation
 
