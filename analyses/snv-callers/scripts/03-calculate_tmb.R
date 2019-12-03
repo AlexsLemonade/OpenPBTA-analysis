@@ -246,7 +246,7 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   
   # Add in the MNVs
   strelka_mutect_maf_df  %>%
-    dplyr::union_all(consensus_mnv) %>%
+    dplyr::union_all(strelka_mutect_mnv) %>%
     dplyr::arrange("Chromosome", "Start_Position") %>%
     as.data.frame()
   
