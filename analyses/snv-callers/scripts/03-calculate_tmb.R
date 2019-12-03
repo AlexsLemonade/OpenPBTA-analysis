@@ -196,7 +196,7 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   ############################ Coding TMB file #################################
   # Make a maf_df of only the coding mutations
   coding_maf_df <- maf_df %>%
-    dplyr::filter(!(Variant_Classification %in% c("IGR", "Silent")))
+    dplyr::filter(!(Variant_Classification %in% c("IGR", "Intron",  "3'Flank", "5'Flank")))
   
   # Calculate coding only TMBs and write to file
   tmb_coding_df <- calculate_tmb(coding_maf_df,
@@ -232,7 +232,7 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   strelka_mutect_maf_df <- strelka %>%
     dplyr::inner_join(mutect, by = join_cols)
   
-  # Get Multi-nucleotide calls from mutect and lancet as SNVs
+  # Get Multi-nucleotide calls from mutect as SNVs
   split_mutect_df <- split_mnv(mutect)
   
   # join MNV calls with strelka
@@ -261,3 +261,4 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   message(paste("TMB 'all' calculations saved to:", tmb_all_file))
   
 }
+
