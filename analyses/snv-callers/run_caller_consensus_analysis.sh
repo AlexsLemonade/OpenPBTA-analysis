@@ -25,15 +25,6 @@ vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}
 # To run plots, set OPENPBTA_PLOTS to 1 or more
 run_plots_nb=${OPENPBTA_PLOTS:-0}
 
-############################ Set Up Reference Files ############################
-# The original COSMIC file is obtained from: https://cancer.sanger.ac.uk/cosmic/download
-# These data are available if you register. The full, unfiltered somatic mutations
-# file CosmicMutantExport.tsv.gz for grch38 is used here.
-Rscript analyses/snv-callers/scripts/00-set_up.R \
-  --annot_rds $annot_rds \
-  --cosmic_og scratch/CosmicMutantExport.tsv.gz \
-  --cosmic_clean $cosmic
-
 ################################ Set Up Database ################################
 python3 analyses/snv-callers/scripts/01-setup_db.py \
   --db-file $dbfile \
