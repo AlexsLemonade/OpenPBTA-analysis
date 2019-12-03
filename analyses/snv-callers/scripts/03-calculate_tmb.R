@@ -98,9 +98,9 @@ files_found <- file.exists(needed_files)
 # Report error if any of them aren't found
 if (!all(files_found)) {
   stop(paste("\n Could not find needed file(s):",
-    needed_files[which(!files_found)],
-    "Check your options and set up.",
-    sep = "\n"
+             needed_files[which(!files_found)],
+             "Check your options and set up.",
+             sep = "\n"
   ))
 }
 
@@ -141,11 +141,11 @@ if (!all(unique(maf_df$Tumor_Sample_Barcode) %in% metadata$Tumor_Sample_Barcode)
 # Add the experimental strategy column on the data.frame for calculating purposes
 maf_df <- maf_df %>%
   dplyr::inner_join(metadata %>%
-    dplyr::select(
-      Tumor_Sample_Barcode,
-      experimental_strategy,
-      short_histology
-    ))
+                      dplyr::select(
+                        Tumor_Sample_Barcode,
+                        experimental_strategy,
+                        short_histology
+                      ))
 
 ############################# Calculate TMB ####################################
 # If the file exists or the overwrite option is not being used, run TMB calculations
@@ -163,15 +163,15 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   }
   # Print out progress message
   message(paste("Calculating TMB for", opt$consensus, "MAF data..."))
-
+  
   # Set up BED region files for TMB calculations
   wgs_bed <- readr::read_tsv(opt$bed_wgs, col_names = FALSE)
   wxs_bed <- readr::read_tsv(opt$bed_wxs, col_names = FALSE)
-
+  
   # Calculate size of genome surveyed
   wgs_genome_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
   wxs_exome_size <- sum(wxs_bed[, 3] - wxs_bed[, 2])
-
+  
   # Print out these genome sizes
   cat(
     " WGS size in bp:", wgs_genome_size,
@@ -179,32 +179,34 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
     "WXS size in bp:", wxs_exome_size,
     "\n"
   )
-
+  
   # Only do this step if you have WXS samples
   if (any(metadata$experimental_strategy == "WXS")) {
     # Filter out mutations for WXS that are outside of these BED regions.
     maf_df <- wxs_bed_filter(maf_df, wxs_bed_file = opt$bed_wxs)
   }
-
+  
   # Calculate TMBs and write to TMB file
   tmb_all_df <- calculate_tmb(maf_df,
-    wgs_size = wgs_genome_size,
-    wxs_size = wxs_exome_size
+                              wgs_size = wgs_genome_size,
+                              wxs_size = wxs_exome_size
   )
-  readr::write_tsv(tmb_df, tmb_all_file)
-
+  readr::write_tsv(tmb_all_df, tmb_all_file)
+  
   # Print out completion message
   message(paste("TMB 'all' calculations saved to:", tmb_all_file))
-
+  
+  # Make a maf_df of only the coding mutations
   coding_maf_df <- maf_df %>%
-    dplyr::filter(Variant_Classification == "")
-  # Calculate TMBs and write to TMB file
-  tmb_coding_df <- calculate_tmb(maf_df,
-    wgs_size = wgs_genome_size,
-    wxs_size = wxs_exome_size
+    dplyr::filter(!(Variant_Classification %in% c("IGR", "Silent")))
+  
+  # Calculate coding only TMBs and write to file
+  tmb_coding_df <- calculate_tmb(coding_maf_df,
+                                 wgs_size = wgs_genome_size,
+                                 wxs_size = wxs_exome_size
   )
-  readr::write_tsv(tmb_df, tmb_all_file)
-
+  readr::write_tsv(tmb_coding_df, tmb_coding_file)
+  
   # Print out completion message
-  message(paste("TMB 'all' calculations saved to:", tmb_all_file))
+  message(paste("TMB 'coding only' calculations saved to:", tmb_coding_file))
 }
