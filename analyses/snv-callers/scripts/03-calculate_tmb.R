@@ -196,7 +196,7 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   ############################ Coding TMB file #################################
   # Make a maf_df of only the coding mutations
   coding_maf_df <- maf_df %>%
-    dplyr::filter(!(Variant_Classification %in% c("IGR", "Intron",  "3'Flank", "5'Flank")))
+    dplyr::filter(!(Variant_Classification %in% c("IGR", "Silent")))
   
   # Calculate coding only TMBs and write to file
   tmb_coding_df <- calculate_tmb(coding_maf_df,
@@ -232,7 +232,7 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   strelka_mutect_maf_df <- strelka %>%
     dplyr::inner_join(mutect, by = join_cols)
   
-  # Get Multi-nucleotide calls from mutect as SNVs
+  # Get Multi-nucleotide calls from mutect and lancet as SNVs
   split_mutect_df <- split_mnv(mutect)
   
   # join MNV calls with strelka
@@ -242,16 +242,22 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
                       copy = TRUE,
                       suffix = c("", "_mutect")
     ) %>%
+    dplyr::inner_join(metadata %>%
+                        dplyr::select(
+                          Tumor_Sample_Barcode,
+                          experimental_strategy,
+                          short_histology
+                        )) %>% 
     dplyr::select(-index) 
   
   # Add in the MNVs
   strelka_mutect_maf_df  %>%
     dplyr::union_all(strelka_mutect_mnv) %>%
-    dplyr::arrange("Chromosome", "Start_Position") %>%
+    dplyr::arrange("Chromosome", "Start_Position") %>% 
     as.data.frame()
   
   # Calculate TMBs and write to TMB file
-  tmb_all_df <- calculate_tmb(strelka_mutect_maf_df ,
+  tmb_all_df <- calculate_tmb(strelka_mutect_maf_df,
                               wgs_size = wgs_genome_size,
                               wxs_size = wxs_exome_size
   )
@@ -261,4 +267,3 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   message(paste("TMB 'all' calculations saved to:", tmb_all_file))
   
 }
-
