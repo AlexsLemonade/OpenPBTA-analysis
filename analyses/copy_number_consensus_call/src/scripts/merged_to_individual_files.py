@@ -66,7 +66,7 @@ freec_samples = np.unique(merged_freec[FREEC_ID_HEADER])
 all_samples = np.unique(list(manta_samples) + list(cnvkit_samples)  + list(freec_samples))
 
 ## Define and create assumed directories
-manta_d = '../../scratch/manta_manta'
+manta_d = os.path.join('..', '..', 'scratch', 'manta_manta')
 cnvkit_d = '../../scratch/cnvkit_cnvkit'
 freec_d = '../../scratch/freec_freec'
 if not os.path.exists(manta_d):
