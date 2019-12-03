@@ -68,7 +68,7 @@ all_samples = np.unique(list(manta_samples) + list(cnvkit_samples)  + list(freec
 ## Define and create assumed directories
 manta_d = os.path.join('..', '..', 'scratch', 'manta_manta')
 cnvkit_d = os.path.join('..', '..', 'scratch', 'cnvkit_cnvkit')
-freec_d = '../../scratch/freec_freec'
+freec_d = os.path.join('..', '..', 'scratch', 'freec_freec')
 if not os.path.exists(manta_d):
     os.makedirs(manta_d)
 if not os.path.exists(cnvkit_d):
