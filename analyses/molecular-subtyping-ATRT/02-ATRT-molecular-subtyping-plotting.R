@@ -56,8 +56,64 @@ final_df <-
 initial_ha_atrt_df <-
   readr::read_rds(file.path(results_dir, "initial_heatmap_annotation.RDS"))
 
+# Define target overexpressed gene vectors
+tyr_genes <-
+  c("TYR",
+    "MITF",
+    "DCT",
+    "VEGFA",
+    "DNAH11",
+    "SPEF1",
+    "POU3F4",
+    "POU3F2",
+    "PBX1")
+shh_genes <-
+  c(
+    "MYCN",
+    "GLI2",
+    "CDK6",
+    "ASCL1",
+    "HES5/6",
+    "DLL1/3",
+    "ZBTB7A",
+    "RXF3",
+    "RXF2",
+    "MYBL2",
+    "MXI1",
+    "MEIS3",
+    "MEIS2",
+    "MAX",
+    "INSM1",
+    "FOXK1"
+  )
+myc_genes <-
+  c(
+    "MYC",
+    "HOTAIR",
+    "HOX",
+    "TCF7L2",
+    "STAT1",
+    "REST",
+    "RARG",
+    "RAD21",
+    "NR4A2",
+    "IRF9",
+    "IRF8",
+    "FOXC1",
+    "CEBPB",
+    "ATF4"
+  )
+
+# Filter to only the genes of interest
+zscored_expression <- zscored_expression[which(
+  rownames(zscored_expression) %in% c(tyr_genes, shh_genes, myc_genes)
+), ]
+
+# Create an absolute value zscored expression data.frame
+zscored_expression <- as.matrix(abs(zscored_expression))
+
 # Create a correlation matrix of the expression data
-initial_mat <- cor(zscored_expression, method = "pearson")
+#initial_mat <- cor(zscored_expression, method = "pearson")
 
 # Make the initial annotation data.frame a Heatmap Annotation object
 initial_ha_atrt <- HeatmapAnnotation(df = initial_ha_atrt_df)
@@ -70,8 +126,8 @@ png(
   units = "px"
 )
 Heatmap(
-  initial_mat,
-  heatmap_legend_param = list(title = "correlation"),
+  zscored_expression,
+  heatmap_legend_param = list(title = "absolute zscore value"),
   top_annotation = initial_ha_atrt
 )
 dev.off()
@@ -96,8 +152,11 @@ atrt_expression_mat <- final_df %>%
   tibble::column_to_rownames("Kids_First_Biospecimen_ID") %>%
   t()
 
+# Create an absolute value zcored expression matrix
+atrt_expression_mat <- abs(atrt_expression_mat) 
+
 # Create a correlation matrix
-final_mat <- cor(atrt_expression_mat, method = "pearson")
+#final_mat <- cor(atrt_expression_mat, method = "pearson")
 
 # Read in final heatmap annotation data.frame
 final_ha_atrt_df <-
@@ -114,8 +173,10 @@ png(
   units = "px"
 )
 Heatmap(
-  final_mat,
-  heatmap_legend_param = list(title = "correlation"),
-  top_annotation = final_ha_atrt
+  atrt_expression_mat,
+  heatmap_legend_param = list(title = "absolute zscore value"),
+  top_annotation = final_ha_atrt,
+  cluster_rows = FALSE,
+  cluster_columns = TRUE
 )
 dev.off()
