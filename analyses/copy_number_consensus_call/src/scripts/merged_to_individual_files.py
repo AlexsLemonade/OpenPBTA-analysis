@@ -92,7 +92,7 @@ for sample in all_samples:
             pass
 
     cnvkit_export = merged_cnvkit.loc[merged_cnvkit[CNVKIT_ID_HEADER] == sample]
-    with open((cnvkit_d + '/' + sample + CNVKIT_EXT), 'w') as file_out:
+    with open(os.path.join(cnvkit_d, sample + CNVKIT_EXT), 'w') as file_out:
         if cnvkit_export.shape[0] <= args.maxcnvs:
             cnvkit_export.to_csv(file_out, sep='\t', index=False)
         else:
