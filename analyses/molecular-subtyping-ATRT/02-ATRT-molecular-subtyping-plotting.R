@@ -21,6 +21,10 @@ if (!("ComplexHeatmap" %in% installed.packages())) {
 }
 library(ComplexHeatmap)
 
+if (!("matrixStats" %in% installed.packages())) {
+  install.packages("matrixStats")
+}
+
 #### Directories and Files -----------------------------------------------------
 
 # Detect the ".git" folder -- this will in the project root directory.
@@ -109,11 +113,22 @@ zscored_expression <- zscored_expression[which(
   rownames(zscored_expression) %in% c(tyr_genes, shh_genes, myc_genes)
 ), ]
 
-# Create an absolute value zscored expression data.frame
+# Create an absolute value zscored expression matrix
 zscored_expression <- as.matrix(abs(zscored_expression))
 
-# Create a correlation matrix of the expression data
-#initial_mat <- cor(zscored_expression, method = "pearson")
+# Arrange zscored expression by rows with largest range of zscore values 
+zscored_expression <- zscored_expression %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("gene_symbol") %>%
+  dplyr::mutate(row_max = matrixStats::rowMaxs(zscored_expression)) %>%
+  dplyr::arrange(dplyr::desc(row_max)) %>%
+  tibble::column_to_rownames("gene_symbol") %>%
+  dplyr::select(-row_max) %>%
+  as.matrix()
+
+# Filter `zscored_expression` matrix to include only the top third rows with the
+# largest range of zscore values
+zscored_expression <- zscored_expression[1:10,]
 
 # Make the initial annotation data.frame a Heatmap Annotation object
 initial_ha_atrt <- HeatmapAnnotation(df = initial_ha_atrt_df)
@@ -153,10 +168,21 @@ atrt_expression_mat <- final_df %>%
   t()
 
 # Create an absolute value zcored expression matrix
-atrt_expression_mat <- abs(atrt_expression_mat) 
+atrt_expression_mat <- as.matrix(abs(atrt_expression_mat))
 
-# Create a correlation matrix
-#final_mat <- cor(atrt_expression_mat, method = "pearson")
+# Arrange `atrt_expression_mat` by rows with largest range of zscore values 
+atrt_expression_mat <- atrt_expression_mat %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("gene_symbol") %>%
+  dplyr::mutate(row_max = matrixStats::rowMaxs(atrt_expression_mat)) %>%
+  dplyr::arrange(dplyr::desc(row_max)) %>%
+  tibble::column_to_rownames("gene_symbol") %>%
+  dplyr::select(-row_max) %>%
+  as.matrix()
+
+# Filter `atrt_expression_mat` matrix to include only the top third rows with the
+# largest range of zscore values
+atrt_expression_mat <- atrt_expression_mat[1:10,]
 
 # Read in final heatmap annotation data.frame
 final_ha_atrt_df <-
@@ -175,8 +201,6 @@ png(
 Heatmap(
   atrt_expression_mat,
   heatmap_legend_param = list(title = "absolute zscore value"),
-  top_annotation = final_ha_atrt,
-  cluster_rows = FALSE,
-  cluster_columns = TRUE
+  top_annotation = final_ha_atrt
 )
 dev.off()
