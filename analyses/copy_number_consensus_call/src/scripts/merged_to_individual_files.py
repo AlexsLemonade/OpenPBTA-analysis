@@ -99,7 +99,7 @@ for sample in all_samples:
             pass
 
     freec_export = merged_freec.loc[merged_freec[FREEC_ID_HEADER] == sample]
-    with open((freec_d + '/' + sample + FREEC_EXT), 'w') as file_out:
+    with open(os.path.join(freec_d, sample + FREEC_EXT), 'w') as file_out:
         if freec_export.shape[0] <= args.maxcnvs:
             freec_export.to_csv(file_out, sep='\t', index=False)
         else:
