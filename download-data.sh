@@ -86,3 +86,5 @@ done
 if [ "$RELEASE" == "testing" ]; then
   chmod u-wx data
 fi
+
+touch -r data/independent-specimens.wgswxs.primary-plus.tsv data/pbta-histologies.tsv
