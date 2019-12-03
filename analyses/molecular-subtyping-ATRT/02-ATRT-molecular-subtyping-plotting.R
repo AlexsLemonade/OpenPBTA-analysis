@@ -40,11 +40,10 @@ if (!dir.exists(plots_dir)) {
 }
 
 # Read in RNA expression data
-stranded_expression <-
+zscored_expression <-
   readr::read_rds(file.path(
-    root_dir,
-    "data",
-    "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+    results_dir,
+    "atrt_zscored_expression.RDS"
   ))
 
 # Read in final output data.frame from `01-ATRT-molecular-subtyping-data-prep.Rmd`
@@ -53,25 +52,12 @@ final_df <-
 
 #### Plot initial heatmap ----------------------------------
 
-# Save Biospecimen Ids in a vector
-column_names <- colnames(stranded_expression)
-
-# Filter for Ids relevant to `ATRT`
-column_names <- column_names %>%
-  as.data.frame() %>%
-  dplyr::filter(. %in% final_df$Kids_First_Biospecimen_ID)
-
-# Make a data.frame with only the expression values for ATRT samples
-stranded_expression_df <- stranded_expression %>%
-  as.data.frame() %>%
-  dplyr::select(column_names$.)
-
-# Create a correlation matrix of the expression data
-initial_mat <- cor(stranded_expression_df, method = "pearson")
-
 # Read in initial heatmap data.frame
 initial_ha_atrt_df <-
   readr::read_rds(file.path(results_dir, "initial_heatmap_annotation.RDS"))
+
+# Create a correlation matrix of the expression data
+initial_mat <- cor(zscored_expression, method = "pearson")
 
 # Make the initial annotation data.frame a Heatmap Annotation object
 initial_ha_atrt <- HeatmapAnnotation(df = initial_ha_atrt_df)
