@@ -39,5 +39,9 @@ molecular-subtyping-ATRT
 │   ├── final_annotated_heatmap.png
 │   └── initial_heatmap.png
 ├── results
-│   └── ATRT_molecular_subtypes.tsv.gz
+│   ├── ATRT_molecular_subtypes.tsv.gz
+│   ├── atrt_zscored_expression.RDS
+│   ├── final_heatmap_annotation.RDS
+│   └── initial_heatmap_annotation.RDS
 └── run-molecular-subtyping-ATRT.sh
+```
