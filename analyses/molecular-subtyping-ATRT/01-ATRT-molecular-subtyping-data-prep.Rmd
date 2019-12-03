@@ -262,17 +262,13 @@ myc_genes <-
     "ATF4"
   )
 
-# Filter expression data for target overexpressed genes
-stranded_expression_df <- stranded_expression %>%
-  as.data.frame() %>%
-  tibble::rownames_to_column("gene_symbol") %>%
-  dplyr::filter(gene_symbol %in% tyr_genes |
-                  gene_symbol %in% shh_genes |
-                  gene_symbol %in% myc_genes) %>%
-  tibble::column_to_rownames("gene_symbol")
+# Filter to ATRT samples only -- we can use atrt_df because it is subset to
+# RNA-seq samples
+stranded_expression <- stranded_expression %>%
+  dplyr::select(atrt_df$Kids_First_Biospecimen_ID)
 
 # Log2 transformation
-norm_expression <- log2(stranded_expression_df + 1)
+norm_expression <- log2(stranded_expression + 1)
 
 # normData mean and sd
 norm_expression_means <- rowMeans(norm_expression, na.rm = TRUE)
@@ -287,6 +283,15 @@ expression_zscored <-
   sweep(expression_zscored, 1, norm_expression_sd, FUN = "/") %>%
   dplyr::na_if(Inf) %>%
   na.omit()
+
+# Save matrix with all genes to file for downstream plotting
+readr::write_rds(expression_zscored, 
+                 file.path(results_dir, "atrt_zscored_expression.RDS"))
+
+# Filter to only the genes of interest
+expression_zscored <- expression_zscored[which(
+   rownames(expression_zscored) %in% c(tyr_genes, shh_genes, myc_genes)
+), ]
 
 # Transpose
 long_stranded_expression <- t(expression_zscored)
