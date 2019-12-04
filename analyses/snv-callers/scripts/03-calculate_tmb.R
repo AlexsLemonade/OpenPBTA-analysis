@@ -8,10 +8,13 @@
 #
 # --consensus : File path to the MAF-like file.
 # --db_file : Path to sqlite database file made from 01-setup_db.py
+# --gtf_file : File path to human genome GTF file. Used to calculate coding genome size.
 # --metadata : Relative file path to MAF file to be analyzed. Can be .gz compressed.
 #              Assumes file path is given from top directory of 'OpenPBTA-analysis'.
-# --bed_wgs : File path that specifies the caller-specific BED regions file.
-#             Assumes from top directory, 'OpenPBTA-analysis'.
+# --bed_wgs : File path that specifies the caller-specific
+#             BED regions file. If two files are given, separate their file paths with a
+#             comma. The intersection of these ranges will be taken and used as a denominator. 
+#             Assumes from top directory, 'OpenPBTA-analysis'
 # --bed_wxs : File path that specifies the WXS BED regions file. Assumes file path
 #             is given from top directory of 'OpenPBTA-analysis'
 # --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
@@ -20,11 +23,13 @@
 #
 # Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
 #   --consensus analyses/snv-callers/results/consensus/consensus_snv.maf.tsv \
+#   --db_file $dbfile \
+#   --gtf_file data/gencode.v27.primary_assembly.annotation.gtf.gz \
 #   --output analyses/snv-callers/results/consensus \
 #   --metadata data/pbta-histologies.tsv \
-#   --bed_wgs data/WGS.hg38.mutect2.unpadded.bed \
+#   --bed_wgs data/WGS.hg38.strelka2.unpadded.bed,data/WGS.hg38.mutect2.unpadded.bed  \
 #   --bed_wxs data/WXS.hg38.100bp_padded.bed \
-#   --no_region
+#   --overwrite
 
 ################################ Initial Set Up ################################
 # Establish base dir
@@ -336,7 +341,7 @@ if (file.exists(tmb_all_file) && !opt$overwrite) {
 
   # Bind the filtered WXS sample rows back to the WGS samples
   strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
-    dplyr::filter(experimental_strategy == "WGS") %>%
+    dplyr::filter(experimental_strategy == "WGS") %>% # Note that `Panel` samples are not included here. 
     dplyr::bind_rows(filt_wxs_maf_df)
 
   # Calculate TMBs and write to TMB file
