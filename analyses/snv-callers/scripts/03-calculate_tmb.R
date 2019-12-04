@@ -205,8 +205,6 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
       file = opt$gtf_file,
       format = "gtf"
     )
-    # Can do this even if the directory exists
-    dir.create(annotation_directory, showWarnings = FALSE)
     
     # Write this to file to save time next time
     AnnotationDbi::saveDb(txdb, annotation_file)
@@ -217,11 +215,15 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   # extract the exons but include ensembl gene identifiers
   tx_exons <- GenomicFeatures::exons(txdb, columns = "gene_id")
   
+  # Extract the ranges and sum to get the size
+  coding_genome_size <- sum(GenomicRanges::width(
+    GenomicRanges::reduce(
+      tx_exons)))
+    
   # Use regular WXS ranges for WXS samples.
   wxs_bed <- readr::read_tsv(opt$bed_wxs, col_names = FALSE)
   
   # Calculate size of genome surveyed
-  coding_genome_size <- sum(coding_ranges[, 3] - coding_ranges[, 2])
   wxs_exome_size <- sum(wxs_bed[, 3] - wxs_bed[, 2])
   
   # Only do this step if you have WXS samples
@@ -267,7 +269,9 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   intersection_ranges <- GenomicRanges::intersect(wgs_beds[[1]], wgs_beds[[2]])
     
   # Get genome size
-  intersect_genome_size <- 
+  intersect_genome_size <- sum(GenomicRanges::width(
+    GenomicRanges::reduce(
+      intersection_ranges)))
   
   # Start up connection
   con <- DBI::dbConnect(RSQLite::SQLite(), opt$db_file)
@@ -275,9 +279,6 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   # Designate caller tables from SQL file
   strelka <- dplyr::tbl(con, "strelka")
   mutect <- dplyr::tbl(con, "mutect")
-  
-  # Use this so we can make columns back to traditional MAF order after join
-  full_col_order <- colnames(strelka)
   
   # Specify the columns to join by
   join_cols <- c(

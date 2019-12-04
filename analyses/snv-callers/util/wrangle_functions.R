@@ -95,60 +95,45 @@ maf_to_granges <- function(maf_df) {
       start = maf_df$Start_Position,
       end = maf_df$End_Position
     ),
-    # I don't think any of the uses here (MAF & WXS bed files) use `Strand` info
-    # in any functional way (MAF is always `+` & WXS bed files don't include it)
-    # so I am commenting the line below out. -JAS
-    
-    # strand = maf_df$Strand,
     mcols = maf_df
   )
 }
 
-wxs_bed_filter <- function(maf_df, wxs_bed_file = NULL, bp_window = 0) {
+snv_bed_filter <- function(maf_df, bed_df, bp_window = 0) {
   # Given a MAF formatted data.frame and a BED regions data.frame; filter out
   # any variants of the MAF df that are not within the BED regions.
   #
   # Args:
   #   maf_df: maf data that has been turned into a data.frame. Can be a maf object
   #           that is subsetted using `@data`.
-  #   wxs_bed_file: a file path to TSV file that has BED formatted columns with
-  #                 chromosome, start, end positions in that order.
+  #   bed_df: BED ranges data.frame with columns: chromosome, start, end 
+  #             positions in that order.
   #   bp_window: how many base pairs away can it be from the BED region to still
   #              be included? Default is 0 bp. This argument gets forwarded
   #              to GenomicRanges::findOverlaps's `maxgap` argument.
   #
   # Returns:
-  # The same MAF formatted data.frame with the WXS mutations that lie outside
-  # the supplied WXS BED regions filtered out.
+  # The same MAF formatted data.frame with the mutations that lie outside
+  # the supplied BED regions filtered out.
 
-  # Read in the BED regions file and make sure the column names are the same
-  # as the MAF column format names
-  wxs_bed_ranges <- readr::read_tsv(wxs_bed_file, col_names = FALSE) %>%
-    dplyr::rename(Chromosome = X1, Start_Position = X2, End_Position = X3)
+  # Turn the bed regions df into a GRanges object
+  bed_granges <-  GenomicRanges::GRanges(
+      seqnames = bed_df$X1,
+      ranges = IRanges::IRanges(
+        start = bed_df$X2,
+        end = bed_df$X3
+      )
+    )
 
-  # Turn the WXS bed regions into a GRanges object
-  wxs_bed_granges <- maf_to_granges(wxs_bed_ranges)
-
-  # Obtain a MAF data.frame of only the WXS samples since this filter will only
-  # be applied to those samples.
-  maf_wxs <- maf_df %>%
-    dplyr::filter(experimental_strategy == "WXS")
-
-  # Error catcher in case there are no `WXS` samples
-  if (nrow(maf_wxs) == 0) {
-    stop("No WXS samples in the 'experimental_strategy' column
-         double check filtering steps and data.")
-  }
-
-  # Turn the MAF WXS sample mutations into a GRanges object
-  wxs_maf_granges <- maf_to_granges(maf_wxs)
+  # Turn the MAF sample mutations into a GRanges object
+  maf_granges <- maf_to_granges(maf_df)
 
   # Find the overlap of the BED regions and the mutations This outputs a
   # special GenomicRanges object that contains indices of each of these
   # ranges that overlap
   overlap <- GenomicRanges::findOverlaps(
-    wxs_maf_granges,
-    wxs_bed_granges,
+    maf_granges,
+    bed_granges,
     maxgap = bp_window
   )
 
@@ -164,12 +149,7 @@ wxs_bed_filter <- function(maf_df, wxs_bed_file = NULL, bp_window = 0) {
   )
 
   # Only keep those in the BED regions that overlap the `wxs_bed_granges`
-  maf_wxs <- maf_wxs[unique(overlap@from), ]
-
-  # Tack these back on to the WGS samples which remain unfiltered
-  filt_maf_df <- maf_df %>%
-    dplyr::filter(experimental_strategy == "WGS") %>%
-    dplyr::bind_rows(maf_wxs)
+  filt_maf_df <- maf_df[unique(overlap@from), ]
 
   # Return this matrix with the WXS mutations filtered but WGS the same
   return(filt_maf_df)
