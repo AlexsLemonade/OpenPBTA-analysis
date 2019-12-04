@@ -53,6 +53,12 @@ option_list <- list(
     default = NULL, help = "Path to sqlite database file made from 01-setup_db.py",
     metavar = "character"
   ),
+  optparse::make_option(
+    c("--gtf_file"),
+    type = "character",
+    default = NULL,
+    help = "File path to human genome GTF file. Used to calculate coding genome size."
+  ),
   make_option(
     opt_str = c("-o", "--output"), type = "character",
     default = NULL, help = "Path to folder where you would like the
@@ -68,7 +74,9 @@ option_list <- list(
   make_option(
     opt_str = "--bed_wgs", type = "character", default = "none",
     help = "File path that specifies the caller-specific
-                BED regions file. Assumes from top directory, 'OpenPBTA-analysis'",
+    BED regions file. If multiple files are given, separate their file paths with a
+    comma. The intersection of these ranges will be taken and used as a denominator. 
+    Assumes from top directory, 'OpenPBTA-analysis'",
     metavar = "character"
   ),
   make_option(
@@ -88,16 +96,29 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
+opt$consensus <- "data/consensus_mutation.maf.tsv"
+opt$db_file <- "scratch/testing_snv_db.sqlite"
+opt$gtf_file <- "data/gencode.v27.primary_assembly.annotation.gtf.gz"
+opt$output <- "analyses/snv-callers/results/consensus"
+opt$metadata <- "data/pbta-histologies.tsv"
+opt$bed_wgs <- "data/WGS.hg38.strelka2.unpadded.bed,data/WGS.hg38.mutect2.unpadded.bed"
+opt$bed_wxs <- "data/WXS.hg38.100bp_padded.bed"
+opt$overwrite <- TRUE
+
+# Split anywhere there are commas for multiple BED files
+opt$bed_wgs <- unlist(strsplit(opt$bed_wgs, ","))
+
 # Make everything relative to root path
 opt$consensus <- file.path(root_dir, opt$consensus)
 opt$db_file <- file.path(root_dir, opt$db_file)
+opt$gtf_file <- file.path(root_dir, opt$gtf_file)
 opt$metadata <- file.path(root_dir, opt$metadata)
 opt$bed_wgs <- file.path(root_dir, opt$bed_wgs)
 opt$bed_wxs <- file.path(root_dir, opt$bed_wxs)
 
 ########### Check that the files we need are in the paths specified ############
 needed_files <- c(
-  opt$consensus, opt$metadata, opt$bed_wgs, opt$bed_wxs, opt$db_file 
+  opt$consensus, opt$metadata, opt$bed_wgs, opt$bed_wxs, opt$db_file, opt$gtf_file 
 )
 
 # Get list of which files were found
@@ -170,23 +191,38 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
     warning("Overwriting existing TMB file.")
   }
   # Print out progress message
-  message(paste("Calculating TMB for", opt$consensus, "MAF data..."))
+  message(paste("Calculating 'coding only' TMB..."))
   
-  # Set up BED region files for TMB calculations
-  wgs_bed <- readr::read_tsv(opt$bed_wgs, col_names = FALSE)
+  # Save the created file here
+  annotation_file <- file.path("scratch", "txdb_from_gencode.v27.gtf.db")
+  
+  # Only remake the file if it doesn't exist
+  if (!file.exists(annotation_file)) {
+    message("Creating exon annotation file")
+    
+    # Define the annotations for the hg38 genome
+    txdb <- GenomicFeatures::makeTxDbFromGFF(
+      file = opt$gtf_file,
+      format = "gtf"
+    )
+    # Can do this even if the directory exists
+    dir.create(annotation_directory, showWarnings = FALSE)
+    
+    # Write this to file to save time next time
+    AnnotationDbi::saveDb(txdb, annotation_file)
+  } else {
+    txdb <- AnnotationDbi::loadDb(annotation_file)
+  }
+  
+  # extract the exons but include ensembl gene identifiers
+  tx_exons <- GenomicFeatures::exons(txdb, columns = "gene_id")
+  
+  # Use regular WXS ranges for WXS samples.
   wxs_bed <- readr::read_tsv(opt$bed_wxs, col_names = FALSE)
   
   # Calculate size of genome surveyed
-  wgs_genome_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
+  coding_genome_size <- sum(coding_ranges[, 3] - coding_ranges[, 2])
   wxs_exome_size <- sum(wxs_bed[, 3] - wxs_bed[, 2])
-  
-  # Print out these genome sizes
-  cat(
-    " WGS size in bp:", wgs_genome_size,
-    "\n",
-    "WXS size in bp:", wxs_exome_size,
-    "\n"
-  )
   
   # Only do this step if you have WXS samples
   if (any(metadata$experimental_strategy == "WXS")) {
@@ -200,7 +236,7 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   
   # Calculate coding only TMBs and write to file
   tmb_coding_df <- calculate_tmb(coding_maf_df,
-                                 wgs_size = wgs_genome_size,
+                                 wgs_size = coding_genome_size,
                                  wxs_size = wxs_exome_size
   )
   readr::write_tsv(tmb_coding_df, tmb_coding_file)
@@ -209,6 +245,30 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   message(paste("TMB 'coding only' calculations saved to:", tmb_coding_file))
   
   ######################### All mutations TMB file #############################
+  #### Calculate intersection genome size
+  # Read in BED region files for TMB calculations
+  wgs_beds <- lapply(opt$bed_wgs, function(bed) {
+    
+    # Read in BED formatted file
+    bed <- readr::read_tsv(bed, col_names = FALSE)
+    
+    # Create the GRanges object from bed
+    GenomicRanges::GRanges(
+      seqnames = bed$X1,
+      ranges = IRanges::IRanges(
+        start = bed$X2,
+        end = bed$X3
+        )
+      )
+  }
+  )
+  
+  # Get intersection 
+  intersection_ranges <- GenomicRanges::intersect(wgs_beds[[1]], wgs_beds[[2]])
+    
+  # Get genome size
+  intersect_genome_size <- 
+  
   # Start up connection
   con <- DBI::dbConnect(RSQLite::SQLite(), opt$db_file)
   
@@ -258,7 +318,7 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   
   # Calculate TMBs and write to TMB file
   tmb_all_df <- calculate_tmb(strelka_mutect_maf_df,
-                              wgs_size = wgs_genome_size,
+                              wgs_size = intersect_genome_size,
                               wxs_size = wxs_exome_size
   )
   readr::write_tsv(tmb_all_df, tmb_all_file)

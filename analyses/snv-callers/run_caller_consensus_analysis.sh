@@ -50,9 +50,10 @@ python3 analyses/snv-callers/scripts/01-setup_db.py \
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --consensus analyses/snv-callers/results/consensus/consensus_snv.maf.tsv \
   --db_file $dbfile \
+  --gtf_file data/gencode.v27.primary_assembly.annotation.gtf.gz \
   --output analyses/snv-callers/results/consensus \
   --metadata data/pbta-histologies.tsv \
-  --bed_wgs data/WGS.hg38.strelka2.unpadded.bed \
+  --bed_wgs data/WGS.hg38.strelka2.unpadded.bed,data/WGS.hg38.mutect2.unpadded.bed  \
   --bed_wxs data/WXS.hg38.100bp_padded.bed \
   --overwrite
   
