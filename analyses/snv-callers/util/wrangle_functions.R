@@ -99,15 +99,16 @@ maf_to_granges <- function(maf_df) {
   )
 }
 
-snv_bed_filter <- function(maf_df, bed_df, bp_window = 0) {
+snv_ranges_filter <- function(maf_df, keep_ranges = NULL, bp_window = 0) {
   # Given a MAF formatted data.frame and a BED regions data.frame; filter out
   # any variants of the MAF df that are not within the BED regions.
   #
   # Args:
   #   maf_df: maf data that has been turned into a data.frame. Can be a maf object
   #           that is subsetted using `@data`.
-  #   bed_df: BED ranges data.frame with columns: chromosome, start, end 
-  #             positions in that order.
+  #   keep_ranges: BED ranges data.frame with columns: chromosome, start, end 
+  #             positions in that order or a Genomic Ranges object. If data.frame, 
+  #             is given, it will be converted to GRanges object
   #   bp_window: how many base pairs away can it be from the BED region to still
   #              be included? Default is 0 bp. This argument gets forwarded
   #              to GenomicRanges::findOverlaps's `maxgap` argument.
@@ -115,32 +116,34 @@ snv_bed_filter <- function(maf_df, bed_df, bp_window = 0) {
   # Returns:
   # The same MAF formatted data.frame with the mutations that lie outside
   # the supplied BED regions filtered out.
-
-  # Turn the bed regions df into a GRanges object
-  bed_granges <-  GenomicRanges::GRanges(
-      seqnames = bed_df$X1,
-      ranges = IRanges::IRanges(
-        start = bed_df$X2,
-        end = bed_df$X3
-      )
-    )
-
+  
   # Turn the MAF sample mutations into a GRanges object
   maf_granges <- maf_to_granges(maf_df)
 
+  # If ranges is given as a data.frame, convert
+  if (is.data.frame(ranges)) {
+  # Turn the bed regions df into a GRanges object
+  keep_ranges <-  GenomicRanges::GRanges(
+      seqnames = keep_ranges[, 1],
+      ranges = IRanges::IRanges(
+        start = keep_ranges[, 2],
+        end = keep_ranges[, 3]
+      )
+    )
+  }
   # Find the overlap of the BED regions and the mutations This outputs a
   # special GenomicRanges object that contains indices of each of these
   # ranges that overlap
   overlap <- GenomicRanges::findOverlaps(
     maf_granges,
-    bed_granges,
+    keep_ranges,
     maxgap = bp_window
   )
 
   # Calculate of ratio of variants in this BED using the @from slot which
   # indicates the indices of the ranges in `wxs_maf_ranges` that have overlaps
   # with `wxs_bed_ranges`
-  ratio <- length(overlap@from) / nrow(maf_wxs)
+  ratio <- length(overlap@from) / nrow(maf_df)
 
   # What fraction of mutations are in these bed regions?
   cat(
@@ -173,7 +176,11 @@ calculate_tmb <- function(maf_df, wgs_size, wxs_size) {
   # Returns:
   # A sample-wise data.frame with Tumor Mutation Burden statistics calculated
   # using the given WGS and WXS sizes.
-  #
+  
+  # Don't want integers per se
+  wgs_size <- as.numeric(wgs_size)
+  wxs_size <- as.numeric(wxs_size)
+  
   # Make a genome size variable
   tmb <- maf_df %>%
     dplyr::mutate(genome_size = dplyr::recode(experimental_strategy,

@@ -74,7 +74,7 @@ option_list <- list(
   make_option(
     opt_str = "--bed_wgs", type = "character", default = "none",
     help = "File path that specifies the caller-specific
-    BED regions file. If multiple files are given, separate their file paths with a
+    BED regions file. If two files are given, separate their file paths with a
     comma. The intersection of these ranges will be taken and used as a denominator. 
     Assumes from top directory, 'OpenPBTA-analysis'",
     metavar = "character"
@@ -95,15 +95,6 @@ option_list <- list(
 
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
-
-opt$consensus <- "data/consensus_mutation.maf.tsv"
-opt$db_file <- "scratch/testing_snv_db.sqlite"
-opt$gtf_file <- "data/gencode.v27.primary_assembly.annotation.gtf.gz"
-opt$output <- "analyses/snv-callers/results/consensus"
-opt$metadata <- "data/pbta-histologies.tsv"
-opt$bed_wgs <- "data/WGS.hg38.strelka2.unpadded.bed,data/WGS.hg38.mutect2.unpadded.bed"
-opt$bed_wxs <- "data/WXS.hg38.100bp_padded.bed"
-opt$overwrite <- TRUE
 
 # Split anywhere there are commas for multiple BED files
 opt$bed_wgs <- unlist(strsplit(opt$bed_wgs, ","))
@@ -146,7 +137,12 @@ if (!dir.exists(opt$output)) {
 tmb_coding_file <- file.path(opt$output, "consensus_snv_tmb_coding_only.tsv")
 tmb_all_file <- file.path(opt$output, "consensus_snv_tmb_all.tsv")
 
-########################### Set up this caller's data ##########################
+# Don't bother if both files exist already and overwrite is FALSE
+if (all(file.exists(c(tmb_coding_file, tmb_all_file)), !opt$overwrite)) {
+  stop(paste0(tmb_coding_file, tmb_all_file, "both exist and --overwrite is not
+              being used. Use --overwrite if you would like to overwrite these files."))
+}
+########################### Set up this consensus data ##########################
 # Print progress message
 message(paste("Reading in", opt$consensus, "MAF data..."))
 
@@ -176,77 +172,82 @@ maf_df <- maf_df %>%
                         short_histology
                       ))
 
+############################ Set up this exon regions ##########################
+# Declare file path 
+annotation_file <- file.path("scratch", "txdb_from_gencode.v27.gtf.db")
+
+# Only remake the file if it doesn't exist
+if (!file.exists(annotation_file)) {
+  message("Creating exon annotation file")
+  
+  # Define the annotations for the hg38 genome
+  txdb <- GenomicFeatures::makeTxDbFromGFF(
+    file = opt$gtf_file,
+    format = "gtf"
+  )
+  
+  # Write this to file to save time next time
+  AnnotationDbi::saveDb(txdb, annotation_file)
+} else {
+  txdb <- AnnotationDbi::loadDb(annotation_file)
+}
+
+# extract the exons but include ensembl gene identifiers
+tx_exons <- GenomicFeatures::exons(txdb, columns = "gene_id")
+
+# Extract the ranges and sum to get the size
+coding_genome_size <- sum(GenomicRanges::width(
+  GenomicRanges::reduce(
+    tx_exons)))
+
 ############################# Calculate TMB ####################################
+
+############################# Coding TMB file ##################################
 # If the file exists or the overwrite option is not being used, run TMB calculations
 if (file.exists(tmb_coding_file) && !opt$overwrite) {
   # Stop if this file exists and overwrite is set to FALSE
   warning(cat(
-    "The Tumor Mutation Burden file already exists: \n",
+    "The 'coding only' Tumor Mutation Burden file already exists: \n",
     tmb_coding_file, "\n",
     "Use --overwrite if you want to overwrite it."
   ))
 } else {
   # Print out warning if this file is going to be overwritten
   if (file.exists(tmb_coding_file)) {
-    warning("Overwriting existing TMB file.")
+    warning("Overwriting existing 'coding only' TMB file.")
   }
+  
   # Print out progress message
   message(paste("Calculating 'coding only' TMB..."))
-  
-  # Save the created file here
-  annotation_file <- file.path("scratch", "txdb_from_gencode.v27.gtf.db")
-  
-  # Only remake the file if it doesn't exist
-  if (!file.exists(annotation_file)) {
-    message("Creating exon annotation file")
     
-    # Define the annotations for the hg38 genome
-    txdb <- GenomicFeatures::makeTxDbFromGFF(
-      file = opt$gtf_file,
-      format = "gtf"
-    )
-    
-    # Write this to file to save time next time
-    AnnotationDbi::saveDb(txdb, annotation_file)
-  } else {
-    txdb <- AnnotationDbi::loadDb(annotation_file)
-  }
-  
-  # extract the exons but include ensembl gene identifiers
-  tx_exons <- GenomicFeatures::exons(txdb, columns = "gene_id")
-  
-  # Extract the ranges and sum to get the size
-  coding_genome_size <- sum(GenomicRanges::width(
-    GenomicRanges::reduce(
-      tx_exons)))
-    
-  # Use regular WXS ranges for WXS samples.
-  wxs_bed <- readr::read_tsv(opt$bed_wxs, col_names = FALSE)
-  
-  # Calculate size of genome surveyed
-  wxs_exome_size <- sum(wxs_bed[, 3] - wxs_bed[, 2])
-  
-  # Only do this step if you have WXS samples
-  if (any(metadata$experimental_strategy == "WXS")) {
-    # Filter out mutations for WXS that are outside of these BED regions.
-    maf_df <- wxs_bed_filter(maf_df, wxs_bed_file = opt$bed_wxs)
-  }
-  ############################ Coding TMB file #################################
-  # Make a maf_df of only the coding mutations
-  coding_maf_df <- maf_df %>%
-    dplyr::filter(!(Variant_Classification %in% c("IGR", "Silent")))
-  
+  # Filter out mutations that are outside of these regions.
+  coding_maf_df <- snv_ranges_filter(maf_df, keep_ranges = tx_exons)
+
   # Calculate coding only TMBs and write to file
   tmb_coding_df <- calculate_tmb(coding_maf_df,
                                  wgs_size = coding_genome_size,
-                                 wxs_size = wxs_exome_size
+                                 wxs_size = coding_genome_size
   )
   readr::write_tsv(tmb_coding_df, tmb_coding_file)
   
   # Print out completion message
   message(paste("TMB 'coding only' calculations saved to:", tmb_coding_file))
-  
-  ######################### All mutations TMB file #############################
+}
+
+########################### All mutations TMB file #############################
+# If the file exists or the overwrite option is not being used, run TMB calculations
+if (file.exists(tmb_all_file) && !opt$overwrite) {
+  # Stop if this file exists and overwrite is set to FALSE
+  warning(cat(
+      "The 'all mutations' Tumor Mutation Burden file already exists: \n",
+      tmb_all_file, "\n",
+      "Use --overwrite if you want to overwrite it."
+    ))
+  } else {
+    # Print out warning if this file is going to be overwritten
+    if (file.exists(tmb_coding_file)) {
+      warning("Overwriting existing 'all mutations' TMB file.")
+    }
   #### Calculate intersection genome size
   # Read in BED region files for TMB calculations
   wgs_beds <- lapply(opt$bed_wgs, function(bed) {
@@ -264,7 +265,6 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
       )
   }
   )
-  
   # Get intersection 
   intersection_ranges <- GenomicRanges::intersect(wgs_beds[[1]], wgs_beds[[2]])
     
@@ -273,6 +273,7 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
     GenomicRanges::reduce(
       intersection_ranges)))
   
+  ######## Obtain Mutect Strelka intersection
   # Start up connection
   con <- DBI::dbConnect(RSQLite::SQLite(), opt$db_file)
   
@@ -317,14 +318,26 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
                       copy = TRUE) %>% 
     as.data.frame()
   
+  # .x is messing up the maf_to_granges function 
+  colnames(strelka_mutect_maf_df) <- gsub("\\.x$", "", colnames(strelka_mutect_maf_df))
+  
+  # For WXS samples, filter out mutations that are outside of these coding regions.
+  filt_wxs_maf_df <- snv_ranges_filter(dplyr::filter(strelka_mutect_maf_df, 
+                                                    experimental_strategy == "WXS"),
+                                      keep_ranges = tx_exons)
+  
+  # Bind the filtered WXS sample rows back to the WGS samples
+  strelka_mutect_maf_df <- strelka_mutect_maf_df %>% 
+    dplyr::filter(experimental_strategy == "WGS") %>% 
+    dplyr::bind_rows(filt_wxs_maf_df)
+  
   # Calculate TMBs and write to TMB file
   tmb_all_df <- calculate_tmb(strelka_mutect_maf_df,
                               wgs_size = intersect_genome_size,
-                              wxs_size = wxs_exome_size
+                              wxs_size = coding_genome_size
   )
   readr::write_tsv(tmb_all_df, tmb_all_file)
   
   # Print out completion message
   message(paste("TMB 'all' calculations saved to:", tmb_all_file))
-
 }
