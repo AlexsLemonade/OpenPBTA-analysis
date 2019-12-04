@@ -29,11 +29,14 @@ set_up_maf <- function(maf_df, metadata_df = NULL, vaf_cutoff = 0) {
   maf_df <- maf_df %>%
     dplyr::mutate(
       # Calculate the variant allele frequency
-      vaf = as.numeric(t_alt_count) / 
-        (as.numeric(t_ref_count) + as.numeric(t_alt_count))) %>%
-    #filter by vaf; if cutoff is 0 leave everything, 
-    dplyr::filter(vaf_cutoff == 0 | is.finite(vaf), 
-                  vaf > vaf_cutoff) %>%
+      vaf = as.numeric(t_alt_count) /
+        (as.numeric(t_ref_count) + as.numeric(t_alt_count))
+    ) %>%
+    # filter by vaf; if cutoff is 0 leave everything,
+    dplyr::filter(
+      vaf_cutoff == 0 | is.finite(vaf),
+      vaf > vaf_cutoff
+    ) %>%
     dplyr::mutate(
       # Create a base_change variable
       base_change = paste0(Reference_Allele, ">", Allele),
@@ -106,8 +109,8 @@ snv_ranges_filter <- function(maf_df, keep_ranges = NULL, bp_window = 0) {
   # Args:
   #   maf_df: maf data that has been turned into a data.frame. Can be a maf object
   #           that is subsetted using `@data`.
-  #   keep_ranges: BED ranges data.frame with columns: chromosome, start, end 
-  #             positions in that order or a Genomic Ranges object. If data.frame, 
+  #   keep_ranges: BED ranges data.frame with columns: chromosome, start, end
+  #             positions in that order or a Genomic Ranges object. If data.frame,
   #             is given, it will be converted to GRanges object
   #   bp_window: how many base pairs away can it be from the BED region to still
   #              be included? Default is 0 bp. This argument gets forwarded
@@ -116,14 +119,14 @@ snv_ranges_filter <- function(maf_df, keep_ranges = NULL, bp_window = 0) {
   # Returns:
   # The same MAF formatted data.frame with the mutations that lie outside
   # the supplied BED regions filtered out.
-  
+
   # Turn the MAF sample mutations into a GRanges object
   maf_granges <- maf_to_granges(maf_df)
 
   # If ranges is given as a data.frame, convert
   if (is.data.frame(ranges)) {
-  # Turn the bed regions df into a GRanges object
-  keep_ranges <-  GenomicRanges::GRanges(
+    # Turn the bed regions df into a GRanges object
+    keep_ranges <- GenomicRanges::GRanges(
       seqnames = keep_ranges[, 1],
       ranges = IRanges::IRanges(
         start = keep_ranges[, 2],
@@ -176,11 +179,11 @@ calculate_tmb <- function(maf_df, wgs_size, wxs_size) {
   # Returns:
   # A sample-wise data.frame with Tumor Mutation Burden statistics calculated
   # using the given WGS and WXS sizes.
-  
+
   # Don't want integers per se
   wgs_size <- as.numeric(wgs_size)
   wxs_size <- as.numeric(wxs_size)
-  
+
   # Make a genome size variable
   tmb <- maf_df %>%
     dplyr::mutate(genome_size = dplyr::recode(experimental_strategy,
@@ -248,7 +251,7 @@ annotr_maf <- function(maf_df, annotation_file = NULL, bp_window = 0) {
 
   # Remove the annotation ranges file to conserve memory burden
   rm(annotation_ranges)
-  
+
   # Return annotated mutations
   return(annot)
 }
