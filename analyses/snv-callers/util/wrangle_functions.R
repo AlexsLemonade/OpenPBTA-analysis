@@ -124,7 +124,7 @@ snv_ranges_filter <- function(maf_df, keep_ranges = NULL, bp_window = 0) {
   maf_granges <- maf_to_granges(maf_df)
 
   # If ranges is given as a data.frame, convert
-  if (is.data.frame(ranges)) {
+  if (is.data.frame(keep_ranges)) {
     # Turn the bed regions df into a GRanges object
     keep_ranges <- GenomicRanges::GRanges(
       seqnames = keep_ranges[, 1],
