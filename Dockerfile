@@ -188,7 +188,14 @@ RUN pip3 install "numpy==1.17.3" && \
 
 
 # pip install for modules Ras, NF1, and TP53 Classifiers
-RUN pip3 install "statsmodels==0.10.2" "plotnine==0.3.0" "scikit-learn==0.19.1" "rpy2==2.9.3" "seaborn==0.8.1" "jupyter==1.0.0" "ipykernel==4.8.1" "widgetsnbextension==2.0.0"
+RUN pip3 install "statsmodels==0.10.2" && \
+   pip3 install "plotnine==0.3.0" && \
+   pip3 install "scikit-learn==0.19.1" &&\
+   pip3 install "rpy2==2.9.3" && \
+   pip3 install "seaborn==0.8.1" && \
+   pip3 install "jupyter==1.0.0" && \
+   pip3 install "ipykernel==4.8.1" && \
+   pip3 install "widgetsnbextension==2.0.0"
 
 
 # Add curl
