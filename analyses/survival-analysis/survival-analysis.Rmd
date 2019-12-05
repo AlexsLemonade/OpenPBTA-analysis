@@ -1,0 +1,94 @@
+---
+title: "VAF Cutoffs and TMB Calculation"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: C. Savonen for ALSF CCDL
+date: 2019
+---
+
+**Purpose:** How do the TMB calculations change with adjustments to the VAF cutoff
+filter? More specifically, if we increase VAF filter cutoff, do the callers' TMB stats 
+relate to each other more? 
+
+### Summary of Findings:
+
+VarDict is the least related to the other callers, but increasing the VAF filter cutoff does somewhat
+recover how its TMB stats relate to the other callers' TMB stats. 
+Regardless, VarDict's data should still be dropped as it is too aberrant from the other callers as 
+well as overly sensitive. 
+
+#### Usage
+
+To run this from the command line, use:
+```
+Rscript -e "rmarkdown::render('analyses/survival-analysis/survival-analysis.Rmd', 
+                              clean = TRUE)"
+```
+
+_This assumes you are in the top directory of the repository._
+
+## Setup
+
+#### Packages and functions
+
+Read in set up script.
+
+```{r}
+if (!("survminer" %in% installed.packages())) {
+  install.packages("survminer")
+}
+
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+#### Set up files and directories
+
+Set up output directories. 
+
+```{r}
+data_dir <- file.path("..", "..", "data")
+results_dir <- "results"
+plots_dir <- "plots"
+```
+
+Make output directories.
+
+```{r}
+if(!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+if(!dir.exists(plots_dir)) {
+  dir.create(plots_dir)
+}
+```
+
+Declare input file paths. 
+
+```{r}
+metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+```
+
+## Import the data
+
+```{r}
+metadata <- readr::read_tsv(metadata_file)
+```
+
+```{r}
+fit <- survminer::survfit(survminer::Surv(OS_days, OS_status) ~ short_histology,
+               data = metadata)
+```
+
+```{r}
+# Visualize with survminer
+ggsurvplot(fit, data = metadata, risk.table = TRUE)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
