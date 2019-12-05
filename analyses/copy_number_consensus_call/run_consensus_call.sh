@@ -31,7 +31,7 @@ cat ../../scratch/config_snakemake.yaml
 ## --restart-times : Define the times a job restarts when run into an error before giving up
 ## --latency-wait: Define the number of seconds to wait for a file to show up after that file has been created
 
-snakemake \ 
+snakemake \
     -s Snakefile \
     --configfile ../../scratch/config_snakemake.yaml \
     -d . \
