@@ -189,5 +189,14 @@ RUN pip3 install "numpy==1.17.3" && \
 # Add curl
 RUN apt-get update && apt-get install -y --no-install-recommends curl
 
+# Need for survminer for doing survival analysis
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    && install2.r --error \
+    --deps TRUE \
+    survival \
+    cmprsk \
+    survMisc \
+    survminer 
+
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
