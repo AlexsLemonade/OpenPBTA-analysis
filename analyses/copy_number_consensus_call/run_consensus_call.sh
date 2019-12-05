@@ -19,6 +19,8 @@ python3 src/scripts/merged_to_individual_files.py \
     --freec ../../data/pbta-cnv-controlfreec.tsv.gz \
     --snake ../../scratch/config_snakemake.yaml
 
+ls ../../scratch/
+cat ../../scratch/config_snakemake.yaml
 
 ## Run the Snakemake pipeline
 ## -s : Point to the location of the Snakemake file
@@ -29,7 +31,7 @@ python3 src/scripts/merged_to_individual_files.py \
 ## --restart-times : Define the times a job restarts when run into an error before giving up
 ## --latency-wait: Define the number of seconds to wait for a file to show up after that file has been created
 
-snakemake \ 
+snakemake \
     -s Snakefile \
     --configfile ../../scratch/config_snakemake.yaml \
     -d . \
