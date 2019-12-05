@@ -19,6 +19,8 @@ python3 src/scripts/merged_to_individual_files.py \
     --freec ../../data/pbta-cnv-controlfreec.tsv.gz \
     --snake ../../scratch/config_snakemake.yaml
 
+ls ../../scratch/
+cat ../../scratch/config_snakemake.yaml
 
 ## Run the Snakemake pipeline
 ## -s : Point to the location of the Snakemake file
