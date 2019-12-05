@@ -20,11 +20,15 @@
 # Example invocation:
 # python3 01-setup_db.py --db-file snv.sqlite --strelka-file strelka.maf --meta-file samples.tsv
 
-
-import os
-import sqlite3
 import argparse
+import base64
+import os
+import requests
+import sqlite3
+
 import pandas as pd
+
+COSMIC_URL = "https://cancer.sanger.ac.uk/cosmic/file_download/GRCh38/cosmic/v90/CosmicMutantExport.tsv.gz"
 
 parser = argparse.ArgumentParser(
     description="Creates and/or fills a database of variant calls")
@@ -48,6 +52,18 @@ parser.add_argument(
     dest='meta_file',
     help="Path of the metadata/histology data file (TSV)."
 )
+parser.add_argument(
+    '--cosmic-user',
+    dest='cosmic_user',
+    help="Username (email) for COSMIC user."
+)
+
+parser.add_argument(
+    '--cosmic-pass',
+    dest='cosmic_pass',
+    help="password for COSMIC user."
+)
+
 parser.add_argument(
     '--overwrite',
     action='store_true',
@@ -249,3 +265,8 @@ if args.meta_file:
         con.execute("DROP TABLE IF EXISTS samples")
     metadata_df = pd.read_table(args.meta_file)
     metadata_df.to_sql("samples", con)
+
+if args.cosmic_user and args.cosmic_pass:
+    r = requests.get(COSMIC_URL, auth=(args.cosmic_user, args.cosmic_pass))
+    cosmic_data = requests.get(r.json()['url'], stream=True)
+
