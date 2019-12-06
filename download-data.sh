@@ -84,5 +84,5 @@ done
 
 # make data directory unwritable in CI
 if [ "$RELEASE" == "testing" ]; then
-  chmod u-wx data
+  chmod -R 0444 data/
 fi
