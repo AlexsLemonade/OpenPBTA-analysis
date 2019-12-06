@@ -58,12 +58,12 @@ cat data/gencode.v27.primary_assembly.annotation.gtf.gz | gunzip - | grep transc
 # Make WGS coding BED file
 bedtools intersect \
   -a data/WGS.hg38.strelka2.unpadded.bed \
-  -b data/WGS.hg38.mutect2.unpadded.bed data/WGS.hg38.lancet.300bp_padded.bed data/gencode.v27.primary_assembly.annotation.bed > scratch/intersect_exon_lancet_strelka_mutect_WGS.bed
+  -b data/WGS.hg38.mutect2.unpadded.bed data/WGS.hg38.lancet.300bp_padded.bed scratch/gencode.v27.primary_assembly.annotation.bed > scratch/intersect_exon_lancet_strelka_mutect_WGS.bed
 
 # Make WXS coding BED file
 bedtools intersect \
   -a data/WXS.hg38.100bp_padded.bed  \
-  -b data/gencode.v27.primary_assembly.annotation.bed >  scratch/intersect_exon_WXS.bed
+  -b scratch/gencode.v27.primary_assembly.annotation.bed >  scratch/intersect_exon_WXS.bed
 
 ######################### Calculate consensus TMB ##############################
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
