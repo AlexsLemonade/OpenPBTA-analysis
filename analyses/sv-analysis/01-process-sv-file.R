@@ -57,7 +57,7 @@ for (i in bioid) {
   rownames(bnds_file) <- unique(reads_id_bnd)
   if (nrow(bnds)  != 0) {
     for (j in 1:nrow(bnds)) {
-      id_name <- substr(bnds[j, 7], start = 1, stop = nchar(as.character(bnds[j, 7])) - 2)
+      id_name <- substr(bnds[j, "ID"], start = 1, stop = nchar(as.character(bnds[j, "ID"])) - 2)
       number  <-  as.character(as.numeric(substr(bnds[j, 7], start = nchar(as.character(bnds[j, 7])), stop = nchar(as.character(bnds[j, 7])))) + 1)
       bnds_file[id_name, paste("chrom", number, sep = "")] <- as.character(bnds$SV.chrom[j])
       bnds_file[id_name, paste("pos", number, sep = "")] <- as.character(bnds$SV.start[j])
@@ -198,4 +198,3 @@ for (i in bioid) {
   write.table(sv_merge,file = outputname_sv_merge,sep = "\t",quote = FALSE,row.names = TRUE,col.names = NA)
   write.table(sv_merge_withoutY_withoutM,file = outputname_sv_merge_withoutY_withoutM,sep = "\t",quote = FALSE,row.names = TRUE,col.names = NA)
 }
-
