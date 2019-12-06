@@ -45,6 +45,21 @@ sv_analysis <- read_tsv(file.path(root_dir, "data/pbta-sv-manta.tsv.gz")) %>%
   filter(Kids.First.Biospecimen.ID.Tumor %in% bioid)
 
 
+## ===================== Functions =====================
+extract_len <- function(info_field, len_string) {
+  # info_field: an entry of the INFO column
+  # len_string: ID of the INFO key that will be used to extract the length from the correct field
+  len_string <-
+    toupper(len_string)  #  forces len_string to uppercase letters
+  if (str_detect(as.character(info_field), paste0(len_string, "="))) {
+    return(gsub((";.*"), "", gsub((paste0(".*", len_string, "=")), "", as.character(info_field)
+    )))
+  } else {
+    return(0)
+  }
+}
+
+
 ## ===================== Generate SV File In A Shatterseek-read Format =====================
 for (i in bioid) {
   sv_individual = sv_analysis[sv_analysis$Kids.First.Biospecimen.ID.Tumor  == i,]
@@ -61,18 +76,8 @@ for (i in bioid) {
       bnds_file[id_name, paste0("chrom", number)] <- as.character(bnds$SV.chrom[j])
       bnds_file[id_name, paste("pos", number, sep = "")] <- as.character(bnds$SV.start[j])
       bnds_file[id_name, paste("alt", number, sep = "")] <- as.character(bnds$ALT[j])
-      if (str_detect(as.character(bnds$INFO[j]),"HOMLEN=")) {
-        bnds_file[id_name, "homolen"] <- gsub((".*HOMLEN="),"",as.character(bnds$INFO[j]))
-        bnds_file[id_name, "homolen"] <- gsub((";.*"),"",bnds_file[id_name, "homolen"])
-      } else {
-        bnds_file[id_name, "homolen"] <- 0
-      }
-      if (str_detect(as.character(bnds$INFO[j]),"SVINSLEN=")) {
-        bnds_file[id_name, "inserlen"] <- gsub((".*SVINSLEN="),"",as.character(bnds$INFO[j]))
-        bnds_file[id_name, "inserlen"] <- gsub((";.*"),"",bnds_file[id_name, "inserlen"])
-      } else {
-        bnds_file[id_name, "inserlen"] <- 0
-      }
+      bnds_file[id_name, "homolen"] <- extract_len(bnds$INFO[j], "HOMLEN")
+      bnds_file[id_name, "inserlen"] <- extract_len(bnds$INFO[j], "SVINSLEN")
       if (substr(bnds_file[id_name, paste("alt", number, sep = "")], start = 1, stop = 1) %in% c("A", "T", "C", "G")) {
         bnds_file[id_name, paste("strand", number, sep = "")] = "+"
       } else {
@@ -95,18 +100,8 @@ for (i in bioid) {
       dups_file[id_name, "pos1"] <- as.character(dups$SV.start[j])
       dups_file[id_name, "pos2"] <- as.character(dups$SV.end[j])
       dups_file[id_name, "alt1"] <- as.character(dups$AnnotSV.ID[j])
-      if (str_detect(as.character(dups$INFO[j]),"HOMLEN=")) {
-        dups_file[id_name, "homolen"] <- gsub((".*HOMLEN="),"",as.character(dups$INFO[j]))
-        dups_file[id_name, "homolen"] <- gsub((";.*"),"",dups_file[id_name, "homolen"])
-      } else {
-        dups_file[id_name, "homolen"] <- 0
-      }
-      if (str_detect(as.character(dups$INFO[j]),"SVINSLEN=")) {
-        dups_file[id_name, "inserlen"] <- gsub((".*SVINSLEN="),"",as.character(dups$INFO[j]))
-        dups_file[id_name, "inserlen"] <- gsub((";.*"),"",dups_file[id_name, "inserlen"])
-      } else {
-        dups_file[id_name, "inserlen"] <- 0
-      }
+      dups_file[id_name, "homolen"] <- extract_len(dups$INFO[j], "HOMLEN")
+      dups_file[id_name, "inserlen"] <- extract_len(dups$INFO[j], "SVINSLEN")
       dups_file[id_name, "strand1"] = "-"
       dups_file[id_name, "strand2"] = "+"
     }
@@ -126,18 +121,8 @@ for (i in bioid) {
       dels_file[id_name, "pos1"] <- as.character(dels$SV.start[j])
       dels_file[id_name, "pos2"] <- as.character(dels$SV.end[j])
       dels_file[id_name, "alt1"] <- as.character(dels$AnnotSV.ID[j])
-      if (str_detect(as.character(dels$INFO[j]),"HOMLEN=")) {
-        dels_file[id_name, "homolen"] <- gsub((".*HOMLEN="),"",as.character(dels$INFO[j]))
-        dels_file[id_name, "homolen"] <- gsub((";.*"),"",dels_file[id_name, "homolen"])
-      } else {
-        dels_file[id_name, "homolen"] <- 0
-      }
-      if (str_detect(as.character(dels$INFO[j]),"SVINSLEN=")) {
-        dels_file[id_name, "inserlen"] <- gsub((".*SVINSLEN="),"",as.character(dels$INFO[j]))
-        dels_file[id_name, "inserlen"] <- gsub((";.*"),"",dels_file[id_name, "inserlen"])
-      } else {
-        dels_file[id_name, "inserlen"] <- 0
-      }
+      dels_file[id_name, "homolen"] <- extract_len(dels$INFO[j], "HOMLEN")
+      dels_file[id_name, "inserlen"] <- extract_len(dels$INFO[j], "SVINSLEN")
       dels_file[id_name, "strand1"] = "+"
       dels_file[id_name, "strand2"] = "-"
     }
@@ -157,18 +142,8 @@ for (i in bioid) {
       invs_file[id_name, "pos1"] <- as.character(invs$SV.start[j])
       invs_file[id_name, "pos2"] <- as.character(invs$SV.end[j])
       invs_file[id_name, "alt1"] <- as.character(invs$AnnotSV.ID[j])
-      if (str_detect(as.character(invs$INFO[j]),"HOMLEN=")) {
-        invs_file[id_name, "homolen"] <- gsub((".*HOMLEN="),"",as.character(invs$INFO[j]))
-        invs_file[id_name, "homolen"] <- gsub((";.*"),"",invs_file[id_name, "homolen"])
-      } else {
-        invs_file[id_name, "homolen"] <- 0
-      }
-      if (str_detect(as.character(invs$INFO[j]),"SVINSLEN=")) {
-        invs_file[id_name, "inserlen"] <- gsub((".*SVINSLEN="),"",as.character(invs$INFO[j]))
-        invs_file[id_name, "inserlen"] <- gsub((";.*"),"",invs_file[id_name, "inserlen"])
-      } else {
-        invs_file[id_name, "inserlen"] <- 0
-      }
+      invs_file[id_name, "homolen"] <- extract_len(invs$INFO[j], "HOMLEN")
+      invs_file[id_name, "inserlen"] <- extract_len(invs$INFO[j], "SVINSLEN")
       if (str_detect(invs$INFO[j],"INV5")) {
         invs_file[id_name, "strand1"] = "+"
         invs_file[id_name, "strand2"] = "+"
