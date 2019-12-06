@@ -41,7 +41,7 @@ bioid <- unique(independent_specimen_list$Kids_First_Biospecimen_ID)
 
 
 ## ===================== Load SV File =====================
-sv_file <- read_tsv("data/pbta-sv-manta.tsv.gz")
+sv_file <- read_tsv(file.path(root_dir, "data/pbta-sv-manta.tsv.gz"))
 # choose independent specimens
 sv_analysis <-  sv_file[sv_file$Kids.First.Biospecimen.ID.Tumor %in% bioid,]
 
@@ -198,5 +198,4 @@ for (i in bioid) {
   write.table(sv_merge,file = outputname_sv_merge,sep = "\t",quote = FALSE,row.names = TRUE,col.names = NA)
   write.table(sv_merge_withoutY_withoutM,file = outputname_sv_merge_withoutY_withoutM,sep = "\t",quote = FALSE,row.names = TRUE,col.names = NA)
 }
-
 
