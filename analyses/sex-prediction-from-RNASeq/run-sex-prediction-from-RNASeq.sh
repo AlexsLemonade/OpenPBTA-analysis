@@ -50,7 +50,17 @@ TEST_TARGETS_FILE_NAME=${PROCESSED}/${FILENAME_LEAD}_${SEED}_test_targets.tsv
 # output file for script 01
 FULL_TARGETS_FILE_NAME=${PROCESSED}/${FILENAME_LEAD}_${SEED}_full_targets.tsv
 
-Rscript --vanilla 01-clean_split_data.R --expression ../../data/pbta-gene-expression-kallisto.stranded.rds --metadata ../../data/pbta-histologies.tsv --output_directory $PROCESSED --train_expression_file_name $TRAIN_EXPRESSION_FILE_NAME --test_expression_file_name $TEST_EXPRESSION_FILE_NAME --train_targets_file_name $TRAIN_TARGETS_FILE_NAME  --test_targets_file_name $TEST_TARGETS_FILE_NAME --full_targets_file_name $FULL_TARGETS_FILE_NAME --seed $SEED --train_percent $TRAIN_PERCENT
+Rscript --vanilla 01-clean_split_data.R \
+  --expression ../../data/pbta-gene-expression-kallisto.stranded.rds \
+  --metadata ../../data/pbta-histologies.tsv \
+  --output_directory $PROCESSED \
+  --train_expression_file_name $TRAIN_EXPRESSION_FILE_NAME \
+  --test_expression_file_name $TEST_EXPRESSION_FILE_NAME \
+  --train_targets_file_name $TRAIN_TARGETS_FILE_NAME  \
+  --test_targets_file_name $TEST_TARGETS_FILE_NAME \
+  --full_targets_file_name $FULL_TARGETS_FILE_NAME \
+  --seed $SEED \
+  --train_percent $TRAIN_PERCENT
 
 # argument for script 02 processing
 TRAIN_TARGET_COLUMN=reported_gender
@@ -60,7 +70,15 @@ MODEL_OBJECT_FILE_NAME=${MODELS}/${FILENAME_LEAD}_${SEED}_${TRANSCRIPT_TAIL_PERC
 MODEL_TRANSCRIPTS_FILE_NAME=${MODELS}/${FILENAME_LEAD}_${SEED}_${TRANSCRIPT_TAIL_PERCENT}_model_transcripts.RDS
 MODEL_COEFS_FILE_NAME=${MODELS}/${FILENAME_LEAD}_${SEED}_${TRANSCRIPT_TAIL_PERCENT}_model_coefs.tsv
 
-Rscript --vanilla 02-train_elasticnet.R --train_expression_file_name $TRAIN_EXPRESSION_FILE_NAME --train_targets_file_name $TRAIN_TARGETS_FILE_NAME --output_directory $MODELS --model_object_file_name $MODEL_OBJECT_FILE_NAME --model_transcripts_file_name $MODEL_TRANSCRIPTS_FILE_NAME --model_coefs_file_name $MODEL_COEFS_FILE_NAME --train_target_column $TRAIN_TARGET_COLUMN --transcript_tail_percent $TRANSCRIPT_TAIL_PERCENT
+Rscript --vanilla 02-train_elasticnet.R \
+ --train_expression_file_name $TRAIN_EXPRESSION_FILE_NAME \
+ --train_targets_file_name $TRAIN_TARGETS_FILE_NAME \
+ --output_directory $MODELS \
+ --model_object_file_name $MODEL_OBJECT_FILE_NAME \
+ --model_transcripts_file_name $MODEL_TRANSCRIPTS_FILE_NAME \
+ --model_coefs_file_name $MODEL_COEFS_FILE_NAME \
+ --train_target_column $TRAIN_TARGET_COLUMN \
+ --transcript_tail_percent $TRANSCRIPT_TAIL_PERCENT
 
 # output files for script 03 reported_gender predictions
 TEST_TARGET_COLUMN=reported_gender
@@ -72,7 +90,16 @@ CM_SET=${RESULTS_FILENAME_LEAD}_confusion_matrix.RDS
 SUMMARY_FILE=${RESULTS_FILENAME_LEAD}_two_class_summary.RDS
 
 if [ ! $TRAIN_PERCENT == 1 ]; then
-  Rscript --vanilla 03-evaluate_model.R --test_expression_file_name $TEST_EXPRESSION_FILE_NAME --test_targets_file_name $TEST_TARGETS_FILE_NAME --model_object_file_name $MODEL_OBJECT_FILE_NAME --model_transcripts_file_name $MODEL_TRANSCRIPTS_FILE_NAME --output_directory $RESULTS_OUTPUT_DIRECTORY --test_target_column $TEST_TARGET_COLUMN --cm_set_file_name $CM_SET_FILE --cm_file_name $CM_SET --summary_file_name $SUMMARY_FILE
+  Rscript --vanilla 03-evaluate_model.R \
+    --test_expression_file_name $TEST_EXPRESSION_FILE_NAME \
+    --test_targets_file_name $TEST_TARGETS_FILE_NAME \
+    --model_object_file_name $MODEL_OBJECT_FILE_NAME \
+    --model_transcripts_file_name $MODEL_TRANSCRIPTS_FILE_NAME \
+    --output_directory $RESULTS_OUTPUT_DIRECTORY \
+    --test_target_column $TEST_TARGET_COLUMN \
+    --cm_set_file_name $CM_SET_FILE \
+    --cm_file_name $CM_SET \
+    --summary_file_name $SUMMARY_FILE
 fi
 
 # output files for script 03 germline_sex_estimate predictions
@@ -85,7 +112,16 @@ CM_SET=${RESULTS_FILENAME_LEAD}_confusion_matrix.RDS
 SUMMARY_FILE=${RESULTS_FILENAME_LEAD}_two_class_summary.RDS
 
 if [ ! $TRAIN_PERCENT == 1 ]; then
-  Rscript --vanilla 03-evaluate_model.R --test_expression_file_name $TEST_EXPRESSION_FILE_NAME --test_targets_file_name $TEST_TARGETS_FILE_NAME --model_object_file_name $MODEL_OBJECT_FILE_NAME --model_transcripts_file_name $MODEL_TRANSCRIPTS_FILE_NAME --output_directory $RESULTS_OUTPUT_DIRECTORY --test_target_column $TEST_TARGET_COLUMN --cm_set_file_name $CM_SET_FILE --cm_file_name $CM_SET --summary_file_name $SUMMARY_FILE
+  Rscript --vanilla 03-evaluate_model.R \
+  --test_expression_file_name $TEST_EXPRESSION_FILE_NAME \
+  --test_targets_file_name $TEST_TARGETS_FILE_NAME \
+  --model_object_file_name $MODEL_OBJECT_FILE_NAME \
+  --model_transcripts_file_name $MODEL_TRANSCRIPTS_FILE_NAME \
+  --output_directory $RESULTS_OUTPUT_DIRECTORY \
+  --test_target_column $TEST_TARGET_COLUMN \
+  --cm_set_file_name $CM_SET_FILE \
+  --cm_file_name $CM_SET \
+  --summary_file_name $SUMMARY_FILE
 fi
 
 
