@@ -1,208 +1,89 @@
-Kids_First_Biospecimen_ID	Kids_First_Participant_ID	source_text_tumor_descriptor	primary_site	composition	sample.count.per.pt_ID
-BS_HZ707C55	PT_ZZRBX5JT	Recurrence	Other locations NOS	Solid Tissue	3
-BS_PJPGVD62	PT_ZZRBX5JT	Initial CNS Tumor	Ventricles	Solid Tissue	3
-BS_YE1MAQYJ	PT_ZZRBX5JT	Recurrence	Spinal Cord- Lumbar/Thecal Sac	Solid Tissue	3
-BS_2R9TCR03	PT_ZMKMKCFQ	Initial CNS Tumor	Other locations NOS;Suprasellar/Hypothalamic/Pituitary;Ventricles	Solid Tissue	2
-BS_YMAJC22S	PT_ZMKMKCFQ	Progressive	Basal Ganglia;Other locations NOS;Suprasellar/Hypothalamic/Pituitary;Thalamus	Solid Tissue	2
-BS_7WNSZNE3	PT_Z4GS3ZQQ	Recurrence	Frontal Lobe	Solid Tissue	2
-BS_EVCAC3NH	PT_Z4GS3ZQQ	Initial CNS Tumor	Frontal Lobe	Solid Tissue	2
-BS_1KYGSMA7	PT_YGN06RPZ	Progressive	Temporal Lobe	Solid Tissue	2
-BS_X9EGD530	PT_YGN06RPZ	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_EN2VK7NY	PT_Y572BRC1	Progressive	Optic Pathway;Suprasellar/Hypothalamic/Pituitary;Temporal Lobe	Solid Tissue	3
-BS_S4V9E1XJ	PT_Y572BRC1	Progressive	Optic Pathway;Suprasellar/Hypothalamic/Pituitary;Temporal Lobe	Solid Tissue	3
-BS_V0Q1G94N	PT_Y572BRC1	Progressive	Optic Pathway;Suprasellar/Hypothalamic/Pituitary;Temporal Lobe	Solid Tissue	3
-BS_6G6C7VPX	PT_XTVQB9S4	Initial CNS Tumor	Frontal Lobe;Meninges/Dura;Parietal Lobe;Spinal Cord- Cervical;Spinal Cord- Lumbar/Thecal Sac;Spinal Cord- Thoracic;Temporal Lobe;Ventricles	Solid Tissue	2
-BS_74FS6GMW	PT_XTVQB9S4	Progressive	Basal Ganglia;Temporal Lobe	Solid Tissue	2
-BS_KK0JWATQ	PT_XHYBZKCX	Second Malignancy	Other locations NOS	Solid Tissue	2
-BS_Q5WZYWCT	PT_XHYBZKCX	Initial CNS Tumor	Spinal Cord- Cervical;Spinal Cord- Thoracic	Solid Tissue	2
-BS_BB0YW800	PT_XCX9W17B	Progressive	Frontal Lobe;Occipital Lobe;Temporal Lobe	Solid Tissue	2
-BS_QNAQGAV6	PT_XCX9W17B	Initial CNS Tumor	Frontal Lobe;Occipital Lobe;Temporal Lobe	Solid Tissue	2
-BS_81SP2HX4	PT_XA98HG1C	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_W644VEVE	PT_XA98HG1C	Progressive	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_MD3DT41J	PT_WP871F5S	Initial CNS Tumor	Brain Stem-Medulla;Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_ZA9XT151	PT_WP871F5S	Progressive	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_1HQ76V6D	PT_WE1CHTWK	Initial CNS Tumor	Frontal Lobe	Solid Tissue	2
-BS_JGA9BP3A	PT_WE1CHTWK	Initial CNS Tumor	Frontal Lobe	Solid Tissue	2
-BS_478TN841	PT_W6AWJJK7	Initial CNS Tumor	Frontal Lobe	Solid Tissue	2
-BS_E4GC9EXR	PT_W6AWJJK7	Recurrence	Frontal Lobe	Solid Tissue	2
-BS_TCGEZJ5F	PT_W17NV5YG	Initial CNS Tumor	Parietal Lobe	Solid Tissue	2
-BS_V4W81SFC	PT_W17NV5YG	Initial CNS Tumor	Other locations NOS	Solid Tissue	2
-BS_G00FHF3Q	PT_TKWTTRQ7	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_GE2RVZE6	PT_TKWTTRQ7	Progressive	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_C3P5BC92	PT_T2M1338J	Initial CNS Tumor	Suprasellar/Hypothalamic/Pituitary	Solid Tissue	2
-BS_X2QTK3QD	PT_T2M1338J	Initial CNS Tumor	Frontal Lobe	Solid Tissue	2
-BS_28CDASF7	PT_S4YNE17X	Progressive	Spinal Cord- Lumbar/Thecal Sac	Solid Tissue	5
-BS_B7QS4DHK	PT_S4YNE17X	Initial CNS Tumor	Other locations NOS	Solid Tissue	5
-BS_CS66RYDA	PT_S4YNE17X	NA	Spinal Cord- Lumbar/Thecal Sac	Solid Tissue	5
-BS_GR46VD0Q	PT_S4YNE17X	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	5
-BS_VXEFKW5P	PT_S4YNE17X	Initial CNS Tumor	Spinal Cord- Cervical	Solid Tissue	5
-BS_JFR750KD	PT_S2SQJVGK	Progressive	Ventricles	Solid Tissue	2
-BS_S458NMKH	PT_S2SQJVGK	Recurrence	Brain Stem- Midbrain/Tectum;Ventricles	Solid Tissue	2
-BS_MN5XVP5A	PT_RPC00TAJ	Progressive	Thalamus	Solid Tissue	2
-BS_RCCN63K6	PT_RPC00TAJ	Progressive	Thalamus	Solid Tissue	2
-BS_4E1G7E3G	PT_RJ1TJ2KH	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_WWKNJSJ5	PT_RJ1TJ2KH	Progressive	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_PQ6QEVE8	PT_RGX23JFP	Progressive	Parietal Lobe;Temporal Lobe	Solid Tissue	2
-BS_ZZWMD6FA	PT_RGX23JFP	Progressive	Parietal Lobe;Temporal Lobe	Solid Tissue	2
-BS_7S6GNG04	PT_QH9H491G	Recurrence	Other locations NOS	Solid Tissue	2
-BS_E2Z940S4	PT_QH9H491G	Initial CNS Tumor	Optic Pathway	Solid Tissue	2
-BS_7ZV3DPGT	PT_QD6KKKJH	Initial CNS Tumor	Pineal Gland;Spinal Cord- Lumbar/Thecal Sac;Spinal Cord- Thoracic	Solid Tissue	2
-BS_M7QJ8VF0	PT_QD6KKKJH	Initial CNS Tumor	Pineal Gland;Spinal Cord- Lumbar/Thecal Sac;Spinal Cord- Thoracic	Solid Tissue	2
-BS_A7Q8G0Y1	PT_PR4YBBH3	Progressive	Brain Stem- Pons	Solid Tissue	2
-BS_RXN5T5YT	PT_PR4YBBH3	Initial CNS Tumor	Brain Stem- Pons	Solid Tissue	2
-BS_BN986DF6	PT_PFA762TK	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_K2VYFVKZ	PT_PFA762TK	Recurrence	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_4FZS7TX4	PT_NPETR8RY	Initial CNS Tumor	Ventricles	Solid Tissue	2
-BS_53M8PP88	PT_NPETR8RY	Recurrence	Ventricles	Solid Tissue	2
-BS_1N7MQZGR	PT_NK8A49X5	NA	Pons/Brainstem	Solid Tissue	2
-BS_YDEVMD24	PT_NK8A49X5	NA	Pons/Brainstem	Solid Tissue	2
-BS_QHS3V0GP	PT_NESAQHB1	NA	Frontal Lobe;Temporal Lobe	Solid Tissue	2
-BS_QT3NZ2YZ	PT_NESAQHB1	Initial CNS Tumor	Frontal Lobe;Temporal Lobe	Solid Tissue	2
-BS_2KJ2YAZR	PT_N8W26H19	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_9DZ253JY	PT_N8W26H19	Progressive	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_1J2WQ08M	PT_MKDQZ17N	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_QP6MSKRE	PT_MKDQZ17N	Progressive	Brain Stem- Pons;Brain Stem-Medulla;Cerebellum/Posterior Fossa;Spinal Cord- Cervical	Solid Tissue	2
-BS_91VYM11A	PT_MDWPRDBT	Recurrence	Cerebellum/Posterior Fossa;Temporal Lobe;Thalamus	Solid Tissue	4
-BS_H0QWRJE2	PT_MDWPRDBT	Progressive	Cerebellum/Posterior Fossa;Frontal Lobe	Solid Tissue	4
-BS_TJTEF70D	PT_MDWPRDBT	Recurrence	Brain Stem- Pons;Cerebellum/Posterior Fossa;Frontal Lobe;Parietal Lobe	Solid Tissue	4
-BS_TK84K675	PT_MDWPRDBT	Progressive	Cerebellum/Posterior Fossa;Hippocampus;Other locations NOS;Spinal Cord- Thoracic;Temporal Lobe;Thalamus	Solid Tissue	4
-BS_QEYPFYHD	PT_M0AP3Z15	Initial CNS Tumor	Cerebellum/Posterior Fossa;Suprasellar/Hypothalamic/Pituitary	Solid Tissue	2
-BS_Z7PKVY9J	PT_M0AP3Z15	Initial CNS Tumor	Cerebellum/Posterior Fossa;Suprasellar/Hypothalamic/Pituitary	Solid Tissue	2
-BS_21ET39G7	PT_KZ56XHJT	NA	Pons/Brainstem	Solid Tissue	2
-BS_FCDAH728	PT_KZ56XHJT	NA	Pons/Brainstem	Solid Tissue	2
-BS_9DFBHHB5	PT_KMHGNCNR	Recurrence	Cerebellum/Posterior Fossa;Optic Pathway;Other locations NOS;Suprasellar/Hypothalamic/Pituitary;Thalamus	Solid Tissue	2
-BS_T3H5AY8A	PT_KMHGNCNR	Initial CNS Tumor	Optic Pathway;Suprasellar/Hypothalamic/Pituitary	Solid Tissue	2
-BS_ENKG5GF3	PT_KCTZZA3G	Initial CNS Tumor	Spinal Cord- Thoracic	Solid Tissue	2
-BS_TAHV8N04	PT_KCTZZA3G	Initial CNS Tumor	Spinal Cord- Thoracic	Solid Tissue	2
-BS_3Y0QXZQB	PT_K8ZV7APT	Initial CNS Tumor	Other locations NOS	Solid Tissue	4
-BS_893A91ZM	PT_K8ZV7APT	Initial CNS Tumor	Other locations NOS	Solid Tissue	4
-BS_FQX1PRAJ	PT_K8ZV7APT	Progressive	Other locations NOS	Solid Tissue	4
-BS_GDHH6T5A	PT_K8ZV7APT	Initial CNS Tumor	Spinal Cord- Lumbar/Thecal Sac	Solid Tissue	4
-BS_1A6MQ9ZA	PT_JSFBMK5V	Progressive	Frontal Lobe;Suprasellar/Hypothalamic/Pituitary;Thalamus;Ventricles	Solid Tissue	2
-BS_T3DGY9J9	PT_JSFBMK5V	Initial CNS Tumor	Thalamus	Solid Tissue	2
-BS_QSTAVWGE	PT_JP1FDKN9	Recurrence	Spinal Cord- Lumbar/Thecal Sac	Solid Tissue	2
-BS_T1DVKKJB	PT_JP1FDKN9	Initial CNS Tumor	Frontal Lobe	Solid Tissue	2
-BS_D29RPBSZ	PT_JNEV57VK	Progressive	Basal Ganglia;Thalamus	Solid Tissue	2
-BS_VF5XWFXD	PT_JNEV57VK	Initial CNS Tumor	Thalamus	Solid Tissue	2
-BS_B9V8RGTA	PT_J50NZYZF	Second Malignancy	Parietal Lobe	Solid Tissue	2
-BS_PSNBFWQV	PT_J50NZYZF	Second Malignancy	Frontal Lobe;Parietal Lobe	Solid Tissue	2
-BS_49F4RAA4	PT_J06X17XH	Initial CNS Tumor	Parietal Lobe	Solid Tissue	2
-BS_ZHHAM3AN	PT_J06X17XH	Recurrence	Parietal Lobe	Solid Tissue	2
-BS_1021ZGQT	PT_HJMP6PH2	Recurrence	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_XZTV0J8W	PT_HJMP6PH2	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_DBDXCXT5	PT_HFQNKP5X	Progressive	Skull	Solid Tissue	4
-BS_EJ9JKM1C	PT_HFQNKP5X	Recurrence	Other locations NOS;Skull	Solid Tissue	4
-BS_GFM6EA61	PT_HFQNKP5X	Initial CNS Tumor	Skull	Solid Tissue	4
-BS_YB07VF1X	PT_HFQNKP5X	Progressive	Skull	Solid Tissue	4
-BS_HX0S30NE	PT_H45M7M2T	Initial CNS Tumor	Parietal Lobe	Solid Tissue	2
-BS_YB2RXRHT	PT_H45M7M2T	Unavailable	Temporal Lobe	Solid Tissue	2
-BS_V96WVE3Z	PT_H3WWDMW9	Progressive	Ventricles	Solid Tissue	2
-BS_WH5HDE0A	PT_H3WWDMW9	Initial CNS Tumor	Ventricles	Solid Tissue	2
-BS_8GW1TMV2	PT_GR8P8NY5	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_RSRPX3S8	PT_GR8P8NY5	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_2SHWPB5P	PT_FZHGKJ0H	Initial CNS Tumor	Other locations NOS;Spinal Cord- Thoracic	Solid Tissue	2
-BS_JBGZ7HHZ	PT_FZHGKJ0H	Initial CNS Tumor	Other locations NOS;Spinal Cord- Thoracic	Solid Tissue	2
-BS_1QXEC43H	PT_FN4GEEFR	Progressive	Frontal Lobe	Solid Tissue	2
-BS_BPWEFR89	PT_FN4GEEFR	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_J4GQPZS0	PT_EYWDFKA7	Initial CNS Tumor	Spinal Cord- Thoracic	Solid Tissue	2
-BS_TYKJ8G2G	PT_EYWDFKA7	Initial CNS Tumor	Spinal Cord- Thoracic	Solid Tissue	2
-BS_J483EMFP	PT_ESHACWF6	Initial CNS Tumor	Temporal Lobe	Solid Tissue	2
-BS_MV6ASWV9	PT_ESHACWF6	Progressive	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_5CTVXVRX	PT_DW2XRPC9	NA	Parietal Lobe	Solid Tissue	2
-BS_8ZS9F31R	PT_DW2XRPC9	NA	Parietal Lobe	Solid Tissue	2
-BS_2HN96129	PT_DTP4MMRA	Second Malignancy	Spinal Cord- Lumbar/Thecal Sac	Solid Tissue	2
-BS_RR12T74P	PT_DTP4MMRA	Second Malignancy	Spinal Cord- Lumbar/Thecal Sac	Solid Tissue	2
-BS_P0W5VJH4	PT_DH8A0SNQ	Progressive	Suprasellar/Hypothalamic/Pituitary	Solid Tissue	2
-BS_WYG77VVP	PT_DH8A0SNQ	Progressive	Suprasellar/Hypothalamic/Pituitary	Solid Tissue	2
-BS_92VDQ0NE	PT_DFQAH7RS	Recurrence	Temporal Lobe	Solid Tissue	2
-BS_P4NX9MPA	PT_DFQAH7RS	Progressive	Temporal Lobe	Solid Tissue	2
-BS_2EN3X6HB	PT_CSZ9QA1N	Initial CNS Tumor	Brain Stem- Midbrain/Tectum;Cerebellum/Posterior Fossa;Optic Pathway;Suprasellar/Hypothalamic/Pituitary;Temporal Lobe;Thalamus	Solid Tissue	2
-BS_W60RQAKK	PT_CSZ9QA1N	Progressive	Brain Stem- Midbrain/Tectum;Brain Stem- Pons;Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_3H71BH6Q	PT_AWMZ12NP	Progressive	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_S9929Z8B	PT_AWMZ12NP	Progressive	Brain Stem-Medulla	Solid Tissue	2
-BS_23M72ABG	PT_AQWDQW27	Initial CNS Tumor	Temporal Lobe	Solid Tissue	3
-BS_D9GEXXHX	PT_AQWDQW27	Progressive	Temporal Lobe	Solid Tissue	3
-BS_KR4MP5ET	PT_AQWDQW27	Progressive	Temporal Lobe	Solid Tissue	3
-BS_3MS8WVNR	PT_AP658JQV	Initial CNS Tumor	Frontal Lobe;Occipital Lobe;Temporal Lobe	Solid Tissue	2
-BS_8MA5B8Y9	PT_AP658JQV	Progressive	Frontal Lobe;Occipital Lobe;Temporal Lobe	Solid Tissue	2
-BS_FCAKKZ20	PT_9S6WMQ92	Progressive	Cerebellum/Posterior Fossa	Solid Tissue	3
-BS_S6Q7NKA3	PT_9S6WMQ92	Progressive	Cerebellum/Posterior Fossa	Solid Tissue	3
-BS_TW8DQH8J	PT_9S6WMQ92	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	3
-BS_6JHXXVR7	PT_9PJR0ZK7	Recurrence	Other locations NOS	Solid Tissue	2
-BS_KE56MMY0	PT_9PJR0ZK7	Progressive	Spine NOS	Solid Tissue	2
-BS_3V3KE3VT	PT_9DMMZ08D	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_44A3ES23	PT_9DMMZ08D	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_5P1TN10Z	PT_9BZETM0M	Initial CNS Tumor	Frontal Lobe	Solid Tissue	2
-BS_TV5B86ZD	PT_9BZETM0M	Initial CNS Tumor	Frontal Lobe	Solid Tissue	2
-BS_MT15SGJN	PT_99S5BPE3	Initial CNS Tumor	Frontal Lobe;Temporal Lobe	Solid Tissue	3
-BS_NB42PWZN	PT_99S5BPE3	Recurrence	Temporal Lobe	Solid Tissue	3
-BS_Z7890YNR	PT_99S5BPE3	Recurrence	Frontal Lobe;Parietal Lobe;Temporal Lobe	Solid Tissue	3
-BS_6NRTJSYK	PT_98QMQZY7	Initial CNS Tumor	Pineal Gland	Solid Tissue	2
-BS_92MT680S	PT_98QMQZY7	Second Malignancy	Meninges/Dura;Skull	Solid Tissue	2
-BS_NRPG5K4K	PT_962TCBVR	Progressive	Cerebellum/Posterior Fossa	Solid Tissue	3
-BS_VP3C8WZT	PT_962TCBVR	Initial CNS Tumor	Ventricles	Solid Tissue	3
-BS_WG203ECV	PT_962TCBVR	Recurrence	Cerebellum/Posterior Fossa	Solid Tissue	3
-BS_3F4FQJMR	PT_8RB7TPS2	Initial CNS Tumor	Temporal Lobe	Solid Tissue	2
-BS_HC44ZA0V	PT_8RB7TPS2	Initial CNS Tumor	Temporal Lobe	Solid Tissue	2
-BS_P0QF87WC	PT_8GN3TQRM	Progressive	Parietal Lobe;Temporal Lobe	Solid Tissue	3
-BS_WAXJY4XQ	PT_8GN3TQRM	Recurrence	Parietal Lobe	Solid Tissue	3
-BS_WJ9H4NZZ	PT_8GN3TQRM	Progressive	Parietal Lobe;Temporal Lobe	Solid Tissue	3
-BS_49FQXT2E	PT_89XRZBSG	Recurrence	Temporal Lobe	Solid Tissue	2
-BS_ZD5HN296	PT_89XRZBSG	Initial CNS Tumor	Temporal Lobe	Solid Tissue	2
-BS_CHDGRYHJ	PT_82MX6J77	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_JAEM78XS	PT_82MX6J77	Second Malignancy	Frontal Lobe	Solid Tissue	2
-BS_QW60M0FE	PT_7M2PGCBV	Initial CNS Tumor	Meninges/Dura	Solid Tissue	2
-BS_Y3G1X98S	PT_7M2PGCBV	Recurrence	Meninges/Dura	Solid Tissue	2
-BS_1TPWFSK6	PT_7JQ24F35	Unavailable	Ventricles	Solid Tissue	3
-BS_R634WKN7	PT_7JQ24F35	Unavailable	Basal Ganglia;Ventricles	Solid Tissue	3
-BS_ZH1FBX50	PT_7JQ24F35	Unavailable	Frontal Lobe	Solid Tissue	3
-BS_1D6PZNKN	PT_7DTGJYA7	Progressive	Brain Stem- Pons;Brain Stem-Medulla;Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_30VC3R2Q	PT_7DTGJYA7	Initial CNS Tumor	Brain Stem- Pons	Solid Tissue	2
-BS_6VPKXXMR	PT_6PP78VNE	Recurrence	Frontal Lobe	Solid Tissue	2
-BS_M85CXHDV	PT_6PP78VNE	Recurrence	Frontal Lobe	Solid Tissue	2
-BS_NPQJ20KX	PT_6MWPJ96F	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_VR7FR1NE	PT_6MWPJ96F	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_3BDAG9YN	PT_62VNQ8C4	Progressive	Cerebellum/Posterior Fossa;Spinal Cord- Cervical	Solid Tissue	2
-BS_8T7DZV2F	PT_62VNQ8C4	Initial CNS Tumor	Cerebellum/Posterior Fossa;Spinal Cord- Cervical	Solid Tissue	2
-BS_NNPEC7W1	PT_59D00MBQ	Progressive	Thalamus	Solid Tissue	3
-BS_TM9MH0RP	PT_59D00MBQ	Initial CNS Tumor	Thalamus	Solid Tissue	3
-BS_ZVWE73JZ	PT_59D00MBQ	Initial CNS Tumor	Thalamus	Solid Tissue	3
-BS_5CMGN56B	PT_4ZSR5DY8	Progressive	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_HA20Y4XY	PT_4ZSR5DY8	Progressive	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_3X9WMZGJ	PT_3VCS1PPF	Initial CNS Tumor	Cerebellum/Posterior Fossa;Spinal Cord- Cervical;Spinal Cord- Lumbar/Thecal Sac;Spinal Cord- Thoracic	Solid Tissue	2
-BS_99B1XRZQ	PT_3VCS1PPF	Recurrence	Occipital Lobe;Parietal Lobe	Solid Tissue	2
-BS_7XRN3CFX	PT_3T3VGWC6	Initial CNS Tumor	Temporal Lobe	Solid Tissue	2
-BS_FJZPQZ2C	PT_3T3VGWC6	Recurrence	Hippocampus	Solid Tissue	2
-BS_MKP2Y41Z	PT_3R0P995B	Progressive	Occipital Lobe;Suprasellar/Hypothalamic/Pituitary	Solid Tissue	2
-BS_RCFQ31XF	PT_3R0P995B	Initial CNS Tumor	Cerebellum/Posterior Fossa;Suprasellar/Hypothalamic/Pituitary	Solid Tissue	2
-BS_983Z6CA6	PT_3KM9W8S8	Progressive	Other locations NOS;Spinal Cord- Lumbar/Thecal Sac;Spinal Cord- Thoracic;Ventricles	Solid Tissue	2
-BS_MVW01FPB	PT_3KM9W8S8	Initial CNS Tumor	Other locations NOS;Spinal Cord- Lumbar/Thecal Sac;Spinal Cord- Thoracic;Temporal Lobe	Solid Tissue	2
-BS_10APZRVT	PT_3D74J8RZ	Progressive	Frontal Lobe	Solid Tissue	2
-BS_53CTGDQG	PT_3D74J8RZ	Progressive	Meninges/Dura	Solid Tissue	2
-BS_G3RJTBZD	PT_3CHB9PK5	Progressive	Frontal Lobe	Solid Tissue	2
-BS_W9N9844Q	PT_3CHB9PK5	Initial CNS Tumor	Frontal Lobe	Solid Tissue	2
-BS_M0QYNVK8	PT_37B5JRP1	Initial CNS Tumor	Thalamus	Solid Tissue	2
-BS_S6S7SK3P	PT_37B5JRP1	Progressive	Basal Ganglia;Brain Stem- Midbrain/Tectum;Brain Stem- Pons;Brain Stem-Medulla;Optic Pathway;Suprasellar/Hypothalamic/Pituitary;Thalamus	Solid Tissue	2
-BS_PK18H7E7	PT_2YT37G8P	Progressive	Suprasellar/Hypothalamic/Pituitary	Solid Tissue	2
-BS_VW85Q4XJ	PT_2YT37G8P	Recurrence	Suprasellar/Hypothalamic/Pituitary	Solid Tissue	2
-BS_CXVGG342	PT_2WVW55DA	Progressive	Parietal Lobe	Solid Tissue	4
-BS_D8N31T39	PT_2WVW55DA	Progressive	Parietal Lobe;Temporal Lobe	Solid Tissue	4
-BS_M7HCF7DW	PT_2WVW55DA	Progressive	Parietal Lobe	Solid Tissue	4
-BS_QAG1RDXN	PT_2WVW55DA	Progressive	Parietal Lobe;Temporal Lobe	Solid Tissue	4
-BS_769BDPDB	PT_2FVTD0WR	Progressive	Optic Pathway;Suprasellar/Hypothalamic/Pituitary	Solid Tissue	2
-BS_YG0A13JH	PT_2FVTD0WR	Initial CNS Tumor	Suprasellar/Hypothalamic/Pituitary;Ventricles	Solid Tissue	2
-BS_6P50QTPP	PT_2ECVKTTQ	Recurrence	Temporal Lobe	Solid Tissue	2
-BS_W3R88RFP	PT_2ECVKTTQ	Initial CNS Tumor	Temporal Lobe	Solid Tissue	2
-BS_2W3NC4K1	PT_2E552BAR	Initial CNS Tumor	Other locations NOS	Solid Tissue	2
-BS_RQSKD7PN	PT_2E552BAR	Initial CNS Tumor	Other locations NOS	Solid Tissue	2
-BS_9G69F50J	PT_25Z2NX27	Initial CNS Tumor	Skull	Solid Tissue	2
-BS_QZFEB94Q	PT_25Z2NX27	Progressive	Other locations NOS	Solid Tissue	2
-BS_23W9EPFE	PT_1ZAWNGWT	Initial CNS Tumor	Frontal Lobe	Solid Tissue	2
-BS_4GTESTSE	PT_1ZAWNGWT	Recurrence	Frontal Lobe	Solid Tissue	2
-BS_E0N3PTPN	PT_1H2REHT2	Progressive	Basal Ganglia;Thalamus	Solid Tissue	3
-BS_QWTE1CWR	PT_1H2REHT2	Progressive	Basal Ganglia	Solid Tissue	3
-BS_WKESC3XN	PT_1H2REHT2	Progressive	Basal Ganglia;Thalamus	Solid Tissue	3
-BS_1RXZ3BP7	PT_02J5CWN5	Progressive	Suprasellar/Hypothalamic/Pituitary	Solid Tissue	2
-BS_M8WP5T16	PT_02J5CWN5	Initial CNS Tumor	Suprasellar/Hypothalamic/Pituitary	Solid Tissue	2
-BS_FEPRNEXX	PT_00G007DM	Recurrence	Cerebellum/Posterior Fossa	Solid Tissue	2
-BS_QWNBZ9RJ	PT_00G007DM	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	2
+Kids_First_Biospecimen_ID	Kids_First_Participant_ID	source_text_tumor_descriptor	primary_site	composition	broad_histology	sample.count.per.pt_ID
+BS_EN2VK7NY	PT_Y572BRC1	Progressive	Optic Pathway;Suprasellar/Hypothalamic/Pituitary;Temporal Lobe	Solid Tissue	Low-grade astrocytic tumor	3
+BS_S4V9E1XJ	PT_Y572BRC1	Progressive	Optic Pathway;Suprasellar/Hypothalamic/Pituitary;Temporal Lobe	Solid Tissue	Low-grade astrocytic tumor	3
+BS_V0Q1G94N	PT_Y572BRC1	Progressive	Optic Pathway;Suprasellar/Hypothalamic/Pituitary;Temporal Lobe	Solid Tissue	Low-grade astrocytic tumor	3
+BS_1HQ76V6D	PT_WE1CHTWK	Initial CNS Tumor	Frontal Lobe	Solid Tissue	NOS Embryonal tumor	2
+BS_JGA9BP3A	PT_WE1CHTWK	Initial CNS Tumor	Frontal Lobe	Solid Tissue	NOS Embryonal tumor	2
+BS_TCGEZJ5F	PT_W17NV5YG	Initial CNS Tumor	Parietal Lobe	Solid Tissue	Ependymal tumor	2
+BS_V4W81SFC	PT_W17NV5YG	Initial CNS Tumor	Other locations NOS	Solid Tissue	Ependymal tumor	2
+BS_C3P5BC92	PT_T2M1338J	Initial CNS Tumor	Suprasellar/Hypothalamic/Pituitary	Solid Tissue	Tumors of sellar region	2
+BS_X2QTK3QD	PT_T2M1338J	Initial CNS Tumor	Frontal Lobe	Solid Tissue	Meningioma	2
+BS_B7QS4DHK	PT_S4YNE17X	Initial CNS Tumor	Other locations NOS	Solid Tissue	Tumor of cranial and paraspinal nerves	3
+BS_GR46VD0Q	PT_S4YNE17X	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	Low-grade astrocytic tumor	3
+BS_VXEFKW5P	PT_S4YNE17X	Initial CNS Tumor	Spinal Cord- Cervical	Solid Tissue	Tumor of cranial and paraspinal nerves	3
+BS_JFR750KD	PT_S2SQJVGK	Progressive	Ventricles	Solid Tissue	Low-grade astrocytic tumor	2
+BS_S458NMKH	PT_S2SQJVGK	Recurrence	Brain Stem- Midbrain/Tectum;Ventricles	Solid Tissue	Low-grade astrocytic tumor	2
+BS_MN5XVP5A	PT_RPC00TAJ	Progressive	Thalamus	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	2
+BS_RCCN63K6	PT_RPC00TAJ	Progressive	Thalamus	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	2
+BS_PQ6QEVE8	PT_RGX23JFP	Progressive	Parietal Lobe;Temporal Lobe	Solid Tissue	Neuronal and mixed neuronal-glial tumor	2
+BS_ZZWMD6FA	PT_RGX23JFP	Progressive	Parietal Lobe;Temporal Lobe	Solid Tissue	Neuronal and mixed neuronal-glial tumor	2
+BS_7ZV3DPGT	PT_QD6KKKJH	Initial CNS Tumor	Pineal Gland;Spinal Cord- Lumbar/Thecal Sac;Spinal Cord- Thoracic	Solid Tissue	Tumor of pineal region	2
+BS_M7QJ8VF0	PT_QD6KKKJH	Initial CNS Tumor	Pineal Gland;Spinal Cord- Lumbar/Thecal Sac;Spinal Cord- Thoracic	Solid Tissue	Tumor of pineal region	2
+BS_1N7MQZGR	PT_NK8A49X5	NA	Pons/Brainstem	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	2
+BS_YDEVMD24	PT_NK8A49X5	NA	Pons/Brainstem	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	2
+BS_91VYM11A	PT_MDWPRDBT	Recurrence	Cerebellum/Posterior Fossa;Temporal Lobe;Thalamus	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	4
+BS_H0QWRJE2	PT_MDWPRDBT	Progressive	Cerebellum/Posterior Fossa;Frontal Lobe	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	4
+BS_TJTEF70D	PT_MDWPRDBT	Recurrence	Brain Stem- Pons;Cerebellum/Posterior Fossa;Frontal Lobe;Parietal Lobe	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	4
+BS_TK84K675	PT_MDWPRDBT	Progressive	Cerebellum/Posterior Fossa;Hippocampus;Other locations NOS;Spinal Cord- Thoracic;Temporal Lobe;Thalamus	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	4
+BS_QEYPFYHD	PT_M0AP3Z15	Initial CNS Tumor	Cerebellum/Posterior Fossa;Suprasellar/Hypothalamic/Pituitary	Solid Tissue	Embryonal tumor	2
+BS_Z7PKVY9J	PT_M0AP3Z15	Initial CNS Tumor	Cerebellum/Posterior Fossa;Suprasellar/Hypothalamic/Pituitary	Solid Tissue	Embryonal tumor	2
+BS_21ET39G7	PT_KZ56XHJT	NA	Pons/Brainstem	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	2
+BS_FCDAH728	PT_KZ56XHJT	NA	Pons/Brainstem	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	2
+BS_ENKG5GF3	PT_KCTZZA3G	Initial CNS Tumor	Spinal Cord- Thoracic	Solid Tissue	Tumor of cranial and paraspinal nerves	2
+BS_TAHV8N04	PT_KCTZZA3G	Initial CNS Tumor	Spinal Cord- Thoracic	Solid Tissue	Tumor of cranial and paraspinal nerves	2
+BS_3Y0QXZQB	PT_K8ZV7APT	Initial CNS Tumor	Other locations NOS	Solid Tissue	Tumor of cranial and paraspinal nerves	3
+BS_893A91ZM	PT_K8ZV7APT	Initial CNS Tumor	Other locations NOS	Solid Tissue	Tumor of cranial and paraspinal nerves	3
+BS_GDHH6T5A	PT_K8ZV7APT	Initial CNS Tumor	Spinal Cord- Lumbar/Thecal Sac	Solid Tissue	Tumor of cranial and paraspinal nerves	3
+BS_B9V8RGTA	PT_J50NZYZF	Second Malignancy	Parietal Lobe	Solid Tissue	Metastatic secondary tumors	2
+BS_PSNBFWQV	PT_J50NZYZF	Second Malignancy	Frontal Lobe;Parietal Lobe	Solid Tissue	Metastatic secondary tumors	2
+BS_8GW1TMV2	PT_GR8P8NY5	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	Embryonal tumor	2
+BS_RSRPX3S8	PT_GR8P8NY5	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	Embryonal tumor	2
+BS_2SHWPB5P	PT_FZHGKJ0H	Initial CNS Tumor	Other locations NOS;Spinal Cord- Thoracic	Solid Tissue	Embryonal tumor	2
+BS_JBGZ7HHZ	PT_FZHGKJ0H	Initial CNS Tumor	Other locations NOS;Spinal Cord- Thoracic	Solid Tissue	Embryonal tumor	2
+BS_J4GQPZS0	PT_EYWDFKA7	Initial CNS Tumor	Spinal Cord- Thoracic	Solid Tissue	Tumor of cranial and paraspinal nerves	2
+BS_TYKJ8G2G	PT_EYWDFKA7	Initial CNS Tumor	Spinal Cord- Thoracic	Solid Tissue	Tumor of cranial and paraspinal nerves	2
+BS_5CTVXVRX	PT_DW2XRPC9	NA	Parietal Lobe	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	2
+BS_8ZS9F31R	PT_DW2XRPC9	NA	Parietal Lobe	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	2
+BS_2HN96129	PT_DTP4MMRA	Second Malignancy	Spinal Cord- Lumbar/Thecal Sac	Solid Tissue	Tumor of cranial and paraspinal nerves	2
+BS_RR12T74P	PT_DTP4MMRA	Second Malignancy	Spinal Cord- Lumbar/Thecal Sac	Solid Tissue	Tumor of cranial and paraspinal nerves	2
+BS_P0W5VJH4	PT_DH8A0SNQ	Progressive	Suprasellar/Hypothalamic/Pituitary	Solid Tissue	Germ cell tumor	2
+BS_WYG77VVP	PT_DH8A0SNQ	Progressive	Suprasellar/Hypothalamic/Pituitary	Solid Tissue	Germ cell tumor	2
+BS_92VDQ0NE	PT_DFQAH7RS	Recurrence	Temporal Lobe	Solid Tissue	Neuronal and mixed neuronal-glial tumor	2
+BS_P4NX9MPA	PT_DFQAH7RS	Progressive	Temporal Lobe	Solid Tissue	Neuronal and mixed neuronal-glial tumor	2
+BS_3H71BH6Q	PT_AWMZ12NP	Progressive	Cerebellum/Posterior Fossa	Solid Tissue	Neuronal and mixed neuronal-glial tumor	2
+BS_S9929Z8B	PT_AWMZ12NP	Progressive	Brain Stem-Medulla	Solid Tissue	Neuronal and mixed neuronal-glial tumor	2
+BS_6JHXXVR7	PT_9PJR0ZK7	Recurrence	Other locations NOS	Solid Tissue	Tumor of cranial and paraspinal nerves	2
+BS_KE56MMY0	PT_9PJR0ZK7	Progressive	Spine NOS	Solid Tissue	Tumor of cranial and paraspinal nerves	2
+BS_3V3KE3VT	PT_9DMMZ08D	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	Embryonal tumor	2
+BS_44A3ES23	PT_9DMMZ08D	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	Embryonal tumor	2
+BS_5P1TN10Z	PT_9BZETM0M	Initial CNS Tumor	Frontal Lobe	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	2
+BS_TV5B86ZD	PT_9BZETM0M	Initial CNS Tumor	Frontal Lobe	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	2
+BS_3F4FQJMR	PT_8RB7TPS2	Initial CNS Tumor	Temporal Lobe	Solid Tissue	Ependymal tumor	2
+BS_HC44ZA0V	PT_8RB7TPS2	Initial CNS Tumor	Temporal Lobe	Solid Tissue	Ependymal tumor	2
+BS_P0QF87WC	PT_8GN3TQRM	Progressive	Parietal Lobe;Temporal Lobe	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	3
+BS_WAXJY4XQ	PT_8GN3TQRM	Recurrence	Parietal Lobe	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	3
+BS_WJ9H4NZZ	PT_8GN3TQRM	Progressive	Parietal Lobe;Temporal Lobe	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	3
+BS_1TPWFSK6	PT_7JQ24F35	Unavailable	Ventricles	Solid Tissue	Low-grade astrocytic tumor	3
+BS_R634WKN7	PT_7JQ24F35	Unavailable	Basal Ganglia;Ventricles	Solid Tissue	Low-grade astrocytic tumor	3
+BS_ZH1FBX50	PT_7JQ24F35	Unavailable	Frontal Lobe	Solid Tissue	Benign tumor	3
+BS_6VPKXXMR	PT_6PP78VNE	Recurrence	Frontal Lobe	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	2
+BS_M85CXHDV	PT_6PP78VNE	Recurrence	Frontal Lobe	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	2
+BS_NPQJ20KX	PT_6MWPJ96F	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	Low-grade astrocytic tumor	2
+BS_VR7FR1NE	PT_6MWPJ96F	Initial CNS Tumor	Cerebellum/Posterior Fossa	Solid Tissue	Low-grade astrocytic tumor	2
+BS_TM9MH0RP	PT_59D00MBQ	Initial CNS Tumor	Thalamus	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	2
+BS_ZVWE73JZ	PT_59D00MBQ	Initial CNS Tumor	Thalamus	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	2
+BS_5CMGN56B	PT_4ZSR5DY8	Progressive	Cerebellum/Posterior Fossa	Solid Tissue	Low-grade astrocytic tumor	2
+BS_HA20Y4XY	PT_4ZSR5DY8	Progressive	Cerebellum/Posterior Fossa	Solid Tissue	Low-grade astrocytic tumor	2
+BS_10APZRVT	PT_3D74J8RZ	Progressive	Frontal Lobe	Solid Tissue	Meningioma	2
+BS_53CTGDQG	PT_3D74J8RZ	Progressive	Meninges/Dura	Solid Tissue	Meningioma	2
+BS_PK18H7E7	PT_2YT37G8P	Progressive	Suprasellar/Hypothalamic/Pituitary	Solid Tissue	Low-grade astrocytic tumor	2
+BS_VW85Q4XJ	PT_2YT37G8P	Recurrence	Suprasellar/Hypothalamic/Pituitary	Solid Tissue	Low-grade astrocytic tumor	2
+BS_CXVGG342	PT_2WVW55DA	Progressive	Parietal Lobe	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	4
+BS_D8N31T39	PT_2WVW55DA	Progressive	Parietal Lobe;Temporal Lobe	Solid Tissue	Low-grade astrocytic tumor	4
+BS_M7HCF7DW	PT_2WVW55DA	Progressive	Parietal Lobe	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	4
+BS_QAG1RDXN	PT_2WVW55DA	Progressive	Parietal Lobe;Temporal Lobe	Solid Tissue	Low-grade astrocytic tumor	4
+BS_2W3NC4K1	PT_2E552BAR	Initial CNS Tumor	Other locations NOS	Solid Tissue	Tumor of cranial and paraspinal nerves	2
+BS_RQSKD7PN	PT_2E552BAR	Initial CNS Tumor	Other locations NOS	Solid Tissue	Tumor of cranial and paraspinal nerves	2
+BS_E0N3PTPN	PT_1H2REHT2	Progressive	Basal Ganglia;Thalamus	Solid Tissue	Low-grade astrocytic tumor	3
+BS_QWTE1CWR	PT_1H2REHT2	Progressive	Basal Ganglia	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	3
+BS_WKESC3XN	PT_1H2REHT2	Progressive	Basal Ganglia;Thalamus	Solid Tissue	Diffuse astrocytic and oligodendroglial tumor	3
