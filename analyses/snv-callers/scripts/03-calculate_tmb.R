@@ -110,6 +110,7 @@ opt <- parse_args(OptionParser(option_list = option_list))
 # Make everything relative to root path
 opt$consensus <- file.path(root_dir, opt$consensus)
 opt$metadata <- file.path(root_dir, opt$metadata)
+opt$db_file <- file.path(root_dir, opt$db_file)
 opt$all_bed_wgs <- file.path(root_dir, opt$all_bed_wgs)
 opt$all_bed_wxs <- file.path(root_dir, opt$all_bed_wxs)
 opt$coding_bed_wgs <- file.path(root_dir, opt$coding_bed_wgs)
@@ -117,7 +118,7 @@ opt$coding_bed_wxs <- file.path(root_dir, opt$coding_bed_wxs)
 
 ########### Check that the files we need are in the paths specified ############
 needed_files <- c(
-  opt$consensus, opt$metadata, opt$all_bed_wgs, opt$all_bed_wxs, 
+  opt$consensus, opt$metadata, opt$db_file, opt$all_bed_wgs, opt$all_bed_wxs, 
   opt$coding_bed_wgs, opt$coding_bed_wxs
 )
 
