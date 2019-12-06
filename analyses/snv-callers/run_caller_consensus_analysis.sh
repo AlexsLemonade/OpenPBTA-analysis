@@ -49,6 +49,7 @@ python3 analyses/snv-callers/scripts/01-setup_db.py \
 ######################### Calculate consensus TMB ##############################
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --consensus analyses/snv-callers/results/consensus/consensus_snv.maf.tsv \
+  --db_file $dbfile \
   --output analyses/snv-callers/results/consensus \
   --metadata data/pbta-histologies.tsv \
   --bed_wgs data/WGS.hg38.strelka2.unpadded.bed \
