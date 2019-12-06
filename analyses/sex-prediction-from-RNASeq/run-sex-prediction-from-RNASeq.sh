@@ -91,10 +91,10 @@ SUMMARY_FILE=${RESULTS_FILENAME_LEAD}_two_class_summary.RDS
 
 if [ ! $TRAIN_PERCENT == 1 ]; then
   Rscript --vanilla 03-evaluate_model.R \
-    --test_expression_file_name $TEST_EXPRESSION_FILE_NAME \
-    --test_targets_file_name $TEST_TARGETS_FILE_NAME \
-    --model_object_file_name $MODEL_OBJECT_FILE_NAME \
-    --model_transcripts_file_name $MODEL_TRANSCRIPTS_FILE_NAME \
+    --test_expression_file_name ${PROCESSED}/$TEST_EXPRESSION_FILE_NAME \
+    --test_targets_file_name ${PROCESSED}/$TEST_TARGETS_FILE_NAME \
+    --model_object_file_name ${MODELS}/$MODEL_OBJECT_FILE_NAME \
+    --model_transcripts_file_name ${MODELS}/$MODEL_TRANSCRIPTS_FILE_NAME \
     --output_directory $RESULTS_OUTPUT_DIRECTORY \
     --test_target_column $TEST_TARGET_COLUMN \
     --cm_set_file_name $CM_SET_FILE \
@@ -113,10 +113,10 @@ SUMMARY_FILE=${RESULTS_FILENAME_LEAD}_two_class_summary.RDS
 
 if [ ! $TRAIN_PERCENT == 1 ]; then
   Rscript --vanilla 03-evaluate_model.R \
-  --test_expression_file_name $TEST_EXPRESSION_FILE_NAME \
-  --test_targets_file_name $TEST_TARGETS_FILE_NAME \
-  --model_object_file_name $MODEL_OBJECT_FILE_NAME \
-  --model_transcripts_file_name $MODEL_TRANSCRIPTS_FILE_NAME \
+  --test_expression_file_name ${PROCESSED}/$TEST_EXPRESSION_FILE_NAME \
+  --test_targets_file_name ${PROCESSED}/$TEST_TARGETS_FILE_NAME \
+  --model_object_file_name ${MODELS}/$MODEL_OBJECT_FILE_NAME \
+  --model_transcripts_file_name ${MODELS}/$MODEL_TRANSCRIPTS_FILE_NAME \
   --output_directory $RESULTS_OUTPUT_DIRECTORY \
   --test_target_column $TEST_TARGET_COLUMN \
   --cm_set_file_name $CM_SET_FILE \
