@@ -32,6 +32,7 @@ Read in set up script.
 if (!("survminer" %in% installed.packages())) {
   install.packages("survminer")
 }
+library(survminer)
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
@@ -70,28 +71,53 @@ metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
 metadata <- readr::read_tsv(metadata_file)
 ```
 
+Reformat the `OS_days` variable. 
+
+```{r}
+metadata$OS_status <- factor(metadata$OS_status, levels = c("LIVING", "DECEASED"))
+metadata$OS_status_num <- as.numeric(metadata$OS_status)
+```
+
 Kaplan-Meier
 
 ```{r}
-fit <- survminer::survfit(survminer::Surv(OS_days, OS_status) ~ short_histology,
+kap_fit <- survival::survfit(survival::Surv(OS_days, OS_status_num) ~ short_histology,
                data = metadata)
 ```
 
 Cox Regression 
 
 ```{r}
-survminer::coxph(survminer::Surv(time, status) ~ sex, data = lung)
+cox_fit <- survival::coxph(survival::Surv(OS_days, OS_status_num) ~ short_histology,
+                           data = metadata)
+
+tmp <- survival::survfit(cox_fit)
+tmp
 ```
 
 Log-Rank 
 
 ```{r}
-survminer::survdiff(survminer::Surv(time, status) ~ sex, data = lung)
+logrank_fit <- survival::survdiff(survival::Surv(OS_days, OS_status_num) ~ short_histology,
+                                  data = metadata)
+
+tmp <- survival::survfit(logrank_fit)
+
+str(kap_fit)
+```
+
+## Plot the models
+
+```{r}
+GGally::ggsurv(kap_fit)
 ```
 
 ```{r}
-# Visualize with survminer
-survminer::ggsurvplot(fit, data = metadata, risk.table = TRUE)
+GGally::ggsurv(cox_fit)
+```
+
+```{r}
+GGally::ggsurv(logrank_fit)
 ```
 
 ## Session Info
