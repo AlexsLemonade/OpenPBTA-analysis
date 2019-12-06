@@ -179,7 +179,6 @@ for (i in bioid) {
         invs_file[id_name, "SVtype"] <- "t2tINV"
       }
     }
-    invs_file[, "SVtype"] <- "INV"
   }
   
   ## Merge four types SV
