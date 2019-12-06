@@ -14,9 +14,12 @@ dbfile=scratch/testing_snv_db.sqlite
 # Designate output file 
 consensus_file=analyses/snv-callers/results/consensus/consensus_snv.maf.tsv
 
-# Reference file paths
-cosmic=analyses/snv-callers/ref_files/brain_cosmic_variants_coordinates.tsv
-annot_rds=analyses/snv-callers/ref_files/hg38_genomic_region_annotation.rds
+# BED and GTF file paths
+exon_file=scratch/gencode.v27.primary_assembly.annotation.bed
+all_mut_wgs_bed=scratch/intersect_strelka_mutect_WGS.bed
+all_mut_wxs_bed=data/WXS.hg38.100bp_padded.bed
+coding_wgs_bed=scratch/intersect_exon_lancet_strelka_mutect_WGS.bed
+coding_wxs_bed=scratch/intersect_exon_WXS.bed
 
 # Set a default for the VAF filter if none is specified
 vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}
@@ -50,20 +53,24 @@ python3 analyses/snv-callers/scripts/01-setup_db.py \
 # Make All mutations BED file
 bedtools intersect \
   -a data/WGS.hg38.strelka2.unpadded.bed \
-  -b data/WGS.hg38.mutect2.unpadded.bed > scratch/intersect_strelka_mutect_WGS.bed
+  -b data/WGS.hg38.mutect2.unpadded.bed > $all_mut_wgs_bed
 
 # Convert GTF to BED file for use in bedtools
-cat data/gencode.v27.primary_assembly.annotation.gtf.gz | gunzip - | grep transcript_id | grep gene_id | convert2bed --do-not-sort --input=gtf - > scratch/gencode.v27.primary_assembly.annotation.bed
+cat data/gencode.v27.primary_assembly.annotation.gtf.gz | gunzip - | grep transcript_id | grep gene_id | grep exon_id | convert2bed --do-not-sort --input=gtf - > $exon_file
 
 # Make WGS coding BED file
 bedtools intersect \
   -a data/WGS.hg38.strelka2.unpadded.bed \
-  -b data/WGS.hg38.mutect2.unpadded.bed data/WGS.hg38.lancet.300bp_padded.bed scratch/gencode.v27.primary_assembly.annotation.bed > scratch/intersect_exon_lancet_strelka_mutect_WGS.bed
+  -b data/WGS.hg38.mutect2.unpadded.bed \
+  data/WGS.hg38.lancet.300bp_padded.bed \
+  $exon_file \
+  > $coding_wgs_bed
 
 # Make WXS coding BED file
 bedtools intersect \
   -a data/WXS.hg38.100bp_padded.bed  \
-  -b scratch/gencode.v27.primary_assembly.annotation.bed >  scratch/intersect_exon_WXS.bed
+  -b $exon_file 
+  > $coding_wxs_bed
 
 ######################### Calculate consensus TMB ##############################
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
@@ -71,10 +78,10 @@ Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --db_file $dbfile \
   --output analyses/snv-callers/results/consensus \
   --metadata data/pbta-histologies.tsv \
-  --all_bed_wgs scratch/intersect_strelka_mutect_WGS.bed \
-  --all_bed_wxs data/WXS.hg38.100bp_padded.bed \
-  --coding_bed_wgs scratch/intersect_exon_lancet_strelka_mutect_WGS.bed \
-  --coding_bed_wxs scratch/intersect_exon_WXS.bed \
+  --all_bed_wgs $all_mut_wgs_bed \
+  --all_bed_wxs $all_mut_wxs_bed \
+  --coding_bed_wgs $coding_wgs_bed \
+  --coding_bed_wxs $coding_wxs_bed \
   --overwrite
   
 ############################# Comparison Plots #################################
