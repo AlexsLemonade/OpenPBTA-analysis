@@ -41,9 +41,8 @@ bioid <- unique(independent_specimen_list$Kids_First_Biospecimen_ID)
 
 
 ## ===================== Load SV File =====================
-sv_file <- read_tsv(file.path(root_dir, "data/pbta-sv-manta.tsv.gz"))
-# choose independent specimens
-sv_analysis <-  sv_file[sv_file$Kids.First.Biospecimen.ID.Tumor %in% bioid,]
+sv_analysis <- read_tsv(file.path(root_dir, "data/pbta-sv-manta.tsv.gz")) %>%
+  filter(Kids.First.Biospecimen.ID.Tumor %in% bioid)
 
 
 ## ===================== Generate SV File In A Shatterseek-read Format =====================
