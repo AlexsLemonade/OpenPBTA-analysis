@@ -22,16 +22,8 @@ annot_rds=analyses/snv-callers/ref_files/hg38_genomic_region_annotation.rds
 vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}
 
 # Unless told to run the plots, the default is to skip them
-run_plots_nb=${OPENPBTA_PLOTS:-FALSE}
-
-############################ Set Up Reference Files ############################
-# The original COSMIC file is obtained from: https://cancer.sanger.ac.uk/cosmic/download
-# These data are available if you register. The full, unfiltered somatic mutations
-# file CosmicMutantExport.tsv.gz for grch38 is used here.
-Rscript analyses/snv-callers/scripts/00-set_up.R \
-  --annot_rds $annot_rds \
-  --cosmic_og scratch/CosmicMutantExport.tsv.gz \
-  --cosmic_clean $cosmic
+# To run plots, set OPENPBTA_PLOTS to 1 or more
+run_plots_nb=${OPENPBTA_PLOTS:-0}
 
 ################################ Set Up Database ################################
 python3 analyses/snv-callers/scripts/01-setup_db.py \
@@ -57,6 +49,7 @@ python3 analyses/snv-callers/scripts/01-setup_db.py \
 ######################### Calculate consensus TMB ##############################
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --consensus analyses/snv-callers/results/consensus/consensus_snv.maf.tsv \
+  --db_file $dbfile \
   --output analyses/snv-callers/results/consensus \
   --metadata data/pbta-histologies.tsv \
   --bed_wgs data/WGS.hg38.strelka2.unpadded.bed \
@@ -64,7 +57,7 @@ Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --overwrite
   
 ############################# Comparison Plots #################################
-if [$run_plots_nb]
+if [ "$run_plots_nb" -gt "0" ]
 then
  Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots.Rmd', clean = TRUE)"
 fi
