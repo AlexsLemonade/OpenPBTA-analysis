@@ -26,22 +26,36 @@ outputfolder<-opt$outputfolder
 standardFusionCalls <- read_tsv(standardFusionCalls) %>% as.data.frame()
 clinical<-read_tsv(clinicalFile)
 
-# to get tumor samples 
+# to get initial tumor samples 
 clinical_rna<-clinical %>% dplyr::filter(experimental_strategy=="RNA-Seq") %>% 
   # samples 
-  dplyr::select("Kids_First_Biospecimen_ID","Kids_First_Participant_ID","source_text_tumor_descriptor","primary_site","composition") %>% unique() %>% 
+  dplyr::select("Kids_First_Biospecimen_ID","Kids_First_Participant_ID","source_text_tumor_descriptor","primary_site","composition","broad_histology") %>% unique() %>% 
   group_by(Kids_First_Participant_ID) %>%
   # filter cell-lines 
-  dplyr::filter(composition=="Solid Tissue") %>%
+  dplyr::filter(composition=="Solid Tissue",source_text_tumor_descriptor=="Initial CNS Tumor") %>%
   dplyr::mutate(sample.count.per.pt_ID = n()) %>% as.data.frame()
 
+
+#get other patients where initial tumors were not found
+non_initial_tumor_samples<- clinical[-which(clinical$Kids_First_Participant_ID %in% clinical_rna$Kids_First_Participant_ID ),] %>% dplyr::filter(experimental_strategy=="RNA-Seq" ,composition=="Solid Tissue") %>% as.data.frame()
+
+
+clinical_rna<-rbind(clinical_rna ,clinical %>% 
+                      dplyr::filter(Kids_First_Biospecimen_ID %in% non_initial_tumor_samples$Kids_First_Biospecimen_ID) %>% 
+                      # samples 
+                      dplyr::select("Kids_First_Biospecimen_ID","Kids_First_Participant_ID","source_text_tumor_descriptor","primary_site","composition","broad_histology") %>% 
+                      unique() %>% 
+                      group_by(Kids_First_Participant_ID) %>%
+                      dplyr::mutate(sample.count.per.pt_ID = n()) %>% 
+                      as.data.frame() )
+                    
 
 # get samples with multiple tumors to review
 clinical_rna<-clinical_rna[order(clinical_rna$Kids_First_Participant_ID,decreasing = TRUE),]
 write.table(clinical_rna[clinical_rna$sample.count.per.pt_ID>1,],file.path(outputfolder,"multiple_tumor_rnaseq.tsv"),sep="\t",quote = FALSE,row.names = FALSE)
 
 # Putative Driver Fusions annotated with broad_histology
-standardFusionCalls<-standardFusionCalls %>% left_join(clinical,by=c("Sample"="Kids_First_Biospecimen_ID","Kids_First_Participant_ID"))
+standardFusionCalls<-standardFusionCalls %>% left_join(clinical_rna,by=c("Sample"="Kids_First_Biospecimen_ID","Kids_First_Participant_ID")) %>% dplyr::filter(!is.na(broad_histology)) %>% as.data.frame()
 
 #remove fusions found in benign tumors as internal false positive control
 # KCNH1--AL590132.1 and AL590132.1--KCNH1 come up as recurrent in multiple histologies but using the following filter helps remove such fusions.

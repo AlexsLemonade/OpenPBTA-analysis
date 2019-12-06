@@ -14,11 +14,8 @@ GOPC--ROS1	Low-grade astrocytic tumor	2
 FGFR2--SHTN1	Neuronal and mixed neuronal-glial tumor	2
 KANK1--NTRK2	Low-grade astrocytic tumor	2
 MYB--QKI	Low-grade astrocytic tumor	2
-NF1--ACACB	Diffuse astrocytic and oligodendroglial tumor	1
 GNB1L--NF2	NOS Embryonal tumor	1
 AFDN--SMTN	NOS Embryonal tumor	1
-PEX5--SLCO1C1	Diffuse astrocytic and oligodendroglial tumor	1
-SPATS2L--SLC25A12	Diffuse astrocytic and oligodendroglial tumor	1
 SEMA5A--MARCH6	Diffuse astrocytic and oligodendroglial tumor	1
 PTDSS2--SBF2	Diffuse astrocytic and oligodendroglial tumor	1
 NUDT3--CD2AP	Diffuse astrocytic and oligodendroglial tumor	1
@@ -44,8 +41,6 @@ KLHL15--UGT1A5	Diffuse astrocytic and oligodendroglial tumor	1
 KLHL15--UGT1A9	Diffuse astrocytic and oligodendroglial tumor	1
 KLHL15--UGT1A8	Diffuse astrocytic and oligodendroglial tumor	1
 CINP--TDRD9	Diffuse astrocytic and oligodendroglial tumor	1
-RTFDC1--MFSD14B	Embryonal tumor	1
-MFSD14B--RTFDC1	Embryonal tumor	1
 GOLGA4--DCAF1	Diffuse astrocytic and oligodendroglial tumor	1
 AUTS2--CARD11	Diffuse astrocytic and oligodendroglial tumor	1
 DDHD1--WWC1	Diffuse astrocytic and oligodendroglial tumor	1
@@ -57,6 +52,7 @@ DENND5B--KRAS	NOS Embryonal tumor	1
 SLC16A7--KNTC1	NOS Embryonal tumor	1
 MPRIP--DRG2	Diffuse astrocytic and oligodendroglial tumor	1
 BCL11A--ALK	Diffuse astrocytic and oligodendroglial tumor	1
+NF1--ACACB	Diffuse astrocytic and oligodendroglial tumor	1
 LIPA--RGS2	Diffuse astrocytic and oligodendroglial tumor	1
 MAD1L1--PHF2	Diffuse astrocytic and oligodendroglial tumor	1
 NFKBID--ACTN4	Diffuse astrocytic and oligodendroglial tumor	1
@@ -65,20 +61,16 @@ PDCD6--SLC9A3	Diffuse astrocytic and oligodendroglial tumor	1
 OSTM1--QKI	Diffuse astrocytic and oligodendroglial tumor	1
 ZNF704--MRPS28	Diffuse astrocytic and oligodendroglial tumor	1
 ITFG2--ANO2	Diffuse astrocytic and oligodendroglial tumor	1
+PEX5--SLCO1C1	Diffuse astrocytic and oligodendroglial tumor	1
+SPATS2L--SLC25A12	Diffuse astrocytic and oligodendroglial tumor	1
 EHMT1--MAN1B1	Diffuse astrocytic and oligodendroglial tumor	1
 ANTXR1--BRAF	Low-grade astrocytic tumor	1
 BRAF--ANTXR1	Low-grade astrocytic tumor	1
 OPCML--ADGRL1	NOS Embryonal tumor	1
 GNAQ--SETX	Ependymal tumor	1
-ACACB--NF1	Diffuse astrocytic and oligodendroglial tumor	1
-ZSWIM4--AHI1	Diffuse astrocytic and oligodendroglial tumor	1
-ZNF43--ERC1	Diffuse astrocytic and oligodendroglial tumor	1
-HIP1--IGF2BP2	Diffuse astrocytic and oligodendroglial tumor	1
-ROCK1--ATP6V0E1	Diffuse astrocytic and oligodendroglial tumor	1
 EWSR1--PLAGL1	NOS Embryonal tumor	1
 LPA--QKI	NOS Embryonal tumor	1
 MAML2--YAP1	Ependymal tumor	1
-RAB8A--CKM	Embryonal tumor	1
 HTRA1--SH3PXD2A	Tumor of cranial and paraspinal nerves	1
 INTS6--TPT1	Embryonal tumor	1
 HEY1--NCOA2	Mesenchymal non-meningothelial tumor	1
@@ -99,7 +91,6 @@ GTF2B--KIF18B	Tumor of cranial and paraspinal nerves	1
 MARK2--STK33	Low-grade astrocytic tumor	1
 ST13--ROS1	Low-grade astrocytic tumor	1
 BCAS1--RAF1	Low-grade astrocytic tumor	1
-SSPO--DDR1	Diffuse astrocytic and oligodendroglial tumor	1
 MET--PTPRZ1	Diffuse astrocytic and oligodendroglial tumor	1
 TANC1--HTRA1	Tumor of cranial and paraspinal nerves	1
 HTRA1--TANC1	Tumor of cranial and paraspinal nerves	1
@@ -149,8 +140,6 @@ AKAP13--TMBIM6	Diffuse astrocytic and oligodendroglial tumor	1
 PPP4R3B--ZIC5	Meningioma	1
 NF2--PISD	Meningioma	1
 TMEM132E--ETV4	Diffuse astrocytic and oligodendroglial tumor	1
-AL138752.2--CUX1	Embryonal tumor	1
-SHB--CUX1	Embryonal tumor	1
 C11orf95--NCOA1	Ependymal tumor	1
 ADAMTS2--CLK4	Ependymal tumor	1
 UBE3C--EXOC4	Diffuse astrocytic and oligodendroglial tumor	1
@@ -162,13 +151,11 @@ NF2--AC069503.2	Meningioma	1
 PMPCB--CNTNAP2	Meningioma	1
 TFCP2--TMPRSS12	Meningioma	1
 PATJ--PRF1	Meningioma	1
-ASTN2--ANKS6	Diffuse astrocytic and oligodendroglial tumor	1
 FARSA--ERCC2	Diffuse astrocytic and oligodendroglial tumor	1
 TMEM165--CHIC2	Diffuse astrocytic and oligodendroglial tumor	1
 LCORL--SCFD2	Diffuse astrocytic and oligodendroglial tumor	1
 HNRNPA2B1--MET	Diffuse astrocytic and oligodendroglial tumor	1
 MYH9--EIF3D	Embryonal tumor	1
-EPHA4--PGM2	Ependymal tumor	1
 MICALL2--HIPK2	Low-grade astrocytic tumor	1
 PHLPP1--GDAP1	Metastatic secondary tumors	1
 KMT2A--MLLT10	Metastatic secondary tumors	1
@@ -205,7 +192,6 @@ SYTL2--CHKA	Ependymal tumor	1
 PDGFB--LRP1	Neuronal and mixed neuronal-glial tumor	1
 COBL--ZNF852	Tumors of sellar region	1
 CLIP1--ROS1	Low-grade astrocytic tumor	1
-FBXL7--CDH4	Meningioma	1
 ICAM1--QTRT1	Embryonal tumor	1
 DST--USP24	Low-grade astrocytic tumor	1
 QKI--CDC5L	Low-grade astrocytic tumor	1
@@ -224,7 +210,6 @@ SRGAP3--TM4SF18	Neuronal and mixed neuronal-glial tumor	1
 PTPRG--ATP13A4	Neuronal and mixed neuronal-glial tumor	1
 PTPRG--OSBPL10	Neuronal and mixed neuronal-glial tumor	1
 SUMF1--BFSP2	Neuronal and mixed neuronal-glial tumor	1
-GPM6B--SRPX	Embryonal tumor	1
 ROR1--DNAJC6	Embryonal tumor	1
 NCOR2--SCARB1	Tumor of cranial and paraspinal nerves	1
 EED--ADGRB3	Ependymal tumor	1
@@ -232,7 +217,6 @@ ZEB2--ARHGAP15	CNS neuroblastoma	1
 KBTBD11-OT1--ARHGEF10	Ependymal tumor	1
 RELA--MACROD1	Ependymal tumor	1
 ARHGEF10--KBTBD11-OT1	Ependymal tumor	1
-UNC5C--GRIA2	Embryonal tumor	1
 UBE2L3--MET	Diffuse astrocytic and oligodendroglial tumor	1
 KIT--KDR	Diffuse astrocytic and oligodendroglial tumor	1
 MET--UBE2L3	Diffuse astrocytic and oligodendroglial tumor	1
@@ -246,14 +230,12 @@ ZFHX4--NDUFA9	Diffuse astrocytic and oligodendroglial tumor	1
 TAX1BP1--BRAF	Low-grade astrocytic tumor	1
 CAPZA2--BRAF	Low-grade astrocytic tumor	1
 TRIM24--BRAF	Low-grade astrocytic tumor	1
-GRID2--ULK4	Ependymal tumor	1
 WWP1--CCDC25	Embryonal tumor	1
 HOOK3--CHRAC1	Embryonal tumor	1
 AGO2--NRBP2	Embryonal tumor	1
 MSRA--WWP1	Embryonal tumor	1
 C11orf95--MAML2	Ependymal tumor	1
 ZBTB44--TTC28	Ependymal tumor	1
-BTRC--TEX36	Meningioma	1
 ALDH7A1--SMARCC1	Mesenchymal non-meningothelial tumor	1
 AFAP1--NTRK2	Low-grade astrocytic tumor	1
 HMGCR--SH3YL1	NOS Embryonal tumor	1
@@ -301,9 +283,6 @@ ITGA9--CLASP2	Diffuse astrocytic and oligodendroglial tumor	1
 DCHS1--ABTB2	Diffuse astrocytic and oligodendroglial tumor	1
 STIM1--DLG1	Diffuse astrocytic and oligodendroglial tumor	1
 C11orf95--RELA	Low-grade astrocytic tumor	1
-CDCP1--SRGAP1	Embryonal tumor	1
-SRGAP1--CDCP1	Embryonal tumor	1
-ASCC1--CCAR1	Diffuse astrocytic and oligodendroglial tumor	1
 ERC2--RAF1	Low-grade astrocytic tumor	1
 HMGA2--NCOR2	Mesenchymal non-meningothelial tumor	1
 NCOR2--HMGA2	Mesenchymal non-meningothelial tumor	1
@@ -318,7 +297,6 @@ EXOC4--CHCHD3	Diffuse astrocytic and oligodendroglial tumor	1
 RAB6A--SRF	Low-grade astrocytic tumor	1
 ERC1--EPB41	Embryonal tumor	1
 YAP1--FAM118B	Low-grade astrocytic tumor	1
-MNT--PRKDC	Diffuse astrocytic and oligodendroglial tumor	1
 PPP1CB--ALK	Neuronal and mixed neuronal-glial tumor	1
 SPDYA--ALK	Neuronal and mixed neuronal-glial tumor	1
 BRAF--KIAA1549	Neuronal and mixed neuronal-glial tumor	1
@@ -354,11 +332,6 @@ PRKAR1A--PRKCA	Low-grade astrocytic tumor	1
 HELZ2--CDH4	Diffuse astrocytic and oligodendroglial tumor	1
 TRIM24--ROS1	Diffuse astrocytic and oligodendroglial tumor	1
 NTRK2--AFAP1	Low-grade astrocytic tumor	1
-CLSTN2--PCDH9	Embryonal tumor	1
-NPAS3--TTLL11	Embryonal tumor	1
-ASPH--SIAH1	Embryonal tumor	1
-PKN2--BLNK	Diffuse astrocytic and oligodendroglial tumor	1
-BMPR2--FEV	Diffuse astrocytic and oligodendroglial tumor	1
 FKBP4--ERC1	Diffuse astrocytic and oligodendroglial tumor	1
 LRIG3--SOX5	Diffuse astrocytic and oligodendroglial tumor	1
 HACE1--BVES	Embryonal tumor	1
@@ -387,14 +360,6 @@ AC008758.1--PRKACA	Diffuse astrocytic and oligodendroglial tumor	1
 SHB--PSIP1	Low-grade astrocytic tumor	1
 AL138752.2--PSIP1	Low-grade astrocytic tumor	1
 E2F6--PDIA6	Diffuse astrocytic and oligodendroglial tumor	1
-B4GALNT3--CCND2	Embryonal tumor	1
-WNK1--CCDC77	Embryonal tumor	1
-CCND2--B4GALNT3	Embryonal tumor	1
-CCND2--CRACR2A	Embryonal tumor	1
-ERC1--CACNA1C	Embryonal tumor	1
-B4GALNT3--ERC1	Embryonal tumor	1
-CCND2--TSPAN9	Embryonal tumor	1
-CCND2--WNT5B	Embryonal tumor	1
 ASPH--LRBA	Diffuse astrocytic and oligodendroglial tumor	1
 EP300--BCOR	Ependymal tumor	1
 CREB3L2--TSC22D4	Diffuse astrocytic and oligodendroglial tumor	1
@@ -414,11 +379,6 @@ SNRNP70--AXL	Diffuse astrocytic and oligodendroglial tumor	1
 NFATC1--SALL3	Diffuse astrocytic and oligodendroglial tumor	1
 RIOK3--TMEM186	Diffuse astrocytic and oligodendroglial tumor	1
 WWTR1--LHPP	Diffuse astrocytic and oligodendroglial tumor	1
-EHMT1--UNC79	Meningioma	1
-TPM3--PKLR	Meningioma	1
-ZBTB16--FXYD6	Meningioma	1
-RNF216--VPS41	Meningioma	1
-ST6GAL1--ROPN1	Meningioma	1
 KIAA1191--SOX30	NOS Embryonal tumor	1
 GTF2I--BRAF	Neuronal and mixed neuronal-glial tumor	1
 MBP--QKI	Diffuse astrocytic and oligodendroglial tumor	1
@@ -426,7 +386,6 @@ YPEL2--PRKAR1A	Diffuse astrocytic and oligodendroglial tumor	1
 ABR--YWHAE	Diffuse astrocytic and oligodendroglial tumor	1
 DPF3--TLE1	Diffuse astrocytic and oligodendroglial tumor	1
 HNRNPD--LIN54	Diffuse astrocytic and oligodendroglial tumor	1
-MBNL1--BRAF	Mesenchymal non-meningothelial tumor	1
 ABR--ANKS1B	Tumor of cranial and paraspinal nerves	1
 CCDC144A--USP32	NOS Embryonal tumor	1
 TRRAP--NRXN3	Diffuse astrocytic and oligodendroglial tumor	1
