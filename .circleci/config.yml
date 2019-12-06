@@ -15,12 +15,8 @@ jobs:
       - run:
           name: List Data Directory Contents
           command: ./scripts/run_in_ci.sh ls data/testing
-      
-      - run:
-          name: Write md5sum
-          command: ./scripts/run_in_ci.sh cd data && md5sum * > md5sum.txt
- 
-      - run:
+
+       - run:
           name: Sample Distribution Analyses
           command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
 
@@ -32,15 +28,15 @@ jobs:
      
       - run:
           name: Collapse RSEM (polyA RNA-seq)
-          command: ./scripts/run_in_ci.sh Rscript analyses/collapse-rnaseq/01-summarize_matrices.R -i data/pbta-gene-expression-rsem-fpkm.polya.rds -g data/gencode.v27.primary_assembly.annotation.gtf.gz -m analyses/collapse-rnaseq/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds -t analyses/collapse-rnaseq/pbta-gene-expression-rsem-fpkm-collapsed_table.polya.rds
+          command: ./scripts/run_in_ci.sh Rscript analyses/collapse-rnaseq/01-summarize_matrices.R -i data/pbta-gene-expression-rsem-fpkm.polya.rds -g analyses/collapse-rnaseq/gencode.v27.primary_assembly.annotation.gtf.gz -m data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds -t analyses/collapse-rnaseq/pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds
 
       - run:
           name: Collapse RSEM (stranded RNA-seq)
-          command: ./scripts/run_in_ci.sh Rscript analyses/collapse-rnaseq/01-summarize_matrices.R -i data/pbta-gene-expression-rsem-fpkm.stranded.rds -g data/gencode.v27.primary_assembly.annotation.gtf.gz -m analyses/collapse-rnaseq/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds -t analyses/collapse-rnaseq/pbta-gene-expression-rsem-fpkm-collapsed_table.stranded.rds
+          command: ./scripts/run_in_ci.sh Rscript analyses/collapse-rnaseq/01-summarize_matrices.R -i data/pbta-gene-expression-rsem-fpkm.stranded.rds -g analyses/collapse-rnaseq/gencode.v27.primary_assembly.annotation.gtf.gz -m data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds -t analyses/collapse-rnaseq/pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds
 
       - run:
           name: Analyze RNA-seq dropped genes from both polyA and stranded data
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render(input = 'analyses/collapse-rnaseq/02-analyze-drops.Rmd', params = list(polya.annot.table = 'pbta-gene-expression-rsem-fpkm-collapsed_table.polya.rds', stranded.annot.table = 'pbta-gene-expression-rsem-fpkm-collapsed_table.stranded.rds'), clean = TRUE)"
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render(input = 'analyses/collapse-rnaseq/02-analyze-drops.Rmd', params = list(polya.annot.table = 'pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds', stranded.annot.table = 'pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds'), clean = TRUE)"
 
       - run:
           name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded expression
@@ -131,11 +127,14 @@ jobs:
           # name: SNV Caller VAF Cutoff Experiment
           # command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)"
       
-      # Without the subset mutation consensus files, this takes a long time to run
       - run:
           name: Oncoprint plotting
           command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"   
-                
+      
+      - run:
+          name: Check for changed files in data
+          command: cd data && md5sum -c md5sum.txt          
+
 
   deploy:
     machine: 

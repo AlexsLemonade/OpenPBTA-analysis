@@ -81,8 +81,3 @@ for file in "${FILES[@]}"
 do
   ln -sfn $RELEASE/$file data/$file
 done
-
-# make data directory unwritable in CI
-if [ "$RELEASE" == "testing" ]; then
-  chmod -R 0444 data/
-fi
