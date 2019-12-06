@@ -16,7 +16,7 @@ library(readr)
 
 # Command-line arguments for this script identify the input directory where the training and target sets are located,
 # the output directory where the model files will be saved, the file name components necessary to create
-# the required file paths for input and output, along with the threshold percentile for filtering transcripts by median 
+# the required file paths for input and output, along with the threshold percentile for filtering transcripts by median
 # absolute deviation.
 
 #________ Declare command line arguments
@@ -57,7 +57,7 @@ option_list <- list(
     type = "character",
     default = NULL,
     help = "output model tarnscripts file"
-  ),  
+  ),
   optparse::make_option(
     c("-r", "--train_target_column"),
     type = "character",
@@ -71,7 +71,7 @@ option_list <- list(
     help = "Filter out the bottom (1 - transcript_tail_percent) of transcripts from the training set",
     metavar = "double"
   )
-  
+
 )
 
 
@@ -87,7 +87,7 @@ if (!dir.exists(output_directory)) {
 
 #--------
 
-#--------test for the existence of the expected training and target value sets. 
+#--------test for the existence of the expected training and target value sets.
 
 train_set_file_name <- file.path(opt$train_expression_file_name)
 targets_set_file_name <- file.path(opt$train_targets_file_name)
@@ -144,7 +144,7 @@ print(paste("Model build begun at", Sys.time(), sep=" "))
 
 #--------Build elastic net logistic regression model
 
-sex.cva <- cva.glmnet(train_set, targets_set[, opt$train_target_column], standardize=TRUE, 
+sex.cva <- cva.glmnet(train_set, targets_set[, opt$train_target_column], standardize=TRUE,
                       alpha = seq(0, 1, len = 11)^3, family="binomial")
 
 print(paste("Model build complete at", Sys.time(), sep=" "))
@@ -169,22 +169,22 @@ best_fit <- sex.cva$modlist[[best_alpha_index]]
 
 #--------Save best_fit model object and filtered transcript indexes
 
-best_fit_file <- file.path(opt$model_object_file_name)
+best_fit_file <- file.path(output_directory, opt$model_object_file_name)
 saveRDS(best_fit, best_fit_file)
 
-model_transcripts_file <- file.path(opt$model_transcripts_file_name)
+model_transcripts_file <- file.path(output_directory, opt$model_transcripts_file_name)
 saveRDS(filtered_txs, model_transcripts_file)
 
 #--------
 
 #--------Capture and save best fit model's non-zero transcripts and coefficients
 
-#The cva.modlist object corresponds to a given alpha value, and contains results for all the lambda values 
+#The cva.modlist object corresponds to a given alpha value, and contains results for all the lambda values
 #tested for the corresponding alpha value.
 
 #The minimum CVloss lambda value is stored within the modlist object as lambda.min.
 
-#However, in an effort to minimize # of non-zero coefficients, 
+#However, in an effort to minimize # of non-zero coefficients,
 #follow common rule-of-thumb and use best_fit$lambda.1se for prediction
 
 non_zero_features <- which(coef(best_fit, s = best_fit$lambda.1se) != 0)
@@ -194,7 +194,7 @@ non_zero_coef <- coef(best_fit, s=best_fit$lambda.1se)[non_zero_features]
 non_zero_transcripts <- colnames(train_set)[non_zero_features]
 
 
-model_coefs_file <- file.path(opt$model_coefs_file_name)
+model_coefs_file <- file.path(output_directory, opt$model_coefs_file_name)
 
 model_coefs <- data.frame(non_zero_transcripts, non_zero_coef)
 
