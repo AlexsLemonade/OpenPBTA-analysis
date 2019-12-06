@@ -70,7 +70,7 @@ rownamesRDS =robjects.r['rownames']
 
 
 
-# Load PDX gene expression data in RDA format
+# Load gene expression data in rds format
 file = os.path.join('data',inputfile)
 
 name=re.sub('\.rds$', '', inputfile)
