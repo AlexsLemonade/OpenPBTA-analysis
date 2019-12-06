@@ -1,0 +1,85 @@
+# Nhat Duong -- 
+# Updated Dec 5, 2019
+
+## Define the ending file(s) that we want
+ALL_FREEC= expand("../../scratch/interim/{sample}.freec.dup.bed", sample=config["samples"])
+ALL_CNVKIT= expand("../../scratch/interim/{sample}.cnvkit.dup.bed", sample=config["samples"])
+ALL_MANTA= expand("../../scratch/interim/{sample}.manta.dup.bed", sample=config["samples"])
+        
+
+## Define the first rule of the Snakefile. This rule determines what the final file is and which steps to be taken.
+rule all:
+    input:
+        ALL_FREEC + ALL_CNVKIT + ALL_MANTA
+
+
+#########################      FILTER STEP FOR THE 3 CALL METHODS ####################################
+
+
+rule freec_filter:
+    input:
+        ## Define the location of the input file and take the extension from the config file
+        events="../../scratch/freec_freec/{sample}" + str(config["freec_ext"])
+    output:
+        ## Define the output files' names
+        freec_del="../../scratch/interim/{sample}.freec.del.bed",
+        freec_dup="../../scratch/interim/{sample}.freec.dup.bed"
+    params:
+        ## Take parameters from the config file and assign them into params for convinient use in the Shell section
+        SIZE_CUTOFF=str(config["size_cutoff"]),
+        FREEC_PVAL=str(config["freec_pval"]),
+    shell:
+        ## The awk command line is to filter out the raw file. The end result has 7 columns - | chr# | start | end | CNV_length | copy_numbers | pval | CNV type |
+        ## The first awk looks at column 6 to filter out for loss/gain. Then it prints out 6 of the 7 columns above
+        ## The pipe into the second awk filters the CNV length, freec pval, and add in the CNV type
+        ## The last pipe is to sort first digit of chromosome number numerically
+        """awk '$6~/loss/ {{print $2,$3,$4,($4-$3 + 1),$5,$9}}' {input.events} """
+        """ | awk '{{if ($4 > {params.SIZE_CUTOFF} && $6 < {params.FREEC_PVAL}){{print $0,"DEL"}}}}' """
+        """ | sort -k1,1 -k2,2n > {output.freec_del} && """
+        """awk '$6~/gain/ {{print $2,$3,$4,($4-$3 + 1),$5,$9}}' {input.events} """
+        """ | awk '{{if ($4 > {params.SIZE_CUTOFF} && $6 < {params.FREEC_PVAL}){{print $0,"DUP"}}}}' """
+        """ | sort -k1,1 -k2,2n > {output.freec_dup}"""
+
+rule cnvkit_filter:
+    input:
+        ## Define the location of the input file and take the extension from the config file
+        events="../../scratch/cnvkit_cnvkit/{sample}" + str(config["cnvkit_ext"])
+    output:
+        ## Define the output files' names
+        cnvkit_del="../../scratch/interim/{sample}.cnvkit.del.bed",
+        cnvkit_dup="../../scratch/interim/{sample}.cnvkit.dup.bed"
+    params:
+        ## Take parameters from the config file and assign them into params for convinient use in the Shell section
+        SIZE_CUTOFF=str(config["size_cutoff"]),
+    shell:
+        ## The awk command line is to filter out the raw file. The end result has 7 columns - | chr# | start | end | CNV_length | copy_numbers | pval | CNV type |
+        ## The first awk looks at column 7 to filter out for loss/gain (less than 2 == loss, bigger than 2 == gain). Then it prints out 6 of the 7 columns above. Put NA for p-value since the CNVkit results don't have p-vals
+        ## The pipe into the second awk filters the CNV length, and add in the CNV type
+        ## The last pipe is to sort first digit of chromosome number numerically
+        """awk '$7<2 {{print $2,$3,$4,($4-$3 + 1),$7,"NA"}}' {input.events} """
+        """ | awk '{{if ($4 > {params.SIZE_CUTOFF}){{print $0,"DEL"}}}}' """
+        """ | sort -k1,1 -k2,2n > {output.cnvkit_del} && """
+        """awk '$7>2 {{print $2,$3,$4,($4-$3 + 1),$7,"NA"}}' {input.events} """
+        """ | awk '{{if ($4 > {params.SIZE_CUTOFF}){{print $0,"DUP"}}}}' """
+        """ | sort -k1,1 -k2,2n > {output.cnvkit_dup}"""
+
+rule manta_filter:
+    input:
+        ## Define the location of the input file and take the extension from the config file
+        "../../scratch/manta_manta/{sample}" + str(config["manta_ext"])
+    output:
+        ## Define the output files' names
+        manta_del="../../scratch/interim/{sample}.manta.del.bed",
+        manta_dup="../../scratch/interim/{sample}.manta.dup.bed"
+    params:
+        ## Take parameters from the config file and assign them into params for convinient use in the Shell section
+        SIZE_CUTOFF=str(config["size_cutoff"]),
+    shell:
+        ## The awk command line is to filter out the raw file. The end result has 7 columns - | chr# | start | end | CNV_length | copy_numbers | pval | CNV type |
+        ## The first awk looks at column 6 to filter out for loss/gain (DEL/DUP). Then it prints out 6 of the 7 columns above. Put NA for both p-value and copy number since MANTA results don't have these values.
+        ## the first awk also filters out for CNV length
+        ## The last pipe is to sort first digit of chromosome number numerically
+        """awk '$6~/DEL/ {{if ($5 > {params.SIZE_CUTOFF}) {{print$2,$3,$4,$5,"NA","NA",$6}}}}' {input} """
+        """ | sort -k1,1 -k2,2n > {output.manta_del} && """
+        """awk '$6~/DUP/ {{if ($5 > {params.SIZE_CUTOFF}) {{print$2,$3,$4,$5,"NA","NA",$6}}}}' {input} """
+        """ | sort -k1,1 -k2,2n > {output.manta_dup}"""
