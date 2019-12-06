@@ -60,8 +60,7 @@ for (i in bioid) {
       number  <-  as.character(as.numeric(substr(bnds[j, 7], start = nchar(as.character(bnds[j, 7])), stop = nchar(as.character(bnds[j, 7])))) + 1)
       bnds_file[id_name, paste0("chrom", number)] <- as.character(bnds$SV.chrom[j])
       bnds_file[id_name, paste("pos", number, sep = "")] <- as.character(bnds$SV.start[j])
-      bnds_file[id_name, paste("alt", number, sep = "")] <- as.character(bnds$ALT[j])
-      bnds_file[id_name, "SVtype"] <- "TRA"
+      bnds_file[id_name, paste("alt", number, sep = "")] <- as.character(bnds$ALT[j]
       if (str_detect(as.character(bnds$INFO[j]),"HOMLEN=")) {
         bnds_file[id_name, "homolen"] <- gsub((".*HOMLEN="),"",as.character(bnds$INFO[j]))
         bnds_file[id_name, "homolen"] <- gsub((";.*"),"",bnds_file[id_name, "homolen"])
@@ -80,6 +79,7 @@ for (i in bioid) {
         bnds_file[id_name, paste("strand", number, sep = "")] = "-"
       }
     }
+    bnds_file[, "SVtype"] <- "TRA"
   }
   ## TYPE == DUP
   dups <- sv_individual[sv_individual$SV.type == "DUP", ]
@@ -94,7 +94,6 @@ for (i in bioid) {
       dups_file[id_name, "chrom2"] <- as.character(dups$SV.chrom[j])
       dups_file[id_name, "pos1"] <- as.character(dups$SV.start[j])
       dups_file[id_name, "pos2"] <- as.character(dups$SV.end[j])
-      dups_file[id_name, "SVtype"] <- "DUP"
       dups_file[id_name, "alt1"] <- as.character(dups$AnnotSV.ID[j])
       if (str_detect(as.character(dups$INFO[j]),"HOMLEN=")) {
         dups_file[id_name, "homolen"] <- gsub((".*HOMLEN="),"",as.character(dups$INFO[j]))
@@ -111,6 +110,7 @@ for (i in bioid) {
       dups_file[id_name, "strand1"] = "-"
       dups_file[id_name, "strand2"] = "+"
     }
+    dups_file[, "SVtype"] <- "DUP"
   }
   ## TYPE == DEL
   dels <- sv_individual[sv_individual$SV.type == "DEL", ]
@@ -125,7 +125,6 @@ for (i in bioid) {
       dels_file[id_name, "chrom2"] <- as.character(dels$SV.chrom[j])
       dels_file[id_name, "pos1"] <- as.character(dels$SV.start[j])
       dels_file[id_name, "pos2"] <- as.character(dels$SV.end[j])
-      dels_file[id_name, "SVtype"] <- "DEL"
       dels_file[id_name, "alt1"] <- as.character(dels$AnnotSV.ID[j])
       if (str_detect(as.character(dels$INFO[j]),"HOMLEN=")) {
         dels_file[id_name, "homolen"] <- gsub((".*HOMLEN="),"",as.character(dels$INFO[j]))
@@ -142,6 +141,7 @@ for (i in bioid) {
       dels_file[id_name, "strand1"] = "+"
       dels_file[id_name, "strand2"] = "-"
     }
+    dels_file[, "SVtype"] <- "DEL"
   }
   ## TYPE == INV
   invs <- sv_individual[sv_individual$SV.type == "INV", ]
@@ -156,7 +156,6 @@ for (i in bioid) {
       invs_file[id_name, "chrom2"] <- as.character(invs$SV.chrom[j])
       invs_file[id_name, "pos1"] <- as.character(invs$SV.start[j])
       invs_file[id_name, "pos2"] <- as.character(invs$SV.end[j])
-      invs_file[id_name, "SVtype"] <- "INV"
       invs_file[id_name, "alt1"] <- as.character(invs$AnnotSV.ID[j])
       if (str_detect(as.character(invs$INFO[j]),"HOMLEN=")) {
         invs_file[id_name, "homolen"] <- gsub((".*HOMLEN="),"",as.character(invs$INFO[j]))
@@ -180,6 +179,7 @@ for (i in bioid) {
         invs_file[id_name, "SVtype"] <- "t2tINV"
       }
     }
+    invs_file[, "SVtype"] <- "INV"
   }
   
   ## Merge four types SV
