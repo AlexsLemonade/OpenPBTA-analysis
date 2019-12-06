@@ -23,13 +23,15 @@
 # Command line example:
 #
 # Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
-#   --consensus analyses/snv-callers/results/consensus/consensus_snv.maf.tsv \
-#   --db_file $dbfile \
-#   --output analyses/snv-callers/results/consensus \
-#   --metadata data/pbta-histologies.tsv \
-#   --bed_wgs data/WGS.hg38.strelka2.unpadded.bed,data/WGS.hg38.mutect2.unpadded.bed  \
-#   --bed_wxs data/WXS.hg38.100bp_padded.bed \
-#   --overwrite
+# --consensus analyses/snv-callers/results/consensus/consensus_snv.maf.tsv \
+# --db_file scratch/testing_snv_db.sqlite \
+# --output analyses/snv-callers/results/consensus \
+# --metadata data/pbta-histologies.tsv \
+# --all_bed_wgs scratch/intersect_strelka_mutect_WGS.bed \
+# --all_bed_wxs data/WXS.hg38.100bp_padded.bed \
+# --coding_bed_wgs scratch/intersect_exon_lancet_strelka_mutect_WGS.bed \
+# --coding_bed_wxs scratch/intersect_exon_WXS.bed \
+# --overwrite
 
 ################################ Initial Set Up ################################
 # Establish base dir
