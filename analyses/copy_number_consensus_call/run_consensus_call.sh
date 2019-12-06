@@ -19,10 +19,15 @@ python3 src/scripts/merged_to_individual_files.py \
     --freec ../../data/pbta-cnv-controlfreec.tsv.gz \
     --snake ../../scratch/config_snakemake.yaml
 
-ls ../../scratch/
-cat ../../scratch/config_snakemake.yaml
 
 ## Run the Snakemake pipeline
+## This Snakemake is to produce copy number consensus, it:
+## 1) Filters out the CNVs results of the 3 call methods
+## 2) Performs a reciprocal comparison between 2 call methods to find common CNVs agreed upon by those 2 methods
+## 3) Repeats step 2 for all pairs made from the 3 call methods 
+## 4) Finally merges the consensus calls together into one big consensus file
+
+## The snakemake flag options are:
 ## -s : Point to the location of the Snakemake file
 ## --configfile : Point to the location of the config file
 ## -d : Specifying working directory. The "." after -d is to show the working dir is at the current folder
