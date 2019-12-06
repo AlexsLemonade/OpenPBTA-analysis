@@ -39,16 +39,16 @@ TRAIN_PERCENT=0.7
 #--------END USER-SPECIFIED ARGUMENTS
 
 # output files for script 01, input files for script 02
-TRAIN_EXPRESSION_FILE_NAME=${PROCESSED}/${FILENAME_LEAD}_${SEED}_train_expression.RDS
-TRAIN_TARGETS_FILE_NAME=${PROCESSED}/${FILENAME_LEAD}_${SEED}_train_targets.tsv
+TRAIN_EXPRESSION_FILE_NAME=${FILENAME_LEAD}_${SEED}_train_expression.RDS
+TRAIN_TARGETS_FILE_NAME=${FILENAME_LEAD}_${SEED}_train_targets.tsv
 
 
 # output files for script 01, input files for script 03
-TEST_EXPRESSION_FILE_NAME=${PROCESSED}/${FILENAME_LEAD}_${SEED}_test_expression.RDS
-TEST_TARGETS_FILE_NAME=${PROCESSED}/${FILENAME_LEAD}_${SEED}_test_targets.tsv
+TEST_EXPRESSION_FILE_NAME=${FILENAME_LEAD}_${SEED}_test_expression.RDS
+TEST_TARGETS_FILE_NAME=${FILENAME_LEAD}_${SEED}_test_targets.tsv
 
 # output file for script 01
-FULL_TARGETS_FILE_NAME=${PROCESSED}/${FILENAME_LEAD}_${SEED}_full_targets.tsv
+FULL_TARGETS_FILE_NAME=${FILENAME_LEAD}_${SEED}_full_targets.tsv
 
 Rscript --vanilla 01-clean_split_data.R \
   --expression ../../data/pbta-gene-expression-kallisto.stranded.rds \
