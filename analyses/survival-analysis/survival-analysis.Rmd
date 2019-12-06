@@ -90,9 +90,6 @@ Cox Regression
 ```{r}
 cox_fit <- survival::coxph(survival::Surv(OS_days, OS_status_num) ~ short_histology,
                            data = metadata)
-
-tmp <- survival::survfit(cox_fit)
-tmp
 ```
 
 Log-Rank 
@@ -100,10 +97,6 @@ Log-Rank
 ```{r}
 logrank_fit <- survival::survdiff(survival::Surv(OS_days, OS_status_num) ~ short_histology,
                                   data = metadata)
-
-tmp <- survival::survfit(logrank_fit)
-
-str(kap_fit)
 ```
 
 ## Plot the models
