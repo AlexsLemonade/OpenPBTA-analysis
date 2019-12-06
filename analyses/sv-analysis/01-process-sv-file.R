@@ -186,7 +186,7 @@ for (i in bioid) {
   ## Merge four types SV
   sv_merge <- rbind(dups_file, dels_file, invs_file, bnds_file)
   sv_merge <- sv_merge[is.na(sv_merge[, 1]) == FALSE & is.na(sv_merge[, 3]) == FALSE, ]
-  outputname_sv_merge <- paste(i,".vcf",sep = "")
+  outputname_sv_merge <- paste(i,".tsv",sep = "")
   outputname_sv_merge  <- file.path(output_directory,outputname_sv_merge)
   
   ## Shatterseek only accept file with chrom1-22,X, so remove chrY and ChrM
