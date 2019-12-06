@@ -19,19 +19,17 @@ cd "$script_directory" || exit
 Rscript --vanilla -e "rmarkdown::render('00-add-ploidy-cnvkit.Rmd', clean = TRUE)"
 
 # Run annotation step for CNVkit
-# TODO: update once GTF file is included with download
 Rscript --vanilla 01-prepare-cn-file.R \
   --cnv_file ../../scratch/cnvkit_with_status.tsv \
-  --gtf_file ../collapse-rnaseq/gencode.v27.primary_assembly.annotation.gtf.gz \
+  --gtf_file ../../data/gencode.v27.primary_assembly.annotation.gtf.gz \
   --metadata ../../data/pbta-histologies.tsv \
   --filename_lead "cnvkit_annotated_cn" \
   --cnvkit
 
 # Run annotation step for ControlFreeC
-# TODO: update once GTF file is included with download
 Rscript --vanilla 01-prepare-cn-file.R \
   --cnv_file ../../data/pbta-cnv-controlfreec.tsv.gz \
-  --gtf_file ../collapse-rnaseq/gencode.v27.primary_assembly.annotation.gtf.gz \
+  --gtf_file ../../data/gencode.v27.primary_assembly.annotation.gtf.gz  \
   --metadata ../../data/pbta-histologies.tsv \
   --filename_lead "controlfreec_annotated_cn" \
   --xy $XYFLAG \
