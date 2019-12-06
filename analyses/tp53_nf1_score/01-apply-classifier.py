@@ -124,7 +124,7 @@ print('There are a total of {} out of {} genes in common ({}%) between the datas
 
 
 # Which Genes are Missing?
-ras_missing_genes_df
+print(ras_missing_genes_df)
 
 
 
@@ -170,7 +170,7 @@ print('There are a total of {} out of {} genes in common ({}%) between the datas
 
 
 # Which Genes are Missing?
-tp53_missing_genes_df
+print(tp53_missing_genes_df)
 
 
 
@@ -214,7 +214,7 @@ print('There are a total of {} out of {} genes in common ({}%) between the datas
 
 
 # Which Genes are Missing?
-nf1_missing_genes_df
+print(nf1_missing_genes_df)
 
 
 
