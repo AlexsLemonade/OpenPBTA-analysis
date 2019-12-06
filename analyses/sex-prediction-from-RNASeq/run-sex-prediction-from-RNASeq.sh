@@ -71,8 +71,8 @@ MODEL_TRANSCRIPTS_FILE_NAME=${MODELS}/${FILENAME_LEAD}_${SEED}_${TRANSCRIPT_TAIL
 MODEL_COEFS_FILE_NAME=${MODELS}/${FILENAME_LEAD}_${SEED}_${TRANSCRIPT_TAIL_PERCENT}_model_coefs.tsv
 
 Rscript --vanilla 02-train_elasticnet.R \
- --train_expression_file_name $TRAIN_EXPRESSION_FILE_NAME \
- --train_targets_file_name $TRAIN_TARGETS_FILE_NAME \
+ --train_expression_file_name ${PROCESSED}/$TRAIN_EXPRESSION_FILE_NAME \
+ --train_targets_file_name ${PROCESSED}/$TRAIN_TARGETS_FILE_NAME \
  --output_directory $MODELS \
  --model_object_file_name $MODEL_OBJECT_FILE_NAME \
  --model_transcripts_file_name $MODEL_TRANSCRIPTS_FILE_NAME \
