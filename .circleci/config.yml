@@ -18,7 +18,7 @@ jobs:
           
       - run:
           name: Write md5sum 
-          command: cd data
+          command: cd data && md5sum * > md5sum.txt
     
       - run:
           name: Sample Distribution Analyses
