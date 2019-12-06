@@ -151,7 +151,7 @@ for (i in bioid) {
   rownames(invs_file) <- unique(reads_id_inv)
   if (nrow(invs)  != 0) {
     for (j in 1:nrow(invs)) { 
-      id_name <- substr(invs[j, 7], start = 1, stop = nchar(as.character(invs[j, 7])))
+      id_name <- substr(invs[j, "ID"], start = 1, stop = nchar(as.character(invs[j, "ID"])))
       invs_file[id_name, "chrom1"] <- as.character(invs$SV.chrom[j])
       invs_file[id_name, "chrom2"] <- as.character(invs$SV.chrom[j])
       invs_file[id_name, "pos1"] <- as.character(invs$SV.start[j])
