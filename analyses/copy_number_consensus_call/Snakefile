@@ -35,7 +35,9 @@ rule freec_filter:
         ## The first awk looks at column 6 to filter out for loss/gain. Then it prints out 6 of the 7 columns above
         ## The pipe into the second awk filters the CNV length, freec pval, and add in the CNV type
         ## The last pipe is to sort first digit of chromosome number numerically
-        """awk '$6~/loss/ {{print $2,$3,$4,($4-$3 + 1),$5,$9}}' {input.events} | awk '{{if ($4 > {params.SIZE_CUTOFF} && $6 < {params.FREEC_PVAL}){{print $0,"DEL"}}}}' | sort -k1,1 -k2,2n > {output.freec_del} && """
+        """awk '$6~/loss/ {{print $2,$3,$4,($4-$3 + 1),$5,$9}}' {input.events} """
+        """ | awk '{{if ($4 > {params.SIZE_CUTOFF} && $6 < {params.FREEC_PVAL}){{print $0,"DEL"}}}}' """
+        """ | sort -k1,1 -k2,2n > {output.freec_del} && """
         """awk '$6~/gain/ {{print $2,$3,$4,($4-$3 + 1),$5,$9}}' {input.events} | awk '{{if ($4 > {params.SIZE_CUTOFF} && $6 < {params.FREEC_PVAL}){{print $0,"DUP"}}}}' | sort -k1,1 -k2,2n > {output.freec_dup}"""
 
 rule cnvkit_filter:
