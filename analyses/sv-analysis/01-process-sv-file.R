@@ -191,7 +191,7 @@ for (i in bioid) {
   
   ## Shatterseek only accept file with chrom1-22,X, so remove chrY and ChrM
   sv_merge_withoutY_withoutM <- sv_merge[sv_merge[,1] != "Y" & sv_merge[,3] != "Y" & sv_merge[,1] != "M" & sv_merge[,3] != "M",]
-  outputname_sv_merge_withoutY_withoutM <- paste(i,"_withoutYandM.vcf",sep = "")
+  outputname_sv_merge_withoutY_withoutM <- paste(i,"_withoutYandM.tsv",sep = "")
   outputname_sv_merge_withoutY_withoutM <- file.path(output_directory,outputname_sv_merge_withoutY_withoutM)
   
   ## output files
