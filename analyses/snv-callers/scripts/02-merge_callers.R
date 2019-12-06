@@ -21,7 +21,7 @@
 # Command line example:
 #
 # Rscript 01-merge_callers.R \
-# --db_file results \
+# --db_file scratch/testing_snv_db.sqlite \
 # --output results/consensus \
 # --vaf_filter 0.15 \
 # --overwrite
@@ -34,6 +34,9 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # Load library:
 library(optparse)
+
+# Import special functions
+source(file.path(root_dir, "analyses", "snv-callers", "util", "split_mnv.R"))
 
 #--------------------------------Set up options--------------------------------#
 # Set up optparse options
@@ -68,71 +71,6 @@ option_list <- list(
 opt <- parse_args(OptionParser(option_list = option_list))
 
 vaf_filter <- opt$vaf_filter # get out of opt list for sql
-
-############################## Custom Function #################################
-
-#' Split multinucleotide variants into single nucleotide calls
-#'
-#' @param mnv_tbl a table containing MNVs (may be from an sql connection)
-#'
-#' @return a data frame of SNVs derived from the MNVs
-#'   (does not contain any of the original SNVs)
-split_mnv <- function(mnv_tbl) {
-  mnv_df <- mnv_tbl %>%
-    dplyr::filter(Variant_Type %in% c("DNP", "TNP", "ONP")) %>%
-    as.data.frame() %>%
-    # add a temp_id for calculating positions, and for potential later 
-    # reconstitution of MNVs.
-    dplyr::mutate(temp_id = dplyr::row_number()) %>%
-    # lancet adds a base to the start of MNV `Allele` fields, so check for that 
-    # and remove the extra base.
-    dplyr::mutate(
-      Allele = dplyr::case_when(
-        stringr::str_length(Allele) == stringr::str_length(Reference_Allele) ~
-          Allele,
-        stringr::str_length(Allele) == stringr::str_length(Reference_Allele) + 1 ~
-          stringr::str_sub(Allele, 2)
-      )
-    )
-  # separate multibase calls into individual rows
-  # Some tables have the `Norm_Seq_Allele`s, so we will preserve and split those
-  # if necessary
-  if ("Match_Norm_Seq_Allele1" %in% colnames(mnv_df)) {
-    mnv_df <- mnv_df %>%
-      tidyr::separate_rows(
-        Reference_Allele,
-        Tumor_Seq_Allele1,
-        Tumor_Seq_Allele2,
-        Match_Norm_Seq_Allele1,
-        Match_Norm_Seq_Allele2,
-        Allele,
-        sep = "(?<=[A-Za-z])"
-      )
-  } else {
-    mnv_df <- mnv_df %>%
-      tidyr::separate_rows(
-        Reference_Allele,
-        Tumor_Seq_Allele1,
-        Tumor_Seq_Allele2,
-        Allele,
-        sep = "(?<=[A-Za-z])"
-      )
-  }
-  mnv_df <- mnv_df %>%
-    # character separation leaves an extra blank
-    dplyr::filter(
-      Reference_Allele != "",
-      Allele != ""
-    ) %>%
-    dplyr::group_by(temp_id) %>%
-    dplyr::mutate(
-      mnv_pos = dplyr::row_number(),
-      Start_Position = Start_Position + mnv_pos - 1,
-      End_Position = Start_Position
-    )
-  return(mnv_df)
-}
-
 
 ############################## Connect to database #############################
 # Normalize this file path
@@ -217,7 +155,6 @@ consensus_mnv <- strelka %>%
 
 # MNV calls are not currently reconstituted from SNV representation, though this
 # could be done at this point.
-
 
 # Write consensus to output file
 consensus_df %>%
