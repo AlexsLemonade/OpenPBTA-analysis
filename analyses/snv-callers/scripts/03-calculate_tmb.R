@@ -8,15 +8,16 @@
 #
 # --consensus : File path to the MAF-like file.
 # --db_file : Path to sqlite database file made from 01-setup_db.py
-# --gtf_file : File path to human genome GTF file. Used to calculate coding genome size.
 # --metadata : Relative file path to MAF file to be analyzed. Can be .gz compressed.
 #              Assumes file path is given from top directory of 'OpenPBTA-analysis'.
-# --bed_wgs : File path that specifies the caller-specific
-#             BED regions file. If two files are given, separate their file paths with a
-#             comma. The intersection of these ranges will be taken and used as a denominator. 
-#             Assumes from top directory, 'OpenPBTA-analysis'
-# --bed_wxs : File path that specifies the WXS BED regions file. Assumes file path
-#             is given from top directory of 'OpenPBTA-analysis'
+# --all_bed_wgs : File path that specifies the BED regions file to be used for the 
+#                 denominator for all mutations TMB for WGS samples.
+# --all_bed_wxs : File path that specifies the BED regions file to be used for the 
+#                 denominator for all mutations TMB for WXS samples.
+# --coding_bed_wgs : File path that specifies the BED regions file to be used for the 
+#                 denominator for coding only TMB for WGS samples.
+# --coding_bed_wxs : File path that specifies the BED regions file to be used for the 
+#                 denominator for coding only TMB for WXS samples.
 # --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
 #
 # Command line example:
@@ -24,7 +25,6 @@
 # Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
 #   --consensus analyses/snv-callers/results/consensus/consensus_snv.maf.tsv \
 #   --db_file $dbfile \
-#   --gtf_file data/gencode.v27.primary_assembly.annotation.gtf.gz \
 #   --output analyses/snv-callers/results/consensus \
 #   --metadata data/pbta-histologies.tsv \
 #   --bed_wgs data/WGS.hg38.strelka2.unpadded.bed,data/WGS.hg38.mutect2.unpadded.bed  \
@@ -36,7 +36,7 @@
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # Import special functions
-source(file.path(root_dir, "analyses", "snv-callers", "util", "wrangle_functions.R"))
+source(file.path(root_dir, "analyses", "snv-callers", "util", "tmb_functions.R"))
 source(file.path(root_dir, "analyses", "snv-callers", "util", "split_mnv.R"))
 
 # Magrittr pipe
@@ -58,12 +58,6 @@ option_list <- list(
     default = NULL, help = "Path to sqlite database file made from 01-setup_db.py",
     metavar = "character"
   ),
-  optparse::make_option(
-    c("--gtf_file"),
-    type = "character",
-    default = NULL,
-    help = "File path to human genome GTF file. Used to calculate coding genome size."
-  ),
   make_option(
     opt_str = c("-o", "--output"), type = "character",
     default = NULL, help = "Path to folder where you would like the
@@ -77,17 +71,27 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
-    opt_str = "--bed_wgs", type = "character", default = "none",
-    help = "File path that specifies the caller-specific
-    BED regions file. If two files are given, separate their file paths with a
-    comma. The intersection of these ranges will be taken and used as a denominator. 
-    Assumes from top directory, 'OpenPBTA-analysis'",
+    opt_str = "--all_bed_wgs", type = "character", default = "none",
+    help = "File path that specifies the BED regions file to be used for the 
+    denominator for all mutations TMB for WGS samples.",
     metavar = "character"
   ),
   make_option(
-    opt_str = "--bed_wxs", type = "character", default = "none",
-    help = "File path that specifies the WXS BED regions file. Assumes
-              from top directory, 'OpenPBTA-analysis'",
+    opt_str = "--all_bed_wxs", type = "character", default = "none",
+    help = "File path that specifies the BED regions file to be used for the 
+    denominator for all mutations TMB for WXS samples.",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = "--coding_bed_wgs", type = "character", default = "none",
+    help = "File path that specifies the BED regions file to be used for the 
+    denominator for coding only TMB for WXS samples. 'OpenPBTA-analysis'",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = "--coding_bed_wxs", type = "character", default = "none",
+    help = "File path that specifies the BED regions file to be used for the 
+    denominator for coding only TMB for WXS samples. 'OpenPBTA-analysis'",
     metavar = "character"
   ),
   make_option(
@@ -101,20 +105,18 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
-# Split anywhere there are commas for multiple BED files
-opt$bed_wgs <- unlist(strsplit(opt$bed_wgs, ","))
-
 # Make everything relative to root path
 opt$consensus <- file.path(root_dir, opt$consensus)
-opt$db_file <- file.path(root_dir, opt$db_file)
-opt$gtf_file <- file.path(root_dir, opt$gtf_file)
 opt$metadata <- file.path(root_dir, opt$metadata)
-opt$bed_wgs <- file.path(root_dir, opt$bed_wgs)
-opt$bed_wxs <- file.path(root_dir, opt$bed_wxs)
+opt$all_bed_wgs <- file.path(root_dir, opt$all_bed_wgs)
+opt$all_bed_wxs <- file.path(root_dir, opt$all_bed_wxs)
+opt$coding_bed_wgs <- file.path(root_dir, opt$coding_bed_wgs)
+opt$coding_bed_wxs <- file.path(root_dir, opt$coding_bed_wxs)
 
 ########### Check that the files we need are in the paths specified ############
 needed_files <- c(
-  opt$consensus, opt$metadata, opt$bed_wgs, opt$bed_wxs, opt$db_file, opt$gtf_file
+  opt$consensus, opt$metadata, opt$all_bed_wgs, opt$all_bed_wxs, 
+  opt$coding_bed_wgs, opt$coding_bed_wxs
 )
 
 # Get list of which files were found
@@ -139,8 +141,8 @@ if (!dir.exists(opt$output)) {
 }
 
 # Declare output file paths
-tmb_coding_file <- file.path(opt$output, "consensus_snv_tmb_coding_only.tsv")
-tmb_all_file <- file.path(opt$output, "consensus_snv_tmb_all.tsv")
+tmb_coding_file <- file.path(opt$output, "pbta-snv-consensus_snv_tmb_coding_only.tsv")
+tmb_all_file <- file.path(opt$output, "pbta-snv-consensus_snv_tmb_all.tsv")
 
 # Don't bother if both files exist already and overwrite is FALSE
 if (all(file.exists(c(tmb_coding_file, tmb_all_file)), !opt$overwrite)) {
@@ -177,36 +179,6 @@ maf_df <- maf_df %>%
       short_histology
     ))
 
-############################ Set up this exon regions ##########################
-# Declare file path
-annotation_file <- file.path("scratch", "txdb_from_gencode.v27.gtf.db")
-
-# Only remake the file if it doesn't exist
-if (!file.exists(annotation_file)) {
-  message("Creating exon annotation file")
-
-  # Define the annotations for the hg38 genome
-  txdb <- GenomicFeatures::makeTxDbFromGFF(
-    file = opt$gtf_file,
-    format = "gtf"
-  )
-
-  # Write this to file to save time next time
-  AnnotationDbi::saveDb(txdb, annotation_file)
-} else {
-  txdb <- AnnotationDbi::loadDb(annotation_file)
-}
-
-# extract the exons but include ensembl gene identifiers
-tx_exons <- GenomicFeatures::exons(txdb, columns = "gene_id")
-
-# Extract the ranges and sum to get the size
-coding_genome_size <- sum(GenomicRanges::width(
-  GenomicRanges::reduce(
-    tx_exons
-  )
-))
-
 ############################# Calculate TMB ####################################
 
 ############################# Coding TMB file ##################################
@@ -223,17 +195,14 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   if (file.exists(tmb_coding_file)) {
     warning("Overwriting existing 'coding only' TMB file.")
   }
-
+  
   # Print out progress message
   message(paste("Calculating 'coding only' TMB..."))
 
-  # Filter out mutations that are outside of these regions.
-  coding_maf_df <- snv_ranges_filter(maf_df, keep_ranges = tx_exons)
-
   # Calculate coding only TMBs and write to file
-  tmb_coding_df <- calculate_tmb(coding_maf_df,
-    wgs_size = coding_genome_size,
-    wxs_size = coding_genome_size
+  tmb_coding_df <- calculate_tmb(maf_df,
+    bed_wgs = opt$coding_bed_wgs,
+    bed_wxs = opt$coding_bed_wgs
   )
   readr::write_tsv(tmb_coding_df, tmb_coding_file)
 
@@ -255,33 +224,8 @@ if (file.exists(tmb_all_file) && !opt$overwrite) {
   if (file.exists(tmb_coding_file)) {
     warning("Overwriting existing 'all mutations' TMB file.")
   }
-  #### Calculate intersection genome size
-  # Read in BED region files for TMB calculations
-  wgs_beds <- lapply(opt$bed_wgs, function(bed) {
 
-    # Read in BED formatted file
-    bed <- readr::read_tsv(bed, col_names = FALSE)
-
-    # Create the GRanges object from bed
-    GenomicRanges::GRanges(
-      seqnames = bed$X1,
-      ranges = IRanges::IRanges(
-        start = bed$X2,
-        end = bed$X3
-      )
-    )
-  })
-  # Get intersection
-  intersection_ranges <- GenomicRanges::intersect(wgs_beds[[1]], wgs_beds[[2]])
-
-  # Get genome size
-  intersect_genome_size <- sum(GenomicRanges::width(
-    GenomicRanges::reduce(
-      intersection_ranges
-    )
-  ))
-
-  ######## Obtain Mutect Strelka intersection
+  ######## Obtain Mutect Strelka mutations
   # Start up connection
   con <- DBI::dbConnect(RSQLite::SQLite(), opt$db_file)
 
@@ -331,23 +275,10 @@ if (file.exists(tmb_all_file) && !opt$overwrite) {
   # .x is messing up the maf_to_granges function
   colnames(strelka_mutect_maf_df) <- gsub("\\.x$", "", colnames(strelka_mutect_maf_df))
 
-  # For WXS samples, filter out mutations that are outside of these coding regions.
-  filt_wxs_maf_df <- snv_ranges_filter(dplyr::filter(
-    strelka_mutect_maf_df,
-    experimental_strategy == "WXS"
-  ),
-  keep_ranges = tx_exons
-  )
-
-  # Bind the filtered WXS sample rows back to the WGS samples
-  strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
-    dplyr::filter(experimental_strategy == "WGS") %>% # Note that `Panel` samples are not included here. 
-    dplyr::bind_rows(filt_wxs_maf_df)
-
   # Calculate TMBs and write to TMB file
   tmb_all_df <- calculate_tmb(strelka_mutect_maf_df,
-    wgs_size = intersect_genome_size,
-    wxs_size = coding_genome_size
+    bed_wgs = opt$all_bed_wgs,
+    bed_wxs = opt$all_bed_wxs
   )
   readr::write_tsv(tmb_all_df, tmb_all_file)
 

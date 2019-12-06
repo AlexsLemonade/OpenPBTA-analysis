@@ -45,16 +45,36 @@ Rscript analyses/snv-callers/scripts/02-merge_callers.R \
 python3 analyses/snv-callers/scripts/01-setup_db.py \
   --db-file $dbfile \
   --consensus-file $consensus_file
-  
+
+###################### Create intersection BED files ###########################
+# Make All mutations BED file
+bedtools intersect \
+  -a data/WGS.hg38.strelka2.unpadded.bed \
+  -b data/WGS.hg38.mutect2.unpadded.bed > scratch/intersect_strelka_mutect_WGS.bed
+
+# Convert GTF to BED file for use in bedtools
+cat data/gencode.v27.primary_assembly.annotation.gtf.gz | gunzip - | grep transcript_id | grep gene_id | convert2bed --do-not-sort --input=gtf - > scratch/gencode.v27.primary_assembly.annotation.bed
+
+# Make WGS coding BED file
+bedtools intersect \
+  -a data/WGS.hg38.strelka2.unpadded.bed \
+  -b data/WGS.hg38.mutect2.unpadded.bed data/WGS.hg38.lancet.300bp_padded.bed data/gencode.v27.primary_assembly.annotation.bed > scratch/intersect_exon_lancet_strelka_mutect_WGS.bed
+
+# Make WXS coding BED file
+bedtools intersect \
+  -a data/WXS.hg38.100bp_padded.bed  \
+  -b data/gencode.v27.primary_assembly.annotation.bed >  scratch/intersect_exon_WXS.bed
+
 ######################### Calculate consensus TMB ##############################
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --consensus analyses/snv-callers/results/consensus/consensus_snv.maf.tsv \
   --db_file $dbfile \
-  --gtf_file data/gencode.v27.primary_assembly.annotation.gtf.gz \
   --output analyses/snv-callers/results/consensus \
   --metadata data/pbta-histologies.tsv \
-  --bed_wgs data/WGS.hg38.strelka2.unpadded.bed,data/WGS.hg38.mutect2.unpadded.bed  \
-  --bed_wxs data/WXS.hg38.100bp_padded.bed \
+  --all_bed_wgs scratch/intersect_strelka_mutect_WGS.bed \
+  --all_bed_wxs data/WXS.hg38.100bp_padded.bed \
+  --coding_bed_wgs scratch/intersect_exon_lancet_strelka_mutect_WGS.bed \
+  --coding_bed_wxs scratch/intersect_exon_WXS.bed \
   --overwrite
   
 ############################# Comparison Plots #################################
