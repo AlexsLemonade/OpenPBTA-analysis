@@ -57,7 +57,7 @@ for (i in bioid) {
   if (nrow(bnds)  != 0) {
     for (j in 1:nrow(bnds)) {
       id_name <- substr(bnds[j, "ID"], start = 1, stop = nchar(as.character(bnds[j, "ID"])) - 2)
-      number  <-  as.character(as.numeric(substr(bnds[j, 7], start = nchar(as.character(bnds[j, 7])), stop = nchar(as.character(bnds[j, 7])))) + 1)
+      number  <-  str_sub(bnds[j, "ID"], -1)
       bnds_file[id_name, paste0("chrom", number)] <- as.character(bnds$SV.chrom[j])
       bnds_file[id_name, paste("pos", number, sep = "")] <- as.character(bnds$SV.start[j])
       bnds_file[id_name, paste("alt", number, sep = "")] <- as.character(bnds$ALT[j]
