@@ -1,4 +1,4 @@
-# Set up and calculate functions for handling MAF data
+# Functions for calculating tumor mutation burden
 #
 # C. Savonen for ALSF - CCDL
 #
