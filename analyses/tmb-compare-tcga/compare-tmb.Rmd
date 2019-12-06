@@ -35,7 +35,7 @@ if (!("TCGAbiolinks" %in% installed.packages())) {
 `%>%` <- dplyr::`%>%`
 
 # Load in these functions so we can use `maf_to_granges`
-source(file.path("..", "snv-callers", "util", "wrangle_functions.R"))
+source(file.path("..", "snv-callers", "util", "tmb_functions.R"))
 ```
 
 Declare names of input and output directories.
