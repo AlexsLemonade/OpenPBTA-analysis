@@ -3,9 +3,9 @@ title: "Summary of Ensembl identifiers for RNA-seq matrices"
 output: html_notebook
 params: 
   polya.annot.table: 
-    value: 'pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds'
+    value: 'pbta-gene-expression-rsem-fpkm-collapsed_table.polya.rds'
   stranded.annot.table:
-    value: 'pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds'
+    value: 'pbta-gene-expression-rsem-fpkm-collapsed_table.stranded.rds'
 ---
 
 ```{r include = FALSE}
@@ -40,9 +40,9 @@ viewDataTable <- function(dat){
 
 ```{r example_run, echo = FALSE}
 # Example Run:
-# rmarkdown::render(input = '02-analyze-drops.Rmd', 
-#                   params = list(polya.annot.table = '~/Projects/OpenPBTA-analysis-local/data/pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds', 
-#                                 stranded.annot.table = '~/Projects/OpenPBTA-analysis-local/data/pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds'))
+# Rscript -e "rmarkdown::render(input = 'analyses/collapse-rnaseq/02-analyze-drops.Rmd',
+#                   params = list(polya.annot.table = 'pbta-gene-expression-rsem-fpkm-collapsed_table.polya.rds',
+#                                 stranded.annot.table = 'pbta-gene-expression-rsem-fpkm-collapsed_table.stranded.rds'), clean = TRUE)"
 ```
 
 ## {.tabset .tabset-fade}
