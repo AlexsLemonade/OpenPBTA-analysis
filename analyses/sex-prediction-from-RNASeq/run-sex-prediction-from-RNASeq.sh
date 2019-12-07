@@ -39,17 +39,19 @@ TRAIN_PERCENT=0.7
 #--------END USER-SPECIFIED ARGUMENTS
 
 # output files for script 01, input files for script 02
+# the training expression set and the labels
 TRAIN_EXPRESSION_FILE_NAME=${FILENAME_LEAD}_${SEED}_train_expression.RDS
 TRAIN_TARGETS_FILE_NAME=${FILENAME_LEAD}_${SEED}_train_targets.tsv
 
-
 # output files for script 01, input files for script 03
+# the test expression set and the labels
 TEST_EXPRESSION_FILE_NAME=${FILENAME_LEAD}_${SEED}_test_expression.RDS
 TEST_TARGETS_FILE_NAME=${FILENAME_LEAD}_${SEED}_test_targets.tsv
 
 # output file for script 01
 FULL_TARGETS_FILE_NAME=${FILENAME_LEAD}_${SEED}_full_targets.tsv
 
+# the first step is to split the data into a training and test set
 Rscript --vanilla 01-clean_split_data.R \
   --expression ../../data/pbta-gene-expression-kallisto.stranded.rds \
   --metadata ../../data/pbta-histologies.tsv \
@@ -63,13 +65,17 @@ Rscript --vanilla 01-clean_split_data.R \
   --train_percent $TRAIN_PERCENT
 
 # argument for script 02 processing
+# this specifies what column in the target data frame will be used as labels
+# during training
 TRAIN_TARGET_COLUMN=reported_gender
 
-#output files for script 02
+# output files for script 02
+# re: the elasticnet model
 MODEL_OBJECT_FILE_NAME=${FILENAME_LEAD}_${SEED}_${TRANSCRIPT_TAIL_PERCENT}_model_object.RDS
 MODEL_TRANSCRIPTS_FILE_NAME=${FILENAME_LEAD}_${SEED}_${TRANSCRIPT_TAIL_PERCENT}_model_transcripts.RDS
 MODEL_COEFS_FILE_NAME=${FILENAME_LEAD}_${SEED}_${TRANSCRIPT_TAIL_PERCENT}_model_coefs.tsv
 
+# elastic net model training
 Rscript --vanilla 02-train_elasticnet.R \
  --train_expression_file_name ${PROCESSED}/$TRAIN_EXPRESSION_FILE_NAME \
  --train_targets_file_name ${PROCESSED}/$TRAIN_TARGETS_FILE_NAME \
@@ -80,19 +86,25 @@ Rscript --vanilla 02-train_elasticnet.R \
  --train_target_column $TRAIN_TARGET_COLUMN \
  --transcript_tail_percent $TRANSCRIPT_TAIL_PERCENT
 
+# if there is a test set, e.g., the entire dataset was not used for training
 if [ ! $TRAIN_PERCENT == 1 ]; then
 
+  # the same filenames are used for evaluating predictions of reported_gender
+  # and germline_sex_estimate
   RESULTS_FILENAME_LEAD=${FILENAME_LEAD}_${SEED}_${TRANSCRIPT_TAIL_PERCENT}
   CM_SET_FILE=${RESULTS_FILENAME_LEAD}_prediction_details.tsv
   CM_SET=${RESULTS_FILENAME_LEAD}_confusion_matrix.RDS
   SUMMARY_FILE=${RESULTS_FILENAME_LEAD}_two_class_summary.RDS
 
+  # we will evaluate the model's performance on both of these columns
   targetColumns=("reported_gender" "germline_sex_estimate")
   for t in ${targetColumns[@]}; do
 
+    # set up results directory for the column being evaluated
     TEST_TARGET_COLUMN=${t}
     RESULTS_OUTPUT_DIRECTORY=${RESULTS}/${TEST_TARGET_COLUMN}
 
+    # model evaluation
     Rscript --vanilla 03-evaluate_model.R \
       --test_expression_file_name ${PROCESSED}/$TEST_EXPRESSION_FILE_NAME \
       --test_targets_file_name ${PROCESSED}/$TEST_TARGETS_FILE_NAME \
