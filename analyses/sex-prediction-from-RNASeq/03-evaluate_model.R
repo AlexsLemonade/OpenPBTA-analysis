@@ -12,9 +12,9 @@ library(caret)
 # We evaluate an elastic net logistic regression model that was trained in script 02-train_elasticnet.R
 # from a training set and known target values set that was cleaned and saved in script 01-clean_split_data.R.
 
-# Command-line arguments for this script identify the test set input directory where the test and target sets out of 
-# 01-clean_split_data.R are located, the model object input directory where the model object and transcript index files 
-# out of 02-train_elasticnet are located, the output directory where the evaluation files will be saved, 
+# Command-line arguments for this script identify the test set input directory where the test and target sets out of
+# 01-clean_split_data.R are located, the model object input directory where the model object and transcript index files
+# out of 02-train_elasticnet are located, the output directory where the evaluation files will be saved,
 # the file name components (filename_lead, seed, MAD threshold) necessary to create
 # the required file paths for input and output.
 
@@ -93,7 +93,7 @@ if (!dir.exists(output_directory)) {
 
 #--------
 
-#--------test for the existence of the expected training and target value sets. 
+#--------test for the existence of the expected training and target value sets.
 
 test_expression_file_name <- file.path(opt$test_expression_file_name)
 test_targets_file_name <- file.path(opt$test_targets_file_name)
@@ -168,16 +168,16 @@ two_class_summary <- twoClassSummary(cm_set, lev = levels(cm_set$obs))
 cat("\n\n")
 two_class_summary
 
-cm_set_file <- file.path(opt$cm_set_file_name)
+cm_set_file <- file.path(output_directory, opt$cm_set_file_name)
 
 write_tsv(cm_set, cm_set_file,
           na = "NA", append = FALSE, col_names = TRUE, quote_escape = "double")
 
 
-cm_file <- file.path(opt$cm_file_name)
+cm_file <- file.path(output_directory, opt$cm_file_name)
 saveRDS(cm, cm_file)
 
-summary_file <- file.path(opt$summary_file_name)
+summary_file <- file.path(output_directory, opt$summary_file_name)
 saveRDS(two_class_summary, summary_file)
 
 
