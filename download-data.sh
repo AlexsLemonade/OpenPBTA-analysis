@@ -59,7 +59,7 @@ fi
 # because it is considerably faster to do so
 
 if [ "$RELEASE" == "testing" ]; then
-  Rscript -e "BSgenome::export(BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38, 'GRCh38.primary_assembly.genome.fa.gz', compress = 'gzip', format = 'fasta')"
+  Rscript -e "Biostrings::writeXStringSet(Biostrings::getSeq(BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38, c('chr21', 'chr22', 'chrX', 'chrY')), 'GRCh38.primary_assembly.genome.fa.gz', format = 'fasta', compress = 'gzip')"
 else
   REFERENCE="ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/GRCh38.primary_assembly.genome.fa.gz"
   if [ ! -e ${REFERENCE##*/} ]
@@ -81,3 +81,8 @@ for file in "${FILES[@]}"
 do
   ln -sfn $RELEASE/$file data/$file
 done
+
+# make data directory unwritable in CI
+if [ "$RELEASE" == "testing" ]; then
+  chmod u-w data
+fi

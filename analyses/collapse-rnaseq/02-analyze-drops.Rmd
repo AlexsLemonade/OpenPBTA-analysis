@@ -3,9 +3,9 @@ title: "Summary of Ensembl identifiers for RNA-seq matrices"
 output: html_notebook
 params: 
   polya.annot.table: 
-    value: 'pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds'
+    value: 'results/pbta-gene-expression-rsem-fpkm-collapsed_table.polya.rds'
   stranded.annot.table:
-    value: 'pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds'
+    value: 'results/pbta-gene-expression-rsem-fpkm-collapsed_table.stranded.rds'
 ---
 
 ```{r include = FALSE}
@@ -40,9 +40,9 @@ viewDataTable <- function(dat){
 
 ```{r example_run, echo = FALSE}
 # Example Run:
-# rmarkdown::render(input = '02-analyze-drops.Rmd', 
-#                   params = list(polya.annot.table = '~/Projects/OpenPBTA-analysis-local/data/pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds', 
-#                                 stranded.annot.table = '~/Projects/OpenPBTA-analysis-local/data/pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds'))
+# Rscript -e "rmarkdown::render(input = 'analyses/collapse-rnaseq/02-analyze-drops.Rmd',
+#                   params = list(polya.annot.table = 'pbta-gene-expression-rsem-fpkm-collapsed_table.polya.rds',
+#                                 stranded.annot.table = 'pbta-gene-expression-rsem-fpkm-collapsed_table.stranded.rds'), clean = TRUE)"
 ```
 
 ## {.tabset .tabset-fade}
@@ -51,9 +51,12 @@ viewDataTable <- function(dat){
 #### Annotation Table
 
 ```{r, echo = FALSE, warning = FALSE}
-# view full gene annotation for polya data
+# view full gene annotation for polya data for multi-mapped gene symbols where
+# the correlation is not NA
 polya.annot.table <- readRDS(params$polya.annot.table)
-viewDataTable(polya.annot.table)
+viewDataTable(polya.annot.table %>% 
+                dplyr::filter(ensembl_id == "Multiple",
+                              !is.na(avg.cor)))
 ```
 
 #### Summary of biotypes that are dropped due to zero expression:
@@ -82,9 +85,12 @@ viewDataTable(dat)
 #### Annotation Table
 
 ```{r, echo = FALSE, warning = FALSE}
-# view full gene annotation for stranded data
+# view full gene annotation for stranded data for multi-mapped gene symbols
+# where the correlation is not NA
 stranded.annot.table <- readRDS(params$stranded.annot.table)
-viewDataTable(stranded.annot.table)
+viewDataTable(stranded.annot.table %>% 
+                dplyr::filter(ensembl_id == "Multiple",
+                              !is.na(avg.cor)))
 ```
 
 #### Summary of biotypes that are dropped due to low expression:
@@ -107,5 +113,27 @@ dat <- stranded.annot.table %>%
   group_by(gene_type)  %>%
   summarise(count = n()) 
 viewDataTable(dat)
+```
+
+##
+
+### Number of multi-mapped genes with `NA` correlation values
+
+Many Ensembl identifiers will have total FPKM > 0, but still have many zeroes.
+This results in `NA` values in the `avg.cor` column for many genes where 
+multiple Ensembl IDs map to the same gene symbol.
+
+_Note: Where `ensembl_id == "Unique"`, correlation values are not calculated._
+
+```{r}
+data.frame(
+  strategy = c("poly-A", "stranded"),
+  number_of_NA = c(nrow(polya.annot.table %>% 
+                          filter(ensembl_id == "Multiple",
+                                 is.na(avg.cor))),
+                   nrow(stranded.annot.table %>% 
+                          filter(ensembl_id == "Multiple",
+                                 is.na(avg.cor))))
+)
 ```
 
