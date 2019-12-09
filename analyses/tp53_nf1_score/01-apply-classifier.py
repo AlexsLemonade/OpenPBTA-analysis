@@ -59,8 +59,6 @@ parser.add_option('-f', '--file',
 
 (options, args) = parser.parse_args()
 inputfile=options.filename
-if not options.filename:   # if filename is not given
-    parser.error('Filename not given')
 
     
 np.random.seed(123)
