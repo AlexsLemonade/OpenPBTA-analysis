@@ -1,3 +1,41 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [OpenPBTA-analysis](#openpbta-analysis)
+    - [Join the Cancer Data Science Slack](#join-the-cancer-data-science-slack)
+  - [How to Participate](#how-to-participate)
+    - [Planned Analyses](#planned-analyses)
+    - [Proposing a New Analysis](#proposing-a-new-analysis)
+    - [Implementing an Analysis](#implementing-an-analysis)
+      - [Analytical Code and Output](#analytical-code-and-output)
+      - [Software Dependencies](#software-dependencies)
+      - [Pull Request Model](#pull-request-model)
+  - [How to Obtain OpenPBTA Data](#how-to-obtain-openpbta-data)
+    - [Data Access via Download Script](#data-access-via-download-script)
+    - [Data Access via CAVATICA](#data-access-via-cavatica)
+  - [Data Formats](#data-formats)
+    - [Data Caveats](#data-caveats)
+  - [How to Add an Analysis](#how-to-add-an-analysis)
+    - [Folder Structure](#folder-structure)
+    - [Analysis Script Numbering](#analysis-script-numbering)
+    - [Output Expectations](#output-expectations)
+    - [Docker Image](#docker-image)
+      - [Development in the Project Docker Container](#development-in-the-project-docker-container)
+        - [RStudio](#rstudio)
+    - [Local Development](#local-development)
+      - [RStudio](#rstudio-1)
+    - [Continuous Integration (CI)](#continuous-integration-ci)
+      - [Working with the subset files used in CI locally](#working-with-the-subset-files-used-in-ci-locally)
+      - [Adding Analyses to CI](#adding-analyses-to-ci)
+      - [Adding Analyses with Multiple Steps](#adding-analyses-with-multiple-steps)
+        - [1. File and merge a pull request for adding `01-filter-samples.R` to the repository.](#1-file-and-merge-a-pull-request-for-adding-01-filter-samplesr-to-the-repository)
+        - [2. File and merge a pull request for adding `02-cluster-heatmap.R` to the repository.](#2-file-and-merge-a-pull-request-for-adding-02-cluster-heatmapr-to-the-repository)
+        - [3. File and merge a pull request for the shell script that runs the entirety of `gene-expression-clustering`.](#3-file-and-merge-a-pull-request-for-the-shell-script-that-runs-the-entirety-of-gene-expression-clustering)
+      - [Passing variables only in CI](#passing-variables-only-in-ci)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # OpenPBTA-analysis
 
 The Open Pediatric Brain Tumor Atlas (OpenPBTA) Project is an effort to describe the landscape of tumors in the [Children's Brain Tumor Tissue Consortium](https://cbttc.org/) and the PNOC003 DIPG clinical trial from the [Pediatric Pacific Neuro-oncology Consortium](http://www.pnoc.us/).
@@ -69,7 +107,8 @@ Users performing analyses, should always refer to the symlinks in the `data/` di
 
 We have created a shell script that will download the latest release from AWS S3.
 macOS users must install `md5sum` before running the download script the first time. 
-This installed with [homebrew](https://brew.sh/) via the command `brew install md5sha1sum` or [conda/miniconda](https://docs.conda.io/projects/conda/en/latest/) via the command `conda install -c conda-forge coreutils`.
+This can be installed with [homebrew](https://brew.sh/) via the command `brew install coreutils` or [conda/miniconda](https://docs.conda.io/projects/conda/en/latest/) via the command `conda install -c conda-forge coreutils`.
+_Note: the `download-data.sh` script now has the ability to skip downloads of unchanged files, but if you previously installed md5sum via brew you'll need to run `brew unlink md5sha1sum && brew install coreutils` first to take advantage of this new feature._
 
 Once this has been done, run `bash download-data.sh` to acquire the latest release.
 This will create symlinks in `data/` to the latest files.
@@ -89,6 +128,12 @@ Users downloading via CAVATICA should place the data files within a `data/releas
 The release notes for each release are provided in the `release-notes.md` file that accompanies the data files.
 
 * Somatic Single Nucleotide Variant (SNV) data are provided in [Annotated MAF format](doc/format/vep-maf.md) files for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-single-nucleotide-variant-calling).
+  * Consensus calls for SNVs and small indels in the file `pbta-snv-consensus-mutation.maf.tsv.gz` are created as the intersection of calls from Strelka2, Mutect2, Lancet, where position, change, and sample were the same for all callers.
+  Multinucleotide variant calls from Mutect2 and Lancet were separated into consecutive SNVs before merging.
+  All columns in the included file are derived from the Strelka2 calls.
+  Note that this file is not strictly a MAF file, as it adds a Variant Allele Frequency (`VAF`) column and does not contain a version comment as the first line.
+  * Tumor mutation burden statistics are calculated based on the mutations included in `pbta-snv-consensus-mutation.maf.tsv.gz` file and by using Strelka2 counts and BED window sizes.
+  These values are saved to `pbta-snv-consensus-mutation-tmb.tsv`
 * Somatic Copy Number Variant (CNV) data are provided in a modified [SEG format](https://software.broadinstitute.org/software/igv/SEG) for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-copy-number-variant-calling).
   * The CNVkit SEG file has an additional column `copy.num` to denote copy number of each segment, derived from the CNS file output of the algorithm described [here](https://cnvkit.readthedocs.io/en/stable/fileformats.html).
   * The ControlFreeC TSV file is a merge of `*_CNVs` files produced from the algorithm, and columns are described [here](http://boevalab.inf.ethz.ch/FREEC/tutorial.html#OUTPUT).
@@ -120,6 +165,7 @@ The release notes for each release are provided in the `release-notes.md` file t
 
 * Somatic Structural Variant Data (Somatic SV) are provided in the [Annotated Manta TSV](doc/format/manta-tsv-header.md) format produced by the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-structural-variant-calling).
 * Gene expression estimates from the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#gene-expression-abundance-estimation) are provided as a gene by sample matrix.
+	* If your analysis requires de-duplicated gene symbols as row names, please use the collapsed matrices provided as part of the data download (`pbta-gene-expression-rsem-fpkm-collapsed.polya.rds`, `pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds`).
 * Gene Fusions produced by the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#rna-fusion-calling-and-prioritization) are provided as [Arriba TSV](doc/format/arriba-tsv-header.md) and [STARFusion TSV](doc/format/starfusion-tsv-header.md) respectively.
 * [Harmonized clinical data](https://alexslemonade.github.io/OpenPBTA-manuscript/#clinical-data-harmonization) are released as tab separated values.
 * For participants with multiple tumor specimens, [Independent specimen lists](https://alexslemonade.github.io/OpenPBTA-manuscript/#selection-of-independent-samples) are provided as TSV files with columns for participant ID and specimen ID. 

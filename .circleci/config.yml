@@ -27,37 +27,24 @@ jobs:
       #                                                rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', clean = TRUE)"
      
       - run:
-          name: Collapse RSEM (polyA RNA-seq)
-          command: ./scripts/run_in_ci.sh Rscript analyses/collapse-rnaseq/01-summarize_matrices.R -i data/pbta-gene-expression-rsem-fpkm.polya.rds -g analyses/collapse-rnaseq/gencode.v27.primary_assembly.annotation.gtf.gz -m data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds -t analyses/collapse-rnaseq/pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds
-
-      - run:
-          name: Collapse RSEM (stranded RNA-seq)
-          command: ./scripts/run_in_ci.sh Rscript analyses/collapse-rnaseq/01-summarize_matrices.R -i data/pbta-gene-expression-rsem-fpkm.stranded.rds -g analyses/collapse-rnaseq/gencode.v27.primary_assembly.annotation.gtf.gz -m data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds -t analyses/collapse-rnaseq/pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds
-
-      - run:
-          name: Analyze RNA-seq dropped genes from both polyA and stranded data
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render(input = 'analyses/collapse-rnaseq/02-analyze-drops.Rmd', params = list(polya.annot.table = 'pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds', stranded.annot.table = 'pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds'), clean = TRUE)"
+          name: Collapse RSEM
+          command: ./scripts/run_in_ci.sh bash analyses/collapse-rnaseq/run-collapse-rnaseq.sh
 
       - run:
           name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded expression
           command: ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
 
       - run:
+          name: Project specific filtering
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/fusion_filtering/04-project-specific-filtering.Rmd')"
+
+      - run:
           name: Transcriptome dimensionality reduction
           command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
 
-# this is getting split up into scripts
-#      - run:
-#          name: Sex prediction from RNA-seq
-#          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/sex-prediction-from-RNASeq/sex-prediction-from-RNASeq.Rmd', clean = TRUE)"
-
       - run:
-          name: Sex prediction from RNA-seq - Data cleaning
-          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/sex-prediction-from-RNASeq/01-clean_split_data.R --expression data/pbta-gene-expression-kallisto.stranded.rds --metadata data/pbta-histologies.tsv --output_directory scratch --filename_lead kallisto_stranded
-      
-      - run:
-          name: Sex prediction from RNA-seq - Train elasticnet
-          command: ./scripts/run_in_ci.sh Rscript --vanilla  analyses/sex-prediction-from-RNASeq/02-train_elasticnet.R --input_directory scratch --output_directory scratch --filename_lead kallisto_stranded
+          name: Sex prediction from RNA-seq - Clean data-train elasticnet-evaluate model
+          command: ./scripts/run_in_ci.sh bash analyses/sex-prediction-from-RNASeq/run-sex-prediction-from-RNASeq.sh
 
       - run:
           name: Selection Strategy Comparison
@@ -96,6 +83,14 @@ jobs:
       - run:
           name: Tumor mutation burden with TCGA
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
+
+      - run:  
+          name: Molecular Subtyping - ATRT
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-ATRT/01-ATRT-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
+
+      - run:
+          name: Copy number consensus
+          command: ./scripts/run_in_ci.sh bash "analyses/copy_number_consensus_call/run_consensus_call.sh"
 
       - run:
           name: Comparative RNASeq - generate correlation matrix
