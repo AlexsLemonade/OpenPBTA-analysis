@@ -134,7 +134,7 @@ jobs:
 
       - run:
           name: TP53 NF1 classifier run
-          command: ./scripts/run_in_ci.sh python "analyses/tp53_nf1_score/01-apply-classifier.py -f pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"   
+          command: ./scripts/run_in_ci.sh python analyses/tp53_nf1_score/01-apply-classifier.py -f pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds  
                 
 
   deploy:
