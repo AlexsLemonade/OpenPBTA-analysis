@@ -96,7 +96,11 @@ jobs:
       - run:
           name: Tumor mutation burden with TCGA
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
-          
+
+      - run:
+          name: Comparative RNASeq - generate correlation matrix
+          command: ./scripts/run_in_ci.sh python3 analyses/comparative-RNASeq-analysis/01-correlation-matrix.py
+
          ################################
          #### Add your analysis here ####
          ################################

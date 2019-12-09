@@ -1,5 +1,5 @@
 """
-Utils to be shared between scripts
+Utility functions to be shared between scripts
 """
 
 import os
@@ -10,9 +10,9 @@ import pyreadr
 
 
 def read_rds(filename, location="data"):
-    """Read an RDS-format gene or transcript expression matrix into Pandas.
+    """Read an RDS-format matrix into a Pandas dataframe.
     Location can be data, scratch, or results.
-    Returns a pandas dataframe"""
+    Index is populated from first column"""
     filepath = get_filepath(filename, location)
     raw_df = pyreadr.read_r(filepath)[None]
     if raw_df.isnull().values.any():
@@ -21,10 +21,13 @@ def read_rds(filename, location="data"):
 
 def write_rds(df, filename, location="scratch"):
     """Write a pandas dataframe to RDS file in the dir specified.
-    Valid locations are scratch or results."""
+    Valid locations are scratch or results.
+    Index is stored as first column since pyreadr.write_rds drops it otherwise"""
+    df.insert(0, df.index.name, df.index, allow_duplicates=True)
     filepath = get_filepath(filename, location)
     pyreadr.write_rds(filepath, df)
-    # Ensure that file can be read, because pyreadr.write_rds fails silently when volume is mounted read-only
+    # Pyreadr.write_rds fails silently when permissions prevent file write,
+    # so trigger an error if our file isn't actually there
     with open(filepath, "rb"):
         pass
 

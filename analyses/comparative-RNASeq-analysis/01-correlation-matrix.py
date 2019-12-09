@@ -7,6 +7,7 @@ The gene expression profile data will be filtered using a developed method descr
 https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/229
 """
 
+import os
 import sys
 import argparse
 import math
@@ -34,7 +35,7 @@ def prepare_expression(input_matrix,
     # Convert to log2(tpm+1)
     samples = raw_samples.apply(lambda x: np.log2(x+1))
 
-    # run expression filter (filter_out_genes_unexpressed_in_most_samples.py)
+    # run expression filter
     # Remove any genes that have 0 expression in more samples than proportion_unexpressed
     print_v("Running expression filter")
     max_ok_zeroes = len(samples.columns) * proportion_unexpressed
@@ -43,9 +44,9 @@ def prepare_expression(input_matrix,
         axis=1)
     expression_filtered_df = samples[has_few_enough_zeroes]
 
-    # run variance filter (filter_out_lowest_varying_genes.py)
+    # run variance filter
     # Sort remaining genes by variance and drop the least-varying
-    # How many to drop is controlled by variance-filter_level
+    # How many to drop is controlled by variance_filter_level
     print_v("Running variance filter")
     variance = expression_filtered_df.apply(np.std, axis=1)
     cut_proportion = int(math.ceil(len(variance)*variance_filter_level))
@@ -62,16 +63,16 @@ def prepare_expression(input_matrix,
 def calculate_correlation(expr_var_filtered_df, verbose=False, prefix=""):
     print_v = print if verbose else lambda *a, **k: None
     """Takes an expression matrix dataframe and calculates spearman correlations.
+    (spearman is a rank transformed pearson ('correlation') metric)
     output file: results/{prefix}all_by_all_correlations.tsv"""
 
     all_by_all_filename = "{}all_by_all_correlations.rds".format(prefix)
 
-    # spearman is a rank transformed pearson ('correlation') metric
-    # Rank transform to get ordering of genes within sample
+    # Rank transform - values are now that rank of that gene within each sample
     print_v("Rank transforming")
     filtered_rank_transformed_df = np.apply_along_axis(scipy.stats.rankdata,0,expr_var_filtered_df)
 
-    # run pearson correlation on ranked genes. Note that df must have samples=rows.
+    # Run pearson metric on ranked genes. For pairwise_distances we need samples=rows so transpose.
     print_v("Running pairwise distances")
     x_corr = 1 - sklp.pairwise_distances(X=filtered_rank_transformed_df.transpose(), metric="correlation")
 
@@ -79,20 +80,28 @@ def calculate_correlation(expr_var_filtered_df, verbose=False, prefix=""):
     labels=expr_var_filtered_df.columns
     all_by_all_df = pd.DataFrame(x_corr, index=labels,columns=labels)
 
-    print_v("Writing to file")
+    print_v("Writing to file {}".format(all_by_all_filename))
     utils.write_rds(all_by_all_df, all_by_all_filename, location="results")
     return all_by_all_df
 
-
 def main():
+    """Creates correlation matrices for all desired datasets."""
+    # This script should always run as if it were being called from
+    # the directory it lives in.
+    os.chdir(sys.path[0])
+
     p = argparse.ArgumentParser()
-    p.add_argument("--input-matrix", help="Path to gene expression matrix RDS file")
-    p.add_argument("--prefix", help="Prefix for output filenames")
     p.add_argument("--verbose", action="store_true")
     args = p.parse_args()
-    expression = prepare_expression(args.input_matrix, verbose=args.verbose, prefix=args.prefix)
-    calculate_correlation(expression, verbose=args.verbose, prefix=args.prefix)
 
+    datasets_to_process = [
+        ("pbta-gene-expression-rsem-tpm.polya.rds", "rsem-tpm-polya-"),
+        ("pbta-gene-expression-rsem-tpm.stranded.rds", "rsem-tpm-stranded-")
+    ]
+
+    for filename, prefix in datasets_to_process:
+        expression = prepare_expression(filename, prefix=prefix, verbose=args.verbose)
+        calculate_correlation(expression, prefix=prefix, verbose=args.verbose)
 
 if __name__ == "__main__":
     main()
