@@ -64,7 +64,7 @@ def calculate_correlation(expr_var_filtered_df, verbose=False, prefix=""):
     print_v = print if verbose else lambda *a, **k: None
     """Takes an expression matrix dataframe and calculates spearman correlations.
     (spearman is a rank transformed pearson ('correlation') metric)
-    output file: results/{prefix}all_by_all_correlations.tsv"""
+    output file: scratch/{prefix}all_by_all_correlations.tsv"""
 
     all_by_all_filename = "{}all_by_all_correlations.rds".format(prefix)
 
@@ -81,7 +81,7 @@ def calculate_correlation(expr_var_filtered_df, verbose=False, prefix=""):
     all_by_all_df = pd.DataFrame(x_corr, index=labels,columns=labels)
 
     print_v("Writing to file {}".format(all_by_all_filename))
-    utils.write_rds(all_by_all_df, all_by_all_filename, location="results")
+    utils.write_rds(all_by_all_df, all_by_all_filename, location="scratch")
     return all_by_all_df
 
 def main():
