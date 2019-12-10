@@ -21,6 +21,7 @@
 library(stringr) 
 library(rprojroot)
 library(readr)
+library(dplyr)
 
 # Detect the ".git" folder -- this will in the project root directory.
 # Use this as the root directory to ensure proper sourcing of functions no
@@ -35,14 +36,13 @@ if (!dir.exists(output_directory)) {
 
 ## ===================== Load  Independent Specimen List =====================
 independent_specimen_list <-  read.table(file.path(root_dir, "data/independent-specimens.wgs.primary-plus.tsv"), header = TRUE, sep = "\t")
-
 # bioid including all sample's names will be used later
 bioid <- unique(independent_specimen_list$Kids_First_Biospecimen_ID)
 
 
 ## ===================== Load SV File =====================
-sv_analysis <- read_tsv(file.path(root_dir, "data/pbta-sv-manta.tsv.gz")) %>%
-  filter(Kids.First.Biospecimen.ID.Tumor %in% bioid)
+sv_analysis <- read_tsv(file.path(root_dir, "data","pbta-sv-manta.tsv.gz")) %>%
+  filter((Kids.First.Biospecimen.ID.Tumor %in% bioid) & (FILTER == "PASS"))
 
 
 ## ===================== Functions =====================
@@ -58,7 +58,6 @@ extract_len <- function(info_field, len_string) {
     return(0)
   }
 }
-
 
 ## ===================== Generate SV File In A Shatterseek-read Format =====================
 for (i in bioid) {
@@ -78,7 +77,7 @@ for (i in bioid) {
       bnds_file[id_name, paste("alt", number, sep = "")] <- as.character(bnds$ALT[j])
       bnds_file[id_name, "homolen"] <- extract_len(bnds$INFO[j], "HOMLEN")
       bnds_file[id_name, "inserlen"] <- extract_len(bnds$INFO[j], "SVINSLEN")
-      if (substr(bnds_file[id_name, paste("alt", number, sep = "")], start = 1, stop = 1) %in% c("A", "T", "C", "G")) {
+      if (substr(bnds_file[id_name, paste0("alt", number)], start = 1, stop = 1) %in% c("A", "T", "C", "G")) {
         bnds_file[id_name, paste("strand", number, sep = "")] = "+"
       } else {
         bnds_file[id_name, paste("strand", number, sep = "")] = "-"
@@ -159,7 +158,7 @@ for (i in bioid) {
   ## Merge four types SV
   sv_merge <- rbind(dups_file, dels_file, invs_file, bnds_file)
   sv_merge <- sv_merge[is.na(sv_merge[, 1]) == FALSE & is.na(sv_merge[, 3]) == FALSE, ]
-  outputname_sv_merge <- paste(i,".tsv",sep = "")
+  outputname_sv_merge <- paste0(i,".tsv")
   outputname_sv_merge  <- file.path(output_directory,outputname_sv_merge)
   
   ## Shatterseek only accept file with chrom1-22,X, so remove chrY and ChrM
