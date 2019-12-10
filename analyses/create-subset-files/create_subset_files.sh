@@ -7,7 +7,7 @@ set -o pipefail
 
 # Set defaults for release and biospecimen file name
 BIOSPECIMEN_FILE=${BIOSPECIMEN_FILE:-biospecimen_ids_for_subset.RDS}
-RELEASE=${RELEASE:-release-v9-20191105}
+RELEASE=${RELEASE:-release-v11-20191126}
 NUM_MATCHED=${NUM_MATCHED:-15}
 
 # This script should always run as if it were being called from
@@ -47,9 +47,9 @@ cp $FULL_DIRECTORY/independent-specimens*.tsv $SUBSET_DIRECTORY
 cp $FULL_DIRECTORY/*.bed $SUBSET_DIRECTORY
 
 # if the md5sum.txt file already exists, get rid of it
-rm -f $SUBSET_DIRECTORY/md5sum.txt
-# create a new md5sum.txt file
 cd $SUBSET_DIRECTORY
+rm -f md5sum.txt
+# create a new md5sum.txt file
 md5sum * > md5sum.txt
 
 # Changelog does not get tracked
