@@ -170,3 +170,4 @@ for (i in bioid) {
   write.table(sv_merge,file = outputname_sv_merge,sep = "\t",quote = FALSE,row.names = TRUE,col.names = NA)
   write.table(sv_merge_withoutY_withoutM,file = outputname_sv_merge_withoutY_withoutM,sep = "\t",quote = FALSE,row.names = TRUE,col.names = NA)
 }
+
