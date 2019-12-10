@@ -131,6 +131,8 @@ git fetch upstream
 git merge upstream/master
 ```
 
+replacing `<my-branch-for-pull-request>` with your branch name without angle brackets.
+
 Note: You will be prompted to enter a commit message via the [text editor configured for your system](https://help.github.com/en/github/using-git/associating-text-editors-with-git).
 
 ## Authorship
