@@ -343,6 +343,9 @@ final_df <- atrt_expression_cn_tmb_df %>%
     ), collapse = ", "),
     germline_sex_estimate = paste(sort(
       unique(c(germline_sex_estimate.x, germline_sex_estimate.y))
+    ), collapse = ", "),
+    primary_site = paste(sort(
+      unique(c(primary_site.x, primary_site.y))
     ), collapse = ", ")
   ) %>%
   dplyr::select(
@@ -357,7 +360,9 @@ final_df <- atrt_expression_cn_tmb_df %>%
       "age_at_diagnosis_days.x",
       "age_at_diagnosis_days.y",
       "germline_sex_estimate.x",
-      "germline_sex_estimate.y"
+      "germline_sex_estimate.y",
+      "primary_site.x",
+      "primary_site.y"
     )
   ) %>%
   dplyr::select(

@@ -82,14 +82,6 @@ tmb_df <-
                               "data",
                               "pbta-snv-consensus-mutation-tmb.tsv"))
 
-# Read in RNA expression data
-zscored_expression <-
-  readr::read_rds(file.path(
-    results_dir,
-    "atrt_zscored_expression.RDS"
-  ))
-
-
 #### Filter metadata -----------------------------------------------------------
 
 # Define regions of the brain (using Anatomy of the Brain figure found at
