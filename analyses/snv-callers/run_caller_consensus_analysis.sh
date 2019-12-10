@@ -57,8 +57,11 @@ bedtools intersect \
 
 # Convert GTF to BED file for use in bedtools
 # Here we are only extracting things with a CDS i.e. are coded in protein
-gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz | awk '$3 ~ /CDS/' | convert2bed --do-not-sort --input=gtf - > $exon_file
-
+gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
+  | awk '$3 ~ /CDS/' \
+  | convert2bed --do-not-sort --input=gtf - \
+  > $exon_file
+  
 # Make WGS coding BED file
 bedtools intersect \
   -a data/WGS.hg38.strelka2.unpadded.bed \
