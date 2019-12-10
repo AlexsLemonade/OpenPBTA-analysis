@@ -56,7 +56,7 @@ bedtools intersect \
   -b data/WGS.hg38.mutect2.unpadded.bed > $all_mut_wgs_bed
 
 # Convert GTF to BED file for use in bedtools
-cat data/gencode.v27.primary_assembly.annotation.gtf.gz | gunzip - | grep transcript_id | grep gene_id | grep exon_id | convert2bed --do-not-sort --input=gtf - > $exon_file
+cat data/gencode.v27.primary_assembly.annotation.gtf.gz | gunzip - | grep transcript_id | grep exon | convert2bed --do-not-sort --input=gtf - > $exon_file
 
 # Make WGS coding BED file
 bedtools intersect \
