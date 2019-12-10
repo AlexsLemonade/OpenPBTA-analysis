@@ -29,13 +29,13 @@ library(dplyr)
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 ## =====================  Create A Subdirectory to Hold All The Output Files ===================== 
-output_directory <- file.path(root_dir, "scratch/sv-vcf")
+output_directory <- file.path(root_dir, "scratch","sv-vcf")
 if (!dir.exists(output_directory)) {
   dir.create(output_directory, recursive = TRUE)
 }
 
 ## ===================== Load  Independent Specimen List =====================
-independent_specimen_list <-  read.table(file.path(root_dir, "data/independent-specimens.wgs.primary-plus.tsv"), header = TRUE, sep = "\t")
+independent_specimen_list <-  read.table(file.path(root_dir, "data","independent-specimens.wgs.primary-plus.tsv"), header = TRUE, sep = "\t")
 # bioid including all sample's names will be used later
 bioid <- unique(independent_specimen_list$Kids_First_Biospecimen_ID)
 
@@ -73,14 +73,14 @@ for (i in bioid) {
       id_name <- substr(bnds[j, "ID"], start = 1, stop = nchar(as.character(bnds[j, "ID"])) - 2)
       number  <-  as.numeric(str_sub(bnds[j, "ID"], -1)) + 1
       bnds_file[id_name, paste0("chrom", number)] <- as.character(bnds$SV.chrom[j])
-      bnds_file[id_name, paste("pos", number, sep = "")] <- as.character(bnds$SV.start[j])
-      bnds_file[id_name, paste("alt", number, sep = "")] <- as.character(bnds$ALT[j])
+      bnds_file[id_name, paste0("pos", number)] <- as.character(bnds$SV.start[j])
+      bnds_file[id_name, paste0("alt", number)] <- as.character(bnds$ALT[j])
       bnds_file[id_name, "homolen"] <- extract_len(bnds$INFO[j], "HOMLEN")
       bnds_file[id_name, "inserlen"] <- extract_len(bnds$INFO[j], "SVINSLEN")
       if (substr(bnds_file[id_name, paste0("alt", number)], start = 1, stop = 1) %in% c("A", "T", "C", "G")) {
-        bnds_file[id_name, paste("strand", number, sep = "")] = "+"
+        bnds_file[id_name, paste0("strand", number)] = "+"
       } else {
-        bnds_file[id_name, paste("strand", number, sep = "")] = "-"
+        bnds_file[id_name, paste0("strand", number)] = "-"
       }
     }
     bnds_file[, "SVtype"] <- "TRA"
@@ -163,7 +163,7 @@ for (i in bioid) {
   
   ## Shatterseek only accept file with chrom1-22,X, so remove chrY and ChrM
   sv_merge_withoutY_withoutM <- sv_merge[sv_merge[,1] != "Y" & sv_merge[,3] != "Y" & sv_merge[,1] != "M" & sv_merge[,3] != "M",]
-  outputname_sv_merge_withoutY_withoutM <- paste(i,"_withoutYandM.tsv",sep = "")
+  outputname_sv_merge_withoutY_withoutM <- paste0(i,"_withoutYandM.tsv")
   outputname_sv_merge_withoutY_withoutM <- file.path(output_directory,outputname_sv_merge_withoutY_withoutM)
   
   ## output files
