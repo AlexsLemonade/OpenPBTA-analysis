@@ -1,7 +1,9 @@
+
+
 #Functionality/purpose:
-  
-#This will clean the gene expression data -- i.e., it drops anything with invalid labels 
-#in either reported_gender or germline_sex_estimate and if the training partition size < 1.0, 
+
+#This will clean the gene expression data -- i.e., it drops anything with invalid labels
+#in either reported_gender or germline_sex_estimate and if the training partition size < 1.0,
 #it will split the data into training and testing sets that can be saved as separate files to be used downstream.
 
 #Inputs and arguments:
@@ -13,6 +15,8 @@
 
 
 #--------Library calls and run parameters.  Modify the assignments as needed for subsequent runs.
+
+cat(paste("\n\nStart script 01_clean_split_data at", Sys.time(), "\n", sep=" "))
 
 library(dplyr)
 library(tibble)
@@ -31,12 +35,8 @@ library(optparse)
 
 # The output directory is specified as command line arument --output_directory and assigned to output_directory below.
 # training and test data files are saved into the output directory.
-# A TSV file that contains the biospecimen ID, reported_gender, and germline_sex_estimate 
+# A TSV file that contains the biospecimen ID, reported_gender, and germline_sex_estimate
 # information that has been cleaned is also saved to the output directory.
-# The lead portion of the output file names is specified as command line argument --filename_lead
-# The training set is saved as paste(opt$filename_lead, seed, "train.RDS", sep = "_")
-# The test set is saved as paste(opt$filename_lead, seed, "test.RDS", sep = "_")
-# The targets TSV file is saved as paste(opt$filename_lead, seed, "targets.tsv", sep = "_")
 
 # Declare command line options
 option_list <- list(
@@ -59,7 +59,31 @@ option_list <- list(
     help = "output directory"
   ),
   optparse::make_option(
-    c("-f", "--filename_lead"),
+    c("-f", "--train_expression_file_name"),
+    type = "character",
+    default = NULL,
+    help = "A character vector that will be used to name output files"
+  ),
+  optparse::make_option(
+    c("-a", "--test_expression_file_name"),
+    type = "character",
+    default = NULL,
+    help = "A character vector that will be used to name output files"
+  ),
+  optparse::make_option(
+    c("-b", "--train_targets_file_name"),
+    type = "character",
+    default = NULL,
+    help = "A character vector that will be used to name output files"
+  ),
+  optparse::make_option(
+    c("-c", "--test_targets_file_name"),
+    type = "character",
+    default = NULL,
+    help = "A character vector that will be used to name output files"
+  ),
+  optparse::make_option(
+    c("-d", "--full_targets_file_name"),
     type = "character",
     default = NULL,
     help = "A character vector that will be used to name output files"
@@ -111,15 +135,15 @@ if (!dir.exists(output_directory)) {
 ge <- readRDS(gene_expression_file_name)
 
 
-#Metadata is in pbta-histologies.tsv.  reported_gender is our target variable. 
-#Kids_First_Biospecimen_ID is the unique identifier for each sample. 
+#Metadata is in pbta-histologies.tsv.  reported_gender is our target variable.
+#Kids_First_Biospecimen_ID is the unique identifier for each sample.
 
 histologies <- read.delim(histologies_file_name, header=TRUE, sep="\t", stringsAsFactors = FALSE)
 
-valid_reported_gender_samples <- histologies[which(toupper(histologies[, "reported_gender"]) == "MALE" | 
+valid_reported_gender_samples <- histologies[which(toupper(histologies[, "reported_gender"]) == "MALE" |
               toupper(histologies[, "reported_gender"]) == "FEMALE"), "Kids_First_Biospecimen_ID"]
 
-valid_germline_sex_estimate_samples <- histologies[which(toupper(histologies[, "germline_sex_estimate"]) == "MALE" | 
+valid_germline_sex_estimate_samples <- histologies[which(toupper(histologies[, "germline_sex_estimate"]) == "MALE" |
               toupper(histologies[, "germline_sex_estimate"]) == "FEMALE"), "Kids_First_Biospecimen_ID"]
 
 Valid_gender_samples <- intersect(valid_reported_gender_samples, valid_germline_sex_estimate_samples)
@@ -149,13 +173,13 @@ gene_expression_mat <- gene_expression_mat[ , colnames(gene_expression_mat) %in%
 
 input_mat <- t(gene_expression_mat)
 
-#Extract reported_gender and germline_sex_estimate values from histologies.  
+#Extract reported_gender and germline_sex_estimate values from histologies.
 #Put these value in a three-column dataframe c("Kids_First_Biospecimen_ID", "reported_gender", "germline_sex_estimate").
 
-targets_unsorted <- histologies[histologies$Kids_First_Biospecimen_ID %in% rownames(input_mat), 
+targets_unsorted <- histologies[histologies$Kids_First_Biospecimen_ID %in% rownames(input_mat),
                                c("Kids_First_Biospecimen_ID", "reported_gender", "germline_sex_estimate")]
 
-#Match sequence of rownames(input_mat) and targets[, 1].  
+#Match sequence of rownames(input_mat) and targets[, 1].
 #targets holds the reported_gender values in the same Kids_First_Biospecimen_ID sequence as rownames(input_mat).
 
 match_index <- unlist(sapply(rownames(input_mat), function(x) which(targets_unsorted[, 1] == x)))
@@ -170,13 +194,13 @@ targets <- targets_unsorted[match_index, c(1:ncol(targets_unsorted))]
 if (train_percent < 1) {
   train_set_index <- sample(1:nrow(input_mat), floor(train_percent*nrow(input_mat)))
   test_set_index <- setdiff(1:nrow(input_mat), train_set_index)
-  
+
   train_expression <- input_mat[train_set_index, ]
   test_expression <- input_mat[test_set_index, ]
-  
+
   train_targets <- targets[train_set_index, ]
   test_targets <- targets[test_set_index, ]
-  
+
   # Fill a column in targets that designates which set a sample is in (train vs. test).
   targets$train_or_test <- NA
   targets[train_set_index, "train_or_test"] <- "train"
@@ -184,29 +208,29 @@ if (train_percent < 1) {
 } else {
   train_expression <- input_mat
   train_targets <- targets
-  
+
   # all smaples are in train set here
-  targets$train_or_test <- "train"  
+  targets$train_or_test <- "train"
 }
 #--------
 
 #--------Save train, (test, if used) and targets files to output directory
 
 if (train_percent < 1) {
-  train_file <- file.path(output_directory, paste(opt$filename_lead, seed, "train_expression.RDS", sep = "_"))
-  test_file <- file.path(output_directory, paste(opt$filename_lead, seed, "test_expression.RDS", sep = "_"))
+  train_file <- file.path(output_directory, opt$train_expression_file_name)
+  test_file <- file.path(output_directory, opt$test_expression_file_name)
   saveRDS(train_expression, train_file)
   saveRDS(test_expression, test_file)
 } else {
-  train_file <- file.path(output_directory, paste(opt$filename_lead, seed, "train_expression.RDS", sep = "_"))
+  train_file <- file.path(output_directory, opt$train_expression_file_name)
   saveRDS(train_expression, train_file)
 }
 
 if (train_percent < 1) {
-  targets_file <- file.path(output_directory, paste(opt$filename_lead, seed, "targets.tsv", sep = "_"))
-  train_targets_file <- file.path(output_directory, paste(opt$filename_lead, seed, "train_targets.tsv", sep = "_"))
-  test_targets_file <- file.path(output_directory, paste(opt$filename_lead, seed, "test_targets.tsv", sep = "_"))
-  
+  targets_file <- file.path(output_directory, opt$full_targets_file_name)
+  train_targets_file <- file.path(output_directory, opt$train_targets_file_name)
+  test_targets_file <- file.path(output_directory, opt$test_targets_file_name)
+
   write_tsv(targets, targets_file,
             na = "NA", append = FALSE, col_names = TRUE, quote_escape = "double")
   write_tsv(train_targets, train_targets_file,
@@ -214,11 +238,14 @@ if (train_percent < 1) {
   write_tsv(test_targets, test_targets_file,
             na = "NA", append = FALSE, col_names = TRUE, quote_escape = "double")
 } else {
-  targets_file <- file.path(output_directory, paste(opt$filename_lead, seed, "targets.tsv", sep = "_"))
-  train_targets_file <- file.path(output_directory, paste(opt$filename_lead, seed, "train_targets.tsv", sep = "_"))
-  
+  targets_file <- file.path(output_directory, opt$full_targets_file_name)
+  train_targets_file <- file.path(output_directory, opt$train_targets_file_name)
+
   write_tsv(targets, targets_file,
             na = "NA", append = FALSE, col_names = TRUE, quote_escape = "double")
   write_tsv(train_targets, train_targets_file,
             na = "NA", append = FALSE, col_names = TRUE, quote_escape = "double")
 }
+
+
+cat(paste("\n\nEnd script 01_clean_split_data at", Sys.time(), "\n", sep=" "))
