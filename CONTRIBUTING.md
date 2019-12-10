@@ -108,6 +108,31 @@ git push origin new-analysis-second
 
 These steps can be repeated for `03-third-script.R`.
 
+### Updating your out-of-date branch
+
+The master branch for AlexsLemonade/OpenPBTA-analysis is protected such that pull request branches must be up-to-date before they are merged into master.
+In addition, it may be helpful to update your branch before it is approved and ready to be merged. 
+For example, it is possible that a continuous integration failure is related to your branch being out-of-date (e.g., the data download script has been updated) and not due to the changes you are adding in your pull request.
+
+You can update your branch via the GitHub interface using the `Update branch` button that appears on your pull request when this occurs. 
+
+![](https://user-images.githubusercontent.com/6311784/38159810-cd0f73b8-34b0-11e8-928c-0ffad49b10f6.png)
+
+**If there are merge conflicts that need to be resolved, please allow a project organizer to resolve them for you.**
+
+If for some reason the `Update branch` button does not work, you can do the follow from the command line (provided you have [set AlexsLemonade/OpenPBTA-analysis as an upstream remote](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/configuring-a-remote-for-a-fork)):
+
+```
+# checkout the out-of-date branch
+git checkout <my-branch-for-pull-request>
+# fetch the upstream changes in the AlexsLemonade master branch
+git fetch upstream
+# merge the AlexsLemonade master branch into the out of date branch
+git merge upstream/master
+```
+
+Note: You will be prompted to enter a commit message via the [text editor configured for your system](https://help.github.com/en/github/using-git/associating-text-editors-with-git).
+
 ## Authorship
 
 The ultimate goal of this is effort is to describe the results of our analyses in a manuscript.
