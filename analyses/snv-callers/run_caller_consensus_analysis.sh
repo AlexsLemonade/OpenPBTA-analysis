@@ -57,7 +57,7 @@ bedtools intersect \
 
 # Convert GTF to BED file for use in bedtools
 # Here we are only extracting things labeled with CCDS ids, i.e. are coded in protein
-cat data/gencode.v27.primary_assembly.annotation.gtf.gz | gunzip - | grep transcript_id | grep -P "CCDS" | convert2bed --do-not-sort --input=gtf - > $exon_file
+gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz | awk '$3 ~ /CDS/' | convert2bed --do-not-sort --input=gtf - > $exon_file
 
 # Make WGS coding BED file
 bedtools intersect \
