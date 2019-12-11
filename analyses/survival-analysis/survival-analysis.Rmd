@@ -63,6 +63,7 @@ Declare input file paths.
 
 ```{r}
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+polya <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed_table.polya.rds")
 ```
 
 ## Import the data
@@ -72,45 +73,107 @@ metadata <- readr::read_tsv(metadata_file)
 ```
 
 Reformat the `OS_days` variable. 
+The `survival` R packages want overall survival status to be in the form of a 
+numeric variable where `0  = Living` and `1 = Deceased`. 
 
 ```{r}
 metadata$OS_status <- factor(metadata$OS_status, levels = c("LIVING", "DECEASED"))
 metadata$OS_status_num <- as.numeric(metadata$OS_status)
 ```
 
-Kaplan-Meier
+This is the template model that you can follow for all survival analyses here. 
+What will change is the independent variables `<INDEPENDENT_VARIABLES>` you use 
+to try to predict survival. 
+Depending on what type of variable you are using for your independent variables, 
+this will influence what statistical model is appropriate `<STAT_MODEL_FUNCTION>`.
 
-```{r}
-kap_fit <- survival::survfit(survival::Surv(OS_days, OS_status_num) ~ short_histology,
-               data = metadata)
+```
+<STAT_MODEL_FUNCTION>(survival::Surv(OS_days, OS_status_num) ~ <INDEPENDENT_VARIABLES>,
+                 data = metadata)
 ```
 
-Cox Regression 
+## Kaplan-Meier
+
+[Kaplan-Meier](https://en.wikipedia.org/wiki/Kaplan%E2%80%93Meier_estimator)
+
 
 ```{r}
-cox_fit <- survival::coxph(survival::Surv(OS_days, OS_status_num) ~ short_histology,
+kap_fit <- survival::survfit(
+  survival::Surv(metadata$OS_days, metadata$OS_status_num) ~ reported_gender,
+  data = metadata)
+
+kap_fit
+```
+`survminer` package comes with a convenient plotting function which uses `ggplot2`
+arguments. 
+
+```{r}
+survminer::ggsurvplot(kap_fit, data = metadata, risk.table = TRUE, 
+                      pval = TRUE, conf.int = TRUE,
+                      xlim = c(0,2000),
+                      break.time.by = 500,
+                      ggtheme = theme_minimal(),
+                      risk.table.y.text.col = T, 
+                      risk.table.y.text = FALSE 
+                      )
+
+# We can save the plot like a normal ggplot
+ggplot2::ggsave(file.path(plots_dir, "survival_curve_gender.pdf"))
+```
+
+## Log-Rank 
+
+For testing whether two survival curves are different, we can use Log-Rank which
+can be implemented using `survival::survdiff` function. 
+In this example, we will test for survival curve differences between for 
+`reported_gender` categories. 
+
+```{r}
+# First let's filter out data that does not have reported_gender available
+metadata_filt <- metadata %>% 
+  dplyr::filter(reported_gender != 'Not Available')
+```
+
+Use the `survdiff` function to test the differences between the `Male` and `Female` 
+curves.
+```{r}
+logrank_fit <- survival::survdiff(
+  survival::Surv(metadata_filt$OS_days, metadata_filt $OS_status_num) ~ reported_gender,
+                                  data = metadata_filt)
+```
+
+Make a pretty table of the results.
+
+```{r}
+data.frame(group = gsub("reported_gender=", "", names(logrank_fit$n)), 
+           Freq = logrank_fit$n, 
+           Observed = logrank_fit$obs, 
+           Expected = logrank_fit$exp, 
+           Chi.Sq = logrank_fit$chisq) %>%
+  dplyr::select(-Freq.groups) %>% 
+  knitr::kable()
+```
+
+## Cox Regression 
+
+Cox Regression is a model suited for survival analysis where your independent 
+variabels are continuous. 
+For this example, we'll use 
+
+```{r}
+polya_fpkm <- readr::read_rds(polya)
+```
+
+```{r}
+cox_fit <- survival::coxph(
+  survival::Surv(metadata$OS_days, metadata$OS_status_num)~ me,
                            data = metadata)
 ```
 
-Log-Rank 
-
 ```{r}
-logrank_fit <- survival::survdiff(survival::Surv(OS_days, OS_status_num) ~ short_histology,
-                                  data = metadata)
-```
-
-## Plot the models
-
-```{r}
-GGally::ggsurv(kap_fit)
-```
-
-```{r}
-GGally::ggsurv(cox_fit)
-```
-
-```{r}
-GGally::ggsurv(logrank_fit)
+summary(cox_fit)$coefficients %>%
+  tibble::rownames_to_column("group") %>% 
+  knitr::kable()
 ```
 
 ## Session Info
