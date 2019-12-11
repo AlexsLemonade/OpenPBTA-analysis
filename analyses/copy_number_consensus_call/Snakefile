@@ -88,8 +88,8 @@ rule manta_filter:
 rule filter_telomeres:
     input:
         ## Define the location of the input file and take the path/extension from the config file
-        script=str(config["scripts"]) + "get_rid_bad_segments.py",
-        bad_list=str(config["scripts"]) + "bad_chromosomal_seg_updated_merged.txt",
+        script=str(config["scripts"]) + "\\get_rid_bad_segments.py",
+        bad_list=str(config["scripts"]) + "\\bad_chromosomal_seg_updated_merged.txt",
         cnvkit_del="../../scratch/interim/{sample}.cnvkit.del.bed",
         cnvkit_dup="../../scratch/interim/{sample}.cnvkit.dup.bed",
         freec_del="../../scratch/interim/{sample}.freec.del.bed",
