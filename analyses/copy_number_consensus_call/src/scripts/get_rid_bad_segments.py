@@ -35,12 +35,12 @@ args = parser.parse_args()
 
 
 ## Check to see if the CNVs file is empty, if so, make an empty variable
-if os.stat(args.cnvfile).st_size == 0:
+if os.stat(args.file).st_size == 0:
     final_content = []
 
 ## If the file has content, then load in the content
 else:
-    with open (args.cnvfile) as file:
+    with open (args.file) as file:
 
         ## Strip the trailing spaces for each line
         stripped_content = [i.rstrip() for i in file.readlines()]
