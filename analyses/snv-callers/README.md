@@ -10,11 +10,12 @@ See the comparison results plots [here](https://cansavvy.github.io/openpbta-note
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [How to run the caller consensus analysis](#how-to-run-the-caller-consensus-analysis)
-  - [Summary of consensus files:](#summary-of-consensus-files)
 - [Summary of Methods](#summary-of-methods)
-  - [Mutation Comparisons](#mutation-comparisons)
   - [Variant Allele Fraction Calculation](#variant-allele-fraction-calculation)
+  - [Mutation Comparisons](#mutation-comparisons)
   - [Tumor Mutation Burden Calculation](#tumor-mutation-burden-calculation)
+    - [All mutations TMB](#all-mutations-tmb)
+    - [Coding only TMB](#coding-only-tmb)
 - [General usage of scripts](#general-usage-of-scripts)
   - [01-setup_db.py](#01-setup_dbpy)
   - [02-merge_callers.R](#02-merge_callersr)
@@ -60,36 +61,32 @@ As Strelka2 does not call multinucleotide variants (MNV), but instead calls each
 
 ### Tumor Mutation Burden Calculation
 
-To calculate TMB, the sum of the bases included in the intersection of the callers' BED regions are used as the denominator, depending on the sample's processing strategy.
+For each experimental strategy and TMB calculation, the intersection of the genomic regions effectively being surveyed are used.
+These genomic regions are used for first filtering mutations to these regions and then for using the size in bp of the genomic regions surveyed as the TMB denominator. 
 
-Where genome size is calculated from the respective BED file as:
-```
-genome_size = sum(End_Position - Start_Position)
-```
+#### All mutations TMB
 
-#### All mutations TMB:
-
-For all mutation TMBs, Lancet is not used because of the [coding bias in the way it was run.]()
-For WGS samples, the size of the genome covered by the intersection of Strelka and Mutects' surveyed areas is used for the denominator.
+For all mutation TMBs, Lancet is not used because of the [coding bias in the way it was run.](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#snv-and-indel-calling)
+For WGS samples, the size of the genome covered by the intersection of Strelka2 and Mutect2's surveyed areas is used for the denominator.
 ```
-WGS_all_mutations_TMB = (total # snvs called by Strelka and Mutect) / intersection_strelka_mutect_genome_size
+WGS_all_mutations_TMB = (total # snvs called by Strelka2 and Mutect) / intersection_strelka_mutect_genome_size
 ```
 For WXS samples, the size of the genome the WXS bed region file is used for the denominator.
 ```
-WXS_all_mutations_TMB = (total # snvs called by Strelka and Mutect) / wxs_genome_size
+WXS_all_mutations_TMB = (total # snvs called by Strelka2 and Mutect2 ) / wxs_genome_size
 ```
-#### Coding only TMB:
+#### Coding only TMB
 
-Coding only TMB uses Lancet and the intersection demoninators are calculated by using exon ranges in the gtf from Gencode 27.
+Coding only TMB uses all three callers: Strelka2, Mutect2, and Lancet and the intersection demoninators are calculated by using exon ranges in the gtf from Gencode 27.
 This file is included in the data download.
 SNVs outside of the these exons are filtered out before being summed and used for TMB calculations like such:
 
 ```
-WGS_coding_only_TMB = (total # exonic snvs called by all three of Strelka, Lancet, and Mutect) / intersection_strelka_lancet_mutect_exonic_genome_size
+WGS_coding_only_TMB = (total # exonic snvs called by all three of Strelka, Lancet, and Mutect2 ) / intersection_strelka_lancet_mutect_exonic_genome_size
 ```
 Because the same WXS BED file applies to all callers, that file is intersected with the exons for filtering and for determining the denominator. 
 ```
-WXS_coding_only_TMB = (total # exonic snvs called by all three of Strelka, Lancet, and Mutect) /
+WXS_coding_only_TMB = (total # exonic snvs called by all three of Strelka, Lancet, and Mutect2 ) /
 intersection_wxs_exonic_genome_size
 ```
 
