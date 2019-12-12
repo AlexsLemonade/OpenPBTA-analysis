@@ -210,5 +210,9 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     survMisc \
     survminer 
 
+# pyreadr for comparative-RNASeq-analysis
+RUN pip3 install "pyreadr==0.2.1"
+
+
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for

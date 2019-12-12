@@ -96,6 +96,14 @@ jobs:
           name: Survival analysis
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/survival-analysis/survival-analysis.Rmd', clean = TRUE)" 
 
+      - run:
+          name: Comparative RNASeq - generate correlation matrix - rsem-tpm.polya
+          command: ./scripts/run_in_ci.sh python3 analyses/comparative-RNASeq-analysis/01-correlation-matrix.py ../../data/pbta-gene-expression-rsem-tpm.polya.rds --output-prefix rsem-tpm-polya- --verbose
+
+      - run:
+          name: Comparative RNASeq - generate correlation matrix - rsem-tpm.stranded
+          command: ./scripts/run_in_ci.sh python3 analyses/comparative-RNASeq-analysis/01-correlation-matrix.py ../../data/pbta-gene-expression-rsem-tpm.stranded.rds --output-prefix rsem-tpm-stranded- --verbose
+
          ################################
          #### Add your analysis here ####
          ################################
