@@ -81,6 +81,9 @@ tmb_df <-
                               "data",
                               "pbta-snv-consensus-mutation-tmb.tsv"))
 
+## TODO: Read in the SV data/GISTIC output to evaluate the chr22q loss 
+#        associated with SMARB1 deletions
+
 #### Filter metadata -----------------------------------------------------------
 
 # Filter metadata for `ATRT` and define `location_summary` based on values in
