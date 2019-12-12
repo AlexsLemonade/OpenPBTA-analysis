@@ -38,20 +38,20 @@ base_change_plot <- function(vaf_df, exp_strategy = "BOTH", filter_cutoff = 0) {
       change = as.factor(change),
       # Change factor level order so ins and del are at the end
       change = forcats::fct_relevel(change, "ins", "del", "long_change", after = Inf)
-    ) 
-  
+    )
+
   if (exp_strategy != "BOTH") {
-  base_count_df <- base_count_df %>%
-    dplyr::group_by(change, experimental_strategy) %>%
-    dplyr::summarise(report = dplyr::n()) %>%
-    dplyr::filter(report > filter_cutoff)
+    base_count_df <- base_count_df %>%
+      dplyr::group_by(change, experimental_strategy) %>%
+      dplyr::summarise(report = dplyr::n()) %>%
+      dplyr::filter(report > filter_cutoff)
   } else {
-  base_count_df <- base_count_df %>%
-    dplyr::count(experimental_strategy, change, name = "count") %>%
-    dplyr::add_count(experimental_strategy, wt = count) %>%
-    dplyr::mutate(report = count / n)
+    base_count_df <- base_count_df %>%
+      dplyr::count(experimental_strategy, change, name = "count") %>%
+      dplyr::add_count(experimental_strategy, wt = count) %>%
+      dplyr::mutate(report = count / n)
   }
-  
+
   # Plot this as a barplot
   barplot <- ggplot2::ggplot(
     base_count_df,
@@ -76,7 +76,7 @@ base_change_plot <- function(vaf_df, exp_strategy = "BOTH", filter_cutoff = 0) {
         position = "dodge", stat = "identity",
         ggplot2::aes(fill = experimental_strategy)
       ) +
-      ggplot2::ylab("Percent of Total Mutations for Strategy") 
+      ggplot2::ylab("Percent of Total Mutations for Strategy")
   }
   # Add some other aesthetics
   barplot <- barplot +
