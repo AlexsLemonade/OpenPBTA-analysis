@@ -79,7 +79,7 @@ WXS_all_mutations_TMB = (total # snvs called by Strelka2 and Mutect2 ) / wxs_gen
 
 Coding only TMB uses all three callers: Strelka2, Mutect2, and Lancet and the intersection demoninators are calculated by using exon ranges in the gtf from Gencode 27.
 This file is included in the data download.
-SNVs outside of the these exons are filtered out before being summed and used for TMB calculations like such:
+SNVs outside of these exons are filtered out before being summed and used for TMB calculations like such:
 
 ```
 WGS_coding_only_TMB = (total # exonic snvs called by all three of Strelka, Lancet, and Mutect2 ) / intersection_strelka_lancet_mutect_exonic_genome_size
