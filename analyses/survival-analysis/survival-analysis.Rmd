@@ -51,10 +51,10 @@ plots_dir <- "plots"
 Make output directories.
 
 ```{r}
-if(!dir.exists(results_dir)) {
+if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
-if(!dir.exists(plots_dir)) {
+if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
 }
 ```
@@ -109,7 +109,8 @@ this will influence what statistical model is appropriate `<STAT_MODEL_FUNCTION>
 ```{r}
 kap_fit <- survival::survfit(
   survival::Surv(metadata$OS_days, metadata$OS_status_num) ~ reported_gender,
-  data = metadata)
+  data = metadata
+)
 
 kap_fit
 ```
@@ -117,14 +118,15 @@ kap_fit
 arguments. 
 
 ```{r}
-survminer::ggsurvplot(kap_fit, data = metadata, risk.table = TRUE, 
-                      pval = TRUE, conf.int = TRUE,
-                      xlim = c(0,2000),
-                      break.time.by = 500,
-                      ggtheme = theme_minimal(),
-                      risk.table.y.text.col = T, 
-                      risk.table.y.text = FALSE 
-                      )
+survminer::ggsurvplot(kap_fit,
+  data = metadata, risk.table = TRUE,
+  pval = TRUE, conf.int = TRUE,
+  xlim = c(0, 2000),
+  break.time.by = 500,
+  ggtheme = theme_minimal(),
+  risk.table.y.text.col = T,
+  risk.table.y.text = FALSE
+)
 
 # We can save the plot like a normal ggplot
 ggplot2::ggsave(kap_meier_plot_file)
@@ -139,16 +141,18 @@ In this example, we will test for survival curve differences between for
 
 ```{r}
 # First let's filter out data that does not have reported_gender available
-metadata_filt <- metadata %>% 
-  dplyr::filter(reported_gender != 'Not Available')
+metadata_filt <- metadata %>%
+  dplyr::filter(reported_gender != "Not Available")
 ```
 
 Use the `survdiff` function to test the differences between the `Male` and `Female` 
 curves.
+
 ```{r}
 logrank_fit <- survival::survdiff(
-  survival::Surv(metadata_filt$OS_days, metadata_filt $OS_status_num) ~ reported_gender,
-                                  data = metadata_filt)
+  survival::Surv(metadata_filt$OS_days, metadata_filt$OS_status_num) ~ reported_gender,
+  data = metadata_filt
+)
 ```
 
 Make a pretty table of the results.
@@ -156,17 +160,19 @@ Make a pretty table of the results.
 ```{r}
 # Here we can get rid of the variable label `reported_gender` since we only have
 # one variable
-logrank_table <- data.frame(group = gsub("reported_gender=", "", names(logrank_fit$n)), 
-           # We'll pull out the stats we want for this table
-           Freq = logrank_fit$n, 
-           Observed = logrank_fit$obs, 
-           Expected = logrank_fit$exp, 
-           Chi.Sq = logrank_fit$chisq) %>%
-  # Drop the automatic groups variable 
-  dplyr::select(-Freq.groups) 
+logrank_table <- data.frame(
+  group = gsub("reported_gender=", "", names(logrank_fit$n)),
+  # We'll pull out the stats we want for this table
+  Freq = logrank_fit$n,
+  Observed = logrank_fit$obs,
+  Expected = logrank_fit$exp,
+  Chi.Sq = logrank_fit$chisq
+) %>%
+  # Drop the automatic groups variable
+  dplyr::select(-Freq.groups)
 
 # Print out the table here
-logrank_table %>% 
+logrank_table %>%
   knitr::kable()
 ```
 
@@ -188,7 +194,7 @@ tmb <- readr::read_tsv(tmb_file)
 ```
 
 ```{r}
-tmb_combine <- metadata %>% 
+tmb_combine <- metadata %>%
   dplyr::inner_join(tmb, by = c("Kids_First_Biospecimen_ID" = "Tumor_Sample_Barcode"))
 ```
 
@@ -196,19 +202,20 @@ Plug this into a Cox Regression model using the function `survival::coxph`.
 
 ```{r}
 cox_fit <- survival::coxph(
-  survival::Surv(tmb_combine$OS_days, tmb_combine$OS_status_num)~ tmb,
-  data = tmb_combine)
+  survival::Surv(tmb_combine$OS_days, tmb_combine$OS_status_num) ~ tmb,
+  data = tmb_combine
+)
 ```
 
 Take the output from this and make a table. 
 
 ```{r}
-cox_table <- summary(cox_fit)$coefficients %>% 
+cox_table <- summary(cox_fit)$coefficients %>%
   as.data.frame()
 
 # Print out the table here
 cox_table %>%
-  knitr::kable() 
+  knitr::kable()
 ```
 
 Save the table data in a TSV.  
