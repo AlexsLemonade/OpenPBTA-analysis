@@ -92,6 +92,10 @@ jobs:
           name: Copy number consensus
           command: ./scripts/run_in_ci.sh bash "analyses/copy_number_consensus_call/run_consensus_call.sh"
           
+      - run:
+          name: Survival analysis
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/survival-analysis/survival-analysis.Rmd', clean = TRUE)" 
+
          ################################
          #### Add your analysis here ####
          ################################
