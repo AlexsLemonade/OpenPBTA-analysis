@@ -36,7 +36,7 @@ This bash script will return:
   - `consensus_snv.maf.tsv` - is  [MAF-like file](#consensus-mutation-call) that contains the snvs that were called by all three of these callers for a given sample are saved to this file.
   These files combine the [MAF file data](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from 3 different SNV callers: [Mutect2](https://software.broadinstitute.org/cancer/cga/mutect), [Strelka2](https://github.com/Illumina/strelka), and [Lancet](https://github.com/nygenome/lancet).
   See the methods on the callers' settings [here](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#somatic-single-nucleotide-variant-calling) and see [the methods of this caller analysis and comparison below](#summary-of-methods).  
-  - `consensus_snv_tmb_coding_only.tsv` - Tumor Mutation burden calculations using *coding only* mutations use the consensus of Lancet, Mutect2, and Strelka2. 
+  - `consensus_snv_tmb_coding_only.tsv` - Tumor Mutation burden calculations using *coding only* mutations use the consensus of Lancet, Mutect2, and Strelka2.
   - `consensus_snv_tmb_all.tsv` - Tumor Mutation burden calculations using *all* mutations use the consensus of Mutect2, and Strelka2. (Lancet was excluded because it has a [coding region bias in the way it was run](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#snv-and-indel-calling)).
 
 ## Summary of Methods
@@ -58,19 +58,39 @@ The default consensus mutations called are those that are shared among all of St
 Mutations were considered to be the same if they were identical in the following field: `Chromosome`, `Start_Position`, `Reference_Allele`,  `Allele`, and `Tumor_Sample_Barcode`.
 As Strelka2 does not call multinucleotide variants (MNV), but instead calls each component SNV as a separate mutation, MNV calls from Mutect2 and Lancet were separated into consecutive SNVs before comparison with Strelka2.
 
-
 ### Tumor Mutation Burden Calculation
 
-To calculate TMB, the sum of the bases included in the WXS or WGS BED regions are used as the denominator, depending on the sample's processing strategy.
-
-```
-TMBwxs = sum(mutation_w-in_bedwxs)/(wxs_genome_size/1000000)
-TMBwgs = sum(all_mutations)/(wgs_genome_size/1000000)
-```
+To calculate TMB, the sum of the bases included in the intersection of the callers' BED regions are used as the denominator, depending on the sample's processing strategy.
 
 Where genome size is calculated from the respective BED file as:
 ```
 genome_size = sum(End_Position - Start_Position)
+```
+
+#### All mutations TMB:
+
+For all mutation TMBs, Lancet is not used because of the [coding bias in the way it was run.]()
+For WGS samples, the size of the genome covered by the intersection of Strelka and Mutects' surveyed areas is used for the denominator.
+```
+WGS_all_mutations_TMB = (total # snvs called by Strelka and Mutect) / intersection_strelka_mutect_genome_size
+```
+For WXS samples, the size of the genome the WXS bed region file is used for the denominator.
+```
+WXS_all_mutations_TMB = (total # snvs called by Strelka and Mutect) / wxs_genome_size
+```
+#### Coding only TMB:
+
+Coding only TMB uses Lancet and the intersection demoninators are calculated by using exon ranges in the gtf from Gencode 27.
+This file is included in the data download.
+SNVs outside of the these exons are filtered out before being summed and used for TMB calculations like such:
+
+```
+WGS_coding_only_TMB = (total # exonic snvs called by all three of Strelka, Lancet, and Mutect) / intersection_strelka_lancet_mutect_exonic_genome_size
+```
+Because the same WXS BED file applies to all callers, that file is intersected with the exons for filtering and for determining the denominator. 
+```
+WXS_coding_only_TMB = (total # exonic snvs called by all three of Strelka, Lancet, and Mutect) /
+intersection_wxs_exonic_genome_size
 ```
 
 ## General usage of scripts
@@ -123,7 +143,7 @@ Using the database created by `01-setup_db.py`, merge callers' data files into c
 
 Using the consensus file created in `02-merge_callers.R`, calculate TMB for all
 WGS and WXS samples.
-Two TMB files are created, one including *all snv* called by Strelka2 and Mutect2 (Lancet is excluded from this TMB calculation consensus because of a [coding region bias in the way it was ran](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#snv-and-indel-calling)), and a *coding snvs only* TMB calculation. 
+Two TMB files are created, one including *all snv* called by Strelka2 and Mutect2 (Lancet is excluded from this TMB calculation consensus because of a [coding region bias in the way it was ran](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#snv-and-indel-calling)), and a *coding snvs only* TMB calculation.
 
 **Argument descriptions**
 ```
