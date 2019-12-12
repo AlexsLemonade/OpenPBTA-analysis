@@ -38,8 +38,7 @@ metadata <-
 select_metadata <- metadata %>%
   dplyr::select(sample_id,
                 Kids_First_Participant_ID,
-                Kids_First_Biospecimen_ID,
-                glioma_brain_region)
+                Kids_First_Biospecimen_ID)
 
 # Read in ssGSEA pathway information
 ssGSEA <-
@@ -84,60 +83,11 @@ tmb_df <-
 
 #### Filter metadata -----------------------------------------------------------
 
-# Define regions of the brain (using Anatomy of the Brain figure found at
-# https://www.ncbi.nlm.nih.gov/books/NBK65903/figure/CDR0000574573__205/)
-supratentorial <-
-  c(
-    "Skull",
-    "Thalamus",
-    "Temporal Lobe",
-    "Frontal Lobe",
-    "Parietal Lobe",
-    "Cerebrum",
-    "Basal Ganglia",
-    "Cranial Nerves NOS",
-    "Basal Ganglia;Temporal Lobe",
-    "Frontal Lobe;Parietal Lobe;Temporal Lobe",
-    "Parietal Lobe;Temporal Lobe",
-    "Frontal Lobe;Parietal Lobe"
-  )
-
-infratentorial <-
-  c(
-    "Cerebellum/Posterior Fossa",
-    "Brain Stem- Pons;Cerebellum/Posterior Fossa",
-    "Cerebellum/Posterior Fossa;Other locations NOS",
-    "Brain Stem",
-    "Brain Stem- Midbrain/Tectum;Ventricles",
-    "Cerebellum/Posterior Fossa;Ventricles",
-    "Cerebellum/Posterior Fossa;Spinal Cord- Cervical;Spinal Cord- Lumbar/Thecal Sac;Spinal Cord- Thoracic",
-    "Other locations NOS;Spinal Cord- Lumbar/Thecal Sac;Spinal Cord- Thoracic;Ventricles"
-  )
-
 # Filter metadata for `ATRT` and define `location_summary` based on values in
 # `primary_site`
 atrt_df <- metadata %>%
   dplyr::filter(short_histology == "ATRT",
-                experimental_strategy == "RNA-Seq") %>%
-  dplyr::mutate(
-    location_summary = dplyr::case_when(
-      primary_site %in% infratentorial ~ "infratentorial",
-      primary_site %in% supratentorial ~ "supratentorial",
-      TRUE ~ "NA"
-    )
-  ) %>%
-  dplyr::group_by(sample_id) %>%
-  dplyr::summarize(
-    Kids_First_Biospecimen_ID = paste(sort(unique(
-      Kids_First_Biospecimen_ID
-    )),
-    collapse = ", "),
-    Kids_First_Participant_ID,
-    location_summary,
-    age_at_diagnosis_days,
-    germline_sex_estimate,
-    primary_site
-  )
+                experimental_strategy == "RNA-Seq")
 
 # Write to file
 readr::write_tsv(atrt_df, file.path(results_dir, "atrt_histologies.tsv"))
@@ -181,6 +131,7 @@ cn_metadata <- cn_df %>%
                 Kids_First_Participant_ID,
                 biospecimen_id,
                 status) %>%
+  dplyr::filter(sample_id %in% atrt_df$sample_id) %>%
   dplyr::distinct()
 
 # Write to file
@@ -188,33 +139,16 @@ readr::write_tsv(cn_metadata, file.path(results_dir, "atrt_focal_cn.tsv.gz"))
 
 #### Filter ssGSEA data --------------------------------------------------------
 
-# Calculate ssGSEA mean and sd
-ssGSEA_means <- rowMeans(ssGSEA, na.rm = TRUE)
-ssGSEA_sd <- apply(ssGSEA, 1, sd, na.rm = TRUE)
-
-# Subtract mean
-ssGSEA_zscored <- sweep(ssGSEA, 1, ssGSEA_means, FUN = "-")
-
-# Divide by SD remove NAs and Inf values from zscore for genes with 0
-ssGSEA_zscored <-
-  sweep(ssGSEA_zscored, 1, ssGSEA_sd, FUN = "/") %>%
-  dplyr::na_if(Inf) %>%
-  na.omit()
-
 # Transpose
-transposed_ssGSEA <- t(ssGSEA_zscored)
-
-# Select wanted pathways and merge metadata
-transposed_ssGSEA <- transposed_ssGSEA %>%
+transposed_ssGSEA <- t(ssGSEA) %>%
   as.data.frame() %>%
-  tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
+  tibble::rownames_to_column("Kids_First_Biospecimen_ID")
+
+# Filter for `sample_id` values found in the metadata filtered for ATRT samples
+transposed_ssGSEA <- transposed_ssGSEA %>%
   dplyr::left_join(select_metadata, by = "Kids_First_Biospecimen_ID") %>%
-  dplyr::group_by(sample_id) %>%
-  dplyr::summarise(
-    HALLMARK_MYC_TARGETS_V1 = mean(HALLMARK_MYC_TARGETS_V1),
-    HALLMARK_MYC_TARGETS_V2 = mean(HALLMARK_MYC_TARGETS_V2),
-    HALLMARK_NOTCH_SIGNALING = mean(HALLMARK_NOTCH_SIGNALING)
-  )
+  dplyr::filter(sample_id %in% atrt_df$sample_id) %>%
+  tibble::column_to_rownames("Kids_First_Biospecimen_ID")
 
 # Write to file
 readr::write_tsv(transposed_ssGSEA, file.path(results_dir, "atrt_ssgsea.tsv"))
@@ -223,8 +157,9 @@ readr::write_tsv(transposed_ssGSEA, file.path(results_dir, "atrt_ssgsea.tsv"))
 
 tmb_df <- tmb_df %>%
   dplyr::select(Tumor_Sample_Barcode, tmb) %>%
-  dplyr::inner_join(select_metadata,
-                    by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID"))
+  dplyr::left_join(select_metadata,
+                    by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
+  dplyr::filter(sample_id %in% atrt_df$sample_id)
 
 # Write to file 
 readr::write_tsv(tmb_df, file.path(results_dir, "atrt_tmb.tsv"))

@@ -56,8 +56,14 @@ if (!dir.exists(results_dir)) {
 metadata <-
   readr::read_tsv(file.path(input_dir, "atrt_histologies.tsv"))
 
+# Select wanted columns in metadata for merging and assign to a new object
+select_metadata <- metadata %>%
+  dplyr::select(sample_id,
+                Kids_First_Participant_ID,
+                Kids_First_Biospecimen_ID)
+
 # Read in ATRT subset ssGSEA pathway information
-transposed_ssGSEA <-
+ssGSEA_subset <-
   as.data.frame(readr::read_tsv(file.path(input_dir, "atrt_ssgsea.tsv")))
 
 # Read in ATRT subset z-scored RNA expression data
@@ -95,7 +101,6 @@ viewDataTable <- function(data) {
     class = 'cell-border stripe',
     options = list(
       pageLength = 5,
-      max.print = 20,
       searchHighlight = TRUE,
       scrollX = TRUE,
       dom = 'tpi',
@@ -110,9 +115,9 @@ viewDataTable <- function(data) {
 }
 ```
 
-# Filter Data
+# Prepare Data
 
-## Filter metadata
+## Metadata
 
 ```{r}
 # Define regions of the brain (using Anatomy of the Brain figure found at
@@ -145,7 +150,26 @@ infratentorial <-
     "Other locations NOS;Spinal Cord- Lumbar/Thecal Sac;Spinal Cord- Thoracic;Ventricles"
   )
 
-# Display `atrt_df`
+metadata <- metadata %>%
+  dplyr::mutate(
+    location_summary = dplyr::case_when(
+      primary_site %in% infratentorial ~ "infratentorial",
+      primary_site %in% supratentorial ~ "supratentorial",
+      TRUE ~ "NA"
+    )
+  ) %>%
+  dplyr::group_by(sample_id) %>%
+  dplyr::select(
+    sample_id,
+    Kids_First_Biospecimen_ID,
+    Kids_First_Participant_ID,
+    location_summary,
+    age_at_diagnosis_days,
+    germline_sex_estimate,
+    primary_site
+  )
+
+# Display metadata subsetted for ATRT samples
 metadata %>%
   head(n = 15)
 ```
@@ -168,7 +192,7 @@ readr::write_rds(initial_annotation_df,
                  file.path(results_dir, "initial_heatmap_annotation.RDS"))
 ```
 
-## Filter RNA expression, CN, TMB, and ssGSEA data by merging with `sample_id`
+## Filter and join RNA expression, CN, TMB, and ssGSEA data
 
 ### RNA expression data 
 
@@ -233,7 +257,7 @@ long_stranded_expression <- t(expression_zscored)
 expression_metadata <- long_stranded_expression %>%
   as.data.frame() %>%
   tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
-  dplyr::left_join(metadata, by = "Kids_First_Biospecimen_ID")
+  dplyr::left_join(select_metadata, by = "Kids_First_Biospecimen_ID")
 
 # Display `expression_metadata`
 expression_metadata %>%
@@ -281,33 +305,50 @@ atrt_expression_cn_df <- atrt_expression_df %>%
 ### ssGSEA data
 
 ```{r}
+# Transpose
+transposed_ssGSEA <- t(ssGSEA_subset)
+
+# Calculate ssGSEA mean and sd
+ssGSEA_means <- rowMeans(ssGSEA, na.rm = TRUE)
+ssGSEA_sd <- apply(ssGSEA, 1, sd, na.rm = TRUE)
+
+# Subtract mean
+ssGSEA_zscored <- sweep(ssGSEA, 1, ssGSEA_means, FUN = "-")
+
+# Divide by SD remove NAs and Inf values from zscore for genes with 0
+ssGSEA_zscored <-
+  sweep(ssGSEA_zscored, 1, ssGSEA_sd, FUN = "/") %>%
+  dplyr::na_if(Inf) %>%
+  na.omit()
+
+# Transpose back
+ssGSEA_zscored <- t(ssGSEA_zscored)
+
 # Summarise pathway values 
-transposed_ssGSEA <- transposed_ssGSEA %>%
- dplyr::group_by(sample_id) %>%
+ssGSEA_summarised <- ssGSEA_zscored %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
+  dplyr::left_join(select_metadata, by = "Kids_First_Biospecimen_ID") %>%
+  dplyr::group_by(sample_id) %>%
   dplyr::summarise(
     HALLMARK_MYC_TARGETS_V1 = mean(HALLMARK_MYC_TARGETS_V1),
     HALLMARK_MYC_TARGETS_V2 = mean(HALLMARK_MYC_TARGETS_V2),
     HALLMARK_NOTCH_SIGNALING = mean(HALLMARK_NOTCH_SIGNALING)
   )
+
 #Display `transposed_ssGSEA`
-transposed_ssGSEA %>%
+ssGSEA_summarised %>%
   head(n = 15)
 
 # Join ATRT expression and focal CN data with transposed ssGSEA data
 atrt_expression_cn_df <- atrt_expression_cn_df %>%
-  dplyr::left_join(transposed_ssGSEA,
+  dplyr::left_join(ssGSEA_summarised,
                    by = "sample_id")
 ```
 
 ### Tumor mutation burden data
 
 ```{r}
-# Join tumor mutuation data with metadata
-# tmb_df <- tmb_df %>%
-#   dplyr::select(Tumor_Sample_Barcode, tmb) %>%
-#   dplyr::inner_join(select_metadata,
-#                     by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID"))
-
 #Display `tmb_df`
 tmb_df %>%
   head(n = 15)
@@ -334,18 +375,6 @@ final_df <- atrt_expression_cn_tmb_df %>%
     ), collapse = ", "),
     Kids_First_Participant_ID = paste(sort(
       unique(c(Kids_First_Participant_ID.x, Kids_First_Participant_ID.y))
-    ), collapse = ", "),
-    location_summary = paste(sort(
-      unique(c(location_summary.x, location_summary.y))
-    ), collapse = ", "),
-    age_at_diagnosis_days = paste(sort(
-      unique(c(age_at_diagnosis_days.x, age_at_diagnosis_days.y))
-    ), collapse = ", "),
-    germline_sex_estimate = paste(sort(
-      unique(c(germline_sex_estimate.x, germline_sex_estimate.y))
-    ), collapse = ", "),
-    primary_site = paste(sort(
-      unique(c(primary_site.x, primary_site.y))
     ), collapse = ", ")
   ) %>%
   dplyr::select(
@@ -354,15 +383,7 @@ final_df <- atrt_expression_cn_tmb_df %>%
       "Kids_First_Biospecimen_ID.x",
       "Kids_First_Biospecimen_ID.y",
       "Kids_First_Participant_ID.x",
-      "Kids_First_Participant_ID.y",
-      "location_summary.x",
-      "location_summary.y",
-      "age_at_diagnosis_days.x",
-      "age_at_diagnosis_days.y",
-      "germline_sex_estimate.x",
-      "germline_sex_estimate.y",
-      "primary_site.x",
-      "primary_site.y"
+      "Kids_First_Participant_ID.y"
     )
   ) %>%
   dplyr::select(
