@@ -64,7 +64,7 @@ select_metadata <- metadata %>%
 
 # Read in ATRT subset ssGSEA pathway information
 ssGSEA_subset <-
-  as.data.frame(readr::read_tsv(file.path(input_dir, "atrt_ssgsea.tsv")))
+  as.data.frame(readr::read_rds(file.path(input_dir, "atrt_ssgsea.RDS")))
 
 # Read in ATRT subset z-scored RNA expression data
 stranded_expression <-
@@ -309,11 +309,11 @@ atrt_expression_cn_df <- atrt_expression_df %>%
 transposed_ssGSEA <- t(ssGSEA_subset)
 
 # Calculate ssGSEA mean and sd
-ssGSEA_means <- rowMeans(ssGSEA, na.rm = TRUE)
-ssGSEA_sd <- apply(ssGSEA, 1, sd, na.rm = TRUE)
+ssGSEA_means <- rowMeans(transposed_ssGSEA, na.rm = TRUE)
+ssGSEA_sd <- apply(transposed_ssGSEA, 1, sd, na.rm = TRUE)
 
 # Subtract mean
-ssGSEA_zscored <- sweep(ssGSEA, 1, ssGSEA_means, FUN = "-")
+ssGSEA_zscored <- sweep(transposed_ssGSEA, 1, ssGSEA_means, FUN = "-")
 
 # Divide by SD remove NAs and Inf values from zscore for genes with 0
 ssGSEA_zscored <-

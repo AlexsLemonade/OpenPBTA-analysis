@@ -148,10 +148,11 @@ transposed_ssGSEA <- t(ssGSEA) %>%
 transposed_ssGSEA <- transposed_ssGSEA %>%
   dplyr::left_join(select_metadata, by = "Kids_First_Biospecimen_ID") %>%
   dplyr::filter(sample_id %in% atrt_df$sample_id) %>%
-  tibble::column_to_rownames("Kids_First_Biospecimen_ID")
+  tibble::column_to_rownames("Kids_First_Biospecimen_ID") %>%
+  dplyr::select(-c("sample_id", "Kids_First_Participant_ID"))
 
 # Write to file
-readr::write_tsv(transposed_ssGSEA, file.path(results_dir, "atrt_ssgsea.tsv"))
+readr::write_rds(transposed_ssGSEA, file.path(results_dir, "atrt_ssgsea.RDS"))
 
 #### Filter tumor mutation burden data -----------------------------------------
 
