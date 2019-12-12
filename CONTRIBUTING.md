@@ -135,6 +135,12 @@ replacing `<my-branch-for-pull-request>` with your branch name without angle bra
 
 Note: You will be prompted to enter a commit message via the [text editor configured for your system](https://help.github.com/en/github/using-git/associating-text-editors-with-git).
 
+To update your branch and pull request on GitHub, push your changes with:
+
+```
+git push
+```
+
 ## Authorship
 
 The ultimate goal of this is effort is to describe the results of our analyses in a manuscript.
