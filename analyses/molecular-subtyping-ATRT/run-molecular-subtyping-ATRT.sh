@@ -10,7 +10,7 @@ set -o pipefail
 
 # this option controls whether on not the step that generates the ATRT only
 # files gets run -- it will be turned off in CI
-SUBSET={OPENPBTA_SUBSET:-1}
+SUBSET=${OPENPBTA_SUBSET:-1}
 
 # This script should always run as if it were being called from
 # the directory it lives in.
