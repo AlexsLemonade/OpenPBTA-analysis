@@ -175,24 +175,6 @@ metadata %>%
   head(n = 15)
 ```
 
-## Prepare annotation data.frame for plotting of initial heatmap
-
-```{r}
-# Create an annotation data.frame for the relevant annotation data
-initial_annotation_df <- metadata %>%
-  tibble::column_to_rownames("Kids_First_Biospecimen_ID") %>%
-  dplyr::select(-c(
-    sample_id,
-    Kids_First_Participant_ID,
-    primary_site,
-    age_at_diagnosis_days
-  ))
-
-# Write initial annotation data.frame to file
-readr::write_rds(initial_annotation_df,
-                 file.path(results_dir, "initial_heatmap_annotation.RDS"))
-```
-
 ## Filter and join RNA expression, CN, TMB, and ssGSEA data
 
 ### RNA expression data 
@@ -402,24 +384,6 @@ readr::write_tsv(final_df,
 
 # Display `final_df`
 viewDataTable(final_df) 
-```
-
-# Prepare annotation data.frame for plotting of final heatmap
-
-```{r}
-# Create an annotation data.frame for the atrt expression data
-final_annotation_df <- final_df %>%
-  dplyr::select(
-    Kids_First_Biospecimen_ID,
-    location_summary,
-    SMARCB1_focal_status,
-    SMARCA4_focal_status,
-  ) %>%
-  tibble::column_to_rownames("Kids_First_Biospecimen_ID")
-
-# Write final annotation data.frame to file
-readr::write_rds(final_annotation_df,
-                 file.path(results_dir, "final_heatmap_annotation.RDS"))
 ```
 
 # Session Info
