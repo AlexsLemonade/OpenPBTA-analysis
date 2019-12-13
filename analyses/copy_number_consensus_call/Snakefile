@@ -96,7 +96,7 @@ rule filter_telomeres:
         filtered_bed="../../scratch/interim/{sample}.{caller}.{dupdel}.filtered.bed"
     wildcard_constraints:
         caller = "cnvkit|freec|manta",
-        dupde = "del|dup"
+        dupdel = "del|dup"
     threads: 1
     shell:
         ## Invoke the python3 script and pass in the reference and CNVs files. Direct the stdout to a new file. 
