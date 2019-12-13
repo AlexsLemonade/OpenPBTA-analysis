@@ -22,14 +22,9 @@ Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd',
 
 ```{r}
 # This will be needed to create the frequency and proportion aberration plots 
-if (!("GenVisR" %in% installed.packages())) {
+if (!("maftools" %in% installed.packages())) {
   install.packages("BiocManager")
-  BiocManager::install("GenVisR")
-}
-
-# This will be need to combine plots 
-if (!("cowplot" %in% installed.packages())) {
-  install.packages("cowplot")
+  BiocManager::install("maftools")
 }
 
 # Magrittr pipe
@@ -73,7 +68,8 @@ metadata <-
 # GISTIC Plots
 
 ```{r}
-maftools::gisticChromPlot(gistic_data)
+maftools::gisticChromPlot(gistic_data, 
+                          ref.build = "hg38")
 ```
 
 # Session Info
