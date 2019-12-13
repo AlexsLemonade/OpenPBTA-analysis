@@ -18,7 +18,7 @@ This document contains information about all data files associated with this pro
 
 ### current release (release-v11-20191126)
 
-| **File name** |  **File Type** | **Associated analysis** | **File Description** |
+| **File name** |  **File Type** | **Origin** | **File Description** |
 |---------------|----------------|------------------------|-----------------------|
 |`GRCh38.primary_assembly.genome.fa.gz` | | |  |
 |`StrexomeLite_Targets_CrossMap_hg38_filtered_chr_prefixed.bed` | | |
