@@ -1,0 +1,84 @@
+---
+title: "CNV GISTIC Plots"
+output:   
+  html_notebook: 
+    toc: true
+    toc_float: true
+---
+
+## Output Files
+
+## Usage
+
+This script is intended to be run via the command line from the top directory
+of the repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', 
+                              clean = TRUE)"
+```
+
+# Set Up
+
+```{r}
+# This will be needed to create the frequency and proportion aberration plots 
+if (!("GenVisR" %in% installed.packages())) {
+  install.packages("BiocManager")
+  BiocManager::install("GenVisR")
+}
+
+# This will be need to combine plots 
+if (!("cowplot" %in% installed.packages())) {
+  install.packages("cowplot")
+}
+
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+# Directories and Files
+
+```{r}
+# Path to input directory
+input_directory <- file.path("..", "..", "data")
+
+# Path to output directory
+output_directory <- "plots"
+
+# Create the output directory if it does not exist
+if (!dir.exists(output_directory)) {
+  dir.create(output_directory, recursive = TRUE)
+}
+```
+
+```{r}
+gistic_results <- file.path(input_directory, "GISTIC_STUFF")
+```
+
+# Read in data 
+
+```{r}
+# Read in GISTIC data
+gistic_data <- maftools::readGistic(
+  gisticAllLesionsFile = file.path("2019-12-10-gistic-results-cnvkit", "all_lesions.conf_90.txt"),
+  gisticAmpGenesFile = file.path("2019-12-10-gistic-results-cnvkit", "amp_genes.conf_90.txt"),
+  gisticScoresFile = file.path("2019-12-10-gistic-results-cnvkit", "scores.gistic")
+  )
+
+# Read in metadata
+metadata <-
+  readr::read_tsv(file.path(input_directory, "pbta-histologies.tsv"))
+```
+
+# GISTIC Plots
+
+```{r}
+maftools::gisticChromPlot(gistic_data)
+```
+
+# Session Info
+
+```{r}
+sessionInfo()
+```
+
