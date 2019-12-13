@@ -8,7 +8,7 @@
 set -e
 set -o pipefail
 
-# this option controls whether on not the step that generates the ATRT only
+# This option controls whether on not the step that generates the ATRT only
 # files gets run -- it will be turned off in CI
 SUBSET=${OPENPBTA_SUBSET:-1}
 

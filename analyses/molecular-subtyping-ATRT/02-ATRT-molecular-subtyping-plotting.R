@@ -62,17 +62,17 @@ final_df <-
 
 #### Plot heatmap --------------------------------------------------------------
 
-# find and filter to high variance genes
+# Find and filter to high variance genes
 row_variances <- matrixStats::rowVars(as.matrix(log_expression))
 high_var_exp <- log_expression[which(row_variances > quantile(row_variances, 0.8)), ]
 
-# z-score the genes and change the identifiers
+# Z-score the genes and change the identifiers
 high_var_exp <- scale(t(high_var_exp),  # scale works on columns
                       center = TRUE,
                       scale = TRUE) %>%
   as.data.frame() %>%
   tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
-  # convert from the biospecimen IDs to the sample_id -- this will allow us
+  # Convert from the biospecimen IDs to the sample_id -- this will allow us
   # to annotate the heatmap we will make
   inner_join(
     select(
@@ -83,10 +83,10 @@ high_var_exp <- scale(t(high_var_exp),  # scale works on columns
     by = "Kids_First_Biospecimen_ID") %>%
   select(-Kids_First_Biospecimen_ID) %>%
   tibble::column_to_rownames("sample_id") %>%
-  # make it such that rows are genes again
+  # Make it such that rows are genes again
   t()
 
-# make data.frame that will be used to form an annotation bar for the heatmap
+# Make data.frame that will be used to form an annotation bar for the heatmap
 annotation_df <- final_df %>%
   select(
     sample_id,
@@ -98,7 +98,7 @@ annotation_df <- final_df %>%
   as.data.frame() %>%  # ComplexHeatmap doesn't like tibbles
   tibble::column_to_rownames("sample_id")
 
-# make into an annotation object
+# Make into an annotation object
 column_annotation <- HeatmapAnnotation(df = annotation_df)
 
 # Plot and save the Heatmap
@@ -117,7 +117,7 @@ Heatmap(
 )
 dev.off()
 
-# make a PCA plot
+# Make a PCA plot
 pca_results <- prcomp(t(high_var_exp))
 pca_plot <- autoplot(pca_results, scale = 0) +
   theme_bw() +

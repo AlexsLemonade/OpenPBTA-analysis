@@ -321,7 +321,7 @@ ssGSEA_summarised <- ssGSEA_zscored %>%
     HALLMARK_NOTCH_SIGNALING = mean(HALLMARK_NOTCH_SIGNALING)
   )
 
-#Display `transposed_ssGSEA`
+# Display `transposed_ssGSEA`
 ssGSEA_summarised %>%
   head(n = 15)
 
@@ -334,7 +334,7 @@ atrt_expression_cn_df <- atrt_expression_cn_df %>%
 ### Tumor mutation burden data
 
 ```{r}
-#Display `tmb_df`
+# Display `tmb_df`
 tmb_df %>%
   head(n = 15)
 
