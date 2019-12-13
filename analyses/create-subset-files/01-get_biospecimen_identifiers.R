@@ -190,9 +190,14 @@ files_to_subset <-
 # files_to_subset <- files_to_subset[-grep("vardict|mutect2", files_to_subset)]
 
 # get the participant ID to biospecimen ID
-id_mapping_df <- read_tsv(file.path(data_directory, "pbta-histologies.tsv")) %>%
-  dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID) %>%
+id_gender_df <- read_tsv(file.path(data_directory, "pbta-histologies.tsv")) %>%
+  dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID,
+                reported_gender) %>%
   dplyr::distinct()
+
+# drop reported gender
+id_mapping_df <- id_gender_df %>%
+  dplyr::select(-reported_gender)
 
 # for each file, extract the participant ID list by first obtaining the
 # biospecimen IDs and then mapping back to
@@ -232,9 +237,34 @@ other_strategy_in_all <- purrr::reduce(other_strategy_participant_list,
 polya_matched <- intersect(polya_in_all, other_strategy_in_all)
 stranded_matched <- intersect(stranded_in_all, other_strategy_in_all)
 
-# find identifiers for matched participants
+# find identifiers for matched participants!
+# first consider the poly-A samples
 polya_for_subset <- sample(polya_matched, num_matched_polya)
-stranded_for_subset <- sample(stranded_matched, num_matched_stranded)
+
+# we need to sample the stranded participants keeping the reported gender in 
+# mind -- currently this is only for the sex prediction from RNA-seq data
+id_gender_df <- id_gender_df %>%
+  dplyr::filter(Kids_First_Participant_ID %in% stranded_matched)
+
+# get the number of samples for each reported gender - we'll split 54% males 
+# which is what the 'matched' cohort is like
+num_male <- ceiling(0.54 * num_matched_stranded)
+num_female <- num_matched_stranded - num_male
+
+stranded_for_subset <- c(
+  id_gender_df %>%
+    dplyr::filter(reported_gender == "Male") %>%
+    dplyr::pull(Kids_First_Participant_ID) %>%
+    unique() %>%
+    sample(num_male),
+  id_gender_df %>%
+    dplyr::filter(reported_gender == "Female") %>%
+    dplyr::pull(Kids_First_Participant_ID) %>%
+    unique() %>%
+    sample(num_female)
+)
+
+# intersect with the other strategies
 matched_for_subset <- purrr::map(participant_id_list,
                                  ~ intersect(.x, c(polya_for_subset,
                                                    stranded_for_subset)))
