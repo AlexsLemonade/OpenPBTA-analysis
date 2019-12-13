@@ -46,13 +46,16 @@ if (!dir.exists(plots_dir)) {
 # Read in RNA expression data
 zscored_expression <-
   readr::read_rds(file.path(
-    results_dir,
+    root_dir,
+    "analyses",
+    "molecular-subtyping-ATRT",
+    "atrt-subset",
     "atrt_zscored_expression.RDS"
   ))
 
 # Read in final output data.frame from `01-ATRT-molecular-subtyping-data-prep.Rmd`
 final_df <-
-  readr::read_tsv(file.path(results_dir, "ATRT_molecular_subtypes.tsv.gz"))
+  readr::read_tsv(file.path(results_dir, "ATRT_molecular_subtypes.tsv"))
 
 #### Plot initial heatmap ----------------------------------
 
