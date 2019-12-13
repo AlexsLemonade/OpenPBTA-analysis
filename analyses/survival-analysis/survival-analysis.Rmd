@@ -28,7 +28,7 @@ _This assumes you are in the top directory of the repository._
 
 Read in set up script.
 
-```{r}
+```{r Set up library}
 if (!("survminer" %in% installed.packages())) {
   install.packages("survminer")
 }
@@ -42,7 +42,7 @@ library(survminer)
 
 Set up output directories. 
 
-```{r}
+```{r Set up directories}
 data_dir <- file.path("..", "..", "data")
 results_dir <- "results"
 plots_dir <- "plots"
@@ -50,7 +50,7 @@ plots_dir <- "plots"
 
 Make output directories.
 
-```{r}
+```{r Make output directories}
 if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
@@ -61,14 +61,14 @@ if (!dir.exists(plots_dir)) {
 
 Declare input file paths. 
 
-```{r}
+```{r Set input file paths}
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
 tmb_file <- file.path(data_dir, "pbta-snv-consensus-mutation-tmb.tsv")
 ```
 
 Declare output file paths. 
 
-```{r}
+```{r Set output file paths}
 kap_meier_plot_file <- file.path(plots_dir, "survival_curve_gender.pdf")
 logrank_table_file <- file.path(results_dir, "logrank_gender.tsv")
 cox_table_file <- file.path(results_dir, "cox_regression_tmb.tsv")
@@ -76,7 +76,7 @@ cox_table_file <- file.path(results_dir, "cox_regression_tmb.tsv")
 
 ## Import the metadata
 
-```{r}
+```{r Read in metadata}
 metadata <- readr::read_tsv(metadata_file)
 ```
 
@@ -84,7 +84,7 @@ Reformat the `OS_days` variable.
 The `survival` R packages want overall survival status to be in the form of a 
 numeric variable where `0  = Living` and `1 = Deceased`. 
 
-```{r}
+```{r Make OS numeric}
 metadata$OS_status <- factor(metadata$OS_status, levels = c("LIVING", "DECEASED"))
 metadata$OS_status_num <- as.numeric(metadata$OS_status)
 ```
@@ -107,20 +107,23 @@ this will influence what statistical model is appropriate `<STAT_MODEL_FUNCTION>
 The [Kaplan-Meier](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3059453/) 
 survival curve shows the probability of survival over time.
 
-```{r}
+```{r Kaplan Meier}
+# Make the model
 kap_fit <- survival::survfit(
   survival::Surv(metadata$OS_days, metadata$OS_status_num) ~ reported_gender,
   data = metadata
 )
 
-kap_fit
+# Print out a cleaned version of this data to look at it
+broom::tidy(kap_fit)
 ```
 
 `survminer` package comes with a convenient plotting function which uses `ggplot2`
 arguments. 
 
-```{r}
+```{r Make survival plot}
 surv_plot <- survminer::ggsurvplot(kap_fit,
+  pval = TRUE, 
   data = metadata, risk.table = TRUE,
   conf.int = TRUE,
   xlim = c(0, 2000),
@@ -130,13 +133,13 @@ surv_plot <- survminer::ggsurvplot(kap_fit,
   risk.table.y.text = FALSE
 )
 
-# Print out this plot
-surv_plot
+# Make this plot a combined plot
+cowplot::plot_grid(surv_plot[[1]], surv_plot[[2]], nrow = 2, rel_heights = c(2.5, 1))
 ```
 
 Save the plot to a file. 
 
-```{r}
+```{r Save survival plot}
 # We can save the plot like a normal ggplot
 ggplot2::ggsave(kap_meier_plot_file)
 ```
@@ -148,7 +151,7 @@ can be implemented using `survival::survdiff` function.
 In this example, we will test for survival curve differences between for 
 `reported_gender` categories. 
 
-```{r}
+```{r Filter out unavailable genders}
 # First let's filter out data that does not have reported_gender available
 metadata_filt <- metadata %>%
   dplyr::filter(reported_gender != "Not Available")
@@ -157,7 +160,7 @@ metadata_filt <- metadata %>%
 Use the `survdiff` function to test the differences between the `Male` and `Female` 
 curves.
 
-```{r}
+```{r Do log rank test}
 logrank_fit <- survival::survdiff(
   survival::Surv(metadata_filt$OS_days, metadata_filt$OS_status_num) ~ reported_gender,
   data = metadata_filt
@@ -166,19 +169,13 @@ logrank_fit <- survival::survdiff(
 
 Make a pretty table of the results.
 
-```{r}
-# Here we can get rid of the variable label `reported_gender` since we only have
-# one variable
-logrank_table <- data.frame(
-  group = gsub("reported_gender=", "", names(logrank_fit$n)),
-  # We'll pull out the stats we want for this table
-  Freq = logrank_fit$n,
-  Observed = logrank_fit$obs,
-  Expected = logrank_fit$exp,
-  Chi.Sq = logrank_fit$chisq
-) %>%
-  # Drop the automatic groups variable
-  dplyr::select(-Freq.groups)
+```{r Make log rank table}
+# Obtain p value for Chi-Squared stat
+p.value = pchisq(logrank_fit$chisq, df = 1, lower = FALSE)
+
+# Use broom to make the model object cleaned up
+logrank_table <- broom::tidy(logrank_fit) %>% 
+  dplyr::mutate(p.value)
 
 # Print out the table here
 logrank_table %>%
@@ -187,7 +184,7 @@ logrank_table %>%
 
 Save the table data in a TSV.  
 
-```{r}
+```{r Write log rank to table}
 readr::write_tsv(logrank_table, logrank_table_file)
 ```
 
@@ -197,19 +194,19 @@ Cox Regression is a model suited for survival analysis where your independent
 variables are continuous. 
 For this example, we'll use Tumor Mutation Burden as our continuous variable. 
 
-```{r}
+```{r Read in TMB data}
 # Read in the data
 tmb <- readr::read_tsv(tmb_file)
 ```
 
-```{r}
+```{r Join TMB to metadata}
 tmb_combine <- metadata %>%
   dplyr::inner_join(tmb, by = c("Kids_First_Biospecimen_ID" = "Tumor_Sample_Barcode"))
 ```
 
 Plug this into a Cox Regression model using the function `survival::coxph`. 
 
-```{r}
+```{r Run Cox regression model}
 cox_fit <- survival::coxph(
   survival::Surv(tmb_combine$OS_days, tmb_combine$OS_status_num) ~ tmb,
   data = tmb_combine
@@ -218,9 +215,9 @@ cox_fit <- survival::coxph(
 
 Take the output from this and make a table. 
 
-```{r}
-cox_table <- summary(cox_fit)$coefficients %>%
-  as.data.frame()
+```{r Make Cox regression table}
+# Tidy up the model object with broom
+cox_table <- broom::tidy(cox_fit) 
 
 # Print out the table here
 cox_table %>%
@@ -229,12 +226,12 @@ cox_table %>%
 
 Save the table data in a TSV.  
 
-```{r}
+```{r Write Cox regression to tsv}
 readr::write_tsv(cox_table, cox_table_file)
 ```
 
 ## Session Info
 
-```{r}
+```{r Print session info}
 sessionInfo()
 ```
