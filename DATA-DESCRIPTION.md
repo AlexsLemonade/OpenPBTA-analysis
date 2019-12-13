@@ -7,7 +7,7 @@ This document contains information about all data files associated with this pro
 	+ *Modified reference file*: Obtained from an external source/database but modified for OpenPBTA use. 	
 	+ *External data file*: Data directly obtained from the cancer samples databases that be. When known, the specific database and download date should be included.
 	+ *Analysis file*: Any file created by a script in `analyses/*`. 
-+ **Associated analyses**
++ **Origin**
 	+ A relative link to the specific analysis from which the file was generated.
 		+ For any files which are generally applicable to many/most/all analyses, please write *Universal* in this field
 	+ When applicable, a link to the specific *script* that produced (or modified, for *Modified reference file* types) the data
