@@ -71,7 +71,7 @@ stranded_expression <-
   readr::read_rds(
     file.path(
       input_dir,
-      "atrt_zscored_expression.RDS"
+      "atrt_log_expression.RDS"
     )
   )
 
@@ -90,6 +90,7 @@ tmb_df <-
 ```
 
 ## Custom Function
+
 ```{r}
 # Custom datatable function
 # Function code adapted from: https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/49acc98f5ffd86853fc70f220623311e13e3ca9f/analyses/collapse-rnaseq/02-analyze-drops.Rmd#L23
@@ -174,24 +175,6 @@ metadata %>%
   head(n = 15)
 ```
 
-## Prepare annotation data.frame for plotting of initial heatmap
-
-```{r}
-# Create an annotation data.frame for the relevant annotation data
-initial_annotation_df <- metadata %>%
-  tibble::column_to_rownames("Kids_First_Biospecimen_ID") %>%
-  dplyr::select(-c(
-    sample_id,
-    Kids_First_Participant_ID,
-    primary_site,
-    age_at_diagnosis_days
-  ))
-
-# Write initial annotation data.frame to file
-readr::write_rds(initial_annotation_df,
-                 file.path(results_dir, "initial_heatmap_annotation.RDS"))
-```
-
 ## Filter and join RNA expression, CN, TMB, and ssGSEA data
 
 ### RNA expression data 
@@ -246,12 +229,14 @@ myc_genes <-
   )
 
 # Filter to only the genes of interest
-expression_zscored <- stranded_expression[which(
+filtered_expression <- stranded_expression[which(
    rownames(stranded_expression) %in% c(tyr_genes, shh_genes, myc_genes)
 ), ]
 
-# Transpose
-long_stranded_expression <- t(expression_zscored)
+# scale does column centering, so we transpose first
+long_stranded_expression <- scale(t(filtered_expression), 
+                                  center = TRUE,
+                                  scale = TRUE)
 
 # Merge metadata with expression data
 expression_metadata <- long_stranded_expression %>%
@@ -336,7 +321,7 @@ ssGSEA_summarised <- ssGSEA_zscored %>%
     HALLMARK_NOTCH_SIGNALING = mean(HALLMARK_NOTCH_SIGNALING)
   )
 
-#Display `transposed_ssGSEA`
+# Display `transposed_ssGSEA`
 ssGSEA_summarised %>%
   head(n = 15)
 
@@ -349,7 +334,7 @@ atrt_expression_cn_df <- atrt_expression_cn_df %>%
 ### Tumor mutation burden data
 
 ```{r}
-#Display `tmb_df`
+# Display `tmb_df`
 tmb_df %>%
   head(n = 15)
 
@@ -399,24 +384,6 @@ readr::write_tsv(final_df,
 
 # Display `final_df`
 viewDataTable(final_df) 
-```
-
-# Prepare annotation data.frame for plotting of final heatmap
-
-```{r}
-# Create an annotation data.frame for the atrt expression data
-final_annotation_df <- final_df %>%
-  dplyr::select(
-    Kids_First_Biospecimen_ID,
-    location_summary,
-    SMARCB1_focal_status,
-    SMARCA4_focal_status,
-  ) %>%
-  tibble::column_to_rownames("Kids_First_Biospecimen_ID")
-
-# Write final annotation data.frame to file
-readr::write_rds(final_annotation_df,
-                 file.path(results_dir, "final_heatmap_annotation.RDS"))
 ```
 
 # Session Info
