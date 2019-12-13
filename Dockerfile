@@ -208,6 +208,7 @@ RUN pip3 install "pyreadr==0.2.1"
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
     --deps TRUE \
+    spatial \
     ggfortify
 
 #### Please install your dependencies here
