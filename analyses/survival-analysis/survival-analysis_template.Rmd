@@ -64,6 +64,8 @@ Declare input file paths.
 ```{r Set input file paths}
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
 tmb_file <- file.path(data_dir, "pbta-snv-consensus-mutation-tmb.tsv")
+germline_sex_file <- file.path("..", "sex-prediction-from-RNASeq", "results", 
+                               "germline_sex_estimate", "kallisto_stranded_36354_0.25_prediction_details.tsv")
 ```
 
 Declare output file paths. 
@@ -89,6 +91,17 @@ metadata$OS_status <- factor(metadata$OS_status, levels = c("LIVING", "DECEASED"
 metadata$OS_status_num <- as.numeric(metadata$OS_status)
 ```
 
+Import germline sex predictions and join to metadata.
+
+```{r}
+# Read in the germline sex predictions
+germline_sex <- readr::read_tsv(germline_sex_file)
+
+# Join to the metadata
+metadata <- metadata %>% 
+  dplyr::inner_join(germline_sex, by = c("Kids_First_Biospecimen_ID" = "sample"))
+```
+
 ## Usage 
 
 This is the template model that you can follow for all survival analyses here. 
@@ -110,7 +123,7 @@ survival curve shows the probability of survival over time.
 ```{r Kaplan Meier}
 # Make the model
 kap_fit <- survival::survfit(
-  survival::Surv(metadata$OS_days, metadata$OS_status_num) ~ reported_gender,
+  survival::Surv(metadata$OS_days, metadata$OS_status_num) ~ pred,
   data = metadata
 )
 
@@ -149,12 +162,12 @@ ggplot2::ggsave(kap_meier_plot_file)
 For testing whether two survival curves are different, we can use Log-Rank which
 can be implemented using `survival::survdiff` function. 
 In this example, we will test for survival curve differences between for 
-`reported_gender` categories. 
+`pred` categories. 
 
 ```{r Filter out unavailable genders}
-# First let's filter out data that does not have reported_gender available
+# First let's filter out data that does not have pred available
 metadata_filt <- metadata %>%
-  dplyr::filter(reported_gender != "Not Available")
+  dplyr::filter(pred != "Not Available")
 ```
 
 Use the `survdiff` function to test the differences between the `Male` and `Female` 
@@ -162,7 +175,7 @@ curves.
 
 ```{r Do log rank test}
 logrank_fit <- survival::survdiff(
-  survival::Surv(metadata_filt$OS_days, metadata_filt$OS_status_num) ~ reported_gender,
+  survival::Surv(metadata_filt$OS_days, metadata_filt$OS_status_num) ~ pred,
   data = metadata_filt
 )
 ```
