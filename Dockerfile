@@ -204,5 +204,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl
 # pyreadr for comparative-RNASeq-analysis
 RUN pip3 install "pyreadr==0.2.1"
 
+# ggfortify for plotting
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    && install2.r --error \
+    --deps TRUE \
+    ggfortify
+
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
