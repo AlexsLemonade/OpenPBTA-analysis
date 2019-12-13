@@ -98,7 +98,7 @@ Import germline sex predictions and join to metadata.
 germline_sex <- readr::read_tsv(germline_sex_file)
 
 # Join to the metadata
-metadata <- metadata %>% 
+germline_metadata <- metadata %>% 
   dplyr::inner_join(germline_sex, by = c("Kids_First_Biospecimen_ID" = "sample"))
 ```
 
@@ -123,8 +123,8 @@ survival curve shows the probability of survival over time.
 ```{r Kaplan Meier}
 # Make the model
 kap_fit <- survival::survfit(
-  survival::Surv(metadata$OS_days, metadata$OS_status_num) ~ pred,
-  data = metadata
+  survival::Surv(germline_metadata$OS_days, germline_metadata$OS_status_num) ~ pred,
+  data = germline_metadata 
 )
 
 # Print out a cleaned version of this data to look at it
@@ -137,7 +137,7 @@ arguments.
 ```{r Make survival plot}
 surv_plot <- survminer::ggsurvplot(kap_fit,
   pval = TRUE, 
-  data = metadata, risk.table = TRUE,
+  data = germline_metadata, risk.table = TRUE,
   conf.int = TRUE,
   xlim = c(0, 2000),
   break.time.by = 500,
@@ -163,20 +163,13 @@ For testing whether two survival curves are different, we can use Log-Rank which
 can be implemented using `survival::survdiff` function. 
 In this example, we will test for survival curve differences between for 
 `pred` categories. 
-
-```{r Filter out unavailable genders}
-# First let's filter out data that does not have pred available
-metadata_filt <- metadata %>%
-  dplyr::filter(pred != "Not Available")
-```
-
 Use the `survdiff` function to test the differences between the `Male` and `Female` 
 curves.
 
 ```{r Do log rank test}
 logrank_fit <- survival::survdiff(
-  survival::Surv(metadata_filt$OS_days, metadata_filt$OS_status_num) ~ pred,
-  data = metadata_filt
+  survival::Surv(germline_metadata$OS_days, germline_metadata$OS_status_num) ~ pred,
+  data = germline_metadata
 )
 ```
 
@@ -213,7 +206,7 @@ tmb <- readr::read_tsv(tmb_file)
 ```
 
 ```{r Join TMB to metadata}
-tmb_combine <- metadata %>%
+tmb_metadata <- metadata %>%
   dplyr::inner_join(tmb, by = c("Kids_First_Biospecimen_ID" = "Tumor_Sample_Barcode"))
 ```
 
@@ -221,8 +214,8 @@ Plug this into a Cox Regression model using the function `survival::coxph`.
 
 ```{r Run Cox regression model}
 cox_fit <- survival::coxph(
-  survival::Surv(tmb_combine$OS_days, tmb_combine$OS_status_num) ~ tmb,
-  data = tmb_combine
+  survival::Surv(tmb_metadata$OS_days, tmb_metadata$OS_status_num) ~ tmb,
+  data = tmb_metadata
 )
 ```
 
