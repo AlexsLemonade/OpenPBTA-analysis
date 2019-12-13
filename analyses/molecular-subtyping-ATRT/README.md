@@ -11,8 +11,9 @@ To run all of the Rscripts in this module from the command line sequentially, us
 bash run-molecular-subtyping-ATRT.sh
 ```
 
-`run-molecular-subtyping-ATRT.sh` is designed to be run as if it was called from this module directory even when called from outside of this directory.
+When run in this manner, `00-subset-files-for-ATRT.R` generate subset files using whichever files are symlinked in `data` on your local machine.
 
+`run-molecular-subtyping-ATRT.sh` is designed to be run as if it was called from this module directory even when called from outside of this directory.
 
 ## Folder content
 
