@@ -11,7 +11,7 @@ To run all of the Rscripts in this module from the command line sequentially, us
 bash run-molecular-subtyping-ATRT.sh
 ```
 
-When run in this manner, `00-subset-files-for-ATRT.R` generate subset files using whichever files are symlinked in `data` on your local machine.
+When run in this manner, `00-subset-files-for-ATRT.R` will generate subset files using whichever files are symlinked in `data` on your local machine.
 
 `run-molecular-subtyping-ATRT.sh` is designed to be run as if it was called from this module directory even when called from outside of this directory.
 
@@ -19,32 +19,41 @@ When run in this manner, `00-subset-files-for-ATRT.R` generate subset files usin
 
 This folder contains scripts tasked to molecularly subtype ATRT samples in the PBTA dataset.
 
-`01-ATRT-molecular-subtyping-data-prep.Rmd` is a notebook written to prepare the RNA expression, copy number, ssGSEA pathway, structural variant, and tumor mutation burden data that are relevant to the ATRT samples. This notebook produces a final results table found at `results/ATRT_molecular_subtypes.tsv.gz`. 
+`00-subset-files-for-ATRT.R` selects data for ATRT samples and saves the files in `atrt-subset`.
 
-`02-ATRT-molecular-subtyping-plotting.R` is a script written to plot heatmaps displaying the data prepared in `01-ATRT-molecular-subtyping-data-prep.Rmd`. This script produces two heatmaps in the `plots` directory of this module and are displayed below.
+`01-ATRT-molecular-subtyping-data-prep.Rmd` is a notebook written to prepare the RNA expression, copy number, ssGSEA pathway, structural variant, and tumor mutation burden data that are relevant for molecular subtyping. This notebook produces a final results table found at `results/ATRT_molecular_subtypes.tsv`. 
 
-The initial heatmap displaying the expression data of the ATRT samples in our data:
-![](plots/initial_heatmap.png)
+`02-ATRT-molecular-subtyping-plotting.R` is a script written to generate a heatmap and PCA plot saved in the `plots` directory of this module and displayed below.
 
-The final annotated heatmap displaying expression data of the ATRT samples, along with copy number, tumor mutation burden, and ssGSEA pathway data:
-![](plots/final_annotated_heatmap.png)
+#### Heatmap
+
+![](plots/atrt_heatmap.png)
+
+#### PCA
+
+![](plots/atrt_expression_pca.png)
 
 ## Folder structure 
 
 The structure of this folder is as follows:
 
 ```
-molecular-subtyping-ATRT
+├── 00-subset-files-for-ATRT.R
 ├── 01-ATRT-molecular-subtyping-data-prep.Rmd
 ├── 01-ATRT-molecular-subtyping-data-prep.nb.html
 ├── 02-ATRT-molecular-subtyping-plotting.R
 ├── README.md
+├── atrt-subset
+│   ├── atrt_focal_cn.tsv.gz
+│   ├── atrt_histologies.tsv
+│   ├── atrt_log_expression.RDS
+│   ├── atrt_ssgsea.RDS
+│   └── atrt_tmb.tsv
 ├── plots
-│   ├── final_annotated_heatmap.png
-│   └── initial_heatmap.png
+│   ├── atrt_expression_pca.png
+│   └── atrt_heatmap.png
 ├── results
-│   ├── ATRT_molecular_subtypes.tsv.gz
-│   ├── atrt_zscored_expression.RDS
+│   ├── ATRT_molecular_subtypes.tsv
 │   ├── final_heatmap_annotation.RDS
 │   └── initial_heatmap_annotation.RDS
 └── run-molecular-subtyping-ATRT.sh
