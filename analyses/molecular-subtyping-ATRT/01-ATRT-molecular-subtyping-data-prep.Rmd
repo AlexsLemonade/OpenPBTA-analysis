@@ -71,7 +71,7 @@ stranded_expression <-
   readr::read_rds(
     file.path(
       input_dir,
-      "atrt_zscored_expression.RDS"
+      "atrt_log_expression.RDS"
     )
   )
 
@@ -90,6 +90,7 @@ tmb_df <-
 ```
 
 ## Custom Function
+
 ```{r}
 # Custom datatable function
 # Function code adapted from: https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/49acc98f5ffd86853fc70f220623311e13e3ca9f/analyses/collapse-rnaseq/02-analyze-drops.Rmd#L23
@@ -246,12 +247,14 @@ myc_genes <-
   )
 
 # Filter to only the genes of interest
-expression_zscored <- stranded_expression[which(
+filtered_expression <- stranded_expression[which(
    rownames(stranded_expression) %in% c(tyr_genes, shh_genes, myc_genes)
 ), ]
 
-# Transpose
-long_stranded_expression <- t(expression_zscored)
+# scale does column centering, so we transpose first
+long_stranded_expression <- scale(t(filtered_expression), 
+                                  center = TRUE,
+                                  scale = TRUE)
 
 # Merge metadata with expression data
 expression_metadata <- long_stranded_expression %>%
