@@ -9,7 +9,6 @@ This document contains information about all data files associated with this pro
 	+ *Analysis file*: Any file created by a script in `analyses/*`. 
 + **Origin**
 	+ A relative link to the specific analysis from which the file was generated.
-		+ For any files which are generally applicable to many/most/all analyses, please write *Universal* in this field
 	+ When applicable, a link to the specific *script* that produced (or modified, for *Modified reference file* types) the data
 + **File description**
 	+ A *brief* one sentence description of what the file contains (e.g., bed files contain coordinates for features XYZ).
