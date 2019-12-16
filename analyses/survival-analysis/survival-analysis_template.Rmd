@@ -188,12 +188,8 @@ logrank_table %>%
   knitr::kable(digits = 2)
 ```
 
-
-
-
-Save the table data in a TSV.  
-
 ```{r Write log rank to table}
+# Save the table data in a TSV
 readr::write_tsv(logrank_table, logrank_table_file)
 ```
 
@@ -233,12 +229,8 @@ cox_table %>%
   knitr::kable(digits = 3)
 ```
 
-
-
-
-Save the table data in a TSV.  
-
 ```{r Write Cox regression to tsv}
+# Save the table data in a TSV
 readr::write_tsv(cox_table, cox_table_file)
 ```
 
