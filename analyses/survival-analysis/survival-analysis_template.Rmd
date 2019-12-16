@@ -188,6 +188,9 @@ logrank_table %>%
   knitr::kable(digits = 2)
 ```
 
+
+
+
 Save the table data in a TSV.  
 
 ```{r Write log rank to table}
@@ -229,6 +232,9 @@ cox_table <- broom::tidy(cox_fit)
 cox_table %>%
   knitr::kable(digits = 3)
 ```
+
+
+
 
 Save the table data in a TSV.  
 
