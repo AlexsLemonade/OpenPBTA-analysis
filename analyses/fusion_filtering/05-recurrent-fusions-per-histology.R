@@ -89,7 +89,8 @@ write.table(rec_fusions_all,file.path(outputfolder,"rec_fusions_participant_hist
 # binary matrix for recurrent fusions found in SAMPLE per broad_histology
 rec_fusions_mat<-rec_fusions %>% 
   # to add sample with rec fusion
-  left_join(standardFusionCalls, by=c("FusionName","broad_histology")) %>% select("FusionName","broad_histology","Sample") %>% 
+  left_join(standardFusionCalls, by=c("FusionName","broad_histology")) %>%
+  select("FusionName","broad_histology","Sample") %>% 
   # to add all rna Sample for binary matrix
   full_join(clinical_rna,by=c("Sample"="Kids_First_Biospecimen_ID","broad_histology"="broad_histology"))
 
@@ -150,7 +151,6 @@ rec_gene_mat[is.na(rec_gene_mat$Gene),"Gene"]<-"No_rec_fused_gene"
 rec_gene_mat<-dcast(rec_gene_mat,Sample~Gene,value.var = "Sample",fun.aggregate = function(x){as.integer(length(x) > 0)},drop = FALSE)
 
 write.table(rec_gene_mat,file.path(outputfolder,"rec_genes_matrix_sample_histology_level.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
-
 
 
 
