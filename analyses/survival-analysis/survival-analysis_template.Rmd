@@ -6,6 +6,8 @@ output:
     toc_float: TRUE
 author: C. Savonen for ALSF CCDL
 date: 2019
+params:
+  plot_ci: TRUE
 ---
 
 **Purpose:** 
@@ -138,7 +140,7 @@ arguments.
 surv_plot <- survminer::ggsurvplot(kap_fit,
   pval = TRUE, 
   data = germline_metadata, risk.table = TRUE,
-  conf.int = TRUE,
+  conf.int = params$plot_ci,
   xlim = c(0, 2000),
   break.time.by = 500,
   ggtheme = theme_minimal(),
