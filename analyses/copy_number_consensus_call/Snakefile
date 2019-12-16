@@ -103,3 +103,4 @@ rule filter_telomeres:
     shell:
         ## Invoke the python3 script and pass in the reference and CNVs files. Direct the stdout to a new file. 
         "python3 {input.script} --reference {input.bad_list} --file {input.bedfile} > {output.filtered_bed}"
+
