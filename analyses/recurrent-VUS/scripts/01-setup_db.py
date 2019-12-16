@@ -53,6 +53,11 @@ parser.add_argument(
     help="Path of the metadata/histology data file (TSV)."
 )
 parser.add_argument(
+    '--ind-file',
+    dest='ind_file',
+    help="Path of the independent samples file."
+)
+parser.add_argument(
     '--cosmic-user',
     dest='cosmic_user',
     help="Username (email) for COSMIC user."
@@ -266,7 +271,9 @@ if args.meta_file:
     metadata_df = pd.read_table(args.meta_file)
     metadata_df.to_sql("samples", con)
 
-if args.cosmic_user and args.cosmic_pass:
-    r = requests.get(COSMIC_URL, auth=(args.cosmic_user, args.cosmic_pass))
-    cosmic_data = requests.get(r.json()['url'], stream=True)
-
+if args.ind_file:
+    print("Reading file {} to table 'ind_samples'".format(args.ind_file))
+    if args.overwrite:
+        con.execute("DROP TABLE IF EXISTS ind_samples")
+    metadata_df = pd.read_table(args.ind_file)
+    metadata_df.to_sql("ind_samples", con)

@@ -1,0 +1,182 @@
+---
+title: "Recurrent Mutations"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+Load libraries and define locations
+
+```{r setup}
+library(dplyr)
+```
+
+```{r locations}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+db_file <- file.path(root_dir, "scratch", "snv_db.sqlite")
+ind_samples <- file.path(root_dir)
+```
+
+
+The first step in analyzing recurrent variant is to filter down to the *recurrent* mutations.
+We will use the database that we built of mutations. 
+So first we connect to it and set up the tables we will use.
+
+```{r}
+con <- DBI::dbConnect(RSQLite::SQLite(), db_file)
+meta <- tbl(con, "samples")
+mutations <- tbl(con, "consensus")
+ind_samples <- tbl(con, "ind_samples")
+lancet <- tbl(con, "lancet")
+strelka <- tbl(con, "strelka")
+mutect <- tbl(con, "mutect")
+```
+
+## Independent samples.
+
+As a first pass at recurrent mutations we will select those that occur more than three times across independent samples.
+
+
+```{r}
+samples <- meta %>%
+  inner_join(
+    ind_samples, 
+    by = c("Kids_First_Biospecimen_ID", "Kids_First_Participant_ID")
+  )
+
+recurrent <- mutations %>%
+  inner_join(
+    ind_samples, 
+    by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")
+  ) %>%
+  group_by(Chromosome, Start_Position, Reference_Allele, Allele) %>%
+  summarize(count = n()) %>%
+  filter(count > 1) %>% 
+  arrange(desc(count))
+```
+
+```{r}
+recurrent %>% as.data.frame()
+```
+
+Lets look at these  with more context, including the sample information.
+
+```{r}
+recurrent_detail <- recurrent %>%
+  inner_join(
+    mutations,
+    by = c("Chromosome", "Start_Position", "Reference_Allele", "Allele")
+  ) %>% 
+  inner_join(
+    ind_samples,
+    by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")
+  ) %>%
+  inner_join(
+    meta, 
+    by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID", 
+           "Kids_First_Participant_ID")
+  )%>%
+  select(
+    "Tumor_Sample_Barcode",
+    "Kids_First_Participant_ID",
+    "disease_type_new",
+    "Hugo_Symbol", 
+    "Chromosome", 
+    "Start_Position",
+    "Reference_Allele",
+    "Allele",
+    "Variant_Classification",
+    "Existing_variation",
+    "HGVSp_Short",
+    "Amino_acids",
+    "Codons",
+    "CLIN_SIG",
+    "VAF"
+  ) %>%
+  as.data.frame()
+```
+
+```{r}
+recurrent_muts <- recurrent_detail %>% 
+  group_by(
+    Hugo_Symbol, 
+    Chromosome, 
+    Start_Position,
+    Reference_Allele,
+    Allele,
+    Variant_Classification,
+    Existing_variation,
+    HGVSp_Short,
+    Amino_acids,
+    Codons,
+    CLIN_SIG
+  ) %>%
+  summarize(
+    count = n(),
+  ) %>%
+  arrange(desc(count))
+```
+
+Most of these recurrent mutations are known. 
+Lets add some flags to note which have been seen in COSMIC and dbsnp, according to VEP.
+One concern is that these annotations may not always be the exact same mutation, but simply in at the same site.
+
+```{r}
+recurrent_muts <- recurrent_muts %>%
+  mutate(
+    dbSNP = grepl("rs", Existing_variation), 
+    COSMIC = grepl("COSM", Existing_variation),
+    HGMD = grepl("CM", Existing_variation)
+  )
+```
+
+As a first pass, lets sort out any missense mutations that have not been seen before.
+
+```{r}
+new_coding_muts <- recurrent_muts %>%
+  filter(
+    is.na(Existing_variation),
+    Variant_Classification == "Missense_Mutation"
+  )
+new_coding_muts
+```
+
+There are 24 of these, but most are seen in only two samples, with two seen in three samples.
+
+Lets take the triply recurrent and look at where it comes from:
+
+```{r}
+new_coding_muts %>%
+  filter(count >= 3) %>%
+  inner_join(
+    recurrent_detail, 
+    by = c("Chromosome", "Start_Position"))
+```
+
+
+Interestingly, the second of these is occuring repeatedly in Low-grade glioma, which might be of interest?
+
+
+## Recurrent AA changes
+
+While we looked above for recurrent mutations, then sorted to coding mutations, 
+it might also be interesting to look for repeated AA mutations.
+This could detect some repeated protein mutations that are not from the exact same base change.
+
+```{r}
+recurrent_aa <- mutations %>%
+  inner_join(
+    ind_samples, 
+    by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")
+  ) %>%
+  filter(!is.na(HGVSp_Short)) %>%
+  group_by(Hugo_Symbol, HGVSp_Short) %>%
+  summarize(count = n()) %>%
+  filter(count > 1) %>% 
+  arrange(desc(count))
+```
+
+```{r}
+recurrent_aa %>% as.data.frame()
+```
+
