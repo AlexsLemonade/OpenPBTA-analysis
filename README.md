@@ -14,8 +14,6 @@
   - [How to Obtain OpenPBTA Data](#how-to-obtain-openpbta-data)
     - [Data Access via Download Script](#data-access-via-download-script)
     - [Data Access via CAVATICA](#data-access-via-cavatica)
-  - [Data Formats](#data-formats)
-    - [Data Caveats](#data-caveats)
   - [How to Add an Analysis](#how-to-add-an-analysis)
     - [Folder Structure](#folder-structure)
     - [Analysis Script Numbering](#analysis-script-numbering)
