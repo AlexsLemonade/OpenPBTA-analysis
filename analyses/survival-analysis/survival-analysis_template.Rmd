@@ -142,7 +142,7 @@ surv_plot <- survminer::ggsurvplot(kap_fit,
   xlim = c(0, 2000),
   break.time.by = 500,
   ggtheme = theme_minimal(),
-  risk.table.y.text.col = T,
+  risk.table.y.text.col = TRUE,
   risk.table.y.text = FALSE
 )
 
