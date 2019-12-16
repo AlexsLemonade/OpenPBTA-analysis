@@ -48,7 +48,7 @@ jobs:
 
       - run:
           name: Identify recurrent fusion per histology
-          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/05-recurrent-fusions-per-histology.R -S data/pbta-fusion-putative-oncogenic.tsv -c data/pbta-histologies.tsv -o analyses/fusion_filtering/results/
+          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/05-recurrent-fusions-per-histology.R -S data/pbta-fusion-putative-oncogenic.tsv -c data/pbta-histologies.tsv -o analyses/fusion_filtering/results/ -i data/independent-specimens.wgswxs.primary-plus.tsv
 
       - run:
           name: Transcriptome dimensionality reduction
