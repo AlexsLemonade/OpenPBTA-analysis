@@ -1,15 +1,15 @@
 ## Data file descriptions
 
-This document contains information about all data files associated with this project. Each file should have the following association information:
+This document contains information about all data files associated with this project. Each file will have the following association information:
 
-+ **File type** should be one of..
-	+ *Reference file*: Obtained from an external source/database. When known, the obtained data and a link to the external source should be included.
-	+ *Modified reference file*: Obtained from an external source/database but modified for OpenPBTA use. 	
-	+ *External data file*: Data directly obtained from the cancer samples databases that be. When known, the specific database and download date should be included.
++ **File type** will be one of:
+	+ *Reference file*: Obtained from an external source/database. When known, the obtained data and a link to the external source is included.
+	+ *Modified reference file*: Obtained from an external source/database but modified for OpenPBTA use. 
+	+ *PBTA data file*: Pediatric Brain Tumor Atlas data that are processed upstream of the OpenPBTA project, e.g., the output of a somatic single nucleotide variant method. Links to the relevant D3B Center or Kids First workflow (and version where applicable) are included in **Origin**.
 	+ *Analysis file*: Any file created by a script in `analyses/*`. 
 + **Origin**
-	+ A relative link to the specific analysis from which the file was generated.
-	+ When applicable, a link to the specific *script* that produced (or modified, for *Modified reference file* types) the data
+	+ For _PBTA data files_, a link the relevant D3B Center or Kids First workflow (and version where applicable).
+	+ When applicable, a link to the specific *script* that produced (or modified, for *Modified reference file* types) the data.
 + **File description**
 	+ A *brief* one sentence description of what the file contains (e.g., bed files contain coordinates for features XYZ).
 
