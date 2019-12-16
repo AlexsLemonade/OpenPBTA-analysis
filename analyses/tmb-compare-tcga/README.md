@@ -24,7 +24,11 @@ Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd',
 
 ## Results
 
+The results of this analysis are the TMB calculations for PBTA and TCGA datasets plotted side by side:
+
 ![](plots/tmb_tcga_and_pbta_plot.png)
+
+Additionally, the resulting TCGA TMB calculations used are saved to `results/brain_related_tcga_tmb.tsv` in this folder.
 
 ## Summary of Methods
 
