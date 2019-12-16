@@ -12,7 +12,7 @@ OUTPUT= expand("../../scratch/interim/{sample}.{caller}.dup.filtered.bed",
 ## Define the first rule of the Snakefile. This rule determines what the final file is and which steps to be taken.
 rule all:
     input:
-        ALL_FREEC + ALL_CNVKIT + ALL_MANTA
+        OUTPUT
 
 
 #########################      FILTER STEP FOR THE 3 CALL METHODS ####################################
