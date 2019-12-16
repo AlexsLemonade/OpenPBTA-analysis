@@ -147,14 +147,17 @@ surv_plot <- survminer::ggsurvplot(kap_fit,
 )
 
 # Make this plot a combined plot
-cowplot::plot_grid(surv_plot[[1]], surv_plot[[2]], nrow = 2, rel_heights = c(2.5, 1))
+surv_plot <- cowplot::plot_grid(surv_plot[[1]], surv_plot[[2]], nrow = 2, rel_heights = c(2.5, 1))
+
+# Print it out here
+surv_plot
 ```
 
 Save the plot to a file. 
 
 ```{r Save survival plot}
 # We can save the plot like a normal ggplot
-ggplot2::ggsave(kap_meier_plot_file)
+cowplot::save_plot(filename = kap_meier_plot_file, plot = surv_plot)
 ```
 
 ## Log-Rank 
