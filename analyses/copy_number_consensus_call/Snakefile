@@ -4,7 +4,9 @@
 ## Define the ending file(s) that we want
 ALL_FREEC= expand("../../scratch/interim/{sample}.freec.dup.filtered.bed", sample=config["samples"])
 ALL_CNVKIT= expand("../../scratch/interim/{sample}.cnvkit.dup.filtered.bed", sample=config["samples"])
-ALL_MANTA= expand("../../scratch/interim/{sample}.manta.dup.filtered.bed", sample=config["samples"])
+OUTPUT= expand("../../scratch/interim/{sample}.{caller}.dup.filtered.bed", 
+               sample=config["samples"], 
+               caller=["freec", "cnvkit", "manta"])
         
 
 ## Define the first rule of the Snakefile. This rule determines what the final file is and which steps to be taken.
