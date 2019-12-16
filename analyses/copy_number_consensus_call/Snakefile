@@ -90,28 +90,16 @@ rule manta_filter:
 rule filter_telomeres:
     input:
         ## Define the location of the input file and take the path/extension from the config file
-        script=str(config["scripts"]) + "/get_rid_bad_segments.py",
-        bad_list=str(config["scripts"]) + "/bad_chromosomal_seg_updated_merged.txt",
-        cnvkit_del="../../scratch/interim/{sample}.cnvkit.del.bed",
-        cnvkit_dup="../../scratch/interim/{sample}.cnvkit.dup.bed",
-        freec_del="../../scratch/interim/{sample}.freec.del.bed",
-        freec_dup="../../scratch/interim/{sample}.freec.dup.bed",
-        manta_del="../../scratch/interim/{sample}.manta.del.bed",
-        manta_dup="../../scratch/interim/{sample}.manta.dup.bed"
+        script=os.path.join(config["scripts"], "get_rid_bad_segments.py"),
+        bad_list=os.path.join(config["scripts"], "bad_chromosomal_seg_updated_merged.txt"),
+        bedfile="../../scratch/interim/{sample}.{caller}.{dupdel}.bed"
     output:
         ## Define the output files' names
-        cnvkit_del="../../scratch/interim/{sample}.cnvkit.del.filtered.bed",
-        cnvkit_dup="../../scratch/interim/{sample}.cnvkit.dup.filtered.bed",
-        freec_del="../../scratch/interim/{sample}.freec.del.filtered.bed",
-        freec_dup="../../scratch/interim/{sample}.freec.dup.filtered.bed",
-        manta_del="../../scratch/interim/{sample}.manta.del.filtered.bed",
-        manta_dup="../../scratch/interim/{sample}.manta.dup.filtered.bed"
+        filtered_bed="../../scratch/interim/{sample}.{caller}.{dupdel}.filtered.bed"
+    wildcard_constraints:
+        caller = "cnvkit|freec|manta",
+        dupdel = "del|dup"
     threads: 1
     shell:
         ## Invoke the python3 script and pass in the reference and CNVs files. Direct the stdout to a new file. 
-        "python3 {input.script} --reference {input.bad_list} --file {input.cnvkit_del} > {output.cnvkit_del} &&"
-        "python3 {input.script} --reference {input.bad_list} --file {input.cnvkit_dup} > {output.cnvkit_dup} &&"
-        "python3 {input.script} --reference {input.bad_list} --file {input.freec_del} > {output.freec_del} &&"
-        "python3 {input.script} --reference {input.bad_list} --file {input.freec_dup} > {output.freec_dup} &&"
-        "python3 {input.script} --reference {input.bad_list} --file {input.manta_del} > {output.manta_del} &&"
-        "python3 {input.script} --reference {input.bad_list} --file {input.manta_dup} > {output.manta_dup}"
+        "python3 {input.script} --reference {input.bad_list} --file {input.bedfile} > {output.filtered_bed}"
