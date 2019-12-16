@@ -90,7 +90,7 @@ jobs:
           
       - run:
           name: Survival analysis
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/survival-analysis/survival-analysis.Rmd', clean = TRUE)" 
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/survival-analysis/survival-analysis_template.Rmd', clean = TRUE)" 
 
       - run:
           name: Comparative RNASeq - generate correlation matrix - rsem-tpm.polya
