@@ -28,7 +28,7 @@ Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd',
 
 ## Summary of Methods
 
-In brief, TMB for both brain tumor datasets are calculated using mutations from exonic regions of the genome only.  
+Overall, tumor mutation burden for both brain tumor datasets are calculated using mutations from exonic regions of the genome only.  
 
 ### PBTA Tumor Mutation Burden
 
@@ -45,11 +45,11 @@ For more details, see [snv-callers README](https://github.com/AlexsLemonade/Open
 
 ### TCGA Tumor Mutation Burden
 
-For calculating TCGA tumor mutation burden, [MC3 mutation calls](https://gdc.cancer.gov/about-data/publications/mc3-2017) were used with TCGA Brain tumor related projects only:
+For calculating TCGA tumor mutation burden, [MC3 mutation calls](https://gdc.cancer.gov/about-data/publications/mc3-2017) were used with TCGA brain-related tumor projects only:
 
 - [LGG (Lower-grade Glioma)](https://www.nejm.org/doi/full/10.1056/NEJMoa1402121)
 - [GBM (Glioblastoma Multiforme)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3910500/)
-- [PCPG (Pheochromocytoma and Paraganglioma)](https://www.cell.com/cancer-cell/fulltext/S1535-6108(17)30001-6)
+- [PCPG (Pheochromocytoma and Paraganglioma)](https://www.cell.com/action/showPdf?pii=S1535-6108%2817%2930001-6)
 
 The size of the [exome BED regions file](https://api.gdc.cancer.gov/data/7f0d3ab9-8bef-4e3b-928a-6090caae885b) included with the MC3 project was used for the denominator.
-All mutations for all three projects fell within these exome bed regions.
+All mutations for all three projects fell within these exome bed regions so no SNV's were filtered out.
