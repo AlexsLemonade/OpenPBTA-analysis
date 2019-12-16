@@ -48,8 +48,8 @@ For more details, see [snv-callers README](https://github.com/AlexsLemonade/Open
 For calculating TCGA tumor mutation burden, [MC3 mutation calls](https://gdc.cancer.gov/about-data/publications/mc3-2017) were used with TCGA Brain tumor related projects only:
 
 - [LGG (Lower-grade Glioma)](https://www.nejm.org/doi/full/10.1056/NEJMoa1402121)
-- [GBM (Glioblastoma Multiforme)](https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga/studied-cancers/glioblastoma)
-- [PCPG (Pheochromocytoma and Paraganglioma)]()
+- [GBM (Glioblastoma Multiforme)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3910500/)
+- [PCPG (Pheochromocytoma and Paraganglioma)](https://www.cell.com/cancer-cell/fulltext/S1535-6108(17)30001-6)
 
 The size of the [exome BED regions file](https://api.gdc.cancer.gov/data/7f0d3ab9-8bef-4e3b-928a-6090caae885b) included with the MC3 project was used for the denominator.
 All mutations for all three projects fell within these exome bed regions.
