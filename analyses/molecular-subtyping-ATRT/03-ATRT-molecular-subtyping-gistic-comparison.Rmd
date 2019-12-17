@@ -46,6 +46,16 @@ select_metadata <- metadata %>%
                 Kids_First_Biospecimen_ID,
                 tumor_ploidy)
 
+# Read in focal CN data
+cn_df <- readr::read_tsv(
+  file.path(
+    "..",
+    "focal-cn-file-preparation",
+    "results",
+    "cnvkit_annotated_cn_autosomes.tsv.gz"
+  )
+)
+
 # Read in GISTIC focal CN data by genes
 # TODO: Change file path to this data once GISTIC files are added to the 
 #       official data release
@@ -60,6 +70,40 @@ final_df <-
   data.table::fread(file.path("results",
                               "ATRT_molecular_subtypes.tsv"),
                     data.table = FALSE)
+```
+## Custom Function
+
+```{r}
+# Custom datatable function
+# Function code adapted from: https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/49acc98f5ffd86853fc70f220623311e13e3ca9f/analyses/collapse-rnaseq/02-analyze-drops.Rmd#L23
+viewDataTable <- function(data) {
+  DT::datatable(
+    data,
+    rownames = FALSE,
+    filter = "bottom",
+    class = 'cell-border stripe',
+    options = list(
+      pageLength = 5,
+      searchHighlight = TRUE,
+      scrollX = TRUE,
+      dom = 'tpi',
+      initComplete = htmlwidgets::JS(
+        "function(settings, json) {",
+        "$(this.api().table().header()).css({'background-color':
+                                            '#004467', 'color': '#fff'});",
+        "}"
+      )
+    )
+  )
+}
+```
+
+# Filter current focal CN data
+
+```{r}
+cn_df <- cn_df %>%
+  dplyr::inner_join(select_metadata, by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
+  dplyr::filter(sample_id %in% final_df$sample_id, gene_symbol == "SMARCB1")
 ```
 
 # Filter GISTIC data for ATRT samples
@@ -81,21 +125,21 @@ transposed_gistic <- transposed_gistic %>%
   # Join the `sample_id` and `tumor_ploidy` columns from the metadata
   dplyr::inner_join(select_metadata, by = "Kids_First_Biospecimen_ID") %>%
   # Filter this data for ATRT samples
-  dplyr::filter(sample_id %in% final_df$sample_id) %>%
+  dplyr::inner_join(cn_df, by = "sample_id") %>%
   # Make the copy number values numeric
-  dplyr::mutate(copy_number = as.numeric(V1)) %>%
+  dplyr::mutate(GISTIC_copy_number = as.numeric(V1)) %>%
   # Remove the non-numeric copy number variable
-  dplyr::select(-V1)
+  dplyr::select(-V1, -tumor_ploidy.x, -tumor_ploidy.y)
 
 # Create `gistic_SMARCB1_status` variable for comparison against the
 # `SMARCB1_focal_status` variable in the current focal copy number data
 final_gistic <-  transposed_gistic %>%
   dplyr::mutate(GISTIC_SMARCB1_focal_status = dplyr::case_when(
     # When the copy number is less than inferred ploidy, mark this as a loss
-    copy_number < tumor_ploidy ~ "loss",
+    GISTIC_copy_number < ploidy ~ "loss",
     # If copy number is higher than ploidy, mark as a gain
-    copy_number > tumor_ploidy ~ "gain",
-    copy_number == tumor_ploidy ~ "neutral"
+    GISTIC_copy_number > ploidy ~ "gain",
+    GISTIC_copy_number == ploidy ~ "neutral"
   ))
 ```
 
@@ -107,19 +151,41 @@ comparison_df <- final_gistic %>%
   dplyr::inner_join(final_df, by = "sample_id") %>%
   dplyr::select(sample_id,
                 Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID.x,
+                ploidy,
+                GISTIC_copy_number,
                 GISTIC_SMARCB1_focal_status,
+                copy_number,
                 SMARCB1_focal_status)
+
+# Save `comparison_df` to file
+readr::write_tsv(
+  comparison_df,
+  file.path("results", "ATRT_SMARCB1_GISTIC_comparison_results.tsv")
+)
+
+# Display `comparison_df`
+viewDataTable(comparison_df) 
 ```
 
 # Plot
 
 ```{r}
 # Produce a comparison plot
-comparison_plot <-
-  ggplot2::ggplot(comparison_df, ggplot2::aes(x = SMARCB1_focal_status)) +
-  ggplot2::geom_bar(ggplot2::aes(fill = GISTIC_SMARCB1_focal_status))
+copy_number_comparison_plot <-
+  ggplot2::ggplot(comparison_df,
+                  ggplot2::aes(x = copy_number, y = GISTIC_copy_number)) +
+  ggplot2::geom_point() +
+  ggplot2::labs(title = "`SMARCB1` focal copy number comparison scatterplot")
 
-comparison_plot
+copy_number_comparison_plot
+
+focal_status_comparison_plot <-
+  ggplot2::ggplot(comparison_df,
+                  ggplot2::aes(x = SMARCB1_focal_status, y = GISTIC_SMARCB1_focal_status)) +
+  ggplot2::geom_point() +
+  ggplot2::labs(title = "`SMARCB1` focal status comparison scatterplot")
+
+focal_status_comparison_plot
 ```
 
 # Session Info
