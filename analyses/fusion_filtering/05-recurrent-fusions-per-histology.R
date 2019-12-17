@@ -32,8 +32,11 @@ independentSpecimens<-read_tsv(independentSpecimensFile) %>% as.data.frame()
 
 sampleIDMatchedIndependent<-clinical %>% filter(Kids_First_Biospecimen_ID %in% independentSpecimens$Kids_First_Biospecimen_ID) %>% select(sample_id) %>% as.vector() 
 
-# PNOC sampleIDs have .WXS which would need to .RNA-Seq 
-sampleIDMatchedIndependent$sample_id<-gsub("[.].*",".RNA-Seq",sampleIDMatchedIndependent$sample_id)
+# PNOC sampleIDs have .WXS which would need to .RNA-Seq ; Panel not in independent sample list ; so using patient ID to match
+clinical_pnoc<-clinical %>% 
+  filter(cohort=="PNOC003",experimental_strategy=="RNA-Seq",tumor_descriptor=="Initial CNS Tumor") %>% 
+  select(Kids_First_Participant_ID,Kids_First_Biospecimen_ID)
+
 
 clinical_rna<-clinical %>% 
   # select WGS/WXS matched sampleIDs + experimental_strategy=="RNA-Seq" +composition == "Solid Tissue"
@@ -43,6 +46,30 @@ clinical_rna<-clinical %>%
   dplyr::group_by(Kids_First_Participant_ID) %>%
   # sample 1 of BS_IDs for multiple sampleID found in matching with WGS/WXS
   dplyr::summarize(Kids_First_Biospecimen_ID = sample(Kids_First_Biospecimen_ID, 1)) 
+
+# match RNASeq only files
+clinical_wgs<-clinical %>% 
+  filter(experimental_strategy == "WGS" | experimental_strategy == "WXS",sample_type=="Tumor")
+
+# remove samples which have WGS/WXS because those would have been captured from the independent-wgswxs-sample
+clinical_rna_v2<-clinical %>% 
+  filter(experimental_strategy == "RNA-Seq",!Kids_First_Participant_ID %in% clinical_wgs$Kids_First_Participant_ID)
+
+clinical_rna_intial<-clinical_rna_v2 %>% 
+  dplyr::filter(composition=="Solid Tissue",tumor_descriptor=="Initial CNS Tumor") %>% 
+  select("Kids_First_Participant_ID","Kids_First_Biospecimen_ID")
+
+clinical_rna_non_initial<- clinical_rna_v2 %>% 
+  filter(!Kids_First_Participant_ID %in% clinical_rna_intial$Kids_First_Participant_ID ) %>% 
+  dplyr::filter(experimental_strategy=="RNA-Seq" ,composition=="Solid Tissue") %>%
+  as.data.frame() %>% 
+  dplyr::group_by(Kids_First_Participant_ID) %>%
+  # random sample 1 of BS_IDs for multiple sampleID found in matching with WGS/WXS
+  dplyr::summarize(Kids_First_Biospecimen_ID = sample(Kids_First_Biospecimen_ID, 1)) 
+
+# bind WGS/WXS matched RNA-Seq + RNAseq only samples initial tumor samples + RNAseq only recurrent/progressive samples + RNASeq matched to PNOC samples
+clinical_rna<-rbind(clinical_rna,clinical_rna_intial,clinical_rna_non_initial,clinical_pnoc)
+
 
 # Putative Driver Fusions annotated with broad_histology
 standardFusionCalls<-standardFusionCalls %>% 
@@ -152,8 +179,6 @@ rec_gene_mat[is.na(rec_gene_mat$Gene),"Gene"]<-"No_rec_fused_gene"
 rec_gene_mat<-dcast(rec_gene_mat,Sample~Gene,value.var = "Sample",fun.aggregate = function(x){as.integer(length(x) > 0)},drop = FALSE)
 
 write.table(rec_gene_mat,file.path(outputfolder,"rec_genes_matrix_sample_histology_level.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
-
-
 
 
 
