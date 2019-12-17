@@ -25,3 +25,5 @@ fi
 
 Rscript -e "rmarkdown::render('01-ATRT-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
 Rscript --vanilla 02-ATRT-molecular-subtyping-plotting.R
+Rscript -e "rmarkdown::render('03-ATRT-molecular-subtyping-gistic-comparison.Rmd', clean = TRUE)"
+
