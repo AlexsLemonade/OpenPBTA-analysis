@@ -16,7 +16,7 @@
     - pbta-gene-expression-kallisto.stranded.rds
     - pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds
   - Add recurrently-fused genes by histology and matrix of recurrently-fused genes by biospecimen from [fusion filtering and prioritization analysis](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/fusion_filtering)
-  - Update consensus TMB files and MAF [#333]](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/333)
+  - Update consensus TMB files and MAF [#333](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/333)
   - Add RNA-Seq [collapsed matrices](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/287) - wrong files (tables of transcripts removed) were included with [V10](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/273)
   - Rename `WGS.hg38.mutect2.unpadded.bed` to `WGS.hg38.mutect2.vardict.unpadded.bed` to better reflect usage
   - Update `pbta-histologies.tsv` to add new RNA-Seq samples listed above, [#222 harmonize disease separators](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/222), and reran [medulloblastoma classifier](https://github.com/d3b-center/medullo-classifier-package) using V12 RSEM fpkm collapsed files
