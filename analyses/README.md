@@ -1,7 +1,7 @@
 ## Analysis Modules
 
 This directory contains various analysis modules in the OpenPBTA project.
-See the READMEs of individual analysis modules for more information about that module.
+See the README of an individual analysis modules for more information about that module.
 
 ### Modules at a glance
 
