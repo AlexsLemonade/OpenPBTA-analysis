@@ -68,7 +68,7 @@ clinical_rna_non_initial<- clinical_rna_v2 %>%
   dplyr::summarize(Kids_First_Biospecimen_ID = sample(Kids_First_Biospecimen_ID, 1)) 
 
 # bind WGS/WXS matched RNA-Seq + RNAseq only samples initial tumor samples + RNAseq only recurrent/progressive samples + RNASeq matched to PNOC samples
-clinical_rna<-rbind(clinical_rna,clinical_rna_intial,clinical_rna_non_initial,clinical_pnoc)
+clinical_rna<-rbind(clinical_rna,clinical_rna_intial,clinical_rna_non_initial,clinical_pnoc) %>% unique()
 
 
 # Putative Driver Fusions annotated with broad_histology
@@ -137,19 +137,19 @@ write.table(rec_fusions_mat,file.path(outputfolder,"rec_fusions_matrix_sample_hi
 rec_gene1A <- standardFusionCalls %>% 
   dplyr::select("Gene1A","broad_histology","Kids_First_Participant_ID")%>%
   unique() %>%
-  dplyr::group_by(Gene1A,broad_histology) %>% 
-  dplyr::summarize(count = n()) %>%
   dplyr::rename("Gene"="Gene1A")
 
 # gene1B recurrent
 rec_gene1B <- standardFusionCalls %>% 
   dplyr::select("Gene1B","broad_histology","Kids_First_Participant_ID")%>%
   unique() %>%
-  dplyr::group_by(Gene1B,broad_histology) %>% 
-  dplyr::summarize(count = n()) %>%
   dplyr::rename("Gene"="Gene1B")
 
-rec_gene<-rbind(rec_gene1A,rec_gene1B)
+# merge and then summarize
+rec_gene<-rbind(rec_gene1A,rec_gene1B) %>% 
+  unique() %>%
+  dplyr::group_by(Gene,broad_histology) %>% 
+  dplyr::summarize(count = n()) 
 
 #find rec fused genes per PATIENT per broad_histology
 rec_gene<-rec_gene[rec_gene$count>3,]
