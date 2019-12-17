@@ -9,11 +9,11 @@ The project maintainers include scientists from [Alex's Lemonade Stand Foundatio
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-  - [Join the Cancer Data Science Slack](#join-the-cancer-data-science-slack)
 - [How to Obtain OpenPBTA Data](#how-to-obtain-openpbta-data)
   - [Data Access via Download Script](#data-access-via-download-script)
   - [Data Access via CAVATICA](#data-access-via-cavatica)
 - [How to Participate](#how-to-participate)
+  - [Join the Cancer Data Science Slack](#join-the-cancer-data-science-slack)
   - [Planned Analyses](#planned-analyses)
   - [Proposing a New Analysis](#proposing-a-new-analysis)
   - [Implementing an Analysis](#implementing-an-analysis)
