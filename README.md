@@ -1,45 +1,45 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [OpenPBTA-analysis](#openpbta-analysis)
-    - [Join the Cancer Data Science Slack](#join-the-cancer-data-science-slack)
-  - [How to Participate](#how-to-participate)
-    - [Planned Analyses](#planned-analyses)
-    - [Proposing a New Analysis](#proposing-a-new-analysis)
-    - [Implementing an Analysis](#implementing-an-analysis)
-      - [Analytical Code and Output](#analytical-code-and-output)
-      - [Software Dependencies](#software-dependencies)
-      - [Pull Request Model](#pull-request-model)
-  - [How to Obtain OpenPBTA Data](#how-to-obtain-openpbta-data)
-    - [Data Access via Download Script](#data-access-via-download-script)
-    - [Data Access via CAVATICA](#data-access-via-cavatica)
-  - [How to Add an Analysis](#how-to-add-an-analysis)
-    - [Folder Structure](#folder-structure)
-    - [Analysis Script Numbering](#analysis-script-numbering)
-    - [Output Expectations](#output-expectations)
-    - [Docker Image](#docker-image)
-      - [Development in the Project Docker Container](#development-in-the-project-docker-container)
-        - [RStudio](#rstudio)
-    - [Local Development](#local-development)
-      - [RStudio](#rstudio-1)
-    - [Continuous Integration (CI)](#continuous-integration-ci)
-      - [Working with the subset files used in CI locally](#working-with-the-subset-files-used-in-ci-locally)
-      - [Adding Analyses to CI](#adding-analyses-to-ci)
-      - [Adding Analyses with Multiple Steps](#adding-analyses-with-multiple-steps)
-        - [1. File and merge a pull request for adding `01-filter-samples.R` to the repository.](#1-file-and-merge-a-pull-request-for-adding-01-filter-samplesr-to-the-repository)
-        - [2. File and merge a pull request for adding `02-cluster-heatmap.R` to the repository.](#2-file-and-merge-a-pull-request-for-adding-02-cluster-heatmapr-to-the-repository)
-        - [3. File and merge a pull request for the shell script that runs the entirety of `gene-expression-clustering`.](#3-file-and-merge-a-pull-request-for-the-shell-script-that-runs-the-entirety-of-gene-expression-clustering)
-      - [Passing variables only in CI](#passing-variables-only-in-ci)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 # OpenPBTA-analysis
 
 The Open Pediatric Brain Tumor Atlas (OpenPBTA) Project is an effort to describe the landscape of tumors in the [Children's Brain Tumor Tissue Consortium](https://cbttc.org/) and the PNOC003 DIPG clinical trial from the [Pediatric Pacific Neuro-oncology Consortium](http://www.pnoc.us/).
 This is an open analysis effort that is organized on GitHub.
 There is a [companion OpenPBTA-manuscript repository](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) that is being used to author a collaborative manuscript describing the effort.
 The project maintainers include scientists from [Alex's Lemonade Stand Foundation's Childhood Cancer Data Lab](https://www.ccdatalab.org/) and the [Center for Data-Driven Discovery in Biomedicine at the Children's Hospital of Philadelphia](https://d3b.center/).
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+  - [Join the Cancer Data Science Slack](#join-the-cancer-data-science-slack)
+- [How to Obtain OpenPBTA Data](#how-to-obtain-openpbta-data)
+  - [Data Access via Download Script](#data-access-via-download-script)
+  - [Data Access via CAVATICA](#data-access-via-cavatica)
+- [How to Participate](#how-to-participate)
+  - [Planned Analyses](#planned-analyses)
+  - [Proposing a New Analysis](#proposing-a-new-analysis)
+  - [Implementing an Analysis](#implementing-an-analysis)
+    - [Analytical Code and Output](#analytical-code-and-output)
+    - [Software Dependencies](#software-dependencies)
+    - [Pull Request Model](#pull-request-model)
+- [How to Add an Analysis](#how-to-add-an-analysis)
+  - [Folder Structure](#folder-structure)
+  - [Analysis Script Numbering](#analysis-script-numbering)
+  - [Output Expectations](#output-expectations)
+  - [Docker Image](#docker-image)
+    - [Development in the Project Docker Container](#development-in-the-project-docker-container)
+      - [RStudio](#rstudio)
+  - [Local Development](#local-development)
+    - [RStudio](#rstudio-1)
+  - [Continuous Integration (CI)](#continuous-integration-ci)
+    - [Working with the subset files used in CI locally](#working-with-the-subset-files-used-in-ci-locally)
+    - [Adding Analyses to CI](#adding-analyses-to-ci)
+    - [Adding Analyses with Multiple Steps](#adding-analyses-with-multiple-steps)
+      - [1. File and merge a pull request for adding `01-filter-samples.R` to the repository.](#1-file-and-merge-a-pull-request-for-adding-01-filter-samplesr-to-the-repository)
+      - [2. File and merge a pull request for adding `02-cluster-heatmap.R` to the repository.](#2-file-and-merge-a-pull-request-for-adding-02-cluster-heatmapr-to-the-repository)
+      - [3. File and merge a pull request for the shell script that runs the entirety of `gene-expression-clustering`.](#3-file-and-merge-a-pull-request-for-the-shell-script-that-runs-the-entirety-of-gene-expression-clustering)
+    - [Passing variables only in CI](#passing-variables-only-in-ci)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 
 ### Join the Cancer Data Science Slack
 
@@ -49,15 +49,45 @@ The project maintainers include scientists from [Alex's Lemonade Stand Foundatio
 You can join the <a href = "http://ccdatalab.org/slack"> Cancer Data Science Slack</a> to connect with OpenPBTA organizers, other project participants, and the broader cancer data science community.
 Sign up and join the <strong>#open-pbta</strong> channel to get started!</p>
 
+## How to Obtain OpenPBTA Data
+
+The OpenPBTA dataset includes somatic mutation and gene expression results in combined tsv or matrix format.
+We are releasing this dataset on both [CAVATICA](https://cavatica.sbgenomics.com) and AWS S3.
+Users performing analyses, should always refer to the symlinks in the `data/` directory and not files within the release folder, as an updated release may be produced before a publication is prepared.
+
+**The data formats and caveats are described in more detail in [`doc/data-formats.md`](doc/data-formats.md).
+For brief descriptions of the data files, see the [`data-description.md`](doc/data-description.md) file included in the download.**
+
+Use the [data issue template](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/new?assignees=&labels=data&template=data-question.md&title=) to file issues if you have questions about or identify issues with OpenPBTA data.
+
+### Data Access via Download Script
+
+We have created a shell script that will download the latest release from AWS S3.
+macOS users must install `md5sum` before running the download script the first time. 
+This can be installed with [homebrew](https://brew.sh/) via the command `brew install coreutils` or [conda/miniconda](https://docs.conda.io/projects/conda/en/latest/) via the command `conda install -c conda-forge coreutils`.
+_Note: the `download-data.sh` script now has the ability to skip downloads of unchanged files, but if you previously installed md5sum via brew you'll need to run `brew unlink md5sha1sum && brew install coreutils` first to take advantage of this new feature._
+
+Once this has been done, run `bash download-data.sh` to acquire the latest release.
+This will create symlinks in `data/` to the latest files.
+It's safe to re-run `bash download-data.sh` to check that you have the most recent release of the data.
+We will update the default release number whenever we produce a new release.
+
+### Data Access via CAVATICA
+
+For any user registered on CAVATICA, the latest release of OpenPBTA data can be accessed from the CAVATICA public projects below:
+- [Pediatric Brain Tumor Atlas Open Access Data - CBTTC](https://cavatica.sbgenomics.com/u/cavatica/pbta-cbttc/)
+- [Pediatric Brain Tumor Atlas Open Access Data - PNOC003](https://cavatica.sbgenomics.com/u/cavatica/pbta-pnoc003/)
+
+Users downloading via CAVATICA should place the data files within a `data/release` folder and then create symlinks to those files within `/data`.
+
+
 ## How to Participate
 
 ### Planned Analyses
 
 There are certain analyses that we have planned or that others have proposed, but which nobody is currently in charge of completing.
 Check the existing [issues](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues) to identify these.
-We have tagged a [subset of these with the label "good first issue"](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
-These "good first issues" are ones that have a limited scope, that can be done with the software already present on the Docker container, and that we expect to have few dependencies with other issues.
-If you would like to take on these or any other existing planned analysis, please comment on the issue noting your interest in tackling the issue in question.
+If you would like to take on a planned analysis, please comment on the issue noting your interest in tackling the issue in question.
 Ask clarifying questions to understand the current scope and goals.
 Then propose a potential solution.
 If the solution aligns with the goals, we will ask you to go ahead and start to implement the solution.
@@ -94,32 +124,6 @@ If you need software that is not included, please edit the Dockerfile to install
 Analyses are added to this repository via [Pull Requests](https://github.com/AlexsLemonade/OpenPBTA-analysis/compare).
 **Please read the [Pull Request section of the contribution guidelines](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/CONTRIBUTING.md#pull-requests) carefully.**
 We are using continuous integration software applied to the supplied test datasets to confirm that the analysis can be carried out successfully within the Docker container.
-
-## How to Obtain OpenPBTA Data
-
-The OpenPBTA dataset includes somatic mutation and gene expression results in combined tsv or matrix format.
-We are releasing this dataset on both [CAVATICA](https://cavatica.sbgenomics.com) and AWS S3.
-Users performing analyses, should always refer to the symlinks in the `data/` directory and not files within the release folder, as an updated release may be produced before a publication is prepared.
-
-### Data Access via Download Script
-
-We have created a shell script that will download the latest release from AWS S3.
-macOS users must install `md5sum` before running the download script the first time. 
-This can be installed with [homebrew](https://brew.sh/) via the command `brew install coreutils` or [conda/miniconda](https://docs.conda.io/projects/conda/en/latest/) via the command `conda install -c conda-forge coreutils`.
-_Note: the `download-data.sh` script now has the ability to skip downloads of unchanged files, but if you previously installed md5sum via brew you'll need to run `brew unlink md5sha1sum && brew install coreutils` first to take advantage of this new feature._
-
-Once this has been done, run `bash download-data.sh` to acquire the latest release.
-This will create symlinks in `data/` to the latest files.
-It's safe to re-run `bash download-data.sh` to check that you have the most recent release of the data.
-We will update the default release number whenever we produce a new release.
-
-### Data Access via CAVATICA
-
-For any user registered on CAVATICA, the latest release of OpenPBTA data can be accessed from the CAVATICA public projects below:
-- [Pediatric Brain Tumor Atlas Open Access Data - CBTTC](https://cavatica.sbgenomics.com/u/cavatica/pbta-cbttc/)
-- [Pediatric Brain Tumor Atlas Open Access Data - PNOC003](https://cavatica.sbgenomics.com/u/cavatica/pbta-pnoc003/)
-
-Users downloading via CAVATICA should place the data files within a `data/release` folder and then create symlinks to those files within `/data`.
 
 ## How to Add an Analysis
 
