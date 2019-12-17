@@ -102,6 +102,9 @@ jobs:
           
          ################################
          #### Add your analysis here ####
+      - run:
+          name: Process SV file
+          command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/01-process-sv-file.R
          ################################
          
       - run:
