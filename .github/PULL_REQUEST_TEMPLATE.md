@@ -44,3 +44,10 @@
 
 - [ ] The dependencies required to run the code in this pull request have been added to the project Dockerfile.
 - [ ] This analysis has been added to continuous integration.
+
+### Data Release Checklist
+<!-- Check all those that apply or remove this section if it is not applicable.-->
+
+- [ ] Is the table in doc/data-file-descriptions.md up to date?
+- [ ] Is doc/data-format.md up to date?
+- [ ] Is doc/release-notes.md up to date?
