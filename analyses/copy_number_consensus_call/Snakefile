@@ -2,11 +2,10 @@
 # Updated Dec 5, 2019
 
 ## Define the ending file(s) that we want
-ALL_FREEC= expand("../../scratch/interim/{sample}.freec.dup.filtered.bed", sample=config["samples"])
-ALL_CNVKIT= expand("../../scratch/interim/{sample}.cnvkit.dup.filtered.bed", sample=config["samples"])
-OUTPUT= expand("../../scratch/interim/{sample}.{caller}.dup.filtered.bed", 
+OUTPUT= expand("../../scratch/interim/{sample}.{caller}.{dupdel}.filtered.bed",
                sample=config["samples"], 
-               caller=["freec", "cnvkit", "manta"])
+               caller=["freec", "cnvkit", "manta"],
+               dupdel=["dup", "del"])
         
 
 ## Define the first rule of the Snakefile. This rule determines what the final file is and which steps to be taken.
@@ -35,12 +34,14 @@ rule freec_filter:
         ## The first awk looks at column 6 to filter out for loss/gain. Then it prints out 6 of the 7 columns above
         ## The pipe into the second awk filters the CNV length, freec pval, and add in the CNV type
         ## The last pipe is to sort first digit of chromosome number numerically
-        """awk '$6~/loss/ {{print $2,$3,$4,($4-$3 + 1),$5,$9}}' {input.events} """
+        """awk '$6~/loss/ {{print "chr"$2,$3,$4,($4-$3 + 1),$5,$9}}' {input.events} """
         """ | awk '{{if ($4 > {params.SIZE_CUTOFF} && $6 < {params.FREEC_PVAL}){{print $0,"DEL"}}}}' """
-        """ | sort -k1,1 -k2,2n > {output.freec_del} && """
-        """awk '$6~/gain/ {{print $2,$3,$4,($4-$3 + 1),$5,$9}}' {input.events} """
+        """ | sort -k1,1 -k2,2n """
+        """ | tr [:blank:] '\t' > {output.freec_del} && """
+        """awk '$6~/gain/ {{print "chr"$2,$3,$4,($4-$3 + 1),$5,$9}}' {input.events} """
         """ | awk '{{if ($4 > {params.SIZE_CUTOFF} && $6 < {params.FREEC_PVAL}){{print $0,"DUP"}}}}' """
-        """ | sort -k1,1 -k2,2n > {output.freec_dup}"""
+        """ | sort -k1,1 -k2,2n """
+        """ | tr [:blank:] '\t' > {output.freec_dup}"""
 
 rule cnvkit_filter:
     input:
@@ -60,10 +61,12 @@ rule cnvkit_filter:
         ## The last pipe is to sort first digit of chromosome number numerically
         """awk '$7<2 {{print $2,$3,$4,($4-$3 + 1),$7,"NA"}}' {input.events} """
         """ | awk '{{if ($4 > {params.SIZE_CUTOFF}){{print $0,"DEL"}}}}' """
-        """ | sort -k1,1 -k2,2n > {output.cnvkit_del} && """
+        """ | sort -k1,1 -k2,2n """
+        """ | tr [:blank:] '\t' > {output.cnvkit_del} && """
         """awk '$7>2 {{print $2,$3,$4,($4-$3 + 1),$7,"NA"}}' {input.events} """
         """ | awk '{{if ($4 > {params.SIZE_CUTOFF}){{print $0,"DUP"}}}}' """
-        """ | sort -k1,1 -k2,2n > {output.cnvkit_dup}"""
+        """ | sort -k1,1 -k2,2n """
+        """ | tr [:blank:] '\t' > {output.cnvkit_dup}"""
 
 rule manta_filter:
     input:
@@ -81,10 +84,12 @@ rule manta_filter:
         ## The first awk looks at column 6 to filter out for loss/gain (DEL/DUP). Then it prints out 6 of the 7 columns above. Put NA for both p-value and copy number since MANTA results don't have these values.
         ## the first awk also filters out for CNV length
         ## The last pipe is to sort first digit of chromosome number numerically
-        """awk '$6~/DEL/ {{if ($5 > {params.SIZE_CUTOFF}) {{print$2,$3,$4,$5,"NA","NA",$6}}}}' {input} """
-        """ | sort -k1,1 -k2,2n > {output.manta_del} && """
-        """awk '$6~/DUP/ {{if ($5 > {params.SIZE_CUTOFF}) {{print$2,$3,$4,$5,"NA","NA",$6}}}}' {input} """
-        """ | sort -k1,1 -k2,2n > {output.manta_dup}"""
+        """awk '$6~/DEL/ {{if ($5 > {params.SIZE_CUTOFF}) {{print "chr"$2,$3,$4,$5,"NA","NA",$6}}}}' {input} """
+        """ | sort -k1,1 -k2,2n """
+        """ | tr [:blank:] '\t' > {output.manta_del} && """
+        """awk '$6~/DUP/ {{if ($5 > {params.SIZE_CUTOFF}) {{print "chr"$2,$3,$4,$5,"NA","NA",$6}}}}' {input} """
+        """ | sort -k1,1 -k2,2n """
+        """ | tr [:blank:] '\t' > {output.manta_dup}"""
 
 
 rule filter_telomeres:
