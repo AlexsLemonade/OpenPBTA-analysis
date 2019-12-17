@@ -6,7 +6,7 @@
 # There are two components to this file the "IGLL regions, centromeric and telomeric regions" and the "segmental duplication regions"
 # 1) The IGLL regions, centromeric and telomeric regions are generated from the practice described by Kai Wang at his PennCNV website http://penncnv.openbioinformatics.org/en/latest/misc/faq/
 # 2) The segmental duplication are downloaded from UCSC genome browser. The segmental duplication with 95% identity was downloaded and merged.
-     The tracked used for this is here https://genome.ucsc.edu/cgi-bin/hgTrackUi?hgsid=783211655_qnHWS1w9VWkUebtWb7482jKHTMF8&c=chr1&g=genomicSuperDups 
+#    The track used for this is here https://genome.ucsc.edu/cgi-bin/hgTrackUi?hgsid=783211655_qnHWS1w9VWkUebtWb7482jKHTMF8&c=chr1&g=genomicSuperDups 
 # 3) In the end, everything was put together into one file, sorted and merged. 
 
 
