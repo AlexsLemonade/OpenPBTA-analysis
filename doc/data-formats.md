@@ -10,7 +10,7 @@ PBTA data files are all files derived from samples (e.g., tumors, cell lines) th
 #### Somatic Single Nucleotide Variant (SNV) Data
 
 Somatic Single Nucleotide Variant (SNV) data are provided in [Annotated MAF format](format/vep-maf.md) files for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-single-nucleotide-variant-calling) and denoted with the `pbta-snv` prefix.
-Briefly, VCFs are VEP annotated and converted to MAF format via [mskcc/vcf2maf](https://github.com/mskcc/vcf2maf/blob/master/maf2vcf.pl) to produce the following files:
+Briefly, VCFs are VEP annotated and converted to MAF format via [vcf2maf](https://github.com/mskcc/vcf2maf/blob/master/maf2vcf.pl) to produce the following files:
 
 * `pbta-snv-lancet.vep.maf.gz`
 * `pbta-snv-mutect2.vep.maf.gz`
@@ -21,8 +21,8 @@ Briefly, VCFs are VEP annotated and converted to MAF format via [mskcc/vcf2maf](
 
 Somatic Copy Number Variant (CNV) data are provided in a modified [SEG format](https://software.broadinstitute.org/software/igv/SEG) for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-copy-number-variant-calling) and denoted with the `pbta-cnv` prefix.
 
-  * `pbta-cnv-cnvkit.seg.gz` is the the CNVkit SEG file. This file contains an additional column `copy.num` to denote copy number of each segment, derived from the CNS file output of the algorithm described [here](https://cnvkit.readthedocs.io/en/stable/fileformats.html).
-  * `pbta-cnv-controlfreec.tsv.gz` is the ControlFreeC TSV file. It is a merge of `*_CNVs` files produced from the algorithm, and columns are described [here](http://boevalab.inf.ethz.ch/FREEC/tutorial.html#OUTPUT).
+  * `pbta-cnv-cnvkit.seg.gz` is the the CNVkit SEG file. This file contains an additional column `copy.num` to denote copy number of each segment, derived from the CNS file output of the algorithm [described here](https://cnvkit.readthedocs.io/en/stable/fileformats.html).
+  * `pbta-cnv-controlfreec.tsv.gz` is the ControlFreeC TSV file. It is a merge of `*_CNVs` files produced from the algorithm, and columns are [described here](http://boevalab.inf.ethz.ch/FREEC/tutorial.html#OUTPUT).
 
 Analysis file(s) comprised of copy number consensus calls from the copy number and structural variant callers are forthcoming (see [#128](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/128) and associated pull requests).
 
@@ -89,7 +89,7 @@ Gene expression are available in multiple forms in the following files:
 
 See [the data description file](data-description.md) for more information about the individual gene expression files.
 
-If your analysis requires de-duplicated gene symbols as row names, please use the collapsed matrices provided as part of the data download (see [below](#collapsed-expression-matrices)).
+If your analysis requires de-duplicated gene symbols as row names, please use the collapsed matrices provided as part of the data download ([see below](#collapsed-expression-matrices)).
 
 #### Gene Fusion Data
 
@@ -131,7 +131,7 @@ In cases where more than one Ensembl gene identifier maps to the same gene symbo
 #### Independent Specimen Lists
 
 Independent specimen lists are the products of the [`analyses/independent-samples`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/independent-samples) analysis module.
-For participants with multiple tumor specimens, independent specimen lists are provided as TSV files with columns for participant ID and specimen ID (methods described [here](https://alexslemonade.github.io/OpenPBTA-manuscript/#selection-of-independent-samples)). 
+For participants with multiple tumor specimens, independent specimen lists are provided as TSV files with columns for participant ID and specimen ID (methods [described here](https://alexslemonade.github.io/OpenPBTA-manuscript/#selection-of-independent-samples)). 
 These files are used for analyses such as mutation co-occurence, where repeated samples might cause bias. 
   
   * `independent-specimens.wgs.primary.tsv` with WGS samples and only primary tumors.
@@ -144,7 +144,7 @@ Note that these independent specimen files do not address the issue of participa
 #### Putative Oncogenic Fusion List
 
 The filtered and prioritized fusion list is a product of the [`analyses/fusion_filtering`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/fusion_filtering) analysis module. 
-The methods are described [here](https://alexslemonade.github.io/OpenPBTA-manuscript/#fusion-prioritization).
+The methods are [described here](https://alexslemonade.github.io/OpenPBTA-manuscript/#fusion-prioritization).
 
 * `pbta-fusion-putative-oncogenic.tsv` 
 
