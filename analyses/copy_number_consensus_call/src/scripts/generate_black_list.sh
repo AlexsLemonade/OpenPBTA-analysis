@@ -18,4 +18,4 @@ sort -k1,1 -k2,2n segdup_95 | bedtools merge > segdup_95_merged
 # Put the IGLL_telo_centromeric_region.txt and the segdup file together,
 # take only the first 3 columns,
 # sort them and merge any overlaping segment
-cat IGLL_telo_centromeric_region.txt segdup_95_merged | awk -v OFS='\t' '{print$1,$2,$3}' | sort -k1,1 -k2,2n | bedtools merge > bad_chromosomal_seg_updated_merged.txt
+cat IGLL_telo_centromeric_region.txt segdup_95_merged | awk -v OFS='\t' '{print$1,$2,$3}' | sort -k1,1 -k2,2n | bedtools merge > bad_chromosomal_seg_updated_merged.bed
