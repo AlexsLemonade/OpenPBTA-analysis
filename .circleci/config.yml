@@ -87,6 +87,10 @@ jobs:
       - run:
           name: Copy number consensus
           command: ./scripts/run_in_ci.sh bash "analyses/copy_number_consensus_call/run_consensus_call.sh"
+          
+      - run:
+          name: Survival analysis
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/survival-analysis/survival-analysis_template.Rmd', params = list(plot_ci = FALSE), clean = TRUE)" 
 
       - run:
           name: Comparative RNASeq - generate correlation matrix - rsem-tpm.polya
@@ -99,12 +103,13 @@ jobs:
       - run:
           name: Molecular Subtyping and Plotting - ATRT
           command:  OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-ATRT/run-molecular-subtyping-ATRT.sh        
-          
-         ################################
-         #### Add your analysis here ####
+      
       - run:
           name: Process SV file
           command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/01-process-sv-file.R
+      
+         ################################
+         #### Add your analysis here ####
          ################################
          
       - run:
