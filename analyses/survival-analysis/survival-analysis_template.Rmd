@@ -182,7 +182,7 @@ Make a pretty table of the results.
 
 ```{r Make log rank table}
 # Obtain p value for Chi-Squared stat
-p.value = pchisq(logrank_fit$chisq, df = 1, lower = FALSE)
+p.value <- pchisq(logrank_fit$chisq, df = 1, lower = FALSE)
 
 # Use broom to make the model object cleaned up
 logrank_table <- broom::tidy(logrank_fit) %>% 
