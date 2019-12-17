@@ -8,7 +8,9 @@ author: Chante Bethell for ALSF CCDL
 date: 2019
 ---
 
-This notebook addresses the issue of molecular subtyping ATRT samples. 
+This notebook compares GISTIC calls for `SMARCB1` with the current calls in 
+found in the OpenPBTA repository. This notebook is related to the issue on 
+molecular subtyping ATRT samples and thus focuses on ATRT samples. 
 
 # Usage
 
@@ -27,14 +29,8 @@ of the repository as follows:
 ## Directories and Files
 
 ```{r}
-# Detect the ".git" folder -- this will in the project root directory.
-# Use this as the root directory to ensure proper sourcing of functions no
-# matter where this is called from
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-
 # Set path to results and plots directory
-results_dir <-
-  file.path(root_dir, "analyses", "molecular-subtyping-ATRT", "results")
+results_dir <- file.path("results")
 
 if (!dir.exists(results_dir)) {
   dir.create(results_dir)
@@ -42,7 +38,7 @@ if (!dir.exists(results_dir)) {
 
 # Read in metadata
 metadata <-
-  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"))
+  readr::read_tsv(file.path("..", "..", "data", "pbta-histologies.tsv"))
 
 # Select wanted columns in metadata for merging and assign to a new object
 select_metadata <- metadata %>%
@@ -50,40 +46,20 @@ select_metadata <- metadata %>%
                 Kids_First_Biospecimen_ID,
                 tumor_ploidy)
 
-# Read in gistic broad value data 
+# Read in GISTIC focal CN data by genes
+# TODO: Change file path to this data once GISTIC files are added to the 
+#       official data release
 gistic_focal_data <-
-  data.table::fread(
-    file.path(
-      root_dir,
-      "analyses",
-      "molecular-subtyping-ATRT",
-      "data",
-      "focal_data_by_genes.csv"
-    )
-  )
+  data.table::fread(file.path("data",
+                              "focal_data_by_genes.csv"), data.table = FALSE)
 
-# Read in ATRT subset focal CN data
-cn_df <- readr::read_tsv(
-  file.path(
-    root_dir,
-    "analyses",
-    "molecular-subtyping-ATRT",
-    "atrt-subset",
-    "atrt_focal_cn.tsv.gz"
-  )
-)
-
-# Read in final output from `01-ATRT-molecular-subtyping-data-prep.Rmd`
+# Read in final output from `01-ATRT-molecular-subtyping-data-prep.Rmd` which 
+# includes the `SMARCB1_focal_status` variable with the current `SMARCB1` CN 
+# calls
 final_df <-
-  data.table::fread(
-    file.path(
-      root_dir,
-      "analyses",
-      "molecular-subtyping-ATRT",
-      "results",
-      "ATRT_molecular_subtypes.tsv"
-    )
-  )
+  data.table::fread(file.path("results",
+                              "ATRT_molecular_subtypes.tsv"),
+                    data.table = FALSE)
 ```
 
 # Filter GISTIC data for ATRT samples
@@ -91,29 +67,35 @@ final_df <-
 ```{r}
 # Filter and transpose GISTIC data 
 transposed_gistic <- gistic_focal_data %>%
+  # Filter to copy number data on `SMARCB1` only
   dplyr::filter(`Gene Symbol` == "SMARCB1") %>%
+  # Transpose and coerce into a data.frame
   t() %>%
   as.data.frame() %>%
+  # Make the rownames a column for the samples ID's
   tibble::rownames_to_column("Kids_First_Biospecimen_ID")
 
-transposed_gistic <- transposed_gistic[-(1:3), ]
-
-# Filter for ATRT samples
+# Remove the non-sample ID rows and filter for ATRT samples
 transposed_gistic <- transposed_gistic %>%
+  dplyr::filter(stringr::str_detect(Kids_First_Biospecimen_ID, "BS_")) %>%
+  # Join the `sample_id` and `tumor_ploidy` columns from the metadata
   dplyr::inner_join(select_metadata, by = "Kids_First_Biospecimen_ID") %>%
-  dplyr::filter(sample_id %in% final_df$sample_id)
+  # Filter this data for ATRT samples
+  dplyr::filter(sample_id %in% final_df$sample_id) %>%
+  # Make the copy number values numeric
+  dplyr::mutate(copy_number = as.numeric(V1)) %>%
+  # Remove the non-numeric copy number variable
+  dplyr::select(-V1)
 
-# Make the GISTIC data numeric
-transposed_gistic$V1 <- as.numeric(transposed_gistic$V1)
-
-# Create `gistic_status` variable
+# Create `gistic_SMARCB1_status` variable for comparison against the
+# `SMARCB1_focal_status` variable in the current focal copy number data
 final_gistic <-  transposed_gistic %>%
-  dplyr::mutate(gistic_status = dplyr::case_when(
+  dplyr::mutate(GISTIC_SMARCB1_focal_status = dplyr::case_when(
     # When the copy number is less than inferred ploidy, mark this as a loss
-    V1 < tumor_ploidy ~ "loss",
+    copy_number < tumor_ploidy ~ "loss",
     # If copy number is higher than ploidy, mark as a gain
-    V1 > tumor_ploidy ~ "gain",
-    V1 == tumor_ploidy ~ "neutral"
+    copy_number > tumor_ploidy ~ "gain",
+    copy_number == tumor_ploidy ~ "neutral"
   ))
 ```
 
@@ -125,7 +107,7 @@ comparison_df <- final_gistic %>%
   dplyr::inner_join(final_df, by = "sample_id") %>%
   dplyr::select(sample_id,
                 Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID.x,
-                gistic_status,
+                GISTIC_SMARCB1_focal_status,
                 SMARCB1_focal_status)
 ```
 
@@ -135,7 +117,7 @@ comparison_df <- final_gistic %>%
 # Produce a comparison plot
 comparison_plot <-
   ggplot2::ggplot(comparison_df, ggplot2::aes(x = SMARCB1_focal_status)) +
-  ggplot2::geom_bar(ggplot2::aes(fill = gistic_status))
+  ggplot2::geom_bar(ggplot2::aes(fill = GISTIC_SMARCB1_focal_status))
 
 comparison_plot
 ```
