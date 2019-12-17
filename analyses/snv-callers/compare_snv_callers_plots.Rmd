@@ -93,6 +93,7 @@ callers_per_mutation_df %>%
   ggplot2::ylab("")
 }
 ```
+
 ## Connect to database
 
 Connect to SQLite database.
@@ -100,7 +101,7 @@ Connect to SQLite database.
 ```{r}
 # Start up connection
 con <- DBI::dbConnect(RSQLite::SQLite(), 
-                      file.path(scratch_dir, "testing_snv_db.sqlite"))
+                      file.path(scratch_dir, "snv_db.sqlite"))
 ```
 
 Note what columns we will join by.
@@ -139,7 +140,7 @@ source(file.path("util", "full_join_callers.R"))
 
 # Bring out the data.frame
 all_caller_df <- all_caller %>%
-  as.data.frame
+  as.data.frame()
 
 # Take a peek at what this looks like
 head(all_caller_df)
@@ -209,13 +210,22 @@ callers_per_mutation <- callers_per_mutation %>%
 Make the upset plot. 
 
 ```{r}
-callers_per_mutation %>% 
+upsettr_plot <- callers_per_mutation %>% 
   upset_plot()
+
+# Make this plot a combined plot
+upsettr_plot <- cowplot::plot_grid(upsettr_plot[[1]], upsettr_plot[[2]], nrow = 2, rel_heights = c(5, 1))
+
+# Print this out here
+upsettr
 ```
 
+Save this plot to a png
+
 ```{r}
-# Save this plot
-ggplot2::ggsave(file.path(plots_dir, "upset_plot.png"))
+# We can save the plot like a normal ggplot
+cowplot::save_plot(filename = file.path(plots_dir, "upset_plot.png"), 
+                   plot = upsettr_plot)
 ```
 
 Transcripts only upset plot. 
