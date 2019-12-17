@@ -19,6 +19,7 @@ import argparse
 import subprocess
 import sys
 import os
+import re
 
 parser = argparse.ArgumentParser(description="""This script filters out telomeric,
                                              centromeric, and seg-dup regions""")
@@ -45,13 +46,8 @@ else:
         ## Strip the trailing spaces for each line
         stripped_content = [i.rstrip() for i in file.readlines()]
 
-        ## If the file is TAB delimited, split the file up by TABs
-        if stripped_content[0].find('\t') != -1:
-            final_content = [i.split('\t') for i in stripped_content]
-
-        ## If the file is space delimited, split the file up by the spaces
-        else:
-            final_content = [i.split() for i in stripped_content]
+        ## Split each line up by any white space between columns
+        final_content = [re.split('\s+',i) for i in stripped_content]
 
         ## If the 1st column has '1' instead of 'chr1' for the chromosome number, add in 'chr'
         if final_content[0][0].find('chr') == -1:
@@ -67,13 +63,8 @@ with open(args.reference) as file:
     ## Strip the trailing spaces for each line
     reference_stripped = [i.rstrip() for i in file.readlines()]
 
-    ## If the file is TAB delimited, split the file up by TABs
-    if reference_stripped[0].find('\t') != 1:
-        fin_reference_file = [i.split('\t') for i in reference_stripped]
-
-    ## If the file is space delimited, split the file up by the spaces
-    else:
-        fin_reference_file = [i.split() for i in reference_stripped]
+    ## Split each line up by any white space between columns
+    fin_reference_file = [re.split('\s+',i) for i in reference_stripped]
 
     ## If the 1st column has '1' instead of 'chr1' for the chromosome number, add in 'chr'
     if fin_reference_file[0][0].find('chr') == -1:
