@@ -14,7 +14,7 @@ find data -type l -delete
 curl --create-dirs $URL/$RELEASE/md5sum.txt -o data/$RELEASE/md5sum.txt -z data/$RELEASE/md5sum.txt
 
 # Consider the filenames in the md5sum file + CHANGELOG.md
-FILES=(`tr -s ' ' < data/$RELEASE/md5sum.txt | cut -d ' ' -f 2` CHANGELOG.md)
+FILES=(`tr -s ' ' < data/$RELEASE/md5sum.txt | cut -d ' ' -f 2` data-files-description.md)
 
 if [ -d "data/$PREVIOUS" ]
 then
