@@ -3,7 +3,11 @@ OUTPUT= expand("../../scratch/interim/{sample}.{caller}.{dupdel}.filtered3.bed",
                sample=config["samples"], 
                caller=["freec", "cnvkit", "manta"],
                dupdel=["dup", "del"])
-        
+
+## Define the wildcards to use in the file names. 
+wildcard_constraints:
+  caller = "cnvkit|freec|manta",
+  dupdel = "dup|del"
 
 ## Define the first rule of the Snakefile. This rule determines what the final file is and which steps to be taken.
 rule all:
@@ -98,10 +102,6 @@ rule filter_telomeres:
     output:
         ## Define the output files' names
         filtered_bed="../../scratch/interim/{sample}.{caller}.{dupdel}.filtered.bed"
-    wildcard_constraints:
-        ## Define the wildcards to use in the file names. 
-        caller = "cnvkit|freec|manta",
-        dupdel = "del|dup"
     threads: 1
     shell:
         ## Invoke the python3 script and pass in the reference and CNVs files. Direct the stdout to a new file. 
@@ -115,16 +115,14 @@ rule first_merge:
     output:
         ## Define the output files' names
         merged_bed="../../scratch/interim/{sample}.{caller}.{dupdel}.filtered2.bed"
-    wildcard_constraints:
-        ## Define the wildcards to use in the file names. 
-        caller = "cnvkit|freec|manta",
-        dupdel = "del|dup"
     threads: 1
     shell:
         ## Call on bedtools to merge any overlapping segment. Merging done for any segments within a single file.
         ## Any condiders any segments within 10,000 bp to be the same CNV. 
         ## Merge but retain info from columns 2 (start pos), 3(end pos), 5(copy numbers), 7(CNV type)
-        "bedtools merge -i {input.filtered_bed} -d 10000 -c 2,3,5,7 -o collapse,collapse,collapse,distinct > {output.merged_bed}"
+        "bedtools merge -i {input.filtered_bed} -d 10000"
+        " -c 2,3,5,7 -o collapse,collapse,collapse,distinct"
+        " > {output.merged_bed}"
 
 
 rule restructure_column:
@@ -135,10 +133,6 @@ rule restructure_column:
     output:
         ## Define the output files' names
         restructured_bed="../../scratch/interim/{sample}.{caller}.{dupdel}.filtered3.bed"
-    wildcard_constraints:
-        ## Define the wildcards to use in the file names. 
-        caller = "cnvkit|freec|manta",
-        dupdel = "del|dup"
     threads: 1
     shell:
         "python3 {input.script} --file {input.merged_bed} > {output.restructured_bed}"
