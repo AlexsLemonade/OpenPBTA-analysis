@@ -78,7 +78,10 @@ survival_analysis <- function(metadata, ind_var, test = "kap.meier", ind_data = 
     ind_var,
     sep = " ~ "
   )
-
+  
+  # We'll need to grab this later for ggsurvplot
+  assign("model", model, envir = .GlobalEnv)
+  
   # Print out what the model is
   message(paste("Testing model:", model))
 
