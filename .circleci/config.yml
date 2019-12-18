@@ -114,7 +114,7 @@ jobs:
           
       - run:
           name: Molecular Subtyping - HGG
-          command: ./scripts/run_in_ci.sh Rscript analyses/molecular-subtyping-HGG/01-HGG-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/01-HGG-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
       
          ################################
          #### Add your analysis here ####
