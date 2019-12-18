@@ -9,17 +9,26 @@
 ################################################################################
 
 survival_analysis <- function(metadata, ind_var, test = "kap.meier", data = NULL) {
-  # Run survival analysis. 
+  # Given the overall survival information, and an independent variable will 
+  # run survival analysis and return a list with 1) the model fit object and 
+  # 2) a summary table. 
   #
   # Args:
-  # metadata:
-  # ind_var:
-  # test:
-  # data:
+  #   metadata: a data.frame that contains columns OS_status and OS_days to use 
+  #             for the survival model. This also assumes "LIVING" and "DECEASED"
+  #             are the two statuses. THis will be converted to a numeric variable 
+  #             for use with `survival` R functions. Samples with NAs are dropped.
+  #   ind_var: a character string noting the name of the independent variable to 
+  #            test as a predictor for survival. 
+  #   test: a character string noting which test to use. Supported choices: 
+  #         "kap.meier", "log.rank", "cox.reg"
+  #   data: If the data for the independent variable needed for the test is not
+  #         in metadata, add it here. This assumes it will be a data.frame with 
+  #         either a "Tumor_Sample_Barcode" or "Kids_First_Biospecimen_ID" column 
+  #         which to inner_join with metadata by. 
   #
   # Returns:
-  # A plot or table depending on the test specified
-  
+  # A list with two objects: the model fit object and the summary table
   
   # List the tests
   supported_tests <- c("kap.meier", "log.rank", "cox.reg")
@@ -61,13 +70,13 @@ survival_analysis <- function(metadata, ind_var, test = "kap.meier", data = NULL
   # Print out what the model is
   message(paste("Testing model:", model))
   
+  # Run the appropriate test
   if (test == "kap.meier") {
     # Make the model
     fit <- survival::survfit(
       survival::Surv(metadata$OS_days, metadata$OS_status_num) ~ eval(parse(ind_var)),
       data = metadata 
     )
-    
   }
   if (test == "log.rank") {
     # Make the model
@@ -87,5 +96,6 @@ survival_analysis <- function(metadata, ind_var, test = "kap.meier", data = NULL
   # Tidy up the model object with broom
   table <- broom::tidy(fit) 
   
-  return(table)
+  # Return both the fit object and the table
+  return(list(fit, table))
 }
