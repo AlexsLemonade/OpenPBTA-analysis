@@ -1,5 +1,5 @@
 ---
-title: "Survival Analysis"
+title: "Survival Analysis Example"
 output: 
   html_notebook:
     toc: TRUE
@@ -44,12 +44,14 @@ survival_analysis(metadata,
               in `metadata`, add it here. This assumes it will be a data.frame with 
               either a `Tumor_Sample_Barcode`, `Kids_First_Biospecimen_ID`, or 
               `sample` column which to `dplyr::inner_join` with `metadata` by. 
-
+  
+  
 #### `test` options:  
 - ["kap.meier"](#kaplan-meier-example) : For basic survival analysis.  
 - ["log.rank"](#log-rank-example) : For use with categorical variables.  
 - ["cox.reg"](#cox-regression-example) : For use with continuous variables.  
-
+  
+  
 #### Output: 
 
 A **list** with:   
@@ -98,8 +100,10 @@ Declare input file paths.
 ```{r Set input file paths}
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
 tmb_file <- file.path(data_dir, "pbta-snv-consensus-mutation-tmb.tsv")
-germline_sex_file <- file.path("..", "sex-prediction-from-RNASeq", "results", 
-                               "germline_sex_estimate", "kallisto_stranded_36354_0.25_prediction_details.tsv")
+germline_sex_file <- file.path(
+  "..", "sex-prediction-from-RNASeq", "results",
+  "germline_sex_estimate", "kallisto_stranded_36354_0.25_prediction_details.tsv"
+)
 ```
 
 Declare output file paths. 
@@ -127,10 +131,11 @@ The [Kaplan-Meier](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3059453/)
 survival curve shows the probability of survival over time.
 
 ```{r Kaplan Meier}
-kap_fit <- survival_analysis(metadata, 
-                  ind_var = "pred", 
-                  test = "kap.meier", 
-                  ind_data = germline_sex)
+kap_fit <- survival_analysis(metadata,
+  ind_var = "pred",
+  test = "kap.meier",
+  ind_data = germline_sex
+)
 ```
 
 `survminer` package comes with a convenient plotting function which uses `ggplot2`
@@ -139,7 +144,7 @@ It requires the original Kaplain-Meier `survfit` object, so we will extract that
 
 ```{r Make survival plot}
 surv_plot <- survminer::ggsurvplot(kap_fit$model,
-  pval = TRUE, 
+  pval = TRUE,
   risk.table = TRUE,
   conf.int = params$plot_ci,
   xlim = c(0, 2000),
@@ -173,10 +178,11 @@ Use the `survdiff` function to test the differences between the `Male` and `Fema
 curves.
 
 ```{r Do log rank test}
-logrank_fit <- survival_analysis(metadata, 
-                                 ind_var = "pred", 
-                                 test = "log.rank", 
-                                 ind_data = germline_sex)
+logrank_fit <- survival_analysis(metadata,
+  ind_var = "pred",
+  test = "log.rank",
+  ind_data = germline_sex
+)
 ```
 
 Print table of the results.
@@ -207,10 +213,11 @@ tmb <- readr::read_tsv(tmb_file)
 Plug this into a Cox Regression model using the function `survival::coxph`. 
 
 ```{r Run Cox regression model}
-cox_fit <- survival_analysis(metadata, 
-                             ind_var = "tmb", 
-                             test = "cox.reg", 
-                             ind_data = tmb)
+cox_fit <- survival_analysis(metadata,
+  ind_var = "tmb",
+  test = "cox.reg",
+  ind_data = tmb
+)
 ```
 
 Take the output from this and make a table. 
