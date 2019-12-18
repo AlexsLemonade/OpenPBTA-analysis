@@ -12,7 +12,7 @@ set -o pipefail
 dbfile=scratch/testing_snv_db.sqlite
 
 # Designate output file 
-consensus_file=analyses/snv-callers/results/consensus/consensus_snv.maf.tsv
+consensus_file=analyses/snv-callers/results/consensus/pbta-snv-consensus-mutation.maf.tsv
 
 # BED and GTF file paths
 exon_file=scratch/gencode.v27.primary_assembly.annotation.bed
@@ -78,7 +78,7 @@ bedtools intersect \
 
 ######################### Calculate consensus TMB ##############################
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
-  --consensus analyses/snv-callers/results/consensus/consensus_snv.maf.tsv \
+  --consensus $consensus_file \
   --db_file $dbfile \
   --output analyses/snv-callers/results/consensus \
   --metadata data/pbta-histologies.tsv \
@@ -87,7 +87,11 @@ Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --coding_bed_wgs $coding_wgs_bed \
   --coding_bed_wxs $coding_wxs_bed \
   --overwrite
-  
+ 
+########################## Compress consensus file #############################
+
+gzip $consensus_file
+
 ############################# Comparison Plots #################################
 if [ "$run_plots_nb" -gt "0" ]
 then
