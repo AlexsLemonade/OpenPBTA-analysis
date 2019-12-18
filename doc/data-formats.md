@@ -151,6 +151,11 @@ The filtered and prioritized fusion and downstream files are a product of the [`
   * `pbta-fusion-recurrently-fused-genes-byhistology.tsv` is a table that includes counts of recurrently fused genes by broad histology.
   * `pbta-fusion-recurrently-fused-genes-bysample.tsv` contains a binary matrix that denotes the presence or absence of a recurrently fused gene in an individual RNA-seq specimen.
 
+#### Copy Number Files
+
+`pbta-cnv-cnvkit-gistic.zip` is the output of running GISTIC 2.0 on the CNVkit results (`pbta-cnv-cnvkit.seg`).
+The script used to run GISTIC can be [found here](https://github.com/d3b-center/publication_workflows/blob/master/openPBTA/run-gistic.sh).
+
 ### Data Caveats
 
 The clinical manifest will be updated and versioned as molecular subgroups are identified based on genomic analyses.
