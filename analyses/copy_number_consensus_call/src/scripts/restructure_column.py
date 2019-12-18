@@ -48,7 +48,7 @@ else:
     ## Make a new column to store info in the new format (start_pos:end_pos:copy_number)
     new_column = file.iloc[:,(0)].copy()
 
-    ## For every CNV in the file, reformatt columns 4, 5, and 6
+    ## For every CNV in the file, reformat columns 4, 5, and 6
     for i_index,i in enumerate(file.itertuples()):
         ## Since bed file uses a comma as default for collapsing information, we split the information using ','
         list_start = str(i._4).split(',')
