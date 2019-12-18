@@ -52,4 +52,5 @@
 - [ ] Is the table in doc/data-file-descriptions.md up to date?
 - [ ] Is doc/data-format.md up to date?
 - [ ] Is doc/release-notes.md up to date?
+- [ ] Is download-data.sh up to date?
 -->
