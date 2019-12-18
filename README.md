@@ -141,7 +141,7 @@ Files that are primarily tabular results files should be placed in a `results` s
 Intermediate files that are useful within the processing steps but that do not represent final results should be placed in `../../scratch/`.
 It is safe to assume that files placed in `../../scratch` will be available to all analyses within the same folder.
 It is not safe to assume that files placed in `../../scratch` will be available from analyses in a different folder.
-When an analysis module contains multiple steps or is nearing completion, a `README.md` file should be added to the folder that summarizes the purpose of the module, any known limitations or required updates, and includes examples for how to run the analyses.
+When an analysis module contains multiple steps or is nearing completion, add a `README.md` file that summarizes the purpose of the module, any known limitations or required updates, and includes examples for how to run the analyses to the folder.
 
 An example highlighting a `new-analysis` directory is shown below.
 The directory is placed alongside existing analyses within the `analyses` directory.
@@ -151,7 +151,7 @@ However, the author could have used Jupyter notebooks, R scripts, or another scr
 The author has produced their output figures as `.pdf` files.
 We have a preference for vector graphics as PDF files, though other forms of vector graphics are also appropriate.
 The results folder contains a tabular summary as a comma separated values file.
-We expect that the file suffix (`.csv`, `.tsv`) should accurately denote the format of the files added.
+ We expect that the file suffix (`.csv`, `.tsv`) accurately denotes the format of the added files.
 The author has also included a `README.md`.
 
 ```
