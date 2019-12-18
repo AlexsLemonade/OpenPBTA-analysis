@@ -44,6 +44,7 @@
 
 - [ ] The dependencies required to run the code in this pull request have been added to the project Dockerfile.
 - [ ] This analysis has been added to continuous integration.
+- [ ] This analysis is recorded in the table in `analyses/README.md`.
 
 <!-- IF YOUR PULL REQUEST IS A DATA RELEASE, PLEASE REMOVE THE [HTML COMMENT TAG](https://html.com/tags/comment-tag/) FROM THE SECTION BELOW AND COMPLETE THE CHECKLIST-->
 
