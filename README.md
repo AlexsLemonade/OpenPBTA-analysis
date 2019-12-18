@@ -22,6 +22,7 @@ The project maintainers include scientists from [Alex's Lemonade Stand Foundatio
     - [Pull Request Model](#pull-request-model)
 - [How to Add an Analysis](#how-to-add-an-analysis)
   - [Folder Structure](#folder-structure)
+  - [Documenting Your Analysis](#documenting-your-analysis)
   - [Analysis Script Numbering](#analysis-script-numbering)
   - [Output Expectations](#output-expectations)
   - [Docker Image](#docker-image)
@@ -141,7 +142,6 @@ Files that are primarily tabular results files should be placed in a `results` s
 Intermediate files that are useful within the processing steps but that do not represent final results should be placed in `../../scratch/`.
 It is safe to assume that files placed in `../../scratch` will be available to all analyses within the same folder.
 It is not safe to assume that files placed in `../../scratch` will be available from analyses in a different folder.
-When an analysis module contains multiple steps or is nearing completion, add a `README.md` file that summarizes the purpose of the module, any known limitations or required updates, and includes examples for how to run the analyses to the folder.
 
 An example highlighting a `new-analysis` directory is shown below.
 The directory is placed alongside existing analyses within the `analyses` directory.
@@ -152,7 +152,7 @@ The author has produced their output figures as `.pdf` files.
 We have a preference for vector graphics as PDF files, though other forms of vector graphics are also appropriate.
 The results folder contains a tabular summary as a comma separated values file.
  We expect that the file suffix (`.csv`, `.tsv`) accurately denotes the format of the added files.
-The author has also included a `README.md`.
+The author has also included a `README.md` ([see Documenting Your Analysis](#documenting-your-analysis)).
 
 ```
 OpenPBTA-analysis
@@ -174,6 +174,18 @@ OpenPBTA-analysis
 ├── data
 └── scratch
 ```
+
+### Documenting Your Analysis
+
+A goal of the OpenPBTA project is to create a collection of workflows that are commonly used for atlas papers.
+As such, documenting your analytical code via comments and including information summarizing the purpose of your analysis is important.
+
+When you file the first pull request creating a new analysis module, add your module to the [Modules At A Glance table](analyses#modules-at-a-glance).
+This table contains fields for the directory name, what input files are required, a short description, and any files that you expect other analyses will rely on.
+As your analysis develops and input or output files change, please check this table remains up to date. 
+This step is included in the pull request reproducibility checklist.
+
+When an analysis module contains multiple steps or is nearing completion, add a `README.md` file that summarizes the purpose of the module, any known limitations or required updates, and includes examples for how to run the analyses to the folder.
 
 ### Analysis Script Numbering
 
