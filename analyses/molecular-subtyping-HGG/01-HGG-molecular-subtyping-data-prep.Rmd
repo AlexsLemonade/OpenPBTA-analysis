@@ -1,0 +1,328 @@
+---
+title: "High-Grade Glioma Molecular Subtyping - Data Prep"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell for ALSF CCDL
+date: 2019
+---
+
+This notebook addresses data preparation for the issue of molecular subtyping 
+high-grade glioma samples in the OpenPBTA dataset. 
+
+# Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+`Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/01-HGG-molecular-subtyping-data-prep.Rmd', clean = TRUE)"`
+
+# Set Up
+
+```{r}
+# Get `magrittr` pipe
+`%>%` <- dplyr::`%>%`
+
+# Install `DT` and `htmlwidgets` packages for displaying tables
+if (!("DT" %in% installed.packages())) {
+  install.packages("DT")
+}
+if (!("htmlwidgets" %in% installed.packages())) {
+  install.packages("htmlwidgets")
+}
+```
+
+## Directories and Files
+
+```{r}
+# Detect the ".git" folder -- this will in the project root directory.
+# Use this as the root directory to ensure proper sourcing of functions no
+# matter where this is called from
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+# File path to results directory
+results_dir <-
+  file.path(root_dir, "analyses", "molecular-subtyping-HGG", "results")
+
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+
+# Read in metadata
+metadata <-
+  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"))
+
+# Select wanted columns in metadata for merging and assign to a new object
+select_metadata <- metadata %>%
+  dplyr::select(sample_id,
+                Kids_First_Participant_ID,
+                Kids_First_Biospecimen_ID,
+                glioma_brain_region,
+                age_at_diagnosis_days,
+                germline_sex_estimate)
+
+# Read in RNA expression data
+stranded_expression <-
+  readr::read_rds(
+    file.path(
+      root_dir,
+      "data",
+      "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+    )
+  )
+
+# Read in focal CN data
+## TODO: This section will be updated to read in focal CN data derived from
+##       copy number consensus calls.
+cn_df <- readr::read_tsv(
+  file.path(
+    root_dir,
+    "analyses",
+    "focal-cn-file-preparation",
+    "results",
+    "cnvkit_annotated_cn_autosomes.tsv.gz"
+  )
+)
+
+# Read in consensus mutation data
+tmb_df <-
+  data.table::fread(file.path(root_dir,
+                              "data",
+                              "pbta-snv-consensus-mutation.maf.tsv.gz"))
+
+# Read in SV data 
+sv_df <- data.table::fread(file.path(root_dir, "data", "pbta-sv-manta.tsv.gz"))
+```
+
+## Custom Function
+```{r}
+# Custom datatable function
+# Function code adapted from: https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/49acc98f5ffd86853fc70f220623311e13e3ca9f/analyses/collapse-rnaseq/02-analyze-drops.Rmd#L23
+viewDataTable <- function(data) {
+  DT::datatable(
+    data,
+    rownames = FALSE,
+    filter = "bottom",
+    class = 'cell-border stripe',
+    options = list(
+      pageLength = 5,
+      searchHighlight = TRUE,
+      scrollX = TRUE,
+      dom = 'tpi',
+      initComplete = htmlwidgets::JS(
+        "function(settings, json) {",
+        "$(this.api().table().header()).css({'background-color':
+                                            '#004467', 'color': '#fff'});",
+        "}"
+      )
+    )
+  )
+}
+```
+
+# Prepare Data 
+
+## Copy number data 
+
+```{r}
+cn_df_filtered <- cn_df %>%
+  dplyr::filter(gene_symbol %in% c("PDGFRA", "PTEN")) %>%
+  dplyr::distinct() %>%
+  dplyr::left_join(select_metadata, by = c("biospecimen_id" = "Kids_First_Biospecimen_ID"))
+```
+
+## Tumor mutation data
+
+```{r}
+# Define target lesions
+H3_K28 <-
+  c("TP53",
+    "H3F3A",
+    "HIST1H3B",
+    "ACVR1",
+    "ATRX",
+    "PDGFRA",
+    "PTEN",
+    "FGFR1",
+    "IDH1",
+    "BRAF")
+
+H3_G35 <- c("H3F3A", "SETD2", "NTRK", "IDH1", "ATRX", "DAXX")
+
+# Filter the tumor mutatation burden data for the target lesions
+tmb_df_filtered <- tmb_df %>%
+  dplyr::filter(Hugo_Symbol %in% H3_K28 | Hugo_Symbol %in% H3_G35) %>%
+  dplyr::select(Tumor_Sample_Barcode, Hugo_Symbol)
+
+# Join the selected variables from the metadata with the filtered tumor mutation
+# burden data.frame 
+tmb_df_filtered <- tmb_df_filtered %>%
+  dplyr::left_join(select_metadata,
+                   by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
+  dplyr::distinct() %>%
+  dplyr::select(
+    -c(
+      "Kids_First_Participant_ID",
+      "glioma_brain_region",
+      "age_at_diagnosis_days",
+      "germline_sex_estimate"
+    )
+  )
+
+# Create data.frame with the filtered CN data.frame and the filtered tmb 
+# data.frame
+final_df <- cn_df_filtered %>%
+  dplyr::inner_join(tmb_df_filtered, by = "sample_id")
+```
+
+## RNA expression data 
+
+```{r}
+# Filter to only the genes of interest
+filtered_expression <-
+  stranded_expression[which(rownames(stranded_expression) %in% c("FOXG1", "OLIG2")), ]
+
+# Scale does column centering, so we transpose first
+long_stranded_expression <- scale(t(filtered_expression), 
+                                  center = TRUE,
+                                  scale = TRUE)
+
+# Merge metadata with expression data
+expression_metadata <- long_stranded_expression %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
+  dplyr::left_join(select_metadata, by = "Kids_First_Biospecimen_ID") %>%
+  dplyr::select(
+    -c(
+      "Kids_First_Participant_ID",
+      "glioma_brain_region",
+      "age_at_diagnosis_days",
+      "germline_sex_estimate"
+    )
+  )  %>%
+  dplyr::group_by(sample_id) %>%
+  dplyr::mutate(
+    OLIG2_expression = paste(sort(unique(OLIG2)), collapse = ", "),
+    FOXG1_expression = paste(sort(unique(FOXG1)), collapse = ", ")
+  ) %>%
+  dplyr::select(-OLIG2, -FOXG1)
+
+# Display `expression_metadata`
+expression_metadata %>%
+  head(n = 15)
+
+# Join the filtered expression data with the running final data.frame
+final_df <- final_df %>%
+  dplyr::left_join(expression_metadata, by = "sample_id")
+```
+
+## SV data
+
+```{r warning = FALSE}
+# Filter manta SV data for the target lesions and join this data.frame with
+# the selected variables of the metadata 
+sv_df_filtered <- sv_df %>%
+  dplyr::filter(stringr::str_detect(Gene.name, H3_K28) |
+                  stringr::str_detect(Gene.name, H3_G35)) %>%
+  dplyr::select(Kids.First.Biospecimen.ID.Tumor, Gene.name, SV.type, SV.chrom) %>%
+  dplyr::left_join(
+    select_metadata,
+    by = c("Kids.First.Biospecimen.ID.Tumor" = "Kids_First_Biospecimen_ID")
+  ) %>%
+  dplyr::select(
+    -c(
+      "Kids_First_Participant_ID",
+      "glioma_brain_region",
+      "age_at_diagnosis_days",
+      "germline_sex_estimate"
+    )
+  ) %>%
+  dplyr::distinct()
+
+# Extract only the target lesions from the `Gene.name` variable
+sv_df_filtered$Gene.name <- stringr::str_extract(sv_df_filtered$Gene.name,
+  c("TP53",
+    "H3F3A",
+    "HIST1H3B",
+    "ACVR1",
+    "ATRX",
+    "PDGFRA",
+    "PTEN",
+    "FGFR1",
+    "IDH1",
+    "BRAF", 
+    "H3F3A",
+    "SETD2",
+    "NTRK",
+    "IDH1",
+    "ATRX", 
+    "DAXX"))
+
+# Remove the NA's and combine the target lessions into a variable named 
+# `Cooccuring_lesions` for each unique `sample_id`
+sv_df_filtered <- sv_df_filtered %>%
+  dplyr::filter(!is.na(Gene.name)) %>%
+  dplyr::group_by(Gene.name) %>%
+  dplyr::mutate(Chromosomal_status = paste("chr", SV.chrom, SV.type)) %>%
+  dplyr::group_by(sample_id) %>%
+  dplyr::mutate(Cooccuring_lesions = paste(sort(
+      unique(c(Gene.name))
+    ), collapse = ", ")) %>%
+  dplyr::select(-c("Gene.name", "SV.chrom", "SV.type")) %>%
+  dplyr::distinct()
+```
+
+# Save final table of results
+
+```{r}
+# Merge the manta data with the existing data.frame 
+final_df <- final_df %>%
+  dplyr::left_join(sv_df_filtered, by = "sample_id") %>%
+  dplyr::group_by(sample_id) %>%
+  dplyr::mutate(
+    Kids_First_Biospecimen_ID = paste(sort(
+      unique(c(Kids_First_Biospecimen_ID, Kids.First.Biospecimen.ID.Tumor,
+             Tumor_Sample_Barcode, biospecimen_id))
+    ), collapse = ", "),
+    Focal_CN_Status = paste(sort(unique(status)), collapse = ", ")
+  ) %>%
+  dplyr::select(
+    -c(
+      "Tumor_Sample_Barcode",
+      "Kids.First.Biospecimen.ID.Tumor",
+      "biospecimen_id",
+      "ensembl",
+      "cytoband",
+      "Hugo_Symbol",
+      "status",
+      "copy_number",
+      "ploidy",
+      "gene_symbol"
+    )
+  ) %>%
+  dplyr::select(
+    sample_id,
+    Kids_First_Biospecimen_ID,
+    Kids_First_Participant_ID,
+    age_at_diagnosis_days,
+    germline_sex_estimate,
+    dplyr::everything()
+  ) %>%
+  dplyr::distinct() %>%
+  dplyr::arrange(Cooccuring_lesions)
+
+# Save final data.frame to file 
+readr::write_tsv(final_df, file.path(results_dir, "HGG_molecular_subtypes.tsv"))
+
+# Display `final_df`
+viewDataTable(final_df) 
+```
+
+# Session Info
+
+```{r}
+# Print the session information
+sessionInfo()
+```
+
