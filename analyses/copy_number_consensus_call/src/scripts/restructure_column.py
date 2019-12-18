@@ -45,8 +45,8 @@ new_column = file.iloc[:,(0)].copy()
 ## For every CNV in the file, reformatt columns 4, 5, and 6
 for i_index,i in enumerate(file.itertuples()):
     ## Since bed file uses a comma as default for collapsing information, we split the information using ','
-    list_start = i._4.split(',')
-    list_end = i._5.split(',')
+    list_start = str(i._4).split(',')
+    list_end = str(i._5).split(',')
     list_cn = str(i._6).split(',')
 
     ## Initialize a variable to store the new restructred information
