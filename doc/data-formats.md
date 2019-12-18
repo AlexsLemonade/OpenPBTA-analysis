@@ -142,12 +142,14 @@ These files are used for analyses such as mutation co-occurence, where repeated 
 
 Note that these independent specimen files do not address the issue of participants with multiple tumor specimens in RNA-seq data at this time.
 
-#### Putative Oncogenic Fusion List
+#### Derived Fusion Files
 
-The filtered and prioritized fusion list is a product of the [`analyses/fusion_filtering`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/fusion_filtering) analysis module. 
-The methods are [described here](https://alexslemonade.github.io/OpenPBTA-manuscript/#fusion-prioritization).
+The filtered and prioritized fusion and downstream files are a product of the [`analyses/fusion_filtering`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/fusion_filtering) analysis module. 
 
-* `pbta-fusion-putative-oncogenic.tsv` 
+  * `pbta-fusion-putative-oncogenic.tsv` contains the filtered and prioritized fusions. 
+  The methods are [described here](https://alexslemonade.github.io/OpenPBTA-manuscript/#fusion-prioritization).
+  * `pbta-fusion-recurrently-fused-genes-byhistology.tsv` is a table that includes counts of recurrently fused genes by broad histology.
+  * `pbta-fusion-recurrently-fused-genes-bysample.tsv` contains a binary matrix that denotes the presence or absence of a recurrently fused gene in an individual RNA-seq specimen.
 
 ### Data Caveats
 
