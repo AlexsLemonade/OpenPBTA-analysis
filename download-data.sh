@@ -13,7 +13,7 @@ find data -type l -delete
 # The md5sum file provides our single point of truth for which files are in a release.
 curl --create-dirs $URL/$RELEASE/md5sum.txt -o data/$RELEASE/md5sum.txt -z data/$RELEASE/md5sum.txt
 
-# Consider the filenames in the md5sum file + CHANGELOG.md
+# Consider the filenames in the md5sum file + data-files-description.md
 FILES=(`tr -s ' ' < data/$RELEASE/md5sum.txt | cut -d ' ' -f 2` data-files-description.md)
 
 if [ -d "data/$PREVIOUS" ]
