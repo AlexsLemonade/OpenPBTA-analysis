@@ -82,38 +82,29 @@ survival_analysis <- function(metadata, ind_var, test = "kap.meier", ind_data = 
   # Print out what the model is
   message(paste("Testing model:", model))
 
-  regex_ugly_string <- "eval\\(parse\\(text = ind_var\\)\\)"
-
   # Run the appropriate test
   if (test == "kap.meier") {
     # Make the model
     fit <- survival::survfit(
-      survival::Surv(OS_days, OS_status_num) ~ eval(parse(text = ind_var)),
+      formula(model),
       data = ind_var_df
     )
-    # Fix attribute names in the model
-    attr(fit$strata, "names") <- gsub(regex_ugly_string, ind_var, attr(fit$strata, "names"))
   }
   if (test == "log.rank") {
     # Make the model
     fit <- survival::survdiff(
-      survival::Surv(OS_days, OS_status_num) ~ eval(parse(text = ind_var)),
+      formula(model),
       data = ind_var_df
     )
     # Obtain p value for Chi-Squared stat
     fit$p.value <- pchisq(fit$chisq, df = 1, lower = FALSE)
-
-    # Fix names in the model
-    names(fit$n) <- gsub(regex_ugly_string, ind_var, names(fit$n))
   }
   if (test == "cox.reg") {
     # Make the model
     fit <- survival::coxph(
-      survival::Surv(OS_days, OS_status_num) ~ eval(parse(text = ind_var)),
+      formula(model),
       data = ind_var_df
     )
-    # Fix name in the model
-    names(fit$coefficients) <- gsub(regex_ugly_string, ind_var, names(fit$coefficients))
   }
   # Tidy up the model object with broom
   table <- broom::tidy(fit)
