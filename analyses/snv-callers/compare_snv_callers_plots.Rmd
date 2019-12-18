@@ -297,7 +297,7 @@ perc_change_df <- all_caller_df %>%
   # Calculate the percent of each 
   dplyr::mutate(percent = count / n) %>%
   # Drop nonsensical change
-  dplyr::filter(!grepl("G>G|A>A|N>A|N>T|T>N|A>N|N>C|G>N|C>C|C>N|T>T", change), 
+  dplyr::filter(!grepl("N>*|*>N|C>C|T>T|A>A|G>G", change), 
                 !is.na(change)) %>%
   dplyr::mutate(
     change = as.factor(change),
