@@ -47,12 +47,14 @@ select_metadata <- metadata %>%
                 tumor_ploidy)
 
 # Read in focal CN data
+## TODO: This section will be updated to read in focal CN data derived from
+##       copy number consensus calls.
 cn_df <- readr::read_tsv(
   file.path(
     "..",
     "focal-cn-file-preparation",
     "results",
-    "cnvkit_annotated_cn_autosomes.tsv.gz"
+    "controlfreec_annotated_cn_autosomes.tsv.gz"
   )
 )
 
@@ -81,12 +83,12 @@ viewDataTable <- function(data) {
     data,
     rownames = FALSE,
     filter = "bottom",
-    class = 'cell-border stripe',
+    class = "cell-border stripe",
     options = list(
       pageLength = 5,
       searchHighlight = TRUE,
       scrollX = TRUE,
-      dom = 'tpi',
+      dom = "tpi",
       initComplete = htmlwidgets::JS(
         "function(settings, json) {",
         "$(this.api().table().header()).css({'background-color':
@@ -101,8 +103,11 @@ viewDataTable <- function(data) {
 # Filter current focal CN data
 
 ```{r}
+# Filter copy number data for values relevant to the `SMARCB1` gene and join
+# selected variables of the metadata
 cn_df <- cn_df %>%
-  dplyr::inner_join(select_metadata, by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
+  dplyr::inner_join(select_metadata,
+                    by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
   dplyr::filter(sample_id %in% final_df$sample_id, gene_symbol == "SMARCB1")
 ```
 
@@ -170,27 +175,31 @@ viewDataTable(comparison_df)
 # Plot
 
 ```{r}
-# Produce a comparison plot
+# Produce a copy number comparison plot
 copy_number_comparison_plot <-
   ggplot2::ggplot(comparison_df,
                   ggplot2::aes(x = copy_number, y = GISTIC_copy_number)) +
   ggplot2::geom_point() +
   ggplot2::labs(title = "`SMARCB1` focal copy number comparison scatterplot")
 
+# Display the copy number comparison plot
 copy_number_comparison_plot
 
+# Produce a focal copy number status comparison plot
 focal_status_comparison_plot <-
   ggplot2::ggplot(comparison_df,
                   ggplot2::aes(x = SMARCB1_focal_status, y = GISTIC_SMARCB1_focal_status)) +
   ggplot2::geom_point() +
-  ggplot2::labs(title = "`SMARCB1` focal status comparison scatterplot")
+  ggplot2::labs(title = "`SMARCB1` focal copy number status comparison scatterplot")
 
+# Display the focal copy number status comparison plot
 focal_status_comparison_plot
 ```
 
 # Session Info
 
 ```{r}
+# Print session information
 sessionInfo()
 ```
 
