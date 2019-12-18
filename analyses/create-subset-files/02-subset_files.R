@@ -100,7 +100,7 @@ subset_files <- function(filename, biospecimen_ids, output_directory) {
   } else if (grepl("pbta-fusion", filename)) {
     # original files contain the biospecimen IDs in a column called 'tumor_id',
     # the filtered/prioritized list biospecimen IDs are in 'Sample'
-    if (grepl("putative-oncogenic", filename)) {
+    if (grepl("putative-oncogenic|bysample", filename)) {
       biospecimen_column <- "Sample"
     } else {
       biospecimen_column <- "tumor_id"
