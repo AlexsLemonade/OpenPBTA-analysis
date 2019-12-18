@@ -182,7 +182,8 @@ As such, documenting your analytical code via comments and including information
 
 When you file the first pull request creating a new analysis module, add your module to the [Modules At A Glance table](analyses#modules-at-a-glance).
 This table contains fields for the directory name, what input files are required, a short description, and any files that you expect other analyses will rely on.
-This item is included in the pull request reproducibility checklist.
+As your analysis develops and input or output files change, please check this table remains up to date. 
+This step is included in the pull request reproducibility checklist.
 
 When an analysis module contains multiple steps or is nearing completion, add a `README.md` file that summarizes the purpose of the module, any known limitations or required updates, and includes examples for how to run the analyses to the folder.
 
