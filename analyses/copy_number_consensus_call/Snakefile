@@ -1,5 +1,5 @@
 ## Define the ending file(s) that we want
-OUTPUT= expand("../../scratch/interim/{sample}.{caller}.{dupdel}.filtered.bed",
+OUTPUT= expand("../../scratch/interim/{sample}.{caller}.{dupdel}.filtered3.bed",
                sample=config["samples"], 
                caller=["freec", "cnvkit", "manta"],
                dupdel=["dup", "del"])
