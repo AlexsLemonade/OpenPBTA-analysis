@@ -186,12 +186,16 @@ final_df <- cn_df_filtered %>%
 filtered_expression <-
   stranded_expression[which(rownames(stranded_expression) %in% c("FOXG1", "OLIG2")), ]
 
+# Log2 transform expression data
+norm_filtered_expression <- log2(filtered_expression + 1)
+
 # Scale does column centering, so we transpose first
-long_stranded_expression <- scale(t(filtered_expression),
+long_stranded_expression <- scale(t(norm_filtered_expression),
                                   center = TRUE,
                                   scale = TRUE)
 
-# Merge metadata with expression data
+# Merge metadata with expression data and collapse the expression data to be 
+# displayed per unique `sample_id`
 expression_metadata <- long_stranded_expression %>%
   as.data.frame() %>%
   tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
