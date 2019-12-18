@@ -104,12 +104,12 @@ viewDataTable <- function(data) {
     data,
     rownames = FALSE,
     filter = "bottom",
-    class = 'cell-border stripe',
+    class = "cell-border stripe",
     options = list(
       pageLength = 5,
       searchHighlight = TRUE,
       scrollX = TRUE,
-      dom = 'tpi',
+      dom = "tpi",
       initComplete = htmlwidgets::JS(
         "function(settings, json) {",
         "$(this.api().table().header()).css({'background-color':
@@ -126,10 +126,13 @@ viewDataTable <- function(data) {
 ## Copy number data 
 
 ```{r}
+# Filter the copy number data for specific genes and merge selected variables
+# of the metadata
 cn_df_filtered <- cn_df %>%
   dplyr::filter(gene_symbol %in% c("PDGFRA", "PTEN")) %>%
   dplyr::distinct() %>%
-  dplyr::left_join(select_metadata, by = c("biospecimen_id" = "Kids_First_Biospecimen_ID"))
+  dplyr::left_join(select_metadata,
+                   by = c("biospecimen_id" = "Kids_First_Biospecimen_ID"))
 ```
 
 ## Tumor mutation data
@@ -184,7 +187,7 @@ filtered_expression <-
   stranded_expression[which(rownames(stranded_expression) %in% c("FOXG1", "OLIG2")), ]
 
 # Scale does column centering, so we transpose first
-long_stranded_expression <- scale(t(filtered_expression), 
+long_stranded_expression <- scale(t(filtered_expression),
                                   center = TRUE,
                                   scale = TRUE)
 
@@ -221,7 +224,7 @@ final_df <- final_df %>%
 
 ```{r warning = FALSE}
 # Filter manta SV data for the target lesions and join this data.frame with
-# the selected variables of the metadata 
+# the selected variables of the metadata
 sv_df_filtered <- sv_df %>%
   dplyr::filter(stringr::str_detect(Gene.name, H3_K28) |
                   stringr::str_detect(Gene.name, H3_G35)) %>%
@@ -251,12 +254,12 @@ sv_df_filtered$Gene.name <- stringr::str_extract(sv_df_filtered$Gene.name,
     "PTEN",
     "FGFR1",
     "IDH1",
-    "BRAF", 
+    "BRAF",
     "H3F3A",
     "SETD2",
     "NTRK",
     "IDH1",
-    "ATRX", 
+    "ATRX",
     "DAXX"))
 
 # Remove the NA's and combine the target lessions into a variable named 
@@ -276,7 +279,7 @@ sv_df_filtered <- sv_df_filtered %>%
 # Save final table of results
 
 ```{r}
-# Merge the manta data with the existing data.frame 
+# Merge the manta data with the existing data.frame
 final_df <- final_df %>%
   dplyr::left_join(sv_df_filtered, by = "sample_id") %>%
   dplyr::group_by(sample_id) %>%
@@ -312,11 +315,11 @@ final_df <- final_df %>%
   dplyr::distinct() %>%
   dplyr::arrange(Cooccuring_lesions)
 
-# Save final data.frame to file 
+# Save final data.frame to file
 readr::write_tsv(final_df, file.path(results_dir, "HGG_molecular_subtypes.tsv"))
 
 # Display `final_df`
-viewDataTable(final_df) 
+viewDataTable(final_df)
 ```
 
 # Session Info
