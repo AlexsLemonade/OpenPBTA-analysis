@@ -55,15 +55,12 @@ else:
         list_end = str(i._5).split(',')
         list_cn = str(i._6).split(',')
 
-        ## Initialize a variable to store the new restructred information
-        growing_list = ''
-
         ## Rearange the split information into the new format
-        growing_list = ''.join(['{}:{}:{},'.format(*cnv) for cnv in zip(list_start, list_end, list_cn)])
+        cnv_list = ''.join(['{}:{}:{},'.format(*cnv) for cnv in zip(list_start, list_end, list_cn)])
 
 
         ## Add the list to the new column
-        new_column.iloc[i_index] = growing_list
+        new_column.iloc[i_index] = cnv_list
 
 
     ## Make a new file by combining columns 1,2,3, the new column, and the copy number type column.
