@@ -12,18 +12,46 @@ params:
 
 **Purpose:** 
 
-Set up basic survival analyses models which can be applied to various other data. 
+An example for running basic survival analysis models which can be applied to 
+various other data. 
 
-#### Usage
+## Usage 
 
-To run this from the command line, use:
+This notebook is a template model that you can follow for all survival analyses. 
+This includes using a wrapper function (`survival_analysis`) that can test given 
+independent variables in the survival model and return back a table. 
+
+**Example use**
+
 ```
-Rscript -e "rmarkdown::render('analyses/survival-analysis/survival-analysis.Rmd', 
-                              clean = TRUE)" 
+survival_analysis(metadata, 
+                  ind_var = <INDEPENDENT_VARIABLE(S)>, 
+                  test = <TEST_ABBR>, 
+                  ind_data = <DATA_FRAME>)
 ```
 
-_This assumes you are in the top directory of the repository._
+This function returns a list with: 
+  1) The original `$model` fit object.  
+  2) The tidied results `$table`.  
+  3) The `$original_data` that was used in the model.  
+  
+#### Options explanation:
 
+- `metadata` : a data.frame that contains columns `OS_status` and `OS_days` to use 
+             for the survival model. This also assumes `LIVING` and `DECEASED`
+             are the two statuses. This will be converted to a numeric variable 
+             for use with `survival` R functions. Samples with `NA`s are dropped.
+- `ind_var`: a character string noting the name of the independent variable to 
+             test as a predictor for survival. 
+-  `test`  : a character string noting which test to use. 
+             **Supported tests:** 
+             - `"kap.meier"` : For basic survival analysis. 
+             - `"log.rank"` : For use with categorical variables.
+             - `"cox.reg"` : For use with continuous variables.
+- `ind_data`: If the data for the independent variable needed for the test is not
+              in `metadata`, add it here. This assumes it will be a data.frame with 
+              either a `Tumor_Sample_Barcode`, `Kids_First_Biospecimen_ID`, or 
+              `sample` column which to `dplyr::inner_join` with `metadata` by. 
 ## Setup
 
 #### Packages and functions
@@ -31,10 +59,8 @@ _This assumes you are in the top directory of the repository._
 Read in set up script.
 
 ```{r Set up library}
-if (!("survminer" %in% installed.packages())) {
-  install.packages("survminer")
-}
-library(survminer)
+# This script contains a wrapper function that can conduct the survival analyses
+source(file.path("util", "survival_models.R"))
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
@@ -84,62 +110,31 @@ cox_table_file <- file.path(results_dir, "cox_regression_tmb.tsv")
 metadata <- readr::read_tsv(metadata_file)
 ```
 
-Reformat the `OS_days` variable. 
-The `survival` R packages want overall survival status to be in the form of a 
-numeric variable where `0  = Living` and `1 = Deceased`. 
-
-```{r Make OS numeric}
-metadata$OS_status <- factor(metadata$OS_status, levels = c("LIVING", "DECEASED"))
-metadata$OS_status_num <- as.numeric(metadata$OS_status)
-```
-
-Import germline sex predictions and join to metadata.
-
 ```{r}
 # Read in the germline sex predictions
 germline_sex <- readr::read_tsv(germline_sex_file)
-
-# Join to the metadata
-germline_metadata <- metadata %>% 
-  dplyr::inner_join(germline_sex, by = c("Kids_First_Biospecimen_ID" = "sample"))
 ```
 
-## Usage 
-
-This is the template model that you can follow for all survival analyses here. 
-What will change is the independent variables `<INDEPENDENT_VARIABLES>` you use 
-to try to predict survival. 
-Depending on what type of variable you are using for your independent variables, 
-this will influence what statistical model is appropriate `<STAT_MODEL_FUNCTION>`.
-
-```
-<STAT_MODEL_FUNCTION>(survival::Surv(OS_days, OS_status_num) ~ <INDEPENDENT_VARIABLES>,
-                 data = metadata)
-```
-
-## Kaplan-Meier
+## Kaplan-Meier Example
 
 The [Kaplan-Meier](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3059453/) 
 survival curve shows the probability of survival over time.
 
 ```{r Kaplan Meier}
-# Make the model
-kap_fit <- survival::survfit(
-  survival::Surv(germline_metadata$OS_days, germline_metadata$OS_status_num) ~ pred,
-  data = germline_metadata 
-)
-
-# Print out a cleaned version of this data to look at it
-broom::tidy(kap_fit)
+kap_fit <- survival_analysis(metadata, 
+                  ind_var = "pred", 
+                  test = "kap.meier", 
+                  ind_data = germline_sex)
 ```
 
 `survminer` package comes with a convenient plotting function which uses `ggplot2`
 arguments. 
+It requires the original Kaplain-Meier `survfit` object, so we will extract that with `$model`.
 
 ```{r Make survival plot}
-surv_plot <- survminer::ggsurvplot(kap_fit,
+surv_plot <- survminer::ggsurvplot(kap_fit$model,
   pval = TRUE, 
-  data = germline_metadata, risk.table = TRUE,
+  risk.table = TRUE,
   conf.int = params$plot_ci,
   xlim = c(0, 2000),
   break.time.by = 500,
@@ -162,7 +157,7 @@ Save the plot to a file.
 cowplot::save_plot(filename = kap_meier_plot_file, plot = surv_plot)
 ```
 
-## Log-Rank 
+## Log-Rank Example
 
 For testing whether two survival curves are different, we can use Log-Rank which
 can be implemented using `survival::survdiff` function. 
@@ -172,33 +167,27 @@ Use the `survdiff` function to test the differences between the `Male` and `Fema
 curves.
 
 ```{r Do log rank test}
-logrank_fit <- survival::survdiff(
-  survival::Surv(germline_metadata$OS_days, germline_metadata$OS_status_num) ~ pred,
-  data = germline_metadata
-)
+logrank_fit <- survival_analysis(metadata, 
+                                 ind_var = "pred", 
+                                 test = "log.rank", 
+                                 ind_data = germline_sex)
 ```
 
 Make a pretty table of the results.
 
 ```{r Make log rank table}
-# Obtain p value for Chi-Squared stat
-p.value <- pchisq(logrank_fit$chisq, df = 1, lower = FALSE)
-
-# Use broom to make the model object cleaned up
-logrank_table <- broom::tidy(logrank_fit) %>% 
-  dplyr::mutate(p.value)
-
 # Print out the table here
-logrank_table %>%
+logrank_fit$table %>%
+  dplyr::mutate(p.value = logrank_fit$model$p.value) %>%
   knitr::kable(digits = 2)
 ```
 
 ```{r Write log rank to table}
 # Save the table data in a TSV
-readr::write_tsv(logrank_table, logrank_table_file)
+readr::write_tsv(logrank_fit$table, logrank_table_file)
 ```
 
-## Cox Regression 
+## Cox Regression Example
 
 Cox Regression is a model suited for survival analysis where your independent 
 variables are continuous. 
@@ -209,34 +198,26 @@ For this example, we'll use Tumor Mutation Burden as our continuous variable.
 tmb <- readr::read_tsv(tmb_file)
 ```
 
-```{r Join TMB to metadata}
-tmb_metadata <- metadata %>%
-  dplyr::inner_join(tmb, by = c("Kids_First_Biospecimen_ID" = "Tumor_Sample_Barcode"))
-```
-
 Plug this into a Cox Regression model using the function `survival::coxph`. 
 
 ```{r Run Cox regression model}
-cox_fit <- survival::coxph(
-  survival::Surv(tmb_metadata$OS_days, tmb_metadata$OS_status_num) ~ tmb,
-  data = tmb_metadata
-)
+cox_fit <- survival_analysis(metadata, 
+                             ind_var = "tmb", 
+                             test = "cox.reg", 
+                             ind_data = tmb)
 ```
 
 Take the output from this and make a table. 
 
 ```{r Make Cox regression table}
-# Tidy up the model object with broom
-cox_table <- broom::tidy(cox_fit) 
-
 # Print out the table here
-cox_table %>%
+cox_fit$table %>%
   knitr::kable(digits = 3)
 ```
 
 ```{r Write Cox regression to tsv}
 # Save the table data in a TSV
-readr::write_tsv(cox_table, cox_table_file)
+readr::write_tsv(cox_fit$table, cox_table_file)
 ```
 
 ## Session Info
