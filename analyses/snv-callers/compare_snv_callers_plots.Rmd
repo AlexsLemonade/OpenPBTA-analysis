@@ -100,7 +100,7 @@ Connect to SQLite database.
 ```{r}
 # Start up connection
 con <- DBI::dbConnect(RSQLite::SQLite(), 
-                      file.path(scratch_dir, "v11_testing_snv_db.sqlite"))
+                      file.path(scratch_dir, "snv_db.sqlite"))
 ```
 
 Note what columns we will join by.
@@ -213,7 +213,7 @@ upsettr_plot <- callers_per_mutation %>%
   upset_plot()
 
 # Print this out here
-upsettr
+upsettr_plot
 ```
 
 Save this plot to a png
