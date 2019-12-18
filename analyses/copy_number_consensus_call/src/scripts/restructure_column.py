@@ -35,7 +35,7 @@ parser.add_argument('--file', required=True,
 args = parser.parse_args()
 
 
-## Check to see if the bed file is empty, if so, make an empty dataframe 
+## Check to see if the bed file is empty, if so, make an empty dataframe
 if os.stat(args.file).st_size == 0:
     new_mat = pd.DataFrame(columns=['a','b'])
 
@@ -59,8 +59,8 @@ else:
         growing_list = ''
 
         ## Rearange the split information into the new format
-        for j in range(0,len(list_start)):
-            growing_list += '{}:{}:{},'.format(list_start[j],list_end[j],list_cn[j])
+        growing_list = ''.join(['{}:{}:{},'.format(*cnv) for cnv in zip(list_start, list_end, list_cn)])
+
 
         ## Add the list to the new column
         new_column.iloc[i_index] = growing_list
