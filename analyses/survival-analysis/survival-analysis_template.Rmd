@@ -30,11 +30,6 @@ survival_analysis(metadata,
                   ind_data = <DATA_FRAME>)
 ```
 
-This function returns a list with: 
-  1) The original `$model` fit object.  
-  2) The tidied results `$table`.  
-  3) The `$original_data` that was used in the model.  
-  
 #### Options explanation:
 
 - `metadata` : a data.frame that contains columns `OS_status` and `OS_days` to use 
@@ -43,15 +38,26 @@ This function returns a list with:
              for use with `survival` R functions. Samples with `NA`s are dropped.
 - `ind_var`: a character string noting the name of the independent variable to 
              test as a predictor for survival. 
--  `test`  : a character string noting which test to use. 
-             **Supported tests:** 
-             - `"kap.meier"` : For basic survival analysis. 
-             - `"log.rank"` : For use with categorical variables.
-             - `"cox.reg"` : For use with continuous variables.
+-  `test`  : a character string noting which test to use. Options: `"kap.meier"`, 
+             `"log.rank"`, or `"cox.reg"` (See below).
 - `ind_data`: If the data for the independent variable needed for the test is not
               in `metadata`, add it here. This assumes it will be a data.frame with 
               either a `Tumor_Sample_Barcode`, `Kids_First_Biospecimen_ID`, or 
               `sample` column which to `dplyr::inner_join` with `metadata` by. 
+
+#### `test` options:  
+- ["kap.meier"](#kaplan-meier-example) : For basic survival analysis.  
+- ["log.rank"](#log-rank-example) : For use with categorical variables.  
+- ["cox.reg"](#cox-regression-example) : For use with continuous variables.  
+
+#### Output: 
+
+A **list** with:   
+  1) The original `$model` fit object.  
+  2) The tidied results `$table`.  
+  3) The `$original_data` that was used in the model.  
+  
+
 ## Setup
 
 #### Packages and functions
@@ -173,7 +179,7 @@ logrank_fit <- survival_analysis(metadata,
                                  ind_data = germline_sex)
 ```
 
-Make a pretty table of the results.
+Print table of the results.
 
 ```{r Make log rank table}
 # Print out the table here
