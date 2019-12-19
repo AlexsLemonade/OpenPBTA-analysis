@@ -153,10 +153,12 @@ rule compare_cnv_methods:
         manta_freec="../../scratch/interim/{sample}.manta_freec.{dupdel}.bed",
         cnvkit_freec="../../scratch/interim/{sample}.cnvkit_freec.{dupdel}.bed"
     threads: 1
+    params:
+        sample_name="{sample}"
     shell:
         "python3 {input.script} --manta {input.manta} --cnvkit {input.cnvkit} --freec {input.freec}"
         "--manta_cnvkit {output.manta_cnvkit} --manta_freec {output.manta_freec} --cnvkit_freec {output.cnvkit_freec}"
-        "--sample {sample}"
+        "--sample {params.sample_name}"
 
 
 
