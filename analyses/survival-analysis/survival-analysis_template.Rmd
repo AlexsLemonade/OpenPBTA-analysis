@@ -145,6 +145,7 @@ It requires the original Kaplain-Meier `survfit` object, so we will extract that
 ```{r Make survival plot}
 surv_plot <- survminer::ggsurvplot(kap_fit$model,
   pval = TRUE,
+  data = kap_fit$original_data,
   risk.table = TRUE,
   conf.int = params$plot_ci,
   xlim = c(0, 2000),
