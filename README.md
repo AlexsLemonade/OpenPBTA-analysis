@@ -91,6 +91,19 @@ Below is a detailed table of [broad histologies](https://github.com/AlexsLemonad
 | Tumors of sellar region | 36 |
 
 
+Below is a table of number of tumor biospecimens by phase of therapy (DNA and RNA):
+
+
+| Phase of Therapy | N |
+|---------------------------------|------|
+| Diagnosis/Initial CNS Tumor | 1507 |
+| Progressive | 291 |
+| Progressive Disease Post-Mortem | 11 |
+| Recurrence | 128 |
+| Second Malignancy | 35 |
+| Unavailable | 72 |
+
+
 ## How to Obtain OpenPBTA Data
 
 We are releasing this dataset on both [CAVATICA](https://cavatica.sbgenomics.com) and AWS S3.
