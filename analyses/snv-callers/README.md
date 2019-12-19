@@ -34,11 +34,11 @@ This bash script will return:
 
 - Comparison plots in a notebook: [`compare_snv_callers_plots.nb.html`](https://cansavvy.github.io/openpbta-notebook-concept/snv-callers/compare_snv_callers_plots.nb.html).
 - A zip file containing:
-  - `consensus_snv.maf.tsv` - is  [MAF-like file](#consensus-mutation-call) that contains the snvs that were called by all three of these callers for a given sample are saved to this file.
+  - `pbta-snv-consensus-mutation.maf.tsv` - is  [MAF-like file](#consensus-mutation-call) that contains the snvs that were called by all three of these callers for a given sample are saved to this file.
   These files combine the [MAF file data](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from 3 different SNV callers: [Mutect2](https://software.broadinstitute.org/cancer/cga/mutect), [Strelka2](https://github.com/Illumina/strelka), and [Lancet](https://github.com/nygenome/lancet).
   See the methods on the callers' settings [here](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#somatic-single-nucleotide-variant-calling) and see [the methods of this caller analysis and comparison below](#summary-of-methods).  
-  - `consensus_snv_tmb_coding_only.tsv` - Tumor Mutation burden calculations using *coding only* mutations use the consensus of Lancet, Mutect2, and Strelka2.
-  - `consensus_snv_tmb_all.tsv` - Tumor Mutation burden calculations using *all* mutations use the consensus of Mutect2, and Strelka2. (Lancet was excluded because it has a [coding region bias in the way it was run](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#snv-and-indel-calling)).
+  - `pbta-snv-consensus-mutation-tmb-coding.tsv` - Tumor Mutation burden calculations using *coding only* mutations use the consensus of Lancet, Mutect2, and Strelka2.
+  - `pbta-snv-consensus-mutation-tmb-all.tsv` - Tumor Mutation burden calculations using *all* mutations use the consensus of Mutect2, and Strelka2. (Lancet was excluded because it has a [coding region bias in the way it was run](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#snv-and-indel-calling)).
 
 ## Summary of Methods
 
@@ -77,17 +77,17 @@ WXS_all_mutations_TMB = (total # snvs called by Strelka2 and Mutect2 ) / wxs_gen
 ```
 #### Coding only TMB
 
-Coding only TMB uses all three callers: Strelka2, Mutect2, and Lancet and the intersection demoninators are calculated by using exon ranges in the gtf from Gencode 27.
+Coding only TMB uses all three callers: Strelka2, Mutect2, and Lancet and the intersection demoninators are calculated by using coding sequence ranges in the gtf from Gencode 27.
 This file is included in the data download.
-SNVs outside of these exons are filtered out before being summed and used for TMB calculations like such:
+SNVs outside of these coding sequences are filtered out before being summed and used for TMB calculations like such:
 
 ```
-WGS_coding_only_TMB = (total # exonic snvs called by all three of Strelka, Lancet, and Mutect2 ) / intersection_strelka_lancet_mutect_exonic_genome_size
+WGS_coding_only_TMB = (total # coding sequence snvs called by all three of Strelka, Lancet, and Mutect2 ) / intersection_strelka_lancet_mutect_CDS_genome_size
 ```
-Because the same WXS BED file applies to all callers, that file is intersected with the exons for filtering and for determining the denominator. 
+Because the same WXS BED file applies to all callers, that file is intersected with the coding sequences for filtering and for determining the denominator. 
 ```
-WXS_coding_only_TMB = (total # exonic snvs called by all three of Strelka, Lancet, and Mutect2 ) /
-intersection_wxs_exonic_genome_size
+WXS_coding_only_TMB = (total # coding sequence snvs called by all three of Strelka, Lancet, and Mutect2 ) /
+intersection_wxs_CDS_genome_size
 ```
 
 ## General usage of scripts
