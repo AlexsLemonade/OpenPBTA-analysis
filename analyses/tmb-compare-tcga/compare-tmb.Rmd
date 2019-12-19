@@ -105,7 +105,8 @@ Download consensus SNV files.
 
 ```{r}
 # Declare file path for consensus file
-consensus_file <- file.path(data_dir, "pbta-snv-consensus-mutation-tmb.tsv")
+consensus_file <- file.path(data_dir, 
+                            "pbta-snv-consensus-mutation-tmb-coding.tsv")
 ```
 
 Read in the consensus TMB file. 
