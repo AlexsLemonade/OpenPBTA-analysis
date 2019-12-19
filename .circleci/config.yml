@@ -72,9 +72,9 @@ jobs:
           name: Focal CN Preparation
           command: OPENPBTA_XY=0 ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
                 
-     # - run:
-     #     name: Interaction plot
-     #     command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh
+      - run:
+          name: Interaction plot
+          command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh
     
       - run:  
           name: Focal CN RNA expression visualization
