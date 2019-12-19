@@ -27,16 +27,8 @@ jobs:
       #                                                rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', clean = TRUE)"
      
       - run:
-          name: Collapse RSEM (polyA RNA-seq)
-          command: ./scripts/run_in_ci.sh Rscript analyses/collapse-rnaseq/01-summarize_matrices.R -i data/pbta-gene-expression-rsem-fpkm.polya.rds -g analyses/collapse-rnaseq/gencode.v27.primary_assembly.annotation.gtf.gz -m data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds -t analyses/collapse-rnaseq/pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds
-
-      - run:
-          name: Collapse RSEM (stranded RNA-seq)
-          command: ./scripts/run_in_ci.sh Rscript analyses/collapse-rnaseq/01-summarize_matrices.R -i data/pbta-gene-expression-rsem-fpkm.stranded.rds -g analyses/collapse-rnaseq/gencode.v27.primary_assembly.annotation.gtf.gz -m data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds -t analyses/collapse-rnaseq/pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds
-
-      - run:
-          name: Analyze RNA-seq dropped genes from both polyA and stranded data
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render(input = 'analyses/collapse-rnaseq/02-analyze-drops.Rmd', params = list(polya.annot.table = 'pbta-gene-expression-rsem-fpkm-collapsed-table.polya.rds', stranded.annot.table = 'pbta-gene-expression-rsem-fpkm-collapsed-table.stranded.rds'), clean = TRUE)"
+          name: Collapse RSEM
+          command: ./scripts/run_in_ci.sh bash analyses/collapse-rnaseq/run-collapse-rnaseq.sh
 
       - run:
           name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded expression
@@ -47,25 +39,16 @@ jobs:
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/fusion_filtering/04-project-specific-filtering.Rmd')"
 
       - run:
+          name: Identify recurrent fusion per histology
+          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/05-recurrent-fusions-per-histology.R -S data/pbta-fusion-putative-oncogenic.tsv -c data/pbta-histologies.tsv -o analyses/fusion_filtering/results/ -i data/independent-specimens.wgswxs.primary-plus.tsv
+
+      - run:
           name: Transcriptome dimensionality reduction
           command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
 
-# this is getting split up into scripts
-#      - run:
-#          name: Sex prediction from RNA-seq
-#          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/sex-prediction-from-RNASeq/sex-prediction-from-RNASeq.Rmd', clean = TRUE)"
-
       - run:
-          name: Sex prediction from RNA-seq - Data cleaning
-          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/sex-prediction-from-RNASeq/01-clean_split_data.R --expression data/pbta-gene-expression-kallisto.stranded.rds --metadata data/pbta-histologies.tsv --output_directory scratch --filename_lead kallisto_stranded
-      
-      - run:
-          name: Sex prediction from RNA-seq - Train elasticnet
-          command: ./scripts/run_in_ci.sh Rscript --vanilla  analyses/sex-prediction-from-RNASeq/02-train_elasticnet.R --input_directory scratch --output_directory scratch --filename_lead kallisto_stranded
-          
-      - run:
-          name: Sex prediction from RNA-seq - Evaluate model
-          command: ./scripts/run_in_ci.sh Rscript --vanilla  analyses/sex-prediction-from-RNASeq/03-evaluate_model.R --test_set_input_directory scratch --model_input_directory scratch --output_directory scratch --filename_lead kallisto_stranded
+          name: Sex prediction from RNA-seq - Clean data-train elasticnet-evaluate model
+          command: ./scripts/run_in_ci.sh bash analyses/sex-prediction-from-RNASeq/run-sex-prediction-from-RNASeq.sh
 
       - run:
           name: Selection Strategy Comparison
@@ -75,7 +58,6 @@ jobs:
 #      - run:
 #          name: ssGSEA Analysis
 #          command: OPENPBTA_ANOVAPVALUE=0.25 OPENPBTA_TUKEYPVALUE=0.50 OPENPBTA_PERCKEEP=0.50 ./scripts/run_in_ci.sh bash analyses/ssgsea-hallmark/run-ssgsea-hallmark.sh
-
 
 # The second method - ControlFREEC - was not included as of v6, so the comparison can no longer be performed
 #      - run:
@@ -105,7 +87,31 @@ jobs:
       - run:
           name: Tumor mutation burden with TCGA
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
+
+      - run:
+          name: Copy number consensus
+          command: ./scripts/run_in_ci.sh bash "analyses/copy_number_consensus_call/run_consensus_call.sh"
           
+      - run:
+          name: Survival analysis
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/survival-analysis/survival-analysis_template.Rmd', params = list(plot_ci = FALSE), clean = TRUE)" 
+
+      - run:
+          name: Comparative RNASeq - generate correlation matrix - rsem-tpm.polya
+          command: ./scripts/run_in_ci.sh python3 analyses/comparative-RNASeq-analysis/01-correlation-matrix.py ../../data/pbta-gene-expression-rsem-tpm.polya.rds --output-prefix rsem-tpm-polya- --verbose
+
+      - run:
+          name: Comparative RNASeq - generate correlation matrix - rsem-tpm.stranded
+          command: ./scripts/run_in_ci.sh python3 analyses/comparative-RNASeq-analysis/01-correlation-matrix.py ../../data/pbta-gene-expression-rsem-tpm.stranded.rds --output-prefix rsem-tpm-stranded- --verbose
+
+      - run:
+          name: Molecular Subtyping and Plotting - ATRT
+          command:  OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-ATRT/run-molecular-subtyping-ATRT.sh        
+      
+      - run:
+          name: Process SV file
+          command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/01-process-sv-file.R
+      
          ################################
          #### Add your analysis here ####
          ################################
