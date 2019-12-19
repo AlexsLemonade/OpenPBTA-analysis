@@ -170,20 +170,20 @@ readr::write_tsv(
 
 # Create a data.frame with the count of each call from GISTIC
 GISTIC_SMARCB1_focal_status <- comparison_df %>%
-  group_by(GISTIC_SMARCB1_focal_status) %>%
-  tally() %>%
+  dplyr::group_by(GISTIC_SMARCB1_focal_status) %>%
+  dplyr::tally() %>%
   tibble::column_to_rownames("GISTIC_SMARCB1_focal_status") 
 
 # Create a data.frame with the count of each current call 
 Current_SMARCB1_focal_status <- comparison_df %>%
-  group_by(SMARCB1_focal_status) %>%
-  tally() %>%
+  dplyr::group_by(SMARCB1_focal_status) %>%
+  dplyr::tally() %>%
   tibble::column_to_rownames("SMARCB1_focal_status")
 
 # Combine the calls into a contigency table
 contigency_df <-
   data.frame(GISTIC_SMARCB1_focal_status, Current_SMARCB1_focal_status) %>%
-  rename(GISTIC_SMARCB1_focal_status = n,
+  dplyr::rename(GISTIC_SMARCB1_focal_status = n,
          Current_SMARCB1_focal_status = n.1) %>%
   tibble::rownames_to_column("Call") 
 
