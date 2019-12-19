@@ -71,9 +71,9 @@ get_biospecimen_ids <- function(filename, id_mapping_df) {
     }
   } else if (grepl("pbta-fusion", filename)) {
     fusion_file <- read_tsv(filename)
-    # the biospecimen IDs in the filtered/prioritize fusion list included with 
+    # the biospecimen IDs in the filtered/prioritize fusion list included with
     # the download are in a column called 'Sample'
-    if (grepl("putative-oncogenic", filename)) {
+    if (grepl("putative-oncogenic|bysample", filename)) {
       biospecimen_ids <- unique(fusion_file$Sample)
     } else {
       # the original files contain the relevant IDs in a column 'tumor_id'
@@ -185,7 +185,18 @@ files_to_subset <-
   files_to_subset[which(!(files_to_subset %in% c(polya_rsem_files[-1],
                                                  stranded_rsem_files[-1])))]
 
-# TODO: REMOVE THIS once you are no longer testing locally!
+# drop recurrently fused genes by histology file -- it is small enough to
+# include the entire thing
+files_to_subset <-
+  files_to_subset[-grep("fused-genes-byhistology", files_to_subset)]
+
+# drop GISTIC zipped file from this list -- there are many files that are not
+# currently documented
+# we'll include the entire zipped folder
+files_to_subset <-
+  files_to_subset[-grepl("pbta-cnv-cnvkit-gistic.zip", files_to_subset)]
+
+# TODO: COMMENT THIS OUT once you are no longer testing locally!
 # this is removing the larger 2 of the 4 MAF files
 # files_to_subset <- files_to_subset[-grep("vardict|mutect2", files_to_subset)]
 
@@ -241,12 +252,12 @@ stranded_matched <- intersect(stranded_in_all, other_strategy_in_all)
 # first consider the poly-A samples
 polya_for_subset <- sample(polya_matched, num_matched_polya)
 
-# we need to sample the stranded participants keeping the reported gender in 
+# we need to sample the stranded participants keeping the reported gender in
 # mind -- currently this is only for the sex prediction from RNA-seq data
 id_gender_df <- id_gender_df %>%
   dplyr::filter(Kids_First_Participant_ID %in% stranded_matched)
 
-# get the number of samples for each reported gender - we'll split 54% males 
+# get the number of samples for each reported gender - we'll split 54% males
 # which is what the 'matched' cohort is like
 num_male <- ceiling(0.54 * num_matched_stranded)
 num_female <- num_matched_stranded - num_male
