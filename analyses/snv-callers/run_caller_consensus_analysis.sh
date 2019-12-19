@@ -9,7 +9,7 @@ set -e
 set -o pipefail
 
 # The sqlite database made from the callers will be called:
-dbfile=scratch/testing_snv_db.sqlite
+dbfile=scratch/snv_db.sqlite
 
 # Designate output file 
 consensus_file=analyses/snv-callers/results/consensus/consensus_snv.maf.tsv
@@ -53,7 +53,7 @@ python3 analyses/snv-callers/scripts/01-setup_db.py \
 # Make All mutations BED file
 bedtools intersect \
   -a data/WGS.hg38.strelka2.unpadded.bed \
-  -b data/WGS.hg38.mutect2.unpadded.bed > $all_mut_wgs_bed
+  -b data/WGS.hg38.mutect2.vardict.unpadded.bed > $all_mut_wgs_bed
 
 # Convert GTF to BED file for use in bedtools
 # Here we are only extracting lines with as a CDS i.e. are coded in protein
@@ -65,7 +65,7 @@ gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
 # Make WGS coding BED file
 bedtools intersect \
   -a data/WGS.hg38.strelka2.unpadded.bed \
-  -b data/WGS.hg38.mutect2.unpadded.bed \
+  -b data/WGS.hg38.mutect2.vardict.unpadded.bed \
   data/WGS.hg38.lancet.300bp_padded.bed \
   $exon_file \
   > $coding_wgs_bed
