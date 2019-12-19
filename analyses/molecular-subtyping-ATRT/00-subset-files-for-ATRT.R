@@ -79,7 +79,7 @@ cn_df <- readr::read_tsv(
 tmb_df <-
   data.table::fread(file.path(root_dir,
                               "data",
-                              "pbta-snv-consensus-mutation-tmb.tsv"))
+                              "pbta-snv-consensus-mutation-tmb-all.tsv"))
 
 ## TODO: Read in the SV data/GISTIC output to evaluate the chr22q loss
 #        associated with SMARB1 deletions

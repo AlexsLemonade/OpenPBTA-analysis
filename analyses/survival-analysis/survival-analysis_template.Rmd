@@ -18,7 +18,7 @@ Set up basic survival analyses models which can be applied to various other data
 
 To run this from the command line, use:
 ```
-Rscript -e "rmarkdown::render('analyses/survival-analysis/survival-analysis.Rmd', 
+Rscript -e "rmarkdown::render('analyses/survival-analysis/survival-analysis_template.Rmd', 
                               clean = TRUE)" 
 ```
 
@@ -65,7 +65,7 @@ Declare input file paths.
 
 ```{r Set input file paths}
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
-tmb_file <- file.path(data_dir, "pbta-snv-consensus-mutation-tmb.tsv")
+tmb_file <- file.path(data_dir, "pbta-snv-consensus-mutation-tmb-all.tsv")
 germline_sex_file <- file.path("..", "sex-prediction-from-RNASeq", "results", 
                                "germline_sex_estimate", "kallisto_stranded_36354_0.25_prediction_details.tsv")
 ```
