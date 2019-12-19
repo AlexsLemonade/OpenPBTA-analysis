@@ -53,7 +53,7 @@ python3 analyses/snv-callers/scripts/01-setup_db.py \
 # Make All mutations BED file
 bedtools intersect \
   -a data/WGS.hg38.strelka2.unpadded.bed \
-  -b data/WGS.hg38.mutect2.unpadded.bed > $all_mut_wgs_bed
+  -b data/WGS.hg38.mutect2.vardict.unpadded.bed > $all_mut_wgs_bed
 
 # Convert GTF to BED file for use in bedtools
 # Here we are only extracting lines with as a CDS i.e. are coded in protein
