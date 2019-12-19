@@ -13,6 +13,7 @@ We invite researchers to join OpenPBTA to help rigorously characterize the genom
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
+- [Data Description](#data-description)
 - [How to Obtain OpenPBTA Data](#how-to-obtain-openpbta-data)
   - [Data Access via Download Script](#data-access-via-download-script)
   - [Data Access via CAVATICA](#data-access-via-cavatica)
