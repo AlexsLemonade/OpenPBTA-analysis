@@ -99,7 +99,7 @@ Declare input file paths.
 
 ```{r Set input file paths}
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
-tmb_file <- file.path(data_dir, "pbta-snv-consensus-mutation-tmb.tsv")
+tmb_file <- file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding.tsv")
 germline_sex_file <- file.path(
   "..", "sex-prediction-from-RNASeq", "results",
   "germline_sex_estimate", "kallisto_stranded_36354_0.25_prediction_details.tsv"
