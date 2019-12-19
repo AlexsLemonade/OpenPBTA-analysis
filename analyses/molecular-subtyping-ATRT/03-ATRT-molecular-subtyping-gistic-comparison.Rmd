@@ -168,8 +168,31 @@ readr::write_tsv(
   file.path("results", "ATRT_SMARCB1_GISTIC_comparison_results.tsv")
 )
 
-# Display `comparison_df`
-viewDataTable(comparison_df) 
+# Create a data.frame with the count of each call from GISTIC
+GISTIC_SMARCB1_focal_status <- comparison_df %>%
+  group_by(GISTIC_SMARCB1_focal_status) %>%
+  tally() %>%
+  tibble::column_to_rownames("GISTIC_SMARCB1_focal_status") 
+
+# Create a data.frame with the count of each current call 
+Current_SMARCB1_focal_status <- comparison_df %>%
+  group_by(SMARCB1_focal_status) %>%
+  tally() %>%
+  tibble::column_to_rownames("SMARCB1_focal_status")
+
+# Combine the calls into a contigency table
+contigency_df <-
+  data.frame(GISTIC_SMARCB1_focal_status, Current_SMARCB1_focal_status) %>%
+  rename(GISTIC_SMARCB1_focal_status = n,
+         Current_SMARCB1_focal_status = n.1) %>%
+  tibble::rownames_to_column("Call") 
+
+# Reorder the calls
+contigency_df$Call <- as.factor(contigency_df$Call)
+levels(contigency_df$Call) <- c("loss", "neutral", "gain")
+
+# Display `contigency_df`
+viewDataTable(contigency_df) 
 ```
 
 # Plot
@@ -180,20 +203,11 @@ copy_number_comparison_plot <-
   ggplot2::ggplot(comparison_df,
                   ggplot2::aes(x = copy_number, y = GISTIC_copy_number)) +
   ggplot2::geom_point() +
-  ggplot2::labs(title = "`SMARCB1` focal copy number comparison scatterplot")
+  ggplot2::labs(title = "`SMARCB1` focal copy number comparison scatterplot") +
+  ggplot2::theme_classic()
 
 # Display the copy number comparison plot
 copy_number_comparison_plot
-
-# Produce a focal copy number status comparison plot
-focal_status_comparison_plot <-
-  ggplot2::ggplot(comparison_df,
-                  ggplot2::aes(x = SMARCB1_focal_status, y = GISTIC_SMARCB1_focal_status)) +
-  ggplot2::geom_point() +
-  ggplot2::labs(title = "`SMARCB1` focal copy number status comparison scatterplot")
-
-# Display the focal copy number status comparison plot
-focal_status_comparison_plot
 ```
 
 # Session Info
