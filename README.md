@@ -111,7 +111,7 @@ We are releasing this dataset on both [CAVATICA](https://cavatica.sbgenomics.com
 Users performing analyses, should always refer to the symlinks in the `data/` directory and not files within the release folder, as an updated release may be produced before a publication is prepared.
 
 **The data formats and caveats are described in more detail in [`doc/data-formats.md`](doc/data-formats.md).
-For brief descriptions of the data files, see the [`data-description.md`](doc/data-description.md) file included in the download.**
+For brief descriptions of the data files, see the [`data-files-description.md`](doc/data-files-description.md) file included in the download.**
 
 Use the [data issue template](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/new?assignees=&labels=data&template=data-question.md&title=) to file issues if you have questions about or identify issues with OpenPBTA data.
 
