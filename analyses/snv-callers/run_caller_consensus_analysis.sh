@@ -65,7 +65,7 @@ gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
 # Make WGS coding BED file
 bedtools intersect \
   -a data/WGS.hg38.strelka2.unpadded.bed \
-  -b data/WGS.hg38.mutect2.unpadded.bed \
+  -b data/WGS.hg38.mutect2.vardict.unpadded.bed \
   data/WGS.hg38.lancet.300bp_padded.bed \
   $exon_file \
   > $coding_wgs_bed
