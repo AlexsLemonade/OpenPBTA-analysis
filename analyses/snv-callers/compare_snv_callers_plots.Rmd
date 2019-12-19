@@ -100,7 +100,7 @@ Connect to SQLite database.
 ```{r}
 # Start up connection
 con <- DBI::dbConnect(RSQLite::SQLite(), 
-                      file.path(scratch_dir, "testing_snv_db.sqlite"))
+                      file.path(scratch_dir, "snv_db.sqlite"))
 ```
 
 Note what columns we will join by.
@@ -209,13 +209,20 @@ callers_per_mutation <- callers_per_mutation %>%
 Make the upset plot. 
 
 ```{r}
-callers_per_mutation %>% 
+upsettr_plot <- callers_per_mutation %>%
   upset_plot()
+
+# Print this out here
+upsettr_plot
 ```
 
+Save this plot to a png
+
 ```{r}
-# Save this plot
-ggplot2::ggsave(file.path(plots_dir, "upset_plot.png"))
+# We can save the plot like a normal ggplot
+png(file = file.path(plots_dir, "upset_plot.png"))
+upsettr_plot
+dev.off()
 ```
 
 Transcripts only upset plot. 
@@ -290,7 +297,7 @@ perc_change_df <- all_caller_df %>%
   # Calculate the percent of each 
   dplyr::mutate(percent = count / n) %>%
   # Drop nonsensical change
-  dplyr::filter(!grepl("G>G|A>A|N>A|N>T|T>N|A>N", change), 
+  dplyr::filter(!grepl("N>*|*>N|C>C|T>T|A>A|G>G", change), 
                 !is.na(change)) %>%
   dplyr::mutate(
     change = as.factor(change),
