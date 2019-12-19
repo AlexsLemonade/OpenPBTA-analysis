@@ -156,8 +156,8 @@ rule compare_cnv_methods:
     params:
         sample_name="{sample}"
     shell:
-        "python3 {input.script} --manta {input.manta} --cnvkit {input.cnvkit} --freec {input.freec}"
-        "--manta_cnvkit {output.manta_cnvkit} --manta_freec {output.manta_freec} --cnvkit_freec {output.cnvkit_freec}"
+        "python3 {input.script} --manta {input.manta} --cnvkit {input.cnvkit} --freec {input.freec} "
+        "--manta_cnvkit {output.manta_cnvkit} --manta_freec {output.manta_freec} --cnvkit_freec {output.cnvkit_freec} "
         "--sample {params.sample_name}"
 
 
