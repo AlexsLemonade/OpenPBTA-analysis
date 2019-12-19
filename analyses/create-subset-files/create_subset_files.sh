@@ -7,7 +7,7 @@ set -o pipefail
 
 # Set defaults for release and biospecimen file name
 BIOSPECIMEN_FILE=${BIOSPECIMEN_FILE:-biospecimen_ids_for_subset.RDS}
-RELEASE=${RELEASE:-release-v11-20191126}
+RELEASE=${RELEASE:-release-v12-20191217}
 NUM_MATCHED=${NUM_MATCHED:-15}
 
 # This script should always run as if it were being called from
@@ -40,18 +40,26 @@ Rscript --vanilla 02-subset_files.R \
 # histologies file
 cp $FULL_DIRECTORY/pbta-histologies.tsv $SUBSET_DIRECTORY
 
+# recurrently fused genes by histologies file
+cp $FULL_DIRECTORY/pbta-fusion-recurrently-fused-genes-byhistology.tsv $SUBSET_DIRECTORY
+
+# GISTIC output
+cp $FULL_DIRECTORY/pbta-cnv-cnvkit-gistic.zip $SUBSET_DIRECTORY
+
 # independent specimen files
 cp $FULL_DIRECTORY/independent-specimens*.tsv $SUBSET_DIRECTORY
 
 # all bed files
 cp $FULL_DIRECTORY/*.bed $SUBSET_DIRECTORY
 
+# the release notes
+cp $FULL_DIRECTORY/release-notes.md $SUBSET_DIRECTORY
+
+# data file description
+cp $FULL_DIRECTORY/data-files-description.md $SUBSET_DIRECTORY
+
 # if the md5sum.txt file already exists, get rid of it
 cd $SUBSET_DIRECTORY
 rm -f md5sum.txt
 # create a new md5sum.txt file
 md5sum * > md5sum.txt
-
-# Changelog does not get tracked
-cd ../../../analyses/create-subset-files
-cp $FULL_DIRECTORY/CHANGELOG.md $SUBSET_DIRECTORY
