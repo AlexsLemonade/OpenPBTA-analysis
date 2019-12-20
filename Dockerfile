@@ -201,12 +201,6 @@ RUN pip3 install "statsmodels==0.10.2" && \
 # Add curl
 RUN apt-get update && apt-get install -y --no-install-recommends curl
 
-<<<<<<< HEAD
-# package required for immune deconvolution
-RUN R -e "install.packages('remotes', dependencies = TRUE)"
-RUN R -e "remotes::install_github('icbi-lab/immunedeconv', ref = '493bcaa9e1f73554ac2d25aff6e6a7925b0ea7a6', dependencies = TRUE)"
-RUN R -e "install.packages('corrplot', dependencies = TRUE)"
-=======
 # Need for survminer for doing survival analysis
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
@@ -225,7 +219,11 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     --deps TRUE \
     spatial \
     ggfortify
->>>>>>> origin/master
+
+# package required for immune deconvolution
+RUN R -e "install.packages('remotes', dependencies = TRUE)"
+RUN R -e "remotes::install_github('icbi-lab/immunedeconv', ref = '493bcaa9e1f73554ac2d25aff6e6a7925b0ea7a6', dependencies = TRUE)"
+RUN R -e "install.packages('corrplot', dependencies = TRUE)"
 
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
