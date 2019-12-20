@@ -37,12 +37,12 @@ Overall, tumor mutation burden for both brain tumor datasets are calculated usin
 ### PBTA Tumor Mutation Burden
 
 The TMB calculations for the pediatric brain tumor set were carried out in [snv-callers analysis](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers) in this repository.
-In brief, tumor mutation burden is calculated using consensus SNV calls found in exonic regions.
+In brief, tumor mutation burden is calculated using consensus SNV calls found in coding sequences.
 Consensus mutations included any calls that were made by all three of: [Mutect2](https://software.broadinstitute.org/cancer/cga/mutect), [Strelka2](https://github.com/Illumina/strelka), and [Lancet](https://github.com/nygenome/lancet).
-The total number exonic consensus SNVs were used for the numerator and the effective size of the genome surveyed is used as the denominator.
+The total number coding sequence consensus SNVs were used for the numerator and the effective size of the genome surveyed is used as the denominator.
 
 ```
-TMB = (total # exonic consensus snvs) / (size of effectively surveyed genome)
+TMB = (total # coding sequence consensus snvs) / (size of effectively surveyed genome)
 ```
 
 For more details, see [snv-callers README](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers).
