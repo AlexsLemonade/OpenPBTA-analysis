@@ -58,22 +58,24 @@ parser.add_argument(
     help="Path of the independent samples file."
 )
 parser.add_argument(
-    '--cosmic-user',
-    dest='cosmic_user',
-    help="Username (email) for COSMIC user."
-)
-
-parser.add_argument(
-    '--cosmic-pass',
-    dest='cosmic_pass',
-    help="password for COSMIC user."
-)
-
-parser.add_argument(
     '--overwrite',
     action='store_true',
     help="Flag for whether to overwrite tables that may already exist."
 )
+
+# parser.add_argument(
+#     '--cosmic-user',
+#     dest='cosmic_user',
+#     help="Username (email) for COSMIC user."
+# )
+# 
+# parser.add_argument(
+#     '--cosmic-pass',
+#     dest='cosmic_pass',
+#     help="password for COSMIC user."
+# )
+
+
 args = parser.parse_args()
 
 # types for all expected MAF fields.
