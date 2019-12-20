@@ -148,6 +148,7 @@ for j, jval in enumerate(list_index):
             for n in list2:
 
                 ## Assign start_pos, end_pos, and copy number of list2 to variables
+                chr_list2 = n[0]
                 start_list2 = int(n[1])
                 end_list2 = int(n[2])
                 cnv_list2 = n[3]
