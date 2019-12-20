@@ -158,7 +158,7 @@ for j, jval in enumerate(list_index):
                     start_list2, end_list2 = end_list2, start_list2
 
                 ## For the current CNV in list1, if it overlaps with any CNV from list2
-                if m[0] == n[0] and start_list1 <= end_list2 and end_list1 >= start_list2:
+                if chr_list1 == chr_list2 and start_list1 <= end_list2 and end_list1 >= start_list2:
 
                     ## Take the common region and store them in variables
                     start = max(start_list1,start_list2)
