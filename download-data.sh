@@ -4,8 +4,8 @@ set -o pipefail
 
 # Use the OpenPBTA bucket as the default.
 URL=${OPENPBTA_URL:-https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data}
-RELEASE=${OPENPBTA_RELEASE:-release-v11-20191126}
-PREVIOUS=${OPENPBTA_RELEASE:-release-v10-20191115}
+RELEASE=${OPENPBTA_RELEASE:-release-v12-20191217}
+PREVIOUS=${OPENPBTA_RELEASE:-release-v11-20191126}
 
 # Remove old symlinks in data
 find data -type l -delete
@@ -13,8 +13,8 @@ find data -type l -delete
 # The md5sum file provides our single point of truth for which files are in a release.
 curl --create-dirs $URL/$RELEASE/md5sum.txt -o data/$RELEASE/md5sum.txt -z data/$RELEASE/md5sum.txt
 
-# Consider the filenames in the md5sum file + CHANGELOG.md
-FILES=(`tr -s ' ' < data/$RELEASE/md5sum.txt | cut -d ' ' -f 2` CHANGELOG.md)
+# Consider the filenames in the md5sum file
+FILES=(`tr -s ' ' < data/$RELEASE/md5sum.txt | cut -d ' ' -f 2`)
 
 if [ -d "data/$PREVIOUS" ]
 then
@@ -59,7 +59,7 @@ fi
 # because it is considerably faster to do so
 
 if [ "$RELEASE" == "testing" ]; then
-  Rscript -e "BSgenome::export(BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38, 'GRCh38.primary_assembly.genome.fa.gz', compress = 'gzip', format = 'fasta')"
+  Rscript -e "Biostrings::writeXStringSet(Biostrings::getSeq(BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38, c('chr21', 'chr22', 'chrX', 'chrY')), 'GRCh38.primary_assembly.genome.fa.gz', format = 'fasta', compress = 'gzip')"
 else
   REFERENCE="ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/GRCh38.primary_assembly.genome.fa.gz"
   if [ ! -e ${REFERENCE##*/} ]
@@ -81,3 +81,8 @@ for file in "${FILES[@]}"
 do
   ln -sfn $RELEASE/$file data/$file
 done
+
+# make data directory unwritable in CI
+if [ "$RELEASE" == "testing" ]; then
+  chmod u-w data
+fi

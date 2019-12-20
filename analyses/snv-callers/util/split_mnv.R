@@ -14,17 +14,17 @@ split_mnv <- function(mnv_tbl) {
   mnv_df <- mnv_tbl %>%
     dplyr::filter(Variant_Type %in% c("DNP", "TNP", "ONP")) %>%
     as.data.frame() %>%
-    # add a temp_id for calculating positions, and for potential later 
+    # add a temp_id for calculating positions, and for potential later
     # reconstitution of MNVs.
     dplyr::mutate(temp_id = dplyr::row_number()) %>%
-    # lancet adds a base to the start of MNV `Allele` fields, so check for that 
+    # lancet adds a base to the start of MNV `Allele` fields, so check for that
     # and remove the extra base.
     dplyr::mutate(
       Allele = dplyr::case_when(
         stringr::str_length(Allele) == stringr::str_length(Reference_Allele) ~
-          Allele,
+        Allele,
         stringr::str_length(Allele) == stringr::str_length(Reference_Allele) + 1 ~
-          stringr::str_sub(Allele, 2)
+        stringr::str_sub(Allele, 2)
       )
     )
   # separate multibase calls into individual rows

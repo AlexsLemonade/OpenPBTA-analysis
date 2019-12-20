@@ -62,3 +62,5 @@ Rscript analyses/fusion_filtering/03-Calc-zscore-annotate.R --standardFusionCall
                                                             --normalExpressionMatrix $normal_expression_file \
                                                             --outputfile scratch/standardFusionStrandedExp_QC_expression
 
+# project specific filtering
+Rscript -e "rmarkdown::render('analyses/fusion_filtering/04-project-specific-filtering.Rmd')"
