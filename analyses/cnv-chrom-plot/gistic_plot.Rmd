@@ -30,9 +30,10 @@ if (!("ggbio" %in% installed.packages())) {
   install.packages("BiocManager")
   BiocManager::install("ggbio")
 }
+library("ggbio")
+
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
-
 ```
 
 # Directories and Files
@@ -72,36 +73,43 @@ gistic_results <- file.path(gistic_results, "2019-12-10-gistic-results-cnvkit")
 metadata <-
   readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv"))
 ```
+Read in the GISTIC scores file
 
 ```{r}
-# Read in GISTIC data
-gistic_data <- maftools::readGistic(
-  gisticAllLesionsFile = file.path(gistic_results, "all_lesions.conf_90.txt"),
-  gisticAmpGenesFile = file.path(gistic_results, "amp_genes.conf_90.txt"),
-  gisticScoresFile = file.path(gistic_results, "scores.gistic")
-  )
+gistic_scores <- readr::read_tsv(file.path(gistic_results, "scores.gistic")) %>% 
+  dplyr::rename("gscore" = "G-score") 
+
+gistic_scores$gscore[which(gistic_scores$Type == "Del")] <- -gistic_scores$gscore[which(gistic_scores$Type == "Del")]
 ```
 
 ## Make GISTIC data into GRanges object
-```{r}
-GenomicRanges::GRanges(
-  seqnames = maf_df$Chromosome,
-  ranges = IRanges::IRanges(
-    start = maf_df$Start_Position,
-    end = maf_df$End_Position
-  ),
-  mcols = maf_df
-)
 
+```{r}
+gistic_ranges <- GenomicRanges::GRanges(
+  seqnames = gistic_scores$Chromosome,
+  ranges = IRanges::IRanges(
+    start = gistic_scores$Start,
+    end = gistic_scores$End
+  ),
+  score = gistic_scores$gscore,
+  mcols = gistic_scores
+)
 ```
 
 # GISTIC Plots
 
 ```{r}
-autoplot(gr, aes(color = strand, fill = strand), facets = strand ~ seqnames, stat = "coverage")
-
+ggplot2::ggplot(gistic_ranges) + 
+  geom_bar(ggplot2::aes(y = score, fill = mcols.Type)) + 
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
 ```
 
+```{r}
+ggplot2::ggsave(file.path(gistic_dir, "gistic_plot.png"), 
+                width = 10, 
+                height = 3, 
+                units = "in")
+```
 # Session Info
 
 ```{r}
