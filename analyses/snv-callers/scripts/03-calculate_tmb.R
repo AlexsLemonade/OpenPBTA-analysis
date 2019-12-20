@@ -144,8 +144,8 @@ if (!dir.exists(opt$output)) {
 }
 
 # Declare output file paths
-tmb_coding_file <- file.path(opt$output, "pbta-snv-consensus_snv_tmb_coding_only.tsv")
-tmb_all_file <- file.path(opt$output, "pbta-snv-consensus_snv_tmb_all.tsv")
+tmb_coding_file <- file.path(opt$output, "pbta-snv-consensus-mutation-tmb-coding.tsv")
+tmb_all_file <- file.path(opt$output, "pbta-snv-consensus-mutation-tmb-all.tsv")
 
 # Don't bother if both files exist already and overwrite is FALSE
 if (all(file.exists(c(tmb_coding_file, tmb_all_file)), !opt$overwrite)) {
