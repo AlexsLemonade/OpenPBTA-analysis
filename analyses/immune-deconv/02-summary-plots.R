@@ -9,7 +9,7 @@ suppressPackageStartupMessages(library(pheatmap))
 suppressPackageStartupMessages(library(corrplot))
 
 # source plotting theme
-source('analyses/immune-deconv/pubTheme.R')
+source('pubTheme.R')
 
 option_list <- list(
   make_option(c("-i", "--input"), type = "character",
@@ -20,14 +20,22 @@ option_list <- list(
 
 # Example Run:
 # Rscript analyses/immune-deconv/02-summary-plots.R \
-# -i 'analyses/immune-deconv/deconv-output.RData' \
-# -o 'analyses/immune-deconv/deconv-summary.pdf'
+# -i 'analyses/immune-deconv/results/deconv-output.RData' \
+# -o 'analyses/immune-deconv/results/deconv-summary.pdf'
 
 # parse parameters
 opt <- parse_args(OptionParser(option_list = option_list))
 deconvout <- opt$input
 output <- opt$output
 load(deconvout) 
+
+# split results of method 1 and 2
+method1 <- as.data.frame(deconv.res[,1])
+method2 <- as.data.frame(deconv.res[,2])
+
+# extract names of the methods used
+method1.name <- colnames(deconv.res)[1]
+method2.name <- colnames(deconv.res)[2]
 
 # first, define a function to create heatmap of
 # average immune scores per histology per cell type
@@ -62,21 +70,22 @@ create.heatmap <- function(deconv.method, title) {
            main = title, annotation_legend = T, cellwidth = 15, cellheight = 15)
 }
 
-# next, plot a correlation heatmap between xCell and Cibersort
+# next, plot a correlation heatmap between xCell and the second specified method
 # only take common cell types between both methods
-common.types <- intersect(cibersort_abs$cell_type, xcell$cell_type) 
-cibersort_abs.sub <- cibersort_abs %>%
+common.types <- intersect(method1$cell_type, method2$cell_type) 
+method1.sub <- method1 %>%
   filter(cell_type %in% common.types) %>%
-  mutate(cibersort = fraction) %>%
+  mutate(!!method1.name := fraction) %>%
   select(-c(method, fraction))
-xcell.sub <- xcell %>%
+method2.sub <- method2 %>%
   filter(cell_type %in% common.types) %>%
-  mutate(xcell = fraction) %>%
+  mutate(!!method2.name := fraction) %>%
   select(-c(method, fraction))
-total <- merge(xcell.sub, cibersort_abs.sub, by = c("sample","cell_type", "broad_histology"))
+total <- merge(method1.sub, method2.sub, by = c("sample","cell_type", "broad_histology"))
 
 # Overall correlation: 0.12
-print(paste("Overall correlation: ", round(cor(total$xcell, total$cibersort), 2))) 
+avg.cor <- round(cor(total[,method1.name], total[,method2.name]), 2)
+print(paste("Overall Pearson Correlation: ", avg.cor))
 
 # labels
 total.labels <- total %>%
@@ -92,7 +101,7 @@ total <- merge(total, total.labels, by = 'broad_histology')
 # calculate correlation per cell type per histology
 total <- total %>% 
   group_by(cell_type, label) %>%
-  dplyr::summarise(corr = cor(xcell, cibersort)) %>%
+  dplyr::summarise(corr = cor(!!sym(method1.name), !!sym(method2.name))) %>%
   spread(key = label, value = corr) %>% 
   column_to_rownames('cell_type') %>%
   replace(is.na(.), 0)
@@ -102,11 +111,13 @@ pdf(file = output, onefile = TRUE, width = 13, height = 8)
 corrplot(t(total), method = "circle", type = 'full', win.asp = 0.5, 
          addCoef.col = "black", number.cex = .5,
          is.corr = FALSE, tl.cex = 0.8, mar = c(0, 0, 0, 5), 
-         title = "\n\n\n\nCorrelation matrix (xCell vs Cibersort)")
+         title = paste0("\n\n\n\nCorrelation matrix (", 
+                        method1.name, " vs ", method2.name, ")\n",
+                        "Overall Pearson Correlation: ", avg.cor))
 
 # lastly, create heatmaps for both deconvolution methods
 # add to the same file as above
-create.heatmap(deconv.method = xcell, title = 'xCell')
-create.heatmap(deconv.method = cibersort_abs, title = 'Cibersort')
+create.heatmap(deconv.method = method1, title = method1.name)
+create.heatmap(deconv.method = method2, title = method2.name)
 dev.off()
 

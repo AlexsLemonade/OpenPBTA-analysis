@@ -15,10 +15,12 @@ option_list <- list(
               help = "Stranded Expression data: HUGO symbol x Sample identifiers (.RDS)"),
   make_option(c("-c", "--clin"), type = "character",
               help = "Clinical file (.TSV)"),
-  make_option(c("-b", "--cibersortbin"), type = "character",
+  make_option(c("-m", "--method"), type = "character",
+              help = "Deconvolution Method"),
+  make_option(c("-b", "--cibersortbin"), type = "character", 
               help = "Path to Cibersort binary (CIBERSORT.R)"),
-  make_option(c("-m", "--cibersortmat"), type = "character",
-              help = "Path to Cibersort matrix (LM22.txt)"),
+  make_option(c("-g", "--cibersortgenemat"), type = "character", 
+              help = "Path to Cibersort signature matrix (LM22.txt)"),
   make_option(c("-o","--outputfile"), type = "character",
               help = "Deconv Output (.RData)")
 )
@@ -28,22 +30,29 @@ option_list <- list(
 # -p 'data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds' \
 # -s 'data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds' \
 # -c 'data/pbta-histologies.tsv' \
-# -b 'analyses/immune-deconv/CIBERSORT.R' \
-# -m 'analyses/immune-deconv/LM22.txt' \
-# -o 'analyses/immune-deconv/deconv-output.RData'
+# -m $DECONV_METHOD \
+# -b $CIBERSORT_BIN \
+# -g $CIBERSORT_MAT \
+# -o 'analyses/immune-deconv/results/deconv-output.RData'
 
 # parse parameters
 opt <- parse_args(OptionParser(option_list = option_list))
 polya <- opt$polyaexprs
 stranded <- opt$strandedexprs
 clin.file <- opt$clin
+deconv.method <- opt$method
+cibersort_bin <- opt$cibersortbin 
+cibersort_mat <- opt$cibersortgenemat 
 output.file <- opt$outputfile
 
-# set path to cibersort binary and matrix
-cibersort_bin <- opt$cibersortbin 
-set_cibersort_binary(cibersort_bin)
-cibersort_mat <- opt$cibersortmat 
-set_cibersort_mat(cibersort_mat)
+print(cibersort_bin)
+print(cibersort_mat)
+# if cibersort_bin and cibersort_mat are defined
+# then, set path to cibersort binary and matrix
+if(cibersort_bin != "NA" & cibersort_mat != "NA"){
+  set_cibersort_binary(cibersort_bin)
+  set_cibersort_mat(cibersort_mat)
+}
 
 # merge expression from polya and stranded data on common genes
 polya <- readRDS(polya)
@@ -77,12 +86,11 @@ deconv <- function(expr.input, method){
   
 # Deconvolute using xCell and Cibersort (absolute mode)
 # these two methods have the max number of immune cell types
-deconv.methods <- immunedeconv::deconvolution_methods
-res <- sapply(deconv.methods[grep("xcell|cibersort_abs", deconv.methods)], function(x) deconv(expr.input, method = x))
-xcell <- as.data.frame(res[,'xCell'])
-cibersort_abs <- as.data.frame(res[,'CIBERSORT (abs.)'])
+deconv.method <- c("xcell", deconv.method)
+deconv.method <- grep(paste0(deconv.method, collapse = "|"), deconvolution_methods, value = TRUE)
+deconv.res <- sapply(deconv.method, function(x) deconv(expr.input, method = x), simplify = "list")
 
-# save all deconvolution methods' output to one RData object 
+# save output to RData object 
 print("Writing output to file..")
-save(cibersort_abs, xcell, file = output.file)
+save(deconv.res, file = output.file)
 print("Done!")
