@@ -77,9 +77,10 @@ Read in the GISTIC scores file and format the data.
 gistic_scores <- readr::read_tsv(file.path(gistic_results, "scores.gistic")) %>% 
   dplyr::rename("gscore" = "G-score") %>% 
   # Recode 23 and 24 as X and Y. 
-  dplyr::mutate(Chromosome = dplyr::recode(Chromosome,
-                              X = "23",
-                              Y = "24"), 
+  dplyr::mutate(Chromosome = as.character(Chromosome), 
+                Chromosome = dplyr::recode(Chromosome,
+                             "23" = "X",
+                             "24" = "Y"), 
                 # Turn `Del` scores into negative `G-scores` 
                 # This is how GISTIC shows the scores. 
                 gscore = dplyr::case_when(
@@ -107,13 +108,11 @@ gistic_ranges <- GenomicRanges::GRanges(
 
 ```{r}
 ggplot2::ggplot(gistic_ranges) + 
-  geom_bar(ggplot2::aes(y = score, fill = mcols.Type), scales = "free") + 
+  geom_bar(ggplot2::aes(y = score, fill = mcols.Type), scales = "free_x", shrink = TRUE) + 
   ggplot2::theme_classic() +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(size = 3, angle = 45, hjust = 1)) + 
+  ggplot2::theme(axis.text.x = ggplot2::element_text(size = 3, angle = 45, hjust = 1)) +
   colorblindr::scale_fill_OkabeIto(name = "Type") + 
   ggplot2::ylab("G-scores") 
-
-  
 ```
 
 ### Save the plot as PNG. 
