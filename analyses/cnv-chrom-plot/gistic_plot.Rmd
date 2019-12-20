@@ -26,50 +26,80 @@ if (!("maftools" %in% installed.packages())) {
   install.packages("BiocManager")
   BiocManager::install("maftools")
 }
-
+if (!("ggbio" %in% installed.packages())) {
+  install.packages("BiocManager")
+  BiocManager::install("ggbio")
+}
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
+
 ```
 
 # Directories and Files
 
 ```{r}
 # Path to input directory
-input_directory <- file.path("..", "..", "data")
+input_dir <- file.path("..", "..", "data")
+
+# Path to gistic zip file results
+gistic_zip <- file.path(input_dir, "pbta-cnv-cnvkit-gistic.zip")
+
+# Zip to here
+gistic_results <- file.path(input_dir, "gistic")
 
 # Path to output directory
-output_directory <- "plots"
+output_dir <- "plots"
 
-# Create the output directory if it does not exist
-if (!dir.exists(output_directory)) {
-  dir.create(output_directory, recursive = TRUE)
+# Create the output dir if it does not exist
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir, recursive = TRUE)
 }
 ```
 
+Unzip and set up GISTIC results folder. 
+
 ```{r}
-gistic_results <- file.path(input_directory, "GISTIC_STUFF")
+if (!dir.exists(gistic_results)){
+  unzip(gistic_zip, exdir = gistic_results)
+}
+gistic_results <- file.path(gistic_results, "2019-12-10-gistic-results-cnvkit")
 ```
 
 # Read in data 
 
 ```{r}
-# Read in GISTIC data
-gistic_data <- maftools::readGistic(
-  gisticAllLesionsFile = file.path("2019-12-10-gistic-results-cnvkit", "all_lesions.conf_90.txt"),
-  gisticAmpGenesFile = file.path("2019-12-10-gistic-results-cnvkit", "amp_genes.conf_90.txt"),
-  gisticScoresFile = file.path("2019-12-10-gistic-results-cnvkit", "scores.gistic")
-  )
-
 # Read in metadata
 metadata <-
-  readr::read_tsv(file.path(input_directory, "pbta-histologies.tsv"))
+  readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv"))
+```
+
+```{r}
+# Read in GISTIC data
+gistic_data <- maftools::readGistic(
+  gisticAllLesionsFile = file.path(gistic_results, "all_lesions.conf_90.txt"),
+  gisticAmpGenesFile = file.path(gistic_results, "amp_genes.conf_90.txt"),
+  gisticScoresFile = file.path(gistic_results, "scores.gistic")
+  )
+```
+
+## Make GISTIC data into GRanges object
+```{r}
+GenomicRanges::GRanges(
+  seqnames = maf_df$Chromosome,
+  ranges = IRanges::IRanges(
+    start = maf_df$Start_Position,
+    end = maf_df$End_Position
+  ),
+  mcols = maf_df
+)
+
 ```
 
 # GISTIC Plots
 
 ```{r}
-maftools::gisticChromPlot(gistic_data, 
-                          ref.build = "hg38")
+autoplot(gr, aes(color = strand, fill = strand), facets = strand ~ seqnames, stat = "coverage")
+
 ```
 
 # Session Info
