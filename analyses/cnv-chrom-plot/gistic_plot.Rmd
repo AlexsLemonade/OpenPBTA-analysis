@@ -6,9 +6,7 @@ output:
     toc_float: true
 ---
 
-## Output Files
-
-## Usage
+### Usage
 
 This script is intended to be run via the command line from the top directory
 of the repository as follows:
@@ -18,7 +16,7 @@ Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd',
                               clean = TRUE)"
 ```
 
-# Set Up
+### Set Up
 
 ```{r}
 # This will be needed to create the frequency and proportion aberration plots 
@@ -36,7 +34,7 @@ library("ggbio")
 `%>%` <- dplyr::`%>%`
 ```
 
-# Directories and Files
+### Directories and Files
 
 ```{r}
 # Path to input directory
@@ -66,7 +64,7 @@ if (!dir.exists(gistic_results)){
 gistic_results <- file.path(gistic_results, "2019-12-10-gistic-results-cnvkit")
 ```
 
-# Read in data 
+### Read in data 
 
 ```{r}
 # Read in metadata
@@ -82,7 +80,7 @@ gistic_scores <- readr::read_tsv(file.path(gistic_results, "scores.gistic")) %>%
 gistic_scores$gscore[which(gistic_scores$Type == "Del")] <- -gistic_scores$gscore[which(gistic_scores$Type == "Del")]
 ```
 
-## Make GISTIC data into GRanges object
+### Make GISTIC data into GRanges object
 
 ```{r}
 gistic_ranges <- GenomicRanges::GRanges(
@@ -96,20 +94,26 @@ gistic_ranges <- GenomicRanges::GRanges(
 )
 ```
 
-# GISTIC Plots
+### Plot the GISTIC scores
 
 ```{r}
 ggplot2::ggplot(gistic_ranges) + 
   geom_bar(ggplot2::aes(y = score, fill = mcols.Type)) + 
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
+  ggplot2::theme_classic() +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(size = 3, angle = 45, hjust = 1)) + 
+  colorblindr::scale_fill_OkabeIto(name = "Type") + 
+  ggplot2::ylab("G-scores")
 ```
 
+### Save the plot as PNG. 
+
 ```{r}
-ggplot2::ggsave(file.path(gistic_dir, "gistic_plot.png"), 
+ggplot2::ggsave(filename = file.path(plots_dir, "gistic_plot.png"), 
                 width = 10, 
                 height = 3, 
                 units = "in")
 ```
+
 # Session Info
 
 ```{r}
