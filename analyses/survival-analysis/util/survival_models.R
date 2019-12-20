@@ -5,10 +5,6 @@
 # 2019
 #
 # Install the packages we need
-if (!("survival" %in% installed.packages())) {
-  install.packages("survival")
-}
-
 if (!("survminer" %in% installed.packages())) {
   install.packages("survminer")
 }
@@ -48,7 +44,8 @@ survival_analysis <- function(metadata, ind_var, test = "kap.meier", ind_data = 
 
   # Check that it is a supported test
   if (!(test %in% supported_tests)) {
-    stop(paste0(test, "is not a supported test."))
+    stop(paste(test, "is not a supported test. Please specify one of the following:",
+               paste(supported_tests, collapse=", ")))
   }
 
   # Format the OS_status variable for the survival model functions
