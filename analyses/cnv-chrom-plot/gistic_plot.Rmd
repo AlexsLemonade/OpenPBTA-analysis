@@ -71,13 +71,22 @@ gistic_results <- file.path(gistic_results, "2019-12-10-gistic-results-cnvkit")
 metadata <-
   readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv"))
 ```
-Read in the GISTIC scores file
+Read in the GISTIC scores file and format the data.
 
 ```{r}
 gistic_scores <- readr::read_tsv(file.path(gistic_results, "scores.gistic")) %>% 
-  dplyr::rename("gscore" = "G-score") 
-
-gistic_scores$gscore[which(gistic_scores$Type == "Del")] <- -gistic_scores$gscore[which(gistic_scores$Type == "Del")]
+  dplyr::rename("gscore" = "G-score") %>% 
+  # Recode 23 and 24 as X and Y. 
+  dplyr::mutate(Chromosome = dplyr::recode(Chromosome,
+                              X = "23",
+                              Y = "24"), 
+                # Turn `Del` scores into negative `G-scores` 
+                # This is how GISTIC shows the scores. 
+                gscore = dplyr::case_when(
+                  Type == "Del" ~ -gscore,
+                  TRUE ~ gscore
+                  )
+                )
 ```
 
 ### Make GISTIC data into GRanges object
@@ -98,11 +107,13 @@ gistic_ranges <- GenomicRanges::GRanges(
 
 ```{r}
 ggplot2::ggplot(gistic_ranges) + 
-  geom_bar(ggplot2::aes(y = score, fill = mcols.Type)) + 
+  geom_bar(ggplot2::aes(y = score, fill = mcols.Type), scales = "free") + 
   ggplot2::theme_classic() +
   ggplot2::theme(axis.text.x = ggplot2::element_text(size = 3, angle = 45, hjust = 1)) + 
   colorblindr::scale_fill_OkabeIto(name = "Type") + 
-  ggplot2::ylab("G-scores")
+  ggplot2::ylab("G-scores") 
+
+  
 ```
 
 ### Save the plot as PNG. 
