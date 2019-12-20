@@ -124,6 +124,7 @@ for j, jval in enumerate(list_index):
         for m in list1:
 
             ## Assign the start_pos, end_pos, and copy number of list1 to variables
+            chr_list1 = m[0]
             start_list1 = int(m[1])
             end_list1 = int(m[2])
             cnv_list1 = m[3]
