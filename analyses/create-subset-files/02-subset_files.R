@@ -69,24 +69,24 @@ subset_files <- function(filename, biospecimen_ids, output_directory) {
   # filtering strategy depends on the file type, mostly because how the sample
   # IDs change based on the file type -- that's why this logic is required
   if (grepl("pbta-snv", filename)) {
-
-    # in a column 'Tumor_Sample_Barcode'
-    snv_file <- data.table::fread(filename,
-                                  skip = 1,  # skip version string
-                                  data.table = FALSE)
-    # we need to obtain the version string from the first line of the MAF file
-    version_string <- readLines(filename, n = 1)
-    # filter + write to file with custom function
-    snv_file %>%
-      dplyr::filter(Tumor_Sample_Barcode %in% biospecimen_ids) %>%
-      write_maf_file(file_name = output_file,
-                     version_string = version_string)
-  } else if (grepl("consensus_mutation", filename)) {
-    consensus_mut_file <- data.table::fread(filename,
-                                            data.table = FALSE)
-    consensus_mut_file %>%
-      dplyr::filter(Tumor_Sample_Barcode %in% biospecimen_ids) %>%
-      readr::write_tsv(output_file)
+    if (grepl("consensus-mutation", filename)) {
+      snv_file <- data.table::fread(filename, data.table = FALSE)
+      snv_file %>%
+        dplyr::filter(Tumor_Sample_Barcode %in% biospecimen_ids) %>%
+        readr::write_tsv(output_file)
+    } else {
+      # in a column 'Tumor_Sample_Barcode'
+      snv_file <- data.table::fread(filename,
+                                    skip = 1,  # skip version string
+                                    data.table = FALSE)
+      # we need to obtain the version string from the first line of the MAF file
+      version_string <- readLines(filename, n = 1)
+      # filter + write to file with custom function
+      snv_file %>%
+        dplyr::filter(Tumor_Sample_Barcode %in% biospecimen_ids) %>%
+        write_maf_file(file_name = output_file,
+                       version_string = version_string)
+    }
   } else if (grepl("pbta-cnv", filename)) {
 
     # in a column 'ID'
@@ -98,11 +98,16 @@ subset_files <- function(filename, biospecimen_ids, output_directory) {
       readr::write_tsv(output_file)
 
   } else if (grepl("pbta-fusion", filename)) {
-
-    # in a column 'tumor_id'
+    # original files contain the biospecimen IDs in a column called 'tumor_id',
+    # the filtered/prioritized list biospecimen IDs are in 'Sample'
+    if (grepl("putative-oncogenic|bysample", filename)) {
+      biospecimen_column <- "Sample"
+    } else {
+      biospecimen_column <- "tumor_id"
+    }
     fusion_file <- readr::read_tsv(filename)
     fusion_file %>%
-      dplyr::filter(tumor_id %in% biospecimen_ids) %>%
+      dplyr::filter(!!rlang::sym(biospecimen_column) %in% biospecimen_ids) %>%
       readr::write_tsv(output_file)
 
   } else if (grepl("pbta-sv", filename)) {
