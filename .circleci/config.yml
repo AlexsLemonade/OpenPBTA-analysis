@@ -108,10 +108,18 @@ jobs:
           name: Process SV file
           command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/01-process-sv-file.R
       
+      - run:
+          name: Oncoprint plotting
+          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
+
+      - run:
+          name: TP53 NF1 classifier run
+          command: ./scripts/run_in_ci.sh python3 analyses/tp53_nf1_score/01-apply-classifier.py -f pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds  
+      
          ################################
          #### Add your analysis here ####
          ################################
-         
+
       - run:
           name: SNV Caller Analysis 
           command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis.sh
@@ -121,14 +129,7 @@ jobs:
           # name: SNV Caller VAF Cutoff Experiment
           # command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)"
       
-      # Without the subset mutation consensus files, this takes a long time to run
-      - run:
-          name: Oncoprint plotting
-          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
-
-      - run:
-          name: TP53 NF1 classifier run
-          command: ./scripts/run_in_ci.sh python3 analyses/tp53_nf1_score/01-apply-classifier.py -f pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds  
+ 
                 
 
   deploy:
