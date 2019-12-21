@@ -1,7 +1,7 @@
 # Bethell and Taroni for CCDL 2019
 # Generates lists of scatter plots for dimension reduction techniques.
 #
-# Usage: bash 03-get-dimension-reduction-plot-lists.sh
+# Usage: bash 02-get-dimension-reduction-plot-lists.sh
 
 COLORVAR=${COLOR:-broad_histology}
 
