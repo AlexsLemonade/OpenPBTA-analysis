@@ -21,11 +21,11 @@ ALL=${OPENPBTA_ALL:-1}
 ind_samples=data/independent-specimens.wgs.primary-plus.tsv
 metadata=data/pbta-histologies.tsv
 
-# using lancet data for now
-maf=data/pbta-snv-lancet.vep.maf.gz
+# using consensus
+maf=data/pbta-snv-consensus-mutation.maf.tsv.gz
 
-cooccur=${results_dir}/lancet_top50
-plot=${plot_dir}/lancet_top50
+cooccur=${results_dir}/consensus_top50
+plot=${plot_dir}/consensus_top50
 
 # associative array of diseases to test; chosen by those that are most common
 # in the openPBTA dataset
