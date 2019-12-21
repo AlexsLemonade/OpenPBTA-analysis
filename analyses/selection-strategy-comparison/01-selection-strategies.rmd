@@ -5,8 +5,16 @@ output:
   html_notebook:
     toc: yes
     toc_float: yes
+date: Sys.Date()
 ---
 
+## Background
+
+This analysis was originally undertaken prior to [`release-v5-20190924`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/doc/release-notes.md#release-v5-20190924), where samples from the two library strategies (stranded, poly-A) were split into separate files.
+This split was necessary because differences were apparent in this analysis.
+
+As of [`release-v12-20191217`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/doc/release-notes.md#release-v12-20191217), stranded RNA-seq data for 23 PNOC and 21 CBTTC samples previously sequenced with poly-A library prep were added.
+This notebook has been updated as of `release-v12-20191217`.
 
 ## Setup
 
@@ -161,7 +169,15 @@ stranded_meta_df <- metadata_df %>%
 
 ```
 
-There are `r nrow(polyA_meta_df)` samples and `r nrow(stranded_meta_df)` stranded samples, so the chances of much meaningful comparison seem slim. But just to compare the kinds of samples between the two:
+As of `release-v12-20191217`, there should be some overlap between samples assayed with both library prep strategies.
+
+```{r intersect IDs}
+matched_sample_ids <- intersect(stranded_meta_df$sample_id, 
+                                polyA_meta_df$sample_id)
+matched_sample_ids
+```
+
+What diseases are represented between the two:
 
 ```{r sample types}
 polyA_counts <- polyA_meta_df %>% 
@@ -220,15 +236,44 @@ plot_raw <- umap_plot(rsem_umap_raw,
 plot_raw
 ```
 
+It looks like the new stranded samples are grouping with the poly-A samples that form their own group when looking at data from the earlier release.
 
-So even with more dimensions, we are not surprised to see that the poly-A samples are still clustering together.
+### Matched only
+
+If we use only the matched samples, what does this look like?
+We first need to map back to the biospecimen IDs to perform this analysis.
+
+```{r extract matched BS ID}
+matched_bs_id <- metadata_df %>%
+  dplyr::filter(sample_id %in% matched_sample_ids) %>%
+  dplyr::pull(Kids_First_Biospecimen_ID)
+
+matched_bs_id <- intersect(rownames(dm_set), matched_bs_id)
+```
+
+Run UMAP on the matched samples.
+
+```{r matched umap raw}
+matched_rsem_umap_raw <- umap::umap(dm_set[matched_bs_id, ],
+                                    neighbors = neighbors)
+```
+
+Now for the plot.
+
+```{r plot matched raw results}
+plot_matched_raw <- umap_plot(matched_rsem_umap_raw, 
+                              metadata_df,
+                              filename = file.path(output_dir, 
+                                                   "umap_matched_raw.png"))
+
+plot_matched_raw
+```
 
 ## Removing poly-A depleted genes
 
 ### Any expression at all
 
 As a first pass, lets see what happens when we remove genes are simply not expressed in the poly-A samples (or vice versa?).
-
 
 ```{r get polyA exp}
 polyA_samples <- rownames(exp_rsem_t) %in% polyA_meta_df$Kids_First_Biospecimen_ID
