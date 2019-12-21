@@ -6,6 +6,8 @@ output:
     toc: yes
     toc_float: yes
 date: Sys.Date()
+params:
+  neighbors: 15
 ---
 
 ## Background
@@ -215,7 +217,7 @@ To start, we will reproduce an naive dimensionality reduction analysis to show t
 
 ```{r neighbors}
 # set neighbors parameter
-neighbors <- 15
+neighbors <- params$neighbors
 ```
 
 ```{r raw clustering}
