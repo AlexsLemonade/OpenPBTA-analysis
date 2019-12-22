@@ -1,0 +1,119 @@
+---
+title: "ssGSEA Result Processing and Modeling"
+author: "Stephanie J. Spielman for ALSF CCDL"
+date: "2019"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+  html_notebook:
+    toc: yes
+    toc_float: yes
+params:
+  plot_ci: yes
+---
+
+#### Purpose
+
+Analyzes ssGSEA results. 
+Code written by Stephanie J. Spielman using modified code originally written by Pichai Raman.
+
+**This code is NOT completed and should be regarded as a work _in progress_.**
+
+#### Usage
+
+To run this from the command line, use:
+```
+Rscript -e "rmarkdown::render('analyses/ssgsea-hallmark/02-model-ssGSEA-results.Rmd', clean = TRUE)" 
+```
+_This assumes you are in the top directory of the repository._
+
+#### Setup
+
+First, install if needed and load libraries, as well as define certain constants:
+
+```{r, lib-load, warning=FALSE, message=FALSE}
+library(dplyr)
+library(tidyr)
+library(readr)
+library(tibble)
+library(purrr)
+library(broom)
+
+
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+
+# Significance testing universal threshold
+SIGNIF_THRESHOLD   <- 0.01
+```
+
+
+<br>
+Next, define directories and load data files:
+```{r, data-load, message=FALSE, warning=FALSE}
+### Define directories
+data_dir    <- file.path("..", "..", "data") 
+results_dir <- "results"
+plots_dir   <- "plots"
+if (!dir.exists(results_dir)) dir.create(results_dir)
+if (!dir.exists(plots_dir))   dir.create(plots_dir)
+
+######### Define input files
+## Metadata file (histologies/clinical data)
+metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+
+## ssGSEA scores
+scores_file <- file.path(results_dir, "ssGSEA_scores.tsv")
+
+
+######## Define output files
+#PENDING
+
+
+######## Load input files
+metadata <- readr::read_tsv(metadata_file)
+scores   <- readr::read_tsv(scores_file)
+```
+
+
+
+#### Begin modeling
+```{r aov-tukey-ssgsea-hallmark}
+
+### Merge histology metadata with ssGSEA scores
+metadata_with_gsea <- metadata %>%
+                        filter(experimental_strategy == "RNA-Seq") %>%
+                        inner_join(scores, by = "Kids_First_Biospecimen_ID" )
+
+### Defines a function for performing Anova/Tukey for identifying significant pathways
+## TODO: Increase flexibility so that predictor does NOT NEED TO BE short_histology
+ssgsea_histology_anova_tukey <- function(df)
+{
+  aov_fit <- aov(ssgsea_score ~ short_histology, data = df)
+  TukeyHSD(aov_fit) %>%  
+    broom::tidy() %>%
+    dplyr::select(comparison, estimate, adj.p.value) %>%
+    dplyr::rename(pathway_score_difference = estimate,
+                  tukey_p_value               = adj.p.value) %>%
+    #tidyr::separate(comparison, into = c("hallmark1", "hallmark2"), sep = "-") %>%
+    mutate(significant = ifelse(tukey_p_value <= SIGNIF_THRESHOLD, TRUE, FALSE))
+}
+
+## Conduct series of ANOVA and posthoc Tukey tests for assessing which short histology groups show differences within EACH pathway (hallmark)
+## TODO: While each Tukey test has corrected P-values, the current code does NOT correct for the fact that we are doing many ANOVAs in the first place. 
+######### I would think another level of multiple testing correction is necessary here.
+pathway_diffs_across_short_histology <- metadata_with_gsea %>%
+                                              group_by(hallmark_name) %>%
+                                              nest() %>%
+                                              mutate(anova_tukey = 
+                                                       map(data, ssgsea_histology_anova_tukey)) %>%
+                                              dplyr::select(-data) %>%
+                                              unnest(anova_tukey) %>%
+                                              filter(significant == TRUE)
+
+head(pathway_diffs_across_short_histology %>% arrange(tukey_p_value))
+
+```
+
+#### TODO: Identify largest differences and plot

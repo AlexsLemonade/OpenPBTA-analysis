@@ -1,0 +1,120 @@
+---
+title: "ssGSEA Analysis"
+author: "Stephanie J. Spielman for ALSF CCDL"
+date: "2019"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+  html_notebook:
+    toc: yes
+    toc_float: yes
+params:
+  plot_ci: yes
+---
+
+#### Purpose
+
+Conducts ssGSEA analysis. 
+Code written by Stephanie J. Spielman using modified code originally written by Pichai Raman.
+
+
+#### Usage
+
+To run this from the command line, use:
+```
+Rscript -e "rmarkdown::render('analyses/ssgsea-hallmark/01-conduct-ssGSEA-analysis.Rmd', clean = TRUE)" 
+```
+_This assumes you are in the top directory of the repository._
+
+#### Setup
+
+First, install if needed and load libraries, as well as define certain constants:
+
+```{r, lib-load, warning=FALSE, message=FALSE}
+library(dplyr)
+library(tidyr)
+library(readr)
+library(tibble)
+
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+
+if (!("msigdbr" %in% installed.packages())) {
+  install.packages("msigdbr")
+}
+if (!("BiocManager" %in% installed.packages())) {
+  install.packages("BiocManager")
+}
+library(BiocManager)
+if (!("GSVA" %in% installed.packages())) {
+  BiocManager::install("GSVA")
+}
+library(msigdbr) ## Contains the hallmark data sets
+library(GSVA)    ## Performs GSEA analysis
+```
+
+
+<br>
+Next, define directories and load data files:
+```{r, data-load}
+### Define directories
+data_dir    <- file.path("..", "..", "data") 
+results_dir <- "results"
+if (!dir.exists(results_dir)) dir.create(results_dir)
+
+######### Define input files
+## Define updated expression matrix. Columns are biospecimen ids and values are RSEM FPKM for stranded samples collapsed to gene symbol (gene-level)
+expression_data_file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
+
+
+######## Define output files
+gsea_scores_output_file <- file.path(results_dir, "ssGSEA_scores.tsv")
+
+######## Load input files
+expression_data <- as.data.frame( readr::read_rds(expression_data_file) )
+human_hallmark  <- msigdbr::msigdbr(species = "Homo sapiens", category = "H") ## human hallmark genes from `migsdbr` package. The loaded data is a tibble.
+```
+
+
+#### Perform ssGSEA 
+
+<br>
+Below, we prepare the data for input to GSEA analysis, and then go ahead and perform analysis.
+```{r, prep-perform-gsea, warning=FALSE, message=FALSE}
+# Prepare expression data: log2 transform re-cast as matrix
+### Rownames are genes and column names are samples
+expression_data_log2_matrix <- as.matrix( log2(expression_data + 1) )
+
+
+# Prepare hallmark genes: Create a list of hallmarks, each of which is a list of genes
+human_hallmark_twocols <- human_hallmark %>% dplyr::select(gs_name, human_gene_symbol)
+human_hallmark_list    <- base::split(human_hallmark_twocols$human_gene_symbol, list(human_hallmark_twocols$gs_name))
+
+### Perform scoring analysis. TODO: I HAVE MADE THIS A ssGSEA instead of GSVA. Was that reasonable?
+gsea_scores <-GSVA::gsva(expression_data_log2_matrix, 
+                         human_hallmark_list,       
+                         method = "ssgsea",
+                         abs.ranking=F, min.sz=1, max.sz=500, mx.diff=F) ## TODO: ARE THESE ARGUMENTS FROM PICHAI RAMAN REASONABLE?
+
+### Clean scoring into tidy format
+gsea_scores_df <- as.data.frame(gsea_scores) %>%
+                    rownames_to_column(var = "hallmark_name")
+#first/last_bs needed for use in gather (we are not on tidyr1.0)
+first_bs <-head(colnames(gsea_scores), n=1)
+last_bs  <- tail(colnames(gsea_scores), n=1)
+gsea_scores_df_tidy <- gsea_scores_df %>%
+                        tidyr::gather(Kids_First_Biospecimen_ID, ssgsea_score, !!first_bs : !!last_bs) %>%
+                        dplyr::select(Kids_First_Biospecimen_ID, hallmark_name, ssgsea_score) 
+
+head(gsea_scores_df_tidy)
+```
+
+Finally, export scores to as TSV:
+
+```{r, export}
+##### Export scores to results file as TSV
+write_tsv(gsea_scores_df_tidy, gsea_scores_output_file)
+```
+
+
