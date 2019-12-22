@@ -1,11 +1,14 @@
 # OpenPBTA-analysis
 
-Pediatric brain tumors are the most common solid tumors and the leading cause of cancer-related death in children. Small sample sizes due to the overall rarity of unique molecular subtypes and tainted grouped analyses resulting from misclassification have hindered our ability to understand and successfully treat these diseases. 
-In September of 2018, the [Children's Brain Tumor Tissue Consortium](https://cbttc.org/) released the [Pediatric Brain Tumor Atlas (PBTA)](https://cbttc.org/pediatric-brain-tumor-atlas/), a genomic dataset (WGS, RNA-Seq, proteomics, and clinical data) for nearly 1,000 tumors, available from the [Gabriella Miller Kids First Portal](https://kidsfirstdrc.org/). 
+Pediatric brain tumors are the most common solid tumors and the leading cause of cancer-related death in children.
+Our ability to understand and successfully treat these diseases is hindered by small sample sizes due to the overall rarity of unique molecular subtypes and tainted grouped analyses resulting from misclassification. 
+In September of 2018, the [Children's Brain Tumor Tissue Consortium](https://cbttc.org/) released the [Pediatric Brain Tumor Atlas (PBTA)](https://cbttc.org/pediatric-brain-tumor-atlas/), a genomic dataset (whole genome sequencing, whole exome sequencing, RNA sequencing, proteomic, and clinical data) for nearly 1,000 tumors, available from the [Gabriella Miller Kids First Portal](https://kidsfirstdrc.org/). 
 
 The Open Pediatric Brain Tumor Atlas (OpenPBTA) Project is a global open science initiative to comprehensively define the molecular landscape of tumors of 944 patients from the CBTTC and the PNOC003 DIPG clinical trial from the [Pediatric Pacific Neuro-oncology Consortium](http://www.pnoc.us/) through real-time, collaborative analyses and [collaborative manuscript writing](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) on GitHub. 
 
-The OpenPBTA uses a pull request system to accept contributions from community participants. Continuous integration software is applied to test datasets to confirm reproducibility of analyses within the project’s Docker container. Collaborative manuscript writing employs the Manubot software to provide an up-to-date public version of the manuscript. 
+The OpenPBTA operates on a pull request model to accept contributions from community participants.
+The maintainers have set up continuous integration software to confirm the reproducibility of analyses within the project’s Docker container.
+The collaborative manuscript is authored using [Manubot](https://manubot.org) software to provide an up-to-date public version of the manuscript. 
 The project maintainers include scientists from [Alex's Lemonade Stand Foundation's Childhood Cancer Data Lab](https://www.ccdatalab.org/) and the [Center for Data-Driven Discovery in Biomedicine at the Children's Hospital of Philadelphia](https://d3b.center/).
 We invite researchers to join OpenPBTA to help rigorously characterize the genomic landscape of these diseases to enable more rapid discovery of additional mechanisms contributing to the pathogenesis of pediatric brain and spinal cord tumors and overall accelerate clinical translation on behalf of patients. 
 
@@ -61,10 +64,10 @@ Below is a summary of biospecimens by sequencing strategy:
 | WXS | 31 | 31 |
 
 
-All sequencing data were performed on nucleic acids extracted from fresh-frozen tissues using paired-end strategies.
-Additional details can be found in the [manuscript methods](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#data-generation).
+All sequencing was performed on nucleic acids extracted from fresh-frozen tissues using paired-end strategies.
+The [manuscript methods section](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#data-generation) has additional details.
 
-Below is a detailed table of [broad histologies](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#who-classification-of-disease-types) and numbers for the 1072 RNA-Seq biospecimens:
+Below is a detailed table of [broad histologies](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#who-classification-of-disease-types) for the 1072 RNA-Seq biospecimens:
 
 
 | Broad Histology | N |
