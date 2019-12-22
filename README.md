@@ -6,7 +6,9 @@ In September of 2018, the [Children's Brain Tumor Tissue Consortium](https://cbt
 
 The Open Pediatric Brain Tumor Atlas (OpenPBTA) Project is a global open science initiative to comprehensively define the molecular landscape of tumors of 944 patients from the CBTTC and the PNOC003 DIPG clinical trial from the [Pediatric Pacific Neuro-oncology Consortium](http://www.pnoc.us/) through real-time, collaborative analyses and [collaborative manuscript writing](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) on GitHub. 
 
-The OpenPBTA uses a pull request system to accept contributions from community participants. Continuous integration software is applied to test datasets to confirm reproducibility of analyses within the project’s Docker container. Collaborative manuscript writing employs the Manubot software to provide an up-to-date public version of the manuscript. 
+The OpenPBTA operates on a pull request model to accept contributions from community participants.
+The maintainers have set up continuous integration software to confirm the reproducibility of analyses within the project’s Docker container.
+The collaborative manuscript is authored using [Manubot](https://manubot.org) software to provide an up-to-date public version of the manuscript. 
 The project maintainers include scientists from [Alex's Lemonade Stand Foundation's Childhood Cancer Data Lab](https://www.ccdatalab.org/) and the [Center for Data-Driven Discovery in Biomedicine at the Children's Hospital of Philadelphia](https://d3b.center/).
 We invite researchers to join OpenPBTA to help rigorously characterize the genomic landscape of these diseases to enable more rapid discovery of additional mechanisms contributing to the pathogenesis of pediatric brain and spinal cord tumors and overall accelerate clinical translation on behalf of patients. 
 
