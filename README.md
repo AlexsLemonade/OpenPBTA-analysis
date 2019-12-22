@@ -48,14 +48,14 @@ We invite researchers to join OpenPBTA to help rigorously characterize the genom
 
 ## Data Description
 
-The OpenPBTA dataset includes gene expression, fusion, as ell as somatic mutation, copy number, structural and variant results in combined tsv or matrix format.
+The OpenPBTA dataset includes gene expression, fusion, as well as somatic mutation, copy number, structural and variant results in combined tsv or matrix format.
 
 Below is a summary of biospecimens by sequencing strategy:
 
 
 | Experimental Strategy | Normal | Tumor |
 |-----------------------|--------|-------|
-| Panel | 1 | 1 |
+| Targeted DNA Panel | 1 | 1 |
 | RNA-Seq | 0 | 1072 |
 | WGS | 801 | 940 |
 | WXS | 31 | 31 |
