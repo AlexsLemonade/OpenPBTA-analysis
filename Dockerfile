@@ -195,11 +195,21 @@ RUN pip3 install "statsmodels==0.10.2" && \
    pip3 install "seaborn==0.8.1" && \
    pip3 install "jupyter==1.0.0" && \
    pip3 install "ipykernel==4.8.1" && \
-   pip3 install "widgetsnbextension==2.0.0"
+   pip3 install "widgetsnbextension==2.0.0" && \
+   pip3 install "tzlocal"
 
 
 # Add curl
 RUN apt-get update && apt-get install -y --no-install-recommends curl
+
+# Need for survminer for doing survival analysis
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    && install2.r --error \
+    --deps TRUE \
+    survival \
+    cmprsk \
+    survMisc \
+    survminer 
 
 # pyreadr for comparative-RNASeq-analysis
 RUN pip3 install "pyreadr==0.2.1"
