@@ -64,7 +64,7 @@ Below is a summary of biospecimens by sequencing strategy:
 | WXS | 31 | 31 |
 
 
-All sequencing data were performed on nucleic acids extracted from fresh-frozen tissues using paired-end strategies.
+All sequencing was performed on nucleic acids extracted from fresh-frozen tissues using paired-end strategies.
 Additional details can be found in the [manuscript methods](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#data-generation).
 
 Below is a detailed table of [broad histologies](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#who-classification-of-disease-types) for the 1072 RNA-Seq biospecimens:
