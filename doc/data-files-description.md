@@ -64,3 +64,4 @@ This document contains information about all data files associated with this pro
 |`pbta-cnv-cnvkit-gistic.zip`| PBTA data file | [Workflow](https://github.com/d3b-center/publication_workflows/blob/master/openPBTA/run-gistic.sh) | Somatic CNV - GISTIC 2.0 output using `pbta-cnv-cnvkit.seg` file input
 |`pbta-fusion-recurrently-fused-genes-byhistology.tsv`| Analysis file | [`analysis/fusion-filtering`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/fusion_filtering) | Recurrently-fused genes tabulated by broad histology
 |`pbta-fusion-recurrently-fused-genes-bysample.tsv`| Analysis file | [`analysis/fusion-filtering`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/fusion_filtering) | Binary matrix that denotes the presence or absence of a recurrently fused gene in an individual RNA-seq specimen
+
