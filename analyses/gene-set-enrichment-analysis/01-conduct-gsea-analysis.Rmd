@@ -1,0 +1,155 @@
+---
+title: "Gene Set Enrichment Analysis with GSAV"
+author: "Stephanie J. Spielman for ALSF CCDL"
+date: "2019"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+  html_notebook:
+    toc: yes
+    toc_float: yes
+params:
+  plot_ci: yes
+---
+
+### Purpose
+
+Conducts gene set enrichment analysis, specifically using the GSVA method [1], for scoring hallmark human pathway enrichment from RNA-Seq results. The GSVA scores (i.e., enrichment scores) can be calculated in two different ways:
+
++ The first (default) sets the argument `mx.diff=FALSE` when calling `GSVA::gsva()`.  This produces a **bimodal distribution of scores**.
++ The second sets the argument `mx.diff=TRUE` when calling `GSVA::gsva()`. This produces a **Gaussian distribution of scores** "under the null hypothesis of no change in the pathway activity throughout the sample population." The authors claim a benefit to this approach:
+  + "Penalizes deviations that are large in *both* tails"
+  + "Provides a 'normalization' of the enrichment score by subtracting potential noise
+  + "Emphasizes genes in pathways that are concordantly activated in one direction only.... For pathways containing genes strongly acting in both directions, the deviations with cancel each other out and show little or no enrichment."
+  
+
+Both options for GSVA score calculations are performed and saved, respectively, as **`gsea_scores_bimodal.tsv`** and **`gsea_scores_gaussian.tsv`** . 
+
+
+
+
+### Usage
+
+To run this from the command line, use:
+```
+Rscript -e "rmarkdown::render('analyses/gene-set-enrichment-analysis/01-conduct-gsea-analysis.Rmd', clean = TRUE)" 
+```
+_This assumes you are in the top directory of the repository._ Please be aware the code can take up to 15 minutes to complete due to complexity of enrichment analysis.
+
+
+### Setup
+
+First, install if needed and load libraries.
+
+```{r, lib-load, warning=FALSE, message=FALSE}
+library(dplyr)
+library(tidyr)
+library(readr)
+library(tibble)
+
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+
+if (!("msigdbr" %in% installed.packages())) {
+  install.packages("msigdbr")
+}
+if (!("BiocManager" %in% installed.packages())) {
+  install.packages("BiocManager")
+}
+library(BiocManager)
+if (!("GSVA" %in% installed.packages())) {
+  BiocManager::install("GSVA")
+}
+library(msigdbr) ## Contains the hallmark data sets
+library(GSVA)    ## Performs GSEA analysis
+```
+
+
+<br>
+Next, define directories and load data files:
+```{r, data-load}
+### Define directories
+data_dir    <- file.path("..", "..", "data") 
+results_dir <- "results"
+if (!dir.exists(results_dir)) dir.create(results_dir)
+
+######### Define input files
+## Define updated expression matrix. Columns are biospecimen ids and values are RSEM FPKM for stranded samples collapsed to gene symbol (gene-level)
+expression_data_file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
+
+
+######## Define output files
+gsea_scores_output_file_bimodal <- file.path(results_dir, "gsea_scores_bimodal.tsv")
+gsea_scores_output_file_gaussian <- file.path(results_dir, "gsea_scores_gaussian.tsv")
+
+######## Load input files
+expression_data <- as.data.frame( readr::read_rds(expression_data_file) )
+human_hallmark  <- msigdbr::msigdbr(species = "Homo sapiens", category = "H") ## human hallmark genes from `migsdbr` package. The loaded data is a tibble.
+```
+
+
+### Perform gene set enrichment analysis 
+
+<br>
+We first prepare the data for input to GSAV score calculations.
+```{r, prep-gsea, warning=FALSE, message=FALSE}
+# Prepare expression data: log2 transform re-cast as matrix
+### Rownames are genes and column names are samples
+expression_data_log2_matrix <- as.matrix( log2(expression_data + 1) )
+
+
+# Prepare hallmark genes: Create a list of hallmarks, each of which is a list of genes
+human_hallmark_twocols <- human_hallmark %>% dplyr::select(gs_name, human_gene_symbol)
+human_hallmark_list    <- base::split(human_hallmark_twocols$human_gene_symbol, list(human_hallmark_twocols$gs_name))
+```
+
+
+<br>
+We then calculate the scores under both `mx.diff=TRUE` and `mx.diff=FALSE`.
+```{r, run-gsea, warning = FALSE, message = FALSE}
+
+######## Function to perform and clean the GSVA analysis. ########
+perform_tidy_gsva <- function(expression_matrix, gene_list, mx.diff){
+  
+  ### Perform scoring analysis. 
+  gsea_scores <- GSVA::gsva(expression_data_log2_matrix,
+                            human_hallmark_list,
+                            method = "gsva",
+                            mx.diff = mx.diff)
+
+  ### Clean scoring into tidy format
+  gsea_scores_df <- as.data.frame(gsea_scores) %>%
+                      rownames_to_column(var = "hallmark_name")
+  
+  #first/last_bs needed for use in gather (we are not on tidyr1.0)
+  first_bs <- head(colnames(gsea_scores), n=1)
+  last_bs  <- tail(colnames(gsea_scores), n=1)
+  
+  gsea_scores_df_tidy <- gsea_scores_df %>%
+                          tidyr::gather(Kids_First_Biospecimen_ID, gsea_score, !!first_bs : !!last_bs) %>%
+                          dplyr::select(Kids_First_Biospecimen_ID, hallmark_name, gsea_score) 
+    
+}
+
+gsea_scores_bimodal  <- perform_tidy_gsva(expression_data_log2_matrix, human_hallmark_list, FALSE)
+gsea_scores_gaussian <- perform_tidy_gsva(expression_data_log2_matrix, human_hallmark_list, TRUE)
+```
+
+
+Quick glances at the results are below, indeed with somewhat different enrichment scores.
+
+```{r, vis-export}
+
+head(gsea_scores_bimodal)
+head(gsea_scores_gaussian)
+
+##### Export scores as TSV
+write_tsv(gsea_scores_bimodal, gsea_scores_output_file_bimodal)
+write_tsv(gsea_scores_gaussian, gsea_scores_output_file_gaussian)
+```
+
+
+### References
+
+1. Sonja Hänzelmann, Robert Castelo, and Justin Guinney. 2013. “GSVA: Gene Set Variation Analysis for Microarray and RNA-Seq Data.” BMC Bioinformatics 14 (1): 7. https://doi.org/10.1186/1471-2105-14-7.

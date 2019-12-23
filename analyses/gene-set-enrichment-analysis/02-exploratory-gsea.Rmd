@@ -1,0 +1,155 @@
+---
+title: "GSEA Score Modeling and Exploratory Analysis"
+author: "Stephanie J. Spielman for ALSF CCDL"
+date: "2019"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+  html_notebook:
+    toc: yes
+    toc_float: yes
+params:
+  plot_ci: yes
+---
+
+### Purpose
+
+Models and explores GSEA scores. **This code is NOT completed and should be regarded as a work _in progress_.**
+
+> Current results suggest that there are distinct interpretations which emerge from different types of scores. Merits _substantial_ further consideration.
+
+### Usage
+
+To run this from the command line, use:
+```
+Rscript -e "rmarkdown::render('analyses/gene-set-enrichment-analysis/02-exploratory-gsea.Rmd', clean = TRUE)" 
+```
+_This assumes you are in the top directory of the repository._
+
+### Setup
+
+First, install if needed and load libraries, as well as define certain constants:
+
+```{r, lib-load, warning=FALSE, message=FALSE}
+library(dplyr)
+library(tidyr)
+library(readr)
+library(tibble)
+library(purrr)
+library(broom)
+library(ggplot2)
+
+
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+
+# Significance testing universal threshold
+SIGNIFICANCE_THRESHOLD   <- 0.01
+```
+
+
+<br>
+Next, define directories and load data files:
+```{r, data-load, message=FALSE, warning=FALSE}
+### Define directories
+data_dir    <- file.path("..", "..", "data") 
+results_dir <- "results"
+
+######### Define input files
+## Metadata file (histologies/clinical data)
+metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+
+## GSEA scores
+scores_bimodal_file <- file.path(results_dir, "gsea_scores_bimodal.tsv")
+scores_gaussian_file <- file.path(results_dir, "gsea_scores_gaussian.tsv")
+
+######## Define output files
+#PENDING
+
+
+######## Load input files
+metadata        <- readr::read_tsv(metadata_file)
+scores_bimodal  <- readr::read_tsv(scores_bimodal_file)
+scores_gaussian <- readr::read_tsv(scores_gaussian_file)
+```
+
+
+
+### Begin modeling
+```{r aov-tukey-gsea-hallmark}
+
+### Merge histology metadata with each set of gsea scores
+scores_bimodal  <- scores_bimodal %>% mutate(score_type = "bimodal")
+scores_gaussian <- scores_gaussian %>% mutate(score_type = "gaussian")
+all_scores      <- bind_rows(scores_bimodal, scores_gaussian) %>%
+                    mutate(score_type    = factor(score_type),
+                           hallmark_name = factor(hallmark_name))
+
+metadata_with_gsea <- metadata %>%
+                        filter(experimental_strategy == "RNA-Seq") %>%
+                        inner_join(all_scores, by = "Kids_First_Biospecimen_ID" )
+
+### Defines a function for performing Anova/Tukey for identifying significant pathways
+## TODO: Increase flexibility so that predictor does NOT NEED TO BE short_histology
+gsea_histology_anova_tukey <- function(df)
+{
+  aov_fit <- aov(gsea_score ~ short_histology, data = df)
+  TukeyHSD(aov_fit) %>%  
+    broom::tidy() %>%
+    dplyr::select(comparison, estimate, adj.p.value) %>%
+    dplyr::rename(pathway_score_difference = estimate,
+                  tukey_p_value               = adj.p.value) 
+}
+
+## Conduct series of ANOVA and posthoc Tukey tests for assessing which short histology groups show differences within EACH pathway (hallmark)
+
+number_of_tests <- metadata_with_gsea %>% 
+                    dplyr::select(hallmark_name, score_type) %>%
+                    distinct() %>% 
+                    nrow()
+pathway_diffs_across_short_histology <- metadata_with_gsea %>%
+                                              group_by(hallmark_name, score_type) %>%
+                                              nest() %>%
+                                              mutate(anova_tukey = map(data, gsea_histology_anova_tukey)) %>%
+                                              dplyr::select(-data) %>%
+                                              unnest(anova_tukey) %>%
+                                              mutate(bonferroni_pvalue = tukey_p_value / number_of_tests,
+                                                     significant_tukey = tukey_p_value <= SIGNIFICANCE_THRESHOLD,
+                                                     significant_tukey_bonf = bonferroni_pvalue <= SIGNIFICANCE_THRESHOLD) ## TODO: Is this layer of Bonferroni reasonable? 
+
+
+
+```
+
+### Exploratory analysis
+
+**1. Are there any pathway comparisons which are significant under one score type and not the other?**
+_No, the score type does NOT affect significance in these samples._
+
+```{r, explore-score-types-sig, warning=FALSE}
+
+# How many pathway comparisons DIFFER IN SIGNIFICANCE between score types?
+pathway_diffs_across_short_histology %>% 
+  dplyr::select(hallmark_name, score_type, comparison, significant_tukey_bonf) %>%
+  spread(score_type, significant_tukey_bonf) %>% 
+  filter(bimodal != gaussian)
+```
+
+
+**2. Are there any significant pathway comparisons whose SIGN differs between score types?**
+_YES. There are MANY examples where different scores yield OPPOSITE conclusions about enrichment._
+
+```{r, explore-score-types-sign, warning=FALSE}
+
+# How many pathway comparisons DIFFER IN SIGNIFICANCE between score types?
+pathway_diffs_across_short_histology %>% 
+  dplyr::select(hallmark_name, score_type, comparison, pathway_score_difference) %>%
+  mutate(score_sign = sign(pathway_score_difference)) %>%
+  dplyr::select(-pathway_score_difference) %>%
+  spread(score_type, score_sign) %>% 
+  filter(bimodal != gaussian)
+```
+
+
+
