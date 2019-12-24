@@ -366,4 +366,5 @@ ggplot(diff_exp, aes(x = cluster, y = log2(expr), color = RNA_library)) +
 ```
 
 
-
+It definitely appears that the new stranded sequences were also processed with poly-A selection, and not ribosome depletion.
+This was not what we had hoped for, unfortunately.
