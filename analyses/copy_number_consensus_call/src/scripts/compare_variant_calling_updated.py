@@ -288,4 +288,3 @@ for content, outfile in zip(fin_list, output_list):
 
     ## Call the "save_to_file" function to print each consensus content to a file.
 
-    save_to_file(ival,output_list[i],args.sample)
