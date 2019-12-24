@@ -278,7 +278,7 @@ for j, jval in enumerate(list_index):
 
         ## Add the consensus list into a final list that hold the
         ## content of 3 files - manta_cnvkit , manta_freec, and cnvkit_freec
-        fin_list += [consensus_list]
+        fin_list.append(consensus_list)
 
 
 
