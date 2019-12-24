@@ -1,0 +1,369 @@
+---
+title: "Updated Selection strategies"
+author: "Joshua Shapiro for CCDL"
+output:
+  html_notebook:
+    toc: yes
+    toc_float: yes
+date: Sys.Date()
+params:
+  neighbors: 15
+editor_options: 
+  chunk_output_type: inline
+---
+
+## Background
+
+This analysis was originally undertaken prior to [`release-v5-20190924`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/doc/release-notes.md#release-v5-20190924), where samples from the two library strategies (stranded, poly-A) were split into separate files.
+This split was necessary because differences were apparent in this analysis.
+
+As of [`release-v12-20191217`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/doc/release-notes.md#release-v12-20191217), stranded RNA-seq data for 23 PNOC and 21 CBTTC samples previously sequenced with poly-A library prep were added.
+This notebook has been updated as of `release-v12-20191217`.
+
+This notebook is designed to update those analyses, with a more specific look at the samples where we now have poly-A and stranded data.
+
+## Setup
+
+### R setup
+
+```{r setup}
+# install packages 
+
+if (!("umap" %in% installed.packages())) {
+  install.packages("umap")
+}
+
+if (!("preprocessCore" %in% installed.packages())) {
+  BiocManager::install("preprocessCore", update = FALSE)
+}
+
+if (!("sva" %in% installed.packages())) {
+  BiocManager::install("sva", update = FALSE)
+}
+
+if (!("DESeq2" %in% installed.packages())) {
+  BiocManager::install("DESeq2", update = FALSE)
+}
+
+# load packages
+library(ggplot2)
+
+# magrittr pipe
+`%>%` <- dplyr::`%>%`
+
+# set seed
+set.seed(2019)
+
+```
+
+
+
+### Directories
+
+```{r directory setup}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+output_dir <- file.path(root_dir,
+                        "analyses", 
+                        "selection-strategy-comparison", 
+                        "plots")
+
+# Create directory to hold the output.
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir)
+}
+```
+
+### Functions
+
+```{r umap plotting function}
+#' Plot of a umap model
+#' 
+#' The umap_plot function takes a umap model and associated metadata and 
+#' returns a ggplot object that plots the first two UMAP components,
+#' colored by disease type and with shapes determined by selection method. 
+#' Optionally writes the plot to a file.
+#' 
+#' @param umap_model A umap model object output from [umap::umap]
+#' @param metadata A data frame of metadata for the samples. Must contain a 
+#'   column of `disease_comparable` and `RNA_library` as in the 
+#'   "pbta-histologies.tsv" file.
+#' @param sample_id The name of the column containing sample ids. Defaults to 
+#'   "Kids_First_Biospecimen_ID", as in the "pbta-histologies.tsv" file.
+#' @param comparable Boolean to determine whether to include only diseases 
+#'   present in both strategies in plots. Requires the presence of a 
+#'   `comparable` column in the metadata function.
+#' @param filename File for writinge the output plot. Default `NA` will not 
+#'   write to a file, but still returns the plot.
+#' 
+#' @return A ggplot object containing a plot of the first two UMAP components
+umap_plot <- function(umap_model, 
+                      metadata, 
+                      sample_id = "Kids_First_Biospecimen_ID", 
+                      filter_comparable = TRUE,
+                      filename = NA){
+  
+  layout <- data.frame(umap_model$layout) %>% 
+    dplyr::rename_all(.funs = gsub, pattern = "^X", replacement = "UMAP") %>%
+    tibble::rownames_to_column(var = sample_id)
+  
+  plot_data <- layout %>%
+    dplyr::left_join(metadata, by = sample_id) 
+  if (filter_comparable) {
+    plot_data <- plot_data %>% dplyr::filter(comparable)
+  }  
+  
+  
+  u_plot <- ggplot(plot_data, 
+                   aes(x = UMAP1, 
+                       y = UMAP2, 
+                       color = disease_comparable, 
+                       shape = RNA_library)) +
+    geom_point(alpha = 0.3) +
+    labs(color = "Disease Type",
+         shape = "Selection Method")
+    
+  
+  if (is.character(filename)) {
+    ggsave(filename, 
+           u_plot,
+           width = 11,
+           height = 7)
+  }
+  
+  return(u_plot)
+}
+
+```
+
+## Read Data
+
+For now we will read in only the rsem data; we may examine the kallisto data later.
+
+```{r read data}
+exp_rsem_polyA <- readRDS(file.path(root_dir, 
+                                    "data", 
+                                    "pbta-gene-expression-rsem-fpkm.polya.rds"))
+exp_rsem_stranded <- readRDS(file.path(root_dir, 
+                                       "data", 
+                                       "pbta-gene-expression-rsem-fpkm.stranded.rds"))
+
+# join polyA and stranded data together
+exp_rsem <- dplyr::bind_cols(exp_rsem_polyA,
+                             exp_rsem_stranded[,-1]) %>%
+  dplyr::filter(complete.cases(.))
+
+# transpose the expression values to a matrix
+exp_rsem_t <- t(exp_rsem[,-1])
+colnames(exp_rsem_t) <- exp_rsem[[1]]
+
+
+
+metadata_df <- readr::read_tsv(file.path(root_dir,
+                                        "data",
+                                        "pbta-histologies.tsv")) %>%
+  dplyr::right_join(dplyr::tibble(Kids_First_Biospecimen_ID = rownames(exp_rsem_t)), 
+                    by = "Kids_First_Biospecimen_ID")
+
+```
+
+## Sample info
+
+Looking at metadata first, separating out the poly-A and stranded samples.
+
+```{r}
+polyA_meta_df <- metadata_df %>% 
+  dplyr::filter(RNA_library == "poly-A") 
+
+stranded_meta_df <- metadata_df %>% 
+  dplyr::filter(RNA_library == "stranded") 
+
+```
+
+As of `release-v12-20191217`, there should be some overlap between samples assayed with both library prep strategies.
+
+```{r intersect IDs}
+matched_sample_ids <- intersect(stranded_meta_df$sample_id, 
+                                polyA_meta_df$sample_id)
+matched_sample_ids
+```
+
+What diseases are represented between the two:
+
+```{r sample types}
+polyA_counts <- polyA_meta_df %>% 
+  dplyr::group_by(disease_type_new) %>%
+  dplyr::summarise(polyA_n = dplyr::n())
+
+polyA_diseases <- polyA_counts$disease_type_new
+
+stranded_counts <- stranded_meta_df %>% 
+  dplyr::group_by(disease_type_new) %>%
+  dplyr::summarise(stranded_n = dplyr::n())
+
+strategy_counts <- dplyr::left_join(polyA_counts, stranded_counts)
+
+strategy_counts
+
+```
+
+
+Looks like there is possible comparison among the gliomas, if those might cluster together on some scale. Focus on those first to see how they compare in analyses.
+
+First, add a flag for comparable datasets (those disease types with both poly-A and stranded samples) to the metadata table for later use.
+
+```{r add to metadata}
+metadata_df <- metadata_df %>%
+  dplyr::mutate(comparable = disease_type_new %in% polyA_diseases, 
+                disease_comparable = ifelse(comparable, disease_type_new, "other"))
+
+```
+
+
+## Raw clustering
+
+To start, we will reproduce an naive dimensionality reduction analysis to show the problem of selection method that we are facing. Since UMAP seems to work well overall, that is what we will focus on first.
+
+```{r neighbors}
+# set neighbors parameter
+neighbors <- params$neighbors
+```
+
+```{r raw clustering}
+# remove low counts
+dm_set <- exp_rsem_t[, colSums(exp_rsem_t) > 100]
+
+rsem_umap_raw <- umap::umap(dm_set, n_neighbors = neighbors)
+
+```
+
+```{r plot raw}
+
+plot_raw <- umap_plot(rsem_umap_raw, 
+                      metadata_df,
+                      filename = file.path(output_dir, 
+                                           "umap_raw.png"))
+
+plot_raw
+```
+
+It looks like the new stranded samples are grouping with the poly-A samples that form their own group when looking at data from the earlier release.
+
+### Matched only
+
+If we use only the matched samples, what does this look like?
+We first need to map back to the biospecimen IDs to perform this analysis.
+
+```{r extract matched BS ID}
+matched_bs_id <- metadata_df %>%
+  dplyr::filter(sample_id %in% matched_sample_ids) %>%
+  dplyr::pull(Kids_First_Biospecimen_ID)
+
+matched_bs_id <- intersect(rownames(dm_set), matched_bs_id)
+```
+
+Run UMAP on the matched samples.
+
+```{r matched umap raw}
+matched_rsem_umap_raw <- umap::umap(dm_set[matched_bs_id, ],
+                                    neighbors = neighbors)
+```
+
+Now for the plot.
+
+```{r plot matched raw results}
+plot_matched_raw <- umap_plot(matched_rsem_umap_raw, 
+                              metadata_df,
+                              filename = file.path(output_dir, 
+                                                   "umap_matched_raw.png"))
+
+plot_matched_raw
+```
+
+## Cluster-differentiating genes
+
+Going back to 
+
+It seems the poly-A samples that were rerun as stranded are matching more closely with their original run than with other stranded samples, which is quite surprising. Lets look at what the sites are that are differentiating them.
+
+Using the umap results, we can quickly characterize the samples by cluster; If the umap1 value is > 10, they will be cluster `A`, < 10 will be cluster `B`.
+
+```{r clusters}
+umap_cluster <- dplyr::tibble(
+  Kids_First_Biospecimen_ID = rownames(rsem_umap_raw$layout),
+  cluster = ifelse(rsem_umap_raw$layout[,1] > 10, "A", "B")
+)
+```
+
+
+Join back to metadata 
+
+```{r}
+metadata_df <- metadata_df %>%
+  dplyr::left_join(umap_cluster)
+```
+
+Summarize groups: 
+
+```{r}
+metadata_df %>%
+  dplyr::group_by(cluster, RNA_library, seq_center) %>%
+  dplyr::tally()
+
+```
+It doesn't seem to be a sequencing center effect, aside from teh fact that the BGI-China sequences are all together.
+
+## Quick correlations
+
+Before doing full DE analysis, lets see if we can find where the strong correlations with UMAP1 may lie.
+
+```{r, warning=FALSE}
+umap1 <- rsem_umap_raw$layout[,1]
+
+umap_pearson_cor <- apply(exp_rsem[,-1], 1, 
+                  function(exp){
+                    cor(x = exp, y = umap1)
+                  })
+umap_spearman_cor <- apply(exp_rsem[,-1], 1, 
+                  function(exp){
+                    cor(x = exp, y = umap1, method="spearman")
+                  })
+umap_cors <- data.frame(gene_id = exp_rsem$gene_id,
+                        pearson = umap_pearson_cor,
+                        spearman = umap_spearman_cor,
+                        stringsAsFactors=FALSE)
+```
+
+```{r}
+diff_genes <- umap_cors %>%
+  dplyr::arrange(desc(abs(spearman))) %>%
+  head(20)
+diff_genes
+```
+
+What are these genes?
+
+Histones, ribosomal, lncRNA, and snoRNAs. 
+All things we might expect to be differentiation poly-A and ribodepleted samples.
+
+Lets look at the distributions between the clusters, and between poly-A vs. stranded samples.
+
+### Merge with metadata and plot
+```{r}
+diff_exp <- exp_rsem %>%
+  dplyr::filter(gene_id %in% diff_genes$gene_id) %>%
+  reshape2::melt(variable.name = "Kids_First_Biospecimen_ID",
+                 value.name = "expr") %>%
+  dplyr::left_join(metadata_df) %>%
+  # split up the gene_ids for better labels
+  tidyr::separate(gene_id, 
+                  into = c("ensembl", "gene"),
+                  sep = "_")
+
+ggplot(diff_exp, aes(x = cluster, y = log2(expr), color = RNA_library)) +
+  geom_jitter(alpha = 0.4) +
+  facet_wrap(~ gene, scales = "free_y") 
+```
+
+
+
