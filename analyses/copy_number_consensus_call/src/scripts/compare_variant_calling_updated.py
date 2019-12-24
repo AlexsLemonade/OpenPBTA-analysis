@@ -283,7 +283,8 @@ for j, jval in enumerate(list_index):
 
 
 ## Print the output into files
-for i,ival in enumerate(fin_list):
+for content, outfile in zip(fin_list, output_list):
+    save_to_file(content, outfile, args.sample)
 
     ## Call the "save_to_file" function to print each consensus content to a file.
 
