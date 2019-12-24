@@ -32,9 +32,11 @@
 # Imports in the pep8 order https://www.python.org/dev/peps/pep-0008/#imports
 # Standard library
 import argparse
-import sys
+import itertools
 import os
 import re
+import sys
+
 
 # Related third party
 import numpy as np
@@ -44,8 +46,10 @@ import pandas as pd
 
 ########################## DEFINE FUNCTIONS ###############################
 
-## Function to read content of input files
+
 def read_input_file(input_file):
+    """ Function to read content of input files and output to a dictionary"""
+
     ## Check to see if the CNVs bed file is empty, if so, make an empty variable
     if os.stat(input_file).st_size == 0:
         content_dict = {}
@@ -73,8 +77,18 @@ def read_input_file(input_file):
 
     return content_dict
 
-## Function to get consensus CNVs.
+
 def generate_consensus(list1_name,list1,list2_name,list2):
+    """ Function to take 2 lists of CNVs as inputs, create consensus CNVs,
+    and output a list of consensus CNVs
+
+    Keyword arguments:
+    list1_name -- Name of the 1st CNVs file
+    list1      -- The actual 1st CNVs file
+    list2_name -- Name of the 2nd CNVs file
+    list2      -- The actual 2nd CNVs file
+    """
+
 
     ## Define a variable to store the list of consensus CNVs
     consensus_list = []
@@ -199,16 +213,29 @@ def generate_consensus(list1_name,list1,list2_name,list2):
     return consensus_list
 
 
-## Function to save output files
+
 def save_to_file(output_file_content, output_path, sample_name):
+    """ Function that takes in content, output file path, and sample name to save the content to a file1
+
+    Keyword arguments:
+    output_file_content -- content of consensus
+    output_path         -- path and name of the output file
+    sample_name         -- sample name of the consensus CNVs.
+    """
+
     ## Open up the file to write in it, the 'w' option overwrites the file if the file exists.
     with open( output_path, 'w') as file:
+
+        ## Add the sample name and file name to each line
+        single_name = os.path.basename(output_path)
+
         ## Loop through the output file and print line by line
         for k in output_file_content:
 
-            ## Add the sample name and file name to each line
-            single_name = output_path.split('/')[-1]
-            file.write('\t'.join(k) + '\t'+ sample_name + '\t' + single_name +'\n')
+            ## Join the sample_name and single_name(file name) to the CNV info
+            k.extend([sample_name, single_name,'\n'])
+            file.write('\t'.join(k))
+
     sys.stderr.write('$$$ Write to file ' + str(output_path) + ' was sucessful\n')
 
 
@@ -252,9 +279,8 @@ input_file_names = list(dict_of_input_content.keys())
 ## This order is important
 output_list = [args.manta_cnvkit, args.manta_freec, args.cnvkit_freec]
 
-## Make a list of iteraby index for the MAIN for-loop below
-## This give a list as followed: [0,1,2]
-list_index = list(range(0,len(dict_of_input_content)))
+## Make a list for pairs of callers to make consensus for
+caller_pairs = list(itertools.combinations(['manta', 'cnvkit', 'freec'],2))
 
 
 ## We have 3 items in dict_of_input_content. Each item is the content of an input file
@@ -262,29 +288,28 @@ list_index = list(range(0,len(dict_of_input_content)))
 fin_list =[]
 
 ## Loop through list_index
-for j, jval in enumerate(list_index):
-    for k,kval in enumerate(list_index[j+1:]):
+for caller1, caller2 in caller_pairs:
 
-        ## Compare 1st and 2nd file from list_of_input_contents
-        ## Then compare the 1st and 3rd
-        ## Then compare the 2nd and 3rd
-        list1 = dict_of_input_content[input_file_names[jval]]
-        list2 = dict_of_input_content[input_file_names[kval]]
-
-        ## Call the "generate_consensus" function to get consensus CNVs
-        consensus_list = generate_consensus(input_file_names[jval],list1,input_file_names[kval],list2)
+    ## Compare 1st and 2nd file from list_of_input_contents
+    ## Then compare the 1st and 3rd
+    ## Then compare the 2nd and 3rd
+    list1 = dict_of_input_content[caller1]
+    list2 = dict_of_input_content[caller2]
 
 
+    ## Call the "generate_consensus" function to get consensus CNVs
+    consensus_list = generate_consensus(caller1,list1,caller2,list2)
 
-        ## Add the consensus list into a final list that hold the
-        ## content of 3 files - manta_cnvkit , manta_freec, and cnvkit_freec
-        fin_list.append(consensus_list)
+
+
+    ## Add the consensus list into a final list that hold the
+    ## content of 3 files - manta_cnvkit , manta_freec, and cnvkit_freec
+    fin_list.append(consensus_list)
 
 
 
 ## Print the output into files
 for content, outfile in zip(fin_list, output_list):
-    save_to_file(content, outfile, args.sample)
 
     ## Call the "save_to_file" function to print each consensus content to a file.
-
+    save_to_file(content, outfile, args.sample)
