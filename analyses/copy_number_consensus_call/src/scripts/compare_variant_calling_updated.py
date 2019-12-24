@@ -48,7 +48,7 @@ import pandas as pd
 def read_input_file(input_file):
     ## Check to see if the CNVs bed file is empty, if so, make an empty variable
     if os.stat(input_file).st_size == 0:
-        fin_input_content = []
+        content_dict = {}
 
     ## If the file has content, then load in the content
     else:
