@@ -55,7 +55,9 @@ survival_analysis <- function(metadata, ind_var, test = "kap.meier", ind_data = 
   # If other ind_data has been supplied, attempt to join it
   if (!is.null(ind_data)) {
     # Make it so the column names are automatically matching no matter what
-    colnames(ind_data) <- gsub("Tumor_Sample_Barcode|sample", "Kids_First_Biospecimen_ID", colnames(ind_data))
+    colnames(ind_data) <- gsub("Tumor_Sample_Barcode|sample", 
+                               "Kids_First_Biospecimen_ID", 
+                               colnames(ind_data))
 
     # Join this ind_data to the metadata
     metadata <- dplyr::inner_join(metadata, ind_data,
@@ -75,9 +77,6 @@ survival_analysis <- function(metadata, ind_var, test = "kap.meier", ind_data = 
     ind_var,
     sep = " ~ "
   )
-  
-  # We'll need to grab this later for ggsurvplot
-  assign("model", model, envir = .GlobalEnv)
   
   # Print out what the model is
   message(paste("Testing model:", model))
@@ -109,6 +108,9 @@ survival_analysis <- function(metadata, ind_var, test = "kap.meier", ind_data = 
   # Tidy up the model object with broom
   table <- broom::tidy(fit)
 
-  # Return both the fit object and the table
+  # Restore the model in this slot so the ggsurvplot function can find it
+  fit$call$formula <- formula(model)
+  
+# Return both the fit object and the table
   return(list(model = fit, table = table, original_data = ind_var_df))
 }
