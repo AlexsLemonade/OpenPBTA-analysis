@@ -8,8 +8,8 @@ output:
 
 ### Usage
 
-This script is intended to be run via the command line from the top directory
-of the repository as follows:
+This notebook can be run via the command line from the top directory of the 
+repository as follows:
 
 ```
 Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', 
@@ -19,11 +19,6 @@ Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd',
 ### Set Up
 
 ```{r}
-# This will be needed to create the frequency and proportion aberration plots 
-if (!("maftools" %in% installed.packages())) {
-  install.packages("BiocManager")
-  BiocManager::install("maftools")
-}
 if (!("ggbio" %in% installed.packages())) {
   install.packages("BiocManager")
   BiocManager::install("ggbio")
@@ -47,21 +42,30 @@ gistic_zip <- file.path(input_dir, "pbta-cnv-cnvkit-gistic.zip")
 gistic_results <- file.path(input_dir, "gistic")
 
 # Path to output directory
-output_dir <- "plots"
+plots_dir <- "plots"
 
-# Create the output dir if it does not exist
-if (!dir.exists(output_dir)) {
-  dir.create(output_dir, recursive = TRUE)
+# Create the plots_dir if it does not exist
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir, recursive = TRUE)
 }
 ```
 
 Unzip and set up GISTIC results folder. 
 
 ```{r}
+# Get the name of the folder first since this changes with updates to the date
+folder_name <- unzip(zipfile = gistic_zip, list = TRUE) %>% 
+  dplyr::filter(Length == 0) %>% 
+  dplyr::pull("Name")
+
+# Extract files if it hasn't been done yet
 if (!dir.exists(gistic_results)){
-  unzip(gistic_zip, exdir = gistic_results)
+  # Unzip but only extract the files not the folder
+  unzip(zipfile = gistic_zip,
+        exdir = gistic_results)
 }
-gistic_results <- file.path(gistic_results, "2019-12-10-gistic-results-cnvkit")
+# Designate GISTIC results folder to extract to
+gistic_results <- file.path(gistic_results, folder_name)
 ```
 
 ### Read in data 
@@ -71,10 +75,11 @@ gistic_results <- file.path(gistic_results, "2019-12-10-gistic-results-cnvkit")
 metadata <-
   readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv"))
 ```
+
 Read in the GISTIC scores file and format the data.
 
 ```{r}
-gistic_scores <- readr::read_tsv(file.path(gistic_results, "scores.gistic")) %>% 
+gistic_scores <- readr::read_tsv(file.path(gistic_results, "scores.gistic")) %>%
   dplyr::rename("gscore" = "G-score") %>% 
   # Recode 23 and 24 as X and Y. 
   dplyr::mutate(Chromosome = as.character(Chromosome), 
@@ -88,6 +93,26 @@ gistic_scores <- readr::read_tsv(file.path(gistic_results, "scores.gistic")) %>%
                   TRUE ~ gscore
                   )
                 )
+```
+Read in the `seg` file so we can plot data by histology. 
+
+```{r}
+# Read in the segment copy number data
+seg_data <- data.table::fread(file.path(input_dir, "pbta-cnv-cnvkit.seg.gz"), 
+                              data.table = FALSE) %>% 
+  # Calculate a ratio 
+  dplyr::mutate(ratio = copy.num/seg.mean) %>% 
+  # Join the histology column to this data 
+  dplyr::inner_join(dplyr::select(metadata, 
+                                  "Kids_First_Biospecimen_ID", 
+                                  "short_histology"),
+                    by = c("ID" = "Kids_First_Biospecimen_ID")) %>% 
+  # Make Del/Amp variable
+  dplyr::mutate(Type = dplyr::case_when(
+                  ratio < 0 ~ "Del",
+                  ratio > 0 ~ "Amp", 
+                  ratio == 0 ~ "Neutral"
+                  ))
 ```
 
 ### Make GISTIC data into GRanges object
@@ -108,7 +133,7 @@ gistic_ranges <- GenomicRanges::GRanges(
 
 ```{r}
 ggplot2::ggplot(gistic_ranges) + 
-  geom_bar(ggplot2::aes(y = score, fill = mcols.Type), scales = "free_x", shrink = TRUE) + 
+  geom_bar(ggplot2::aes(y = score, fill = mcols.Type), scales = "free_x", space = "free_x") + 
   ggplot2::theme_classic() +
   ggplot2::theme(axis.text.x = ggplot2::element_text(size = 3, angle = 45, hjust = 1)) +
   colorblindr::scale_fill_OkabeIto(name = "Type") + 
@@ -122,6 +147,46 @@ ggplot2::ggsave(filename = file.path(plots_dir, "gistic_plot.png"),
                 width = 10, 
                 height = 3, 
                 units = "in")
+```
+
+### Log R Ratio plots by histology 
+
+```{r results = 'hide'}
+# Make a plot for each histology group
+lapply(unique(seg_data$short_histology), function(histology_group) {
+   
+  # Isolate the data to the histology group
+  hist_df <- seg_data %>% 
+    dplyr::filter(short_histology == histology_group)
+  
+  # Only continue if there are at least 5 samples to plot
+  if (nrow(hist_df) > 5) {
+    # Turn into a GRanges for easier mapping
+    hist_ranges <- GenomicRanges::GRanges(
+      seqnames = hist_df$chrom,
+      ranges = IRanges::IRanges(
+        start = hist_df$loc.start,
+        end = hist_df$loc.end
+      ),
+      score = hist_df$ratio,
+      mcols = hist_df$Type
+  )
+  # Map this on a plot
+  ggplot2::ggplot(hist_ranges) + 
+    geom_bar(ggplot2::aes(y = score, fill = mcols), scales = "free_x", space = "free_x") + 
+    ggplot2::theme_classic() +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(size = 3, angle = 45, hjust = 1)) +
+    colorblindr::scale_fill_OkabeIto(name = "Type") + 
+    ggplot2::ylab("Copy Number") + 
+    ggplot2::ggtitle()
+  
+  # Save the plot to a png
+  ggplot2::ggsave(filename = file.path(plots_dir, paste0(histology_group, "_plot.png")), 
+                  width = 10, 
+                  height = 3, 
+                  units = "in")
+  }
+})
 ```
 
 # Session Info
