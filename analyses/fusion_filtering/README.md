@@ -1,0 +1,31 @@
+## Fusion prioritization
+This analysis will perform artifact filtering and annotation on fusion calls to prioritize putative oncogenic fusions. Briefly, we considered all inframe and frameshift fusion calls with a minimum of 1 junction reads and at least one gene partner expressed (TPM > 1) to be true calls. If a fusion call had large number of spanning fragment reads compared to junction reads (spanning fragment minus junction read greater than ten), we removed these calls as potential false positives. We prioritized a union of fusion calls as true calls if the fused genes were detected by both callers, the same fusion was recurrent within a broad_histology (>2 samples) or the fusion was specific to the broad_histology. If either 5' or 3' genes fused to more than five different genes within a sample, we removed these calls as potential false positives. We annotated putative driver fusions and prioritized fusions based on partners containing known kinases, oncogenes, tumor suppressors, curated transcription factors, cosmic conses gene list or TCGA fusions.
+
+
+#### Inputs from data download
+* pbta-fusion-starfusion.tsv.gz : aggregated starfusion calls ; a column tumor_id with the samples BS ID is added to each sample files
+* pbta-fusion-arriba.tsv.gz : aggregated arriba calls; a column tumor_id with the samples BS ID is added to each sample files ; a column annots is added from running FusionAnnotator
+* pbta-gene-expression-rsem-fpkm.polya.rds : aggregated polya samples fpkm data
+* pbta-gene-expression-rsem-fpkm.strande.rds : aggregated stranded fpm data
+
+#### Inputs used as reference
+* genelistreference.txt : known kinases, oncogenes, tumor suppressors, curated transcription factors [@doi:10.1016/j.cell.2018.01.029], COSMIC census genes. MYBL1 [@doi:10.1073/pnas.1300252110], SNCAIP [@doi:10.1038/nature11327], FOXR2 [@doi:10.1016/j.cell.2016.01.015], TTYH1 [@doi:10.1038/ng.2849], and TERT [@doi:10.1038/ng.3438; @doi:10.1002/gcc.22110; @doi:10.1016/j.canlet.2014.11.057; @doi:10.1007/s11910-017-0722-5] were added to the oncogene list and BCOR [@doi:10.1016/j.cell.2016.01.015] and QKI [@doi:10.1038/ng.3500] were added to the tumor suppressor gene list based on pediatric cancer literature review
+* fusionreference.txt :  known TCGA fusions
+* Brain_FPKM_hg38_matrix.txt.zip : GTex brain samples FPKM data
+
+#### Outputs saved to data download
+* pbta-fusion-putative-oncogenic.tsv
+* pbta-fusion-recurrently-fused-genes-byhistology.tsv
+* pbta-fusion-recurrently-fused-genes-bysample.tsv
+
+### Run script
+`bash run_fusion_merged.sh` 
+
+#### Order of scripts in analysis
+`01-fusion-standardization.R` : Standardizes fusion calls from STARFusion and Arriba
+`02-fusion-filtering.R` : Artifact filtering by removing readthroughs and NEIGHBORS from annots column; annots column also contains red flag databases that are used to further filter common/normal occuring fusions; all fusions where both genes are expressed <1TPM is removed as non-expressed fusions; fusions required to have atleast 1 JunctionSpanningRead minus  SpanningFragCount-JunctionReadCount to be <10
+`03-Calc-zscore-annotate.R` : Calculates zscore for gene fused gene's expression compared to GTeX brian samples and annotates if differently expressed or not
+`04-project-specific-filtering.Rmd` : Notebook to perform project specific filtering. We removed fusions with genes fused more than 5 times in a samples as potential artifact. We kepth fusions that were called by both callers and if >2 samples per histology called the fusion. We then prioritize the fusions as putative-oncogenic fusions if any fused gene in the fusion is annotated as kinases, oncogenes, tumor suppressors, curated transcription factors, cosmic conses gene list or is a TCGA fusions
+`05-recurrent-fusions-per-histology.R` : To identify recurrent fusion and fused genes we first indentified RNAseq samples that can be used independetly for each patient. After the selection of samples we identify which fusions and genes are reccurent ( found in >3 participants per histology ) in our pbta-fusion-putative-oncogenic.tsv dataset.
+
+
