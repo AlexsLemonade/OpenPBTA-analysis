@@ -277,7 +277,11 @@ input_file_names = list(dict_of_input_content.keys())
 
 ## Put the output file paths into their own lists that is to be iterated over
 ## This order is important
-output_list = [args.manta_cnvkit, args.manta_freec, args.cnvkit_freec]
+## Make a list for pairs of callers to make consensus for
+caller_pairs = list(itertools.combinations(input_file_names,2))
+
+# generate output list in the same order
+output_files = [getattr(args, "_".join(callers)) for callers in caller_pairs]
 
 ## Make a list for pairs of callers to make consensus for
 caller_pairs = list(itertools.combinations(['manta', 'cnvkit', 'freec'],2))
