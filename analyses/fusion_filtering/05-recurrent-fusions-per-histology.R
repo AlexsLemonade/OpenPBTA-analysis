@@ -115,7 +115,7 @@ rec_fusions <- standardFusionCalls %>%
 #find rec fusions per PATIENT per broad_histology
 rec_fusions<-rec_fusions[rec_fusions$count>3,]
 rec_fusions<-rec_fusions[order(rec_fusions$count,decreasing = TRUE),]
-write.table(rec_fusions,file.path(outputfolder,"rec_fusions_participant_histology_level.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
+write.table(rec_fusions,file.path(outputfolder,"pbta-fusion-recurrent-fusion-byhistology.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
 
 
 # binary matrix for recurrent fusions found in SAMPLE per broad_histology
@@ -132,7 +132,7 @@ rec_fusions_mat[is.na(rec_fusions_mat$FusionName),"FusionName"]<-"No_rec_fusion"
 # binary matrix
 rec_fusions_mat<-dcast(rec_fusions_mat,Sample~FusionName,value.var = "Sample",fun.aggregate = function(x){as.integer(length(x) > 0)},drop = FALSE) 
 
-write.table(rec_fusions_mat,file.path(outputfolder,"rec_fusions_matrix_sample_histology_level.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
+write.table(rec_fusions_mat,file.path(outputfolder,"pbta-fusion-recurrent-fusion-bysample.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
 
 
 # gene1A recurrent
@@ -156,7 +156,7 @@ rec_gene<-rbind(rec_gene1A,rec_gene1B) %>%
 #find rec fused genes per PATIENT per broad_histology
 rec_gene<-rec_gene[rec_gene$count>3,]
 rec_gene<-rec_gene[order(rec_gene$count,decreasing = TRUE),]
-write.table(rec_gene,file.path(outputfolder,"rec_genes_participant_histology_level.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
+write.table(rec_gene,file.path(outputfolder,"pbta-fusion-recurrently-fused-genes-byhistology.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
 
 # binary matrix for recurrently fused genes found in SAMPLE per broad_histology
 rec_geneA_mat<-rec_gene %>% 
@@ -180,6 +180,6 @@ rec_gene_mat[is.na(rec_gene_mat$Gene),"Gene"]<-"No_rec_fused_gene"
 # binary matrix
 rec_gene_mat<-dcast(rec_gene_mat,Sample~Gene,value.var = "Sample",fun.aggregate = function(x){as.integer(length(x) > 0)},drop = FALSE)
 
-write.table(rec_gene_mat,file.path(outputfolder,"rec_genes_matrix_sample_histology_level.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
+write.table(rec_gene_mat,file.path(outputfolder,"pbta-fusion-recurrently-fused-genes-bysample.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
 
 
