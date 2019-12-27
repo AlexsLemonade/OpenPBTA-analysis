@@ -23,9 +23,13 @@ This analysis will perform artifact filtering and annotation on fusion calls to 
 
 #### Order of scripts in analysis
 `01-fusion-standardization.R` : Standardizes fusion calls from STARFusion and Arriba
+
 `02-fusion-filtering.R` : Artifact filtering by removing readthroughs and NEIGHBORS from annots column; annots column also contains red flag databases that are used to further filter common/normal occuring fusions; all fusions where both genes are expressed <1TPM is removed as non-expressed fusions; fusions required to have atleast 1 JunctionSpanningRead minus  SpanningFragCount-JunctionReadCount to be <10
+
 `03-Calc-zscore-annotate.R` : Calculates zscore for gene fused gene's expression compared to GTeX brian samples and annotates if differently expressed or not
+
 `04-project-specific-filtering.Rmd` : Notebook to perform project specific filtering. We removed fusions with genes fused more than 5 times in a samples as potential artifact. We kepth fusions that were called by both callers and if >2 samples per histology called the fusion. We then prioritize the fusions as putative-oncogenic fusions if any fused gene in the fusion is annotated as kinases, oncogenes, tumor suppressors, curated transcription factors, cosmic conses gene list or is a TCGA fusions
+
 `05-recurrent-fusions-per-histology.R` : To identify recurrent fusion and fused genes we first indentified RNAseq samples that can be used independetly for each patient. After the selection of samples we identify which fusions and genes are reccurent ( found in >3 participants per histology ) in our pbta-fusion-putative-oncogenic.tsv dataset.
 
 
