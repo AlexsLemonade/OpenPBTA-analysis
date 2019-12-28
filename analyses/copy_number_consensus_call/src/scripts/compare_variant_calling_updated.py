@@ -265,25 +265,29 @@ parser.add_argument('--sample', default='no_sample',
 args = parser.parse_args()
 
 
-## Read in the input files as dictionaries
-manta_dict = read_input_file(args.manta)
-cnvkit_dict = read_input_file(args.cnvkit)
-freec_dict = read_input_file(args.freec)
+## Define a list of input callers
 
-## Put the input dictionaries into a bigger dictionary
-dict_of_input_content = {'manta':manta_dict, 'cnvkit':cnvkit_dict, 'freec':freec_dict}
+input_callers = ['manta', 'cnvkit', 'freec']
+input_content = dict()
+for caller in input_callers:
+    ## Read in the input files as dictionaries
+    input_content[caller] = read_input_file(getattr(args, caller))
 
-input_file_names = list(dict_of_input_content.keys())
+
+
+
 
 ## Put the output file paths into their own lists that is to be iterated over
 ## This order is important
-output_list = [args.manta_cnvkit, args.manta_freec, args.cnvkit_freec]
+## Make a list for pairs of callers to make consensus for
+caller_pairs = list(itertools.combinations(input_callers,2))
+# generate output list in the same order
+output_files = [getattr(args, "_".join(callers)) for callers in caller_pairs]
 
 ## Make a list for pairs of callers to make consensus for
-caller_pairs = list(itertools.combinations(['manta', 'cnvkit', 'freec'],2))
 
 
-## We have 3 items in dict_of_input_content. Each item is the content of an input file
+## We have 3 items in input_content. Each item is the content of an input file
 ## Make a list to store the final files
 fin_list =[]
 
@@ -293,8 +297,8 @@ for caller1, caller2 in caller_pairs:
     ## Compare 1st and 2nd file from list_of_input_contents
     ## Then compare the 1st and 3rd
     ## Then compare the 2nd and 3rd
-    list1 = dict_of_input_content[caller1]
-    list2 = dict_of_input_content[caller2]
+    list1 = input_content[caller1]
+    list2 = input_content[caller2]
 
 
     ## Call the "generate_consensus" function to get consensus CNVs
@@ -309,7 +313,7 @@ for caller1, caller2 in caller_pairs:
 
 
 ## Print the output into files
-for content, outfile in zip(fin_list, output_list):
+for content, outfile in zip(fin_list, output_files):
 
     ## Call the "save_to_file" function to print each consensus content to a file.
     save_to_file(content, outfile, args.sample)
