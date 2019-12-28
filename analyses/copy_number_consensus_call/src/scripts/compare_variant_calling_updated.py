@@ -280,12 +280,7 @@ for caller in input_callers:
 ## Put the output file paths into their own lists that is to be iterated over
 ## This order is important
 ## Make a list for pairs of callers to make consensus for
-<<<<<<< HEAD
 caller_pairs = list(itertools.combinations(input_callers,2))
-=======
-caller_pairs = list(itertools.combinations(input_file_names,2))
-
->>>>>>> c1cc92e2fd89181d3e03f90c074311e972bf6987
 # generate output list in the same order
 output_files = [getattr(args, "_".join(callers)) for callers in caller_pairs]
 
