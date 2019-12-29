@@ -1,5 +1,10 @@
 ## Fusion prioritization
-This analysis will perform artifact filtering and annotation on fusion calls to prioritize putative oncogenic fusions. Briefly, we considered all inframe and frameshift fusion calls with a minimum of 1 junction reads and at least one gene partner expressed (TPM > 1) to be true calls. If a fusion call had large number of spanning fragment reads compared to junction reads (spanning fragment minus junction read greater than ten), we removed these calls as potential false positives. We prioritized a union of fusion calls as true calls if the fused genes were detected by both callers, the same fusion was recurrent within a broad_histology (>2 samples) or the fusion was specific to the broad_histology. If either 5' or 3' genes fused to more than five different genes within a sample, we removed these calls as potential false positives. We annotated putative driver fusions and prioritized fusions based on partners containing known kinases, oncogenes, tumor suppressors, curated transcription factors, cosmic conses gene list or TCGA fusions.
+This analysis will perform artifact filtering and annotation on fusion calls from STARfusion and Arriba fusion callers to prioritize putative oncogenic fusions. 
+Briefly, we considered all inframe and frameshift fusion calls with a minimum of 1 junction reads and at least one gene partner expressed (TPM > 1) to be true calls. 
+If a fusion call had large number of spanning fragment reads compared to junction reads (spanning fragment minus junction read greater than ten), we removed these calls as potential false positives. 
+We prioritized a union of fusion calls as true calls if the fused genes were detected by both callers OR the same fusion was recurrent within a broad_histology (>2 samples) OR the fusion was specific to the broad_histology. 
+If either 5' or 3' genes fused to more than five different genes within a sample, we removed these calls as potential false positives. 
+We annotated putative driver fusions and prioritized fusions based on partners containing known kinases, oncogenes, tumor suppressors, curated transcription factors, cosmic conses gene list or TCGA fusions.
 
 
 #### Inputs from data download
