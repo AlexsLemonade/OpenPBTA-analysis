@@ -1,14 +1,22 @@
 # OpenPBTA-analysis
 
-The Open Pediatric Brain Tumor Atlas (OpenPBTA) Project is an effort to describe the landscape of tumors in the [Children's Brain Tumor Tissue Consortium](https://cbttc.org/) and the PNOC003 DIPG clinical trial from the [Pediatric Pacific Neuro-oncology Consortium](http://www.pnoc.us/).
-This is an open analysis effort that is organized on GitHub.
-There is a [companion OpenPBTA-manuscript repository](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) that is being used to author a collaborative manuscript describing the effort.
+Pediatric brain tumors are the most common solid tumors and the leading cause of cancer-related death in children.
+Our ability to understand and successfully treat these diseases is hindered by small sample sizes due to the overall rarity of unique molecular subtypes and tainted grouped analyses resulting from misclassification. 
+In September of 2018, the [Children's Brain Tumor Tissue Consortium](https://cbttc.org/) released the [Pediatric Brain Tumor Atlas (PBTA)](https://cbttc.org/pediatric-brain-tumor-atlas/), a genomic dataset (whole genome sequencing, whole exome sequencing, RNA sequencing, proteomic, and clinical data) for nearly 1,000 tumors, available from the [Gabriella Miller Kids First Portal](https://kidsfirstdrc.org/). 
+
+The Open Pediatric Brain Tumor Atlas (OpenPBTA) Project is a global open science initiative to comprehensively define the molecular landscape of tumors of 944 patients from the CBTTC and the PNOC003 DIPG clinical trial from the [Pediatric Pacific Neuro-oncology Consortium](http://www.pnoc.us/) through real-time, collaborative analyses and [collaborative manuscript writing](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) on GitHub. 
+
+The OpenPBTA operates on a pull request model to accept contributions from community participants.
+The maintainers have set up continuous integration software to confirm the reproducibility of analyses within the project’s Docker container.
+The collaborative manuscript is authored using [Manubot](https://manubot.org) software to provide an up-to-date public version of the manuscript. 
 The project maintainers include scientists from [Alex's Lemonade Stand Foundation's Childhood Cancer Data Lab](https://www.ccdatalab.org/) and the [Center for Data-Driven Discovery in Biomedicine at the Children's Hospital of Philadelphia](https://d3b.center/).
+We invite researchers to join OpenPBTA to help rigorously characterize the genomic landscape of these diseases to enable more rapid discovery of additional mechanisms contributing to the pathogenesis of pediatric brain and spinal cord tumors and overall accelerate clinical translation on behalf of patients. 
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
+- [Data Description](#data-description)
 - [How to Obtain OpenPBTA Data](#how-to-obtain-openpbta-data)
   - [Data Access via Download Script](#data-access-via-download-script)
   - [Data Access via CAVATICA](#data-access-via-cavatica)
@@ -41,14 +49,72 @@ The project maintainers include scientists from [Alex's Lemonade Stand Foundatio
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
+## Data Description
+
+The OpenPBTA dataset includes gene expression, fusion, as well as somatic mutation, copy number, structural and variant results in combined tsv or matrix format.
+
+Below is a summary of biospecimens by sequencing strategy:
+
+
+| Experimental Strategy | Normal | Tumor |
+|-----------------------|--------|-------|
+| Targeted DNA Panel | 1 | 1 |
+| RNA-Seq | 0 | 1072 |
+| WGS | 801 | 940 |
+| WXS | 31 | 31 |
+
+
+All sequencing was performed on nucleic acids extracted from fresh-frozen tissues using paired-end strategies.
+The [manuscript methods section](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#data-generation) has additional details.
+
+Below is a detailed table of [broad histologies](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#who-classification-of-disease-types) for the 1072 RNA-Seq biospecimens:
+
+
+| Broad Histology | N |
+|-----------------------------------------------|-----|
+| Benign tumor | 38 |
+| Choroid plexus tumor | 11 |
+| CNS Embryonal tumor | 5 |
+| CNS neuroblastoma | 5 |
+| Diffuse astrocytic and oligodendroglial tumor | 225 |
+| Embryonal tumor | 161 |
+| Ependymal tumor | 93 |
+| Germ cell tumor | 13 |
+| Histiocytic tumor | 5 |
+| Low-grade astrocytic tumor | 256 |
+| Lymphomas | 1 |
+| Meningioma | 29 |
+| Mesenchymal non-meningothelial tumor | 21 |
+| Metastatic secondary tumors | 7 |
+| Neuronal and mixed neuronal-glial tumor | 80 |
+| NOS Embryonal tumor | 17 |
+| Other tumor | 6 |
+| Pre-cancerous lesion | 14 |
+| Tumor of cranial and paraspinal nerves | 44 |
+| Tumor of pineal region | 5 |
+| Tumors of sellar region | 36 |
+
+
+Below is a table of number of tumor biospecimens by phase of therapy (DNA and RNA):
+
+
+| Phase of Therapy | N |
+|---------------------------------|------|
+| Diagnosis/Initial CNS Tumor | 1507 |
+| Progressive | 291 |
+| Progressive Disease Post-Mortem | 11 |
+| Recurrence | 128 |
+| Second Malignancy | 35 |
+| Unavailable | 72 |
+
+
 ## How to Obtain OpenPBTA Data
 
-The OpenPBTA dataset includes somatic mutation and gene expression results in combined tsv or matrix format.
 We are releasing this dataset on both [CAVATICA](https://cavatica.sbgenomics.com) and AWS S3.
 Users performing analyses, should always refer to the symlinks in the `data/` directory and not files within the release folder, as an updated release may be produced before a publication is prepared.
 
 **The data formats and caveats are described in more detail in [`doc/data-formats.md`](doc/data-formats.md).
-For brief descriptions of the data files, see the [`data-description.md`](doc/data-description.md) file included in the download.**
+For brief descriptions of the data files, see the [`data-files-description.md`](doc/data-files-description.md) file included in the download.**
 
 Use the [data issue template](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/new?assignees=&labels=data&template=data-question.md&title=) to file issues if you have questions about or identify issues with OpenPBTA data.
 
