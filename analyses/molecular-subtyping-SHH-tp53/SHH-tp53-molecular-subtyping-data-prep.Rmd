@@ -10,21 +10,21 @@ date: 2019
 
 This notebook [molecularly subtypes Medulloblastoma samples into their TP53 status](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/247). 
 
-# Usage
+## Usage
 
 This notebook is intended to be run via the command line from the top directory
 of the repository as follows:
 
 `Rscript -e "rmarkdown::render('analyses/molecular-subtyping-SHH-tp53/SHH-tp53-molecular-subtyping-data-prep.Rmd', clean = TRUE)"`
 
-# Set Up
+## Set Up
 
 ```{r}
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 ```
 
-## Directories and Files
+### Directories and Files
 
 ```{r}
 # File path to data directory
@@ -120,7 +120,13 @@ tp53_mut <- tp53_mut %>%
 tp53_mut
 ```
 
-# Session Info
+Save table to a TSV file. 
+
+```{r}
+readr::write_tsv(tp53_mut, file.path(results_dir, "tp53-shh-samples-status.tsv"))
+```
+
+## Session Info
 
 ```{r}
 sessionInfo()
