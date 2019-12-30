@@ -44,8 +44,8 @@ Read in metadata and isolate to medulloblastoma samples.
 
 ```{r}
 metadata <-
-  readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) %>% 
-  dplyr::filter(disease_type_new == "Medulloblastoma") 
+  readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) %>%
+  dplyr::filter(disease_type_new == "Medulloblastoma")
 
 # Check summary of subtypes here
 summary(as.factor(metadata$molecular_subtype))
@@ -55,8 +55,8 @@ Propagate the `molecular_subtype` labels to biospecimens of the same `sample_id`
 First make a key of molecular subtype to `sample_id`.
 
 ```{r}
-key_df <- metadata %>% 
-  dplyr::filter(!is.na(molecular_subtype)) %>% 
+key_df <- metadata %>%
+  dplyr::filter(!is.na(molecular_subtype)) %>%
   dplyr::select(molecular_subtype, sample_id)
 
 # Make into list form so it can be used in dplyr::recode
@@ -64,15 +64,15 @@ key <- key_df$molecular_subtype
 names(key) <- key_df$sample_id
 ```
 
-Recode and filter to all `sample_id`s that are `SHH`.
+Recode and filter to all `sample_id`s that are `SHH` and have `WGS` or `WXS` data.
 
 ```{r}
-metadata <- metadata %>% 
+shh_metadata <- metadata %>%
   dplyr::mutate(molecular_subtype = dplyr::recode(sample_id, !!!key, .default = "NA")) %>%
   dplyr::filter(molecular_subtype == "SHH")
 
 # Check summary after recoding
-summary(as.factor(metadata$molecular_subtype))
+summary(as.factor(shh_metadata$molecular_subtype))
 ```
 
 Read in the SNV consensus calls. 
@@ -80,44 +80,50 @@ Read in the SNV consensus calls.
 ```{r}
 snv_df <-
   # Read in the consensus file
-  data.table::fread(file.path(data_dir, "pbta-snv-consensus-mutation.maf.tsv.gz"), 
-                    data.table = FALSE) %>% 
+  data.table::fread(file.path(data_dir, "pbta-snv-consensus-mutation.maf.tsv.gz"),
+    data.table = FALSE
+  ) %>%
   # Filter to only Medulloblastoma samples
-  dplyr::filter(Tumor_Sample_Barcode %in% metadata$Kids_First_Biospecimen_ID)
+  dplyr::filter(Tumor_Sample_Barcode %in% shh_metadata$Kids_First_Biospecimen_ID)
 ```
 
 ## Identify TP53 SNVs.
 
+Get a list of samples that are positive for TP53 mutations in the SNV consensus data.
+
 ```{r}
-tp53_mut <- snv_df %>%
+tp53_mut_biospecimens <- snv_df %>%
   # Filter to only SNV's in TP53 gene
   dplyr::filter(Hugo_Symbol == "TP53") %>%
-  dplyr::group_by(Tumor_Sample_Barcode) %>% 
-  dplyr::summarize(num_TP53_mutation = dplyr::n())
+  dplyr::pull(Tumor_Sample_Barcode)
 ```
 
-Add other sample identifiers to this information.
+Now recode their TP53 status to be associated with their `sample_id`.
 
 ```{r}
-tp53_mut <- tp53_mut %>% 
-  # Join the metadata to the tp53 mutation data
-  dplyr::right_join(dplyr::select(metadata, "Kids_First_Participant_ID", "sample_id", "Kids_First_Biospecimen_ID"),
-                    by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>% 
-  # Collapse to sample_id
-  dplyr::group_by(Kids_First_Participant_ID, sample_id, num_TP53_mutation) %>%
-  # Combine the two biospecimen ids
-  dplyr::summarize("Kids_First_Biospecimen_IDs" = paste(Tumor_Sample_Barcode, collapse = ", ")) %>% 
-  # Rearrange columns for more easily readable table
-  dplyr::select(Kids_First_Participant_ID, sample_id, Kids_First_Biospecimen_IDs,	num_TP53_mutation) %>% 
-  # Make TP53 mutation variable binary
-  dplyr::mutate(TP53_mutation = dplyr::case_when(
-    is.na(num_TP53_mutation) ~ "No", 
-    num_TP53_mutation > 0 ~ "Yes")) %>% 
-  # Get rid of numeric TP53 column
-  dplyr::select(-num_TP53_mutation)
+# Make into list form so it can be used in dplyr::recode
+key <- shh_metadata$sample_id
+names(key) <- shh_metadata$Kids_First_Biospecimen_ID
+
+# List of tp53 postive samples
+tp53_mut_samples <- dplyr::recode(tp53_mut_biospecimens, !!!key)
+```
+
+Summarize TP53 status to a table with other sample identifiers.
+
+```{r}
+tp53_status_table <- shh_metadata %>%
+  # Narrow down to sample identifier columns
+  dplyr::select("Kids_First_Participant_ID", "sample_id", "Kids_First_Biospecimen_ID") %>%
+  # Collapse Biospecimen ids for each sample
+  dplyr::group_by(Kids_First_Participant_ID, sample_id) %>%
+  dplyr::summarize(Kids_First_Biospecimen_IDs = paste(Kids_First_Biospecimen_ID, collapse = ", ")) %>%
+  # Make a variable that says whether or not there is a TP53 SNV mutation
+  dplyr::mutate(TP53_mutation = sample_id %in% tp53_mut_samples)
+
 
 # Print out this table
-tp53_mut
+tp53_status_table
 ```
 
 Save table to a TSV file. 
