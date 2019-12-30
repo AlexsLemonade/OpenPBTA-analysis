@@ -1,6 +1,6 @@
 ## Fusion prioritization
 
-**Module author:** Krutika Gaonkar ([@kgaonkar6](https://github.com/kgaonkar6))
+**Module authors :** Krutika Gaonkar ([@kgaonkar6](https://github.com/kgaonkar6)), Jaclyn Taroni ([@jaclyn-taroni](https://github.com/jaclyn-taroni)), Jo Lynne Harenza([@jharenza](https://github.com/jharenza)), and Komal Rathi ([@komalsrathi](https://github.com/komalsrathi))
 Jaclyn Taroni ([@jaclyn-taroni] (https://github.com/jaclyn-taroni))
 Jo Lynne([@jharenza](https://github.com/jharenza))
 Komal Rathi ([@komalsrathi] (https://github.com/komalsrathi))
@@ -43,5 +43,4 @@ We also gather counts for recurrent fusions and fused genes found in more than 3
 `04-project-specific-filtering.Rmd` : Notebook to perform project specific filtering. We removed fusions with genes fused more than 5 times in a samples as potential artifact. We kepth fusions that were called by both callers and if >2 samples per histology called the fusion. We then prioritize the fusions as putative-oncogenic fusions if any fused gene in the fusion is annotated as kinases, oncogenes, tumor suppressors, curated transcription factors, cosmic conses gene list or is a TCGA fusions
 
 `05-recurrent-fusions-per-histology.R` : To identify recurrent fusion and fused genes we first indentified RNAseq samples that can be used independetly for each patient. After the selection of samples we identify which fusions and genes are reccurent ( found in >3 participants per histology ) in our pbta-fusion-putative-oncogenic.tsv dataset.
-
 
