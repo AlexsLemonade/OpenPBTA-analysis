@@ -1,4 +1,9 @@
 ## Fusion prioritization
+
+**Module author:** Krutika Gaonkar ([@kgaonkar6](https://github.com/kgaonkar6))
+Jaclyn Taroni ([@jaclyn-taroni] (https://github.com/jaclyn-taroni))
+
+
 This analysis will perform artifact filtering and annotation on fusion calls from STARfusion and Arriba fusion callers to prioritize putative oncogenic fusions. 
 Briefly, we considered all inframe and frameshift fusion calls with a minimum of 1 junction reads and at least one gene partner expressed (TPM > 1) to be true calls. 
 If a fusion call had large number of spanning fragment reads compared to junction reads (spanning fragment minus junction read greater than ten), we removed these calls as potential false positives. 
