@@ -43,3 +43,6 @@ gzip -f results/cnvkit_annotated_cn_x_and_y.tsv
 if [ "$XYFLAG" -gt "0" ]; then
   gzip -f results/controlfreec_annotated_cn_x_and_y.tsv
 fi
+
+# Compare to expression data
+Rscript --vanilla 02-rna-expression-validation.R
