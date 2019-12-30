@@ -100,17 +100,24 @@ Add other sample identifiers to this information.
 
 ```{r}
 tp53_mut <- tp53_mut %>% 
+  # Join the metadata to the tp53 mutation data
   dplyr::right_join(dplyr::select(metadata, "Kids_First_Participant_ID", "sample_id", "Kids_First_Biospecimen_ID"),
                     by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>% 
+  # Collapse to sample_id
+  dplyr::group_by(Kids_First_Participant_ID, sample_id, num_TP53_mutation) %>%
+  # Combine the two biospecimen ids
+  dplyr::summarize("Kids_First_Biospecimen_IDs" = paste(Tumor_Sample_Barcode, collapse = ", ")) %>% 
   # Rearrange columns for more easily readable table
-  dplyr::select(Kids_First_Participant_ID, sample_id, Tumor_Sample_Barcode,	num_TP53_mutation) %>% 
+  dplyr::select(Kids_First_Participant_ID, sample_id, Kids_First_Biospecimen_IDs,	num_TP53_mutation) %>% 
+  # Make TP53 mutation variable binary
   dplyr::mutate(TP53_mutation = dplyr::case_when(
     is.na(num_TP53_mutation) ~ "No", 
     num_TP53_mutation > 0 ~ "Yes")) %>% 
+  # Get rid of numeric TP53 column
   dplyr::select(-num_TP53_mutation)
 
 # Print out this table
-tp53_mut 
+tp53_mut
 ```
 
 # Session Info
