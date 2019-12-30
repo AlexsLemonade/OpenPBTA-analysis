@@ -5,7 +5,7 @@ If a fusion call had large number of spanning fragment reads compared to junctio
 We prioritized a union of fusion calls as true calls if the fused genes were detected by both callers OR the same fusion was recurrent within a broad_histology (>2 samples) OR the fusion was specific to the broad_histology. 
 If either 5' or 3' genes fused to more than five different genes within a sample, we removed these calls as potential false positives. 
 We annotated putative driver fusions and prioritized fusions based on partners containing known kinases, oncogenes, tumor suppressors, curated transcription factors, cosmic conses gene list or TCGA fusions.
-
+We also gather counts for recurrent fusions and fused genes found in more than 3 participants per histology and represent them as binary matrices per sample.
 
 #### Inputs from data download
 * pbta-fusion-starfusion.tsv.gz : aggregated starfusion calls ; a column tumor_id with the samples BS ID is added to each sample files
