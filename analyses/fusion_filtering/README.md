@@ -4,7 +4,7 @@
 
 
 This analysis is designed to filter artifacts and annotate fusion calls from STARfusion and Arriba fusion callers with the goal of prioritizing oncogenic fusions. 
-Briefly, we considered all inframe and frameshift fusion calls with a minimum of 1 junction reads and at least one gene partner expressed (TPM > 1) to be true calls. 
+We considered all inframe and frameshift fusion calls with a minimum of 1 junction reads and at least one gene partner expressed (TPM > 1) to be potential true calls. 
 We then removed fusion calls that had many spanning fragment reads compared to junction reads (`spanning fragment read count` minus `junction read count` greater than ten) as potential false positives. 
 We prioritized a union of fusion calls as true calls if the fused genes were detected by both callers OR the same fusion was recurrent within a broad_histology (>2 samples) OR the fusion was specific to the broad_histology. 
 We removed calls for which one gene was 5' or 3' fused to more than five different other genes within a sample as potential false positives. 
