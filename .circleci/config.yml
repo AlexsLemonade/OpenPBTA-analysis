@@ -67,10 +67,6 @@ jobs:
       - run:
           name: Interaction plot
           command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh
-    
-      - run:  
-          name: Focal CN RNA expression visualization
-          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/focal-cn-file-preparation/rna-expression-validation.R
 
       - run:
           name: Mutational Signatures 
