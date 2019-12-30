@@ -68,7 +68,8 @@ Recode and filter to all `sample_id`s that are `SHH`.
 
 ```{r}
 metadata <- metadata %>% 
-  dplyr::mutate(molecular_subtype = dplyr::recode(sample_id, !!!key, .default = "NA")) %>%   dplyr::filter(molecular_subtype == "SHH")
+  dplyr::mutate(molecular_subtype = dplyr::recode(sample_id, !!!key, .default = "NA")) %>%
+  dplyr::filter(molecular_subtype == "SHH")
 
 # Check summary after recoding
 summary(as.factor(metadata$molecular_subtype))
