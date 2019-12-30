@@ -129,7 +129,7 @@ tp53_status_table
 Save table to a TSV file. 
 
 ```{r}
-readr::write_tsv(tp53_mut, file.path(results_dir, "tp53-shh-samples-status.tsv"))
+readr::write_tsv(tp53_status_table, file.path(results_dir, "tp53-shh-samples-status.tsv"))
 ```
 
 ## Session Info
