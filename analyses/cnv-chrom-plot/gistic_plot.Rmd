@@ -155,7 +155,7 @@ ggplot2::ggsave(
 )
 ```
 
-### Log R Ratio plots by histology 
+### Segment mean plots by histology 
 
 ```{r, results='hide', message=FALSE}
 # Make a plot for each histology group
@@ -213,6 +213,9 @@ lapply(unique(seg_data$short_histology), function(histology_group) {
     height = 3,
     units = "in"
   )
+  
+  # Print the plot here 
+  hist_plot
 })
 ```
 
