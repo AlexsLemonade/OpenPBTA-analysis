@@ -112,6 +112,10 @@ jobs:
           name: TP53 NF1 classifier run
           command: ./scripts/run_in_ci.sh python3 analyses/tp53_nf1_score/01-apply-classifier.py -f pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds  
       
+      - run:
+          name: SHH TP53 Molecular Subtyping
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-SHH-tp53/SHH-tp53-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
+
          ################################
          #### Add your analysis here ####
          ################################
