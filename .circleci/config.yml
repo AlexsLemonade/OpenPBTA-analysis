@@ -31,12 +31,8 @@ jobs:
           command: ./scripts/run_in_ci.sh bash analyses/collapse-rnaseq/run-collapse-rnaseq.sh
 
       - run:
-          name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded expression
+          name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded data and creates recurrent fusion list
           command: ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
-
-      - run:
-          name: Identify recurrent fusion per histology
-          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/05-recurrent-fusions-per-histology.R -S data/pbta-fusion-putative-oncogenic.tsv -c data/pbta-histologies.tsv -o analyses/fusion_filtering/results/ -i data/independent-specimens.wgswxs.primary-plus.tsv
 
       - run:
           name: Transcriptome dimensionality reduction
