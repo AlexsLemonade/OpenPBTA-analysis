@@ -116,6 +116,10 @@ jobs:
           name: TP53 NF1 classifier run
           command: ./scripts/run_in_ci.sh python3 analyses/tp53_nf1_score/01-apply-classifier.py -f pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds  
       
+      - run:
+          name: GISTIC Plots
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', clean = TRUE)"
+          
          ################################
          #### Add your analysis here ####
          ################################
