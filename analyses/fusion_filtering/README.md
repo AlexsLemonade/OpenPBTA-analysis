@@ -16,7 +16,7 @@ We also gather counts for recurrent fusions and fused genes found in more than 3
 * pbta-fusion-starfusion.tsv.gz : aggregated starfusion calls ; a column tumor_id with the samples BS ID is added to each sample files
 * pbta-fusion-arriba.tsv.gz : aggregated arriba calls; a column tumor_id with the samples BS ID is added to each sample files ; a column annots is added from running FusionAnnotator
 * pbta-gene-expression-rsem-fpkm.polya.rds : aggregated polya samples fpkm data
-* pbta-gene-expression-rsem-fpkm.strande.rds : aggregated stranded fpm data
+* pbta-gene-expression-rsem-fpkm.stranded.rds : aggregated stranded fpm data
 
 #### Inputs used as reference
 * genelistreference.txt : known kinases, oncogenes, tumor suppressors, curated transcription factors [@doi:10.1016/j.cell.2018.01.029], COSMIC Cancer Gene Census list[https://cancer.sanger.ac.uk/census] . MYBL1 [@doi:10.1073/pnas.1300252110], SNCAIP [@doi:10.1038/nature11327], FOXR2 [@doi:10.1016/j.cell.2016.01.015], TTYH1 [@doi:10.1038/ng.2849], and TERT [@doi:10.1038/ng.3438; @doi:10.1002/gcc.22110; @doi:10.1016/j.canlet.2014.11.057; @doi:10.1007/s11910-017-0722-5] were added to the oncogene list and BCOR [@doi:10.1016/j.cell.2016.01.015] and QKI [@doi:10.1038/ng.3500] were added to the tumor suppressor gene list based on pediatric cancer literature review
