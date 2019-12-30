@@ -2932,17 +2932,11 @@ div.tocify {
 
 <h1 class="title toc-ignore">Exploration of RNA selection strategy effects</h1>
 <h4 class="author">Joshua Shapiro for CCDL</h4>
-<h4 class="date">Sys.Date()</h4>
 
 </div>
 
 
 <!-- rnb-text-begin -->
-<div id="background" class="section level2">
-<h2>Background</h2>
-<p>This analysis was originally undertaken prior to <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/doc/release-notes.md#release-v5-20190924"><code>release-v5-20190924</code></a>, where samples from the two library strategies (stranded, poly-A) were split into separate files. This split was necessary because differences were apparent in this analysis.</p>
-<p>As of <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/doc/release-notes.md#release-v12-20191217"><code>release-v12-20191217</code></a>, stranded RNA-seq data for 23 PNOC and 21 CBTTC samples previously sequenced with poly-A library prep were added. This notebook has been updated as of <code>release-v12-20191217</code>.</p>
-</div>
 <div id="setup" class="section level2">
 <h2>Setup</h2>
 <div id="r-setup" class="section level3">
@@ -3099,15 +3093,12 @@ metadata_df &lt;- readr::read_tsv(file.path(root_dir,
   dplyr::right_join(dplyr::tibble(Kids_First_Biospecimen_ID = rownames(exp_rsem_t)), 
                     by = &quot;Kids_First_Biospecimen_ID&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgT1NfZGF5cyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBhZ2VfbGFzdF91cGRhdGVfZGF5cyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBub3JtYWxfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfcGxvaWR5ID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW1cbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgYWdlX2F0X2RpYWdub3Npc19kYXlzID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIE9TX2RheXMgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
 <pre><code>Parsed with column specification:
 cols(
   .default = col_character(),
-  OS_days = [32mcol_double()[39m,
-  age_last_update_days = [32mcol_double()[39m,
-  normal_fraction = [32mcol_double()[39m,
-  tumor_fraction = [32mcol_double()[39m,
-  tumor_ploidy = [32mcol_double()[39m
+  age_at_diagnosis_days = [32mcol_double()[39m,
+  OS_days = [32mcol_double()[39m
 )
 See spec(...) for full column specifications.</code></pre>
 <!-- rnb-output-end -->
@@ -3129,7 +3120,7 @@ stranded_meta_df &lt;- metadata_df %&gt;%
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>As of <code>release-v12-20191217</code>, there should be some overlap between samples assayed with both library prep strategies.</p>
+<p>There are 58 samples and 970 stranded samples, so the chances of much meaningful comparison seem slim. But just to compare the kinds of samples between the two:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWF0Y2hlZF9zYW1wbGVfaWRzIDwtIGludGVyc2VjdChzdHJhbmRlZF9tZXRhX2RmJHNhbXBsZV9pZCwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBvbHlBX21ldGFfZGYkc2FtcGxlX2lkKVxubWF0Y2hlZF9zYW1wbGVfaWRzXG5gYGAifQ== -->
@@ -3169,10 +3160,10 @@ strategy_counts &lt;- dplyr::left_join(polyA_counts, stranded_counts)</code></pr
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyYXRlZ3lfY291bnRzXG5gYGAifQ== -->
 <pre class="r"><code>strategy_counts</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MywibnJvdyI6NH0sInJkZiI6IlVrUllNd3BZQ2dBQUFBTUFBd1lBQUFNRkFBQUFBQVZWVkVZdE9BQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFNQUFBQVFBQUFBQkFBRUFBa0FBQUF5UW5KaGFXNXpkR1Z0SUdkc2FXOXRZUzBnUkdsbVpuVnpaU0JwYm5SeWFXNXphV01nY0c5dWRHbHVaU0JuYkdsdmJXRUFCQUFKQUFBQUVVaHBaMmd0WjNKaFpHVWdaMnhwYjIxaEFBUUFDUUFBQUE5TlpXUjFiR3h2WW14aGMzUnZiV0VBQkFBSkFBQUFIMUJ5YVcxcGRHbDJaU0JPWlhWeWIyVmpkRzlrWlhKdFlXd2dWSFZ0YjNJQUFBQU5BQUFBQkFBQUFDQUFBQUFVQUFBQUFRQUFBQVVBQUFBTkFBQUFCQUFBQUNZQUFBQ0RBQUFBZXdBQUFCRUFBQVFDQUFBQUFRQUVBQWtBQUFBSmNtOTNMbTVoYldWekFBQUFEUUFBQUFLQUFBQUEvLy8vL0FBQUJBSUFBQUFCQUFRQUNRQUFBQVZqYkdGemN3QUFBQkFBQUFBQkFBUUFDUUFBQUFwa1lYUmhMbVp5WVcxbEFBQUVBZ0FBQUFFQUJBQUpBQUFBQlc1aGJXVnpBQUFBRUFBQUFBTUFCQUFKQUFBQUVHUnBjMlZoYzJWZmRIbHdaVjl1WlhjQUJBQUpBQUFBQjNCdmJIbEJYMjRBQkFBSkFBQUFDbk4wY21GdVpHVmtYMjRBQUFEK0FBQUVBZ0FBQUFFQUJBQUpBQUFBQjI5d2RHbHZibk1BQUFJVEFBQUFCUUFBQUJBQUFBQUJBQVFBQ1FBQUFBRnlBQUFBRUFBQUFBRUFCQUFKQUFBQURITmhiWEJzWlNCMGVYQmxjd0FBQUFvQUFBQUJBQUFBQUFBQUFBMEFBQUFCQUFBQUJBQUFBQTBBQUFBQkFBQUFBd0FBQkFJQUFBVC9BQUFBRUFBQUFBVUFCQUFKQUFBQUJtVnVaMmx1WlFBRUFBa0FBQUFGYkdGaVpXd0FCQUFKQUFBQURuSnZkMjVoYldWekxuQnlhVzUwQUFRQUNRQUFBQXB5YjNkekxuUnZkR0ZzQUFRQUNRQUFBQXBqYjJ4ekxuUnZkR0ZzQUFBQS9nQUFBUDQ9In0= -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MywibnJvdyI6NH0sInJkZiI6IlVrUllNd3BZQ2dBQUFBTUFBd1lBQUFNRkFBQUFBQVZWVkVZdE9BQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFNQUFBQVFBQUFBQkFBRUFBa0FBQUF5UW5KaGFXNXpkR1Z0SUdkc2FXOXRZUzBnUkdsbVpuVnpaU0JwYm5SeWFXNXphV01nY0c5dWRHbHVaU0JuYkdsdmJXRUFCQUFKQUFBQU1FaHBaMmd0WjNKaFpHVWdaMnhwYjIxaE8yRnpkSEp2WTNsMGIyMWhJQ2hYU0U4Z1ozSmhaR1VnU1VsSkwwbFdLUUFFQUFrQUFBQVBUV1ZrZFd4c2IySnNZWE4wYjIxaEFBUUFDUUFBQUNKVGRYQnlZWFJsYm5SdmNtbGhiQ0J2Y2lCVGNHbHVZV3dnUTI5eVpDQlFUa1ZVQUFBQURRQUFBQVFBQUFBZ0FBQUFGQUFBQUFFQUFBQUZBQUFBRFFBQUFBUUFBQUFQQUFBQWRBQUFBSG9BQUFBTUFBQUVBZ0FBQUFFQUJBQUpBQUFBQ1hKdmR5NXVZVzFsY3dBQUFBMEFBQUFDZ0FBQUFQLy8vL3dBQUFRQ0FBQUFBUUFFQUFrQUFBQUZZMnhoYzNNQUFBQVFBQUFBQVFBRUFBa0FBQUFLWkdGMFlTNW1jbUZ0WlFBQUJBSUFBQUFCQUFRQUNRQUFBQVZ1WVcxbGN3QUFBQkFBQUFBREFBUUFDUUFBQUJCa2FYTmxZWE5sWDNSNWNHVmZibVYzQUFRQUNRQUFBQWR3YjJ4NVFWOXVBQVFBQ1FBQUFBcHpkSEpoYm1SbFpGOXVBQUFBL2dBQUJBSUFBQUFCQUFRQUNRQUFBQWR2Y0hScGIyNXpBQUFDRXdBQUFBVUFBQUFRQUFBQUFRQUVBQWtBQUFBQmNnQUFBQkFBQUFBQkFBUUFDUUFBQUF4ellXMXdiR1VnZEhsd1pYTUFBQUFLQUFBQUFRQUFBQUFBQUFBTkFBQUFBUUFBQUFRQUFBQU5BQUFBQVFBQUFBTUFBQVFDQUFBRS93QUFBQkFBQUFBRkFBUUFDUUFBQUFabGJtZHBibVVBQkFBSkFBQUFCV3hoWW1Wc0FBUUFDUUFBQUE1eWIzZHVZVzFsY3k1d2NtbHVkQUFFQUFrQUFBQUtjbTkzY3k1MGIzUmhiQUFFQUFrQUFBQUtZMjlzY3k1MGIzUmhiQUFBQVA0QUFBRCsifQ== -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["disease_type_new"],"name":[1],"type":["chr"],"align":["left"]},{"label":["polyA_n"],"name":[2],"type":["int"],"align":["right"]},{"label":["stranded_n"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"Brainstem glioma- Diffuse intrinsic pontine glioma","2":"32","3":"38"},{"1":"High-grade glioma","2":"20","3":"131"},{"1":"Medulloblastoma","2":"1","3":"123"},{"1":"Primitive Neuroectodermal Tumor","2":"5","3":"17"}],"options":{"columns":{"min":{},"max":[10],"total":[3]},"rows":{"min":[10],"max":[10],"total":[4]},"pages":{}}}
+{"columns":[{"label":["disease_type_new"],"name":[1],"type":["chr"],"align":["left"]},{"label":["polyA_n"],"name":[2],"type":["int"],"align":["right"]},{"label":["stranded_n"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"Brainstem glioma- Diffuse intrinsic pontine glioma","2":"32","3":"15"},{"1":"High-grade glioma;astrocytoma (WHO grade III/IV)","2":"20","3":"116"},{"1":"Medulloblastoma","2":"1","3":"122"},{"1":"Supratentorial or Spinal Cord PNET","2":"5","3":"12"}],"options":{"columns":{"min":{},"max":[10],"total":[3]},"rows":{"min":[10],"max":[10],"total":[4]},"pages":{}}}
   </script>
 </div>
 <!-- rnb-frame-end -->
@@ -3273,7 +3264,6 @@ plot_matched_raw</code></pre>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-</div>
 <div id="removing-poly-a-depleted-genes" class="section level2">
 <h2>Removing poly-A depleted genes</h2>
 <div id="any-expression-at-all" class="section level3">
@@ -3291,8 +3281,8 @@ polyA_gene_filter &lt;- colSums(polyA_exp &lt;= 0) == 0
 polyA_expressed &lt;- exp_rsem_t[, polyA_gene_filter]
 ncol(polyA_expressed)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDE3NTIzXG4ifQ== -->
-<pre><code>[1] 17523</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDE3NTIxXG4ifQ== -->
+<pre><code>[1] 17521</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3410,9 +3400,9 @@ combat_exp &lt;- sva::ComBat(dat = t(polyA_expressed),
                           mod = combat_model, 
                           par.prior = TRUE) # parametric adjustment</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRm91bmQyYmF0Y2hlc1xuQWRqdXN0aW5nIGZvcjY3Y292YXJpYXRlKHMpIG9yIGNvdmFyaWF0ZSBsZXZlbChzKVxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiRm91bmQyYmF0Y2hlc1xuQWRqdXN0aW5nIGZvcjcwY292YXJpYXRlKHMpIG9yIGNvdmFyaWF0ZSBsZXZlbChzKVxuIn0= -->
 <pre><code>Found2batches
-Adjusting for67covariate(s) or covariate level(s)</code></pre>
+Adjusting for70covariate(s) or covariate level(s)</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiU3RhbmRhcmRpemluZyBEYXRhIGFjcm9zcyBnZW5lc1xuIn0= -->
 <pre><code>Standardizing Data across genes</code></pre>
