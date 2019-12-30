@@ -1,7 +1,6 @@
 ## Fusion prioritization
 
 **Module authors :** Krutika Gaonkar ([@kgaonkar6](https://github.com/kgaonkar6)), Jaclyn Taroni ([@jaclyn-taroni](https://github.com/jaclyn-taroni)), Jo Lynne Harenza([@jharenza](https://github.com/jharenza)), and Komal Rathi ([@komalsrathi](https://github.com/komalsrathi))
-Jo Lynne([@jharenza](https://github.com/jharenza))
 Komal Rathi ([@komalsrathi] (https://github.com/komalsrathi))
 
 
