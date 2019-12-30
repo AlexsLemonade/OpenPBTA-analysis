@@ -3057,25 +3057,32 @@ summary(as.factor(metadata$molecular_subtype))</code></pre>
 <h2>Identify TP53 SNVs.</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudHA1M19tdXQgPC0gc252X2RmICU+JVxuICAjIEZpbHRlciB0byBvbmx5IFNOVidzIGluIFRQNTMgZ2VuZVxuICBkcGx5cjo6ZmlsdGVyKEh1Z29fU3ltYm9sID09IFwiVFA1M1wiKSAlPiUgXG4gIGRwbHlyOjpncm91cF9ieShUdW1vcl9TYW1wbGVfQmFyY29kZSkgJT4lIFxuICBkcGx5cjo6c3VtbWFyaXplKG51bV90cDUzX211dCA9IGRwbHlyOjpuKCkpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudHA1M19tdXQgPC0gc252X2RmICU+JVxuICAjIEZpbHRlciB0byBvbmx5IFNOVidzIGluIFRQNTMgZ2VuZVxuICBkcGx5cjo6ZmlsdGVyKEh1Z29fU3ltYm9sID09IFwiVFA1M1wiKSAlPiVcbiAgZHBseXI6Omdyb3VwX2J5KFR1bW9yX1NhbXBsZV9CYXJjb2RlKSAlPiUgXG4gIGRwbHlyOjpzdW1tYXJpemUobnVtX1RQNTNfbXV0YXRpb24gPSBkcGx5cjo6bigpKVxuYGBgIn0= -->
 <pre class="r"><code>tp53_mut &lt;- snv_df %&gt;%
   # Filter to only SNV's in TP53 gene
-  dplyr::filter(Hugo_Symbol == &quot;TP53&quot;) %&gt;% 
+  dplyr::filter(Hugo_Symbol == &quot;TP53&quot;) %&gt;%
   dplyr::group_by(Tumor_Sample_Barcode) %&gt;% 
-  dplyr::summarize(num_tp53_mut = dplyr::n())</code></pre>
+  dplyr::summarize(num_TP53_mutation = dplyr::n())</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Print out the table of TP53 mutations per sample.</p>
+<p>Add other sample identifiers to this information.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudHA1M19tdXRcbmBgYCJ9 -->
-<pre class="r"><code>tp53_mut</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudHA1M19tdXQgPC0gdHA1M19tdXQgJT4lIFxuICBkcGx5cjo6aW5uZXJfam9pbihkcGx5cjo6c2VsZWN0KG1ldGFkYXRhLCBcIktpZHNfRmlyc3RfUGFydGljaXBhbnRfSURcIiwgXCJzYW1wbGVfaWRcIiwgXCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEXCIpLFxuICAgICAgICAgICAgICAgICAgICBieSA9IGMoXCJUdW1vcl9TYW1wbGVfQmFyY29kZVwiID0gXCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEXCIpKSAlPiUgXG4gICMgUmVhcnJhbmdlIGNvbHVtbnMgZm9yIG1vcmUgZWFzaWx5IHJlYWRhYmxlIHRhYmxlXG4gIGRwbHlyOjpzZWxlY3QoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCwgc2FtcGxlX2lkLCBUdW1vcl9TYW1wbGVfQmFyY29kZSxcdG51bV9UUDUzX211dGF0aW9uKVxuXG4jIFByaW50IG91dCB0aGlzIHRhYmxlXG50cDUzX211dCBcbmBgYCJ9 -->
+<pre class="r"><code>tp53_mut &lt;- tp53_mut %&gt;% 
+  dplyr::inner_join(dplyr::select(metadata, &quot;Kids_First_Participant_ID&quot;, &quot;sample_id&quot;, &quot;Kids_First_Biospecimen_ID&quot;),
+                    by = c(&quot;Tumor_Sample_Barcode&quot; = &quot;Kids_First_Biospecimen_ID&quot;)) %&gt;% 
+  # Rearrange columns for more easily readable table
+  dplyr::select(Kids_First_Participant_ID, sample_id, Tumor_Sample_Barcode, num_TP53_mutation)
+
+# Print out this table
+tp53_mut </code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MiwibnJvdyI6Nn0sInJkZiI6IlVrUllNd3BZQ2dBQUFBTUFBd1lBQUFNRkFBQUFBQVZWVkVZdE9BQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFJQUFBQVFBQUFBQmdBRUFBa0FBQUFMUWxOZk1VTmFVRlpEV0ZJQUJBQUpBQUFBQzBKVFh6SktORVpITkVoV0FBUUFDUUFBQUF0Q1UxODFTa014TVRaT1RRQUVBQWtBQUFBTFFsTmZSbFpaUWtkTlJ6RUFCQUFKQUFBQUMwSlRYMWRaTlV0WlUwaEtBQVFBQ1FBQUFBdENVMTlhVWpjMVJVdExXQUFBQUEwQUFBQUdBQUFBQVFBQUFBRUFBQUFCQUFBQUFnQUFBQUVBQUFBQkFBQUVBZ0FBQUFFQUJBQUpBQUFBQlc1aGJXVnpBQUFBRUFBQUFBSUFCQUFKQUFBQUZGUjFiVzl5WDFOaGJYQnNaVjlDWVhKamIyUmxBQVFBQ1FBQUFBeHVkVzFmZEhBMU0xOXRkWFFBQUFRQ0FBQUFBUUFFQUFrQUFBQUpjbTkzTG01aGJXVnpBQUFBRFFBQUFBS0FBQUFBLy8vLytnQUFCQUlBQUFBQkFBUUFDUUFBQUFWamJHRnpjd0FBQUJBQUFBQUJBQVFBQ1FBQUFBcGtZWFJoTG1aeVlXMWxBQUFBL2dBQUJBSUFBQUFCQUFRQUNRQUFBQWR2Y0hScGIyNXpBQUFDRXdBQUFBVUFBQUFRQUFBQUFRQUVBQWtBQUFBQmNnQUFBQkFBQUFBQkFBUUFDUUFBQUJCMWJtNWhiV1ZrTFdOb2RXNXJMVGt5QUFBQUNnQUFBQUVBQUFBQUFBQUFEUUFBQUFFQUFBQUdBQUFBRFFBQUFBRUFBQUFDQUFBRUFnQUFBdjhBQUFBUUFBQUFCUUFFQUFrQUFBQUdaVzVuYVc1bEFBUUFDUUFBQUFWc1lXSmxiQUFFQUFrQUFBQU9jbTkzYm1GdFpYTXVjSEpwYm5RQUJBQUpBQUFBQ25KdmQzTXVkRzkwWVd3QUJBQUpBQUFBQ21OdmJITXVkRzkwWVd3QUFBRCtBQUFBL2c9PSJ9 -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6NCwibnJvdyI6Nn0sInJkZiI6IlVrUllNd3BZQ2dBQUFBTUFBd1lBQUFNRkFBQUFBQVZWVkVZdE9BQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFRQUFBQVFBQUFBQmdBRUFBa0FBQUFMVUZSZk9WTTJWMDFST1RJQUJBQUpBQUFBQzFCVVgxaEJPVGhJUnpGREFBUUFDUUFBQUF0UVZGOVlRVGs0U0VjeFF3QUVBQWtBQUFBTFVGUmZPVVJOVFZvd09FUUFCQUFKQUFBQUMxQlVYemxUTmxkTlVUa3lBQVFBQ1FBQUFBdFFWRjg1VXpaWFRWRTVNZ0FBQUJBQUFBQUdBQVFBQ1FBQUFBZzNNekUyTFRNek13QUVBQWtBQUFBSU56TXhOaTA1TXpFQUJBQUpBQUFBQ1Rjek1UWXRNekF5TXdBRUFBa0FBQUFKTnpNeE5pMHhOamMyQUFRQUNRQUFBQWczTXpFMkxUSTNPQUFFQUFrQUFBQUhOek14TmkwNU5RQUFBQkFBQUFBR0FBUUFDUUFBQUF0Q1UxOHhRMXBRVmtOWVVnQUVBQWtBQUFBTFFsTmZNa28wUmtjMFNGWUFCQUFKQUFBQUMwSlRYelZLUXpFeE5rNU5BQVFBQ1FBQUFBdENVMTlHVmxsQ1IwMUhNUUFFQUFrQUFBQUxRbE5mVjFrMVMxbFRTRW9BQkFBSkFBQUFDMEpUWDFwU056VkZTMHRZQUFBQURRQUFBQVlBQUFBQkFBQUFBUUFBQUFFQUFBQUNBQUFBQVFBQUFBRUFBQVFDQUFBQUFRQUVBQWtBQUFBSmNtOTNMbTVoYldWekFBQUFEUUFBQUFLQUFBQUEvLy8vK2dBQUJBSUFBQUFCQUFRQUNRQUFBQVZqYkdGemN3QUFBQkFBQUFBQkFBUUFDUUFBQUFwa1lYUmhMbVp5WVcxbEFBQUVBZ0FBQUFFQUJBQUpBQUFBQlc1aGJXVnpBQUFBRUFBQUFBUUFCQUFKQUFBQUdVdHBaSE5mUm1seWMzUmZVR0Z5ZEdsamFYQmhiblJmU1VRQUJBQUpBQUFBQ1hOaGJYQnNaVjlwWkFBRUFBa0FBQUFVVkhWdGIzSmZVMkZ0Y0d4bFgwSmhjbU52WkdVQUJBQUpBQUFBRVc1MWJWOVVVRFV6WDIxMWRHRjBhVzl1QUFBQS9nQUFCQUlBQUFBQkFBUUFDUUFBQUFkdmNIUnBiMjV6QUFBQ0V3QUFBQVVBQUFBUUFBQUFBUUFFQUFrQUFBQUJjZ0FBQUJBQUFBQUJBQVFBQ1FBQUFCQjFibTVoYldWa0xXTm9kVzVyTFRFNEFBQUFDZ0FBQUFFQUFBQUFBQUFBRFFBQUFBRUFBQUFHQUFBQURRQUFBQUVBQUFBRUFBQUVBZ0FBQlA4QUFBQVFBQUFBQlFBRUFBa0FBQUFHWlc1bmFXNWxBQVFBQ1FBQUFBVnNZV0psYkFBRUFBa0FBQUFPY205M2JtRnRaWE11Y0hKcGJuUUFCQUFKQUFBQUNuSnZkM011ZEc5MFlXd0FCQUFKQUFBQUNtTnZiSE11ZEc5MFlXd0FBQUQrQUFBQS9nPT0ifQ== -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Tumor_Sample_Barcode"],"name":[1],"type":["chr"],"align":["left"]},{"label":["num_tp53_mut"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"BS_1CZPVCXR","2":"1"},{"1":"BS_2J4FG4HV","2":"1"},{"1":"BS_5JC116NM","2":"1"},{"1":"BS_FVYBGMG1","2":"2"},{"1":"BS_WY5KYSHJ","2":"1"},{"1":"BS_ZR75EKKX","2":"1"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Tumor_Sample_Barcode"],"name":[3],"type":["chr"],"align":["left"]},{"label":["num_TP53_mutation"],"name":[4],"type":["int"],"align":["right"]}],"data":[{"1":"PT_9S6WMQ92","2":"7316-333","3":"BS_1CZPVCXR","4":"1"},{"1":"PT_XA98HG1C","2":"7316-931","3":"BS_2J4FG4HV","4":"1"},{"1":"PT_XA98HG1C","2":"7316-3023","3":"BS_5JC116NM","4":"1"},{"1":"PT_9DMMZ08D","2":"7316-1676","3":"BS_FVYBGMG1","4":"2"},{"1":"PT_9S6WMQ92","2":"7316-278","3":"BS_WY5KYSHJ","4":"1"},{"1":"PT_9S6WMQ92","2":"7316-95","3":"BS_ZR75EKKX","4":"1"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
   </script>
 </div>
 <!-- rnb-frame-end -->
@@ -3090,7 +3097,7 @@ summary(as.factor(metadata$molecular_subtype))</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgICBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgIFxuIFs0XSBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgICBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgICBMQ19BRERSRVNTPUMgICAgICAgICAgICAgIFxuWzEwXSBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgICBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHBhcmFsbGVsICBzdGF0cyAgICAgZ3JhcGhpY3MgIGdyRGV2aWNlcyB1dGlscyAgICAgZGF0YXNldHMgIG1ldGhvZHMgICBiYXNlICAgICBcblxub3RoZXIgYXR0YWNoZWQgcGFja2FnZXM6XG5bMV0gc3Vydm1pbmVyXzAuNC40ICAgICBnZ3B1YnJfMC4yLjQgICAgICAgIG1hZ3JpdHRyXzEuNSAgICAgICAgZ2diaW9fMS4zNC4wICAgICAgIFxuWzVdIGdncGxvdDJfMy4yLjAgICAgICAgQmlvY0dlbmVyaWNzXzAuMzIuMCBtYWZ0b29sc18yLjIuMCAgICAgXG5cbmxvYWRlZCB2aWEgYSBuYW1lc3BhY2UgKGFuZCBub3QgYXR0YWNoZWQpOlxuICBbMV0gYmFja3BvcnRzXzEuMS40ICAgICAgICAgICAgICAgICAgICAgICAgIFxuICBbMl0gSG1pc2NfNC4yLTAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICBbM10gQmlvY0ZpbGVDYWNoZV8xLjEwLjIgICAgICAgICAgICAgICAgICAgIFxuICBbNF0gcGx5cl8xLjguNCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICBbNV0gbGF6eWV2YWxfMC4yLjIgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICBbNl0gR1NFQUJhc2VfMS40OC4wICAgICAgICAgICAgICAgICAgICAgICAgIFxuICBbN10gc3BsaW5lc18zLjYuMCAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICBbOF0gQmlvY1BhcmFsbGVsXzEuMjAuMCAgICAgICAgICAgICAgICAgICAgIFxuICBbOV0gR2Vub21lSW5mb0RiXzEuMjIuMCAgICAgICAgICAgICAgICAgICAgIFxuIFsxMF0gZGlnZXN0XzAuNi4yMCAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFsxMV0gZW5zZW1ibGRiXzIuMTAuMiAgICAgICAgICAgICAgICAgICAgICAgIFxuIFsxMl0gaHRtbHRvb2xzXzAuMy42ICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFsxM10gZmFuc2lfMC40LjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFsxNF0gY2hlY2ttYXRlXzEuOS40ICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFsxNV0gbWVtb2lzZV8xLjEuMCAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFsxNl0gQlNnZW5vbWVfMS41NC4wICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFsxN10gY2x1c3Rlcl8yLjEuMCAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFsxOF0gQmlvc3RyaW5nc18yLjU0LjAgICAgICAgICAgICAgICAgICAgICAgIFxuIFsxOV0gcmVhZHJfMS4zLjEgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFsyMF0gYW5ub3RhdGVfMS42NC4wICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFsyMV0gd29yZGNsb3VkXzIuNiAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFsyMl0gbWF0cml4U3RhdHNfMC41NS4wICAgICAgICAgICAgICAgICAgICAgIFxuIFsyM10gUi51dGlsc18yLjkuMCAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFsyNF0gYXNrcGFzc18xLjEgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFsyNV0gcHJldHR5dW5pdHNfMS4wLjIgICAgICAgICAgICAgICAgICAgICAgIFxuIFsyNl0gY29sb3JzcGFjZV8xLjQtMSAgICAgICAgICAgICAgICAgICAgICAgIFxuIFsyN10gYmxvYl8xLjEuMSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFsyOF0gcmFwcGRpcnNfMC4zLjEgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFsyOV0geGZ1bl8wLjggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFszMF0gZHBseXJfMC44LjMgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFszMV0gY3JheW9uXzEuMy40ICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFszMl0gUkN1cmxfMS45NS00LjEyICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFszM10ganNvbmxpdGVfMS42ICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFszNF0gZ3JhcGhfMS42NC4wICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFszNV0gemVhbGxvdF8wLjEuMCAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFszNl0gc3Vydml2YWxfMi40NC0xLjEgICAgICAgICAgICAgICAgICAgICAgIFxuIFszN10gVmFyaWFudEFubm90YXRpb25fMS4zMi4wICAgICAgICAgICAgICAgIFxuIFszOF0gem9vXzEuOC02ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFszOV0gZ2x1ZV8xLjMuMSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs0MF0gZ3RhYmxlXzAuMy4wICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs0MV0gemxpYmJpb2NfMS4zMi4wICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs0Ml0gWFZlY3Rvcl8wLjI2LjAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs0M10gVHhEYi5Ic2FwaWVucy5VQ1NDLmhnMzgua25vd25HZW5lXzMuMTAuMFxuIFs0NF0gRGVsYXllZEFycmF5XzAuMTIuMCAgICAgICAgICAgICAgICAgICAgIFxuIFs0NV0gc2NhbGVzXzEuMC4wICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs0Nl0gREJJXzEuMC4wICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs0N10gR0dhbGx5XzEuNC4wICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs0OF0gUmNwcF8xLjAuMSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs0OV0geHRhYmxlXzEuOC00ICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs1MF0gcHJvZ3Jlc3NfMS4yLjIgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs1MV0gY21wcnNrXzIuMi04ICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs1Ml0gaHRtbFRhYmxlXzEuMTMuMSAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs1M10gZm9yZWlnbl8wLjgtNzEgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs1NF0gYml0XzEuMS0xNCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs1NV0gT3JnYW5pc21EYmlfMS4yOC4wICAgICAgICAgICAgICAgICAgICAgIFxuIFs1Nl0ga20uY2lfMC41LTIgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs1N10gRm9ybXVsYV8xLjItMyAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs1OF0gRFRfMC43ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs1OV0gc3RhdHM0XzMuNi4wICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs2MF0gR1NWQV8xLjM0LjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs2MV0gaHRtbHdpZGdldHNfMS4zICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs2Ml0gaHR0cl8xLjQuMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs2M10gUkNvbG9yQnJld2VyXzEuMS0yICAgICAgICAgICAgICAgICAgICAgIFxuIFs2NF0gYWNlcGFja18xLjQuMSAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs2NV0gcGtnY29uZmlnXzIuMC4yICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs2Nl0gcmVzaGFwZV8wLjguOCAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs2N10gWE1MXzMuOTgtMS4yMCAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs2OF0gUi5tZXRob2RzUzNfMS43LjEgICAgICAgICAgICAgICAgICAgICAgIFxuIFs2OV0gbm5ldF83LjMtMTIgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs3MF0gZGJwbHlyXzEuNC4yICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs3MV0gdXRmOF8xLjEuNCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs3Ml0gdGlkeXNlbGVjdF8wLjIuNSAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs3M10gbGFiZWxpbmdfMC4zICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs3NF0gcmxhbmdfMC40LjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs3NV0gcmVzaGFwZTJfMS40LjMgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs3Nl0gbGF0ZXJfMC44LjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs3N10gQW5ub3RhdGlvbkRiaV8xLjQ4LjAgICAgICAgICAgICAgICAgICAgIFxuIFs3OF0gbXVuc2VsbF8wLjUuMCAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs3OV0gdG9vbHNfMy42LjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs4MF0gY2xpXzEuMS4wICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs4MV0gZ2VuZXJpY3NfMC4wLjIgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs4Ml0gUlNRTGl0ZV8yLjEuMSAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs4M10gYnJvb21fMC41LjIgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs4NF0gZXZhbHVhdGVfMC4xNCAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs4NV0gc3RyaW5ncl8xLjQuMCAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs4Nl0geWFtbF8yLjIuMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs4N10gcmVtYXRjaDJfMi4wLjEgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs4OF0gb3JnLkhzLmVnLmRiXzMuMTAuMCAgICAgICAgICAgICAgICAgICAgIFxuIFs4OV0ga25pdHJfMS4yMyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs5MF0gYml0NjRfMC45LTcgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs5MV0gc3Vydk1pc2NfMC41LjUgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs5Ml0gcHVycnJfMC4zLjIgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs5M10gQW5ub3RhdGlvbkZpbHRlcl8xLjEwLjAgICAgICAgICAgICAgICAgIFxuIFs5NF0gUkJHTF8xLjYyLjEgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs5NV0gbmxtZV8zLjEtMTQwICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs5Nl0gbWltZV8wLjcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs5N10gUi5vb18xLjIyLjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs5OF0gYmlvbWFSdF8yLjQyLjAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs5OV0gc2hpbnl0aGVtZXNfMS4xLjIgICAgICAgICAgICAgICAgICAgICAgIFxuWzEwMF0gY29tcGlsZXJfMy42LjAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEwMV0gcnN0dWRpb2FwaV8wLjEwICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEwMl0gY3VybF8zLjMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEwM10gZ2dzaWduaWZfMC42LjAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEwNF0gdGliYmxlXzIuMS4zICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEwNV0gZ2VuZXBsb3R0ZXJfMS42NC4wICAgICAgICAgICAgICAgICAgICAgIFxuWzEwNl0gc3RyaW5naV8xLjQuMyAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEwN10gaGlnaHJfMC44ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEwOF0gR2Vub21pY0ZlYXR1cmVzXzEuMzguMCAgICAgICAgICAgICAgICAgIFxuWzEwOV0gbGF0dGljZV8wLjIwLTM4ICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzExMF0gUHJvdEdlbmVyaWNzXzEuMTguMCAgICAgICAgICAgICAgICAgICAgIFxuWzExMV0gTWF0cml4XzEuMi0xNyAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzExMl0gc3R5bGVyXzEuMS4xICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzExM10gdmN0cnNfMC4xLjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzExNF0gS01zdXJ2XzAuMS01ICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzExNV0gcGlsbGFyXzEuNC4yICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzExNl0gQmlvY01hbmFnZXJfMS4zMC40ICAgICAgICAgICAgICAgICAgICAgIFxuWzExN10gY29sb3JibGluZHJfMC4xLjAgICAgICAgICAgICAgICAgICAgICAgIFxuWzExOF0gY293cGxvdF8wLjkuNCAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzExOV0gZGF0YS50YWJsZV8xLjEyLjIgICAgICAgICAgICAgICAgICAgICAgIFxuWzEyMF0gYml0b3BzXzEuMC02ICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEyMV0gaHR0cHV2XzEuNS4xICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEyMl0gcnRyYWNrbGF5ZXJfMS40Ni4wICAgICAgICAgICAgICAgICAgICAgIFxuWzEyM10gR2Vub21pY1Jhbmdlc18xLjM4LjAgICAgICAgICAgICAgICAgICAgIFxuWzEyNF0gUjZfMi40LjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEyNV0gbGF0dGljZUV4dHJhXzAuNi0yOCAgICAgICAgICAgICAgICAgICAgIFxuWzEyNl0gcHJvbWlzZXNfMS4wLjEgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEyN10gZ3JpZEV4dHJhXzIuMyAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEyOF0gSVJhbmdlc18yLjIwLjEgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEyOV0gZGljaHJvbWF0XzIuMC0wICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEzMF0gYXNzZXJ0dGhhdF8wLjIuMSAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEzMV0gU3VtbWFyaXplZEV4cGVyaW1lbnRfMS4xNi4wICAgICAgICAgICAgIFxuWzEzMl0gcnByb2pyb290XzEuMy0yICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEzM10gb3BlbnNzbF8xLjQgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEzNF0gd2l0aHJfMi4xLjIgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEzNV0gR2Vub21pY0FsaWdubWVudHNfMS4yMi4xICAgICAgICAgICAgICAgIFxuWzEzNl0gUnNhbXRvb2xzXzIuMi4xICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEzN10gUzRWZWN0b3JzXzAuMjQuMSAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEzOF0gR2Vub21lSW5mb0RiRGF0YV8xLjIuMiAgICAgICAgICAgICAgICAgIFxuWzEzOV0gaG1zXzAuNC4yICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzE0MF0gZ3JpZF8zLjYuMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzE0MV0gcnBhcnRfNC4xLTE1ICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzE0Ml0gdGlkeXJfMC44LjMgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzE0M10gcm1hcmtkb3duXzEuMTMgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzE0NF0gYmlvdml6QmFzZV8xLjM0LjEgICAgICAgICAgICAgICAgICAgICAgIFxuWzE0NV0gQmlvYmFzZV8yLjQ2LjAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzE0Nl0gc2hpbnlfMS4zLjIgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzE0N10gYmFzZTY0ZW5jXzAuMS0zICAgICAgICAgICAgICAgICAgICAgICAgIFxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgICBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgICBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgIFxuIFs2XSBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgICBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgICBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgIFxuWzExXSBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHBhcmFsbGVsICBzdGF0cyAgICAgZ3JhcGhpY3MgIGdyRGV2aWNlcyB1dGlscyAgICAgZGF0YXNldHMgIG1ldGhvZHMgICBiYXNlICAgICBcblxub3RoZXIgYXR0YWNoZWQgcGFja2FnZXM6XG5bMV0gc3Vydm1pbmVyXzAuNC40ICAgICBnZ3B1YnJfMC4yLjQgICAgICAgIG1hZ3JpdHRyXzEuNSAgICAgICAgZ2diaW9fMS4zNC4wICAgICAgICBnZ3Bsb3QyXzMuMi4wICAgICAgIEJpb2NHZW5lcmljc18wLjMyLjAgbWFmdG9vbHNfMi4yLjAgICAgIFxuXG5sb2FkZWQgdmlhIGEgbmFtZXNwYWNlIChhbmQgbm90IGF0dGFjaGVkKTpcbiAgWzFdIGJhY2twb3J0c18xLjEuNCAgICAgICAgICAgICAgICAgICAgICAgICAgSG1pc2NfNC4yLTAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBCaW9jRmlsZUNhY2hlXzEuMTAuMiAgICAgICAgICAgICAgICAgICAgXG4gIFs0XSBwbHlyXzEuOC40ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxhenlldmFsXzAuMi4yICAgICAgICAgICAgICAgICAgICAgICAgICAgR1NFQUJhc2VfMS40OC4wICAgICAgICAgICAgICAgICAgICAgICAgIFxuICBbN10gc3BsaW5lc18zLjYuMCAgICAgICAgICAgICAgICAgICAgICAgICAgICBCaW9jUGFyYWxsZWxfMS4yMC4wICAgICAgICAgICAgICAgICAgICAgIEdlbm9tZUluZm9EYl8xLjIyLjAgICAgICAgICAgICAgICAgICAgICBcbiBbMTBdIGRpZ2VzdF8wLjYuMjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZW5zZW1ibGRiXzIuMTAuMiAgICAgICAgICAgICAgICAgICAgICAgICBodG1sdG9vbHNfMC4zLjYgICAgICAgICAgICAgICAgICAgICAgICAgXG4gWzEzXSBmYW5zaV8wLjQuMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNoZWNrbWF0ZV8xLjkuNCAgICAgICAgICAgICAgICAgICAgICAgICAgbWVtb2lzZV8xLjEuMCAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFsxNl0gQlNnZW5vbWVfMS41NC4wICAgICAgICAgICAgICAgICAgICAgICAgICBjbHVzdGVyXzIuMS4wICAgICAgICAgICAgICAgICAgICAgICAgICAgIEJpb3N0cmluZ3NfMi41NC4wICAgICAgICAgICAgICAgICAgICAgICBcbiBbMTldIHJlYWRyXzEuMy4xICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYW5ub3RhdGVfMS42NC4wICAgICAgICAgICAgICAgICAgICAgICAgICB3b3JkY2xvdWRfMi42ICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gWzIyXSBtYXRyaXhTdGF0c18wLjU1LjAgICAgICAgICAgICAgICAgICAgICAgIFIudXRpbHNfMi45LjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYXNrcGFzc18xLjEgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFsyNV0gcHJldHR5dW5pdHNfMS4wLjIgICAgICAgICAgICAgICAgICAgICAgICBjb2xvcnNwYWNlXzEuNC0xICAgICAgICAgICAgICAgICAgICAgICAgIGJsb2JfMS4xLjEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcbiBbMjhdIHJhcHBkaXJzXzAuMy4xICAgICAgICAgICAgICAgICAgICAgICAgICAgeGZ1bl8wLjggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkcGx5cl8wLjguMyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gWzMxXSBjcmF5b25fMS4zLjQgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFJDdXJsXzEuOTUtNC4xMiAgICAgICAgICAgICAgICAgICAgICAgICAganNvbmxpdGVfMS42ICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFszNF0gZ3JhcGhfMS42NC4wICAgICAgICAgICAgICAgICAgICAgICAgICAgICB6ZWFsbG90XzAuMS4wICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN1cnZpdmFsXzIuNDQtMS4xICAgICAgICAgICAgICAgICAgICAgICBcbiBbMzddIFZhcmlhbnRBbm5vdGF0aW9uXzEuMzIuMCAgICAgICAgICAgICAgICAgem9vXzEuOC02ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnbHVlXzEuMy4xICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gWzQwXSBndGFibGVfMC4zLjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHpsaWJiaW9jXzEuMzIuMCAgICAgICAgICAgICAgICAgICAgICAgICAgWFZlY3Rvcl8wLjI2LjAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs0M10gVHhEYi5Ic2FwaWVucy5VQ1NDLmhnMzgua25vd25HZW5lXzMuMTAuMCBEZWxheWVkQXJyYXlfMC4xMi4wICAgICAgICAgICAgICAgICAgICAgIHNjYWxlc18xLjAuMCAgICAgICAgICAgICAgICAgICAgICAgICAgICBcbiBbNDZdIERCSV8xLjAuMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgR0dhbGx5XzEuNC4wICAgICAgICAgICAgICAgICAgICAgICAgICAgICBSY3BwXzEuMC4xICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gWzQ5XSB4dGFibGVfMS44LTQgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHByb2dyZXNzXzEuMi4yICAgICAgICAgICAgICAgICAgICAgICAgICAgY21wcnNrXzIuMi04ICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs1Ml0gaHRtbFRhYmxlXzEuMTMuMSAgICAgICAgICAgICAgICAgICAgICAgICBmb3JlaWduXzAuOC03MSAgICAgICAgICAgICAgICAgICAgICAgICAgIGJpdF8xLjEtMTQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcbiBbNTVdIE9yZ2FuaXNtRGJpXzEuMjguMCAgICAgICAgICAgICAgICAgICAgICAga20uY2lfMC41LTIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBGb3JtdWxhXzEuMi0zICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gWzU4XSBEVF8wLjcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0YXRzNF8zLjYuMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgR1NWQV8xLjM0LjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs2MV0gaHRtbHdpZGdldHNfMS4zICAgICAgICAgICAgICAgICAgICAgICAgICBodHRyXzEuNC4wICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFJDb2xvckJyZXdlcl8xLjEtMiAgICAgICAgICAgICAgICAgICAgICBcbiBbNjRdIGFjZXBhY2tfMS40LjEgICAgICAgICAgICAgICAgICAgICAgICAgICAgcGtnY29uZmlnXzIuMC4yICAgICAgICAgICAgICAgICAgICAgICAgICByZXNoYXBlXzAuOC44ICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gWzY3XSBYTUxfMy45OC0xLjIwICAgICAgICAgICAgICAgICAgICAgICAgICAgIFIubWV0aG9kc1MzXzEuNy4xICAgICAgICAgICAgICAgICAgICAgICAgbm5ldF83LjMtMTIgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs3MF0gZGJwbHlyXzEuNC4yICAgICAgICAgICAgICAgICAgICAgICAgICAgICB1dGY4XzEuMS40ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRpZHlzZWxlY3RfMC4yLjUgICAgICAgICAgICAgICAgICAgICAgICBcbiBbNzNdIGxhYmVsaW5nXzAuMyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmxhbmdfMC40LjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXNoYXBlMl8xLjQuMyAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gWzc2XSBsYXRlcl8wLjguMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEFubm90YXRpb25EYmlfMS40OC4wICAgICAgICAgICAgICAgICAgICAgbXVuc2VsbF8wLjUuMCAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs3OV0gdG9vbHNfMy42LjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbGlfMS4xLjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdlbmVyaWNzXzAuMC4yICAgICAgICAgICAgICAgICAgICAgICAgICBcbiBbODJdIFJTUUxpdGVfMi4xLjEgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJvb21fMC41LjIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBldmFsdWF0ZV8wLjE0ICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gWzg1XSBzdHJpbmdyXzEuNC4wICAgICAgICAgICAgICAgICAgICAgICAgICAgIHlhbWxfMi4yLjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmVtYXRjaDJfMi4wLjEgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs4OF0gb3JnLkhzLmVnLmRiXzMuMTAuMCAgICAgICAgICAgICAgICAgICAgICBrbml0cl8xLjIzICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJpdDY0XzAuOS03ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcbiBbOTFdIHN1cnZNaXNjXzAuNS41ICAgICAgICAgICAgICAgICAgICAgICAgICAgcHVycnJfMC4zLjIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBBbm5vdGF0aW9uRmlsdGVyXzEuMTAuMCAgICAgICAgICAgICAgICAgXG4gWzk0XSBSQkdMXzEuNjIuMSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG5sbWVfMy4xLTE0MCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbWltZV8wLjcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs5N10gUi5vb18xLjIyLjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBiaW9tYVJ0XzIuNDIuMCAgICAgICAgICAgICAgICAgICAgICAgICAgIHNoaW55dGhlbWVzXzEuMS4yICAgICAgICAgICAgICAgICAgICAgICBcblsxMDBdIGNvbXBpbGVyXzMuNi4wICAgICAgICAgICAgICAgICAgICAgICAgICAgcnN0dWRpb2FwaV8wLjEwICAgICAgICAgICAgICAgICAgICAgICAgICBjdXJsXzMuMyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bMTAzXSBnZ3NpZ25pZl8wLjYuMCAgICAgICAgICAgICAgICAgICAgICAgICAgIHRpYmJsZV8yLjEuMyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2VuZXBsb3R0ZXJfMS42NC4wICAgICAgICAgICAgICAgICAgICAgIFxuWzEwNl0gc3RyaW5naV8xLjQuMyAgICAgICAgICAgICAgICAgICAgICAgICAgICBoaWdocl8wLjggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEdlbm9taWNGZWF0dXJlc18xLjM4LjAgICAgICAgICAgICAgICAgICBcblsxMDldIGxhdHRpY2VfMC4yMC0zOCAgICAgICAgICAgICAgICAgICAgICAgICAgUHJvdEdlbmVyaWNzXzEuMTguMCAgICAgICAgICAgICAgICAgICAgICBNYXRyaXhfMS4yLTE3ICAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bMTEyXSBzdHlsZXJfMS4xLjEgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHZjdHJzXzAuMS4wICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgS01zdXJ2XzAuMS01ICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzExNV0gcGlsbGFyXzEuNC4yICAgICAgICAgICAgICAgICAgICAgICAgICAgICBCaW9jTWFuYWdlcl8xLjMwLjQgICAgICAgICAgICAgICAgICAgICAgIGNvbG9yYmxpbmRyXzAuMS4wICAgICAgICAgICAgICAgICAgICAgICBcblsxMThdIGNvd3Bsb3RfMC45LjQgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGF0YS50YWJsZV8xLjEyLjIgICAgICAgICAgICAgICAgICAgICAgICBiaXRvcHNfMS4wLTYgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bMTIxXSBodHRwdXZfMS41LjEgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJ0cmFja2xheWVyXzEuNDYuMCAgICAgICAgICAgICAgICAgICAgICAgR2Vub21pY1Jhbmdlc18xLjM4LjAgICAgICAgICAgICAgICAgICAgIFxuWzEyNF0gUjZfMi40LjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsYXR0aWNlRXh0cmFfMC42LTI4ICAgICAgICAgICAgICAgICAgICAgIHByb21pc2VzXzEuMC4xICAgICAgICAgICAgICAgICAgICAgICAgICBcblsxMjddIGdyaWRFeHRyYV8yLjMgICAgICAgICAgICAgICAgICAgICAgICAgICAgSVJhbmdlc18yLjIwLjEgICAgICAgICAgICAgICAgICAgICAgICAgICBkaWNocm9tYXRfMi4wLTAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bMTMwXSBhc3NlcnR0aGF0XzAuMi4xICAgICAgICAgICAgICAgICAgICAgICAgIFN1bW1hcml6ZWRFeHBlcmltZW50XzEuMTYuMCAgICAgICAgICAgICAgcnByb2pyb290XzEuMy0yICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEzM10gb3BlbnNzbF8xLjQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB3aXRocl8yLjEuMiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEdlbm9taWNBbGlnbm1lbnRzXzEuMjIuMSAgICAgICAgICAgICAgICBcblsxMzZdIFJzYW10b29sc18yLjIuMSAgICAgICAgICAgICAgICAgICAgICAgICAgUzRWZWN0b3JzXzAuMjQuMSAgICAgICAgICAgICAgICAgICAgICAgICBHZW5vbWVJbmZvRGJEYXRhXzEuMi4yICAgICAgICAgICAgICAgICAgXG5bMTM5XSBobXNfMC40LjIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdyaWRfMy42LjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcnBhcnRfNC4xLTE1ICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzE0Ml0gdGlkeXJfMC44LjMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBybWFya2Rvd25fMS4xMyAgICAgICAgICAgICAgICAgICAgICAgICAgIGJpb3ZpekJhc2VfMS4zNC4xICAgICAgICAgICAgICAgICAgICAgICBcblsxNDVdIEJpb2Jhc2VfMi40Ni4wICAgICAgICAgICAgICAgICAgICAgICAgICAgc2hpbnlfMS4zLjIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBiYXNlNjRlbmNfMC4xLTMgICAgICAgICAgICAgICAgICAgICAgICAgXG4ifQ== -->
 <pre><code>R version 3.6.0 (2019-04-26)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Debian GNU/Linux 9 (stretch)
@@ -3099,171 +3106,71 @@ Matrix products: default
 BLAS/LAPACK: /usr/lib/libopenblasp-r0.2.19.so
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C               LC_TIME=en_US.UTF-8       
- [4] LC_COLLATE=en_US.UTF-8     LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                  LC_ADDRESS=C              
-[10] LC_TELEPHONE=C             LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C               LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8     LC_MONETARY=en_US.UTF-8   
+ [6] LC_MESSAGES=C              LC_PAPER=en_US.UTF-8       LC_NAME=C                  LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
 [1] parallel  stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] survminer_0.4.4     ggpubr_0.2.4        magrittr_1.5        ggbio_1.34.0       
-[5] ggplot2_3.2.0       BiocGenerics_0.32.0 maftools_2.2.0     
+[1] survminer_0.4.4     ggpubr_0.2.4        magrittr_1.5        ggbio_1.34.0        ggplot2_3.2.0       BiocGenerics_0.32.0 maftools_2.2.0     
 
 loaded via a namespace (and not attached):
-  [1] backports_1.1.4                         
-  [2] Hmisc_4.2-0                             
-  [3] BiocFileCache_1.10.2                    
-  [4] plyr_1.8.4                              
-  [5] lazyeval_0.2.2                          
-  [6] GSEABase_1.48.0                         
-  [7] splines_3.6.0                           
-  [8] BiocParallel_1.20.0                     
-  [9] GenomeInfoDb_1.22.0                     
- [10] digest_0.6.20                           
- [11] ensembldb_2.10.2                        
- [12] htmltools_0.3.6                         
- [13] fansi_0.4.0                             
- [14] checkmate_1.9.4                         
- [15] memoise_1.1.0                           
- [16] BSgenome_1.54.0                         
- [17] cluster_2.1.0                           
- [18] Biostrings_2.54.0                       
- [19] readr_1.3.1                             
- [20] annotate_1.64.0                         
- [21] wordcloud_2.6                           
- [22] matrixStats_0.55.0                      
- [23] R.utils_2.9.0                           
- [24] askpass_1.1                             
- [25] prettyunits_1.0.2                       
- [26] colorspace_1.4-1                        
- [27] blob_1.1.1                              
- [28] rappdirs_0.3.1                          
- [29] xfun_0.8                                
- [30] dplyr_0.8.3                             
- [31] crayon_1.3.4                            
- [32] RCurl_1.95-4.12                         
- [33] jsonlite_1.6                            
- [34] graph_1.64.0                            
- [35] zeallot_0.1.0                           
- [36] survival_2.44-1.1                       
- [37] VariantAnnotation_1.32.0                
- [38] zoo_1.8-6                               
- [39] glue_1.3.1                              
- [40] gtable_0.3.0                            
- [41] zlibbioc_1.32.0                         
- [42] XVector_0.26.0                          
- [43] TxDb.Hsapiens.UCSC.hg38.knownGene_3.10.0
- [44] DelayedArray_0.12.0                     
- [45] scales_1.0.0                            
- [46] DBI_1.0.0                               
- [47] GGally_1.4.0                            
- [48] Rcpp_1.0.1                              
- [49] xtable_1.8-4                            
- [50] progress_1.2.2                          
- [51] cmprsk_2.2-8                            
- [52] htmlTable_1.13.1                        
- [53] foreign_0.8-71                          
- [54] bit_1.1-14                              
- [55] OrganismDbi_1.28.0                      
- [56] km.ci_0.5-2                             
- [57] Formula_1.2-3                           
- [58] DT_0.7                                  
- [59] stats4_3.6.0                            
- [60] GSVA_1.34.0                             
- [61] htmlwidgets_1.3                         
- [62] httr_1.4.0                              
- [63] RColorBrewer_1.1-2                      
- [64] acepack_1.4.1                           
- [65] pkgconfig_2.0.2                         
- [66] reshape_0.8.8                           
- [67] XML_3.98-1.20                           
- [68] R.methodsS3_1.7.1                       
- [69] nnet_7.3-12                             
- [70] dbplyr_1.4.2                            
- [71] utf8_1.1.4                              
- [72] tidyselect_0.2.5                        
- [73] labeling_0.3                            
- [74] rlang_0.4.0                             
- [75] reshape2_1.4.3                          
- [76] later_0.8.0                             
- [77] AnnotationDbi_1.48.0                    
- [78] munsell_0.5.0                           
- [79] tools_3.6.0                             
- [80] cli_1.1.0                               
- [81] generics_0.0.2                          
- [82] RSQLite_2.1.1                           
- [83] broom_0.5.2                             
- [84] evaluate_0.14                           
- [85] stringr_1.4.0                           
- [86] yaml_2.2.0                              
- [87] rematch2_2.0.1                          
- [88] org.Hs.eg.db_3.10.0                     
- [89] knitr_1.23                              
- [90] bit64_0.9-7                             
- [91] survMisc_0.5.5                          
- [92] purrr_0.3.2                             
- [93] AnnotationFilter_1.10.0                 
- [94] RBGL_1.62.1                             
- [95] nlme_3.1-140                            
- [96] mime_0.7                                
- [97] R.oo_1.22.0                             
- [98] biomaRt_2.42.0                          
- [99] shinythemes_1.1.2                       
-[100] compiler_3.6.0                          
-[101] rstudioapi_0.10                         
-[102] curl_3.3                                
-[103] ggsignif_0.6.0                          
-[104] tibble_2.1.3                            
-[105] geneplotter_1.64.0                      
-[106] stringi_1.4.3                           
-[107] highr_0.8                               
-[108] GenomicFeatures_1.38.0                  
-[109] lattice_0.20-38                         
-[110] ProtGenerics_1.18.0                     
-[111] Matrix_1.2-17                           
-[112] styler_1.1.1                            
-[113] vctrs_0.1.0                             
-[114] KMsurv_0.1-5                            
-[115] pillar_1.4.2                            
-[116] BiocManager_1.30.4                      
-[117] colorblindr_0.1.0                       
-[118] cowplot_0.9.4                           
-[119] data.table_1.12.2                       
-[120] bitops_1.0-6                            
-[121] httpuv_1.5.1                            
-[122] rtracklayer_1.46.0                      
-[123] GenomicRanges_1.38.0                    
-[124] R6_2.4.0                                
-[125] latticeExtra_0.6-28                     
-[126] promises_1.0.1                          
-[127] gridExtra_2.3                           
-[128] IRanges_2.20.1                          
-[129] dichromat_2.0-0                         
-[130] assertthat_0.2.1                        
-[131] SummarizedExperiment_1.16.0             
-[132] rprojroot_1.3-2                         
-[133] openssl_1.4                             
-[134] withr_2.1.2                             
-[135] GenomicAlignments_1.22.1                
-[136] Rsamtools_2.2.1                         
-[137] S4Vectors_0.24.1                        
-[138] GenomeInfoDbData_1.2.2                  
-[139] hms_0.4.2                               
-[140] grid_3.6.0                              
-[141] rpart_4.1-15                            
-[142] tidyr_0.8.3                             
-[143] rmarkdown_1.13                          
-[144] biovizBase_1.34.1                       
-[145] Biobase_2.46.0                          
-[146] shiny_1.3.2                             
-[147] base64enc_0.1-3                         </code></pre>
+  [1] backports_1.1.4                          Hmisc_4.2-0                              BiocFileCache_1.10.2                    
+  [4] plyr_1.8.4                               lazyeval_0.2.2                           GSEABase_1.48.0                         
+  [7] splines_3.6.0                            BiocParallel_1.20.0                      GenomeInfoDb_1.22.0                     
+ [10] digest_0.6.20                            ensembldb_2.10.2                         htmltools_0.3.6                         
+ [13] fansi_0.4.0                              checkmate_1.9.4                          memoise_1.1.0                           
+ [16] BSgenome_1.54.0                          cluster_2.1.0                            Biostrings_2.54.0                       
+ [19] readr_1.3.1                              annotate_1.64.0                          wordcloud_2.6                           
+ [22] matrixStats_0.55.0                       R.utils_2.9.0                            askpass_1.1                             
+ [25] prettyunits_1.0.2                        colorspace_1.4-1                         blob_1.1.1                              
+ [28] rappdirs_0.3.1                           xfun_0.8                                 dplyr_0.8.3                             
+ [31] crayon_1.3.4                             RCurl_1.95-4.12                          jsonlite_1.6                            
+ [34] graph_1.64.0                             zeallot_0.1.0                            survival_2.44-1.1                       
+ [37] VariantAnnotation_1.32.0                 zoo_1.8-6                                glue_1.3.1                              
+ [40] gtable_0.3.0                             zlibbioc_1.32.0                          XVector_0.26.0                          
+ [43] TxDb.Hsapiens.UCSC.hg38.knownGene_3.10.0 DelayedArray_0.12.0                      scales_1.0.0                            
+ [46] DBI_1.0.0                                GGally_1.4.0                             Rcpp_1.0.1                              
+ [49] xtable_1.8-4                             progress_1.2.2                           cmprsk_2.2-8                            
+ [52] htmlTable_1.13.1                         foreign_0.8-71                           bit_1.1-14                              
+ [55] OrganismDbi_1.28.0                       km.ci_0.5-2                              Formula_1.2-3                           
+ [58] DT_0.7                                   stats4_3.6.0                             GSVA_1.34.0                             
+ [61] htmlwidgets_1.3                          httr_1.4.0                               RColorBrewer_1.1-2                      
+ [64] acepack_1.4.1                            pkgconfig_2.0.2                          reshape_0.8.8                           
+ [67] XML_3.98-1.20                            R.methodsS3_1.7.1                        nnet_7.3-12                             
+ [70] dbplyr_1.4.2                             utf8_1.1.4                               tidyselect_0.2.5                        
+ [73] labeling_0.3                             rlang_0.4.0                              reshape2_1.4.3                          
+ [76] later_0.8.0                              AnnotationDbi_1.48.0                     munsell_0.5.0                           
+ [79] tools_3.6.0                              cli_1.1.0                                generics_0.0.2                          
+ [82] RSQLite_2.1.1                            broom_0.5.2                              evaluate_0.14                           
+ [85] stringr_1.4.0                            yaml_2.2.0                               rematch2_2.0.1                          
+ [88] org.Hs.eg.db_3.10.0                      knitr_1.23                               bit64_0.9-7                             
+ [91] survMisc_0.5.5                           purrr_0.3.2                              AnnotationFilter_1.10.0                 
+ [94] RBGL_1.62.1                              nlme_3.1-140                             mime_0.7                                
+ [97] R.oo_1.22.0                              biomaRt_2.42.0                           shinythemes_1.1.2                       
+[100] compiler_3.6.0                           rstudioapi_0.10                          curl_3.3                                
+[103] ggsignif_0.6.0                           tibble_2.1.3                             geneplotter_1.64.0                      
+[106] stringi_1.4.3                            highr_0.8                                GenomicFeatures_1.38.0                  
+[109] lattice_0.20-38                          ProtGenerics_1.18.0                      Matrix_1.2-17                           
+[112] styler_1.1.1                             vctrs_0.1.0                              KMsurv_0.1-5                            
+[115] pillar_1.4.2                             BiocManager_1.30.4                       colorblindr_0.1.0                       
+[118] cowplot_0.9.4                            data.table_1.12.2                        bitops_1.0-6                            
+[121] httpuv_1.5.1                             rtracklayer_1.46.0                       GenomicRanges_1.38.0                    
+[124] R6_2.4.0                                 latticeExtra_0.6-28                      promises_1.0.1                          
+[127] gridExtra_2.3                            IRanges_2.20.1                           dichromat_2.0-0                         
+[130] assertthat_0.2.1                         SummarizedExperiment_1.16.0              rprojroot_1.3-2                         
+[133] openssl_1.4                              withr_2.1.2                              GenomicAlignments_1.22.1                
+[136] Rsamtools_2.2.1                          S4Vectors_0.24.1                         GenomeInfoDbData_1.2.2                  
+[139] hms_0.4.2                                grid_3.6.0                               rpart_4.1-15                            
+[142] tidyr_0.8.3                              rmarkdown_1.13                           biovizBase_1.34.1                       
+[145] Biobase_2.46.0                           shiny_1.3.2                              base64enc_0.1-3                         </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiU0hIIFRQNTMgTW9sZWN1bGFyIFN1YnR5cGluZyIKb3V0cHV0OiAKICBodG1sX25vdGVib29rOgogICAgdG9jOiBUUlVFCiAgICB0b2NfZmxvYXQ6IFRSVUUKYXV0aG9yOiBDYW5kYWNlIFNhdm9uZW4gZm9yIEFMU0YgQ0NETApkYXRlOiAyMDE5Ci0tLQoKVGhpcyBub3RlYm9vayBbbW9sZWN1bGFybHkgc3VidHlwZXMgTWVkdWxsb2JsYXN0b21hIHNhbXBsZXMgaW50byB0aGVpciBUUDUzIHN0YXR1c10oaHR0cHM6Ly9naXRodWIuY29tL0FsZXhzTGVtb25hZGUvT3BlblBCVEEtYW5hbHlzaXMvaXNzdWVzLzI0NykuIAoKIyBVc2FnZQoKVGhpcyBub3RlYm9vayBpcyBpbnRlbmRlZCB0byBiZSBydW4gdmlhIHRoZSBjb21tYW5kIGxpbmUgZnJvbSB0aGUgdG9wIGRpcmVjdG9yeQpvZiB0aGUgcmVwb3NpdG9yeSBhcyBmb2xsb3dzOgoKYFJzY3JpcHQgLWUgInJtYXJrZG93bjo6cmVuZGVyKCdhbmFseXNlcy9tb2xlY3VsYXItc3VidHlwaW5nLVNISC10cDUzL1NISC10cDUzLW1vbGVjdWxhci1zdWJ0eXBpbmctZGF0YS1wcmVwLlJtZCcsIGNsZWFuID0gVFJVRSkiYAoKIyBTZXQgVXAKCmBgYHtyfQojIEdldCBgbWFncml0dHJgIHBpcGUKYCU+JWAgPC0gZHBseXI6OmAlPiVgCmBgYAoKIyMgRGlyZWN0b3JpZXMgYW5kIEZpbGVzCgpgYGB7cn0KIyBGaWxlIHBhdGggdG8gZGF0YSBkaXJlY3RvcnkKZGF0YV9kaXIgPC0gZmlsZS5wYXRoKCIuLiIsICIuLiIsICJkYXRhIikKCiMgRmlsZSBwYXRoIHRvIHJlc3VsdHMgZGlyZWN0b3J5CnJlc3VsdHNfZGlyIDwtICJyZXN1bHRzIgoKaWYgKCFkaXIuZXhpc3RzKHJlc3VsdHNfZGlyKSkgewogIGRpci5jcmVhdGUocmVzdWx0c19kaXIpCn0KYGBgCgojIyBSZWFkIGluIHRoZSBkYXRhCgpSZWFkIGluIG1ldGFkYXRhIGFuZCBpc29sYXRlIHRvIG1lZHVsbG9ibGFzdG9tYSBzYW1wbGVzLgoKYGBge3J9Cm1ldGFkYXRhIDwtCiAgcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpciwgInBidGEtaGlzdG9sb2dpZXMudHN2IikpICU+JSAKICBkcGx5cjo6ZmlsdGVyKGRpc2Vhc2VfdHlwZV9uZXcgPT0gIk1lZHVsbG9ibGFzdG9tYSIpIAoKIyBDaGVjayBzdW1tYXJ5IG9mIHN1YnR5cGVzIGhlcmUKc3VtbWFyeShhcy5mYWN0b3IobWV0YWRhdGEkbW9sZWN1bGFyX3N1YnR5cGUpKQpgYGAKClByb3BhZ2F0ZSB0aGUgYG1vbGVjdWxhcl9zdWJ0eXBlYCBsYWJlbHMgdG8gYmlvc3BlY2ltZW5zIG9mIHRoZSBzYW1lIGBzYW1wbGVfaWRgLgpGaXJzdCBtYWtlIGEga2V5IG9mIG1vbGVjdWxhciBzdWJ0eXBlIHRvIGBzYW1wbGVfaWRgLgoKYGBge3J9CmtleV9kZiA8LSBtZXRhZGF0YSAlPiUgCiAgZHBseXI6OmZpbHRlcighaXMubmEobW9sZWN1bGFyX3N1YnR5cGUpKSAlPiUgCiAgZHBseXI6OnNlbGVjdChtb2xlY3VsYXJfc3VidHlwZSwgc2FtcGxlX2lkKQoKIyBNYWtlIGludG8gbGlzdCBmb3JtIHNvIGl0IGNhbiBiZSB1c2VkIGluIGRwbHlyOjpyZWNvZGUKa2V5IDwtIGtleV9kZiRtb2xlY3VsYXJfc3VidHlwZQpuYW1lcyhrZXkpIDwtIGtleV9kZiRzYW1wbGVfaWQKYGBgCgpSZWNvZGUgYW5kIGZpbHRlciB0byBhbGwgYHNhbXBsZV9pZGBzIHRoYXQgYXJlIGBTSEhgLgoKYGBge3J9Cm1ldGFkYXRhIDwtIG1ldGFkYXRhICU+JSAKICBkcGx5cjo6bXV0YXRlKG1vbGVjdWxhcl9zdWJ0eXBlID0gZHBseXI6OnJlY29kZShzYW1wbGVfaWQsICEhIWtleSwgLmRlZmF1bHQgPSAiTkEiKSkgJT4lICAgZHBseXI6OmZpbHRlcihtb2xlY3VsYXJfc3VidHlwZSA9PSAiU0hIIikKCiMgQ2hlY2sgc3VtbWFyeSBhZnRlciByZWNvZGluZwpzdW1tYXJ5KGFzLmZhY3RvcihtZXRhZGF0YSRtb2xlY3VsYXJfc3VidHlwZSkpCmBgYAoKUmVhZCBpbiB0aGUgU05WIGNvbnNlbnN1cyBjYWxscy4gCgpgYGB7cn0Kc252X2RmIDwtCiAgIyBSZWFkIGluIHRoZSBjb25zZW5zdXMgZmlsZQogIGRhdGEudGFibGU6OmZyZWFkKGZpbGUucGF0aChkYXRhX2RpciwgInBidGEtc252LWNvbnNlbnN1cy1tdXRhdGlvbi5tYWYudHN2Lmd6IiksIAogICAgICAgICAgICAgICAgICAgIGRhdGEudGFibGUgPSBGQUxTRSkgJT4lIAogICMgRmlsdGVyIHRvIG9ubHkgTWVkdWxsb2JsYXN0b21hIHNhbXBsZXMKICBkcGx5cjo6ZmlsdGVyKFR1bW9yX1NhbXBsZV9CYXJjb2RlICVpbiUgbWV0YWRhdGEkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkKYGBgCgojIyBJZGVudGlmeSBUUDUzIFNOVnMuCgpgYGB7cn0KdHA1M19tdXQgPC0gc252X2RmICU+JQogICMgRmlsdGVyIHRvIG9ubHkgU05WJ3MgaW4gVFA1MyBnZW5lCiAgZHBseXI6OmZpbHRlcihIdWdvX1N5bWJvbCA9PSAiVFA1MyIpICU+JSAKICBkcGx5cjo6Z3JvdXBfYnkoVHVtb3JfU2FtcGxlX0JhcmNvZGUpICU+JSAKICBkcGx5cjo6c3VtbWFyaXplKG51bV90cDUzX211dCA9IGRwbHlyOjpuKCkpCmBgYAoKUHJpbnQgb3V0IHRoZSB0YWJsZSBvZiBUUDUzIG11dGF0aW9ucyBwZXIgc2FtcGxlLiAKCmBgYHtyfQp0cDUzX211dApgYGAKCiMgU2Vzc2lvbiBJbmZvCgpgYGB7cn0Kc2Vzc2lvbkluZm8oKQpgYGAK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiU0hIIFRQNTMgTW9sZWN1bGFyIFN1YnR5cGluZyIKb3V0cHV0OiAKICBodG1sX25vdGVib29rOgogICAgdG9jOiBUUlVFCiAgICB0b2NfZmxvYXQ6IFRSVUUKYXV0aG9yOiBDYW5kYWNlIFNhdm9uZW4gZm9yIEFMU0YgQ0NETApkYXRlOiAyMDE5Ci0tLQoKVGhpcyBub3RlYm9vayBbbW9sZWN1bGFybHkgc3VidHlwZXMgTWVkdWxsb2JsYXN0b21hIHNhbXBsZXMgaW50byB0aGVpciBUUDUzIHN0YXR1c10oaHR0cHM6Ly9naXRodWIuY29tL0FsZXhzTGVtb25hZGUvT3BlblBCVEEtYW5hbHlzaXMvaXNzdWVzLzI0NykuIAoKIyBVc2FnZQoKVGhpcyBub3RlYm9vayBpcyBpbnRlbmRlZCB0byBiZSBydW4gdmlhIHRoZSBjb21tYW5kIGxpbmUgZnJvbSB0aGUgdG9wIGRpcmVjdG9yeQpvZiB0aGUgcmVwb3NpdG9yeSBhcyBmb2xsb3dzOgoKYFJzY3JpcHQgLWUgInJtYXJrZG93bjo6cmVuZGVyKCdhbmFseXNlcy9tb2xlY3VsYXItc3VidHlwaW5nLVNISC10cDUzL1NISC10cDUzLW1vbGVjdWxhci1zdWJ0eXBpbmctZGF0YS1wcmVwLlJtZCcsIGNsZWFuID0gVFJVRSkiYAoKIyBTZXQgVXAKCmBgYHtyfQojIEdldCBgbWFncml0dHJgIHBpcGUKYCU+JWAgPC0gZHBseXI6OmAlPiVgCmBgYAoKIyMgRGlyZWN0b3JpZXMgYW5kIEZpbGVzCgpgYGB7cn0KIyBGaWxlIHBhdGggdG8gZGF0YSBkaXJlY3RvcnkKZGF0YV9kaXIgPC0gZmlsZS5wYXRoKCIuLiIsICIuLiIsICJkYXRhIikKCiMgRmlsZSBwYXRoIHRvIHJlc3VsdHMgZGlyZWN0b3J5CnJlc3VsdHNfZGlyIDwtICJyZXN1bHRzIgoKaWYgKCFkaXIuZXhpc3RzKHJlc3VsdHNfZGlyKSkgewogIGRpci5jcmVhdGUocmVzdWx0c19kaXIpCn0KYGBgCgojIyBSZWFkIGluIHRoZSBkYXRhCgpSZWFkIGluIG1ldGFkYXRhIGFuZCBpc29sYXRlIHRvIG1lZHVsbG9ibGFzdG9tYSBzYW1wbGVzLgoKYGBge3J9Cm1ldGFkYXRhIDwtCiAgcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpciwgInBidGEtaGlzdG9sb2dpZXMudHN2IikpICU+JSAKICBkcGx5cjo6ZmlsdGVyKGRpc2Vhc2VfdHlwZV9uZXcgPT0gIk1lZHVsbG9ibGFzdG9tYSIpIAoKIyBDaGVjayBzdW1tYXJ5IG9mIHN1YnR5cGVzIGhlcmUKc3VtbWFyeShhcy5mYWN0b3IobWV0YWRhdGEkbW9sZWN1bGFyX3N1YnR5cGUpKQpgYGAKClByb3BhZ2F0ZSB0aGUgYG1vbGVjdWxhcl9zdWJ0eXBlYCBsYWJlbHMgdG8gYmlvc3BlY2ltZW5zIG9mIHRoZSBzYW1lIGBzYW1wbGVfaWRgLgpGaXJzdCBtYWtlIGEga2V5IG9mIG1vbGVjdWxhciBzdWJ0eXBlIHRvIGBzYW1wbGVfaWRgLgoKYGBge3J9CmtleV9kZiA8LSBtZXRhZGF0YSAlPiUgCiAgZHBseXI6OmZpbHRlcighaXMubmEobW9sZWN1bGFyX3N1YnR5cGUpKSAlPiUgCiAgZHBseXI6OnNlbGVjdChtb2xlY3VsYXJfc3VidHlwZSwgc2FtcGxlX2lkKQoKIyBNYWtlIGludG8gbGlzdCBmb3JtIHNvIGl0IGNhbiBiZSB1c2VkIGluIGRwbHlyOjpyZWNvZGUKa2V5IDwtIGtleV9kZiRtb2xlY3VsYXJfc3VidHlwZQpuYW1lcyhrZXkpIDwtIGtleV9kZiRzYW1wbGVfaWQKYGBgCgpSZWNvZGUgYW5kIGZpbHRlciB0byBhbGwgYHNhbXBsZV9pZGBzIHRoYXQgYXJlIGBTSEhgLgoKYGBge3J9Cm1ldGFkYXRhIDwtIG1ldGFkYXRhICU+JSAKICBkcGx5cjo6bXV0YXRlKG1vbGVjdWxhcl9zdWJ0eXBlID0gZHBseXI6OnJlY29kZShzYW1wbGVfaWQsICEhIWtleSwgLmRlZmF1bHQgPSAiTkEiKSkgJT4lICAgZHBseXI6OmZpbHRlcihtb2xlY3VsYXJfc3VidHlwZSA9PSAiU0hIIikKCiMgQ2hlY2sgc3VtbWFyeSBhZnRlciByZWNvZGluZwpzdW1tYXJ5KGFzLmZhY3RvcihtZXRhZGF0YSRtb2xlY3VsYXJfc3VidHlwZSkpCmBgYAoKUmVhZCBpbiB0aGUgU05WIGNvbnNlbnN1cyBjYWxscy4gCgpgYGB7cn0Kc252X2RmIDwtCiAgIyBSZWFkIGluIHRoZSBjb25zZW5zdXMgZmlsZQogIGRhdGEudGFibGU6OmZyZWFkKGZpbGUucGF0aChkYXRhX2RpciwgInBidGEtc252LWNvbnNlbnN1cy1tdXRhdGlvbi5tYWYudHN2Lmd6IiksIAogICAgICAgICAgICAgICAgICAgIGRhdGEudGFibGUgPSBGQUxTRSkgJT4lIAogICMgRmlsdGVyIHRvIG9ubHkgTWVkdWxsb2JsYXN0b21hIHNhbXBsZXMKICBkcGx5cjo6ZmlsdGVyKFR1bW9yX1NhbXBsZV9CYXJjb2RlICVpbiUgbWV0YWRhdGEkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkKYGBgCgojIyBJZGVudGlmeSBUUDUzIFNOVnMuCgpgYGB7cn0KdHA1M19tdXQgPC0gc252X2RmICU+JQogICMgRmlsdGVyIHRvIG9ubHkgU05WJ3MgaW4gVFA1MyBnZW5lCiAgZHBseXI6OmZpbHRlcihIdWdvX1N5bWJvbCA9PSAiVFA1MyIpICU+JQogIGRwbHlyOjpncm91cF9ieShUdW1vcl9TYW1wbGVfQmFyY29kZSkgJT4lIAogIGRwbHlyOjpzdW1tYXJpemUobnVtX1RQNTNfbXV0YXRpb24gPSBkcGx5cjo6bigpKQpgYGAKCkFkZCBvdGhlciBzYW1wbGUgaWRlbnRpZmllcnMgdG8gdGhpcyBpbmZvcm1hdGlvbi4KCmBgYHtyfQp0cDUzX211dCA8LSB0cDUzX211dCAlPiUgCiAgZHBseXI6OmlubmVyX2pvaW4oZHBseXI6OnNlbGVjdChtZXRhZGF0YSwgIktpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQiLCAic2FtcGxlX2lkIiwgIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQiKSwKICAgICAgICAgICAgICAgICAgICBieSA9IGMoIlR1bW9yX1NhbXBsZV9CYXJjb2RlIiA9ICJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEIikpICU+JSAKICAjIFJlYXJyYW5nZSBjb2x1bW5zIGZvciBtb3JlIGVhc2lseSByZWFkYWJsZSB0YWJsZQogIGRwbHlyOjpzZWxlY3QoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCwgc2FtcGxlX2lkLCBUdW1vcl9TYW1wbGVfQmFyY29kZSwJbnVtX1RQNTNfbXV0YXRpb24pCgojIFByaW50IG91dCB0aGlzIHRhYmxlCnRwNTNfbXV0IApgYGAKCiMgU2Vzc2lvbiBJbmZvCgpgYGB7cn0Kc2Vzc2lvbkluZm8oKQpgYGAK</div>
 
 
 </div>

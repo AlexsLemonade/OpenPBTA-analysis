@@ -90,15 +90,22 @@ snv_df <-
 ```{r}
 tp53_mut <- snv_df %>%
   # Filter to only SNV's in TP53 gene
-  dplyr::filter(Hugo_Symbol == "TP53") %>% 
+  dplyr::filter(Hugo_Symbol == "TP53") %>%
   dplyr::group_by(Tumor_Sample_Barcode) %>% 
-  dplyr::summarize(num_tp53_mut = dplyr::n())
+  dplyr::summarize(num_TP53_mutation = dplyr::n())
 ```
 
-Print out the table of TP53 mutations per sample. 
+Add other sample identifiers to this information.
 
 ```{r}
-tp53_mut
+tp53_mut <- tp53_mut %>% 
+  dplyr::inner_join(dplyr::select(metadata, "Kids_First_Participant_ID", "sample_id", "Kids_First_Biospecimen_ID"),
+                    by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>% 
+  # Rearrange columns for more easily readable table
+  dplyr::select(Kids_First_Participant_ID, sample_id, Tumor_Sample_Barcode,	num_TP53_mutation)
+
+# Print out this table
+tp53_mut 
 ```
 
 # Session Info
