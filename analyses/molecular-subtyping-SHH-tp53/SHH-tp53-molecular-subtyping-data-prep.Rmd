@@ -1,0 +1,82 @@
+---
+title: "SHH TP53 Molecular Subtyping"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Candace Savonen for ALSF CCDL
+date: 2019
+---
+
+This notebook [molecularly subtypes Medulloblastoma samples into their TP53 status](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/247). 
+
+# Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+`Rscript -e "rmarkdown::render('analyses/molecular-subtyping-SHH-tp53/SHH-tp53-molecular-subtyping-data-prep.Rmd', clean = TRUE)"`
+
+# Set Up
+
+```{r}
+# Get `magrittr` pipe
+`%>%` <- dplyr::`%>%`
+```
+
+## Directories and Files
+
+```{r}
+# File path to data directory
+data_dir <- file.path("..", "..", "data")
+
+# File path to results directory
+results_dir <- "results"
+
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+```
+
+## Read in the data
+
+Read in metadata and isolate to medulloblastoma samples.
+
+```{r}
+metadata <-
+  readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) %>% 
+  dplyr::filter(disease_type_new == "Medulloblastoma")
+```
+
+Read in the SNV consensus calls. 
+
+```{r}
+snv_df <-
+  # Read in the consensus file
+  data.table::fread(file.path(data_dir, "pbta-snv-consensus-mutation.maf.tsv.gz"), 
+                    data.table = FALSE) %>% 
+  # Filter to only Medulloblastoma samples
+  dplyr::filter(Tumor_Sample_Barcode %in% metadata$Kids_First_Biospecimen_ID)
+```
+
+## Identify TP53 SNVs.
+
+```{r}
+tp53_mut <- snv_df %>%
+  # Filter to only SNV's in TP53 gene
+  dplyr::filter(Hugo_Symbol == "TP53") %>% 
+  dplyr::group_by(Tumor_Sample_Barcode) %>% 
+  dplyr::summarize(num_tp53_mut = dplyr::n())
+```
+
+Print out the table of TP53 mutations per sample. 
+
+```{r}
+tp53_mut
+```
+
+# Session Info
+
+```{r}
+sessionInfo()
+```
