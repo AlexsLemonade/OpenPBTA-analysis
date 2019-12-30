@@ -7,7 +7,7 @@ This analysis is designed to filter artifacts and annotate fusion calls from STA
 Briefly, we considered all inframe and frameshift fusion calls with a minimum of 1 junction reads and at least one gene partner expressed (TPM > 1) to be true calls. 
 If a fusion call had large number of spanning fragment reads compared to junction reads (spanning fragment minus junction read greater than ten), we removed these calls as potential false positives. 
 We prioritized a union of fusion calls as true calls if the fused genes were detected by both callers OR the same fusion was recurrent within a broad_histology (>2 samples) OR the fusion was specific to the broad_histology. 
-If either 5' or 3' genes fused to more than five different genes within a sample, we removed these calls as potential false positives. 
+We removed calls for which one gene was 5' or 3' fused to more than five different other genes within a sample as potential false positives. 
 We annotated putative driver fusions and prioritized fusions when at least one fused gene was a known kinase, oncogene, tumor suppressor, curated transcription factor, on the cosmic consensus gene list.
 We also annotated fusions between pairs of genes that were observed in TCGA.
 We also gather counts for recurrent fusions and fused genes found in more than 3 participants per histology and represent them as binary matrices per sample.
