@@ -45,7 +45,33 @@ Read in metadata and isolate to medulloblastoma samples.
 ```{r}
 metadata <-
   readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) %>% 
-  dplyr::filter(disease_type_new == "Medulloblastoma")
+  dplyr::filter(disease_type_new == "Medulloblastoma") 
+
+# Check summary of subtypes here
+summary(as.factor(metadata$molecular_subtype))
+```
+
+Propagate the `molecular_subtype` labels to biospecimens of the same `sample_id`.
+First make a key of molecular subtype to `sample_id`.
+
+```{r}
+key_df <- metadata %>% 
+  dplyr::filter(!is.na(molecular_subtype)) %>% 
+  dplyr::select(molecular_subtype, sample_id)
+
+# Make into list form so it can be used in dplyr::recode
+key <- key_df$molecular_subtype
+names(key) <- key_df$sample_id
+```
+
+Recode and filter to all `sample_id`s that are `SHH`.
+
+```{r}
+metadata <- metadata %>% 
+  dplyr::mutate(molecular_subtype = dplyr::recode(sample_id, !!!key, .default = "NA")) %>%   dplyr::filter(molecular_subtype == "SHH")
+
+# Check summary after recoding
+summary(as.factor(metadata$molecular_subtype))
 ```
 
 Read in the SNV consensus calls. 
