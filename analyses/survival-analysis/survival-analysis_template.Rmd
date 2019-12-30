@@ -147,7 +147,7 @@ survival curve shows the probability of survival over time.
 kap_fit <- survival_analysis(metadata,
   ind_var = "pred",
   test = "kap.meier",
-  ind_data = germline_sex, 
+  ind_data = germline_sex,
   metadata_sample_col = "Kids_First_Biospecimen_ID",
   ind_data_sample_col = "sample"
 )
@@ -234,7 +234,7 @@ Plug this into a Cox Regression model using the function `survival::coxph`.
 cox_fit <- survival_analysis(metadata,
   ind_var = "tmb",
   test = "cox.reg",
-  ind_data = tmb, 
+  ind_data = tmb,
   metadata_sample_col = "Kids_First_Biospecimen_ID",
   ind_data_sample_col = "Tumor_Sample_Barcode"
 )
