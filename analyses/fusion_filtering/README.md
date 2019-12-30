@@ -2,6 +2,8 @@
 
 **Module author:** Krutika Gaonkar ([@kgaonkar6](https://github.com/kgaonkar6))
 Jaclyn Taroni ([@jaclyn-taroni] (https://github.com/jaclyn-taroni))
+Jo Lynne([@jharenza](https://github.com/jharenza))
+Komal Rathi ([@komalsrathi] (https://github.com/komalsrathi))
 
 
 This analysis will perform artifact filtering and annotation on fusion calls from STARfusion and Arriba fusion callers to prioritize putative oncogenic fusions. 
