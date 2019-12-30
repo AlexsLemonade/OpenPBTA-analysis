@@ -34,7 +34,7 @@ We also gather counts for recurrent fusions and fused genes found in more than 3
 #### Order of scripts in analysis
 `01-fusion-standardization.R` : Standardizes fusion calls from STARFusion and Arriba
 
-`02-fusion-filtering.R` : Artifact filtering by removing readthroughs and NEIGHBORS from annots column; annots column also contains red flag databases that are used to further filter common/normal occuring fusions; all fusions where both genes are expressed <1TPM is removed as non-expressed fusions; fusions required to have atleast 1 JunctionSpanningRead minus  SpanningFragCount-JunctionReadCount to be <10
+`02-fusion-filtering.R` : Artifact filtering by removing readthroughs and NEIGHBORS from annots column; annots column also contains red flag databases that are used to further filter common/normal occuring fusions; all fusions where both genes are expressed FPKM < 1 are removed as non-expressed fusions; fusions required to have at least 1 JunctionSpanningRead minus  SpanningFragCount-JunctionReadCount to be <10
 
 `03-Calc-zscore-annotate.R` : Calculates zscore for gene fused gene's expression compared to GTeX brian samples and annotates if differently expressed or not
 
