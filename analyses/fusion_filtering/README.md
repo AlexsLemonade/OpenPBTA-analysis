@@ -36,7 +36,7 @@ We also gather counts for recurrent fusions and fused genes found in more than 3
 
 `02-fusion-filtering.R` : Artifact filtering by removing readthroughs and NEIGHBORS from annots column; annots column also contains red flag databases that are used to further filter common/normal occuring fusions; all fusions where both genes are expressed FPKM < 1 are removed as non-expressed fusions; fusions required to have at least 1 JunctionSpanningRead minus  SpanningFragCount-JunctionReadCount to be <10
 
-`03-Calc-zscore-annotate.R` : Calculates zscore for gene fused gene's expression compared to GTeX brian samples and annotates if differently expressed or not
+`03-Calc-zscore-annotate.R` : Calculates z-score for gene fused gene's expression compared to GTeX brain samples and annotates if differently expressed or not
 
 `04-project-specific-filtering.Rmd` : Notebook to perform project specific filtering. We removed fusions with genes fused more than 5 times in a samples as potential artifact. We kepth fusions that were called by both callers and if >2 samples per histology called the fusion. We then prioritize the fusions as putative-oncogenic fusions if any fused gene in the fusion is annotated as kinases, oncogenes, tumor suppressors, curated transcription factors, cosmic conses gene list or is a TCGA fusions
 
