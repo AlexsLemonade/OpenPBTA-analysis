@@ -27,24 +27,37 @@ independent variables in the survival model and return back a table.
 survival_analysis(metadata, 
                   ind_var = <INDEPENDENT_VARIABLE(S)>, 
                   test = <TEST_ABBR>, 
-                  ind_data = <DATA_FRAME>)
+                  ind_data = <DATA_FRAME>, 
+                  metadata_sample_col = "Kids_First_Biospecimen_ID",
+                  ind_data_sample_col = <COLUMN THAT MATCHES METADATA's Kids_First_Biospecimen_ID>)
 ```
 
 #### Options explanation:
 
-- `metadata` : a data.frame that contains columns `OS_status` and `OS_days` to use 
+- `metadata` : A data.frame that contains columns `OS_status` and `OS_days` to use 
              for the survival model. This also assumes `LIVING` and `DECEASED`
              are the two statuses. This will be converted to a numeric variable 
              for use with `survival` R functions. Samples with `NA`s are dropped.
-- `ind_var`: a character string noting the name of the independent variable to 
+- `ind_var`: A character string noting the name of the independent variable to 
              test as a predictor for survival. 
--  `test`  : a character string noting which test to use. Options: `"kap.meier"`, 
+- `test`  : A character string noting which test to use. Options: `"kap.meier"`, 
              `"log.rank"`, or `"cox.reg"` (See below).
 - `ind_data`: If the data for the independent variable needed for the test is not
               in `metadata`, add it here. This assumes it will be a data.frame with 
               either a `Tumor_Sample_Barcode`, `Kids_First_Biospecimen_ID`, or 
               `sample` column which to `dplyr::inner_join` with `metadata` by. 
-  
+- `ind_data_sample_col` : A character string that states the name of the column in 
+              `ind_data` that contains the sample IDs that match to the metadata. 
+- `metadata_sample_col` : A character string that states the name of the column in 
+              `metadata` that contains the sample IDs that match to the ind_data. 
+- `os_days_col` : A character string that states the name of the column in 
+                `metadata` that contains the overall survival days information.
+                Default is `OS_days`.
+- `os_status_col` : A character string that states the name of the column in 
+                `metadata` that contains the overall survival status information
+                 The data in this column will be converted to numeric  where 
+                 `LIVING` = 1 and `DECEASED` = 2. (This is what `survminer` functions
+                 look for.) Default is `OS_status`.
   
 #### `test` options:  
 - ["kap.meier"](#kaplan-meier-example) : For basic survival analysis.  
@@ -134,7 +147,9 @@ survival curve shows the probability of survival over time.
 kap_fit <- survival_analysis(metadata,
   ind_var = "pred",
   test = "kap.meier",
-  ind_data = germline_sex
+  ind_data = germline_sex, 
+  metadata_sample_col = "Kids_First_Biospecimen_ID",
+  ind_data_sample_col = "sample"
 )
 ```
 
@@ -182,7 +197,9 @@ curves.
 logrank_fit <- survival_analysis(metadata,
   ind_var = "pred",
   test = "log.rank",
-  ind_data = germline_sex
+  ind_data = germline_sex,
+  metadata_sample_col = "Kids_First_Biospecimen_ID",
+  ind_data_sample_col = "sample"
 )
 ```
 
@@ -217,7 +234,9 @@ Plug this into a Cox Regression model using the function `survival::coxph`.
 cox_fit <- survival_analysis(metadata,
   ind_var = "tmb",
   test = "cox.reg",
-  ind_data = tmb
+  ind_data = tmb, 
+  metadata_sample_col = "Kids_First_Biospecimen_ID",
+  ind_data_sample_col = "Tumor_Sample_Barcode"
 )
 ```
 
