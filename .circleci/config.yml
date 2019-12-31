@@ -112,6 +112,11 @@ jobs:
           name: SHH TP53 Molecular Subtyping
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-SHH-tp53/SHH-tp53-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
 
+      - run:
+          name: Gene set enrichment analysis to generate GSVA scores
+          command: OPENPBTA_SMALLSET=TRUE ./scripts/run_in_ci.sh bash "analysis/gene-set-enrichment-analysis/run-gsea.sh" 
+
+
          ################################
          #### Add your analysis here ####
          ################################
