@@ -32,3 +32,10 @@ ROC curve for TP53 classifier scores for stranded RNAseq data
 ROC curve for TP53 classifier scores for polya RNAseq data
 ![polya RNAseq TP53 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/polya_TP53.png)
 
+ROC curve for NF1 classifier scores for stranded RNAseq data
+![stranded RNAseq NF1 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/stranded_NF1.png)
+
+ROC curve for NF1 classifier scores for polya RNASeq data
+![polya RNASeq NF1 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/polya_NF1.png)
+
+
