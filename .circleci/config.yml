@@ -31,12 +31,8 @@ jobs:
           command: ./scripts/run_in_ci.sh bash analyses/collapse-rnaseq/run-collapse-rnaseq.sh
 
       - run:
-          name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded expression
+          name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded data and creates recurrent fusion list
           command: ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
-
-      - run:
-          name: Identify recurrent fusion per histology
-          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/05-recurrent-fusions-per-histology.R -S data/pbta-fusion-putative-oncogenic.tsv -c data/pbta-histologies.tsv -o analyses/fusion_filtering/results/ -i data/independent-specimens.wgswxs.primary-plus.tsv
 
       - run:
           name: Transcriptome dimensionality reduction
@@ -71,10 +67,6 @@ jobs:
       - run:
           name: Interaction plot
           command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh
-    
-      - run:  
-          name: Focal CN RNA expression visualization
-          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/focal-cn-file-preparation/rna-expression-validation.R
 
       - run:
           name: Mutational Signatures 
@@ -114,8 +106,12 @@ jobs:
 
       - run:
           name: TP53 NF1 classifier run
-          command: ./scripts/run_in_ci.sh python3 analyses/tp53_nf1_score/01-apply-classifier.py -f pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds  
+          command: ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"  
       
+      - run:
+          name: SHH TP53 Molecular Subtyping
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-SHH-tp53/SHH-tp53-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
+
          ################################
          #### Add your analysis here ####
          ################################
