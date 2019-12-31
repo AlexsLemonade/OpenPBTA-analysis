@@ -8,7 +8,7 @@ Now published in [Rokita et al. _Cell Reports._ 2019.](https://doi.org/10.1016/j
 In brief, _TP53_ inactivation, _NF1_ inactivation, and Ras activation classifiers are applied to the stranded and polya OpenPBTA RNA-seq data.
 The classifiers were trained on TCGA PanCan data ([Way et al. _Cell Reports._ 2018](https://doi.org/10.1016/j.celrep.2018.03.046), [Knijnenburg et al. _Cell Reports._ 2018.](https://doi.org/10.1016/j.celrep.2018.03.076)).
 See [`01-apply-classifier.py`](01-apply-classifier.py) for more information about the procedure.
-To evaluate the classifier scores 02-evaluate-classifier.py uses SNV data to identify true TP53/NF1 loss samples and compares scores of shuffled data to true calls and plots ROC curves. 
+To evaluate the classifier scores [`02-evaluate-classifier.py`](02-evaluate-classifier.py) uses SNV data to identify true TP53/NF1 loss samples and compares scores of shuffled data to true calls and plots ROC curves. 
 
 
 
