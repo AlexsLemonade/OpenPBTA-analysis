@@ -24,7 +24,7 @@ It produces  `results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifi
 Because some of the classifier genes are not present in the OpenPBTA dataset, the scores should be interpreted as continuous values representing relative gene alterations and not as probabilities.
 
 ROC curve for TP53 classifier scores for stranded RNAseq data
-![stranded RNAseq TP53 classifier ROC] (https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/stranded_TP53.png)
+![stranded RNAseq TP53 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/stranded_TP53.png)
 
 ROC curve for TP53 classifier scores for polya RNAseq data
 ![polya RNAseq TP53 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/polya_TP53.png)
