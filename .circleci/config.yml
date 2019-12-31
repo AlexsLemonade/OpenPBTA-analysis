@@ -113,11 +113,11 @@ jobs:
          ################################
       - run:
           name: Evaluation plots for TP53/NF1 classifier polya
-          command: ./scripts/run_in_ci.sh python3 analyses/tp53_nf1_score/02-evaluate-classifier.py -s TP53_NF1_snv_alteration.tsv -f analyses/tp53_nf1_score/results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv -c data/pbta-histologies.tsv -o polya
+          command: ./scripts/run_in_ci.sh python3 analyses/tp53_nf1_score/02-evaluate-classifier.py -s analyses/tp53_nf1_score/results/TP53_NF1_snv_alteration.tsv -f analyses/tp53_nf1_score/results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv -c data/pbta-histologies.tsv -o polya
 
       - run:
           name: Evaluation plots for TP53/NF1 classifier stranded
-          command: ./scripts/run_in_ci.sh python3 analyses/tp53_nf1_score/02-evaluate-classifier.py -s TP53_NF1_snv_alteration.tsv -f analyses/tp53_nf1_score/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv -c data/pbta-histologies.tsv -o stranded 		
+          command: ./scripts/run_in_ci.sh python3 analyses/tp53_nf1_score/02-evaluate-classifier.py -s analyses/tp53_nf1_score/results/TP53_NF1_snv_alteration.tsv -f analyses/tp53_nf1_score/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv -c data/pbta-histologies.tsv -o stranded 		
 
       - run:
           name: SNV Caller Analysis 
