@@ -8,4 +8,4 @@ Written by Stephanie J. Spielman to supercede previous analyses in [`ssgsea-hall
 
 ## Folder Content
 
-+ `01-conduct-gsea-analysis.Rmd` performs the GSVA analysis using RSEM FPMK expression data. Results are saved the TSV file `results/gsea_scores.tsv`.
++ `01-conduct-gsea-analysis.Rmd` performs the GSVA analysis using RSEM FPKM expression data. Results are saved the TSV file `results/gsea_scores.tsv`.
