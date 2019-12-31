@@ -1,6 +1,6 @@
 ## Fusion prioritization
 
-**Module authors :** Krutika Gaonkar ([@kgaonkar6](https://github.com/kgaonkar6)), Jaclyn Taroni ([@jaclyn-taroni](https://github.com/jaclyn-taroni)), Jo Lynne Harenza([@jharenza](https://github.com/jharenza)), and Komal Rathi ([@komalsrathi](https://github.com/komalsrathi))
+**Module authors :** Krutika Gaonkar ([@kgaonkar6](https://github.com/kgaonkar6)), Jaclyn Taroni ([@jaclyn-taroni](https://github.com/jaclyn-taroni)), Jo Lynne Harenza ([@jharenza](https://github.com/jharenza)), and Komal Rathi ([@komalsrathi](https://github.com/komalsrathi))
 
 
 This analysis is designed to filter artifacts and annotate fusion calls from STARfusion and Arriba fusion callers with the goal of prioritizing oncogenic fusions. 
@@ -9,11 +9,11 @@ We then removed fusion calls that had many spanning fragment reads compared to j
 We retained fusion calls if the fused genes were detected by both callers, the same fusion was recurrent within a broad_histology (>2 samples), the fusion was specific to the broad_histology. 
 We removed calls for which one gene was 5' or 3' fused to more than five different other genes within a sample as potential false positives. 
 We annotated putative driver fusions and prioritized fusions when at least one fused gene was a known kinase, oncogene, tumor suppressor, curated transcription factor, on the COSMIC Cancer Gene Census list.
-We also annotated fusions between pairs of genes that were observed in TCGA.
+We also annotated fusions between pairs of genes where the fusion was observed in TCGA.
 We also gather counts for recurrent fusions and fused genes found in more than 3 participants per histology and represent them as binary matrices per sample.
 
 #### Inputs from data download
-* pbta-fusion-starfusion.tsv.gz : aggregated starfusion calls ; a column tumor_id with the samples BS ID is added to each sample files
+* pbta-fusion-starfusion.tsv.gz : aggregated starfusion calls; a column tumor_id with the samples BS ID is added to each sample files
 * pbta-fusion-arriba.tsv.gz : aggregated arriba calls; a column tumor_id with the samples BS ID is added to each sample files ; a column annots is added from running FusionAnnotator
 * pbta-gene-expression-rsem-fpkm.polya.rds : aggregated polya samples fpkm data
 * pbta-gene-expression-rsem-fpkm.stranded.rds : aggregated stranded fpm data
@@ -34,10 +34,10 @@ We also gather counts for recurrent fusions and fused genes found in more than 3
 #### Order of scripts in analysis
 `01-fusion-standardization.R` : Standardizes fusion calls from STARFusion and Arriba
 
-`02-fusion-filtering.R` : Artifact filtering by removing readthroughs and NEIGHBORS from annots column; annots column also contains red flag databases that are used to further filter common/normal occuring fusions; all fusions where both genes are expressed FPKM < 1 are removed as non-expressed fusions; fusions required to have at least 1 JunctionSpanningRead minus  SpanningFragCount-JunctionReadCount to be <10
+`02-fusion-filtering.R` : Filters artifacts by removing readthroughs and NEIGHBORS from annots column; annots column also contains red flag databases that are used to further filter common/normal occuring fusions; filters all fusions where both genes are expressed FPKM < 1 are removed as non-expressed; requires fusions  to have at least 1 JunctionSpanningRead and  SpanningFragCount-JunctionReadCount to be <10
 
-`03-Calc-zscore-annotate.R` : Calculates z-score for gene fused gene's expression compared to GTeX brain samples and annotates if differently expressed or not
+`03-Calc-zscore-annotate.R` : Calculates z-score for gene fused gene's expression compared to GTeX brain samples and annotates differential expression status
 
-`04-project-specific-filtering.Rmd` : Notebook to perform project specific filtering. We removed fusions with genes fused more than 5 times in a samples as potential artifact. We kepth fusions that were called by both callers and if >2 samples per histology called the fusion. We then prioritize the fusions as putative-oncogenic fusions if any fused gene in the fusion is annotated as kinases, oncogenes, tumor suppressors, curated transcription factors or present in COSMIC Cancer Gene Census list. We also annotated fusions if they are present in TCGA fusions list.
+`04-project-specific-filtering.Rmd` : Performs project specific filtering. We removed fusions with genes fused more than 5 times in a samples as potential artifact. We kepth fusions that were called by both callers and if >2 samples per histology called the fusion. We then prioritize the fusions as putative-oncogenic fusions if any fused gene in the fusion is annotated as kinases, oncogenes, tumor suppressors, curated transcription factors or present in COSMIC Cancer Gene Census list. We also annotated fusions if they are present in TCGA fusions list.
 
-`05-recurrent-fusions-per-histology.R` : To identify recurrent fusion and fused genes we first identified RNA-seq samples that can be used independently for each patient. After the selection of samples we identify which fusions and genes are recurrent (found in >3 participants per histology) in our `pbta-fusion-putative-oncogenic.tsv` dataset.
+`05-recurrent-fusions-per-histology.R` : Identifies recurrent fusions and genes that are recurrently observed in fusions. We identified RNA-seq samples that can be used independently for each patient. After the selection of samples we identify which fusions and genes are recurrent (found in >3 participants per histology) in our `pbta-fusion-putative-oncogenic.tsv` dataset.
