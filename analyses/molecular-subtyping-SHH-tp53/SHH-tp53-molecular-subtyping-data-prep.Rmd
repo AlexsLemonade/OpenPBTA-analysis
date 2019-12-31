@@ -68,7 +68,9 @@ Recode and filter to all `sample_id`s that are `SHH` and have `WGS` or `WXS` dat
 
 ```{r}
 shh_metadata <- metadata %>%
-  dplyr::mutate(molecular_subtype = dplyr::recode(sample_id, !!!key, .default = "NA")) %>%
+  dplyr::mutate(molecular_subtype = dplyr::recode(sample_id, 
+                                                  !!!key, 
+                                                  .default = "NA")) %>%
   dplyr::filter(molecular_subtype == "SHH")
 
 # Check summary after recoding
@@ -114,17 +116,23 @@ Summarize TP53 status to a table with other sample identifiers.
 ```{r}
 tp53_status_table <- shh_metadata %>%
   # Narrow down to sample identifier columns
-  dplyr::select("Kids_First_Participant_ID", "sample_id", "Kids_First_Biospecimen_ID", "experimental_strategy") %>%
+  dplyr::select("Kids_First_Participant_ID", 
+                "sample_id", 
+                "Kids_First_Biospecimen_ID", 
+                "experimental_strategy") %>%
   # Collapse Biospecimen ids for each sample
   dplyr::group_by(Kids_First_Participant_ID, sample_id) %>%
-  dplyr::summarize(Kids_First_Biospecimen_IDs = paste(Kids_First_Biospecimen_ID, collapse = ", "), 
-                   experimental_strategies = paste(experimental_strategy, collapse = ", ")) %>%
+  dplyr::summarize(Kids_First_Biospecimen_IDs = paste(Kids_First_Biospecimen_ID, 
+                                                      collapse = ", "), 
+                   experimental_strategies = paste(sort(experimental_strategy), 
+                                                   collapse = ", ")) %>%
   # Make a variable that says whether or not there is a TP53 SNV mutation
+  # Add an exception where NA is placed if there are no DNA-seq samples
   dplyr::mutate(TP53_mutation =  sample_id %in% tp53_mut_samples,
-                # Add an exception where NA is placed if there are no DNA-seq samples
                 TP53_mutation = dplyr::case_when(
-    !grepl("WXS|WGS", experimental_strategies) ~ NA,
-    TRUE ~ TP53_mutation))
+                  !grepl("WXS|WGS", experimental_strategies) ~ NA,
+                  TRUE ~ TP53_mutation
+                ))
 
 # Print out this table
 tp53_status_table
@@ -133,7 +141,8 @@ tp53_status_table
 Save table to a TSV file. 
 
 ```{r}
-readr::write_tsv(tp53_status_table, file.path(results_dir, "tp53-shh-samples-status.tsv"))
+readr::write_tsv(tp53_status_table, file.path(results_dir, 
+                                              "tp53-shh-samples-status.tsv"))
 ```
 
 ## Session Info
