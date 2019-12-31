@@ -109,7 +109,7 @@ if (!dir.exists(results_dir)) dir.create(results_dir)
 expression_data_file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
 
 ## Define output file
-gsea_scores_output_file <- file.path(results_dir, "gsea_scores.tsv")
+gsea_scores_output_file <- file.path(results_dir, "gsva_scores.tsv")
 
 
 
@@ -158,5 +158,4 @@ gsea_scores_df_tidy <- gsea_scores_df %>%
 
 #### Export GSEA scores to TSV --------------------------------------------------------------------
 write_tsv(gsea_scores_df_tidy, gsea_scores_output_file)
-
 
