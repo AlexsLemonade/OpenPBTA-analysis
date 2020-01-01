@@ -62,9 +62,9 @@ select_metadata <- metadata %>%
                 Kids_First_Participant_ID,
                 Kids_First_Biospecimen_ID)
 
-# Read in ATRT subset ssGSEA pathway information
-ssGSEA_subset <-
-  as.data.frame(readr::read_rds(file.path(input_dir, "atrt_ssgsea.RDS")))
+# Read in ATRT subset GSVA pathway scores
+gsva_subset <-
+  as.data.frame(readr::read_rds(file.path(input_dir, "atrt_gsva.RDS")))
 
 # Read in ATRT subset z-scored RNA expression data
 stranded_expression <-

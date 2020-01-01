@@ -135,7 +135,7 @@ filtered_gsva_scores <- gsva_scores %>%
   dplyr::select(-Kids_First_Participant_ID)
 
 # Write to file
-readr::write_rds(filtered_gsva_scores, file.path(results_dir, "atrt_gsva.RDS"))
+readr::write_tsv(filtered_gsva_scores, file.path(results_dir, "atrt_gsva.tsv"))
 
 #### Filter tumor mutation burden data -----------------------------------------
 
