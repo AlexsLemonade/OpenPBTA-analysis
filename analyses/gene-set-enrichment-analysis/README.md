@@ -9,3 +9,8 @@ Written by Stephanie J. Spielman to supercede previous analyses in [`ssgsea-hall
 ## Folder Content
 
 + `01-conduct-gsea-analysis.Rmd` performs the GSVA analysis using RSEM FPKM expression data. Results are saved the TSV file `results/gsea_scores.tsv`.
+
++ `results/gsva_scores_stranded.tsv` represents GSVA scores calculated from `pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds` (data release v12)
+	+ File created with: `Rscript --vanilla 01-conduct-gsea-analysis.R --input pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds --output gsva_scores_stranded.tsv`
++ `results/gsva_scores_polya.tsv` represents GSVA scores calculated from `pbta-gene-expression-rsem-fpkm-collapsed.polya.rds` (data release v12)
+	+ File created with: `Rscript --vanilla 01-conduct-gsea-analysis.R --input pbta-gene-expression-rsem-fpkm-collapsed.polya.rds --output gsva_scores_stranded.tsv`

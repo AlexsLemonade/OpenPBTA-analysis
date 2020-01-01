@@ -114,7 +114,7 @@ jobs:
 
       - run:
           name: Gene set enrichment analysis to generate GSVA scores
-          command: OPENPBTA_SMALLSET=TRUE ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh" 
+          command: ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh" 
 
 
          ################################

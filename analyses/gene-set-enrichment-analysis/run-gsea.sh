@@ -1,18 +1,15 @@
-####################################################
+#########################################################################
 # Stephanie J. Spielman for ALSF CCDL 2020
 #
 # Run the GSEA pipeline, currently just `01-conduct-gsea-analysis.R`
 # 
 # Usage: bash run-gsea.sh
 #
-# Takes a single environmental variable `OPENPBTA_SMALLSET`. If FALSE or 0 (default), runs all samples. If TRUE or 1 runs a subset of samples (for testing in CI)
-####################################################
+#########################################################################
 
 
 set -e
 set -o pipefail
-
-SMALLSET=${OPENPBTA_SMALLSET:-1}
 
 
 # This script should always run as if it were being called from
@@ -22,4 +19,14 @@ script_directory="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
-Rscript --vanilla 01-conduct-gsea-analysis.R --smallset ${SMALLSET}
+
+######## Calculate scores from polyA expression data ############
+INPUT_FILE="pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
+OUTPUT_FILE="gsva_scores_polya.tsv"
+Rscript --vanilla 01-conduct-gsea-analysis.R --input ${INPUT_FILE} --output ${OUTPUT_FILE}
+
+
+######## Calculate scores from stranded expression data ############
+INPUT_FILE="pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+OUTPUT_FILE="gsva_scores_stranded.tsv"
+Rscript --vanilla 01-conduct-gsea-analysis.R --input ${INPUT_FILE} --output ${OUTPUT_FILE}

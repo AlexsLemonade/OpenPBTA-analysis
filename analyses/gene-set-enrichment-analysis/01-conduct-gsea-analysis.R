@@ -13,10 +13,9 @@
 #
 #
 # ####### USAGE, assumed to be run from top-level of project:
-# Rscript --vanilla 'analyses/gene-set-enrichment-analysis/01-conduct-gsea-analysis.R
-#    Two optional commandline arguments:
-#     --smallset=<TRUE/FALSE> (Default FALSE). Set to `TRUE` for running in CI
-#     --smallset_size=<a numeric> (Default 15). Set the number of samples to run for smallset analysis, again for CI 
+# Rscript --vanilla 'analyses/gene-set-enrichment-analysis/01-conduct-gsea-analysis.R --input <expression input file> --output <output file for writing scores>
+#     --input : The name of the input expression data file to use for calculating scores. This file is assumed to live in the project's `data/` directory.
+#     --output: The name of the TSV-formatted output file of GSVA scores, to be saved in the `results/` directory of this analysis.
 # 
 # Reference:
 # 1. Sonja Hänzelmann, Robert Castelo, and Justin Guinney. 2013. “GSVA: Gene Set Variation Analysis for Microarray and RNA-Seq Data.” BMC Bioinformatics 14 (1): 7. https://doi.org/10.1186/1471-2105-14-7.
@@ -41,7 +40,7 @@ if (!("msigdbr" %in% installed.packages())) {
 if (!("BiocManager" %in% installed.packages())) {
   install.packages("BiocManager")
 }
-library(BiocManager)
+library(BiocManager, quietly = TRUE)
 if (!("GSVA" %in% installed.packages())) {
   BiocManager::install("GSVA")
 }
@@ -54,48 +53,25 @@ library(GSVA)    ## Performs GSEA analysis
 ## Define arguments
 option_list <- list(
   optparse::make_option(
-    c("--smallset"),
-    type = "logical",
-    default = FALSE,
-    help = "Set as TRUE to limit the number of samples evaluated, largely for running in CI."
+    c("--input"),
+    type = "character",
+    default = NA,
+    help = "The input file of expression data from which scores will be calculated."
   ),
     optparse::make_option(
-    c("--smallset_size"),
-    type = "double",
-    default = 15,
-    help = "Size of small sample, only used if argument `smallset` is specified as TRUE."
+    c("--output"),
+    type = "character",
+    default = NA, 
+    help = "The output file for writing GSVA scores in TSV format."
   )
 )
 
 ## Read in arguments
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
+if (is.na(opt$input)) stop("\n\nERROR: You must provide an input file with expression data with the flag --input, assumed to be in the `data/` directory of the OpenPBTA repository..") 
+if (is.na(opt$output)) stop("\n\nERROR: You must provide an output file for saving GSVA scores with the flag --output, assumed to be placed in the `results/` directory of this analysis.") 
 
-
-## Sanity check the options. 
-MIN_SAMPLE_SIZE <- 15 # At least 15 should be run for small samples
-
-if (is.null(opt$smallset) | is.na(opt$smallset)){
-    opt$smallset <- FALSE
-}
-if (opt$smallset == 0) opt$smallset <- FALSE
-if (opt$smallset == 1) opt$smallset <- TRUE
-
-if (!(typeof(opt$smallset) == "logical"))  {
-  stop("ERROR: The optional argument --smallset must be a logical argument, TRUE (1) or FALSE (0).")
-}  
-
-if (opt$smallset == TRUE){
-  if (!(typeof(opt$smallset_size) == "double"))  {
-    stop("ERROR: The optional argument --smallset_size must be a number")
-  }
-  # Ensure a reasonable amount at least
-  if (opt$smallset_size < MIN_SAMPLE_SIZE) {
-    opt$smallset_size <- MIN_SAMPLE_SIZE
-  } 
-  ## Ceil the smallset value in case of decimal
-  opt$smallset_size <- ceiling(opt$smallset_size)
-}
 
 #### Set Up paths and file names --------------------------------------------------------------------
 
@@ -104,13 +80,10 @@ data_dir    <- file.path("..", "..", "data")
 results_dir <- "results"
 if (!dir.exists(results_dir)) dir.create(results_dir)
 
-## Define input files
-## Define updated expression matrix. Columns are biospecimen ids and values are RSEM FPKM for stranded samples collapsed to gene symbol (gene-level)
-expression_data_file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
-
-## Define output file
-gsea_scores_output_file <- file.path(results_dir, "gsva_scores.tsv")
-
+## Ensure the input file exists in `data/` and specify input/output files 
+expression_data_file <- file.path(data_dir, basename(opt$input))
+if (!file.exists(expression_data_file)) stop("\n\nERROR: Provided input file does not exist.")
+scores_output_file <- file.path(results_dir, basename(opt$output))
 
 
 
@@ -121,11 +94,6 @@ human_hallmark  <- msigdbr::msigdbr(species = "Homo sapiens", category = "H") ##
 
 
 #### Perform gene set enrichment analysis --------------------------------------------------------------------
-
-# Subset expression data if specified
-if (opt$smallset) {
-  expression_data <- expression_data[1:opt$smallset_size]
-}
 
 # Prepare expression data: log2 transform re-cast as matrix
 ### Rownames are genes and column names are samples
@@ -157,5 +125,5 @@ gsea_scores_df_tidy <- gsea_scores_df %>%
 
 
 #### Export GSEA scores to TSV --------------------------------------------------------------------
-write_tsv(gsea_scores_df_tidy, gsea_scores_output_file)
+write_tsv(gsea_scores_df_tidy, scores_output_file)
 
