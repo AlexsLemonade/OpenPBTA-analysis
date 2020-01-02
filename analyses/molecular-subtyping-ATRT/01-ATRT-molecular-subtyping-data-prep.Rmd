@@ -62,9 +62,9 @@ select_metadata <- metadata %>%
                 Kids_First_Participant_ID,
                 Kids_First_Biospecimen_ID)
 
-# Read in ATRT subset ssGSEA pathway information
-ssGSEA_subset <-
-  as.data.frame(readr::read_rds(file.path(input_dir, "atrt_ssgsea.RDS")))
+# Read in ATRT subset GSVA pathway scores
+gsva_subset <-
+  as.data.frame(readr::read_tsv(file.path(input_dir, "atrt_gsva.tsv")))
 
 # Read in ATRT subset z-scored RNA expression data
 stranded_expression <-
@@ -278,7 +278,7 @@ cn_df <- cn_df %>%
     )), collapse = ", ")
   )
 
-#Display `cn_metadata`
+# Display `cn_metadata`
 cn_df %>%
   head(n = 15)
 
@@ -287,47 +287,35 @@ atrt_expression_cn_df <- atrt_expression_df %>%
   dplyr::left_join(cn_df, by = "sample_id")
 ```
 
-### ssGSEA data
+### GSVA data
 
 ```{r}
-# Transpose
-transposed_ssGSEA <- t(ssGSEA_subset)
+# Filter to only the hallmark gene sets that were named in the issue
+relevant_genesets <- c("HALLMARK_MYC_TARGETS_V1",
+                       "HALLMARK_MYC_TARGETS_V2",
+                       "HALLMARK_NOTCH_SIGNALING")
+gsva_filtered <- gsva_subset %>%
+  dplyr::filter(hallmark_name %in% relevant_genesets)
 
-# Calculate ssGSEA mean and sd
-ssGSEA_means <- rowMeans(transposed_ssGSEA, na.rm = TRUE)
-ssGSEA_sd <- apply(transposed_ssGSEA, 1, sd, na.rm = TRUE)
+# Matrix with gene set columns that can be scaled
+gsva_mat <- gsva_filtered %>% 
+  dplyr::select(-Kids_First_Biospecimen_ID) %>% 
+  tidyr::spread(hallmark_name, gsea_score) %>%
+  tibble::column_to_rownames("sample_id") %>%
+  as.matrix()
 
-# Subtract mean
-ssGSEA_zscored <- sweep(transposed_ssGSEA, 1, ssGSEA_means, FUN = "-")
-
-# Divide by SD remove NAs and Inf values from zscore for genes with 0
-ssGSEA_zscored <-
-  sweep(ssGSEA_zscored, 1, ssGSEA_sd, FUN = "/") %>%
-  dplyr::na_if(Inf) %>%
-  na.omit()
-
-# Transpose back
-ssGSEA_zscored <- t(ssGSEA_zscored)
-
-# Summarise pathway values 
-ssGSEA_summarised <- ssGSEA_zscored %>%
+# z-score scores (here they are columns)
+scaled_gsva <- scale(gsva_mat, center = TRUE, scale = TRUE) %>%
   as.data.frame() %>%
-  tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
-  dplyr::left_join(select_metadata, by = "Kids_First_Biospecimen_ID") %>%
-  dplyr::group_by(sample_id) %>%
-  dplyr::summarise(
-    HALLMARK_MYC_TARGETS_V1 = mean(HALLMARK_MYC_TARGETS_V1),
-    HALLMARK_MYC_TARGETS_V2 = mean(HALLMARK_MYC_TARGETS_V2),
-    HALLMARK_NOTCH_SIGNALING = mean(HALLMARK_NOTCH_SIGNALING)
-  )
+  tibble::rownames_to_column("sample_id")
 
-# Display `transposed_ssGSEA`
-ssGSEA_summarised %>%
+# Display scaled_gsva
+scaled_gsva %>%
   head(n = 15)
 
-# Join ATRT expression and focal CN data with transposed ssGSEA data
+# Join ATRT expression and focal CN data with GSVA data
 atrt_expression_cn_df <- atrt_expression_cn_df %>%
-  dplyr::left_join(ssGSEA_summarised,
+  dplyr::left_join(scaled_gsva,
                    by = "sample_id")
 ```
 
