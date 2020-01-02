@@ -45,7 +45,7 @@ full_status_df = pd.crosstab(status_df['sample_id'], status_df.Hugo_Symbol,dropn
 full_status_df.head(3)
 full_status_df[full_status_df > 1] = 1
 full_status_df = full_status_df.reset_index()
-full_status_df=full_status_df.drop(['No_NF1_alt','No_TP53_alt'],axis=1)
+full_status_df=full_status_df.drop(['No_TP53_NF1_alt'],axis=1)
 
 # read in clinical file
 clinical_df = pd.read_table(clinical)
