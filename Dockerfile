@@ -224,6 +224,9 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     spatial \
     ggfortify
 
+# Install for mutation signature analysis
+RUN R -e "BiocManager::install('ggbio')"
+
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
 
