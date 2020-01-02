@@ -109,6 +109,10 @@ jobs:
           command: ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"  
       
       - run:
+          name: GISTIC Plots
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', clean = TRUE)"
+          
+      - run:
           name: SHH TP53 Molecular Subtyping
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-SHH-tp53/SHH-tp53-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
 
