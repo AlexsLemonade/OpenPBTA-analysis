@@ -1,39 +1,39 @@
 # Intended for import only
 # Chante Bethell for CCDL 2019
-# 
+#
 # Assign function to perform the dimension reduction techniques
 perform_dimension_reduction <- function(transposed_expression_matrix,
                                         method,
-                                        seed,
                                         model_filename,
                                         output_directory,
                                         perplexity_parameter,
-                                        neighbors_parameter) {
+                                        neighbors_parameter,
+                                        seed = 2019) {
   # Given a data.frame that containes the transposed expression matrix and the
   # name of a dimension reduction method, perform the dimension reduction
   # technique on the transposed matrix
-  # 
+  #
   # Args:
   #   transposed_expression_matrix: Transposed `RSEM` or `Kallisto` expression
   #                                 matrix
   #   method: Dimension reduction method to be performed
-  #   seed: Seed, set to a default of 2019
   #   model_filename: Name of the output model file
   #   output_directory: file.path to the output directory
   #   perplexity_parameter: integer defining the perplexity parameter for t-SNE
   #   neighbors_parameter: integer defining the n_neighbors parameter for UMAP
+  #   seed: Seed, set to a default of 2019
   #
   # Returns:
   #   dimension_reduction_df: data.frame containing the resulting scores of the
   #                           dimension reduction technique, with a column that
   #                           includes sample identifiers
-  
+
   # Set seed for reproducibility
   set.seed(seed)
-  
+
   # Save rownames as a vector
   ID <- rownames(transposed_expression_matrix)
-  
+
   # Perform dimension reduction
   if (method == "PCA") {
     dimension_reduction_results <- prcomp(transposed_expression_matrix)
@@ -56,10 +56,10 @@ perform_dimension_reduction <- function(transposed_expression_matrix,
   } else {
     stop(paste(method, "is not a supported argument"))
   }
-  
+
   # Assign the relevant rownames(Kids_First_Biospecimen_ID) to a column
   dimension_reduction_df$Kids_First_Biospecimen_ID <- ID
-  
+
   # Write the resulting model to a rds file
   readr::write_rds(
     dimension_reduction_results,
@@ -68,7 +68,7 @@ perform_dimension_reduction <- function(transposed_expression_matrix,
       paste(model_filename, "_model.rds", sep = "")
     )
   )
-  
+
   return(dimension_reduction_df)
 }
 
@@ -94,11 +94,11 @@ align_metadata <- function(dimension_reduction_df,
   # Returns:
   #   aligned_scores_df: A data.frame containing the dimension reduction scores
   #         along with the variables from `metadata_df`
-  
+
   # Join the dimension reductions scores data.frame and the metadata data.frame
   aligned_scores_df <- dimension_reduction_df %>%
-    dplyr::inner_join(metadata_df, by = c("Kids_First_Biospecimen_ID")) 
-  
+    dplyr::inner_join(metadata_df, by = c("Kids_First_Biospecimen_ID"))
+
   # Write the resulting metadata aligned data.frame to a tsv file
   readr::write_tsv(
     aligned_scores_df,
@@ -107,7 +107,7 @@ align_metadata <- function(dimension_reduction_df,
       paste(scores_filename, "_scores_aligned.tsv", sep = "")
     )
   )
-  
+
   return(aligned_scores_df)
 }
 
@@ -140,19 +140,19 @@ dimension_reduction_wrapper <- function(transposed_expression_matrix,
   #   aligned_scores_df: data.frame containing dimension reduction scores and
   #                      aligned metadata variables
   #
-  
+
   # Run `perform_dimension_reduction` function
   dimension_reduction_df <-
     perform_dimension_reduction(
       transposed_expression_matrix,
       method,
-      seed,
       model_filename = filename_lead,
       output_directory,
       perplexity_parameter,
-      neighbors_parameter
+      neighbors_parameter,
+      seed
     )
-  
+
   # Run `align_metadata` function
   aligned_scores_df <-
     align_metadata(
@@ -161,15 +161,15 @@ dimension_reduction_wrapper <- function(transposed_expression_matrix,
       scores_filename = filename_lead,
       output_directory
     )
-  
+
 }
 
 # Function to plot
-plot_dimension_reduction <- function(aligned_scores_df, 
+plot_dimension_reduction <- function(aligned_scores_df,
                                      point_color,
                                      x_label,
                                      y_label,
-                                     score1 = 1, 
+                                     score1 = 1,
                                      score2 = 2) {
     # Given a data.frame that contains the scores of a dimension reduction
     # analysis and the information we want from the metadata, make a scatterplot.
@@ -188,17 +188,17 @@ plot_dimension_reduction <- function(aligned_scores_df,
     #
     # Returns:
     #   dimension_reduction_plot: the plot representing the dimension reduction
-    #                             scores in the given data.frame, using the 
-    #                             values in `point_color` as symbols to color 
+    #                             scores in the given data.frame, using the
+    #                             values in `point_color` as symbols to color
     #                             the points
-    
+
     if (!(point_color %in% colnames(aligned_scores_df))) {
       stop(paste(point_color, "is not column in aligned_scores_df"))
     }
-  
+
     # transform the strings in `point_color` into symbols for plotting
     color_sym <- rlang::sym(point_color)
-    
+
     dimension_reduction_plot <- ggplot2::ggplot(
       aligned_scores_df,
       ggplot2::aes(
@@ -215,10 +215,10 @@ plot_dimension_reduction <- function(aligned_scores_df,
         "#8b20d3", "#799d10", "#881c23",
         "#3fc6f8", "#fe5cde", "#0a7fb2",
         "#f2945a", "#6b4472", "#f4d403",
-        "#76480d", "#a6b6f9"
+        "#76480d", "#a6b6f9", "#000000"
       ))) +
       ggplot2::labs(x = x_label, y = y_label) +
       ggplot2::theme_bw()
-    
+
     return(dimension_reduction_plot)
 }
