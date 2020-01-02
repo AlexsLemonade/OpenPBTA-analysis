@@ -4,11 +4,11 @@
 # Assign function to perform the dimension reduction techniques
 perform_dimension_reduction <- function(transposed_expression_matrix,
                                         method,
-                                        seed,
                                         model_filename,
                                         output_directory,
                                         perplexity_parameter,
-                                        neighbors_parameter) {
+                                        neighbors_parameter,
+                                        seed = 2019) {
   # Given a data.frame that containes the transposed expression matrix and the
   # name of a dimension reduction method, perform the dimension reduction
   # technique on the transposed matrix
@@ -17,11 +17,11 @@ perform_dimension_reduction <- function(transposed_expression_matrix,
   #   transposed_expression_matrix: Transposed `RSEM` or `Kallisto` expression
   #                                 matrix
   #   method: Dimension reduction method to be performed
-  #   seed: Seed, set to a default of 2019
   #   model_filename: Name of the output model file
   #   output_directory: file.path to the output directory
   #   perplexity_parameter: integer defining the perplexity parameter for t-SNE
   #   neighbors_parameter: integer defining the n_neighbors parameter for UMAP
+  #   seed: Seed, set to a default of 2019
   #
   # Returns:
   #   dimension_reduction_df: data.frame containing the resulting scores of the
@@ -146,11 +146,11 @@ dimension_reduction_wrapper <- function(transposed_expression_matrix,
     perform_dimension_reduction(
       transposed_expression_matrix,
       method,
-      seed,
       model_filename = filename_lead,
       output_directory,
       perplexity_parameter,
-      neighbors_parameter
+      neighbors_parameter,
+      seed
     )
 
   # Run `align_metadata` function
