@@ -172,7 +172,7 @@ write_tsv(cm_set, cm_set_file,
 cm_file <- file.path(output_directory, opt$cm_file_name)
 saveRDS(cm, cm_file)
 
-# In CI, the model will intermittently predict every samples as "male"
+# In CI, the model will intermittently predict every sample as "male"
 # This is causing an error and therefore causing CI to fail intermittently
 # for unrelated changes.
 # The underlying cause should be investigated more thoroughly, as we would
