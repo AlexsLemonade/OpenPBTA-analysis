@@ -30,37 +30,37 @@ clinical<-read_tsv(clinicalFile)
 # gather RNA-seq from WGS/WXS samples in independent-specimens.wgswxs.primary-plus.tsv
 independentSpecimens<-read_tsv(independentSpecimensFile) %>% as.data.frame()
 
-sampleIDMatchedIndependent<-clinical %>% filter(Kids_First_Biospecimen_ID %in% independentSpecimens$Kids_First_Biospecimen_ID) %>% select(sample_id) %>% as.vector() 
+sampleIDMatchedIndependent<-clinical %>% dplyr::filter(Kids_First_Biospecimen_ID %in% independentSpecimens$Kids_First_Biospecimen_ID) %>% dplyr::select(sample_id) %>% as.vector() 
 
 # PNOC sampleIDs have .WXS which would need to .RNA-Seq ; Panel not in independent sample list ; so using patient ID to match
 clinical_pnoc<-clinical %>% 
-  filter(cohort=="PNOC003",experimental_strategy=="RNA-Seq",tumor_descriptor=="Initial CNS Tumor") %>% 
-  select(Kids_First_Participant_ID,Kids_First_Biospecimen_ID)
+  dplyr::filter(cohort=="PNOC003",experimental_strategy=="RNA-Seq",tumor_descriptor=="Initial CNS Tumor") %>% 
+  dplyr::select(Kids_First_Participant_ID,Kids_First_Biospecimen_ID)
 
 
 clinical_rna<-clinical %>% 
   # select WGS/WXS matched sampleIDs + experimental_strategy=="RNA-Seq" +composition == "Solid Tissue"
-  filter(sample_id %in% sampleIDMatchedIndependent$sample_id,
-                    experimental_strategy == "RNA-Seq",
-                    composition == "Solid Tissue") %>%
+  dplyr::filter(sample_id %in% sampleIDMatchedIndependent$sample_id,
+         experimental_strategy == "RNA-Seq",
+         composition == "Solid Tissue") %>%
   dplyr::group_by(Kids_First_Participant_ID) %>%
   # sample 1 of BS_IDs for multiple sampleID found in matching with WGS/WXS
   dplyr::summarize(Kids_First_Biospecimen_ID = sample(Kids_First_Biospecimen_ID, 1)) 
 
 # match RNASeq only files
 clinical_wgs<-clinical %>% 
-  filter(experimental_strategy == "WGS" | experimental_strategy == "WXS",sample_type=="Tumor")
+  dplyr::filter(experimental_strategy == "WGS" | experimental_strategy == "WXS",sample_type=="Tumor")
 
 # remove samples which have WGS/WXS because those would have been captured from the independent-wgswxs-sample
 clinical_rna_v2<-clinical %>% 
-  filter(experimental_strategy == "RNA-Seq",!Kids_First_Participant_ID %in% clinical_wgs$Kids_First_Participant_ID)
+  dplyr::filter(experimental_strategy == "RNA-Seq",!Kids_First_Participant_ID %in% clinical_wgs$Kids_First_Participant_ID)
 
 clinical_rna_intial<-clinical_rna_v2 %>% 
   dplyr::filter(composition=="Solid Tissue",tumor_descriptor=="Initial CNS Tumor") %>% 
   select("Kids_First_Participant_ID","Kids_First_Biospecimen_ID")
 
 clinical_rna_non_initial<- clinical_rna_v2 %>% 
-  filter(!Kids_First_Participant_ID %in% clinical_rna_intial$Kids_First_Participant_ID ) %>% 
+  dplyr::filter(!Kids_First_Participant_ID %in% clinical_rna_intial$Kids_First_Participant_ID ) %>% 
   dplyr::filter(experimental_strategy=="RNA-Seq" ,composition=="Solid Tissue") %>%
   as.data.frame() %>% 
   dplyr::group_by(Kids_First_Participant_ID) %>%
@@ -70,10 +70,12 @@ clinical_rna_non_initial<- clinical_rna_v2 %>%
 # bind WGS/WXS matched RNA-Seq + RNAseq only samples initial tumor samples + RNAseq only recurrent/progressive samples + RNASeq matched to PNOC samples
 clinical_rna<-rbind(clinical_rna,clinical_rna_intial,clinical_rna_non_initial,clinical_pnoc) %>% unique()
 
+clinical_rna<-clinical_rna %>% left_join(clinical,by=c("Kids_First_Participant_ID","Kids_First_Biospecimen_ID"))
+
 
 # Putative Driver Fusions annotated with broad_histology
 standardFusionCalls<-standardFusionCalls %>% 
-  filter( Sample%in% clinical_rna$Kids_First_Biospecimen_ID) %>%
+  dplyr::filter( Sample%in% clinical_rna$Kids_First_Biospecimen_ID) %>%
   left_join(clinical,by=c("Sample"="Kids_First_Biospecimen_ID","Kids_First_Participant_ID")) %>% 
   dplyr::filter(!is.na(broad_histology)) %>% as.data.frame()
 
@@ -113,7 +115,7 @@ rec_fusions <- standardFusionCalls %>%
 #find rec fusions per PATIENT per broad_histology
 rec_fusions<-rec_fusions[rec_fusions$count>3,]
 rec_fusions<-rec_fusions[order(rec_fusions$count,decreasing = TRUE),]
-write.table(rec_fusions,file.path(outputfolder,"rec_fusions_participant_histology_level.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
+write.table(rec_fusions,file.path(outputfolder,"pbta-fusion-recurrent-fusion-byhistology.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
 
 
 # binary matrix for recurrent fusions found in SAMPLE per broad_histology
@@ -122,7 +124,7 @@ rec_fusions_mat<-rec_fusions %>%
   left_join(standardFusionCalls, by=c("FusionName","broad_histology")) %>%
   select("FusionName","broad_histology","Sample") %>% 
   # to add all rna Sample for binary matrix
-  full_join(clinical,by=c("Sample"="Kids_First_Biospecimen_ID","broad_histology"="broad_histology"))
+  full_join(clinical_rna,by=c("Sample"="Kids_First_Biospecimen_ID","broad_histology"="broad_histology"))
 
 # adding a full join to recurrent fusion adds NAs to FusionName column that don't have recurrent fusions. Changing NA to No_rec_fusions so in matrix format it columns specifies that instead of NA
 rec_fusions_mat[is.na(rec_fusions_mat$FusionName),"FusionName"]<-"No_rec_fusion"
@@ -130,7 +132,7 @@ rec_fusions_mat[is.na(rec_fusions_mat$FusionName),"FusionName"]<-"No_rec_fusion"
 # binary matrix
 rec_fusions_mat<-dcast(rec_fusions_mat,Sample~FusionName,value.var = "Sample",fun.aggregate = function(x){as.integer(length(x) > 0)},drop = FALSE) 
 
-write.table(rec_fusions_mat,file.path(outputfolder,"rec_fusions_matrix_sample_histology_level.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
+write.table(rec_fusions_mat,file.path(outputfolder,"pbta-fusion-recurrent-fusion-bysample.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
 
 
 # gene1A recurrent
@@ -154,7 +156,7 @@ rec_gene<-rbind(rec_gene1A,rec_gene1B) %>%
 #find rec fused genes per PATIENT per broad_histology
 rec_gene<-rec_gene[rec_gene$count>3,]
 rec_gene<-rec_gene[order(rec_gene$count,decreasing = TRUE),]
-write.table(rec_gene,file.path(outputfolder,"rec_genes_participant_histology_level.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
+write.table(rec_gene,file.path(outputfolder,"pbta-fusion-recurrently-fused-genes-byhistology.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
 
 # binary matrix for recurrently fused genes found in SAMPLE per broad_histology
 rec_geneA_mat<-rec_gene %>% 
@@ -171,14 +173,13 @@ rec_geneB_mat<-rec_gene %>%
 
 rec_gene_mat<-rbind(rec_geneA_mat,rec_geneB_mat) %>% unique() %>%
   # to add all rna Sample for binary matrix
-  full_join(clinical,by=c("Sample"="Kids_First_Biospecimen_ID","broad_histology"="broad_histology")) %>%
+  full_join(clinical_rna,by=c("Sample"="Kids_First_Biospecimen_ID","broad_histology"="broad_histology")) %>%
   unique()
 rec_gene_mat[is.na(rec_gene_mat$Gene),"Gene"]<-"No_rec_fused_gene"
 
 # binary matrix
 rec_gene_mat<-dcast(rec_gene_mat,Sample~Gene,value.var = "Sample",fun.aggregate = function(x){as.integer(length(x) > 0)},drop = FALSE)
 
-write.table(rec_gene_mat,file.path(outputfolder,"rec_genes_matrix_sample_histology_level.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
-
+write.table(rec_gene_mat,file.path(outputfolder,"pbta-fusion-recurrently-fused-genes-bysample.tsv"),quote = FALSE,row.names = FALSE,sep="\t")
 
 

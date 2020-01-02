@@ -40,15 +40,15 @@ select_metadata <- metadata %>%
                 Kids_First_Participant_ID,
                 Kids_First_Biospecimen_ID)
 
-# Read in ssGSEA pathway information
-ssGSEA <-
-  as.data.frame(readr::read_rds(
+# Read in GSVA pathway scores
+gsva_scores <-
+  as.data.frame(readr::read_tsv(
     file.path(
       root_dir,
       "analyses",
-      "ssgsea-hallmark",
+      "gene-set-enrichment-analysis",
       "results",
-      "GeneSetExpressionMatrix.RDS"
+      "gsva_scores_stranded.tsv"
     )
   ))
 
@@ -126,22 +126,16 @@ cn_metadata <- cn_df %>%
 # Write to file
 readr::write_tsv(cn_metadata, file.path(results_dir, "atrt_focal_cn.tsv.gz"))
 
-#### Filter ssGSEA data --------------------------------------------------------
-
-# Transpose
-transposed_ssGSEA <- t(ssGSEA) %>%
-  as.data.frame() %>%
-  tibble::rownames_to_column("Kids_First_Biospecimen_ID")
+#### Filter GSVA data ----------------------------------------------------------
 
 # Filter for `sample_id` values found in the metadata filtered for ATRT samples
-transposed_ssGSEA <- transposed_ssGSEA %>%
+filtered_gsva_scores <- gsva_scores %>%
   dplyr::left_join(select_metadata, by = "Kids_First_Biospecimen_ID") %>%
   dplyr::filter(sample_id %in% atrt_df$sample_id) %>%
-  tibble::column_to_rownames("Kids_First_Biospecimen_ID") %>%
-  dplyr::select(-c("sample_id", "Kids_First_Participant_ID"))
+  dplyr::select(-Kids_First_Participant_ID)
 
 # Write to file
-readr::write_rds(transposed_ssGSEA, file.path(results_dir, "atrt_ssgsea.RDS"))
+readr::write_tsv(filtered_gsva_scores, file.path(results_dir, "atrt_gsva.tsv"))
 
 #### Filter tumor mutation burden data -----------------------------------------
 
