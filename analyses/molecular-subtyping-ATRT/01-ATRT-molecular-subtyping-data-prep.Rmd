@@ -278,7 +278,7 @@ cn_df <- cn_df %>%
     )), collapse = ", ")
   )
 
-#Display `cn_metadata`
+# Display `cn_metadata`
 cn_df %>%
   head(n = 15)
 
@@ -290,14 +290,14 @@ atrt_expression_cn_df <- atrt_expression_df %>%
 ### GSVA data
 
 ```{r}
-# filter to only the hallmark gene sets that were named in the issue
+# Filter to only the hallmark gene sets that were named in the issue
 relevant_genesets <- c("HALLMARK_MYC_TARGETS_V1",
                        "HALLMARK_MYC_TARGETS_V2",
                        "HALLMARK_NOTCH_SIGNALING")
 gsva_filtered <- gsva_subset %>%
   dplyr::filter(hallmark_name %in% relevant_genesets)
 
-# matrix with gene set columns that can be scaled
+# Matrix with gene set columns that can be scaled
 gsva_mat <- gsva_filtered %>% 
   dplyr::select(-Kids_First_Biospecimen_ID) %>% 
   tidyr::spread(hallmark_name, gsea_score) %>%
@@ -308,6 +308,10 @@ gsva_mat <- gsva_filtered %>%
 scaled_gsva <- scale(gsva_mat, center = TRUE, scale = TRUE) %>%
   as.data.frame() %>%
   tibble::rownames_to_column("sample_id")
+
+# Display scaled_gsva
+scaled_gsva %>%
+  head(n = 15)
 
 # Join ATRT expression and focal CN data with GSVA data
 atrt_expression_cn_df <- atrt_expression_cn_df %>%
