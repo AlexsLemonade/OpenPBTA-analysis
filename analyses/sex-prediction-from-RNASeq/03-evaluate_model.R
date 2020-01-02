@@ -164,22 +164,27 @@ cm <- confusionMatrix(data = cm_set$pred, reference = cm_set$obs)
 cat("\n\n")
 cm
 
-two_class_summary <- twoClassSummary(cm_set, lev = levels(cm_set$obs))
-cat("\n\n")
-two_class_summary
-
 cm_set_file <- file.path(output_directory, opt$cm_set_file_name)
 
 write_tsv(cm_set, cm_set_file,
           na = "NA", append = FALSE, col_names = TRUE, quote_escape = "double")
 
-
 cm_file <- file.path(output_directory, opt$cm_file_name)
 saveRDS(cm, cm_file)
 
-summary_file <- file.path(output_directory, opt$summary_file_name)
-saveRDS(two_class_summary, summary_file)
-
+# In CI, the model will intermittently predict every samples as "male"
+# This is causing an error and therefore causing CI to fail intermittently
+# for unrelated changes.
+# The underlying cause should be investigated more thoroughly, as we would
+# like the module code to run reproducibly, e.g., get the same labels given
+# the same seed.
+if (length(levels(cm_set$obs)) > 1) {
+  two_class_summary <- twoClassSummary(cm_set, lev = levels(cm_set$obs))
+  cat("\n\n")
+  two_class_summary
+  summary_file <- file.path(output_directory, opt$summary_file_name)
+  saveRDS(two_class_summary, summary_file)
+}
 
 #--------
 
