@@ -111,7 +111,10 @@ seg_data <- data.table::fread(file.path(input_dir, "pbta-cnv-cnvkit.seg.gz"),
     "short_histology"
   ),
   by = c("ID" = "Kids_First_Biospecimen_ID")
-  )
+  ) %>% 
+  # Reformat the chromosome variable to drop the "chr"
+  dplyr::mutate(chrom = factor(gsub("chr", "", chrom), 
+                               levels = c(1:22, "X", "Y")))
 ```
 
 ### Make GISTIC data into GRanges object
