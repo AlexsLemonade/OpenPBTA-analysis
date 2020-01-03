@@ -31,12 +31,8 @@ jobs:
           command: ./scripts/run_in_ci.sh bash analyses/collapse-rnaseq/run-collapse-rnaseq.sh
 
       - run:
-          name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded expression
+          name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded data and creates recurrent fusion list
           command: ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
-
-      - run:
-          name: Identify recurrent fusion per histology
-          command: ./scripts/run_in_ci.sh Rscript analyses/fusion_filtering/05-recurrent-fusions-per-histology.R -S data/pbta-fusion-putative-oncogenic.tsv -c data/pbta-histologies.tsv -o analyses/fusion_filtering/results/ -i data/independent-specimens.wgswxs.primary-plus.tsv
 
       - run:
           name: Transcriptome dimensionality reduction
@@ -48,9 +44,9 @@ jobs:
 
       - run:
           name: Selection Strategy Comparison
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/selection-strategy-comparison/01-selection-strategies.rmd', clean = TRUE)"
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/selection-strategy-comparison/01-selection-strategies.rmd', params = list(neighbors = 2), clean = TRUE)"
 
-# TODO: fix when this gets updated to use the collapsed matrix https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/235          
+# This is deprecated       
 #      - run:
 #          name: ssGSEA Analysis
 #          command: OPENPBTA_ANOVAPVALUE=0.25 OPENPBTA_TUKEYPVALUE=0.50 OPENPBTA_PERCKEEP=0.50 ./scripts/run_in_ci.sh bash analyses/ssgsea-hallmark/run-ssgsea-hallmark.sh
@@ -71,10 +67,6 @@ jobs:
       - run:
           name: Interaction plot
           command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh
-    
-      - run:  
-          name: Focal CN RNA expression visualization
-          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/focal-cn-file-preparation/rna-expression-validation.R
 
       - run:
           name: Mutational Signatures 
@@ -112,10 +104,31 @@ jobs:
           name: Molecular Subtyping - HGG
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/01-HGG-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
       
+      - run:
+          name: Oncoprint plotting
+          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
+
+      - run:
+          name: TP53 NF1 classifier run
+          command: ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"  
+      
+      - run:
+          name: GISTIC Plots
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', clean = TRUE)"
+          
+      - run:
+          name: SHH TP53 Molecular Subtyping
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-SHH-tp53/SHH-tp53-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
+
+      - run:
+          name: Gene set enrichment analysis to generate GSVA scores
+          command: ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh" 
+
+
          ################################
          #### Add your analysis here ####
          ################################
-         
+
       - run:
           name: SNV Caller Analysis 
           command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis.sh
@@ -125,10 +138,7 @@ jobs:
           # name: SNV Caller VAF Cutoff Experiment
           # command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)"
       
-      # Without the subset mutation consensus files, this takes a long time to run
-      - run:
-          name: Oncoprint plotting
-          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"   
+ 
                 
 
   deploy:
