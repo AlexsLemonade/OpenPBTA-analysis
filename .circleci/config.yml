@@ -120,6 +120,11 @@ jobs:
           name: Gene set enrichment analysis to generate GSVA scores
           command: ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh" 
 
+      - run:
+          name: Molecular Subtyping of non-MB/non-ATRT Embryonal Tumors
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-nonMB-nonATRT/01-subtyping.Rmd', clean=TRUE)" 
+
+
 
          ################################
          #### Add your analysis here ####
