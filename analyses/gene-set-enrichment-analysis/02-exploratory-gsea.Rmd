@@ -52,11 +52,13 @@ library(broom)
 SIGNIFICANCE_THRESHOLD   <- 0.01
 
 # Are we testing?
-if( !(params$is_ci %in% c(0,1) & !(params$is_ci) %in% c(TRUE, FALSE)) ){
+if( !(params$is_ci %in% c(0,1)) & !(params$is_ci %in% c(TRUE, FALSE)) ){
   stop("\n\nERROR: The parameter `is_ci` should be 0/1 (or FALSE/TRUE).")
 }
-if (params$is_ci == 0) params$is_ci <- FALSE
-if (params$is_ci == 1) params$is_ci <- TRUE
+# Assigning params$is_ci to running_in_ci avoids a locked binding error
+running_in_ci <- params$is_ci
+if (running_in_ci == 0) running_in_ci <- FALSE
+if (running_in_ci == 1) running_in_ci <- TRUE
 ```
 
 
@@ -103,7 +105,7 @@ metadata_with_gsva <- metadata %>%
 
 ### If we are running in CI, we need to ensure enough levels for AOV.
 ### PolyA data generally does NOT have enough samples, so this should do it.
-if (params$is_ci)
+if (running_in_ci)
 {
   metadata_with_gsva %>% 
     filter(data_type == "stranded") -> metadata_with_gsva
@@ -155,7 +157,7 @@ pathway_diffs <- metadata_with_gsva %>%
 _Yes, 57 pathways are differently-significant between stranded and polyA expression data._
 
 ```{r, explore-data-types-sig, warning=FALSE}
-if(!(params$is_ci)){
+if(!(running_in_ci)){
   # How many pathway comparisons DIFFER IN SIGNIFICANCE between expression data types?
   pathway_diffs %>% 
     dplyr::select(hallmark_name, data_type, comparison, significant_tukey_bonf) %>%
@@ -169,7 +171,7 @@ if(!(params$is_ci)){
 The scores of pathways whose significant differs are about same order of magnitude, with a couple wild exceptions for __Medulloblastoma-HGAT comparsion__. Also reveals some differences in sign of score.
 
 ```{r, explore-data-types-sig-2, warning=FALSE}
-if(!(params$is_ci)){
+if(!(running_in_ci)){
   diff_sig_stranded_polya %>%
     inner_join(pathway_diffs) %>%
     dplyr::select(hallmark_name, comparison, data_type, pathway_score_difference) %>%
@@ -185,7 +187,7 @@ if(!(params$is_ci)){
 
 There are (as of v12 data release) **39** pathway comparisons which differ in sign between polyA and stranded expression, largely for comparisons between samples MB-CNS embryonal tumor but there is no single hallmark that stands out.
 ```{r, explore-data-types-sign, warning=FALSE}
-if(!(params$is_ci)){
+if(!(running_in_ci)){
   # How many pathway comparisons DIFFER IN SIGNIFICANCE between data types?
   pathway_diffs %>% 
     dplyr::select(hallmark_name, data_type, comparison, pathway_score_difference) %>%
