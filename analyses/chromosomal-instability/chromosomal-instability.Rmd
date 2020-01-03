@@ -1,0 +1,250 @@
+---
+title: "Chromosomal Instability"
+output:   
+  html_notebook: 
+    toc: true
+    toc_float: true
+author: Candace Savonen for ALSF - CCDL
+date: 2020
+---
+
+### Usage
+
+This notebook can be run via the command line from the top directory of the 
+repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', 
+                              clean = TRUE)"
+```
+
+### Set Up
+
+```{r}
+# This package doesn't install properly so we are manually downloading it to get 
+# functions
+if (!dir.exists("svcnvplus")) {
+  download.file("https://github.com/gonzolgarcia/svcnvplus/archive/master.zip",
+                destfile = "svcnvplus.zip")
+  unzip("svcnvplus.zip", exdir = "svcnvplus")
+}
+
+# Get SV file processed for the formatting we need
+source(file.path("..", "sv-analysis", "01-process-sv-file.R"))
+
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+Import the functions from `svcnvplus`.
+
+```{r, message=FALSE, results='hide'}
+# Establish "package" directory
+svcnvplus_dir <- file.path("svcnvplus", "svcnvplus-master", "R")
+
+function_files <- list.files(svcnvplus_dir, full.names = TRUE)
+
+# Source in all the functions
+lapply(function_files, source)
+```
+
+### Directories and Files
+
+```{r}
+# Path to data directory
+data_dir <- file.path("..", "..", "data")
+
+# Path to scratch directory
+sv_dir <- file.path("..", "..", "scratch", "sv-vcf")
+
+# Path to output directory
+plots_dir <- "plots"
+
+# Create the plots_dir if it does not exist
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir, recursive = TRUE)
+}
+```
+
+### Read in data 
+
+```{r}
+# Read in metadata
+metadata <-
+  readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
+```
+
+Read in the CNV data. 
+
+```{r}
+# Read in the segment copy number data
+cnv_df <- data.table::fread(file.path(data_dir, "pbta-cnv-cnvkit.seg.gz"),
+  data.table = FALSE
+) %>%
+  # Join the histology column to this data
+  dplyr::inner_join(dplyr::select(
+    metadata,
+    "Kids_First_Biospecimen_ID",
+    "short_histology"
+  ),
+  by = c("ID" = "Kids_First_Biospecimen_ID")
+  ) %>% 
+  # Reformat the chromosome variable to drop the "chr"
+  dplyr::mutate(chrom = factor(gsub("chr", "", chrom), 
+                               levels = c(1:22, "X", "Y")))
+```
+
+Read in the SV data.
+
+```{r}
+# Get a list of the properly formatted SV files, we'll only take the ones without Y and M chromosomes
+sv_files <- list.files(sv_dir, pattern = "_withoutYandM.tsv", full.names = TRUE)
+
+# Read in each of the files
+sv_data <- lapply(sv_files, data.table::fread)
+
+# Bind all of them into one
+sv_df <- dplyr::bind_rows(sv_data)
+```
+
+### Validate and structure the SV and CNV data
+
+Validate and format segmentation data.frame to be used by `svcnvplus` package toolkit
+
+```{r}
+cnv_df <- validate.seg(cnv_df)
+head(cnv_df)
+```
+
+Validate and format structural variant data.frame to be used by `svcnvplus` package toolkit
+
+```{r}
+sv_df <- validate.sv(sv_df)
+head(sv_df)
+```
+
+```{r message=FALSE, echo = FALSE}
+segdf_clean <- clean.cnv.artifact(segdf, verbose=FALSE,n.reps = 4)  # remove likely artifacts from segmentation data
+```
+
+```{r plot1,  fig.width=9, fig.height=4, fig.align='center', fig.cap = "Genome wide CNV frequencies", message=FALSE}
+cnv_freq <- cnv.freq.plot(segdf)  # plot cnv frequencies
+```
+
+```{r message=FALSE}
+head(cnv_freq$freqsum)  # data.frame contains every genomic bin 
+```
+
+
+
+### Make GISTIC data into GRanges object
+
+```{r}
+gistic_ranges <- GenomicRanges::GRanges(
+  seqnames = gistic_scores$Chromosome,
+  ranges = IRanges::IRanges(
+    start = gistic_scores$Start,
+    end = gistic_scores$End
+  ),
+  score = gistic_scores$gscore,
+  mcols = gistic_scores
+)
+```
+
+### Plot the GISTIC scores
+
+```{r}
+gistic_plot <- ggbio::autoplot(gistic_ranges, ggplot2::aes(y = score, fill = mcols.Type),
+  geom = "bar", scales = "free_x", space = "free_x"
+) +
+  ggplot2::theme_classic() +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(size = 3, angle = 45, hjust = 1)) +
+  colorblindr::scale_fill_OkabeIto(name = "Type") +
+  ggplot2::ylab("G-scores")
+
+# Print out plot here
+gistic_plot@ggplot
+```
+
+### Save the plot as PNG. 
+
+```{r}
+ggplot2::ggsave(
+  plot = gistic_plot@ggplot,
+  filename = file.path(plots_dir, "gistic_plot.png"),
+  width = 10,
+  height = 3,
+  units = "in"
+)
+```
+
+### Segment mean plots by histology 
+
+```{r, results='hide', message=FALSE}
+# Make a plot for each histology group
+lapply(unique(seg_data$short_histology), function(histology_group) {
+
+  # How many samples are of this histology label?
+  sample_num <- seg_data %>%
+    dplyr::filter(short_histology == histology_group) %>%
+    dplyr::pull(ID) %>%
+    unique() %>%
+    length()
+
+  # Isolate the data to the histology group
+  hist_df <- seg_data %>%
+    dplyr::filter(short_histology == histology_group) %>%
+    dplyr::group_by(short_histology, chrom, loc.start, loc.end) %>%
+    dplyr::summarize(hist.mean = mean(seg.mean)) %>%
+    # Make Del/Amp variable
+    dplyr::mutate(Type = dplyr::case_when(
+      hist.mean < 0 ~ "Del",
+      hist.mean > 0 ~ "Amp",
+      hist.mean == 0 ~ "Neutral"
+    ))
+
+  # Turn into a GRanges for easier mapping
+  hist_ranges <- GenomicRanges::GRanges(
+    seqnames = hist_df$chrom,
+    ranges = IRanges::IRanges(
+      start = hist_df$loc.start,
+      end = hist_df$loc.end
+    ),
+    score = hist_df$hist.mean,
+    mcols = hist_df$Type
+  )
+  # Map this on a plot
+  hist_plot <- ggbio::autoplot(hist_ranges,
+    ggplot2::aes(y = score, fill = mcols),
+    geom = "bar", scales = "free_x", space = "free_x"
+  ) +
+    ggplot2::theme_classic() +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(size = 3, angle = 45, hjust = 1)) +
+    colorblindr::scale_fill_OkabeIto(name = "Type") +
+    ggplot2::labs(
+      title = histology_group,
+      y = "Average segment mean",
+      subtitle = paste("n =", sample_num)
+    )
+
+  # Save the plot to a png
+  # Have to ouse @ggplot to extract the portion of the ggbio object with the plot
+  ggplot2::ggsave(
+    plot = hist_plot@ggplot,
+    filename = file.path(plots_dir, paste0(histology_group, "_plot.png")),
+    width = 10,
+    height = 3,
+    units = "in"
+  )
+  
+  # Print the plot here 
+  hist_plot
+})
+```
+
+# Session Info
+
+```{r}
+sessionInfo()
+```
+
