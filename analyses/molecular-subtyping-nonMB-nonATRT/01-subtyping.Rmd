@@ -1,0 +1,139 @@
+---
+title: "Subtyping of non-MB/non-ATRT Embryonal Tumors"
+author: "Stephanie J. Spielman"
+date: 2020
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Purpose
+
+This RMarkdown file performs molecular subtyping on the unclassifed embryonal tumors. The majority of these samples are already classified as either Medulloblastoma or ATRT, but a subset are neither of these subtypes and require further classification.
+
+**This is a work in progress**.
+
+Currently, we use RNA-seq expression data (stranded library specifically) to subtype (or, try to subtype).
+
+## Setup
+
+Load libraries and set paths to input, output directories and files.
+
+```{r libs-paths}
+
+####### Packages
+if (!("cowplot" %in% installed.packages())) {
+  install.packages("cowplot")
+}
+if (!("cowplot" %in% installed.packages())) {
+  install.packages("RColorBrewer")
+}
+if (!("umap" %in% installed.packages())) {
+  install.packages("umap")
+}
+library(tidyverse)
+library(cowplot)
+library(RColorBrewer)
+library(umap)
+
+####### Define directories
+data_dir    <- file.path("..", "..", "data")
+plots_dir <- "plots"
+if (!dir.exists(plots_dir)) dir.create(plots_dir)
+
+
+######## Input file names
+metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+expression_file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm.stranded.rds")  ## TODO: Make this an input argument
+
+####### Output file names
+umap_plot_file <- file.path(plots_dir, "umap_expression_all_embryonal.pdf")
+```
+
+
+## Analysis
+
+#### Read in and prepare input files
+```{r input-prep}
+### Read input files
+metadata   <- readr::read_tsv(metadata_file)
+expression <- readr::read_rds(expression_file)
+
+### Subset metadata to only RNA-seq samples that are annotated as embryonal (we include classified subtypes to start) 
+metadata %>% 
+  filter(experimental_strategy == "RNA-Seq", 
+         str_detect(broad_histology, "Embryonal tumor"),
+         Kids_First_Biospecimen_ID %in% names(expression)) -> all_embryonal
+
+### Subset and normalize expression data to use only those embroynal samples in `all_embryonal`
+expression %>% 
+  dplyr::select(gene_id, all_embryonal$Kids_First_Biospecimen_ID) %>%
+  gather(Kids_First_Biospecimen_ID, expression_level, -gene_id) %>%
+  mutate(norm_expression_level = log2(expression_level + 1)) %>%
+  dplyr::select(-expression_level) %>%
+  spread(gene_id, norm_expression_level) -> expression_embryonal
+```
+
+#### Perform and plot UMAP results
+
+We begin by performing UMAP analysis with several different neighbors on the _whole_ set of embryonal tumors. The goal is to assess whether the existing classifications emerge as distinct groupings, and if so, whether the unclassified samples emerge as distinct from the existing classifications. Because the unclassified samples have such few data points, we try a couple neighbor parameters (NOTE: these do not appear to make a substantial difference in this data).
+
+
+```{r umap-and-plot, fig.width=12, fig.height=5}
+
+embryonal_classified <- c("Medulloblastoma", "Atypical Teratoid Rhabdoid Tumor (ATRT)") ## Already known
+expression_to_umap <- expression_embryonal[,2:ncol(expression_embryonal)] ## Only the expression columns
+
+umap_plots <- list() ## Will store three plots for three neighbor amounts. Since the unclassified samples are very few, it is possible we'll need a small neighbor parameter
+x <- 1
+try_neighbors <- c(5,10,15)
+for (neighbors in try_neighbors) {
+  
+  ## Perform UMAP with given neighbors
+  umap_model <- umap::umap(expression_to_umap, n_neighbors = neighbors)
+  
+  ## Tidy the UMAP to bring back sample information, and add column to indicate if the sample is already classified as MB or ATRT or not
+  data.frame(umap_model$layout) %>% 
+    dplyr::rename_all(.funs = gsub, pattern = "^X", replacement = "UMAP") %>%
+    bind_cols(expression_embryonal %>% dplyr::select("Kids_First_Biospecimen_ID")) %>%
+    inner_join(all_embryonal) %>%
+    mutate(already_classified = ifelse(disease_type_old %in% embryonal_classified, TRUE, FALSE)) -> umap_model_with_sample_info
+  
+  ## Plot UMAP1 vs UMAP2, coloring by `disease_type_old` and using size to reflect samples in need of subtyping
+  ggplot(umap_model_with_sample_info, aes(x = UMAP1, y = UMAP2)) + 
+    geom_point(aes(color = fct_relevel(disease_type_old, embryonal_classified), size = already_classified), alpha=0.7) + 
+    scale_color_brewer(palette = "Dark2") +  ## Use a colorblind friendly palette
+    scale_size_manual(values=c(3, 1)) + 
+    theme_classic() + 
+    theme(legend.position = "bottom", legend.box = "vertical") +
+    labs(
+      title = paste0("UMAP with n_neighbors=", neighbors),
+      color = "disease_type_old"
+    ) -> p
+  
+  
+  umap_plots[[x]] <- p + theme(legend.position = "none")
+  x <- x + 1
+
+  if (x == length(try_neighbors))
+  {
+    umap_legend <- get_legend(p)
+  }
+}
+
+## Create single final visualization of the three UMAPs 
+plot_no_legend <- plot_grid(plotlist = umap_plots, nrow=1)
+final_plot <- plot_grid(plot_no_legend, umap_legend, nrow=2, rel_heights=c(1, 0.25))
+
+## Print the plot
+print(final_plot)
+```
+
+We save the UMAP plots here:
+
+```{r}
+save_plot(umap_plot_file, final_plot, base_width=12, base_height=5)
+```
+
