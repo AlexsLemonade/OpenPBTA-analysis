@@ -9,22 +9,13 @@
 set -e
 set -o pipefail
 
-# This script should always run as if it were being called from
-# the directory it lives in.
-script_directory="$(perl -e 'use File::Basename;
- use Cwd "abs_path";
- print dirname(abs_path(@ARGV[0]));' -- "$0")"
-cd "$script_directory" || exit
-
-data_dir="../../data"
-scratch_dir="../../scratch"
+data_dir="data"
+scratch_dir="scratch"
 # cds gencode bed file  
 exon_file="${scratch_dir}/gencode.v27.primary_assembly.annotation.bed"
 consensus_file="${data_dir}/pbta-snv-consensus-mutation.maf.tsv.gz"
 clinical_file="${data_dir}/pbta-histologies.tsv"
-# expression files for prediction
-collapsed_stranded="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
-collapsed_polya="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
+analysis_dir="analyses/tp53_nf1_score"
 
 # Convert GTF to BED file
 # Here we are only extracting lines with as a CDS i.e. are coded in protein
@@ -34,13 +25,17 @@ gunzip -c ${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz \
   > $exon_file
 
 # Prep the SNV consensus data for evaluation downstream
-Rscript --vanilla 00-tp53-nf1-alterations.R \
+Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
   --snvConsensus ${consensus_file} \
   --clinicalFile ${clinical_file} \
-  --outputFolder results \
+  --outputFolder ${analysis_dir}/tp53_nf1_score/results \
   --gencode ${exon_file}
 
+# expression files for prediction
+collapsed_stranded="pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+collapsed_polya="pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
+
 # Run classifier for stranded and polya
-python3 01-apply-classifier.py -f ${collapsed_stranded}
-python3 01-apply-classifier.py -f ${collapsed_polya}
+python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_stranded}
+python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_polya}
 
