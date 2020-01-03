@@ -46,7 +46,6 @@ consensus_snv <- read_tsv(snvConsensusFile)
 gencode_cds <- read_tsv(gencodeBed, col_names = FALSE)
 # clinical file
 clinical <- read_tsv(clinicalFile)
-# clinical<-clinical %>% filter(!sample_type=="Normal" & !experimental_strategy == "RNA-Seq")
 
 # filter the MAF data.frame to only include entries that fall within the
 # CDS bed file regions
