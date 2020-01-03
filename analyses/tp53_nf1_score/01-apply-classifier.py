@@ -60,7 +60,7 @@ readRDS = robjects.r["readRDS"]
 rownamesRDS = robjects.r["rownames"]
 
 # Load gene expression data in rds format
-file = os.path.join(inputfile)
+file = os.path.join("data", inputfile)
 
 name = re.sub("\.rds$", "", inputfile)
 
