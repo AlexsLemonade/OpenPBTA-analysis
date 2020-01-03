@@ -28,7 +28,7 @@ gunzip -c ${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz \
 Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
   --snvConsensus ${consensus_file} \
   --clinicalFile ${clinical_file} \
-  --outputFolder ${analysis_dir}/tp53_nf1_score/results \
+  --outputFolder ${analysis_dir}/results \
   --gencode ${exon_file}
 
 # expression files for prediction
