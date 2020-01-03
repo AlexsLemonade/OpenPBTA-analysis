@@ -12,6 +12,7 @@ output:
     toc_float: yes
 params:
   plot_ci: yes
+  is_ci: FALSE
 ---
 
 ### Purpose
@@ -49,6 +50,13 @@ library(broom)
 
 # Significance testing universal threshold
 SIGNIFICANCE_THRESHOLD   <- 0.01
+
+# Are we testing?
+if( !(params$is_ci %in% c(0,1) & !(params$is_ci) %in% c(TRUE, FALSE)) ){
+  stop("\n\nERROR: The parameter `is_ci` should be 0/1 (or FALSE/TRUE).")
+}
+if (params$is_ci == 0) params$is_ci <- FALSE
+if (params$is_ci == 1) params$is_ci <- TRUE
 ```
 
 
@@ -93,6 +101,16 @@ metadata_with_gsva <- metadata %>%
                         filter(experimental_strategy == "RNA-Seq") %>%
                         inner_join(all_scores, by = "Kids_First_Biospecimen_ID" )
 
+### If we are running in CI, we need to ensure enough levels for AOV.
+### PolyA data generally does NOT have enough samples, so this should do it.
+if (params$is_ci)
+{
+  metadata_with_gsva %>% 
+    filter(data_type == "stranded") -> metadata_with_gsva
+}
+
+
+
 ### Defines a function for performing Anova/Tukey for identifying significant pathways
 ## TODO: Increase flexibility so that predictor does NOT NEED TO BE short_histology
 gsva_histology_anova_tukey <- function(df)
@@ -105,11 +123,13 @@ gsva_histology_anova_tukey <- function(df)
                   tukey_p_value            = adj.p.value) 
 }
 
+
 ## Conduct series of ANOVA and posthoc Tukey tests for assessing which short histology groups show differences within EACH pathway (hallmark)
 number_of_tests <- metadata_with_gsva %>% 
                     dplyr::select(hallmark_name, data_type) %>%
                     distinct() %>% 
                     nrow()
+
 pathway_diffs <- metadata_with_gsva %>%
                     group_by(hallmark_name, data_type) %>%
                     nest() %>%
@@ -135,25 +155,28 @@ pathway_diffs <- metadata_with_gsva %>%
 _Yes, 57 pathways are differently-significant between stranded and polyA expression data._
 
 ```{r, explore-data-types-sig, warning=FALSE}
-
-# How many pathway comparisons DIFFER IN SIGNIFICANCE between expression data types?
-pathway_diffs %>% 
-  dplyr::select(hallmark_name, data_type, comparison, significant_tukey_bonf) %>%
-  spread(data_type, significant_tukey_bonf) %>% 
-  filter(polya != stranded) %>%
-  ungroup()-> diff_sig_stranded_polya
-head(diff_sig_stranded_polya)
+if(!(params$is_ci)){
+  # How many pathway comparisons DIFFER IN SIGNIFICANCE between expression data types?
+  pathway_diffs %>% 
+    dplyr::select(hallmark_name, data_type, comparison, significant_tukey_bonf) %>%
+    spread(data_type, significant_tukey_bonf) %>% 
+    filter(polya != stranded) %>%
+    ungroup()-> diff_sig_stranded_polya
+  head(diff_sig_stranded_polya)
+}
 ```
 
 The scores of pathways whose significant differs are about same order of magnitude, with a couple wild exceptions for __Medulloblastoma-HGAT comparsion__. Also reveals some differences in sign of score.
 
 ```{r, explore-data-types-sig-2, warning=FALSE}
-diff_sig_stranded_polya %>%
-  inner_join(pathway_diffs) %>%
-  dplyr::select(hallmark_name, comparison, data_type, pathway_score_difference) %>%
-  spread(data_type, pathway_score_difference) %>%
-  mutate(stranded_polya_score_ratio = stranded/polya) %>% 
-  filter(abs(stranded_polya_score_ratio) > 4)
+if(!(params$is_ci)){
+  diff_sig_stranded_polya %>%
+    inner_join(pathway_diffs) %>%
+    dplyr::select(hallmark_name, comparison, data_type, pathway_score_difference) %>%
+    spread(data_type, pathway_score_difference) %>%
+    mutate(stranded_polya_score_ratio = stranded/polya) %>% 
+    filter(abs(stranded_polya_score_ratio) > 4)
+}
 ```
 
 <br><br>
@@ -162,21 +185,22 @@ diff_sig_stranded_polya %>%
 
 There are (as of v12 data release) **39** pathway comparisons which differ in sign between polyA and stranded expression, largely for comparisons between samples MB-CNS embryonal tumor but there is no single hallmark that stands out.
 ```{r, explore-data-types-sign, warning=FALSE}
-
-# How many pathway comparisons DIFFER IN SIGNIFICANCE between data types?
-pathway_diffs %>% 
-  dplyr::select(hallmark_name, data_type, comparison, pathway_score_difference) %>%
-  mutate(score_sign = sign(pathway_score_difference)) %>%
-  dplyr::select(-pathway_score_difference) %>%
-  spread(data_type, score_sign) %>% 
-  filter(polya != stranded) %>%
-  ungroup() -> diff_signs_data_type
-
-diff_signs_data_type %>% 
-  count(comparison) 
-
-diff_signs_data_type %>% 
-  count(hallmark_name)
+if(!(params$is_ci)){
+  # How many pathway comparisons DIFFER IN SIGNIFICANCE between data types?
+  pathway_diffs %>% 
+    dplyr::select(hallmark_name, data_type, comparison, pathway_score_difference) %>%
+    mutate(score_sign = sign(pathway_score_difference)) %>%
+    dplyr::select(-pathway_score_difference) %>%
+    spread(data_type, score_sign) %>% 
+    filter(polya != stranded) %>%
+    ungroup() -> diff_signs_data_type
+  
+  diff_signs_data_type %>% 
+    count(comparison) 
+  
+  diff_signs_data_type %>% 
+    count(hallmark_name)
+}
 ```
 
 <br><br>
