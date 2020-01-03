@@ -126,12 +126,6 @@ jobs:
          ################################
 
       - run:
-          name: TP53 NF1 alterations for validation script
-          command: ./scripts/run_in_ci.sh Rscript analyses/tp53_nf1_score/00-tp53-nf1-alterations.R --snvConsensus data/pbta-snv-consensus-mutation.maf.tsv.gz --clinicalFile data/pbta-histologies.tsv -o analyses/tp53_nf1_score/results/ --gencode scratch/gencode.v27.primary_assembly.annotation.bed 
-
-
-
-      - run:
           name: SNV Caller Analysis 
           command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis.sh
           
