@@ -91,19 +91,6 @@ viewDataTable <- function(data) {
 ## SNV consensus mutation data - defining lesions
 
 ```{r}
-# Define target lesions
-H3_K28 <-
-  c("TP53",
-    "H3F3A",
-    "HIST1H3B",
-    "ACVR1",
-    "ATRX",
-    "FGFR1",
-    "IDH1",
-    "BRAF")
-
-H3_G35 <- c("H3F3A", "SETD2", "IDH1", "ATRX", "DAXX")
-
 # Filter the snv consensus mutatation data for the target lesions
 snv_lesions_df <- snv_df %>%
   dplyr::select(Tumor_Sample_Barcode, Hugo_Symbol, HGVSp_Short) %>%
