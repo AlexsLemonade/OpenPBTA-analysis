@@ -30,6 +30,9 @@ Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd',
 ### Set Up
 
 ```{r}
+# This threshold will be used to determine percent of genome changed
+ch.pct <- 0.02
+
 # Path to scratch directory
 sv_dir <- file.path("..", "..", "scratch", "sv-vcf")
 
@@ -107,14 +110,20 @@ Read in the SV data.
 sv_files <- list.files(sv_dir, pattern = "_withoutYandM.tsv", full.names = TRUE)
 
 # Read in each of the files
-sv_data <- lapply(sv_files, data.table::fread, colClasses = "character", 
-                  data.table = FALSE)
+sv_data <- lapply(sv_files, function(sv_file) {
+  data.table::fread(sv_file, data.table = FALSE) %>% 
+    # The row binding step won't work unless all chromosome variables get 
+    # converted to characters consistently
+    dplyr::mutate(chrom1 = as.character(chrom1), 
+                  chrom2 = as.character(chrom2))
+})
 
+# Extract and carry over the sample names to the list
 sample_names <- gsub("_withoutYandM.tsv", "", sv_files)
 names(sv_data) <- stringr::word(sample_names, sep = "/", 5)
 
 # Bind all of them into one
-sv_df <- dplyr::bind_rows(sv_data, .id = "sample_names") %>%
+sv_df <- dplyr::bind_rows(sv_data, .id = "sample_names")
 ```
 
 Make an SV breaks data.frame. 
@@ -125,23 +134,25 @@ sv_breaks <- sv_df %>%
   # Gather the chromosomal coordinate variables
   tidyr::gather(key, value, -sample_names, -V1, -homolen, -inserlen, -SVtype) %>%
   # Make the `1` and `2` variables identical so they can be made into one column
-  dplyr::mutate(key = gsub("1|2", "", key)) %>%
+  dplyr::mutate(key = as.factor(gsub("1|2", "", key))) %>%
   # There are repeat values so we need to make an ID column
-  tibble::rowid_to_column() %>% 
+  tibble::rowid_to_column() 
+
+%>% 
   # Spread the values to their respective columns
-  tidyr::spread(key, value)
+  tidyr::spread(key, value, -sample_names, -V1, -homolen, -inserlen, -SVtype)
 ```
 
-Make a `GenomicRanges` object for SV data.
+Make a `GenomicRanges` object for SV breaks data.
 
 ```{r}
 sv_ranges <- GenomicRanges::GRanges(
-    seqnames = sv_df$chrom1,
+    seqnames = sv_breaks$chrom,
     ranges = IRanges::IRanges(
-      start = as.numeric(sv_df$pos),
-      end = as.numeric(sv_df$pos)
+      start = as.numeric(sv_breaks$pos),
+      end = as.numeric(sv_breaks$pos)
     ),
-    mcols = sv_df
+    mcols = sv_breaks
   )
 ```
 
@@ -158,6 +169,19 @@ perc_genome_change <- cnv_df %>%
   # Determine ratio of changed to total
   dplyr::mutate(perc_change = change / sum(change + no_change))
 ```
+
+```{r}
+dplyr::inner_join(perc_genome_change, metadata, 
+                  by = c("ID" = "Kids_First_Biospecimen_ID")) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = short_histology, y = perc_change, color = short_histology)) + 
+  ggforce::geom_sina() + 
+  ggplot2::theme_classic() +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1), 
+                 legend.position = "none") + 
+  ggplot2::ylab("Percent Genome Change (> 0.2 threshold)") + 
+  ggplot2::xlab("")
+```
+
 
 ### Co-localization of breakpoints
 
