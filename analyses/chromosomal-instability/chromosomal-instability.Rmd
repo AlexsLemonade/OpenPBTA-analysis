@@ -8,10 +8,19 @@ author: Candace Savonen for ALSF - CCDL
 date: 2020
 ---
 
+Code adapted from [svcnvplus](https://github.com/gonzolgarcia/svcnvplus). 
+
 ### Usage
 
 This notebook can be run via the command line from the top directory of the 
 repository as follows:
+
+- Generating a measure of chromosomal instability (CIN) burden that can be plotted by tumor type
+- Identify recurrently altered genes to be included in the OncoPrint (#6)
+- Amplification/tandem-duplication
+- Deep deletion/deletion
+- Other Structural variation: Inversion, translocations
+
 
 ```
 Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', 
@@ -21,31 +30,16 @@ Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd',
 ### Set Up
 
 ```{r}
-# This package doesn't install properly so we are manually downloading it to get 
-# functions
-if (!dir.exists("svcnvplus")) {
-  download.file("https://github.com/gonzolgarcia/svcnvplus/archive/master.zip",
-                destfile = "svcnvplus.zip")
-  unzip("svcnvplus.zip", exdir = "svcnvplus")
-}
+# Path to scratch directory
+sv_dir <- file.path("..", "..", "scratch", "sv-vcf")
 
-# Get SV file processed for the formatting we need
-source(file.path("..", "sv-analysis", "01-process-sv-file.R"))
+if (!dir.exists(sv_dir)) {
+  # Get SV file processed for the formatting we need
+  source(file.path("..", "sv-analysis", "01-process-sv-file.R"))
+}
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
-```
-
-Import the functions from `svcnvplus`.
-
-```{r, message=FALSE, results='hide'}
-# Establish "package" directory
-svcnvplus_dir <- file.path("svcnvplus", "svcnvplus-master", "R")
-
-function_files <- list.files(svcnvplus_dir, full.names = TRUE)
-
-# Source in all the functions
-lapply(function_files, source)
 ```
 
 ### Directories and Files
@@ -53,9 +47,6 @@ lapply(function_files, source)
 ```{r}
 # Path to data directory
 data_dir <- file.path("..", "..", "data")
-
-# Path to scratch directory
-sv_dir <- file.path("..", "..", "scratch", "sv-vcf")
 
 # Path to output directory
 plots_dir <- "plots"
@@ -80,18 +71,33 @@ Read in the CNV data.
 # Read in the segment copy number data
 cnv_df <- data.table::fread(file.path(data_dir, "pbta-cnv-cnvkit.seg.gz"),
   data.table = FALSE
-) %>%
-  # Join the histology column to this data
-  dplyr::inner_join(dplyr::select(
-    metadata,
-    "Kids_First_Biospecimen_ID",
-    "short_histology"
-  ),
-  by = c("ID" = "Kids_First_Biospecimen_ID")
-  ) %>% 
+) %>% 
+  dplyr::mutate(ID = as.factor(ID), 
+                # Calculate width
+                width = loc.end - loc.start, 
+                # Make a binary variable that labels whether or not a sequence 
+                # is considered changed by the threshold set
+                changed = as.factor(dplyr::case_when(
+                  seg.mean < log2(1 - ch.pct) ~ "change", 
+                  seg.mean >= log2(1 - ch.pct) ~ "no_change")))
+
+#%>% 
   # Reformat the chromosome variable to drop the "chr"
-  dplyr::mutate(chrom = factor(gsub("chr", "", chrom), 
-                               levels = c(1:22, "X", "Y")))
+  #dplyr::mutate(chrom = factor(gsub("chr", "", chrom), 
+  #                             levels = c(1:22, "X", "Y")))
+```
+
+Make a `GenomicRanges` object for CNV data. 
+
+```{r}
+cnv_ranges <- GenomicRanges::GRanges(
+    seqnames = cnv_df$chrom,
+    ranges = IRanges::IRanges(
+      start = cnv_df$loc.start,
+      end = cnv_df$loc.end
+    ),
+    mcols = cnv_df
+  )
 ```
 
 Read in the SV data.
@@ -101,146 +107,94 @@ Read in the SV data.
 sv_files <- list.files(sv_dir, pattern = "_withoutYandM.tsv", full.names = TRUE)
 
 # Read in each of the files
-sv_data <- lapply(sv_files, data.table::fread)
+sv_data <- lapply(sv_files, data.table::fread, colClasses = "character", 
+                  data.table = FALSE)
+
+sample_names <- gsub("_withoutYandM.tsv", "", sv_files)
+names(sv_data) <- stringr::word(sample_names, sep = "/", 5)
 
 # Bind all of them into one
-sv_df <- dplyr::bind_rows(sv_data)
+sv_df <- dplyr::bind_rows(sv_data, .id = "sample_names") %>%
 ```
 
-### Validate and structure the SV and CNV data
-
-Validate and format segmentation data.frame to be used by `svcnvplus` package toolkit
+Make an SV breaks data.frame. 
 
 ```{r}
-cnv_df <- validate.seg(cnv_df)
-head(cnv_df)
+# Make a data.frame that has the breaks   
+sv_breaks <- sv_df %>%
+  # Gather the chromosomal coordinate variables
+  tidyr::gather(key, value, -sample_names, -V1, -homolen, -inserlen, -SVtype) %>%
+  # Make the `1` and `2` variables identical so they can be made into one column
+  dplyr::mutate(key = gsub("1|2", "", key)) %>%
+  # There are repeat values so we need to make an ID column
+  tibble::rowid_to_column() %>% 
+  # Spread the values to their respective columns
+  tidyr::spread(key, value)
 ```
 
-Validate and format structural variant data.frame to be used by `svcnvplus` package toolkit
+Make a `GenomicRanges` object for SV data.
 
 ```{r}
-sv_df <- validate.sv(sv_df)
-head(sv_df)
-```
-
-```{r message=FALSE, echo = FALSE}
-segdf_clean <- clean.cnv.artifact(segdf, verbose=FALSE,n.reps = 4)  # remove likely artifacts from segmentation data
-```
-
-```{r plot1,  fig.width=9, fig.height=4, fig.align='center', fig.cap = "Genome wide CNV frequencies", message=FALSE}
-cnv_freq <- cnv.freq.plot(segdf)  # plot cnv frequencies
-```
-
-```{r message=FALSE}
-head(cnv_freq$freqsum)  # data.frame contains every genomic bin 
-```
-
-
-
-### Make GISTIC data into GRanges object
-
-```{r}
-gistic_ranges <- GenomicRanges::GRanges(
-  seqnames = gistic_scores$Chromosome,
-  ranges = IRanges::IRanges(
-    start = gistic_scores$Start,
-    end = gistic_scores$End
-  ),
-  score = gistic_scores$gscore,
-  mcols = gistic_scores
-)
-```
-
-### Plot the GISTIC scores
-
-```{r}
-gistic_plot <- ggbio::autoplot(gistic_ranges, ggplot2::aes(y = score, fill = mcols.Type),
-  geom = "bar", scales = "free_x", space = "free_x"
-) +
-  ggplot2::theme_classic() +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(size = 3, angle = 45, hjust = 1)) +
-  colorblindr::scale_fill_OkabeIto(name = "Type") +
-  ggplot2::ylab("G-scores")
-
-# Print out plot here
-gistic_plot@ggplot
-```
-
-### Save the plot as PNG. 
-
-```{r}
-ggplot2::ggsave(
-  plot = gistic_plot@ggplot,
-  filename = file.path(plots_dir, "gistic_plot.png"),
-  width = 10,
-  height = 3,
-  units = "in"
-)
-```
-
-### Segment mean plots by histology 
-
-```{r, results='hide', message=FALSE}
-# Make a plot for each histology group
-lapply(unique(seg_data$short_histology), function(histology_group) {
-
-  # How many samples are of this histology label?
-  sample_num <- seg_data %>%
-    dplyr::filter(short_histology == histology_group) %>%
-    dplyr::pull(ID) %>%
-    unique() %>%
-    length()
-
-  # Isolate the data to the histology group
-  hist_df <- seg_data %>%
-    dplyr::filter(short_histology == histology_group) %>%
-    dplyr::group_by(short_histology, chrom, loc.start, loc.end) %>%
-    dplyr::summarize(hist.mean = mean(seg.mean)) %>%
-    # Make Del/Amp variable
-    dplyr::mutate(Type = dplyr::case_when(
-      hist.mean < 0 ~ "Del",
-      hist.mean > 0 ~ "Amp",
-      hist.mean == 0 ~ "Neutral"
-    ))
-
-  # Turn into a GRanges for easier mapping
-  hist_ranges <- GenomicRanges::GRanges(
-    seqnames = hist_df$chrom,
+sv_ranges <- GenomicRanges::GRanges(
+    seqnames = sv_df$chrom1,
     ranges = IRanges::IRanges(
-      start = hist_df$loc.start,
-      end = hist_df$loc.end
+      start = as.numeric(sv_df$pos),
+      end = as.numeric(sv_df$pos)
     ),
-    score = hist_df$hist.mean,
-    mcols = hist_df$Type
+    mcols = sv_df
   )
-  # Map this on a plot
-  hist_plot <- ggbio::autoplot(hist_ranges,
-    ggplot2::aes(y = score, fill = mcols),
-    geom = "bar", scales = "free_x", space = "free_x"
-  ) +
-    ggplot2::theme_classic() +
-    ggplot2::theme(axis.text.x = ggplot2::element_text(size = 3, angle = 45, hjust = 1)) +
-    colorblindr::scale_fill_OkabeIto(name = "Type") +
-    ggplot2::labs(
-      title = histology_group,
-      y = "Average segment mean",
-      subtitle = paste("n =", sample_num)
-    )
-
-  # Save the plot to a png
-  # Have to ouse @ggplot to extract the portion of the ggbio object with the plot
-  ggplot2::ggsave(
-    plot = hist_plot@ggplot,
-    filename = file.path(plots_dir, paste0(histology_group, "_plot.png")),
-    width = 10,
-    height = 3,
-    units = "in"
-  )
-  
-  # Print the plot here 
-  hist_plot
-})
 ```
+
+### Percent genome change
+
+```{r}
+perc_genome_change <- cnv_df %>% 
+  # Group by biospecimen ID and whether the sequence is considered "changed"
+  dplyr::group_by(ID, changed) %>% 
+  # Add up total length of "changed" and "no_change" sequences for each sample
+  dplyr::summarize(total_bp = sum(as.numeric(width))) %>% 
+  # Reformat for easier calculation
+  tidyr::spread(total_bp, key = changed) %>%
+  # Determine ratio of changed to total
+  dplyr::mutate(perc_change = change / sum(change + no_change))
+```
+
+### Co-localization of breakpoints
+
+```{r}
+
+```
+
+### Breakpoint burden
+
+```{r plot3, fig.width=5, fig.height=5, fig.align='center', fig.cap = "SV versus CNV breakpoint burden",  message=FALSE}
+sv_breaks_df  <- sv.breaks(svdf)  # define breakpoints from SV data
+sv_burden <- table(sv_breaks_df$sample)
+seg_breaks_df  <- seg.breaks(segdf,fc.pct = 0.2,verbose=FALSE)  # define breakpoints from seg data based on certain CNV change cutoff
+seg_burden <- table(seg_breaks_df$sample)
+common_samples <- intersect(names(sv_burden),names(seg_burden))
+dat <- cbind(sv_burden[common_samples],seg_burden[common_samples])
+plot(dat,xlab="SV burden",ylab="CNV breakpoint burden")
+legend("topright",paste("cor=",cor(dat)[1,2], sep=""))
+```
+
+### Chromosome shattering
+
+```{r}
+shattered.regions(segdf, svdf, fc.pct = 0.2,  min.num.probes = 5, clean.brk = 8,
+                                window.size = 10,slide.size = 2, num.seg.breaks = 6, 
+                                num.seg.sd = 5, num.sv.breaks = 6, num.sv.sd = 5, 
+                                num.common.breaks = 3, num.common.sd = 0, interleaved.cut = 0.33,
+                                dist.iqm.cut = 100000,verbose=FALSE)
+```
+
+
+### Recurrently shattered regions
+
+```{r}
+freq.p.test
+```
+
 
 # Session Info
 
