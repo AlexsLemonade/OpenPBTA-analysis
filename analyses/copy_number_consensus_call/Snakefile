@@ -1,13 +1,14 @@
 ## Define the ending file(s) that we want
-OUTPUT= expand("../../scratch/interim/{sample}.{caller}.{dupdel}.filtered3.bed",
+OUTPUT= expand("../../scratch/interim/{sample}.{combined_caller}.{dupdel}.bed",
                sample=config["samples"], 
-               caller=["freec", "cnvkit", "manta"],
-               dupdel=["dup", "del"])
+               combined_caller=["manta_cnvkit", "manta_freec", "cnvkit_freec"],
+               dupdel=["dup", "del"]),
 
 ## Define the wildcards to use in the file names. 
 wildcard_constraints:
   caller = "cnvkit|freec|manta",
-  dupdel = "dup|del"
+  dupdel = "dup|del",
+  combined_caller = "manta_cnvkit|manta_freec|cnvkit_freec"
 
 ## Define the first rule of the Snakefile. This rule determines what the final file is and which steps to be taken.
 rule all:
@@ -136,3 +137,28 @@ rule restructure_column:
     threads: 1
     shell:
         "python3 {input.script} --file {input.merged_bed} > {output.restructured_bed}"
+
+
+rule compare_cnv_methods:
+    input:
+        ## Define the location of the input file and take the path/extension from the config file
+        script=os.path.join(config["scripts"], "compare_variant_calling_updated.py"),
+        cnvkit="../../scratch/interim/{sample}.cnvkit.{dupdel}.filtered3.bed",
+        freec="../../scratch/interim/{sample}.freec.{dupdel}.filtered3.bed",
+        manta="../../scratch/interim/{sample}.manta.{dupdel}.filtered3.bed"
+
+    output:
+        ## Define the output files' names
+        manta_cnvkit="../../scratch/interim/{sample}.manta_cnvkit.{dupdel}.bed",
+        manta_freec="../../scratch/interim/{sample}.manta_freec.{dupdel}.bed",
+        cnvkit_freec="../../scratch/interim/{sample}.cnvkit_freec.{dupdel}.bed"
+    threads: 1
+    params:
+        sample_name="{sample}"
+    shell:
+        "python3 {input.script} --manta {input.manta} --cnvkit {input.cnvkit} --freec {input.freec} "
+        "--manta_cnvkit {output.manta_cnvkit} --manta_freec {output.manta_freec} --cnvkit_freec {output.cnvkit_freec} "
+        "--sample {params.sample_name}"
+
+
+
