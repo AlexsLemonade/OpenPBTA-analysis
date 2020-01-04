@@ -176,7 +176,6 @@ rule combine_files:
         "cat {input.manta_cnvkit} {input.manta_freec} {input.cnvkit_freec} | sort -k1,1 -k2,2n > {output.dup_del_file}"
 
 
-
 rule merge:
     input:
         ## Define the location of the input file
@@ -193,4 +192,18 @@ rule merge:
         "bedtools merge -i {input.delete} -c 4,5,6,7,8,9 -o collapse,collapse,collapse,distinct,distinct,collapse > {output.delete} && \
         bedtools merge -i {input.dup} -c 4,5,6,7,8,9 -o collapse,collapse,collapse,distinct,distinct,collapse > {output.dup} && \
         cat {output.delete} {output.dup} > {output.combined_dup_del}"
-        
+
+
+rule add_column_names:
+    input:
+        ## Define the location of the input file and take the path/extension from the config file
+        script=os.path.join(config["scripts"], "give_column_names.py"),
+        combined_dup_del="../../scratch/endpoints/{sample}.del_dup.merged.bed"
+    output:
+        ## Define the output files' names
+        final_dup_del="../../scratch/endpoints/{sample}.del_dup.merged.final.bed"
+    threads: 1
+    shell:
+        ## Name the headers
+        "python3 {input.script} --file {input.combined_dup_del} > {output.final_dup_del}"
+
