@@ -1,8 +1,7 @@
 ## Define the ending file(s) that we want
-OUTPUT= expand("../../scratch/interim/{sample}.{combined_caller}.{dupdel}.bed",
-               sample=config["samples"], 
-               combined_caller=["manta_cnvkit", "manta_freec", "cnvkit_freec"],
-               dupdel=["dup", "del"]),
+OUTPUT= expand("../../scratch/endpoints/{sample}.del_dup.merged.final.bed",
+               sample=config["samples"]),
+
 
 ## Define the wildcards to use in the file names. 
 wildcard_constraints:
