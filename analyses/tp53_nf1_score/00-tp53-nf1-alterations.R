@@ -52,22 +52,32 @@ clinical <- read_tsv(clinicalFile)
 coding_consensus_snv <- snv_ranges_filter(maf_df = consensus_snv,
                                           keep_ranges = gencode_cds)
 
-# only include TP53 and NF1 and remove silent mutations and mutations in introns
-tp53_nf1_coding <- coding_consensus_snv %>%
-  dplyr::filter(Hugo_Symbol %in% c("TP53", "NF1")) %>%
-  dplyr::filter(!(Variant_Classification %in% c("Silent", "Intron"))) %>%
-  dplyr::arrange(dplyr::desc(Hugo_Symbol))
+# subset to TP53, removing silent mutations and mutations in introns
+tp53_coding <- coding_consensus_snv %>%
+  filter(Hugo_Symbol == "TP53") %>%
+  filter(!(Variant_Classification %in% c("Silent", "Intron")))
+
+# subset to NF1, removing silent mutations, mutations in introns, and missense
+# mutations -- we exclude missense mutations because they are not annotated
+# with OncoKB
+# https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/381#issuecomment-570748578
+nf1_coding <- coding_consensus_snv %>%
+  filter(Hugo_Symbol == "NF1") %>%
+  filter(!(Variant_Classification %in% c("Silent",
+                                         "Intron",
+                                         "Missense_Mutation")))
 
 # include only the relevant columns from the MAF file
-tp53_nf1_coding <- tp53_nf1_coding %>%
-  dplyr::select(Chromosome, Start_Position, End_Position, Strand,
-                Variant_Classification, Tumor_Sample_Barcode, Hugo_Symbol)
+tp53_nf1_coding <- tp53_coding %>%
+  bind_rows(nf1_coding) %>%
+  select(Chromosome, Start_Position, End_Position, Strand,
+         Variant_Classification, Tumor_Sample_Barcode, Hugo_Symbol)
 
 # biospecimen IDs for tumor or cell line DNA-seq
 bs_ids <- clinical %>%
-  dplyr::filter(sample_type != "Normal",
-                experimental_strategy != "RNA-Seq") %>%
-  dplyr::pull(Kids_First_Biospecimen_ID)
+  filter(sample_type != "Normal",
+         experimental_strategy != "RNA-Seq") %>%
+  pull(Kids_First_Biospecimen_ID)
 
 # all BS ids that are not in the data frame that contain the TP53 and NF1
 # coding mutations should be labeled as not having either
@@ -85,8 +95,8 @@ without_mut_df <- data.frame(
   Hugo_Symbol = "No_TP53_NF1_alt"
 )
 
-tp53_nf1_coding <- dplyr::bind_rows(tp53_nf1_coding,
-                                    without_mut_df)
+tp53_nf1_coding <- bind_rows(tp53_nf1_coding,
+                             without_mut_df)
 
 # save TP53 and NF1 SNV alterations
 write_tsv(tp53_nf1_coding,
