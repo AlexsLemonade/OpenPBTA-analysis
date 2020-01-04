@@ -59,8 +59,11 @@ RUN R -e "BiocManager::install(c('annotatr', 'TxDb.Hsapiens.UCSC.hg38.knownGene'
 # Packages for expression normalization and batch correction
 RUN R -e "BiocManager::install(c('preprocessCore', 'sva'), update = FALSE)"
 
-# These packages are for single-sample GSEA analysis
-RUN R -e "BiocManager::install(c('GSEABase', 'GSVA'), update = FALSE)"
+
+## This is deprecated 
+#  # These packages are for single-sample GSEA analysis
+#  RUN R -e "BiocManager::install(c('GSEABase', 'GSVA'), update = FALSE)"
+
 
 # This is needed to create the interactive pie chart
 RUN R -e "devtools::install_github('timelyportfolio/sunburstR', ref = 'd40d7ed71ee87ca4fbb9cb8b7cf1e198a23605a9', dependencies = TRUE)"
@@ -226,5 +229,17 @@ RUN R -e "install.packages('remotes', dependencies = TRUE)"
 RUN R -e "remotes::install_github('icbi-lab/immunedeconv', ref = '493bcaa9e1f73554ac2d25aff6e6a7925b0ea7a6', dependencies = TRUE)"
 RUN R -e "install.packages('corrplot', dependencies = TRUE)"
 
+# Install for mutation signature analysis
+RUN R -e "BiocManager::install('ggbio')"
+
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
+
+# CRAN package msigdbr needed for gene-set-enrichment-analysis
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    && install2.r --error \
+    --deps TRUE \
+    msigdbr
+
+# Bioconductor package GSVA needed for gene-set-enrichment-analysis
+RUN R -e "BiocManager::install(c('GSVA'), update = FALSE)"
