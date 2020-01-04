@@ -1,6 +1,6 @@
 Kids_First_Participant_ID	sample_id	Kids_First_Biospecimen_ID	H3F3A.K28M	HIST1H3B.K28M	H3F3A.G35R	H3F3A.G35V	disease_type_new	disease_type_reclassified
 PT_KZ56XHJT	7316-3231	BS_1Q524P3B	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_KZ56XHJT	7316-3231	BS_1Q524P3B	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_KZ56XHJT	7316-3231	BS_1Q524P3B	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_NMZBRFYS	7316-1987	BS_BD4RQ1G0	No	No	No	No	Schwannoma	Schwannoma
 PT_FMK5VFYW	7316-950	BS_80X7AVCP	No	No	No	No	Primitive Neuroectodermal Tumor	Primitive Neuroectodermal Tumor
 PT_E4ECAFEN	7316-38	BS_1JMTTKMK	No	No	No	No	Medulloblastoma	Medulloblastoma
@@ -11,13 +11,13 @@ PT_9PJR0ZK7	7316-935	BS_A1DV9T7G	No	No	No	No	Neurofibroma	Neurofibroma
 PT_NV584F7Q	7316-3192	BS_X7QJCVJB	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_YMN5GV47	7316-658	BS_Y3ETG5AE	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_1E3E6GMF	A09985	BS_541KKASA	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_1E3E6GMF	A09985	BS_541KKASA	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_1E3E6GMF	A09985	BS_541KKASA	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_M9XXJ4GR	A09576	BS_5FBN4PPQ	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_M9XXJ4GR	A09576	BS_5FBN4PPQ	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_M9XXJ4GR	A09576	BS_5FBN4PPQ	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_Y572BRC1	7316-2147	BS_JA3XXP1Y	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_YZME6QCY	7316-2245	BS_MW6YMRBJ	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_Y5KY6KN9	7316-195	BS_JGKRN7NA	No	No	No	No	High-grade glioma	High-grade glioma
-PT_Y5KY6KN9	7316-195	BS_JGKRN7NA	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_Y5KY6KN9	7316-195	BS_JGKRN7NA	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_7JQ24F35	7316-1957	BS_WD7AQV83	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_25Z2NX27	7316-355	BS_N9SMBR24	No	No	No	No	Fibroma	Fibroma
 PT_PFA762TK	7316-462	BS_32JF8TPP	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
@@ -28,7 +28,7 @@ PT_38FS37DP	7316-2686	BS_JX1PK0VW	No	No	No	No	Primitive Neuroectodermal Tumor	Pr
 PT_K8ZV7APT	7316-2166	BS_C6NB914B	No	No	No	No	Neurofibroma	Neurofibroma
 PT_A4KA01ZH	7316-894	BS_RCAZ62J7	No	No	No	No	Teratoma	Teratoma
 PT_59D00MBQ	7316-1936	BS_QG6V29H7	No	No	No	No	High-grade glioma	High-grade glioma
-PT_59D00MBQ	7316-1936	BS_QG6V29H7	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_59D00MBQ	7316-1936	BS_QG6V29H7	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_K39HM2JF	7316-1084	BS_YEWX69X4	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_GB8MNK85	7316-1086	BS_7HC4W4SA	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_EZW3S4F1	7316-1961	BS_QBZDQX7A	No	No	No	No	Ependymoma	Ependymoma
@@ -39,11 +39,11 @@ PT_02J5CWN5	7316-898	BS_5TT6TT4K	No	No	No	No	Low-grade astrocytic tumor	Low-grad
 PT_23NZGSRJ	7316-2659	BS_05S9WJW6	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_409Y4N1N	7316-84	BS_HW4MYBZ2	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_JNEV57VK	7316-2594	BS_85Q5P8GF	No	No	No	No	High-grade glioma	High-grade glioma
-PT_JNEV57VK	7316-2594	BS_85Q5P8GF	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_JNEV57VK	7316-2594	BS_85Q5P8GF	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_NA8NZ0BN	7316-2135	BS_B6K0N6HS	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_MPRBGGEJ	7316-2172	BS_KYG3H6C6	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_KTRJ8TFY	7316-3230	BS_HYKV2TH9	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_KTRJ8TFY	7316-3230	BS_HYKV2TH9	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_KTRJ8TFY	7316-3230	BS_HYKV2TH9	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_82MX6J77	7316-2148	BS_P42V737Y	No	No	No	No	Meningioma	Meningioma
 PT_67R1AF5R	7316-889	BS_4PAE19ZC	No	No	No	No	Ependymoma	Ependymoma
 PT_ZN1F7RMP	7316-1080	BS_BR1X3R68	No	No	No	No	Adenoma	Adenoma
@@ -54,7 +54,7 @@ PT_5P3XJ97K	7316-390	BS_RB8VSEVG	No	No	No	No	Low-grade astrocytic tumor	Low-grad
 PT_NDVJE438	7316-2811	BS_FT95T4YP	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_4ZSR5DY8	7316-2667	BS_W9FW1PAE	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_7E3V3JFX	7316-506	BS_G16NM5WJ	No	No	No	No	Ependymoma	Ependymoma
-PT_7E3V3JFX	7316-506	BS_G16NM5WJ	No	Yes	No	No	Ependymoma	High-grade glioma
+PT_7E3V3JFX	7316-506	BS_G16NM5WJ	No	Yes	No	No	Ependymoma	High-grade glioma, H3 K28 mutant
 PT_E78NHRWQ	7316-1081	BS_3DYRAZE7	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_EC8R84NM	7316-341	BS_CXDKK6KS	No	No	No	No	Craniopharyngioma	Craniopharyngioma
 PT_KN25EYMG	7316-2309	BS_PVYMDM18	No	No	No	No	Medulloblastoma	Medulloblastoma
@@ -64,10 +64,10 @@ PT_7TRGHZBK	7316-431	BS_XEVMEYFS	No	No	No	No	Choroid plexus carcinoma	Choroid pl
 PT_89XRZBSG	7316-445	BS_G9MQM1KK	No	No	No	No	High-grade glioma	High-grade glioma
 PT_48N4Y6YP	7316-1866	BS_8B1YF57H	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_KZ56XHJT	7316-3231	BS_YHXMYDBN	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_KZ56XHJT	7316-3231	BS_YHXMYDBN	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_KZ56XHJT	7316-3231	BS_YHXMYDBN	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_EGGY1XC0	7316-2865	BS_CSY11X7E	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_JSFBMK5V	7316-1769	BS_RXP2ZRQT	No	No	No	No	High-grade glioma	High-grade glioma
-PT_JSFBMK5V	7316-1769	BS_RXP2ZRQT	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_JSFBMK5V	7316-1769	BS_RXP2ZRQT	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_DTP4MMRA	7316-1463	BS_NASADC3P	No	No	No	No	Schwannoma	Schwannoma
 PT_XTVQB9S4	7316-2933	BS_DE26D072	No	No	No	No	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor
 PT_E3S6H59E	7316-133	BS_T54TAE3R	No	No	No	No	Oligodendroglioma	Oligodendroglioma
@@ -76,13 +76,13 @@ PT_M1RYN7B0	7316-1781	BS_0EN5R1AP	No	No	No	No	Atypical Teratoid Rhabdoid Tumor	A
 PT_5KP2E0DS	7316-3936	BS_D3ZV6MMY	No	No	No	No	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor
 PT_VBVZ2NAR	7316-2156	BS_9ZFXXJPK	No	No	No	No	Ependymoma	Ependymoma
 PT_KTRJ8TFY	7316-3223	BS_3VKW5988	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_KTRJ8TFY	7316-3223	BS_3VKW5988	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_KTRJ8TFY	7316-3223	BS_3VKW5988	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_ZZTQQVCT	7316-2723	BS_78TQS4Y3	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_3CHB9PK5	7316-2085	BS_8AY2GM4G	No	No	No	No	High-grade glioma	High-grade glioma
 PT_N9W4GT6D	7316-174	BS_AVS4DSZW	No	No	No	No	Ependymoma	Ependymoma
 PT_4ZSR5DY8	7316-264	BS_YH4DYNQ2	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_9GKVQ9QS	7316-3213	BS_JRFVST47	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_9GKVQ9QS	7316-3213	BS_JRFVST47	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_9GKVQ9QS	7316-3213	BS_JRFVST47	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_7QKGGMKV	7316-347	BS_NMQTPVFW	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_99S5BPE3	7316-365	BS_86QSEFS7	No	No	No	No	Ependymoma	Ependymoma
 PT_1NN9AW39	7316-3148	BS_8D52JK1Q	No	No	No	No	Malignant melanocytic neoplasm	Malignant melanocytic neoplasm
@@ -121,13 +121,13 @@ PT_MTE126WM	7316-376	BS_74A1TB03	No	No	No	No	Atypical Teratoid Rhabdoid Tumor	At
 PT_RX1EWBP9	7316-2276	BS_0FQKT8EY	No	No	No	No	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor
 PT_46F28BFH	7316-1799	BS_H8E4K1DT	No	No	No	No	Ependymoma	Ependymoma
 PT_4XB3YTJM	7316-388	BS_823V5X6Z	No	No	No	No	High-grade glioma	High-grade glioma
-PT_4XB3YTJM	7316-388	BS_823V5X6Z	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_4XB3YTJM	7316-388	BS_823V5X6Z	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_XP8AM1CH	7316-1096	BS_1EQGGHHQ	No	No	No	No	Adenoma	Adenoma
 PT_HFQNKP5X	7316-921	BS_FBJ516WW	No	No	No	No	Chordoma	Chordoma
 PT_CW0BJE0Y	7316-41	BS_12ZB7R6A	No	No	No	No	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor
 PT_E6FTW238	7316-3890	BS_5WK2KXYW	No	No	No	No	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor
 PT_KTRJ8TFY	7316-3230	BS_AF5D41PD	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_KTRJ8TFY	7316-3230	BS_AF5D41PD	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_KTRJ8TFY	7316-3230	BS_AF5D41PD	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_SZJ7WZZW	7316-467	BS_WP9J88EB	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_S2SQJVGK	7316-344	BS_8S2CZBA6	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_W6CW60K9	7316-380	BS_ZX1YPQ88	No	No	No	No	Craniopharyngioma	Craniopharyngioma
@@ -154,16 +154,16 @@ PT_ZZRBX5JT	7316-2661	BS_JE1DF581	No	No	No	No	Ependymoma	Ependymoma
 PT_FN4GEEFR	7316-729	BS_BX8AR74E	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_FYECBRPP	7316-1778	BS_WCNPE0AC	No	No	No	No	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor
 PT_WGVEF96B	7316-3219	BS_TQ0J7WJQ	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_WGVEF96B	7316-3219	BS_TQ0J7WJQ	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_WGVEF96B	7316-3219	BS_TQ0J7WJQ	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_M23Q0DC3	7316-3212	BS_CGXTFM67	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_M23Q0DC3	7316-3212	BS_CGXTFM67	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_M23Q0DC3	7316-3212	BS_CGXTFM67	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_TS0FW57Z	7316-2167	BS_Q0XBZP88	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_W5GP3F6B	A16915	BS_P7VR731D	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_W5GP3F6B	A16915	BS_P7VR731D	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_W5GP3F6B	A16915	BS_P7VR731D	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_S4H6KA09	7316-2134	BS_K6A9Z04J	No	No	No	No	Ependymoma	Ependymoma
 PT_S7WJ99PC	7316-677	BS_W9P0PFDH	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_V1HNAC2Q	7316-3240	BS_YZD4SSMA	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_V1HNAC2Q	7316-3240	BS_YZD4SSMA	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_V1HNAC2Q	7316-3240	BS_YZD4SSMA	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_98QMQZY7	7316-464	BS_JC8YV5V9	No	No	No	No	Primitive Neuroectodermal Tumor	Primitive Neuroectodermal Tumor
 PT_B0JFCN5W	7316-1773	BS_BZ4GKDP4	No	No	No	No	Craniopharyngioma	Craniopharyngioma
 PT_5F4N0CAP	7316-219	BS_G12HNXYX	No	No	No	No	Medulloblastoma	Medulloblastoma
@@ -189,17 +189,17 @@ PT_8GN3TQRM	7316-2091	BS_RXSBJ929	No	No	No	No	High-grade glioma	High-grade gliom
 PT_9YNQJZ5G	7316-1941	BS_C3X4AEK5	No	No	No	No	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor
 PT_2WVW55DA	7316-502	BS_R94EDP5H	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_JSFBMK5V	7316-392	BS_H0638GZT	No	No	No	No	High-grade glioma	High-grade glioma
-PT_JSFBMK5V	7316-392	BS_H0638GZT	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_JSFBMK5V	7316-392	BS_H0638GZT	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_02J5CWN5	7316-2989	BS_2VB8649B	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_3P3D97AB	7316-13	BS_XVNNWN2Z	No	No	No	No	Neurofibroma	Neurofibroma
 PT_E8XM8JFZ	7316-324	BS_B558FJXC	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_EW604JB3	7316-1134	BS_N8D9FH6M	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_QD6KKKJH	7316-1765	BS_B91XGSA5	No	No	No	No	Pineoblastoma	Pineoblastoma
 PT_NK8A49X5	7316-3228	BS_HEJ72V3F	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_NK8A49X5	7316-3228	BS_HEJ72V3F	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_NK8A49X5	7316-3228	BS_HEJ72V3F	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_7T13FDWK	7316-1082	BS_DMBNB0EP	No	No	No	No	Craniopharyngioma	Craniopharyngioma
 PT_9GKVQ9QS	A05262	BS_6B62YT97	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_9GKVQ9QS	A05262	BS_6B62YT97	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_9GKVQ9QS	A05262	BS_6B62YT97	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_WYR1DVHX	7316-1950	BS_ACTR13BQ	No	No	No	No	Craniopharyngioma	Craniopharyngioma
 PT_N8W26H19	7316-177	BS_AJAH8KG5	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_DQT78GS5	7316-3326	BS_69VS8PS1	No	No	No	No	Embryonal tumor with multilayer rosettes NOS	Embryonal tumor with multilayer rosettes NOS
@@ -211,7 +211,7 @@ PT_VTF65Y63	7316-3513	BS_MSGYZ69T	No	No	No	No	Craniopharyngioma	Craniopharyngiom
 PT_BDNE55YT	7316-1710	BS_Y43VC4VG	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_95S99RWE	7316-323	BS_HYGK88B0	No	No	No	No	Craniopharyngioma	Craniopharyngioma
 PT_RYMG3M91	A18777	BS_QZPGVNBB	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_RYMG3M91	A18777	BS_QZPGVNBB	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_RYMG3M91	A18777	BS_QZPGVNBB	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_PGVQ4XRZ	7316-946	BS_VXNT1TDB	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_VJ0M4E8Y	7316-2099	BS_FFD25TTK	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_NSXP8AWV	7316-94	BS_M18CDDGK	No	No	No	No	Meningioma	Meningioma
@@ -228,11 +228,11 @@ PT_Z4GS3ZQQ	7316-740	BS_6ZP2KRPW	No	No	No	No	Dysembryoplastic neuroepithelial tu
 PT_ZS2YDFBE	7316-2860	BS_P6NWC51S	No	No	No	No	Choroid plexus papilloma	Choroid plexus papilloma
 PT_ECBD1D5J	7316-2177	BS_84AQCZE4	No	No	No	No	Meningioma	Meningioma
 PT_C9YDTZPA	A15726	BS_74SJ7YV4	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_C9YDTZPA	A15726	BS_74SJ7YV4	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_C9YDTZPA	A15726	BS_74SJ7YV4	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_1J2DT6MM	7316-2184	BS_THH0CE5A	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_4347ZBEX	7316-913	BS_742CDKAS	No	No	No	No	High-grade glioma	High-grade glioma
 PT_Z4PJA6KT	7316-1763	BS_TF5TTEXH	No	No	No	No	High-grade glioma	High-grade glioma
-PT_Z4PJA6KT	7316-1763	BS_TF5TTEXH	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_Z4PJA6KT	7316-1763	BS_TF5TTEXH	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_9DER14KH	7316-2230	BS_TNQKJZCP	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_M0FVZ88D	7316-1986	BS_JNS7Q60A	No	No	No	No	Meningioma	Meningioma
 PT_DFQAH7RS	7316-2760	BS_ZKFEMJZ8	No	No	No	No	Ganglioglioma	Ganglioglioma
@@ -243,7 +243,7 @@ PT_3R0P995B	7316-873	BS_75VHXMZN	No	No	No	No	Ependymoma	Ependymoma
 PT_QPY0H50V	7316-2614	BS_Z4S81HG1	No	No	No	No	Myofibroblastoma	Myofibroblastoma
 PT_HJA1ZYS1	7316-2939	BS_H83DTMT2	No	No	No	No	Dermoid Cyst	Dermoid Cyst
 PT_WGVEF96B	7316-4446	BS_4DQAQFQH	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_WGVEF96B	7316-4446	BS_4DQAQFQH	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_WGVEF96B	7316-4446	BS_4DQAQFQH	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_FAPEH6R1	7316-1660	BS_ARE4EM81	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_RRT2E7HK	7316-136	BS_JHGFJR3D	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_164RNWTT	7316-1078	BS_5D24XV4T	No	No	No	No	Ependymoma	Ependymoma
@@ -266,7 +266,7 @@ PT_1ZAWNGWT	7316-319	BS_6X2BQQGE	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_X0FPPTMT	7316-280	BS_BMHYK93N	No	No	No	No	Neurocytoma	Neurocytoma
 PT_C94VR1Y2	7316-2278	BS_HBAKYKQM	No	No	No	No	Ependymoma	Ependymoma
 PT_40HTPY49	7316-466	BS_T7WMJ08W	No	No	No	No	High-grade glioma	High-grade glioma
-PT_40HTPY49	7316-466	BS_T7WMJ08W	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_40HTPY49	7316-466	BS_T7WMJ08W	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_VE0Q731Y	7316-1641	BS_BBHFKBE7	No	No	No	No	Ependymoma	Ependymoma
 PT_89XRZBSG	7316-1789	BS_X1DSETVE	No	No	No	No	High-grade glioma	High-grade glioma
 PT_GH27VJBD	7316-2266	BS_H8MAKDRB	No	No	No	No	Ependymoma	Ependymoma
@@ -278,7 +278,7 @@ PT_QEP13FH4	7316-3025	BS_Y5DA59M3	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_3WA7SBQ6	7316-2248	BS_HN8DE43A	No	No	No	No	Choroid plexus carcinoma	Choroid plexus carcinoma
 PT_EZS4SRH6	7316-676	BS_X1R0N8QS	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_KTRJ8TFY	7316-3223	BS_BQ81D2BP	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_KTRJ8TFY	7316-3223	BS_BQ81D2BP	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_KTRJ8TFY	7316-3223	BS_BQ81D2BP	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_PY4QFHHV	7316-3768	BS_EKR4NSNW	No	No	No	No	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor
 PT_9DMMZ08D	7316-1666	BS_H174820R	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_N9SG16EC	7316-1958	BS_FHFVCQ41	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
@@ -301,12 +301,12 @@ PT_EJ8TKG2Z	7316-3571	BS_NMJPX8VQ	No	No	No	No	Craniopharyngioma	Craniopharyngiom
 PT_HNZNZ635	7316-2151	BS_SKRY0BJ4	No	No	No	No	High-grade glioma	High-grade glioma
 PT_AP9P5D7N	7316-1117	BS_V79WFJ6N	No	No	No	No	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor
 PT_R4T1V1K4	7316-3206	BS_23ZE42Q3	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_R4T1V1K4	7316-3206	BS_23ZE42Q3	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_R4T1V1K4	7316-3206	BS_23ZE42Q3	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_7F485CXV	7316-1114	BS_1RF75MK2	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_VBNP6JFB	7316-1095	BS_YZ2YNEJJ	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_NYBH025T	7316-3069	BS_6NPSZJ4C	No	No	No	No	Ependymoma	Ependymoma
 PT_EN2RN5Y1	A17997	BS_328C4BW5	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_EN2RN5Y1	A17997	BS_328C4BW5	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_EN2RN5Y1	A17997	BS_328C4BW5	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_C1M4YF1R	7316-127	BS_K6BMXTW5	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_CQ7EGCMB	7316-3809	BS_PJ08ZW9A	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_KCTZZA3G	7316-216	BS_EDCQ4M0R	No	No	No	No	Neurofibroma	Neurofibroma
@@ -327,9 +327,9 @@ PT_ZGWYMRV8	7316-378	BS_7F07M7JG	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_57YP9ABV	7316-1070	BS_YKQP4SBX	No	No	No	No	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor
 PT_H876VB6R	7316-1806	BS_XMNBSBGN	No	No	No	No	Ependymoma	Ependymoma
 PT_HGM20MW7	A09446	BS_52ETE050	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_HGM20MW7	A09446	BS_52ETE050	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_HGM20MW7	A09446	BS_52ETE050	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_A06JR0E5	A17096	BS_XPZAD9PP	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_A06JR0E5	A17096	BS_XPZAD9PP	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_A06JR0E5	A17096	BS_XPZAD9PP	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_9S6WMQ92	7316-278	BS_WY5KYSHJ	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_J3B812DT	7316-123	BS_PZDTK87A	No	No	No	No	Dysplasia	Dysplasia
 PT_2YT37G8P	7316-399	BS_4QFSH7C4	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
@@ -348,7 +348,7 @@ PT_GWX2XSM0	7316-2752	BS_41SWNWAG	No	No	No	No	Low-grade astrocytic tumor	Low-gra
 PT_RGX23JFP	7316-156	BS_SYGKQD8M	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_F9F3E8YR	7316-3519	BS_R922P3XJ	No	No	No	No	Dysplasia	Dysplasia
 PT_JNEV57VK	7316-3058	BS_P0QJ1QAH	No	No	No	No	High-grade glioma	High-grade glioma
-PT_JNEV57VK	7316-3058	BS_P0QJ1QAH	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_JNEV57VK	7316-3058	BS_P0QJ1QAH	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_7TEHW6VQ	7316-2755	BS_KYPZRS4S	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_8RB3EKNP	7316-4028	BS_5KFAEMQJ	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_9A6RPJ97	7316-906	BS_RHEBGZF8	No	No	No	No	Medulloblastoma	Medulloblastoma
@@ -367,7 +367,7 @@ PT_QT9T89S5	7316-297	BS_T97EP8H0	No	No	No	No	Low-grade astrocytic tumor	Low-grad
 PT_R1N5M7NH	7316-3557	BS_886M7JMG	No	No	No	No	Brain arteriovenous malformation	Brain arteriovenous malformation
 PT_WWZ2Q14R	7316-3138	BS_DVQYQSVW	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_5KRVE8E4	7316-1671	BS_QX754ADQ	No	No	No	No	Craniopharyngioma	Craniopharyngioma
-PT_V1HNAC2Q	A07150	BS_7KR13R3P	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_V1HNAC2Q	A07150	BS_7KR13R3P	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_V1HNAC2Q	A07150	BS_7KR13R3P	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
 PT_N32BYY8A	7316-89	BS_D6XHKZDZ	No	No	No	No	High-grade glioma	High-grade glioma
 PT_FAQWD7GX	7316-2311	BS_CN7PB0DN	No	No	No	No	Craniopharyngioma	Craniopharyngioma
@@ -377,7 +377,7 @@ PT_DPVW4M1W	7316-2271	BS_SQSH5G7A	No	No	No	No	Sarcoma	Sarcoma
 PT_BNARR0N6	7316-1954	BS_99PPRCW4	No	No	No	No	Ependymoma	Ependymoma
 PT_P9RT6693	7316-2566	BS_P3KD5EQG	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_NK8A49X5	7316-3216	BS_1MME7FBS	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_NK8A49X5	7316-3216	BS_1MME7FBS	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_NK8A49X5	7316-3216	BS_1MME7FBS	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_EYWDFKA7	7316-29	BS_DAEM3WRX	No	No	No	No	Schwannoma	Schwannoma
 PT_5GQ76YZJ	7316-168	BS_WXKCR17Q	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_06ERX8Z7	7316-2578	BS_B1X2SB4P	No	No	No	No	Subependymal Giant Cell Astrocytoma	Subependymal Giant Cell Astrocytoma
@@ -389,7 +389,7 @@ PT_ZD9AYB6F	7316-3323	BS_245CTSH9	No	No	No	No	Low-grade astrocytic tumor	Low-gra
 PT_0CRPE7YP	7316-2158	BS_YPCTK927	No	No	No	No	Craniopharyngioma	Craniopharyngioma
 PT_3KK1F95W	7316-1744	BS_03SSN1N2	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_KZ56XHJT	7316-3231	BS_X5VN0FW0	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_KZ56XHJT	7316-3231	BS_X5VN0FW0	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_KZ56XHJT	7316-3231	BS_X5VN0FW0	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_V5ASTHRH	7316-3892	BS_HNE6BPMH	No	No	No	No	Germinoma	Germinoma
 PT_229DRV7B	7316-1757	BS_CDKC1E2B	No	No	No	No	Neurofibroma	Neurofibroma
 PT_WP871F5S	7316-1766	BS_R3WB0PP7	No	No	No	No	Hemangioblastoma	Hemangioblastoma
@@ -398,7 +398,7 @@ PT_QAX38GM7	7316-3570	BS_QD22MJJ5	No	No	No	No	Low-grade astrocytic tumor	Low-gra
 PT_BF3PGTF7	7316-1808	BS_AGAW7M7W	No	No	No	No	Meningioma	Meningioma
 PT_17NG0KW3	7316-1945	BS_JDS0SYST	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_1AAYYGGY	A14709	BS_1RTE2KEX	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_1AAYYGGY	A14709	BS_1RTE2KEX	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_1AAYYGGY	A14709	BS_1RTE2KEX	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_C5FKRB1P	A14565	BS_A6YJ3WG2	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
 PT_WP871F5S	7316-3336	BS_XWQTX5HH	No	No	No	No	Hemangioblastoma	Hemangioblastoma
 PT_MNHMAH0S	7316-880	BS_MJJZJMTK	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
@@ -413,17 +413,17 @@ PT_3CHB9PK5	7316-515	BS_20TBZG09	No	No	No	No	High-grade glioma	High-grade glioma
 PT_6N825561	7316-3920	BS_E0S2Y0TS	No	No	No	No	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor
 PT_78NQ0QQS	7316-1651	BS_T8TCEBB1	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_Y660CKCB	7316-3122	BS_FKQ7F6D1	No	No	No	No	High-grade glioma	High-grade glioma
-PT_Y660CKCB	7316-3122	BS_FKQ7F6D1	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_Y660CKCB	7316-3122	BS_FKQ7F6D1	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_E66N7YBN	7316-35	BS_0XD58YD9	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_8GN3TQRM	7316-2069	BS_QQP17PDQ	No	No	No	No	High-grade glioma	High-grade glioma
 PT_RJ1TJ2KH	7316-2110	BS_6GN1FGTB	No	No	No	No	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor
 PT_KTRJ8TFY	A09689	BS_402W79TS	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_KTRJ8TFY	A09689	BS_402W79TS	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_KTRJ8TFY	A09689	BS_402W79TS	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_D9NTSYSC	7316-3064	BS_9BGCH82S	No	No	No	No	Glial-neuronal tumor NOS	Glial-neuronal tumor NOS
 PT_6TZR2DH1	7316-100	BS_SFZ3A07S	No	No	No	No	Craniopharyngioma	Craniopharyngioma
 PT_R0M1QBY4	7316-905	BS_0YVR8Q4E	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_KZ56XHJT	7316-3217	BS_0ATJ22QA	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_KZ56XHJT	7316-3217	BS_0ATJ22QA	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_KZ56XHJT	7316-3217	BS_0ATJ22QA	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_PNED3GG3	7316-387	BS_WMEYJGDC	No	No	No	No	Craniopharyngioma	Craniopharyngioma
 PT_WPYCXMDA	7316-3891	BS_QSDKJM8T	No	No	No	No	Craniopharyngioma	Craniopharyngioma
 PT_KBFM551M	A07082	BS_WYTDVC0Y	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
@@ -433,7 +433,7 @@ PT_9C2G356W	7316-3555	BS_1VMBA3BN	No	No	No	No	Low-grade astrocytic tumor	Low-gra
 PT_3NM45TQ8	7316-1077	BS_N2JD3VX6	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_BZKJR4GK	7316-561	BS_NTXHP7QR	No	No	No	No	Craniopharyngioma	Craniopharyngioma
 PT_ND34A6PR	7316-122	BS_QMHND3QK	No	No	No	No	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor
-PT_NWYSD53S	A15170	BS_2KMB51YF	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_NWYSD53S	A15170	BS_2KMB51YF	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_NWYSD53S	A15170	BS_2KMB51YF	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
 PT_MSQ6GSVP	7316-2274	BS_HJ95JNFN	No	No	No	No	High-grade glioma	High-grade glioma
 PT_41WETNRC	7316-3065	BS_GFS9JEE6	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
@@ -448,13 +448,13 @@ PT_E79807KT	7316-1087	BS_3A0CJMRH	No	No	No	No	Low-grade astrocytic tumor	Low-gra
 PT_2WVW55DA	7316-1890	BS_NYVVN7SD	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_1P436YMM	7316-3917	BS_6GTKRGNK	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_KZ56XHJT	7316-3217	BS_H8NWA41N	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_KZ56XHJT	7316-3217	BS_H8NWA41N	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_KZ56XHJT	7316-3217	BS_H8NWA41N	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_F3S9PB94	7316-2240	BS_R1CV479M	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_0MXPTTM3	7316-3220	BS_8SYN7GXG	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
 PT_S4YNE17X	7316-2899	BS_3MYQP7P5	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_9M4CQX3M	7316-1972	BS_ZAH4FHV2	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_9GKVQ9QS	7316-3213	BS_3Z40EZHD	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_9GKVQ9QS	7316-3213	BS_3Z40EZHD	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_9GKVQ9QS	7316-3213	BS_3Z40EZHD	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_RFGZ2JGP	7316-135	BS_9CMJ3QF6	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_W17NV5YG	7316-2079	BS_FVPMPMRJ	No	No	No	No	Ependymoma	Ependymoma
 PT_S21ZTKPS	7316-362	BS_P3EVK3C2	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
@@ -486,15 +486,15 @@ PT_0H65S44B	7316-3567	BS_Q807ENGY	No	No	No	No	Intraneural perineurioma	Intraneur
 PT_CWD717Q0	7316-101	BS_4RS1SC48	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_N9KYV4WB	7316-749	BS_9PQPZPGM	No	No	No	No	Ependymoma	Ependymoma
 PT_P2NGYMG5	7316-1956	BS_230S192D	No	No	No	No	High-grade glioma	High-grade glioma
-PT_P2NGYMG5	7316-1956	BS_230S192D	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_P2NGYMG5	7316-1956	BS_230S192D	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_Y572BRC1	7316-485	BS_042DVDQM	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_YZ8A8A36	7316-723	BS_59FR1NC2	No	No	No	No	Choroid plexus carcinoma	Choroid plexus carcinoma
 PT_625X34JX	7316-2170	BS_6FYTRKJJ	No	No	No	No	Ependymoma	Ependymoma
 PT_HMF8J4EG	7316-644	BS_GKPVZXYP	No	No	No	No	High-grade glioma	High-grade glioma
-PT_HMF8J4EG	7316-644	BS_GKPVZXYP	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_HMF8J4EG	7316-644	BS_GKPVZXYP	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_6E8JYRXM	7316-2729	BS_3R0KN6Z4	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_V1HNAC2Q	7316-3215	BS_NNFDFAFM	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_V1HNAC2Q	7316-3215	BS_NNFDFAFM	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_V1HNAC2Q	7316-3215	BS_NNFDFAFM	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_M2J30CF7	7316-1747	BS_AWDQEKK1	No	No	No	No	Myeloid Sarcoma	Myeloid Sarcoma
 PT_0NY38X3W	7316-1706	BS_HQFNQHVW	No	No	No	No	Ependymoma	Ependymoma
 PT_0SPKM4S8	7316-2640	BS_VW4XN9Y7	No	No	No	No	High-grade glioma	High-grade glioma
@@ -516,7 +516,7 @@ PT_E546ZRXA	7316-952	BS_9QMVZ4C0	No	No	No	No	Dysembryoplastic neuroepithelial tu
 PT_CAYBADQC	7316-2641	BS_2Z9JQDPV	No	No	No	No	JXG- Non-Langerhans Histiocytosis	JXG- Non-Langerhans Histiocytosis
 PT_DH8A0SNQ	7316-3057	BS_BYJDRXMK	No	No	No	No	Teratoma	Teratoma
 PT_NK8A49X5	A14449	BS_GKXD33YH	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_NK8A49X5	A14449	BS_GKXD33YH	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_NK8A49X5	A14449	BS_GKXD33YH	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_HJMP6PH2	7316-185	BS_XKM2EAT4	No	No	No	No	Ewings Sarcoma	Ewings Sarcoma
 PT_VTM2STE3	7316-2189	BS_ERFMPQN3	No	No	No	No	High-grade glioma	High-grade glioma
 PT_DW6V5V8E	7316-924	BS_F4D169Q7	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
@@ -525,7 +525,7 @@ PT_962TCBVR	7316-391	BS_2CQ6K2JW	No	No	No	No	Low-grade astrocytic tumor	Low-grad
 PT_FCM7XPVR	7316-2285	BS_4GKH983E	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_CGWPWSXM	7316-2005	BS_9W6FK6X4	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_M9XXJ4GR	7316-3222	BS_682Z7WH6	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_M9XXJ4GR	7316-3222	BS_682Z7WH6	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_M9XXJ4GR	7316-3222	BS_682Z7WH6	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_98QMQZY7	7316-2724	BS_N9BF56FP	No	No	No	No	Fibromyxoid Tumor	Fibromyxoid Tumor
 PT_DXF7ZZQZ	7316-2809	BS_KVYCH9PB	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_3KM9W8S8	7316-1771	BS_859AV1DB	No	No	No	No	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor
@@ -553,7 +553,7 @@ PT_203ZY782	7316-2668	BS_BVD7PWP5	No	No	No	No	Choroid plexus cyst	Choroid plexus
 PT_DEKWG1QG	7316-2139	BS_CXN0498B	No	No	No	No	Osteoblastoma	Osteoblastoma
 PT_6TKJRSPW	7316-162	BS_WRJNMEX2	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_KZ56XHJT	7316-3231	BS_D6STCMQS	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_KZ56XHJT	7316-3231	BS_D6STCMQS	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_KZ56XHJT	7316-3231	BS_D6STCMQS	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_H4H6RD7Y	7316-1072	BS_MS87PMR7	No	No	No	No	Cyst	Cyst
 PT_AXMVG8QE	7316-2732	BS_Q88059DJ	No	No	No	No	Meningioma	Meningioma
 PT_PKHG2YFW	7316-3306	BS_7Y5E5KQW	No	No	No	No	Langerhans Cell histiocytosis	Langerhans Cell histiocytosis
@@ -569,14 +569,14 @@ PT_RFF7MKTC	7316-954	BS_PP4WJBNR	No	No	No	No	Low-grade astrocytic tumor	Low-grad
 PT_Q90R6M3E	7316-897	BS_XGMXJKFX	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_387VK1T9	7316-3625	BS_F064HMTP	No	No	No	No	High-grade glioma	High-grade glioma
 PT_M9XXJ4GR	7316-3222	BS_R6CKWZW6	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_M9XXJ4GR	7316-3222	BS_R6CKWZW6	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_M9XXJ4GR	7316-3222	BS_R6CKWZW6	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_E3Y5BBSF	7316-3071	BS_W8DA9AXT	No	No	No	No	Craniopharyngioma	Craniopharyngioma
 PT_EQ5C5TEA	7316-3922	BS_0S617SMM	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_Z4GS3ZQQ	7316-1797	BS_AWV1EDYB	No	No	No	No	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor
 PT_82MX6J77	7316-302	BS_8H2XX24V	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_2WVW55DA	7316-2100	BS_RG6JK7ZN	No	No	No	No	High-grade glioma	High-grade glioma
 PT_N3205P0D	7316-1099	BS_EPM623G4	No	No	No	No	High-grade glioma	High-grade glioma
-PT_N3205P0D	7316-1099	BS_EPM623G4	No	No	Yes	No	High-grade glioma	High-grade glioma
+PT_N3205P0D	7316-1099	BS_EPM623G4	No	No	Yes	No	High-grade glioma	High-grade glioma, H3 G35 mutant
 PT_EV71W1JW	7316-349	BS_YETTZ1NC	No	No	No	No	Metastatic secondary tumors	Metastatic secondary tumors
 PT_45YH276T	7316-499	BS_QC5FNXGH	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_A325EYR2	7316-2557	BS_YB99Q6TN	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
@@ -595,7 +595,7 @@ PT_VZTTTP3Q	7316-167	BS_16FT8V4B	No	No	No	No	Low-grade astrocytic tumor	Low-grad
 PT_2BJF83GQ	7316-1745	BS_J5J0EA7Y	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_DMHFS0HX	7316-3055	BS_GCQEB05M	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_1YQH5NSH	A20091	BS_74TZJTW0	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_1YQH5NSH	A20091	BS_74TZJTW0	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_1YQH5NSH	A20091	BS_74TZJTW0	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_4347ZBEX	7316-913	BS_PKZ1HWNB	No	No	No	No	High-grade glioma	High-grade glioma
 PT_S4YNE17X	7316-234	BS_93BV8AY9	No	No	No	No	Neurofibroma	Neurofibroma
 PT_4ADZ9F53	7316-3060	BS_FHE6Z73G	No	No	No	No	Ganglioglioma	Ganglioglioma
@@ -605,10 +605,10 @@ PT_2ZXR2PDN	7316-1636	BS_93B38HPS	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_6SH7PV1N	7316-535	BS_MW63FCZC	No	No	No	No	High-grade glioma	High-grade glioma
 PT_NBSRQAMS	7316-1079	BS_Q9NHTR7G	No	No	No	No	Ewings Sarcoma	Ewings Sarcoma
 PT_QTDY0Y9A	7316-3771	BS_1S5V7WWC	No	No	No	No	High-grade glioma	High-grade glioma
-PT_QTDY0Y9A	7316-3771	BS_1S5V7WWC	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_QTDY0Y9A	7316-3771	BS_1S5V7WWC	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_T1FV709B	7316-681	BS_XH5JP8DB	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_Y5KY6KN9	7316-195	BS_AYPBAHJ6	No	No	No	No	High-grade glioma	High-grade glioma
-PT_Y5KY6KN9	7316-195	BS_AYPBAHJ6	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_Y5KY6KN9	7316-195	BS_AYPBAHJ6	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_YDWBWTVN	7316-147	BS_YVFFHJ1Q	No	No	No	No	Schwannoma	Schwannoma
 PT_3VQEVNDD	7316-1680	BS_9G7ETYHR	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_8XZY6MM1	7316-957	BS_WB8P21ED	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
@@ -620,13 +620,13 @@ PT_S7YHNHSS	7316-2754	BS_KSRYKCDE	No	No	No	No	Neurofibroma	Neurofibroma
 PT_JW6FBEFK	7316-3019	BS_3P96RT4E	No	No	No	No	Subependymal Giant Cell Astrocytoma	Subependymal Giant Cell Astrocytoma
 PT_2CJ31SBX	7316-3624	BS_JC2187NA	No	No	No	No	Ependymoma	Ependymoma
 PT_JSFBMK5V	7316-1769	BS_KY1CTGJ3	No	No	No	No	High-grade glioma	High-grade glioma
-PT_JSFBMK5V	7316-1769	BS_KY1CTGJ3	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_JSFBMK5V	7316-1769	BS_KY1CTGJ3	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_858H7ABM	7316-903	BS_872Q3FK2	No	No	No	No	High-grade glioma	High-grade glioma
-PT_858H7ABM	7316-903	BS_872Q3FK2	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_858H7ABM	7316-903	BS_872Q3FK2	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_PR4YBBH3	7316-116	BS_PPY0EWPG	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_PR4YBBH3	7316-116	BS_PPY0EWPG	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_PR4YBBH3	7316-116	BS_PPY0EWPG	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_VPEMAQBN	A12748	BS_6VTQ3W4M	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_VPEMAQBN	A12748	BS_6VTQ3W4M	No	Yes	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_VPEMAQBN	A12748	BS_6VTQ3W4M	No	Yes	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_AKQZZPH8	7316-2782	BS_XPSD2NRJ	No	No	No	No	Meningioma	Meningioma
 PT_EYWDFKA7	7316-30	BS_5S8VXASX	No	No	No	No	Schwannoma	Schwannoma
 PT_D7KMPYTZ	7316-2133	BS_P3P96WCD	No	No	No	No	Medulloblastoma	Medulloblastoma
@@ -639,7 +639,7 @@ PT_TD6ST5MG	7316-235	BS_SE82EQF8	No	No	No	No	Low-grade astrocytic tumor	Low-grad
 PT_4159VCJY	7316-389	BS_HTGDSPQA	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_TB8HPJBN	7316-2663	BS_G2016BE5	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_2JDDX6TJ	7316-409	BS_B9QP40ER	No	No	No	No	High-grade glioma	High-grade glioma
-PT_2JDDX6TJ	7316-409	BS_B9QP40ER	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_2JDDX6TJ	7316-409	BS_B9QP40ER	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_Z4BF2NSB	7316-161	BS_W2QCHQ7E	No	No	No	No	High-grade glioma	High-grade glioma
 PT_A9YAZJNN	7316-263	BS_PNXDHDF3	No	No	No	No	Meningioma	Meningioma
 PT_C2D4JXS1	7316-1746	BS_68TZMZH1	No	No	No	No	High-grade glioma	High-grade glioma
@@ -648,10 +648,10 @@ PT_7WT6P5M8	7316-2308	BS_JB3J82ZK	No	No	No	No	High-grade glioma	High-grade gliom
 PT_B7QRTN72	7316-1802	BS_YH60H2FS	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_P5HHJJPH	7316-870	BS_KXGJ1HMG	No	No	No	No	High-grade glioma	High-grade glioma
 PT_PR4YBBH3	7316-126	BS_C2NH5FDT	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_PR4YBBH3	7316-126	BS_C2NH5FDT	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_PR4YBBH3	7316-126	BS_C2NH5FDT	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_QH9H491G	7316-1461	BS_4T8J7JEP	No	No	No	No	Meningioma	Meningioma
 PT_KZ56XHJT	7316-3231	BS_22VCR7DF	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_KZ56XHJT	7316-3231	BS_22VCR7DF	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_KZ56XHJT	7316-3231	BS_22VCR7DF	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_92YX7KK9	7316-1785	BS_F5KRHGKC	No	No	No	No	Germinoma	Germinoma
 PT_K8ZV7APT	7316-2590	BS_5XZP7F4Q	No	No	No	No	Neurofibroma	Neurofibroma
 PT_2SCVQ2N6	7316-3631	BS_ST3Z2B9B	No	No	No	No	Ependymoma	Ependymoma
@@ -661,7 +661,7 @@ PT_ZCXS29JJ	7316-2153	BS_VF099E8S	No	No	No	No	Sarcoma	Sarcoma
 PT_HQ89KPKT	7316-202	BS_R1RMKH1B	No	No	No	No	Ganglioneuroma	Ganglioneuroma
 PT_A9F8Y6MA	7316-476	BS_ZKZACPVV	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_7FZ8SE69	7316-2152	BS_KHSYAB3J	No	No	No	No	High-grade glioma	High-grade glioma
-PT_7FZ8SE69	7316-2152	BS_KHSYAB3J	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_7FZ8SE69	7316-2152	BS_KHSYAB3J	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_2D1KGV99	7316-3151	BS_CFEWVDG1	No	No	No	No	Dysplasia	Dysplasia
 PT_PFP1ZVHD	7316-2310	BS_Z9PKZ4RT	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_69C7CBFW	7316-1959	BS_MJ8EGM54	No	No	No	No	Rhabdomyosarcoma	Rhabdomyosarcoma
@@ -670,7 +670,7 @@ PT_JXSDFPNM	7316-2142	BS_F5641KTR	No	No	No	No	Meningioma	Meningioma
 PT_JV9G8MFD	7316-2269	BS_ZAT0XJE5	No	No	No	No	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor
 PT_FF0MSK4D	7316-2987	BS_KJQXZ8GK	No	No	No	No	Primitive Neuroectodermal Tumor	Primitive Neuroectodermal Tumor
 PT_VPEMAQBN	7316-3225	BS_Q6GVRAWK	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_VPEMAQBN	7316-3225	BS_Q6GVRAWK	No	Yes	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_VPEMAQBN	7316-3225	BS_Q6GVRAWK	No	Yes	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_2FVTD0WR	7316-917	BS_RA0VCMWC	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_RH59ET3M	7316-1655	BS_KRYYDC2X	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_KVFS3Z2Q	7316-1955	BS_9JVGXA2W	No	No	No	No	Ependymoma	Ependymoma
@@ -682,7 +682,7 @@ PT_NTEKMKTX	7316-1650	BS_PYVPKH11	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_WVC247PK	7316-1090	BS_QK61ST4T	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_SABHZ7XX	7316-3029	BS_FCXEAPJ1	No	No	No	No	Schwannoma	Schwannoma
 PT_63F63QY0	7316-3521	BS_KAD49R68	No	No	No	No	High-grade glioma	High-grade glioma
-PT_63F63QY0	7316-3521	BS_KAD49R68	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_63F63QY0	7316-3521	BS_KAD49R68	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_1H2REHT2	7316-3303	BS_96S0VQBN	No	No	No	No	High-grade glioma	High-grade glioma
 PT_8WNA6M94	7316-1983	BS_090GV72Q	No	No	No	No	Schwannoma	Schwannoma
 PT_VQDNSYXM	7316-1637	BS_JBY9S5D4	No	No	No	No	Glial-neuronal tumor NOS	Glial-neuronal tumor NOS
@@ -693,9 +693,9 @@ PT_KZ04SDDS	7316-1774	BS_79NQJZ09	No	No	No	No	High-grade glioma	High-grade gliom
 PT_XA98HG1C	7316-3023	BS_5JC116NM	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_FC0EF5ZT	7316-3572	BS_WJ7GMQTF	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_X71D7G5S	7316-1105	BS_P8WN8XEQ	No	No	No	No	High-grade glioma	High-grade glioma
-PT_X71D7G5S	7316-1105	BS_P8WN8XEQ	No	No	Yes	No	High-grade glioma	High-grade glioma
+PT_X71D7G5S	7316-1105	BS_P8WN8XEQ	No	No	Yes	No	High-grade glioma	High-grade glioma, H3 G35 mutant
 PT_QA9WJ679	7316-3218	BS_7PF3C1P7	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_QA9WJ679	7316-3218	BS_7PF3C1P7	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_QA9WJ679	7316-3218	BS_7PF3C1P7	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_GAM3E6M3	7316-872	BS_9E632VPJ	No	No	No	No	Ependymoma	Ependymoma
 PT_1H2REHT2	7316-3022	BS_79SYEHY3	No	No	No	No	High-grade glioma	High-grade glioma
 PT_T8V9ES93	7316-1106	BS_J4E9SW51	No	No	No	No	High-grade glioma	High-grade glioma
@@ -709,17 +709,17 @@ PT_5SNX4PMK	7316-171	BS_XKXDH0YJ	No	No	No	No	NeuroInflammatory systemic disease	
 PT_RQ21EBK9	7316-367	BS_39Q80NT3	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_8RB7TPS2	7316-322	BS_8SETK1J4	No	No	No	No	Ependymoma	Ependymoma
 PT_JNEV57VK	7316-3058	BS_HM5GFJN8	No	No	No	No	High-grade glioma	High-grade glioma
-PT_JNEV57VK	7316-3058	BS_HM5GFJN8	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_JNEV57VK	7316-3058	BS_HM5GFJN8	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_N3HVMV06	7316-2075	BS_SD28E0SC	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_6N1QWCXE	7316-3169	BS_D2BZ25FW	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_5D3AVPCW	7316-187	BS_XCFNEZ8E	No	No	No	No	Dysplasia	Dysplasia
 PT_NK8A49X5	7316-4448	BS_6JBE0947	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_NK8A49X5	7316-4448	BS_6JBE0947	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_NK8A49X5	7316-4448	BS_6JBE0947	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_KEQ53KRH	7316-440	BS_R1G6SG0K	No	No	No	No	High-grade glioma	High-grade glioma
 PT_1KEER2Q1	7316-460	BS_F1B71HTZ	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_S2CXXZCF	7316-643	BS_KVV3G6NP	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_6Q0NPVP3	7316-2255	BS_E5H6CFYT	No	No	No	No	Ganglioglioma	Ganglioglioma
-PT_6Q0NPVP3	7316-2255	BS_E5H6CFYT	No	Yes	No	No	Ganglioglioma	High-grade glioma
+PT_6Q0NPVP3	7316-2255	BS_E5H6CFYT	No	Yes	No	No	Ganglioglioma	High-grade glioma, H3 K28 mutant
 PT_KHX1WQ4H	7316-186	BS_BNFCXVYZ	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_3R0P995B	7316-892	BS_C9TNGEA0	No	No	No	No	Ependymoma	Ependymoma
 PT_C2VY5NM6	7316-875	BS_N0Z6V2YG	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
@@ -727,7 +727,7 @@ PT_ZRQQC2S9	7316-3139	BS_PEFRDKDZ	No	No	No	No	Low-grade astrocytic tumor	Low-gra
 PT_PAW18EK3	7316-1948	BS_M2MSWKBC	No	No	No	No	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor
 PT_H0HWHRPB	7316-1679	BS_QE5B0T7R	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_59D00MBQ	7316-1937	BS_3E5C1PN1	No	No	No	No	High-grade glioma	High-grade glioma
-PT_59D00MBQ	7316-1937	BS_3E5C1PN1	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_59D00MBQ	7316-1937	BS_3E5C1PN1	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_2BTC5TEN	7316-2183	BS_AQQY8HMR	No	No	No	No	Craniopharyngioma	Craniopharyngioma
 PT_BWGZBVD1	7316-1678	BS_NZRJE7QA	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_R9V5R1SY	7316-1940	BS_B94G701Q	No	No	No	No	Ganglioglioma	Ganglioglioma
@@ -758,7 +758,7 @@ PT_YKVK5HTK	7316-441	BS_3QDRWJCF	No	No	No	No	Low-grade astrocytic tumor	Low-grad
 PT_R6WWH1QX	7316-423	BS_1AZ8YJSH	No	No	No	No	Ependymoma	Ependymoma
 PT_W17NV5YG	7316-2106	BS_B4DY7ET3	No	No	No	No	Ependymoma	Ependymoma
 PT_VPEMAQBN	7316-3235	BS_VXDGXQKZ	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_VPEMAQBN	7316-3235	BS_VXDGXQKZ	No	Yes	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_VPEMAQBN	7316-3235	BS_VXDGXQKZ	No	Yes	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_TPSMT960	7316-400	BS_4M0ZMCDC	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_2FVTD0WR	7316-2897	BS_8TFBNHT0	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_DFXQFYPV	7316-2155	BS_DJEVCH34	No	No	No	No	Medulloblastoma	Medulloblastoma
@@ -768,10 +768,10 @@ PT_N4PR21ME	7316-330	BS_Y3472DYJ	No	No	No	No	Ependymoma	Ependymoma
 PT_06H29FCG	7316-1944	BS_0W8AWY10	No	No	No	No	Ependymoma	Ependymoma
 PT_BK92NM09	7316-2669	BS_XVYRXN8J	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_1DSX4VJM	7316-1708	BS_KYPMZZSY	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_1DSX4VJM	7316-1708	BS_KYPMZZSY	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_1DSX4VJM	7316-1708	BS_KYPMZZSY	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_37B5JRP1	7316-2217	BS_EJV0N3BX	No	No	No	No	High-grade glioma	High-grade glioma
 PT_PSX2CSYX	7316-46	BS_AFAHY6HP	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_PSX2CSYX	7316-46	BS_AFAHY6HP	No	Yes	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_PSX2CSYX	7316-46	BS_AFAHY6HP	No	Yes	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_K5KH69Q1	7316-2670	BS_BS5X4H0Y	No	No	No	No	Dermoid Cyst	Dermoid Cyst
 PT_1H2REHT2	7316-2990	BS_7M7JNG00	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_ZR8MQRVG	7316-346	BS_MT5ZSRG4	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
@@ -807,7 +807,7 @@ PT_KBFM551M	7316-4447	BS_QZRP3NSG	No	No	No	No	Brainstem glioma- Diffuse intrinsi
 PT_7RMS6K08	7316-1748	BS_ACE6QKVF	No	No	No	No	Craniopharyngioma	Craniopharyngioma
 PT_6PFFSB6D	7316-2569	BS_4Z6F1HJZ	No	No	No	No	Myxoid spindle cell tumor	Myxoid spindle cell tumor
 PT_5BWZA0NT	7316-1102	BS_BFDEZK1C	No	No	No	No	High-grade glioma	High-grade glioma
-PT_5BWZA0NT	7316-1102	BS_BFDEZK1C	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_5BWZA0NT	7316-1102	BS_BFDEZK1C	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_MSBPMJ56	7316-306	BS_40FX713C	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_D5KHK0SS	7316-882	BS_AJ0T7DJ7	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_HMY997GX	7316-3554	BS_2JDVY4F7	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
@@ -821,13 +821,13 @@ PT_R63RHJWX	7316-739	BS_G4EX0H98	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_N673SYWW	7316-1751	BS_PMFR8NPN	No	No	No	No	Craniopharyngioma	Craniopharyngioma
 PT_124TTG01	7316-1960	BS_85Y70BHE	No	No	No	No	Adenoma	Adenoma
 PT_DMAF1J4A	A18552	BS_JCWD4DMA	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_DMAF1J4A	A18552	BS_JCWD4DMA	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_DMAF1J4A	A18552	BS_JCWD4DMA	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_9S6WMQ92	7316-95	BS_ZR75EKKX	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_7JQ24F35	7316-1674	BS_1135HC0V	No	No	No	No	Cortical Tubers	Cortical Tubers
 PT_AWBPNFM5	7316-1854	BS_5V2FBYQG	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_EEKE0V9T	7316-32	BS_F969DNHD	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_Y5KY6KN9	7316-195	BS_XMP9XNR9	No	No	No	No	High-grade glioma	High-grade glioma
-PT_Y5KY6KN9	7316-195	BS_XMP9XNR9	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_Y5KY6KN9	7316-195	BS_XMP9XNR9	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_279D9QZ8	7316-325	BS_1YTHM07J	No	No	No	No	High-grade glioma	High-grade glioma
 PT_D215EQAP	7316-747	BS_SFH8TGKT	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_FXPJM0MW	7316-207	BS_WQ19Z6MD	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
@@ -836,21 +836,21 @@ PT_8RB7TPS2	7316-3	BS_ZS1QRMXS	No	No	No	No	Ependymoma	Ependymoma
 PT_45P9F9MD	7316-314	BS_0RF0G9SQ	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_962TCBVR	7316-2744	BS_ME97J1GA	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_X5TQR8V2	7316-343	BS_C19DFVR5	No	No	No	No	High-grade glioma	High-grade glioma
-PT_X5TQR8V2	7316-343	BS_C19DFVR5	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_X5TQR8V2	7316-343	BS_C19DFVR5	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_ZMKMKCFQ	7316-2988	BS_GRS3T427	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_KZ56XHJT	7316-3234	BS_DVDT4VXQ	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_KZ56XHJT	7316-3234	BS_DVDT4VXQ	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_KZ56XHJT	7316-3234	BS_DVDT4VXQ	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_SCBMTG0S	7316-2175	BS_BM95DGCQ	No	No	No	No	Prolactinoma	Prolactinoma
 PT_H45M7M2T	7316-1652	BS_6XHDR1WS	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_3PSG2DQT	7316-1111	BS_2CD1XWVP	No	No	No	No	Dysplasia	Dysplasia
 PT_JWW33RTB	7316-1793	BS_JBHQ6G3J	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_KMHGNCNR	7316-944	BS_T5T21G7N	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_KAQMYFYB	A16405	BS_5CCAC8TZ	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_KAQMYFYB	A16405	BS_5CCAC8TZ	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_KAQMYFYB	A16405	BS_5CCAC8TZ	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_54MH6Q46	7316-2591	BS_AXM96K20	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_FWD7NZQ0	7316-1108	BS_797V83YM	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_M23Q0DC3	A03942	BS_GBT44HST	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_M23Q0DC3	A03942	BS_GBT44HST	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_M23Q0DC3	A03942	BS_GBT44HST	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_MDWPRDBT	7316-895	BS_BQWMQM2Y	No	No	No	No	High-grade glioma	High-grade glioma
 PT_WYVMWYVA	7316-257	BS_HC4T1EEP	No	No	No	No	Choroid plexus papilloma	Choroid plexus papilloma
 PT_ECMZCNTF	7316-736	BS_MGBEMNYR	No	No	No	No	Ependymoma	Ependymoma
@@ -859,7 +859,7 @@ PT_GDDWPDMC	7316-2575	BS_V3ZNXRHK	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_JN3EN2HR	7316-2267	BS_MAVSJH2Y	No	No	No	No	Ependymoma	Ependymoma
 PT_0K0DPVF6	7316-121	BS_Z4Q8RH5M	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_RA6AGBA7	7316-461	BS_P4K6WK9Y	No	No	No	No	High-grade glioma	High-grade glioma
-PT_RA6AGBA7	7316-461	BS_P4K6WK9Y	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_RA6AGBA7	7316-461	BS_P4K6WK9Y	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_C4F1HPH5	7316-493	BS_RH9PMH3G	No	No	No	No	Langerhans Cell histiocytosis	Langerhans Cell histiocytosis
 PT_ESHACWF6	7316-1790	BS_A94A7EJ4	No	No	No	No	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor
 PT_HFQNKP5X	7316-4062	BS_5B6XZ7YP	No	No	No	No	Chordoma	Chordoma
@@ -875,7 +875,7 @@ PT_NEB4WEAT	7316-3020	BS_0SFXXBQ5	No	No	No	No	Craniopharyngioma	Craniopharyngiom
 PT_41RR5FQD	7316-1115	BS_71HPXFE7	No	No	No	No	Teratoma	Teratoma
 PT_7M2PGCBV	7316-3312	BS_BBTT7DH4	No	No	No	No	Meningioma	Meningioma
 PT_Z4PJA6KT	7316-1763	BS_WPCBK1EG	No	No	No	No	High-grade glioma	High-grade glioma
-PT_Z4PJA6KT	7316-1763	BS_WPCBK1EG	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_Z4PJA6KT	7316-1763	BS_WPCBK1EG	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_CXT81GRM	7316-1772	BS_3CG2N4PD	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_5X061J42	7316-2149	BS_Z5VJCFNP	No	No	No	No	Germinoma	Germinoma
 PT_RRG1V7EP	7316-820	BS_P7CY04E7	No	No	No	No	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor
@@ -885,7 +885,7 @@ PT_2NQPX1R2	7316-1116	BS_YBCQBCQC	No	No	No	No	Craniopharyngioma	Craniopharyngiom
 PT_8GBF5MTD	7316-166	BS_S7S6YEHA	No	No	No	No	Craniopharyngioma	Craniopharyngioma
 PT_YBJYA2CD	7316-2244	BS_KFRBXXV7	No	No	No	No	Choroid plexus papilloma	Choroid plexus papilloma
 PT_KTRJ8TFY	7316-3230	BS_5968GBGT	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_KTRJ8TFY	7316-3230	BS_5968GBGT	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_KTRJ8TFY	7316-3230	BS_5968GBGT	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_PHKSYE6Q	7316-220	BS_Y9GHDZKS	No	No	No	No	Choroid plexus papilloma	Choroid plexus papilloma
 PT_KBFM551M	7316-3214	BS_M0B42FPR	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
 PT_BQ8BQ01J	7316-183	BS_0DKPGQWD	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
@@ -900,9 +900,9 @@ PT_NTK39NNV	7316-3076	BS_Y2C78JC4	No	No	No	No	Low-grade astrocytic tumor	Low-gra
 PT_AC5SD9AC	7316-2291	BS_VPJ9CARN	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_3VCS1PPF	7316-490	BS_QMY84KF4	No	No	No	No	Ependymoma	Ependymoma
 PT_FYPWZBH0	7316-1085	BS_ZCY4ECNV	No	No	No	No	High-grade glioma	High-grade glioma
-PT_FYPWZBH0	7316-1085	BS_ZCY4ECNV	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_FYPWZBH0	7316-1085	BS_ZCY4ECNV	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_Z4PJA6KT	7316-1763	BS_853PNV7P	No	No	No	No	High-grade glioma	High-grade glioma
-PT_Z4PJA6KT	7316-1763	BS_853PNV7P	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_Z4PJA6KT	7316-1763	BS_853PNV7P	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_ZZ8SBJJ5	7316-725	BS_CPZZR2R7	No	No	No	No	Choroid plexus papilloma	Choroid plexus papilloma
 PT_BG7GAFK6	7316-3626	BS_9BF58P80	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_KVMF5TFW	7316-3030	BS_8FSJDG2T	No	No	No	No	High-grade glioma	High-grade glioma
@@ -926,23 +926,23 @@ PT_XWVQW6JX	7316-3556	BS_XBBBE8V2	No	No	No	No	Low-grade astrocytic tumor	Low-gra
 PT_6R7AE0P3	7316-2653	BS_42A66SH4	No	No	No	No	Langerhans Cell histiocytosis	Langerhans Cell histiocytosis
 PT_44HPG5YT	7316-3067	BS_BZWM455T	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_B38P3Y5T	7316-3208	BS_DH86PF5A	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_B38P3Y5T	7316-3208	BS_DH86PF5A	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_B38P3Y5T	7316-3208	BS_DH86PF5A	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_NK8A49X5	7316-3228	BS_AHAXPFG3	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_NK8A49X5	7316-3228	BS_AHAXPFG3	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_NK8A49X5	7316-3228	BS_AHAXPFG3	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_QK4XB83F	7316-663	BS_01Y5F4PN	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_J50NZYZF	7316-956	BS_MWZCP1XW	No	No	No	No	Metastatic secondary tumors	Metastatic secondary tumors
 PT_SMDEQVHJ	7316-119	BS_XSWF2MR1	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_G16VK7FR	A19649	BS_2HDEZFTW	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_G16VK7FR	A19649	BS_2HDEZFTW	No	Yes	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_G16VK7FR	A19649	BS_2HDEZFTW	No	Yes	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_K2YDNZDA	7316-429	BS_62XRDTM6	No	No	No	No	Ependymoma	Ependymoma
 PT_K8ZV7APT	7316-10	BS_1RFBH1SP	No	No	No	No	Neurofibroma	Neurofibroma
 PT_1E3E6GMF	7316-3224	BS_7GKF6M85	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_1E3E6GMF	7316-3224	BS_7GKF6M85	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_1E3E6GMF	7316-3224	BS_7GKF6M85	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_MXASQ2GW	7316-3558	BS_922YMFYK	No	No	No	No	Neurofibroma	Neurofibroma
 PT_FFRHWB74	7316-932	BS_QDGHHS4S	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_CK41DW03	7316-329	BS_3AERRZQT	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_RDJ40M73	7316-2561	BS_928HWFFM	No	No	No	No	High-grade glioma	High-grade glioma
-PT_RDJ40M73	7316-2561	BS_928HWFFM	No	No	Yes	No	High-grade glioma	High-grade glioma
+PT_RDJ40M73	7316-2561	BS_928HWFFM	No	No	Yes	No	High-grade glioma	High-grade glioma, H3 G35 mutant
 PT_0CE0HFYB	7316-2581	BS_30W38X77	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_99S5BPE3	7316-292	BS_83MSWR59	No	No	No	No	Ependymoma	Ependymoma
 PT_D7FS86D8	7316-1862	BS_3ZASRA3A	No	No	No	No	Cyst	Cyst
@@ -952,9 +952,9 @@ PT_N8W26H19	7316-267	BS_TZPJHKQR	No	No	No	No	Low-grade astrocytic tumor	Low-grad
 PT_R1DHB0ZT	7316-2642	BS_E9ATGWME	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_V0TQ0P66	7316-129	BS_2AWCKNB3	No	No	No	No	Meningioma	Meningioma
 PT_RE6AXQM1	A19015	BS_6687ZNGS	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_RE6AXQM1	A19015	BS_6687ZNGS	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_RE6AXQM1	A19015	BS_6687ZNGS	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_DJ106XYS	7316-3935	BS_WJF6ZXWN	No	No	No	No	High-grade glioma	High-grade glioma
-PT_DJ106XYS	7316-3935	BS_WJF6ZXWN	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_DJ106XYS	7316-3935	BS_WJF6ZXWN	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_E3ADF4ZB	7316-2664	BS_C1RRDNF5	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_GNKRMTQY	7316-3856	BS_H1MNXNHB	No	No	No	No	Pineoblastoma	Pineoblastoma
 PT_XCCV6CW2	7316-2268	BS_FYJMNRGK	No	No	No	No	Teratoma	Teratoma
@@ -969,7 +969,7 @@ PT_6VJ5PNKS	7316-2174	BS_JJWC13GG	No	No	No	No	Low-grade astrocytic tumor	Low-gra
 PT_H45M7M2T	7316-3074	BS_E9M7TDB6	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_00G007DM	7316-272	BS_K07KNTFY	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_KZ56XHJT	A12398	BS_9DN4QR6E	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_KZ56XHJT	A12398	BS_9DN4QR6E	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_KZ56XHJT	A12398	BS_9DN4QR6E	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_VH6S71AC	7316-735	BS_8BD8WD38	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_3AWKWXEV	7316-85	BS_E42SSQGJ	No	No	No	No	High-grade glioma	High-grade glioma
 PT_ZZWYKZZ8	7316-2758	BS_2E81A3FT	No	No	No	No	Ependymoma	Ependymoma
@@ -1014,22 +1014,22 @@ PT_FZHGKJ0H	7316-4034	BS_5J5VH3X0	No	No	No	No	Ganglioneuroblastoma	Ganglioneurob
 PT_WG5PHHSQ	7316-1962	BS_N5VYY66W	No	No	No	No	Meningioangiomatosis	Meningioangiomatosis
 PT_KCTZZA3G	7316-223	BS_TX2WGF8K	No	No	No	No	Neurofibroma	Neurofibroma
 PT_Y74CVASJ	A16538	BS_KPG4WCHS	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_Y74CVASJ	A16538	BS_KPG4WCHS	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_Y74CVASJ	A16538	BS_KPG4WCHS	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_W6AWJJK7	7316-893	BS_3Y44RJXS	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_9BZETM0M	7316-158	BS_STNH7YSX	No	No	No	No	High-grade glioma	High-grade glioma
-PT_9BZETM0M	7316-158	BS_STNH7YSX	No	No	Yes	No	High-grade glioma	High-grade glioma
+PT_9BZETM0M	7316-158	BS_STNH7YSX	No	No	Yes	No	High-grade glioma	High-grade glioma, H3 G35 mutant
 PT_1TGKS073	7316-1659	BS_CGCNC41M	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_KZ56XHJT	A08732	BS_FWP8ZA4K	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_KZ56XHJT	A08732	BS_FWP8ZA4K	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_KZ56XHJT	A08732	BS_FWP8ZA4K	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_HGM20MW7	7316-3221	BS_FK3B5SDH	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_HGM20MW7	7316-3221	BS_FK3B5SDH	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_HGM20MW7	7316-3221	BS_FK3B5SDH	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_6MWPJ96F	7316-1928	BS_M8EBKZDG	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_GYJ97915	7316-1093	BS_HM5N78GV	No	No	No	No	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor
 PT_01MZ62KG	7316-447	BS_TE8QFF7T	No	No	No	No	Pineoblastoma	Pineoblastoma
 PT_H57TEQDT	7316-2324	BS_CP435MAC	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_4JG5KWE8	7316-50	BS_N9N1X78X	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_VCD0W8HG	7316-2756	BS_TRGECFNP	No	No	No	No	High-grade glioma	High-grade glioma
-PT_VCD0W8HG	7316-2756	BS_TRGECFNP	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_VCD0W8HG	7316-2756	BS_TRGECFNP	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_KBFM551M	7316-3214	BS_M5FM63EB	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
 PT_YXJQGT69	7316-934	BS_NHRNZRQV	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_20ZM6THA	7316-3629	BS_9X9E86DY	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
@@ -1044,7 +1044,7 @@ PT_9ZY739FB	7316-170	BS_Z14Z2JMW	No	No	No	No	Neurofibroma	Neurofibroma
 PT_MDWPRDBT	7316-2751	BS_1M63B97V	No	No	No	No	High-grade glioma	High-grade glioma
 PT_0MHKP408	7316-726	BS_J6VRW67C	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_7P6J57H3	A12911	BS_Y0DGBKTY	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_7P6J57H3	A12911	BS_Y0DGBKTY	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_7P6J57H3	A12911	BS_Y0DGBKTY	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_CTSQ5FHH	7316-438	BS_HPMX6CT4	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_WE1CHTWK	7316-87	BS_4DY83R02	No	No	No	No	Primitive Neuroectodermal Tumor	Primitive Neuroectodermal Tumor
 PT_DACV00WF	7316-489	BS_PVZJCXS1	No	No	No	No	Medulloblastoma	Medulloblastoma
@@ -1053,17 +1053,17 @@ PT_8FWP7BR3	7316-449	BS_0QEBZX3M	No	No	No	No	Low-grade astrocytic tumor	Low-grad
 PT_AWMZ12NP	7316-2203	BS_N8WXTFN4	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_8ECE2D92	7316-914	BS_GXACEYKB	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_KZ56XHJT	7316-3231	BS_AK9BV52G	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_KZ56XHJT	7316-3231	BS_AK9BV52G	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_KZ56XHJT	7316-3231	BS_AK9BV52G	Yes	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_2WVW55DA	7316-2092	BS_M28HG0NT	No	No	No	No	High-grade glioma	High-grade glioma
 PT_QH9H491G	7316-382	BS_YRC54VPP	No	No	No	No	Meningioma	Meningioma
 PT_17W3GJPT	7316-2306	BS_ETTZM63Y	No	No	No	No	Ganglioglioma	Ganglioglioma
 PT_7BJBEBZT	7316-1670	BS_164KRQJ0	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_JNEV57VK	7316-3058	BS_QWM9BPDY	No	No	No	No	High-grade glioma	High-grade glioma
-PT_JNEV57VK	7316-3058	BS_QWM9BPDY	Yes	No	No	No	High-grade glioma	High-grade glioma
+PT_JNEV57VK	7316-3058	BS_QWM9BPDY	Yes	No	No	No	High-grade glioma	High-grade glioma, H3 K28 mutant
 PT_NNZQ09SH	7316-1109	BS_2SG8JNMB	No	No	No	No	Low-grade astrocytic tumor	Low-grade astrocytic tumor
 PT_7KBMN6C2	7316-553	BS_HZHEF797	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_CSKHQB16	A14567	BS_CX6KACX6	No	No	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma
-PT_CSKHQB16	A14567	BS_CX6KACX6	No	Yes	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma
+PT_CSKHQB16	A14567	BS_CX6KACX6	No	Yes	No	No	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant
 PT_NPETR8RY	7316-1784	BS_FSM39DXA	No	No	No	No	Ependymoma	Ependymoma
 PT_CWA1405H	7316-2252	BS_9YPJANGX	No	No	No	No	Medulloblastoma	Medulloblastoma
 PT_QJ3144WH	7316-3204	BS_8BS10XE2	No	No	No	No	Choroid plexus papilloma	Choroid plexus papilloma

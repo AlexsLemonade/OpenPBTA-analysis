@@ -47,8 +47,8 @@ metadata <-
 
 # Select wanted columns in metadata for merging and assign to a new object
 select_metadata <- metadata %>%
-  dplyr::select(sample_id,
-                Kids_First_Participant_ID,
+  dplyr::select(Kids_First_Participant_ID,
+                sample_id,
                 Kids_First_Biospecimen_ID,
                 disease_type_new)
 
@@ -57,33 +57,6 @@ snv_df <-
   data.table::fread(file.path(root_dir,
                               "data",
                               "pbta-snv-consensus-mutation.maf.tsv.gz"))
-```
-
-## Custom Function
-
-```{r}
-# Custom datatable function
-# Function code adapted from: https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/49acc98f5ffd86853fc70f220623311e13e3ca9f/analyses/collapse-rnaseq/02-analyze-drops.Rmd#L23
-viewDataTable <- function(data) {
-  DT::datatable(
-    data,
-    rownames = FALSE,
-    filter = "bottom",
-    class = "cell-border stripe",
-    options = list(
-      pageLength = 5,
-      searchHighlight = TRUE,
-      scrollX = TRUE,
-      dom = "tpi",
-      initComplete = htmlwidgets::JS(
-        "function(settings, json) {",
-        "$(this.api().table().header()).css({'background-color':
-                                            '#004467', 'color': '#fff'});",
-        "}"
-      )
-    )
-  )
-}
 ```
 
 # Prepare Data 
@@ -108,28 +81,28 @@ snv_lesions_df <- snv_df %>%
     H3F3A.G35V = dplyr::case_when(Hugo_Symbol == "H3F3A" &
                                     HGVSp_Short == "p.G35V" ~ "Yes",
                                   TRUE ~ "No")
+  ) %>%
+  dplyr::select(
+    -HGVSp_Short,
+    -Hugo_Symbol
   )
 
 # Join the selected variables from the metadata with the snv consensus mutation
 # and defining lesions data.frame
-snv_lesions_df <- snv_lesions_df %>%
-  dplyr::left_join(select_metadata,
-                   by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
+snv_lesions_df <- select_metadata %>%
+  dplyr::right_join(snv_lesions_df,
+                    by = c("Kids_First_Biospecimen_ID" = "Tumor_Sample_Barcode")) %>%
   dplyr::select(
-    Kids_First_Participant_ID,
-    sample_id,
-    Kids_First_Biospecimen_ID = Tumor_Sample_Barcode,
-    dplyr::everything(),
-    -HGVSp_Short,
-    -Hugo_Symbol
+    -disease_type_new,
+    dplyr::everything()
   ) %>%
   dplyr::distinct() %>%
   dplyr::mutate(
     disease_type_reclassified = dplyr::case_when(
-      H3F3A.K28M == "Yes" |
-        HIST1H3B.K28M == "Yes" |
-        H3F3A.G35R == "Yes" |
-        H3F3A.G35V == "Yes" ~ "High-grade glioma",
+      H3F3A.K28M == "Yes" ~ "High-grade glioma, H3 K28 mutant",
+        HIST1H3B.K28M == "Yes" ~ "High-grade glioma, H3 K28 mutant",
+        H3F3A.G35R == "Yes" ~ "High-grade glioma, H3 G35 mutant",
+        H3F3A.G35V == "Yes" ~ "High-grade glioma, H3 G35 mutant",
       TRUE ~ as.character(disease_type_new)
     )
   )
@@ -149,15 +122,14 @@ readr::write_tsv(snv_lesions_df,
 ## Inconsistencies in disease classification
 
 ```{r}
-# Isolate the samples that should be reclassified as HGG
-hgg_samples <- snv_lesions_df %>%
+# Isolate the samples with the specified mutations that were not classified
+# as HGG or DIPG
+snv_lesions_df %>%
   dplyr::filter(
-    disease_type_reclassified == "High-grade glioma" &
-      disease_type_new != "High-grade glioma"
+    grepl("High-grade glioma", disease_type_reclassified) &
+      !(disease_type_new %in% c("High-grade glioma", 
+                                "Brainstem glioma- Diffuse intrinsic pontine glioma"))
   )
-
-# Display the reclassified samples
-viewDataTable(hgg_samples)
 ```
 
 # Session Info
