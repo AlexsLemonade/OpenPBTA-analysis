@@ -2,7 +2,6 @@
 OUTPUT= expand("../../scratch/endpoints/{sample}.del_dup.merged.final.bed",
                sample=config["samples"]),
 
-
 ## Define the wildcards to use in the file names. 
 wildcard_constraints:
   caller = "cnvkit|freec|manta",
@@ -178,7 +177,8 @@ rule combine_files:
 rule merge:
     input:
         ## Define the location of the input file
-        dup_del_file="../../scratch/interim/{sample}.combined.{dupdel}.sorted.bed"
+        delete="../../scratch/interim/{sample}.combined.del.sorted.bed",
+        dup="../../scratch/interim/{sample}.combined.dup.sorted.bed"
     output:
         ## Define the output files' names
         delete="../../scratch/interim/{sample}.del.merged.bed",
