@@ -238,9 +238,3 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 
 # Bioconductor package GSVA needed for gene-set-enrichment-analysis
 RUN R -e "BiocManager::install(c('GSVA'), update = FALSE)"
-
-# CRAN package cowplot needed for `molecular-subtyping-nonMB-nonATRT`
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
-    --deps TRUE \
-    cowplot

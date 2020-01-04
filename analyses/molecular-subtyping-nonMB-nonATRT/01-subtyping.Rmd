@@ -11,11 +11,48 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Purpose
 
+**THIS ANALYSIS IS A WORK IN PROGRESS.**
+
 This RMarkdown file performs molecular subtyping on the unclassifed embryonal tumors. The majority of these samples are already classified as either Medulloblastoma or ATRT, but a subset are neither of these subtypes and require further classification.
 
-**This is a work in progress**.
+We use information from fusions, CNV, and RNAseq expression to subtype these tumors into ETMR and CNS embryonal NOS, as follows:
 
-Currently, we use RNA-seq expression data (stranded library specifically) to subtype (or, try to subtype).
+
++ **ETMR, C19MC-altered**
+  + Embryonal tumor with multilayered rosettes (ETMR), C19MC-altered
+  + These tumors have focal amplification of the miRNA cluster on chr19 (denoted C19MC) and often have gene fusions involving _TTYH1_ and chr19 miRNA cluster genes
+  + These tumors have high expression of _LIN28A_ and serves as a biomarker for ETMRs
+
++ **ETMR, NOS**
+  + Embryonal tumor with multilayered rosettes (ETMR)
+  + These tumors have high expression of _LIN28A_ and serves as a biomarker for ETMRs, but do not show focal amplification of C19MC.
+
++ **CNS HGNET-MN1**
+  + CNS high-grade neuroepithelial tumor with MN1 alteration
+  + Likely previously diagnosed as PNET.
+  + Contain gene fusions involving _MN1_. Fusion partners can include _BEND2_ and _CXXC5_. 
+  + Predominantly female patients.
+
++ **CNS HGNET-BCOR**
+  + CNS high-grade neuroepithelial tumor with BCOR alteration
+  + Tumors have internal tandem duplication of _BCOR_
+  + Median age of diagnosis less than 10 years
+
++ **CNS NB-FOXR2**
+  + Central nervous system (CNS) neuroblastoma with FOXR2 activation
+  + Over-expression and/or gene fusions in _FOXR2_
+
++ **CNS EFT-CIC**
+  + CNS Ewing sarcoma family tumor with CIC alteration
+  + Alterations in _ CIC_, commonly fused with _ NUTM1_
+
++ **CNS Embryonal, NOS**
+  + CNS Embryonal tumor, not otherwise specified
+  + Tumors previously called PNET that do not fit into other groups above.
+
+
+
+
 
 ## Setup
 
@@ -24,116 +61,176 @@ Load libraries and set paths to input, output directories and files.
 ```{r libs-paths}
 
 ####### Packages
-if (!("cowplot" %in% installed.packages())) {
-  install.packages("cowplot")
-}
-if (!("cowplot" %in% installed.packages())) {
-  install.packages("RColorBrewer")
-}
-if (!("umap" %in% installed.packages())) {
-  install.packages("umap")
-}
-library(tidyverse)
-library(cowplot)
-library(RColorBrewer)
-library(umap)
+library(readr)
+library(tidyr)
+library(dplyr)
+library(stringr)
+`%>%` <- dplyr::`%>%`
 
 ####### Define directories
 data_dir    <- file.path("..", "..", "data")
-plots_dir <- "plots"
-if (!dir.exists(plots_dir)) dir.create(plots_dir)
-
+cnv_dir     <- file.path("..", "focal-cn-file-preparation", "results")
 
 ######## Input file names
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
 expression_file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm.stranded.rds")  ## TODO: Make this an input argument
-
-####### Output file names
-umap_plot_file <- file.path(plots_dir, "umap_expression_all_embryonal.pdf")
+fusion_file     <- file.path(data_dir, "pbta-fusion-arriba.tsv.gz") ## TODO: Is this the right file for now? And/or, make this an input argument
+cnv_file        <- file.path(cnv_dir, "controlfreec_annotated_cn_autosomes.tsv.gz") ## TODO: Is this the right file for now? And/or, make this an input argument
 ```
 
-
-## Analysis
 
 #### Read in and prepare input files
 ```{r input-prep}
 ### Read input files
 metadata   <- readr::read_tsv(metadata_file)
 expression <- readr::read_rds(expression_file)
+fusions    <- readr::read_tsv(fusion_file)
+cnv        <- readr::read_tsv(cnv_file)
 
-### Subset metadata to only RNA-seq samples that are annotated as embryonal (we include classified subtypes to start) 
+### Subset metadata to only samples annotated as embryonal but NOT MB, ATRT
 metadata %>% 
+  filter(str_detect(broad_histology, "Embryonal tumor"),
+         !(str_detect(short_histology, "ATRT")),
+         !(str_detect(short_histology, "Medulloblastoma"))) -> unclassified_embryonal
+
+### Some useful definitions
+## From UCSC Genome Brower, these are positions corresponding to 19q13.41 (C19MC region)
+c19mc_region <- "19q13.41"
+c19mc_start  <- 51400001
+c19mc_end    <- 53600000
+```
+
+
+## Analysis
+
+### Part One: ETMR Subtyping
+
+
+#### Fusions
+
+First, we identify samples with the following characteristics:
+
++ Fusions involving TTYH1
++ Fusions in C19MC region
+
+
+```{r}
+######### Samples with fusions involving TTYH1 
+fusions %>%
+  filter(tumor_id %in% unclassified_embryonal$Kids_First_Biospecimen_ID, 
+         str_detect(`gene1--gene2`, "TTYH1")) %>%
+  rename(Kids_First_Biospecimen_ID = tumor_id) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, `gene1--gene2`) %>%
+  #separate(`gene1--gene2`, into=c("gene1", "gene2"), sep = "--") %>%
+  distinct() %>%
+  inner_join(metadata) %>%
+  select(Kids_First_Biospecimen_ID, sample_id, short_histology, broad_histology) %>%
+  distinct() %>%
+  mutate(feature = "TTYH1 Fusion") -> samples_with_ttyh1_fusion
+head(samples_with_ttyh1_fusion)
+
+
+
+########### Samples with fusions in C19MC region, need to search by region here
+#fusions %>% 
+#  filter(str_detect("C19MC", `gene1--gene2`)) -> c19mc_fusions_naivesearch
+#nrow(c19mc_fusions_naivesearch) ####### --> 0 . C19MC is not a gene name used in the fusions data, need to use regions below:
+
+### Logic: Look for fusions involving a breakpoint on chr19 where start/stop regions include a region within [c19mc_start,c19mc_end]
+
+fusions %>% 
+  filter(tumor_id %in% unclassified_embryonal$Kids_First_Biospecimen_ID, 
+         str_detect(annots, "chr19")) %>%
+  rename(Kids_First_Biospecimen_ID = tumor_id) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, `gene1--gene2`, breakpoint1, breakpoint2) %>%
+  separate(breakpoint1, into=c("chr1", "pos1"), sep = ":") %>%
+  separate(breakpoint2, into=c("chr2", "pos2"), sep = ":") %>%
+  filter(chr1 == 19, 
+         pos1 >= c19mc_start &  pos1 <= c19mc_end) -> fusions_part1
+
+fusions %>% 
+  filter(tumor_id %in% unclassified_embryonal$Kids_First_Biospecimen_ID, 
+         str_detect(annots, "chr19")) %>%
+  rename(Kids_First_Biospecimen_ID = tumor_id) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, `gene1--gene2`, breakpoint1, breakpoint2) %>%
+  separate(breakpoint1, into=c("chr1", "pos1"), sep = ":") %>%
+  separate(breakpoint2, into=c("chr2", "pos2"), sep = ":") %>%
+  filter(chr2 == 19, pos2 >= c19mc_start &  pos2 <= c19mc_end) %>%
+  dplyr::select(Kids_First_Biospecimen_ID) %>%
+  distinct() %>%
+  bind_rows(fusions_part1) %>%
+  inner_join(metadata) %>%
+  select(Kids_First_Biospecimen_ID, sample_id, short_histology, broad_histology) %>%
+  mutate(feature = "C19MC-region fusions") -> fusions_involving_c19mc_regions
+
+head(fusions_involving_c19mc_regions)
+```
+
+#### CNV
+
+Next, we identify samples with C19MC amplification. 
+
+```{r}
+########### Look for CNV of C19MC which is located at 19q13.41 (defined as `c19mc_region`)
+cnv %>%
+   rename(Kids_First_Biospecimen_ID = biospecimen_id) %>%
+   filter(Kids_First_Biospecimen_ID %in% unclassified_embryonal$Kids_First_Biospecimen_ID,
+          cytoband == c19mc_region, 
+          status == "gain") %>%
+  dplyr::select(Kids_First_Biospecimen_ID) %>% 
+  distinct() %>%
+  inner_join(metadata) %>%
+  select(Kids_First_Biospecimen_ID, sample_id, short_histology, broad_histology) %>%
+  mutate(feature = "C19MC Amplification") -> samples_with_c19mc_amp
+head(samples_with_c19mc_amp)
+```
+
+#### Expression
+
+Next, we obtain LIN28A expression levels.
+```{r}
+# RNA-seq samples only
+unclassified_embryonal %>%
   filter(experimental_strategy == "RNA-Seq", 
-         str_detect(broad_histology, "Embryonal tumor"),
-         Kids_First_Biospecimen_ID %in% names(expression)) -> all_embryonal
+         Kids_First_Biospecimen_ID %in% names(expression)) -> unclassified_embryonal_rnaseq
 
 ### Subset and normalize expression data to use only those embroynal samples in `all_embryonal`
 expression %>% 
-  dplyr::select(gene_id, all_embryonal$Kids_First_Biospecimen_ID) %>%
+  dplyr::select(gene_id, unclassified_embryonal_rnaseq$Kids_First_Biospecimen_ID) %>%
   gather(Kids_First_Biospecimen_ID, expression_level, -gene_id) %>%
   mutate(norm_expression_level = log2(expression_level + 1)) %>%
-  dplyr::select(-expression_level) %>%
-  spread(gene_id, norm_expression_level) -> expression_embryonal
+  dplyr::select(-expression_level) -> expression_unclassified_embryonal
+
+######### Isolate LIN28A expression levels (exclude pseudogenes P1, P2)
+expression_unclassified_embryonal %>%
+  filter(str_detect(gene_id, "LIN28A$")) %>%
+  inner_join(unclassified_embryonal) %>%
+  dplyr::select(sample_id, norm_expression_level) %>%
+  rename(lin28a_norm_expression = norm_expression_level) -> samples_lin28a_expression
+head(samples_lin28a_expression)
 ```
 
-#### Perform and plot UMAP results
+#### Merging
 
-We begin by performing UMAP analysis with several different neighbors on the _whole_ set of embryonal tumors. The goal is to assess whether the existing classifications emerge as distinct groupings, and if so, whether the unclassified samples emerge as distinct from the existing classifications. Because the unclassified samples have such few data points, we try a couple neighbor parameters (NOTE: these do not appear to make a substantial difference in this data).
-
-
-```{r umap-and-plot, fig.width=12, fig.height=5}
-
-embryonal_classified <- c("Medulloblastoma", "Atypical Teratoid Rhabdoid Tumor (ATRT)") ## Already known
-expression_to_umap <- expression_embryonal[,2:ncol(expression_embryonal)] ## Only the expression columns
-
-umap_plots <- list() ## Will store three plots for three neighbor amounts. Since the unclassified samples are very few, it is possible we'll need a small neighbor parameter
-x <- 1
-try_neighbors <- c(5,10,15)
-for (neighbors in try_neighbors) {
-  
-  ## Perform UMAP with given neighbors
-  umap_model <- umap::umap(expression_to_umap, n_neighbors = neighbors)
-  
-  ## Tidy the UMAP to bring back sample information, and add column to indicate if the sample is already classified as MB or ATRT or not
-  data.frame(umap_model$layout) %>% 
-    dplyr::rename_all(.funs = gsub, pattern = "^X", replacement = "UMAP") %>%
-    bind_cols(expression_embryonal %>% dplyr::select("Kids_First_Biospecimen_ID")) %>%
-    inner_join(all_embryonal) %>%
-    mutate(already_classified = ifelse(disease_type_old %in% embryonal_classified, TRUE, FALSE)) -> umap_model_with_sample_info
-  
-  ## Plot UMAP1 vs UMAP2, coloring by `disease_type_old` and using size to reflect samples in need of subtyping
-  ggplot(umap_model_with_sample_info, aes(x = UMAP1, y = UMAP2)) + 
-    geom_point(aes(color = fct_relevel(disease_type_old, embryonal_classified), size = already_classified), alpha=0.7) + 
-    scale_color_brewer(palette = "Dark2") +  ## Use a colorblind friendly palette
-    scale_size_manual(values=c(3, 1)) + 
-    theme_classic() + 
-    theme(legend.position = "bottom", legend.box = "vertical") +
-    labs(
-      title = paste0("UMAP with n_neighbors=", neighbors),
-      color = "disease_type_old"
-    ) -> p
-  
-  
-  umap_plots[[x]] <- p + theme(legend.position = "none")
-  x <- x + 1
-
-  if (x == length(try_neighbors))
-  {
-    umap_legend <- get_legend(p)
-  }
-}
-
-## Create single final visualization of the three UMAPs 
-plot_no_legend <- plot_grid(plotlist = umap_plots, nrow=1)
-final_plot <- plot_grid(plot_no_legend, umap_legend, nrow=2, rel_heights=c(1, 0.25))
-
-## Print the plot
-print(final_plot)
-```
-
-We save the UMAP plots here:
-
+Finally, let's put it all together to see what we've found:
 ```{r}
-save_plot(umap_plot_file, final_plot, base_width=12, base_height=5)
-```
+fusion_cnv <- bind_rows(samples_with_ttyh1_fusion, samples_with_c19mc_amp, fusions_involving_c19mc_regions) 
 
+left_join(fusion_cnv, samples_lin28a_expression, by = "sample_id") %>%
+  arrange(sample_id)
+```
+We have **four samples** which may be potentially classified as ETMRs based on fusions and/or amplication:
+
++ `7316-3226` has TTYH1 and C19MC-region fusions, LIN28A log2 expression ~5.48
++ `7316-4034` has C19MC Amplification, LIN28A log2 expression ~0.14 (fairly low)
++ `7316-464` has C19MC Amplification, LIN28A log2 expression ~0.39 (still low, but getting higher!)
++ `7316-784` has TTYH1 fusion, LIN28A log2 expression ~5.5
+
+
+We can also check for just LIN28A overexpression, revealing samples `7316-2658` and `7316-2987` has having some level of overexpression (_naively_ eyeballing here only). 
+```{r}
+
+samples_lin28a_expression %>% 
+  arrange(desc(lin28a_norm_expression), sample_id) %>%
+  head(10)
+```

@@ -12,6 +12,4 @@ The primary goals of this analysis, [per Issue #251](https://github.com/AlexsLem
 
 ## Folder Content
 
-+ `01-subtyping.Rmd` performs molecular subtyping, currently with UMAP on stranded RNA-seq expression data
-
-+ `plots/umap_expression_all_embryonal.pdf` displays initial UMAP results, considering _all_ embryonal tumors for a cursory view of their separation
++ `01-subtyping.Rmd` performs molecular subtyping, currently fort ETMR only
