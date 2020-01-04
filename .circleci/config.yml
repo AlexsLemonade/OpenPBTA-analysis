@@ -99,6 +99,10 @@ jobs:
       - run:
           name: Process SV file
           command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/01-process-sv-file.R
+          
+      - run:
+          name: Molecular Subtyping - HGG
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/01-HGG-molecular-subtyping-defining-lesions.Rmd', clean = TRUE)"
       
       - run:
           name: Oncoprint plotting
