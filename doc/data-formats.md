@@ -118,7 +118,8 @@ Consensus mutation files are products of the [`analyses/snv-callers`](https://gi
   Multinucleotide variant calls from Mutect2 and Lancet were separated into consecutive SNVs before merging.
   All columns in the included file are derived from the Strelka2 calls.
   Note that this file is not strictly a MAF file, as it adds a Variant Allele Frequency (`VAF`) column and does not contain a version comment as the first line.
-  * `pbta-snv-consensus-mutation-tmb.tsv` includes tumor mutation burden statistics are calculated based on the mutations included in `pbta-snv-consensus-mutation.maf.tsv.gz` file and by using Strelka2 counts and BED window sizes.
+  * `pbta-snv-consensus-mutation-tmb-all.tsv` includes tumor mutation burden statistics that are calculated based calculated from Strelka2 and Mutect2 SNV consensus, and the intersection of Strelka2 and Mutect2 BED windows sizes.
+  * `pbta-snv-consensus-mutation-tmb-coding.tsv` contains coding only tumor mutation burden statistics calculated from the number of coding sequence Strelka2, Mutect2, and Lancet consensus SNVs and size of the intersection of all three callers' BED windows and the Gencode v27 coding sequence regions. 
 
 #### Collapsed Expression Matrices
 
@@ -141,12 +142,19 @@ These files are used for analyses such as mutation co-occurence, where repeated 
 
 Note that these independent specimen files do not address the issue of participants with multiple tumor specimens in RNA-seq data at this time.
 
-#### Putative Oncogenic Fusion List
+#### Derived Fusion Files
 
-The filtered and prioritized fusion list is a product of the [`analyses/fusion_filtering`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/fusion_filtering) analysis module. 
-The methods are [described here](https://alexslemonade.github.io/OpenPBTA-manuscript/#fusion-prioritization).
+The filtered and prioritized fusion and downstream files are a product of the [`analyses/fusion_filtering`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/fusion_filtering) analysis module. 
 
-* `pbta-fusion-putative-oncogenic.tsv` 
+  * `pbta-fusion-putative-oncogenic.tsv` contains the filtered and prioritized fusions. 
+  The methods are [described here](https://alexslemonade.github.io/OpenPBTA-manuscript/#fusion-prioritization).
+  * `pbta-fusion-recurrently-fused-genes-byhistology.tsv` is a table that includes counts of recurrently fused genes by broad histology.
+  * `pbta-fusion-recurrently-fused-genes-bysample.tsv` contains a binary matrix that denotes the presence or absence of a recurrently fused gene in an individual RNA-seq specimen.
+
+#### Copy Number Files
+
+`pbta-cnv-cnvkit-gistic.zip` is the output of running GISTIC 2.0 on the CNVkit results (`pbta-cnv-cnvkit.seg`).
+The script used to run GISTIC can be [found here](https://github.com/d3b-center/publication_workflows/blob/master/openPBTA/run-gistic.sh).
 
 ### Data Caveats
 
