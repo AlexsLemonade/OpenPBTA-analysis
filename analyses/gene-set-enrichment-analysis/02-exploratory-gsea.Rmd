@@ -1,0 +1,243 @@
+---
+title: "GSVA Score Modeling and Exploratory Analysis"
+author: "Stephanie J. Spielman for ALSF CCDL"
+date: '2020'
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+  html_notebook:
+    df_print: paged
+    toc: yes
+    toc_float: yes
+params:
+  plot_ci: yes
+  is_ci: FALSE
+---
+
+### Purpose
+
+Models and explores GSVA scores. **This code is NOT completed and should be regarded as a work _in progress_.**
+
+### Usage
+
+To run this from the command line, use:
+```
+Rscript -e "rmarkdown::render('analyses/gene-set-enrichment-analysis/02-exploratory-gsea.Rmd', clean = TRUE)" 
+```
+_This assumes you are in the top directory of the repository._
+
+### Setup
+
+Load libraries and define certain constants:
+
+```{r, lib-load, warning=FALSE, message=FALSE}
+###TODO: Should we just load tidyverse? All the core are used
+library(tidyverse)
+#library(dplyr)
+#library(tidyr)
+#library(readr)
+#library(tibble)
+#library(purrr)
+#library(stringr)
+#library(forcats)
+#library(ggplot2)
+library(broom)
+
+
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+
+# Significance testing universal threshold
+SIGNIFICANCE_THRESHOLD   <- 0.01
+
+# Are we testing?
+if( !(params$is_ci %in% c(0,1)) & !(params$is_ci %in% c(TRUE, FALSE)) ){
+  stop("\n\nERROR: The parameter `is_ci` should be 0/1 (or FALSE/TRUE).")
+}
+# Assigning params$is_ci to running_in_ci avoids a locked binding error
+running_in_ci <- params$is_ci
+if (running_in_ci == 0) running_in_ci <- FALSE
+if (running_in_ci == 1) running_in_ci <- TRUE
+```
+
+
+<br>
+Next, define directories and load data files:
+```{r, data-load, message=FALSE, warning=FALSE}
+### Define directories
+data_dir    <- file.path("..", "..", "data") 
+results_dir <- "results"
+
+######### Define input files
+## Metadata file (histologies/clinical data)
+metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+
+## GSEA scores
+scores_stranded_file <- file.path(results_dir, "gsva_scores_stranded.tsv")
+scores_polya_file <- file.path(results_dir, "gsva_scores_polya.tsv")
+
+######## Define output files
+#PENDING
+
+
+######## Load input files
+metadata        <- readr::read_tsv(metadata_file)
+scores_stranded <- readr::read_tsv(scores_stranded_file)
+scores_polya    <- readr::read_tsv(scores_polya_file)
+```
+
+
+
+### Begin modeling
+```{r aov-tukey-gsea-hallmark}
+
+### Merge histology metadata with each set of gsea scores
+scores_stranded  <- scores_stranded %>% mutate(data_type = "stranded")
+scores_polya     <- scores_polya %>% mutate(data_type = "polya")
+all_scores      <- bind_rows(scores_stranded, scores_polya) %>%
+                        mutate(data_type    = factor(data_type),
+                        hallmark_name = factor(hallmark_name))
+
+metadata_with_gsva <- metadata %>%
+                        filter(experimental_strategy == "RNA-Seq") %>%
+                        inner_join(all_scores, by = "Kids_First_Biospecimen_ID" )
+
+### If we are running in CI, we need to ensure enough levels for AOV.
+### PolyA data generally does NOT have enough samples, so this should do it.
+if (running_in_ci)
+{
+  metadata_with_gsva %>% 
+    filter(data_type == "stranded") -> metadata_with_gsva
+}
+
+
+
+### Defines a function for performing Anova/Tukey for identifying significant pathways
+## TODO: Increase flexibility so that predictor does NOT NEED TO BE short_histology
+gsva_histology_anova_tukey <- function(df)
+{
+  aov_fit <- aov(gsea_score ~ short_histology, data = df)
+  TukeyHSD(aov_fit) %>%  
+    broom::tidy() %>%
+    dplyr::select(comparison, estimate, adj.p.value) %>%
+    dplyr::rename(pathway_score_difference = estimate,
+                  tukey_p_value            = adj.p.value) 
+}
+
+
+## Conduct series of ANOVA and posthoc Tukey tests for assessing which short histology groups show differences within EACH pathway (hallmark)
+number_of_tests <- metadata_with_gsva %>% 
+                    dplyr::select(hallmark_name, data_type) %>%
+                    distinct() %>% 
+                    nrow()
+
+pathway_diffs <- metadata_with_gsva %>%
+                    group_by(hallmark_name, data_type) %>%
+                    nest() %>%
+                    mutate(anova_tukey = map(data, gsva_histology_anova_tukey)) %>%
+                    dplyr::select(-data) %>%
+                    unnest(anova_tukey) %>%
+                    ungroup() %>%
+                    mutate(bonferroni_pvalue = tukey_p_value * number_of_tests,
+                           bonferroni_pvalue = ifelse(bonferroni_pvalue >= 1, 1, bonferroni_pvalue), 
+                           significant_tukey = tukey_p_value <= SIGNIFICANCE_THRESHOLD,
+                           significant_tukey_bonf = bonferroni_pvalue <= SIGNIFICANCE_THRESHOLD) ## TODO: Is this multiple correction reasonable? 
+
+
+
+```
+
+### Exploratory analysis
+
+> NOTE: #1-2 below are possibly/likely confounded by the wildly different sample sizes in polyA vs stranded expression data.
+<br><br>
+
+**1. Are there any pathway comparisons which are significant under stranded expression but not polyA expression?**
+_Yes, 57 pathways are differently-significant between stranded and polyA expression data._
+
+```{r, explore-data-types-sig, warning=FALSE}
+if(!(running_in_ci)){
+  # How many pathway comparisons DIFFER IN SIGNIFICANCE between expression data types?
+  pathway_diffs %>% 
+    dplyr::select(hallmark_name, data_type, comparison, significant_tukey_bonf) %>%
+    spread(data_type, significant_tukey_bonf) %>% 
+    filter(polya != stranded) %>%
+    ungroup()-> diff_sig_stranded_polya
+  head(diff_sig_stranded_polya)
+}
+```
+
+The scores of pathways whose significant differs are about same order of magnitude, with a couple wild exceptions for __Medulloblastoma-HGAT comparsion__. Also reveals some differences in sign of score.
+
+```{r, explore-data-types-sig-2, warning=FALSE}
+if(!(running_in_ci)){
+  diff_sig_stranded_polya %>%
+    inner_join(pathway_diffs) %>%
+    dplyr::select(hallmark_name, comparison, data_type, pathway_score_difference) %>%
+    spread(data_type, pathway_score_difference) %>%
+    mutate(stranded_polya_score_ratio = stranded/polya) %>% 
+    filter(abs(stranded_polya_score_ratio) > 4)
+}
+```
+
+<br><br>
+
+**2. Are there any significant pathway comparisons whose SIGN differs between stranded expression and polyA expression??**
+
+There are (as of v12 data release) **39** pathway comparisons which differ in sign between polyA and stranded expression, largely for comparisons between samples MB-CNS embryonal tumor but there is no single hallmark that stands out.
+```{r, explore-data-types-sign, warning=FALSE}
+if(!(running_in_ci)){
+  # How many pathway comparisons DIFFER IN SIGNIFICANCE between data types?
+  pathway_diffs %>% 
+    dplyr::select(hallmark_name, data_type, comparison, pathway_score_difference) %>%
+    mutate(score_sign = sign(pathway_score_difference)) %>%
+    dplyr::select(-pathway_score_difference) %>%
+    spread(data_type, score_sign) %>% 
+    filter(polya != stranded) %>%
+    ungroup() -> diff_signs_data_type
+  
+  diff_signs_data_type %>% 
+    count(comparison) 
+  
+  diff_signs_data_type %>% 
+    count(hallmark_name)
+}
+```
+
+<br><br>
+
+**3. Template visualizing your favorite pathway with your favorite short histology**
+
+Below is a proposed example visualization for seeing scores and significance for a particular histological type.
+
+```{r, viz-selected-pathway, fig.width=8, fig.height=6 }
+
+## TODO: Functionalize with pathway and histology as arguments
+## For now as an example, visualize all the MB score differences for adipogenesis pathway.
+pathway <- "HALLMARK_ADIPOGENESIS" # for example
+histology <- "Medulloblastoma"
+pathway_diffs %>%
+  filter(hallmark_name == pathway, 
+          str_detect(comparison, histology)) %>%
+  mutate(change_sign = str_detect(comparison, paste0("-", histology)),   ##### If histology is the SECOND in comparison, we'll need to change its sign for consistency. We don't want to be using separate here in case there are dashes in the histologies themselves.
+         pathway_score_difference = ifelse(change_sign, -1 * change_sign, pathway_score_difference),
+         compared_to = str_replace(comparison, paste0(histology,"-"), ""), ## Remove histology of interest
+         compared_to = str_replace(compared_to, paste0("-", histology), ""),) %>% ## either side removal
+  dplyr::select(data_type, pathway_score_difference, significant_tukey_bonf, compared_to) %>%
+  mutate(significant_tukey_bonf = factor(significant_tukey_bonf, levels=c(TRUE, FALSE))) %>% ## Better ordered with T first
+  ggplot(aes(x = fct_reorder(compared_to, pathway_score_difference), y = pathway_score_difference)) + 
+    geom_col(aes(fill = significant_tukey_bonf)) + 
+    facet_wrap(~data_type, ncol=2) + 
+    geom_hline(yintercept=0) + 
+    labs(
+      x = paste(histology, "Comparisons"),
+      y = "GSVA score difference", 
+      fill = "Significant difference",
+      title = paste("GSVA score comparisons for", histology, "samples")
+    ) + 
+  coord_flip()
+```
+
+<!-- More exploration pending? -->
+

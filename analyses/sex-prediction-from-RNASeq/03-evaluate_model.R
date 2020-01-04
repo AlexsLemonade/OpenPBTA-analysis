@@ -178,7 +178,7 @@ saveRDS(cm, cm_file)
 # The underlying cause should be investigated more thoroughly, as we would
 # like the module code to run reproducibly, e.g., get the same labels given
 # the same seed.
-if (length(levels(cm_set$obs)) > 1) {
+if (length(levels(cm_set$pred)) > 1) {
   two_class_summary <- twoClassSummary(cm_set, lev = levels(cm_set$obs))
   cat("\n\n")
   two_class_summary
