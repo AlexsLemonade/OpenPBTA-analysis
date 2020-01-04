@@ -34,34 +34,37 @@ parser.add_argument('--file', required=True,
 
 args = parser.parse_args()
 
+
+## Check to see if the bed file is empty, if so, make an empty dataframe
+if os.stat(args.file).st_size == 0:
+    new_mat = pd.DataFrame(columns=['a','b'])
+
 ## Use pandas to read in the bed file.
 ## Since Manta doesn't have copy numbers and "NA" is used for Manta's copy numbers, we need
 ## the "keep_default_na" so that the "NA"s don't get converted into NaN by pandas
-file = pd.read_csv(args.file, delimiter='\t', header=None, keep_default_na=False)
+else:
+    file = pd.read_csv(args.file, delimiter='\t', header=None, keep_default_na=False)
 
-## Make a new column to store info in the new format (start_pos:end_pos:copy_number)
-new_column = file.iloc[:,(0)].copy()
+    ## Make a new column to store info in the new format (start_pos:end_pos:copy_number)
+    new_column = file.iloc[:,(0)].copy()
 
-## For every CNV in the file, reformatt columns 4, 5, and 6
-for i_index,i in enumerate(file.itertuples()):
-    ## Since bed file uses a comma as default for collapsing information, we split the information using ','
-    list_start = i._4.split(',')
-    list_end = i._5.split(',')
-    list_cn = str(i._6).split(',')
+    ## For every CNV in the file, reformat columns 4, 5, and 6
+    for i_index,i in enumerate(file.itertuples()):
+        ## Since bed file uses a comma as default for collapsing information, we split the information using ','
+        list_start = str(i._4).split(',')
+        list_end = str(i._5).split(',')
+        list_cn = str(i._6).split(',')
 
-    ## Initialize a variable to store the new restructred information
-    growing_list = ''
-
-    ## Rearange the split information into the new format
-    for j in range(0,len(list_start)):
-        growing_list += '{}:{}:{},'.format(list_start[j],list_end[j],list_cn[j])
-
-    ## Add the list to the new column
-    new_column.iloc[i_index] = growing_list
+        ## Rearange the split information into the new format
+        cnv_list = ''.join(['{}:{}:{},'.format(*cnv) for cnv in zip(list_start, list_end, list_cn)])
 
 
-## Make a new file by combining columns 1,2,3, the new column, and the copy number type column.
-new_mat = (pd.concat([file.iloc[:,0:3].copy(),new_column,file.iloc[:,-1].copy()], axis=1))
+        ## Add the list to the new column
+        new_column.iloc[i_index] = cnv_list
+
+
+    ## Make a new file by combining columns 1,2,3, the new column, and the copy number type column.
+    new_mat = (pd.concat([file.iloc[:,0:3].copy(),new_column,file.iloc[:,-1].copy()], axis=1))
 
 ## Output restructred file to stdout
 new_mat.to_csv(sys.stdout, sep='\t', index=False, header=False)
