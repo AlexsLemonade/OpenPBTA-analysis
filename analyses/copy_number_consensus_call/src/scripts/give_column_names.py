@@ -33,10 +33,10 @@ if os.stat(args.file).st_size == 0:
 ## Since Manta doesn't have copy numbers and "NA" is used for Manta's copy numbers, we need
 ## the "keep_default_na" so that the "NA"s don't get converted into NaN by pandas
 else:
-    file = pd.read_csv(args.file, delimiter='\t', header=None, keep_default_na=False)
+    new_mat = pd.read_csv(args.file, delimiter='\t', header=None, keep_default_na=False)
 
     ## Add a header to the DataFrame
-    file.columns = ['chrom','start','end','manta_CNVs','cnvkit_CNVs','freec_CNVs','CNV_type','sample','file_names']
+    new_mat.columns = ['chrom','start','end','manta_CNVs','cnvkit_CNVs','freec_CNVs','CNV_type','sample','file_names']
 
 ## Output restructred file to stdout
-file.to_csv(sys.stdout, sep='\t', index=False, header=True)
+new_mat.to_csv(sys.stdout, sep='\t', index=False, header=True)
