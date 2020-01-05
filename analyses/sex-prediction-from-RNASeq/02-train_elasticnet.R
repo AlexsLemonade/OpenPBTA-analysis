@@ -145,7 +145,7 @@ print(paste("Model build begun at", Sys.time(), sep=" "))
 #--------Build elastic net logistic regression model
 
 sex.cva <- cva.glmnet(train_set, targets_set[, opt$train_target_column], standardize=TRUE,
-                      alpha = seq(0, 1, len = 11)^3, family="binomial")
+                      alpha = seq(0, 1, len = 11)^3, foldid=sample(1:10,size=nrow(train_set),replace=TRUE), family="binomial")
 
 print(paste("Model build complete at", Sys.time(), sep=" "))
 

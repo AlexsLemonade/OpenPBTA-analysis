@@ -101,6 +101,12 @@ option_list <- list(
     default = 0.7,
     help = "The proportion of samples that should be in the training set when splitting into training and testing sets",
     metavar = "double"
+  ),
+  optparse::make_option(
+    c("-e", "--target_columns"),
+    type = "character",
+    default = "reported_gender",
+    help = "Names of columns to use as targets in testing",
   )
 )
 
@@ -117,6 +123,8 @@ set.seed(seed)
 
 gene_expression_file_name <- opt$expression
 histologies_file_name <- opt$metadata
+
+target_column_list <- strsplit(opt$target_columns, ",")
 
 # Create specified output directory if it does not yet exist
 output_directory <- opt$output_directory
@@ -140,13 +148,26 @@ ge <- readRDS(gene_expression_file_name)
 
 histologies <- read.delim(histologies_file_name, header=TRUE, sep="\t", stringsAsFactors = FALSE)
 
-valid_reported_gender_samples <- histologies[which(toupper(histologies[, "reported_gender"]) == "MALE" |
-              toupper(histologies[, "reported_gender"]) == "FEMALE"), "Kids_First_Biospecimen_ID"]
+#valid_reported_gender_samples <- histologies[which(toupper(histologies[, "reported_gender"]) == "MALE" |
+#              toupper(histologies[, "reported_gender"]) == "FEMALE"), "Kids_First_Biospecimen_ID"]
 
-valid_germline_sex_estimate_samples <- histologies[which(toupper(histologies[, "germline_sex_estimate"]) == "MALE" |
-              toupper(histologies[, "germline_sex_estimate"]) == "FEMALE"), "Kids_First_Biospecimen_ID"]
+#valid_germline_sex_estimate_samples <- histologies[which(toupper(histologies[, "germline_sex_estimate"]) == "MALE" |
+#              toupper(histologies[, "germline_sex_estimate"]) == "FEMALE"), "Kids_First_Biospecimen_ID"]
 
-Valid_gender_samples <- intersect(valid_reported_gender_samples, valid_germline_sex_estimate_samples)
+samples_list <- list()
+
+for (t in target_column_list[[1]]) {
+  
+  samples_list[[t]] <- histologies[which(toupper(histologies[, t]) == "MALE" |
+                                           toupper(histologies[, t]) == "FEMALE"), "Kids_First_Biospecimen_ID"]
+  
+}
+
+#Valid_gender_samples <- intersect(valid_reported_gender_samples, valid_germline_sex_estimate_samples)
+
+Valid_gender_samples <- Reduce(intersect, samples_list)
+
+
 #--------
 
 #-------- drop the gene and transcript identifiers and create a matrix

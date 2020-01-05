@@ -160,25 +160,32 @@ cm_set$Female = 1 - unname(predict_prob)
 cm_set$pred <- factor(unname(predict_class))
 cm_set$sample <- test_targets[, "Kids_First_Biospecimen_ID"]
 
-cm <- confusionMatrix(data = cm_set$pred, reference = cm_set$obs)
-cat("\n\n")
-cm
+cm <- tryCatch(confusionMatrix(data = cm_set$pred, reference = cm_set$obs),
+               error=function(e) e)
+if (!inherits(cm, "error")) {
+  cat("\n\n")
+  print(cm)
+  
+  cm_set_file <- file.path(output_directory, opt$cm_set_file_name)
+  
+  write_tsv(cm_set, cm_set_file,
+                na = "NA", append = FALSE, col_names = TRUE, quote_escape = "double")
+  
+  
+  cm_file <- file.path(output_directory, opt$cm_file_name)
+  saveRDS(cm, cm_file)
+}
 
-two_class_summary <- twoClassSummary(cm_set, lev = levels(cm_set$obs))
-cat("\n\n")
-two_class_summary
 
-cm_set_file <- file.path(output_directory, opt$cm_set_file_name)
-
-write_tsv(cm_set, cm_set_file,
-          na = "NA", append = FALSE, col_names = TRUE, quote_escape = "double")
-
-
-cm_file <- file.path(output_directory, opt$cm_file_name)
-saveRDS(cm, cm_file)
-
-summary_file <- file.path(output_directory, opt$summary_file_name)
-saveRDS(two_class_summary, summary_file)
+two_class_summary <- tryCatch(twoClassSummary(cm_set, lev = levels(cm_set$obs)),
+                              error=function(e) e)
+if (!inherits(two_class_summary, "error")) {
+  cat("\n\n")
+  print(two_class_summary)
+  
+  summary_file <- file.path(output_directory, opt$summary_file_name)
+  saveRDS(two_class_summary, summary_file)
+}
 
 
 #--------
