@@ -39,6 +39,9 @@ np.random.seed(123)
 status_df = pd.read_table(status_file,low_memory=False)
 # read in clinical file
 clinical_df = pd.read_table(clinical)
+# select only IDs
+clinical_df = clinical_df[['Kids_First_Biospecimen_ID','sample_id','Kids_First_Participant_ID']]
+
 
 # add clinical info to alterations dataframe
 status_df = (
