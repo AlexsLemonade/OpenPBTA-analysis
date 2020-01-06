@@ -23,7 +23,7 @@ mkdir -p results
 # we will use CIBERSORT for the paper but because the dependent scripts are not publicly accesible, we will use the next best method i.e. MCP-counter as default for testing purpose
 # Reference for benchmarking between xCell, CIBERSORT and MCP-counter: PMID: 31641033
 
-DECONV_METHOD=${OPENPBTA_DECONV_METHOD:-"mcp_counter"}
+DECONV_METHOD=${OPENPBTA_DECONV_METHOD:-"cibersort_abs"}
 echo "Deconv method: $DECONV_METHOD"
 if [ "$DECONV_METHOD" == "cibersort_abs" ]
 then
