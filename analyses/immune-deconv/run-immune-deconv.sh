@@ -18,7 +18,7 @@ cd "$script_directory" || exit
 
 # create results directory if it doesn't already exist
 mkdir -p results
-
+mkdir -p plots
 # generate deconvolution output for poly-A and stranded datasets using xCell and the second specified method
 # we will use CIBERSORT for the paper but because the dependent scripts are not publicly accesible, we will use the next best method i.e. MCP-counter as default for testing purpose
 # Reference for benchmarking between xCell, CIBERSORT and MCP-counter: PMID: 31641033
