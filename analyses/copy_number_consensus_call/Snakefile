@@ -1,5 +1,5 @@
 ## Define the ending file(s) that we want
-OUTPUT= expand("../../scratch/endpoints/{sample}.del_dup.merged.final.bed",
+OUTPUT= expand("results/cnv_consensus/{sample}.cnv_consensus.csv",
                sample=config["samples"]),
 
 ## Define the wildcards to use in the file names. 
@@ -190,7 +190,7 @@ rule merge:
         ## Put the dup CNVs calls and del CNVs calls together into one file
         "bedtools merge -i {input.delete} -c 4,5,6,7,8,9 -o collapse,collapse,collapse,distinct,distinct,collapse > {output.delete} && \
         bedtools merge -i {input.dup} -c 4,5,6,7,8,9 -o collapse,collapse,collapse,distinct,distinct,collapse > {output.dup} && \
-        cat {output.delete} {output.dup} > {output.combined_dup_del}"
+        cat {output.delete} {output.dup} > {output.combined_dup_del}"c
 
 
 rule add_column_names:
@@ -200,7 +200,7 @@ rule add_column_names:
         combined_dup_del="../../scratch/endpoints/{sample}.del_dup.merged.bed"
     output:
         ## Define the output files' names
-        final_dup_del="../../scratch/endpoints/{sample}.del_dup.merged.final.bed"
+        final_dup_del="results/cnv_consensus/{sample}.cnv_consensus.csv"
     threads: 1
     shell:
         ## Name the headers
