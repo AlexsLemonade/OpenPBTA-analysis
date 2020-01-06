@@ -183,12 +183,15 @@ rule combine_merge_paired_cnv:
 
 rule merge_all:
     input:
+        ## Take all of the del and dup files of ALL samples as input. If there are 200 samples, there will be 400 files total
         bedfiles = expand("../../scratch/endpoints/{sample}.{dupdel}.merged.final.bed",
                           sample = config["samples"],
                           dupdel = ["dup", "del"])
     output:
+        ## Define the final output file
         "results/cnv_consensus.tsv"
     shell:
+        ## Add a header to the file and combine all of the files using cat. 
        "echo -e 'chrom\tstart\tend\tmanta_CNVs\tcnvkit_CNVs\tfreec_CNVs\tCNV_type\tsample\tfile_names' "
        " | cat - {input.bedfiles} "
        " > {output}"
