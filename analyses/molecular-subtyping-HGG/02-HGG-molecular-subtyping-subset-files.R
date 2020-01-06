@@ -154,7 +154,8 @@ cn_metadata <- cn_df %>%
                 sample_id,
                 Kids_First_Participant_ID,
                 biospecimen_id,
-                status) %>%
+                status,
+                cytoband) %>%
   dplyr::filter(sample_id %in% hgg_metadata_df$sample_id) %>%
   dplyr::distinct()
 
