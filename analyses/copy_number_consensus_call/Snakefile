@@ -1,6 +1,5 @@
 ## Define the ending file(s) that we want
-OUTPUT= expand("results/cnv_consensus/{sample}.cnv_consensus.csv",
-               sample=config["samples"]),
+OUTPUT = "results/cnv_consensus.tsv",
 
 ## Define the wildcards to use in the file names. 
 wildcard_constraints:
@@ -167,46 +166,32 @@ rule combine_merge_paired_cnv:
         cnvkit_freec="../../scratch/interim/{sample}.cnvkit_freec.{dupdel}.bed"
     output:
         ## Define the output files' names
-        dup_del_file="../../scratch/interim/{sample}.combined.{dupdel}.sorted.bed"
+        merged="../../scratch/endpoints/{sample}.{dupdel}.merged.final.bed"
     threads: 1
     shell:
         ## Combine the input file, sort and output to one file
+        ## Columns 4, 5, and 6 hold the original CNV calls from Manta, CNVkit, and Freec, respectively. 
+        ## We want to retain info in these columns when merging these files so we use COLLAPSE to keep the information in these columns
+
+        ## Columns 7 and 8 are the CNVtype (DEL, DUP) and Sample_name, respectively.
+        ## AT THIS POINT, these columns of the input files hold the same values, thus we perform DISTINCT, which is to take the unique of columns 7 and 8.
+
+        ## As for column 9, this column holds the files that were merged to get a specific CNV. We want to keep all information here so we COLLAPSE it.
         "cat {input.manta_cnvkit} {input.manta_freec} {input.cnvkit_freec} "
         "| sort -k1,1 -k2,2n "
         "| bedtools merge -c 4,5,6,7,8,9 -o collapse,collapse,collapse,distinct,distinct,collapse "
         "> {output.merged}"
+        
 
-
-rule merge:
+rule merge_all:
     input:
-        ## Define the location of the input file
-        delete="../../scratch/interim/{sample}.combined.del.sorted.bed",
-        dup="../../scratch/interim/{sample}.combined.dup.sorted.bed"
+        bedfiles = expand("../../scratch/endpoints/{sample}.{dupdel}.merged.final.bed",
+                          sample = config["samples"],
+                          dupdel = ["dup", "del"])
     output:
-        ## Define the output files' names
-        delete="../../scratch/interim/{sample}.del.merged.bed",
-        dup="../../scratch/interim/{sample}.dup.merged.bed",
-        combined_dup_del="../../scratch/endpoints/{sample}.del_dup.merged.bed"
-    threads: 1
+        "results/cnv_consensus.tsv"
     shell:
-        ## Merge the consensus files together
-        ## Put the dup CNVs calls and del CNVs calls together into one file
-        "bedtools merge -i {input.delete} -c 4,5,6,7,8,9 -o collapse,collapse,collapse,distinct,distinct,collapse 
-        " > {output.delete} && "
-        "bedtools merge -i {input.dup} -c 4,5,6,7,8,9 -o collapse,collapse,collapse,distinct,distinct,collapse "
-        " > {output.dup} && "
-        "cat {output.delete} {output.dup} > {output.combined_dup_del}"
+       "echo -e 'chrom\tstart\tend\tmanta_CNVs\tcnvkit_CNVs\tfreec_CNVs\tCNV_type\tsample\tfile_names' "
+       " | cat - {input.bedfiles} "
+       " > {output}"
 
-
-rule add_column_names:
-    input:
-        ## Define the location of the input file and take the path/extension from the config file
-        script=os.path.join(config["scripts"], "give_column_names.py"),
-        combined_dup_del="../../scratch/endpoints/{sample}.del_dup.merged.bed"
-    output:
-        ## Define the output files' names
-        final_dup_del="results/cnv_consensus/{sample}.cnv_consensus.csv"
-    threads: 1
-    shell:
-        ## Name the headers
-        "python3 {input.script} --file {input.combined_dup_del} > {output.final_dup_del}"
