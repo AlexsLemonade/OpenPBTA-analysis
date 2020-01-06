@@ -35,10 +35,22 @@ outputfilename = options.outputfile
 
 np.random.seed(123)
 
+# read TP53/NF1 alterations
 status_df = pd.read_table(status_file,low_memory=False)
+# read in clinical file
+clinical_df = pd.read_table(clinical)
+
+# add clinical info to alterations dataframe
+status_df = (
+    status_df.merge(
+        clinical_df,
+        how='left', left_on='Tumor_Sample_Barcode', right_on='Kids_First_Biospecimen_ID'
+    )
+)    
 
 # Value count of variant classification 
 print(status_df.Variant_Classification.value_counts())
+
 
 # Obtain a binary status matrix
 full_status_df = pd.crosstab(status_df['sample_id'], status_df.Hugo_Symbol,dropna=False)
@@ -47,8 +59,6 @@ full_status_df[full_status_df > 1] = 1
 full_status_df = full_status_df.reset_index()
 full_status_df=full_status_df.drop(['No_TP53_NF1_alt'],axis=1)
 
-# read in clinical file
-clinical_df = pd.read_table(clinical)
 
 
 # add clinical info to TP53 and NF1 binary status df
