@@ -41,7 +41,15 @@ gencodeBed <- opt$gencode
 #### Generate files with TP53, NF1 mutations -----------------------------------
 
 # read in consensus SNV files
-consensus_snv <- read_tsv(snvConsensusFile)
+consensus_snv <- data.table::fread(snvConsensusFile,
+                                   select = c("Chromosome",
+                                              "Start_Position",
+                                              "End_Position",
+                                              "Strand",
+                                              "Variant_Classification",
+                                              "Tumor_Sample_Barcode",
+                                              "Hugo_Symbol"),
+                                   data.table = FALSE)
 # gencode cds region BED file
 gencode_cds <- read_tsv(gencodeBed, col_names = FALSE)
 # clinical file
@@ -69,9 +77,7 @@ nf1_coding <- coding_consensus_snv %>%
 
 # include only the relevant columns from the MAF file
 tp53_nf1_coding <- tp53_coding %>%
-  bind_rows(nf1_coding) %>%
-  select(Chromosome, Start_Position, End_Position, Strand,
-         Variant_Classification, Tumor_Sample_Barcode, Hugo_Symbol)
+  bind_rows(nf1_coding)
 
 # biospecimen IDs for tumor or cell line DNA-seq
 bs_ids <- clinical %>%
@@ -84,20 +90,13 @@ bs_ids <- clinical %>%
 bs_ids_without_mut <- setdiff(bs_ids,
                               unique(tp53_nf1_coding$Tumor_Sample_Barcode))
 
-# create a data.frame with wildtype BS IDs for joining
-without_mut_df <- data.frame(
-  Chromosome = NA,
-  Start_Position = NA,
-  End_Position = NA,
-  Strand = NA,
-  Variant_Classification = NA,
-  Tumor_Sample_Barcode = bs_ids_without_mut,
-  Hugo_Symbol = "No_TP53_NF1_alt"
-)
-
+# add the TP53 and NF1 wildtype samples into the data.frame
 tp53_nf1_coding <- bind_rows(tp53_nf1_coding,
-                             without_mut_df)
+                             data.frame(
+                               Tumor_Sample_Barcode = bs_ids_without_mut,
+                               Hugo_Symbol = "No_TP53_NF1_alt")
+                             )
 
 # save TP53 and NF1 SNV alterations
 write_tsv(tp53_nf1_coding,
-          file.path(outputFolder,"TP53_NF1_snv_alteration.tsv"))
+          file.path(outputFolder, "TP53_NF1_snv_alteration.tsv"))
