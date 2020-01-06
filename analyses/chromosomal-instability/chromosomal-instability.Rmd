@@ -222,16 +222,27 @@ lapply(common_sample_ids, function(sample_id) {
 
 ### Breakpoint burden
 
-```{r plot3, fig.width=5, fig.height=5, fig.align='center', fig.cap = "SV versus CNV breakpoint burden",  message=FALSE}
-# define breakpoints from SV data
-sv_burden <- table(sv_breaks_df$sample)
-seg_breaks_df  <- seg.breaks(segdf,fc.pct = 0.2,verbose=FALSE)  # define breakpoints from seg data based on certain CNV change cutoff
-seg_burden <- table(seg_breaks_df$sample)
-common_samples <- intersect(names(sv_burden),names(seg_burden))
-dat <- cbind(sv_burden[common_samples],seg_burden[common_samples])
-plot(dat,xlab="SV burden",ylab="CNV breakpoint burden")
-legend("topright",paste("cor=",cor(dat)[1,2], sep=""))
+Make a breakpoint burden summary table with both CNV and SV data. 
+
+```{r}
+# Combine SV and CNV breakpoint summaries into one data.frame
+breakpoint_df <- data.frame(table(sv_df$sample_ids)) %>% 
+  dplyr::inner_join(data.frame(table(cnv_df$ID)), 
+                    by = "Var1", 
+                    suffix = c(".sv", ".cnv")) %>% 
+  # Rename the sample column to reflect its info
+  dplyr::rename(sample_id = Var1)
+
+# Let's take a look at a preview of this
+breakpoint_df
 ```
+
+```{r}
+ggplot2::ggplot(breakpoint_df, ggplot2::aes(x = Freq.sv, y = Freq.cnv)) + 
+  ggplot2::geom_point()
+```
+
+
 
 ### Chromosome shattering
 
