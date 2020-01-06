@@ -105,6 +105,15 @@ These files are denoted with the prefix `pbta-fusion`.
 
 * `pbta-histologies.tsv`
 
+##### Mapping Between DNA-seq and RNA-seq Data for the Same Sample
+
+Many analyses rely on examining DNA-seq (e.g., WGS/WXS/Panel) and RNA-seq data together.
+The identifiers in the `Kids_First_Biospecimen_ID` column of the `pbta-histologies.tsv` file will be non-overlapping for different experimental strategies, as these identifiers map to a _library or assay_.
+Analysts should use the identifiers in the `sample_id` to connect DNA-seq and RNA-seq assays from the same sample.
+For an example, see [the `sample_id` mapping step of the OncoPrint pipeline](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/oncoprint-landscape/00-map-to-sample_id.R).
+
+<!-- TODO: add a notebook with an example for how to map between identifiers -->
+
 ### Analysis Files
 
 Analysis files are created by a script in `analyses/*`. 
