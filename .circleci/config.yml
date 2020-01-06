@@ -33,7 +33,7 @@ jobs:
       # Immune deconvolution using MCP-counter and xCell (for testing)
       - run:
           name: Immune deconvolution and Summary plots using immunedeconv R package
-          command: ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
+          command: OPENPBTA_DECONV_METHOD="mcp_counter" ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
 
       # Immune deconvolution using CIBERSORT and xCell (for OpenPBTA)
       # - run:
