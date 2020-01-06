@@ -52,4 +52,4 @@ echo "Create summary plots"
 # Also generates corresponding heatmaps of average normalized immune scores
 Rscript --vanilla 02-summary-plots.R \
 --input results/deconv-output.RData \
---output results/deconv-summary.pdf
+--output plots/deconv-summary.pdf
