@@ -230,7 +230,7 @@ def save_to_file(output_file_content, output_path, sample_name):
         single_name = os.path.basename(output_path)
 
         ## Loop through the output file and print line by line
-         for line_fields in output_file_content:
+        for line_fields in output_file_content:
 
             ## Join the sample_name and single_name(file name) to the CNV info
             line_fields.extend([sample_name, single_name])
