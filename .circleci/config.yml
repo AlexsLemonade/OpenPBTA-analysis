@@ -102,7 +102,7 @@ jobs:
           
       - run:
           name: Molecular Subtyping - HGG
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/01-HGG-molecular-subtyping-defining-lesions.Rmd', clean = TRUE)"
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
       
       - run:
           name: Oncoprint plotting
