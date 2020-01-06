@@ -82,12 +82,10 @@ cnv_df <- data.table::fread(file.path(data_dir, "pbta-cnv-cnvkit.seg.gz"),
                 # is considered changed by the threshold set
                 changed = as.factor(dplyr::case_when(
                   seg.mean < log2(1 - ch.pct) ~ "change", 
-                  seg.mean >= log2(1 - ch.pct) ~ "no_change")))
-
-#%>% 
+                  seg.mean >= log2(1 - ch.pct) ~ "no_change"))) %>% 
   # Reformat the chromosome variable to drop the "chr"
-  #dplyr::mutate(chrom = factor(gsub("chr", "", chrom), 
-  #                             levels = c(1:22, "X", "Y")))
+  dplyr::mutate(chrom = factor(gsub("chr", "", chrom), 
+                               levels = c(1:22, "X", "Y")))
 ```
 
 Make a `GenomicRanges` object for CNV data. 
@@ -123,24 +121,20 @@ sample_names <- gsub("_withoutYandM.tsv", "", sv_files)
 names(sv_data) <- stringr::word(sample_names, sep = "/", 5)
 
 # Bind all of them into one
-sv_df <- dplyr::bind_rows(sv_data, .id = "sample_names")
+sv_df <- dplyr::bind_rows(sv_data, .id = "sample_ids")
 ```
 
 Make an SV breaks data.frame. 
 
 ```{r}
 # Make a data.frame that has the breaks   
-sv_breaks <- sv_df %>%
-  # Gather the chromosomal coordinate variables
-  tidyr::gather(key, value, -sample_names, -V1, -homolen, -inserlen, -SVtype) %>%
-  # Make the `1` and `2` variables identical so they can be made into one column
-  dplyr::mutate(key = as.factor(gsub("1|2", "", key))) %>%
-  # There are repeat values so we need to make an ID column
-  tibble::rowid_to_column() 
-
-%>% 
-  # Spread the values to their respective columns
-  tidyr::spread(key, value, -sample_names, -V1, -homolen, -inserlen, -SVtype)
+sv_breaks <- data.frame(
+  samples = rep(sv_df$sample_ids, 2), 
+  chrom = c(sv_df$chrom1, sv_df$chrom2),
+  start = c(sv_df$pos1, sv_df$pos2),
+  end = c(sv_df$pos1, sv_df$pos2),
+  svclass = rep(sv_df$SVtype, 2), 
+  stringsAsFactors = FALSE)
 ```
 
 Make a `GenomicRanges` object for SV breaks data.
@@ -149,8 +143,8 @@ Make a `GenomicRanges` object for SV breaks data.
 sv_ranges <- GenomicRanges::GRanges(
     seqnames = sv_breaks$chrom,
     ranges = IRanges::IRanges(
-      start = as.numeric(sv_breaks$pos),
-      end = as.numeric(sv_breaks$pos)
+      start = as.numeric(sv_breaks$start),
+      end = as.numeric(sv_breaks$end)
     ),
     mcols = sv_breaks
   )
@@ -170,6 +164,8 @@ perc_genome_change <- cnv_df %>%
   dplyr::mutate(perc_change = change / sum(change + no_change))
 ```
 
+Plot percent genome change
+
 ```{r}
 dplyr::inner_join(perc_genome_change, metadata, 
                   by = c("ID" = "Kids_First_Biospecimen_ID")) %>% 
@@ -186,13 +182,48 @@ dplyr::inner_join(perc_genome_change, metadata,
 ### Co-localization of breakpoints
 
 ```{r}
+# identify the sample ids that are common to both SV and CNV data
+common_sample_ids <- intersect(sv_df$sample_ids, cnv_df$ID)
 
+# Find overlaps for each sample
+lapply(common_sample_ids, function(sample_id) {
+  
+  sv_break_sample <- sv_breaks %>% 
+    dplyr::filter(samples == sample_id)
+  
+  sv_sample_ranges <- GenomicRanges::GRanges(
+      seqnames = sv_breaks$chrom,
+    ranges = IRanges::IRanges(
+      start = as.numeric(sv_breaks$start),
+      end = as.numeric(sv_breaks$end)
+    ),
+    mcols = sv_breaks
+  )
+  cnv_sample <- cnv_df %>% 
+    dplyr::filter(ID == sample_id)
+  
+  cnv_sample_ranges <- GenomicRanges::GRanges(
+    seqnames = cnv_df$chrom,
+    ranges = IRanges::IRanges(
+      start = cnv_df$loc.start,
+      end = cnv_df$loc.end
+    ),
+    mcols = cnv_df
+  )
+  
+  overlaps <- GenomicAlignments::findOverlaps(sv_sample_ranges,
+                                              cnv_sample_ranges)
+  sv_match <- unique(queryHits(overlaps))
+  cnv_match <- unique(subjectHits(overlaps))
+  
+}
+)
 ```
 
 ### Breakpoint burden
 
 ```{r plot3, fig.width=5, fig.height=5, fig.align='center', fig.cap = "SV versus CNV breakpoint burden",  message=FALSE}
-sv_breaks_df  <- sv.breaks(svdf)  # define breakpoints from SV data
+# define breakpoints from SV data
 sv_burden <- table(sv_breaks_df$sample)
 seg_breaks_df  <- seg.breaks(segdf,fc.pct = 0.2,verbose=FALSE)  # define breakpoints from seg data based on certain CNV change cutoff
 seg_burden <- table(seg_breaks_df$sample)
