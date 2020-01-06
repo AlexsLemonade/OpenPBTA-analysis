@@ -172,16 +172,14 @@ rule combine_merge_paired_cnv:
         ## Combine the input file, sort and output to one file
         ## Columns 4, 5, and 6 hold the original CNV calls from Manta, CNVkit, and Freec, respectively. 
         ## We want to retain info in these columns when merging these files so we use COLLAPSE to keep the information in these columns
-
         ## Columns 7 and 8 are the CNVtype (DEL, DUP) and Sample_name, respectively.
         ## AT THIS POINT, these columns of the input files hold the same values, thus we perform DISTINCT, which is to take the unique of columns 7 and 8.
-
         ## As for column 9, this column holds the files that were merged to get a specific CNV. We want to keep all information here so we COLLAPSE it.
         "cat {input.manta_cnvkit} {input.manta_freec} {input.cnvkit_freec} "
         "| sort -k1,1 -k2,2n "
         "| bedtools merge -c 4,5,6,7,8,9 -o collapse,collapse,collapse,distinct,distinct,collapse "
         "> {output.merged}"
-        
+
 
 rule merge_all:
     input:
