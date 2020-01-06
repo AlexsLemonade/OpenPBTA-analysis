@@ -1,6 +1,5 @@
 #!/bin/bash
 # Module author: Komal S. Rathi
-# Shell script author: Jaclyn Taroni for ALSF CCDL
 # 2019
 
 # This script runs the steps for immune deconvolution in PBTA histologies
@@ -54,4 +53,3 @@ echo "Create summary plots"
 Rscript --vanilla 02-summary-plots.R \
 --input results/deconv-output.RData \
 --output results/deconv-summary.pdf
-
