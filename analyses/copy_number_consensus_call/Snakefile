@@ -171,7 +171,10 @@ rule combine_merge_paired_cnv:
     threads: 1
     shell:
         ## Combine the input file, sort and output to one file
-        "cat {input.manta_cnvkit} {input.manta_freec} {input.cnvkit_freec} | sort -k1,1 -k2,2n > {output.dup_del_file}"
+        "cat {input.manta_cnvkit} {input.manta_freec} {input.cnvkit_freec} "
+        "| sort -k1,1 -k2,2n "
+        "| bedtools merge -c 4,5,6,7,8,9 -o collapse,collapse,collapse,distinct,distinct,collapse "
+        "> {output.merged}"
 
 
 rule merge:
