@@ -159,7 +159,7 @@ rule compare_cnv_methods:
         "--sample {params.sample_name}"
 
 
-rule combine_files:
+rule combine_merge_paired_cnv:
     input:
         ## Define the location of the input file
         manta_cnvkit="../../scratch/interim/{sample}.manta_cnvkit.{dupdel}.bed",
@@ -205,4 +205,3 @@ rule add_column_names:
     shell:
         ## Name the headers
         "python3 {input.script} --file {input.combined_dup_del} > {output.final_dup_del}"
-
