@@ -107,7 +107,7 @@ hgg_lesions_df <- hgg_lesions_df %>%
 # as High-grade glioma based on defining lesions
 hgg_metadata_df <- metadata %>%
   dplyr::filter(
-    disease_type_new == "High-grade glioma;astrocytoma (WHO grade III/IV)" |
+    disease_type_new == "High-grade glioma" |
       sample_id %in% hgg_lesions_df$sample_id,
     experimental_strategy == "RNA-Seq",
     RNA_library == "stranded"
@@ -126,9 +126,23 @@ stranded_expression <- stranded_expression %>%
 # Log2 transformation
 norm_expression <- log2(stranded_expression + 1)
 
+# Norm data mean and sd
+norm_expression_means <- rowMeans(norm_expression, na.rm = TRUE)
+norm_expression_sd <- apply(norm_expression, 1, sd, na.rm = TRUE)
+
+# Subtract mean
+expression_zscored <-
+  sweep(norm_expression, 1, norm_expression_means, FUN = "-")
+
+# Divide by SD remove NAs and Inf values from zscore for genes with 0 in normData
+expression_zscored <-
+  sweep(expression_zscored, 1, norm_expression_sd, FUN = "/") %>%
+  dplyr::na_if(Inf) %>%
+  na.omit()
+
 # Save matrix with all genes to file for downstream plotting
-readr::write_rds(norm_expression,
-                 file.path(results_dir, "hgg_log_expression.RDS"))
+readr::write_rds(expression_zscored,
+                 file.path(results_dir, "hgg_zscored_expression.RDS"))
 
 #### Filter focal CN data ------------------------------------------------------
 
