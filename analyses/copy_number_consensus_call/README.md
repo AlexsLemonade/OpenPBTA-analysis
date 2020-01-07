@@ -21,7 +21,6 @@ This pipeline revolves around the use of Snakemake to run analysis for each pati
 
 1) Parse through the 3 input files and put CNVs of the **same caller and sample** in the same files.
 2) Remove any sample/caller combination files with **more than 2500** CNVs called.
-   
    We belive these to be noisy/poor quality samples (this came from what GISTIC uses as a cutoff for noisy samples).
 3) Create a `config_snakemake.yaml` that contains all of the samples names to run the Snakemake pipeline
 4) Run the Snakemake pipeline to perform analysis **per sample**. 
