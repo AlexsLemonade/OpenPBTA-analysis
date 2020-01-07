@@ -26,7 +26,8 @@ This pipeline revolves around the use of Snakemake to run analysis for each pati
 6) Filter out any CNVs that overlap 50% or more with **IGLL, telomeric, centromeric, seg_dup regions**
 7) Merge any CNVs of the same sample and call method if they **overlap or within 10,000 bp** (We consider CNV calls within 10,000 bp the same CNV)
 8) Reformat the columns of the files (So the info are easier to read)
-9) **Call consensus** by comparing CNVs from 2 call methods at a time. Since there are 3 callers, there were 3 comparisons
+9) **Call consensus** by comparing CNVs from 2 call methods at a time. 
+Since there are 3 callers, there were 3 comparisons: `manta-cnvkit`, `manta-freec`, and `cnvkit-freec`.
 `manta-cnvkit` `manta-freec` `cnvkit-freec`. If a CNV from 1 caller **overlaps 50% or more** with at least 1 CNV from another caller,
 the common region of the overlapping CNV would be the new CONSENSUS CNV. 
 10) **Sort and merge** the CNVs from the comparison pairs ,`manta-cnvkit` `manta-freec` `cnvkit-freec`, together into 1 file
@@ -60,6 +61,5 @@ chr14	103515996	103563240	NULL	103515996:103563363:3	103511784:103541532:3,10354
 
 To run the entire pipeline, make sure to have the latest release of the three input files mentioned in the Overview section.
 Go to OpenPBTA-analysis/analyses/copy_number_consensus_call and run `bash run_consensus_call.sh`
-
 
 
