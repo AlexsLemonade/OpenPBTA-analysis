@@ -30,15 +30,9 @@ jobs:
           name: Collapse RSEM
           command: ./scripts/run_in_ci.sh bash analyses/collapse-rnaseq/run-collapse-rnaseq.sh
 
-      # Immune deconvolution using MCP-counter and xCell (for testing)
       - run:
-          name: Immune deconvolution and Summary plots using immunedeconv R package
+          name: Immune deconvolution using xCell and MCP-Counter
           command: OPENPBTA_DECONV_METHOD="mcp_counter" ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
-
-      # Immune deconvolution using CIBERSORT and xCell (for OpenPBTA)
-      # - run:
-      #     name: Immune deconvolution and Summary plots using immunedeconv R package
-      #     command: OPENPBTA_DECONV_METHOD="cibersort_abs" ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
 
       - run:
           name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded data and creates recurrent fusion list
