@@ -1,5 +1,6 @@
 # This script subsets the focal copy number, RNA expression, fusion and 
-# histologies` files to include only High-grade glioma samples.
+# histologies` and GISTIC's broad values files to include only High-grade glioma
+# samples.
 
 # Chante Bethell for CCDL 2020
 #
@@ -68,6 +69,17 @@ cn_df <- readr::read_tsv(
 # Read in fusion data
 fusion_df <- readr::read_tsv(
   file.path(root_dir, "data", "pbta-fusion-putative-oncogenic.tsv"))
+
+# Read in GISTIC `broad_values_by_arm.txt` file
+gistic_df <-
+  data.table::fread(unzip(
+    file.path(root_dir, "data", "pbta-cnv-cnvkit-gistic.zip"),
+    files = file.path(
+      "2019-12-10-gistic-results-cnvkit",
+      "broad_values_by_arm.txt"
+    ),
+    exdir = file.path(root_dir, "scratch")
+  ))
 
 # Read in output file from `01-HGG-molecular-subtyping-defining-lesions.Rmd`
 hgg_lesions_df <- readr::read_tsv(
@@ -154,3 +166,27 @@ fusion_df <- fusion_df %>%
 
 # Write to file
 readr::write_tsv(fusion_df, file.path(subset_dir, "hgg_fusion.tsv"))
+
+#### Filter GISTIC data --------------------------------------------------------
+
+gistic_df <- gistic_df %>%
+  as.data.frame() %>%
+  tibble::column_to_rownames("Chromosome Arm") %>%
+  t() %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
+  dplyr::left_join(select_metadata, by = "Kids_First_Biospecimen_ID") %>%
+  dplyr::filter(sample_id %in% hgg_metadata_df$sample_id) %>%
+  dplyr::select(sample_id,
+                Kids_First_Biospecimen_ID,
+                `1p`,
+                `19q`,
+                `7p`,
+                `7q`,
+                `10p`,
+                `10q`) #Select only the chromosome arms we are interested in
+
+# Write to file
+readr::write_tsv(gistic_df,
+                 file.path(subset_dir, "hgg_gistic_broad_values.tsv"))
+  
