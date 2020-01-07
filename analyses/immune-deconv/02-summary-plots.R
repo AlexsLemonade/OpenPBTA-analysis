@@ -9,7 +9,9 @@ suppressPackageStartupMessages(library(pheatmap))
 suppressPackageStartupMessages(library(corrplot))
 
 # source plotting theme
-source('pubTheme.R')
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+source(file.path(root_dir, "analyses", "immune-deconv",
+                 "util", "pubTheme.R"))
 
 option_list <- list(
   make_option(c("-i", "--input"), type = "character",
