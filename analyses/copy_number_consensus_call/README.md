@@ -29,7 +29,7 @@ Since there are 3 callers, there were 3 comparisons: `manta-cnvkit`, `manta-free
 `manta-cnvkit` `manta-freec` `cnvkit-freec`. If a CNV from 1 caller **overlaps 50% or more** with at least 1 CNV from another caller,
 the common region of the overlapping CNV would be the new CONSENSUS CNV. 
 10) **Sort and merge** the CNVs from the comparison pairs ,`manta-cnvkit` `manta-freec` `cnvkit-freec`, together into 1 file
-11) After every samples' consensus CNVs were called, **combine every single files** from step 10 and output it to `results/cnv_consensus.tsv`
+11) After every samples' consensus CNVs were called, **combine all merged files** from step 10 and output to `results/cnv_consensus.tsv`
 
 ## Example Output File
 
