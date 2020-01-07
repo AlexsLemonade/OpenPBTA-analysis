@@ -14,8 +14,8 @@ CIBERSORT requires two files that are available upon request from https://cibers
 
 We chose xCell as the method of choice because: 1) it is able to deconvolute the maximum number of immune and non-immune cell types 2) it is highly robust against background predictions and 3) can reliably identify the presence of immune cells at low abundances (0-1% infiltration depending on the immune cell type). To compare the immune scores predicted by xCell with that of other methods, we chose either CIBERSORT (abs.) and MCP-Counter as those two are the only methods in addition to xCell that output immune scores as arbitrary scores representing cell type abundance. All three methods allow comparison between samples (inter-sample comparisons), between cell types (intra sample comparisons) as well as between different cancer types (inter histology). We chose CIBERSORT (abs.) over MCP-Counter as it has the greatest number of overlapping immune cell types with that of xCell:
 
-| method | cell_type | ntypes |
-|--------|-----------|--------|
+| method | overlapping_cell_type | overlap |
+|--------|---------------|---------|
 | cibersort_abs, mcp_counter, xcell | Monocyte, Neutrophil, T cell CD8+ | 3 |
 | mcp_counter, xcell | B cell, Cancer associated fibroblast, Endothelial cell, Myeloid dendritic cell, NK cell | 5 |
 | cibersort_abs, xcell | B cell memory, B cell naive, B cell plasma, Eosinophil, Macrophage M1, Macrophage M2, Myeloid dendritic cell activated, T cell CD4+ naive, T cell gamma delta, T cell regulatory (Tregs) | 10 |
@@ -50,8 +50,6 @@ This script creates summary correlation plots and heatmaps from predicted immune
 3. Output
 
 plots/deconv-summary.pdf contains the following plots:
-
-![](plots/deconv-summary.pdf)
 
 * a correlation plot of predicted immune scores across common cell types from xCell and CIBERSORT (abs.) 
 * individual heatmaps of average scores per histology for both methods. 
