@@ -1,9 +1,14 @@
 #########################################################################
 # Stephanie J. Spielman for ALSF CCDL 2020
 #
-# Run the GSEA pipeline, currently just `01-conduct-gsea-analysis.R`
+# Run the GSEA pipeline:
+## 1. `01-conduct-gsea-analysis.R` to calculate scores
+## 2. `02-exploratory-gsea.Rmd` to explore the scores, lightly for now
 # 
-# Usage: bash run-gsea.sh
+# Usage: bash run-gsea.sh 
+#
+# Takes one environment variable, `OPENPBTA_TESTING`, which is 1 for running
+# samples in CI for testing, 0 for running the full dataset (Default)
 #
 #########################################################################
 
@@ -11,6 +16,8 @@
 set -e
 set -o pipefail
 
+
+IS_CI=${OPENPBTA_TESTING:-0}
 
 # This script should always run as if it were being called from
 # the directory it lives in.
@@ -30,3 +37,7 @@ Rscript --vanilla 01-conduct-gsea-analysis.R --input ${INPUT_FILE} --output ${OU
 INPUT_FILE="pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
 OUTPUT_FILE="gsva_scores_stranded.tsv"
 Rscript --vanilla 01-conduct-gsea-analysis.R --input ${INPUT_FILE} --output ${OUTPUT_FILE}
+
+
+######## Exploratory analysis of GSVA scores ############
+Rscript -e "rmarkdown::render('02-exploratory-gsea.Rmd', clean = TRUE, params=list(is_ci = ${IS_CI}))" 
