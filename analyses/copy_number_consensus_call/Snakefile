@@ -192,8 +192,7 @@ rule merge_all:
         "results/cnv_consensus.tsv"
     shell:
         ## Add a header to the file and combine all of the files using cat. 
-       "echo -e 'chrom\tstart\tend\tmanta_CNVs\tcnvkit_CNVs\tfreec_CNVs\tCNV_type\tsample\tfile_names' "
+       "echo -e 'chrom\tstart\tend\tmanta_CNVs\tcnvkit_CNVs\tfreec_CNVs\tCNV_type\tBiospecimen\tfile_names' "
        " | cat - {input.bedfiles} "
        " | cut -f 1-8 "
        " > {output}"
-
