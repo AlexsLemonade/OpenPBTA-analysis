@@ -20,7 +20,7 @@ Go to OpenPBTA-analysis/analyses/copy_number_consensus_call and run `bash run_co
 This pipeline revolves around the use of Snakemake to run analysis for each patient sample. The overview of the steps are as followed:
 
 1) Parse through the 3 input files and put CNVs of the **same caller and sample** in the same files.
-2) Get rid of any one sample with **more than 2500** CNVs called
+2) Remove any sample/caller combination files with **more than 2500** CNVs called.
    
    We belive these to be noisy/poor quality samples (this came from what GISTIC uses as a cutoff for noisy samples).
 3) Create a `config_snakemake.yaml` that contains all of the samples names to run the Snakemake pipeline
