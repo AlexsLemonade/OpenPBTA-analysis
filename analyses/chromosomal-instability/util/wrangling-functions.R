@@ -160,11 +160,12 @@ overlap_sv_cnv <- function(cnv_df,
   return(overlap_df)
 }
 
-break_density <- function(sv_breaks, 
-                          cnv_breaks, 
+break_density <- function(sv_breaks = NULL, 
+                          cnv_breaks = NULL, 
                           window_size = 1e6,
                           max_gap = 0,
                           chr_sizes_list = NULL,
+                          by_sample =
                           samples_col_cnv = "samples", 
                           chrom_col_cnv =  "chrom", 
                           start_col_cnv = "start", 
@@ -205,7 +206,7 @@ break_density <- function(sv_breaks,
   # Make CNV into GRanges
   if (!is.null(cnv_breaks)) {
     cnv_ranges <- make_granges(cnv_breaks, 
-                              sample_id = "all", 
+                              sample_id = sample_id, 
                               samples_col = samples_col_cnv,
                               chrom_col =  chrom_col_cnv, 
                               start_col = start_col_cnv, 
@@ -216,7 +217,7 @@ break_density <- function(sv_breaks,
   # Make SV into GRanges
   if (!is.null(sv_breaks)) {
     sv_ranges <- make_granges(sv_breaks, 
-                             sample_id = "all",
+                             sample_id = sample_id,
                              samples_col = samples_col_sv, 
                              chrom_col =  chrom_col_sv, 
                              start_col = start_col_sv, 
@@ -253,10 +254,10 @@ break_density <- function(sv_breaks,
   return(bins)
 }
 
-map_density_plot <- function(granges, 
-                             y_val, 
-                             color, 
-                             y_lab) {
+map_density_plot <- function(granges = bins, 
+                             y_val = density, 
+                             color = "blue", 
+                             y_lab = "Breaks per Kb") {
   # Given a GRanges object, plot it y value along its chromosomal mappings using 
   # ggbio. 
   # 

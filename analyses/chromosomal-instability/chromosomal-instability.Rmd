@@ -10,16 +10,17 @@ date: 2020
 
 Code adapted from [svcnvplus](https://github.com/gonzolgarcia/svcnvplus). 
 
+- Percent Genome Change 
+- Find Regions of CNV and SV overlap for each sample 
+- Find regions of high break density
+- Breakpoint burden per sample
+- Co localization of breakpoints 
+- Plot the breakpoints
+
 ### Usage
 
 This notebook can be run via the command line from the top directory of the 
 repository as follows:
-
-- Generating a measure of chromosomal instability (CIN) burden that can be plotted by tumor type
-- Identify recurrently altered genes to be included in the OncoPrint (#6)
-- Amplification/tandem-duplication
-- Deep deletion/deletion
-- Other Structural variation: Inversion, translocations
 
 ```
 Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/chromosomal-instability.Rmd', 
@@ -200,7 +201,7 @@ sv_cnv_common <- overlap_sv_cnv(cnv_df = cnv_df,
                                 by_sample = TRUE)
 ```
 
-### Find regions of high break density
+## Find regions of high break density
 
 Make an CNV breaks data.frame. 
 
@@ -259,15 +260,23 @@ common_break_ranges <- break_density(sv_breaks,
                                      chr_sizes_list = chr_sizes_list)
 ```
 
-
-
-### Chromosome shattering
+Get SV breakpoint density
 
 ```{r}
-TBD
+sv_break_ranges <- break_density(sv_breaks, 
+                                 window_size = 1e6,
+                                 chr_sizes_list = chr_sizes_list)
 ```
 
-### Recurrently shattered regions
+Get CNV breakpoint density
+
+```{r}
+cnv_break_ranges <- break_density(sv_breaks, 
+                                 window_size = 1e6,
+                                 chr_sizes_list = chr_sizes_list)
+```
+
+## Plot the breakpoints
 
 ```{r}
 TBD
