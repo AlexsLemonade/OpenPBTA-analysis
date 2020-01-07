@@ -10,6 +10,10 @@ This analysis uses information from the following files generated from the 3 cal
 * `pbta-cnv-controlfreec.tsv.gz`
 * `pbta-sv-manta.tsv.gz`
 
+## Running the pipeline
+
+To run the entire pipeline, make sure to have the latest release of the three input files mentioned in the Overview section.
+Go to OpenPBTA-analysis/analyses/copy_number_consensus_call and run `bash run_consensus_call.sh`
 
 ## Methods
 
@@ -17,19 +21,22 @@ This pipeline revolves around the use of Snakemake to run analysis for each pati
 
 1) Parse through the 3 input files and put CNVs of the **same caller and sample** in the same files.
 2) Get rid of any one sample with **more than 2500** CNVs called
-2) Create a `config_snakemake.yaml` that contains all of the samples names to run the Snakemake pipeline
-3) Run the Snakemake pipeline to perform analysis **per sample**. 
-4) Filter for any CNVs that are over a certain **SIZE_CUTOFF** (default 3000 bp)
-5) Filter for any **significant** CNVs called by Freec (default pval = 0.01)
-6) Filter out any CNVs that overlap 50% or more with **IGLL, telomeric, centromeric, seg_dup regions**
-7) Merge any CNVs of the same sample and call method if they **overlap or within 10,000 bp** (We consider CNV calls within 10,000 bp the same CNV)
-8) Reformat the columns of the files (So the info are easier to read)
-9) **Call consensus** by comparing CNVs from 2 call methods at a time. 
+   
+   We belive these to be noisy/poor quality samples (this came from what GISTIC uses as a cutoff for noisy samples).
+3) Create a `config_snakemake.yaml` that contains all of the samples names to run the Snakemake pipeline
+4) Run the Snakemake pipeline to perform analysis **per sample**. 
+5) Filter for any CNVs that are over a certain **SIZE_CUTOFF** (default 3000 bp)
+6) Filter for any **significant** CNVs called by Freec (default pval = 0.01)
+7) Filter out any CNVs that overlap 50% or more with **IGLL, telomeric, centromeric, seg_dup regions**
+8) Merge any CNVs of the same sample and call method if they **overlap or within 10,000 bp** (We consider CNV calls within 10,000 bp the same CNV)
+9) Reformat the columns of the files (So the info are easier to read)
+10) **Call consensus** by comparing CNVs from 2 call methods at a time. 
+
 Since there are 3 callers, there were 3 comparisons: `manta-cnvkit`, `manta-freec`, and `cnvkit-freec`.
 `manta-cnvkit` `manta-freec` `cnvkit-freec`. If a CNV from 1 caller **overlaps 50% or more** with at least 1 CNV from another caller,
 the common region of the overlapping CNV would be the new CONSENSUS CNV. 
-10) **Sort and merge** the CNVs from the comparison pairs ,`manta-cnvkit` `manta-freec` `cnvkit-freec`, together into 1 file
-11) After every samples' consensus CNVs were called, **combine all merged files** from step 10 and output to `results/cnv_consensus.tsv`
+11) **Sort and merge** the CNVs from the comparison pairs ,`manta-cnvkit` `manta-freec` `cnvkit-freec`, together into 1 file
+12) After every samples' consensus CNVs were called, **combine all merged files** from step 10 and output to `results/cnv_consensus.tsv`
 
 ## Example Output File
 
@@ -52,10 +59,3 @@ chr14	103515996	103563240	NULL	103515996:103563363:3	103511784:103541532:3,10354
 * Column 7 is the CNVtype. In this case, it is either DUP or DEL
 * Column 8 is the Sample name
 * Column 9 contains the name of of the files (`manta-cnvkit` `manta-freec` `cnvkit-freec`) that made up the **consensus** CNV. 
-
-
-
-## Running the pipeline
-
-To run the entire pipeline, make sure to have the latest release of the three input files mentioned in the Overview section.
-Go to OpenPBTA-analysis/analyses/copy_number_consensus_call and run `bash run_consensus_call.sh`
