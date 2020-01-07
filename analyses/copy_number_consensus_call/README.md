@@ -58,4 +58,4 @@ chr14	103515996	103563240	NULL	103515996:103563363:3	103511784:103541532:3,10354
 One has the start and end coordinates of `103511784:103541532` **on the same chromosome** and has a copy number of `3` and another has the coordinates `103543140:103563240` and has a copy number of `3`. 
 * Column 7 is the CNVtype. This will be one of DUP or DEL, corresponding to duplications or deletions, respectively. Note that this does not describe the number of copies, only the direction of the copy number change.
 * Column 8 is the Sample name
-* Column 9 contains the name of of the files (`manta-cnvkit` `manta-freec` `cnvkit-freec`) that made up the **consensus** CNV. 
+* Column 9 contains the name of of the two-caller consensus files (`manta-cnvkit` `manta-freec` `cnvkit-freec`) that made up the final **consensus** CNV. 
