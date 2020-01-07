@@ -9,7 +9,7 @@ This analysis uses information from the following files generated from the 3 cal
 `pbta-cnv-cnvkit.seg.gz`	
 
 * `pbta-cnv-controlfreec.tsv.gz`
-`pbta-sv-manta.tsv.gz`
+* `pbta-sv-manta.tsv.gz`
 
 
 ## Methods
