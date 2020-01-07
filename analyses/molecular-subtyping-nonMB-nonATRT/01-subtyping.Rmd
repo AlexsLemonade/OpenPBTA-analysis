@@ -65,17 +65,27 @@ library(readr)
 library(tidyr)
 library(dplyr)
 library(stringr)
+library(kableExtra)
 `%>%` <- dplyr::`%>%`
 
 ####### Define directories
 data_dir    <- file.path("..", "..", "data")
 cnv_dir     <- file.path("..", "focal-cn-file-preparation", "results")
+results_dir <- file.path("results")
+if (!dir.exists(results_dir)) dir.create(results_dir)
 
 ######## Input file names
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
 expression_file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm.stranded.rds")  ## TODO: Make this an input argument
-fusion_file     <- file.path(data_dir, "pbta-fusion-arriba.tsv.gz") ## TODO: Is this the right file for now? And/or, make this an input argument
+fusion_file      <- file.path(data_dir, "pbta-fusion-putative-oncogenic.tsv")
 cnv_file        <- file.path(cnv_dir, "controlfreec_annotated_cn_autosomes.tsv.gz") ## TODO: Is this the right file for now? And/or, make this an input argument
+fusion_file_arriba     <- file.path(data_dir, "pbta-fusion-arriba.tsv.gz") ## TODO: Is this the right file for now? And/or, make this an input argument
+fusion_arriba <- read_tsv(fusion_file_arriba)
+fusion_file_star     <- file.path(data_dir, "pbta-fusion-starfusion.tsv.gz") ## TODO: Is this the right file for now? And/or, make this an input argument
+fusion_star <- read_tsv(fusion_file_star)
+
+###### Output file names
+file_samples_with_tthy1_c19mc_fusions <- file.path(results_dir, "samples_with_TTYH1_C19MC_fusions.tsv")
 ```
 
 
@@ -88,11 +98,14 @@ fusions    <- readr::read_tsv(fusion_file)
 cnv        <- readr::read_tsv(cnv_file)
 
 ### Subset metadata to only samples annotated as embryonal but NOT MB, ATRT
-metadata %>% 
-  filter(str_detect(broad_histology, "Embryonal tumor"),
-         !(str_detect(short_histology, "ATRT")),
-         !(str_detect(short_histology, "Medulloblastoma"))) -> unclassified_embryonal
+# metadata %>% 
+#   filter(str_detect(broad_histology, "Embryonal tumor"),
+#          !(str_detect(short_histology, "ATRT")),
+#          !(str_detect(short_histology, "Medulloblastoma"))) -> unclassified_embryonal
+#metadata %>% 
+#  filter(str_detect(broad_histology, "Embryonal tumor")) -> unclassified_embryonal
 
+         
 ### Some useful definitions
 ## From UCSC Genome Brower, these are positions corresponding to 19q13.41 (C19MC region)
 c19mc_region <- "19q13.41"
@@ -117,60 +130,67 @@ First, we identify samples with the following characteristics:
 ```{r}
 ######### Samples with fusions involving TTYH1 
 fusions %>%
-  filter(tumor_id %in% unclassified_embryonal$Kids_First_Biospecimen_ID, 
-         str_detect(`gene1--gene2`, "TTYH1")) %>%
-  rename(Kids_First_Biospecimen_ID = tumor_id) %>%
-  dplyr::select(Kids_First_Biospecimen_ID, `gene1--gene2`) %>%
-  #separate(`gene1--gene2`, into=c("gene1", "gene2"), sep = "--") %>%
+  filter(str_detect(FusionName, "TTYH1")) %>%
+  rename(Kids_First_Biospecimen_ID = Sample) %>% 
+  dplyr::select(Kids_First_Biospecimen_ID) %>%
   distinct() %>%
-  inner_join(metadata) %>%
-  select(Kids_First_Biospecimen_ID, sample_id, short_histology, broad_histology) %>%
-  distinct() %>%
-  mutate(feature = "TTYH1 Fusion") -> samples_with_ttyh1_fusion
-head(samples_with_ttyh1_fusion)
-
+  mutate(feature = "TTYH1 Fusion") -> fusions_involving_ttyh1
 
 
 ########### Samples with fusions in C19MC region, need to search by region here
-#fusions %>% 
-#  filter(str_detect("C19MC", `gene1--gene2`)) -> c19mc_fusions_naivesearch
-#nrow(c19mc_fusions_naivesearch) ####### --> 0 . C19MC is not a gene name used in the fusions data, need to use regions below:
+#### Logic: Look for fusions where both breakpoints are on chr19, and at least ONE breakpoint lies within the C19MC, i.e. inclusive \in [c19mc_start,c19mc_end]
+#### To do this we need to return to the original fusion files which contain the locations of breakpoints
+fusion_star %>%
+  dplyr::select(LeftBreakpoint, RightBreakpoint, tumor_id) %>%
+  mutate(LeftBreakpoint = str_replace(LeftBreakpoint, "^chr", ""),
+         LeftBreakpoint = str_replace(LeftBreakpoint, ":[\\+-]$",""),
+         RightBreakpoint = str_replace(RightBreakpoint, "^chr", ""),
+         RightBreakpoint = str_replace(RightBreakpoint, ":[\\+-]$","")) %>%
+  rename(breakpoint1 = LeftBreakpoint, 
+         breakpoint2 = RightBreakpoint) %>%
+  mutate(caller = "star")-> star_columns
 
-### Logic: Look for fusions involving a breakpoint on chr19 where start/stop regions include a region within [c19mc_start,c19mc_end]
-
-fusions %>% 
-  filter(tumor_id %in% unclassified_embryonal$Kids_First_Biospecimen_ID, 
-         str_detect(annots, "chr19")) %>%
-  rename(Kids_First_Biospecimen_ID = tumor_id) %>%
-  dplyr::select(Kids_First_Biospecimen_ID, `gene1--gene2`, breakpoint1, breakpoint2) %>%
-  separate(breakpoint1, into=c("chr1", "pos1"), sep = ":") %>%
-  separate(breakpoint2, into=c("chr2", "pos2"), sep = ":") %>%
-  filter(chr1 == 19, 
-         pos1 >= c19mc_start &  pos1 <= c19mc_end) -> fusions_part1
-
-fusions %>% 
-  filter(tumor_id %in% unclassified_embryonal$Kids_First_Biospecimen_ID, 
-         str_detect(annots, "chr19")) %>%
-  rename(Kids_First_Biospecimen_ID = tumor_id) %>%
-  dplyr::select(Kids_First_Biospecimen_ID, `gene1--gene2`, breakpoint1, breakpoint2) %>%
-  separate(breakpoint1, into=c("chr1", "pos1"), sep = ":") %>%
-  separate(breakpoint2, into=c("chr2", "pos2"), sep = ":") %>%
-  filter(chr2 == 19, pos2 >= c19mc_start &  pos2 <= c19mc_end) %>%
-  dplyr::select(Kids_First_Biospecimen_ID) %>%
+fusion_arriba %>%
+  dplyr::select(breakpoint1, breakpoint2, tumor_id) %>%
+  mutate(caller = "arriba") %>%
+  bind_rows(star_columns) %>% 
   distinct() %>%
-  bind_rows(fusions_part1) %>%
-  inner_join(metadata) %>%
-  select(Kids_First_Biospecimen_ID, sample_id, short_histology, broad_histology) %>%
-  mutate(feature = "C19MC-region fusions") -> fusions_involving_c19mc_regions
-
-head(fusions_involving_c19mc_regions)
+  filter(str_detect(breakpoint1, "^19") & str_detect(breakpoint2, "^19")) %>%
+  mutate(breakpoint1 = as.numeric(str_replace(breakpoint1, "^19:","")),
+         breakpoint2 = as.numeric(str_replace(breakpoint2, "^19:",""))) %>%
+  filter( (breakpoint1 >= c19mc_start & breakpoint1 <= c19mc_end) | 
+           (breakpoint2 >= c19mc_start & breakpoint2 <= c19mc_end) ) %>%
+  dplyr::select(tumor_id) %>%
+  rename(Kids_First_Biospecimen_ID = tumor_id) %>%
+  distinct() %>%
+  mutate(feature = "C19MC-region Fusion") -> fusions_involving_c19mc
 ```
+
+
+```{r}
+bind_rows(fusions_involving_ttyh1, fusions_involving_c19mc) %>%
+  inner_join(metadata) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, sample_id, short_histology, broad_histology, disease_type_new, feature) %>%
+  mutate(has_feature = TRUE) %>%
+  spread(feature, has_feature) %>%
+  replace(is.na(.), FALSE) %>%
+  arrange(sample_id) -> samples_fusions_of_interest
+write_tsv(samples_fusions_of_interest, file_samples_with_tthy1_c19mc_fusions)
+
+kable(samples_fusions_of_interest) %>% kable_styling()
+```
+
+
+<!--
+OLD CODE POSSIBLY TO MAKE A GRAND RETURN, BUT LEAVING HERE COMMENTED OUT UNTIL ITS FATE IS DECIDED.
 
 #### CNV
 
 Next, we identify samples with C19MC amplification. 
 
-```{r}
+```{r, eval=FALSE, echo=FALSE}
+
+########################### THIS CODE IS NOT CURRENTLY BEING RUN ###################################
 ########### Look for CNV of C19MC which is located at 19q13.41 (defined as `c19mc_region`)
 cnv %>%
    rename(Kids_First_Biospecimen_ID = biospecimen_id) %>%
@@ -188,7 +208,7 @@ head(samples_with_c19mc_amp)
 #### Expression
 
 Next, we obtain LIN28A expression levels.
-```{r}
+```{r, eval=FALSE, echo=FALSE}
 # RNA-seq samples only
 unclassified_embryonal %>%
   filter(experimental_strategy == "RNA-Seq", 
@@ -213,7 +233,7 @@ head(samples_lin28a_expression)
 #### Merging
 
 Finally, let's put it all together to see what we've found:
-```{r}
+```{r, eval=FALSE, echo=FALSE}
 fusion_cnv <- bind_rows(samples_with_ttyh1_fusion, samples_with_c19mc_amp, fusions_involving_c19mc_regions) 
 
 left_join(fusion_cnv, samples_lin28a_expression, by = "sample_id") %>%
@@ -221,16 +241,18 @@ left_join(fusion_cnv, samples_lin28a_expression, by = "sample_id") %>%
 ```
 We have **four samples** which may be potentially classified as ETMRs based on fusions and/or amplication:
 
-+ `7316-3226` has TTYH1 and C19MC-region fusions, LIN28A log2 expression ~5.48
++ `7316-3326` has TTYH1 and C19MC-region fusions, LIN28A log2 expression ~5.48
 + `7316-4034` has C19MC Amplification, LIN28A log2 expression ~0.14 (fairly low)
 + `7316-464` has C19MC Amplification, LIN28A log2 expression ~0.39 (still low, but getting higher!)
 + `7316-784` has TTYH1 fusion, LIN28A log2 expression ~5.5
 
 
 We can also check for just LIN28A overexpression, revealing samples `7316-2658` and `7316-2987` has having some level of overexpression (_naively_ eyeballing here only). 
-```{r}
+```{r, eval=FALSE, echo=FALSE}
 
 samples_lin28a_expression %>% 
   arrange(desc(lin28a_norm_expression), sample_id) %>%
-  head(10)
+  head(20)
 ```
+
+-->
