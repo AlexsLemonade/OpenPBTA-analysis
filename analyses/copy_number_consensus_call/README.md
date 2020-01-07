@@ -32,9 +32,7 @@ This pipeline revolves around the use of Snakemake to run analysis for each pati
 9) Reformat the columns of the files (So the info are easier to read)
 10) **Call consensus** by comparing CNVs from 2 call methods at a time. 
 
-Since there are 3 callers, there were 3 comparisons: `manta-cnvkit`, `manta-freec`, and `cnvkit-freec`.
-`manta-cnvkit` `manta-freec` `cnvkit-freec`. If a CNV from 1 caller **overlaps 50% or more** with at least 1 CNV from another caller,
-the common region of the overlapping CNV would be the new CONSENSUS CNV. 
+Since there are 3 callers, there were 3 comparisons: `manta-cnvkit`, `manta-freec`, and `cnvkit-freec`. If a CNV from 1 caller **overlaps 50% or more** with at least 1 CNV from another caller, the common region of the overlapping CNV would be the new CONSENSUS CNV. 
 
 11) **Sort and merge** the CNVs from the comparison pairs ,`manta-cnvkit` `manta-freec` `cnvkit-freec`, together into 1 file
 12) After every samples' consensus CNVs were called, **combine all merged files** from step 10 and output to `results/cnv_consensus.tsv`
