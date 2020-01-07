@@ -1703,7 +1703,7 @@ if (running_in_ci == 0) running_in_ci &lt;- FALSE
 if (running_in_ci == 1) running_in_ci &lt;- TRUE</code></pre>
 <p><br> Next, define directories and load data files:</p>
 <pre class="r"><code>### Define directories
-data_dir    &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;data&quot;) 
+data_dir    &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;data&quot;, &quot;testing&quot;) 
 results_dir &lt;- &quot;results&quot;
 
 ######### Define input files
@@ -1734,6 +1734,7 @@ scores_polya    &lt;- readr::read_tsv(scores_polya_file)</code></pre>
 <div id="anova-and-tukey-analysis-of-gsva-scores" class="section level3">
 <h3>ANOVA and Tukey analysis of GSVA scores</h3>
 <p>Here we perform a series of ANOVAs, for polyA and stranded libraries separately, to determine whether mean GSVA scores for a given grouping are significantly different across hallmarks (pathways). The given groupings examined here are <code>short_histology</code> and <code>disease_type_new</code>. In other words, we perform an ANOVA (and associated postdoc Tukey test) for each hallmark as, <code>hallmark ~ grouping</code>. Users can specify the grouping variable.</p>
+<p>First, prepare the data for modeling:</p>
 <pre class="r"><code>### Merge histology metadata with each set of gsea scores
 scores_stranded  &lt;- scores_stranded %&gt;% mutate(data_type = &quot;stranded&quot;)
 scores_polya     &lt;- scores_polya %&gt;% mutate(data_type = &quot;polya&quot;)
@@ -1743,9 +1744,9 @@ all_scores      &lt;- bind_rows(scores_stranded, scores_polya) %&gt;%
 
 metadata_with_gsva &lt;- metadata %&gt;%
                         filter(experimental_strategy == &quot;RNA-Seq&quot;) %&gt;%
-                        inner_join(all_scores, by = &quot;Kids_First_Biospecimen_ID&quot; )
-
-short_histology_stranded_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, short_histology, &quot;stranded&quot;, SIGNIFICANCE_THRESHOLD) 
+                        inner_join(all_scores, by = &quot;Kids_First_Biospecimen_ID&quot; )</code></pre>
+<p>Now, model:</p>
+<pre class="r"><code>short_histology_stranded_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, short_histology, &quot;stranded&quot;, SIGNIFICANCE_THRESHOLD) 
 disease_type_new_stranded_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, disease_type_new, &quot;stranded&quot;, SIGNIFICANCE_THRESHOLD) 
 
 head(short_histology_stranded_model_results)</code></pre>
@@ -1753,152 +1754,104 @@ head(short_histology_stranded_model_results)</code></pre>
 ## # A tibble: 50 x 5
 ##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
 ##    &lt;fct&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI…             12.9     4.73e- 60        2.37e- 58
-##  2 HALLMARK_ALL…             20.5     6.67e- 95        3.33e- 93
-##  3 HALLMARK_AND…             17.9     9.82e- 84        4.91e- 82
-##  4 HALLMARK_ANG…             14.5     5.88e- 68        2.94e- 66
-##  5 HALLMARK_API…             20.2     1.07e- 93        5.37e- 92
-##  6 HALLMARK_API…             27.4     1.84e-122        9.20e-121
-##  7 HALLMARK_APO…             19.6     2.41e- 91        1.20e- 89
-##  8 HALLMARK_BIL…             24.7     5.08e-112        2.54e-110
-##  9 HALLMARK_CHO…             17.2     2.40e- 80        1.20e- 78
-## 10 HALLMARK_COA…             21.9     4.76e-101        2.38e- 99
+##  1 HALLMARK_ADI…             2.29       0.104             1     
+##  2 HALLMARK_ALL…             2.81       0.0609            1     
+##  3 HALLMARK_AND…             2.69       0.0692            1     
+##  4 HALLMARK_ANG…             1.63       0.216             1     
+##  5 HALLMARK_API…             3.32       0.0369            1     
+##  6 HALLMARK_API…             7.18       0.00164           0.0821
+##  7 HALLMARK_APO…             2.15       0.122             1     
+##  8 HALLMARK_BIL…             3.70       0.0257            1     
+##  9 HALLMARK_CHO…             3.34       0.0360            1     
+## 10 HALLMARK_COA…             2.36       0.0975            1     
 ## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
 ## 
 ## $tukey
-## # A tibble: 33,300 x 7
+## # A tibble: 500 x 7
 ##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
 ##    &lt;fct&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI… ATRT-Aden…          -0.107          1                    1
-##  2 HALLMARK_ADI… Central n…           0.112          1                    1
-##  3 HALLMARK_ADI… Chondrosa…          -0.282          1.00                 1
-##  4 HALLMARK_ADI… Chordoma-…           0.0360         1                    1
-##  5 HALLMARK_ADI… Choroid p…          -0.0429         1                    1
-##  6 HALLMARK_ADI… CNS EFT-C…          -0.143          1.00                 1
-##  7 HALLMARK_ADI… CNS Embry…          -0.221          1.00                 1
-##  8 HALLMARK_ADI… CNS gangl…          -0.487          0.854                1
-##  9 HALLMARK_ADI… CNS lymph…          -0.185          1                    1
-## 10 HALLMARK_ADI… CNS neuro…          -0.148          1.00                 1
-## # … with 33,290 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
+##  1 HALLMARK_ADI… HGAT-Dysp…          -0.149          0.985                1
+##  2 HALLMARK_ADI… LGAT-Dysp…          -0.168          0.974                1
+##  3 HALLMARK_ADI… Medullobl…          -0.596          0.317                1
+##  4 HALLMARK_ADI… Schwannom…          -0.204          0.982                1
+##  5 HALLMARK_ADI… LGAT-HGAT           -0.0192         1.00                 1
+##  6 HALLMARK_ADI… Medullobl…          -0.447          0.122                1
+##  7 HALLMARK_ADI… Schwannom…          -0.0552         1.00                 1
+##  8 HALLMARK_ADI… Medullobl…          -0.428          0.107                1
+##  9 HALLMARK_ADI… Schwannom…          -0.0360         1.00                 1
+## 10 HALLMARK_ADI… Schwannom…           0.392          0.692                1
+## # … with 490 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
 ## #   significant_tukey_bonf &lt;lgl&gt;</code></pre>
 <pre class="r"><code>head(disease_type_new_stranded_model_results)</code></pre>
 <pre><code>## $anova
 ## # A tibble: 50 x 5
 ##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
 ##    &lt;fct&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI…             7.33     1.91e- 50        9.53e- 49
-##  2 HALLMARK_ALL…            12.1      7.60e- 88        3.80e- 86
-##  3 HALLMARK_AND…             9.87     7.62e- 71        3.81e- 69
-##  4 HALLMARK_ANG…             8.69     1.40e- 61        6.99e- 60
-##  5 HALLMARK_API…            11.8      2.54e- 85        1.27e- 83
-##  6 HALLMARK_API…            15.7      5.70e-112        2.85e-110
-##  7 HALLMARK_APO…            11.3      7.72e- 82        3.86e- 80
-##  8 HALLMARK_BIL…            14.0      5.19e-101        2.60e- 99
-##  9 HALLMARK_CHO…             9.46     1.17e- 67        5.87e- 66
-## 10 HALLMARK_COA…            12.8      1.45e- 92        7.23e- 91
+##  1 HALLMARK_ADI…             2.22       0.106              1    
+##  2 HALLMARK_ALL…             2.38       0.0890             1    
+##  3 HALLMARK_AND…             2.03       0.133              1    
+##  4 HALLMARK_ANG…             1.46       0.260              1    
+##  5 HALLMARK_API…             2.93       0.0484             1    
+##  6 HALLMARK_API…             6.22       0.00258            0.129
+##  7 HALLMARK_APO…             1.85       0.164              1    
+##  8 HALLMARK_BIL…             3.20       0.0364             1    
+##  9 HALLMARK_CHO…             3.24       0.0352             1    
+## 10 HALLMARK_COA…             1.91       0.151              1    
 ## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
 ## 
 ## $tukey
-## # A tibble: 113,900 x 7
+## # A tibble: 750 x 7
 ##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
 ##    &lt;fct&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI… Atypical …          -0.107              1                1
-##  2 HALLMARK_ADI… Brain art…          -0.352              1                1
-##  3 HALLMARK_ADI… Brainstem…           0.148              1                1
-##  4 HALLMARK_ADI… Cavernoma…          -0.0514             1                1
-##  5 HALLMARK_ADI… Chondrosa…          -0.282              1                1
-##  6 HALLMARK_ADI… Chordoma-…           0.0411             1                1
-##  7 HALLMARK_ADI… Choroid p…           0.0283             1                1
-##  8 HALLMARK_ADI… Choroid p…           0.0426             1                1
-##  9 HALLMARK_ADI… Choroid p…          -0.0483             1                1
-## 10 HALLMARK_ADI… CNS embry…          -0.0188             1                1
-## # … with 113,890 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
+##  1 HALLMARK_ADI… Dysplasia…          -0.155          0.998                1
+##  2 HALLMARK_ADI… High-grad…          -0.364          0.801                1
+##  3 HALLMARK_ADI… Low-grade…          -0.323          0.848                1
+##  4 HALLMARK_ADI… Medullobl…          -0.751          0.172                1
+##  5 HALLMARK_ADI… Schwannom…          -0.359          0.923                1
+##  6 HALLMARK_ADI… High-grad…          -0.210          0.976                1
+##  7 HALLMARK_ADI… Low-grade…          -0.168          0.989                1
+##  8 HALLMARK_ADI… Medullobl…          -0.596          0.376                1
+##  9 HALLMARK_ADI… Schwannom…          -0.204          0.993                1
+## 10 HALLMARK_ADI… Low-grade…           0.0416         1.00                 1
+## # … with 740 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
 ## #   significant_tukey_bonf &lt;lgl&gt;</code></pre>
-<pre class="r"><code>if (!(running_in_ci)){
-  ### If we are running in CI, we need to ensure enough levels for AOV.
-  ### PolyA data generally does NOT have enough samples, so this should do it.
-  short_histology_polya_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, short_histology, &quot;polya&quot;, SIGNIFICANCE_THRESHOLD) 
-  disease_type_new_polya_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, disease_type_new, &quot;polya&quot;, SIGNIFICANCE_THRESHOLD) 
-  head(short_histology_polya_model_results)
-  head(disease_type_new_polya_model_results)
-}</code></pre>
-<pre><code>## $anova
-## # A tibble: 50 x 5
-##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
-##    &lt;fct&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI…             4.87      0.00455            0.228 
-##  2 HALLMARK_ALL…             2.05      0.118              1     
-##  3 HALLMARK_AND…             3.45      0.0229             1     
-##  4 HALLMARK_ANG…             6.20      0.00107            0.0535
-##  5 HALLMARK_API…             5.32      0.00275            0.138 
-##  6 HALLMARK_API…             2.42      0.0765             1     
-##  7 HALLMARK_APO…             4.64      0.00589            0.294 
-##  8 HALLMARK_BIL…             3.50      0.0214             1     
-##  9 HALLMARK_CHO…             3.35      0.0257             1     
-## 10 HALLMARK_COA…             6.41      0.000852           0.0426
-## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
-## 
-## $tukey
-## # A tibble: 300 x 7
-##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
-##    &lt;fct&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI… High-grad…           0.191         0.0261            1    
-##  2 HALLMARK_ADI… Medullobl…          -0.143         0.927             1    
-##  3 HALLMARK_ADI… Primitive…          -0.177         0.385             1    
-##  4 HALLMARK_ADI… Medullobl…          -0.334         0.494             1    
-##  5 HALLMARK_ADI… Primitive…          -0.368         0.0119            0.596
-##  6 HALLMARK_ADI… Primitive…          -0.0339        0.999             1    
-##  7 HALLMARK_ALL… High-grad…           0.0123        0.999             1    
-##  8 HALLMARK_ALL… Medullobl…          -0.349         0.733             1    
-##  9 HALLMARK_ALL… Primitive…          -0.352         0.138             1    
-## 10 HALLMARK_ALL… Medullobl…          -0.361         0.717             1    
-## # … with 290 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
-## #   significant_tukey_bonf &lt;lgl&gt;</code></pre>
-<pre class="r"><code>### Save the ANOVA and Tukey results
+<pre class="r"><code>## Save stranded library results
 write_tsv(short_histology_stranded_model_results[[&quot;anova&quot;]],  file_anova_stranded_short_histology)
-write_tsv(short_histology_polya_model_results[[&quot;anova&quot;]],     file_anova_polya_short_histology)
 write_tsv(disease_type_new_stranded_model_results[[&quot;anova&quot;]], file_anova_stranded_disease_type_new)
-write_tsv(disease_type_new_polya_model_results[[&quot;anova&quot;]],    file_anova_polya_disease_type_new)
-
 write_tsv(short_histology_stranded_model_results[[&quot;tukey&quot;]],  file_tukey_stranded_short_histology)
-write_tsv(short_histology_polya_model_results[[&quot;tukey&quot;]],     file_tukey_polya_short_histology)
 write_tsv(disease_type_new_stranded_model_results[[&quot;tukey&quot;]], file_tukey_stranded_disease_type_new)
-write_tsv(disease_type_new_polya_model_results[[&quot;tukey&quot;]],    file_tukey_polya_disease_type_new)</code></pre>
+print(running_in_ci)</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre class="r"><code>### Don&#39;t run polyA samples in CI due to data limitations, won&#39;t be enough levels for ANOVA
+# if (!(running_in_ci)){
+#   print(&quot;!!!!&quot;)
+#   short_histology_polya_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, short_histology, &quot;polya&quot;, SIGNIFICANCE_THRESHOLD)
+#   disease_type_new_polya_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, disease_type_new, &quot;polya&quot;, SIGNIFICANCE_THRESHOLD)
+#   head(short_histology_polya_model_results)
+#   head(disease_type_new_polya_model_results)
+# 
+#   ### Save polya library results
+#   write_tsv(short_histology_polya_model_results[[&quot;anova&quot;]],     file_anova_polya_short_histology)
+#   write_tsv(disease_type_new_polya_model_results[[&quot;anova&quot;]],    file_anova_polya_disease_type_new)
+#   write_tsv(short_histology_polya_model_results[[&quot;tukey&quot;]],     file_tukey_polya_short_histology)
+#   write_tsv(disease_type_new_polya_model_results[[&quot;tukey&quot;]],    file_tukey_polya_disease_type_new)
+# 
+# }</code></pre>
 <p><strong>How many <code>short_histology</code> have significant ANOVAs across hallmark pathways, for each library?</strong></p>
-<pre class="r"><code>short_histology_stranded_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)</code></pre>
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["significant_anova"],"name":[1],"type":["lgl"],"align":["right"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"TRUE","2":"50"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-<pre class="r"><code>if (!(running_in_ci))
-{
-  short_histology_polya_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)
-}</code></pre>
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["significant_anova"],"name":[1],"type":["lgl"],"align":["right"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"FALSE","2":"50"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
+<pre class="r"><code>##short_histology_stranded_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)
+#if (!(running_in_ci))
+#{
+#  short_histology_polya_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)
+#}</code></pre>
 <blockquote>
 <p>All are significantly different for stranded, none for polya. Likely due to data/power limitations.</p>
 </blockquote>
 <p><strong>How many <code>disease_type_new</code> have significant ANOVAs across hallmark pathways, for each library?</strong></p>
-<pre class="r"><code>disease_type_new_stranded_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)</code></pre>
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["significant_anova"],"name":[1],"type":["lgl"],"align":["right"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"TRUE","2":"50"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-<pre class="r"><code>if (!(running_in_ci))
-{
-  disease_type_new_polya_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)
-}</code></pre>
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["significant_anova"],"name":[1],"type":["lgl"],"align":["right"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"FALSE","2":"50"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
+<pre class="r"><code>#disease_type_new_stranded_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)
+#if (!(running_in_ci))
+#{
+#  disease_type_new_polya_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)
+#}</code></pre>
 <blockquote>
 <p>Again, all are significantly different for stranded, none for polya. Likely due to data/power limitations.</p>
 </blockquote>
