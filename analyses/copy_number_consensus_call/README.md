@@ -9,7 +9,6 @@ This analysis uses information from the following files generated from the 3 cal
 `pbta-cnv-cnvkit.seg.gz`	
 
 * `pbta-cnv-controlfreec.tsv.gz`
-
 `pbta-sv-manta.tsv.gz`
 
 
@@ -61,4 +60,3 @@ chr14	103515996	103563240	NULL	103515996:103563363:3	103511784:103541532:3,10354
 
 To run the entire pipeline, make sure to have the latest release of the three input files mentioned in the Overview section.
 Go to OpenPBTA-analysis/analyses/copy_number_consensus_call and run `bash run_consensus_call.sh`
-
