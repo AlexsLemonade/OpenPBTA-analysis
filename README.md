@@ -12,7 +12,13 @@ The collaborative manuscript is authored using [Manubot](https://manubot.org) so
 The project maintainers include scientists from [Alex's Lemonade Stand Foundation's Childhood Cancer Data Lab](https://www.ccdatalab.org/) and the [Center for Data-Driven Discovery in Biomedicine at the Children's Hospital of Philadelphia](https://d3b.center/).
 We invite researchers to join OpenPBTA to help rigorously characterize the genomic landscape of these diseases to enable more rapid discovery of additional mechanisms contributing to the pathogenesis of pediatric brain and spinal cord tumors and overall accelerate clinical translation on behalf of patients. 
 
-**Please see [`analyses/README.md`](./analyses/README.md) for a list of current analyses being performed.**
+**New to the project? Please be sure to read the following documentation before contributing:**
+
+1. Learn about the fundamental data used for this project in [**`doc/data-formats.md`**](./doc/data-formats.md) and [**`doc/data-files-description.md`**](./doc/data-files-description.md)
+	+ A history of data releases can be found in [**`doc/release_notes.md`**](./doc/release_notes.md)
+2. See what analyses are being performed in [**`analyses/README.md`**](./analyses/README.md) 
+3. Read the remainder of this README document in full.
+4. Read our contributing guidelines in [**`CONTRIBUTING.md`**](./CONTRIBUTING.md) in full.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
