@@ -10,11 +10,10 @@ date: 2020
 
 Code adapted from [svcnvplus](https://github.com/gonzolgarcia/svcnvplus). 
 
-- Percent Genome Change 
-- Find Regions of CNV and SV overlap for each sample 
+- Percent genome change 
 - Find regions of high break density
 - Breakpoint burden per sample
-- Co localization of breakpoints 
+- Localization of breakpoints 
 - Plot the breakpoints
 
 ### Usage
@@ -66,13 +65,9 @@ if (!dir.exists(plots_dir)) {
 }
 ```
 
-### Read in data 
+### Read in data and format it 
 
-```{r}
-# Read in metadata
-metadata <-
-  readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
-```
+#### Set up CNV data: 
 
 Read in the CNV data and format it to make the chromosome and coordinates easier for
 handling later. 
@@ -96,6 +91,8 @@ cnv_df <- data.table::fread(file.path(data_dir, "pbta-cnv-cnvkit.seg.gz"),
   # Changing these so they end up matching the SV data
   dplyr::rename(start = loc.start, end = loc.end)
 ```
+
+#### Set up SV data
 
 Read in the SV data.
 
@@ -147,6 +144,8 @@ sv_df <- dplyr::bind_rows(sv_data, .id = "sample_ids") %>%
     TRUE ~ pos2
   ))
 ```
+
+### Set up other reference data
 
 Obtain a list of samples that are common to both datasets. 
 
@@ -207,7 +206,12 @@ sv_cnv_common <- overlap_sv_cnv(cnv_df = cnv_df,
                                 by_sample = TRUE)
 ```
 
-## Find regions of high break density
+## Format the data as chromosomes breaks
+
+The SV and CNV data comes to us in the form of ranges, but for getting a look 
+at chromosomal instability, we will want to convert this data into single break
+points of the genome. 
+We'll also remove the sex chromosomes. 
 
 Make an CNV breaks data.frame. 
 
@@ -240,97 +244,106 @@ sv_breaks <- data.frame(
   dplyr::filter(!(chrom %in% c("X", "Y")))
 ```
 
-### Breakpoint burden per sample
-
-Make a breakpoint burden summary table with both CNV and SV data. 
-
-```{r}
-# Combine SV and CNV breakpoint summaries into one data.frame
-breakpoint_df <- data.frame(table(sv_breaks$samples)) %>% 
-  dplyr::inner_join(data.frame(table(cnv_breaks$samples)), 
-                    by = "Var1", 
-                    suffix = c(".sv", ".cnv")) %>% 
-  # Rename the sample column to reflect its info
-  dplyr::rename(sample_id = Var1)
-
-# Let's take a look at a preview of this
-breakpoint_df
-```
-
 ### Co-localization of breakpoints
 
+For each sample, we will bin the genome and count how many chromosome breaks 
+occur for each bin, given the given bin_size.
+
+We will run this for each sample and return a list of three `GenomicRanges` objects:
+1) `common_density` contains the combined break counts for both SV and CNV break data.   
+2) `cnv_density` contains the number of break counts for CNV.   
+3) `sv_density` contains the number of break counts for SV.  
+
 ```{r}
+# Change here and it will change the rest
+bin_size <- 1e6
+
+# Get a big list of break densities for each sample. 
 densities <- lapply(common_samples, function(sample_id) {
+  
   # Calculate break densities with both datasets combined
   common_density <- break_density(sv_breaks, 
                                   cnv_breaks, 
                                   sample_id = sample_id,
-                                  window_size = 1e6,
+                                  window_size = bin_size,
                                   chr_sizes_list = chr_sizes_list)
   
   # Calculate break densities for CNV only
   cnv_density <- break_density(cnv_breaks, 
-                sample_id = sample_id,
-                window_size = 1e6,
-                chr_sizes_list = chr_sizes_list)
+                               sample_id = sample_id,
+                               window_size = bin_size,
+                               chr_sizes_list = chr_sizes_list)
   
   # Calculate break densities for SV only
   sv_density  <- break_density(sv_breaks, 
-                sample_id = sample_id,
-                window_size = 1e6,
-                chr_sizes_list = chr_sizes_list)
-  
-  # Combine all three datasets into one
-  all_densities <- GenomicRanges::GRangesList(common_density, 
-                                              cnv_density, 
-                                              sv_density)
-  # Uncompress this into a normal GRanges object
-  all_densities <- unlist(all_densities)
-  
-  # Add dataset of origin label in listData
-  all_densities@elementMetadata@listData$dataset <- 
-    rep(c("common", "cnv_only", "sv_only"), each = 2897)
-  
+                               sample_id = sample_id,
+                               window_size = bin_size,
+                               chr_sizes_list = chr_sizes_list)
+
   # Return this mega GRanges list
-  return(all_densities)
+  return(list(common_density = common_density,
+              cnv_density = cnv_density,
+              sv_density = sv_density))
 })
 
 # Bring along the sample IDs
-names(common_density) <- common_samples
+names(densities) <- common_samples
 ```
 
-Get CNV breakpoint density
+## Plot the breakpoints for each sample
+
+Given the `GenomicRanges` objects for each sample, create a combined plot for 
+each. 
 
 ```{r}
-cnv_density <- lapply(common_samples, function(sample_id) {
-  break_density(cnv_breaks, 
-                sample_id = sample_id,
-                window_size = 1e6,
-                chr_sizes_list = chr_sizes_list)
+lapply(densities, function(sample_densities) {
+  # get the sample name
+  sample_name <- common_samples[parent.frame()$i[]]
+  
+  # Make combined SV and CNV plot
+  common_plot <- map_density_plot(sample_densities$common_density,
+                   y_val = "counts", 
+                   y_lab = "Breaks per Mb",
+                   color = "blue",
+                   main_title = "Common Breaks")
+  
+  # Make CNV plot
+  cnv_plot <- map_density_plot(sample_densities$cnv_density,
+                   y_val = "counts", 
+                   y_lab = "Breaks per Mb",
+                   color = "darkgreen",
+                   main_title = "CNV Breaks")
+  
+  # Make SV plot
+  sv_plot <- map_density_plot(sample_densities$sv_density,
+                   y_val = "counts", 
+                   y_lab = "Breaks per Mb",
+                   color = "orange",
+                   main_title = "SV Breaks")
+  
+  # Make a title
+  title <- cowplot::ggdraw() + 
+    cowplot::draw_label(paste(sample_name, " - Chromosomal Break Density"),
+                        fontface = 'bold', x = .4, hjust = 0, size = 12)
+  
+  # Put all plots and title together
+  full_plot <- cowplot::plot_grid(title, 
+                                  common_plot, 
+                                  cnv_plot, 
+                                  sv_plot, 
+                                  nrow = 4, 
+                                  axis = "b", 
+                                  rel_heights = c(2, 5, 5, 5))
+
+  # Save plot to PNG
+  cowplot::save_plot(plot = full_plot, 
+                     filename = file.path(plots_dir, paste0(sample_name, "_breaks.png")),
+                     base_height = 7, 
+                     base_width = 20)
+  
+  # Print out the plot while we are here
+  full_plot
 })
-
-# Bring along the sample IDs
-names(cnv_density) <- common_samples
-```
-
-Get SV breakpoint density
-
-```{r}
-sv_density <- lapply(common_samples, function(sample_id) {
-  break_density(sv_breaks, 
-                sample_id = sample_id,
-                window_size = 1e6,
-                chr_sizes_list = chr_sizes_list)
-})
-
-# Bring along the sample IDs
-names(sv_density) <- common_samples
-```
-
-## Plot the breakpoints
-
-```{r}
-map_density_plot()
 ```
 
 # Session Info
