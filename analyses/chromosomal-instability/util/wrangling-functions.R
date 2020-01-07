@@ -162,10 +162,10 @@ overlap_sv_cnv <- function(cnv_df,
 
 break_density <- function(sv_breaks = NULL, 
                           cnv_breaks = NULL, 
+                          sample_id = NULL,
                           window_size = 1e6,
                           max_gap = 0,
                           chr_sizes_list = NULL,
-                          by_sample =
                           samples_col_cnv = "samples", 
                           chrom_col_cnv =  "chrom", 
                           start_col_cnv = "start", 
@@ -198,7 +198,11 @@ break_density <- function(sv_breaks = NULL,
   #   end_col_sv/cnv: character string that indicates the column name with the 
   #            end coordinate. Default is "end". Will be passed to
   #            make_granges function. 
-  #            
+  #
+  # Check that a sample ID has been specified. 
+  if (is.null(sample_id)) {
+    stop("No sample ID has been specified. Use the `sample_id` argument.")
+  }
   # If no data.frame is provided, stop
   if (is.null(cnv_breaks) && is.null(sv_breaks)) {
     stop("Need at least CNV or SV breaks data.frame provided.")
@@ -270,7 +274,7 @@ map_density_plot <- function(granges = bins,
   #          ggplot2::ylab argument. 
   
   density_plot <- ggbio::autoplot(granges, ggplot2::aes(y = !!rlang::sym(y_val),
-                                                        color = !!rlang::sym(color))),
+                                                        color = !!rlang::sym(color)),
                                   geom = "line", scales = "free_x", space = "free_x") +
     ggplot2::theme_classic() +
     ggplot2::theme(axis.text.x = ggplot2::element_text(size = 3, angle = 45, hjust = 1)) +

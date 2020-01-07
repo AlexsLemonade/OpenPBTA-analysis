@@ -148,7 +148,13 @@ sv_df <- dplyr::bind_rows(sv_data, .id = "sample_ids") %>%
   ))
 ```
 
-Set up Chromosome size data 
+Obtain a list of samples that are common to both datasets. 
+
+```{r}
+common_samples <- intersect(sv_df$samples, cnv_df$samples)
+```
+
+Set up chromosome size data 
 
 ```{r}
 # Set up Chr sizes
@@ -254,26 +260,71 @@ breakpoint_df
 ### Co-localization of breakpoints
 
 ```{r}
-common_break_ranges <- break_density(sv_breaks, 
-                                     cnv_breaks, 
-                                     window_size = 1e6,
-                                     chr_sizes_list = chr_sizes_list)
-```
+densities <- lapply(common_samples, function(sample_id) {
+  # Calculate break densities with both datasets combined
+  common_density <- break_density(sv_breaks, 
+                                  cnv_breaks, 
+                                  sample_id = sample_id,
+                                  window_size = 1e6,
+                                  chr_sizes_list = chr_sizes_list)
+  
+  # Calculate break densities for CNV only
+  cnv_density <- break_density(cnv_breaks, 
+                sample_id = sample_id,
+                window_size = 1e6,
+                chr_sizes_list = chr_sizes_list)
+  
+  # Calculate break densities for SV only
+  sv_density  <- break_density(sv_breaks, 
+                sample_id = sample_id,
+                window_size = 1e6,
+                chr_sizes_list = chr_sizes_list)
+  
+  # Combine all three datasets into one
+  all_densities <- GenomicRanges::GRangesList(common_density, 
+                                              cnv_density, 
+                                              sv_density)
+  # Uncompress this into a normal GRanges object
+  all_densities <- unlist(all_densities)
+  
+  # Add dataset of origin label in listData
+  all_densities@elementMetadata@listData$dataset <- 
+    rep(c("common", "cnv_only", "sv_only"), each = 2897)
+  
+  # Return this mega GRanges list
+  return(all_densities)
+})
 
-Get SV breakpoint density
-
-```{r}
-sv_break_ranges <- break_density(sv_breaks, 
-                                 window_size = 1e6,
-                                 chr_sizes_list = chr_sizes_list)
+# Bring along the sample IDs
+names(common_density) <- common_samples
 ```
 
 Get CNV breakpoint density
 
 ```{r}
-cnv_break_ranges <- break_density(sv_breaks, 
-                                 window_size = 1e6,
-                                 chr_sizes_list = chr_sizes_list)
+cnv_density <- lapply(common_samples, function(sample_id) {
+  break_density(cnv_breaks, 
+                sample_id = sample_id,
+                window_size = 1e6,
+                chr_sizes_list = chr_sizes_list)
+})
+
+# Bring along the sample IDs
+names(cnv_density) <- common_samples
+```
+
+Get SV breakpoint density
+
+```{r}
+sv_density <- lapply(common_samples, function(sample_id) {
+  break_density(sv_breaks, 
+                sample_id = sample_id,
+                window_size = 1e6,
+                chr_sizes_list = chr_sizes_list)
+})
+
+# Bring along the sample IDs
+names(sv_density) <- common_samples
 ```
 
 ## Plot the breakpoints
