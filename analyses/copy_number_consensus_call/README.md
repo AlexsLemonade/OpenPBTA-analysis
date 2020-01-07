@@ -6,7 +6,7 @@ The PBTA data set contains CNVs called from different callers, ie. Manta, CNVkit
 The goal is to use all of these callers to reduce false positives and come up with a final consensus list of CNVs.
 This analysis uses information from the following files generated from the 3 callers
 
-`pbta-cnv-cnvkit.seg.gz`	
+* `pbta-cnv-cnvkit.seg.gz`	
 * `pbta-cnv-controlfreec.tsv.gz`
 * `pbta-sv-manta.tsv.gz`
 
