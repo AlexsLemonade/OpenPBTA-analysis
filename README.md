@@ -15,7 +15,7 @@ We invite researchers to join OpenPBTA to help rigorously characterize the genom
 **New to the project? Please be sure to read the following documentation before contributing:**
 
 1. Learn about the fundamental data used for this project in [**`doc/data-formats.md`**](./doc/data-formats.md) and [**`doc/data-files-description.md`**](./doc/data-files-description.md)
-	+ A history of data releases can be found in [**`doc/release_notes.md`**](./doc/release_notes.md)
+	+ A history of data releases can be found in [**`doc/release-notes.md`**](./doc/release-notes.md)
 2. See what analyses are being performed in [**`analyses/README.md`**](./analyses/README.md) 
 3. Read the remainder of this README document in full.
 4. Read our contributing guidelines in [**`CONTRIBUTING.md`**](./CONTRIBUTING.md) in full.
