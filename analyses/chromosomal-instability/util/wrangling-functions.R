@@ -236,13 +236,13 @@ break_density <- function(sv_breaks = NULL,
   bins <- GenomicRanges::tileGenome(chr_sizes_list, 
                                     tilewidth = window_size)
 
+  # Uncompress GRangesList
+  bins <- unlist(bins)
+  
   # Get counts for each genome bin
   bin_counts <- GenomicRanges::countOverlaps(bins, 
                                              combo_ranges, 
                                              max_gap)
-  
-  # Uncompress GRangesList
-  bins <- unlist(bins)
   
   # Store count info
   bins@elementMetadata@listData$counts <- bin_counts
@@ -255,7 +255,7 @@ break_density <- function(sv_breaks = NULL,
 }
 
 map_density_plot <- function(granges = bins, 
-                             y_val = density, 
+                             y_val = "density", 
                              color = "blue", 
                              y_lab = "Breaks per Kb") {
   # Given a GRanges object, plot it y value along its chromosomal mappings using 
@@ -263,16 +263,18 @@ map_density_plot <- function(granges = bins,
   # 
   # Args:
   #   granges: A Granges object to plot
-  #   y_val: a column in list data to plot on the y axis
+  #   y_val: a character string of the columnname in listData spot of the 
+  #          GenomicRanges to plot on the y axis
   #   color: an optional factor level to color code things by
   #   y_lab: a character string to use for the ylabel. Will be passed to 
   #          ggplot2::ylab argument. 
   
-  density_plot <- ggbio::autoplot(granges, ggplot2::aes(y = {{y_val}}, fill = {{color}}),
-                                  geom = "bar", scales = "free_x", space = "free_x") +
+  density_plot <- ggbio::autoplot(granges, ggplot2::aes(y = !!rlang::sym(y_val),
+                                                        color = !!rlang::sym(color))),
+                                  geom = "line", scales = "free_x", space = "free_x") +
     ggplot2::theme_classic() +
     ggplot2::theme(axis.text.x = ggplot2::element_text(size = 3, angle = 45, hjust = 1)) +
-    colorblindr::scale_fill_OkabeIto(name = color) +
+    colorblindr::scale_color_OkabeIto(name = color) +
     ggplot2::ylab(y_lab)
 
   # Print out plot

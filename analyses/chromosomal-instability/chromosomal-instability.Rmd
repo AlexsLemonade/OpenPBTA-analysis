@@ -279,7 +279,7 @@ cnv_break_ranges <- break_density(sv_breaks,
 ## Plot the breakpoints
 
 ```{r}
-TBD
+map_density_plot()
 ```
 
 # Session Info
