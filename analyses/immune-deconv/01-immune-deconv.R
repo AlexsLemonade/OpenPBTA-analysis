@@ -81,12 +81,11 @@ deconv <- function(expr.input, method) {
     gather(sample, fraction, -c(cell_type, method)) %>%
     as.data.frame() %>%
     inner_join(clin.sub, by = c("sample" = "Kids_First_Biospecimen_ID"))
-  # res <- merge(res, clin.sub, by.x = 'sample', by.y = 'Kids_First_Biospecimen_ID')
   
   return(res)
 }
 
-# Deconvolute using xCell and Cibersort (absolute mode)
+# Deconvolute using xCell and the second chosen method
 # these two methods have the max number of immune cell types
 deconv.method <- c("xcell", deconv.method)
 expr.input <- c("polya", "stranded") # datasets
