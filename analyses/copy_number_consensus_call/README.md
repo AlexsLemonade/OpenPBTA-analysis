@@ -39,7 +39,7 @@ Since there are 3 callers, there were 3 comparisons: `manta-cnvkit`, `manta-free
 ## Example Output File
 
 ```
-chrom start end	manta_CNVs	cnvkit_CNVs	freec_CNVs	CNV_type	sample	file_names
+chrom start end	manta_CNVs	cnvkit_CNVs	freec_CNVs	CNV_type	Biospecimen	file_names
 chr11 771036  866778	NULL	770516:866778:3	771036:871536:3	DUP	BS_007JTNB8	BS_007JTNB8.cnvkit_freec.dup.bed
 chr13	99966948	99991872	NULL	99954829:99994557:3	99966948:99991872:3	DUP	BS_007JTNB8	BS_007JTNB8.cnvkit_freec.dup.bed
 chr14	103515996	103563240	NULL	103515996:103563363:3	103511784:103541532:3,103543140:103563240:3	DUP	BS_007JTNB8	BS_007JTNB8.cnvkit_freec.dup.bed
