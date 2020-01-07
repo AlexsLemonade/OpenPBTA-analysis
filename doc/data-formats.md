@@ -109,8 +109,9 @@ These files are denoted with the prefix `pbta-fusion`.
 
 Many analyses rely on examining DNA-seq (e.g., WGS/WXS/Panel) and RNA-seq data together.
 The identifiers in the `Kids_First_Biospecimen_ID` column of the `pbta-histologies.tsv` file will be non-overlapping for different experimental strategies, as these identifiers map to a _library or assay_.
-Analysts should use the identifiers in the `sample_id` to connect DNA-seq and RNA-seq assays from the same sample.
-For an example, see [the `sample_id` mapping step of the OncoPrint pipeline](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/oncoprint-landscape/00-map-to-sample_id.R).
+**Analysts should use the identifiers in the `sample_id` to connect DNA-seq and RNA-seq assays from the same sample.**
+
+For an example, see [the `sample_id` mapping step (code section under the comment header "Filter to independent specimens") of the OncoPrint pipeline](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/oncoprint-landscape/00-map-to-sample_id.R).
 
 Note that some individual participants (tracked via the `Kids_First_Participant_ID` column) will have multiple samples included in the PBTA dataset.
 Please [see the independent specimens files section](#independent-specimen-lists) for more information.
