@@ -147,6 +147,23 @@ sv_df <- dplyr::bind_rows(sv_data, .id = "sample_ids") %>%
   ))
 ```
 
+Set up Chromosome size data 
+
+```{r}
+# Set up Chr sizes
+chr_sizes <- readr::read_tsv(file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed"), 
+                             col_names = FALSE) %>% 
+  # Reformat the chromosome variable to drop the "chr"
+  dplyr::mutate(X1 = factor(gsub("chr", "", X1), 
+                               levels = c(1:22, "X", "Y", "M"))) %>% 
+  # Remove sex chromosomes
+  dplyr::filter(!(X1 %in% c("X", "Y", "M"))) 
+
+# Make chromosome size list
+chr_sizes_list <- chr_sizes$X3  
+names(chr_sizes_list) <- chr_sizes$X1
+```
+
 ### Percent genome change by CNV data
 
 ```{r}
@@ -196,7 +213,9 @@ cnv_breaks <- data.frame(
   end = c(cnv_df$start, cnv_df$end),
   seg.mean = rep(cnv_df$seg.mean, 2), 
   copy.num = rep(cnv_df$copy.num, 2), 
-  stringsAsFactors = FALSE)
+  stringsAsFactors = FALSE) %>% 
+  # Remove sex chromosomes
+  dplyr::filter(!(chrom %in% c("X", "Y")))
 ```
 
 Make an SV breaks data.frame. 
@@ -204,12 +223,14 @@ Make an SV breaks data.frame.
 ```{r}
 # Make a data.frame that has the breaks   
 sv_breaks <- data.frame(
-  samples = rep(sv_df$sample_ids, 2), 
+  samples = rep(sv_df$samples, 2), 
   chrom = c(sv_df$chrom1, sv_df$chrom2),
-  start = c(sv_df$pos1, sv_df$pos2),
-  end = c(sv_df$pos1, sv_df$pos2),
+  start = c(sv_df$start, sv_df$end),
+  end = c(sv_df$start, sv_df$end),
   svclass = rep(sv_df$SVtype, 2), 
-  stringsAsFactors = FALSE)
+  stringsAsFactors = FALSE) %>% 
+  # Remove sex chromosomes
+  dplyr::filter(!(chrom %in% c("X", "Y")))
 ```
 
 ### Breakpoint burden per sample
@@ -232,8 +253,13 @@ breakpoint_df
 ### Co-localization of breakpoints
 
 ```{r}
-TBD
+common_break_ranges <- break_density(sv_breaks, 
+                                     cnv_breaks, 
+                                     window_size = 1e6,
+                                     chr_sizes_list = chr_sizes_list)
 ```
+
+
 
 ### Chromosome shattering
 

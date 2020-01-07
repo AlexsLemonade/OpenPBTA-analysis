@@ -160,10 +160,11 @@ overlap_sv_cnv <- function(cnv_df,
   return(overlap_df)
 }
 
-
 break_density <- function(sv_breaks, 
                           cnv_breaks, 
-                          window_size, 
+                          window_size = 1e6,
+                          max_gap = 0,
+                          chr_sizes_list = NULL,
                           samples_col_cnv = "samples", 
                           chrom_col_cnv =  "chrom", 
                           start_col_cnv = "start", 
@@ -174,7 +175,8 @@ break_density <- function(sv_breaks,
                           end_col_sv = "end"
                           ) {
   # For a given breaks data.frame calculate the breaks density for a sliding 
-  # window across the genome
+  # window across the genome. Returns the data as a GenomicRanges object for 
+  # easy mapping with ggbio. 
   #
   # Args:
   #   sv_breaks: a data.frame with the breaks for the SV data. 
@@ -182,7 +184,7 @@ break_density <- function(sv_breaks,
   #   sample_id: sample ID for which the data needs to be extracted and made into 
   #              a GenomicRanges object. If "all" is designated, all samples will
   #              be kept. 
-  #   window_size: What size windows to calculate break density. 
+  #   window_size: What size windows to calculate break density. Default is 1kb. 
   #   samples_col_sv/cnv: character string that indicates the column name with the 
   #                sample ID information. Default is "samples". Will be passed to
   #                make_granges function. 
@@ -202,25 +204,25 @@ break_density <- function(sv_breaks,
   }
   # Make CNV into GRanges
   if (!is.null(cnv_breaks)) {
-  cnv_ranges <- make_granges(cnv_breaks, 
-                            sample_id = "all", 
-                            samples_col = samples_col_cnv,
-                            chrom_col =  chrom_col_cnv, 
-                            start_col = start_col_cnv, 
-                            end_col = end_col_cnv) 
-  # This will get written over if there are both datasets
-  combo_ranges <- cnv_ranges
+    cnv_ranges <- make_granges(cnv_breaks, 
+                              sample_id = "all", 
+                              samples_col = samples_col_cnv,
+                              chrom_col =  chrom_col_cnv, 
+                              start_col = start_col_cnv, 
+                              end_col = end_col_cnv) 
+    # This will get written over if there are both datasets
+    combo_ranges <- cnv_ranges
   }
   # Make SV into GRanges
   if (!is.null(sv_breaks)) {
-  sv_ranges <- make_granges(sv_breaks, 
-                           sample_id = "all",
-                           samples_col = samples_col_sv, 
-                           chrom_col =  chrom_col_sv, 
-                           start_col = start_col_sv, 
-                           end_col = end_col_sv) 
-  # This will get written over if there are both datasets
-  combo_ranges <- sv_ranges
+    sv_ranges <- make_granges(sv_breaks, 
+                             sample_id = "all",
+                             samples_col = samples_col_sv, 
+                             chrom_col =  chrom_col_sv, 
+                             start_col = start_col_sv, 
+                             end_col = end_col_sv) 
+    # This will get written over if there are both datasets
+    combo_ranges <- sv_ranges
   }
   
   # If both datasets are given, reduce them into one. 
@@ -229,14 +231,49 @@ break_density <- function(sv_breaks,
                                          sv_ranges)
   } 
   
-  bins   <- GenomicRanges::tileGenome(combo_ranges@, 
-                                      tilewidth = window_size, 
-                                      cut.last.tile.in.chrom = TRUE)
+  # Create genome bins
+  bins <- GenomicRanges::tileGenome(chr_sizes_list, 
+                                    tilewidth = window_size)
+
+  # Get counts for each genome bin
+  bin_counts <- GenomicRanges::countOverlaps(bins, 
+                                             combo_ranges, 
+                                             max_gap)
   
-  ## Calculate density using sliding window.
-  combo_ranges@
+  # Uncompress GRangesList
+  bins <- unlist(bins)
   
+  # Store count info
+  bins@elementMetadata@listData$counts <- bin_counts
   
-    
+  # Calculate and store density
+  bins@elementMetadata@listData$density <- bin_counts/window_size
+  
+  # Return the GRanges object for mapping purposes
+  return(bins)
 }
 
+map_density_plot <- function(granges, 
+                             y_val, 
+                             color, 
+                             y_lab) {
+  # Given a GRanges object, plot it y value along its chromosomal mappings using 
+  # ggbio. 
+  # 
+  # Args:
+  #   granges: A Granges object to plot
+  #   y_val: a column in list data to plot on the y axis
+  #   color: an optional factor level to color code things by
+  #   y_lab: a character string to use for the ylabel. Will be passed to 
+  #          ggplot2::ylab argument. 
+  
+  density_plot <- ggbio::autoplot(granges, ggplot2::aes(y = {{y_val}}, fill = {{color}}),
+                                  geom = "bar", scales = "free_x", space = "free_x") +
+    ggplot2::theme_classic() +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(size = 3, angle = 45, hjust = 1)) +
+    colorblindr::scale_fill_OkabeIto(name = color) +
+    ggplot2::ylab(y_lab)
+
+  # Print out plot
+  density_plot@ggplot
+}
