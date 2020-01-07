@@ -29,13 +29,16 @@ deconvout <- opt$input
 output <- opt$output
 load(deconvout) 
 
-# split results of method 1 and 2
-method1 <- as.data.frame(deconv.res[,1])
-method2 <- as.data.frame(deconv.res[,2])
-
 # extract names of the methods used
-method1.name <- colnames(deconv.res)[1]
-method2.name <- colnames(deconv.res)[2]
+methods <- unique(deconv.res$method)
+method1.name <- methods[1]
+method2.name <- methods[2]
+
+# split results of method 1 and 2
+method1 <- deconv.res %>%
+  filter(method == method1.name)
+method2 <- deconv.res %>%
+  filter(method == method2.name)
 
 # first, define a function to create heatmap of
 # average immune scores per histology per cell type
@@ -43,7 +46,7 @@ create.heatmap <- function(deconv.method, title) {
   
   # create labels: count of samples per histology
   annot <- deconv.method %>%
-    select(broad_histology, sample) %>%
+    dplyr::select(broad_histology, sample) %>%
     unique() %>%
     group_by(broad_histology) %>%
     summarise(label = n()) %>%
@@ -76,20 +79,20 @@ common.types <- intersect(method1$cell_type, method2$cell_type)
 method1.sub <- method1 %>%
   filter(cell_type %in% common.types) %>%
   mutate(!!method1.name := fraction) %>%
-  select(-c(method, fraction))
+  dplyr::select(-c(method, fraction))
 method2.sub <- method2 %>%
   filter(cell_type %in% common.types) %>%
   mutate(!!method2.name := fraction) %>%
-  select(-c(method, fraction))
+  dplyr::select(-c(method, fraction))
 total <- merge(method1.sub, method2.sub, by = c("sample","cell_type", "broad_histology"))
 
-# Overall correlation: 0.12
+# Overall correlation
 avg.cor <- round(cor(total[,method1.name], total[,method2.name]), 2)
 print(paste("Overall Pearson Correlation: ", avg.cor))
 
 # labels
 total.labels <- total %>%
-  select(broad_histology, sample) %>%
+  dplyr::select(broad_histology, sample) %>%
   unique() %>%
   group_by(broad_histology) %>%
   dplyr::summarise(label = n()) %>%

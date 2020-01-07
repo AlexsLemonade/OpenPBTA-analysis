@@ -57,38 +57,42 @@ if(cibersort_bin != "NA" & cibersort_mat != "NA"){
 # merge expression from polya and stranded data on common genes
 polya <- readRDS(polya)
 stranded <- readRDS(stranded)
-common.genes <- intersect(rownames(polya), rownames(stranded))
-polya <- polya[common.genes,]
-stranded <- stranded[common.genes,]
-expr.input <- cbind(polya, stranded)
 
 # read clinical data
 clin <- read.delim(clin.file, stringsAsFactors = F)
-clin  <- clin %>% 
-  filter(Kids_First_Biospecimen_ID %in% colnames(expr.input)) %>%
-  select(Kids_First_Biospecimen_ID, broad_histology)
 
 # function to run immunedeconv
-deconv <- function(expr.input, method){
+deconv <- function(expr.input, method) {
+  
+  # get data
+  expr.input <- get(expr.input)
+  
+  # subset clinical
+  clin.sub  <- clin %>% 
+    filter(Kids_First_Biospecimen_ID %in% colnames(expr.input)) %>%
+    dplyr::select(Kids_First_Biospecimen_ID, broad_histology)
   
   # deconvolute using specified method
   res <- deconvolute(gene_expression = as.matrix(expr.input), method = method)
-  res$method <- method # assign method name 
-
+  res$method <- names(grep(method, deconvolution_methods, value = TRUE)) # assign method name 
+  
   # merge output with clinical data
   res <- res %>%
     gather(sample, fraction, -c(cell_type, method)) %>%
-    as.data.frame()
-  res <- merge(res, clin, by.x = 'sample', by.y = 'Kids_First_Biospecimen_ID')
-
+    as.data.frame() %>%
+    inner_join(clin.sub, by = c("sample" = "Kids_First_Biospecimen_ID"))
+  # res <- merge(res, clin.sub, by.x = 'sample', by.y = 'Kids_First_Biospecimen_ID')
+  
   return(res)
 }
-  
+
 # Deconvolute using xCell and Cibersort (absolute mode)
 # these two methods have the max number of immune cell types
 deconv.method <- c("xcell", deconv.method)
-deconv.method <- grep(paste0(deconv.method, collapse = "|"), deconvolution_methods, value = TRUE)
-deconv.res <- sapply(deconv.method, function(x) deconv(expr.input, method = x), simplify = "list")
+expr.input <- c("polya", "stranded") # datasets
+combo <- expand.grid(expr.input, deconv.method, stringsAsFactors = F) # combination of dataset and methods
+deconv.res <- apply(combo, 1, FUN = function(x) deconv(expr.input = x[1], method = x[2]))
+deconv.res <- do.call(rbind.data.frame, deconv.res)
 
 # save output to RData object 
 print("Writing output to file..")
