@@ -1,7 +1,7 @@
 # This script subsets the focal copy number, RNA expression, fusion and 
 # histologies` files to include only High-grade glioma samples.
 
-# Chante Bethell for CCDL 2019
+# Chante Bethell for CCDL 2020
 #
 # #### USAGE
 # This script is intended to be run via the command line from the top directory
@@ -22,12 +22,12 @@
 # matter where this is called from
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
-# Set path to results and plots directory
-results_dir <-
+# Set path to subset directory
+subset_dir <-
   file.path(root_dir, "analyses", "molecular-subtyping-HGG", "hgg-subset")
 
-if (!dir.exists(results_dir)) {
-  dir.create(results_dir)
+if (!dir.exists(subset_dir)) {
+  dir.create(subset_dir)
 }
 
 # Read in metadata
@@ -40,18 +40,7 @@ select_metadata <- metadata %>%
                 Kids_First_Participant_ID,
                 Kids_First_Biospecimen_ID,
                 glioma_brain_region,
-                age_at_diagnosis_days,
-                germline_sex_estimate)
-
-# Read in RNA expression data
-stranded_expression <-
-  readr::read_rds(
-    file.path(
-      root_dir,
-      "data",
-      "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
-    )
-  )
+                age_at_diagnosis_days)
 
 # Read in RNA expression data
 stranded_expression <-
@@ -97,14 +86,15 @@ hgg_lesions_df <- readr::read_tsv(
 # for samples classified and reclassified as HGG
 hgg_lesions_df <- hgg_lesions_df %>%
   dplyr::filter(
-    disease_type_new == "High-grade glioma;astrocytoma (WHO grade III/IV)" |
-      disease_type_reclassified == "High-grade glioma"
+    disease_type_new == "High-grade glioma" |
+      grepl("High-grade glioma", disease_type_reclassified)
   )
 
 #### Filter metadata -----------------------------------------------------------
 
 # Filter metadata for `High-grade glioma` and samples that should be classified
-# as High-grade glioma based on defining lesions
+# as High-grade glioma based on defining lesions and are stranded RNA-seq
+# samples.
 hgg_metadata_df <- metadata %>%
   dplyr::filter(
     disease_type_new == "High-grade glioma" |
@@ -114,7 +104,7 @@ hgg_metadata_df <- metadata %>%
   )
 
 # Write to file
-readr::write_tsv(hgg_metadata_df, file.path(results_dir, "hgg_histologies.tsv"))
+readr::write_tsv(hgg_metadata_df, file.path(subset_dir, "hgg_histologies.tsv"))
 
 #### Filter expression data ----------------------------------------------------
 
@@ -126,23 +116,14 @@ stranded_expression <- stranded_expression %>%
 # Log2 transformation
 norm_expression <- log2(stranded_expression + 1)
 
-# Norm data mean and sd
-norm_expression_means <- rowMeans(norm_expression, na.rm = TRUE)
-norm_expression_sd <- apply(norm_expression, 1, sd, na.rm = TRUE)
-
-# Subtract mean
-expression_zscored <-
-  sweep(norm_expression, 1, norm_expression_means, FUN = "-")
-
-# Divide by SD remove NAs and Inf values from zscore for genes with 0 in normData
-expression_zscored <-
-  sweep(expression_zscored, 1, norm_expression_sd, FUN = "/") %>%
-  dplyr::na_if(Inf) %>%
-  na.omit()
+# Scale does column centering, so we transpose first
+long_zscored_expression <- scale(t(norm_expression), 
+                                  center = TRUE,
+                                  scale = TRUE)
 
 # Save matrix with all genes to file for downstream plotting
-readr::write_rds(expression_zscored,
-                 file.path(results_dir, "hgg_zscored_expression.RDS"))
+readr::write_rds(long_zscored_expression,
+                 file.path(subset_dir, "hgg_zscored_expression.RDS"))
 
 #### Filter focal CN data ------------------------------------------------------
 
@@ -157,10 +138,11 @@ cn_metadata <- cn_df %>%
                 status,
                 cytoband) %>%
   dplyr::filter(sample_id %in% hgg_metadata_df$sample_id) %>%
-  dplyr::distinct()
+  dplyr::distinct() # Remove duplicate rows produced as a result of not
+                    # including the copy number variable from `cn_df`
 
 # Write to file
-readr::write_tsv(cn_metadata, file.path(results_dir, "hgg_focal_cn.tsv.gz"))
+readr::write_tsv(cn_metadata, file.path(subset_dir, "hgg_focal_cn.tsv.gz"))
 
 #### Filter fusion data --------------------------------------------------------
 
@@ -171,4 +153,4 @@ fusion_df <- fusion_df %>%
   dplyr::filter(sample_id %in% hgg_metadata_df$sample_id)
 
 # Write to file
-readr::write_tsv(fusion_df, file.path(results_dir, "hgg_fusion.tsv"))
+readr::write_tsv(fusion_df, file.path(subset_dir, "hgg_fusion.tsv"))
