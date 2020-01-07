@@ -56,6 +56,6 @@ chr14	103515996	103563240	NULL	103515996:103563363:3	103511784:103541532:3,10354
   * Note that if there is more than one original CNV call corresponding to a given consensus CNV from a given caller, the information for each of the CNV calls will be comma separated.
   * In the example output above column 6 of line 4 contains `103511784:103541532:3,103543140:103563240:3` which means 2 CNVs called by FreeC helped to make up the **consensus** CNV on line 4. 
 One has the start and end coordinates of `103511784:103541532` **on the same chromosome** and has a copy number of `3` and another has the coordinates `103543140:103563240` and has a copy number of `3`. 
-* Column 7 is the CNVtype. In this case, it is either DUP or DEL
+* Column 7 is the CNVtype. This will be one of DUP or DEL, corresponding to duplications or deletions, respectively. Note that this does not describe the number of copies, only the direction of the copy number change.
 * Column 8 is the Sample name
 * Column 9 contains the name of of the files (`manta-cnvkit` `manta-freec` `cnvkit-freec`) that made up the **consensus** CNV. 
