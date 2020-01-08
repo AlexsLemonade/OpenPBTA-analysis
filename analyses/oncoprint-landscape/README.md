@@ -8,8 +8,6 @@ The code was written to be updated as consensus, filtered, and/or prioritized da
 
 In particular, the following are likely to change:
 
-* The final fusion lists ([#39](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/39)) will be used in this figure.
-  The current plots use the output of the [fusion standardization step](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/9c68671a4cba89681046c026eb1658794165e836/analyses/fusion_filtering/01-fusion-standardization.R), prior to QC and filtering.
 * The plot will use consensus copy number calls ([#128](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/128)).
 
 ## Usage

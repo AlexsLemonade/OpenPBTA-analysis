@@ -25,6 +25,15 @@ stranded_expression_file="data/pbta-gene-expression-rsem-fpkm.stranded.rds"
 references_directory="analyses/fusion_filtering/references/"
 normal_expression_file="$references_directory/Brain_FPKM_hg38_matrix.txt.zip"
 
+# data release files to use for recurrent fusion/fused genes detection
+putative_oncogenic_fusion="data/pbta-fusion-putative-oncogenic.tsv"
+histologies_file="data/pbta-histologies.tsv"
+independent_samples_file="data/independent-specimens.wgswxs.primary-plus.tsv"
+
+# results folder for analysis
+results_folder="analyses/fusion_filtering/results/"
+
+
 # Run Fusion standardization
 Rscript analyses/fusion_filtering/01-fusion-standardization.R --fusionfile $arriba_file \
                                                               --caller "arriba" \
@@ -62,3 +71,11 @@ Rscript analyses/fusion_filtering/03-Calc-zscore-annotate.R --standardFusionCall
                                                             --normalExpressionMatrix $normal_expression_file \
                                                             --outputfile scratch/standardFusionStrandedExp_QC_expression
 
+# Project specific filtering
+Rscript -e "rmarkdown::render('analyses/fusion_filtering/04-project-specific-filtering.Rmd')"
+
+# Recurrent fusion/fused genes
+Rscript analyses/fusion_filtering/05-recurrent-fusions-per-histology.R --standardFusionCalls $putative_oncogenic_fusion \
+                                                                       --clinicalFile $histologies_file \
+                                                                       --outputfolder $results_folder \
+                                                                       --independentSpecimensFile $independent_samples_file

@@ -41,6 +41,10 @@ if (!("htmlwidgets" %in% installed.packages())) {
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # File path to results directory
+input_dir <-
+  file.path(root_dir, "analyses", "molecular-subtyping-ATRT", "atrt-subset")
+
+# File path to results directory
 results_dir <-
   file.path(root_dir, "analyses", "molecular-subtyping-ATRT", "results")
 
@@ -48,9 +52,9 @@ if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
 
-# Read in metadata
+# Read in ATRT subset metadata
 metadata <-
-  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"))
+  readr::read_tsv(file.path(input_dir, "atrt_histologies.tsv"))
 
 # Select wanted columns in metadata for merging and assign to a new object
 select_metadata <- metadata %>%
@@ -58,49 +62,35 @@ select_metadata <- metadata %>%
                 Kids_First_Participant_ID,
                 Kids_First_Biospecimen_ID)
 
-# Read in ssGSEA pathway information
-ssGSEA <-
-  as.data.frame(readr::read_rds(
-    file.path(
-      root_dir,
-      "analyses",
-      "ssgsea-hallmark",
-      "results",
-      "GeneSetExpressionMatrix.RDS"
-    )
-  ))
+# Read in ATRT subset GSVA pathway scores
+gsva_subset <-
+  as.data.frame(readr::read_tsv(file.path(input_dir, "atrt_gsva.tsv")))
 
-# Read in RNA expression data
+# Read in ATRT subset z-scored RNA expression data
 stranded_expression <-
   readr::read_rds(
     file.path(
-      root_dir,
-      "data",
-      "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+      input_dir,
+      "atrt_log_expression.RDS"
     )
   )
 
-# Read in focal CN data
-## TODO: This section will be updated to read in focal CN data derived from
-##       copy number consensus calls.
+# Read in ATRT subset focal CN data
 cn_df <- readr::read_tsv(
   file.path(
-    root_dir,
-    "analyses",
-    "focal-cn-file-preparation",
-    "results",
-    "controlfreec_annotated_cn_autosomes.tsv.gz"
+    input_dir,
+    "atrt_focal_cn.tsv.gz"
   )
 )
 
-# Read in consensus mutation data
+# Read in ATRT subset consensus mutation data
 tmb_df <-
-  data.table::fread(file.path(root_dir,
-                              "data",
-                              "pbta-snv-consensus-mutation-tmb.tsv"))
+  data.table::fread(file.path(input_dir,
+                              "atrt_tmb.tsv"))
 ```
 
 ## Custom Function
+
 ```{r}
 # Custom datatable function
 # Function code adapted from: https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/49acc98f5ffd86853fc70f220623311e13e3ca9f/analyses/collapse-rnaseq/02-analyze-drops.Rmd#L23
@@ -126,9 +116,9 @@ viewDataTable <- function(data) {
 }
 ```
 
-# Filter Data
+# Prepare Data
 
-## Filter metadata
+## Metadata
 
 ```{r}
 # Define regions of the brain (using Anatomy of the Brain figure found at
@@ -161,11 +151,7 @@ infratentorial <-
     "Other locations NOS;Spinal Cord- Lumbar/Thecal Sac;Spinal Cord- Thoracic;Ventricles"
   )
 
-# Filter metadata for `ATRT` and define `location_summary` based on values in
-# `primary_site`
-atrt_df <- metadata %>%
-  dplyr::filter(short_histology == "ATRT",
-                experimental_strategy == "RNA-Seq") %>%
+metadata <- metadata %>%
   dplyr::mutate(
     location_summary = dplyr::case_when(
       primary_site %in% infratentorial ~ "infratentorial",
@@ -174,11 +160,9 @@ atrt_df <- metadata %>%
     )
   ) %>%
   dplyr::group_by(sample_id) %>%
-  dplyr::summarize(
-    Kids_First_Biospecimen_ID = paste(sort(unique(
-      Kids_First_Biospecimen_ID
-    )),
-    collapse = ", "),
+  dplyr::select(
+    sample_id,
+    Kids_First_Biospecimen_ID,
     Kids_First_Participant_ID,
     location_summary,
     age_at_diagnosis_days,
@@ -186,30 +170,12 @@ atrt_df <- metadata %>%
     primary_site
   )
 
-# Display `atrt_df`
-atrt_df %>%
+# Display metadata subsetted for ATRT samples
+metadata %>%
   head(n = 15)
 ```
 
-## Prepare annotation data.frame for plotting of initial heatmap
-
-```{r}
-# Create an annotation data.frame for the relevant annotation data
-initial_annotation_df <- atrt_df %>%
-  tibble::column_to_rownames("Kids_First_Biospecimen_ID") %>%
-  dplyr::select(-c(
-    sample_id,
-    Kids_First_Participant_ID,
-    primary_site,
-    age_at_diagnosis_days
-  ))
-
-# Write initial annotation data.frame to file
-readr::write_rds(initial_annotation_df,
-                 file.path(results_dir, "initial_heatmap_annotation.RDS"))
-```
-
-## Filter RNA expression, CN, TMB, and ssGSEA data by merging with `sample_id`
+## Filter and join RNA expression, CN, TMB, and ssGSEA data
 
 ### RNA expression data 
 
@@ -262,34 +228,15 @@ myc_genes <-
     "ATF4"
   )
 
-# Filter expression data for target overexpressed genes
-stranded_expression_df <- stranded_expression %>%
-  as.data.frame() %>%
-  tibble::rownames_to_column("gene_symbol") %>%
-  dplyr::filter(gene_symbol %in% tyr_genes |
-                  gene_symbol %in% shh_genes |
-                  gene_symbol %in% myc_genes) %>%
-  tibble::column_to_rownames("gene_symbol")
+# Filter to only the genes of interest
+filtered_expression <- stranded_expression[which(
+   rownames(stranded_expression) %in% c(tyr_genes, shh_genes, myc_genes)
+), ]
 
-# Log2 transformation
-norm_expression <- log2(stranded_expression_df + 1)
-
-# normData mean and sd
-norm_expression_means <- rowMeans(norm_expression, na.rm = TRUE)
-norm_expression_sd <- apply(norm_expression, 1, sd, na.rm = TRUE)
-
-# Subtract mean
-expression_zscored <-
-  sweep(norm_expression, 1, norm_expression_means, FUN = "-")
-
-# Divide by SD remove NAs and Inf values from zscore for genes with 0 in normData
-expression_zscored <-
-  sweep(expression_zscored, 1, norm_expression_sd, FUN = "/") %>%
-  dplyr::na_if(Inf) %>%
-  na.omit()
-
-# Transpose
-long_stranded_expression <- t(expression_zscored)
+# scale does column centering, so we transpose first
+long_stranded_expression <- scale(t(filtered_expression), 
+                                  center = TRUE,
+                                  scale = TRUE)
 
 # Merge metadata with expression data
 expression_metadata <- long_stranded_expression %>%
@@ -302,7 +249,7 @@ expression_metadata %>%
   head(n = 15)
 
 # Join expression data with metadata filtered for `ATRT`
-atrt_expression_df <- atrt_df %>%
+atrt_expression_df <- metadata %>%
   dplyr::left_join(expression_metadata,
                    by = "sample_id")
 ```
@@ -310,15 +257,8 @@ atrt_expression_df <- atrt_df %>%
 ### CN data
 
 ```{r}
-# Join focal CN data with metadata
-cn_metadata <- cn_df %>%
-  dplyr::left_join(metadata,
-                   by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
-  dplyr::select(gene_symbol,
-                sample_id,
-                Kids_First_Participant_ID,
-                biospecimen_id,
-                status) %>%
+# Filter focal CN data for SMARCB1 and SMARCA4 status 
+cn_df <- cn_df %>% 
   dplyr::filter(gene_symbol %in% c("SMARCB1", "SMARCA4")) %>%
   dplyr::mutate(
     SMARCB1_focal_status = dplyr::case_when(gene_symbol == "SMARCB1" ~ status,
@@ -338,66 +278,51 @@ cn_metadata <- cn_df %>%
     )), collapse = ", ")
   )
 
-#Display `cn_metadata`
-cn_metadata %>%
+# Display `cn_metadata`
+cn_df %>%
   head(n = 15)
 
 # Join ATRT expression data with focal CN data
 atrt_expression_cn_df <- atrt_expression_df %>%
-  dplyr::left_join(cn_metadata, by = "sample_id")
+  dplyr::left_join(cn_df, by = "sample_id")
 ```
 
-### ssGSEA data
+### GSVA data
 
 ```{r}
-# Calculate ssGSEA mean and sd
-ssGSEA_means <- rowMeans(ssGSEA, na.rm = TRUE)
-ssGSEA_sd <- apply(ssGSEA, 1, sd, na.rm = TRUE)
+# Filter to only the hallmark gene sets that were named in the issue
+relevant_genesets <- c("HALLMARK_MYC_TARGETS_V1",
+                       "HALLMARK_MYC_TARGETS_V2",
+                       "HALLMARK_NOTCH_SIGNALING")
+gsva_filtered <- gsva_subset %>%
+  dplyr::filter(hallmark_name %in% relevant_genesets)
 
-# Subtract mean
-ssGSEA_zscored <- sweep(ssGSEA, 1, ssGSEA_means, FUN = "-")
+# Matrix with gene set columns that can be scaled
+gsva_mat <- gsva_filtered %>% 
+  dplyr::select(-Kids_First_Biospecimen_ID) %>% 
+  tidyr::spread(hallmark_name, gsea_score) %>%
+  tibble::column_to_rownames("sample_id") %>%
+  as.matrix()
 
-# Divide by SD remove NAs and Inf values from zscore for genes with 0
-ssGSEA_zscored <-
-  sweep(ssGSEA_zscored, 1, ssGSEA_sd, FUN = "/") %>%
-  dplyr::na_if(Inf) %>%
-  na.omit()
-
-# Transpose
-transposed_ssGSEA <- t(ssGSEA_zscored)
-
-# Select wanted pathways and merge metadata
-transposed_ssGSEA <- transposed_ssGSEA %>%
+# z-score scores (here they are columns)
+scaled_gsva <- scale(gsva_mat, center = TRUE, scale = TRUE) %>%
   as.data.frame() %>%
-  tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
-  dplyr::left_join(select_metadata, by = "Kids_First_Biospecimen_ID") %>%
-  dplyr::group_by(sample_id) %>%
-  dplyr::summarise(
-    HALLMARK_MYC_TARGETS_V1 = mean(HALLMARK_MYC_TARGETS_V1),
-    HALLMARK_MYC_TARGETS_V2 = mean(HALLMARK_MYC_TARGETS_V2),
-    HALLMARK_NOTCH_SIGNALING = mean(HALLMARK_NOTCH_SIGNALING)
-  )
+  tibble::rownames_to_column("sample_id")
 
-#Display `transposed_ssGSEA`
-transposed_ssGSEA %>%
+# Display scaled_gsva
+scaled_gsva %>%
   head(n = 15)
 
-# Join ATRT expression and focal CN data with transposed ssGSEA data
+# Join ATRT expression and focal CN data with GSVA data
 atrt_expression_cn_df <- atrt_expression_cn_df %>%
-  dplyr::left_join(transposed_ssGSEA,
+  dplyr::left_join(scaled_gsva,
                    by = "sample_id")
 ```
 
 ### Tumor mutation burden data
 
 ```{r}
-# Join tumor mutuation data with metadata
-tmb_df <- tmb_df %>%
-  dplyr::select(Tumor_Sample_Barcode, tmb) %>%
-  dplyr::inner_join(select_metadata,
-                    by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID"))
-
-#Display `tmb_df`
+# Display `tmb_df`
 tmb_df %>%
   head(n = 15)
 
@@ -443,28 +368,10 @@ final_df <- atrt_expression_cn_tmb_df %>%
   dplyr::ungroup()
 
 readr::write_tsv(final_df,
-                 file.path(results_dir, "ATRT_molecular_subtypes.tsv.gz"))
+                 file.path(results_dir, "ATRT_molecular_subtypes.tsv"))
 
 # Display `final_df`
 viewDataTable(final_df) 
-```
-
-# Prepare annotation data.frame for plotting of final heatmap
-
-```{r}
-# Create an annotation data.frame for the atrt expression data
-final_annotation_df <- final_df %>%
-  dplyr::select(
-    Kids_First_Biospecimen_ID,
-    location_summary,
-    SMARCB1_focal_status,
-    SMARCA4_focal_status,
-  ) %>%
-  tibble::column_to_rownames("Kids_First_Biospecimen_ID")
-
-# Write final annotation data.frame to file
-readr::write_rds(final_annotation_df,
-                 file.path(results_dir, "final_heatmap_annotation.RDS"))
 ```
 
 # Session Info

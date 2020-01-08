@@ -145,7 +145,7 @@ if (!dir.exists(output_directory)) {
 # Character string that will be used to name files
 filename_lead <- opt$filename_lead
 
-# Define seed as the parmeter passed via the command line
+# Define seed as the parameter passed via the command line
 seed <- opt$seed
 
 # Define t-SNE perplexity parameter as the parameter passed via command line

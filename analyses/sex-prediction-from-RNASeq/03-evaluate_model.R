@@ -187,7 +187,6 @@ if (!inherits(two_class_summary, "error")) {
   saveRDS(two_class_summary, summary_file)
 }
 
-
 #--------
 
 cat(paste("\n\nEnd script 03-evaluate_model; output=", opt$output_directory, "at", Sys.time(), "\n", sep=" "))
