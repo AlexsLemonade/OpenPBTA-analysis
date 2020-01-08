@@ -143,7 +143,20 @@ fuseEmbry <- filterFusion(df = fuse,
                           bioid = demoEmbry.bios, 
                           fuses = embryFuses, 
                           genes = embryGenes)
+allFuseEpend <- filterFusion(df = fuse,
+                          fuses = ependFuses)
+allFuseEmbry <- filterFusion(df = fuse,
+                          fuses = embryFuses,
+                          genes = embryGenes)
 #' Write the fusion frames to file
+generateOutput(df  = allFuseEpend,
+               fuses = ependFuses,
+               outputPath = file.path(
+                 opt$output_dir,"fusion_summary_ependymoma_foi.tsv"))
+generateOutput(df = allFuseEmbry,
+               fuses = embryFuses,
+               outputPath = file.path(
+                 opt$output_dir,"fusion_summary_embryonal_foi.tsv"))
 generateOutput(df = fuseEpend, 
                fuses = ependFuses, 
                outputPath = file.path(
