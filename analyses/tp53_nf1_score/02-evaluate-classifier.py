@@ -129,12 +129,12 @@ def get_roc_plot(scores_df, gene, outputfilename, color):
     sample_status = scores_df.loc[:, "{}_status".format(lower_gene)]
     sample_score = scores_df.loc[:, "{}_score".format(lower_gene)]
     shuffle_score = scores_df.loc[:, "{}_shuffle".format(lower_gene)]
-    fpr_pdx, tpr_pdx, thresh_pdx = roc_curve(
+    fpr_pbta, tpr_pbta, thresh_pbta = roc_curve(
         sample_status, sample_score, drop_intermediate=False
     )
-    precision_pdx, recall_pdx, _ = precision_recall_curve(sample_status, sample_score)
-    auroc_pdx = roc_auc_score(sample_status, sample_score)
-    aupr_pdx = average_precision_score(sample_status, sample_score)
+    precision_pbta, recall_pbta, _ = precision_recall_curve(sample_status, sample_score)
+    auroc_pbta = roc_auc_score(sample_status, sample_score)
+    aupr_pbta = average_precision_score(sample_status, sample_score)
 
     # Obtain Shuffled Metrics
     fpr_shuff, tpr_shuff, thresh_shuff = roc_curve(
@@ -147,7 +147,7 @@ def get_roc_plot(scores_df, gene, outputfilename, color):
     aupr_shuff = average_precision_score(sample_status, shuffle_score)
 
     roc_df = (
-        pd.DataFrame([fpr_pdx, tpr_pdx, thresh_pdx], index=["fpr", "tpr", "threshold"])
+        pd.DataFrame([fpr_pbta, tpr_pbta, thresh_pbta], index=["fpr", "tpr", "threshold"])
         .transpose()
         .assign(gene=gene, shuffled=False)
     )
@@ -157,9 +157,9 @@ def get_roc_plot(scores_df, gene, outputfilename, color):
     plt.xlim([0.0, 1.0])
     plt.ylim([0.0, 1.0])
     plt.plot(
-        fpr_pdx,
-        tpr_pdx,
-        label="{} (AUROC = {})".format(gene, round(auroc_pdx, 2)),
+        fpr_pbta,
+        tpr_pbta,
+        label="{} (AUROC = {})".format(gene, round(auroc_pbta, 2)),
         linestyle="solid",
         color=color,
     )
