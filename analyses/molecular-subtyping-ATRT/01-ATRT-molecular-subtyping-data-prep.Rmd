@@ -423,6 +423,17 @@ final_df <- final_df %>%
   ) %>%
   dplyr::ungroup()
 
+# Replace `NA` with `neutral` for focal status and `chr22q` variables
+final_df$SMARCB1_focal_status <- final_df$SMARCB1_focal_status %>%
+  tidyr::replace_na("neutral")
+
+final_df$SMARCA4_focal_status <- final_df$SMARCA4_focal_status %>%
+  tidyr::replace_na("neutral")
+
+final_df$chr_22q_loss <- final_df$SMARCB1_focal_status %>%
+  tidyr::replace_na("neutral")
+
+# Write final table to file
 readr::write_tsv(final_df,
                  file.path(results_dir, "ATRT_molecular_subtypes.tsv"))
 
