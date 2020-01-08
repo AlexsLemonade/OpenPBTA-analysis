@@ -78,18 +78,22 @@ handling later.
 # Read in the segment copy number data
 cnv_df <- data.table::fread(file.path(data_dir, "pbta-cnv-cnvkit.seg.gz"),
   data.table = FALSE
-) %>% 
-  dplyr::mutate(samples = as.factor(ID), 
-                # Calculate width
-                width = loc.end - loc.start, 
-                # Make a binary variable that labels whether or not a sequence 
-                # is considered changed by the threshold set
-                changed = as.factor(dplyr::case_when(
-                  seg.mean < log2(1 - ch.pct) ~ "change", 
-                  seg.mean >= log2(1 - ch.pct) ~ "no_change"))) %>% 
+) %>%
+  dplyr::mutate(
+    samples = as.factor(ID),
+    # Calculate width
+    width = loc.end - loc.start,
+    # Make a binary variable that labels whether or not a sequence
+    # is considered changed by the threshold set
+    changed = as.factor(dplyr::case_when(
+      seg.mean < log2(1 - ch.pct) ~ "change",
+      seg.mean >= log2(1 - ch.pct) ~ "no_change"
+    ))
+  ) %>%
   # Reformat the chromosome variable to drop the "chr"
-  dplyr::mutate(chrom = factor(gsub("chr", "", chrom), 
-                               levels = c(1:22, "X", "Y")))  %>% 
+  dplyr::mutate(chrom = factor(gsub("chr", "", chrom),
+    levels = c(1:22, "X", "Y")
+  )) %>%
   # Changing these so they end up matching the SV data
   dplyr::rename(start = loc.start, end = loc.end)
 ```
@@ -104,15 +108,17 @@ sv_files <- list.files(sv_dir, pattern = "_withoutYandM.tsv", full.names = TRUE)
 
 # Read in each of the files
 sv_data <- lapply(sv_files, function(sv_file) {
-  data.table::fread(sv_file, data.table = FALSE) %>% 
-    # The row binding step won't work unless all chromosome variables get 
+  data.table::fread(sv_file, data.table = FALSE) %>%
+    # The row binding step won't work unless all chromosome variables get
     # converted to characters consistently
-    dplyr::mutate(chrom1 = as.character(chrom1), 
-                  chrom2 = as.character(chrom2))
+    dplyr::mutate(
+      chrom1 = as.character(chrom1),
+      chrom2 = as.character(chrom2)
+    )
 })
 ```
 
-Carry over the sample names
+Carry over the sample names.
 
 ```{r}
 # Extract and carry over the sample names to the list
@@ -125,26 +131,33 @@ handling later.
 
 ```{r}
 # Bind all of them into one
-sv_df <- dplyr::bind_rows(sv_data, .id = "sample_ids") %>% 
+sv_df <- dplyr::bind_rows(sv_data, .id = "sample_ids") %>%
   # Reformat the 23 and 24 chromosomes so they are X and Y and also factors
-  dplyr::mutate(chrom1 = factor(dplyr::recode(chrom1, 
-                                       `23` = "X", `24` = "Y"), 
-                                levels = c(1:22, "X", "Y")),
-                chrom2 = factor(dplyr::recode(chrom2, 
-                                       `23` = "X", `24` = "Y"),
-                                levels = c(1:22, "X", "Y"))
-                ) %>% 
+  dplyr::mutate(
+    chrom1 = factor(dplyr::recode(chrom1,
+      `23` = "X", `24` = "Y"
+    ),
+    levels = c(1:22, "X", "Y")
+    ),
+    chrom2 = factor(dplyr::recode(chrom2,
+      `23` = "X", `24` = "Y"
+    ),
+    levels = c(1:22, "X", "Y")
+    )
+  ) %>%
   # Changing these so they end up matching the SV data
-  dplyr::rename(samples = sample_ids, chrom = chrom1) %>% 
+  dplyr::rename(samples = sample_ids, chrom = chrom1) %>%
   # GenomicRanges is unhappy if end comes before start, so we need to switch these
-  dplyr::mutate(start = dplyr::case_when(
-    pos2 < pos1 ~ pos2,
-    TRUE ~ pos1
-  ), 
-  end = dplyr::case_when(
-    pos2 < pos1 ~ pos1,
-    TRUE ~ pos2
-  ))
+  dplyr::mutate(
+    start = dplyr::case_when(
+      pos2 < pos1 ~ pos2,
+      TRUE ~ pos1
+    ),
+    end = dplyr::case_when(
+      pos2 < pos1 ~ pos1,
+      TRUE ~ pos2
+    )
+  )
 ```
 
 ### Set up other reference data
@@ -159,16 +172,18 @@ Set up chromosome size data
 
 ```{r}
 # Set up Chr sizes
-chr_sizes <- readr::read_tsv(file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed"), 
-                             col_names = FALSE) %>% 
+chr_sizes <- readr::read_tsv(file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed"),
+  col_names = FALSE
+) %>%
   # Reformat the chromosome variable to drop the "chr"
-  dplyr::mutate(X1 = factor(gsub("chr", "", X1), 
-                               levels = c(1:22, "X", "Y", "M"))) %>% 
+  dplyr::mutate(X1 = factor(gsub("chr", "", X1),
+    levels = c(1:22, "X", "Y", "M")
+  )) %>%
   # Remove sex chromosomes
-  dplyr::filter(!(X1 %in% c("X", "Y", "M"))) 
+  dplyr::filter(!(X1 %in% c("X", "Y", "M")))
 
 # Make chromosome size list
-chr_sizes_list <- chr_sizes$X3  
+chr_sizes_list <- chr_sizes$X3
 names(chr_sizes_list) <- chr_sizes$X1
 ```
 
@@ -182,15 +197,16 @@ We'll also remove the sex chromosomes.
 Make an CNV breaks data.frame. 
 
 ```{r}
-# Make a CNV data.frame that has the breaks   
+# Make a CNV data.frame that has the breaks
 cnv_breaks <- data.frame(
-  samples = rep(cnv_df$ID, 2), 
+  samples = rep(cnv_df$ID, 2),
   chrom = c(cnv_df$chrom, cnv_df$chrom),
   start = c(cnv_df$start, cnv_df$end),
   end = c(cnv_df$start, cnv_df$end),
-  seg.mean = rep(cnv_df$seg.mean, 2), 
-  copy.num = rep(cnv_df$copy.num, 2), 
-  stringsAsFactors = FALSE) %>% 
+  seg.mean = rep(cnv_df$seg.mean, 2),
+  copy.num = rep(cnv_df$copy.num, 2),
+  stringsAsFactors = FALSE
+) %>%
   # Remove sex chromosomes
   dplyr::filter(!(chrom %in% c("X", "Y")))
 ```
@@ -198,14 +214,15 @@ cnv_breaks <- data.frame(
 Make an SV breaks data.frame. 
 
 ```{r}
-# Make a data.frame that has the breaks   
+# Make a data.frame that has the breaks
 sv_breaks <- data.frame(
-  samples = rep(sv_df$samples, 2), 
+  samples = rep(sv_df$samples, 2),
   chrom = c(sv_df$chrom1, sv_df$chrom2),
   start = c(sv_df$start, sv_df$end),
   end = c(sv_df$start, sv_df$end),
-  svclass = rep(sv_df$SVtype, 2), 
-  stringsAsFactors = FALSE) %>% 
+  svclass = rep(sv_df$SVtype, 2),
+  stringsAsFactors = FALSE
+) %>%
   # Remove sex chromosomes
   dplyr::filter(!(chrom %in% c("X", "Y")))
 ```
@@ -224,32 +241,37 @@ We will run this for each sample and return a list of three `GenomicRanges` obje
 # Change here and it will change the rest
 bin_size <- 1e6
 
-# Get a big list of break densities for each sample. 
+# Get a big list of break densities for each sample.
 densities <- lapply(common_samples, function(sample_id) {
-  
+
   # Calculate break densities with both datasets combined
-  common_density <- break_density(sv_breaks, 
-                                  cnv_breaks, 
-                                  sample_id = sample_id,
-                                  window_size = bin_size,
-                                  chr_sizes_list = chr_sizes_list)
-  
+  common_density <- break_density(sv_breaks,
+    cnv_breaks,
+    sample_id = sample_id,
+    window_size = bin_size,
+    chr_sizes_list = chr_sizes_list
+  )
+
   # Calculate break densities for CNV only
-  cnv_density <- break_density(cnv_breaks, 
-                               sample_id = sample_id,
-                               window_size = bin_size,
-                               chr_sizes_list = chr_sizes_list)
-  
+  cnv_density <- break_density(cnv_breaks,
+    sample_id = sample_id,
+    window_size = bin_size,
+    chr_sizes_list = chr_sizes_list
+  )
+
   # Calculate break densities for SV only
-  sv_density  <- break_density(sv_breaks, 
-                               sample_id = sample_id,
-                               window_size = bin_size,
-                               chr_sizes_list = chr_sizes_list)
+  sv_density <- break_density(sv_breaks,
+    sample_id = sample_id,
+    window_size = bin_size,
+    chr_sizes_list = chr_sizes_list
+  )
 
   # Return this mega GRanges list
-  return(list(common_density = common_density,
-              cnv_density = cnv_density,
-              sv_density = sv_density))
+  return(list(
+    common_density = common_density,
+    cnv_density = cnv_density,
+    sv_density = sv_density
+  ))
 })
 
 # Bring along the sample IDs
