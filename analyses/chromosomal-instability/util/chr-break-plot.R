@@ -116,10 +116,3 @@ chr_break_plot <- function(granges_list,
   # Print out the plot while we are here
   full_plot
 }
-
-# Make the combo plot
-chr_break_plot(granges_list = granges_list,
-               plot_name = group_name,
-               y_val = "median_counts", 
-               y_lab = "Avg Breaks per Mb", 
-               plot_dir = hist_plots_dir)
