@@ -10,7 +10,7 @@
 # Imports in the pep8 order https://www.python.org/dev/peps/pep-0008/#imports
 # Standard library
 import argparse
-import sysr
+import sys
 
 # Related third party
 import numpy as np
