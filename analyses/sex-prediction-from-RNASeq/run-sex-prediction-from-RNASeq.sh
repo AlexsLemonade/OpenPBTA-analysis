@@ -13,6 +13,9 @@ script_directory="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
+# option for only running a single tail percent in continuous integration
+PERCENT=${OPENPBTA_PERCENT:-1}
+
 #--------USER-SPECIFIED ARGUMENTS
 
 # output directory of script 01, input directory of scripts 02 and 03
@@ -31,7 +34,13 @@ SEED=36354
 FILENAME_LEAD=kallisto_stranded
 
 # argument for script 02 processing and script 03 input file specification
-TRANSCRIPT_TAIL_PERCENT_ARRAY=(0.25 0.125 0.0625 0.0313 0.0156 0.0078 0.0039 0.0020 0.0010 0.0005)
+# if this is not in CI, we can use the full 10 values for the transcript tail %
+# else, use 0.25 only
+if ["$PERCENT" -gt "0"]; then
+  TRANSCRIPT_TAIL_PERCENT_ARRAY=(0.25 0.125 0.0625 0.0313 0.0156 0.0078 0.0039 0.0020 0.0010 0.0005)
+else
+  TRANSCRIPT_TAIL_PERCENT_ARRAY=(0.25)
+fi
 
 # argument for script 01 processing
 TRAIN_PERCENT=0.7
@@ -43,7 +52,6 @@ TRAIN_TARGET_COLUMN=reported_gender
 
 # we will evaluate the model's performance on both of these columns
 targetColumns=("reported_gender" "germline_sex_estimate")
-
 
 #--------END USER-SPECIFIED ARGUMENTS
 
@@ -105,7 +113,7 @@ Rscript --vanilla 02-train_elasticnet.R \
   --model_coefs_file_name $MODEL_COEFS_FILE_NAME \
   --train_target_column $TRAIN_TARGET_COLUMN \
   --transcript_tail_percent ${TRANSCRIPT_TAIL_PERCENT_ARRAY[i]}
- 
+
 
 # if there is a test set, e.g., the entire dataset was not used for training
 if [ ! $TRAIN_PERCENT == 1 ]; then
@@ -117,7 +125,7 @@ if [ ! $TRAIN_PERCENT == 1 ]; then
   CM_SET=${RESULTS_FILENAME_LEAD}_confusion_matrix.RDS
   SUMMARY_FILE=${RESULTS_FILENAME_LEAD}_two_class_summary.RDS
 
-  
+
   for t in ${targetColumns[@]}; do
 
     # set up results directory for the column being evaluated
@@ -138,9 +146,9 @@ if [ ! $TRAIN_PERCENT == 1 ]; then
   done
 fi
 
- 
+
 done
- 
+
 Rscript -e 'library(rmarkdown)'
 
 
