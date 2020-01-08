@@ -256,7 +256,7 @@ We will run this for each sample and return a list of three `GenomicRanges` obje
 2) `cnv_density` contains the number of break counts for CNV.   
 3) `sv_density` contains the number of break counts for SV.  
 
-```{r, results='hide'}
+```{r, warning = FALSE, results='hide'}
 # Change here and it will change the rest
 bin_size <- 1e6
 
@@ -297,7 +297,7 @@ sample_densities <- lapply(common_samples, function(sample_id) {
 })
 
 # Bring along the sample IDs
-names(densities) <- common_samples
+names(sample_densities) <- common_samples
 ```
 
 ## Plot the breakpoints for each sample
@@ -306,7 +306,7 @@ Given the `GenomicRanges` objects for each sample, create a combined plot for
 each. 
 
 ```{r, results='hide'}
-lapply(densities, function(granges_list){
+lapply(sample_densities, function(granges_list){
   
   # Get the sample name
   sample_name <- common_samples[parent.frame()$i[]]
@@ -315,7 +315,7 @@ lapply(densities, function(granges_list){
   chr_break_plot(granges_list = granges_list,
                  plot_name = sample_name,
                  y_val = "total_counts", 
-                 y_lab - "Breaks per Mb", 
+                 y_lab = "Breaks per Mb", 
                  plot_dir = sample_plots_dir)
 })
 ```
@@ -385,7 +385,7 @@ lapply(group_densities, function(granges_list){
   # Make the combo plot
   chr_break_plot(granges_list = granges_list,
                  plot_name = group_name,
-                 y_val = "avg_counts", 
+                 y_val = "median_counts", 
                  y_lab = "Avg Breaks per Mb", 
                  plot_dir = hist_plots_dir)
 })

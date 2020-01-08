@@ -26,8 +26,8 @@ map_density_plot <- function(granges,
   #
   # For setting the scale later, need to get y's max
   max_y <- max(
-    dplyr::pull(
-      data.frame(granges@elementMetadata@listData),
+    data.frame(granges@elementMetadata@listData) %>% 
+      dplyr::pull(
       !!rlang::sym(y_val)
     )
   )
@@ -115,3 +115,10 @@ chr_break_plot <- function(granges_list,
   # Print out the plot while we are here
   full_plot
 }
+
+# Make the combo plot
+chr_break_plot(granges_list = granges_list,
+               plot_name = group_name,
+               y_val = "median_counts", 
+               y_lab = "Avg Breaks per Mb", 
+               plot_dir = hist_plots_dir)

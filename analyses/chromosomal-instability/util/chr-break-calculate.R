@@ -71,7 +71,7 @@ make_granges <- function(break_df = NULL,
       start = dplyr::pull(break_df, !!rlang::sym(start_col)),
       end = dplyr::pull(break_df, !!rlang::sym(end_col))
     ),
-    mcols = break_df
+    mcols = dplyr::pull(break_df, !!rlang::sym(samples_col))
   )
 
   return(granges)
@@ -122,10 +122,10 @@ break_density <- function(sv_breaks = NULL,
   if (is.null(sample_id)) {
     stop("No sample ID has been specified. Use the `sample_id` argument.")
   }
-  
+
   # Determine how many samples are in the group
   n_samples <- length(sample_id)
-  
+
   # Make CNV into GRanges
   if (!is.null(cnv_breaks)) {
     cnv_ranges <- make_granges(
@@ -159,7 +159,24 @@ break_density <- function(sv_breaks = NULL,
       cnv_ranges,
       sv_ranges
     )
-  }
+    
+    # Carry over list data from sv_ranges
+    sv_overlaps <- GenomicRanges::findOverlaps(sv_ranges, combo_ranges)
+
+    # Carry over list data from cnv_ranges
+    cnv_overlaps <- GenomicRanges::findOverlaps(cnv_ranges, combo_ranges)
+
+    # Set up an empty list where we can store what sample each sequence came from
+    combo_ranges@elementMetadata@listData$samples <- rep(NA, length(combo_ranges))
+
+    # Bring over CNV samples
+    combo_ranges@elementMetadata@listData$samples[cnv_overlaps@from] <-
+      cnv_ranges@elementMetadata@listData$mcols[cnv_overlaps@to]
+
+    # Bring over SV samples
+    combo_ranges@elementMetadata@listData$samples[cnv_overlaps@from] <-
+      cnv_ranges@elementMetadata@listData$mcols[cnv_overlaps@to]
+    }
 
   # Create genome bins
   bins <- GenomicRanges::tileGenome(chr_sizes_list,
@@ -174,13 +191,40 @@ break_density <- function(sv_breaks = NULL,
     bins,
     combo_ranges
   )
-
+  ########################### Calculate summary stats ##########################
+  # Get a per sample break down if there is more than one sample
+  if (n_samples > 1) {
+    
+    # Get counts for each genome bin
+    bin_indices <- GenomicRanges::findOverlaps(
+      bins,
+      combo_ranges
+    )
+    
+    # Get list of samples 
+    bin_samples <- combo_ranges@elementMetadata@listData$mcols[bin_indices@to] 
+    
+    # Make a matrix that has the number of breaks per sample for each bin
+    freq_per_bin <- table(bin_indices@from, bin_samples) %>% 
+      data.frame() %>%
+      tidyr::spread(Var1, Freq) %>% 
+      tibble::column_to_rownames("bin_samples") %>%
+      t()
+    
+    # Calculate the median breaks per bin
+    median_counts <- apply(freq_per_bin, 1, median)
+    
+    # Store the median break counts, some bins data may be dropped off so we need 
+    # to start with NAs and then fill in the data based on the indices.
+    bins@elementMetadata@listData$median_counts <- rep(NA, length(bins))
+    bins@elementMetadata@listData$median_counts[as.numeric(names(median_counts))] <- median_counts
+    
+    # Store average count info
+    bins@elementMetadata@listData$avg_counts <- bin_counts / n_samples
+  }
   # Store count info
   bins@elementMetadata@listData$total_counts <- bin_counts
 
-  # Store average count info
-  bins@elementMetadata@listData$avg_counts <- bin_counts / n_samples
-  
   # Calculate and store density
   bins@elementMetadata@listData$density <- bin_counts / window_size
 
