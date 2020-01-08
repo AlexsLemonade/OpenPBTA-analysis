@@ -52,8 +52,11 @@ if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
 
+# Read in non-subsetted metadata
+metadata <- readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"))
+
 # Read in ATRT subset metadata
-metadata <-
+subset_metadata <-
   readr::read_tsv(file.path(input_dir, "atrt_histologies.tsv"))
 
 # Select wanted columns in metadata for merging and assign to a new object
@@ -156,7 +159,7 @@ infratentorial <-
     "Other locations NOS;Spinal Cord- Lumbar/Thecal Sac;Spinal Cord- Thoracic;Ventricles"
   )
 
-metadata <- metadata %>%
+subset_metadata <- subset_metadata %>%
   dplyr::mutate(
     location_summary = dplyr::case_when(
       primary_site %in% infratentorial ~ "infratentorial",
@@ -176,7 +179,7 @@ metadata <- metadata %>%
   )
 
 # Display metadata subsetted for ATRT samples
-metadata %>%
+subset_metadata %>%
   head(n = 15)
 ```
 
@@ -254,7 +257,7 @@ expression_metadata %>%
   head(n = 15)
 
 # Join expression data with metadata filtered for `ATRT`
-atrt_expression_df <- metadata %>%
+atrt_expression_df <- subset_metadata %>%
   dplyr::left_join(expression_metadata,
                    by = "sample_id")
 ```
@@ -262,26 +265,17 @@ atrt_expression_df <- metadata %>%
 ### CN data
 
 ```{r}
-# Filter focal CN data for SMARCB1 and SMARCA4 status 
-cn_df <- cn_df %>% 
+# Filter focal CN data for SMARCB1 and SMARCA4 status
+cn_df <- cn_df %>%
   dplyr::filter(gene_symbol %in% c("SMARCB1", "SMARCA4")) %>%
   dplyr::mutate(
     SMARCB1_focal_status = dplyr::case_when(gene_symbol == "SMARCB1" ~ status,
-                                            TRUE ~ "neutral"),
+                                            TRUE ~ "NA"),
     SMARCA4_focal_status = dplyr::case_when(gene_symbol == "SMARCA4" ~ status,
-                                            TRUE ~ "neutral")
+                                            TRUE ~ "NA")
   ) %>%
   dplyr::select(-c("status", "gene_symbol")) %>%
-  dplyr::distinct() %>%
-  dplyr::group_by(sample_id) %>%
-  dplyr::summarise(
-    SMARCB1_focal_status = paste(sort(unique(
-      SMARCB1_focal_status
-    )), collapse = ", "),
-    SMARCA4_focal_status = paste(sort(unique(
-      SMARCA4_focal_status
-    )), collapse = ", ")
-  )
+  dplyr::distinct()
 
 # Display `cn_metadata`
 cn_df %>%
@@ -423,15 +417,34 @@ final_df <- final_df %>%
   ) %>%
   dplyr::ungroup()
 
-# Replace `NA` with `neutral` for focal status and `chr22q` variables
-final_df$SMARCB1_focal_status <- final_df$SMARCB1_focal_status %>%
-  tidyr::replace_na("neutral")
-
-final_df$SMARCA4_focal_status <- final_df$SMARCA4_focal_status %>%
-  tidyr::replace_na("neutral")
-
-final_df$chr_22q_loss <- final_df$SMARCB1_focal_status %>%
-  tidyr::replace_na("neutral")
+# Replace `NA` with `neutral` for focal status variables (for WGS samples)
+final_df <- final_df %>%
+  dplyr::group_by(sample_id) %>%
+  dplyr::mutate(
+    SMARCB1_focal_status = paste(sort(unique(dplyr::case_when(
+      (is.na(as.character(SMARCB1_focal_status)) | SMARCB1_focal_status == "NA") &
+        !(
+          Kids_First_Biospecimen_ID %in% subset_metadata$Kids_First_Biospecimen_ID
+        ) ~ "neutral",
+      (is.na(as.character(SMARCB1_focal_status)) | SMARCB1_focal_status == "NA") &
+        (
+          Kids_First_Biospecimen_ID %in% subset_metadata$Kids_First_Biospecimen_ID
+        ) ~ "NA",
+      TRUE ~ as.character(SMARCB1_focal_status)
+    ))), collapse = ", "),
+    SMARCA4_focal_status = paste(sort(unique(dplyr::case_when(
+      (is.na(as.character(SMARCA4_focal_status)) | SMARCA4_focal_status == "NA") &
+        !(
+          Kids_First_Biospecimen_ID %in% subset_metadata$Kids_First_Biospecimen_ID
+        ) ~ "neutral",
+      (is.na(as.character(SMARCA4_focal_status)) | SMARCA4_focal_status == "NA") &
+        (
+          Kids_First_Biospecimen_ID %in% subset_metadata$Kids_First_Biospecimen_ID
+        ) ~ "NA",
+      TRUE ~ as.character(SMARCA4_focal_status)
+    ))), collapse = ", ")
+  ) %>%
+  dplyr::distinct()
 
 # Write final table to file
 readr::write_tsv(final_df,
