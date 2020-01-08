@@ -93,7 +93,8 @@ annotation_df <- final_df %>%
     location_summary,
     germline_sex_estimate,
     SMARCB1_focal_status,
-    SMARCA4_focal_status
+    SMARCA4_focal_status,
+    chr_22q_loss
   ) %>%
   as.data.frame() %>%  # ComplexHeatmap doesn't like tibbles
   tibble::column_to_rownames("sample_id")

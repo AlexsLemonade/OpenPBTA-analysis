@@ -71,7 +71,7 @@ cn_df <- readr::read_tsv(
     "analyses",
     "focal-cn-file-preparation",
     "results",
-    "controlfreec_annotated_cn_autosomes.tsv.gz"
+    "cnvkit_annotated_cn_autosomes.tsv.gz"
   )
 )
 
@@ -81,8 +81,16 @@ tmb_df <-
                               "data",
                               "pbta-snv-consensus-mutation-tmb-all.tsv"))
 
-## TODO: Read in the SV data/GISTIC output to evaluate the chr22q loss
-#        associated with SMARB1 deletions
+# Read in GISTIC `broad_values_by_arm.txt` file
+gistic_df <-
+  data.table::fread(unzip(
+    file.path(root_dir, "data", "pbta-cnv-cnvkit-gistic.zip"),
+    files = file.path(
+      "2019-12-10-gistic-results-cnvkit",
+      "broad_values_by_arm.txt"
+    ),
+    exdir = file.path(root_dir, "scratch")
+  ))
 
 #### Filter metadata -----------------------------------------------------------
 
@@ -147,3 +155,21 @@ tmb_df <- tmb_df %>%
 
 # Write to file
 readr::write_tsv(tmb_df, file.path(results_dir, "atrt_tmb.tsv"))
+
+#### Filter GISTIC data --------------------------------------------------------
+
+gistic_df <- gistic_df %>%
+  as.data.frame() %>%
+  tibble::column_to_rownames("Chromosome Arm") %>%
+  t() %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
+  dplyr::left_join(select_metadata, by = "Kids_First_Biospecimen_ID") %>%
+  dplyr::filter(sample_id %in% atrt_df$sample_id) %>%
+  dplyr::select(sample_id,
+                Kids_First_Biospecimen_ID,
+                `22q`) #Select only the chromosome arm we are interested in
+
+# Write to file
+readr::write_tsv(gistic_df,
+                 file.path(results_dir, "atrt_gistic_broad_values.tsv"))

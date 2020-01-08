@@ -87,6 +87,11 @@ cn_df <- readr::read_tsv(
 tmb_df <-
   data.table::fread(file.path(input_dir,
                               "atrt_tmb.tsv"))
+
+# Read in ATRT subset GISTIC data
+gistic_df <-
+  readr::read_tsv(file.path(input_dir, "atrt_gistic_broad_values.tsv"))
+
 ```
 
 ## Custom Function
@@ -335,11 +340,31 @@ atrt_expression_cn_tmb_df <- atrt_expression_cn_df %>%
 # data.
 ```
 
+### GISTIC data
+
+```{r}
+gistic_df <- gistic_df %>%
+  dplyr::select(-Kids_First_Biospecimen_ID) %>%
+  dplyr::group_by(sample_id) %>%
+  dplyr::mutate(chr_22q_loss = dplyr::case_when(`22q` == -1 ~ "Yes",
+                                                TRUE ~ "No")) %>%
+  dplyr::select(-`22q`)
+
+# Display `gistic_df`
+gistic_df %>%
+  head(n = 15)
+
+# Join GISTIC data with the running final data.frame
+final_df <- atrt_expression_cn_tmb_df %>%
+  dplyr::left_join(gistic_df, by = "sample_id") %>%
+  dplyr::distinct()
+```
+
 # Save final table of results
 
 ```{r}
 # Save final data.frame
-final_df <- atrt_expression_cn_tmb_df %>%
+final_df <- final_df %>%
   dplyr::group_by(sample_id) %>%
   dplyr::mutate(
     Kids_First_Biospecimen_ID = paste(sort(
