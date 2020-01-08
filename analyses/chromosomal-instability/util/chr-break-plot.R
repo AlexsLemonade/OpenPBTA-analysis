@@ -1,4 +1,4 @@
-# Functions for chromosomal instability calculations
+# Functions for chromosomal instability plots
 #
 # C. Savonen for ALSF - CCDL
 #
@@ -26,10 +26,10 @@ map_density_plot <- function(granges,
   #
   # For setting the scale later, need to get y's max
   max_y <- max(
-    data.frame(granges@elementMetadata@listData) %>% 
+    data.frame(granges@elementMetadata@listData) %>%
       dplyr::pull(
       !!rlang::sym(y_val)
-    ), 
+    ),
     na.rm = TRUE
   )
   # Make the density plot
@@ -49,8 +49,8 @@ map_density_plot <- function(granges,
 
 chr_break_plot <- function(granges_list,
                            plot_name,
-                           y_val, 
-                           y_lab, 
+                           y_val,
+                           y_lab,
                            plot_dir) {
   # A wrapper function to make a 3 row chromosomal map plot for a set of GRanges
   # objects that contain common_density, cnv_density, and sv_density.
@@ -58,7 +58,7 @@ chr_break_plot <- function(granges_list,
   # Args:
   #   granges_list: A list of Granges object to plot as a combination plot
   #   plot_name: a character string specifying the plot
-  #   y_val: to be passed to map_density plot for mapping. 
+  #   y_val: to be passed to map_density plot for mapping.
   #   y_lab: to be passed to map_density plot for y axis label
   #   plot_dir: a file path where you would like the plot PNG to be saved.
   #

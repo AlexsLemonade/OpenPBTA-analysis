@@ -1,4 +1,4 @@
-# Functions for chromosomal instability plots
+# Functions for chromosomal instability calculations
 #
 # C. Savonen for ALSF - CCDL
 #
@@ -10,7 +10,7 @@ make_granges <- function(break_df = NULL,
                          chrom_col = "chrom",
                          start_col = "start",
                          end_col = "end") {
-  # For a given breaks data.frame make a GenomicRanger object from it. Can
+  # For a given breaks data.frame make a GenomicRanges object from it. Can
   # filter to a single samples' data.
   #
   # Args:
@@ -92,7 +92,7 @@ break_density <- function(sv_breaks = NULL,
                           end_col_sv = "end") {
   # For given breaks data.frame(s), calculate the breaks density for a tiled
   # windows across the genome. Returns the data as a GenomicRanges object for
-  # easy mapping with ggbio. Where the density and counts are stored in
+  # easy mapping with `ggbio`. Where the density and counts are stored in
   # @elementMetadata@listData.
   #
   # Args:
@@ -159,7 +159,7 @@ break_density <- function(sv_breaks = NULL,
       cnv_ranges,
       sv_ranges
     )
-    
+
     # Carry over list data from sv_ranges
     sv_overlaps <- GenomicRanges::findOverlaps(sv_ranges, combo_ranges)
 
@@ -194,31 +194,31 @@ break_density <- function(sv_breaks = NULL,
   ########################### Calculate summary stats ##########################
   # Get a per sample break down if there is more than one sample
   if (n_samples > 1) {
-    
+
     # Get counts for each genome bin
     bin_indices <- GenomicRanges::findOverlaps(
       bins,
       combo_ranges
     )
-    
-    # Get list of samples 
-    bin_samples <- combo_ranges@elementMetadata@listData$mcols[bin_indices@to] 
-    
+
+    # Get list of samples
+    bin_samples <- combo_ranges@elementMetadata@listData$mcols[bin_indices@to]
+
     # Make a matrix that has the number of breaks per sample for each bin
-    freq_per_bin <- table(bin_indices@from, bin_samples) %>% 
+    freq_per_bin <- table(bin_indices@from, bin_samples) %>%
       data.frame() %>%
-      tidyr::spread(Var1, Freq) %>% 
+      tidyr::spread(Var1, Freq) %>%
       tibble::column_to_rownames("bin_samples") %>%
       t()
-    
+
     # Calculate the median breaks per bin
     median_counts <- apply(freq_per_bin, 1, median)
-    
-    # Store the median break counts, some bins data may be dropped off so we need 
+
+    # Store the median break counts, some bins data may be dropped off so we need
     # to start with NAs and then fill in the data based on the indices.
     bins@elementMetadata@listData$median_counts <- rep(NA, length(bins))
     bins@elementMetadata@listData$median_counts[as.numeric(names(median_counts))] <- median_counts
-    
+
     # Store average count info
     bins@elementMetadata@listData$avg_counts <- bin_counts / n_samples
   }
