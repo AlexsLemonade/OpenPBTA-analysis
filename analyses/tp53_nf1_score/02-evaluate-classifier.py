@@ -1,3 +1,31 @@
+"""
+Evaluate Classifier Predictions
+Modified from PDX PPTC Machine Learning Analysis
+https://github.com/marislab/pdx-classification
+Rokita et al. Cell Reports. 2019.
+https://doi.org/10.1016/j.celrep.2019.09.071
+
+Gregory Way, 2018
+Modified by Krutika Gaonkar for OpenPBTA, 2020
+
+In the following notebook I evaluate the predictions made by the NF1 and TP53 classifiers in the input PDX RNAseq data.
+
+## Procedure
+
+1. Load status matrices
+  * These files store the mutation status for TP53 and NF1 for the input samples (see 00-tp53-nf1-alterations.R for more information)
+2. Align identifiers
+  * The identifiers matching the RNAseq data to the status matrix are not aligned.
+  * I use an intermediate dictionary to map common identifiers
+3. Load predictions (see 01-apply-classifier.py for more details)
+4. Evaluate predictions
+  * I visualize the distribution of predictions between wild-type and mutant samples for both classifiers
+
+## Output
+
+The output of this notebook are several evaluation figures demonstrating the predictive performance on the input data for the three classifiers.
+"""
+
 import os
 import random
 from decimal import Decimal
