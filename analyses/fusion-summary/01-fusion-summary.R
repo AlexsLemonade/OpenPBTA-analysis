@@ -85,8 +85,8 @@ generateOutput <- function(df, fuses, outputPath) {
   mtx = as.data.frame.matrix(tbl)
   # convert the rownames into the first row
   mtx = setDT(mtx,keep.rownames=TRUE)
-  # add in a column name for the rownames
-  colnames(mtx) = c("Kids_First_Biospecimen_ID",lvls)
+  # rename the column of the rownames
+  colnames(mtx)[colnames(mtx) == 'rn'] <- 'Kids_First_Biospecimen_ID'
   write.table(mtx, file=outputPath, sep="\t", quote=FALSE, row.names=FALSE)
 }
 
