@@ -117,6 +117,13 @@ cnv_df <- data.table::fread(file.path(data_dir, "pbta-cnv-cnvkit.seg.gz"),
   dplyr::rename(start = loc.start, end = loc.end)
 ```
 
+Filter CNV data to only the changes that are larger than our cutoff `ch.pct`.
+
+```{r}
+cnv_filtered_df <- cnv_df %>% 
+  dplyr::filter(changed == "change")
+```
+
 #### Set up SV data
 
 Read in the SV data.
@@ -218,12 +225,12 @@ Make an CNV breaks data.frame.
 ```{r}
 # Make a CNV data.frame that has the breaks
 cnv_breaks <- data.frame(
-  samples = rep(cnv_df$ID, 2),
-  chrom = c(cnv_df$chrom, cnv_df$chrom),
-  start = c(cnv_df$start, cnv_df$end),
-  end = c(cnv_df$start, cnv_df$end),
-  seg.mean = rep(cnv_df$seg.mean, 2),
-  copy.num = rep(cnv_df$copy.num, 2),
+  samples = rep(cnv_filtered_df$ID, 2),
+  chrom = c(cnv_filtered_df$chrom, cnv_filtered_df$chrom),
+  start = c(cnv_filtered_df$start, cnv_filtered_df$end),
+  end = c(cnv_filtered_df$start, cnv_filtered_df$end),
+  seg.mean = rep(cnv_filtered_df$seg.mean, 2),
+  copy.num = rep(cnv_filtered_df$copy.num, 2),
   stringsAsFactors = FALSE
 ) %>%
   # Remove sex chromosomes
