@@ -53,10 +53,10 @@ make_granges <- function(break_df = NULL,
     ))
   }
 
-  if (sample_id != "all") {
+  if (sample_id[1] != "all") {
     # Extract samples' info from the data.frame
     break_df <- break_df %>%
-      dplyr::filter(c(sample_id) %in% !!rlang::sym(samples_col))
+      dplyr::filter(!!rlang::sym(samples_col) %in% c(sample_id))
 
     # Stop if the sample doesn't exist in the data.frame
     if (nrow(break_df) == 0) {

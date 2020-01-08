@@ -48,7 +48,9 @@ map_density_plot <- function(granges,
 
 chr_break_plot <- function(granges_list,
                            plot_name,
-                           y_val) {
+                           y_val, 
+                           y_lab, 
+                           plot_dir) {
   # A wrapper function to make a 3 row chromosomal map plot for a set of GRanges
   # objects that contain common_density, cnv_density, and sv_density.
   #
@@ -56,6 +58,8 @@ chr_break_plot <- function(granges_list,
   #   granges_list: A list of Granges object to plot as a combination plot
   #   plot_name: a character string specifying the plot
   #   y_val: to be passed to map_density plot for mapping. 
+  #   y_lab: to be passed to map_density plot for y axis label
+  #   plot_dir: a file path where you would like the plot PNG to be saved.
   #
   # Returns:
   #  ggplot of chromosomal mapping of the y value given.
@@ -63,7 +67,7 @@ chr_break_plot <- function(granges_list,
   # Make combined SV and CNV plot
   common_plot <- map_density_plot(granges_list$common_density,
     y_val = y_val,
-    y_lab = "Breaks per Mb",
+    y_lab = y_lab,
     color = "blue",
     main_title = "Common Breaks"
   )
@@ -71,7 +75,7 @@ chr_break_plot <- function(granges_list,
   # Make CNV plot
   cnv_plot <- map_density_plot(granges_list$cnv_density,
     y_val = y_val,
-    y_lab = "Breaks per Mb",
+    y_lab = y_lab,
     color = "darkgreen",
     main_title = "CNV Breaks"
   )
@@ -79,7 +83,7 @@ chr_break_plot <- function(granges_list,
   # Make SV plot
   sv_plot <- map_density_plot(granges_list$sv_density,
     y_val = y_val,
-    y_lab = "Breaks per Mb",
+    y_lab = y_lab,
     color = "orange",
     main_title = "SV Breaks"
   )
@@ -103,7 +107,7 @@ chr_break_plot <- function(granges_list,
   # Save plot to PNG
   cowplot::save_plot(
     plot = full_plot,
-    filename = file.path(plots_dir, paste0(plot_name, "_breaks.png")),
+    filename = file.path(plot_dir, paste0(plot_name, "_breaks.png")),
     base_height = 7,
     base_width = 20
   )
