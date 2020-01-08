@@ -1,4 +1,4 @@
-# This script subsets the focal copy number, RNA expression, tumor mutation 
+# This script subsets the focal copy number, RNA expression, tumor mutation
 # burden and histologies` files to include only ATRT samples.
 
 # Chante Bethell for CCDL 2019
@@ -40,15 +40,15 @@ select_metadata <- metadata %>%
                 Kids_First_Participant_ID,
                 Kids_First_Biospecimen_ID)
 
-# Read in ssGSEA pathway information
-ssGSEA <-
-  as.data.frame(readr::read_rds(
+# Read in GSVA pathway scores
+gsva_scores <-
+  as.data.frame(readr::read_tsv(
     file.path(
       root_dir,
       "analyses",
-      "ssgsea-hallmark",
+      "gene-set-enrichment-analysis",
       "results",
-      "GeneSetExpressionMatrix.RDS"
+      "gsva_scores_stranded.tsv"
     )
   ))
 
@@ -79,9 +79,9 @@ cn_df <- readr::read_tsv(
 tmb_df <-
   data.table::fread(file.path(root_dir,
                               "data",
-                              "pbta-snv-consensus-mutation-tmb.tsv"))
+                              "pbta-snv-consensus-mutation-tmb-all.tsv"))
 
-## TODO: Read in the SV data/GISTIC output to evaluate the chr22q loss 
+## TODO: Read in the SV data/GISTIC output to evaluate the chr22q loss
 #        associated with SMARB1 deletions
 
 #### Filter metadata -----------------------------------------------------------
@@ -105,27 +105,13 @@ stranded_expression <- stranded_expression %>%
 # Log2 transformation
 norm_expression <- log2(stranded_expression + 1)
 
-# normData mean and sd
-norm_expression_means <- rowMeans(norm_expression, na.rm = TRUE)
-norm_expression_sd <- apply(norm_expression, 1, sd, na.rm = TRUE)
-
-# Subtract mean
-expression_zscored <-
-  sweep(norm_expression, 1, norm_expression_means, FUN = "-")
-
-# Divide by SD remove NAs and Inf values from zscore for genes with 0 in normData
-expression_zscored <-
-  sweep(expression_zscored, 1, norm_expression_sd, FUN = "/") %>%
-  dplyr::na_if(Inf) %>%
-  na.omit()
-
 # Save matrix with all genes to file for downstream plotting
-readr::write_rds(expression_zscored, 
-                 file.path(results_dir, "atrt_zscored_expression.RDS"))
+readr::write_rds(norm_expression,
+                 file.path(results_dir, "atrt_log_expression.RDS"))
 
 #### Filter focal CN data ------------------------------------------------------
 
-# Filter focal CN to ATRT samples only 
+# Filter focal CN to ATRT samples only
 cn_metadata <- cn_df %>%
   dplyr::left_join(select_metadata,
                    by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
@@ -140,22 +126,16 @@ cn_metadata <- cn_df %>%
 # Write to file
 readr::write_tsv(cn_metadata, file.path(results_dir, "atrt_focal_cn.tsv.gz"))
 
-#### Filter ssGSEA data --------------------------------------------------------
-
-# Transpose
-transposed_ssGSEA <- t(ssGSEA) %>%
-  as.data.frame() %>%
-  tibble::rownames_to_column("Kids_First_Biospecimen_ID")
+#### Filter GSVA data ----------------------------------------------------------
 
 # Filter for `sample_id` values found in the metadata filtered for ATRT samples
-transposed_ssGSEA <- transposed_ssGSEA %>%
+filtered_gsva_scores <- gsva_scores %>%
   dplyr::left_join(select_metadata, by = "Kids_First_Biospecimen_ID") %>%
   dplyr::filter(sample_id %in% atrt_df$sample_id) %>%
-  tibble::column_to_rownames("Kids_First_Biospecimen_ID") %>%
-  dplyr::select(-c("sample_id", "Kids_First_Participant_ID"))
+  dplyr::select(-Kids_First_Participant_ID)
 
 # Write to file
-readr::write_rds(transposed_ssGSEA, file.path(results_dir, "atrt_ssgsea.RDS"))
+readr::write_tsv(filtered_gsva_scores, file.path(results_dir, "atrt_gsva.tsv"))
 
 #### Filter tumor mutation burden data -----------------------------------------
 
@@ -165,5 +145,5 @@ tmb_df <- tmb_df %>%
                     by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
   dplyr::filter(sample_id %in% atrt_df$sample_id)
 
-# Write to file 
+# Write to file
 readr::write_tsv(tmb_df, file.path(results_dir, "atrt_tmb.tsv"))
