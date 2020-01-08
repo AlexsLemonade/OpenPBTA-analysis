@@ -90,8 +90,8 @@ break_density <- function(sv_breaks = NULL,
                           chrom_col_sv = "chrom",
                           start_col_sv = "start",
                           end_col_sv = "end") {
-  # For given breaks data.frame(s), calculate the breaks density for a sliding
-  # window across the genome. Returns the data as a GenomicRanges object for
+  # For given breaks data.frame(s), calculate the breaks density for a tiled
+  # windows across the genome. Returns the data as a GenomicRanges object for
   # easy mapping with ggbio. Where the density and counts are stored in
   # @elementMetadata@listData.
   #

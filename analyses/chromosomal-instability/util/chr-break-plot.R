@@ -47,7 +47,7 @@ map_density_plot <- function(granges,
 }
 
 chr_break_plot <- function(granges_list) {
-  # A wrapper function to make a 3 row chromsomal map plot for a set of GRanges
+  # A wrapper function to make a 3 row chromosomal map plot for a set of GRanges
   # objects that contain common_density, cnv_density, and sv_density.
   #
   # Args:
