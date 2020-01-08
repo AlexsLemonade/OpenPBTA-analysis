@@ -1,4 +1,4 @@
-# Functions for chromosomal instability breakpoint calculations.
+# Functions for chromosomal instability plots
 #
 # C. Savonen for ALSF - CCDL
 #
@@ -33,7 +33,7 @@ make_granges <- function(break_df = NULL,
   # break points from the data.frame
 
   # If no data.frame is provided, stop
-  if (is.null(breaks_df)) {
+  if (is.null(break_df)) {
     stop("No breaks data.frame has been provided. ")
   }
 
@@ -56,7 +56,7 @@ make_granges <- function(break_df = NULL,
   if (sample_id != "all") {
     # Extract samples' info from the data.frame
     break_df <- break_df %>%
-      dplyr::filter(!!rlang::sym(samples_col) == sample_id)
+      dplyr::filter(c(sample_id) %in% !!rlang::sym(samples_col))
 
     # Stop if the sample doesn't exist in the data.frame
     if (nrow(break_df) == 0) {
@@ -100,7 +100,7 @@ break_density <- function(sv_breaks = NULL,
   #   cnv_breaks: a data.frame with the breaks for the SV data.
   #   sample_id: sample ID for which the data needs to be extracted and made into
   #              a GenomicRanges object. If "all" is designated, all samples will
-  #              be kept.
+  #              be kept. Multiple samples can be designated as a character vector.
   #   chr_size_list: a named numeric vector of the sizes (bp) of the chromosomes.
   #                  names of the chromosomes must match the format of the input
   #                  break data. e.g. "chr1" or "1".
@@ -122,10 +122,14 @@ break_density <- function(sv_breaks = NULL,
   if (is.null(sample_id)) {
     stop("No sample ID has been specified. Use the `sample_id` argument.")
   }
-
+  
+  # Determine how many samples are in the group
+  n_samples <- length(sample_id)
+  
   # Make CNV into GRanges
   if (!is.null(cnv_breaks)) {
-    cnv_ranges <- make_granges(cnv_breaks,
+    cnv_ranges <- make_granges(
+      break_df = cnv_breaks,
       sample_id = sample_id,
       samples_col = samples_col_cnv,
       chrom_col = chrom_col_cnv,
@@ -137,7 +141,8 @@ break_density <- function(sv_breaks = NULL,
   }
   # Make SV into GRanges
   if (!is.null(sv_breaks)) {
-    sv_ranges <- make_granges(sv_breaks,
+    sv_ranges <- make_granges(
+      break_df = sv_breaks,
       sample_id = sample_id,
       samples_col = samples_col_sv,
       chrom_col = chrom_col_sv,
@@ -171,8 +176,11 @@ break_density <- function(sv_breaks = NULL,
   )
 
   # Store count info
-  bins@elementMetadata@listData$counts <- bin_counts
+  bins@elementMetadata@listData$total_counts <- bin_counts
 
+  # Store average count info
+  bins@elementMetadata@listData$avg_counts <- bin_counts / n_samples
+  
   # Calculate and store density
   bins@elementMetadata@listData$density <- bin_counts / window_size
 

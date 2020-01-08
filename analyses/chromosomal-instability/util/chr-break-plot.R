@@ -1,4 +1,4 @@
-# Functions for chromosomal instability plots
+# Functions for chromosomal instability calculations
 #
 # C. Savonen for ALSF - CCDL
 #
@@ -46,38 +46,39 @@ map_density_plot <- function(granges,
   density_plot@ggplot
 }
 
-chr_break_plot <- function(granges_list) {
+chr_break_plot <- function(granges_list,
+                           plot_name,
+                           y_val) {
   # A wrapper function to make a 3 row chromosomal map plot for a set of GRanges
   # objects that contain common_density, cnv_density, and sv_density.
   #
   # Args:
   #   granges_list: A list of Granges object to plot as a combination plot
+  #   plot_name: a character string specifying the plot
+  #   y_val: to be passed to map_density plot for mapping. 
   #
   # Returns:
   #  ggplot of chromosomal mapping of the y value given.
   #
-  # Get the sample name
-  sample_name <- common_samples[parent.frame()$i[]]
-
   # Make combined SV and CNV plot
-  common_plot <- map_density_plot(sample_densities$common_density,
-    y_val = "counts",
+  common_plot <- map_density_plot(granges_list$common_density,
+    y_val = y_val,
     y_lab = "Breaks per Mb",
     color = "blue",
     main_title = "Common Breaks"
   )
 
   # Make CNV plot
-  cnv_plot <- map_density_plot(sample_densities$cnv_density,
-    y_val = "counts",
+  cnv_plot <- map_density_plot(granges_list$cnv_density,
+    y_val = y_val,
     y_lab = "Breaks per Mb",
     color = "darkgreen",
     main_title = "CNV Breaks"
   )
 
   # Make SV plot
-  sv_plot <- map_density_plot(sample_densities$sv_density,
-    y_val = "counts",
+  sv_plot <- map_density_plot(granges_list$sv_density,
+    y_val = y_val,
     y_lab = "Breaks per Mb",
     color = "orange",
     main_title = "SV Breaks"
@@ -85,7 +86,7 @@ chr_break_plot <- function(granges_list) {
 
   # Make a title
   title <- cowplot::ggdraw() +
-    cowplot::draw_label(paste(sample_name, " - Chromosomal Break Density"),
+    cowplot::draw_label(paste(plot_name, " - Chromosomal Break Density"),
       fontface = "bold", x = .4, hjust = 0, size = 12
     )
 
@@ -102,7 +103,7 @@ chr_break_plot <- function(granges_list) {
   # Save plot to PNG
   cowplot::save_plot(
     plot = full_plot,
-    filename = file.path(plots_dir, paste0(sample_name, "_breaks.png")),
+    filename = file.path(plots_dir, paste0(plot_name, "_breaks.png")),
     base_height = 7,
     base_width = 20
   )
