@@ -72,18 +72,18 @@ done
 
 
 # the first step is to split the data into a training and test set
-#Rscript --vanilla 01-clean_split_data.R \
-#  --expression ../../data/pbta-gene-expression-kallisto.stranded.rds \
-#  --metadata ../../data/pbta-histologies.tsv \
-#  --output_directory $PROCESSED \
-#  --train_expression_file_name $TRAIN_EXPRESSION_FILE_NAME \
-#  --test_expression_file_name $TEST_EXPRESSION_FILE_NAME \
-#  --train_targets_file_name $TRAIN_TARGETS_FILE_NAME  \
-#  --test_targets_file_name $TEST_TARGETS_FILE_NAME \
-#  --full_targets_file_name $FULL_TARGETS_FILE_NAME \
-#  --seed $SEED \
-#  --train_percent $TRAIN_PERCENT \
-#  --target_columns $targetColumns_to_pass
+Rscript --vanilla 01-clean_split_data.R \
+  --expression ../../data/pbta-gene-expression-kallisto.stranded.rds \
+  --metadata ../../data/pbta-histologies.tsv \
+  --output_directory $PROCESSED \
+  --train_expression_file_name $TRAIN_EXPRESSION_FILE_NAME \
+  --test_expression_file_name $TEST_EXPRESSION_FILE_NAME \
+  --train_targets_file_name $TRAIN_TARGETS_FILE_NAME  \
+  --test_targets_file_name $TEST_TARGETS_FILE_NAME \
+  --full_targets_file_name $FULL_TARGETS_FILE_NAME \
+  --seed $SEED \
+  --train_percent $TRAIN_PERCENT \
+  --target_columns $targetColumns_to_pass
 
 
 
@@ -96,15 +96,15 @@ MODEL_TRANSCRIPTS_FILE_NAME=${FILENAME_LEAD}_${SEED}_${TRANSCRIPT_TAIL_PERCENT_A
 MODEL_COEFS_FILE_NAME=${FILENAME_LEAD}_${SEED}_${TRANSCRIPT_TAIL_PERCENT_ARRAY[i]}_model_coefs.tsv
 
 
-#Rscript --vanilla 02-train_elasticnet.R \
-# --train_expression_file_name ${PROCESSED}/$TRAIN_EXPRESSION_FILE_NAME \
-# --train_targets_file_name ${PROCESSED}/$TRAIN_TARGETS_FILE_NAME \
-# --output_directory $MODELS \
-# --model_object_file_name $MODEL_OBJECT_FILE_NAME \
-# --model_transcripts_file_name $MODEL_TRANSCRIPTS_FILE_NAME \
-# --model_coefs_file_name $MODEL_COEFS_FILE_NAME \
-# --train_target_column $TRAIN_TARGET_COLUMN \
-# --transcript_tail_percent ${TRANSCRIPT_TAIL_PERCENT_ARRAY[i]}
+Rscript --vanilla 02-train_elasticnet.R \
+  --train_expression_file_name ${PROCESSED}/$TRAIN_EXPRESSION_FILE_NAME \
+  --train_targets_file_name ${PROCESSED}/$TRAIN_TARGETS_FILE_NAME \
+  --output_directory $MODELS \
+  --model_object_file_name $MODEL_OBJECT_FILE_NAME \
+  --model_transcripts_file_name $MODEL_TRANSCRIPTS_FILE_NAME \
+  --model_coefs_file_name $MODEL_COEFS_FILE_NAME \
+  --train_target_column $TRAIN_TARGET_COLUMN \
+  --transcript_tail_percent ${TRANSCRIPT_TAIL_PERCENT_ARRAY[i]}
  
 
 # if there is a test set, e.g., the entire dataset was not used for training
@@ -125,16 +125,16 @@ if [ ! $TRAIN_PERCENT == 1 ]; then
     RESULTS_OUTPUT_DIRECTORY=${RESULTS}/${TEST_TARGET_COLUMN}
 
     # model evaluation
-#    Rscript --vanilla 03-evaluate_model.R \
-#      --test_expression_file_name ${PROCESSED}/$TEST_EXPRESSION_FILE_NAME \
-#      --test_targets_file_name ${PROCESSED}/$TEST_TARGETS_FILE_NAME \
-#      --model_object_file_name ${MODELS}/$MODEL_OBJECT_FILE_NAME \
-#      --model_transcripts_file_name ${MODELS}/$MODEL_TRANSCRIPTS_FILE_NAME \
-#      --output_directory $RESULTS_OUTPUT_DIRECTORY \
-#      --test_target_column $TEST_TARGET_COLUMN \
-#      --cm_set_file_name $CM_SET_FILE \
-#      --cm_file_name $CM_SET \
-#      --summary_file_name $SUMMARY_FILE
+   Rscript --vanilla 03-evaluate_model.R \
+     --test_expression_file_name ${PROCESSED}/$TEST_EXPRESSION_FILE_NAME \
+     --test_targets_file_name ${PROCESSED}/$TEST_TARGETS_FILE_NAME \
+     --model_object_file_name ${MODELS}/$MODEL_OBJECT_FILE_NAME \
+     --model_transcripts_file_name ${MODELS}/$MODEL_TRANSCRIPTS_FILE_NAME \
+     --output_directory $RESULTS_OUTPUT_DIRECTORY \
+     --test_target_column $TEST_TARGET_COLUMN \
+     --cm_set_file_name $CM_SET_FILE \
+     --cm_file_name $CM_SET \
+     --summary_file_name $SUMMARY_FILE
   done
 fi
 
