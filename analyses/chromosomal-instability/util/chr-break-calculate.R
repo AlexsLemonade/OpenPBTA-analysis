@@ -1,4 +1,4 @@
-# Functions for chromosomal instability plots
+# Functions for chromosomal instability breakpoint calculations.
 #
 # C. Savonen for ALSF - CCDL
 #
