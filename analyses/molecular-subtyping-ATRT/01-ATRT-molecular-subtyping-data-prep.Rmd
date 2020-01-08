@@ -180,7 +180,7 @@ metadata %>%
   head(n = 15)
 ```
 
-## Filter and join RNA expression, CN, TMB, and ssGSEA data
+## Filter and join RNA expression, CN, TMB, ssGSVA and GISTIC data
 
 ### RNA expression data 
 
@@ -388,6 +388,37 @@ final_df <- final_df %>%
     sample_id,
     Kids_First_Biospecimen_ID,
     Kids_First_Participant_ID,
+    age_at_diagnosis_days,
+    germline_sex_estimate,
+    primary_site,
+    location_summary,
+    chr_22q_loss,
+    SMARCB1_focal_status,
+    TYR,
+    MITF,
+    DCT,
+    VEGFA,
+    DNAH11,
+    SPEF1,
+    POU3F4,
+    POU3F2,
+    PBX1,
+    SMARCA4_focal_status,
+    HALLMARK_NOTCH_SIGNALING,
+    MYCN,
+    GLI2,
+    CDK6,
+    ASCL1,
+    ZBTB7A,
+    MYBL2,
+    MXI1,
+    MEIS3,
+    MEIS2,
+    MAX,
+    INSM1,
+    FOXK1,
+    HALLMARK_MYC_TARGETS_V1,
+    HALLMARK_MYC_TARGETS_V2,
     dplyr::everything()
   ) %>%
   dplyr::ungroup()
