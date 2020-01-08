@@ -29,7 +29,8 @@ map_density_plot <- function(granges,
     data.frame(granges@elementMetadata@listData) %>% 
       dplyr::pull(
       !!rlang::sym(y_val)
-    )
+    ), 
+    na.rm = TRUE
   )
   # Make the density plot
   density_plot <- ggbio::autoplot(granges, ggplot2::aes(y = !!rlang::sym(y_val)),

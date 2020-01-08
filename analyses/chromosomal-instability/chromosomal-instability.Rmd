@@ -386,7 +386,7 @@ lapply(group_densities, function(granges_list){
   chr_break_plot(granges_list = granges_list,
                  plot_name = group_name,
                  y_val = "median_counts", 
-                 y_lab = "Avg Breaks per Mb", 
+                 y_lab = "Median Breaks per Mb", 
                  plot_dir = hist_plots_dir)
 })
 ```
