@@ -113,10 +113,6 @@ Declare input file paths.
 ```{r Set input file paths}
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
 tmb_file <- file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding.tsv")
-germline_sex_file <- file.path(
-  "..", "sex-prediction-from-RNASeq", "results",
-  "germline_sex_estimate", "kallisto_stranded_36354_0.25_prediction_details.tsv"
-)
 ```
 
 Declare output file paths. 
@@ -133,11 +129,6 @@ cox_table_file <- file.path(results_dir, "cox_regression_tmb.tsv")
 metadata <- readr::read_tsv(metadata_file)
 ```
 
-```{r}
-# Read in the germline sex predictions
-germline_sex <- readr::read_tsv(germline_sex_file)
-```
-
 ## Kaplan-Meier Example
 
 The [Kaplan-Meier](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3059453/) 
@@ -145,9 +136,8 @@ survival curve shows the probability of survival over time.
 
 ```{r Kaplan Meier}
 kap_fit <- survival_analysis(metadata,
-  ind_var = "pred",
+  ind_var = "germline_sex_estimate",
   test = "kap.meier",
-  ind_data = germline_sex,
   metadata_sample_col = "Kids_First_Biospecimen_ID",
   ind_data_sample_col = "sample"
 )
@@ -162,7 +152,6 @@ surv_plot <- survminer::ggsurvplot(kap_fit$model,
   pval = TRUE,
   data = kap_fit$original_data,
   risk.table = TRUE,
-  conf.int = params$plot_ci,
   xlim = c(0, 2000),
   break.time.by = 500,
   ggtheme = theme_minimal(),
@@ -171,7 +160,8 @@ surv_plot <- survminer::ggsurvplot(kap_fit$model,
 )
 
 # Make this plot a combined plot
-surv_plot <- cowplot::plot_grid(surv_plot[[1]], surv_plot[[2]], nrow = 2, rel_heights = c(2.5, 1))
+surv_plot <- cowplot::plot_grid(surv_plot[[1]], surv_plot[[2]], nrow = 2, 
+                                rel_heights = c(2.5, 1))
 
 # Print it out here
 surv_plot
@@ -189,15 +179,14 @@ cowplot::save_plot(filename = kap_meier_plot_file, plot = surv_plot)
 For testing whether two survival curves are different, we can use Log-Rank which
 can be implemented using `survival::survdiff` function. 
 In this example, we will test for survival curve differences between for 
-`pred` categories. 
+`germline_sex_estimate` categories. 
 Use the `survdiff` function to test the differences between the `Male` and `Female` 
 curves.
 
 ```{r Do log rank test}
 logrank_fit <- survival_analysis(metadata,
-  ind_var = "pred",
+  ind_var = "germline_sex_estimate",
   test = "log.rank",
-  ind_data = germline_sex,
   metadata_sample_col = "Kids_First_Biospecimen_ID",
   ind_data_sample_col = "sample"
 )

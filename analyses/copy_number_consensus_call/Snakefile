@@ -1,8 +1,5 @@
 ## Define the ending file(s) that we want
-OUTPUT= expand("../../scratch/interim/{sample}.{combined_caller}.{dupdel}.bed",
-               sample=config["samples"], 
-               combined_caller=["manta_cnvkit", "manta_freec", "cnvkit_freec"],
-               dupdel=["dup", "del"]),
+OUTPUT = "results/cnv_consensus.tsv",
 
 ## Define the wildcards to use in the file names. 
 wildcard_constraints:
@@ -161,4 +158,41 @@ rule compare_cnv_methods:
         "--sample {params.sample_name}"
 
 
+rule combine_merge_paired_cnv:
+    input:
+        ## Define the location of the input file
+        manta_cnvkit="../../scratch/interim/{sample}.manta_cnvkit.{dupdel}.bed",
+        manta_freec="../../scratch/interim/{sample}.manta_freec.{dupdel}.bed",
+        cnvkit_freec="../../scratch/interim/{sample}.cnvkit_freec.{dupdel}.bed"
+    output:
+        ## Define the output files' names
+        merged="../../scratch/endpoints/{sample}.{dupdel}.merged.final.bed"
+    threads: 1
+    shell:
+        ## Combine the input file, sort and output to one file
+        ## Columns 4, 5, and 6 hold the original CNV calls from Manta, CNVkit, and Freec, respectively. 
+        ## We want to retain info in these columns when merging these files so we use COLLAPSE to keep the information in these columns
+        ## Columns 7 and 8 are the CNVtype (DEL, DUP) and Sample_name, respectively.
+        ## AT THIS POINT, these columns of the input files hold the same values, thus we perform DISTINCT, which is to take the unique of columns 7 and 8.
+        ## As for column 9, this column holds the files that were merged to get a specific CNV. We want to keep all information here so we COLLAPSE it.
+        "cat {input.manta_cnvkit} {input.manta_freec} {input.cnvkit_freec} "
+        "| sort -k1,1 -k2,2n "
+        "| bedtools merge -c 4,5,6,7,8,9 -o collapse,collapse,collapse,distinct,distinct,collapse "
+        "> {output.merged}"
 
+
+rule merge_all:
+    input:
+        ## Take all of the del and dup files of ALL samples as input. If there are 200 samples, there will be 400 files total
+        bedfiles = expand("../../scratch/endpoints/{sample}.{dupdel}.merged.final.bed",
+                          sample = config["samples"],
+                          dupdel = ["dup", "del"])
+    output:
+        ## Define the final output file
+        "results/cnv_consensus.tsv"
+    shell:
+        ## Add a header to the file and combine all of the files using cat. 
+       "echo -e 'chrom\tstart\tend\tmanta_CNVs\tcnvkit_CNVs\tfreec_CNVs\tCNV_type\tBiospecimen\tfile_names' "
+       " | cat - {input.bedfiles} "
+       " | cut -f 1-8 "
+       " > {output}"
