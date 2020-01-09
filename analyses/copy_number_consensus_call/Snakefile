@@ -188,7 +188,6 @@ rule merge_all:
                           sample = config["samples"],
                           dupdel = ["dup", "del"])
     output:
-        ## Define the final output file
         "../../scratch/endpoints/all_CNVs_combined.tsv"
     shell:
         ## Add a header to the file and combine all of the files using cat. 
@@ -205,4 +204,3 @@ rule clean_output:
         "results/cnv_consensus.tsv"
     shell:
         "python3 {input.script} --file {input.cnv_file} > {output}"
-
