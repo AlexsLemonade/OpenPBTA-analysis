@@ -28,7 +28,10 @@ def remove_dup_and_null(cell):
         set_cell.remove("NULL")
 
     ## Join the set
-    sorted_cell = sorted(set_cell, key=lambda x: x.split(":")[0])
+    if len(set_cell) > 1:
+        sorted_cell = sorted(set_cell, key=lambda x: int(x.split(":")[0]))
+    else:
+        sorted_cell = set_cell
     new_cell = ",".join(sorted_cell)
     return new_cell
 
