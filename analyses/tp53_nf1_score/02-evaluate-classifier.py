@@ -8,7 +8,7 @@ https://doi.org/10.1016/j.celrep.2019.09.071
 Gregory Way, 2018
 Modified by Krutika Gaonkar for OpenPBTA, 2020
 
-In the following notebook I evaluate the predictions made by the NF1 and TP53 classifiers in the input PDX RNAseq data.
+This script evaluates the predictions made by the NF1 and TP53 classifiers in the input PPTC RNAseq data.
 
 ## Procedure
 
