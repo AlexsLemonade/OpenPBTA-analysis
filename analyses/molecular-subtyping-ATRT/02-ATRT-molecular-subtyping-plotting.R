@@ -89,6 +89,7 @@ high_var_exp <- scale(t(high_var_exp),  # scale works on columns
 
 # Make data.frame that will be used to form an annotation bar for the heatmap
 annotation_df <- final_df %>%
+  filter(sample_id %in% colnames(high_var_exp)) %>%
   select(
     sample_id,
     location_summary,
