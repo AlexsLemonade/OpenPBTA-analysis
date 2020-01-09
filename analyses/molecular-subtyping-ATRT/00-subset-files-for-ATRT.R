@@ -94,21 +94,16 @@ gistic_df <-
 
 #### Filter metadata -----------------------------------------------------------
 
-# Filter metadata for `ATRT` and define `location_summary` based on values in
-# `primary_site`
 atrt_df <- metadata %>%
-  dplyr::filter(short_histology == "ATRT",
-                experimental_strategy == "RNA-Seq")
-
-# Write to file
-readr::write_tsv(atrt_df, file.path(results_dir, "atrt_histologies.tsv"))
+  dplyr::filter(short_histology == "ATRT")
 
 #### Filter expression data ----------------------------------------------------
 
 # Filter to ATRT samples only -- we can use atrt_df because it is subset to
 # RNA-seq samples
 stranded_expression <- stranded_expression %>%
-  dplyr::select(atrt_df$Kids_First_Biospecimen_ID)
+  dplyr::select(intersect(atrt_df$Kids_First_Biospecimen_ID,
+                          colnames(stranded_expression)))
 
 # Log2 transformation
 norm_expression <- log2(stranded_expression + 1)
@@ -168,7 +163,7 @@ gistic_df <- gistic_df %>%
   dplyr::filter(sample_id %in% atrt_df$sample_id) %>%
   dplyr::select(sample_id,
                 Kids_First_Biospecimen_ID,
-                `22q`) #Select only the chromosome arm we are interested in
+                `22q`) # Select only the chromosome arm we are interested in
 
 # Write to file
 readr::write_tsv(gistic_df,
