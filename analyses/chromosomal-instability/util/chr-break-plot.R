@@ -1,4 +1,4 @@
-# Functions for chromosomal instability plots
+# Functions for chromosomal instability calculations
 #
 # C. Savonen for ALSF - CCDL
 #
@@ -23,13 +23,16 @@ map_density_plot <- function(granges,
   #
   # Returns:
   #  ggplot of chromosomal mapping of the y value given.
-  #
+  
+  # For the y-axis ticks, default is to print every two 
+  by_interval <- 2
+  
   # For setting the scale later, need to get y's max
   max_y <- max(
-    data.frame(granges@elementMetadata@listData) %>%
+    data.frame(granges@elementMetadata@listData) %>% 
       dplyr::pull(
       !!rlang::sym(y_val)
-    ),
+    ), 
     na.rm = TRUE
   )
   # Make the density plot
@@ -41,24 +44,24 @@ map_density_plot <- function(granges,
     ggplot2::theme(axis.text.x = ggplot2::element_text(size = 3, angle = 45, hjust = 1)) +
     ggplot2::ylab(y_lab) +
     ggplot2::ggtitle(main_title) +
-    ggplot2::scale_y_continuous(breaks = seq(0, max_y, by = 2))
+    ggplot2::scale_y_continuous(breaks = seq(0, max_y, by = by_interval))
 
   # Print out plot
   density_plot@ggplot
 }
 
-chr_break_plot <- function(granges_list,
-                           plot_name,
-                           y_val,
-                           y_lab,
-                           plot_dir) {
+multipanel_break_plot <- function(granges_list,
+                                  plot_name,
+                                  y_val, 
+                                  y_lab, 
+                                  plot_dir) {
   # A wrapper function to make a 3 row chromosomal map plot for a set of GRanges
   # objects that contain common_density, cnv_density, and sv_density.
   #
   # Args:
   #   granges_list: A list of Granges object to plot as a combination plot
   #   plot_name: a character string specifying the plot
-  #   y_val: to be passed to map_density plot for mapping.
+  #   y_val: to be passed to map_density plot for mapping. 
   #   y_lab: to be passed to map_density plot for y axis label
   #   plot_dir: a file path where you would like the plot PNG to be saved.
   #
