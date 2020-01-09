@@ -33,7 +33,9 @@ def remove_dup_and_null(cell):
 
 
 ## Define parser for the input file
-parser = argparse.ArgumentParser(description="""This script removes duplicates coordinates and NULLs from the file""")
+parser = argparse.ArgumentParser(
+    description="""This script removes duplicates coordinate sets and NULLs from the individual callers columns"""
+)
 parser.add_argument('--file', required=True,
                     help='path to the file that needs duplicates and NULLs removed')
 
