@@ -51,5 +51,6 @@ echo "Create summary plots"
 # Now, run the script to generate correlation plots between xCell and the second method 
 # Also generates corresponding heatmaps of average normalized immune scores
 Rscript --vanilla 02-summary-plots.R \
---input results/deconv-output.RData
+--input results/deconv-output.RData \
+--output plots
 
