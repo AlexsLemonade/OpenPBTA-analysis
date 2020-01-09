@@ -142,6 +142,7 @@ break_density <- function(sv_breaks = NULL,
       chrom_col = chrom_col_cnv,
       start_col = start_col_cnv,
       end_col = end_col_cnv
+    )
 
     # Read in SV data
     sv_ranges <- make_granges(
