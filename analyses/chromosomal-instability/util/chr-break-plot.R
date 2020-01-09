@@ -23,7 +23,10 @@ map_density_plot <- function(granges,
   #
   # Returns:
   #  ggplot of chromosomal mapping of the y value given.
-  #
+  
+  # For the y-axis ticks, default is to print every two 
+  by_interval <- 2
+  
   # For setting the scale later, need to get y's max
   max_y <- max(
     data.frame(granges@elementMetadata@listData) %>% 
@@ -41,17 +44,17 @@ map_density_plot <- function(granges,
     ggplot2::theme(axis.text.x = ggplot2::element_text(size = 3, angle = 45, hjust = 1)) +
     ggplot2::ylab(y_lab) +
     ggplot2::ggtitle(main_title) +
-    ggplot2::scale_y_continuous(breaks = seq(0, max_y, by = 2))
+    ggplot2::scale_y_continuous(breaks = seq(0, max_y, by = by_interval))
 
   # Print out plot
   density_plot@ggplot
 }
 
-chr_break_plot <- function(granges_list,
-                           plot_name,
-                           y_val, 
-                           y_lab, 
-                           plot_dir) {
+multipanel_break_plot <- function(granges_list,
+                                  plot_name,
+                                  y_val, 
+                                  y_lab, 
+                                  plot_dir) {
   # A wrapper function to make a 3 row chromosomal map plot for a set of GRanges
   # objects that contain common_density, cnv_density, and sv_density.
   #
@@ -116,10 +119,3 @@ chr_break_plot <- function(granges_list,
   # Print out the plot while we are here
   full_plot
 }
-
-# Make the combo plot
-chr_break_plot(granges_list = granges_list,
-               plot_name = group_name,
-               y_val = "median_counts", 
-               y_lab = "Avg Breaks per Mb", 
-               plot_dir = hist_plots_dir)

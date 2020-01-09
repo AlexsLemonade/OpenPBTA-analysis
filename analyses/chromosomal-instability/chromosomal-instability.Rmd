@@ -319,11 +319,11 @@ lapply(sample_densities, function(granges_list){
   sample_name <- common_samples[parent.frame()$i[]]
   
   # Make the combo plot
-  chr_break_plot(granges_list = granges_list,
-                 plot_name = sample_name,
-                 y_val = "total_counts", 
-                 y_lab = "Breaks per Mb", 
-                 plot_dir = sample_plots_dir)
+  multipanel_break_plot(granges_list = granges_list,
+                        plot_name = sample_name,
+                        y_val = "total_counts", 
+                        y_lab = "Breaks per Mb", 
+                        plot_dir = sample_plots_dir)
 })
 ```
 
@@ -390,11 +390,11 @@ lapply(group_densities, function(granges_list){
   group_name <- tumor_types[parent.frame()$i[]]
   
   # Make the combo plot
-  chr_break_plot(granges_list = granges_list,
-                 plot_name = group_name,
-                 y_val = "median_counts", 
-                 y_lab = "Median Breaks per Mb", 
-                 plot_dir = hist_plots_dir)
+  multipanel_break_plot(granges_list = granges_list,
+                        plot_name = group_name,
+                        y_val = "median_counts", 
+                        y_lab = "Median Breaks per Mb", 
+                        plot_dir = hist_plots_dir)
 })
 ```
 
