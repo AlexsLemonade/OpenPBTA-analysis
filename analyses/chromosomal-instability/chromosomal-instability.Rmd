@@ -334,21 +334,30 @@ Same as was done for each sample, now we will calculate densities for
 each tumor-type group. 
 
 ```{r, results='hide'}
-# Change here and it will change the rest
+# Change bin_size here and it will change the rest
 bin_size <- 1e6
 
-# Get a list of the tumor_types
-tumor_types <- unique(metadata$short_histology)
+# Get a list of the tumor_types for which we have DNA-seq data
+tumor_types <- metadata %>% 
+  dplyr::filter(!is.na(short_histology), experimental_strategy != "RNA-Seq") %>% 
+  distinct(short_histology) %>%
+  dplyr::pull(short_histology)
+```
 
+Run the density calculations for the groups. 
+
+```{r}
 # Get a big list of break densities for each sample.
 group_densities <- lapply(tumor_types, function(tumor_type) {
 
   # Obtain a list of sample_ids to subset by
   sample_ids <- metadata %>%
-    dplyr::filter(tumor_type %in% short_histology) %>%
+    dplyr::filter(metadata$short_histology == tumor_type) %>%
     dplyr::pull(Kids_First_Biospecimen_ID)
+  
+  message(paste("Calculating breakpoint density for", tumor_type, "samples"))
 
-  # Calculate break densities with both datasets combined
+    # Calculate break densities with both datasets combined
   common_density <- break_density(
     sv_breaks,
     cnv_breaks,
@@ -405,6 +414,14 @@ lapply(group_densities, function(granges_list) {
     plot_dir = hist_plots_dir
   )
 })
+```
+
+Zip up the PNG files into one file. 
+
+```{r}
+zip(paste0(hist_plots_dir, ".zip"), 
+    hist_plots_dir
+)
 ```
 
 ### Session Info
