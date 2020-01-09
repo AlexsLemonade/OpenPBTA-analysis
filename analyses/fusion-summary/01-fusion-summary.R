@@ -8,14 +8,6 @@ suppressPackageStartupMessages(library("optparse"))
 
 #' **Filters**
 #' 
-#' *Demographic Filers*
-#' 1: Used to filter short_histology to get Ependymoma tumors 
-ependSH = "Ependymoma"
-#' 2: Used for Embryonal tumors (short_histology)
-#'  not from ATRT or MB (broad_histology)
-embryBH = "Embryonal tumor"
-embrySH = c("ATRT", "Medulloblastoma")
-#' 
 #' *Fusions Filters*
 #' 1: Exact match a list of fusions common in Ependymoma tumors
 ependFuses = c(
@@ -27,6 +19,9 @@ ependFuses = c(
   "YAP1--FAM118B",
   "YAP1--MAMLD1",
   "YAP1--MAMLD2"
+)
+ependGenes = c(
+  "RELA"
 )
 #' 2: Exact match a list of fusions common in Embryonal tumors
 #' as well as fusions containing a particular gene with any other gene
@@ -79,8 +74,8 @@ generateOutput <- function(df, fuses, outputPath) {
   # minimal set is the explicit fusions + any other non-specific fusions in the table
   lvls = unique(c(fuses, sort(as.character(unique(df$FusionName)))))
   df$FusionName = factor(df$FusionName, levels=lvls)
-  # convert the table to a table dropping the empty levels
-  tbl = table(droplevels(df)$Sample,df$FusionName)
+  # convert the data frame to a table
+  tbl = table(df$Sample,df$FusionName)
   # convert back to a matrix
   mtx = as.data.frame.matrix(tbl)
   # convert the rownames into the first row
@@ -128,23 +123,10 @@ if (!file.exists(opt$demographic_file)) {
 demo <- read.csv(opt$demographic_file, sep="\t")
 fuse <- read.csv(opt$fusions_file, sep="\t")
 
-#' Use the filters from above to get the biospecimen ids
-demoEpend.bios <- filter(demo,
-                        short_histology == ependSH)$Kids_First_Biospecimen_ID
-demoEmbry.bios <- filter(demo,
-                        broad_histology == embryBH &
-                          !(short_histology %in% embrySH))$Kids_First_Biospecimen_ID
-
 #' Filter the fusion files for your two populations
-fuseEpend <- filterFusion(df = fuse, 
-                          bioid = demoEpend.bios, 
-                          fuses = ependFuses)
-fuseEmbry <- filterFusion(df = fuse, 
-                          bioid = demoEmbry.bios, 
-                          fuses = embryFuses, 
-                          genes = embryGenes)
 allFuseEpend <- filterFusion(df = fuse,
-                          fuses = ependFuses)
+                          fuses = ependFuses,
+                          genes = ependGenes)
 allFuseEmbry <- filterFusion(df = fuse,
                           fuses = embryFuses,
                           genes = embryGenes)
@@ -157,11 +139,3 @@ generateOutput(df = allFuseEmbry,
                fuses = embryFuses,
                outputPath = file.path(
                  opt$output_dir,"fusion_summary_embryonal_foi.tsv"))
-generateOutput(df = fuseEpend, 
-               fuses = ependFuses, 
-               outputPath = file.path(
-                 opt$output_dir,"ependymoma_fusion_summary.tsv"))
-generateOutput(df = fuseEmbry,
-               fuses = embryFuses,
-               outputPath = file.path(
-                 opt$output_dir,"embryomal_fusion_summary.tsv"))
