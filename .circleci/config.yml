@@ -128,6 +128,9 @@ jobs:
           name: Gene set enrichment analysis to generate GSVA scores
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh" 
 
+      - run:
+          name: Chromosomal instability breakpoints
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/chromosomal-instability/chromosomal-instability.Rmd', clean = TRUE)"
 
          ################################
          #### Add your analysis here ####
