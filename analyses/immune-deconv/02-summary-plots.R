@@ -14,17 +14,19 @@ source(file.path(root_dir, "analyses", "immune-deconv",
                  "util", "pubTheme.R"))
 
 option_list <- list(
-  make_option(c("-i", "--input"), type = "character",
-              help = "Immunedeconv output from 01-immune.deconv.R (.RData)")
+  make_option(c("-i", "--input"), type = "character", help = "Immunedeconv output from 01-immune.deconv.R (.RData)"), 
+  make_option(c("-o",  "--output"), type = "character", help = "Output directory")
 )
 
 # Example Run:
 # Rscript analyses/immune-deconv/02-summary-plots.R \
-# -i 'analyses/immune-deconv/results/deconv-output.RData'
+# -i 'analyses/immune-deconv/results/deconv-output.RData' \
+# -o 'analyses/immune-deconv/plots
 
 # parse parameters
 opt <- parse_args(OptionParser(option_list = option_list))
 deconvout <- opt$input
+output <- opt$output
 load(deconvout) 
 
 # extract names of the methods used
@@ -112,7 +114,7 @@ m1 <- gsub(" ","",method1.name)
 m2 <- gsub(" ","",method2.name)
 
 # create correlation plot for overlapping cell types between both methods
-png(filename = paste0("plots/corrplot_", m1, "_vs_", m2, ".png"), 
+png(filename = file.path(output, paste0("corrplot_", m1, "_vs_", m2, ".png")), 
     width = 13, height = 8, units = "in", res = 300)
 corrplot(t(total), method = "circle", type = 'full', win.asp = 0.5, 
          addCoef.col = "black", number.cex = .5,
@@ -124,12 +126,12 @@ dev.off()
 
 # create heatmaps of average immune scores per histology per cell type
 # method1
-png(filename = paste0("plots/heatmap_", m1, ".png"), width = 13, height = 8, units = "in", res = 300)
+png(filename = file.path(output, paste0("heatmap_", m1, ".png")), width = 13, height = 8, units = "in", res = 300)
 create.heatmap(deconv.method = method1, title = method1.name)
 dev.off()
 
 # method2
-png(filename = paste0("plots/heatmap_", m2, ".png"), width = 10, height = 8, units = "in", res = 300)
+png(filename = file.path(output, paste0("heatmap_", m2, ".png")), width = 10, height = 8, units = "in", res = 300)
 create.heatmap(deconv.method = method2, title = method2.name)
 dev.off()
 
