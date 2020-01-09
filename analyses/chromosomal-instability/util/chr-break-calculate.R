@@ -15,14 +15,14 @@ make_granges <- function(break_df = NULL,
   #
   # Args:
   #   break_df: for a data.frame with chromosomal coordinates and sample IDs.
-  #   sample_id: a character string that designates which data needs to be 
-  #              extracted and made intoa GenomicRanges object by matching the 
-  #              information in the designated sample_col. If "all" is designated, 
-  #              all samples will be kept. Multiple samples can be designated 
+  #   sample_id: a character string that designates which data needs to be
+  #              extracted and made intoa GenomicRanges object by matching the
+  #              information in the designated sample_col. If "all" is designated,
+  #              all samples will be kept. Multiple samples can be designated
   #              as a character vector.
   #   samples_col: character string that indicates the column name with the
   #                sample ID information. Default is "samples". This information
-  #                will be store in the GenomicRanges object in 
+  #                will be store in the GenomicRanges object in
   #                `elementData@listData$samples`
   #   chrom_col: character string that indicates the column name with the
   #              chromosome information. Default is "chrom".
@@ -101,10 +101,10 @@ break_density <- function(sv_breaks = NULL,
   # Args:
   #   sv_breaks: a data.frame with the breaks for the SV data.
   #   cnv_breaks: a data.frame with the breaks for the CNV data.
-  #   sample_id: a character string that designates which data needs to be 
-  #              extracted and made intoa GenomicRanges object by matching the 
-  #              information in the designated sample_col. If "all" is designated, 
-  #              all samples will be kept. Multiple samples can be designated 
+  #   sample_id: a character string that designates which data needs to be
+  #              extracted and made intoa GenomicRanges object by matching the
+  #              information in the designated sample_col. If "all" is designated,
+  #              all samples will be kept. Multiple samples can be designated
   #              as a character vector.
   #   chr_size_list: a named numeric vector of the sizes (bp) of the chromosomes.
   #                  names of the chromosomes must match the format of the input
@@ -133,28 +133,48 @@ break_density <- function(sv_breaks = NULL,
 
   # If both datasets are given, make them into one and use this
   if (!is.null(cnv_breaks) & !is.null(sv_breaks)) {
+
+    # Read in CNV data
+    cnv_ranges <- make_granges(
+      break_df = cnv_breaks,
+      sample_id = sample_id,
+      samples_col = samples_col_cnv,
+      chrom_col = chrom_col_cnv,
+      start_col = start_col_cnv,
+      end_col = end_col_cnv
+    )
+
+    # Read in SV data
+    sv_ranges <- make_granges(
+      break_df = sv_breaks,
+      sample_id = sample_id,
+      samples_col = samples_col_sv,
+      chrom_col = chrom_col_sv,
+      start_col = start_col_sv,
+      end_col = end_col_sv
+    )
+    # Combine datasets
     break_ranges <- GenomicRanges::union(
       cnv_ranges,
       sv_ranges
     )
-    
+
     # Carry over list data from sv_ranges
     sv_overlaps <- GenomicRanges::findOverlaps(sv_ranges, break_ranges)
-    
+
     # Carry over list data from cnv_ranges
     cnv_overlaps <- GenomicRanges::findOverlaps(cnv_ranges, break_ranges)
-    
+
     # Set up an empty list where we can store what sample each sequence came from
     break_ranges@elementMetadata@listData$samples <- rep(NA, length(break_ranges))
-    
+
     # Bring over CNV samples
     break_ranges@elementMetadata@listData$samples[cnv_overlaps@from] <-
       cnv_ranges@elementMetadata@listData$mcols[cnv_overlaps@to]
-    
+
     # Bring over SV samples
     break_ranges@elementMetadata@listData$samples[cnv_overlaps@from] <-
       cnv_ranges@elementMetadata@listData$mcols[cnv_overlaps@to]
-    
   } else if (!is.null(cnv_breaks) & is.null(sv_breaks)) {
     # If only the CNV data is given, use this data only
     break_ranges <- make_granges(
@@ -194,31 +214,31 @@ break_density <- function(sv_breaks = NULL,
   ########################### Calculate summary stats ##########################
   # Get a per sample break down if there is more than one sample
   if (n_samples > 1) {
-    
+
     # Get counts for each genome bin
     bin_indices <- GenomicRanges::findOverlaps(
       bins,
       break_ranges
     )
-    
-    # Get list of samples 
-    bin_samples <- break_ranges@elementMetadata@listData$mcols[bin_indices@to] 
-    
+
+    # Get list of samples
+    bin_samples <- break_ranges@elementMetadata@listData$mcols[bin_indices@to]
+
     # Make a matrix that has the number of breaks per sample for each bin
-    freq_per_bin <- table(bin_indices@from, bin_samples) %>% 
+    freq_per_bin <- table(bin_indices@from, bin_samples) %>%
       data.frame() %>%
-      tidyr::spread(Var1, Freq) %>% 
+      tidyr::spread(Var1, Freq) %>%
       tibble::column_to_rownames("bin_samples") %>%
       t()
-    
+
     # Calculate the median breaks per bin
     median_counts <- apply(freq_per_bin, 1, median)
-    
-    # Store the median break counts, some bins data may be dropped off so we need 
+
+    # Store the median break counts, some bins data may be dropped off so we need
     # to start with NAs and then fill in the data based on the indices.
     bins@elementMetadata@listData$median_counts <- rep(NA, length(bins))
     bins@elementMetadata@listData$median_counts[as.numeric(names(median_counts))] <- median_counts
-    
+
     # Store average count info
     bins@elementMetadata@listData$avg_counts <- bin_counts / n_samples
   }
