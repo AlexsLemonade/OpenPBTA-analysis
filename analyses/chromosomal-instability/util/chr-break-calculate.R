@@ -152,7 +152,7 @@ break_density <- function(sv_breaks = NULL,
       chrom_col = chrom_col_sv,
       start_col = start_col_sv,
       end_col = end_col_sv
-      )
+    )
     # Combine datasets
     break_ranges <- GenomicRanges::union(
       cnv_ranges,
@@ -175,7 +175,6 @@ break_density <- function(sv_breaks = NULL,
     # Bring over SV samples
     break_ranges@elementMetadata@listData$samples[cnv_overlaps@from] <-
       cnv_ranges@elementMetadata@listData$mcols[cnv_overlaps@to]
-
   } else if (!is.null(cnv_breaks) & is.null(sv_breaks)) {
     # If only the CNV data is given, use this data only
     break_ranges <- make_granges(
