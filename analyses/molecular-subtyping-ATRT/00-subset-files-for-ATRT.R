@@ -147,7 +147,7 @@ readr::write_tsv(filtered_gsva_scores, file.path(results_dir, "atrt_gsva.tsv"))
 tmb_df <- tmb_df %>%
   dplyr::select(Tumor_Sample_Barcode, tmb) %>%
   dplyr::left_join(select_metadata,
-                    by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
+                   by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
   dplyr::filter(sample_id %in% atrt_df$sample_id)
 
 # Write to file

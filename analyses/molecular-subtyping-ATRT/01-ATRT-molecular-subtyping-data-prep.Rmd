@@ -266,6 +266,9 @@ expression_metadata %>%
 atrt_expression_df <- collapsed_metadata %>%
   dplyr::left_join(expression_metadata,
                    by = "sample_id")
+
+# Remove data we no longer need
+rm(filtered_expression, long_stranded_expression, expression_metadata)
 ```
 
 ### CN data
@@ -281,7 +284,7 @@ genes_cn_df <- cn_df %>%
 # add in the samples that did not have any copy number changes for either
 # of these genes
 missing_cn_samples <- setdiff(unique(cn_df$sample_id), genes_cn_df$sample_id)
-missing_cn_samples <- metadata %>%
+genes_cn_df <- metadata %>%
   dplyr::filter(sample_id %in% missing_cn_samples,
                 experimental_strategy == "WGS",                 
                 sample_type == "Tumor",
@@ -290,13 +293,10 @@ missing_cn_samples <- metadata %>%
                 Kids_First_Participant_ID,
                 Kids_First_Biospecimen_ID) %>%
   dplyr::rename(biospecimen_id = Kids_First_Biospecimen_ID) %>%
-  dplyr::mutate(SMARCB1_focal_status = "neutral",
-                SMARCA4_focal_status = "neutral")
-
-genes_cn_df <- genes_cn_df %>%
-  dplyr::bind_rows(missing_cn_samples)
-
-rm(missing_cn_samples)
+  # bind rows fills with NAs -- if something is NA, there is no evidence for
+  # a copy number alteration in that gene and we will call it neutral
+  dplyr::bind_rows(genes_cn_df) %>%
+  dplyr::mutate_all(function(x) tidyr::replace_na(x, "neutral"))
 
 # Display `genes_cn_df`
 genes_cn_df %>%
@@ -308,6 +308,9 @@ atrt_expression_cn_df <- atrt_expression_df %>%
                                  -biospecimen_id,
                                  -Kids_First_Participant_ID), 
                    by = "sample_id")
+
+# Remove data we don't need 
+rm(missing_cn_samples, cn_df, atrt_expression_df, genes_cn_df)
 ```
 
 ### GSVA data
@@ -340,6 +343,9 @@ scaled_gsva %>%
 atrt_expression_cn_df <- atrt_expression_cn_df %>%
   dplyr::left_join(scaled_gsva,
                    by = "sample_id")
+
+# Remove data we no longer need
+rm(gsva_filtered, gsva_mat, scaled_gsva)
 ```
 
 ### Tumor mutation burden data
@@ -356,6 +362,9 @@ atrt_expression_cn_tmb_df <- atrt_expression_cn_df %>%
                                  -Tumor_Sample_Barcode,
                                  -Kids_First_Participant_ID), 
                    by = "sample_id")
+
+# Remove data we no longer need
+rm(tmb_df, atrt_expression_cn_df)
 ```
 
 ### GISTIC data
@@ -376,6 +385,9 @@ gistic_df %>%
 final_df <- atrt_expression_cn_tmb_df %>%
   dplyr::left_join(gistic_df, by = "sample_id") %>%
   dplyr::distinct()
+
+# Remove data we no longer need
+rm(gistic_df, atrt_expression_cn_tmb_df)
 ```
 
 # Save final table of results
@@ -420,35 +432,6 @@ final_df <- final_df %>%
     HALLMARK_MYC_TARGETS_V2,
     dplyr::everything()
   )
-
-# # Replace `NA` with `neutral` for focal status variables (for WGS samples)
-# final_df <- final_df %>%
-#   dplyr::group_by(sample_id) %>%
-#   dplyr::mutate(
-#     SMARCB1_focal_status = paste(sort(unique(dplyr::case_when(
-#       (is.na(as.character(SMARCB1_focal_status)) | SMARCB1_focal_status == "NA") &
-#         !(
-#           Kids_First_Biospecimen_ID %in% subset_metadata$Kids_First_Biospecimen_ID
-#         ) ~ "neutral",
-#       (is.na(as.character(SMARCB1_focal_status)) | SMARCB1_focal_status == "NA") &
-#         (
-#           Kids_First_Biospecimen_ID %in% subset_metadata$Kids_First_Biospecimen_ID
-#         ) ~ "NA",
-#       TRUE ~ as.character(SMARCB1_focal_status)
-#     ))), collapse = ", "),
-#     SMARCA4_focal_status = paste(sort(unique(dplyr::case_when(
-#       (is.na(as.character(SMARCA4_focal_status)) | SMARCA4_focal_status == "NA") &
-#         !(
-#           Kids_First_Biospecimen_ID %in% subset_metadata$Kids_First_Biospecimen_ID
-#         ) ~ "neutral",
-#       (is.na(as.character(SMARCA4_focal_status)) | SMARCA4_focal_status == "NA") &
-#         (
-#           Kids_First_Biospecimen_ID %in% subset_metadata$Kids_First_Biospecimen_ID
-#         ) ~ "NA",
-#       TRUE ~ as.character(SMARCA4_focal_status)
-#     ))), collapse = ", ")
-#   ) %>%
-#   dplyr::distinct()
 
 # Write final table to file
 readr::write_tsv(final_df,
