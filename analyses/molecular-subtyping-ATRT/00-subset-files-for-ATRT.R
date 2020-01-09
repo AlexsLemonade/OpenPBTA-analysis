@@ -95,7 +95,9 @@ gistic_df <-
 #### Filter metadata -----------------------------------------------------------
 
 atrt_df <- metadata %>%
-  dplyr::filter(short_histology == "ATRT")
+  dplyr::filter(short_histology == "ATRT",
+                sample_type == "Tumor",
+                composition == "Solid Tissue")
 
 #### Filter expression data ----------------------------------------------------
 
