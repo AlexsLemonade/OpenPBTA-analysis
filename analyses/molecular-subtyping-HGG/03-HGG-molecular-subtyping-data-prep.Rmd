@@ -162,7 +162,8 @@ final_df <- hgg_df %>%
     HIST1H3B.K28M = paste(sort(unique(HIST1H3B.K28M)), collapse = ", "),
     H3F3A.G35R.V = paste(sort(unique(
       H3F3A.G35R, H3F3A.G35V
-    )), collapse = ", ")
+    )), collapse = ", "),
+    IDH1.R132H = paste(sort(unique(IDH1.R132H)), collapse = ", ")
   ) %>%
   dplyr::select(-H3F3A.G35R, -H3F3A.G35V) %>%
   dplyr::distinct() %>%
@@ -411,6 +412,7 @@ final_df <- final_df %>%
     DAXX_mutated,
     SETD2_mutated,
     NTRK_fused,
+    IDH1.R132H,
     dplyr::everything()
   )
 # NOTE: There are still duplicate rows for some `sample_id`s due to various
