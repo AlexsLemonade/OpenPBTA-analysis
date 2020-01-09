@@ -45,7 +45,7 @@ args = parser.parse_args()
 new_mat = pd.read_csv(args.file, delimiter='\t', header=[0], keep_default_na=False)
 
 ## Take out the three columns to be operated on and apply the "remove_dup_and_null" function on those columns
-new_mat[['manta_CNVs','cnvkit_CNVs','freec_CNVs']] = new_mat[['manta_CNVs','cnvkit_CNVs','freec_CNVs']].applymap(lambda x: remove_dup_and_null(x))
+new_mat[['manta_CNVs','cnvkit_CNVs','freec_CNVs']] = new_mat[['manta_CNVs','cnvkit_CNVs','freec_CNVs']].applymap( remove_dup_and_null)
 
 
 ## Output restructred file to stdout
