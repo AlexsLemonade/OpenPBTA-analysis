@@ -18,7 +18,7 @@ import pandas as pd
 
 
 def remove_dup_and_null(cell):
-    """ Remove duplicated coordinates and NULLs """
+    """ Remove duplicated coordinate sets and NULLs from a comma separated string """
 
     ## Split the cell by commas and convert it to a set, this removes duplicated elements
     set_cell = set(cell.split(','))
