@@ -9,9 +9,9 @@ date: 2020
 ---
 
 This analysis evaluates chromosomal instability by formatting SV and CNV data 
-into chromsomal breaks. 
-
-This notebook returns plots for each sample in the `plots` directory.
+into chromosomal breaks and measuring chromosomal break density.
+This notebook returns plots for each sample and tumor type group in the 
+`plots` directory.
 
 You can see the output notebook [here](https://cansavvy.github.io/openpbta-notebook-concept/chromosomal-instability/chromosomal-instability.nb.html).
 
@@ -66,7 +66,7 @@ hist_plots_dir <- file.path(plots_dir, "tumor-type")
 
 # Create the hist_plots_dir  if it does not exist
 if (!dir.exists(hist_plots_dir)) {
-  dir.create(hist_plots_dir , recursive = TRUE)
+  dir.create(hist_plots_dir, recursive = TRUE)
 }
 
 # Path to tumor type plots output directory
@@ -76,7 +76,6 @@ sample_plots_dir <- file.path(plots_dir, "sample")
 if (!dir.exists(sample_plots_dir)) {
   dir.create(sample_plots_dir, recursive = TRUE)
 }
-
 ```
 
 ### Read in data and format it 
@@ -85,7 +84,7 @@ if (!dir.exists(sample_plots_dir)) {
 
 ```{r}
 # Read in the metadata
-metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) 
+metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
 ```
 
 #### Set up CNV data: 
@@ -120,7 +119,7 @@ cnv_df <- data.table::fread(file.path(data_dir, "pbta-cnv-cnvkit.seg.gz"),
 Filter CNV data to only the changes that are larger than our cutoff `ch.pct`.
 
 ```{r}
-cnv_filtered_df <- cnv_df %>% 
+cnv_filtered_df <- cnv_df %>%
   dplyr::filter(changed == "change")
 ```
 
@@ -186,7 +185,7 @@ sv_df <- dplyr::bind_rows(sv_data, .id = "sample_ids") %>%
   )
 ```
 
-### Set up other reference data
+#### Set up other reference data
 
 Obtain a list of samples that are common to both datasets. 
 
@@ -253,10 +252,10 @@ sv_breaks <- data.frame(
   dplyr::filter(!(chrom %in% c("X", "Y")))
 ```
 
-### Co-localization of breakpoints
+### Co-localization of breakpoints for samples 
 
 For each sample, we will bin the genome and count how many chromosome breaks 
-occur for each bin, given the given bin_size.
+occur for each bin, given the given `bin_size`.
 
 We will run this for each sample and return a list of three `GenomicRanges` objects:
 1) `common_density` contains the combined break counts for both SV and CNV break data.   
@@ -307,27 +306,32 @@ sample_densities <- lapply(common_samples, function(sample_id) {
 names(sample_densities) <- common_samples
 ```
 
-## Plot the breakpoints for each sample
+### Plot the breakpoints for each sample
 
 Given the `GenomicRanges` objects for each sample, create a combined plot for 
 each. 
 
 ```{r, results='hide'}
-lapply(sample_densities, function(granges_list){
-  
+lapply(sample_densities, function(granges_list) {
+
   # Get the sample name
   sample_name <- common_samples[parent.frame()$i[]]
-  
+
   # Make the combo plot
-  multipanel_break_plot(granges_list = granges_list,
-                        plot_name = sample_name,
-                        y_val = "total_counts", 
-                        y_lab = "Breaks per Mb", 
-                        plot_dir = sample_plots_dir)
+  multipanel_break_plot(
+    granges_list = granges_list,
+    plot_name = sample_name,
+    y_val = "total_counts",
+    y_lab = "Breaks per Mb",
+    plot_dir = sample_plots_dir
+  )
 })
 ```
 
-## Plot the breakpoints for each tumor-type
+### Co-localization of breakpoints for tumor-type groups
+
+Same as was done for each sample, now we will calculate densities for 
+each tumor-type group. 
 
 ```{r, results='hide'}
 # Change here and it will change the rest
@@ -338,12 +342,12 @@ tumor_types <- unique(metadata$short_histology)
 
 # Get a big list of break densities for each sample.
 group_densities <- lapply(tumor_types, function(tumor_type) {
-  
+
   # Obtain a list of sample_ids to subset by
-  sample_ids <- metadata %>% 
-    dplyr::filter(tumor_type %in% short_histology) %>% 
+  sample_ids <- metadata %>%
+    dplyr::filter(tumor_type %in% short_histology) %>%
     dplyr::pull(Kids_First_Biospecimen_ID)
-    
+
   # Calculate break densities with both datasets combined
   common_density <- break_density(
     sv_breaks,
@@ -377,30 +381,36 @@ group_densities <- lapply(tumor_types, function(tumor_type) {
   ))
 })
 
-# Bring along the sample IDs
+# Bring along the tumor-type labels
 names(group_densities) <- tumor_types
 ```
 
-Plot the tumor type data. 
+### Plot the breakpoints for each tumor-type
 
-```{r, results='hide'}
-lapply(group_densities, function(granges_list){
-  
-  # Get the sample name
+Here we will plot median number of break points for the tumor-type group per 
+each bin.
+
+```{r}
+lapply(group_densities, function(granges_list) {
+
+  # Get the tumor type label
   group_name <- tumor_types[parent.frame()$i[]]
-  
+
   # Make the combo plot
-  multipanel_break_plot(granges_list = granges_list,
-                        plot_name = group_name,
-                        y_val = "median_counts", 
-                        y_lab = "Median Breaks per Mb", 
-                        plot_dir = hist_plots_dir)
+  multipanel_break_plot(
+    granges_list = granges_list,
+    plot_name = group_name,
+    y_val = "median_counts",
+    y_lab = "Median Breaks per Mb",
+    plot_dir = hist_plots_dir
+  )
 })
 ```
 
-# Session Info
+### Session Info
 
 ```{r}
 sessionInfo()
+ group_name 
 ```
 

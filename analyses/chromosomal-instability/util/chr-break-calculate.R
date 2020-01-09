@@ -166,15 +166,16 @@ break_density <- function(sv_breaks = NULL,
     cnv_overlaps <- GenomicRanges::findOverlaps(cnv_ranges, break_ranges)
 
     # Set up an empty list where we can store what sample each sequence came from
-    break_ranges@elementMetadata@listData$samples <- rep(NA, length(break_ranges))
+    break_ranges@elementMetadata@listData$mcols <- rep(NA, length(break_ranges))
 
     # Bring over CNV samples
-    break_ranges@elementMetadata@listData$samples[cnv_overlaps@from] <-
+    break_ranges@elementMetadata@listData$mcols[cnv_overlaps@from] <-
       cnv_ranges@elementMetadata@listData$mcols[cnv_overlaps@to]
 
     # Bring over SV samples
-    break_ranges@elementMetadata@listData$samples[cnv_overlaps@from] <-
+    break_ranges@elementMetadata@listData$mcols[cnv_overlaps@from] <-
       cnv_ranges@elementMetadata@listData$mcols[cnv_overlaps@to]
+    
   } else if (!is.null(cnv_breaks) & is.null(sv_breaks)) {
     # If only the CNV data is given, use this data only
     break_ranges <- make_granges(
