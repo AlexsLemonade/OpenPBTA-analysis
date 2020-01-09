@@ -104,7 +104,7 @@ break_density <- function(sv_breaks = NULL,
   #   chr_size_list: a named numeric vector of the sizes (bp) of the chromosomes.
   #                  names of the chromosomes must match the format of the input
   #                  break data. e.g. "chr1" or "1".
-  #   window_size: What size windows to calculate break density. Default is 1kb.
+  #   window_size: What size windows to calculate break density. Default is 1Mb.
   #   samples_col_sv/cnv: character string that indicates the column name with the
   #                sample ID information. Default is "samples". Will be passed to
   #                `make_granges`` function.
@@ -120,7 +120,7 @@ break_density <- function(sv_breaks = NULL,
   #
   # Check that a sample ID has been specified.
   if (is.null(sample_id)) {
-    stop("No sample ID has been specified. Use the `sample_id` argument.")
+    stop("No sample ID(s) have been specified. Use the `sample_id` argument.")
   }
 
   # Determine how many samples are in the group
