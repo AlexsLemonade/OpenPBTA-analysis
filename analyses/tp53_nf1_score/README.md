@@ -10,7 +10,8 @@ The classifiers were trained on TCGA PanCan data ([Way et al. _Cell Reports._ 20
 See [`01-apply-classifier.py`](01-apply-classifier.py) for more information about the procedure.
 To evaluate the classifier scores, we use [`02-evaluate-classifier.py`](02-evaluate-classifier.py) and input SNV data to identify true TP53/NF1 loss samples and compare scores of shuffled data to true calls and plot ROC curves. 
 
-
+**This module is in progress.** 
+Copy number aberrations are not currently considered when evaluating the classifiers.
 
 #### Running the analysis
 
