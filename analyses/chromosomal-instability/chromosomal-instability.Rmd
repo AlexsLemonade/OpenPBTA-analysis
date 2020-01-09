@@ -411,6 +411,5 @@ lapply(group_densities, function(granges_list) {
 
 ```{r}
 sessionInfo()
- group_name 
 ```
 
