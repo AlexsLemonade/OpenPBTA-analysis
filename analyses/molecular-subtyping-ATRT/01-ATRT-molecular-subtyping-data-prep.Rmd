@@ -363,7 +363,7 @@ final_df <- final_df %>%
   dplyr::mutate(
     Kids_First_Biospecimen_ID = paste(sort(
       unique(c(Kids_First_Biospecimen_ID.x, Kids_First_Biospecimen_ID.y,
-             Tumor_Sample_Barcode))
+             Tumor_Sample_Barcode, biospecimen_id))
     ), collapse = ", "),
     Kids_First_Participant_ID = paste(sort(
       unique(c(Kids_First_Participant_ID.x, Kids_First_Participant_ID.y))
@@ -375,7 +375,10 @@ final_df <- final_df %>%
       "Kids_First_Biospecimen_ID.x",
       "Kids_First_Biospecimen_ID.y",
       "Kids_First_Participant_ID.x",
-      "Kids_First_Participant_ID.y"
+      "Kids_First_Participant_ID.y",
+      "Kids_First_Participant_ID.x.x",
+      "Kids_First_Participant_ID.y.y",
+      "biospecimen_id"
     )
   ) %>%
   dplyr::select(
