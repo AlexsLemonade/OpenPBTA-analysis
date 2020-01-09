@@ -37,6 +37,7 @@ library(dplyr)
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # Set path to results, plots, and subset files directories
+data_dir <- file.path(root_dir, "data")
 module_dir <- file.path(root_dir, "analyses", "molecular-subtyping-ATRT")
 results_dir <- file.path(module_dir, "results")
 plots_dir <- file.path(module_dir, "plots")
@@ -54,7 +55,7 @@ log_expression <-
   ))
 
 # Read in the subset histologies file
-metadata_df <- readr::read_tsv(file.path(subset_dir, "atrt_histologies.tsv"))
+metadata_df <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
 
 # Read in final output data.frame from `01-ATRT-molecular-subtyping-data-prep.Rmd`
 final_df <-
