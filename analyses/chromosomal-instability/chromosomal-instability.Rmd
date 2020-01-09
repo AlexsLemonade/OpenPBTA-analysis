@@ -33,14 +33,6 @@ Rscript -e "rmarkdown::render('analyses/chromosomal-instability/chromosomal-inst
 # This threshold will be used to determine percent of genome changed
 ch.pct <- 0.02
 
-# Path to scratch directory
-sv_dir <- file.path("..", "..", "scratch", "sv-vcf")
-
-if (!dir.exists(sv_dir)) {
-  # Get SV file processed for the formatting we need
-  source(file.path("..", "sv-analysis", "01-process-sv-file.R"))
-}
-
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 ```
@@ -128,59 +120,14 @@ cnv_filtered_df <- cnv_df %>%
 Read in the SV data.
 
 ```{r}
-# Get a list of the properly formatted SV files, we'll only take the ones without Y and M chromosomes
-sv_files <- list.files(sv_dir, pattern = "_withoutYandM.tsv", full.names = TRUE)
-
-# Read in each of the files
-sv_data <- lapply(sv_files, function(sv_file) {
-  data.table::fread(sv_file, data.table = FALSE) %>%
-    # The row binding step won't work unless all chromosome variables get
-    # converted to characters consistently
-    dplyr::mutate(
-      chrom1 = as.character(chrom1),
-      chrom2 = as.character(chrom2)
-    )
-})
-```
-
-Carry over the sample names.
-
-```{r}
-# Extract and carry over the sample names to the list
-sample_names <- gsub("_withoutYandM.tsv", "", sv_files)
-names(sv_data) <- stringr::word(sample_names, sep = "/", 5)
-```
-
-Format this into a data.frame and make the chromosome and coordinates easier for
-handling later. 
-
-```{r}
-# Bind all of them into one
-sv_df <- dplyr::bind_rows(sv_data, .id = "sample_ids") %>%
+sv_df <- data.table::fread(file.path(data_dir, "pbta-sv-manta.tsv.gz"), 
+                           data.table = FALSE) %>%
   # Reformat the 23 and 24 chromosomes so they are X and Y and also factors
   dplyr::mutate(
-    chrom1 = factor(dplyr::recode(chrom1,
+    chrom = factor(dplyr::recode(SV.chrom,
       `23` = "X", `24` = "Y"
     ),
     levels = c(1:22, "X", "Y")
-    ),
-    chrom2 = factor(dplyr::recode(chrom2,
-      `23` = "X", `24` = "Y"
-    ),
-    levels = c(1:22, "X", "Y")
-    )
-  ) %>%
-  # Changing these so they end up matching the SV data
-  dplyr::rename(samples = sample_ids, chrom = chrom1) %>%
-  # GenomicRanges is unhappy if end comes before start, so we need to switch these
-  dplyr::mutate(
-    start = dplyr::case_when(
-      pos2 < pos1 ~ pos2,
-      TRUE ~ pos1
-    ),
-    end = dplyr::case_when(
-      pos2 < pos1 ~ pos1,
-      TRUE ~ pos2
     )
   )
 ```
@@ -241,11 +188,11 @@ Make an SV breaks data.frame.
 ```{r}
 # Make a data.frame that has the breaks
 sv_breaks <- data.frame(
-  samples = rep(sv_df$samples, 2),
-  chrom = c(sv_df$chrom1, sv_df$chrom2),
-  start = c(sv_df$start, sv_df$end),
-  end = c(sv_df$start, sv_df$end),
-  svclass = rep(sv_df$SVtype, 2),
+  samples = rep(sv_df$Kids.First.Biospecimen.ID.Tumor, 2),
+  chrom = c(sv_df$chrom, sv_df$chrom),
+  start = c(sv_df$SV.start, sv_df$SV.end),
+  end = c(sv_df$SV.start, sv_df$SV.end),
+  svclass = rep(sv_df$SV.type, 2),
   stringsAsFactors = FALSE
 ) %>%
   # Remove sex chromosomes
