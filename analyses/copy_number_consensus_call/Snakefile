@@ -192,7 +192,7 @@ rule merge_all:
         "../../scratch/endpoints/all_CNVs_combined.tsv"
     shell:
         ## Add a header to the file and combine all of the files using cat. 
-       "echo -e 'chrom\tstart\tend\tmanta_CNVs\tcnvkit_CNVs\tfreec_CNVs\tCNV_type\tsample\tfile_names' "
+       "echo -e 'chrom\tstart\tend\tmanta_CNVs\tcnvkit_CNVs\tfreec_CNVs\tCNV_type\ tBiospecimen\tfile_names' "
        " | cat - {input.bedfiles} "
        " | cut -f 1-8 "
        " > {output}"
@@ -205,5 +205,4 @@ rule clean_output:
         "results/cnv_consensus.tsv"
     shell:
         "python3 {input.script} --file {input.cnv_file} > {output}"
-
 
