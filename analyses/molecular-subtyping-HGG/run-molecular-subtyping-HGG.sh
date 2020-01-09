@@ -27,3 +27,7 @@ Rscript -e "rmarkdown::render('01-HGG-molecular-subtyping-defining-lesions.Rmd',
 if [ "$SUBSET" -gt "0" ]; then
   Rscript --vanilla 02-HGG-molecular-subtyping-subset-files.R
 fi
+
+# Run the third script in this module that wrangles the subsetted data files and saves
+# them in an output tsv file
+Rscript -e "rmarkdown::render('03-HGG-molecular-subtyping-data-prep.Rmd', clean = TRUE)"

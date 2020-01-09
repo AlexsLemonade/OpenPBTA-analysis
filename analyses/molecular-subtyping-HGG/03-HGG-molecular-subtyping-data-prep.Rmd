@@ -1,0 +1,433 @@
+---
+title: "High-Grade Glioma Molecular Subtyping - Data Prep"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell for ALSF CCDL
+date: 2019
+---
+
+This notebook addresses the data wrangling for the purpose of molecular
+subtyping High-grade glioma samples.
+
+# Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+`Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/03-HGG-molecular-subtyping-data-prep.Rmd', clean = TRUE)"`
+
+# Set Up
+
+```{r}
+# Get `magrittr` pipe
+`%>%` <- dplyr::`%>%`
+
+# Install `DT` and `htmlwidgets` packages for displaying tables
+if (!("DT" %in% installed.packages())) {
+  install.packages("DT")
+}
+if (!("htmlwidgets" %in% installed.packages())) {
+  install.packages("htmlwidgets")
+}
+```
+
+
+## Directories and Files
+
+```{r}
+# Detect the ".git" folder -- this will in the project root directory.
+# Use this as the root directory to ensure proper sourcing of functions no
+# matter where this is called from
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+# File path to results directory
+input_dir <-
+  file.path(root_dir, "analyses", "molecular-subtyping-HGG", "hgg-subset")
+
+# File path to results directory
+results_dir <-
+  file.path(root_dir, "analyses", "molecular-subtyping-HGG", "results")
+
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+
+# Read in output tsv with defining lesions as variables generated in 
+# `01-HGG-molecular-subtyping-defining-lesions.Rmd`
+hgg_df <- readr::read_tsv(file.path(results_dir, "HGG_defining_lesions.tsv"))
+
+# Read in HGG subset metadata
+subset_metadata <-
+  readr::read_tsv(file.path(input_dir, "hgg_histologies.tsv"))
+
+# Read in non-subsetted metadata
+metadata <- readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"))
+
+# Select wanted columns in metadata for merging and assign to a new object
+select_metadata <- metadata %>%
+  dplyr::select(sample_id,
+                Kids_First_Biospecimen_ID)
+
+# Read in HGG subset z-scored RNA expression data
+stranded_expression <-
+  readr::read_rds(
+    file.path(
+      input_dir,
+      "hgg_zscored_expression.RDS"
+    )
+  )
+
+# Read in HGG subset focal CN data
+cn_df <- readr::read_tsv(
+  file.path(
+    input_dir,
+    "hgg_focal_cn.tsv.gz"
+  )
+)
+
+# Read in HGG subset fusion data
+fusion_df <-
+  readr::read_tsv(file.path(input_dir,
+                              "hgg_fusion.tsv"))
+
+# Read in HGG subset GISTIC broad value data 
+gistic_df <-
+  readr::read_tsv(file.path(input_dir, "hgg_gistic_broad_values.tsv"))
+```
+
+## Custom Function
+
+```{r}
+# Custom datatable function
+# Function code adapted from: https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/49acc98f5ffd86853fc70f220623311e13e3ca9f/analyses/collapse-rnaseq/02-analyze-drops.Rmd#L23
+viewDataTable <- function(data) {
+  DT::datatable(
+    data,
+    rownames = FALSE,
+    filter = "bottom",
+    class = 'cell-border stripe',
+    options = list(
+      pageLength = 5,
+      searchHighlight = TRUE,
+      scrollX = TRUE,
+      dom = 'tpi',
+      initComplete = htmlwidgets::JS(
+        "function(settings, json) {",
+        "$(this.api().table().header()).css({'background-color':
+                                            '#004467', 'color': '#fff'});",
+        "}"
+      )
+    )
+  )
+}
+```
+
+# Prepare Data
+
+## Metadata
+
+```{r}
+metadata <- metadata %>%
+  dplyr::filter(sample_id %in% hgg_df$sample_id) %>%
+  dplyr::mutate(
+    age_at_diagnosis_years = as.numeric(age_at_diagnosis_days)/365
+    ) %>%
+  dplyr::select(
+    sample_id,
+    Kids_First_Participant_ID,
+    Kids_First_Biospecimen_ID,
+    age_at_diagnosis_years,
+    glioma_brain_region
+  ) %>%
+  dplyr::group_by(
+    sample_id,
+    Kids_First_Participant_ID
+  ) %>%
+  dplyr::summarize_all(function(x) paste(sort(unique(x)), collapse = ", "))
+
+# Display metadata subsetted for HGG samples
+metadata %>%
+  head(n = 15)
+
+# Merge output from `01-HGG-molecular-subtyping-defining-legions.Rmd`
+final_df <- hgg_df %>%
+  dplyr::select(
+    -Kids_First_Participant_ID,-Kids_First_Biospecimen_ID,-disease_type_new,-disease_type_reclassified
+  ) %>%
+  dplyr::group_by(sample_id) %>%
+  dplyr::mutate(
+    H3F3A.K28M = paste(sort(unique(H3F3A.K28M)), collapse = ", "),
+    HIST1H3B.K28M = paste(sort(unique(HIST1H3B.K28M)), collapse = ", "),
+    H3F3A.G35R.V = paste(sort(unique(
+      H3F3A.G35R, H3F3A.G35V
+    )), collapse = ", ")
+  ) %>%
+  dplyr::select(-H3F3A.G35R, -H3F3A.G35V) %>%
+  dplyr::distinct() %>%
+  dplyr::right_join(metadata, by = "sample_id")
+```
+
+## Filter and Join RNA expression, CN, Fusion and GISTIC data 
+
+### RNA expression data 
+
+```{r}
+# Filter to only the genes of interest and merge metadata with expression data
+filtered_expression_metadata <- stranded_expression %>%
+  as.data.frame() %>%
+  dplyr::select(FOXG1_expression_zscore = FOXG1, 
+                OLIG2_expression_zscore = OLIG2) %>%
+  tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
+  dplyr::left_join(select_metadata, by = "Kids_First_Biospecimen_ID") %>%
+  dplyr::select(-Kids_First_Biospecimen_ID) %>%
+  dplyr::distinct()
+
+# Display `filtered_expression_metadata`
+filtered_expression_metadata %>%
+  head(n = 15)
+
+# Join expression data with running final data.frame
+final_df <- final_df %>%
+  dplyr::left_join(filtered_expression_metadata,
+                   by = "sample_id")
+
+# Remove data we no longer need
+rm(filtered_expression_metadata)
+```
+
+### CN data
+
+```{r}
+# Filter focal CN data for PDGFRA, PTEN and MYCN status
+genes_cn_df <- cn_df %>%
+  tibble::rowid_to_column("id") %>%
+  dplyr::filter(gene_symbol %in% c("PDGFRA", "PTEN", "MYCN")) %>%
+  tidyr::spread(gene_symbol, status, fill = "neutral") %>%
+  dplyr::rename(PDGFRA_focal_status = PDGFRA,
+                PTEN_focal_status = PTEN,
+                MYCN_focal_status = MYCN) %>%
+  dplyr::select(-id)
+
+# add in the samples that did not have any copy number changes for either
+# of these genes
+missing_cn_samples <- setdiff(unique(cn_df$sample_id), genes_cn_df$sample_id)
+genes_cn_df <- subset_metadata %>%
+  dplyr::filter(sample_id %in% missing_cn_samples) %>%
+  dplyr::select(sample_id,
+                Kids_First_Participant_ID,
+                Kids_First_Biospecimen_ID) %>%
+  dplyr::rename(biospecimen_id = Kids_First_Biospecimen_ID) %>%
+  # bind rows fills with NAs -- if something is NA, there is no evidence for
+  # a copy number alteration in that gene and we will call it neutral
+  dplyr::bind_rows(genes_cn_df) %>%
+  dplyr::mutate_all(function(x) tidyr::replace_na(x, "neutral"))
+
+# Display `genes_cn_df`
+genes_cn_df %>%
+  head(n = 15)
+
+# Join HGG expression data with focal CN data
+final_df <- final_df %>%
+  dplyr::left_join(dplyr::select(genes_cn_df,
+                                 -biospecimen_id,
+                                 -cytoband,
+                                 -Kids_First_Participant_ID),
+                   by = "sample_id") %>%
+  dplyr::mutate_all(function(x) tidyr::replace_na(x, "neutral"))
+
+# Remove data we no longer need
+rm(missing_cn_samples, genes_cn_df)
+```
+
+### SV data
+
+```{r}
+# Define target lesions
+H3_K28 <-
+  c("TP53",
+    "H3F3A",
+    "HIST1H3B",
+    "ACVR1",
+    "ATRX",
+    "FGFR1",
+    "IDH1",
+    "BRAF")
+
+H3_G35 <- c("H3F3A", "SETD2", "IDH1", "ATRX", "DAXX")
+
+# Filter CN data for the target SV lesions and join this data.frame with
+# the selected variables of the metadata
+sv_df_filtered <- cn_df %>%
+  dplyr::filter(
+    stringr::str_detect(gene_symbol, H3_K28) |
+      stringr::str_detect(gene_symbol, H3_G35)
+  ) %>%
+  dplyr::select(sample_id, biospecimen_id, gene_symbol, status, cytoband) %>%
+  dplyr::group_by(sample_id) %>%
+  dplyr::mutate(
+    ACVR1_mutated = paste(sort(unique(
+      dplyr::case_when(gene_symbol == "ACVR1" ~ "Yes",
+                       TRUE ~ "No")
+    )), collapse = ", "),
+    TP53_mutated = paste(sort(unique(
+      dplyr::case_when(gene_symbol == "TP53" ~ "Yes",
+                       TRUE ~ "No")
+    )), collapse = ", "),
+    ATRX_mutated = paste(sort(unique(
+      dplyr::case_when(gene_symbol == "ATRX" ~ "Yes",
+                       TRUE ~ "No")
+    )), collapse = ", "),
+    FGFR1_mutated = paste(sort(unique(
+      dplyr::case_when(gene_symbol == "FGFR1" ~ "Yes",
+                       TRUE ~ "No")
+    )), collapse = ", "),
+    SETD2_mutated = paste(sort(unique(
+      dplyr::case_when(gene_symbol == "SETD2" ~ "Yes",
+                       TRUE ~ "No")
+    )), collapse = ", "),
+    TERT_mutated = paste(sort(unique(
+      dplyr::case_when(gene_symbol == "TERT" ~ "Yes",
+                       TRUE ~ "No")
+    )), collapse = ", "),
+    IDH1_mutated = paste(sort(unique(
+      dplyr::case_when(gene_symbol == "IDH1" ~ "Yes",
+                       TRUE ~ "No")
+    )), collapse = ", "),
+    CIC_mutated = paste(sort(unique(
+      dplyr::case_when(gene_symbol == "CIC" ~ "Yes",
+                       TRUE ~ "No")
+    )), collapse = ", "),
+    FUBP1_mutated = paste(sort(unique(
+      dplyr::case_when(gene_symbol == "FUBP1" ~ "Yes",
+                       TRUE ~ "No")
+    )), collapse = ", "),
+    DAXX_mutated = paste(sort(unique(
+      dplyr::case_when(gene_symbol == "DAXX" ~ "Yes",
+                       TRUE ~ "No")
+    )), collapse = ", ")
+  ) %>%
+  dplyr::select(-c("gene_symbol", "cytoband", "status", "biospecimen_id")) %>%
+  dplyr::distinct()
+
+# Display `sv_df_filtered`
+sv_df_filtered %>%
+  head(n = 15)
+
+# Join SV data with the running final data.frame
+final_df <- final_df %>%
+  dplyr::left_join(sv_df_filtered, by = "sample_id")
+
+# Remove data we don't need
+rm(sv_df_filtered)
+```
+
+### Fusion data 
+
+```{r}
+# Filter the fusion data to only `NTRK` fusions
+fusion_df_filtered <- fusion_df %>%
+  dplyr::mutate(
+    NTRK_fused = dplyr::case_when(stringr::str_detect(FusionName, "NTRK") ~ "Yes",
+                                  TRUE ~ "No"),
+    FGFR1_fused = dplyr::case_when(stringr::str_detect(FusionName, "FGFR1") ~ "Yes",
+                                   TRUE ~ "No")
+  ) %>%
+  dplyr::select(
+    -c(
+      "FusionName",
+      "age_at_diagnosis_days",
+      "glioma_brain_region",
+      "Kids_First_Participant_ID",
+      "Sample"
+    )
+  )
+
+# Display `fusion_df_filtered`
+fusion_df_filtered %>%
+  head(n = 15)
+
+# Join fusion data with the running final data.frame
+final_df <- final_df %>%
+  dplyr::left_join(fusion_df_filtered, by = "sample_id") %>%
+  dplyr::distinct()
+
+# Remove data we don't need
+rm(fusion_df_filtered)
+```
+
+### GISTIC data
+
+```{r}
+gistic_df <- gistic_df %>%
+  dplyr::select(-Kids_First_Biospecimen_ID) %>%
+  dplyr::group_by(sample_id) %>%
+  dplyr::mutate(
+    chr_1p_loss = dplyr::case_when(`1p` == -1 ~ "Yes", TRUE ~ "No"),
+    chr_19q_loss = dplyr::case_when(`19q` == -1 ~ "Yes", TRUE ~ "No"),
+    chr_7_loss = dplyr::case_when(`7p` == -1 |
+                                    `7q` == -1 ~ "Yes", TRUE ~ "No"),
+    chr_10_loss = dplyr::case_when(`10p` == -1 |
+                                     `10q` == -1 ~ "Yes", TRUE ~ "No")
+  ) %>%
+  dplyr::select(-c("1p", "19q", "7p", "7q", "10p", "10q"))
+
+# Display `gistic_df`
+gistic_df %>%
+  head(n = 15)
+
+# Join GISTIC data with the running final data.frame
+final_df <- final_df %>%
+  dplyr::left_join(gistic_df, by = "sample_id") %>%
+  dplyr::distinct()
+
+# Remove data we no longer need
+rm(gistic_df)
+```
+
+# Save final table of results
+
+```{r}
+# Merge the manta data with the existing data.frame
+final_df <- final_df %>%
+  dplyr::select(
+    Kids_First_Participant_ID,
+    sample_id,
+    Kids_First_Biospecimen_ID,
+    age_at_diagnosis_years,
+    glioma_brain_region,
+    H3F3A.K28M,
+    HIST1H3B.K28M,
+    ACVR1_mutated,
+    TP53_mutated,
+    ATRX_mutated,
+    FGFR1_mutated,
+    FGFR1_fused,
+    PDGFRA_focal_status,
+    PTEN_focal_status,
+    IDH1_mutated,
+    H3F3A.G35R.V,
+    DAXX_mutated,
+    SETD2_mutated,
+    NTRK_fused,
+    dplyr::everything()
+  )
+# NOTE: There are still duplicate rows for some `sample_id`s due to various
+# `OLIG2` and `FOXG1` expression z-scores for multiple
+# `Kids_First_Biospecimen_ID`s.
+
+# Save final data.frame to file
+readr::write_tsv(final_df, file.path(results_dir, "HGG_molecular_subtypes.tsv"))
+
+# Display `final_df`
+viewDataTable(final_df)
+```
+
+# Session Info
+
+```{r}
+# Print the session information
+sessionInfo()
+```
+
