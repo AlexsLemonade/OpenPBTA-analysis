@@ -47,10 +47,8 @@ The structure of this folder is as follows:
 │   ├── atrt_focal_cn.tsv.gz
 │   ├── atrt_gistic_broad_values.tsv
 │   ├── atrt_gsva.tsv
-│   ├── atrt_histologies.tsv
 │   ├── atrt_log_expression.RDS
 │   └── atrt_tmb.tsv
-├── data
 ├── plots
 │   ├── atrt_expression_pca.png
 │   └── atrt_heatmap.png
