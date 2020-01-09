@@ -7,13 +7,13 @@ suppressPackageStartupMessages(library("data.table"))
 suppressPackageStartupMessages(library("optparse"))
 
 #' **Filters**
-#' 
+#'
 #' *Fusions Filters*
 #' 1: Exact match a list of fusions common in Ependymoma tumors
 ependFuses = c(
   "C11orf95--MAML2",
   "C11orf95--RELA",
-  "C11orf95--YAP1", 
+  "C11orf95--YAP1",
   "LTBP3--RELA",
   "PTEN--TAS2R1",
   "YAP1--FAM118B",
@@ -47,7 +47,7 @@ filterFusion <- function(df, bioid, fuses, genes) {
     df <- filter(df, Sample %in% bioid)
   }
   if (!missing(fuses) & !missing(genes)) {
-    df <- filter(df, FusionName %in% fuses | 
+    df <- filter(df, FusionName %in% fuses |
                    Gene1A %in% genes |
                    Gene2A %in% genes |
                    Gene1B %in% genes |
@@ -55,7 +55,7 @@ filterFusion <- function(df, bioid, fuses, genes) {
   } else if (!missing(fuses)) {
     df <- filter(df, FusionName %in% fuses)
   } else if (!missing(genes)) {
-    df <- filter(df,     
+    df <- filter(df,
                  Gene1A %in% genes |
                    Gene2A %in% genes |
                    Gene1B %in% genes |
@@ -88,10 +88,6 @@ generateOutput <- function(df, fuses, outputPath) {
 #' Set up the options
 optionList <- list(
   make_option(
-    opt_str = c("-d","--demographic_file"), type = "character",
-    default = NULL, help = "Path to the demographic file."
-  ),
-  make_option(
     opt_str = c("-f","--fusions_file"), type = "character",
     default = NULL, help = "Path to the fusions file."
   ),
@@ -109,27 +105,19 @@ if (!dir.exists(opt$output_dir)) {
   dir.create(opt$output_dir)
 }
 
-#' Check that the files exist
-if (!file.exists(opt$demographic_file)) {
-  demo_missing <- paste("Error:", opt$demographic_file, "does not exist")
-  if (!file.exists(opt$fusions_file)) {
-    stop(paste(demo_missing, "\nError:", opt$fusions_file, "does not exist"))
-  } else
-    stop(demo_missing)
-} else if (!file.exists(opt$fusions_file)) {
+if (!file.exists(opt$fusions_file))
   stop(paste("Error:", opt$fusions_file, "does not exist"))
-}
+
 #' Load the files
-demo <- read.csv(opt$demographic_file, sep="\t")
 fuse <- read.csv(opt$fusions_file, sep="\t")
 
 #' Filter the fusion files for your two populations
 allFuseEpend <- filterFusion(df = fuse,
-                          fuses = ependFuses,
-                          genes = ependGenes)
+                             fuses = ependFuses,
+                             genes = ependGenes)
 allFuseEmbry <- filterFusion(df = fuse,
-                          fuses = embryFuses,
-                          genes = embryGenes)
+                             fuses = embryFuses,
+                             genes = embryGenes)
 #' Write the fusion frames to file
 generateOutput(df  = allFuseEpend,
                fuses = ependFuses,

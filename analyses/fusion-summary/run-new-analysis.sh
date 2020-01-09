@@ -13,10 +13,8 @@ cd "$script_directory" || exit
 data_dir="../../data"
 scratch_dir="../..scratch"
 
-demographic_file="${data_dir}/pbta-histologies.tsv"
 fusions_file="${data_dir}/pbta-fusion-putative-oncogenic.tsv"
 
 Rscript --vanilla ${script_directory}/01-fusion-summary.R \
-  --demographic_file ${demographic_file} \
   --fusions_file ${fusions_file} \
-  --output_dir ${script_directory}/results 
+  --output_dir ${script_directory}/results
