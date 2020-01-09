@@ -132,13 +132,7 @@ sv_df <- data.table::fread(file.path(data_dir, "pbta-sv-manta.tsv.gz"),
   )
 ```
 
-#### Set up other reference data
-
-Obtain a list of samples that are common to both datasets. 
-
-```{r}
-common_samples <- intersect(sv_df$samples, cnv_df$samples)
-```
+#### Set up chromosome reference data
 
 Set up chromosome size data 
 
@@ -195,8 +189,14 @@ sv_breaks <- data.frame(
   svclass = rep(sv_df$SV.type, 2),
   stringsAsFactors = FALSE
 ) %>%
-  # Remove sex chromosomes
-  dplyr::filter(!(chrom %in% c("X", "Y")))
+  # Remove sex chromosomes and NAs
+  dplyr::filter(!(chrom %in% c("X", "Y", NA)))
+```
+
+Obtain a list of samples that are common to both datasets. 
+
+```{r}
+common_samples <- intersect(sv_breaks$samples, cnv_breaks$samples)
 ```
 
 ### Co-localization of breakpoints for samples 
