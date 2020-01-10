@@ -286,6 +286,8 @@ tumor_types <- metadata %>%
   dplyr::filter(!is.na(short_histology), experimental_strategy != "RNA-Seq") %>% 
   dplyr::distinct(short_histology) %>%
   dplyr::pull(short_histology)
+
+tumor_types[12]
 ```
 
 Run the density calculations for the groups. 
@@ -303,7 +305,7 @@ group_densities <- lapply(tumor_types, function(tumor_type) {
   check_samples <- (sample_ids %in% common_samples)
   
   # If no samples, go to next
-  if (sum(check_samples) > 0) {
+  if (sum(check_samples) > 1) {
   
   message(paste("Calculating breakpoint density for", tumor_type, "samples"))
 
@@ -343,6 +345,9 @@ group_densities <- lapply(tumor_types, function(tumor_type) {
 
 # Bring along the tumor-type labels
 names(group_densities) <- tumor_types
+
+# Remove tumor_types data that didn't have at least two samples
+group_densities <- group_densities[!sapply(group_densities, is.null)]
 ```
 
 ### Plot the breakpoints for each tumor-type
@@ -352,7 +357,6 @@ each bin.
 
 ```{r}
 lapply(group_densities, function(granges_list) {
-
   # Get the tumor type label
   group_name <- tumor_types[parent.frame()$i[]]
 
