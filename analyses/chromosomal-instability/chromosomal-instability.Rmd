@@ -193,12 +193,6 @@ sv_breaks <- data.frame(
   dplyr::filter(!(chrom %in% c("X", "Y", NA)))
 ```
 
-Obtain a list of samples that are common to both datasets. 
-
-```{r}
-common_samples <- intersect(sv_breaks$samples, cnv_breaks$samples)
-```
-
 ### Co-localization of breakpoints for samples 
 
 For each sample, we will bin the genome and count how many chromosome breaks 
@@ -212,6 +206,9 @@ We will run this for each sample and return a list of three `GenomicRanges` obje
 ```{r, warning = FALSE, results='hide'}
 # Change here and it will change the rest
 bin_size <- 1e6
+
+# Obtain a list of samples that are common to both datasets. 
+common_samples <- intersect(sv_breaks$samples, cnv_breaks$samples)
 
 # Get a big list of break densities for each sample.
 sample_densities <- lapply(common_samples, function(sample_id) {
@@ -301,6 +298,12 @@ group_densities <- lapply(tumor_types, function(tumor_type) {
   sample_ids <- metadata %>%
     dplyr::filter(metadata$short_histology == tumor_type) %>%
     dplyr::pull(Kids_First_Biospecimen_ID)
+  
+  # Double check these samples are in the list
+  check_samples <- (sample_ids %in% common_samples)
+  
+  # If no samples, go to next
+  if (sum(check_samples) == 0) next
   
   message(paste("Calculating breakpoint density for", tumor_type, "samples"))
 
