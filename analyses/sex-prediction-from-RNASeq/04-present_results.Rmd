@@ -3,6 +3,12 @@ title: "Sex Prediction from RNASeq Results"
 output: html_document
 author: Bill Amadio
 date: 2019
+params:
+  results_dir: "results"
+  model_dir: "models"
+  cm_set: NULL
+  seed: NULL
+  target_columns: NULL
 ---
 
 ```{r echo=FALSE, results='hide'}
@@ -18,11 +24,11 @@ library(knitr)
 
 
 ```{r echo=FALSE}
-args <- commandArgs(TRUE)
-parseArgs <- function(x) strsplit(sub("^--", "", x), "=")
-argsDF <- as.data.frame(do.call("rbind", parseArgs(args)))
-argsL <- as.list(as.character(argsDF$V2))
-names(argsL) <- argsDF$V1
+#args <- commandArgs(TRUE)
+#parseArgs <- function(x) strsplit(sub("^--", "", x), "=")
+#argsDF <- as.data.frame(do.call("rbind", parseArgs(args)))
+#argsL <- as.list(as.character(argsDF$V2))
+#names(argsL) <- argsDF$V1
 ```
 
 
@@ -31,11 +37,11 @@ names(argsL) <- argsDF$V1
 ## non-zero features v. # training transcripts plote
 
 # we will generate a separate data frame for each value in the targetColumns argument
-target_column_list <- strsplit(argsL$target_columns, ",")
+target_column_list <- strsplit(params$target_columns, ",")
 df_list <- list()
 
 # Create specified output directory if it does not yet exist
-plot_directory <- file.path(argsL$results_dir, "plots")
+plot_directory <- file.path(params$results_dir, "plots")
 
 if (!dir.exists(plot_directory)) {
   dir.create(plot_directory, recursive = TRUE)
@@ -45,13 +51,13 @@ if (!dir.exists(plot_directory)) {
 for (t in target_column_list[[1]]) {
 
 # here, we collect the predictive accuracy values from each confusion matrix file in the results directory  
-  results_directory <- file.path(argsL$results_dir, t)
+  results_directory <- file.path(params$results_dir, t)
   files_to_process <- list.files(path = results_directory, pattern = "_confusion_matrix.RDS")
-  first_pos <- sapply(files_to_process, function(x) regexpr(argsL$seed, x))
+  first_pos <- sapply(files_to_process, function(x) regexpr(params$seed, x))
   last_pos <- sapply(files_to_process, function(x) regexpr("confusion_matrix", x))
   transcript_tail_percents <- substr(files_to_process, 1, last_pos-2)
   
-  files_to_process_names <- file.path(argsL$results_dir, t, files_to_process)
+  files_to_process_names <- file.path(params$results_dir, t, files_to_process)
   predictive_accuracies <- sapply(files_to_process_names, function(x) readRDS(x)$overall["Accuracy"])
 
 #store predictive accuracies in a data frame with ID=unique portion of the confusion matrix file name  
@@ -59,13 +65,13 @@ for (t in target_column_list[[1]]) {
                                       cm_filename=files_to_process_names, predictive_accuracy=predictive_accuracies)
 
 # # here, we collect the # training transcripts values from each model object in the models directory  
-  results_directory <- file.path(argsL$model_dir)
+  results_directory <- file.path(params$model_dir)
   files_to_process <- list.files(path = results_directory, pattern = "_model_object.RDS")
-  first_pos <- sapply(files_to_process, function(x) regexpr(argsL$seed, x))
+  first_pos <- sapply(files_to_process, function(x) regexpr(params$seed, x))
   last_pos <- sapply(files_to_process, function(x) regexpr("model_object", x))
   transcript_tail_percents <- substr(files_to_process, 1, last_pos-2)
   
-  files_to_process_names <- file.path(argsL$model_dir, files_to_process)
+  files_to_process_names <- file.path(params$model_dir, files_to_process)
   number_transcripts <- sapply(files_to_process_names, function(x) readRDS(x)$glmnet.fit$beta@Dim[1])
 
 #store # training transcripts values in a data frame with ID=uniqure portion of the model object file name 
@@ -76,13 +82,13 @@ for (t in target_column_list[[1]]) {
 
 
 #here, we collect the number of non-zero features from each model coefficients file in the models directory  
-  results_directory <- file.path(argsL$model_dir)
+  results_directory <- file.path(params$model_dir)
   files_to_process <- list.files(path = results_directory, pattern = "_model_coefs.tsv")
-  first_pos <- sapply(files_to_process, function(x) regexpr(argsL$seed, x))
+  first_pos <- sapply(files_to_process, function(x) regexpr(params$seed, x))
   last_pos <- sapply(files_to_process, function(x) regexpr("model_coefs", x))
   transcript_tail_percents <- substr(files_to_process, 1, last_pos-2)
   
-  files_to_process_names <- file.path(argsL$model_dir, files_to_process)
+  files_to_process_names <- file.path(params$model_dir, files_to_process)
   number_non_zero <- sapply(files_to_process_names, function(x) 
     nrow(read.delim(x, header=TRUE, sep="\t", stringsAsFactors = FALSE)))
 
@@ -103,15 +109,20 @@ for (t in target_column_list[[1]]) {
 
 ### **Overview and Conclusion**
 
-The 01-clean_split_data.R, 02-train_elasticnet.R, 03-evaluate_model.R pipeline trains and evaluates an elasticnet logistic regression model to predict sex from RNASeq data.  The training features are gene expression transcripts, and the training labels are reported_gender values for each sample.
+The 01-clean_split_data.R, 02-train_elasticnet.R, 03-evaluate_model.R pipeline trains and evaluates an elasticnet logistic regression model to predict sex from RNASeq data.  
+The training features are gene expression transcripts, and the training labels are reported_gender values for each sample.
 
-The pipeline is a response to issue [#84](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/84) which was raised to check whether, in some histologies, silencing might be breaking down, potentially resulting in changes in X inactivation. Based on the accuracy achieved here, this is probably not happening, and this classifier can be helpful to predict values for datasets without annotated sex information.
+The pipeline is a response to issue [#84](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/84) which was raised to check whether, in some histologies, silencing might be breaking down, potentially resulting in changes in X inactivation. 
+Based on the accuracy achieved here, this is probably not happening, and this classifier can be helpful to predict values for datasets without annotated sex information.
 
 
 
 ### **Strength of Calls**
 
-The model generates a probability that a given sample is Female. Female/Male calls are made using a 50% threshold. Predictive accuracy varies by the number of training transcripts used.  The plot below shows model probability values, generated by the most accurate set of training transcripts, for all 258 samples in the test set.  The test set points are split on the x-axis by reported_gender (ground truth) values. Erroneous calls are displayed in red.  
+The model generates a probability that a given sample is Female. 
+Female/Male calls are made using a 50% threshold. Predictive accuracy varies by the number of training transcripts used.  
+The plot below shows model probability values, generated by the most accurate set of training transcripts, for all 258 samples in the test set.  
+The test set points are split on the x-axis by reported_gender (ground truth) values. Erroneous calls are displayed in red.  
 
 
 ```{r echo=FALSE}
@@ -146,7 +157,8 @@ suppressMessages(ggsave(plot=plot, filename=file.path(plot_directory,
 
 ### **Predictive Accuracy**
 
-Model accuracy was tested against germline_sex_estimate values in addition to reported_gender values.  Confusion matrices for models using the most accurate set of training transcripts appear below.
+Model accuracy was tested against germline_sex_estimate values in addition to reported_gender values.  
+Confusion matrices for models using the most accurate set of training transcripts appear below.
 
 
 ```{r echo=FALSE}
@@ -177,7 +189,9 @@ for (t in target_column_list[[1]]) {
 
 ### **Training Guidance**
 
-Training transcripts are filtered by median absolute deviation across all samples.  The pipeline accepts an array of user-supplied training set sizes, and a model, using each training set size, is built, evaluated and saved. The plots below show predictive accuracies by number of training transcripts using reported_gender and germline_sex_estimate as ground truths.
+Training transcripts are filtered by median absolute deviation across all samples.  
+The pipeline accepts an array of user-supplied training set sizes, and a model, using each training set size, is built, evaluated and saved. 
+The plots below show predictive accuracies by number of training transcripts using reported_gender and germline_sex_estimate as ground truths.
 
 
 ```{r echo=FALSE}
@@ -205,7 +219,8 @@ for (t in target_column_list[[1]]) {
 
 
 
-The number of non-zero features in each model varied considerably.  The elastic net alpha parameter was optimized using the default sequence of 11 values more closely spaced around alpha = 0.  
+The number of non-zero features in each model varied considerably.  
+The elastic net alpha parameter was optimized using the default sequence of 11 values more closely spaced around alpha = 0.  
 
 
 ```{r echo=FALSE}
