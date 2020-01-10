@@ -160,10 +160,12 @@ break_density <- function(sv_breaks = NULL,
     )
 
     # Carry over list data from sv_ranges
-    sv_overlaps <- GenomicRanges::findOverlaps(sv_ranges, break_ranges)
+    sv_overlaps <- suppressWarnings(GenomicRanges::findOverlaps(sv_ranges, 
+                                                                break_ranges))
 
     # Carry over list data from cnv_ranges
-    cnv_overlaps <- GenomicRanges::findOverlaps(cnv_ranges, break_ranges)
+    cnv_overlaps <- suppressWarnings(GenomicRanges::findOverlaps(cnv_ranges, 
+                                                                 break_ranges))
 
     # Set up an empty list where we can store what sample each sequence came from
     break_ranges@elementMetadata@listData$mcols <- rep(NA, length(break_ranges))
@@ -208,19 +210,19 @@ break_density <- function(sv_breaks = NULL,
   bins <- unlist(bins)
 
   # Get counts for each genome bin
-  bin_counts <- GenomicRanges::countOverlaps(
+  bin_counts <- suppressWarnings(GenomicRanges::countOverlaps(
     bins,
     break_ranges
-  )
+  ))
   ########################### Calculate summary stats ##########################
   # Get a per sample break down if there is more than one sample
   if (n_samples > 1) {
 
     # Get counts for each genome bin
-    bin_indices <- GenomicRanges::findOverlaps(
+    bin_indices <- suppressWarnings(GenomicRanges::findOverlaps(
       bins,
       break_ranges
-    )
+    ))
 
     # Get list of samples
     bin_samples <- break_ranges@elementMetadata@listData$mcols[bin_indices@to]
