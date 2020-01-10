@@ -58,11 +58,7 @@ if (!dir.exists(results_dir)) {
 # `01-HGG-molecular-subtyping-defining-lesions.Rmd`
 hgg_df <- readr::read_tsv(file.path(results_dir, "HGG_defining_lesions.tsv"))
 
-# Read in HGG subset metadata
-subset_metadata <-
-  readr::read_tsv(file.path(input_dir, "hgg_histologies.tsv"))
-
-# Read in non-subsetted metadata
+# Read in metadata
 metadata <- readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"))
 
 # Select wanted columns in metadata for merging and assign to a new object
@@ -129,8 +125,17 @@ viewDataTable <- function(data) {
 ## Metadata
 
 ```{r}
-# Filter metadata to samples classified to be HGG from the first script of this
-# module
+# Filter `HGG_defining_lesions.tsv` for samples classified and reclassified as
+# HGG
+hgg_df <- hgg_df %>%
+  dplyr::filter(
+    disease_type_new == "High-grade glioma" |
+      grepl("High-grade glioma", disease_type_reclassified)
+  )
+
+# Filter metadata for `High-grade glioma` and samples that should be classified
+# as High-grade glioma based on defining lesions and are stranded RNA-seq
+# samples
 metadata <- metadata %>%
   dplyr::filter(sample_id %in% hgg_df$sample_id) %>%
   dplyr::mutate(age_at_diagnosis_years = as.numeric(age_at_diagnosis_days) /
@@ -211,9 +216,9 @@ genes_cn_df <- cn_df %>%
   tidyr::spread(gene_symbol, status, fill = "neutral") %>%
   dplyr::group_by(sample_id) %>%
   dplyr::mutate(
-    PDGFRA_focal_status = paste(sort(unique("PDGFRA")), collapse = ", "),
-    PTEN_focal_status = paste(sort(unique("PTEN")), collapse = ", "),
-    MYCN_focal_status = paste(sort(unique("MYCN")), collapse = ", ")
+    PDGFRA_focal_status = paste(sort(unique(PDGFRA)), collapse = ", "),
+    PTEN_focal_status = paste(sort(unique(PTEN)), collapse = ", "),
+    MYCN_focal_status = paste(sort(unique(MYCN)), collapse = ", ")
   ) %>%
   dplyr::select(-c("id", "PDGFRA", "PTEN", "MYCN"))
 
