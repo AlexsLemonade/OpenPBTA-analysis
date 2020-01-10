@@ -226,7 +226,7 @@ genes_cn_df <- cn_df %>%
 # of these genes
 missing_cn_samples <-
   setdiff(unique(cn_df$sample_id), genes_cn_df$sample_id)
-genes_cn_df <- subset_metadata %>%
+genes_cn_df <- metadata %>%
   dplyr::filter(sample_id %in% missing_cn_samples) %>%
   dplyr::select(sample_id,
                 Kids_First_Participant_ID,

@@ -115,9 +115,6 @@ hgg_metadata_df <- metadata %>%
     RNA_library == "stranded"
   )
 
-# Write to file
-readr::write_tsv(hgg_metadata_df, file.path(subset_dir, "hgg_histologies.tsv"))
-
 #### Filter expression data ----------------------------------------------------
 
 # Filter to HGG samples only -- we can use hgg_metadata_df because it is subset
