@@ -230,11 +230,11 @@ def save_to_file(output_file_content, output_path, sample_name):
         single_name = os.path.basename(output_path)
 
         ## Loop through the output file and print line by line
-        for k in output_file_content:
+        for line_fields in output_file_content:
 
             ## Join the sample_name and single_name(file name) to the CNV info
-            k.extend([sample_name, single_name,'\n'])
-            file.write('\t'.join(k))
+            line_fields.extend([sample_name, single_name])
+            file.write('\t'.join(line_fields) + '\n')
 
     sys.stderr.write('$$$ Write to file ' + str(output_path) + ' was sucessful\n')
 
