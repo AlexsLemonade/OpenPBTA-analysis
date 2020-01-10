@@ -10,13 +10,13 @@ make_granges <- function(break_df = NULL,
                          chrom_col = "chrom",
                          start_col = "start",
                          end_col = "end") {
-  # For a given breaks data.frame make a GenomicRanger object from it. Can
+  # For a given breaks data.frame make a GenomicRanges object from it. Can
   # filter to a single samples' data.
   #
   # Args:
   #   break_df: for a data.frame with chromosomal coordinates and sample IDs.
   #   sample_id: a character string that designates which data needs to be
-  #              extracted and made intoa GenomicRanges object by matching the
+  #              extracted and made into a GenomicRanges object by matching the
   #              information in the designated sample_col. If "all" is designated,
   #              all samples will be kept. Multiple samples can be designated
   #              as a character vector.
@@ -32,8 +32,8 @@ make_granges <- function(break_df = NULL,
   #            end coordinate. Default is "end".
   #
   # Returns:
-  # A Genomic Ranges formatted object for the particular sample that has the
-  # break points from the data.frame
+  # A GenomicRanges object for the particular sample that has the breakpoints
+  # from the data.frame
 
   # If no data.frame is provided, stop
   if (is.null(break_df)) {
@@ -160,11 +160,11 @@ break_density <- function(sv_breaks = NULL,
     )
 
     # Carry over list data from sv_ranges
-    sv_overlaps <- suppressWarnings(GenomicRanges::findOverlaps(sv_ranges, 
+    sv_overlaps <- suppressWarnings(GenomicRanges::findOverlaps(sv_ranges,
                                                                 break_ranges))
 
     # Carry over list data from cnv_ranges
-    cnv_overlaps <- suppressWarnings(GenomicRanges::findOverlaps(cnv_ranges, 
+    cnv_overlaps <- suppressWarnings(GenomicRanges::findOverlaps(cnv_ranges,
                                                                  break_ranges))
 
     # Set up an empty list where we can store what sample each sequence came from
@@ -177,7 +177,7 @@ break_density <- function(sv_breaks = NULL,
     # Bring over SV samples
     break_ranges@elementMetadata@listData$mcols[cnv_overlaps@from] <-
       cnv_ranges@elementMetadata@listData$mcols[cnv_overlaps@to]
-    
+
   } else if (!is.null(cnv_breaks) & is.null(sv_breaks)) {
     # If only the CNV data is given, use this data only
     break_ranges <- make_granges(
