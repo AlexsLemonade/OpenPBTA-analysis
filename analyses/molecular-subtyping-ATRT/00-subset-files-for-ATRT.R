@@ -71,7 +71,7 @@ cn_df <- readr::read_tsv(
     "analyses",
     "focal-cn-file-preparation",
     "results",
-    "controlfreec_annotated_cn_autosomes.tsv.gz"
+    "cnvkit_annotated_cn_autosomes.tsv.gz"
   )
 )
 
@@ -81,26 +81,31 @@ tmb_df <-
                               "data",
                               "pbta-snv-consensus-mutation-tmb-all.tsv"))
 
-## TODO: Read in the SV data/GISTIC output to evaluate the chr22q loss
-#        associated with SMARB1 deletions
+# Read in GISTIC `broad_values_by_arm.txt` file
+gistic_df <-
+  data.table::fread(unzip(
+    file.path(root_dir, "data", "pbta-cnv-cnvkit-gistic.zip"),
+    files = file.path(
+      "2019-12-10-gistic-results-cnvkit",
+      "broad_values_by_arm.txt"
+    ),
+    exdir = file.path(root_dir, "scratch")
+  ), data.table = FALSE)
 
 #### Filter metadata -----------------------------------------------------------
 
-# Filter metadata for `ATRT` and define `location_summary` based on values in
-# `primary_site`
 atrt_df <- metadata %>%
   dplyr::filter(short_histology == "ATRT",
-                experimental_strategy == "RNA-Seq")
-
-# Write to file
-readr::write_tsv(atrt_df, file.path(results_dir, "atrt_histologies.tsv"))
+                sample_type == "Tumor",
+                composition == "Solid Tissue")
 
 #### Filter expression data ----------------------------------------------------
 
 # Filter to ATRT samples only -- we can use atrt_df because it is subset to
 # RNA-seq samples
 stranded_expression <- stranded_expression %>%
-  dplyr::select(atrt_df$Kids_First_Biospecimen_ID)
+  dplyr::select(intersect(atrt_df$Kids_First_Biospecimen_ID,
+                          colnames(stranded_expression)))
 
 # Log2 transformation
 norm_expression <- log2(stranded_expression + 1)
@@ -142,8 +147,25 @@ readr::write_tsv(filtered_gsva_scores, file.path(results_dir, "atrt_gsva.tsv"))
 tmb_df <- tmb_df %>%
   dplyr::select(Tumor_Sample_Barcode, tmb) %>%
   dplyr::left_join(select_metadata,
-                    by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
+                   by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
   dplyr::filter(sample_id %in% atrt_df$sample_id)
 
 # Write to file
 readr::write_tsv(tmb_df, file.path(results_dir, "atrt_tmb.tsv"))
+
+#### Filter GISTIC data --------------------------------------------------------
+
+gistic_df <- gistic_df %>%
+  tibble::column_to_rownames("Chromosome Arm") %>%
+  t() %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
+  dplyr::filter(Kids_First_Biospecimen_ID %in% atrt_df$Kids_First_Biospecimen_ID) %>%
+  dplyr::left_join(select_metadata, by = "Kids_First_Biospecimen_ID") %>%
+  dplyr::select(sample_id,
+                Kids_First_Biospecimen_ID,
+                `22q`) # Select only the chromosome arm we are interested in
+
+# Write to file
+readr::write_tsv(gistic_df,
+                 file.path(results_dir, "atrt_gistic_broad_values.tsv"))
