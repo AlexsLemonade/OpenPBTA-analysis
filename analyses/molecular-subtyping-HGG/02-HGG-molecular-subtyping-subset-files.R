@@ -118,7 +118,9 @@ hgg_metadata_df <- metadata %>%
     disease_type_new == "High-grade glioma" |
       sample_id %in% hgg_lesions_df$sample_id,
     experimental_strategy == "RNA-Seq",
-    RNA_library == "stranded"
+    RNA_library == "stranded",
+    sample_type == "Tumor",
+    composition == "Solid Tissue"
   )
 
 #### Filter expression data ----------------------------------------------------

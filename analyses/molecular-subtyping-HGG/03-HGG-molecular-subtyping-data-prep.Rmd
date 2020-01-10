@@ -286,61 +286,61 @@ H3_G35 <- c("H3F3A", "SETD2", "IDH1", "ATRX", "DAXX")
 
 # Filter CN data for the target SV lesions and join this data.frame with
 # the selected variables of the metadata
-sv_df_filtered <- cn_df %>%
+sv_df_filtered <- snv_df %>%
   dplyr::filter(
-    stringr::str_detect(gene_symbol, H3_K28) |
-      stringr::str_detect(gene_symbol, H3_G35) |
-      stringr::str_detect(gene_symbol, c("P73-AS1", "CIC", "FUBP1"))
+    stringr::str_detect(Hugo_Symbol, H3_K28) |
+      stringr::str_detect(Hugo_Symbol, H3_G35) |
+      stringr::str_detect(Hugo_Symbol, c("P73-AS1", "CIC", "FUBP1"))
   ) %>%
-  dplyr::select(sample_id, biospecimen_id, gene_symbol, status, cytoband) %>%
+  dplyr::select(sample_id, Hugo_Symbol) %>%
   dplyr::group_by(sample_id) %>%
   dplyr::mutate(
     ACVR1_mutated = paste(sort(unique(
-      dplyr::case_when(stringr::str_detect(gene_symbol, "ACVR1") ~ "Yes",
+      dplyr::case_when(stringr::str_detect(Hugo_Symbol, "ACVR1") ~ "Yes",
                        TRUE ~ "No")
     )), collapse = ", "),
     TP53_mutated = paste(sort(unique(
-      dplyr::case_when(stringr::str_detect(gene_symbol, "TP53") ~ "Yes",
+      dplyr::case_when(stringr::str_detect(Hugo_Symbol, "TP53") ~ "Yes",
                        TRUE ~ "No")
     )), collapse = ", "),
     ATRX_mutated = paste(sort(unique(
-      dplyr::case_when(stringr::str_detect(gene_symbol, "ATRX") ~ "Yes",
+      dplyr::case_when(stringr::str_detect(Hugo_Symbol, "ATRX") ~ "Yes",
                        TRUE ~ "No")
     )), collapse = ", "),
     FGFR1_mutated = paste(sort(unique(
-      dplyr::case_when(stringr::str_detect(gene_symbol, "FGFR1") ~ "Yes",
+      dplyr::case_when(stringr::str_detect(Hugo_Symbol, "FGFR1") ~ "Yes",
                        TRUE ~ "No")
     )), collapse = ", "),
     SETD2_mutated = paste(sort(unique(
-      dplyr::case_when(stringr::str_detect(gene_symbol, "SETD2") ~ "Yes",
+      dplyr::case_when(stringr::str_detect(Hugo_Symbol, "SETD2") ~ "Yes",
                        TRUE ~ "No")
     )), collapse = ", "),
     TERT_mutated = paste(sort(unique(
-      dplyr::case_when(stringr::str_detect(gene_symbol, "TERT") ~ "Yes",
+      dplyr::case_when(stringr::str_detect(Hugo_Symbol, "TERT") ~ "Yes",
                        TRUE ~ "No")
     )), collapse = ", "),
     IDH1_mutated = paste(sort(unique(
-      dplyr::case_when(stringr::str_detect(gene_symbol, "IDH1") ~ "Yes",
+      dplyr::case_when(stringr::str_detect(Hugo_Symbol, "IDH1") ~ "Yes",
                        TRUE ~ "No")
     )), collapse = ", "),
     CIC_mutated = paste(sort(unique(
-      dplyr::case_when(stringr::str_detect(gene_symbol, "CIC") ~ "Yes",
+      dplyr::case_when(stringr::str_detect(Hugo_Symbol, "CIC") ~ "Yes",
                        TRUE ~ "No")
     )), collapse = ", "),
     FUBP1_mutated = paste(sort(unique(
-      dplyr::case_when(stringr::str_detect(gene_symbol, "FUBP1") ~ "Yes",
+      dplyr::case_when(stringr::str_detect(Hugo_Symbol, "FUBP1") ~ "Yes",
                        TRUE ~ "No")
     )), collapse = ", "),
     DAXX_mutated = paste(sort(unique(
-      dplyr::case_when(stringr::str_detect(gene_symbol, "DAXX") ~ "Yes",
+      dplyr::case_when(stringr::str_detect(Hugo_Symbol, "DAXX") ~ "Yes",
                        TRUE ~ "No")
     )), collapse = ", "),
     P73_AS1_mutated = paste(sort(unique(
-      dplyr::case_when(stringr::str_detect(gene_symbol, "P73-AS1") ~ "Yes",
+      dplyr::case_when(stringr::str_detect(Hugo_Symbol, "P73-AS1") ~ "Yes",
                        TRUE ~ "No")
     )), collapse = ", ")
   ) %>%
-  dplyr::select(-c("gene_symbol", "cytoband", "status", "biospecimen_id")) %>%
+  dplyr::select(-Hugo_Symbol) %>%
   dplyr::distinct()
 
 # Display `sv_df_filtered`
