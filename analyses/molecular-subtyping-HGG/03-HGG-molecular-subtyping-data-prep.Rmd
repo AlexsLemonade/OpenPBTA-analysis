@@ -91,6 +91,10 @@ fusion_df <-
 # Read in HGG subset GISTIC broad value data 
 gistic_df <-
   readr::read_tsv(file.path(input_dir, "hgg_gistic_broad_values.tsv"))
+
+# Read in HGG subset snv maf data 
+snv_df <-
+  readr::read_tsv(file.path(input_dir, "hgg_snv_maf.tsv"))
 ```
 
 ## Custom Function
@@ -170,8 +174,7 @@ final_df <- hgg_df %>%
     HIST1H3B.K28M = paste(sort(unique(HIST1H3B.K28M)), collapse = ", "),
     H3F3A.G35R.V = paste(sort(unique(
       H3F3A.G35R, H3F3A.G35V
-    )), collapse = ", "),
-    IDH1.R132H = paste(sort(unique(IDH1.R132H)), collapse = ", ")
+    )), collapse = ", ")
   ) %>%
   dplyr::select(-H3F3A.G35R,-H3F3A.G35V) %>%
   dplyr::distinct() %>%
@@ -423,6 +426,30 @@ final_df <- final_df %>%
 
 # Remove data we no longer need
 rm(gistic_df)
+```
+
+### SNV data
+
+```{r}
+snv_df <- snv_df %>%
+  dplyr::mutate(
+    IDH1.R132H = dplyr::case_when(Hugo_Symbol == "IDH1" &
+                                    HGVSp_Short == "p.R132H" ~ "Yes",
+                                  TRUE ~ "No")
+  ) %>%
+  dplyr::select(sample_id, IDH1.R132H)
+
+# Display `snv_df`
+snv_df %>%
+  head(n = 15)
+
+# Join `IDH1-R132H` data with running final data.frame
+final_df <- final_df %>%
+  dplyr::left_join(snv_df, by = "sample_id") %>%
+  dplyr::distinct()
+
+# Remove data we no longer need
+rm(snv_df)
 ```
 
 # Save final table of results

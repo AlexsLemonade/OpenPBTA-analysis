@@ -80,10 +80,7 @@ snv_lesions_df <- snv_df %>%
                                   TRUE ~ "No"),
     H3F3A.G35V = dplyr::case_when(Hugo_Symbol == "H3F3A" &
                                     HGVSp_Short == "p.G35V" ~ "Yes",
-                                  TRUE ~ "No"),
-    IDH1.R132H = dplyr::case_when(Hugo_Symbol == "IDH1" &
-                                    HGVSp_Short == "p.R132H" ~ "Yes",
-                                  TRUE ~ "No"),    
+                                  TRUE ~ "No")
   ) %>%
   dplyr::select(
     -HGVSp_Short,

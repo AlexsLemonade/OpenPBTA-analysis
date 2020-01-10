@@ -81,6 +81,12 @@ gistic_df <-
     exdir = file.path(root_dir, "scratch")
   ))
 
+# Read in snv consensus mutation data
+snv_maf_df <-
+  data.table::fread(file.path(root_dir,
+                              "data",
+                              "pbta-snv-consensus-mutation.maf.tsv.gz"))
+
 # Read in output file from `01-HGG-molecular-subtyping-defining-lesions.Rmd`
 hgg_lesions_df <- readr::read_tsv(
   file.path(
@@ -186,4 +192,15 @@ gistic_df <- gistic_df %>%
 # Write to file
 readr::write_tsv(gistic_df,
                  file.path(subset_dir, "hgg_gistic_broad_values.tsv"))
-  
+
+#### Filter SNV consensus maf data ---------------------------------------------
+
+snv_maf_df <- snv_maf_df %>%
+  dplyr::select(Tumor_Sample_Barcode, Hugo_Symbol, HGVSp_Short) %>%
+  dplyr::left_join(select_metadata,
+                   by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
+  dplyr::filter(sample_id %in% hgg_metadata_df$sample_id)
+
+# Write to file
+readr::write_tsv(snv_maf_df,
+                 file.path(subset_dir, "hgg_snv_maf.tsv"))
