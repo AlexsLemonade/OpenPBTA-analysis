@@ -303,7 +303,7 @@ group_densities <- lapply(tumor_types, function(tumor_type) {
   check_samples <- (sample_ids %in% common_samples)
   
   # If no samples, go to next
-  if (sum(check_samples) == 0) next
+  if (sum(check_samples) > 0) {
   
   message(paste("Calculating breakpoint density for", tumor_type, "samples"))
 
@@ -338,6 +338,7 @@ group_densities <- lapply(tumor_types, function(tumor_type) {
     cnv_density = cnv_density,
     sv_density = sv_density
   ))
+  }
 })
 
 # Bring along the tumor-type labels
