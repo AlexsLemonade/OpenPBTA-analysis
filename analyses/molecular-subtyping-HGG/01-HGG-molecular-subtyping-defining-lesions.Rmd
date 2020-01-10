@@ -106,7 +106,6 @@ snv_lesions_df <- select_metadata %>%
         HIST1H3B.K28M == "Yes" ~ "High-grade glioma, H3 K28 mutant",
         H3F3A.G35R == "Yes" ~ "High-grade glioma, H3 G35 mutant",
         H3F3A.G35V == "Yes" ~ "High-grade glioma, H3 G35 mutant",
-        IDH1.R132H == "Yes" ~ "High-grade glioma, IDH mutant",
       TRUE ~ as.character(disease_type_new)
     )
   )

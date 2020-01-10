@@ -247,7 +247,7 @@ final_df <- final_df %>%
   # `bind_rows` fills with NAs -- if something in the focal status variables is
   # NA, there is no evidence for a copy number alteration in that gene and we
   # will call it neutral
-  dplyr::mutate_at(vars(
+  dplyr::mutate_at(dplyr::vars(
     c(
       "PDGFRA_focal_status",
       "PTEN_focal_status",
