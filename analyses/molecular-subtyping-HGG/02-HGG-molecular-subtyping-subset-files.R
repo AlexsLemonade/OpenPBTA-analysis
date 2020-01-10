@@ -1,4 +1,4 @@
-# This script subsets the focal copy number, RNA expression, fusion and 
+# This script subsets the focal copy number, RNA expression, fusion and
 # histologies` and GISTIC's broad values files to include only High-grade glioma
 # samples.
 
@@ -62,7 +62,7 @@ cn_df <- readr::read_tsv(
     "analyses",
     "focal-cn-file-preparation",
     "results",
-    "controlfreec_annotated_cn_autosomes.tsv.gz"
+    "cnvkit_annotated_cn_autosomes.tsv.gz"
   )
 )
 
@@ -134,7 +134,7 @@ stranded_expression <- stranded_expression %>%
 norm_expression <- log2(stranded_expression + 1)
 
 # Scale does column centering, so we transpose first
-long_zscored_expression <- scale(t(norm_expression), 
+long_zscored_expression <- scale(t(norm_expression),
                                   center = TRUE,
                                   scale = TRUE)
 
