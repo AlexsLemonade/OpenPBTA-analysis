@@ -39,9 +39,7 @@ metadata <-
 select_metadata <- metadata %>%
   dplyr::select(sample_id,
                 Kids_First_Participant_ID,
-                Kids_First_Biospecimen_ID,
-                glioma_brain_region,
-                age_at_diagnosis_days)
+                Kids_First_Biospecimen_ID)
 
 # Read in RNA expression data
 stranded_expression <-
