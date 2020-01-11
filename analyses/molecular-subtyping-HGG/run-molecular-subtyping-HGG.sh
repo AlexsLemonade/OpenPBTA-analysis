@@ -2,8 +2,8 @@
 
 # Chante Bethell for CCDL 2020
 #
-# Run `01-HGG-molecular-subtyping-defining-lesions.Rmd` and 
-# `02-HGG-molecular-subtyping-subset-files.R` if needed. 
+# Run the HGG molecular subtyping pipeline.
+# When OPENPBTA_SUBSET=1 (default), new HGG subset files will be generated.
 
 set -e
 set -o pipefail
@@ -19,7 +19,7 @@ script_directory="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
-# Run the first script in this module that reclassifies high-grade gliomas 
+# Run the first script in this module that reclassifies high-grade gliomas
 Rscript -e "rmarkdown::render('01-HGG-molecular-subtyping-defining-lesions.Rmd', clean = TRUE)"
 
 # Run the second script in this module that subset files using the samples in the output
@@ -27,3 +27,6 @@ Rscript -e "rmarkdown::render('01-HGG-molecular-subtyping-defining-lesions.Rmd',
 if [ "$SUBSET" -gt "0" ]; then
   Rscript --vanilla 02-HGG-molecular-subtyping-subset-files.R
 fi
+
+# Run the copy number data cleaning notebook
+Rscript -e "rmarkdown::render('03-HGG-molecular-subtyping-cnv.Rmd', clean = TRUE)"
