@@ -97,69 +97,65 @@ Rscript --vanilla 01-clean_split_data.R \
 
 for (( i = 0; i < ${#TRANSCRIPT_TAIL_PERCENT_ARRAY[*]}; i++ )); do
 
-# output files for script 02
-# re: the elasticnet model
-MODEL_OBJECT_FILE_NAME=${FILENAME_LEAD}_${SEED}_${TRANSCRIPT_TAIL_PERCENT_ARRAY[i]}_model_object.RDS
-MODEL_TRANSCRIPTS_FILE_NAME=${FILENAME_LEAD}_${SEED}_${TRANSCRIPT_TAIL_PERCENT_ARRAY[i]}_model_transcripts.RDS
-MODEL_COEFS_FILE_NAME=${FILENAME_LEAD}_${SEED}_${TRANSCRIPT_TAIL_PERCENT_ARRAY[i]}_model_coefs.tsv
+  # output files for script 02
+  # re: the elasticnet model
+  MODEL_OBJECT_FILE_NAME=${FILENAME_LEAD}_${SEED}_${TRANSCRIPT_TAIL_PERCENT_ARRAY[i]}_model_object.RDS
+  MODEL_TRANSCRIPTS_FILE_NAME=${FILENAME_LEAD}_${SEED}_${TRANSCRIPT_TAIL_PERCENT_ARRAY[i]}_model_transcripts.RDS
+  MODEL_COEFS_FILE_NAME=${FILENAME_LEAD}_${SEED}_${TRANSCRIPT_TAIL_PERCENT_ARRAY[i]}_model_coefs.tsv
 
 
-Rscript --vanilla 02-train_elasticnet.R \
-  --train_expression_file_name ${PROCESSED}/$TRAIN_EXPRESSION_FILE_NAME \
-  --train_targets_file_name ${PROCESSED}/$TRAIN_TARGETS_FILE_NAME \
-  --output_directory $MODELS \
-  --model_object_file_name $MODEL_OBJECT_FILE_NAME \
-  --model_transcripts_file_name $MODEL_TRANSCRIPTS_FILE_NAME \
-  --model_coefs_file_name $MODEL_COEFS_FILE_NAME \
-  --train_target_column $TRAIN_TARGET_COLUMN \
-  --transcript_tail_percent ${TRANSCRIPT_TAIL_PERCENT_ARRAY[i]}
+  Rscript --vanilla 02-train_elasticnet.R \
+    --train_expression_file_name ${PROCESSED}/$TRAIN_EXPRESSION_FILE_NAME \
+    --train_targets_file_name ${PROCESSED}/$TRAIN_TARGETS_FILE_NAME \
+    --output_directory $MODELS \
+    --model_object_file_name $MODEL_OBJECT_FILE_NAME \
+    --model_transcripts_file_name $MODEL_TRANSCRIPTS_FILE_NAME \
+    --model_coefs_file_name $MODEL_COEFS_FILE_NAME \
+    --train_target_column $TRAIN_TARGET_COLUMN \
+    --transcript_tail_percent ${TRANSCRIPT_TAIL_PERCENT_ARRAY[i]}
 
 
-# if there is a test set, e.g., the entire dataset was not used for training
-if [ ! $TRAIN_PERCENT == 1 ]; then
+  # if there is a test set, e.g., the entire dataset was not used for training
+  if [ ! $TRAIN_PERCENT == 1 ]; then
 
-  # the same filenames are used for evaluating predictions of reported_gender
-  # and germline_sex_estimate
-  RESULTS_FILENAME_LEAD=${FILENAME_LEAD}_${SEED}_${TRANSCRIPT_TAIL_PERCENT_ARRAY[i]}
-  CM_SET_FILE=${RESULTS_FILENAME_LEAD}_prediction_details.tsv
-  CM_SET=${RESULTS_FILENAME_LEAD}_confusion_matrix.RDS
-  SUMMARY_FILE=${RESULTS_FILENAME_LEAD}_two_class_summary.RDS
+    # the same filenames are used for evaluating predictions of reported_gender
+    # and germline_sex_estimate
+    RESULTS_FILENAME_LEAD=${FILENAME_LEAD}_${SEED}_${TRANSCRIPT_TAIL_PERCENT_ARRAY[i]}
+    CM_SET_FILE=${RESULTS_FILENAME_LEAD}_prediction_details.tsv
+    CM_SET=${RESULTS_FILENAME_LEAD}_confusion_matrix.RDS
+    SUMMARY_FILE=${RESULTS_FILENAME_LEAD}_two_class_summary.RDS
 
 
-  for t in ${targetColumns[@]}; do
+    for t in ${targetColumns[@]}; do
 
-    # set up results directory for the column being evaluated
-    TEST_TARGET_COLUMN=${t}
-    RESULTS_OUTPUT_DIRECTORY=${RESULTS}/${TEST_TARGET_COLUMN}
+      # set up results directory for the column being evaluated
+      TEST_TARGET_COLUMN=${t}
+      RESULTS_OUTPUT_DIRECTORY=${RESULTS}/${TEST_TARGET_COLUMN}
 
-    # model evaluation
-   Rscript --vanilla 03-evaluate_model.R \
-     --test_expression_file_name ${PROCESSED}/$TEST_EXPRESSION_FILE_NAME \
-     --test_targets_file_name ${PROCESSED}/$TEST_TARGETS_FILE_NAME \
-     --model_object_file_name ${MODELS}/$MODEL_OBJECT_FILE_NAME \
-     --model_transcripts_file_name ${MODELS}/$MODEL_TRANSCRIPTS_FILE_NAME \
-     --output_directory $RESULTS_OUTPUT_DIRECTORY \
-     --test_target_column $TEST_TARGET_COLUMN \
-     --cm_set_file_name $CM_SET_FILE \
-     --cm_file_name $CM_SET \
-     --summary_file_name $SUMMARY_FILE
-  done
-fi
+      # model evaluation
+       Rscript --vanilla 03-evaluate_model.R \
+         --test_expression_file_name ${PROCESSED}/$TEST_EXPRESSION_FILE_NAME \
+         --test_targets_file_name ${PROCESSED}/$TEST_TARGETS_FILE_NAME \
+         --model_object_file_name ${MODELS}/$MODEL_OBJECT_FILE_NAME \
+         --model_transcripts_file_name ${MODELS}/$MODEL_TRANSCRIPTS_FILE_NAME \
+         --output_directory $RESULTS_OUTPUT_DIRECTORY \
+         --test_target_column $TEST_TARGET_COLUMN \
+         --cm_set_file_name $CM_SET_FILE \
+         --cm_file_name $CM_SET \
+         --summary_file_name $SUMMARY_FILE
+    done
 
+  fi
 
 done
 
-Rscript -e 'library(rmarkdown)'
 
 
-
-Rscript -e "rmarkdown::render('04-present_results.Rmd', 'html_document')" --args \
-  --results_dir=${RESULTS} \
-  --model_dir=$MODELS \
-  --cm_set=$CM_SET \
-  --seed=$SEED \
-  --target_columns=$targetColumns_to_pass
-
+Rscript -e "rmarkdown::render('04-present_results.Rmd', 'html_document', params = list(results_dir = '${RESULTS}', \
+      model_dir = '${MODELS}', \
+      cm_set = '${CM_SET}', \
+      seed = '${SEED}', \
+      target_columns = '${targetColumns_to_pass}'))"
 
 
 

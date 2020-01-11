@@ -106,7 +106,7 @@ option_list <- list(
     c("-e", "--target_columns"),
     type = "character",
     default = "reported_gender",
-    help = "Names of columns to use as targets in testing",
+    help = "Names of columns to use as targets in testing separated with a comma",
   )
 )
 
