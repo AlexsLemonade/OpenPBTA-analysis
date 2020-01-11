@@ -53,14 +53,17 @@ if (!dir.exists(results_dir)) {
 
 ### Read in Files
 
-```{r}
+```{r message=FALSE}
 # CDS bed file, to be used to filter the consensus MAF file
 bed_file <- file.path(root_dir, 
                       "scratch", 
                       "gencode.v27.primary_assembly.annotation.bed")
-gencode_cds_bed <- readr::read_tsv(bed_file)
+gencode_cds_bed <- readr::read_tsv(bed_file, col_names = FALSE)
 # Read in HGG subset snv maf data 
 snv_df <- readr::read_tsv(file.path(input_dir, "hgg_snv_maf.tsv"))
+# Read in defining lesions file
+defining_lesions_df <- readr::read_tsv(file.path(results_dir,
+                                                 "HGG_defining_lesions.tsv"))
 ```
 
 ## What mutations are we interested in?
@@ -75,7 +78,12 @@ From [`@jharenza`](https://github.com/jharenza):
 
 Samples were examined for the presence or absence of these defining lesions in [`01-HGG-molecular-subtyping-defining-lesions`](./01-HGG-molecular-subtyping-defining-lesions.Rmd).
 Samples that were classified as High-grade glioma in the `disease_type_new` column of `pbta-histologies.tsv` and those with one of these defining lesions were included in the subset files (see: [`02-HGG-molecular-subtyping-subset-files.R`](./02-HGG-molecular-subtyping-subset-files.R)).
-Thus, we are not concerned with these specific mutations here.
+Thus, we are not concerned with cleaning data for these specific mutations here.
+Instead, we can look at the defining lesions `data.frame` we read in above.
+
+```{r}
+head(defining_lesions_df, n = 10)
+```
 
 ### H3 K28 mutant
 
@@ -137,6 +145,132 @@ genes_of_interest <- unique(c(k28_genes_of_interest,
 
 ```{r}
 filtered_snv_df <- snv_df %>%
-  dplyr::filter(Hugo_Symbol %in% )
+  dplyr::filter(Hugo_Symbol %in% genes_of_interest)
+```
+
+#### _TERT_ mutation
+
+We likely want to be permissive with the _TERT_ mutations in terms of regions.
+
+```{r}
+tert_snv_df <- filtered_snv_df %>%
+  dplyr::filter(Hugo_Symbol == "TERT",
+                Variant_Classification != "Silent")
+
+tert_snv_df
+```
+
+#### Coding mutations in genes other than _TERT_
+
+For all other genes, we'll restrict to the coding sequences and drop silent mutations.
+
+```{r}
+coding_snv_df <- snv_ranges_filter(maf_df = filtered_snv_df,
+                                   keep_ranges = gencode_cds_bed) %>%
+  dplyr::filter(Variant_Classification != "Silent",
+                Hugo_Symbol != "TERT")
+
+head(coding_snv_df, n = 10)
+```
+
+#### Specific _IDH1_ mutations
+
+_IDH1_ mutations are specific - we'll break them out here.
+
+```{r}
+idh_snv_df <- filtered_snv_df %>%
+  dplyr::filter(Hugo_Symbol == "IDH1",
+                grepl("R132|R172", HGVSp_Short))
+
+head(idh_snv_df)
+```
+
+_Note that some samples that did not get included in the subset files, namely those that `disease_type_new == "Brainstem glioma- Diffuse intrinsic pontine glioma"`, have R132H mutations.
+Should they be included in the subset files?_
+
+### Wrangle SNV Data
+
+Now that we've filtered the data, we'll get it into a form that's more amenable to presentation.
+First, let's include a column that contains all of the coding mutations of interest (excluding _TERT_).
+This will contain duplicated information -- e.g., _H3F3A_ will be present for tumors with _H3F3A_ K28M mutations -- but serve as a "sanity check."
+
+```{r}
+coding_summary_df <- coding_snv_df %>% 
+  dplyr::select(Tumor_Sample_Barcode,
+                Hugo_Symbol) %>%
+  # For each tumor biospecimen, get a comma sepearted
+  dplyr::group_by(Tumor_Sample_Barcode) %>%
+  dplyr::summarize(relevant_coding_mutations = paste(sort(unique(Hugo_Symbol)),
+                                                     collapse = ", "))
+
+head(coding_summary_df, n = 10)
+```
+
+Add tumors that had no mutations in the relevant genes into this `data.frame`.
+
+```{r}
+# This will be all biospecimen IDs that were included in the HGG subset
+# SNV file
+subset_bsid <- unique(snv_df$Tumor_Sample_Barcode)
+# Add the 'missing' biospecimen IDs into the coding summary data.frame but
+# mark relevant_coding_mutations as "None"
+coding_summary_df <- coding_summary_df %>%
+  dplyr::bind_rows(data.frame(
+    Tumor_Sample_Barcode = setdiff(subset_bsid,
+                                   coding_summary_df$Tumor_Sample_Barcode)
+  )) %>%
+  replace(is.na(.), "None")
+```
+
+We'll make a `data.frame` that indicates the Variant Classification of any _TERT_ mutation in a tumor biospecimen.
+
+```{r}
+tert_summary_df <- tert_snv_df %>%
+  dplyr::select(Tumor_Sample_Barcode,
+                Variant_Classification) %>%
+  dplyr::group_by(Tumor_Sample_Barcode) %>%
+  dplyr::summarize(TERT_variant_classification = 
+                     paste(sort(unique(Variant_Classification)),
+                           collapse = ", "))
+head(tert_summary_df)
+```
+
+Add in tumor biospecimens where no _TERT_ mutation is present.
+
+```{r}
+tert_summary_df <- tert_summary_df %>%
+  dplyr::bind_rows(data.frame(
+    Tumor_Sample_Barcode = setdiff(subset_bsid,
+                                   tert_summary_df$Tumor_Sample_Barcode)
+  )) %>%
+  replace(is.na(.), "None")
+```
+
+And now a `data.frame` that contains the specific IDH1 mutations.
+
+```{r}
+idh_summary_df <- idh_snv_df %>%
+  dplyr::select(Tumor_Sample_Barcode, HGVSp_Short) %>%
+  dplyr::rename(IDH1_mutation = HGVSp_Short) %>%
+  dplyr::bind_rows(data.frame(
+    Tumor_Sample_Barcode = setdiff(subset_bsid,
+                                   idh_snv_df$Tumor_Sample_Barcode)
+  )) %>%
+  replace(is.na(.), "None")
+```
+
+## Final Mutations Table
+
+We'll include specific information from the defining lesions table.
+
+```{r}
+defining_lesions_df <- defining_lesions_df %>%
+  # We're not concerned with disease type classifications at the moment
+  dplyr::select(-dplyr::starts_with("disease")) %>%
+  # Filter to tumor biospecimens that are in the subset file
+  dplyr::filter(Kids_First_Biospecimen_ID %in% subset_bsid) %>%
+  # All other data.frame use 'Tumor_Sample_Barcode' for the column that contains
+  # the tumor biospecimen identifiers
+  dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID)
 ```
 
