@@ -43,3 +43,5 @@ if [ ! -f "$exon_file" ]; then
     > $exon_file
 if
 
+# Run notebook that cleans the mutation data
+Rscript -e "rmarkdown::render('04-HGG-molecular-subtyping-mutation.Rmd', clean = TRUE)"
