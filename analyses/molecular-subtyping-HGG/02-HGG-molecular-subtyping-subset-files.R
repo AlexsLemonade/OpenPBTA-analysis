@@ -53,6 +53,16 @@ stranded_expression <-
     )
   )
 
+polya_expression <-
+  readr::read_rds(
+    file.path(
+      root_dir,
+      "data",
+      "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
+    )
+  )
+
+
 # Read in focal CN data
 ## TODO: This section will be updated to read in focal CN data derived from
 ##       copy number consensus calls.
@@ -117,30 +127,36 @@ hgg_metadata_df <- metadata %>%
   dplyr::filter(
     disease_type_new == "High-grade glioma" |
       sample_id %in% hgg_lesions_df$sample_id,
-    experimental_strategy == "RNA-Seq",
-    RNA_library == "stranded",
     sample_type == "Tumor",
     composition == "Solid Tissue"
   )
 
 #### Filter expression data ----------------------------------------------------
 
-# Filter to HGG samples only -- we can use hgg_metadata_df because it is subset
-# to RNA-seq samples
-stranded_expression <- stranded_expression %>%
-  dplyr::select(hgg_metadata_df$Kids_First_Biospecimen_ID)
+filter_process_expression <- function(expression_mat) {
+  # Filter to HGG samples only -- we can use hgg_metadata_df because it is
+  # subset to RNA-seq samples
+  filtered_expression <- expression_mat %>%
+    dplyr::select(intersect(hgg_metadata_df$Kids_First_Biospecimen_ID,
+                            colnames(expression_mat)))
 
-# Log2 transformation
-norm_expression <- log2(stranded_expression + 1)
+  # Log2 transformation
+  log_expression <- log2(filtered_expression + 1)
 
-# Scale does column centering, so we transpose first
-long_zscored_expression <- scale(t(norm_expression),
-                                  center = TRUE,
-                                  scale = TRUE)
+  # Scale does column centering, so we transpose first
+  long_zscored_expression <- scale(t(log_expression),
+                                   center = TRUE,
+                                   scale = TRUE)
+  return(long_zscored_expression)
+}
 
 # Save matrix with all genes to file for downstream plotting
-readr::write_rds(long_zscored_expression,
-                 file.path(subset_dir, "hgg_zscored_expression.RDS"))
+filter_process_expression(stranded_expression) %>%
+  readr::write_rds(file.path(subset_dir,
+                             "hgg_zscored_expression.stranded.RDS"))
+filter_process_expression(polya_expression) %>%
+  readr::write_rds(file.path(subset_dir,
+                             "hgg_zscored_expression.polya.RDS"))
 
 #### Filter focal CN data ------------------------------------------------------
 
