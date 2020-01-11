@@ -1,0 +1,142 @@
+---
+title: "High-Grade Glioma Molecular Subtyping - Mutations"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell and Jaclyn Taroni for ALSF CCDL
+date: 2020
+---
+
+This notebook prepares consensus mutation data for the purposes of use for subtyping HGG samples 
+([`AlexsLemonade/OpenPBTA-analysis#249`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249)).
+
+## Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/04-HGG-molecular-subtyping-mutation.Rmd', clean = TRUE)"
+```
+
+## Set Up
+
+### Libraries and Functions
+
+```{r}
+`%>%` <- dplyr::`%>%`
+```
+
+We'll take a similar approach to the [`tp53_nf1_score`](../tp53_nf1_score/) module and use functions from the [`snv-callers`](../snv-callers/) module.
+
+```{r}
+# TODO: if a common util folder is established, use that instead
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+source(file.path(root_dir, "analyses", "snv-callers", "util",
+                 "tmb_functions.R"))
+```
+
+### Directories
+
+```{r}
+# File path to results directory
+input_dir <-
+  file.path(root_dir, "analyses", "molecular-subtyping-HGG", "hgg-subset")
+# File path to results directory
+results_dir <-
+  file.path(root_dir, "analyses", "molecular-subtyping-HGG", "results")
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+```
+
+### Read in Files
+
+```{r}
+# CDS bed file, to be used to filter the consensus MAF file
+bed_file <- file.path(root_dir, 
+                      "scratch", 
+                      "gencode.v27.primary_assembly.annotation.bed")
+gencode_cds_bed <- readr::read_tsv(bed_file)
+# Read in HGG subset snv maf data 
+snv_df <- readr::read_tsv(file.path(input_dir, "hgg_snv_maf.tsv"))
+```
+
+## What mutations are we interested in?
+
+We'll summarize the contents of ([`AlexsLemonade/OpenPBTA-analysis#249`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249)).
+
+### Defining Lesions
+
+From [`@jharenza`](https://github.com/jharenza):
+
+> Any sample that harbors _H3F3A_ K28M, _H3F3A_ G35R/V, or _HIST1H3B_ K28M, if not classified as a high-grade glioma, should be, as this is a defining lesion. Eg: three former PNET tumors were re-classified as such.
+
+Samples were examined for the presence or absence of these defining lesions in [`01-HGG-molecular-subtyping-defining-lesions`](./01-HGG-molecular-subtyping-defining-lesions.Rmd).
+Samples that were classified as High-grade glioma in the `disease_type_new` column of `pbta-histologies.tsv` and those with one of these defining lesions were included in the subset files (see: [`02-HGG-molecular-subtyping-subset-files.R`](./02-HGG-molecular-subtyping-subset-files.R)).
+Thus, we are not concerned with these specific mutations here.
+
+### H3 K28 mutant
+
+Co-occurring lesions include _ACRV1_, _TP53_, _ATRX_ mutations.
+Mutually exclusive lesions include _FGFR1_ and _IDH1_ mutations and _BRAF_ V600E (specific for low-grade gliomas).
+
+```{r}
+k28_genes_of_interest <- c("ACRV1", "TP53", "ATRX", "FGFR1", "IDH1", "BRAF")
+```
+
+### H3 G35 mutant
+
+Co-occurring lesions include _ATRX/DAXX_, _TP53_, _SETD2_ mutations.
+Mutually exclusive lesions include _IDH1_ mutations.
+
+```{r}
+g35_genes_of_interest <- c("ATRX", "DAXX", "TP53", "SETD2", "IDH1")
+```
+
+### IDH mutant
+
+These tumors harbor _IDH1_ R132H mutations.
+Co-occurring lessions include _TP53_ mutations.
+
+```{r}
+idh_genes_of_interest <- c("IDH1", "TP53")
+```
+
+### H3.3 and IDH wildtype
+
+These tumors do not have _H3F3A_ or _IDH1_ mutations, but harbor _TP53_ and _TERT_ mutations.
+
+```{r}
+wildtype_genes_of_interest <- c("H3F3A", "IDH1", "TP53", "TERT")
+```
+
+### 1p/19q co-deleted oligodendrogliomas
+
+> * Nearly all have a co-occurring _IDH1_ mutation (R132 or R172)
+> * Other co-occurring lesions include: _TERT_ promoter, _CIC_, and _FUBP1_ mutations
+
+```{r}
+codeleted_genes_of_interest <- c("IDH1", "TERT", "CIC", "FUBP1")
+```
+
+## Clean SNV data
+
+Get a vector of _all_ genes of interest, so we can use this to filter the HGG subset consensus MAF file.
+
+```{r}
+genes_of_interest <- unique(c(k28_genes_of_interest,
+                              g35_genes_of_interest,
+                              idh_genes_of_interest,
+                              wildtype_genes_of_interest,
+                              codeleted_genes_of_interest))
+```
+
+### Filter the SNV data
+
+```{r}
+filtered_snv_df <- snv_df %>%
+  dplyr::filter(Hugo_Symbol %in% )
+```
+
