@@ -85,7 +85,7 @@ head(genes_cn_df, n = 10)
 ```
 
 At the moment, there is a row for each alteration found in a particular biospecimen.
-We can collapse this further such that we have a column that contains
+We can collapse this further such that we have a column that contains the focal status for each gene.
 
 ```{r}
 genes_cn_df <- genes_cn_df %>%
