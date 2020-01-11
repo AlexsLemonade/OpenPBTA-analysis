@@ -1,0 +1,189 @@
+---
+title: "High-grade Glioma Molecular Subtyping - Focal and Broad Copy Number Alterations"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell and Jaclyn Taroni for ALSF CCDL
+date: 2020
+---
+
+This notebook prepares focal and broad copy number alteration data for the 
+purposes of use for subtyping HGG samples 
+([`AlexsLemonade/OpenPBTA-analysis#249`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249)).
+
+#### TODO: This analysis should be revisited when consensus copy data is made available.
+
+## Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+`Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/03-HGG-molecular-subtyping-cnv.Rmd', clean = TRUE)"`
+
+## Set Up
+
+```{r}
+library(tidyverse)
+```
+
+### Directories
+
+```{r}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+# File path to results directory
+input_dir <-
+  file.path(root_dir, "analyses", "molecular-subtyping-HGG", "hgg-subset")
+# File path to results directory
+results_dir <-
+  file.path(root_dir, "analyses", "molecular-subtyping-HGG", "results")
+
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+```
+
+### Read in Files
+
+```{r}
+# Read in HGG subset focal CN data
+cn_df <- read_tsv(file.path(input_dir, "hgg_focal_cn.tsv.gz"))
+# Read in relevant broad chromosome arm loss for HGG samples
+gistic_df <- read_tsv(file.path(input_dir, "hgg_gistic_broad_values.tsv"))
+```
+
+### Output File
+
+```{r}
+output_file <- file.path(results_dir, "HGG_cleaned_cnv.tsv")
+```
+
+## CNVkit Data
+
+We are using CNVkit data that has been annotated via the [`focal-cn-file-preparation`](../focal-cn-file-preparation/) module.
+Note that a gene may have evidence for two kinds of copy number alteration (e.g., both _loss_ and _gain_) in these data.
+This may or may not be a caller-specific artifact that will be alleviated by generating consensus copy number calls 
+([`AlexsLemonade/OpenPBTA-analysis#128`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/128)).
+See also: https://jaclyn-taroni.github.io/openpbta-notebook-concept/both-gain-and-loss.nb.html.
+It currently poses a challenge for cleaning and preparing these data.
+
+```{r}
+# Filter focal CN data for PDGFRA, PTEN and MYCN status
+genes_cn_df <- cn_df %>%
+  # Rename the column with the biospecimen identifiers to be more consistent
+  # with the rest of the project
+  rename(Kids_First_Biospecimen_ID = biospecimen_id) %>%
+  # Drop the cytoband column
+  select(-cytoband) %>%
+  # Look at the genes of interest
+  filter(gene_symbol %in% c("PDGFRA", "PTEN", "MYCN")) %>%
+  # Spread such that the gene symbols become columns
+  rowid_to_column("id") %>%
+  spread(gene_symbol, status) 
+
+head(genes_cn_df, n = 10)
+```
+
+At the moment, there is a row for each alteration found in a particular biospecimen.
+We can collapse this further such that we have a column that contains
+
+```{r}
+genes_cn_df <- genes_cn_df %>%
+  group_by(Kids_First_Biospecimen_ID) %>%
+  # If something is NA, it won't get included in the paste step and instead 
+  # becomes "" rather than NA -- this is more difficult to work with but we can
+  # detect the absence of gain, loss, or amplification
+  mutate(
+    PDGFRA_focal_status = paste(sort(unique(PDGFRA)), collapse = ", "),
+    PTEN_focal_status = paste(sort(unique(PTEN)), collapse = ", "),
+    MYCN_focal_status = paste(sort(unique(MYCN)), collapse = ", ")
+  ) %>%
+  select(id:Kids_First_Biospecimen_ID, ends_with("focal_status"), everything())
+
+head(genes_cn_df, n = 10)
+```
+
+Now we have columns that capture all reported alterations for a given gene as their own columns.
+Let's look at the instances where we have more than one kind of alteration reported for that gene (i.e., gene symbol).
+They will contain a comma.
+
+```{r}
+genes_cn_df %>% filter(grepl(",", PDGFRA_focal_status) |
+                         grepl(",", PTEN_focal_status) |
+                          grepl(",", MYCN_focal_status))
+```
+
+In the `amplification, gain` instances, this is a matter of one segment having 
+[a copy number that is >(2 * ploidy)](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/02d45fe4d54bf7c319099e0f94251ccf2bb77ec3/analyses/focal-cn-file-preparation/01-prepare-cn-file.R#L269) but the other segment not reaching that threshold.
+
+Let's get rid of the columns we no longer need and filter out the duplicate rows.
+
+```{r}
+genes_cn_df <- genes_cn_df %>%
+  # Drop the columns that are no longer relevant and remove duplicates
+  select(-c("id", "PDGFRA", "PTEN", "MYCN")) %>%
+  distinct()
+  
+head(genes_cn_df, n = 10)
+```
+
+This still leaves the issue of _blank cells_ for instances where we have no evidence for any kind of copy number event.
+We should instead make these values `"neutral"`.
+We can use logic around the presence of `"gain"`, `"loss"`, or `"amplification"` because:
+ 
+  1. When we first prep the CNVkit file, [the only options are `"gain"`, `"loss"` or `"neutral"`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/02d45fe4d54bf7c319099e0f94251ccf2bb77ec3/analyses/focal-cn-file-preparation/00-add-ploidy-cnvkit.Rmd#L43).
+  2. We then [remove `"neutral"` events](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/02d45fe4d54bf7c319099e0f94251ccf2bb77ec3/analyses/focal-cn-file-preparation/01-prepare-cn-file.R#L262).
+  3. We [label an event an `"amplification"` when copy number > (2 * ploidy)](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/02d45fe4d54bf7c319099e0f94251ccf2bb77ec3/analyses/focal-cn-file-preparation/01-prepare-cn-file.R#L269).
+
+```{r}
+genes_cn_df <- genes_cn_df %>%
+  # Here if the value for a focal status column *doesn't* contain loss, gain,
+  # or amplification -- call it neutral
+  mutate_at(vars(ends_with("focal_status")),
+            list(~ case_when(
+              !grepl("gain|loss|amplification", .) ~ "neutral",
+              TRUE ~ .
+            )))
+
+head(genes_cn_df, n = 10)
+```
+
+## GISTIC Data
+
+The GISTIC `broad_values_by_arm.txt` file is a matrix with integers that indicate chromosome arm status. 
+Much like the annotated CNVkit data above, we'll convert this to `"loss"`, `"neutral"`, and `"gain"`.
+
+```{r}
+head(gistic_df, n = 10) 
+```
+
+```{r}
+gistic_status_df <- gistic_df %>%
+  # for the numeric columns (e.g., not the identifiers!), go from the integers
+  # to loss, gain, neutral
+  mutate_if(is.numeric, 
+            list(~ case_when(
+              . < 0 ~ "loss",
+              . > 0 ~ "gain",
+              . == 0 ~ "neutral"
+            ))) %>%
+  # drop sample_id
+  select(-sample_id)
+
+head(gistic_status_df, n = 10)
+```
+
+## Join Together
+
+```{r}
+final_hgg_cn_df <- inner_join(genes_cn_df,
+                              gistic_status_df,
+                              by = "Kids_First_Biospecimen_ID")
+head(final_hgg_cn_df, n = 10)
+```
+
+Write this to file.
+
+```{r}
+write_tsv(final_hgg_cn_df, output_file)
+```
