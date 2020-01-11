@@ -66,6 +66,12 @@ defining_lesions_df <- readr::read_tsv(file.path(results_dir,
                                                  "HGG_defining_lesions.tsv"))
 ```
 
+## Output File
+
+```{r}
+output_file <- file.path(results_dir, "HGG_cleaned_mutation.tsv")
+```
+
 ## What mutations are we interested in?
 
 We'll summarize the contents of ([`AlexsLemonade/OpenPBTA-analysis#249`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249)).
@@ -272,5 +278,23 @@ defining_lesions_df <- defining_lesions_df %>%
   # All other data.frame use 'Tumor_Sample_Barcode' for the column that contains
   # the tumor biospecimen identifiers
   dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID)
+```
+
+Join all mutation `data.frame` together.
+
+```{r}
+final_mutations_df <- list(defining_lesions_df,
+                           coding_summary_df,
+                           idh_summary_df,
+                           tert_summary_df) %>%
+  purrr::reduce(dplyr::inner_join, by = "Tumor_Sample_Barcode")
+
+head(final_mutations_df, n = 10)
+```
+
+Write the final table to file.
+
+```{r}
+readr::write_tsv(final_mutations_df, output_file)
 ```
 
