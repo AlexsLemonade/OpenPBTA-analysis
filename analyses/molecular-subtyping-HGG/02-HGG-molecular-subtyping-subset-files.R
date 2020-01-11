@@ -39,9 +39,7 @@ metadata <-
 select_metadata <- metadata %>%
   dplyr::select(sample_id,
                 Kids_First_Participant_ID,
-                Kids_First_Biospecimen_ID,
-                glioma_brain_region,
-                age_at_diagnosis_days)
+                Kids_First_Biospecimen_ID)
 
 # Read in RNA expression data
 stranded_expression <-
@@ -95,7 +93,16 @@ gistic_df <-
 snv_maf_df <-
   data.table::fread(file.path(root_dir,
                               "data",
-                              "pbta-snv-consensus-mutation.maf.tsv.gz"))
+                              "pbta-snv-consensus-mutation.maf.tsv.gz"),
+                    select = c("Chromosome",
+                               "Start_Position",
+                               "End_Position",
+                               "Strand",
+                               "Variant_Classification",
+                               "Tumor_Sample_Barcode",
+                               "Hugo_Symbol",
+                               "HGVSp_Short"),
+                    data.table = FALSE)
 
 # Read in output file from `01-HGG-molecular-subtyping-defining-lesions.Rmd`
 hgg_lesions_df <- readr::read_tsv(
@@ -214,7 +221,6 @@ readr::write_tsv(gistic_df,
 #### Filter SNV consensus maf data ---------------------------------------------
 
 snv_maf_df <- snv_maf_df %>%
-  dplyr::select(Tumor_Sample_Barcode, Hugo_Symbol, HGVSp_Short) %>%
   dplyr::left_join(select_metadata,
                    by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
   dplyr::filter(sample_id %in% hgg_metadata_df$sample_id)
