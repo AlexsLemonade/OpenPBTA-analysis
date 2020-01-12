@@ -322,3 +322,9 @@ Write the final table to file.
 readr::write_tsv(final_mutations_df, output_file)
 ```
 
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
