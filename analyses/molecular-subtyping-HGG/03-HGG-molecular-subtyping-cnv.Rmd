@@ -187,3 +187,10 @@ Write this to file.
 ```{r}
 write_tsv(final_hgg_cn_df, output_file)
 ```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
