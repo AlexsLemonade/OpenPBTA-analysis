@@ -37,11 +37,11 @@ fi
 # if the cds gencode bed file is not available from another analysis, generate
 # it here
 if [ ! -f "$exon_file" ]; then
-  gunzip -c ../../data/gencode.v27.primary_assembly.annotation.gtf.gz \
+  gunzip -c "../../data/gencode.v27.primary_assembly.annotation.gtf.gz" \
     | awk '$3 ~ /CDS/' \
     | convert2bed --do-not-sort --input=gtf - \
     > $exon_file
-if
+fi
 
 # Run notebook that cleans the mutation data
 Rscript -e "rmarkdown::render('04-HGG-molecular-subtyping-mutation.Rmd', clean = TRUE)"
