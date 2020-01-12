@@ -194,6 +194,16 @@ head(idh_snv_df)
 _Note that some samples that did not get included in the subset files, namely those that `disease_type_new == "Brainstem glioma- Diffuse intrinsic pontine glioma"`, have R132H mutations.
 Should they be included in the subset files?_
 
+#### _BRAF_ V600E
+
+```{r}
+braf_snv_df <- filtered_snv_df %>%
+  dplyr::filter(Hugo_Symbol == "BRAF",
+                grepl("V600E", HGVSp_Short))
+
+head(braf_snv_df, n = 10)
+```
+
 ### Wrangle SNV Data
 
 Now that we've filtered the data, we'll get it into a form that's more amenable to presentation.
@@ -252,7 +262,7 @@ tert_summary_df <- tert_summary_df %>%
   replace(is.na(.), "None")
 ```
 
-And now a `data.frame` that contains the specific IDH1 mutations.
+Now a `data.frame` that contains the specific IDH1 mutations.
 
 ```{r}
 idh_summary_df <- idh_snv_df %>%
@@ -262,7 +272,20 @@ idh_summary_df <- idh_snv_df %>%
     Tumor_Sample_Barcode = setdiff(subset_bsid,
                                    idh_snv_df$Tumor_Sample_Barcode)
   )) %>%
-  replace(is.na(.), "None")
+  replace(is.na(.), "No R132 or R172")
+```
+
+And a `data.frame` that contains the specific _BRAF_ mutation.
+
+```{r}
+braf_summary_df <- braf_snv_df %>%
+  dplyr::select(Tumor_Sample_Barcode, HGVSp_Short) %>%
+  dplyr::rename(BRAF_V600E = HGVSp_Short) %>%
+  dplyr::bind_rows(data.frame(
+    Tumor_Sample_Barcode = setdiff(subset_bsid,
+                                   braf_snv_df$Tumor_Sample_Barcode)
+  )) %>%
+  replace(is.na(.), "No V600E")
 ```
 
 ## Final Mutations Table
@@ -286,7 +309,8 @@ Join all mutation `data.frame` together.
 final_mutations_df <- list(defining_lesions_df,
                            coding_summary_df,
                            idh_summary_df,
-                           tert_summary_df) %>%
+                           tert_summary_df,
+                           braf_summary_df) %>%
   purrr::reduce(dplyr::inner_join, by = "Tumor_Sample_Barcode")
 
 head(final_mutations_df, n = 10)
