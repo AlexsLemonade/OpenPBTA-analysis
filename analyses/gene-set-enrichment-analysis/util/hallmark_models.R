@@ -24,11 +24,6 @@ if (tidyr_version$major >= 1){
 
 
 
-
-### Define function for performing ANOVA, and subsequently posthoc Tukey tests, for identifying pathways significantly different across histologies, and significant pairwise comparisons of histologies within a pathway. 
-
-
-
 perform_anova <- function(df, predictor_variable_string)
 {
   ### Defines a function for performing ANOVA to detect signficance GSVA scores according to a given predictor variable
@@ -45,7 +40,7 @@ gsva_anova_tukey <- function(df, predictor_variable, library_type, significance_
   ##### 2. "tukey" is a tibble of all Tukey HSD tests performed, comparing each level of `predictor_variable` for each hallmark
   
   ### Input arguments:
-  ### 1. `df`:   the data frame containing scores (`gsea_score`) and assumed to contain the specified `predictor_variable` 
+  ### 1. `df`:   the data frame containing scores (`gsea_score`) and assumed to contain the specified `predictor_variable` and a column `data_type` referring to either "stranded" or "polyA" libraries
   ### 2. `predictor_variable`: A _string_ indicating the predictor variable, such as `short_histology`, `disease_type_new`, etc.
   ### 3. `library_type`:  Which RNAseq library to analyze? Specify either `polyA` or `stranded`
   ### 4. `significance_threshold`:  What threshold is used for significance (aka alpha, FPR)?
@@ -67,8 +62,9 @@ gsva_anova_tukey <- function(df, predictor_variable, library_type, significance_
     distinct() %>% 
     count(data_type) %>%
     filter(data_type == library_type) %>%
-    pull(n) -> number_of_tests
-
+    pull(n) -> number_of_tests 
+  
+  print(number_of_tests)
   ############### Perform modeling, including ANOVAs and Tukey across hallmarks
   df %>%
     filter(data_type == library_type) %>%

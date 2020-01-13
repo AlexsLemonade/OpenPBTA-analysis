@@ -48,14 +48,16 @@ source(file.path("util", "hallmark_models.R"))
 # Significance testing universal threshold
 SIGNIFICANCE_THRESHOLD <- 0.01
 
-# Are we testing?
-if( !(params$is_ci %in% c(0,1)) & !(params$is_ci %in% c(TRUE, FALSE)) ){
-  stop("\n\nERROR: The parameter `is_ci` should be 0/1 (or FALSE/TRUE).")
-}
 # Assigning params$is_ci to running_in_ci avoids a locked binding error
 running_in_ci <- params$is_ci
-if (running_in_ci == 0) running_in_ci <- FALSE
-if (running_in_ci == 1) running_in_ci <- TRUE
+
+# Are we testing? In case of a non 0/1 number, we recast as logical, and then ensure logical.
+if (running_in_ci %in% c(0,1)) running_in_ci <- as.logical(running_in_ci)
+if (!(is.logical(running_in_ci)))
+{
+  stop("\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).")
+}
+
 ```
 
 

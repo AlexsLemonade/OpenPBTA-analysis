@@ -1653,8 +1653,8 @@ summary {
 <h3>Purpose</h3>
 <p>The purpose of this analysis is to assess significant differences in GSVA scores for each hallmark pathways. Using ANOVA and subsequent Tukey tests, we ask:</p>
 <ul>
-<li><p>For each pathway, are GSVA scores significant different across <code>short_histology</code>? If so, which histologies are significantly different?</p></li>
-<li><p>For each pathway, are GSVA scores significant different across <code>disease_type_new</code>? If so, which types are significantly different?</p></li>
+<li><p>For each pathway, are GSVA scores significantly different across <code>short_histology</code>? If so, which histologies are significantly different?</p></li>
+<li><p>For each pathway, are GSVA scores significantly different across <code>disease_type_new</code>? If so, which types are significantly different?</p></li>
 </ul>
 <p>We perform this using both GSVA scores calculated from the stranded and polyA RNA-seq libraries. Code is also flexible enough to test a different variable besides <code>short_histology</code>, etc.</p>
 </div>
@@ -1677,14 +1677,15 @@ source(file.path(&quot;util&quot;, &quot;hallmark_models.R&quot;))
 # Significance testing universal threshold
 SIGNIFICANCE_THRESHOLD &lt;- 0.01
 
-# Are we testing?
-if( !(params$is_ci %in% c(0,1)) &amp; !(params$is_ci %in% c(TRUE, FALSE)) ){
-  stop(&quot;\n\nERROR: The parameter `is_ci` should be 0/1 (or FALSE/TRUE).&quot;)
-}
 # Assigning params$is_ci to running_in_ci avoids a locked binding error
 running_in_ci &lt;- params$is_ci
-if (running_in_ci == 0) running_in_ci &lt;- FALSE
-if (running_in_ci == 1) running_in_ci &lt;- TRUE</code></pre>
+
+# Are we testing? In case of a non 0/1 number, we recast as logical, and then ensure logical.
+if (running_in_ci %in% c(0,1)) running_in_ci &lt;- as.logical(running_in_ci)
+if (!(is.logical(running_in_ci)))
+{
+  stop(&quot;\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).&quot;)
+}</code></pre>
 <p><br> Next, define directories and load data files:</p>
 <pre class="r"><code>### Define directories
 data_dir    &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;data&quot;) 
@@ -1717,7 +1718,7 @@ scores_polya    &lt;- readr::read_tsv(scores_polya_file)</code></pre>
 </div>
 <div id="anova-and-tukey-analysis-of-gsva-scores" class="section level3">
 <h3>ANOVA and Tukey analysis of GSVA scores</h3>
-<p>Here we perform a series of ANOVAs, for polyA and stranded libraries separately, to determine whether mean GSVA scores for a given grouping are significantly different across hallmarks (pathways). The given groupings examined here are <code>short_histology</code> and <code>disease_type_new</code>. In other words, we perform an ANOVA (and associated postdoc Tukey test) for each hallmark as, <code>hallmark ~ grouping</code>. Users can specify the grouping variable.</p>
+<p>Here we perform a series of ANOVAs, for polyA and stranded libraries separately, to determine whether mean GSVA scores for a given grouping are significantly different across hallmarks (pathways). The given groupings examined here are <code>short_histology</code> and <code>disease_type_new</code>. In other words, we perform an ANOVA (and associated posthoc Tukey test) for each hallmark as, <code>hallmark ~ grouping</code>. Users can specify the grouping variable.</p>
 <p>First, prepare the data for modeling:</p>
 <pre class="r"><code>### Merge histology metadata with each set of gsea scores
 scores_stranded  &lt;- scores_stranded %&gt;% mutate(data_type = &quot;stranded&quot;)
@@ -1730,10 +1731,11 @@ metadata_with_gsva &lt;- metadata %&gt;%
                         filter(experimental_strategy == &quot;RNA-Seq&quot;) %&gt;%
                         inner_join(all_scores, by = &quot;Kids_First_Biospecimen_ID&quot; )</code></pre>
 <p>Now, model:</p>
-<pre class="r"><code>short_histology_stranded_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, short_histology, &quot;stranded&quot;, SIGNIFICANCE_THRESHOLD) 
-disease_type_new_stranded_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, disease_type_new, &quot;stranded&quot;, SIGNIFICANCE_THRESHOLD) 
-
-head(short_histology_stranded_model_results)</code></pre>
+<pre class="r"><code>short_histology_stranded_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, short_histology, &quot;stranded&quot;, SIGNIFICANCE_THRESHOLD) </code></pre>
+<pre><code>## [1] 50</code></pre>
+<pre class="r"><code>disease_type_new_stranded_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, disease_type_new, &quot;stranded&quot;, SIGNIFICANCE_THRESHOLD) </code></pre>
+<pre><code>## [1] 50</code></pre>
+<pre class="r"><code>head(short_histology_stranded_model_results)</code></pre>
 <pre><code>## $anova
 ## # A tibble: 50 x 5
 ##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
@@ -1820,6 +1822,8 @@ if (!(running_in_ci)){
   write_tsv(disease_type_new_polya_model_results[[&quot;tukey&quot;]],    file_tukey_polya_disease_type_new)
 
 }</code></pre>
+<pre><code>## [1] 50
+## [1] 50</code></pre>
 <p><strong>How many <code>short_histology</code> have significant ANOVAs across hallmark pathways, for each library?</strong></p>
 <pre class="r"><code>short_histology_stranded_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)</code></pre>
 <div data-pagedtable="false">
