@@ -374,9 +374,15 @@ lapply(group_densities, function(granges_list) {
 Zip up the PNG files into one file. 
 
 ```{r}
-zip(paste0(hist_plots_dir, ".zip"), 
-    hist_plots_dir
-)
+# Declare name of zip file
+zip_file <- paste0(hist_plots_dir, ".zip")
+
+# Remove any current zip_file of this name so we can overwrite it
+if (file.exists(zip_file)){
+  file.remove(zip_file)
+}
+# Zip up the plots
+zip(zip_file, hist_plots_dir)
 ```
 
 ### Session Info
