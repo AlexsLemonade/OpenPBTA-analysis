@@ -60,7 +60,7 @@ bed_file <- file.path(root_dir,
                       "gencode.v27.primary_assembly.annotation.bed")
 gencode_cds_bed <- readr::read_tsv(bed_file, col_names = FALSE)
 # Read in HGG subset snv maf data 
-snv_df <- readr::read_tsv(file.path(input_dir, "hgg_snv_maf.tsv"))
+snv_df <- readr::read_tsv(file.path(input_dir, "hgg_snv_maf.tsv.gz"))
 # Read in defining lesions file
 defining_lesions_df <- readr::read_tsv(file.path(results_dir,
                                                  "HGG_defining_lesions.tsv"))
@@ -191,7 +191,7 @@ idh_snv_df <- filtered_snv_df %>%
 head(idh_snv_df)
 ```
 
-_Note that some samples that did not get included in the subset files, namely those that `disease_type_new == "Brainstem glioma- Diffuse intrinsic pontine glioma"`, have R132H mutations.
+_Note that some samples that did not get included in the subset file (e.g., LGAT, Ganglioglioma, etc.) have R132H mutations.
 Should they be included in the subset files?_
 
 #### _BRAF_ V600E
@@ -295,7 +295,8 @@ We'll include specific information from the defining lesions table.
 ```{r}
 defining_lesions_df <- defining_lesions_df %>%
   # We're not concerned with disease type classifications at the moment
-  dplyr::select(-dplyr::starts_with("disease")) %>%
+  dplyr::select(-dplyr::starts_with("disease"),
+                -short_histology) %>%
   # Filter to tumor biospecimens that are in the subset file
   dplyr::filter(Kids_First_Biospecimen_ID %in% subset_bsid) %>%
   # All other data.frame use 'Tumor_Sample_Barcode' for the column that contains
