@@ -19,7 +19,7 @@ params:
 
 The purpose of this analysis is to assess significant differences in GSVA scores for each hallmark pathways. Using ANOVA and subsequent Tukey tests, we ask:
 
-+ For each pathway, are GSVA scores significant different across `short_histology`? If so, which histologies are significantly different?
++ For each pathway, are GSVA scores significantly different across `short_histology`? If so, which histologies are significantly different?
 
 + For each pathway, are GSVA scores significant different across `disease_type_new`? If so, which types are significantly different?
 
@@ -169,5 +169,4 @@ if (!(running_in_ci))
 ```
 
 > Again, all are significantly different for stranded, none for polya. Likely due to data/power limitations.
-
 
