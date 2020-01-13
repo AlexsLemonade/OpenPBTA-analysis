@@ -52,6 +52,7 @@ select_metadata <- metadata %>%
   dplyr::select(Kids_First_Participant_ID,
                 sample_id,
                 Kids_First_Biospecimen_ID,
+                short_histology,
                 disease_type_new)
 
 # Read in snv consensus mutation data
@@ -108,10 +109,11 @@ snv_lesions_df <- select_metadata %>%
   dplyr::inner_join(snv_lesions_df,
                     by = c("Kids_First_Biospecimen_ID" = "Tumor_Sample_Barcode")) %>%
   dplyr::select(
-    -disease_type_new,
-    dplyr::everything()
+    dplyr::ends_with("ID"),
+    dplyr::starts_with("H"),
+    short_histology,
+    disease_type_new
   ) %>%
-  dplyr::distinct() %>%
   dplyr::mutate(
     disease_type_reclassified = dplyr::case_when(
       H3F3A.K28M == "Yes" ~ "High-grade glioma, H3 K28 mutant",
