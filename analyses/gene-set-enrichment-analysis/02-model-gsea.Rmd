@@ -21,7 +21,7 @@ The purpose of this analysis is to assess significant differences in GSVA scores
 
 + For each pathway, are GSVA scores significantly different across `short_histology`? If so, which histologies are significantly different?
 
-+ For each pathway, are GSVA scores significant different across `disease_type_new`? If so, which types are significantly different?
++ For each pathway, are GSVA scores significantly different across `disease_type_new`? If so, which types are significantly different?
 
 We perform this using both GSVA scores calculated from the stranded and polyA RNA-seq libraries. Code is also flexible enough to test a different variable besides `short_histology`, etc.
 
