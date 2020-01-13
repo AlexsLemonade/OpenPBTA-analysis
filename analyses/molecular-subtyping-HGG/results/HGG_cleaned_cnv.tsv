@@ -17,8 +17,10 @@ sample_id	Kids_First_Participant_ID	Kids_First_Biospecimen_ID	PDGFRA_focal_statu
 7316-388	PT_4XB3YTJM	BS_823V5X6Z	neutral	loss	loss	gain	neutral	neutral	neutral	neutral	neutral
 7316-3030	PT_KVMF5TFW	BS_8FSJDG2T	neutral	neutral	gain	neutral	neutral	neutral	neutral	neutral	neutral
 7316-2554	PT_37B5JRP1	BS_8Q8N6AHW	gain	loss	loss	neutral	loss	gain	gain	loss	loss
+7316-3220	PT_0MXPTTM3	BS_8SYN7GXG	neutral	loss	gain	neutral	neutral	neutral	neutral	neutral	neutral
 7316-3303	PT_1H2REHT2	BS_96S0VQBN	neutral	loss	loss	neutral	neutral	gain	gain	neutral	neutral
 7316-194	PT_SYHB12RN	BS_9DM8H1RX	loss	loss	loss	neutral	neutral	neutral	neutral	neutral	neutral
+7316-3232	PT_KBFM551M	BS_9P4NDTKJ	loss	loss	loss	neutral	gain	gain	gain	loss	loss
 7316-3230	PT_KTRJ8TFY	BS_AF5D41PD	amplification, gain	loss	loss	neutral	neutral	neutral	neutral	neutral	neutral
 7316-3228	PT_NK8A49X5	BS_AHAXPFG3	loss	loss	loss	neutral	neutral	neutral	neutral	neutral	neutral
 7316-195	PT_Y5KY6KN9	BS_AYPBAHJ6	gain	loss	loss	neutral	gain	gain	neutral	neutral	neutral
@@ -28,20 +30,25 @@ sample_id	Kids_First_Participant_ID	Kids_First_Biospecimen_ID	PDGFRA_focal_statu
 7316-895	PT_MDWPRDBT	BS_BQWMQM2Y	loss	loss	loss	neutral	neutral	neutral	neutral	neutral	neutral
 7316-343	PT_X5TQR8V2	BS_C19DFVR5	amplification	loss	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-126	PT_PR4YBBH3	BS_C2NH5FDT	amplification	loss	neutral	neutral	neutral	gain	neutral	neutral	neutral
+7316-3227	PT_MNSEJCDM	BS_CBMAWSAR	loss	loss	neutral	gain	neutral	gain	gain	neutral	neutral
 7316-2255	PT_6Q0NPVP3	BS_E5H6CFYT	gain	loss	gain	neutral	gain	gain	gain	loss	loss
 7316-3230	PT_KTRJ8TFY	BS_EE73VE7V	gain	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-1099	PT_N3205P0D	BS_EPM623G4	neutral	gain, loss	neutral	neutral	neutral	gain	gain	neutral	neutral
+7316-3817	PT_J5NSRW1Y	BS_F8K4VQMF	loss	loss	loss	neutral	neutral	gain	neutral	neutral	neutral
 7316-3221	PT_HGM20MW7	BS_FK3B5SDH	loss	loss	loss	neutral	neutral	neutral	neutral	neutral	neutral
 7316-3122	PT_Y660CKCB	BS_FKQ7F6D1	loss	loss	loss	neutral	neutral	neutral	neutral	neutral	neutral
 7316-644	PT_HMF8J4EG	BS_GKPVZXYP	loss	loss	loss	neutral	neutral	neutral	neutral	neutral	neutral
 7316-3217	PT_KZ56XHJT	BS_H8NWA41N	loss	loss	loss	neutral	neutral	neutral	neutral	neutral	neutral
 7316-3228	PT_NK8A49X5	BS_HEJ72V3F	loss	loss	loss	neutral	neutral	neutral	neutral	neutral	neutral
+7316-3237	PT_KBFM551M	BS_J8EK6RNF	loss	loss	neutral	neutral	neutral	gain	gain	loss	loss
 7316-2308	PT_7WT6P5M8	BS_JB3J82ZK	neutral	loss	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-3213	PT_9GKVQ9QS	BS_JRFVST47	gain	loss	loss	neutral	neutral	neutral	neutral	neutral	neutral
 7316-3521	PT_63F63QY0	BS_KAD49R68	loss	loss	loss	neutral	neutral	neutral	neutral	neutral	neutral
 7316-2176	PT_VAJN5QP8	BS_KSHETTQC	loss	loss	loss	neutral	gain	gain	gain	neutral	neutral
 7316-870	PT_P5HHJJPH	BS_KXGJ1HMG	neutral	loss	neutral	neutral	neutral	gain	gain	loss	loss
 7316-1708	PT_1DSX4VJM	BS_KYPMZZSY	loss	loss	loss	neutral	neutral	neutral	neutral	neutral	neutral
+7316-3214	PT_KBFM551M	BS_M0B42FPR	loss	loss	loss	neutral	neutral	neutral	neutral	neutral	neutral
+7316-71	PT_VVCN8DXT	BS_MSB1RDAJ	loss	loss	loss	neutral	neutral	neutral	neutral	neutral	neutral
 7316-3075	PT_KFYJBQB8	BS_NJFK43N3	loss	loss	loss	neutral	neutral	neutral	neutral	neutral	neutral
 7316-3215	PT_V1HNAC2Q	BS_NNFDFAFM	gain	neutral	loss	neutral	neutral	neutral	neutral	gain	gain
 7316-2307	PT_S0Q27J13	BS_P3PF53V8	loss	loss	loss	neutral	loss	neutral	neutral	loss	loss
@@ -65,4 +72,6 @@ sample_id	Kids_First_Participant_ID	Kids_First_Biospecimen_ID	PDGFRA_focal_statu
 7316-1763	PT_Z4PJA6KT	BS_WPCBK1EG	neutral	loss	loss	gain	neutral	neutral	neutral	neutral	neutral
 7316-1789	PT_89XRZBSG	BS_X1DSETVE	loss	loss	loss	gain	loss	neutral	neutral	neutral	neutral
 7316-2610	PT_6GDPNFA6	BS_XGVSX8BX	gain	loss	neutral	loss	gain	neutral	neutral	loss	loss
+7316-3229	PT_MNSEJCDM	BS_Y74XAFJX	gain	neutral	gain	gain	neutral	gain	gain	neutral	neutral
 7316-1085	PT_FYPWZBH0	BS_ZCY4ECNV	neutral	loss	neutral	neutral	neutral	neutral	neutral	neutral	neutral
+7316-3227	PT_MNSEJCDM	BS_ZSH09N84	neutral	neutral	gain	gain	neutral	gain	gain	neutral	neutral
