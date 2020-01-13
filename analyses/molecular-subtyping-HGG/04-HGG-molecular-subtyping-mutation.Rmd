@@ -154,21 +154,9 @@ filtered_snv_df <- snv_df %>%
   dplyr::filter(Hugo_Symbol %in% genes_of_interest)
 ```
 
-#### _TERT_ mutation
-
-We likely want to be permissive with the _TERT_ mutations in terms of regions.
-
-```{r}
-tert_snv_df <- filtered_snv_df %>%
-  dplyr::filter(Hugo_Symbol == "TERT",
-                Variant_Classification != "Silent")
-
-tert_snv_df
-```
-
 #### Coding mutations in genes other than _TERT_
 
-For all other genes, we'll restrict to the coding sequences and drop silent mutations.
+For all genes other than _TERT_, we'll restrict to the coding sequences and drop silent mutations.
 
 ```{r}
 coding_snv_df <- snv_ranges_filter(maf_df = filtered_snv_df,
@@ -177,6 +165,18 @@ coding_snv_df <- snv_ranges_filter(maf_df = filtered_snv_df,
                 Hugo_Symbol != "TERT")
 
 head(coding_snv_df, n = 10)
+```
+
+#### _TERT_ mutation
+
+We likely want to be permissive with the _TERT_ mutations in terms of *regions.*
+
+```{r}
+tert_snv_df <- filtered_snv_df %>%
+  dplyr::filter(Hugo_Symbol == "TERT",
+                Variant_Classification != "Silent")
+
+tert_snv_df
 ```
 
 #### Specific _IDH1_ mutations
