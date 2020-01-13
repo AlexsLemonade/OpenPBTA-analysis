@@ -235,11 +235,11 @@ break_density <- function(sv_breaks = NULL,
       t()
 
     # Calculate the median breaks per bin
-    median_counts <- apply(freq_per_bin, 1, median)
+    median_counts <- apply(freq_per_bin, 1, median, na.rm = TRUE)
 
     # Store the median break counts, some bins data may be dropped off so we need
-    # to start with NAs and then fill in the data based on the indices.
-    bins@elementMetadata@listData$median_counts <- rep(NA, length(bins))
+    # to start with 0s and then fill in the data based on the indices.
+    bins@elementMetadata@listData$median_counts <- rep(0, length(bins))
     bins@elementMetadata@listData$median_counts[as.numeric(names(median_counts))] <- median_counts
 
     # Store average count info

@@ -13,8 +13,6 @@ into chromosomal breaks and measuring chromosomal break density.
 This notebook returns plots for each sample and tumor type group in the 
 `plots` directory.
 
-You can see the output notebook [here](https://cansavvy.github.io/openpbta-notebook-concept/chromosomal-instability/chromosomal-instability.nb.html).
-
 Code adapted from [svcnvplus](https://github.com/gonzolgarcia/svcnvplus).
 
 ### Usage
@@ -97,7 +95,8 @@ cnv_df <- data.table::fread(file.path(data_dir, "pbta-cnv-cnvkit.seg.gz"),
     # is considered changed by the threshold set
     changed = as.factor(dplyr::case_when(
       seg.mean < log2(1 - ch.pct) ~ "change",
-      seg.mean >= log2(1 - ch.pct) ~ "no_change"
+      seg.mean >= log2(1 + ch.pct) ~ "change", 
+      TRUE ~ "no_change"
     ))
   ) %>%
   # Reformat the chromosome variable to drop the "chr"
@@ -148,9 +147,9 @@ chr_sizes <- readr::read_tsv(file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed
   # Remove sex chromosomes
   dplyr::filter(!(X1 %in% c("X", "Y", "M")))
 
-# Make chromosome size list
-chr_sizes_list <- chr_sizes$X3
-names(chr_sizes_list) <- chr_sizes$X1
+# Make chromosome size named vector
+chr_sizes_vector <- chr_sizes$X3
+names(chr_sizes_vector) <- chr_sizes$X1
 ```
 
 ## Format the data as chromosomes breaks
@@ -166,7 +165,7 @@ Make an CNV breaks data.frame.
 # Make a CNV data.frame that has the breaks
 cnv_breaks <- data.frame(
   samples = rep(cnv_filtered_df$ID, 2),
-  chrom = c(cnv_filtered_df$chrom, cnv_filtered_df$chrom),
+  chrom = rep(cnv_filtered_df$chrom, 2),
   start = c(cnv_filtered_df$start, cnv_filtered_df$end),
   end = c(cnv_filtered_df$start, cnv_filtered_df$end),
   seg.mean = rep(cnv_filtered_df$seg.mean, 2),
@@ -219,7 +218,7 @@ sample_densities <- lapply(common_samples, function(sample_id) {
     cnv_breaks,
     sample_id = sample_id,
     window_size = bin_size,
-    chr_sizes_list = chr_sizes_list
+    chr_sizes_vector = chr_sizes_vector
   )
 
   # Calculate break densities for CNV only
@@ -227,7 +226,7 @@ sample_densities <- lapply(common_samples, function(sample_id) {
     cnv_breaks,
     sample_id = sample_id,
     window_size = bin_size,
-    chr_sizes_list = chr_sizes_list
+    chr_sizes_vector = chr_sizes_vector
   )
 
   # Calculate break densities for SV only
@@ -235,7 +234,7 @@ sample_densities <- lapply(common_samples, function(sample_id) {
     sv_breaks,
     sample_id = sample_id,
     window_size = bin_size,
-    chr_sizes_list = chr_sizes_list
+    chr_sizes_vector = chr_sizes_vector
   )
 
   # Return this mega GRanges list
@@ -261,14 +260,6 @@ lapply(sample_densities, function(granges_list) {
   # Get the sample name
   sample_name <- common_samples[parent.frame()$i[]]
 
-  # Make the combo plot
-  multipanel_break_plot(
-    granges_list = granges_list,
-    plot_name = sample_name,
-    y_val = "total_counts",
-    y_lab = "Breaks per Mb",
-    plot_dir = sample_plots_dir
-  )
 })
 ```
 
@@ -286,8 +277,6 @@ tumor_types <- metadata %>%
   dplyr::filter(!is.na(short_histology), experimental_strategy != "RNA-Seq") %>% 
   dplyr::distinct(short_histology) %>%
   dplyr::pull(short_histology)
-
-tumor_types[12]
 ```
 
 Run the density calculations for the groups. 
@@ -315,7 +304,7 @@ group_densities <- lapply(tumor_types, function(tumor_type) {
     cnv_breaks,
     sample_id = sample_ids,
     window_size = bin_size,
-    chr_sizes_list = chr_sizes_list
+    chr_sizes_vector = chr_sizes_vector
   )
 
   # Calculate break densities for CNV only
@@ -323,7 +312,7 @@ group_densities <- lapply(tumor_types, function(tumor_type) {
     cnv_breaks,
     sample_id = sample_ids,
     window_size = bin_size,
-    chr_sizes_list = chr_sizes_list
+    chr_sizes_vector = chr_sizes_vector
   )
 
   # Calculate break densities for SV only
@@ -331,7 +320,7 @@ group_densities <- lapply(tumor_types, function(tumor_type) {
     sv_breaks,
     sample_id = sample_ids,
     window_size = bin_size,
-    chr_sizes_list = chr_sizes_list
+    chr_sizes_vector = chr_sizes_vector
   )
 
   # Return this mega GRanges list
