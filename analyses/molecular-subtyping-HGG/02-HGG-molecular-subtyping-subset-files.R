@@ -140,6 +140,14 @@ hgg_metadata_df <- metadata %>%
 #### Filter expression data ----------------------------------------------------
 
 filter_process_expression <- function(expression_mat) {
+  # This function takes the collapsed FPKM expression matrix, selects relevant
+  # columns (samples) via the Kids_First_Biospecimen_ID identifier, and then
+  # log2(x + 1) transforms and z-scores the filtered matrix gene-wise.
+  # It returns the z-scored matrix, where the columns are genes and the rows
+  # are samples (biospecimen ID are the rownames).
+  #
+  # Only intended for use in the context of this script!
+
   # Filter to HGG samples only -- we can use hgg_metadata_df because it is
   # subset to RNA-seq samples
   filtered_expression <- expression_mat %>%
