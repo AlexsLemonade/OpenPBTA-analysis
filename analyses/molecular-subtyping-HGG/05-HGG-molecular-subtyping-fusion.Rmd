@@ -78,7 +78,7 @@ dim(FGFR1_fusions)
 ```
 
 There are no _FGFR1_ fusions present in the filtered and prioritized fusion table for samples that were included in the HGG subset file.
-Recall that samples in the HGG subset file either had a defining lesion (H3 K28 or H3 G35 mutation) _or_ were labeled `High-grade glioma` in the `disease_type_new` column of `pbta-histologies.tsv`.
+Recall that samples in the HGG subset file either had a defining lesion (H3 K28 or H3 G35 mutation) _or_ were labeled `HGAT` in the `short_histology` column of `pbta-histologies.tsv`.
 
 _FGFR1_ fusions are _mutually exclusive_ so this result is not necessarily unexpected.
 
