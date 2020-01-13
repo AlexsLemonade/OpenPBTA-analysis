@@ -1,11 +1,14 @@
 ---
 title: "High-grade Glioma Molecular Subtyping - Focal and Broad Copy Number Alterations"
-output: 
+author: "Chante Bethell, Stephanie J. Spielman, and Jaclyn Taroni for ALSF CCDL"
+date: "2020"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
   html_notebook:
-    toc: TRUE
-    toc_float: TRUE
-author: Chante Bethell and Jaclyn Taroni for ALSF CCDL
-date: 2020
+    toc: yes
+    toc_float: yes
 ---
 
 This notebook prepares focal and broad copy number alteration data for the 
@@ -65,88 +68,43 @@ Note that a gene may have evidence for two kinds of copy number alteration (e.g.
 This may or may not be a caller-specific artifact that will be alleviated by generating consensus copy number calls 
 ([`AlexsLemonade/OpenPBTA-analysis#128`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/128)).
 See also: https://jaclyn-taroni.github.io/openpbta-notebook-concept/both-gain-and-loss.nb.html.
-It currently poses a challenge for cleaning and preparing these data.
+
+
 
 ```{r}
+
 # Filter focal CN data for PDGFRA, PTEN and MYCN status
-genes_cn_df <- cn_df %>%
-  # Rename the column with the biospecimen identifiers to be more consistent
-  # with the rest of the project
+cn_df %>%
   rename(Kids_First_Biospecimen_ID = biospecimen_id) %>%
-  # Drop the cytoband column
   select(-cytoband) %>%
-  # Look at the genes of interest
-  filter(gene_symbol %in% c("PDGFRA", "PTEN", "MYCN")) %>%
-  # Spread such that the gene symbols become columns
-  rowid_to_column("id") %>%
-  spread(gene_symbol, status) 
+  filter(gene_symbol %in% c("PDGFRA", "PTEN", "MYCN")) -> cn_df_genes
 
-head(genes_cn_df, n = 10)
+# Select only the ID information, for use in joining below
+cn_df_genes %>%  dplyr::select(sample_id, Kids_First_Biospecimen_ID, Kids_First_Participant_ID) -> cn_df_genes_ids
+
+# Summarize the data to have a single row per sample where _all_ kinds of copy number alterations are present.
+cn_df_genes %>% 
+  group_by(gene_symbol, sample_id, Kids_First_Biospecimen_ID) %>% 
+  summarize(full_status = paste(status, collapse=", ")) %>% 
+  spread(gene_symbol, full_status) %>% 
+  replace_na(list(PDGFRA = "neutral", 
+                  PTEN = "neutral", 
+                  MYCN = "neutral")) %>% 
+  left_join(cn_df_genes_ids) %>%
+  distinct() %>%
+  # Rename columns to indicate focal status explicitly
+  rename(MYCN_focal_status   = MYCN, 
+         PDGFRA_focal_status = PDGFRA,
+         PTEN_focal_status   = PTEN) %>%
+  # Arrange order of columns
+  dplyr::select(sample_id, 
+                Kids_First_Biospecimen_ID, 
+                Kids_First_Participant_ID, 
+                everything()) -> cn_df_genes_status
+
+head(cn_df_genes_status, n = 10)
 ```
 
-At the moment, there is a row for each alteration found in a particular biospecimen.
-We can collapse this further such that we have a column that contains the focal status for each gene.
-
-```{r}
-genes_cn_df <- genes_cn_df %>%
-  group_by(Kids_First_Biospecimen_ID) %>%
-  # If something is NA, it won't get included in the paste step and instead 
-  # becomes "" rather than NA -- this is more difficult to work with but we can
-  # detect the absence of gain, loss, or amplification
-  mutate(
-    PDGFRA_focal_status = paste(sort(unique(PDGFRA)), collapse = ", "),
-    PTEN_focal_status = paste(sort(unique(PTEN)), collapse = ", "),
-    MYCN_focal_status = paste(sort(unique(MYCN)), collapse = ", ")
-  ) %>%
-  select(id:Kids_First_Biospecimen_ID, ends_with("focal_status"), everything())
-
-head(genes_cn_df, n = 10)
-```
-
-Now we have columns that capture all reported alterations for a given gene as their own columns.
-Let's look at the instances where we have more than one kind of alteration reported for that gene (i.e., gene symbol).
-They will contain a comma.
-
-```{r}
-genes_cn_df %>% filter(grepl(",", PDGFRA_focal_status) |
-                         grepl(",", PTEN_focal_status) |
-                          grepl(",", MYCN_focal_status))
-```
-
-In the `amplification, gain` instances, this is a matter of one segment having 
-[a copy number that is >(2 * ploidy)](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/02d45fe4d54bf7c319099e0f94251ccf2bb77ec3/analyses/focal-cn-file-preparation/01-prepare-cn-file.R#L269) but the other segment not reaching that threshold.
-
-Let's get rid of the columns we no longer need and filter out the duplicate rows.
-
-```{r}
-genes_cn_df <- genes_cn_df %>%
-  # Drop the columns that are no longer relevant and remove duplicates
-  select(-c("id", "PDGFRA", "PTEN", "MYCN")) %>%
-  distinct()
-  
-head(genes_cn_df, n = 10)
-```
-
-This still leaves the issue of _blank cells_ for instances where we have no evidence for any kind of copy number event.
-We should instead make these values `"neutral"`.
-We can use logic around the presence of `"gain"`, `"loss"`, or `"amplification"` because:
- 
-  1. When we first prep the CNVkit file, [the only options are `"gain"`, `"loss"` or `"neutral"`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/02d45fe4d54bf7c319099e0f94251ccf2bb77ec3/analyses/focal-cn-file-preparation/00-add-ploidy-cnvkit.Rmd#L43).
-  2. We then [remove `"neutral"` events](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/02d45fe4d54bf7c319099e0f94251ccf2bb77ec3/analyses/focal-cn-file-preparation/01-prepare-cn-file.R#L262).
-  3. We [label an event an `"amplification"` when copy number > (2 * ploidy)](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/02d45fe4d54bf7c319099e0f94251ccf2bb77ec3/analyses/focal-cn-file-preparation/01-prepare-cn-file.R#L269).
-
-```{r}
-genes_cn_df <- genes_cn_df %>%
-  # Here if the value for a focal status column *doesn't* contain loss, gain,
-  # or amplification -- call it neutral
-  mutate_at(vars(ends_with("focal_status")),
-            list(~ case_when(
-              !grepl("gain|loss|amplification", .) ~ "neutral",
-              TRUE ~ .
-            )))
-
-head(genes_cn_df, n = 10)
-```
 
 ## GISTIC Data
 
@@ -176,7 +134,7 @@ head(gistic_status_df, n = 10)
 ## Join Together
 
 ```{r}
-final_hgg_cn_df <- inner_join(genes_cn_df,
+final_hgg_cn_df <- inner_join(cn_df_genes_status,
                               gistic_status_df,
                               by = "Kids_First_Biospecimen_ID")
 head(final_hgg_cn_df, n = 10)
