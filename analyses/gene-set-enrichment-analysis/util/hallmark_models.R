@@ -50,7 +50,7 @@ gsva_anova_tukey <- function(df, predictor_variable, library_type, significance_
   ### 3. `library_type`:  Which RNAseq library to analyze? Specify either `polyA` or `stranded`
   ### 4. `significance_threshold`:  What threshold is used for significance (aka alpha, FPR)?
 
-  predictor_variable        <- dplyr::enquo(predictor_variable)  
+  predictor_variable        <- enquo(predictor_variable)  
   predictor_variable_string <- quo_name(predictor_variable)
   library_type <- str_to_lower(library_type)
   ######## Sanity check #########
@@ -109,4 +109,3 @@ gsva_anova_tukey <- function(df, predictor_variable, library_type, significance_
   
   return(list("anova" = final_anova_results, "tukey" = final_tukey_results))
 }
-
