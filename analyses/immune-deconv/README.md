@@ -62,11 +62,9 @@ This script creates summary correlation plots and heatmaps from predicted immune
 
 3. Output
 
-`plots/deconv-summary.pdf`
-
-The pdf contains the following plots:
-* a correlation plot of predicted immune scores across 13 common cell types from xCell and CIBERSORT (abs.) 
-* individual heatmaps of average immune scores per cell type per histology for each method. 
+* `plots/corrplot_xCell_vs_CIBERSORT(abs.).png`: a correlation plot of predicted immune scores across 13 common cell types from xCell and CIBERSORT (abs.) 
+* `plots/heatmap_xCell.png`: heatmap of average immune scores per cell type per histology for xCell.
+* `plots/heatmap_CIBERSORT(abs.).png`: heatmap of average immune scores per cell type per histology for the second method, CIBERSORT in our case.
 
 ### Running the analysis
 

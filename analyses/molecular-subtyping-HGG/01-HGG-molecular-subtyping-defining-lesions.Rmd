@@ -43,13 +43,16 @@ if (!dir.exists(results_dir)) {
 
 # Read in metadata
 metadata <-
-  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"))
+  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv")) %>%
+  dplyr::filter(sample_type == "Tumor",
+                composition == "Solid Tissue") 
 
 # Select wanted columns in metadata for merging and assign to a new object
 select_metadata <- metadata %>%
   dplyr::select(Kids_First_Participant_ID,
                 sample_id,
                 Kids_First_Biospecimen_ID,
+                short_histology,
                 disease_type_new)
 
 # Read in snv consensus mutation data
@@ -66,6 +69,9 @@ snv_df <-
 ```{r}
 # Filter the snv consensus mutatation data for the target lesions
 snv_lesions_df <- snv_df %>%
+  dplyr::filter(Hugo_Symbol %in% c("H3F3A", "HIST1H3B") &
+                  HGVSp_Short %in% c("p.K28M", "p.G35R",
+                                     "p.G35V")) %>%
   dplyr::select(Tumor_Sample_Barcode, Hugo_Symbol, HGVSp_Short) %>%
   dplyr::mutate(
     H3F3A.K28M = dplyr::case_when(Hugo_Symbol == "H3F3A" &
@@ -85,18 +91,29 @@ snv_lesions_df <- snv_df %>%
   dplyr::select(
     -HGVSp_Short,
     -Hugo_Symbol
-  )
+  ) 
+
+# add back in samples with no evidence of these specific mutations
+snv_lesions_df <- snv_lesions_df %>%
+  dplyr::bind_rows(
+    data.frame(
+      Tumor_Sample_Barcode = setdiff(unique(snv_df$Tumor_Sample_Barcode),
+                                     snv_lesions_df$Tumor_Sample_Barcode)
+    )
+  ) %>%
+  dplyr::mutate_all(function(x) tidyr::replace_na(x, "No"))
 
 # Join the selected variables from the metadata with the snv consensus mutation
 # and defining lesions data.frame
 snv_lesions_df <- select_metadata %>%
-  dplyr::right_join(snv_lesions_df,
+  dplyr::inner_join(snv_lesions_df,
                     by = c("Kids_First_Biospecimen_ID" = "Tumor_Sample_Barcode")) %>%
   dplyr::select(
-    -disease_type_new,
-    dplyr::everything()
+    dplyr::ends_with("ID"),
+    dplyr::starts_with("H"),
+    short_histology,
+    disease_type_new
   ) %>%
-  dplyr::distinct() %>%
   dplyr::mutate(
     disease_type_reclassified = dplyr::case_when(
       H3F3A.K28M == "Yes" ~ "High-grade glioma, H3 K28 mutant",
