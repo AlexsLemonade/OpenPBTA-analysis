@@ -118,11 +118,11 @@ hgg_lesions_df <- readr::read_tsv(
 #### Filter HGG defining lesions data.frame ------------------------------------
 
 # Filter the output file from `01-HGG-molecular-subtyping-defining-lesions.Rmd`
-# for samples classified and reclassified as HGG
+# for samples classified as HGAT or those with defining lesions
 hgg_lesions_df <- hgg_lesions_df %>%
   dplyr::filter(
-    disease_type_new == "High-grade glioma" |
-      grepl("High-grade glioma", disease_type_reclassified)
+    short_histology == "HGAT" |
+      grepl("H3 G35 mutant|H3 K28 mutant", disease_type_reclassified)
   )
 
 #### Filter metadata -----------------------------------------------------------
@@ -140,6 +140,14 @@ hgg_metadata_df <- metadata %>%
 #### Filter expression data ----------------------------------------------------
 
 filter_process_expression <- function(expression_mat) {
+  # This function takes the collapsed FPKM expression matrix, selects relevant
+  # columns (samples) via the Kids_First_Biospecimen_ID identifier, and then
+  # log2(x + 1) transforms and z-scores the filtered matrix gene-wise.
+  # It returns the z-scored matrix, where the columns are genes and the rows
+  # are samples (biospecimen ID are the rownames).
+  #
+  # Only intended for use in the context of this script!
+
   # Filter to HGG samples only -- we can use hgg_metadata_df because it is
   # subset to RNA-seq samples
   filtered_expression <- expression_mat %>%
@@ -210,7 +218,7 @@ gistic_df <- gistic_df %>%
                 `7p`,
                 `7q`,
                 `10p`,
-                `10q`) #Select only the chromosome arms we are interested in
+                `10q`) # Select only the chromosome arms we are interested in
 
 # Write to file
 readr::write_tsv(gistic_df,
@@ -225,4 +233,4 @@ snv_maf_df <- snv_maf_df %>%
 
 # Write to file
 readr::write_tsv(snv_maf_df,
-                 file.path(subset_dir, "hgg_snv_maf.tsv"))
+                 file.path(subset_dir, "hgg_snv_maf.tsv.gz"))
