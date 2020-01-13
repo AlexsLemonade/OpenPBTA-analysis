@@ -97,7 +97,7 @@ scores_polya    <- readr::read_tsv(scores_polya_file)
 ### ANOVA and Tukey analysis of GSVA scores
 
 Here we perform a series of ANOVAs, for polyA and stranded libraries separately, to determine whether mean GSVA scores for a given grouping are significantly different across hallmarks (pathways). The given groupings examined here are `short_histology` and `disease_type_new`. 
-In other words, we perform an ANOVA (and associated postdoc Tukey test) for each hallmark as, `hallmark ~ grouping`. Users can specify the grouping variable.
+In other words, we perform an ANOVA (and associated posthoc Tukey test) for each hallmark as, `hallmark ~ grouping`. Users can specify the grouping variable.
 
 First, prepare the data for modeling:
 
@@ -169,4 +169,3 @@ if (!(running_in_ci))
 ```
 
 > Again, all are significantly different for stranded, none for polya. Likely due to data/power limitations.
-
