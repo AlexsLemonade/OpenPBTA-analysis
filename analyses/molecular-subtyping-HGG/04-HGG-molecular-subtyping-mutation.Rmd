@@ -8,7 +8,7 @@ author: Chante Bethell and Jaclyn Taroni for ALSF CCDL
 date: 2020
 ---
 
-This notebook prepares consensus mutation data for the purposes of use for subtyping HGG samples 
+This notebook prepares consensus mutation data for the purposes of subtyping HGG samples 
 ([`AlexsLemonade/OpenPBTA-analysis#249`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249)).
 
 ## Usage
@@ -112,7 +112,7 @@ g35_genes_of_interest <- c("ATRX", "DAXX", "TP53", "SETD2", "IDH1")
 ### IDH mutant
 
 These tumors harbor _IDH1_ R132H mutations.
-Co-occurring lessions include _TP53_ mutations.
+Co-occurring lesions include _TP53_ mutations.
 
 ```{r}
 idh_genes_of_interest <- c("IDH1", "TP53")
@@ -214,7 +214,7 @@ This will contain duplicated information -- e.g., _H3F3A_ will be present for tu
 coding_summary_df <- coding_snv_df %>% 
   dplyr::select(Tumor_Sample_Barcode,
                 Hugo_Symbol) %>%
-  # For each tumor biospecimen, get a comma sepearted
+  # For each tumor biospecimen, get a comma separated
   dplyr::group_by(Tumor_Sample_Barcode) %>%
   dplyr::summarize(relevant_coding_mutations = paste(sort(unique(Hugo_Symbol)),
                                                      collapse = ", "))
@@ -238,7 +238,7 @@ coding_summary_df <- coding_summary_df %>%
   replace(is.na(.), "None")
 ```
 
-We'll make a `data.frame` that indicates the Variant Classification of any _TERT_ mutation in a tumor biospecimen.
+We'll make a `data.frame` that indicates the `Variant_Classification` of any _TERT_ mutation in a tumor biospecimen.
 
 ```{r}
 tert_summary_df <- tert_snv_df %>%
@@ -328,4 +328,3 @@ readr::write_tsv(final_mutations_df, output_file)
 ```{r}
 sessionInfo()
 ```
-
