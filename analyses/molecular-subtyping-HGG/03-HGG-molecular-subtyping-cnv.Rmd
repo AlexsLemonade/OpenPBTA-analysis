@@ -72,26 +72,28 @@ See also: https://jaclyn-taroni.github.io/openpbta-notebook-concept/both-gain-an
 
 
 ```{r}
+# Select only the ID information, for use in joining below
+cn_df_ids <- cn_df %>%  
+  select(sample_id, 
+         Kids_First_Biospecimen_ID = biospecimen_id,
+         Kids_First_Participant_ID)
 
 # Filter focal CN data for PDGFRA, PTEN and MYCN status
-cn_df %>%
+cn_df_genes <- cn_df %>%
   rename(Kids_First_Biospecimen_ID = biospecimen_id) %>%
   select(-cytoband) %>%
-  filter(gene_symbol %in% c("PDGFRA", "PTEN", "MYCN")) -> cn_df_genes
-
-# Select only the ID information, for use in joining below
-cn_df_genes %>%  dplyr::select(sample_id, Kids_First_Biospecimen_ID, Kids_First_Participant_ID) -> cn_df_genes_ids
+  filter(gene_symbol %in% c("PDGFRA", "PTEN", "MYCN"))
 
 # Summarize the data to have a single row per sample where _all_ kinds of copy number alterations are present.
-cn_df_genes %>% 
+cn_df_genes_status <- cn_df_genes %>% 
   group_by(gene_symbol, sample_id, Kids_First_Biospecimen_ID) %>% 
   summarize(full_status = paste(status, collapse=", ")) %>% 
   spread(gene_symbol, full_status) %>% 
+  right_join(cn_df_ids) %>%
+  distinct() %>%
   replace_na(list(PDGFRA = "neutral", 
                   PTEN = "neutral", 
                   MYCN = "neutral")) %>% 
-  left_join(cn_df_genes_ids) %>%
-  distinct() %>%
   # Rename columns to indicate focal status explicitly
   rename(MYCN_focal_status   = MYCN, 
          PDGFRA_focal_status = PDGFRA,
@@ -100,7 +102,7 @@ cn_df_genes %>%
   dplyr::select(sample_id, 
                 Kids_First_Biospecimen_ID, 
                 Kids_First_Participant_ID, 
-                everything()) -> cn_df_genes_status
+                everything())
 
 head(cn_df_genes_status, n = 10)
 ```
@@ -134,9 +136,13 @@ head(gistic_status_df, n = 10)
 ## Join Together
 
 ```{r}
-final_hgg_cn_df <- inner_join(cn_df_genes_status,
-                              gistic_status_df,
-                              by = "Kids_First_Biospecimen_ID")
+# There are some samples that had too many segments and were flagged by GISTIC
+# These values will be filled with NA -- we'll change them to indicate that 
+# they failed GISTIC QC
+final_hgg_cn_df <- left_join(cn_df_genes_status,
+                             gistic_status_df,
+                             by = "Kids_First_Biospecimen_ID") %>%
+  replace(is.na(.), "Failed GISTIC QC")
 head(final_hgg_cn_df, n = 10)
 ```
 
