@@ -94,7 +94,6 @@ rule manta_filter:
 rule filter_telomeres:
     input:
         ## Define the location of the input file and take the path/extension from the config file
-        script=os.path.join(config["scripts"], "get_rid_bad_segments.py"),
         bad_list=os.path.join(config["scripts"], "bad_chromosomal_seg_updated_merged.bed"),
         bedfile="../../scratch/interim/{sample}.{caller}.{dupdel}.bed"
     output:
@@ -102,8 +101,8 @@ rule filter_telomeres:
         filtered_bed="../../scratch/interim/{sample}.{caller}.{dupdel}.filtered.bed"
     threads: 1
     shell:
-        ## Invoke the python3 script and pass in the reference and CNVs files. Direct the stdout to a new file. 
-        "python3 {input.script} --reference {input.bad_list} --file {input.bedfile} > {output.filtered_bed}"
+        ## Invoke the bedtools subtract pass in the reference and CNVs files. Direct the stdout to a new file. 
+        "bedtools subtract -N -a {input.bedfile} -b {input.bad_list} -f 0.5 > {output.filtered_bed}"
 
 
 rule first_merge:
