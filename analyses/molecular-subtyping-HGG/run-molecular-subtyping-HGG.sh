@@ -12,6 +12,10 @@ set -o pipefail
 # files gets run -- it will be turned off in CI
 SUBSET=${OPENPBTA_SUBSET:-1}
 
+# cds gencode bed file is used by other analyses where mutation data is
+# filtered to only coding regions
+exon_file="../../scratch/gencode.v27.primary_assembly.annotation.bed"
+
 # This script should always run as if it were being called from
 # the directory it lives in.
 script_directory="$(perl -e 'use File::Basename;
@@ -28,5 +32,31 @@ if [ "$SUBSET" -gt "0" ]; then
   Rscript --vanilla 02-HGG-molecular-subtyping-subset-files.R
 fi
 
+#### Copy number data ----------------------------------------------------------
+
 # Run the copy number data cleaning notebook
 Rscript -e "rmarkdown::render('03-HGG-molecular-subtyping-cnv.Rmd', clean = TRUE)"
+
+#### Mutation data -------------------------------------------------------------
+
+# if the cds gencode bed file is not available from another analysis, generate
+# it here
+if [ ! -f "$exon_file" ]; then
+  gunzip -c "../../data/gencode.v27.primary_assembly.annotation.gtf.gz" \
+    | awk '$3 ~ /CDS/' \
+    | convert2bed --do-not-sort --input=gtf - \
+    > $exon_file
+fi
+
+# Run notebook that cleans the mutation data
+Rscript -e "rmarkdown::render('04-HGG-molecular-subtyping-mutation.Rmd', clean = TRUE)"
+
+#### Fusion data ---------------------------------------------------------------
+
+# Run notebook that cleans the fusion data
+Rscript -e "rmarkdown::render('05-HGG-molecular-subtyping-fusion.Rmd', clean = TRUE)"
+
+#### Gene expression data ----------------------------------------------------------------
+
+# Run notebook that cleans the gene expression data
+Rscript -e "rmarkdown::render('06-HGG-molecular-subtyping-gene-expression.Rmd', clean = TRUE)"
