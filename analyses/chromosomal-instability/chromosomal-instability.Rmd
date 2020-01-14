@@ -211,38 +211,11 @@ common_samples <- intersect(sv_breaks$samples, cnv_breaks$samples)
 
 # Get a big list of break densities for each sample.
 sample_densities <- lapply(common_samples, function(sample_id) {
-
-  # Calculate break densities with both datasets combined
-  common_density <- break_density(
-    sv_breaks,
-    cnv_breaks,
-    sample_id = sample_id,
-    window_size = bin_size,
-    chr_sizes_vector = chr_sizes_vector
-  )
-
-  # Calculate break densities for CNV only
-  cnv_density <- break_density(
-    cnv_breaks,
-    sample_id = sample_id,
-    window_size = bin_size,
-    chr_sizes_vector = chr_sizes_vector
-  )
-
-  # Calculate break densities for SV only
-  sv_density <- break_density(
-    sv_breaks,
-    sample_id = sample_id,
-    window_size = bin_size,
-    chr_sizes_vector = chr_sizes_vector
-  )
-
-  # Return this mega GRanges list
-  return(list(
-    common_density = common_density,
-    cnv_density = cnv_density,
-    sv_density = sv_density
-  ))
+  chr_break_list(
+    cnv_breaks = cnv_breaks, 
+    sv_breaks = sv_breaks, 
+    sample_id = sample_id, 
+    chr_sizes_vector = chr_sizes_vector)
 })
 
 # Bring along the sample IDs
@@ -254,13 +227,74 @@ names(sample_densities) <- common_samples
 Given the `GenomicRanges` objects for each sample, create a combined plot for 
 each. 
 
-```{r, results='hide'}
-lapply(sample_densities, function(granges_list) {
 
-  # Get the sample name
-  sample_name <- common_samples[parent.frame()$i[]]
+```{r}
+histologies <- 
+  data.frame(Kids_First_Biospecimen_ID = rownames(common_total_counts)) %>%
+  dplyr::inner_join(dplyr::select(metadata, Kids_First_Biospecimen_ID, short_histology)) %>% 
+  dplyr::mutate(short_histology = as.factor(short_histology)) %>% 
+  tibble::column_to_rownames("Kids_First_Biospecimen_ID")
+```
 
+```{r}
+chr_labels <- sample_densities$BS_CGXTFM67$common_density@seqnames
+chr_labels <- paste0("chr", as.factor(chr_labels))
+#chr_labels <- factor(chr_labels, levels = c(paste0("chr", 1:22)))
+
+chr_colors <- rep(c("grey", "lightblue"), length.out = length(unique(chr_labels)))
+names(chr_colors) <- unique(chr_labels) 
+
+chr_annot <- ComplexHeatmap::HeatmapAnnotation(df = data.frame(chr_labels), col = list(chr_labels = c(chr_colors)), 
+                                               show_legend = FALSE,
+                                               gap = grid::unit(3, "points"))
+```
+
+
+### Common density heatmap
+
+set up the data
+```{r}
+# Pull out the total_counts 
+common_total_counts <- lapply(sample_densities, function(granges_list) {
+  granges_list$common_density@elementMetadata@listData$total_counts
 })
+# Make into a data.frame
+common_total_counts <- dplyr::bind_rows(common_total_counts) %>%
+  t()
+
+# Log2 transform it
+common_total_counts <- log2(0.01 + common_total_counts)
+
+colnames(common_total_counts) <- chr_labels
+```
+
+Make a color function. 
+
+```{r}
+col_fun <- circlize::colorRamp2(c(min(common_total_counts), 
+                                  mean(common_total_counts), 
+                                  max(common_total_counts)), 
+                                c("deepskyblue", "black", "yellow"))
+```
+
+Make the heatmap
+
+```{r}
+# Plot on a heatmap
+common_heatmap <- ComplexHeatmap::Heatmap(common_total_counts, 
+                                          name = "histology", 
+                                          col = col_fun, 
+                                          row_title = "Biospecimens", 
+                                          cluster_columns = FALSE,
+                                          cluster_rows = FALSE,
+                                          show_column_names = FALSE, 
+                                          show_row_names = FALSE, 
+                                          bottom_annotation = chr_annot)
+common_heatmap
+```
+
+```{r}
+
 ```
 
 ### Co-localization of breakpoints for tumor-type groups
@@ -295,40 +329,11 @@ group_densities <- lapply(tumor_types, function(tumor_type) {
   
   # If no samples, go to next
   if (sum(check_samples) > 1) {
-  
   message(paste("Calculating breakpoint density for", tumor_type, "samples"))
-
-    # Calculate break densities with both datasets combined
-  common_density <- break_density(
-    sv_breaks,
-    cnv_breaks,
-    sample_id = sample_ids,
-    window_size = bin_size,
-    chr_sizes_vector = chr_sizes_vector
-  )
-
-  # Calculate break densities for CNV only
-  cnv_density <- break_density(
-    cnv_breaks,
-    sample_id = sample_ids,
-    window_size = bin_size,
-    chr_sizes_vector = chr_sizes_vector
-  )
-
-  # Calculate break densities for SV only
-  sv_density <- break_density(
-    sv_breaks,
-    sample_id = sample_ids,
-    window_size = bin_size,
-    chr_sizes_vector = chr_sizes_vector
-  )
-
-  # Return this mega GRanges list
-  return(list(
-    common_density = common_density,
-    cnv_density = cnv_density,
-    sv_density = sv_density
-  ))
+  chr_break_list(cnv_breaks = cnv_breaks, 
+                 sv_breaks = sv_breaks, 
+                 sample_id = sample_ids, 
+                 chr_sizes_vector = chr_sizes_vector)
   }
 })
 
@@ -345,14 +350,11 @@ Here we will plot median number of break points for the tumor-type group per
 each bin.
 
 ```{r}
-lapply(group_densities, function(granges_list) {
-  # Get the tumor type label
-  group_name <- tumor_types[parent.frame()$i[]]
-
+purrr::imap(group_densities, function(.x, name = .y){
   # Make the combo plot
   multipanel_break_plot(
-    granges_list = granges_list,
-    plot_name = group_name,
+    granges_list = .x,
+    plot_name = name,
     y_val = "median_counts",
     y_lab = "Median Breaks per Mb",
     plot_dir = hist_plots_dir

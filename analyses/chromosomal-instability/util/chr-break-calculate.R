@@ -84,7 +84,7 @@ break_density <- function(sv_breaks = NULL,
                           cnv_breaks = NULL,
                           sample_id = NULL,
                           window_size = 1e6,
-                          chr_sizes_list = NULL,
+                          chr_sizes_vector = NULL,
                           samples_col_cnv = "samples",
                           chrom_col_cnv = "chrom",
                           start_col_cnv = "start",
@@ -106,7 +106,7 @@ break_density <- function(sv_breaks = NULL,
   #              information in the designated sample_col. If "all" is designated,
   #              all samples will be kept. Multiple samples can be designated
   #              as a character vector.
-  #   chr_size_list: a named numeric vector of the sizes (bp) of the chromosomes.
+  #   chr_size_vector: a named numeric vector of the sizes (bp) of the chromosomes.
   #                  names of the chromosomes must match the format of the input
   #                  break data. e.g. "chr1" or "1".
   #   window_size: What size windows to calculate break density. Default is 1Mb.
@@ -127,7 +127,10 @@ break_density <- function(sv_breaks = NULL,
   if (is.null(sample_id)) {
     stop("No sample ID(s) have been specified. Use the `sample_id` argument.")
   }
-
+  # Check that a chromosome sizes have been given
+  if (is.null(chr_sizes_vector)) {
+    stop("No `chr_sizes_vector` argument has been given. Need that to create bins.")
+  }
   # Determine how many samples are in the group
   n_samples <- length(sample_id)
 
@@ -202,7 +205,7 @@ break_density <- function(sv_breaks = NULL,
   }
 
   ######################### Tally breaks by genome bins ########################
-  bins <- GenomicRanges::tileGenome(chr_sizes_list,
+  bins <- GenomicRanges::tileGenome(chr_sizes_vector,
     tilewidth = window_size
   )
 
@@ -253,4 +256,58 @@ break_density <- function(sv_breaks = NULL,
 
   # Return the GRanges object for mapping purposes
   return(bins)
+}
+
+
+chr_break_list <- function(sv_breaks = NULL, 
+                           cnv_breaks = NULL,
+                           sample_id = NULL,
+                           chr_sizes_vector = NULL,
+                           window_size = 1e6) {
+  # For given snv_breaks and cnv_breaks data frame calculate the breaks density
+  # for each and then the combined. Returns data as a list of three GenomicRanges
+  # objects
+  #
+  # Args:
+  #   sv_breaks: a data.frame with the breaks for the SV data.
+  #   cnv_breaks: a data.frame with the breaks for the CNV data.
+  #   sample_id: a character string that designates which data needs to be
+  #              extracted and made intoa GenomicRanges object by matching the
+  #              information in the designated sample_col. If "all" is designated,
+  #              all samples will be kept. Multiple samples can be designated
+  #              as a character vector.
+  #   chr_sizes_vector: a named numeric vector of the sizes (bp) of the chromosomes.
+  #                  names of the chromosomes must match the format of the input
+  #                  break data. e.g. "chr1" or "1".
+  # Calculate break densities with both datasets combined
+  common_density <- break_density(
+    sv_breaks,
+    cnv_breaks,
+    sample_id = sample_id,
+    window_size = bin_size,
+    chr_sizes_vector = chr_sizes_vector
+  )
+  
+  # Calculate break densities for CNV only
+  cnv_density <- break_density(
+    cnv_breaks,
+    sample_id = sample_id,
+    window_size = bin_size,
+    chr_sizes_vector = chr_sizes_vector
+  )
+  
+  # Calculate break densities for SV only
+  sv_density <- break_density(
+    sv_breaks,
+    sample_id = sample_id,
+    window_size = bin_size,
+    chr_sizes_vector = chr_sizes_vector
+  )
+  
+  # Return this mega GRanges list
+  return(list(
+    common_density = common_density,
+    cnv_density = cnv_density,
+    sv_density = sv_density
+  ))
 }

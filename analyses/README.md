@@ -11,8 +11,7 @@ Note that _nearly all_ modules use the harmonized clinical data file (`pbta-hist
 
 | Module | Input Files | Brief Description | Output Files Consumed by Other Analyses |
 |--------|-------|-------------------|--------------|
-| [`chromosomal-instability`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/chromosomal-instability) | `pbta-histologies.tsv`, `pbta-sv-manta.tsv.gz` and `pbta-cnv-cnvkit.seg.gz` | Evaluates chromosomal instability by calculating chromosomal
-breakpoint densities | N/A
+| [`chromosomal-instability`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/chromosomal-instability) | `pbta-histologies.tsv`, `pbta-sv-manta.tsv.gz` and `pbta-cnv-cnvkit.seg.gz` | Evaluates chromosomal instability by calculating chromosomal breakpoint densities | N/A
 | [`cnv-chrom-plot`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/cnv-chrom) | `pbta-cnv-cnvkit-gistic.zip` and `pbta-cnv-cnvkit.seg.gz` | Makes plots from GISTIC output as well as `seg.mean` plots by histology group  | N/A
 | [`cnv-comparison`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/cnv-comparison) | Earlier version of SEG files | *Deprecated*; compared earlier version of the CNV methods. | N/A
 | [`collapse-rnaseq`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/collapse-rnaseq) | `pbta-gene-expression-rsem-fpkm.polya.rds`, `pbta-gene-expression-rsem-fpkm.stranded.rds`, `gencode.v27.primary_assembly.annotation.gtf.gz` | Collapses RSEM FPKM matrices such that gene symbols are de-duplicated. | `results/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds`, `results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds` (included in data download; too large for tracking via GitHub)
