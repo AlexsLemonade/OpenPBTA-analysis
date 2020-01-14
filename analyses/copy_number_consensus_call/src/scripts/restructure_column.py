@@ -48,7 +48,7 @@ else:
     ## Make a new column to store info in the new format (start_pos:end_pos:copy_number)
     new_column = file.iloc[:,(0)].copy()
 
-    ## For every CNV in the file, reformatt columns 4, 5, and 6
+    ## For every CNV in the file, reformat columns 4, 5, and 6
     for i_index,i in enumerate(file.itertuples()):
         ## Since bed file uses a comma as default for collapsing information, we split the information using ','
         list_start = str(i._4).split(',')
@@ -56,15 +56,12 @@ else:
         list_cn = str(i._6).split(',')
         list_segmean = str(i._7).split(',')
 
-        ## Initialize a variable to store the new restructred information
-        growing_list = ''
-
         ## Rearange the split information into the new format
-        growing_list = ''.join(['{}:{}:{}:{},'.format(*cnv) for cnv in zip(list_start, list_end, list_cn, list_segmean)])
+        cnv_list = ''.join(['{}:{}:{}:{},'.format(*cnv) for cnv in zip(list_start, list_end, list_cn, list_segmean)])
 
 
         ## Add the list to the new column
-        new_column.iloc[i_index] = growing_list
+        new_column.iloc[i_index] = cnv_list
 
 
     ## Make a new file by combining columns 1,2,3, the new column, and the copy number type column.
