@@ -1,1 +1,4 @@
+# Ignore shatterseek in this directory
 02-shatterseek.R
+# Except this file
+!.gitignore
