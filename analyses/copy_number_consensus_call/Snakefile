@@ -58,11 +58,11 @@ rule cnvkit_filter:
         ## The first awk looks at column 7 to filter out for loss/gain (less than 2 == loss, bigger than 2 == gain). Then it prints out 6 of the 7 columns above. Put NA for p-value since the CNVkit results don't have p-vals
         ## The pipe into the second awk filters the CNV length, and add in the CNV type
         ## The last pipe is to sort first digit of chromosome number numerically
-        """awk '$7<2 {{print $2,$3,$4,($4-$3 + 1),$7,$6,"NA"}}' {input.events} """
+        """awk '$7<2 {{print $2,$3,$4,($4-$3 + 1),$7,"NA",$6}}' {input.events} """
         """ | awk '{{if ($4 > {params.SIZE_CUTOFF}){{print $0,"DEL"}}}}' """
         """ | sort -k1,1 -k2,2n """
         """ | tr [:blank:] '\t' > {output.cnvkit_del} && """
-        """awk '$7>2 {{print $2,$3,$4,($4-$3 + 1),$7,$6,"NA"}}' {input.events} """
+        """awk '$7>2 {{print $2,$3,$4,($4-$3 + 1),$7,"NA",$6}}' {input.events} """
         """ | awk '{{if ($4 > {params.SIZE_CUTOFF}){{print $0,"DUP"}}}}' """
         """ | sort -k1,1 -k2,2n """
         """ | tr [:blank:] '\t' > {output.cnvkit_dup}"""
