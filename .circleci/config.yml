@@ -31,12 +31,12 @@ jobs:
           command: ./scripts/run_in_ci.sh bash analyses/collapse-rnaseq/run-collapse-rnaseq.sh
 
       - run:
-          name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded expression
-          command: ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
+          name: Immune deconvolution using xCell and MCP-Counter
+          command: OPENPBTA_DECONV_METHOD="mcp_counter" ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
 
       - run:
-          name: Project specific filtering
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/fusion_filtering/04-project-specific-filtering.Rmd')"
+          name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded data and creates recurrent fusion list
+          command: ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
 
       - run:
           name: Transcriptome dimensionality reduction
@@ -48,9 +48,9 @@ jobs:
 
       - run:
           name: Selection Strategy Comparison
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/selection-strategy-comparison/01-selection-strategies.rmd', clean = TRUE)"
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/selection-strategy-comparison/01-selection-strategies.rmd', params = list(neighbors = 2), clean = TRUE)"
 
-# TODO: fix when this gets updated to use the collapsed matrix https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/235          
+# This is deprecated       
 #      - run:
 #          name: ssGSEA Analysis
 #          command: OPENPBTA_ANOVAPVALUE=0.25 OPENPBTA_TUKEYPVALUE=0.50 OPENPBTA_PERCKEEP=0.50 ./scripts/run_in_ci.sh bash analyses/ssgsea-hallmark/run-ssgsea-hallmark.sh
@@ -71,10 +71,6 @@ jobs:
       - run:
           name: Interaction plot
           command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh
-    
-      - run:  
-          name: Focal CN RNA expression visualization
-          command: ./scripts/run_in_ci.sh Rscript --vanilla analyses/focal-cn-file-preparation/rna-expression-validation.R
 
       - run:
           name: Mutational Signatures 
@@ -87,6 +83,10 @@ jobs:
       - run:
           name: Copy number consensus
           command: ./scripts/run_in_ci.sh bash "analyses/copy_number_consensus_call/run_consensus_call.sh"
+          
+      - run:
+          name: Survival analysis
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/survival-analysis/survival-analysis_template.Rmd', params = list(plot_ci = FALSE), clean = TRUE)" 
 
       - run:
           name: Comparative RNASeq - generate correlation matrix - rsem-tpm.polya
@@ -99,14 +99,50 @@ jobs:
       - run:
           name: Molecular Subtyping and Plotting - ATRT
           command:  OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-ATRT/run-molecular-subtyping-ATRT.sh        
+      
+      - run:
+          name: Process SV file
+          command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/01-process-sv-file.R
           
+      - run:
+          name: Molecular Subtyping - HGG
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
+      
+      - run:
+          name: Oncoprint plotting
+          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
+
+      - run:
+          name: TP53 NF1 classifier run
+          command: ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"  
+      
+      - run:
+          name: GISTIC Plots
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', clean = TRUE)"
+          
+      - run:
+          name: SHH TP53 Molecular Subtyping
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-SHH-tp53/SHH-tp53-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
+
+      - run:
+          name: Gene set enrichment analysis to generate GSVA scores
+          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh" 
+
+
          ################################
          #### Add your analysis here ####
       - run:
           name: Process SV file
           command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/01-process-sv-file.R
          ################################
-         
+      - run:
+          name: Evaluation plots for TP53/NF1 classifier polya
+          command: ./scripts/run_in_ci.sh python3 analyses/tp53_nf1_score/02-evaluate-classifier.py -s analyses/tp53_nf1_score/results/TP53_NF1_snv_alteration.tsv -f analyses/tp53_nf1_score/results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv -c data/pbta-histologies.tsv -o polya
+
+      - run:
+          name: Evaluation plots for TP53/NF1 classifier stranded
+          command: ./scripts/run_in_ci.sh python3 analyses/tp53_nf1_score/02-evaluate-classifier.py -s analyses/tp53_nf1_score/results/TP53_NF1_snv_alteration.tsv -f analyses/tp53_nf1_score/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv -c data/pbta-histologies.tsv -o stranded 		
+
       - run:
           name: SNV Caller Analysis 
           command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis.sh
@@ -115,11 +151,12 @@ jobs:
        # - run:
           # name: SNV Caller VAF Cutoff Experiment
           # command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)"
-      
-      # Without the subset mutation consensus files, this takes a long time to run
+
       - run:
-          name: Oncoprint plotting
-          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"   
+          name: Fusion Summary
+          command: ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
+      
+ 
                 
 
   deploy:

@@ -52,19 +52,23 @@ if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
 
+# Read in non-subsetted metadata
+metadata <- readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"))
+
 # Read in ATRT subset metadata
-metadata <-
-  readr::read_tsv(file.path(input_dir, "atrt_histologies.tsv"))
+subset_metadata <- metadata %>%
+  dplyr::filter(short_histology == "ATRT",
+                sample_type == "Tumor",
+                composition == "Solid Tissue")
 
 # Select wanted columns in metadata for merging and assign to a new object
 select_metadata <- metadata %>%
   dplyr::select(sample_id,
-                Kids_First_Participant_ID,
                 Kids_First_Biospecimen_ID)
 
-# Read in ATRT subset ssGSEA pathway information
-ssGSEA_subset <-
-  as.data.frame(readr::read_rds(file.path(input_dir, "atrt_ssgsea.RDS")))
+# Read in ATRT subset GSVA pathway scores
+gsva_subset <-
+  as.data.frame(readr::read_tsv(file.path(input_dir, "atrt_gsva.tsv")))
 
 # Read in ATRT subset z-scored RNA expression data
 stranded_expression <-
@@ -87,6 +91,11 @@ cn_df <- readr::read_tsv(
 tmb_df <-
   data.table::fread(file.path(input_dir,
                               "atrt_tmb.tsv"))
+
+# Read in ATRT subset GISTIC data
+gistic_df <-
+  readr::read_tsv(file.path(input_dir, "atrt_gistic_broad_values.tsv"))
+
 ```
 
 ## Custom Function
@@ -151,7 +160,7 @@ infratentorial <-
     "Other locations NOS;Spinal Cord- Lumbar/Thecal Sac;Spinal Cord- Thoracic;Ventricles"
   )
 
-metadata <- metadata %>%
+collapsed_metadata <- subset_metadata %>%
   dplyr::mutate(
     location_summary = dplyr::case_when(
       primary_site %in% infratentorial ~ "infratentorial",
@@ -159,7 +168,6 @@ metadata <- metadata %>%
       TRUE ~ "NA"
     )
   ) %>%
-  dplyr::group_by(sample_id) %>%
   dplyr::select(
     sample_id,
     Kids_First_Biospecimen_ID,
@@ -168,14 +176,19 @@ metadata <- metadata %>%
     age_at_diagnosis_days,
     germline_sex_estimate,
     primary_site
-  )
+  ) %>%
+  dplyr::group_by(
+    sample_id,
+    Kids_First_Participant_ID
+  ) %>%
+  dplyr::summarize_all(function(x) paste(sort(unique(x)), collapse = ", "))
 
 # Display metadata subsetted for ATRT samples
-metadata %>%
+collapsed_metadata %>%
   head(n = 15)
 ```
 
-## Filter and join RNA expression, CN, TMB, and ssGSEA data
+## Filter and join RNA expression, CN, TMB, ssGSVA and GISTIC data
 
 ### RNA expression data 
 
@@ -241,94 +254,95 @@ long_stranded_expression <- scale(t(filtered_expression),
 # Merge metadata with expression data
 expression_metadata <- long_stranded_expression %>%
   as.data.frame() %>%
-  tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
-  dplyr::left_join(select_metadata, by = "Kids_First_Biospecimen_ID")
+  tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>% 
+  dplyr::left_join(select_metadata, by = "Kids_First_Biospecimen_ID") %>%
+  dplyr::select(-Kids_First_Biospecimen_ID)
 
 # Display `expression_metadata`
 expression_metadata %>%
   head(n = 15)
 
 # Join expression data with metadata filtered for `ATRT`
-atrt_expression_df <- metadata %>%
+atrt_expression_df <- collapsed_metadata %>%
   dplyr::left_join(expression_metadata,
                    by = "sample_id")
+
+# Remove data we no longer need
+rm(filtered_expression, long_stranded_expression, expression_metadata)
 ```
 
 ### CN data
 
 ```{r}
-# Filter focal CN data for SMARCB1 and SMARCA4 status 
-cn_df <- cn_df %>% 
+# Filter focal CN data for SMARCB1 and SMARCA4 status
+genes_cn_df <- cn_df %>%
   dplyr::filter(gene_symbol %in% c("SMARCB1", "SMARCA4")) %>%
-  dplyr::mutate(
-    SMARCB1_focal_status = dplyr::case_when(gene_symbol == "SMARCB1" ~ status,
-                                            TRUE ~ "neutral"),
-    SMARCA4_focal_status = dplyr::case_when(gene_symbol == "SMARCA4" ~ status,
-                                            TRUE ~ "neutral")
-  ) %>%
-  dplyr::select(-c("status", "gene_symbol")) %>%
-  dplyr::distinct() %>%
-  dplyr::group_by(sample_id) %>%
-  dplyr::summarise(
-    SMARCB1_focal_status = paste(sort(unique(
-      SMARCB1_focal_status
-    )), collapse = ", "),
-    SMARCA4_focal_status = paste(sort(unique(
-      SMARCA4_focal_status
-    )), collapse = ", ")
-  )
+  tidyr::spread(gene_symbol, status, fill = "neutral") %>%
+  dplyr::rename(SMARCB1_focal_status = SMARCB1,
+                SMARCA4_focal_status = SMARCA4)
 
-#Display `cn_metadata`
-cn_df %>%
+# add in the samples that did not have any copy number changes for either
+# of these genes
+missing_cn_samples <- setdiff(unique(cn_df$sample_id), genes_cn_df$sample_id)
+genes_cn_df <- subset_metadata %>%
+  dplyr::filter(sample_id %in% missing_cn_samples) %>%
+  dplyr::select(sample_id,
+                Kids_First_Participant_ID,
+                Kids_First_Biospecimen_ID) %>%
+  dplyr::rename(biospecimen_id = Kids_First_Biospecimen_ID) %>%
+  # bind rows fills with NAs -- if something is NA, there is no evidence for
+  # a copy number alteration in that gene and we will call it neutral
+  dplyr::bind_rows(genes_cn_df) %>%
+  dplyr::mutate_all(function(x) tidyr::replace_na(x, "neutral"))
+
+# Display `genes_cn_df`
+genes_cn_df %>%
   head(n = 15)
 
 # Join ATRT expression data with focal CN data
 atrt_expression_cn_df <- atrt_expression_df %>%
-  dplyr::left_join(cn_df, by = "sample_id")
+  dplyr::left_join(dplyr::select(genes_cn_df,
+                                 -biospecimen_id,
+                                 -Kids_First_Participant_ID), 
+                   by = "sample_id")
+
+# Remove data we don't need 
+rm(missing_cn_samples, cn_df, atrt_expression_df, genes_cn_df)
 ```
 
-### ssGSEA data
+### GSVA data
 
 ```{r}
-# Transpose
-transposed_ssGSEA <- t(ssGSEA_subset)
+# Filter to only the hallmark gene sets that were named in the issue
+relevant_genesets <- c("HALLMARK_MYC_TARGETS_V1",
+                       "HALLMARK_MYC_TARGETS_V2",
+                       "HALLMARK_NOTCH_SIGNALING")
+gsva_filtered <- gsva_subset %>%
+  dplyr::filter(hallmark_name %in% relevant_genesets)
 
-# Calculate ssGSEA mean and sd
-ssGSEA_means <- rowMeans(transposed_ssGSEA, na.rm = TRUE)
-ssGSEA_sd <- apply(transposed_ssGSEA, 1, sd, na.rm = TRUE)
+# Matrix with gene set columns that can be scaled
+gsva_mat <- gsva_filtered %>% 
+  dplyr::select(-Kids_First_Biospecimen_ID) %>% 
+  tidyr::spread(hallmark_name, gsea_score) %>%
+  tibble::column_to_rownames("sample_id") %>%
+  as.matrix()
 
-# Subtract mean
-ssGSEA_zscored <- sweep(transposed_ssGSEA, 1, ssGSEA_means, FUN = "-")
-
-# Divide by SD remove NAs and Inf values from zscore for genes with 0
-ssGSEA_zscored <-
-  sweep(ssGSEA_zscored, 1, ssGSEA_sd, FUN = "/") %>%
-  dplyr::na_if(Inf) %>%
-  na.omit()
-
-# Transpose back
-ssGSEA_zscored <- t(ssGSEA_zscored)
-
-# Summarise pathway values 
-ssGSEA_summarised <- ssGSEA_zscored %>%
+# z-score scores (here they are columns)
+scaled_gsva <- scale(gsva_mat, center = TRUE, scale = TRUE) %>%
   as.data.frame() %>%
-  tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
-  dplyr::left_join(select_metadata, by = "Kids_First_Biospecimen_ID") %>%
-  dplyr::group_by(sample_id) %>%
-  dplyr::summarise(
-    HALLMARK_MYC_TARGETS_V1 = mean(HALLMARK_MYC_TARGETS_V1),
-    HALLMARK_MYC_TARGETS_V2 = mean(HALLMARK_MYC_TARGETS_V2),
-    HALLMARK_NOTCH_SIGNALING = mean(HALLMARK_NOTCH_SIGNALING)
-  )
+  tibble::rownames_to_column("sample_id")
 
-# Display `transposed_ssGSEA`
-ssGSEA_summarised %>%
+# Display scaled_gsva
+scaled_gsva %>%
   head(n = 15)
 
-# Join ATRT expression and focal CN data with transposed ssGSEA data
+# Join ATRT expression and focal CN data with GSVA data
 atrt_expression_cn_df <- atrt_expression_cn_df %>%
-  dplyr::left_join(ssGSEA_summarised,
+  dplyr::left_join(scaled_gsva,
                    by = "sample_id")
+
+# Remove data we no longer need
+rm(gsva_filtered, gsva_mat, scaled_gsva)
 ```
 
 ### Tumor mutation burden data
@@ -341,44 +355,82 @@ tmb_df %>%
 # Join ATRT expression, focal CN data and transposed ssGSEA data with tumor
 # mutation burden data
 atrt_expression_cn_tmb_df <- atrt_expression_cn_df %>%
-  dplyr::left_join(tmb_df, by = "sample_id")
+  dplyr::left_join(dplyr::select(tmb_df,
+                                 -Tumor_Sample_Barcode,
+                                 -Kids_First_Participant_ID), 
+                   by = "sample_id")
 
-## TODO: Add a column to this data.frame denoting `chr22q` loss using the SV
-# data.
+# Remove data we no longer need
+rm(tmb_df, atrt_expression_cn_df)
+```
+
+### GISTIC data
+
+```{r}
+gistic_df <- gistic_df %>%
+  dplyr::select(-Kids_First_Biospecimen_ID) %>%
+  dplyr::group_by(sample_id) %>%
+  dplyr::mutate(chr_22q_loss = dplyr::case_when(`22q` == -1 ~ "Yes",
+                                                TRUE ~ "No")) %>%
+  dplyr::select(-`22q`)
+
+# Display `gistic_df`
+gistic_df %>%
+  head(n = 15)
+
+# Join GISTIC data with the running final data.frame
+final_df <- atrt_expression_cn_tmb_df %>%
+  dplyr::left_join(gistic_df, by = "sample_id") %>%
+  dplyr::distinct()
+
+# Remove data we no longer need
+rm(gistic_df, atrt_expression_cn_tmb_df)
 ```
 
 # Save final table of results
 
 ```{r}
 # Save final data.frame
-final_df <- atrt_expression_cn_tmb_df %>%
-  dplyr::group_by(sample_id) %>%
-  dplyr::mutate(
-    Kids_First_Biospecimen_ID = paste(sort(
-      unique(c(Kids_First_Biospecimen_ID.x, Kids_First_Biospecimen_ID.y,
-             Tumor_Sample_Barcode))
-    ), collapse = ", "),
-    Kids_First_Participant_ID = paste(sort(
-      unique(c(Kids_First_Participant_ID.x, Kids_First_Participant_ID.y))
-    ), collapse = ", ")
-  ) %>%
-  dplyr::select(
-    -c(
-      "Tumor_Sample_Barcode",
-      "Kids_First_Biospecimen_ID.x",
-      "Kids_First_Biospecimen_ID.y",
-      "Kids_First_Participant_ID.x",
-      "Kids_First_Participant_ID.y"
-    )
-  ) %>%
+final_df <- final_df %>%
   dplyr::select(
     sample_id,
     Kids_First_Biospecimen_ID,
     Kids_First_Participant_ID,
+    age_at_diagnosis_days,
+    germline_sex_estimate,
+    primary_site,
+    location_summary,
+    chr_22q_loss,
+    SMARCB1_focal_status,
+    TYR,
+    MITF,
+    DCT,
+    VEGFA,
+    DNAH11,
+    SPEF1,
+    POU3F4,
+    POU3F2,
+    PBX1,
+    SMARCA4_focal_status,
+    HALLMARK_NOTCH_SIGNALING,
+    MYCN,
+    GLI2,
+    CDK6,
+    ASCL1,
+    ZBTB7A,
+    MYBL2,
+    MXI1,
+    MEIS3,
+    MEIS2,
+    MAX,
+    INSM1,
+    FOXK1,
+    HALLMARK_MYC_TARGETS_V1,
+    HALLMARK_MYC_TARGETS_V2,
     dplyr::everything()
-  ) %>%
-  dplyr::ungroup()
+  )
 
+# Write final table to file
 readr::write_tsv(final_df,
                  file.path(results_dir, "ATRT_molecular_subtypes.tsv"))
 

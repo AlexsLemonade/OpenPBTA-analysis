@@ -9,10 +9,10 @@ set -e
 set -o pipefail
 
 # The sqlite database made from the callers will be called:
-dbfile=scratch/testing_snv_db.sqlite
+dbfile=scratch/snv_db.sqlite
 
 # Designate output file 
-consensus_file=analyses/snv-callers/results/consensus/consensus_snv.maf.tsv
+consensus_file=analyses/snv-callers/results/consensus/pbta-snv-consensus-mutation.maf.tsv
 
 # BED and GTF file paths
 exon_file=scratch/gencode.v27.primary_assembly.annotation.bed
@@ -53,7 +53,7 @@ python3 analyses/snv-callers/scripts/01-setup_db.py \
 # Make All mutations BED file
 bedtools intersect \
   -a data/WGS.hg38.strelka2.unpadded.bed \
-  -b data/WGS.hg38.mutect2.unpadded.bed > $all_mut_wgs_bed
+  -b data/WGS.hg38.mutect2.vardict.unpadded.bed > $all_mut_wgs_bed
 
 # Convert GTF to BED file for use in bedtools
 # Here we are only extracting lines with as a CDS i.e. are coded in protein
@@ -65,7 +65,7 @@ gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
 # Make WGS coding BED file
 bedtools intersect \
   -a data/WGS.hg38.strelka2.unpadded.bed \
-  -b data/WGS.hg38.mutect2.unpadded.bed \
+  -b data/WGS.hg38.mutect2.vardict.unpadded.bed \
   data/WGS.hg38.lancet.300bp_padded.bed \
   $exon_file \
   > $coding_wgs_bed
@@ -78,7 +78,7 @@ bedtools intersect \
 
 ######################### Calculate consensus TMB ##############################
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
-  --consensus analyses/snv-callers/results/consensus/consensus_snv.maf.tsv \
+  --consensus $consensus_file \
   --db_file $dbfile \
   --output analyses/snv-callers/results/consensus \
   --metadata data/pbta-histologies.tsv \
@@ -87,7 +87,11 @@ Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --coding_bed_wgs $coding_wgs_bed \
   --coding_bed_wxs $coding_wxs_bed \
   --overwrite
-  
+ 
+########################## Compress consensus file #############################
+
+gzip $consensus_file
+
 ############################# Comparison Plots #################################
 if [ "$run_plots_nb" -gt "0" ]
 then

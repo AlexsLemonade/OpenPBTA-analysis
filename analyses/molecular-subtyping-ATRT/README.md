@@ -1,6 +1,6 @@
 # Molecular Subtyping ATRT
 
-**Note: The files in the `atrt-subset` directory were generated via `00-subset-files-for-ATRT.R` using the the files in the [version 11 data release](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/293).
+**Note: The files in the `atrt-subset` directory were generated via `00-subset-files-for-ATRT.R` using the the files in the [version 12 data release](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/293).
 When re-running this module, you may want to regenerate the ATRT subset files using the most recent data release.**
 
 ## Usage
@@ -21,7 +21,7 @@ This folder contains scripts tasked to molecularly subtype ATRT samples in the P
 
 `00-subset-files-for-ATRT.R` selects data for ATRT samples and saves the files in `atrt-subset`.
 
-`01-ATRT-molecular-subtyping-data-prep.Rmd` is a notebook written to prepare the RNA expression, copy number, ssGSEA pathway, structural variant, and tumor mutation burden data that are relevant for molecular subtyping. This notebook produces a final results table found at `results/ATRT_molecular_subtypes.tsv`. 
+`01-ATRT-molecular-subtyping-data-prep.Rmd` is a notebook written to prepare the RNA expression, copy number, GSVA pathway scores, structural variant, and tumor mutation burden data that are relevant for molecular subtyping. This notebook produces a final results table found at `results/ATRT_molecular_subtypes.tsv`. 
 
 `02-ATRT-molecular-subtyping-plotting.R` is a script written to generate a heatmap and PCA plot saved in the `plots` directory of this module and displayed below.
 
@@ -45,9 +45,9 @@ The structure of this folder is as follows:
 ├── README.md
 ├── atrt-subset
 │   ├── atrt_focal_cn.tsv.gz
-│   ├── atrt_histologies.tsv
+│   ├── atrt_gistic_broad_values.tsv
+│   ├── atrt_gsva.tsv
 │   ├── atrt_log_expression.RDS
-│   ├── atrt_ssgsea.RDS
 │   └── atrt_tmb.tsv
 ├── plots
 │   ├── atrt_expression_pca.png
