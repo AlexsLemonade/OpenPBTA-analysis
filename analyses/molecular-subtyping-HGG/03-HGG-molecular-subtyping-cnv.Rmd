@@ -12,7 +12,7 @@ output:
 ---
 
 This notebook prepares focal and broad copy number alteration data for the 
-purposes of use for subtyping HGG samples 
+purpose of subtyping HGG samples 
 ([`AlexsLemonade/OpenPBTA-analysis#249`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249)).
 
 #### TODO: This analysis should be revisited when consensus copy data is made available.
