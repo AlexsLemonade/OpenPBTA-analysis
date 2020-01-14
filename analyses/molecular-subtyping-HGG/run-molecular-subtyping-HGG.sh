@@ -50,3 +50,8 @@ fi
 
 # Run notebook that cleans the mutation data
 Rscript -e "rmarkdown::render('04-HGG-molecular-subtyping-mutation.Rmd', clean = TRUE)"
+
+#### Fusion data ---------------------------------------------------------------
+
+# Run notebook that cleans the fusion data
+Rscript -e "rmarkdown::render('05-HGG-molecular-subtyping-fusion.Rmd', clean = TRUE)"
