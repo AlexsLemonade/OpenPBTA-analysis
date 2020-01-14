@@ -1,0 +1,158 @@
+---
+title: "High-Grade Glioma Molecular Subtyping - Defining Lesions"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell for ALSF CCDL
+date: 2019
+---
+
+This notebook looks at the defining lesions for all samples for the issue of 
+molecular subtyping high-grade glioma samples in the OpenPBTA dataset. 
+
+# Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+`Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/01-HGG-molecular-subtyping-defining-lesions.Rmd', clean = TRUE)"`
+
+# Set Up
+
+```{r}
+# Get `magrittr` pipe
+`%>%` <- dplyr::`%>%`
+```
+
+## Directories and Files
+
+```{r}
+# Detect the ".git" folder -- this will in the project root directory.
+# Use this as the root directory to ensure proper sourcing of functions no
+# matter where this is called from
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+# File path to results directory
+results_dir <-
+  file.path(root_dir, "analyses", "molecular-subtyping-HGG", "results")
+
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+
+# Read in metadata
+metadata <-
+  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv")) %>%
+  dplyr::filter(sample_type == "Tumor",
+                composition == "Solid Tissue") 
+
+# Select wanted columns in metadata for merging and assign to a new object
+select_metadata <- metadata %>%
+  dplyr::select(Kids_First_Participant_ID,
+                sample_id,
+                Kids_First_Biospecimen_ID,
+                short_histology,
+                disease_type_new)
+
+# Read in snv consensus mutation data
+snv_df <-
+  data.table::fread(file.path(root_dir,
+                              "data",
+                              "pbta-snv-consensus-mutation.maf.tsv.gz"))
+```
+
+# Prepare Data 
+
+## SNV consensus mutation data - defining lesions
+
+```{r}
+# Filter the snv consensus mutatation data for the target lesions
+snv_lesions_df <- snv_df %>%
+  dplyr::filter(Hugo_Symbol %in% c("H3F3A", "HIST1H3B") &
+                  HGVSp_Short %in% c("p.K28M", "p.G35R",
+                                     "p.G35V")) %>%
+  dplyr::select(Tumor_Sample_Barcode, Hugo_Symbol, HGVSp_Short) %>%
+  dplyr::mutate(
+    H3F3A.K28M = dplyr::case_when(Hugo_Symbol == "H3F3A" &
+                                    HGVSp_Short == "p.K28M" ~ "Yes",
+                                  TRUE ~ "No"),
+    HIST1H3B.K28M = dplyr::case_when(
+      Hugo_Symbol == "HIST1H3B" & HGVSp_Short == "p.K28M" ~ "Yes",
+      TRUE ~ "No"
+    ),
+    H3F3A.G35R = dplyr::case_when(Hugo_Symbol == "H3F3A" &
+                                    HGVSp_Short == "p.G35R" ~ "Yes",
+                                  TRUE ~ "No"),
+    H3F3A.G35V = dplyr::case_when(Hugo_Symbol == "H3F3A" &
+                                    HGVSp_Short == "p.G35V" ~ "Yes",
+                                  TRUE ~ "No")
+  ) %>%
+  dplyr::select(
+    -HGVSp_Short,
+    -Hugo_Symbol
+  ) 
+
+# add back in samples with no evidence of these specific mutations
+snv_lesions_df <- snv_lesions_df %>%
+  dplyr::bind_rows(
+    data.frame(
+      Tumor_Sample_Barcode = setdiff(unique(snv_df$Tumor_Sample_Barcode),
+                                     snv_lesions_df$Tumor_Sample_Barcode)
+    )
+  ) %>%
+  dplyr::mutate_all(function(x) tidyr::replace_na(x, "No"))
+
+# Join the selected variables from the metadata with the snv consensus mutation
+# and defining lesions data.frame
+snv_lesions_df <- select_metadata %>%
+  dplyr::inner_join(snv_lesions_df,
+                    by = c("Kids_First_Biospecimen_ID" = "Tumor_Sample_Barcode")) %>%
+  dplyr::select(
+    dplyr::ends_with("ID"),
+    dplyr::starts_with("H"),
+    short_histology,
+    disease_type_new
+  ) %>%
+  dplyr::mutate(
+    disease_type_reclassified = dplyr::case_when(
+      H3F3A.K28M == "Yes" ~ "High-grade glioma, H3 K28 mutant",
+        HIST1H3B.K28M == "Yes" ~ "High-grade glioma, H3 K28 mutant",
+        H3F3A.G35R == "Yes" ~ "High-grade glioma, H3 G35 mutant",
+        H3F3A.G35V == "Yes" ~ "High-grade glioma, H3 G35 mutant",
+      TRUE ~ as.character(disease_type_new)
+    )
+  )
+
+# Display `snv_lesions_df`
+snv_lesions_df 
+```
+
+## Save final table of results
+
+```{r}
+# Save final data.frame to file
+readr::write_tsv(snv_lesions_df,
+                 file.path(results_dir, "HGG_defining_lesions.tsv"))
+```
+
+## Inconsistencies in disease classification
+
+```{r}
+# Isolate the samples with the specified mutations that were not classified
+# as HGG or DIPG
+snv_lesions_df %>%
+  dplyr::filter(
+    grepl("High-grade glioma", disease_type_reclassified) &
+      !(disease_type_new %in% c("High-grade glioma", 
+                                "Brainstem glioma- Diffuse intrinsic pontine glioma"))
+  )
+```
+
+# Session Info
+
+```{r}
+# Print the session information
+sessionInfo()
+```
+
