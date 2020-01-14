@@ -27,3 +27,8 @@ Rscript -e "rmarkdown::render('01-HGG-molecular-subtyping-defining-lesions.Rmd',
 if [ "$SUBSET" -gt "0" ]; then
   Rscript --vanilla 02-HGG-molecular-subtyping-subset-files.R
 fi
+
+#### Gene expression data ----------------------------------------------------------------
+
+# Run notebook that cleans the fusion data
+Rscript -e "rmarkdown::render('06-HGG-molecular-subtyping-gene-expression.Rmd', clean = TRUE)"
