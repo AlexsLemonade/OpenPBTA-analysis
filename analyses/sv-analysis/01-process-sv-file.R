@@ -41,6 +41,9 @@ bioid <- unique(independent_specimen_list$Kids_First_Biospecimen_ID)
 
 
 ## ===================== Load SV File =====================
+# read sv file
+# filter independent-specimens
+# filter "PASS" samples
 sv_analysis <- read_tsv(file.path(root_dir, "data","pbta-sv-manta.tsv.gz")) %>%
   filter((Kids.First.Biospecimen.ID.Tumor %in% bioid) & (FILTER == "PASS"))
 
@@ -61,22 +64,32 @@ extract_len <- function(info_field, len_string) {
 
 ## ===================== Generate SV File In A Shatterseek-read Format =====================
 for (i in bioid) {
-  sv_individual = sv_analysis[sv_analysis$Kids.First.Biospecimen.ID.Tumor  == i,]
+  sv_individual <- sv_analysis[sv_analysis$Kids.First.Biospecimen.ID.Tumor  == i,]
   ## TYPE == BND
+  # bnds is individual's translocation
   bnds <- sv_individual[sv_individual$SV.type == "BND", ]
+  # delete the last two characters to match tranlocation pair
   reads_id_bnd <- substr(bnds$ID, start = 1, stop = nchar(as.character(bnds$ID))-2)
+  # build bnds_file
   bnds_file <- matrix(NA, nrow = length(unique(reads_id_bnd)), ncol = 11)
   colnames(bnds_file) <- c("chrom1","pos1","chrom2","pos2","SVtype","strand1","strand2","alt1","alt2","homolen","inserlen")
   rownames(bnds_file) <- unique(reads_id_bnd)
+   # if individual's translocation is null, skip next loop
   if (nrow(bnds)  != 0) {
+    # fill bnds_file row by row
     for (j in 1:nrow(bnds)) {
+      # extract reads id 
+      # without the last two characters
       id_name <- substr(bnds[j, "ID"], start = 1, stop = nchar(as.character(bnds[j, "ID"])) - 2)
+      # extract the last two chararcter of reads id
       number  <-  as.numeric(str_sub(bnds[j, "ID"], -1)) + 1
       bnds_file[id_name, paste0("chrom", number)] <- as.character(bnds$SV.chrom[j])
       bnds_file[id_name, paste0("pos", number)] <- as.character(bnds$SV.start[j])
       bnds_file[id_name, paste0("alt", number)] <- as.character(bnds$ALT[j])
       bnds_file[id_name, "homolen"] <- extract_len(bnds$INFO[j], "HOMLEN")
       bnds_file[id_name, "inserlen"] <- extract_len(bnds$INFO[j], "SVINSLEN")
+      # estimate strands is + or -  by alt column
+      # if alt column start with A/T/C/G， the strand is +, or else is -
       if (substr(bnds_file[id_name, paste0("alt", number)], start = 1, stop = 1) %in% c("A", "T", "C", "G")) {
         bnds_file[id_name, paste0("strand", number)] = "+"
       } else {
@@ -86,14 +99,18 @@ for (i in bioid) {
     bnds_file[, "SVtype"] <- "TRA"
   }
   ## TYPE == DUP
+  # dups is individual's duplication
   dups <- sv_individual[sv_individual$SV.type == "DUP", ]
   reads_id_dup <- substr(dups$ID, start = 1, stop = nchar(as.character(dups$ID)))
+  # build dups_file
   dups_file <- matrix(NA, nrow = length(unique(reads_id_dup)), ncol = 11)
   colnames(dups_file) <- c("chrom1","pos1","chrom2","pos2","SVtype","strand1","strand2","alt1","alt2","homolen","inserlen")
   rownames(dups_file) <- unique(reads_id_dup)
+   # if individual's duplication is null, skip next loop
   if (nrow(dups)  != 0) {
+    # fill dups_file row by row
     for (j in 1:nrow(dups)) { 
-      id_name <- substr(dups[j, 7], start = 1, stop = nchar(as.character(dups[j, 7])))
+      id_name <- substr(dups[j, "ID"], start = 1, stop = nchar(as.character(dups[j, "ID"])))
       dups_file[id_name, "chrom1"] <- as.character(dups$SV.chrom[j])
       dups_file[id_name, "chrom2"] <- as.character(dups$SV.chrom[j])
       dups_file[id_name, "pos1"] <- as.character(dups$SV.start[j])
@@ -107,14 +124,19 @@ for (i in bioid) {
     dups_file[, "SVtype"] <- "DUP"
   }
   ## TYPE == DEL
+  # dels is individual's deletion
   dels <- sv_individual[sv_individual$SV.type == "DEL", ]
+  # extract all ids
   reads_id_del <- substr(dels$ID, start = 1, stop = nchar(as.character(dels$ID)))
+  # build dels_file
   dels_file <- matrix(NA, nrow = length(unique(reads_id_del)), ncol = 11)
   colnames(dels_file) <- c("chrom1","pos1","chrom2","pos2","SVtype","strand1","strand2","alt1","alt2","homolen","inserlen")
   rownames(dels_file) <- unique(reads_id_del)
+  # if individual's deletion is null, skip next loop
   if (nrow(dels)  != 0) {
+    # fill dels_file row by row
     for (j in 1:nrow(dels)) { 
-      id_name <- substr(dels[j, 7], start = 1, stop = nchar(as.character(dels[j, 7])))
+      id_name <- substr(dels[j, "ID"], start = 1, stop = nchar(as.character(dels[j, "ID"])))
       dels_file[id_name, "chrom1"] <- as.character(dels$SV.chrom[j])
       dels_file[id_name, "chrom2"] <- as.character(dels$SV.chrom[j])
       dels_file[id_name, "pos1"] <- as.character(dels$SV.start[j])
@@ -128,12 +150,16 @@ for (i in bioid) {
     dels_file[, "SVtype"] <- "DEL"
   }
   ## TYPE == INV
+  # invs is individual's inversion
   invs <- sv_individual[sv_individual$SV.type == "INV", ]
   reads_id_inv <- substr(invs$ID, start = 1, stop = nchar(as.character(invs$ID)))
+  # build invs_file
   invs_file <- matrix(NA, nrow = length(unique(reads_id_inv)), ncol = 11)
   colnames(invs_file) <- c("chrom1","pos1","chrom2","pos2","SVtype","strand1","strand2","alt1","alt2","homolen","inserlen")
   rownames(invs_file) <- unique(reads_id_inv)
+   # if individual's inversion is null, skip next loop
   if (nrow(invs)  != 0) {
+    # fill invs_file row by row
     for (j in 1:nrow(invs)) { 
       id_name <- substr(invs[j, "ID"], start = 1, stop = nchar(as.character(invs[j, "ID"])))
       invs_file[id_name, "chrom1"] <- as.character(invs$SV.chrom[j])
