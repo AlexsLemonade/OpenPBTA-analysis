@@ -30,5 +30,5 @@ fi
 
 #### Gene expression data ----------------------------------------------------------------
 
-# Run notebook that cleans the fusion data
+# Run notebook that cleans the gene expression data
 Rscript -e "rmarkdown::render('06-HGG-molecular-subtyping-gene-expression.Rmd', clean = TRUE)"
