@@ -2,8 +2,8 @@
 
 # Chante Bethell for CCDL 2020
 #
-# Run `01-HGG-molecular-subtyping-defining-lesions.Rmd` and
-# `02-HGG-molecular-subtyping-subset-files.R` if needed.
+# Run the HGG molecular subtyping pipeline.
+# When OPENPBTA_SUBSET=1 (default), new HGG subset files will be generated.
 
 set -e
 set -o pipefail
@@ -31,6 +31,11 @@ Rscript -e "rmarkdown::render('01-HGG-molecular-subtyping-defining-lesions.Rmd',
 if [ "$SUBSET" -gt "0" ]; then
   Rscript --vanilla 02-HGG-molecular-subtyping-subset-files.R
 fi
+
+#### Copy number data ----------------------------------------------------------
+
+# Run the copy number data cleaning notebook
+Rscript -e "rmarkdown::render('03-HGG-molecular-subtyping-cnv.Rmd', clean = TRUE)"
 
 #### Mutation data -------------------------------------------------------------
 
