@@ -1,4 +1,4 @@
-# Yang Yang 2019
+# Yang Yang 2020
 # This script is for analyzing chromothripsis, using modified shaterseek code.
 # 
 # Input files:
