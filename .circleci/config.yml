@@ -127,14 +127,15 @@ jobs:
       - run:
           name: Gene set enrichment analysis to generate GSVA scores
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh" 
-
-
-         ################################
-         #### Add your analysis here ####
+         
       - run:
           name: Process SV file
           command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/01-process-sv-file.R
-         ################################
+          
+      - run:
+          name: Shatterseek
+          command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/02-shatterseek.R
+         
       - run:
           name: Evaluation plots for TP53/NF1 classifier polya
           command: ./scripts/run_in_ci.sh python3 analyses/tp53_nf1_score/02-evaluate-classifier.py -s analyses/tp53_nf1_score/results/TP53_NF1_snv_alteration.tsv -f analyses/tp53_nf1_score/results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv -c data/pbta-histologies.tsv -o polya
