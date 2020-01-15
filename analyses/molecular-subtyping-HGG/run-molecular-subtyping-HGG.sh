@@ -63,4 +63,4 @@ Rscript -e "rmarkdown::render('06-HGG-molecular-subtyping-gene-expression.Rmd', 
 
 #### Combine DNA data ----------------------------------------------------------
 
-Rscript -e "rmarkdown::render('07-HGG-molecular-subtyping-combine-dna.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('07-HGG-molecular-subtyping-combine-table.Rmd', clean = TRUE)"
