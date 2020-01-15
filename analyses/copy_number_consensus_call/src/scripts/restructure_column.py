@@ -1,16 +1,16 @@
 ################## PURPOSE #################
-# This script is to restructure the 4th(start pos),5th(end pos), and 6th(copy number) columns of the input file
+# This script is to restructure the 4th(start pos), 5th(end pos), 6th(copy number), and 7th(seg.mean) columns of the input file
 # Because these columns hold the "raw" coordinates of the CNV after filtering out for IGLL, telomerics, centromeric
 # and segup regions, we want to retain these info for any analysis further down stream.
-# Thus this script format columns 4, 5, and 6 of a CNV into ---  start_pos:end_pos:copy_number  ----
-# So if a CNV is part of a FINAL consensus CNV, its (start_pos:end_pos:copy_number) information will
+# Thus this script format columns 4, 5, 6, and 7 of a CNV into ---  start_pos:end_pos:copy_number:seg_mean  ----
+# So if a CNV is part of a FINAL consensus CNV, its (start_pos:end_pos:copy_number:seg_mean) information will
 # be carried through and contained in the FINAL FILE
 
 # For example
-#          column 4                   column 5             column 6
-# 2777350,6035598,6807639       6035597,6807638,7659545     3,3,3
+#          column 4                   column 5             column 6        column 7
+# 2777350,6035598,6807639       6035597,6807638,7659545     3,3,3         0.5,0.2,0.4
 
-# Will become 2777350:6035597:3,6035598:6807638:3,6807639:7659545:3,
+# Will become 2777350:6035597:3:0.5,6035598:6807638:3:0.2,6807639:7659545:3:0.4,
 ################# ASSUMPTION ###############
 
 # The bed file has no header
@@ -54,9 +54,10 @@ else:
         list_start = str(i._4).split(',')
         list_end = str(i._5).split(',')
         list_cn = str(i._6).split(',')
+        list_segmean = str(i._7).split(',')
 
         ## Rearange the split information into the new format
-        cnv_list = ''.join(['{}:{}:{},'.format(*cnv) for cnv in zip(list_start, list_end, list_cn)])
+        cnv_list = ''.join(['{}:{}:{}:{},'.format(*cnv) for cnv in zip(list_start, list_end, list_cn, list_segmean)])
 
 
         ## Add the list to the new column
