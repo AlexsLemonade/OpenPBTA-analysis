@@ -128,10 +128,10 @@ option_list <- list(
     help = "file path to file that contains CNV information"
   ),
   optparse::make_option(
-    c("--gtf_file"),
+    c("--exon_file"),
     type = "character",
     default = NULL,
-    help = "file path to human genome GTF file"
+    help = "file path to human genome exon filtered GTF file"
   ),
   optparse::make_option(
     c("--metadata"),
@@ -228,32 +228,18 @@ histologies_df <- readr::read_tsv(opt$metadata)
 
 #### Annotation file -----------------------------------------------------------
 
-# this is the output of GenomicFeatures::makeTxDbFromGFF
-# TODO: possibly update this when the GTF file gets included in the data
-#       download; may also remove the --gtf_file option and hardcode it?
-annotation_directory <- file.path(root_dir,
-                                  "analyses",
-                                  "focal-cn-file-preparation",
-                                  "annotation_files")
-annotation_file <- file.path(annotation_directory,
-                             "txdb_from_gencode.v27.gtf.db")
+# Read in prepared exons file
+exons_df <- data.table::fread(opt$exon_file, data.table = FALSE)
 
-if (!file.exists(annotation_file)) {
-  # Define the annotations for the hg38 genome
-  txdb <- GenomicFeatures::makeTxDbFromGFF(
-    file = opt$gtf_file,
-    format = "gtf"
-  )
-  # can do this even if the directory exists
-  dir.create(annotation_directory, showWarnings = FALSE)
-  # write this to file to save time next time
-  AnnotationDbi::saveDb(txdb, annotation_file)
-} else {
-  txdb <- AnnotationDbi::loadDb(annotation_file)
-}
-
-# extract the exons but include ensembl gene identifiers
-tx_exons <- GenomicFeatures::exons(txdb, columns = "gene_id")
+# Create the GRanges object
+exons_gr <- GenomicRanges::GRanges(
+  seqnames = exons$V1,
+  ranges = IRanges::IRanges(
+    start = exons$V2,
+    end = exons$V3
+  ),
+  gene_id = exons$V4
+)
 
 #### Addressing autosomes first ------------------------------------------------
 
