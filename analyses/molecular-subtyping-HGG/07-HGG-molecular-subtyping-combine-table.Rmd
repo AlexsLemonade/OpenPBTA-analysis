@@ -8,12 +8,16 @@ author: Chante Bethell and Jaclyn Taroni for ALSF CCDL
 date: 2020
 ---
 
-This notebook joins copy number alteration and mutation data for the 
+This notebook joins copy number alteration, mutation, fusion and gene expression data for the 
 purposes of subtyping HGG samples 
 ([`AlexsLemonade/OpenPBTA-analysis#249`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249)).
 
-The copy number data are cleaned in [`03-HGG-molecular-subtyping-cnv.Rmd`](./03-HGG-molecular-subtyping-cnv.Rmd).
-The mutation data are cleaned in [`04-HGG-molecular-subtyping-mutation.Rmd`](./04-HGG-molecular-subtyping-mutation.Rmd).
+All data are cleaned in notebooks upstream:
+
+* Copy number data in [`03-HGG-molecular-subtyping-cnv.Rmd`](./03-HGG-molecular-subtyping-cnv.Rmd)
+* Mutation data in [`04-HGG-molecular-subtyping-mutation.Rmd`](./04-HGG-molecular-subtyping-mutation.Rmd); specific defining lesions are prepared in [`01-HGG-molecular-subtyping-defining-lesions.Rmd`](./01-HGG-molecular-subtyping-defining-lesions.Rmd)
+* Fusion data in [`05-HGG-molecular-subtyping-fusion.Rmd`](./05-HGG-molecular-subtyping-fusion.Rmd)
+* Gene expression data in [`06-HGG-molecular-subtyping-gene-expression.Rmd`](./06-HGG-molecular-subtyping-gene-expression.Rmd)
 
 ## Usage
 
@@ -43,6 +47,8 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 # File path to results directory -- this contains the cleaned data
 results_dir <-
   file.path(root_dir, "analyses", "molecular-subtyping-HGG", "results")
+
+data_dir <- file.path(root_dir, "data")
 ```
 
 ### Read in Files
@@ -50,16 +56,23 @@ results_dir <-
 ```{r message=FALSE}
 cn_gistic_df <- read_tsv(file.path(results_dir, "HGG_cleaned_cnv.tsv"))
 mutation_df <- read_tsv(file.path(results_dir, "HGG_cleaned_mutation.tsv"))
-histologies_df <- read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"))
+histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
+fusion_df <- read_tsv(file.path(results_dir, "HGG_cleaned_fusion.tsv"))
+polya_exp <- read_tsv(file.path(results_dir, 
+                                "HGG_cleaned_expression.polya.tsv"))
+stranded_exp <- read_tsv(file.path(results_dir, 
+                                   "HGG_cleaned_expression.stranded.tsv"))
 ```
 
 ### Output Files
 
 ```{r}
-output_all <- file.path(results_dir, "HGG_combined_cnv_mutation.tsv")
+
 ```
 
-## Join data together
+## Join Together
+
+### DNA-seq Data (CNV, Mutation)
 
 The CNVkit data, and therefore the GISTIC data that is _downstream_ of CNVkit, only includes WGS samples.
 Let's look at what biospecimen identifiers are present in the mutation data but not in the copy number data.
@@ -86,9 +99,88 @@ any(duplicated(dna_df$Kids_First_Biospecimen_ID))
 ```
 
 No it doesn't.
-We can write the table to file without any further processing.
+
+### Join RNA-seq Data Together
+
+We have two cleaned gene expression data files corresponding to the stranded and poly-A datasets.
+The distributions for the 3 genes of interest look pretty similar: https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/06-HGG-molecular-subtyping-gene-expression.nb.html#density_plots
+Therefore, we'll put all of this in the same table.
 
 ```{r}
-write_tsv(dna_df, output_all)
+exp_df <- bind_rows(polya_exp, stranded_exp)
+rm(polya_exp, stranded_exp)
+```
+
+Now we can join the fusion and gene expression data. 
+
+```{r}
+rna_df <- left_join(exp_df, fusion_df, 
+                    by = c("Kids_First_Biospecimen_ID" = "Sample"))
+```
+
+#### Digging into Fusion Data
+
+There are some biospecimen identifiers that are in the expression files, but not the fusion files.
+What are they?
+
+```{r}
+missing_bsids <- rna_df %>%
+  filter(!complete.cases(.)) %>%
+  pull(Kids_First_Biospecimen_ID)
+
+histologies_df %>%
+  filter(Kids_First_Biospecimen_ID %in% missing_bsids)
+```
+
+No obvious pattern -- the `sample_type` and `composition` columns contain values we'd expect based on the retention of these identifiers.
+Are these samples present in the files prior to subsetting in [`02-HGG-molecular-subtyping-subset-files.R`](./02-HGG-molecular-subtyping-subset-files.R)?
+
+```{r}
+# read in full file
+putative_oncogenic_df <- 
+  read_tsv(file.path(data_dir, "pbta-fusion-putative-oncogenic.tsv"))
+```
+
+```{r}
+all(missing_bsids %in% putative_oncogenic_df$Sample)
+```
+
+```{r}
+sum(!(missing_bsids %in% putative_oncogenic_df$Sample))
+```
+
+No, none of these identifiers are in the original putative oncogenic list.
+What about the unfiltered fusion files?
+
+STARFusion first.
+
+```{r}
+starfusion_df <- read_tsv(file.path(data_dir, "pbta-fusion-starfusion.tsv.gz"))
+```
+
+```{r}
+all(missing_bsids %in% starfusion_df$tumor_id)
+```
+
+```{r}
+starfusion_missing <- 
+  missing_bsids[which(!(missing_bsids %in% starfusion_df$tumor_id))]
+starfusion_missing
+```
+
+```{r}
+arriba_df <- read_tsv(file.path(data_dir, "pbta-fusion-arriba.tsv.gz"))
+```
+
+```{r}
+all(missing_bsids %in% arriba_df$tumor_id)
+```
+
+So all samples that are "missing" from the putative oncogenic fusion file are present in the Arriba file, but some are not present in the STARFusion file.
+Fusions need to be in at least two callers [per this notebook](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/1a8a35954a09c6a64ae38f2b885867420da4b1d0/analyses/fusion_filtering/04-project-specific-filtering.Rmd#L49). 
+We will consider biospecimen identifiers that are not in STARFusion to have missing fusion data, but for those that are in both original caller files that is the equivalent of having no relevant fusions recorded.
+
+```{r}
+
 ```
 
