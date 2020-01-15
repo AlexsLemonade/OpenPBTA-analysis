@@ -67,7 +67,10 @@ stranded_exp <- read_tsv(file.path(results_dir,
 ### Output Files
 
 ```{r}
-
+# full table
+output_all <- file.path(results_dir, "HGG_cleaned_all_table.tsv")
+# molecular subtype table
+output_subtype <- file.path(results_dir, "HGG_molecular_subtype.tsv")
 ```
 
 ## Join Together
@@ -100,22 +103,19 @@ any(duplicated(dna_df$Kids_First_Biospecimen_ID))
 
 No it doesn't.
 
-### Join RNA-seq Data Together
+```{r}
+rm(mutation_df, cn_gistic_df)
+```
+
+### Join RNA-seq Data (Fusion, Gene Expression)
 
 We have two cleaned gene expression data files corresponding to the stranded and poly-A datasets.
-The distributions for the 3 genes of interest look pretty similar: https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/06-HGG-molecular-subtyping-gene-expression.nb.html#density_plots
+The (z-scored) distributions for the 3 genes of interest look pretty similar: https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/06-HGG-molecular-subtyping-gene-expression.nb.html#density_plots
 Therefore, we'll put all of this in the same table.
 
 ```{r}
 exp_df <- bind_rows(polya_exp, stranded_exp)
 rm(polya_exp, stranded_exp)
-```
-
-Now we can join the fusion and gene expression data. 
-
-```{r}
-rna_df <- left_join(exp_df, fusion_df, 
-                    by = c("Kids_First_Biospecimen_ID" = "Sample"))
 ```
 
 #### Digging into Fusion Data
@@ -124,9 +124,8 @@ There are some biospecimen identifiers that are in the expression files, but not
 What are they?
 
 ```{r}
-missing_bsids <- rna_df %>%
-  filter(!complete.cases(.)) %>%
-  pull(Kids_First_Biospecimen_ID)
+missing_bsids <- setdiff(exp_df$Kids_First_Biospecimen_ID,
+                         fusion_df$Sample)
 
 histologies_df %>%
   filter(Kids_First_Biospecimen_ID %in% missing_bsids)
@@ -181,6 +180,336 @@ Fusions need to be in at least two callers [per this notebook](https://github.co
 We will consider biospecimen identifiers that are not in STARFusion to have missing fusion data, but for those that are in both original caller files that is the equivalent of having no relevant fusions recorded.
 
 ```{r}
+no_evidence_ids <- setdiff(missing_bsids, starfusion_missing)
 
+fusion_df <- fusion_df %>%
+  # First add in the instances where we have no evidence of these fusions,
+  # these will be IDs that are present in the STARFusion file
+  bind_rows(data.frame(Sample = no_evidence_ids)) %>%
+  replace(is.na(.), "None") %>%
+  # For the IDs that are not in the STARFusion file, leave the fusion values
+  # as NA
+  bind_rows(data.frame(Sample = starfusion_missing))
 ```
 
+```{r}
+rm(arriba_df, putative_oncogenic_df, starfusion_df, starfusion_missing,
+   missing_bsids, no_evidence_ids)
+```
+
+### Join the Expression and Fusion Data
+
+```{r}
+rna_df <- left_join(exp_df, fusion_df,
+                    by = c("Kids_First_Biospecimen_ID" = "Sample"))
+head(rna_df, n = 10)
+```
+
+```{r}
+rna_df <- histologies_df %>%
+  select(Kids_First_Participant_ID,
+         sample_id, 
+         Kids_First_Biospecimen_ID) %>%
+  inner_join(rna_df)
+```
+
+```{r}
+rm(fusion_df, exp_df)
+```
+
+Are there duplicated `sample_id` in the RNA data frame?
+
+```{r}
+any(duplicated(rna_df$sample_id))
+```
+
+This very well might boil down to the "matched" samples from different library preparation types. 
+Let's check.
+
+```{r}
+histologies_df %>%
+  filter(sample_id %in% rna_df$sample_id[which(duplicated(rna_df$sample_id))],
+         experimental_strategy == "RNA-Seq") %>%
+  group_by(sample_id) %>%
+  summarize(RNA_library = paste(RNA_library, collapse = ", "))
+```
+
+That appears to be the majority of cases. 
+Because we know there are some issues with stranded samples (e.g., they are poly-A stranded and not ribodepleted stranded) in `release-v12-20191217`, we could take an approach where we _prefer_ samples labeled poly-A. 
+My impression of the ticket is that the mutation data is the most important information when making a subtype call, so we will leave the duplicates in for now.
+
+### All Data
+
+```{r}
+all_data_df <- left_join(dna_df, rna_df,
+                         by = c("Kids_First_Participant_ID",
+                                "sample_id")) %>%
+  rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID.x,
+         Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID.y) %>%
+  select(starts_with("Kids_First"), sample_id, everything())
+
+head(all_data_df, n = 10)
+```
+
+Add in brain region and age.
+
+```{r}
+relevant_clinical_df <- histologies_df %>%
+  filter(sample_id %in% all_data_df$sample_id,
+         sample_type == "Tumor",
+         composition == "Solid Tissue") %>%
+  mutate(age_at_diagnosis_yr = 
+           floor(as.integer(age_at_diagnosis_days)/365)) %>%
+  group_by(Kids_First_Participant_ID, sample_id) %>%
+  summarize(glioma_brain_region = paste(sort(unique(glioma_brain_region)), 
+                                        collapse = ", "),
+            age_at_diagnosis_yr = paste(sort(unique(age_at_diagnosis_yr)),
+                                        collapse = ", "))
+```
+
+```{r}
+all_data_df <- inner_join(relevant_clinical_df,
+                          all_data_df)
+```
+
+Write to file.
+
+```{r}
+write_tsv(all_data_df, output_all)
+```
+
+## Tables by Molecular Subtype
+
+In this section, we'll divide up the table based on the molecular subtypes described in [`AlexsLemonade/OpenPBTA-analysis#249`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249).
+
+### H3 K28 mutant
+
+> * These tumors contain H3F3A K28M or HIST1H3B K28M mutations
+> * Co-occurring lesions include: ACVR1, TP53, ATRX mutations; PDGFRA amplification; PTEN loss
+> * Mutually-exclusive lesions: FGFR1 mutations/fusions (thalamic); IDH1 mutations; BRAF V600E (low-grade gliomas)
+> * Average age of 9 years
+> * Majority should be midline localized
+
+```{r}
+h3_k28_df <- all_data_df %>% 
+  # Only rows with H3 K28M mutations
+  filter(H3F3A.K28M == "Yes" | HIST1H3B.K28M == "Yes") %>%
+  # Only the relevant columns
+  select(Kids_First_Participant_ID, 
+         sample_id,
+         H3F3A.K28M,
+         HIST1H3B.K28M,
+         H3F3A.G35R,
+         H3F3A.G35V,
+         age_at_diagnosis_yr,
+         glioma_brain_region,
+         relevant_coding_mutations,
+         PTEN_focal_status,
+         PDGFRA_focal_status,
+         BRAF_V600E,
+         FGFR1_fusions) %>%
+  distinct()
+
+h3_k28_df
+```
+
+Mutually exclusive with the H3 G35 mutations?
+
+```{r}
+any(h3_k28_df$H3F3A.G35R == "Yes")
+```
+
+```{r}
+any(h3_k28_df$H3F3A.G35V == "Yes")
+```
+
+Are the majority midline localized?
+
+```{r}
+table(h3_k28_df$glioma_brain_region)
+```
+
+Yes.
+
+```{r}
+h3_k28_df %>%
+  group_by(relevant_coding_mutations) %>%
+  count()
+```
+
+The coding mutation list looks like what we would expect based on the description, with the exception of some BRAF mutations.
+There are no _IDH1_ mutations.
+
+```{r}
+h3_k28_df %>%
+  group_by(PTEN_focal_status, PDGFRA_focal_status) %>%
+  count()
+```
+
+The copy number information looks a bit different than what is described, but we are not yet using consensus calls.
+
+<!--TODO: consensus calls-->
+
+```{r}
+summary(as.integer(h3_k28_df$age_at_diagnosis_yr))
+```
+
+Age is similar to what is described.
+
+```{r}
+table(h3_k28_df$FGFR1_fusions)
+```
+
+No _FGFR1_ fusions.
+
+The histologies file that gets distributed as part of the project and contains molecular subtypes contains one row per biospecimen.
+So we'll create a table that contains the biospecimen IDs and the calls.
+
+```{r}
+h3_k28_df_biospecimen <- all_data_df %>%
+  filter(H3F3A.K28M == "Yes" | HIST1H3B.K28M == "Yes") %>%
+  select(Kids_First_Participant_ID,
+         sample_id,
+         Kids_First_Biospecimen_ID_DNA,
+         Kids_First_Biospecimen_ID_RNA, 
+         BRAF_V600E) %>%
+  mutate(molecular_subtype = case_when(
+    BRAF_V600E == "p.V600E" ~ "BRAF_V600E_mutation",
+    TRUE ~ "HGG_H3_K28"
+  )) %>%
+  select(-BRAF_V600E)
+```
+
+### H3 G35 mutant
+
+> * These tumors contain H3F3A G35R/V mutations
+> * Co-occurring lesions include: ATRX/DAXX, TP53, SETD2 mutations, NTRK fusions
+> * Mutually exclusive lesions: IDH1 mutations
+> * Average age of 20 years
+
+```{r}
+h3_g35_df <- all_data_df %>% 
+  # Only rows with H3 G35 mutations
+  filter(H3F3A.G35R == "Yes" | H3F3A.G35V == "Yes") %>%
+  # Only the relevant columns
+  select(Kids_First_Participant_ID, 
+         sample_id,
+         H3F3A.K28M,
+         HIST1H3B.K28M,
+         H3F3A.G35R,
+         H3F3A.G35V,
+         age_at_diagnosis_yr,
+         relevant_coding_mutations,
+         NTRK_fusions) %>%
+  distinct()
+
+h3_g35_df
+```
+
+Make a biospecimen-centric table
+
+```{r}
+h3_g35_df_biospecimen <- all_data_df %>% 
+  # Only rows with H3 K28M mutations
+  filter(H3F3A.G35R == "Yes" | H3F3A.G35V == "Yes") %>%
+  select(Kids_First_Participant_ID,
+         sample_id,
+         Kids_First_Biospecimen_ID_DNA,
+         Kids_First_Biospecimen_ID_RNA) %>%
+  mutate(molecular_subtype = "HGG_H3_G35")
+```
+
+### IDH mutant
+
+> * These tumors contain IDH1 R132H mutations
+> * Co-occurring lesions include: TP53 mutations; P73-AS1 promoter methylation and downregulation
+> * High expression of FOXG1 and OLIG2
+> * Mutually exclusive lesions: chr7 gain and chr10 loss
+
+```{r}
+idh_df <- all_data_df %>%
+  filter(IDH1_mutation == "p.R132H")
+idh_df
+```
+
+In these instances, the broad copy data look consistent with the description, all tumors have _TP53_ mutations, and the _TP73-AS1_ expression is consistent with downregulation.
+
+Make a biospecimen-centric table.
+
+```{r}
+idh_df_biospecimen <- all_data_df %>%
+  filter(IDH1_mutation == "p.R132H") %>%
+  select(Kids_First_Participant_ID,
+         sample_id,
+         Kids_First_Biospecimen_ID_DNA,
+         Kids_First_Biospecimen_ID_RNA) %>%
+  mutate(molecular_subtype = "HGG_IDH")
+```
+
+
+### H3.3 and IDH wildtype
+
+> * High-grade gliomas absent of H3F3A and IDH mutations
+> * Defining lesions: MYCN, PDGFRA amplification, TP53 and TERT mutations
+
+```{r}
+wildtype_df <- all_data_df %>%
+  filter(H3F3A.K28M == "No",
+         HIST1H3B.K28M == "No",
+         H3F3A.G35R == "No",
+         H3F3A.G35V == "No",
+         !grepl("IDH1", relevant_coding_mutations)) %>%
+  select(Kids_First_Participant_ID,
+         sample_id,
+         relevant_coding_mutations,
+         TERT_variant_classification,
+         MYCN_focal_status,
+         PDGFRA_focal_status) %>%
+  distinct()
+
+wildtype_df %>% arrange(MYCN_focal_status, PDGFRA_focal_status)
+```
+
+This is not particularly straightforward, so I will leave that out for now.
+Possible next steps: only those with amplifications or gains in the two mentioned genes?
+
+### 1p/19q co-deleted oligodendrogliomas
+
+> * Co-deletion of chr 1p and 19q (LOH, loss of heterozygosity of both) results in translocation t(1p;19q)
+> * Nearly all have a co-occurring IDH1 mutation (R132 or R172)
+> * Other co-occurring lesions include: TERT promoter, CIC, and FUBP1 mutations
+> * Mutually exclusive of TP53 and ATRX mutation
+> * Typically occurs in adult tumors
+
+Let's first filter by the broad arm data and see what we get.
+
+```{r}
+all_data_df %>%
+  filter(`1p` == "loss" | `19q` == "loss")
+```
+
+We don't see the _IDH1_ mutations we would expect and we do see _TP53_ and _ATRX_ mutations, so we will leave this off as well for the moment.
+
+## Biospecimen Table
+
+Join all the tables that contain the biospecimen ids and `molecular_subtype` column together.
+
+```{r}
+molecular_subtype_table <- bind_rows(h3_g35_df_biospecimen,
+                                     h3_k28_df_biospecimen,
+                                     idh_df_biospecimen)
+
+head(molecular_subtype_table, n = 10)
+```
+
+Write to file.
+
+```{r}
+write_tsv(molecular_subtype_table, output_subtype)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
