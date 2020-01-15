@@ -1,0 +1,94 @@
+---
+title: "High-Grade Glioma Molecular Subtyping - Combine DNA Assays"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell and Jaclyn Taroni for ALSF CCDL
+date: 2020
+---
+
+This notebook joins copy number alteration and mutation data for the 
+purposes of subtyping HGG samples 
+([`AlexsLemonade/OpenPBTA-analysis#249`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249)).
+
+The copy number data are cleaned in [`03-HGG-molecular-subtyping-cnv.Rmd`](./03-HGG-molecular-subtyping-cnv.Rmd).
+The mutation data are cleaned in [`04-HGG-molecular-subtyping-mutation.Rmd`](./04-HGG-molecular-subtyping-mutation.Rmd).
+
+## Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/07-HGG-molecular-subtyping-combine-dna.Rmd', clean = TRUE)"
+```
+
+## Set up
+
+### Libraries and Functions
+
+```{r}
+library(tidyverse)
+```
+
+### Directories
+
+```{r}
+# Detect the ".git" folder -- this will in the project root directory.
+# Use this as the root directory to ensure proper sourcing of functions no
+# matter where this is called from
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+# File path to results directory -- this contains the cleaned data
+results_dir <-
+  file.path(root_dir, "analyses", "molecular-subtyping-HGG", "results")
+```
+
+### Read in Files
+
+```{r message=FALSE}
+cn_gistic_df <- read_tsv(file.path(results_dir, "HGG_cleaned_cnv.tsv"))
+mutation_df <- read_tsv(file.path(results_dir, "HGG_cleaned_mutation.tsv"))
+histologies_df <- read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"))
+```
+
+### Output Files
+
+```{r}
+output_all <- file.path(results_dir, "HGG_combined_cnv_mutation.tsv")
+```
+
+## Join data together
+
+The CNVkit data, and therefore the GISTIC data that is _downstream_ of CNVkit, only includes WGS samples.
+Let's look at what biospecimen identifiers are present in the mutation data but not in the copy number data.
+
+```{r}
+histologies_df %>% 
+  filter(Kids_First_Biospecimen_ID %in% 
+           setdiff(mutation_df$Tumor_Sample_Barcode,
+                   cn_gistic_df$Kids_First_Biospecimen_ID)) %>%
+  count(experimental_strategy)
+```
+
+```{r}
+dna_df <- mutation_df %>%
+  rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
+  left_join(cn_gistic_df)
+```
+
+In earlier work on this module, we observed duplicated `sample_id`.
+We removed non-tumor samples (e.g., derived cell lines), does this issue persist?
+
+```{r}
+any(duplicated(dna_df$Kids_First_Biospecimen_ID))
+```
+
+No it doesn't.
+We can write the table to file without any further processing.
+
+```{r}
+write_tsv(dna_df, output_all)
+```
+
