@@ -16,11 +16,6 @@ This analysis is designed to
 * pbta-sv-manta.tsv
 * pbta-cnv-cnvkit.seg
 
-
-#### Outputs saved to data download
-* PBTA_chromothripsis_newlink_region.csv
-
-
 #### Order of scripts in analysis
 `01-process-sv-file.R` : This script is for generating sv file in shatterseek-read/signature-read input format
 
