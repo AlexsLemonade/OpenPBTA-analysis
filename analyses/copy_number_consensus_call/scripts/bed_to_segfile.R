@@ -92,6 +92,7 @@ out_table <- cnvs %>%
                 loc.start = start, 
                 loc.end = end,
                 num.mark = num.mark,
-                seg.mean = segmean_wmean)
+                seg.mean = segmean_wmean,
+                copy.num = copynum)
 
 readr::write_tsv(out_table, file.path(analysis_dir, opts$output_file))
