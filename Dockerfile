@@ -233,6 +233,8 @@ RUN R -e "install.packages('corrplot', dependencies = TRUE)"
 RUN R -e "BiocManager::install('ggbio')"
 
 #### Please install your dependencies here
+# Install for sv shatterseek
+RUN R -e “withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true"),remotes::install_github('parklab/ShatterSeek'))”
 #### Add a comment to indicate what analysis it is required for
 
 # CRAN package msigdbr needed for gene-set-enrichment-analysis
