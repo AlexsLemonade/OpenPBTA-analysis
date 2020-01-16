@@ -36,7 +36,7 @@
     - intersect_strelka_mutect_WGS.bed
     - intersect_exon_lancet_strelka_mutect_WGS.bed
     - intersect_exon_WXS.bed
-  - Add `WXS.hg38.lancet.300bp_padded.bed` file. 
+  - Add `WXS.hg38.lancet.400bp_padded.bed` file. 
   - Update `pbta-histologies.tsv` to remove RNA-Seq samples listed above, propagate medulloblastoma `molecular_subtypes` per [#379](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/379), harmonize "Diagnosis" to "Initial CNS Tumor", fix PNOC003 `seq_center` for RNA-Seq samples to "TGEN", harmonize `ethnicity` to match CBTTC data in [KidsFirst](https://kidsfirstdrc.org/):
 
 
@@ -61,7 +61,7 @@ data
     ├── WGS.hg38.strelka2.unpadded.bed
     ├── WGS.hg38.vardict.100bp_padded.bed
     ├── WXS.hg38.100bp_padded.bed
-    ├── WXS.hg38.lancet.300bp_padded.bed
+    ├── WXS.hg38.lancet.400bp_padded.bed
     ├── md5sum.txt
     ├── pbta-cnv-cnvkit.seg.gz
     ├── pbta-cnv-controlfreec.tsv.gz
