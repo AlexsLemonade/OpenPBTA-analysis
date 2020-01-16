@@ -106,6 +106,16 @@ embryonal_df <- embryonal_df %>%
                                    "Atypical Teratoid Rhabdoid Tumor (ATRT)")))
 ```
 
+Is there anything in the `disease_type_new` column we should be concerned about removing?
+
+```{r}
+embryonal_df %>%
+  group_by(disease_type_new) %>%
+  count()
+```
+
+No, nothing was changes to MB or ATRT.
+
 ### Combine biospecimen IDs
 
 Using the fusion information and the clinical file.
