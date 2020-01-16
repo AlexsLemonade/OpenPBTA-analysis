@@ -65,6 +65,7 @@ data
     ├── md5sum.txt
     ├── pbta-cnv-cnvkit.seg.gz
     ├── pbta-cnv-controlfreec.tsv.gz
+    ├── pbta-cnv-cnvkit-gistic.zip
     ├── pbta-fusion-arriba.tsv.gz
     ├── pbta-fusion-starfusion.tsv.gz
     ├── pbta-fusion-putative-oncogenic.tsv
