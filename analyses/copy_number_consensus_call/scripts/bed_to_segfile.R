@@ -40,7 +40,7 @@ option_list <- list(
 opts <- parse_args(OptionParser(option_list = option_list))
 
 # Read the cnv output table
-cnvs <- readr::read_tsv(file.path(analysis_dir, opts$cnv_file))
+cnvs <- readr::read_tsv(opts$cnv_file)
 
 # Columns *_CNV have the format START:END:COPY_NUMBER:SEG.MEAN,START:END:COPY_NUMBER:SEG.MEAN
 # This function converts ones such string into a data frane, 
@@ -110,4 +110,4 @@ out_table <- cnvs %>%
                 seg.mean = segmean_wmean,
                 copy.num = copynum)
 
-readr::write_tsv(out_table, file.path(analysis_dir, opts$output_file))
+readr::write_tsv(out_table, opts$output_file)
