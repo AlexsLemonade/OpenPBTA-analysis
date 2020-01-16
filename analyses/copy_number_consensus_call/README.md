@@ -39,12 +39,11 @@ Since there are 3 callers, there were 3 comparisons: `manta-cnvkit`, `manta-free
 ## Example Output File
 
 ```
-chrom start end	manta_CNVs	cnvkit_CNVs	freec_CNVs	CNV_type	Biospecimen	file_names
-chr11 771036  866778	NULL	770516:866778:3	771036:871536:3	DUP	BS_007JTNB8	BS_007JTNB8.cnvkit_freec.dup.bed
-chr13	99966948	99991872	NULL	99954829:99994557:3	99966948:99991872:3	DUP	BS_007JTNB8	BS_007JTNB8.cnvkit_freec.dup.bed
-chr14	103515996	103563240	NULL	103515996:103563363:3	103511784:103541532:3,103543140:103563240:3	DUP	BS_007JTNB8	BS_007JTNB8.cnvkit_freec.dup.bed
+chrom	start	end	manta_CNVs	cnvkit_CNVs	freec_CNVs	CNV_type	Biospecimen
+chr11	771036	866778	NULL	770516:866778:3:0.214821	771036:871536:3:NA	DUP	BS_007JTNB8
+chr13	99966948	99991872	NULL	99954829:99994557:3:0.263969	99966948:99991872:3:NA	DUP	BS_007JTNB8
+chr14	103515996	103563240	NULL	103515996:103563363:3:0.237098	103511784:103541532:3:NA,103543140:103563240:3:NA	DUP	BS_007JTNB8
 ```
-
 * The 1st line of the file is the header which contains the column names. There are 9 columns in total
 * The 2nd line is the first CNV of the file.
 * Column 1 is the **consensus** CNV chromosome
@@ -52,10 +51,10 @@ chr14	103515996	103563240	NULL	103515996:103563363:3	103511784:103541532:3,10354
 * Column 3 is the **consensus** CNV end location
 * Columns 4, 5, and 6 contain the calls of Manta, CNVkit, and Freec that make up the **consensus** CNV described in columns 1, 2, and 3. 
 * ie. If there is info in column 4, that means one or more CNVs called from Manta made up the current **consensus** CNV described in columns 1, 2, and 3. 
-* Columns 4, 5, and 6 have the following format: `START:END:COPY_NUMBER,START:END:COPY_NUMBER`
+* Columns 4, 5, and 6 have the following format: `START:END:COPY_NUMBER,START:END:COPY_NUMBER:SEG.MEAN`
   * Note that if there is more than one original CNV call corresponding to a given consensus CNV from a given caller, the information for each of the CNV calls will be comma separated.
-  * In the example output above column 6 of line 4 contains `103511784:103541532:3,103543140:103563240:3` which means 2 CNVs called by FreeC helped to make up the **consensus** CNV on line 4. 
-One has the start and end coordinates of `103511784:103541532` **on the same chromosome** and has a copy number of `3` and another has the coordinates `103543140:103563240` and has a copy number of `3`. 
+  * In the example output above column 6 of line 4 contains `103511784:103541532:3:NA,103543140:103563240:3:NA` which means 2 CNVs called by FreeC helped to make up the **consensus** CNV on line 4. 
+One has the start and end coordinates of `103511784:103541532` **on the same chromosome**, has a copy number of `3`, and a seg.mean of `NA`. The other has the coordinates `103543140:103563240`, has a copy number of `3`, and a seg.mean of `NA`
 * Column 7 is the CNVtype. This will be one of DUP or DEL, corresponding to duplications or deletions, respectively. Note that this does not describe the number of copies, only the direction of the copy number change.
-* Column 8 is the Sample name
-* Column 9 contains the name of of the two-caller consensus files (`manta-cnvkit` `manta-freec` `cnvkit-freec`) that made up the final **consensus** CNV. 
+* Column 8 is the Biospecimen Sample name
+

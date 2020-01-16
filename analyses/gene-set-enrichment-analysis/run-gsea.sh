@@ -39,5 +39,5 @@ OUTPUT_FILE="gsva_scores_stranded.tsv"
 Rscript --vanilla 01-conduct-gsea-analysis.R --input ${INPUT_FILE} --output ${OUTPUT_FILE}
 
 
-######## Exploratory analysis of GSVA scores ############
-Rscript -e "rmarkdown::render('02-exploratory-gsea.Rmd', clean = TRUE, params=list(is_ci = ${IS_CI}))" 
+######## Model GSVA scores ############
+Rscript -e "rmarkdown::render('02-model-gsea.Rmd', clean = TRUE, params=list(is_ci = ${IS_CI}))" 
