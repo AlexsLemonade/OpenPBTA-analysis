@@ -1,0 +1,125 @@
+---
+title: "Molecularly Subtyping Embryonal Tumors - Which samples to include?"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Stephanie J. Spielman and Jaclyn Taroni for ALSF CCDL
+date: 2019
+---
+
+This notebook identifies samples to include in subset files for the purpose of molecularly subtyping embryonal tumors ([`AlexsLemonade/OpenPBTA-analysis#251`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251)).
+
+This closed pull request is also relevant to the task at hand: [`AlexsLemonade/OpenPBTA-analysis#401`](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/401).
+
+To summarize - we will identify biospecimen IDs that should be included for downstream analysis using the following criteria:
+
+1. An RNA-seq biospecimen includes a _TTYH1_ fusion (5' partner).
+   We can consume the files from the [`fusion-summary` module](../fusion-summary/) for this step.
+   (See also: [this comment on `AlexsLemonade/OpenPBTA-analysis#401`](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/401#issuecomment-573669727).)
+2. Any sample with `"Embryonal tumor"` in the `broad_histology` column of `pbta-histologies.tsv` that is not labeled `"Medulloblastoma"` or `"Atypical Teratoid Rhabdoid Tumor (ATRT)"` in `disease_type_old` per [this comment on `AlexsLemonade/OpenPBTA-analysis#251`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251#issuecomment-568220913).
+   We'll look at the `disease_type_new` column as well.
+
+## Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/molecular-subtyping-embryonal/01-samples-to-subset.Rmd', clean = TRUE)"
+```
+
+## Set Up
+
+### Libraries and functions
+
+```{r}
+library(tidyverse)
+```
+
+### Directories
+
+```{r}
+data_dir <- file.path("..", "..", "data")
+# the directory that contains the fusion summary files of interest
+fusion_summary_dir <- file.path("..", "fusion-summary", "results")
+
+results_dir <- "results"
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+```
+
+### Read in relevant files
+
+```{r message=FALSE}
+histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
+fusion_summary_df <- read_tsv(file.path(fusion_summary_dir,
+                                        "fusion_summary_embryonal_foi.tsv"))
+```
+
+### Output file
+
+```{r}
+output_file <- file.path(results_dir, "biospecimen_ids_embryonal_subtyping.tsv")
+```
+
+## Identify relevant samples
+
+### _TTYH1_ fusions
+
+We'll use the fusion summary file to find samples that contain _TTYH1_.
+We're only interested in fusions where _TTYH1_ is the 5' fusion partner.
+
+```{r}
+ttyh1_fusions <- fusion_summary_df %>%
+  select(Kids_First_Biospecimen_ID, starts_with("TTYH1"))
+```
+
+Which samples have these fusions?
+
+```{r}
+fusion_biospecimens <- ttyh1_fusions %>%
+  # add a column that counts how many TTYH1 fusions are present
+  mutate(fusion_count = rowSums(select(., starts_with("TTYH1")))) %>%
+  # if there's any TTYH1 fusion - pull out the biospecimen ID
+  filter(fusion_count > 0) %>%
+  pull(Kids_First_Biospecimen_ID)
+```
+
+### Disease labels
+
+First subset to embryonal **tumors**, excluding any derived cell lines.
+
+```{r}
+embryonal_df <- histologies_df %>%
+  filter(str_detect(broad_histology, "Embryonal tumor"),
+         sample_type == "Tumor",
+         composition == "Solid Tissue")
+```
+
+Drop medulloblastoma and ATRT samples using the `disease_type_old` labels.
+
+```{r}
+embryonal_df <- embryonal_df %>%
+  filter(!(disease_type_old %in% c("Medulloblastoma",
+                                   "Atypical Teratoid Rhabdoid Tumor (ATRT)")))
+```
+
+### Combine biospecimen IDs
+
+Using the fusion information and the clinical file.
+
+```{r}
+all_biospecimen_ids <- 
+  unique(c(embryonal_df %>% pull(Kids_First_Biospecimen_ID),
+           fusion_biospecimens))
+```
+
+Write to file.
+
+```{r}
+data.frame(Kids_First_Biospecimen_ID = all_biospecimen_ids) %>%
+  write_tsv(output_file)
+```
+
