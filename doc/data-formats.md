@@ -9,7 +9,7 @@ PBTA data files are all files derived from samples (e.g., tumors, cell lines) th
 
 ### Quality Control Data
 
-MendQC output files `*readDist.txt` and `*bam_umend_qc.tsv`, along with a manifest mapping filename to biospecimen, are provided. 
+MendQC [output files](https://github.com/UCSC-Treehouse/mend_qc#output) `*readDist.txt` and `*bam_umend_qc.tsv`, along with a manifest mapping filename to biospecimen, are provided. 
 
  * `pbta-mend-qc.tar.gz`
  * `pbta-mend-qc-manifest.tsv`
