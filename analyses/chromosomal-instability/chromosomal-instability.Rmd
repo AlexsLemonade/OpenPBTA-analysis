@@ -32,7 +32,7 @@ Rscript -e "rmarkdown::render('analyses/chromosomal-instability/chromosomal-inst
 set.seed(2020)
 
 # This threshold will be used to determine percent of genome changed
-ch.pct <- 0.02
+ch.pct <- 0.2
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
@@ -76,6 +76,7 @@ metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
 
 Read in the CNV data and format it to make the chromosome and coordinates easier for
 handling later. 
+TODO: Update to Consensus CNV data. 
 
 ```{r}
 # Read in the segment copy number data
@@ -88,9 +89,10 @@ cnv_df <- data.table::fread(file.path(data_dir, "pbta-cnv-cnvkit.seg.gz"),
     width = loc.end - loc.start,
     # Make a binary variable that labels whether or not a sequence
     # is considered changed by the threshold set
+    # TODO: after updating to Consensus CNV data, see if sex chromosomes still
+    # need to be removed and whether these thresholds should be changed.
     changed = as.factor(dplyr::case_when(
-      seg.mean < log2(1 - ch.pct) ~ "change",
-      seg.mean >= log2(1 + ch.pct) ~ "change", 
+      abs(seg.mean) > log2(1 + ch.pct) ~ "change",
       TRUE ~ "no_change"
     ))
   ) %>%
@@ -114,8 +116,9 @@ cnv_filtered_df <- cnv_df %>%
 Read in the SV data.
 
 ```{r}
-sv_df <- data.table::fread(file.path(data_dir, "pbta-sv-manta.tsv.gz"), 
-                           data.table = FALSE) %>%
+sv_df <- data.table::fread(file.path(data_dir, "pbta-sv-manta.tsv.gz"),
+  data.table = FALSE
+) %>%
   # Reformat the 23 and 24 chromosomes so they are X and Y and also factors
   dplyr::mutate(
     chrom = dplyr::recode(SV.chrom,
@@ -187,6 +190,23 @@ sv_breaks <- data.frame(
   dplyr::filter(!(chrom %in% c("X", "Y", "M", NA)))
 ```
 
+Make an common breaks data.frame. 
+
+```{r}
+common_breaks <- dplyr::bind_rows(sv_breaks, cnv_breaks) %>%
+  dplyr::distinct(chrom, start, .keep_all = TRUE)
+```
+
+Put all the breaks into a list. 
+
+```{r}
+breaks_list <- list(
+  common_breaks = common_breaks,
+  cnv_breaks = cnv_breaks,
+  sv_breaks = sv_breaks
+)
+```
+
 ### Co-localization of breakpoints for samples 
 
 For each sample, we will bin the genome and count how many chromosome breaks 
@@ -201,16 +221,18 @@ We will run this for each sample and return a list of three `GenomicRanges` obje
 # Change here and it will change the rest
 bin_size <- 1e6
 
-# Obtain a list of samples that are common to both datasets. 
+# Obtain a list of samples that are common to both datasets.
 common_samples <- intersect(sv_breaks$samples, cnv_breaks$samples)
 
 # Get a big list of break densities for each sample.
 sample_densities <- lapply(common_samples, function(sample_id) {
-  chr_break_list(
-    cnv_breaks = cnv_breaks, 
-    sv_breaks = sv_breaks, 
-    sample_id = sample_id, 
-    chr_sizes_vector = chr_sizes_vector)
+  lapply(breaks_list, function(breaks_df) {
+    break_density(breaks_df,
+      sample_id = sample_id,
+      window_size = bin_size,
+      chr_sizes_vector = chr_sizes_vector
+    )
+  })
 })
 
 # Bring along the sample IDs
@@ -231,70 +253,77 @@ chr_labels <- paste0("chr", as.factor(chr_labels))
 
 # Make a key for assigning alternating colors to the chromosomes
 chr_colors <- rep(c("grey", "lightblue"), length.out = length(unique(chr_labels)))
-names(chr_colors) <- unique(chr_labels) 
+names(chr_colors) <- unique(chr_labels)
 
 # Create the Heatmap annotation object
-chr_annot <- ComplexHeatmap::HeatmapAnnotation(df = data.frame(chr_labels), col = list(chr_labels = c(chr_colors)), 
-                                               name ="",
-                                               show_legend = FALSE, 
-                                               show_annotation_name = FALSE)
+chr_annot <- ComplexHeatmap::HeatmapAnnotation(
+  df = data.frame(chr_labels), col = list(chr_labels = c(chr_colors)),
+  name = "",
+  show_legend = FALSE,
+  show_annotation_name = FALSE
+)
 ```
 
 Make histology labeling `HeatmapAnnotation` object.
 
 ```{r}
 # Get the histologies for the samples in this set and order them by histology
-histologies <- 
+histologies <-
   data.frame(Kids_First_Biospecimen_ID = common_samples) %>%
-  dplyr::inner_join(dplyr::select(metadata, Kids_First_Biospecimen_ID, short_histology)) %>% 
-  dplyr::mutate(short_histology = as.factor(short_histology)) %>% 
-  dplyr::arrange(short_histology) %>% 
-  tibble::column_to_rownames("Kids_First_Biospecimen_ID") 
+  dplyr::inner_join(dplyr::select(metadata, Kids_First_Biospecimen_ID, short_histology)) %>%
+  dplyr::mutate(short_histology = as.factor(short_histology)) %>%
+  dplyr::arrange(short_histology) %>%
+  tibble::column_to_rownames("Kids_First_Biospecimen_ID")
 
 # Create the Heatmap annotation object
-hist_annot <- ComplexHeatmap::rowAnnotation(df = histologies,
-                                            show_annotation_name = FALSE)
+hist_annot <- ComplexHeatmap::rowAnnotation(
+  df = histologies,
+  show_annotation_name = FALSE
+)
 ```
 
 Make a color function. 
 
 ```{r}
-col_fun <- circlize::colorRamp2(c(0, 2, 5, 10, 20),
-                                c("#edf8fb", "#b2e2e2", "#66c2a4", "#2ca25f", "#006d2c"))
+col_fun <- circlize::colorRamp2(
+  c(0, 2, 5, 10, 20),
+  c("#edf8fb", "#b2e2e2", "#66c2a4", "#2ca25f", "#006d2c")
+)
 ```
 
 Make a function for making the heatmaps. 
 
 ```{r}
 breaks_heatmap <- function(data_name) {
-  # A wrapper function for making a heatmap from the samples GenomicRanges list. 
-  # 
+  # A wrapper function for making a heatmap from the samples GenomicRanges list.
+  #
   # Args:
-  # data_name: a character string that matches a name in the list. 
+  # data_name: a character string that matches a name in the list.
 
-  # Returns: 
+  # Returns:
   # A heatmap of the chromosomal breaks
 
-  # Pull out the total_counts 
+  # Pull out the total_counts
   total_counts <- lapply(sample_densities, function(granges_list) {
     granges_list[[data_name]]@elementMetadata@listData$total_counts
   })
   # Make into a data.frame
   total_counts <- dplyr::bind_rows(total_counts) %>%
-    dplyr::select(rownames(histologies)) %>% 
+    dplyr::select(rownames(histologies)) %>%
     t()
   # Add chromosome labels
   colnames(total_counts) <- chr_labels
   # Plot on a heatmap
-  heatmap <- ComplexHeatmap::Heatmap(total_counts, 
-                                            col = col_fun, 
-                                            heatmap_legend_param = list(title = "Count of chr breaks"),
-                                            cluster_columns = FALSE,
-                                            cluster_rows = FALSE,
-                                            show_column_names = FALSE, 
-                                            show_row_names = FALSE, 
-                                            bottom_annotation = chr_annot, 
-                                            left_annotation = hist_annot)
+  heatmap <- ComplexHeatmap::Heatmap(total_counts,
+    col = col_fun,
+    heatmap_legend_param = list(title = "Count of chr breaks"),
+    cluster_columns = FALSE,
+    cluster_rows = FALSE,
+    show_column_names = FALSE,
+    show_row_names = FALSE,
+    bottom_annotation = chr_annot,
+    left_annotation = hist_annot
+  )
   # Return plot
   return(heatmap)
 }
@@ -306,9 +335,10 @@ breaks_heatmap <- function(data_name) {
 common_heatmap <- breaks_heatmap(data_name = "common_density")
 
 # Save plot as PNG
-png(file.path(plots_dir, paste0("common_density_heatmap.png")), 
-  width = 1200, height = 900, units = "px")
-  common_heatmap
+png(file.path(plots_dir, paste0("common_density_heatmap.png")),
+  width = 1200, height = 900, units = "px"
+)
+common_heatmap
 dev.off()
 
 # Print out here
@@ -321,9 +351,10 @@ common_heatmap
 cnv_heatmap <- breaks_heatmap(data_name = "cnv_density")
 
 # Save plot as PNG
-png(file.path(plots_dir, paste0("cnv_density_heatmap.png")), 
-  width = 1200, height = 900, units = "px")
-  cnv_heatmap
+png(file.path(plots_dir, paste0("cnv_density_heatmap.png")),
+  width = 1200, height = 900, units = "px"
+)
+cnv_heatmap
 dev.off()
 
 # Print out here
@@ -336,9 +367,10 @@ cnv_heatmap
 sv_heatmap <- breaks_heatmap(data_name = "sv_density")
 
 # Save plot as PNG
-png(file.path(plots_dir, paste0("sv_density_heatmap.png")), 
-  width = 1200, height = 900, units = "px")
-  sv_heatmap
+png(file.path(plots_dir, paste0("sv_density_heatmap.png")),
+  width = 1200, height = 900, units = "px"
+)
+sv_heatmap
 dev.off()
 
 # Print out here
@@ -355,8 +387,8 @@ each tumor-type group.
 bin_size <- 1e6
 
 # Get a list of the tumor_types for which we have DNA-seq data
-tumor_types <- metadata %>% 
-  dplyr::filter(!is.na(short_histology), experimental_strategy != "RNA-Seq") %>% 
+tumor_types <- metadata %>%
+  dplyr::filter(!is.na(short_histology), experimental_strategy != "RNA-Seq") %>%
   dplyr::distinct(short_histology) %>%
   dplyr::pull(short_histology)
 ```
@@ -371,17 +403,19 @@ group_densities <- lapply(tumor_types, function(tumor_type) {
   sample_ids <- metadata %>%
     dplyr::filter(metadata$short_histology == tumor_type) %>%
     dplyr::pull(Kids_First_Biospecimen_ID)
-  
+
   # Double check these samples are in the list
   check_samples <- (sample_ids %in% common_samples)
-  
+
   # If no samples, go to next
   if (sum(check_samples) > 1) {
-  message(paste("Calculating breakpoint density for", tumor_type, "samples"))
-  chr_break_list(cnv_breaks = cnv_breaks, 
-                 sv_breaks = sv_breaks, 
-                 sample_id = sample_ids, 
-                 chr_sizes_vector = chr_sizes_vector)
+    message(paste("Calculating breakpoint density for", tumor_type, "samples"))
+    chr_break_list(
+      cnv_breaks = cnv_breaks,
+      sv_breaks = sv_breaks,
+      sample_id = sample_ids,
+      chr_sizes_vector = chr_sizes_vector
+    )
   }
 })
 
@@ -398,7 +432,7 @@ Here we will plot median number of break points for the tumor-type group per
 each bin.
 
 ```{r}
-purrr::imap(group_densities, function(.x, name = .y){
+purrr::imap(group_densities, function(.x, name = .y) {
   # Make the combo plot
   multipanel_break_plot(
     granges_list = .x,
@@ -417,7 +451,7 @@ Zip up the PNG files into one file.
 zip_file <- paste0(hist_plots_dir, ".zip")
 
 # Remove any current zip_file of this name so we can overwrite it
-if (file.exists(zip_file)){
+if (file.exists(zip_file)) {
   file.remove(zip_file)
 }
 # Zip up the plots

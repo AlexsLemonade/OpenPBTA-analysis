@@ -80,27 +80,21 @@ make_granges <- function(break_df = NULL,
   return(granges)
 }
 
-break_density <- function(sv_breaks = NULL,
-                          cnv_breaks = NULL,
+break_density <- function(breaks_df = NULL,
                           sample_id = NULL,
                           window_size = 1e6,
                           chr_sizes_vector = NULL,
-                          samples_col_cnv = "samples",
-                          chrom_col_cnv = "chrom",
-                          start_col_cnv = "start",
-                          end_col_cnv = "end",
-                          samples_col_sv = "samples",
-                          chrom_col_sv = "chrom",
-                          start_col_sv = "start",
-                          end_col_sv = "end") {
+                          samples_col = "samples",
+                          chrom_col = "chrom",
+                          start_col = "start",
+                          end_col = "end") {
   # For given breaks data.frame(s), calculate the breaks density for a tiled
   # windows across the genome. Returns the data as a GenomicRanges object for
   # easy mapping with ggbio. Where the density and counts are stored in
   # @elementMetadata@listData.
   #
   # Args:
-  #   sv_breaks: a data.frame with the breaks for the SV data.
-  #   cnv_breaks: a data.frame with the breaks for the CNV data.
+  #   breaks_df: a data.frame with chromosomal breaks.
   #   sample_id: a character string that designates which data needs to be
   #              extracted and made intoa GenomicRanges object by matching the
   #              information in the designated sample_col. If "all" is designated,
@@ -134,76 +128,15 @@ break_density <- function(sv_breaks = NULL,
   # Determine how many samples are in the group
   n_samples <- length(sample_id)
 
-  # If both datasets are given, make them into one and use this
-  if (!is.null(cnv_breaks) & !is.null(sv_breaks)) {
-
-    # Read in CNV data
-    cnv_ranges <- make_granges(
-      break_df = cnv_breaks,
-      sample_id = sample_id,
-      samples_col = samples_col_cnv,
-      chrom_col = chrom_col_cnv,
-      start_col = start_col_cnv,
-      end_col = end_col_cnv
-    )
-
-    # Read in SV data
-    sv_ranges <- make_granges(
-      break_df = sv_breaks,
-      sample_id = sample_id,
-      samples_col = samples_col_sv,
-      chrom_col = chrom_col_sv,
-      start_col = start_col_sv,
-      end_col = end_col_sv
-    )
-    # Combine datasets
-    break_ranges <- GenomicRanges::union(
-      cnv_ranges,
-      sv_ranges
-    )
-
-    # Carry over list data from sv_ranges
-    sv_overlaps <- suppressWarnings(GenomicRanges::findOverlaps(sv_ranges,
-                                                                break_ranges))
-
-    # Carry over list data from cnv_ranges
-    cnv_overlaps <- suppressWarnings(GenomicRanges::findOverlaps(cnv_ranges,
-                                                                 break_ranges))
-
-    # Set up an empty list where we can store what sample each sequence came from
-    break_ranges@elementMetadata@listData$mcols <- rep(NA, length(break_ranges))
-
-    # Bring over CNV samples
-    break_ranges@elementMetadata@listData$mcols[cnv_overlaps@from] <-
-      cnv_ranges@elementMetadata@listData$mcols[cnv_overlaps@to]
-
-    # Bring over SV samples
-    break_ranges@elementMetadata@listData$mcols[cnv_overlaps@from] <-
-      cnv_ranges@elementMetadata@listData$mcols[cnv_overlaps@to]
-
-  } else if (!is.null(cnv_breaks) & is.null(sv_breaks)) {
-    # If only the CNV data is given, use this data only
-    break_ranges <- make_granges(
-      break_df = cnv_breaks,
-      sample_id = sample_id,
-      samples_col = samples_col_cnv,
-      chrom_col = chrom_col_cnv,
-      start_col = start_col_cnv,
-      end_col = end_col_cnv
-    )
-  } else if (!is.null(sv_breaks) & is.null(cnv_breaks)) {
-    break_ranges <- make_granges(
-      break_df = sv_breaks,
-      sample_id = sample_id,
-      samples_col = samples_col_sv,
-      chrom_col = chrom_col_sv,
-      start_col = start_col_sv,
-      end_col = end_col_sv
-    )
-  } else if (is.null(sv_breaks) & is.null(cnv_breaks)) {
-    stop("No data has been provided in either the `sv_break` or `cnv_break` arguments.")
-  }
-
+  # Make this into a GenomicRanges object
+  break_ranges <- make_granges(
+    break_df = breaks_df,
+    sample_id = sample_id,
+    samples_col = samples_col,
+    chrom_col = chrom_col,
+    start_col = start_col,
+    end_col = end_col
+  )
   ######################### Tally breaks by genome bins ########################
   bins <- GenomicRanges::tileGenome(chr_sizes_vector,
     tilewidth = window_size
@@ -256,58 +189,4 @@ break_density <- function(sv_breaks = NULL,
 
   # Return the GRanges object for mapping purposes
   return(bins)
-}
-
-
-chr_break_list <- function(sv_breaks = NULL, 
-                           cnv_breaks = NULL,
-                           sample_id = NULL,
-                           chr_sizes_vector = NULL,
-                           window_size = 1e6) {
-  # For given snv_breaks and cnv_breaks data frame calculate the breaks density
-  # for each and then the combined. Returns data as a list of three GenomicRanges
-  # objects
-  #
-  # Args:
-  #   sv_breaks: a data.frame with the breaks for the SV data.
-  #   cnv_breaks: a data.frame with the breaks for the CNV data.
-  #   sample_id: a character string that designates which data needs to be
-  #              extracted and made intoa GenomicRanges object by matching the
-  #              information in the designated sample_col. If "all" is designated,
-  #              all samples will be kept. Multiple samples can be designated
-  #              as a character vector.
-  #   chr_sizes_vector: a named numeric vector of the sizes (bp) of the chromosomes.
-  #                  names of the chromosomes must match the format of the input
-  #                  break data. e.g. "chr1" or "1".
-  # Calculate break densities with both datasets combined
-  common_density <- break_density(
-    sv_breaks,
-    cnv_breaks,
-    sample_id = sample_id,
-    window_size = bin_size,
-    chr_sizes_vector = chr_sizes_vector
-  )
-  
-  # Calculate break densities for CNV only
-  cnv_density <- break_density(
-    cnv_breaks,
-    sample_id = sample_id,
-    window_size = bin_size,
-    chr_sizes_vector = chr_sizes_vector
-  )
-  
-  # Calculate break densities for SV only
-  sv_density <- break_density(
-    sv_breaks,
-    sample_id = sample_id,
-    window_size = bin_size,
-    chr_sizes_vector = chr_sizes_vector
-  )
-  
-  # Return this mega GRanges list
-  return(list(
-    common_density = common_density,
-    cnv_density = cnv_density,
-    sv_density = sv_density
-  ))
 }
