@@ -22,6 +22,7 @@ Briefly, VCFs are VEP annotated and converted to MAF format via [vcf2maf](https:
 ### Somatic Copy Number Variant (CNV) Data
 
 Somatic Copy Number Variant (CNV) data are provided in a modified [SEG format](https://software.broadinstitute.org/software/igv/SEG) for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-copy-number-variant-calling) and denoted with the `pbta-cnv` prefix.
+**Somatic copy number data is only generated for whole genome sequencing (WGS) samples.**
 
   * `pbta-cnv-cnvkit.seg.gz` is the the CNVkit SEG file. This file contains an additional column `copy.num` to denote copy number of each segment, derived from the CNS file output of the algorithm [described here](https://cnvkit.readthedocs.io/en/stable/fileformats.html).
   * `pbta-cnv-controlfreec.tsv.gz` is the ControlFreeC TSV file. It is a merge of `*_CNVs` files produced from the algorithm, and columns are [described here](http://boevalab.inf.ethz.ch/FREEC/tutorial.html#OUTPUT).
@@ -62,6 +63,7 @@ The _copy number_ annotated in the CNVkit SEG file is annotated with respect to 
 ### Somatic Structural Variant (SV) Data
 
 Somatic Structural Variant Data (Somatic SV) are provided in the [Annotated Manta TSV](doc/format/manta-tsv-header.md) format produced by the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-structural-variant-calling) and denoted with the `pbta-sv` prefix.
+**Somatic structural variant data is only generated for whole genome sequencing (WGS) samples.**
 
 * `pbta-sv-manta.tsv.gz`
 
