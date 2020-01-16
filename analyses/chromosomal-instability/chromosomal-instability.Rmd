@@ -32,6 +32,7 @@ Rscript -e "rmarkdown::render('analyses/chromosomal-instability/chromosomal-inst
 set.seed(2020)
 
 # This threshold will be used to determine percent of genome changed
+# TODO: after updating to consensus CNV data, evaluate this threshold setting.
 ch.pct <- 0.2
 
 # Magrittr pipe
@@ -76,7 +77,7 @@ metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
 
 Read in the CNV data and format it to make the chromosome and coordinates easier for
 handling later. 
-TODO: Update to Consensus CNV data. 
+TODO: Update to consensus CNV data. 
 
 ```{r}
 # Read in the segment copy number data
@@ -156,6 +157,7 @@ The SV and CNV data comes to us in the form of ranges, but for getting a look
 at chromosomal instability, we will want to convert this data into single break
 points of the genome. 
 We'll also remove the sex chromosomes. 
+TODO: after updating to consensus CNV data, evaluate whether sex chromosomes should still be removed. 
 
 Make an CNV breaks data.frame. 
 
@@ -164,8 +166,7 @@ Make an CNV breaks data.frame.
 cnv_breaks <- data.frame(
   samples = rep(cnv_filtered_df$ID, 2),
   chrom = rep(cnv_filtered_df$chrom, 2),
-  start = c(cnv_filtered_df$start, cnv_filtered_df$end),
-  end = c(cnv_filtered_df$start, cnv_filtered_df$end),
+  coord = c(cnv_filtered_df$start, cnv_filtered_df$end),
   seg.mean = rep(cnv_filtered_df$seg.mean, 2),
   copy.num = rep(cnv_filtered_df$copy.num, 2),
   stringsAsFactors = FALSE
@@ -181,8 +182,7 @@ Make an SV breaks data.frame.
 sv_breaks <- data.frame(
   samples = rep(sv_df$Kids.First.Biospecimen.ID.Tumor, 2),
   chrom = rep(sv_df$chrom, 2),
-  start = c(sv_df$SV.start, sv_df$SV.end),
-  end = c(sv_df$SV.start, sv_df$SV.end),
+  coord = c(sv_df$SV.start, sv_df$SV.end),
   svclass = rep(sv_df$SV.type, 2),
   stringsAsFactors = FALSE
 ) %>%
@@ -194,7 +194,7 @@ Make an common breaks data.frame.
 
 ```{r}
 common_breaks <- dplyr::bind_rows(sv_breaks, cnv_breaks) %>%
-  dplyr::distinct(chrom, start, .keep_all = TRUE)
+  dplyr::distinct(samples, chrom, coord, .keep_all = TRUE)
 ```
 
 Put all the breaks into a list. 
@@ -213,9 +213,9 @@ For each sample, we will bin the genome and count how many chromosome breaks
 occur for each bin, given the given `bin_size`.
 
 We will run this for each sample and return a list of three `GenomicRanges` objects:
-1) `common_density` contains the combined break counts for both SV and CNV break data.   
-2) `cnv_density` contains the number of break counts for CNV.   
-3) `sv_density` contains the number of break counts for SV.  
+1) `common_breaks` contains the combined break counts for both SV and CNV break data.   
+2) `cnv_breaks` contains the number of break counts for CNV.   
+3) `sv_breaks` contains the number of break counts for SV.  
 
 ```{r, warning = FALSE, results='hide'}
 # Change here and it will change the rest
@@ -229,6 +229,8 @@ sample_densities <- lapply(common_samples, function(sample_id) {
   lapply(breaks_list, function(breaks_df) {
     break_density(breaks_df,
       sample_id = sample_id,
+      start_col = "coord",
+      end_col = "coord",
       window_size = bin_size,
       chr_sizes_vector = chr_sizes_vector
     )
@@ -248,7 +250,7 @@ Make chromosome labeling `HeatmapAnnotation` object.
 
 ```{r}
 # Extract chromosome names from a GenomicRanges object
-chr_labels <- sample_densities[[1]]$common_density@seqnames
+chr_labels <- sample_densities[[1]]$common_breaks@seqnames
 chr_labels <- paste0("chr", as.factor(chr_labels))
 
 # Make a key for assigning alternating colors to the chromosomes
@@ -332,10 +334,10 @@ breaks_heatmap <- function(data_name) {
 ## Common breaks heatmap
 
 ```{r}
-common_heatmap <- breaks_heatmap(data_name = "common_density")
+common_heatmap <- breaks_heatmap(data_name = "common_breaks")
 
 # Save plot as PNG
-png(file.path(plots_dir, paste0("common_density_heatmap.png")),
+png(file.path(plots_dir, paste0("common_breaks_heatmap.png")),
   width = 1200, height = 900, units = "px"
 )
 common_heatmap
@@ -348,10 +350,10 @@ common_heatmap
 ## CNV breaks heatmap
 
 ```{r}
-cnv_heatmap <- breaks_heatmap(data_name = "cnv_density")
+cnv_heatmap <- breaks_heatmap(data_name = "cnv_breaks")
 
 # Save plot as PNG
-png(file.path(plots_dir, paste0("cnv_density_heatmap.png")),
+png(file.path(plots_dir, paste0("cnv_breaks_heatmap.png")),
   width = 1200, height = 900, units = "px"
 )
 cnv_heatmap
@@ -364,10 +366,10 @@ cnv_heatmap
 ## SV breaks heatmap
 
 ```{r}
-sv_heatmap <- breaks_heatmap(data_name = "sv_density")
+sv_heatmap <- breaks_heatmap(data_name = "sv_breaks")
 
 # Save plot as PNG
-png(file.path(plots_dir, paste0("sv_density_heatmap.png")),
+png(file.path(plots_dir, paste0("sv_breaks_heatmap.png")),
   width = 1200, height = 900, units = "px"
 )
 sv_heatmap
@@ -410,12 +412,15 @@ group_densities <- lapply(tumor_types, function(tumor_type) {
   # If no samples, go to next
   if (sum(check_samples) > 1) {
     message(paste("Calculating breakpoint density for", tumor_type, "samples"))
-    chr_break_list(
-      cnv_breaks = cnv_breaks,
-      sv_breaks = sv_breaks,
-      sample_id = sample_ids,
-      chr_sizes_vector = chr_sizes_vector
-    )
+    lapply(breaks_list, function(breaks_df) {
+      break_density(breaks_df,
+        sample_id = sample_ids,
+        start_col = "coord",
+        end_col = "coord",
+        window_size = bin_size,
+        chr_sizes_vector = chr_sizes_vector
+      )
+    })
   }
 })
 
