@@ -11,7 +11,7 @@ PBTA data files are all files derived from samples (e.g., tumors, cell lines) th
 
 MendQC [output files](https://github.com/UCSC-Treehouse/mend_qc#output) `*readDist.txt` and `*bam_umend_qc.tsv`, along with a manifest mapping filename to biospecimen, are provided. 
 
- * `pbta-mend-qc.tar.gz`
+ * `pbta-mend-qc-results.tar.gz`
  * `pbta-mend-qc-manifest.tsv`
 
 ### Somatic Single Nucleotide Variant (SNV) Data
@@ -191,7 +191,7 @@ The script used to run GISTIC can be [found here](https://github.com/d3b-center/
 
 Copy number consensus calls from the copy number and structural variant callers are a product of the [`analyses/copy_number_consensus_call`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/copy_number_consensus_call) analysis module. 
  * `cnv_consensus.tsv` contains consensus regions from two or more callers, with columns described in the [analysis README](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/copy_number_consensus_call/README.md).
- 
+
 ## Data Caveats
 
 The clinical manifest will be updated and versioned as molecular subgroups are identified based on genomic analyses.

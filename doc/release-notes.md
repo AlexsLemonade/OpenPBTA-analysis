@@ -22,7 +22,7 @@
     - fusion_summary_embryonal_foi.tsv
     - fusion_summary_ependymoma_foi.tsv
   - Add MendQC and STAR output files and associated manifests, per [#341](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/341). Files added:
-    - pbta-mend-qc.tar.gz
+    - pbta-mend-qc-results.tar.gz
     - pbta-mend-qc-manifest.tsv
     - pbta-star-log-final.tar.gz
     - pbta-star-log-manifest.tsv
@@ -52,7 +52,7 @@
 data
 └── release-v13-20200116
     ├── release-notes.md
-    ├── data-file-descriptions.md
+    ├── data-files-description.md
     ├── StrexomeLite_Targets_CrossMap_hg38_filtered_chr_prefixed.bed
     ├── StrexomeLite_hg38_liftover_100bp_padded.bed
     ├── WGS.hg38.lancet.300bp_padded.bed
@@ -75,8 +75,6 @@ data
     ├── pbta-gene-expression-rsem-fpkm.polya.rds
     ├── pbta-gene-expression-rsem-fpkm.stranded.rds
     ├── pbta-histologies.tsv
-    ├── pbta-isoform-counts-rsem-expected_count.polya.rds
-    ├── pbta-isoform-counts-rsem-expected_count.stranded.rds
     ├── pbta-snv-lancet.vep.maf.gz
     ├── pbta-snv-mutect2.vep.maf.gz
     ├── pbta-snv-strelka2.vep.maf.gz
@@ -92,6 +90,8 @@ data
     ├── pbta-gene-expression-rsem-tpm.stranded.rds
     ├── pbta-isoform-expression-rsem-tpm.polya.rds
     ├── pbta-isoform-expression-rsem-tpm.stranded.rds
+    ├── pbta-isoform-counts-rsem-expected_count.polya.rds
+    ├── pbta-isoform-counts-rsem-expected_count.stranded.rds
     ├── pbta-snv-consensus-mutation.maf.tsv.gz
     ├── pbta-snv-consensus-mutation-tmb-all.tsv
     ├── pbta-snv-consensus-mutation-tmb-coding.tsv
@@ -101,10 +101,14 @@ data
     ├── pbta-tcga-snv-strelka2.vep.maf.gz
     ├── pbta-tcga-snv-mutect2.vep.maf.gz
     ├── pbta-tcga-manifest.tsv
-    ├── pbta-mend-qc.tar.gz
+    ├── pbta-mend-qc-results.tar.gz
     ├── pbta-mend-qc-manifest.tsv
     ├── pbta-star-log-final.tar.gz
     ├── pbta-star-log-manifest.tsv
+    ├── cnv_consensus.tsv
+    ├── intersect_exon_lancet_strelka_mutect_WGS.bed
+    ├── intersect_exon_WXS.bed
+    ├── intersect_strelka_mutect_WGS.bed
     ├── fusion_summary_embryonal_foi.tsv
     └── fusion_summary_ependymoma_foi.tsv
 ```
