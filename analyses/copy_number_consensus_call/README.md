@@ -10,6 +10,14 @@ This analysis uses information from the following files generated from the 3 cal
 * `pbta-cnv-controlfreec.tsv.gz`
 * `pbta-sv-manta.tsv.gz`
 
+The analysis produces an output file that includes the original calls used for each consensus call:
+
+* `results/cnv_consensus.tsv`
+
+And also a segfile for downstream processing:
+
+* `results/pbta-cnv-consensus.seg`
+
 ## Running the pipeline
 
 To run the entire pipeline, make sure to have the latest release of the three input files mentioned in the Overview section.
