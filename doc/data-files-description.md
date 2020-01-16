@@ -15,7 +15,7 @@ This document contains information about all data files associated with this pro
 
 
 
-### current release (release-v12-20191217)
+### current release (release-v13-20200116)
 
 | **File name** |  **File Type** | **Origin** | **File Description** |
 |---------------|----------------|------------------------|-----------------------|
