@@ -87,6 +87,31 @@ fusion_biospecimens <- ttyh1_fusions %>%
   pull(Kids_First_Biospecimen_ID)
 ```
 
+DNA-seq biospecimens associated with the samples that contain the relevant fusions.
+
+```{r}
+relevant_samples <- histologies_df %>%
+  filter(Kids_First_Biospecimen_ID %in% fusion_biospecimens) %>%
+  pull(sample_id)
+
+relevant_sample_df <- histologies_df %>%
+  filter(sample_id %in% relevant_samples,
+         experimental_strategy %in% c("WGS", "WXS"),
+         sample_type == "Tumor",
+         composition == "Solid Tissue")
+
+relevant_sample_df
+```
+
+We've captured a medulloblastoma tumor and a pineoblastoma tumor with the _TTYH1_ fusion criterion.
+
+```{r}
+fusion_biospecimens <- c(
+  fusion_biospecimens,
+  relevant_sample_df %>% pull(Kids_First_Biospecimen_ID)
+)
+```
+
 ### Disease labels
 
 First subset to embryonal **tumors**, excluding any derived cell lines.
