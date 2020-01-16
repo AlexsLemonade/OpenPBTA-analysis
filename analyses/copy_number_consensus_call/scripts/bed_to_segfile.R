@@ -1,40 +1,52 @@
+# bed_to_segfile.R
+#
+# Josh Shapiro for CCDL 2020
+# 
+# Purpose: Convert the bed file output from the CNV consensus workflow to a seg file
+#
+# Option descriptions
+# -i, --cnv_file : path to the cnv consensus file 
+# -o, --output_file : path for output file
+# 
+# example invocation:
+# Rscript scripts/bed_to_segfile.R \
+#   -i results/cnv_consensus.tsv \
+#   -o results/pbta-cnv-consensus.seg
 
-# Base directories
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-analysis_dir <- file.path(root_dir, "analyses", "copy_number_consensus_call")
 
-library(optparse)
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
-# Parse options
 
+
+# Parse command line options
+library(optparse)
 option_list <- list(
   make_option(
     c("-i", "--cnv_file"),
     type = "character",
     default = NULL,
-    help = "path to the cnv consensus file, relative to analysis root",
+    help = "path to the cnv consensus file",
   ),
   make_option(
     c("-o", "--output_file"),
     type = "character",
     default = NULL,
-    help = "path to output file, relative to analysis root"
+    help = "path to output file"
   )
 )
 
 opts <- parse_args(OptionParser(option_list = option_list))
 
-# read the cnv output table
+# Read the cnv output table
 cnvs <- readr::read_tsv(file.path(analysis_dir, opts$cnv_file))
 
 # Columns *_CNV have the format START:END:COPY_NUMBER:SEG.MEAN,START:END:COPY_NUMBER:SEG.MEAN
-# This function converts one into a data frane, 
+# This function converts ones such string into a data frane, 
 # which we can then make a column within the cnv data frame
 segstrings_to_df <- function(segment_string){
-  segment_vector <- stringr::str_split(segment_string, ",")[[1]]
+  segment_vector <- stringr::str_split(segment_string, ",")[[1]] 
   seg_matrix <- stringr::str_split(segment_vector, ":", simplify = TRUE)
   # account for rows with no calls
   if(dim(seg_matrix)[2] != 4){seg_matrix <- matrix(ncol = 4)}
@@ -46,23 +58,26 @@ segstrings_to_df <- function(segment_string){
   return(seg_df)
 }
 
-# Functions to calculate weighted means and medians 
-# from data frames created with segstrings_to_df()
+## Functions to calculate weighted means and medians 
+## from data frames created with segstrings_to_df()
 
+# weighted mean segmean
 seg_wmean <- function(seg_df){
   wmean <- weighted.mean(seg_df$segmean, seg_df$length)
 }
 
+# weighted median segmean
 seg_wmedian <- function(seg_df){
   wmed <- matrixStats::weightedMedian(seg_df$segmean, seg_df$length, 
                                       interpolate = FALSE)
 }
-
+## weighted median with interpolation (probably not used)
 seg_wmedian2 <- function(seg_df){
   wmed <- matrixStats::weightedMedian(seg_df$segmean, seg_df$length, 
                                       interpolate = TRUE)
 }
 
+# weighted median copy number
 copies_wmedian <- function(seg_df){
   wmed <- matrixStats::weightedMedian(seg_df$copies, seg_df$length, 
                                       interpolate = FALSE)
@@ -79,7 +94,7 @@ cnvs <- cnvs %>%
                 cnvkit_cn = purrr::map_dbl(cnvkit_df, copies_wmedian),
                 freec_cn = purrr::map_dbl(freec_df, copies_wmedian),
                 copynum = ifelse(is.finite(cnvkit_cn), # use cnvkit if available
-                                 cnvkit_cn, freec_cn),
+                                 cnvkit_cn, freec_cn), #otherwise use freec
                 num.mark = NA)
 
 
