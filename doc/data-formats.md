@@ -149,11 +149,6 @@ Consensus mutation files are products of the [`analyses/snv-callers`](https://gi
   * `pbta-snv-consensus-mutation-tmb-all.tsv` includes tumor mutation burden statistics that are calculated based calculated from Strelka2 and Mutect2 SNV consensus, and the intersection of Strelka2 and Mutect2 BED windows sizes.
   * `pbta-snv-consensus-mutation-tmb-coding.tsv` contains coding only tumor mutation burden statistics calculated from the number of coding sequence Strelka2, Mutect2, and Lancet consensus SNVs and size of the intersection of all three callers' BED windows and the Gencode v27 coding sequence regions. 
 
-### Consensus Copy Number File
-
-Copy number consensus calls from the copy number and structural variant callers are a product of the [`analyses/copy_number_consensus_call`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/copy_number_consensus_call) analysis module. 
- * `cnv_consensus.tsv` contains consensus regions from two or more callers, with columns described in the [analysis README](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/copy_number_consensus_call/README.md).
-
 ### Collapsed Expression Matrices
 
 Collapsed expression matrices are products of the [`analyses/collapse-rnaseq`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/collapse-rnaseq) analysis module.
@@ -192,6 +187,11 @@ The filtered and prioritized fusion and downstream files are a product of the [`
 `pbta-cnv-cnvkit-gistic.zip` is the output of running GISTIC 2.0 on the CNVkit results (`pbta-cnv-cnvkit.seg`).
 The script used to run GISTIC can be [found here](https://github.com/d3b-center/publication_workflows/blob/master/openPBTA/run-gistic.sh).
 
+### Consensus Copy Number File
+
+Copy number consensus calls from the copy number and structural variant callers are a product of the [`analyses/copy_number_consensus_call`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/copy_number_consensus_call) analysis module. 
+ * `cnv_consensus.tsv` contains consensus regions from two or more callers, with columns described in the [analysis README](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/copy_number_consensus_call/README.md).
+ 
 ## Data Caveats
 
 The clinical manifest will be updated and versioned as molecular subgroups are identified based on genomic analyses.
