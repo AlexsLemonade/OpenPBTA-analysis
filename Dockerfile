@@ -233,7 +233,7 @@ RUN R -e "install.packages('corrplot', dependencies = TRUE)"
 RUN R -e "BiocManager::install('ggbio')"
 
 # package required for shatterseek
-RUN R -e  "remotes::install_github('parklab/ShatterSeek', ref = '83ab3effaf9589cc391ecc2ac45a6eaf578b5046', dependencies = TRUE)"
+RUN R -e  "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true"), remotes::install_github('parklab/ShatterSeek', ref = '83ab3effaf9589cc391ecc2ac45a6eaf578b5046', dependencies = TRUE)"
 
 
 # CRAN package msigdbr needed for gene-set-enrichment-analysis
