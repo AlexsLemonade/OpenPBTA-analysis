@@ -4,7 +4,7 @@
 # Input files:
 # 1. independent-specimens.wgs.primary-plus.tsv
 # this file is used to choose independent specimens
-# 2. pbta-cnv-cnvkit.seg
+# 2. pbta-cnv-cnvkit.seg or pbta-cnv-controlfreec.tsv.gz
 # CNV file is needed in shatterseek
 # 3. BSID_withoutYandM.vcf
 # Those files are SV files, which generated from the "01-process-sv-file.R" script
