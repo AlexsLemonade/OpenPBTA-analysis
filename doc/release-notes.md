@@ -13,7 +13,6 @@
     - pbta-isoform-counts-rsem-expected_count.stranded.rds
     - pbta-gene-counts-rsem-expected_count.stranded.rds
     - pbta-gene-expression-kallisto.stranded.rds
-    - pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds
     - pbta-fusion-recurrently-fused-genes-byhistology.tsv
     - pbta-fusion-recurrently-fused-genes-bysample.tsv
     - pbta-gene-expression-rsem-fpkm-collapsed.polya.rds
