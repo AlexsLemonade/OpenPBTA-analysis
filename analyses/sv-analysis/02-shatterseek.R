@@ -25,7 +25,7 @@
 ## ===================== Load Packages =====================
 library(devtools)
 
-withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true"),remotes::install_github('parklab/ShatterSeek'))
+# withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true"),remotes::install_github('parklab/ShatterSeek'))
 library(ShatterSeek)
 library(readr)
 library(plyr)
