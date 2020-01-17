@@ -118,6 +118,11 @@ subset_files <- function(filename, biospecimen_ids, output_directory) {
       dplyr::filter(Kids.First.Biospecimen.ID.Tumor %in% biospecimen_ids) %>%
       readr::write_tsv(output_file)
 
+  } else if (grepl("cnv_consensus", filename)) {
+    cnv_consensus <- readr::read_tsv(filename)
+    cnv_consensus %>%
+      dplyr::filter(Biospecimen %in% biospecimen_ids) %>%
+      readr::write_tsv(output_file)
   } else if (grepl(".rds", filename)) {
 
     # any column name that contains 'BS_' is a biospecimen ID
