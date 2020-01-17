@@ -136,10 +136,9 @@ jobs:
           name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors 
           command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
 
-         ################################
-         #### Add your analysis here ####
-         ################################
-     
+      - run:
+          name: Add Shatterseek
+          command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/02-shatterseek.R 
 
       - run:
           name: SNV Caller Analysis 
