@@ -90,3 +90,12 @@ filter_process_expression(stranded_collapsed) %>%
   write_rds(file.path(subset_dir, "embryonal_zscored_exp.stranded.rds"))
 
 #### Copy number data ----------------------------------------------------------
+
+# Let's combine all the copy number data before filtering
+copy_number_all <- bind_rows(copy_number_autosomes,
+                             copy_number_sexchr)
+rm(copy_number_autosomes, copy_number_sexchr)
+
+copy_number_all %>%
+  filter(biospecimen_id %in% subset_id) %>%
+  write_tsv(file.path(subset_dir, "embryonal_cnvkit_annotated_cn.tsv"))
