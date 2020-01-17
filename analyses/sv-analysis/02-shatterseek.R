@@ -58,16 +58,17 @@ bioid <- unique(independent_specimen_list$Kids_First_Biospecimen_ID)
 
 
 ## ===================== Load CNV File =====================
-# since there are 2 cnv files, we read  both of them
+# since there are 2 cnv files and 1 consensus file, we read  all of them
 cnvkit <- read_tsv(file.path(root_dir,"data","pbta-cnv-cnvkit.seg.gz"))
 controlfreec <- read_tsv(file.path(root_dir,"data","pbta-cnv-controlfreec.tsv.gz"))
+cnvconsensus <- read_tsv(file.path(root_dir,"analyses","copy_number_consensus_call","results","pbta-cnv-consensus.seg"))
 #  unify the column names and chr format of the two cnv files
 names(controlfreec)[names(controlfreec)=="chr"] <- "chrom"
 names(controlfreec)[names(controlfreec)=="start"] <- "loc.start"
 names(controlfreec)[names(controlfreec)=="end"] <- "loc.end"
 names(controlfreec)[names(controlfreec)=="copy.number"] <- "copy.num"
 controlfreec$chrom <- paste0("chr",controlfreec$chrom)
-# choose  one file then analyze
+# we use cnvconsensus as cnv file
 cnv_file <- cnvkit
 # choose independent specimens and remove all chrY
 # shatterseek can't recognize chrY, so remove them
