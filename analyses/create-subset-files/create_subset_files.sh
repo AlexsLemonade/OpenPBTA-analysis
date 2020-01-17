@@ -9,6 +9,7 @@ set -o pipefail
 BIOSPECIMEN_FILE=${BIOSPECIMEN_FILE:-biospecimen_ids_for_subset.RDS}
 RELEASE=${RELEASE:-release-v13-20200116}
 NUM_MATCHED=${NUM_MATCHED:-15}
+RUN_LOCAL=${RUN_LOCAL:-0}
 
 # This script should always run as if it were being called from
 # the directory it lives in.
@@ -28,7 +29,8 @@ SUBSET_DIRECTORY=../../data/testing/$RELEASE
 Rscript --vanilla 01-get_biospecimen_identifiers.R \
     --data_directory $FULL_DIRECTORY \
     --output_file $BIOSPECIMEN_FILE \
-    --num_matched $NUM_MATCHED
+    --num_matched $NUM_MATCHED \
+    --local $RUN_LOCAL
 
 # subset the files
 Rscript --vanilla 02-subset_files.R \
