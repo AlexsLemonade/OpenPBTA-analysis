@@ -7,7 +7,8 @@
 # Option descriptions
 # -i, --cnv_file : path to the cnv consensus file 
 # -o, --output_file : path for output file
-# 
+# --segmean-method : method for combining seg.mean values. Default `weight_mean` for the length-weighted mean
+#
 # example invocation:
 # Rscript scripts/bed_to_segfile.R \
 #   -i results/cnv_consensus.tsv \
@@ -17,8 +18,6 @@
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
-
-
 
 # Parse command line options
 library(optparse)
@@ -34,10 +33,25 @@ option_list <- list(
     type = "character",
     default = NULL,
     help = "path to output file"
+  ),
+  make_option(
+    c("--segmean_method"),
+    type = "character",
+    
+    default = "weight_mean",
+    help = "Method for combining segment mean values.
+                One of ['weight_mean', 'weight_median', 'median_interpolate'],
+                corresponding to weighted mean, weighted median, or weighted  
+                median with interpolation. Default is weighted mean."
   )
 )
 
 opts <- parse_args(OptionParser(option_list = option_list))
+
+# Check options:
+if (! (opts$segmean_method %in% c('weight_mean', 'weight_median', 'median_interpolate'))){
+    stop("--segmean_method must be one of ['weight_mean', 'weight_median', 'median_interpolate']")
+}
 
 # Read the cnv output table
 cnvs <- readr::read_tsv(opts$cnv_file)
@@ -83,14 +97,19 @@ copies_wmedian <- function(seg_df){
                                       interpolate = FALSE)
 }
 
+segmean_function <- if (opts$segmean_method == "weight_mean"){
+    seg_wmean
+  } else if (opts$segmean_method == "weight_median"){
+    seg_wmedian
+  } else if (opts$segmean_method == "median_interpolate"){
+    seg_wmedian_interpolate
+  }
 
 # Calculate summary stats from merged CNV calls. \
 cnvs <- cnvs %>%
   dplyr::mutate(cnvkit_df = purrr::map(cnvkit_CNVs, segstrings_to_df),
                 freec_df = purrr::map(freec_CNVs, segstrings_to_df),
-                segmean_wmean = purrr::map_dbl(cnvkit_df, seg_wmean),
-                segmean_wmedian1 = purrr::map_dbl(cnvkit_df, seg_wmedian),
-                segmean_wmedian2 = purrr::map_dbl(cnvkit_df, seg_wmedian_interpolate),
+                segmean = purrr::map_dbl(cnvkit_df, segmean_function),
                 cnvkit_cn = purrr::map_dbl(cnvkit_df, copies_wmedian),
                 freec_cn = purrr::map_dbl(freec_df, copies_wmedian),
                 copynum = ifelse(is.finite(cnvkit_cn), # use cnvkit if available
@@ -107,7 +126,7 @@ out_table <- cnvs %>%
                 loc.start = start, 
                 loc.end = end,
                 num.mark = num.mark,
-                seg.mean = segmean_wmean,
+                seg.mean = segmean,
                 copy.num = copynum)
 
 readr::write_tsv(out_table, opts$output_file)
