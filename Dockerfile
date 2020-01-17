@@ -242,4 +242,4 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 RUN R -e "BiocManager::install(c('GSVA'), update = FALSE)"
 
 # package required for shatterseek
-RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true', remotes::install_github('parklab/ShatterSeek', ref = '83ab3effaf9589cc391ecc2ac45a6eaf578b5046', dependencies = TRUE))"
+RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true', remotes::install_github('parklab/ShatterSeek', ref = 'b0ddb6b4eb5d655683c4bc97793285fd77d9a850', dependencies = TRUE))"
