@@ -7,7 +7,7 @@ set -o pipefail
 
 # Set defaults for release and biospecimen file name
 BIOSPECIMEN_FILE=${BIOSPECIMEN_FILE:-biospecimen_ids_for_subset.RDS}
-RELEASE=${RELEASE:-release-v12-20191217}
+RELEASE=${RELEASE:-release-v13-20200116}
 NUM_MATCHED=${NUM_MATCHED:-15}
 
 # This script should always run as if it were being called from
@@ -57,6 +57,18 @@ cp $FULL_DIRECTORY/release-notes.md $SUBSET_DIRECTORY
 
 # data file description
 cp $FULL_DIRECTORY/data-files-description.md $SUBSET_DIRECTORY
+
+# TCGA related files
+cp $FULL_DIRECTORY/pbta-tcga* $SUBSET_DIRECTORY
+
+# STAR logs
+cp $FULL_DIRECTORY/pbta-star* $SUBSET_DIRECTORY
+
+# MEND QC files
+cp $FULL_DIRECTORY/pbta-mend* $SUBSET_DIRECTORY
+
+# fusion summary files
+cp $FULL_DIRECTORY/fusion_summary* $SUBSET_DIRECTORY
 
 # if the md5sum.txt file already exists, get rid of it
 cd $SUBSET_DIRECTORY
