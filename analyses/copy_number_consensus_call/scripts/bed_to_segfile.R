@@ -72,7 +72,7 @@ seg_wmedian <- function(seg_df){
                                       interpolate = FALSE)
 }
 ## weighted median with interpolation (probably not used)
-seg_wmedian2 <- function(seg_df){
+seg_wmedian_interpolate <- function(seg_df){
   wmed <- matrixStats::weightedMedian(seg_df$segmean, seg_df$length, 
                                       interpolate = TRUE)
 }
@@ -90,7 +90,7 @@ cnvs <- cnvs %>%
                 freec_df = purrr::map(freec_CNVs, segstrings_to_df),
                 segmean_wmean = purrr::map_dbl(cnvkit_df, seg_wmean),
                 segmean_wmedian1 = purrr::map_dbl(cnvkit_df, seg_wmedian),
-                segmean_wmedian2 = purrr::map_dbl(cnvkit_df, seg_wmedian2),
+                segmean_wmedian2 = purrr::map_dbl(cnvkit_df, seg_wmedian_interpolate),
                 cnvkit_cn = purrr::map_dbl(cnvkit_df, copies_wmedian),
                 freec_cn = purrr::map_dbl(freec_df, copies_wmedian),
                 copynum = ifelse(is.finite(cnvkit_cn), # use cnvkit if available
