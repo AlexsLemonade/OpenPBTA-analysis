@@ -44,7 +44,7 @@ Since there are 3 callers, there were 3 comparisons: `manta-cnvkit`, `manta-free
 11) **Sort and merge** the CNVs from the comparison pairs ,`manta-cnvkit` `manta-freec` `cnvkit-freec`, together into 1 file
 12) After every samples' consensus CNVs were called, **combine all merged files** from step 10 and output to `results/cnv_consensus.tsv`
 13) The `results/cnv_consensus.tsv` is translated into a `pbta-cnv-consensus.seg` file in the same format as `pbta-cnv-cnvkit.seg.gz`.
-When a consensus CNV contains from multiple source CNV segments, we take the mean of the CNVkit `seg.mean` values from the source segments, weighted by segment lenth.
+When a consensus CNV contains from multiple source CNV segments, we take the mean of the CNVkit `seg.mean` values from the source segments, weighted by segment length.
 If no CNVkit CNV was included, the value for this column is NA.
 The `copy.num` column is the weighted median of CNVkit segment values where they exist, or Control-FREEC values in the absence of CNVkit data.
 
