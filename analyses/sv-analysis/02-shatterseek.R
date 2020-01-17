@@ -86,19 +86,25 @@ sv <- data.frame()
 # main process
 for (i in bioid) {
   # read sv file one by one
+  print("find error step1")
   sv_shatterseek <- read.table(file.path("scratch","sv-vcf",paste(i,"_withoutYandM.tsv",sep="")),sep="\t",header=TRUE)
   
   # sv_shatterseek_original is a file with chrY and ChrM, which will be used later
+  print("find error step2")
   sv_shatterseek_original <- read.table(file.path("scratch","sv-vcf",paste(i,".tsv",sep="")),sep="\t",header=TRUE)
+  print("find error step3")
   sv_shatterseek_original$sample <- i
   
   # merge all sv_shatterseek_original, will be used later
+  print("find error step4")
   sv <- rbind(sv,sv_shatterseek_original)
   
   #  read cnv one by one
+  print("find error step5")
   cnv_shatterseek <-  cnv_analysis[cnv_analysis$ID == i,]
   
   # build sv and cnv data frame
+  print("find error step6")
   SV_data <-
     SVs(
       chrom1 = as.character(sv_shatterseek$chrom1),
@@ -109,6 +115,7 @@ for (i in bioid) {
       strand1 = as.character(sv_shatterseek$strand1),
       strand2 = as.character(sv_shatterseek$strand2)
     )
+  print("find error step7")
   CN_data <-
     CNVsegs(
       chrom = as.character(cnv_shatterseek$chrom),
@@ -118,6 +125,7 @@ for (i in bioid) {
     )
   
   # run shatterseek in min.size = 6
+  print("find error step8")
   chromothripsis6 <- shatterseek(SV.sample=SV_data,seg.sample=CN_data,min.Size=6)
   chrss6 <- chromothripsis6@chromSummary
   chrss6$sample <- i
