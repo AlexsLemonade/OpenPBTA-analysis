@@ -114,7 +114,7 @@ jobs:
 
       - run:
           name: TP53 NF1 classifier run
-          command: ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"  
+          command: OPENPBTA_POLYAPLOT=0 ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"  
       
       - run:
           name: GISTIC Plots
@@ -128,17 +128,18 @@ jobs:
           name: Gene set enrichment analysis to generate GSVA scores
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh" 
 
+      - run:
+          name: Fusion Summary
+          command: ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
+
+      - run:
+          name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors 
+          command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
 
          ################################
          #### Add your analysis here ####
          ################################
-      - run:
-          name: Evaluation plots for TP53/NF1 classifier polya
-          command: ./scripts/run_in_ci.sh python3 analyses/tp53_nf1_score/02-evaluate-classifier.py -s analyses/tp53_nf1_score/results/TP53_NF1_snv_alteration.tsv -f analyses/tp53_nf1_score/results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv -c data/pbta-histologies.tsv -o polya
-
-      - run:
-          name: Evaluation plots for TP53/NF1 classifier stranded
-          command: ./scripts/run_in_ci.sh python3 analyses/tp53_nf1_score/02-evaluate-classifier.py -s analyses/tp53_nf1_score/results/TP53_NF1_snv_alteration.tsv -f analyses/tp53_nf1_score/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv -c data/pbta-histologies.tsv -o stranded 		
+     
 
       - run:
           name: SNV Caller Analysis 
@@ -147,13 +148,7 @@ jobs:
        # This analysis was a side concept question and no longer needs to be run. 
        # - run:
           # name: SNV Caller VAF Cutoff Experiment
-          # command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)"
-
-      - run:
-          name: Fusion Summary
-          command: ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
-      
- 
+          # command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)" 
                 
 
   deploy:
