@@ -31,7 +31,7 @@
     - pbta-tcga-snv-mutect2.vep.maf.gz
     - pbta-tcga-snv-strelka2.vep.maf.gz
     - pbta-tcga-manifest.tsv
-  - Add `cnv-consensus.tsv` file from [#128](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/128).
+  - Add `cnv_consensus.tsv` file from [#128](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/128).
   - Add analysis files from [#351](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/351#issuecomment-571295623)
     - intersect_strelka_mutect_WGS.bed
     - intersect_exon_lancet_strelka_mutect_WGS.bed
