@@ -1,5 +1,6 @@
-# Chante Bethell for CCDL 2019
-# Run 01-prepare-cn-file.R
+# C. Bethell and C. Savonen for CCDL 2019
+# Run 00-add-ploidy-cnvkit.Rmd, 01-prepare-cn-file.R, and -2-rna-expression-validation.R
+# sequentially.
 #
 # Usage: bash run-prepare-cn.sh
 

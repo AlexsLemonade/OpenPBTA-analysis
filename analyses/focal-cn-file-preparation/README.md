@@ -21,8 +21,9 @@ bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
   This notebook adds the ploidy inferred via ControlFreeC to the CNVkit data and adds a status column that defines gain and loss broadly.
   (Note that [the logic around sex chromosomes in males when ploidy = 3 leaves something to be desired](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/259#discussion_r345354403)).
 * `01-prepare-cn-file.R` - This script performs the ranges to annotation mapping using the GENCODE v27 GTF included via the data download step; it takes the ControlFreeC file and the CNVkit file prepared with `00-add-ploidy-cnvkit.Rmd` as input.
-  The mapping is limited to _exons_. 
-  Mapping to cytobands is performed with the [`org.Hs.eg.db`](https://doi.org/doi:10.18129/B9.bioc.org.Hs.eg.db) package.
+  The mapping is limited to _exons_.
+  Mapping to cytobands is performed with the [`UCSC hg38 cytoband file`](http://hgdownload.cse.ucsc.edu/goldenpath/hg38/database/cytoBand.txt.gz).
+  _Note: The decision to implement the `UCSC file` was made based on a comparison done between the cytoband calls in the `org.Hs.eg.db` package and the calls in the `UCSC file`. We found that they disagreed in ~11,800 calls out of ~800,000 and the `UCSC file` contains more cytoband calls._
   A table with the following columns is returned:
   
   | biospecimen_id | status | copy_number | ploidy | ensembl | gene_symbol | cytoband |
