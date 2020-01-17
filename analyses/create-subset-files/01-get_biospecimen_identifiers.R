@@ -88,6 +88,9 @@ get_biospecimen_ids <- function(filename, id_mapping_df) {
     expression_file <- read_rds(filename) %>%
       dplyr::select(dplyr::contains("BS_"))
     biospecimen_ids <- unique(colnames(expression_file))
+  } else if (grepl("cnv_consensus", filename)) {
+    cnv_consensus <- read_tsv(filename)
+    biospecimen_ids <- unique(cnv_consensus$Biospecimen)
   } else {
     # error-handling
     stop("File type unrecognized by 'get_biospecimen_ids'")
@@ -120,7 +123,7 @@ option_list <- list(
   make_option(
     c("-r", "--supported_string"),
     type = "character",
-    default = "pbta-snv|pbta-cnv|pbta-fusion|pbta-isoform|pbta-sv|pbta-gene",
+    default = "pbta-snv|pbta-cnv|pbta-fusion|pbta-isoform|pbta-sv|pbta-gene|cnv_consensus",
     help = "string for pattern matching used to subset to only supported files"
   ),
   make_option(
@@ -194,7 +197,7 @@ files_to_subset <-
 # currently documented
 # we'll include the entire zipped folder
 files_to_subset <-
-  files_to_subset[-grepl("pbta-cnv-cnvkit-gistic.zip", files_to_subset)]
+  files_to_subset[-grep("pbta-cnv-cnvkit-gistic.zip", files_to_subset)]
 
 # TODO: COMMENT THIS OUT once you are no longer testing locally!
 # this is removing the larger 2 of the 4 MAF files
