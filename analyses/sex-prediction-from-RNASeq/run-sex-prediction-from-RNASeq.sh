@@ -16,6 +16,7 @@ cd "$script_directory" || exit
 # option for only running a single tail percent in continuous integration
 PERCENT=${OPENPBTA_PERCENT:-1}
 
+
 #--------USER-SPECIFIED ARGUMENTS
 
 # output directory of script 01, input directory of scripts 02 and 03
@@ -51,6 +52,7 @@ TRAIN_PERCENT=0.7
 TRAIN_TARGET_COLUMN=reported_gender
 
 # we will evaluate the model's performance on both of these columns
+# be sure to include the value of TRAIN_TARGET_COLUMN in this array as well
 targetColumns=("reported_gender" "germline_sex_estimate")
 
 #--------END USER-SPECIFIED ARGUMENTS
@@ -91,6 +93,7 @@ Rscript --vanilla 01-clean_split_data.R \
   --full_targets_file_name $FULL_TARGETS_FILE_NAME \
   --seed $SEED \
   --train_percent $TRAIN_PERCENT \
+  --train_target_column $TRAIN_TARGET_COLUMN \
   --target_columns $targetColumns_to_pass
 
 
@@ -112,7 +115,8 @@ for (( i = 0; i < ${#TRANSCRIPT_TAIL_PERCENT_ARRAY[*]}; i++ )); do
     --model_transcripts_file_name $MODEL_TRANSCRIPTS_FILE_NAME \
     --model_coefs_file_name $MODEL_COEFS_FILE_NAME \
     --train_target_column $TRAIN_TARGET_COLUMN \
-    --transcript_tail_percent ${TRANSCRIPT_TAIL_PERCENT_ARRAY[i]}
+    --transcript_tail_percent ${TRANSCRIPT_TAIL_PERCENT_ARRAY[i]} \
+    --seed $SEED
 
 
   # if there is a test set, e.g., the entire dataset was not used for training
@@ -153,8 +157,8 @@ done
 
 Rscript -e "rmarkdown::render('04-present_results.Rmd', 'html_document', params = list(results_dir = '${RESULTS}', \
       model_dir = '${MODELS}', \
-      cm_set = '${CM_SET}', \
       seed = '${SEED}', \
+      train_target_column = '${TRAIN_TARGET_COLUMN}', \
       target_columns = '${targetColumns_to_pass}'))"
 
 
