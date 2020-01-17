@@ -142,7 +142,7 @@ jobs:
 
       - run:
           name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors 
-          command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
 
          ################################
          #### Add your analysis here ####
