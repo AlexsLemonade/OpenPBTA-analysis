@@ -44,7 +44,10 @@ Read in metadata and isolate to medulloblastoma samples.
 
 ```{r}
 metadata <-
-  readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) %>%
+  readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"),
+                  col_types = readr::cols(
+                    molecular_subtype = readr::col_character() 
+                  )) %>%
   dplyr::filter(disease_type_new == "Medulloblastoma")
 
 # Check summary of subtypes here
