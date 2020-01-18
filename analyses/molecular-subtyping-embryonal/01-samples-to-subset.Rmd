@@ -41,8 +41,6 @@ library(tidyverse)
 
 ```{r}
 data_dir <- file.path("..", "..", "data")
-# the directory that contains the fusion summary files of interest
-fusion_summary_dir <- file.path("..", "fusion-summary", "results")
 
 results_dir <- "results"
 if (!dir.exists(results_dir)) {
@@ -54,7 +52,7 @@ if (!dir.exists(results_dir)) {
 
 ```{r message=FALSE}
 histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
-fusion_summary_df <- read_tsv(file.path(fusion_summary_dir,
+fusion_summary_df <- read_tsv(file.path(data_dir,
                                         "fusion_summary_embryonal_foi.tsv"))
 ```
 
@@ -156,5 +154,11 @@ Write to file.
 ```{r}
 data.frame(Kids_First_Biospecimen_ID = all_biospecimen_ids) %>%
   write_tsv(output_file)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
 ```
 
