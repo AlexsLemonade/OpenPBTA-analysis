@@ -1,0 +1,173 @@
+---
+title: "GSVA Score Modeling"
+author: "Stephanie J. Spielman for ALSF CCDL"
+date: '2020'
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+  html_notebook:
+    df_print: paged
+    toc: yes
+    toc_float: yes
+params:
+  plot_ci: yes
+  is_ci: FALSE
+---
+
+### Purpose
+
+The purpose of this analysis is to assess significant differences in GSVA scores for each hallmark pathways. Using ANOVA and subsequent Tukey tests, we ask:
+
++ For each pathway, are GSVA scores significantly different across `short_histology`? If so, which histologies are significantly different?
+
++ For each pathway, are GSVA scores significantly different across `disease_type_new`? If so, which types are significantly different?
+
+We perform this using both GSVA scores calculated from the stranded and polyA RNA-seq libraries. Code is also flexible enough to test a different variable besides `short_histology`, etc.
+
+### Usage
+
+To run this from the command line, use:
+```
+Rscript -e "rmarkdown::render('analyses/gene-set-enrichment-analysis/02-model-gsea.Rmd', clean = TRUE)" 
+```
+_This assumes you are in the top directory of the repository._
+
+### Setup
+
+Load libraries and define certain constants:
+
+```{r, lib-load, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(broom)
+`%>%` <- dplyr::`%>%`
+
+# This script contains functions used to modeling GSVA scores
+source(file.path("util", "hallmark_models.R"))
+
+# Significance testing universal threshold
+SIGNIFICANCE_THRESHOLD <- 0.01
+
+# Assigning params$is_ci to running_in_ci avoids a locked binding error
+running_in_ci <- params$is_ci
+
+# Are we testing? In case of a non 0/1 number, we recast as logical, and then ensure logical.
+if (running_in_ci %in% c(0,1)) running_in_ci <- as.logical(running_in_ci)
+if (!(is.logical(running_in_ci)))
+{
+  stop("\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).")
+}
+
+```
+
+
+<br>
+Next, define directories and load data files:
+```{r, data-load, message=FALSE, warning=FALSE}
+### Define directories
+data_dir    <- file.path("..", "..", "data") 
+results_dir <- "results"
+
+######### Define input files
+## Metadata file (histologies/clinical data)
+metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+
+## GSEA scores
+scores_stranded_file <- file.path(results_dir, "gsva_scores_stranded.tsv")
+scores_polya_file    <- file.path(results_dir, "gsva_scores_polya.tsv")
+
+######## Define output files
+file_anova_stranded_short_histology  <- file.path(results_dir, "gsva_anova_stranded_short_histology.tsv")
+file_anova_polya_short_histology     <- file.path(results_dir, "gsva_anova_polya_short_histology.tsv")
+file_anova_stranded_disease_type_new <- file.path(results_dir, "gsva_anova_stranded_disease_type_new.tsv")
+file_anova_polya_disease_type_new    <- file.path(results_dir, "gsva_anova_polya_disease_type_new.tsv")
+
+file_tukey_stranded_short_histology  <- file.path(results_dir, "gsva_tukey_stranded_short_histology.tsv")
+file_tukey_polya_short_histology     <- file.path(results_dir, "gsva_tukey_polya_short_histology.tsv")
+file_tukey_stranded_disease_type_new <- file.path(results_dir, "gsva_tukey_stranded_disease_type_new.tsv")
+file_tukey_polya_disease_type_new    <- file.path(results_dir, "gsva_tukey_polya_disease_type_new.tsv")
+
+
+######## Load input files
+metadata        <- readr::read_tsv(metadata_file)
+scores_stranded <- readr::read_tsv(scores_stranded_file)
+scores_polya    <- readr::read_tsv(scores_polya_file)
+```
+
+
+
+### ANOVA and Tukey analysis of GSVA scores
+
+Here we perform a series of ANOVAs, for polyA and stranded libraries separately, to determine whether mean GSVA scores for a given grouping are significantly different across hallmarks (pathways). The given groupings examined here are `short_histology` and `disease_type_new`. 
+In other words, we perform an ANOVA (and associated posthoc Tukey test) for each hallmark as, `hallmark ~ grouping`. Users can specify the grouping variable.
+
+First, prepare the data for modeling:
+
+```{r aov-prep}
+
+### Merge histology metadata with each set of gsea scores
+scores_stranded  <- scores_stranded %>% mutate(data_type = "stranded")
+scores_polya     <- scores_polya %>% mutate(data_type = "polya")
+all_scores      <- bind_rows(scores_stranded, scores_polya) %>%
+                        mutate(data_type    = factor(data_type),
+                        hallmark_name = factor(hallmark_name))
+
+metadata_with_gsva <- metadata %>%
+                        filter(experimental_strategy == "RNA-Seq") %>%
+                        inner_join(all_scores, by = "Kids_First_Biospecimen_ID" )
+```
+
+
+Now, model:
+
+```{r, aov-perform}
+short_histology_stranded_model_results <- gsva_anova_tukey(metadata_with_gsva, short_histology, "stranded", SIGNIFICANCE_THRESHOLD) 
+disease_type_new_stranded_model_results <- gsva_anova_tukey(metadata_with_gsva, disease_type_new, "stranded", SIGNIFICANCE_THRESHOLD) 
+
+head(short_histology_stranded_model_results)
+head(disease_type_new_stranded_model_results)
+
+## Save stranded library results
+write_tsv(short_histology_stranded_model_results[["anova"]],  file_anova_stranded_short_histology)
+write_tsv(disease_type_new_stranded_model_results[["anova"]], file_anova_stranded_disease_type_new)
+write_tsv(short_histology_stranded_model_results[["tukey"]],  file_tukey_stranded_short_histology)
+write_tsv(disease_type_new_stranded_model_results[["tukey"]], file_tukey_stranded_disease_type_new)
+
+
+### Don't run polyA samples in CI due to data limitations, won't be enough levels for ANOVA
+if (!(running_in_ci)){
+  short_histology_polya_model_results <- gsva_anova_tukey(metadata_with_gsva, short_histology, "polya", SIGNIFICANCE_THRESHOLD)
+  disease_type_new_polya_model_results <- gsva_anova_tukey(metadata_with_gsva, disease_type_new, "polya", SIGNIFICANCE_THRESHOLD)
+  head(short_histology_polya_model_results)
+  head(disease_type_new_polya_model_results)
+
+  ### Save polya library results
+  write_tsv(short_histology_polya_model_results[["anova"]],     file_anova_polya_short_histology)
+  write_tsv(disease_type_new_polya_model_results[["anova"]],    file_anova_polya_disease_type_new)
+  write_tsv(short_histology_polya_model_results[["tukey"]],     file_tukey_polya_short_histology)
+  write_tsv(disease_type_new_polya_model_results[["tukey"]],    file_tukey_polya_disease_type_new)
+
+}
+```
+
+**How many `short_histology` have significant ANOVAs across hallmark pathways, for each library?**
+```{r}
+short_histology_stranded_model_results[["anova"]] %>% count(significant_anova)
+if (!(running_in_ci))
+{
+  short_histology_polya_model_results[["anova"]] %>% count(significant_anova)
+}
+```
+
+> All are significantly different for stranded, none for polya. Likely due to data/power limitations.
+
+**How many `disease_type_new` have significant ANOVAs across hallmark pathways, for each library?**
+```{r}
+disease_type_new_stranded_model_results[["anova"]] %>% count(significant_anova)
+if (!(running_in_ci))
+{
+  disease_type_new_polya_model_results[["anova"]] %>% count(significant_anova)
+}
+```
+
+> Again, all are significantly different for stranded, none for polya. Likely due to data/power limitations.

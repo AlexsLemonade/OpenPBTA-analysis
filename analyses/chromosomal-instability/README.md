@@ -41,5 +41,5 @@ The individual sample plots and grouped by `short_histology` plots are in the `p
 
 - `make_granges` : Given a data.frame with chr break coordinates, make a `GenomicRanges` object.
 - `break_density`: Given data.frame(s) with chr break coordinates, calculate the density of the breaks.
-- `map_density_plot`: Given a `GenomicRanges` object, use map the chromosomal coordinates to a `ggplot2`
-- `chr_break_plot`: Given a list of `GenomicRanges` objects, plot them in a combined `cowplot`.
+- `map_breaks_plot`: Given a `GenomicRanges` object, use map the chromosomal coordinates to a `ggplot2`
+- `multipanel_break_plot`: Given a list of `GenomicRanges` objects, plot them in a combined `cowplot`.

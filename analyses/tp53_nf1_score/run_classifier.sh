@@ -9,6 +9,9 @@
 set -e
 set -o pipefail
 
+# we want to skip the poly-A ROC plot in CI
+POLYA_PLOT=${OPENPBTA_POLYAPLOT:-1}
+
 data_dir="data"
 scratch_dir="scratch"
 # cds gencode bed file  
@@ -39,3 +42,12 @@ collapsed_polya="pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
 python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_stranded}
 python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_polya}
 
+
+# Run ROC plot step
+
+# Skip poly-A plotting in CI
+if [ "$POLYA_PLOT" -gt "0" ]; then
+	python3 ${analysis_dir}/02-evaluate-classifier.py -s ${analysis_dir}/results/TP53_NF1_snv_alteration.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv -c ${data_dir}/pbta-histologies.tsv -o polya
+fi
+
+python3 ${analysis_dir}/02-evaluate-classifier.py -s ${analysis_dir}/results/TP53_NF1_snv_alteration.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv -c ${data_dir}/pbta-histologies.tsv -o stranded

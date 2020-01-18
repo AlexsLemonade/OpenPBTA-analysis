@@ -29,16 +29,20 @@ rule freec_filter:
         SIZE_CUTOFF=str(config["size_cutoff"]),
         FREEC_PVAL=str(config["freec_pval"]),
     shell:
-        ## The awk command line is to filter out the raw file. The end result has 7 columns - | chr# | start | end | CNV_length | copy_numbers | pval | CNV type |
-        ## The first awk looks at column 6 to filter out for loss/gain. Then it prints out 6 of the 7 columns above
-        ## The pipe into the second awk filters the CNV length, freec pval, and add in the CNV type
-        ## The last pipe is to sort first digit of chromosome number numerically
-        """awk '$6~/loss/ {{print "chr"$2,$3,$4,($4-$3 + 1),$5,$9}}' {input.events} """
-        """ | awk '{{if ($4 > {params.SIZE_CUTOFF} && $6 < {params.FREEC_PVAL}){{print $0,"DEL"}}}}' """
+        ## The awk command line is to filter out the raw file. 
+        ## The end result has 8 columns
+        ## | chr# | start | end | CNV_length | copy_numbers | pval | seg.mean | CNV type |
+        ## The first awk looks at column 6 to filter out for loss/gain. 
+        ## Then it prints out all of the 8 columns above
+        ## The second awk filters the CNV length, freec pval
+        ## The sort command sorts the first digit of chromosome number numerically
+        ## The last pipe is to introduce tab into the file and output file name.
+        """awk '$6~/loss/ {{print "chr"$2,$3,$4,($4-$3 + 1),$5,$9,"NA","DEL"}}' {input.events} """
+        """ | awk '{{if ($4 > {params.SIZE_CUTOFF} && $6 < {params.FREEC_PVAL}){{print}}}}' """
         """ | sort -k1,1 -k2,2n """
         """ | tr [:blank:] '\t' > {output.freec_del} && """
-        """awk '$6~/gain/ {{print "chr"$2,$3,$4,($4-$3 + 1),$5,$9}}' {input.events} """
-        """ | awk '{{if ($4 > {params.SIZE_CUTOFF} && $6 < {params.FREEC_PVAL}){{print $0,"DUP"}}}}' """
+        """awk '$6~/gain/ {{print "chr"$2,$3,$4,($4-$3 + 1),$5,$9,"NA","DUP"}}' {input.events} """
+        """ | awk '{{if ($4 > {params.SIZE_CUTOFF} && $6 < {params.FREEC_PVAL}){{print}}}}' """
         """ | sort -k1,1 -k2,2n """
         """ | tr [:blank:] '\t' > {output.freec_dup}"""
 
@@ -54,16 +58,21 @@ rule cnvkit_filter:
         ## Take parameters from the config file and assign them into params for convinient use in the Shell section
         SIZE_CUTOFF=str(config["size_cutoff"]),
     shell:
-        ## The awk command line is to filter out the raw file. The end result has 7 columns - | chr# | start | end | CNV_length | copy_numbers | pval | CNV type |
-        ## The first awk looks at column 7 to filter out for loss/gain (less than 2 == loss, bigger than 2 == gain). Then it prints out 6 of the 7 columns above. Put NA for p-value since the CNVkit results don't have p-vals
-        ## The pipe into the second awk filters the CNV length, and add in the CNV type
-        ## The last pipe is to sort first digit of chromosome number numerically
-        """awk '$7<2 {{print $2,$3,$4,($4-$3 + 1),$7,"NA"}}' {input.events} """
-        """ | awk '{{if ($4 > {params.SIZE_CUTOFF}){{print $0,"DEL"}}}}' """
+        ## The awk command line is to filter out the raw file. 
+        ## The end result has 8 columns
+        ## | chr# | start | end | CNV_length | copy_numbers | pval | seg.mean | CNV type |
+        ## The first awk filter out for loss/gain using column 7 ( < 2 == loss, > 2 == gain). 
+        ## It writes NA for p-value since the CNVkit results don't have p-vals. 
+        ## Then it prints out all 8 of the columns above. 
+        ## The second awk filters the CNV length, and add in the CNV type
+        ## The sort command sorts the first digit of chromosome number numerically
+        ## The last pipe is to introduce tab into the file and output file name.        
+        """awk '$7<2 {{print $2,$3,$4,($4-$3 + 1),$7,"NA",$6,"DEL"}}' {input.events} """
+        """ | awk '{{if ($4 > {params.SIZE_CUTOFF}){{print}}}}' """
         """ | sort -k1,1 -k2,2n """
         """ | tr [:blank:] '\t' > {output.cnvkit_del} && """
-        """awk '$7>2 {{print $2,$3,$4,($4-$3 + 1),$7,"NA"}}' {input.events} """
-        """ | awk '{{if ($4 > {params.SIZE_CUTOFF}){{print $0,"DUP"}}}}' """
+        """awk '$7>2 {{print $2,$3,$4,($4-$3 + 1),$7,"NA",$6,"DUP"}}' {input.events} """
+        """ | awk '{{if ($4 > {params.SIZE_CUTOFF}){{print}}}}' """
         """ | sort -k1,1 -k2,2n """
         """ | tr [:blank:] '\t' > {output.cnvkit_dup}"""
 
@@ -79,14 +88,19 @@ rule manta_filter:
         ## Take parameters from the config file and assign them into params for convinient use in the Shell section
         SIZE_CUTOFF=str(config["size_cutoff"]),
     shell:
-        ## The awk command line is to filter out the raw file. The end result has 7 columns - | chr# | start | end | CNV_length | copy_numbers | pval | CNV type |
-        ## The first awk looks at column 6 to filter out for loss/gain (DEL/DUP). Then it prints out 6 of the 7 columns above. Put NA for both p-value and copy number since MANTA results don't have these values.
+        ## The awk command line is to filter out the raw file. 
+        ## The end result has 8 columns
+        ## | chr# | start | end | CNV_length | copy_numbers | pval | seg.mean | CNV type |
+        ## The first awk looks at column 6 to filter out for loss/gain (DEL/DUP). 
+        ## Then it prints out all 8 of the columns above. 
+        ## It writes NA for both p-value and copy number since MANTA results don't have these values.
         ## the first awk also filters out for CNV length
-        ## The last pipe is to sort first digit of chromosome number numerically
-        """awk '$6~/DEL/ {{if ($5 > {params.SIZE_CUTOFF}) {{print "chr"$2,$3,$4,$5,"NA","NA",$6}}}}' {input} """
+        ## The sort command sorts the first digit of chromosome number numerically
+        ## The last pipe is to introduce tab into the file and output file name.        
+        """awk '$6~/DEL/ {{if ($5 > {params.SIZE_CUTOFF}) {{print "chr"$2,$3,$4,$5,"NA","NA","NA",$6}}}}' {input} """
         """ | sort -k1,1 -k2,2n """
         """ | tr [:blank:] '\t' > {output.manta_del} && """
-        """awk '$6~/DUP/ {{if ($5 > {params.SIZE_CUTOFF}) {{print "chr"$2,$3,$4,$5,"NA","NA",$6}}}}' {input} """
+        """awk '$6~/DUP/ {{if ($5 > {params.SIZE_CUTOFF}) {{print "chr"$2,$3,$4,$5,"NA","NA","NA",$6}}}}' {input} """
         """ | sort -k1,1 -k2,2n """
         """ | tr [:blank:] '\t' > {output.manta_dup}"""
 
@@ -94,16 +108,15 @@ rule manta_filter:
 rule filter_telomeres:
     input:
         ## Define the location of the input file and take the path/extension from the config file
-        script=os.path.join(config["scripts"], "get_rid_bad_segments.py"),
-        bad_list=os.path.join(config["scripts"], "bad_chromosomal_seg_updated_merged.bed"),
+        bad_list=os.path.join("ref", "bad_chromosomal_seg_updated_merged.bed"),
         bedfile="../../scratch/interim/{sample}.{caller}.{dupdel}.bed"
     output:
         ## Define the output files' names
         filtered_bed="../../scratch/interim/{sample}.{caller}.{dupdel}.filtered.bed"
     threads: 1
     shell:
-        ## Invoke the python3 script and pass in the reference and CNVs files. Direct the stdout to a new file. 
-        "python3 {input.script} --reference {input.bad_list} --file {input.bedfile} > {output.filtered_bed}"
+        ## Invoke the bedtools subtract pass in the reference and CNVs files. Direct the stdout to a new file. 
+        "bedtools subtract -N -a {input.bedfile} -b {input.bad_list} -f 0.5 > {output.filtered_bed}"
 
 
 rule first_merge:
@@ -116,10 +129,10 @@ rule first_merge:
     threads: 1
     shell:
         ## Call on bedtools to merge any overlapping segment. Merging done for any segments within a single file.
-        ## Any condiders any segments within 10,000 bp to be the same CNV. 
-        ## Merge but retain info from columns 2 (start pos), 3(end pos), 5(copy numbers), 7(CNV type)
+        ## We considers any segments within 10,000 bp to be the same CNV. 
+        ## Merge but retain info from columns 2 (start pos), 3(end pos), 5(copy numbers), 7(seg.mean), 8(CNV type)
         "bedtools merge -i {input.filtered_bed} -d 10000"
-        " -c 2,3,5,7 -o collapse,collapse,collapse,distinct"
+        " -c 2,3,5,7,8 -o collapse,collapse,collapse,collapse,distinct"
         " > {output.merged_bed}"
 
 
@@ -204,3 +217,4 @@ rule clean_output:
         "results/cnv_consensus.tsv"
     shell:
         "python3 {input.script} --file {input.cnv_file} > {output}"
+

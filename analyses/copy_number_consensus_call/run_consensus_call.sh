@@ -13,7 +13,7 @@ cd "$script_directory" || exit
 ## Run the python script to go from 1 big manta file, cnvkit file and freec file into 3 directories. 
 ## Each directory with individual sample files.
 
-python3 src/scripts/merged_to_individual_files.py \
+python3 scripts/merged_to_individual_files.py \
     --manta ../../data/pbta-sv-manta.tsv.gz \
     --cnvkit ../../data/pbta-cnv-cnvkit.seg.gz \
     --freec ../../data/pbta-cnv-controlfreec.tsv.gz \
@@ -45,3 +45,9 @@ snakemake \
     --restart-times 3 \
     --max-jobs-per-second 10 \
     --latency-wait 30
+
+
+##
+Rscript scripts/bed_to_segfile.R \
+  -i results/cnv_consensus.tsv \
+  -o results/pbta-cnv-consensus.seg

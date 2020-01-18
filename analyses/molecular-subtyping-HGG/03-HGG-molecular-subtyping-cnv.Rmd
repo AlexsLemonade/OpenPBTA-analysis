@@ -1,0 +1,160 @@
+---
+title: "High-grade Glioma Molecular Subtyping - Focal and Broad Copy Number Alterations"
+author: "Chante Bethell, Stephanie J. Spielman, and Jaclyn Taroni for ALSF CCDL"
+date: "2020"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+  html_notebook:
+    toc: yes
+    toc_float: yes
+---
+
+This notebook prepares focal and broad copy number alteration data for the 
+purposes of use for subtyping HGG samples 
+([`AlexsLemonade/OpenPBTA-analysis#249`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249)).
+
+#### TODO: This analysis should be revisited when consensus copy data is made available.
+
+## Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+`Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/03-HGG-molecular-subtyping-cnv.Rmd', clean = TRUE)"`
+
+## Set Up
+
+```{r}
+library(tidyverse)
+```
+
+### Directories
+
+```{r}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+# File path to results directory
+input_dir <-
+  file.path(root_dir, "analyses", "molecular-subtyping-HGG", "hgg-subset")
+# File path to results directory
+results_dir <-
+  file.path(root_dir, "analyses", "molecular-subtyping-HGG", "results")
+
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+```
+
+### Read in Files
+
+```{r}
+# Read in HGG subset focal CN data
+cn_df <- read_tsv(file.path(input_dir, "hgg_focal_cn.tsv.gz"))
+# Read in relevant broad chromosome arm loss for HGG samples
+gistic_df <- read_tsv(file.path(input_dir, "hgg_gistic_broad_values.tsv"))
+```
+
+### Output File
+
+```{r}
+output_file <- file.path(results_dir, "HGG_cleaned_cnv.tsv")
+```
+
+## CNVkit Data
+
+We are using CNVkit data that has been annotated via the [`focal-cn-file-preparation`](../focal-cn-file-preparation/) module.
+Note that a gene may have evidence for two kinds of copy number alteration (e.g., both _loss_ and _gain_) in these data.
+This may or may not be a caller-specific artifact that will be alleviated by generating consensus copy number calls 
+([`AlexsLemonade/OpenPBTA-analysis#128`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/128)).
+See also: https://jaclyn-taroni.github.io/openpbta-notebook-concept/both-gain-and-loss.nb.html.
+
+
+
+```{r}
+# Select only the ID information, for use in joining below
+cn_df_ids <- cn_df %>%  
+  select(sample_id, 
+         Kids_First_Biospecimen_ID = biospecimen_id,
+         Kids_First_Participant_ID)
+
+# Filter focal CN data for PDGFRA, PTEN and MYCN status
+cn_df_genes <- cn_df %>%
+  rename(Kids_First_Biospecimen_ID = biospecimen_id) %>%
+  select(-cytoband) %>%
+  filter(gene_symbol %in% c("PDGFRA", "PTEN", "MYCN"))
+
+# Summarize the data to have a single row per sample where _all_ kinds of copy number alterations are present.
+cn_df_genes_status <- cn_df_genes %>% 
+  group_by(gene_symbol, sample_id, Kids_First_Biospecimen_ID) %>% 
+  summarize(full_status = paste(status, collapse=", ")) %>% 
+  spread(gene_symbol, full_status) %>% 
+  right_join(cn_df_ids) %>%
+  distinct() %>%
+  replace_na(list(PDGFRA = "neutral", 
+                  PTEN = "neutral", 
+                  MYCN = "neutral")) %>% 
+  # Rename columns to indicate focal status explicitly
+  rename(MYCN_focal_status   = MYCN, 
+         PDGFRA_focal_status = PDGFRA,
+         PTEN_focal_status   = PTEN) %>%
+  # Arrange order of columns
+  dplyr::select(sample_id, 
+                Kids_First_Biospecimen_ID, 
+                Kids_First_Participant_ID, 
+                everything())
+
+head(cn_df_genes_status, n = 10)
+```
+
+
+## GISTIC Data
+
+The GISTIC `broad_values_by_arm.txt` file is a matrix with integers that indicate chromosome arm status. 
+Much like the annotated CNVkit data above, we'll convert this to `"loss"`, `"neutral"`, and `"gain"`.
+
+```{r}
+head(gistic_df, n = 10) 
+```
+
+```{r}
+gistic_status_df <- gistic_df %>%
+  # for the numeric columns (e.g., not the identifiers!), go from the integers
+  # to loss, gain, neutral
+  mutate_if(is.numeric, 
+            list(~ case_when(
+              . < 0 ~ "loss",
+              . > 0 ~ "gain",
+              . == 0 ~ "neutral"
+            ))) %>%
+  # drop sample_id
+  select(-sample_id)
+
+head(gistic_status_df, n = 10)
+```
+
+## Join Together
+
+```{r}
+# There are some samples that had too many segments and were flagged by GISTIC
+# These values will be filled with NA -- we'll change them to indicate that 
+# they failed GISTIC QC
+final_hgg_cn_df <- left_join(cn_df_genes_status,
+                             gistic_status_df,
+                             by = "Kids_First_Biospecimen_ID") %>%
+  replace(is.na(.), "Failed GISTIC QC")
+head(final_hgg_cn_df, n = 10)
+```
+
+Write this to file.
+
+```{r}
+write_tsv(final_hgg_cn_df, output_file)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
