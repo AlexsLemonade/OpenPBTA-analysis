@@ -87,11 +87,11 @@ sv <- data.frame()
 for (i in bioid) {
   # read sv file one by one
   sv_shatterseek <- read.table(file.path("scratch","sv-vcf",paste(i,"_withoutYandM.tsv",sep="")),sep="\t",header=TRUE)
-  head(sv_shatterseek)
+  print(head(sv_shatterseek))
   # sv_shatterseek_original is a file with chrY and ChrM, which will be used later
   sv_shatterseek_original <- read.table(file.path("scratch","sv-vcf",paste(i,".tsv",sep="")),sep="\t",header=TRUE)
-  head(sv_shatterseek_original)
-  sv_shatterseek_original$sample <- i
+  print(head(sv_shatterseek_original))
+  sv_shatterseek_original[,"sample"] <- i
   
   # merge all sv_shatterseek_original, will be used later
   sv <- rbind(sv,sv_shatterseek_original)
@@ -110,7 +110,6 @@ for (i in bioid) {
       strand1 = as.character(sv_shatterseek$strand1),
       strand2 = as.character(sv_shatterseek$strand2)
     )
-  print("find error step7")
   CN_data <-
     CNVsegs(
       chrom = as.character(cnv_shatterseek$chrom),
@@ -120,7 +119,6 @@ for (i in bioid) {
     )
   
   # run shatterseek in min.size = 6
-  print("find error step8")
   chromothripsis6 <- shatterseek(SV.sample=SV_data,seg.sample=CN_data,min.Size=6)
   chrss6 <- chromothripsis6@chromSummary
   chrss6$sample <- i
