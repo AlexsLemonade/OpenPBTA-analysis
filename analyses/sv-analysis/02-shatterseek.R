@@ -86,25 +86,20 @@ sv <- data.frame()
 # main process
 for (i in bioid) {
   # read sv file one by one
-  print("find error step1")
   sv_shatterseek <- read.table(file.path("scratch","sv-vcf",paste(i,"_withoutYandM.tsv",sep="")),sep="\t",header=TRUE)
-  
+  head(sv_shatterseek)
   # sv_shatterseek_original is a file with chrY and ChrM, which will be used later
-  print("find error step2")
   sv_shatterseek_original <- read.table(file.path("scratch","sv-vcf",paste(i,".tsv",sep="")),sep="\t",header=TRUE)
-  print("find error step3")
+  head(sv_shatterseek_original)
   sv_shatterseek_original$sample <- i
   
   # merge all sv_shatterseek_original, will be used later
-  print("find error step4")
   sv <- rbind(sv,sv_shatterseek_original)
   
   #  read cnv one by one
-  print("find error step5")
   cnv_shatterseek <-  cnv_analysis[cnv_analysis$ID == i,]
   
   # build sv and cnv data frame
-  print("find error step6")
   SV_data <-
     SVs(
       chrom1 = as.character(sv_shatterseek$chrom1),
