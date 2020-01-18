@@ -187,6 +187,7 @@ The filtered and prioritized fusion and downstream files are a product of the [`
 ### Copy Number Files
 
 `pbta-cnv-cnvkit-gistic.zip` is the output of running GISTIC 2.0 on the CNVkit results (`pbta-cnv-cnvkit.seg`).
+GISTIC output files are described in detail on the Broad Institute's [GenePattern website](https://www.genepattern.org/modules/docs/GISTIC_2.0).
 The script used to run GISTIC can be [found here](https://github.com/d3b-center/publication_workflows/blob/master/openPBTA/run-gistic.sh).
 
 ### Consensus Copy Number File
