@@ -105,6 +105,10 @@ jobs:
           command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/01-process-sv-file.R
           
       - run:
+          name: SNV Caller Analysis 
+          command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis.sh
+          
+      - run:
           name: Molecular Subtyping - HGG
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
       
@@ -140,9 +144,6 @@ jobs:
           name: Add Shatterseek
           command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/02-shatterseek.R 
 
-      - run:
-          name: SNV Caller Analysis 
-          command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis.sh
           
        # This analysis was a side concept question and no longer needs to be run. 
        # - run:
