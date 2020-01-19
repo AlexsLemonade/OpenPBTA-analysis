@@ -1,0 +1,228 @@
+---
+title: "Molecularly Subtyping Embryonal Tumors - Which samples to include?"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Stephanie J. Spielman and Jaclyn Taroni for ALSF CCDL
+date: 2020
+---
+
+This notebook identifies samples to include in subset files for the purpose of molecularly subtyping embryonal tumors ([`AlexsLemonade/OpenPBTA-analysis#251`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251)).
+
+This closed pull request is also relevant to the task at hand: [`AlexsLemonade/OpenPBTA-analysis#401`](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/401
+
+We'll use the subset files generated in [`02-generate-subset-files.R`](./02-generate-subset-files.R) to construct tables that summarize the data on the subtyping issue.
+
+## Usage
+
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/molecular-subtyping-embryonal/03-table-prep.Rmd', clean = TRUE)"
+```
+
+## Set up
+
+### Libraries
+
+```{r}
+library(tidyverse)
+```
+
+### Directories
+
+```{r}
+subset_dir <- "subset-files"
+results_dir <- "results"
+data_dir <- file.path("..", "..", "data")
+```
+
+### Read in files
+
+```{r message=FALSE}
+histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"),
+                           col_types = cols(molecular_subtype = col_character()))
+copy_number_annotated_df <-
+  read_tsv(file.path(subset_dir, "embryonal_cnvkit_annotated_cn.tsv"),
+           col_types = cols(germline_sex_estimate = col_character()))
+polya_exp <- read_rds(file.path(subset_dir,
+                                "embryonal_zscored_exp.polya.rds"))
+stranded_exp <- read_rds(file.path(subset_dir,
+                                   "embryonal_zscored_exp.stranded.rds"))
+fusions_df <- read_tsv(file.path(data_dir,
+                                "fusion_summary_embryonal_foi.tsv"))
+biospecimen_ids <- read_tsv(file.path(results_dir, 
+                                      "biospecimen_ids_embryonal_subtyping.tsv")) %>%
+                              pull(Kids_First_Biospecimen_ID)
+
+cn_consensus <- read_tsv("../copy_number_consensus_call/results/pbta-cnv-consensus.seg") %>%
+  filter(ID %in% biospecimen_ids)
+```
+
+
+```{r message=FALSE}
+```
+
+### Output file
+
+```{r}
+
+```
+
+## Wrangle data
+
+### Fusion data
+
+Summarizing the salient points from [`AlexsLemonade/OpenPBTA-analysis#251`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251):
+
+> **ETMR, C19MC-altered**: These tumors have focal amplification of the miRNA cluster on chr19 (denoted C19MC) and often have gene fusions involving _TTYH1_ and chr19 miRNA cluster genes
+> **CNS HGNET-MN1**: Contain gene fusions involving 5' _MN1_. 3' fusion partners can include _BEND2_ and _CXXC5_.
+> **CNS NB-FOXR2**: Over-expression and/or gene fusions in _FOXR2_
+> **CNS EFT-CIC**: Alterations in _CIC_, commonly fused with _NUTM1_
+
+```{r}
+colnames(fusions_df)
+```
+
+```{r}
+# TODO: consider moving this out of this notebook to use with ependymoma
+wrangle_fusions <- function(fusions_df, string_to_match, column_name) {
+  
+  specific_fusions <- fusions_df %>%
+    select(Kids_First_Biospecimen_ID, matches(string_to_match)) %>%
+    reshape2::melt() %>%
+    filter(value > 0) %>%
+    select(-value) %>%
+    group_by(Kids_First_Biospecimen_ID) %>%
+    summarize(!!column_name := paste(sort(unique(variable)), collapse = ", "))
+  
+  missing_ids <- setdiff(fusions_df$Kids_First_Biospecimen_ID,
+                         specific_fusions$Kids_First_Biospecimen_ID)
+  
+  specific_fusions <- specific_fusions %>%
+    bind_rows(data.frame(Kids_First_Biospecimen_ID = missing_ids)) %>%
+    replace(is.na(.), "None")
+}
+```
+
+
+```{r}
+ttyh1_fusions <- wrangle_fusions(fusions_df, "TTYH1--", "TTYH1_fusions")
+mn1_fusions <- wrangle_fusions(fusions_df, "MN1--", "MN1_fusions") 
+foxr2_fusions <- wrangle_fusions(fusions_df, "FOXR2", "FOXR2_fusions")
+cic_fusions <- wrangle_fusions(fusions_df, "CIC--", "CIC_fusions")
+fusions_summary_df <- list(ttyh1_fusions,
+                           mn1_fusions,
+                           foxr2_fusions,
+                           cic_fusions) %>%
+  purrr::reduce(dplyr::inner_join, by = "Kids_First_Biospecimen_ID")
+rm(ttyh1_fusions, mn1_fusions, foxr2_fusions, cic_fusions)
+```
+
+```{r}
+head(fusions_summary_df %>% arrange(desc(TTYH1_fusions)), n = 10)
+```
+
+### Expression data
+
+```{r}
+exp_genes_of_interest <- c("LIN28A", "FOXR2")
+polya_exp <- polya_exp[, exp_genes_of_interest] %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("Kids_First_Biospecimen_ID")
+stranded_exp <- stranded_exp[, exp_genes_of_interest] %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("Kids_First_Biospecimen_ID")
+
+exp_df <- bind_rows("polya" = polya_exp, 
+                    "stranded" = stranded_exp, 
+                    .id = "exp_dataset") %>%
+  select(-exp_dataset, everything())
+
+rm(polya_exp, stranded_exp, exp_genes_of_interest)
+```
+
+### Join RNA data
+
+```{r}
+rna_df <- exp_df %>%
+  left_join(fusions_summary_df) %>%
+  select(-exp_dataset, everything())
+rm(exp_df, fusions_summary_df)
+```
+
+### Copy number data
+
+```{r}
+# TODO: tandem duplication of BCOR - consumable SV data?
+```
+
+We're looking for focal amplification of C19MC (miRNA cluster on chr19).
+
+```{r}
+chr19_cn_df <- cn_consensus %>% 
+  filter(chrom == "chr19",
+         seg.mean > 0)
+
+chr19_cn_df
+```
+
+These are not within the ranges from @sjspielman provided [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/401/files#diff-77e96177f89b99ad2b1f0fe51ec5c22eR110):
+
+```
+## From UCSC Genome Brower, these are positions corresponding to 19q13.41 (C19MC region)
+c19mc_region <- "19q13.41"
+c19mc_start  <- 51400001
+c19mc_end    <- 53600000
+```
+
+We may have to revisit these coordinates.
+For now, let's see how this lines up with the RNA-seq data.
+
+The copy numbers in all of these cases are high - we'll simplify the column name to `chr19_amplification`.
+
+```{r}
+chr19_cn_df <- chr19_cn_df %>%
+  mutate(chr19_amplification = "Yes") %>%
+  select(ID, chr19_amplification) %>%
+  bind_rows(data.frame(ID = setdiff(copy_number_annotated_df$biospecimen_id,
+                                    chr19_cn_df$ID))) %>%
+  replace(is.na(.), "No")
+```
+
+## Final table!
+
+### `sample_id`
+
+```{r}
+identifiers_df <- histologies_df %>%
+  select(Kids_First_Participant_ID, sample_id, Kids_First_Biospecimen_ID)
+```
+
+```{r}
+chr19_cn_df <- identifiers_df %>%
+  inner_join(chr19_cn_df, by = c("Kids_First_Biospecimen_ID" = "ID"))
+```
+
+```{r}
+rna_df <- identifiers_df %>%
+  inner_join(rna_df)
+```
+
+```{r}
+molecular_data_df <- full_join(chr19_cn_df, rna_df,
+                               by = c("Kids_First_Participant_ID",
+                                      "sample_id")) %>%
+  rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID.x,
+         Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID.y)
+```
+
+```{r}
+molecular_data_df %>%
+  select(Kids_First_Participant_ID, sample_id, LIN28A, TTYH1_fusions,
+         chr19_amplification, MN1_fusions, FOXR2_fusions, FOXR2)
+```
+
