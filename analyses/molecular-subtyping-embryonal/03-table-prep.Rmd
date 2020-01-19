@@ -26,10 +26,57 @@ Rscript -e "rmarkdown::render('analyses/molecular-subtyping-embryonal/03-table-p
 
 ## Set up
 
-### Libraries
+### Libraries and functions
 
 ```{r}
 library(tidyverse)
+```
+
+```{r}
+# TODO: consider moving this out of this notebook to use with ependymoma 
+# subtyping?
+wrangle_fusions <- function(fusions_df, string_to_match, column_name) {
+  # This function takes the fusion summary binary matrix and returns a 
+  # data frame that contains two columns: Kids_First_Biospecimen_ID and
+  # a column containing a comma-separated 'list' of relevant fusions.
+  # A "relevant fusion" is determined by passing the string_to_match argument
+  # to dplyr::matches. To specify that a gene symbol should be a 5' partner,
+  # you can pass "<gene symbol>--". The 2nd column name is determined by the
+  # column_name argument.
+  #
+  # Args:
+  #   fusions_df: a fusion_summary data.frame from `fusion-summary`
+  #   string_to_match: character; passed to dplyr::matches to select relevant
+  #                    columns
+  #   column_name: the name of the relevant fusion column in the data.frame 
+  #                that is returned
+  # 
+  # Returns: a data.frame with Kids_First_Biospecimen_ID and relevant fusions
+  #          columns; biospecimens without any relevant fusions will have "None"
+  #          in the second column
+  
+  specific_fusions <- fusions_df %>%
+    # only include relevant fusions using string_to_match
+    select(Kids_First_Biospecimen_ID, matches(string_to_match)) %>%
+    reshape2::melt() %>%
+    # a value of 0 means that fusion is not present in that biospecimen
+    filter(value > 0) %>%
+    select(-value) %>%
+    group_by(Kids_First_Biospecimen_ID) %>%
+    # get the comma separated 'list' of relevant fusions
+    summarize(!!column_name := paste(sort(unique(variable)), collapse = ", "))
+  
+  # if a sample had none of the relevant fusions, it's missing from 
+  # specific_fusions -- let's add them back in with "None" in the second
+  # column
+  missing_ids <- setdiff(fusions_df$Kids_First_Biospecimen_ID,
+                         specific_fusions$Kids_First_Biospecimen_ID)
+  specific_fusions <- specific_fusions %>%
+    bind_rows(data.frame(Kids_First_Biospecimen_ID = missing_ids)) %>%
+    replace(is.na(.), "None")
+  
+  return(specific_fusions)
+}
 ```
 
 ### Directories
@@ -42,28 +89,49 @@ data_dir <- file.path("..", "..", "data")
 
 ### Read in files
 
-```{r message=FALSE}
-histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"),
-                           col_types = cols(molecular_subtype = col_character()))
-copy_number_annotated_df <-
-  read_tsv(file.path(subset_dir, "embryonal_cnvkit_annotated_cn.tsv"),
-           col_types = cols(germline_sex_estimate = col_character()))
-polya_exp <- read_rds(file.path(subset_dir,
-                                "embryonal_zscored_exp.polya.rds"))
-stranded_exp <- read_rds(file.path(subset_dir,
-                                   "embryonal_zscored_exp.stranded.rds"))
-fusions_df <- read_tsv(file.path(data_dir,
-                                "fusion_summary_embryonal_foi.tsv"))
-biospecimen_ids <- read_tsv(file.path(results_dir, 
-                                      "biospecimen_ids_embryonal_subtyping.tsv")) %>%
-                              pull(Kids_First_Biospecimen_ID)
+Set up filenames.
 
-cn_consensus <- read_tsv("../copy_number_consensus_call/results/pbta-cnv-consensus.seg") %>%
-  filter(ID %in% biospecimen_ids)
+```{r}
+# full clinical file + fusions of interest file
+histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
+fusion_file <- file.path(data_dir, "fusion_summary_embryonal_foi.tsv")
+# copy number consensus file (analysis file)
+cn_consensus_seg <- file.path("..", "copy_number_consensus_call", "results",
+                              "pbta-cnv-consensus.seg")
+# subset files - annotated copy number, z-scored expression
+copy_num_subset <- file.path(subset_dir, "embryonal_cnvkit_annotated_cn.tsv")
+polya_file <- file.path(subset_dir, "embryonal_zscored_exp.polya.rds")
+stranded_file <- file.path(subset_dir, "embryonal_zscored_exp.stranded.rds")
+# file that contains the biospecimen IDs that met criteria for subtyping
+biospecimen_file <- file.path(results_dir, 
+                              "biospecimen_ids_embryonal_subtyping.tsv")
 ```
 
+Read in files.
 
 ```{r message=FALSE}
+histologies_df <- read_tsv(histologies_file, 
+                           col_types = cols(
+                             molecular_subtype = col_character()
+                          ))
+
+# data is likely insufficient for specific BCOR alteration?
+copy_number_annotated_df <- read_tsv(copy_num_subset,
+                                     col_types = cols(
+                                       germline_sex_estimate = col_character()
+                                     ))
+
+polya_exp <- read_rds(polya_file)
+stranded_exp <- read_rds(stranded_file)
+fusions_df <- read_tsv(fusion_file)
+
+# get biospecimen ids as a vector rather than data frame
+biospecimen_ids <- read_tsv(biospecimen_file) %>%
+  pull(Kids_First_Biospecimen_ID)
+
+# we'll filter to only the relevant biospeciments
+cn_consensus <- read_tsv(cn_consensus_seg) %>%
+  filter(ID %in% biospecimen_ids)
 ```
 
 ### Output file
@@ -87,29 +155,7 @@ Summarizing the salient points from [`AlexsLemonade/OpenPBTA-analysis#251`](http
 colnames(fusions_df)
 ```
 
-```{r}
-# TODO: consider moving this out of this notebook to use with ependymoma
-wrangle_fusions <- function(fusions_df, string_to_match, column_name) {
-  
-  specific_fusions <- fusions_df %>%
-    select(Kids_First_Biospecimen_ID, matches(string_to_match)) %>%
-    reshape2::melt() %>%
-    filter(value > 0) %>%
-    select(-value) %>%
-    group_by(Kids_First_Biospecimen_ID) %>%
-    summarize(!!column_name := paste(sort(unique(variable)), collapse = ", "))
-  
-  missing_ids <- setdiff(fusions_df$Kids_First_Biospecimen_ID,
-                         specific_fusions$Kids_First_Biospecimen_ID)
-  
-  specific_fusions <- specific_fusions %>%
-    bind_rows(data.frame(Kids_First_Biospecimen_ID = missing_ids)) %>%
-    replace(is.na(.), "None")
-}
-```
-
-
-```{r}
+```{r message=FALSE}
 ttyh1_fusions <- wrangle_fusions(fusions_df, "TTYH1--", "TTYH1_fusions")
 mn1_fusions <- wrangle_fusions(fusions_df, "MN1--", "MN1_fusions") 
 foxr2_fusions <- wrangle_fusions(fusions_df, "FOXR2", "FOXR2_fusions")
@@ -119,7 +165,8 @@ fusions_summary_df <- list(ttyh1_fusions,
                            foxr2_fusions,
                            cic_fusions) %>%
   purrr::reduce(dplyr::inner_join, by = "Kids_First_Biospecimen_ID")
-rm(ttyh1_fusions, mn1_fusions, foxr2_fusions, cic_fusions)
+# remove data.frame we no longer need
+rm(ttyh1_fusions, mn1_fusions, foxr2_fusions, cic_fusions, fusions_df)
 ```
 
 ```{r}
@@ -128,20 +175,31 @@ head(fusions_summary_df %>% arrange(desc(TTYH1_fusions)), n = 10)
 
 ### Expression data
 
+Summarizing salient points from [`AlexsLemonade/OpenPBTA-analysis#251`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251):
+
+> **ETMR, C19MC-altered**: These tumors have high expression of _LIN28A_ and serves as a biomarker for ETMRs
+> **CNS NB-FOXR2**: Over-expression and/or gene fusions in _FOXR2_
+> **ETMR, NOS**: These tumors have high expression of _LIN28A_ and serves as a biomarker for ETMRs, but do not show focal amplification of C19MC.
+
 ```{r}
 exp_genes_of_interest <- c("LIN28A", "FOXR2")
+# set up poly-A data
 polya_exp <- polya_exp[, exp_genes_of_interest] %>%
   as.data.frame() %>%
   tibble::rownames_to_column("Kids_First_Biospecimen_ID")
+# set up stranded data
 stranded_exp <- stranded_exp[, exp_genes_of_interest] %>%
   as.data.frame() %>%
   tibble::rownames_to_column("Kids_First_Biospecimen_ID")
 
+# bind together both datasets, but keep track of what selection strategy was
+# used
 exp_df <- bind_rows("polya" = polya_exp, 
                     "stranded" = stranded_exp, 
                     .id = "exp_dataset") %>%
   select(-exp_dataset, everything())
 
+# remove data.frame we no longer need
 rm(polya_exp, stranded_exp, exp_genes_of_interest)
 ```
 
@@ -151,16 +209,18 @@ rm(polya_exp, stranded_exp, exp_genes_of_interest)
 rna_df <- exp_df %>%
   left_join(fusions_summary_df) %>%
   select(-exp_dataset, everything())
-rm(exp_df, fusions_summary_df)
+
+# remove data.frame we no longer need
+rm(exp_df)
+```
+
+```{r}
+head(rna_df, n = 10)
 ```
 
 ### Copy number data
 
-```{r}
-# TODO: tandem duplication of BCOR - consumable SV data?
-```
-
-We're looking for focal amplification of C19MC (miRNA cluster on chr19).
+We're interested in focal amplification of C19MC (miRNA cluster on chr19) for the **ETMR, C19MC-altered** subtype.
 
 ```{r}
 chr19_cn_df <- cn_consensus %>% 
@@ -191,26 +251,41 @@ chr19_cn_df <- chr19_cn_df %>%
   bind_rows(data.frame(ID = setdiff(copy_number_annotated_df$biospecimen_id,
                                     chr19_cn_df$ID))) %>%
   replace(is.na(.), "No")
+
+# we no longer need the consensus file
+rm(cn_consensus)
 ```
 
-## Final table!
+### Structural variant data
 
-### `sample_id`
+> **CNS HGNET-BCOR**
+> * CNS high-grade neuroepithelial tumor with BCOR alteration
+> * Tumors have internal tandem duplication of BCOR
+
+We currently don't have a easily consumable SV file and copy number seems inadequate for this task.
+
+```{r}
+# TODO: BCOR tandem duplication
+```
+
+## Final table
+
+### Add `Kids_First_Participant_ID` and `sample_id`
 
 ```{r}
 identifiers_df <- histologies_df %>%
-  select(Kids_First_Participant_ID, sample_id, Kids_First_Biospecimen_ID)
-```
-
-```{r}
+  select(Kids_First_Participant_ID, 
+         sample_id, 
+         Kids_First_Biospecimen_ID)
+# add IDs to chromosome 19 data
 chr19_cn_df <- identifiers_df %>%
   inner_join(chr19_cn_df, by = c("Kids_First_Biospecimen_ID" = "ID"))
-```
-
-```{r}
+# add IDs to RNA data 
 rna_df <- identifiers_df %>%
   inner_join(rna_df)
 ```
+
+### Join molecular data
 
 ```{r}
 molecular_data_df <- full_join(chr19_cn_df, rna_df,
@@ -220,9 +295,140 @@ molecular_data_df <- full_join(chr19_cn_df, rna_df,
          Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID.y)
 ```
 
+### Add clinical data
+
+The following were mentioned in [`AlexsLemonade/OpenPBTA-analysis#251`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251):
+
+> **CNS HGNET-BCOR**: Median age of diagnosis less than 10 years
+> **CNS HGNET-MN1**: Predominantly female patients.
+> **CNS Embryonal, NOS**: Tumors previously called PNET that do not fit into other groups above.
+
+Granted, we don't currently have enough information to look specifically at CNS HGNET-BCOR and therefore perhaps can not classify any tumor as CNS Embryonal, NOS. 
+
 ```{r}
-molecular_data_df %>%
-  select(Kids_First_Participant_ID, sample_id, LIN28A, TTYH1_fusions,
-         chr19_amplification, MN1_fusions, FOXR2_fusions, FOXR2)
+relevant_clinical_data <- histologies_df %>% 
+  filter(Kids_First_Biospecimen_ID %in% biospecimen_ids) %>%
+  select(Kids_First_Participant_ID, 
+         sample_id,
+         age_at_diagnosis_days,
+         germline_sex_estimate,
+         disease_type_old,
+         disease_type_new) %>%
+  distinct() %>%
+  # convert age to years
+  mutate(age_at_diagnosis_yrs = 
+           floor(as.numeric(age_at_diagnosis_days) / 365)) %>%
+  select(-age_at_diagnosis_days)
+
+all_data_df <- inner_join(relevant_clinical_data,
+                          molecular_data_df)
+```
+
+## Subtyping
+
+### ETMR, C19MC-altered and ETMR, NOS
+
+The differences between ETMR, C19MC-altered and ETMR, NOS is a difference in C19MC amplification.
+We'll filter on _LIN28A_ overexpression, as that is a feature of both.
+
+*Recall that we z-scored these expression values before subsetting the matrix so they are in the context of **all** samples for a given selection strategy.*
+
+```{r}
+all_data_df %>%
+  # 3 standard deviations above the mean
+  filter(LIN28A > 3) %>%
+  select(ends_with("ID"), 
+         starts_with("disease"),
+         LIN28A,
+         TTYH1_fusions,
+         chr19_amplification)
+```
+
+For some samples that have a _TTYH1_ fusion, we do not have DNA data to check for C19MC amplification.
+
+### CNS HGNET-MN1
+
+> * CNS high-grade neuroepithelial tumor with _MN1_ alteration
+> * Likely previously diagnosed as PNET.
+> * Contain gene fusions involving 5' _MN1_. 3' fusion partners can include _BEND2_ and _CXXC5_.
+> * Predominantly female patients.
+
+```{r}
+all_data_df %>%
+  # 3 standard deviations above the mean
+  filter(MN1_fusions != "None") %>%
+  select(ends_with("ID"), 
+         starts_with("disease"),
+         germline_sex_estimate,
+         MN1_fusions)
+```
+
+No samples fit this criteria.
+There were other samples that **did** contain _MN1_ fusions.
+
+```{r}
+mn1_fusions <- fusions_summary_df %>%
+  filter(MN1_fusions != "None") 
+
+mn1_fusions
+```
+
+```{r}
+histologies_df %>%
+  filter(Kids_First_Biospecimen_ID %in% pull(mn1_fusions, 
+                                             Kids_First_Biospecimen_ID)) %>%
+  select(Kids_First_Participant_ID, 
+         sample_id, 
+         Kids_First_Biospecimen_ID,
+         disease_type_old,
+         disease_type_new,
+         germline_sex_estimate)
+```
+
+They are classified as `Ependymoma` and `Low-grade astrocytic tumor`.
+
+### CNS HGNET-BCOR
+
+> * CNS high-grade neuroepithelial tumor with BCOR alteration
+> * Tumors have internal tandem duplication of BCOR
+> * Median age of diagnosis less than 10 years
+
+We have not included SV data, yet.
+
+### CNS NB-FOXR2
+
+> * Central nervous system (CNS) neuroblastoma with _FOXR2_ activation
+> * Over-expression and/or gene fusions in _FOXR2_
+
+```{r}
+all_data_df %>%
+  filter(FOXR2_fusions != "None" | FOXR2 > 3) %>%
+  select(ends_with("ID"), 
+         starts_with("disease"),
+         FOXR2,
+         FOXR2_fusions)
+```
+
+### CNS EFT-CIC
+
+> * CNS Ewing sarcoma family tumor with _CIC_ alteration
+> * Alterations in _CIC_, commonly fused with _NUTM1_
+
+```{r}
+all_data_df %>%
+  filter(CIC_fusions != "None")
+```
+
+### CNS Embryonal, NOS
+
+> * CNS Embryonal tumor, not otherwise specified
+> * Tumors previously called PNET that do not fit into other groups above.
+
+We do not have CNS HGNET-BCOR information currently.
+
+## Session Info
+
+```{r}
+sessionInfo()
 ```
 
