@@ -29,3 +29,6 @@ Rscript -e "rmarkdown::render('01-samples-to-subset.Rmd', clean = TRUE)"
 if [ "$SUBSET" -gt "0" ]; then
   Rscript --vanilla 02-generate-subset-files.R
 fi
+
+# Run notebook that wrangles all the relevant data
+Rscript -e "rmarkdown::render('03-table-prep.Rmd', clean = TRUE)"
