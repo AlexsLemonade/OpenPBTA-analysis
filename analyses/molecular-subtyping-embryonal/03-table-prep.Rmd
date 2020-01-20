@@ -137,7 +137,8 @@ cn_consensus <- read_tsv(cn_consensus_seg) %>%
 ### Output file
 
 ```{r}
-
+output_all <- file.path(results_dir, 
+                        "embryonal_tumor_subtyping_relevant_data.tsv")
 ```
 
 ## Wrangle data
@@ -147,8 +148,11 @@ cn_consensus <- read_tsv(cn_consensus_seg) %>%
 Summarizing the salient points from [`AlexsLemonade/OpenPBTA-analysis#251`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251):
 
 > **ETMR, C19MC-altered**: These tumors have focal amplification of the miRNA cluster on chr19 (denoted C19MC) and often have gene fusions involving _TTYH1_ and chr19 miRNA cluster genes
+
 > **CNS HGNET-MN1**: Contain gene fusions involving 5' _MN1_. 3' fusion partners can include _BEND2_ and _CXXC5_.
+
 > **CNS NB-FOXR2**: Over-expression and/or gene fusions in _FOXR2_
+
 > **CNS EFT-CIC**: Alterations in _CIC_, commonly fused with _NUTM1_
 
 ```{r}
@@ -178,7 +182,9 @@ head(fusions_summary_df %>% arrange(desc(TTYH1_fusions)), n = 10)
 Summarizing salient points from [`AlexsLemonade/OpenPBTA-analysis#251`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251):
 
 > **ETMR, C19MC-altered**: These tumors have high expression of _LIN28A_ and serves as a biomarker for ETMRs
+
 > **CNS NB-FOXR2**: Over-expression and/or gene fusions in _FOXR2_
+
 > **ETMR, NOS**: These tumors have high expression of _LIN28A_ and serves as a biomarker for ETMRs, but do not show focal amplification of C19MC.
 
 ```{r}
@@ -259,7 +265,9 @@ rm(cn_consensus)
 ### Structural variant data
 
 > **CNS HGNET-BCOR**
+
 > * CNS high-grade neuroepithelial tumor with BCOR alteration
+
 > * Tumors have internal tandem duplication of BCOR
 
 We currently don't have a easily consumable SV file and copy number seems inadequate for this task.
@@ -300,7 +308,9 @@ molecular_data_df <- full_join(chr19_cn_df, rna_df,
 The following were mentioned in [`AlexsLemonade/OpenPBTA-analysis#251`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251):
 
 > **CNS HGNET-BCOR**: Median age of diagnosis less than 10 years
+
 > **CNS HGNET-MN1**: Predominantly female patients.
+
 > **CNS Embryonal, NOS**: Tumors previously called PNET that do not fit into other groups above.
 
 Granted, we don't currently have enough information to look specifically at CNS HGNET-BCOR and therefore perhaps can not classify any tumor as CNS Embryonal, NOS. 
@@ -322,6 +332,28 @@ relevant_clinical_data <- histologies_df %>%
 
 all_data_df <- inner_join(relevant_clinical_data,
                           molecular_data_df)
+```
+
+Write to file.
+
+```{r}
+all_data_df %>%
+  select(Kids_First_Participant_ID, 
+         sample_id,
+         Kids_First_Biospecimen_ID_DNA,
+         Kids_First_Biospecimen_ID_RNA,
+         age_at_diagnosis_yrs,
+         germline_sex_estimate,
+         disease_type_old,
+         disease_type_new,
+         LIN28A,
+         TTYH1_fusions,
+         chr19_amplification,
+         FOXR2,
+         FOXR2_fusions,
+         MN1_fusions,
+         CIC_fusions) %>%
+  write_tsv(output_all)
 ```
 
 ## Subtyping
