@@ -198,6 +198,7 @@ collapsed_metadata %>%
 
 ```{r}
 # Define target overexpressed gene vectors
+# https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/244#issuecomment-576850172
 tyr_genes <-
   c("TYR",
     "MITF",
@@ -205,44 +206,29 @@ tyr_genes <-
     "VEGFA",
     "DNAH11",
     "SPEF1",
-    "POU3F4",
-    "POU3F2",
-    "PBX1")
+    "MSX2",
+    "STAT3",
+    "PRRX1",
+    "LMX1",
+    "OTX2")
 shh_genes <-
   c(
     "MYCN",
     "GLI2",
     "CDK6",
     "ASCL1",
-    "HES5/6",
-    "DLL1/3",
-    "ZBTB7A",
-    "RXF3",
-    "RXF2",
-    "MYBL2",
-    "MXI1",
-    "MEIS3",
-    "MEIS2",
-    "MAX",
-    "INSM1",
-    "FOXK1"
+    "HES5",
+    "HES6",
+    "DLL1",
+    "DLL3",
+    "LHX2",
+    "TEAD1"
   )
 myc_genes <-
   c(
     "MYC",
     "HOTAIR",
-    "HOX",
-    "TCF7L2",
-    "STAT1",
-    "REST",
-    "RARG",
-    "RAD21",
-    "NR4A2",
-    "IRF9",
-    "IRF8",
-    "FOXC1",
-    "CEBPB",
-    "ATF4"
+    "TEAD3"
   )
 
 # Filter to only the genes of interest
