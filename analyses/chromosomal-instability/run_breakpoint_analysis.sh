@@ -9,7 +9,7 @@
 # 
 surveyed_wgs=data/WGS.hg38.strelka2.unpadded.bed
 
-#TODO: when the unsurveyed regions of the genome BED file is prepared, replace this
+# TODO: when the unsurveyed regions of the genome BED file is prepared, replace this
 # <unsurveyed_regions.bed> with the appropriate file and uncomment this section. 
 # Also change the above file name to a new file name. 
 
@@ -18,6 +18,8 @@ surveyed_wgs=data/WGS.hg38.strelka2.unpadded.bed
 #  -b <unsurveyed_regions.bed> > $surveyed_wgs
   
 # WXS effectively surveyed BED file
+# TODO: potentially we should be using an unpadded BED file here to get a more accurate estimate of the surveyed genome. 
+# TODO: we may also want to subtract <unsurveyed_regions.bed> regions from this BED regions. 
 surveyed_wxs=data/WXS.hg38.100bp_padded.bed  
 
 ############################ Run setup data script #############################
