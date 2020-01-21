@@ -166,7 +166,10 @@ collapsed_metadata <- subset_metadata %>%
       primary_site %in% infratentorial ~ "infratentorial",
       primary_site %in% supratentorial ~ "supratentorial",
       TRUE ~ "NA"
-    )
+    ),
+    # Convert `OS_days` values to months and assign new values to `OS_months`
+    # column
+    OS_months = OS_days / (365 / 12)
   ) %>%
   dplyr::select(
     sample_id,
@@ -174,6 +177,7 @@ collapsed_metadata <- subset_metadata %>%
     Kids_First_Participant_ID,
     location_summary,
     age_at_diagnosis_days,
+    OS_months,
     germline_sex_estimate,
     primary_site
   ) %>%
@@ -397,6 +401,7 @@ final_df <- final_df %>%
     Kids_First_Biospecimen_ID,
     Kids_First_Participant_ID,
     age_at_diagnosis_days,
+    OS_months,
     germline_sex_estimate,
     primary_site,
     location_summary,
