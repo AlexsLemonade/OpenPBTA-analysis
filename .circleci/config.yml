@@ -131,7 +131,7 @@ jobs:
 
       - run:
           name: Chromosomal instability breakpoints
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/chromosomal-instability/chromosomal-instability.Rmd', clean = TRUE)"
+          command: ./scripts/run_in_ci.sh bash run_breakpoint_analysis.sh
 
       - run:
           name: Fusion Summary
