@@ -240,7 +240,7 @@ rule merge_all:
 
 rule clean_output:
     input:
-        script=os.path.join(config["scripts"], "remove_dup_NULL_entries.py"),
+        script=os.path.join(config["scripts"], "remove_dup_NULL_overlap_entries.py"),
         cnv_file ="../../scratch/endpoints/all_CNVs_combined.tsv"
     output:
         "results/cnv_consensus.tsv"
