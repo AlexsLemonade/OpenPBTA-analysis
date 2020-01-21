@@ -5,22 +5,22 @@
 # 2020
 #
 # Option descriptions
-# --cnv_seg: Relative file path (assuming from top directory of 
-#            'OpenPBTA-analysis') to CNV segment file to be used for breakpoint 
+# --cnv_seg: Relative file path (assuming from top directory of
+#            'OpenPBTA-analysis') to CNV segment file to be used for breakpoint
 # --sv: Relative file path (assuming from top directory of
 #       'OpenPBTA-analysis') to SV file to be used for breakpoint calculations.
-# --metadata: Relative file path (assuming from top directory of 
-#             'OpenPBTA-analysis') to MAF file to be analyzed. It is only needed 
-#             for identifying which samples are WGS or WXS. 
+# --metadata: Relative file path (assuming from top directory of
+#             'OpenPBTA-analysis') to MAF file to be analyzed. It is only needed
+#             for identifying which samples are WGS or WXS.
 # --ch.pct: A number between 0 and 1 that specifies the ratio of change needed to
 #           consider a CNV copy number as changed.
-# --output: Path to folder where you would like the output breakpoint calculations 
+# --output: Path to folder where you would like the output breakpoint calculations
 #           files from this script to be stored
-# --surveyed_wgs: File path that specifies the BED regions file that indicates 
+# --surveyed_wgs: File path that specifies the BED regions file that indicates
 #                 the effectively surveyed regions of the genome for the WGS samples.",
-# --surveyed_wxs: File path that specifies the BED regions file that indicates the 
+# --surveyed_wxs: File path that specifies the BED regions file that indicates the
 #                 effectively surveyed regions of the genome for the WXS samples.
-# 
+#
 # Command line example:
 #
 # Rscript analyses/chromosomal-instability/00-setup-breakpoint-data.R \
@@ -29,7 +29,7 @@
 # --metadata data/pbta-histologies.tsv \
 # --surveyed_wgs  WGS_effectively_surveyed.bed \
 # --surveyed_wxs data/WXS.hg38.100bp_padded.bed
-# 
+#
 ################################ Initial Set Up ################################
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -114,9 +114,9 @@ files_found <- file.exists(needed_files)
 # Report error if any of them aren't found
 if (!all(files_found)) {
   stop(paste("\n Could not find needed file(s):",
-             needed_files[which(!files_found)],
-             "Check your options and set up.",
-             sep = "\n"
+    needed_files[which(!files_found)],
+    "Check your options and set up.",
+    sep = "\n"
   ))
 }
 
@@ -150,7 +150,7 @@ cnv_df <- data.table::fread(opt$cnv_seg, data.table = FALSE) %>%
   ) %>%
   # Reformat the chromosome variable to drop the "chr"
   dplyr::mutate(chrom = factor(gsub("chr", "", chrom),
-                               levels = c(1:22, "X", "Y")
+    levels = c(1:22, "X", "Y")
   )) %>%
   # Changing these so they end up matching the SV data
   dplyr::rename(start = loc.start, end = loc.end)
@@ -168,17 +168,19 @@ sv_df <- data.table::fread(opt$sv, data.table = FALSE) %>%
   # Reformat the 23 and 24 chromosomes so they are X and Y and also factors
   dplyr::mutate(
     chrom = dplyr::recode(SV.chrom,
-                          `23` = "X", `24` = "Y"
+      `23` = "X", `24` = "Y"
     )
   )
 
 #################### Format the data as chromosomes breaks #####################
 # Only keep samples for which there are both SV and CNV data
-common_samples <- dplyr::intersect(unique(cnv_df$ID),
-                                   unique(sv_df$Kids.First.Biospecimen.ID.Tumor))
+common_samples <- dplyr::intersect(
+  unique(cnv_df$ID),
+  unique(sv_df$Kids.First.Biospecimen.ID.Tumor)
+)
 
-#TODO: after updating to consensus CNV data, evaluate whether sex chromosomes should still be removed. 
-#Make an CNV breaks data.frame. 
+# TODO: after updating to consensus CNV data, evaluate whether sex chromosomes should still be removed.
+# Make an CNV breaks data.frame.
 
 # Make a CNV data.frame that has the breaks
 cnv_breaks <- data.frame(
@@ -190,11 +192,13 @@ cnv_breaks <- data.frame(
   stringsAsFactors = FALSE
 ) %>%
   # Remove sex chromosomes
-  dplyr::filter(!(chrom %in% c("X", "Y")), 
-                # Only keep samples that have both CNV and SV data
-                samples %in% common_samples)
+  dplyr::filter(
+    !(chrom %in% c("X", "Y")),
+    # Only keep samples that have both CNV and SV data
+    samples %in% common_samples
+  )
 
-# Make an SV breaks data.frame. 
+# Make an SV breaks data.frame.
 sv_breaks <- data.frame(
   samples = rep(sv_df$Kids.First.Biospecimen.ID.Tumor, 2),
   chrom = rep(sv_df$chrom, 2),
@@ -203,16 +207,18 @@ sv_breaks <- data.frame(
   stringsAsFactors = FALSE
 ) %>%
   # Remove sex chromosomes and NAs
-  dplyr::filter(!(chrom %in% c("X", "Y", "M", NA)), 
-                # Only keep samples that have both CNV and SV data
-                samples %in% common_samples)
+  dplyr::filter(
+    !(chrom %in% c("X", "Y", "M", NA)),
+    # Only keep samples that have both CNV and SV data
+    samples %in% common_samples
+  )
 
 ############################## Find common breaks ##############################
-# Make an common breaks data.frame. 
+# Make an common breaks data.frame.
 common_breaks <- dplyr::bind_rows(sv_breaks, cnv_breaks) %>%
   dplyr::distinct(samples, chrom, coord, .keep_all = TRUE)
 
-# Put all the breaks into a list. 
+# Put all the breaks into a list.
 breaks_list <- list(
   common_breaks = common_breaks,
   cnv_breaks = cnv_breaks,
@@ -238,26 +244,27 @@ wxs_size <- as.numeric(wxs_size)
 
 # Set up the metadata
 metadata <- readr::read_tsv(opt$metadata) %>%
-  # Isolate metadata to only the samples that are in the datasets. 
-  dplyr::filter(Kids_First_Biospecimen_ID %in% common_samples) %>% 
+  # Isolate metadata to only the samples that are in the datasets.
+  dplyr::filter(Kids_First_Biospecimen_ID %in% common_samples) %>%
   # Keep the columns to only the experimental strategy and the biospecimen ID
-  dplyr::select(Kids_First_Biospecimen_ID, experimental_strategy) %>% 
-  # For an easier time matching to our breaks data.frames, lets just rename this. 
+  dplyr::select(Kids_First_Biospecimen_ID, experimental_strategy) %>%
+  # For an easier time matching to our breaks data.frames, lets just rename this.
   dplyr::rename(samples = Kids_First_Biospecimen_ID)
 
 # Calculate the breaks density for each data.frame
-breaks_density_list <- lapply(breaks_list, function(breaks_df){
+breaks_density_list <- lapply(breaks_list, function(breaks_df) {
   # Calculate the breaks density
   breaks_df %>%
     # Tack on the experimental strategy
-    dplyr::inner_join(metadata) %>% 
+    dplyr::inner_join(metadata) %>%
     # Recode using the BED range sizes
     dplyr::mutate(genome_size = dplyr::recode(experimental_strategy,
-                                              "WGS" = wgs_size,
-                                              "WXS" = wxs_size
+      "WGS" = wgs_size,
+      "WXS" = wxs_size
     )) %>%
     dplyr::group_by(
-      samples, experimental_strategy, genome_size) %>%
+      samples, experimental_strategy, genome_size
+    ) %>%
     # Count number of mutations for that sample
     dplyr::summarize(breaks_count = dplyr::n()) %>%
     # Calculate breaks density
@@ -266,7 +273,9 @@ breaks_density_list <- lapply(breaks_list, function(breaks_df){
 
 # Write the break densities each as their own files
 purrr::imap(breaks_density_list, function(.x, name = .y) {
-  # Write to TSV file 
-  readr::write_tsv(.x, 
-                   file.path(opt$output, paste0(name, "_densities.tsv")))
+  # Write to TSV file
+  readr::write_tsv(
+    .x,
+    file.path(opt$output, paste0(name, "_densities.tsv"))
+  )
 })

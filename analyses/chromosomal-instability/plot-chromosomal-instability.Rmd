@@ -118,8 +118,10 @@ Save to an RDS file
 
 ```{r}
 # Save to an RDS file
-readr::write_rds(sample_densities, 
-                 file.path(scratch_dir, "sample_breakpoint_densities.RDS"))
+readr::write_rds(
+  sample_densities,
+  file.path(scratch_dir, "sample_breakpoint_densities.RDS")
+)
 ```
 
 ### Set up for making heatmaps of the breakpoints
@@ -316,8 +318,10 @@ Save to an RDS file
 
 ```{r}
 # Save to an RDS file
-readr::write_rds(group_densities, 
-                 file.path(scratch_dir, "histology_breakpoint_densities.RDS"))
+readr::write_rds(
+  group_densities,
+  file.path(scratch_dir, "histology_breakpoint_densities.RDS")
+)
 ```
 
 ### Plot the breakpoints for each tumor-type
