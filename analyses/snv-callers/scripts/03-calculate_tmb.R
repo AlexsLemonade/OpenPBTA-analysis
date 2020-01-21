@@ -29,8 +29,8 @@
 # --metadata data/pbta-histologies.tsv \
 # --all_bed_wgs scratch/intersect_strelka_mutect_WGS.bed \
 # --all_bed_wxs data/WXS.hg38.100bp_padded.bed \
-# --coding_bed_wgs scratch/intersect_exon_lancet_strelka_mutect_WGS.bed \
-# --coding_bed_wxs scratch/intersect_exon_WXS.bed \
+# --coding_bed_wgs scratch/intersect_cds_lancet_strelka_mutect_WGS.bed \
+# --coding_bed_wxs scratch/intersect_cds_WXS.bed \
 # --overwrite
 
 ################################ Initial Set Up ################################
@@ -205,7 +205,7 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   # Calculate coding only TMBs and write to file
   tmb_coding_df <- calculate_tmb(maf_df,
     bed_wgs = opt$coding_bed_wgs,
-    bed_wxs = opt$coding_bed_wgs
+    bed_wxs = opt$coding_bed_wxs
   )
   readr::write_tsv(tmb_coding_df, tmb_coding_file)
 

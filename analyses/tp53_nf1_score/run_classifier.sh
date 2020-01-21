@@ -15,7 +15,7 @@ POLYA_PLOT=${OPENPBTA_POLYAPLOT:-1}
 data_dir="data"
 scratch_dir="scratch"
 # cds gencode bed file  
-exon_file="${scratch_dir}/gencode.v27.primary_assembly.annotation.bed"
+cds_file="${scratch_dir}/gencode.v27.primary_assembly.annotation.bed"
 consensus_file="${data_dir}/pbta-snv-consensus-mutation.maf.tsv.gz"
 clinical_file="${data_dir}/pbta-histologies.tsv"
 analysis_dir="analyses/tp53_nf1_score"
@@ -25,14 +25,14 @@ analysis_dir="analyses/tp53_nf1_score"
 gunzip -c ${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz \
   | awk '$3 ~ /CDS/' \
   | convert2bed --do-not-sort --input=gtf - \
-  > $exon_file
+  > $cds_file
 
 # Prep the SNV consensus data for evaluation downstream
 Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
   --snvConsensus ${consensus_file} \
   --clinicalFile ${clinical_file} \
   --outputFolder ${analysis_dir}/results \
-  --gencode ${exon_file}
+  --gencode ${cds_file}
 
 # expression files for prediction
 collapsed_stranded="pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
