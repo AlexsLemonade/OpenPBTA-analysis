@@ -4,6 +4,8 @@
 #
 # 2020
 #
+# Code adapted from [svcnvplus](https://github.com/gonzolgarcia/svcnvplus).
+#
 # Option descriptions
 # --cnv_seg: Relative file path (assuming from top directory of
 #            'OpenPBTA-analysis') to CNV segment file to be used for breakpoint

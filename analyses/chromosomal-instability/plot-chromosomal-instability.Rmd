@@ -9,12 +9,10 @@ date: 2020
 ---
 
 This analysis evaluates chromosomal instability by using breakpoint SV and CNV 
-data that was formatted by `01-setup-breakpoint_data.R` and mapping chromosomal 
+data that was formatted by `00-setup-breakpoint_data.R` and mapping chromosomal 
 break density.
 This notebook returns chromosomal break heatmaps and plots for each tumor type 
 group in the `plots` directory.
-
-Code adapted from [svcnvplus](https://github.com/gonzolgarcia/svcnvplus).
 
 ### Usage
 
@@ -74,13 +72,33 @@ metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
 Load in the previously formatted breakpoint data. 
 
 ```{r}
-breaks_list <- readr::read_rds(file.path(scratch_dir, "breaks_lists.RDS"))
+breaks_list <- readr::read_rds(file.path("breakpoint-data", "breaks_lists.RDS"))
 ```
 
 Get a vector of the biospecimen IDs. 
 
 ```{r}
 common_samples <- unique(breaks_list$common_breaks$samples)
+```
+
+Set up chromosome size data. 
+It just so happens that this BED file: `WGS.hg38.strelka2.unpadded.bed` is actually 
+just a list of the chromosome sizes so we are using that for now. 
+
+```{r}
+# Set up Chr sizes
+chr_sizes <- readr::read_tsv(file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed"),
+  col_names = FALSE
+) %>%
+  # Reformat the chromosome variable to drop the "chr"
+  dplyr::mutate(X1 = factor(gsub("chr", "", X1),
+    levels = c(1:22, "X", "Y", "M")
+  )) %>%
+  # Remove sex chromosomes
+  dplyr::filter(!(X1 %in% c("X", "Y", "M")))
+# Make chromosome size named vector
+chr_sizes_vector <- chr_sizes$X3
+names(chr_sizes_vector) <- chr_sizes$X1
 ```
 
 ### Co-localization of breakpoints for samples 

@@ -26,7 +26,7 @@ Rscript analyses/chromosomal-instability/00-setup-breakpoint-data.R \
   --cnv_seg data/pbta-cnv-cnvkit.seg.gz \
   --sv data/pbta-sv-manta.tsv.gz \
   --metadata data/pbta-histologies.tsv \
-  --surveyed_wgs  data/WGS.hg38.strelka2.unpadded.bed \
+  --surveyed_wgs data/WGS.hg38.strelka2.unpadded.bed \
   --surveyed_wxs data/WXS.hg38.100bp_padded.bed
   
 ######################### Chromosomal Instability Plots ########################

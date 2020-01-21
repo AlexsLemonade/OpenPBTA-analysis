@@ -2939,8 +2939,7 @@ div.tocify {
 
 
 <!-- rnb-text-begin -->
-<p>This analysis evaluates chromosomal instability by using breakpoint SV and CNV data that was formatted by <code>01-setup-breakpoint_data.R</code> and mapping chromosomal break density. This notebook returns chromosomal break heatmaps and plots for each tumor type group in the <code>plots</code> directory.</p>
-<p>Code adapted from <a href="https://github.com/gonzolgarcia/svcnvplus">svcnvplus</a>.</p>
+<p>This analysis evaluates chromosomal instability by using breakpoint SV and CNV data that was formatted by <code>00-setup-breakpoint_data.R</code> and mapping chromosomal break density. This notebook returns chromosomal break heatmaps and plots for each tumor type group in the <code>plots</code> directory.</p>
 <div id="usage" class="section level3">
 <h3>Usage</h3>
 <p>This notebook can be run via the command line from the top directory of the repository as follows:</p>
@@ -3002,13 +3001,35 @@ if (!dir.exists(hist_plots_dir)) {
 <pre class="r"><code># Read in the metadata
 metadata &lt;- readr::read_tsv(file.path(data_dir, &quot;pbta-histologies.tsv&quot;))</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgT1NfZGF5cyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBhZ2VfbGFzdF91cGRhdGVfZGF5cyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBub3JtYWxfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfcGxvaWR5ID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIG1vbGVjdWxhcl9zdWJ0eXBlID0gXHUwMDFiWzMzbWNvbF9sb2dpY2FsKClcdTAwMWJbMzltXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbjIyMSBwYXJzaW5nIGZhaWx1cmVzLlxuIHJvdyAgICAgICAgICAgICAgIGNvbCAgICAgICAgICAgZXhwZWN0ZWQgYWN0dWFsICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZmlsZVxuMjYwNiBtb2xlY3VsYXJfc3VidHlwZSAxLzAvVC9GL1RSVUUvRkFMU0UgR3JvdXAzICcuLi8uLi9kYXRhL3BidGEtaGlzdG9sb2dpZXMudHN2J1xuMjYwNyBtb2xlY3VsYXJfc3VidHlwZSAxLzAvVC9GL1RSVUUvRkFMU0UgR3JvdXA0ICcuLi8uLi9kYXRhL3BidGEtaGlzdG9sb2dpZXMudHN2J1xuMjYwOCBtb2xlY3VsYXJfc3VidHlwZSAxLzAvVC9GL1RSVUUvRkFMU0UgR3JvdXAzICcuLi8uLi9kYXRhL3BidGEtaGlzdG9sb2dpZXMudHN2J1xuMjYwOSBtb2xlY3VsYXJfc3VidHlwZSAxLzAvVC9GL1RSVUUvRkFMU0UgR3JvdXAzICcuLi8uLi9kYXRhL3BidGEtaGlzdG9sb2dpZXMudHN2J1xuMjYxMCBtb2xlY3VsYXJfc3VidHlwZSAxLzAvVC9GL1RSVUUvRkFMU0UgR3JvdXAzICcuLi8uLi9kYXRhL3BidGEtaGlzdG9sb2dpZXMudHN2J1xuLi4uLiAuLi4uLi4uLi4uLi4uLi4uLiAuLi4uLi4uLi4uLi4uLi4uLi4gLi4uLi4uIC4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLlxuU2VlIHByb2JsZW1zKC4uLikgZm9yIG1vcmUgZGV0YWlscy5cbiJ9 -->
+<pre><code>Parsed with column specification:
+cols(
+  .default = col_character(),
+  OS_days = [32mcol_double()[39m,
+  age_last_update_days = [32mcol_double()[39m,
+  normal_fraction = [32mcol_double()[39m,
+  tumor_fraction = [32mcol_double()[39m,
+  tumor_ploidy = [32mcol_double()[39m,
+  molecular_subtype = [33mcol_logical()[39m
+)
+See spec(...) for full column specifications.
+221 parsing failures.
+ row               col           expected actual                              file
+2606 molecular_subtype 1/0/T/F/TRUE/FALSE Group3 '../../data/pbta-histologies.tsv'
+2607 molecular_subtype 1/0/T/F/TRUE/FALSE Group4 '../../data/pbta-histologies.tsv'
+2608 molecular_subtype 1/0/T/F/TRUE/FALSE Group3 '../../data/pbta-histologies.tsv'
+2609 molecular_subtype 1/0/T/F/TRUE/FALSE Group3 '../../data/pbta-histologies.tsv'
+2610 molecular_subtype 1/0/T/F/TRUE/FALSE Group3 '../../data/pbta-histologies.tsv'
+.... ................. .................. ...... .................................
+See problems(...) for more details.</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Load in the previously formatted breakpoint data.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYnJlYWtzX2xpc3QgPC0gcmVhZHI6OnJlYWRfcmRzKGZpbGUucGF0aChzY3JhdGNoX2RpciwgXCJicmVha3NfbGlzdHMuUkRTXCIpKVxuYGBgIn0= -->
-<pre class="r"><code>breaks_list &lt;- readr::read_rds(file.path(scratch_dir, &quot;breaks_lists.RDS&quot;))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYnJlYWtzX2xpc3QgPC0gcmVhZHI6OnJlYWRfcmRzKGZpbGUucGF0aChcImJyZWFrcG9pbnQtZGF0YVwiLCBcImJyZWFrc19saXN0cy5SRFNcIikpXG5gYGAifQ== -->
+<pre class="r"><code>breaks_list &lt;- readr::read_rds(file.path(&quot;breakpoint-data&quot;, &quot;breaks_lists.RDS&quot;))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3017,6 +3038,36 @@ metadata &lt;- readr::read_tsv(file.path(data_dir, &quot;pbta-histologies.tsv&qu
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29tbW9uX3NhbXBsZXMgPC0gdW5pcXVlKGJyZWFrc19saXN0JGNvbW1vbl9icmVha3Mkc2FtcGxlcylcbmBgYCJ9 -->
 <pre class="r"><code>common_samples &lt;- unique(breaks_list$common_breaks$samples)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Set up chromosome size data. It just so happens that this BED file: <code>WGS.hg38.strelka2.unpadded.bed</code> is actually just a list of the chromosome sizes so we are using that for now.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTZXQgdXAgQ2hyIHNpemVzXG5jaHJfc2l6ZXMgPC0gcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpciwgXCJXR1MuaGczOC5zdHJlbGthMi51bnBhZGRlZC5iZWRcIiksXG4gIGNvbF9uYW1lcyA9IEZBTFNFXG4pICU+JVxuICAjIFJlZm9ybWF0IHRoZSBjaHJvbW9zb21lIHZhcmlhYmxlIHRvIGRyb3AgdGhlIFwiY2hyXCJcbiAgZHBseXI6Om11dGF0ZShYMSA9IGZhY3Rvcihnc3ViKFwiY2hyXCIsIFwiXCIsIFgxKSxcbiAgICBsZXZlbHMgPSBjKDE6MjIsIFwiWFwiLCBcIllcIiwgXCJNXCIpXG4gICkpICU+JVxuICAjIFJlbW92ZSBzZXggY2hyb21vc29tZXNcbiAgZHBseXI6OmZpbHRlcighKFgxICVpbiUgYyhcIlhcIiwgXCJZXCIsIFwiTVwiKSkpXG5gYGAifQ== -->
+<pre class="r"><code># Set up Chr sizes
+chr_sizes &lt;- readr::read_tsv(file.path(data_dir, &quot;WGS.hg38.strelka2.unpadded.bed&quot;),
+  col_names = FALSE
+) %&gt;%
+  # Reformat the chromosome variable to drop the &quot;chr&quot;
+  dplyr::mutate(X1 = factor(gsub(&quot;chr&quot;, &quot;&quot;, X1),
+    levels = c(1:22, &quot;X&quot;, &quot;Y&quot;, &quot;M&quot;)
+  )) %&gt;%
+  # Remove sex chromosomes
+  dplyr::filter(!(X1 %in% c(&quot;X&quot;, &quot;Y&quot;, &quot;M&quot;)))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBYMSA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBYMiA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBYMyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltXG4pXG4ifQ== -->
+<pre><code>Parsed with column specification:
+cols(
+  X1 = [31mcol_character()[39m,
+  X2 = [32mcol_double()[39m,
+  X3 = [32mcol_double()[39m
+)</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBNYWtlIGNocm9tb3NvbWUgc2l6ZSBuYW1lZCB2ZWN0b3JcbmNocl9zaXplc192ZWN0b3IgPC0gY2hyX3NpemVzJFgzXG5uYW1lcyhjaHJfc2l6ZXNfdmVjdG9yKSA8LSBjaHJfc2l6ZXMkWDFcbmBgYCJ9 -->
+<pre class="r"><code># Make chromosome size named vector
+chr_sizes_vector &lt;- chr_sizes$X3
+names(chr_sizes_vector) &lt;- chr_sizes$X1</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3029,16 +3080,28 @@ metadata &lt;- readr::read_tsv(file.path(data_dir, &quot;pbta-histologies.tsv&qu
 3) <code>sv_breaks</code> contains the number of break counts for SV.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBDaGFuZ2UgaGVyZSBhbmQgaXQgd2lsbCBjaGFuZ2UgdGhlIHJlc3RcbmJpbl9zaXplIDwtIDFlNlxuXG4jIEdldCBhIGJpZyBsaXN0IG9mIGJyZWFrIGRlbnNpdGllcyBmb3IgZWFjaCBzYW1wbGUuXG5zYW1wbGVfZGVuc2l0aWVzIDwtIGxhcHBseShjb21tb25fc2FtcGxlcywgZnVuY3Rpb24oc2FtcGxlX2lkKSB7XG4gIGxhcHBseShicmVha3NfbGlzdCwgZnVuY3Rpb24oYnJlYWtzX2RmKSB7XG4gICAgYnJlYWtfZGVuc2l0eShicmVha3NfZGYsXG4gICAgICBzYW1wbGVfaWQgPSBzYW1wbGVfaWQsXG4gICAgICBzdGFydF9jb2wgPSBcImNvb3JkXCIsXG4gICAgICBlbmRfY29sID0gXCJjb29yZFwiLFxuICAgICAgd2luZG93X3NpemUgPSBiaW5fc2l6ZSxcbiAgICAgIGNocl9zaXplc192ZWN0b3IgPSBjaHJfc2l6ZXNfdmVjdG9yXG4gICAgKVxuICB9KVxufSlcbmBgYCJ9 -->
+<pre class="r"><code># Change here and it will change the rest
+bin_size &lt;- 1e6
+
+# Get a big list of break densities for each sample.
+sample_densities &lt;- lapply(common_samples, function(sample_id) {
+  lapply(breaks_list, function(breaks_df) {
+    break_density(breaks_df,
+      sample_id = sample_id,
+      start_col = &quot;coord&quot;,
+      end_col = &quot;coord&quot;,
+      window_size = bin_size,
+      chr_sizes_vector = chr_sizes_vector
+    )
+  })
+})</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Save to an RDS file</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTYXZlIHRvIGFuIFJEUyBmaWxlXG5yZWFkcjo6d3JpdGVfcmRzKHNhbXBsZV9kZW5zaXRpZXMsIFxuICAgICAgICAgICAgICAgICBmaWxlLnBhdGgoc2NyYXRjaF9kaXIsIFwic2FtcGxlX2JyZWFrcG9pbnRfZGVuc2l0aWVzLlJEU1wiKSlcbmBgYCJ9 -->
-<pre class="r"><code># Save to an RDS file
-readr::write_rds(sample_densities, 
-                 file.path(scratch_dir, &quot;sample_breakpoint_densities.RDS&quot;))</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -3048,94 +3111,21 @@ readr::write_rds(sample_densities,
 <p>Make chromosome labeling <code>HeatmapAnnotation</code> object.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBFeHRyYWN0IGNocm9tb3NvbWUgbmFtZXMgZnJvbSBhIEdlbm9taWNSYW5nZXMgb2JqZWN0XG5jaHJfbGFiZWxzIDwtIHNhbXBsZV9kZW5zaXRpZXNbWzFdXSRjb21tb25fYnJlYWtzQHNlcW5hbWVzXG5jaHJfbGFiZWxzIDwtIHBhc3RlMChcImNoclwiLCBhcy5mYWN0b3IoY2hyX2xhYmVscykpXG5cbiMgTWFrZSBhIGtleSBmb3IgYXNzaWduaW5nIGFsdGVybmF0aW5nIGNvbG9ycyB0byB0aGUgY2hyb21vc29tZXNcbmNocl9jb2xvcnMgPC0gcmVwKGMoXCJncmV5XCIsIFwibGlnaHRibHVlXCIpLCBsZW5ndGgub3V0ID0gbGVuZ3RoKHVuaXF1ZShjaHJfbGFiZWxzKSkpXG5uYW1lcyhjaHJfY29sb3JzKSA8LSB1bmlxdWUoY2hyX2xhYmVscylcblxuIyBDcmVhdGUgdGhlIEhlYXRtYXAgYW5ub3RhdGlvbiBvYmplY3RcbmNocl9hbm5vdCA8LSBDb21wbGV4SGVhdG1hcDo6SGVhdG1hcEFubm90YXRpb24oXG4gIGRmID0gZGF0YS5mcmFtZShjaHJfbGFiZWxzKSwgY29sID0gbGlzdChjaHJfbGFiZWxzID0gYyhjaHJfY29sb3JzKSksXG4gIG5hbWUgPSBcIlwiLFxuICBzaG93X2xlZ2VuZCA9IEZBTFNFLFxuICBzaG93X2Fubm90YXRpb25fbmFtZSA9IEZBTFNFXG4pXG5gYGAifQ== -->
-<pre class="r"><code># Extract chromosome names from a GenomicRanges object
-chr_labels &lt;- sample_densities[[1]]$common_breaks@seqnames
-chr_labels &lt;- paste0(&quot;chr&quot;, as.factor(chr_labels))
-
-# Make a key for assigning alternating colors to the chromosomes
-chr_colors &lt;- rep(c(&quot;grey&quot;, &quot;lightblue&quot;), length.out = length(unique(chr_labels)))
-names(chr_colors) &lt;- unique(chr_labels)
-
-# Create the Heatmap annotation object
-chr_annot &lt;- ComplexHeatmap::HeatmapAnnotation(
-  df = data.frame(chr_labels), col = list(chr_labels = c(chr_colors)),
-  name = &quot;&quot;,
-  show_legend = FALSE,
-  show_annotation_name = FALSE
-)</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Make histology labeling <code>HeatmapAnnotation</code> object.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBHZXQgdGhlIGhpc3RvbG9naWVzIGZvciB0aGUgc2FtcGxlcyBpbiB0aGlzIHNldCBhbmQgb3JkZXIgdGhlbSBieSBoaXN0b2xvZ3lcbmhpc3RvbG9naWVzIDwtXG4gIGRhdGEuZnJhbWUoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCA9IGNvbW1vbl9zYW1wbGVzKSAlPiVcbiAgZHBseXI6OmlubmVyX2pvaW4oZHBseXI6OnNlbGVjdChtZXRhZGF0YSwgS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCwgc2hvcnRfaGlzdG9sb2d5KSkgJT4lXG4gIGRwbHlyOjptdXRhdGUoc2hvcnRfaGlzdG9sb2d5ID0gYXMuZmFjdG9yKHNob3J0X2hpc3RvbG9neSkpICU+JVxuICBkcGx5cjo6YXJyYW5nZShzaG9ydF9oaXN0b2xvZ3kpICU+JVxuICB0aWJibGU6OmNvbHVtbl90b19yb3duYW1lcyhcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIilcblxuIyBDcmVhdGUgdGhlIEhlYXRtYXAgYW5ub3RhdGlvbiBvYmplY3Rcbmhpc3RfYW5ub3QgPC0gQ29tcGxleEhlYXRtYXA6OnJvd0Fubm90YXRpb24oXG4gIGRmID0gaGlzdG9sb2dpZXMsXG4gIHNob3dfYW5ub3RhdGlvbl9uYW1lID0gRkFMU0VcbilcbmBgYCJ9 -->
-<pre class="r"><code># Get the histologies for the samples in this set and order them by histology
-histologies &lt;-
-  data.frame(Kids_First_Biospecimen_ID = common_samples) %&gt;%
-  dplyr::inner_join(dplyr::select(metadata, Kids_First_Biospecimen_ID, short_histology)) %&gt;%
-  dplyr::mutate(short_histology = as.factor(short_histology)) %&gt;%
-  dplyr::arrange(short_histology) %&gt;%
-  tibble::column_to_rownames(&quot;Kids_First_Biospecimen_ID&quot;)
-
-# Create the Heatmap annotation object
-hist_annot &lt;- ComplexHeatmap::rowAnnotation(
-  df = histologies,
-  show_annotation_name = FALSE
-)</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Make a color function.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29sX2Z1biA8LSBjaXJjbGl6ZTo6Y29sb3JSYW1wMihcbiAgYygwLCAyLCA1LCAxMCwgMjApLFxuICBjKFwiI2VkZjhmYlwiLCBcIiNiMmUyZTJcIiwgXCIjNjZjMmE0XCIsIFwiIzJjYTI1ZlwiLCBcIiMwMDZkMmNcIilcbilcbmBgYCJ9 -->
-<pre class="r"><code>col_fun &lt;- circlize::colorRamp2(
-  c(0, 2, 5, 10, 20),
-  c(&quot;#edf8fb&quot;, &quot;#b2e2e2&quot;, &quot;#66c2a4&quot;, &quot;#2ca25f&quot;, &quot;#006d2c&quot;)
-)</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Make a function for making the heatmaps.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYnJlYWtzX2hlYXRtYXAgPC0gZnVuY3Rpb24oZGF0YV9uYW1lKSB7XG4gICMgQSB3cmFwcGVyIGZ1bmN0aW9uIGZvciBtYWtpbmcgYSBoZWF0bWFwIGZyb20gdGhlIHNhbXBsZXMgR2Vub21pY1JhbmdlcyBsaXN0LlxuICAjXG4gICMgQXJnczpcbiAgIyBkYXRhX25hbWU6IGEgY2hhcmFjdGVyIHN0cmluZyB0aGF0IG1hdGNoZXMgYSBuYW1lIGluIHRoZSBsaXN0LlxuXG4gICMgUmV0dXJuczpcbiAgIyBBIGhlYXRtYXAgb2YgdGhlIGNocm9tb3NvbWFsIGJyZWFrc1xuXG4gICMgUHVsbCBvdXQgdGhlIHRvdGFsX2NvdW50c1xuICB0b3RhbF9jb3VudHMgPC0gbGFwcGx5KHNhbXBsZV9kZW5zaXRpZXMsIGZ1bmN0aW9uKGdyYW5nZXNfbGlzdCkge1xuICAgIGdyYW5nZXNfbGlzdFtbZGF0YV9uYW1lXV1AZWxlbWVudE1ldGFkYXRhQGxpc3REYXRhJHRvdGFsX2NvdW50c1xuICB9KVxuICAjIE1ha2UgaW50byBhIGRhdGEuZnJhbWVcbiAgdG90YWxfY291bnRzIDwtIGRwbHlyOjpiaW5kX3Jvd3ModG90YWxfY291bnRzKSAlPiVcbiAgICBkcGx5cjo6c2VsZWN0KHJvd25hbWVzKGhpc3RvbG9naWVzKSkgJT4lXG4gICAgdCgpXG4gICMgQWRkIGNocm9tb3NvbWUgbGFiZWxzXG4gIGNvbG5hbWVzKHRvdGFsX2NvdW50cykgPC0gY2hyX2xhYmVsc1xuICAjIFBsb3Qgb24gYSBoZWF0bWFwXG4gIGhlYXRtYXAgPC0gQ29tcGxleEhlYXRtYXA6OkhlYXRtYXAodG90YWxfY291bnRzLFxuICAgIGNvbCA9IGNvbF9mdW4sXG4gICAgaGVhdG1hcF9sZWdlbmRfcGFyYW0gPSBsaXN0KHRpdGxlID0gXCJDb3VudCBvZiBjaHIgYnJlYWtzXCIpLFxuICAgIGNsdXN0ZXJfY29sdW1ucyA9IEZBTFNFLFxuICAgIGNsdXN0ZXJfcm93cyA9IEZBTFNFLFxuICAgIHNob3dfY29sdW1uX25hbWVzID0gRkFMU0UsXG4gICAgc2hvd19yb3dfbmFtZXMgPSBGQUxTRSxcbiAgICBib3R0b21fYW5ub3RhdGlvbiA9IGNocl9hbm5vdCxcbiAgICBsZWZ0X2Fubm90YXRpb24gPSBoaXN0X2Fubm90XG4gIClcbiAgIyBSZXR1cm4gcGxvdFxuICByZXR1cm4oaGVhdG1hcClcbn1cbmBgYCJ9 -->
-<pre class="r"><code>breaks_heatmap &lt;- function(data_name) {
-  # A wrapper function for making a heatmap from the samples GenomicRanges list.
-  #
-  # Args:
-  # data_name: a character string that matches a name in the list.
-
-  # Returns:
-  # A heatmap of the chromosomal breaks
-
-  # Pull out the total_counts
-  total_counts &lt;- lapply(sample_densities, function(granges_list) {
-    granges_list[[data_name]]@elementMetadata@listData$total_counts
-  })
-  # Make into a data.frame
-  total_counts &lt;- dplyr::bind_rows(total_counts) %&gt;%
-    dplyr::select(rownames(histologies)) %&gt;%
-    t()
-  # Add chromosome labels
-  colnames(total_counts) &lt;- chr_labels
-  # Plot on a heatmap
-  heatmap &lt;- ComplexHeatmap::Heatmap(total_counts,
-    col = col_fun,
-    heatmap_legend_param = list(title = &quot;Count of chr breaks&quot;),
-    cluster_columns = FALSE,
-    cluster_rows = FALSE,
-    show_column_names = FALSE,
-    show_row_names = FALSE,
-    bottom_annotation = chr_annot,
-    left_annotation = hist_annot
-  )
-  # Return plot
-  return(heatmap)
-}</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -3143,19 +3133,6 @@ hist_annot &lt;- ComplexHeatmap::rowAnnotation(
 <h2>Common breaks heatmap</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29tbW9uX2hlYXRtYXAgPC0gYnJlYWtzX2hlYXRtYXAoZGF0YV9uYW1lID0gXCJjb21tb25fYnJlYWtzXCIpXG5cbiMgU2F2ZSBwbG90IGFzIFBOR1xucG5nKGZpbGUucGF0aChwbG90c19kaXIsIHBhc3RlMChcImNvbW1vbl9icmVha3NfaGVhdG1hcC5wbmdcIikpLFxuICB3aWR0aCA9IDEyMDAsIGhlaWdodCA9IDkwMCwgdW5pdHMgPSBcInB4XCJcbilcbmNvbW1vbl9oZWF0bWFwXG5kZXYub2ZmKClcblxuIyBQcmludCBvdXQgaGVyZVxuY29tbW9uX2hlYXRtYXBcbmBgYCJ9 -->
-<pre class="r"><code>common_heatmap &lt;- breaks_heatmap(data_name = &quot;common_breaks&quot;)
-
-# Save plot as PNG
-png(file.path(plots_dir, paste0(&quot;common_breaks_heatmap.png&quot;)),
-  width = 1200, height = 900, units = &quot;px&quot;
-)
-common_heatmap
-dev.off()
-
-# Print out here
-common_heatmap</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -3163,19 +3140,6 @@ common_heatmap</code></pre>
 <h2>CNV breaks heatmap</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY252X2hlYXRtYXAgPC0gYnJlYWtzX2hlYXRtYXAoZGF0YV9uYW1lID0gXCJjbnZfYnJlYWtzXCIpXG5cbiMgU2F2ZSBwbG90IGFzIFBOR1xucG5nKGZpbGUucGF0aChwbG90c19kaXIsIHBhc3RlMChcImNudl9icmVha3NfaGVhdG1hcC5wbmdcIikpLFxuICB3aWR0aCA9IDEyMDAsIGhlaWdodCA9IDkwMCwgdW5pdHMgPSBcInB4XCJcbilcbmNudl9oZWF0bWFwXG5kZXYub2ZmKClcblxuIyBQcmludCBvdXQgaGVyZVxuY252X2hlYXRtYXBcbmBgYCJ9 -->
-<pre class="r"><code>cnv_heatmap &lt;- breaks_heatmap(data_name = &quot;cnv_breaks&quot;)
-
-# Save plot as PNG
-png(file.path(plots_dir, paste0(&quot;cnv_breaks_heatmap.png&quot;)),
-  width = 1200, height = 900, units = &quot;px&quot;
-)
-cnv_heatmap
-dev.off()
-
-# Print out here
-cnv_heatmap</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -3183,19 +3147,6 @@ cnv_heatmap</code></pre>
 <h2>SV breaks heatmap</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3ZfaGVhdG1hcCA8LSBicmVha3NfaGVhdG1hcChkYXRhX25hbWUgPSBcInN2X2JyZWFrc1wiKVxuXG4jIFNhdmUgcGxvdCBhcyBQTkdcbnBuZyhmaWxlLnBhdGgocGxvdHNfZGlyLCBwYXN0ZTAoXCJzdl9icmVha3NfaGVhdG1hcC5wbmdcIikpLFxuICB3aWR0aCA9IDEyMDAsIGhlaWdodCA9IDkwMCwgdW5pdHMgPSBcInB4XCJcbilcbnN2X2hlYXRtYXBcbmRldi5vZmYoKVxuXG4jIFByaW50IG91dCBoZXJlXG5zdl9oZWF0bWFwXG5gYGAifQ== -->
-<pre class="r"><code>sv_heatmap &lt;- breaks_heatmap(data_name = &quot;sv_breaks&quot;)
-
-# Save plot as PNG
-png(file.path(plots_dir, paste0(&quot;sv_breaks_heatmap.png&quot;)),
-  width = 1200, height = 900, units = &quot;px&quot;
-)
-sv_heatmap
-dev.off()
-
-# Print out here
-sv_heatmap</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <div id="co-localization-of-breakpoints-for-tumor-type-groups" class="section level3">
@@ -3208,49 +3159,11 @@ sv_heatmap</code></pre>
 <p>Run the density calculations for the groups.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBHZXQgYSBiaWcgbGlzdCBvZiBicmVhayBkZW5zaXRpZXMgZm9yIGVhY2ggc2FtcGxlLlxuZ3JvdXBfZGVuc2l0aWVzIDwtIGxhcHBseSh0dW1vcl90eXBlcywgZnVuY3Rpb24odHVtb3JfdHlwZSkge1xuXG4gICMgT2J0YWluIGEgbGlzdCBvZiBzYW1wbGVfaWRzIHRvIHN1YnNldCBieVxuICBzYW1wbGVfaWRzIDwtIG1ldGFkYXRhICU+JVxuICAgIGRwbHlyOjpmaWx0ZXIobWV0YWRhdGEkc2hvcnRfaGlzdG9sb2d5ID09IHR1bW9yX3R5cGUpICU+JVxuICAgIGRwbHlyOjpwdWxsKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpXG5cbiAgIyBEb3VibGUgY2hlY2sgdGhlc2Ugc2FtcGxlcyBhcmUgaW4gdGhlIGxpc3RcbiAgY2hlY2tfc2FtcGxlcyA8LSAoc2FtcGxlX2lkcyAlaW4lIGNvbW1vbl9zYW1wbGVzKVxuXG4gICMgSWYgbm8gc2FtcGxlcywgZ28gdG8gbmV4dFxuICBpZiAoc3VtKGNoZWNrX3NhbXBsZXMpID4gMSkge1xuICAgIG1lc3NhZ2UocGFzdGUoXCJDYWxjdWxhdGluZyBicmVha3BvaW50IGRlbnNpdHkgZm9yXCIsIHR1bW9yX3R5cGUsIFwic2FtcGxlc1wiKSlcbiAgICBsYXBwbHkoYnJlYWtzX2xpc3QsIGZ1bmN0aW9uKGJyZWFrc19kZikge1xuICAgICAgYnJlYWtfZGVuc2l0eShicmVha3NfZGYsXG4gICAgICAgIHNhbXBsZV9pZCA9IHNhbXBsZV9pZHMsXG4gICAgICAgIHN0YXJ0X2NvbCA9IFwiY29vcmRcIixcbiAgICAgICAgZW5kX2NvbCA9IFwiY29vcmRcIixcbiAgICAgICAgd2luZG93X3NpemUgPSBiaW5fc2l6ZSxcbiAgICAgICAgY2hyX3NpemVzX3ZlY3RvciA9IGNocl9zaXplc192ZWN0b3JcbiAgICAgIClcbiAgICB9KVxuICB9XG59KVxuXG4jIEJyaW5nIGFsb25nIHRoZSB0dW1vci10eXBlIGxhYmVsc1xubmFtZXMoZ3JvdXBfZGVuc2l0aWVzKSA8LSB0dW1vcl90eXBlc1xuXG4jIFJlbW92ZSB0dW1vcl90eXBlcyBkYXRhIHRoYXQgZGlkbid0IGhhdmUgYXQgbGVhc3QgdHdvIHNhbXBsZXNcbmdyb3VwX2RlbnNpdGllcyA8LSBncm91cF9kZW5zaXRpZXNbIXNhcHBseShncm91cF9kZW5zaXRpZXMsIGlzLm51bGwpXVxuYGBgIn0= -->
-<pre class="r"><code># Get a big list of break densities for each sample.
-group_densities &lt;- lapply(tumor_types, function(tumor_type) {
-
-  # Obtain a list of sample_ids to subset by
-  sample_ids &lt;- metadata %&gt;%
-    dplyr::filter(metadata$short_histology == tumor_type) %&gt;%
-    dplyr::pull(Kids_First_Biospecimen_ID)
-
-  # Double check these samples are in the list
-  check_samples &lt;- (sample_ids %in% common_samples)
-
-  # If no samples, go to next
-  if (sum(check_samples) &gt; 1) {
-    message(paste(&quot;Calculating breakpoint density for&quot;, tumor_type, &quot;samples&quot;))
-    lapply(breaks_list, function(breaks_df) {
-      break_density(breaks_df,
-        sample_id = sample_ids,
-        start_col = &quot;coord&quot;,
-        end_col = &quot;coord&quot;,
-        window_size = bin_size,
-        chr_sizes_vector = chr_sizes_vector
-      )
-    })
-  }
-})
-
-# Bring along the tumor-type labels
-names(group_densities) &lt;- tumor_types
-
-# Remove tumor_types data that didn't have at least two samples
-group_densities &lt;- group_densities[!sapply(group_densities, is.null)]</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Save to an RDS file</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTYXZlIHRvIGFuIFJEUyBmaWxlXG5yZWFkcjo6d3JpdGVfcmRzKGdyb3VwX2RlbnNpdGllcywgXG4gICAgICAgICAgICAgICAgIGZpbGUucGF0aChzY3JhdGNoX2RpciwgXCJoaXN0b2xvZ3lfYnJlYWtwb2ludF9kZW5zaXRpZXMuUkRTXCIpKVxuYGBgIn0= -->
-<pre class="r"><code># Save to an RDS file
-readr::write_rds(group_densities, 
-                 file.path(scratch_dir, &quot;histology_breakpoint_densities.RDS&quot;))</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -3259,34 +3172,11 @@ readr::write_rds(group_densities,
 <p>Here we will plot median number of break points for the tumor-type group per each bin.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHVycnI6OmltYXAoZ3JvdXBfZGVuc2l0aWVzLCBmdW5jdGlvbigueCwgbmFtZSA9IC55KSB7XG4gICMgTWFrZSB0aGUgY29tYm8gcGxvdFxuICBtdWx0aXBhbmVsX2JyZWFrX3Bsb3QoXG4gICAgZ3Jhbmdlc19saXN0ID0gLngsXG4gICAgcGxvdF9uYW1lID0gbmFtZSxcbiAgICB5X3ZhbCA9IFwibWVkaWFuX2NvdW50c1wiLFxuICAgIHlfbGFiID0gXCJNZWRpYW4gQnJlYWtzIHBlciBNYlwiLFxuICAgIHBsb3RfZGlyID0gaGlzdF9wbG90c19kaXJcbiAgKVxufSlcbmBgYCJ9 -->
-<pre class="r"><code>purrr::imap(group_densities, function(.x, name = .y) {
-  # Make the combo plot
-  multipanel_break_plot(
-    granges_list = .x,
-    plot_name = name,
-    y_val = &quot;median_counts&quot;,
-    y_lab = &quot;Median Breaks per Mb&quot;,
-    plot_dir = hist_plots_dir
-  )
-})</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Zip up the PNG files into one file.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBEZWNsYXJlIG5hbWUgb2YgemlwIGZpbGVcbnppcF9maWxlIDwtIHBhc3RlMChoaXN0X3Bsb3RzX2RpciwgXCIuemlwXCIpXG5cbiMgUmVtb3ZlIGFueSBjdXJyZW50IHppcF9maWxlIG9mIHRoaXMgbmFtZSBzbyB3ZSBjYW4gb3ZlcndyaXRlIGl0XG5pZiAoZmlsZS5leGlzdHMoemlwX2ZpbGUpKSB7XG4gIGZpbGUucmVtb3ZlKHppcF9maWxlKVxufVxuIyBaaXAgdXAgdGhlIHBsb3RzXG56aXAoemlwX2ZpbGUsIGhpc3RfcGxvdHNfZGlyKVxuYGBgIn0= -->
-<pre class="r"><code># Declare name of zip file
-zip_file &lt;- paste0(hist_plots_dir, &quot;.zip&quot;)
-
-# Remove any current zip_file of this name so we can overwrite it
-if (file.exists(zip_file)) {
-  file.remove(zip_file)
-}
-# Zip up the plots
-zip(zip_file, hist_plots_dir)</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -3294,16 +3184,13 @@ zip(zip_file, hist_plots_dir)</code></pre>
 <h3>Session Info</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
-<pre class="r"><code>sessionInfo()</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiQ2hyb21vc29tYWwgSW5zdGFiaWxpdHk6IEJyZWFrcG9pbnRzIgpvdXRwdXQ6ICAgCiAgaHRtbF9ub3RlYm9vazogCiAgICB0b2M6IHRydWUKICAgIHRvY19mbG9hdDogdHJ1ZQphdXRob3I6IENhbmRhY2UgU2F2b25lbiBmb3IgQUxTRiAtIENDREwKZGF0ZTogMjAyMAotLS0KClRoaXMgYW5hbHlzaXMgZXZhbHVhdGVzIGNocm9tb3NvbWFsIGluc3RhYmlsaXR5IGJ5IHVzaW5nIGJyZWFrcG9pbnQgU1YgYW5kIENOViAKZGF0YSB0aGF0IHdhcyBmb3JtYXR0ZWQgYnkgYDAxLXNldHVwLWJyZWFrcG9pbnRfZGF0YS5SYCBhbmQgbWFwcGluZyBjaHJvbW9zb21hbCAKYnJlYWsgZGVuc2l0eS4KVGhpcyBub3RlYm9vayByZXR1cm5zIGNocm9tb3NvbWFsIGJyZWFrIGhlYXRtYXBzIGFuZCBwbG90cyBmb3IgZWFjaCB0dW1vciB0eXBlIApncm91cCBpbiB0aGUgYHBsb3RzYCBkaXJlY3RvcnkuCgpDb2RlIGFkYXB0ZWQgZnJvbSBbc3ZjbnZwbHVzXShodHRwczovL2dpdGh1Yi5jb20vZ29uem9sZ2FyY2lhL3N2Y252cGx1cykuCgojIyMgVXNhZ2UKClRoaXMgbm90ZWJvb2sgY2FuIGJlIHJ1biB2aWEgdGhlIGNvbW1hbmQgbGluZSBmcm9tIHRoZSB0b3AgZGlyZWN0b3J5IG9mIHRoZSAKcmVwb3NpdG9yeSBhcyBmb2xsb3dzOgoKYGBgClJzY3JpcHQgLWUgInJtYXJrZG93bjo6cmVuZGVyKCdhbmFseXNlcy9jaHJvbW9zb21hbC1pbnN0YWJpbGl0eS9wbG90LWNocm9tb3NvbWFsLWluc3RhYmlsaXR5LlJtZCcsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbGVhbiA9IFRSVUUpIgpgYGAKCiMjIyBTZXQgVXAKCmBgYHtyfQojIFNldCBzZWVkIHNvIGhlYXRtYXBzIHR1cm4gb3V0IHRoZSBzYW1lCnNldC5zZWVkKDIwMjApCgojIE1hZ3JpdHRyIHBpcGUKYCU+JWAgPC0gZHBseXI6OmAlPiVgCmBgYAoKUmVhZCBpbiB0aGUgY3VzdG9tIGZ1bmN0aW9ucyBuZWVkZWQgZm9yIHRoaXMgYW5hbHlzaXMuIAoKYGBge3J9CnNvdXJjZShmaWxlLnBhdGgoInV0aWwiLCAiY2hyLWJyZWFrLWNhbGN1bGF0ZS5SIikpCnNvdXJjZShmaWxlLnBhdGgoInV0aWwiLCAiY2hyLWJyZWFrLXBsb3QuUiIpKQpgYGAKCiMjIyBEaXJlY3RvcmllcyBhbmQgRmlsZXMKCmBgYHtyfQojIFBhdGggdG8gZGF0YSBkaXJlY3RvcnkKZGF0YV9kaXIgPC0gZmlsZS5wYXRoKCIuLiIsICIuLiIsICJkYXRhIikKc2NyYXRjaF9kaXIgPC0gZmlsZS5wYXRoKCIuLiIsICIuLiIsICJkYXRhIikKCiMgUGF0aCB0byBvdXRwdXQgZGlyZWN0b3J5CnBsb3RzX2RpciA8LSAicGxvdHMiCgojIFBhdGggdG8gdHVtb3IgdHlwZSBwbG90cyBvdXRwdXQgZGlyZWN0b3J5Cmhpc3RfcGxvdHNfZGlyIDwtIGZpbGUucGF0aChwbG90c19kaXIsICJ0dW1vci10eXBlIikKCiMgQ3JlYXRlIHRoZSBoaXN0X3Bsb3RzX2RpciAgaWYgaXQgZG9lcyBub3QgZXhpc3QKaWYgKCFkaXIuZXhpc3RzKGhpc3RfcGxvdHNfZGlyKSkgewogIGRpci5jcmVhdGUoaGlzdF9wbG90c19kaXIsIHJlY3Vyc2l2ZSA9IFRSVUUpCn0KYGBgCgojIyMgUmVhZCBpbiBkYXRhIAoKU2V0IHVwIG1ldGFkYXRhCgpgYGB7cn0KIyBSZWFkIGluIHRoZSBtZXRhZGF0YQptZXRhZGF0YSA8LSByZWFkcjo6cmVhZF90c3YoZmlsZS5wYXRoKGRhdGFfZGlyLCAicGJ0YS1oaXN0b2xvZ2llcy50c3YiKSkKYGBgCgpMb2FkIGluIHRoZSBwcmV2aW91c2x5IGZvcm1hdHRlZCBicmVha3BvaW50IGRhdGEuIAoKYGBge3J9CmJyZWFrc19saXN0IDwtIHJlYWRyOjpyZWFkX3JkcyhmaWxlLnBhdGgoc2NyYXRjaF9kaXIsICJicmVha3NfbGlzdHMuUkRTIikpCmBgYAoKR2V0IGEgdmVjdG9yIG9mIHRoZSBiaW9zcGVjaW1lbiBJRHMuIAoKYGBge3J9CmNvbW1vbl9zYW1wbGVzIDwtIHVuaXF1ZShicmVha3NfbGlzdCRjb21tb25fYnJlYWtzJHNhbXBsZXMpCmBgYAoKIyMjIENvLWxvY2FsaXphdGlvbiBvZiBicmVha3BvaW50cyBmb3Igc2FtcGxlcyAKCkZvciBlYWNoIHNhbXBsZSwgd2Ugd2lsbCBiaW4gdGhlIGdlbm9tZSBhbmQgY291bnQgaG93IG1hbnkgY2hyb21vc29tZSBicmVha3MgCm9jY3VyIGZvciBlYWNoIGJpbiwgZ2l2ZW4gdGhlIGdpdmVuIGBiaW5fc2l6ZWAuCgpXZSB3aWxsIHJ1biB0aGlzIGZvciBlYWNoIHNhbXBsZSBhbmQgcmV0dXJuIGEgbGlzdCBvZiB0aHJlZSBgR2Vub21pY1Jhbmdlc2Agb2JqZWN0czoKMSkgYGNvbW1vbl9icmVha3NgIGNvbnRhaW5zIHRoZSBjb21iaW5lZCBicmVhayBjb3VudHMgZm9yIGJvdGggU1YgYW5kIENOViBicmVhayBkYXRhLiAgIAoyKSBgY252X2JyZWFrc2AgY29udGFpbnMgdGhlIG51bWJlciBvZiBicmVhayBjb3VudHMgZm9yIENOVi4gICAKMykgYHN2X2JyZWFrc2AgY29udGFpbnMgdGhlIG51bWJlciBvZiBicmVhayBjb3VudHMgZm9yIFNWLiAgCgpgYGB7ciwgd2FybmluZyA9IEZBTFNFLCByZXN1bHRzPSdoaWRlJ30KIyBDaGFuZ2UgaGVyZSBhbmQgaXQgd2lsbCBjaGFuZ2UgdGhlIHJlc3QKYmluX3NpemUgPC0gMWU2CgojIEdldCBhIGJpZyBsaXN0IG9mIGJyZWFrIGRlbnNpdGllcyBmb3IgZWFjaCBzYW1wbGUuCnNhbXBsZV9kZW5zaXRpZXMgPC0gbGFwcGx5KGNvbW1vbl9zYW1wbGVzLCBmdW5jdGlvbihzYW1wbGVfaWQpIHsKICBsYXBwbHkoYnJlYWtzX2xpc3QsIGZ1bmN0aW9uKGJyZWFrc19kZikgewogICAgYnJlYWtfZGVuc2l0eShicmVha3NfZGYsCiAgICAgIHNhbXBsZV9pZCA9IHNhbXBsZV9pZCwKICAgICAgc3RhcnRfY29sID0gImNvb3JkIiwKICAgICAgZW5kX2NvbCA9ICJjb29yZCIsCiAgICAgIHdpbmRvd19zaXplID0gYmluX3NpemUsCiAgICAgIGNocl9zaXplc192ZWN0b3IgPSBjaHJfc2l6ZXNfdmVjdG9yCiAgICApCiAgfSkKfSkKCiMgQnJpbmcgYWxvbmcgdGhlIHNhbXBsZSBJRHMKbmFtZXMoc2FtcGxlX2RlbnNpdGllcykgPC0gY29tbW9uX3NhbXBsZXMKYGBgCgpTYXZlIHRvIGFuIFJEUyBmaWxlCgpgYGB7cn0KIyBTYXZlIHRvIGFuIFJEUyBmaWxlCnJlYWRyOjp3cml0ZV9yZHMoc2FtcGxlX2RlbnNpdGllcywgCiAgICAgICAgICAgICAgICAgZmlsZS5wYXRoKHNjcmF0Y2hfZGlyLCAic2FtcGxlX2JyZWFrcG9pbnRfZGVuc2l0aWVzLlJEUyIpKQpgYGAKCiMjIyBTZXQgdXAgZm9yIG1ha2luZyBoZWF0bWFwcyBvZiB0aGUgYnJlYWtwb2ludHMKCkdpdmVuIHRoZSBgR2Vub21pY1Jhbmdlc2Agb2JqZWN0cyBmb3IgZWFjaCBzYW1wbGUsIGNyZWF0ZSBhIGNvbWJpbmVkIHBsb3QgZm9yIAplYWNoLiAKCk1ha2UgY2hyb21vc29tZSBsYWJlbGluZyBgSGVhdG1hcEFubm90YXRpb25gIG9iamVjdC4gCgpgYGB7cn0KIyBFeHRyYWN0IGNocm9tb3NvbWUgbmFtZXMgZnJvbSBhIEdlbm9taWNSYW5nZXMgb2JqZWN0CmNocl9sYWJlbHMgPC0gc2FtcGxlX2RlbnNpdGllc1tbMV1dJGNvbW1vbl9icmVha3NAc2VxbmFtZXMKY2hyX2xhYmVscyA8LSBwYXN0ZTAoImNociIsIGFzLmZhY3RvcihjaHJfbGFiZWxzKSkKCiMgTWFrZSBhIGtleSBmb3IgYXNzaWduaW5nIGFsdGVybmF0aW5nIGNvbG9ycyB0byB0aGUgY2hyb21vc29tZXMKY2hyX2NvbG9ycyA8LSByZXAoYygiZ3JleSIsICJsaWdodGJsdWUiKSwgbGVuZ3RoLm91dCA9IGxlbmd0aCh1bmlxdWUoY2hyX2xhYmVscykpKQpuYW1lcyhjaHJfY29sb3JzKSA8LSB1bmlxdWUoY2hyX2xhYmVscykKCiMgQ3JlYXRlIHRoZSBIZWF0bWFwIGFubm90YXRpb24gb2JqZWN0CmNocl9hbm5vdCA8LSBDb21wbGV4SGVhdG1hcDo6SGVhdG1hcEFubm90YXRpb24oCiAgZGYgPSBkYXRhLmZyYW1lKGNocl9sYWJlbHMpLCBjb2wgPSBsaXN0KGNocl9sYWJlbHMgPSBjKGNocl9jb2xvcnMpKSwKICBuYW1lID0gIiIsCiAgc2hvd19sZWdlbmQgPSBGQUxTRSwKICBzaG93X2Fubm90YXRpb25fbmFtZSA9IEZBTFNFCikKYGBgCgpNYWtlIGhpc3RvbG9neSBsYWJlbGluZyBgSGVhdG1hcEFubm90YXRpb25gIG9iamVjdC4KCmBgYHtyfQojIEdldCB0aGUgaGlzdG9sb2dpZXMgZm9yIHRoZSBzYW1wbGVzIGluIHRoaXMgc2V0IGFuZCBvcmRlciB0aGVtIGJ5IGhpc3RvbG9neQpoaXN0b2xvZ2llcyA8LQogIGRhdGEuZnJhbWUoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCA9IGNvbW1vbl9zYW1wbGVzKSAlPiUKICBkcGx5cjo6aW5uZXJfam9pbihkcGx5cjo6c2VsZWN0KG1ldGFkYXRhLCBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lELCBzaG9ydF9oaXN0b2xvZ3kpKSAlPiUKICBkcGx5cjo6bXV0YXRlKHNob3J0X2hpc3RvbG9neSA9IGFzLmZhY3RvcihzaG9ydF9oaXN0b2xvZ3kpKSAlPiUKICBkcGx5cjo6YXJyYW5nZShzaG9ydF9oaXN0b2xvZ3kpICU+JQogIHRpYmJsZTo6Y29sdW1uX3RvX3Jvd25hbWVzKCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEIikKCiMgQ3JlYXRlIHRoZSBIZWF0bWFwIGFubm90YXRpb24gb2JqZWN0Cmhpc3RfYW5ub3QgPC0gQ29tcGxleEhlYXRtYXA6OnJvd0Fubm90YXRpb24oCiAgZGYgPSBoaXN0b2xvZ2llcywKICBzaG93X2Fubm90YXRpb25fbmFtZSA9IEZBTFNFCikKYGBgCgpNYWtlIGEgY29sb3IgZnVuY3Rpb24uIAoKYGBge3J9CmNvbF9mdW4gPC0gY2lyY2xpemU6OmNvbG9yUmFtcDIoCiAgYygwLCAyLCA1LCAxMCwgMjApLAogIGMoIiNlZGY4ZmIiLCAiI2IyZTJlMiIsICIjNjZjMmE0IiwgIiMyY2EyNWYiLCAiIzAwNmQyYyIpCikKYGBgCgpNYWtlIGEgZnVuY3Rpb24gZm9yIG1ha2luZyB0aGUgaGVhdG1hcHMuIAoKYGBge3J9CmJyZWFrc19oZWF0bWFwIDwtIGZ1bmN0aW9uKGRhdGFfbmFtZSkgewogICMgQSB3cmFwcGVyIGZ1bmN0aW9uIGZvciBtYWtpbmcgYSBoZWF0bWFwIGZyb20gdGhlIHNhbXBsZXMgR2Vub21pY1JhbmdlcyBsaXN0LgogICMKICAjIEFyZ3M6CiAgIyBkYXRhX25hbWU6IGEgY2hhcmFjdGVyIHN0cmluZyB0aGF0IG1hdGNoZXMgYSBuYW1lIGluIHRoZSBsaXN0LgoKICAjIFJldHVybnM6CiAgIyBBIGhlYXRtYXAgb2YgdGhlIGNocm9tb3NvbWFsIGJyZWFrcwoKICAjIFB1bGwgb3V0IHRoZSB0b3RhbF9jb3VudHMKICB0b3RhbF9jb3VudHMgPC0gbGFwcGx5KHNhbXBsZV9kZW5zaXRpZXMsIGZ1bmN0aW9uKGdyYW5nZXNfbGlzdCkgewogICAgZ3Jhbmdlc19saXN0W1tkYXRhX25hbWVdXUBlbGVtZW50TWV0YWRhdGFAbGlzdERhdGEkdG90YWxfY291bnRzCiAgfSkKICAjIE1ha2UgaW50byBhIGRhdGEuZnJhbWUKICB0b3RhbF9jb3VudHMgPC0gZHBseXI6OmJpbmRfcm93cyh0b3RhbF9jb3VudHMpICU+JQogICAgZHBseXI6OnNlbGVjdChyb3duYW1lcyhoaXN0b2xvZ2llcykpICU+JQogICAgdCgpCiAgIyBBZGQgY2hyb21vc29tZSBsYWJlbHMKICBjb2xuYW1lcyh0b3RhbF9jb3VudHMpIDwtIGNocl9sYWJlbHMKICAjIFBsb3Qgb24gYSBoZWF0bWFwCiAgaGVhdG1hcCA8LSBDb21wbGV4SGVhdG1hcDo6SGVhdG1hcCh0b3RhbF9jb3VudHMsCiAgICBjb2wgPSBjb2xfZnVuLAogICAgaGVhdG1hcF9sZWdlbmRfcGFyYW0gPSBsaXN0KHRpdGxlID0gIkNvdW50IG9mIGNociBicmVha3MiKSwKICAgIGNsdXN0ZXJfY29sdW1ucyA9IEZBTFNFLAogICAgY2x1c3Rlcl9yb3dzID0gRkFMU0UsCiAgICBzaG93X2NvbHVtbl9uYW1lcyA9IEZBTFNFLAogICAgc2hvd19yb3dfbmFtZXMgPSBGQUxTRSwKICAgIGJvdHRvbV9hbm5vdGF0aW9uID0gY2hyX2Fubm90LAogICAgbGVmdF9hbm5vdGF0aW9uID0gaGlzdF9hbm5vdAogICkKICAjIFJldHVybiBwbG90CiAgcmV0dXJuKGhlYXRtYXApCn0KYGBgCgojIyBDb21tb24gYnJlYWtzIGhlYXRtYXAKCmBgYHtyfQpjb21tb25faGVhdG1hcCA8LSBicmVha3NfaGVhdG1hcChkYXRhX25hbWUgPSAiY29tbW9uX2JyZWFrcyIpCgojIFNhdmUgcGxvdCBhcyBQTkcKcG5nKGZpbGUucGF0aChwbG90c19kaXIsIHBhc3RlMCgiY29tbW9uX2JyZWFrc19oZWF0bWFwLnBuZyIpKSwKICB3aWR0aCA9IDEyMDAsIGhlaWdodCA9IDkwMCwgdW5pdHMgPSAicHgiCikKY29tbW9uX2hlYXRtYXAKZGV2Lm9mZigpCgojIFByaW50IG91dCBoZXJlCmNvbW1vbl9oZWF0bWFwCmBgYAoKIyMgQ05WIGJyZWFrcyBoZWF0bWFwCgpgYGB7cn0KY252X2hlYXRtYXAgPC0gYnJlYWtzX2hlYXRtYXAoZGF0YV9uYW1lID0gImNudl9icmVha3MiKQoKIyBTYXZlIHBsb3QgYXMgUE5HCnBuZyhmaWxlLnBhdGgocGxvdHNfZGlyLCBwYXN0ZTAoImNudl9icmVha3NfaGVhdG1hcC5wbmciKSksCiAgd2lkdGggPSAxMjAwLCBoZWlnaHQgPSA5MDAsIHVuaXRzID0gInB4IgopCmNudl9oZWF0bWFwCmRldi5vZmYoKQoKIyBQcmludCBvdXQgaGVyZQpjbnZfaGVhdG1hcApgYGAKCiMjIFNWIGJyZWFrcyBoZWF0bWFwCgpgYGB7cn0Kc3ZfaGVhdG1hcCA8LSBicmVha3NfaGVhdG1hcChkYXRhX25hbWUgPSAic3ZfYnJlYWtzIikKCiMgU2F2ZSBwbG90IGFzIFBORwpwbmcoZmlsZS5wYXRoKHBsb3RzX2RpciwgcGFzdGUwKCJzdl9icmVha3NfaGVhdG1hcC5wbmciKSksCiAgd2lkdGggPSAxMjAwLCBoZWlnaHQgPSA5MDAsIHVuaXRzID0gInB4IgopCnN2X2hlYXRtYXAKZGV2Lm9mZigpCgojIFByaW50IG91dCBoZXJlCnN2X2hlYXRtYXAKYGBgCgojIyMgQ28tbG9jYWxpemF0aW9uIG9mIGJyZWFrcG9pbnRzIGZvciB0dW1vci10eXBlIGdyb3VwcwoKU2FtZSBhcyB3YXMgZG9uZSBmb3IgZWFjaCBzYW1wbGUsIG5vdyB3ZSB3aWxsIGNhbGN1bGF0ZSBkZW5zaXRpZXMgZm9yIAplYWNoIHR1bW9yLXR5cGUgZ3JvdXAuIAoKYGBge3IsIHJlc3VsdHM9J2hpZGUnfQojIENoYW5nZSBiaW5fc2l6ZSBoZXJlIGFuZCBpdCB3aWxsIGNoYW5nZSB0aGUgcmVzdApiaW5fc2l6ZSA8LSAxZTYKCiMgR2V0IGEgbGlzdCBvZiB0aGUgdHVtb3JfdHlwZXMgZm9yIHdoaWNoIHdlIGhhdmUgRE5BLXNlcSBkYXRhCnR1bW9yX3R5cGVzIDwtIG1ldGFkYXRhICU+JQogIGRwbHlyOjpmaWx0ZXIoIWlzLm5hKHNob3J0X2hpc3RvbG9neSksIGV4cGVyaW1lbnRhbF9zdHJhdGVneSAhPSAiUk5BLVNlcSIpICU+JQogIGRwbHlyOjpkaXN0aW5jdChzaG9ydF9oaXN0b2xvZ3kpICU+JQogIGRwbHlyOjpwdWxsKHNob3J0X2hpc3RvbG9neSkKYGBgCgpSdW4gdGhlIGRlbnNpdHkgY2FsY3VsYXRpb25zIGZvciB0aGUgZ3JvdXBzLiAKCmBgYHtyfQojIEdldCBhIGJpZyBsaXN0IG9mIGJyZWFrIGRlbnNpdGllcyBmb3IgZWFjaCBzYW1wbGUuCmdyb3VwX2RlbnNpdGllcyA8LSBsYXBwbHkodHVtb3JfdHlwZXMsIGZ1bmN0aW9uKHR1bW9yX3R5cGUpIHsKCiAgIyBPYnRhaW4gYSBsaXN0IG9mIHNhbXBsZV9pZHMgdG8gc3Vic2V0IGJ5CiAgc2FtcGxlX2lkcyA8LSBtZXRhZGF0YSAlPiUKICAgIGRwbHlyOjpmaWx0ZXIobWV0YWRhdGEkc2hvcnRfaGlzdG9sb2d5ID09IHR1bW9yX3R5cGUpICU+JQogICAgZHBseXI6OnB1bGwoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkKCiAgIyBEb3VibGUgY2hlY2sgdGhlc2Ugc2FtcGxlcyBhcmUgaW4gdGhlIGxpc3QKICBjaGVja19zYW1wbGVzIDwtIChzYW1wbGVfaWRzICVpbiUgY29tbW9uX3NhbXBsZXMpCgogICMgSWYgbm8gc2FtcGxlcywgZ28gdG8gbmV4dAogIGlmIChzdW0oY2hlY2tfc2FtcGxlcykgPiAxKSB7CiAgICBtZXNzYWdlKHBhc3RlKCJDYWxjdWxhdGluZyBicmVha3BvaW50IGRlbnNpdHkgZm9yIiwgdHVtb3JfdHlwZSwgInNhbXBsZXMiKSkKICAgIGxhcHBseShicmVha3NfbGlzdCwgZnVuY3Rpb24oYnJlYWtzX2RmKSB7CiAgICAgIGJyZWFrX2RlbnNpdHkoYnJlYWtzX2RmLAogICAgICAgIHNhbXBsZV9pZCA9IHNhbXBsZV9pZHMsCiAgICAgICAgc3RhcnRfY29sID0gImNvb3JkIiwKICAgICAgICBlbmRfY29sID0gImNvb3JkIiwKICAgICAgICB3aW5kb3dfc2l6ZSA9IGJpbl9zaXplLAogICAgICAgIGNocl9zaXplc192ZWN0b3IgPSBjaHJfc2l6ZXNfdmVjdG9yCiAgICAgICkKICAgIH0pCiAgfQp9KQoKIyBCcmluZyBhbG9uZyB0aGUgdHVtb3ItdHlwZSBsYWJlbHMKbmFtZXMoZ3JvdXBfZGVuc2l0aWVzKSA8LSB0dW1vcl90eXBlcwoKIyBSZW1vdmUgdHVtb3JfdHlwZXMgZGF0YSB0aGF0IGRpZG4ndCBoYXZlIGF0IGxlYXN0IHR3byBzYW1wbGVzCmdyb3VwX2RlbnNpdGllcyA8LSBncm91cF9kZW5zaXRpZXNbIXNhcHBseShncm91cF9kZW5zaXRpZXMsIGlzLm51bGwpXQpgYGAKClNhdmUgdG8gYW4gUkRTIGZpbGUKCmBgYHtyfQojIFNhdmUgdG8gYW4gUkRTIGZpbGUKcmVhZHI6OndyaXRlX3Jkcyhncm91cF9kZW5zaXRpZXMsIAogICAgICAgICAgICAgICAgIGZpbGUucGF0aChzY3JhdGNoX2RpciwgImhpc3RvbG9neV9icmVha3BvaW50X2RlbnNpdGllcy5SRFMiKSkKYGBgCgojIyMgUGxvdCB0aGUgYnJlYWtwb2ludHMgZm9yIGVhY2ggdHVtb3ItdHlwZQoKSGVyZSB3ZSB3aWxsIHBsb3QgbWVkaWFuIG51bWJlciBvZiBicmVhayBwb2ludHMgZm9yIHRoZSB0dW1vci10eXBlIGdyb3VwIHBlciAKZWFjaCBiaW4uCgpgYGB7cn0KcHVycnI6OmltYXAoZ3JvdXBfZGVuc2l0aWVzLCBmdW5jdGlvbigueCwgbmFtZSA9IC55KSB7CiAgIyBNYWtlIHRoZSBjb21ibyBwbG90CiAgbXVsdGlwYW5lbF9icmVha19wbG90KAogICAgZ3Jhbmdlc19saXN0ID0gLngsCiAgICBwbG90X25hbWUgPSBuYW1lLAogICAgeV92YWwgPSAibWVkaWFuX2NvdW50cyIsCiAgICB5X2xhYiA9ICJNZWRpYW4gQnJlYWtzIHBlciBNYiIsCiAgICBwbG90X2RpciA9IGhpc3RfcGxvdHNfZGlyCiAgKQp9KQpgYGAKClppcCB1cCB0aGUgUE5HIGZpbGVzIGludG8gb25lIGZpbGUuIAoKYGBge3J9CiMgRGVjbGFyZSBuYW1lIG9mIHppcCBmaWxlCnppcF9maWxlIDwtIHBhc3RlMChoaXN0X3Bsb3RzX2RpciwgIi56aXAiKQoKIyBSZW1vdmUgYW55IGN1cnJlbnQgemlwX2ZpbGUgb2YgdGhpcyBuYW1lIHNvIHdlIGNhbiBvdmVyd3JpdGUgaXQKaWYgKGZpbGUuZXhpc3RzKHppcF9maWxlKSkgewogIGZpbGUucmVtb3ZlKHppcF9maWxlKQp9CiMgWmlwIHVwIHRoZSBwbG90cwp6aXAoemlwX2ZpbGUsIGhpc3RfcGxvdHNfZGlyKQpgYGAKCiMjIyBTZXNzaW9uIEluZm8KCmBgYHtyfQpzZXNzaW9uSW5mbygpCmBgYAoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiQ2hyb21vc29tYWwgSW5zdGFiaWxpdHk6IEJyZWFrcG9pbnRzIgpvdXRwdXQ6ICAgCiAgaHRtbF9ub3RlYm9vazogCiAgICB0b2M6IHRydWUKICAgIHRvY19mbG9hdDogdHJ1ZQphdXRob3I6IENhbmRhY2UgU2F2b25lbiBmb3IgQUxTRiAtIENDREwKZGF0ZTogMjAyMAotLS0KClRoaXMgYW5hbHlzaXMgZXZhbHVhdGVzIGNocm9tb3NvbWFsIGluc3RhYmlsaXR5IGJ5IHVzaW5nIGJyZWFrcG9pbnQgU1YgYW5kIENOViAKZGF0YSB0aGF0IHdhcyBmb3JtYXR0ZWQgYnkgYDAwLXNldHVwLWJyZWFrcG9pbnRfZGF0YS5SYCBhbmQgbWFwcGluZyBjaHJvbW9zb21hbCAKYnJlYWsgZGVuc2l0eS4KVGhpcyBub3RlYm9vayByZXR1cm5zIGNocm9tb3NvbWFsIGJyZWFrIGhlYXRtYXBzIGFuZCBwbG90cyBmb3IgZWFjaCB0dW1vciB0eXBlIApncm91cCBpbiB0aGUgYHBsb3RzYCBkaXJlY3RvcnkuCgojIyMgVXNhZ2UKClRoaXMgbm90ZWJvb2sgY2FuIGJlIHJ1biB2aWEgdGhlIGNvbW1hbmQgbGluZSBmcm9tIHRoZSB0b3AgZGlyZWN0b3J5IG9mIHRoZSAKcmVwb3NpdG9yeSBhcyBmb2xsb3dzOgoKYGBgClJzY3JpcHQgLWUgInJtYXJrZG93bjo6cmVuZGVyKCdhbmFseXNlcy9jaHJvbW9zb21hbC1pbnN0YWJpbGl0eS9wbG90LWNocm9tb3NvbWFsLWluc3RhYmlsaXR5LlJtZCcsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbGVhbiA9IFRSVUUpIgpgYGAKCiMjIyBTZXQgVXAKCmBgYHtyfQojIFNldCBzZWVkIHNvIGhlYXRtYXBzIHR1cm4gb3V0IHRoZSBzYW1lCnNldC5zZWVkKDIwMjApCgojIE1hZ3JpdHRyIHBpcGUKYCU+JWAgPC0gZHBseXI6OmAlPiVgCmBgYAoKUmVhZCBpbiB0aGUgY3VzdG9tIGZ1bmN0aW9ucyBuZWVkZWQgZm9yIHRoaXMgYW5hbHlzaXMuIAoKYGBge3J9CnNvdXJjZShmaWxlLnBhdGgoInV0aWwiLCAiY2hyLWJyZWFrLWNhbGN1bGF0ZS5SIikpCnNvdXJjZShmaWxlLnBhdGgoInV0aWwiLCAiY2hyLWJyZWFrLXBsb3QuUiIpKQpgYGAKCiMjIyBEaXJlY3RvcmllcyBhbmQgRmlsZXMKCmBgYHtyfQojIFBhdGggdG8gZGF0YSBkaXJlY3RvcnkKZGF0YV9kaXIgPC0gZmlsZS5wYXRoKCIuLiIsICIuLiIsICJkYXRhIikKc2NyYXRjaF9kaXIgPC0gZmlsZS5wYXRoKCIuLiIsICIuLiIsICJkYXRhIikKCiMgUGF0aCB0byBvdXRwdXQgZGlyZWN0b3J5CnBsb3RzX2RpciA8LSAicGxvdHMiCgojIFBhdGggdG8gdHVtb3IgdHlwZSBwbG90cyBvdXRwdXQgZGlyZWN0b3J5Cmhpc3RfcGxvdHNfZGlyIDwtIGZpbGUucGF0aChwbG90c19kaXIsICJ0dW1vci10eXBlIikKCiMgQ3JlYXRlIHRoZSBoaXN0X3Bsb3RzX2RpciAgaWYgaXQgZG9lcyBub3QgZXhpc3QKaWYgKCFkaXIuZXhpc3RzKGhpc3RfcGxvdHNfZGlyKSkgewogIGRpci5jcmVhdGUoaGlzdF9wbG90c19kaXIsIHJlY3Vyc2l2ZSA9IFRSVUUpCn0KYGBgCgojIyMgUmVhZCBpbiBkYXRhIAoKU2V0IHVwIG1ldGFkYXRhCgpgYGB7cn0KIyBSZWFkIGluIHRoZSBtZXRhZGF0YQptZXRhZGF0YSA8LSByZWFkcjo6cmVhZF90c3YoZmlsZS5wYXRoKGRhdGFfZGlyLCAicGJ0YS1oaXN0b2xvZ2llcy50c3YiKSkKYGBgCgpMb2FkIGluIHRoZSBwcmV2aW91c2x5IGZvcm1hdHRlZCBicmVha3BvaW50IGRhdGEuIAoKYGBge3J9CmJyZWFrc19saXN0IDwtIHJlYWRyOjpyZWFkX3JkcyhmaWxlLnBhdGgoImJyZWFrcG9pbnQtZGF0YSIsICJicmVha3NfbGlzdHMuUkRTIikpCmBgYAoKR2V0IGEgdmVjdG9yIG9mIHRoZSBiaW9zcGVjaW1lbiBJRHMuIAoKYGBge3J9CmNvbW1vbl9zYW1wbGVzIDwtIHVuaXF1ZShicmVha3NfbGlzdCRjb21tb25fYnJlYWtzJHNhbXBsZXMpCmBgYAoKU2V0IHVwIGNocm9tb3NvbWUgc2l6ZSBkYXRhLiAKSXQganVzdCBzbyBoYXBwZW5zIHRoYXQgdGhpcyBCRUQgZmlsZTogYFdHUy5oZzM4LnN0cmVsa2EyLnVucGFkZGVkLmJlZGAgaXMgYWN0dWFsbHkgCmp1c3QgYSBsaXN0IG9mIHRoZSBjaHJvbW9zb21lIHNpemVzIHNvIHdlIGFyZSB1c2luZyB0aGF0IGZvciBub3cuIAoKYGBge3J9CiMgU2V0IHVwIENociBzaXplcwpjaHJfc2l6ZXMgPC0gcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpciwgIldHUy5oZzM4LnN0cmVsa2EyLnVucGFkZGVkLmJlZCIpLAogIGNvbF9uYW1lcyA9IEZBTFNFCikgJT4lCiAgIyBSZWZvcm1hdCB0aGUgY2hyb21vc29tZSB2YXJpYWJsZSB0byBkcm9wIHRoZSAiY2hyIgogIGRwbHlyOjptdXRhdGUoWDEgPSBmYWN0b3IoZ3N1YigiY2hyIiwgIiIsIFgxKSwKICAgIGxldmVscyA9IGMoMToyMiwgIlgiLCAiWSIsICJNIikKICApKSAlPiUKICAjIFJlbW92ZSBzZXggY2hyb21vc29tZXMKICBkcGx5cjo6ZmlsdGVyKCEoWDEgJWluJSBjKCJYIiwgIlkiLCAiTSIpKSkKIyBNYWtlIGNocm9tb3NvbWUgc2l6ZSBuYW1lZCB2ZWN0b3IKY2hyX3NpemVzX3ZlY3RvciA8LSBjaHJfc2l6ZXMkWDMKbmFtZXMoY2hyX3NpemVzX3ZlY3RvcikgPC0gY2hyX3NpemVzJFgxCmBgYAoKIyMjIENvLWxvY2FsaXphdGlvbiBvZiBicmVha3BvaW50cyBmb3Igc2FtcGxlcyAKCkZvciBlYWNoIHNhbXBsZSwgd2Ugd2lsbCBiaW4gdGhlIGdlbm9tZSBhbmQgY291bnQgaG93IG1hbnkgY2hyb21vc29tZSBicmVha3MgCm9jY3VyIGZvciBlYWNoIGJpbiwgZ2l2ZW4gdGhlIGdpdmVuIGBiaW5fc2l6ZWAuCgpXZSB3aWxsIHJ1biB0aGlzIGZvciBlYWNoIHNhbXBsZSBhbmQgcmV0dXJuIGEgbGlzdCBvZiB0aHJlZSBgR2Vub21pY1Jhbmdlc2Agb2JqZWN0czoKMSkgYGNvbW1vbl9icmVha3NgIGNvbnRhaW5zIHRoZSBjb21iaW5lZCBicmVhayBjb3VudHMgZm9yIGJvdGggU1YgYW5kIENOViBicmVhayBkYXRhLiAgIAoyKSBgY252X2JyZWFrc2AgY29udGFpbnMgdGhlIG51bWJlciBvZiBicmVhayBjb3VudHMgZm9yIENOVi4gICAKMykgYHN2X2JyZWFrc2AgY29udGFpbnMgdGhlIG51bWJlciBvZiBicmVhayBjb3VudHMgZm9yIFNWLiAgCgpgYGB7ciwgd2FybmluZyA9IEZBTFNFLCByZXN1bHRzPSdoaWRlJ30KIyBDaGFuZ2UgaGVyZSBhbmQgaXQgd2lsbCBjaGFuZ2UgdGhlIHJlc3QKYmluX3NpemUgPC0gMWU2CgojIEdldCBhIGJpZyBsaXN0IG9mIGJyZWFrIGRlbnNpdGllcyBmb3IgZWFjaCBzYW1wbGUuCnNhbXBsZV9kZW5zaXRpZXMgPC0gbGFwcGx5KGNvbW1vbl9zYW1wbGVzLCBmdW5jdGlvbihzYW1wbGVfaWQpIHsKICBsYXBwbHkoYnJlYWtzX2xpc3QsIGZ1bmN0aW9uKGJyZWFrc19kZikgewogICAgYnJlYWtfZGVuc2l0eShicmVha3NfZGYsCiAgICAgIHNhbXBsZV9pZCA9IHNhbXBsZV9pZCwKICAgICAgc3RhcnRfY29sID0gImNvb3JkIiwKICAgICAgZW5kX2NvbCA9ICJjb29yZCIsCiAgICAgIHdpbmRvd19zaXplID0gYmluX3NpemUsCiAgICAgIGNocl9zaXplc192ZWN0b3IgPSBjaHJfc2l6ZXNfdmVjdG9yCiAgICApCiAgfSkKfSkKCiMgQnJpbmcgYWxvbmcgdGhlIHNhbXBsZSBJRHMKbmFtZXMoc2FtcGxlX2RlbnNpdGllcykgPC0gY29tbW9uX3NhbXBsZXMKYGBgCgpTYXZlIHRvIGFuIFJEUyBmaWxlCgpgYGB7cn0KIyBTYXZlIHRvIGFuIFJEUyBmaWxlCnJlYWRyOjp3cml0ZV9yZHMoCiAgc2FtcGxlX2RlbnNpdGllcywKICBmaWxlLnBhdGgoc2NyYXRjaF9kaXIsICJzYW1wbGVfYnJlYWtwb2ludF9kZW5zaXRpZXMuUkRTIikKKQpgYGAKCiMjIyBTZXQgdXAgZm9yIG1ha2luZyBoZWF0bWFwcyBvZiB0aGUgYnJlYWtwb2ludHMKCkdpdmVuIHRoZSBgR2Vub21pY1Jhbmdlc2Agb2JqZWN0cyBmb3IgZWFjaCBzYW1wbGUsIGNyZWF0ZSBhIGNvbWJpbmVkIHBsb3QgZm9yIAplYWNoLiAKCk1ha2UgY2hyb21vc29tZSBsYWJlbGluZyBgSGVhdG1hcEFubm90YXRpb25gIG9iamVjdC4gCgpgYGB7cn0KIyBFeHRyYWN0IGNocm9tb3NvbWUgbmFtZXMgZnJvbSBhIEdlbm9taWNSYW5nZXMgb2JqZWN0CmNocl9sYWJlbHMgPC0gc2FtcGxlX2RlbnNpdGllc1tbMV1dJGNvbW1vbl9icmVha3NAc2VxbmFtZXMKY2hyX2xhYmVscyA8LSBwYXN0ZTAoImNociIsIGFzLmZhY3RvcihjaHJfbGFiZWxzKSkKCiMgTWFrZSBhIGtleSBmb3IgYXNzaWduaW5nIGFsdGVybmF0aW5nIGNvbG9ycyB0byB0aGUgY2hyb21vc29tZXMKY2hyX2NvbG9ycyA8LSByZXAoYygiZ3JleSIsICJsaWdodGJsdWUiKSwgbGVuZ3RoLm91dCA9IGxlbmd0aCh1bmlxdWUoY2hyX2xhYmVscykpKQpuYW1lcyhjaHJfY29sb3JzKSA8LSB1bmlxdWUoY2hyX2xhYmVscykKCiMgQ3JlYXRlIHRoZSBIZWF0bWFwIGFubm90YXRpb24gb2JqZWN0CmNocl9hbm5vdCA8LSBDb21wbGV4SGVhdG1hcDo6SGVhdG1hcEFubm90YXRpb24oCiAgZGYgPSBkYXRhLmZyYW1lKGNocl9sYWJlbHMpLCBjb2wgPSBsaXN0KGNocl9sYWJlbHMgPSBjKGNocl9jb2xvcnMpKSwKICBuYW1lID0gIiIsCiAgc2hvd19sZWdlbmQgPSBGQUxTRSwKICBzaG93X2Fubm90YXRpb25fbmFtZSA9IEZBTFNFCikKYGBgCgpNYWtlIGhpc3RvbG9neSBsYWJlbGluZyBgSGVhdG1hcEFubm90YXRpb25gIG9iamVjdC4KCmBgYHtyfQojIEdldCB0aGUgaGlzdG9sb2dpZXMgZm9yIHRoZSBzYW1wbGVzIGluIHRoaXMgc2V0IGFuZCBvcmRlciB0aGVtIGJ5IGhpc3RvbG9neQpoaXN0b2xvZ2llcyA8LQogIGRhdGEuZnJhbWUoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCA9IGNvbW1vbl9zYW1wbGVzKSAlPiUKICBkcGx5cjo6aW5uZXJfam9pbihkcGx5cjo6c2VsZWN0KG1ldGFkYXRhLCBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lELCBzaG9ydF9oaXN0b2xvZ3kpKSAlPiUKICBkcGx5cjo6bXV0YXRlKHNob3J0X2hpc3RvbG9neSA9IGFzLmZhY3RvcihzaG9ydF9oaXN0b2xvZ3kpKSAlPiUKICBkcGx5cjo6YXJyYW5nZShzaG9ydF9oaXN0b2xvZ3kpICU+JQogIHRpYmJsZTo6Y29sdW1uX3RvX3Jvd25hbWVzKCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEIikKCiMgQ3JlYXRlIHRoZSBIZWF0bWFwIGFubm90YXRpb24gb2JqZWN0Cmhpc3RfYW5ub3QgPC0gQ29tcGxleEhlYXRtYXA6OnJvd0Fubm90YXRpb24oCiAgZGYgPSBoaXN0b2xvZ2llcywKICBzaG93X2Fubm90YXRpb25fbmFtZSA9IEZBTFNFCikKYGBgCgpNYWtlIGEgY29sb3IgZnVuY3Rpb24uIAoKYGBge3J9CmNvbF9mdW4gPC0gY2lyY2xpemU6OmNvbG9yUmFtcDIoCiAgYygwLCAyLCA1LCAxMCwgMjApLAogIGMoIiNlZGY4ZmIiLCAiI2IyZTJlMiIsICIjNjZjMmE0IiwgIiMyY2EyNWYiLCAiIzAwNmQyYyIpCikKYGBgCgpNYWtlIGEgZnVuY3Rpb24gZm9yIG1ha2luZyB0aGUgaGVhdG1hcHMuIAoKYGBge3J9CmJyZWFrc19oZWF0bWFwIDwtIGZ1bmN0aW9uKGRhdGFfbmFtZSkgewogICMgQSB3cmFwcGVyIGZ1bmN0aW9uIGZvciBtYWtpbmcgYSBoZWF0bWFwIGZyb20gdGhlIHNhbXBsZXMgR2Vub21pY1JhbmdlcyBsaXN0LgogICMKICAjIEFyZ3M6CiAgIyBkYXRhX25hbWU6IGEgY2hhcmFjdGVyIHN0cmluZyB0aGF0IG1hdGNoZXMgYSBuYW1lIGluIHRoZSBsaXN0LgoKICAjIFJldHVybnM6CiAgIyBBIGhlYXRtYXAgb2YgdGhlIGNocm9tb3NvbWFsIGJyZWFrcwoKICAjIFB1bGwgb3V0IHRoZSB0b3RhbF9jb3VudHMKICB0b3RhbF9jb3VudHMgPC0gbGFwcGx5KHNhbXBsZV9kZW5zaXRpZXMsIGZ1bmN0aW9uKGdyYW5nZXNfbGlzdCkgewogICAgZ3Jhbmdlc19saXN0W1tkYXRhX25hbWVdXUBlbGVtZW50TWV0YWRhdGFAbGlzdERhdGEkdG90YWxfY291bnRzCiAgfSkKICAjIE1ha2UgaW50byBhIGRhdGEuZnJhbWUKICB0b3RhbF9jb3VudHMgPC0gZHBseXI6OmJpbmRfcm93cyh0b3RhbF9jb3VudHMpICU+JQogICAgZHBseXI6OnNlbGVjdChyb3duYW1lcyhoaXN0b2xvZ2llcykpICU+JQogICAgdCgpCiAgIyBBZGQgY2hyb21vc29tZSBsYWJlbHMKICBjb2xuYW1lcyh0b3RhbF9jb3VudHMpIDwtIGNocl9sYWJlbHMKICAjIFBsb3Qgb24gYSBoZWF0bWFwCiAgaGVhdG1hcCA8LSBDb21wbGV4SGVhdG1hcDo6SGVhdG1hcCh0b3RhbF9jb3VudHMsCiAgICBjb2wgPSBjb2xfZnVuLAogICAgaGVhdG1hcF9sZWdlbmRfcGFyYW0gPSBsaXN0KHRpdGxlID0gIkNvdW50IG9mIGNociBicmVha3MiKSwKICAgIGNsdXN0ZXJfY29sdW1ucyA9IEZBTFNFLAogICAgY2x1c3Rlcl9yb3dzID0gRkFMU0UsCiAgICBzaG93X2NvbHVtbl9uYW1lcyA9IEZBTFNFLAogICAgc2hvd19yb3dfbmFtZXMgPSBGQUxTRSwKICAgIGJvdHRvbV9hbm5vdGF0aW9uID0gY2hyX2Fubm90LAogICAgbGVmdF9hbm5vdGF0aW9uID0gaGlzdF9hbm5vdAogICkKICAjIFJldHVybiBwbG90CiAgcmV0dXJuKGhlYXRtYXApCn0KYGBgCgojIyBDb21tb24gYnJlYWtzIGhlYXRtYXAKCmBgYHtyfQpjb21tb25faGVhdG1hcCA8LSBicmVha3NfaGVhdG1hcChkYXRhX25hbWUgPSAiY29tbW9uX2JyZWFrcyIpCgojIFNhdmUgcGxvdCBhcyBQTkcKcG5nKGZpbGUucGF0aChwbG90c19kaXIsIHBhc3RlMCgiY29tbW9uX2JyZWFrc19oZWF0bWFwLnBuZyIpKSwKICB3aWR0aCA9IDEyMDAsIGhlaWdodCA9IDkwMCwgdW5pdHMgPSAicHgiCikKY29tbW9uX2hlYXRtYXAKZGV2Lm9mZigpCgojIFByaW50IG91dCBoZXJlCmNvbW1vbl9oZWF0bWFwCmBgYAoKIyMgQ05WIGJyZWFrcyBoZWF0bWFwCgpgYGB7cn0KY252X2hlYXRtYXAgPC0gYnJlYWtzX2hlYXRtYXAoZGF0YV9uYW1lID0gImNudl9icmVha3MiKQoKIyBTYXZlIHBsb3QgYXMgUE5HCnBuZyhmaWxlLnBhdGgocGxvdHNfZGlyLCBwYXN0ZTAoImNudl9icmVha3NfaGVhdG1hcC5wbmciKSksCiAgd2lkdGggPSAxMjAwLCBoZWlnaHQgPSA5MDAsIHVuaXRzID0gInB4IgopCmNudl9oZWF0bWFwCmRldi5vZmYoKQoKIyBQcmludCBvdXQgaGVyZQpjbnZfaGVhdG1hcApgYGAKCiMjIFNWIGJyZWFrcyBoZWF0bWFwCgpgYGB7cn0Kc3ZfaGVhdG1hcCA8LSBicmVha3NfaGVhdG1hcChkYXRhX25hbWUgPSAic3ZfYnJlYWtzIikKCiMgU2F2ZSBwbG90IGFzIFBORwpwbmcoZmlsZS5wYXRoKHBsb3RzX2RpciwgcGFzdGUwKCJzdl9icmVha3NfaGVhdG1hcC5wbmciKSksCiAgd2lkdGggPSAxMjAwLCBoZWlnaHQgPSA5MDAsIHVuaXRzID0gInB4IgopCnN2X2hlYXRtYXAKZGV2Lm9mZigpCgojIFByaW50IG91dCBoZXJlCnN2X2hlYXRtYXAKYGBgCgojIyMgQ28tbG9jYWxpemF0aW9uIG9mIGJyZWFrcG9pbnRzIGZvciB0dW1vci10eXBlIGdyb3VwcwoKU2FtZSBhcyB3YXMgZG9uZSBmb3IgZWFjaCBzYW1wbGUsIG5vdyB3ZSB3aWxsIGNhbGN1bGF0ZSBkZW5zaXRpZXMgZm9yIAplYWNoIHR1bW9yLXR5cGUgZ3JvdXAuIAoKYGBge3IsIHJlc3VsdHM9J2hpZGUnfQojIENoYW5nZSBiaW5fc2l6ZSBoZXJlIGFuZCBpdCB3aWxsIGNoYW5nZSB0aGUgcmVzdApiaW5fc2l6ZSA8LSAxZTYKCiMgR2V0IGEgbGlzdCBvZiB0aGUgdHVtb3JfdHlwZXMgZm9yIHdoaWNoIHdlIGhhdmUgRE5BLXNlcSBkYXRhCnR1bW9yX3R5cGVzIDwtIG1ldGFkYXRhICU+JQogIGRwbHlyOjpmaWx0ZXIoIWlzLm5hKHNob3J0X2hpc3RvbG9neSksIGV4cGVyaW1lbnRhbF9zdHJhdGVneSAhPSAiUk5BLVNlcSIpICU+JQogIGRwbHlyOjpkaXN0aW5jdChzaG9ydF9oaXN0b2xvZ3kpICU+JQogIGRwbHlyOjpwdWxsKHNob3J0X2hpc3RvbG9neSkKYGBgCgpSdW4gdGhlIGRlbnNpdHkgY2FsY3VsYXRpb25zIGZvciB0aGUgZ3JvdXBzLiAKCmBgYHtyfQojIEdldCBhIGJpZyBsaXN0IG9mIGJyZWFrIGRlbnNpdGllcyBmb3IgZWFjaCBzYW1wbGUuCmdyb3VwX2RlbnNpdGllcyA8LSBsYXBwbHkodHVtb3JfdHlwZXMsIGZ1bmN0aW9uKHR1bW9yX3R5cGUpIHsKCiAgIyBPYnRhaW4gYSBsaXN0IG9mIHNhbXBsZV9pZHMgdG8gc3Vic2V0IGJ5CiAgc2FtcGxlX2lkcyA8LSBtZXRhZGF0YSAlPiUKICAgIGRwbHlyOjpmaWx0ZXIobWV0YWRhdGEkc2hvcnRfaGlzdG9sb2d5ID09IHR1bW9yX3R5cGUpICU+JQogICAgZHBseXI6OnB1bGwoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkKCiAgIyBEb3VibGUgY2hlY2sgdGhlc2Ugc2FtcGxlcyBhcmUgaW4gdGhlIGxpc3QKICBjaGVja19zYW1wbGVzIDwtIChzYW1wbGVfaWRzICVpbiUgY29tbW9uX3NhbXBsZXMpCgogICMgSWYgbm8gc2FtcGxlcywgZ28gdG8gbmV4dAogIGlmIChzdW0oY2hlY2tfc2FtcGxlcykgPiAxKSB7CiAgICBtZXNzYWdlKHBhc3RlKCJDYWxjdWxhdGluZyBicmVha3BvaW50IGRlbnNpdHkgZm9yIiwgdHVtb3JfdHlwZSwgInNhbXBsZXMiKSkKICAgIGxhcHBseShicmVha3NfbGlzdCwgZnVuY3Rpb24oYnJlYWtzX2RmKSB7CiAgICAgIGJyZWFrX2RlbnNpdHkoYnJlYWtzX2RmLAogICAgICAgIHNhbXBsZV9pZCA9IHNhbXBsZV9pZHMsCiAgICAgICAgc3RhcnRfY29sID0gImNvb3JkIiwKICAgICAgICBlbmRfY29sID0gImNvb3JkIiwKICAgICAgICB3aW5kb3dfc2l6ZSA9IGJpbl9zaXplLAogICAgICAgIGNocl9zaXplc192ZWN0b3IgPSBjaHJfc2l6ZXNfdmVjdG9yCiAgICAgICkKICAgIH0pCiAgfQp9KQoKIyBCcmluZyBhbG9uZyB0aGUgdHVtb3ItdHlwZSBsYWJlbHMKbmFtZXMoZ3JvdXBfZGVuc2l0aWVzKSA8LSB0dW1vcl90eXBlcwoKIyBSZW1vdmUgdHVtb3JfdHlwZXMgZGF0YSB0aGF0IGRpZG4ndCBoYXZlIGF0IGxlYXN0IHR3byBzYW1wbGVzCmdyb3VwX2RlbnNpdGllcyA8LSBncm91cF9kZW5zaXRpZXNbIXNhcHBseShncm91cF9kZW5zaXRpZXMsIGlzLm51bGwpXQpgYGAKClNhdmUgdG8gYW4gUkRTIGZpbGUKCmBgYHtyfQojIFNhdmUgdG8gYW4gUkRTIGZpbGUKcmVhZHI6OndyaXRlX3JkcygKICBncm91cF9kZW5zaXRpZXMsCiAgZmlsZS5wYXRoKHNjcmF0Y2hfZGlyLCAiaGlzdG9sb2d5X2JyZWFrcG9pbnRfZGVuc2l0aWVzLlJEUyIpCikKYGBgCgojIyMgUGxvdCB0aGUgYnJlYWtwb2ludHMgZm9yIGVhY2ggdHVtb3ItdHlwZQoKSGVyZSB3ZSB3aWxsIHBsb3QgbWVkaWFuIG51bWJlciBvZiBicmVhayBwb2ludHMgZm9yIHRoZSB0dW1vci10eXBlIGdyb3VwIHBlciAKZWFjaCBiaW4uCgpgYGB7cn0KcHVycnI6OmltYXAoZ3JvdXBfZGVuc2l0aWVzLCBmdW5jdGlvbigueCwgbmFtZSA9IC55KSB7CiAgIyBNYWtlIHRoZSBjb21ibyBwbG90CiAgbXVsdGlwYW5lbF9icmVha19wbG90KAogICAgZ3Jhbmdlc19saXN0ID0gLngsCiAgICBwbG90X25hbWUgPSBuYW1lLAogICAgeV92YWwgPSAibWVkaWFuX2NvdW50cyIsCiAgICB5X2xhYiA9ICJNZWRpYW4gQnJlYWtzIHBlciBNYiIsCiAgICBwbG90X2RpciA9IGhpc3RfcGxvdHNfZGlyCiAgKQp9KQpgYGAKClppcCB1cCB0aGUgUE5HIGZpbGVzIGludG8gb25lIGZpbGUuIAoKYGBge3J9CiMgRGVjbGFyZSBuYW1lIG9mIHppcCBmaWxlCnppcF9maWxlIDwtIHBhc3RlMChoaXN0X3Bsb3RzX2RpciwgIi56aXAiKQoKIyBSZW1vdmUgYW55IGN1cnJlbnQgemlwX2ZpbGUgb2YgdGhpcyBuYW1lIHNvIHdlIGNhbiBvdmVyd3JpdGUgaXQKaWYgKGZpbGUuZXhpc3RzKHppcF9maWxlKSkgewogIGZpbGUucmVtb3ZlKHppcF9maWxlKQp9CiMgWmlwIHVwIHRoZSBwbG90cwp6aXAoemlwX2ZpbGUsIGhpc3RfcGxvdHNfZGlyKQpgYGAKCiMjIyBTZXNzaW9uIEluZm8KCmBgYHtyfQpzZXNzaW9uSW5mbygpCmBgYAoK</div>
 
 
 </div>
