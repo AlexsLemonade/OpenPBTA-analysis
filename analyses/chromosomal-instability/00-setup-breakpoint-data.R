@@ -26,6 +26,9 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
+# Use the TMB functions
+source(file.path("analyses", "snv-callers", "util", "tmb_functions.R"))
+
 # Load library:
 library(optparse)
 
@@ -52,6 +55,12 @@ option_list <- list(
     'OpenPBTA-analysis') to MAF file to be analyzed. It is only needed
     for identifying which samples are WGS or WXS. ",
     metavar = "character"
+  ),
+  make_option(
+    opt_str = "--ch.pct", default = 0,
+    help = "A number between 0 and 1 that specifies the ratio of change needed to
+    consider a CNV copy number as changed.",
+    metavar = "number"
   ),
   make_option(
     opt_str = c("-o", "--output"), type = "character",
@@ -81,6 +90,13 @@ option_list <- list(
 
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
+
+opt$cnv_seg <- "data/pbta-cnv-cnvkit.seg.gz"
+opt$sv <- "data/pbta-sv-manta.tsv.gz"
+opt$metadata <- "data/pbta-histologies.tsv"
+opt$output <- "analyses/chromosomal-instability/breakpoint-data"
+opt$surveyed_wgs <- "data/WGS.hg38.strelka2.unpadded.bed"
+opt$surveyed_wxs <- "data/WXS.hg38.100bp_padded.bed"
 
 # Make everything relative to root path
 opt$cnv_seg <- file.path(root_dir, opt$cnv_seg)
@@ -130,7 +146,7 @@ cnv_df <- data.table::fread(opt$cnv_seg, data.table = FALSE) %>%
     # TODO: after updating to Consensus CNV data, see if sex chromosomes still
     # need to be removed and whether these thresholds should be changed.
     changed = as.factor(dplyr::case_when(
-      abs(seg.mean) > log2(1 + ch.pct) ~ "change",
+      abs(seg.mean) > log2(1 + opt$ch.pct) ~ "change",
       TRUE ~ "no_change"
     ))
   ) %>%
@@ -208,13 +224,47 @@ breaks_list <- list(
 # Save to an RDS file
 readr::write_rds(breaks_list, file.path(opt$output, "breaks_lists.RDS"))
 
-############################## Find common breaks ##############################
+################# Calculate the breaks density using BED ranges ################
+# Set up the BED ranges for the denominator of break density
+# Read in the BED files we need
+bed_wgs <- readr::read_tsv(opt$surveyed_wgs, col_names = FALSE)
+bed_wxs <- readr::read_tsv(opt$surveyed_wxs, col_names = FALSE)
 
-# Isolate metadata to only the samples that are in the datasets
+# Sum up genome sizes
+wgs_size <- sum(bed_wgs[, 3] - bed_wgs[, 2])
+wxs_size <- sum(bed_wxs[, 3] - bed_wxs[, 2])
+
+# Don't want integers per se
+wgs_size <- as.numeric(wgs_size)
+wxs_size <- as.numeric(wxs_size)
+
+# Set up the metadata
 metadata <- readr::read_tsv(opt$metadata) %>%
-  dplyr::filter(Kids_First_Biospecimen_ID %in% common_samples)
+  # Isolate metadata to only the samples that are in the datasets. 
+  dplyr::filter(Kids_First_Biospecimen_ID %in% common_samples) %>% 
+  # Keep the columns to only the experimental strategy and the biospecimen ID
+  dplyr::select(Kids_First_Biospecimen_ID, experimental_strategy) %>% 
+  # For an easier time matching to our breaks data.frames, lets just rename this. 
+  dplyr::rename(samples = Kids_First_Biospecimen_ID)
 
-lapply(breaks_list, 
+# Calculate the breaks density for each data.frame
+breaks_density_list <- lapply(breaks_list, function(breaks_df){
+  # Calculate the breaks density
+  breaks_df %>%
+    # Tack on the experimental strategy
+    dplyr::inner_join(metadata) %>% 
+    # Recode using the BED range sizes
+    dplyr::mutate(genome_size = dplyr::recode(experimental_strategy,
+                                              "WGS" = wgs_size,
+                                              "WXS" = wxs_size
+    )) %>%
+    dplyr::group_by(
+      samples, experimental_strategy, genome_size) %>%
+    # Count number of mutations for that sample
+    dplyr::summarize(breaks_count = dplyr::n()) %>%
+    # Calculate breaks density
+    dplyr::mutate(breaks_density = breaks_count / (genome_size / 1000000))
+})
 
-
-
+# Save to an RDS file
+readr::write_rds(breaks_density_list, file.path(opt$output, "breaks_density_lists.RDS"))
