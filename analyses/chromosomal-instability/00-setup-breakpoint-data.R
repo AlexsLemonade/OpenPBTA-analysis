@@ -39,9 +39,6 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
-# Use the TMB functions
-source(file.path("analyses", "snv-callers", "util", "tmb_functions.R"))
-
 # Load library:
 library(optparse)
 
