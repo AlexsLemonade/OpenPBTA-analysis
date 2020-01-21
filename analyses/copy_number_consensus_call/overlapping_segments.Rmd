@@ -1,0 +1,73 @@
+---
+title: "Overlapping Segments"
+author: "Joshua A. Shapiro"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+It has come to our attention that there are overlapping segments in the output file.
+This notebook will explore those segments to assess how common this is and what approach will be best to adddress and eliminate such segments from the final output.
+
+First, we will setup:
+
+```{r setup}
+library(dplyr)
+
+consensus_file <- file.path("results", "cnv_consensus.tsv")
+```
+
+Define functions for later use
+
+```{r subseg dataframe func}
+# Columns *_CNV have the format START:END:COPY_NUMBER:SEG.MEAN,START:END:COPY_NUMBER:SEG.MEAN
+# This function converts ones such string into a data frane, 
+# which we can then make a column within the cnv data frame
+segstrings_to_df <- function(segment_string){
+  segment_vector <- stringr::str_split(segment_string, ",")[[1]] 
+  seg_matrix <- stringr::str_split(segment_vector, ":", simplify = TRUE)
+  # account for rows with no calls
+  if(dim(seg_matrix)[2] != 4){seg_matrix <- matrix(ncol = 4)}
+  
+  colnames(seg_matrix) <- c("start", "end", "copies", "segmean")
+  suppressWarnings(class(seg_matrix) <- "numeric")
+  seg_df <- as.data.frame(seg_matrix) %>%
+    dplyr::mutate(length = abs(end - start))
+  return(seg_df)
+}
+```
+
+
+## Read in the cnv file
+
+```{r read_consensus}
+cnvs <- readr::read_tsv(consensus_file)
+```
+
+
+## Find overlapping segments
+
+```{r}
+overlaps <- cnvs %>%
+  dplyr::inner_join(
+    cnvs,
+    by = c(
+      "Biospecimen", 
+      "chrom"
+    )
+  ) %>%
+  dplyr::filter(
+    start.x <= start.y,
+    end.x > start.y,
+    !(start.x == start.y | end.x == end.y)
+  ) %>%
+  dplyr::mutate(length.x = end.x - start.x,
+                length.y = end.y - start.y,
+                start_offset = start.y - start.x
+                ) %>%
+  dplyr::select(Biospecimen, chrom, 
+                start.x, end.x, length.x,
+                start.y, end.y, length.y,
+                start_offset,
+                dplyr::everything())
+```
