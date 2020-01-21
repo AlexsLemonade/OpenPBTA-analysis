@@ -32,7 +32,7 @@ rule freec_filter:
         ## The awk command line is to filter out the raw file. 
         ## The end result has 8 columns
         ## | chr# | start | end | CNV_length | copy_numbers | pval | seg.mean | CNV type |
-        ## The first awk looks at column 6 to filter out for loss/gain. 
+        ## The first awk looks at column 6 to filter out for loss/gain.
         ## Then it prints out all of the 8 columns above
         ## The second awk filters the CNV length, freec pval
         ## The sort command sorts the first digit of chromosome number numerically
@@ -179,7 +179,7 @@ rule combine_merge_paired_cnv:
         cnvkit_freec="../../scratch/interim/{sample}.cnvkit_freec.{dupdel}.bed"
     output:
         ## Define the output files' names
-        merged="../../scratch/endpoints/{sample}.{dupdel}.merged.final.bed"
+        merged="../../scratch/interim/{sample}.{dupdel}.merged.bed"
     threads: 1
     shell:
         ## Combine the input file, sort and output to one file
@@ -192,6 +192,35 @@ rule combine_merge_paired_cnv:
         "| sort -k1,1 -k2,2n "
         "| bedtools merge -c 4,5,6,7,8,9 -o collapse,collapse,collapse,distinct,distinct,collapse "
         "> {output.merged}"
+
+rule remove_inset_calls:
+    ## Sometimes calls are inset within one another: one del call within the range of a dup call, or vice versa.
+    ## To fix this, we will subtract del calls from dup calls, which splits them and removes the overlap.
+    ## We then need to add back any dup calls that may have been fully enclosed in del calls, which we do
+    ## by intesecting dup and del calls, then intersecting those intersection calls with the original dup calls,
+    ## requiring full reciprocal coverage (-r 1) to find only those dup calls that are in the original set and NOT covered by a del call
+    input:
+        dup_merge = "../../scratch/interim/{sample}.dup.merged.bed",
+        del_merge = "../../scratch/interim/{sample}.del.merged.bed"
+    output:
+        dup_merge = "../../scratch/endpoints/{sample}.dup.merged.final.bed",
+        del_merge = "../../scratch/endpoints/{sample}.del.merged.final.bed"
+    shell:
+        "bedtools subtract -a {input.dup_merge} -b {input.del_merge}"
+        " > ../../scratch/interim/{wildcards.sample}.dup-del.bed &&"
+        "bedtools subtract -a {input.del_merge} -b {input.dup_merge}"
+        " > ../../scratch/interim/{wildcards.sample}.del-dup.bed &&"
+        "bedtools intersect -a {input.dup_merge} -b {input.del_merge}"
+        " > ../../scratch/interim/{wildcards.sample}.deldup_intersect.bed &&"
+        "bedtools intersect -f 1 -r -a {input.dup_merge} -b ../../scratch/interim/{wildcards.sample}.deldup_intersect.bed"
+        " >  ../../scratch/interim/{wildcards.sample}.dup_intersect.bed &&"
+        "bedtools intersect -f 1 -r -a {input.del_merge} -b ../../scratch/interim/{wildcards.sample}.deldup_intersect.bed"
+        " >  ../../scratch/interim/{wildcards.sample}.del_intersect.bed &&"
+        "cat ../../scratch/interim/{wildcards.sample}.dup-del.bed ../../scratch/interim/{wildcards.sample}.dup_intersect.bed"
+        " > {output.dup_merge} &&"
+        "cat ../../scratch/interim/{wildcards.sample}.del-dup.bed ../../scratch/interim/{wildcards.sample}.del_intersect.bed"
+        " > {output.del_merge}"
+
 
 
 rule merge_all:
