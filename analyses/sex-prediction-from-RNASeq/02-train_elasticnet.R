@@ -70,8 +70,14 @@ option_list <- list(
     default = 0.25,
     help = "Filter out the bottom (1 - transcript_tail_percent) of transcripts from the training set",
     metavar = "double"
+  ),
+  optparse::make_option(
+    c("-s", "--seed"),
+    type = "integer",
+    default = 36354,
+    help = "seed integer",
+    metavar = "integer"
   )
-
 )
 
 
@@ -144,8 +150,10 @@ print(paste("Model build begun at", Sys.time(), sep=" "))
 
 #--------Build elastic net logistic regression model
 
+set.seed(opt$seed)
+
 sex.cva <- cva.glmnet(train_set, targets_set[, opt$train_target_column], standardize=TRUE,
-                      alpha = seq(0, 1, len = 11)^3, family="binomial")
+                      alpha = seq(0, 1, len = 11)^3, foldid=sample(1:10,size=nrow(train_set),replace=TRUE), family="binomial")
 
 print(paste("Model build complete at", Sys.time(), sep=" "))
 
@@ -191,7 +199,7 @@ non_zero_features <- which(coef(best_fit, s = best_fit$lambda.1se) != 0)
 
 non_zero_coef <- coef(best_fit, s=best_fit$lambda.1se)[non_zero_features]
 
-non_zero_transcripts <- colnames(train_set)[non_zero_features]
+non_zero_transcripts <- rownames(coef(best_fit, s=best_fit$lambda.1se))[non_zero_features]
 
 
 model_coefs_file <- file.path(output_directory, opt$model_coefs_file_name)

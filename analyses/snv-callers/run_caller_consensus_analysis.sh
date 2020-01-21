@@ -15,11 +15,11 @@ dbfile=scratch/snv_db.sqlite
 consensus_file=analyses/snv-callers/results/consensus/pbta-snv-consensus-mutation.maf.tsv
 
 # BED and GTF file paths
-exon_file=scratch/gencode.v27.primary_assembly.annotation.bed
+cds_file=scratch/gencode.v27.primary_assembly.annotation.bed
 all_mut_wgs_bed=scratch/intersect_strelka_mutect_WGS.bed
 all_mut_wxs_bed=data/WXS.hg38.100bp_padded.bed
-coding_wgs_bed=scratch/intersect_exon_lancet_strelka_mutect_WGS.bed
-coding_wxs_bed=scratch/intersect_exon_WXS.bed
+coding_wgs_bed=scratch/intersect_cds_lancet_strelka_mutect_WGS.bed
+coding_wxs_bed=scratch/intersect_cds_lancet_WXS.bed
 
 # Set a default for the VAF filter if none is specified
 vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}
@@ -60,20 +60,21 @@ bedtools intersect \
 gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
   | awk '$3 ~ /CDS/' \
   | convert2bed --do-not-sort --input=gtf - \
-  > $exon_file
+  > $cds_file
   
 # Make WGS coding BED file
 bedtools intersect \
   -a data/WGS.hg38.strelka2.unpadded.bed \
   -b data/WGS.hg38.mutect2.vardict.unpadded.bed \
   data/WGS.hg38.lancet.300bp_padded.bed \
-  $exon_file \
+  $cds_file \
   > $coding_wgs_bed
 
 # Make WXS coding BED file
 bedtools intersect \
   -a data/WXS.hg38.100bp_padded.bed  \
-  -b $exon_file 
+  -b data/WXS.hg38.lancet.400bp_padded.bed \
+  $cds_file \
   > $coding_wxs_bed
 
 ######################### Calculate consensus TMB ##############################
