@@ -380,6 +380,12 @@ rm(gistic_df, atrt_expression_cn_tmb_df)
 # Save final table of results
 
 ```{r}
+# For reordering the output, we will use the vector of genes as input but we 
+# need to account for genes that are missing from the expression matrix
+tyr_genes <- intersect(colnames(final_df), tyr_genes)
+shh_genes <- intersect(colnames(final_df), shh_genes)
+myc_genes <- intersect(colnames(final_df), myc_genes)
+
 # Save final data.frame
 final_df <- final_df %>%
   dplyr::select(
@@ -393,31 +399,13 @@ final_df <- final_df %>%
     location_summary,
     chr_22q_loss,
     SMARCB1_focal_status,
-    TYR,
-    MITF,
-    DCT,
-    VEGFA,
-    DNAH11,
-    SPEF1,
-    POU3F4,
-    POU3F2,
-    PBX1,
+    !!! rlang::syms(tyr_genes),
     SMARCA4_focal_status,
     HALLMARK_NOTCH_SIGNALING,
-    MYCN,
-    GLI2,
-    CDK6,
-    ASCL1,
-    ZBTB7A,
-    MYBL2,
-    MXI1,
-    MEIS3,
-    MEIS2,
-    MAX,
-    INSM1,
-    FOXK1,
+    !!! rlang::syms(shh_genes),
     HALLMARK_MYC_TARGETS_V1,
     HALLMARK_MYC_TARGETS_V2,
+    !!! rlang::syms(myc_genes),
     dplyr::everything()
   )
 
