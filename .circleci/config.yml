@@ -115,7 +115,7 @@ jobs:
 
       - run:
           name: TP53 NF1 classifier run
-          command: ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"  
+          command: OPENPBTA_POLYAPLOT=0 ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"  
       
       - run:
           name: GISTIC Plots
@@ -129,10 +129,22 @@ jobs:
           name: Gene set enrichment analysis to generate GSVA scores
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh" 
 
+      - run:
+          name: Chromosomal instability breakpoints
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/chromosomal-instability/chromosomal-instability.Rmd', clean = TRUE)"
+
+      - run:
+          name: Fusion Summary
+          command: ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
+
+      - run:
+          name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors 
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
 
          ################################
          #### Add your analysis here ####
          ################################
+     
 
       - run:
           name: SNV Caller Analysis 
@@ -141,9 +153,7 @@ jobs:
        # This analysis was a side concept question and no longer needs to be run. 
        # - run:
           # name: SNV Caller VAF Cutoff Experiment
-          # command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)"
-      
- 
+          # command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)" 
                 
 
   deploy:
