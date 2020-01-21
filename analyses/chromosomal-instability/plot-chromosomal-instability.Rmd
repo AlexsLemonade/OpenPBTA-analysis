@@ -285,7 +285,7 @@ sv_heatmap
 Same as was done for each sample, now we will calculate densities for 
 each tumor-type group. 
 
-```{r, results='hide'}
+```{r}
 # Change bin_size here and it will change the rest
 bin_size <- 1e6
 
