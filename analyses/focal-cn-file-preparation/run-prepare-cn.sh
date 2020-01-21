@@ -32,7 +32,7 @@ Rscript --vanilla 01-prepare-cn-file.R \
   --cds_file $cds_file \
   --metadata ../../data/pbta-histologies.tsv \
   --filename_lead "cnvkit_annotated_cn" \
-  --cnvkit
+  --cnvkit \
   --gistic
 
 # Run annotation step for ControlFreeC
@@ -42,7 +42,7 @@ Rscript --vanilla 01-prepare-cn-file.R \
   --metadata ../../data/pbta-histologies.tsv \
   --filename_lead "controlfreec_annotated_cn" \
   --xy $XYFLAG \
-  --controlfreec
+  --controlfreec \
   --gistic
 
 # gzip the four files in the results folder, overwriting without prompt

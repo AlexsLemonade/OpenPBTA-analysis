@@ -171,7 +171,7 @@ option_list <- list(
     type = "logical",
     action = "store_true",
     default = FALSE,
-    help = "flag used to indicate if the GISTIC file is should be included in this analysis"
+    help = "flag used to indicate if the GISTIC file should be incorporated"
   ),
   optparse::make_option(
     c("--xy"),
