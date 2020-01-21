@@ -3,7 +3,7 @@
 #Functionality/purpose:
 
 #This will clean the gene expression data -- i.e., it drops anything with invalid labels
-#in either reported_gender or germline_sex_estimate and if the training partition size < 1.0,
+#in any of the target columns specified and if the training partition size < 1.0,
 #it will split the data into training and testing sets that can be saved as separate files to be used downstream.
 
 #Inputs and arguments:
@@ -35,7 +35,7 @@ library(optparse)
 
 # The output directory is specified as command line arument --output_directory and assigned to output_directory below.
 # training and test data files are saved into the output directory.
-# A TSV file that contains the biospecimen ID, reported_gender, and germline_sex_estimate
+# A TSV file that contains the biospecimen ID, and target columns
 # information that has been cleaned is also saved to the output directory.
 
 # Declare command line options
@@ -101,7 +101,19 @@ option_list <- list(
     default = 0.7,
     help = "The proportion of samples that should be in the training set when splitting into training and testing sets",
     metavar = "double"
-  )
+  ),
+  optparse::make_option(
+    c("-e", "--target_columns"),
+    type = "character",
+    default = "reported_gender",
+    help = "Names of columns to use as targets in testing separated with a comma",
+  ),
+  optparse::make_option(
+    c("-r", "--train_target_column"),
+    type = "character",
+    default = "reported_gender",
+    help = "Names of column in the target dataframe used as training label",
+  )  
 )
 
 
@@ -117,6 +129,13 @@ set.seed(seed)
 
 gene_expression_file_name <- opt$expression
 histologies_file_name <- opt$metadata
+
+target_column_list <- strsplit(opt$target_columns, ",")
+
+# check train_target_column is in target_column_list
+if (!(opt$train_target_column %in% target_column_list[[1]])) {
+  stop(paste("TRAIN_TARGET_COLUMN value is not in target_Columns list. Check both arguments."))
+}
 
 # Create specified output directory if it does not yet exist
 output_directory <- opt$output_directory
@@ -135,18 +154,23 @@ if (!dir.exists(output_directory)) {
 ge <- readRDS(gene_expression_file_name)
 
 
-#Metadata is in pbta-histologies.tsv.  reported_gender is our target variable.
+#Metadata is in pbta-histologies.tsv.  train_target_column is our target variable.
 #Kids_First_Biospecimen_ID is the unique identifier for each sample.
 
 histologies <- read.delim(histologies_file_name, header=TRUE, sep="\t", stringsAsFactors = FALSE)
 
-valid_reported_gender_samples <- histologies[which(toupper(histologies[, "reported_gender"]) == "MALE" |
-              toupper(histologies[, "reported_gender"]) == "FEMALE"), "Kids_First_Biospecimen_ID"]
+samples_list <- list()
 
-valid_germline_sex_estimate_samples <- histologies[which(toupper(histologies[, "germline_sex_estimate"]) == "MALE" |
-              toupper(histologies[, "germline_sex_estimate"]) == "FEMALE"), "Kids_First_Biospecimen_ID"]
+for (t in target_column_list[[1]]) {
+  
+  samples_list[[t]] <- histologies[which(toupper(histologies[, t]) == "MALE" |
+                                           toupper(histologies[, t]) == "FEMALE"), "Kids_First_Biospecimen_ID"]
+  
+}
 
-Valid_gender_samples <- intersect(valid_reported_gender_samples, valid_germline_sex_estimate_samples)
+Valid_gender_samples <- Reduce(intersect, samples_list)
+
+
 #--------
 
 #-------- drop the gene and transcript identifiers and create a matrix
@@ -163,7 +187,7 @@ ge <- ge %>%
 # create a matrix
 gene_expression_mat <- as.matrix(ge)
 
-# filter matrix columns to sample with valid reported_gender and germline_sex_estimate values
+# filter matrix columns to samples with valid values in all targetColumns
 gene_expression_mat <- gene_expression_mat[ , colnames(gene_expression_mat) %in% Valid_gender_samples]
 #--------
 
@@ -173,14 +197,23 @@ gene_expression_mat <- gene_expression_mat[ , colnames(gene_expression_mat) %in%
 
 input_mat <- t(gene_expression_mat)
 
-#Extract reported_gender and germline_sex_estimate values from histologies.
-#Put these value in a three-column dataframe c("Kids_First_Biospecimen_ID", "reported_gender", "germline_sex_estimate").
+#Extract target_column_list values from histologies.
+#Put these values in a dataframe, targets_unsorted, with columns Kids_First_Biospecimen_ID, 
+#target_column_list[[1]][1], target_column_list[[1]][2], ...
+#So, we need a character vecor with the proposed column names for dataframe targets_unsorted
+
+targets_unsorted_columns <- vector(mode="character", length=length(target_column_list[[1]]) + 1)
+targets_unsorted_columns[1] <- "Kids_First_Biospecimen_ID"
+for (t in seq(1:length(target_column_list[[1]]))) {
+  targets_unsorted_columns[t + 1] <- target_column_list[[1]][t]
+  
+}
 
 targets_unsorted <- histologies[histologies$Kids_First_Biospecimen_ID %in% rownames(input_mat),
-                               c("Kids_First_Biospecimen_ID", "reported_gender", "germline_sex_estimate")]
+                               targets_unsorted_columns]
 
 #Match sequence of rownames(input_mat) and targets[, 1].
-#targets holds the reported_gender values in the same Kids_First_Biospecimen_ID sequence as rownames(input_mat).
+#targets holds the target_column_list values in the same Kids_First_Biospecimen_ID sequence as rownames(input_mat).
 
 match_index <- unlist(sapply(rownames(input_mat), function(x) which(targets_unsorted[, 1] == x)))
 
