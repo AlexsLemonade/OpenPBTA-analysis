@@ -16,25 +16,23 @@ break point densities using CNV and SV data.
 
 ## Usage
 
-This notebook can be run via the command line from the top directory of the
+This analysis can be run via the command line from the top directory of the
 repository as follows:
 
 ```
-Rscript -e "rmarkdown::render('analyses/chromosomal-instability/chromosomal-instability.Rmd',
-                              clean = TRUE)"
+bash run-breakpoint-analysis.sh
 ```
 
 ## Methods
 
 CNV and SV data are used to calculate chromosomal instability.
-SV data here is first formatted by running `sv-analysis/01-process-sv-file.R`
-script and using the without Y and M files.
 Then both CNV and SV range datasets are transformed into single breakpoint data.
 Breakpoint density is calculated by creating bins using `GenomicRanges::tileGenome` using a one Mb window size.
-This notebook returns chromosomal break plots for each sample and `short_histology` group in the `plots` directory.
+The `plot-chromosomal-instability.Rmd` returns chromosomal break plots for each sample and `short_histology` group in the `plots` directory.
 
 ## Output
 
+Three output TSVs (one for each the CNV and SV data, and one for the combined data) with breakpoint density per Mb of the effectively surveyed genome are saved to `breakpoint-data` directory. v
 The individual sample plots and grouped by `short_histology` plots are in the `plots/sample` and `plots/tumor-type` directories, respectively.
 
 ## Summary of Custom Functions
