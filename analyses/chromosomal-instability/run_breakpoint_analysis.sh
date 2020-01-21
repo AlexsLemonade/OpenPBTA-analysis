@@ -24,15 +24,11 @@ Rscript analyses/chromosomal-instability/00-setup-breakpoint-data.R \
 ######################### Chromosomal Instability Plots ########################
 Rscript -e "rmarkdown::render('analyses/chromosomal-instability/plot-chromosomal-instability.Rmd', 
                               clean = TRUE)"
-                              
-############################ Recurrent Genes Analysis ##########################
-# Convert GTF to BED file for use in bedtools
-# Here we are only extracting lines with as a CDS i.e. are coded in protein
-gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
-  | awk '$3 ~ /CDS/' \
-  | convert2bed --do-not-sort --input=gtf - \
-  > scratch/exon_gencode.v27.primary_assembly.annotation.bed
 
-# Run the recurrent gene notebook 
-Rscript -e "rmarkdown::render('analyses/chromosomal-instability/find-recurrent-breakpoint-genes.Rmd', 
-                              clean = TRUE)"
+
+opt$cnv_seg <- "data/pbta-cnv-cnvkit.seg.gz"
+opt$sv <- "data/pbta-sv-manta.tsv.gz"
+opt$metadata <- "data/pbta-histologies.tsv"
+opt$output <- "analyses/chromosomal-instability/breakpoint-data"
+opt$surveyed_wgs <- "data/WGS.hg38.strelka2.unpadded.bed"
+opt$surveyed_wxs <- "data/WXS.hg38.100bp_padded.bed"

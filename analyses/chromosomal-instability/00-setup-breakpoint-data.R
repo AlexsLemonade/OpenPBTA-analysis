@@ -3,21 +3,32 @@
 # C. Savonen for ALSF - CCDL
 #
 # 2020
-# C. Savonen for ALSF - CCDL
-#
-# 2019
 #
 # Option descriptions
-
+# --cnv_seg: Relative file path (assuming from top directory of 
+#            'OpenPBTA-analysis') to CNV segment file to be used for breakpoint 
+# --sv: Relative file path (assuming from top directory of
+#       'OpenPBTA-analysis') to SV file to be used for breakpoint calculations.
+# --metadata: Relative file path (assuming from top directory of 
+#             'OpenPBTA-analysis') to MAF file to be analyzed. It is only needed 
+#             for identifying which samples are WGS or WXS. 
+# --ch.pct: A number between 0 and 1 that specifies the ratio of change needed to
+#           consider a CNV copy number as changed.
+# --output: Path to folder where you would like the output breakpoint calculations 
+#           files from this script to be stored
+# --surveyed_wgs: File path that specifies the BED regions file that indicates 
+#                 the effectively surveyed regions of the genome for the WGS samples.",
+# --surveyed_wxs: File path that specifies the BED regions file that indicates the 
+#                 effectively surveyed regions of the genome for the WXS samples.
+# 
 # Command line example:
 #
 # Rscript analyses/chromosomal-instability/00-setup-breakpoint-data.R \
 # --cnv_seg data/pbta-cnv-cnvkit.seg.gz \
 # --sv data/pbta-sv-manta.tsv.gz \
 # --metadata data/pbta-histologies.tsv \
-# --surveyed_wgs  WGS_effectively_surveyed.bed
+# --surveyed_wgs  WGS_effectively_surveyed.bed \
 # --surveyed_wxs data/WXS.hg38.100bp_padded.bed
-# --overwrite
 # 
 ################################ Initial Set Up ################################
 # Establish base dir
@@ -79,24 +90,11 @@ option_list <- list(
     help = "File path that specifies the BED regions file that indicates the 
     effectively surveyed regions of the genome for the WXS samples.",
     metavar = "character"
-  ),
-  make_option(
-    opt_str = "--overwrite", action = "store_true",
-    default = FALSE, help = "If TRUE, will overwrite any files of
-              the same name. Default is FALSE",
-    metavar = "character"
   )
 )
 
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
-
-opt$cnv_seg <- "data/pbta-cnv-cnvkit.seg.gz"
-opt$sv <- "data/pbta-sv-manta.tsv.gz"
-opt$metadata <- "data/pbta-histologies.tsv"
-opt$output <- "analyses/chromosomal-instability/breakpoint-data"
-opt$surveyed_wgs <- "data/WGS.hg38.strelka2.unpadded.bed"
-opt$surveyed_wxs <- "data/WXS.hg38.100bp_padded.bed"
 
 # Make everything relative to root path
 opt$cnv_seg <- file.path(root_dir, opt$cnv_seg)
@@ -266,5 +264,9 @@ breaks_density_list <- lapply(breaks_list, function(breaks_df){
     dplyr::mutate(breaks_density = breaks_count / (genome_size / 1000000))
 })
 
-# Save to an RDS file
-readr::write_rds(breaks_density_list, file.path(opt$output, "breaks_density_lists.RDS"))
+# Write the break densities each as their own files
+purrr::imap(breaks_density_list, function(.x, name = .y) {
+  # Write to TSV file 
+  readr::write_tsv(.x, 
+                   file.path(opt$output, paste0(name, "_densities.tsv")))
+})
