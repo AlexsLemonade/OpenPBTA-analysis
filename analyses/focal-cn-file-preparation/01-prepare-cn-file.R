@@ -248,7 +248,6 @@ if (opt$gistic) {
     data.table::fread(
       paste0(
         gistic_results,
-        folder_name,
         "broad_values_by_arm.txt"
       ),
       data.table = FALSE
