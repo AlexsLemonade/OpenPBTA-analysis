@@ -43,7 +43,6 @@ snakemake \
     -j \
     -p \
     --restart-times 3 \
-    --max-jobs-per-second 10 \
     --latency-wait 30
 
 
