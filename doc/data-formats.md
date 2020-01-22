@@ -109,7 +109,7 @@ STAR `*Log.final.out` files, along with a manifest mapping filename to biospecim
 
 ### Gene Fusion Data
 
-Gene Fusions produced by the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#rna-fusion-calling-and-prioritization) are provided as [Arriba TSV](doc/format/arriba-tsv-header.md) and [STARFusion TSV](doc/format/starfusion-tsv-header.md) respectively.
+Gene Fusions produced by the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#rna-fusion-calling-and-prioritization) are provided as [Arriba TSV](format/arriba-tsv-header.md) and [STARFusion TSV](format/starfusion-tsv-header.md) respectively.
 These files are denoted with the prefix `pbta-fusion`.
 
 * `pbta-fusion-arriba.tsv.gz`
