@@ -1,5 +1,5 @@
 ## Define the ending file(s) that we want
-OUTPUT = "results/cnv_consensus.tsv",
+OUTPUT = "results/cnv_consensus.tsv", "results/cnv_neutral.tsv"
 
 ## Define the wildcards to use in the file names. 
 wildcard_constraints:
@@ -117,6 +117,16 @@ rule generate_excluded:
         "ref/cnv_excluded.bed"
     shell:
         "cat {input} | cut -f 1-3 | sort -k1,1 -k2,2n | bedtools merge > {output}"
+
+rule generate_callable:
+    # Invert the excluded regions to generate a file of regions potentially called.
+    input:
+        bed="ref/cnv_excluded.bed",
+        genome="ref/hg38.genome"
+    output:
+        "ref/cnv_callable.bed"
+    shell:
+        "bedtools complement  -i {input.bed} -g {input.genome} > {output}"
 
 
 rule filter_excluded:
@@ -245,6 +255,26 @@ rule remove_inset_calls:
         "cat ../../scratch/interim/{wildcards.sample}.del-dup.bed ../../scratch/interim/{wildcards.sample}.del_intersect.bed"
         " > {output.del_merge}"
 
+rule neutral_regions:
+    ## for each sample, find the segments not called as either dups or dels with bedtools
+    ## then append the sample name
+    input:
+        dup_merge = "../../scratch/endpoints/{sample}.dup.merged.final.bed",
+        del_merge = "../../scratch/endpoints/{sample}.del.merged.final.bed",
+        called = "ref/cnv_callable.bed"
+    output:
+        "../../scratch/endpoints/{sample}.neutral.bed"
+    shell:
+        "bedtools subtract -a {input.called} -b {input.dup_merge}"
+        " | bedtools subtract -a stdin -b {input.del_merge}"
+        " | sed '/$/\t{wildcard.sample}/' > {output}"
+
+rule merge_neutral:
+    input:
+        expand("../../scratch/endpoints/{sample}.neutral.bed",
+                          sample = config["samples"])
+    output:
+        "results/cnv_neutral.tsv"
 
 
 rule merge_all:
