@@ -26,8 +26,8 @@ bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
   _Note: The decision to implement the `UCSC file` was made based on a comparison done between the cytoband calls in the `org.Hs.eg.db` package and the calls in the `UCSC file`. We found that they disagreed in ~11,800 calls out of ~800,000 and the `UCSC file` contains more cytoband calls._
   A table with the following columns is returned:
   
-  | biospecimen_id | broad_status | status | copy_number | ploidy | ensembl | gene_symbol |
-  |----------------|--------------|--------|-------------|--------|---------|-------------|
+  | biospecimen_id | arm | broad_status | status | copy_number | ploidy | ensembl | gene_symbol |
+  |----------------|-----|--------------|--------|-------------|--------|---------|-------------|
   
 * `02-rna-expression-validation.R` - This script examines RNA-seq expression levels (RSEM FPKM) of genes that are called as deletions.
 

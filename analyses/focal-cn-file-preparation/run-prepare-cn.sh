@@ -8,6 +8,8 @@ set -e
 set -o pipefail
 
 XYFLAG=${OPENPBTA_XY:-1}
+# This cds file is filtered below to contain coding sequences only, converted
+# to a bed file, and saved in the project's `scratch` directory.
 cds_file=../../scratch/gencode.v27.primary_assembly.annotation.bed
 
 # This script should always run as if it were being called from
