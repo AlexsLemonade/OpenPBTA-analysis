@@ -374,8 +374,8 @@ h3_k28_df_biospecimen <- all_data_df %>%
          Kids_First_Biospecimen_ID_RNA, 
          BRAF_V600E) %>%
   mutate(molecular_subtype = case_when(
-    BRAF_V600E == "p.V600E" ~ "BRAF_V600E_mutation",
-    TRUE ~ "HGG_H3_K28"
+    BRAF_V600E == "p.V600E" ~ "DMG_H3_K28_BRAF_V600E",
+    TRUE ~ "DMG_H3_K28"
   )) %>%
   select(-BRAF_V600E)
 ```
@@ -488,7 +488,29 @@ all_data_df %>%
   filter(`1p` == "loss" | `19q` == "loss")
 ```
 
-We don't see the _IDH1_ mutations we would expect and we do see _TP53_ and _ATRX_ mutations, so we will leave this off as well for the moment.
+We don't see the _IDH1_ mutations we would expect and we do see _TP53_ and _ATRX_ mutations, so we will leave this off as well for the moment and in a subsequent notebook we'll address [`AlexsLemonade/OpenPBTA-analysis#435 (comment)`](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/435#issuecomment-576898275):
+
+> We expect very few, if any of these (maybe 1 when we looked by CNV), so I think maybe we can approach this cohort by starting to look for 1p/19q codeletions in all samples + IDH mutations, and if we see any, we may manually want to check the CNV plots just to confirm.
+
+### Samples without histone mutations that have _BRAF_ V600 mutations
+
+From [`AlexsLemonade/OpenPBTA-analysis#435 (comment)`](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/435#issuecomment-576889305):
+
+> A few patients ... initially had dx of HGG, have no histone mutations, but have only BRAF V600E mutations. These patients' biospecimens can possibly be LGGs. I think for these, we should note that they are exclusively `BRAF_V600E_mutant`
+
+```{r}
+braf_df_biospecimen <- all_data_df %>%
+  filter(H3F3A.K28M == "No",
+         HIST1H3B.K28M == "No",
+         H3F3A.G35R == "No",
+         H3F3A.G35V == "No",
+         BRAF_V600E == "p.V600E") %>%
+  select(Kids_First_Participant_ID,
+         sample_id,
+         Kids_First_Biospecimen_ID_DNA,
+         Kids_First_Biospecimen_ID_RNA) %>%
+  mutate(molecular_subtype = "BRAF_V600E_mutation")
+```
 
 ## Biospecimen Table
 
@@ -497,9 +519,18 @@ Join all the tables that contain the biospecimen ids and `molecular_subtype` col
 ```{r}
 molecular_subtype_table <- bind_rows(h3_g35_df_biospecimen,
                                      h3_k28_df_biospecimen,
-                                     idh_df_biospecimen)
+                                     idh_df_biospecimen,
+                                     braf_df_biospecimen)
 
-head(molecular_subtype_table, n = 10)
+# We'll add in NA values in cases that do not yet have labels
+molecular_subtype_table <- all_data_df %>%
+  filter(!(sample_id %in% molecular_subtype_table$sample_id),
+         !(Kids_First_Participant_ID %in% molecular_subtype_table$Kids_First_Participant_ID)) %>%
+  select(Kids_First_Participant_ID,
+         sample_id,
+         Kids_First_Biospecimen_ID_DNA,
+         Kids_First_Biospecimen_ID_RNA) %>%
+  bind_rows(molecular_subtype_table)
 ```
 
 Write to file.
