@@ -14,9 +14,13 @@ The analysis produces an output file that includes the original calls used for e
 
 * `results/cnv_consensus.tsv`
 
-And also a segfile for downstream processing:
+A segfile for downstream processing:
 
 * `results/pbta-cnv-consensus.seg`
+
+And a bed file of regions that were excluded from calls (see step 7)
+
+* `ref/cnv_excluded.bed`
 
 ## Running the pipeline
 
@@ -34,7 +38,7 @@ This pipeline revolves around the use of Snakemake to run analysis for each pati
 4) Run the Snakemake pipeline to perform analysis **per sample**. 
 5) Filter for any CNVs that are over a certain **SIZE_CUTOFF** (default 3000 bp)
 6) Filter for any **significant** CNVs called by Freec (default pval = 0.01)
-7) Filter out any CNVs that overlap 50% or more with **IGLL, telomeric, centromeric, seg_dup regions**
+7) Filter out any CNVs that overlap 50% or more with **Immunoglobulin, telomeric, centromeric, seg_dup regions** as found in the file `ref/cnv_excluded.bed`
 8) Merge any CNVs of the same sample and call method if they **overlap or within 10,000 bp** (We consider CNV calls within 10,000 bp the same CNV)
 9) Reformat the columns of the files (So the info are easier to read)
 10) **Call consensus** by comparing CNVs from 2 call methods at a time. 
