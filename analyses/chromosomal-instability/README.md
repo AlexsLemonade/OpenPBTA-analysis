@@ -33,6 +33,7 @@ The `plot-chromosomal-instability.Rmd` returns chromosomal break plots for each 
 ## Output
 
 Three output TSVs (one for each the CNV and SV data, and one for the combined data) with breakpoint density per Mb of the effectively surveyed genome are saved to `breakpoint-data` directory.
+Note that this script is set up to handle WXS and WGS separately, however currently our PBTA dataset only has CNV and SV data for WGS samples. 
 The individual sample plots and grouped by `short_histology` plots are in the `plots/sample` and `plots/tumor-type` directories, respectively.
 
 ## Summary of Custom Functions
