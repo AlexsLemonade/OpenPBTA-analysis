@@ -16,7 +16,9 @@ molecular subtyping high-grade glioma samples in the OpenPBTA dataset.
 This notebook is intended to be run via the command line from the top directory
 of the repository as follows:
 
-`Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/01-HGG-molecular-subtyping-defining-lesions.Rmd', clean = TRUE)"`
+```
+Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/01-HGG-molecular-subtyping-defining-lesions.Rmd', clean = TRUE)"
+```
 
 # Set Up
 
@@ -52,6 +54,7 @@ select_metadata <- metadata %>%
   dplyr::select(Kids_First_Participant_ID,
                 sample_id,
                 Kids_First_Biospecimen_ID,
+                broad_histology,
                 short_histology,
                 disease_type_new)
 
@@ -111,18 +114,30 @@ snv_lesions_df <- select_metadata %>%
   dplyr::select(
     dplyr::ends_with("ID"),
     dplyr::starts_with("H"),
+    broad_histology,
     short_histology,
     disease_type_new
   ) %>%
   dplyr::mutate(
     disease_type_reclassified = dplyr::case_when(
       H3F3A.K28M == "Yes" ~ "High-grade glioma, H3 K28 mutant",
-        HIST1H3B.K28M == "Yes" ~ "High-grade glioma, H3 K28 mutant",
-        H3F3A.G35R == "Yes" ~ "High-grade glioma, H3 G35 mutant",
-        H3F3A.G35V == "Yes" ~ "High-grade glioma, H3 G35 mutant",
-      TRUE ~ as.character(disease_type_new)
+      HIST1H3B.K28M == "Yes" ~ "High-grade glioma, H3 K28 mutant",
+      H3F3A.G35R == "Yes" ~ "High-grade glioma, H3 G35 mutant",
+      H3F3A.G35V == "Yes" ~ "High-grade glioma, H3 G35 mutant",
+      TRUE ~ as.character(disease_type_new)),
+    short_histology_reclassified = dplyr::case_when(
+      H3F3A.K28M == "Yes" ~ "HGAT",
+      HIST1H3B.K28M == "Yes" ~ "HGAT",
+      H3F3A.G35R == "Yes" ~ "HGAT",
+      H3F3A.G35V == "Yes" ~ "HGAT",
+      TRUE ~ as.character(short_histology)),
+    broad_histology_reclassified = dplyr::case_when(
+      H3F3A.K28M == "Yes" ~ "Diffuse astrocytic and oligodendroglial tumor",
+      HIST1H3B.K28M == "Yes" ~ "Diffuse astrocytic and oligodendroglial tumor",
+      H3F3A.G35R == "Yes" ~ "Diffuse astrocytic and oligodendroglial tumor",
+      H3F3A.G35V == "Yes" ~ "Diffuse astrocytic and oligodendroglial tumor",
+      TRUE ~ as.character(broad_histology)),
     )
-  )
 
 # Display `snv_lesions_df`
 snv_lesions_df 
