@@ -120,8 +120,8 @@ snv_lesions_df <- select_metadata %>%
   ) %>%
   dplyr::mutate(
     disease_type_reclassified = dplyr::case_when(
-      H3F3A.K28M == "Yes" ~ "High-grade glioma, H3 K28 mutant",
-      HIST1H3B.K28M == "Yes" ~ "High-grade glioma, H3 K28 mutant",
+      H3F3A.K28M == "Yes" ~ "Diffuse midline glioma, H3 K28 mutant",
+      HIST1H3B.K28M == "Yes" ~ "Diffuse midline glioma, H3 K28 mutant",
       H3F3A.G35R == "Yes" ~ "High-grade glioma, H3 G35 mutant",
       H3F3A.G35V == "Yes" ~ "High-grade glioma, H3 G35 mutant",
       TRUE ~ as.character(disease_type_new)),
@@ -158,7 +158,7 @@ readr::write_tsv(snv_lesions_df,
 # as HGG or DIPG
 snv_lesions_df %>%
   dplyr::filter(
-    grepl("High-grade glioma", disease_type_reclassified) &
+    grepl("High-grade glioma|Diffuse midline glioma", disease_type_reclassified) &
       !(disease_type_new %in% c("High-grade glioma", 
                                 "Brainstem glioma- Diffuse intrinsic pontine glioma"))
   )

@@ -9,7 +9,7 @@ PT_J06X17XH	7316-3628	BS_02ZSVZCB	No	No	No	No	Mesenchymal non-meningothelial tum
 PT_3KK1F95W	7316-1744	BS_03SSN1N2	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_Y572BRC1	7316-485	BS_042DVDQM	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_ATE3YRH5	7316-3308	BS_04B8X54S	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_KZ56XHJT	7316-3217	BS_0ATJ22QA	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_KZ56XHJT	7316-3217	BS_0ATJ22QA	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_YGN06RPZ	7316-2208	BS_060QB7XB	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_Y8HSH496	7316-196	BS_06GPPDHZ	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_8WNA6M94	7316-1983	BS_090GV72Q	No	No	No	No	Tumor of cranial and paraspinal nerves	Schwannoma	Schwannoma	Schwannoma	Schwannoma	Tumor of cranial and paraspinal nerves
@@ -44,33 +44,33 @@ PT_XP8AM1CH	7316-1096	BS_1EQGGHHQ	No	No	No	No	Benign tumor	Adenoma	Adenoma	Adeno
 PT_JN3S17B3	7316-1693	BS_1EYKDS0Z	No	No	No	No	Benign tumor	Choroid plexus tumor	Choroid plexus papilloma	Choroid plexus papilloma	Choroid plexus tumor	Benign tumor
 PT_W3FSA7NH	7316-3522	BS_1GK2EMFY	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_HT4HJXY6	7316-901	BS_1JGQPJH3	No	No	No	No	Meningioma	Meningioma	Meningioma	Meningioma	Meningioma	Meningioma
-PT_NK8A49X5	7316-3216	BS_1MME7FBS	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
-PT_KZ56XHJT	7316-3231	BS_1Q524P3B	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
-PT_1AAYYGGY	A14709	BS_1RTE2KEX	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_NK8A49X5	7316-3216	BS_1MME7FBS	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_KZ56XHJT	7316-3231	BS_1Q524P3B	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_1AAYYGGY	A14709	BS_1RTE2KEX	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_K8ZV7APT	7316-10	BS_1RFBH1SP	No	No	No	No	Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	Neurofibroma	Neurofibroma	Tumor of cranial and paraspinal nerves
-PT_QTDY0Y9A	7316-3771	BS_1S5V7WWC	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_QTDY0Y9A	7316-3771	BS_1S5V7WWC	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_279D9QZ8	7316-325	BS_1YTHM07J	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_9C2G356W	7316-3555	BS_1VMBA3BN	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_3CHB9PK5	7316-515	BS_20TBZG09	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
-PT_KZ56XHJT	7316-3231	BS_22VCR7DF	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
-PT_P2NGYMG5	7316-1956	BS_230S192D	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_KZ56XHJT	7316-3231	BS_22VCR7DF	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_P2NGYMG5	7316-1956	BS_230S192D	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_Q3EP24V1	7316-154	BS_235QEYMQ	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_R4T1V1K4	7316-3206	BS_23ZE42Q3	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_R4T1V1K4	7316-3206	BS_23ZE42Q3	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_R0M1QBY4	7316-905	BS_0YVR8Q4E	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
 PT_ZD9AYB6F	7316-3323	BS_245CTSH9	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_W7FK539G	7316-76	BS_25VZM81R	No	No	No	No	Metastatic secondary tumors	Other	Metastatic secondary tumors	Metastatic secondary tumors	Other	Metastatic secondary tumors
 PT_8CZ6ANE0	7316-1970	BS_4G9Y2VC6	No	No	No	No	Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor	DNET	Neuronal and mixed neuronal-glial tumor
-PT_G16VK7FR	A19649	BS_2HDEZFTW	No	Yes	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_G16VK7FR	A19649	BS_2HDEZFTW	No	Yes	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_7F485CXV	7316-1114	BS_1RF75MK2	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
 PT_V0TQ0P66	7316-129	BS_2AWCKNB3	No	No	No	No	Meningioma	Meningioma	Meningioma	Meningioma	Meningioma	Meningioma
 PT_Z4GS3ZQQ	7316-740	BS_6ZP2KRPW	No	No	No	No	Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor	DNET	Neuronal and mixed neuronal-glial tumor
 PT_962TCBVR	7316-391	BS_2CQ6K2JW	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_ZZWYKZZ8	7316-2758	BS_2E81A3FT	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
 PT_V07ZH5JS	7316-472	BS_2F70R10Z	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_NWYSD53S	A15170	BS_2KMB51YF	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_NWYSD53S	A15170	BS_2KMB51YF	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_GCKT4FJX	7316-3919	BS_2HNHCSNB	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_HMY997GX	7316-3554	BS_2JDVY4F7	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_EN2RN5Y1	A17997	BS_328C4BW5	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_EN2RN5Y1	A17997	BS_328C4BW5	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_F27SA15G	7316-1661	BS_2NN6ME5A	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_EG7PH32E	7316-2144	BS_2P7MJGM7	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
 PT_ZVV78QP5	7316-117	BS_2RJN5Z4W	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
@@ -91,14 +91,14 @@ PT_1DY2TP9N	7316-1786	BS_376Q9QKG	No	No	No	No	Ependymal tumor	Ependymoma	Ependym
 PT_Y8RNS9JE	7316-1656	BS_3BMGF6GN	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_NS1F6DT8	7316-3048	BS_8226HD4X	No	No	No	No	Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor	DNET	Neuronal and mixed neuronal-glial tumor
 PT_E79807KT	7316-1087	BS_3A0CJMRH	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_59D00MBQ	7316-1937	BS_3E5C1PN1	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_59D00MBQ	7316-1937	BS_3E5C1PN1	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_CK41DW03	7316-329	BS_3AERRZQT	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_YGN06RPZ	7316-2204	BS_3C4YAMKJ	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_E78NHRWQ	7316-1081	BS_3DYRAZE7	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_3X3MF8ZD	7316-114	BS_3NX3RBCX	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
-PT_KTRJ8TFY	7316-3223	BS_3VKW5988	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
-PT_9GKVQ9QS	7316-3213	BS_3Z40EZHD	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
-PT_KTRJ8TFY	A09689	BS_402W79TS	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_KTRJ8TFY	7316-3223	BS_3VKW5988	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_9GKVQ9QS	7316-3213	BS_3Z40EZHD	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_KTRJ8TFY	A09689	BS_402W79TS	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_S4YNE17X	7316-2899	BS_3MYQP7P5	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_JW6FBEFK	7316-3019	BS_3P96RT4E	No	No	No	No	Low-grade astrocytic tumor	LGAT	Subependymal Giant Cell Astrocytoma	Subependymal Giant Cell Astrocytoma	LGAT	Low-grade astrocytic tumor
 PT_YKVK5HTK	7316-441	BS_3QDRWJCF	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
@@ -121,8 +121,8 @@ PT_TPSMT960	7316-400	BS_4M0ZMCDC	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low
 PT_DFCZAG9T	7316-224	BS_4NPEMNAD	No	No	No	No	CNS neuroblastoma	CNS neuroblastoma	Neuroblastoma	Neuroblastoma	CNS neuroblastoma	CNS neuroblastoma
 PT_50ZFWMZE	7316-1942	BS_4P25NNZD	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_67R1AF5R	7316-889	BS_4PAE19ZC	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
-PT_HGM20MW7	A09446	BS_52ETE050	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
-PT_1E3E6GMF	A09985	BS_541KKASA	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_HGM20MW7	A09446	BS_52ETE050	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_1E3E6GMF	A09985	BS_541KKASA	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_2YT37G8P	7316-399	BS_4QFSH7C4	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_QQZXYR4M	7316-1946	BS_58X7SKJS	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_1ZAWNGWT	7316-3345	BS_4DTX295Z	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
@@ -131,19 +131,19 @@ PT_EXJAEW1M	7316-188	BS_4XPPZTGG	No	No	No	No	Benign tumor	Other	JXG- Non-Langerh
 PT_6PFFSB6D	7316-2569	BS_4Z6F1HJZ	No	No	No	No	Other tumor	Other	Myxoid spindle cell tumor	Myxoid spindle cell tumor	Other	Other tumor
 PT_7YGZ526E	7316-1978	BS_4ZKN0WGS	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_5M8A47WW	7316-436	BS_50XV7CTQ	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_KTRJ8TFY	7316-3230	BS_5968GBGT	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_KTRJ8TFY	7316-3230	BS_5968GBGT	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_HVZTF42R	7316-2187	BS_53TV75NN	No	No	No	No	Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor	ATRT	Embryonal tumor
-PT_KAQMYFYB	A16405	BS_5CCAC8TZ	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_KAQMYFYB	A16405	BS_5CCAC8TZ	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_S8E3281G	7316-2138	BS_55N7KFHW	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
-PT_M9XXJ4GR	A09576	BS_5FBN4PPQ	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_M9XXJ4GR	A09576	BS_5FBN4PPQ	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_CWD717Q0	7316-101	BS_4RS1SC48	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
 PT_YZ8A8A36	7316-723	BS_59FR1NC2	No	No	No	No	Choroid plexus tumor	Chordoma	Choroid plexus carcinoma	Choroid plexus carcinoma	Chordoma	Choroid plexus tumor
-PT_RE6AXQM1	A19015	BS_6687ZNGS	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_RE6AXQM1	A19015	BS_6687ZNGS	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_HFQNKP5X	7316-4062	BS_5B6XZ7YP	No	No	No	No	Choroid plexus tumor	Chordoma	Chordoma	Chordoma	Chordoma	Choroid plexus tumor
 PT_JMW6Q6NH	7316-1648	BS_5BNV7MCF	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_M9XXJ4GR	7316-3222	BS_682Z7WH6	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_M9XXJ4GR	7316-3222	BS_682Z7WH6	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_164RNWTT	7316-1078	BS_5D24XV4T	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
-PT_9GKVQ9QS	A05262	BS_6B62YT97	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_9GKVQ9QS	A05262	BS_6B62YT97	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_16EJ7BZ9	7316-1938	BS_5KK9P7XD	No	No	No	No	Benign tumor	Other	Meningioangiomatosis	Meningioangiomatosis	Other	Benign tumor
 PT_J0SZ1SX5	7316-2589	BS_5NAKYS1S	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_3MNY9BRY	7316-2583	BS_5R0HHQ1Y	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
@@ -160,7 +160,7 @@ PT_WKNKNYHH	7316-1107	BS_5ZRZC3ZM	No	No	No	No	Ependymal tumor	Ependymoma	Ependym
 PT_3A87PCQK	7316-480	BS_AQECMDPP	No	No	No	No	Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor	DNET	Neuronal and mixed neuronal-glial tumor
 PT_K2YDNZDA	7316-429	BS_62XRDTM6	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
 PT_AWBPNFM5	7316-1854	BS_5V2FBYQG	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
-PT_VPEMAQBN	A12748	BS_6VTQ3W4M	No	Yes	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_VPEMAQBN	A12748	BS_6VTQ3W4M	No	Yes	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_DQT78GS5	7316-3326	BS_69VS8PS1	No	No	No	No	Embryonal tumor	CNS Embryonal tumor	Embryonal tumor with multilayer rosettes NOS	Embryonal tumor with multilayer rosettes NOS	CNS Embryonal tumor	Embryonal tumor
 PT_4347ZBEX	7316-913	BS_742CDKAS	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_HFQNKP5X	7316-3295	BS_6F49F7WH	No	No	No	No	Choroid plexus tumor	Chordoma	Chordoma	Chordoma	Chordoma	Choroid plexus tumor
@@ -169,9 +169,9 @@ PT_625X34JX	7316-2170	BS_6FYTRKJJ	No	No	No	No	Ependymal tumor	Ependymoma	Ependym
 PT_RJ1TJ2KH	7316-2110	BS_6GN1FGTB	No	No	No	No	Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor	ATRT	Embryonal tumor
 PT_6MWPJ96F	7316-1711	BS_6GV08HTE	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_976P4557	7316-214	BS_6HE8H9HY	No	No	No	No	Meningioma	Meningioma	Meningioma	Meningioma	Meningioma	Meningioma
-PT_C9YDTZPA	A15726	BS_74SJ7YV4	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_C9YDTZPA	A15726	BS_74SJ7YV4	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_Z4GS3ZQQ	7316-1797	BS_AWV1EDYB	No	No	No	No	Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor	DNET	Neuronal and mixed neuronal-glial tumor
-PT_1YQH5NSH	A20091	BS_74TZJTW0	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_1YQH5NSH	A20091	BS_74TZJTW0	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_9YNQJZ5G	7316-1941	BS_C3X4AEK5	No	No	No	No	Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor	DNET	Neuronal and mixed neuronal-glial tumor
 PT_NYBH025T	7316-3069	BS_6NPSZJ4C	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
 PT_1P436YMM	7316-3917	BS_6GTKRGNK	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
@@ -189,18 +189,18 @@ PT_1ZAWNGWT	7316-319	BS_6X2BQQGE	No	No	No	No	Neuronal and mixed neuronal-glial t
 PT_2E552BAR	7316-3066	BS_6Z213H2V	No	No	No	No	Tumor of cranial and paraspinal nerves	MPNST	Malignant peripheral nerve sheath tumor	Malignant peripheral nerve sheath tumor	MPNST	Tumor of cranial and paraspinal nerves
 PT_8SDJXNFR	7316-3755	BS_6Z4WHYDG	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
 PT_41RR5FQD	7316-1115	BS_71HPXFE7	No	No	No	No	Germ cell tumor	Teratoma	Teratoma	Teratoma	Teratoma	Germ cell tumor
-PT_1E3E6GMF	7316-3224	BS_7GKF6M85	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
-PT_V1HNAC2Q	A07150	BS_7KR13R3P	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
-PT_QA9WJ679	7316-3218	BS_7PF3C1P7	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_1E3E6GMF	7316-3224	BS_7GKF6M85	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_V1HNAC2Q	A07150	BS_7KR13R3P	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_QA9WJ679	7316-3218	BS_7PF3C1P7	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_MTE126WM	7316-376	BS_74A1TB03	No	No	No	No	Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor	ATRT	Embryonal tumor
 PT_PF9EC93Q	7316-3765	BS_80078QDG	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_3R0P995B	7316-873	BS_75VHXMZN	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
 PT_A594A46X	7316-91	BS_6Y7FX7QJ	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
 PT_ZZTQQVCT	7316-2723	BS_78TQS4Y3	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_4XB3YTJM	7316-388	BS_823V5X6Z	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
-PT_JNEV57VK	7316-2594	BS_85Q5P8GF	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_4XB3YTJM	7316-388	BS_823V5X6Z	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_JNEV57VK	7316-2594	BS_85Q5P8GF	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_GB8MNK85	7316-1086	BS_7HC4W4SA	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_858H7ABM	7316-903	BS_872Q3FK2	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_858H7ABM	7316-903	BS_872Q3FK2	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_5VAKED5F	7316-2689	BS_7M5272WN	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_1H2REHT2	7316-2990	BS_7M7JNG00	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_FWD7NZQ0	7316-1108	BS_797V83YM	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
@@ -235,7 +235,7 @@ PT_S2SQJVGK	7316-344	BS_8S2CZBA6	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low
 PT_8RB7TPS2	7316-322	BS_8SETK1J4	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
 PT_SYHB12RN	7316-194	BS_9DM8H1RX	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_2FVTD0WR	7316-2897	BS_8TFBNHT0	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_KZ56XHJT	A12398	BS_9DN4QR6E	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_KZ56XHJT	A12398	BS_9DN4QR6E	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_JYZA0PNV	7316-437	BS_8W0FNBWF	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_WG2Z95B5	7316-2141	BS_8WJR4AA3	No	No	No	No	Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor	ATRT	Embryonal tumor
 PT_KBFM551M	7316-3232	BS_9P4NDTKJ	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
@@ -251,8 +251,8 @@ PT_BNARR0N6	7316-1954	BS_99PPRCW4	No	No	No	No	Ependymal tumor	Ependymoma	Ependym
 PT_D9NTSYSC	7316-3064	BS_9BGCH82S	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Glial-neuronal tumor NOS	Glial-neuronal tumor NOS	Glial-neuronal tumor NOS	Glial-neuronal tumor NOS	Neuronal and mixed neuronal-glial tumor
 PT_QD6KKKJH	7316-1765	BS_9BN45DFK	No	No	No	No	Tumor of pineal region	Pineoblastoma	Pineoblastoma	Pineoblastoma	Pineoblastoma	Tumor of pineal region
 PT_QA9WJ679	A08768	BS_AEEKJ1QK	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
-PT_KTRJ8TFY	7316-3230	BS_AF5D41PD	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
-PT_PSX2CSYX	7316-46	BS_AFAHY6HP	No	Yes	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_KTRJ8TFY	7316-3230	BS_AF5D41PD	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_PSX2CSYX	7316-46	BS_AFAHY6HP	No	Yes	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_GAM3E6M3	7316-872	BS_9E632VPJ	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
 PT_EYZ25B99	7316-470	BS_9E6Q11G2	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_0XN6EYXZ	7316-3512	BS_9F2J6VS1	No	No	No	No	Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Tumors of sellar region
@@ -269,25 +269,25 @@ PT_4XVA57J7	7316-1760	BS_9NF39QAW	No	No	No	No	Low-grade astrocytic tumor	LGAT	Lo
 PT_N9KYV4WB	7316-749	BS_9PQPZPGM	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
 PT_4EDBZRM2	7316-1952	BS_9M49SGAQ	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
 PT_YT70KJ5P	7316-4	BS_9R82A3VT	No	No	No	No	Other tumor	Other	Cyst	Cyst	Other	Other tumor
-PT_NK8A49X5	7316-3228	BS_AHAXPFG3	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_NK8A49X5	7316-3228	BS_AHAXPFG3	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_HJMP6PH2	7316-3775	BS_9SVMVJ45	No	No	No	No	Mesenchymal non-meningothelial tumor	CNS EFT-CIC	Ewings Sarcoma	Ewings Sarcoma	CNS EFT-CIC	Mesenchymal non-meningothelial tumor
 PT_CGWPWSXM	7316-2005	BS_9W6FK6X4	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
 PT_20ZM6THA	7316-3629	BS_9X9E86DY	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_KZ56XHJT	7316-3231	BS_AK9BV52G	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_KZ56XHJT	7316-3231	BS_AK9BV52G	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_VBVZ2NAR	7316-2156	BS_9ZFXXJPK	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
 PT_9PJR0ZK7	7316-935	BS_A1DV9T7G	No	No	No	No	Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	Neurofibroma	Neurofibroma	Tumor of cranial and paraspinal nerves
 PT_1Z015H6V	7316-3516	BS_A3EV6FXK	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
-PT_Y5KY6KN9	7316-195	BS_AYPBAHJ6	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_Y5KY6KN9	7316-195	BS_AYPBAHJ6	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_YCMH9SQP	7316-225	BS_A70G7S2W	No	No	No	No	Metastatic secondary tumors	Other	Metastatic secondary tumors	Metastatic secondary tumors	Other	Metastatic secondary tumors
 PT_ESHACWF6	7316-1790	BS_A94A7EJ4	No	No	No	No	Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor	ATRT	Embryonal tumor
 PT_9XAA8PF6	7316-1069	BS_A9S5HT6P	No	No	No	No	Benign tumor	Adenoma	Adenoma	Adenoma	Adenoma	Benign tumor
 PT_N9CGVG02	7316-2197	BS_ABENB1H2	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_2JDDX6TJ	7316-409	BS_B9QP40ER	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_2JDDX6TJ	7316-409	BS_B9QP40ER	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_7RMS6K08	7316-1748	BS_ACE6QKVF	No	No	No	No	Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Tumors of sellar region
 PT_WYR1DVHX	7316-1950	BS_ACTR13BQ	No	No	No	No	Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Tumors of sellar region
-PT_5BWZA0NT	7316-1102	BS_BFDEZK1C	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_5BWZA0NT	7316-1102	BS_BFDEZK1C	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_4TASAQKA	7316-3566	BS_AEMRNSQX	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_KTRJ8TFY	7316-3223	BS_BQ81D2BP	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_KTRJ8TFY	7316-3223	BS_BQ81D2BP	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_MDWPRDBT	7316-895	BS_BQWMQM2Y	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_PY4QFHHV	7316-3768	BS_EKR4NSNW	No	No	No	No	Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor	DNET	Neuronal and mixed neuronal-glial tumor
 PT_99S5BPE3	7316-451	BS_AG6M7TJE	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
@@ -307,11 +307,11 @@ PT_A0F23R7E	7316-452	BS_AR2BH0Z4	No	No	No	No	Neuronal and mixed neuronal-glial t
 PT_FAPEH6R1	7316-1660	BS_ARE4EM81	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_N9W4GT6D	7316-174	BS_AVS4DSZW	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
 PT_M2J30CF7	7316-1747	BS_AWDQEKK1	No	No	No	No	Metastatic secondary tumors	Other	Myeloid Sarcoma	Myeloid Sarcoma	Other	Metastatic secondary tumors
-PT_X5TQR8V2	7316-343	BS_C19DFVR5	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_X5TQR8V2	7316-343	BS_C19DFVR5	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_GERCQ0JG	7316-3520	BS_HZV4WDTB	No	No	No	No	Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor	DNET	Neuronal and mixed neuronal-glial tumor
 PT_54MH6Q46	7316-2591	BS_AXM96K20	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_CR2YBSPT	7316-359	BS_AXW0XBH8	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
-PT_PR4YBBH3	7316-126	BS_C2NH5FDT	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_PR4YBBH3	7316-126	BS_C2NH5FDT	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_06ERX8Z7	7316-2578	BS_B1X2SB4P	No	No	No	No	Low-grade astrocytic tumor	LGAT	Subependymal Giant Cell Astrocytoma	Subependymal Giant Cell Astrocytoma	LGAT	Low-grade astrocytic tumor
 PT_W17NV5YG	7316-2106	BS_B4DY7ET3	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
 PT_3VCS1PPF	7316-198	BS_B4P1NP87	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
@@ -331,8 +331,8 @@ PT_NMZBRFYS	7316-1987	BS_BD4RQ1G0	No	No	No	No	Tumor of cranial and paraspinal ne
 PT_MNSEJCDM	7316-3227	BS_CBMAWSAR	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_SCBMTG0S	7316-2175	BS_BM95DGCQ	No	No	No	No	Benign tumor	Other	Prolactinoma	Prolactinoma	Other	Benign tumor
 PT_X0FPPTMT	7316-280	BS_BMHYK93N	No	No	No	No	Benign tumor	Central neurocytoma	Neurocytoma	Neurocytoma	Central neurocytoma	Benign tumor
-PT_M23Q0DC3	7316-3212	BS_CGXTFM67	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
-PT_CSKHQB16	A14567	BS_CX6KACX6	No	Yes	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_M23Q0DC3	7316-3212	BS_CGXTFM67	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_CSKHQB16	A14567	BS_CX6KACX6	No	Yes	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_KHX1WQ4H	7316-186	BS_BNFCXVYZ	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_ZN1F7RMP	7316-1080	BS_BR1X3R68	No	No	No	No	Benign tumor	Adenoma	Adenoma	Adenoma	Adenoma	Benign tumor
 PT_K5KH69Q1	7316-2670	BS_BS5X4H0Y	No	No	No	No	Benign tumor	Other	Dermoid Cyst	Dermoid Cyst	Other	Benign tumor
@@ -343,11 +343,11 @@ PT_MDWPRDBT	7316-2146	BS_D368BNRD	No	No	No	No	Diffuse astrocytic and oligodendro
 PT_DH8A0SNQ	7316-3057	BS_BYJDRXMK	No	No	No	No	Germ cell tumor	Teratoma	Teratoma	Teratoma	Teratoma	Germ cell tumor
 PT_B0JFCN5W	7316-1773	BS_BZ4GKDP4	No	No	No	No	Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Tumors of sellar region
 PT_44HPG5YT	7316-3067	BS_BZWM455T	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
-PT_KZ56XHJT	7316-3231	BS_D6STCMQS	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_KZ56XHJT	7316-3231	BS_D6STCMQS	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_N32BYY8A	7316-89	BS_D6XHKZDZ	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_E3ADF4ZB	7316-2664	BS_C1RRDNF5	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_868QRW9G	7316-3132	BS_K89V7JNJ	No	No	No	No	Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor	DNET	Neuronal and mixed neuronal-glial tumor
-PT_B38P3Y5T	7316-3208	BS_DH86PF5A	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_B38P3Y5T	7316-3208	BS_DH86PF5A	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_R10BSB9F	7316-1965	BS_C5RDMCCS	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
 PT_MBAXTJET	7316-275	BS_C6GBYR17	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_K8ZV7APT	7316-2166	BS_C6NB914B	No	No	No	No	Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	Neurofibroma	Neurofibroma	Tumor of cranial and paraspinal nerves
@@ -385,14 +385,14 @@ PT_XTVQB9S4	7316-2933	BS_DE26D072	No	No	No	No	Embryonal tumor	ATRT	Atypical Tera
 PT_J5NSRW1Y	7316-3817	BS_F8K4VQMF	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Gliomatosis Cerebri	Gliomatosis Cerebri	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_7T13FDWK	7316-1082	BS_DMBNB0EP	No	No	No	No	Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Tumors of sellar region
 PT_76Q72M5T	7316-397	BS_DT92H1MJ	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_HGM20MW7	7316-3221	BS_FK3B5SDH	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_HGM20MW7	7316-3221	BS_FK3B5SDH	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_2ECVKTTQ	7316-173	BS_DW1CYEXP	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_6Q0NPVP3	7316-2255	BS_E5H6CFYT	No	Yes	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_6Q0NPVP3	7316-2255	BS_E5H6CFYT	No	Yes	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_6N825561	7316-3920	BS_E0S2Y0TS	No	No	No	No	Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor	ATRT	Embryonal tumor
 PT_X1PRY0FC	7316-1779	BS_E2RXQ3JW	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_Y660CKCB	7316-3122	BS_FKQ7F6D1	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_Y660CKCB	7316-3122	BS_FKQ7F6D1	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_17W3GJPT	7316-2306	BS_ETTZM63Y	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
-PT_KZ56XHJT	A08732	BS_FWP8ZA4K	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_KZ56XHJT	A08732	BS_FWP8ZA4K	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_KMHGNCNR	7316-350	BS_E7HEQZ1K	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_2E552BAR	7316-2719	BS_E8MC6R2K	No	No	No	No	Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	Neurofibroma	Neurofibroma	Tumor of cranial and paraspinal nerves
 PT_J4MWGQFQ	7316-2071	BS_E8SJ36A6	No	No	No	No	Meningioma	Meningioma	Meningioma	Meningioma	Meningioma	Meningioma
@@ -404,13 +404,13 @@ PT_9AW9EWHA	7316-454	BS_EFBBP9H3	No	No	No	No	Ependymal tumor	Ependymoma	Ependymo
 PT_MA0J8DSN	7316-39	BS_T99M7842	No	No	No	No	Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor	DNET	Neuronal and mixed neuronal-glial tumor
 PT_DNAJYFZT	7316-4035	BS_EJ1H9PZY	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
 PT_89XRZBSG	7316-445	BS_G9MQM1KK	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
-PT_M23Q0DC3	A03942	BS_GBT44HST	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_M23Q0DC3	A03942	BS_GBT44HST	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_K63972GG	7316-666	BS_EQE19CB0	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_HMF8J4EG	7316-644	BS_GKPVZXYP	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_HMF8J4EG	7316-644	BS_GKPVZXYP	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_2ECVKTTQ	7316-2154	BS_ERMGD2N5	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_AP9P5D7N	7316-1117	BS_V79WFJ6N	No	No	No	No	Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor	DNET	Neuronal and mixed neuronal-glial tumor
 PT_K8ZV7APT	7316-2665	BS_EXTEGB51	No	No	No	No	Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	Neurofibroma	Neurofibroma	Tumor of cranial and paraspinal nerves
-PT_NK8A49X5	A14449	BS_GKXD33YH	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_NK8A49X5	A14449	BS_GKXD33YH	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_EB0D3BXG	7316-3311	BS_F0GNWEJJ	No	No	No	No	CNS neuroblastoma	CNS neuroblastoma	Neuroblastoma	Neuroblastoma	CNS neuroblastoma	CNS neuroblastoma
 PT_1KEER2Q1	7316-460	BS_F1B71HTZ	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_2C63FJAM	7316-3040	BS_F48RA7QF	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
@@ -420,7 +420,7 @@ PT_JXSDFPNM	7316-2142	BS_F5641KTR	No	No	No	No	Meningioma	Meningioma	Meningioma	M
 PT_92YX7KK9	7316-1785	BS_F5KRHGKC	No	No	No	No	Germ cell tumor	Germinoma	Germinoma	Germinoma	Germinoma	Germ cell tumor
 PT_3PK66TJY	7316-2609	BS_F5V8CWXT	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
 PT_4RJ2EATN	7316-1653	BS_F7KYPE79	No	No	No	No	Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Tumors of sellar region
-PT_JSFBMK5V	7316-392	BS_H0638GZT	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_JSFBMK5V	7316-392	BS_H0638GZT	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_EEKE0V9T	7316-32	BS_F969DNHD	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_QT3MK7BZ	7316-1977	BS_F9ZTZ4YS	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_AWMZ12NP	7316-2216	BS_FJEBFQHG	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
@@ -433,7 +433,7 @@ PT_Z9QE51C3	7316-373	BS_FNF1TCSW	No	No	No	No	Neuronal and mixed neuronal-glial t
 PT_N9SG16EC	7316-1958	BS_FHFVCQ41	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_WY8REZ3P	7316-1783	BS_G61CN2V0	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
 PT_0MXPTTM3	A09410	BS_H3TYF6GD	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
-PT_KZ56XHJT	7316-3217	BS_H8NWA41N	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_KZ56XHJT	7316-3217	BS_H8NWA41N	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_Y7F2JZMQ	7316-2680	BS_GS9JCK55	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
 PT_VHS5RM2K	7316-364	BS_FNM4BB83	No	No	No	No	Mesenchymal non-meningothelial tumor	CNS EFT-CIC	Ewings Sarcoma	Ewings Sarcoma	CNS EFT-CIC	Mesenchymal non-meningothelial tumor
 PT_XSS1ANXD	7316-495	BS_FQ2ZBMPA	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
@@ -441,13 +441,13 @@ PT_NPETR8RY	7316-1784	BS_FSM39DXA	No	No	No	No	Ependymal tumor	Ependymoma	Ependym
 PT_W17NV5YG	7316-2079	BS_FVPMPMRJ	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
 PT_GY0QSY4H	7316-1075	BS_FWCKP4X1	No	No	No	No	Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Tumors of sellar region
 PT_GPQJYAW4	7316-1750	BS_W6B48DD5	No	No	No	No	Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor	DNET	Neuronal and mixed neuronal-glial tumor
-PT_NK8A49X5	7316-3228	BS_HEJ72V3F	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_NK8A49X5	7316-3228	BS_HEJ72V3F	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_7F3ZPZB7	7316-2662	BS_FXDY881S	No	No	No	No	Germ cell tumor	Germinoma	Germinoma	Germinoma	Germinoma	Germ cell tumor
 PT_XCCV6CW2	7316-2268	BS_FYJMNRGK	No	No	No	No	Germ cell tumor	Teratoma	Teratoma	Teratoma	Teratoma	Germ cell tumor
 PT_MSQ6GSVP	7316-2274	BS_HJ95JNFN	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
-PT_7E3V3JFX	7316-506	BS_G16NM5WJ	No	Yes	No	No	Ependymal tumor	Ependymoma	Ependymoma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_7E3V3JFX	7316-506	BS_G16NM5WJ	No	Yes	No	No	Ependymal tumor	Ependymoma	Ependymoma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_TB8HPJBN	7316-2663	BS_G2016BE5	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_KTRJ8TFY	7316-3230	BS_HYKV2TH9	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_KTRJ8TFY	7316-3230	BS_HYKV2TH9	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_T8V9ES93	7316-1106	BS_J4E9SW51	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_0EWY6S6S	7316-3491	BS_GAA327FP	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_MNSEJCDM	7316-3229	BS_J8EH1N7V	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
@@ -463,25 +463,25 @@ PT_ZMKMKCFQ	7316-2988	BS_GRS3T427	No	No	No	No	Low-grade astrocytic tumor	LGAT	Lo
 PT_8ECE2D92	7316-914	BS_GXACEYKB	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
 PT_J302B8Y5	7316-386	BS_GTAJFTTR	No	No	No	No	Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor	ATRT	Embryonal tumor
 PT_4159VCJY	7316-389	BS_HTGDSPQA	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
-PT_DMAF1J4A	A18552	BS_JCWD4DMA	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_DMAF1J4A	A18552	BS_JCWD4DMA	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_1DRAVX4S	7316-1968	BS_GWPJKM7G	No	No	No	No	Mesenchymal non-meningothelial tumor	CNS Rhabdomyosarcoma	Rhabdomyosarcoma	Rhabdomyosarcoma	CNS Rhabdomyosarcoma	Mesenchymal non-meningothelial tumor
 PT_JWW33RTB	7316-1793	BS_JBHQ6G3J	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
-PT_9GKVQ9QS	7316-3213	BS_JRFVST47	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_9GKVQ9QS	7316-3213	BS_JRFVST47	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_GNKRMTQY	7316-3856	BS_H1MNXNHB	No	No	No	No	Tumor of pineal region	Pineoblastoma	Pineoblastoma	Pineoblastoma	Pineoblastoma	Tumor of pineal region
-PT_63F63QY0	7316-3521	BS_KAD49R68	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_63F63QY0	7316-3521	BS_KAD49R68	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_8R00BMHH	7316-1845	BS_H50HR85Y	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_7FZ8SE69	7316-2152	BS_KHSYAB3J	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_7FZ8SE69	7316-2152	BS_KHSYAB3J	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_HJA1ZYS1	7316-2939	BS_H83DTMT2	No	No	No	No	Benign tumor	Other	Dermoid Cyst	Dermoid Cyst	Other	Benign tumor
 PT_46F28BFH	7316-1799	BS_H8E4K1DT	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
 PT_GH27VJBD	7316-2266	BS_H8MAKDRB	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
-PT_Y74CVASJ	A16538	BS_KPG4WCHS	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_Y74CVASJ	A16538	BS_KPG4WCHS	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_C94VR1Y2	7316-2278	BS_HBAKYKQM	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
 PT_WYVMWYVA	7316-257	BS_HC4T1EEP	No	No	No	No	Benign tumor	Choroid plexus tumor	Choroid plexus papilloma	Choroid plexus papilloma	Choroid plexus tumor	Benign tumor
 PT_VAJN5QP8	7316-2176	BS_KSHETTQC	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_3D74J8RZ	7316-1792	BS_HGP0PV0D	No	No	No	No	Meningioma	Meningioma	Meningioma	Meningioma	Meningioma	Meningioma
 PT_P5HHJJPH	7316-870	BS_KXGJ1HMG	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
-PT_JSFBMK5V	7316-1769	BS_KY1CTGJ3	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
-PT_1DSX4VJM	7316-1708	BS_KYPMZZSY	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_JSFBMK5V	7316-1769	BS_KY1CTGJ3	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_1DSX4VJM	7316-1708	BS_KYPMZZSY	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_3WA7SBQ6	7316-2248	BS_HN8DE43A	No	No	No	No	Choroid plexus tumor	Chordoma	Choroid plexus carcinoma	Choroid plexus carcinoma	Chordoma	Choroid plexus tumor
 PT_V5ASTHRH	7316-3892	BS_HNE6BPMH	No	No	No	No	Germ cell tumor	Germinoma	Germinoma	Germinoma	Germinoma	Germ cell tumor
 PT_0NY38X3W	7316-1706	BS_HQFNQHVW	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
@@ -540,7 +540,7 @@ PT_5SX0GRW1	7316-1927	BS_KP0YNTAK	No	No	No	No	CNS neuroblastoma	CNS neuroblastom
 PT_KFYJBQB8	7316-3075	BS_NJFK43N3	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_F822DBA0	7316-458	BS_KPWRDRFP	No	No	No	No	Mesenchymal non-meningothelial tumor	CNS EFT-CIC	Ewings Sarcoma	Ewings Sarcoma	CNS EFT-CIC	Mesenchymal non-meningothelial tumor
 PT_7VPSS2SN	7316-3621	BS_ZH6PC8KM	No	No	No	No	Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor	DNET	Neuronal and mixed neuronal-glial tumor
-PT_V1HNAC2Q	7316-3215	BS_NNFDFAFM	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_V1HNAC2Q	7316-3215	BS_NNFDFAFM	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_S7YHNHSS	7316-2754	BS_KSRYKCDE	No	No	No	No	Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	Neurofibroma	Neurofibroma	Tumor of cranial and paraspinal nerves
 PT_6DW5NFKX	7316-3150	BS_KT9H4B1N	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_GBDYKSPY	7316-209	BS_KV3XF9WV	No	No	No	No	Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	Neurofibroma	Neurofibroma	Tumor of cranial and paraspinal nerves
@@ -550,20 +550,20 @@ PT_AWMZ12NP	7316-2203	BS_N8WXTFN4	No	No	No	No	Neuronal and mixed neuronal-glial 
 PT_MPRBGGEJ	7316-2172	BS_KYG3H6C6	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_7TEHW6VQ	7316-2755	BS_KYPZRS4S	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_MV7Y44QQ	7316-157	BS_E0AAK0V0	No	No	No	No	Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor	DNET	Neuronal and mixed neuronal-glial tumor
-PT_JNEV57VK	7316-3058	BS_P0QJ1QAH	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_JNEV57VK	7316-3058	BS_P0QJ1QAH	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_S0Q27J13	7316-2307	BS_P3PF53V8	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_BDM0M83S	7316-3072	BS_M16CDR44	No	No	No	No	Embryonal tumor	CNS Embryonal tumor	CNS embryonal tumor	CNS embryonal tumor	CNS Embryonal tumor	Embryonal tumor
 PT_NSXP8AWV	7316-94	BS_M18CDDGK	No	No	No	No	Meningioma	Meningioma	Meningioma	Meningioma	Meningioma	Meningioma
-PT_RA6AGBA7	7316-461	BS_P4K6WK9Y	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_RA6AGBA7	7316-461	BS_P4K6WK9Y	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_90W4HCNR	7316-2672	BS_M1TDS9CT	No	No	No	No	Benign tumor	Choroid plexus tumor	Choroid plexus papilloma	Choroid plexus papilloma	Choroid plexus tumor	Benign tumor
 PT_E546ZRXA	7316-952	BS_9QMVZ4C0	No	No	No	No	Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	Dysembryoplastic neuroepithelial tumor	DNET	Neuronal and mixed neuronal-glial tumor
-PT_W5GP3F6B	A16915	BS_P7VR731D	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_W5GP3F6B	A16915	BS_P7VR731D	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_X71D7G5S	7316-1105	BS_P8WN8XEQ	No	No	Yes	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 G35 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_EPFX7V9H	7316-2571	BS_NB509KST	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
 PT_6MWPJ96F	7316-1928	BS_M8EBKZDG	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_3PSG2DQT	7316-1111	BS_2CD1XWVP	No	No	No	No	Pre-cancerous lesion	Dysplasia	Dysplasia	Dysplasia	Dysplasia	Pre-cancerous lesion
 PT_JN3EN2HR	7316-2267	BS_MAVSJH2Y	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
-PT_PR4YBBH3	7316-116	BS_PPY0EWPG	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_PR4YBBH3	7316-116	BS_PPY0EWPG	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_N8W26H19	7316-3061	BS_MBYEK6HV	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_XHYBZKCX	7316-1456	BS_MCM78YPC	No	No	No	No	Other tumor	Other	Reactive Connective Tissue	Reactive Connective Tissue	Other	Other tumor
 PT_Y32AQSEY	7316-159	BS_MDVMT75X	No	No	No	No	Tumor of cranial and paraspinal nerves	Schwannoma	Schwannoma	Schwannoma	Schwannoma	Tumor of cranial and paraspinal nerves
@@ -583,14 +583,14 @@ PT_BWN251DF	7316-659	BS_MVC1NCZX	No	No	No	No	Ependymal tumor	Ependymoma	Ependymo
 PT_YZME6QCY	7316-2245	BS_MW6YMRBJ	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_02MVZZSW	7316-1702	BS_MW74GF38	No	No	No	No	Meningioma	Meningioma	Meningioma	Meningioma	Meningioma	Meningioma
 PT_JXGMAHHN	7316-874	BS_MWKJF6XH	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_VPEMAQBN	7316-3225	BS_Q6GVRAWK	No	Yes	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_VPEMAQBN	7316-3225	BS_Q6GVRAWK	No	Yes	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_CEWNZVKF	7316-124	BS_MWXDJFWW	No	No	No	No	Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Tumors of sellar region
 PT_J50NZYZF	7316-956	BS_MWZCP1XW	No	No	No	No	Metastatic secondary tumors	Other	Metastatic secondary tumors	Metastatic secondary tumors	Other	Metastatic secondary tumors
 PT_2YCHME6S	7316-2622	BS_MZB884N9	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_1BV6ND1D	7316-3203	BS_MZJJRDZF	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_C2VY5NM6	7316-875	BS_N0Z6V2YG	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_WG5PHHSQ	7316-1962	BS_N5VYY66W	No	No	No	No	Benign tumor	Other	Meningioangiomatosis	Meningioangiomatosis	Other	Benign tumor
-PT_59D00MBQ	7316-1936	BS_QG6V29H7	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_59D00MBQ	7316-1936	BS_QG6V29H7	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_EW604JB3	7316-1134	BS_N8D9FH6M	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_98QMQZY7	7316-2724	BS_N9BF56FP	No	No	No	No	Mesenchymal non-meningothelial tumor	Other	Fibromyxoid Tumor	Fibromyxoid Tumor	Other	Mesenchymal non-meningothelial tumor
 PT_4JG5KWE8	7316-50	BS_N9N1X78X	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
@@ -604,7 +604,7 @@ PT_YXJQGT69	7316-934	BS_NHRNZRQV	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low
 PT_0DXHDZJR	7316-2857	BS_QWS88QXE	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_X84SD608	7316-497	BS_NJV6A585	No	No	No	No	Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	Neurofibroma	Neurofibroma	Tumor of cranial and paraspinal nerves
 PT_EJ8TKG2Z	7316-3571	BS_NMJPX8VQ	No	No	No	No	Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Tumors of sellar region
-PT_RYMG3M91	A18777	BS_QZPGVNBB	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_RYMG3M91	A18777	BS_QZPGVNBB	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_KEQ53KRH	7316-440	BS_R1G6SG0K	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_NXX0M835	7316-948	BS_NS8G0465	No	No	No	No	Tumor of cranial and paraspinal nerves	Schwannoma	Schwannoma	Schwannoma	Schwannoma	Tumor of cranial and paraspinal nerves
 PT_BZKJR4GK	7316-561	BS_NTXHP7QR	No	No	No	No	Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Tumors of sellar region
@@ -613,7 +613,7 @@ PT_XTVQB9S4	7316-2186	BS_NXZSD2KK	No	No	No	No	Embryonal tumor	ATRT	Atypical Tera
 PT_2WVW55DA	7316-1890	BS_NYVVN7SD	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_BWGZBVD1	7316-1678	BS_NZRJE7QA	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_12JTZFC2	7316-3504	BS_P0KQFXNC	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_M9XXJ4GR	7316-3222	BS_R6CKWZW6	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_M9XXJ4GR	7316-3222	BS_R6CKWZW6	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_4Z34K4XB	7316-733	BS_P36C0ABE	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_S21ZTKPS	7316-362	BS_P3EVK3C2	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_P9RT6693	7316-2566	BS_P3KD5EQG	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
@@ -659,7 +659,7 @@ PT_5CNZ47XV	7316-1926	BS_QM1Z8R38	No	No	No	No	Low-grade astrocytic tumor	LGAT	Lo
 PT_DMMKT7X1	7316-1635	BS_QMG7XNEW	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_ND34A6PR	7316-122	BS_QMHND3QK	No	No	No	No	Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor	ATRT	Embryonal tumor
 PT_3VCS1PPF	7316-490	BS_QMY84KF4	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
-PT_40HTPY49	7316-466	BS_T7WMJ08W	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_40HTPY49	7316-466	BS_T7WMJ08W	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_7M2PGCBV	7316-331	BS_QRH793AV	No	No	No	No	Meningioma	Meningioma	Meningioma	Meningioma	Meningioma	Meningioma
 PT_WPYCXMDA	7316-3891	BS_QSDKJM8T	No	No	No	No	Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Tumors of sellar region
 PT_0WKX8Q5X	7316-88	BS_QSMFVHSB	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
@@ -667,8 +667,8 @@ PT_GDDWPDMC	7316-2575	BS_V3ZNXRHK	No	No	No	No	Neuronal and mixed neuronal-glial 
 PT_5KRVE8E4	7316-1671	BS_QX754ADQ	No	No	No	No	Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Tumors of sellar region
 PT_1VQWQ0TC	7316-3627	BS_QXZTRMWM	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_2Z7GVDTM	7316-3515	BS_QYWGB52C	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_WGVEF96B	7316-3219	BS_TQ0J7WJQ	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
-PT_VCD0W8HG	7316-2756	BS_TRGECFNP	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_WGVEF96B	7316-3219	BS_TQ0J7WJQ	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_VCD0W8HG	7316-2756	BS_TRGECFNP	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_3V5GTCJR	7316-1646	BS_QZTPJ8YW	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_HQ89KPKT	7316-202	BS_R1RMKH1B	No	No	No	No	Benign tumor	Other	Ganglioneuroma	Ganglioneuroma	Other	Benign tumor
 PT_ATS9XDJ5	7316-2159	BS_R1ZBTEAG	No	No	No	No	Tumor of cranial and paraspinal nerves	Schwannoma	Schwannoma	Schwannoma	Schwannoma	Tumor of cranial and paraspinal nerves
@@ -711,10 +711,10 @@ PT_59FJRPVX	7316-3769	BS_WJB33V17	No	No	No	No	Diffuse astrocytic and oligodendro
 PT_ESHACWF6	7316-878	BS_SWHQ8FDW	No	No	No	No	Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor	ATRT	Embryonal tumor
 PT_RM9AZ7A8	7316-2084	BS_SYWRCE3Z	No	No	No	No	Tumor of cranial and paraspinal nerves	Schwannoma	Schwannoma	Schwannoma	Schwannoma	Tumor of cranial and paraspinal nerves
 PT_CYBYN18G	7316-2567	BS_T1SNKF50	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
-PT_DJ106XYS	7316-3935	BS_WJF6ZXWN	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_DJ106XYS	7316-3935	BS_WJF6ZXWN	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_E3S6H59E	7316-133	BS_T54TAE3R	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	Oligodendroglioma	Oligodendroglioma	Oligodendroglioma	Oligodendroglioma	Diffuse astrocytic and oligodendroglial tumor
 PT_KMHGNCNR	7316-944	BS_T5T21G7N	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_Z4PJA6KT	7316-1763	BS_WPCBK1EG	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_Z4PJA6KT	7316-1763	BS_WPCBK1EG	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_WE7HQN0C	7316-1795	BS_T8C13KNH	No	No	No	No	Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Tumors of sellar region
 PT_QT9T89S5	7316-297	BS_T97EP8H0	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_6DB7B9WV	7316-3317	BS_CWQ35N2K	No	No	No	No	Pre-cancerous lesion	Dysplasia	Dysplasia	Dysplasia	Dysplasia	Pre-cancerous lesion
@@ -726,10 +726,10 @@ PT_GKWWWJ0X	7316-1071	BS_XKE77TR4	No	No	No	No	Neuronal and mixed neuronal-glial 
 PT_1J2DT6MM	7316-2184	BS_THH0CE5A	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_89XRZBSG	7316-1789	BS_X1DSETVE	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_QEMT1845	7316-3153	BS_TPX7YY57	No	No	No	No	Other tumor	Gliosis	Reactive Gliosis	Reactive Gliosis	Gliosis	Other tumor
-PT_KZ56XHJT	7316-3231	BS_X5VN0FW0	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_KZ56XHJT	7316-3231	BS_X5VN0FW0	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_6GDPNFA6	7316-2610	BS_XGVSX8BX	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_KCTZZA3G	7316-223	BS_TX2WGF8K	No	No	No	No	Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	Neurofibroma	Neurofibroma	Tumor of cranial and paraspinal nerves
-PT_A06JR0E5	A17096	BS_XPZAD9PP	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_A06JR0E5	A17096	BS_XPZAD9PP	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_N8W26H19	7316-267	BS_TZPJHKQR	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_D13X3N8F	7316-2743	BS_V2MDX7HG	No	No	No	No	Other tumor	Other	Cyst	Cyst	Other	Other tumor
 PT_7DP91QDJ	7316-3017	BS_V3SC6NWH	No	No	No	No	Mesenchymal non-meningothelial tumor	Hemangioma	Cavernoma	Cavernoma	Hemangioma	Mesenchymal non-meningothelial tumor
@@ -742,7 +742,7 @@ PT_ZCXS29JJ	7316-2153	BS_VF099E8S	No	No	No	No	Mesenchymal non-meningothelial tum
 PT_DA4WFQ96	7316-172	BS_M9YZK3SP	No	No	No	No	Pre-cancerous lesion	Dysplasia	Dysplasia	Dysplasia	Dysplasia	Pre-cancerous lesion
 PT_QZN7FZER	7316-2757	BS_VK46N40F	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
 PT_DFQAH7RS	7316-2760	BS_ZKFEMJZ8	No	No	No	No	Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor
-PT_7P6J57H3	A12911	BS_Y0DGBKTY	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_7P6J57H3	A12911	BS_Y0DGBKTY	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_3D74J8RZ	7316-877	BS_VMZMGB7B	No	No	No	No	Meningioma	Meningioma	Meningioma	Meningioma	Meningioma	Meningioma
 PT_AC5SD9AC	7316-2291	BS_VPJ9CARN	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_9B6KWJT2	7316-1226	BS_VQC2PE2B	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
@@ -752,14 +752,14 @@ PT_MNSEJCDM	7316-3229	BS_Y74XAFJX	No	No	No	No	Diffuse astrocytic and oligodendro
 PT_A325EYR2	7316-2557	BS_YB99Q6TN	No	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Brainstem glioma- Diffuse intrinsic pontine glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_3RN24N9X	7316-20	BS_VW96PFKQ	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_PGVQ4XRZ	7316-946	BS_VXNT1TDB	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
-PT_KZ56XHJT	7316-3231	BS_YHXMYDBN	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_KZ56XHJT	7316-3231	BS_YHXMYDBN	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_TV5DYHNC	7316-1073	BS_W23ERYW3	No	No	No	No	Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor	ATRT	Embryonal tumor
 PT_25Z2NX27	7316-1462	BS_W50WEJE7	No	No	No	No	Benign tumor	Other	Ossifying Fibroma	Ossifying Fibroma	Other	Benign tumor
 PT_NPETR8RY	7316-160	BS_W5P7SPDH	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
 PT_J3B812DT	7316-123	BS_PZDTK87A	No	No	No	No	Pre-cancerous lesion	Dysplasia	Dysplasia	Dysplasia	Dysplasia	Pre-cancerous lesion
 PT_JP1FDKN9	7316-2959	BS_W74D279Q	No	No	No	No	Ependymal tumor	Ependymoma	Ependymoma	Ependymoma	Ependymoma	Ependymal tumor
 PT_F9F3E8YR	7316-3519	BS_R922P3XJ	No	No	No	No	Pre-cancerous lesion	Dysplasia	Dysplasia	Dysplasia	Dysplasia	Pre-cancerous lesion
-PT_FYPWZBH0	7316-1085	BS_ZCY4ECNV	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	High-grade glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
+PT_FYPWZBH0	7316-1085	BS_ZCY4ECNV	Yes	No	No	No	Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	Diffuse midline glioma, H3 K28 mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor
 PT_E3Y5BBSF	7316-3071	BS_W8DA9AXT	No	No	No	No	Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Craniopharyngioma	Tumors of sellar region
 PT_4ZSR5DY8	7316-2667	BS_W9FW1PAE	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
 PT_S7WJ99PC	7316-677	BS_W9P0PFDH	No	No	No	No	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor
