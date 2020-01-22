@@ -122,7 +122,7 @@ rule generate_callable:
     # Invert the excluded regions to generate a file of regions potentially called.
     input:
         bed="ref/cnv_excluded.bed",
-        genome="ref/hg38.genome"
+        genome="ref/hg38.chrom.sizes"
     output:
         "ref/cnv_callable.bed"
     shell:
