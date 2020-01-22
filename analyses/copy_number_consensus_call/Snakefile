@@ -1,5 +1,5 @@
 ## Define the ending file(s) that we want
-OUTPUT = "results/cnv_consensus.tsv", "results/cnv_neutral.tsv"
+OUTPUT = "results/cnv_consensus.tsv", "results/cnv_neutral.bed"
 
 ## Define the wildcards to use in the file names. 
 wildcard_constraints:
@@ -276,7 +276,9 @@ rule merge_neutral:
         expand("../../scratch/endpoints/{sample}.neutral.bed",
                           sample = config["samples"])
     output:
-        "results/cnv_neutral.tsv"
+        "results/cnv_neutral.bed"
+    shell:
+        "cat {input} > {output}"
 
 
 rule merge_all:
