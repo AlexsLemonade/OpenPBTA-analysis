@@ -221,35 +221,36 @@ if (opt$gistic) {
   # Path to gistic zip file results
   gistic_zip <-
     file.path(root_dir, "data", "pbta-cnv-cnvkit-gistic.zip")
-
+  
   # Get the name of the folder first since this changes with updates to the date
   folder_name <- unzip(zipfile = gistic_zip, list = TRUE) %>%
     dplyr::filter(Length == 0) %>%
     dplyr::pull("Name")
-
+  
   # Path to gistic results directory
   gistic_results <-
-    file.path(
-      root_dir,
-      "analyses",
-      "focal-cn-file-preparation",
-      "gistic-results"
-    )
-
+    file.path(root_dir,
+              "analyses",
+              "focal-cn-file-preparation",
+              "gistic-results")
+  
   # Extract files if it hasn't been done yet
   if (!dir.exists(gistic_results)) {
     # Unzip but only extract the files not the folder
-    unzip(
-      zipfile = gistic_zip,
-      exdir = gistic_results
-    )
+    unzip(zipfile = gistic_zip,
+          exdir = gistic_results)
   }
   # Designate GISTIC results folder to extract to
   gistic_results <- file.path(gistic_results, folder_name)
-
+  
   # Read in broad values by arm GISTIC output file
   gistic_df <-
-    data.table::fread(file.path(gistic_results, "broad_values_by_arm.txt"),
+    data.table::fread(
+      paste0(
+        gistic_results,
+        folder_name,
+        "broad_values_by_arm.txt"
+      ),
       data.table = FALSE
     )
 }
@@ -367,7 +368,7 @@ if (opt$gistic) {
 }
 
 # Output file name
-autosome_output_file <- paste0(opt$filename_lead, "_autosomes.tsv")
+autosome_output_file <- paste0(opt$filename_lead, "_autosomes.tsv.bz2")
 
 # Save final data.frame to a tsv file
 readr::write_tsv(
@@ -409,7 +410,7 @@ if (xy_flag) {
   }
 
   # Output file name
-  sex_chrom_output_file <- paste0(opt$filename_lead, "_x_and_y.tsv")
+  sex_chrom_output_file <- paste0(opt$filename_lead, "_x_and_y.tsv.bz2")
 
   # Save final data.frame to a tsv file
   readr::write_tsv(

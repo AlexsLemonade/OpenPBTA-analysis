@@ -7,9 +7,9 @@
 set -e
 set -o pipefail
 
-XYFLAG=${OPENPBTA_XY:-1}
 # This cds file is filtered below to contain coding sequences only, converted
 # to a bed file, and saved in the project's `scratch` directory.
+XYFLAG=${OPENPBTA_XY:-1}
 cds_file=../../scratch/gencode.v27.primary_assembly.annotation.bed
 
 # This script should always run as if it were being called from
@@ -46,15 +46,6 @@ Rscript --vanilla 01-prepare-cn-file.R \
   --xy $XYFLAG \
   --controlfreec \
   --gistic
-
-# gzip the four files in the results folder, overwriting without prompt
-gzip -f results/cnvkit_annotated_cn_autosomes.tsv
-gzip -f results/controlfreec_annotated_cn_autosomes.tsv
-gzip -f results/cnvkit_annotated_cn_x_and_y.tsv
-
-if [ "$XYFLAG" -gt "0" ]; then
-  gzip -f results/controlfreec_annotated_cn_x_and_y.tsv
-fi
 
 # Compare to expression data
 Rscript --vanilla 02-rna-expression-validation.R
