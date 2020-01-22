@@ -39,6 +39,9 @@ Read in the custom functions needed for this analysis.
 ```{r}
 source(file.path("util", "chr-break-calculate.R"))
 source(file.path("util", "chr-break-plot.R"))
+
+# Borrowing the custom plotting function from the `tmb-compare-tcga` analysis plots
+source(file.path("..", "tmb-compare-tcga", "util", "sina_plot.R"))
 ```
 
 ### Directories and Files
@@ -67,6 +70,16 @@ Set up metadata
 ```{r}
 # Read in the metadata
 metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
+```
+
+Read in the union breaks densities TSV that was made by the 00-setup-breakpoint-data.R script. 
+
+```{r}
+breaks_densities_df <- readr::read_tsv(
+  file.path("breakpoint-data", "union_of_breaks_densities.tsv")) %>% 
+  # Add on the short histology column from the metadata for plotting purposes
+  dplyr::inner_join(metadata %>% dplyr::select(Kids_First_Biospecimen_ID, short_histology), 
+                    by = c("samples" = "Kids_First_Biospecimen_ID"))
 ```
 
 Load in the previously formatted breakpoint data. 
@@ -100,6 +113,27 @@ chr_sizes <- readr::read_tsv(file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed
 chr_sizes_vector <- chr_sizes$X3
 names(chr_sizes_vector) <- chr_sizes$X1
 ```
+
+### Plot the break densities by their histology
+
+```{r}
+breaks_sina <- sina_plot(breaks_densities_df, 
+          colour = "#630882", 
+          x_axis = "short_histology", 
+          y_axis = "breaks_density", 
+          title = "Chromosomal Break Densities", 
+          y_label = "Chromosomal breaks per Mb") + 
+  # Adjust the background stripe size
+    ggplot2::theme(
+      panel.grid.major.x = ggplot2::element_line(colour = c("gray93", "white"), size = 12.75))
+
+# Save the plot to a png
+ggplot2::ggsave(file.path(plots_dir, "breaks_density_sina_plot.png"), 
+                   plot = breaks_sina, width = 35, height = 20, unit = "cm")
+```
+
+Print from png so rendering is smoother
+![Breaks Density Plot](./plots/breaks_density_sina_plot.png)
 
 ### Co-localization of breakpoints for samples 
 

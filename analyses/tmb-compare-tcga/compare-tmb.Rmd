@@ -199,7 +199,8 @@ tcga_plot <- sina_plot(tmb_tcga,
     axis.ticks.y = ggplot2::element_blank(),
     axis.text.x = ggplot2::element_text(size = 7),
     panel.grid.major.x = ggplot2::element_line(colour = c("gray93", "white"), size = 9)
-  )
+  ) +
+  ggplot2::ylim(c(-3, 3))
 ```
 
 Plot the PBTA data. 
@@ -211,7 +212,8 @@ pbta_plot <- sina_plot(tmb_pbta,
                        x_axis = "short_histology",  
                        y_axis = "tmb",
                        title = "PBTA", 
-                       y_label = "log10 (Number of Mutations per Mb)")
+                       y_label = "log10 (Number of Mutations per Mb)") +
+    ggplot2::ylim(c(-3, 3))
 ```
 
 Use cowplot to put them together. 

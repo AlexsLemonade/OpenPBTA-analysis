@@ -39,7 +39,6 @@ sina_plot <- function(data,
     ggplot2::theme_classic() +
     ggplot2::ylab(y_label) +
     ggplot2::xlab("") +
-    ggplot2::ylim(c(-3, 3)) +
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(angle = 60, hjust = 1),
       legend.position = "none"
