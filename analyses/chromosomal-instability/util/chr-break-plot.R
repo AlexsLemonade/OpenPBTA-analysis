@@ -56,7 +56,7 @@ multipanel_break_plot <- function(granges_list,
                                   y_lab,
                                   plot_dir) {
   # A wrapper function to make a 3 row chromosomal map plot for a set of GRanges
-  # objects that contain common_breaks, cnv_breaks, and sv_breaks.
+  # objects that contain union_of_breaks, cnv_breaks, and sv_breaks.
   #
   # Args:
   #   granges_list: A list of Granges object to plot as a combination plot
@@ -69,11 +69,11 @@ multipanel_break_plot <- function(granges_list,
   #  ggplot of chromosomal mapping of the y value given.
   #
   # Make combined SV and CNV plot
-  common_plot <- map_breaks_plot(granges_list$common_breaks,
+  union_of_plot <- map_breaks_plot(granges_list$union_of_breaks,
     y_val = y_val,
     y_lab = y_lab,
     color = "blue",
-    main_title = "Common Breaks"
+    main_title = "Union of Breaks"
   )
 
   # Make CNV plot
@@ -100,7 +100,7 @@ multipanel_break_plot <- function(granges_list,
 
   # Put all plots and title together
   full_plot <- cowplot::plot_grid(title,
-    common_plot,
+    union_of_plot,
     cnv_plot,
     sv_plot,
     nrow = 4,
