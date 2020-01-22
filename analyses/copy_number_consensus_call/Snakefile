@@ -141,7 +141,7 @@ rule filter_excluded:
         filtered_bed="../../scratch/interim/{sample}.{caller}.{dupdel}.filtered.bed"
     threads: 1
     shell:
-        ## Invoke the bedtools subtract pass in the reference and CNVs files. Direct the stdout to a new file. 
+        ## Invoke the bedtools subtract pass in the reference and CNVs files. Direct the stdout to a new file.
         "bedtools subtract -N -a {input.bedfile} -b {input.exclude_list} -f 0.5 > {output.filtered_bed}"
 
 
@@ -225,7 +225,7 @@ rule remove_inset_calls:
     ## segments and removes the overlap.
     ## This subtraction will remove any dup segments that lay entirely within a del segment, so those need to be added back.
     ## We do this by finding the intersection of all dup and del segments, which includes regions where both are present, 
-    ## but may remove the annotation of which original segment was 'fully enclosed' by a segment of the opposite call. 
+    ## but may remove the annotation of which original segment was 'fully enclosed' by a segment of the opposite call.
     ## To restore that inforamtion we intersect the original dup calls with those intersection calls,
     ## requiring full reciprocal coverage (-r 1) to find only those dup calls that are in the original set and NOT enclosed by a del call
     ##
@@ -269,7 +269,7 @@ rule neutral_regions:
     shell:
         "bedtools subtract -a {input.called} -b {input.dup_merge}"
         " | bedtools subtract -a stdin -b {input.del_merge}"
-        " | sed '/$/\t{wildcard.sample}/' > {output}"
+        " | sed 's/$/\t{wildcards.sample}/' > {output}"
 
 rule merge_neutral:
     input:
