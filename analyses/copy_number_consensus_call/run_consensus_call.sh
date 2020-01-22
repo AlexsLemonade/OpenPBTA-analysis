@@ -43,5 +43,10 @@ snakemake \
     -j \
     -p \
     --restart-times 3 \
-    --max-jobs-per-second 10 \
     --latency-wait 30
+
+
+##
+Rscript scripts/bed_to_segfile.R \
+  -i results/cnv_consensus.tsv \
+  -o results/pbta-cnv-consensus.seg

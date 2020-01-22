@@ -7,26 +7,34 @@ A table with brief descriptions for each data file is provided in the `data-desc
 
 PBTA data files are all files derived from samples (e.g., tumors, cell lines) that are processed upstream of this repository and are not the product of any analysis code in the `AlexsLemonade/OpenPBTA-analysis` repository.
 
+### Quality Control Data
 
+MendQC [output files](https://github.com/UCSC-Treehouse/mend_qc#output) `*readDist.txt` and `*bam_umend_qc.tsv`, along with a manifest mapping filename to biospecimen, are provided. 
+
+ * `pbta-mend-qc-results.tar.gz`
+ * `pbta-mend-qc-manifest.tsv`
 
 ### Somatic Single Nucleotide Variant (SNV) Data
 
 Somatic Single Nucleotide Variant (SNV) data are provided in [Annotated MAF format](format/vep-maf.md) files for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-single-nucleotide-variant-calling) and denoted with the `pbta-snv` prefix.
+A subset of TCGA brain tumor MAF files are also provided, along with a manifest, `pbta-tcga-manifest.tsv`, and denoted with the `pbta-tcga-snv` prefix.
 Briefly, VCFs are VEP annotated and converted to MAF format via [vcf2maf](https://github.com/mskcc/vcf2maf/blob/master/maf2vcf.pl) to produce the following files:
 
 * `pbta-snv-lancet.vep.maf.gz`
 * `pbta-snv-mutect2.vep.maf.gz`
 * `pbta-snv-strelka2.vep.maf.gz`
 * `pbta-snv-vardict.vep.maf.gz`
+* `pbta-tcga-snv-lancet.vep.maf.gz`
+* `pbta-tcga-snv-mutect2.vep.maf.gz`
+* `pbta-tcga-snv-strelka2.vep.maf.gz`
 
 ### Somatic Copy Number Variant (CNV) Data
 
 Somatic Copy Number Variant (CNV) data are provided in a modified [SEG format](https://software.broadinstitute.org/software/igv/SEG) for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-copy-number-variant-calling) and denoted with the `pbta-cnv` prefix.
+**Somatic copy number data is only generated for whole genome sequencing (WGS) samples.**
 
   * `pbta-cnv-cnvkit.seg.gz` is the the CNVkit SEG file. This file contains an additional column `copy.num` to denote copy number of each segment, derived from the CNS file output of the algorithm [described here](https://cnvkit.readthedocs.io/en/stable/fileformats.html).
   * `pbta-cnv-controlfreec.tsv.gz` is the ControlFreeC TSV file. It is a merge of `*_CNVs` files produced from the algorithm, and columns are [described here](http://boevalab.inf.ethz.ch/FREEC/tutorial.html#OUTPUT).
-
-Analysis file(s) comprised of copy number consensus calls from the copy number and structural variant callers are forthcoming (see [#128](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/128) and associated pull requests).
 
 #### A Note on Ploidy
 
@@ -62,6 +70,7 @@ The _copy number_ annotated in the CNVkit SEG file is annotated with respect to 
 ### Somatic Structural Variant (SV) Data
 
 Somatic Structural Variant Data (Somatic SV) are provided in the [Annotated Manta TSV](doc/format/manta-tsv-header.md) format produced by the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-structural-variant-calling) and denoted with the `pbta-sv` prefix.
+**Somatic structural variant data is only generated for whole genome sequencing (WGS) samples.**
 
 * `pbta-sv-manta.tsv.gz`
 
@@ -93,6 +102,11 @@ See [the data description file](data-description.md) for more information about 
 
 If your analysis requires de-duplicated gene symbols as row names, please use the collapsed matrices provided as part of the data download ([see below](#collapsed-expression-matrices)).
 
+STAR `*Log.final.out` files, along with a manifest mapping filename to biospecimen, are provided ([see section 4.1 here](http://labshare.cshl.edu/shares/gingeraslab/www-data/dobin/STAR/STAR.posix/doc/STARmanual.pdf)). 
+
+ * `pbta-star-log-final.tar.gz`
+ * `pbta-star-log-manifest.tsv`
+
 ### Gene Fusion Data
 
 Gene Fusions produced by the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#rna-fusion-calling-and-prioritization) are provided as [Arriba TSV](doc/format/arriba-tsv-header.md) and [STARFusion TSV](doc/format/starfusion-tsv-header.md) respectively.
@@ -100,6 +114,7 @@ These files are denoted with the prefix `pbta-fusion`.
 
 * `pbta-fusion-arriba.tsv.gz`
 * `pbta-fusion-starfusion.tsv.gz`
+
 
 ### Harmonized Clinical Data
 
@@ -166,11 +181,18 @@ The filtered and prioritized fusion and downstream files are a product of the [`
   The methods are [described here](https://alexslemonade.github.io/OpenPBTA-manuscript/#fusion-prioritization).
   * `pbta-fusion-recurrently-fused-genes-byhistology.tsv` is a table that includes counts of recurrently fused genes by broad histology.
   * `pbta-fusion-recurrently-fused-genes-bysample.tsv` contains a binary matrix that denotes the presence or absence of a recurrently fused gene in an individual RNA-seq specimen.
+  * `fusion_summary_embryonal_foi.tsv` contains a binary matrix that denotes the presence or absence of a recurrent embryonal tumor fusions of interest per individual RNA-seq specimen.
+  * `fusion_summary_ependymoma_foi.tsv` contains a binary matrix that denotes the presence or absence of a recurrent ependymal tumor fusions of interest per individual RNA-seq specimen.
 
 ### Copy Number Files
 
 `pbta-cnv-cnvkit-gistic.zip` is the output of running GISTIC 2.0 on the CNVkit results (`pbta-cnv-cnvkit.seg`).
 The script used to run GISTIC can be [found here](https://github.com/d3b-center/publication_workflows/blob/master/openPBTA/run-gistic.sh).
+
+### Consensus Copy Number File
+
+Copy number consensus calls from the copy number and structural variant callers are a product of the [`analyses/copy_number_consensus_call`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/copy_number_consensus_call) analysis module. 
+ * `cnv_consensus.tsv` contains consensus regions from two or more callers, with columns described in the [analysis README](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/copy_number_consensus_call/README.md).
 
 ## Data Caveats
 
