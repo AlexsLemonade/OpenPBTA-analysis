@@ -28,9 +28,10 @@ Rscript analyses/chromosomal-instability/00-setup-breakpoint-data.R \
   --cnv_seg data/pbta-cnv-cnvkit.seg.gz \
   --sv data/pbta-sv-manta.tsv.gz \
   --metadata data/pbta-histologies.tsv \
+  --output analyses/chromosomal-instability/breakpoint-data \
   --surveyed_wgs $surveyed_wgs \
   --surveyed_wxs $surveyed_wxs
   
 ######################### Chromosomal Instability Plots ########################
-Rscript -e "rmarkdown::render('analyses/chromosomal-instability/plot-chromosomal-instability.Rmd', 
+Rscript -e "rmarkdown::render('analyses/chromosomal-instability/01-plot-chromosomal-instability.Rmd', 
                               clean = TRUE)"

@@ -8,7 +8,8 @@
 #
 # Option descriptions
 # --cnv_seg: Relative file path (assuming from top directory of
-#            'OpenPBTA-analysis') to CNV segment file to be used for breakpoint
+#            'OpenPBTA-analysis') to CNV segment file to be used for breakpoint 
+#            calculations.
 # --sv: Relative file path (assuming from top directory of
 #       'OpenPBTA-analysis') to SV file to be used for breakpoint calculations.
 # --metadata: Relative file path (assuming from top directory of
@@ -80,13 +81,15 @@ option_list <- list(
   ),
   make_option(
     opt_str = "--surveyed_wgs", type = "character", default = "none",
-    help = "File path that specifies the BED regions file that indicates the 
+    help = "Relative file path (assuming from top directory of
+    'OpenPBTA-analysis') that specifies the BED regions file that indicates the 
     effectively surveyed regions of the genome for the WGS samples.",
     metavar = "character"
   ),
   make_option(
     opt_str = "--surveyed_wxs", type = "character", default = "none",
-    help = "File path that specifies the BED regions file that indicates the 
+    help = "Relative file path (assuming from top directory of
+    'OpenPBTA-analysis') that specifies the BED regions file that indicates the 
     effectively surveyed regions of the genome for the WXS samples.",
     metavar = "character"
   )
