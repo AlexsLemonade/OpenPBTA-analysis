@@ -1,5 +1,5 @@
 ################## PURPOSE #################
-# This script is to remove duplicated coordinates reulted from Bedtools merging
+# This script removes duplicated coordinates that resulted from Bedtools merging
 # and removes NULLs if they are not stand-alone values in a cell
 
 ################# ASSUMPTION ###############
