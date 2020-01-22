@@ -60,3 +60,8 @@ Rscript -e "rmarkdown::render('05-HGG-molecular-subtyping-fusion.Rmd', clean = T
 
 # Run notebook that cleans the gene expression data
 Rscript -e "rmarkdown::render('06-HGG-molecular-subtyping-gene-expression.Rmd', clean = TRUE)"
+
+
+#### 1p/19q co-deleted oligodendrogliomas notebook -----------------------------
+
+Rscript -e "rmarkdown::render('08-1p19q-codeleted-oligodendrogliomas.Rmd', clean = TRUE)"
