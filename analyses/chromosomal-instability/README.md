@@ -28,7 +28,7 @@ bash run-breakpoint-analysis.sh
 CNV and SV data are used to calculate chromosomal instability.
 Then both CNV and SV range datasets are transformed into single breakpoint data.
 Breakpoint density is calculated by creating bins using `GenomicRanges::tileGenome` using a one Mb window size.
-The `plot-chromosomal-instability.Rmd` returns chromosomal break plots for each sample and `short_histology` group in the `plots` directory.
+The `01-plot-chromosomal-instability.Rmd` returns chromosomal break plots for each sample and `short_histology` group in the `plots` directory.
 
 ## Output
 
