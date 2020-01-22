@@ -215,14 +215,14 @@ sv_breaks <- data.frame(
     samples %in% common_samples
   )
 
-############################## Find common breaks ##############################
-# Make an common breaks data.frame.
-common_breaks <- dplyr::bind_rows(sv_breaks, cnv_breaks) %>%
+############################## Create union of breaks ##########################
+# Make an union of breaks data.frame.
+union_of_breaks <- dplyr::bind_rows(sv_breaks, cnv_breaks) %>%
   dplyr::distinct(samples, chrom, coord, .keep_all = TRUE)
 
 # Put all the breaks into a list.
 breaks_list <- list(
-  common_breaks = common_breaks,
+  union_of_breaks = union_of_breaks,
   cnv_breaks = cnv_breaks,
   sv_breaks = sv_breaks
 )

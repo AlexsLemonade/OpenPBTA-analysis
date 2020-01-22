@@ -78,7 +78,7 @@ breaks_list <- readr::read_rds(file.path("breakpoint-data", "breaks_lists.RDS"))
 Get a vector of the biospecimen IDs. 
 
 ```{r}
-common_samples <- unique(breaks_list$common_breaks$samples)
+common_samples <- unique(breaks_list$union_of_breaks$samples)
 ```
 
 Set up chromosome size data. 
@@ -107,7 +107,7 @@ For each sample, we will bin the genome and count how many chromosome breaks
 occur for each bin, given the given `bin_size`.
 
 We will run this for each sample and return a list of three `GenomicRanges` objects:
-1) `common_breaks` contains the combined break counts for both SV and CNV break data.   
+1) `union_of_breaks` contains the combined break counts for both SV and CNV break data.   
 2) `cnv_breaks` contains the number of break counts for CNV.   
 3) `sv_breaks` contains the number of break counts for SV.  
 
@@ -151,7 +151,7 @@ Make chromosome labeling `HeatmapAnnotation` object.
 
 ```{r}
 # Extract chromosome names from a GenomicRanges object
-chr_labels <- sample_densities[[1]]$common_breaks@seqnames
+chr_labels <- sample_densities[[1]]$union_of_breaks@seqnames
 chr_labels <- paste0("chr", as.factor(chr_labels))
 
 # Make a key for assigning alternating colors to the chromosomes
@@ -232,20 +232,20 @@ breaks_heatmap <- function(data_name) {
 }
 ```
 
-## Common breaks heatmap
+## Union of breaks heatmap
 
 ```{r}
-common_heatmap <- breaks_heatmap(data_name = "common_breaks")
+union_of_heatmap <- breaks_heatmap(data_name = "union_of_breaks")
 
 # Save plot as PNG
-png(file.path(plots_dir, paste0("common_breaks_heatmap.png")),
+png(file.path(plots_dir, paste0("union_of_breaks_heatmap.png")),
   width = 1200, height = 900, units = "px"
 )
-common_heatmap
+union_of_heatmap
 dev.off()
 
 # Print out here
-common_heatmap
+union_of_heatmap
 ```
 
 ## CNV breaks heatmap
