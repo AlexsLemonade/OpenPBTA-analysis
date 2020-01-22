@@ -126,7 +126,9 @@ rule generate_callable:
     output:
         "ref/cnv_callable.bed"
     shell:
-        "bedtools complement  -i {input.bed} -g {input.genome} > {output}"
+        "bedtools complement  -i {input.bed} -g {input.genome} "
+        # remove alt chromosomes
+        "| grep -v '_'> {output}"
 
 
 rule filter_excluded:
