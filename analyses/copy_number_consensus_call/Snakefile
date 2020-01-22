@@ -195,10 +195,17 @@ rule combine_merge_paired_cnv:
 
 rule remove_inset_calls:
     ## Sometimes calls are inset within one another: one del call within the range of a dup call, or vice versa.
-    ## To fix this, we will subtract del calls from dup calls, which splits them and removes the overlap.
-    ## We then need to add back any dup calls that may have been fully enclosed in del calls, which we do
-    ## by intesecting dup and del calls, then intersecting those intersection calls with the original dup calls,
-    ## requiring full reciprocal coverage (-r 1) to find only those dup calls that are in the original set and NOT covered by a del call
+    ## To fix this, we will use bedtools to subtract del calls from dup calls, which splits the dup into two (or more)
+    ## segments and removes the overlap.
+    ## This subtraction will remove any dup segments that lay entirely within a del segment, so those need to be added back.
+    ## We do this by finding the intersection of all dup and del segments, which includes regions where both are present, 
+    ## but may remove the annotation of which original segment was 'fully enclosed' by a segment of the opposite call. 
+    ## To restore that inforamtion we intersect the original dup calls with those intersection calls,
+    ## requiring full reciprocal coverage (-r 1) to find only those dup calls that are in the original set and NOT enclosed by a del call
+    ##
+    ## The entire process is also repeated with the opposite order, to caputure all del calls, then the results are merged
+    ## separately for dups and dels.
+    
     input:
         dup_merge = "../../scratch/interim/{sample}.dup.merged.bed",
         del_merge = "../../scratch/interim/{sample}.del.merged.bed"
