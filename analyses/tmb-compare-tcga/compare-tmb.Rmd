@@ -61,42 +61,7 @@ if (!dir.exists(plots_dir)) {
 Custom function for plotting the TMB. 
 
 ```{r}
-sina_plot <- function(data, colour = NULL, x_axis = "short_histology", title) {
-  # Given a data.frame with metadata and `tmb` information, make a sina plot from it
-  #
-  # Args:
-  #
-  # data : a data.frame with `tmb` as columns
-  # x_axis : A name of a column in data that you would like to make the x_axis from
-  #           Given as a character string. 
-  # colour: the color you would like the points to be
-  # title: The title for the plot. To be passed to `ggtitle`
-  #
-  # Returns:
-  #   A sina plot by histology group
-  data %>%
-    # eval parse bit will treat the variable as the text it has stored
-    ggplot2::ggplot(ggplot2::aes(x = reorder(eval(parse(text = x_axis)), tmb, mean), 
-                                 y = log10(tmb))) +
-    ggforce::geom_sina(color = colour, alpha = 0.3, maxwidth = 0.9) +
-    ggplot2::stat_summary(
-      fun.y = mean, fun.ymin = mean, fun.ymax = mean,
-      geom = "crossbar",
-      width = 0.95, size = 0.15
-    ) +
-    ggplot2::theme_classic() +
-    ggplot2::ylab("log10 (Number of Mutations per Mb)") +
-    ggplot2::xlab("") +
-    ggplot2::ylim(c(-3, 3)) +
-    ggplot2::theme(
-      axis.text.x = ggplot2::element_text(angle = 60, hjust = 1),
-      legend.position = "none"
-    ) +
-    ggplot2::ggtitle(title) + 
-    ggplot2::theme(
-    panel.grid.major.x = ggplot2::element_line(colour = c("gray93", "white"), size = 9)
-)
-}
+source(file.path("util", "sina_plot.R"))
 ```
 
 ## Set up consensus SNV PBTA data
@@ -222,7 +187,12 @@ Plot the TCGA data.
 
 ```{r}
 # Make TCGA plot and get rid of y axis
-tcga_plot <- sina_plot(tmb_tcga, colour = "#3BC8A2", title = "TCGA (Adult)") +
+tcga_plot <- sina_plot(tmb_tcga, 
+                       colour = "#3BC8A2", 
+                       x_axis = "short_histology",  
+                       y_axis = "tmb",
+                       title = "TCGA (Adult)", 
+                       y_label = "log10 (Number of Mutations per Mb)") +
   ggplot2::theme(
     axis.title.y = ggplot2::element_blank(),
     axis.text.y = ggplot2::element_blank(),
@@ -236,7 +206,12 @@ Plot the PBTA data.
 
 ```{r}
 # Make the plot for PBTA
-pbta_plot <- sina_plot(tmb_pbta, colour = "#630882", title = "PBTA")
+pbta_plot <- sina_plot(tmb_pbta, 
+                       colour = "#630882", 
+                       x_axis = "short_histology",  
+                       y_axis = "tmb",
+                       title = "PBTA", 
+                       y_label = "log10 (Number of Mutations per Mb)")
 ```
 
 Use cowplot to put them together. 
