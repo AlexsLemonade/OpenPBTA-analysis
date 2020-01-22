@@ -20,7 +20,7 @@ A segfile for downstream processing:
 
 And a bed file of regions that were excluded from calls (see step 7)
 
-* `ref/cnv_excluded.bed`
+* `ref/cnv_excluded_regions.bed`
 
 ## Running the pipeline
 
