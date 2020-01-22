@@ -205,7 +205,6 @@ rule remove_inset_calls:
     ##
     ## The entire process is also repeated with the opposite order, to caputure all del calls, then the results are merged
     ## separately for dups and dels.
-    
     input:
         dup_merge = "../../scratch/interim/{sample}.dup.merged.bed",
         del_merge = "../../scratch/interim/{sample}.del.merged.bed"
@@ -213,16 +212,20 @@ rule remove_inset_calls:
         dup_merge = "../../scratch/endpoints/{sample}.dup.merged.final.bed",
         del_merge = "../../scratch/endpoints/{sample}.del.merged.final.bed"
     shell:
+        # subtract deletion segments from duplications (and vice versa)
         "bedtools subtract -a {input.dup_merge} -b {input.del_merge}"
         " > ../../scratch/interim/{wildcards.sample}.dup-del.bed &&"
         "bedtools subtract -a {input.del_merge} -b {input.dup_merge}"
         " > ../../scratch/interim/{wildcards.sample}.del-dup.bed &&"
+        # intersect dups and dels to find regions where both where present
         "bedtools intersect -a {input.dup_merge} -b {input.del_merge}"
         " > ../../scratch/interim/{wildcards.sample}.deldup_intersect.bed &&"
+        # find which of the intersection regions came from a duplication segment, then which came from deletions
         "bedtools intersect -f 1 -r -a {input.dup_merge} -b ../../scratch/interim/{wildcards.sample}.deldup_intersect.bed"
         " >  ../../scratch/interim/{wildcards.sample}.dup_intersect.bed &&"
         "bedtools intersect -f 1 -r -a {input.del_merge} -b ../../scratch/interim/{wildcards.sample}.deldup_intersect.bed"
         " >  ../../scratch/interim/{wildcards.sample}.del_intersect.bed &&"
+        # merge dups and dels separately
         "cat ../../scratch/interim/{wildcards.sample}.dup-del.bed ../../scratch/interim/{wildcards.sample}.dup_intersect.bed"
         " > {output.dup_merge} &&"
         "cat ../../scratch/interim/{wildcards.sample}.del-dup.bed ../../scratch/interim/{wildcards.sample}.del_intersect.bed"
