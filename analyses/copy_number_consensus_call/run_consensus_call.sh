@@ -17,7 +17,8 @@ python3 scripts/merged_to_individual_files.py \
     --manta ../../data/pbta-sv-manta.tsv.gz \
     --cnvkit ../../data/pbta-cnv-cnvkit.seg.gz \
     --freec ../../data/pbta-cnv-controlfreec.tsv.gz \
-    --snake ../../scratch/config_snakemake.yaml
+    --snake ../../scratch/config_snakemake.yaml \
+    --badcalls results/bad_calls.tsv
 
 
 ## Run the Snakemake pipeline
