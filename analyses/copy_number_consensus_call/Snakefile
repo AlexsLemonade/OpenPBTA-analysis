@@ -131,8 +131,9 @@ rule generate_callable:
     shell:
         "awk '($3-$2) >= {params.min_size}' {input.bed}  "
         "| bedtools complement -i stdin -g {input.genome} "
-        # remove alt chromosomes
-        "| grep -v '_'> {output}"
+        # remove alt chromosomes and mitochondria
+        "| grep -v '_' "
+        "| grep -v 'chrM' > {output}"
 
 
 rule filter_excluded:
