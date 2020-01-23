@@ -89,6 +89,9 @@ Get a vector of the biospecimen IDs.
 ```{r}
 cnv_df <- data.table::fread(
   file.path(data_dir, "pbta-cnv-cnvkit.seg.gz"), data.table = FALSE) 
+
+sv_df <- data.table::fread(
+  file.path(data_dir, "pbta-sv-manta.tsv.gz"), data.table = FALSE) 
 ```
 
 ### Session Info

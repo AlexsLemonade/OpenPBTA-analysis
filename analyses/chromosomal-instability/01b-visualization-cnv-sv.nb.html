@@ -2948,22 +2948,12 @@ div.tocify {
 <h3>Set Up</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBQYXRoIHRvIGRhdGEgZGlyZWN0b3J5XG5kYXRhX2RpciA8LSBmaWxlLnBhdGgoXFwuLlxcLCBcXC4uXFwsIFxcZGF0YVxcKVxuc2NyYXRjaF9kaXIgPC0gZmlsZS5wYXRoKFxcLi5cXCwgXFwuLlxcLCBcXHNjcmF0Y2hcXClcblxuIyBQYXRoIHRvIG91dHB1dCBkaXJlY3RvcnlcbnBsb3RzX2RpciA8LSBcXHBsb3RzXFxcblxuIyBQYXRoIHRvIHR1bW9yIHR5cGUgcGxvdHMgb3V0cHV0IGRpcmVjdG9yeVxuaGlzdF9wbG90c19kaXIgPC0gZmlsZS5wYXRoKHBsb3RzX2RpciwgXFx0dW1vci10eXBlXFwpXG5cbiMgQ3JlYXRlIHRoZSBoaXN0X3Bsb3RzX2RpciAgaWYgaXQgZG9lcyBub3QgZXhpc3RcbmlmICghZGlyLmV4aXN0cyhoaXN0X3Bsb3RzX2RpcikpIHtcbiAgZGlyLmNyZWF0ZShoaXN0X3Bsb3RzX2RpciwgcmVjdXJzaXZlID0gVFJVRSlcbn1cbmBgYFxuYGBgIn0= -->
-<p><code>r</code>r # Path to data directory data_dir &lt;- file.path(.., .., ) scratch_dir &lt;- file.path(.., .., )</p>
-</div>
-<div id="path-to-output-directory" class="section level1">
-<h1>Path to output directory</h1>
-<p>plots_dir &lt;- <br />
-</p>
-</div>
-<div id="path-to-tumor-type-plots-output-directory" class="section level1">
-<h1>Path to tumor type plots output directory</h1>
-<p>hist_plots_dir &lt;- file.path(plots_dir, -type)</p>
-</div>
-<div id="create-the-hist_plots_dir-if-it-does-not-exist" class="section level1">
-<h1>Create the hist_plots_dir if it does not exist</h1>
-<p>if (!dir.exists(hist_plots_dir)) { dir.create(hist_plots_dir, recursive = TRUE) }</p>
-<pre><code></code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTZXQgc2VlZCBzbyBoZWF0bWFwcyB0dXJuIG91dCB0aGUgc2FtZVxuc2V0LnNlZWQoMjAyMClcblxuIyBNYWdyaXR0ciBwaXBlXG5gJT4lYCA8LSBkcGx5cjo6YCU+JWBcbmBgYCJ9 -->
+<pre class="r"><code># Set seed so heatmaps turn out the same
+set.seed(2020)
+
+# Magrittr pipe
+`%&gt;%` &lt;- dplyr::`%&gt;%`</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2976,13 +2966,26 @@ div.tocify {
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+</div>
 <div id="directories-and-files" class="section level3">
 <h3>Directories and Files</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuYnJlYWtzX2RlbnNpdGllc19kZiA8LSByZWFkcjo6cmVhZF90c3YoXG4gIGZpbGUucGF0aChcXGJyZWFrcG9pbnQtZGF0YVxcLCBcXHVuaW9uX29mX2JyZWFrc19kZW5zaXRpZXMudHN2XFwpKSAlPiUgXG4gICMgQWRkIG9uIHRoZSBzaG9ydCBoaXN0b2xvZ3kgY29sdW1uIGZyb20gdGhlIG1ldGFkYXRhIGZvciBwbG90dGluZyBwdXJwb3Nlc1xuICBkcGx5cjo6aW5uZXJfam9pbihtZXRhZGF0YSAlPiUgZHBseXI6OnNlbGVjdChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lELCBzaG9ydF9oaXN0b2xvZ3kpLCBcbiAgICAgICAgICAgICAgICAgICAgYnkgPSBjKFxcc2FtcGxlc1xcID0gXFxLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEXFwpKVxuYGBgXG5gYGAifQ== -->
-<p><code>r</code>r breaks_densities_df &lt;- readr::read_tsv( file.path(-data, _of_breaks_densities.tsv)) %&gt;% # Add on the short histology column from the metadata for plotting purposes dplyr::inner_join(metadata %&gt;% dplyr::select(Kids_First_Biospecimen_ID, short_histology), by = c( = _First_Biospecimen_ID))</p>
-<pre><code></code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBQYXRoIHRvIGRhdGEgZGlyZWN0b3J5XG5kYXRhX2RpciA8LSBmaWxlLnBhdGgoXCIuLlwiLCBcIi4uXCIsIFwiZGF0YVwiKVxuc2NyYXRjaF9kaXIgPC0gZmlsZS5wYXRoKFwiLi5cIiwgXCIuLlwiLCBcInNjcmF0Y2hcIilcblxuIyBQYXRoIHRvIG91dHB1dCBkaXJlY3RvcnlcbnBsb3RzX2RpciA8LSBcInBsb3RzXCJcblxuIyBQYXRoIHRvIHR1bW9yIHR5cGUgcGxvdHMgb3V0cHV0IGRpcmVjdG9yeVxuaGlzdF9wbG90c19kaXIgPC0gZmlsZS5wYXRoKHBsb3RzX2RpciwgXCJ0dW1vci10eXBlXCIpXG5cbiMgQ3JlYXRlIHRoZSBoaXN0X3Bsb3RzX2RpciAgaWYgaXQgZG9lcyBub3QgZXhpc3RcbmlmICghZGlyLmV4aXN0cyhoaXN0X3Bsb3RzX2RpcikpIHtcbiAgZGlyLmNyZWF0ZShoaXN0X3Bsb3RzX2RpciwgcmVjdXJzaXZlID0gVFJVRSlcbn1cbmBgYCJ9 -->
+<pre class="r"><code># Path to data directory
+data_dir &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;data&quot;)
+scratch_dir &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;scratch&quot;)
+
+# Path to output directory
+plots_dir &lt;- &quot;plots&quot;
+
+# Path to tumor type plots output directory
+hist_plots_dir &lt;- file.path(plots_dir, &quot;tumor-type&quot;)
+
+# Create the hist_plots_dir  if it does not exist
+if (!dir.exists(hist_plots_dir)) {
+  dir.create(hist_plots_dir, recursive = TRUE)
+}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2992,46 +2995,78 @@ div.tocify {
 <p>Set up metadata</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuYnJlYWtzX2xpc3QgPC0gcmVhZHI6OnJlYWRfcmRzKGZpbGUucGF0aChcXGJyZWFrcG9pbnQtZGF0YVxcLCBcXGJyZWFrc19saXN0cy5SRFNcXCkpXG5gYGBcbmBgYCJ9 -->
-<p><code>r</code>r breaks_list &lt;- readr::read_rds(file.path(-data, _lists.RDS))</p>
-<pre><code></code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBSZWFkIGluIHRoZSBtZXRhZGF0YVxubWV0YWRhdGEgPC0gcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpciwgXCJwYnRhLWhpc3RvbG9naWVzLnRzdlwiKSlcbmBgYCJ9 -->
+<pre class="r"><code># Read in the metadata
+metadata &lt;- readr::read_tsv(file.path(data_dir, &quot;pbta-histologies.tsv&quot;))</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgT1NfZGF5cyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBhZ2VfbGFzdF91cGRhdGVfZGF5cyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBub3JtYWxfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfcGxvaWR5ID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIG1vbGVjdWxhcl9zdWJ0eXBlID0gXHUwMDFiWzMzbWNvbF9sb2dpY2FsKClcdTAwMWJbMzltXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbjIyMSBwYXJzaW5nIGZhaWx1cmVzLlxuIHJvdyAgICAgICAgICAgICAgIGNvbCAgICAgICAgICAgZXhwZWN0ZWQgYWN0dWFsICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZmlsZVxuMjYwNiBtb2xlY3VsYXJfc3VidHlwZSAxLzAvVC9GL1RSVUUvRkFMU0UgR3JvdXAzICcuLi8uLi9kYXRhL3BidGEtaGlzdG9sb2dpZXMudHN2J1xuMjYwNyBtb2xlY3VsYXJfc3VidHlwZSAxLzAvVC9GL1RSVUUvRkFMU0UgR3JvdXA0ICcuLi8uLi9kYXRhL3BidGEtaGlzdG9sb2dpZXMudHN2J1xuMjYwOCBtb2xlY3VsYXJfc3VidHlwZSAxLzAvVC9GL1RSVUUvRkFMU0UgR3JvdXAzICcuLi8uLi9kYXRhL3BidGEtaGlzdG9sb2dpZXMudHN2J1xuMjYwOSBtb2xlY3VsYXJfc3VidHlwZSAxLzAvVC9GL1RSVUUvRkFMU0UgR3JvdXAzICcuLi8uLi9kYXRhL3BidGEtaGlzdG9sb2dpZXMudHN2J1xuMjYxMCBtb2xlY3VsYXJfc3VidHlwZSAxLzAvVC9GL1RSVUUvRkFMU0UgR3JvdXAzICcuLi8uLi9kYXRhL3BidGEtaGlzdG9sb2dpZXMudHN2J1xuLi4uLiAuLi4uLi4uLi4uLi4uLi4uLiAuLi4uLi4uLi4uLi4uLi4uLi4gLi4uLi4uIC4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLlxuU2VlIHByb2JsZW1zKC4uLikgZm9yIG1vcmUgZGV0YWlscy5cbiJ9 -->
+<pre><code>Parsed with column specification:
+cols(
+  .default = col_character(),
+  OS_days = [32mcol_double()[39m,
+  age_last_update_days = [32mcol_double()[39m,
+  normal_fraction = [32mcol_double()[39m,
+  tumor_fraction = [32mcol_double()[39m,
+  tumor_ploidy = [32mcol_double()[39m,
+  molecular_subtype = [33mcol_logical()[39m
+)
+See spec(...) for full column specifications.
+221 parsing failures.
+ row               col           expected actual                              file
+2606 molecular_subtype 1/0/T/F/TRUE/FALSE Group3 '../../data/pbta-histologies.tsv'
+2607 molecular_subtype 1/0/T/F/TRUE/FALSE Group4 '../../data/pbta-histologies.tsv'
+2608 molecular_subtype 1/0/T/F/TRUE/FALSE Group3 '../../data/pbta-histologies.tsv'
+2609 molecular_subtype 1/0/T/F/TRUE/FALSE Group3 '../../data/pbta-histologies.tsv'
+2610 molecular_subtype 1/0/T/F/TRUE/FALSE Group3 '../../data/pbta-histologies.tsv'
+.... ................. .................. ...... .................................
+See problems(...) for more details.</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Read in the union breaks densities TSV that was made by the 00-setup-breakpoint-data.R script.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuY29tbW9uX3NhbXBsZXMgPC0gdW5pcXVlKGJyZWFrc19saXN0JHVuaW9uX29mX2JyZWFrcyRzYW1wbGVzKVxuYGBgXG5gYGAifQ== -->
-<p><code>r</code>r common_samples &lt;- unique(breaks_list<span class="math inline">\(union_of_breaks\)</span>samples)</p>
-<pre><code></code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYnJlYWtzX2RlbnNpdGllc19kZiA8LSByZWFkcjo6cmVhZF90c3YoXG4gIGZpbGUucGF0aChcImJyZWFrcG9pbnQtZGF0YVwiLCBcInVuaW9uX29mX2JyZWFrc19kZW5zaXRpZXMudHN2XCIpKSAlPiUgXG4gICMgQWRkIG9uIHRoZSBzaG9ydCBoaXN0b2xvZ3kgY29sdW1uIGZyb20gdGhlIG1ldGFkYXRhIGZvciBwbG90dGluZyBwdXJwb3Nlc1xuICBkcGx5cjo6aW5uZXJfam9pbihtZXRhZGF0YSAlPiUgZHBseXI6OnNlbGVjdChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lELCBzaG9ydF9oaXN0b2xvZ3kpLCBcbiAgICAgICAgICAgICAgICAgICAgYnkgPSBjKFwic2FtcGxlc1wiID0gXCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEXCIpKVxuYGBgIn0= -->
+<pre class="r"><code>breaks_densities_df &lt;- readr::read_tsv(
+  file.path(&quot;breakpoint-data&quot;, &quot;union_of_breaks_densities.tsv&quot;)) %&gt;% 
+  # Add on the short histology column from the metadata for plotting purposes
+  dplyr::inner_join(metadata %&gt;% dplyr::select(Kids_First_Biospecimen_ID, short_histology), 
+                    by = c(&quot;samples&quot; = &quot;Kids_First_Biospecimen_ID&quot;))</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBzYW1wbGVzID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIGV4cGVyaW1lbnRhbF9zdHJhdGVneSA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBnZW5vbWVfc2l6ZSA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBicmVha3NfY291bnQgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgYnJlYWtzX2RlbnNpdHkgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bVxuKVxuIn0= -->
+<pre><code>Parsed with column specification:
+cols(
+  samples = [31mcol_character()[39m,
+  experimental_strategy = [31mcol_character()[39m,
+  genome_size = [32mcol_double()[39m,
+  breaks_count = [32mcol_double()[39m,
+  breaks_density = [32mcol_double()[39m
+)</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Load in the previously formatted breakpoint data.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBTZXQgdXAgQ2hyIHNpemVzXG5jaHJfc2l6ZXMgPC0gcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpciwgXFxXR1MuaGczOC5zdHJlbGthMi51bnBhZGRlZC5iZWRcXCksXG4gIGNvbF9uYW1lcyA9IEZBTFNFXG4pICU+JVxuICAjIFJlZm9ybWF0IHRoZSBjaHJvbW9zb21lIHZhcmlhYmxlIHRvIGRyb3AgdGhlIFxcY2hyXFxcbiAgZHBseXI6Om11dGF0ZShYMSA9IGZhY3Rvcihnc3ViKFxcY2hyXFwsIFxcXFwsIFgxKSxcbiAgICBsZXZlbHMgPSBjKDE6MjIsIFxcWFxcLCBcXFlcXCwgXFxNXFwpXG4gICkpICU+JVxuICAjIFJlbW92ZSBzZXggY2hyb21vc29tZXNcbiAgZHBseXI6OmZpbHRlcighKFgxICVpbiUgYyhcXFhcXCwgXFxZXFwsIFxcTVxcKSkpXG4jIE1ha2UgY2hyb21vc29tZSBzaXplIG5hbWVkIHZlY3RvclxuY2hyX3NpemVzX3ZlY3RvciA8LSBjaHJfc2l6ZXMkWDNcbm5hbWVzKGNocl9zaXplc192ZWN0b3IpIDwtIGNocl9zaXplcyRYMVxuYGBgXG5gYGAifQ== -->
-<p><code>r</code>r # Set up Chr sizes chr_sizes &lt;- readr::read_tsv(file.path(data_dir, .hg38.strelka2.unpadded.bed), col_names = FALSE ) %&gt;% # Reformat the chromosome variable to drop the <br />
-dplyr::mutate(X1 = factor(gsub(, \, X1), levels = c(1:22, , , ) )) %&gt;% # Remove sex chromosomes dplyr::filter(!(X1 %in% c(, , ))) # Make chromosome size named vector chr_sizes_vector &lt;- chr_sizes<span class="math inline">\(X3 names(chr_sizes_vector) &lt;- chr_sizes\)</span>X1</p>
-<pre><code></code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYnJlYWtzX2xpc3QgPC0gcmVhZHI6OnJlYWRfcmRzKGZpbGUucGF0aChcImJyZWFrcG9pbnQtZGF0YVwiLCBcImJyZWFrc19saXN0cy5SRFNcIikpXG5gYGAifQ== -->
+<pre class="r"><code>breaks_list &lt;- readr::read_rds(file.path(&quot;breakpoint-data&quot;, &quot;breaks_lists.RDS&quot;))</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiY2Fubm90IG9wZW4gY29tcHJlc3NlZCBmaWxlICdicmVha3BvaW50LWRhdGEvYnJlYWtzX2xpc3RzLlJEUycsIHByb2JhYmxlIHJlYXNvbiAnTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeSdFcnJvciBpbiBnemZpbGUoZmlsZSwgXCJyYlwiKSA6IGNhbm5vdCBvcGVuIHRoZSBjb25uZWN0aW9uXG4ifQ== -->
+<pre><code>cannot open compressed file 'breakpoint-data/breaks_lists.RDS', probable reason 'No such file or directory'Error in gzfile(file, &quot;rb&quot;) : cannot open the connection</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Get a vector of the biospecimen IDs.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY252X2RmIDwtIGRhdGEudGFibGU6OmZyZWFkKGZpbGUucGF0aChkYXRhX2RpciwgXCJwYnRhLWNudi1jbnZraXQuc2VnLmd6XCIpLCBkYXRhLnRhYmxlID0gRkFMU0UpICU+JVxuICAjIFJlZm9ybWF0IHRoZSBjaHJvbW9zb21lIHZhcmlhYmxlIHRvIGRyb3AgdGhlIFwiY2hyXCJcbiAgZHBseXI6Om11dGF0ZShjaHJvbSA9IGZhY3Rvcihnc3ViKFwiY2hyXCIsIFwiXCIsIGNocm9tKSxcbiAgICBsZXZlbHMgPSBjKDE6MjIsIFwiWFwiLCBcIllcIilcbiAgKSlcblxuYGBgIn0= -->
-<pre class="r"><code>cnv_df &lt;- data.table::fread(file.path(data_dir, &quot;pbta-cnv-cnvkit.seg.gz&quot;), data.table = FALSE) %&gt;%
-  # Reformat the chromosome variable to drop the &quot;chr&quot;
-  dplyr::mutate(chrom = factor(gsub(&quot;chr&quot;, &quot;&quot;, chrom),
-    levels = c(1:22, &quot;X&quot;, &quot;Y&quot;)
-  ))
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3ZfZGYgPC0gZGF0YS50YWJsZTo6ZnJlYWQoXG4gIGZpbGUucGF0aChkYXRhX2RpciwgXCJwYnRhLXN2LW1hbnRhLnNlZy5nelwiKSwgZGF0YS50YWJsZSA9IEZBTFNFKSBcblxuYGBgIn0= -->
+<pre class="r"><code>sv_df &lt;- data.table::fread(
+  file.path(data_dir, &quot;pbta-sv-manta.seg.gz&quot;), data.table = FALSE) 
 </code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ1Iub28nOlxuICBtZXRob2QgICAgICAgIGZyb20gICAgICAgXG4gIHRocm93LmRlZmF1bHQgUi5tZXRob2RzUzNcbiJ9 -->
-<pre><code>Registered S3 method overwritten by 'R.oo':
-  method        from       
-  throw.default R.methodsS3</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gZGF0YS50YWJsZTo6ZnJlYWQoZmlsZS5wYXRoKGRhdGFfZGlyLCBcInBidGEtc3YtbWFudGEuc2VnLmd6XCIpLCAgOiBcbiAgRmlsZSAnLi4vLi4vZGF0YS9wYnRhLXN2LW1hbnRhLnNlZy5neicgZG9lcyBub3QgZXhpc3Qgb3IgaXMgbm9uLXJlYWRhYmxlLiBnZXR3ZCgpPT0nL2hvbWUvcnN0dWRpby9raXRlbWF0aWMvT3BlblBCVEEtYW5hbHlzaXMvYW5hbHlzZXMvY2hyb21vc29tYWwtaW5zdGFiaWxpdHknXG4ifQ== -->
+<pre><code>Error in data.table::fread(file.path(data_dir, &quot;pbta-sv-manta.seg.gz&quot;),  : 
+  File '../../data/pbta-sv-manta.seg.gz' does not exist or is non-readable. getwd()=='/home/rstudio/kitematic/OpenPBTA-analysis/analyses/chromosomal-instability'</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3047,9 +3082,8 @@ dplyr::mutate(X1 = factor(gsub(, \, X1), levels = c(1:22, , , ) )) %&gt;% # Remo
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
-</div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiVmlzdWFsaXplIFNWIGFuZCBDTlYgZGF0YSIKb3V0cHV0OiAgIAogIGh0bWxfbm90ZWJvb2s6IAogICAgdG9jOiB0cnVlCiAgICB0b2NfZmxvYXQ6IHRydWUKYXV0aG9yOiBDYW5kYWNlIFNhdm9uZW4gZm9yIEFMU0YgLSBDQ0RMCmRhdGU6IDIwMjAKLS0tCgpUbyBnZW5lcmF0ZSBjaXJjdWxhciBwbG90cyB0aGF0IGludGVncmF0ZSBDTlYgYW5kIFNWIGRhdGEuIFNwZWNpZmljYWxseSwgaXQgbWlnaHQgYmUgdXNlZnVsIGZvciB0aGUgZm9sbG93aW5nIGNhc2VzOgoKRGlzcGxheSBleGFtcGxlcyBvZiBjaHJvbW90aHJpcHNpcyBwZXIgIzI3IChjb21tZW50KQpUaGVyZSBhcmUgc29tZSBzdWJ0eXBlIHRpY2tldHMgdGhhdCB3b3VsZCBiZW5lZml0IGZyb20gc3VjaCBhIHZpc3VhbGl6YXRpb24gKGUuZy4sICJbU1QtRVBOLVlBUDFdIEZvY2FsIDExcSBtb3N0IGZyZXF1ZW50IENOQSwgd2l0aCByZXN0IG9mIGdlbm9tZSBzdGFibGUiICMyNDUpCkxpa2VseSBtb3N0IHVzZWZ1bCB0byBleGFtaW5lIHRyYW5zbG9jYXRpb25zClRoZSBpbXBsZW1lbnRhdGlvbiBzaG91bGQgZm9jdXMgb24gZmxleGliaWxpdHkgYW5kIGV4dGVuc2liaWxpdHkgYmVjYXVzZSB3ZSBkb24ndCBrbm93IHdoYXQgImZpbmFsIiBvdXRwdXQgd2lsbCBiZSByZXF1aXJlZCBmb3IgdGhlIHByb2plY3QuCiMjIyBVc2FnZQoKVGhpcyBub3RlYm9vayBjYW4gYmUgcnVuIHZpYSB0aGUgY29tbWFuZCBsaW5lIGZyb20gdGhlIHRvcCBkaXJlY3Rvcnkgb2YgdGhlIApyZXBvc2l0b3J5IGFzIGZvbGxvd3M6CgpgYGAKUnNjcmlwdCAtZSAicm1hcmtkb3duOjpyZW5kZXIoJ2FuYWx5c2VzL2Nocm9tb3NvbWFsLWluc3RhYmlsaXR5LzAxLXBsb3QtY2hyb21vc29tYWwtaW5zdGFiaWxpdHkuUm1kJywgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsZWFuID0gVFJVRSkiCmBgYAoKIyMjIFNldCBVcAoKYGBge3J9CiMgU2V0IHNlZWQgc28gaGVhdG1hcHMgdHVybiBvdXQgdGhlIHNhbWUKc2V0LnNlZWQoMjAyMCkKCiMgTWFncml0dHIgcGlwZQpgJT4lYCA8LSBkcGx5cjo6YCU+JWAKYGBgCgpSZWFkIGluIHRoZSBjdXN0b20gZnVuY3Rpb25zIG5lZWRlZCBmb3IgdGhpcyBhbmFseXNpcy4gCgpgYGB7cn0Kc291cmNlKGZpbGUucGF0aCgidXRpbCIsICJjaXJjb3MtcGxvdHMuUiIpKQpgYGAKCiMjIyBEaXJlY3RvcmllcyBhbmQgRmlsZXMKCmBgYHtyfQojIFBhdGggdG8gZGF0YSBkaXJlY3RvcnkKZGF0YV9kaXIgPC0gZmlsZS5wYXRoKCIuLiIsICIuLiIsICJkYXRhIikKc2NyYXRjaF9kaXIgPC0gZmlsZS5wYXRoKCIuLiIsICIuLiIsICJzY3JhdGNoIikKCiMgUGF0aCB0byBvdXRwdXQgZGlyZWN0b3J5CnBsb3RzX2RpciA8LSAicGxvdHMiCgojIFBhdGggdG8gdHVtb3IgdHlwZSBwbG90cyBvdXRwdXQgZGlyZWN0b3J5Cmhpc3RfcGxvdHNfZGlyIDwtIGZpbGUucGF0aChwbG90c19kaXIsICJ0dW1vci10eXBlIikKCiMgQ3JlYXRlIHRoZSBoaXN0X3Bsb3RzX2RpciAgaWYgaXQgZG9lcyBub3QgZXhpc3QKaWYgKCFkaXIuZXhpc3RzKGhpc3RfcGxvdHNfZGlyKSkgewogIGRpci5jcmVhdGUoaGlzdF9wbG90c19kaXIsIHJlY3Vyc2l2ZSA9IFRSVUUpCn0KYGBgCgojIyMgUmVhZCBpbiBkYXRhIAoKU2V0IHVwIG1ldGFkYXRhCgpgYGB7cn0KIyBSZWFkIGluIHRoZSBtZXRhZGF0YQptZXRhZGF0YSA8LSByZWFkcjo6cmVhZF90c3YoZmlsZS5wYXRoKGRhdGFfZGlyLCAicGJ0YS1oaXN0b2xvZ2llcy50c3YiKSkKYGBgCgpSZWFkIGluIHRoZSB1bmlvbiBicmVha3MgZGVuc2l0aWVzIFRTViB0aGF0IHdhcyBtYWRlIGJ5IHRoZSAwMC1zZXR1cC1icmVha3BvaW50LWRhdGEuUiBzY3JpcHQuIAoKYGBge3J9CmJyZWFrc19kZW5zaXRpZXNfZGYgPC0gcmVhZHI6OnJlYWRfdHN2KAogIGZpbGUucGF0aCgiYnJlYWtwb2ludC1kYXRhIiwgInVuaW9uX29mX2JyZWFrc19kZW5zaXRpZXMudHN2IikpICU+JSAKICAjIEFkZCBvbiB0aGUgc2hvcnQgaGlzdG9sb2d5IGNvbHVtbiBmcm9tIHRoZSBtZXRhZGF0YSBmb3IgcGxvdHRpbmcgcHVycG9zZXMKICBkcGx5cjo6aW5uZXJfam9pbihtZXRhZGF0YSAlPiUgZHBseXI6OnNlbGVjdChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lELCBzaG9ydF9oaXN0b2xvZ3kpLCAKICAgICAgICAgICAgICAgICAgICBieSA9IGMoInNhbXBsZXMiID0gIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQiKSkKYGBgCgpMb2FkIGluIHRoZSBwcmV2aW91c2x5IGZvcm1hdHRlZCBicmVha3BvaW50IGRhdGEuIAoKYGBge3J9CmJyZWFrc19saXN0IDwtIHJlYWRyOjpyZWFkX3JkcyhmaWxlLnBhdGgoImJyZWFrcG9pbnQtZGF0YSIsICJicmVha3NfbGlzdHMuUkRTIikpCmBgYAoKR2V0IGEgdmVjdG9yIG9mIHRoZSBiaW9zcGVjaW1lbiBJRHMuIAoKYGBge3J9CmNudl9kZiA8LSBkYXRhLnRhYmxlOjpmcmVhZCgKICBmaWxlLnBhdGgoZGF0YV9kaXIsICJwYnRhLWNudi1jbnZraXQuc2VnLmd6IiksIGRhdGEudGFibGUgPSBGQUxTRSkgCmBgYAoKIyMjIFNlc3Npb24gSW5mbwoKYGBge3J9CnNlc3Npb25JbmZvKCkKYGBgCgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiVmlzdWFsaXplIFNWIGFuZCBDTlYgZGF0YSIKb3V0cHV0OiAgIAogIGh0bWxfbm90ZWJvb2s6IAogICAgdG9jOiB0cnVlCiAgICB0b2NfZmxvYXQ6IHRydWUKYXV0aG9yOiBDYW5kYWNlIFNhdm9uZW4gZm9yIEFMU0YgLSBDQ0RMCmRhdGU6IDIwMjAKLS0tCgpUbyBnZW5lcmF0ZSBjaXJjdWxhciBwbG90cyB0aGF0IGludGVncmF0ZSBDTlYgYW5kIFNWIGRhdGEuIFNwZWNpZmljYWxseSwgaXQgbWlnaHQgYmUgdXNlZnVsIGZvciB0aGUgZm9sbG93aW5nIGNhc2VzOgoKRGlzcGxheSBleGFtcGxlcyBvZiBjaHJvbW90aHJpcHNpcyBwZXIgIzI3IChjb21tZW50KQpUaGVyZSBhcmUgc29tZSBzdWJ0eXBlIHRpY2tldHMgdGhhdCB3b3VsZCBiZW5lZml0IGZyb20gc3VjaCBhIHZpc3VhbGl6YXRpb24gKGUuZy4sICJbU1QtRVBOLVlBUDFdIEZvY2FsIDExcSBtb3N0IGZyZXF1ZW50IENOQSwgd2l0aCByZXN0IG9mIGdlbm9tZSBzdGFibGUiICMyNDUpCkxpa2VseSBtb3N0IHVzZWZ1bCB0byBleGFtaW5lIHRyYW5zbG9jYXRpb25zClRoZSBpbXBsZW1lbnRhdGlvbiBzaG91bGQgZm9jdXMgb24gZmxleGliaWxpdHkgYW5kIGV4dGVuc2liaWxpdHkgYmVjYXVzZSB3ZSBkb24ndCBrbm93IHdoYXQgImZpbmFsIiBvdXRwdXQgd2lsbCBiZSByZXF1aXJlZCBmb3IgdGhlIHByb2plY3QuCiMjIyBVc2FnZQoKVGhpcyBub3RlYm9vayBjYW4gYmUgcnVuIHZpYSB0aGUgY29tbWFuZCBsaW5lIGZyb20gdGhlIHRvcCBkaXJlY3Rvcnkgb2YgdGhlIApyZXBvc2l0b3J5IGFzIGZvbGxvd3M6CgpgYGAKUnNjcmlwdCAtZSAicm1hcmtkb3duOjpyZW5kZXIoJ2FuYWx5c2VzL2Nocm9tb3NvbWFsLWluc3RhYmlsaXR5LzAxLXBsb3QtY2hyb21vc29tYWwtaW5zdGFiaWxpdHkuUm1kJywgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsZWFuID0gVFJVRSkiCmBgYAoKIyMjIFNldCBVcAoKYGBge3J9CiMgU2V0IHNlZWQgc28gaGVhdG1hcHMgdHVybiBvdXQgdGhlIHNhbWUKc2V0LnNlZWQoMjAyMCkKCiMgTWFncml0dHIgcGlwZQpgJT4lYCA8LSBkcGx5cjo6YCU+JWAKYGBgCgpSZWFkIGluIHRoZSBjdXN0b20gZnVuY3Rpb25zIG5lZWRlZCBmb3IgdGhpcyBhbmFseXNpcy4gCgpgYGB7cn0Kc291cmNlKGZpbGUucGF0aCgidXRpbCIsICJjaXJjb3MtcGxvdHMuUiIpKQpgYGAKCiMjIyBEaXJlY3RvcmllcyBhbmQgRmlsZXMKCmBgYHtyfQojIFBhdGggdG8gZGF0YSBkaXJlY3RvcnkKZGF0YV9kaXIgPC0gZmlsZS5wYXRoKCIuLiIsICIuLiIsICJkYXRhIikKc2NyYXRjaF9kaXIgPC0gZmlsZS5wYXRoKCIuLiIsICIuLiIsICJzY3JhdGNoIikKCiMgUGF0aCB0byBvdXRwdXQgZGlyZWN0b3J5CnBsb3RzX2RpciA8LSAicGxvdHMiCgojIFBhdGggdG8gdHVtb3IgdHlwZSBwbG90cyBvdXRwdXQgZGlyZWN0b3J5Cmhpc3RfcGxvdHNfZGlyIDwtIGZpbGUucGF0aChwbG90c19kaXIsICJ0dW1vci10eXBlIikKCiMgQ3JlYXRlIHRoZSBoaXN0X3Bsb3RzX2RpciAgaWYgaXQgZG9lcyBub3QgZXhpc3QKaWYgKCFkaXIuZXhpc3RzKGhpc3RfcGxvdHNfZGlyKSkgewogIGRpci5jcmVhdGUoaGlzdF9wbG90c19kaXIsIHJlY3Vyc2l2ZSA9IFRSVUUpCn0KYGBgCgojIyMgUmVhZCBpbiBkYXRhIAoKU2V0IHVwIG1ldGFkYXRhCgpgYGB7cn0KIyBSZWFkIGluIHRoZSBtZXRhZGF0YQptZXRhZGF0YSA8LSByZWFkcjo6cmVhZF90c3YoZmlsZS5wYXRoKGRhdGFfZGlyLCAicGJ0YS1oaXN0b2xvZ2llcy50c3YiKSkKYGBgCgpSZWFkIGluIHRoZSB1bmlvbiBicmVha3MgZGVuc2l0aWVzIFRTViB0aGF0IHdhcyBtYWRlIGJ5IHRoZSAwMC1zZXR1cC1icmVha3BvaW50LWRhdGEuUiBzY3JpcHQuIAoKYGBge3J9CmJyZWFrc19kZW5zaXRpZXNfZGYgPC0gcmVhZHI6OnJlYWRfdHN2KAogIGZpbGUucGF0aCgiYnJlYWtwb2ludC1kYXRhIiwgInVuaW9uX29mX2JyZWFrc19kZW5zaXRpZXMudHN2IikpICU+JSAKICAjIEFkZCBvbiB0aGUgc2hvcnQgaGlzdG9sb2d5IGNvbHVtbiBmcm9tIHRoZSBtZXRhZGF0YSBmb3IgcGxvdHRpbmcgcHVycG9zZXMKICBkcGx5cjo6aW5uZXJfam9pbihtZXRhZGF0YSAlPiUgZHBseXI6OnNlbGVjdChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lELCBzaG9ydF9oaXN0b2xvZ3kpLCAKICAgICAgICAgICAgICAgICAgICBieSA9IGMoInNhbXBsZXMiID0gIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQiKSkKYGBgCgpMb2FkIGluIHRoZSBwcmV2aW91c2x5IGZvcm1hdHRlZCBicmVha3BvaW50IGRhdGEuIAoKYGBge3J9CmJyZWFrc19saXN0IDwtIHJlYWRyOjpyZWFkX3JkcyhmaWxlLnBhdGgoImJyZWFrcG9pbnQtZGF0YSIsICJicmVha3NfbGlzdHMuUkRTIikpCmBgYAoKR2V0IGEgdmVjdG9yIG9mIHRoZSBiaW9zcGVjaW1lbiBJRHMuIAoKYGBge3J9CmNudl9kZiA8LSBkYXRhLnRhYmxlOjpmcmVhZCgKICBmaWxlLnBhdGgoZGF0YV9kaXIsICJwYnRhLWNudi1jbnZraXQuc2VnLmd6IiksIGRhdGEudGFibGUgPSBGQUxTRSkgCgpzdl9kZiA8LSBkYXRhLnRhYmxlOjpmcmVhZCgKICBmaWxlLnBhdGgoZGF0YV9kaXIsICJwYnRhLXN2LW1hbnRhLnRzdi5neiIpLCBkYXRhLnRhYmxlID0gRkFMU0UpIApgYGAKCiMjIyBTZXNzaW9uIEluZm8KCmBgYHtyfQpzZXNzaW9uSW5mbygpCmBgYAoK</div>
 
 
 </div>
