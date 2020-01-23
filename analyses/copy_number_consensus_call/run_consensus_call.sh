@@ -40,10 +40,12 @@ snakemake \
     -s Snakefile \
     --configfile ../../scratch/config_snakemake.yaml \
     -j \
-    --restart-times 2 
+    --restart-times 2
 
 
 ##
 Rscript scripts/bed_to_segfile.R \
   -i results/cnv_consensus.tsv \
-  -o results/pbta-cnv-consensus.seg
+  -o results/pbta-cnv-consensus.seg \
+  -n results/cnv_neutral.bed \
+  -u results/uncalled_samples.tsv

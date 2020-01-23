@@ -141,7 +141,7 @@ uncalled <- readr::read_tsv(opts$uncalled_file)
 # as these can not have any CN calls by definition, so we don't want to 
 # call them as unchanged, just missing (they won't appear in the cnv file)
 exclude_list <- uncalled %>% 
-  dplyr::group_by(specimen)%>%
+  dplyr::group_by(sample)%>%
   dplyr::tally() %>%
   dplyr::filter(n > 1) %>%
   dplyr::pull(sample)
@@ -152,8 +152,8 @@ out_neutral <- neutral %>%
   dplyr::select(ID = specimen,
                 chrom = chrom,
                 loc.start = start, 
-                loc.end = end,
-                num.mark = NA,
+                loc.end = end) %>%
+  dplyr::mutate(num.mark = NA,
                 seg.mean = NA,
                 copy.num = 2)
     
@@ -171,7 +171,7 @@ out_cnvs <- cnvs %>%
                 seg.mean = segmean,
                 copy.num = copynum)
 
-out_table <- bind_rows(out_neutral, out_cnvs) %>%
-  arrange(ID, chrom, loc.start)
+out_table <- dplyr::bind_rows(out_neutral, out_cnvs) %>%
+  dplyr::arrange(ID, chrom, loc.start)
 
 readr::write_tsv(out_table, opts$output_file)
