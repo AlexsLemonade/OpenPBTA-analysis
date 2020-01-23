@@ -119,27 +119,28 @@ breaks_cdf <- breaks_densities_df %>%
   dplyr::group_by(short_histology, add = TRUE) %>% 
   dplyr::filter(dplyr::n() > 5) %>% 
   # Calculate histology group mean
-  dplyr::mutate(hist_mean = mean(breaks_density)) %>% 
+  dplyr::mutate(hist_mean = mean(breaks_density), 
+                hist_rank = rank(breaks_density)/dplyr::n()) %>% 
   dplyr::ungroup() %>% 
   # Now we will plot these as cummulative distribution plots
-  ggplot2::ggplot(ggplot2::aes(color = short_histology, x = breaks_density)) +
-  ggplot2::geom_point(stat = "ecdf") +
+  ggplot2::ggplot(ggplot2::aes(x = hist_rank, y = breaks_density, 
+                               color = short_histology)) +
+  ggplot2::geom_point() +
   # Add summary line for mean
-  ggplot2::geom_vline(ggplot2::aes(xintercept = hist_mean)) + 
+  ggplot2::geom_hline(ggplot2::aes(yintercept = hist_mean)) + 
   # Separate by histology
   ggplot2::facet_wrap(~short_histology, nrow = 2) + 
   ggplot2::theme_classic() +
-  ggplot2::xlab("Chromosomal Breaks per Mb") +
-  ggplot2::ylab("Rank") +
+  ggplot2::xlab("Rank") +
+  ggplot2::ylab("Chromosomal Breaks per Mb") +
   # Transform to log10 make non-log y-axis labels
-  ggplot2::scale_x_continuous(trans = "log10", breaks =  c(0, 1, 10, 30)) +
+  ggplot2::scale_y_continuous(trans = "log10", breaks =  c(0, 1, 10, 30)) +
   ggplot2::theme(legend.position = "none") +
-  ggplot2::coord_flip() +
   # Get rid of x-axis ticks
   ggplot2::theme(
     axis.text.x = ggplot2::element_blank(),
     axis.ticks.x = ggplot2::element_blank(), 
-    strip.text = ggplot2::element_text(size = 4))
+    strip.text = ggplot2::element_text(size = 4)) 
 
 # Save the plot to a png
 ggplot2::ggsave(file.path(plots_dir, "breaks_cdf_plot.png"), 
