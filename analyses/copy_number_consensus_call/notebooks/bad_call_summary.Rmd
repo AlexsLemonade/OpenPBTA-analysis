@@ -1,0 +1,110 @@
+---
+title: "Bad Call Summaries"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+There are some callers that are thrown out from the analysis due to having too many CNV calls.
+Lets look at that in more depth.
+
+```{r setup}
+library(dplyr)
+```
+
+
+First we will just read in the original cnv files so we can characterize this.
+
+```{r}
+datadir <- file.path("..", "..", "..", "data")
+cnvkit <- readr::read_tsv(file.path(datadir, "pbta-cnv-cnvkit.seg.gz"))
+freec <- readr::read_tsv(file.path(datadir, "pbta-cnv-controlfreec.tsv.gz"))
+manta <- readr::read_tsv(file.path(datadir, "pbta-sv-manta.tsv.gz"))
+
+metadata <- readr::read_tsv(file.path(datadir, "pbta-histologies.tsv"))
+```
+
+Count numbers of rows in each table for each sample
+```{r}
+cnvkit_summary <- cnvkit %>%
+  rename(Biospecimen = ID) %>%
+  group_by(Biospecimen) %>%
+  tally(name = "n.cnvkit")
+```
+
+```{r}
+freec_summary <- freec %>%
+  rename(Biospecimen = Kids_First_Biospecimen_ID) %>%
+  group_by(Biospecimen) %>%
+  tally(name = "n.freec")
+```
+
+```{r}
+manta_summary <- manta %>%
+  rename(Biospecimen = Kids.First.Biospecimen.ID.Tumor) %>%
+  group_by(Biospecimen) %>%
+  tally(name = "n.manta")
+```
+
+Put the summaries together
+```{r}
+cnv_counts <- cnvkit_summary %>%
+  full_join(freec_summary) %>%
+  full_join(manta_summary)
+
+#change NAs to 0
+cnv_counts <- data.frame(cnv_counts)
+cnv_counts[is.na(cnv_counts)] <- 0
+```
+
+correlations among methods
+```{r}
+cor(cnv_counts[,-1], method = "spearman")
+```
+
+
+# Drop summary
+
+```{r}
+threshold = 2500
+cnv_counts <- cnv_counts %>%
+  mutate(drop_cnvkit = n.cnvkit > threshold, 
+         drop_freec = n.freec > threshold, 
+         drop_manta = n.manta > threshold)
+```
+
+
+```{r}
+drop_summary <- summarize(cnv_counts,
+  cnvkit_drops = sum(drop_cnvkit), 
+  freec_drops = sum(drop_freec),
+  manta_drops = sum(drop_manta),
+  cnvkit_freec_drops = sum(drop_cnvkit & drop_freec),
+  cnvkit_manta_drops = sum(drop_cnvkit & drop_manta),
+  freec_manta_drops = sum(drop_freec & drop_manta),
+  drop_all = sum(drop_cnvkit & drop_freec & drop_manta)
+)
+```
+
+add metadata
+```{r}
+cnv_counts <- cnv_counts %>%
+  left_join(metadata, by = c("Biospecimen" = "Kids_First_Biospecimen_ID"))
+```
+
+
+```{r group by histology}
+drop_summary_groups <- cnv_counts %>%
+  group_by(broad_histology) %>%
+  summarize(
+    n = n(),
+    cnvkit_drops = sum(drop_cnvkit), 
+    freec_drops = sum(drop_freec),
+    manta_drops = sum(drop_manta),
+    cnvkit_freec_drops = sum(drop_cnvkit & drop_freec),
+    cnvkit_manta_drops = sum(drop_cnvkit & drop_manta),
+    freec_manta_drops = sum(drop_freec & drop_manta),
+    drop_all = sum(drop_cnvkit & drop_freec & drop_manta)
+  )
+```
+
