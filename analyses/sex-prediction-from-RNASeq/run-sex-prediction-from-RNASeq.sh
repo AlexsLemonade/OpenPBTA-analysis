@@ -157,7 +157,6 @@ done
 
 Rscript -e "rmarkdown::render('04-present_results.Rmd', 'html_document', params = list(results_dir = '${RESULTS}', \
       model_dir = '${MODELS}', \
-      seed = '${SEED}', \
       train_target_column = '${TRAIN_TARGET_COLUMN}', \
       target_columns = '${targetColumns_to_pass}'))"
 
