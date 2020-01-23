@@ -38,7 +38,7 @@ cn_df <-
                             "analyses",
                             "focal-cn-file-preparation",
                             "results",
-                            "controlfreec_annotated_cn_autosomes.tsv.gz"))
+                            "controlfreec_annotated_cn_autosomes.tsv.bz2"))
 
 # Read in RNA-seq expression data
 rsem_expression_polyA <-
