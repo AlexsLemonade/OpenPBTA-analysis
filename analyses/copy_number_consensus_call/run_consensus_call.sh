@@ -18,7 +18,7 @@ python3 scripts/merged_to_individual_files.py \
     --cnvkit ../../data/pbta-cnv-cnvkit.seg.gz \
     --freec ../../data/pbta-cnv-controlfreec.tsv.gz \
     --snake ../../scratch/config_snakemake.yaml \
-    --badcalls results/bad_calls.tsv
+    --uncalled results/uncalled_samples.tsv
 
 
 ## Run the Snakemake pipeline
@@ -31,7 +31,6 @@ python3 scripts/merged_to_individual_files.py \
 ## The snakemake flag options are:
 ## -s : Point to the location of the Snakemake file
 ## --configfile : Point to the location of the config file
-## -d : Specifying working directory. The "." after -d is to show the working dir is at the current folder
 ## -j : Set available cores, in this case, when no number is provided, thus use all available cores
 ## -p : Print shell command that will be executed
 ## --restart-times : Define the times a job restarts when run into an error before giving up
@@ -40,11 +39,8 @@ python3 scripts/merged_to_individual_files.py \
 snakemake \
     -s Snakefile \
     --configfile ../../scratch/config_snakemake.yaml \
-    -d . \
     -j \
-    -p \
-    --restart-times 3 \
-    --latency-wait 30
+    --restart-times 2 
 
 
 ##

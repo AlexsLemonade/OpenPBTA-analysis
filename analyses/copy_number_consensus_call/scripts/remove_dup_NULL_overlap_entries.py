@@ -52,6 +52,8 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument('--file', required=True,
                     help='path to the file that needs duplicates and NULLs removed')
+parser.add_argument('--uncalled', required=False,
+                    help='path to table of uncalled samples/')
 
 args = parser.parse_args()
 

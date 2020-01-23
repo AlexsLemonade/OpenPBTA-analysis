@@ -120,13 +120,17 @@ rule generate_excluded:
 
 rule generate_callable:
     # Invert the excluded regions to generate a file of regions potentially called.
+    # First filters out small regions <200Kb
     input:
         bed="ref/cnv_excluded_regions.bed",
         genome="ref/hg38.chrom.sizes"
     output:
         "ref/cnv_callable.bed"
+    params:
+        min_size = 200000
     shell:
-        "bedtools complement  -i {input.bed} -g {input.genome} "
+        "awk '($3-$2) >= {params.min_size}' {input.bed}  "
+        "| bedtools complement -i stdin -g {input.genome} "
         # remove alt chromosomes
         "| grep -v '_'> {output}"
 
@@ -297,13 +301,11 @@ rule merge_all:
        " > {output}"
 
 
-
-
-
 rule clean_output:
     input:
         script=os.path.join(config["scripts"], "remove_dup_NULL_overlap_entries.py"),
-        cnv_file ="../../scratch/endpoints/all_CNVs_combined.tsv"
+        cnv_file ="../../scratch/endpoints/all_CNVs_combined.tsv",
+        removed_file = "results/removed_calls.tsv"
     output:
         "results/cnv_consensus.tsv"
     shell:

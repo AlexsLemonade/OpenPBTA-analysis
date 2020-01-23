@@ -38,8 +38,8 @@ parser.add_argument('--freec', required=True,
                     help='path to the freec file')
 parser.add_argument('--snake', required=True,
                     help='path new snakemake file')
-parser.add_argument('--badcalls', required=True,
-                    help='path for the bad calls list')
+parser.add_argument('--uncalled', required=True,
+                    help='path for the table of sample-caller outputs removed and not called for too many CNVs')
 parser.add_argument('--maxcnvs', default=2500,
                     help='samples with more than 2500 cnvs are set to blank')
 parser.add_argument('--cnvsize', default=3000,
@@ -90,21 +90,21 @@ for sample in all_samples:
 
     ## Write cnvs to file if less than maxcnvs / otherwise empty file and add to bad_calls list
     with open(os.path.join(manta_d, sample + MANTA_EXT), 'w') as file_out:
-        if manta_export.shape[0] <= args.maxcnvs:
+        if manta_export.shape[0] <= args.maxcnvs and manta_export.shape[0] > 0:
             manta_export.to_csv(file_out, sep='\t', index=False)
         else:
             bad_calls.append(sample + "\tmanta\n")
 
     cnvkit_export = merged_cnvkit.loc[merged_cnvkit[CNVKIT_ID_HEADER] == sample]
     with open(os.path.join(cnvkit_d, sample + CNVKIT_EXT), 'w') as file_out:
-        if cnvkit_export.shape[0] <= args.maxcnvs:
+        if cnvkit_export.shape[0] <= args.maxcnvs and cnvkit_export.shape[0] > 0:
             cnvkit_export.to_csv(file_out, sep='\t', index=False)
         else:
             bad_calls.append(sample + "\tcnvkit\n")
 
     freec_export = merged_freec.loc[merged_freec[FREEC_ID_HEADER] == sample]
     with open(os.path.join(freec_d, sample + FREEC_EXT), 'w') as file_out:
-        if freec_export.shape[0] <= args.maxcnvs:
+        if freec_export.shape[0] <= args.maxcnvs and freec_export.shape[0] > 0:
             freec_export.to_csv(file_out, sep='\t', index=False)
         else:
             bad_calls.append(sample + "\tfreec\n")
@@ -129,6 +129,6 @@ with open(args.snake, 'w') as file:
     file.write('freec_pval: ' + str(args.freecp) + '\n')
 
 ## Write out the bad calls file
-with open(args.badcalls, 'w') as file:
+with open(args.uncalled, 'w') as file:
     file.write("sample\tcaller\n")
     file.writelines(bad_calls)
