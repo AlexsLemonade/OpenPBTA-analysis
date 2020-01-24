@@ -10,17 +10,12 @@ This analysis uses information from the following files generated from the 3 cal
 * `pbta-cnv-controlfreec.tsv.gz`
 * `pbta-sv-manta.tsv.gz`
 
-The analysis produces an output file that includes the original calls used for each consensus call:
+The analysis produces the following output files
 
-* `results/cnv_consensus.tsv`
-
-A segfile for downstream processing:
-
-* `results/pbta-cnv-consensus.seg`
-
-And a bed file of regions that were excluded from calls (see step 7)
-
-* `ref/cnv_excluded_regions.bed`
+* `results/cnv_consensus.tsv`:  A tab separated file out consense copy number variants, including the original calls used for each consensus call
+* `results/pbta-cnv-consensus.seg`: A `.seg` formatted file for downstream processing
+* `ref/cnv_excluded_regions.bed`: A `.bed` file of error-prone regions that were filtered from copy number calls
+* `ref/cnv_callable.bed`: A `.bed` file of regions considered "callable" by the analysis pipeline
 
 ## Running the pipeline
 
