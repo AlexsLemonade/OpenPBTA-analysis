@@ -317,7 +317,7 @@ rule make_segfile:
         script= os.path.join(config["scripts"], "bed_to_segfile.R"),
         consensus = "results/cnv_consensus.tsv",
         neutral = "results/cnv_neutral.bed",
-        uncalled = "results/cnv_consensus.tsv"
+        uncalled = "results/uncalled_samples.tsv"
     output:
         "results/pbta-cnv-consensus.seg"
     shell:
