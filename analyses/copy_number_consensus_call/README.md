@@ -29,7 +29,24 @@ Go to OpenPBTA-analysis/analyses/copy_number_consensus_call and run `bash run_co
 
 ## Methods
 
-This pipeline revolves around the use of Snakemake to run analysis for each patient sample. The overview of the steps are as followed:
+### Assayed Regions
+
+Regions of the genome with a high potential for error are first defined by merging the set telomeric, centromeric and heterochromatic regions with regions around immunoglobulins and segmentmental duplications.
+The input files for this step are described in `scripts/prepare_blacklist_files.sh` and include:
+
+* `ref/centromeres.bed`
+* `ref/heterochromatin.bed`
+* `ref/immunoglobulin_regions.bed`
+* `ref/segmental_dups.bed`
+* `ref/telomeres.bed`
+
+The final set of merged excluded regions are placed in the file `ref/cnv_excluded_regions.bed`
+
+In addition, a file of the genomic regions that we deem "callable" is created at `ref/cnv_callable.bed` as the complement of the excluded regions, after removing exclusions smaller than 200kb.
+
+### Consensus CNV creation
+
+The per-sample pipeline revolves around the use of Snakemake to run analysis for each patient sample. The overview of the steps are as followed:
 
 1) Parse through the 3 input files and put CNVs of the **same caller and sample** in the same files.
 2) Remove any sample/caller combination files with **more than 2500** CNVs called.
@@ -43,15 +60,18 @@ This pipeline revolves around the use of Snakemake to run analysis for each pati
 9) Reformat the columns of the files (So the info are easier to read)
 10) **Call consensus** by comparing CNVs from 2 call methods at a time. 
 
-Since there are 3 callers, there were 3 comparisons: `manta-cnvkit`, `manta-freec`, and `cnvkit-freec`. If a CNV from 1 caller **overlaps 50% or more** with at least 1 CNV from another caller, the common region of the overlapping CNV would be the new CONSENSUS CNV. 
+Since there are 3 callers, there were 3 comparisons: `manta-cnvkit`, `manta-freec`, and `cnvkit-freec`. If a CNV from 1 caller **overlaps 50% or more** with at least 1 CNV from another caller, the common region of the overlapping CNV would be the new CONSENSUS CNV.
 
 11) **Sort and merge** the CNVs from the comparison pairs ,`manta-cnvkit` `manta-freec` `cnvkit-freec`, together into 1 file
 12) Resolve overlapping segments where duplications are embedded within larger deletion segments, or deletions within duplications.
 13) After every samples' consensus CNVs were called, **combine all merged files** from step 10 and output to `results/cnv_consensus.tsv`
-14) The `results/cnv_consensus.tsv` is translated into a `pbta-cnv-consensus.seg` file in the same format as `pbta-cnv-cnvkit.seg.gz`.
-When a consensus CNV contains from multiple source CNV segments, we take the mean of the CNVkit `seg.mean` values from the source segments, weighted by segment length.
-If no CNVkit CNV was included, the value for this column is NA.
+14) The `results/cnv_consensus.tsv` is translated into a `results/pbta-cnv-consensus.seg` file in the same format as `pbta-cnv-cnvkit.seg.gz`, including all samples where at least two callers passed quality filtering.
+When a consensus segment is derived from multiple source segments, we take the mean of the CNVkit `seg.mean` values from the source segments, weighted by segment length.
+If no CNVkit variant was included, the value for this column is NA.
 The `copy.num` column is the weighted median of CNVkit segment values where they exist, or Control-FREEC values in the absence of CNVkit data.
+Because some software (notably GISTIC) requires all samples to have the same regions called, the copy number variants from `cnv_consensus.tsv` are supplementented with "neutral" segments where no call was made.
+These include all non-variant regions present in `ref/cnv_callable.bed`
+The neutral regions are assigned copy.num 2, except on chrX and chrY, where the copy number is left NA.
 
 ## Example Output File
 
