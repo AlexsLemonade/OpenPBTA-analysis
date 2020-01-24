@@ -1,0 +1,256 @@
+---
+title: "Project specific filtering"
+output: html_notebook
+params:
+  histology:
+    label: "Clinical file" 
+    value: data/pbta-histologies.tsv
+    input: file
+  group:
+    label: "Grouping variable"
+    value: broad_histology
+    input: string
+  dataStranded:
+    label: "Input filtered fusion dataframe"
+    value: scratch/standardFusionStrandedExp_QC_expression_GTExComparison_annotated.RDS
+    input: file
+  dataPolya:
+    label: "Input filtered fusion dataframe"
+    value: scratch/standardFusionPolyaExp_QC_expression_GTExComparison_annotated.RDS
+    input: file    
+  numCaller:
+    label: "Least Number of callers to have called fusion"
+    value: 2
+    input: integer
+  numSample:
+    label: "Least Number of samples to have fusion per group"
+    value: 2
+    input: integer
+  numGroup:
+    label: "Max number of groups found in"
+    value: 1
+    input: integer
+  limitMultiFused:
+    label: "Max number of times gene can be fused per sample"
+    value: 5
+    input: integer  
+  outputfolder:
+    label: "results folder for *tsv files"
+    value: results
+    input: string     
+
+    
+---
+
+K S Gaonkar
+
+Filtered Fusions:
+1. In-frame fusions is called in atleast 2 samples per histology OR
+2. In-frame fusions is called in atleast 2 callers 
+AND
+Filtered-fusions found in more than 1 histology OR
+Filtered-fusion doesn't have multi-fused gene (more than 5 times in sample)
+
+Putative Driver:
+Filtering for general cancer specific genes
+Fusions with genes in either onco
+
+This notebook assumes you are in OpenPBTA-analysis project folder structure.
+
+
+```{r}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+#load required packages
+suppressPackageStartupMessages(library("readr"))
+suppressPackageStartupMessages(library("tidyverse"))
+suppressPackageStartupMessages(library("reshape2"))
+suppressPackageStartupMessages(library("qdapRegex"))
+
+#read filtFusion files
+strandedQCGeneFiltered_filtFusion<-readRDS(file.path(root_dir, params$dataStranded))
+polyaQCGeneFiltered_filtFusion<-readRDS(file.path(root_dir, params$dataPolya))
+
+# results folder
+outputfolder<-params$outputfolder
+QCGeneFiltered_filtFusion<-rbind(strandedQCGeneFiltered_filtFusion,polyaQCGeneFiltered_filtFusion)
+
+write.table(QCGeneFiltered_filtFusion, file.path(outputfolder, "FilteredFusion.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
+
+# subset for recurrent fusion detection and multifused genes QC
+fusion_calls<-unique(QCGeneFiltered_filtFusion)
+# remove distance from intergenic fusions
+fusion_calls$FusionName<-unlist(lapply(fusion_calls$FusionName,function(x) rm_between(x, "(", ")", extract = F)))
+
+
+# get grouping column id
+group<-params$group
+
+# get histology file
+clinical<-read.delim(file.path(root_dir, params$histology), stringsAsFactors = FALSE)
+clinical<-clinical[,c("Kids_First_Biospecimen_ID","Kids_First_Participant_ID","broad_histology")]
+
+# Least number of callers
+numCaller<-params$numCaller
+
+# Least number of samples per group
+numSample<-params$numSample
+
+# Max number of groups 
+numGroup<-params$numGroup
+
+# Max number of times gene can be fused per sample
+limitMultiFused<-params$limitMultiFused
+
+
+print("Raw calls from STARfusion and Arriba for PBTA")
+table(fusion_calls$Caller)
+```
+
+
+```{r}
+
+# aggregate caller 
+fusion_caller.summary <- fusion_calls %>%
+  dplyr::filter(Fusion_Type != "other") %>%
+  dplyr::select(Sample,FusionName,Caller,Fusion_Type) %>%
+  group_by(FusionName, Sample ,Fusion_Type) %>%
+  unique() %>%
+  dplyr::mutate(CalledBy = toString(Caller), caller.count = n()) %>%
+  dplyr::select(-Caller)
+
+# remove fusion within local rearrangement
+fusion_calls <- fusion_calls %>%
+  # remove local rearrangement/adjacent genes
+  dplyr::filter(!grepl("LOCAL_REARRANGEMENT|LOCAL_INVERSION",annots))
+
+#to add aggregated caller from fusion_caller.summary
+fusion_calls<-fusion_calls %>% 
+  dplyr::filter(Fusion_Type != "other") %>% dplyr::select(-Caller,-annots) %>%
+  left_join(fusion_caller.summary,by=(c("Sample","FusionName","Fusion_Type"))) %>%
+  dplyr::select(-JunctionReadCount,-SpanningFragCount,-Confidence,-LeftBreakpoint,-RightBreakpoint) %>% unique()
+
+#merge with histology file
+fusion_calls<-merge(fusion_calls,clinical,by.x="Sample",by.y="Kids_First_Biospecimen_ID")
+
+
+
+
+
+
+```
+
+
+```{r}
+# Gene fusion should be in-frame
+# AND
+#
+# 1. Called by at least n callers
+fusion_calls.summary <- fusion_calls %>%
+  dplyr::filter(caller.count >= numCaller) %>%
+  unique() %>%
+  mutate(note=paste0("Called by",numCaller, "callers")) %>%
+  as.data.frame()
+
+# OR
+# 2. Found in at least n samples in each group
+sample.count <- fusion_calls %>%
+  dplyr::filter(Fusion_Type != "other") %>%
+  dplyr::select(FusionName, Sample, !!as.name(group),-Fusion_Type) %>%
+  unique() %>%
+  group_by(FusionName, !!as.name(group)) %>%
+  dplyr::mutate(sample.count = n(),Sample = toString(Sample)) %>%
+  dplyr::filter(sample.count > numSample) %>%
+  unique() %>%
+  mutate(note=paste0("Found in atleast ",numSample, " samples in a group")) %>%
+  as.data.frame()
+
+
+```
+
+
+
+```{r}
+#filter QCGeneFiltered_filtFusion to keep recurrent fusions from above sample.count and fusion_calls.summary
+
+QCGeneFiltered_recFusion<-fusion_calls %>%
+  dplyr::filter(FusionName %in% unique(c(sample.count$FusionName,fusion_calls.summary$FusionName)))
+
+```
+
+
+
+
+
+```{r}
+# remove fusions that are in > numGroup
+group.count <- fusion_calls %>%
+  dplyr::select(FusionName, !!as.name(group)) %>%
+  unique() %>%
+  group_by(FusionName) %>%
+  dplyr::mutate(group.ct = n(),Sample = toString(!!(as.name(group)))) %>%
+  dplyr::filter(group.ct >numGroup)
+
+
+# remove multi-fused genes
+fusion_recurrent5_per_sample <- fusion_calls  %>%
+  # We want to keep track of the gene symbols for each sample-fusion pair
+  dplyr::select(Sample, FusionName, Gene1A, Gene1B, Gene2A, Gene2B) %>%
+  # We want a single column that contains the gene symbols
+  tidyr::gather(Gene1A, Gene1B, Gene2A, Gene2B,
+                key = gene_position, value = GeneSymbol) %>%
+  # Remove columns without gene symbols
+  dplyr::filter(GeneSymbol != "") %>%
+  dplyr::arrange(Sample, FusionName) %>%
+  # Retain only distinct rows
+  dplyr::distinct() %>%
+  group_by(Sample,GeneSymbol) %>% 
+  dplyr::summarise(Gene.ct = n()) %>% 
+  dplyr::filter(Gene.ct>limitMultiFused) %>%
+  mutate(note=paste0("multfused " ,limitMultiFused, " times per sample"))
+
+
+
+```
+
+
+```{r}
+
+# filter QCGeneFiltered_recFusion to remove fusions found in more than 1 group 
+
+recurrent_symbols <- fusion_recurrent5_per_sample$GeneSymbol
+
+QCGeneFiltered_recFusionUniq<-QCGeneFiltered_recFusion %>%
+  dplyr::filter(!FusionName %in% group.count$FusionName) %>%
+  dplyr::filter(!Gene1A %in% recurrent_symbols |
+                  !Gene2A %in% recurrent_symbols |
+                  !Gene1B %in% recurrent_symbols | 
+                  !Gene2B %in% recurrent_symbols) %>%
+  unique()
+
+
+
+
+```
+
+
+
+
+
+```{r}
+
+# filter for putative driver genes and mutifused genes per sample
+putative_driver_annotated_fusions <- fusion_calls %>%
+  dplyr::filter(!is.na(Gene1A_anno) | !is.na(Gene1B_anno) | !is.na(Gene2A_anno) | !is.na(Gene2B_anno)) %>%
+  unique()
+  
+# merge putative annotated oncogenic and scavenged back non-oncogenic annotated, recurrent fusions
+putative_driver_fusions<-rbind(QCGeneFiltered_recFusionUniq,putative_driver_annotated_fusions) %>%
+  unique() %>% select (-broad_histology) %>%
+  as.data.frame()
+
+write.table(putative_driver_fusions,file.path(outputfolder,"pbta-fusion-putative-oncogenic.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
+
+```
+
+
+

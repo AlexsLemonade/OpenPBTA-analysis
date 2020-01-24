@@ -1,0 +1,155 @@
+---
+title: "SHH TP53 Molecular Subtyping"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Candace Savonen for ALSF CCDL
+date: 2019
+---
+
+This notebook [molecularly subtypes Medulloblastoma samples into their TP53 status](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/247). 
+
+## Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+`Rscript -e "rmarkdown::render('analyses/molecular-subtyping-SHH-tp53/SHH-tp53-molecular-subtyping-data-prep.Rmd', clean = TRUE)"`
+
+## Set Up
+
+```{r}
+# Get `magrittr` pipe
+`%>%` <- dplyr::`%>%`
+```
+
+### Directories and Files
+
+```{r}
+# File path to data directory
+data_dir <- file.path("..", "..", "data")
+
+# File path to results directory
+results_dir <- "results"
+
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+```
+
+## Read in the data
+
+Read in metadata and isolate to medulloblastoma samples.
+
+```{r}
+metadata <-
+  readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"),
+                  col_types = readr::cols(
+                    molecular_subtype = readr::col_character() 
+                  )) %>%
+  dplyr::filter(disease_type_new == "Medulloblastoma")
+
+# Check summary of subtypes here
+summary(as.factor(metadata$molecular_subtype))
+```
+
+Propagate the `molecular_subtype` labels to biospecimens of the same `sample_id`.
+First make a key of molecular subtype to `sample_id`.
+
+```{r}
+key_df <- metadata %>%
+  dplyr::filter(!is.na(molecular_subtype)) %>%
+  dplyr::select(molecular_subtype, sample_id)
+
+# Make into list form so it can be used in dplyr::recode
+key <- key_df$molecular_subtype
+names(key) <- key_df$sample_id
+```
+
+Recode and filter to all `sample_id`s that are `SHH` and have `WGS` or `WXS` data.
+
+```{r}
+shh_metadata <- metadata %>%
+  dplyr::mutate(molecular_subtype = dplyr::recode(sample_id, 
+                                                  !!!key, 
+                                                  .default = "NA")) %>%
+  dplyr::filter(molecular_subtype == "SHH")
+
+# Check summary after recoding
+summary(as.factor(shh_metadata$molecular_subtype))
+```
+
+Read in the SNV consensus calls. 
+
+```{r}
+snv_df <-
+  # Read in the consensus file
+  data.table::fread(file.path(data_dir, "pbta-snv-consensus-mutation.maf.tsv.gz"),
+    data.table = FALSE
+  ) %>%
+  # Filter to only Medulloblastoma samples
+  dplyr::filter(Tumor_Sample_Barcode %in% shh_metadata$Kids_First_Biospecimen_ID)
+```
+
+## Identify TP53 SNVs.
+
+Get a list of samples that are positive for TP53 mutations in the SNV consensus data.
+
+```{r}
+tp53_mut_biospecimens <- snv_df %>%
+  # Filter to only SNV's in TP53 gene
+  dplyr::filter(Hugo_Symbol == "TP53") %>%
+  dplyr::pull(Tumor_Sample_Barcode)
+```
+
+Now recode their TP53 status to be associated with their `sample_id`.
+
+```{r}
+# Make into list form so it can be used in dplyr::recode
+key <- shh_metadata$sample_id
+names(key) <- shh_metadata$Kids_First_Biospecimen_ID
+
+# List of tp53 postive samples
+tp53_mut_samples <- dplyr::recode(tp53_mut_biospecimens, !!!key)
+```
+
+Summarize TP53 status to a table with other sample identifiers.
+
+```{r}
+tp53_status_table <- shh_metadata %>%
+  # Narrow down to sample identifier columns
+  dplyr::select("Kids_First_Participant_ID", 
+                "sample_id", 
+                "Kids_First_Biospecimen_ID", 
+                "experimental_strategy") %>%
+  # Collapse Biospecimen ids for each sample
+  dplyr::group_by(Kids_First_Participant_ID, sample_id) %>%
+  dplyr::summarize(Kids_First_Biospecimen_IDs = paste(Kids_First_Biospecimen_ID, 
+                                                      collapse = ", "), 
+                   experimental_strategies = paste(sort(experimental_strategy), 
+                                                   collapse = ", ")) %>%
+  # Make a variable that says whether or not there is a TP53 SNV mutation
+  # Add an exception where NA is placed if there are no DNA-seq samples
+  dplyr::mutate(TP53_mutation =  sample_id %in% tp53_mut_samples,
+                TP53_mutation = dplyr::case_when(
+                  !grepl("WXS|WGS", experimental_strategies) ~ NA,
+                  TRUE ~ TP53_mutation
+                ))
+
+# Print out this table
+tp53_status_table
+```
+
+Save table to a TSV file. 
+
+```{r}
+readr::write_tsv(tp53_status_table, file.path(results_dir, 
+                                              "tp53-shh-samples-status.tsv"))
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```

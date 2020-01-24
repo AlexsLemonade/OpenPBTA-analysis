@@ -21,9 +21,9 @@ wget -N --directory-prefix=driver-lists -O driver-lists/brain-goi-list-short.txt
 
 #### Download consensus mutation files
 
-maf_consensus=../../data/snv-consensus_11122019/consensus_mutation.maf.tsv
-controlfreec_autosomes=../focal-cn-file-preparation/results/controlfreec_annotated_cn_autosomes.tsv.gz
-arriba_file=../../scratch/arriba.tsv
+maf_consensus=../../data/pbta-snv-consensus-mutation.maf.tsv.gz
+controlfreec_autosomes=../focal-cn-file-preparation/results/controlfreec_annotated_cn_autosomes.tsv.bz2
+fusion_file=../../data/pbta-fusion-putative-oncogenic.tsv
 histologies_file=../../data/pbta-histologies.tsv
 intermediate_directory=../../scratch/oncoprint_files
 primary_filename="all_participants_primary_only"
@@ -35,7 +35,7 @@ genes_list=driver-lists/brain-goi-list-long.txt
 Rscript --vanilla 00-map-to-sample_id.R \
   --maf_file ${maf_consensus} \
   --cnv_file ${controlfreec_autosomes} \
-  --fusion_file ${arriba_file} \
+  --fusion_file ${fusion_file} \
   --metadata_file ${histologies_file} \
   --output_directory ${intermediate_directory} \
   --filename_lead ${primary_filename} \
@@ -62,7 +62,7 @@ Rscript --vanilla 01-plot-oncoprint.R \
 Rscript --vanilla 00-map-to-sample_id.R \
   --maf_file ${maf_consensus} \
   --cnv_file ${controlfreec_autosomes} \
-  --fusion_file ${arriba_file} \
+  --fusion_file ${fusion_file} \
   --metadata_file ${histologies_file} \
   --output_directory ${intermediate_directory} \
   --filename_lead ${primaryplus_filename} \
