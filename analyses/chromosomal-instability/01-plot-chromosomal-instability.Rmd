@@ -20,7 +20,7 @@ This notebook can be run via the command line from the top directory of the
 repository as follows:
 
 ```
-Rscript -e "rmarkdown::render('analyses/chromosomal-instability/plot-chromosomal-instability.Rmd', 
+Rscript -e "rmarkdown::render('analyses/chromosomal-instability/01-plot-chromosomal-instability.Rmd', 
                               clean = TRUE)"
 ```
 
@@ -69,6 +69,16 @@ Set up metadata
 metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
 ```
 
+Read in the union breaks densities TSV that was made by the 00-setup-breakpoint-data.R script. 
+
+```{r}
+breaks_densities_df <- readr::read_tsv(
+  file.path("breakpoint-data", "union_of_breaks_densities.tsv")) %>% 
+  # Add on the short histology column from the metadata for plotting purposes
+  dplyr::inner_join(metadata %>% dplyr::select(Kids_First_Biospecimen_ID, short_histology), 
+                    by = c("samples" = "Kids_First_Biospecimen_ID"))
+```
+
 Load in the previously formatted breakpoint data. 
 
 ```{r}
@@ -101,12 +111,51 @@ chr_sizes_vector <- chr_sizes$X3
 names(chr_sizes_vector) <- chr_sizes$X1
 ```
 
+### Plot the break densities by their histology
+
+```{r}
+breaks_cdf <- breaks_densities_df %>% 
+  # Only plot histologies groups with more than 5 samples
+  dplyr::group_by(short_histology, add = TRUE) %>% 
+  dplyr::filter(dplyr::n() > 5) %>% 
+  # Calculate histology group mean
+  dplyr::mutate(hist_mean = mean(breaks_density), 
+                hist_rank = rank(breaks_density)/dplyr::n()) %>% 
+  dplyr::ungroup() %>% 
+  # Now we will plot these as cummulative distribution plots
+  ggplot2::ggplot(ggplot2::aes(x = hist_rank, y = breaks_density, 
+                               color = short_histology)) +
+  ggplot2::geom_point() +
+  # Add summary line for mean
+  ggplot2::geom_hline(ggplot2::aes(yintercept = hist_mean)) + 
+  # Separate by histology
+  ggplot2::facet_wrap(~short_histology, nrow = 2) + 
+  ggplot2::theme_classic() +
+  ggplot2::xlab("Rank") +
+  ggplot2::ylab("Chromosomal Breaks per Mb") +
+  # Transform to log10 make non-log y-axis labels
+  ggplot2::scale_y_continuous(trans = "log10", breaks =  c(0, 1, 10, 30)) +
+  ggplot2::theme(legend.position = "none") +
+  # Get rid of x-axis ticks
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_blank(),
+    axis.ticks.x = ggplot2::element_blank(), 
+    strip.text = ggplot2::element_text(size = 4)) 
+
+# Save the plot to a png
+ggplot2::ggsave(file.path(plots_dir, "breaks_cdf_plot.png"), 
+                   plot = breaks_cdf, width = 17, height = 20, unit = "cm")
+```
+
+Print from png so rendering is smoother.
+![Breaks Density CDF Plot](./plots/breaks_cdf_plot.png)
+
 ### Co-localization of breakpoints for samples 
 
 For each sample, we will bin the genome and count how many chromosome breaks 
 occur for each bin, given the given `bin_size`.
 
-We will run this for each sample and return a list of three `GenomicRanges` objects:
+We will run this for each sample and return a list of three `GenomicRanges` objects:  
 1) `union_of_breaks` contains the combined break counts for both SV and CNV break data.   
 2) `cnv_breaks` contains the number of break counts for CNV.   
 3) `sv_breaks` contains the number of break counts for SV.  
