@@ -1,7 +1,5 @@
-## Define the ending file(s) that we want
-OUTPUT = "results/cnv_consensus.tsv", "results/cnv_neutral.bed"
 
-## Define the wildcards to use in the file names. 
+## Define the wildcards to use in the file names.
 wildcard_constraints:
   caller = "cnvkit|freec|manta",
   dupdel = "dup|del",
@@ -10,7 +8,10 @@ wildcard_constraints:
 ## Define the first rule of the Snakefile. This rule determines what the final file is and which steps to be taken.
 rule all:
     input:
-        OUTPUT
+        "results/cnv_consensus.tsv",
+        "results/cnv_neutral.bed",
+        "results/pbta-cnv-consensus.seg"
+
 
 
 #########################      FILTER STEP FOR THE 3 CALL METHODS ####################################
@@ -289,15 +290,15 @@ rule merge_neutral:
 rule merge_all:
     input:
         ## Take all of the del and dup files of ALL samples as input. If there are 200 samples, there will be 400 files total
-        bedfiles = expand("../../scratch/endpoints/{sample}.{dupdel}.merged.final.bed",
-                          sample = config["samples"],
-                          dupdel = ["dup", "del"])
+        expand("../../scratch/endpoints/{sample}.{dupdel}.merged.final.bed",
+               sample = config["samples"],
+               dupdel = ["dup", "del"])
     output:
         "../../scratch/endpoints/all_CNVs_combined.tsv"
     shell:
         ## Add a header to the file and combine all of the files using cat. 
        "echo -e 'chrom\tstart\tend\tmanta_CNVs\tcnvkit_CNVs\tfreec_CNVs\tCNV_type\tBiospecimen\tfile_names' "
-       " | cat - {input.bedfiles} "
+       " | cat - {input} "
        " | cut -f 1-8 "
        " > {output}"
 
@@ -305,10 +306,23 @@ rule merge_all:
 rule clean_output:
     input:
         script=os.path.join(config["scripts"], "remove_dup_NULL_overlap_entries.py"),
-        cnv_file ="../../scratch/endpoints/all_CNVs_combined.tsv",
-        removed_file = "results/removed_calls.tsv"
+        cnv_file ="../../scratch/endpoints/all_CNVs_combined.tsv"
     output:
         "results/cnv_consensus.tsv"
     shell:
         "python3 {input.script} --file {input.cnv_file} > {output}"
 
+rule make_segfile:
+    input:
+        script= os.path.join(config["scripts"], "bed_to_segfile.R"),
+        consensus = "results/cnv_consensus.tsv",
+        neutral = "results/cnv_neutral.bed",
+        uncalled = "results/cnv_consensus.tsv"
+    output:
+        "results/pbta-cnv-consensus.seg"
+    shell:
+        "Rscript {input.script}"
+        " -i {input.consensus}"
+        " -n {input.neutral}"
+        " -u {input.uncalled}"
+        " -o {output}"
