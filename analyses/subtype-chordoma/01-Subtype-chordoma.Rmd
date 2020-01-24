@@ -20,7 +20,7 @@ chordoma_samples <- histologies_df %>%
 ```
 
 ```{r}
-focal_cn_df <- read_tsv("../focal-cn-file-preparation/results/controlfreec_annotated_cn_autosomes.tsv.gz")
+focal_cn_df <- read_tsv("../focal-cn-file-preparation/results/controlfreec_annotated_cn_autosomes.tsv.bz2")
 ```
 
 ```{r}
