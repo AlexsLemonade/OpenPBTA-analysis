@@ -37,7 +37,7 @@ FILENAME_LEAD=kallisto_stranded
 # argument for script 02 processing and script 03 input file specification
 # if this is not in CI, we can use the full 10 values for the transcript tail %
 # else, use 0.25 only
-if ["$PERCENT" -gt "0"]; then
+if [ "$PERCENT" -gt "0" ]; then
   TRANSCRIPT_TAIL_PERCENT_ARRAY=(0.25 0.125 0.0625 0.0313 0.0156 0.0078 0.0039 0.0020 0.0010 0.0005)
 else
   TRANSCRIPT_TAIL_PERCENT_ARRAY=(0.25)
