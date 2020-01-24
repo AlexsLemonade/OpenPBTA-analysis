@@ -61,7 +61,7 @@ circos_map_plot <- function(df = sv_df
   y_min <- min(bed_df$value, na.rm = TRUE)
   y_max <- max(bed_df$value, na.rm = TRUE)
   
-  /# Stop if there isn't data in this data.frame
+  # Stop if there isn't data in this data.frame
   if (nrow(bed_df) == 0){
     stop("There are 0 rows of data. Check your samples_col arg and the data.frame you supplied. ")
   }
@@ -100,32 +100,29 @@ circos_map_plot <- function(df = sv_df
                                           # Establish the ylim
                                           ylim = c(y_min, y_max),
                                           panel.fun = function(region, value, ...) {
-                                            i = circlize::getI(...)
-                                            for(c in length(palette_col)) {
                                               circlize::circos.genomicPoints(region, value, 
-                                                                             column = i,
-                                                                             pch = 20, 
-                                                                             color = palette_col[c])
-                                            }
+                                                                             col = palette_col)
                                           })
   } else if (type == "line") {
   # Add line track
   circlize::circos.genomicTrackPlotRegion(bed_df, 
                                           track.height = track_height,
-                                          ylim = c(min(bed_df$value1), max(bed_df$value1)),
+                                          # Establish the ylim
+                                          ylim = c(y_min, y_max),
                                           panel.fun = function(region, value, ...) {
                                             circlize::circos.genomicLines(region, value, 
-                                                                          col = rand_color(nrow(bed1), transparency = 0.5),
-                                                                          pch = ".")})
+                                                                           col = palette_col)
+                                          })
   } else if (type == "rect") {
     # Add the actual track of scatterplots
     circlize::circos.genomicTrackPlotRegion(bed_df, 
                                             track.height = track_height,
-                                            ylim = c(min(bed_df$value1), max(bed_df$value1)),
+                                            # Establish the ylim
+                                            ylim = c(y_min, y_max),
                                             panel.fun = function(region, value, ...) {
-                                              circlize::circos.genomicRect(region, value, col = colour)
+                                              circlize::circos.genomicRect(region, value, 
+                                                                           col = palette_col)
                                             })
   }
-  
 }
 
