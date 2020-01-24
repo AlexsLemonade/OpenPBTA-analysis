@@ -1,5 +1,5 @@
 ---
-title: "Visualize SV and CNV data"
+title: "Circos Plots Examples for Visualizing SV and CNV data"
 output:   
   html_notebook: 
     toc: true
@@ -8,19 +8,16 @@ author: Candace Savonen for ALSF - CCDL
 date: 2020
 ---
 
-To generate circular plots that integrate CNV and SV data. Specifically, it might be useful for the following cases:
+This notebook shows examples of how to use the circos_map_plot function for 
+mapping data that corresponds to chromosomal coordinates.
 
-Display examples of chromothripsis per #27 (comment)
-There are some subtype tickets that would benefit from such a visualization (e.g., "[ST-EPN-YAP1] Focal 11q most frequent CNA, with rest of genome stable" #245)
-Likely most useful to examine translocations
-The implementation should focus on flexibility and extensibility because we don't know what "final" output will be required for the project.
 ### Usage
 
 This notebook can be run via the command line from the top directory of the 
 repository as follows:
 
 ```
-Rscript -e "rmarkdown::render('analyses/chromosomal-instability/01-plot-chromosomal-instability.Rmd', 
+Rscript -e "rmarkdown::render('analyses/chromosomal-instability/01b-visulization-cnv-sv.Rmd', 
                               clean = TRUE)"
 ```
 
@@ -68,23 +65,13 @@ Set up metadata
 metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
 ```
 
-Read in the union breaks densities TSV that was made by the 00-setup-breakpoint-data.R script. 
-
-```{r}
-breaks_densities_df <- readr::read_tsv(
-  file.path("breakpoint-data", "union_of_breaks_densities.tsv")) %>% 
-  # Add on the short histology column from the metadata for plotting purposes
-  dplyr::inner_join(metadata %>% dplyr::select(Kids_First_Biospecimen_ID, short_histology), 
-                    by = c("samples" = "Kids_First_Biospecimen_ID"))
-```
-
 Load in the previously formatted breakpoint data. 
 
 ```{r}
 breaks_list <- readr::read_rds(file.path("breakpoint-data", "breaks_lists.RDS"))
 ```
 
-Get a vector of the biospecimen IDs. 
+Read in the CNV and SV data. 
 
 ```{r}
 cnv_df <- data.table::fread(
@@ -92,6 +79,40 @@ cnv_df <- data.table::fread(
 
 sv_df <- data.table::fread(
   file.path(data_dir, "pbta-sv-manta.tsv.gz"), data.table = FALSE) 
+```
+
+```{r}
+sample_df <- readr::read_tsv(file.path(scratch_dir, "sv-vcf", "BS_0DKPGQWD_withoutYandM.tsv"))
+
+bed_1 <- sample_df %>% 
+  dplyr::select(chrom = chrom1, start = pos1, end = pos2) %>% 
+  dplyr::mutate(chrom = paste0("chr", chrom), 
+                start = as.integer(start), 
+                end = as.integer(end), 
+                value1 = rnorm(nrow(sample_df)))
+
+bed_2 <- sample_df %>% 
+  dplyr::select(chrom = chrom2, start = pos1, end = pos2) %>% 
+  dplyr::mutate(chrom = paste0("chr", chrom), 
+                start = as.integer(start), 
+                end = as.integer(end),
+                value1 = rnorm(nrow(sample_df)))
+```
+
+
+```{r}
+circos_map_plot(df = breaks_list$sv_breaks,
+                add_track = FALSE,
+                samples_col = "samples",
+                sample_names = "all",
+                chr_col = "chrom",
+                start_col = "coord",
+                end_col =  "coord",
+                y_val = NULL,
+                track_height = .15,
+                type = "rect",
+                colour_key = "svclass", 
+                palette = "YlGnBu") 
 ```
 
 ### Session Info
