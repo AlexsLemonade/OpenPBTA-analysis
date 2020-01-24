@@ -50,9 +50,9 @@ args = parser.parse_args()
 
 
 ## Pandas load/read files in
-merged_manta = pd.read_csv(args.manta, delimiter='\t', low_memory=False)
-merged_cnvkit = pd.read_csv(args.cnvkit, delimiter='\t', low_memory=False)
-merged_freec = pd.read_csv(args.freec, delimiter='\t', low_memory=False)
+merged_manta = pd.read_csv(args.manta, delimiter='\t', dtype=str   )
+merged_cnvkit = pd.read_csv(args.cnvkit, delimiter='\t', dtype=str )
+merged_freec = pd.read_csv(args.freec, delimiter='\t', dtype=str )
 
 
 
