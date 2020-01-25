@@ -14,9 +14,13 @@ The analysis produces an output file that includes the original calls used for e
 
 * `results/cnv_consensus.tsv`
 
-And also a segfile for downstream processing:
+A segfile for downstream processing:
 
 * `results/pbta-cnv-consensus.seg`
+
+And a bed file of regions that were excluded from calls (see step 7)
+
+* `ref/cnv_excluded_regions.bed`
 
 ## Running the pipeline
 
@@ -34,7 +38,7 @@ This pipeline revolves around the use of Snakemake to run analysis for each pati
 4) Run the Snakemake pipeline to perform analysis **per sample**. 
 5) Filter for any CNVs that are over a certain **SIZE_CUTOFF** (default 3000 bp)
 6) Filter for any **significant** CNVs called by Freec (default pval = 0.01)
-7) Filter out any CNVs that overlap 50% or more with **IGLL, telomeric, centromeric, seg_dup regions**
+7) Filter out any CNVs that overlap 50% or more with **Immunoglobulin, telomeric, centromeric, seg_dup regions** as found in the file `ref/cnv_excluded.bed`
 8) Merge any CNVs of the same sample and call method if they **overlap or within 10,000 bp** (We consider CNV calls within 10,000 bp the same CNV)
 9) Reformat the columns of the files (So the info are easier to read)
 10) **Call consensus** by comparing CNVs from 2 call methods at a time. 
@@ -42,8 +46,9 @@ This pipeline revolves around the use of Snakemake to run analysis for each pati
 Since there are 3 callers, there were 3 comparisons: `manta-cnvkit`, `manta-freec`, and `cnvkit-freec`. If a CNV from 1 caller **overlaps 50% or more** with at least 1 CNV from another caller, the common region of the overlapping CNV would be the new CONSENSUS CNV. 
 
 11) **Sort and merge** the CNVs from the comparison pairs ,`manta-cnvkit` `manta-freec` `cnvkit-freec`, together into 1 file
-12) After every samples' consensus CNVs were called, **combine all merged files** from step 10 and output to `results/cnv_consensus.tsv`
-13) The `results/cnv_consensus.tsv` is translated into a `pbta-cnv-consensus.seg` file in the same format as `pbta-cnv-cnvkit.seg.gz`.
+12) Resolve overlapping segments where duplications are embedded within larger deletion segments, or deletions within duplications.
+13) After every samples' consensus CNVs were called, **combine all merged files** from step 10 and output to `results/cnv_consensus.tsv`
+14) The `results/cnv_consensus.tsv` is translated into a `pbta-cnv-consensus.seg` file in the same format as `pbta-cnv-cnvkit.seg.gz`.
 When a consensus CNV contains from multiple source CNV segments, we take the mean of the CNVkit `seg.mean` values from the source segments, weighted by segment length.
 If no CNVkit CNV was included, the value for this column is NA.
 The `copy.num` column is the weighted median of CNVkit segment values where they exist, or Control-FREEC values in the absence of CNVkit data.
