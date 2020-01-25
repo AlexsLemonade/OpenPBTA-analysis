@@ -8,24 +8,29 @@ date: 20191121
 ```{r}
 library(dplyr)
 library(readr)
+library(ggplot2)
 ```
 
 ```{r}
-histologies_df <- read_tsv("../../data/pbta-histologies.tsv")
+histologies_df <- read_tsv(file.path("..", "..", "data", 
+                                     "pbta-histologies.tsv"))
 ```
 ```{r}
 chordoma_samples <- histologies_df %>%
-  filter(short_histology=="Chordoma") %>% 
+  filter(short_histology == "Chordoma") %>% 
   pull(Kids_First_Biospecimen_ID)
 ```
 
 ```{r}
-focal_cn_df <- read_tsv("../focal-cn-file-preparation/results/controlfreec_annotated_cn_autosomes.tsv.bz2")
+# TODO: update to use consensus file and likely a more permissive version of 
+# the focal-cn-file-preparation annotation step
+# Here, we're using an older version of the annotated files that used exons
+focal_cn_df <- read_tsv("https://github.com/AlexsLemonade/OpenPBTA-analysis/raw/fa214291713575be7fd20c92374b268870f4173f/analyses/focal-cn-file-preparation/results/cnvkit_annotated_cn_autosomes.tsv.gz")
 ```
 
 ```{r}
 chordoma_loss <- focal_cn_df %>% 
-  filter(biospecimen_id %in% chordoma_samples, gene_symbol=="SMARCB1")
+  filter(biospecimen_id %in% chordoma_samples, gene_symbol == "SMARCB1")
 
 chordoma_loss 
 ```
@@ -105,6 +110,7 @@ smarcb1_expression <- t(smarcb1_expression) %>%
 smarcb1_expression
 ```
 This also needs sample_id to add it in:
+
 ```{r}
 smarcb1_expression <- smarcb1_expression %>%
   inner_join(select(chordoma_id_df,
@@ -113,6 +119,7 @@ smarcb1_expression <- smarcb1_expression %>%
              by = "Kids_First_Biospecimen_ID")
 smarcb1_expression
 ```
+
 ```{r}
 chordoma_smarcb1_df <- smarcb1_expression %>%
   # any missing samples will get filled with NA when using a full join
@@ -152,10 +159,6 @@ chordoma_smarcb1_df
 ```
 
 ```{r}
-library(ggplot2)
-```
-
-```{r}
 # this specifies that this is the data we want to plot
 chordoma_smarcb1_df %>%
   # drop the sample that doesn't have WGS data
@@ -174,8 +177,3 @@ chordoma_smarcb1_df %>%
                shape = 18)
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
-
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
-
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
