@@ -1,10 +1,12 @@
 # Fusion Summary
 
 This module generates summary files for fusions of interest present in biospecimens taken from:
+
 1. Ependymoma tumors
 2. Embryonal tumors not from ATRT or MB
 
-To genereate the tables simply run:
+To generate the tables simply run:
+
 ```
 ./run-new-analysis.sh
 ```
