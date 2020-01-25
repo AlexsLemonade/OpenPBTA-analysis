@@ -54,6 +54,16 @@ This notebook produces a fusion results table found at `results/HGG_cleaned_fusi
 Per [issue #249](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249), we filtered the z-scored gene expression to genes of interest: _OLIG2_ and _FOXG1_ should be highly expressed in IDH mutants, and _TP73-AS1_ methylation and downregulation cooccurs with _TP53_ mutations.
 This notebook produces two expression results table (one for each selection strategy) found at `results/HGG_cleaned_expression.polya.tsv` and `HGG_cleaned_expression.stranded.tsv`.
 
+[`07-HGG-molecular-subtyping-combine-table.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/07-HGG-molecular-subtyping-combine-table.nb.html) is a notebook written to combine the cleaned copy number, mutation, fusion, and gene expression data (prepared in this module's previous notebooks) into one final table of results.
+This notebook produces one table with the cleaned data found at `results/HGG_cleaned_all_table.tsv`.
+A table with the molecular subtype information for each HGG sample at `results/HGG_molecular_subtype.tsv` is also produced, where the subtype values in the `molecular_subtype` column are determined as follows:
+
+1. If there was an _H3F3A_ K28M or _HIST1H3B_ K28M mutation and no _BRAF_ V600E mutation -> `DMG_H3_K28`
+2. If there was an _H3F3A_ K28M or _HIST1H3B_ K28M mutation and a _BRAF_ V600E mutation -> `DMG_H3_K28_BRAF_V600E"`
+3. If there was an _H3F3A_ G35V or G35R mutation -> `HGG_H3_G35`
+4. If there was an _IDH1_ R132 mutation -> `HGG_IDH`
+5. If a sample was initially classified as HGAT, had no defining histone mutations, and a _BRAF_ V600E mutation -> `BRAF_V600E_mutation`
+6. All other samples that did not meet any of these criteria were marked as `NA`
 
 ## Folder structure
 
@@ -71,6 +81,8 @@ The structure of this folder is as follows:
 ├── 05-HGG-molecular-subtyping-fusion.nb.html
 ├── 06-HGG-molecular-subtyping-gene-expression.Rmd
 ├── 06-HGG-molecular-subtyping-gene-expression.nb.html
+├── 07-HGG-molecular-subtyping-combine-table.Rmd
+├── 07-HGG-molecular-subtyping-combine-table.nb.html
 ├── README.md
 ├── hgg-subset
 │   ├── hgg_focal_cn.tsv.gz
@@ -80,11 +92,13 @@ The structure of this folder is as follows:
 │   ├── hgg_zscored_expression.polya.RDS
 │   └── hgg_zscored_expression.stranded.RDS
 ├── results
+│   ├── HGG_cleaned_all_table.tsv
 │   ├── HGG_cleaned_cnv.tsv
 │   ├── HGG_cleaned_expression.polya.tsv
 │   ├── HGG_cleaned_expression.stranded.tsv
 │   ├── HGG_cleaned_fusion.tsv
 │   ├── HGG_cleaned_mutation.tsv
-│   └── HGG_defining_lesions.tsv
+│   ├── HGG_defining_lesions.tsv
+│   └── HGG_molecular_subtype.tsv
 └── run-molecular-subtyping-HGG.sh
 ```
