@@ -48,14 +48,14 @@ filterFusion <- function(df, bioid, fuses, genes) {
 #' Generate matrix with fusion counts
 #' @param fuseDF Filtered fusion data frame
 #' @param bioid List of biospecimen IDs that should be included in final table
+
 #' @return Data frame that contains fusion counts
 prepareOutput <- function(fuseDF, bioid) {
   fuseDF %>% 
     reshape2::dcast(Sample ~ FusionName) %>%
-    dplyr::bind_rows(data.frame(Sample = setdiff(bioid, fuseDF$Sample))) %>%
-    replace(is.na(.), 0)
+    bind_rows(data.frame(Sample = setdiff(bioid, fuseDF$Sample))) %>%
+    rename(Kids_First_Biospecimen_ID = Sample)
 }
-
 ```
 
 ### Read in data
@@ -139,14 +139,47 @@ We use the putative oncogenic file here, therefore any sample that is in either 
 specimensUnion<- union(arribaDF$tumor_id, starfusionDF$tumor_id)
 ```
 
-Write the table with fusion counts to file for both tumor types.
-Any sample in either caller should be represented in the final file.
+#### Write ependymoma fusions to file
+
+```{r}
+allFuseEpend <- allFuseEpend %>%
+  prepareOutput(specimensUnion)
+```
+
+```{r}
+# Are there any missing fusions?
+setdiff(ependFuses, colnames(allFuseEpend))
+```
 
 ```{r}
 allFuseEpend %>%
-  prepareOutput(specimensUnion) %>%
+  mutate(
+    `C11orf95--YAP1` = 0,
+    `LTBP3--RELA` = 0,
+    `PTEN--TAS2R1` = 0,
+    `YAP1--MAMLD2` = 0
+  ) %>%
   write_tsv(ependFile)
+```
+
+#### Write non-MB, non-ATRT embryonal fusions to file
+
+```{r}
+allFuseEmbry <- allFuseEmbry %>%
+  prepareOutput(specimensUnion)
+```
+
+```{r}
+# Are there any missing fusions?
+setdiff(embryFuses, colnames(allFuseEmbry))
+```
+
+```{r}
 allFuseEmbry %>%
-  prepareOutput(specimensUnion) %>%
+  mutate(
+    `CIC--NUTM1` = 0,
+    `MN1--BEND2` = 0
+  ) %>%
   write_tsv(embryFile)
 ```
+
