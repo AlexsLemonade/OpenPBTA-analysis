@@ -54,6 +54,9 @@ This notebook produces a fusion results table found at `results/HGG_cleaned_fusi
 Per [issue #249](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249), we filtered the z-scored gene expression to genes of interest: _OLIG2_ and _FOXG1_ should be highly expressed in IDH mutants, and _TP73-AS1_ methylation and downregulation cooccurs with _TP53_ mutations.
 This notebook produces two expression results table (one for each selection strategy) found at `results/HGG_cleaned_expression.polya.tsv` and `HGG_cleaned_expression.stranded.tsv`.
 
+[`08-1p19q-codeleted-oligodendrogliomas.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/08-1p19q-codeleted-oligodendrogliomas.nb.html) is a notebook written to identify samples in the OpenPBTA dataset that should be classified as 1p/19q co-deleted oligodendrogliomas.
+The GISTIC `broad_values_by_arm.txt` file is used to identify samples with `1p` and `19q` loss, then the consensus mutation file is filtered to the identified samples in order to check for _IDH1_ mutations.
+**Note:** Per [this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/435#issuecomment-576898275), very few samples in the OpenPBTA dataset, if any, are expected to fit into the `1p/19q co-deleted oligodendrogliomas` subtype.
 
 ## Folder structure
 
@@ -71,6 +74,8 @@ The structure of this folder is as follows:
 ├── 05-HGG-molecular-subtyping-fusion.nb.html
 ├── 06-HGG-molecular-subtyping-gene-expression.Rmd
 ├── 06-HGG-molecular-subtyping-gene-expression.nb.html
+├── 08-1p19q-codeleted-oligodendrogliomas.Rmd
+├── 08-1p19q-codeleted-oligodendrogliomas.nb.html
 ├── README.md
 ├── hgg-subset
 │   ├── hgg_focal_cn.tsv.gz
