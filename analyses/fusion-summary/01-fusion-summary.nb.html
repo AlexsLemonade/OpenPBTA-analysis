@@ -1777,27 +1777,28 @@ $(document).ready(function () {
 <h3>Libraries and functions</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoibGlicmFyeSh0aWR5dmVyc2UpIn0= -->
 <pre class="r"><code>library(tidyverse)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RwbHlyJzpcbiAgbWV0aG9kICAgICAgICAgICBmcm9tXG4gIHByaW50LnJvd3dpc2VfZGYgICAgIFxuXHUwMDFiWzM3beKUgOKUgCBcdTAwMWJbMW1BdHRhY2hpbmcgcGFja2FnZXNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2UgMS4yLjEg4pSA4pSAXHUwMDFiWzM5bVxuXHUwMDFiWzM3bVx1MDAxYlszMm3inJRcdTAwMWJbMzdtIFx1MDAxYlszNG1nZ3Bsb3QyXHUwMDFiWzM3bSAzLjIuMCAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszN20gXHUwMDFiWzM0bXB1cnJyICBcdTAwMWJbMzdtIDAuMy4yXG5cdTAwMWJbMzJt4pyUXHUwMDFiWzM3bSBcdTAwMWJbMzRtdGliYmxlIFx1MDAxYlszN20gMi4xLjMgICAgIFx1MDAxYlszMm3inJRcdTAwMWJbMzdtIFx1MDAxYlszNG1kcGx5ciAgXHUwMDFiWzM3bSAwLjguM1xuXHUwMDFiWzMybeKclFx1MDAxYlszN20gXHUwMDFiWzM0bXRpZHlyICBcdTAwMWJbMzdtIDAuOC4zICAgICBcdTAwMWJbMzJt4pyUXHUwMDFiWzM3bSBcdTAwMWJbMzRtc3RyaW5nclx1MDAxYlszN20gMS40LjBcblx1MDAxYlszMm3inJRcdTAwMWJbMzdtIFx1MDAxYlszNG1yZWFkciAgXHUwMDFiWzM3bSAxLjMuMSAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszN20gXHUwMDFiWzM0bWZvcmNhdHNcdTAwMWJbMzdtIDAuNC4wXHUwMDFiWzM5bVxuXHUwMDFiWzM3beKUgOKUgCBcdTAwMWJbMW1Db25mbGljdHNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2VfY29uZmxpY3RzKCkg4pSA4pSAXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzM3bSBcdTAwMWJbMzRtZHBseXJcdTAwMWJbMzdtOjpcdTAwMWJbMzJtZmlsdGVyKClcdTAwMWJbMzdtIG1hc2tzIFx1MDAxYlszNG1zdGF0c1x1MDAxYlszN206OmZpbHRlcigpXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzM3bSBcdTAwMWJbMzRtZHBseXJcdTAwMWJbMzdtOjpcdTAwMWJbMzJtbGFnKClcdTAwMWJbMzdtICAgIG1hc2tzIFx1MDAxYlszNG1zdGF0c1x1MDAxYlszN206OmxhZygpXHUwMDFiWzM5bVxuIn0= -->
-<pre><code>Registered S3 method overwritten by 'dplyr':
-  method           from
-  print.rowwise_df     
-[37m── [1mAttaching packages[22m ──────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──[39m
-[37m[32m✔[37m [34mggplot2[37m 3.2.0     [32m✔[37m [34mpurrr  [37m 0.3.2
-[32m✔[37m [34mtibble [37m 2.1.3     [32m✔[37m [34mdplyr  [37m 0.8.3
-[32m✔[37m [34mtidyr  [37m 0.8.3     [32m✔[37m [34mstringr[37m 1.4.0
-[32m✔[37m [34mreadr  [37m 1.3.1     [32m✔[37m [34mforcats[37m 0.4.0[39m
-[37m── [1mConflicts[22m ─────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-[31m✖[37m [34mdplyr[37m::[32mfilter()[37m masks [34mstats[37m::filter()
-[31m✖[37m [34mdplyr[37m::[32mlag()[37m    masks [34mstats[37m::lag()[39m</code></pre>
-<!-- rnb-output-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIEF0dGFjaGluZyBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDEuMi4xIOKUgOKUgFxuIn0= -->
+<pre><code>── Attaching packages ───────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pyUIGdncGxvdDIgMy4yLjAgICAgIOKclCBwdXJyciAgIDAuMy4yXG7inJQgdGliYmxlICAyLjEuMyAgICAg4pyUIGRwbHlyICAgMC44LjNcbuKclCB0aWR5ciAgIDAuOC4zICAgICDinJQgc3RyaW5nciAxLjQuMFxu4pyUIHJlYWRyICAgMS4zLjEgICAgIOKclCBmb3JjYXRzIDAuNC4wXG4ifQ== -->
+<pre><code>✔ ggplot2 3.2.0     ✔ purrr   0.3.2
+✔ tibble  2.1.3     ✔ dplyr   0.8.3
+✔ tidyr   0.8.3     ✔ stringr 1.4.0
+✔ readr   1.3.1     ✔ forcats 0.4.0</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIENvbmZsaWN0cyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlX2NvbmZsaWN0cygpIOKUgOKUgFxu4pyWIGRwbHlyOjpmaWx0ZXIoKSBtYXNrcyBzdGF0czo6ZmlsdGVyKClcbuKcliBkcGx5cjo6bGFnKCkgICAgbWFza3Mgc3RhdHM6OmxhZygpXG4ifQ== -->
+<pre><code>── Conflicts ──────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIycgR2VuZXJhdGUgZmlsdGVyZWQgZnVzaW9uIGZyYW1lXG4jJyBAcGFyYW0gZGYgVW5maWx0ZXJlZCBmdXNpb24gZGF0YSBmcmFtZVxuIycgQHBhcmFtIGJpb2lkIExpc3Qgb2YgYmlvc3BlY2ltZW4gSURzXG4jJyBAcGFyYW0gZnVzZXMgTGlzdCBvZiBleHBsaWNpdCBmdXNpb24gbmFtZXNcbiMnIEBwYXJhbSBnZW5lcyBMaXN0IG9mIGdlbmUgbmFtZXNcbiMnIEByZXR1cm4gdGhlIGZpbHRlcmVkIGZ1c2lvbiBkYXRhIGZyYW1lXG5maWx0ZXJGdXNpb24gPC0gZnVuY3Rpb24oZGYsIGJpb2lkLCBmdXNlcywgZ2VuZXMpIHtcbiAgaWYgKCFtaXNzaW5nKGJpb2lkKSkge1xuICAgIGRmIDwtIGZpbHRlcihkZiwgU2FtcGxlICVpbiUgYmlvaWQpXG4gIH1cbiAgaWYgKCFtaXNzaW5nKGZ1c2VzKSAmICFtaXNzaW5nKGdlbmVzKSkge1xuICAgIGRmIDwtIGZpbHRlcihkZiwgRnVzaW9uTmFtZSAlaW4lIGZ1c2VzIHxcbiAgICAgICAgICAgICAgICAgICBHZW5lMUEgJWluJSBnZW5lcyB8XG4gICAgICAgICAgICAgICAgICAgR2VuZTJBICVpbiUgZ2VuZXMgfFxuICAgICAgICAgICAgICAgICAgIEdlbmUxQiAlaW4lIGdlbmVzIHxcbiAgICAgICAgICAgICAgICAgICBHZW5lMkIgJWluJSBnZW5lcylcbiAgfSBlbHNlIGlmICghbWlzc2luZyhmdXNlcykpIHtcbiAgICBkZiA8LSBmaWx0ZXIoZGYsIEZ1c2lvbk5hbWUgJWluJSBmdXNlcylcbiAgfSBlbHNlIGlmICghbWlzc2luZyhnZW5lcykpIHtcbiAgICBkZiA8LSBmaWx0ZXIoZGYsXG4gICAgICAgICAgICAgICAgIEdlbmUxQSAlaW4lIGdlbmVzIHxcbiAgICAgICAgICAgICAgICAgICBHZW5lMkEgJWluJSBnZW5lcyB8XG4gICAgICAgICAgICAgICAgICAgR2VuZTFCICVpbiUgZ2VuZXMgfFxuICAgICAgICAgICAgICAgICAgIEdlbmUyQiAlaW4lIGdlbmVzKVxuICB9XG4gIHJldHVybihkZiAlPiUgc2VsZWN0KFNhbXBsZSwgRnVzaW9uTmFtZSkpXG59XG5cblxuIycgR2VuZXJhdGUgbWF0cml4IHdpdGggZnVzaW9uIGNvdW50c1xuIycgQHBhcmFtIGZ1c2VERiBGaWx0ZXJlZCBmdXNpb24gZGF0YSBmcmFtZVxuIycgQHBhcmFtIGJpb2lkIExpc3Qgb2YgYmlvc3BlY2ltZW4gSURzIHRoYXQgc2hvdWxkIGJlIGluY2x1ZGVkIGluIGZpbmFsIHRhYmxlXG4jJyBAcmV0dXJuIERhdGEgZnJhbWUgdGhhdCBjb250YWlucyBmdXNpb24gY291bnRzXG5wcmVwYXJlT3V0cHV0IDwtIGZ1bmN0aW9uKGZ1c2VERiwgYmlvaWQpIHtcbiAgZnVzZURGICU+JSBcbiAgICByZXNoYXBlMjo6ZGNhc3QoU2FtcGxlIH4gRnVzaW9uTmFtZSkgJT4lXG4gICAgZHBseXI6OmJpbmRfcm93cyhkYXRhLmZyYW1lKFNhbXBsZSA9IHNldGRpZmYoYmlvaWQsIGZ1c2VERiRTYW1wbGUpKSkgJT4lXG4gICAgcmVwbGFjZShpcy5uYSguKSwgMClcbn1cblxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMnIEdlbmVyYXRlIGZpbHRlcmVkIGZ1c2lvbiBmcmFtZSIsIiMnIEBwYXJhbSBkZiBVbmZpbHRlcmVkIGZ1c2lvbiBkYXRhIGZyYW1lIiwiIycgQHBhcmFtIGJpb2lkIExpc3Qgb2YgYmlvc3BlY2ltZW4gSURzIiwiIycgQHBhcmFtIGZ1c2VzIExpc3Qgb2YgZXhwbGljaXQgZnVzaW9uIG5hbWVzIiwiIycgQHBhcmFtIGdlbmVzIExpc3Qgb2YgZ2VuZSBuYW1lcyIsIiMnIEByZXR1cm4gdGhlIGZpbHRlcmVkIGZ1c2lvbiBkYXRhIGZyYW1lIiwiZmlsdGVyRnVzaW9uIDwtIGZ1bmN0aW9uKGRmLCBiaW9pZCwgZnVzZXMsIGdlbmVzKSB7XG4gIGlmICghbWlzc2luZyhiaW9pZCkpIHtcbiAgICBkZiA8LSBmaWx0ZXIoZGYsIFNhbXBsZSAlaW4lIGJpb2lkKVxuICB9XG4gIGlmICghbWlzc2luZyhmdXNlcykgJiAhbWlzc2luZyhnZW5lcykpIHtcbiAgICBkZiA8LSBmaWx0ZXIoZGYsIEZ1c2lvbk5hbWUgJWluJSBmdXNlcyB8XG4gICAgICAgICAgICAgICAgICAgR2VuZTFBICVpbiUgZ2VuZXMgfFxuICAgICAgICAgICAgICAgICAgIEdlbmUyQSAlaW4lIGdlbmVzIHxcbiAgICAgICAgICAgICAgICAgICBHZW5lMUIgJWluJSBnZW5lcyB8XG4gICAgICAgICAgICAgICAgICAgR2VuZTJCICVpbiUgZ2VuZXMpXG4gIH0gZWxzZSBpZiAoIW1pc3NpbmcoZnVzZXMpKSB7XG4gICAgZGYgPC0gZmlsdGVyKGRmLCBGdXNpb25OYW1lICVpbiUgZnVzZXMpXG4gIH0gZWxzZSBpZiAoIW1pc3NpbmcoZ2VuZXMpKSB7XG4gICAgZGYgPC0gZmlsdGVyKGRmLFxuICAgICAgICAgICAgICAgICBHZW5lMUEgJWluJSBnZW5lcyB8XG4gICAgICAgICAgICAgICAgICAgR2VuZTJBICVpbiUgZ2VuZXMgfFxuICAgICAgICAgICAgICAgICAgIEdlbmUxQiAlaW4lIGdlbmVzIHxcbiAgICAgICAgICAgICAgICAgICBHZW5lMkIgJWluJSBnZW5lcylcbiAgfVxuICByZXR1cm4oZGYgJT4lIHNlbGVjdChTYW1wbGUsIEZ1c2lvbk5hbWUpKVxufSIsIiIsIiIsIiMnIEdlbmVyYXRlIG1hdHJpeCB3aXRoIGZ1c2lvbiBjb3VudHMiLCIjJyBAcGFyYW0gZnVzZURGIEZpbHRlcmVkIGZ1c2lvbiBkYXRhIGZyYW1lIiwiIycgQHBhcmFtIGJpb2lkIExpc3Qgb2YgYmlvc3BlY2ltZW4gSURzIHRoYXQgc2hvdWxkIGJlIGluY2x1ZGVkIGluIGZpbmFsIHRhYmxlIiwiIycgQHJldHVybiBEYXRhIGZyYW1lIHRoYXQgY29udGFpbnMgZnVzaW9uIGNvdW50cyIsInByZXBhcmVPdXRwdXQgPC0gZnVuY3Rpb24oZnVzZURGLCBiaW9pZCkge1xuICBmdXNlREYgJT4lIFxuICAgIHJlc2hhcGUyOjpkY2FzdChTYW1wbGUgfiBGdXNpb25OYW1lKSAlPiVcbiAgICBkcGx5cjo6YmluZF9yb3dzKGRhdGEuZnJhbWUoU2FtcGxlID0gc2V0ZGlmZihiaW9pZCwgZnVzZURGJFNhbXBsZSkpKSAlPiVcbiAgICByZXBsYWNlKGlzLm5hKC4pLCAwKVxufSJdfQ== -->
 <pre class="r"><code>#' Generate filtered fusion frame
 #' @param df Unfiltered fusion data frame
 #' @param bioid List of biospecimen IDs
@@ -1836,8 +1837,7 @@ prepareOutput &lt;- function(fuseDF, bioid) {
     reshape2::dcast(Sample ~ FusionName) %&gt;%
     dplyr::bind_rows(data.frame(Sample = setdiff(bioid, fuseDF$Sample))) %&gt;%
     replace(is.na(.), 0)
-}
-</code></pre>
+}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -1846,61 +1846,63 @@ prepareOutput &lt;- function(fuseDF, bioid) {
 <h3>Read in data</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGF0YURpciA8LSBmaWxlLnBhdGgoXCIuLlwiLCBcIi4uXCIsIFwiZGF0YVwiKVxuIycgVGhlIHB1dGF0aXZlIG9uY29nZW5pYyBmdXNpb24gZmlsZSBpcyB3aGF0IHdlJ2xsIHVzZSB0byBjaGVjayBmb3IgdGhlIFxuIycgcHJlc2VuY2Ugb3IgYWJzZW5jZSBvZiB0aGUgZnVzaW9ucy5cbnB1dGF0aXZlT25jb2dlbmljREYgPC0gXG4gIHJlYWRfdHN2KGZpbGUucGF0aChkYXRhRGlyLCBcInBidGEtZnVzaW9uLXB1dGF0aXZlLW9uY29nZW5pYy50c3ZcIikpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbImRhdGFEaXIgPC0gZmlsZS5wYXRoKFwiLi5cIiwgXCIuLlwiLCBcImRhdGFcIikiLCIjJyBUaGUgcHV0YXRpdmUgb25jb2dlbmljIGZ1c2lvbiBmaWxlIGlzIHdoYXQgd2UnbGwgdXNlIHRvIGNoZWNrIGZvciB0aGUgIiwiIycgcHJlc2VuY2Ugb3IgYWJzZW5jZSBvZiB0aGUgZnVzaW9ucy4iLCJwdXRhdGl2ZU9uY29nZW5pY0RGIDwtIFxuICByZWFkX3RzdihmaWxlLnBhdGgoZGF0YURpciwgXCJwYnRhLWZ1c2lvbi1wdXRhdGl2ZS1vbmNvZ2VuaWMudHN2XCIpKSJdfQ== -->
 <pre class="r"><code>dataDir &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;data&quot;)
 #' The putative oncogenic fusion file is what we'll use to check for the 
 #' presence or absence of the fusions.
 putativeOncogenicDF &lt;- 
   read_tsv(file.path(dataDir, &quot;pbta-fusion-putative-oncogenic.tsv&quot;))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgenNjb3JlX0dlbmUxQSA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICB6c2NvcmVfR2VuZTFCID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIHpzY29yZV9HZW5lMkEgPSBcdTAwMWJbMzNtY29sX2xvZ2ljYWwoKVx1MDAxYlszOW0sXG4gIHpzY29yZV9HZW5lMkIgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgbm90ZV9leHByZXNzaW9uX0dlbmUyQSA9IFx1MDAxYlszM21jb2xfbG9naWNhbCgpXHUwMDFiWzM5bSxcbiAgR2VuZTJBID0gXHUwMDFiWzMzbWNvbF9sb2dpY2FsKClcdTAwMWJbMzltLFxuICBHZW5lMkFfYW5ubyA9IFx1MDAxYlszM21jb2xfbG9naWNhbCgpXHUwMDFiWzM5bSxcbiAgY2FsbGVyLmNvdW50ID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW1cbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuIn0= -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgenNjb3JlX0dlbmUxQSA9IGNvbF9kb3VibGUoKSxcbiAgenNjb3JlX0dlbmUxQiA9IGNvbF9kb3VibGUoKSxcbiAgenNjb3JlX0dlbmUyQSA9IGNvbF9sb2dpY2FsKCksXG4gIHpzY29yZV9HZW5lMkIgPSBjb2xfZG91YmxlKCksXG4gIG5vdGVfZXhwcmVzc2lvbl9HZW5lMkEgPSBjb2xfbG9naWNhbCgpLFxuICBHZW5lMkEgPSBjb2xfbG9naWNhbCgpLFxuICBHZW5lMkFfYW5ubyA9IGNvbF9sb2dpY2FsKCksXG4gIGNhbGxlci5jb3VudCA9IGNvbF9kb3VibGUoKVxuKVxuIn0= -->
 <pre><code>Parsed with column specification:
 cols(
   .default = col_character(),
-  zscore_Gene1A = [32mcol_double()[39m,
-  zscore_Gene1B = [32mcol_double()[39m,
-  zscore_Gene2A = [33mcol_logical()[39m,
-  zscore_Gene2B = [32mcol_double()[39m,
-  note_expression_Gene2A = [33mcol_logical()[39m,
-  Gene2A = [33mcol_logical()[39m,
-  Gene2A_anno = [33mcol_logical()[39m,
-  caller.count = [32mcol_double()[39m
-)
-See spec(...) for full column specifications.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIycgSG93ZXZlciwgc29tZSBiaW9zcGVjaW1lbnMgYXJlIG5vdCByZXByZXNlbnRlZCBpbiB0aGlzIGZpbHRlcmVkLCBwcmlvcml0aXplZFxuIycgZmlsZSBidXQgKmFyZSogcHJlc2VudCBpbiB0aGUgb3JpZ2luYWwgZmlsZXMgLS0gdGhpcyB3aWxsIGNhdXNlIHRoZW0gdG8gYmVcbiMnIFwibWlzc2luZ1wiIGluIHRoZSBmaW5hbCBmaWxlcyBmb3IgY29uc3VtcHRpb24gd2hpY2ggY291bGQgbWlzbGVhZCBhbmFseXN0cy5cbmFycmliYURGIDwtIHJlYWRfdHN2KGZpbGUucGF0aChkYXRhRGlyLCBcInBidGEtZnVzaW9uLWFycmliYS50c3YuZ3pcIikpXG5gYGAifQ== -->
+  zscore_Gene1A = col_double(),
+  zscore_Gene1B = col_double(),
+  zscore_Gene2A = col_logical(),
+  zscore_Gene2B = col_double(),
+  note_expression_Gene2A = col_logical(),
+  Gene2A = col_logical(),
+  Gene2A_anno = col_logical(),
+  caller.count = col_double()
+)</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
+<pre><code>See spec(...) for full column specifications.</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMnIEhvd2V2ZXIsIHNvbWUgYmlvc3BlY2ltZW5zIGFyZSBub3QgcmVwcmVzZW50ZWQgaW4gdGhpcyBmaWx0ZXJlZCwgcHJpb3JpdGl6ZWQiLCIjJyBmaWxlIGJ1dCAqYXJlKiBwcmVzZW50IGluIHRoZSBvcmlnaW5hbCBmaWxlcyAtLSB0aGlzIHdpbGwgY2F1c2UgdGhlbSB0byBiZSIsIiMnIFwibWlzc2luZ1wiIGluIHRoZSBmaW5hbCBmaWxlcyBmb3IgY29uc3VtcHRpb24gd2hpY2ggY291bGQgbWlzbGVhZCBhbmFseXN0cy4iLCJhcnJpYmFERiA8LSByZWFkX3RzdihmaWxlLnBhdGgoZGF0YURpciwgXCJwYnRhLWZ1c2lvbi1hcnJpYmEudHN2Lmd6XCIpKSJdfQ== -->
 <pre class="r"><code>#' However, some biospecimens are not represented in this filtered, prioritized
 #' file but *are* present in the original files -- this will cause them to be
 #' &quot;missing&quot; in the final files for consumption which could mislead analysts.
 arribaDF &lt;- read_tsv(file.path(dataDir, &quot;pbta-fusion-arriba.tsv.gz&quot;))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgc3BsaXRfcmVhZHMxID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIHNwbGl0X3JlYWRzMiA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBkaXNjb3JkYW50X21hdGVzID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIGNvdmVyYWdlMSA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBjb3ZlcmFnZTIgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgc3BsaXRfcmVhZHMxID0gY29sX2RvdWJsZSgpLFxuICBzcGxpdF9yZWFkczIgPSBjb2xfZG91YmxlKCksXG4gIGRpc2NvcmRhbnRfbWF0ZXMgPSBjb2xfZG91YmxlKCksXG4gIGNvdmVyYWdlMSA9IGNvbF9kb3VibGUoKSxcbiAgY292ZXJhZ2UyID0gY29sX2RvdWJsZSgpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbiJ9 -->
 <pre><code>Parsed with column specification:
 cols(
   .default = col_character(),
-  split_reads1 = [32mcol_double()[39m,
-  split_reads2 = [32mcol_double()[39m,
-  discordant_mates = [32mcol_double()[39m,
-  coverage1 = [32mcol_double()[39m,
-  coverage2 = [32mcol_double()[39m
+  split_reads1 = col_double(),
+  split_reads2 = col_double(),
+  discordant_mates = col_double(),
+  coverage1 = col_double(),
+  coverage2 = col_double()
 )
 See spec(...) for full column specifications.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RhcmZ1c2lvbkRGIDwtIHJlYWRfdHN2KGZpbGUucGF0aChkYXRhRGlyLCBcInBidGEtZnVzaW9uLXN0YXJmdXNpb24udHN2Lmd6XCIpKVxuYGBgIn0= -->
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjoic3RhcmZ1c2lvbkRGIDwtIHJlYWRfdHN2KGZpbGUucGF0aChkYXRhRGlyLCBcInBidGEtZnVzaW9uLXN0YXJmdXNpb24udHN2Lmd6XCIpKSJ9 -->
 <pre class="r"><code>starfusionDF &lt;- read_tsv(file.path(dataDir, &quot;pbta-fusion-starfusion.tsv.gz&quot;))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgSnVuY3Rpb25SZWFkQ291bnQgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgU3Bhbm5pbmdGcmFnQ291bnQgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgRkZQTSA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBMZWZ0QnJlYWtFbnRyb3B5ID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIFJpZ2h0QnJlYWtFbnRyb3B5ID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW1cbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuIn0= -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgSnVuY3Rpb25SZWFkQ291bnQgPSBjb2xfZG91YmxlKCksXG4gIFNwYW5uaW5nRnJhZ0NvdW50ID0gY29sX2RvdWJsZSgpLFxuICBGRlBNID0gY29sX2RvdWJsZSgpLFxuICBMZWZ0QnJlYWtFbnRyb3B5ID0gY29sX2RvdWJsZSgpLFxuICBSaWdodEJyZWFrRW50cm9weSA9IGNvbF9kb3VibGUoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
 <pre><code>Parsed with column specification:
 cols(
   .default = col_character(),
-  JunctionReadCount = [32mcol_double()[39m,
-  SpanningFragCount = [32mcol_double()[39m,
-  FFPM = [32mcol_double()[39m,
-  LeftBreakEntropy = [32mcol_double()[39m,
-  RightBreakEntropy = [32mcol_double()[39m
+  JunctionReadCount = col_double(),
+  SpanningFragCount = col_double(),
+  FFPM = col_double(),
+  LeftBreakEntropy = col_double(),
+  RightBreakEntropy = col_double()
 )
 See spec(...) for full column specifications.</code></pre>
-<!-- rnb-output-end -->
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -1908,7 +1910,7 @@ See spec(...) for full column specifications.</code></pre>
 <h3>Output</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVzdWx0c0RpciA8LSBcInJlc3VsdHNcIlxuaWYgKCFkaXIuZXhpc3RzKHJlc3VsdHNEaXIpKSB7XG4gIGRpci5jcmVhdGUocmVzdWx0c0Rpcilcbn1cbmVwZW5kRmlsZSA8LSBmaWxlLnBhdGgocmVzdWx0c0RpciwgXCJmdXNpb25fc3VtbWFyeV9lcGVuZHltb21hX2ZvaS50c3ZcIilcbmVtYnJ5RmlsZSA8LSBmaWxlLnBhdGgocmVzdWx0c0RpciwgXCJmdXNpb25fc3VtbWFyeV9lbWJyeW9uYWxfZm9pLnRzdlwiKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbInJlc3VsdHNEaXIgPC0gXCJyZXN1bHRzXCIiLCJpZiAoIWRpci5leGlzdHMocmVzdWx0c0RpcikpIHtcbiAgZGlyLmNyZWF0ZShyZXN1bHRzRGlyKVxufSIsImVwZW5kRmlsZSA8LSBmaWxlLnBhdGgocmVzdWx0c0RpciwgXCJmdXNpb25fc3VtbWFyeV9lcGVuZHltb21hX2ZvaS50c3ZcIikiLCJlbWJyeUZpbGUgPC0gZmlsZS5wYXRoKHJlc3VsdHNEaXIsIFwiZnVzaW9uX3N1bW1hcnlfZW1icnlvbmFsX2ZvaS50c3ZcIikiXX0= -->
 <pre class="r"><code>resultsDir &lt;- &quot;results&quot;
 if (!dir.exists(resultsDir)) {
   dir.create(resultsDir)
@@ -1925,7 +1927,7 @@ embryFile &lt;- file.path(resultsDir, &quot;fusion_summary_embryonal_foi.tsv&quo
 <p>Taken from <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/245"><code>AlexsLemonade/OpenPBTA-analysis#245</code></a> and <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251"><code>AlexsLemonade/OpenPBTA-analysis#251</code></a>, respectively.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIycgKipGaWx0ZXJzKipcbiMnXG4jJyAqRnVzaW9ucyBGaWx0ZXJzKlxuIycgMTogRXhhY3QgbWF0Y2ggYSBsaXN0IG9mIGZ1c2lvbnMgY29tbW9uIGluIEVwZW5keW1vbWEgdHVtb3JzXG5lcGVuZEZ1c2VzIDwtIGMoXG4gIFwiQzExb3JmOTUtLU1BTUwyXCIsXG4gIFwiQzExb3JmOTUtLVJFTEFcIixcbiAgXCJDMTFvcmY5NS0tWUFQMVwiLFxuICBcIkxUQlAzLS1SRUxBXCIsXG4gIFwiUFRFTi0tVEFTMlIxXCIsXG4gIFwiWUFQMS0tRkFNMTE4QlwiLFxuICBcIllBUDEtLU1BTUxEMVwiLFxuICBcIllBUDEtLU1BTUxEMlwiXG4pXG5lcGVuZEdlbmVzIDwtIGMoXG4gIFwiUkVMQVwiXG4pXG4jJyAyOiBFeGFjdCBtYXRjaCBhIGxpc3Qgb2YgZnVzaW9ucyBjb21tb24gaW4gRW1icnlvbmFsIHR1bW9yc1xuIycgYXMgd2VsbCBhcyBmdXNpb25zIGNvbnRhaW5pbmcgYSBwYXJ0aWN1bGFyIGdlbmUgd2l0aCBhbnkgb3RoZXIgZ2VuZVxuZW1icnlGdXNlcyA8LSBjKFxuICBcIkNJQy0tTlVUTTFcIixcbiAgXCJNTjEtLUJFTkQyXCIsXG4gIFwiTU4xLS1DWFhDNVwiXG4pXG5lbWJyeUdlbmVzIDwtIGMoXG4gIFwiRk9YUjJcIixcbiAgXCJNTjFcIixcbiAgXCJUVFlIMVwiXG4pXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMnICoqRmlsdGVycyoqIiwiIyciLCIjJyAqRnVzaW9ucyBGaWx0ZXJzKiIsIiMnIDE6IEV4YWN0IG1hdGNoIGEgbGlzdCBvZiBmdXNpb25zIGNvbW1vbiBpbiBFcGVuZHltb21hIHR1bW9ycyIsImVwZW5kRnVzZXMgPC0gYyhcbiAgXCJDMTFvcmY5NS0tTUFNTDJcIixcbiAgXCJDMTFvcmY5NS0tUkVMQVwiLFxuICBcIkMxMW9yZjk1LS1ZQVAxXCIsXG4gIFwiTFRCUDMtLVJFTEFcIixcbiAgXCJQVEVOLS1UQVMyUjFcIixcbiAgXCJZQVAxLS1GQU0xMThCXCIsXG4gIFwiWUFQMS0tTUFNTEQxXCIsXG4gIFwiWUFQMS0tTUFNTEQyXCJcbikiLCJlcGVuZEdlbmVzIDwtIGMoXG4gIFwiUkVMQVwiXG4pIiwiIycgMjogRXhhY3QgbWF0Y2ggYSBsaXN0IG9mIGZ1c2lvbnMgY29tbW9uIGluIEVtYnJ5b25hbCB0dW1vcnMiLCIjJyBhcyB3ZWxsIGFzIGZ1c2lvbnMgY29udGFpbmluZyBhIHBhcnRpY3VsYXIgZ2VuZSB3aXRoIGFueSBvdGhlciBnZW5lIiwiZW1icnlGdXNlcyA8LSBjKFxuICBcIkNJQy0tTlVUTTFcIixcbiAgXCJNTjEtLUJFTkQyXCIsXG4gIFwiTU4xLS1DWFhDNVwiXG4pIiwiZW1icnlHZW5lcyA8LSBjKFxuICBcIkZPWFIyXCIsXG4gIFwiTU4xXCIsXG4gIFwiVFRZSDFcIlxuKSJdfQ== -->
 <pre class="r"><code>#' **Filters**
 #'
 #' *Fusions Filters*
@@ -1962,7 +1964,7 @@ embryGenes &lt;- c(
 <h3>Filter putative oncogenic fusions list</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxsRnVzZUVwZW5kIDwtIGZpbHRlckZ1c2lvbihkZiA9IHB1dGF0aXZlT25jb2dlbmljREYsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZ1c2VzID0gZXBlbmRGdXNlcyxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2VuZXMgPSBlcGVuZEdlbmVzKVxuYWxsRnVzZUVtYnJ5IDwtIGZpbHRlckZ1c2lvbihkZiA9IHB1dGF0aXZlT25jb2dlbmljREYsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZ1c2VzID0gZW1icnlGdXNlcyxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2VuZXMgPSBlbWJyeUdlbmVzKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbImFsbEZ1c2VFcGVuZCA8LSBmaWx0ZXJGdXNpb24oZGYgPSBwdXRhdGl2ZU9uY29nZW5pY0RGLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICBmdXNlcyA9IGVwZW5kRnVzZXMsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdlbmVzID0gZXBlbmRHZW5lcykiLCJhbGxGdXNlRW1icnkgPC0gZmlsdGVyRnVzaW9uKGRmID0gcHV0YXRpdmVPbmNvZ2VuaWNERixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZnVzZXMgPSBlbWJyeUZ1c2VzLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZW5lcyA9IGVtYnJ5R2VuZXMpIl19 -->
 <pre class="r"><code>allFuseEpend &lt;- filterFusion(df = putativeOncogenicDF,
                              fuses = ependFuses,
                              genes = ependGenes)
@@ -1975,7 +1977,7 @@ allFuseEmbry &lt;- filterFusion(df = putativeOncogenicDF,
 <p>Get the biospecimen IDs that are present in <em>either</em> caller file (Arriba, STARFusion). The fusions in the putative oncogenic fusion file can be retained even if they are not in both callers: <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/8fba1753608d8ac0aa3d5d7d63c480b8f00ff0e9/analyses/fusion_filtering/04-project-specific-filtering.Rmd#L242" class="uri">https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/8fba1753608d8ac0aa3d5d7d63c480b8f00ff0e9/analyses/fusion_filtering/04-project-specific-filtering.Rmd#L242</a> We use the putative oncogenic file here, therefore any sample that is in either file but does not have a fusion that is relevant to the subtyping tickets is not <em>missing</em> but instead has no evidence of the relevant fusions.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3BlY2ltZW5zVW5pb248LSB1bmlvbihhcnJpYmFERiR0dW1vcl9pZCwgc3RhcmZ1c2lvbkRGJHR1bW9yX2lkKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoic3BlY2ltZW5zVW5pb248LSB1bmlvbihhcnJpYmFERiR0dW1vcl9pZCwgc3RhcmZ1c2lvbkRGJHR1bW9yX2lkKSJ9 -->
 <pre class="r"><code>specimensUnion&lt;- union(arribaDF$tumor_id, starfusionDF$tumor_id)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -1983,26 +1985,34 @@ allFuseEmbry &lt;- filterFusion(df = putativeOncogenicDF,
 <p>Write the table with fusion counts to file for both tumor types. Any sample in either caller should be represented in the final file.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxsRnVzZUVwZW5kICU+JVxuICBwcmVwYXJlT3V0cHV0KHNwZWNpbWVuc1VuaW9uKSAlPiVcbiAgd3JpdGVfdHN2KGVwZW5kRmlsZSlcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYWxsRnVzZUVwZW5kICU+JVxuICBwcmVwYXJlT3V0cHV0KHNwZWNpbWVuc1VuaW9uKSAlPiVcbiAgd3JpdGVfdHN2KGVwZW5kRmlsZSkifQ== -->
 <pre class="r"><code>allFuseEpend %&gt;%
   prepareOutput(specimensUnion) %&gt;%
   write_tsv(ependFile)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiVXNpbmcgRnVzaW9uTmFtZSBhcyB2YWx1ZSBjb2x1bW46IHVzZSB2YWx1ZS52YXIgdG8gb3ZlcnJpZGUuXG5BZ2dyZWdhdGlvbiBmdW5jdGlvbiBtaXNzaW5nOiBkZWZhdWx0aW5nIHRvIGxlbmd0aFxuYmluZGluZyBjaGFyYWN0ZXIgYW5kIGZhY3RvciB2ZWN0b3IsIGNvZXJjaW5nIGludG8gY2hhcmFjdGVyIHZlY3RvclxuIn0= -->
-<pre><code>Using FusionName as value column: use value.var to override.
-Aggregation function missing: defaulting to length
-binding character and factor vector, coercing into character vector</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxsRnVzZUVtYnJ5ICU+JVxuICBwcmVwYXJlT3V0cHV0KHNwZWNpbWVuc1VuaW9uKSAlPiVcbiAgd3JpdGVfdHN2KGVtYnJ5RmlsZSlcbmBgYCJ9 -->
+<!-- rnb-message-begin eyJkYXRhIjoiVXNpbmcgRnVzaW9uTmFtZSBhcyB2YWx1ZSBjb2x1bW46IHVzZSB2YWx1ZS52YXIgdG8gb3ZlcnJpZGUuXG4ifQ== -->
+<pre><code>Using FusionName as value column: use value.var to override.</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiQWdncmVnYXRpb24gZnVuY3Rpb24gbWlzc2luZzogZGVmYXVsdGluZyB0byBsZW5ndGhcbiJ9 -->
+<pre><code>Aggregation function missing: defaulting to length</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZyBpbiBiaW5kX3Jvd3NfKHgsIC5pZCk6IGJpbmRpbmcgY2hhcmFjdGVyIGFuZCBmYWN0b3IgdmVjdG9yLFxuY29lcmNpbmcgaW50byBjaGFyYWN0ZXIgdmVjdG9yXG4ifQ== -->
+<pre><code>Warning in bind_rows_(x, .id): binding character and factor vector,
+coercing into character vector</code></pre>
+<!-- rnb-warning-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYWxsRnVzZUVtYnJ5ICU+JVxuICBwcmVwYXJlT3V0cHV0KHNwZWNpbWVuc1VuaW9uKSAlPiVcbiAgd3JpdGVfdHN2KGVtYnJ5RmlsZSkifQ== -->
 <pre class="r"><code>allFuseEmbry %&gt;%
   prepareOutput(specimensUnion) %&gt;%
   write_tsv(embryFile)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiVXNpbmcgRnVzaW9uTmFtZSBhcyB2YWx1ZSBjb2x1bW46IHVzZSB2YWx1ZS52YXIgdG8gb3ZlcnJpZGUuXG5BZ2dyZWdhdGlvbiBmdW5jdGlvbiBtaXNzaW5nOiBkZWZhdWx0aW5nIHRvIGxlbmd0aFxuYmluZGluZyBjaGFyYWN0ZXIgYW5kIGZhY3RvciB2ZWN0b3IsIGNvZXJjaW5nIGludG8gY2hhcmFjdGVyIHZlY3RvclxuIn0= -->
+<!-- rnb-message-begin eyJkYXRhIjoiVXNpbmcgRnVzaW9uTmFtZSBhcyB2YWx1ZSBjb2x1bW46IHVzZSB2YWx1ZS52YXIgdG8gb3ZlcnJpZGUuXG5BZ2dyZWdhdGlvbiBmdW5jdGlvbiBtaXNzaW5nOiBkZWZhdWx0aW5nIHRvIGxlbmd0aFxuIn0= -->
 <pre><code>Using FusionName as value column: use value.var to override.
-Aggregation function missing: defaulting to length
-binding character and factor vector, coercing into character vector</code></pre>
-<!-- rnb-output-end -->
+Aggregation function missing: defaulting to length</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZyBpbiBiaW5kX3Jvd3NfKHgsIC5pZCk6IGJpbmRpbmcgY2hhcmFjdGVyIGFuZCBmYWN0b3IgdmVjdG9yLFxuY29lcmNpbmcgaW50byBjaGFyYWN0ZXIgdmVjdG9yXG4ifQ== -->
+<pre><code>Warning in bind_rows_(x, .id): binding character and factor vector,
+coercing into character vector</code></pre>
+<!-- rnb-warning-end -->
 <!-- rnb-chunk-end -->
 </div>
 </div>
