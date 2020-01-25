@@ -22,7 +22,7 @@ wget -N --directory-prefix=driver-lists -O driver-lists/brain-goi-list-short.txt
 #### Download consensus mutation files
 
 maf_consensus=../../data/pbta-snv-consensus-mutation.maf.tsv.gz
-controlfreec_autosomes=../focal-cn-file-preparation/results/controlfreec_annotated_cn_autosomes.tsv.gz
+controlfreec_autosomes=../focal-cn-file-preparation/results/controlfreec_annotated_cn_autosomes.tsv.bz2
 fusion_file=../../data/pbta-fusion-putative-oncogenic.tsv
 histologies_file=../../data/pbta-histologies.tsv
 intermediate_directory=../../scratch/oncoprint_files
