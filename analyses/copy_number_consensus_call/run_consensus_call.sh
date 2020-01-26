@@ -10,6 +10,12 @@ script_directory="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
+
+SCRATCHDIR=../../scratch/copy_consensus
+# make directories:
+mkdir -p $SCRATCHDIR
+mkdir -p results
+
 ## Run the python script to go from 1 big manta file, cnvkit file and freec file into 3 directories. 
 ## Each directory with individual sample files.
 
@@ -17,7 +23,8 @@ python3 scripts/merged_to_individual_files.py \
     --manta ../../data/pbta-sv-manta.tsv.gz \
     --cnvkit ../../data/pbta-cnv-cnvkit.seg.gz \
     --freec ../../data/pbta-cnv-controlfreec.tsv.gz \
-    --snake ../../scratch/config_snakemake.yaml \
+    --snake $SCRATCHDIR/config_snakemake.yaml \
+    --scratch $SCRATCHDIR \
     --uncalled results/uncalled_samples.tsv
 
 
@@ -38,7 +45,7 @@ python3 scripts/merged_to_individual_files.py \
 
 snakemake \
     -s Snakefile \
-    --configfile ../../scratch/config_snakemake.yaml \
+    --configfile $SCRATCHDIR/config_snakemake.yaml \
     -j \
     --restart-times 2
 

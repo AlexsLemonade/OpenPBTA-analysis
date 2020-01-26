@@ -37,7 +37,9 @@ parser.add_argument('--cnvkit', required=True,
 parser.add_argument('--freec', required=True,
                     help='path to the freec file')
 parser.add_argument('--snake', required=True,
-                    help='path new snakemake file')
+                    help='path for snakemake config file')
+parser.add_argument('--scratch', required=True,
+                    help='directory for scratch files')
 parser.add_argument('--uncalled', required=True,
                     help='path for the table of sample-caller outputs removed and not called for too many CNVs')
 parser.add_argument('--maxcnvs', default=2500,
@@ -46,6 +48,7 @@ parser.add_argument('--cnvsize', default=3000,
                     help='cnv cutoff size in base pairs')
 parser.add_argument('--freecp', default=0.01,
                     help='p-value cutoff for freec')
+
 args = parser.parse_args()
 
 
@@ -68,15 +71,17 @@ freec_samples = set(merged_freec[FREEC_ID_HEADER])
 all_samples = manta_samples | cnvkit_samples | freec_samples # set union
 
 ## Define and create assumed directories
-manta_d = os.path.join('..', '..', 'scratch', 'manta_manta')
-cnvkit_d = os.path.join('..', '..', 'scratch', 'cnvkit_cnvkit')
-freec_d = os.path.join('..', '..', 'scratch', 'freec_freec')
+scratch_d = args.scratch
+manta_d = os.path.join(scratch_d, 'manta_manta')
+cnvkit_d = os.path.join(scratch_d, 'cnvkit_cnvkit')
+freec_d = os.path.join(scratch_d, 'freec_freec')
 if not os.path.exists(manta_d):
     os.makedirs(manta_d)
 if not os.path.exists(cnvkit_d):
     os.makedirs(cnvkit_d)
 if not os.path.exists(freec_d):
     os.makedirs(freec_d)
+
 
 
 bad_calls = []
@@ -121,8 +126,9 @@ with open(args.snake, 'w') as file:
     file.write('cnvkit_ext: ' + CNVKIT_EXT + '\n')
     file.write('freec_ext: ' + FREEC_EXT + '\n')
 
-    ## Define location for python scripts
+    ## Define location for python scripts and scratch
     file.write('scripts: ' + os.path.dirname(os.path.realpath(__file__)) + '\n')
+    file.write('scratch: ' + scratch_d + '\n')
 
     ## Define the size cutoff and freec's pval cut off.
     file.write('size_cutoff: ' + str(args.cnvsize) + '\n')
