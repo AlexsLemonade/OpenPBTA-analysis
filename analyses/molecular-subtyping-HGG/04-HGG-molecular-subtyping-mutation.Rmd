@@ -296,7 +296,7 @@ We'll include specific information from the defining lesions table.
 defining_lesions_df <- defining_lesions_df %>%
   # We're not concerned with disease type classifications at the moment
   dplyr::select(-dplyr::starts_with("disease"),
-                -short_histology) %>%
+                -dplyr::contains("histology")) %>%
   # Filter to tumor biospecimens that are in the subset file
   dplyr::filter(Kids_First_Biospecimen_ID %in% subset_bsid) %>%
   # All other data.frame use 'Tumor_Sample_Barcode' for the column that contains
