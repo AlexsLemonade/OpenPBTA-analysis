@@ -3,9 +3,6 @@ title: "High-grade Glioma Molecular Subtyping - Focal and Broad Copy Number Alte
 author: "Chante Bethell, Stephanie J. Spielman, and Jaclyn Taroni for ALSF CCDL"
 date: "2020"
 output:
-  html_document:
-    df_print: paged
-    toc: yes
   html_notebook:
     toc: yes
     toc_float: yes
