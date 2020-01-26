@@ -3,11 +3,19 @@ title: "Generate Fusion Summary Files"
 output: html_notebook
 author: Daniel Miller (D3b) and Jaclyn Taroni (CCDL)
 date: January 2020
+params:
+  is_ci: 0
 ---
 
 Generate fusion files specifically for consumption by molecular subtyping analyses
 
 ## Set up
+
+```{r}
+# if running in CI, we need to skip the EPN steps
+if (params$is_ci == 0) running_in_ci <- FALSE
+if (params$is_ci == 1) running_in_ci <- TRUE
+```
 
 ### Libraries and functions
 
@@ -139,29 +147,6 @@ We use the putative oncogenic file here, therefore any sample that is in either 
 specimensUnion<- union(arribaDF$tumor_id, starfusionDF$tumor_id)
 ```
 
-#### Write ependymoma fusions to file
-
-```{r}
-allFuseEpend <- allFuseEpend %>%
-  prepareOutput(specimensUnion)
-```
-
-```{r}
-# Are there any missing fusions?
-setdiff(ependFuses, colnames(allFuseEpend))
-```
-
-```{r}
-allFuseEpend %>%
-  mutate(
-    `C11orf95--YAP1` = 0,
-    `LTBP3--RELA` = 0,
-    `PTEN--TAS2R1` = 0,
-    `YAP1--MAMLD2` = 0
-  ) %>%
-  write_tsv(ependFile)
-```
-
 #### Write non-MB, non-ATRT embryonal fusions to file
 
 ```{r}
@@ -183,3 +168,18 @@ allFuseEmbry %>%
   write_tsv(embryFile)
 ```
 
+#### Write ependymoma fusions to file
+
+```{r}
+if (!running_in_ci) {
+  allFuseEpend %>%
+    prepareOutput(specimensUnion) %>%
+    mutate(
+      `C11orf95--YAP1` = 0,
+      `LTBP3--RELA` = 0,
+      `PTEN--TAS2R1` = 0,
+      `YAP1--MAMLD2` = 0
+    ) %>%
+    write_tsv(ependFile)
+}
+```
