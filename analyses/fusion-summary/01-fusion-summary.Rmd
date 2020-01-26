@@ -142,24 +142,24 @@ specimensUnion<- union(arribaDF$tumor_id, starfusionDF$tumor_id)
 #### Write ependymoma fusions to file
 
 ```{r}
-# allFuseEpend <- allFuseEpend %>%
-#   prepareOutput(specimensUnion)
+allFuseEpend <- allFuseEpend %>%
+  prepareOutput(specimensUnion)
 ```
 
 ```{r}
 # Are there any missing fusions?
-# setdiff(ependFuses, colnames(allFuseEpend))
+setdiff(ependFuses, colnames(allFuseEpend))
 ```
 
 ```{r}
-# allFuseEpend %>%
-#   mutate(
-#     `C11orf95--YAP1` = 0,
-#     `LTBP3--RELA` = 0,
-#     `PTEN--TAS2R1` = 0,
-#     `YAP1--MAMLD2` = 0
-#   ) %>%
-#   write_tsv(ependFile)
+allFuseEpend %>%
+  mutate(
+    `C11orf95--YAP1` = 0,
+    `LTBP3--RELA` = 0,
+    `PTEN--TAS2R1` = 0,
+    `YAP1--MAMLD2` = 0
+  ) %>%
+  write_tsv(ependFile)
 ```
 
 #### Write non-MB, non-ATRT embryonal fusions to file
