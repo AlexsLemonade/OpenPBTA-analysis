@@ -65,13 +65,7 @@ polya_expression <-
 ## TODO: This section will be updated to read in focal CN data derived from
 ##       copy number consensus calls.
 cn_df <- readr::read_tsv(
-  file.path(
-    root_dir,
-    "analyses",
-    "focal-cn-file-preparation",
-    "results",
-    "cnvkit_annotated_cn_autosomes.tsv.bz2"
-  )
+  "https://github.com/AlexsLemonade/OpenPBTA-analysis/raw/fa214291713575be7fd20c92374b268870f4173f/analyses/focal-cn-file-preparation/results/cnvkit_annotated_cn_autosomes.tsv.gz"
 )
 
 # Read in fusion data
