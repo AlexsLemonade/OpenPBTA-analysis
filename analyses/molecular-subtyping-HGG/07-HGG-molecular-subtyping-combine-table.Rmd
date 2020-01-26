@@ -162,12 +162,6 @@ all(missing_bsids %in% starfusion_df$tumor_id)
 ```
 
 ```{r}
-starfusion_missing <- 
-  missing_bsids[which(!(missing_bsids %in% starfusion_df$tumor_id))]
-starfusion_missing
-```
-
-```{r}
 arriba_df <- read_tsv(file.path(data_dir, "pbta-fusion-arriba.tsv.gz"))
 ```
 
@@ -176,25 +170,18 @@ all(missing_bsids %in% arriba_df$tumor_id)
 ```
 
 So all samples that are "missing" from the putative oncogenic fusion file are present in the Arriba file, but some are not present in the STARFusion file.
-Fusions need to be in at least two callers [per this notebook](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/1a8a35954a09c6a64ae38f2b885867420da4b1d0/analyses/fusion_filtering/04-project-specific-filtering.Rmd#L49). 
-We will consider biospecimen identifiers that are not in STARFusion to have missing fusion data, but for those that are in both original caller files that is the equivalent of having no relevant fusions recorded.
+Putative oncogenic fusions are retained if they are detected by _either_ caller.
+We will consider biospecimen identifiers that were present in the Arriba file to have no evidence for these fusions, rather than consider them missing data.
 
 ```{r}
-no_evidence_ids <- setdiff(missing_bsids, starfusion_missing)
-
 fusion_df <- fusion_df %>%
-  # First add in the instances where we have no evidence of these fusions,
-  # these will be IDs that are present in the STARFusion file
-  bind_rows(data.frame(Sample = no_evidence_ids)) %>%
-  replace(is.na(.), "None") %>%
-  # For the IDs that are not in the STARFusion file, leave the fusion values
-  # as NA
-  bind_rows(data.frame(Sample = starfusion_missing))
+  # Add in the instances where we have no evidence 
+  bind_rows(data.frame(Sample = missing_bsids)) %>%
+  replace(is.na(.), "None")
 ```
 
 ```{r}
-rm(arriba_df, putative_oncogenic_df, starfusion_df, starfusion_missing,
-   missing_bsids, no_evidence_ids)
+rm(arriba_df, putative_oncogenic_df, starfusion_df, missing_bsids)
 ```
 
 ### Join the Expression and Fusion Data
