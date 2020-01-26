@@ -105,10 +105,24 @@ rule manta_filter:
         """ | tr [:blank:] '\t' > {output.manta_dup}"""
 
 
-rule filter_telomeres:
+rule generate_excluded:
+    # Combine the sets of regions that are not well called by CNV algorithms for exclusion
+    input:
+        "ref/telomeres.bed",
+        "ref/centromeres.bed",
+        "ref/heterochromatin.bed",
+        "ref/immunoglobulin_regions.bed",
+        "ref/segmental_dups.bed"
+    output:
+        "ref/cnv_excluded_regions.bed"
+    shell:
+        "cat {input} | cut -f 1-3 | sort -k1,1 -k2,2n | bedtools merge > {output}"
+
+
+rule filter_excluded:
     input:
         ## Define the location of the input file and take the path/extension from the config file
-        bad_list=os.path.join("ref", "bad_chromosomal_seg_updated_merged.bed"),
+        exclude_list="ref/cnv_excluded_regions.bed",
         bedfile="../../scratch/interim/{sample}.{caller}.{dupdel}.bed"
     output:
         ## Define the output files' names
@@ -116,7 +130,7 @@ rule filter_telomeres:
     threads: 1
     shell:
         ## Invoke the bedtools subtract pass in the reference and CNVs files. Direct the stdout to a new file. 
-        "bedtools subtract -N -a {input.bedfile} -b {input.bad_list} -f 0.5 > {output.filtered_bed}"
+        "bedtools subtract -N -a {input.bedfile} -b {input.exclude_list} -f 0.5 > {output.filtered_bed}"
 
 
 rule first_merge:
@@ -247,6 +261,10 @@ rule merge_all:
        " | cat - {input.bedfiles} "
        " | cut -f 1-8 "
        " > {output}"
+
+
+
+
 
 rule clean_output:
     input:
