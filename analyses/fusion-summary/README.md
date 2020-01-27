@@ -5,10 +5,10 @@ This module generates summary files for fusions of interest present in biospecim
 1. Ependymoma tumors
 2. Embryonal tumors not from ATRT or MB
 
-To generate the tables simply run:
+To generate the tables run:
 
 ```
-./run-new-analysis.sh
+bash run-new-analysis.sh
 ```
 
 ## General Use
