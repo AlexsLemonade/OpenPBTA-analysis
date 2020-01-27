@@ -43,7 +43,7 @@ source(file.path("util", "circos-plots.R"))
 # Path to data directory
 data_dir <- file.path("..", "..", "data")
 scratch_dir <- file.path("..", "..", "scratch")
-
+sv_vcf <- 
 # Path to output directory
 plots_dir <- "plots"
 
@@ -54,6 +54,10 @@ hist_plots_dir <- file.path(plots_dir, "tumor-type")
 if (!dir.exists(hist_plots_dir)) {
   dir.create(hist_plots_dir, recursive = TRUE)
 }
+```
+
+```{r}
+
 ```
 
 ### Read in data 
@@ -71,34 +75,36 @@ Load in the previously formatted breakpoint data.
 breaks_list <- readr::read_rds(file.path("breakpoint-data", "breaks_lists.RDS"))
 ```
 
-Read in the CNV and SV data. 
+Read in the CNV data. 
 
 ```{r}
 cnv_df <- data.table::fread(
   file.path(data_dir, "pbta-cnv-cnvkit.seg.gz"), data.table = FALSE) 
-
-sv_df <- data.table::fread(
-  file.path(data_dir, "pbta-sv-manta.tsv.gz"), data.table = FALSE) 
 ```
+
+Read in the formatted SV data. 
 
 ```{r}
-sample_df <- readr::read_tsv(file.path(scratch_dir, "sv-vcf", "BS_0DKPGQWD_withoutYandM.tsv"))
+# Get the file names for the 
+sv_files <- list.files(file.path(scratch_dir, "sv-vcf"), 
+                       pattern = "_withoutYandM.tsv", 
+                       full.names = TRUE)
 
-bed_1 <- sample_df %>% 
-  dplyr::select(chrom = chrom1, start = pos1, end = pos2) %>% 
-  dplyr::mutate(chrom = paste0("chr", chrom), 
-                start = as.integer(start), 
-                end = as.integer(end), 
-                value1 = rnorm(nrow(sample_df)))
+# Read in each of the sample's files
+sv_data <- lapply(sv_files, function(sv_file){
+                  readr::read_tsv(sv_file, 
+                                  # Set default as character
+                                  col_types = readr::cols(.default = "c"))
+})
 
-bed_2 <- sample_df %>% 
-  dplyr::select(chrom = chrom2, start = pos1, end = pos2) %>% 
-  dplyr::mutate(chrom = paste0("chr", chrom), 
-                start = as.integer(start), 
-                end = as.integer(end),
-                value1 = rnorm(nrow(sample_df)))
+# Name the dataset by their biospecimen ID
+names(sv_data) <- gsub("_withoutYandM.tsv", "", stringr::word(sv_files, sep = "/", 5))
+
+# Collapse into one data.frame
+sv_df <- dplyr::bind_rows(sv_data, .id = "biospecimen_id")
 ```
 
+Example uses of `circos_map_plot`
 
 ```{r}
 circos_map_plot(df = breaks_list$sv_breaks,
