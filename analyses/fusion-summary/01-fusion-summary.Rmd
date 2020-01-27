@@ -61,7 +61,7 @@ filterFusion <- function(df, bioid, fuses, genes) {
 prepareOutput <- function(fuseDF, bioid) {
   fuseDF %>% 
     reshape2::dcast(Sample ~ FusionName) %>%
-    bind_rows(data.frame(Sample = setdiff(bioid, fuseDF$Sample))) %>%
+    right_join(data.frame(Sample = bioid)) %>%
     replace(is.na(.), 0) %>%
     rename(Kids_First_Biospecimen_ID = Sample)
 }
