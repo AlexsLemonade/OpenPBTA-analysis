@@ -26,7 +26,7 @@ option_list <- list(
     c("-i", "--cnv_file"),
     type = "character",
     default = NULL,
-    help = "consensus filetsv",
+    help = "consensus file tsv",
   ),
   make_option(
     c("-o", "--output_file"),
