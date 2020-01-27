@@ -43,7 +43,8 @@ source(file.path("util", "circos-plots.R"))
 # Path to data directory
 data_dir <- file.path("..", "..", "data")
 scratch_dir <- file.path("..", "..", "scratch")
-sv_vcf <- 
+sv_vcf_dir <- file.path(scratch_dir, "sv-vcf")
+
 # Path to output directory
 plots_dir <- "plots"
 
@@ -56,8 +57,12 @@ if (!dir.exists(hist_plots_dir)) {
 }
 ```
 
-```{r}
+Run the SV process script if its output folder doesn't exist. 
 
+```{r}
+if (!dir.exists(sv_vcf_dir)) {
+  source(file.path("..", "sv-analysis", "01-process-sv-file.R"))
+}
 ```
 
 ### Read in data 
@@ -92,9 +97,9 @@ sv_files <- list.files(file.path(scratch_dir, "sv-vcf"),
 
 # Read in each of the sample's files
 sv_data <- lapply(sv_files, function(sv_file){
-                  readr::read_tsv(sv_file, 
+                  suppressWarnings(readr::read_tsv(sv_file, 
                                   # Set default as character
-                                  col_types = readr::cols(.default = "c"))
+                                  col_types = readr::cols(.default = "c")))
 })
 
 # Name the dataset by their biospecimen ID
@@ -104,21 +109,60 @@ names(sv_data) <- gsub("_withoutYandM.tsv", "", stringr::word(sv_files, sep = "/
 sv_df <- dplyr::bind_rows(sv_data, .id = "biospecimen_id")
 ```
 
-Example uses of `circos_map_plot`
+Make a translocation data.frame. 
 
 ```{r}
-circos_map_plot(df = breaks_list$sv_breaks,
+transloc_df <- sv_df %>% 
+  dplyr::filter(SVtype == "TRA") %>% 
+  dplyr::mutate(start1 = as.numeric(pos1), 
+                start2 = as.numeric(pos2), 
+                end2 = gsub("\\[|\\]|G|C|T|A", "", alt1), 
+                end1 = gsub("\\[|\\]|G|C|T|A", "", alt2), 
+                end2 = as.numeric(stringr::word(end2, sep = ":", 2)), 
+                end1 = as.numeric(stringr::word(end1, sep = ":", 2)))
+```
+
+## Example uses of `circos_map_plot`
+
+**Example 1** making a Circos plot that is color-coded circos by a factor.
+
+```{r}
+# Let's make a variable that specifies whether the data is a deletion or amplication. 
+cnv_df <- cnv_df %>% 
+  dplyr::mutate(direction = dplyr::case_when(seg.mean < 0 ~ "del", 
+                                             seg.mean > 0 ~ "amp", 
+                                             seg.mean == 0 ~"neutral"), 
+                direction = as.factor(direction))
+```
+
+Create a Circos plot for a single sample.
+For that same sample, let's add the translocations. 
+
+```{r}
+circos_map_plot(df = cnv_df, 
                 add_track = FALSE,
-                samples_col = "samples",
-                sample_names = "all",
+                samples_col = "ID",
+                sample_names = "BS_007JTNB8",
                 chr_col = "chrom",
-                start_col = "coord",
-                end_col =  "coord",
-                y_val = NULL,
+                start_col = "loc.start",
+                end_col =  "loc.end",
+                y_val = "copy.num",
                 track_height = .15,
                 type = "rect",
-                colour_key = "svclass", 
+                colour_key = "direction",
                 palette = "YlGnBu") 
+
+# Now add the translocation bit. 
+circos_map_transloc(transloc_df, 
+                    add_track = TRUE, # We change this to true to add on to our already existing plot
+                    sample_names = "BS_007JTNB8",
+                    samples_col = "biospecimen_id",
+                    chr_col_1 = "chrom1",
+                    chr_col_2 = "chrom2",
+                    start_col_1 = "start1",
+                    start_col_2 = "start2",
+                    end_col_1 =  "end1",
+                    end_col_2 =  "end2")
 ```
 
 ### Session Info
