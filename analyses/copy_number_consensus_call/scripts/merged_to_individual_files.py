@@ -1,9 +1,6 @@
-## Nhat Duong
-## November, 22 2019
+## Nhat Duong & J Shapiro
+## 2019 - 2020
 
-######### ASSUMPTIONS ########
-# ../../scratch is available to store intermediate files
-##############################
 
 # Imports in the pep8 order https://www.python.org/dev/peps/pep-0008/#imports
 # Standard library
