@@ -86,7 +86,7 @@ add_ploidy_df <- consensus_seg_df %>%
 
 ```{r}
 add_autosomes_df <- add_ploidy_df %>%
-  # x and y chromosomes must be handled differently - leave in for safety
+  # x and y chromosomes must be handled differently
   filter(!(chrom %in% c("chrX", "chrY"))) %>%
   mutate(status = case_when(
     # when the copy number is less than inferred ploidy, mark this as a loss
