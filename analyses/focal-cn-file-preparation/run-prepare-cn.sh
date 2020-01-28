@@ -26,10 +26,10 @@ gunzip -c ../../data/gencode.v27.primary_assembly.annotation.gtf.gz \
   > $cds_file
 
 # Prep the CNVkit data
-Rscript --vanilla -e "rmarkdown::render('00-add-ploidy-cnvkit.Rmd', clean = TRUE)"
+Rscript --vanilla -e "rmarkdown::render('01-add-ploidy-cnvkit.Rmd', clean = TRUE)"
 
 # Run annotation step for CNVkit
-Rscript --vanilla 01-prepare-cn-file.R \
+Rscript --vanilla 03-prepare-cn-file.R \
   --cnv_file ../../scratch/cnvkit_with_status.tsv \
   --cds_file $cds_file \
   --metadata ../../data/pbta-histologies.tsv \
@@ -38,7 +38,7 @@ Rscript --vanilla 01-prepare-cn-file.R \
   --gistic
 
 # Run annotation step for ControlFreeC
-Rscript --vanilla 01-prepare-cn-file.R \
+Rscript --vanilla 03-prepare-cn-file.R \
   --cnv_file ../../data/pbta-cnv-controlfreec.tsv.gz \
   --cds_file $cds_file \
   --metadata ../../data/pbta-histologies.tsv \
@@ -48,4 +48,4 @@ Rscript --vanilla 01-prepare-cn-file.R \
   --gistic
 
 # Compare to expression data
-# Rscript --vanilla 02-rna-expression-validation.R
+# Rscript --vanilla 04-rna-expression-validation.R
