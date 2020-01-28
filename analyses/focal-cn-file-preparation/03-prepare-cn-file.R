@@ -6,11 +6,17 @@
 #
 # Chante Bethell for CCDL 2019 and Jo Lynne Rokita
 #
-# #### USAGE
-# This script is intended to be run via the command line from the top directory
-# of the repository as follows:
+# #### Example Usage
 #
-# Rscript 'analyses/oncoprint-landscape/01-prepare-cn-file.R'
+# This script is intended to be run via the command line.
+# This example assumes it is being run from the root of the repository.
+#
+# Rscript --vanilla analyses/oncoprint-landscape/03-prepare-cn-file.R \
+#   --cnv_file data/pbta-cnv-controlfreec.tsv.gz \
+#   --gtf_file data/gencode.v27.primary_assembly.annotation.gtf.gz \
+#   --metadata data/pbta-histologies.tsv \
+#   --filename_lead "controlfreec_annotated_cn"
+#   --controlfreec
 
 #### Set Up --------------------------------------------------------------------
 
