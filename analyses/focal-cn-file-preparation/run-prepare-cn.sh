@@ -7,6 +7,10 @@ set -e
 set -o pipefail
 
 XYFLAG=${OPENPBTA_XY:-1}
+# currently, we use the consensus SEG file committed to the repository
+# this means it is *not* subset and therefore requires too much RAM
+# to run the annotation step
+RUNCONSENSUS=${OPENPBTA_CONSENSUS:-1}
 
 # This script should always run as if it were being called from
 # the directory it lives in.
@@ -43,14 +47,17 @@ Rscript --vanilla 03-prepare-cn-file.R \
   --xy $XYFLAG \
   --controlfreec
 
+
+if [ "$RUNCONSENSUS" -gt "0"]; then
 # Run annotation step for consensus file
-Rscript --vanilla 03-prepare-cn-file.R \
-  --cnv_file ${scratch_dir}/consensus_seg_with_status.tsv \
-  --gtf_file $gtf_file \
-  --metadata $histologies_file \
-  --filename_lead "consensus_seg_annotated_cn" \
-  --seg \
-  --xy $XYFLAG
+  Rscript --vanilla 03-prepare-cn-file.R \
+    --cnv_file ${scratch_dir}/consensus_seg_with_status.tsv \
+    --gtf_file $gtf_file \
+    --metadata $histologies_file \
+    --filename_lead "consensus_seg_annotated_cn" \
+    --seg \
+    --xy $XYFLAG
+fi
 
 # Compare to expression data
 # Rscript --vanilla rna-expression-validation.R
