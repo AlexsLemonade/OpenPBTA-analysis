@@ -47,4 +47,4 @@ Rscript --vanilla 03-prepare-cn-file.R \
   --seg
 
 # Compare to expression data
-# Rscript --vanilla 04-rna-expression-validation.R
+# Rscript --vanilla rna-expression-validation.R
