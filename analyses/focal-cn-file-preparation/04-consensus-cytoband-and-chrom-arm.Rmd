@@ -1,0 +1,139 @@
+---
+title: "Map to broader segments: cytobands, chromosome arms"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell and Jaclyn Taroni for ALSF CCDL
+date: 2020
+---
+
+```{r}
+library(tidyverse)
+```
+
+## Set up 
+
+```{r}
+# Detect the ".git" folder -- this will in the project root directory.
+# Use this as the root directory to ensure proper sourcing of functions no
+# matter where this is called from
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+# Set path to results directory
+results_dir <-
+  file.path(root_dir, "analyses", "focal-cn-file-preparation", "results")
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+```
+
+### Read in GISTIC chromosome arm file
+
+```{r}
+# We are using the consensus GISTIC results! Advanced access!
+# TODO: use the version included in the data download
+# Path to gistic results directory
+gistic_results <- file.path(root_dir,
+                            "analyses",
+                            "focal-cn-file-preparation",
+                            "gistic-results",
+                            "2019-01-28-consensus-cnv")
+
+gistic_arm_file <- file.path(gistic_results, "broad_values_by_arm.txt")
+
+# Read in broad values by arm GISTIC output file
+gistic_arm_df <- data.table::fread(gistic_arm_file, data.table = FALSE)
+```
+
+
+```{r}
+# # Path to gistic zip file results
+# gistic_zip <-
+#   file.path(root_dir, "data", "pbta-cnv-cnvkit-gistic.zip")
+# 
+# # Get the name of the folder first since this changes with updates to the date
+# folder_name <- unzip(zipfile = gistic_zip, list = TRUE) %>%
+#   dplyr::filter(Length == 0) %>%
+#   dplyr::pull("Name")
+# 
+# # Path to gistic results directory
+# gistic_results <-
+#   file.path(root_dir,
+#             "analyses",
+#             "focal-cn-file-preparation",
+#             "gistic-results")
+# 
+# # Extract files if it hasn't been done yet
+# if (!dir.exists(gistic_results)) {
+#   # Unzip but only extract the files not the folder
+#   unzip(zipfile = gistic_zip,
+#         exdir = gistic_results)
+# }
+# # Designate GISTIC results folder to extract to
+# gistic_results <- file.path(gistic_results, folder_name)
+# 
+# # Read in broad values by arm GISTIC output file
+# gistic_df <-
+#   data.table::fread(
+#     paste0(
+#       gistic_results,
+#       "broad_values_by_arm.txt"
+#     ),
+#     data.table = FALSE
+#   )
+```
+
+Wrangle the GISTIC file
+
+```{r}
+tidy_gistic_arm_df <- gistic_arm_df %>%
+  column_to_rownames("Chromosome Arm") %>%
+  t() %>%
+  as.data.frame() %>%
+  rownames_to_column("Kids_First_Biospecimen_ID") %>%
+  reshape2::melt(variable.name = "chromosome_arm",
+                 value.name = "gistic_arm_value") %>%
+  mutate(gistic_arm_status = case_when(
+    gistic_arm_value < 0 ~ "loss",
+    gistic_arm_value > 0 ~ "gain",
+    TRUE ~ "neutral"
+  ))
+```
+
+There are no sex chromosome values in the GISTIC file.
+
+### Read in the annotated consensus copy number file
+
+```{r}
+autosomes_file <- file.path(results_dir, 
+                            "consensus_seg_annotated_cn_autosomes.tsv.gz")
+annotated_autosomes_df <- read_tsv(autosomes_file)
+```
+
+Create an arm column using the cytoband column
+
+```{r}
+# Add a column that tells us the position of the p or q and then use this to
+# split the cytoband column
+annotated_autosomes_df <- annotated_autosomes_df %>%
+  add_column(arm_position = str_locate(annotated_autosomes_df$cytoband, 
+                                       "p|q")[[1]]) %>%
+  mutate(annotated_arm = str_sub(cytoband, 1, arm_position)) %>%
+  select(-arm_position)
+```
+
+## Join together GISTIC and annotated SEG file
+
+```{r}
+seg_gistic_df <- annotated_autosomes_df %>%
+  left_join(tidy_gistic_arm_df, by = c("biospecimen_id" = "Kids_First_Biospecimen_ID",
+                                       "annotated_arm" = "chromosome_arm"))
+```
+
+```{r}
+seg_gistic_df %>%
+  write_tsv(file.path(results_dir, 
+                      "consensus_annotated_cn_autosomes_with_arm_values.tsv.gz"))
+```
+
