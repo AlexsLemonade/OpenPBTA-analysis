@@ -18,6 +18,9 @@ cd "$script_directory" || exit
 # Prep the CNVkit data
 Rscript --vanilla -e "rmarkdown::render('01-add-ploidy-cnvkit.Rmd', clean = TRUE)"
 
+# Prep the consensus SEG file data
+Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd', clean = TRUE)"
+
 # Run annotation step for CNVkit
 Rscript --vanilla 03-prepare-cn-file.R \
   --cnv_file ../../scratch/cnvkit_with_status.tsv \
@@ -34,6 +37,14 @@ Rscript --vanilla 03-prepare-cn-file.R \
   --filename_lead "controlfreec_annotated_cn" \
   --xy $XYFLAG \
   --controlfreec
+
+# Run annotation step for consensus file
+Rscript --vanilla 03-prepare-cn-file.R \
+  --cnv_file ../../scratch/consensus_seg_with_status.tsv \
+  --gtf_file ../collapse-rnaseq/gencode.v27.primary_assembly.annotation.gtf.gz \
+  --metadata ../../data/pbta-histologies.tsv \
+  --filename_lead "consensus_seg_annotated_cn" \
+  --seg
 
 # Compare to expression data
 # Rscript --vanilla 04-rna-expression-validation.R
