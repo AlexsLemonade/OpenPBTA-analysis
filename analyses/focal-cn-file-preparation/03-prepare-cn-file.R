@@ -153,11 +153,12 @@ option_list <- list(
     help = "flag used to indicate if the CNV file is the output of ControlFreeC"
   ),
   optparse::make_option(
-    c("--cnvkit"),
+    c("--seg"),
     type = "logical",
     action = "store_true",
     default = FALSE,
-    help = "flag used to indicate if the CNV file is the output of CNVkit"
+    help = "flag used to indicate if the CNV file was original a SEG file that
+            has been prepped by a notebook to include ploidy information"
   ),
   optparse::make_option(
     c("--xy"),
@@ -173,13 +174,13 @@ opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
 # error handling related to specifying the CNV method
-if (all(opt$controlfreec, opt$cnvkit)) {
-  stop("--controlfreec and --cnvkit are mutually exclusive")
+if (all(opt$controlfreec, opt$seg)) {
+  stop("--controlfreec and --seg are mutually exclusive")
 }
 
-if (!any(opt$controlfreec, opt$cnvkit)) {
+if (!any(opt$controlfreec, opt$seg)) {
   stop("You must specify the CNV file format by using --controlfreec or
-       --cnvkit")
+       --seg")
 }
 
 # convert xy flag to logical
@@ -204,7 +205,7 @@ if (!dir.exists(results_dir)) {
 
 # we want to standardize the formats between the two methods here and drop
 # columns we won't need to
-if (opt$cnvkit) {
+if (opt$seg) {
   cnv_df <- readr::read_tsv(opt$cnv_file) %>%
     dplyr::rename(chr = chrom, start = loc.start, end = loc.end,
                   copy_number = copy.num) %>%
