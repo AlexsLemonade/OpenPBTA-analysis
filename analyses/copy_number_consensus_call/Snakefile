@@ -163,7 +163,8 @@ rule first_merge:
         ## Call on bedtools to merge any overlapping segment. Merging done for any segments within a single file.
         ## We considers any segments within 10,000 bp to be the same CNV. 
         ## Merge but retain info from columns 2 (start pos), 3(end pos), 5(copy numbers), 7(seg.mean), 8(CNV type)
-        "bedtools merge -i {input.filtered_bed} -d 10000"
+        "sort -k1,1 -k2,2n {input.filtered_bed}"
+        "| bedtools merge -i stdin -d 10000"
         " -c 2,3,5,7,8 -o collapse,collapse,collapse,collapse,distinct"
         " > {output.merged_bed}"
 
@@ -262,7 +263,7 @@ rule remove_inset_calls:
         " >  {output.dup_intersect} &&"
         "bedtools intersect -f 1 -r -a {input.del_merge} -b {output.deldup_intersect}"
         " >  {output.del_intersect} &&"
-        # merge dups and dels separately
+        # combine dups and dels separately
         "cat {output.dupdel_diff} {output.dup_intersect}"
         " > {output.dup_merge} &&"
         "cat {output.deldup_diff} {output.del_intersect}"

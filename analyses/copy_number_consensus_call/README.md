@@ -13,7 +13,7 @@ This analysis uses information from the following files generated from the 3 cal
 The analysis produces the following output files
 
 * `results/cnv_consensus.tsv`:  A tab separated file out consense copy number variants, including the original calls used for each consensus call
-* `results/pbta-cnv-consensus.seg`: A `.seg` formatted file for downstream processing
+* `results/pbta-cnv-consensus.seg.gz`: A `.seg` formatted file for downstream processing
 * `ref/cnv_excluded_regions.bed`: A `.bed` file of error-prone regions that were filtered from copy number calls
 * `ref/cnv_callable.bed`: A `.bed` file of regions considered "callable" by the analysis pipeline
 
