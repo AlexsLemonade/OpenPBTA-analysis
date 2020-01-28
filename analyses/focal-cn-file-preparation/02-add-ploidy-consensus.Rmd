@@ -33,10 +33,6 @@ library(tidyverse)
 ### Files and directories
 
 ```{r}
-results_dir <- "results"
-if (!dir.exists(results_dir)) {
-  dir.create(results_dir)
-}
 scratch_dir <- file.path("..", "..", "scratch")
 ```
 
@@ -123,14 +119,30 @@ add_xy_df <- add_ploidy_df %>%
     chrom == "chrX" & germline_sex_estimate == "Female" & copy.num == tumor_ploidy ~ "neutral"
   ))
 
-add_status_df <- dplyr::bind_rows(add_autosomes_df, add_xy_df) %>%
-  dplyr::select(-germline_sex_estimate) %>%
-  dplyr::rename(Kids_First_Biospecimen_ID = ID)
+add_status_df <- bind_rows(add_autosomes_df, add_xy_df) %>%
+  select(-germline_sex_estimate) %>%
+  rename(Kids_First_Biospecimen_ID = ID)
+```
+
+### Does `seg.mean` agree with `status`?
+
+```{r}
+add_status_df %>%
+  filter(!is.na(seg.mean)) %>%
+  ggplot(aes(x = status, y = seg.mean, group = status)) +
+  geom_jitter()
+```
+
+```{r}
+add_status_df %>%
+  filter(!is.na(seg.mean)) %>%
+  group_by(status) %>%
+  summarize(mean = mean(seg.mean), sd = sd(seg.mean))
 ```
 
 ### Write to file
 
 ```{r}
 output_file <- file.path("..", "..", "scratch", "consensus_seg_with_status.tsv")
-readr::write_tsv(add_status_df, output_file)
+write_tsv(add_status_df, output_file)
 ```
