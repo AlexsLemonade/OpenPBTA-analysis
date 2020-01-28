@@ -38,7 +38,7 @@ cn_df <-
                             "analyses",
                             "focal-cn-file-preparation",
                             "results",
-                            "controlfreec_annotated_cn_autosomes.tsv.bz2"))
+                            "controlfreec_annotated_cn_autosomes.tsv.gz"))
 
 # Read in RNA-seq expression data
 rsem_expression_polyA <-
@@ -98,7 +98,7 @@ not_tumor_biospecimens <- metadata %>%
 biospecimens_to_remove <- unique(c(ambiguous_biospecimens,
                                    not_tumor_biospecimens))
 
-# Filter the CN data 
+# Filter the CN data
 cn_df <- cn_df %>%
   dplyr::filter(!(biospecimen_id %in% biospecimens_to_remove))
 
@@ -113,17 +113,17 @@ ind_biospecimen <-
                             "independent-specimens.wgswxs.primary.tsv")) %>%
   dplyr::pull(Kids_First_Biospecimen_ID)
 
-# Filter the CN data, to only include biospecimen identifiers in the 
+# Filter the CN data, to only include biospecimen identifiers in the
 # independent file
 cn_df <- cn_df %>%
   dplyr::filter(biospecimen_id %in% ind_biospecimen)
-  
+
 # For the RNA-seq samples, we need to map from the sample identifier
 # associated with the independent specimen and back to a biospecimen ID
 ind_sample_id <- metadata %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in% ind_biospecimen) %>%
   dplyr::pull(sample_id)
-  
+
 # Get the corresponding biospecimen ID to be used
 rnaseq_ind <- metadata %>%
   dplyr::filter(sample_id %in% ind_sample_id,
@@ -132,7 +132,7 @@ rnaseq_ind <- metadata %>%
 
 #### Filter and Join data ------------------------------------------------------
 
-# Filter expression data to include independent sample and calculate z-scores by 
+# Filter expression data to include independent sample and calculate z-scores by
 # gene using `calculate_z_score` custom function
 expression_df_polyA <- calculate_z_score(rsem_expression_polyA, rnaseq_ind)
 expression_df_stranded <- calculate_z_score(rsem_expression_stranded,
@@ -216,8 +216,8 @@ stranded_loss_plot_df <-
     "focal_cn_stacked_expression_stranded.png"
   )
 
-# Plot and save scatterplot showing mean expression of deletions compared to 
-# mean expression of non-deletions across genes 
+# Plot and save scatterplot showing mean expression of deletions compared to
+# mean expression of non-deletions across genes
 
 mean_polyA_plot <-
   plot_mean_expression(

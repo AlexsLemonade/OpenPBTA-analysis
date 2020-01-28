@@ -48,4 +48,4 @@ Rscript --vanilla 01-prepare-cn-file.R \
   --gistic
 
 # Compare to expression data
-Rscript --vanilla 02-rna-expression-validation.R
+# Rscript --vanilla 02-rna-expression-validation.R
