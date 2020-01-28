@@ -6,11 +6,17 @@
 #
 # Chante Bethell for CCDL 2019 and Jo Lynne Rokita
 #
-# #### USAGE
-# This script is intended to be run via the command line from the top directory
-# of the repository as follows:
+# #### Example Usage
 #
-# Rscript 'analyses/oncoprint-landscape/01-prepare-cn-file.R'
+# This script is intended to be run via the command line.
+# This example assumes it is being run from the root of the repository.
+#
+# Rscript --vanilla analyses/oncoprint-landscape/03-prepare-cn-file.R \
+#   --cnv_file data/pbta-cnv-controlfreec.tsv.gz \
+#   --gtf_file data/gencode.v27.primary_assembly.annotation.gtf.gz \
+#   --metadata data/pbta-histologies.tsv \
+#   --filename_lead "controlfreec_annotated_cn"
+#   --controlfreec
 
 #### Set Up --------------------------------------------------------------------
 
@@ -62,7 +68,7 @@ process_annotate_overlaps <- function(cnv_df,
   # Args:
   #   cnv_df: standardized data.frame that contains the segments used in the
   #           CNV caller
-  #   txdb_exons: exons to be merged with the CNV data.frame; output o
+  #   txdb_exons: exons to be merged with the CNV data.frame; output of
   #               GenomicFeatures::exons
   #   filt_na_symbol: logical, if TRUE, rows without gene symbols will be
   #                   removed; default is TRUE
@@ -204,7 +210,7 @@ if (!dir.exists(results_dir)) {
 #### Format CNV file and overlap with hg38 genome annotations ------------------
 
 # we want to standardize the formats between the two methods here and drop
-# columns we won't need to
+# columns we won't need.
 if (opt$seg) {
   cnv_df <- readr::read_tsv(opt$cnv_file) %>%
     dplyr::rename(chr = chrom, start = loc.start, end = loc.end,
