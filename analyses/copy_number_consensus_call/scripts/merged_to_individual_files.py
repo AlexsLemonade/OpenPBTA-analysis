@@ -1,9 +1,6 @@
-## Nhat Duong
-## November, 22 2019
+## Nhat Duong & J Shapiro
+## 2019 - 2020
 
-######### ASSUMPTIONS ########
-# ../../scratch is available to store intermediate files
-##############################
 
 # Imports in the pep8 order https://www.python.org/dev/peps/pep-0008/#imports
 # Standard library
@@ -68,7 +65,7 @@ freec_samples = set(merged_freec[FREEC_ID_HEADER])
 
 ## Merged and take the unique samples. Any method without a certain sample will get an empty file
 ## for of that sample.
-all_samples = manta_samples | cnvkit_samples | freec_samples # set union
+all_samples = sorted(manta_samples | cnvkit_samples | freec_samples) # set union
 
 ## Define and create assumed directories
 scratch_d = args.scratch
@@ -135,6 +132,7 @@ with open(args.snake, 'w') as file:
     file.write('freec_pval: ' + str(args.freecp) + '\n')
 
 ## Write out the bad calls file
+bad_calls.sort()
 with open(args.uncalled, 'w') as file:
     file.write("sample\tcaller\n")
     file.writelines(bad_calls)
