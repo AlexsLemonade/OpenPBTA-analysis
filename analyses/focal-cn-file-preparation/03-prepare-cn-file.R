@@ -62,7 +62,7 @@ process_annotate_overlaps <- function(cnv_df,
   # Args:
   #   cnv_df: standardized data.frame that contains the segments used in the
   #           CNV caller
-  #   txdb_exons: exons to be merged with the CNV data.frame; output o
+  #   txdb_exons: exons to be merged with the CNV data.frame; output of
   #               GenomicFeatures::exons
   #   filt_na_symbol: logical, if TRUE, rows without gene symbols will be
   #                   removed; default is TRUE
@@ -204,7 +204,7 @@ if (!dir.exists(results_dir)) {
 #### Format CNV file and overlap with hg38 genome annotations ------------------
 
 # we want to standardize the formats between the two methods here and drop
-# columns we won't need to
+# columns we won't need.
 if (opt$seg) {
   cnv_df <- readr::read_tsv(opt$cnv_file) %>%
     dplyr::rename(chr = chrom, start = loc.start, end = loc.end,

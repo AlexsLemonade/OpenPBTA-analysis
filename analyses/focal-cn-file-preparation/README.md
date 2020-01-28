@@ -21,7 +21,7 @@ bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
 * `02-add-ploidy-consensus.Rmd` - This is very similar to the CNVkit file prep.
 However, there are instances in the consensus SEG file where `copy.num` is `NA` which are removed.
 See the notebook for more information.
-* `03-prepare-cn-file.R` - This script performs the ranges to annotation mapping using the GENCODE v27 GTF included via the data download step; it takes the ControlFreeC file or a SEG (e.g., CNVkit, consensus SEG) file prepared with `00-add-ploidy-cnvkit.Rmd` as input.
+* `03-prepare-cn-file.R` - This script performs the ranges to annotation mapping using the GENCODE v27 GTF included via the data download step; it takes the ControlFreeC file or a SEG (e.g., CNVkit, consensus SEG) file prepared with `01-add-ploidy-cnvkit.Rmd` and  `02-add-ploidy-cnvkit.Rmd`as input.
   The mapping is limited to _exons_. 
   Mapping to cytobands is performed with the [`org.Hs.eg.db`](https://doi.org/doi:10.18129/B9.bioc.org.Hs.eg.db) package.
   A table with the following columns is returned:
