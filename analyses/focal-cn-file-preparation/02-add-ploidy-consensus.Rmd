@@ -124,7 +124,8 @@ add_xy_df <- add_ploidy_df %>%
   ))
 
 add_status_df <- dplyr::bind_rows(add_autosomes_df, add_xy_df) %>%
-  dplyr::select(-germline_sex_estimate)
+  dplyr::select(-germline_sex_estimate) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID = ID)
 ```
 
 ### Write to file
