@@ -10,7 +10,7 @@ rule all:
     input:
         "results/cnv_consensus.tsv",
         "results/cnv_neutral.bed",
-        "results/pbta-cnv-consensus.seg"
+        "results/pbta-cnv-consensus.seg.gz"
 
 
 scratch_loc = config["scratch"] + '/'
@@ -325,7 +325,7 @@ rule make_segfile:
         neutral = "results/cnv_neutral.bed",
         uncalled = "results/uncalled_samples.tsv"
     output:
-        "results/pbta-cnv-consensus.seg"
+        "results/pbta-cnv-consensus.seg.gz"
     shell:
         "Rscript {input.script}"
         " -i {input.consensus}"
