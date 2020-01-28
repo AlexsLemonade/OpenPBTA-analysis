@@ -40,7 +40,7 @@ scratch_dir <- file.path("..", "..", "scratch")
 # TODO: the consensus SEG file is not currently in the data download -- when it
 # gets included we will have to change the file path here
 consensus_seg_file <- file.path("..", "copy_number_consensus_call", "results", 
-                                "pbta-cnv-consensus.seg")
+                                "pbta-cnv-consensus.seg.gz")
 histologies_file <- file.path("..", "..", "data", "pbta-histologies.tsv")
 
 consensus_seg_df <- read_tsv(consensus_seg_file)
