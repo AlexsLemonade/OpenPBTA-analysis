@@ -74,12 +74,6 @@ Set up metadata
 metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
 ```
 
-Load in the previously formatted breakpoint data. 
-
-```{r}
-breaks_list <- readr::read_rds(file.path("breakpoint-data", "breaks_lists.RDS"))
-```
-
 Read in the CNV data. 
 
 ```{r}
@@ -87,39 +81,32 @@ cnv_df <- data.table::fread(
   file.path(data_dir, "pbta-cnv-cnvkit.seg.gz"), data.table = FALSE) 
 ```
 
-Read in the formatted SV data. 
+Make a translocation data.frame. 
 
 ```{r}
-# Get the file names for the 
-sv_files <- list.files(file.path(scratch_dir, "sv-vcf"), 
-                       pattern = "_withoutYandM.tsv", 
-                       full.names = TRUE)
-
-# Read in each of the sample's files
-sv_data <- lapply(sv_files, function(sv_file){
-                  suppressWarnings(readr::read_tsv(sv_file, 
-                                  # Set default as character
-                                  col_types = readr::cols(.default = "c")))
-})
-
-# Name the dataset by their biospecimen ID
-names(sv_data) <- gsub("_withoutYandM.tsv", "", stringr::word(sv_files, sep = "/", 5))
-
-# Collapse into one data.frame
-sv_df <- dplyr::bind_rows(sv_data, .id = "biospecimen_id")
+sv_df <- data.table::fread(
+  file.path(data_dir, "pbta-sv-manta.tsv.gz"), data.table = FALSE)
 ```
 
 Make a translocation data.frame. 
 
 ```{r}
 transloc_df <- sv_df %>% 
-  dplyr::filter(SVtype == "TRA") %>% 
-  dplyr::mutate(start1 = as.numeric(pos1), 
-                start2 = as.numeric(pos2), 
-                end2 = gsub("\\[|\\]|G|C|T|A", "", alt1), 
-                end1 = gsub("\\[|\\]|G|C|T|A", "", alt2), 
-                end2 = as.numeric(stringr::word(end2, sep = ":", 2)), 
-                end1 = as.numeric(stringr::word(end1, sep = ":", 2)))
+  dplyr::filter(SV.type == "BND") %>% 
+  dplyr::mutate(match_id = substr(ID, 0,  nchar(ID) -2), 
+                pair_num = substr(ID, nchar(ID),  nchar(ID))) %>% 
+  dplyr::select(biospecimen_id = Kids.First.Biospecimen.ID.Tumor, 
+                chrom = SV.chrom, 
+                start = SV.start, 
+                end = SV.end, 
+                widht = SV.length, 
+                match_id, 
+                pair_num)
+
+transloc_df  <- transloc_df %>% 
+  dplyr::filter(pair_num == 0) %>% 
+  dplyr::inner_join(filter(transloc_df, pair_num == 1), by = "match_id", 
+                    suffix = c("1", "2"))
 ```
 
 ## Example uses of `circos_map_plot`
@@ -148,15 +135,15 @@ circos_map_plot(df = cnv_df,
                 end_col =  "loc.end",
                 y_val = "copy.num",
                 track_height = .15,
-                type = "rect",
+                type = "line",
                 colour_key = "direction",
                 palette = "YlGnBu") 
 
 # Now add the translocation bit. 
 circos_map_transloc(transloc_df, 
-                    add_track = TRUE, # We change this to true to add on to our already existing plot
+                    add_track = FALSE, # We change this to true to add on to our already existing plot
                     sample_names = "BS_007JTNB8",
-                    samples_col = "biospecimen_id",
+                    samples_col = "biospecimen_id1",
                     chr_col_1 = "chrom1",
                     chr_col_2 = "chrom2",
                     start_col_1 = "start1",

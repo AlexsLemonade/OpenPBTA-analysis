@@ -44,18 +44,13 @@ prep_bed <- function(df,
   # Don't have to have a y_val
   if (y_val != "none") {
     bed_df <- bed_df %>% 
-      dplyr::mutate(value = dplyr::pull(df, !!rlang::sym(y_val)))
-  } else {
-    # Make a blank column if none is specified
-    bed_df <- bed_df %>% 
-      dplyr::mutate(value = NA)
-  }
+      dplyr::mutate(y_val = as.numeric(dplyr::pull(df, !!rlang::sym(y_val))))
+  } 
   # Circlize is particular about what these values need to be
   bed_df <- bed_df %>% 
     dplyr::mutate(chr = as.character(chr), 
                 start = as.integer(start), 
-                end = as.integer(end), 
-                value = as.numeric(value)) %>% 
+                end = as.integer(end)) %>% 
     # Circlize wants things to be only a data.frame NOT a tibble
     as.data.frame()
   
@@ -73,6 +68,19 @@ prep_bed <- function(df,
   # Return formatted data.frame
   return(bed_df)
 }
+
+df = cnv_df 
+add_track = FALSE
+samples_col = "ID"
+sample_names = "BS_007JTNB8"
+chr_col = "chrom"
+start_col = "loc.start"
+end_col =  "loc.end"
+y_val = "copy.num"
+track_height = .15
+type = "rect"
+colour_key = "direction"
+palette = "YlGnBu"
 
 circos_map_plot <- function(df,
                             add_track = FALSE,
@@ -125,8 +133,8 @@ circos_map_plot <- function(df,
                      y_val = y_val)
   
   # Establish ymin and ymax before further manipulations
-  y_min <- min(bed_df$value, na.rm = TRUE)
-  y_max <- max(bed_df$value, na.rm = TRUE)
+  y_min <- min(bed_df$y_val, na.rm = TRUE)
+  y_max <- max(bed_df$y_val, na.rm = TRUE)
 
   # Set up color key if specified
   if (!is.null(colour_key)) {
@@ -140,12 +148,23 @@ circos_map_plot <- function(df,
       # Determine the number of levels
       n_levels <- length(levels(bed_df$color_key))
       
-      # ColorBrewer complains if given a number less than 3 we will take care of this later. 
-      n_levels <- ifelse(n_levels < 3, 3, n_levels)
-      
+      # ColorBrewer complains if given a number less than 3 
       # Set up a palette based on number of factor levels
-      palette_col <- RColorBrewer::brewer.pal(n_levels, 
+      palette_col <- RColorBrewer::brewer.pal(ifelse(n_levels < 3, 3, n_levels), 
                                               name = palette)
+      
+      # Make a recode color key list 
+      level_key <- palette_col[1:n_levels]
+      
+      # Make the palette colors the names in this list
+      names(level_key) <- levels(bed_df$color_key)
+      
+      # Set up the color ready data.frame
+      bed_df  <- bed_df %>% 
+        # Make column that specifies the color for each value
+        dplyr::mutate(color_key = dplyr::recode(color_key, !!!level_key), 
+                      color_key = as.character(color_key))
+      
     # If color key is numeric...
     } else if (is.numeric(bed_df$color_key)) {
       # Make color palette based on 5 colors
@@ -163,15 +182,6 @@ circos_map_plot <- function(df,
       stop("`colour_key` argument can only be a numeric or factor variable. It is neither. 
            Check the column data you specified for `colour_key`.")
     }
-    # Circlize wants things in their own column for each color
-    bed_df  <- bed_df %>% 
-      # Make a color column and then spread to each so circlize can use it
-      tidyr::spread(color_key, value) %>% 
-        dplyr::select(-rowid)
-    
-    # Only keep the colors that have data
-    palette_col <- palette_col[1:(ncol(bed_df) - 3)]
-    
   } else {
     # If no color key is specified, just make the color black.
     palette_col <- "black"
@@ -192,6 +202,12 @@ circos_map_plot <- function(df,
   }
   
   if (type == "point") {
+    # Circlize wants things in their own column for each color
+    bed_df  <- bed_df %>% 
+      # Make a color column and then spread to each so circlize can use it
+      tidyr::spread(color_key, value) %>% 
+      dplyr::select(-rowid)
+    
     # Add scatterplot track
     circlize::circos.genomicTrackPlotRegion(bed_df, 
                                             track.height = track_height,
@@ -202,6 +218,12 @@ circos_map_plot <- function(df,
                                                                              col = palette_col)
                                             })
   } else if (type == "line") {
+    # For line and point, circlize wants things in their own column for each color
+    bed_df  <- bed_df %>% 
+      # Make a color column and then spread to each so circlize can use it
+      tidyr::spread(color_key, value) %>% 
+      dplyr::select(-rowid)
+    
     # Add line track
     circlize::circos.genomicTrackPlotRegion(bed_df, 
                                             track.height = track_height,
@@ -212,6 +234,9 @@ circos_map_plot <- function(df,
                                                                             col = palette_col)
                                             })
   } else if (type == "rect") {
+    # Get rid of rowid
+    bed_df <- bed_df %>% 
+      dplyr::select(-rowid)
     # Add a rectangle track
     circlize::circos.genomicTrackPlotRegion(bed_df, 
                                             track.height = track_height,
@@ -219,13 +244,26 @@ circos_map_plot <- function(df,
                                             ylim = c(y_min, y_max),
                                             panel.fun = function(region, value, ...) {
                                               i = circlize::getI(...)
-                                              circlize::circos.genomicRect(region, value, 
-                                                                           ytop = value + 0.4, 
-                                                                           ybottom = value - 0.4,
-                                                                           col = palette_col[i])
+                                                circlize::circos.genomicRect(region, value[[1]],
+                                                                             ytop = value[[1]] + 0.4, 
+                                                                             ybottom = value[[1]] - 0.4, 
+                                                                             col = value[[2]], 
+                                                                             border = value[[2]])
                                             })
   }
 }
+
+df = transloc_df 
+add_track = FALSE 
+sample_names = "BS_007JTNB8"
+samples_col = "biospecimen_id1"
+chr_col_1 = "chrom1"
+chr_col_2 = "chrom2"
+start_col_1 = "start1"
+start_col_2 = "start2"
+end_col_1 =  "end1"
+end_col_2 =  "end2"
+y_val_2 = 
 
 circos_map_transloc <- function(df, 
                                 add_track = FALSE,
@@ -253,7 +291,7 @@ circos_map_transloc <- function(df,
   #
   # Returns:
   #  Circos plot (or new circos plot track) of the data provided. 
-  
+
   # Set up the df_1 how circlize wants it
   bed_df_1 <- prep_bed(df = df,
                        samples_col = samples_col,
@@ -268,7 +306,7 @@ circos_map_transloc <- function(df,
                       sample_names = sample_names,
                       chr_col = chr_col_2,
                       start_col = start_col_2,
-                      end_col = end_col_2)
+                      end_col = end_col_2) 
   
   # If we aren't adding on a track to a current plot...
   if (!add_track) {
