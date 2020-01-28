@@ -101,11 +101,19 @@ option_list <- list(
     default = FALSE, help = "If TRUE, will overwrite any files of
               the same name. Default is FALSE",
     metavar = "character"
+  ),
+  make_option(
+    opt_str = "--tcga", action = "store_true",
+    default = FALSE, help = "If TRUE, will skip PBTA metadata specific steps",
+    metavar = "character"
   )
 )
 
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
+
+opt$consensus <- "analyses/snv-callers/results/consensus/tcga-snv-consensus-snv.maf.tsv"
+opt$metdata <- "data/pbta-tcga-manifest.tsv"
 
 # Make everything relative to root path
 opt$consensus <- file.path(root_dir, opt$consensus)
@@ -162,17 +170,23 @@ maf_df <- data.table::fread(opt$consensus, data.table = FALSE)
 # Print progress message
 message("Setting up metadata...")
 
-# Isolate metadata to only the samples that are in the datasets
-metadata <- readr::read_tsv(opt$metadata) %>%
-  dplyr::filter(Kids_First_Biospecimen_ID %in% maf_df$Tumor_Sample_Barcode) %>%
-  dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
-  dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID)
+# Have to handle TCGA and PBTA metadata differently
+if (opt$tcga) {
+  metadata <- readr::read_tsv(opt$metadata) %>% 
+    dplyr::mutate(experimental_strategy = "WGS", 
+                  short_histology = stringr::word(broad_histology, sep = "-", 2))
+} else {
+  # Isolate metadata to only the samples that are in the datasets
+  metadata <- readr::read_tsv(opt$metadata) %>%
+    dplyr::filter(Kids_First_Biospecimen_ID %in% maf_df$Tumor_Sample_Barcode) %>%
+    dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
+    dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID)
 
-# Make sure that we have metadata for all these samples.
-if (!all(unique(maf_df$Tumor_Sample_Barcode) %in% metadata$Tumor_Sample_Barcode)) {
-  stop("There are samples in this MAF file that are not in the metadata.")
+  # Make sure that we have metadata for all these samples.
+  if (!all(unique(maf_df$Tumor_Sample_Barcode) %in% metadata$Tumor_Sample_Barcode)) {
+    stop("There are samples in this MAF file that are not in the metadata.")
+  }
 }
-
 # Add the experimental strategy column on the data.frame for calculating purposes
 maf_df <- maf_df %>%
   dplyr::inner_join(metadata %>%

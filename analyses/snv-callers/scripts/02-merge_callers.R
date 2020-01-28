@@ -120,6 +120,11 @@ strelka <- dplyr::tbl(con, "strelka")
 lancet <- dplyr::tbl(con, "lancet")
 mutect <- dplyr::tbl(con, "mutect")
 
+
+strelka <- data.frame(strelka)
+lancet <- data.frame(lancet)
+mutect <- data.frame(mutect)
+
 # We won't use VarDicts calls for the consensus
 # vardict <- dplyr::tbl(con, "vardict")
 
@@ -134,6 +139,18 @@ join_cols <- c(
   "Allele",
   "Tumor_Sample_Barcode"
 )
+
+strelka_df <- data.table::fread("data/pbta-tcga-snv-strelka2.vep.maf.gz", data.table = FALSE) 
+mutect_df <- data.table::fread("data/pbta-tcga-snv-mutect2.vep.maf.gz", data.table = FALSE) 
+
+dplyr::all_equal(strelka_df, mutect_df)
+
+
+lancet_df <- data.table::fread("data/pbta-tcga-snv-lancet.vep.maf.gz", data.table = FALSE) %>% 
+  dplyr::select(join_cols)
+
+consensus_df %>% as.data.frame()
+match(strelka_df$Start_Position, lancet_df$Start_Position)
 
 # Create the consensus for non-MNVs
 consensus_df <- mutect %>%

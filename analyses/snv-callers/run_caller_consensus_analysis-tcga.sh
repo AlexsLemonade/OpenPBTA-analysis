@@ -2,7 +2,7 @@
 # C. Savonen
 # CCDL for ALSF 2019
 
-# Purpose:Run an consensus analysis of SNV callers
+# Purpose: Run an consensus analysis of SNV callers for TCGA data
 
 # Set this so the whole loop stops if there is an error
 set -e
@@ -86,7 +86,8 @@ Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --all_bed_wxs $all_mut_wxs_bed \
   --coding_bed_wgs $coding_wgs_bed \
   --coding_bed_wxs $coding_wxs_bed \
-  --overwrite
+  --overwrite \
+  --tcga
  
 ########################## Compress consensus file #############################
 gzip $consensus_file
