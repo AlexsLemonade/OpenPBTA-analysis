@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 
 <meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Stephanie J. Spielman for ALSF CCDL" />
@@ -1541,6 +1541,7 @@ code {
 }
 img {
   max-width:100%;
+  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -1602,7 +1603,6 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
-  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -1614,6 +1614,18 @@ summary {
   display: none;
 }
 </style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
 
 <!-- code folding -->
 
@@ -1661,7 +1673,7 @@ summary {
 <div id="usage" class="section level3">
 <h3>Usage</h3>
 <p>To run this from the command line, use:</p>
-<pre><code>Rscript -e &quot;rmarkdown::render(&#39;analyses/gene-set-enrichment-analysis/02-model-gsea.Rmd&#39;, clean = TRUE)&quot; </code></pre>
+<pre><code>Rscript -e &quot;rmarkdown::render('analyses/gene-set-enrichment-analysis/02-model-gsea.Rmd', clean = TRUE)&quot; </code></pre>
 <p><em>This assumes you are in the top directory of the repository.</em></p>
 </div>
 <div id="setup" class="section level3">
@@ -1740,65 +1752,65 @@ metadata_with_gsva &lt;- metadata %&gt;%
 ## # A tibble: 50 x 5
 ##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
 ##    &lt;fct&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI…             12.9     4.73e- 60        2.37e- 58
-##  2 HALLMARK_ALL…             20.5     6.67e- 95        3.33e- 93
-##  3 HALLMARK_AND…             17.9     9.82e- 84        4.91e- 82
-##  4 HALLMARK_ANG…             14.5     5.88e- 68        2.94e- 66
-##  5 HALLMARK_API…             20.2     1.07e- 93        5.37e- 92
-##  6 HALLMARK_API…             27.4     1.84e-122        9.20e-121
-##  7 HALLMARK_APO…             19.6     2.41e- 91        1.20e- 89
-##  8 HALLMARK_BIL…             24.7     5.08e-112        2.54e-110
-##  9 HALLMARK_CHO…             17.2     2.40e- 80        1.20e- 78
-## 10 HALLMARK_COA…             21.9     4.76e-101        2.38e- 99
+##  1 HALLMARK_ADI…             12.8     4.02e- 58        2.01e- 56
+##  2 HALLMARK_ALL…             22.3     3.79e- 99        1.89e- 97
+##  3 HALLMARK_AND…             17.5     1.55e- 79        7.77e- 78
+##  4 HALLMARK_ANG…             15.0     3.04e- 68        1.52e- 66
+##  5 HALLMARK_API…             21.1     1.31e- 94        6.57e- 93
+##  6 HALLMARK_API…             29.7     7.62e-127        3.81e-125
+##  7 HALLMARK_APO…             21.0     5.73e- 94        2.87e- 92
+##  8 HALLMARK_BIL…             30.2     1.12e-128        5.62e-127
+##  9 HALLMARK_CHO…             18.4     4.52e- 83        2.26e- 81
+## 10 HALLMARK_COA…             23.9     1.18e-105        5.89e-104
 ## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
 ## 
 ## $tukey
-## # A tibble: 33,300 x 7
+## # A tibble: 31,500 x 7
 ##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
 ##    &lt;fct&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI… ATRT-Aden…          -0.107          1                    1
-##  2 HALLMARK_ADI… Central n…           0.112          1                    1
-##  3 HALLMARK_ADI… Chondrosa…          -0.282          1.00                 1
-##  4 HALLMARK_ADI… Chordoma-…           0.0360         1                    1
-##  5 HALLMARK_ADI… Choroid p…          -0.0429         1                    1
-##  6 HALLMARK_ADI… CNS EFT-C…          -0.143          1.00                 1
-##  7 HALLMARK_ADI… CNS Embry…          -0.221          1.00                 1
-##  8 HALLMARK_ADI… CNS gangl…          -0.487          0.854                1
-##  9 HALLMARK_ADI… CNS lymph…          -0.185          1                    1
-## 10 HALLMARK_ADI… CNS neuro…          -0.148          1.00                 1
-## # … with 33,290 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
+##  1 HALLMARK_ADI… ATRT-Aden…         -0.115           1.000                1
+##  2 HALLMARK_ADI… Central n…          0.123           1                    1
+##  3 HALLMARK_ADI… Chondrosa…         -0.279           1.000                1
+##  4 HALLMARK_ADI… Chordoma-…          0.00733         1                    1
+##  5 HALLMARK_ADI… Choroid p…         -0.0605          1                    1
+##  6 HALLMARK_ADI… CNS EFT-C…         -0.142           1.000                1
+##  7 HALLMARK_ADI… CNS Embry…         -0.229           1.000                1
+##  8 HALLMARK_ADI… CNS gangl…         -0.524           0.677                1
+##  9 HALLMARK_ADI… CNS lymph…         -0.179           1                    1
+## 10 HALLMARK_ADI… CNS neuro…         -0.167           1.000                1
+## # … with 31,490 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
 ## #   significant_tukey_bonf &lt;lgl&gt;</code></pre>
 <pre class="r"><code>head(disease_type_new_stranded_model_results)</code></pre>
 <pre><code>## $anova
 ## # A tibble: 50 x 5
 ##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
 ##    &lt;fct&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI…             7.33     1.91e- 50        9.53e- 49
-##  2 HALLMARK_ALL…            12.1      7.60e- 88        3.80e- 86
-##  3 HALLMARK_AND…             9.87     7.62e- 71        3.81e- 69
-##  4 HALLMARK_ANG…             8.69     1.40e- 61        6.99e- 60
-##  5 HALLMARK_API…            11.8      2.54e- 85        1.27e- 83
-##  6 HALLMARK_API…            15.7      5.70e-112        2.85e-110
-##  7 HALLMARK_APO…            11.3      7.72e- 82        3.86e- 80
-##  8 HALLMARK_BIL…            14.0      5.19e-101        2.60e- 99
-##  9 HALLMARK_CHO…             9.46     1.17e- 67        5.87e- 66
-## 10 HALLMARK_COA…            12.8      1.45e- 92        7.23e- 91
+##  1 HALLMARK_ADI…             7.59     5.01e- 52        2.51e- 50
+##  2 HALLMARK_ALL…            12.7      2.77e- 90        1.39e- 88
+##  3 HALLMARK_AND…             9.49     4.53e- 67        2.26e- 65
+##  4 HALLMARK_ANG…             8.71     5.81e- 61        2.90e- 59
+##  5 HALLMARK_API…            12.1      1.71e- 86        8.54e- 85
+##  6 HALLMARK_API…            16.7      3.39e-116        1.70e-114
+##  7 HALLMARK_APO…            11.8      2.23e- 84        1.12e- 82
+##  8 HALLMARK_BIL…            16.6      1.05e-115        5.25e-114
+##  9 HALLMARK_CHO…             9.80     2.09e- 69        1.05e- 67
+## 10 HALLMARK_COA…            13.4      1.75e- 95        8.75e- 94
 ## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
 ## 
 ## $tukey
 ## # A tibble: 113,900 x 7
 ##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
 ##    &lt;fct&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI… Atypical …          -0.107              1                1
-##  2 HALLMARK_ADI… Brain art…          -0.352              1                1
-##  3 HALLMARK_ADI… Brainstem…           0.148              1                1
-##  4 HALLMARK_ADI… Cavernoma…          -0.0514             1                1
-##  5 HALLMARK_ADI… Chondrosa…          -0.282              1                1
-##  6 HALLMARK_ADI… Chordoma-…           0.0411             1                1
-##  7 HALLMARK_ADI… Choroid p…           0.0283             1                1
-##  8 HALLMARK_ADI… Choroid p…           0.0426             1                1
-##  9 HALLMARK_ADI… Choroid p…          -0.0483             1                1
-## 10 HALLMARK_ADI… CNS embry…          -0.0188             1                1
+##  1 HALLMARK_ADI… Atypical …         -0.115           1                    1
+##  2 HALLMARK_ADI… Brain art…         -0.411           1.000                1
+##  3 HALLMARK_ADI… Brainstem…         -0.251           1.000                1
+##  4 HALLMARK_ADI… Cavernoma…         -0.0511          1                    1
+##  5 HALLMARK_ADI… Chondrosa…         -0.279           1                    1
+##  6 HALLMARK_ADI… Chordoma-…         -0.00240         1                    1
+##  7 HALLMARK_ADI… Choroid p…          0.0219          1                    1
+##  8 HALLMARK_ADI… Choroid p…          0.0404          1                    1
+##  9 HALLMARK_ADI… Choroid p…         -0.0668          1                    1
+## 10 HALLMARK_ADI… CNS embry…         -0.0123          1                    1
 ## # … with 113,890 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
 ## #   significant_tukey_bonf &lt;lgl&gt;</code></pre>
 <pre class="r"><code>## Save stranded library results
@@ -1808,7 +1820,7 @@ write_tsv(short_histology_stranded_model_results[[&quot;tukey&quot;]],  file_tuk
 write_tsv(disease_type_new_stranded_model_results[[&quot;tukey&quot;]], file_tukey_stranded_disease_type_new)
 
 
-### Don&#39;t run polyA samples in CI due to data limitations, won&#39;t be enough levels for ANOVA
+### Don't run polyA samples in CI due to data limitations, won't be enough levels for ANOVA
 if (!(running_in_ci)){
   short_histology_polya_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, short_histology, &quot;polya&quot;, SIGNIFICANCE_THRESHOLD)
   disease_type_new_polya_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, disease_type_new, &quot;polya&quot;, SIGNIFICANCE_THRESHOLD)
@@ -1881,23 +1893,6 @@ $(document).ready(function () {
 
 
 </script>
-
-<!-- tabsets -->
-
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
-<!-- code folding -->
-
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

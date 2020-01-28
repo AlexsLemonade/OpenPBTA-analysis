@@ -6,9 +6,8 @@ date: 2019
 params:
   results_dir: "results"
   model_dir: "models"
-  seed: NULL
-  train_target_column: NULL
-  target_columns: NULL
+  train_target_column: "reported_gender"
+  target_columns: "reported_gender,germline_sex_estimate"
 ---
 
 
@@ -20,6 +19,7 @@ library(ggplot2)
 library(graphics)
 library(rmarkdown)
 library(knitr)
+library(stringr)
 
 ```
 
@@ -45,29 +45,26 @@ for (t in target_column_list[[1]]) {
 # here, we collect the predictive accuracy values from each confusion matrix file in the results directory  
   results_directory <- file.path(params$results_dir, t)
   files_to_process <- list.files(path = results_directory, pattern = "_confusion_matrix.RDS")
-  first_pos <- sapply(files_to_process, function(x) regexpr(params$seed, x))
-  last_pos <- sapply(files_to_process, function(x) regexpr("confusion_matrix", x))
-  transcript_tail_percents <- substr(files_to_process, 1, last_pos-2)
+  file_ID_stem <- stringr::str_replace_all(string = files_to_process, 
+                                                       pattern = "_confusion_matrix.RDS",  replacement = "")
   
   files_to_process_names <- file.path(params$results_dir, t, files_to_process)
   predictive_accuracies <- sapply(files_to_process_names, function(x) readRDS(x)$overall["Accuracy"])
 
 #store predictive accuracies in a data frame with ID=unique portion of the confusion matrix file name  
-  predictive_accuracies <- data.frame(ID=transcript_tail_percents, 
+  predictive_accuracies <- data.frame(ID=file_ID_stem, 
                                       cm_filename=files_to_process_names, predictive_accuracy=predictive_accuracies)
 
 # # here, we collect the # training transcripts values from each model object in the models directory  
   results_directory <- file.path(params$model_dir)
   files_to_process <- list.files(path = results_directory, pattern = "_model_object.RDS")
-  first_pos <- sapply(files_to_process, function(x) regexpr(params$seed, x))
-  last_pos <- sapply(files_to_process, function(x) regexpr("model_object", x))
-  transcript_tail_percents <- substr(files_to_process, 1, last_pos-2)
-  
+  file_ID_stem <- stringr::str_replace_all(string = files_to_process, 
+                                                       pattern = "_model_object.RDS",  replacement = "")  
   files_to_process_names <- file.path(params$model_dir, files_to_process)
   number_transcripts <- sapply(files_to_process_names, function(x) readRDS(x)$glmnet.fit$beta@Dim[1])
 
 #store # training transcripts values in a data frame with ID=uniqure portion of the model object file name 
-  number_transcripts <- data.frame(ID=transcript_tail_percents, number_training_transcripts=number_transcripts)
+  number_transcripts <- data.frame(ID=file_ID_stem, number_training_transcripts=number_transcripts)
 
 # join predictive accuracy and # training transcript values by ID  
   pre_final_df <- suppressWarnings(inner_join(predictive_accuracies, number_transcripts, by="ID"))
@@ -76,10 +73,8 @@ for (t in target_column_list[[1]]) {
 #here, we collect the number of non-zero features from each model coefficients file in the models directory  
   results_directory <- file.path(params$model_dir)
   files_to_process <- list.files(path = results_directory, pattern = "_model_coefs.tsv")
-  first_pos <- sapply(files_to_process, function(x) regexpr(params$seed, x))
-  last_pos <- sapply(files_to_process, function(x) regexpr("model_coefs", x))
-  transcript_tail_percents <- substr(files_to_process, 1, last_pos-2)
-  
+  file_ID_stem <- stringr::str_replace_all(string = files_to_process, 
+                                                       pattern = "_model_coefs.tsv",  replacement = "")  
   files_to_process_names <- file.path(params$model_dir, files_to_process)
   
   check_intercept <- function(x) {
@@ -93,7 +88,7 @@ for (t in target_column_list[[1]]) {
   number_non_zero <- sapply(files_to_process_names, check_intercept)
   
 #store # non-zero features values in a data frame with ID=unique portion of the model coeffs file name  
-  number_non_zero <- data.frame(ID=transcript_tail_percents, number_features=number_non_zero)
+  number_non_zero <- data.frame(ID=file_ID_stem, number_features=number_non_zero)
 
 #join # non-zero features to predictive accuracies and # training transcript values by ID  
   final_df <- suppressWarnings(inner_join(pre_final_df, number_non_zero, by="ID"))
@@ -132,17 +127,14 @@ Erroneous calls are displayed in red.
 
 #for the train_target_column value, find the index of the row corresponding to the maximum predictive accuracy
 #if more than one match, take the largest index value
-max_accuracy_index <- max(which(df_list[[target_column_list[[1]][which(target_column_list[[1]] ==
-                      params$train_target_column)]]]$predictive_accuracy==
-                      max(df_list[[target_column_list[[1]][which(target_column_list[[1]] ==
-                      params$train_target_column)]]]$predictive_accuracy)))
-
+max_accuracy_index <- max(which(df_list[[params$train_target_column]]$predictive_accuracy==
+                                  max(df_list[[params$train_target_column]]$predictive_accuracy)))
 #construct the name of the matching prediction details file  
-start_name <- df_list[[target_column_list[[1]][1]]]$cm_filename[max_accuracy_index]
-final_name <- paste(substr(start_name, 1, regexpr("_confusion", start_name)-1), "_prediction_details.tsv", sep="")
+df_name <- file.path(stringr::str_replace_all(string=df_list[[params$train_target_column]]$cm_filename[max_accuracy_index],
+                                       pattern="_confusion_matrix.RDS", 
+                                       replacement="_prediction_details.tsv"))
   
 #read the matching prediction details file  
-df_name <- file.path(final_name)
 plot_df <- read.delim(df_name, header=TRUE, sep="\t", stringsAsFactors = FALSE)
 
 #print and save strength of calls plot suppressing messages
@@ -177,10 +169,12 @@ for (t in target_column_list[[1]]) {
   cat("  \n#######",  "Confusion Matrix for", t, "Calls at Maximum Accuracy #######  \n")
   print(cm_object)
   cat("  \n")
+
   
-  summary_file_name <- substr(df_list[[t]]$cm_filename[max_accuracy_index], 1,
-                              regexpr("_confusion_matrix", df_list[[t]]$cm_filename[max_accuracy_index]))
-  summary_file_name <- paste(summary_file_name, "two_class_summary.RDS", sep="")
+  summary_file_name <- stringr::str_replace_all(string=df_list[[t]]$cm_filename[max_accuracy_index],
+                                       pattern="_confusion_matrix.RDS", 
+                                       replacement="_two_class_summary.RDS")
+    
   summary_object <- readRDS(file.path(summary_file_name))
   cat("  \n#######",  "Two Class Summary for", t, "Calls at Maximum Accuracy #######  \n")
   print(summary_object)
