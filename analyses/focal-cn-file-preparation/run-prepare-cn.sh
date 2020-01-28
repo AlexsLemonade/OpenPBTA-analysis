@@ -23,8 +23,7 @@ Rscript --vanilla 03-prepare-cn-file.R \
   --cnv_file ../../scratch/cnvkit_with_status.tsv \
   --metadata ../../data/pbta-histologies.tsv \
   --filename_lead "cnvkit_annotated_cn" \
-  --cnvkit \
-  --gistic
+  --seg
 
 # Run annotation step for ControlFreeC
 Rscript --vanilla 03-prepare-cn-file.R \
@@ -32,8 +31,7 @@ Rscript --vanilla 03-prepare-cn-file.R \
   --metadata ../../data/pbta-histologies.tsv \
   --filename_lead "controlfreec_annotated_cn" \
   --xy $XYFLAG \
-  --controlfreec \
-  --gistic
+  --controlfreec
 
 # Compare to expression data
 # Rscript --vanilla 04-rna-expression-validation.R
