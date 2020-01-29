@@ -170,7 +170,7 @@ circos_map_plot(
   end_col = "loc.end",
   y_val = "copy.num",
   track_height = .15,
-  type = "line", # type is set to point
+  type = "line", # type is set to line
   colour_key = "ID", # This is set to the ID column so its color coded by sample
   palette = "YlGnBu"
 )
@@ -189,7 +189,7 @@ circos_map_plot(
   end_col = "loc.end",
   y_val = "copy.num",
   track_height = .15,
-  type = "line", # type is set to line
+  type = "rect", 
   colour_key = "ID", # This is set to the ID column so its color coded by sample
   palette = "Accent"
 )
