@@ -44,7 +44,7 @@ jobs:
 
       - run:
           name: Sex prediction from RNA-seq - Clean data-train elasticnet-evaluate model
-          command: ./scripts/run_in_ci.sh bash analyses/sex-prediction-from-RNASeq/run-sex-prediction-from-RNASeq.sh
+          command: OPENPBTA_PERCENT=0 ./scripts/run_in_ci.sh bash analyses/sex-prediction-from-RNASeq/run-sex-prediction-from-RNASeq.sh
 
       - run:
           name: Selection Strategy Comparison
@@ -54,6 +54,7 @@ jobs:
 #      - run:
 #          name: ssGSEA Analysis
 #          command: OPENPBTA_ANOVAPVALUE=0.25 OPENPBTA_TUKEYPVALUE=0.50 OPENPBTA_PERCKEEP=0.50 ./scripts/run_in_ci.sh bash analyses/ssgsea-hallmark/run-ssgsea-hallmark.sh
+
 
 # The second method - ControlFREEC - was not included as of v6, so the comparison can no longer be performed
 #      - run:
@@ -66,7 +67,7 @@ jobs:
 
       - run:
           name: Focal CN Preparation
-          command: OPENPBTA_XY=0 ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
+          command: OPENPBTA_CONSENSUS=0 OPENPBTA_XY=0 ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
                 
       - run:
           name: Interaction plot
@@ -133,12 +134,16 @@ jobs:
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh" 
 
       - run:
+          name: Chromosomal instability breakpoints
+          command: ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
+
+      - run:
           name: Fusion Summary
-          command: ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
+          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
 
       - run:
           name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors 
-          command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
 
       - run:
           name: Add Shatterseek

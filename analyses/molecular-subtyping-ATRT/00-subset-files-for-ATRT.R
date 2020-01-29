@@ -30,6 +30,8 @@ if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
 
+scratch_dir <- file.path(root_dir, "scratch")
+
 # Read in metadata
 metadata <-
   readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"))
@@ -63,15 +65,13 @@ stranded_expression <-
   )
 
 # Read in focal CN data
-## TODO: This section will be updated to read in focal CN data derived from
-##       copy number consensus calls.
 cn_df <- readr::read_tsv(
   file.path(
     root_dir,
     "analyses",
     "focal-cn-file-preparation",
     "results",
-    "cnvkit_annotated_cn_autosomes.tsv.gz"
+    "consensus_seg_annotated_cn_autosomes.tsv.gz"
   )
 )
 
@@ -82,15 +82,17 @@ tmb_df <-
                               "pbta-snv-consensus-mutation-tmb-all.tsv"))
 
 # Read in GISTIC `broad_values_by_arm.txt` file
-gistic_df <-
-  data.table::fread(unzip(
-    file.path(root_dir, "data", "pbta-cnv-cnvkit-gistic.zip"),
-    files = file.path(
-      "2019-12-10-gistic-results-cnvkit",
-      "broad_values_by_arm.txt"
-    ),
-    exdir = file.path(root_dir, "scratch")
-  ), data.table = FALSE)
+# TODO: update once the consensus GISTIC results are in the data release
+download.file(url = "https://github.com/AlexsLemonade/OpenPBTA-analysis/files/4123481/2019-01-28-consensus-cnv.zip",
+              destfile = file.path(scratch_dir, "2019-01-28-consensus-cnv.zip"),
+              quiet = TRUE)
+unzip(file.path(scratch_dir, "2019-01-28-consensus-cnv.zip"),
+      exdir = file.path(scratch_dir, "2019-01-28-consensus-cnv"),
+      files = file.path("2019-01-28-consensus-cnv", "broad_values_by_arm.txt"))
+gistic_df <- data.table::fread(file.path(scratch_dir,
+                                         "2019-01-28-consensus-cnv",
+                                         "broad_values_by_arm.txt"),
+                               data.table = FALSE)
 
 #### Filter metadata -----------------------------------------------------------
 

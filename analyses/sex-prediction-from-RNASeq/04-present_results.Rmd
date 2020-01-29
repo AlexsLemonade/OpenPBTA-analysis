@@ -1,0 +1,254 @@
+---
+title: "Sex Prediction from RNASeq Results"
+output: html_document
+author: Bill Amadio
+date: 2019
+params:
+  results_dir: "results"
+  model_dir: "models"
+  train_target_column: "reported_gender"
+  target_columns: "reported_gender,germline_sex_estimate"
+---
+
+
+```{r echo=FALSE, results='hide'}
+
+library(dplyr, warn.conflicts=FALSE, quietly = TRUE)
+library(readr)
+library(ggplot2)
+library(graphics)
+library(rmarkdown)
+library(knitr)
+library(stringr)
+
+```
+
+
+```{r echo=FALSE, results='hide'}
+#in this chunk, we read the columns required for the predictive accuracy v. # training transcripts and
+## non-zero features v. # training transcripts plote
+
+# we will generate a separate data frame for each value in the targetColumns argument
+target_column_list <- strsplit(params$target_columns, ",")
+df_list <- list()
+
+# Create specified output directory if it does not yet exist
+plot_directory <- file.path(params$results_dir, "plots")
+
+if (!dir.exists(plot_directory)) {
+  dir.create(plot_directory, recursive = TRUE)
+}
+
+#loop through the values in the targetColumns argument
+for (t in target_column_list[[1]]) {
+
+# here, we collect the predictive accuracy values from each confusion matrix file in the results directory  
+  results_directory <- file.path(params$results_dir, t)
+  files_to_process <- list.files(path = results_directory, pattern = "_confusion_matrix.RDS")
+  file_ID_stem <- stringr::str_replace_all(string = files_to_process, 
+                                                       pattern = "_confusion_matrix.RDS",  replacement = "")
+  
+  files_to_process_names <- file.path(params$results_dir, t, files_to_process)
+  predictive_accuracies <- sapply(files_to_process_names, function(x) readRDS(x)$overall["Accuracy"])
+
+#store predictive accuracies in a data frame with ID=unique portion of the confusion matrix file name  
+  predictive_accuracies <- data.frame(ID=file_ID_stem, 
+                                      cm_filename=files_to_process_names, predictive_accuracy=predictive_accuracies)
+
+# # here, we collect the # training transcripts values from each model object in the models directory  
+  results_directory <- file.path(params$model_dir)
+  files_to_process <- list.files(path = results_directory, pattern = "_model_object.RDS")
+  file_ID_stem <- stringr::str_replace_all(string = files_to_process, 
+                                                       pattern = "_model_object.RDS",  replacement = "")  
+  files_to_process_names <- file.path(params$model_dir, files_to_process)
+  number_transcripts <- sapply(files_to_process_names, function(x) readRDS(x)$glmnet.fit$beta@Dim[1])
+
+#store # training transcripts values in a data frame with ID=uniqure portion of the model object file name 
+  number_transcripts <- data.frame(ID=file_ID_stem, number_training_transcripts=number_transcripts)
+
+# join predictive accuracy and # training transcript values by ID  
+  pre_final_df <- suppressWarnings(inner_join(predictive_accuracies, number_transcripts, by="ID"))
+
+
+#here, we collect the number of non-zero features from each model coefficients file in the models directory  
+  results_directory <- file.path(params$model_dir)
+  files_to_process <- list.files(path = results_directory, pattern = "_model_coefs.tsv")
+  file_ID_stem <- stringr::str_replace_all(string = files_to_process, 
+                                                       pattern = "_model_coefs.tsv",  replacement = "")  
+  files_to_process_names <- file.path(params$model_dir, files_to_process)
+  
+  check_intercept <- function(x) {
+    coef_df <- read.delim(x, header=TRUE, sep="\t", stringsAsFactors = FALSE)
+    if (coef_df[1,1] == "(Intercept)") {
+      nrow(coef_df) - 1
+    } else {
+      nrow(coef_df)
+    }
+  }
+  number_non_zero <- sapply(files_to_process_names, check_intercept)
+  
+#store # non-zero features values in a data frame with ID=unique portion of the model coeffs file name  
+  number_non_zero <- data.frame(ID=file_ID_stem, number_features=number_non_zero)
+
+#join # non-zero features to predictive accuracies and # training transcript values by ID  
+  final_df <- suppressWarnings(inner_join(pre_final_df, number_non_zero, by="ID"))
+#join DFs two-by-two to suppress 'joining by' messages.  Cannot suppress them with Reduce
+  
+
+#store this data frame in the list of data frames by targetColumn
+  df_list[[t]] <- final_df
+
+  
+}
+
+
+```
+
+### **Overview and Conclusion**
+
+The 01-clean_split_data.R, 02-train_elasticnet.R, 03-evaluate_model.R pipeline trains and evaluates an elasticnet logistic regression model to predict sex from RNASeq data.  
+The training features are gene expression transcripts, and the training labels are reported_gender values for each sample.
+
+The pipeline is a response to issue [#84](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/84) which was raised to check whether, in some histologies, silencing might be breaking down, potentially resulting in changes in X inactivation. 
+Based on the accuracy achieved here, this is probably not happening, and this classifier can be helpful to predict values for datasets without annotated sex information.
+
+
+
+### **Strength of Calls**
+
+The model generates a probability that a given sample is Female. 
+Female/Male calls are made using a 50% threshold. Predictive accuracy varies by the number of training transcripts used.  
+The plot below shows model probability values, generated by the most accurate set of training transcripts, for all 258 samples in the test set.  
+The test set points are split on the x-axis by train_target_column (ground truth) values.
+Erroneous calls are displayed in red.  
+
+
+```{r echo=FALSE}
+
+#for the train_target_column value, find the index of the row corresponding to the maximum predictive accuracy
+#if more than one match, take the largest index value
+max_accuracy_index <- max(which(df_list[[params$train_target_column]]$predictive_accuracy==
+                                  max(df_list[[params$train_target_column]]$predictive_accuracy)))
+#construct the name of the matching prediction details file  
+df_name <- file.path(stringr::str_replace_all(string=df_list[[params$train_target_column]]$cm_filename[max_accuracy_index],
+                                       pattern="_confusion_matrix.RDS", 
+                                       replacement="_prediction_details.tsv"))
+  
+#read the matching prediction details file  
+plot_df <- read.delim(df_name, header=TRUE, sep="\t", stringsAsFactors = FALSE)
+
+#print and save strength of calls plot suppressing messages
+plot <- ggplot(plot_df, aes(x=obs, y=Female)) + 
+  geom_jitter(shape=16, position=position_jitter(0.2), aes(color=ifelse((obs=="Male" & Female>0.5) | (obs=="Female" & Female<0.5),
+  "red", "black"))) + labs(title=paste("Strength of Calls forTest Set Values of", params$train_target_column), 
+  x=target_column_list[[1]][1], y="Model Probability of Female") +
+  theme(legend.position="none") + scale_color_manual(values=c("black", "red"))
+print(plot)
+suppressMessages(ggsave(plot=plot, filename=file.path(plot_directory,
+                                       paste("Strength_of_Calls_at_Maximum_Accuracy", ".png", sep=""))))
+
+
+
+```
+
+
+### **Predictive Accuracy**
+
+Model accuracy was tested against germline_sex_estimate values in addition to reported_gender values.  
+Confusion matrices for models using the most accurate set of training transcripts appear below.
+
+
+```{r echo=FALSE}
+
+#same logic here as in previous chuck to identify confusion matrix and two class summary objects
+#corresponding to maximum accuracy
+
+for (t in target_column_list[[1]]) {
+  
+  cm_object <- readRDS(file.path(df_list[[t]]$cm_filename[max_accuracy_index]))
+  cat("  \n#######",  "Confusion Matrix for", t, "Calls at Maximum Accuracy #######  \n")
+  print(cm_object)
+  cat("  \n")
+
+  
+  summary_file_name <- stringr::str_replace_all(string=df_list[[t]]$cm_filename[max_accuracy_index],
+                                       pattern="_confusion_matrix.RDS", 
+                                       replacement="_two_class_summary.RDS")
+    
+  summary_object <- readRDS(file.path(summary_file_name))
+  cat("  \n#######",  "Two Class Summary for", t, "Calls at Maximum Accuracy #######  \n")
+  print(summary_object)
+  cat("  \n")
+
+  
+}
+
+```
+
+
+### **Training Guidance**
+
+Training transcripts are filtered by median absolute deviation across all samples.  
+The pipeline accepts an array of user-supplied training set sizes, and a model, using each training set size, is built, evaluated and saved. 
+The plots below show predictive accuracies by number of training transcripts using reported_gender and germline_sex_estimate as ground truths.
+
+
+```{r echo=FALSE}
+
+#for each value in the targetColumns argument, plot prediction accuracy v. # training transcripts
+#from the data frames in the data frame list contructed above
+
+for (t in target_column_list[[1]]) {
+  
+  plot <- ggplot(df_list[[t]], aes(x=number_training_transcripts,  y=predictive_accuracy)) +
+            geom_point(color = "black", size = 2, shape = "circle filled", fill="black") +
+            labs(title=paste("Prediction Accuracy for", t, "calls by # Training Transcripts"), 
+                 x="number of training transcripts", y="prediction accuracy")
+  print(plot)
+  suppressMessages(ggsave(plot=plot, filename=file.path(plot_directory,
+                              paste("Predictive_Accuracy_on_", t, "_labels_v._Number_Training_Transcripts", ".png", sep=""))))
+
+    
+}
+
+
+```
+
+
+
+
+
+The number of non-zero features in each model varied considerably.  
+The elastic net alpha parameter was optimized using the default sequence of 11 values more closely spaced around alpha = 0.  
+
+
+```{r echo=FALSE}
+
+#for each value in the targetColumns argument, plot # non-zero features v. # training transcripts
+#from the data frames in the data frame list contructed above
+
+
+for (t in target_column_list[[1]]) {
+  
+  plot <- ggplot(df_list[[t]], aes(x=number_training_transcripts,  y=number_features)) +
+            geom_point(color = "black", size = 2, shape = "circle filled", fill="black") +
+            labs(title=paste("# Non-zero Features for", t, "calls by # Training Transcripts"), 
+                 x="number of training transcripts", y="number features")
+  print(plot)
+  suppressMessages(ggsave(plot=plot, filename=file.path(plot_directory,
+                              paste("Number_Non-zero_Features_for_", t, "_labels_v._Number_Training_Transcripts", ".png", sep=""))))
+
+    
+}
+
+
+
+```
+
+
+```{r}
+sessionInfo()
+
+```
+
+

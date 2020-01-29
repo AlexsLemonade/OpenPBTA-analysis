@@ -1,7 +1,5 @@
-## Define the ending file(s) that we want
-OUTPUT = "results/cnv_consensus.tsv",
 
-## Define the wildcards to use in the file names. 
+## Define the wildcards to use in the file names.
 wildcard_constraints:
   caller = "cnvkit|freec|manta",
   dupdel = "dup|del",
@@ -10,20 +8,23 @@ wildcard_constraints:
 ## Define the first rule of the Snakefile. This rule determines what the final file is and which steps to be taken.
 rule all:
     input:
-        OUTPUT
+        "results/cnv_consensus.tsv",
+        "results/cnv_neutral.bed",
+        "results/pbta-cnv-consensus.seg.gz"
 
 
+scratch_loc = config["scratch"] + '/'
 #########################      FILTER STEP FOR THE 3 CALL METHODS ####################################
 
 
 rule freec_filter:
     input:
         ## Define the location of the input file and take the extension from the config file
-        events="../../scratch/freec_freec/{sample}" + str(config["freec_ext"])
+        events= scratch_loc + "freec_freec/{sample}" + str(config["freec_ext"])
     output:
         ## Define the output files' names
-        freec_del="../../scratch/interim/{sample}.freec.del.bed",
-        freec_dup="../../scratch/interim/{sample}.freec.dup.bed"
+        freec_del= scratch_loc + "interim/{sample}.freec.del.bed",
+        freec_dup= scratch_loc + "interim/{sample}.freec.dup.bed"
     params:
         ## Take parameters from the config file and assign them into params for convinient use in the Shell section
         SIZE_CUTOFF=str(config["size_cutoff"]),
@@ -32,7 +33,7 @@ rule freec_filter:
         ## The awk command line is to filter out the raw file. 
         ## The end result has 8 columns
         ## | chr# | start | end | CNV_length | copy_numbers | pval | seg.mean | CNV type |
-        ## The first awk looks at column 6 to filter out for loss/gain. 
+        ## The first awk looks at column 6 to filter out for loss/gain.
         ## Then it prints out all of the 8 columns above
         ## The second awk filters the CNV length, freec pval
         ## The sort command sorts the first digit of chromosome number numerically
@@ -49,11 +50,11 @@ rule freec_filter:
 rule cnvkit_filter:
     input:
         ## Define the location of the input file and take the extension from the config file
-        events="../../scratch/cnvkit_cnvkit/{sample}" + str(config["cnvkit_ext"])
+        events= scratch_loc + "cnvkit_cnvkit/{sample}" + str(config["cnvkit_ext"])
     output:
         ## Define the output files' names
-        cnvkit_del="../../scratch/interim/{sample}.cnvkit.del.bed",
-        cnvkit_dup="../../scratch/interim/{sample}.cnvkit.dup.bed"
+        cnvkit_del= scratch_loc + "interim/{sample}.cnvkit.del.bed",
+        cnvkit_dup= scratch_loc + "interim/{sample}.cnvkit.dup.bed"
     params:
         ## Take parameters from the config file and assign them into params for convinient use in the Shell section
         SIZE_CUTOFF=str(config["size_cutoff"]),
@@ -79,11 +80,11 @@ rule cnvkit_filter:
 rule manta_filter:
     input:
         ## Define the location of the input file and take the extension from the config file
-        "../../scratch/manta_manta/{sample}" + str(config["manta_ext"])
+         scratch_loc + "manta_manta/{sample}" + str(config["manta_ext"])
     output:
         ## Define the output files' names
-        manta_del="../../scratch/interim/{sample}.manta.del.bed",
-        manta_dup="../../scratch/interim/{sample}.manta.dup.bed"
+        manta_del= scratch_loc + "interim/{sample}.manta.del.bed",
+        manta_dup= scratch_loc + "interim/{sample}.manta.dup.bed"
     params:
         ## Take parameters from the config file and assign them into params for convinient use in the Shell section
         SIZE_CUTOFF=str(config["size_cutoff"]),
@@ -105,33 +106,65 @@ rule manta_filter:
         """ | tr [:blank:] '\t' > {output.manta_dup}"""
 
 
-rule filter_telomeres:
+rule generate_excluded:
+    # Combine the sets of regions that are not well called by CNV algorithms for exclusion
+    input:
+        "ref/telomeres.bed",
+        "ref/centromeres.bed",
+        "ref/heterochromatin.bed",
+        "ref/immunoglobulin_regions.bed",
+        "ref/segmental_dups.bed"
+    output:
+        "ref/cnv_excluded_regions.bed"
+    shell:
+        "cat {input} | cut -f 1-3 | sort -k1,1 -k2,2n | bedtools merge > {output}"
+
+rule generate_callable:
+    # Invert the excluded regions to generate a file of regions potentially called.
+    # First filters out small regions <200Kb
+    input:
+        bed="ref/cnv_excluded_regions.bed",
+        genome="ref/hg38.chrom.sizes"
+    output:
+        "ref/cnv_callable.bed"
+    params:
+        min_size = 200000
+    shell:
+        "awk '($3-$2) >= {params.min_size}' {input.bed}  "
+        "| bedtools complement -i stdin -g {input.genome} "
+        # remove alt chromosomes and mitochondria
+        "| grep -v '_' "
+        "| grep -v 'chrM' > {output}"
+
+
+rule filter_excluded:
     input:
         ## Define the location of the input file and take the path/extension from the config file
-        bad_list=os.path.join("ref", "bad_chromosomal_seg_updated_merged.bed"),
-        bedfile="../../scratch/interim/{sample}.{caller}.{dupdel}.bed"
+        exclude_list="ref/cnv_excluded_regions.bed",
+        bedfile= scratch_loc + "interim/{sample}.{caller}.{dupdel}.bed"
     output:
         ## Define the output files' names
-        filtered_bed="../../scratch/interim/{sample}.{caller}.{dupdel}.filtered.bed"
+        filtered_bed= scratch_loc + "interim/{sample}.{caller}.{dupdel}.filtered.bed"
     threads: 1
     shell:
-        ## Invoke the bedtools subtract pass in the reference and CNVs files. Direct the stdout to a new file. 
-        "bedtools subtract -N -a {input.bedfile} -b {input.bad_list} -f 0.5 > {output.filtered_bed}"
+        ## Invoke the bedtools subtract pass in the reference and CNVs files. Direct the stdout to a new file.
+        "bedtools subtract -N -a {input.bedfile} -b {input.exclude_list} -f 0.5 > {output.filtered_bed}"
 
 
 rule first_merge:
     input:
         ## Define the location of the input file and take the path/extension from the config file
-        filtered_bed="../../scratch/interim/{sample}.{caller}.{dupdel}.filtered.bed"
+        filtered_bed= scratch_loc + "interim/{sample}.{caller}.{dupdel}.filtered.bed"
     output:
         ## Define the output files' names
-        merged_bed="../../scratch/interim/{sample}.{caller}.{dupdel}.filtered2.bed"
+        merged_bed= scratch_loc + "interim/{sample}.{caller}.{dupdel}.filtered2.bed"
     threads: 1
     shell:
         ## Call on bedtools to merge any overlapping segment. Merging done for any segments within a single file.
         ## We considers any segments within 10,000 bp to be the same CNV. 
         ## Merge but retain info from columns 2 (start pos), 3(end pos), 5(copy numbers), 7(seg.mean), 8(CNV type)
-        "bedtools merge -i {input.filtered_bed} -d 10000"
+        "sort -k1,1 -k2,2n {input.filtered_bed}"
+        "| bedtools merge -i stdin -d 10000"
         " -c 2,3,5,7,8 -o collapse,collapse,collapse,collapse,distinct"
         " > {output.merged_bed}"
 
@@ -140,10 +173,10 @@ rule restructure_column:
     input:
         ## Define the location of the input file and take the path/extension from the config file
         script=os.path.join(config["scripts"], "restructure_column.py"),
-        merged_bed="../../scratch/interim/{sample}.{caller}.{dupdel}.filtered2.bed"
+        merged_bed= scratch_loc + "interim/{sample}.{caller}.{dupdel}.filtered2.bed"
     output:
         ## Define the output files' names
-        restructured_bed="../../scratch/interim/{sample}.{caller}.{dupdel}.filtered3.bed"
+        restructured_bed= scratch_loc + "interim/{sample}.{caller}.{dupdel}.filtered3.bed"
     threads: 1
     shell:
         "python3 {input.script} --file {input.merged_bed} > {output.restructured_bed}"
@@ -153,15 +186,15 @@ rule compare_cnv_methods:
     input:
         ## Define the location of the input file and take the path/extension from the config file
         script=os.path.join(config["scripts"], "compare_variant_calling_updated.py"),
-        cnvkit="../../scratch/interim/{sample}.cnvkit.{dupdel}.filtered3.bed",
-        freec="../../scratch/interim/{sample}.freec.{dupdel}.filtered3.bed",
-        manta="../../scratch/interim/{sample}.manta.{dupdel}.filtered3.bed"
+        cnvkit= scratch_loc + "interim/{sample}.cnvkit.{dupdel}.filtered3.bed",
+        freec= scratch_loc + "interim/{sample}.freec.{dupdel}.filtered3.bed",
+        manta= scratch_loc + "interim/{sample}.manta.{dupdel}.filtered3.bed"
 
     output:
         ## Define the output files' names
-        manta_cnvkit="../../scratch/interim/{sample}.manta_cnvkit.{dupdel}.bed",
-        manta_freec="../../scratch/interim/{sample}.manta_freec.{dupdel}.bed",
-        cnvkit_freec="../../scratch/interim/{sample}.cnvkit_freec.{dupdel}.bed"
+        manta_cnvkit= scratch_loc + "interim/{sample}.manta_cnvkit.{dupdel}.bed",
+        manta_freec= scratch_loc + "interim/{sample}.manta_freec.{dupdel}.bed",
+        cnvkit_freec= scratch_loc + "interim/{sample}.cnvkit_freec.{dupdel}.bed"
     threads: 1
     params:
         sample_name="{sample}"
@@ -174,12 +207,12 @@ rule compare_cnv_methods:
 rule combine_merge_paired_cnv:
     input:
         ## Define the location of the input file
-        manta_cnvkit="../../scratch/interim/{sample}.manta_cnvkit.{dupdel}.bed",
-        manta_freec="../../scratch/interim/{sample}.manta_freec.{dupdel}.bed",
-        cnvkit_freec="../../scratch/interim/{sample}.cnvkit_freec.{dupdel}.bed"
+        manta_cnvkit= scratch_loc + "interim/{sample}.manta_cnvkit.{dupdel}.bed",
+        manta_freec= scratch_loc + "interim/{sample}.manta_freec.{dupdel}.bed",
+        cnvkit_freec= scratch_loc + "interim/{sample}.cnvkit_freec.{dupdel}.bed"
     output:
         ## Define the output files' names
-        merged="../../scratch/endpoints/{sample}.{dupdel}.merged.final.bed"
+        merged= scratch_loc + "interim/{sample}.{dupdel}.merged.bed"
     threads: 1
     shell:
         ## Combine the input file, sort and output to one file
@@ -193,28 +226,109 @@ rule combine_merge_paired_cnv:
         "| bedtools merge -c 4,5,6,7,8,9 -o collapse,collapse,collapse,distinct,distinct,collapse "
         "> {output.merged}"
 
+rule remove_inset_calls:
+    ## Sometimes calls are inset within one another: one del call within the range of a dup call, or vice versa.
+    ## To fix this, we will use bedtools to subtract del calls from dup calls, which splits the dup into two (or more)
+    ## segments and removes the overlap.
+    ## This subtraction will remove any dup segments that lay entirely within a del segment, so those need to be added back.
+    ## We do this by finding the intersection of all dup and del segments, which includes regions where both are present, 
+    ## but may remove the annotation of which original segment was 'fully enclosed' by a segment of the opposite call.
+    ## To restore that inforamtion we intersect the original dup calls with those intersection calls,
+    ## requiring full reciprocal coverage (-r 1) to find only those dup calls that are in the original set and NOT enclosed by a del call
+    ##
+    ## The entire process is also repeated with the opposite order, to caputure all del calls, then the results are merged
+    ## separately for dups and dels.
+    input:
+        dup_merge =  scratch_loc + "interim/{sample}.dup.merged.bed",
+        del_merge =  scratch_loc + "interim/{sample}.del.merged.bed"
+    output:
+        dup_merge =  scratch_loc + "endpoints/{sample}.dup.merged.final.bed",
+        del_merge =  scratch_loc + "endpoints/{sample}.del.merged.final.bed",
+        dupdel_diff = scratch_loc + "interim/{sample}.dup-del.bed",
+        deldup_diff = scratch_loc + "interim/{sample}.del-dup.bed",
+        deldup_intersect = scratch_loc + "interim/{sample}.deldup_intersect.bed",
+        del_intersect = scratch_loc + "interim/{sample}.del_intersect.bed",
+        dup_intersect = scratch_loc + "interim/{sample}.dup_intersect.bed"
+    shell:
+        # subtract deletion segments from duplications (and vice versa)
+        "bedtools subtract -a {input.dup_merge} -b {input.del_merge}"
+        " > {output.dupdel_diff} &&"
+        "bedtools subtract -a {input.del_merge} -b {input.dup_merge}"
+        " > {output.deldup_diff} &&"
+        # intersect dups and dels to find regions where both where present
+        "bedtools intersect -a {input.dup_merge} -b {input.del_merge}"
+        " > {output.deldup_intersect} &&"
+        # find which of the intersection regions came from a duplication segment, then which came from deletions
+        "bedtools intersect -f 1 -r -a {input.dup_merge} -b {output.deldup_intersect}"
+        " >  {output.dup_intersect} &&"
+        "bedtools intersect -f 1 -r -a {input.del_merge} -b {output.deldup_intersect}"
+        " >  {output.del_intersect} &&"
+        # combine dups and dels separately
+        "cat {output.dupdel_diff} {output.dup_intersect}"
+        " > {output.dup_merge} &&"
+        "cat {output.deldup_diff} {output.del_intersect}"
+        " > {output.del_merge}"
+
+rule neutral_regions:
+    ## for each sample, find the segments not called as either dups or dels with bedtools
+    ## then append the sample name
+    input:
+        dup_merge =  scratch_loc + "endpoints/{sample}.dup.merged.final.bed",
+        del_merge =  scratch_loc + "endpoints/{sample}.del.merged.final.bed",
+        called = "ref/cnv_callable.bed"
+    output:
+         scratch_loc + "endpoints/{sample}.neutral.bed"
+    shell:
+        "bedtools subtract -a {input.called} -b {input.dup_merge}"
+        " | bedtools subtract -a stdin -b {input.del_merge}"
+        " | sed 's/$/\t{wildcards.sample}/' > {output}"
+
+rule merge_neutral:
+    input:
+        expand( scratch_loc + "endpoints/{sample}.neutral.bed",
+                          sample = config["samples"])
+    output:
+        "results/cnv_neutral.bed"
+    shell:
+        "cat {input} > {output}"
+
 
 rule merge_all:
     input:
         ## Take all of the del and dup files of ALL samples as input. If there are 200 samples, there will be 400 files total
-        bedfiles = expand("../../scratch/endpoints/{sample}.{dupdel}.merged.final.bed",
-                          sample = config["samples"],
-                          dupdel = ["dup", "del"])
+        expand( scratch_loc + "endpoints/{sample}.{dupdel}.merged.final.bed",
+               sample = config["samples"],
+               dupdel = ["dup", "del"])
     output:
-        "../../scratch/endpoints/all_CNVs_combined.tsv"
+         scratch_loc + "endpoints/all_CNVs_combined.tsv"
     shell:
         ## Add a header to the file and combine all of the files using cat. 
        "echo -e 'chrom\tstart\tend\tmanta_CNVs\tcnvkit_CNVs\tfreec_CNVs\tCNV_type\tBiospecimen\tfile_names' "
-       " | cat - {input.bedfiles} "
+       " | cat - {input} "
        " | cut -f 1-8 "
        " > {output}"
 
+
 rule clean_output:
     input:
-        script=os.path.join(config["scripts"], "remove_dup_NULL_entries.py"),
-        cnv_file ="../../scratch/endpoints/all_CNVs_combined.tsv"
+        script=os.path.join(config["scripts"], "remove_dup_NULL_overlap_entries.py"),
+        cnv_file = scratch_loc + "endpoints/all_CNVs_combined.tsv"
     output:
         "results/cnv_consensus.tsv"
     shell:
         "python3 {input.script} --file {input.cnv_file} > {output}"
 
+rule make_segfile:
+    input:
+        script= os.path.join(config["scripts"], "bed_to_segfile.R"),
+        consensus = "results/cnv_consensus.tsv",
+        neutral = "results/cnv_neutral.bed",
+        uncalled = "results/uncalled_samples.tsv"
+    output:
+        "results/pbta-cnv-consensus.seg.gz"
+    shell:
+        "Rscript {input.script}"
+        " -i {input.consensus}"
+        " -n {input.neutral}"
+        " -u {input.uncalled}"
+        " -o {output}"

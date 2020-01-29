@@ -4,11 +4,11 @@
 #
 # 2020
 
-map_density_plot <- function(granges,
-                             y_val,
-                             y_lab,
-                             color,
-                             main_title) {
+map_breaks_plot <- function(granges,
+                            y_val,
+                            y_lab,
+                            color,
+                            main_title) {
   # Given a GRanges object, plot it y value along its chromosomal mappings using
   # ggbio.
   #
@@ -56,28 +56,28 @@ multipanel_break_plot <- function(granges_list,
                                   y_lab,
                                   plot_dir) {
   # A wrapper function to make a 3 row chromosomal map plot for a set of GRanges
-  # objects that contain common_density, cnv_density, and sv_density.
+  # objects that contain union_of_breaks, cnv_breaks, and sv_breaks.
   #
   # Args:
   #   granges_list: A list of Granges object to plot as a combination plot
   #   plot_name: a character string specifying the plot
-  #   y_val: to be passed to map_density plot for mapping.
-  #   y_lab: to be passed to map_density plot for y axis label
+  #   y_val: to be passed to map_breaks plot for mapping.
+  #   y_lab: to be passed to map_breaks plot for y axis label
   #   plot_dir: a file path where you would like the plot PNG to be saved.
   #
   # Returns:
   #  ggplot of chromosomal mapping of the y value given.
   #
   # Make combined SV and CNV plot
-  common_plot <- map_density_plot(granges_list$common_density,
+  union_of_plot <- map_breaks_plot(granges_list$union_of_breaks,
     y_val = y_val,
     y_lab = y_lab,
     color = "blue",
-    main_title = "Common Breaks"
+    main_title = "Union of Breaks"
   )
 
   # Make CNV plot
-  cnv_plot <- map_density_plot(granges_list$cnv_density,
+  cnv_plot <- map_breaks_plot(granges_list$cnv_breaks,
     y_val = y_val,
     y_lab = y_lab,
     color = "darkgreen",
@@ -85,7 +85,7 @@ multipanel_break_plot <- function(granges_list,
   )
 
   # Make SV plot
-  sv_plot <- map_density_plot(granges_list$sv_density,
+  sv_plot <- map_breaks_plot(granges_list$sv_breaks,
     y_val = y_val,
     y_lab = y_lab,
     color = "orange",
@@ -100,7 +100,7 @@ multipanel_break_plot <- function(granges_list,
 
   # Put all plots and title together
   full_plot <- cowplot::plot_grid(title,
-    common_plot,
+    union_of_plot,
     cnv_plot,
     sv_plot,
     nrow = 4,
