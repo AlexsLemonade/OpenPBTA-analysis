@@ -1,16 +1,16 @@
 # C. Bethell and C. Savonen for CCDL 2019
-# Run 00-add-ploidy-cnvkit.Rmd, 01-prepare-cn-file.R, and 02-rna-expression-validation.R
-# sequentially.
+# Run focal-cn-file-preparation module
 #
 # Usage: bash run-prepare-cn.sh
 
 set -e
 set -o pipefail
 
-# This cds file is filtered below to contain coding sequences only, converted
-# to a bed file, and saved in the project's `scratch` directory.
 XYFLAG=${OPENPBTA_XY:-1}
-cds_file=../../scratch/gencode.v27.primary_assembly.annotation.bed
+# currently, we use the consensus SEG file committed to the repository
+# this means it is *not* subset and therefore requires too much RAM
+# to run the annotation step
+RUNCONSENSUS=${OPENPBTA_CONSENSUS:-1}
 
 # This script should always run as if it were being called from
 # the directory it lives in.
@@ -19,33 +19,45 @@ script_directory="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
-# Set up cds file
-gunzip -c ../../data/gencode.v27.primary_assembly.annotation.gtf.gz \
-  | awk '$3 ~ /CDS/' \
-  | convert2bed --do-not-sort --input=gtf - \
-  > $cds_file
+scratch_dir=../../scratch
+data_dir=../../data
+histologies_file=${data_dir}/pbta-histologies.tsv
+gtf_file=${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz
 
 # Prep the CNVkit data
-Rscript --vanilla -e "rmarkdown::render('00-add-ploidy-cnvkit.Rmd', clean = TRUE)"
+Rscript --vanilla -e "rmarkdown::render('01-add-ploidy-cnvkit.Rmd', clean = TRUE)"
+
+# Prep the consensus SEG file data
+Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd', clean = TRUE)"
 
 # Run annotation step for CNVkit
-Rscript --vanilla 01-prepare-cn-file.R \
-  --cnv_file ../../scratch/cnvkit_with_status.tsv \
-  --cds_file $cds_file \
-  --metadata ../../data/pbta-histologies.tsv \
+Rscript --vanilla 03-prepare-cn-file.R \
+  --cnv_file ${scratch_dir}/cnvkit_with_status.tsv \
+  --gtf_file $gtf_file \
+  --metadata $histologies_file \
   --filename_lead "cnvkit_annotated_cn" \
-  --cnvkit \
-  --gistic
+  --seg
 
 # Run annotation step for ControlFreeC
-Rscript --vanilla 01-prepare-cn-file.R \
-  --cnv_file ../../data/pbta-cnv-controlfreec.tsv.gz \
-  --cds_file $cds_file \
-  --metadata ../../data/pbta-histologies.tsv \
+Rscript --vanilla 03-prepare-cn-file.R \
+  --cnv_file ${data_dir}/pbta-cnv-controlfreec.tsv.gz \
+  --gtf_file $gtf_file \
+  --metadata $histologies_file \
   --filename_lead "controlfreec_annotated_cn" \
   --xy $XYFLAG \
-  --controlfreec \
-  --gistic
+  --controlfreec
+
+
+if [ "$RUNCONSENSUS" -gt "0"]; then
+# Run annotation step for consensus file
+  Rscript --vanilla 03-prepare-cn-file.R \
+    --cnv_file ${scratch_dir}/consensus_seg_with_status.tsv \
+    --gtf_file $gtf_file \
+    --metadata $histologies_file \
+    --filename_lead "consensus_seg_annotated_cn" \
+    --seg \
+    --xy $XYFLAG
+fi
 
 # Compare to expression data
-Rscript --vanilla 02-rna-expression-validation.R
+# Rscript --vanilla rna-expression-validation.R

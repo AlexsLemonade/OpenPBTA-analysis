@@ -71,7 +71,7 @@ cn_df <- readr::read_tsv(
     "analyses",
     "focal-cn-file-preparation",
     "results",
-    "cnvkit_annotated_cn_autosomes.tsv.bz2"
+    "cnvkit_annotated_cn_autosomes.tsv.gz"
   )
 )
 
