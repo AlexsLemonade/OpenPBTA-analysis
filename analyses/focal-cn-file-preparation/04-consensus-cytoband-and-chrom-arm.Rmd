@@ -8,11 +8,17 @@ author: Chante Bethell and Jaclyn Taroni for ALSF CCDL
 date: 2020
 ---
 
+The purpose of this notebook is to account for broader copy number changes.
+
+## Set up 
+
+### Libraries and functions
+
 ```{r}
 library(tidyverse)
 ```
 
-## Set up 
+### Directories
 
 ```{r}
 # Detect the ".git" folder -- this will in the project root directory.
@@ -27,6 +33,59 @@ if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
 ```
+
+### Output files
+
+```{r}
+all_status_df_file <- file.path(
+  results_dir,
+  "consensus_autosomes_with_arm_and_cytoband_values.tsv.gz"
+)
+long_regions_df_file <- file.path(
+  results_dir,
+  "consensus_autosomes_largest_region_tidy.tsv.gz"
+)
+```
+
+## Get a mapping between gene symbols and cytobands
+
+In `03-prepare-cn-file.R`, we used the `org.Hs.eg.db` package to map between the Ensembl gene identifiers and cytobands.
+We'll extract cytobands that contain any Entrez IDs and then use those Entrez IDs to get gene symbols.
+We can also potentially use the cytoband data from UCSC, but it was generally in agreement with the cytoband data from this package.
+
+Here's a quote [from an earlier version of this module](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/b4b52300adba95bb815f4e9ff925da8c74159889/analyses/focal-cn-file-preparation/01-prepare-cn-file.R#L257):
+
+> The decision to implement the UCSC hg38 cytoband file was made based on a comparison done between the cytoband calls in the `org.Hs.eg.db` package and the calls in the UCSC file. We found that they disagreed in ~11,800 calls out of ~800,000 and the `UCSC file` contains more cytoband calls.
+
+```{r}
+# These steps are taken from the org.Hs.eg.db reference manual
+band_object <- org.Hs.eg.db::org.Hs.egMAP2EG
+# Get the cytobands that are mapped to any entrez gene id
+mapped_bands <- AnnotationDbi::mappedkeys(band_object)
+# Convert to a list
+mapped_band_list <- as.list(band_object[mapped_bands]) 
+
+# Make a data.frame that contains the cytoband to gene symbol mapping
+mapped_band_df <- reshape2::melt(mapped_band_list)
+colnames(mapped_band_df) <- c("entrez_id", "cytoband")
+mapped_band_df <- mapped_band_df %>%
+  # The entrez_id column is a factor, mapIds need a character
+  mutate(entrez_id = as.character(entrez_id)) %>%
+  # We're using the default behavior for mapIds 
+  # "only the 1st thing that comes back will be returned"
+  # https://www.rdocumentation.org/packages/AnnotationDbi/versions/1.30.1/topics/AnnotationDb-objects
+  mutate(gene_symbol = AnnotationDbi::mapIds(org.Hs.eg.db::org.Hs.eg.db,
+                                             keys = entrez_id,
+                                             column = "SYMBOL",
+                                             keytype = "ENTREZID")) %>%
+  # drop the Entrez IDs
+  select(-entrez_id)
+
+# remove the unneeded objects
+rm(band_object, mapped_bands, mapped_band_list)
+```
+
+## GISTIC
 
 ### Read in GISTIC chromosome arm file
 
@@ -46,45 +105,50 @@ gistic_arm_file <- file.path(gistic_results, "broad_values_by_arm.txt")
 gistic_arm_df <- data.table::fread(gistic_arm_file, data.table = FALSE)
 ```
 
+<!--When we use the v14+ GISTIC data included in the data download this section is relevant
 
 ```{r}
-# # Path to gistic zip file results
-# gistic_zip <-
-#   file.path(root_dir, "data", "pbta-cnv-cnvkit-gistic.zip")
-# 
-# # Get the name of the folder first since this changes with updates to the date
-# folder_name <- unzip(zipfile = gistic_zip, list = TRUE) %>%
-#   dplyr::filter(Length == 0) %>%
-#   dplyr::pull("Name")
-# 
-# # Path to gistic results directory
-# gistic_results <-
-#   file.path(root_dir,
-#             "analyses",
-#             "focal-cn-file-preparation",
-#             "gistic-results")
-# 
-# # Extract files if it hasn't been done yet
-# if (!dir.exists(gistic_results)) {
-#   # Unzip but only extract the files not the folder
-#   unzip(zipfile = gistic_zip,
-#         exdir = gistic_results)
-# }
-# # Designate GISTIC results folder to extract to
-# gistic_results <- file.path(gistic_results, folder_name)
-# 
-# # Read in broad values by arm GISTIC output file
-# gistic_df <-
-#   data.table::fread(
-#     paste0(
-#       gistic_results,
-#       "broad_values_by_arm.txt"
-#     ),
-#     data.table = FALSE
-#   )
-```
+# Path to gistic zip file results
+gistic_zip <-
+  file.path(root_dir, "data", "pbta-cnv-cnvkit-gistic.zip")
 
-Wrangle the GISTIC file
+# Get the name of the folder first since this changes with updates to the date
+folder_name <- unzip(zipfile = gistic_zip, list = TRUE) %>%
+  dplyr::filter(Length == 0) %>%
+  dplyr::pull("Name")
+
+# Path to gistic results directory
+gistic_results <-
+  file.path(root_dir,
+            "analyses",
+            "focal-cn-file-preparation",
+            "gistic-results")
+
+# Extract files if it hasn't been done yet
+if (!dir.exists(gistic_results)) {
+  # Unzip but only extract the files not the folder
+  unzip(zipfile = gistic_zip,
+        exdir = gistic_results)
+}
+# Designate GISTIC results folder to extract to
+gistic_results <- file.path(gistic_results, folder_name)
+
+# Read in broad values by arm GISTIC output file
+gistic_df <-
+  data.table::fread(
+    paste0(
+      gistic_results,
+      "broad_values_by_arm.txt"
+    ),
+    data.table = FALSE
+  )
+```
+-->
+
+### Tidy the GISTIC arm data
+
+The GISTIC arm data contains chromosome arms in the first column and all other columns correspond to a WGS biospecimen identifier.
+We want to get this into long format.
 
 ```{r}
 tidy_gistic_arm_df <- gistic_arm_df %>%
@@ -101,9 +165,9 @@ tidy_gistic_arm_df <- gistic_arm_df %>%
   ))
 ```
 
-There are no sex chromosome values in the GISTIC file.
+There are no sex chromosome values in this version of the GISTIC file.
 
-### Read in the annotated consensus copy number file
+## Annotated consensus copy number data
 
 ```{r}
 autosomes_file <- file.path(results_dir, 
@@ -123,7 +187,7 @@ annotated_autosomes_df <- annotated_autosomes_df %>%
   select(-arm_position)
 ```
 
-## Join together GISTIC and annotated SEG file
+### Join together GISTIC and annotated SEG file
 
 ```{r}
 seg_gistic_df <- annotated_autosomes_df %>%
@@ -131,9 +195,108 @@ seg_gistic_df <- annotated_autosomes_df %>%
                                        "annotated_arm" = "chromosome_arm"))
 ```
 
+## What about cytoband status?
+
+If the majority of the gene symbols in a cytoband are called as the same alteration, make that the cytoband status.
+
 ```{r}
-seg_gistic_df %>%
-  write_tsv(file.path(results_dir, 
-                      "consensus_annotated_cn_autosomes_with_arm_values.tsv.gz"))
+# add a column to the data.frame that contains the mapping between the cytoband
+# and gene symbol that counts how many symbols are mapped to that cytoband
+symbols_per_cytoband <- mapped_band_df %>%
+  group_by(cytoband) %>%
+  tally(name = "num_symbol")
+```
+
+What proportion of the gene symbols in the cytoband are called as the same status?
+
+```{r}
+symbol_count_df <- seg_gistic_df %>%
+  group_by(biospecimen_id, cytoband, status) %>%
+  summarize(num_symbols_with_status = length(unique(gene_symbol))) %>%
+  left_join(symbols_per_cytoband) %>%
+  mutate(cytoband_proportion = (num_symbols_with_status / num_symbol))
+```
+
+### Add the cytoband proportion and status
+
+```{r}
+seg_gistic_cytoband_df <- symbol_count_df %>%
+  ungroup() %>%
+  select(biospecimen_id, cytoband, status, cytoband_proportion) %>%
+  inner_join(seg_gistic_df) %>%
+  mutate(cytoband_status = case_when(
+    cytoband_proportion > 0.5 ~ status,
+    TRUE ~ "NA"
+  )) 
+```
+
+Write to file.
+
+```{r}
+seg_gistic_cytoband_df %>%
+  write_tsv(all_status_df_file)
+```
+
+Do these statuses tend to agree?
+
+```{r}
+seg_gistic_cytoband_df %>%
+  group_by(gistic_arm_status, cytoband_status) %>%
+  tally()
+```
+
+## Make a long table with the "broadest regions" as status
+
+An example -- If chromosome 10p is lost, we don't also want to call the 10p cytobands lost and the gene symbols in 10p as lost.
+Instead, label 10p a loss and filter out the smaller regions.
+
+### Non-neutral arm data
+
+```{r}
+arm_status_df <- seg_gistic_cytoband_df %>%
+  filter(gistic_arm_status != "neutral") %>%
+  select(Kids_First_Biospecimen_ID = biospecimen_id,
+         region = annotated_arm,
+         status = gistic_arm_status) %>%
+  distinct()
+```
+
+### Non-neutral cytoband data
+
+For instances where the arm status is neutral, but there *is* cytoband status...
+
+```{r}
+cytoband_status_df <- seg_gistic_cytoband_df %>%
+  filter(gistic_arm_status == "neutral",
+         cytoband_status != "NA") %>%
+  select(Kids_First_Biospecimen_ID = biospecimen_id,
+         region = cytoband,
+         status = cytoband_status) %>%
+  distinct()
+```
+
+### Gene-level data
+
+Get the gene symbol for instances where the other two levels are neutral or NA.
+
+```{r}
+gene_status_df <- seg_gistic_cytoband_df %>%
+  filter(gistic_arm_status == "neutral",
+         cytoband_status == "NA") %>%
+  select(Kids_First_Biospecimen_ID = biospecimen_id,
+         region = gene_symbol,
+         status = status) %>%
+  distinct()
+```
+
+### Join all together and write to file
+
+```{r}
+long_status_df <- bind_rows(
+  arm_status_df,
+  cytoband_status_df,
+  gene_status_df
+) %>%
+  write_tsv(long_regions_df_file)
 ```
 
