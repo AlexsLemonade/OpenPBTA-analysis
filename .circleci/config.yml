@@ -141,6 +141,38 @@ jobs:
           name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors 
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
 
+      - run:
+          name: Telomerase Activity - RSEM FPKM stranded
+          command: ./scripts/run_in_ci.sh Rscript analyses/telomerase-activities-prediction/01-RSEM-FPKM-Stranded.r
+
+      - run:
+          name: Telomerase Activity - RSEM FPKM polyA
+          command: ./scripts/run_in_ci.sh Rscript analyses/telomerase-activities-prediction/02-RSEM-FPKM-PolyA.r
+
+      - run:
+          name: Telomerase Activity - RSEM counts stranded
+          command: ./scripts/run_in_ci.sh Rscript analyses/telomerase-activities-prediction/03-RSEM-Counts-Stranded.r
+
+      - run:
+          name: Telomerase Activity - RSEM counts stranded
+          command: ./scripts/run_in_ci.sh Rscript analyses/telomerase-activities-prediction/03-RSEM-Counts-Stranded.r
+
+      - run:
+          name: Telomerase Activity - RSEM counts polyA
+          command: ./scripts/run_in_ci.sh Rscript analyses/telomerase-activities-prediction/04-RSEM-Counts-PolyA.r
+
+      - run:
+          name: Telomerase Activity - Compare counts vs. FPKM
+          command: ./scripts/run_in_ci.sh Rscript analyses/telomerase-activities-prediction/05-Comparing-Counts-versus-FPKM.r
+
+      - run:
+          name: Telomerase Activity - TERT and TERC expression
+          command: ./scripts/run_in_ci.sh Rscript analyses/telomerase-activities-prediction/06-Comparing-TERTexp-TERCexp-EXTENDScores.r
+
+      - run:
+          name: Telomerase Activity - Histology
+          command: ./scripts/run_in_ci.sh Rscript analyses/telomerase-activities-prediction/07-Comparing-Histology-versus-EXTENDScores.r
+
          ################################
          #### Add your analysis here ####
          ################################
