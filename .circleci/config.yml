@@ -67,7 +67,7 @@ jobs:
 
       - run:
           name: Focal CN Preparation
-          command: OPENPBTA_XY=0 ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
+          command: OPENPBTA_CONSENSUS=0 OPENPBTA_XY=0 ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
                 
       - run:
           name: Interaction plot
@@ -135,7 +135,7 @@ jobs:
 
       - run:
           name: Fusion Summary
-          command: ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
+          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
 
       - run:
           name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors 
