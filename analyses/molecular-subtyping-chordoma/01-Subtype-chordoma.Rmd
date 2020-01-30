@@ -18,7 +18,8 @@ library(ggplot2)
 ### Read in data
 
 ```{r}
-histologies_df <- read_tsv(file.path("..", "..", "data", 
+data_dir <- file.path("..", "..", "data")
+histologies_df <- read_tsv(file.path(data_dir,
                                      "pbta-histologies.tsv"))
 ```
 ```{r}
@@ -37,7 +38,7 @@ focal_cn_df <- read_tsv("https://github.com/AlexsLemonade/OpenPBTA-analysis/raw/
 ```{r}
 #we need to include the sample_id field from pbta-histologies.tsv in the final table (field will allow #us to map between RNA-seq (e.g., SMARCB1 expression values) and WGS data (e.g., SMARCB1 focal copy #number status) from the same event for a given individual).
 #To get the SMARCB1 jitter plot in the photo here #250 (comment), you will first need to read in the #collapsed expression data
-expression_data <- read_rds(file.path("..", "..", "data", "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
+expression_data <- read_rds(file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
 ```
 
 ### Output
@@ -221,6 +222,7 @@ chordoma_smarcb1_df %>%
                color = "blue", 
                shape = 18) +
                xlab("SMARCB1 status") +
+   xlab("SMARCB1 status") +
    ylab("SMARCB1 expression")
 ```
 
@@ -234,4 +236,3 @@ Write the table to file.
 chordoma_smarcb1_df %>%
   write_tsv(output_file)
 ```
-
