@@ -5,7 +5,6 @@ stringsAsFactors=FALSE
 library(circlize)
 library(stringr)
 library('devtools')
-install_github('NNoureen/EXTEND')
 library(EXTEND)
 
 ###################################################   Running Analysis on RSEM-FPKM data formats  #####################################################################
