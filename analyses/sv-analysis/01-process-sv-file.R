@@ -35,12 +35,14 @@ if (!dir.exists(output_directory)) {
 }
 
 ## ===================== Load  Independent Specimen List =====================
+print(paste0("debug:",1))
 independent_specimen_list <-  read.table(file.path(root_dir, "data","independent-specimens.wgs.primary-plus.tsv"), header = TRUE, sep = "\t")
 # bioid including all sample's names will be used later
 bioid <- unique(independent_specimen_list$Kids_First_Biospecimen_ID)
 
 
 ## ===================== Load SV File =====================
+print(paste0("debug:",2))
 # read sv file
 # filter independent-specimens
 # filter "PASS" samples
@@ -49,6 +51,7 @@ sv_analysis <- read_tsv(file.path(root_dir, "data","pbta-sv-manta.tsv.gz")) %>%
 
 
 ## ===================== Functions =====================
+print(paste0("debug:",3))
 extract_len <- function(info_field, len_string) {
   # info_field: an entry of the INFO column
   # len_string: ID of the INFO key that will be used to extract the length from the correct field
@@ -64,6 +67,7 @@ extract_len <- function(info_field, len_string) {
 
 ## ===================== Generate SV File In A Shatterseek-read Format =====================
 for (i in bioid) {
+  print(paste0("debug:",4))
   sv_individual <- sv_analysis[sv_analysis$Kids.First.Biospecimen.ID.Tumor  == i,]
   ## TYPE == BND
   # bnds is individual's translocation
