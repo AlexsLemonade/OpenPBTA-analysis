@@ -143,7 +143,7 @@ jobs:
 
       - run:
           name: Molecular subtyping Chordoma
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/subtype-chordoma/01-Subtype-chordoma.Rmd', clean = TRUE)"
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-chordoma/01-Subtype-chordoma.Rmd', clean = TRUE)"
 
           
          ################################
