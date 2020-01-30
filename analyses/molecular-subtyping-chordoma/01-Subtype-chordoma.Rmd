@@ -216,7 +216,9 @@ chordoma_smarcb1_df %>%
                geom = "point", 
                size = 3, 
                color = "blue", 
-               shape = 18)
+               shape = 18) +
+   xlab("SMARCB1 status") +
+   ylab("SMARCB1 expression")
 ```
 
 ```{r}
