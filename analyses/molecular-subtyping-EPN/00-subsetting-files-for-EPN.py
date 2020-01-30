@@ -1,16 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
-
+# Author - Teja Koganti (D3B)
 
 import pandas as pd
 import numpy as np 
-
-
-
-pip install rpy2
-
-
-
 import  pyreadr
 import rpy2.robjects as robjects
 
@@ -40,10 +33,6 @@ collapsed_rsem_stranded_only_with_ependymomasamples = collapsed_rsem_stranded.re
 
 saveRDS = robjects.r['saveRDS']
 saveRDS(collapsed_rsem_stranded_only_with_ependymomasamples, "analyses/molecular-subtyping-EPN/epn-subset/epn_pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
-
-
-
-# In[156]:
 
 
 

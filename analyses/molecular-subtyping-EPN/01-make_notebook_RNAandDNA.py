@@ -1,26 +1,26 @@
 #!/usr/bin/env python
 # coding: utf-8
-
-
-
+#Author - Teja Koganti (D3B)
 
 
 import pandas as pd
 import numpy as np 
 
-pbta_histologies = pd.read_csv("/Users/kogantit/Documents/OpenPBTA/OpenPBTA-analysis/data/pbta-histologies.tsv", sep="\t")
+pbta_histologies = pd.read_csv("data/pbta-histologies.tsv", sep="\t")
 
-outnotebook = open("/Users/kogantit/Documents/OpenPBTA/OpenPBTA-analysis/analyses/molecular-subtyping-EPN/results/EPN_molecular_subtype.tsv", "w")
+outnotebook = open("analyses/molecular-subtyping-EPN/results/EPN_molecular_subtype.tsv", "w")
 
 EP = pbta_histologies[pbta_histologies["disease_type_new"]=="Ependymoma"]
 EP_rnaseq_samples = EP[EP["experimental_strategy"] == "RNA-Seq"][["Kids_First_Biospecimen_ID", "primary_site", "Kids_First_Participant_ID", "sample_id", "experimental_strategy"]]
 EP_rnaseq_samples["disease_group"] = ["infratentorial" if "Posterior Fossa" in primary else "infratentorial" if "Optic" in primary else "supratentorial" if "Frontal Lobe" in primary else "supratentorial" if "Parietal Lobe" in primary else "infratentorial" if "Spinal Cord" in primary else "supratentorial" if "Occipital Lobe" in primary else "infratentorial" if "Tectum" in primary else "infratentorial" if "Spine" in primary else "supratentorial" if "Temporal Lobe" in primary else "infratentorial" if "Spinal" in primary else  "None" for primary in EP_rnaseq_samples["primary_site"]]
+EP_rnasamplenames_PTIDs = list(EP_rnaseq_samples["Kids_First_Participant_ID"]) 
 
 
 all_WGS = EP[EP["experimental_strategy"]=="WGS"]
 WGSPT = all_WGS[all_WGS["Kids_First_Participant_ID"].isin(EP_rnasamplenames_PTIDs)]
 WGS_dnaseqsamples = WGSPT[["Kids_First_Biospecimen_ID", "Kids_First_Participant_ID", "sample_id"]]
 
+outnotebook.write("Kids_First_Participant_ID\tsample_id\tKids_First_Biospecimen_ID_DNA\tKids_First_Biospecimen_ID_RNA\tsubtype\n")
 count =0 
 for index1, row1 in EP_rnaseq_samples.iterrows():
     list_of_sampleids = []

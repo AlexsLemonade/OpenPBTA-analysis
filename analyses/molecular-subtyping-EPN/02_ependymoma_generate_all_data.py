@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
-
-# In[52]:
+# Author Teja Koganti (D3B)
 
 
 import pandas as pd
 import numpy as np 
+import zipfile
 import  pyreadr
 import statistics
 import rpy2.robjects as robjects
@@ -13,28 +13,32 @@ from rpy2.robjects import pandas2ri
 pandas2ri.activate()
 
 # File to write all the data in analyses/molecul-EPN/results folder 
-outfile = open("/Users/kogantit/Documents/OpenPBTA/OpenPBTA-analysis/analyses/molecular-subtyping-EPN/results/EPN_all_data.tsv", "w")
+outfile = open("analyses/molecular-subtyping-EPN/results/EPN_all_data.tsv", "w")
 
 # Reading GISTIC broad_values file for CNA 
-CNA = pd.read_csv("/Users/kogantit/Documents/OpenPBTA_tickets/ependymoma_subtyping_ticket/2019-12-10-gistic-results-cnvkit/broad_values_by_arm.txt", sep="\t")
+#CNA = pd.read_csv("/Users/kogantit/Documents/OpenPBTA_tickets/ependymoma_subtyping_ticket/2019-12-10-gistic-results-cnvkit/broad_values_by_arm.txt", sep="\t")
+#CNA = CNA.set_index("Chromosome Arm")
+zip=zipfile.ZipFile('data/pbta-cnv-cnvkit-gistic.zip')
+CNA=pd.read_csv(zip.open('2019-12-10-gistic-results-cnvkit/broad_values_by_arm.txt'), sep="\t")
 CNA = CNA.set_index("Chromosome Arm")
+
 count=0
 
 # Reading in gene set enrichment analyses file for GSEA scores for NKKB pathway
-gsva = pd.read_csv("/Users/kogantit/Documents/OpenPBTA/OpenPBTA-analysis/analyses/gene-set-enrichment-analysis/results/gsva_scores_stranded.tsv", sep="\t")
+gsva = pd.read_csv("analyses/gene-set-enrichment-analysis/results/gsva_scores_stranded.tsv", sep="\t")
 gsva_NFKB = gsva.loc[gsva['hallmark_name'] == "HALLMARK_TNFA_SIGNALING_VIA_NFKB"]
 gsva_NFKB = gsva_NFKB.set_index("Kids_First_Biospecimen_ID")
 
 # Reading collapsed gene expression file, none in polya file, so ignoring that file 
 readRDS = robjects.r["readRDS"]
-fpkm_df = readRDS("/Users/kogantit/Documents/OpenPBTA/OpenPBTA-analysis/analyses/molecular-subtyping-EPN/epn-subset/epn_pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
+fpkm_df = readRDS("analyses/molecular-subtyping-EPN/epn-subset/epn_pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
 
 #Reading fusion summary file
-fusion = pd.read_csv("/Users/kogantit/Documents/OpenPBTA/OpenPBTA-analysis/analyses/fusion-summary/results/fusion_summary_ependymoma_foi.tsv", sep="\t")
+fusion = pd.read_csv("analyses/fusion-summary/results/fusion_summary_ependymoma_foi.tsv", sep="\t")
 fusion = fusion.set_index("Kids_First_Biospecimen_ID")
 
 #Reading chromosomal instability file for breakpoint density 
-breakpoint_density = pd.read_csv("/Users/kogantit/Documents/OpenPBTA/OpenPBTA-analysis/analyses/chromosomal-instability/breakpoint-data/union_of_breaks_densities.tsv", sep="\t")
+breakpoint_density = pd.read_csv("analyses/chromosomal-instability/breakpoint-data/union_of_breaks_densities.tsv", sep="\t")
 breakpoint_density = breakpoint_density.set_index("samples")
 
 # creating empty lists to get mean and standard deviation of gene FPKM's from pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds file
@@ -50,7 +54,7 @@ IFT46_fpkm = []
 
 
 # Opening the FPKM file separately to fill up the mean and stdev lists 
-with open("/Users/kogantit/Documents/OpenPBTA/OpenPBTA-analysis/analyses/molecular-subtyping-EPN/results/EPN_molecular_subtype.tsv", "r") as notebook:
+with open("analyses/molecular-subtyping-EPN/results/EPN_molecular_subtype.tsv", "r") as notebook:
     for line in notebook:
         line = line.split()
         if not line[0].startswith("Kids"):
@@ -84,7 +88,7 @@ IFT46_stdev = np.std(IFT46_fpkm)
 
 
 # Looping through EPN sample file with both RNA and DNA BSID's   
-with open("/Users/kogantit/Documents/OpenPBTA/OpenPBTA-analysis/analyses/molecular-subtyping-EPN/results/EPN_molecular_subtype.tsv", "r") as notebook:
+with open("analyses/molecular-subtyping-EPN/results/EPN_molecular_subtype.tsv", "r") as notebook:
     for line in notebook:
         line = line.split()
         # Adding fusion, CNA, breakpoints density and expression data to header line
@@ -169,59 +173,6 @@ with open("/Users/kogantit/Documents/OpenPBTA/OpenPBTA-analysis/analyses/molecul
                 outfile.write("\n")
             
 print("Done!!")
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-
-
-# In[ ]:
 
 
 
