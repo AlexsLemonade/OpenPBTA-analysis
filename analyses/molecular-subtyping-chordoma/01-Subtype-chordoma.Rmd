@@ -60,13 +60,19 @@ output_file <- file.path(results_dir, "chordoma_smarcb1_status.tsv")
 
 ## Prepare the data
 
+Extracting the chordoma samples that have a loss of SMARCB1 from focal_cn_df
 ```{r}
 chordoma_loss <- focal_cn_df %>% 
   filter(biospecimen_id %in% chordoma_samples, gene_symbol == "SMARCB1")
-
 chordoma_loss 
 ```
 
+```{r}
+# remove large copy number data frame
+rm(focal_cn_df)
+```
+
+Modifying the output file to filter only chorodoma diagnoses and removing columns with information not relevant to the study
 ```{r}
 chordoma_id_df <- histologies_df %>% 
   # only rows with chordoma samples
@@ -77,6 +83,7 @@ chordoma_id_df <- histologies_df %>%
 chordoma_id_df
 ```
 
+Distinguishing the chrodoma samples with no copy number change chromosome 22
 ```{r}
 copy_neutral_df <- chordoma_id_df %>% 
   # the copy events can only be taken from WGS data not RNA-seq data
@@ -91,11 +98,7 @@ copy_neutral_df <- chordoma_id_df %>%
 copy_neutral_df
 ```
 
-```{r}
-# remove large copy number data frame
-rm(focal_cn_df)
-```
-
+Joining chordoma samples (both with chr 22 loss and no copy number change)
 ```{r}
 chordoma_copy <- chordoma_loss %>% 
   #join the losses with the neutrals to get a new data frame
@@ -146,8 +149,8 @@ smarcb1_expression <- t(smarcb1_expression) %>%
   rename(SMARCB1_expression = SMARCB1)
 smarcb1_expression
 ```
-This also needs sample_id to add it in:
 
+This also needs sample_id to add it in
 ```{r}
 smarcb1_expression <- smarcb1_expression %>%
   inner_join(select(chordoma_id_df,
@@ -157,6 +160,7 @@ smarcb1_expression <- smarcb1_expression %>%
 smarcb1_expression
 ```
 
+Joining the copy number data with the expression data in this step
 ```{r}
 chordoma_smarcb1_df <- smarcb1_expression %>%
   # any missing samples will get filled with NA when using a full join
@@ -215,7 +219,9 @@ chordoma_smarcb1_df %>%
                geom = "point", 
                size = 3, 
                color = "blue", 
-               shape = 18)
+               shape = 18) +
+               xlab("SMARCB1 status") +
+   ylab("SMARCB1 expression")
 ```
 
 ```{r}
