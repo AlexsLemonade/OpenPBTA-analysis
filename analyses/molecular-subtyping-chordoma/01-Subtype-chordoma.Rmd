@@ -18,7 +18,8 @@ library(ggplot2)
 ### Read in data
 
 ```{r}
-histologies_df <- read_tsv(file.path("..", "..", "data", 
+data_dir <- file.path("..", "..", "data)
+histologies_df <- read_tsv(file.path(data_dir,
                                      "pbta-histologies.tsv"))
 ```
 ```{r}
@@ -228,4 +229,3 @@ Write the table to file.
 chordoma_smarcb1_df %>%
   write_tsv(output_file)
 ```
-
