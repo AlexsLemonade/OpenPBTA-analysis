@@ -25,6 +25,14 @@ jobs:
       #    name: Mutect2 vs Strelka2
       #    command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/01-set-up.Rmd', clean = TRUE);
       #                                                rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', clean = TRUE)"
+      - run:
+          name: SNV Caller Analysis 
+          command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis.sh
+          
+      - run:
+          name: Add Shatterseek
+          command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/02-shatterseek.R         
+     
      
       - run:
           name: Collapse RSEM
@@ -105,9 +113,7 @@ jobs:
           name: Process SV file
           command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/01-process-sv-file.R
           
-      - run:
-          name: SNV Caller Analysis 
-          command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis.sh
+ 
           
       - run:
           name: Molecular Subtyping - HGG
@@ -145,9 +151,6 @@ jobs:
           name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors 
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
 
-      - run:
-          name: Add Shatterseek
-          command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/02-shatterseek.R 
 
           
        # This analysis was a side concept question and no longer needs to be run. 
