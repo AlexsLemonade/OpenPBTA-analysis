@@ -20,25 +20,30 @@ library(ggplot2)
 ```{r}
 data_dir <- file.path("..", "..", "data")
 histologies_df <- read_tsv(file.path(data_dir,
-                                     "pbta-histologies.tsv"))
-```
-```{r}
-chordoma_samples <- histologies_df %>%
-  filter(short_histology == "Chordoma") %>% 
-  pull(Kids_First_Biospecimen_ID)
+                                     "pbta-histologies.tsv"),
+                           col_types = cols(
+                             molecular_subtype = col_character()
+                           ))
 ```
 
 ```{r}
-# TODO: update to use consensus file and likely a more permissive version of 
-# the focal-cn-file-preparation annotation step
-# Here, we're using an older version of the annotated files that used exons
-focal_cn_df <- read_tsv("https://github.com/AlexsLemonade/OpenPBTA-analysis/raw/fa214291713575be7fd20c92374b268870f4173f/analyses/focal-cn-file-preparation/results/cnvkit_annotated_cn_autosomes.tsv.gz")
+# TODO: update to use consensus file with annotations included in the data 
+# download?
+focal_cn_df <- 
+  read_tsv(file.path("..", "focal-cn-file-preparation", "results",
+                     "consensus_seg_annotated_cn_autosomes.tsv.gz"))
 ```
 
 ```{r}
-#we need to include the sample_id field from pbta-histologies.tsv in the final table (field will allow #us to map between RNA-seq (e.g., SMARCB1 expression values) and WGS data (e.g., SMARCB1 focal copy #number status) from the same event for a given individual).
-#To get the SMARCB1 jitter plot in the photo here #250 (comment), you will first need to read in the #collapsed expression data
-expression_data <- read_rds(file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
+# we need to include the sample_id field from pbta-histologies.tsv in the final 
+# table (field will allow #us to map between RNA-seq (e.g., SMARCB1 expression 
+# values) and WGS data (e.g., SMARCB1 focal copy number status) from the same 
+# event for a given individual). To get the SMARCB1 jitter plot in the photo 
+# here #250 (comment), you will first need to read in the collapsed expression 
+# data
+expression_data <- 
+  read_rds(file.path(data_dir, 
+                     "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
 ```
 
 ### Output
@@ -61,10 +66,21 @@ output_file <- file.path(results_dir, "chordoma_smarcb1_status.tsv")
 
 ## Prepare the data
 
-Extracting the chordoma samples that have a loss of SMARCB1 from focal_cn_df
+Extracting the biospecimen IDs that correspond to chordoma samples
+
+```{r}
+chordoma_samples <- histologies_df %>%
+  filter(short_histology == "Chordoma") %>% 
+  pull(Kids_First_Biospecimen_ID)
+```
+
+Extracting the chordoma samples that have a loss of SMARCB1 from `focal_cn_df`
+
 ```{r}
 chordoma_loss <- focal_cn_df %>% 
-  filter(biospecimen_id %in% chordoma_samples, gene_symbol == "SMARCB1")
+  filter(biospecimen_id %in% chordoma_samples, 
+         gene_symbol == "SMARCB1",
+         status == "loss")
 chordoma_loss 
 ```
 
@@ -84,7 +100,7 @@ chordoma_id_df <- histologies_df %>%
 chordoma_id_df
 ```
 
-Distinguishing the chrodoma samples with no copy number change chromosome 22
+Distinguishing the chordoma samples with no copy number change chromosome 22
 ```{r}
 copy_neutral_df <- chordoma_id_df %>% 
   # the copy events can only be taken from WGS data not RNA-seq data
@@ -165,33 +181,25 @@ Joining the copy number data with the expression data in this step
 ```{r}
 chordoma_smarcb1_df <- smarcb1_expression %>%
   # any missing samples will get filled with NA when using a full join
-  full_join(chordoma_copy, by = "sample_id")
-chordoma_smarcb1_df
-```
+  full_join(chordoma_copy, by = "sample_id") %>%
+  rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID,
+         Kids_First_Biospecimen_ID_RNA = biospecimen_id)
 
-```{r}
 # this step adds in the participant identifier (sample_id to match between the two data.frame)
-chordoma_smarcb1_df <- chordoma_smarcb1_df %>%
-  inner_join(distinct(select(chordoma_id_df, 
-                             sample_id, 
-                             Kids_First_Participant_ID)),
+chordoma_smarcb1_df <- chordoma_id_df %>%
+  select(sample_id, Kids_First_Participant_ID) %>%
+  distinct() %>%
+  inner_join(chordoma_smarcb1_df,
              by = "sample_id")
 
-# combining the two biospecimen identifiers to a single column (all biospecimen IDs for a sampl separated by a comma)
-chordoma_smarcb1_df <- chordoma_smarcb1_df %>%
-  mutate(Kids_First_Biospecimen_ID = if_else(
-    # one sample is missing WGS data, so if that's true only include biospecimen ID from RNA-seq
-    is.na(biospecimen_id),
-    Kids_First_Biospecimen_ID,
-    paste(Kids_First_Biospecimen_ID, biospecimen_id, sep = ", ")
-  ))
 chordoma_smarcb1_df
 ```
 
 ```{r}
 chordoma_smarcb1_df <- chordoma_smarcb1_df %>%
   select(Kids_First_Participant_ID, 
-         Kids_First_Biospecimen_ID, 
+         Kids_First_Biospecimen_ID_DNA,
+         Kids_First_Biospecimen_ID_RNA,
          sample_id,
          status,
          SMARCB1_expression) %>%
