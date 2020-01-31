@@ -95,16 +95,32 @@ cnv_df <- data.table::fread(
             "results",
             "pbta-cnv-consensus.seg.gz"),
   data.table = FALSE
-) %>%
-  # Let's make a variable that specifies whether the data is a deletion or amplication.
-  dplyr::mutate(
-    direction = dplyr::case_when(
-      copy.num < 2 ~ "del",
-      copy.num > 2 ~ "amp",
-      copy.num == 2 ~ "neutral"
-    ),
-    direction = factor(direction, levels = c("del", "neutral", "amp"))
-  )
+) 
+```
+
+Create a status variable based on copy number and tumor ploidy. 
+This is logic was borrowed from [`focal-cn-file-preparation` module](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/86bd634a928db3f460328210e38c7dc1797d1304/analyses/focal-cn-file-preparation/02-add-ploidy-consensus.Rmd#L74).
+
+```{r}
+cnv_df <- cnv_df %>% 
+  # Only keep data that has values for copy.num
+  dplyr::filter(!is.na(copy.num)) %>%
+  # Tack on the ploidy and sex estimate information from metadata
+  dplyr::inner_join(
+    dplyr::select(metadata, 
+                  Kids_First_Biospecimen_ID, 
+                  tumor_ploidy,
+                  germline_sex_estimate), 
+             by = c("ID" = "Kids_First_Biospecimen_ID")) %>%
+  # Create a status variable
+  dplyr::mutate(status = dplyr::case_when(
+    # when the copy number is less than inferred ploidy, mark this as a loss
+    copy.num < tumor_ploidy ~ "loss",
+    # if copy number is higher than ploidy, mark as a gain
+    copy.num > tumor_ploidy ~ "gain",
+    copy.num == tumor_ploidy ~ "neutral"
+  ), 
+  status = factor(status, levels = c("loss", "neutral", "gain")))
 ```
 
 Read in the SV data. 
@@ -179,12 +195,12 @@ RColorBrewer::display.brewer.all()
 ```
 
 **Factor-based color keys:** 
-Here we will add a column to `cnv_df` that color codes based on the `direction` 
+Here we will add a column to `cnv_df` that color codes based on the `status` 
 column which has three categories. 
 
 ```{r}
 # Let's determine how many levels this factor column has
-n_levels <- length(levels(cnv_df$direction))
+n_levels <- length(levels(cnv_df$status))
 
 # Set up a palette based on number of factor levels
 palette_col <- RColorBrewer::brewer.pal(n_levels, name = "Accent")
@@ -193,7 +209,7 @@ palette_col <- RColorBrewer::brewer.pal(n_levels, name = "Accent")
 palette_key <- palette_col
 
 # Have the factor levels be the names
-names(palette_key) <- levels(cnv_df$direction)
+names(palette_key) <- levels(cnv_df$status)
 
 # Preview this
 palette_key
@@ -204,7 +220,7 @@ Add factor based color column to cnv_df
 ```{r}
 cnv_df <- cnv_df %>%
   # Make column that specifies the color for each factor level
-  dplyr::mutate(fac_color_key = dplyr::recode(direction, !!!palette_key))
+  dplyr::mutate(fac_color_key = dplyr::recode(status, !!!palette_key))
 ```
 
 ## Example uses of `circos_map_plot`
