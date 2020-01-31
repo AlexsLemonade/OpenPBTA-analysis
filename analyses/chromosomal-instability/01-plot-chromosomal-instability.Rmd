@@ -248,14 +248,26 @@ histologies <-
   data.frame(Kids_First_Biospecimen_ID = common_samples) %>%
   dplyr::inner_join(dplyr::select(metadata, Kids_First_Biospecimen_ID, short_histology)) %>%
   dplyr::mutate(short_histology = as.factor(short_histology)) %>%
+  dplyr::filter(!is.na(short_histology)) %>% 
   dplyr::arrange(short_histology) %>%
-  tibble::column_to_rownames("Kids_First_Biospecimen_ID")
+  tibble::column_to_rownames("Kids_First_Biospecimen_ID") 
 
-# Create the Heatmap annotation object
-hist_annot <- ComplexHeatmap::rowAnnotation(
-  df = histologies,
-  show_annotation_name = FALSE
-)
+# Get values that can be used to make colors equi distant hues away for the 
+# number of histology groups we have
+col_val <- seq(from = 0, to = 1, 
+               length.out = length(unique(histologies$short_histology)))
+
+# Translate into colors
+col_key <- hsv(h = col_val, s = col_val, v = 1)
+
+# Make this named based on histology
+names(col_key) <- unique(histologies$short_histology)
+
+# Make the same order as the data.frame
+col_key <-  as.character(dplyr::recode(histologies$short_histology, !!!col_key))
+
+# Make the names 
+names(col_key) <- as.character(rownames(histologies))
 ```
 
 Make a color function. 
@@ -311,9 +323,17 @@ breaks_heatmap <- function(data_name) {
 
   # Create the Heatmap annotation object
   chr_annot <- ComplexHeatmap::HeatmapAnnotation(
-    df = data.frame(chr_labels), col = list(chr_labels = c(chr_colors)),
+    df = data.frame(chr_labels), 
+    col = list(chr_labels = c(chr_colors)),
     name = "",
     show_legend = FALSE,
+    show_annotation_name = FALSE
+  )
+  # Create the Heatmap annotation object
+  hist_annot <- ComplexHeatmap::HeatmapAnnotation(
+    df = data.frame(histologies),
+    col = list(histologies = col_key), 
+    which = "row",
     show_annotation_name = FALSE
   )
   # Plot on a heatmap
