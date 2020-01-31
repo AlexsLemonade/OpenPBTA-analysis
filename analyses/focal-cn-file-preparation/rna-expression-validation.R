@@ -9,7 +9,7 @@
 #
 # Rscript --vanilla rna-expression-validation.R \
 #   --annotated_cnv_file analyses/focal-cn-file-preparation/results/cnvkit_annotated_cn_autosomes.tsv.gz \
-#   --expression_file data/pbta-gene-expression-rsem-fpkm.polya.rds \
+#   --expression_file data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
 #   --metadata  data/pbta-histologies.tsv \
 #   --goi_list analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
 #   --filename_lead "cnvkit_annotated_cn_autosomes_polya"
