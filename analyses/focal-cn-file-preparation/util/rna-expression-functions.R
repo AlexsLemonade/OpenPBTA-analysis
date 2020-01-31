@@ -64,7 +64,7 @@ merge_expression <-
   function (copy_number_df,
             expression_df,
             metadata,
-            filename) {
+            filename_lead) {
     # Given the focal copy number data.frame already annotated with the
     # metadata, the RNA-seq expression data.frame, and the metadata, combine
     # the data into one data.frame and save data.frame as tsv file.
@@ -73,7 +73,7 @@ merge_expression <-
     #   copy_number_df: focal copy number data.frame
     #   expression_df: RNA-seq expression data.frame
     #   metadata: the relevant metadata data.frame
-    #   filename: filename of the output tsv file
+    #   filename_lead: the lead for the filename of the output tsv file
     #
     # Returns:
     #   combined_df: data.frame with information from the focal CN, the
@@ -123,7 +123,7 @@ merge_expression <-
       )
     
     # Save results
-    readr::write_tsv(combined_df, file.path(results_dir, filename))
+    readr::write_tsv(combined_df, file.path(results_dir, paste0(filename_lead, "_expression_merged.tsv")))
     
     return(combined_df)
     
@@ -132,7 +132,7 @@ merge_expression <-
 plot_stacked_expression <- function (cn_expression_loss_df,
                                      cn_expression_neutral_df,
                                      cn_expression_zero_df,
-                                     all_stacked_plot_name) {
+                                     plotname_lead) {
   # Given a data.frame with annotated CN and RNA expression data, produce a
   # stacked barplot for loss calls, neutral calls, and instances where
   # `copy_number` == 0.
@@ -147,7 +147,7 @@ plot_stacked_expression <- function (cn_expression_loss_df,
   #   cn_expression_zero_df: data.frame with annotated CN and RNA expression
   #                          data produced using `merge_expression` custom
   #                          function and filtered for `copy_number` = 0
-  #   all_stacked_plot_name: name to save the combined stacked barplot as
+  #   plotname_lead: lead for name to save the combined stacked barplot as
   #
   # Returns:
   #   Saves stacked barplot.
@@ -166,9 +166,9 @@ plot_stacked_expression <- function (cn_expression_loss_df,
                                                      fill = expression_class)) +
     ggplot2::geom_bar(position = ggplot2::position_fill(reverse = TRUE)) +
     ggplot2::ylab("Proportion of called genes") +
-    ggplot2::labs(title = toupper(gsub(".png", "", all_stacked_plot_name)))
+    ggplot2::labs(title = toupper(paste0(plotname_lead, "_stacked_plot")))
 
-  ggplot2::ggsave(file.path(plots_dir, all_stacked_plot_name),
+  ggplot2::ggsave(file.path(plots_dir, paste0(plotname_lead, "_stacked_plot.png")),
                   cn_expression_plot)
 
 }
@@ -176,8 +176,7 @@ plot_stacked_expression <- function (cn_expression_loss_df,
 plot_mean_expression <- function (cn_expression_loss_df,
                                   cn_expression_neutral_df,
                                   cn_expression_zero_df,
-                                  loss_cor_plot_name,
-                                  zero_cor_plot_name) {
+                                  plotname_lead) {
   # Given a data.frame with expression values for all CN calls and a
   # data.frame with expression values for loss calls, produce and save
   # a scatterplot displaying the correlation of loss and neutral calls across
@@ -193,8 +192,7 @@ plot_mean_expression <- function (cn_expression_loss_df,
   #   cn_expression_zero_df: data.frame with annotated CN and RNA expression
   #                          data produced using `merge_expression` custom
   #                          function and filtered for `copy_number` = 0
-  #   loss_cor_plot_name: name to save the output neutral/loss correlation plot
-  #   zero_cor_plot_name: name to save the output neutral/zero correlation plot
+  #   plotname_lead: name to save the output neutral/loss correlation plot
   #
   # Returns:
   #   The above named plots are saved in `plots_dir`
@@ -229,8 +227,8 @@ plot_mean_expression <- function (cn_expression_loss_df,
     ) +
     ggplot2::geom_point(alpha = 0.2) +
     ggplot2::geom_abline() +
-    ggplot2::labs(title = toupper(gsub(".png", "", loss_cor_plot_name)))
-  ggplot2::ggsave(file.path(plots_dir, loss_cor_plot_name),
+    ggplot2::labs(title = toupper(paste0(plotname_lead, "_loss_cor_plot")))
+  ggplot2::ggsave(file.path(plots_dir, paste0(plotname_lead, "_loss_cor_plot.png")),
                   mean_combined_plot_loss)
   
   # Plot neutral/zero mean values
@@ -243,8 +241,8 @@ plot_mean_expression <- function (cn_expression_loss_df,
     ) +
     ggplot2::geom_point(alpha = 0.2) +
     ggplot2::geom_abline() +
-    ggplot2::labs(title = toupper(gsub(".png", "", zero_cor_plot_name)))
-  ggplot2::ggsave(file.path(plots_dir, zero_cor_plot_name),
+    ggplot2::labs(title = toupper(paste0(plotname_lead, "_zero_cor_plot")))
+  ggplot2::ggsave(file.path(plots_dir, paste0(plotname_lead, "_zero_cor_plot.png")),
                   mean_combined_plot_zero)
   
 }
