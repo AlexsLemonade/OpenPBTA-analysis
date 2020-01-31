@@ -53,7 +53,7 @@ outermost of the plot. Default is TRUE.
 ### Set Up
 
 ```{r}
-# Set seed so heatmaps turn out the same
+# Set seed so plots turn out the same
 set.seed(2020)
 
 # Magrittr pipe
@@ -159,6 +159,12 @@ transloc_df <- transloc_df %>%
   )
 ```
 
+Let's get some sample IDs to play with in these examples. 
+
+```{r}
+samples_for_examples <- sample(cnv_df$ID, 5)
+```
+
 ## Making color keys examples
 The `circos_map_plot` functions take columns that specify the colors for each data row. 
 Here are some examples of how to set up color columns that can be passed to the circos
@@ -232,7 +238,7 @@ circos_map_plot(
   df = cnv_df,
   add_track = FALSE, # If set to TRUE we would add to an exisiting plot.
   samples_col = "ID", # Designate what columns of `cnv_df` hold the sample IDs.
-  sample_names = "BS_007JTNB8", # What sample we are plotting.
+  sample_names = samples_for_examples[1], # What sample we are plotting.
   chr_col = "chrom", # Designate what columns of `cnv_df` hold the coordinates.
   start_col = "loc.start",
   end_col = "loc.end",
@@ -250,7 +256,7 @@ circos_map_plot(
   df = cnv_df,
   add_track = FALSE,
   samples_col = "ID",
-  sample_names = c("BS_007JTNB8", "BS_CGXTFM67", "BS_XEVMEYFS"), # What samples we are plotting.
+  sample_names = samples_for_examples[1:3], # What samples we are plotting.
   chr_col = "chrom",
   start_col = "loc.start",
   end_col = "loc.end",
@@ -272,7 +278,7 @@ circos_map_plot(
   df = cnv_df,
   add_track = FALSE,
   samples_col = "ID",
-  sample_names = "BS_007JTNB8", # One sample here
+  sample_names = samples_for_examples[1], # One sample here
   chr_col = "chrom",
   start_col = "loc.start",
   end_col = "loc.end",
@@ -286,8 +292,8 @@ circos_map_plot(
   df = cnv_df,
   add_track = TRUE, # Set to TRUE so adds to plot called above.
   samples_col = "ID",
-  sample_names = "BS_00TRPEQX", # Second sample here. 
-  chr_col = "chrom", #
+  sample_names = samples_for_examples[2], # Second sample here. 
+  chr_col = "chrom", 
   start_col = "loc.start",
   end_col = "loc.end",
   y_val = "copy.num",
@@ -301,7 +307,7 @@ circos_map_plot(
 ```{r}
 circos_map_transloc(transloc_df,
   add_track = FALSE, # We change this to true to add on to our already existing plot
-  sample_names = "BS_007JTNB8",
+  sample_names = samples_for_examples[1],
   samples_col = "biospecimen_id1",
   chr_col_1 = "chrom1", # Need to specify which column is the first and second location for each
   chr_col_2 = "chrom2",
@@ -320,7 +326,7 @@ png(file.path(plots_dir, "transloc_circos_plot.png"), width = 800, height = 800)
 # Run function per usual
 circos_map_transloc(transloc_df,
   add_track = FALSE,
-  sample_names = "BS_007JTNB8",
+  sample_names = samples_for_examples[1],
   samples_col = "biospecimen_id1",
   chr_col_1 = "chrom1",
   chr_col_2 = "chrom2",
