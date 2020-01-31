@@ -10,12 +10,13 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 #generate collapsed data for count files 
-Rscript ../analyses/collapse-rnaseq/01-summarize_matrices.R -i ../../data/pbta-gene-counts-rsem-expected_count.stranded.rds -g ../../data/gencode.v27.primary_assembly.annotation.gtf.gz -m ../analyses/collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.stranded.rds -t ../analyses/collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed_table.stranded.rds
-Rscript ../analyses/collapse-rnaseq/01-summarize_matrices.R -i ../../data/pbta-gene-counts-rsem-expected_count.polya.rds -g ../../data/gencode.v27.primary_assembly.annotation.gtf.gz -m ../analyses/collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.polya.rds -t ../analyses/collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed_table.polya.rds
+Rscript ../collapse-rnaseq/01-summarize_matrices.R -i ../../data/pbta-gene-counts-rsem-expected_count.stranded.rds -g ../../data/gencode.v27.primary_assembly.annotation.gtf.gz -m ../collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.stranded.rds -t ../collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed_table.stranded.rds
+Rscript ../collapse-rnaseq/01-summarize_matrices.R -i ../../data/pbta-gene-counts-rsem-expected_count.polya.rds -g ../../data/gencode.v27.primary_assembly.annotation.gtf.gz -m ../collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.polya.rds -t ../collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed_table.polya.rds
 
+mkdir results
 
+#generate telomerase activities using gene expression data from collapse RNA seq data files
 Rscript --vanilla 01-run-EXTEND.R --input ../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds --output results/TelomeraseScores_PTBAStranded_FPKM.txt
 Rscript --vanilla 01-run-EXTEND.R --input ../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds --output results/TelomeraseScores_PTBAPolya_FPKM.txt
-Rscript --vanilla 01-run-EXTEND.R --input ../analyses/collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.stranded.rds --output results/TelomeraseScores_PTBAStranded_counts.txt
-Rscript --vanilla 01-run-EXTEND.R --input ../analyses/collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.polya.rds --output results/TelomeraseScores_PTBAPolya_counts.txt
-#Rscript 01-run-EXTEND.R --input pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds --output TelomeraseScores_PTBAStranded_FPKM.txt
+Rscript --vanilla 01-run-EXTEND.R --input ../collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.stranded.rds --output results/TelomeraseScores_PTBAStranded_counts.txt
+Rscript --vanilla 01-run-EXTEND.R --input ../collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.polya.rds --output results/TelomeraseScores_PTBAPolya_counts.txt
