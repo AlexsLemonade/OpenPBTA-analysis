@@ -69,14 +69,16 @@ Set up metadata
 metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
 ```
 
-Read in the union breaks densities TSV that was made by the 00-setup-breakpoint-data.R script. 
+Read in the intersection breaks densities TSV that was made by the 00-setup-breakpoint-data.R script. 
 
 ```{r}
 breaks_densities_df <- readr::read_tsv(
-  file.path("breakpoint-data", "union_of_breaks_densities.tsv")) %>% 
+  file.path("breakpoint-data", "intersection_of_breaks_densities.tsv")
+) %>%
   # Add on the short histology column from the metadata for plotting purposes
-  dplyr::inner_join(metadata %>% dplyr::select(Kids_First_Biospecimen_ID, short_histology), 
-                    by = c("samples" = "Kids_First_Biospecimen_ID"))
+  dplyr::inner_join(metadata %>% dplyr::select(Kids_First_Biospecimen_ID, short_histology),
+    by = c("samples" = "Kids_First_Biospecimen_ID")
+  )
 ```
 
 Load in the previously formatted breakpoint data. 
@@ -88,7 +90,32 @@ breaks_list <- readr::read_rds(file.path("breakpoint-data", "breaks_lists.RDS"))
 Get a vector of the biospecimen IDs. 
 
 ```{r}
-common_samples <- unique(breaks_list$union_of_breaks$samples)
+common_samples <- unique(breaks_list$intersection_of_breaks$samples)
+```
+
+Set up uncallable regions BED. 
+
+```{r}
+uncallable_bed <- readr::read_tsv(
+  file.path(
+    "..",
+    "copy_number_consensus_call",
+    "ref",
+    "cnv_excluded_regions.bed"
+  ),
+  col_names = c("chrom", "start", "end")
+) %>%
+  # Reformat the chromosome variable to drop the "chr"
+  dplyr::mutate(chrom = factor(gsub("chr", "", chrom),
+    levels = c(1:22, "X", "Y")
+  )) %>%
+  dplyr::filter(
+    !is.na(chrom),
+    # Exclude the small regions
+    end - start > 200000,
+    # Drop sex chromosomes
+    !(chrom %in% c("X", "Y", "M"))
+  )
 ```
 
 Set up chromosome size data. 
@@ -97,54 +124,61 @@ just a list of the chromosome sizes so we are using that for now.
 
 ```{r}
 # Set up Chr sizes
-chr_sizes <- readr::read_tsv(file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed"),
-  col_names = FALSE
+chr_sizes_bed <- readr::read_tsv(file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed"),
+  col_names = c("chrom", "start", "end")
 ) %>%
   # Reformat the chromosome variable to drop the "chr"
-  dplyr::mutate(X1 = factor(gsub("chr", "", X1),
+  dplyr::mutate(chrom = factor(gsub("chr", "", chrom),
     levels = c(1:22, "X", "Y", "M")
   )) %>%
   # Remove sex chromosomes
-  dplyr::filter(!(X1 %in% c("X", "Y", "M")))
-# Make chromosome size named vector
-chr_sizes_vector <- chr_sizes$X3
-names(chr_sizes_vector) <- chr_sizes$X1
+  dplyr::filter(!(chrom %in% c("X", "Y", "M")))
+
+# Make chromosome size named vector for Heatmap annotation
+chr_sizes_vector <- chr_sizes_bed$end
+names(chr_sizes_vector) <- chr_sizes_bed$chrom
 ```
 
 ### Plot the break densities by their histology
 
 ```{r}
-breaks_cdf <- breaks_densities_df %>% 
+breaks_cdf <- breaks_densities_df %>%
   # Only plot histologies groups with more than 5 samples
-  dplyr::group_by(short_histology, add = TRUE) %>% 
-  dplyr::filter(dplyr::n() > 5) %>% 
+  dplyr::group_by(short_histology, add = TRUE) %>%
+  dplyr::filter(dplyr::n() > 5) %>%
   # Calculate histology group mean
-  dplyr::mutate(hist_mean = mean(breaks_density), 
-                hist_rank = rank(breaks_density)/dplyr::n()) %>% 
-  dplyr::ungroup() %>% 
+  dplyr::mutate(
+    hist_mean = mean(breaks_density),
+    hist_rank = rank(breaks_density) / dplyr::n()
+  ) %>%
+  dplyr::ungroup() %>%
   # Now we will plot these as cummulative distribution plots
-  ggplot2::ggplot(ggplot2::aes(x = hist_rank, y = breaks_density, 
-                               color = short_histology)) +
+  ggplot2::ggplot(ggplot2::aes(
+    x = hist_rank, y = breaks_density,
+    color = short_histology
+  )) +
   ggplot2::geom_point() +
   # Add summary line for mean
-  ggplot2::geom_hline(ggplot2::aes(yintercept = hist_mean)) + 
+  ggplot2::geom_hline(ggplot2::aes(yintercept = hist_mean)) +
   # Separate by histology
-  ggplot2::facet_wrap(~short_histology, nrow = 2) + 
+  ggplot2::facet_wrap(~short_histology, nrow = 2) +
   ggplot2::theme_classic() +
   ggplot2::xlab("Rank") +
   ggplot2::ylab("Chromosomal Breaks per Mb") +
   # Transform to log10 make non-log y-axis labels
-  ggplot2::scale_y_continuous(trans = "log10", breaks =  c(0, 1, 10, 30)) +
+  ggplot2::scale_y_continuous(trans = "log10", breaks = c(0, 1, 10, 30)) +
   ggplot2::theme(legend.position = "none") +
   # Get rid of x-axis ticks
   ggplot2::theme(
     axis.text.x = ggplot2::element_blank(),
-    axis.ticks.x = ggplot2::element_blank(), 
-    strip.text = ggplot2::element_text(size = 4)) 
+    axis.ticks.x = ggplot2::element_blank(),
+    strip.text = ggplot2::element_text(size = 4)
+  )
 
 # Save the plot to a png
-ggplot2::ggsave(file.path(plots_dir, "breaks_cdf_plot.png"), 
-                   plot = breaks_cdf, width = 17, height = 20, unit = "cm")
+ggplot2::ggsave(file.path(plots_dir, "breaks_cdf_plot.png"),
+  plot = breaks_cdf, width = 17, height = 20, unit = "cm"
+)
 ```
 
 Print from png so rendering is smoother.
@@ -156,13 +190,20 @@ For each sample, we will bin the genome and count how many chromosome breaks
 occur for each bin, given the given `bin_size`.
 
 We will run this for each sample and return a list of three `GenomicRanges` objects:  
-1) `union_of_breaks` contains the combined break counts for both SV and CNV break data.   
+1) `intersection_of_breaks` contains the intersection break counts for both SV and CNV break data.  
 2) `cnv_breaks` contains the number of break counts for CNV.   
 3) `sv_breaks` contains the number of break counts for SV.  
 
 ```{r, warning = FALSE, results='hide'}
 # Change here and it will change the rest
 bin_size <- 1e6
+
+# For simplicity's sake, change the name of the intersection column we want to use
+breaks_list$intersection_of_breaks <- breaks_list$intersection_of_breaks %>%
+  dplyr::rename(
+    chrom = sv_ranges.seqnames,
+    coord = sv_ranges.start
+  )
 
 # Get a big list of break densities for each sample.
 sample_densities <- lapply(common_samples, function(sample_id) {
@@ -172,7 +213,10 @@ sample_densities <- lapply(common_samples, function(sample_id) {
       start_col = "coord",
       end_col = "coord",
       window_size = bin_size,
-      chr_sizes_vector = chr_sizes_vector
+      chr_sizes_vector = chr_sizes_vector,
+      unsurveyed_bed = uncallable_bed,
+      perc_cutoff = .75 # What percentage of each bin needs to be callable
+      # for it not to be NA
     )
   })
 })
@@ -196,26 +240,6 @@ readr::write_rds(
 Given the `GenomicRanges` objects for each sample, create a combined plot for 
 each. 
 
-Make chromosome labeling `HeatmapAnnotation` object. 
-
-```{r}
-# Extract chromosome names from a GenomicRanges object
-chr_labels <- sample_densities[[1]]$union_of_breaks@seqnames
-chr_labels <- paste0("chr", as.factor(chr_labels))
-
-# Make a key for assigning alternating colors to the chromosomes
-chr_colors <- rep(c("grey", "lightblue"), length.out = length(unique(chr_labels)))
-names(chr_colors) <- unique(chr_labels)
-
-# Create the Heatmap annotation object
-chr_annot <- ComplexHeatmap::HeatmapAnnotation(
-  df = data.frame(chr_labels), col = list(chr_labels = c(chr_colors)),
-  name = "",
-  show_legend = FALSE,
-  show_annotation_name = FALSE
-)
-```
-
 Make histology labeling `HeatmapAnnotation` object.
 
 ```{r}
@@ -238,7 +262,7 @@ Make a color function.
 
 ```{r}
 col_fun <- circlize::colorRamp2(
-  c(0, 2, 5, 10, 20),
+  c(0, .25, .5, 1, 3),
   c("#edf8fb", "#b2e2e2", "#66c2a4", "#2ca25f", "#006d2c")
 )
 ```
@@ -257,16 +281,43 @@ breaks_heatmap <- function(data_name) {
 
   # Pull out the total_counts
   total_counts <- lapply(sample_densities, function(granges_list) {
-    granges_list[[data_name]]@elementMetadata@listData$total_counts
+    granges <- granges_list[[data_name]] # We need to tack on this uncallable regions data
+
+    # Return only the total_counts
+    sample_counts <- granges@elementMetadata@listData$total_counts
+
+    # Name with chromosome labels
+    names(sample_counts) <- S4Vectors::decode(granges@seqnames)
+
+    return(sample_counts)
   })
   # Make into a data.frame
-  total_counts <- dplyr::bind_rows(total_counts) %>%
+  total_counts_df <- dplyr::bind_rows(total_counts) %>%
     dplyr::select(rownames(histologies)) %>%
     t()
-  # Add chromosome labels
-  colnames(total_counts) <- chr_labels
+
+  # Extract chromosome labels
+  chr_labels <- names(total_counts[[1]])
+
+  # Add chromosome labels as column names
+  colnames(total_counts_df) <- chr_labels
+
+  # Make chromosome labeling `HeatmapAnnotation` object.
+  chr_labels <- paste0("chr", as.factor(names(total_counts[[1]])))
+
+  # Make a key for assigning alternating colors to the chromosomes
+  chr_colors <- rep(c("grey", "lightblue"), length.out = length(unique(chr_labels)))
+  names(chr_colors) <- unique(chr_labels)
+
+  # Create the Heatmap annotation object
+  chr_annot <- ComplexHeatmap::HeatmapAnnotation(
+    df = data.frame(chr_labels), col = list(chr_labels = c(chr_colors)),
+    name = "",
+    show_legend = FALSE,
+    show_annotation_name = FALSE
+  )
   # Plot on a heatmap
-  heatmap <- ComplexHeatmap::Heatmap(total_counts,
+  heatmap <- ComplexHeatmap::Heatmap(total_counts_df,
     col = col_fun,
     heatmap_legend_param = list(title = "Count of chr breaks"),
     cluster_columns = FALSE,
@@ -274,27 +325,28 @@ breaks_heatmap <- function(data_name) {
     show_column_names = FALSE,
     show_row_names = FALSE,
     bottom_annotation = chr_annot,
-    left_annotation = hist_annot
+    left_annotation = hist_annot,
+    na_col = "#f1f1f1"
   )
   # Return plot
   return(heatmap)
 }
 ```
 
-## Union of breaks heatmap
+## Intersection of breaks heatmap
 
 ```{r}
-union_of_heatmap <- breaks_heatmap(data_name = "union_of_breaks")
+intersection_of_heatmap <- breaks_heatmap(data_name = "intersection_of_breaks")
 
 # Save plot as PNG
-png(file.path(plots_dir, paste0("union_of_breaks_heatmap.png")),
+png(file.path(plots_dir, paste0("intersection_of_breaks_heatmap.png")),
   width = 1200, height = 900, units = "px"
 )
-union_of_heatmap
+intersection_of_heatmap
 dev.off()
 
 # Print out here
-union_of_heatmap
+intersection_of_heatmap
 ```
 
 ## CNV breaks heatmap
@@ -368,7 +420,9 @@ group_densities <- lapply(tumor_types, function(tumor_type) {
         start_col = "coord",
         end_col = "coord",
         window_size = bin_size,
-        chr_sizes_vector = chr_sizes_vector
+        chr_sizes_vector = chr_sizes_vector,
+        unsurveyed_bed = uncallable_bed,
+        perc_cutoff = .75
       )
     })
   }
@@ -402,8 +456,8 @@ purrr::imap(group_densities, function(.x, name = .y) {
   multipanel_break_plot(
     granges_list = .x,
     plot_name = name,
-    y_val = "median_counts",
-    y_lab = "Median Breaks per Mb",
+    y_val = "total_counts",
+    y_lab = "Total Breaks per Mb",
     plot_dir = hist_plots_dir
   )
 })

@@ -69,11 +69,11 @@ multipanel_break_plot <- function(granges_list,
   #  ggplot of chromosomal mapping of the y value given.
   #
   # Make combined SV and CNV plot
-  union_of_plot <- map_breaks_plot(granges_list$union_of_breaks,
+  union_of_plot <- map_breaks_plot(granges_list$intersection_of_breaks,
     y_val = y_val,
     y_lab = y_lab,
     color = "blue",
-    main_title = "Union of Breaks"
+    main_title = "Intersection of Breaks"
   )
 
   # Make CNV plot

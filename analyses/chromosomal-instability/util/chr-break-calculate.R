@@ -87,7 +87,9 @@ break_density <- function(breaks_df = NULL,
                           samples_col = "samples",
                           chrom_col = "chrom",
                           start_col = "start",
-                          end_col = "end") {
+                          end_col = "end",
+                          unsurveyed_bed = NULL,
+                          perc_cutoff = .75) {
   # For given breaks data.frame(s), calculate the breaks density for a tiled
   # windows across the genome. Returns the data as a GenomicRanges object for
   # easy mapping with ggbio. Where the density and counts are stored in
@@ -116,6 +118,11 @@ break_density <- function(breaks_df = NULL,
   #   end_col_sv/cnv: character string that indicates the column name with the
   #            end coordinate. Default is "end". Will be passed to
   #            `make_granges` function.
+  #   unsurveyed_bed: an optional BED format data frame with columns `chrom`, `start`
+  #               and `end` columns that specify regions that should be NA
+  #               because they were not surveyed.
+  #   perc_cutoff: Only relevant of `unsurveyed_bed` is being used. The percent
+  #                overlap above which a bin's region should be considered NA.
   #
   # Check that a sample ID has been specified.
   if (is.null(sample_id)) {
@@ -137,6 +144,7 @@ break_density <- function(breaks_df = NULL,
     start_col = start_col,
     end_col = end_col
   )
+
   ######################### Tally breaks by genome bins ########################
   bins <- GenomicRanges::tileGenome(chr_sizes_vector,
     tilewidth = window_size
@@ -185,8 +193,36 @@ break_density <- function(breaks_df = NULL,
   bins@elementMetadata@listData$total_counts <- bin_counts
 
   # Calculate and store density
-  bins@elementMetadata@listData$density <- bin_counts / window_size
+  bins@elementMetadata@listData$density <- bin_counts / bins@ranges@width
 
+  # If specified, make unsurveyed into a GenomicRanges
+  if (!is.null(unsurveyed_bed)) {
+    # Make GRanges for uncallable ranges
+    unsurveyed_ranges <- GenomicRanges::GRanges(
+      seqnames = unsurveyed_bed$chrom,
+      ranges = IRanges::IRanges(
+        start = unsurveyed_bed$start,
+        end = unsurveyed_bed$end
+      ),
+      total_counts = NA
+    )
+
+    # Find the NA region(s) for each bin without combining close regions
+    na_regions <- GenomicRanges::pintersect(IRanges::findOverlapPairs(bins, unsurveyed_ranges))
+
+    # Find overlap between na_regions and bin
+    na_overlaps <- GenomicRanges::findOverlaps(bins, na_regions)
+
+    # Calculate the percent overlap, adding up the na regions within a bin
+    pct_overlap <- tapply(na_regions@ranges@width, na_overlaps@from, sum) / bins[unique(na_overlaps@from)]@ranges@width
+
+    # Get the bin indices that correspond to less than the cutoff
+    bin_indices <- na_overlaps@from[which(pct_overlap > perc_cutoff)]
+
+    # Call these data points NA instead
+    bins$total_counts[bin_indices] <- NA
+    bins$density[bin_indices] <- NA
+  }
   # Return the GRanges object for mapping purposes
   return(bins)
 }

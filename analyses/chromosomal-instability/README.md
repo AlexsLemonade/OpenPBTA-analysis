@@ -1,7 +1,7 @@
 # Chromosomal Instability Analysis
 
 This analysis evaluates chromosomal instability by calculating chromosomal
-break point densities using CNV and SV data.
+break point density calculations and circular plot visualization using CNV and SV data.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -28,16 +28,18 @@ bash run-breakpoint-analysis.sh
 CNV and SV data are used to calculate chromosomal instability.
 Then both CNV and SV range datasets are transformed into single breakpoint data.
 Breakpoint density is calculated by creating bins using `GenomicRanges::tileGenome` using a one Mb window size.
+Genome bins above a percentage (default is 75%) of their total size being covered in uncallable regions are called as NA for all output statistics.  
 The `01-plot-chromosomal-instability.Rmd` returns chromosomal break plots for each sample and `short_histology` group in the `plots` directory.
 
 ## Output
 
-Three output TSVs (one for each the CNV and SV data, and one for the combined data) with breakpoint density per Mb of the effectively surveyed genome are saved to `breakpoint-data` directory.
-Note that this script is set up to handle WXS and WGS separately, however currently our PBTA dataset only has CNV and SV data for WGS samples. 
+Three output TSVs (one for each the CNV and SV data, and one for the intersection data with breakpoint density per Mb of the effectively surveyed genome are saved to `breakpoint-data` directory.
+Note that this script is set up to handle WXS and WGS separately, however currently our PBTA dataset only has CNV and SV data for WGS samples.
 The individual sample plots and grouped by `short_histology` plots are in the `plots/sample` and `plots/tumor-type` directories, respectively.
 
 ## Summary of Custom Functions
 
+For breakpoint analysis:
 - `make_granges` : Given a data.frame with chr break coordinates, make a `GenomicRanges` object.
 - `break_density`: Given data.frame(s) with chr break coordinates, calculate the density of the breaks.
 - `map_breaks_plot`: Given a `GenomicRanges` object, use map the chromosomal coordinates to a `ggplot2`
