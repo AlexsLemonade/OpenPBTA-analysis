@@ -245,8 +245,7 @@ RUN R -e "BiocManager::install(c('GSVA'), update = FALSE)"
 # remote package EXTEND needed for telomerase-activity-prediciton analysis
 RUN R -e "devtools::install_github('NNoureen/EXTEND', ref = '467c2724e1324ef05ad9260c3079e5b0b0366420', dependencies = TRUE)"
 =======
-# Telomerase activity
-RUN R -e "remotes::install_github('NNoureen/EXTEND', ref = '467c2724e1324ef05ad9260c3079e5b0b0366420', dependencies = TRUE)"
+
 
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
