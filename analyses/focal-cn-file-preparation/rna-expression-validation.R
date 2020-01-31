@@ -90,7 +90,8 @@ cn_df <- readr::read_tsv(opt$annotated_cnv_file)
 expression_matrix <- readr::read_rds(opt$expression_file)
 
 # Read in metadata
-metadata <- readr::read_tsv(opt$metadata)
+metadata <- readr::read_tsv(opt$metadata,
+                            col_types = readr::cols(molecular_subtype = readr::col_character()))
 
 #### Custom Functions ----------------------------------------------------------
 

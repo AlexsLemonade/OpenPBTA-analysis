@@ -58,8 +58,11 @@ if [ "$RUNCONSENSUS" -gt "0"]; then
     --seg \
     --xy $XYFLAG
 fi
-  
-# Compare annotated CNVkit autosome output to polyA expression data 
+
+# Compare annotated CNVkit autosome output to polyA expression data
+# This step is for testing purposes only, this will be removed once
+# the consensus file is subsetted for use in circleci. The for loop
+# step below will be implemented instead.
 Rscript --vanilla rna-expression-validation.R \
   --annotated_cnv_file results/cnvkit_annotated_cn_autosomes.tsv.gz \
   --expression_file ../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
@@ -68,50 +71,35 @@ Rscript --vanilla rna-expression-validation.R \
   --goi_list ../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
   --filename_lead "cnvkit_annotated_cn_autosomes_polya"
 
-# Compare annotated CNVkit autosome output to stranded expression data 
-Rscript --vanilla rna-expression-validation.R \
-  --annotated_cnv_file results/cnvkit_annotated_cn_autosomes.tsv.gz \
-  --expression_file ../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
-  --independent_specimens_file ../../data/independent-specimens.wgswxs.primary.tsv \
-  --metadata $histologies_file \
-  --goi_list ../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
-  --filename_lead "cnvkit_annotated_cn_autosomes_stranded"
-  
-# Compare annotated Controlfreec autosome output to polyA expression data 
-Rscript --vanilla rna-expression-validation.R \
-  --annotated_cnv_file results/controlfreec_annotated_cn_autosomes.tsv.gz \
-  --expression_file ../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
-  --independent_specimens_file ../../data/independent-specimens.wgswxs.primary.tsv \
-  --metadata $histologies_file \
-  --goi_list ../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
-  --filename_lead "controlfreec_annotated_cn_autosomes_polya"
+# # TODO: uncomment the code below once we have a subset consensus cn file for circleCI
+# # Loop over all annotated cn files in the results directory for each of the
+# # collapsed expression files (polyA and stranded)
+# FILES=results/*
+# for f in $FILES
+# do
+#   echo "Plotting $f ..."
+#   # We want to extract the `filename_lead` from the name of the file in the
+#   # results directory
+#   filename_lead=${f%%.*}
+#   filename_lead=${filename_lead#*/}
+#   filename_lead=${filename_lead}_polya
+#   Rscript --vanilla rna-expression-validation.R \
+#   --annotated_cnv_file $f \
+#   --expression_file ../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
+#   --independent_specimens_file ../../data/independent-specimens.wgswxs.primary.tsv \
+#   --metadata $histologies_file \
+#   --goi_list ../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
+#   --filename_lead $filename_lead
+# 
+#   filename_lead=${f%%.*}
+#   filename_lead=${filename_lead#*/}
+#   filename_lead=${filename_lead}_stranded
+#   Rscript --vanilla rna-expression-validation.R \
+#   --annotated_cnv_file $f \
+#   --expression_file ../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
+#   --independent_specimens_file ../../data/independent-specimens.wgswxs.primary.tsv \
+#   --metadata $histologies_file \
+#   --goi_list ../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
+#   --filename_lead $filename_lead
+# done
 
-# Compare annotated Controlfreec autosome output to stranded expression data 
-Rscript --vanilla rna-expression-validation.R \
-  --annotated_cnv_file results/controlfreec_annotated_cn_autosomes.tsv.gz \
-  --expression_file ../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
-  --independent_specimens_file ../../data/independent-specimens.wgswxs.primary.tsv \
-  --metadata $histologies_file \
-  --goi_list ../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
-  --filename_lead "controlfreec_annotated_cn_autosomes_stranded"
-
-if [ "$RUNCONSENSUS" -gt "0"]; then
-# Compare annotated consensus autosome output to polyA expression data 
-Rscript --vanilla rna-expression-validation.R \
-  --annotated_cnv_file results/consensus_annotated_cn_autosomes.tsv.gz \
-  --expression_file ../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
-  --independent_specimens_file ../../data/independent-specimens.wgswxs.primary.tsv \
-  --metadata $histologies_file \
-  --goi_list ../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
-  --filename_lead "consensus_annotated_cn_autosomes_polya"
-
-# Compare annotated consensus autosome output to stranded expression data 
-Rscript --vanilla rna-expression-validation.R \
-  --annotated_cnv_file results/consensus_annotated_cn_autosomes.tsv.gz \
-  --expression_file ../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
-  --independent_specimens_file ../../data/independent-specimens.wgswxs.primary.tsv \
-  --metadata $histologies_file \
-  --goi_list ../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
-  --filename_lead "consensus_annotated_cn_autosomes_stranded"
-
-fi
