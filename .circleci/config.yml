@@ -145,6 +145,9 @@ jobs:
           name: Molecular subtyping Chordoma
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-chordoma/01-Subtype-chordoma.Rmd', clean = TRUE)"
 
+      - run:
+          name: Telomerase activity
+          command: ./scripts/run_in_ci.sh bash analyses/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
           
          ################################
          #### Add your analysis here ####
