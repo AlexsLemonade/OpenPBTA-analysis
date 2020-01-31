@@ -63,6 +63,7 @@ fi
 Rscript --vanilla rna-expression-validation.R \
   --annotated_cnv_file results/cnvkit_annotated_cn_autosomes.tsv.gz \
   --expression_file ../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
+  --independent_specimens_file ../../data/independent-specimens.wgswxs.primary.tsv \
   --metadata $histologies_file \
   --goi_list ../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
   --filename_lead "cnvkit_annotated_cn_autosomes_polya"
@@ -71,6 +72,7 @@ Rscript --vanilla rna-expression-validation.R \
 Rscript --vanilla rna-expression-validation.R \
   --annotated_cnv_file results/cnvkit_annotated_cn_autosomes.tsv.gz \
   --expression_file ../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
+  --independent_specimens_file ../../data/independent-specimens.wgswxs.primary.tsv \
   --metadata $histologies_file \
   --goi_list ../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
   --filename_lead "cnvkit_annotated_cn_autosomes_stranded"
@@ -79,6 +81,7 @@ Rscript --vanilla rna-expression-validation.R \
 Rscript --vanilla rna-expression-validation.R \
   --annotated_cnv_file results/controlfreec_annotated_cn_autosomes.tsv.gz \
   --expression_file ../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
+  --independent_specimens_file ../../data/independent-specimens.wgswxs.primary.tsv \
   --metadata $histologies_file \
   --goi_list ../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
   --filename_lead "controlfreec_annotated_cn_autosomes_polya"
@@ -87,6 +90,7 @@ Rscript --vanilla rna-expression-validation.R \
 Rscript --vanilla rna-expression-validation.R \
   --annotated_cnv_file results/controlfreec_annotated_cn_autosomes.tsv.gz \
   --expression_file ../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
+  --independent_specimens_file ../../data/independent-specimens.wgswxs.primary.tsv \
   --metadata $histologies_file \
   --goi_list ../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
   --filename_lead "controlfreec_annotated_cn_autosomes_stranded"
@@ -96,6 +100,7 @@ if [ "$RUNCONSENSUS" -gt "0"]; then
 Rscript --vanilla rna-expression-validation.R \
   --annotated_cnv_file results/consensus_annotated_cn_autosomes.tsv.gz \
   --expression_file ../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
+  --independent_specimens_file ../../data/independent-specimens.wgswxs.primary.tsv \
   --metadata $histologies_file \
   --goi_list ../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
   --filename_lead "consensus_annotated_cn_autosomes_polya"
@@ -104,6 +109,7 @@ Rscript --vanilla rna-expression-validation.R \
 Rscript --vanilla rna-expression-validation.R \
   --annotated_cnv_file results/consensus_annotated_cn_autosomes.tsv.gz \
   --expression_file ../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
+  --independent_specimens_file ../../data/independent-specimens.wgswxs.primary.tsv \
   --metadata $histologies_file \
   --goi_list ../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
   --filename_lead "consensus_annotated_cn_autosomes_stranded"

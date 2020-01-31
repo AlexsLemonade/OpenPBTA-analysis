@@ -10,6 +10,7 @@
 # Rscript --vanilla rna-expression-validation.R \
 #   --annotated_cnv_file analyses/focal-cn-file-preparation/results/cnvkit_annotated_cn_autosomes.tsv.gz \
 #   --expression_file data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
+#   --independent_specimens_file ../../data/independent-specimens.wgswxs.primary.tsv \
 #   --metadata  data/pbta-histologies.tsv \
 #   --goi_list analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
 #   --filename_lead "cnvkit_annotated_cn_autosomes_polya"
@@ -35,6 +36,12 @@ option_list <- list(
     default = NULL,
     help = "file path to RDS file that contains gene expression information"
   ),
+  optparse::make_option(
+    c("--independent_specimens_file"),
+    type = "character",
+    default = NULL,
+    help = "file path to tsv file that contains list of independent specimen ids"
+  ),  
   optparse::make_option(
     c("--metadata"),
     type = "character",
@@ -142,11 +149,7 @@ cn_df <- cn_df %>%
 # Below code is adapted from: analyses/oncoprint-landscape/00-map-to-sample_id.R
 # Read in the primary indepedent specimens file
 ind_biospecimen <-
-  readr::read_tsv(file.path(
-    root_dir,
-    "data",
-    "independent-specimens.wgswxs.primary.tsv"
-  )) %>%
+  readr::read_tsv(opt$independent_specimens_file) %>%
   dplyr::pull(Kids_First_Biospecimen_ID)
 
 # Filter the CN data, to only include biospecimen identifiers in the
