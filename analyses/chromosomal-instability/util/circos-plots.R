@@ -10,7 +10,8 @@ prep_bed <- function(df,
                      chr_col = "chrom",
                      start_col = "start",
                      end_col = "end",
-                     y_val = "none") {
+                     y_val = "none",
+                     color_col = "none") {
   # Given a data.frame, set it up for use with circlize. Note that start and end
   # columns cannot be the same.
   #
@@ -23,6 +24,7 @@ prep_bed <- function(df,
   #   start_col: a character string that specifies the start coordinate column name.
   #   end_col: a character string that specifies the end coordinate column name.
   #   y_val: The column name of the value you would like to plot (Optional)
+  #   color_col: The column name of the colors you would like to use (Optional)
   #
   # Returns:
   #  Data.frame formatted how circlize wants it
@@ -47,6 +49,11 @@ prep_bed <- function(df,
   if (y_val != "none") {
     bed_df <- bed_df %>%
       dplyr::mutate(y_val = as.numeric(dplyr::pull(df, !!rlang::sym(y_val))))
+  }
+  # Don't have to have a color_col
+  if (color_col != "none") {
+    bed_df <- bed_df %>%
+      dplyr::mutate(color_col = dplyr::pull(df, !!rlang::sym(color_col)))
   }
   # Circlize is particular about what these values need to be
   bed_df <- bed_df %>%
@@ -73,6 +80,7 @@ prep_bed <- function(df,
   return(bed_df)
 }
 
+
 circos_map_plot <- function(df,
                             add_track = FALSE,
                             samples_col = "samples",
@@ -80,11 +88,13 @@ circos_map_plot <- function(df,
                             chr_col = "chrom",
                             start_col = "start",
                             end_col = "end",
+                            color_col = "none",
                             y_val = NULL,
                             track_height = .15,
-                            type = "rect",
-                            colour_key = NULL,
-                            palette = "YlGnBu") {
+                            type = "point",
+                            rect_height = 0.4,
+                            cytoband = TRUE,
+                            single_color = "none") {
   # Given a data.frame with chromosomal coordinates, and a corresponding data value to plot,
   # make a circos plot or add a circos track to an existing plot.
   #
@@ -97,22 +107,17 @@ circos_map_plot <- function(df,
   #   chr_col: a character string that specifies the chromosomes column name.
   #   start_col: a character string that specifies the start coordinate column name.
   #   end_col: a character string that specifies the end coordinate column name.
+  #   color_col: a column with color specifications for each data point.
   #   y_val: The column name of the value you would like to plot
   #   track_height: a number between 0 and 1 that designates height, 1 = the full diameter of the circos plot.
   #   type: Type of plot the track should be. Options are line, point, rect
-  #   colour_key: a character string designating a column that contains information
-  #               to color by. Can be numeric or a factor.
-  #   palette: the color brewer palette you would like to be used. Run `RColorBrewer::display.brewer.all()` to see options.
+  #   rect_height: The added height (plus and minus y_val) that should be plotted.
+  #   cytoband: TRUE/FALSE indicating whether you want a cytoband on the outermost
+  #             of the plot. Default is TRUE.
+  #   single_color: A single color to choose.
   #
   # Returns:
   #  Circos plot (or new circos plot track) of the data provided.
-
-  # Filter the samples specified
-  if (sample_names[1] != "all") {
-    df <- df %>%
-      # Filter based on the samples
-      dplyr::filter(!!rlang::sym(samples_col) %in% sample_names)
-  }
 
   # Set up the data how circlize wants it
   bed_df <- prep_bed(
@@ -122,85 +127,30 @@ circos_map_plot <- function(df,
     chr_col = chr_col,
     start_col = start_col,
     end_col = end_col,
-    y_val = y_val
+    y_val = y_val,
+    color_col = color_col
   )
 
   # Establish ymin and ymax before further manipulations
   y_min <- min(bed_df$y_val, na.rm = TRUE)
   y_max <- max(bed_df$y_val, na.rm = TRUE)
 
-  # Set up color key if specified
-  if (!is.null(colour_key)) {
-    # Add on color_key as a new column
-    bed_df <- bed_df %>%
-      dplyr::mutate(color_key = dplyr::pull(df, !!rlang::sym(colour_key))) %>%
-      tibble::rowid_to_column()
-
-    # If color key is numeric...
-    if (is.numeric(bed_df$color_key)) {
-      # Make color palette based on 5 colors
-      palette_col <- RColorBrewer::brewer.pal(5, name = palette)
-
-      # Make color ramp function based on quantiles and specified palette
-      color_fun <- circlize::colorRamp2(
-        breaks = quantile(
-          bed_df$color_key,
-          c(0.15, 0.35, 0.5, 0.65, 0.85)
-        ),
-        colors = palette_col
-      )
-      # Set up the color ready data.frame
-      bed_df <- bed_df %>%
-        # Make column that specifies the color for each value
-        dplyr::mutate(color_key = color_fun(value))
-
-      # If color key is not numeric...
-    } else {
-
-      # Try to coerce to factor...
-      if (!is.factor(bed_df$color_key)) {
-        bed_df <- bed_df %>%
-          dplyr::mutate(color_key = as.factor(color_key))
-
-        # Print warning about coercion
-        message("`colour_key` argument is being coerced to a factor.")
-      }
-
-      # Determine the number of levels
-      n_levels <- length(levels(bed_df$color_key))
-
-      # ColorBrewer complains if given a number less than 3
-      # Set up a palette based on number of factor levels
-      palette_col <- RColorBrewer::brewer.pal(ifelse(n_levels < 3, 3, n_levels),
-        name = palette
-      )
-
-      # Make a recode color key list
-      level_key <- palette_col[1:n_levels]
-
-      # Make the palette colors the names in this list
-      names(level_key) <- levels(bed_df$color_key)
-
-      # Set up the color ready data.frame
-      bed_df <- bed_df %>%
-        # Make column that specifies the color for each value
-        dplyr::mutate(
-          color_key = dplyr::recode(color_key, !!!level_key),
-          color_key = as.character(color_key)
-        )
-
-      # Only keep the colors that were actually recoded
-      palette_col <- unique(bed_df$color_key)
-    }
-  } else {
+  # If a single color is specified:
+  if (single_color != "none" & color_col == "none") {
     # If no color key is specified, just make the color black.
-    palette_col <- "black"
-  }
-
-  # Check if the chromosomes have the `chr` format. If not, add it.
-  if (!grepl("chr", bed_df$chr[1])) {
     bed_df <- bed_df %>%
-      dplyr::mutate(chr = paste0("chr", chr))
+      dplyr::mutate(color_col = single_color[1])
+
+    # If both single_color and color_col have been used, spit back an error
+  } else if (single_color != "none" & color_col != "none") {
+    stop("You've specified a `single_color` and a color_col, need to pick one or 
+         the other.")
+
+    # If neither have been used, just use black
+  } else if (single_color == "none" & color_col == "none") {
+    # If no color key is specified, just make the color black.
+    bed_df <- bed_df %>%
+      dplyr::mutate(color_col = "black")
   }
 
   # If we aren't adding on a track to a current plot...
@@ -208,59 +158,66 @@ circos_map_plot <- function(df,
     # Initialize the plot
     circlize::circos.clear()
     circlize::circos.par(start.degree = 90)
-    circlize::circos.initializeWithIdeogram(species = "hg38")
+
+    # Initialize with or without the cytoband
+    if (cytoband) {
+      circlize::circos.initializeWithIdeogram(species = "hg38")
+    } else {
+      circlize::circos.initializeWithIdeogram(
+        plotType = c("axis", "labels"),
+        species = "hg38"
+      )
+    }
   }
 
   if (type == "point") {
-    # Circlize wants things in their own column for each color
-    bed_df <- bed_df %>%
-      # Make a color column and then spread to each so circlize can use it
-      tidyr::spread(color_key, y_val) %>%
-      dplyr::select(-rowid)
-
     # Add scatterplot track
     circlize::circos.genomicTrackPlotRegion(bed_df,
       track.height = track_height,
       # Establish the ylim
       ylim = c(y_min, y_max),
       panel.fun = function(region, value, ...) {
-        circlize::circos.genomicPoints(region, value,
-          col = palette_col
+        circlize::circos.genomicPoints(region,
+          value[[1]],
+          col = value[[2]]
         )
       }
     )
   } else if (type == "line") {
-    # For line and point, circlize wants things in their own column for each color
-    bed_df <- bed_df %>%
-      # Make a color column and then spread to each so circlize can use it
-      tidyr::spread(color_key, y_val) %>%
+    # Need to separate the lines into their own columns
+    spread_df <- bed_df %>%
+      # Remove NA values
+      dplyr::filter(!is.na(y_val)) %>%
+      tibble::rowid_to_column() %>%
+      # Make each color its own column
+      tidyr::spread(color_col, y_val) %>%
       dplyr::select(-rowid)
 
+    # Palette color
+    palette_col <- colnames(spread_df)[4:ncol(spread_df)]
+
     # Add line track
-    circlize::circos.genomicTrackPlotRegion(bed_df,
+    circlize::circos.genomicTrackPlotRegion(spread_df,
       track.height = track_height,
       # Establish the ylim
       ylim = c(y_min, y_max),
       panel.fun = function(region, value, ...) {
-        circlize::circos.genomicLines(region, value,
+        circlize::circos.genomicLines(region,
+          value,
           col = palette_col
         )
       }
     )
   } else if (type == "rect") {
-    # Get rid of rowid
-    bed_df <- bed_df %>%
-      dplyr::select(-rowid)
     # Add a rectangle track
     circlize::circos.genomicTrackPlotRegion(bed_df,
       track.height = track_height,
       # Establish the ylim
       ylim = c(y_min, y_max),
       panel.fun = function(region, value, ...) {
-        i <- circlize::getI(...)
         circlize::circos.genomicRect(region, value[[1]],
-          ytop = value[[1]] + 0.4,
-          ybottom = value[[1]] - 0.4,
+          ytop = value[[1]] + rect_height,
+          ybottom = value[[1]] - rect_height,
           col = value[[2]],
           border = value[[2]]
         )
@@ -278,7 +235,9 @@ circos_map_transloc <- function(df,
                                 start_col_1 = "start1",
                                 start_col_2 = "start2",
                                 end_col_1 = "end1",
-                                end_col_2 = "end2") {
+                                end_col_2 = "end2",
+                                color_col = "none",
+                                cytoband = TRUE) {
   # Given two BED data.frames, plot translocations on a new or already exisiting circos plot.
   #
   # Args:
@@ -291,10 +250,11 @@ circos_map_transloc <- function(df,
   #   start_col_1/2: a character string that specifies the start coordinate column name for the from and to coordinates respectively.
   #   end_col_1/2: a character string that specifies the end coordinate column name for the from and to coordinates respectively.
   #   y_val_1/2: The column name of the value you would like to plot for the from and to coordinates respectively.
-  #   palette: the color brewer palette you would like to be used. Run `RColorBrewer::display.brewer.all()` to see options.
-  #
+  #   color_col: a column with color specifications for each data point.
+  #   cytoband: TRUE/FALSE indicating whether you want a cytoband on the outermost
+  #             of the plot. Default is TRUE.
   # Returns:
-  #  Circos plot (or new circos plot track) of the data provided.
+  #  Circos plot (or new circos plot track) of the translocation data provided.
 
   # Set up the df_1 how circlize wants it
   bed_df_1 <- prep_bed(
@@ -303,9 +263,10 @@ circos_map_transloc <- function(df,
     sample_names = sample_names,
     chr_col = chr_col_1,
     start_col = start_col_1,
-    end_col = end_col_1
-  ) %>%
-    dplyr::mutate(value1 = rnorm(nrow(.)))
+    end_col = end_col_1,
+    color_col = color_col
+  ) # %>%
+  # dplyr::mutate(value1 = rnorm(nrow(.)))
 
   # Set up the df_2 how circlize wants it
   bed_df_2 <- prep_bed(
@@ -314,25 +275,39 @@ circos_map_transloc <- function(df,
     sample_names = sample_names,
     chr_col = chr_col_2,
     start_col = start_col_2,
-    end_col = end_col_2
-  ) %>%
-    dplyr::mutate(value1 = rnorm(nrow(.)))
+    end_col = end_col_2,
+    color_col = color_col
+  ) # %>%
+  # dplyr::mutate(value1 = rnorm(nrow(.)))
 
   # If we aren't adding on a track to a current plot...
   if (!add_track) {
     # Initialize the plot
     circlize::circos.clear()
     circlize::circos.par(start.degree = 90)
-    circlize::circos.initializeWithIdeogram(species = "hg38")
+
+    # Initialize with or without the cytoband
+    if (cytoband) {
+      circlize::circos.initializeWithIdeogram(species = "hg38")
+    } else {
+      circlize::circos.initializeWithIdeogram(
+        plotType = c("axis", "labels"),
+        species = "hg38"
+      )
+    }
   }
 
-  circlize::circos.genomicLink(bed_df_1,
+  if (color_col == "none") {
+    # Create random palette if no color palette was called
+    color_palette <- circlize::rand_color(nrow(bed_df_1), transparency = 0.5)
+  } else {
+    # Pull palette if the color_col was called
+    color_palette <- dplyr::pull(bed_df_1, !!rlang::sym(color_col))
+  }
+  circlize::circos.genomicLink(
+    bed_df_1,
     bed_df_2,
-    col = circlize::rand_color(nrow(bed_df_1),
-      transparency = 0.5
-    ),
-    border = circlize::rand_color(nrow(bed_df_1),
-      transparency = 0.5
-    )
+    col = color_palette,
+    border = color_palette
   )
 }
