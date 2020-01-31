@@ -15,25 +15,34 @@ calculate_z_score <- function (expression_data, rnaseq_ind) {
   # calculate the log2 expression values and z-scores.
   #
   # Args:
-  #   expression_data: data.frame with RNA expression data
+  #   expression_data: matrix with RNA expression data
   #
   # Return:
   #   long_expression: expression data.frame filtered for independent samples
   #                    and now in long format, and with the added columns:
-  #                    `log2_exp`, `z_score`, `expression_class`
+  #                    `z_score`, `expression_class`
   
-  # Change expression data.frame to long tidy format
-  long_expression <- expression_data %>%
-    tidyr::gather(biospecimen_id, expression_value, -gene_id) %>%
-    dplyr::distinct() %>%
+  # log2 transform expression matrix
+  log2_exp <- log2(expression_matrix + 1)
+  
+  # z-score log2 transformed expression matrix
+  zscore_expression <- scale(t(log2_exp), 
+                             center = TRUE,
+                             scale = TRUE)
+  
+  # Change z-scored expression data.frame to long tidy format
+  long_expression <- zscore_expression %>%
+    reshape2::melt() %>%
+    dplyr::rename(
+      biospecimen_id = Var1,
+      gene_id = Var2,
+      z_score = value
+    ) %>%
     dplyr::filter(biospecimen_id %in% rnaseq_ind) %>%
-    dplyr::mutate(gene_id = gsub(".*\\_", "", gene_id)) # Trim the gene ids to
-  # include only the gene symbol
-  long_expression <- long_expression %>%
-    dplyr::group_by(gene_id) %>%
     dplyr::mutate(
-      log2_exp = log2(expression_value + 1),
-      z_score = (log2_exp - mean(log2_exp) / sd(log2_exp)),
+      gene_id = gsub(".*\\_", "", gene_id),
+      # Trim the gene ids to
+      # include only the gene symbol
       expression_class = dplyr::case_when(
         z_score < -2 ~ "z < -2",
         z_score < -1 ~ "-2 ≤ z < -1",
@@ -41,8 +50,7 @@ calculate_z_score <- function (expression_data, rnaseq_ind) {
         z_score < 0 ~ "-0.5 ≤ z < 0",
         z_score < 0.5 ~ "0 ≤ z < 0.5",
         z_score < 1 ~ "0.5 ≤ z < 1",
-        z_score < 2 ~ "1 ≤ z < 2",
-        !(is.na(z_score)) ~ "z ≥ 2"
+        z_score < 2 ~ "1 ≤ z < 2",!(is.na(z_score)) ~ "z ≥ 2"
       ) %>%
         ordered(
           levels = c(
@@ -56,7 +64,8 @@ calculate_z_score <- function (expression_data, rnaseq_ind) {
             "z ≥ 2"
           )
         )
-    )
+    ) %>%
+    dplyr::distinct()
   
 }
 
@@ -88,8 +97,6 @@ merge_expression <-
         Kids_First_Participant_ID,
         sample_id,
         biospecimen_id,
-        expression_value,
-        log2_exp,
         z_score,
         expression_class,
         tumor_descriptor
@@ -119,7 +126,7 @@ merge_expression <-
         by = c("sample_id",
                "gene_id" = "gene_symbol",
                "tumor_descriptor"),
-        suffix = c("_cn", "_expression")
+        suffix = c("_expression", "_cn")
       )
     
     # Save results
@@ -200,15 +207,15 @@ plot_mean_expression <- function (cn_expression_loss_df,
   # Calculate the mean of log2 expression values
   mean_loss <- cn_expression_loss_df %>%
     dplyr::group_by(gene_id, is_driver_gene) %>%
-    dplyr::summarise(mean_loss_log_expression = mean(log2_exp))
+    dplyr::summarise(mean_loss_zscore = mean(z_score))
   
   mean_neutral <- cn_expression_neutral_df %>%
     dplyr::group_by(gene_id, is_driver_gene) %>%
-    dplyr::summarise(mean_neutral_log_expression = mean(log2_exp))
+    dplyr::summarise(mean_neutral_zscore = mean(z_score))
   
   mean_zero <- cn_expression_zero_df %>%
     dplyr::group_by(gene_id, is_driver_gene) %>%
-    dplyr::summarise(mean_zero_log_expression = mean(log2_exp))
+    dplyr::summarise(mean_zero_zscore = mean(z_score))
   
   # Combine the mean values to be plotted
   mean_combined_loss_neutral <- mean_loss %>%
@@ -221,8 +228,8 @@ plot_mean_expression <- function (cn_expression_loss_df,
   mean_combined_plot_loss <-
     ggplot2::ggplot(
       mean_combined_loss_neutral,
-      ggplot2::aes(x = mean_neutral_log_expression,
-                   y = mean_loss_log_expression,
+      ggplot2::aes(x = mean_neutral_zscore,
+                   y = mean_loss_zscore,
                    col = is_driver_gene)
     ) +
     ggplot2::geom_point(alpha = 0.2) +
@@ -235,8 +242,8 @@ plot_mean_expression <- function (cn_expression_loss_df,
   mean_combined_plot_zero <-
     ggplot2::ggplot(
       mean_combined_zero_neutral,
-      ggplot2::aes(x = mean_neutral_log_expression,
-                   y = mean_zero_log_expression,
+      ggplot2::aes(x = mean_neutral_zscore,
+                   y = mean_zero_zscore,
                    col = is_driver_gene)
     ) +
     ggplot2::geom_point(alpha = 0.2) +

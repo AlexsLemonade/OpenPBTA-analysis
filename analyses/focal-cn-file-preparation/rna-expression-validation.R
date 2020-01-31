@@ -87,7 +87,7 @@ if (!dir.exists(plots_dir)) {
 cn_df <- readr::read_tsv(opt$annotated_cnv_file)
 
 # Read in RNA-seq expression data
-expression_df <- readr::read_rds(opt$expression_file)
+expression_matrix <- readr::read_rds(opt$expression_file)
 
 # Read in metadata
 metadata <- readr::read_tsv(opt$metadata)
@@ -175,7 +175,7 @@ rnaseq_ind <- metadata %>%
 
 # Filter expression data to include independent sample and calculate z-scores by
 # gene using `calculate_z_score` custom function
-expression_zscore_df <- calculate_z_score(expression_df, rnaseq_ind)
+expression_zscore_df <- calculate_z_score(expression_matrix, rnaseq_ind)
 
 # Merge Focal CN data.frame with RNA expression data.frame using
 # `merge_expression` custom function
@@ -184,7 +184,7 @@ expression_cn_combined_df <-
     cn_df,
     expression_zscore_df,
     metadata,
-    "annotated_focal_cn_expression.tsv.gz"
+    opt$filename_lead
   )
 
 # Read in gene list
@@ -233,3 +233,4 @@ cn_mean_plot <-
     cn_zero_df,
     opt$filename_lead
   )
+
