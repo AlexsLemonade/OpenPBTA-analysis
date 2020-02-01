@@ -123,7 +123,8 @@ idh_genes_of_interest <- c("IDH1", "TP53")
 These tumors do not have _H3F3A_ or _IDH1_ mutations, but harbor _TP53_ and _TERT_ mutations.
 
 ```{r}
-wildtype_genes_of_interest <- c("H3F3A", "IDH1", "TP53", "TERT")
+wildtype_genes_of_interest <- c("H3F3A", "HIST1H3B", "HIST1H3C", "HIST2H3C",
+                                "IDH1", "TP53", "TERT")
 ```
 
 ### 1p/19q co-deleted oligodendrogliomas
