@@ -15,8 +15,6 @@ This notebook will look at the following features in the entire OpenPBTA cohort:
 
 The purpose is to identify samples that should be classified as 1p/19q co-deleted oligodendrogliomas.
 
-#### TODO: use consensus copy number data and GISTIC results
-
 ## Usage
 
 This notebook is intended to be run via the command line from the top directory
@@ -45,41 +43,23 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 results_dir <-
   file.path(root_dir, "analyses", "molecular-subtyping-HGG", "results")
 data_dir <- file.path(root_dir, "data")
+scratch_dir <- file.path(root_dir, "scratch")
 ```
 
 ### Read in data
 
 ```{r}
-# Read in GISTIC `broad_values_by_arm.txt` file
-gistic_df <-
-  data.table::fread(unzip(
-    file.path(data_dir, "pbta-cnv-cnvkit-gistic.zip"),
-    files = file.path(
-      "2019-12-10-gistic-results-cnvkit",
-      "broad_values_by_arm.txt"
-    ),
-    exdir = file.path(root_dir, "scratch")
-  ), data.table = FALSE)
-```
-
-```{r}
-consensus_maf_df <- read_tsv(file.path(data_dir, 
-                                       "pbta-snv-consensus-mutation.maf.tsv.gz"))
-```
-
-```{r}
-histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
-```
-
-```{r}
-# TODO: at the time of writing this notebook, this is a consensus SEG file
-# that has overlapping regions -- this will be resolved in an upcoming PR.
-# It is also worth noting that the GISTIC files we are currently using were
-# run on the original (not consensus!) CNVkit results
-consensus_seg_file <- file.path(root_dir, "analyses", 
-                                "copy_number_consensus_call", "results", 
-                                "pbta-cnv-consensus.seg")
-consensus_seg_df <- read_tsv(consensus_seg_file)
+# TODO: update once the consensus GISTIC results are in the data release
+download.file(url = "https://github.com/AlexsLemonade/OpenPBTA-analysis/files/4123481/2019-01-28-consensus-cnv.zip",
+              destfile = file.path(scratch_dir, "2019-01-28-consensus-cnv.zip"),
+              quiet = TRUE)
+unzip(file.path(scratch_dir, "2019-01-28-consensus-cnv.zip"),
+      exdir = file.path(scratch_dir, "2019-01-28-consensus-cnv"),
+      files = file.path("2019-01-28-consensus-cnv", "broad_values_by_arm.txt"))
+gistic_df <- data.table::fread(file.path(scratch_dir,
+                                         "2019-01-28-consensus-cnv",
+                                         "broad_values_by_arm.txt"),
+                               data.table = FALSE)
 ```
 
 ## Look at features
@@ -102,35 +82,11 @@ codeleted_samples <- relevant_arms_df %>%
 codeleted_samples
 ```
 
-### IDH1 mutations
+Using the consensus GISTIC results, we have no instances of 1p, 19q co-deletion.
 
-Let's check the one biospecimen(s) that came up with codeletions for _IDH1_ mutations.
-
-```{r}
-consensus_maf_df %>%
-  filter(Tumor_Sample_Barcode %in% codeleted_samples$Kids_First_Biospecimen_ID,
-         Hugo_Symbol == "IDH1")
-```
-
-No _IDH1_ mutations are present in this sample in the consensus mutation file.
-
-## Check 
+## Session Info
 
 ```{r}
-# Set a Type column, same as https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/fa214291713575be7fd20c92374b268870f4173f/analyses/cnv-chrom-plot/gistic_plot.Rmd#L182
-consensus_seg_df <- consensus_seg_df %>%
-  mutate(Type = case_when(
-    seg.mean < 0 ~ "Del",
-    seg.mean > 0 ~ "Amp",
-    seg.mean == 0 ~ "Neutral")
-  )
+sessionInfo()
 ```
 
-Look at the samples that we identified as having a 1p/19q codeletion in the SEG file.
-
-```{r}
-consensus_seg_df %>%
-  filter(ID %in% codeleted_samples$Kids_First_Biospecimen_ID)
-```
-
-There are no deletions in `chr1` and `chr19` in this sample in the consensus file.
