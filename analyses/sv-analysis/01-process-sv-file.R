@@ -187,10 +187,6 @@ for (i in bioid) {
   
   ## Merge four types SV
   sv_merge <- rbind(dups_file, dels_file, invs_file, bnds_file)
-  print(nrow(dups_file))
-  print(nrow(dels_file))
-  print(nrow(invs_file))
-  print(nrow(bnds_file))
   sv_merge <- sv_merge[is.na(sv_merge[, 1]) == FALSE & is.na(sv_merge[, 3]) == FALSE, ]
   outputname_sv_merge <- paste0(i,".tsv")
   outputname_sv_merge  <- file.path(output_directory,outputname_sv_merge)
