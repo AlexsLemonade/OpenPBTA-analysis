@@ -77,7 +77,7 @@ output_subtype <- file.path(results_dir, "HGG_molecular_subtype.tsv")
 
 ### DNA-seq Data (CNV, Mutation)
 
-The CNVkit data, and therefore the GISTIC data that is _downstream_ of CNVkit, only includes WGS samples.
+The CNV and SV data, and therefore the GISTIC data that is _downstream_ of the copy number consensus calls, only includes WGS samples.
 Let's look at what biospecimen identifiers are present in the mutation data but not in the copy number data.
 
 ```{r}
@@ -209,9 +209,7 @@ Are there duplicated `sample_id` in the RNA data frame?
 ```{r}
 any(duplicated(rna_df$sample_id))
 ```
-
-This very well might boil down to the "matched" samples from different library preparation types. 
-Let's check.
+What are they?
 
 ```{r}
 histologies_df %>%
@@ -221,9 +219,7 @@ histologies_df %>%
   summarize(RNA_library = paste(RNA_library, collapse = ", "))
 ```
 
-That appears to be the majority of cases. 
-Because we know there are some issues with stranded samples (e.g., they are poly-A stranded and not ribodepleted stranded) in `release-v12-20191217`, we could take an approach where we _prefer_ samples labeled poly-A. 
-My impression of the ticket is that the mutation data is the most important information when making a subtype call, so we will leave the duplicates in for now.
+There are 2 instances where there are two stranded biospecimen IDs that map to the same `sample_id`.
 
 ### All Data
 
