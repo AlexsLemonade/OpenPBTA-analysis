@@ -526,7 +526,7 @@ subtypes_df <- bind_rows(
 
 subtypes_df <- all_data_df %>%
   select(contains("ID")) %>%
-  left_join(subtypes_df) %>%
+  full_join(subtypes_df) %>%
   replace_na(list(molecular_subtype = "CNS Embryonal, NOS"))
 ```
 
