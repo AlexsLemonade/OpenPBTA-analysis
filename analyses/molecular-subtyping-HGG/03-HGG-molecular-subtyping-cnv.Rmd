@@ -12,8 +12,6 @@ This notebook prepares focal and broad copy number alteration data for the
 purpose of subtyping HGG samples 
 ([`AlexsLemonade/OpenPBTA-analysis#249`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249)).
 
-#### TODO: This analysis should be revisited when consensus copy data is made available.
-
 ## Usage
 
 This notebook is intended to be run via the command line from the top directory
@@ -58,15 +56,10 @@ gistic_df <- read_tsv(file.path(input_dir, "hgg_gistic_broad_values.tsv"))
 output_file <- file.path(results_dir, "HGG_cleaned_cnv.tsv")
 ```
 
-## CNVkit Data
+## Annotated consensus CN data
 
-We are using CNVkit data that has been annotated via the [`focal-cn-file-preparation`](../focal-cn-file-preparation/) module.
-Note that a gene may have evidence for two kinds of copy number alteration (e.g., both _loss_ and _gain_) in these data.
-This may or may not be a caller-specific artifact that will be alleviated by generating consensus copy number calls 
-([`AlexsLemonade/OpenPBTA-analysis#128`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/128)).
-See also: https://jaclyn-taroni.github.io/openpbta-notebook-concept/both-gain-and-loss.nb.html.
-
-
+We are using consensus copy number data data that has been annotated via the [`focal-cn-file-preparation`](../focal-cn-file-preparation/) module.
+Note that a gene may have evidence for two kinds of copy number alteration (e.g., both _loss_ and _gain_) in these data, but no longer see instances of this when using the consensus data for these samples.
 
 ```{r}
 # Select only the ID information, for use in joining below
