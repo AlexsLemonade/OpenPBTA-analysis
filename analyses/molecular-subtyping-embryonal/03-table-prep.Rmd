@@ -94,17 +94,26 @@ Set up filenames.
 ```{r}
 # full clinical file + fusions of interest file
 histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
-fusion_file <- file.path(data_dir, "fusion_summary_embryonal_foi.tsv")
+# TODO: update when the new files with union of sample IDs get included in the
+# in the data download (v14)
+fusion_file <- file.path("..", "fusion-summary", "results",
+                         "fusion_summary_embryonal_foi.tsv")
 # copy number consensus file (analysis file)
 cn_consensus_seg <- file.path("..", "copy_number_consensus_call", "results",
-                              "pbta-cnv-consensus.seg")
-# subset files - annotated copy number, z-scored expression
-copy_num_subset <- file.path(subset_dir, "embryonal_cnvkit_annotated_cn.tsv")
+                              "pbta-cnv-consensus.seg.gz")
+manta_file <- file.path(subset_dir, "embryonal_manta_sv.tsv")
 polya_file <- file.path(subset_dir, "embryonal_zscored_exp.polya.rds")
 stranded_file <- file.path(subset_dir, "embryonal_zscored_exp.stranded.rds")
 # file that contains the biospecimen IDs that met criteria for subtyping
 biospecimen_file <- file.path(results_dir, 
                               "biospecimen_ids_embryonal_subtyping.tsv")
+# annotated sex chromosomes copy number alterations
+sex_chr_consensus <- file.path("..", "focal-cn-file-preparation", "results", 
+                               "consensus_seg_annotated_cn_x_and_y.tsv.gz")
+sex_chr_cnvkit <- file.path("..", "focal-cn-file-preparation", "results", 
+                            "cnvkit_annotated_cn_x_and_y.tsv.gz")
+sex_chr_controlfreec <- file.path("..", "focal-cn-file-preparation", "results", 
+                                  "controlfreec_annotated_cn_x_and_y.tsv.gz")
 ```
 
 Read in files.
@@ -115,12 +124,10 @@ histologies_df <- read_tsv(histologies_file,
                              molecular_subtype = col_character()
                           ))
 
-# data is likely insufficient for specific BCOR alteration?
-copy_number_annotated_df <- read_tsv(copy_num_subset,
-                                     col_types = cols(
-                                       germline_sex_estimate = col_character()
-                                     ))
+# manta data for BCOR tandem duplication
+manta_sv_df <- read_tsv(manta_file)
 
+# all of the RNA data
 polya_exp <- read_rds(polya_file)
 stranded_exp <- read_rds(stranded_file)
 fusions_df <- read_tsv(fusion_file)
@@ -129,9 +136,16 @@ fusions_df <- read_tsv(fusion_file)
 biospecimen_ids <- read_tsv(biospecimen_file) %>%
   pull(Kids_First_Biospecimen_ID)
 
-# we'll filter to only the relevant biospeciments
+# we'll filter to only the relevant biospecimens for the copy number alteration
+# data that is committed to the repository
 cn_consensus <- read_tsv(cn_consensus_seg) %>%
   filter(ID %in% biospecimen_ids)
+consensus_sex_chr <- read_tsv(sex_chr_consensus) %>%
+  filter(biospecimen_id %in% biospecimen_ids)
+cnvkit_sex_chr <- read_tsv(sex_chr_cnvkit) %>%
+  filter(biospecimen_id %in% biospecimen_ids)
+controlfreec_sex_chr <- read_tsv(sex_chr_controlfreec) %>%
+  filter(biospecimen_id %in% biospecimen_ids)
 ```
 
 ### Output file
@@ -251,11 +265,18 @@ For now, let's see how this lines up with the RNA-seq data.
 The copy numbers in all of these cases are high - we'll simplify the column name to `chr19_amplification`.
 
 ```{r}
+# get a data.frame of the relevant WGS biospecimen_ids
+wgs_ids <- intersect(histologies_df %>%
+                       filter(experimental_strategy == "WGS") %>%
+                       pull(Kids_First_Biospecimen_ID),
+                     biospecimen_ids) %>%
+  as.data.frame(stringsAsFactors = FALSE) %>%
+  rename(Kids_First_Biospecimen_ID = ".")
+          
 chr19_cn_df <- chr19_cn_df %>%
   mutate(chr19_amplification = "Yes") %>%
   select(ID, chr19_amplification) %>%
-  bind_rows(data.frame(ID = setdiff(copy_number_annotated_df$biospecimen_id,
-                                    chr19_cn_df$ID))) %>%
+  right_join(wgs_ids, by = c("ID" = "Kids_First_Biospecimen_ID")) %>%
   replace(is.na(.), "No")
 
 # we no longer need the consensus file
@@ -270,11 +291,43 @@ rm(cn_consensus)
 
 > * Tumors have internal tandem duplication of BCOR
 
-We currently don't have a easily consumable SV file and copy number seems inadequate for this task.
+The definition of internal tandem duplication from [Rustagi et al. _BMC Bioinformatics._ 2016.](https://doi.org/10.1186/s12859-016-1031-8):
+
+> Detection of tandem duplication within coding exons, referred to as internal tandem duplication (ITD)
+
+The annotated files from the [`focal-cn-file-preparation`](../focal-cn-file-preparation/) module use exons to check for overlaps.
+So, we can try to supplement the Manta calls with the annotated sex chromosome files.
 
 ```{r}
-# TODO: BCOR tandem duplication
+# only include rows from Manta that make reference to BCOR, pass all filters
+# https://github.com/Illumina/manta/blob/75b5c38d4fcd2f6961197b28a41eb61856f2d976/docs/userGuide/README.md#vcf-format-fields
+# and are recorded as tandem duplication events
+bcor_sv_df <- manta_sv_df %>%
+  filter(str_detect(Gene.name, "BCOR"),
+         FILTER == "PASS",
+         ALT == "<DUP:TANDEM>")
+
+# take a look at the genes 
+bcor_sv_df %>% 
+  head(n = 2) %>%
+  pull(Gene.name)
 ```
+
+Not necessarily specific to _BCOR_ alterations.
+
+```{r}
+consensus_sex_chr %>% filter(gene_symbol == "BCOR") 
+```
+
+```{r}
+cnvkit_sex_chr %>% filter(gene_symbol == "BCOR") 
+```
+
+```{r}
+controlfreec_sex_chr %>% filter(gene_symbol == "BCOR")
+```
+
+This is not conclusive.
 
 ## Final table
 
