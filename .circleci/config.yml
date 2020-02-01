@@ -134,12 +134,12 @@ jobs:
           command: ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
 
       - run:
-          name: Fusion Summary
-          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
-
-      - run:
           name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors 
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
+
+      - run:
+          name: Fusion Summary
+          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
 
       - run:
           name: Molecular subtyping Chordoma
