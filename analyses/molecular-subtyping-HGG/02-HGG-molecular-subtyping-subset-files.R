@@ -123,11 +123,11 @@ hgg_lesions_df <- hgg_lesions_df %>%
 
 #### Filter metadata -----------------------------------------------------------
 
-# Filter metadata for `High-grade glioma` and samples that should be classified
+# Filter metadata for HGAT and samples that should be classified
 # as High-grade glioma based on defining lesions
 hgg_metadata_df <- metadata %>%
   dplyr::filter(
-    disease_type_new == "High-grade glioma" |
+    short_histology == "HGAT" |
       sample_id %in% hgg_lesions_df$sample_id,
     sample_type == "Tumor",
     composition == "Solid Tissue"
