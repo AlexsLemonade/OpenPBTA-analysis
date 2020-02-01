@@ -471,7 +471,7 @@ all_data_df %>%
   filter(`1p` == "loss" | `19q` == "loss")
 ```
 
-We don't see the _IDH1_ mutations we would expect and we do see _TP53_ and _ATRX_ mutations, so we will leave this off as well for the moment and in a subsequent notebook we'll address [`AlexsLemonade/OpenPBTA-analysis#435 (comment)`](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/435#issuecomment-576898275):
+We don't see the _IDH1_ mutations we would expect and we do see an H3 K28M mutation, so we will leave this off as well for the moment and in a subsequent notebook we'll address [`AlexsLemonade/OpenPBTA-analysis#435 (comment)`](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/435#issuecomment-576898275):
 
 > We expect very few, if any of these (maybe 1 when we looked by CNV), so I think maybe we can approach this cohort by starting to look for 1p/19q codeletions in all samples + IDH mutations, and if we see any, we may manually want to check the CNV plots just to confirm.
 
