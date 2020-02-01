@@ -49,13 +49,13 @@ stranded_collapsed <-
 # one of the noted alterations is on chr19 (CIC)
 copy_number_autosomes <- read_tsv(
   file.path(root_dir, "analyses", "focal-cn-file-preparation",
-            "results", "cnvkit_annotated_cn_autosomes.tsv.gz")
+            "results", "consensus_seg_annotated_cn_autosomes.tsv.gz")
 )
 
 # another noted alteration is on chr X (BCOR)
 copy_number_sexchr <- read_tsv(
   file.path(root_dir, "analyses", "focal-cn-file-preparation",
-            "results", "cnvkit_annotated_cn_x_and_y.tsv.gz")
+            "results", "consensus_seg_annotated_cn_x_and_y.tsv.gz")
 )
 
 #### Filter and process expression data ----------------------------------------
@@ -101,4 +101,4 @@ rm(copy_number_autosomes, copy_number_sexchr)
 
 copy_number_all %>%
   filter(biospecimen_id %in% subset_id) %>%
-  write_tsv(file.path(subset_dir, "embryonal_cnvkit_annotated_cn.tsv"))
+  write_tsv(file.path(subset_dir, "embryonal_consensus_seg_annotated_cn.tsv"))
