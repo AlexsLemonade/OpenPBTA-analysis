@@ -82,8 +82,7 @@ for (i in bioid) {
   # sv_shatterseek_original is a file with chrY and ChrM, which will be used later
   sv_shatterseek_original <- read.table(file.path("scratch","sv-vcf",paste(i,".tsv",sep="")),sep="\t",header=TRUE)
   
-  # merge all sv_shatterseek_original, will be used later
-  sv <- rbind(sv,sv_shatterseek_original)
+
   
   #  read cnv one by one
   cnv_shatterseek <-  cnv_analysis[cnv_analysis$ID == i,]
@@ -98,8 +97,11 @@ for (i in bioid) {
     next;
   }
   
+  
   # add sample id
   sv_shatterseek_original$sample <- i
+  # merge all sv_shatterseek_original, will be used later
+  sv <- rbind(sv,sv_shatterseek_original)
   
   
   # build sv and cnv data frame
@@ -263,13 +265,13 @@ chrsslink <- function(chrss,formatid=format_id){
   }
   ss$format_id <- paste(ss$sample,ss$chr,sep="_")
   idlist <- unique(ss$format_id)
-
+  
   # linkss is used to save data
   linkss <- data.frame(matrix(ncol = 7, nrow = 1))
   colnames(linkss) <- colnames(ss)
   # linkss2 collects linkss
   linkss2 <- data.frame()
-
+  
   #  judge if a link-chrss is a chrss region or link region
   for (id in idlist){
     # formatid=format_id
@@ -303,7 +305,7 @@ chrsslink <- function(chrss,formatid=format_id){
       }
     }
   }
-
+  
   # assign start and end based on chrss cluster
   linkss2 <- merge(linkss2,chrss[,c("format_id","start","end")],by.x=("format_id"),by.y=("format_id"),all.x=T)
   linkss2$start <- ifelse(!is.na(linkss2$start.y),ifelse(linkss2$start.x<linkss2$start.y,linkss2$start.x,linkss2$start.y),linkss2$start.x)
@@ -314,7 +316,7 @@ chrsslink <- function(chrss,formatid=format_id){
   chrss2 <- chrss[keeps]
   linkss2 <- rbind(linkss2,chrss2)
   idlist <- unique(linkss2$format_id)
-
+  
   linkss <- data.frame(matrix(ncol = 7, nrow = 1))
   colnames(linkss) <- colnames(linkss2)
   linkss3 <- data.frame()
@@ -395,5 +397,4 @@ chrsslink1$chrss_status <- gsub("no","link",chrsslink1$chrss_status)
 chrsslink1$circos_plot <- paste(chrsslink1$sample,".png",sep="")
 chrsslink1$cnv <- paste(chrsslink1$sample,".txt",sep="")
 
-# write csv
 write.csv(chrsslink1,file.path(output_directory,"PBTA_chromothripsis_newlink_region.csv"),row.names = F)
