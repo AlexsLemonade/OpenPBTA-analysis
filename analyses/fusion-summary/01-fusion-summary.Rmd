@@ -1,0 +1,186 @@
+---
+title: "Generate Fusion Summary Files"
+output: html_notebook
+author: Daniel Miller (D3b) and Jaclyn Taroni (CCDL)
+date: January 2020
+params:
+  is_ci: 0
+---
+
+Generate fusion files specifically for consumption by molecular subtyping analyses
+
+## Set up
+
+```{r}
+# if running in CI, we need to skip the EPN steps
+if (params$is_ci == 0) running_in_ci <- FALSE
+if (params$is_ci == 1) running_in_ci <- TRUE
+```
+
+### Libraries and functions
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+#' Generate filtered fusion frame
+#' @param df Unfiltered fusion data frame
+#' @param bioid List of biospecimen IDs
+#' @param fuses List of explicit fusion names
+#' @param genes List of gene names
+#' @return the filtered fusion data frame
+filterFusion <- function(df, bioid, fuses, genes) {
+  if (!missing(bioid)) {
+    df <- filter(df, Sample %in% bioid)
+  }
+  if (!missing(fuses) & !missing(genes)) {
+    df <- filter(df, FusionName %in% fuses |
+                   Gene1A %in% genes |
+                   Gene2A %in% genes |
+                   Gene1B %in% genes |
+                   Gene2B %in% genes)
+  } else if (!missing(fuses)) {
+    df <- filter(df, FusionName %in% fuses)
+  } else if (!missing(genes)) {
+    df <- filter(df,
+                 Gene1A %in% genes |
+                   Gene2A %in% genes |
+                   Gene1B %in% genes |
+                   Gene2B %in% genes)
+  }
+  return(df %>% select(Sample, FusionName))
+}
+
+
+#' Generate matrix with fusion counts
+#' @param fuseDF Filtered fusion data frame
+#' @param bioid List of biospecimen IDs that should be included in final table
+
+#' @return Data frame that contains fusion counts
+prepareOutput <- function(fuseDF, bioid) {
+  fuseDF %>% 
+    reshape2::dcast(Sample ~ FusionName) %>%
+    right_join(data.frame(Sample = bioid)) %>%
+    replace(is.na(.), 0) %>%
+    rename(Kids_First_Biospecimen_ID = Sample)
+}
+```
+
+### Read in data
+
+```{r}
+dataDir <- file.path("..", "..", "data")
+#' The putative oncogenic fusion file is what we'll use to check for the 
+#' presence or absence of the fusions.
+putativeOncogenicDF <- 
+  read_tsv(file.path(dataDir, "pbta-fusion-putative-oncogenic.tsv"))
+#' However, some biospecimens are not represented in this filtered, prioritized
+#' file but *are* present in the original files -- this will cause them to be
+#' "missing" in the final files for consumption which could mislead analysts.
+arribaDF <- read_tsv(file.path(dataDir, "pbta-fusion-arriba.tsv.gz"))
+starfusionDF <- read_tsv(file.path(dataDir, "pbta-fusion-starfusion.tsv.gz"))
+```
+
+### Output
+
+```{r}
+resultsDir <- "results"
+if (!dir.exists(resultsDir)) {
+  dir.create(resultsDir)
+}
+ependFile <- file.path(resultsDir, "fusion_summary_ependymoma_foi.tsv")
+embryFile <- file.path(resultsDir, "fusion_summary_embryonal_foi.tsv")
+```
+
+## Fusions and genes of interest
+
+Taken from [`AlexsLemonade/OpenPBTA-analysis#245`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/245) and [`AlexsLemonade/OpenPBTA-analysis#251`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251), respectively.
+
+```{r}
+#' **Filters**
+#'
+#' *Fusions Filters*
+#' 1: Exact match a list of fusions common in Ependymoma tumors
+ependFuses <- c(
+  "C11orf95--MAML2",
+  "C11orf95--RELA",
+  "C11orf95--YAP1",
+  "LTBP3--RELA",
+  "PTEN--TAS2R1",
+  "YAP1--FAM118B",
+  "YAP1--MAMLD1",
+  "YAP1--MAMLD2"
+)
+ependGenes <- c(
+  "RELA"
+)
+#' 2: Exact match a list of fusions common in Embryonal tumors
+#' as well as fusions containing a particular gene with any other gene
+embryFuses <- c(
+  "CIC--NUTM1",
+  "MN1--BEND2",
+  "MN1--CXXC5"
+)
+embryGenes <- c(
+  "FOXR2",
+  "MN1",
+  "TTYH1"
+)
+```
+
+### Filter putative oncogenic fusions list
+
+```{r}
+allFuseEpend <- filterFusion(df = putativeOncogenicDF,
+                             fuses = ependFuses,
+                             genes = ependGenes)
+allFuseEmbry <- filterFusion(df = putativeOncogenicDF,
+                             fuses = embryFuses,
+                             genes = embryGenes)
+```
+
+Get the biospecimen IDs that are present in *either* caller file (Arriba, STARFusion).
+The fusions in the putative oncogenic fusion file can be retained even if they are not in both callers: https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/8fba1753608d8ac0aa3d5d7d63c480b8f00ff0e9/analyses/fusion_filtering/04-project-specific-filtering.Rmd#L242
+We use the putative oncogenic file here, therefore any sample that is in either file but does not have a fusion that is relevant to the subtyping tickets is not _missing_ but instead has no evidence of the relevant fusions.
+
+```{r}
+specimensUnion<- union(arribaDF$tumor_id, starfusionDF$tumor_id)
+```
+
+#### Write non-MB, non-ATRT embryonal fusions to file
+
+```{r}
+allFuseEmbry <- allFuseEmbry %>%
+  prepareOutput(specimensUnion)
+```
+
+```{r}
+# Are there any missing fusions?
+setdiff(embryFuses, colnames(allFuseEmbry))
+```
+
+```{r}
+allFuseEmbry %>%
+  mutate(
+    `CIC--NUTM1` = 0,
+    `MN1--BEND2` = 0
+  ) %>%
+  write_tsv(embryFile)
+```
+
+#### Write ependymoma fusions to file
+
+```{r}
+if (!running_in_ci) {
+  allFuseEpend %>%
+    prepareOutput(specimensUnion) %>%
+    mutate(
+      `C11orf95--YAP1` = 0,
+      `LTBP3--RELA` = 0,
+      `PTEN--TAS2R1` = 0,
+      `YAP1--MAMLD2` = 0
+    ) %>%
+    write_tsv(ependFile)
+}
+```
