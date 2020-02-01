@@ -43,20 +43,8 @@ stranded_collapsed <-
   read_rds(file.path(data_dir,
                      "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
 
-# We'll use the annotated CNVkit file for now
-# TODO: update this to use the consensus CNVkit seg file that has been put
-# through the focal-cn-file-preparation annotation process
-# one of the noted alterations is on chr19 (CIC)
-copy_number_autosomes <- read_tsv(
-  file.path(root_dir, "analyses", "focal-cn-file-preparation",
-            "results", "consensus_seg_annotated_cn_autosomes.tsv.gz")
-)
-
-# another noted alteration is on chr X (BCOR)
-copy_number_sexchr <- read_tsv(
-  file.path(root_dir, "analyses", "focal-cn-file-preparation",
-            "results", "consensus_seg_annotated_cn_x_and_y.tsv.gz")
-)
+# structural variant for BCOR tandem duplications
+manta_sv_df <- read_tsv(file.path(data_dir, "pbta-sv-manta.tsv.gz"))
 
 #### Filter and process expression data ----------------------------------------
 
@@ -92,13 +80,8 @@ filter_process_expression(polya_collapsed) %>%
 filter_process_expression(stranded_collapsed) %>%
   write_rds(file.path(subset_dir, "embryonal_zscored_exp.stranded.rds"))
 
-#### Copy number data ----------------------------------------------------------
+#### Structural variant data ---------------------------------------------------
 
-# Let's combine all the copy number data before filtering
-copy_number_all <- bind_rows(copy_number_autosomes,
-                             copy_number_sexchr)
-rm(copy_number_autosomes, copy_number_sexchr)
-
-copy_number_all %>%
-  filter(biospecimen_id %in% subset_id) %>%
-  write_tsv(file.path(subset_dir, "embryonal_consensus_seg_annotated_cn.tsv"))
+manta_sv_df %>%
+  filter(Kids.First.Biospecimen.ID.Tumor %in% subset_id) %>%
+  write_tsv(file.path(subset_dir, "embryonal_manta_sv.tsv"))
