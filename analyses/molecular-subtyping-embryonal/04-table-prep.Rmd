@@ -21,7 +21,7 @@ This notebook is intended to be run via the command line from the top directory
 of the repository as follows:
 
 ```
-Rscript -e "rmarkdown::render('analyses/molecular-subtyping-embryonal/03-table-prep.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('analyses/molecular-subtyping-embryonal/04-table-prep.Rmd', clean = TRUE)"
 ```
 
 ## Set up
@@ -92,13 +92,14 @@ data_dir <- file.path("..", "..", "data")
 Set up filenames.
 
 ```{r}
-# full clinical file + fusions of interest file
+# full clinical file
 histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
 # TODO: update when the new files with union of sample IDs get included in the
 # in the data download (v14)
 fusion_file <- file.path("..", "fusion-summary", "results",
                          "fusion_summary_embryonal_foi.tsv")
 # copy number consensus file (analysis file)
+# TODO: update when included in data download (v14)
 cn_consensus_seg <- file.path("..", "copy_number_consensus_call", "results",
                               "pbta-cnv-consensus.seg.gz")
 manta_file <- file.path(subset_dir, "embryonal_manta_sv.tsv")
@@ -236,51 +237,6 @@ rm(exp_df)
 
 ```{r}
 head(rna_df, n = 10)
-```
-
-### Copy number data
-
-We're interested in focal amplification of C19MC (miRNA cluster on chr19) for the **ETMR, C19MC-altered** subtype.
-
-```{r}
-chr19_cn_df <- cn_consensus %>% 
-  filter(chrom == "chr19",
-         seg.mean > 0)
-
-chr19_cn_df
-```
-
-These are not within the ranges from @sjspielman provided [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/401/files#diff-77e96177f89b99ad2b1f0fe51ec5c22eR110):
-
-```
-## From UCSC Genome Brower, these are positions corresponding to 19q13.41 (C19MC region)
-c19mc_region <- "19q13.41"
-c19mc_start  <- 51400001
-c19mc_end    <- 53600000
-```
-
-We may have to revisit these coordinates.
-For now, let's see how this lines up with the RNA-seq data.
-
-The copy numbers in all of these cases are high - we'll simplify the column name to `chr19_amplification`.
-
-```{r}
-# get a data.frame of the relevant WGS biospecimen_ids
-wgs_ids <- intersect(histologies_df %>%
-                       filter(experimental_strategy == "WGS") %>%
-                       pull(Kids_First_Biospecimen_ID),
-                     biospecimen_ids) %>%
-  as.data.frame(stringsAsFactors = FALSE) %>%
-  rename(Kids_First_Biospecimen_ID = ".")
-          
-chr19_cn_df <- chr19_cn_df %>%
-  mutate(chr19_amplification = "Yes") %>%
-  select(ID, chr19_amplification) %>%
-  right_join(wgs_ids, by = c("ID" = "Kids_First_Biospecimen_ID")) %>%
-  replace(is.na(.), "No")
-
-# we no longer need the consensus file
-rm(cn_consensus)
 ```
 
 ### Structural variant data

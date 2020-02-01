@@ -34,4 +34,4 @@ fi
 Rscript -e "rmarkdown::render('03-clean-c19mc-data.Rmd', clean = TRUE)"
 
 # Run notebook that wrangles all the relevant data
-Rscript -e "rmarkdown::render('03-table-prep.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('04-table-prep.Rmd', clean = TRUE)"
