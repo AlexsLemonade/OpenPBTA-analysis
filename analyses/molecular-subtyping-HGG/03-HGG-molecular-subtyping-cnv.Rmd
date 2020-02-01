@@ -43,6 +43,74 @@ if (!dir.exists(results_dir)) {
 
 ### Read in Files
 
+We will need the clinical/histologies file and the defining lesions file to distinguish between missing samples or samples that had only neutral copy number calls.
+
+```{r message=FALSE}
+histologies_df <- read_tsv(file.path(root_dir, "data",
+                                     "pbta-histologies.tsv"))
+defining_lesions_df <- read_tsv(file.path(results_dir, 
+                                          "HGG_defining_lesions.tsv"))
+```
+
+#### Inclusion Criteria
+
+Here, we'll use the same logic as `02-HGG-molecular-subtyping-subset-files.R` to identify samples to include and also check for experimental strategy.
+
+```{r}
+hgg_lesions_df <- defining_lesions_df %>%
+  dplyr::filter(
+    short_histology == "HGAT" |
+      grepl("H3 G35 mutant|H3 K28 mutant", disease_type_reclassified)
+  )
+
+# Filter metadata for HGAT and samples that should be classified
+# as High-grade glioma based on defining lesions
+hgg_metadata_df <- histologies_df %>%
+  dplyr::filter(
+    short_histology == "HGAT" |
+      sample_id %in% hgg_lesions_df$sample_id,
+    sample_type == "Tumor",
+    composition == "Solid Tissue"
+  )
+```
+
+Only WGS samples have CNV and SV data, so we'll filter based on `experimental_strategy`.
+
+```{r}
+included_wgs_samples <- intersect(hgg_lesions_df %>% 
+                                    pull(Kids_First_Biospecimen_ID),
+                                  hgg_metadata_df %>% 
+                                    filter(experimental_strategy == "WGS") %>%
+                                    pull(Kids_First_Biospecimen_ID))
+```
+
+Are all the WGS samples that pass the inclusion criteria in the consensus SEG file committed to the repository?
+
+```{r}
+consensus_seg_ids <- read_tsv(file.path(root_dir, 
+                                        "analyses", 
+                                        "copy_number_consensus_call",
+                                        "results",
+                                        "pbta-cnv-consensus.seg.gz")) %>%
+  pull(ID)
+consensus_seg_ids <- unique(consensus_seg_ids)
+```
+
+```{r}
+all(included_wgs_samples %in% consensus_seg_ids)
+```
+
+No, they're not.
+How many are missing?
+
+```{r}
+sum(!(included_wgs_samples %in% consensus_seg_ids))
+```
+
+We'd then expect `r sum(included_wgs_samples %in% consensus_seg_ids)` samples to have non-NA values in the cleaned CNV files.
+
+#### Read in CN Data
+
 ```{r}
 # Read in HGG subset focal CN data
 cn_df <- read_tsv(file.path(input_dir, "hgg_focal_cn.tsv.gz"))
@@ -97,7 +165,6 @@ cn_df_genes_status <- cn_df_genes %>%
 head(cn_df_genes_status, n = 10)
 ```
 
-
 ## GISTIC Data
 
 The GISTIC `broad_values_by_arm.txt` file is a matrix with integers that indicate chromosome arm status. 
@@ -116,24 +183,37 @@ gistic_status_df <- gistic_df %>%
               . < 0 ~ "loss",
               . > 0 ~ "gain",
               . == 0 ~ "neutral"
-            ))) %>%
-  # drop sample_id
-  select(-sample_id)
+            )))
 
 head(gistic_status_df, n = 10)
+```
+
+Add in participant IDs.
+
+```{r}
+gistic_status_df <- hgg_metadata_df %>% 
+  select(Kids_First_Biospecimen_ID,
+         Kids_First_Participant_ID,
+         sample_id) %>%
+  right_join(gistic_status_df)
 ```
 
 ## Join Together
 
 ```{r}
-# There are some samples that had too many segments and were flagged by GISTIC
-# These values will be filled with NA -- we'll change them to indicate that 
-# they failed GISTIC QC
-final_hgg_cn_df <- left_join(cn_df_genes_status,
-                             gistic_status_df,
-                             by = "Kids_First_Biospecimen_ID") %>%
-  replace(is.na(.), "Failed GISTIC QC")
-head(final_hgg_cn_df, n = 10)
+final_hgg_cn_df <- full_join(cn_df_genes_status,
+                             gistic_status_df)
+
+nrow(final_hgg_cn_df)
+```
+
+`final_hgg_cn_df` includes all the samples that are in the consensus SEG file.
+So any missing CNA values at this stage come from the fact that neutral values are _not_ included in the annotated copy number files.
+We can fill any "missing values" with neutral calls as a result.
+
+```{r}
+final_hgg_cn_df <- final_hgg_cn_df %>%
+  replace(is.na(.), "neutral")
 ```
 
 Write this to file.
