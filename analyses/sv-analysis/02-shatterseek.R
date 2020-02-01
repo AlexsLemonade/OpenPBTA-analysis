@@ -81,7 +81,6 @@ for (i in bioid) {
   
   # sv_shatterseek_original is a file with chrY and ChrM, which will be used later
   sv_shatterseek_original <- read.table(file.path("scratch","sv-vcf",paste(i,".tsv",sep="")),sep="\t",header=TRUE)
-  sv_shatterseek_original$sample <- i
   
   # merge all sv_shatterseek_original, will be used later
   sv <- rbind(sv,sv_shatterseek_original)
@@ -98,6 +97,9 @@ for (i in bioid) {
     print(paste0(i," has an empty sv file"))
     next;
   }
+  
+  # add sample id
+  sv_shatterseek_original$sample <- i
   
   
   # build sv and cnv data frame
