@@ -276,12 +276,15 @@ In this section, we'll divide up the table based on the molecular subtypes descr
 ```{r}
 h3_k28_df <- all_data_df %>% 
   # Only rows with H3 K28M mutations
-  filter(H3F3A.K28M == "Yes" | HIST1H3B.K28M == "Yes") %>%
+  filter(H3F3A.K28M == "Yes" | HIST1H3B.K28M == "Yes" | 
+           HIST1H3C.K28M == "Yes" | HIST2H3C.K28M == "Yes") %>%
   # Only the relevant columns
   select(Kids_First_Participant_ID, 
          sample_id,
          H3F3A.K28M,
          HIST1H3B.K28M,
+         HIST1H3C.K28M,
+         HIST2H3C.K28M,
          H3F3A.G35R,
          H3F3A.G35V,
          age_at_diagnosis_yr,
@@ -329,9 +332,7 @@ h3_k28_df %>%
   count()
 ```
 
-The copy number information looks a bit different than what is described, but we are not yet using consensus calls.
-
-<!--TODO: consensus calls-->
+The copy number information looks a bit different than what is described, but these are not lesions that must occur.
 
 ```{r}
 summary(as.integer(h3_k28_df$age_at_diagnosis_yr))
@@ -350,15 +351,16 @@ So we'll create a table that contains the biospecimen IDs and the calls.
 
 ```{r}
 h3_k28_df_biospecimen <- all_data_df %>%
-  filter(H3F3A.K28M == "Yes" | HIST1H3B.K28M == "Yes") %>%
+  filter(H3F3A.K28M == "Yes" | HIST1H3B.K28M == "Yes" |
+           HIST1H3C.K28M == "Yes" | HIST2H3C.K28M == "Yes") %>%
   select(Kids_First_Participant_ID,
          sample_id,
          Kids_First_Biospecimen_ID_DNA,
          Kids_First_Biospecimen_ID_RNA, 
          BRAF_V600E) %>%
   mutate(molecular_subtype = case_when(
-    BRAF_V600E == "p.V600E" ~ "DMG_H3_K28_BRAF_V600E",
-    TRUE ~ "DMG_H3_K28"
+    BRAF_V600E == "p.V600E" ~ "DMG, H3 K28, BRAF_V600E",
+    TRUE ~ "DMG, H3 K28"
   )) %>%
   select(-BRAF_V600E)
 ```
@@ -399,7 +401,7 @@ h3_g35_df_biospecimen <- all_data_df %>%
          sample_id,
          Kids_First_Biospecimen_ID_DNA,
          Kids_First_Biospecimen_ID_RNA) %>%
-  mutate(molecular_subtype = "HGG_H3_G35")
+  mutate(molecular_subtype = "HGG, H3 G35")
 ```
 
 ### IDH mutant
@@ -426,7 +428,7 @@ idh_df_biospecimen <- all_data_df %>%
          sample_id,
          Kids_First_Biospecimen_ID_DNA,
          Kids_First_Biospecimen_ID_RNA) %>%
-  mutate(molecular_subtype = "HGG_IDH")
+  mutate(molecular_subtype = "HGG, IDH")
 ```
 
 
@@ -439,6 +441,8 @@ idh_df_biospecimen <- all_data_df %>%
 wildtype_df <- all_data_df %>%
   filter(H3F3A.K28M == "No",
          HIST1H3B.K28M == "No",
+         HIST1H3C.K28M == "No",
+         HIST2H3C.K28M == "No",
          H3F3A.G35R == "No",
          H3F3A.G35V == "No",
          !grepl("IDH1", relevant_coding_mutations)) %>%
@@ -485,6 +489,8 @@ From [`AlexsLemonade/OpenPBTA-analysis#435 (comment)`](https://github.com/AlexsL
 braf_df_biospecimen <- all_data_df %>%
   filter(H3F3A.K28M == "No",
          HIST1H3B.K28M == "No",
+         HIST1H3C.K28M == "No",
+         HIST2H3C.K28M == "No",
          H3F3A.G35R == "No",
          H3F3A.G35V == "No",
          BRAF_V600E == "p.V600E") %>%
@@ -492,7 +498,7 @@ braf_df_biospecimen <- all_data_df %>%
          sample_id,
          Kids_First_Biospecimen_ID_DNA,
          Kids_First_Biospecimen_ID_RNA) %>%
-  mutate(molecular_subtype = "BRAF_V600E_mutation")
+  mutate(molecular_subtype = "BRAF V600E")
 ```
 
 ## Biospecimen Table
@@ -505,15 +511,13 @@ molecular_subtype_table <- bind_rows(h3_g35_df_biospecimen,
                                      idh_df_biospecimen,
                                      braf_df_biospecimen)
 
-# We'll add in NA values in cases that do not yet have labels
+# We'll add HGG, H3 wildtype values in cases that do not yet have labels
 molecular_subtype_table <- all_data_df %>%
-  filter(!(sample_id %in% molecular_subtype_table$sample_id),
-         !(Kids_First_Participant_ID %in% molecular_subtype_table$Kids_First_Participant_ID)) %>%
-  select(Kids_First_Participant_ID,
-         sample_id,
-         Kids_First_Biospecimen_ID_DNA,
-         Kids_First_Biospecimen_ID_RNA) %>%
-  bind_rows(molecular_subtype_table)
+  select(Kids_First_Participant_ID, sample_id,
+         Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_DNA) %>%
+  left_join(molecular_subtype_table) %>%
+  distinct() %>%
+  replace_na(list(molecular_subtype = "HGG, H3 wildtype"))
 ```
 
 Write to file.
