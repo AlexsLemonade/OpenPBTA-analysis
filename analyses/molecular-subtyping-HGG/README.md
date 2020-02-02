@@ -58,12 +58,12 @@ This notebook produces two expression results table (one for each selection stra
 This notebook produces one table with the cleaned data found at `results/HGG_cleaned_all_table.tsv`.
 A table with the molecular subtype information for each HGG sample at `results/HGG_molecular_subtype.tsv` is also produced, where the subtype values in the `molecular_subtype` column are determined as follows:
 
-1. If there was an _H3F3A_ K28M or _HIST1H3B_ K28M mutation and no _BRAF_ V600E mutation -> `DMG_H3_K28`
-2. If there was an _H3F3A_ K28M or _HIST1H3B_ K28M mutation and a _BRAF_ V600E mutation -> `DMG_H3_K28_BRAF_V600E"`
-3. If there was an _H3F3A_ G35V or G35R mutation -> `HGG_H3_G35`
-4. If there was an _IDH1_ R132 mutation -> `HGG_IDH`
-5. If a sample was initially classified as HGAT, had no defining histone mutations, and a _BRAF_ V600E mutation -> `BRAF_V600E_mutation`
-6. All other samples that did not meet any of these criteria were marked as `NA`
+1. If there was an _H3F3A_ K28M or _HIST1H3B_ K28M mutation and no _BRAF_ V600E mutation -> `DMG, H3K28`
+2. If there was an _H3F3A_ K28M or _HIST1H3B_ K28M mutation and a _BRAF_ V600E mutation -> `DMG, H3 K28, BRAF V600E"`
+3. If there was an _H3F3A_ G35V or G35R mutation -> `HGG, H3 G35`
+4. If there was an _IDH1_ R132 mutation -> `HGG, IDH`
+5. If a sample was initially classified as HGAT, had no defining histone mutations, and a _BRAF_ V600E mutation -> `BRAF V600E`
+6. All other samples that did not meet any of these criteria were marked as `HGG, H3 wildtype`
 
 ## Folder structure
 
