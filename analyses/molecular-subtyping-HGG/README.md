@@ -21,7 +21,7 @@ When run in this manner, `02-HGG-molecular-subtyping-subset-files.R` will genera
 
 This folder contains scripts tasked to molecularly subtype High-grade Glioma samples in the PBTA dataset.
 
-[`01-HGG-molecular-subtyping-defining-lesions.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/01-HGG-molecular-subtyping-defining-lesions.nb.html) is a notebook written to look at the high-grade glioma defining lesions (_H3F3A_ K28M, _H3F3A_ G35R/V, _HIST1H3B_ K28M) for all tumor samples in the PBTA dataset. This notebook produces a results table found at `results/HGG_defining_lesions.tsv`.
+[`01-HGG-molecular-subtyping-defining-lesions.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/01-HGG-molecular-subtyping-defining-lesions.nb.html) is a notebook written to look at the high-grade glioma defining lesions (_H3F3A_ K28M, _H3F3A_ G35R/V, _HIST1H3B_ K28M, _HIST1H3C_ K28M, _HIST2H3C_ K28M) for all tumor samples in the PBTA dataset. This notebook produces a results table found at `results/HGG_defining_lesions.tsv`.
 
 `02-HGG-molecular-subtyping-subset-files.R` is a script written to subset the copy number, gene expression, fusion, mutation, SNV and GISTIC's broad values files to include only samples: 1) with defining lesions or 2) labeled as high-grade astrocytic tumors (`HGAT` in `short_histology`).
 This script produces the relevant subset files that can be found in the `hgg-subset` directory.
@@ -58,8 +58,8 @@ This notebook produces two expression results table (one for each selection stra
 This notebook produces one table with the cleaned data found at `results/HGG_cleaned_all_table.tsv`.
 A table with the molecular subtype information for each HGG sample at `results/HGG_molecular_subtype.tsv` is also produced, where the subtype values in the `molecular_subtype` column are determined as follows:
 
-1. If there was an _H3F3A_ K28M or _HIST1H3B_ K28M mutation and no _BRAF_ V600E mutation -> `DMG, H3K28`
-2. If there was an _H3F3A_ K28M or _HIST1H3B_ K28M mutation and a _BRAF_ V600E mutation -> `DMG, H3 K28, BRAF V600E"`
+1. If there was an _H3F3A_ K28M, _HIST1H3B_ K28M, _HIST1H3C_ K28M, or _HIST2H3C_ K28M mutation and no _BRAF_ V600E mutation -> `DMG, H3K28`
+2. If there was an _HIST1H3B_ K28M, _HIST1H3C_ K28M, or _HIST2H3C_ K28M mutation and a _BRAF_ V600E mutation -> `DMG, H3 K28, BRAF V600E"`
 3. If there was an _H3F3A_ G35V or G35R mutation -> `HGG, H3 G35`
 4. If there was an _IDH1_ R132 mutation -> `HGG, IDH`
 5. If a sample was initially classified as HGAT, had no defining histone mutations, and a _BRAF_ V600E mutation -> `BRAF V600E`
