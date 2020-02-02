@@ -359,7 +359,7 @@ h3_k28_df_biospecimen <- all_data_df %>%
          Kids_First_Biospecimen_ID_RNA, 
          BRAF_V600E) %>%
   mutate(molecular_subtype = case_when(
-    BRAF_V600E == "p.V600E" ~ "DMG, H3 K28, BRAF_V600E",
+    BRAF_V600E == "p.V600E" ~ "DMG, H3 K28, BRAF V600E",
     TRUE ~ "DMG, H3 K28"
   )) %>%
   select(-BRAF_V600E)
