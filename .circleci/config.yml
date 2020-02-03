@@ -44,7 +44,7 @@ jobs:
 
       - run:
           name: Sex prediction from RNA-seq - Clean data-train elasticnet-evaluate model
-          command: ./scripts/run_in_ci.sh bash analyses/sex-prediction-from-RNASeq/run-sex-prediction-from-RNASeq.sh
+          command: OPENPBTA_PERCENT=0 ./scripts/run_in_ci.sh bash analyses/sex-prediction-from-RNASeq/run-sex-prediction-from-RNASeq.sh
 
       - run:
           name: Selection Strategy Comparison
@@ -54,6 +54,7 @@ jobs:
 #      - run:
 #          name: ssGSEA Analysis
 #          command: OPENPBTA_ANOVAPVALUE=0.25 OPENPBTA_TUKEYPVALUE=0.50 OPENPBTA_PERCKEEP=0.50 ./scripts/run_in_ci.sh bash analyses/ssgsea-hallmark/run-ssgsea-hallmark.sh
+
 
 # The second method - ControlFREEC - was not included as of v6, so the comparison can no longer be performed
 #      - run:
@@ -66,7 +67,7 @@ jobs:
 
       - run:
           name: Focal CN Preparation
-          command: OPENPBTA_XY=0 ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
+          command: OPENPBTA_CONSENSUS=0 OPENPBTA_XY=0 ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
                 
       - run:
           name: Interaction plot
@@ -79,6 +80,10 @@ jobs:
       - run:
           name: Tumor mutation burden with TCGA
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
+
+      - run:
+          name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors 
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
 
       - run:
           name: Copy number consensus
@@ -114,31 +119,41 @@ jobs:
 
       - run:
           name: TP53 NF1 classifier run
-          command: ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"  
+          command: OPENPBTA_POLYAPLOT=0 ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"  
       
       - run:
           name: GISTIC Plots
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', clean = TRUE)"
-          
-      - run:
-          name: SHH TP53 Molecular Subtyping
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-SHH-tp53/SHH-tp53-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
+      
+      # Deprecated - these results do not include germline calls and therefore are insufficient by subtyping
+      # - run:
+      #     name: SHH TP53 Molecular Subtyping
+      #     command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-SHH-tp53/SHH-tp53-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
 
       - run:
           name: Gene set enrichment analysis to generate GSVA scores
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh" 
 
+      - run:
+          name: Chromosomal instability breakpoints
+          command: ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
 
+      - run:
+          name: Fusion Summary
+          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
+
+      - run:
+          name: Molecular subtyping Chordoma
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-chordoma/01-Subtype-chordoma.Rmd', clean = TRUE)"
+
+      - run:
+          name: Telomerase activity
+          command: ./scripts/run_in_ci.sh bash analyses/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
+          
          ################################
          #### Add your analysis here ####
          ################################
-      - run:
-          name: Evaluation plots for TP53/NF1 classifier polya
-          command: ./scripts/run_in_ci.sh python3 analyses/tp53_nf1_score/02-evaluate-classifier.py -s analyses/tp53_nf1_score/results/TP53_NF1_snv_alteration.tsv -f analyses/tp53_nf1_score/results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv -c data/pbta-histologies.tsv -o polya
-
-      - run:
-          name: Evaluation plots for TP53/NF1 classifier stranded
-          command: ./scripts/run_in_ci.sh python3 analyses/tp53_nf1_score/02-evaluate-classifier.py -s analyses/tp53_nf1_score/results/TP53_NF1_snv_alteration.tsv -f analyses/tp53_nf1_score/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv -c data/pbta-histologies.tsv -o stranded 		
+     
 
       - run:
           name: SNV Caller Analysis 
@@ -147,13 +162,7 @@ jobs:
        # This analysis was a side concept question and no longer needs to be run. 
        # - run:
           # name: SNV Caller VAF Cutoff Experiment
-          # command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)"
-
-      - run:
-          name: Fusion Summary
-          command: ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
-      
- 
+          # command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)" 
                 
 
   deploy:

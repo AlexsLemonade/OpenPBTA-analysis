@@ -10,14 +10,22 @@ script_directory="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
+
+SCRATCHDIR=../../scratch/copy_consensus
+# make directories:
+mkdir -p $SCRATCHDIR
+mkdir -p results
+
 ## Run the python script to go from 1 big manta file, cnvkit file and freec file into 3 directories. 
 ## Each directory with individual sample files.
 
-python3 src/scripts/merged_to_individual_files.py \
+python3 scripts/merged_to_individual_files.py \
     --manta ../../data/pbta-sv-manta.tsv.gz \
     --cnvkit ../../data/pbta-cnv-cnvkit.seg.gz \
     --freec ../../data/pbta-cnv-controlfreec.tsv.gz \
-    --snake ../../scratch/config_snakemake.yaml
+    --snake $SCRATCHDIR/config_snakemake.yaml \
+    --scratch $SCRATCHDIR \
+    --uncalled results/uncalled_samples.tsv
 
 
 ## Run the Snakemake pipeline
@@ -30,7 +38,6 @@ python3 src/scripts/merged_to_individual_files.py \
 ## The snakemake flag options are:
 ## -s : Point to the location of the Snakemake file
 ## --configfile : Point to the location of the config file
-## -d : Specifying working directory. The "." after -d is to show the working dir is at the current folder
 ## -j : Set available cores, in this case, when no number is provided, thus use all available cores
 ## -p : Print shell command that will be executed
 ## --restart-times : Define the times a job restarts when run into an error before giving up
@@ -38,10 +45,7 @@ python3 src/scripts/merged_to_individual_files.py \
 
 snakemake \
     -s Snakefile \
-    --configfile ../../scratch/config_snakemake.yaml \
-    -d . \
+    --configfile $SCRATCHDIR/config_snakemake.yaml \
     -j \
-    -p \
-    --restart-times 3 \
-    --max-jobs-per-second 10 \
-    --latency-wait 30
+    --restart-times 2
+

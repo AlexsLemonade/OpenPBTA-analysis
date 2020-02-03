@@ -1,0 +1,330 @@
+---
+title: "High-Grade Glioma Molecular Subtyping - Mutations"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell and Jaclyn Taroni for ALSF CCDL
+date: 2020
+---
+
+This notebook prepares consensus mutation data for the purposes of subtyping HGG samples 
+([`AlexsLemonade/OpenPBTA-analysis#249`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249)).
+
+## Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/04-HGG-molecular-subtyping-mutation.Rmd', clean = TRUE)"
+```
+
+## Set Up
+
+### Libraries and Functions
+
+```{r}
+`%>%` <- dplyr::`%>%`
+```
+
+We'll take a similar approach to the [`tp53_nf1_score`](../tp53_nf1_score/) module and use functions from the [`snv-callers`](../snv-callers/) module.
+
+```{r}
+# TODO: if a common util folder is established, use that instead
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+source(file.path(root_dir, "analyses", "snv-callers", "util",
+                 "tmb_functions.R"))
+```
+
+### Directories
+
+```{r}
+# File path to results directory
+input_dir <-
+  file.path(root_dir, "analyses", "molecular-subtyping-HGG", "hgg-subset")
+# File path to results directory
+results_dir <-
+  file.path(root_dir, "analyses", "molecular-subtyping-HGG", "results")
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+```
+
+### Read in Files
+
+```{r message=FALSE}
+# CDS bed file, to be used to filter the consensus MAF file
+bed_file <- file.path(root_dir, 
+                      "scratch", 
+                      "gencode.v27.primary_assembly.annotation.bed")
+gencode_cds_bed <- readr::read_tsv(bed_file, col_names = FALSE)
+# Read in HGG subset snv maf data 
+snv_df <- readr::read_tsv(file.path(input_dir, "hgg_snv_maf.tsv.gz"))
+# Read in defining lesions file
+defining_lesions_df <- readr::read_tsv(file.path(results_dir,
+                                                 "HGG_defining_lesions.tsv"))
+```
+
+## Output File
+
+```{r}
+output_file <- file.path(results_dir, "HGG_cleaned_mutation.tsv")
+```
+
+## What mutations are we interested in?
+
+We'll summarize the contents of ([`AlexsLemonade/OpenPBTA-analysis#249`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249)).
+
+### Defining Lesions
+
+From [`@jharenza`](https://github.com/jharenza):
+
+> Any sample that harbors _H3F3A_ K28M, _H3F3A_ G35R/V, or _HIST1H3B_ K28M, if not classified as a high-grade glioma, should be, as this is a defining lesion. Eg: three former PNET tumors were re-classified as such.
+
+Samples were examined for the presence or absence of these defining lesions in [`01-HGG-molecular-subtyping-defining-lesions`](./01-HGG-molecular-subtyping-defining-lesions.Rmd).
+Samples that were classified as HGAT in the `short_histology` column of `pbta-histologies.tsv` and those with one of these defining lesions were included in the subset files (see: [`02-HGG-molecular-subtyping-subset-files.R`](./02-HGG-molecular-subtyping-subset-files.R)).
+Thus, we are not concerned with cleaning data for these specific mutations here.
+Instead, we can look at the defining lesions `data.frame` we read in above.
+
+```{r}
+head(defining_lesions_df, n = 10)
+```
+
+### H3 K28 mutant
+
+Co-occurring lesions include _ACRV1_, _TP53_, _ATRX_ mutations.
+Mutually exclusive lesions include _FGFR1_ and _IDH1_ mutations and _BRAF_ V600E (specific for low-grade gliomas).
+
+```{r}
+k28_genes_of_interest <- c("ACRV1", "TP53", "ATRX", "FGFR1", "IDH1", "BRAF")
+```
+
+### H3 G35 mutant
+
+Co-occurring lesions include _ATRX/DAXX_, _TP53_, _SETD2_ mutations.
+Mutually exclusive lesions include _IDH1_ mutations.
+
+```{r}
+g35_genes_of_interest <- c("ATRX", "DAXX", "TP53", "SETD2", "IDH1")
+```
+
+### IDH mutant
+
+These tumors harbor _IDH1_ R132H mutations.
+Co-occurring lesions include _TP53_ mutations.
+
+```{r}
+idh_genes_of_interest <- c("IDH1", "TP53")
+```
+
+### H3.3 and IDH wildtype
+
+These tumors do not have _H3F3A_ or _IDH1_ mutations, but harbor _TP53_ and _TERT_ mutations.
+
+```{r}
+wildtype_genes_of_interest <- c("H3F3A", "IDH1", "TP53", "TERT")
+```
+
+### 1p/19q co-deleted oligodendrogliomas
+
+> * Nearly all have a co-occurring _IDH1_ mutation (R132 or R172)
+> * Other co-occurring lesions include: _TERT_ promoter, _CIC_, and _FUBP1_ mutations
+
+```{r}
+codeleted_genes_of_interest <- c("IDH1", "TERT", "CIC", "FUBP1")
+```
+
+## Clean SNV data
+
+Get a vector of _all_ genes of interest, so we can use this to filter the HGG subset consensus MAF file.
+
+```{r}
+genes_of_interest <- unique(c(k28_genes_of_interest,
+                              g35_genes_of_interest,
+                              idh_genes_of_interest,
+                              wildtype_genes_of_interest,
+                              codeleted_genes_of_interest))
+```
+
+### Filter the SNV data
+
+```{r}
+filtered_snv_df <- snv_df %>%
+  dplyr::filter(Hugo_Symbol %in% genes_of_interest)
+```
+
+#### Coding mutations in genes other than _TERT_
+
+For all genes other than _TERT_, we'll restrict to the coding sequences and drop silent mutations.
+
+```{r}
+coding_snv_df <- snv_ranges_filter(maf_df = filtered_snv_df,
+                                   keep_ranges = gencode_cds_bed) %>%
+  dplyr::filter(Variant_Classification != "Silent",
+                Hugo_Symbol != "TERT")
+
+head(coding_snv_df, n = 10)
+```
+
+#### _TERT_ mutation
+
+We likely want to be permissive with the _TERT_ mutations in terms of *regions.*
+
+```{r}
+tert_snv_df <- filtered_snv_df %>%
+  dplyr::filter(Hugo_Symbol == "TERT",
+                Variant_Classification != "Silent")
+
+tert_snv_df
+```
+
+#### Specific _IDH1_ mutations
+
+_IDH1_ mutations are specific - we'll break them out here.
+
+```{r}
+idh_snv_df <- filtered_snv_df %>%
+  dplyr::filter(Hugo_Symbol == "IDH1",
+                grepl("R132|R172", HGVSp_Short))
+
+head(idh_snv_df)
+```
+
+_Note that some samples that did not get included in the subset file (e.g., LGAT, Ganglioglioma, etc.) have R132H mutations.
+Should they be included in the subset files?_
+
+#### _BRAF_ V600E
+
+```{r}
+braf_snv_df <- filtered_snv_df %>%
+  dplyr::filter(Hugo_Symbol == "BRAF",
+                grepl("V600E", HGVSp_Short))
+
+head(braf_snv_df, n = 10)
+```
+
+### Wrangle SNV Data
+
+Now that we've filtered the data, we'll get it into a form that's more amenable to presentation.
+First, let's include a column that contains all of the coding mutations of interest (excluding _TERT_).
+This will contain duplicated information -- e.g., _H3F3A_ will be present for tumors with _H3F3A_ K28M mutations -- but serve as a "sanity check."
+
+```{r}
+coding_summary_df <- coding_snv_df %>% 
+  dplyr::select(Tumor_Sample_Barcode,
+                Hugo_Symbol) %>%
+  # For each tumor biospecimen, get a comma separated
+  dplyr::group_by(Tumor_Sample_Barcode) %>%
+  dplyr::summarize(relevant_coding_mutations = paste(sort(unique(Hugo_Symbol)),
+                                                     collapse = ", "))
+
+head(coding_summary_df, n = 10)
+```
+
+Add tumors that had no mutations in the relevant genes into this `data.frame`.
+
+```{r}
+# This will be all biospecimen IDs that were included in the HGG subset
+# SNV file
+subset_bsid <- unique(snv_df$Tumor_Sample_Barcode)
+# Add the 'missing' biospecimen IDs into the coding summary data.frame but
+# mark relevant_coding_mutations as "None"
+coding_summary_df <- coding_summary_df %>%
+  dplyr::bind_rows(data.frame(
+    Tumor_Sample_Barcode = setdiff(subset_bsid,
+                                   coding_summary_df$Tumor_Sample_Barcode)
+  )) %>%
+  replace(is.na(.), "None")
+```
+
+We'll make a `data.frame` that indicates the `Variant_Classification` of any _TERT_ mutation in a tumor biospecimen.
+
+```{r}
+tert_summary_df <- tert_snv_df %>%
+  dplyr::select(Tumor_Sample_Barcode,
+                Variant_Classification) %>%
+  dplyr::group_by(Tumor_Sample_Barcode) %>%
+  dplyr::summarize(TERT_variant_classification = 
+                     paste(sort(unique(Variant_Classification)),
+                           collapse = ", "))
+head(tert_summary_df)
+```
+
+Add in tumor biospecimens where no _TERT_ mutation is present.
+
+```{r}
+tert_summary_df <- tert_summary_df %>%
+  dplyr::bind_rows(data.frame(
+    Tumor_Sample_Barcode = setdiff(subset_bsid,
+                                   tert_summary_df$Tumor_Sample_Barcode)
+  )) %>%
+  replace(is.na(.), "None")
+```
+
+Now a `data.frame` that contains the specific IDH1 mutations.
+
+```{r}
+idh_summary_df <- idh_snv_df %>%
+  dplyr::select(Tumor_Sample_Barcode, HGVSp_Short) %>%
+  dplyr::rename(IDH1_mutation = HGVSp_Short) %>%
+  dplyr::bind_rows(data.frame(
+    Tumor_Sample_Barcode = setdiff(subset_bsid,
+                                   idh_snv_df$Tumor_Sample_Barcode)
+  )) %>%
+  replace(is.na(.), "No R132 or R172")
+```
+
+And a `data.frame` that contains the specific _BRAF_ mutation.
+
+```{r}
+braf_summary_df <- braf_snv_df %>%
+  dplyr::select(Tumor_Sample_Barcode, HGVSp_Short) %>%
+  dplyr::rename(BRAF_V600E = HGVSp_Short) %>%
+  dplyr::bind_rows(data.frame(
+    Tumor_Sample_Barcode = setdiff(subset_bsid,
+                                   braf_snv_df$Tumor_Sample_Barcode)
+  )) %>%
+  replace(is.na(.), "No V600E")
+```
+
+## Final Mutations Table
+
+We'll include specific information from the defining lesions table.
+
+```{r}
+defining_lesions_df <- defining_lesions_df %>%
+  # We're not concerned with disease type classifications at the moment
+  dplyr::select(-dplyr::starts_with("disease"),
+                -short_histology) %>%
+  # Filter to tumor biospecimens that are in the subset file
+  dplyr::filter(Kids_First_Biospecimen_ID %in% subset_bsid) %>%
+  # All other data.frame use 'Tumor_Sample_Barcode' for the column that contains
+  # the tumor biospecimen identifiers
+  dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID)
+```
+
+Join all mutation `data.frame` together.
+
+```{r}
+final_mutations_df <- list(defining_lesions_df,
+                           coding_summary_df,
+                           idh_summary_df,
+                           tert_summary_df,
+                           braf_summary_df) %>%
+  purrr::reduce(dplyr::inner_join, by = "Tumor_Sample_Barcode")
+
+head(final_mutations_df, n = 10)
+```
+
+Write the final table to file.
+
+```{r}
+readr::write_tsv(final_mutations_df, output_file)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
