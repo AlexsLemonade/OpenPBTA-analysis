@@ -13,10 +13,6 @@ assignees: ''
 
 
 
-#### Why should the module be updated?
-
-
-
 #### What changes need to be made? Please provide enough detail for another participant to make the update.
 
 
