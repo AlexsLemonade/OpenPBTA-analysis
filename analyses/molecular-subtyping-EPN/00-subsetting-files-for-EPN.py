@@ -18,7 +18,7 @@ EP_rnaseq_samples["disease_group"] = ["infratentorial" if "Posterior Fossa" in p
 EP_rnasamplenames = list(EP_rnaseq_samples["Kids_First_Biospecimen_ID"])
 
 # Reading in pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds file to subset (All ependymoma samples are  stranded, so ignoring polyA gene expression file in subsetting )
-collapsed_rsem_stranded = pyreadr.read_r("data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
+collapsed_rsem_stranded = pyreadr.read_r("data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")[None]
 
 # Subsetting columns with column names/BSIDs that are  in the  list  of ependymoma samples
 collapsed_rsem_stranded_only_with_ependymomasamples = collapsed_rsem_stranded.reindex(columns = EP_rnasamplenames)
