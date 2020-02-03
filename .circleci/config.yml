@@ -138,8 +138,12 @@ jobs:
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
 
       - run:
-          name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors 
+          name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
+
+      - run:
+          name: Molecular subtyping - Ependymoma
+          command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
 
          ################################
          #### Add your analysis here ####
