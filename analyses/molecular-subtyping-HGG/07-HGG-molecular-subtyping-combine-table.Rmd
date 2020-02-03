@@ -226,9 +226,8 @@ There are 2 instances where there are two stranded biospecimen IDs that map to t
 ```{r}
 all_data_df <- left_join(dna_df, rna_df,
                          by = c("Kids_First_Participant_ID",
-                                "sample_id")) %>%
-  rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID.x,
-         Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID.y) %>%
+                                "sample_id"),
+                                suffix = c("_DNA", "_RNA")) %>%
   select(starts_with("Kids_First"), sample_id, everything())
 
 head(all_data_df, n = 10)
@@ -395,7 +394,7 @@ Make a biospecimen-centric table.
 
 ```{r}
 h3_g35_df_biospecimen <- all_data_df %>% 
-  # Only rows with H3 K28M mutations
+  # Only rows with H3 G35 mutations
   filter(H3F3A.G35R == "Yes" | H3F3A.G35V == "Yes") %>%
   select(Kids_First_Participant_ID,
          sample_id,
@@ -457,8 +456,7 @@ wildtype_df <- all_data_df %>%
 wildtype_df %>% arrange(MYCN_focal_status, PDGFRA_focal_status)
 ```
 
-This is not particularly straightforward, so I will leave that out for now.
-Possible next steps: only those with amplifications or gains in the two mentioned genes?
+We will label samples without H3 mutations as `HGG, H3 wildtype` below.
 
 ### 1p/19q co-deleted oligodendrogliomas
 
