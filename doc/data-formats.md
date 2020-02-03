@@ -187,12 +187,14 @@ The filtered and prioritized fusion and downstream files are a product of the [`
 ### Copy Number Files
 
 `pbta-cnv-cnvkit-gistic.zip` is the output of running GISTIC 2.0 on the CNVkit results (`pbta-cnv-cnvkit.seg`).
-The script used to run GISTIC can be [found here](https://github.com/d3b-center/publication_workflows/blob/master/openPBTA/run-gistic.sh).
+`pbta-cnv-consensus-gistic.zip` is the output of running GISTIC 2.0 on the CNV consensus calls (`pbta-cnv-consensus.seg`), described below.
+The scripts used to run GISTIC are linked here: [CNVkit](https://github.com/d3b-center/OpenPBTA-workflows/blob/master/bash/run-gistic.sh) and [Consensus calls](https://github.com/d3b-center/OpenPBTA-workflows/blob/master/bash/run_gistic_consensus.sh).
 
 ### Consensus Copy Number File
 
 Copy number consensus calls from the copy number and structural variant callers are a product of the [`analyses/copy_number_consensus_call`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/copy_number_consensus_call) analysis module. 
- * `cnv_consensus.tsv` contains consensus regions from two or more callers, with columns described in the [analysis README](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/copy_number_consensus_call/README.md).
+ * `pbta-cnv-consensus.seg.gz` contains consensus segments and segment means (log R ratios) from two or more callers, as described in the [analysis README](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/copy_number_consensus_call/README.md).
+
 
 ## Data Caveats
 
