@@ -391,7 +391,7 @@ h3_g35_df <- all_data_df %>%
 h3_g35_df
 ```
 
-Make a biospecimen-centric table
+Make a biospecimen-centric table.
 
 ```{r}
 h3_g35_df_biospecimen <- all_data_df %>% 
