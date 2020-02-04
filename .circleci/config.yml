@@ -112,7 +112,11 @@ jobs:
       - run:
           name: Molecular Subtyping - HGG
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
-      
+
+      - run:
+          name: Molecular subtyping - Ependymoma
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
+
       - run:
           name: Oncoprint plotting
           command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
@@ -131,7 +135,7 @@ jobs:
 
       - run:
           name: Gene set enrichment analysis to generate GSVA scores
-          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh" 
+          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh"
 
       - run:
           name: Chromosomal instability breakpoints
@@ -149,9 +153,6 @@ jobs:
           name: Telomerase activity
           command: ./scripts/run_in_ci.sh bash analyses/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
       
-      - run:
-          name: Molecular subtyping - Ependymoma
-          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
 
 
          ################################
