@@ -22,6 +22,8 @@
 # Use this as the root directory to ensure proper sourcing of functions no
 # matter where this is called from
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+scratch_dir <- file.path(root_dir, "scratch")
 
 # Set path to subset directory
 subset_dir <-
@@ -45,8 +47,7 @@ select_metadata <- metadata %>%
 stranded_expression <-
   readr::read_rds(
     file.path(
-      root_dir,
-      "data",
+      data_dir,
       "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
     )
   )
@@ -54,40 +55,35 @@ stranded_expression <-
 polya_expression <-
   readr::read_rds(
     file.path(
-      root_dir,
-      "data",
+      data_dir,
       "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
     )
   )
 
 
 # Read in focal CN data
-## TODO: This section will be updated to read in focal CN data derived from
-##       copy number consensus calls.
+## TODO: If annotated files get included in data download
 cn_df <- readr::read_tsv(
-  file.path(
-    root_dir,
-    "analyses",
-    "focal-cn-file-preparation",
-    "results",
-    "cnvkit_annotated_cn_autosomes.tsv.gz"
-  )
+  file.path(root_dir, "analyses", "focal-cn-file-preparation", "results",
+            "consensus_seg_annotated_cn_autosomes.tsv.gz")
 )
 
 # Read in fusion data
 fusion_df <- readr::read_tsv(
-  file.path(root_dir, "data", "pbta-fusion-putative-oncogenic.tsv"))
+  file.path(data_dir, "pbta-fusion-putative-oncogenic.tsv"))
 
 # Read in GISTIC `broad_values_by_arm.txt` file
-gistic_df <-
-  data.table::fread(unzip(
-    file.path(root_dir, "data", "pbta-cnv-cnvkit-gistic.zip"),
-    files = file.path(
-      "2019-12-10-gistic-results-cnvkit",
-      "broad_values_by_arm.txt"
-    ),
-    exdir = file.path(root_dir, "scratch")
-  ), data.table = FALSE)
+# TODO: update once the consensus GISTIC results are in the data release
+download.file(url = "https://github.com/AlexsLemonade/OpenPBTA-analysis/files/4123481/2019-01-28-consensus-cnv.zip",
+              destfile = file.path(scratch_dir, "2019-01-28-consensus-cnv.zip"),
+              quiet = TRUE)
+unzip(file.path(scratch_dir, "2019-01-28-consensus-cnv.zip"),
+      exdir = file.path(scratch_dir, "2019-01-28-consensus-cnv"),
+      files = file.path("2019-01-28-consensus-cnv", "broad_values_by_arm.txt"))
+gistic_df <- data.table::fread(file.path(scratch_dir,
+                                         "2019-01-28-consensus-cnv",
+                                         "broad_values_by_arm.txt"),
+                               data.table = FALSE)
 
 # Read in snv consensus mutation data
 snv_maf_df <-
@@ -127,11 +123,11 @@ hgg_lesions_df <- hgg_lesions_df %>%
 
 #### Filter metadata -----------------------------------------------------------
 
-# Filter metadata for `High-grade glioma` and samples that should be classified
+# Filter metadata for HGAT and samples that should be classified
 # as High-grade glioma based on defining lesions
 hgg_metadata_df <- metadata %>%
   dplyr::filter(
-    disease_type_new == "High-grade glioma" |
+    short_histology == "HGAT" |
       sample_id %in% hgg_lesions_df$sample_id,
     sample_type == "Tumor",
     composition == "Solid Tissue"
@@ -186,7 +182,7 @@ cn_metadata <- cn_df %>%
                 cytoband) %>%
   dplyr::filter(biospecimen_id %in% hgg_metadata_df$Kids_First_Biospecimen_ID) %>%
   dplyr::distinct() # Remove duplicate rows produced as a result of not
-                    # including the copy number variable from `cn_df`
+# including the copy number variable from `cn_df`
 
 # Write to file
 readr::write_tsv(cn_metadata, file.path(subset_dir, "hgg_focal_cn.tsv.gz"))
