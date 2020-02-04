@@ -135,9 +135,15 @@ circos_map_plot <- function(df,
   y_min <- min(bed_df$y_val, na.rm = TRUE)
   y_max <- max(bed_df$y_val, na.rm = TRUE)
 
+  # Tell them only one color is allowed
+  if (length(single_color) > 1) {
+    warning("Only a single color is allowed for the `single_color` argument, 
+            only the first item will be used.")
+  }
+  
   # If a single color is specified:
   if (single_color != "none" & color_col == "none") {
-    # If no color key is specified, just make the color black.
+    # If a single color is specified, replace the color column with that value
     bed_df <- bed_df %>%
       dplyr::mutate(color_col = single_color[1])
 
