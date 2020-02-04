@@ -42,14 +42,12 @@ scratch_dir <- file.path("..", "..", "scratch")
 
 ```{r}
 # TODO: update once the consensus GISTIC results are in the data release
-# download.file(url = "https://github.com/AlexsLemonade/OpenPBTA-analysis/files/4123481/2019-01-28-consensus-cnv.zip",
-#               destfile = file.path(scratch_dir, "2019-01-28-consensus-cnv.zip"))
-# dir(scratch_dir)
-# unzip(file.path(scratch_dir, "2019-01-28-consensus-cnv.zip"),
-#       exdir = file.path(scratch_dir, "2019-01-28-consensus-cnv"),
-#       files = file.path("2019-01-28-consensus-cnv", "broad_values_by_arm.txt"),
-#       overwrite = FALSE)
-# This should be extracted in 02-HGG-molecular-subtyping-subset-files.R
+download.file(url = "https://github.com/AlexsLemonade/OpenPBTA-analysis/files/4123481/2019-01-28-consensus-cnv.zip",
+              destfile = file.path(scratch_dir, "2019-01-28-consensus-cnv.zip"))
+unzip(file.path(scratch_dir, "2019-01-28-consensus-cnv.zip"),
+      exdir = scratch_dir,
+      files = file.path("2019-01-28-consensus-cnv", "broad_values_by_arm.txt"),
+      overwrite = FALSE)
 gistic_df <- data.table::fread(file.path(scratch_dir,
                                          "2019-01-28-consensus-cnv",
                                          "broad_values_by_arm.txt"),
