@@ -3,12 +3,20 @@
 #Author - Teja Koganti (D3B)
 
 
+import argparse
 import pandas as pd
-import numpy as np 
 
-pbta_histologies = pd.read_csv("data/pbta-histologies.tsv", sep="\t")
+parser = argparse.ArgumentParser()
+parser.add_argument('-i', '--histologies', required = True,
+                    help = 'path to the histology file')
+parser.add_argument('-o', '--outnotebook', required = True,
+                    help = "output notebook")
+args = parser.parse_args()
 
-outnotebook = open("analyses/molecular-subtyping-EPN/results/EPN_molecular_subtype.tsv", "w")
+
+pbta_histologies = pd.read_csv(args.histologies, sep="\t")
+
+outnotebook = open(args.outnotebook, "w")
 
 EP = pbta_histologies[pbta_histologies["disease_type_new"]=="Ependymoma"]
 EP_rnaseq_samples = EP[EP["experimental_strategy"] == "RNA-Seq"][["Kids_First_Biospecimen_ID", "primary_site", "Kids_First_Participant_ID", "sample_id", "experimental_strategy"]]
@@ -21,7 +29,7 @@ WGSPT = all_WGS[all_WGS["Kids_First_Participant_ID"].isin(EP_rnasamplenames_PTID
 WGS_dnaseqsamples = WGSPT[["Kids_First_Biospecimen_ID", "Kids_First_Participant_ID", "sample_id"]]
 
 outnotebook.write("Kids_First_Participant_ID\tsample_id\tKids_First_Biospecimen_ID_DNA\tKids_First_Biospecimen_ID_RNA\tsubtype\n")
-count =0 
+count = 0 
 for index1, row1 in EP_rnaseq_samples.iterrows():
     list_of_sampleids = []
     list_of_sampleids.append(row1["sample_id"])
@@ -31,7 +39,8 @@ for index1, row1 in EP_rnaseq_samples.iterrows():
             outnotebook.write(str(row1["Kids_First_Participant_ID"])+"\t"+str(row1["sample_id"])+"\t"+str(row2["Kids_First_Biospecimen_ID"])+"\t"+str(row1["Kids_First_Biospecimen_ID"])+"\t"+str(row1["disease_group"])+"\n")
     if len(list_of_sampleids) <2:
         outnotebook.write(str(row1["Kids_First_Participant_ID"])+"\t"+str(row1["sample_id"])+"\t"+"NA"+"\t"+str(row1["Kids_First_Biospecimen_ID"])+"\t"+str(row1["disease_group"])+"\n")
-        
+
+outnotebook.close()       
         
     
   
