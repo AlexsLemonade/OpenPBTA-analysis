@@ -25,7 +25,6 @@
   - Update analysis files and names from `exon` to `cds` per [#440](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/440) and [this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/432#issuecomment-581462059): 
     - intersect_strelka_mutect_WGS.bed
     - intersect_cds_lancet_strelka_mutect_WGS.bed
-    - intersect_cds_WXS.bed
     - pbta-snv-consensus-mutation-tmb-coding.tsv
   - Update `pbta-histologies.tsv` to add embryonal `molecular_subtypes` per [#251](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251) using results [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-embryonal/results) and high-grade glioma (HGG) `molecular_subtypes` per [#249](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249) and [this commit](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/435/commits/7e8e7917c002e11ab97312dc7f64c542fc04892b). 
     - Additional clinical data updated include:
@@ -103,7 +102,6 @@ data
     ├── pbta-star-log-final.tar.gz
     ├── pbta-star-log-manifest.tsv
     ├── intersect_cds_lancet_strelka_mutect_WGS.bed
-    ├── intersect_cds_WXS.bed
     ├── intersect_strelka_mutect_WGS.bed
     ├── fusion_summary_embryonal_foi.tsv
     └── fusion_summary_ependymoma_foi.tsv
