@@ -4,7 +4,7 @@
 - release date: 2020-02-03
 - status: available
 - changes:
-  - Update kallisto stranded file to remove index column per [#474](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/474):
+  - Update kallisto stranded file to remove index column per [#474](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/474). Also removed samples from last re-sequencing polyA+stranded batch that were missed with the v13 release:
     - pbta-gene-expression-kallisto.stranded.rds
   - Update matrices of ependymonal tumor and embryonal tumor fusions of interest by biospecimen from [`analyses/fusion-summary`](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/478) to include all RNA biospecimens in new `pbta-histologies.tsv` file without fusion calls. Files updated:
     - fusion_summary_embryonal_foi.tsv
