@@ -44,14 +44,15 @@ scratch_dir <- file.path("..", "..", "scratch")
 # TODO: update once the consensus GISTIC results are in the data release
 download.file(url = "https://github.com/AlexsLemonade/OpenPBTA-analysis/files/4123481/2019-01-28-consensus-cnv.zip",
               destfile = file.path(scratch_dir, "2019-01-28-consensus-cnv.zip"))
-unzip(file.path(scratch_dir, "2019-01-28-consensus-cnv.zip"),
-      exdir = file.path(scratch_dir, "2019-01-28-consensus-cnv"),
-      files = file.path("2019-01-28-consensus-cnv", "broad_values_by_arm.txt"),
-      overwrite = FALSE)
-gistic_df <- data.table::fread(file.path(scratch_dir,
-                                         "2019-01-28-consensus-cnv",
-                                         "broad_values_by_arm.txt"),
-                               data.table = FALSE)
+dir(scratch_dir)
+# unzip(file.path(scratch_dir, "2019-01-28-consensus-cnv.zip"),
+#       exdir = file.path(scratch_dir, "2019-01-28-consensus-cnv"),
+#       files = file.path("2019-01-28-consensus-cnv", "broad_values_by_arm.txt"),
+#       overwrite = FALSE)
+# gistic_df <- data.table::fread(file.path(scratch_dir,
+#                                          "2019-01-28-consensus-cnv",
+#                                          "broad_values_by_arm.txt"),
+#                                data.table = FALSE)
 ```
 
 ## Look at features
@@ -59,19 +60,19 @@ gistic_df <- data.table::fread(file.path(scratch_dir,
 ### 1p/19q codeletions
 
 ```{r}
-relevant_arms_df <- gistic_df %>%
-  filter(`Chromosome Arm` %in% c("1p", "19q")) %>%
-  column_to_rownames("Chromosome Arm") %>%
-  t() %>%
-  as.data.frame() %>%
-  rownames_to_column("Kids_First_Biospecimen_ID")
+# relevant_arms_df <- gistic_df %>%
+#   filter(`Chromosome Arm` %in% c("1p", "19q")) %>%
+#   column_to_rownames("Chromosome Arm") %>%
+#   t() %>%
+#   as.data.frame() %>%
+#   rownames_to_column("Kids_First_Biospecimen_ID")
 ```
 
 ```{r}
-codeleted_samples <- relevant_arms_df %>%
-  filter(`1p` < 0, `19q` < 0)
-
-codeleted_samples
+# codeleted_samples <- relevant_arms_df %>%
+#   filter(`1p` < 0, `19q` < 0)
+# 
+# codeleted_samples
 ```
 
 Using the consensus GISTIC results, we have no instances of 1p, 19q co-deletion.

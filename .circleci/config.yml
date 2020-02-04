@@ -31,6 +31,10 @@ jobs:
           command: ./scripts/run_in_ci.sh bash analyses/collapse-rnaseq/run-collapse-rnaseq.sh
 
       - run:
+          name: Molecular Subtyping - HGG
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
+
+      - run:
           name: Immune deconvolution using xCell and MCP-Counter
           command: OPENPBTA_DECONV_METHOD="mcp_counter" ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
 
@@ -108,10 +112,6 @@ jobs:
       - run:
           name: Process SV file
           command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/01-process-sv-file.R
-          
-      - run:
-          name: Molecular Subtyping - HGG
-          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
       
       - run:
           name: Oncoprint plotting
