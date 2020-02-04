@@ -43,7 +43,7 @@ for strategy in ${libraryStrategies[@]}; do
     --independent_specimens_file ${data_dir}/independent-specimens.wgswxs.primary.tsv \
     --metadata $histologies_file \
     --goi_list ../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
-    --filename_lead
+    --filename_lead "consensus_seg_annotated_cn_autosomes"
 done
 
 # if we want to process the CNV data from the original callers
