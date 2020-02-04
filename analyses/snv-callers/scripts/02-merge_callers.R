@@ -133,24 +133,47 @@ full_col_order <- colnames(strelka)
 
 # Specify the columns to join by
 join_cols <- c(
-  "Chromosome",
-  "Start_Position",
-  "Reference_Allele",
-  "Allele",
+  #"Chromosome",
+  #"Start_Position",
+  #"Reference_Allele",
+  #"Allele",
   "Tumor_Sample_Barcode"
 )
 
-strelka_df <- data.table::fread("data/pbta-tcga-snv-strelka2.vep.maf.gz", data.table = FALSE) 
-mutect_df <- data.table::fread("data/pbta-tcga-snv-mutect2.vep.maf.gz", data.table = FALSE) 
+lancet %>% dplyr::select(join_cols)
+strelka %>% dplyr::select(join_cols)
+mutect %>% dplyr::select(join_cols)
 
-dplyr::all_equal(strelka_df, mutect_df)
+summary(factor(lancet$Tumor_Sample_Barcode))
+summary(factor(strelka$Tumor_Sample_Barcode))
+
+tmp <- lancet %>% 
+  dplyr::mutate(vaf2 = t_alt_count /(t_ref_count + t_alt_count))
+
+lancet <- data.table::fread("../../data/pbta-tcga-snv-lancet.vep.maf.gz", data.table = FALSE)
+summary(lancet$t_alt_count)
+
+mutect <- data.table::fread("../../data/pbta-tcga-snv-mutect2.vep.maf.gz", data.table = FALSE)
+summary(mutect$n_alt_count)
+
+ggplot2::qplot(lancet$t_alt_count, geom = "density")
+summary(lancet$t_alt_count)
+summary(mutect$t_alt_count)
+
+ggplot2::qplot(mutect$t_alt_count, geom = "density")
+ggplot2::qplot(strelka$t_alt_count, geom = "density")
+
+ggplot2::qplot(lancet$VAF, geom = "density")
+ggplot2::qplot(mutect$VAF, geom = "density")
+ggplot2::qplot(strelka$VAF, geom = "density")
 
 
-lancet_df <- data.table::fread("data/pbta-tcga-snv-lancet.vep.maf.gz", data.table = FALSE) %>% 
-  dplyr::select(join_cols)
+all(lancet$Tumor_Sample_Barcode %in% mutect$Tumor_Sample_Barcode)
+intersect(lancet$Tumor_Sample_Barcode, strelka$Tumor_Sample_Barcode)
 
-consensus_df %>% as.data.frame()
-match(strelka_df$Start_Position, lancet_df$Start_Position)
+ggplot2::qplot(summary(factor(lancet$Tumor_Sample_Barcode)), geom = "density")
+ggplot2::qplot(summary(factor(mutect$Tumor_Sample_Barcode)), geom = "density")
+
 
 # Create the consensus for non-MNVs
 consensus_df <- mutect %>%
