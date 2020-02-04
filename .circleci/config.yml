@@ -151,7 +151,7 @@ jobs:
       
       - run:
           name: Molecular subtyping - Ependymoma
-          command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
 
 
          ################################
