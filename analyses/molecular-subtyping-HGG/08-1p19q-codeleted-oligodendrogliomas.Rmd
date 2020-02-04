@@ -32,15 +32,10 @@ library(tidyverse)
 ### Directories
 
 ```{r}
-# Detect the ".git" folder -- this will in the project root directory.
-# Use this as the root directory to ensure proper sourcing of functions no
-# matter where this is called from
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 # File path to results directory -- this contains the cleaned data
-results_dir <-
-  file.path(root_dir, "analyses", "molecular-subtyping-HGG", "results")
-data_dir <- file.path(root_dir, "data")
-scratch_dir <- file.path(root_dir, "scratch")
+results_dir <- file.path("results")
+data_dir <- file.path("..", "..", "data")
+scratch_dir <- file.path("..", "..", "scratch")
 ```
 
 ### Read in data
@@ -51,7 +46,8 @@ download.file(url = "https://github.com/AlexsLemonade/OpenPBTA-analysis/files/41
               destfile = file.path(scratch_dir, "2019-01-28-consensus-cnv.zip"))
 unzip(file.path(scratch_dir, "2019-01-28-consensus-cnv.zip"),
       exdir = file.path(scratch_dir, "2019-01-28-consensus-cnv"),
-      files = file.path("2019-01-28-consensus-cnv", "broad_values_by_arm.txt"))
+      files = file.path("2019-01-28-consensus-cnv", "broad_values_by_arm.txt"),
+      overwrite = FALSE)
 gistic_df <- data.table::fread(file.path(scratch_dir,
                                          "2019-01-28-consensus-cnv",
                                          "broad_values_by_arm.txt"),
