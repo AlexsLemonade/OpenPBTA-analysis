@@ -212,9 +212,17 @@ break_density <- function(breaks_df = NULL,
 
     # Find overlap between na_regions and bin
     na_overlaps <- GenomicRanges::findOverlaps(bins, na_regions)
-
+    
+    # Get the sum of the length of all excluded regions for each bin. 
+    excluded_length_per_bin <- tapply(na_regions@ranges@width, # Get length of each sequence
+                                      na_overlaps@from, # Index of which bin it overlaps
+                                      sum) # Add up per bin
+    
+    # Get the total bin length for each bin that has excluded regions
+    bin_length <- bins[unique(na_overlaps@from)]@ranges@width
+    
     # Calculate the percent overlap, adding up the na regions within a bin
-    pct_overlap <- tapply(na_regions@ranges@width, na_overlaps@from, sum) / bins[unique(na_overlaps@from)]@ranges@width
+    pct_overlap <- excluded_length_per_bin / bin_length
 
     # Get the bin indices that correspond to less than the cutoff
     bin_indices <- na_overlaps@from[which(pct_overlap > perc_cutoff)]

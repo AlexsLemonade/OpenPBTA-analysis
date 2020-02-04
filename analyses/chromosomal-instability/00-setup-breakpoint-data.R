@@ -41,7 +41,7 @@
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
-# We need a function from here
+# We need the `make_granges` function from here
 source(file.path(root_dir, 
                  "analyses", 
                  "chromosomal-instability", 

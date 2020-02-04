@@ -111,8 +111,6 @@ uncallable_bed <- readr::read_tsv(
   )) %>%
   dplyr::filter(
     !is.na(chrom),
-    # Exclude the small regions
-    end - start > 200000,
     # Drop sex chromosomes
     !(chrom %in% c("X", "Y", "M"))
   )
@@ -161,9 +159,9 @@ breaks_cdf <- breaks_densities_df %>%
   # Add summary line for mean
   ggplot2::geom_hline(ggplot2::aes(yintercept = hist_mean)) +
   # Separate by histology
-  ggplot2::facet_wrap(~short_histology, nrow = 2) +
+  ggplot2::facet_wrap(~short_histology, nrow = 1, strip.postion = "bottom") +
   ggplot2::theme_classic() +
-  ggplot2::xlab("Rank") +
+  ggplot2::xlab("") +
   ggplot2::ylab("Chromosomal Breaks per Mb") +
   # Transform to log10 make non-log y-axis labels
   ggplot2::scale_y_continuous(trans = "log10", breaks = c(0, 1, 10, 30)) +
@@ -172,7 +170,11 @@ breaks_cdf <- breaks_densities_df %>%
   ggplot2::theme(
     axis.text.x = ggplot2::element_blank(),
     axis.ticks.x = ggplot2::element_blank(),
-    strip.text = ggplot2::element_text(size = 4)
+    strip.text = ggplot2::element_text(size = 10),
+    strip.background = ggplot2::element_rect(color=NULL, fill=NULL), 
+    strip.position = "outside",
+    panel.spacing = 0,
+    panel.border = ggplot2::element_rect(color=NULL, fill=NULL)
   )
 
 # Save the plot to a png
