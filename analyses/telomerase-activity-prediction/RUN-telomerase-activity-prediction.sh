@@ -23,4 +23,8 @@ Rscript --vanilla 01-run-EXTEND.R --input ../../data/pbta-gene-expression-rsem-f
 Rscript --vanilla 01-run-EXTEND.R --input ../collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.stranded.rds --output results/TelomeraseScores_PTBAStranded_counts.txt
 Rscript --vanilla 01-run-EXTEND.R --input ../collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.polya.rds --output results/TelomeraseScores_PTBAPolya_counts.txt
 
+#Compare Telomerase scores for PolyA and Stranded data
 Rscript --vanilla 02-Comparing-Counts-versus-FPKM.R --output plots/PTBA_GE_Score_AllScatter.pdf
+
+#Compare Telomerase scores with TERT and TERC gene expressions
+Rscript --vanilla 03-Comparing-TERTexp-TERCexp-EXTENDScores.R --output plots/PTBA_GE_TM_ScatterComp.pdf
