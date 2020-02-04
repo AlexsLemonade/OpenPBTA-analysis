@@ -35,20 +35,24 @@ Rscript --vanilla 03-prepare-cn-file.R \
   --xy $XYFLAG
 
 libraryStrategies=("polya" "stranded")
+chromosomesType=("autosomes" "x_and_y")
 for strategy in ${libraryStrategies[@]}; do
-
-  Rscript --vanilla rna-expression-validation.R \
-    --annotated_cnv_file results/consensus_seg_annotated_cn_autosomes.tsv.gz \
-    --expression_file ${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.${strategy}.rds \
-    --independent_specimens_file ${data_dir}/independent-specimens.wgswxs.primary.tsv \
-    --metadata $histologies_file \
-    --goi_list ../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
-    --filename_lead "consensus_seg_annotated_cn_autosomes"
+  
+  for chromosome_type in ${chromosomesType[@]}; do
+  
+    Rscript --vanilla rna-expression-validation.R \
+      --annotated_cnv_file results/consensus_seg_annotated_cn_${chromosome_type}.tsv.gz \
+      --expression_file ${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.${strategy}.rds \
+      --independent_specimens_file ${data_dir}/independent-specimens.wgswxs.primary.tsv \
+      --metadata $histologies_file \
+      --goi_list ../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
+      --filename_lead "consensus_seg_annotated_cn"_${chromosome_type}_${strategy}
+  done
 done
 
 # if we want to process the CNV data from the original callers
 # (e.g., CNVkit, ControlFreeC)
-if [ "$RUN_ORIGINAL" -gt "0"]; then
+if [ "$RUN_ORIGINAL" -gt "0" ]; then
 
   # Prep the CNVkit data
   Rscript --vanilla -e "rmarkdown::render('01-add-ploidy-cnvkit.Rmd', clean = TRUE)"
@@ -71,4 +75,3 @@ if [ "$RUN_ORIGINAL" -gt "0"]; then
     --controlfreec
 
 fi
-
