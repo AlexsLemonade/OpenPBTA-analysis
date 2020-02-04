@@ -1,12 +1,6 @@
 library('ggpubr')
 stringsAsFactors=FALSE
-library(stringr)
-library(gridBase)
-library(gridGraphics)
-library(optparse)
-
-
-
+library(grid)
 
 ###############################################  Comparing TERT and TERC expression with EXTEND Scores (Figure 2)  ################################################################################################
 
