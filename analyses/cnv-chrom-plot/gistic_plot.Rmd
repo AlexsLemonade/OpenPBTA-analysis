@@ -35,12 +35,7 @@ if (!("ggbio" %in% installed.packages())) {
 ```{r}
 # Path to input directory
 input_dir <- file.path("..", "..", "data")
-
-# Path to gistic zip file results
-gistic_zip <- file.path(input_dir, "pbta-cnv-cnvkit-gistic.zip")
-
-# Zip to here
-gistic_results <- file.path(input_dir, "gistic")
+scratch_dir <- file.path("..", "..", "scratch")
 
 # Path to output directory
 plots_dir <- "plots"
@@ -54,21 +49,18 @@ if (!dir.exists(plots_dir)) {
 Unzip and set up GISTIC results folder. 
 
 ```{r}
-# Get the name of the folder first since this changes with updates to the date
-folder_name <- unzip(zipfile = gistic_zip, list = TRUE) %>%
-  dplyr::filter(Length == 0) %>%
-  dplyr::pull("Name")
+gistic_dir <- file.path(scratch_dir, "2019-01-28-consensus-cnv")
 
-# Extract files if it hasn't been done yet
-if (!dir.exists(gistic_results)) {
-  # Unzip but only extract the files not the folder
-  unzip(
-    zipfile = gistic_zip,
-    exdir = gistic_results
-  )
+if (!dir.exists(gistic_dir)) {
+  # TODO: update once the consensus GISTIC results are in the data release
+  download.file(url = "https://github.com/AlexsLemonade/OpenPBTA-analysis/files/4123481/2019-01-28-consensus-cnv.zip",
+                destfile = paste0(gistic_dir, ".zip"),
+                quiet = TRUE)
+
+  unzip(paste0(gistic_dir, ".zip"), 
+        exdir = scratch_dir,
+        files = file.path( "2019-01-28-consensus-cnv", "scores.gistic"))
 }
-# Designate GISTIC results folder to extract to
-gistic_results <- file.path(gistic_results, folder_name)
 ```
 
 ### Read in data 
@@ -82,7 +74,9 @@ metadata <-
 Read in the GISTIC scores file and format the data.
 
 ```{r}
-gistic_scores <- readr::read_tsv(file.path(gistic_results, "scores.gistic")) %>%
+gistic_scores <- data.table::fread(file.path(gistic_dir,
+                                             "scores.gistic"),
+                                   data.table = FALSE) %>%
   dplyr::rename("gscore" = "G-score") %>%
   # Recode 23 and 24 as X and Y.
   dplyr::mutate(
@@ -99,11 +93,17 @@ gistic_scores <- readr::read_tsv(file.path(gistic_results, "scores.gistic")) %>%
     )
   )
 ```
+
 Read in the `seg` file so we can plot data by histology. 
 
 ```{r}
+# TODO: update file path when the consensus file has been added to the data release. 
 # Read in the segment copy number data
-seg_data <- data.table::fread(file.path(input_dir, "pbta-cnv-cnvkit.seg.gz"),
+seg_data <- data.table::fread(file.path(
+  "..", 
+  "copy_number_consensus_call", 
+  "results", 
+  "pbta-cnv-consensus.seg.gz"),
   data.table = FALSE
 ) %>%
   # Join the histology column to this data
@@ -210,7 +210,7 @@ lapply(unique(seg_data$short_histology), function(histology_group) {
     )
 
   # Save the plot to a png
-  # Have to ouse @ggplot to extract the portion of the ggbio object with the plot
+  # Have to use @ggplot to extract the portion of the ggbio object with the plot
   ggplot2::ggsave(
     plot = hist_plot@ggplot,
     filename = file.path(plots_dir, paste0(histology_group, "_plot.png")),
@@ -218,9 +218,6 @@ lapply(unique(seg_data$short_histology), function(histology_group) {
     height = 3,
     units = "in"
   )
-  
-  # Print the plot here 
-  hist_plot
 })
 ```
 
