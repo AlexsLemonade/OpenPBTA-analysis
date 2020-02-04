@@ -6,7 +6,6 @@
 set -e
 set -o pipefail
 
-XYFLAG=${OPENPBTA_XY:-1}
 # Run original files - will not by default
 RUN_ORIGINAL=${RUN_ORIGINAL:-0}
 
@@ -21,6 +20,8 @@ scratch_dir=../../scratch
 data_dir=../../data
 histologies_file=${data_dir}/pbta-histologies.tsv
 gtf_file=${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz
+goi_file=../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt
+independent_specimens_file=${data_dir}/independent-specimens.wgswxs.primary.tsv
 
 # Prep the consensus SEG file data
 Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd', clean = TRUE)"
@@ -31,21 +32,20 @@ Rscript --vanilla 03-prepare-cn-file.R \
   --gtf_file $gtf_file \
   --metadata $histologies_file \
   --filename_lead "consensus_seg_annotated_cn" \
-  --seg \
-  --xy $XYFLAG
+  --seg
 
 libraryStrategies=("polya" "stranded")
 chromosomesType=("autosomes" "x_and_y")
 for strategy in ${libraryStrategies[@]}; do
-  
+
   for chromosome_type in ${chromosomesType[@]}; do
-  
+
     Rscript --vanilla rna-expression-validation.R \
       --annotated_cnv_file results/consensus_seg_annotated_cn_${chromosome_type}.tsv.gz \
       --expression_file ${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.${strategy}.rds \
-      --independent_specimens_file ${data_dir}/independent-specimens.wgswxs.primary.tsv \
+      --independent_specimens_file $independent_specimens_file \
       --metadata $histologies_file \
-      --goi_list ../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
+      --goi_list $goi_file \
       --filename_lead "consensus_seg_annotated_cn"_${chromosome_type}_${strategy}
   done
 done
@@ -71,7 +71,21 @@ if [ "$RUN_ORIGINAL" -gt "0" ]; then
     --gtf_file $gtf_file \
     --metadata $histologies_file \
     --filename_lead "controlfreec_annotated_cn" \
-    --xy $XYFLAG \
     --controlfreec
+
+  filenameLead=("cnvkit_annotated_cn" "controlfreec_annotated_cn")
+  for filename in ${filenameLead[@]}; do
+    for strategy in ${libraryStrategies[@]}; do
+      for chromosome_type in ${chromosomesType[@]}; do
+        Rscript --vanilla rna-expression-validation.R \
+          --annotated_cnv_file results/${filename}_${chromosome_type}.tsv.gz \
+          --expression_file ${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.${strategy}.rds \
+          --independent_specimens_file $independent_specimens_file \
+          --metadata $histologies_file \
+          --goi_list $goi_file \
+          --filename_lead ${filename}_${chromosome_type}_${strategy}
+      done
+    done
+  done
 
 fi
