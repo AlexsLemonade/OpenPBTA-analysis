@@ -9,7 +9,7 @@
   - Update matrices of ependymonal tumor and embryonal tumor fusions of interest by biospecimen from [`analyses/fusion-summary`](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/478) to include all RNA biospecimens in new `pbta-histologies.tsv` file without fusion calls. Files updated:
     - fusion_summary_embryonal_foi.tsv
     - fusion_summary_ependymoma_foi.tsv
-  - Update strelka2 and mutect2 TCGA MAF files per [#483](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/483) and [#512](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/512). Files updated:
+  - Update Strelka2, Mutect2, and Lancet TCGA MAF files per [#483](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/483) and [#512](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/512). Files updated:
     - pbta-tcga-snv-mutect2.vep.maf.gz
     - pbta-tcga-snv-strelka2.vep.maf.gz
     - pbta-tcga-snv-lancet.vep.maf.gz
@@ -700,6 +700,5 @@ data
     ├── strelka2.maf.gz
     └── tumor-normal-pair.tsv
 ```
-
 
 
