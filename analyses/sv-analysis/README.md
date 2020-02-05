@@ -12,7 +12,7 @@ This analysis is designed to
 #### Inputs from data download
 * independent-specimens.wgs.primary-plus.tsv
 * pbta-sv-manta.tsv
-* pbta-cnv-cnvkit.seg
+* pbta-cnv-consensus.seg
 
 #### Order of scripts in analysis
 `01-process-sv-file.R` : This script is for generating sv file in shatterseek-read/signature-read input format
