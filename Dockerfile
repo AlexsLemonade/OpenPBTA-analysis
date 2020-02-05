@@ -232,9 +232,6 @@ RUN R -e "install.packages('corrplot', dependencies = TRUE)"
 # Install for mutation signature analysis
 RUN R -e "BiocManager::install('ggbio')"
 
-#### Please install your dependencies here
-#### Add a comment to indicate what analysis it is required for
-
 # CRAN package msigdbr needed for gene-set-enrichment-analysis
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
@@ -243,3 +240,19 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 
 # Bioconductor package GSVA needed for gene-set-enrichment-analysis
 RUN R -e "BiocManager::install(c('GSVA'), update = FALSE)"
+
+# remote package EXTEND needed for telomerase-activity-prediciton analysis
+RUN R -e "devtools::install_github('NNoureen/EXTEND', ref = '467c2724e1324ef05ad9260c3079e5b0b0366420', dependencies = TRUE)"
+
+# Required for installing pdftools, which is a dependency of gridGraphics
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    libpoppler-cpp-dev
+
+# CRAN package gridGraphics needed for telomerase-activity-prediction
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    && install2.r --error \
+    --deps TRUE \
+    gridGraphics
+
+#### Please install your dependencies here
+#### Add a comment to indicate what analysis it is required for
