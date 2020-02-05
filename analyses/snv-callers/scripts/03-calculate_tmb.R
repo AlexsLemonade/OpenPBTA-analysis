@@ -281,7 +281,12 @@ if (file.exists(tmb_all_file) && !opt$overwrite) {
       copy = TRUE
     ) %>%
     as.data.frame()
-
+  
+  if (opt$tcga) {
+    strelka_mutect_mnv <- strelka_mutect_mnv %>% 
+      dplyr::mutate(Tumor_Sample_Barcode = substr(Tumor_Sample_Barcode, 0, 12))
+  }
+  
   # Add in the MNVs
   strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
     dplyr::union_all(strelka_mutect_mnv,
