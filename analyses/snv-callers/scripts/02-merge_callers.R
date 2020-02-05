@@ -70,12 +70,10 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
-
-opt$db_file <- "scratch/tcga_snv_db.sqlite"
-opt$output_file <- "analyses/snv-callers/results/consensus/tcga-snv-consensus-snv.maf.tsv"
-opt$vaf_filter <- 0
-opt$overwrite <- TRUE
-
+#opt$db_file <- "scratch/tcga_snv_db.sqlite"
+#opt$output_file <- "analyses/snv-callers/results/consensus/tcga-snv-consensus-snv.maf.tsv"
+#opt$vaf_filter <- 0
+#opt$overwrite <- TRUE
 
 vaf_filter <- opt$vaf_filter # get out of opt list for sql
 
@@ -121,9 +119,9 @@ lancet <- dplyr::tbl(con, "lancet")
 mutect <- dplyr::tbl(con, "mutect")
 
 
-strelka <- data.frame(strelka)
-lancet <- data.frame(lancet)
-mutect <- data.frame(mutect)
+#strelka <- data.frame(strelka)
+#lancet <- data.frame(lancet)
+#mutect <- data.frame(mutect)
 
 # We won't use VarDicts calls for the consensus
 # vardict <- dplyr::tbl(con, "vardict")
@@ -133,47 +131,12 @@ full_col_order <- colnames(strelka)
 
 # Specify the columns to join by
 join_cols <- c(
-  #"Chromosome",
-  #"Start_Position",
-  #"Reference_Allele",
-  #"Allele",
+  "Chromosome",
+  "Start_Position",
+  "Reference_Allele",
+  "Allele",
   "Tumor_Sample_Barcode"
 )
-
-lancet %>% dplyr::select(join_cols)
-strelka %>% dplyr::select(join_cols)
-mutect %>% dplyr::select(join_cols)
-
-summary(factor(lancet$Tumor_Sample_Barcode))
-summary(factor(strelka$Tumor_Sample_Barcode))
-
-tmp <- lancet %>% 
-  dplyr::mutate(vaf2 = t_alt_count /(t_ref_count + t_alt_count))
-
-lancet <- data.table::fread("../../data/pbta-tcga-snv-lancet.vep.maf.gz", data.table = FALSE)
-summary(lancet$t_alt_count)
-
-mutect <- data.table::fread("../../data/pbta-tcga-snv-mutect2.vep.maf.gz", data.table = FALSE)
-summary(mutect$n_alt_count)
-
-ggplot2::qplot(lancet$t_alt_count, geom = "density")
-summary(lancet$t_alt_count)
-summary(mutect$t_alt_count)
-
-ggplot2::qplot(mutect$t_alt_count, geom = "density")
-ggplot2::qplot(strelka$t_alt_count, geom = "density")
-
-ggplot2::qplot(lancet$VAF, geom = "density")
-ggplot2::qplot(mutect$VAF, geom = "density")
-ggplot2::qplot(strelka$VAF, geom = "density")
-
-
-all(lancet$Tumor_Sample_Barcode %in% mutect$Tumor_Sample_Barcode)
-intersect(lancet$Tumor_Sample_Barcode, strelka$Tumor_Sample_Barcode)
-
-ggplot2::qplot(summary(factor(lancet$Tumor_Sample_Barcode)), geom = "density")
-ggplot2::qplot(summary(factor(mutect$Tumor_Sample_Barcode)), geom = "density")
-
 
 # Create the consensus for non-MNVs
 consensus_df <- mutect %>%
@@ -212,3 +175,4 @@ consensus_df %>%
   as.data.frame() %>%
   # Write to a TSV file, change NAs back to "."
   readr::write_tsv(opt$output_file, na = ".")
+

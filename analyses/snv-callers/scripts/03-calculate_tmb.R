@@ -112,9 +112,6 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
-opt$consensus <- "analyses/snv-callers/results/consensus/tcga-snv-consensus-snv.maf.tsv"
-opt$metdata <- "data/pbta-tcga-manifest.tsv"
-
 # Make everything relative to root path
 opt$consensus <- file.path(root_dir, opt$consensus)
 opt$metadata <- file.path(root_dir, opt$metadata)
@@ -151,9 +148,14 @@ if (!dir.exists(opt$output)) {
   dir.create(opt$output, recursive = TRUE)
 }
 
-# Declare output file paths
-tmb_coding_file <- file.path(opt$output, "pbta-snv-consensus-mutation-tmb-coding.tsv")
-tmb_all_file <- file.path(opt$output, "pbta-snv-consensus-mutation-tmb-all.tsv")
+# Get data name
+data_name <- ifelse(opt$tcga, "tcga", "pbta")
+
+# Declare output file based on data_name
+tmb_coding_file <- file.path(opt$output, 
+                             paste0(data_name, "-snv-consensus-mutation-tmb-coding.tsv"))
+tmb_all_file <- file.path(opt$output, 
+                          paste0(data_name, "-snv-consensus-mutation-tmb-all.tsv"))
 
 # Don't bother if both files exist already and overwrite is FALSE
 if (all(file.exists(c(tmb_coding_file, tmb_all_file)), !opt$overwrite)) {
@@ -172,10 +174,16 @@ message("Setting up metadata...")
 
 # Have to handle TCGA and PBTA metadata differently
 if (opt$tcga) {
+  # Format two fields of metadata for use with functions
   metadata <- readr::read_tsv(opt$metadata) %>% 
-    dplyr::mutate(experimental_strategy = "WGS", 
-                  short_histology = stringr::word(broad_histology, sep = "-", 2))
-} else {
+    dplyr::mutate(experimental_strategy = "WGS", # This field doesn't exist for this data, but all is WGS
+                  short_histology = stringr::word(broad_histology, sep = "-", 2)) # This field is named differently
+  
+  # Manifest files only have first 12 letters of the barcode so we gotta chop the end off
+  maf_df <- maf_df %>% 
+    dplyr::mutate(Tumor_Sample_Barcode = substr(Tumor_Sample_Barcode, 0, 12))
+  
+  } else {
   # Isolate metadata to only the samples that are in the datasets
   metadata <- readr::read_tsv(opt$metadata) %>%
     dplyr::filter(Kids_First_Biospecimen_ID %in% maf_df$Tumor_Sample_Barcode) %>%
