@@ -65,6 +65,10 @@ A table with the molecular subtype information for each HGG sample at `results/H
 5. If a sample was initially classified as HGAT, had no defining histone mutations, and a _BRAF_ V600E mutation -> `BRAF V600E`
 6. All other samples that did not meet any of these criteria were marked as `HGG, H3 wildtype`
 
+[`08-1p19q-codeleted-oligodendrogliomas.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/08-1p19q-codeleted-oligodendrogliomas.nb.html) is a notebook written to identify samples in the OpenPBTA dataset that should be classified as 1p/19q co-deleted oligodendrogliomas.
+The GISTIC `broad_values_by_arm.txt` file is used to identify samples with `1p` and `19q` loss, then the consensus mutation file is filtered to the identified samples in order to check for _IDH1_ mutations.
+**Note:** Per [this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/435#issuecomment-576898275), very few samples in the OpenPBTA dataset, if any, are expected to fit into the `1p/19q co-deleted oligodendrogliomas` subtype.
+
 ## Folder structure
 
 The structure of this folder is as follows:
@@ -83,6 +87,8 @@ The structure of this folder is as follows:
 ├── 06-HGG-molecular-subtyping-gene-expression.nb.html
 ├── 07-HGG-molecular-subtyping-combine-table.Rmd
 ├── 07-HGG-molecular-subtyping-combine-table.nb.html
+├── 08-1p19q-codeleted-oligodendrogliomas.Rmd
+├── 08-1p19q-codeleted-oligodendrogliomas.nb.html
 ├── README.md
 ├── hgg-subset
 │   ├── hgg_focal_cn.tsv.gz

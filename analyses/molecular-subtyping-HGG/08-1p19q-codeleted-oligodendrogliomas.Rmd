@@ -1,0 +1,84 @@
+---
+title: "1p/19q co-deleted oligodendrogliomas"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Jaclyn Taroni for ALSF CCDL
+date: 2020
+---
+
+This notebook will look at 1p/19q codeletions in the entire OpenPBTA cohort.
+
+The purpose is to identify samples that should be classified as 1p/19q co-deleted oligodendrogliomas.
+
+## Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/08-1p19q-codeleted-oligodendrogliomas.Rmd', clean = TRUE)"
+```
+
+## Set up
+
+### Libraries and functions
+
+```{r}
+library(tidyverse)
+```
+
+### Directories
+
+```{r}
+# File path to results directory -- this contains the cleaned data
+results_dir <- file.path("results")
+data_dir <- file.path("..", "..", "data")
+scratch_dir <- file.path("..", "..", "scratch")
+```
+
+### Read in data
+
+```{r}
+# TODO: update once the consensus GISTIC results are in the data release
+download.file(url = "https://github.com/AlexsLemonade/OpenPBTA-analysis/files/4123481/2019-01-28-consensus-cnv.zip",
+              destfile = file.path(scratch_dir, "2019-01-28-consensus-cnv.zip"))
+unzip(file.path(scratch_dir, "2019-01-28-consensus-cnv.zip"),
+      exdir = scratch_dir,
+      files = file.path("2019-01-28-consensus-cnv", "broad_values_by_arm.txt"),
+      overwrite = FALSE)
+gistic_df <- data.table::fread(file.path(scratch_dir,
+                                         "2019-01-28-consensus-cnv",
+                                         "broad_values_by_arm.txt"),
+                               data.table = FALSE)
+```
+
+## Look at features
+
+### 1p/19q codeletions
+
+```{r}
+relevant_arms_df <- gistic_df %>%
+  filter(`Chromosome Arm` %in% c("1p", "19q")) %>%
+  column_to_rownames("Chromosome Arm") %>%
+  t() %>%
+  as.data.frame() %>%
+  rownames_to_column("Kids_First_Biospecimen_ID")
+```
+
+```{r}
+codeleted_samples <- relevant_arms_df %>%
+  filter(`1p` < 0, `19q` < 0)
+
+codeleted_samples
+```
+
+Using the consensus GISTIC results, we have no instances of 1p, 19q co-deletion.
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
