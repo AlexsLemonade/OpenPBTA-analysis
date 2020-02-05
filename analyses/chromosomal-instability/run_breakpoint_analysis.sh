@@ -35,3 +35,6 @@ Rscript analyses/chromosomal-instability/00-setup-breakpoint-data.R \
 ######################### Chromosomal Instability Plots ########################
 Rscript -e "rmarkdown::render('analyses/chromosomal-instability/01-plot-chromosomal-instability.Rmd', 
                               clean = TRUE)"
+                              
+Rscript -e "rmarkdown::render('analyses/chromosomal-instability/01b-visualization-cnv-sv.Rmd', 
+                              clean = TRUE)"
