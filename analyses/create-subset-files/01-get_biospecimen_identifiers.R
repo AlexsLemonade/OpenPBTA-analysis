@@ -212,7 +212,7 @@ files_to_subset <-
 # currently documented
 # we'll include the entire zipped folder
 files_to_subset <-
-  files_to_subset[-grep("pbta-cnv-cnvkit-gistic.zip", files_to_subset)]
+  files_to_subset[-grep("gistic.zip", files_to_subset)]
 
 # if testing this locally, drop the 2 larger of the 4 MAF files
 if (running_locally) {
