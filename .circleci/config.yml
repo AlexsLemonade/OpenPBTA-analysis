@@ -102,6 +102,10 @@ jobs:
           command: ./scripts/run_in_ci.sh python3 analyses/comparative-RNASeq-analysis/01-correlation-matrix.py ../../data/pbta-gene-expression-rsem-tpm.stranded.rds --output-prefix rsem-tpm-stranded- --verbose
 
       - run:
+          name: Comparative RNASeq - generate thresholds and outliers - rsem-tpm.stranded
+          command: ./scripts/run_in_ci.sh python3 analyses/comparative-RNASeq-analysis/02-thresholds-and-outliers.py ../../data/pbta-gene-expression-rsem-tpm.stranded.rds --output-prefix rsem-tpm-stranded- --verbose
+
+      - run:
           name: Molecular Subtyping and Plotting - ATRT
           command:  OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-ATRT/run-molecular-subtyping-ATRT.sh        
       
