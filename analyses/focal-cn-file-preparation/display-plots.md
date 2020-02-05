@@ -1,4 +1,4 @@
-## This markdown displays the plots produced in the `rna-expression-validation.R` script of this module. 
+## This markdown displays the plots produced in the `rna-expression-validation.R` script of this module using the consensus SEG copy number file and collapsed RSEM expression files. 
 
 ##### The scatterplots below show the correlation between the mean z-scored expression of loss and neutral CN calls across genes, separated by polyA and stranded RNA expression data. 
 
