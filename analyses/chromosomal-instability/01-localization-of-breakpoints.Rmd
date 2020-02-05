@@ -200,27 +200,23 @@ sample_densities <- lapply(common_samples, function(sample_id) {
 names(sample_densities) <- common_samples
 ```
 
+Switch list to be by breaks first, samples second. 
+
+```{r}
+sample_densities <- purrr::transpose(sample_densities)
+```
+
 Turn each dataset into its own data.frame and write it to its own TSV file. 
 This will be used by `02-a-plot-chr-instability-heatmaps.Rmd` for heatmaps. 
 
 ```{r}
-# Turn intersection data into its own data.frame
-intersection_df <- purrr::map(sample_densities, "intersection_of_breaks") %>% 
-  dplyr::bind_rows(.id = "chr") %>% 
+# Write the break densities each as their own files
+purrr::imap(sample_densities, function(.x, name = .y) {
+  dplyr::bind_rows(.x, .id = "samples") %>%
+  # Write each to a TSV file
   readr::write_tsv(file.path(output_dir, 
-                            "intersection_binned_breakpoint_counts.tsv"))
-
-# Same for CNV 
-cnv_df <- purrr::map(sample_densities, "cnv_breaks") %>% 
-  dplyr::bind_rows(.id = "chr") %>% 
-  readr::write_tsv(file.path(output_dir, 
-                            "cnv_binned_breakpoint_counts.tsv"))
-
-# Same for SV
-sv_df <- purrr::map(sample_densities, "sv_breaks") %>% 
-  dplyr::bind_rows(.id = "chr") %>% 
-  readr::write_tsv(file.path(output_dir, 
-                            "sv_binned_breakpoint_counts.tsv"))
+                            paste0(name, "_binned_breakpoint_counts.tsv")))
+})
 ```
 
 ### Mapping of breakpoint densities for tumor-type groups
