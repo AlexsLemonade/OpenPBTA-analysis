@@ -8,8 +8,6 @@ This analysis is designed to
 2. chromothripsis analysis
 3. decipher signatures of structural variations
 4. to understand the potential mechanism behind tumors through structural variations analysis
-5. association of chromothripsis with other somatic alterations (i.e. TP53 status)
-6. multivariate [survival] analyses including clinical variables as well as ... chromothripsis.
 
 #### Inputs from data download
 * independent-specimens.wgs.primary-plus.tsv
