@@ -31,6 +31,10 @@ jobs:
           command: ./scripts/run_in_ci.sh bash analyses/collapse-rnaseq/run-collapse-rnaseq.sh
 
       - run:
+          name: Molecular Subtyping - HGG
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
+
+      - run:
           name: Immune deconvolution using xCell and MCP-Counter
           command: OPENPBTA_DECONV_METHOD="mcp_counter" ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
 
@@ -67,7 +71,7 @@ jobs:
 
       - run:
           name: Focal CN Preparation
-          command: OPENPBTA_XY=0 ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
+          command: OPENPBTA_CONSENSUS=0 OPENPBTA_XY=0 ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
                 
       - run:
           name: Interaction plot
@@ -80,6 +84,10 @@ jobs:
       - run:
           name: Tumor mutation burden with TCGA
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
+
+      - run:
+          name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors 
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
 
       - run:
           name: Copy number consensus
@@ -104,10 +112,6 @@ jobs:
       - run:
           name: Process SV file
           command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/01-process-sv-file.R
-          
-      - run:
-          name: Molecular Subtyping - HGG
-          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
       
       - run:
           name: Oncoprint plotting
@@ -120,10 +124,11 @@ jobs:
       - run:
           name: GISTIC Plots
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', clean = TRUE)"
-          
-      - run:
-          name: SHH TP53 Molecular Subtyping
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-SHH-tp53/SHH-tp53-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
+      
+      # Deprecated - these results do not include germline calls and therefore are insufficient by subtyping
+      # - run:
+      #     name: SHH TP53 Molecular Subtyping
+      #     command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-SHH-tp53/SHH-tp53-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
 
       - run:
           name: Gene set enrichment analysis to generate GSVA scores
@@ -131,16 +136,20 @@ jobs:
 
       - run:
           name: Chromosomal instability breakpoints
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/chromosomal-instability/chromosomal-instability.Rmd', clean = TRUE)"
+          command: ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
 
       - run:
           name: Fusion Summary
-          command: ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
+          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
 
       - run:
-          name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors 
-          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
+          name: Molecular subtyping Chordoma
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-chordoma/01-Subtype-chordoma.Rmd', clean = TRUE)"
 
+      - run:
+          name: Telomerase activity
+          command: ./scripts/run_in_ci.sh bash analyses/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
+          
          ################################
          #### Add your analysis here ####
          ################################
