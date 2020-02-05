@@ -222,4 +222,9 @@ The GISTIC output data files below, which are commonly leveraged for downstream 
 
 ## Data Caveats
 
-The clinical manifest will be updated and versioned as molecular subgroups are identified based on genomic analyses.
+The clinical manifest will be updated and versioned as molecular subgroups are identified based on genomic analyses. 
+
+Analyses related to molecular subtyping are as follows:
+
+* [`molecular-subtyping-HGG`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-HGG)
+* [`molecular-subtyping-embryonal`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-embryonal)
