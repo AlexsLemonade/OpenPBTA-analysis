@@ -49,10 +49,20 @@ Stranded_Histology = Stranded_Histology[-which(Stranded_Histology$short_histolog
 
 pdf(PBTA_EXTEND_HistologyCompPlot)
 
-P1 = ggplot(Stranded_Histology, aes(x=fct_reorder(short_histology,NormEXTENDScores,.desc =TRUE),y=NormEXTENDScores))+geom_boxplot(size= 0.1,notch=FALSE,outlier.size = 0,outlier.shape=NA,fill="cyan3")+theme_classic()+theme(axis.text.x=element_text(angle=50,size=7,vjust=1,hjust=1),legend.position = "top",legend.key.size= unit(0.3,"cm"),legend.key.width = unit(0.3,"cm"),legend.title = element_text(size=7),legend.text =element_text(size=6))
+## Globally set the theme in one step, so it gets applied to both plots
+theme_set(theme_classic() + 
+          theme(axis.text.x=element_text(angle=50,size=7,vjust=1,hjust=1),
+          legend.position = "top",
+          legend.key.size= unit(0.3,"cm"),
+          legend.key.width = unit(0.3,"cm"),
+          legend.title = element_text(size=7),
+          legend.text =element_text(size=6)
+        )
+)
 
-P2 = ggplot(Stranded_Histology, aes(x=fct_reorder(broad_histology,NormEXTENDScores,.desc =TRUE),y=NormEXTENDScores))+geom_boxplot(size= 0.1,notch=FALSE,outlier.size = 0,outlier.shape=NA,fill="cyan3")+theme_classic()+theme(axis.text.x=element_text(angle=50,size=7,vjust=1,hjust=1),legend.position = "top",legend.key.size= unit(0.3,"cm"),legend.key.width = unit(0.3,"cm"),legend.title = element_text(size=7),legend.text =element_text(size=6))
 
+P1 = ggplot(Stranded_Histology, aes(x=fct_reorder(short_histology,NormEXTENDScores,.desc =TRUE),y=NormEXTENDScores))+geom_boxplot(size= 0.1,notch=FALSE,outlier.size = 0,outlier.shape=NA,fill="cyan3")
+P2 = ggplot(Stranded_Histology, aes(x=fct_reorder(broad_histology,NormEXTENDScores,.desc =TRUE),y=NormEXTENDScores))+geom_boxplot(size= 0.1,notch=FALSE,outlier.size = 0,outlier.shape=NA,fill="cyan3")
 
 grid.newpage()
 # Create layout : nrow = 2, ncol = 1
