@@ -95,5 +95,5 @@ gzip $consensus_file
 ############################# Comparison Plots #################################
 if [ "$run_plots_nb" -gt "0" ]
 then
- Rscript -e "rmarkdown::render('analyses/snv-callers/tcga-compare_snv_callers_plots.Rmd', clean = TRUE)"
+ Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots-tcga.Rmd', clean = TRUE)"
 fi
