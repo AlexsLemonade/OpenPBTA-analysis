@@ -41,7 +41,7 @@ option_list <- list(
     type = "character",
     default = NULL,
     help = "file path to tsv file that contains list of independent specimen ids"
-  ),  
+  ),
   optparse::make_option(
     c("--metadata"),
     type = "character",
@@ -141,9 +141,9 @@ biospecimens_to_remove <- unique(c(
 ))
 
 # Filter the CN data
-cn_df <- cn_df %>%
-  dplyr::filter(!(biospecimen_id %in% biospecimens_to_remove))
-
+filt_cn_df <- cn_df %>%
+  dplyr::filter(!(biospecimen_id %in% biospecimens_to_remove)) %>%
+  dplyr::select(biospecimen_id, status, copy_number, gene_symbol)
 
 #### Determine independent specimens -------------------------------------------
 
@@ -155,8 +155,23 @@ ind_biospecimen <-
 
 # Filter the CN data, to only include biospecimen identifiers in the
 # independent file
-cn_df <- cn_df %>%
-  dplyr::filter(biospecimen_id %in% ind_biospecimen)
+filt_cn_df <- filt_cn_df %>%
+  dplyr::filter(biospecimen_id %in% ind_biospecimen) %>%
+  dplyr::distinct() %>%
+  dplyr::group_by(biospecimen_id, gene_symbol) %>%
+  dplyr::summarize(status = paste(sort(unique(status)),
+                                  collapse = ", "),
+                   copy_number = paste(sort(unique(copy_number)),
+                                       collapse = ", "))
+
+ambiguous_cn_status_df <- filt_cn_df %>%
+  dplyr::filter(stringr::str_detect(status, ",") |
+                  stringr::str_detect(copy_number, ",")) # %>%
+# TODO: write this to file
+
+filt_cn_df <- filt_cn_df %>%
+  dplyr::filter(stringr::str_detect(status, ",", negate = TRUE) |
+                  stringr::str_detect(copy_number, ",", negate = TRUE))
 
 # For the RNA-seq samples, we need to map from the sample identifier
 # associated with the independent specimen and back to a biospecimen ID
