@@ -215,7 +215,7 @@ purrr::imap(sample_densities, function(.x, name = .y) {
   dplyr::bind_rows(.x, .id = "samples") %>%
   # Write each to a TSV file
   readr::write_tsv(file.path(output_dir, 
-                            paste0(name, "_binned_breakpoint_counts.tsv")))
+                            paste0(name, "_binned_counts.tsv")))
 })
 ```
 
