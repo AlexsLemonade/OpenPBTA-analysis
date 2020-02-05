@@ -130,9 +130,9 @@ tcga_plot <- sina_plot(tmb_tcga, colour = "#3BC8A2", title = "TCGA (Adult)") +
     axis.title.y = ggplot2::element_blank(),
     axis.text.y = ggplot2::element_blank(),
     axis.ticks.y = ggplot2::element_blank(),
-    axis.text.x = ggplot2::element_text(size = 7),
-    panel.grid.major.x = ggplot2::element_line(colour = c("gray93", "white"), size = 9)
-  )
+    axis.text.x = ggplot2::element_text(size = 10),
+    panel.grid.major.x = ggplot2::element_line(colour = c("gray93", "white"), size = 13), 
+    plot.margin = ggplot2::unit(c(.25, .25, 3, .25), "cm"))
 ```
 
 Plot the PBTA data. 
