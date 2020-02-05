@@ -10,7 +10,7 @@
 # Rscript --vanilla rna-expression-validation.R \
 #   --annotated_cnv_file analyses/focal-cn-file-preparation/results/cnvkit_annotated_cn_autosomes.tsv.gz \
 #   --expression_file data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
-#   --independent_specimens_file ../../data/independent-specimens.wgswxs.primary.tsv \
+#   --independent_specimens_file data/independent-specimens.wgswxs.primary.tsv \
 #   --metadata  data/pbta-histologies.tsv \
 #   --goi_list analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
 #   --filename_lead "cnvkit_annotated_cn_autosomes_polya"
@@ -197,7 +197,7 @@ expression_zscore_df <- calculate_z_score(expression_matrix, rnaseq_ind)
 # `merge_expression` custom function
 expression_cn_combined_df <-
   merge_expression(
-    cn_df,
+    filt_cn_df,
     expression_zscore_df,
     metadata,
     opt$filename_lead

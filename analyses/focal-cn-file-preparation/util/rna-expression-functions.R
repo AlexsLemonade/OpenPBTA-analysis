@@ -23,7 +23,7 @@ calculate_z_score <- function (expression_data, rnaseq_ind) {
   #                    `z_score`, `expression_class`
   
   # log2 transform expression matrix
-  log2_exp <- log2(expression_matrix + 1)
+  log2_exp <- log2(expression_data + 1)
   
   # z-score log2 transformed expression matrix
   zscore_expression <- scale(t(log2_exp), 
