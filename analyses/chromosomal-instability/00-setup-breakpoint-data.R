@@ -54,6 +54,48 @@ source(file.path(root_dir,
 # Load library:
 library(optparse)
 
+
+############################ Intersect function ################################
+intersect_cnv_sv <- function(sample_id, sv_breaks, cnv_breaks, gap = opt$gap) {
+  # For a given sample's data in CNV and SV chromosomal breaks data.frame, 
+  # intersect the two (based on the maxgap allowed to consider two breaks 
+  # identical) and return a data.frame with the intersection breaks. 
+  #
+  # Args:
+  #   sample_id: The sample_id to be looked up in the samples_col
+  #   sv/cnv_breaks: for a data.frame with chromosomal coordinates and sample IDs 
+  #                  for their respective breaks
+  #   sample_id: a character string that designates which sample's data needs to be
+  #              extracted and intersected between the two data.frames (CNV and SV)
+  #   gap : The max number of bases between a CNV and SV break for them to be 
+  #         considered the same. 
+  #
+  # Returns:
+  # A chromosomal breaks data.frame that contains the intersection of CNV and SV 
+  # chromosomal break data.
+  # 
+  # Make into GenomicRanges objects 
+  sv_ranges <- make_granges(sv_breaks, 
+                            sample_id = sample_id, 
+                            start_col = "coord",
+                            end_col = "coord")
+  cnv_ranges <- make_granges(cnv_breaks,
+                             sample_id = sample_id, 
+                             start_col = "coord",
+                             end_col = "coord")
+  # Find overlaps
+  intersection_df <- IRanges::mergeByOverlaps(
+    sv_ranges, 
+    cnv_ranges,
+    maxgap = opt$gap) %>% 
+    # Coerce to data.frame
+    as.data.frame() %>% 
+    # Remove these, they are redundant
+    dplyr::select(-dplyr::contains("mcols"))
+  
+  return(intersection_df)
+}
+
 ################################ Set up options ################################
 # Set up optparse options
 option_list <- list(
@@ -253,29 +295,11 @@ common_samples <- dplyr::intersect(
 
 ######################### Create intersection of breaks ########################
 # Make an intersection of breaks data.frame.
-intersection_of_breaks <- lapply(common_samples, function(sample_id) {
-  
-  # Make into GenomicRanges objects 
-  sv_ranges <- make_granges(sv_breaks, 
-                            sample_id = sample_id, 
-                            start_col = "coord",
-                            end_col = "coord")
-  cnv_ranges <- make_granges(cnv_breaks,
-                             sample_id = sample_id, 
-                             start_col = "coord",
-                             end_col = "coord")
-  # Find overlaps
-  intersection_df <- IRanges::mergeByOverlaps(
-    sv_ranges, 
-    cnv_ranges,
-    maxgap = opt$gap) %>% 
-    # Coerce to data.frame
-    as.data.frame() %>% 
-    # Remove these, they are redundant
-    dplyr::select(-dplyr::contains("mcols"))
-  
-  return(intersection_df)
-  }) 
+intersection_of_breaks <- lapply(common_samples,
+                                 intersect_cnv_sv, # Special intersect function
+                                 sv_breaks = sv_breaks,
+                                 cnv_breaks = cnv_breaks, 
+                                 gap = opt$gap) # The maxgap allowed
 
 # Bring along sample names
 names(intersection_of_breaks) <- common_samples
