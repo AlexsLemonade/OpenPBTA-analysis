@@ -1,26 +1,27 @@
 library('ggpubr')
 stringsAsFactors=FALSE
 library(grid)
+library(optparse)
 
 ###############################################  Comparing TERT and TERC expression with EXTEND Scores (Figure 2)  ################################################################################################
 
 
 
 
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git")) 
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
-A = file.path(root_dir, "data", "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds")   ### Variable representing Expression data for PolyA FPKM 
-				 
+A = file.path(root_dir, "data", "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds")   ### Variable representing Expression data for PolyA FPKM
+
 B = file.path(root_dir, "data", "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")  ### Variable representing Expression data for Stranded FPKM
-				 
+
 C = file.path(root_dir, "analyses", "telomerase-activity-prediction",
                  "results", "TelomeraseScores_PTBAPolya_FPKM.txt")      ### Variable representing Telomerase activity-prediction for PolyA_FPKM data
-				 
+
 D = file.path(root_dir, "analyses", "telomerase-activity-prediction",
                  "results", "TelomeraseScores_PTBAStranded_FPKM.txt")   ### Variable representing Telomerase activity-prediction for Stranded_FPKM data
 
 
-				 
+
 # set up the command line options
 option_list <- list(
   make_option(c("-o", "--output"), type = "character",
@@ -67,40 +68,40 @@ add.params = list(color = "black", fill = "grey",size=0.5), # Customize reg. lin
 conf.int = TRUE # Add confidence interval
 )+ stat_cor(method = "spearman",size=2)
 
-		   
+
 P2 = ggscatter(PTBA_GE_TM_PolyA, x = "NormEXTENDScores", y = "TERC",color = "red",size = 1.3,
 add = "reg.line",  # Add regressin line
 add.params = list(color = "black", fill = "grey",size=0.5), # Customize reg. line
 conf.int = TRUE # Add confidence interval
 )+ stat_cor(method = "spearman",size=2)
-		   
+
 P3 = ggscatter(PTBA_GE_TM_Stranded, x = "NormEXTENDScores", y = "TERT",color = "red",size = 1.3,
 add = "reg.line",  # Add regressin line
 add.params = list(color = "black", fill = "grey",size=0.5), # Customize reg. line
 conf.int = TRUE # Add confidence interval
 )+ stat_cor(method = "spearman",size=2)
-		   	   
+
 
 P4 = ggscatter(PTBA_GE_TM_Stranded, x = "NormEXTENDScores", y = "TERC",color = "red",size = 1.3,
 add = "reg.line",  # Add regressin line
 add.params = list(color = "black", fill = "grey",size=0.5), # Customize reg. line
 conf.int = TRUE # Add confidence interval
 )+ stat_cor(method = "spearman",size=2)
-		   
-		   
+
+
 grid.newpage()
 # Create layout : nrow = 2, ncol =2
 pushViewport(viewport(layout = grid.layout(nrow = 2, ncol = 2)))
 # A helper function to define a region on the layout
 define_region <- function(row, col){
   viewport(layout.pos.row = row, layout.pos.col = col)
-} 
+}
 
 
 print(ggpar(P1,font.xtickslab =6,font.ytickslab =6,font.x = 7,font.y=7,xlab="EXTEND Scores PolyA_FPKM",ylab="TERT Expression"),vp = define_region(row = 1, col = 1))
 print(ggpar(P2,font.xtickslab =6,font.ytickslab =6,font.x = 7,font.y=7,xlab="EXTEND Scores PolyA_FPKM",ylab="TERC Expression"),vp = define_region(row = 1, col = 2))
 print(ggpar(P3,font.xtickslab =6,font.ytickslab =6,font.x = 7,font.y=7,xlab="EXTEND Scores Stranded_FPKM",ylab="TERT Expression"),vp = define_region(row = 2, col = 1))
 print(ggpar(P4,font.xtickslab =6,font.ytickslab =6,font.x = 7,font.y=7,xlab="EXTEND Scores Stranded_FPKM",ylab="TERC Expression"),vp = define_region(row = 2, col = 2))
-		   
+
 dev.off()
 
