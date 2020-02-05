@@ -80,6 +80,19 @@ make_granges <- function(break_df = NULL,
   return(granges)
 }
 
+breaks_df <- breaks_list$cnv_breaks
+sample_id = breaks_list$intersection_of_breaks$samples[1]
+start_col = "coord"
+end_col = "coord"
+window_size = bin_size # Bin size to calculate breaks density
+chr_sizes_vector = chr_sizes_vector # This is the sizes of chromosomes used for binning
+unsurveyed_bed = uncallable_bed # This is the BED file that notes what regions are uncallable
+perc_cutoff = .75 # What percentage of each bin needs to be callable for it not to be NA
+return_vector = TRUE
+
+
+
+
 break_density <- function(breaks_df = NULL,
                           sample_id = NULL,
                           window_size = 1e6,
@@ -228,10 +241,14 @@ break_density <- function(breaks_df = NULL,
     
     # Calculate the percent overlap, adding up the na regions within a bin
     pct_overlap <- excluded_length_per_bin / bin_length
-
+    
+    # Store bins as names for sanity checking
+    # Note that unique and tapply put the bins in the same order
+    names(pct_overlap) <- unique(na_overlaps@from)
+    
     # Get the bin indices that correspond to less than the cutoff
-    bin_indices <- na_overlaps@from[which(pct_overlap > perc_cutoff)]
-
+    bin_indices <- names(pct_overlap)[which(pct_overlap > perc_cutoff)]
+    
     # Call these data points NA instead
     bins$total_counts[bin_indices] <- NA
     bins$density[bin_indices] <- NA
