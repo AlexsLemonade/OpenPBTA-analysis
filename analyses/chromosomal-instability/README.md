@@ -8,8 +8,7 @@ break point density calculations and circular plot visualization using CNV and S
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Usage](#usage)
-- [Methods](#methods)
-- [Output](#output)
+- [Methods and Output](#methods-and-output)
 - [Summary of Custom Functions](#summary-of-custom-functions)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -40,7 +39,7 @@ The output of this notebook is three `_binned_breakpoint_counts.tsv"` for each d
 
 - `02a-plot-chr-instability-heatmaps.Rmd` uses `_binned_breakpoint_counts.tsv"` datasets to create three heatmaps for the intersection, CNV, and SV data respectively. `NA` regions are gray.
 
-- `02b-plot-chr-instability-heatmaps.Rmd` uses `intersection_of_breaks_densities.tsv` and `histology_breakpoint_binned_counts.RDS` to plot breakpoint densities by `short_histology` group. 
+- `02b-plot-chr-instability-by-histology.Rmd` uses `intersection_of_breaks_densities.tsv` and `histology_breakpoint_binned_counts.RDS` to plot breakpoint densities by `short_histology` group. 
 
 ## Summary of Custom Functions
 
