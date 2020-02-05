@@ -28,3 +28,6 @@ Rscript --vanilla 02-Comparing-Counts-versus-FPKM.R --output plots/PTBA_GE_Score
 
 #Compare Telomerase scores with TERT and TERC gene expressions
 Rscript --vanilla 03-Comparing-TERTexp-TERCexp-EXTENDScores.R --output plots/PTBA_GE_TM_ScatterComp.pdf
+
+#Distribution of telomerase scores across various histologies of brain tumors.
+Rscript --vanilla 04-Comparing-Histology-versus-EXTENDScores.R --output plots/PBTA_StrandedHistology.pdf
