@@ -70,7 +70,7 @@ source(file.path("util", "circos-plots.R"))
 
 ```{r}
 # Path to data directory
-data_dir <- file.path("..", "..", "data", "testing", "release-v14-20200203")
+data_dir <- file.path("..", "..", "data")
 
 # Path to output directory
 plots_dir <- "plots"
@@ -88,11 +88,8 @@ metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
 Read in the CNV data. 
 
 ```{r}
-# TODO: update file path when consensus is added to data release
 cnv_df <- data.table::fread(
-  file.path("..", 
-            "copy_number_consensus_call", 
-            "results",
+  file.path(data_dir, 
             "pbta-cnv-consensus.seg.gz"),
   data.table = FALSE
 ) 
