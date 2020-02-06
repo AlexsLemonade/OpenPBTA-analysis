@@ -80,19 +80,6 @@ make_granges <- function(break_df = NULL,
   return(granges)
 }
 
-breaks_df <- breaks_list$cnv_breaks
-sample_id = breaks_list$intersection_of_breaks$samples[1]
-start_col = "coord"
-end_col = "coord"
-window_size = bin_size # Bin size to calculate breaks density
-chr_sizes_vector = chr_sizes_vector # This is the sizes of chromosomes used for binning
-unsurveyed_bed = uncallable_bed # This is the BED file that notes what regions are uncallable
-perc_cutoff = .75 # What percentage of each bin needs to be callable for it not to be NA
-return_vector = TRUE
-
-
-
-
 break_density <- function(breaks_df = NULL,
                           sample_id = NULL,
                           window_size = 1e6,
@@ -102,7 +89,7 @@ break_density <- function(breaks_df = NULL,
                           start_col = "start",
                           end_col = "end",
                           unsurveyed_bed = NULL,
-                          perc_cutoff = .75, 
+                          perc_cutoff = .75,
                           return_vector = FALSE) {
   # For given breaks data.frame(s), calculate the breaks density for a tiled
   # windows across the genome. Returns the data as a GenomicRanges object for
@@ -138,11 +125,11 @@ break_density <- function(breaks_df = NULL,
   #   perc_cutoff: Only relevant of `unsurveyed_bed` is being used. The percent
   #                overlap above which a bin's region should be considered NA.
   #   return_vector: Default is to return a GenomicRanges, but if this option is
-  #                  used, only a named vector is returned with the data for 
+  #                  used, only a named vector is returned with the data for
   #                  each bin
   # Returns:
-  # Breakpoint density and total counts per bin are stored either as a GenomicRanges 
-  # object(default) @elementMetadata@listData or a named vector. 
+  # Breakpoint density and total counts per bin are stored either as a GenomicRanges
+  # object(default) @elementMetadata@listData or a named vector.
   #
   # Check that a sample ID has been specified.
   if (is.null(sample_id)) {
@@ -223,49 +210,54 @@ break_density <- function(breaks_df = NULL,
       ranges = IRanges::IRanges(
         start = unsurveyed_bed$start,
         end = unsurveyed_bed$end
-      ))
+      )
+    )
 
     # Find the NA region(s) for each bin without combining close regions
     na_regions <- GenomicRanges::pintersect(IRanges::findOverlapPairs(bins, unsurveyed_ranges))
 
     # Find overlap between na_regions and bin
     na_overlaps <- GenomicRanges::findOverlaps(bins, na_regions)
-    
-    # Get the sum of the length of all excluded regions for each bin. 
-    excluded_length_per_bin <- tapply(na_regions@ranges@width, # Get length of each sequence
-                                      na_overlaps@from, # Index of which bin it overlaps
-                                      sum) # Add up per bin
-    
+
+    # Get the sum of the length of all excluded regions for each bin.
+    excluded_length_per_bin <- tapply(
+      na_regions@ranges@width, # Get length of each sequence
+      na_overlaps@from, # Index of which bin it overlaps
+      sum
+    ) # Add up per bin
+
     # Get the total bin length for each bin that has excluded regions
     bin_length <- bins[unique(na_overlaps@from)]@ranges@width
-    
+
     # Calculate the percent overlap, adding up the na regions within a bin
     pct_overlap <- excluded_length_per_bin / bin_length
-    
+
     # Store bins as names for sanity checking
     # Note that unique and tapply put the bins in the same order
     names(pct_overlap) <- unique(na_overlaps@from)
-    
+
     # Get the bin indices that correspond to less than the cutoff
     bin_indices <- names(pct_overlap)[which(pct_overlap > perc_cutoff)]
-    
+
+    # Make sure these are numeric again so we can reference them
+    bin_indices <- as.numeric(bin_indices)
+
     # Call these data points NA instead
     bins$total_counts[bin_indices] <- NA
     bins$density[bin_indices] <- NA
   }
-  
+
   # If return_vector option is used, extract only the data
-  if (return_vector){
+  if (return_vector) {
     # Just extract vector of data
     total_counts <- bins@elementMetadata@listData$total_counts
-    
+
     # Name with chromosome labels
     names(total_counts) <- S4Vectors::decode(bins@seqnames)
-    
+
     return(total_counts)
   } else {
     # Return the GRanges object for mapping purposes
     return(bins)
   }
 }
-

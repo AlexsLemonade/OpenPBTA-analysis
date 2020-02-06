@@ -61,7 +61,7 @@ source(file.path("util", "chr-break-plot.R"))
 data_dir <- file.path("..", "..", "data")
 scratch_dir <- file.path("..", "..", "scratch")
 
-# The output from this notebook is used for downstream notebooks so we will save 
+# The output from this notebook is used for downstream notebooks so we will save
 # it in a special directory
 output_dir <- "breakpoint-data"
 
@@ -71,6 +71,24 @@ if (!dir.exists(output_dir)) {
 }
 ```
 
+Here's all the input files we will need: 
+
+```{r}
+chr_file <- file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed")
+metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+breaks_file <- file.path(output_dir, "breaks_lists.RDS")
+uncallable_file <- file.path(
+  "..", "copy_number_consensus_call", "ref",
+  "cnv_excluded_regions.bed"
+)
+```
+
+The histology output file: 
+```{r}
+output_file <- file.path(output_dir, "histology_breakpoint_binned_counts.RDS")
+```
+
+
 #### Specialized functions. 
 
 Wrapper function to run break_density for all three datasets: CNV, SV, and 
@@ -78,27 +96,27 @@ intersection data.
 
 ```{r}
 all_break_density <- function(breaks_list, sample_ids, return_vector) {
-  # For given sample(s) ids, run breaks_density for all dataframes items in breaks_list. 
+  # For given sample(s) ids, run breaks_density for all dataframes items in breaks_list.
   #
   # Args:
   #   breaks_list: a data.frame with chromosomal breaks.
   #   sample_ids: a single or multiple samples that correspond to the sample_col
-  #               argument and will be used for calculating density. 
+  #               argument and will be used for calculating density.
   #   return_vector: If we don't need the full GenomicRanges object, only the total_counts, put TRUE
-  #   
-  # Returns: 
-  # GenomicRanges object that contains the densities mapped across the genome 
-  # for the given samples and for all data.frames in breaks_list. 
-  lapply(breaks_list, break_density,  # Either intersection, CNV, SV data depending on the iteration.
-      sample_id = sample_ids,
-      start_col = "coord",
-      end_col = "coord",
-      window_size = bin_size, # Bin size to calculate breaks density
-      chr_sizes_vector = chr_sizes_vector, # This is the sizes of chromosomes used for binning
-      unsurveyed_bed = uncallable_bed, # This is the BED file that notes what regions are uncallable
-      perc_cutoff = .75, # What percentage of each bin needs to be callable for it not to be NA
-      return_vector = return_vector # If we don't need the full GenomicRanges object
-    )
+  #
+  # Returns:
+  # GenomicRanges object that contains the densities mapped across the genome
+  # for the given samples and for all data.frames in breaks_list.
+  lapply(breaks_list, break_density, # Either intersection, CNV, SV data depending on the iteration.
+    sample_id = sample_ids,
+    start_col = "coord",
+    end_col = "coord",
+    window_size = bin_size, # Bin size to calculate breaks density
+    chr_sizes_vector = chr_sizes_vector, # This is the sizes of chromosomes used for binning
+    unsurveyed_bed = uncallable_bed, # This is the BED file that notes what regions are uncallable
+    perc_cutoff = .75, # What percentage of each bin needs to be callable for it not to be NA
+    return_vector = return_vector # If we don't need the full GenomicRanges object
+  )
 }
 ```
 
@@ -107,7 +125,7 @@ all_break_density <- function(breaks_list, sample_ids, return_vector) {
 Import data that was set up in breakpoint format in `00-setup-breakpoint-data.R`.
 
 ```{r}
-breaks_list <- readr::read_rds(file.path(output_dir, "breaks_lists.RDS"))
+breaks_list <- readr::read_rds(breaks_file)
 ```
 
 Get the list of biospecimen IDs that are in this set.
@@ -120,7 +138,7 @@ Set up metadata
 
 ```{r}
 # Read in the metadata
-metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) %>% 
+metadata <- readr::read_tsv(metadata_file) %>%
   # Only keep metadata for the samples we are working with here
   dplyr::filter(Kids_First_Biospecimen_ID %in% common_samples)
 ```
@@ -131,7 +149,7 @@ just a list of the chromosome sizes so we are using that for now.
 
 ```{r}
 # Set up Chr sizes
-chr_sizes_bed <- readr::read_tsv(file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed"),
+chr_sizes_bed <- readr::read_tsv(chr_file,
   col_names = c("chrom", "start", "end")
 ) %>%
   # Reformat the chromosome variable to drop the "chr"
@@ -150,13 +168,7 @@ Set up uncallable regions BED. We will use this to declare NAs in regions with
 too high of a percentage of uncallable regions. 
 
 ```{r}
-uncallable_bed <- readr::read_tsv(
-  file.path(
-    "..",
-    "copy_number_consensus_call",
-    "ref",
-    "cnv_excluded_regions.bed"
-  ),
+uncallable_bed <- readr::read_tsv(uncallable_file,
   col_names = c("chrom", "start", "end")
 ) %>%
   # Reformat the chromosome variable to drop the "chr"
@@ -190,10 +202,12 @@ Calculate sample breakpoint densities across the binned genome.
 ```{r}
 # Get a big list of break densities for each sample.
 sample_densities <- lapply(common_samples, function(sample_id) {
-  all_break_density(breaks_list = breaks_list, 
-                    sample_id = sample_id, 
-                    return_vector = TRUE) # We only want the total counts, 
-                                          # not the whole GenomicRanges object
+  all_break_density(
+    breaks_list = breaks_list,
+    sample_id = sample_id,
+    return_vector = TRUE
+  ) # We only want the total counts,
+  # not the whole GenomicRanges object
 })
 
 # Bring along the sample IDs
@@ -213,9 +227,11 @@ This will be used by `02-a-plot-chr-instability-heatmaps.Rmd` for heatmaps.
 # Write the break densities each as their own files
 purrr::imap(sample_densities, function(.x, name = .y) {
   dplyr::bind_rows(.x, .id = "samples") %>%
-  # Write each to a TSV file
-  readr::write_tsv(file.path(output_dir, 
-                            paste0(name, "_binned_counts.tsv")))
+    # Write each to a TSV file
+    readr::write_tsv(file.path(
+      output_dir,
+      paste0(name, "_binned_counts.tsv")
+    ))
 })
 ```
 
@@ -238,7 +254,7 @@ Run the density calculations for the groups.
 ```{r}
 # Get a big list of break densities for each sample.
 group_densities <- lapply(tumor_types, function(tumor_type) {
-  
+
   # Obtain a list of sample_ids to calculate break density for
   sample_ids <- metadata %>%
     dplyr::filter(metadata$short_histology == tumor_type) %>%
@@ -246,11 +262,13 @@ group_densities <- lapply(tumor_types, function(tumor_type) {
 
   # Print progress message
   message(paste("Calculating breakpoint density for", tumor_type, "samples"))
-  
+
   # Calculate break density for all 3 datasets
-  all_break_density(breaks_list = breaks_list,
-                    sample_id = sample_ids, # We are supplying all samples for this tumor-type
-                    return_vector = FALSE) # We want the whole GenomicRanges object
+  all_break_density(
+    breaks_list = breaks_list,
+    sample_id = sample_ids, # We are supplying all samples for this tumor-type
+    return_vector = FALSE
+  ) # We want the whole GenomicRanges object
 })
 
 # Bring along the tumor-type labels
@@ -263,7 +281,7 @@ Save list of `GenomicRanges` objects to an RDS file.
 # Save to an RDS file
 readr::write_rds(
   group_densities,
-  file.path(output_dir, "histology_breakpoint_binned_counts.RDS")
+  output_file
 )
 ```
 
