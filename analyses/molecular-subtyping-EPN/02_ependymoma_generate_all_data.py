@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 # Author Teja Koganti (D3B)
 
 
@@ -8,6 +7,8 @@ import pandas as pd
 import numpy as np 
 import zipfile
 import statistics
+import  scipy
+from scipy import stats
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--notebook', required = True,
@@ -26,7 +27,6 @@ parser.add_argument('--breakpoints', required = True,
                     help = "breakpoint summary file")
 parser.add_argument('-o', '--outfile', required = True,
                     help = "output file")
-
 args = parser.parse_args()
 
 # File to write all the data in 
@@ -37,7 +37,6 @@ zip=zipfile.ZipFile(args.gistic)
 CNA=pd.read_csv(zip.open(args.subfile_gistic), sep="\t")
 CNA = CNA.set_index("Chromosome Arm")
 
-count=0
 
 # Reading in gene set enrichment analyses file for GSEA scores for NKKB pathway
 gsva = pd.read_csv(args.gsva, sep="\t")
@@ -47,6 +46,7 @@ gsva_NFKB = gsva_NFKB.set_index("Kids_First_Biospecimen_ID")
 # Reading subset gene expression file
 fpkm_df = pd.read_csv(args.expression, sep = "\t")
 fpkm_df = fpkm_df.set_index("GENE")
+zscore_fpkm_df = fpkm_df.apply(scipy.stats.zscore)
 
 #Reading fusion summary file
 fusion = pd.read_csv(args.fusion, sep="\t")
@@ -56,140 +56,72 @@ fusion = fusion.set_index("Kids_First_Biospecimen_ID")
 breakpoint_density = pd.read_csv(args.breakpoints, sep="\t")
 breakpoint_density = breakpoint_density.set_index("samples")
 
-# creating empty lists to get mean and standard deviation of gene FPKM's from pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds file
-#BSID_list = []
-RELA_fpkm = []
-L1CAM_fpkm = []
-ARL4D_fpkm = []
-CLDN1_fpkm = []
-CXorf67_fpkm = []
-TKTL1_fpkm = []
-GPBP1_fpkm = []
-IFT46_fpkm = []
+#Reading the input in a  dataframe 
+EPN_notebook = pd.read_csv(args.notebook, sep="\t")
+
+# This function takes in a GISTIC  broad_values 
+# and a string (loss/gain) and returns 0/1 accordingly 
+def DNA_samples_fill_df(CNA_value, loss_gain):
+          if CNA_value<0 and loss_gain=="loss":
+            return(1)
+          elif loss_gain=="gain" and CNA_value>0:
+            return(1)
+          else:
+            return(0)
+
+# Function to generate Z-scores column for every gene 
+def fill_df_with_fpkm_zscores(df,fpkmdf, column_name, gene_name):
+        zscore_list = scipy.stats.zscore(np.array(df.apply(lambda x: fpkmdf.loc[gene_name, x["Kids_First_Biospecimen_ID_RNA"]], axis=1)))
+        df[column_name] = pd.Series(zscore_list)
+        return(df)
 
 
-# Opening the FPKM file separately to fill up the mean and stdev lists 
-with open(args.notebook, "r") as notebook:
-    for line in notebook:
-        line = line.split()
-        if not line[0].startswith("Kids"):
-            RELA_fpkm.append(fpkm_df.get_value("RELA", line[3]))
-            L1CAM_fpkm.append(fpkm_df.get_value("L1CAM", line[3]))
-            ARL4D_fpkm.append(fpkm_df.get_value("ARL4D", line[3]))
-            CLDN1_fpkm.append(fpkm_df.get_value("CLDN1", line[3]))
-            CXorf67_fpkm.append(fpkm_df.get_value("CXorf67", line[3]))
-            TKTL1_fpkm.append(fpkm_df.get_value("TKTL1", line[3]))
-            GPBP1_fpkm.append(fpkm_df.get_value("GPBP1", line[3]))
-            IFT46_fpkm.append(fpkm_df.get_value("IFT46", line[3]))                  
-                                
+# Filling up  dataframe with broad CNA values from GISTIC
+EPN_notebook["1q_loss"] = EPN_notebook.apply(lambda x: DNA_samples_fill_df(CNA.loc["1q", x["Kids_First_Biospecimen_ID_DNA"]], "loss") 
+	if x["Kids_First_Biospecimen_ID_DNA"] is not np.nan else 0,axis=1)
+EPN_notebook["9p_loss"] = EPN_notebook.apply(lambda x: DNA_samples_fill_df(CNA.loc["9p", x["Kids_First_Biospecimen_ID_DNA"]], "loss") 
+	if x["Kids_First_Biospecimen_ID_DNA"] is not np.nan else 0,axis=1)
+EPN_notebook["9q_loss"] = EPN_notebook.apply(lambda x: DNA_samples_fill_df(CNA.loc["9q", x["Kids_First_Biospecimen_ID_DNA"]], "loss") 
+	if x["Kids_First_Biospecimen_ID_DNA"] is not np.nan else 0,axis=1)
+EPN_notebook["6p_loss"] = EPN_notebook.apply(lambda x: DNA_samples_fill_df(CNA.loc["6p", x["Kids_First_Biospecimen_ID_DNA"]], "loss") 
+	if x["Kids_First_Biospecimen_ID_DNA"] is not np.nan else 0,axis=1)
+EPN_notebook["6q_loss"] = EPN_notebook.apply(lambda x: DNA_samples_fill_df(CNA.loc["6q", x["Kids_First_Biospecimen_ID_DNA"]], "loss") 
+	if x["Kids_First_Biospecimen_ID_DNA"] is not np.nan else 0,axis=1)
+EPN_notebook["11q_loss"] = EPN_notebook.apply(lambda x: DNA_samples_fill_df(CNA.loc["11q", x["Kids_First_Biospecimen_ID_DNA"]], "loss") 
+	if x["Kids_First_Biospecimen_ID_DNA"] is not np.nan else 0,axis=1)
+EPN_notebook["11q_gain"] = EPN_notebook.apply(lambda x: DNA_samples_fill_df(CNA.loc["11q", x["Kids_First_Biospecimen_ID_DNA"]], "gain") 
+	if x["Kids_First_Biospecimen_ID_DNA"] is not np.nan else 0,axis=1)
 
-# Generating mean and stdev scores from the FPKM list
-RELA_mean = np.mean(RELA_fpkm)
-RELA_stdev = np.std(RELA_fpkm)
-L1CAM_mean = np.mean(L1CAM_fpkm)
-L1CAM_stdev = np.std(L1CAM_fpkm)
-ARL4D_mean = np.mean(ARL4D_fpkm)
-ARL4D_stdev = np.std(ARL4D_fpkm)
-CLDN1_mean = np.mean(CLDN1_fpkm)
-CLDN1_stdev = np.std(CLDN1_fpkm)
-CXorf67_mean = np.mean(CXorf67_fpkm)
-CXorf67_stdev = np.std(CXorf67_fpkm)
-TKTL1_mean = np.mean(TKTL1_fpkm)
-TKTL1_stdev = np.std(TKTL1_fpkm)
-GPBP1_mean = np.mean(GPBP1_fpkm)
-GPBP1_stdev = np.std(GPBP1_fpkm)
-IFT46_mean = np.mean(IFT46_fpkm)
-IFT46_stdev = np.std(IFT46_fpkm)
+# Adding GSEA score to the  dataframe 
+EPN_notebook["NFKB_pathway_GSEAscore"] = EPN_notebook.apply(lambda x: gsva_NFKB.loc[x["Kids_First_Biospecimen_ID_RNA"], "gsea_score"], axis =1)
 
+# Adding fusion lines to dataframe 
+EPN_notebook["C11orf95-RELA_fusion"] = EPN_notebook.apply(lambda x: fusion.loc[x["Kids_First_Biospecimen_ID_RNA"], "C11orf95--RELA"], axis=1)
+EPN_notebook["LTBP3--RELA_fusion"] = EPN_notebook.apply(lambda x: fusion.loc[x["Kids_First_Biospecimen_ID_RNA"], "LTBP3--RELA"], axis=1)
+EPN_notebook["PTEN--TAS2R1_fusion"] =  EPN_notebook.apply(lambda x: fusion.loc[x["Kids_First_Biospecimen_ID_RNA"], "PTEN--TAS2R1"], axis=1)
+EPN_notebook["C11orf95--YAP1_fusion"] = EPN_notebook.apply(lambda x: fusion.loc[x["Kids_First_Biospecimen_ID_RNA"], "C11orf95--YAP1"], axis=1)
+EPN_notebook["YAP1--MAMLD1_fusion"] = EPN_notebook.apply(lambda x: fusion.loc[x["Kids_First_Biospecimen_ID_RNA"],"YAP1--MAMLD1"], axis=1)
+EPN_notebook["YAP1--FAM118B_fusion"] = EPN_notebook.apply(lambda x: fusion.loc[x["Kids_First_Biospecimen_ID_RNA"],"YAP1--FAM118B"], axis=1)
+EPN_notebook["C11orf95--MAML2_fusion"] = EPN_notebook.apply(lambda x: fusion.loc[x["Kids_First_Biospecimen_ID_RNA"],"C11orf95--MAML2"], axis=1)
 
-# Looping through EPN sample file with both RNA and DNA BSID's   
-with open(args.notebook, "r") as notebook:
-    for line in notebook:
-        line = line.split()
-        # Adding fusion, CNA, breakpoints density and expression data to header line
-        if line[0].startswith("Kids"):
-            line.extend(("1q_loss", "9p_loss", "9q_loss", "6p_loss", "6q_loss", "11q_loss", "11q_gain", "NFKB_pathway_GSEAscore", "C11orf95-RELA_fusion", "LTBP3--RELA_fusion", "PTEN--TAS2R1_fusion", "C11orf95--YAP1_fusion", "YAP1--MAMLD1_fusion", "YAP1--FAM118B_fusion", "C11orf95--MAML2_fusion","breaks_density-chromosomal_instability", "RELA_expr_Z-scores", "L1CAM_expr_Zscore","ARL4D_expr_Zscore",  "CLDN1_expr_zscore", "CXorf67_expr_zscore", "TKTL1_expr_zscore", "GPBP1_expr_zscore", "IFT46_expr_zscore"))
-            #print(line)
-            # Printing header line
-            for i in line:
-                outfile.write(i+"\t")
-            outfile.write("\n")    
-        else:
-            # Looking for NFKB pathway and fusions based on RNA BSID's 
-            nfkb_gsva_score = (gsva_NFKB.get_value(line[3], "gsea_score"))
-            C11orf95_RELA = fusion.get_value(line[3], "C11orf95--RELA")
-            LTBP3_RELA = fusion.get_value(line[3], "LTBP3--RELA")
-            PTEN_TAS2R1 = fusion.get_value(line[3], "PTEN--TAS2R1")
-            C11orf95_YAP1 = fusion.get_value(line[3], "C11orf95--YAP1")
-            YAP1_MAMLD1 = fusion.get_value(line[3], "YAP1--MAMLD1")
-            YAP1_FAM118B = fusion.get_value(line[3], "YAP1--FAM118B")
-            C11orf95_MAML2 = fusion.get_value(line[3], "C11orf95--MAML2")
-            # Looking for expression data and creating Z-scores  
-            RELA_zscore = (fpkm_df.get_value("RELA", line[3])-RELA_mean)/RELA_stdev
-            L1CAM_zscore = (fpkm_df.get_value("L1CAM", line[3])-L1CAM_mean)/L1CAM_stdev
-            ARL4D_zscore = (fpkm_df.get_value("ARL4D", line[3])-ARL4D_mean)/ARL4D_stdev
-            CLDN1_zscore = (fpkm_df.get_value("CLDN1", line[3])-CLDN1_mean)/CLDN1_stdev
-            CXorf67_zscore = (fpkm_df.get_value("CXorf67", line[3])-CXorf67_mean)/CXorf67_stdev
-            TKTL1_zscore = (fpkm_df.get_value("TKTL1", line[3])-TKTL1_mean)/TKTL1_stdev
-            GPBP1_zscore = (fpkm_df.get_value("GPBP1", line[3])-GPBP1_mean)/GPBP1_stdev
-            IFT46_zscore = (fpkm_df.get_value("IFT46", line[3])-IFT46_mean)/IFT46_stdev
-            # Looking for chromosomal CNA based on DNA BSID's. Some of the corresponding DNA ID's show "NA", so splitting with if statement
-            if line[2]!="NA":
-                oneqvalue = (CNA.get_value("1q",line[2]))
-                nineploss = (CNA.get_value("9p",line[2]))
-                nineqloss = (CNA.get_value("9q",line[2]))
-                sixploss = (CNA.get_value("6p",line[2]))
-                sixqloss = (CNA.get_value("6q",line[2]))
-                elevenq = (CNA.get_value("11q",line[2]))
-                breaks_density =  breakpoint_density.get_value(line[2], "breaks_density")
-                if int(oneqvalue) < 0:
-                    line.append("1")
-                else:
-                    line.append("0")
-                if int(nineploss) < 0:
-                    line.append("1")
-                else:
-                    line.append("0")    
-                if int(nineqloss) < 0:
-                    line.append("1")
-                else:
-                    line.append("0")    
-                if int(sixploss) < 0 :
-                    line.append("1")
-                else:
-                    line.append("0")    
-                if int(sixqloss) < 0:
-                    line.append("1")
-                else:
-                    line.append("0")
-                if int(elevenq) < 0:
-                    line.append("1")
-                else:
-                    line.append("0")
-                if int(elevenq) > 0:
-                    line.append("1")
-                else:
-                    line.append("0")
-                # Adding all the data collected so far for every sample with RNA and DNA BSID to "line"     
-                line.extend((nfkb_gsva_score, C11orf95_RELA, LTBP3_RELA, PTEN_TAS2R1, C11orf95_YAP1, YAP1_MAMLD1, YAP1_FAM118B, C11orf95_MAML2, breaks_density, RELA_zscore, L1CAM_zscore,ARL4D_zscore, CLDN1_zscore, CXorf67_zscore, TKTL1_zscore, GPBP1_zscore, IFT46_zscore))
-                count+=1
-                # Writing line to output file 
-                for i in line:
-                    outfile.write(str(i)+"\t")
-                outfile.write("\n")    
-            elif line[2]=="NA":
-                # Adding all the data collected so far for RNA BSID, All corresponding DNA ID's here are "NA"
-                line.extend(("0", "0", "0", "0", "0", "0", "0", nfkb_gsva_score, C11orf95_RELA, LTBP3_RELA, PTEN_TAS2R1, C11orf95_YAP1, YAP1_MAMLD1, YAP1_FAM118B, C11orf95_MAML2, "NA", RELA_zscore, L1CAM_zscore,ARL4D_zscore, CLDN1_zscore, CXorf67_zscore, TKTL1_zscore, GPBP1_zscore, IFT46_zscore))
-                count+=1
-                #print(line)
-                # Writing to output file 
-                for i in line:
-                    outfile.write(str(i)+"\t")
-                outfile.write("\n")
+# Adding breakpoints density for chromosomal instability  to the dataframe 
+EPN_notebook["breaks_density-chromosomal_instability"] = EPN_notebook.apply(lambda x: breakpoint_density.loc[x["Kids_First_Biospecimen_ID_DNA"], "breaks_density"] 
+	if x["Kids_First_Biospecimen_ID_DNA"] is not np.nan  else "NA", axis=1)
 
-outfile.close()            
-print("Done!!")
+# Adding Z-scores to dataframe 
+EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "RELA_expr_Z-scores", "RELA")
+EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "L1CAM_expr_Zscore", "L1CAM")
+EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "ARL4D_expr_Zscore", "ARL4D")
+EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "CLDN1_expr_zscore", "CLDN1")
+EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "CXorf67_expr_zscore", "CXorf67")
+EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "TKTL1_expr_zscore", "TKTL1")
+EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "GPBP1_expr_zscore", "GPBP1")
+EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df,  "IFT46_expr_zscore", "IFT46")
 
-
+# Replacing all Nan values with NA so they are not empty when writing to a file
+EPN_notebook =EPN_notebook.replace(np.nan, 'NA', regex=True)
+# Writing dataframe to output file 
+EPN_notebook.to_csv(outfile, sep="\t", header=True, index=False)
+outfile.close()
 
 
