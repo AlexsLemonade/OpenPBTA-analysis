@@ -115,7 +115,4 @@ multipanel_break_plot <- function(granges_list,
     base_height = 7,
     base_width = 20
   )
-
-  # Print out the plot while we are here
-  full_plot
 }
