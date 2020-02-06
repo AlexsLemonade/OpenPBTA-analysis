@@ -1,0 +1,169 @@
+---
+title: "Chromosomal Instability: Breakpoints"
+output:   
+  html_notebook: 
+    toc: true
+    toc_float: true
+author: Candace Savonen for ALSF - CCDL
+date: 2020
+---
+
+This analysis evaluates chromosomal instability by using breakpoint SV and CNV 
+data that was co-localized by histology in `01-localization-of-breakpoints.Rmd`. 
+This notebook returns plots for each tumor type group in the `plots` directory.
+
+### Usage
+
+This notebook can be run via the command line from the top directory of the 
+repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/chromosomal-instability/02b-plot-chr-instability-by-histology.Rmd', 
+                              clean = TRUE)"
+```
+
+### Set Up
+
+```{r}
+# Set seed so heatmaps turn out the same
+set.seed(2020)
+
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+### Directories and Files
+
+```{r}
+# Path to data directory
+data_dir <- file.path("..", "..", "data")
+scratch_dir <- file.path("..", "..", "scratch")
+
+# Path to output directory
+plots_dir <- "plots"
+
+# Path to tumor type plots output directory
+hist_plots_dir <- file.path(plots_dir, "tumor-type")
+
+# Create the hist_plots_dir  if it does not exist
+if (!dir.exists(hist_plots_dir)) {
+  dir.create(hist_plots_dir, recursive = TRUE)
+}
+```
+
+### Read in data 
+
+Set up metadata
+
+```{r}
+# Read in the metadata
+metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
+```
+
+Load in the localized by histology breakpoint data. 
+
+```{r}
+hist_break_local <- readr::read_rds(file.path(scratch_dir, 
+                                              "histology_breakpoint_densities.RDS"))
+```
+
+Read in the total intersection breaks densities TSV that was made by the 
+`00-setup-breakpoint-data.R` script. 
+
+```{r}
+total_break_densities_df <- readr::read_tsv(
+  file.path("breakpoint-data", "intersection_of_breaks_densities.tsv")
+) %>%
+  # Add on the short histology column from the metadata for plotting purposes
+  dplyr::inner_join(metadata %>% dplyr::select(Kids_First_Biospecimen_ID, short_histology),
+    by = c("samples" = "Kids_First_Biospecimen_ID")
+  )
+```
+
+## Plot the break densities by their histology
+
+```{r}
+breaks_cdf <- total_break_densities_df  %>%
+  # Only plot histologies groups with more than 5 samples
+  dplyr::group_by(short_histology, add = TRUE) %>%
+  dplyr::filter(dplyr::n() > 5) %>%
+  # Calculate histology group mean
+  dplyr::mutate(
+    hist_mean = mean(breaks_density),
+    hist_rank = rank(breaks_density) / dplyr::n()
+  ) %>%
+  dplyr::ungroup() %>%
+  # Now we will plot these as cummulative distribution plots
+  ggplot2::ggplot(ggplot2::aes(
+    x = hist_rank, y = breaks_density,
+    color = short_histology
+  )) +
+  ggplot2::geom_point() +
+  # Add summary line for mean
+  ggplot2::geom_hline(ggplot2::aes(yintercept = hist_mean)) +
+  # Separate by histology
+  ggplot2::facet_wrap(~short_histology, nrow = 1, strip.postion = "bottom") +
+  ggplot2::theme_classic() +
+  ggplot2::xlab("") +
+  ggplot2::ylab("Chromosomal Breaks per Mb") +
+  # Transform to log10 make non-log y-axis labels
+  ggplot2::scale_y_continuous(trans = "log10", breaks = c(0, 1, 10, 30)) +
+  ggplot2::theme(legend.position = "none") +
+  # Get rid of x-axis ticks
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_blank(),
+    axis.ticks.x = ggplot2::element_blank(),
+    strip.text = ggplot2::element_text(size = 10),
+    strip.background = ggplot2::element_rect(color=NULL, fill=NULL), 
+    strip.position = "outside",
+    panel.spacing = 0,
+    panel.border = ggplot2::element_rect(color=NULL, fill=NULL)
+  )
+
+# Save the plot to a png
+ggplot2::ggsave(file.path(plots_dir, "breaks_cdf_plot.png"),
+  plot = breaks_cdf, width = 17, height = 20, unit = "cm"
+)
+```
+
+Print from png so rendering is smoother.
+![Breaks Density CDF Plot](./plots/breaks_cdf_plot.png)
+
+### Plot the breakpoints for each tumor-type
+
+Here we will plot median number of break points for the tumor-type group per 
+each bin.
+
+```{r}
+purrr::imap(hist_break_local, function(.x, name = .y) {
+  # Make the combo plot
+  multipanel_break_plot(
+    granges_list = .x,
+    plot_name = name,
+    y_val = "total_counts",
+    y_lab = "Total Breaks per Mb",
+    plot_dir = hist_plots_dir
+  )
+})
+```
+
+Zip up the PNG files into one file. 
+
+```{r}
+# Declare name of zip file
+zip_file <- paste0(hist_plots_dir, ".zip")
+
+# Remove any current zip_file of this name so we can overwrite it
+if (file.exists(zip_file)) {
+  file.remove(zip_file)
+}
+# Zip up the plots
+zip(zip_file, hist_plots_dir)
+```
+
+### Session Info
+
+```{r}
+sessionInfo()
+```
+
