@@ -70,7 +70,7 @@ source(file.path("util", "circos-plots.R"))
 
 ```{r}
 # Path to data directory
-data_dir <- file.path("..", "..", "data")
+data_dir <- file.path("..", "..", "data", "testing", "release-v14-20200203")
 
 # Path to output directory
 plots_dir <- "plots"
@@ -307,7 +307,7 @@ circos_map_plot(
 ```{r}
 circos_map_transloc(transloc_df,
   add_track = FALSE, # We change this to true to add on to our already existing plot
-  sample_names = samples_for_examples[1],
+  sample_names = sample(transloc_df$biospecimen_id1, 1),
   samples_col = "biospecimen_id1",
   chr_col_1 = "chrom1", # Need to specify which column is the first and second location for each
   chr_col_2 = "chrom2",
@@ -326,7 +326,7 @@ png(file.path(plots_dir, "transloc_circos_plot.png"), width = 800, height = 800)
 # Run function per usual
 circos_map_transloc(transloc_df,
   add_track = FALSE,
-  sample_names = samples_for_examples[1],
+  sample_names = sample(transloc_df$biospecimen_id1, 1),
   samples_col = "biospecimen_id1",
   chr_col_1 = "chrom1",
   chr_col_2 = "chrom2",
