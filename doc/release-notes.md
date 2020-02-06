@@ -40,7 +40,7 @@
             - Embryonal: if `molecular_subtype` contains `ETMR`, these became `ETMR` while the rest became `Embryonal Tumor`
         - `broad_histology`
             - HGG: all became `Diffuse astrocytic and oligodendroglial tumor`
-            - Embryonal: all became `CNS Embryonal Tumor`
+            - Embryonal: all became `Embryonal Tumor`
 
 - folder structure:
 ```
