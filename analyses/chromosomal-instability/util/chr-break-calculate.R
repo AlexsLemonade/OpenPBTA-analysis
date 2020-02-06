@@ -80,19 +80,6 @@ make_granges <- function(break_df = NULL,
   return(granges)
 }
 
-breaks_df <- breaks_list$cnv_breaks
-sample_id = breaks_list$intersection_of_breaks$samples[1]
-start_col = "coord"
-end_col = "coord"
-window_size = bin_size # Bin size to calculate breaks density
-chr_sizes_vector = chr_sizes_vector # This is the sizes of chromosomes used for binning
-unsurveyed_bed = uncallable_bed # This is the BED file that notes what regions are uncallable
-perc_cutoff = .75 # What percentage of each bin needs to be callable for it not to be NA
-return_vector = TRUE
-
-
-
-
 break_density <- function(breaks_df = NULL,
                           sample_id = NULL,
                           window_size = 1e6,
