@@ -141,7 +141,7 @@ biospecimens_to_remove <- unique(c(
 ))
 
 # Filter the CN data
-filt_cn_df <- cn_df %>%
+cn_df <- cn_df %>%
   dplyr::filter(!(biospecimen_id %in% biospecimens_to_remove)) %>%
   dplyr::select(biospecimen_id, status, copy_number, gene_symbol)
 
@@ -155,21 +155,26 @@ ind_biospecimen <-
 
 # Filter the CN data, to only include biospecimen identifiers in the
 # independent file
-filt_cn_df <- filt_cn_df %>%
+cn_df <- cn_df %>%
   dplyr::filter(biospecimen_id %in% ind_biospecimen) %>%
   dplyr::distinct() %>%
   dplyr::group_by(biospecimen_id, gene_symbol) %>%
+  # Collapse status and copy number -- anything with conflicting (e.g., more 
+  # than one) values will contain a comma in status and/or copy number
   dplyr::summarize(status = paste(sort(unique(status)),
                                   collapse = ", "),
                    copy_number = paste(sort(unique(copy_number)),
                                        collapse = ", "))
 
-ambiguous_cn_status_df <- filt_cn_df %>%
-  dplyr::filter(stringr::str_detect(status, ",") |
-                  stringr::str_detect(copy_number, ",")) # %>%
-# TODO: write this to file
+# TODO: write cases where there is conflicting evidence re: status and copy
+# number to a separate file -- this would be the same regardless of the 
+# expression data being used 
+# ambiguous_cn_status_df <- cn_df %>%
+#   dplyr::filter(stringr::str_detect(status, ",") |
+#                   stringr::str_detect(copy_number, ","))
 
-filt_cn_df <- filt_cn_df %>%
+# This is removing any instances where the status or copy number do not agree
+cn_df <-cn_df %>%
   dplyr::filter(stringr::str_detect(status, ",", negate = TRUE) |
                   stringr::str_detect(copy_number, ",", negate = TRUE))
 
@@ -197,7 +202,7 @@ expression_zscore_df <- calculate_z_score(expression_matrix, rnaseq_ind)
 # `merge_expression` custom function
 expression_cn_combined_df <-
   merge_expression(
-    filt_cn_df,
+    cn_df,
     expression_zscore_df,
     metadata,
     opt$filename_lead
