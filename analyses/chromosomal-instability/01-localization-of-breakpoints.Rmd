@@ -88,7 +88,6 @@ The histology output file:
 output_file <- file.path(output_dir, "histology_breakpoint_binned_counts.RDS")
 ```
 
-
 #### Specialized functions. 
 
 Wrapper function to run break_density for all three datasets: CNV, SV, and 
@@ -218,6 +217,8 @@ Switch list to be by breaks first, samples second.
 
 ```{r}
 sample_densities <- purrr::transpose(sample_densities)
+# Extract the chromosome names for each bin
+chr_bin_names <- names(sample_densities[[1]][[1]])
 ```
 
 Turn each dataset into its own data.frame and write it to its own TSV file. 
@@ -226,7 +227,9 @@ This will be used by `02-a-plot-chr-instability-heatmaps.Rmd` for heatmaps.
 ```{r}
 # Write the break densities each as their own files
 purrr::imap(sample_densities, function(.x, name = .y) {
-  dplyr::bind_rows(.x, .id = "samples") %>%
+  dplyr::bind_rows(.x) %>% 
+    # Add on the chromosome names so they don't get lost
+    dplyr::mutate(chr_bin_names) %>%
     # Write each to a TSV file
     readr::write_tsv(file.path(
       output_dir,

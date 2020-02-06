@@ -49,22 +49,35 @@ if (!dir.exists(plots_dir)) {
 }
 ```
 
+Here's all the input files we will need: 
+
+```{r}
+metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+binned_counts_files <- list.files("breakpoint-data",
+                                  pattern = "_binned_counts.tsv", 
+                                  full.names = TRUE)
+```
+
+Output files:
+
+```{r}
+intersection_heatmap_file <- file.path(plots_dir, paste0("intersection_breaks_heatmap.png"))
+cnv_heatmap_file <- file.path(plots_dir, paste0("cnv_breaks_heatmap.png"))
+sv_heatmap_file <- file.path(plots_dir, paste0("sv_breaks_heatmap.png"))
+```
+
 ### Read in data 
 
 Set up metadata
 
 ```{r}
 # Read in the metadata
-metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
+metadata <- readr::read_tsv(metadata_file)
 ```
 
 Load in the previously localized breakpoint data. 
 
 ```{r}
-binned_counts_files <- list.files("breakpoint-data", 
-                            pattern = "_binned_counts.tsv", 
-                            full.names = TRUE)
-
 # Read in each dataset
 binned_counts <- lapply(binned_counts_files, readr::read_tsv)
 
@@ -78,14 +91,27 @@ Extract chromosome labels and make an alternating color key for them.
 
 ```{r}
 # Extract chromosome labels
-chr_labels <- paste0("chr", binned_counts[[1]]$chr)
+chrs <- paste0("chr", binned_counts[[1]]$chr_bin_names)
 
 # Make chromosome labeling `HeatmapAnnotation` object.
-chr_labels <- as.factor(chr_labels)
+chrs <- as.factor(chrs)
 
 # Make a key for assigning alternating colors to the chromosomes
-chr_colors <- rep(c("grey", "lightblue"), length.out = length(unique(chr_labels)))
-names(chr_colors) <- unique(chr_labels)
+chr_colors <- rep(c("grey", "lightblue"), length.out = length(unique(chrs)))
+names(chr_colors) <- unique(chrs)
+
+# Make the same order as the data.frame
+chr_colors  <-  as.character(dplyr::recode(chrs, !!!chr_colors))
+names(chr_colors) <- chrs
+```
+
+Get sample names. 
+
+```{r}
+common_samples <- grep("chr_bin_names", 
+                       colnames(binned_counts[[1]]), 
+                       invert = TRUE, 
+                       value = TRUE) 
 ```
 
 ### Set up for making heatmaps of the breakpoints
@@ -102,6 +128,7 @@ histologies <-
   dplyr::inner_join(dplyr::select(metadata, Kids_First_Biospecimen_ID, short_histology)) %>%
   dplyr::mutate(short_histology = as.factor(short_histology)) %>%
   dplyr::filter(!is.na(short_histology)) %>% 
+  dplyr::arrange(short_histology) %>% 
   tibble::column_to_rownames("Kids_First_Biospecimen_ID") 
 
 # Get values that can be used to make colors equi distant hues away for the 
@@ -110,16 +137,16 @@ col_val <- seq(from = 0, to = 1,
                length.out = length(unique(histologies$short_histology)))
 
 # Translate into colors
-col_key <- hsv(h = col_val, s = col_val, v = 1)
+histologies_colors <- hsv(h = col_val, s = col_val, v = 1)
 
 # Make this named based on histology
-names(col_key) <- unique(histologies$short_histology)
+names(histologies_colors) <- unique(histologies$short_histology)
 
 # Make the same order as the data.frame
-col_key <-  as.character(dplyr::recode(histologies$short_histology, !!!col_key))
+histologies_colors <-  as.character(dplyr::recode(histologies$short_histology, !!!histologies_colors))
 
 # Make the names 
-names(col_key) <- as.character(rownames(histologies))
+names(histologies_colors) <- as.character(rownames(histologies))
 ```
 
 Make a color function. 
@@ -134,19 +161,35 @@ col_fun <- circlize::colorRamp2(
 Make a function for making the heatmaps. 
 
 ```{r}
-breaks_heatmap <- function(data_name, chr_labels) {
+breaks_heatmap <- function(binned_counts_df, 
+                           chrs, 
+                           histologies,
+                           chr_colors, 
+                           histologies_colors, 
+                           col_fun
+                           ) {
   # A wrapper function for making a heatmap from the samples GenomicRanges list.
   #
   # Args:
-  # data_name: a character string that matches a name in the list.
-
+  # binned_counts_df: a data.frame with the binned counts for each sample.
+  # chrs: The chromosomes for each bin key.
+  # histologies: The histologies to biospecimen's key.
+  # chr_colors: A named vector to be used for coloring chromosomes.
+  # histologies_colors: A named vector to be used for coloring histologies.
+  # col_fun: a color key for the heatmap itself. Provided as a function. 
+  # 
   # Returns:
   # A heatmap of the chromosomal breaks
 
+  # Drop chr bin names
+  binned_counts_mat <- binned_counts_df %>% 
+    dplyr::select(-chr_bin_names) %>% 
+    t() 
+  
   # Create the Heatmap annotation object
   chr_annot <- ComplexHeatmap::HeatmapAnnotation(
-    df = data.frame(chr_labels), 
-    col = list(chr_labels = c(chr_colors)),
+    df = data.frame(chrs), 
+    col = list(chrs = chr_colors),
     name = "",
     show_legend = FALSE,
     show_annotation_name = FALSE
@@ -154,12 +197,12 @@ breaks_heatmap <- function(data_name, chr_labels) {
   # Create the Heatmap annotation object
   hist_annot <- ComplexHeatmap::HeatmapAnnotation(
     df = data.frame(histologies),
-    col = list(histologies = col_key), 
+    col = list(histologies = histologies_colors), 
     which = "row",
     show_annotation_name = FALSE
   )
   # Plot on a heatmap
-  heatmap <- ComplexHeatmap::Heatmap(total_counts_df,
+  heatmap <- ComplexHeatmap::Heatmap(binned_counts_mat,
     col = col_fun,
     heatmap_legend_param = list(title = "Count of chr breaks"),
     cluster_columns = FALSE,
@@ -178,10 +221,16 @@ breaks_heatmap <- function(data_name, chr_labels) {
 ## Intersection of breaks heatmap
 
 ```{r}
-intersection_of_heatmap <- breaks_heatmap(data_name = "intersection_of_breaks")
+intersection_of_heatmap <- breaks_heatmap(
+  binned_counts_df = binned_counts$intersection_of_breaks, 
+  chrs, 
+  histologies,
+  chr_colors, 
+  histologies_colors, 
+  col_fun)
 
 # Save plot as PNG
-png(file.path(plots_dir, paste0("intersection_of_breaks_heatmap.png")),
+png(intersection_heatmap_file,
   width = 1200, height = 900, units = "px"
 )
 intersection_of_heatmap
@@ -194,10 +243,16 @@ intersection_of_heatmap
 ## CNV breaks heatmap
 
 ```{r}
-cnv_heatmap <- breaks_heatmap(data_name = "cnv_breaks")
+cnv_heatmap <- breaks_heatmap(
+  binned_counts_df = binned_counts$cnv_breaks, 
+  chrs, 
+  histologies,
+  chr_colors, 
+  histologies_colors, 
+  col_fun)
 
 # Save plot as PNG
-png(file.path(plots_dir, paste0("cnv_breaks_heatmap.png")),
+png(cnv_heatmap_file,
   width = 1200, height = 900, units = "px"
 )
 cnv_heatmap
@@ -210,10 +265,16 @@ cnv_heatmap
 ## SV breaks heatmap
 
 ```{r}
-sv_heatmap <- breaks_heatmap(data_name = "sv_breaks")
+sv_heatmap <- breaks_heatmap(
+  binned_counts_df = binned_counts$sv_breaks, 
+  chrs, 
+  histologies,
+  chr_colors, 
+  histologies_colors, 
+  col_fun)
 
 # Save plot as PNG
-png(file.path(plots_dir, paste0("sv_breaks_heatmap.png")),
+png(sv_heatmap_file,
   width = 1200, height = 900, units = "px"
 )
 sv_heatmap
