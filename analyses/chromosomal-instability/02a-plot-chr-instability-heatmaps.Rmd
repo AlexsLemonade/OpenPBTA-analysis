@@ -62,9 +62,9 @@ binned_counts_files <- list.files("breakpoint-data",
 Output files:
 
 ```{r}
-intersection_heatmap_file <- file.path(plots_dir, paste0("intersection_breaks_heatmap.png"))
-cnv_heatmap_file <- file.path(plots_dir, paste0("cnv_breaks_heatmap.png"))
-sv_heatmap_file <- file.path(plots_dir, paste0("sv_breaks_heatmap.png"))
+intersection_heatmap_file <- file.path(plots_dir, "intersection_breaks_heatmap.png")
+cnv_heatmap_file <- file.path(plots_dir, "cnv_breaks_heatmap.png")
+sv_heatmap_file <- file.path(plots_dir, "sv_breaks_heatmap.png")
 ```
 
 Make a special function for making the heatmaps. 
