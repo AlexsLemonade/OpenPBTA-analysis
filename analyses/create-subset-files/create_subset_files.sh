@@ -60,6 +60,7 @@ cp $FULL_DIRECTORY/pbta-fusion-recurrently-fused-genes-byhistology.tsv $SUBSET_D
 
 # GISTIC output
 cp $FULL_DIRECTORY/pbta-cnv-cnvkit-gistic.zip $SUBSET_DIRECTORY
+cp $FULL_DIRECTORY/pbta-cnv-consensus-gistic.zip $SUBSET_DIRECTORY
 
 # independent specimen files
 cp $FULL_DIRECTORY/independent-specimens*.tsv $SUBSET_DIRECTORY
