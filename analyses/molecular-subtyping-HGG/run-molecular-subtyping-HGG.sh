@@ -64,3 +64,7 @@ Rscript -e "rmarkdown::render('06-HGG-molecular-subtyping-gene-expression.Rmd', 
 #### Combine DNA data ----------------------------------------------------------
 
 Rscript -e "rmarkdown::render('07-HGG-molecular-subtyping-combine-table.Rmd', clean = TRUE)"
+
+#### 1p/19q co-deleted oligodendrogliomas notebook -----------------------------
+
+Rscript -e "rmarkdown::render('08-1p19q-codeleted-oligodendrogliomas.Rmd', clean = TRUE)"
