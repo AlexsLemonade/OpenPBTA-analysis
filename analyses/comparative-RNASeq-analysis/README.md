@@ -43,6 +43,7 @@ Output files:
 ```
 scratch/rsem-tpm-stranded-all_by_all_correlations.rds
 scratch/rsem-tpm-stranded-filtered_genes_to_keep.rds
+scratch/rsem-tpm-stranded-log2-normalized.rds
 ```
 
 ### 02 -  Thresholds and Outliers
@@ -51,8 +52,7 @@ Generates outlier thresholds and matrix of outlier genes.
 ```
 ./scripts/run_in_ci.sh \
   python3 analyses/comparative-RNASeq-analysis/02-thresholds-and-outliers.py \
-    ../../data/pbta-gene-expression-rsem-tpm.stranded.rds \
-    --output-prefix rsem-tpm-stranded- \
+    --prefix rsem-tpm-stranded- \
     --verbose
 ```
 
@@ -60,16 +60,15 @@ Additional flags for this step:
   - `--iqr-multiplier 1.5` sets the interquartile range multiplier for the Tukey outlier calculation
 
 
-Input files:
+Input files (detected via command-line prefix provided):
 ```
-data/pbta-gene-expression-rsem-tpm.stranded.rds
+scratch/rsem-tpm-stranded-log2-normalized.rds
 scratch/rsem-tpm-stranded-filtered_genes_to_keep.rds
 ```
 
 Output files:
 ```
-scratch/rsem-tpm-stranded-log2-normalized.rds
-scratch/rsem-tpm-stranded-threshold-expression-values.rds
+results/rsem-tpm-stranded-gene_expression_outliers.tsv.gz
 ```
 
 ## Limitations and requirements

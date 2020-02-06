@@ -27,3 +27,8 @@ def write_rds(df, filepath):
     # so trigger an error if our file isn't actually there
     with open(filepath, "rb"):
         pass
+
+def write_tsv(df, path):
+    """Wrapper for pandas to_csv with standardized arguments.
+       Generates a tsv.gz file."""
+    df.to_csv(path, sep="\t", compression="gzip")

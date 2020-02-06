@@ -10,15 +10,24 @@ the 5% of genes with the highest expression are marked, as well as the genes whi
 are excluded by the expression and variance filters from step 1.
 
 The final result is a matrix .rds file of genes by samples where, for each sample,
-each gene may be labeled with zero or more of the following keys (concatenated
-together into a string):
+each gene is labeled with a 4-character string formatted as follows:
 
-U: Up outlier
-D: Down outlier
-T: in Top five percent of genes for this sample
-F: qc Fail (when less than 5% of genes in the sample have nonzero expression)
-P: gene is droPped by expression or variance filter
+"(P|F) (U|D|N) (T|L) (R|E|V)"
 
+0. QC status of this sample - do at least 5% of genes in this sample have
+expression greater than zero?
+P: Pass, F: Fail
+
+1. Outlier status:
+U: Up outlier, D: Down outlier, N: Not an outlier
+
+2. Is this gene's expression in the top 5 percent of expression for this sample?
+T: in Top 5%, L: in Lower 95%
+
+3. Is this gene dropped from the analysis due to expression or variance filters
+(as implemented in step 1)?
+R: Retained, E: dropped by Expression filter, V: dropped by Variance filter
+(TODO: E/V distinction is not yet implemented -- all dropped genes are labeled E.)
 
 Modified Tukey Method
 --------------------
@@ -69,19 +78,6 @@ import pandas as pd
 import numpy as np
 import utils
 
-def normalize_expression(input_path, scratch_dir, prefix="", verbose=False):
-    """Convert samples to log2(TPM) + 1 and save in scratch.
-    Note: This is duplicate work from step 01 because I forgot in that step
-    to write results to scratch file. Future update will merge these. (TODO)"""
-    print_v = print if verbose else lambda *a, **k: None
-    print_v("Loading samples {}".format(input_path))
-    raw_samples = utils.read_rds(input_path)
-    samples = np.log2(raw_samples+1)
-    output_path = os.path.join(scratch_dir, "{}log2-normalized.rds".format(prefix))
-    print_v("Writing normalized samples to {}".format(output_path))
-    utils.write_rds(samples, output_path)
-    return samples
-
 def tukey_thresholds(expression_values, iqr_multiplier):
     """Generate a pair of outlier thresholds (high, low) from
     expression_values (series) and an iqr multiplier using standard Tukey method."""
@@ -103,27 +99,29 @@ def modified_tukey_thresholds(expression_values, iqr_multiplier):
     return( pd.Series([high, low], index=["high", "low"]))
 
 def generate_all_thresholds(normalized_samples,
-                        scratch_dir,
                         iqr_multiplier=1.5,
-                        prefix="",
                         verbose=False):
     """Generate high and low outlier thresholds for each gene
     using the modified tukey method from a matrix of
     log2(TMP+1) normalized sample expression"""
     print_v = print if verbose else lambda *a, **k: None
-
     print_v("Calculating outlier thresholds.")
-    thresholds = normalized_samples.apply(modified_tukey_thresholds, args=[iqr_multiplier], axis=1)
-    thresholds_path = os.path.join(scratch_dir, "{}threshold-expression-values.rds".format(prefix))
-    print_v("Writing expression outlier thresholds to {}".format(thresholds_path))
-    utils.write_rds(thresholds, thresholds_path)
-    return thresholds
+    return normalized_samples.apply(modified_tukey_thresholds, args=[iqr_multiplier], axis=1)
+
+def update_at_index(idx, new_value):
+    """Helper function to modify list in-place, setting value at idx to new_value.
+    for use in pandas apply and applymap, eg x.apply(update_at_index(0, "A"))."""
+    def updater(mylist):
+        mylist[idx] = new_value
+    return updater
 
 def single_sample_outliers(sample_expression, expression_thresholds):
     """Given the expression of a single sample as series, and matrix
     of thresholds, calculate the up and down outliers and genes in the top 5%
     of sample's expression. Return a matrix of genes vs samples, with each gene
-    marked as U or D for outlier, T if it's in the top 5%, and F for qc Fail."""
+    marked with, in order, QC status(Pass/Fail), outlier status (Up/Down/Not outlier),
+    and top5% status(Top5/Lower95); additionally mark all genes as Retained by filter, 
+    to be modified by parent."""
 
     down_outliers = sample_expression[sample_expression < expression_thresholds["low"]].index
     up_outliers = sample_expression[sample_expression > expression_thresholds["high"]].index
@@ -133,21 +131,21 @@ def single_sample_outliers(sample_expression, expression_thresholds):
     qc_fail = (top5_value <=0) # If 0 is in the top5%, this sample is really underexpressed
     top5_genes = sample_expression[sample_expression >= top5_value].keys()
 
-    # Possible values include (D)own outlier, (U)p outlier, (T)op5%, and qc (F)ail
-    # dro(P)ped genes are added in calculate_outliers
-    result = pd.Series("", index = sample_expression.index)
-    result[top5_genes] += "T"
-    result[down_outliers] += "D"
-    result[up_outliers] += "U"
+    # Generate result code. Start with default Pass/Not outlier/Lower95/Retained.
+    result = pd.Series("PNLR", index = sample_expression.index)
+    result = result.apply(list)# Split into a list to allow modification by index
     if qc_fail:
-        result += "F" # Mark every gene as QC fail for this sample
+        result.apply(update_at_index(0, "F")) # Mark every gene as QC fail for this sample
+    result[up_outliers].apply(update_at_index(1, "U"))
+    result[down_outliers].apply(update_at_index(1, "D"))
+    result[top5_genes].apply(update_at_index(2, "T"))
     return result
+
 
 def calculate_all_outliers(samples,
                            thresholds,
-                           scratch_dir,
-                           results_dir,
-                           prefix="",
+                           filtered_genelist_path,
+                           outliers_path,
                            verbose=False):
     """For each sample calculate up and down outlier genes based on the thresholds.
     Then, apply expression & variance filters to mark 'noise' genes, and save as result file."""
@@ -157,33 +155,28 @@ def calculate_all_outliers(samples,
     outliers = samples.apply(single_sample_outliers, args=[thresholds], axis=0)
 
     # Apply the expression & variance filters that we calculated in step 1 to mark filtered
-    # genes as dro(P)ped.
-    filtered_genelist_filepath = os.path.join(scratch_dir,
-                                              "{}filtered_genes_to_keep.rds".format(prefix))
-    filtered_genelist = utils.read_rds(filtered_genelist_filepath)
+    # genes as dropped due to Expression or Variance; by default they're already marked Retained.
+    filtered_genelist = utils.read_rds(filtered_genelist_path)
     dropped_genes = pd.Index(set(outliers.index) - set(filtered_genelist["gene_id"]))
-    outliers.loc[dropped_genes] = outliers.loc[dropped_genes].applymap(lambda x: x + "P")
+    outliers.loc[dropped_genes].applymap(update_at_index(3, "E"))
+    outliers = outliers.applymap("".join) # Concatenate all values to string
 
-    outliers_path = os.path.join(results_dir, "{}gene_expression_outliers.rds".format(prefix))
     print_v("Writing outlier results to {}".format(outliers_path))
-    os.makedirs(results_dir, exist_ok=True) # make results dir if not already present
-    utils.write_rds(outliers, outliers_path)
+    utils.write_tsv(outliers, outliers_path)
     return outliers
 
 def main():
     """Generates expression thresholds and uses them to calculate
     high and low outliers for each sample in the dataset.
-    input file: in format TPM, samples in columns, genes in rows
-    output file: (TODO finalize): genes are rows, samples are columns,
-    values are a comma-separated list of outlier and top5 status, with
-    dropped genes removed."""
+    input file: in format log_2(TPM+1), samples in columns, genes in rows
+    output file: genes are rows, samples are columns,
+    values are a fixed width string of keys representing
+    QC, outlier, top5, and dropped-gene status."""
     # This script should always run as if it were being called from
     # the directory it lives in.
     os.chdir(sys.path[0])
 
     p = argparse.ArgumentParser()
-    p.add_argument("input_path", metavar="input-path",
-                   help="Path to input Rds file. Genes in rows, samples in columns, TPM format.")
     p.add_argument("--verbose", action="store_true")
     p.add_argument("--scratch",
                    default=os.path.join("..", "..", "scratch"),
@@ -191,7 +184,7 @@ def main():
     p.add_argument("--results",
                    default="results",
                    help="Path to results dir for generated outliers file.")
-    p.add_argument("--output-prefix", help="Prefix for output files.")
+    p.add_argument("--prefix", help="Prefix for input and output files.")
     p.add_argument("--iqr-multiplier",
                    default=1.5,
                    type=float,
@@ -200,30 +193,26 @@ def main():
 
     print_v = print if args.verbose else lambda *a, **k: None
 
-    # Use input basename as prefix if none was supplied
-    prefix = args.output_prefix or os.path.splitext(os.path.basename(args.input_path))[0]
+    # Input paths
+    normalized_samples_path = os.path.join(args.scratch, "{}log2-normalized.rds".format(args.prefix))
+    filtered_genelist_path = os.path.join(args.scratch,
+                                          "{}filtered_genes_to_keep.rds".format(args.prefix))
+    # Output paths
+    outliers_path = os.path.join(args.results, "{}gene_expression_outliers.tsv.gz".format(args.prefix))
 
-    # Load normalized samples if they exist; otherwise, generate.
-    normalized_samples_path = os.path.join(args.scratch, "{}log2-normalized.rds".format(prefix))
-    try:
-        normalized_samples = utils.read_rds(normalized_samples_path)
-        print_v("Loaded existing normalized samples from file.")
-    except utils.pyreadr.custom_errors.LibrdataError:
-        normalized_samples = normalize_expression(args.input_path,
-                                                  args.scratch,
-                                                  prefix=prefix,
-                                                  verbose=args.verbose)
+    os.makedirs(args.results, exist_ok=True) # make results dir if not already present
+
+    # Load normalized samples from Step 01
+    normalized_samples = utils.read_rds(normalized_samples_path)
+
     # Generate thresholds and outliers
     thresholds = generate_all_thresholds(normalized_samples,
-                                     args.scratch,
                                      iqr_multiplier=args.iqr_multiplier,
-                                     prefix=prefix,
                                      verbose=args.verbose)
     calculate_all_outliers(normalized_samples,
                            thresholds,
-                           args.scratch,
-                           args.results,
-                           prefix=prefix,
+                           filtered_genelist_path,
+                           outliers_path,
                            verbose=args.verbose)
     print_v("Done generating thresholds and outliers.")
 
