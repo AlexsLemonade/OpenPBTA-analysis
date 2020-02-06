@@ -33,19 +33,19 @@ jobs:
 
      ### MOLECULAR SUBTYPING ###
 
-     - run:
+      - run:
           name: Molecular Subtyping - HGG
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
 
-     - run:
+      - run:
           name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors 
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
   
-     - run:
+      - run:
           name: Molecular Subtyping and Plotting - ATRT
           command:  OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-ATRT/run-molecular-subtyping-ATRT.sh
 
-     - run:
+      - run:
           name: Molecular subtyping Chordoma
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-chordoma/01-Subtype-chordoma.Rmd', clean = TRUE)"
 
