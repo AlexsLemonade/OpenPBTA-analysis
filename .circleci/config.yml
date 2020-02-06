@@ -153,7 +153,10 @@ jobs:
          ################################
          #### Add your analysis here ####
          ################################
-     
+
+      - run:
+          name: TCGA SNV Caller Analysis 
+          command: ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-tcga.sh     
 
       - run:
           name: SNV Caller Analysis 
