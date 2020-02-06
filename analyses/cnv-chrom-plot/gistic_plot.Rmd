@@ -49,18 +49,16 @@ if (!dir.exists(plots_dir)) {
 Unzip and set up GISTIC results folder. 
 
 ```{r}
+# TODO: update once the consensus GISTIC results are in the data release
 gistic_dir <- file.path(scratch_dir, "2019-01-28-consensus-cnv")
+download.file(url = "https://github.com/AlexsLemonade/OpenPBTA-analysis/files/4123481/2019-01-28-consensus-cnv.zip",
+              destfile = paste0(gistic_dir, ".zip"),
+              quiet = TRUE)
 
-if (!dir.exists(gistic_dir)) {
-  # TODO: update once the consensus GISTIC results are in the data release
-  download.file(url = "https://github.com/AlexsLemonade/OpenPBTA-analysis/files/4123481/2019-01-28-consensus-cnv.zip",
-                destfile = paste0(gistic_dir, ".zip"),
-                quiet = TRUE)
+unzip(paste0(gistic_dir, ".zip"), 
+      exdir = scratch_dir,
+      files = file.path( "2019-01-28-consensus-cnv", "scores.gistic"))
 
-  unzip(paste0(gistic_dir, ".zip"), 
-        exdir = scratch_dir,
-        files = file.path( "2019-01-28-consensus-cnv", "scores.gistic"))
-}
 ```
 
 ### Read in data 
