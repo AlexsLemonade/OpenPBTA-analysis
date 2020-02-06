@@ -30,33 +30,33 @@ jobs:
       #    command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/01-set-up.Rmd', clean = TRUE);
       #                                                rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', clean = TRUE)"
      
-      - run:
-          name: Collapse RSEM
-          command: ./scripts/run_in_ci.sh bash analyses/collapse-rnaseq/run-collapse-rnaseq.sh
+      # - run:
+      #     name: Collapse RSEM
+      #     command: ./scripts/run_in_ci.sh bash analyses/collapse-rnaseq/run-collapse-rnaseq.sh
 
-      - run:
-          name: Molecular Subtyping - HGG
-          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
+      # - run:
+      #     name: Molecular Subtyping - HGG
+      #     command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
 
-      - run:
-          name: Immune deconvolution using xCell and MCP-Counter
-          command: OPENPBTA_DECONV_METHOD="mcp_counter" ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
+      # - run:
+      #     name: Immune deconvolution using xCell and MCP-Counter
+      #     command: OPENPBTA_DECONV_METHOD="mcp_counter" ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
 
-      - run:
-          name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded data and creates recurrent fusion list
-          command: ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
+      # - run:
+      #     name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded data and creates recurrent fusion list
+      #     command: ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
 
-      - run:
-          name: Transcriptome dimensionality reduction
-          command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
+      # - run:
+      #     name: Transcriptome dimensionality reduction
+      #     command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
 
-      - run:
-          name: Sex prediction from RNA-seq - Clean data-train elasticnet-evaluate model
-          command: OPENPBTA_PERCENT=0 ./scripts/run_in_ci.sh bash analyses/sex-prediction-from-RNASeq/run-sex-prediction-from-RNASeq.sh
+      # - run:
+      #     name: Sex prediction from RNA-seq - Clean data-train elasticnet-evaluate model
+      #     command: OPENPBTA_PERCENT=0 ./scripts/run_in_ci.sh bash analyses/sex-prediction-from-RNASeq/run-sex-prediction-from-RNASeq.sh
 
-      - run:
-          name: Selection Strategy Comparison
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/selection-strategy-comparison/01-selection-strategies.rmd', params = list(neighbors = 2), clean = TRUE)"
+      # - run:
+      #     name: Selection Strategy Comparison
+      #     command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/selection-strategy-comparison/01-selection-strategies.rmd', params = list(neighbors = 2), clean = TRUE)"
 
 # This is deprecated       
 #      - run:
