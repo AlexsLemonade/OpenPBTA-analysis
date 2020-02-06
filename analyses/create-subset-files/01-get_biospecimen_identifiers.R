@@ -336,6 +336,14 @@ rest_stranded_rsem <- lapply(stranded_rsem_files[-1],
                              function(x) stranded_rsem_ids) %>%
   purrr::set_names(stranded_rsem_files[-1])
 
+# for each pbta-snv instance, add in biospecimen IDs for samples we know have a
+# positive example of an NF1 mutation for tp53_nf1_score
+pbta_snv_index <- stringr::str_which(names(biospecimen_ids_for_subset),
+                                     "pbta-snv")
+nf1_positive_biospecimen_ids <- c("BS_85Q5P8GF", "BS_Y3ETG5AE", "BS_S0T3CQ97")
+biospecimen_ids_for_subset <- biospecimen_ids_for_subset %>%
+  purrr::modify_at(pbta_snv_index, ~ append(.x, nf1_positive_biospecimen_ids))
+
 # append the other RSEM elements to the list of all ids and write to file
 biospecimen_ids_for_subset %>%
   append(rest_polya_rsem) %>%
