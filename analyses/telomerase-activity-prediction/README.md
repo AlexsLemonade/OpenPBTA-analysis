@@ -17,16 +17,17 @@ Goals include:
 
 
 
-Scripts and Results/Plots:
+Contents of directory:
 
-1. RUN-telomerase-activity-prediction.sh is used to generate the telomerase activities from gene expression data sets from different platforms.
+1. [`RUN-telomerase-activity-prediction.sh`](./RUN-telomerase-activity-prediction.sh) is used to generate the telomerase activities from gene expression data sets from different platforms, and calls all R scripts in order.
 
-2. Results directory contains Telomerase Scores for PolyA counts data (file = "TelomeraseScores_PTBAPolya_counts.txt"),PolyA FPKM data (file = "TelomeraseScores_PTBAPolya_FPKM.txt"), Stranded Counts data(file = "TelomeraseScores_PTBAStranded_counts.txt") and Stranded FPKM data (file = "TelomeraseScores_PTBAStranded_FPKM.txt")
+2. The directory `results/` contains:
+	+ Telomerase Scores for PolyA counts data in [TelomeraseScores_PTBAPolya_counts.txt](./results/TelomeraseScores_PTBAPolya_counts.txt)
+	+ Telomerase Scores for PolyA FPKM data in [TelomeraseScores_PTBAPolya_FPKM.txt](./results/TelomeraseScores_PTBAPolya_FPKM.txt)
+	+ Telomerase Scores for Stranded Counts data in [TelomeraseScores_PTBAStranded_counts.txt](./results/TelomeraseScores_PTBAStranded_counts.txt)
+	+ Telomerase Scores for Stranded FPKM data in [TelomeraseScores_PTBAStranded_FPKM.txt](./results/TelomeraseScores_PTBAStranded_FPKM.txt)
 
-3. Analysis-telomerase-activity.sh is used to perform comparative analysis and the results are saved in plots directory.
-
-4. "PTBA_GE_Score_AllScatter.pdf" plot represents the telomerase activity scores correlations across different data sets (i.e Stranded counts versus Stranded FPKM and PolyA counts versus PolyA FPKM)
-
-5. "PTBA_GE_TM_ScatterComp.pdf" plot correlates TERT and TERC gene expressions with telomerase activities for different data sets (i.e Stranded and PolyA)
-
-6. "PBTA_StrandedHistology.pdf" plot shows the distribution of telomerase activities across different brain tumor histologies.
+3. The directory `plots/` contains:
+	+ [PTBA_GE_Score_AllScatter.pdf](./plots/PTBA_GE_Score_AllScatter.pdf): represents the telomerase activity scores correlations across different data sets (i.e Stranded counts versus Stranded FPKM and PolyA counts versus PolyA FPKM)
+	+ [PTBA_GE_TM_ScatterComp.pdf](./plots/PTBA_GE_TM_ScatterComp.pdf): correlates TERT and TERC gene expressions with telomerase activities for different data sets (i.e Stranded and PolyA)
+	+ [PBTA_StrandedHistology.pdf](./plots/PBTA_StrandedHistology.pdf): shows the distribution of telomerase activities across different brain tumor histologies.
