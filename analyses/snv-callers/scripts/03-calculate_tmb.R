@@ -176,7 +176,7 @@ message("Setting up metadata...")
 if (opt$tcga) {
   # Format two fields of metadata for use with functions
   metadata <- readr::read_tsv(opt$metadata) %>% 
-    dplyr::mutate(experimental_strategy = "WGS", # This field doesn't exist for this data, but all is WGS
+    dplyr::mutate(experimental_strategy = "WXS", # This field doesn't exist for this data, but all is WXS
                   short_histology = stringr::word(broad_histology, sep = "-", 2)) # This field is named differently
   
   # Manifest files only have first 12 letters of the barcode so we gotta chop the end off
