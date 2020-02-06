@@ -1,5 +1,5 @@
 ---
-title: "Plot Caller Comparisons"
+title: "TCGA Plot Caller Comparisons"
 output: 
   html_notebook:
     toc: TRUE
@@ -8,7 +8,7 @@ author: C. Savonen for ALSF CCDL
 date: 2019
 ---
 
-Purpose: After creating a consensus file with `02-merge_callers.R`, this notebook 
+Purpose: After creating a TCGA consensus file with `02-merge_callers.R`, this notebook 
 plots these data in a series of plots to compare the consensus calls to the individual 
 callers. 
 
@@ -16,11 +16,6 @@ callers.
 
 
 #### Individual Caller's Reports 
-
-
-*Notable Findings:*  
-
-- Mutect2, Strelka2, and Lancet do have [plenty of mutations in common](#upset-graph). 
 
 ### Outline of analyses completed:
 
@@ -34,7 +29,7 @@ callers.
 
 To run this from the command line, use:
 ```
-Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots.Rmd', 
+Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots-tcga.Rmd', 
                               clean = TRUE)"
 ```
 
@@ -64,7 +59,7 @@ Set up directories.
 
 ```{r}
 scratch_dir <- file.path("..", "..", "scratch")
-results_dir <- file.path("results", "comparison")
+results_dir <- file.path("results", "tcga-comparison")
 plots_dir <- file.path("plots", "tcga-comparison")
 
 if (!dir.exists(results_dir)) {
