@@ -135,6 +135,13 @@ circos_map_plot <- function(df,
   y_min <- min(bed_df$y_val, na.rm = TRUE)
   y_max <- max(bed_df$y_val, na.rm = TRUE)
 
+  # Can't have identical y_min and y_max, this is just so CircleCI runs even if 
+  # the subset data is wonky
+  if (y_min == y_max) {
+    y_max <- y_max + 0.001 
+    warning("ymax and ymin are identical")
+  }
+    
   # Tell them only one color is allowed
   if (length(single_color) > 1) {
     warning("Only a single color is allowed for the `single_color` argument, 
