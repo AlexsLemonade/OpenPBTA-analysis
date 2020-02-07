@@ -184,16 +184,47 @@ The filtered and prioritized fusion and downstream files are a product of the [`
   * `fusion_summary_embryonal_foi.tsv` contains a binary matrix that denotes the presence or absence of a recurrent embryonal tumor fusions of interest per individual RNA-seq specimen.
   * `fusion_summary_ependymoma_foi.tsv` contains a binary matrix that denotes the presence or absence of a recurrent ependymal tumor fusions of interest per individual RNA-seq specimen.
 
-### Copy Number Files
+### Derived Copy Number Files
 
-`pbta-cnv-cnvkit-gistic.zip` is the output of running GISTIC 2.0 on the CNVkit results (`pbta-cnv-cnvkit.seg`).
-The script used to run GISTIC can be [found here](https://github.com/d3b-center/publication_workflows/blob/master/openPBTA/run-gistic.sh).
-
-### Consensus Copy Number File
+#### Consensus Copy Number File
 
 Copy number consensus calls from the copy number and structural variant callers are a product of the [`analyses/copy_number_consensus_call`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/copy_number_consensus_call) analysis module. 
- * `cnv_consensus.tsv` contains consensus regions from two or more callers, with columns described in the [analysis README](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/copy_number_consensus_call/README.md).
+
+* `pbta-cnv-consensus.seg.gz` contains consensus segments and segment means (log R ratios) from two or more callers, as described in the [analysis README](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/copy_number_consensus_call/README.md).
+
+#### GISTIC Output File Formats
+
+`pbta-cnv-cnvkit-gistic.zip` is the output of running GISTIC 2.0 on the CNVkit results (`pbta-cnv-cnvkit.seg`).
+`pbta-cnv-consensus-gistic.zip` is the output of running GISTIC 2.0 on the CNV consensus calls (`pbta-cnv-consensus.seg.gz`), described below.
+The scripts used to run GISTIC are linked here: [CNVkit](https://github.com/d3b-center/OpenPBTA-workflows/blob/master/bash/run-gistic.sh) and [Consensus calls](https://github.com/d3b-center/OpenPBTA-workflows/blob/master/bash/run_gistic_consensus.sh).
+
+Note that GISTIC is run on the _entire cohort_ and therefore the output reflects regions that are significantly amplified or deleted across the entire cohort.
+
+The GISTIC output data files below, which are commonly leveraged for downstream analyses, are described in more detail on the Broad Institute's [GenePattern website](https://www.genepattern.org/modules/docs/GISTIC_2.0).
+
+  - `all_lesions.conf_90.txt` (90% confidence level): this file contains significant regions of amplification and deletion and samples with amplifications/deletions in each of these regions
+  - `amp_genes.conf_90.txt` (90% confidence level): table of amplification peaks and genes within them
+  - `del_genes.conf_90.txt` (90% confidence level): table of deletion peaks and genes within them
+  - `all_thresholded.by_genes.txt`: table of high- and low-level amplifications and deletions using sample-specific thresholds for high-level (output in `sample_cutoffs.txt` file) and default low-level thresholds (+/-0.1)
+
+##### Additional relevant output files are described below:
+
+  - `all_data_by_genes.txt`: This file contains a table of gene symbol, gene ID, cytoband, and Log R Ratios (LRR) for each sample (not thresholded).
+  - `broad_data_by_genes.txt`: This file contains a table of gene symbol, gene ID, cytoband, and LRR for each sample.
+  - `focal_data_by_genes.txt`: This file contains a matrix of gene LRR by sample.
+  - `sample_seg_counts.txt`: By default, samples with >2500 segments are excluded from GISTIC analyses; samples are annotated as included or excluded in this file.
+  - `broad_values_by_arm.txt`: This file contains a matrix of chromosomal arm LRR by sample.
+
+##### Use cases for these files include:
+
+  - `broad_values_by_arm.txt` for molecular subtyping in which chromosomal arms are commonly gained/amplified or deleted
+  - `all_thresholded.by_genes.txt` for gene-level copy-number analyses
 
 ## Data Caveats
 
-The clinical manifest will be updated and versioned as molecular subgroups are identified based on genomic analyses.
+The clinical manifest will be updated and versioned as molecular subgroups are identified based on genomic analyses. 
+
+Analyses related to molecular subtyping are as follows:
+
+* [`molecular-subtyping-HGG`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-HGG)
+* [`molecular-subtyping-embryonal`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-embryonal)
