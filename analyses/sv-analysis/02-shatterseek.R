@@ -136,7 +136,7 @@ add_shatterseek_fdr <- function(shatterseek_result) {
       ft_fdr = p.adjust(pval_fragment_joins, method = "fdr"),
       ent_fdr = p.adjust(chr_breakpoint_enrichment, method = "fdr"),
       ext_fdr = p.adjust(pval_exp_chr, method = "fdr"),
-      exct_fdr = p.adjust(pval_exp_cluster, method = "fdr"),
+      exct_fdr = p.adjust(pval_exp_cluster, method = "fdr")
       total_intra = (number_DEL + number_DUP + number_h2hINV + number_t2tINV)
     )
   return(shatterseek_result)
