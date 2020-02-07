@@ -50,7 +50,7 @@ bioid <- unique(independent_specimen_list$Kids_First_Biospecimen_ID)
 
 ## ===================== Load CNV File =====================
 # read cnv  consensus file
-cnvconsensus <- read_tsv(file.path(root_dir,"analyses","copy_number_consensus_call","results","pbta-cnv-consensus.seg.gz"))
+cnvconsensus <- read_tsv(file.path(root_dir, "data", "pbta-cnv-consensus.seg.gz"))
 # For shatterseek can not work with NA copy number, remove rows with NA copy number
 cnvconsensus <- cnvconsensus[is.na(cnvconsensus$copy.num)==F,]
 
@@ -159,7 +159,7 @@ ss3$call3 <- ifelse(((ss3$total_intra > 2)&(ss3$number_TRA > 3)&(ss3$ft_fdr > 0.
 # combine call3 result to call6, combine call6 result to call3
 ss6 <- ss3 %>%
   # pick the relevant columns from ss3 to join to ss6
-  select(chrom, sample, call3) %>%
+  select(chrom, `sample`, call3) %>%
   # join by chromosome and sample
   inner_join(ss6, by = c("chrom", "sample"))
 ss3 <- ss6 %>%
