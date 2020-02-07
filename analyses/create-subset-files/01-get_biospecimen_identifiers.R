@@ -212,7 +212,7 @@ files_to_subset <-
 # currently documented
 # we'll include the entire zipped folder
 files_to_subset <-
-  files_to_subset[-grep("pbta-cnv-cnvkit-gistic.zip", files_to_subset)]
+  files_to_subset[-grep("gistic.zip", files_to_subset)]
 
 # if testing this locally, drop the 2 larger of the 4 MAF files
 if (running_locally) {
@@ -335,6 +335,14 @@ rest_polya_rsem <- lapply(polya_rsem_files[-1], function(x) polya_rsem_ids) %>%
 rest_stranded_rsem <- lapply(stranded_rsem_files[-1],
                              function(x) stranded_rsem_ids) %>%
   purrr::set_names(stranded_rsem_files[-1])
+
+# for each pbta-snv instance, add in biospecimen IDs for samples we know have a
+# positive example of an NF1 mutation for tp53_nf1_score
+pbta_snv_index <- stringr::str_which(names(biospecimen_ids_for_subset),
+                                     "pbta-snv")
+nf1_positive_biospecimen_ids <- c("BS_85Q5P8GF", "BS_Y3ETG5AE", "BS_S0T3CQ97")
+biospecimen_ids_for_subset <- biospecimen_ids_for_subset %>%
+  purrr::modify_at(pbta_snv_index, ~ append(.x, nf1_positive_biospecimen_ids))
 
 # append the other RSEM elements to the list of all ids and write to file
 biospecimen_ids_for_subset %>%
