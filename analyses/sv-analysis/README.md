@@ -17,4 +17,4 @@ This analysis is designed to
 #### Order of scripts in analysis
 `01-process-sv-file.R` : This script is for generating sv file in shatterseek-read/signature-read input format
 
-`02-shatterseek.R` : This script is for analyzing chromothripsis, using modified shaterseek code
+`02-shatterseek.R` : This script is for analyzing chromothripsis, using modified ShatterSeek code
