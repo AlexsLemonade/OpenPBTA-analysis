@@ -127,7 +127,11 @@ jobs:
       - run:
           name: Comparative RNASeq - generate correlation matrix - rsem-tpm.stranded
           command: ./scripts/run_in_ci.sh python3 analyses/comparative-RNASeq-analysis/01-correlation-matrix.py ../../data/pbta-gene-expression-rsem-tpm.stranded.rds --output-prefix rsem-tpm-stranded- --verbose
-    
+
+      - run:
+          name: Comparative RNASeq - generate thresholds and outliers - rsem-tpm.stranded
+          command: ./scripts/run_in_ci.sh python3 analyses/comparative-RNASeq-analysis/02-thresholds-and-outliers.py --prefix rsem-tpm-stranded- --verbose
+
       - run:
           name: Process SV file
           command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/01-process-sv-file.R
