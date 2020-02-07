@@ -9,8 +9,9 @@
 set -e
 set -o pipefail
 
-# we want to skip the poly-A ROC plot in CI
-POLYA_PLOT=${OPENPBTA_POLYAPLOT:-1}
+# we want to skip the poly-A steps in CI
+# if POLYA=1, poly-A steps will be run
+POLYA=${OPENPBTA_POLYAPLOT:-1}
 
 data_dir="data"
 scratch_dir="scratch"
@@ -38,16 +39,12 @@ Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
 collapsed_stranded="pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
 collapsed_polya="pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
 
-# Run classifier for stranded and polya
+# Run classifier and ROC plotting for stranded data
 python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_stranded}
-python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_polya}
-
-
-# Run ROC plot step
-
-# Skip poly-A plotting in CI
-if [ "$POLYA_PLOT" -gt "0" ]; then
-	python3 ${analysis_dir}/02-evaluate-classifier.py -s ${analysis_dir}/results/TP53_NF1_snv_alteration.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv -c ${data_dir}/pbta-histologies.tsv -o polya
-fi
-
 python3 ${analysis_dir}/02-evaluate-classifier.py -s ${analysis_dir}/results/TP53_NF1_snv_alteration.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv -c ${data_dir}/pbta-histologies.tsv -o stranded
+
+# Skip poly-A steps in CI
+if [ "$POLYA" -gt "0" ]; then
+  python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_polya}
+  python3 ${analysis_dir}/02-evaluate-classifier.py -s ${analysis_dir}/results/TP53_NF1_snv_alteration.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv -c ${data_dir}/pbta-histologies.tsv -o polya
+fi
