@@ -1,6 +1,6 @@
 # Yang Yang 2020
 # This script is for analyzing chromothripsis, using modified ShatterSeek code.
-# 
+#
 # Input files:
 # 1. independent-specimens.wgs.primary-plus.tsv
 # this file is used to choose independent specimens
@@ -8,7 +8,7 @@
 # CNV file is needed in shatterseek
 # 3. BSID_withoutYandM.tsv and BSID.tsv
 # Those files are SV files, which generated from the "01-process-sv-file.R" script
-# 
+#
 # Output files:
 # PBTA_chromothripsis_newlink_region.csv
 # this file is about the chromothripsis region and chromothripsis-link region of each sample.
@@ -31,7 +31,7 @@ library(dplyr)
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 
-## =====================  Create A Subdirectory to Hold All The Output Files ===================== 
+## =====================  Create A Subdirectory to Hold All The Output Files =====================
 # save output files in "analyses/sv-analysis/tables/sv-shatterseek"
 output_directory <- file.path(root_dir, "analyses","sv-analysis","result")
 
@@ -71,13 +71,13 @@ svlist <- data.frame()
 for (i in bioid) {
   # read sv file one by one
   sv_shatterseek <- read.table(file.path("scratch","sv-vcf",paste(i,"_withoutYandM.tsv",sep="")),sep="\t",header=TRUE)
-  
+
   # sv_shatterseek_original is a file with chrY and ChrM, which will be used later
   sv_shatterseek_original <- read.table(file.path("scratch","sv-vcf",paste(i,".tsv",sep="")),sep="\t",header=TRUE)
-  
+
   #  read cnv one by one
   cnv_shatterseek <-  cnv_analysis[cnv_analysis$ID == i,]
-  
+
   # For CI
   # if we meet empty sv file, jump into next loop
   nsv1 <- nrow(sv_shatterseek)
@@ -87,14 +87,14 @@ for (i in bioid) {
     print(paste0(i," has an empty sv file"))
     next;
   }
-  
-  
+
+
   # add sample id
   sv_shatterseek_original$sample <- i
   # merge all sv_shatterseek_original, will be used later
   svlist <- rbind(svlist,sv_shatterseek_original)
-  
-  
+
+
   # build sv and cnv data frame
   SV_data <-
     SVs(
@@ -113,13 +113,13 @@ for (i in bioid) {
       end = cnv_shatterseek$loc.end,
       total_cn = cnv_shatterseek$copy.num
     )
-  
+
   # run shatterseek in min.size = 6
   chromothripsis6 <- shatterseek(SV.sample=SV_data,seg.sample=CN_data,min.Size=6)
   chrss6 <- chromothripsis6@chromSummary
   chrss6$sample <- i
   ss6 <- rbind(ss6,chrss6)
-  
+
   # run shatterseek in min.size = 3
   chromothripsis3 <- shatterseek(SV.sample=SV_data,seg.sample=CN_data,min.Size=3)
   chrss3 <- chromothripsis3@chromSummary
@@ -137,7 +137,6 @@ add_shatterseek_fdr <- function(shatterseek_result) {
       ent_fdr = p.adjust(chr_breakpoint_enrichment, method = "fdr"),
       ext_fdr = p.adjust(pval_exp_chr, method = "fdr"),
       exct_fdr = p.adjust(pval_exp_cluster, method = "fdr")
-      total_intra = (number_DEL + number_DUP + number_h2hINV + number_t2tINV)
     )
   return(shatterseek_result)
 }
@@ -222,13 +221,13 @@ chrsslink <- function(chrss,formatid=format_id){
   }
   ss$format_id <- paste(ss$sample,ss$chr,sep="_")
   idlist <- unique(ss$format_id)
-  
+
   # linkss is used to save data
   linkss <- data.frame(matrix(ncol = 7, nrow = 1))
   colnames(linkss) <- colnames(ss)
   # linkss2 collects linkss
   linkss2 <- data.frame()
-  
+
   #  judge if a link-chrss is a chrss region or link region
   for (id in idlist){
     # formatid=format_id
@@ -262,7 +261,7 @@ chrsslink <- function(chrss,formatid=format_id){
       }
     }
   }
-  
+
   # assign start and end based on chrss cluster
   linkss2 <- merge(linkss2,chrss[,c("format_id","start","end")],by.x=("format_id"),by.y=("format_id"),all.x=T)
   linkss2$start <- ifelse(!is.na(linkss2$start.y),ifelse(linkss2$start.x<linkss2$start.y,linkss2$start.x,linkss2$start.y),linkss2$start.x)
@@ -273,7 +272,7 @@ chrsslink <- function(chrss,formatid=format_id){
   chrss2 <- chrss[keeps]
   linkss2 <- rbind(linkss2,chrss2)
   idlist <- unique(linkss2$format_id)
-  
+
   linkss <- data.frame(matrix(ncol = 7, nrow = 1))
   colnames(linkss) <- colnames(linkss2)
   linkss3 <- data.frame()
