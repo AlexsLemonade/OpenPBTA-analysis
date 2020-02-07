@@ -19,6 +19,7 @@ import utils
 
 def prepare_expression(input_matrix,
                        scratch_dir,
+                       normalized_samples_path,
                        proportion_unexpressed=0.8,
                        variance_filter_level=0.2,
                        verbose=False,
@@ -35,7 +36,9 @@ def prepare_expression(input_matrix,
     raw_samples = utils.read_rds(input_matrix)
 
     # Convert to log2(tpm+1)
-    samples = raw_samples.apply(lambda x: np.log2(x+1))
+    samples = np.log2(raw_samples+1)
+    print_v("Writing normalized samples to {}".format(normalized_samples_path))
+    utils.write_rds(samples, normalized_samples_path)
 
     # run expression filter
     # Remove any genes that have 0 expression in more samples than proportion_unexpressed
@@ -113,8 +116,12 @@ def main():
     # Use input basename as prefix if none was supplied
     prefix = args.output_prefix or os.path.splitext(os.path.basename(args.input_path))[0]
 
+    # Output file path
+    normalized_samples_path = os.path.join(args.scratch, "{}log2-normalized.rds".format(prefix))
+
     expression = prepare_expression(args.input_path, 
                                     args.scratch, 
+                                    normalized_samples_path,
                                     prefix=prefix, 
                                     verbose=args.verbose,
                                     proportion_unexpressed=args.proportion_unexpressed, 
