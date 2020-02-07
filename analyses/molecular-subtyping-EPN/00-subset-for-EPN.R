@@ -49,18 +49,18 @@ histologies <- readr::read_tsv(opts$histology, col_types = readr::cols(.default 
 expression <- readr::read_rds(opts$expression)
 
 
-epr_samples <- histologies %>%
+epn_samples <- histologies %>%
   filter(experimental_strategy == "RNA-Seq",
          disease_type_new == "Ependymoma") %>%
   pull(Kids_First_Biospecimen_ID)
 
 # Subsetting expression columns with column names/BSIDs that are  in the  list  of ependymoma samples
-epr_expression <- expression %>%
-  select(epr_samples) %>%
+epn_expression <- expression %>%
+  select(epn_samples) %>%
   tibble::rownames_to_column("GENE")
 
 # write the expression file out
-readr::write_tsv(epr_expression, opts$outfile)
+readr::write_tsv(epn_expression, opts$outfile)
    
 
   
