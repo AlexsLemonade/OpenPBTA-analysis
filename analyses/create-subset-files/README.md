@@ -21,3 +21,14 @@ To run the entire pipeline with skipping those files enabled, one can run (from 
 ```
 RUN_LOCAL=1 ./analyses/create-subset-files/create_subset_files.sh
 ```
+
+### Additional features for convenience
+
+Running the following from the root directory of the repository
+
+```
+SKIP_SUBSETTING=1 ./analyses/create-subset-files/create_subset_files.sh
+```
+
+will skip the subsetting file steps that are implemented in R and only copy files that are included in full (e.g., `pbta-histologies.tsv`) and generate a new `md5sum.txt`.
+This is intended to be used when the only files that need to be updated are those that are copied over without being reduced in size in anyway.
