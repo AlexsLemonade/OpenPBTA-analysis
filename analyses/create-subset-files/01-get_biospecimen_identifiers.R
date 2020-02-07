@@ -181,6 +181,13 @@ num_nonmatched <- ceiling(0.1 * num_matched_participants)
 # set the seed
 set.seed(opt$seed)
 
+#### Samples we need to include to run tp53_nf1_score --------------------------
+
+tp53_dnaseq <- c("BS_3E5C1PN1", "BS_KHSYAB3J", "BS_ZR75EKKX")
+tp53_stranded <- c("BS_TM9MH0RP", "BS_4B0BAVTX", "BS_FCAKKZ20")
+nf1_dnaseq <- c("BS_RXSBJ929", "BS_P3PF53V8", "BS_7M7JNG00")
+nf1_stranded <- c("BS_WJ9H4NZZ", "BS_Z8YZ6QGS", "BS_E0N3PTPN")
+
 #### Get IDs -------------------------------------------------------------------
 
 # list all files we are interested in subsetting and can support
@@ -320,6 +327,20 @@ biospecimen_ids_for_subset <- purrr::map(
   }
 )
 
+# for each stranded instance, add in biospecimen IDs for samples we know have a
+# positive example of NF1 mutation and TP53 for tp53_nf1_score
+stranded_index <- stringr::str_which(names(biospecimen_ids_for_subset),
+                                     "stranded")
+biospecimen_ids_for_subset <- biospecimen_ids_for_subset %>%
+  purrr::modify_at(stranded_index, ~ append(.x, c(tp53_stranded, nf1_stranded)))
+
+# for each pbta-snv instance, add in biospecimen IDs for samples we know have a
+# positive example of NF1 mutation and TP53 for tp53_nf1_score
+pbta_snv_index <- stringr::str_which(names(biospecimen_ids_for_subset),
+                                     "pbta-snv")
+biospecimen_ids_for_subset <- biospecimen_ids_for_subset %>%
+  purrr::modify_at(pbta_snv_index, ~ append(.x, c(tp53_dnaseq, nf1_dnaseq)))
+
 # now for the other RSEM files, we need to use the same identifiers as the
 # same file we included
 polya_rsem_ids <-
@@ -335,14 +356,6 @@ rest_polya_rsem <- lapply(polya_rsem_files[-1], function(x) polya_rsem_ids) %>%
 rest_stranded_rsem <- lapply(stranded_rsem_files[-1],
                              function(x) stranded_rsem_ids) %>%
   purrr::set_names(stranded_rsem_files[-1])
-
-# for each pbta-snv instance, add in biospecimen IDs for samples we know have a
-# positive example of an NF1 mutation for tp53_nf1_score
-pbta_snv_index <- stringr::str_which(names(biospecimen_ids_for_subset),
-                                     "pbta-snv")
-nf1_positive_biospecimen_ids <- c("BS_85Q5P8GF", "BS_Y3ETG5AE", "BS_S0T3CQ97")
-biospecimen_ids_for_subset <- biospecimen_ids_for_subset %>%
-  purrr::modify_at(pbta_snv_index, ~ append(.x, nf1_positive_biospecimen_ids))
 
 # append the other RSEM elements to the list of all ids and write to file
 biospecimen_ids_for_subset %>%
