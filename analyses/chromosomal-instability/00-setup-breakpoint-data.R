@@ -23,6 +23,10 @@
 #                 the effectively surveyed regions of the genome for the WGS samples.",
 # --surveyed_wxs: File path that specifies the BED regions file that indicates the
 #                 effectively surveyed regions of the genome for the WXS samples.
+# --gap: An integer that indicates how many base pairs away a CNV and SV and 
+#        still be considered the same. Will be passed to maxgap argument in 
+#        GenomicRanges::findOverlaps. Default is 0.
+# --drop_sex: If TRUE, will drop the sex chromosomes. Default is FALSE
 #
 # Command line example:
 #
@@ -37,11 +41,60 @@
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
+# We need the `make_granges` function from here
+source(file.path(root_dir, 
+                 "analyses", 
+                 "chromosomal-instability", 
+                 "util", 
+                 "chr-break-calculate.R"))
+
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
 # Load library:
 library(optparse)
+
+
+############################ Intersect function ################################
+intersect_cnv_sv <- function(sample_id, sv_breaks, cnv_breaks, gap = opt$gap) {
+  # For a given sample's data in CNV and SV chromosomal breaks data.frame, 
+  # intersect the two (based on the maxgap allowed to consider two breaks 
+  # identical) and return a data.frame with the intersection breaks. 
+  #
+  # Args:
+  #   sample_id: The sample_id to be looked up in the samples_col
+  #   sv/cnv_breaks: for a data.frame with chromosomal coordinates and sample IDs 
+  #                  for their respective breaks
+  #   sample_id: a character string that designates which sample's data needs to be
+  #              extracted and intersected between the two data.frames (CNV and SV)
+  #   gap : The max number of bases between a CNV and SV break for them to be 
+  #         considered the same. 
+  #
+  # Returns:
+  # A chromosomal breaks data.frame that contains the intersection of CNV and SV 
+  # chromosomal break data.
+  # 
+  # Make into GenomicRanges objects 
+  sv_ranges <- make_granges(sv_breaks, 
+                            sample_id = sample_id, 
+                            start_col = "coord",
+                            end_col = "coord")
+  cnv_ranges <- make_granges(cnv_breaks,
+                             sample_id = sample_id, 
+                             start_col = "coord",
+                             end_col = "coord")
+  # Find overlaps
+  intersection_df <- IRanges::mergeByOverlaps(
+    sv_ranges, 
+    cnv_ranges,
+    maxgap = opt$gap) %>% 
+    # Coerce to data.frame
+    as.data.frame() %>% 
+    # Remove these, they are redundant
+    dplyr::select(-dplyr::contains("mcols"))
+  
+  return(intersection_df)
+}
 
 ################################ Set up options ################################
 # Set up optparse options
@@ -91,6 +144,18 @@ option_list <- list(
     help = "Relative file path (assuming from top directory of
     'OpenPBTA-analysis') that specifies the BED regions file that indicates the 
     effectively surveyed regions of the genome for the WXS samples.",
+    metavar = "character"
+  ), 
+  make_option(
+    opt_str = "--gap", default = 0,
+    help = "An integer that indicates how many base pairs away a CNV and SV 
+    breakpoint can be and still be considered the same. Will be passed to maxgap
+    argument in GenomicRanges::findOverlaps.",
+    metavar = "number"
+  ),
+  make_option(
+    opt_str = "--drop_sex", action = "store_true",
+    default = FALSE, help = "If TRUE, will drop the sex chromosomes. Default is FALSE",
     metavar = "character"
   )
 )
@@ -173,7 +238,14 @@ sv_df <- data.table::fread(opt$sv, data.table = FALSE) %>%
       `23` = "X", `24` = "Y"
     )
   )
-
+####################### Drop Sex Chr if option is on ###########################
+if (opt$drop_sex){
+  sv_df <- sv_df %>% 
+    dplyr::filter(!(chrom %in% c("X", "Y", "M")))
+  
+  cnv_df <- cnv_df %>% 
+    dplyr::filter(!(chrom %in% c("X", "Y", "M")))
+}
 #################### Format the data as chromosomes breaks #####################
 # Only keep samples for which there are both SV and CNV data
 common_samples <- dplyr::intersect(
@@ -215,14 +287,30 @@ sv_breaks <- data.frame(
     samples %in% common_samples
   )
 
-############################## Create union of breaks ##########################
-# Make an union of breaks data.frame.
-union_of_breaks <- dplyr::bind_rows(sv_breaks, cnv_breaks) %>%
-  dplyr::distinct(samples, chrom, coord, .keep_all = TRUE)
+# Remake this in case some samples' data got filtered out in the process
+common_samples <- dplyr::intersect(
+  unique(cnv_breaks$samples),
+  unique(sv_breaks$samples)
+)
+
+######################### Create intersection of breaks ########################
+# Make an intersection of breaks data.frame.
+intersection_of_breaks <- lapply(common_samples,
+                                 intersect_cnv_sv, # Special intersect function
+                                 sv_breaks = sv_breaks,
+                                 cnv_breaks = cnv_breaks, 
+                                 gap = opt$gap) # The maxgap allowed
+
+# Bring along sample names
+names(intersection_of_breaks) <- common_samples
+
+# Collaps into a data.frame
+intersection_of_breaks <- dplyr::bind_rows(intersection_of_breaks, 
+                                           .id = "samples")
 
 # Put all the breaks into a list.
 breaks_list <- list(
-  union_of_breaks = union_of_breaks,
+  intersection_of_breaks = intersection_of_breaks,
   cnv_breaks = cnv_breaks,
   sv_breaks = sv_breaks
 )
@@ -281,3 +369,4 @@ purrr::imap(breaks_density_list, function(.x, name = .y) {
     file.path(opt$output, paste0(name, "_densities.tsv"))
   )
 })
+
