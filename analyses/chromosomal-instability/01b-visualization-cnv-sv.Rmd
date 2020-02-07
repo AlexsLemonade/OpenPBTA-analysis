@@ -88,11 +88,8 @@ metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
 Read in the CNV data. 
 
 ```{r}
-# TODO: update file path when consensus is added to data release
 cnv_df <- data.table::fread(
-  file.path("..", 
-            "copy_number_consensus_call", 
-            "results",
+  file.path(data_dir, 
             "pbta-cnv-consensus.seg.gz"),
   data.table = FALSE
 ) 
@@ -307,7 +304,7 @@ circos_map_plot(
 ```{r}
 circos_map_transloc(transloc_df,
   add_track = FALSE, # We change this to true to add on to our already existing plot
-  sample_names = samples_for_examples[1],
+  sample_names = sample(transloc_df$biospecimen_id1, 1),
   samples_col = "biospecimen_id1",
   chr_col_1 = "chrom1", # Need to specify which column is the first and second location for each
   chr_col_2 = "chrom2",
@@ -326,7 +323,7 @@ png(file.path(plots_dir, "transloc_circos_plot.png"), width = 800, height = 800)
 # Run function per usual
 circos_map_transloc(transloc_df,
   add_track = FALSE,
-  sample_names = samples_for_examples[1],
+  sample_names = sample(transloc_df$biospecimen_id1, 1),
   samples_col = "biospecimen_id1",
   chr_col_1 = "chrom1",
   chr_col_2 = "chrom2",
