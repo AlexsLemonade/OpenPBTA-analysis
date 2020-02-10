@@ -11,7 +11,7 @@ date: 2020
 This analysis locally maps breakpoint density across the genome by binning
 breakpoint SV and CNV data. 
 This notebook returns data that are passed on to 
-`02-a-plot-chr-instability-by-sample.Rmd` and `02b-plot-chr-instability-by-histology.Rmd` for plotting. 
+`02-a-plot-chr-instability-heatmaps.Rmd` and `02b-plot-chr-instability-by-histology.Rmd` for plotting. 
 
 The `breaks_density` function bins the genome and counts how many chromosome breaks 
 occur for each bin, given the given `bin_size`.
