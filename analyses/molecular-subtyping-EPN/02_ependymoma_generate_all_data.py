@@ -72,10 +72,17 @@ def DNA_samples_fill_df(row, CNA, arm, loss_gain):
        return(0)
 
 # Function to generate Z-scores column for every gene 
-def fill_df_with_fpkm_zscores(df,fpkmdf, column_name, gene_name):
+#def fill_df_with_fpkm_zscores(df,fpkmdf, column_name, gene_name):
+#        zscore_list = stats.zscore(np.array(df.apply(lambda x: fpkmdf.loc[gene_name, x["Kids_First_Biospecimen_ID_RNA"]], axis=1)))
+#        df[column_name] = pd.Series(zscore_list)
+#        return(df)
+
+def fill_df_with_fpkm_zscores(df,fpkmdf, gene_name):
         zscore_list = stats.zscore(np.array(df.apply(lambda x: fpkmdf.loc[gene_name, x["Kids_First_Biospecimen_ID_RNA"]], axis=1)))
+        column_name = gene_name + "_expr_zscore"
         df[column_name] = pd.Series(zscore_list)
         return(df)
+
 
 # This  function takes a dataframe whose values need to be  used for final 
 # EPN_notebook and based on columnname, the corresponding value is returned  
@@ -106,14 +113,14 @@ EPN_notebook["breaks_density-chromosomal_instability"] = EPN_notebook.apply(lamb
         if x["Kids_First_Biospecimen_ID_DNA"] is not np.nan  else "NA", axis=1)
 
 # Adding Z-scores to dataframe
-EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "RELA_expr_Z-scores", "RELA")
-EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "L1CAM_expr_Zscore", "L1CAM")
-EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "ARL4D_expr_Zscore", "ARL4D")
-EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "CLDN1_expr_zscore", "CLDN1")
-EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "CXorf67_expr_zscore", "CXorf67")
-EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "TKTL1_expr_zscore", "TKTL1")
-EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "GPBP1_expr_zscore", "GPBP1")
-EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df,  "IFT46_expr_zscore", "IFT46")
+EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "RELA")
+EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "L1CAM")
+EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "ARL4D")
+EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "CLDN1")
+EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "CXorf67")
+EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "TKTL1")
+EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "GPBP1")
+EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "IFT46")
 
 # Replacing all Nan values with NA so they are not empty when writing to a file
 EPN_notebook =EPN_notebook.replace(np.nan, 'NA', regex=True)
