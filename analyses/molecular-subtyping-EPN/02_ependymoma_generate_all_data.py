@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # Author Teja Koganti (D3B)
 
+import sys
 
 import argparse
 import pandas as pd
@@ -59,15 +60,18 @@ breakpoint_density = breakpoint_density.set_index("samples")
 #Reading the input in a  dataframe 
 EPN_notebook = pd.read_csv(args.notebook, sep="\t")
 
-# This function takes in a GISTIC  broad_values 
-# and a string (loss/gain) and returns 0/1 accordingly 
-def DNA_samples_fill_df(CNA_value, loss_gain):
-          if CNA_value<0 and loss_gain=="loss":
-            return(1)
-          elif loss_gain=="gain" and CNA_value>0:
-            return(1)
-          else:
-            return(0)
+# This function takes in CNA dataframe along  with chromosomal arm
+# and if should be a loss/gain in the results and returns a boolean value  accordingly
+def DNA_samples_fill_df(row, CNA, arm, loss_gain):
+    if row["Kids_First_Biospecimen_ID_DNA"] is np.nan:
+        return(0)
+    CNA_value = CNA.loc[arm, row["Kids_First_Biospecimen_ID_DNA"]]
+    if CNA_value<0 and loss_gain=="loss":
+       return(1)
+    elif loss_gain=="gain" and CNA_value>0:
+       return(1)
+    else:
+       return(0)
 
 # Function to generate Z-scores column for every gene 
 def fill_df_with_fpkm_zscores(df,fpkmdf, column_name, gene_name):
@@ -75,40 +79,35 @@ def fill_df_with_fpkm_zscores(df,fpkmdf, column_name, gene_name):
         df[column_name] = pd.Series(zscore_list)
         return(df)
 
+# This  function takes a dataframe whose values need to be  used for final 
+# EPN_notebook and based on columnname, the corresponding value is returned  
+def  fill_df_with_rnaresults(row, RNA_df, columnname):
+	fusion_value = RNA_df.loc[row["Kids_First_Biospecimen_ID_RNA"],  columnname]
+	return(fusion_value)
 
 # Filling up  dataframe with broad CNA values from GISTIC
-EPN_notebook["1q_loss"] = EPN_notebook.apply(lambda x: DNA_samples_fill_df(CNA.loc["1q", x["Kids_First_Biospecimen_ID_DNA"]], "loss") 
-	if x["Kids_First_Biospecimen_ID_DNA"] is not np.nan else 0,axis=1)
-EPN_notebook["9p_loss"] = EPN_notebook.apply(lambda x: DNA_samples_fill_df(CNA.loc["9p", x["Kids_First_Biospecimen_ID_DNA"]], "loss") 
-	if x["Kids_First_Biospecimen_ID_DNA"] is not np.nan else 0,axis=1)
-EPN_notebook["9q_loss"] = EPN_notebook.apply(lambda x: DNA_samples_fill_df(CNA.loc["9q", x["Kids_First_Biospecimen_ID_DNA"]], "loss") 
-	if x["Kids_First_Biospecimen_ID_DNA"] is not np.nan else 0,axis=1)
-EPN_notebook["6p_loss"] = EPN_notebook.apply(lambda x: DNA_samples_fill_df(CNA.loc["6p", x["Kids_First_Biospecimen_ID_DNA"]], "loss") 
-	if x["Kids_First_Biospecimen_ID_DNA"] is not np.nan else 0,axis=1)
-EPN_notebook["6q_loss"] = EPN_notebook.apply(lambda x: DNA_samples_fill_df(CNA.loc["6q", x["Kids_First_Biospecimen_ID_DNA"]], "loss") 
-	if x["Kids_First_Biospecimen_ID_DNA"] is not np.nan else 0,axis=1)
-EPN_notebook["11q_loss"] = EPN_notebook.apply(lambda x: DNA_samples_fill_df(CNA.loc["11q", x["Kids_First_Biospecimen_ID_DNA"]], "loss") 
-	if x["Kids_First_Biospecimen_ID_DNA"] is not np.nan else 0,axis=1)
-EPN_notebook["11q_gain"] = EPN_notebook.apply(lambda x: DNA_samples_fill_df(CNA.loc["11q", x["Kids_First_Biospecimen_ID_DNA"]], "gain") 
-	if x["Kids_First_Biospecimen_ID_DNA"] is not np.nan else 0,axis=1)
+EPN_notebook["1q_loss"] = EPN_notebook.apply(DNA_samples_fill_df, axis = 1, args = (CNA, "1q", "loss"))
+EPN_notebook["9p_loss"] = EPN_notebook.apply(DNA_samples_fill_df, axis = 1, args = (CNA, "9p", "loss"))
+EPN_notebook["9q_loss"] = EPN_notebook.apply(DNA_samples_fill_df, axis = 1, args = (CNA, "9q", "loss"))
+EPN_notebook["6p_loss"] = EPN_notebook.apply(DNA_samples_fill_df, axis = 1, args = (CNA, "6p", "loss"))
+EPN_notebook["6q_loss"] = EPN_notebook.apply(DNA_samples_fill_df, axis = 1, args = (CNA, "6q", "loss"))
+EPN_notebook["11q_loss"] = EPN_notebook.apply(DNA_samples_fill_df, axis = 1, args = (CNA, "11q", "loss"))
+EPN_notebook["11q_gain"] = EPN_notebook.apply(DNA_samples_fill_df, axis = 1, args = (CNA, "11q", "gain"))
 
 # Adding GSEA score to the  dataframe 
-EPN_notebook["NFKB_pathway_GSEAscore"] = EPN_notebook.apply(lambda x: gsva_NFKB.loc[x["Kids_First_Biospecimen_ID_RNA"], "gsea_score"], axis =1)
+#EPN_notebook["NFKB_pathway_GSEAscore"] = EPN_notebook.apply(lambda x: gsva_NFKB.loc[x["Kids_First_Biospecimen_ID_RNA"], "gsea_score"], axis =1)
+EPN_notebook["NFKB_pathway_GSEAscore"] = EPN_notebook.apply(fill_df_with_rnaresults, axis=1, args =  (gsva_NFKB, "gsea_score"))
 
-# Adding fusion lines to dataframe 
-EPN_notebook["C11orf95-RELA_fusion"] = EPN_notebook.apply(lambda x: fusion.loc[x["Kids_First_Biospecimen_ID_RNA"], "C11orf95--RELA"], axis=1)
-EPN_notebook["LTBP3--RELA_fusion"] = EPN_notebook.apply(lambda x: fusion.loc[x["Kids_First_Biospecimen_ID_RNA"], "LTBP3--RELA"], axis=1)
-EPN_notebook["PTEN--TAS2R1_fusion"] =  EPN_notebook.apply(lambda x: fusion.loc[x["Kids_First_Biospecimen_ID_RNA"], "PTEN--TAS2R1"], axis=1)
-EPN_notebook["C11orf95--YAP1_fusion"] = EPN_notebook.apply(lambda x: fusion.loc[x["Kids_First_Biospecimen_ID_RNA"], "C11orf95--YAP1"], axis=1)
-EPN_notebook["YAP1--MAMLD1_fusion"] = EPN_notebook.apply(lambda x: fusion.loc[x["Kids_First_Biospecimen_ID_RNA"],"YAP1--MAMLD1"], axis=1)
-EPN_notebook["YAP1--FAM118B_fusion"] = EPN_notebook.apply(lambda x: fusion.loc[x["Kids_First_Biospecimen_ID_RNA"],"YAP1--FAM118B"], axis=1)
-EPN_notebook["C11orf95--MAML2_fusion"] = EPN_notebook.apply(lambda x: fusion.loc[x["Kids_First_Biospecimen_ID_RNA"],"C11orf95--MAML2"], axis=1)
+fusions_list = ["C11orf95--RELA", "LTBP3--RELA", "PTEN--TAS2R1",  "C11orf95--YAP1", "YAP1--MAMLD1", "YAP1--FAM118B", "C11orf95--MAML2"]
+for every_fusion in fusions_list:
+	EPN_notebook[every_fusion] = EPN_notebook.apply(fill_df_with_rnaresults,  axis=1, args = (fusion, every_fusion))
 
-# Adding breakpoints density for chromosomal instability  to the dataframe 
-EPN_notebook["breaks_density-chromosomal_instability"] = EPN_notebook.apply(lambda x: breakpoint_density.loc[x["Kids_First_Biospecimen_ID_DNA"], "breaks_density"] 
-	if x["Kids_First_Biospecimen_ID_DNA"] is not np.nan  else "NA", axis=1)
 
-# Adding Z-scores to dataframe 
+# Adding breakpoints density for chromosomal instability  to the dataframe
+EPN_notebook["breaks_density-chromosomal_instability"] = EPN_notebook.apply(lambda x: breakpoint_density.loc[x["Kids_First_Biospecimen_ID_DNA"], "breaks_density"]
+        if x["Kids_First_Biospecimen_ID_DNA"] is not np.nan  else "NA", axis=1)
+
+# Adding Z-scores to dataframe
 EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "RELA_expr_Z-scores", "RELA")
 EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "L1CAM_expr_Zscore", "L1CAM")
 EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, "ARL4D_expr_Zscore", "ARL4D")
@@ -120,8 +119,7 @@ EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df,  "IFT46_expr_zsc
 
 # Replacing all Nan values with NA so they are not empty when writing to a file
 EPN_notebook =EPN_notebook.replace(np.nan, 'NA', regex=True)
-# Writing dataframe to output file 
+# Writing dataframe to output file
 EPN_notebook.to_csv(outfile, sep="\t", header=True, index=False)
 outfile.close()
-
 
