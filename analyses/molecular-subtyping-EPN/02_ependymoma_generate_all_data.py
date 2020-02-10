@@ -72,12 +72,7 @@ def DNA_samples_fill_df(row, CNA, arm, loss_gain):
        return(0)
 
 # Function to generate Z-scores column for every gene 
-#def fill_df_with_fpkm_zscores(df,fpkmdf, column_name, gene_name):
-#        zscore_list = stats.zscore(np.array(df.apply(lambda x: fpkmdf.loc[gene_name, x["Kids_First_Biospecimen_ID_RNA"]], axis=1)))
-#        df[column_name] = pd.Series(zscore_list)
-#        return(df)
-
-def fill_df_with_fpkm_zscores(df,fpkmdf, gene_name):
+def fill_df_with_fpkm_zscores(df, fpkmdf, gene_name):
         zscore_list = stats.zscore(np.array(df.apply(lambda x: fpkmdf.loc[gene_name, x["Kids_First_Biospecimen_ID_RNA"]], axis=1)))
         column_name = gene_name + "_expr_zscore"
         df[column_name] = pd.Series(zscore_list)
