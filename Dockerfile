@@ -178,6 +178,29 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 # TCGAbiolinks for TMB compare analysis
 RUN R -e "BiocManager::install(c('TCGAbiolinks'), update = FALSE)"
 
+# MATLAB Compiler Runtime is required for GISTIC, MutSigCV
+# Install steps are adapted from usuresearch/matlab-runtime
+# https://hub.docker.com/r/usuresearch/matlab-runtime/dockerfile
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get -q update && \
+    apt-get install -q -y --no-install-recommends \
+    xorg
+
+RUN mkdir /mcr-install && \
+    mkdir /opt/mcr && \
+    cd /mcr-install && \
+    wget -q http://ssd.mathworks.com/supportfiles/downloads/R2017b/deployment_files/R2017b/installers/glnxa64/MCR_R2017b_glnxa64_installer.zip && \
+    unzip -q MCR_R2017b_glnxa64_installer.zip && \
+    rm -f MCR_R2017b_glnxa64_installer.zip && \
+    ./install -destinationFolder /opt/mcr -agreeToLicense yes -mode silent && \
+    cd / && \
+    rm -rf mcr-install
+
+# Configure environment variables for MCR
+ENV LD_LIBRARY_PATH /opt/mcr/v93/runtime/glnxa64:/opt/mcr/v93/bin/glnxa64:/opt/mcr/v93/sys/os/glnxa64
+ENV XAPPLRESDIR /opt/mcr/v93/X11/app-defaults
+
 # Install python3 data science basics (pandas)
 # using pip to get more current versions
 RUN apt-get update -qq && apt-get -y --no-install-recommends install python3-pip  python3-dev 
@@ -260,25 +283,3 @@ RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remote
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
 
-# MATLAB Compiler Runtime is required for GISTIC, MutSigCV
-# Install steps are adapted from usuresearch/matlab-runtime
-# https://hub.docker.com/r/usuresearch/matlab-runtime/dockerfile
-
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get -q update && \
-    apt-get install -q -y --no-install-recommends \
-    xorg
-
-RUN mkdir /mcr-install && \
-    mkdir /opt/mcr && \
-    cd /mcr-install && \
-    wget -q http://ssd.mathworks.com/supportfiles/downloads/R2017b/deployment_files/R2017b/installers/glnxa64/MCR_R2017b_glnxa64_installer.zip && \
-    unzip -q MCR_R2017b_glnxa64_installer.zip && \
-    rm -f MCR_R2017b_glnxa64_installer.zip && \
-    ./install -destinationFolder /opt/mcr -agreeToLicense yes -mode silent && \
-    cd / && \
-    rm -rf mcr-install
-
-# Configure environment variables for MCR
-ENV LD_LIBRARY_PATH /opt/mcr/v93/runtime/glnxa64:/opt/mcr/v93/bin/glnxa64:/opt/mcr/v93/sys/os/glnxa64
-ENV XAPPLRESDIR /opt/mcr/v93/X11/app-defaults
