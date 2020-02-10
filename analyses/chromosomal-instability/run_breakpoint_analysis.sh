@@ -2,6 +2,9 @@
 # CCDL for ALSF 2020
 # Candace L Savonen
 # 
+# Need to adjust minimum samples to plot if in CI:
+IS_CI=${OPENPBTA_TESTING:-0}
+
 ###################### Create intersection BED files ###########################
 # WGS effectively surveyed BED file
 surveyed_wgs=scratch/cnv_surveyed_wgs.bed
@@ -19,9 +22,8 @@ surveyed_wgs=scratch/cnv_surveyed_wgs.bed
 surveyed_wxs=data/WXS.hg38.100bp_padded.bed  
 
 ############################ Run setup data script #############################
-# TODO: update CNV consensus file path with v14
 Rscript analyses/chromosomal-instability/00-setup-breakpoint-data.R \
-  --cnv_seg analyses/copy_number_consensus_call/results/pbta-cnv-consensus.seg.gz \
+  --cnv_seg data/pbta-cnv-consensus.seg.gz \
   --sv data/pbta-sv-manta.tsv.gz \
   --metadata data/pbta-histologies.tsv \
   --output analyses/chromosomal-instability/breakpoint-data \
@@ -42,5 +44,11 @@ Rscript -e "rmarkdown::render('analyses/chromosomal-instability/01b-visualizatio
 Rscript -e "rmarkdown::render('analyses/chromosomal-instability/02a-plot-chr-instability-heatmaps.Rmd', 
                               clean = TRUE)"
 # Histology plots:
+if [ $IS_CI -gt 0 ]
+then
+  MIN_SAMPLES=5
+else 
+  MIN_SAMPLES=0
+fi
 Rscript -e "rmarkdown::render('analyses/chromosomal-instability/02b-plot-chr-instability-by-histology.Rmd', 
-                              clean = TRUE)"
+                              clean = TRUE, params = list(min_samples=${MIN_SAMPLES}))"

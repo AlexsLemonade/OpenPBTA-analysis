@@ -6,6 +6,8 @@ output:
     toc_float: true
 author: Candace Savonen for ALSF - CCDL
 date: 2020
+params:
+  min_samples: 5
 ---
 
 This analysis evaluates chromosomal instability by using breakpoint SV and CNV 
@@ -34,6 +36,16 @@ set.seed(2020)
 
 # Need the plotting functions
 source(file.path("util", "chr-break-plot.R"))
+```
+
+Set up option for how many samples minimum we need to include in CDF plot. 
+Borrowed this type of logic from @sjspielman in the [gene-set-enrichment analysis.](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/ee1283991d30237a6a04be8fc6fec7672844133b/analyses/gene-set-enrichment-analysis/02-model-gsea.Rmd#L55)
+
+```{r}
+# Let's check if this is numeric
+if (!(is.numeric(params$min_samples))) {
+  stop("The parameter n_group should be numeric.")
+} 
 ```
 
 ### Directories and Files
@@ -100,9 +112,9 @@ total_break_densities_df <- readr::read_tsv(
 
 ```{r}
 breaks_cdf <- total_break_densities_df  %>%
-  # Only plot histologies groups with more than 5 samples
+  # Only plot histologies groups with more than `min_samples` number of samples
   dplyr::group_by(short_histology, add = TRUE) %>%
-  dplyr::filter(dplyr::n() > 5) %>%
+  dplyr::filter(dplyr::n() > params$min_samples) %>%
   # Calculate histology group mean
   dplyr::mutate(
     hist_mean = mean(breaks_density),

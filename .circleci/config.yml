@@ -110,7 +110,7 @@ jobs:
 
       - run:
           name: Chromosomal instability breakpoints
-          command: ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
+          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
           
       - run:
           name: Copy number consensus
