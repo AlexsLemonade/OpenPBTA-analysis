@@ -79,7 +79,10 @@ breaks_heatmap <- function(binned_counts_df,
   # A wrapper function for making a heatmap from the samples GenomicRanges list.
   #
   # Args:
-  # binned_counts_df: a data.frame with the binned counts for each sample.
+  # binned_counts_df: a data.frame with the binned counts for each sample must 
+  #                   have sample IDs in the row_ids and that the name of the 
+  #                   histology column must match the histologies_colors vector
+  #                   name
   # chrs: The chromosomes for each bin key.
   # histologies: The histologies to biospecimen's key.
   # chr_colors: A named vector to be used for coloring chromosomes.
@@ -191,6 +194,7 @@ histologies <-
   dplyr::arrange(short_histology) %>%
   tibble::column_to_rownames("Kids_First_Biospecimen_ID")
 
+#TODO: Better colors
 # Get values that can be used to make colors equi distant hues away for the
 # number of histology groups we have
 col_val <- seq(
