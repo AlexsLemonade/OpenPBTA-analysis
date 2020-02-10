@@ -63,7 +63,9 @@ WGS_dnaseqsamples = WGS_dnaseqsamples.rename(columns={"Kids_First_Biospecimen_ID
 
 # sample_id is common between both  datafarmes and also unique between RNA and DNA. 
 # Some DNA BSID's are missing for the corresponding RNA samples 
-EP_rnaseq_WGS = EP_rnaseq_samples.merge(WGS_dnaseqsamples, on = ["sample_id", "Kids_First_Participant_ID"], how = "left")
+EP_rnaseq_WGS = EP_rnaseq_samples.merge(WGS_dnaseqsamples, 
+                                        on = ["sample_id", "Kids_First_Participant_ID"], 
+                                        how = "outer")
 EP_rnaseq_WGS.fillna('NA', inplace=True)
 
 EP_rnaseq_WGS[["Kids_First_Participant_ID", 
