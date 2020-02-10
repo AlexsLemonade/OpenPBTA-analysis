@@ -185,7 +185,8 @@ Make histology labeling `HeatmapAnnotation` object.
 histologies <-
   data.frame(Kids_First_Biospecimen_ID = common_samples) %>%
   dplyr::inner_join(dplyr::select(metadata, Kids_First_Biospecimen_ID, short_histology)) %>%
-  dplyr::mutate(short_histology = as.factor(short_histology)) %>%
+  dplyr::mutate(short_histology = tools::toTitleCase(short_histology), 
+                short_histology = as.factor(short_histology)) %>%
   dplyr::filter(!is.na(short_histology)) %>%
   dplyr::arrange(short_histology) %>%
   tibble::column_to_rownames("Kids_First_Biospecimen_ID")
