@@ -111,7 +111,8 @@ breaks_cdf <- total_break_densities_df  %>%
   dplyr::ungroup() %>%
   # Now we will plot these as cummulative distribution plots
   ggplot2::ggplot(ggplot2::aes(
-    x = hist_rank, y = breaks_density,
+    x = hist_rank, 
+    y = breaks_density,
     color = short_histology
   )) +
   ggplot2::geom_point() +

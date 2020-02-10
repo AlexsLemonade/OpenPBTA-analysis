@@ -20,6 +20,10 @@ jobs:
           name: Sample Distribution Analyses
           command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
 
+      - run:
+          name: Chromosomal instability breakpoints
+          command: ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
+          
       # TODO: The data files for CI need to be fixed https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/527
       # - run:
       #     name: TP53 NF1 classifier run
@@ -147,10 +151,6 @@ jobs:
       - run:
           name: Gene set enrichment analysis to generate GSVA scores
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh" 
-
-      - run:
-          name: Chromosomal instability breakpoints
-          command: ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
 
       - run:
           name: Fusion Summary
