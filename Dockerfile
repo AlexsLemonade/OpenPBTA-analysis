@@ -260,3 +260,18 @@ RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remote
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
 
+# MATLAB Compiler Runtime is required for GISTIC, MutSigCV
+# Install steps are adapted from usuresearch/matlab-runtime
+# https://hub.docker.com/r/usuresearch/matlab-runtime/dockerfile
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    xorg
+
+RUN mkdir /mcr-install && \
+    mkdir /opt/mcr && \
+    cd /mcr-install && \
+    wget -q http://ssd.mathworks.com/supportfiles/downloads/R2017b/deployment_files/R2017b/installers/glnxa64/MCR_R2017b_glnxa64_installer.zip && \
+    unzip -q MCR_R2017b_glnxa64_installer.zip && \
+    rm -f MCR_R2017b_glnxa64_installer.zip && \
+    ./install -destinationFolder /opt/mcr -agreeToLicense yes -mode silent && \
+    cd / && \
+    rm -rf mcr-install
