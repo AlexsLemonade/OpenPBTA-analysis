@@ -39,5 +39,5 @@ Rscript -e "rmarkdown::render('analyses/chromosomal-instability/01-localization-
 Rscript -e "rmarkdown::render('analyses/chromosomal-instability/01b-visualization-cnv-sv.Rmd', 
                               clean = TRUE)"
 # Heatmaps:
-Rscript -e "rmarkdown::render('analyses/chromosomal-instability/02-visualization-cnv-sv.Rmd', 
+Rscript -e "rmarkdown::render('analyses/chromosomal-instability/02a-plot-chr-instability-heatmaps.Rmd', 
                               clean = TRUE)"
