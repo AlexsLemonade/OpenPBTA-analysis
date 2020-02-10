@@ -159,6 +159,10 @@ jobs:
       - run:
           name: Fusion Summary
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
+          
+      - run:
+          name: Add Shatterseek
+          command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/02-shatterseek.R
 
       - run:
           name: Telomerase activity
@@ -169,7 +173,7 @@ jobs:
          ################################
          #### Add your analysis here ####
          ################################
-     
+
 
       - run:
           name: SNV Caller Analysis 

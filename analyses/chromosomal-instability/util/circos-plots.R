@@ -147,7 +147,7 @@ circos_map_plot <- function(df,
     warning("Only a single color is allowed for the `single_color` argument, 
             only the first item will be used.")
   }
-  
+
   # If a single color is specified:
   if (single_color != "none" & color_col == "none") {
     # If a single color is specified, replace the color column with that value
