@@ -7,12 +7,13 @@
 # Option descriptions
 # -h, --histology : path to the histology metadata file 
 # -e, --expression : path to expression data file in RDS
-# -o, --output_file : path for output file
+# -o, --output_file : path for output tsv file, optionally gzipped with .gz ending
 #
 # example invocation:
-# Rscript scripts/bed_to_segfile.R \
-#   -i results/cnv_consensus.tsv \
-#   -o results/pbta-cnv-consensus.seg
+# Rscript 00-subset-for-EPN.R \
+#   -h ../../data/pbta-histologies.tsv \
+#   -e ../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
+#   -o epn-subset/epn-pbta-gene-expression-rsem-fpkm-collapsed.stranded.tsv.gz
 # 
 
 # Libraries
@@ -26,7 +27,7 @@ option_list <- list(
     c("-i", "--histology"),
     type = "character",
     default = NULL,
-    help = "hisology file tsv",
+    help = "histology file tsv",
   ),
   make_option(
     c("-e", "--expression"),
@@ -38,7 +39,7 @@ option_list <- list(
     c("-o", "--outfile"),
     type = "character",
     default = NULL,
-    help = "output file"
+    help = "output tsv file; .gz for gzipped output."
   )
 )
 
@@ -54,7 +55,7 @@ epn_samples <- histologies %>%
          disease_type_new == "Ependymoma") %>%
   pull(Kids_First_Biospecimen_ID)
 
-# Subsetting expression columns with column names/BSIDs that are  in the  list  of ependymoma samples
+# Subsetting expression columns with column names/BSIDs that are in the list of ependymoma samples
 epn_expression <- expression %>%
   select(epn_samples) %>%
   tibble::rownames_to_column("GENE")
