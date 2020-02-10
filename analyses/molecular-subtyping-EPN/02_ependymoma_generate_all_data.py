@@ -7,8 +7,6 @@ import argparse
 import pandas as pd
 import numpy as np 
 import zipfile
-import statistics
-import  scipy
 from scipy import stats
 
 parser = argparse.ArgumentParser()
@@ -47,17 +45,17 @@ gsva_NFKB = gsva_NFKB.set_index("Kids_First_Biospecimen_ID")
 # Reading subset gene expression file
 fpkm_df = pd.read_csv(args.expression, sep = "\t")
 fpkm_df = fpkm_df.set_index("GENE")
-zscore_fpkm_df = fpkm_df.apply(scipy.stats.zscore)
+zscore_fpkm_df = fpkm_df.apply(stats.zscore)
 
-#Reading fusion summary file
+# Reading fusion summary file
 fusion = pd.read_csv(args.fusion, sep="\t")
 fusion = fusion.set_index("Kids_First_Biospecimen_ID")
 
-#Reading chromosomal instability file for breakpoint density 
+# Reading chromosomal instability file for breakpoint density 
 breakpoint_density = pd.read_csv(args.breakpoints, sep="\t")
 breakpoint_density = breakpoint_density.set_index("samples")
 
-#Reading the input in a  dataframe 
+# Reading the input in a  dataframe 
 EPN_notebook = pd.read_csv(args.notebook, sep="\t")
 
 # This function takes in CNA dataframe along  with chromosomal arm
@@ -75,7 +73,7 @@ def DNA_samples_fill_df(row, CNA, arm, loss_gain):
 
 # Function to generate Z-scores column for every gene 
 def fill_df_with_fpkm_zscores(df,fpkmdf, column_name, gene_name):
-        zscore_list = scipy.stats.zscore(np.array(df.apply(lambda x: fpkmdf.loc[gene_name, x["Kids_First_Biospecimen_ID_RNA"]], axis=1)))
+        zscore_list = stats.zscore(np.array(df.apply(lambda x: fpkmdf.loc[gene_name, x["Kids_First_Biospecimen_ID_RNA"]], axis=1)))
         df[column_name] = pd.Series(zscore_list)
         return(df)
 
