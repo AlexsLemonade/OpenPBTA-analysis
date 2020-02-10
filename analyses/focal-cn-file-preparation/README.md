@@ -29,8 +29,9 @@ See the notebook for more information.
   | biospecimen_id | status | copy_number | ploidy | ensembl | gene_symbol | cytoband |
   |----------------|--------|-------------|--------|---------|-------------|---------|
   
-* `rna-expression-validation.R` - This script examines RNA-seq expression levels (RSEM FPKM) of genes that are called as deletions. 
-It is not currently run via the shell script.
+* `rna-expression-validation.R` - This script examines RNA-seq expression levels (RSEM FPKM) of genes that are called as deletions.
+It produces loss/neutral and zero/neutral correlation plots, as well as stacked barplots displaying the distribution of ranges in expression across each of the calls (loss, neutral, zero).
+_Note: The shell script's default behavior is to produce these plots using the annotated consensus SEG autosome and sex chromsome files found in this module's `results` directory and listed below._
 
 ### Output files for downstream consumption 
   
@@ -42,4 +43,65 @@ results
 ├── consensus_seg_annotated_cn_x_and_y.tsv.gz
 ├── controlfreec_annotated_cn_autosomes.tsv.gz
 └── controlfreec_annotated_cn_x_and_y.tsv.gz
+```
+
+### Folder Structure
+
+```
+focal-cn-file-preparation
+├── 01-add-ploidy-cnvkit.Rmd
+├── 01-add-ploidy-cnvkit.nb.html
+├── 02-add-ploidy-consensus.Rmd
+├── 02-add-ploidy-consensus.nb.html
+├── 03-prepare-cn-file.R
+├── README.md
+├── display-plots.md
+├── plots
+│   ├── cnvkit_annotated_cn_autosomes_polya_loss_cor_plot.png
+│   ├── cnvkit_annotated_cn_autosomes_polya_stacked_plot.png
+│   ├── cnvkit_annotated_cn_autosomes_polya_zero_cor_plot.png
+│   ├── cnvkit_annotated_cn_autosomes_stranded_loss_cor_plot.png
+│   ├── cnvkit_annotated_cn_autosomes_stranded_stacked_plot.png
+│   ├── cnvkit_annotated_cn_autosomes_stranded_zero_cor_plot.png
+│   ├── cnvkit_annotated_cn_x_and_y_polya_loss_cor_plot.png
+│   ├── cnvkit_annotated_cn_x_and_y_polya_stacked_plot.png
+│   ├── cnvkit_annotated_cn_x_and_y_polya_zero_cor_plot.png
+│   ├── cnvkit_annotated_cn_x_and_y_stranded_loss_cor_plot.png
+│   ├── cnvkit_annotated_cn_x_and_y_stranded_stacked_plot.png
+│   ├── cnvkit_annotated_cn_x_and_y_stranded_zero_cor_plot.png
+│   ├── consensus_seg_annotated_cn_autosomes_polya_loss_cor_plot.png
+│   ├── consensus_seg_annotated_cn_autosomes_polya_stacked_plot.png
+│   ├── consensus_seg_annotated_cn_autosomes_polya_zero_cor_plot.png
+│   ├── consensus_seg_annotated_cn_autosomes_stranded_loss_cor_plot.png
+│   ├── consensus_seg_annotated_cn_autosomes_stranded_stacked_plot.png
+│   ├── consensus_seg_annotated_cn_autosomes_stranded_zero_cor_plot.png
+│   ├── consensus_seg_annotated_cn_x_and_y_polya_loss_cor_plot.png
+│   ├── consensus_seg_annotated_cn_x_and_y_polya_stacked_plot.png
+│   ├── consensus_seg_annotated_cn_x_and_y_polya_zero_cor_plot.png
+│   ├── consensus_seg_annotated_cn_x_and_y_stranded_loss_cor_plot.png
+│   ├── consensus_seg_annotated_cn_x_and_y_stranded_stacked_plot.png
+│   ├── consensus_seg_annotated_cn_x_and_y_stranded_zero_cor_plot.png
+│   ├── controlfreec_annotated_cn_autosomes_polya_loss_cor_plot.png
+│   ├── controlfreec_annotated_cn_autosomes_polya_stacked_plot.png
+│   ├── controlfreec_annotated_cn_autosomes_polya_zero_cor_plot.png
+│   ├── controlfreec_annotated_cn_autosomes_stranded_loss_cor_plot.png
+│   ├── controlfreec_annotated_cn_autosomes_stranded_stacked_plot.png
+│   ├── controlfreec_annotated_cn_autosomes_stranded_zero_cor_plot.png
+│   ├── controlfreec_annotated_cn_x_and_y_polya_loss_cor_plot.png
+│   ├── controlfreec_annotated_cn_x_and_y_polya_stacked_plot.png
+│   ├── controlfreec_annotated_cn_x_and_y_polya_zero_cor_plot.png
+│   ├── controlfreec_annotated_cn_x_and_y_stranded_loss_cor_plot.png
+│   ├── controlfreec_annotated_cn_x_and_y_stranded_stacked_plot.png
+│   └── controlfreec_annotated_cn_x_and_y_stranded_zero_cor_plot.png
+├── results
+│   ├── cnvkit_annotated_cn_autosomes.tsv.gz
+│   ├── cnvkit_annotated_cn_x_and_y.tsv.gz
+│   ├── consensus_seg_annotated_cn_autosomes.tsv.gz
+│   ├── consensus_seg_annotated_cn_x_and_y.tsv.gz
+│   ├── controlfreec_annotated_cn_autosomes.tsv.gz
+│   └── controlfreec_annotated_cn_x_and_y.tsv.gz
+├── rna-expression-validation.R
+├── run-prepare-cn.sh
+└── util
+    └── rna-expression-functions.R
 ```

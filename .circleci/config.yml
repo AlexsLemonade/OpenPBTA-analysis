@@ -20,19 +20,46 @@ jobs:
           name: Sample Distribution Analyses
           command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
 
+      # TODO: The data files for CI need to be fixed https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/527
+      # - run:
+      #     name: TP53 NF1 classifier run
+      #     command: OPENPBTA_POLYAPLOT=0 ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"  
+
       # The analysis no longer needs to be tested as it has been retired and is better covered by 'SNV Caller Analysis' below.
       #- run:
       #    name: Mutect2 vs Strelka2
       #    command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/01-set-up.Rmd', clean = TRUE);
       #                                                rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', clean = TRUE)"
-     
-      - run:
-          name: Collapse RSEM
-          command: ./scripts/run_in_ci.sh bash analyses/collapse-rnaseq/run-collapse-rnaseq.sh
+
+     ### MOLECULAR SUBTYPING ###
 
       - run:
           name: Molecular Subtyping - HGG
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
+
+      - run:
+          name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors 
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
+  
+      - run:
+          name: Molecular Subtyping and Plotting - ATRT
+          command:  OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-ATRT/run-molecular-subtyping-ATRT.sh
+
+      - run:
+          name: Molecular subtyping Chordoma
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-chordoma/01-Subtype-chordoma.Rmd', clean = TRUE)"
+
+
+      # Deprecated - these results do not include germline calls and therefore are insufficient by subtyping
+      # - run:
+      #     name: SHH TP53 Molecular Subtyping
+      #     command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-SHH-tp53/SHH-tp53-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
+
+      ### END MOLECULAR SUBTYPING ###
+
+      - run:
+          name: Collapse RSEM
+          command: ./scripts/run_in_ci.sh bash analyses/collapse-rnaseq/run-collapse-rnaseq.sh
 
       - run:
           name: Immune deconvolution using xCell and MCP-Counter
@@ -68,11 +95,7 @@ jobs:
       - run:
           name: Independent samples
           command: ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh 
-
-      - run:
-          name: Focal CN Preparation
-          command: OPENPBTA_CONSENSUS=0 OPENPBTA_XY=0 ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
-                
+               
       - run:
           name: Interaction plot
           command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh
@@ -86,12 +109,12 @@ jobs:
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
 
       - run:
-          name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors 
-          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
-
-      - run:
           name: Copy number consensus
           command: ./scripts/run_in_ci.sh bash "analyses/copy_number_consensus_call/run_consensus_call.sh"
+
+      - run:
+          name: Focal CN Preparation
+          command: ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
           
       - run:
           name: Survival analysis
@@ -106,9 +129,9 @@ jobs:
           command: ./scripts/run_in_ci.sh python3 analyses/comparative-RNASeq-analysis/01-correlation-matrix.py ../../data/pbta-gene-expression-rsem-tpm.stranded.rds --output-prefix rsem-tpm-stranded- --verbose
 
       - run:
-          name: Molecular Subtyping and Plotting - ATRT
-          command:  OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-ATRT/run-molecular-subtyping-ATRT.sh        
-      
+          name: Comparative RNASeq - generate thresholds and outliers - rsem-tpm.stranded
+          command: ./scripts/run_in_ci.sh python3 analyses/comparative-RNASeq-analysis/02-thresholds-and-outliers.py --prefix rsem-tpm-stranded- --verbose
+
       - run:
           name: Process SV file
           command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/01-process-sv-file.R
@@ -116,20 +139,11 @@ jobs:
       - run:
           name: Oncoprint plotting
           command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
-
-      - run:
-          name: TP53 NF1 classifier run
-          command: OPENPBTA_POLYAPLOT=0 ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"  
       
       - run:
           name: GISTIC Plots
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', clean = TRUE)"
       
-      # Deprecated - these results do not include germline calls and therefore are insufficient by subtyping
-      # - run:
-      #     name: SHH TP53 Molecular Subtyping
-      #     command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-SHH-tp53/SHH-tp53-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
-
       - run:
           name: Gene set enrichment analysis to generate GSVA scores
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh" 
@@ -141,10 +155,10 @@ jobs:
       - run:
           name: Fusion Summary
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
-
+          
       - run:
-          name: Molecular subtyping Chordoma
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-chordoma/01-Subtype-chordoma.Rmd', clean = TRUE)"
+          name: Add Shatterseek
+          command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/02-shatterseek.R
 
       - run:
           name: Telomerase activity
@@ -153,7 +167,7 @@ jobs:
          ################################
          #### Add your analysis here ####
          ################################
-     
+
 
       - run:
           name: SNV Caller Analysis 

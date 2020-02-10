@@ -62,9 +62,9 @@ binned_counts_files <- list.files("breakpoint-data",
 Output files:
 
 ```{r}
-intersection_heatmap_file <- file.path(plots_dir, paste0("intersection_breaks_heatmap.png"))
-cnv_heatmap_file <- file.path(plots_dir, paste0("cnv_breaks_heatmap.png"))
-sv_heatmap_file <- file.path(plots_dir, paste0("sv_breaks_heatmap.png"))
+intersection_heatmap_file <- file.path(plots_dir, "intersection_breaks_heatmap.png")
+cnv_heatmap_file <- file.path(plots_dir, "cnv_breaks_heatmap.png")
+sv_heatmap_file <- file.path(plots_dir, "sv_breaks_heatmap.png")
 ```
 
 Make a special function for making the heatmaps. 
@@ -91,7 +91,7 @@ breaks_heatmap <- function(binned_counts_df,
 
   # Drop chr bin names
   binned_counts_mat <- binned_counts_df %>%
-    dplyr::select(-chr_bin_names) %>%
+    dplyr::select(rownames(histologies)) %>%
     t()
 
   # Create the Heatmap annotation object
@@ -105,7 +105,7 @@ breaks_heatmap <- function(binned_counts_df,
   # Create the Heatmap annotation object
   hist_annot <- ComplexHeatmap::HeatmapAnnotation(
     df = data.frame(histologies),
-    col = list(histologies = histologies_colors),
+    col = list(short_histology = histologies_colors),
     which = "row",
     show_annotation_name = FALSE
   )
@@ -161,10 +161,6 @@ chrs <- as.factor(chrs)
 # Make a key for assigning alternating colors to the chromosomes
 chr_colors <- rep(c("grey", "lightblue"), length.out = length(unique(chrs)))
 names(chr_colors) <- unique(chrs)
-
-# Make the same order as the data.frame
-chr_colors <- as.character(dplyr::recode(chrs, !!!chr_colors))
-names(chr_colors) <- chrs
 ```
 
 Get sample names. 
@@ -189,7 +185,8 @@ Make histology labeling `HeatmapAnnotation` object.
 histologies <-
   data.frame(Kids_First_Biospecimen_ID = common_samples) %>%
   dplyr::inner_join(dplyr::select(metadata, Kids_First_Biospecimen_ID, short_histology)) %>%
-  dplyr::mutate(short_histology = as.factor(short_histology)) %>%
+  dplyr::mutate(short_histology = tools::toTitleCase(short_histology), 
+                short_histology = as.factor(short_histology)) %>%
   dplyr::filter(!is.na(short_histology)) %>%
   dplyr::arrange(short_histology) %>%
   tibble::column_to_rownames("Kids_First_Biospecimen_ID")
@@ -206,12 +203,6 @@ histologies_colors <- hsv(h = col_val, s = col_val, v = 1)
 
 # Make this named based on histology
 names(histologies_colors) <- unique(histologies$short_histology)
-
-# Make the same order as the data.frame
-histologies_colors <- as.character(dplyr::recode(histologies$short_histology, !!!histologies_colors))
-
-# Make the names
-names(histologies_colors) <- as.character(rownames(histologies))
 ```
 
 Make a color function. 

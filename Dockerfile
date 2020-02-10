@@ -254,5 +254,9 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     --deps TRUE \
     gridGraphics
 
+# package required for shatterseek
+RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remotes::install_github('parklab/ShatterSeek', ref = '83ab3effaf9589cc391ecc2ac45a6eaf578b5046', dependencies = TRUE))"
+
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
+
