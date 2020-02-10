@@ -82,15 +82,13 @@ tmb_df <-
                               "pbta-snv-consensus-mutation-tmb-all.tsv"))
 
 # Read in GISTIC `broad_values_by_arm.txt` file
-# TODO: update once the consensus GISTIC results are in the data release
-download.file(url = "https://github.com/AlexsLemonade/OpenPBTA-analysis/files/4123481/2019-01-28-consensus-cnv.zip",
-              destfile = file.path(scratch_dir, "2019-01-28-consensus-cnv.zip"),
-              quiet = TRUE)
-unzip(file.path(scratch_dir, "2019-01-28-consensus-cnv.zip"),
-      exdir = file.path(scratch_dir, "2019-01-28-consensus-cnv"),
-      files = file.path("2019-01-28-consensus-cnv", "broad_values_by_arm.txt"))
-gistic_df <- data.table::fread(file.path(scratch_dir,
-                                         "2019-01-28-consensus-cnv",
+unzip(file.path(root_dir, "data", "pbta-cnv-consensus-gistic.zip"),
+      exdir = file.path(root_dir, "data"),
+      files = file.path("pbta-cnv-consensus-gistic", "broad_values_by_arm.txt"))
+
+gistic_df <- data.table::fread(file.path(root_dir, 
+                                         "data",
+                                         "pbta-cnv-consensus-gistic",
                                          "broad_values_by_arm.txt"),
                                data.table = FALSE)
 
