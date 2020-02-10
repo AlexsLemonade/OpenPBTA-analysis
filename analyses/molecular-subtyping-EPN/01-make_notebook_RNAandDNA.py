@@ -33,7 +33,6 @@ def group_disease(primary_site):
         if site in primary:
             return "infratentorial"
     for site in supra:
-        #if primary in site:
         if site in primary:
             return "supratentorial"
     # Note we only get to the below return if the primary site was not in either defined group.
@@ -44,7 +43,6 @@ def group_disease(primary_site):
 EP = pbta_histologies[pbta_histologies["disease_type_new"]=="Ependymoma"]
 EP_rnaseq_samples = EP[EP["experimental_strategy"] == "RNA-Seq"][["Kids_First_Biospecimen_ID", "primary_site", 
 	"Kids_First_Participant_ID", "sample_id", "experimental_strategy"]]
-#EP_rnaseq_samples["disease_group"] = [group_disease(primary) for primary in EP_rnaseq_samples["primary_site"]]
 EP_rnaseq_samples["disease_group"] = [group_disease(primary) for primary in EP_rnaseq_samples["primary_site"]]
 
 # List with only RNA samples
