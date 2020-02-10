@@ -20,10 +20,6 @@ jobs:
           name: Sample Distribution Analyses
           command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
 
-      - run:
-          name: Copy number consensus
-          command: ./scripts/run_in_ci.sh bash "analyses/copy_number_consensus_call/run_consensus_call.sh"
-
       # TODO: The data files for CI need to be fixed https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/527
       # - run:
       #     name: TP53 NF1 classifier run
@@ -111,6 +107,10 @@ jobs:
       - run:
           name: Tumor mutation burden with TCGA
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
+
+      - run:
+          name: Copy number consensus
+          command: ./scripts/run_in_ci.sh bash "analyses/copy_number_consensus_call/run_consensus_call.sh"
 
       - run:
           name: Focal CN Preparation
