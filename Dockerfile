@@ -264,7 +264,7 @@ RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remote
 # Install steps are adapted from usuresearch/matlab-runtime
 # https://hub.docker.com/r/usuresearch/matlab-runtime/dockerfile
 
-export DEBIAN_FRONTEND=noninteractive
+RUN export DEBIAN_FRONTEND=noninteractive
 RUN apt-get -q update && \
     apt-get install -q -y --no-install-recommends \
     xorg
