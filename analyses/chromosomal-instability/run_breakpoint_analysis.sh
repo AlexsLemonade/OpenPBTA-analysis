@@ -44,11 +44,11 @@ Rscript -e "rmarkdown::render('analyses/chromosomal-instability/01b-visualizatio
 Rscript -e "rmarkdown::render('analyses/chromosomal-instability/02a-plot-chr-instability-heatmaps.Rmd', 
                               clean = TRUE)"
 # Histology plots:
-if [ $IS_CI -gt 0 ]
+if [ $IS_CI -gt 1 ]
 then
-  MIN_SAMPLES=5
-else 
   MIN_SAMPLES=0
+else 
+  MIN_SAMPLES=5
 fi
 Rscript -e "rmarkdown::render('analyses/chromosomal-instability/02b-plot-chr-instability-by-histology.Rmd', 
                               clean = TRUE, params = list(min_samples=${MIN_SAMPLES}))"
