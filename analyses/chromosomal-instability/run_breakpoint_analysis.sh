@@ -41,3 +41,6 @@ Rscript -e "rmarkdown::render('analyses/chromosomal-instability/01b-visualizatio
 # Heatmaps:
 Rscript -e "rmarkdown::render('analyses/chromosomal-instability/02a-plot-chr-instability-heatmaps.Rmd', 
                               clean = TRUE)"
+# Histology plots:
+Rscript -e "rmarkdown::render('analyses/chromosomal-instability/02b-plot-chr-instability-by-histology.Rmd', 
+                              clean = TRUE)"
