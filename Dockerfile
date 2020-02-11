@@ -279,16 +279,16 @@ RUN mkdir /mcr-install && \
     cd / && \
     rm -rf mcr-install
 
+ENV LD_LIBRARY_PATH /opt/mcr/v83/runtime/glnxa64:/opt/mcr/v83/bin/glnxa64:/opt/mcr/v83/sys/os/glnxa64:
+ENV XAPPLRESDIR /opt/mcr/v83/X11/app-defaults
+
 # GISTIC installation
 RUN mkdir -p gistic_install && \
     cd gistic_install && \
     wget ftp://ftp.broadinstitute.org/pub/GISTIC2.0/GISTIC_2_0_23.tar.gz && \
     tar zxf GISTIC_2_0_23.tar.gz
 
-RUN echo "NOCACHE" && chown -R rstudio:rstudio /rocker-build/gistic_install
-RUN echo "NOCACHE" && chmod 755 /rocker-build/gistic_install
+RUN chown -R rstudio:rstudio /rocker-build/gistic_install
+RUN chmod 755 /rocker-build/gistic_install
 
-RUN echo "NOCACHE" && \
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/mcr/v83/runtime/glnxa64:/opt/mcr/v83/bin/glnxa64:/opt/mcr/v83/sys/os/glnxa64: && \
-    export XAPPLRESDIR=/opt/mcr/v83/X11/app-defaults && \
-    cd gistic_install && ./run_gistic_example
+RUN cd gistic_install && ./run_gistic_example
