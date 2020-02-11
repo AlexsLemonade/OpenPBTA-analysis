@@ -34,6 +34,10 @@ Rscript analyses/chromosomal-instability/00-setup-breakpoint-data.R \
 Rscript -e "rmarkdown::render('analyses/chromosomal-instability/01-localization-of-breakpoints.Rmd', 
                               clean = TRUE)"
                               
-######################### Chromosomal Instability Plots ########################                              
+######################### Chromosomal Instability Plots ########################   
+# Circos plots examples:
 Rscript -e "rmarkdown::render('analyses/chromosomal-instability/01b-visualization-cnv-sv.Rmd', 
+                              clean = TRUE)"
+# Heatmaps:
+Rscript -e "rmarkdown::render('analyses/chromosomal-instability/02a-plot-chr-instability-heatmaps.Rmd', 
                               clean = TRUE)"

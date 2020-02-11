@@ -11,7 +11,7 @@ date: 2020
 This analysis locally maps breakpoint density across the genome by binning
 breakpoint SV and CNV data. 
 This notebook returns data that are passed on to 
-`02-a-plot-chr-instability-by-sample.Rmd` and `02b-plot-chr-instability-by-histology.Rmd` for plotting. 
+`02-a-plot-chr-instability-heatmaps.Rmd` and `02b-plot-chr-instability-by-histology.Rmd` for plotting. 
 
 The `breaks_density` function bins the genome and counts how many chromosome breaks 
 occur for each bin, given the given `bin_size`.
@@ -87,7 +87,6 @@ The histology output file:
 ```{r}
 output_file <- file.path(output_dir, "histology_breakpoint_binned_counts.RDS")
 ```
-
 
 #### Specialized functions. 
 
@@ -218,6 +217,8 @@ Switch list to be by breaks first, samples second.
 
 ```{r}
 sample_densities <- purrr::transpose(sample_densities)
+# Extract the chromosome names for each bin
+chr_bin_names <- names(sample_densities[[1]][[1]])
 ```
 
 Turn each dataset into its own data.frame and write it to its own TSV file. 
@@ -226,7 +227,9 @@ This will be used by `02-a-plot-chr-instability-heatmaps.Rmd` for heatmaps.
 ```{r}
 # Write the break densities each as their own files
 purrr::imap(sample_densities, function(.x, name = .y) {
-  dplyr::bind_rows(.x, .id = "samples") %>%
+  dplyr::bind_rows(.x) %>% 
+    # Add on the chromosome names so they don't get lost
+    dplyr::mutate(chr_bin_names) %>%
     # Write each to a TSV file
     readr::write_tsv(file.path(
       output_dir,
