@@ -14,6 +14,10 @@
 #   - Some number of biospecimen IDs that correspond to participant IDs that
 #     are *not* represented across strategies but are present in the file under
 #     consideration. This number will be 10% of num_matched.
+#   - We include (and hardcode) a set of biospecimen IDs for samples that have
+#     TP53 and NF1 mutations that meet the criteria in the tp53_nf1_module and
+#     are represented in the stranded RNA-seq dataset. 
+#     See 00-enrich-positive-examples for more information.
 #
 # EXAMPLE USAGE:
 #
@@ -182,6 +186,7 @@ num_nonmatched <- ceiling(0.1 * num_matched_participants)
 set.seed(opt$seed)
 
 #### Samples we need to include to run tp53_nf1_score --------------------------
+# For more information, see the 00-enrich-positive-examples notebook
 
 tp53_dnaseq <- c("BS_3E5C1PN1", "BS_KHSYAB3J", "BS_ZR75EKKX")
 tp53_stranded <- c("BS_TM9MH0RP", "BS_4B0BAVTX", "BS_FCAKKZ20")
