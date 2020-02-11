@@ -44,7 +44,8 @@ Borrowed this type of logic from @sjspielman in the [gene-set-enrichment analysi
 ```{r}
 # Let's check if this is numeric
 if (!(is.numeric(params$min_samples))) {
-  stop("The parameter n_group should be numeric.")
+  warning("The parameter min_samples should be numeric. Trying to coerce to numeric.")
+  params$min_samples <- as.numeric(params$min_samples)
 } 
 ```
 
