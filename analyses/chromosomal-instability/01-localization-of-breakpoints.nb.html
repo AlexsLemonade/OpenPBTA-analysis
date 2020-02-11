@@ -2959,40 +2959,14 @@ div.tocify {
 <h3>Set Up</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbIiMgQ2hhbmdlIGhlcmUgYW5kIGl0IHdpbGwgY2hhbmdlIHRoZSByZXN0IiwiYmluX3NpemUgPC0gMWU2IiwiIiwiIyBTZXQgc2VlZCBzbyBoZWF0bWFwcyB0dXJuIG91dCB0aGUgc2FtZSIsInNldC5zZWVkKDIwMjApIiwiIiwiIyBNYWdyaXR0ciBwaXBlIiwiYCU+JWAgPC0gZHBseXI6OmAlPiVgIl19 -->
-<pre class="r"><code># Change here and it will change the rest
-bin_size &lt;- 1e6
-
-# Set seed so heatmaps turn out the same
-set.seed(2020)
-
-# Magrittr pipe
-`%&gt;%` &lt;- dplyr::`%&gt;%`</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Read in the custom functions needed for this analysis.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbInNvdXJjZShmaWxlLnBhdGgoXCJ1dGlsXCIsIFwiY2hyLWJyZWFrLWNhbGN1bGF0ZS5SXCIpKSIsInNvdXJjZShmaWxlLnBhdGgoXCJ1dGlsXCIsIFwiY2hyLWJyZWFrLXBsb3QuUlwiKSkiXX0= -->
-<pre class="r"><code>source(file.path(&quot;util&quot;, &quot;chr-break-calculate.R&quot;))
-source(file.path(&quot;util&quot;, &quot;chr-break-plot.R&quot;))</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="directories-and-files" class="section level3">
-<h3>Directories and Files</h3>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbIiMgUGF0aCB0byBkYXRhIGRpcmVjdG9yeSIsImRhdGFfZGlyIDwtIGZpbGUucGF0aChcIi4uXCIsIFwiLi5cIiwgXCJkYXRhXCIpIiwic2NyYXRjaF9kaXIgPC0gZmlsZS5wYXRoKFwiLi5cIiwgXCIuLlwiLCBcInNjcmF0Y2hcIikiLCIiLCIjIFRoZSBvdXRwdXQgZnJvbSB0aGlzIG5vdGVib29rIGlzIHVzZWQgZm9yIGRvd25zdHJlYW0gbm90ZWJvb2tzIHNvIHdlIHdpbGwgc2F2ZSIsIiMgaXQgaW4gYSBzcGVjaWFsIGRpcmVjdG9yeSIsIm91dHB1dF9kaXIgPC0gXCJicmVha3BvaW50LWRhdGFcIiIsIiIsIiMgQ3JlYXRlIHRoZSBvdXRwdXRfZGlyIGlmIGl0IGRvZXMgbm90IGV4aXN0IiwiaWYgKCFkaXIuZXhpc3RzKG91dHB1dF9kaXIpKSB7XG4gIGRpci5jcmVhdGUob3V0cHV0X2Rpcilcbn0iXX0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBQYXRoIHRvIGRhdGEgZGlyZWN0b3J5XG5kYXRhX2RpciA8LSBmaWxlLnBhdGgoXFwuLlxcLCBcXC4uXFwsIFxcZGF0YVxcKVxuc2NyYXRjaF9kaXIgPC0gZmlsZS5wYXRoKFxcLi5cXCwgXFwuLlxcLCBcXHNjcmF0Y2hcXClcblxuIyBUaGUgb3V0cHV0IGZyb20gdGhpcyBub3RlYm9vayBpcyB1c2VkIGZvciBkb3duc3RyZWFtIG5vdGVib29rcyBzbyB3ZSB3aWxsIHNhdmVcbiMgaXQgaW4gYSBzcGVjaWFsIGRpcmVjdG9yeVxub3V0cHV0X2RpciA8LSBcXGJyZWFrcG9pbnQtZGF0YVxcXG5cbiMgQ3JlYXRlIHRoZSBvdXRwdXRfZGlyIGlmIGl0IGRvZXMgbm90IGV4aXN0XG5pZiAoIWRpci5leGlzdHMob3V0cHV0X2RpcikpIHtcbiAgZGlyLmNyZWF0ZShvdXRwdXRfZGlyKVxufVxuYGBgIn0= -->
 <pre class="r"><code># Path to data directory
-data_dir &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;data&quot;)
-scratch_dir &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;scratch&quot;)
+data_dir &lt;- file.path(\..\, \..\, \data\)
+scratch_dir &lt;- file.path(\..\, \..\, \scratch\)
 
 # The output from this notebook is used for downstream notebooks so we will save
 # it in a special directory
-output_dir &lt;- &quot;breakpoint-data&quot;
+output_dir &lt;- \breakpoint-data\
 
 # Create the output_dir if it does not exist
 if (!dir.exists(output_dir)) {
@@ -3001,34 +2975,34 @@ if (!dir.exists(output_dir)) {
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Here’s all the input files we will need:</p>
+<p>Read in the custom functions needed for this analysis.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbImNocl9maWxlIDwtIGZpbGUucGF0aChkYXRhX2RpciwgXCJXR1MuaGczOC5zdHJlbGthMi51bnBhZGRlZC5iZWRcIikiLCJtZXRhZGF0YV9maWxlIDwtIGZpbGUucGF0aChkYXRhX2RpciwgXCJwYnRhLWhpc3RvbG9naWVzLnRzdlwiKSIsImJyZWFrc19maWxlIDwtIGZpbGUucGF0aChvdXRwdXRfZGlyLCBcImJyZWFrc19saXN0cy5SRFNcIikiLCJ1bmNhbGxhYmxlX2ZpbGUgPC0gZmlsZS5wYXRoKFxuICBcIi4uXCIsIFwiY29weV9udW1iZXJfY29uc2Vuc3VzX2NhbGxcIiwgXCJyZWZcIixcbiAgXCJjbnZfZXhjbHVkZWRfcmVnaW9ucy5iZWRcIlxuKSJdfQ== -->
-<pre class="r"><code>chr_file &lt;- file.path(data_dir, &quot;WGS.hg38.strelka2.unpadded.bed&quot;)
-metadata_file &lt;- file.path(data_dir, &quot;pbta-histologies.tsv&quot;)
-breaks_file &lt;- file.path(output_dir, &quot;breaks_lists.RDS&quot;)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2hyX2ZpbGUgPC0gZmlsZS5wYXRoKGRhdGFfZGlyLCBcXFdHUy5oZzM4LnN0cmVsa2EyLnVucGFkZGVkLmJlZFxcKVxubWV0YWRhdGFfZmlsZSA8LSBmaWxlLnBhdGgoZGF0YV9kaXIsIFxccGJ0YS1oaXN0b2xvZ2llcy50c3ZcXClcbmJyZWFrc19maWxlIDwtIGZpbGUucGF0aChvdXRwdXRfZGlyLCBcXGJyZWFrc19saXN0cy5SRFNcXClcbnVuY2FsbGFibGVfZmlsZSA8LSBmaWxlLnBhdGgoXG4gIFxcLi5cXCwgXFxjb3B5X251bWJlcl9jb25zZW5zdXNfY2FsbFxcLCBcXHJlZlxcLFxuICBcXGNudl9leGNsdWRlZF9yZWdpb25zLmJlZFxcXG4pXG5gYGAifQ== -->
+<pre class="r"><code>chr_file &lt;- file.path(data_dir, \WGS.hg38.strelka2.unpadded.bed\)
+metadata_file &lt;- file.path(data_dir, \pbta-histologies.tsv\)
+breaks_file &lt;- file.path(output_dir, \breaks_lists.RDS\)
 uncallable_file &lt;- file.path(
-  &quot;..&quot;, &quot;copy_number_consensus_call&quot;, &quot;ref&quot;,
-  &quot;cnv_excluded_regions.bed&quot;
+  \..\, \copy_number_consensus_call\, \ref\,
+  \cnv_excluded_regions.bed\
 )</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>The histology output file:</p>
+</div>
+<div id="directories-and-files" class="section level3">
+<h3>Directories and Files</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoib3V0cHV0X2ZpbGUgPC0gZmlsZS5wYXRoKG91dHB1dF9kaXIsIFwiaGlzdG9sb2d5X2JyZWFrcG9pbnRfYmlubmVkX2NvdW50cy5SRFNcIikifQ== -->
-<pre class="r"><code>output_file &lt;- file.path(output_dir, &quot;histology_breakpoint_binned_counts.RDS&quot;)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxub3V0cHV0X2ZpbGUgPC0gZmlsZS5wYXRoKG91dHB1dF9kaXIsIFxcaGlzdG9sb2d5X2JyZWFrcG9pbnRfYmlubmVkX2NvdW50cy5SRFNcXClcbmBgYCJ9 -->
+<pre class="r"><code>output_file &lt;- file.path(output_dir, \histology_breakpoint_binned_counts.RDS\)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<div id="specialized-functions." class="section level4">
-<h4>Specialized functions.</h4>
-<p>Wrapper function to run break_density for all three datasets: CNV, SV, and intersection data.</p>
+<p>Here’s all the input files we will need:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYWxsX2JyZWFrX2RlbnNpdHkgPC0gZnVuY3Rpb24oYnJlYWtzX2xpc3QsIHNhbXBsZV9pZHMsIHJldHVybl92ZWN0b3IpIHtcbiAgIyBGb3IgZ2l2ZW4gc2FtcGxlKHMpIGlkcywgcnVuIGJyZWFrc19kZW5zaXR5IGZvciBhbGwgZGF0YWZyYW1lcyBpdGVtcyBpbiBicmVha3NfbGlzdC5cbiAgI1xuICAjIEFyZ3M6XG4gICMgICBicmVha3NfbGlzdDogYSBkYXRhLmZyYW1lIHdpdGggY2hyb21vc29tYWwgYnJlYWtzLlxuICAjICAgc2FtcGxlX2lkczogYSBzaW5nbGUgb3IgbXVsdGlwbGUgc2FtcGxlcyB0aGF0IGNvcnJlc3BvbmQgdG8gdGhlIHNhbXBsZV9jb2xcbiAgIyAgICAgICAgICAgICAgIGFyZ3VtZW50IGFuZCB3aWxsIGJlIHVzZWQgZm9yIGNhbGN1bGF0aW5nIGRlbnNpdHkuXG4gICMgICByZXR1cm5fdmVjdG9yOiBJZiB3ZSBkb24ndCBuZWVkIHRoZSBmdWxsIEdlbm9taWNSYW5nZXMgb2JqZWN0LCBvbmx5IHRoZSB0b3RhbF9jb3VudHMsIHB1dCBUUlVFXG4gICNcbiAgIyBSZXR1cm5zOlxuICAjIEdlbm9taWNSYW5nZXMgb2JqZWN0IHRoYXQgY29udGFpbnMgdGhlIGRlbnNpdGllcyBtYXBwZWQgYWNyb3NzIHRoZSBnZW5vbWVcbiAgIyBmb3IgdGhlIGdpdmVuIHNhbXBsZXMgYW5kIGZvciBhbGwgZGF0YS5mcmFtZXMgaW4gYnJlYWtzX2xpc3QuXG4gIGxhcHBseShicmVha3NfbGlzdCwgYnJlYWtfZGVuc2l0eSwgIyBFaXRoZXIgaW50ZXJzZWN0aW9uLCBDTlYsIFNWIGRhdGEgZGVwZW5kaW5nIG9uIHRoZSBpdGVyYXRpb24uXG4gICAgc2FtcGxlX2lkID0gc2FtcGxlX2lkcyxcbiAgICBzdGFydF9jb2wgPSBcImNvb3JkXCIsXG4gICAgZW5kX2NvbCA9IFwiY29vcmRcIixcbiAgICB3aW5kb3dfc2l6ZSA9IGJpbl9zaXplLCAjIEJpbiBzaXplIHRvIGNhbGN1bGF0ZSBicmVha3MgZGVuc2l0eVxuICAgIGNocl9zaXplc192ZWN0b3IgPSBjaHJfc2l6ZXNfdmVjdG9yLCAjIFRoaXMgaXMgdGhlIHNpemVzIG9mIGNocm9tb3NvbWVzIHVzZWQgZm9yIGJpbm5pbmdcbiAgICB1bnN1cnZleWVkX2JlZCA9IHVuY2FsbGFibGVfYmVkLCAjIFRoaXMgaXMgdGhlIEJFRCBmaWxlIHRoYXQgbm90ZXMgd2hhdCByZWdpb25zIGFyZSB1bmNhbGxhYmxlXG4gICAgcGVyY19jdXRvZmYgPSAuNzUsICMgV2hhdCBwZXJjZW50YWdlIG9mIGVhY2ggYmluIG5lZWRzIHRvIGJlIGNhbGxhYmxlIGZvciBpdCBub3QgdG8gYmUgTkFcbiAgICByZXR1cm5fdmVjdG9yID0gcmV0dXJuX3ZlY3RvciAjIElmIHdlIGRvbid0IG5lZWQgdGhlIGZ1bGwgR2Vub21pY1JhbmdlcyBvYmplY3RcbiAgKVxufSJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxsX2JyZWFrX2RlbnNpdHkgPC0gZnVuY3Rpb24oYnJlYWtzX2xpc3QsIHNhbXBsZV9pZHMsIHJldHVybl92ZWN0b3IpIHtcbiAgIyBGb3IgZ2l2ZW4gc2FtcGxlKHMpIGlkcywgcnVuIGJyZWFrc19kZW5zaXR5IGZvciBhbGwgZGF0YWZyYW1lcyBpdGVtcyBpbiBicmVha3NfbGlzdC5cbiAgI1xuICAjIEFyZ3M6XG4gICMgICBicmVha3NfbGlzdDogYSBkYXRhLmZyYW1lIHdpdGggY2hyb21vc29tYWwgYnJlYWtzLlxuICAjICAgc2FtcGxlX2lkczogYSBzaW5nbGUgb3IgbXVsdGlwbGUgc2FtcGxlcyB0aGF0IGNvcnJlc3BvbmQgdG8gdGhlIHNhbXBsZV9jb2xcbiAgIyAgICAgICAgICAgICAgIGFyZ3VtZW50IGFuZCB3aWxsIGJlIHVzZWQgZm9yIGNhbGN1bGF0aW5nIGRlbnNpdHkuXG4gICMgICByZXR1cm5fdmVjdG9yOiBJZiB3ZSBkb24ndCBuZWVkIHRoZSBmdWxsIEdlbm9taWNSYW5nZXMgb2JqZWN0LCBvbmx5IHRoZSB0b3RhbF9jb3VudHMsIHB1dCBUUlVFXG4gICNcbiAgIyBSZXR1cm5zOlxuICAjIEdlbm9taWNSYW5nZXMgb2JqZWN0IHRoYXQgY29udGFpbnMgdGhlIGRlbnNpdGllcyBtYXBwZWQgYWNyb3NzIHRoZSBnZW5vbWVcbiAgIyBmb3IgdGhlIGdpdmVuIHNhbXBsZXMgYW5kIGZvciBhbGwgZGF0YS5mcmFtZXMgaW4gYnJlYWtzX2xpc3QuXG4gIGxhcHBseShicmVha3NfbGlzdCwgYnJlYWtfZGVuc2l0eSwgIyBFaXRoZXIgaW50ZXJzZWN0aW9uLCBDTlYsIFNWIGRhdGEgZGVwZW5kaW5nIG9uIHRoZSBpdGVyYXRpb24uXG4gICAgc2FtcGxlX2lkID0gc2FtcGxlX2lkcyxcbiAgICBzdGFydF9jb2wgPSBcXGNvb3JkXFwsXG4gICAgZW5kX2NvbCA9IFxcY29vcmRcXCxcbiAgICB3aW5kb3dfc2l6ZSA9IGJpbl9zaXplLCAjIEJpbiBzaXplIHRvIGNhbGN1bGF0ZSBicmVha3MgZGVuc2l0eVxuICAgIGNocl9zaXplc192ZWN0b3IgPSBjaHJfc2l6ZXNfdmVjdG9yLCAjIFRoaXMgaXMgdGhlIHNpemVzIG9mIGNocm9tb3NvbWVzIHVzZWQgZm9yIGJpbm5pbmdcbiAgICB1bnN1cnZleWVkX2JlZCA9IHVuY2FsbGFibGVfYmVkLCAjIFRoaXMgaXMgdGhlIEJFRCBmaWxlIHRoYXQgbm90ZXMgd2hhdCByZWdpb25zIGFyZSB1bmNhbGxhYmxlXG4gICAgcGVyY19jdXRvZmYgPSAuNzUsICMgV2hhdCBwZXJjZW50YWdlIG9mIGVhY2ggYmluIG5lZWRzIHRvIGJlIGNhbGxhYmxlIGZvciBpdCBub3QgdG8gYmUgTkFcbiAgICByZXR1cm5fdmVjdG9yID0gcmV0dXJuX3ZlY3RvciAjIElmIHdlIGRvbid0IG5lZWQgdGhlIGZ1bGwgR2Vub21pY1JhbmdlcyBvYmplY3RcbiAgKVxufVxuYGBgIn0= -->
 <pre class="r"><code>all_break_density &lt;- function(breaks_list, sample_ids, return_vector) {
   # For given sample(s) ids, run breaks_density for all dataframes items in breaks_list.
   #
@@ -3043,8 +3017,8 @@ uncallable_file &lt;- file.path(
   # for the given samples and for all data.frames in breaks_list.
   lapply(breaks_list, break_density, # Either intersection, CNV, SV data depending on the iteration.
     sample_id = sample_ids,
-    start_col = &quot;coord&quot;,
-    end_col = &quot;coord&quot;,
+    start_col = \coord\,
+    end_col = \coord\,
     window_size = bin_size, # Bin size to calculate breaks density
     chr_sizes_vector = chr_sizes_vector, # This is the sizes of chromosomes used for binning
     unsurveyed_bed = uncallable_bed, # This is the BED file that notes what regions are uncallable
@@ -3055,6 +3029,24 @@ uncallable_file &lt;- file.path(
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>The histology output file:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYnJlYWtzX2xpc3QgPC0gcmVhZHI6OnJlYWRfcmRzKGJyZWFrc19maWxlKVxuYGBgIn0= -->
+<pre class="r"><code>breaks_list &lt;- readr::read_rds(breaks_file)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<div id="specialized-functions." class="section level4">
+<h4>Specialized functions.</h4>
+<p>Wrapper function to run break_density for all three datasets: CNV, SV, and intersection data.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29tbW9uX3NhbXBsZXMgPC0gdW5pcXVlKGJyZWFrc19saXN0JGludGVyc2VjdGlvbl9vZl9icmVha3Mkc2FtcGxlcylcbmBgYCJ9 -->
+<pre class="r"><code>common_samples &lt;- unique(breaks_list$intersection_of_breaks$samples)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 </div>
 </div>
 <div id="read-in-data" class="section level3">
@@ -3062,120 +3054,57 @@ uncallable_file &lt;- file.path(
 <p>Import data that was set up in breakpoint format in <code>00-setup-breakpoint-data.R</code>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYnJlYWtzX2xpc3QgPC0gcmVhZHI6OnJlYWRfcmRzKGJyZWFrc19maWxlKSJ9 -->
-<pre class="r"><code>breaks_list &lt;- readr::read_rds(breaks_file)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBSZWFkIGluIHRoZSBtZXRhZGF0YVxubWV0YWRhdGEgPC0gcmVhZHI6OnJlYWRfdHN2KG1ldGFkYXRhX2ZpbGUpICU+JVxuICAjIE9ubHkga2VlcCBtZXRhZGF0YSBmb3IgdGhlIHNhbXBsZXMgd2UgYXJlIHdvcmtpbmcgd2l0aCBoZXJlXG4gIGRwbHlyOjpmaWx0ZXIoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCAlaW4lIGNvbW1vbl9zYW1wbGVzKVxuYGBgIn0= -->
+<pre class="r"><code># Read in the metadata
+metadata &lt;- readr::read_tsv(metadata_file) %&gt;%
+  # Only keep metadata for the samples we are working with here
+  dplyr::filter(Kids_First_Biospecimen_ID %in% common_samples)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Get the list of biospecimen IDs that are in this set.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiY29tbW9uX3NhbXBsZXMgPC0gdW5pcXVlKGJyZWFrc19saXN0JGludGVyc2VjdGlvbl9vZl9icmVha3Mkc2FtcGxlcykifQ== -->
-<pre class="r"><code>common_samples &lt;- unique(breaks_list$intersection_of_breaks$samples)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTZXQgdXAgQ2hyIHNpemVzXG5jaHJfc2l6ZXNfYmVkIDwtIHJlYWRyOjpyZWFkX3RzdihjaHJfZmlsZSxcbiAgY29sX25hbWVzID0gYyhcXGNocm9tXFwsIFxcc3RhcnRcXCwgXFxlbmRcXClcbikgJT4lXG4gICMgUmVmb3JtYXQgdGhlIGNocm9tb3NvbWUgdmFyaWFibGUgdG8gZHJvcCB0aGUgXFxjaHJcXFxuICBkcGx5cjo6bXV0YXRlKGNocm9tID0gZmFjdG9yKGdzdWIoXFxjaHJcXCwgXFxcXCwgY2hyb20pLFxuICAgIGxldmVscyA9IGMoMToyMiwgXFxYXFwsIFxcWVxcLCBcXE1cXClcbiAgKSkgJT4lXG4gICMgUmVtb3ZlIHNleCBjaHJvbW9zb21lc1xuICBkcGx5cjo6ZmlsdGVyKCEoY2hyb20gJWluJSBjKFxcWFxcLCBcXFlcXCwgXFxNXFwpKSlcbiMgTWFrZSBjaHJvbW9zb21lIHNpemUgbmFtZWQgdmVjdG9yIGZvciBIZWF0bWFwIGFubm90YXRpb25cbmNocl9zaXplc192ZWN0b3IgPC0gY2hyX3NpemVzX2JlZCRlbmRcbm5hbWVzKGNocl9zaXplc192ZWN0b3IpIDwtIGNocl9zaXplc19iZWQkY2hyb21cbmBgYCJ9 -->
+<pre class="r"><code># Set up Chr sizes
+chr_sizes_bed &lt;- readr::read_tsv(chr_file,
+  col_names = c(\chrom\, \start\, \end\)
+) %&gt;%
+  # Reformat the chromosome variable to drop the \chr\
+  dplyr::mutate(chrom = factor(gsub(\chr\, \\, chrom),
+    levels = c(1:22, \X\, \Y\, \M\)
+  )) %&gt;%
+  # Remove sex chromosomes
+  dplyr::filter(!(chrom %in% c(\X\, \Y\, \M\)))
+# Make chromosome size named vector for Heatmap annotation
+chr_sizes_vector &lt;- chr_sizes_bed$end
+names(chr_sizes_vector) &lt;- chr_sizes_bed$chrom</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Set up metadata</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbIiMgUmVhZCBpbiB0aGUgbWV0YWRhdGEiLCJtZXRhZGF0YSA8LSByZWFkcjo6cmVhZF90c3YobWV0YWRhdGFfZmlsZSkgJT4lXG4gICMgT25seSBrZWVwIG1ldGFkYXRhIGZvciB0aGUgc2FtcGxlcyB3ZSBhcmUgd29ya2luZyB3aXRoIGhlcmVcbiAgZHBseXI6OmZpbHRlcihLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiUgY29tbW9uX3NhbXBsZXMpIl19 -->
-<pre class="r"><code># Read in the metadata
-metadata &lt;- readr::read_tsv(metadata_file) %&gt;%
-  # Only keep metadata for the samples we are working with here
-  dplyr::filter(Kids_First_Biospecimen_ID %in% common_samples)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudW5jYWxsYWJsZV9iZWQgPC0gcmVhZHI6OnJlYWRfdHN2KHVuY2FsbGFibGVfZmlsZSxcbiAgY29sX25hbWVzID0gYyhcXGNocm9tXFwsIFxcc3RhcnRcXCwgXFxlbmRcXClcbikgJT4lXG4gICMgUmVmb3JtYXQgdGhlIGNocm9tb3NvbWUgdmFyaWFibGUgdG8gZHJvcCB0aGUgXFxjaHJcXFxuICBkcGx5cjo6bXV0YXRlKGNocm9tID0gZmFjdG9yKGdzdWIoXFxjaHJcXCwgXFxcXCwgY2hyb20pLFxuICAgIGxldmVscyA9IGMoMToyMiwgXFxYXFwsIFxcWVxcKVxuICApKSAlPiVcbiAgZHBseXI6OmZpbHRlcihcbiAgICAhaXMubmEoY2hyb20pLFxuICAgICMgRHJvcCBzZXggY2hyb21vc29tZXNcbiAgICAhKGNocm9tICVpbiUgYyhcXFhcXCwgXFxZXFwsIFxcTVxcKSlcbiAgKVxuYGBgIn0= -->
+<pre class="r"><code>uncallable_bed &lt;- readr::read_tsv(uncallable_file,
+  col_names = c(\chrom\, \start\, \end\)
+) %&gt;%
+  # Reformat the chromosome variable to drop the \chr\
+  dplyr::mutate(chrom = factor(gsub(\chr\, \\, chrom),
+    levels = c(1:22, \X\, \Y\)
+  )) %&gt;%
+  dplyr::filter(
+    !is.na(chrom),
+    # Drop sex chromosomes
+    !(chrom %in% c(\X\, \Y\, \M\))
+  )</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgT1NfZGF5cyA9IGNvbF9kb3VibGUoKSxcbiAgYWdlX2xhc3RfdXBkYXRlX2RheXMgPSBjb2xfZG91YmxlKCksXG4gIG5vcm1hbF9mcmFjdGlvbiA9IGNvbF9kb3VibGUoKSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBjb2xfZG91YmxlKCksXG4gIHR1bW9yX3Bsb2lkeSA9IGNvbF9kb3VibGUoKSxcbiAgbW9sZWN1bGFyX3N1YnR5cGUgPSBjb2xfbG9naWNhbCgpXG4pXG4ifQ== -->
-<pre><code>Parsed with column specification:
-cols(
-  .default = col_character(),
-  OS_days = col_double(),
-  age_last_update_days = col_double(),
-  normal_fraction = col_double(),
-  tumor_fraction = col_double(),
-  tumor_ploidy = col_double(),
-  molecular_subtype = col_logical()
-)</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
-<pre><code>See spec(...) for full column specifications.</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZzogNDkzIHBhcnNpbmcgZmFpbHVyZXMuXG4gcm93ICAgICAgICAgICAgICAgY29sICAgICAgICAgICBleHBlY3RlZCBhY3R1YWwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBmaWxlXG4yMzM0IG1vbGVjdWxhcl9zdWJ0eXBlIDEvMC9UL0YvVFJVRS9GQUxTRSBHcm91cDMgJy4uLy4uL2RhdGEvcGJ0YS1oaXN0b2xvZ2llcy50c3YnXG4yMzM1IG1vbGVjdWxhcl9zdWJ0eXBlIDEvMC9UL0YvVFJVRS9GQUxTRSBHcm91cDQgJy4uLy4uL2RhdGEvcGJ0YS1oaXN0b2xvZ2llcy50c3YnXG4yMzM2IG1vbGVjdWxhcl9zdWJ0eXBlIDEvMC9UL0YvVFJVRS9GQUxTRSBHcm91cDMgJy4uLy4uL2RhdGEvcGJ0YS1oaXN0b2xvZ2llcy50c3YnXG4yMzM3IG1vbGVjdWxhcl9zdWJ0eXBlIDEvMC9UL0YvVFJVRS9GQUxTRSBHcm91cDMgJy4uLy4uL2RhdGEvcGJ0YS1oaXN0b2xvZ2llcy50c3YnXG4yMzM4IG1vbGVjdWxhcl9zdWJ0eXBlIDEvMC9UL0YvVFJVRS9GQUxTRSBHcm91cDMgJy4uLy4uL2RhdGEvcGJ0YS1oaXN0b2xvZ2llcy50c3YnXG4uLi4uIC4uLi4uLi4uLi4uLi4uLi4uIC4uLi4uLi4uLi4uLi4uLi4uLiAuLi4uLi4gLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uXG5TZWUgcHJvYmxlbXMoLi4uKSBmb3IgbW9yZSBkZXRhaWxzLlxuIn0= -->
-<pre><code>Warning: 493 parsing failures.
- row               col           expected actual                              file
-2334 molecular_subtype 1/0/T/F/TRUE/FALSE Group3 '../../data/pbta-histologies.tsv'
-2335 molecular_subtype 1/0/T/F/TRUE/FALSE Group4 '../../data/pbta-histologies.tsv'
-2336 molecular_subtype 1/0/T/F/TRUE/FALSE Group3 '../../data/pbta-histologies.tsv'
-2337 molecular_subtype 1/0/T/F/TRUE/FALSE Group3 '../../data/pbta-histologies.tsv'
-2338 molecular_subtype 1/0/T/F/TRUE/FALSE Group3 '../../data/pbta-histologies.tsv'
-.... ................. .................. ...... .................................
-See problems(...) for more details.</code></pre>
-<!-- rnb-warning-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Set up chromosome size data that will be used for creating genome bins. It just so happens that this BED file: <code>WGS.hg38.strelka2.unpadded.bed</code> is actually just a list of the chromosome sizes so we are using that for now.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbIiMgU2V0IHVwIENociBzaXplcyIsImNocl9zaXplc19iZWQgPC0gcmVhZHI6OnJlYWRfdHN2KGNocl9maWxlLFxuICBjb2xfbmFtZXMgPSBjKFwiY2hyb21cIiwgXCJzdGFydFwiLCBcImVuZFwiKVxuKSAlPiVcbiAgIyBSZWZvcm1hdCB0aGUgY2hyb21vc29tZSB2YXJpYWJsZSB0byBkcm9wIHRoZSBcImNoclwiXG4gIGRwbHlyOjptdXRhdGUoY2hyb20gPSBmYWN0b3IoZ3N1YihcImNoclwiLCBcIlwiLCBjaHJvbSksXG4gICAgbGV2ZWxzID0gYygxOjIyLCBcIlhcIiwgXCJZXCIsIFwiTVwiKVxuICApKSAlPiVcbiAgIyBSZW1vdmUgc2V4IGNocm9tb3NvbWVzXG4gIGRwbHlyOjpmaWx0ZXIoIShjaHJvbSAlaW4lIGMoXCJYXCIsIFwiWVwiLCBcIk1cIikpKSJdfQ== -->
-<pre class="r"><code># Set up Chr sizes
-chr_sizes_bed &lt;- readr::read_tsv(chr_file,
-  col_names = c(&quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;)
-) %&gt;%
-  # Reformat the chromosome variable to drop the &quot;chr&quot;
-  dplyr::mutate(chrom = factor(gsub(&quot;chr&quot;, &quot;&quot;, chrom),
-    levels = c(1:22, &quot;X&quot;, &quot;Y&quot;, &quot;M&quot;)
-  )) %&gt;%
-  # Remove sex chromosomes
-  dplyr::filter(!(chrom %in% c(&quot;X&quot;, &quot;Y&quot;, &quot;M&quot;)))</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBjaHJvbSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgc3RhcnQgPSBjb2xfZG91YmxlKCksXG4gIGVuZCA9IGNvbF9kb3VibGUoKVxuKVxuIn0= -->
-<pre><code>Parsed with column specification:
-cols(
-  chrom = col_character(),
-  start = col_double(),
-  end = col_double()
-)</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-source-begin eyJkYXRhIjpbIiMgTWFrZSBjaHJvbW9zb21lIHNpemUgbmFtZWQgdmVjdG9yIGZvciBIZWF0bWFwIGFubm90YXRpb24iLCJjaHJfc2l6ZXNfdmVjdG9yIDwtIGNocl9zaXplc19iZWQkZW5kIiwibmFtZXMoY2hyX3NpemVzX3ZlY3RvcikgPC0gY2hyX3NpemVzX2JlZCRjaHJvbSJdfQ== -->
-<pre class="r"><code># Make chromosome size named vector for Heatmap annotation
-chr_sizes_vector &lt;- chr_sizes_bed$end
-names(chr_sizes_vector) &lt;- chr_sizes_bed$chrom</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Set up uncallable regions BED. We will use this to declare NAs in regions with too high of a percentage of uncallable regions.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoidW5jYWxsYWJsZV9iZWQgPC0gcmVhZHI6OnJlYWRfdHN2KHVuY2FsbGFibGVfZmlsZSxcbiAgY29sX25hbWVzID0gYyhcImNocm9tXCIsIFwic3RhcnRcIiwgXCJlbmRcIilcbikgJT4lXG4gICMgUmVmb3JtYXQgdGhlIGNocm9tb3NvbWUgdmFyaWFibGUgdG8gZHJvcCB0aGUgXCJjaHJcIlxuICBkcGx5cjo6bXV0YXRlKGNocm9tID0gZmFjdG9yKGdzdWIoXCJjaHJcIiwgXCJcIiwgY2hyb20pLFxuICAgIGxldmVscyA9IGMoMToyMiwgXCJYXCIsIFwiWVwiKVxuICApKSAlPiVcbiAgZHBseXI6OmZpbHRlcihcbiAgICAhaXMubmEoY2hyb20pLFxuICAgICMgRHJvcCBzZXggY2hyb21vc29tZXNcbiAgICAhKGNocm9tICVpbiUgYyhcIlhcIiwgXCJZXCIsIFwiTVwiKSlcbiAgKSJ9 -->
-<pre class="r"><code>uncallable_bed &lt;- readr::read_tsv(uncallable_file,
-  col_names = c(&quot;chrom&quot;, &quot;start&quot;, &quot;end&quot;)
-) %&gt;%
-  # Reformat the chromosome variable to drop the &quot;chr&quot;
-  dplyr::mutate(chrom = factor(gsub(&quot;chr&quot;, &quot;&quot;, chrom),
-    levels = c(1:22, &quot;X&quot;, &quot;Y&quot;)
-  )) %&gt;%
-  dplyr::filter(
-    !is.na(chrom),
-    # Drop sex chromosomes
-    !(chrom %in% c(&quot;X&quot;, &quot;Y&quot;, &quot;M&quot;))
-  )</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBjaHJvbSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgc3RhcnQgPSBjb2xfZG91YmxlKCksXG4gIGVuZCA9IGNvbF9kb3VibGUoKVxuKVxuIn0= -->
-<pre><code>Parsed with column specification:
-cols(
-  chrom = col_character(),
-  start = col_double(),
-  end = col_double()
-)</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="mapping-of-breakpoint-densities-for-individual-samples" class="section level3">
-<h3>Mapping of breakpoint densities for individual samples</h3>
-<p>Let’s reformat that the intersection_or_breaks data.frame. It contains both SV data and CNV data for its intersections. We’ll go by SV data here.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbIiMgRm9yIHNpbXBsaWNpdHkncyBzYWtlLCBjaGFuZ2UgdGhlIG5hbWUgb2YgdGhlIGludGVyc2VjdGlvbiBjb2x1bW4gd2Ugd2FudCB0byB1c2UiLCJicmVha3NfbGlzdCRpbnRlcnNlY3Rpb25fb2ZfYnJlYWtzIDwtIGJyZWFrc19saXN0JGludGVyc2VjdGlvbl9vZl9icmVha3MgJT4lXG4gIGRwbHlyOjpyZW5hbWUoXG4gICAgY2hyb20gPSBzdl9yYW5nZXMuc2VxbmFtZXMsXG4gICAgY29vcmQgPSBzdl9yYW5nZXMuc3RhcnRcbiAgKSJdfQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBGb3Igc2ltcGxpY2l0eSdzIHNha2UsIGNoYW5nZSB0aGUgbmFtZSBvZiB0aGUgaW50ZXJzZWN0aW9uIGNvbHVtbiB3ZSB3YW50IHRvIHVzZVxuYnJlYWtzX2xpc3QkaW50ZXJzZWN0aW9uX29mX2JyZWFrcyA8LSBicmVha3NfbGlzdCRpbnRlcnNlY3Rpb25fb2ZfYnJlYWtzICU+JVxuICBkcGx5cjo6cmVuYW1lKFxuICAgIGNocm9tID0gc3ZfcmFuZ2VzLnNlcW5hbWVzLFxuICAgIGNvb3JkID0gc3ZfcmFuZ2VzLnN0YXJ0XG4gIClcbmBgYCJ9 -->
 <pre class="r"><code># For simplicity's sake, change the name of the intersection column we want to use
 breaks_list$intersection_of_breaks &lt;- breaks_list$intersection_of_breaks %&gt;%
   dplyr::rename(
@@ -3185,10 +3114,10 @@ breaks_list$intersection_of_breaks &lt;- breaks_list$intersection_of_breaks %&gt
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Calculate sample breakpoint densities across the binned genome.</p>
+<p>Set up uncallable regions BED. We will use this to declare NAs in regions with too high of a percentage of uncallable regions.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbIiMgR2V0IGEgYmlnIGxpc3Qgb2YgYnJlYWsgZGVuc2l0aWVzIGZvciBlYWNoIHNhbXBsZS4iLCJzYW1wbGVfZGVuc2l0aWVzIDwtIGxhcHBseShjb21tb25fc2FtcGxlcywgZnVuY3Rpb24oc2FtcGxlX2lkKSB7XG4gIGFsbF9icmVha19kZW5zaXR5KFxuICAgIGJyZWFrc19saXN0ID0gYnJlYWtzX2xpc3QsXG4gICAgc2FtcGxlX2lkID0gc2FtcGxlX2lkLFxuICAgIHJldHVybl92ZWN0b3IgPSBUUlVFXG4gICkgIyBXZSBvbmx5IHdhbnQgdGhlIHRvdGFsIGNvdW50cyxcbiAgIyBub3QgdGhlIHdob2xlIEdlbm9taWNSYW5nZXMgb2JqZWN0XG59KSIsIiIsIiMgQnJpbmcgYWxvbmcgdGhlIHNhbXBsZSBJRHMiLCJuYW1lcyhzYW1wbGVfZGVuc2l0aWVzKSA8LSBjb21tb25fc2FtcGxlcyJdfQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBHZXQgYSBiaWcgbGlzdCBvZiBicmVhayBkZW5zaXRpZXMgZm9yIGVhY2ggc2FtcGxlLlxuc2FtcGxlX2RlbnNpdGllcyA8LSBsYXBwbHkoY29tbW9uX3NhbXBsZXMsIGZ1bmN0aW9uKHNhbXBsZV9pZCkge1xuICBhbGxfYnJlYWtfZGVuc2l0eShcbiAgICBicmVha3NfbGlzdCA9IGJyZWFrc19saXN0LFxuICAgIHNhbXBsZV9pZCA9IHNhbXBsZV9pZCxcbiAgICByZXR1cm5fdmVjdG9yID0gVFJVRVxuICApICMgV2Ugb25seSB3YW50IHRoZSB0b3RhbCBjb3VudHMsXG4gICMgbm90IHRoZSB3aG9sZSBHZW5vbWljUmFuZ2VzIG9iamVjdFxufSlcblxuIyBCcmluZyBhbG9uZyB0aGUgc2FtcGxlIElEc1xubmFtZXMoc2FtcGxlX2RlbnNpdGllcykgPC0gY29tbW9uX3NhbXBsZXNcbmBgYCJ9 -->
 <pre class="r"><code># Get a big list of break densities for each sample.
 sample_densities &lt;- lapply(common_samples, function(sample_id) {
   all_break_density(
@@ -3204,20 +3133,23 @@ names(sample_densities) &lt;- common_samples</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Switch list to be by breaks first, samples second.</p>
+</div>
+<div id="mapping-of-breakpoint-densities-for-individual-samples" class="section level3">
+<h3>Mapping of breakpoint densities for individual samples</h3>
+<p>Let’s reformat that the intersection_or_breaks data.frame. It contains both SV data and CNV data for its intersections. We’ll go by SV data here.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbInNhbXBsZV9kZW5zaXRpZXMgPC0gcHVycnI6OnRyYW5zcG9zZShzYW1wbGVfZGVuc2l0aWVzKSIsIiMgRXh0cmFjdCB0aGUgY2hyb21vc29tZSBuYW1lcyBmb3IgZWFjaCBiaW4iLCJjaHJfYmluX25hbWVzIDwtIG5hbWVzKHNhbXBsZV9kZW5zaXRpZXNbWzFdXVtbMV1dKSJdfQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2FtcGxlX2RlbnNpdGllcyA8LSBwdXJycjo6dHJhbnNwb3NlKHNhbXBsZV9kZW5zaXRpZXMpXG4jIEV4dHJhY3QgdGhlIGNocm9tb3NvbWUgbmFtZXMgZm9yIGVhY2ggYmluXG5jaHJfYmluX25hbWVzIDwtIG5hbWVzKHNhbXBsZV9kZW5zaXRpZXNbWzFdXVtbMV1dKVxuYGBgIn0= -->
 <pre class="r"><code>sample_densities &lt;- purrr::transpose(sample_densities)
 # Extract the chromosome names for each bin
 chr_bin_names &lt;- names(sample_densities[[1]][[1]])</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Turn each dataset into its own data.frame and write it to its own TSV file. This will be used by <code>02-a-plot-chr-instability-heatmaps.Rmd</code> for heatmaps.</p>
+<p>Calculate sample breakpoint densities across the binned genome.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbIiMgV3JpdGUgdGhlIGJyZWFrIGRlbnNpdGllcyBlYWNoIGFzIHRoZWlyIG93biBmaWxlcyIsInB1cnJyOjppbWFwKHNhbXBsZV9kZW5zaXRpZXMsIGZ1bmN0aW9uKC54LCBuYW1lID0gLnkpIHtcbiAgZHBseXI6OmJpbmRfcm93cygueCkgJT4lIFxuICAgICMgQWRkIG9uIHRoZSBjaHJvbW9zb21lIG5hbWVzIHNvIHRoZXkgZG9uJ3QgZ2V0IGxvc3RcbiAgICBkcGx5cjo6bXV0YXRlKGNocl9iaW5fbmFtZXMpICU+JVxuICAgICMgV3JpdGUgZWFjaCB0byBhIFRTViBmaWxlXG4gICAgcmVhZHI6OndyaXRlX3RzdihmaWxlLnBhdGgoXG4gICAgICBvdXRwdXRfZGlyLFxuICAgICAgcGFzdGUwKG5hbWUsIFwiX2Jpbm5lZF9jb3VudHMudHN2XCIpXG4gICAgKSlcbn0pIl19 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBXcml0ZSB0aGUgYnJlYWsgZGVuc2l0aWVzIGVhY2ggYXMgdGhlaXIgb3duIGZpbGVzXG5wdXJycjo6aW1hcChzYW1wbGVfZGVuc2l0aWVzLCBmdW5jdGlvbigueCwgbmFtZSA9IC55KSB7XG4gIGRwbHlyOjpiaW5kX3Jvd3MoLngpICU+JSBcbiAgICAjIEFkZCBvbiB0aGUgY2hyb21vc29tZSBuYW1lcyBzbyB0aGV5IGRvbid0IGdldCBsb3N0XG4gICAgZHBseXI6Om11dGF0ZShjaHJfYmluX25hbWVzKSAlPiVcbiAgICAjIFdyaXRlIGVhY2ggdG8gYSBUU1YgZmlsZVxuICAgIHJlYWRyOjp3cml0ZV90c3YoZmlsZS5wYXRoKFxuICAgICAgb3V0cHV0X2RpcixcbiAgICAgIHBhc3RlMChuYW1lLCBcXF9iaW5uZWRfY291bnRzLnRzdlxcKVxuICAgICkpXG59KVxuYGBgIn0= -->
 <pre class="r"><code># Write the break densities each as their own files
 purrr::imap(sample_densities, function(.x, name = .y) {
   dplyr::bind_rows(.x) %&gt;% 
@@ -3226,7 +3158,7 @@ purrr::imap(sample_densities, function(.x, name = .y) {
     # Write each to a TSV file
     readr::write_tsv(file.path(
       output_dir,
-      paste0(name, &quot;_binned_counts.tsv&quot;)
+      paste0(name, \_binned_counts.tsv\)
     ))
 })</code></pre>
 <!-- rnb-source-end -->
@@ -3380,25 +3312,22 @@ $sv_breaks
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-</div>
-<div id="mapping-of-breakpoint-densities-for-tumor-type-groups" class="section level3">
-<h3>Mapping of breakpoint densities for tumor-type groups</h3>
-<p>Same as was done for each sample, now we will calculate densities for each tumor-type group. This will be used by <code>02-b-plot-chr-instability-by-histology.Rmd</code> for plots.</p>
+<p>Switch list to be by breaks first, samples second.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbIiMgR2V0IGEgbGlzdCBvZiB0aGUgdHVtb3JfdHlwZXMgZm9yIHdoaWNoIHdlIGhhdmUgRE5BLXNlcSBkYXRhIiwidHVtb3JfdHlwZXMgPC0gbWV0YWRhdGEgJT4lXG4gIGRwbHlyOjpmaWx0ZXIoIWlzLm5hKHNob3J0X2hpc3RvbG9neSksIGV4cGVyaW1lbnRhbF9zdHJhdGVneSAhPSBcIlJOQS1TZXFcIikgJT4lXG4gIGRwbHlyOjpkaXN0aW5jdChzaG9ydF9oaXN0b2xvZ3kpICU+JVxuICBkcGx5cjo6cHVsbChzaG9ydF9oaXN0b2xvZ3kpIl19 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBHZXQgYSBsaXN0IG9mIHRoZSB0dW1vcl90eXBlcyBmb3Igd2hpY2ggd2UgaGF2ZSBETkEtc2VxIGRhdGFcbnR1bW9yX3R5cGVzIDwtIG1ldGFkYXRhICU+JVxuICBkcGx5cjo6ZmlsdGVyKCFpcy5uYShzaG9ydF9oaXN0b2xvZ3kpLCBleHBlcmltZW50YWxfc3RyYXRlZ3kgIT0gXFxSTkEtU2VxXFwpICU+JVxuICBkcGx5cjo6ZGlzdGluY3Qoc2hvcnRfaGlzdG9sb2d5KSAlPiVcbiAgZHBseXI6OnB1bGwoc2hvcnRfaGlzdG9sb2d5KVxuYGBgIn0= -->
 <pre class="r"><code># Get a list of the tumor_types for which we have DNA-seq data
 tumor_types &lt;- metadata %&gt;%
-  dplyr::filter(!is.na(short_histology), experimental_strategy != &quot;RNA-Seq&quot;) %&gt;%
+  dplyr::filter(!is.na(short_histology), experimental_strategy != \RNA-Seq\) %&gt;%
   dplyr::distinct(short_histology) %&gt;%
   dplyr::pull(short_histology)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Run the density calculations for the groups.</p>
+<p>Turn each dataset into its own data.frame and write it to its own TSV file. This will be used by <code>02-a-plot-chr-instability-heatmaps.Rmd</code> for heatmaps.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbIiMgR2V0IGEgYmlnIGxpc3Qgb2YgYnJlYWsgZGVuc2l0aWVzIGZvciBlYWNoIHNhbXBsZS4iLCJncm91cF9kZW5zaXRpZXMgPC0gbGFwcGx5KHR1bW9yX3R5cGVzLCBmdW5jdGlvbih0dW1vcl90eXBlKSB7XG5cbiAgIyBPYnRhaW4gYSBsaXN0IG9mIHNhbXBsZV9pZHMgdG8gY2FsY3VsYXRlIGJyZWFrIGRlbnNpdHkgZm9yXG4gIHNhbXBsZV9pZHMgPC0gbWV0YWRhdGEgJT4lXG4gICAgZHBseXI6OmZpbHRlcihtZXRhZGF0YSRzaG9ydF9oaXN0b2xvZ3kgPT0gdHVtb3JfdHlwZSkgJT4lXG4gICAgZHBseXI6OnB1bGwoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRClcblxuICAjIFByaW50IHByb2dyZXNzIG1lc3NhZ2VcbiAgbWVzc2FnZShwYXN0ZShcIkNhbGN1bGF0aW5nIGJyZWFrcG9pbnQgZGVuc2l0eSBmb3JcIiwgdHVtb3JfdHlwZSwgXCJzYW1wbGVzXCIpKVxuXG4gICMgQ2FsY3VsYXRlIGJyZWFrIGRlbnNpdHkgZm9yIGFsbCAzIGRhdGFzZXRzXG4gIGFsbF9icmVha19kZW5zaXR5KFxuICAgIGJyZWFrc19saXN0ID0gYnJlYWtzX2xpc3QsXG4gICAgc2FtcGxlX2lkID0gc2FtcGxlX2lkcywgIyBXZSBhcmUgc3VwcGx5aW5nIGFsbCBzYW1wbGVzIGZvciB0aGlzIHR1bW9yLXR5cGVcbiAgICByZXR1cm5fdmVjdG9yID0gRkFMU0VcbiAgKSAjIFdlIHdhbnQgdGhlIHdob2xlIEdlbm9taWNSYW5nZXMgb2JqZWN0XG59KSJdfQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBHZXQgYSBiaWcgbGlzdCBvZiBicmVhayBkZW5zaXRpZXMgZm9yIGVhY2ggc2FtcGxlLlxuZ3JvdXBfZGVuc2l0aWVzIDwtIGxhcHBseSh0dW1vcl90eXBlcywgZnVuY3Rpb24odHVtb3JfdHlwZSkge1xuXG4gICMgT2J0YWluIGEgbGlzdCBvZiBzYW1wbGVfaWRzIHRvIGNhbGN1bGF0ZSBicmVhayBkZW5zaXR5IGZvclxuICBzYW1wbGVfaWRzIDwtIG1ldGFkYXRhICU+JVxuICAgIGRwbHlyOjpmaWx0ZXIobWV0YWRhdGEkc2hvcnRfaGlzdG9sb2d5ID09IHR1bW9yX3R5cGUpICU+JVxuICAgIGRwbHlyOjpwdWxsKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpXG5cbiAgIyBQcmludCBwcm9ncmVzcyBtZXNzYWdlXG4gIG1lc3NhZ2UocGFzdGUoXFxDYWxjdWxhdGluZyBicmVha3BvaW50IGRlbnNpdHkgZm9yXFwsIHR1bW9yX3R5cGUsIFxcc2FtcGxlc1xcKSlcblxuICAjIENhbGN1bGF0ZSBicmVhayBkZW5zaXR5IGZvciBhbGwgMyBkYXRhc2V0c1xuICBhbGxfYnJlYWtfZGVuc2l0eShcbiAgICBicmVha3NfbGlzdCA9IGJyZWFrc19saXN0LFxuICAgIHNhbXBsZV9pZCA9IHNhbXBsZV9pZHMsICMgV2UgYXJlIHN1cHBseWluZyBhbGwgc2FtcGxlcyBmb3IgdGhpcyB0dW1vci10eXBlXG4gICAgcmV0dXJuX3ZlY3RvciA9IEZBTFNFXG4gICkgIyBXZSB3YW50IHRoZSB3aG9sZSBHZW5vbWljUmFuZ2VzIG9iamVjdFxufSlcbiMgQnJpbmcgYWxvbmcgdGhlIHR1bW9yLXR5cGUgbGFiZWxzXG5uYW1lcyhncm91cF9kZW5zaXRpZXMpIDwtIHR1bW9yX3R5cGVzXG5gYGAifQ== -->
 <pre class="r"><code># Get a big list of break densities for each sample.
 group_densities &lt;- lapply(tumor_types, function(tumor_type) {
 
@@ -3408,7 +3337,7 @@ group_densities &lt;- lapply(tumor_types, function(tumor_type) {
     dplyr::pull(Kids_First_Biospecimen_ID)
 
   # Print progress message
-  message(paste(&quot;Calculating breakpoint density for&quot;, tumor_type, &quot;samples&quot;))
+  message(paste(\Calculating breakpoint density for\, tumor_type, \samples\))
 
   # Calculate break density for all 3 datasets
   all_break_density(
@@ -3416,102 +3345,19 @@ group_densities &lt;- lapply(tumor_types, function(tumor_type) {
     sample_id = sample_ids, # We are supplying all samples for this tumor-type
     return_vector = FALSE
   ) # We want the whole GenomicRanges object
-})</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBFcGVuZHltb21hIHNhbXBsZXNcbiJ9 -->
-<pre><code>Calculating breakpoint density for Ependymoma samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBMR0FUIHNhbXBsZXNcbiJ9 -->
-<pre><code>Calculating breakpoint density for LGAT samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBBVFJUIHNhbXBsZXNcbiJ9 -->
-<pre><code>Calculating breakpoint density for ATRT samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBDaG9yb2lkIHBsZXh1cyB0dW1vciBzYW1wbGVzXG4ifQ== -->
-<pre><code>Calculating breakpoint density for Choroid plexus tumor samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBNZW5pbmdpb21hIHNhbXBsZXNcbiJ9 -->
-<pre><code>Calculating breakpoint density for Meningioma samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBPdGhlciBzYW1wbGVzXG4ifQ== -->
-<pre><code>Calculating breakpoint density for Other samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBDTlMgbmV1cm9ibGFzdG9tYSBzYW1wbGVzXG4ifQ== -->
-<pre><code>Calculating breakpoint density for CNS neuroblastoma samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBHYW5nbGlvZ2xpb21hIHNhbXBsZXNcbiJ9 -->
-<pre><code>Calculating breakpoint density for Ganglioglioma samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBOZXVyb2ZpYnJvbWEgc2FtcGxlc1xuIn0= -->
-<pre><code>Calculating breakpoint density for Neurofibroma samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBDaG9yZG9tYSBzYW1wbGVzXG4ifQ== -->
-<pre><code>Calculating breakpoint density for Chordoma samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBETkVUIHNhbXBsZXNcbiJ9 -->
-<pre><code>Calculating breakpoint density for DNET samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBNUE5TVCBzYW1wbGVzXG4ifQ== -->
-<pre><code>Calculating breakpoint density for MPNST samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBIR0FUIHNhbXBsZXNcbiJ9 -->
-<pre><code>Calculating breakpoint density for HGAT samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBQaW5lb2JsYXN0b21hIHNhbXBsZXNcbiJ9 -->
-<pre><code>Calculating breakpoint density for Pineoblastoma samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBUZXJhdG9tYSBzYW1wbGVzXG4ifQ== -->
-<pre><code>Calculating breakpoint density for Teratoma samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBDcmFuaW9waGFyeW5naW9tYSBzYW1wbGVzXG4ifQ== -->
-<pre><code>Calculating breakpoint density for Craniopharyngioma samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBHZXJtaW5vbWEgc2FtcGxlc1xuIn0= -->
-<pre><code>Calculating breakpoint density for Germinoma samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBDTlMgUmhhYmRvbXlvc2FyY29tYSBzYW1wbGVzXG4ifQ== -->
-<pre><code>Calculating breakpoint density for CNS Rhabdomyosarcoma samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBTY2h3YW5ub21hIHNhbXBsZXNcbiJ9 -->
-<pre><code>Calculating breakpoint density for Schwannoma samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBPbGlnb2RlbmRyb2dsaW9tYSBzYW1wbGVzXG4ifQ== -->
-<pre><code>Calculating breakpoint density for Oligodendroglioma samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBMYW5nZXJoYW5zIENlbGwgaGlzdGlvY3l0b3NpcyBzYW1wbGVzXG4ifQ== -->
-<pre><code>Calculating breakpoint density for Langerhans Cell histiocytosis samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBEeXNwbGFzaWEgc2FtcGxlc1xuIn0= -->
-<pre><code>Calculating breakpoint density for Dysplasia samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBDZW50cmFsIG5ldXJvY3l0b21hIHNhbXBsZXNcbiJ9 -->
-<pre><code>Calculating breakpoint density for Central neurocytoma samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBDTlMgc2FyY29tYSBzYW1wbGVzXG4ifQ== -->
-<pre><code>Calculating breakpoint density for CNS sarcoma samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBDTlMgRUZULUNJQyBzYW1wbGVzXG4ifQ== -->
-<pre><code>Calculating breakpoint density for CNS EFT-CIC samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBNZWR1bGxvYmxhc3RvbWEgc2FtcGxlc1xuIn0= -->
-<pre><code>Calculating breakpoint density for Medulloblastoma samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBFVE1SIHNhbXBsZXNcbiJ9 -->
-<pre><code>Calculating breakpoint density for ETMR samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiQ2FsY3VsYXRpbmcgYnJlYWtwb2ludCBkZW5zaXR5IGZvciBFbWJyeW9uYWwgVHVtb3Igc2FtcGxlc1xuIn0= -->
-<pre><code>Calculating breakpoint density for Embryonal Tumor samples</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-source-begin eyJkYXRhIjpbIiMgQnJpbmcgYWxvbmcgdGhlIHR1bW9yLXR5cGUgbGFiZWxzIiwibmFtZXMoZ3JvdXBfZGVuc2l0aWVzKSA8LSB0dW1vcl90eXBlcyJdfQ== -->
-<pre class="r"><code># Bring along the tumor-type labels
+})
+# Bring along the tumor-type labels
 names(group_densities) &lt;- tumor_types</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Save list of <code>GenomicRanges</code> objects to an RDS file.</p>
+</div>
+<div id="mapping-of-breakpoint-densities-for-tumor-type-groups" class="section level3">
+<h3>Mapping of breakpoint densities for tumor-type groups</h3>
+<p>Same as was done for each sample, now we will calculate densities for each tumor-type group. This will be used by <code>02-b-plot-chr-instability-by-histology.Rmd</code> for plots.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbIiMgU2F2ZSB0byBhbiBSRFMgZmlsZSIsInJlYWRyOjp3cml0ZV9yZHMoXG4gIGdyb3VwX2RlbnNpdGllcyxcbiAgb3V0cHV0X2ZpbGVcbikiXX0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTYXZlIHRvIGFuIFJEUyBmaWxlXG5yZWFkcjo6d3JpdGVfcmRzKFxuICBncm91cF9kZW5zaXRpZXMsXG4gIG91dHB1dF9maWxlXG4pXG5gYGAifQ== -->
 <pre class="r"><code># Save to an RDS file
 readr::write_rds(
   group_densities,
@@ -3520,12 +3366,10 @@ readr::write_rds(
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-</div>
-<div id="session-info" class="section level3">
-<h3>Session Info</h3>
+<p>Run the density calculations for the groups.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoic2Vzc2lvbkluZm8oKSJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgIFxuIFszXSBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgIFxuWzExXSBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5sb2FkZWQgdmlhIGEgbmFtZXNwYWNlIChhbmQgbm90IGF0dGFjaGVkKTpcbiBbMV0gUmNwcF8xLjAuMSAgICAgICAgICAgICBwaWxsYXJfMS40LjIgICAgICAgICAgIGNvbXBpbGVyXzMuNi4wICAgICAgICBcbiBbNF0gR2Vub21lSW5mb0RiXzEuMjIuMCAgICBYVmVjdG9yXzAuMjYuMCAgICAgICAgIGJhc2U2NGVuY18wLjEtMyAgICAgICBcbiBbN10gYml0b3BzXzEuMC02ICAgICAgICAgICB0b29sc18zLjYuMCAgICAgICAgICAgIHpsaWJiaW9jXzEuMzIuMCAgICAgICBcblsxMF0gemVhbGxvdF8wLjEuMCAgICAgICAgICBkaWdlc3RfMC42LjIwICAgICAgICAgIGpzb25saXRlXzEuNiAgICAgICAgICBcblsxM10gZXZhbHVhdGVfMC4xNCAgICAgICAgICB0aWJibGVfMi4xLjMgICAgICAgICAgIHBrZ2NvbmZpZ18yLjAuMiAgICAgICBcblsxNl0gcmxhbmdfMC40LjAgICAgICAgICAgICBjbGlfMS4xLjAgICAgICAgICAgICAgIHlhbWxfMi4yLjAgICAgICAgICAgICBcblsxOV0gcGFyYWxsZWxfMy42LjAgICAgICAgICB4ZnVuXzAuOCAgICAgICAgICAgICAgIEdlbm9tZUluZm9EYkRhdGFfMS4yLjJcblsyMl0gZHBseXJfMC44LjMgICAgICAgICAgICBzdHJpbmdyXzEuNC4wICAgICAgICAgIGtuaXRyXzEuMjMgICAgICAgICAgICBcblsyNV0gdmN0cnNfMC4xLjAgICAgICAgICAgICBTNFZlY3RvcnNfMC4yNC4xICAgICAgIGhtc18wLjQuMiAgICAgICAgICAgICBcblsyOF0gSVJhbmdlc18yLjIwLjEgICAgICAgICBzdGF0czRfMy42LjAgICAgICAgICAgIHRpZHlzZWxlY3RfMC4yLjUgICAgICBcblszMV0gZ2x1ZV8xLjMuMSAgICAgICAgICAgICBSNl8yLjQuMCAgICAgICAgICAgICAgIGZhbnNpXzAuNC4wICAgICAgICAgICBcblszNF0gcm1hcmtkb3duXzEuMTMgICAgICAgICB0aWR5cl8wLjguMyAgICAgICAgICAgIHJlYWRyXzEuMy4xICAgICAgICAgICBcblszN10gcHVycnJfMC4zLjIgICAgICAgICAgICBtYWdyaXR0cl8xLjUgICAgICAgICAgIGJhY2twb3J0c18xLjEuNCAgICAgICBcbls0MF0gaHRtbHRvb2xzXzAuMy42ICAgICAgICBHZW5vbWljUmFuZ2VzXzEuMzguMCAgIEJpb2NHZW5lcmljc18wLjMyLjAgICBcbls0M10gYXNzZXJ0dGhhdF8wLjIuMSAgICAgICB1dGY4XzEuMS40ICAgICAgICAgICAgIHN0cmluZ2lfMS40LjMgICAgICAgICBcbls0Nl0gUkN1cmxfMS45NS00LjEyICAgICAgICBjcmF5b25fMS4zLjQgICAgICAgICAgXG4ifQ== -->
@@ -3565,6 +3409,28 @@ loaded via a namespace (and not attached):
 [43] assertthat_0.2.1       utf8_1.1.4             stringi_1.4.3         
 [46] RCurl_1.95-4.12        crayon_1.3.4          </code></pre>
 <!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Save list of <code>GenomicRanges</code> objects to an RDS file.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTYXZlIHRvIGFuIFJEUyBmaWxlXG5yZWFkcjo6d3JpdGVfcmRzKFxuICBncm91cF9kZW5zaXRpZXMsXG4gIG91dHB1dF9maWxlXG4pXG5gYGAifQ== -->
+<pre class="r"><code># Save to an RDS file
+readr::write_rds(
+  group_densities,
+  output_file
+)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="session-info" class="section level3">
+<h3>Session Info</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
