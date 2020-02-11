@@ -277,9 +277,7 @@ RUN mkdir /mcr-install && \
     rm -f MCR_R2014a_glnxa64_installer.zip && \
     ./install -destinationFolder /opt/mcr -agreeToLicense yes -mode silent && \
     cd / && \
-    rm -rf mcr-install && \
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/mcr/v83/runtime/glnxa64:/opt/mcr/v83/bin/glnxa64:/opt/mcr/v83/sys/os/glnxa64: && \
-    export XAPPLRESDIR=/opt/mcr/v83/X11/app-defaults
+    rm -rf mcr-install
 
 # GISTIC installation
 RUN mkdir -p gistic_install && \
@@ -290,4 +288,7 @@ RUN mkdir -p gistic_install && \
 RUN echo "NOCACHE" && chown -R rstudio:rstudio /rocker-build/gistic_install
 RUN echo "NOCACHE" && chmod 755 /rocker-build/gistic_install
 
-RUN echo "NOCACHE" && cd gistic_install && ./run_gistic_example
+RUN echo "NOCACHE" && \
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/mcr/v83/runtime/glnxa64:/opt/mcr/v83/bin/glnxa64:/opt/mcr/v83/sys/os/glnxa64: && \
+    export XAPPLRESDIR=/opt/mcr/v83/X11/app-defaults && \
+    cd gistic_install && ./run_gistic_example
