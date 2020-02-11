@@ -60,7 +60,7 @@ RUN R -e "BiocManager::install(c('annotatr', 'TxDb.Hsapiens.UCSC.hg38.knownGene'
 RUN R -e "BiocManager::install(c('preprocessCore', 'sva'), update = FALSE)"
 
 
-## This is deprecated 
+## This is deprecated
 #  # These packages are for single-sample GSEA analysis
 #  RUN R -e "BiocManager::install(c('GSEABase', 'GSVA'), update = FALSE)"
 
@@ -180,7 +180,7 @@ RUN R -e "BiocManager::install(c('TCGAbiolinks'), update = FALSE)"
 
 # Install python3 data science basics (pandas)
 # using pip to get more current versions
-RUN apt-get update -qq && apt-get -y --no-install-recommends install python3-pip  python3-dev 
+RUN apt-get update -qq && apt-get -y --no-install-recommends install python3-pip  python3-dev
 RUN pip3 install "numpy==1.17.3" && \
    pip3 install "six==1.13.0" "setuptools==41.6.0" && \
    pip3 install "cycler==0.10.0" "kiwisolver==1.1.0" "pyparsing==2.4.5" "python-dateutil==2.8.1" "pytz==2019.3" && \
@@ -212,7 +212,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     survival \
     cmprsk \
     survMisc \
-    survminer 
+    survminer
 
 # pyreadr for comparative-RNASeq-analysis
 RUN pip3 install "pyreadr==0.2.1"
@@ -272,12 +272,14 @@ RUN apt-get -q update && \
 RUN mkdir /mcr-install && \
     mkdir /opt/mcr && \
     cd /mcr-install && \
-    wget -q http://ssd.mathworks.com/supportfiles/downloads/R2017b/deployment_files/R2017b/installers/glnxa64/MCR_R2017b_glnxa64_installer.zip && \
-    unzip -q MCR_R2017b_glnxa64_installer.zip && \
-    rm -f MCR_R2017b_glnxa64_installer.zip && \
+    wget -q https://www.mathworks.com/supportfiles/downloads/R2014a/deployment_files/R2014a/installers/glnxa64/MCR_R2014a_glnxa64_installer.zip && \
+    unzip -q MCR_R2014a_glnxa64_installer.zip && \
+    rm -f MCR_R2014a_glnxa64_installer.zip && \
     ./install -destinationFolder /opt/mcr -agreeToLicense yes -mode silent && \
     cd / && \
-    rm -rf mcr-install
+    rm -rf mcr-install && \
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/mcr/v83/runtime/glnxa64:/opt/mcr/v83/bin/glnxa64:/opt/mcr/v83/sys/os/glnxa64: && \
+    export XAPPLRESDIR=/opt/mcr/v83/X11/app-defaults
 
 # GISTIC installation
 RUN mkdir -p gistic_install && \
@@ -289,4 +291,3 @@ RUN chown -R rstudio:rstudio /rocker-build/gistic_install
 RUN chmod 755 /rocker-build/gistic_install
 
 RUN cd gistic_install && ./run_gistic_example
-
