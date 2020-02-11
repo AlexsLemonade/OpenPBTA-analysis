@@ -2,6 +2,10 @@
 # CCDL for ALSF 2020
 # Candace L Savonen
 # 
+# Set this so the whole loop stops if there is an error
+set -e
+set -o pipefail
+
 # Need to adjust minimum samples to plot if in CI:
 IS_CI=${OPENPBTA_TESTING:-0}
 
