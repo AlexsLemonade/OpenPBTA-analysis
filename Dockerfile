@@ -279,12 +279,15 @@ RUN mkdir /mcr-install && \
     cd / && \
     rm -rf mcr-install
 
+WORKDIR /home/rstudio/
+
 # GISTIC installation
 RUN mkdir -p gistic_install && \
     cd gistic_install && \
     wget -q ftp://ftp.broadinstitute.org/pub/GISTIC2.0/GISTIC_2_0_23.tar.gz && \
     tar zxf GISTIC_2_0_23.tar.gz
 
-RUN chown -R rstudio:rstudio /rocker-build/gistic_install
-RUN chmod 755 /rocker-build/gistic_install
+RUN chown -R rstudio:rstudio /home/rstudio/gistic_install
+RUN chmod 755 /home/rstudio/gistic_install
 
+WORKDIR /rocker-build/
