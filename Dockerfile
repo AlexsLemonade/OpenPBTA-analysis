@@ -279,6 +279,14 @@ RUN mkdir /mcr-install && \
     cd / && \
     rm -rf mcr-install
 
-# Configure environment variables for MCR
-# ENV LD_LIBRARY_PATH /opt/mcr/v93/runtime/glnxa64:/opt/mcr/v93/bin/glnxa64:/opt/mcr/v93/sys/os/glnxa64
-# ENV XAPPLRESDIR /opt/mcr/v93/X11/app-defaults
+# GISTIC installation
+RUN mkdir -p gistic_install && \
+    cd gistic_install && \
+    wget -q ftp://ftp.broadinstitute.org/pub/GISTIC2.0/GISTIC_2_0_23.tar.gz && \
+    tar zxf GISTIC_2_0_23.tar.gz
+
+RUN chown -R rstudio:rstudio /rocker-build/gistic_install
+RUN chmod 755 /rocker-build/gistic_install
+
+RUN cd gistic_install && ./run_gistic_example
+
