@@ -272,7 +272,7 @@ RUN apt-get -q update && \
 RUN mkdir /mcr-install && \
     mkdir /opt/mcr && \
     cd /mcr-install && \
-    wget -q https://www.mathworks.com/supportfiles/downloads/R2014a/deployment_files/R2014a/installers/glnxa64/MCR_R2014a_glnxa64_installer.zip && \
+    wget https://www.mathworks.com/supportfiles/downloads/R2014a/deployment_files/R2014a/installers/glnxa64/MCR_R2014a_glnxa64_installer.zip && \
     unzip -q MCR_R2014a_glnxa64_installer.zip && \
     rm -f MCR_R2014a_glnxa64_installer.zip && \
     ./install -destinationFolder /opt/mcr -agreeToLicense yes -mode silent && \
@@ -284,10 +284,10 @@ RUN mkdir /mcr-install && \
 # GISTIC installation
 RUN mkdir -p gistic_install && \
     cd gistic_install && \
-    wget -q ftp://ftp.broadinstitute.org/pub/GISTIC2.0/GISTIC_2_0_23.tar.gz && \
+    wget ftp://ftp.broadinstitute.org/pub/GISTIC2.0/GISTIC_2_0_23.tar.gz && \
     tar zxf GISTIC_2_0_23.tar.gz
 
-RUN chown -R rstudio:rstudio /rocker-build/gistic_install
-RUN chmod 755 /rocker-build/gistic_install
+RUN echo "NOCACHE" && chown -R rstudio:rstudio /rocker-build/gistic_install
+RUN echo "NOCACHE" && chmod 755 /rocker-build/gistic_install
 
-RUN cd gistic_install && ./run_gistic_example
+RUN echo "NOCACHE" && cd gistic_install && ./run_gistic_example
