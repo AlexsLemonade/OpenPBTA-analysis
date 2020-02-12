@@ -22,7 +22,7 @@ jobs:
 
       - run:
           name: GISTIC proof of concept
-          command: ./scripts/run_in_ci.sh bash analyses/gistic-proof-of-concept/gistic-example.sh
+          command: ./scripts/run_in_ci.sh bash analyses/run-gistic/gistic-example.sh
 
       # The analysis no longer needs to be tested as it has been retired and is better covered by 'SNV Caller Analysis' below.
       #- run:
