@@ -50,12 +50,10 @@ Set up directories.
 ```{r}
 scratch_dir <- file.path("..", "..", "scratch")
 data_dir <- file.path("..", "..", "data")
-
 ```
 
 ```{r}
-metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) %>% 
-  dplyr::filter("")
+metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) 
 ```
 
 ## Connect to TCGA database
@@ -120,32 +118,30 @@ pbta_mutect <- dplyr::tbl(con, "mutect") %>%
 
 ```{r}
 lancet <- dplyr::bind_rows(list(tcga = tcga_lancet,  
-                                pbta = pbta_lancet), .id = "dataset")
-```
+                                pbta = pbta_lancet), .id = "dataset") %>% 
+  dplyr::mutate(dataset = as.factor(dataset))
 
-```{r}
 lancet %>% 
-  dplyr::group_by(as.factor(dataset), Tumor_Sample_Barcode) %>% 
-  dplyr::summarize(n_mut = dplyr::n()) %>% 
-  summary()
-
-```
-
-```
-ggplot2::ggplot() + 
-  ggplot2::geom_density(ggplot2::aes(x = n_mut, color = dataset))  
-  #ggplot2::xlim()
+  dplyr::group_by(Tumor_Sample_Barcode, dataset) %>% 
+  dplyr::summarize(n_mut = dplyr::n(), 
+                   med_depth = median(n_depth)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = med_depth, y = n_mut, color = dataset)) + 
+  ggplot2::geom_point() + 
+  ggplot2::facet_wrap(~dataset)
 ```
 
 ```{r}
-lancet <- dplyr::bind_rows(list(tcga = tcga_lancet,  
-                                pbta = pbta_lancet), .id = "dataset")
-```
+mutect <- dplyr::bind_rows(list(tcga = tcga_mutect,  
+                      pbta = pbta_mutect), .id = "dataset") %>% 
+  dplyr::mutate(dataset = as.factor(dataset))
 
-```{r}
-ggplot2::ggplot(lancet) + 
-  ggplot2::geom_density(ggplot2::aes(x = t_depth, color = dataset)) + 
-  ggplot2::xlim(c(0, 100))
+mutect %>% 
+  dplyr::group_by(Tumor_Sample_Barcode, dataset) %>% 
+  dplyr::summarize(n_mut = dplyr::n(), 
+                   med_depth = median(n_depth)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = med_depth, y = n_mut, color = dataset)) + 
+  ggplot2::geom_point() + 
+  ggplot2::facet_wrap(~dataset)
 ```
 
 ## Where are the unique Lancet calls? 
@@ -191,7 +187,6 @@ map_breaks_plot(lancet_densities,
                 y_lab = "Total Num of Calls", 
                 main_title = "Lancet Only Calls"
                 )
-
 ```
 
 ## Session Info
