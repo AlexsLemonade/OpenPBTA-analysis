@@ -102,9 +102,9 @@ align_data <- function(aligned_scores_df,
 # Alter the function to plot
 plot_dimension_reduction <- function(umap_aligned_scores_df,
                                      tsne_aligned_scores_df,
-                                           library,
-                                           score1 = 1,
-                                           score2 = 2) {
+                                     library,
+                                     score1 = 1,
+                                     score2 = 2) {
   # Given a data.frame that contains the expression scores and the information
   # we want from the metadata, align the HGG `molecular_subtype` column
   # and make a list of scatterplots for each dimension reduction method.
