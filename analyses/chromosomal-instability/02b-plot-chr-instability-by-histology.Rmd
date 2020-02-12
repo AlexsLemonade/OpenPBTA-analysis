@@ -148,8 +148,6 @@ breaks_cdf <- total_break_densities_df  %>%
     strip.text = ggplot2::element_text(size = 10, angle = 90, hjust = 1), 
     strip.background = ggplot2::element_rect(fill = NA, color = NA)
   )
-
-breaks_cdf
 ```
 
 
