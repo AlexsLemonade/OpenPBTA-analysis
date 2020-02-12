@@ -128,7 +128,7 @@ breaks_cdf_plot(density_file = sv_densities_file,
 
 ### Plot the breakpoints for each tumor-type
 
-Here we will plot median number of break points for the tumor-type group per 
+Here we will plot total number of break points for the tumor-type group per 
 each bin.
 
 ```{r, results=FALSE}
