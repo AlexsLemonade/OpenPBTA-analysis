@@ -131,7 +131,7 @@ breaks_cdf_plot(density_file = sv_densities_file,
 Here we will plot median number of break points for the tumor-type group per 
 each bin.
 
-```{r}
+```{r, results=FALSE}
 purrr::imap(hist_break_local, function(.x, name = .y) {
   # Make the combo plot
   multipanel_break_plot(

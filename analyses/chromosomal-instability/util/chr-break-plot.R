@@ -123,10 +123,9 @@ breaks_cdf_plot <- function(density_file, metadata_df, cdf_plot_file) {
   #
   # Args:
   #   density_file: a chromosomal breaks density file path where each sample is
-  #                 a row with these columns: samples, experimental_strategy,
-  #                 breaks_count. 
+  #                 a row with `samples` and `breaks_count` columns. 
   #   metadata_df: a data.frame with Kids_First_Biospecimen_ID, short_histology
-  #             columns
+  #                columns
   #   cdf_plot_file: A file.path to where the plot should be saved
   #   
   # Returns:
