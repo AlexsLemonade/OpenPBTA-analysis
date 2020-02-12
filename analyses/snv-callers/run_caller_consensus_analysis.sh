@@ -76,7 +76,13 @@ bedtools intersect \
   -b data/WXS.hg38.lancet.400bp_padded.bed \
   $cds_file \
   > $coding_wxs_bed
-
+  
+# Make WXS coding BED file
+bedtools intersect \
+  -a data/WXS.hg38.100bp_padded.bed  \
+  -b $cds_file \
+  > scratch/intersect_cds_WXS.bed
+  
 ######################### Calculate consensus TMB ##############################
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --consensus $consensus_file \

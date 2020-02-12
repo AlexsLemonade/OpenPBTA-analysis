@@ -111,7 +111,7 @@ pbta_lancet <- dplyr::tbl(con, "lancet") %>%
 
 pbta_mutect <- dplyr::tbl(con, "mutect") %>% 
   dplyr::select(join_cols, "VAF") %>% 
-  as.data.frame()
+  as.data.frame() 
 ```
 
 ## Compare TCGA and PBTA by different metrics
@@ -131,6 +131,12 @@ lancet %>%
 ```
 
 ```{r}
+pbta_mutect <- pbta_mutect %>% dplyr::inner_join(
+  metadata %>% 
+    dplyr::select(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID,
+                  experimental_strategy)) %>% 
+  dplyr::filter(experimental_strategy == "WXS")
+
 mutect <- dplyr::bind_rows(list(tcga = tcga_mutect,  
                       pbta = pbta_mutect), .id = "dataset") %>% 
   dplyr::mutate(dataset = as.factor(dataset))
@@ -142,6 +148,24 @@ mutect %>%
   ggplot2::ggplot(ggplot2::aes(x = med_depth, y = n_mut, color = dataset)) + 
   ggplot2::geom_point() + 
   ggplot2::facet_wrap(~dataset)
+```
+
+##
+
+```{r}
+source(file.path("..", "snv-callers", "util", "tmb_functions.R"))
+
+# Calculate coding only TMBs and write to file
+pbta_lancet_coding_df <- calculate_tmb(pbta_lancet,
+  bed_wgs = file.path(data_dir, "WGS.hg38.lancet.300bp_padded.bed"),
+  bed_wxs = file.path(scratch_dir, "intersect_cds_lancet_WXS.bed")
+  )
+
+# Calculate coding only TMBs and write to file
+pbta_mutect_coding_df <- calculate_tmb(pbta_mutect,
+  bed_wgs = file.path(scratch_dir, "data/WGS.hg38.mutect2.vardict.unpadded.bed"),
+  bed_wxs = file.path(scratch_dir, "intersect_cds_WXS.bed")
+  )
 ```
 
 ## Where are the unique Lancet calls? 
