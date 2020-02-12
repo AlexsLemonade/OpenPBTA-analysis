@@ -351,7 +351,7 @@ polya_tsne_aligned_scores <- readr::read_tsv(
     "analyses",
     "transcriptomic-dimension-reduction",
     "results",
-    "rsem_polya_log_tsne_scores_aligned.tsv"
+    "rsem_polyA_log_tsne_scores_aligned.tsv"
   )
 )
 
@@ -362,7 +362,7 @@ polya_umap_aligned_scores <- readr::read_tsv(
     "analyses",
     "transcriptomic-dimension-reduction",
     "results",
-    "rsem_polya_log_umap_scores_aligned.tsv"
+    "rsem_polyA_log_umap_scores_aligned.tsv"
   )
 )
 
