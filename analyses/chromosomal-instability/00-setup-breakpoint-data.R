@@ -163,15 +163,6 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
-opt$cnv_seg <- "data/pbta-cnv-consensus.seg.gz"
-opt$sv <-  "data//pbta-sv-manta.tsv.gz"
-opt$metadata <- "data/pbta-histologies.tsv"
-opt$output <- "analyses/chromosomal-instability/breakpoint-data" 
-opt$surveyed_wgs <- "scratch/cnv_surveyed_wgs.bed"
-opt$surveyed_wxs <- "data/WXS.hg38.100bp_padded.bed"
-opt$gap <- 5
-opt$drop_sex <- TRUE
-
 # Make everything relative to root path
 opt$cnv_seg <- file.path(root_dir, opt$cnv_seg)
 opt$sv <- file.path(root_dir, opt$sv)
