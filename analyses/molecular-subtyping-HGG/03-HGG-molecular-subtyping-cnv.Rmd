@@ -1,0 +1,230 @@
+---
+title: "High-grade Glioma Molecular Subtyping - Focal and Broad Copy Number Alterations"
+author: "Chante Bethell, Stephanie J. Spielman, and Jaclyn Taroni for ALSF CCDL"
+date: "2020"
+output:
+  html_notebook:
+    toc: yes
+    toc_float: yes
+---
+
+This notebook prepares focal and broad copy number alteration data for the 
+purpose of subtyping HGG samples 
+([`AlexsLemonade/OpenPBTA-analysis#249`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249)).
+
+## Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+`Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/03-HGG-molecular-subtyping-cnv.Rmd', clean = TRUE)"`
+
+## Set Up
+
+```{r}
+library(tidyverse)
+```
+
+### Directories
+
+```{r}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+# File path to results directory
+input_dir <-
+  file.path(root_dir, "analyses", "molecular-subtyping-HGG", "hgg-subset")
+# File path to results directory
+results_dir <-
+  file.path(root_dir, "analyses", "molecular-subtyping-HGG", "results")
+
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+```
+
+### Read in Files
+
+We will need the clinical/histologies file and the defining lesions file to distinguish between missing samples or samples that had only neutral copy number calls.
+
+```{r message=FALSE}
+histologies_df <- read_tsv(file.path(root_dir, "data",
+                                     "pbta-histologies.tsv"))
+defining_lesions_df <- read_tsv(file.path(results_dir, 
+                                          "HGG_defining_lesions.tsv"))
+```
+
+#### Inclusion Criteria
+
+Here, we'll use the same logic as `02-HGG-molecular-subtyping-subset-files.R` to identify samples to include and also check for experimental strategy.
+
+```{r}
+hgg_lesions_df <- defining_lesions_df %>%
+  dplyr::filter(
+    short_histology == "HGAT" |
+      grepl("H3 G35 mutant|H3 K28 mutant", disease_type_reclassified)
+  )
+
+# Filter metadata for HGAT and samples that should be classified
+# as High-grade glioma based on defining lesions
+hgg_metadata_df <- histologies_df %>%
+  dplyr::filter(
+    short_histology == "HGAT" |
+      sample_id %in% hgg_lesions_df$sample_id,
+    sample_type == "Tumor",
+    composition == "Solid Tissue"
+  )
+```
+
+Only WGS samples have CNV and SV data, so we'll filter based on `experimental_strategy`.
+
+```{r}
+included_wgs_samples <- intersect(hgg_lesions_df %>% 
+                                    pull(Kids_First_Biospecimen_ID),
+                                  hgg_metadata_df %>% 
+                                    filter(experimental_strategy == "WGS") %>%
+                                    pull(Kids_First_Biospecimen_ID))
+```
+
+Are all the WGS samples that pass the inclusion criteria in the consensus SEG file committed to the repository?
+
+```{r}
+consensus_seg_ids <- read_tsv(file.path(root_dir, 
+                                        "analyses", 
+                                        "copy_number_consensus_call",
+                                        "results",
+                                        "pbta-cnv-consensus.seg.gz")) %>%
+  pull(ID)
+consensus_seg_ids <- unique(consensus_seg_ids)
+```
+
+```{r}
+all(included_wgs_samples %in% consensus_seg_ids)
+```
+
+No, they're not.
+How many are missing?
+
+```{r}
+sum(!(included_wgs_samples %in% consensus_seg_ids))
+```
+
+We'd then expect `r sum(included_wgs_samples %in% consensus_seg_ids)` samples to have non-NA values in the cleaned CNV files.
+
+#### Read in CN Data
+
+```{r}
+# Read in HGG subset focal CN data
+cn_df <- read_tsv(file.path(input_dir, "hgg_focal_cn.tsv.gz"))
+# Read in relevant broad chromosome arm loss for HGG samples
+gistic_df <- read_tsv(file.path(input_dir, "hgg_gistic_broad_values.tsv"))
+```
+
+### Output File
+
+```{r}
+output_file <- file.path(results_dir, "HGG_cleaned_cnv.tsv")
+```
+
+## Annotated consensus CN data
+
+We are using consensus copy number data data that has been annotated via the [`focal-cn-file-preparation`](../focal-cn-file-preparation/) module.
+Note that a gene may have evidence for two kinds of copy number alteration (e.g., both _loss_ and _gain_) in these data, but no longer see instances of this when using the consensus data for these samples.
+
+```{r}
+# Select only the ID information, for use in joining below
+cn_df_ids <- cn_df %>%  
+  select(sample_id, 
+         Kids_First_Biospecimen_ID = biospecimen_id,
+         Kids_First_Participant_ID)
+
+# Filter focal CN data for PDGFRA, PTEN and MYCN status
+cn_df_genes <- cn_df %>%
+  rename(Kids_First_Biospecimen_ID = biospecimen_id) %>%
+  select(-cytoband) %>%
+  filter(gene_symbol %in% c("PDGFRA", "PTEN", "MYCN"))
+
+# Summarize the data to have a single row per sample where _all_ kinds of copy number alterations are present.
+cn_df_genes_status <- cn_df_genes %>% 
+  group_by(gene_symbol, sample_id, Kids_First_Biospecimen_ID) %>% 
+  summarize(full_status = paste(status, collapse=", ")) %>% 
+  spread(gene_symbol, full_status) %>% 
+  right_join(cn_df_ids) %>%
+  distinct() %>%
+  replace_na(list(PDGFRA = "neutral", 
+                  PTEN = "neutral", 
+                  MYCN = "neutral")) %>% 
+  # Rename columns to indicate focal status explicitly
+  rename(MYCN_focal_status   = MYCN, 
+         PDGFRA_focal_status = PDGFRA,
+         PTEN_focal_status   = PTEN) %>%
+  # Arrange order of columns
+  dplyr::select(sample_id, 
+                Kids_First_Biospecimen_ID, 
+                Kids_First_Participant_ID, 
+                everything())
+
+head(cn_df_genes_status, n = 10)
+```
+
+## GISTIC Data
+
+The GISTIC `broad_values_by_arm.txt` file is a matrix with integers that indicate chromosome arm status. 
+Much like the annotated CNVkit data above, we'll convert this to `"loss"`, `"neutral"`, and `"gain"`.
+
+```{r}
+head(gistic_df, n = 10) 
+```
+
+```{r}
+gistic_status_df <- gistic_df %>%
+  # for the numeric columns (e.g., not the identifiers!), go from the integers
+  # to loss, gain, neutral
+  mutate_if(is.numeric, 
+            list(~ case_when(
+              . < 0 ~ "loss",
+              . > 0 ~ "gain",
+              . == 0 ~ "neutral"
+            )))
+
+head(gistic_status_df, n = 10)
+```
+
+Add in participant IDs.
+
+```{r}
+gistic_status_df <- hgg_metadata_df %>% 
+  select(Kids_First_Biospecimen_ID,
+         Kids_First_Participant_ID,
+         sample_id) %>%
+  right_join(gistic_status_df)
+```
+
+## Join Together
+
+```{r}
+final_hgg_cn_df <- full_join(cn_df_genes_status,
+                             gistic_status_df)
+
+nrow(final_hgg_cn_df)
+```
+
+`final_hgg_cn_df` includes all the samples that are in the consensus SEG file.
+So any missing CNA values at this stage come from the fact that neutral values are _not_ included in the annotated copy number files.
+We can fill any "missing values" with neutral calls as a result.
+
+```{r}
+final_hgg_cn_df <- final_hgg_cn_df %>%
+  replace(is.na(.), "neutral")
+```
+
+Write this to file.
+
+```{r}
+write_tsv(final_hgg_cn_df, output_file)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+

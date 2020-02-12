@@ -1,4 +1,4 @@
-# This script subsets the focal copy number, RNA expression, fusion and 
+# This script subsets the focal copy number, RNA expression, fusion and
 # histologies` and GISTIC's broad values files to include only High-grade glioma
 # samples.
 
@@ -22,6 +22,8 @@
 # Use this as the root directory to ensure proper sourcing of functions no
 # matter where this is called from
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+scratch_dir <- file.path(root_dir, "scratch")
 
 # Set path to subset directory
 subset_dir <-
@@ -39,47 +41,63 @@ metadata <-
 select_metadata <- metadata %>%
   dplyr::select(sample_id,
                 Kids_First_Participant_ID,
-                Kids_First_Biospecimen_ID,
-                glioma_brain_region,
-                age_at_diagnosis_days)
+                Kids_First_Biospecimen_ID)
 
 # Read in RNA expression data
 stranded_expression <-
   readr::read_rds(
     file.path(
-      root_dir,
-      "data",
+      data_dir,
       "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
     )
   )
 
-# Read in focal CN data
-## TODO: This section will be updated to read in focal CN data derived from
-##       copy number consensus calls.
-cn_df <- readr::read_tsv(
-  file.path(
-    root_dir,
-    "analyses",
-    "focal-cn-file-preparation",
-    "results",
-    "controlfreec_annotated_cn_autosomes.tsv.gz"
+polya_expression <-
+  readr::read_rds(
+    file.path(
+      data_dir,
+      "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
+    )
   )
+
+
+# Read in focal CN data
+## TODO: If annotated files get included in data download
+cn_df <- readr::read_tsv(
+  file.path(root_dir, "analyses", "focal-cn-file-preparation", "results",
+            "consensus_seg_annotated_cn_autosomes.tsv.gz")
 )
 
 # Read in fusion data
 fusion_df <- readr::read_tsv(
-  file.path(root_dir, "data", "pbta-fusion-putative-oncogenic.tsv"))
+  file.path(data_dir, "pbta-fusion-putative-oncogenic.tsv"))
 
 # Read in GISTIC `broad_values_by_arm.txt` file
-gistic_df <-
-  data.table::fread(unzip(
-    file.path(root_dir, "data", "pbta-cnv-cnvkit-gistic.zip"),
-    files = file.path(
-      "2019-12-10-gistic-results-cnvkit",
-      "broad_values_by_arm.txt"
-    ),
-    exdir = file.path(root_dir, "scratch")
-  ))
+unzip(file.path(root_dir, "data", "pbta-cnv-consensus-gistic.zip"),
+      exdir = file.path(root_dir, "data"),
+      files = file.path("pbta-cnv-consensus-gistic", "broad_values_by_arm.txt"))
+
+gistic_df <- data.table::fread(file.path(root_dir, 
+                                         "data",
+                                         "pbta-cnv-consensus-gistic",
+                                         "broad_values_by_arm.txt"),
+                               data.table = FALSE)
+
+
+# Read in snv consensus mutation data
+snv_maf_df <-
+  data.table::fread(file.path(root_dir,
+                              "data",
+                              "pbta-snv-consensus-mutation.maf.tsv.gz"),
+                    select = c("Chromosome",
+                               "Start_Position",
+                               "End_Position",
+                               "Strand",
+                               "Variant_Classification",
+                               "Tumor_Sample_Barcode",
+                               "Hugo_Symbol",
+                               "HGVSp_Short"),
+                    data.table = FALSE)
 
 # Read in output file from `01-HGG-molecular-subtyping-defining-lesions.Rmd`
 hgg_lesions_df <- readr::read_tsv(
@@ -95,47 +113,59 @@ hgg_lesions_df <- readr::read_tsv(
 #### Filter HGG defining lesions data.frame ------------------------------------
 
 # Filter the output file from `01-HGG-molecular-subtyping-defining-lesions.Rmd`
-# for samples classified and reclassified as HGG
+# for samples classified as HGAT or those with defining lesions
 hgg_lesions_df <- hgg_lesions_df %>%
   dplyr::filter(
-    disease_type_new == "High-grade glioma" |
-      grepl("High-grade glioma", disease_type_reclassified)
+    short_histology == "HGAT" |
+      grepl("H3 G35 mutant|H3 K28 mutant", disease_type_reclassified)
   )
 
 #### Filter metadata -----------------------------------------------------------
 
-# Filter metadata for `High-grade glioma` and samples that should be classified
-# as High-grade glioma based on defining lesions and are stranded RNA-seq
-# samples.
+# Filter metadata for HGAT and samples that should be classified
+# as High-grade glioma based on defining lesions
 hgg_metadata_df <- metadata %>%
   dplyr::filter(
-    disease_type_new == "High-grade glioma" |
+    short_histology == "HGAT" |
       sample_id %in% hgg_lesions_df$sample_id,
-    experimental_strategy == "RNA-Seq",
-    RNA_library == "stranded"
+    sample_type == "Tumor",
+    composition == "Solid Tissue"
   )
-
-# Write to file
-readr::write_tsv(hgg_metadata_df, file.path(subset_dir, "hgg_histologies.tsv"))
 
 #### Filter expression data ----------------------------------------------------
 
-# Filter to HGG samples only -- we can use hgg_metadata_df because it is subset
-# to RNA-seq samples
-stranded_expression <- stranded_expression %>%
-  dplyr::select(hgg_metadata_df$Kids_First_Biospecimen_ID)
+filter_process_expression <- function(expression_mat) {
+  # This function takes the collapsed FPKM expression matrix, selects relevant
+  # columns (samples) via the Kids_First_Biospecimen_ID identifier, and then
+  # log2(x + 1) transforms and z-scores the filtered matrix gene-wise.
+  # It returns the z-scored matrix, where the columns are genes and the rows
+  # are samples (biospecimen ID are the rownames).
+  #
+  # Only intended for use in the context of this script!
 
-# Log2 transformation
-norm_expression <- log2(stranded_expression + 1)
+  # Filter to HGG samples only -- we can use hgg_metadata_df because it is
+  # subset to RNA-seq samples
+  filtered_expression <- expression_mat %>%
+    dplyr::select(intersect(hgg_metadata_df$Kids_First_Biospecimen_ID,
+                            colnames(expression_mat)))
 
-# Scale does column centering, so we transpose first
-long_zscored_expression <- scale(t(norm_expression), 
-                                  center = TRUE,
-                                  scale = TRUE)
+  # Log2 transformation
+  log_expression <- log2(filtered_expression + 1)
+
+  # Scale does column centering, so we transpose first
+  long_zscored_expression <- scale(t(log_expression),
+                                   center = TRUE,
+                                   scale = TRUE)
+  return(long_zscored_expression)
+}
 
 # Save matrix with all genes to file for downstream plotting
-readr::write_rds(long_zscored_expression,
-                 file.path(subset_dir, "hgg_zscored_expression.RDS"))
+filter_process_expression(stranded_expression) %>%
+  readr::write_rds(file.path(subset_dir,
+                             "hgg_zscored_expression.stranded.RDS"))
+filter_process_expression(polya_expression) %>%
+  readr::write_rds(file.path(subset_dir,
+                             "hgg_zscored_expression.polya.RDS"))
 
 #### Filter focal CN data ------------------------------------------------------
 
@@ -149,9 +179,9 @@ cn_metadata <- cn_df %>%
                 biospecimen_id,
                 status,
                 cytoband) %>%
-  dplyr::filter(sample_id %in% hgg_metadata_df$sample_id) %>%
+  dplyr::filter(biospecimen_id %in% hgg_metadata_df$Kids_First_Biospecimen_ID) %>%
   dplyr::distinct() # Remove duplicate rows produced as a result of not
-                    # including the copy number variable from `cn_df`
+# including the copy number variable from `cn_df`
 
 # Write to file
 readr::write_tsv(cn_metadata, file.path(subset_dir, "hgg_focal_cn.tsv.gz"))
@@ -162,7 +192,7 @@ fusion_df <- fusion_df %>%
   dplyr::select(Sample, FusionName) %>%
   dplyr::left_join(select_metadata,
                    by = c("Sample" = "Kids_First_Biospecimen_ID")) %>%
-  dplyr::filter(sample_id %in% hgg_metadata_df$sample_id)
+  dplyr::filter(Sample %in% hgg_metadata_df$Kids_First_Biospecimen_ID)
 
 # Write to file
 readr::write_tsv(fusion_df, file.path(subset_dir, "hgg_fusion.tsv"))
@@ -170,13 +200,12 @@ readr::write_tsv(fusion_df, file.path(subset_dir, "hgg_fusion.tsv"))
 #### Filter GISTIC data --------------------------------------------------------
 
 gistic_df <- gistic_df %>%
-  as.data.frame() %>%
   tibble::column_to_rownames("Chromosome Arm") %>%
   t() %>%
   as.data.frame() %>%
   tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
   dplyr::left_join(select_metadata, by = "Kids_First_Biospecimen_ID") %>%
-  dplyr::filter(sample_id %in% hgg_metadata_df$sample_id) %>%
+  dplyr::filter(Kids_First_Biospecimen_ID %in% hgg_metadata_df$Kids_First_Biospecimen_ID) %>%
   dplyr::select(sample_id,
                 Kids_First_Biospecimen_ID,
                 `1p`,
@@ -184,9 +213,19 @@ gistic_df <- gistic_df %>%
                 `7p`,
                 `7q`,
                 `10p`,
-                `10q`) #Select only the chromosome arms we are interested in
+                `10q`) # Select only the chromosome arms we are interested in
 
 # Write to file
 readr::write_tsv(gistic_df,
                  file.path(subset_dir, "hgg_gistic_broad_values.tsv"))
-  
+
+#### Filter SNV consensus maf data ---------------------------------------------
+
+snv_maf_df <- snv_maf_df %>%
+  dplyr::left_join(select_metadata,
+                   by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
+  dplyr::filter(Tumor_Sample_Barcode %in% hgg_metadata_df$Kids_First_Biospecimen_ID)
+
+# Write to file
+readr::write_tsv(snv_maf_df,
+                 file.path(subset_dir, "hgg_snv_maf.tsv.gz"))

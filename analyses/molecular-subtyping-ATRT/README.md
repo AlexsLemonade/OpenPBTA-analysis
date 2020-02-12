@@ -1,7 +1,13 @@
 # Molecular Subtyping ATRT
 
-**Note: The files in the `atrt-subset` directory were generated via `00-subset-files-for-ATRT.R` using the the files in the [version 11 data release](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/293).
-When re-running this module, you may want to regenerate the ATRT subset files using the most recent data release.**
+*Note: The files in the `atrt-subset` directory were generated via `00-subset-files-for-ATRT.R` using the the files in the [version 13 data release](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/444).
+When re-running this module, you may want to regenerate the ATRT subset files using the most recent data release.*
+
+**Module authors:** Chante Bethell ([@cbethell](https://github.com/cbethell)) and Jaclyn Taroni ([@jaclyn-taroni](https://github.com/jaclyn-taroni))
+
+## Limitations
+
+From the analyses performed here, subtyping ATRT tumors was not clear cut and has been deferred (see: [#244 (comment)](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/244#issuecomment-579757849)).
 
 ## Usage
 
@@ -11,7 +17,7 @@ To run all of the Rscripts in this module from the command line sequentially, us
 bash run-molecular-subtyping-ATRT.sh
 ```
 
-When run in this manner, `00-subset-files-for-ATRT.R` will generate subset files using whichever files are symlinked in `data` on your local machine.
+**When run in this manner, `00-subset-files-for-ATRT.R` will generate subset files using whichever files are symlinked in `data` on your local machine.**
 
 `run-molecular-subtyping-ATRT.sh` is designed to be run as if it was called from this module directory even when called from outside of this directory.
 
@@ -45,8 +51,8 @@ The structure of this folder is as follows:
 ├── README.md
 ├── atrt-subset
 │   ├── atrt_focal_cn.tsv.gz
+│   ├── atrt_gistic_broad_values.tsv
 │   ├── atrt_gsva.tsv
-│   ├── atrt_histologies.tsv
 │   ├── atrt_log_expression.RDS
 │   └── atrt_tmb.tsv
 ├── plots

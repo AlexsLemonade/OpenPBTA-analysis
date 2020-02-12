@@ -44,7 +44,14 @@
 
 - [ ] The dependencies required to run the code in this pull request have been added to the project Dockerfile.
 - [ ] This analysis has been added to continuous integration.
-- [ ] This analysis is recorded in the table in `analyses/README.md`.
+
+#### Documentation Checklist
+
+<!-- Please review https://github.com/AlexsLemonade/OpenPBTA-analysis#documenting-your-analysis -->
+
+- [ ] This analysis module has a `README` and it is up to date.
+- [ ] This analysis is recorded in the table in `analyses/README.md` and the entry is up to date.
+- [ ] The analytical code is documented and contains comments.
 
 <!-- IF YOUR PULL REQUEST IS A DATA RELEASE, PLEASE REMOVE THE [HTML COMMENT TAG](https://html.com/tags/comment-tag/) FROM THE SECTION BELOW AND COMPLETE THE CHECKLIST-->
 

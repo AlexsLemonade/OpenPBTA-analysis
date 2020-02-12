@@ -60,7 +60,7 @@ RUN R -e "BiocManager::install(c('annotatr', 'TxDb.Hsapiens.UCSC.hg38.knownGene'
 RUN R -e "BiocManager::install(c('preprocessCore', 'sva'), update = FALSE)"
 
 
-## This is deprecated 
+## This is deprecated
 #  # These packages are for single-sample GSEA analysis
 #  RUN R -e "BiocManager::install(c('GSEABase', 'GSVA'), update = FALSE)"
 
@@ -180,7 +180,7 @@ RUN R -e "BiocManager::install(c('TCGAbiolinks'), update = FALSE)"
 
 # Install python3 data science basics (pandas)
 # using pip to get more current versions
-RUN apt-get update -qq && apt-get -y --no-install-recommends install python3-pip  python3-dev 
+RUN apt-get update -qq && apt-get -y --no-install-recommends install python3-pip  python3-dev
 RUN pip3 install "numpy==1.17.3" && \
    pip3 install "six==1.13.0" "setuptools==41.6.0" && \
    pip3 install "cycler==0.10.0" "kiwisolver==1.1.0" "pyparsing==2.4.5" "python-dateutil==2.8.1" "pytz==2019.3" && \
@@ -212,7 +212,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     survival \
     cmprsk \
     survMisc \
-    survminer 
+    survminer
 
 # pyreadr for comparative-RNASeq-analysis
 RUN pip3 install "pyreadr==0.2.1"
@@ -232,9 +232,6 @@ RUN R -e "install.packages('corrplot', dependencies = TRUE)"
 # Install for mutation signature analysis
 RUN R -e "BiocManager::install('ggbio')"
 
-#### Please install your dependencies here
-#### Add a comment to indicate what analysis it is required for
-
 # CRAN package msigdbr needed for gene-set-enrichment-analysis
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
@@ -243,3 +240,54 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 
 # Bioconductor package GSVA needed for gene-set-enrichment-analysis
 RUN R -e "BiocManager::install(c('GSVA'), update = FALSE)"
+
+# remote package EXTEND needed for telomerase-activity-prediciton analysis
+RUN R -e "devtools::install_github('NNoureen/EXTEND', ref = '467c2724e1324ef05ad9260c3079e5b0b0366420', dependencies = TRUE)"
+
+# Required for installing pdftools, which is a dependency of gridGraphics
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    libpoppler-cpp-dev
+
+# CRAN package gridGraphics needed for telomerase-activity-prediction
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    && install2.r --error \
+    --deps TRUE \
+    gridGraphics
+
+# package required for shatterseek
+RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remotes::install_github('parklab/ShatterSeek', ref = '83ab3effaf9589cc391ecc2ac45a6eaf578b5046', dependencies = TRUE))"
+
+#### Please install your dependencies here
+#### Add a comment to indicate what analysis it is required for
+
+# MATLAB Compiler Runtime is required for GISTIC, MutSigCV
+# Install steps are adapted from usuresearch/matlab-runtime
+# https://hub.docker.com/r/usuresearch/matlab-runtime/dockerfile
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get -q update && \
+    apt-get install -q -y --no-install-recommends \
+    xorg
+
+RUN mkdir /mcr-install && \
+    mkdir /opt/mcr && \
+    cd /mcr-install && \
+    wget https://www.mathworks.com/supportfiles/downloads/R2014a/deployment_files/R2014a/installers/glnxa64/MCR_R2014a_glnxa64_installer.zip && \
+    unzip -q MCR_R2014a_glnxa64_installer.zip && \
+    rm -f MCR_R2014a_glnxa64_installer.zip && \
+    ./install -destinationFolder /opt/mcr -agreeToLicense yes -mode silent && \
+    cd / && \
+    rm -rf mcr-install
+
+WORKDIR /home/rstudio/
+
+# GISTIC installation
+RUN mkdir -p gistic_install && \
+    cd gistic_install && \
+    wget -q ftp://ftp.broadinstitute.org/pub/GISTIC2.0/GISTIC_2_0_23.tar.gz && \
+    tar zxf GISTIC_2_0_23.tar.gz
+
+RUN chown -R rstudio:rstudio /home/rstudio/gistic_install
+RUN chmod 755 /home/rstudio/gistic_install
+
+WORKDIR /rocker-build/
