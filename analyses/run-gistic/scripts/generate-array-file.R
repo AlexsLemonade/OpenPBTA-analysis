@@ -1,7 +1,9 @@
 # J. Taroni for ALSF CCDL 2020
-# This script accepts the OpenPBTA histologies file + a SEG file and will filter
-# the SEG file to the WGS samples that have the user-specified filter_value in
-# the user-specified filter_column
+# This script accepts the OpenPBTA histologies file + a SEG file and will
+# produce an array list file that contains WGS samples that have the
+# user-specified filter_value in the user-specified filter_column.
+# We include the SEG file so we can take the intersection of the IDs that match
+# the criteria
 #
 # Example usage - filtering to HGAT samples
 # (assumes you are in the analyses/run-gistic directory)
@@ -11,7 +13,7 @@
 #     --metadata ../../data/pbta-histologies.tsv \
 #     --filter_column short_histology \
 #     --filter_value HGAT \
-#     --output_file seg_files/hgat-cnv-consensus.seg.gz
+#     --output_file array_list_files/hgat-array-file.txt
 #
 
 library(tidyverse)
@@ -61,7 +63,7 @@ opt <- optparse::parse_args(opt_parser)
 seg_df <- read_tsv(opt$segfile)
 histologies_df <- read_tsv(opt$metadata)
 
-#### Filter SEG file -----------------------------------------------------------
+#### Generate array list file --------------------------------------------------
 
 relevant_biospecimen_ids <- histologies_df %>%
   # only WGS samples have copy number data
@@ -70,6 +72,13 @@ relevant_biospecimen_ids <- histologies_df %>%
          !!sym(opt$filter_column) == opt$filter_value) %>%
   pull(Kids_First_Biospecimen_ID)
 
-seg_df %>%
-  filter(ID %in% relevant_biospecimen_ids) %>%
-  write_tsv(opt$output_file)
+# Get the intersection of the IDs in the SEG file with the IDs that meet the
+# criteria -- some samples may have been filtered out during the consensus call
+# process for example
+relevant_biospecimen_ids <- intersect(seg_df$ID,
+                                      relevant_biospecimen_ids)
+
+# write to file - it is a text file with a single column with an optional
+# header "array"
+write_delim(data.frame(array = relevant_biospecimen_ids),
+            path = opt$output_file)

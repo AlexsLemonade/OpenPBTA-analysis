@@ -2,6 +2,9 @@
 
 # Jaclyn Taroni for ALSF CCDL 2020
 
+set -e
+set -o pipefail
+
 # This script should always run as if it were being called from
 # the directory it lives in.
 script_directory="$(perl -e 'use File::Basename;
@@ -20,17 +23,17 @@ then
   cd /home/rstudio/gistic_install && ./run_gistic_example
 else
 
-  # run GISTIC for the whole cohort 
-  echo "Running GISTIC on the entire OpenPBTA cohort..."
-  bash scripts/run-gistic-openpbta.sh
+  # run GISTIC for the whole cohort
+  # echo "Running GISTIC on the entire OpenPBTA cohort..."
+  # bash scripts/run-gistic-openpbta.sh
 
   # Now we'll run it on histologies with at least 100 WGS samples
   echo "Running GISTIC on specific histologies..."
 
-  # directory where we will put the SEG files that are specific 
+  # directory where we will put the array list files
   # to a histology
-  subset_directory="seg_files"
-  mkdir -p $subset_directory
+  alf_directory="array_list_files"
+  mkdir -p $alf_directory
 
   # These will be constant for every disease
   consensus_segfile="../../data/pbta-cnv-consensus.seg.gz"
@@ -50,15 +53,15 @@ else
     echo "    $disease_id"
 
     # generate a subset SEG file for this disease
-    subset_seg_file="${subset_directory}/${disease_id,,}_consensus_seg.gz"
-    Rscript --vanilla scripts/subset-seg-file.R \
+    array_list_file="${alf_directory}/${disease_id,,}-array-list.txt"
+    Rscript --vanilla scripts/generate-array-file.R \
       --segfile $consensus_segfile \
       --metadata $histologies_file \
       --filter_column $filter_column \
       --filter_value $disease_id \
-      --output_file $subset_seg_file
+      --output_file $array_list_file
 
-    SEGFILE=../${subset_seg_file} \
+    ARRAYLIST=../${array_list_file} \
     FILEPREFIX=$disease_id \
     OUTPUTFOLDER=pbta-cnv-consensus-${disease_id,,}-gistic \
     bash scripts/run-gistic-openpbta.sh

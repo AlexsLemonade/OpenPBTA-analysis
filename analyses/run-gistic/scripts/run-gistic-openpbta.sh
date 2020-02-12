@@ -2,7 +2,7 @@
 
 # Jaclyn Taroni for ALSF CCDL 2020
 
-set -e 
+set -e
 set -o pipefail
 
 # Configure environmental variables for MCR
@@ -16,11 +16,15 @@ script_directory="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
-# The gzipped SEG file to use and a "nickname" for it 
+# The gzipped SEG file to use and a "nickname" for it
 # The FILEPREFIX is appended to the base file name for the
 # gunzipped version of the file in scratch
 SEGFILE=${SEGFILE:-"../../../data/pbta-cnv-consensus.seg.gz"}
 FILEPREFIX=${FILEPREFIX:-"consensus"}
+
+# An array list file is used if we want to subset the cohort, by default
+# we don't want to do that
+ARRAYLIST=${ARRAYLIST:-""}
 
 # The results directory relative to where this script lives
 # and the folder name that will contain the GISTIC results, respectively
@@ -48,6 +52,7 @@ refgenefile=/home/rstudio/gistic_install/refgenefiles/hg38.UCSC.add_miR.160920.r
 /home/rstudio/gistic_install/gp_gistic2_from_seg \
   -v 30 \
   -b $basedir \
+  -alf $ARRAYLIST \
   -seg $segfile \
   -refgene $refgenefile \
   -genegistic 1 \
