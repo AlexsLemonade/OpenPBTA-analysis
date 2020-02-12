@@ -73,6 +73,9 @@ plot_dimension_reduction <- function(expression_df,
   # Args:
   #   expression_df: data.frame containing dimension reduction scores,
   #                           and relative information from the metadata
+  #   metadata_df: data.frame containing the relevant metadata
+  #   library: a string indicated the selection strategy used to produce the
+  #            expression data
   #   score1: the column number of the first dimension reduction score that we
   #           want to plot, 1 by default
   #   score2: the column number of the second dimension reduction score that
@@ -85,7 +88,7 @@ plot_dimension_reduction <- function(expression_df,
   #                             and `molecular_subtype` to color the points
   
   
-  # the first column will be either transcript or column ids
+  # The first column will be either transcript or column ids
   feature_identifier <- colnames(expression_df)[1]
   
   # drop any columns that contain other identifers
@@ -128,12 +131,11 @@ plot_dimension_reduction <- function(expression_df,
     perplexity_parameter = 10
   )
   
-  
   # Plot
-  
   # Empty lists that will hold plots
   plot_list <- list()
   
+  # Plot using UMAP scores
   plot_list[["UMAP"]] <- ggplot2::ggplot(umap_aligned_scores,
                                          ggplot2::aes(
                                            x = dplyr::pull(umap_aligned_scores, score1),
@@ -147,12 +149,15 @@ plot_dimension_reduction <- function(expression_df,
         "#2b3fff", "#ec102f", "#235e31",
         "#1a6587", "#11e38c", "#a22f80",
         "#fe5900", "#1945c5", "#51f310",
-        "#8b20d3", "#799d10", "#881c23"
+        "#8b20d3", "#799d10", "#881c23",
+        "#3fc6f8", "#fe5cde", "#0a7fb2",
+        "#f2945a", "#6b4472", "#f4d403"
       )
     ), na.value = "#a6b6f9") +
     ggplot2::labs(x = "UMAP1", y = "UMAP2") +
     ggplot2::theme_bw()
   
+  # Plot using t-SNE scores
   plot_list[["t-SNE"]] <- ggplot2::ggplot(tsne_aligned_scores,
                                           ggplot2::aes(
                                             x = dplyr::pull(tsne_aligned_scores, score1),
@@ -166,15 +171,18 @@ plot_dimension_reduction <- function(expression_df,
         "#2b3fff", "#ec102f", "#235e31",
         "#1a6587", "#11e38c", "#a22f80",
         "#fe5900", "#1945c5", "#51f310",
-        "#8b20d3", "#799d10", "#881c23"
+        "#8b20d3", "#799d10", "#881c23",
+        "#3fc6f8", "#fe5cde", "#0a7fb2",
+        "#f2945a", "#6b4472", "#f4d403"
       )
     ), na.value = "#a6b6f9") +
     ggplot2::labs(x = "t-SNE1", y = "t-SNE2") +
     ggplot2::theme_bw()
   
-  # Save plot list
+  # Define output name of plot list
   output_filename <- paste0("HGG_", library, "_plot_list.RDS")
   
+  # Save plot list
   readr::write_rds(plot_list,
                    path = file.path(scratch_dir, output_filename))
 }
@@ -189,7 +197,7 @@ generate_multipanel_plot <- function(rds_filename) {
   #   rds_filename: the list of plots representing the dimension reduction scores
   #
   # Returns:
-  #   plot: multipanel plot
+  #   final_plot: multipanel plot with visualizations of t-SNE and UMAP scores
   
   
   # First, we're going to infer some things about the plot from the name of
@@ -198,7 +206,7 @@ generate_multipanel_plot <- function(rds_filename) {
   # Change file extension
   output_file <- sub("_plot_list.RDS", ".pdf", rds_filename)
   
-  # putting the title together
+  # Putting the title together
   plot_title <-
     toupper(paste(sub("_plot_list.RDS", "", rds_filename)))
   
@@ -284,9 +292,21 @@ metadata_df <-
   )
 
 # Read in expression files
-stranded_expression <- readr::read_rds(file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
+stranded_expression <- readr::read_rds(
+  file.path(
+    data_dir,
+    "release-v13-20200116",
+    "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+  )
+)
 
-polya_expression <- readr::read_rds(file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"))
+polya_expression <- readr::read_rds(
+  file.path(
+    data_dir,
+    "release-v13-20200116",
+    "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
+  )
+)
 
 # Define gene count countoff 
 gene_count_threshold <- 100
