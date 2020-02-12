@@ -19,7 +19,7 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 
-if [[ "$IS_CI" -gt "1" ]]
+if [[ "$IS_CI" -gt "0" ]]
 then
   cd /home/rstudio/gistic_install && ./run_gistic_example
 else
