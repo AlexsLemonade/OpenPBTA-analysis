@@ -24,6 +24,10 @@ jobs:
           name: GISTIC proof of concept
           command: ./scripts/run_in_ci.sh bash analyses/gistic-proof-of-concept/gistic-example.sh
 
+      - run:
+          name: Transcriptome dimensionality reduction
+          command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
+
       # The analysis no longer needs to be tested as it has been retired and is better covered by 'SNV Caller Analysis' below.
       #- run:
       #    name: Mutect2 vs Strelka2
@@ -67,10 +71,6 @@ jobs:
       - run:
           name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded data and creates recurrent fusion list
           command: ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
-
-      - run:
-          name: Transcriptome dimensionality reduction
-          command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
 
       - run:
           name: Sex prediction from RNA-seq - Clean data-train elasticnet-evaluate model
