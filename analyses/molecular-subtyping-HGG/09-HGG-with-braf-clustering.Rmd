@@ -128,7 +128,7 @@ plot_dimension_reduction <- function(expression_df,
     metadata_df = metadata_df,
     filename_lead = tsne_file,
     output_directory = scratch_dir,
-    perplexity_parameter = 10
+    perplexity_parameter = 5
   )
   
   # Plot
