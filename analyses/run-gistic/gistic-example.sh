@@ -43,7 +43,7 @@ gunzip -c $SEGFILE > $segfile
 refgenefile=../../../gistic_install/refgenefiles/hg38.UCSC.add_miR.160920.refgene.mat
 
 # Run GISTIC! These parameters are from: https://github.com/d3b-center/OpenPBTA-workflows/blob/cb87a2b725d0e41d34a88436492830802c40f7f0/bash/run-gistic.sh#L16
-/home/rstudio/gistic_install/gp_gistic2_from_seg \
+../../../gistic_install/gp_gistic2_from_seg \
 	-v 30 \
 	-b $basedir \
 	-seg $segfile \
