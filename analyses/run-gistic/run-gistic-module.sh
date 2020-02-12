@@ -45,22 +45,22 @@ else
   disease[Medulloblastoma]="Medulloblastoma"
 
   for disease_id in "${!disease[@]}"; do
-  echo "    $disease_id"
+    echo "    $disease_id"
 
-  # generate a subset SEG file for this disease
-  subset_seg_file="${subset_directory}/${disease_id,,}_consensus_seg.gz"
-  Rscript --vanilla scripts/subset-seg-file.R \
-    --segfile $consensus_segfile \
-    --metadata $histologies_file \
-    --filter_column $filter_column \
-    --filter_value $disease_id \
-    --output_file $subset_seg_file
+    # generate a subset SEG file for this disease
+    subset_seg_file="${subset_directory}/${disease_id,,}_consensus_seg.gz"
+    Rscript --vanilla scripts/subset-seg-file.R \
+      --segfile $consensus_segfile \
+      --metadata $histologies_file \
+      --filter_column $filter_column \
+      --filter_value $disease_id \
+      --output_file $subset_seg_file
 
-  SEGFILE=../${subset_seg_file} \
-  FILEPREFIX=$disease_id \
-  OUTPUTFOLDER=pbta-cnv-consensus-${disease_id,,}-gistic \
-  bash scripts/run-gistic-openpbta.sh
+    SEGFILE=../${subset_seg_file} \
+    FILEPREFIX=$disease_id \
+    OUTPUTFOLDER=pbta-cnv-consensus-${disease_id,,}-gistic \
+    bash scripts/run-gistic-openpbta.sh
 
 	done
 
-fi 
+fi
