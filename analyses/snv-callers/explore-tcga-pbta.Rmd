@@ -1,0 +1,201 @@
+---
+title: "TCGA Plot Caller Comparisons"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: C. Savonen for ALSF CCDL
+date: 2019
+---
+
+Purpose: After creating a TCGA consensus and PBTA consensus, this notebook is  
+comparing the underlying data structures. 
+
+### Summary of Findings:
+
+
+#### Individual Caller's Reports 
+
+### Outline of analyses completed:
+
+- [Upset graph](#upset-graph)  
+- [VAF of combinations of callers](#vaf-for-combination-sets-of-callers)
+- [Base changes by caller](#base-changes)
+- [VAF distributions by caller](#vaf-distributions)
+- [VAF correlations between callers](#vaf-correlations)
+
+#### Usage
+
+To run this from the command line, use:
+```
+Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots-tcga.Rmd', 
+                              clean = TRUE)"
+```
+
+_This assumes you are in the top directory of the repository._
+
+## Setup
+
+#### Packages and functions
+
+Read in set up script.
+
+```{r}
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+Set up directories. 
+
+```{r}
+scratch_dir <- file.path("..", "..", "scratch")
+data_dir <- file.path("..", "..", "data")
+
+```
+
+```{r}
+metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) %>% 
+  dplyr::filter("")
+```
+
+## Connect to TCGA database
+
+Note what columns we will join by.
+
+```{r}
+join_cols = c("Chromosome",
+              "Start_Position",
+              "Reference_Allele",
+              "Allele",
+              "Tumor_Sample_Barcode", 
+              "Variant_Classification", 
+              "t_depth",
+              "t_ref_count", 
+              "t_alt_count", 
+              "n_depth", 
+              "n_ref_count", 
+              "n_alt_count", 
+              "VAF")
+```
+
+Set up tables from the database but only call the columns we need.
+
+```{r}
+# Start up connection
+con <- DBI::dbConnect(RSQLite::SQLite(), 
+                      file.path(scratch_dir, "tcga_snv_db.sqlite"))
+
+tcga_strelka <- dplyr::tbl(con, "strelka") %>% 
+  dplyr::select(join_cols) %>% 
+  as.data.frame()
+
+tcga_lancet <- dplyr::tbl(con, "lancet") %>% 
+  dplyr::select(join_cols) %>% 
+  as.data.frame()
+
+tcga_mutect <- dplyr::tbl(con, "mutect") %>% 
+  dplyr::select(join_cols) %>% 
+  as.data.frame()
+```
+
+```{r}
+# Start up connection
+con <- DBI::dbConnect(RSQLite::SQLite(), 
+                      file.path(scratch_dir, "snv_db.sqlite"))
+
+pbta_strelka <- dplyr::tbl(con, "strelka") %>% 
+  dplyr::select(join_cols, "VAF") %>% 
+  as.data.frame()
+
+pbta_lancet <- dplyr::tbl(con, "lancet") %>% 
+  dplyr::select(join_cols, "VAF") %>% 
+  as.data.frame()
+
+pbta_mutect <- dplyr::tbl(con, "mutect") %>% 
+  dplyr::select(join_cols, "VAF") %>% 
+  as.data.frame()
+```
+
+## Compare TCGA and PBTA by different metrics
+
+```{r}
+lancet <- dplyr::bind_rows(list(tcga = tcga_lancet,  
+                                pbta = pbta_lancet), .id = "dataset")
+```
+
+```{r}
+lancet %>% 
+  dplyr::group_by(as.factor(dataset), Tumor_Sample_Barcode) %>% 
+  dplyr::summarize(n_mut = dplyr::n()) %>% 
+  summary()
+
+```
+
+```
+ggplot2::ggplot() + 
+  ggplot2::geom_density(ggplot2::aes(x = n_mut, color = dataset))  
+  #ggplot2::xlim()
+```
+
+```{r}
+lancet <- dplyr::bind_rows(list(tcga = tcga_lancet,  
+                                pbta = pbta_lancet), .id = "dataset")
+```
+
+```{r}
+ggplot2::ggplot(lancet) + 
+  ggplot2::geom_density(ggplot2::aes(x = t_depth, color = dataset)) + 
+  ggplot2::xlim(c(0, 100))
+```
+
+## Where are the unique Lancet calls? 
+
+```{r}
+source(file.path("..", "chromosomal-instability", "util", "chr-break-plot.R"))
+source(file.path("..", "chromosomal-instability", "util", "chr-break-calculate.R"))
+```
+
+```{r}
+# Set up Chr sizes
+chr_sizes <- readr::read_tsv(file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed"),
+  col_names = FALSE
+) %>%
+  # Reformat the chromosome variable to drop the "chr"
+  dplyr::mutate(X1 = factor(gsub("chr", "", X1),
+    levels = c(1:22, "X", "Y", "M")
+  )) %>%
+  # Remove sex chromosomes
+  dplyr::filter(!(X1 %in% c("X", "Y", "M")))
+# Make chromosome size named vector
+chr_sizes_vector <- chr_sizes$X3
+names(chr_sizes_vector) <- chr_sizes$X1
+```
+
+```{r}
+only_lancet <- all_caller_df %>% 
+  dplyr::filter(!is.na(VAF_lancet) & is.na(VAF_strelka) & is.na(VAF_mutect)) %>% 
+  dplyr::mutate(Chromosome = gsub("chr", "", Chromosome))
+
+lancet_densities <- break_density(breaks_df = only_lancet, 
+             sample_id = "all",
+             samples_col = "Tumor_Sample_Barcode",
+             chrom_col = "Chromosome",
+             start_col = "Start_Position",
+             end_col = "Start_Position", 
+             window_size = 1e7,
+             chr_sizes_vector = chr_sizes_vector)
+
+map_breaks_plot(lancet_densities, 
+                y_val = "total_counts", 
+                color = "blue", 
+                y_lab = "Total Num of Calls", 
+                main_title = "Lancet Only Calls"
+                )
+
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
