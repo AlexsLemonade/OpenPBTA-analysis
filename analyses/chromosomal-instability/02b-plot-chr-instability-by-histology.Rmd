@@ -100,9 +100,6 @@ Load in the localized by histology breakpoint data.
 hist_break_local <- readr::read_rds(hist_binned_breaks_file)
 ```
 
-Read in the total intersection breaks densities TSV that was made by the 
-`00-setup-breakpoint-data.R` script. 
-
 ## Plot CDF plot by histology
 
 #### Intersection breaks density plot. 
