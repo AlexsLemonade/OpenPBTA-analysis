@@ -19,8 +19,8 @@ then
 else
 
 	# run GISTIC for the whole cohort 
-	# echo "Running GISTIC on the entire OpenPBTA cohort..."
-	# bash scripts/run-gistic-openpbta.sh
+	echo "Running GISTIC on the entire OpenPBTA cohort..."
+	bash scripts/run-gistic-openpbta.sh
 
 	# Now we'll run it on histologies with at least 100 WGS samples
 	echo "Running GISTIC on specific histologies..."
