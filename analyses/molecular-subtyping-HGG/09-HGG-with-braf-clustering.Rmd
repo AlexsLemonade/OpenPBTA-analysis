@@ -4,13 +4,16 @@ output:
   html_notebook:
     toc: TRUE
     toc_float: TRUE
+params:
+  plot_ci: yes
+  is_ci: FALSE
 author: Chante Bethell for ALSF CCDL
 date: 2020
 ---
 
 This notebook will look at HGAT samples without histone mutations that have `BRAF V600E` mutations.
 
-The purpose is to identify samples that may need to be reclassified as LGAT instead of HGAT using clustering.
+The purpose is to identify samples that may need to be reclassified as LGAT instead of HGAT using t-SNE and UMAP clustering.
 
 ## Usage
 
@@ -18,7 +21,7 @@ This notebook is intended to be run via the command line from the top directory
 of the repository as follows:
 
 ```
-Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/09-HGG-with-braf-clustering.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/09-HGG-with-braf-clustering.Rmd', clean = TRUE, params=list(is_ci = ${IS_CI}))"
 ```
 
 ## Set up
@@ -28,6 +31,18 @@ Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/09-HGG-with-braf
 ```{r}
 # Load in tidyverse functions
 library(tidyverse)
+```
+
+### CI
+```{r}
+# Assigning params$is_ci to running_in_ci avoids a locked binding error
+running_in_ci <- params$is_ci
+# Are we testing? In case of a non 0/1 number, we recast as logical, and then ensure logical.
+if (running_in_ci %in% c(0,1)) running_in_ci <- as.logical(running_in_ci)
+if (!(is.logical(running_in_ci)))
+{
+  stop("\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).")
+}
 ```
 
 ### Directories
@@ -65,6 +80,7 @@ source(
 plot_dimension_reduction <- function(expression_df,
                                      metadata_df,
                                      library,
+                                     perplexity_param,
                                      score1 = 1,
                                      score2 = 2) {
   # Given a data.frame that contains the expression scores and the information
@@ -128,7 +144,7 @@ plot_dimension_reduction <- function(expression_df,
     metadata_df = metadata_df,
     filename_lead = tsne_file,
     output_directory = scratch_dir,
-    perplexity_parameter = 2
+    perplexity_parameter = perplexity_param
   )
   
   # Plot
@@ -141,7 +157,7 @@ plot_dimension_reduction <- function(expression_df,
                                            x = dplyr::pull(umap_aligned_scores, score1),
                                            y = dplyr::pull(umap_aligned_scores, score2)
                                          )) +
-    ggplot2::geom_point(alpha = 0.7,
+    ggplot2::geom_point(alpha = 0.6,
                         ggplot2::aes(color = molecular_subtype,
                                      shape = broad_histology)) +
     ggplot2::scale_color_manual(values = (
@@ -163,7 +179,7 @@ plot_dimension_reduction <- function(expression_df,
                                             x = dplyr::pull(tsne_aligned_scores, score1),
                                             y = dplyr::pull(tsne_aligned_scores, score2)
                                           )) +
-    ggplot2::geom_point(alpha = 0.7,
+    ggplot2::geom_point(alpha = 0.6,
                         ggplot2::aes(color = molecular_subtype,
                                      shape = broad_histology)) +
     ggplot2::scale_color_manual(values = (
@@ -340,19 +356,28 @@ metadata_df$molecular_subtype[metadata_df$molecular_subtype == ""] <- NA
 ## Dimension Reduction and Plotting
 
 ```{r fig.width = 22, fig.height = 10}
+# Define the perplexity parameter for the t-SNE dimension reduction step
+if (!(running_in_ci)) {
+  perplexity_param = 10
+} else {
+  perplexity_param = 2
+}
+
 # Dimension reduction and plot list generation
 stranded_plot_list <-
   plot_dimension_reduction(
     expression_df = stranded_expression,
     metadata_df = metadata_df,
     library = "stranded",
+    perplexity_param = perplexity_param
   )
 
 polya_plot_list <-
   plot_dimension_reduction(
     expression_df = polya_expression,
     metadata_df = metadata_df,
-    library = "polya"
+    library = "polya",
+    perplexity_param = perplexity_param
   )
 
 # Generate multipanel plots with custom function 

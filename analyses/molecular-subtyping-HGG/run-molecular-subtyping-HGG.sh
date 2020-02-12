@@ -8,6 +8,8 @@
 set -e
 set -o pipefail
 
+IS_CI=${OPENPBTA_TESTING:-0}
+
 # This option controls whether on not the step that generates the HGG only
 # files gets run -- it will be turned off in CI
 SUBSET=${OPENPBTA_SUBSET:-1}
@@ -72,4 +74,4 @@ Rscript -e "rmarkdown::render('08-1p19q-codeleted-oligodendrogliomas.Rmd', clean
 #### HGAT with `BRAF V600E` mutations clustering ------------------------------
 
 # Run notebook that looks at how HGAT samples with `BRAF V600E` mutations cluster
-Rscript -e "rmarkdown::render('09-HGG-with-braf-clustering.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('09-HGG-with-braf-clustering.Rmd', clean = TRUE, params=list(is_ci = ${IS_CI}))"
