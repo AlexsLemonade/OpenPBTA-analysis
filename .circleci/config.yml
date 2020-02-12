@@ -22,7 +22,7 @@ jobs:
 
       - run:
           name: GISTIC proof of concept
-          command: OPENPBTA_CI=1 ./scripts/run_in_ci.sh bash analyses/run-gistic/scripts/run-gistic-openpbta.sh
+          command: OPENPBTA_CI=1 ./scripts/run_in_ci.sh bash analyses/run-gistic/run-gistic-module.sh
 
       # The analysis no longer needs to be tested as it has been retired and is better covered by 'SNV Caller Analysis' below.
       #- run:

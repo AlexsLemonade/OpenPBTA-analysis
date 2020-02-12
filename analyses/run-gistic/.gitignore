@@ -1,2 +1,5 @@
-# Ignore the consensus GISTIC results
+# Ignore the uncompressed GISTIC results
 results/pbta-cnv-consensus-gistic
+results/pbta-cnv-consensus-hgat-gistic
+results/pbta-cnv-consensus-lgat-gistic
+results/pbta-cnv-consensus-medulloblastoma-gistic

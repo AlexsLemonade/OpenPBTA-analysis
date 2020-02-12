@@ -1,15 +1,13 @@
 #!/bin/bash
 
+# Jaclyn Taroni for ALSF CCDL 2020
+
 set -e 
 set -o pipefail
 
 # Configure environmental variables for MCR
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/mcr/v83/runtime/glnxa64:/opt/mcr/v83/bin/glnxa64:/opt/mcr/v83/sys/os/glnxa64
 export XAPPLRESDIR=/opt/mcr/v83/X11/app-defaults
-
-# If this is CI, run the example included with GISTIC
-# The sample size for the subset files are too small otherwise
-IS_CI=${OPENPBTA_CI:-0}
 
 # This script should always run as if it were being called from
 # the directory it lives in.
@@ -18,56 +16,50 @@ script_directory="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
+# The gzipped SEG file to use and a "nickname" for it 
+# The FILEPREFIX is appended to the base file name for the
+# gunzipped version of the file in scratch
+SEGFILE=${SEGFILE:-"../../../data/pbta-cnv-consensus.seg.gz"}
+FILEPREFIX=${FILEPREFIX:-"consensus"}
 
-if [[ "$IS_CI" -gt "0" ]]
-then
-  cd /home/rstudio/gistic_install && ./run_gistic_example
-else
+# The results directory relative to where this script lives
+# and the folder name that will contain the GISTIC results, respectively
+# These will be constructed into a file path that is the basedir argument
+# for GISTIC
+RESULTSDIR=${RESULTSDIR:-"../results"}
+OUTPUTFOLDER=${OUTPUTFOLDER:-"pbta-cnv-consensus-gistic"}
 
-  # The gzipped SEG file to use and a "nickname" for it 
-  # The FILEPREFIX is appended to the base file name for the
-  # gunzipped version of the file in scratch
-  SEGFILE=${SEGFILE:-"../../../data/pbta-cnv-consensus.seg.gz"}
-  FILEPREFIX=${FILEPREFIX:-"consensus"}
+basedir=${RESULTSDIR}/${OUTPUTFOLDER}
+mkdir -p $basedir
 
-  # The results directory relative to where this script lives
-  # and the folder name that will contain the GISTIC results, respectively
-  # These will be constructed into a file path that is the basedir argument
-  # for GISTIC
-  RESULTSDIR=${RESULTSDIR:-"results"}
-  OUTPUTFOLDER=${OUTPUTFOLDER:-"pbta-cnv-consensus-gistic"}
+# It's unclear if GISTIC can handle gzipped files
+# So we will gunzip the file specified and put it in
+# a "compartmentalized" scratch folder and name the file
+# using the FILEPREFIX variable
+scratchdir="../../../scratch/uncompressed-seg-for-gistic"
+mkdir -p $scratchdir
+segfile=${scratchdir}/${FILEPREFIX}_seg_file_for_gistic.seg
+gunzip -c $SEGFILE > $segfile
 
-  basedir=${RESULTSDIR}/${OUTPUTFOLDER}
-  mkdir -p $basedir
+# This is the correct genome build for OpenPBTA
+refgenefile=/home/rstudio/gistic_install/refgenefiles/hg38.UCSC.add_miR.160920.refgene.mat
 
-  # It's unclear if GISTIC can handle gzipped files
-  # So we will gunzip the file specified and put it in
-  # a "compartmentalized" scratch folder and name the file
-  # using the FILEPREFIX variable
-  scratchdir="../../../scratch/uncompressed-seg-for-gistic"
-  mkdir -p $scratchdir
-  segfile=${scratchdir}/${FILEPREFIX}_seg_file_for_gistic.seg
-  gunzip -c $SEGFILE > $segfile
+# Run GISTIC! These parameters are from: https://github.com/d3b-center/OpenPBTA-workflows/blob/cb87a2b725d0e41d34a88436492830802c40f7f0/bash/run-gistic.sh#L16
+/home/rstudio/gistic_install/gp_gistic2_from_seg \
+  -v 30 \
+  -b $basedir \
+  -seg $segfile \
+  -refgene $refgenefile \
+  -genegistic 1 \
+  -smallmem 1 \
+  -broad 1 \
+  -twoside 1 \
+  -brlen 0.98 \
+  -conf 0.90 \
+  -armpeel 1 \
+  -savegene 1 \
+  -gcm extreme \
+  -js 2 \
+  -rx 0
 
-  # This is the correct genome build for OpenPBTA
-  refgenefile=/home/rstudio/gistic_install/refgenefiles/hg38.UCSC.add_miR.160920.refgene.mat
-
-  # Run GISTIC! These parameters are from: https://github.com/d3b-center/OpenPBTA-workflows/blob/cb87a2b725d0e41d34a88436492830802c40f7f0/bash/run-gistic.sh#L16
-  /home/rstudio/gistic_install/gp_gistic2_from_seg \
-    -v 30 \
-    -b $basedir \
-    -seg $segfile \
-    -refgene $refgenefile \
-    -genegistic 1 \
-    -smallmem 1 \
-    -broad 1 \
-    -twoside 1 \
-    -brlen 0.98 \
-    -conf 0.90 \
-    -armpeel 1 \
-    -savegene 1 \
-    -gcm extreme \
-    -js 2 \
-    -rx 0
-fi 
 
