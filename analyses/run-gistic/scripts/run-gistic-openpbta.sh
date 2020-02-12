@@ -27,7 +27,7 @@ else
   # The gzipped SEG file to use and a "nickname" for it 
   # The FILEPREFIX is appended to the base file name for the
   # gunzipped version of the file in scratch
-  SEGFILE=${SEGFILE:-"../../data/pbta-cnv-consensus.seg.gz"}
+  SEGFILE=${SEGFILE:-"../../../data/pbta-cnv-consensus.seg.gz"}
   FILEPREFIX=${FILEPREFIX:-"consensus"}
 
   # The results directory relative to where this script lives
@@ -44,7 +44,7 @@ else
   # So we will gunzip the file specified and put it in
   # a "compartmentalized" scratch folder and name the file
   # using the FILEPREFIX variable
-  scratchdir="../../scratch/uncompressed-seg-for-gistic"
+  scratchdir="../../../scratch/uncompressed-seg-for-gistic"
   mkdir -p $scratchdir
   segfile=${scratchdir}/${FILEPREFIX}_seg_file_for_gistic.seg
   gunzip -c $SEGFILE > $segfile
