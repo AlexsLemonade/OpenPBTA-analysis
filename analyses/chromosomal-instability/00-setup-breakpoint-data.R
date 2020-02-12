@@ -163,6 +163,15 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
+opt$cnv_seg <- "data/pbta-cnv-consensus.seg.gz"
+opt$sv <-  "data//pbta-sv-manta.tsv.gz"
+opt$metadata <- "data/pbta-histologies.tsv"
+opt$output <- "analyses/chromosomal-instability/breakpoint-data" 
+opt$surveyed_wgs <- "scratch/cnv_surveyed_wgs.bed"
+opt$surveyed_wxs <- "data/WXS.hg38.100bp_padded.bed"
+opt$gap <- 5
+opt$drop_sex <- TRUE
+
 # Make everything relative to root path
 opt$cnv_seg <- file.path(root_dir, opt$cnv_seg)
 opt$sv <- file.path(root_dir, opt$sv)
@@ -304,9 +313,11 @@ intersection_of_breaks <- lapply(common_samples,
 # Bring along sample names
 names(intersection_of_breaks) <- common_samples
 
-# Collaps into a data.frame
+# Collapse into a data.frame
 intersection_of_breaks <- dplyr::bind_rows(intersection_of_breaks, 
-                                           .id = "samples")
+                                           .id = "samples") %>% 
+  # Only need one chromosome 
+  dplyr::select(chrom = sv_ranges.seqnames, -cnv_ranges.seqnames, dplyr::everything())
 
 # Put all the breaks into a list.
 breaks_list <- list(
@@ -346,7 +357,7 @@ breaks_density_list <- lapply(breaks_list, function(breaks_df) {
   # Calculate the breaks density
   breaks_df %>%
     # Tack on the experimental strategy
-    dplyr::inner_join(metadata) %>%
+    dplyr::full_join(metadata) %>%
     # Recode using the BED range sizes
     dplyr::mutate(genome_size = dplyr::recode(experimental_strategy,
       "WGS" = wgs_size,
@@ -356,7 +367,7 @@ breaks_density_list <- lapply(breaks_list, function(breaks_df) {
       samples, experimental_strategy, genome_size
     ) %>%
     # Count number of mutations for that sample
-    dplyr::summarize(breaks_count = dplyr::n()) %>%
+    dplyr::summarize(breaks_count = sum(!is.na(chrom))) %>%
     # Calculate breaks density
     dplyr::mutate(breaks_density = breaks_count / (genome_size / 1000000))
 })
