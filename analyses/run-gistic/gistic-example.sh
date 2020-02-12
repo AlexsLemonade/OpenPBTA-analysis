@@ -4,7 +4,7 @@ set -e
 set -o pipefail
 
 # Configure environmental variables for MCR
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/mcr/v83/runtime/glnxa64:/opt/mcr/v83/bin/glnxa64:/opt/mcr/v83/sys/os/glnxa64:
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/mcr/v83/runtime/glnxa64:/opt/mcr/v83/bin/glnxa64:/opt/mcr/v83/sys/os/glnxa64
 export XAPPLRESDIR=/opt/mcr/v83/X11/app-defaults
 
 # This script should always run as if it were being called from
