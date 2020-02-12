@@ -34,7 +34,7 @@ jobs:
 
       - run:
           name: Molecular Subtyping - HGG
-          command: OPENPBTA_TESTING=1 OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
 
       - run:
           name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors 

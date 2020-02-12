@@ -4,9 +4,6 @@ output:
   html_notebook:
     toc: TRUE
     toc_float: TRUE
-params:
-  plot_ci: yes
-  is_ci: FALSE
 author: Chante Bethell for ALSF CCDL
 date: 2020
 ---
@@ -21,7 +18,7 @@ This notebook is intended to be run via the command line from the top directory
 of the repository as follows:
 
 ```
-Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/09-HGG-with-braf-clustering.Rmd', clean = TRUE, params=list(is_ci = ${IS_CI}))"
+Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/09-HGG-with-braf-clustering.Rmd', clean = TRUE)"
 ```
 
 ## Set up
@@ -31,18 +28,6 @@ Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/09-HGG-with-braf
 ```{r}
 # Load in tidyverse functions
 library(tidyverse)
-```
-
-### CI
-```{r}
-# Assigning params$is_ci to running_in_ci avoids a locked binding error
-running_in_ci <- params$is_ci
-# Are we testing? In case of a non 0/1 number, we recast as logical, and then ensure logical.
-if (running_in_ci %in% c(0,1)) running_in_ci <- as.logical(running_in_ci)
-if (!(is.logical(running_in_ci)))
-{
-  stop("\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).")
-}
 ```
 
 ### Directories
@@ -75,21 +60,60 @@ source(
     "dimension-reduction-functions.R"
   )
 )
+```
 
+#### Function to join metadata with HGG molecular subtype file
+
+```{r}
+align_data <- function(aligned_scores_df,
+                       hgg_molecular_subtype_df) {
+  # Given a data.frame with dimension reduction scores already aligned with the
+  # metadata, join the `molecular_subtype` column from the 
+  # `HGG_molecular_subtype.tsv` file generated in this module.
+  # Args:
+  #   aligned_scores_df: data.frame containing dimension reduction scores
+  #                      and relative information from the metadata
+  #   hgg_molecular_subtype_df: data.frame containing a `molecular_subtype`
+  #                             column with values determined in this module
+  # Returns:
+  #   aligned_scores_df: data.frame containing dimension reduction scores,
+  #                      metadata, and the `molecular_subtype` column from the
+  #                      `results/HGG_molecular_subtype.tsv` file
+  
+  aligned_scores_df <- aligned_scores_df %>%
+    dplyr::left_join(hgg_molecular_subtype_df, by = "sample_id") %>%
+    dplyr::group_by(sample_id) %>%
+    dplyr::select(-molecular_subtype.x, molecular_subtype = molecular_subtype.y) %>%
+    dplyr::distinct() %>%
+    dplyr::filter(
+      broad_histology %in% c(
+        "Low-grade astrocytic tumor",
+        "Diffuse astrocytic and oligodendroglial tumor"
+      )
+    )
+
+  return(aligned_scores_df)
+}
+```
+
+#### Function to generate plot list from dimension reduction scores
+
+```{r}
 # Alter the function to plot
-plot_dimension_reduction <- function(expression_df,
-                                     metadata_df,
-                                     library,
-                                     perplexity_param,
-                                     score1 = 1,
-                                     score2 = 2) {
+plot_dimension_reduction <- function(umap_aligned_scores_df,
+                                     tsne_aligned_scores_df,
+                                           library,
+                                           score1 = 1,
+                                           score2 = 2) {
   # Given a data.frame that contains the expression scores and the information
-  # we want from the metadata, make a scatterplot.
+  # we want from the metadata, align the HGG `molecular_subtype` column
+  # and make a list of scatterplots for each dimension reduction method.
   #
   # Args:
-  #   expression_df: data.frame containing dimension reduction scores,
-  #                           and relative information from the metadata
-  #   metadata_df: data.frame containing the relevant metadata
+  #   umap_aligned_scores_df: data.frame containing UMAP dimension reduction
+  #                           scores and relative information from the metadata
+  #   tsne_aligned_scores_df: data.frame containing t-SNE dimension reduction
+  #                           scores and relative information from the metadata
   #   library: a string indicated the selection strategy used to produce the
   #            expression data
   #   score1: the column number of the first dimension reduction score that we
@@ -98,98 +122,81 @@ plot_dimension_reduction <- function(expression_df,
   #           we want to plot, 2 by default
   #
   # Returns:
-  #   dimension_reduction_plot: the plot representing the dimension reduction
-  #                             scores in the given data.frame, using the
-  #                             values in `broad_histology` as symbols to shape
-  #                             and `molecular_subtype` to color the points
+  #   plot_list: the list of plots representing the dimension reduction
+  #              scores in the given data.frame, using the values in
+  #              `broad_histology` as symbols to shape and
+  #              `molecular_subtype` to color the points
   
   
-  # The first column will be either transcript or column ids
-  feature_identifier <- colnames(expression_df)[1]
-  
-  # drop any columns that contain other identifers
-  # expression_data <- expression_data %>%
-  #   dplyr::select(!!rlang::sym(feature_identifier), dplyr::starts_with("BS_")) %>%
-  #   dplyr::filter(complete.cases(.)) %>%
-  #   tibble::column_to_rownames(var = feature_identifier)
-  
-  # Filter out low count genes
-  genes_to_keep <-
-    rowSums(expression_df) >= gene_count_threshold
-  expression_df <- expression_df[genes_to_keep,]
-  
-  expression_df <- log2(expression_df + 1)
-  
-  # Transpose the data
-  transposed_exp_data <- t(expression_df)
-  
-  # UMAP
-  umap_file <- paste0("HGG_umap_", library)
-  umap_aligned_scores <- dimension_reduction_wrapper(
-    transposed_expression_matrix = transposed_exp_data,
-    method = "UMAP",
-    seed = 2020,
-    metadata_df = metadata_df,
-    filename_lead = umap_file,
-    output_directory = scratch_dir,
-    neighbors_parameter = 15
-  )
-  
-  # t-SNE
-  tsne_file <- paste0("HGG_tsne_", library)
-  tsne_aligned_scores <- dimension_reduction_wrapper(
-    transposed_expression_matrix = transposed_exp_data,
-    method = "t-SNE",
-    seed = 2020,
-    metadata_df = metadata_df,
-    filename_lead = tsne_file,
-    output_directory = scratch_dir,
-    perplexity_parameter = perplexity_param
-  )
+  # Join HGG molecular_subtype column with scores data.frame and filter
   
   # Plot
   # Empty lists that will hold plots
   plot_list <- list()
   
   # Plot using UMAP scores
-  plot_list[["UMAP"]] <- ggplot2::ggplot(umap_aligned_scores,
+  plot_list[["UMAP"]] <- ggplot2::ggplot(umap_aligned_scores_df,
                                          ggplot2::aes(
-                                           x = dplyr::pull(umap_aligned_scores, score1),
-                                           y = dplyr::pull(umap_aligned_scores, score2)
+                                           x = dplyr::pull(umap_aligned_scores_df, score1),
+                                           y = dplyr::pull(umap_aligned_scores_df, score2)
                                          )) +
     ggplot2::geom_point(alpha = 0.6,
                         ggplot2::aes(color = molecular_subtype,
                                      shape = broad_histology)) +
     ggplot2::scale_color_manual(values = (
       c(
-        "#2b3fff", "#ec102f", "#235e31",
-        "#1a6587", "#11e38c", "#a22f80",
-        "#fe5900", "#1945c5", "#51f310",
-        "#8b20d3", "#799d10", "#881c23",
-        "#3fc6f8", "#fe5cde", "#0a7fb2",
-        "#f2945a", "#6b4472", "#f4d403"
+        "#2b3fff",
+        "#ec102f",
+        "#235e31",
+        "#1a6587",
+        "#11e38c",
+        "#a22f80",
+        "#fe5900",
+        "#1945c5",
+        "#51f310",
+        "#8b20d3",
+        "#799d10",
+        "#881c23",
+        "#3fc6f8",
+        "#fe5cde",
+        "#0a7fb2",
+        "#f2945a",
+        "#6b4472",
+        "#f4d403"
       )
     ), na.value = "#a6b6f9") +
     ggplot2::labs(x = "UMAP1", y = "UMAP2") +
     ggplot2::theme_bw()
   
   # Plot using t-SNE scores
-  plot_list[["t-SNE"]] <- ggplot2::ggplot(tsne_aligned_scores,
+  plot_list[["t-SNE"]] <- ggplot2::ggplot(tsne_aligned_scores_df,
                                           ggplot2::aes(
-                                            x = dplyr::pull(tsne_aligned_scores, score1),
-                                            y = dplyr::pull(tsne_aligned_scores, score2)
+                                            x = dplyr::pull(tsne_aligned_scores_df, score1),
+                                            y = dplyr::pull(tsne_aligned_scores_df, score2)
                                           )) +
     ggplot2::geom_point(alpha = 0.6,
                         ggplot2::aes(color = molecular_subtype,
                                      shape = broad_histology)) +
     ggplot2::scale_color_manual(values = (
       c(
-        "#2b3fff", "#ec102f", "#235e31",
-        "#1a6587", "#11e38c", "#a22f80",
-        "#fe5900", "#1945c5", "#51f310",
-        "#8b20d3", "#799d10", "#881c23",
-        "#3fc6f8", "#fe5cde", "#0a7fb2",
-        "#f2945a", "#6b4472", "#f4d403"
+        "#2b3fff",
+        "#ec102f",
+        "#235e31",
+        "#1a6587",
+        "#11e38c",
+        "#a22f80",
+        "#fe5900",
+        "#1945c5",
+        "#51f310",
+        "#8b20d3",
+        "#799d10",
+        "#881c23",
+        "#3fc6f8",
+        "#fe5cde",
+        "#0a7fb2",
+        "#f2945a",
+        "#6b4472",
+        "#f4d403"
       )
     ), na.value = "#a6b6f9") +
     ggplot2::labs(x = "t-SNE1", y = "t-SNE2") +
@@ -203,8 +210,13 @@ plot_dimension_reduction <- function(expression_df,
                    path = file.path(scratch_dir, output_filename))
 }
 
+```
+
+#### Function to generate multipanel plot from plot list
+
+```{r}
 # Extract the individual plots from the list produced in
-# `plot_dimension_reduction` function above
+# `align_plot_dimension_reduction` function above
 generate_multipanel_plot <- function(rds_filename) {
   # Given a data.frame that contains the scores of a dimension reduction
   # analysis and the information we want from the metadata, make a scatterplot.
@@ -259,10 +271,12 @@ generate_multipanel_plot <- function(rds_filename) {
   
   # Add the title such that it is centered over the scatter plots
   multipanel_with_title <-
-    cowplot::plot_grid(plot_title_panel,
-                       multipanel_plot,
-                       ncol = 1,
-                       rel_heights = c(0.1, 1))
+    cowplot::plot_grid(
+      plot_title_panel,
+      multipanel_plot,
+      ncol = 1,
+      rel_heights = c(0.1, 1)
+    )
   
   # Pad the right side of the multipanel plot that now has a title
   multipanel_spacer <- cowplot::plot_grid(multipanel_with_title,
@@ -308,47 +322,49 @@ metadata_df <-
   )
 
 # Read in expression files
-stranded_expression <- readr::read_rds(
+stranded_tsne_aligned_scores <- readr::read_tsv(
   file.path(
-    data_dir,
-    "release-v13-20200116",
-    "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+    "..",
+    "..",
+    "analyses",
+    "transcriptomic-dimension-reduction",
+    "results",
+    "rsem_stranded_log_tsne_scores_aligned.tsv"
   )
 )
 
-polya_expression <- readr::read_rds(
+stranded_umap_aligned_scores <- readr::read_tsv(
   file.path(
-    data_dir,
-    "release-v13-20200116",
-    "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
+    "..",
+    "..",
+    "analyses",
+    "transcriptomic-dimension-reduction",
+    "results",
+    "rsem_stranded_log_umap_scores_aligned.tsv"
   )
 )
 
-# Define gene count countoff 
-gene_count_threshold <- 100
-```
-
-## Join HGG molecular subtype column with metadata
-
-```{r}
-# Join HGG molecular_subtype column with metadata and filter
-metadata_df <- metadata_df %>%
-  dplyr::left_join(hgg_molecular_subtype_df, by = "sample_id") %>%
-  dplyr::group_by(sample_id) %>%
-  dplyr::mutate(molecular_subtype = paste(sort(
-    unique(molecular_subtype.x, molecular_subtype.y)
-  ), collapse = ", ")) %>%
-  dplyr::select(-molecular_subtype.x,-molecular_subtype.y) %>%
-  dplyr::distinct() %>%
-  dplyr::filter(
-    broad_histology %in% c(
-      "Low-grade astrocytic tumor",
-      "Diffuse astrocytic and oligodendroglial tumor"
-    )
+polya_tsne_aligned_scores <- readr::read_tsv(
+  file.path(
+    "..",
+    "..",
+    "analyses",
+    "transcriptomic-dimension-reduction",
+    "results",
+    "rsem_polya_log_tsne_scores_aligned.tsv"
   )
+)
 
-# Fill in blanks with NA's
-metadata_df$molecular_subtype[metadata_df$molecular_subtype == ""] <- NA
+polya_umap_aligned_scores <- readr::read_tsv(
+  file.path(
+    "..",
+    "..",
+    "analyses",
+    "transcriptomic-dimension-reduction",
+    "results",
+    "rsem_polya_log_umap_scores_aligned.tsv"
+  )
+)
 
 ```
 
@@ -356,28 +372,34 @@ metadata_df$molecular_subtype[metadata_df$molecular_subtype == ""] <- NA
 ## Dimension Reduction and Plotting
 
 ```{r fig.width = 22, fig.height = 10}
-# Define the perplexity parameter for the t-SNE dimension reduction step
-if (!(running_in_ci)) {
-  perplexity_param = 10
-} else {
-  perplexity_param = 2
-}
+# Align dimension reduction scores data.frame with `molecular_subtype`
+# from `HGG_molecular_subtype.tsv`
+stranded_tsne_aligned_scores <-
+  align_data(stranded_tsne_aligned_scores,
+             hgg_molecular_subtype_df)
 
-# Dimension reduction and plot list generation
+stranded_umap_aligned_scores <-
+  align_data(stranded_umap_aligned_scores,
+             hgg_molecular_subtype_df)
+
+polya_tsne_aligned_scores <- align_data(polya_tsne_aligned_scores,
+                                        hgg_molecular_subtype_df)
+
+polya_umap_aligned_scores <- align_data(polya_umap_aligned_scores,
+                                        hgg_molecular_subtype_df)
+# Plot list generation
 stranded_plot_list <-
   plot_dimension_reduction(
-    expression_df = stranded_expression,
-    metadata_df = metadata_df,
-    library = "stranded",
-    perplexity_param = perplexity_param
+    umap_aligned_scores_df = stranded_umap_aligned_scores,
+    tsne_aligned_scores_df = stranded_tsne_aligned_scores,
+    library = "stranded"
   )
 
 polya_plot_list <-
   plot_dimension_reduction(
-    expression_df = polya_expression,
-    metadata_df = metadata_df,
-    library = "polya",
-    perplexity_param = perplexity_param
+    umap_aligned_scores_df = polya_umap_aligned_scores,
+    tsne_aligned_scores_df = polya_tsne_aligned_scores,
+    library = "polya"
   )
 
 # Generate multipanel plots with custom function 
