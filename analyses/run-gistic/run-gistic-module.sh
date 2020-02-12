@@ -15,6 +15,8 @@ IS_CI=${OPENPBTA_CI:-0}
 
 if [[ "$IS_CI" -gt "0" ]]
 then
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/mcr/v83/runtime/glnxa64:/opt/mcr/v83/bin/glnxa64:/opt/mcr/v83/sys/os/glnxa64
+  export XAPPLRESDIR=/opt/mcr/v83/X11/app-defaults
   cd /home/rstudio/gistic_install && ./run_gistic_example
 else
 
