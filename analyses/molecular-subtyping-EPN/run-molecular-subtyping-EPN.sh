@@ -51,10 +51,9 @@ python3 02_ependymoma_generate_all_data.py \
     --gsva $GSVA \
     --expression $SUBSET_EXPRESSION \
     --fusion $FUSION \
-    --breakpoints $BREAKPOINTS \
-    --breakpoints_cnv $BREAKPOINTS_CNV
-    --breakpoints_sv $BREAKPOINTS_SV
-    --focal_gene_cn $FOCAL_GENE_CN
-    --subfile_gistic_focalbygene $GISTIC_SUBFILE_FOCALBYGENE
+    --breakpoints_cnv $BREAKPOINTS_CNV \
+    --breakpoints_sv $BREAKPOINTS_SV \
+    --focal_gene_cn $FOCAL_GENE_CN \
+    --subfile_gistic_focalbygene $GISTIC_SUBFILE_FOCALBYGENE \
     --outfile $OUTPUT
 
