@@ -33,9 +33,6 @@ library(tidyverse)
 ### Directories
 
 ```{r}
-# File path to scratch directory -- this contains the cleaned data
-scratch_dir <- file.path("..", "..", "scratch")
-
 # File path to data directory
 data_dir <- file.path("..", "..", "data")
 
@@ -51,7 +48,7 @@ if (!dir.exists(plots_dir)) {
 ### Functions
 
 ```{r}
-# Source the functions for dimension reduction
+# Source the functions for plotting dimension reduction scores
 source(
   file.path(
     "..",
@@ -62,7 +59,7 @@ source(
 )
 ```
 
-#### Function to join metadata with HGG molecular subtype file
+#### Function to join dimension reductions scores with HGG molecular subtype file
 
 ```{r}
 align_data <- function(aligned_scores_df,
@@ -81,165 +78,55 @@ align_data <- function(aligned_scores_df,
   #                      `results/HGG_molecular_subtype.tsv` file
   
   aligned_scores_df <- aligned_scores_df %>%
-    dplyr::left_join(hgg_molecular_subtype_df, by = "sample_id") %>%
-    dplyr::group_by(sample_id) %>%
-    dplyr::select(-molecular_subtype.x, molecular_subtype = molecular_subtype.y) %>%
-    dplyr::distinct() %>%
+    dplyr::left_join(
+      hgg_molecular_subtype_df,
+      by = c("Kids_First_Biospecimen_ID" = "Kids_First_Biospecimen_ID_RNA")
+    ) %>%
     dplyr::filter(
       broad_histology %in% c(
         "Low-grade astrocytic tumor",
         "Diffuse astrocytic and oligodendroglial tumor"
       )
+    ) %>%
+    dplyr::group_by(Kids_First_Biospecimen_ID) %>%
+    dplyr::select(-molecular_subtype.x, molecular_subtype = molecular_subtype.y) %>%
+    dplyr::distinct() %>%
+    dplyr::mutate(
+      subtype_class = dplyr::case_when(
+        stringr::str_detect(molecular_subtype, "BRAF V600E") &
+          broad_histology == "Diffuse astrocytic and oligodendroglial tumor" ~ "HGAT_BRAF",
+        broad_histology == "Low-grade astrocytic tumor" ~ "LGAT",
+        TRUE ~ "HGAT_NO_BRAF"
+      )
     )
-
+  
   return(aligned_scores_df)
 }
 ```
 
-#### Function to generate plot list from dimension reduction scores
+#### Function to generate a multipanel plot
 
 ```{r}
-# Alter the function to plot
-plot_dimension_reduction <- function(umap_aligned_scores_df,
-                                     tsne_aligned_scores_df,
-                                     library,
-                                     score1 = 1,
-                                     score2 = 2) {
-  # Given a data.frame that contains the expression scores and the information
-  # we want from the metadata, align the HGG `molecular_subtype` column
-  # and make a list of scatterplots for each dimension reduction method.
+generate_multipanel_plot <- function(plot1,
+                                     plot2,
+                                     output_filename) {
+  # Given two plots generated in a previous function, make a multipanel plot,
+  # save, and display.
   #
   # Args:
-  #   umap_aligned_scores_df: data.frame containing UMAP dimension reduction
-  #                           scores and relative information from the metadata
-  #   tsne_aligned_scores_df: data.frame containing t-SNE dimension reduction
-  #                           scores and relative information from the metadata
-  #   library: a string indicated the selection strategy used to produce the
-  #            expression data
-  #   score1: the column number of the first dimension reduction score that we
-  #           want to plot, 1 by default
-  #   score2: the column number of the second dimension reduction score that
-  #           we want to plot, 2 by default
-  #
-  # Returns:
-  #   plot_list: the list of plots representing the dimension reduction
-  #              scores in the given data.frame, using the values in
-  #              `broad_histology` as symbols to shape and
-  #              `molecular_subtype` to color the points
-  
-  
-  # Join HGG molecular_subtype column with scores data.frame and filter
-  
-  # Plot
-  # Empty lists that will hold plots
-  plot_list <- list()
-  
-  # Plot using UMAP scores
-  plot_list[["UMAP"]] <- ggplot2::ggplot(umap_aligned_scores_df,
-                                         ggplot2::aes(
-                                           x = dplyr::pull(umap_aligned_scores_df, score1),
-                                           y = dplyr::pull(umap_aligned_scores_df, score2)
-                                         )) +
-    ggplot2::geom_point(alpha = 0.6,
-                        ggplot2::aes(color = molecular_subtype,
-                                     shape = broad_histology)) +
-    ggplot2::scale_color_manual(values = (
-      c(
-        "#2b3fff",
-        "#ec102f",
-        "#235e31",
-        "#1a6587",
-        "#11e38c",
-        "#a22f80",
-        "#fe5900",
-        "#1945c5",
-        "#51f310",
-        "#8b20d3",
-        "#799d10",
-        "#881c23",
-        "#3fc6f8",
-        "#fe5cde",
-        "#0a7fb2",
-        "#f2945a",
-        "#6b4472",
-        "#f4d403"
-      )
-    ), na.value = "#a6b6f9") +
-    ggplot2::labs(x = "UMAP1", y = "UMAP2") +
-    ggplot2::theme_bw()
-  
-  # Plot using t-SNE scores
-  plot_list[["t-SNE"]] <- ggplot2::ggplot(tsne_aligned_scores_df,
-                                          ggplot2::aes(
-                                            x = dplyr::pull(tsne_aligned_scores_df, score1),
-                                            y = dplyr::pull(tsne_aligned_scores_df, score2)
-                                          )) +
-    ggplot2::geom_point(alpha = 0.6,
-                        ggplot2::aes(color = molecular_subtype,
-                                     shape = broad_histology)) +
-    ggplot2::scale_color_manual(values = (
-      c(
-        "#2b3fff",
-        "#ec102f",
-        "#235e31",
-        "#1a6587",
-        "#11e38c",
-        "#a22f80",
-        "#fe5900",
-        "#1945c5",
-        "#51f310",
-        "#8b20d3",
-        "#799d10",
-        "#881c23",
-        "#3fc6f8",
-        "#fe5cde",
-        "#0a7fb2",
-        "#f2945a",
-        "#6b4472",
-        "#f4d403"
-      )
-    ), na.value = "#a6b6f9") +
-    ggplot2::labs(x = "t-SNE1", y = "t-SNE2") +
-    ggplot2::theme_bw()
-  
-  # Define output name of plot list
-  output_filename <- paste0("HGG_", library, "_plot_list.RDS")
-  
-  # Save plot list
-  readr::write_rds(plot_list,
-                   path = file.path(scratch_dir, output_filename))
-}
-
-```
-
-#### Function to generate multipanel plot from plot list
-
-```{r}
-# Extract the individual plots from the list produced in
-# `align_plot_dimension_reduction` function above
-generate_multipanel_plot <- function(rds_filename) {
-  # Given a data.frame that contains the scores of a dimension reduction
-  # analysis and the information we want from the metadata, make a scatterplot.
-  #
-  # Args:
-  #   rds_filename: the list of plots representing the dimension reduction scores
+  #   plot1: the first dimension reduction plot
+  #   plot2: the second dimendion reduction plot
+  #   output_filename: the filename for the output multipanel plot
   #
   # Returns:
   #   final_plot: multipanel plot with visualizations of t-SNE and UMAP scores
   
-  
-  # First, we're going to infer some things about the plot from the name of
-  # the input file -- specifically, the plot title and the output file name
-  
-  # Change file extension
-  output_file <- sub("_plot_list.RDS", ".pdf", rds_filename)
-  
   # Putting the title together
   plot_title <-
-    toupper(paste(sub("_plot_list.RDS", "", rds_filename)))
-  
-  # We need to read in the list generated via get-plot-list.R
-  plot_list <- readr::read_rds(file.path(scratch_dir, rds_filename))
+    toupper(paste(sub(".pdf", "", output_filename)))
+
+  # Put the plots in a list
+  plot_list <- list(plot1, plot2)
   
   # Extract legend from the plot list + adjust text size
   plot_legend <- cowplot::get_legend(
@@ -295,7 +182,7 @@ generate_multipanel_plot <- function(rds_filename) {
   
   # Save to file
   cowplot::save_plot(
-    file.path(plots_dir, output_file),
+    file.path(plots_dir, output_filename),
     final_plot,
     base_width = 24,
     base_height = 8
@@ -371,7 +258,7 @@ polya_umap_aligned_scores <- readr::read_tsv(
 
 ## Dimension Reduction and Plotting
 
-```{r fig.width = 22, fig.height = 10}
+```{r fig.width = 20, fig.height = 8}
 # Align dimension reduction scores data.frame with `molecular_subtype`
 # from `HGG_molecular_subtype.tsv`
 stranded_tsne_aligned_scores <-
@@ -387,25 +274,39 @@ polya_tsne_aligned_scores <- align_data(polya_tsne_aligned_scores,
 
 polya_umap_aligned_scores <- align_data(polya_umap_aligned_scores,
                                         hgg_molecular_subtype_df)
-# Plot list generation
-stranded_plot_list <-
-  plot_dimension_reduction(
-    umap_aligned_scores_df = stranded_umap_aligned_scores,
-    tsne_aligned_scores_df = stranded_tsne_aligned_scores,
-    library = "stranded"
-  )
+# Plot generation
+stranded_tsne_plot <-
+  plot_dimension_reduction(stranded_tsne_aligned_scores,
+                           "subtype_class",
+                           "t-SNE1",
+                           "t-SNE2")
 
-polya_plot_list <-
-  plot_dimension_reduction(
-    umap_aligned_scores_df = polya_umap_aligned_scores,
-    tsne_aligned_scores_df = polya_tsne_aligned_scores,
-    library = "polya"
-  )
 
-# Generate multipanel plots with custom function 
-generate_multipanel_plot("HGG_stranded_plot_list.RDS")
+polya_tsne_plot <-
+  plot_dimension_reduction(polya_tsne_aligned_scores,
+                           "subtype_class",
+                           "t-SNE1",
+                           "t-SNE2")
 
-generate_multipanel_plot("HGG_polya_plot_list.RDS")
+
+stranded_umap_plot <-
+  plot_dimension_reduction(stranded_umap_aligned_scores,
+                           "subtype_class",
+                           "UMAP1",
+                           "UMAP2")
+
+
+polya_umap_plot <-
+  plot_dimension_reduction(polya_umap_aligned_scores,
+                           "subtype_class",
+                           "UMAP1",
+                           "UMAP2")
+
+
+# Generate multipanel plots with custom function
+generate_multipanel_plot(stranded_tsne_plot, stranded_umap_plot, "HGG_stranded.pdf")
+
+generate_multipanel_plot(polya_tsne_plot, polya_umap_plot, "HGG_polya.pdf")
 
 ```
 
