@@ -2,9 +2,6 @@
 
 # Jaclyn Taroni for ALSF CCDL 2020
 
-set -e
-set -o pipefail
-
 # Configure environmental variables for MCR
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/mcr/v83/runtime/glnxa64:/opt/mcr/v83/bin/glnxa64:/opt/mcr/v83/sys/os/glnxa64
 export XAPPLRESDIR=/opt/mcr/v83/X11/app-defaults

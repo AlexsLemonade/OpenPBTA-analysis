@@ -2,9 +2,6 @@
 
 # Jaclyn Taroni for ALSF CCDL 2020
 
-set -e
-set -o pipefail
-
 # This script should always run as if it were being called from
 # the directory it lives in.
 script_directory="$(perl -e 'use File::Basename;
@@ -18,6 +15,8 @@ IS_CI=${OPENPBTA_CI:-0}
 
 if [[ "$IS_CI" -gt "0" ]]
 then
+  set -e
+  set -o pipefail
   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/mcr/v83/runtime/glnxa64:/opt/mcr/v83/bin/glnxa64:/opt/mcr/v83/sys/os/glnxa64
   export XAPPLRESDIR=/opt/mcr/v83/X11/app-defaults
   cd /home/rstudio/gistic_install && ./run_gistic_example
