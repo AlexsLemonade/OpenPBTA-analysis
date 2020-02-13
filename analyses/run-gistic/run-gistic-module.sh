@@ -66,6 +66,6 @@ else
     OUTPUTFOLDER=pbta-cnv-consensus-${disease_id,,}-gistic \
     bash scripts/run-gistic-openpbta.sh
 
-	done
+  done
 
 fi
