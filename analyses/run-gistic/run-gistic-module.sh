@@ -57,7 +57,7 @@ else
       --segfile $consensus_segfile \
       --metadata $histologies_file \
       --filter_column $filter_column \
-      --filter_value $disease_id \
+      --filter_value ${disease[$disease_id]} \
       --output_file $array_list_file
 
     ARRAYLIST=../${array_list_file} \
