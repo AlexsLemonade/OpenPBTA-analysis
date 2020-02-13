@@ -222,6 +222,8 @@ cnv_df <- data.table::fread(opt$cnv_seg, data.table = FALSE) %>%
   # Changing these so they end up matching the SV data
   dplyr::rename(start = loc.start, end = loc.end)
 
+# Obtain full list of samples
+cnv_samples <- unique(as.character(cnv_df$samples))
 
 # Filter CNV data to only the changes that are larger than our cutoff `ch.pct`.
 cnv_filtered_df <- cnv_df %>%
@@ -238,6 +240,10 @@ sv_df <- data.table::fread(opt$sv, data.table = FALSE) %>%
       `23` = "X", `24` = "Y"
     )
   )
+
+# Obtain full list of samples
+sv_samples <- unique(sv_df$Kids.First.Biospecimen.ID.Tumor)
+
 ####################### Drop Sex Chr if option is on ###########################
 if (opt$drop_sex){
   sv_df <- sv_df %>% 
@@ -334,10 +340,20 @@ wxs_size <- sum(bed_wxs[, 3] - bed_wxs[, 2])
 wgs_size <- as.numeric(wgs_size)
 wxs_size <- as.numeric(wxs_size)
 
+# Read in uncalled samples from consensus module
+uncalled_samples <- readr::read_tsv(file.path(root_dir, 
+                                              "analyses", 
+                                              "copy_number_consensus_call", 
+                                              "results", 
+                                              "uncalled_samples.tsv"))$sample
+
+# Get vector of all samples 
+all_samples <- unique(c(cnv_samples, sv_samples, uncalled_samples))
+
 # Set up the metadata
 metadata <- readr::read_tsv(opt$metadata) %>%
   # Isolate metadata to only the samples that are in the datasets.
-  dplyr::filter(Kids_First_Biospecimen_ID %in% common_samples) %>%
+  dplyr::filter(Kids_First_Biospecimen_ID %in% all_samples) %>%
   # Keep the columns to only the experimental strategy and the biospecimen ID
   dplyr::select(Kids_First_Biospecimen_ID, experimental_strategy) %>%
   # For an easier time matching to our breaks data.frames, lets just rename this.
@@ -347,7 +363,7 @@ metadata <- readr::read_tsv(opt$metadata) %>%
 breaks_density_list <- lapply(breaks_list, function(breaks_df) {
   # Calculate the breaks density
   breaks_df %>%
-    # Tack on the experimental strategy
+    # Tack on the experimental strategy and samples with no counts
     dplyr::full_join(metadata) %>%
     # Recode using the BED range sizes
     dplyr::mutate(genome_size = dplyr::recode(experimental_strategy,
@@ -357,10 +373,16 @@ breaks_density_list <- lapply(breaks_list, function(breaks_df) {
     dplyr::group_by(
       samples, experimental_strategy, genome_size
     ) %>%
-    # Count number of mutations for that sample
-    dplyr::summarize(breaks_count = sum(!is.na(chrom))) %>%
+    # Count number of mutations for that sample but find out if it is NA
+    dplyr::summarize(is_na = any(is.na(chrom)), 
+                     breaks_count = dplyr::n()) %>%
     # Calculate breaks density
-    dplyr::mutate(breaks_density = breaks_count / (genome_size / 1000000))
+    dplyr::mutate(breaks_count = dplyr::case_when(
+      !is_na ~ as.numeric(breaks_count), 
+      is_na ~ as.numeric(NA)
+      ), 
+    breaks_density = breaks_count / (genome_size / 1000000)) %>% 
+    dplyr::select(-is_na)
 })
 
 # Write the break densities each as their own files
