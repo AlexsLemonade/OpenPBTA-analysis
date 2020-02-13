@@ -24,7 +24,10 @@ GISTIC=../../data/pbta-cnv-consensus-gistic.zip
 GISTIC_FILE=pbta-cnv-consensus-gistic/broad_values_by_arm.txt
 GSVA=../gene-set-enrichment-analysis/results/gsva_scores_stranded.tsv
 FUSION=../fusion-summary/results/fusion_summary_ependymoma_foi.tsv
-BREAKPOINTS=../chromosomal-instability/breakpoint-data/union_of_breaks_densities.tsv
+BREAKPOINTS_CNV=../chromosomal-instability/breakpoint-data/cnv_breaks_densities.tsv
+BREAKPOINTS_SV=../chromosomal-instability/breakpoint-data/sv_breaks_densities.tsv
+FOCAL_GENE_CN=../focal-cn-file-preparation/results/consensus_seg_annotated_cn_autosomes.tsv.gz
+GISTIC_SUBFILE_FOCALBYGENE=pbta-cnv-consensus-gistic/focal_data_by_genes.txt
 
 OUTPUT=results/EPN_all_data.tsv
 
@@ -49,5 +52,9 @@ python3 02_ependymoma_generate_all_data.py \
     --expression $SUBSET_EXPRESSION \
     --fusion $FUSION \
     --breakpoints $BREAKPOINTS \
+    --breakpoints_cnv $BREAKPOINTS_CNV
+    --breakpoints_sv $BREAKPOINTS_SV
+    --focal_gene_cn $FOCAL_GENE_CN
+    --subfile_gistic_focalbygene $GISTIC_SUBFILE_FOCALBYGENE
     --outfile $OUTPUT
 

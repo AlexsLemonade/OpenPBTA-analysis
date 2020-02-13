@@ -36,7 +36,7 @@ def group_disease(primary_site):
         if site in primary:
             return "supratentorial"
     # Note we only get to the below return if the primary site was not in either defined group.
-    return "None"
+    return "undetermined"
 
 
 # Filtering for ependymoma samples 
