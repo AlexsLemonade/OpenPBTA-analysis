@@ -67,4 +67,5 @@ refgenefile=/home/rstudio/gistic_install/refgenefiles/hg38.UCSC.add_miR.160920.r
   -js 2 \
   -rx 0
 
-
+# compress GISTIC output
+cd $RESULTSDIR && zip -r ${OUTPUTFOLDER}.zip $OUTPUTFOLDER
