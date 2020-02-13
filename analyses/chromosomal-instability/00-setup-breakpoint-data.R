@@ -253,15 +253,6 @@ if (opt$drop_sex){
     dplyr::filter(!(chrom %in% c("X", "Y", "M")))
 }
 #################### Format the data as chromosomes breaks #####################
-# Only keep samples for which there are both SV and CNV data
-common_samples <- dplyr::intersect(
-  unique(cnv_df$ID),
-  unique(sv_df$Kids.First.Biospecimen.ID.Tumor)
-)
-
-# TODO: after updating to consensus CNV data, evaluate whether sex chromosomes should still be removed.
-# Make an CNV breaks data.frame.
-
 # Make a CNV data.frame that has the breaks
 cnv_breaks <- data.frame(
   samples = rep(cnv_filtered_df$ID, 2),
@@ -271,12 +262,8 @@ cnv_breaks <- data.frame(
   copy.num = rep(cnv_filtered_df$copy.num, 2),
   stringsAsFactors = FALSE
 ) %>%
-  # Remove sex chromosomes
-  dplyr::filter(
-    !(chrom %in% c("X", "Y")),
-    # Only keep samples that have both CNV and SV data
-    samples %in% common_samples
-  )
+  # Remove NAs
+  dplyr::filter(!is.na(chrom))
 
 # Make an SV breaks data.frame.
 sv_breaks <- data.frame(
@@ -286,20 +273,16 @@ sv_breaks <- data.frame(
   svclass = rep(sv_df$SV.type, 2),
   stringsAsFactors = FALSE
 ) %>%
-  # Remove sex chromosomes and NAs
-  dplyr::filter(
-    !(chrom %in% c("X", "Y", "M", NA)),
-    # Only keep samples that have both CNV and SV data
-    samples %in% common_samples
-  )
+  # Remove NAs
+  dplyr::filter(!is.na(chrom))
 
-# Remake this in case some samples' data got filtered out in the process
+######################### Create intersection of breaks ########################
+# Get list of samples for which there are both SV and CNV data
 common_samples <- dplyr::intersect(
   unique(cnv_breaks$samples),
   unique(sv_breaks$samples)
 )
 
-######################### Create intersection of breaks ########################
 # Make an intersection of breaks data.frame.
 intersection_of_breaks <- lapply(common_samples,
                                  intersect_cnv_sv, # Special intersect function
@@ -314,7 +297,7 @@ names(intersection_of_breaks) <- common_samples
 intersection_of_breaks <- dplyr::bind_rows(intersection_of_breaks, 
                                            .id = "samples") %>% 
   # Only need one chromosome 
-  dplyr::select(chrom = sv_ranges.seqnames, -cnv_ranges.seqnames, dplyr::everything())
+  dplyr::select(chrom = sv_ranges.seqnames, dplyr::everything(), -cnv_ranges.seqnames)
 
 # Put all the breaks into a list.
 breaks_list <- list(
@@ -376,12 +359,14 @@ breaks_density_list <- lapply(breaks_list, function(breaks_df) {
     # Count number of mutations for that sample but find out if it is NA
     dplyr::summarize(is_na = any(is.na(chrom)), 
                      breaks_count = dplyr::n()) %>%
-    # Calculate breaks density
+    # Calculate breaks density, but put NA for breaks_count if the sample was not 
+    # in the SV or CNV data originally
     dplyr::mutate(breaks_count = dplyr::case_when(
       !is_na ~ as.numeric(breaks_count), 
       is_na ~ as.numeric(NA)
       ), 
     breaks_density = breaks_count / (genome_size / 1000000)) %>% 
+    # Drop the is_na column, we only needed if for recoding
     dplyr::select(-is_na)
 })
 
@@ -393,4 +378,3 @@ purrr::imap(breaks_density_list, function(.x, name = .y) {
     file.path(opt$output, paste0(name, "_densities.tsv"))
   )
 })
-
