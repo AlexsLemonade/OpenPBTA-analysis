@@ -336,14 +336,18 @@ uncalled_samples <- readr::read_tsv(opt$uncalled)$sample
 # Get vector of all samples 
 all_samples <- unique(c(cnv_samples, sv_samples, uncalled_samples))
 
+
 # Set up the metadata
-metadata <- readr::read_tsv(opt$metadata) %>%
+metadata <- readr::read_tsv(opt$metadata, guess_max = 10000) %>%
   # Isolate metadata to only the samples that are in the datasets.
   dplyr::filter(Kids_First_Biospecimen_ID %in% all_samples) %>%
   # Keep the columns to only the experimental strategy and the biospecimen ID
   dplyr::select(Kids_First_Biospecimen_ID, experimental_strategy) %>%
   # For an easier time matching to our breaks data.frames, lets just rename this.
-  dplyr::rename(samples = Kids_First_Biospecimen_ID)
+  dplyr::rename(samples = Kids_First_Biospecimen_ID) %>%
+  # samples not in cnv_samples were were noisy or otherwise bad data
+  dplyr::mutate(surveyed = samples %in% cnv_samples) 
+
 
 # Calculate the breaks density for each data.frame
 breaks_density_list <- lapply(breaks_list, function(breaks_df) {
@@ -357,16 +361,17 @@ breaks_density_list <- lapply(breaks_list, function(breaks_df) {
       "WXS" = wxs_size
     )) %>%
     dplyr::group_by(
-      samples, experimental_strategy, genome_size
+      samples, experimental_strategy, genome_size, surveyed
     ) %>%
     # Count number of mutations for that sample but find out if it is NA
     dplyr::summarize(is_na = any(is.na(chrom)), 
                      breaks_count = dplyr::n()) %>%
-    # Calculate breaks density, but put NA for breaks_count if the sample was not 
-    # in the SV or CNV data originally
+    # Calculate breaks density, but put NA for breaks_count if the sample was 
+    # dropped from CNV consensus analysis
     dplyr::mutate(breaks_count = dplyr::case_when(
       !is_na ~ as.numeric(breaks_count), 
-      is_na ~ as.numeric(NA)
+      is_na & surveyed ~ as.numeric(0),
+      TRUE ~ as.numeric(NA)
       ), 
     breaks_density = breaks_count / (genome_size / 1000000)) %>% 
     # Drop the is_na column, we only needed if for recoding
