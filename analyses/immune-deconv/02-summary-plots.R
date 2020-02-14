@@ -42,7 +42,7 @@ method2 <- deconv.res %>%
 
 # first, define a function to create heatmap of
 # average immune scores per histology per cell type
-create.heatmap <- function(deconv.method, title) {
+create.heatmap <- function(deconv.method, title, fileout) {
   
   # create labels: count of samples per histology
   annot <- deconv.method %>%
@@ -65,12 +65,36 @@ create.heatmap <- function(deconv.method, title) {
     column_to_rownames('cell_type')
   
   # remove rows with all zeros (not allowed because we are scaling by row)
-  deconv.method <- deconv.method[apply(deconv.method, 1, function(x) !all(x==0)),]
+  # deconv.method <- deconv.method[apply(deconv.method, 1, function(x) !all(x==0)),]
   
-  title <- paste0(title,"\nAverage immune scores normalized by rows")
-  pheatmap(mat = t(deconv.method), fontsize = 10, 
-           scale = "column", angle_col = 45,
-           main = title, annotation_legend = T, cellwidth = 15, cellheight = 15)
+  #title <- paste0(title,"\nAverage immune scores normalized by rows")
+  # pheatmap(mat = t(deconv.method), fontsize = 10, 
+  #          scale = "column", angle_col = 45,
+  #          main = title, annotation_legend = T, cellwidth = 15, cellheight = 15)
+  pdf(file = fileout, width = 13, height = 8)
+  non.brain.tumors <- c("Lymphomas (1)", "Histiocytic tumor (5)")
+  deconv.method %>%
+    select(non.brain.tumors) %>%
+    rownames_to_column('celltype') %>%
+    filter_if(is.numeric, all_vars(. > 0)) %>%
+    column_to_rownames('celltype') %>%
+    t() %>%
+    pheatmap(fontsize = 10,
+             scale = "column", angle_col = 45,
+             main = "Average immune scores normalized by rows\nNon-Brain Tumors", 
+             annotation_legend = T, cellwidth = 15, cellheight = 15)
+  
+  deconv.method %>%
+    select(-non.brain.tumors) %>%
+    rownames_to_column('celltype') %>%
+    filter_if(is.numeric, all_vars(. > 0)) %>%
+    column_to_rownames('celltype') %>%
+    t() %>% 
+    pheatmap(fontsize = 10, 
+             scale = "column", angle_col = 45,
+             main = "Average immune scores normalized by rows\nBrain Tumors", 
+             annotation_legend = T, cellwidth = 15, cellheight = 15)
+  dev.off()
 }
 
 # next, plot a correlation heatmap between xCell and the second specified method
@@ -114,24 +138,29 @@ m1 <- gsub(" ","",method1.name)
 m2 <- gsub(" ","",method2.name)
 
 # create correlation plot for overlapping cell types between both methods
-png(filename = file.path(output, paste0("corrplot_", m1, "_vs_", m2, ".png")), 
-    width = 13, height = 8, units = "in", res = 300)
-corrplot(t(total), method = "circle", type = 'full', win.asp = 0.5, 
-         addCoef.col = "black", number.cex = .5,
-         is.corr = FALSE, tl.cex = 0.8, mar = c(0, 0, 0, 5), 
-         title = paste0("\n\n\n\nCorrelation matrix (", 
+pdf(file = file.path(output, paste0("corrplot_", m1, "_vs_", m2, ".pdf")), 
+    width = 16, height = 8)
+corrplot(t(total), method = "circle", type = 'full', win.asp = 0.5,
+         addCoef.col = "#888888", number.cex = .7,  
+         tl.col = "black", number.font = 2,
+         is.corr = FALSE, tl.cex = 0.8,
+         mar = c(0, 0, 0, 5),
+         cl.cex = .8,
+         title = paste0("\n\n\n\nCorrelation matrix (",
                         method1.name, " vs ", method2.name, ")\n",
                         "Overall Pearson Correlation: ", avg.cor))
 dev.off()
 
 # create heatmaps of average immune scores per histology per cell type
 # method1
-png(filename = file.path(output, paste0("heatmap_", m1, ".png")), width = 13, height = 8, units = "in", res = 300)
-create.heatmap(deconv.method = method1, title = method1.name)
-dev.off()
+#png(filename = file.path(output, paste0("heatmap_", m1, ".png")), width = 13, height = 8, units = "in", res = 300)
+create.heatmap(deconv.method = method1, title = method1.name,
+               fileout = file.path(output, paste0("heatmap_", m1, ".pdf")))
+#dev.off()
 
 # method2
-png(filename = file.path(output, paste0("heatmap_", m2, ".png")), width = 10, height = 8, units = "in", res = 300)
-create.heatmap(deconv.method = method2, title = method2.name)
-dev.off()
+#png(filename = file.path(output, paste0("heatmap_", m2, ".png")), width = 10, height = 8, units = "in", res = 300)
+create.heatmap(deconv.method = method2, title = method2.name,
+               fileout = file.path(output, paste0("heatmap_", m2, ".pdf")))
+#dev.off()
 
