@@ -361,13 +361,16 @@ breaks_density_list <- lapply(breaks_list, function(breaks_df) {
                      breaks_count = dplyr::n()) %>%
     # Calculate breaks density, but put NA for breaks_count if the sample was not 
     # in the SV or CNV data originally
-    dplyr::mutate(breaks_count = dplyr::case_when(
-      !is_na ~ as.numeric(breaks_count), 
-      is_na ~ as.numeric(NA)
+    dplyr::mutate(
+      surveyed = samples %in% unique(c(cnv_samples, sv_samples)), 
+      breaks_count = dplyr::case_when(
+        !is_na ~ as.numeric(breaks_count), 
+        is_na & surveyed ~ as.numeric(0),
+        TRUE ~ as.numeric(NA)
       ), 
     breaks_density = breaks_count / (genome_size / 1000000)) %>% 
     # Drop the is_na column, we only needed if for recoding
-    dplyr::select(-is_na)
+    dplyr::select(-is_na, -surveyed)
 })
 
 # Write the break densities each as their own files
