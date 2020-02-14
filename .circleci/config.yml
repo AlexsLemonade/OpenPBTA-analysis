@@ -20,10 +20,6 @@ jobs:
           name: Sample Distribution Analyses
           command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
 
-      - run:
-          name: GISTIC proof of concept
-          command: ./scripts/run_in_ci.sh bash analyses/gistic-proof-of-concept/gistic-example.sh
-
       # The analysis no longer needs to be tested as it has been retired and is better covered by 'SNV Caller Analysis' below.
       #- run:
       #    name: Mutect2 vs Strelka2
@@ -180,7 +176,11 @@ jobs:
        # - run:
           # name: SNV Caller VAF Cutoff Experiment
           # command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)" 
-                
+
+      # This checks that the GISTIC install still works, but not the modules code
+      - run:
+          name: GISTIC proof of concept
+          command: OPENPBTA_CI=1 ./scripts/run_in_ci.sh bash analyses/run-gistic/run-gistic-module.sh
 
   deploy:
     machine: 

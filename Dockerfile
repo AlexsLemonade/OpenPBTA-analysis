@@ -285,7 +285,9 @@ WORKDIR /home/rstudio/
 RUN mkdir -p gistic_install && \
     cd gistic_install && \
     wget -q ftp://ftp.broadinstitute.org/pub/GISTIC2.0/GISTIC_2_0_23.tar.gz && \
-    tar zxf GISTIC_2_0_23.tar.gz
+    tar zxf GISTIC_2_0_23.tar.gz && \
+    rm -f GISTIC_2_0_23.tar.gz && \
+    rm -rf MCR_Installer
 
 RUN chown -R rstudio:rstudio /home/rstudio/gistic_install
 RUN chmod 755 /home/rstudio/gistic_install
