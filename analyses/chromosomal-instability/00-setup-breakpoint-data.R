@@ -375,7 +375,7 @@ breaks_density_list <- lapply(breaks_list, function(breaks_df) {
       ), 
     breaks_density = breaks_count / (genome_size / 1000000)) %>% 
     # Drop the is_na column, we only needed if for recoding
-    dplyr::select(-is_na)
+    dplyr::select(-is_na, -surveyed)
 })
 
 # Write the break densities each as their own files
