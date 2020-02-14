@@ -129,12 +129,12 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 
 # Add bedops per the BEDOPS documentation
 RUN wget https://github.com/bedops/bedops/releases/download/v2.4.37/bedops_linux_x86_64-v2.4.37.tar.bz2
-RUN tar -jxvf bedops_linux_x86_64-v2.4.37.tar.bz2
+RUN tar -jxvf bedops_linux_x86_64-v2.4.37.tar.bz2 && rm -f bedops_linux_x86_64-v2.4.37.tar.bz2
 RUN cp bin/* /usr/local/bin
 
 # HTSlib
 RUN wget https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar.bz2
-RUN tar -jxvf htslib-1.9.tar.bz2
+RUN tar -jxvf htslib-1.9.tar.bz2 && rm -f htslib-1.9.tar.bz2
 RUN cd htslib-1.9 && \
     ./configure && \
     make && \
@@ -269,15 +269,29 @@ RUN apt-get -q update && \
     apt-get install -q -y --no-install-recommends \
     xorg
 
-RUN mkdir /mcr-install && \
+# This is the version of MCR required to run the precompiled version of GISTIC
+RUN mkdir /mcr-install-v83 && \
     mkdir /opt/mcr && \
-    cd /mcr-install && \
+    cd /mcr-install-v83 && \
     wget https://www.mathworks.com/supportfiles/downloads/R2014a/deployment_files/R2014a/installers/glnxa64/MCR_R2014a_glnxa64_installer.zip && \
     unzip -q MCR_R2014a_glnxa64_installer.zip && \
     rm -f MCR_R2014a_glnxa64_installer.zip && \
     ./install -destinationFolder /opt/mcr -agreeToLicense yes -mode silent && \
     cd / && \
-    rm -rf mcr-install
+    rm -rf mcr-install-v83
+
+# This is the version of MCR required to run the precompiled version of FocalScan
+RUN mkdir /mcr-install-v901 && \
+    mkdir -p /opt/mcr && \
+    cd /mcr-install-v901 && \
+    wget -q https://ssd.mathworks.com/supportfiles/downloads/R2016a/deployment_files/R2016a/installers/glnxa64/MCR_R2016a_glnxa64_installer.zip && \
+    unzip -q MCR_R2016a_glnxa64_installer.zip && \
+    rm -f MCR_R2014a_glnxa64_installer.zip && \
+    ./install -destinationFolder /opt/mcr -agreeToLicense yes -mode silent && \
+    wget https://ssd.mathworks.com/supportfiles/downloads/R2016a/deployment_files/R2016a/installers/glnxa64/MCR_R2016a_Update_7_glnxa64.sh && \
+    bash MCR_R2016a_Update_7_glnxa64.sh -d=/opt/mcr/v901 -s && \
+    cd / && \
+    rm -rf mcr-install-v901
 
 WORKDIR /home/rstudio/
 
