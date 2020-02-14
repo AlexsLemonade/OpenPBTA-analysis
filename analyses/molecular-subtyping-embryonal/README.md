@@ -42,8 +42,9 @@ The output of this script includes the subsets of the structural variant, poly-A
 
 [`03-clean-c19mc-data.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-embryonal/03-clean-c19mc-data.nb.html) is a notebook written to clean copy number data related to C19MC amplifications in non-MB, non-ATRT embryonal tumors.
 Specifically, the goal of this notebook is to identify embryonal tumors with multilayered rosettes (ETMR), C19MC-altered tumors.
-This is done by filtering the consensus copy number calls (found at `analyses/copy_number_consensus_call/results/pbta-cnv-consensus.seg.gz`) to focal amplifications on chromosome 19.
+This is done by filtering the consensus copy number calls (found at `analyses/copy_number_consensus_call/results/pbta-cnv-consensus.seg.gz`) to segments on chromosome 19 with a positive `seg.mean`.
 We are interested in the focal amplifications here because the amplification of C19MC, the miRNA cluster on chromosome 19, is a suggested characteristic of ETMRs as noted [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251#issue-520154478).
+In this notebook, we also visualize the width of the focal amplifications found to ensure that they overlap as there is disagreement about the genomic location of C19MC [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/458#issuecomment-581050051).
 The output of this notebook is a cleaned TSV file, named `cleaned_chr19_cn.tsv`, containing a binary column indicating whether or not each biospecimen ID identified in `01-samples-to-subset.Rmd` is associated with chromosome 19 amplification (stored in the `results` directory of this module).
 
 [`04-table-prep.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-embryonal/04-table-prep.nb.html) is a notebook written to construct tables that summarize the data relevant to the molecular subtyping of non-MB and non-ATRT embryonal tumors per the information provided on the reference GitHub issue [#251](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251).
