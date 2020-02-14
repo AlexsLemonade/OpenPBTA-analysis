@@ -10,13 +10,14 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 # The sample size for the subset files are too small otherwise
 IS_CI=${OPENPBTA_CI:-0}
 
-ORIG_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/mcr/v83/runtime/glnxa64:/opt/mcr/v83/bin/glnxa64:/opt/mcr/v83/sys/os/glnxa64
-export XAPPLRESDIR=/opt/mcr/v83/X11/app-defaults
-
 if [[ "$IS_CI" -gt "0" ]]
 then
   
+  # Environmental variables for MCR
+  ORIG_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/mcr/v83/runtime/glnxa64:/opt/mcr/v83/bin/glnxa64:/opt/mcr/v83/sys/os/glnxa64
+  export XAPPLRESDIR=/opt/mcr/v83/X11/app-defaults
+
   # We want this to fail if the GISTIC example fails only -- because we have
   # some instances of running GISTIC that do not complete but do save some 
   # output
@@ -24,6 +25,10 @@ then
   set -o pipefail
   # Run the example that comes with GISTIC - that allows us to 
   cd /home/rstudio/gistic_install && ./run_gistic_example
+  
+  # 'Undo' environmental variables for MCR
+  export LD_LIBRARY_PATH=$ORIG_LD_LIBRARY_PATH
+  unset XAPPLRESDIR
 
 else
 
@@ -73,7 +78,3 @@ else
   done
 
 fi
-
-# 'Undo' environmental variables for MCR
-export LD_LIBRARY_PATH=$ORIG_LD_LIBRARY_PATH
-unset XAPPLRESDIR
