@@ -147,6 +147,13 @@ option_list <- list(
     metavar = "character"
   ), 
   make_option(
+    opt_str = "--uncalled_samples", type = "character", default = "none",
+    help = "Relative file path (assuming from top directory of
+    'OpenPBTA-analysis') that specifies the regions that were uncalled in CNV
+    analysis.",
+    metavar = "character"
+  ), 
+  make_option(
     opt_str = "--gap", default = 0,
     help = "An integer that indicates how many base pairs away a CNV and SV 
     breakpoint can be and still be considered the same. Will be passed to maxgap
@@ -172,7 +179,7 @@ opt$surveyed_wxs <- file.path(root_dir, opt$surveyed_wxs)
 
 ########### Check that the files we need are in the paths specified ############
 needed_files <- c(
-  opt$cnv_seg, opt$sv, opt$metadata, opt$surveyed_wgs, opt$surveyed_wxs
+  opt$cnv_seg, opt$sv, opt$metadata, opt$surveyed_wgs, opt$surveyed_wxs, opt$uncalled
 )
 
 # Get list of which files were found
@@ -324,11 +331,7 @@ wgs_size <- as.numeric(wgs_size)
 wxs_size <- as.numeric(wxs_size)
 
 # Read in uncalled samples from consensus module
-uncalled_samples <- readr::read_tsv(file.path(root_dir, 
-                                              "analyses", 
-                                              "copy_number_consensus_call", 
-                                              "results", 
-                                              "uncalled_samples.tsv"))$sample
+uncalled_samples <- readr::read_tsv(opt$uncalled)$sample
 
 # Get vector of all samples 
 all_samples <- unique(c(cnv_samples, sv_samples, uncalled_samples))
