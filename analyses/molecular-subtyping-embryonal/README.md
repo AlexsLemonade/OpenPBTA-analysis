@@ -1,6 +1,6 @@
 # Molecular Subtyping non-MB, non-ATRT Embryonal Tumors
 
-**Module authors:** Stephanie J. Spielman([@sjspielman](https://github.com/sjspielman)) and Jaclyn Taroni ([@jaclyn-taroni](https://github.com/jaclyn-taroni))
+**Module authors:** Chante Bethell([@cbethell](https://github.com/cbethell)), Stephanie J. Spielman([@sjspielman](https://github.com/sjspielman)) and Jaclyn Taroni ([@jaclyn-taroni](https://github.com/jaclyn-taroni))
 
 **Note: The files in the `subset-files` directory were generated via `02-generate-subset-files.R` using the the files in the [version 13 data release](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/444).**
 
@@ -33,19 +33,21 @@ bash run-embryonal-subtyping.sh
 [`01-samples-to-subset.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-embryonal/01-samples-to-subset.nb.html) is a notebook written to identify samples to include in subset files for the purpose of molecularly subtyping non-MB and non-ATRT embryonal tumors.
 The samples are identified using the following criteria:
 
-1. An RNA-seq biospecimen sample includes a _TTYH1_ fusion (5' partner).
+1. An RNA-seq biospecimen sample includes a _TTYH1_ fusion (5' partner) [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/401#issuecomment-573669727).
 2. Any sample with "Embryonal tumor" in the `broad_histology` column of the metadata `pbta-histologies.tsv` that is not labeled "Medulloblastoma" or "Atypical Teratoid Rhabdoid Tumor (ATRT)" in `disease_type_old` or `disease_type_new` columns [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251#issuecomment-568220913).
-The output of this notebook is a tsv file containing the biospeciemen IDs identified based on the above criteria (stored in the `results` directory of this module.
+The output of this notebook is a TSV file, named `biospecimen_ids_embryonal_subtyping.tsv`, containing the biospeciemen IDs identified based on the above criteria (stored in the `results` directory of this module.
 
 [`02-generate-subset-files.R`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-embryonal/02-generate-subset-files.R) is a script written to subset the files required for the subtyping of non-MB and non-ATRT embryonal tumors.
 The output of this script includes the subsets of the structural variant, poly-A RNA-seq, and stranded RNA-seq data files (stored in the `subset-files` directory of this module).
 
 [`03-clean-c19mc-data.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-embryonal/03-clean-c19mc-data.nb.html) is a notebook written to clean copy number data related to C19MC amplifications in non-MB, non-ATRT embryonal tumors.
 Specifically, the goal of this notebook is to identify embryonal tumors with multilayered rosettes (ETMR), C19MC-altered tumors.
-The output of this notebook is a cleaned tsv file containing a binary column indicating whether or not each biospecimen ID is associated with chromosome 19 amplification, which is a suggested characteristic of ETMRs (stored in the `results` directory of this module).
+This is done by filtering the consensus copy number calls (found at `analyses/copy_number_consensus_call/results/pbta-cnv-consensus.seg.gz`) to focal amplifications on chromosome 19.
+We are interested in the focal amplifications here because the amplification of C19MC, the miRNA cluster on chromosome 19, is a suggested characteristic of ETMRs as noted [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251#issue-520154478).
+The output of this notebook is a cleaned TSV file, named `cleaned_chr19_cn.tsv`, containing a binary column indicating whether or not each biospecimen ID identified in `01-samples-to-subset.Rmd` is associated with chromosome 19 amplification (stored in the `results` directory of this module).
 
-[`04-table-prep.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-embryonal/04-table-prep.nb.html) is a notebook written to construct tables that summarize the data relevant to the molecular subtyping of non-MB and non-ATRT embryonal tumors per the information provided on the [reference GitHub issue](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251).
-The output of this notebook includes two tsv files, both found in the `results` directory of this module.
+[`04-table-prep.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-embryonal/04-table-prep.nb.html) is a notebook written to construct tables that summarize the data relevant to the molecular subtyping of non-MB and non-ATRT embryonal tumors per the information provided on the reference GitHub issue [#251](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251).
+The output of this notebook includes two TSV files, both found in the `results` directory of this module.
 The first output file, `embryonal_tumor_subtyping_relevant_data.tsv`, contains a summary table of the data subsetted in `02-generate-subset-files.R`, as well as relevant fusion and copy number data for the purpose of molecular subtyping embryonal tumors.
 The second output file, `embryonal_tumor_molecular_subtypes.tsv`, contains the molecular subtype information of the identified biospecimen IDs based on the summarized relevant data as described in the [original comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251#issue-520154478) and in [this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251#issuecomment-571807158) both found on the reference GitHub issue.
 The information in this file is represented in table with the following columns:
