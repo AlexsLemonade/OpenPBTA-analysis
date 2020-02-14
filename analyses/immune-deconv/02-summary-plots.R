@@ -44,6 +44,9 @@ method2 <- deconv.res %>%
 # average immune scores per histology per cell type
 create.heatmap <- function(deconv.method, title, fileout) {
   
+  # assign labels
+  non.brain.tumors <- c("Histiocytic tumor", "Lymphomas")
+  
   # create labels: count of samples per histology
   annot <- deconv.method %>%
     dplyr::select(broad_histology, sample) %>%
@@ -66,28 +69,33 @@ create.heatmap <- function(deconv.method, title, fileout) {
   
   # plot non-brain and brain tumors separately
   pdf(file = fileout, width = 13, height = 8)
-  non.brain.tumors <- c("Lymphomas (1)", "Histiocytic tumor (5)")
-  deconv.method %>%
-    select(non.brain.tumors) %>%
+  # non-brain tumors
+  mat <- deconv.method %>% 
+    select(grep(paste0(non.brain.tumors, collapse="|"), colnames(deconv.method), value = TRUE))  %>%
     rownames_to_column('celltype') %>%
     filter_if(is.numeric, all_vars(. > 0)) %>%
     column_to_rownames('celltype') %>%
-    t() %>%
-    pheatmap(fontsize = 10,
+    t()
+  if(nrow(mat) > 1){
+    pheatmap(mat, fontsize = 10,
              scale = "column", angle_col = 45,
              main = "Average immune scores normalized by rows\nNon-Brain Tumors", 
              annotation_legend = T, cellwidth = 15, cellheight = 15)
-  
-  deconv.method %>%
-    select(-non.brain.tumors) %>%
+  }
+   
+  # brain tumors 
+  mat <- deconv.method %>%
+    select(grep(paste0(non.brain.tumors, collapse="|"), colnames(deconv.method), invert = TRUE, value = TRUE)) %>%
     rownames_to_column('celltype') %>%
     filter_if(is.numeric, all_vars(. > 0)) %>%
     column_to_rownames('celltype') %>%
-    t() %>% 
-    pheatmap(fontsize = 10, 
+    t()
+  if(nrow(mat) > 1){
+    pheatmap(mat, fontsize = 10, 
              scale = "column", angle_col = 45,
              main = "Average immune scores normalized by rows\nBrain Tumors", 
              annotation_legend = T, cellwidth = 15, cellheight = 15)
+  }
   dev.off()
 }
 
