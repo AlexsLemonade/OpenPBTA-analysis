@@ -71,13 +71,14 @@ create.heatmap <- function(deconv.method, title, fileout) {
   pdf(file = fileout, width = 13, height = 8)
   # non-brain tumors
   mat <- deconv.method %>% 
-    select(grep(paste0(non.brain.tumors, collapse="|"), colnames(deconv.method), value = TRUE))  %>%
-    rownames_to_column('celltype') %>%
-    filter_if(is.numeric, all_vars(. > 0)) %>%
-    column_to_rownames('celltype') %>%
-    t()
-  if(nrow(mat) > 1){
-    pheatmap(mat, fontsize = 10,
+    select(grep(paste0(non.brain.tumors, collapse="|"), colnames(deconv.method), value = TRUE)) 
+  if(ncol(mat) > 1){
+    mat <- mat %>%
+      rownames_to_column('celltype') %>%
+      filter_if(is.numeric, all_vars(. > 0)) %>%
+      column_to_rownames('celltype') %>%
+      t() %>%
+      pheatmap(fontsize = 10,
              scale = "column", angle_col = 45,
              main = "Average immune scores normalized by rows\nNon-Brain Tumors", 
              annotation_legend = T, cellwidth = 15, cellheight = 15)
@@ -85,17 +86,19 @@ create.heatmap <- function(deconv.method, title, fileout) {
    
   # brain tumors 
   mat <- deconv.method %>%
-    select(grep(paste0(non.brain.tumors, collapse="|"), colnames(deconv.method), invert = TRUE, value = TRUE)) %>%
-    rownames_to_column('celltype') %>%
-    filter_if(is.numeric, all_vars(. > 0)) %>%
-    column_to_rownames('celltype') %>%
-    t()
-  if(nrow(mat) > 1){
-    pheatmap(mat, fontsize = 10, 
-             scale = "column", angle_col = 45,
-             main = "Average immune scores normalized by rows\nBrain Tumors", 
-             annotation_legend = T, cellwidth = 15, cellheight = 15)
+    select(grep(paste0(non.brain.tumors, collapse="|"), colnames(deconv.method), invert = TRUE, value = TRUE))
+  if(ncol(mat) > 1){
+    mat <- mat %>%
+      rownames_to_column('celltype') %>%
+      filter_if(is.numeric, all_vars(. > 0)) %>%
+      column_to_rownames('celltype') %>%
+      t() %>%
+      pheatmap(fontsize = 10, 
+               scale = "column", angle_col = 45,
+               main = "Average immune scores normalized by rows\nBrain Tumors", 
+               annotation_legend = T, cellwidth = 15, cellheight = 15)
   }
+    
   dev.off()
 }
 
