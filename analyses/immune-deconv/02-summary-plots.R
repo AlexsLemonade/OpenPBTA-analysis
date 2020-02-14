@@ -64,13 +64,7 @@ create.heatmap <- function(deconv.method, title, fileout) {
     spread(key = label, value = mean) %>% 
     column_to_rownames('cell_type')
   
-  # remove rows with all zeros (not allowed because we are scaling by row)
-  # deconv.method <- deconv.method[apply(deconv.method, 1, function(x) !all(x==0)),]
-  
-  #title <- paste0(title,"\nAverage immune scores normalized by rows")
-  # pheatmap(mat = t(deconv.method), fontsize = 10, 
-  #          scale = "column", angle_col = 45,
-  #          main = title, annotation_legend = T, cellwidth = 15, cellheight = 15)
+  # plot non-brain and brain tumors separately
   pdf(file = fileout, width = 13, height = 8)
   non.brain.tumors <- c("Lymphomas (1)", "Histiocytic tumor (5)")
   deconv.method %>%
@@ -153,14 +147,10 @@ dev.off()
 
 # create heatmaps of average immune scores per histology per cell type
 # method1
-#png(filename = file.path(output, paste0("heatmap_", m1, ".png")), width = 13, height = 8, units = "in", res = 300)
 create.heatmap(deconv.method = method1, title = method1.name,
                fileout = file.path(output, paste0("heatmap_", m1, ".pdf")))
-#dev.off()
 
 # method2
-#png(filename = file.path(output, paste0("heatmap_", m2, ".png")), width = 10, height = 8, units = "in", res = 300)
 create.heatmap(deconv.method = method2, title = method2.name,
                fileout = file.path(output, paste0("heatmap_", m2, ".pdf")))
-#dev.off()
 
