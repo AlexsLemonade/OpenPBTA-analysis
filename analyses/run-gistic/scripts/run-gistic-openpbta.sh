@@ -3,15 +3,13 @@
 # Jaclyn Taroni for ALSF CCDL 2020
 
 # Configure environmental variables for MCR
+ORIG_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/mcr/v83/runtime/glnxa64:/opt/mcr/v83/bin/glnxa64:/opt/mcr/v83/sys/os/glnxa64
 export XAPPLRESDIR=/opt/mcr/v83/X11/app-defaults
 
 # This script should always run as if it were being called from
 # the directory it lives in.
-script_directory="$(perl -e 'use File::Basename;
-  use Cwd "abs_path";
-  print dirname(abs_path(@ARGV[0]));' -- "$0")"
-cd "$script_directory" || exit
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
 # The gzipped SEG file to use and a "nickname" for it
 # The FILEPREFIX is appended to the base file name for the
@@ -66,3 +64,7 @@ refgenefile=/home/rstudio/gistic_install/refgenefiles/hg38.UCSC.add_miR.160920.r
 
 # compress GISTIC output
 cd $RESULTSDIR && zip -r ${OUTPUTFOLDER}.zip $OUTPUTFOLDER
+
+# 'Undo' environmental variables for MCR
+export LD_LIBRARY_PATH=$ORIG_LD_LIBRARY_PATH
+unset XAPPLRESDIR

@@ -4,22 +4,27 @@
 
 # This script should always run as if it were being called from
 # the directory it lives in.
-script_directory="$(perl -e 'use File::Basename;
-  use Cwd "abs_path";
-  print dirname(abs_path(@ARGV[0]));' -- "$0")"
-cd "$script_directory" || exit
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
 # If this is CI, run the example included with GISTIC
 # The sample size for the subset files are too small otherwise
 IS_CI=${OPENPBTA_CI:-0}
 
+ORIG_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/mcr/v83/runtime/glnxa64:/opt/mcr/v83/bin/glnxa64:/opt/mcr/v83/sys/os/glnxa64
+export XAPPLRESDIR=/opt/mcr/v83/X11/app-defaults
+
 if [[ "$IS_CI" -gt "0" ]]
 then
+  
+  # We want this to fail if the GISTIC example fails only -- because we have
+  # some instances of running GISTIC that do not complete but do save some 
+  # output
   set -e
   set -o pipefail
-  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/mcr/v83/runtime/glnxa64:/opt/mcr/v83/bin/glnxa64:/opt/mcr/v83/sys/os/glnxa64
-  export XAPPLRESDIR=/opt/mcr/v83/X11/app-defaults
+  # Run the example that comes with GISTIC - that allows us to 
   cd /home/rstudio/gistic_install && ./run_gistic_example
+
 else
 
   # run GISTIC for the whole cohort
@@ -68,3 +73,7 @@ else
   done
 
 fi
+
+# 'Undo' environmental variables for MCR
+export LD_LIBRARY_PATH=$ORIG_LD_LIBRARY_PATH
+unset XAPPLRESDIR
