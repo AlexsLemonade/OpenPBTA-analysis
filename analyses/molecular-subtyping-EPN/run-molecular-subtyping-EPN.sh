@@ -21,7 +21,7 @@ FULL_EXPRESSION=../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds
 SUBSET_EXPRESSION=epn-subset/epn-pbta-gene-expression-rsem-fpkm-collapsed.stranded.tsv.gz
 NOTEBOOK=../../scratch/EPN_molecular_subtype.tsv
 GISTIC=../../data/pbta-cnv-consensus-gistic.zip
-GISTIC_FILE=pbta-cnv-consensus-gistic/broad_values_by_arm.txt
+GISTIC_SUBFILE_BROAD=pbta-cnv-consensus-gistic/broad_values_by_arm.txt
 GSVA=../gene-set-enrichment-analysis/results/gsva_scores_stranded.tsv
 FUSION=../fusion-summary/results/fusion_summary_ependymoma_foi.tsv
 BREAKPOINTS_CNV=../chromosomal-instability/breakpoint-data/cnv_breaks_densities.tsv
@@ -47,13 +47,13 @@ echo  "Generating analyses/molecular-subtyping-EPN/results/EPN_all_data.tsv  tha
 python3 02_ependymoma_generate_all_data.py \
     --notebook $NOTEBOOK \
     --gistic $GISTIC \
-    --subfile-gistic $GISTIC_FILE \
+    --subfile-gistic-broad $GISTIC_SUBFILE_BROAD \
     --gsva $GSVA \
     --expression $SUBSET_EXPRESSION \
     --fusion $FUSION \
-    --breakpoints_cnv $BREAKPOINTS_CNV \
-    --breakpoints_sv $BREAKPOINTS_SV \
-    --focal_gene_cn $FOCAL_GENE_CN \
-    --subfile_gistic_focalbygene $GISTIC_SUBFILE_FOCALBYGENE \
+    --breakpoints-cnv $BREAKPOINTS_CNV \
+    --breakpoints-sv $BREAKPOINTS_SV \
+    --focal-gene-cn $FOCAL_GENE_CN \
+    --subfile-gistic-focalbygene $GISTIC_SUBFILE_FOCALBYGENE \
     --outfile $OUTPUT
 
