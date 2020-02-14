@@ -44,7 +44,7 @@ The output of this notebook is a cleaned tsv file containing a binary column ind
 
 [`04-table-prep.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-embryonal/04-table-prep.nb.html) is a notebook written to construct tables that summarize the data relevant to the molecular subtyping of non-MB and non-ATRT embryonal tumors per the information provided on the [reference GitHub issue](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251).
 The output of this notebook includes two tsv files, both found in the `results` directory of this module.
-The first output file, `embryonal_tumor_subtyping_relevant_data.tsv`, contains a summary table of the data subsetted in `02-generate-subset-files.R` for the purpose of molecular subtyping embryonal tumors.  
+The first output file, `embryonal_tumor_subtyping_relevant_data.tsv`, contains a summary table of the data subsetted in `02-generate-subset-files.R`, as well as relevant fusion and copy number data for the purpose of molecular subtyping embryonal tumors.
 The second output file, `embryonal_tumor_molecular_subtypes.tsv`, contains the molecular subtype information of the identified biospecimen IDs based on the summarized relevant data as described in the [original comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251#issue-520154478) and in [this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251#issuecomment-571807158) both found on the reference GitHub issue.
 The information in this file is represented in table with the following columns:
 
