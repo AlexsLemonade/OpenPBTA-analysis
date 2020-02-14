@@ -55,7 +55,6 @@ gsva_NFKB = gsva_NFKB.set_index("Kids_First_Biospecimen_ID")
 # Reading subset gene expression file
 fpkm_df = pd.read_csv(args.expression, sep = "\t")
 fpkm_df = fpkm_df.set_index("GENE")
-zscore_fpkm_df = fpkm_df.apply(stats.zscore)
 
 # Reading fusion summary file
 fusion_df = pd.read_csv(args.fusion, sep="\t")
