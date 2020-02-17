@@ -27,13 +27,7 @@ option_list <- list(
     type = "character",
     default = NULL,
     help = "output directory for plots"
-  ),
-  optparse::make_option(
-    c("-f", "--function_script"),
-    type = "character",
-    default = NULL,
-    help = "R script that contains custom function to generate multipanel plot"
-  )  
+  )
 )
 
 # Read the arguments passed
@@ -48,8 +42,21 @@ if (!dir.exists(plot_directory)) {
 
 #### Source custom function ---------------------------------------------------
 
+# Detect the ".git" folder -- this will in the project root directory.
+# Use this as the root directory to ensure proper sourcing of functions no
+# matter where this is called from
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
 # Source script that contains the custom `generate-multipanel-plot` function
-source(opt$function_script)
+source(
+  file.path(
+    root_dir,
+    "analyses",
+    "transcriptomic-dimension-reduction",
+    "util",
+    "generate-multipanel-plot-functions.R"
+  )
+)
 
 #### Make the multipanel plot --------------------------------------------------
 

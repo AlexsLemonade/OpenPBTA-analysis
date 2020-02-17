@@ -18,6 +18,5 @@ do
   echo "Plotting $f ..."
   Rscript scripts/generate-multipanel-plot.R \
   --plot_rds $f \
-  --plot_directory plots \
-  --function_script util/generate-multipanel-plot-functions.R
+  --plot_directory plots
 done
