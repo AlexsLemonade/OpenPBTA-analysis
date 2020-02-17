@@ -10,13 +10,13 @@
 # --db_file : Path to sqlite database file made from 01-setup_db.py
 # --metadata : Relative file path to MAF file to be analyzed. Can be .gz compressed.
 #              Assumes file path is given from top directory of 'OpenPBTA-analysis'.
-# --all_bed_wgs : File path that specifies the BED regions file to be used for the 
+# --all_bed_wgs : File path that specifies the BED regions file to be used for the
 #                 denominator for all mutations TMB for WGS samples.
-# --all_bed_wxs : File path that specifies the BED regions file to be used for the 
+# --all_bed_wxs : File path that specifies the BED regions file to be used for the
 #                 denominator for all mutations TMB for WXS samples.
-# --coding_bed_wgs : File path that specifies the BED regions file to be used for the 
+# --coding_bed_wgs : File path that specifies the BED regions file to be used for the
 #                 denominator for coding only TMB for WGS samples.
-# --coding_bed_wxs : File path that specifies the BED regions file to be used for the 
+# --coding_bed_wxs : File path that specifies the BED regions file to be used for the
 #                 denominator for coding only TMB for WXS samples.
 # --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
 #
@@ -74,25 +74,25 @@ option_list <- list(
   ),
   make_option(
     opt_str = "--all_bed_wgs", type = "character", default = "none",
-    help = "File path that specifies the BED regions file to be used for the 
+    help = "File path that specifies the BED regions file to be used for the
     denominator for all mutations TMB for WGS samples.",
     metavar = "character"
   ),
   make_option(
     opt_str = "--all_bed_wxs", type = "character", default = "none",
-    help = "File path that specifies the BED regions file to be used for the 
+    help = "File path that specifies the BED regions file to be used for the
     denominator for all mutations TMB for WXS samples.",
     metavar = "character"
   ),
   make_option(
     opt_str = "--coding_bed_wgs", type = "character", default = "none",
-    help = "File path that specifies the BED regions file to be used for the 
+    help = "File path that specifies the BED regions file to be used for the
     denominator for coding only TMB for WXS samples. 'OpenPBTA-analysis'",
     metavar = "character"
   ),
   make_option(
     opt_str = "--coding_bed_wxs", type = "character", default = "none",
-    help = "File path that specifies the BED regions file to be used for the 
+    help = "File path that specifies the BED regions file to be used for the
     denominator for coding only TMB for WXS samples. 'OpenPBTA-analysis'",
     metavar = "character"
   ),
@@ -123,7 +123,7 @@ opt$coding_bed_wxs <- file.path(root_dir, opt$coding_bed_wxs)
 
 ########### Check that the files we need are in the paths specified ############
 needed_files <- c(
-  opt$consensus, opt$metadata, opt$db_file, opt$all_bed_wgs, opt$all_bed_wxs, 
+  opt$consensus, opt$metadata, opt$db_file, opt$all_bed_wgs, opt$all_bed_wxs,
   opt$coding_bed_wgs, opt$coding_bed_wxs
 )
 
@@ -152,9 +152,9 @@ if (!dir.exists(opt$output)) {
 data_name <- ifelse(opt$tcga, "tcga", "pbta")
 
 # Declare output file based on data_name
-tmb_coding_file <- file.path(opt$output, 
+tmb_coding_file <- file.path(opt$output,
                              paste0(data_name, "-snv-consensus-mutation-tmb-coding.tsv"))
-tmb_all_file <- file.path(opt$output, 
+tmb_all_file <- file.path(opt$output,
                           paste0(data_name, "-snv-consensus-mutation-tmb-all.tsv"))
 
 # Don't bother if both files exist already and overwrite is FALSE
@@ -175,14 +175,14 @@ message("Setting up metadata...")
 # Have to handle TCGA and PBTA metadata differently
 if (opt$tcga) {
   # Format two fields of metadata for use with functions
-  metadata <- readr::read_tsv(opt$metadata) %>% 
+  metadata <- readr::read_tsv(opt$metadata) %>%
     dplyr::mutate(experimental_strategy = "WXS", # This field doesn't exist for this data, but all is WXS
-                  short_histology = stringr::word(broad_histology, sep = "-", 2)) # This field is named differently
-  
+                  short_histology = Primary_diagnosis) # This field is named differently
+
   # Manifest files only have first 12 letters of the barcode so we gotta chop the end off
-  maf_df <- maf_df %>% 
+  maf_df <- maf_df %>%
     dplyr::mutate(Tumor_Sample_Barcode = substr(Tumor_Sample_Barcode, 0, 12))
-  
+
   } else {
   # Isolate metadata to only the samples that are in the datasets
   metadata <- readr::read_tsv(opt$metadata) %>%
@@ -220,7 +220,7 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   if (file.exists(tmb_coding_file)) {
     warning("Overwriting existing 'coding only' TMB file.")
   }
-  
+
   # Print out progress message
   message(paste("Calculating 'coding only' TMB..."))
 
@@ -281,12 +281,12 @@ if (file.exists(tmb_all_file) && !opt$overwrite) {
       copy = TRUE
     ) %>%
     as.data.frame()
-  
+
   if (opt$tcga) {
-    strelka_mutect_mnv <- strelka_mutect_mnv %>% 
+    strelka_mutect_mnv <- strelka_mutect_mnv %>%
       dplyr::mutate(Tumor_Sample_Barcode = substr(Tumor_Sample_Barcode, 0, 12))
   }
-  
+
   # Add in the MNVs
   strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
     dplyr::union_all(strelka_mutect_mnv,
