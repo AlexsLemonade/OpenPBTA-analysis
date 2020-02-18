@@ -43,6 +43,10 @@ jobs:
       - run:
           name: Molecular subtyping Chordoma
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-chordoma/01-Subtype-chordoma.Rmd', clean = TRUE)"
+      
+      - run:
+          name: Molecular subtyping - Ependymoma
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
 
 
       # Deprecated - these results do not include germline calls and therefore are insufficient by subtyping
@@ -108,6 +112,10 @@ jobs:
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
 
       - run:
+          name: Chromosomal instability breakpoints
+          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
+          
+      - run:
           name: Copy number consensus
           command: ./scripts/run_in_ci.sh bash "analyses/copy_number_consensus_call/run_consensus_call.sh"
 
@@ -134,7 +142,7 @@ jobs:
       - run:
           name: Process SV file
           command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/01-process-sv-file.R
-      
+
       - run:
           name: Oncoprint plotting
           command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
@@ -145,11 +153,7 @@ jobs:
       
       - run:
           name: Gene set enrichment analysis to generate GSVA scores
-          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh" 
-
-      - run:
-          name: Chromosomal instability breakpoints
-          command: ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
+          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh"
 
       - run:
           name: Fusion Summary
@@ -162,7 +166,9 @@ jobs:
       - run:
           name: Telomerase activity
           command: ./scripts/run_in_ci.sh bash analyses/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
-          
+      
+
+
          ################################
          #### Add your analysis here ####
          ################################
