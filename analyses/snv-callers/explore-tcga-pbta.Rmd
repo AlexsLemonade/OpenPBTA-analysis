@@ -181,7 +181,7 @@ strelka  %>%
 ## Is this a caller specific problem?? 
 
 ```{r}
-tmb_combo <- function(pbta_df, tcga_df) {
+tmb_combo <- function(pbta_df = pbta_lancet, tcga_df = tcga_lancet) {
 # Calculate coding only TMBs and write to file
   pbta_coding_df <- calculate_tmb(pbta_df,
     bed_wgs = file.path(data_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
@@ -194,13 +194,31 @@ tmb_combo <- function(pbta_df, tcga_df) {
     bed_wxs = file.path(scratch_dir, "intersect_cds_WXS.bed")
     )
 
-  tmb_df <- dplyr::bind_rows(list(pbta = pbta_df, 
-                                  tcga = tcga_df), .id = "dataset") %>% 
-    ggplot2::ggplot(ggplot2::aes(x = short_histology, y = log10(tmb), color = dataset)) + 
-    ggforce::geom_sina() + 
+  dplyr::bind_rows(list(pbta = pbta_coding_df, 
+                        tcga = tcga_coding_df), .id = "dataset")  %>% 
+  dplyr::mutate(dataset = as.factor(dataset)) %>%
+    ggplot2::ggplot(ggplot2::aes(x = short_histology, color = dataset, 
+                                 y = log10(tmb))) +
+    ggforce::geom_sina(alpha = 0.3, maxwidth = 0.9) +
+    ggplot2::stat_summary(
+      fun.y = mean, fun.ymin = mean, fun.ymax = mean,
+      geom = "crossbar",
+      width = 0.95, size = 0.15
+    ) +
+    ggplot2::theme_classic() +
+    ggplot2::ylab("log10 (Number of Mutations per Mb)") +
+    ggplot2::xlab("") +
+    ggplot2::ylim(c(-3, 3)) +
     ggplot2::theme(
-        axis.text.x = ggplot2::element_text(angle = 55, hjust = 1)) 
+      axis.text.x = ggplot2::element_text(angle = 60, hjust = 1),
+      legend.position = "none"
+    ) +
+    ggplot2::ggtitle(title) + 
+    ggplot2::theme(
+    panel.grid.major.x = ggplot2::element_line(colour = c("gray93", "white"), size = 9))
 }
+
+tmb_df
 ```
 
 ```{r}
@@ -215,6 +233,13 @@ tmb_combo(pbta_mutect, tcga_mutect)
 tmb_combo(pbta_strelka, tcga_strelka)
 ```
 
+## Let's find the overlap of the target regions of both datasets
+
+```{r}
+"https://api.gdc.cancer.gov/data/7f0d3ab9-8bef-4e3b-928a-6090caae885b"
+
+
+```
 ## Session Info
 
 ```{r}
