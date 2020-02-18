@@ -150,7 +150,7 @@ dimension_reduction_wrapper <- function(transposed_expression_matrix,
       output_directory,
       perplexity_parameter,
       neighbors_parameter,
-      seed
+      seed = seed
     )
 
   # Run `align_metadata` function
