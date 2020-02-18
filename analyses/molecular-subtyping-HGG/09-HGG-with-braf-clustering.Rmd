@@ -34,7 +34,11 @@ library(tidyverse)
 
 ```{r}
 # File path to data directory
-data_dir <- file.path("..", "..", "data")
+data_dir <- file.path("..",
+                      "..",
+                      "analyses",
+                      "transcriptomic-dimension-reduction",
+                      "results")
 
 # File path to plots directory -- this contains the multipanel output plots
 plots_dir <- file.path("plots")
@@ -42,7 +46,6 @@ plots_dir <- file.path("plots")
 if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
 }
-
 ```
 
 ### Functions
@@ -57,257 +60,110 @@ source(
     "dimension-reduction-functions.R"
   )
 )
-```
 
-#### Function to join dimension reductions scores with HGG molecular subtype file
-
-```{r}
-align_data <- function(aligned_scores_df,
-                       hgg_molecular_subtype_df) {
-  # Given a data.frame with dimension reduction scores already aligned with the
-  # metadata, join the `molecular_subtype` column from the 
-  # `HGG_molecular_subtype.tsv` file generated in this module.
-  # Args:
-  #   aligned_scores_df: data.frame containing dimension reduction scores
-  #                      and relative information from the metadata
-  #   hgg_molecular_subtype_df: data.frame containing a `molecular_subtype`
-  #                             column with values determined in this module
-  # Returns:
-  #   aligned_scores_df: data.frame containing dimension reduction scores,
-  #                      metadata, and the `molecular_subtype` column from the
-  #                      `results/HGG_molecular_subtype.tsv` file
-  
-  aligned_scores_df <- aligned_scores_df %>%
-    dplyr::left_join(
-      hgg_molecular_subtype_df,
-      by = c("Kids_First_Biospecimen_ID" = "Kids_First_Biospecimen_ID_RNA")
-    ) %>%
-    dplyr::filter(
-      broad_histology %in% c(
-        "Low-grade astrocytic tumor",
-        "Diffuse astrocytic and oligodendroglial tumor"
-      )
-    ) %>%
-    dplyr::group_by(Kids_First_Biospecimen_ID) %>%
-    dplyr::select(-molecular_subtype.x, molecular_subtype = molecular_subtype.y) %>%
-    dplyr::distinct() %>%
-    dplyr::mutate(
-      subtype_class = dplyr::case_when(
-        stringr::str_detect(molecular_subtype, "BRAF V600E") &
-          broad_histology == "Diffuse astrocytic and oligodendroglial tumor" ~ "HGAT_BRAF",
-        broad_histology == "Low-grade astrocytic tumor" ~ "LGAT",
-        TRUE ~ "HGAT_NO_BRAF"
-      )
-    )
-  
-  return(aligned_scores_df)
-}
-```
-
-#### Function to generate a multipanel plot
-
-```{r}
-generate_multipanel_plot <- function(plot1,
-                                     plot2,
-                                     output_filename) {
-  # Given two plots generated in a previous function, make a multipanel plot,
-  # save, and display.
-  #
-  # Args:
-  #   plot1: the first dimension reduction plot
-  #   plot2: the second dimendion reduction plot
-  #   output_filename: the filename for the output multipanel plot
-  #
-  # Returns:
-  #   final_plot: multipanel plot with visualizations of t-SNE and UMAP scores
-  
-  # Putting the title together
-  plot_title <-
-    toupper(paste(sub(".pdf", "", output_filename)))
-
-  # Put the plots in a list
-  plot_list <- list(plot1, plot2)
-  
-  # Extract legend from the plot list + adjust text size
-  plot_legend <- cowplot::get_legend(
-    plot_list[[1]] +
-      guides(color = guide_legend(ncol = 1)) +
-      theme(
-        text = element_text(size = 10),
-        legend.box.margin = margin(15, 15, 15, 15)
-      )
+# Source the function for generating a multipanel plot
+source(
+  file.path(
+    "..",
+    "transcriptomic-dimension-reduction",
+    "util",
+    "generate-multipanel-plot-functions.R"
   )
-  
-  # We'll remove the legends from all the plots for arranging in a grid
-  plot_list <- lapply(plot_list,
-                      function(p)
-                        p + theme(legend.position = "none"))
-  
-  # Multipanel plot of the dimension reduction scatter plots with panel labels
-  multipanel_plot <-
-    cowplot::plot_grid(
-      plotlist = plot_list,
-      nrow = 1,
-      align = "h",
-      labels = "AUTO"
-    )
-  
-  # This is the plot title
-  plot_title_panel <- cowplot::ggdraw() +
-    cowplot::draw_label(plot_title, fontface = "bold", size = 15)
-  
-  # Add the title such that it is centered over the scatter plots
-  multipanel_with_title <-
-    cowplot::plot_grid(
-      plot_title_panel,
-      multipanel_plot,
-      ncol = 1,
-      rel_heights = c(0.1, 1)
-    )
-  
-  # Pad the right side of the multipanel plot that now has a title
-  multipanel_spacer <- cowplot::plot_grid(multipanel_with_title,
-                                          NULL,
-                                          nrow = 1,
-                                          rel_widths = c(1, 0.05))
-  
-  # Add in the legend to the right of the multipanel plot
-  final_plot <- cowplot::plot_grid(
-    multipanel_with_title,
-    plot_legend,
-    nrow = 1,
-    rel_widths = c(1, 0.25)
-  ) +
-    theme(plot.margin = unit(c(1, 1, 1, 1), "cm"))
-  
-  # Save to file
-  cowplot::save_plot(
-    file.path(plots_dir, output_filename),
-    final_plot,
-    base_width = 24,
-    base_height = 8
-  )
-  
-  # Display final plot
-  final_plot
-}
-
+)
 ```
+
+
 
 ### Read in data
 
 ```{r}
-# Read in HGG molecular subtype tsv file -- output of `07-HGG-molecular-subtyping-combine-table.Rmd`
-hgg_molecular_subtype_df <- readr::read_tsv(file.path("results",
-                                                      "HGG_molecular_subtype.tsv"))
-
-# Read in metadata
-metadata_df <-
-  readr::read_tsv(
-    file.path(data_dir, "pbta-histologies.tsv"),
-    col_types = cols(molecular_subtype = col_character())
-  )
-
-# Read in expression files
+# Read in expression files. Note: only the relevant stranded expression score files
+# are used here as the polyA expression score files do not retain information
+# regarding low grade glioma samples.
 stranded_tsne_aligned_scores <- readr::read_tsv(
-  file.path(
-    "..",
-    "..",
-    "analyses",
-    "transcriptomic-dimension-reduction",
-    "results",
-    "rsem_stranded_log_tsne_scores_aligned.tsv"
-  )
+  file.path(data_dir,
+            "rsem_stranded_log_tsne_scores_aligned.tsv"),
+  col_types = cols(molecular_subtype = col_character())
 )
 
 stranded_umap_aligned_scores <- readr::read_tsv(
-  file.path(
-    "..",
-    "..",
-    "analyses",
-    "transcriptomic-dimension-reduction",
-    "results",
-    "rsem_stranded_log_umap_scores_aligned.tsv"
-  )
+  file.path(data_dir,
+            "rsem_stranded_log_umap_scores_aligned.tsv"),
+  col_types = cols(molecular_subtype = col_character())
 )
-
-polya_tsne_aligned_scores <- readr::read_tsv(
-  file.path(
-    "..",
-    "..",
-    "analyses",
-    "transcriptomic-dimension-reduction",
-    "results",
-    "rsem_polyA_log_tsne_scores_aligned.tsv"
-  )
-)
-
-polya_umap_aligned_scores <- readr::read_tsv(
-  file.path(
-    "..",
-    "..",
-    "analyses",
-    "transcriptomic-dimension-reduction",
-    "results",
-    "rsem_polyA_log_umap_scores_aligned.tsv"
-  )
-)
-
 ```
 
+## Wrangle Data for Plotting
+
+```{r}
+# Add variables to aligned scores data.frames for plotting
+stranded_tsne_aligned_scores <- stranded_tsne_aligned_scores %>%
+  dplyr::group_by(Kids_First_Biospecimen_ID) %>%
+  dplyr::mutate(
+    subtype_class = dplyr::case_when(
+      stringr::str_detect(molecular_subtype, "BRAF V600E") &
+        broad_histology == "Diffuse astrocytic and oligodendroglial tumor" ~ "HGAT_BRAF",
+      broad_histology == "Low-grade astrocytic tumor" ~ "LGAT",
+      TRUE ~ "HGAT_NO_BRAF"
+    ),
+    is_HGAT_BRAF = dplyr::case_when(
+      subtype_class == "HGAT_BRAF" ~ "Yes",
+      TRUE ~ "No"
+    )
+  )
+
+stranded_umap_aligned_scores <- stranded_umap_aligned_scores %>%
+  dplyr::group_by(Kids_First_Biospecimen_ID) %>%
+  dplyr::mutate(
+    subtype_class = dplyr::case_when(
+      stringr::str_detect(molecular_subtype, "BRAF V600E") &
+        broad_histology == "Diffuse astrocytic and oligodendroglial tumor" ~ "HGAT_BRAF",
+      broad_histology == "Low-grade astrocytic tumor" ~ "LGAT",
+      TRUE ~ "HGAT_NO_BRAF"
+    ),
+    is_HGAT_BRAF = dplyr::case_when(
+      subtype_class == "HGAT_BRAF" ~ "Yes",
+      TRUE ~ "No"
+    )
+  )
+```
 
 ## Dimension Reduction and Plotting
 
-```{r fig.width = 20, fig.height = 8}
-# Align dimension reduction scores data.frame with `molecular_subtype`
-# from `HGG_molecular_subtype.tsv`
-stranded_tsne_aligned_scores <-
-  align_data(stranded_tsne_aligned_scores,
-             hgg_molecular_subtype_df)
-
-stranded_umap_aligned_scores <-
-  align_data(stranded_umap_aligned_scores,
-             hgg_molecular_subtype_df)
-
-polya_tsne_aligned_scores <- align_data(polya_tsne_aligned_scores,
-                                        hgg_molecular_subtype_df)
-
-polya_umap_aligned_scores <- align_data(polya_umap_aligned_scores,
-                                        hgg_molecular_subtype_df)
+```{r message = FALSE, warning = FALSE, fig.width = 20, fig.height = 8}
 # Plot generation
 stranded_tsne_plot <-
-  plot_dimension_reduction(stranded_tsne_aligned_scores,
-                           "subtype_class",
-                           "t-SNE1",
-                           "t-SNE2")
-
-
-polya_tsne_plot <-
-  plot_dimension_reduction(polya_tsne_aligned_scores,
-                           "subtype_class",
-                           "t-SNE1",
-                           "t-SNE2")
+  plot_dimension_reduction(
+    aligned_scores_df = stranded_tsne_aligned_scores,
+    point_color = "subtype_class",
+    point_size = "is_HGAT_BRAF",
+    x_label = "t-SNE1",
+    y_label = "t-SNE2"
+  ) +
+  ggplot2::scale_color_manual(values = (c("#0a7fb2", "#799d10", "#F3E500")))
 
 
 stranded_umap_plot <-
-  plot_dimension_reduction(stranded_umap_aligned_scores,
-                           "subtype_class",
-                           "UMAP1",
-                           "UMAP2")
+  plot_dimension_reduction(
+    aligned_scores_df = stranded_umap_aligned_scores,
+    point_color = "subtype_class",
+    point_size = "is_HGAT_BRAF",
+    x_label = "UMAP1",
+    y_label = "UMAP2"
+  ) +
+  ggplot2::scale_color_manual(values = (c("#0a7fb2", "#799d10", "#F3E500")))
 
 
-polya_umap_plot <-
-  plot_dimension_reduction(polya_umap_aligned_scores,
-                           "subtype_class",
-                           "UMAP1",
-                           "UMAP2")
-
+# Put plots together in a list to satisfy function argument
+plot_list <- list(stranded_tsne_plot, stranded_umap_plot)
 
 # Generate multipanel plots with custom function
-generate_multipanel_plot(stranded_tsne_plot, stranded_umap_plot, "HGG_stranded.pdf")
-
-generate_multipanel_plot(polya_tsne_plot, polya_umap_plot, "HGG_polya.pdf")
-
+generate_multipanel_plot(
+  plot_list = plot_list,
+  plot_title = "HGG Stranded Clustering",
+  output_directory = plots_dir,
+  output_filename = "HGG_stranded.pdf"
+)
 ```
 
 ## Session Info
