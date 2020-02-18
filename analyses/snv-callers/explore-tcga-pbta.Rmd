@@ -70,63 +70,85 @@ join_cols = c("Chromosome",
 Set up tables from the database but only call the columns we need.
 
 ```{r}
-# Start up connection
-con <- DBI::dbConnect(RSQLite::SQLite(), 
-                      file.path(scratch_dir, "tcga_snv_db.sqlite"))
+set_up_tcga <- function(data.name = "strelka") {
+    # Start up connection
+  con <- DBI::dbConnect(RSQLite::SQLite(), file.path(scratch_dir, "tcga_snv_db.sqlite"))
+  
+  # Connect to SQL
+  df <- dplyr::tbl(con, data.name) %>% 
+    dplyr::select(join_cols) %>% 
+    as.data.frame() %>% 
+    # Shorten the Tumor_Sample_Barcode so it matches
+    dplyr::mutate(Tumor_Sample_Barcode = substr(Tumor_Sample_Barcode, 0, 12)) %>% 
+    dplyr::inner_join(tcga_metadata %>% dplyr::select(Tumor_Sample_Barcode, broad_histology))
+    dplyr::mutate(experimental_strategy = "WXS", short_histology = broad_histology)
+    
+  return(df)
+}
 
-tcga_strelka <- dplyr::tbl(con, "strelka") %>% 
-  dplyr::select(join_cols) %>% 
-  as.data.frame() %>% 
-  dplyr::mutate(experimental_strategy = "WXS", short_histology = "brain")
-
-tcga_lancet <- dplyr::tbl(con, "lancet") %>% 
-  dplyr::select(join_cols) %>% 
-  as.data.frame() %>% 
-  dplyr::mutate(experimental_strategy = "WXS", short_histology = "brain")
-
-tcga_mutect <- dplyr::tbl(con, "mutect") %>% 
-  dplyr::select(join_cols) %>% 
-  as.data.frame() %>% 
-  dplyr::mutate(experimental_strategy = "WXS", short_histology = "brain")
+tcga_lancet <- set_up_tcga("lancet")
+tcga_mutect <- set_up_tcga("mutect")
+tcga_strelka <- set_up_tcga("strelka")
 ```
 
 ```{r}
-# Start up connection
-con <- DBI::dbConnect(RSQLite::SQLite(), 
-                      file.path(scratch_dir, "snv_db.sqlite"))
+set_up_pbta <- function(data.name = "strelka") {
+  # Start up connection
+  con <- DBI::dbConnect(RSQLite::SQLite(), 
+                        file.path(scratch_dir, "snv_db.sqlite"))
+  
+  # Connect to SQL
+  df <- dplyr::tbl(con, data.name) %>% 
+    dplyr::select(join_cols, "VAF") %>% 
+    as.data.frame() %>% 
+    dplyr::inner_join(
+    pbta_metadata %>% 
+      dplyr::select(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID,
+                    experimental_strategy, short_histology))
+    
+  return(df)
+}
 
-pbta_strelka <- dplyr::tbl(con, "strelka") %>% 
-  dplyr::select(join_cols, "VAF") %>% 
-  as.data.frame() %>% 
-  dplyr::inner_join(
-  pbta_metadata %>% 
-    dplyr::select(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID,
-                  experimental_strategy, short_histology))
-
-pbta_lancet <- dplyr::tbl(con, "lancet") %>% 
-  dplyr::select(join_cols, "VAF") %>% 
-  as.data.frame() %>% 
-  dplyr::inner_join(
-  pbta_metadata %>% 
-    dplyr::select(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID,
-                  experimental_strategy, short_histology))
-
-pbta_mutect <- dplyr::tbl(con, "mutect") %>% 
-  dplyr::select(join_cols, "VAF") %>% 
-  as.data.frame() %>% 
-  dplyr::inner_join(
-  pbta_metadata %>% 
-    dplyr::select(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID,
-                  experimental_strategy, short_histology))
+pbta_lancet <- set_up_pbta("lancet")
+pbta_mutect <- set_up_pbta("mutect")
+pbta_strelka <- set_up_pbta("strelka")
 ```
-
-## Is this a tumor sequencing depth problem for certain callers? 
 
 ```{r}
 lancet <- dplyr::bind_rows(list(tcga = tcga_lancet,  
                                 pbta = pbta_lancet), .id = "dataset") %>% 
   dplyr::mutate(dataset = as.factor(dataset))
 
+mutect <- dplyr::bind_rows(list(tcga = tcga_mutect, 
+                                pbta = pbta_mutect), .id = "dataset") %>% 
+  dplyr::mutate(dataset = as.factor(dataset)) 
+
+strelka <- dplyr::bind_rows(list(tcga = tcga_strelka, 
+                                pbta = pbta_strelka), .id = "dataset") %>% 
+  dplyr::mutate(dataset = as.factor(dataset)) 
+```
+
+## Is this a tumor sequencing depth problem for certain callers? 
+
+```{r}
+lancet %>% 
+  ggplot2::ggplot(ggplot2::aes(x = log10(t_depth), color = dataset)) + 
+  ggplot2::geom_density() 
+```
+
+```{r}
+mutect %>% 
+  ggplot2::ggplot(ggplot2::aes(x = log10(t_depth), color = dataset)) + 
+  ggplot2::geom_density() 
+```
+
+```{r}
+strelka %>% 
+  ggplot2::ggplot(ggplot2::aes(x = VAF, color = dataset)) + 
+  ggplot2::geom_density() 
+```
+
+```{r}
 lancet %>% 
   dplyr::group_by(Tumor_Sample_Barcode, dataset) %>% 
   dplyr::summarize(n_mut = dplyr::n(), 
@@ -137,10 +159,6 @@ lancet %>%
 ```
 
 ```{r}
-mutect <- dplyr::bind_rows(list(tcga = tcga_mutect, 
-                                pbta = pbta_mutect), .id = "dataset") %>% 
-  dplyr::mutate(dataset = as.factor(dataset))
-
 mutect %>% 
   dplyr::group_by(Tumor_Sample_Barcode, dataset) %>% 
   dplyr::summarize(n_mut = dplyr::n(), 
@@ -151,34 +169,7 @@ mutect %>%
 ```
 
 ```{r}
-strelka <- dplyr::bind_rows(list(tcga = tcga_strelka, 
-                                pbta = pbta_strelka), .id = "dataset") %>% 
-  dplyr::mutate(dataset = as.factor(dataset))
-
 strelka  %>% 
-  dplyr::group_by(Tumor_Sample_Barcode, dataset) %>% 
-  dplyr::summarize(n_mut = dplyr::n(), 
-                   med_depth = median(n_depth)) %>% 
-  ggplot2::ggplot(ggplot2::aes(x = med_depth, y = n_mut, color = dataset)) + 
-  ggplot2::geom_point() + 
-  ggplot2::facet_wrap(~dataset)
-```
-
-
-## Is this a WXS vs WGS problem? 
-
-```{r}
-pbta_mutect <- pbta_mutect %>% dplyr::inner_join(
-  pbta_metadata %>% 
-    dplyr::select(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID,
-                  experimental_strategy)) %>% 
-  dplyr::filter(experimental_strategy == "WXS")
-
-mutect <- dplyr::bind_rows(list(tcga = tcga_mutect,  
-                      pbta = pbta_mutect), .id = "dataset") %>% 
-  dplyr::mutate(dataset = as.factor(dataset))
-
-mutect %>% 
   dplyr::group_by(Tumor_Sample_Barcode, dataset) %>% 
   dplyr::summarize(n_mut = dplyr::n(), 
                    med_depth = median(n_depth)) %>% 
@@ -190,83 +181,38 @@ mutect %>%
 ## Is this a caller specific problem?? 
 
 ```{r}
+tmb_combo <- function(pbta_df, tcga_df) {
 # Calculate coding only TMBs and write to file
-pbta_lancet_coding_df <- calculate_tmb(pbta_lancet,
-  bed_wgs = file.path(scratch_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
-  bed_wxs = file.path(scratch_dir, "intersect_cds_lancet_WXS.bed")
-  )
+  pbta_coding_df <- calculate_tmb(pbta_df,
+    bed_wgs = file.path(data_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
+    bed_wxs = file.path(scratch_dir, "intersect_cds_WXS.bed")
+    )
 
-# Calculate coding only TMBs and write to file
-tcga_lancet_coding_df <- calculate_tmb(tcga_lancet,
-  bed_wgs = file.path(scratch_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
-  bed_wxs = file.path(scratch_dir, "intersect_cds_lancet_WXS.bed")
-  )
+  # Calculate coding only TMBs and write to file
+  tcga_coding_df <- calculate_tmb(tcga_df,
+    bed_wgs = file.path(scratch_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
+    bed_wxs = file.path(scratch_dir, "intersect_cds_WXS.bed")
+    )
 
-lancet_tmb <- dplyr::bind_rows(list(pbta = pbta_lancet_coding_df, 
-                                    tcga = tcga_lancet_coding_df), .id = "dataset")
-
-lancet_tmb %>% 
-  ggplot2::ggplot(ggplot2::aes(x = short_histology, y = tmb, color = dataset)) + 
-  ggplot2::geom_point() + 
-  ggplot2::theme(
-      axis.text.x = ggplot2::element_text(angle = 55, hjust = 1)) + 
-  ggplot2::ylim(c(0,10))
+  tmb_df <- dplyr::bind_rows(list(pbta = pbta_df, 
+                                  tcga = tcga_df), .id = "dataset") %>% 
+    ggplot2::ggplot(ggplot2::aes(x = short_histology, y = log10(tmb), color = dataset)) + 
+    ggforce::geom_sina() + 
+    ggplot2::theme(
+        axis.text.x = ggplot2::element_text(angle = 55, hjust = 1)) 
+}
 ```
 
 ```{r}
-# Calculate coding only TMBs and write to file
-pbta_mutect_coding_df <- calculate_tmb(pbta_mutect,
-  bed_wgs = file.path(scratch_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
-  bed_wxs = file.path(scratch_dir, "intersect_cds_WXS.bed")
-  )
-
-# Calculate coding only TMBs and write to file
-tcga_mutect_coding_df <- calculate_tmb(tcga_mutect,
-  bed_wgs = file.path(scratch_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
-  bed_wxs = file.path(scratch_dir, "intersect_cds_WXS.bed")
-  )
-
-mutect_tmb <- dplyr::bind_rows(list(pbta = pbta_mutect_coding_df, 
-                                    tcga = tcga_mutect_coding_df), .id = "dataset")
-
-mutect_tmb %>% 
-  ggplot2::ggplot(ggplot2::aes(x = short_histology, y = tmb, color = dataset)) + 
-  ggplot2::geom_point() + 
-  ggplot2::theme(
-      axis.text.x = ggplot2::element_text(angle = 55, hjust = 1)) + 
-  ggplot2::ylim(c(0,25))
+tmb_combo(pbta_lancet, tcga_lancet)
 ```
 
 ```{r}
-# Calculate coding only TMBs and write to file
-pbta_strelka_coding_df <- calculate_tmb(pbta_strelka,
-  bed_wgs = file.path(data_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
-  bed_wxs = file.path(scratch_dir, "intersect_cds_WXS.bed")
-  )
-
-# Calculate coding only TMBs and write to file
-tcga_strelka_coding_df <- calculate_tmb(tcga_strelka,
-  bed_wgs = file.path(scratch_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
-  bed_wxs = file.path(scratch_dir, "intersect_cds_WXS.bed")
-  )
-
-strelka_tmb <- dplyr::bind_rows(list(pbta = pbta_strelka_coding_df, 
-                                    tcga = tcga_strelka_coding_df), .id = "dataset")
-
-strelka_tmb %>% 
-  ggplot2::ggplot(ggplot2::aes(x = short_histology, y = tmb, color = dataset)) + 
-  ggplot2::geom_point() + 
-  ggplot2::theme(
-      axis.text.x = ggplot2::element_text(angle = 55, hjust = 1)) + 
-  ggplot2::ylim(c(0,25))
+tmb_combo(pbta_mutect, tcga_mutect)
 ```
 
-## Is this just a disease specific thing and has nothing to do with age? 
-
-
 ```{r}
-
-
+tmb_combo(pbta_strelka, tcga_strelka)
 ```
 
 ## Session Info
