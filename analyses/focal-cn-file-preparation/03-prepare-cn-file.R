@@ -265,6 +265,8 @@ tx_exons <- GenomicFeatures::exons(txdb, columns = "gene_id")
 #### Addressing autosomes first ------------------------------------------------
 
 # Exclude the X and Y chromosomes
+# Removing copy neutral segments saves on the RAM required to run this step
+# and file size
 cnv_no_xy <- cnv_df %>%
   dplyr::filter(!(chr %in% c("chrX", "chrY")), status != "neutral")
 
@@ -287,9 +289,11 @@ readr::write_tsv(autosome_annotated_cn,
 #### X&Y -----------------------------------------------------------------------
 
 if (xy_flag) {
-  # Filter to just the X and Y chromosomes
+  # Filter to just the X and Y chromosomes and remove neutral segments
+  # Removing copy neutral segments saves on the RAM required to run this step
+  # and file size
   cnv_sex_chrom <- cnv_df %>%
-    dplyr::filter(chr %in% c("chrX", "chrY"))
+    dplyr::filter(chr %in% c("chrX", "chrY"), status != "neutral")
 
   # Merge and annotated no X&Y
   sex_chrom_annotated_cn <- process_annotate_overlaps(cnv_df = cnv_sex_chrom,
