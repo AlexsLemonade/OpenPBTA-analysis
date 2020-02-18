@@ -191,7 +191,6 @@ We'll go by SV data here.
 # For simplicity's sake, change the name of the intersection column we want to use
 breaks_list$intersection_of_breaks <- breaks_list$intersection_of_breaks %>%
   dplyr::rename(
-    chrom = sv_ranges.seqnames,
     coord = sv_ranges.start
   )
 ```
