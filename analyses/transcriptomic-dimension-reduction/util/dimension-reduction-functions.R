@@ -212,13 +212,26 @@ plot_dimension_reduction <- function(aligned_scores_df,
   
     # transform the strings `point_color` into symbols for plotting
     color_sym <- rlang::sym(point_color)
+    
+    # transform the strings `point_size` and `point_shape` into symbols for
+    # plotting when they are not NULL
+    if (!(is.null(point_size))) {
+    point_size <- rlang::sym(point_size)
+    }
+    
+    if(!is.null(point_shape)) {
+    point_shape <- rlang::sym(point_shape)
+    }
 
+    # plot
     dimension_reduction_plot <- ggplot2::ggplot(
       aligned_scores_df,
       ggplot2::aes(
         x = dplyr::pull(aligned_scores_df, score1),
         y = dplyr::pull(aligned_scores_df, score2),
         color = !!color_sym,
+        size = !!point_size,
+        shape = !!point_shape
       )
     ) +
       ggplot2::geom_point(alpha = 0.3) +
@@ -233,22 +246,6 @@ plot_dimension_reduction <- function(aligned_scores_df,
       ))) +
       ggplot2::labs(x = x_label, y = y_label) +
       ggplot2::theme_bw()
-
-    if (!(is.null(point_shape))) {
-      # transform the strings `point_shape` into symbols for plotting
-      shape_sym <- rlang::sym(point_shape)
-      
-      dimension_reduction_plot <- dimension_reduction_plot +
-        ggplot2::geom_point(ggplot2::aes(shape = !!shape_sym))
-    }
-    
-    if (!(is.null(point_size))) {
-      # transform the strings `point_size` into symbols for plotting
-      size_sym <- rlang::sym(point_size)
-      
-      dimension_reduction_plot <- dimension_reduction_plot +
-        ggplot2::geom_point(ggplot2::aes(size = !!size_sym))
-    }
     
     return(dimension_reduction_plot)
 }
