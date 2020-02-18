@@ -216,11 +216,11 @@ plot_dimension_reduction <- function(aligned_scores_df,
     # transform the strings `point_size` and `point_shape` into symbols for
     # plotting when they are not NULL
     if (!(is.null(point_size))) {
-    point_size <- rlang::sym(point_size)
+      point_size <- rlang::sym(point_size)
     }
     
-    if(!is.null(point_shape)) {
-    point_shape <- rlang::sym(point_shape)
+    if (!is.null(point_shape)) {
+      point_shape <- rlang::sym(point_shape)
     }
 
     # plot
