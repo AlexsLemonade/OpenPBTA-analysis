@@ -62,9 +62,9 @@ binned_counts_files <- list.files("breakpoint-data",
 Output files:
 
 ```{r}
-intersection_heatmap_file <- file.path(plots_dir, "intersection_breaks_heatmap.png")
-cnv_heatmap_file <- file.path(plots_dir, "cnv_breaks_heatmap.png")
-sv_heatmap_file <- file.path(plots_dir, "sv_breaks_heatmap.png")
+intersection_heatmap_file <- file.path(plots_dir, "intersection_breaks_heatmap.pdf")
+cnv_heatmap_file <- file.path(plots_dir, "cnv_breaks_heatmap.pdf")
+sv_heatmap_file <- file.path(plots_dir, "sv_breaks_heatmap.pdf")
 ```
 
 Make a special function for making the heatmaps. 
@@ -229,16 +229,13 @@ intersection_of_heatmap <- breaks_heatmap(
   histologies_colors,
   col_fun
 )
-
-# Save plot as PNG
-png(intersection_heatmap_file,
-  width = 1200, height = 900, units = "px"
-)
-intersection_of_heatmap
-dev.off()
-
 # Print out here
 intersection_of_heatmap
+
+# Save plot as PNG
+pdf(intersection_heatmap_file)
+intersection_of_heatmap
+dev.off()
 ```
 
 ## CNV breaks heatmap
@@ -252,16 +249,13 @@ cnv_heatmap <- breaks_heatmap(
   histologies_colors,
   col_fun
 )
-
-# Save plot as PNG
-png(cnv_heatmap_file,
-  width = 1200, height = 900, units = "px"
-)
-cnv_heatmap
-dev.off()
-
 # Print out here
 cnv_heatmap
+
+# Save plot as PDF
+pdf(cnv_heatmap_file)
+cnv_heatmap
+dev.off()
 ```
 
 ## SV breaks heatmap
@@ -275,16 +269,13 @@ sv_heatmap <- breaks_heatmap(
   histologies_colors,
   col_fun
 )
-
-# Save plot as PNG
-png(sv_heatmap_file,
-  width = 1200, height = 900, units = "px"
-)
-sv_heatmap
-dev.off()
-
 # Print out here
 sv_heatmap
+
+# Save plot as PDF
+pdf(sv_heatmap_file)
+sv_heatmap
+dev.off()
 ```
 
 ### Session Info
