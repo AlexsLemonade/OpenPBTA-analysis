@@ -35,6 +35,8 @@ source(file.path("..", "chromosomal-instability", "util", "chr-break-plot.R"))
 source(file.path("..", "chromosomal-instability", "util", "circos-plots.R"))
 ```
 
+### Special functions 
+
 ```{r}
 sina_plot <- function(data, colour = NULL, x_axis = "short_histology", title) {
   # Given a data.frame with metadata and `tmb` information, make a sina plot from it
@@ -71,6 +73,8 @@ sina_plot <- function(data, colour = NULL, x_axis = "short_histology", title) {
     ggplot2::ggtitle(title) 
 }
 ```
+
+Function for making a combined CDF plot for TMB. 
 
 ```{r}
 tmb_cdf_plot <- function(tmb_df, plot_title) {
@@ -118,11 +122,65 @@ tmb_cdf_plot <- function(tmb_df, plot_title) {
     ) + 
     ggplot2::ggtitle(plot_title)
   
-  ggplot2::ggsave(filename = paste0(plot_title, ".png"), plot = cdf_plot, width = 10, height = 7.5)
+  ggplot2::ggsave(filename = file.path(plots_dir, paste0(plot_title, ".png")), plot = cdf_plot, width = 10, height = 7.5)
   
   cdf_plot
 }
 ```
+
+Function for comparing the sequence overlap of two GenomicRanges objects. 
+
+```{r}
+bed_overlap <- function(bed_granges_1, 
+                        bed_granges_2,
+                        name_1, 
+                        name_2, 
+                        plot_name) {
+  # Find intersection
+  overlaps <- GenomicRanges::intersect(bed_granges_1, bed_granges_2)
+  
+  # Percent of TCGA Target region covered by overlap
+  sum(overlaps@ranges@width) / sum(bed_granges_2@ranges@width)
+
+  # Percent of PBTA Target region covered by overlap
+  sum(bed_granges_1@ranges@width)
+
+  # Make filename to save plot as
+  plot.file <- file.path(plots_dir, paste0(plot_name, ".png"))
+  
+  # Make the Venn diagram
+  grid::grid.newpage();
+  venn.plot <- VennDiagram::draw.pairwise.venn(
+    area1 = sum(bed_granges_1@ranges@width),
+    area2 = sum(bed_granges_2@ranges@width),
+    cross.area = sum(overlaps@ranges@width),
+    category = c(name_1, name_2),
+    fill = c("#F8766D", "#00BFC4"),
+    cex = 2,
+    cat.cex = 1.5,
+    #cat.dist = c(-0.05, -0.05),
+    #cat.pos = c(170, 65),
+    ext.pos = 0,
+    ext.dist = -0.01,
+    ext.length = .8,
+    ext.line.lwd = 2,
+    ext.line.lty = "dashed", 
+    margin = 0.1);
+  grid::grid.draw(venn.plot)
+
+  png(plot.file);
+  grid::grid.draw(venn.plot);
+  dev.off()
+  
+  cat(" Ratio of", name_1, "overlapped:", 
+     sum(overlaps@ranges@width)/sum(bed_granges_1@ranges@width), "\n",
+     "Ratio of", name_2, "overlapped:", 
+     sum(overlaps@ranges@width)/sum(bed_granges_2@ranges@width), "\n"
+    )
+}
+```
+
+Function for comparing TMB for TCGA and PBTA and printing out a sina plot. 
 
 ```{r}
 tmb_combo <- function(pbta_df, tcga_df, data.name) {
@@ -170,7 +228,14 @@ Set up directories.
 ```{r}
 scratch_dir <- file.path("..", "..", "scratch")
 data_dir <- file.path("..", "..", "data")
+plots_dir <- file.path("plots", "tcga-vs-pbta-plots")
+
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir)
+}
 ```
+
+Read in the metadata. 
 
 ```{r}
 pbta_metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) 
@@ -200,7 +265,7 @@ join_cols = c("Chromosome",
               "VAF")
 ```
 
-Set up tables from the database but only call the columns we need.
+Set up TCGA data. 
 
 ```{r}
 set_up_tcga <- function(data.name) {
@@ -223,6 +288,8 @@ tcga_mutect <- set_up_tcga("mutect")
 tcga_strelka <- set_up_tcga("strelka")
 tcga_consensus <- set_up_tcga("consensus")
 ```
+
+Set up PBTA data. 
 
 ```{r}
 set_up_pbta <- function(data.name) {
@@ -248,6 +315,8 @@ pbta_strelka <- set_up_pbta("strelka")
 pbta_consensus <- set_up_pbta("consensus")
 ```
 
+Set up combined PBTA and TCGA data.frames. 
+
 ```{r}
 lancet <- dplyr::bind_rows(list(tcga = tcga_lancet,  
                                 pbta = pbta_lancet), .id = "dataset") %>% 
@@ -263,6 +332,8 @@ strelka <- dplyr::bind_rows(list(tcga = tcga_strelka,
 ```
 
 ## Is this a tumor sequencing depth problem for certain callers? 
+
+We'll plot the tumor sequencing depth for each caller. 
 
 ```{r}
 lancet %>% 
@@ -282,27 +353,7 @@ strelka %>%
   ggplot2::geom_density() 
 ```
 
-## Is this a caller specific problem?? 
-
-Lancet only TMB:
-
-```{r}
-tmb_combo(pbta_lancet, tcga_lancet)
-```
-
-Mutect only TMB:
-
-```{r}
-tmb_combo(pbta_mutect, tcga_mutect)
-```
-
-Strelka only TMB: 
-
-```{r}
-tmb_combo(pbta_strelka, tcga_strelka)
-```
-
-## CDF plots 
+## Is this a caller specific problem
 
 Lancet only TMB:
 
@@ -312,10 +363,9 @@ lancet_tmb <- dplyr::bind_rows(list(pbta = calculate_tmb(pbta_lancet,
   bed_wxs = file.path(scratch_dir, "intersect_cds_WXS.bed")
   ),
   tcga = calculate_tmb(tcga_lancet,
-  bed_wgs = file.path(scratch_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
+  bed_wgs = file.path(scratch_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"), # There's no TCGA WGS samples, this is just a place holder and won't be used.  
   bed_wxs = file.path("ref_files", "hg38_liftover_genome_gencode.v19.basic.exome.bed")
   )), .id = "datasets") 
-
 
 tmb_cdf_plot(lancet_tmb, plot_title = "Lancet")
 ```
@@ -332,7 +382,6 @@ mutect_tmb <- dplyr::bind_rows(list(pbta = calculate_tmb(pbta_mutect,
   bed_wxs = file.path("ref_files", "hg38_liftover_genome_gencode.v19.basic.exome.bed")
   )), .id = "datasets") 
 
-
 tmb_cdf_plot(mutect_tmb, plot_title = "Mutect2")
 ```
 
@@ -347,7 +396,6 @@ strelka_tmb <- dplyr::bind_rows(list(pbta = calculate_tmb(pbta_strelka,
   bed_wgs = file.path(scratch_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
   bed_wxs = file.path("ref_files", "hg38_liftover_genome_gencode.v19.basic.exome.bed")
   )), .id = "datasets") 
-
 
 tmb_cdf_plot(strelka_tmb, plot_title = "Strelka2")
 ```
@@ -364,61 +412,10 @@ consensus_tmb <- dplyr::bind_rows(list(pbta = calculate_tmb(pbta_consensus,
   bed_wxs = file.path("ref_files", "hg38_liftover_genome_gencode.v19.basic.exome.bed")
   )), .id = "datasets") 
 
-
 tmb_cdf_plot(consensus_tmb, plot_title = "Consensus")
 ```
 
 ## Let's find the overlap of the target regions of both datasets
-
-```{r}
-bed_overlap <- function(bed_granges_1, 
-                        bed_granges_2,
-                        name_1, 
-                        name_2, 
-                        plot_name) {
-  # Find intersection
-  overlaps <- GenomicRanges::intersect(bed_granges_1, bed_granges_2)
-  
-  # Percent of TCGA Target region covered by overlap
-  sum(overlaps@ranges@width) / sum(bed_granges_2@ranges@width)
-
-  # Percent of PBTA Target region covered by overlap
-  sum(bed_granges_1@ranges@width)
-
-  # Make filename to save plot as
-  plot.file <- paste0(plot_name, ".png")
-  
-  # Make the Venn diagram
-  grid::grid.newpage();
-  venn.plot <- VennDiagram::draw.pairwise.venn(
-    area1 = sum(bed_granges_1@ranges@width),
-    area2 = sum(bed_granges_2@ranges@width),
-    cross.area = sum(overlaps@ranges@width),
-    category = c(name_1, name_2),
-    fill = c("#F8766D", "#00BFC4"),
-    cex = 2,
-    cat.cex = 1.5,
-    #cat.dist = c(-0.05, -0.05),
-    #cat.pos = c(170, 65),
-    ext.pos = 0,
-    ext.dist = -0.01,
-    ext.length = .8,
-    ext.line.lwd = 2,
-    ext.line.lty = "dashed", 
-    margin = 0.1);
-  grid::grid.draw(venn.plot)
-
-  png(plot.file);
-  grid::grid.draw(venn.plot);
-  dev.off()
-  
-  cat(" Ratio of", name_1, "overlapped:", 
-     sum(overlaps@ranges@width)/sum(bed_granges_1@ranges@width), "\n",
-     "Ratio of", name_2, "overlapped:", 
-     sum(overlaps@ranges@width)/sum(bed_granges_2@ranges@width), "\n"
-    )
-}
-```
 
 Download the Target BED regions file from MC3, and format the chromosome data to 
 be `chr`, save as a TSV file. 
