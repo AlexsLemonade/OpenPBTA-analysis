@@ -69,10 +69,9 @@ A table with the molecular subtype information for each HGG sample at `results/H
 The GISTIC `broad_values_by_arm.txt` file is used to identify samples with `1p` and `19q` loss, then the consensus mutation file is filtered to the identified samples in order to check for _IDH1_ mutations.
 **Note:** Per [this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/435#issuecomment-576898275), very few samples in the OpenPBTA dataset, if any, are expected to fit into the `1p/19q co-deleted oligodendrogliomas` subtype.
 
-[`09-HGG-with-braf-clustering.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/09-HGG-with-braf-clustering.nb.html) is a notebook written to identify high grade glioma samples without histone mutations that have `BRAF V600E` mutations and observe how they cluster alongside low grade gliomas and high grade gliomas without the `BRAF V600E` mutation.
+[`09-HGG-with-braf-clustering.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/09-HGG-with-braf-clustering.nb.html) is a notebook written to identify high grade glioma samples without histone mutations that have `BRAF V600E` mutations and observe how they cluster alongside low grade gliomas and high grade gliomas without the `BRAF V600E` mutation in the stranded RNA-seq data (which contains both histologies).
 If the identified samples cluster with the low grade gliomas, this suggests that these samples should be reclassified as low grade gliomas.
-This notebook generates two plots that can be found in the `plots` directory of this module. These plots show the `t-SNE` and `UMAP` dimension reduction results for both the polyA and stranded expression files (handled separately).
-
+This notebook generates a multipanel plot with the t-SNE and UMAP results that can be found in the `plots` directory of this module.
 
 ## Folder structure
 
@@ -105,7 +104,6 @@ The structure of this folder is as follows:
 │   ├── hgg_zscored_expression.polya.RDS
 │   └── hgg_zscored_expression.stranded.RDS
 ├── plots
-│   ├── HGG_polya.pdf
 │   └── HGG_stranded.pdf
 ├── results
 │   ├── HGG_cleaned_all_table.tsv
