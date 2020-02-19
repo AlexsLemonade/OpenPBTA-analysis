@@ -280,19 +280,6 @@ RUN mkdir /mcr-install-v83 && \
     cd / && \
     rm -rf mcr-install-v83
 
-# This is the version of MCR required to run the precompiled version of FocalScan
-RUN mkdir /mcr-install-v901 && \
-    mkdir -p /opt/mcr && \
-    cd /mcr-install-v901 && \
-    wget -q https://ssd.mathworks.com/supportfiles/downloads/R2016a/deployment_files/R2016a/installers/glnxa64/MCR_R2016a_glnxa64_installer.zip && \
-    unzip -q MCR_R2016a_glnxa64_installer.zip && \
-    rm -f MCR_R2014a_glnxa64_installer.zip && \
-    ./install -destinationFolder /opt/mcr -agreeToLicense yes -mode silent && \
-    wget https://ssd.mathworks.com/supportfiles/downloads/R2016a/deployment_files/R2016a/installers/glnxa64/MCR_R2016a_Update_7_glnxa64.sh && \
-    bash MCR_R2016a_Update_7_glnxa64.sh -d=/opt/mcr/v901 -s && \
-    cd / && \
-    rm -rf mcr-install-v901
-
 WORKDIR /home/rstudio/
 
 # GISTIC installation
