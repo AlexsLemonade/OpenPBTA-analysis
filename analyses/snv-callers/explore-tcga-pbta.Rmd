@@ -37,40 +37,43 @@ source(file.path("..", "chromosomal-instability", "util", "circos-plots.R"))
 
 ### Special functions 
 
+Function for setting up PBTA data from the database. 
+
 ```{r}
-sina_plot <- function(data, colour = NULL, x_axis = "short_histology", title) {
-  # Given a data.frame with metadata and `tmb` information, make a sina plot from it
-  #
-  # Args:
-  #
-  # data : a data.frame with `tmb` as columns
-  # x_axis : A name of a column in data that you would like to make the x_axis from
-  #           Given as a character string. 
-  # colour: the color you would like the points to be
-  # title: The title for the plot. To be passed to `ggtitle`
-  #
-  # Returns:
-  #   A sina plot by histology group
-  data %>%
-    # eval parse bit will treat the variable as the text it has stored
-    ggplot2::ggplot(ggplot2::aes(x = reorder(eval(parse(text = x_axis)), tmb, mean), 
-                                 y = tmb)) +
-    ggforce::geom_sina(color = colour, alpha = 0.3, maxwidth = 0.9) +
-    ggplot2::stat_summary(
-      fun.y = mean, fun.ymin = mean, fun.ymax = mean,
-      geom = "crossbar",
-      width = 0.95, size = 0.15
-    ) +
-    ggplot2::theme_classic() +
-    ggplot2::ylab("Number of Mutations per Mb") +
-    ggplot2::xlab("") +
-    ggplot2::theme(
-      axis.text.x = ggplot2::element_text(angle = 60, hjust = 1),
-      legend.position = "none"
-    ) +
-    ggplot2::scale_y_continuous(trans = "log1p", breaks = c(0, 1, 3, 10, 30), 
-                                limits = c(0, 35)) +
-    ggplot2::ggtitle(title) 
+set_up_pbta <- function(data.name) {
+  # Start up connection
+  con <- DBI::dbConnect(RSQLite::SQLite(), 
+                        file.path(scratch_dir, "snv_db.sqlite"))
+  
+  # Connect to SQL
+  df <- dplyr::tbl(con, data.name) %>% 
+    dplyr::select(join_cols, "VAF") %>% 
+    as.data.frame() %>% 
+    dplyr::inner_join(
+    pbta_metadata %>% 
+      dplyr::select(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID,
+                    experimental_strategy, short_histology))
+    
+  return(df)
+}
+```
+
+Function for setting up TCGA data from the database. 
+
+```{r}
+set_up_tcga <- function(data.name) {
+    # Start up connection
+  con <- DBI::dbConnect(RSQLite::SQLite(), file.path(scratch_dir, "tcga_snv_db.sqlite"))
+  
+  # Connect to SQL
+  df <- dplyr::tbl(con, data.name) %>% 
+    dplyr::select(join_cols) %>% 
+    as.data.frame() %>% 
+    # Shorten the Tumor_Sample_Barcode so it matches
+    dplyr::mutate(Tumor_Sample_Barcode = substr(Tumor_Sample_Barcode, 0, 12)) %>% 
+    dplyr::inner_join(tcga_metadata %>% dplyr::select(Tumor_Sample_Barcode, short_histology, experimental_strategy))
+
+  return(df)
 }
 ```
 
@@ -180,61 +183,6 @@ bed_overlap <- function(bed_granges_1,
 }
 ```
 
-Function for comparing TMB for TCGA and PBTA and printing out a sina plot. 
-
-```{r}
-tmb_combo <- function(pbta_df, tcga_df, data.name) {
-  # Calculate coding only TMBs and write to file
-  pbta_coding_df <- calculate_tmb(pbta_df,
-    bed_wgs = file.path(data_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
-    bed_wxs = file.path(scratch_dir, "intersect_cds_WXS.bed")
-    )
-
-  # Calculate coding only TMBs and write to file
-  tcga_coding_df <- calculate_tmb(tcga_df,
-    bed_wgs = file.path(scratch_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
-    bed_wxs = file.path("ref_files", "hg38_liftover_genome_gencode.v19.basic.exome.bed")
-    )
-  
-  # Make the plot for PBTA
-  pbta_plot <- sina_plot(pbta_coding_df, colour = "#630882", title = "PBTA") +
-      ggplot2::theme(
-      panel.grid.major.x = ggplot2::element_line(colour = c("gray93", "white"), size = 12)
-    )
-  
-  # Make TCGA plot and get rid of y axis
-  tcga_plot <- sina_plot(tcga_coding_df, colour = "#3BC8A2", title = "TCGA (Adult)") +
-    ggplot2::theme(
-      axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_blank(),
-      axis.ticks.y = ggplot2::element_blank(),
-      axis.text.x = ggplot2::element_text(size = 8.5),
-      panel.grid.major.x = ggplot2::element_line(colour = c("gray93", "white"), size = 9)
-    )
-
-  # Put the plots together
-  tmb_plot <- cowplot::plot_grid(pbta_plot, tcga_plot,
-    align = "v",
-    axis = "left",
-    rel_widths = c(2.5, 1),
-    label_size = 12
-  )
-  return(tmb_plot)
-}
-```
-
-Set up directories. 
-
-```{r}
-scratch_dir <- file.path("..", "..", "scratch")
-data_dir <- file.path("..", "..", "data")
-plots_dir <- file.path("plots", "tcga-vs-pbta-plots")
-
-if (!dir.exists(plots_dir)) {
-  dir.create(plots_dir)
-}
-```
-
 Read in the metadata. 
 
 ```{r}
@@ -268,21 +216,6 @@ join_cols = c("Chromosome",
 Set up TCGA data. 
 
 ```{r}
-set_up_tcga <- function(data.name) {
-    # Start up connection
-  con <- DBI::dbConnect(RSQLite::SQLite(), file.path(scratch_dir, "tcga_snv_db.sqlite"))
-  
-  # Connect to SQL
-  df <- dplyr::tbl(con, data.name) %>% 
-    dplyr::select(join_cols) %>% 
-    as.data.frame() %>% 
-    # Shorten the Tumor_Sample_Barcode so it matches
-    dplyr::mutate(Tumor_Sample_Barcode = substr(Tumor_Sample_Barcode, 0, 12)) %>% 
-    dplyr::inner_join(tcga_metadata %>% dplyr::select(Tumor_Sample_Barcode, short_histology, experimental_strategy))
-
-  return(df)
-}
-
 tcga_lancet <- set_up_tcga("lancet")
 tcga_mutect <- set_up_tcga("mutect")
 tcga_strelka <- set_up_tcga("strelka")
@@ -292,23 +225,6 @@ tcga_consensus <- set_up_tcga("consensus")
 Set up PBTA data. 
 
 ```{r}
-set_up_pbta <- function(data.name) {
-  # Start up connection
-  con <- DBI::dbConnect(RSQLite::SQLite(), 
-                        file.path(scratch_dir, "v11_snv_db.sqlite"))
-  
-  # Connect to SQL
-  df <- dplyr::tbl(con, data.name) %>% 
-    dplyr::select(join_cols, "VAF") %>% 
-    as.data.frame() %>% 
-    dplyr::inner_join(
-    pbta_metadata %>% 
-      dplyr::select(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID,
-                    experimental_strategy, short_histology))
-    
-  return(df)
-}
-
 pbta_lancet <- set_up_pbta("lancet")
 pbta_mutect <- set_up_pbta("mutect")
 pbta_strelka <- set_up_pbta("strelka")
@@ -417,7 +333,7 @@ tmb_cdf_plot(consensus_tmb, plot_title = "Consensus")
 
 ## Let's find the overlap of the target regions of both datasets
 
-Download the Target BED regions file from MC3, and format the chromosome data to 
+Download a TCGA Target BED regions file from MC3, and format the chromosome data to 
 be `chr`, save as a TSV file. 
 
 ```{r}
