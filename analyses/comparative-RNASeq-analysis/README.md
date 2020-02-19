@@ -35,10 +35,11 @@ Generates the correlation matrix and filtered gene list.
 ```
 
 Required flags:
-    - First argument must be the path to the input expression .Rds file
+  - First argument must be the path to the input expression .Rds file
   - `--scratch ../../scratch` provides path to scratch dir where intermediate files shared between steps can be read and written.
+
 Optional flags:
-  - `--verbose` enables verbose output
+  - `--verbose` enables verbose output.
   - `--prefix MyDataset` prepends MyDataset to output filenames to identify runs. Subsequent steps in the same run must use the same prefix.
   - `--nofilter` causes the sample filtering step to be skipped.
 If the sample filtering step is *not* skipped, these flags are required:
@@ -76,6 +77,7 @@ Generates outlier thresholds and matrix of outlier genes.
 Required flags:
   - `--scratch ../../scratch` provides path to scratch dir where intermediate files shared between steps can be read and written.
  - `--results ./results` provides path to final results dir.
+
 Optional flags:
   - `--verbose` enables verbose output
   - `--prefix MyDataset` prepends MyDataset to input and output filenames to identify runs. Subsequent steps in the same run must use the same prefix.
@@ -93,7 +95,7 @@ results/rsem-tpm-stranded-gene_expression_outliers.tsv.gz
 ```
 
 ## Limitations and requirements
-Because the per-sample results of this analysis are dependent on the entire dataset, all samples in the dataset must meet certain standards for the outliers to be meaningful.
+Because the per-sample results of this analysis are dependent on the entire dataset, all samples in the dataset must meet certain standards for the outliers to be meaningful:
   - All samples must pass the MEND quality control check, which confirms that the sample has at least 10 million Mapped Exonic Non-Duplicate reads.
   - Dataset must contain only tumor samples; no normal, cell line, etc data. The filter applied via the `pbta-histologies.tsv` file to enforce this is:
 ```
