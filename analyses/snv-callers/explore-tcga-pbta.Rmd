@@ -33,6 +33,43 @@ Read in set up script.
 source(file.path("..", "snv-callers", "util", "tmb_functions.R"))
 ```
 
+```{r}
+sina_plot <- function(data, colour = NULL, x_axis = "short_histology", title) {
+  # Given a data.frame with metadata and `tmb` information, make a sina plot from it
+  #
+  # Args:
+  #
+  # data : a data.frame with `tmb` as columns
+  # x_axis : A name of a column in data that you would like to make the x_axis from
+  #           Given as a character string. 
+  # colour: the color you would like the points to be
+  # title: The title for the plot. To be passed to `ggtitle`
+  #
+  # Returns:
+  #   A sina plot by histology group
+  data %>%
+    # eval parse bit will treat the variable as the text it has stored
+    ggplot2::ggplot(ggplot2::aes(x = reorder(eval(parse(text = x_axis)), tmb, mean), 
+                                 y = tmb)) +
+    ggforce::geom_sina(color = colour, alpha = 0.3, maxwidth = 0.9) +
+    ggplot2::stat_summary(
+      fun.y = mean, fun.ymin = mean, fun.ymax = mean,
+      geom = "crossbar",
+      width = 0.95, size = 0.15
+    ) +
+    ggplot2::theme_classic() +
+    ggplot2::ylab("log10 (Number of Mutations per Mb)") +
+    ggplot2::xlab("") +
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_text(angle = 60, hjust = 1),
+      legend.position = "none"
+    ) +
+      ggplot2::scale_y_continuous(trans = "log1p", breaks = c(0, 1, 3, 10, 30)) +
+    ggplot2::scale_x_continuous(limits = c(-0.2, 1.2), breaks = c()) +
+    ggplot2::ggtitle(title) 
+}
+```
+
 Set up directories. 
 
 ```{r}
@@ -181,7 +218,7 @@ strelka  %>%
 ## Is this a caller specific problem?? 
 
 ```{r}
-tmb_combo <- function(pbta_df = pbta_lancet, tcga_df = tcga_lancet) {
+tmb_combo <- function(pbta_df, tcga_df, data.name) {
 # Calculate coding only TMBs and write to file
   pbta_coding_df <- calculate_tmb(pbta_df,
     bed_wgs = file.path(data_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
@@ -193,32 +230,30 @@ tmb_combo <- function(pbta_df = pbta_lancet, tcga_df = tcga_lancet) {
     bed_wgs = file.path(scratch_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
     bed_wxs = file.path(scratch_dir, "intersect_cds_WXS.bed")
     )
+  
+  # Make the plot for PBTA
+  pbta_plot <- sina_plot(pbta_coding_df, colour = "#630882", title = "PBTA")
+  
+  # Make TCGA plot and get rid of y axis
+  tcga_plot <- sina_plot(tcga_coding_df, colour = "#3BC8A2", title = "TCGA (Adult)") +
+    ggplot2::theme(
+      axis.title.y = ggplot2::element_blank(),
+      axis.text.y = ggplot2::element_blank(),
+      axis.ticks.y = ggplot2::element_blank(),
+      axis.text.x = ggplot2::element_text(size = 7),
+      panel.grid.major.x = ggplot2::element_line(colour = c("gray93", "white"), size = 9)
+    )
 
-  dplyr::bind_rows(list(pbta = pbta_coding_df, 
-                        tcga = tcga_coding_df), .id = "dataset")  %>% 
-  dplyr::mutate(dataset = as.factor(dataset)) %>%
-    ggplot2::ggplot(ggplot2::aes(x = short_histology, color = dataset, 
-                                 y = log10(tmb))) +
-    ggforce::geom_sina(alpha = 0.3, maxwidth = 0.9) +
-    ggplot2::stat_summary(
-      fun.y = mean, fun.ymin = mean, fun.ymax = mean,
-      geom = "crossbar",
-      width = 0.95, size = 0.15
-    ) +
-    ggplot2::theme_classic() +
-    ggplot2::ylab("log10 (Number of Mutations per Mb)") +
-    ggplot2::xlab("") +
-    ggplot2::ylim(c(-3, 3)) +
-    ggplot2::theme(
-      axis.text.x = ggplot2::element_text(angle = 60, hjust = 1),
-      legend.position = "none"
-    ) +
-    ggplot2::ggtitle(title) + 
-    ggplot2::theme(
-    panel.grid.major.x = ggplot2::element_line(colour = c("gray93", "white"), size = 9))
+  # Put the plots together
+  tmb_plot <- cowplot::plot_grid(pbta_plot, tcga_plot,
+    align = "v",
+    axis = "left",
+    rel_widths = c(2.5, 1),
+    label_size = 12
+  )
+  
+  return(tmb_plot)
 }
-
-tmb_df
 ```
 
 ```{r}
