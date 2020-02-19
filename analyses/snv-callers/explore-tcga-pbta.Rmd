@@ -73,8 +73,8 @@ sina_plot <- function(data, colour = NULL, x_axis = "short_histology", title) {
 ```
 
 ```{r}
-tmb_cdf_plot <- function(tmb_df) {
-  tmb_df %>%
+tmb_cdf_plot <- function(tmb_df, plot_title) {
+  cdf_plot <- tmb_df %>%
     as.data.frame() %>%
     dplyr::mutate(short_histology = tools::toTitleCase(short_histology)) %>% 
     # Only plot histologies groups with more than `min_samples` number of samples
@@ -84,7 +84,8 @@ tmb_cdf_plot <- function(tmb_df) {
     # Calculate histology group mean
     dplyr::mutate(
       hist_mean = mean(tmb),
-      hist_rank = rank(tmb, ties.method = "first") / dplyr::n()
+      hist_rank = rank(tmb, ties.method = "first") / dplyr::n(), 
+      sample_size = paste0("n = ", dplyr::n())
     ) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(short_histology = reorder(short_histology, hist_mean)) %>% 
@@ -99,7 +100,7 @@ tmb_cdf_plot <- function(tmb_df) {
     ggplot2::geom_segment(x = 0, xend = 1, color = "grey", 
                           ggplot2::aes(y = hist_mean, yend = hist_mean)) +
     # Separate by histology
-    ggplot2::facet_wrap(~ short_histology, nrow = 1, strip.position = "bottom") +
+    ggplot2::facet_wrap(~ short_histology + sample_size, nrow = 1, strip.position = "bottom") +
     ggplot2::theme_classic() +
     ggplot2::xlab("") +
     ggplot2::ylab("TMB") +
@@ -114,7 +115,53 @@ tmb_cdf_plot <- function(tmb_df) {
       strip.placement = "outside",
       strip.text = ggplot2::element_text(size = 10, angle = 90, hjust = 1), 
       strip.background = ggplot2::element_rect(fill = NA, color = NA)
+    ) + 
+    ggplot2::ggtitle(plot_title)
+  
+  ggplot2::ggsave(filename = paste0(plot_title, ".png"), plot = cdf_plot, width = 10, height = 7.5)
+  
+  cdf_plot
+}
+```
+
+```{r}
+tmb_combo <- function(pbta_df, tcga_df, data.name) {
+  # Calculate coding only TMBs and write to file
+  pbta_coding_df <- calculate_tmb(pbta_df,
+    bed_wgs = file.path(data_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
+    bed_wxs = file.path(scratch_dir, "intersect_cds_WXS.bed")
     )
+
+  # Calculate coding only TMBs and write to file
+  tcga_coding_df <- calculate_tmb(tcga_df,
+    bed_wgs = file.path(scratch_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
+    bed_wxs = file.path("ref_files", "hg38_liftover_genome_gencode.v19.basic.exome.bed")
+    )
+  
+  # Make the plot for PBTA
+  pbta_plot <- sina_plot(pbta_coding_df, colour = "#630882", title = "PBTA") +
+      ggplot2::theme(
+      panel.grid.major.x = ggplot2::element_line(colour = c("gray93", "white"), size = 12)
+    )
+  
+  # Make TCGA plot and get rid of y axis
+  tcga_plot <- sina_plot(tcga_coding_df, colour = "#3BC8A2", title = "TCGA (Adult)") +
+    ggplot2::theme(
+      axis.title.y = ggplot2::element_blank(),
+      axis.text.y = ggplot2::element_blank(),
+      axis.ticks.y = ggplot2::element_blank(),
+      axis.text.x = ggplot2::element_text(size = 8.5),
+      panel.grid.major.x = ggplot2::element_line(colour = c("gray93", "white"), size = 9)
+    )
+
+  # Put the plots together
+  tmb_plot <- cowplot::plot_grid(pbta_plot, tcga_plot,
+    align = "v",
+    axis = "left",
+    rel_widths = c(2.5, 1),
+    label_size = 12
+  )
+  return(tmb_plot)
 }
 ```
 
@@ -237,47 +284,6 @@ strelka %>%
 
 ## Is this a caller specific problem?? 
 
-```{r}
-tmb_combo <- function(pbta_df, tcga_df, data.name) {
-  # Calculate coding only TMBs and write to file
-  pbta_coding_df <- calculate_tmb(pbta_df,
-    bed_wgs = file.path(data_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
-    bed_wxs = file.path(scratch_dir, "intersect_cds_WXS.bed")
-    )
-
-  # Calculate coding only TMBs and write to file
-  tcga_coding_df <- calculate_tmb(tcga_df,
-    bed_wgs = file.path(scratch_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
-    bed_wxs = file.path("ref_files", "hg38_liftover_genome_gencode.v19.basic.exome.bed")
-    )
-  
-  # Make the plot for PBTA
-  pbta_plot <- sina_plot(pbta_coding_df, colour = "#630882", title = "PBTA") +
-      ggplot2::theme(
-      panel.grid.major.x = ggplot2::element_line(colour = c("gray93", "white"), size = 12)
-    )
-  
-  # Make TCGA plot and get rid of y axis
-  tcga_plot <- sina_plot(tcga_coding_df, colour = "#3BC8A2", title = "TCGA (Adult)") +
-    ggplot2::theme(
-      axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_blank(),
-      axis.ticks.y = ggplot2::element_blank(),
-      axis.text.x = ggplot2::element_text(size = 8.5),
-      panel.grid.major.x = ggplot2::element_line(colour = c("gray93", "white"), size = 9)
-    )
-
-  # Put the plots together
-  tmb_plot <- cowplot::plot_grid(pbta_plot, tcga_plot,
-    align = "v",
-    axis = "left",
-    rel_widths = c(2.5, 1),
-    label_size = 12
-  )
-  return(tmb_plot)
-}
-```
-
 Lancet only TMB:
 
 ```{r}
@@ -311,7 +317,7 @@ lancet_tmb <- dplyr::bind_rows(list(pbta = calculate_tmb(pbta_lancet,
   )), .id = "datasets") 
 
 
-tmb_cdf_plot(lancet_tmb)
+tmb_cdf_plot(lancet_tmb, plot_title = "Lancet")
 ```
 
 Mutect only TMB:
@@ -327,7 +333,7 @@ mutect_tmb <- dplyr::bind_rows(list(pbta = calculate_tmb(pbta_mutect,
   )), .id = "datasets") 
 
 
-tmb_cdf_plot(mutect_tmb)
+tmb_cdf_plot(mutect_tmb, plot_title = "Mutect2")
 ```
 
 Strelka only TMB:
@@ -343,7 +349,7 @@ strelka_tmb <- dplyr::bind_rows(list(pbta = calculate_tmb(pbta_strelka,
   )), .id = "datasets") 
 
 
-tmb_cdf_plot(strelka_tmb)
+tmb_cdf_plot(strelka_tmb, plot_title = "Strelka2")
 ```
 
 Consensus TMB:
@@ -359,7 +365,7 @@ consensus_tmb <- dplyr::bind_rows(list(pbta = calculate_tmb(pbta_consensus,
   )), .id = "datasets") 
 
 
-tmb_cdf_plot(consensus_tmb)
+tmb_cdf_plot(consensus_tmb, plot_title = "Consensus")
 ```
 
 ## Let's find the overlap of the target regions of both datasets
@@ -443,6 +449,9 @@ tcga_lift_granges <- GenomicRanges::GRanges(
     start = tcga_lift_bed$start,
     end = tcga_lift_bed$end
   ))
+
+# Reduce this to it's essential ranges
+tcga_lift_granges <- GenomicRanges::reduce(tcga_lift_granges)
 ```
 
 Make a TCGA BED GenomicRanges. 
@@ -455,15 +464,20 @@ tcga_granges <- GenomicRanges::GRanges(
     start = tcga_bed$start,
     end = tcga_bed$end
   ))
+
+# Reduce this to it's essential ranges
+tcga_granges <- GenomicRanges::reduce(tcga_granges)
 ```
 
 Format the PBTA WXS data as a GRanges object. 
 
 ```{r}
-pbta_bed <- readr::read_tsv(file.path(scratch_dir, "intersect_cds_WXS.bed"), 
+#pbta_bed <- readr::read_tsv(file.path(scratch_dir, "intersect_cds_WXS.bed"), 
+pbta_bed <- readr::read_tsv(file.path(data_dir, "WXS.hg38.100bp_padded.bed"), 
                             col_names = c("chr", "start", "end")) %>% 
   dplyr::filter(!is.na(chr)) %>% 
   dplyr::mutate(y_val = 1)
+
 
 # Make GRanges for CNV data
 pbta_granges <- GenomicRanges::GRanges(
@@ -472,6 +486,9 @@ pbta_granges <- GenomicRanges::GRanges(
     start = pbta_bed$start,
     end = pbta_bed$end
   ))
+
+# Reduce this to it's essential ranges
+pbta_granges <- GenomicRanges::reduce(pbta_granges)
 ```
 
 Read in the coding sequence regions file. 
@@ -489,6 +506,9 @@ cds_granges <- GenomicRanges::GRanges(
     start = cds_bed$start,
     end = cds_bed$end
   ))
+
+# Reduce this to it's essential ranges
+cds_granges <- GenomicRanges::reduce(cds_granges)
 ```
 
 We also need to see how this translates to CDS regions:
