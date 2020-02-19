@@ -98,32 +98,36 @@ stranded_umap_aligned_scores <- readr::read_tsv(
 ```{r}
 # Add variables to aligned scores data.frames for plotting
 stranded_tsne_aligned_scores <- stranded_tsne_aligned_scores %>%
-  dplyr::group_by(Kids_First_Biospecimen_ID) %>%
-  dplyr::mutate(
-    subtype_class = dplyr::case_when(
-      stringr::str_detect(molecular_subtype, "BRAF V600E") &
-        broad_histology == "Diffuse astrocytic and oligodendroglial tumor" ~ "HGAT_BRAF",
-      broad_histology == "Low-grade astrocytic tumor" ~ "LGAT",
-      TRUE ~ "HGAT_NO_BRAF"
-    ),
-    is_HGAT_BRAF = dplyr::case_when(
-      subtype_class == "HGAT_BRAF" ~ "Yes",
-      TRUE ~ "No"
+  filter(broad_histology %in% c("Diffuse astrocytic and oligodendroglial tumor",
+                                "Low-grade astrocytic tumor")) %>%
+  mutate(subtype_class = case_when(
+    molecular_subtype == "BRAF V600E" &
+      broad_histology == "Diffuse astrocytic and oligodendroglial tumor" ~ "HGAT_NO_HISTONE_BRAF",
+    broad_histology == "Low-grade astrocytic tumor" ~ "LGAT",
+    TRUE ~ "OTHER_HGAT"
+  )) %>%
+  mutate(
+    HGAT_NO_HISTONE_BRAF = if_else(
+      subtype_class == "HGAT_NO_HISTONE_BRAF",
+      "yes",
+      "no"
     )
   )
 
 stranded_umap_aligned_scores <- stranded_umap_aligned_scores %>%
-  dplyr::group_by(Kids_First_Biospecimen_ID) %>%
-  dplyr::mutate(
-    subtype_class = dplyr::case_when(
-      stringr::str_detect(molecular_subtype, "BRAF V600E") &
-        broad_histology == "Diffuse astrocytic and oligodendroglial tumor" ~ "HGAT_BRAF",
-      broad_histology == "Low-grade astrocytic tumor" ~ "LGAT",
-      TRUE ~ "HGAT_NO_BRAF"
-    ),
-    is_HGAT_BRAF = dplyr::case_when(
-      subtype_class == "HGAT_BRAF" ~ "Yes",
-      TRUE ~ "No"
+  filter(broad_histology %in% c("Diffuse astrocytic and oligodendroglial tumor",
+                                "Low-grade astrocytic tumor")) %>%
+  mutate(subtype_class = case_when(
+    molecular_subtype == "BRAF V600E" &
+      broad_histology == "Diffuse astrocytic and oligodendroglial tumor" ~ "HGAT_NO_HISTONE_BRAF",
+    broad_histology == "Low-grade astrocytic tumor" ~ "LGAT",
+    TRUE ~ "OTHER_HGAT"
+  )) %>%
+  mutate(
+    HGAT_NO_HISTONE_BRAF = if_else(
+      subtype_class == "HGAT_NO_HISTONE_BRAF",
+      "yes",
+      "no"
     )
   )
 ```
@@ -136,23 +140,23 @@ stranded_tsne_plot <-
   plot_dimension_reduction(
     aligned_scores_df = stranded_tsne_aligned_scores,
     point_color = "subtype_class",
-    point_size = "is_HGAT_BRAF",
+    point_size = "HGAT_NO_HISTONE_BRAF",
+    point_shape = "HGAT_NO_HISTONE_BRAF",
     x_label = "t-SNE1",
     y_label = "t-SNE2"
   ) +
-  ggplot2::scale_color_manual(values = (c("#0a7fb2", "#799d10", "#F3E500")))
-
+  scale_color_manual(values = c("#0a7fb2", "#799d10", "#F3E500"))
 
 stranded_umap_plot <-
   plot_dimension_reduction(
     aligned_scores_df = stranded_umap_aligned_scores,
     point_color = "subtype_class",
-    point_size = "is_HGAT_BRAF",
+    point_size = "HGAT_NO_HISTONE_BRAF",
+    point_shape = "HGAT_NO_HISTONE_BRAF",
     x_label = "UMAP1",
     y_label = "UMAP2"
   ) +
-  ggplot2::scale_color_manual(values = (c("#0a7fb2", "#799d10", "#F3E500")))
-
+  scale_color_manual(values = c("#0a7fb2", "#799d10", "#F3E500"))
 
 # Put plots together in a list to satisfy function argument
 plot_list <- list(stranded_tsne_plot, stranded_umap_plot)
