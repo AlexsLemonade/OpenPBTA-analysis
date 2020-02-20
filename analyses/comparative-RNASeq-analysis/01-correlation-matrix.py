@@ -69,30 +69,33 @@ def filter_samples(input_matrix,
         print_v("Skipped the QC and tumor status filters; using all samples.")
         return raw_samples
 
-    # Filter to only samples with a MEND QC status of PASS
+    # Filter to only sample ids with a MEND QC status of PASS
     # Samples not mentioned in the qc_status (ie, no qc result) will be dropped by the filter
     qc_status = get_qc_status(mend_results_path, mend_manifest_path)
     qc_pass_ids= [k for k, v in qc_status.items() if v == "PASS"]
-    qc_pass_samples = raw_samples[set(raw_samples.columns).intersection(qc_pass_ids)]
+    qc_pass_ids_in_dataset = set(raw_samples.columns).intersection(qc_pass_ids)
     print_v("QC filter: dropped {} samples that were not MEND QC PASS.".format(
-            len(raw_samples.columns) - len(qc_pass_samples.columns)))
+            len(raw_samples.columns) - len(qc_pass_ids_in_dataset)))
 
-    # Call out any samples that didn't have a QC result at all but continue analysis
+    # Call out any sample ids that had no corresponding QC file, but ok to continue even if some are present
     samples_without_qc_results = set(raw_samples.columns) - set(qc_status.keys())
     if len(samples_without_qc_results):
         print("WARNING: {} samples were dropped due to missing MEND QC results. Sample IDs: {}".format(
               len(samples_without_qc_results),
               ", ".join(samples_without_qc_results)))
 
-    # Further filter to only tumor RNA-Seq samples
+    # Further filter to only tumor RNA-Seq sample ids
     clinical = utils.read_tsv(clinical_path)
     tumor_ids = clinical[(clinical["sample_type"] == "Tumor")
                          & (clinical["composition"] == "Solid Tissue")
                          & (clinical["experimental_strategy"] == "RNA-Seq")
                         ].index
-    qc_pass_tumor_samples = qc_pass_samples[set(qc_pass_samples.columns).intersection(tumor_ids)]
+    qc_pass_tumor_ids_in_dataset = qc_pass_ids_in_dataset.intersection(tumor_ids)
     print_v("Tumor filter: dropped {} samples that were not solid tumor RNA-Seq.".format(
-            len(qc_pass_samples.columns) - len(qc_pass_tumor_samples.columns)))
+            len(qc_pass_ids_in_dataset) - len(qc_pass_tumor_ids_in_dataset)))
+
+    # And apply filtered IDs to the original dataset, retaining the original column order
+    qc_pass_tumor_samples = raw_samples[[sid for sid in raw_samples.columns if sid in qc_pass_tumor_ids_in_dataset]]
     return qc_pass_tumor_samples
 
 def prepare_expression(raw_samples,
