@@ -24,8 +24,7 @@ Rscript -e "rmarkdown::render('analyses/gistic-cohort-vs-histology-comparison/gi
 ## Set up
 
 ```{r}
-# Get the magrittr pipe
-`%>%` <- dplyr::`%>%`
+library(tidyverse)
 ```
 
 ### Files and Directories
