@@ -161,7 +161,7 @@ stranded_umap_plot <-
 # Put plots together in a list to satisfy function argument
 plot_list <- list(stranded_tsne_plot, stranded_umap_plot)
 
-# Generate multipanel plots with custom function
+# Generate multipanel plots with custom function and save
 generate_multipanel_plot(
   plot_list = plot_list,
   plot_title = "HGG Stranded Clustering",
@@ -169,6 +169,49 @@ generate_multipanel_plot(
   output_filename = "HGG_stranded.pdf"
 )
 ```
+
+## Identify sample that clusters with LGAT
+
+```{r message = FALSE, warning = FALSE, fig.width = 16, fig.height = 10}
+# Plot generation using `tumor_descriptor` as the variable supplied for shape.
+# This variable was chosen because it was one of the variables in which the
+# two samples where `HGAT_NO_HISTONE_BRAF` == "yes" differ.
+
+plot_dimension_reduction(
+  aligned_scores_df = stranded_tsne_aligned_scores,
+  point_color = "subtype_class",
+  point_size = "HGAT_NO_HISTONE_BRAF",
+  point_shape = "tumor_descriptor",
+  x_label = "t-SNE1",
+  y_label = "t-SNE2"
+) +
+  scale_color_manual(values = c("#0a7fb2", "#799d10", "#F3E500"))
+
+plot_dimension_reduction(
+  aligned_scores_df = stranded_umap_aligned_scores,
+  point_color = "subtype_class",
+  point_size = "HGAT_NO_HISTONE_BRAF",
+  point_shape = "tumor_descriptor",
+  x_label = "UMAP1",
+  y_label = "UMAP2"
+) +
+  scale_color_manual(values = c("#0a7fb2", "#799d10", "#F3E500"))
+
+# According to the plots above, there is one sample that should be reclassified.
+# This sample is an initial CNS Tumor that is currently classified as HGAT with
+# no histone mutation but with a `BRAF V600E` mutation. We will use this
+# information to isolate this sample.
+
+stranded_tsne_aligned_scores %>%
+  filter(tumor_descriptor == "Initial CNS Tumor", subtype_class == "HGAT_NO_HISTONE_BRAF") %>%
+  pull("Kids_First_Biospecimen_ID")
+
+stranded_umap_aligned_scores %>%
+  filter(tumor_descriptor == "Initial CNS Tumor", subtype_class == "HGAT_NO_HISTONE_BRAF") %>%
+  pull("Kids_First_Biospecimen_ID")
+```
+In both aligned scores data frames (t-SNE and UMAP), the `Kids_First_Biospecimen_ID` of the sample with no histone mutation but with _BRAF V600E_ mutation, that has been identified to cluster with LGAT samples, is **"BS_H1XPVS9A"**.
+[Per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/435#discussion_r373808742), we should reclassify this sample as LGAT.
 
 ## Session Info
 
