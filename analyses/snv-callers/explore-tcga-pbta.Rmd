@@ -35,6 +35,18 @@ source(file.path("..", "chromosomal-instability", "util", "chr-break-plot.R"))
 source(file.path("..", "chromosomal-instability", "util", "circos-plots.R"))
 ```
 
+Declare directory paths. 
+
+```{r}
+scratch_dir <- file.path("..", "..", "scratch")
+data_dir <- file.path("..", "..", "data")
+plots_dir <- file.path("plots", "tcga-vs-pbta-plots")
+
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir)
+}
+```
+
 ### Special functions 
 
 Function for setting up PBTA data from the database. 
@@ -43,7 +55,7 @@ Function for setting up PBTA data from the database.
 set_up_pbta <- function(data.name) {
   # Start up connection
   con <- DBI::dbConnect(RSQLite::SQLite(), 
-                        file.path(scratch_dir, "snv_db.sqlite"))
+                        file.path(scratch_dir, "v11_snv_db.sqlite"))
   
   # Connect to SQL
   df <- dplyr::tbl(con, data.name) %>% 
@@ -339,8 +351,7 @@ be `chr`, save as a TSV file.
 ```{r}
 tcga_bed <- readr::read_tsv("https://api.gdc.cancer.gov/data/7f0d3ab9-8bef-4e3b-928a-6090caae885b", col_names = c("chr", "start", "end")) %>% 
   dplyr::filter(!is.na(chr)) %>% 
-  dplyr::mutate(chr = paste0("chr", chr), 
-                y_val = 1) %>% 
+  dplyr::mutate(chr = paste0("chr", chr)) %>% 
   readr::write_tsv(file.path("ref_files", "gencode.v19.basic.exome.tsv"), 
                    col_names = FALSE)
 ```
@@ -352,8 +363,7 @@ from the Target BED regions for TCGA data from hg19 to hg38 (What the PBTA data 
 tcga_lift_bed <- readr::read_tsv(file.path("ref_files",
                                       "hg38_liftover_genome_gencode.v19.basic.exome.bed"), 
                             col_names = c("chr", "start", "end")) %>% 
-  dplyr::mutate(chr = stringr::word(chr, sep = "_", 1)) %>% 
-  dplyr::mutate(y_val = 1)
+  dplyr::mutate(chr = stringr::word(chr, sep = "_", 1)) 
 
 # Make GRanges for CNV data
 tcga_lift_granges <- GenomicRanges::GRanges(
@@ -388,9 +398,7 @@ Format the PBTA WXS data as a GRanges object.
 #pbta_bed <- readr::read_tsv(file.path(scratch_dir, "intersect_cds_WXS.bed"), 
 pbta_bed <- readr::read_tsv(file.path(data_dir, "WXS.hg38.100bp_padded.bed"), 
                             col_names = c("chr", "start", "end")) %>% 
-  dplyr::filter(!is.na(chr)) %>% 
-  dplyr::mutate(y_val = 1)
-
+  dplyr::filter(!is.na(chr)) 
 
 # Make GRanges for CNV data
 pbta_granges <- GenomicRanges::GRanges(
