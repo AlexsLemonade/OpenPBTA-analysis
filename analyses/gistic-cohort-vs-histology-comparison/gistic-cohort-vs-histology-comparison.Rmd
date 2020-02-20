@@ -1,5 +1,5 @@
 ---
-title: "GISTIC specific histology versus entire PBTA cohort comparison of results"
+title: "GISTIC entire PBTA cohort versus individual histology comparison of results"
 output: 
   html_notebook:
     toc: TRUE
@@ -111,26 +111,65 @@ plot_gistic_scores <- function(gistic_scores_file) {
 }
 ```
 
+### Unzip GISTIC results folders
+
+```{r}
+# Unzip and set up GISTIC results folders and files.
+cohort_gistic_dir <- file.path(data_dir, "pbta-cnv-consensus-gistic")
+cohort_gistic_zip <- file.path(data_dir, "pbta-cnv-consensus-gistic.zip")
+
+if (!dir.exists(cohort_gistic_dir)) {
+  unzip(cohort_gistic_zip, 
+        exdir = data_dir)
+}
+
+lgat_gistic_dir <- file.path(data_dir, "pbta-cnv-consensus-lgat-gistic")
+lgat_gistic_zip <- file.path(data_dir, "pbta-cnv-consensus-lgat-gistic.zip")
+
+if (!dir.exists(lgat_gistic_dir)) {
+  unzip(lgat_gistic_zip, 
+        exdir = data_dir)
+}
+
+hgat_gistic_dir <- file.path(data_dir, "pbta-cnv-consensus-hgat-gistic")
+hgat_gistic_zip <- file.path(data_dir, "pbta-cnv-consensus-hgat-gistic.zip")
+
+if (!dir.exists(hgat_gistic_dir)) {
+  unzip(hgat_gistic_zip, 
+        exdir = data_dir)
+}
+
+medulloblastoma_gistic_dir <- file.path(data_dir, "pbta-cnv-consensus-medulloblastoma-gistic")
+medulloblastoma_gistic_zip <- file.path(data_dir, "pbta-cnv-consensus-medulloblastoma-gistic.zip")
+
+if (!dir.exists(medulloblastoma_gistic_dir)) {
+  unzip(medulloblastoma_gistic_zip, 
+        exdir = data_dir)
+}
+
+```
+
 ### Run `plot_gistic_scores` for each file
 
 ```{r}
+# Define file paths to `scores.gistic` files and run `plot_gistic_scores`
+# function for each file
 cohort_scores <-
-  file.path(data_dir, "pbta-cnv-consensus-gistic", "scores.gistic")
+  file.path(cohort_gistic_dir, "scores.gistic")
 cohort_scores_plot <- plot_gistic_scores(cohort_scores)
 
 lgat_scores <-
-  file.path(data_dir, "pbta-cnv-consensus-lgat-gistic", "scores.gistic")
+  file.path(lgat_gistic_dir, "scores.gistic")
 lgat_scores_plot <- plot_gistic_scores(lgat_scores)
 
 hgat_scores <-
-  file.path(data_dir, "pbta-cnv-consensus-hgat-gistic", "scores.gistic")
+  file.path(hgat_gistic_dir, "scores.gistic")
 hgat_scores_plot <- plot_gistic_scores(hgat_scores)
 
 medulloblastoma_scores <-
-  file.path(data_dir,
-            "pbta-cnv-consensus-medulloblastoma-gistic",
-            "scores.gistic")
-medulloblastoma_scores_plot <- plot_gistic_scores(medulloblastoma_scores)
+  file.path(medulloblastoma_gistic_dir, "scores.gistic")
+medulloblastoma_scores_plot <-
+  plot_gistic_scores(medulloblastoma_scores)
 ```
 
 ### Generate multipanel plots 
@@ -211,16 +250,16 @@ plot_sample_seg_counts <-
 
 ```{r}
 # Run comparison using LGAT file
-cohort_sample_seg_counts <- file.path(data_dir, "pbta-cnv-consensus-gistic", "sample_seg_counts.txt")
-lgat_sample_seg_counts <- file.path(data_dir, "pbta-cnv-consensus-lgat-gistic", "sample_seg_counts.txt")
+cohort_sample_seg_counts <- file.path(cohort_gistic_dir, "sample_seg_counts.txt")
+lgat_sample_seg_counts <- file.path(lgat_gistic_dir, "sample_seg_counts.txt")
 plot_sample_seg_counts(cohort_sample_seg_counts, lgat_sample_seg_counts)
 
 # Run comparison using HGAT file
-hgat_sample_seg_counts <- file.path(data_dir, "pbta-cnv-consensus-hgat-gistic", "sample_seg_counts.txt")
+hgat_sample_seg_counts <- file.path(hgat_gistic_dir, "sample_seg_counts.txt")
 plot_sample_seg_counts(cohort_sample_seg_counts, hgat_sample_seg_counts)
 
 # Run comparison using medulloblastoma file
-medulloblastoma_sample_seg_counts <- file.path(data_dir, "pbta-cnv-consensus-medulloblastoma-gistic", "sample_seg_counts.txt")
+medulloblastoma_sample_seg_counts <- file.path(medulloblastoma_gistic_dir, "sample_seg_counts.txt")
 plot_sample_seg_counts(cohort_sample_seg_counts, medulloblastoma_sample_seg_counts)
 ```
 
