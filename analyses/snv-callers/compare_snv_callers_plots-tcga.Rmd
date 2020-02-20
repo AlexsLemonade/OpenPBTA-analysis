@@ -93,7 +93,7 @@ Connect to SQLite database.
 ```{r}
 # Start up connection
 con <- DBI::dbConnect(RSQLite::SQLite(), 
-                      file.path(scratch_dir, "tcga_snv_db.sqlite"))
+                      file.path(scratch_dir, "tcga_v2_snv_db.sqlite"))
 ```
 
 Note what columns we will join by.

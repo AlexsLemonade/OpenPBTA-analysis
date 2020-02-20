@@ -9,15 +9,15 @@ set -e
 set -o pipefail
 
 # The sqlite database made from the callers will be called:
-dbfile=scratch/tcga_snv_db.sqlite
+dbfile=scratch/tcga_v2_snv_db.sqlite
 
 # Designate output file 
-consensus_file=analyses/snv-callers/results/consensus/tcga-snv-consensus-snv.maf.tsv
+consensus_file=analyses/snv-callers/results/consensus/tcga-snv-v2-consensus-snv.maf.tsv
 
 # BED and GTF file paths
 cds_file=scratch/gencode.v27.primary_assembly.annotation.bed
 all_mut_wgs_bed=scratch/intersect_strelka_mutect_WGS.bed
-all_mut_wxs_bed=data/WXS.hg38.100bp_padded.bed
+all_mut_wxs_bed=data/gencode.v19.basic.exome.hg38liftover.bed
 coding_wgs_bed=scratch/intersect_cds_lancet_strelka_mutect_WGS.bed
 coding_wxs_bed=scratch/intersect_cds_lancet_WXS.bed
 
@@ -31,9 +31,9 @@ run_plots_nb=${OPENPBTA_PLOTS:-0}
 ################################ Set Up Database ################################
 python3 analyses/snv-callers/scripts/01-setup_db.py \
   --db-file $dbfile \
-  --strelka-file data/pbta-tcga-snv-strelka2.vep.maf.gz \
-  --mutect-file data/pbta-tcga-snv-mutect2.vep.maf.gz \
-  --lancet-file data/pbta-tcga-snv-lancet.vep.maf.gz \
+  --strelka-file scratch/pbta-tcga-snv-strelka2.vep.maf.gz \
+  --mutect-file scratch/pbta-tcga-snv-mutect2.vep.maf.gz \
+  --lancet-file scratch/pbta-tcga-snv-lancet.vep.maf.gz \
   --meta-file data/pbta-tcga-manifest.tsv
 
 ##################### Merge callers' files into total files ####################
