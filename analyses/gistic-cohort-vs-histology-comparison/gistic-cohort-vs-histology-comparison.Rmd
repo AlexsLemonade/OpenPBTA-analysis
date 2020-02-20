@@ -194,21 +194,22 @@ generate_multipanel_plot(plot_list = medulloblastoma_plot_list,
                          output_filename = "medulloblastoma_gistic_scores_multipanel_plot.png")
 ```
 
-## Compare "sample_seg_counts.txt" files
+## Compare `amp_genes.conf_90.txt` and `del_genes.conf_90.txt` files
 
 ### Custom function
 ```{r}
-plot_sample_seg_counts <-
-  function(cohort_sample_seg_file,
-           histology_sample_seg_file) {
-    # Given the GISTIC result `sample_seg_counts.txt` files for the entire cohort
-    # and a specific histology, plot a Venn Diagram showing the counts of rows that
-    # overlap/do not overlap between the two files.
+plot_amp_del_genes <-
+  function(cohort_genes_file,
+           histology_genes_file) {
+    # Given the GISTIC result `amp_genes_conf_90.txt` or `del_genes_conf_90.txt`
+    # files for the entire cohort and a specific histology, plot a Venn Diagram
+    # showing the counts of rows that overlap/do not overlap between the two
+    # files.
     #
     # Args:
-    #   cohort_sample_seg_file: the file path to the sample seg counts file for
+    #   cohort_genes_file: the file path to the amp/del genes file for
     #                           the entire cohort
-    #   histology_sample_seg_file: the file path to the sample seg counts file
+    #   histology_genes_file: the file path to the amp/del genes file
     #                              for an individual histology
     #
     # Returns:
@@ -216,52 +217,122 @@ plot_sample_seg_counts <-
     #  overlaps/does not overlap between the two given files
     
     # Read in files
-    cohort_sample_seg_counts <-
-      data.table::fread(cohort_sample_seg_file,
+    cohort_genes <-
+      data.table::fread(cohort_genes_file,
                         data.table = FALSE)
     
-    histology_sample_seg_counts <-
-      data.table::fread(histology_sample_seg_file,
+    histology_genes <-
+      data.table::fread(histology_genes_file,
                         data.table = FALSE)
     
-    # Create a column that contains the information across columns for each row
-    cohort_sample_seg_counts <- cohort_sample_seg_counts %>%
-      dplyr::mutate(sample_seg_counts = paste0(sample, ", ", segment_count, ", ", included))
+    # Wrnagle data in cohort file for plotting
+    cohort_genes <- t(cohort_genes)
     
-    histology_sample_seg_counts <- histology_sample_seg_counts %>%
-      dplyr::mutate(sample_seg_counts = paste0(sample, ", ", segment_count, ", ", included))
+    cohort_genes <- cohort_genes[-1,] %>%
+      as.data.frame() %>%
+      dplyr::mutate(summary_info = paste0(V1, ", ", V2, ", ", V3, ", ", V4)) %>%
+      dplyr::select(-c("V1", "V2", "V3", "V4")) %>%
+      dplyr::select(summary_info, dplyr::everything()) %>%
+      tidyr::gather(V5, V6,-summary_info) %>%
+      dplyr::group_by(summary_info) %>%
+      dplyr::mutate(genes = paste0(sort(unique(V6)), collapse = ", ")) %>%
+      dplyr::select(-V5,-V6) %>%
+      dplyr::distinct() %>%
+      dplyr::mutate(summary = paste0(summary_info, genes)) %>%
+      dplyr::filter(!(summary == "NA, NA, NA, NA")) %>%
+      dplyr::arrange()
     
-    cohort_samples <-
-      cohort_sample_seg_counts[!is.na(cohort_sample_seg_counts$sample_seg_counts), "sample_seg_counts"]
-    histology_samples <-
-      histology_sample_seg_counts[!is.na(histology_sample_seg_counts$sample_seg_counts), "sample_seg_counts"]
+    # Wrangle data in individual histology file for plotting
+    histology_genes <- t(histology_genes)
+    
+    histology_genes <- histology_genes[-1,] %>%
+      as.data.frame() %>%
+      dplyr::mutate(summary_info = paste0(V1, ", ", V2, ", ", V3, ", ", V4)) %>%
+      dplyr::select(-c("V1", "V2", "V3", "V4")) %>%
+      dplyr::select(summary_info, dplyr::everything()) %>%
+      tidyr::gather(V5, V6,-summary_info) %>%
+      dplyr::group_by(summary_info) %>%
+      dplyr::mutate(genes = paste0(sort(unique(V6)), collapse = ", ")) %>%
+      dplyr::select(-V5,-V6) %>%
+      dplyr::distinct() %>%
+      dplyr::mutate(summary = paste0(summary_info, genes)) %>%
+      dplyr::filter(!(summary == "NA, NA, NA, NA")) %>%
+      dplyr::arrange()
+    
+    # Define vectors for Venn Diagram plotting
+    cohort <- as.data.frame(cohort_genes$summary) %>%
+      dplyr::rename(summary = `cohort_genes$summary`)
+    
+    individual_histology <- as.data.frame(histology_genes$summary) %>%
+      dplyr::rename(summary = `histology_genes$summary`)
+    
     
     # Define list for input in `venn` function
     input <-
-      list(cohort_samples = cohort_samples, individual_histology_samples = histology_samples)
+      list(cohort = cohort,
+           individual_histology = individual_histology)
     
-    # Plot Venn Diagram
+    # Display Venn Diagram
     gplots::venn(input)
     
   }
 ```
 
-### Run `plot_sample_seg_counts` on each file
+### Run `plot_amp_del_genes` on each `amp_genes.conf_90.txt` file
 
-```{r}
+```{r warning = FALSE, message = FALSE}
 # Run comparison using LGAT file
-cohort_sample_seg_counts <- file.path(cohort_gistic_dir, "sample_seg_counts.txt")
-lgat_sample_seg_counts <- file.path(lgat_gistic_dir, "sample_seg_counts.txt")
-plot_sample_seg_counts(cohort_sample_seg_counts, lgat_sample_seg_counts)
+cohort_amp_genes <- file.path(cohort_gistic_dir, "amp_genes.conf_90.txt")
+lgat_amp_genes <- file.path(lgat_gistic_dir, "amp_genes.conf_90.txt")
+plot_amp_del_genes(cohort_amp_genes, lgat_amp_genes)
 
 # Run comparison using HGAT file
-hgat_sample_seg_counts <- file.path(hgat_gistic_dir, "sample_seg_counts.txt")
-plot_sample_seg_counts(cohort_sample_seg_counts, hgat_sample_seg_counts)
+hgat_amp_genes <- file.path(hgat_gistic_dir, "amp_genes.conf_90.txt")
+plot_amp_del_genes(cohort_amp_genes, hgat_amp_genes)
 
 # Run comparison using medulloblastoma file
-medulloblastoma_sample_seg_counts <- file.path(medulloblastoma_gistic_dir, "sample_seg_counts.txt")
-plot_sample_seg_counts(cohort_sample_seg_counts, medulloblastoma_sample_seg_counts)
+medulloblastoma_amp_genes <- file.path(medulloblastoma_gistic_dir, "amp_genes.conf_90.txt")
+plot_amp_del_genes(cohort_amp_genes, medulloblastoma_amp_genes)
 ```
+
+### Run `plot_amp_del_genes` on each `del_genes.conf_90.txt` file
+
+```{r warning = FALSE, message = FALSE}
+# Run comparison using LGAT file
+cohort_del_genes <- file.path(cohort_gistic_dir, "del_genes.conf_90.txt")
+lgat_del_genes <- file.path(lgat_gistic_dir, "del_genes.conf_90.txt")
+plot_amp_del_genes(cohort_del_genes, lgat_del_genes)
+
+# Run comparison using HGAT file
+hgat_del_genes <- file.path(hgat_gistic_dir, "del_genes.conf_90.txt")
+plot_amp_del_genes(cohort_del_genes, hgat_del_genes)
+
+# Run comparison using medulloblastoma file
+medulloblastoma_del_genes <- file.path(medulloblastoma_gistic_dir, "del_genes.conf_90.txt")
+plot_amp_del_genes(cohort_del_genes, medulloblastoma_del_genes)
+```
+
+#### The above plots may not be the best visualizations for these particular files. I summarized the data for each row in the data.frames and used this summary info to compare the data.frames. I am not sure this was the best decision here.
+
+#### The following plots are a series of `amp_qplot.png` files generated using GISTIC:
+
+![Entire cohort amp plot](../run-gistic/results/pbta-cnv-consensus-gistic/amp_qplot.png)
+
+![LGAT amp plot](../run-gistic/results/pbta-cnv-consensus-lgat-gistic/amp_qplot.png)
+
+![HGAT amp plot](../run-gistic/results/pbta-cnv-consensus-hgat-gistic/amp_qplot.png)
+
+![Medulloblastoma amp plot](../run-gistic/results/pbta-cnv-consensus-medulloblastoma-gistic/amp_qplot.png)
+
+#### The following plots are a series of `amp_qplot.png` files generated using GISTIC:
+
+![Entire cohort del plot](../run-gistic/results/pbta-cnv-consensus-gistic/del_qplot.png)
+
+![LGAT del plot](../run-gistic/results/pbta-cnv-consensus-lgat-gistic/del_qplot.png)
+
+![HGAT del plot](../run-gistic/results/pbta-cnv-consensus-hgat-gistic/del_qplot.png)
+
+![Medulloblastoma del plot](../run-gistic/results/pbta-cnv-consensus-medulloblastoma-gistic/del_qplot.png)
 
 ## Session Info
 
