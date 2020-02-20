@@ -9,7 +9,7 @@ Then, outliers are calculated based on these thresholds. In addition, for each s
 the 5% of genes with the highest expression are marked, as well as the genes which
 are excluded by the expression and variance filters from step 1.
 
-The final result is a matrix .rds file of genes by samples where, for each sample,
+The final result is a matrix tsv file of genes by samples where, for each sample,
 each gene is labeled with a 4-character string formatted as follows:
 
 "(P|F) (U|D|N) (T|L) (R|E|V)"
@@ -27,7 +27,6 @@ T: in Top 5%, L: in Lower 95%
 3. Is this gene dropped from the analysis due to expression or variance filters
 (as implemented in step 1)?
 R: Retained, E: dropped by Expression filter, V: dropped by Variance filter
-(TODO: E/V distinction is not yet implemented -- all dropped genes are labeled E.)
 
 Modified Tukey Method
 --------------------
@@ -120,9 +119,7 @@ def single_sample_outliers(sample_expression, expression_thresholds):
     of thresholds, calculate the up and down outliers and genes in the top 5%
     of sample's expression. Return a matrix of genes vs samples, with each gene
     marked with, in order, QC status(Pass/Fail), outlier status (Up/Down/Not outlier),
-    and top5% status(Top5/Lower95); additionally mark all genes as Retained by filter, 
-    to be modified by parent."""
-
+    and top5% status(Top5/Lower95)."""
     down_outliers = sample_expression[sample_expression < expression_thresholds["low"]].index
     up_outliers = sample_expression[sample_expression > expression_thresholds["high"]].index
 
@@ -131,8 +128,8 @@ def single_sample_outliers(sample_expression, expression_thresholds):
     qc_fail = (top5_value <=0) # If 0 is in the top5%, this sample is really underexpressed
     top5_genes = sample_expression[sample_expression >= top5_value].keys()
 
-    # Generate result code. Start with default Pass/Not outlier/Lower95/Retained.
-    result = pd.Series("PNLR", index = sample_expression.index)
+    # Generate result code. Start with default Pass/Not outlier/Lower95.
+    result = pd.Series("PNL", index = sample_expression.index)
     result = result.apply(list)# Split into a list to allow modification by index
     if qc_fail:
         result.apply(update_at_index(0, "F")) # Mark every gene as QC fail for this sample
@@ -150,15 +147,15 @@ def calculate_all_outliers(samples,
     """For each sample calculate up and down outlier genes based on the thresholds.
     Then, apply expression & variance filters to mark 'noise' genes, and save as result file."""
     print_v = print if verbose else lambda *a, **k: None
-    print_v("Calculating outliers for all samples")
+    print_v("Calculating outliers for all samples.")
 
     outliers = samples.apply(single_sample_outliers, args=[thresholds], axis=0)
 
     # Apply the expression & variance filters that we calculated in step 1 to mark filtered
-    # genes as dropped due to Expression or Variance; by default they're already marked Retained.
-    filtered_genelist = utils.read_rds(filtered_genelist_path)
-    dropped_genes = pd.Index(set(outliers.index) - set(filtered_genelist["gene_id"]))
-    outliers.loc[dropped_genes].applymap(update_at_index(3, "E"))
+    # genes as dropped due to Expression or Variance, or as Retained.
+    # gene_filter_status is a pd.Series with values eg ["E"]
+    gene_filter_status = utils.read_feather(filtered_genelist_path)["status"].apply(list)
+    outliers = outliers.add(gene_filter_status, axis="index")
     outliers = outliers.applymap("".join) # Concatenate all values to string
 
     print_v("Writing outlier results to {}".format(outliers_path))
@@ -194,16 +191,16 @@ def main():
     print_v = print if args.verbose else lambda *a, **k: None
 
     # Input paths
-    normalized_samples_path = os.path.join(args.scratch, "{}log2-normalized.rds".format(args.prefix))
+    normalized_samples_path = os.path.join(args.scratch, "{}log2-normalized.feather".format(args.prefix))
     filtered_genelist_path = os.path.join(args.scratch,
-                                          "{}filtered_genes_to_keep.rds".format(args.prefix))
+                                          "{}gene-filters.feather".format(args.prefix))
     # Output paths
     outliers_path = os.path.join(args.results, "{}gene_expression_outliers.tsv.gz".format(args.prefix))
 
     os.makedirs(args.results, exist_ok=True) # make results dir if not already present
 
     # Load normalized samples from Step 01
-    normalized_samples = utils.read_rds(normalized_samples_path)
+    normalized_samples = utils.read_feather(normalized_samples_path)
 
     # Generate thresholds and outliers
     thresholds = generate_all_thresholds(normalized_samples,

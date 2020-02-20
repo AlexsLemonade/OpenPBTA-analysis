@@ -28,7 +28,20 @@ def write_rds(df, filepath):
     with open(filepath, "rb"):
         pass
 
+def read_tsv(path):
+    """Wrapper for pandas read_csv with standardized arguments."""
+    return pd.read_csv(path, sep="\t", index_col=0)
+
 def write_tsv(df, path):
     """Wrapper for pandas to_csv with standardized arguments.
        Generates a tsv.gz file."""
     df.to_csv(path, sep="\t", compression="gzip")
+
+def read_feather(path):
+    """Wrapper for pandas read_feather, retrieving original index."""
+    df = pd.read_feather(path)
+    return df.set_index(df.columns[0], drop=True)
+
+def write_feather(df, path):
+    """Wrapper for pandas to_feather, saving original index as column."""
+    df.reset_index().to_feather(path)

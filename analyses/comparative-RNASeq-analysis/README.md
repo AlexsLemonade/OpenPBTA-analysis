@@ -17,33 +17,50 @@ The comparative-RNAseq-analysis module implements the outlier analysis workflow 
 The input file must be an RNA-Seq TPM gene expression matrix in the [RDS](https://stat.ethz.ch/R-manual/R-devel/library/base/html/readRDS.html) file format. Currently available matrices that meet this format are `pbta-gene-expression-rsem-tpm.polya.rds` and `pbta-gene-expression-rsem-tpm.stranded.rds`.
 
 Command lines follow, using as example the stranded (ribodeplete) dataset.
-Available flags:
-  - `--verbose` toggles verbose output
-  - `--output-prefix MyDataset` prepends MyDataset to output filenames to identify runs. Subsequent steps in the same run must use the same prefix.
-  - `--scratch ../../scratch` provides path to scratch dir where intermediate files shared between steps can be read and written.
-  - `--results ./results` provides path to final results dir.
 
 ### 01 - Correlation Matrix
+Filters input samples to only tumor samples which are MEND QC pass using the histology spreadsheet
+and qc manifest and results.
 Generates the correlation matrix and filtered gene list.
 
 ```
 ./scripts/run_in_ci.sh \
   python3 analyses/comparative-RNASeq-analysis/01-correlation-matrix.py \
     ../../data/pbta-gene-expression-rsem-tpm.stranded.rds \
-    --output-prefix rsem-tpm-stranded- \
+    --clinical-path ../../data/pbta-histologies.tsv \
+    --qc-manifest-path ../../data/pbta-mend-qc-manifest.tsv \
+    --qc-results-path ../../data/pbta-mend-qc-results.tar.gz \
+    --prefix rsem-tpm-stranded- \
     --verbose
 ```
 
-Input file:
+Required flags:
+  - First argument must be the path to the input expression .Rds file
+  - `--scratch ../../scratch` provides path to scratch dir where intermediate files shared between steps can be read and written.
+
+Optional flags:
+  - `--verbose` enables verbose output.
+  - `--prefix MyDataset` prepends MyDataset to output filenames to identify runs. Subsequent steps in the same run must use the same prefix.
+  - `--nofilter` causes the sample filtering step to be skipped.
+If the sample filtering step is *not* skipped, these flags are required:
+  - `--clinical-path` path to clinical tsv file with tumor status columns, eg `pbta-histologies.tsv`.
+  - `--qc-manifest-path` path to the qc manifest mapping sample IDs to filenames, eg `pbta-mend-qc-manifest.tsv`.
+  - `--qc-results-path` path to the tarball of  qc results files, eg `pbta-mend-qc-results.tar.gz`.
+
+
+Input files:
 ```
 data/pbta-gene-expression-rsem-tpm.stranded.rds
+data/pbta-histologies.tsv
+data/pbta-mend-qc-manifest.tsv
+data/pbta-mend-qc-results.tar.gz
 ```
 
 Output files:
 ```
-scratch/rsem-tpm-stranded-all_by_all_correlations.rds
-scratch/rsem-tpm-stranded-filtered_genes_to_keep.rds
-scratch/rsem-tpm-stranded-log2-normalized.rds
+scratch/rsem-tpm-stranded-all_by_all_correlations.feather
+scratch/rsem-tpm-stranded-gene-filters.feather
+scratch/rsem-tpm-stranded-filtered-log2-normalized.feather
 ```
 
 ### 02 -  Thresholds and Outliers
@@ -53,17 +70,23 @@ Generates outlier thresholds and matrix of outlier genes.
 ./scripts/run_in_ci.sh \
   python3 analyses/comparative-RNASeq-analysis/02-thresholds-and-outliers.py \
     --prefix rsem-tpm-stranded- \
+    --results results \
     --verbose
 ```
 
-Additional flags for this step:
+Required flags:
+  - `--scratch ../../scratch` provides path to scratch dir where intermediate files shared between steps can be read and written.
+ - `--results ./results` provides path to final results dir.
+
+Optional flags:
+  - `--verbose` enables verbose output
+  - `--prefix MyDataset` prepends MyDataset to input and output filenames to identify runs. Subsequent steps in the same run must use the same prefix.
   - `--iqr-multiplier 1.5` sets the interquartile range multiplier for the Tukey outlier calculation
 
-
-Input files (detected via command-line prefix provided):
+Input files (detected via the provided prefix):
 ```
-scratch/rsem-tpm-stranded-log2-normalized.rds
-scratch/rsem-tpm-stranded-filtered_genes_to_keep.rds
+scratch/rsem-tpm-stranded-filtered-log2-normalized.feather
+scratch/rsem-tpm-stranded-gene-filters.feather
 ```
 
 Output files:
@@ -72,9 +95,14 @@ results/rsem-tpm-stranded-gene_expression_outliers.tsv.gz
 ```
 
 ## Limitations and requirements
-Because the per-sample results of this analysis are dependent on the entire dataset, all samples in the dataset must meet certain standards for the outliers to be meaningful. *(Currently, these standards are not being enforced.)*
-  - All samples must pass a quality control check.
-  - Dataset must contain only tumor samples; no normal, cell line, etc data.
+Because the per-sample results of this analysis are dependent on the entire dataset, all samples in the dataset must meet certain standards for the outliers to be meaningful:
+  - All samples must pass the MEND quality control check, which confirms that the sample has at least 10 million Mapped Exonic Non-Duplicate reads.
+  - Dataset must contain only tumor samples; no normal, cell line, etc data. The filter applied via the `pbta-histologies.tsv` file to enforce this is:
+```
+sample_type == Tumor
+composition == Solid Tissue
+experimental_strategy == RNA-Seq
+```
   - All samples in the dataset must have the same library preparation for their gene expression to be comparable. (Eg, polyA selection, ribodepletion, or hybrid capture).
 
 ### Software dependencies
@@ -86,9 +114,10 @@ pandas (0.25.3)
 scipy (1.3.2)
 scikit-learn (0.19.1)
 pyreadr (0.2.1)
+pyarrow (0.16.0)
 ```
 In addition, a `utils` module is included for certain shared functions.
 
 ## Future updates
-- The next iteration of this module will use the `pbta-histologies.tsv` file to filter the input datasets to only tumor samples. It will also filter samples to those which meet a to-be-described quality control standard.
-
+- Trends in outlier results
+- PolyA vs RiboDeplete classifier
