@@ -19,6 +19,20 @@ import scipy.stats
 import sklearn.metrics.pairwise as sklp
 import utils
 
+def extract_sample_qc_status(qc_file_handle, file_label):
+    """Parses a MEND QC results file handle to "PASS" or "FAIL".
+    QC results parsing to something else (or failing to parse) indicate a major
+    failure in the QC script and should interrupt analysis.
+    The qc_file_handle is as provided by TarFile.extractfile, ie, in raw bytes"""
+    # Expected File format (example. Has PASS\n or FAIL\n at end of second line
+    # input	uniqMappedNonDupeReadCount	estExonicUniqMappedNonDupeReadCount	qc\n
+    # sample1.readDist.txt	22333444.5	10999888.765	PASS\n
+    status = qc_file_handle.readlines()[1][-5:-1].decode("utf-8")
+    if not status in ["PASS", "FAIL"]:
+        print("ERROR: MEND QC file {} parsed status as '{}' - expected PASS or FAIL!".format(file_label, status))
+        raise ValueError
+    return status
+
 def get_qc_status(mend_results_path, mend_manifest_path):
     """Takes: mend results tgz containing bam_umend_qc.tsv files, and
     manifest containing mapping from filename to sample id.
@@ -26,9 +40,12 @@ def get_qc_status(mend_results_path, mend_manifest_path):
     mend_tgz = tarfile.open(mend_results_path)
     qc_files = (i for i in mend_tgz.getmembers() if i.name.endswith("bam_umend_qc.tsv"))
     # Dictionary of filename (UUID.bam_umend_qc.tsv) to PASS or FAIL string
-    filename_map = { i.name : mend_tgz.extractfile(i).readlines()[1][-5:-1].decode("utf-8") for i in qc_files }
+    filename_map = { i.name : extract_sample_qc_status(mend_tgz.extractfile(i), i.name) for i in qc_files }
     # Find sample ID entries in manifest and map them via filename.
     manifest = utils.read_tsv(mend_manifest_path)
+
+    # If a QC result file is not listed in the manifest, this throws KeyError
+    # This would indicate major failure in the QC script and should interrupt analysis.
     return { manifest.loc[k]["Kids.First.Biospecimen.ID"] : v for k, v in filename_map.items() }
 
 def filter_samples(input_matrix,
@@ -53,11 +70,19 @@ def filter_samples(input_matrix,
         return raw_samples
 
     # Filter to only samples with a MEND QC status of PASS
+    # Samples not mentioned in the qc_status (ie, no qc result) will be dropped by the filter
     qc_status = get_qc_status(mend_results_path, mend_manifest_path)
     qc_pass_ids= [k for k, v in qc_status.items() if v == "PASS"]
     qc_pass_samples = raw_samples[set(raw_samples.columns).intersection(qc_pass_ids)]
     print_v("QC filter: dropped {} samples that were not MEND QC PASS.".format(
             len(raw_samples.columns) - len(qc_pass_samples.columns)))
+
+    # Call out any samples that didn't have a QC result at all but continue analysis
+    samples_without_qc_results = set(raw_samples.columns) - set(qc_status.keys())
+    if len(samples_without_qc_results):
+        print("WARNING: {} samples were dropped due to missing MEND QC results. Sample IDs: {}".format(
+              len(samples_without_qc_results),
+              ", ".join(samples_without_qc_results)))
 
     # Further filter to only tumor RNA-Seq samples
     clinical = utils.read_tsv(clinical_path)
