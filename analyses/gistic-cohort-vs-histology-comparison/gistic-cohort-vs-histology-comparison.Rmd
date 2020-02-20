@@ -18,7 +18,7 @@ This notebook is intended to be run via the command line from the top directory
 of the repository as follows:
 
 ```
-Rscript -e "rmarkdown::render('analyses/gistic-cohort-vs-histology-comparison/gistic-histology-vs-cohort.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('analyses/gistic-cohort-vs-histology-comparison/gistic-cohort-vs-histology-comparison.Rmd', clean = TRUE)"
 ```
 
 ## Set up

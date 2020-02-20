@@ -167,7 +167,9 @@ jobs:
           name: Telomerase activity
           command: ./scripts/run_in_ci.sh bash analyses/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
       
-
+      - run:
+          name: GISTIC Results Comparison - Entire Cohort vs Histology
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/gistic-cohort-vs-histology-comparison/gistic-cohort-vs-histology-comparison.Rmd', clean = TRUE)"
 
          ################################
          #### Add your analysis here ####
