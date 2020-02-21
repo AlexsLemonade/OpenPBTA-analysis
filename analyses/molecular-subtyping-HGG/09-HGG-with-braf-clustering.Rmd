@@ -178,13 +178,7 @@ generate_multipanel_plot(
   output_filename = "HGG_stranded.pdf"
 )
 
-# Add this PNG for display in the README
-generate_multipanel_plot(
-  plot_list = plot_list,
-  plot_title = "HGG Stranded Clustering",
-  output_directory = plots_dir,
-  output_filename = "HGG_stranded.png"
-)
+ggsave(file.path(plots_dir, "HGG_stranded.png"), plot = last_plot())
 ```
 
 In both aligned scores data frames (t-SNE and UMAP), the `Kids_First_Biospecimen_ID` of the sample with no histone mutation but with _BRAF V600E_ mutation, that has been identified to cluster with LGAT samples, is **"BS_H1XPVS9A"**.
