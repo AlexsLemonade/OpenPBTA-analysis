@@ -198,141 +198,147 @@ generate_multipanel_plot(plot_list = medulloblastoma_plot_list,
 
 ### Custom function
 ```{r}
-plot_amp_del_genes <-
-  function(cohort_genes_file,
-           histology_genes_file) {
+get_genes_vector <- function(genes_file) {
+  # Given the GISTIC result `amp_genes_conf_90.txt` or `del_genes_conf_90.txt`
+  # files for the entire cohort or a specific histology, get the vector of
+  # genes for each amplification/deletion.
+  #
+  # Args:
+  #  genes_file: file path to the `amp_genes.conf_90.txt` or
+  #              `del_genes.conf_90.txt` file
+  #
+  # Return:
+  #  genes_vector: a vector with all the genes included in the file
+  
+  genes_ragged_df <- data.table::fread(genes_file,
+                                       data.table = FALSE)
+  genes_list <- as.list(genes_ragged_df)
+  genes_list <- genes_list %>%
+    # This removes any element from the list that is all NA -- most likely a
+    # result of reading in a ragged array
+    purrr::discard(~ all(is.na(.))) %>%
+    # This removes the element of the list that is essentially the "header" for
+    # the file
+    purrr::discard(~ any(str_detect(., "cytoband|q value"))) %>% 
+    # Remove any broad peaks with q-value > 0.05
+    purrr::discard(~ .[3] > 0.05) %>%
+    # Remove everything before and including the wide peak boundaries for each
+    # remaining element of the list
+    purrr::modify(~ .[-c(1:(str_which(., "chr")))]) %>%
+    # Remove blanks -- result of ragged data.frame
+    purrr::modify(~ .[. != ""])
+  # This will give us the vector of all the genes that were included
+  genes_vector <- unique(unname(unlist(genes_list)))
+}
+
+
+plot_venn_diagram <-
+  function(cohort_genes_vector,
+           histology_genes_vector,
+           histology_label) {
     # Given the GISTIC result `amp_genes_conf_90.txt` or `del_genes_conf_90.txt`
     # files for the entire cohort and a specific histology, plot a Venn Diagram
     # showing the counts of rows that overlap/do not overlap between the two
     # files.
     #
     # Args:
-    #   cohort_genes_file: the file path to the amp/del genes file for
+    #   cohort_genes_vector: a vector of all the genes in the amp/del file for
     #                           the entire cohort
-    #   histology_genes_file: the file path to the amp/del genes file
+    #   histology_genes_vector: a vector of all the genes in the amp/del file
     #                              for an individual histology
+    #   histology_label: string indicating the individual histology, for the
+    #                    purpose of labeling the Venn Diagram plots
     #
     # Returns:
     #  This function displays a Venn Diagram that represents the data that
     #  overlaps/does not overlap between the two given files
     
-    # Read in files
-    cohort_genes <-
-      data.table::fread(cohort_genes_file,
-                        data.table = FALSE)
-    
-    histology_genes <-
-      data.table::fread(histology_genes_file,
-                        data.table = FALSE)
-    
-    # Wrnagle data in cohort file for plotting
-    cohort_genes <- t(cohort_genes)
-    
-    cohort_genes <- cohort_genes[-1,] %>%
-      as.data.frame() %>%
-      dplyr::mutate(summary_info = paste0(V1, ", ", V2, ", ", V3, ", ", V4)) %>%
-      dplyr::select(-c("V1", "V2", "V3", "V4")) %>%
-      dplyr::select(summary_info, dplyr::everything()) %>%
-      tidyr::gather(V5, V6,-summary_info) %>%
-      dplyr::group_by(summary_info) %>%
-      dplyr::mutate(genes = paste0(sort(unique(V6)), collapse = ", ")) %>%
-      dplyr::select(-V5,-V6) %>%
-      dplyr::distinct() %>%
-      dplyr::mutate(summary = paste0(summary_info, genes)) %>%
-      dplyr::filter(!(summary == "NA, NA, NA, NA")) %>%
-      dplyr::arrange()
-    
-    # Wrangle data in individual histology file for plotting
-    histology_genes <- t(histology_genes)
-    
-    histology_genes <- histology_genes[-1,] %>%
-      as.data.frame() %>%
-      dplyr::mutate(summary_info = paste0(V1, ", ", V2, ", ", V3, ", ", V4)) %>%
-      dplyr::select(-c("V1", "V2", "V3", "V4")) %>%
-      dplyr::select(summary_info, dplyr::everything()) %>%
-      tidyr::gather(V5, V6,-summary_info) %>%
-      dplyr::group_by(summary_info) %>%
-      dplyr::mutate(genes = paste0(sort(unique(V6)), collapse = ", ")) %>%
-      dplyr::select(-V5,-V6) %>%
-      dplyr::distinct() %>%
-      dplyr::mutate(summary = paste0(summary_info, genes)) %>%
-      dplyr::filter(!(summary == "NA, NA, NA, NA")) %>%
-      dplyr::arrange()
-    
-    # Define vectors for Venn Diagram plotting
-    cohort <- as.data.frame(cohort_genes$summary) %>%
-      dplyr::rename(summary = `cohort_genes$summary`)
-    
-    individual_histology <- as.data.frame(histology_genes$summary) %>%
-      dplyr::rename(summary = `histology_genes$summary`)
-    
-    
     # Define list for input in `venn` function
     input <-
-      list(cohort = cohort,
-           individual_histology = individual_histology)
+      list(cohort_genes_vector, histology_genes_vector)
+    
+    names(input) <- c("cohort_genes", histology_label)
     
     # Display Venn Diagram
     gplots::venn(input)
     
   }
+
+plot_genes_venn_diagram_wrapper <- function(cohort_genes_file,
+                                            lgat_genes_file,
+                                            hgat_genes_file,
+                                            medulloblastoma_genes_file) {
+  # Given the GISTIC result `amp_genes_conf_90.txt` or `del_genes_conf_90.txt`
+  # files for the entire cohort and the three individual histologies, run the
+  # `get_genes_vector` and `plot_venn_diagram` functions to plot the overlaps
+  # between the results for the entire cohort and the each of the individual
+  # histologies.
+  #
+  # Args:
+  #    cohort_genes_file: file path to the `amp_genes.conf_90.txt` or
+  #                       `del_genes.conf_90.txt` file for the entire
+  #                       cohort
+  #    lgat_genes_file: file path to the `amp_genes.conf_90.txt` or
+  #                     `del_genes.conf_90.txt` file for the LGAT
+  #                     histology
+  #    hgat_genes_file: file path to the `amp_genes.conf_90.txt` or
+  #                     `del_genes.conf_90.txt` file for the HGAT
+  #                     histology
+  #    medulloblastoma_genes_file: file path to the `amp_genes.conf_90.txt` or
+  #                                `del_genes.conf_90.txt` file for the
+  #                                 medulloblastoma histology
+  
+  # Run `get_genes_vector` function on each of the files
+  cohort_genes_vector <- get_genes_vector(cohort_genes_file)
+  lgat_genes_vector <- get_genes_vector(lgat_genes_file)
+  hgat_genes_vector <- get_genes_vector(hgat_genes_file)
+  medulloblastoma_genes_vector <- get_genes_vector(medulloblastoma_genes_file)
+  
+  # Run `plot_venn_diagram` for each comparison case
+  lgat_venn <- plot_venn_diagram(cohort_genes_vector, lgat_genes_vector, "lgat_genes")
+  hgat_venn <- plot_venn_diagram(cohort_genes_vector, hgat_genes_vector, "hgat_genes")
+  medulloblastoma_venn <- plot_venn_diagram(cohort_genes_vector, medulloblastoma_genes_vector, "medulloblastoma_genes")
+  
+  # Save plots to list
+  venn_plot_list <- list(lgat_venn, hgat_venn, medulloblastoma_venn)
+  
+  # Return the plot list
+  return(venn_plot_list)
+  
+}
 ```
 
-### Run `plot_amp_del_genes` on each `amp_genes.conf_90.txt` file
+### Run `plot_genes_venn_diagram_wrapper` on `amp_genes.conf_90.txt` files
 
 ```{r warning = FALSE, message = FALSE}
-# Run comparison using LGAT file
+# Define GISTIC amp genes file paths
 cohort_amp_genes <- file.path(cohort_gistic_dir, "amp_genes.conf_90.txt")
 lgat_amp_genes <- file.path(lgat_gistic_dir, "amp_genes.conf_90.txt")
-plot_amp_del_genes(cohort_amp_genes, lgat_amp_genes)
-
-# Run comparison using HGAT file
 hgat_amp_genes <- file.path(hgat_gistic_dir, "amp_genes.conf_90.txt")
-plot_amp_del_genes(cohort_amp_genes, hgat_amp_genes)
-
-# Run comparison using medulloblastoma file
 medulloblastoma_amp_genes <- file.path(medulloblastoma_gistic_dir, "amp_genes.conf_90.txt")
-plot_amp_del_genes(cohort_amp_genes, medulloblastoma_amp_genes)
+
+# Run `plot_genes_venn_diagram_wrapper` function on GISTIC amp genes files
+amp_plot_list <- plot_genes_venn_diagram_wrapper(cohort_amp_genes,
+                                                 lgat_amp_genes,
+                                                 hgat_amp_genes,
+                                                 medulloblastoma_amp_genes)
 ```
 
-### Run `plot_amp_del_genes` on each `del_genes.conf_90.txt` file
+### Run `plot_genes_venn_diagram_wrapper` on `del_genes.conf_90.txt` files
 
 ```{r warning = FALSE, message = FALSE}
-# Run comparison using LGAT file
+# Define GISTIC del genes file paths
 cohort_del_genes <- file.path(cohort_gistic_dir, "del_genes.conf_90.txt")
 lgat_del_genes <- file.path(lgat_gistic_dir, "del_genes.conf_90.txt")
-plot_amp_del_genes(cohort_del_genes, lgat_del_genes)
-
-# Run comparison using HGAT file
 hgat_del_genes <- file.path(hgat_gistic_dir, "del_genes.conf_90.txt")
-plot_amp_del_genes(cohort_del_genes, hgat_del_genes)
-
-# Run comparison using medulloblastoma file
 medulloblastoma_del_genes <- file.path(medulloblastoma_gistic_dir, "del_genes.conf_90.txt")
-plot_amp_del_genes(cohort_del_genes, medulloblastoma_del_genes)
+
+# Run `plot_genes_venn_diagram_wrapper` function on GISTIC del genes files
+del_plot_list <- plot_genes_venn_diagram_wrapper(cohort_del_genes,
+                                                 lgat_del_genes,
+                                                 hgat_del_genes,
+                                                 medulloblastoma_del_genes)
 ```
-
-#### The above plots may not be the best visualizations for these particular files. I summarized the data for each row in the data.frames and used this summary info to compare the data.frames. I am not sure this was the best decision here.
-
-#### The following plots are a series of `amp_qplot.png` files generated using GISTIC:
-
-![Entire cohort amp plot](../run-gistic/results/pbta-cnv-consensus-gistic/amp_qplot.png)
-
-![LGAT amp plot](../run-gistic/results/pbta-cnv-consensus-lgat-gistic/amp_qplot.png)
-
-![HGAT amp plot](../run-gistic/results/pbta-cnv-consensus-hgat-gistic/amp_qplot.png)
-
-![Medulloblastoma amp plot](../run-gistic/results/pbta-cnv-consensus-medulloblastoma-gistic/amp_qplot.png)
-
-#### The following plots are a series of `amp_qplot.png` files generated using GISTIC:
-
-![Entire cohort del plot](../run-gistic/results/pbta-cnv-consensus-gistic/del_qplot.png)
-
-![LGAT del plot](../run-gistic/results/pbta-cnv-consensus-lgat-gistic/del_qplot.png)
-
-![HGAT del plot](../run-gistic/results/pbta-cnv-consensus-hgat-gistic/del_qplot.png)
-
-![Medulloblastoma del plot](../run-gistic/results/pbta-cnv-consensus-medulloblastoma-gistic/del_qplot.png)
 
 ## Session Info
 
