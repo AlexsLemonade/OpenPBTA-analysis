@@ -8,9 +8,8 @@ author: Chante Bethell for ALSF CCDL
 date: 2020
 ---
 
-This notebook will look at HGAT samples without histone mutations that have `BRAF V600E` mutations.
-
-The purpose is to identify samples that may need to be reclassified as LGAT instead of HGAT using t-SNE and UMAP clustering.
+This notebook will look at HGAT samples without histone mutations that have `BRAF V600E` mutations using t-SNE and UMAP clustering from `transcriptomic-dimension-reduction`.
+The purpose is to identify samples that are candidates for recategorization.
 
 ## Usage
 
@@ -181,19 +180,8 @@ generate_multipanel_plot(
 ggsave(file.path(plots_dir, "HGG_stranded.png"), plot = last_plot())
 ```
 
-In both aligned scores data frames (t-SNE and UMAP), the `Kids_First_Biospecimen_ID` of the sample with no histone mutation but with _BRAF V600E_ mutation, that has been identified to cluster with LGAT samples, is **"BS_H1XPVS9A"**.
-[Per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/435#discussion_r373808742), we should reclassify this sample as LGAT.
-
-```{r}
-molecular_subtype_df <- molecular_subtype_df %>%
-  mutate(molecular_subtype = case_when(
-    Kids_First_Biospecimen_ID_RNA == "BS_H1XPVS9A" ~ "LGAT, BRAF V600E",
-    TRUE ~ molecular_subtype
-  ))
-
-molecular_subtype_df %>%
-  write_tsv(molecular_subtype_file)
-```
+In both aligned scores data frames (t-SNE and UMAP), the `Kids_First_Biospecimen_ID` of the sample with no histone mutation but with _BRAF V600E_ mutation, that has been identified to cluster with LGAT samples, is **`BS_H1XPVS9A`**.
+`BS_H1XPVS9A` is a candidate for reclassification.
 
 ## Session Info
 
