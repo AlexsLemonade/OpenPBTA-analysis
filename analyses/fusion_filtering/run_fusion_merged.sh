@@ -26,6 +26,7 @@ references_directory="analyses/fusion_filtering/references/"
 normal_expression_file="$references_directory/Brain_FPKM_hg38_matrix.txt.zip"
 
 # data release files to use for recurrent fusion/fused genes detection
+# TODO: once the data release gets updated to v15+, use the putative oncogenic fusion file included in the data download
 putative_oncogenic_fusion="analyses/fusion_filtering/results/pbta-fusion-putative-oncogenic.tsv"
 histologies_file="data/pbta-histologies.tsv"
 independent_samples_file="data/independent-specimens.wgswxs.primary-plus.tsv"
