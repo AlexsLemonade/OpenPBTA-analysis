@@ -26,7 +26,7 @@ references_directory="analyses/fusion_filtering/references/"
 normal_expression_file="$references_directory/Brain_FPKM_hg38_matrix.txt.zip"
 
 # data release files to use for recurrent fusion/fused genes detection
-putative_oncogenic_fusion="data/pbta-fusion-putative-oncogenic.tsv"
+putative_oncogenic_fusion="analyses/fusion_filtering/results/pbta-fusion-putative-oncogenic.tsv"
 histologies_file="data/pbta-histologies.tsv"
 independent_samples_file="data/independent-specimens.wgswxs.primary-plus.tsv"
 
@@ -51,7 +51,7 @@ Rscript analyses/fusion_filtering/02-fusion-filtering.R --standardFusionFiles $s
                                                         --outputfile scratch/standardFusionPolyaExp \
                                                         --readthroughFilter
 # Run Fusion general filtering for stranded
-Rscript analyses/fusion_filtering/02-fusion-filtering.R --standardFusionFiles $standard_arriba_file,$stranded_starfusion_file \
+Rscript analyses/fusion_filtering/02-fusion-filtering.R --standardFusionFiles $standard_arriba_file,$standard_starfusion_file \
                                                         --expressionMatrix $stranded_expression_file \
                                                         --artifactFilter $artifact_filter \
                                                         --readingFrameFilter $reading_frame_filter \
