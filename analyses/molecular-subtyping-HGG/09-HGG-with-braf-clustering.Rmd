@@ -80,17 +80,20 @@ source(
 # Read in expression files. Note: only the relevant stranded expression score files
 # are used here as the polyA expression score files do not retain information
 # regarding low grade glioma samples.
-stranded_tsne_aligned_scores <- readr::read_tsv(
+stranded_tsne_aligned_scores <- read_tsv(
   file.path(data_dir,
             "rsem_stranded_log_tsne_scores_aligned.tsv"),
   col_types = cols(molecular_subtype = col_character())
 )
 
-stranded_umap_aligned_scores <- readr::read_tsv(
+stranded_umap_aligned_scores <- read_tsv(
   file.path(data_dir,
             "rsem_stranded_log_umap_scores_aligned.tsv"),
   col_types = cols(molecular_subtype = col_character())
 )
+
+molecular_subtype_file <- file.path("results", "HGG_molecular_subtype.tsv")
+molecular_subtype_df <- read_tsv(molecular_subtype_file)
 ```
 
 ## Wrangle Data for Plotting
@@ -203,15 +206,28 @@ plot_dimension_reduction(
 # information to isolate this sample.
 
 stranded_tsne_aligned_scores %>%
-  filter(tumor_descriptor == "Initial CNS Tumor", subtype_class == "HGAT_NO_HISTONE_BRAF") %>%
+  filter(tumor_descriptor == "Initial CNS Tumor", 
+         subtype_class == "HGAT_NO_HISTONE_BRAF") %>%
   pull("Kids_First_Biospecimen_ID")
 
 stranded_umap_aligned_scores %>%
-  filter(tumor_descriptor == "Initial CNS Tumor", subtype_class == "HGAT_NO_HISTONE_BRAF") %>%
+  filter(tumor_descriptor == "Initial CNS Tumor", 
+         subtype_class == "HGAT_NO_HISTONE_BRAF") %>%
   pull("Kids_First_Biospecimen_ID")
 ```
 In both aligned scores data frames (t-SNE and UMAP), the `Kids_First_Biospecimen_ID` of the sample with no histone mutation but with _BRAF V600E_ mutation, that has been identified to cluster with LGAT samples, is **"BS_H1XPVS9A"**.
 [Per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/435#discussion_r373808742), we should reclassify this sample as LGAT.
+
+```{r}
+molecular_subtype_df <- molecular_subtype_df %>%
+  mutate(molecular_subtype = case_when(
+    Kids_First_Biospecimen_ID_RNA == "BS_H1XPVS9A" ~ "LGAT, BRAF V600E",
+    TRUE ~ molecular_subtype
+  ))
+
+molecular_subtype_df %>%
+  write_tsv(molecular_subtype_file)
+```
 
 ## Session Info
 
