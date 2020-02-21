@@ -115,12 +115,12 @@ overlap <- GenomicRanges::findOverlaps(
 # Only keep those in the BED regions that overlap the `wxs_bed_granges`
 padded_lancet <- lancet[unique(overlap@from), ]
 
-lancet_combo <- dplyr::bind_rows(list(padded = padded_lancet, 
-                                      unpadded = unpadded_lancet, 
+lancet_combo <- dplyr::bind_rows(list(wxs_padded = padded_lancet, 
+                                      wxs_unpadded = unpadded_lancet, 
                                       wgs = lancet_wgs), .id = "pad")
 
 ggplot2::ggplot(lancet_combo, ggplot2::aes(x = pad, y = VAF, fill = pad)) + 
   ggplot2::geom_violin() + 
   ggplot2::theme_classic() + 
-  ggplot2::ggtitle("Lancet VAF WXS samples only")
+  ggplot2::ggtitle("Lancet VAF samples only")
 ```
