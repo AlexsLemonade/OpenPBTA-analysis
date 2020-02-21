@@ -52,15 +52,17 @@ source(file.path("..",
                  "transcriptomic-dimension-reduction",
                  "util",
                  "generate-multipanel-plot-functions.R"))
-```
 
-## Compare "scores.gistic" files
-
-### Custom function
-
-```{r}
 # Code adapted from `analyses/cnv-chrom-plot/gistic_plot.Rmd`
 plot_gistic_scores <- function(gistic_scores_file) {
+  # Given the file path to a `scores.gistic` file, plot the gistic scores.
+  #
+  # Args:
+  #   gistic_scores_file: file path to `scores.gistic` file
+  #
+  # Return:
+  #    A ggbio plot of the given gistic scores
+  
   # Read in and format gistic scores data
   gistic_scores <- data.table::fread(gistic_scores_file,
                                      data.table = FALSE) %>%
@@ -109,95 +111,7 @@ plot_gistic_scores <- function(gistic_scores_file) {
   return(gistic_plot@ggplot)
   
 }
-```
 
-### Unzip GISTIC results folders
-
-```{r}
-# Unzip and set up GISTIC results folders and files.
-cohort_gistic_dir <- file.path(data_dir, "pbta-cnv-consensus-gistic")
-cohort_gistic_zip <- file.path(data_dir, "pbta-cnv-consensus-gistic.zip")
-
-if (!dir.exists(cohort_gistic_dir)) {
-  unzip(cohort_gistic_zip, 
-        exdir = data_dir)
-}
-
-lgat_gistic_dir <- file.path(data_dir, "pbta-cnv-consensus-lgat-gistic")
-lgat_gistic_zip <- file.path(data_dir, "pbta-cnv-consensus-lgat-gistic.zip")
-
-if (!dir.exists(lgat_gistic_dir)) {
-  unzip(lgat_gistic_zip, 
-        exdir = data_dir)
-}
-
-hgat_gistic_dir <- file.path(data_dir, "pbta-cnv-consensus-hgat-gistic")
-hgat_gistic_zip <- file.path(data_dir, "pbta-cnv-consensus-hgat-gistic.zip")
-
-if (!dir.exists(hgat_gistic_dir)) {
-  unzip(hgat_gistic_zip, 
-        exdir = data_dir)
-}
-
-medulloblastoma_gistic_dir <- file.path(data_dir, "pbta-cnv-consensus-medulloblastoma-gistic")
-medulloblastoma_gistic_zip <- file.path(data_dir, "pbta-cnv-consensus-medulloblastoma-gistic.zip")
-
-if (!dir.exists(medulloblastoma_gistic_dir)) {
-  unzip(medulloblastoma_gistic_zip, 
-        exdir = data_dir)
-}
-
-```
-
-### Run `plot_gistic_scores` for each file
-
-```{r}
-# Define file paths to `scores.gistic` files and run `plot_gistic_scores`
-# function for each file
-cohort_scores <-
-  file.path(cohort_gistic_dir, "scores.gistic")
-cohort_scores_plot <- plot_gistic_scores(cohort_scores)
-
-lgat_scores <-
-  file.path(lgat_gistic_dir, "scores.gistic")
-lgat_scores_plot <- plot_gistic_scores(lgat_scores)
-
-hgat_scores <-
-  file.path(hgat_gistic_dir, "scores.gistic")
-hgat_scores_plot <- plot_gistic_scores(hgat_scores)
-
-medulloblastoma_scores <-
-  file.path(medulloblastoma_gistic_dir, "scores.gistic")
-medulloblastoma_scores_plot <-
-  plot_gistic_scores(medulloblastoma_scores)
-```
-
-### Generate multipanel plots 
-
-```{r fig.height = 10, fig.width = 24}
-lgat_plot_list <- list(lgat_scores_plot, cohort_scores_plot)
-generate_multipanel_plot(plot_list = lgat_plot_list,
-                         plot_title = "LGAT scores versus entire cohort",
-                         output_directory = plots_dir,
-                         output_filename = "lgat_gistic_scores_multipanel_plot.png")
-
-hgat_plot_list <- list(hgat_scores_plot, cohort_scores_plot)
-generate_multipanel_plot(plot_list = hgat_plot_list,
-                         plot_title = "HGAT scores versus entire cohort",
-                         output_directory = plots_dir,
-                         output_filename = "hgat_gistic_scores_multipanel_plot.png")
-
-medulloblastoma_plot_list <- list(medulloblastoma_scores_plot, cohort_scores_plot)
-generate_multipanel_plot(plot_list = medulloblastoma_plot_list,
-                         plot_title = "Medulloblastoma scores versus entire cohort",
-                         output_directory = plots_dir,
-                         output_filename = "medulloblastoma_gistic_scores_multipanel_plot.png")
-```
-
-## Compare `amp_genes.conf_90.txt` and `del_genes.conf_90.txt` files
-
-### Custom function
-```{r}
 get_genes_vector <- function(genes_file) {
   # Given the GISTIC result `amp_genes_conf_90.txt` or `del_genes_conf_90.txt`
   # files for the entire cohort or a specific histology, get the vector of
@@ -308,21 +222,92 @@ plot_genes_venn_diagram_wrapper <- function(cohort_genes_file,
 }
 ```
 
-### Run `plot_genes_venn_diagram_wrapper` on `amp_genes.conf_90.txt` files
+## Compare "scores.gistic" files
 
-```{r warning = FALSE, message = FALSE}
-# Define GISTIC amp genes file paths
-cohort_amp_genes <- file.path(cohort_gistic_dir, "amp_genes.conf_90.txt")
-lgat_amp_genes <- file.path(lgat_gistic_dir, "amp_genes.conf_90.txt")
-hgat_amp_genes <- file.path(hgat_gistic_dir, "amp_genes.conf_90.txt")
-medulloblastoma_amp_genes <- file.path(medulloblastoma_gistic_dir, "amp_genes.conf_90.txt")
+### Unzip GISTIC results folders
 
-# Run `plot_genes_venn_diagram_wrapper` function on GISTIC amp genes files
-amp_plot_list <- plot_genes_venn_diagram_wrapper(cohort_amp_genes,
-                                                 lgat_amp_genes,
-                                                 hgat_amp_genes,
-                                                 medulloblastoma_amp_genes)
+```{r}
+# Unzip and set up GISTIC results folders and files.
+cohort_gistic_dir <- file.path(data_dir, "pbta-cnv-consensus-gistic")
+cohort_gistic_zip <- file.path(data_dir, "pbta-cnv-consensus-gistic.zip")
+
+if (!dir.exists(cohort_gistic_dir)) {
+  unzip(cohort_gistic_zip, 
+        exdir = data_dir)
+}
+
+lgat_gistic_dir <- file.path(data_dir, "pbta-cnv-consensus-lgat-gistic")
+lgat_gistic_zip <- file.path(data_dir, "pbta-cnv-consensus-lgat-gistic.zip")
+
+if (!dir.exists(lgat_gistic_dir)) {
+  unzip(lgat_gistic_zip, 
+        exdir = data_dir)
+}
+
+hgat_gistic_dir <- file.path(data_dir, "pbta-cnv-consensus-hgat-gistic")
+hgat_gistic_zip <- file.path(data_dir, "pbta-cnv-consensus-hgat-gistic.zip")
+
+if (!dir.exists(hgat_gistic_dir)) {
+  unzip(hgat_gistic_zip, 
+        exdir = data_dir)
+}
+
+medulloblastoma_gistic_dir <- file.path(data_dir, "pbta-cnv-consensus-medulloblastoma-gistic")
+medulloblastoma_gistic_zip <- file.path(data_dir, "pbta-cnv-consensus-medulloblastoma-gistic.zip")
+
+if (!dir.exists(medulloblastoma_gistic_dir)) {
+  unzip(medulloblastoma_gistic_zip, 
+        exdir = data_dir)
+}
+
 ```
+
+### Run `plot_gistic_scores` for each file
+
+```{r}
+# Define file paths to `scores.gistic` files and run `plot_gistic_scores`
+# function for each file
+cohort_scores <-
+  file.path(cohort_gistic_dir, "scores.gistic")
+cohort_scores_plot <- plot_gistic_scores(cohort_scores)
+
+lgat_scores <-
+  file.path(lgat_gistic_dir, "scores.gistic")
+lgat_scores_plot <- plot_gistic_scores(lgat_scores)
+
+hgat_scores <-
+  file.path(hgat_gistic_dir, "scores.gistic")
+hgat_scores_plot <- plot_gistic_scores(hgat_scores)
+
+medulloblastoma_scores <-
+  file.path(medulloblastoma_gistic_dir, "scores.gistic")
+medulloblastoma_scores_plot <-
+  plot_gistic_scores(medulloblastoma_scores)
+```
+
+### Generate multipanel plots 
+
+```{r fig.height = 10, fig.width = 24}
+lgat_plot_list <- list(lgat_scores_plot, cohort_scores_plot)
+generate_multipanel_plot(plot_list = lgat_plot_list,
+                         plot_title = "LGAT scores versus entire cohort",
+                         output_directory = plots_dir,
+                         output_filename = "lgat_gistic_scores_multipanel_plot.png")
+
+hgat_plot_list <- list(hgat_scores_plot, cohort_scores_plot)
+generate_multipanel_plot(plot_list = hgat_plot_list,
+                         plot_title = "HGAT scores versus entire cohort",
+                         output_directory = plots_dir,
+                         output_filename = "hgat_gistic_scores_multipanel_plot.png")
+
+medulloblastoma_plot_list <- list(medulloblastoma_scores_plot, cohort_scores_plot)
+generate_multipanel_plot(plot_list = medulloblastoma_plot_list,
+                         plot_title = "Medulloblastoma scores versus entire cohort",
+                         output_directory = plots_dir,
+                         output_filename = "medulloblastoma_gistic_scores_multipanel_plot.png")
+```
+
+## Compare `amp_genes.conf_90.txt` and `del_genes.conf_90.txt` files
 
 ### Run `plot_genes_venn_diagram_wrapper` on `del_genes.conf_90.txt` files
 
