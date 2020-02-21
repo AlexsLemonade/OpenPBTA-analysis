@@ -64,7 +64,8 @@ set_up_pbta <- function(data.name) {
     dplyr::inner_join(
     pbta_metadata %>% 
       dplyr::select(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID,
-                    experimental_strategy, short_histology))
+                    experimental_strategy, short_histology)) %>% 
+    dplyr::filter(experimental_strategy == "WXS")
     
   return(df)
 }
@@ -83,7 +84,7 @@ set_up_tcga <- function(data.name) {
     as.data.frame() %>% 
     # Shorten the Tumor_Sample_Barcode so it matches
     dplyr::mutate(Tumor_Sample_Barcode = substr(Tumor_Sample_Barcode, 0, 12)) %>% 
-    dplyr::inner_join(tcga_metadata %>% dplyr::select(Tumor_Sample_Barcode, short_histology, experimental_strategy))
+    dplyr::inner_join(tcga_metadata %>% dplyr::select(Tumor_Sample_Barcode, short_histology, experimental_strategy)) 
 
   return(df)
 }
