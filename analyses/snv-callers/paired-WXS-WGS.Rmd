@@ -1,0 +1,100 @@
+---
+title: "Padded vs unpadded"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: C. Savonen for ALSF CCDL
+date: 2019
+---
+
+
+Declare names of input and output directories.
+
+```{r}
+# magrittr pipe
+`%>%` <- dplyr::`%>%`
+
+data_dir <- file.path("..", "..", "data")
+scratch_dir <- file.path("..", "..", "scratch")
+results_dir <- "results"
+plots_dir <- "plots"
+
+# Load in these functions so we can use `maf_to_granges`
+source(file.path("..", "snv-callers", "util", "tmb_functions.R"))
+```
+
+
+```{r}
+metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) 
+
+matched_participants <- metadata %>% 
+  dplyr::filter(experimental_strategy != "RNA-Seq") %>% 
+  dplyr::group_by(Kids_First_Participant_ID) %>% 
+  dplyr::summarize(strategies = paste0(experimental_strategy, collapse = ",")) %>% 
+  dplyr::filter(grepl("WXS", strategies) & grepl("WGS", strategies)) %>% 
+  dplyr::pull(Kids_First_Participant_ID)
+
+biospecimens <- metadata %>% 
+  dplyr::filter(Kids_First_Participant_ID %in% matched_participants) %>% 
+  dplyr::pull(Kids_First_Biospecimen_ID)
+```
+
+Connect to SQLite database.
+
+```{r}
+# Start up connection
+con <- DBI::dbConnect(RSQLite::SQLite(), 
+                      file.path(scratch_dir, "v11_snv_db.sqlite"))
+```
+
+Note what columns we will join by.
+
+```{r}
+join_cols = c("Chromosome",
+              "Start_Position",
+              "End_Position", 
+              "Reference_Allele",
+              "Allele",
+              "Tumor_Sample_Barcode", 
+              "Variant_Classification")
+```
+
+```{r}
+lancet_wxs <- dplyr::tbl(con, "lancet") %>% 
+  dplyr::select(join_cols, "VAF") %>% 
+    dplyr::inner_join(
+    dplyr::tbl(con, "samples") %>% 
+      dplyr::select(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID,
+                    experimental_strategy, short_histology, 
+                    Kids_First_Participant_ID)) %>% 
+    dplyr::filter(experimental_strategy == "WXS", 
+                  Tumor_Sample_Barcode %in% biospecimens ) %>% 
+  as.data.frame()
+
+lancet_wgs <- dplyr::tbl(con, "lancet") %>% 
+  dplyr::select(join_cols, "VAF") %>% 
+    dplyr::inner_join(
+    dplyr::tbl(con, "samples") %>% 
+      dplyr::select(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID,
+                    experimental_strategy, short_histology, 
+                    Kids_First_Participant_ID)) %>% 
+    dplyr::filter(experimental_strategy == "WGS", 
+                  Tumor_Sample_Barcode %in% biospecimens) %>% 
+  as.data.frame()
+```
+
+```{r}
+lancet_combo <- dplyr::bind_rows(list(wxs = lancet_wxs, 
+                                      wgs = lancet_wgs), .id = "experiment")
+```
+
+Plot this
+
+```{r}
+ggplot2::ggplot(lancet_combo, ggplot2::aes(x = experiment, y = VAF, fill = experiment)) + 
+  ggplot2::geom_violin() + 
+  ggplot2::theme_classic() + 
+  ggplot2::facet_wrap(~Kids_First_Participant_ID) +
+  ggplot2::ggtitle("Lancet participants with WXS and WGS")
+```
