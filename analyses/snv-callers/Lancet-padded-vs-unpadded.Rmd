@@ -26,13 +26,7 @@ source(file.path("..", "snv-callers", "util", "tmb_functions.R"))
 
 
 ```{r}
-metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) %>% 
-  dplyr::select(sample_id, experimental_strategy) %>% 
-  tibble::rowid_to_column() %>% 
-  tidyr::spread(experimental_strategy, sample_id) %>% 
-  dplyr::filter(!is.na(WGS) & !is.na(WXS))
-
-metadata
+metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) 
 ```
 ```{r}
 wxs_padded <- readr::read_tsv(file.path(data_dir, "WXS.hg38.lancet.400bp_padded.bed"), 
@@ -123,4 +117,8 @@ ggplot2::ggplot(lancet_combo, ggplot2::aes(x = pad, y = VAF, fill = pad)) +
   ggplot2::geom_violin() + 
   ggplot2::theme_classic() + 
   ggplot2::ggtitle("Lancet VAF samples only")
+```
+
+```{r}
+sessionInfo()
 ```
