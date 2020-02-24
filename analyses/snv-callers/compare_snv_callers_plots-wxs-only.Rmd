@@ -5,58 +5,25 @@ output:
     toc: TRUE
     toc_float: TRUE
 author: C. Savonen for ALSF CCDL
-date: 2019
+date: 2020
 ---
 
-### Summary of Findings:
+### Purpose: 
+With the TCGA data (which is all WXS), we were noticing Lancet was returning 
+particularly low VAF SNVs. This runs a quick analysis on the WXS PBTA samples so 
+we could try to parse whether this was a WXS thing or a TCGA thing. 
 
-
-#### Individual Caller's Reports 
-
-
-*Notable Findings:*  
-
-- [VarDict calls more mutations](#upset-graph) than any of the other callers. 
-Many of these have [very low ](#vaf-distributions) suggesting that some may be sequencing errors. 
-
-- Mutect2, Strelka2, and Lancet do have [plenty of mutations in common](#upset-graph). 
-
-### Outline of analyses completed:
-
-- [Upset graph](#upset-graph)  
-- [VAF of combinations of callers](#vaf-for-combination-sets-of-callers)
-- [Base changes by caller](#base-changes)
-- [VAF distributions by caller](#vaf-distributions)
-- [VAF correlations between callers](#vaf-correlations)
-
-#### Usage
-
-To run this from the command line, use:
-```
-Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots.Rmd', 
-                              clean = TRUE)"
-```
-
-_This assumes you are in the top directory of the repository._
-
-## Setup
-
-#### Packages and functions
-
-Set up directories. 
+### Conclusion: 
+Lancet was also doing poorly with PBTA WXS samples. 
 
 ```{r}
-scratch_dir <- file.path("..", "..", "scratch")
-results_dir <- file.path("results", "comparison")
-plots_dir <- file.path("plots", "comparison")
+# magrittr pipe
+`%>%` <- dplyr::`%>%`
 
-if (!dir.exists(results_dir)) {
-  dir.create(results_dir)
-}
-if (!dir.exists(plots_dir)) {
-  dir.create(plots_dir)
-}
+scratch_dir <- file.path("..", "..", "scratch")
 ```
+
+Set up this function. 
 
 ```{r}
 upset_plot <- function(callers_per_mutation_df) {
@@ -73,6 +40,7 @@ callers_per_mutation_df %>%
   ggplot2::ylab("")
 }
 ```
+
 ## Connect to database
 
 Connect to SQLite database.
@@ -94,7 +62,8 @@ join_cols = c("Chromosome",
               "Variant_Classification")
 ```
 
-Set up tables from the database but only call the columns we need.
+Set up tables from the database but only call the columns we need. 
+Note that we are only keeping the WXS samples. 
 
 ```{r}
 strelka <- dplyr::tbl(con, "strelka") %>% 
@@ -121,6 +90,7 @@ mutect <- dplyr::tbl(con, "mutect") %>%
                     experimental_strategy, short_histology)) %>% 
     dplyr::filter(experimental_strategy == "WXS")
 
+# Note that we will drop Vardict, but because of the join script, we will keep it in for now. 
 vardict <- dplyr::tbl(con, "vardict") %>% 
   dplyr::select(join_cols, "VAF") %>% 
     dplyr::inner_join(
@@ -212,122 +182,11 @@ Make the upset plot.
 
 ```{r}
 upsettr_plot <- callers_per_mutation %>%
-  upset_plot()
+  upset_plot() + 
+  ggplot2::ggtitle("WXS samples only")
 
 # Print this out here
 upsettr_plot
-```
-
-Save this plot to a png
-
-```{r}
-# We can save the plot like a normal ggplot
-png(file = file.path(plots_dir, "upset_plot.png"))
-upsettr_plot
-dev.off()
-```
-
-Transcripts only upset plot. 
-
-```{r}
-callers_per_mutation %>% 
-  dplyr::filter(!(Variant_Classification %in% c("5'Flank", "3'Flank", "IGR", "Intron"))) %>%
-  upset_plot()
-```
-
-Non transcript upset plot. 
-
-```{r}
-callers_per_mutation %>% 
-  dplyr::filter(Variant_Classification %in% c("5'Flank", "3'Flank", "IGR", "Intron")) %>%
-  upset_plot()
-```
-
-## VAF for combination sets of callers
-
-Graph mutations by combinations of callers and plot the VAF density.
-Get list of callers per mutation and the median vaf for each. 
-Graph the median VAF for each combination of callers.
-
-```{r}
-# Make this plot
-callers_per_mutation %>%
-  ggplot2::ggplot(ggplot2::aes(x = caller_combo, y = median_vaf)) +
-  ggplot2::geom_violin() +
-  ggplot2::theme_classic() +
-  ggupset::scale_x_mergelist(sep = "-") +
-  ggupset::axis_combmatrix(sep = "-") +
-  ggplot2::xlab("") +
-  ggplot2::ylab("Median VAF Across Callers")
-```
-
-```{r}
-# Save this plot
-ggplot2::ggsave(file.path(plots_dir, "upset_median_vaf_plot.png"))
-```
-
-## Base Changes 
-
-Summarize base change information per caller. 
-
-```{r}
-# Summarize by the number of times each base change shows up in each category.
-perc_change_df <- all_caller_df %>% 
-  # Make change variable
-  dplyr::mutate(base_change = paste0(Allele, ">", Reference_Allele)) %>% 
-  dplyr::mutate(
-    # From the base_change variable, summarize insertions, deletions, and
-    # changes that are more than one base into their own groups.
-    change = dplyr::case_when(
-      grepl("^-", base_change) ~ "ins",
-      grepl("-$", base_change) ~ "del",
-      nchar(base_change) > 3 ~ "long_change",
-      TRUE ~ base_change
-    )
-  ) %>%
-  # Whittle down to necessary columns
-  dplyr::select(change, dplyr::starts_with("VAF_")) %>% 
-  # Make this long form
-  tidyr::gather(key = "caller", value = "vaf", -change) %>% 
-  # Drop the prefix
-  dplyr::mutate(caller = gsub("VAF_", "", caller)) %>% 
-  # Get rid of NA rows
-  dplyr::filter(!is.na(vaf)) %>%
-  # Summarize the number of mutations per caller
-  dplyr::count(caller, change, name = "count") %>%
-  dplyr::add_count(caller, wt = count) %>%
-  # Calculate the percent of each 
-  dplyr::mutate(percent = count / n) %>%
-  # Drop nonsensical change
-  dplyr::filter(!grepl("N>*|*>N|C>C|T>T|A>A|G>G", change), 
-                !is.na(change)) %>%
-  dplyr::mutate(
-    change = as.factor(change),
-    # Change factor level order so ins and del are at the end
-    change = forcats::fct_relevel(change, "ins", "del", "long_change", after = Inf)
-  ) 
-```
-
-Make a barplot illustrating the percent of the mutations for each caller that 
-that are each type of change. 
-
-```{r}
-perc_change_df %>%
-  ggplot2::ggplot(ggplot2::aes(x = change, y = percent)) +
-  ggplot2::theme_classic() +
-  ggplot2::geom_bar(
-    position = "dodge", stat = "identity",
-    ggplot2::aes(fill = caller)
-  ) +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
-  ggplot2::xlab("") +
-  ggplot2::ylab("Percent of callers' mutations") +
-  colorblindr::scale_fill_OkabeIto()
-```
-
-```{r}
-# Save this plot
-ggplot2::ggsave(file.path(plots_dir, "perc_base_change_plot.png"))
 ```
 
 ## VAF distributions
@@ -339,62 +198,8 @@ long_vaf_df %>%
   ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, color = caller)) +
   ggplot2::geom_violin() +
   ggplot2::theme_classic() +
-  colorblindr::scale_color_OkabeIto()
-```
-
-```{r}
-# Save this plot
-ggplot2::ggsave(file.path(plots_dir, "vaf_violin_plot.png"))
-```
-
-## VAF correlations
-
-Make the plot with ggpairs. 
-
-```{r}
-GGally::ggpairs(vaf_df %>% dplyr::select(-VAF_consensus, -Variant_Classification), 
-                mapping = ggplot2::aes(alpha = 0.05)) +
-  ggplot2::theme_classic()
-``` 
-
-```{r}
-# Save this plot
-ggplot2::ggsave(file.path(plots_dir, "vaf_correlations_plot.png"))
-```
-
-## Mutation Region barplot
-
-Summarize `Variant_Classification` information per caller. 
-
-```{r}
-# Summarize by the number of times each base change shows up in each category.
-perc_var_df <- long_vaf_df %>% 
-  # Summarize the number of mutations per caller
-  dplyr::count(caller, Variant_Classification, name = "count") %>%
-  dplyr::add_count(caller, wt = count) %>%
-  # Calculate the percent of each 
-  dplyr::mutate(percent = count / n)
-```
-
-Make a barplot illustrating the percent of the mutations for each caller that 
-that are each type of change. 
-
-```{r}
-perc_var_df %>%
-  ggplot2::ggplot(ggplot2::aes(x = caller, y = percent)) +
-  ggplot2::theme_classic() +
-  ggplot2::geom_bar(
-    position = "stack", stat = "identity",
-    ggplot2::aes(fill = Variant_Classification)
-  ) +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
-  ggplot2::xlab("") +
-  ggplot2::ylab("Percent of callers' mutations")
-```
-
-```{r}
-# Save this plot
-ggplot2::ggsave(file.path(plots_dir, "variant_classification_plot.png"))
+  colorblindr::scale_color_OkabeIto() + 
+  ggplot2::ggtitle("WXS samples only")
 ```
 
 ## Session Info

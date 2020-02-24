@@ -13,6 +13,10 @@ This analysis resulted from an [idea in a comment here](https://github.com/Alexs
 In short we were seeing particularly low VAF for Lancet TCGA data and were wondering 
 whether this had to do with the data being WXS instead of WGS. 
 
+### Conclusion: 
+Lancet was doing poorly with WXS samples when compared on a within participant 
+basis. 
+
 Declare names of input and output directories.
 
 ```{r}
@@ -25,25 +29,25 @@ data_dir <- file.path("..", "..", "data")
 Read in the metadata. 
 
 ```{r}
-metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) 
+metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
 ```
 
 Retrieve all the participant IDs for participants that have both WGS and WXS data. 
 
 ```{r}
-matched_participants <- metadata %>% 
-  dplyr::filter(experimental_strategy != "RNA-Seq") %>% 
-  dplyr::group_by(Kids_First_Participant_ID) %>% 
-  dplyr::summarize(strategies = paste0(experimental_strategy, collapse = ",")) %>% 
-  dplyr::filter(grepl("WXS", strategies) & grepl("WGS", strategies)) %>% 
+matched_participants <- metadata %>%
+  dplyr::filter(experimental_strategy != "RNA-Seq") %>%
+  dplyr::group_by(Kids_First_Participant_ID) %>%
+  dplyr::summarize(strategies = paste0(experimental_strategy, collapse = ",")) %>%
+  dplyr::filter(grepl("WXS", strategies) & grepl("WGS", strategies)) %>%
   dplyr::pull(Kids_First_Participant_ID)
 ```
 
 Get the biospecimen IDS for these participants. 
 
 ```{r}
-biospecimens <- metadata %>% 
-  dplyr::filter(Kids_First_Participant_ID %in% matched_participants) %>% 
+biospecimens <- metadata %>%
+  dplyr::filter(Kids_First_Participant_ID %in% matched_participants) %>%
   dplyr::pull(Kids_First_Biospecimen_ID)
 ```
 
@@ -51,46 +55,55 @@ Connect to SQLite database.
 
 ```{r}
 # Start up connection
-con <- DBI::dbConnect(RSQLite::SQLite(), 
-                      file.path(scratch_dir, "v11_snv_db.sqlite"))
+con <- DBI::dbConnect(
+  RSQLite::SQLite(),
+  file.path(scratch_dir, "v11_snv_db.sqlite")
+)
 ```
 
 Make a list of columns we will keep.
 
 ```{r}
-cols_to_keep <- c("Chromosome",
-              "Start_Position",
-              "End_Position", 
-              "Reference_Allele",
-              "Allele",
-              "Tumor_Sample_Barcode", 
-              "Variant_Classification", 
-              "VAF")
+cols_to_keep <- c(
+  "Chromosome",
+  "Start_Position",
+  "End_Position",
+  "Reference_Allele",
+  "Allele",
+  "Tumor_Sample_Barcode",
+  "Variant_Classification",
+  "VAF"
+)
 ```
 
 Set up the Lancet data from the SQL database and only keep the biospecimens we
 identified. 
 
 ```{r}
-lancet <- dplyr::tbl(con, "lancet") %>% 
-  dplyr::select(cols_to_keep) %>% 
-    dplyr::inner_join(
-    dplyr::tbl(con, "samples") %>% 
-      dplyr::select(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID,
-                    experimental_strategy, short_histology, 
-                    Kids_First_Participant_ID)) %>% 
-    dplyr::filter(Tumor_Sample_Barcode %in% biospecimens) %>% 
+lancet <- dplyr::tbl(con, "lancet") %>%
+  dplyr::select(cols_to_keep) %>%
+  dplyr::inner_join(
+    dplyr::tbl(con, "samples") %>%
+      dplyr::select(
+        Tumor_Sample_Barcode = Kids_First_Biospecimen_ID,
+        experimental_strategy, short_histology,
+        Kids_First_Participant_ID
+      )
+  ) %>%
+  dplyr::filter(Tumor_Sample_Barcode %in% biospecimens) %>%
   as.data.frame()
 ```
 
 Plot this as a violin plot
 
 ```{r}
-vaf_plot <- ggplot2::ggplot(lancet, ggplot2::aes(x = experimental_strategy, 
-                                                 y = VAF, 
-                                                 fill = experimental_strategy)) + 
-  ggplot2::geom_violin() + 
-  ggplot2::theme_classic() + 
+vaf_plot <- ggplot2::ggplot(lancet, ggplot2::aes(
+  x = experimental_strategy,
+  y = VAF,
+  fill = experimental_strategy
+)) +
+  ggplot2::geom_violin() +
+  ggplot2::theme_classic() +
   ggplot2::ggtitle("Lancet participants with WXS and WGS")
 ```
 
@@ -103,7 +116,7 @@ vaf_plot
 Split up data by participant. 
 
 ```{r}
-vaf_plot + ggplot2::facet_wrap(~ Kids_First_Participant_ID)
+vaf_plot + ggplot2::facet_wrap(~Kids_First_Participant_ID)
 ```
 
 ### Session Info
