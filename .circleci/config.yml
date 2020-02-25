@@ -169,7 +169,7 @@ jobs:
 
       - run:
           name: Lancet WXS vs WGS test
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-test/lancet-paired-WXS-WGS.Rmd', clean = TRUE)"
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/lancet-paired-WXS-WGS.Rmd', clean = TRUE)"
 
          ################################
          #### Add your analysis here ####
