@@ -167,19 +167,18 @@ jobs:
           name: Telomerase activity
           command: ./scripts/run_in_ci.sh bash analyses/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
 
-      - run:
-          name: PBTA vs TCGA explore 
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/explore-tcga-pbta.Rmd', clean = TRUE)"
-
          ################################
          #### Add your analysis here ####
          ################################
 
-
       - run:
           name: SNV Caller Analysis 
           command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis.sh
-          
+      
+      - run:
+          name: PBTA vs TCGA explore 
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/explore-tcga-pbta.Rmd', clean = TRUE)"
+
        # This analysis was a side concept question and no longer needs to be run. 
        # - run:
           # name: SNV Caller VAF Cutoff Experiment
