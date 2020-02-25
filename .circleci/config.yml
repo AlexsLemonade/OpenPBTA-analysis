@@ -167,6 +167,10 @@ jobs:
           name: Telomerase activity
           command: ./scripts/run_in_ci.sh bash analyses/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
 
+      - run:
+          name: GISTIC Results Comparison - Entire Cohort vs Histology
+          command: ./scripts/run_in_ci.sh bash analyses/gistic-cohort-vs-histology-comparison/run-gistic-comparison.sh
+
 
          ################################
          #### Add your analysis here ####
@@ -187,10 +191,6 @@ jobs:
           name: GISTIC proof of concept
           command: OPENPBTA_CI=1 ./scripts/run_in_ci.sh bash analyses/run-gistic/run-gistic-module.sh
           
-      - run:
-          name: GISTIC Results Comparison - Entire Cohort vs Histology
-          command: ./scripts/run_in_ci.sh bash analyses/gistic-cohort-vs-histology/run-gistic-comparison.sh
-
   deploy:
     machine: 
       docker_layer_caching: true
