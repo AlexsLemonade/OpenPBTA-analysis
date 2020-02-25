@@ -9,7 +9,7 @@ set -e
 set -o pipefail
 
 # The sqlite database made from the callers will be called:
-dbfile=scratch/pbta-snv_db.sqlite
+dbfile=scratch/pbta_snv_db.sqlite
 
 # Designate output file 
 consensus_file=analyses/snv-callers/results/consensus/pbta-snv-consensus-mutation.maf.tsv
