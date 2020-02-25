@@ -167,6 +167,9 @@ jobs:
           name: Telomerase activity
           command: ./scripts/run_in_ci.sh bash analyses/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
 
+      - run:
+          name: PBTA vs TCGA explore 
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/explore-tcga-pbta.Rmd', clean = TRUE)"
 
          ################################
          #### Add your analysis here ####

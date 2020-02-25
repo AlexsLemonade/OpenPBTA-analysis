@@ -60,7 +60,7 @@ Function for setting up PBTA data from the database.
 set_up_pbta <- function(data.name) {
   # Start up connection
   con <- DBI::dbConnect(RSQLite::SQLite(), 
-                        file.path(scratch_dir, "v11_snv_db.sqlite"))
+                        file.path(scratch_dir, "snv_db.sqlite"))
   
   # Connect to SQL
   df <- dplyr::tbl(con, data.name) %>% 
