@@ -1,0 +1,166 @@
+---
+title: "GISTIC comparison of gene level status"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell for ALSF CCDL
+date: 2020
+---
+
+This notebook will compare the GISTIC gene level calls to our calls using the overlaps with exons.
+
+The purpose is to identify, if any, disagreement between GISTIC's gene level calls and the calls in the annotated CN files we prepared in `analyses/focal-cn-file-preparation/results`. 
+
+## Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/gistic-cohort-vs-histology-comparison/gistic-gene-level-call-comparison.Rmd', clean = TRUE)"
+```
+
+## Set up
+
+```{r}
+library(tidyverse)
+```
+
+### Files and Directories
+
+```{r}
+# Path to input directory
+focal_cn_data_dir <- file.path("..", "focal-cn-file-preparation", "results")
+gistic_data_dir <- file.path("..", "run-gistic", "results")
+```
+
+### Unzip GISTIC results and read in `all_lesions.conf_90.txt` files
+
+```{r}
+# Unzip and set up GISTIC results folders and files.
+cohort_gistic_dir <- file.path(gistic_data_dir, "pbta-cnv-consensus-gistic")
+cohort_gistic_zip <- file.path(gistic_data_dir, "pbta-cnv-consensus-gistic.zip")
+
+if (!dir.exists(cohort_gistic_dir)) {
+  unzip(cohort_gistic_zip, 
+        exdir = data_dir)
+}
+
+lgat_gistic_dir <- file.path(gistic_data_dir, "pbta-cnv-consensus-lgat-gistic")
+lgat_gistic_zip <- file.path(gistic_data_dir, "pbta-cnv-consensus-lgat-gistic.zip")
+
+if (!dir.exists(lgat_gistic_dir)) {
+  unzip(lgat_gistic_zip, 
+        exdir = data_dir)
+}
+```
+
+### Define file paths for GISTIC `all_lesions.conf_90.txt` files
+
+```{r}
+cohort_all_lesions_file <- file.path(cohort_gistic_dir, "all_lesions.conf_90.txt")
+
+lgat_all_lesions_file <- file.path(lgat_gistic_dir, "all_lesions.conf_90.txt")
+```
+
+### Define file paths for `focal-cn-file-preparation` result files
+
+```{r}
+consensus_autosomes_file <- file.path(focal_cn_data_dir, "consensus_seg_annotated_cn_autosomes.tsv.gz")
+
+cnvkit_autosomes_file <- file.path(focal_cn_data_dir, "cnvkit_annotated_cn_autosomes.tsv.gz")
+```
+
+## Function to Wrangle Data
+
+```{r}
+merge_calls <- function (annotated_cn_file,
+                         gistic_file) {
+  # Given the file path to one of our annotated cn files from 
+  # `analyses/focal-cn-file-prepration/results` and one of the 
+  # GISTIC `all_lesions.conf_90.txt` files from `analyses/run-gistic/results`,
+  # produce a table that contains the non-neutral GISTIC gene level calls
+  # that disagree with the calls we have.
+  #
+  # Args:
+  #   annotated_cn_file: file path to our annotated CN file
+  #   gistic_file: file path to the GISTIC all lesions file
+  #
+  # Return:
+  #   final_table: final table with the GISTIC calls and our calls
+  #                that disagree
+  
+  # Read in the annotated CN file
+  annotated_cn_df <- readr::read_tsv(annotated_cn_file)
+  
+  # Read in the GISTIC calls file
+  gistic_calls_df <- data.table::fread(gistic_file,
+                                       data.table = FALSE)
+  
+  # Wrangle the GISTIC calls data to be in a comparable format with our CN calls
+  gistic_calls_df <- gistic_calls_df %>%
+    dplyr::select(
+      -c(
+        "Unique Name",
+        "Wide Peak Limits",
+        "Peak Limits",
+        "Region Limits",
+        "q values",
+        "Residual q values after removing segments shared with higher peaks",
+        "Broad or Focal",
+        "Amplitude Threshold"
+      )
+    ) %>%
+    as.data.frame() %>%
+    tidyr::gather("biospecimen_id", "gistic_call", -Descriptor) %>%
+    arrange(desc(Descriptor)) %>%
+    dplyr::mutate(
+      gistic_call = dplyr::case_when(
+        gistic_call %in% c("-1", "-1.2929") ~ "loss",
+        gistic_call %in% c("1", " 1", " 2", "2", " 1.0000") ~ "gain",
+        TRUE ~ "neutral"
+      )
+    ) %>%
+    dplyr::distinct()
+  
+  # Merge our CN calls with the GISTIC calls
+  all_calls_df <- gistic_calls_df %>%
+    dplyr::inner_join(annotated_cn_df,
+                      by = c("biospecimen_id", "Descriptor" = "cytoband")) %>%
+    dplyr::select(-c("ensembl", "copy_number", "ploidy", "gene_symbol")) %>%
+    dplyr::distinct() %>%
+    # Filter out the neutral calls and keep the instances where the calls disagree
+    dplyr::filter(gistic_call != "neutral", gistic_call != status)
+  
+  # Keep just the chromosome arm info
+  all_calls_df$Descriptor <-
+    gsub("(p|q).*", "\\1", all_calls_df$Descriptor)
+  
+  # Tally how many times the calls disagree for each chromsome arm
+  final_table <- all_calls_df %>%
+    dplyr::group_by(Descriptor, gistic_call, status) %>%
+    tally()
+}
+```
+
+## Generate final tables
+
+### Use GISTIC results for LGAT histology
+
+```{r warning = FALSE, message = FALSE}
+lgat_merged_calls_table <- merge_calls(cnvkit_autosomes_file,
+                                       lgat_all_lesions_file)
+
+lgat_merged_calls_table
+```
+
+### Use GISTIC results for entire cohort
+
+```{r warning = FALSE, message = FALSE}
+consensus_merged_calls_table <- merge_calls(cnvkit_autosomes_file,
+                                            cohort_all_lesions_file)
+
+consensus_merged_calls_table
+```
+
