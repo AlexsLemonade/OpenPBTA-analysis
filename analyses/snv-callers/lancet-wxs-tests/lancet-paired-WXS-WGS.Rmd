@@ -14,7 +14,7 @@ In short we were seeing particularly low VAF for Lancet TCGA data and were wonde
 whether this had to do with the data being WXS instead of WGS. 
 
 ### Conclusion: 
-Lancet was doing poorly with WXS samples when compared on a within participant 
+This notebook shows within a group of participants who have WXS and WGS data, Lancet seems to call more mutations of low VAF in WXS data than in WGS. This leads us to question the validity of Lancet's WXS calls with the current data. 
 basis. 
 
 Declare names of input and output directories.
