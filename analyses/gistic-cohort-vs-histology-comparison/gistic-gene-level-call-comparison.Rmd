@@ -161,7 +161,8 @@ merge_calls <- function (annotated_cn_file,
                   neutral = dplyr::case_when(gistic_call == "neutral" ~ "gistic",
                                           status == "neutral" ~ "focal",
                                           TRUE ~ "NA")) %>%
-    dplyr::select(chromosome_arm = Descriptor, -c("gistic_call", "status")) %>%
+    dplyr::select(-c("gistic_call", "status")) %>%
+    dplyr::rename(chromosome_arm = Descriptor, wide_peak = `Unique Name`) %>%
     dplyr::distinct()
   
   # Save final table to file
@@ -180,7 +181,7 @@ lgat_merged_calls_table <- merge_calls(consensus_autosomes_file,
                                        "lgat_calls_comparison_table.tsv")
 
 lgat_merged_calls_table %>%
-  dplyr::filter(`Unique Name` == "Deletion Peak 1")
+  dplyr::filter(wide_peak == "Deletion Peak 1")
 ```
 
 ### Use GISTIC results for entire cohort
@@ -191,7 +192,7 @@ consensus_merged_calls_table <- merge_calls(consensus_autosomes_file,
                                             "consensus_calls_comparison_table.tsv")
 
 consensus_merged_calls_table %>%
-  dplyr::filter(`Unique Name` == "Deletion Peak  1")
+  dplyr::filter(wide_peak == "Deletion Peak  1")
 ```
 
 ## Session Info
