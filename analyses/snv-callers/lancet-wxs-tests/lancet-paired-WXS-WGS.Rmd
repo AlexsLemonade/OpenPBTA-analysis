@@ -24,6 +24,7 @@ Declare names of input and output directories.
 `%>%` <- dplyr::`%>%`
 
 data_dir <- file.path("..", "..", "..", "data")
+scratch_dir <- file.path("..", "..", "..", "scratch")
 ```
 
 Read in the metadata. 
@@ -116,7 +117,7 @@ vaf_plot
 Split up data by participant. 
 
 ```{r}
-vaf_plot + ggplot2::facet_wrap(~Kids_First_Participant_ID)
+vaf_plot + ggplot2::facet_wrap(~ Kids_First_Participant_ID)
 ```
 
 ### Session Info
