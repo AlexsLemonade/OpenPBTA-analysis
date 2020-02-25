@@ -169,7 +169,7 @@ jobs:
 
       - run:
           name: PBTA vs TCGA explore 
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/explore-tcga-pbta.Rmd', clean = TRUE)"
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-test/explore-tcga-pbta.Rmd', clean = TRUE)"
 
          ################################
          #### Add your analysis here ####
