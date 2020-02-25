@@ -33,6 +33,13 @@ library(tidyverse)
 # Path to input directory
 focal_cn_data_dir <- file.path("..", "focal-cn-file-preparation", "results")
 gistic_data_dir <- file.path("..", "run-gistic", "results")
+
+# Path to output directory
+results_dir <- "results"
+
+if(!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
 ```
 
 ### Unzip GISTIC results and read in `all_lesions.conf_90.txt` files
@@ -64,28 +71,28 @@ cohort_all_lesions_file <- file.path(cohort_gistic_dir, "all_lesions.conf_90.txt
 lgat_all_lesions_file <- file.path(lgat_gistic_dir, "all_lesions.conf_90.txt")
 ```
 
-### Define file paths for `focal-cn-file-preparation` result files
+### Define file path for `focal-cn-file-preparation` result file
 
 ```{r}
 consensus_autosomes_file <- file.path(focal_cn_data_dir, "consensus_seg_annotated_cn_autosomes.tsv.gz")
-
-cnvkit_autosomes_file <- file.path(focal_cn_data_dir, "cnvkit_annotated_cn_autosomes.tsv.gz")
 ```
 
 ## Function to Wrangle Data
 
 ```{r}
 merge_calls <- function (annotated_cn_file,
-                         gistic_file) {
+                         gistic_file,
+                         output_filename) {
   # Given the file path to one of our annotated cn files from 
   # `analyses/focal-cn-file-prepration/results` and one of the 
   # GISTIC `all_lesions.conf_90.txt` files from `analyses/run-gistic/results`,
-  # produce a table that contains the non-neutral GISTIC gene level calls
-  # that disagree with the calls we have.
+  # produce a table that contains the GISTIC and annotated CN calls, along
+  # with the wide peak label.
   #
   # Args:
   #   annotated_cn_file: file path to our annotated CN file
   #   gistic_file: file path to the GISTIC all lesions file
+  #   output_filename: string defining what to save the output table as
   #
   # Return:
   #   final_table: final table with the GISTIC calls and our calls
@@ -102,7 +109,6 @@ merge_calls <- function (annotated_cn_file,
   gistic_calls_df <- gistic_calls_df %>%
     dplyr::select(
       -c(
-        "Unique Name",
         "Wide Peak Limits",
         "Peak Limits",
         "Region Limits",
@@ -113,12 +119,13 @@ merge_calls <- function (annotated_cn_file,
       )
     ) %>%
     as.data.frame() %>%
-    tidyr::gather("biospecimen_id", "gistic_call", -Descriptor) %>%
-    arrange(desc(Descriptor)) %>%
+    tidyr::gather("biospecimen_id", "gistic_call", -Descriptor, -`Unique Name`) %>%
+    dplyr::arrange(desc(Descriptor)) %>%
     dplyr::mutate(
       gistic_call = dplyr::case_when(
         gistic_call %in% c("-1", "-1.2929") ~ "loss",
-        gistic_call %in% c("1", " 1", " 2", "2", " 1.0000") ~ "gain",
+        gistic_call %in% c("1", " 1", " 1.0000") ~ "gain",
+        gistic_call %in% c(" 2", "2") ~ "amplification",
         TRUE ~ "neutral"
       )
     ) %>%
@@ -137,10 +144,29 @@ merge_calls <- function (annotated_cn_file,
   all_calls_df$Descriptor <-
     gsub("(p|q).*", "\\1", all_calls_df$Descriptor)
   
-  # Tally how many times the calls disagree for each chromsome arm
+  # Keep just the wide peak name
+  all_calls_df$`Unique Name` <- gsub(" -.*", "", all_calls_df$`Unique Name`)
+  
+  # Add loss, gain, amplification, and neutral columns to final table
   final_table <- all_calls_df %>%
-    dplyr::group_by(Descriptor, gistic_call, status) %>%
-    tally()
+    dplyr::mutate(loss = dplyr::case_when(gistic_call == "loss" ~ "gistic",
+                                          status == "loss" ~ "focal",
+                                          TRUE ~ "NA"),
+                  gain = dplyr::case_when(gistic_call == "gain" ~ "gistic",
+                                          status == "gain" ~ "focal",
+                                          TRUE ~ "NA"),
+                  amplification = dplyr::case_when(gistic_call == "amplification" ~ "gistic",
+                                          status == "amplification" ~ "focal",
+                                          TRUE ~ "NA"),
+                  neutral = dplyr::case_when(gistic_call == "neutral" ~ "gistic",
+                                          status == "neutral" ~ "focal",
+                                          TRUE ~ "NA")) %>%
+    dplyr::select(chromosome_arm = Descriptor, -c("gistic_call", "status")) %>%
+    dplyr::distinct()
+  
+  # Save final table to file
+  readr::write_tsv(final_table, file.path(results_dir, output_filename))
+  
 }
 ```
 
@@ -149,18 +175,28 @@ merge_calls <- function (annotated_cn_file,
 ### Use GISTIC results for LGAT histology
 
 ```{r warning = FALSE, message = FALSE}
-lgat_merged_calls_table <- merge_calls(cnvkit_autosomes_file,
-                                       lgat_all_lesions_file)
+lgat_merged_calls_table <- merge_calls(consensus_autosomes_file,
+                                       lgat_all_lesions_file,
+                                       "lgat_calls_comparison_table.tsv")
 
-lgat_merged_calls_table
+lgat_merged_calls_table %>%
+  dplyr::filter(`Unique Name` == "Deletion Peak 1")
 ```
 
 ### Use GISTIC results for entire cohort
 
 ```{r warning = FALSE, message = FALSE}
-consensus_merged_calls_table <- merge_calls(cnvkit_autosomes_file,
-                                            cohort_all_lesions_file)
+consensus_merged_calls_table <- merge_calls(consensus_autosomes_file,
+                                            cohort_all_lesions_file,
+                                            "consensus_calls_comparison_table.tsv")
 
-consensus_merged_calls_table
+consensus_merged_calls_table %>%
+  dplyr::filter(`Unique Name` == "Deletion Peak  1")
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
 ```
 

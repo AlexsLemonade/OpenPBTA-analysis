@@ -189,7 +189,7 @@ jobs:
           
       - run:
           name: GISTIC Results Comparison - Entire Cohort vs Histology
-          command: ./scripts/run_in_ci.sh bash run-gistic-comparison.sh
+          command: ./scripts/run_in_ci.sh bash analyses/gistic-cohort-vs-histology/run-gistic-comparison.sh
 
   deploy:
     machine: 
