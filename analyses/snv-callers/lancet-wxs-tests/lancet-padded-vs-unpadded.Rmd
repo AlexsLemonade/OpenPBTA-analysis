@@ -24,8 +24,8 @@ Declare names of input and output directories.
 # magrittr pipe
 `%>%` <- dplyr::`%>%`
 
-data_dir <- file.path("..", "..", "data")
-scratch_dir <- file.path("..", "..", "scratch")
+data_dir <- file.path("..", "..", "..", "data")
+scratch_dir <- file.path("..", "..", "..", "scratch")
 
 # Load in these functions so we can use `maf_to_granges`
 source(file.path("..", "snv-callers", "util", "tmb_functions.R"))

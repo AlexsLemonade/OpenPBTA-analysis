@@ -20,7 +20,7 @@ Lancet was also doing poorly with PBTA WXS samples.
 # magrittr pipe
 `%>%` <- dplyr::`%>%`
 
-scratch_dir <- file.path("..", "..", "scratch")
+scratch_dir <- file.path("..", "..", "..", "scratch")
 ```
 
 Set up this function. 

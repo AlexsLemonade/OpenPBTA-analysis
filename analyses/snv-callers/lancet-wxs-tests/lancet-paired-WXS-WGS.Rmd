@@ -23,7 +23,7 @@ Declare names of input and output directories.
 # magrittr pipe
 `%>%` <- dplyr::`%>%`
 
-data_dir <- file.path("..", "..", "data")
+data_dir <- file.path("..", "..", "..", "data")
 ```
 
 Read in the metadata. 

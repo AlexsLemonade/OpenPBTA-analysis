@@ -30,17 +30,17 @@ Read in set up script.
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
-source(file.path("..", "snv-callers", "util", "tmb_functions.R"))
-source(file.path("..", "chromosomal-instability", "util", "chr-break-plot.R"))
-source(file.path("..", "chromosomal-instability", "util", "circos-plots.R"))
+source(file.path("..", "..", "snv-callers", "util", "tmb_functions.R"))
+source(file.path("..", "..", "chromosomal-instability", "util", "chr-break-plot.R"))
+source(file.path("..", "..", "chromosomal-instability", "util", "circos-plots.R"))
 ```
 
 Declare directory paths. 
 
 ```{r}
-scratch_dir <- file.path("..", "..", "scratch")
-data_dir <- file.path("..", "..", "data")
-plots_dir <- file.path("plots", "tcga-vs-pbta-plots")
+scratch_dir <- file.path("..", "..", "..", "scratch")
+data_dir <- file.path("..", "..", "..", "data")
+plots_dir <- file.path("..", "plots", "tcga-vs-pbta-plots")
 
 if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
