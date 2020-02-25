@@ -130,8 +130,8 @@ merge_calls <- function (annotated_cn_file,
                       by = c("biospecimen_id", "Descriptor" = "cytoband")) %>%
     dplyr::select(-c("ensembl", "copy_number", "ploidy", "gene_symbol")) %>%
     dplyr::distinct() %>%
-    # Filter out the neutral calls and keep the instances where the calls disagree
-    dplyr::filter(gistic_call != "neutral", gistic_call != status)
+    # Filter out the instances where the calls disagree
+    dplyr::filter(gistic_call != status)
   
   # Keep just the chromosome arm info
   all_calls_df$Descriptor <-
