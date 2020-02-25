@@ -118,11 +118,6 @@ strelka <- dplyr::tbl(con, "strelka")
 lancet <- dplyr::tbl(con, "lancet")
 mutect <- dplyr::tbl(con, "mutect")
 
-
-#strelka <- data.frame(strelka)
-#lancet <- data.frame(lancet)
-#mutect <- data.frame(mutect)
-
 # We won't use VarDicts calls for the consensus
 # vardict <- dplyr::tbl(con, "vardict")
 

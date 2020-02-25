@@ -9,17 +9,19 @@ set -e
 set -o pipefail
 
 # The sqlite database made from the callers will be called:
-dbfile=scratch/tcga_v2_snv_db.sqlite
+dbfile=scratch/tcga_snv_db.sqlite
 
 # Designate output file 
 consensus_file=analyses/snv-callers/results/consensus/tcga-snv-v2-consensus-snv.maf.tsv
 
 # BED and GTF file paths
 cds_file=scratch/gencode.v27.primary_assembly.annotation.bed
-all_mut_wgs_bed=scratch/intersect_strelka_mutect_WGS.bed
+# The WGS files are really just place holders and aren't used since the TCGA data is all WGS
+all_mut_wgs_bed=analyses/snv-callers/ref_files/gencode.v19.basic.exome.hg38liftover.bed 
+coding_wgs_bed=analyses/snv-callers/ref_files/gencode.v19.basic.exome.hg38liftover.bed
+
 all_mut_wxs_bed=data/gencode.v19.basic.exome.hg38liftover.bed
-coding_wgs_bed=scratch/intersect_cds_lancet_strelka_mutect_WGS.bed
-coding_wxs_bed=scratch/intersect_cds_lancet_WXS.bed
+coding_wxs_bed=scratch/intersect_cds_gencode_liftover_WXS.bed
 
 # Set a default for the VAF filter if none is specified
 vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}
@@ -31,9 +33,9 @@ run_plots_nb=${OPENPBTA_PLOTS:-0}
 ################################ Set Up Database ################################
 python3 analyses/snv-callers/scripts/01-setup_db.py \
   --db-file $dbfile \
-  --strelka-file scratch/pbta-tcga-snv-strelka2.vep.maf.gz \
-  --mutect-file scratch/pbta-tcga-snv-mutect2.vep.maf.gz \
-  --lancet-file scratch/pbta-tcga-snv-lancet.vep.maf.gz \
+  --strelka-file data/pbta-tcga-snv-strelka2.vep.maf.gz \
+  --mutect-file data/pbta-tcga-snv-mutect2.vep.maf.gz \
+  --lancet-file data/pbta-tcga-snv-lancet.vep.maf.gz \
   --meta-file data/pbta-tcga-manifest.tsv
 
 ##################### Merge callers' files into total files ####################
@@ -47,38 +49,25 @@ Rscript analyses/snv-callers/scripts/02-merge_callers.R \
 python3 analyses/snv-callers/scripts/01-setup_db.py \
   --db-file $dbfile \
   --consensus-file $consensus_file
-
+∂
 ###################### Create intersection BED files ###########################
-# Make All mutations BED file
-bedtools intersect \
-  -a data/WGS.hg38.strelka2.unpadded.bed \
-  -b data/WGS.hg38.mutect2.vardict.unpadded.bed > $all_mut_wgs_bed
-
 # Convert GTF to BED file for use in bedtools
 # Here we are only extracting lines with as a CDS i.e. are coded in protein
 gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
   | awk '$3 ~ /CDS/' \
   | convert2bed --do-not-sort --input=gtf - \
   > $cds_file
-  
-# Make WGS coding BED file
-bedtools intersect \
-  -a data/WGS.hg38.strelka2.unpadded.bed \
-  -b data/WGS.hg38.mutect2.vardict.unpadded.bed \
-  data/WGS.hg38.lancet.300bp_padded.bed \
-  $cds_file \
-  > $coding_wgs_bed
 
 # Make WXS coding BED file
+# TODO: This file path will need to be updated when the TCGA target BED file is 
+# added to the data release
 bedtools intersect \
-  -a data/WXS.hg38.100bp_padded.bed  \
-  -b data/WXS.hg38.lancet.400bp_padded.bed \
-  $cds_file \
+  -a analyses/snv-callers/ref_files/gencode.v19.basic.exome.hg38liftover.bed  \
+  -b $cds_file \
   > $coding_wxs_bed
 
 ######################### Calculate consensus TMB ##############################
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
-  --consensus $consensus_file \
   --db_file $dbfile \
   --output analyses/snv-callers/results/consensus \
   --metadata data/pbta-tcga-manifest.tsv \
