@@ -1,5 +1,5 @@
 ---
-title: "TCGA Plot Caller Comparisons"
+title: "TCGA PBTA comparison exploration"
 output: 
   html_notebook:
     toc: TRUE
@@ -9,7 +9,13 @@ date: 2019
 ---
 
 Purpose: Why are TCGA and PBTA data so different and why is TCGA TMB not higher than 
-PBTA as we expected from literature and the results from Grobner et al. 
+PBTA as we expected from literature and the results from Grobner et al. 2019
+
+Main three questions asked in this notebook: 
+
+1) Is the read depth different between PBTA and TCGA?  
+2) Do TMB comparisons results change if we calculate TMB with each caller by itself?   
+3) How much do the TCGA and PBTA overlap in their target WXS regions?   
 
 Conclusions from this notebook: 
 Although it may be partially a caller-specific thing, we also suspect a problem with 
@@ -36,8 +42,6 @@ Read in set up script.
 `%>%` <- dplyr::`%>%`
 
 source(file.path("..", "..", "snv-callers", "util", "tmb_functions.R"))
-source(file.path("..", "..", "chromosomal-instability", "util", "chr-break-plot.R"))
-source(file.path("..", "..", "chromosomal-instability", "util", "circos-plots.R"))
 ```
 
 Declare directory paths. 
