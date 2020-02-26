@@ -12,10 +12,11 @@ set -o pipefail
 dbfile=scratch/tcga_snv_db.sqlite
 
 # Designate output file 
-consensus_file=analyses/snv-callers/results/consensus/tcga-snv-v2-consensus-snv.maf.tsv
+consensus_file=analyses/snv-callers/results/consensus/tcga-snv-consensus-snv.maf.tsv
 
 # BED and GTF file paths
 cds_file=scratch/gencode.v27.primary_assembly.annotation.bed
+
 # The WGS files are really just place holders and aren't used since the TCGA data is all WGS
 all_mut_wgs_bed=analyses/snv-callers/ref_files/gencode.v19.basic.exome.hg38liftover.bed 
 coding_wgs_bed=analyses/snv-callers/ref_files/gencode.v19.basic.exome.hg38liftover.bed
