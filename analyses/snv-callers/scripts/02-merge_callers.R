@@ -70,11 +70,6 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
-#opt$db_file <- "scratch/tcga_snv_db.sqlite"
-#opt$output_file <- "analyses/snv-callers/results/consensus/tcga-snv-consensus-snv.maf.tsv"
-#opt$vaf_filter <- 0
-#opt$overwrite <- TRUE
-
 vaf_filter <- opt$vaf_filter # get out of opt list for sql
 
 ############################## Connect to database #############################

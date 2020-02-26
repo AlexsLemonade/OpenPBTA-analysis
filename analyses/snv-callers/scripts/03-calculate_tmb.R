@@ -18,6 +18,7 @@
 # --coding_bed_wxs : File path that specifies the BED regions file to be used for the
 #                 denominator for coding only TMB for WXS samples.
 # --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
+# --tcga: If TRUE, will skip PBTA metadata specific steps
 #
 # Command line example:
 #

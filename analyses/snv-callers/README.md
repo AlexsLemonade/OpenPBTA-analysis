@@ -44,8 +44,8 @@ This bash script will return:
   - `pbta/tcga-snv-consensus-mutation.maf.tsv` - is  [MAF-like file](#consensus-mutation-call) that contains the snvs that were called by all three of these callers for a given sample are saved to this file.
   These files combine the [MAF file data](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from 3 different SNV callers: [Mutect2](https://software.broadinstitute.org/cancer/cga/mutect), [Strelka2](https://github.com/Illumina/strelka), and [Lancet](https://github.com/nygenome/lancet).
   See the methods on the callers' settings [here](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#somatic-single-nucleotide-variant-calling) and see [the methods of this caller analysis and comparison below](#summary-of-methods).  
-  - `pbta/tcga-snv-consensus-mutation-tmb-coding.tsv` - Tumor Mutation burden calculations using *coding only* mutations use the consensus of Lancet, Mutect2, and Strelka2.
-  - `pbta/tcga-snv-consensus-mutation-tmb-all.tsv` - Tumor Mutation burden calculations using *all* mutations use the consensus of Mutect2, and Strelka2. (Lancet was excluded because it has a [coding region bias in the way it was run](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#snv-and-indel-calling)).
+  - `pbta/tcga-snv-mutation-tmb-coding.tsv` - Tumor Mutation burden calculations using *coding only* mutations use the consensus of Mutect2 and Strelka2 only within coding sequence regions of the genome.
+  - `pbta/tcga-snv-consensus-mutation-tmb-all.tsv` - Tumor Mutation burden calculations using *all* mutations use the consensus of Mutect2 and Strelka2 throughout the genome.
 
 ## Summary of Methods
 
@@ -62,13 +62,14 @@ This is following the [code used in
 
 ### Mutation Comparisons
 
-The default consensus mutations called are those that are shared among all of Strelka2, Mutect2, and Lancet.
+The consensus mutations called are those that are shared among all of Strelka2, Mutect2, and Lancet.
 Mutations were considered to be the same if they were identical in the following field: `Chromosome`, `Start_Position`, `Reference_Allele`,  `Allele`, and `Tumor_Sample_Barcode`.
 As Strelka2 does not call multinucleotide variants (MNV), but instead calls each component SNV as a separate mutation, MNV calls from Mutect2 and Lancet were separated into consecutive SNVs before comparison with Strelka2.
 
 ### Tumor Mutation Burden Calculation
 
 For each experimental strategy and TMB calculation, the intersection of the genomic regions effectively being surveyed are used.
+Only Strelka2 and Mutect2 agreement was used for TMB calculations. This is because of some [complications identified with Lancet's performance on WXS data](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers/lancet-wxs-tests).
 These genomic regions are used for first filtering mutations to these regions and then for using the size in bp of the genomic regions surveyed as the TMB denominator.
 
 #### All mutations TMB
@@ -89,12 +90,12 @@ This file is included in the data download.
 SNVs outside of these coding sequences are filtered out before being summed and used for TMB calculations like such:
 
 ```
-WGS_coding_only_TMB = (total # coding sequence snvs called by all three of Strelka, Lancet, and Mutect2 ) / intersection_strelka_lancet_mutect_CDS_genome_size
+WGS_coding_only_TMB = (total # coding sequence snvs called both Strelka and Mutect2 ) / intersection_wgs_strelka_mutect_CDS_genome_size
 ```
 Because the same WXS BED file applies to all callers, that file is intersected with the coding sequences for filtering and for determining the denominator.
 ```
-WXS_coding_only_TMB = (total # coding sequence snvs called by all three of Strelka, Lancet, and Mutect2 ) /
-intersection_wxs_CDS_genome_size
+WXS_coding_only_TMB = (total # coding sequence snvs called by Strelka and Mutect2 ) /
+intersection_wxs_strelka_mutect_CDS_genome_size
 ```
 
 ## General usage of scripts
@@ -147,17 +148,21 @@ Using the database created by `01-setup_db.py`, merge callers' data files into c
 
 Using the consensus file created in `02-merge_callers.R`, calculate TMB for all
 WGS and WXS samples.
-Two TMB files are created, one including *all snv* called by Strelka2 and Mutect2 (Lancet is excluded from this TMB calculation consensus because of a [coding region bias in the way it was ran](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#snv-and-indel-calling)), and a *coding snvs only* TMB calculation.
+Two TMB files are created, one including *all snv* and a *coding snvs only*, these both are made using mutations called by both Strelka2 and Mutect2. 
 
 **Argument descriptions**
 ```
- --consensus : File path to the MAF-like file.
  --db_file : Path to sqlite database file made from 01-setup_db.py
  --metadata : Relative file path to MAF file to be analyzed. Can be .gz compressed.
               Assumes file path is given from top directory of 'OpenPBTA-analysis'.
- --bed_wgs : File path that specifies the caller-specific BED regions file.
-             Assumes from top directory, 'OpenPBTA-analysis'.
- --bed_wxs : File path that specifies the WXS BED regions file. Assumes file path
-             is given from top directory of 'OpenPBTA-analysis'
+ --all_bed_wgs : File path that specifies the BED regions file to be used for the
+                 denominator for all mutations TMB for WGS samples.
+ --all_bed_wxs : File path that specifies the BED regions file to be used for the
+                 denominator for all mutations TMB for WXS samples.
+ --coding_bed_wgs : File path that specifies the BED regions file to be used for the
+                 denominator for coding only TMB for WGS samples.
+ --coding_bed_wxs : File path that specifies the BED regions file to be used for the
+                 denominator for coding only TMB for WXS samples.
  --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
+ --tcga: If used will skip PBTA metadata specific steps and do TCGA metdata steps.
 ```
