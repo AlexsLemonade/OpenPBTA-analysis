@@ -14,6 +14,10 @@
 #   - Some number of biospecimen IDs that correspond to participant IDs that
 #     are *not* represented across strategies but are present in the file under
 #     consideration. This number will be 10% of num_matched.
+#   - We include (and hardcode) a set of biospecimen IDs for samples that have
+#     TP53 and NF1 mutations that meet the criteria in the tp53_nf1_module and
+#     are represented in the stranded RNA-seq dataset. 
+#     See 00-enrich-positive-examples for more information.
 #
 # EXAMPLE USAGE:
 #
@@ -181,6 +185,14 @@ num_nonmatched <- ceiling(0.1 * num_matched_participants)
 # set the seed
 set.seed(opt$seed)
 
+#### Samples we need to include to run tp53_nf1_score --------------------------
+# For more information, see the 00-enrich-positive-examples notebook
+
+tp53_dnaseq <- c("BS_3E5C1PN1", "BS_KHSYAB3J", "BS_ZR75EKKX")
+tp53_stranded <- c("BS_TM9MH0RP", "BS_4B0BAVTX", "BS_FCAKKZ20")
+nf1_dnaseq <- c("BS_RXSBJ929", "BS_P3PF53V8", "BS_7M7JNG00")
+nf1_stranded <- c("BS_WJ9H4NZZ", "BS_Z8YZ6QGS", "BS_E0N3PTPN")
+
 #### Get IDs -------------------------------------------------------------------
 
 # list all files we are interested in subsetting and can support
@@ -212,7 +224,7 @@ files_to_subset <-
 # currently documented
 # we'll include the entire zipped folder
 files_to_subset <-
-  files_to_subset[-grep("pbta-cnv-cnvkit-gistic.zip", files_to_subset)]
+  files_to_subset[-grep("gistic.zip", files_to_subset)]
 
 # if testing this locally, drop the 2 larger of the 4 MAF files
 if (running_locally) {
@@ -319,6 +331,20 @@ biospecimen_ids_for_subset <- purrr::map(
       dplyr::pull(Kids_First_Biospecimen_ID)
   }
 )
+
+# for each stranded instance, add in biospecimen IDs for samples we know have a
+# positive example of NF1 mutation and TP53 for tp53_nf1_score
+stranded_index <- stringr::str_which(names(biospecimen_ids_for_subset),
+                                     "stranded")
+biospecimen_ids_for_subset <- biospecimen_ids_for_subset %>%
+  purrr::modify_at(stranded_index, ~ append(.x, c(tp53_stranded, nf1_stranded)))
+
+# for each pbta-snv instance, add in biospecimen IDs for samples we know have a
+# positive example of NF1 mutation and TP53 for tp53_nf1_score
+pbta_snv_index <- stringr::str_which(names(biospecimen_ids_for_subset),
+                                     "pbta-snv")
+biospecimen_ids_for_subset <- biospecimen_ids_for_subset %>%
+  purrr::modify_at(pbta_snv_index, ~ append(.x, c(tp53_dnaseq, nf1_dnaseq)))
 
 # now for the other RSEM files, we need to use the same identifiers as the
 # same file we included

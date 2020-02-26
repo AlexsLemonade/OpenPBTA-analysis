@@ -23,6 +23,10 @@
 #                 the effectively surveyed regions of the genome for the WGS samples.",
 # --surveyed_wxs: File path that specifies the BED regions file that indicates the
 #                 effectively surveyed regions of the genome for the WXS samples.
+# --gap: An integer that indicates how many base pairs away a CNV and SV and 
+#        still be considered the same. Will be passed to maxgap argument in 
+#        GenomicRanges::findOverlaps. Default is 0.
+# --drop_sex: If TRUE, will drop the sex chromosomes. Default is FALSE
 #
 # Command line example:
 #
@@ -37,11 +41,60 @@
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
+# We need the `make_granges` function from here
+source(file.path(root_dir, 
+                 "analyses", 
+                 "chromosomal-instability", 
+                 "util", 
+                 "chr-break-calculate.R"))
+
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
 # Load library:
 library(optparse)
+
+
+############################ Intersect function ################################
+intersect_cnv_sv <- function(sample_id, sv_breaks, cnv_breaks, gap = opt$gap) {
+  # For a given sample's data in CNV and SV chromosomal breaks data.frame, 
+  # intersect the two (based on the maxgap allowed to consider two breaks 
+  # identical) and return a data.frame with the intersection breaks. 
+  #
+  # Args:
+  #   sample_id: The sample_id to be looked up in the samples_col
+  #   sv/cnv_breaks: for a data.frame with chromosomal coordinates and sample IDs 
+  #                  for their respective breaks
+  #   sample_id: a character string that designates which sample's data needs to be
+  #              extracted and intersected between the two data.frames (CNV and SV)
+  #   gap : The max number of bases between a CNV and SV break for them to be 
+  #         considered the same. 
+  #
+  # Returns:
+  # A chromosomal breaks data.frame that contains the intersection of CNV and SV 
+  # chromosomal break data.
+  # 
+  # Make into GenomicRanges objects 
+  sv_ranges <- make_granges(sv_breaks, 
+                            sample_id = sample_id, 
+                            start_col = "coord",
+                            end_col = "coord")
+  cnv_ranges <- make_granges(cnv_breaks,
+                             sample_id = sample_id, 
+                             start_col = "coord",
+                             end_col = "coord")
+  # Find overlaps
+  intersection_df <- IRanges::mergeByOverlaps(
+    sv_ranges, 
+    cnv_ranges,
+    maxgap = opt$gap) %>% 
+    # Coerce to data.frame
+    as.data.frame() %>% 
+    # Remove these, they are redundant
+    dplyr::select(-dplyr::contains("mcols"))
+  
+  return(intersection_df)
+}
 
 ################################ Set up options ################################
 # Set up optparse options
@@ -92,6 +145,25 @@ option_list <- list(
     'OpenPBTA-analysis') that specifies the BED regions file that indicates the 
     effectively surveyed regions of the genome for the WXS samples.",
     metavar = "character"
+  ), 
+  make_option(
+    opt_str = "--uncalled_samples", type = "character", default = "none",
+    help = "Relative file path (assuming from top directory of
+    'OpenPBTA-analysis') that specifies the regions that were uncalled in CNV
+    analysis.",
+    metavar = "character"
+  ), 
+  make_option(
+    opt_str = "--gap", default = 0,
+    help = "An integer that indicates how many base pairs away a CNV and SV 
+    breakpoint can be and still be considered the same. Will be passed to maxgap
+    argument in GenomicRanges::findOverlaps.",
+    metavar = "number"
+  ),
+  make_option(
+    opt_str = "--drop_sex", action = "store_true",
+    default = FALSE, help = "If TRUE, will drop the sex chromosomes. Default is FALSE",
+    metavar = "character"
   )
 )
 
@@ -107,7 +179,7 @@ opt$surveyed_wxs <- file.path(root_dir, opt$surveyed_wxs)
 
 ########### Check that the files we need are in the paths specified ############
 needed_files <- c(
-  opt$cnv_seg, opt$sv, opt$metadata, opt$surveyed_wgs, opt$surveyed_wxs
+  opt$cnv_seg, opt$sv, opt$metadata, opt$surveyed_wgs, opt$surveyed_wxs, opt$uncalled
 )
 
 # Get list of which files were found
@@ -157,6 +229,8 @@ cnv_df <- data.table::fread(opt$cnv_seg, data.table = FALSE) %>%
   # Changing these so they end up matching the SV data
   dplyr::rename(start = loc.start, end = loc.end)
 
+# Obtain full list of samples
+cnv_samples <- unique(as.character(cnv_df$samples))
 
 # Filter CNV data to only the changes that are larger than our cutoff `ch.pct`.
 cnv_filtered_df <- cnv_df %>%
@@ -174,16 +248,18 @@ sv_df <- data.table::fread(opt$sv, data.table = FALSE) %>%
     )
   )
 
+# Obtain full list of samples
+sv_samples <- unique(sv_df$Kids.First.Biospecimen.ID.Tumor)
+
+####################### Drop Sex Chr if option is on ###########################
+if (opt$drop_sex){
+  sv_df <- sv_df %>% 
+    dplyr::filter(!(chrom %in% c("X", "Y", "M")))
+  
+  cnv_df <- cnv_df %>% 
+    dplyr::filter(!(chrom %in% c("X", "Y", "M")))
+}
 #################### Format the data as chromosomes breaks #####################
-# Only keep samples for which there are both SV and CNV data
-common_samples <- dplyr::intersect(
-  unique(cnv_df$ID),
-  unique(sv_df$Kids.First.Biospecimen.ID.Tumor)
-)
-
-# TODO: after updating to consensus CNV data, evaluate whether sex chromosomes should still be removed.
-# Make an CNV breaks data.frame.
-
 # Make a CNV data.frame that has the breaks
 cnv_breaks <- data.frame(
   samples = rep(cnv_filtered_df$ID, 2),
@@ -193,12 +269,8 @@ cnv_breaks <- data.frame(
   copy.num = rep(cnv_filtered_df$copy.num, 2),
   stringsAsFactors = FALSE
 ) %>%
-  # Remove sex chromosomes
-  dplyr::filter(
-    !(chrom %in% c("X", "Y")),
-    # Only keep samples that have both CNV and SV data
-    samples %in% common_samples
-  )
+  # Remove NAs
+  dplyr::filter(!is.na(chrom))
 
 # Make an SV breaks data.frame.
 sv_breaks <- data.frame(
@@ -208,21 +280,35 @@ sv_breaks <- data.frame(
   svclass = rep(sv_df$SV.type, 2),
   stringsAsFactors = FALSE
 ) %>%
-  # Remove sex chromosomes and NAs
-  dplyr::filter(
-    !(chrom %in% c("X", "Y", "M", NA)),
-    # Only keep samples that have both CNV and SV data
-    samples %in% common_samples
-  )
+  # Remove NAs
+  dplyr::filter(!is.na(chrom))
 
-############################## Create union of breaks ##########################
-# Make an union of breaks data.frame.
-union_of_breaks <- dplyr::bind_rows(sv_breaks, cnv_breaks) %>%
-  dplyr::distinct(samples, chrom, coord, .keep_all = TRUE)
+######################### Create intersection of breaks ########################
+# Get list of samples for which there are both SV and CNV data
+common_samples <- dplyr::intersect(
+  unique(cnv_breaks$samples),
+  unique(sv_breaks$samples)
+)
+
+# Make an intersection of breaks data.frame.
+intersection_of_breaks <- lapply(common_samples,
+                                 intersect_cnv_sv, # Special intersect function
+                                 sv_breaks = sv_breaks,
+                                 cnv_breaks = cnv_breaks, 
+                                 gap = opt$gap) # The maxgap allowed
+
+# Bring along sample names
+names(intersection_of_breaks) <- common_samples
+
+# Collapse into a data.frame
+intersection_of_breaks <- dplyr::bind_rows(intersection_of_breaks, 
+                                           .id = "samples") %>% 
+  # Only need one chromosome 
+  dplyr::select(chrom = sv_ranges.seqnames, dplyr::everything(), -cnv_ranges.seqnames)
 
 # Put all the breaks into a list.
 breaks_list <- list(
-  union_of_breaks = union_of_breaks,
+  intersection_of_breaks = intersection_of_breaks,
   cnv_breaks = cnv_breaks,
   sv_breaks = sv_breaks
 )
@@ -244,33 +330,52 @@ wxs_size <- sum(bed_wxs[, 3] - bed_wxs[, 2])
 wgs_size <- as.numeric(wgs_size)
 wxs_size <- as.numeric(wxs_size)
 
+# Read in uncalled samples from consensus module
+uncalled_samples <- readr::read_tsv(opt$uncalled)$sample
+
+# Get vector of all samples 
+all_samples <- unique(c(cnv_samples, sv_samples, uncalled_samples))
+
+
 # Set up the metadata
-metadata <- readr::read_tsv(opt$metadata) %>%
+metadata <- readr::read_tsv(opt$metadata, guess_max = 10000) %>%
   # Isolate metadata to only the samples that are in the datasets.
-  dplyr::filter(Kids_First_Biospecimen_ID %in% common_samples) %>%
+  dplyr::filter(Kids_First_Biospecimen_ID %in% all_samples) %>%
   # Keep the columns to only the experimental strategy and the biospecimen ID
   dplyr::select(Kids_First_Biospecimen_ID, experimental_strategy) %>%
   # For an easier time matching to our breaks data.frames, lets just rename this.
-  dplyr::rename(samples = Kids_First_Biospecimen_ID)
+  dplyr::rename(samples = Kids_First_Biospecimen_ID) %>%
+  # samples not in cnv_samples were were noisy or otherwise bad data
+  dplyr::mutate(surveyed = samples %in% cnv_samples) 
+
 
 # Calculate the breaks density for each data.frame
 breaks_density_list <- lapply(breaks_list, function(breaks_df) {
   # Calculate the breaks density
   breaks_df %>%
-    # Tack on the experimental strategy
-    dplyr::inner_join(metadata) %>%
+    # Tack on the experimental strategy and samples with no counts
+    dplyr::full_join(metadata) %>%
     # Recode using the BED range sizes
     dplyr::mutate(genome_size = dplyr::recode(experimental_strategy,
       "WGS" = wgs_size,
       "WXS" = wxs_size
     )) %>%
     dplyr::group_by(
-      samples, experimental_strategy, genome_size
+      samples, experimental_strategy, genome_size, surveyed
     ) %>%
-    # Count number of mutations for that sample
-    dplyr::summarize(breaks_count = dplyr::n()) %>%
-    # Calculate breaks density
-    dplyr::mutate(breaks_density = breaks_count / (genome_size / 1000000))
+    # Count number of mutations for that sample but find out if it is NA
+    dplyr::summarize(is_na = any(is.na(chrom)), 
+                     breaks_count = dplyr::n()) %>%
+    # Calculate breaks density, but put NA for breaks_count if the sample was 
+    # dropped from CNV consensus analysis
+    dplyr::mutate(breaks_count = dplyr::case_when(
+      !is_na ~ as.numeric(breaks_count), 
+      is_na & surveyed ~ as.numeric(0),
+      TRUE ~ as.numeric(NA)
+      ), 
+    breaks_density = breaks_count / (genome_size / 1000000)) %>% 
+    # Drop the is_na column, we only needed if for recoding
+    dplyr::select(-is_na, -surveyed)
 })
 
 # Write the break densities each as their own files

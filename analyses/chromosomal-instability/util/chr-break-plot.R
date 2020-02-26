@@ -69,11 +69,11 @@ multipanel_break_plot <- function(granges_list,
   #  ggplot of chromosomal mapping of the y value given.
   #
   # Make combined SV and CNV plot
-  union_of_plot <- map_breaks_plot(granges_list$union_of_breaks,
+  intersection_of_plot <- map_breaks_plot(granges_list$intersection_of_breaks,
     y_val = y_val,
     y_lab = y_lab,
     color = "blue",
-    main_title = "Union of Breaks"
+    main_title = "Intersection of Breaks"
   )
 
   # Make CNV plot
@@ -100,7 +100,7 @@ multipanel_break_plot <- function(granges_list,
 
   # Put all plots and title together
   full_plot <- cowplot::plot_grid(title,
-    union_of_plot,
+    intersection_of_plot,
     cnv_plot,
     sv_plot,
     nrow = 4,
@@ -115,7 +115,70 @@ multipanel_break_plot <- function(granges_list,
     base_height = 7,
     base_width = 20
   )
+}
 
-  # Print out the plot while we are here
-  full_plot
+breaks_cdf_plot <- function(density_file, metadata_df, cdf_plot_file) {
+  # Given a genome wide breaks density file path, plot the CDF distribution 
+  # for it by histology.
+  #
+  # Args:
+  #   density_file: a chromosomal breaks density file path where each sample is
+  #                 a row with `samples` and `breaks_count` columns. 
+  #   metadata_df: a data.frame with Kids_First_Biospecimen_ID, short_histology
+  #                columns
+  #   cdf_plot_file: A file.path to where the plot should be saved
+  #   
+  # Returns:
+  #  Saves the CDF breaks plot to a file and also prints it out. 
+  
+  # Read in the breaks file
+  breaks_cdf <- readr::read_tsv(density_file) %>%
+    # Add on the short histology column from the metadata for plotting purposes
+    dplyr::inner_join(metadata_df %>%
+                        dplyr::select(Kids_First_Biospecimen_ID, short_histology),
+                      by = c("samples" = "Kids_First_Biospecimen_ID")
+    ) %>%
+    # Only plot histologies groups with more than `min_samples` number of samples
+    dplyr::group_by(tools::toTitleCase(short_histology), add = TRUE) %>%
+    # Only keep groups with this amount of samples
+    dplyr::filter(dplyr::n() > params$min_samples) %>%
+    # Calculate histology group mean
+    dplyr::mutate(
+      hist_mean = mean(breaks_count),
+      hist_rank = rank(breaks_count, ties.method = "first") / dplyr::n()
+    ) %>%
+    dplyr::ungroup() %>%
+    # Now we will plot these as cummulative distribution plots
+    ggplot2::ggplot(ggplot2::aes(
+      x = hist_rank, 
+      y = breaks_count,
+      color = short_histology
+    )) +
+    ggplot2::geom_point() + 
+    # Add summary line for mean
+    ggplot2::geom_segment(x = 0, xend = 1, color = "grey", 
+                          ggplot2::aes(y = hist_mean, yend = hist_mean)) +
+    # Separate by histology
+    ggplot2::facet_wrap(~ short_histology, nrow = 1, strip.position = "bottom") +
+    ggplot2::theme_classic() +
+    ggplot2::xlab("") +
+    ggplot2::ylab("Chromosomal Breaks per Genome") +
+    # Transform to log10 make non-log y-axis labels
+    ggplot2::scale_y_continuous(trans = "log1p", breaks = c(0, 1, 3, 10, 30)) +
+    ggplot2::scale_x_continuous(limits = c(-0.2, 1.2), breaks = c()) +
+    # Making it pretty
+    ggplot2::theme(legend.position = "none") +
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_blank(),
+      axis.ticks.x = ggplot2::element_blank(),
+      strip.placement = "outside",
+      strip.text = ggplot2::element_text(size = 10, angle = 90, hjust = 1), 
+      strip.background = ggplot2::element_rect(fill = NA, color = NA)
+    )
+  
+  # Save the plot to a png
+  ggplot2::ggsave(cdf_plot_file,
+                  plot = breaks_cdf, width = 40, height = 20, unit = "cm")
+  
+  return(breaks_cdf)
 }

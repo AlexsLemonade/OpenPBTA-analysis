@@ -7,8 +7,6 @@ import sys
 import pandas as pd
 import pyreadr
 
-
-
 def read_rds(filepath):
     """Read an RDS-format matrix into a Pandas dataframe.
     Location can be data, scratch, or results.
@@ -22,9 +20,28 @@ def write_rds(df, filepath):
     """Write a pandas dataframe to RDS file in the dir specified.
     Valid locations are scratch or results.
     Index is stored as first column since pyreadr.write_rds drops it otherwise"""
-    df.insert(0, df.index.name, df.index, allow_duplicates=True)
-    pyreadr.write_rds(filepath, df)
+    indexed_df = df.copy()
+    indexed_df.insert(0, indexed_df.index.name, indexed_df.index, allow_duplicates=True)
+    pyreadr.write_rds(filepath, indexed_df)
     # Pyreadr.write_rds fails silently when permissions prevent file write,
     # so trigger an error if our file isn't actually there
     with open(filepath, "rb"):
         pass
+
+def read_tsv(path):
+    """Wrapper for pandas read_csv with standardized arguments."""
+    return pd.read_csv(path, sep="\t", index_col=0)
+
+def write_tsv(df, path):
+    """Wrapper for pandas to_csv with standardized arguments.
+       Generates a tsv.gz file."""
+    df.to_csv(path, sep="\t", compression="gzip")
+
+def read_feather(path):
+    """Wrapper for pandas read_feather, retrieving original index."""
+    df = pd.read_feather(path)
+    return df.set_index(df.columns[0], drop=True)
+
+def write_feather(df, path):
+    """Wrapper for pandas to_feather, saving original index as column."""
+    df.reset_index().to_feather(path)
