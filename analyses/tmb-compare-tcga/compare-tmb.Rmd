@@ -113,18 +113,19 @@ tmb_cdf_plot <- function(tmb_df, plot_title, colour) {
 
 Read in the consensus TMB file. 
 
-```{r include=FALSE}
+```{r}
 # TODO: update if the consensus file gets updated in a future data release
 tmb_pbta <- data.table::fread(file.path("..", 
                                         "snv-callers",
                                         "results",
                                         "consensus", 
                                         "pbta-snv-mutation-tmb-coding.tsv")) %>% 
+  # This variable is weird when binding but we don't need it for the plot so we'll just remove it. 
   dplyr::select(-genome_size)
 ```
 
 
-```{r include=FALSE}
+```{r}
 # TODO: update if the consensus file gets updated in a future data release
 tmb_tcga <- data.table::fread(file.path("..", 
                                         "snv-callers",
