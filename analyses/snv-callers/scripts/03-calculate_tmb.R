@@ -200,7 +200,8 @@ if (opt$tcga) {
 strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
   dplyr::union_all(strelka_mutect_mnv,
                    copy = TRUE
-  )
+  ) %>%
+  as.data.frame()
 
 ########################### Set up metadata columns ############################
 # Print progress message
@@ -214,7 +215,7 @@ if (opt$tcga) {
       experimental_strategy = "WXS", # This field doesn't exist for this data, but all is WXS
       short_histology = Primary_diagnosis
     ) # This field is named differently
-  
+
   # Manifest files only have first 12 letters of the barcode so we gotta chop the end off
   strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
     dplyr::mutate(Tumor_Sample_Barcode = substr(Tumor_Sample_Barcode, 0, 12))
@@ -224,7 +225,7 @@ if (opt$tcga) {
     dplyr::filter(Kids_First_Biospecimen_ID %in% strelka_mutect_maf_df$Tumor_Sample_Barcode) %>%
     dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
     dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID)
-  
+
   # Make sure that we have metadata for all these samples.
   if (!all(unique(strelka_mutect_maf_df$Tumor_Sample_Barcode) %in% metadata$Tumor_Sample_Barcode)) {
     stop("There are samples in this MAF file that are not in the metadata.")
@@ -232,15 +233,13 @@ if (opt$tcga) {
 }
 # Add in metadata
 strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
+  as.data.frame() %>%
   dplyr::inner_join(metadata %>%
                       dplyr::select(
                         "Tumor_Sample_Barcode",
                         "experimental_strategy",
                         "short_histology"
-                      ),
-                    copy = TRUE
-  ) %>%
-  as.data.frame()
+                      ))
 
 # .x is messing up the maf_to_granges function
 colnames(strelka_mutect_maf_df) <- gsub("\\.x$", "", colnames(strelka_mutect_maf_df))
