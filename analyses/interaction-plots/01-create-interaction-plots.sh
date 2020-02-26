@@ -25,6 +25,7 @@ metadata=data/pbta-histologies.tsv
 maf=data/pbta-snv-consensus-mutation.maf.tsv.gz
 
 cooccur=${results_dir}/consensus_top50
+gene_disease=${results_dir}/gene_disease_top50
 plot=${plot_dir}/consensus_top50
 
 # associative array of diseases to test; chosen by those that are most common
@@ -65,7 +66,8 @@ for disease_id in "${!disease[@]}"; do
     --vaf 0.2 \
     --min_mutated 5 \
     --max_genes 50 \
-    --out ${cooccur}.${disease_id}.tsv
+    --out ${cooccur}.${disease_id}.tsv \
+    --disease_table ${gene_disease}.${disease_id}.tsv
 
   Rscript ${script_dir}/03-plot_interactions.R \
     --infile ${cooccur}.${disease_id}.tsv \

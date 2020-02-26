@@ -85,7 +85,7 @@ out_file <- file.path(root_dir, opts$outfile)
 
 #### Read files
 
-meta_df <- readr::read_tsv(meta_file, col_types = readr::cols())
+meta_df <- readr::read_tsv(meta_file, col_types = readr::cols(), guess_max = 10000)
 specimen_df <- readr::read_tsv(specimen_file, col_types = readr::cols())
 
 

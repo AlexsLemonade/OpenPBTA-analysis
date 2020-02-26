@@ -23,6 +23,7 @@
 # --max_genes: Maximum number of genes to plot interation data for 
 #       (uses the most mutated n genes)
 # --out: Output file location
+# --disease_table: Location for disease table output
 #
 #
 # Command line example:
@@ -81,6 +82,14 @@ option_list <- list(
     default = file.path("analyses", "interaction-plots", "results", "cooccurence.tsv"),
     help = "Relative file path (from top directory of 'OpenPBTA-analysis')
             where output table will be placed.",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = "--disease_table",
+    type = "character",
+    default = file.path("analyses", "interaction-plots", "results", "disease-counts.tsv"),
+    help = "Relative file path (from top directory of 'OpenPBTA-analysis')
+            where table of geneXdisease mutation counts will be placed.",
     metavar = "character"
   ),
   make_option(
@@ -155,6 +164,7 @@ maf_file <- file.path(root_dir, opts$maf)
 cnv_file <- file.path(root_dir, opts$cnv)
 meta_file <- file.path(root_dir, opts$metadata)
 out_file <- file.path(root_dir, opts$out)
+disease_file <- file.path(root_dir, opts$disease_table)
 if (!is.na(opts$specimen_list)) {
   specimen_file <- file.path(root_dir, opts$specimen_list)
 }
@@ -278,6 +288,7 @@ gene_sample_counts <- maf_filtered %>%
   dplyr::group_by(gene = Hugo_Symbol, sample = Tumor_Sample_Barcode) %>%
   dplyr::tally(name = "mutations")
 
+
 # count # of samples mutated by gene
 gene_counts <- gene_sample_counts %>%
   dplyr::filter(sample %in% samples) %>%
@@ -300,3 +311,14 @@ top_count_genes <- head(gene_counts, opts$max_genes)$gene
 cooccur_summary <- coocurrence(gene_sample_counts, top_count_genes)
 
 readr::write_tsv(cooccur_summary, out_file)
+
+# count mutations by disease types
+gene_disease_counts <- gene_sample_counts %>%
+  dplyr::filter(gene %in% top_count_genes) %>%
+  dplyr::left_join(sample_meta, 
+                   by = c("sample" = "Kids_First_Biospecimen_ID")) %>%
+  dplyr::group_by(gene, disease = disease_type_new) %>%
+  dplyr::summarize(mutations = sum(mutations))
+
+readr::write_tsv(gene_disease_counts, disease_file)
+
