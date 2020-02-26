@@ -169,7 +169,11 @@ jobs:
 
       - run:
           name: GISTIC Results Comparison - Entire Cohort vs Histology
-          command: ./scripts/run_in_ci.sh bash analyses/gistic-cohort-vs-histology-comparison/run-gistic-comparison.sh
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('gistic-cohort-vs-histology-comparison.Rmd', clean = TRUE)"
+          
+      - run:
+          name: GISTIC vs Focal CN File Preparation
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/gistic-vs-focal-cn-file-preparation/01-gistic-tidy-data-prep.Rmd', clean = TRUE)"
 
 
          ################################
