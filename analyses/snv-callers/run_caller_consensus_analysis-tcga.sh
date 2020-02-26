@@ -20,7 +20,7 @@ cds_file=scratch/gencode.v27.primary_assembly.annotation.bed
 all_mut_wgs_bed=analyses/snv-callers/ref_files/gencode.v19.basic.exome.hg38liftover.bed 
 coding_wgs_bed=analyses/snv-callers/ref_files/gencode.v19.basic.exome.hg38liftover.bed
 
-all_mut_wxs_bed=data/gencode.v19.basic.exome.hg38liftover.bed
+all_mut_wxs_bed=analyses/snv-callers/ref_files/gencode.v19.basic.exome.hg38liftover.bed
 coding_wxs_bed=scratch/intersect_cds_gencode_liftover_WXS.bed
 
 # Set a default for the VAF filter if none is specified
@@ -49,7 +49,7 @@ Rscript analyses/snv-callers/scripts/02-merge_callers.R \
 python3 analyses/snv-callers/scripts/01-setup_db.py \
   --db-file $dbfile \
   --consensus-file $consensus_file
-∂
+
 ###################### Create intersection BED files ###########################
 # Convert GTF to BED file for use in bedtools
 # Here we are only extracting lines with as a CDS i.e. are coded in protein
