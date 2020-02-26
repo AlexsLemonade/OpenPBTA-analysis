@@ -54,6 +54,14 @@ option_list <- list(
     type = "numeric",
     help = "Relative size of plots; number of rows and columns to be plotted",
     metavar = "character"
+  ),
+  make_option(
+    opt_str = "--disease_table",
+    type = "character",
+    default = NA,
+    help = "Relative file path (from top directory of 'OpenPBTA-analysis')
+            where geneXdisease table is located (optional)",
+    metavar = "character"
   )
 )
 
@@ -79,6 +87,7 @@ cooccur_df <- cooccur_df %>%
     label1 = factor(label1, levels = labels),
     label2 = factor(label2, levels = labels)
   )
+
 
 # create scales for consistent sizing
 xscale <- cooccur_df$label1 %>%
@@ -132,3 +141,20 @@ cooccur_plot <- ggplot(
   )
 
 ggsave(cooccur_plot, filename = plot_file)
+
+# if we don't have a disease table, quit 
+if (is.na(opts$disease_table)) {
+ quit()
+}
+# otherwise make a gene by disease stacked bar chart
+
+disease_file = file.path(root_dir, opts$disease_table)
+disease_df <-
+  readr::read_tsv(disease_file, col_types = readr::cols())
+
+disease_barplot <- ggplot(
+  disease_df,
+  aes(x = gene, y = mutations, fill = disease)) + 
+  geom_col() +
+  theme_void()
+
