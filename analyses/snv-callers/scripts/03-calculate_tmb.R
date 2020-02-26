@@ -196,23 +196,11 @@ if (opt$tcga) {
     dplyr::mutate(Tumor_Sample_Barcode = substr(Tumor_Sample_Barcode, 0, 12))
 }
 
-# Add in the MNVs
+# Split up MNVs
 strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
   dplyr::union_all(strelka_mutect_mnv,
-    copy = TRUE
-  ) %>%
-  dplyr::inner_join(metadata %>%
-    dplyr::select(
-      "Tumor_Sample_Barcode",
-      "experimental_strategy",
-      "short_histology"
-    ),
-  copy = TRUE
-  ) %>%
-  as.data.frame()
-
-# .x is messing up the maf_to_granges function
-colnames(strelka_mutect_maf_df) <- gsub("\\.x$", "", colnames(strelka_mutect_maf_df))
+                   copy = TRUE
+  )
 
 ########################### Set up metadata columns ############################
 # Print progress message
@@ -242,14 +230,20 @@ if (opt$tcga) {
     stop("There are samples in this MAF file that are not in the metadata.")
   }
 }
-# Add the experimental strategy column on the data.frame for calculating purposes
+# Add in metadata
 strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
   dplyr::inner_join(metadata %>%
                       dplyr::select(
-                        Tumor_Sample_Barcode,
-                        experimental_strategy,
-                        short_histology
-                      ))
+                        "Tumor_Sample_Barcode",
+                        "experimental_strategy",
+                        "short_histology"
+                      ),
+                    copy = TRUE
+  ) %>%
+  as.data.frame()
+
+# .x is messing up the maf_to_granges function
+colnames(strelka_mutect_maf_df) <- gsub("\\.x$", "", colnames(strelka_mutect_maf_df))
 
 ############################# Coding TMB file ##################################
 # If the file exists or the overwrite option is not being used, run TMB calculations
