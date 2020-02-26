@@ -173,7 +173,7 @@ jobs:
           
       - run:
           name: GISTIC vs Focal CN File Preparation
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/gistic-vs-focal-cn-file-preparation/01-gistic-tidy-data-prep.Rmd', clean = TRUE)"
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/gistic-vs-focal-cn-file-preparation/01-GISTIC-tidy-data-prep.Rmd', clean = TRUE)"
 
 
          ################################
