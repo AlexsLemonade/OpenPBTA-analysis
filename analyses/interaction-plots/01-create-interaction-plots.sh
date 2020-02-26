@@ -37,10 +37,9 @@ if [ "$ALL" -gt "0" ]; then
   disease[Medulloblastoma]="Medulloblastoma"
   disease[Ependymoma]="Ependymoma"
   disease[HGAT]="High-grade glioma"
-  disease[DIPG]="Brainstem glioma- Diffuse intrinsic pontine glioma"
+  disease[DMG]="Diffuse midline glioma"
   disease[Ganglioglioma]="Ganglioglioma"
   disease[Craniopharyngioma]="Craniopharyngioma"
-  disease[ATRT]="Atypical Teratoid Rhabdoid Tumor"
 fi
 
 
