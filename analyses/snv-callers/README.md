@@ -44,8 +44,8 @@ This bash script will return:
   - `pbta/tcga-snv-consensus-mutation.maf.tsv` - is  [MAF-like file](#consensus-mutation-call) that contains the snvs that were called by all three of these callers for a given sample are saved to this file.
   These files combine the [MAF file data](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from 3 different SNV callers: [Mutect2](https://software.broadinstitute.org/cancer/cga/mutect), [Strelka2](https://github.com/Illumina/strelka), and [Lancet](https://github.com/nygenome/lancet).
   See the methods on the callers' settings [here](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#somatic-single-nucleotide-variant-calling) and see [the methods of this caller analysis and comparison below](#summary-of-methods).  
-  - `pbta/tcga-snv-mutation-tmb-coding.tsv` - Tumor Mutation burden calculations using *coding only* mutations use the consensus of Mutect2 and Strelka2 only within coding sequence regions of the genome.
-  - `pbta/tcga-snv-consensus-mutation-tmb-all.tsv` - Tumor Mutation burden calculations using *all* mutations use the consensus of Mutect2 and Strelka2 throughout the genome.
+  - `pbta/tcga-snv-mutation-tmb-coding.tsv` - Tumor Mutation burden calculations using *coding only* mutations identified by both Mutect2 and Strelka2 only within coding sequence regions of the genome.
+  - `pbta/tcga-snv--mutation-tmb-all.tsv` - Tumor Mutation burden calculations using *all* mutations identified by both of Mutect2 and Strelka2 throughout the genome.
 
 ## Summary of Methods
 
@@ -148,7 +148,7 @@ Using the database created by `01-setup_db.py`, merge callers' data files into c
 
 Using the consensus file created in `02-merge_callers.R`, calculate TMB for all
 WGS and WXS samples.
-Two TMB files are created, one including *all snv* and a *coding snvs only*, these both are made using mutations called by both Strelka2 and Mutect2. 
+Two TMB files are created, one including *all snv* and a *coding snvs only*, these both are made using mutations called by both Strelka2 and Mutect2.
 
 **Argument descriptions**
 ```
