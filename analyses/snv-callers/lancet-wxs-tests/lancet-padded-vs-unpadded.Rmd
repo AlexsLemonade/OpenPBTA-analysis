@@ -15,8 +15,9 @@ whether this had to do with the extra padding allowed in the pipeline (to try to
 for its local assembly). 
 
 ### Conclusion: 
-Lancet was doing poorly with WXS samples, whether or not they were using SNVs in
-the padding regions of the BED. 
+This notebook shows Lancet seems to call more mutations of low VAF in WXS data than in WGS and 
+this includes whether the data includes the padded regions or not. 
+This leads us to question the validity of Lancet's WXS calls with the current data. 
 
 Declare names of input and output directories.
 
@@ -28,7 +29,7 @@ data_dir <- file.path("..", "..", "..", "data")
 scratch_dir <- file.path("..", "..", "..", "scratch")
 
 # Load in these functions so we can use `maf_to_granges`
-source(file.path("..", "snv-callers", "util", "tmb_functions.R"))
+source(file.path("..", "..", "snv-callers", "util", "tmb_functions.R"))
 ```
 
 Load in the WXS ranges for Lancet data included with the data release. 
