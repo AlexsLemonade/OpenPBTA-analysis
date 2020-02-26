@@ -1,0 +1,172 @@
+---
+title: "Lancet padded vs unpadded"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: C. Savonen for ALSF CCDL
+date: 2020
+---
+
+#### Purpose: 
+This analysis resulted from an [idea in a comment here](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/548#issuecomment-589734993).
+In short we were seeing particularly low VAF for Lancet TCGA data and were wondering 
+whether this had to do with the extra padding allowed in the pipeline (to try to account 
+for its local assembly). 
+
+### Conclusion: 
+Lancet was doing poorly with WXS samples, whether or not they were using SNVs in
+the padding regions of the BED. 
+
+Declare names of input and output directories.
+
+```{r}
+# magrittr pipe
+`%>%` <- dplyr::`%>%`
+
+data_dir <- file.path("..", "..", "..", "data")
+scratch_dir <- file.path("..", "..", "..", "scratch")
+
+# Load in these functions so we can use `maf_to_granges`
+source(file.path("..", "snv-callers", "util", "tmb_functions.R"))
+```
+
+Load in the WXS ranges for Lancet data included with the data release. 
+
+```{r}
+wxs_padded <- readr::read_tsv(file.path(data_dir, "WXS.hg38.lancet.400bp_padded.bed"),
+  col_names = FALSE
+)
+```
+
+Set up this data as a GenomicRanges object. 
+
+```{r}
+# Turn the bed regions df into a GRanges object
+padded_ranges <- GenomicRanges::GRanges(
+  seqnames = wxs_padded$X1,
+  ranges = IRanges::IRanges(
+    start = wxs_padded$X2,
+    end = wxs_padded$X3
+  )
+)
+```
+
+Set up an alternative form of this data with the padding on either side removed. 
+
+```{r}
+# Turn the bed regions df into a GRanges object
+unpadded_ranges <- GenomicRanges::GRanges(
+  seqnames = wxs_padded$X1,
+  ranges = IRanges::IRanges(
+    start = wxs_padded$X2 + 400,
+    end = wxs_padded$X3 - 400
+  )
+)
+```
+
+Connect to SQLite database.
+
+```{r}
+# Start up connection
+con <- DBI::dbConnect(
+  RSQLite::SQLite(),
+  file.path(scratch_dir, "v11_snv_db.sqlite")
+)
+```
+
+Note what columns we will join by.
+
+```{r}
+cols_to_keep <- c(
+  "Chromosome",
+  "Start_Position",
+  "End_Position",
+  "Reference_Allele",
+  "Allele",
+  "Tumor_Sample_Barcode",
+  "Variant_Classification",
+  "VAF"
+)
+```
+
+Set up the Lancet data from the SQL database. 
+
+```{r}
+lancet <- dplyr::tbl(con, "lancet") %>%
+  dplyr::select(cols_to_keep) %>%
+  dplyr::inner_join(
+    dplyr::tbl(con, "samples") %>%
+      dplyr::select(
+        Tumor_Sample_Barcode = Kids_First_Biospecimen_ID,
+        experimental_strategy, short_histology
+      )
+  ) %>%
+  as.data.frame()
+```
+
+Get this data split into WXS only and WGS only data frames. 
+
+```{r}
+wxs_lancet <- lancet %>%
+  dplyr::filter(experimental_strategy == "WXS")
+
+wgs_lancet <- lancet %>%
+  dplyr::filter(experimental_strategy == "WGS")
+```
+
+We will need to filter VAF data out by whether it is in the unpadded or padded ranges. 
+So let's turn only the WXS data into a GenomicRanges object. 
+
+```{r}
+# Turn the MAF sample mutations into a GRanges object
+wxs_lancet_granges <- maf_to_granges(wxs_lancet)
+```
+
+Now we'll find the overlaps with the unpadded ranges and keep only those SNVs. 
+
+```{r}
+overlap <- GenomicRanges::findOverlaps(
+  wxs_lancet_granges,
+  unpadded_ranges
+)
+
+unpadded_lancet <- wxs_lancet[unique(overlap@from), ]
+```
+
+Do the same thing but for the padded ranges. 
+
+```{r}
+overlap <- GenomicRanges::findOverlaps(
+  wxs_lancet_granges,
+  padded_ranges
+)
+
+padded_lancet <- wxs_lancet[unique(overlap@from), ]
+```
+
+Combine the unpadded, padded, and the WGS data for Lancet into one big data.frame
+where the "pad" variable says where the data is from. 
+
+```{r}
+lancet_combo <- dplyr::bind_rows(list(
+  wxs_padded = padded_lancet,
+  wxs_unpadded = unpadded_lancet,
+  wgs = wgs_lancet
+), .id = "pad")
+```
+
+Plot this data as a violin plot. 
+
+```{r}
+ggplot2::ggplot(lancet_combo, ggplot2::aes(x = pad, y = VAF, fill = pad)) +
+  ggplot2::geom_violin() +
+  ggplot2::theme_classic() +
+  ggplot2::ggtitle("Lancet samples only")
+```
+
+### Session Info
+
+```{r}
+sessionInfo()
+```
