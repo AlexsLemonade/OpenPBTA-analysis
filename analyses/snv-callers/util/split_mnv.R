@@ -62,7 +62,7 @@ split_mnv <- function(mnv_tbl) {
       mnv_pos = dplyr::row_number(),
       Start_Position = Start_Position + mnv_pos - 1,
       End_Position = Start_Position
-    )
+    ) %>% 
     dplyr::ungroup()
   return(mnv_df)
 }

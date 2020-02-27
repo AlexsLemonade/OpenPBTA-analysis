@@ -241,17 +241,13 @@ if (opt$tcga) {
 }
 # Add in metadata
 strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
-  as.data.frame() %>%
   dplyr::inner_join(metadata %>%
                       dplyr::select(
-                        "Tumor_Sample_Barcode",
-                        "experimental_strategy",
-                        "short_histology"
+                        Tumor_Sample_Barcode,
+                        experimental_strategy,
+                        short_histology
                       ), 
-                    by = Tumor_Samples_Barcode)
-
-# .x is messing up the maf_to_granges function
-colnames(strelka_mutect_maf_df) <- gsub("\\.x$", "", colnames(strelka_mutect_maf_df))
+                    by = "Tumor_Sample_Barcode")
 
 ############################# Coding TMB file ##################################
 # If the file exists or the overwrite option is not being used, run TMB calculations
