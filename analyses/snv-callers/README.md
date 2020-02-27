@@ -31,7 +31,7 @@ To run the evaluations and comparisons of all the SNV callers, call the bash scr
 bash run_caller_analysis.sh
 ```
 
-For the TCGA data, it has its own script to run the same methods:
+The TCGA data is processed by its own script to run the same methods:
 
 ```
 bash run_caller_analysis-tcga.sh
@@ -41,7 +41,7 @@ This bash script will return:
 
 - Comparison plots in a notebook: [`compare_snv_callers_plots.nb.html`](https://cansavvy.github.io/openpbta-notebook-concept/snv-callers/compare_snv_callers_plots.nb.html).
 - A zip file containing:
-  - `pbta/tcga-snv-consensus-mutation.maf.tsv` - is  [MAF-like file](#consensus-mutation-call) that contains the snvs that were called by all three of these callers for a given sample are saved to this file.
+- `[pbta|tcga]-snv-consensus-mutation.maf.tsv` - [MAF-like files](#consensus-mutation-call) that contain the snvs that were called by all callers described below for a given sample.
   These files combine the [MAF file data](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from 3 different SNV callers: [Mutect2](https://software.broadinstitute.org/cancer/cga/mutect), [Strelka2](https://github.com/Illumina/strelka), and [Lancet](https://github.com/nygenome/lancet).
   See the methods on the callers' settings [here](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#somatic-single-nucleotide-variant-calling) and see [the methods of this caller analysis and comparison below](#summary-of-methods).  
   - `pbta/tcga-snv-mutation-tmb-coding.tsv` - Tumor Mutation burden calculations using *coding only* mutations identified by both Mutect2 and Strelka2 only within coding sequence regions of the genome.
@@ -69,6 +69,8 @@ As Strelka2 does not call multinucleotide variants (MNV), but instead calls each
 ### Tumor Mutation Burden Calculation
 
 For each experimental strategy and TMB calculation, the intersection of the genomic regions effectively being surveyed are used.
+Only Strelka2 and Mutect2 agreement were used for TMB calculations.
+This is because of some [complications identified with Lancet's performance on WXS data](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers/lancet-wxs-tests).
 Only Strelka2 and Mutect2 agreement was used for TMB calculations. This is because of some [complications identified with Lancet's performance on WXS data](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers/lancet-wxs-tests).
 These genomic regions are used for first filtering mutations to these regions and then for using the size in bp of the genomic regions surveyed as the TMB denominator.
 
@@ -87,7 +89,7 @@ WXS_all_mutations_TMB = (total # snvs called by Strelka2 and Mutect2 ) / wxs_gen
 
 Coding only TMB uses all three callers: Strelka2, Mutect2, and Lancet and the intersection demoninators are calculated by using coding sequence ranges in the gtf from Gencode 27.
 This file is included in the data download.
-SNVs outside of these coding sequences are filtered out before being summed and used for TMB calculations like such:
+SNVs outside of these coding sequences are filtered out before being summed and used for TMB calculations as follows:
 
 ```
 WGS_coding_only_TMB = (total # coding sequence snvs called both Strelka and Mutect2 ) / intersection_wgs_strelka_mutect_CDS_genome_size

@@ -2,7 +2,7 @@
 # C. Savonen
 # CCDL for ALSF 2019
 
-# Purpose:Run an consensus analysis for PBTA of SNV callers
+# Purpose: Run a consensus analysis for PBTA of SNV callers
 
 # Set this so the whole loop stops if there is an error
 set -e

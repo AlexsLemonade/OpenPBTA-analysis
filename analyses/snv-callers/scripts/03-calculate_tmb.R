@@ -106,6 +106,16 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
+opt$metadata <- "data/pbta-histologies.tsv"
+opt$db_file <- "scratch/v11_testing_snv_db.sqlite"
+opt$output <- "analyses/snv-callers/results/consensus"
+opt$all_bed_wgs <- "scratch/intersect_strelka_mutect_WGS.bed"
+opt$all_bed_wxs <- "data/WXS.hg38.100bp_padded.bed"
+opt$coding_bed_wgs <- "scratch/intersect_cds_lancet_strelka_mutect_WGS.bed"
+opt$coding_bed_wxs <- "scratch/intersect_cds_lancet_WXS.bed"
+opt$overwrite <- TRUE
+opt$tcga <- FALSE
+
 # Make everything relative to root path
 opt$metadata <- file.path(root_dir, opt$metadata)
 opt$db_file <- file.path(root_dir, opt$db_file)
@@ -179,10 +189,18 @@ join_cols <- c(
 
 # Create the consensus for non-MNVs
 strelka_mutect_maf_df <- strelka %>%
-  dplyr::inner_join(mutect, by = join_cols)
+  # We'll keep the Strelka2 columns and drop Mutect2 columns
+  dplyr::inner_join(mutect %>% 
+                      dplyr::select(join_cols), 
+                    by = join_cols, 
+                    copy = TRUE) %>%
+  as.data.frame()
 
 # Get Multi-nucleotide calls from mutect as SNVs
-split_mutect_df <- split_mnv(mutect)
+split_mutect_df <- split_mnv(mutect) %>% 
+  dplyr::select(join_cols) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::select(-temp_id)
 
 # join MNV calls with strelka
 strelka_mutect_mnv <- strelka %>%
@@ -194,15 +212,16 @@ strelka_mutect_mnv <- strelka %>%
 
 if (opt$tcga) {
   strelka_mutect_mnv <- strelka_mutect_mnv %>%
+    # In the TCGA MAF files, the Tumor_Sample_Barcode has the biospecimen
+    # information but only the first 12 characters are needed to match the metadata
     dplyr::mutate(Tumor_Sample_Barcode = substr(Tumor_Sample_Barcode, 0, 12))
 }
 
-# Split up MNVs
+# Merge in the MNVs
 strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
-  dplyr::union_all(strelka_mutect_mnv,
-                   copy = TRUE
-  ) %>%
-  as.data.frame()
+  dplyr::union(strelka_mutect_mnv,
+               by = join_cols
+  ) 
 
 ########################### Set up metadata columns ############################
 # Print progress message
@@ -220,7 +239,7 @@ if (opt$tcga) {
   # Manifest files only have first 12 letters of the barcode so we gotta chop the end off
   strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
     dplyr::mutate(Tumor_Sample_Barcode = substr(Tumor_Sample_Barcode, 0, 12))
-} else {
+} else { # pbta data 
   # Isolate metadata to only the samples that are in the datasets
   metadata <- readr::read_tsv(opt$metadata) %>%
     dplyr::filter(Kids_First_Biospecimen_ID %in% strelka_mutect_maf_df$Tumor_Sample_Barcode) %>%
@@ -240,7 +259,8 @@ strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
                         "Tumor_Sample_Barcode",
                         "experimental_strategy",
                         "short_histology"
-                      ))
+                      ), 
+                    by = Tumor_Samples_Barcode)
 
 # .x is messing up the maf_to_granges function
 colnames(strelka_mutect_maf_df) <- gsub("\\.x$", "", colnames(strelka_mutect_maf_df))
