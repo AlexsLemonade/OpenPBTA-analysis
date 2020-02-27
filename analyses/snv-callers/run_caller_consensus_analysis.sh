@@ -65,10 +65,8 @@ gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
   > scratch/coding_sequences.bed
 
 # Sort so we can merge
-bedtools sort -i scratch/coding_sequences.bed > scratch/coding_regions.bed
-
-# Merge these ranges into one and save as the CDS file 
-bedtools merge -i scratch/coding_regions.bed > $cds_file
+bedtools sort -i coding_sequences.bed | 
+bedtools merge -i stdin  > $cds_file
   
 ##################### Make WGS coding BED file  
 # Make WGS coding BED file for strelka
@@ -90,18 +88,16 @@ bedtools intersect \
    > scratch/wgs_coding_strelka_mutect.bed
 
 # Merge these ranges into one
-bedtools sort -i scratch/wgs_coding_strelka_mutect.bed > scratch/wgs_coding_strelka_mutect_sorted.bed
-bedtools merge -i scratch/wgs_coding_strelka_mutect_sorted.bed > $coding_wgs_bed
+bedtools sort -i scratch/wgs_coding_strelka_mutect.bed | 
+bedtools merge -i stdin > $coding_wgs_bed
    
 ##################### Make WXS coding BED file
+# Intersect coding and WXS ranges, sort and merge 
 bedtools intersect \
   -a data/WXS.hg38.100bp_padded.bed  \
-  -b $cds_file \
-  > scratch/wxs_coding.bed
-
-# Sort and merge these ranges into one
-bedtools sort -i scratch/wxs_coding.bed > wxs_coding_sorted.bed
-bedtools merge -i wxs_coding_sorted.bed > $coding_wxs_bed
+  -b $cds_file |
+bedtools sort -i stdin |
+bedtools merge -i stdin > $coding_wxs_bed
 
 ######################### Calculate consensus TMB ##############################
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
