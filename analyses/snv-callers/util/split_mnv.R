@@ -14,9 +14,9 @@ split_mnv <- function(mnv_tbl) {
   mnv_df <- mnv_tbl %>%
     dplyr::filter(Variant_Type %in% c("DNP", "TNP", "ONP")) %>%
     as.data.frame() %>%
-    # add a temp_id for calculating positions, and for potential later
+    # add a mnv_id for calculating positions, and for potential later
     # reconstitution of MNVs.
-    dplyr::mutate(temp_id = dplyr::row_number()) %>%
+    dplyr::mutate(mnv_id = dplyr::row_number()) %>%
     # lancet adds a base to the start of MNV `Allele` fields, so check for that
     # and remove the extra base.
     dplyr::mutate(
@@ -57,11 +57,12 @@ split_mnv <- function(mnv_tbl) {
       Reference_Allele != "",
       Allele != ""
     ) %>%
-    dplyr::group_by(temp_id) %>%
+    dplyr::group_by(mnv_id) %>%
     dplyr::mutate(
       mnv_pos = dplyr::row_number(),
       Start_Position = Start_Position + mnv_pos - 1,
       End_Position = Start_Position
     )
+    dplyr::ungroup()
   return(mnv_df)
 }
