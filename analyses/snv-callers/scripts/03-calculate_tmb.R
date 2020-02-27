@@ -106,16 +106,6 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
-opt$metadata <- "data/pbta-histologies.tsv"
-opt$db_file <- "scratch/v11_testing_snv_db.sqlite"
-opt$output <- "analyses/snv-callers/results/consensus"
-opt$all_bed_wgs <- "scratch/intersect_strelka_mutect_WGS.bed"
-opt$all_bed_wxs <- "data/WXS.hg38.100bp_padded.bed"
-opt$coding_bed_wgs <- "scratch/intersect_cds_lancet_strelka_mutect_WGS.bed"
-opt$coding_bed_wxs <- "scratch/intersect_cds_lancet_WXS.bed"
-opt$overwrite <- TRUE
-opt$tcga <- FALSE
-
 # Make everything relative to root path
 opt$metadata <- file.path(root_dir, opt$metadata)
 opt$db_file <- file.path(root_dir, opt$db_file)
