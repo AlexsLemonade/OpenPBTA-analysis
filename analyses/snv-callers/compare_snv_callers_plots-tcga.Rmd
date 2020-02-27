@@ -389,52 +389,6 @@ perc_var_df %>%
 ggplot2::ggsave(file.path(plots_dir, "tcga-variant_classification_plot.png"))
 ```
 
-## Where are the unique Lancet calls? 
-
-```{r}
-source(file.path("..", "chromosomal-instability", "util", "chr-break-plot.R"))
-source(file.path("..", "chromosomal-instability", "util", "chr-break-calculate.R"))
-```
-
-```{r}
-# Set up Chr sizes
-chr_sizes <- readr::read_tsv(file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed"),
-  col_names = FALSE
-) %>%
-  # Reformat the chromosome variable to drop the "chr"
-  dplyr::mutate(X1 = factor(gsub("chr", "", X1),
-    levels = c(1:22, "X", "Y", "M")
-  )) %>%
-  # Remove sex chromosomes
-  dplyr::filter(!(X1 %in% c("X", "Y", "M")))
-# Make chromosome size named vector
-chr_sizes_vector <- chr_sizes$X3
-names(chr_sizes_vector) <- chr_sizes$X1
-```
-
-```{r}
-only_lancet <- all_caller_df %>% 
-  dplyr::filter(!is.na(VAF_lancet) & is.na(VAF_strelka) & is.na(VAF_mutect)) %>% 
-  dplyr::mutate(Chromosome = gsub("chr", "", Chromosome))
-
-lancet_densities <- break_density(breaks_df = only_lancet, 
-             sample_id = "all",
-             samples_col = "Tumor_Sample_Barcode",
-             chrom_col = "Chromosome",
-             start_col = "Start_Position",
-             end_col = "Start_Position", 
-             window_size = 1e7,
-             chr_sizes_vector = chr_sizes_vector)
-
-map_breaks_plot(lancet_densities, 
-                y_val = "total_counts", 
-                color = "blue", 
-                y_lab = "Total Num of Calls", 
-                main_title = "Lancet Only Calls"
-                )
-
-```
-
 ## Session Info
 
 ```{r}

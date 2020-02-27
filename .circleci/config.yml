@@ -173,8 +173,12 @@ jobs:
 
 
       - run:
+          name: TCGA SNV Caller Analysis 
+          command: ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-tcga.sh     
+
+      - run:
           name: SNV Caller Analysis 
-          command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis.sh
+          command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-pbta.sh
       
       - run:
           name: Lancet WXS vs WGS test
