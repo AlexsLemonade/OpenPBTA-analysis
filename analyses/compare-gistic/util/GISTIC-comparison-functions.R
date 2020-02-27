@@ -13,7 +13,7 @@
 
 
 #### Implemented in both `01-GISTIC-cohort-vs-histology.Rmd` and `02-GISTIC-tidy-data-prep.Rmd`
-get_genes_vector <- function(genes_file,
+get_genes_object <- function(genes_file,
                              include_peak_info = FALSE) {
   # Given the GISTIC result `amp_genes_conf_90.txt` or `del_genes_conf_90.txt`
   # files for the entire cohort or a specific histology, get the vector/data.frame
@@ -34,18 +34,18 @@ get_genes_vector <- function(genes_file,
   genes_list <- genes_list %>%
     # This removes any element from the list that is all NA -- most likely a
     # result of reading in a ragged array
-    purrr::discard( ~ all(is.na(.))) %>%
+    purrr::discard(~ all(is.na(.))) %>%
     # This removes the element of the list that is essentially the "header" for
     # the file
-    purrr::discard( ~ any(str_detect(., "cytoband|q value"))) %>%
+    purrr::discard(~ any(str_detect(., "cytoband|q value"))) %>%
     # Remove blanks -- result of ragged data.frame
-    purrr::modify( ~ .[. != ""])
+    purrr::modify(~ .[. != ""])
   
   if (include_peak_info == TRUE) {
     genes_list <- genes_list %>%
       # Remove everything before and including the wide peak boundaries for each
       # remaining element of the list
-      purrr::modify( ~ .[-c(1:(str_which(., "chr")) - 1)])
+      purrr::modify(~ .[-c(1:(str_which(., "chr")) - 1)])
     
     # This will give us the data.frame of all the genes that were included
     genes_output <-
@@ -57,17 +57,17 @@ get_genes_vector <- function(genes_file,
     # region is the key and the genes in that region are the values
     genes_output <- genes_output %>%
       dplyr::rename(peak_region = X1) %>%
-      tidyr::gather("region", "gene_symbol",-peak_region) %>%
+      tidyr::gather("region", "gene_symbol", -peak_region) %>%
       dplyr::select(-region) %>%
       dplyr::filter(!(is.na(gene_symbol)))
     
   } else {
     genes_list <- genes_list %>%
       # Remove any broad peaks with q-value > 0.05
-      purrr::discard( ~ .[3] > 0.05) %>%
+      purrr::discard(~ .[3] > 0.05) %>%
       # Remove everything before and including the wide peak boundaries for each
       # remaining element of the list
-      purrr::modify( ~ .[-c(1:(str_which(., "chr")))])
+      purrr::modify(~ .[-c(1:(str_which(., "chr")))])
     
     # This will give us the vector of all the genes that were included
     genes_output <- unique(unname(unlist(genes_list)))
@@ -174,7 +174,7 @@ plot_genes_venn_diagram_wrapper <- function(cohort_genes_file,
                                             medulloblastoma_genes_file) {
   # Given the GISTIC result `amp_genes_conf_90.txt` or `del_genes_conf_90.txt`
   # files for the entire cohort and the three individual histologies, run the
-  # `get_genes_vector` and `plot_venn_diagram` functions to plot the overlaps
+  # `get_genes_object` and `plot_venn_diagram` functions to plot the overlaps
   # between the results for the entire cohort and the each of the individual
   # histologies.
   #
@@ -192,11 +192,11 @@ plot_genes_venn_diagram_wrapper <- function(cohort_genes_file,
   #                                `del_genes.conf_90.txt` file for the
   #                                 medulloblastoma histology
   
-  # Run `get_genes_vector` function on each of the files
-  cohort_genes_vector <- get_genes_vector(cohort_genes_file)
-  lgat_genes_vector <- get_genes_vector(lgat_genes_file)
-  hgat_genes_vector <- get_genes_vector(hgat_genes_file)
-  medulloblastoma_genes_vector <- get_genes_vector(medulloblastoma_genes_file)
+  # Run `get_genes_object` function on each of the files
+  cohort_genes_vector <- get_genes_object(cohort_genes_file)
+  lgat_genes_vector <- get_genes_object(lgat_genes_file)
+  hgat_genes_vector <- get_genes_object(hgat_genes_file)
+  medulloblastoma_genes_vector <- get_genes_object(medulloblastoma_genes_file)
   
   # Run `plot_venn_diagram` for each comparison case
   lgat_venn <- plot_venn_diagram(cohort_genes_vector, lgat_genes_vector, "lgat_genes")
@@ -239,12 +239,12 @@ prepare_gene_level_gistic <- function(all_lesions_file,
   gistic_all_lesions_df <- data.table::fread(all_lesions_file,
                                              data.table = FALSE)
   
-  # Run `get_genes_vector` function on `amp_genes` and `del_genes` files to get
+  # Run `get_genes_object` function on `amp_genes` and `del_genes` files to get
   # a data.frame with just the genes and their corresponding detection peak
-  amp_genes_df <- get_genes_vector(amp_genes_file,
+  amp_genes_df <- get_genes_object(amp_genes_file,
                                    include_peak_info = TRUE)
   
-  del_genes_df <- get_genes_vector(del_genes_file,
+  del_genes_df <- get_genes_object(del_genes_file,
                                    include_peak_info = TRUE)
   
   # Bind the rows from the above data.frames into one data.frame
