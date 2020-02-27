@@ -188,9 +188,7 @@ strelka_mutect_maf_df <- strelka %>%
 
 # Get Multi-nucleotide calls from mutect as SNVs
 split_mutect_df <- split_mnv(mutect) %>% 
-  dplyr::select(join_cols) %>% 
-  dplyr::ungroup() %>% 
-  dplyr::select(-temp_id)
+  dplyr::select(join_cols) 
 
 # join MNV calls with strelka
 strelka_mutect_mnv <- strelka %>%
