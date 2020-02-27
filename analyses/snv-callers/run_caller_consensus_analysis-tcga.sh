@@ -57,7 +57,11 @@ python3 analyses/snv-callers/scripts/01-setup_db.py \
 gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
   | awk '$3 ~ /CDS/' \
   | convert2bed --do-not-sort --input=gtf - \
-  > $cds_file
+  > scratch/coding_sequences.bed
+
+# Sort so we can merge
+bedtools sort -i coding_sequences.bed | 
+bedtools merge -i stdin  > $cds_file
 
 # Make WXS coding BED file
 # TODO: This file path will need to be updated when the TCGA target BED file is 
@@ -65,7 +69,11 @@ gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
 bedtools intersect \
   -a analyses/snv-callers/ref_files/gencode.v19.basic.exome.hg38liftover.bed  \
   -b $cds_file \
-  > $coding_wxs_bed
+  > scratch/coding_wxs.bed
+
+# Sort so we can merge
+bedtools sort -i scratch/coding_wxs.bed | 
+bedtools merge -i stdin  > $coding_wxs_bed
 
 ######################### Calculate consensus TMB ##############################
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
