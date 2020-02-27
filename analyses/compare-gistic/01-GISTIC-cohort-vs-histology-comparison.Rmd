@@ -1,0 +1,333 @@
+---
+title: "GISTIC entire PBTA cohort versus individual histology comparison of results"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell for ALSF CCDL
+date: 2020
+---
+
+This notebook will look at the files in the `run-gistic/results` directory and compare those for the entire cohort to those of three individual histologies, namely, LGAT, HGAT and medulloblastoma.
+
+The purpose is to identify, if any, disagreement between GISTIC results for the entire cohort versus the three individual histologies.
+
+## Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/compare-gistic/01-GISTIC-cohort-vs-histology-comparison.Rmd', clean = TRUE)"
+```
+
+## Set up
+
+```{r}
+library(tidyverse)
+```
+
+### Files and Directories
+
+```{r}
+# Path to input directory
+data_dir <- file.path("..", "run-gistic", "results")
+
+# Path to output directory
+plots_dir <- "plots"
+
+# Create the plots_dir if it does not exist
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir, recursive = TRUE)
+}
+```
+
+### Functions
+
+```{r}
+# Source `generate-multipanel-plot-functions.R` script
+source(file.path("..",
+                 "..",
+                 "analyses",
+                 "transcriptomic-dimension-reduction",
+                 "util",
+                 "generate-multipanel-plot-functions.R"))
+
+# Code adapted from `analyses/cnv-chrom-plot/gistic_plot.Rmd`
+plot_gistic_scores <- function(gistic_scores_file) {
+  # Given the file path to a `scores.gistic` file, plot the gistic scores.
+  #
+  # Args:
+  #   gistic_scores_file: file path to `scores.gistic` file
+  #
+  # Return:
+  #    A ggbio plot of the given gistic scores
+  
+  # Read in and format gistic scores data
+  gistic_scores <- data.table::fread(gistic_scores_file,
+                                     data.table = FALSE) %>%
+    dplyr::rename("gscore" = "G-score") %>%
+    # Recode 23 and 24 as X and Y.
+    dplyr::mutate(
+      Chromosome = as.character(Chromosome),
+      Chromosome = dplyr::recode(Chromosome,
+                                 "23" = "X",
+                                 "24" = "Y"),
+      # Turn `Del` scores into negative `G-scores`
+      # This is how GISTIC shows the scores.
+      gscore = dplyr::case_when(Type == "Del" ~ -gscore,
+                                TRUE ~ gscore)
+    )
+  
+  # Make GISTIC data into GRanges object
+  gistic_ranges <- GenomicRanges::GRanges(
+    seqnames = gistic_scores$Chromosome,
+    ranges = IRanges::IRanges(start = gistic_scores$Start,
+                              end = gistic_scores$End),
+    score = gistic_scores$gscore,
+    mcols = gistic_scores
+  )
+  
+  # Plot the GISTIC scores
+  gistic_plot <-
+    ggbio::autoplot(
+      gistic_ranges,
+      ggplot2::aes(y = score, fill = mcols.Type),
+      geom = "bar",
+      scales = "free_x",
+      space = "free_x"
+    ) +
+    ggplot2::theme_classic() +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(
+      size = 3,
+      angle = 45,
+      hjust = 1
+    )) +
+    colorblindr::scale_fill_OkabeIto(name = "Type") +
+    ggplot2::ylab("G-scores") +
+    ggplot2::scale_y_continuous(limits = c(-1, 1.2), breaks = seq(-1, 1.2, 0.2))
+  
+  # Return plot
+  return(gistic_plot@ggplot)
+  
+}
+
+get_genes_vector <- function(genes_file) {
+  # Given the GISTIC result `amp_genes_conf_90.txt` or `del_genes_conf_90.txt`
+  # files for the entire cohort or a specific histology, get the vector of
+  # genes for each amplification/deletion.
+  #
+  # Args:
+  #  genes_file: file path to the `amp_genes.conf_90.txt` or
+  #              `del_genes.conf_90.txt` file
+  #
+  # Return:
+  #  genes_vector: a vector with all the genes included in the file
+  
+  genes_ragged_df <- data.table::fread(genes_file,
+                                       data.table = FALSE)
+  genes_list <- as.list(genes_ragged_df)
+  genes_list <- genes_list %>%
+    # This removes any element from the list that is all NA -- most likely a
+    # result of reading in a ragged array
+    purrr::discard(~ all(is.na(.))) %>%
+    # This removes the element of the list that is essentially the "header" for
+    # the file
+    purrr::discard(~ any(str_detect(., "cytoband|q value"))) %>% 
+    # Remove any broad peaks with q-value > 0.05
+    purrr::discard(~ .[3] > 0.05) %>%
+    # Remove everything before and including the wide peak boundaries for each
+    # remaining element of the list
+    purrr::modify(~ .[-c(1:(str_which(., "chr")))]) %>%
+    # Remove blanks -- result of ragged data.frame
+    purrr::modify(~ .[. != ""])
+  # This will give us the vector of all the genes that were included
+  genes_vector <- unique(unname(unlist(genes_list)))
+}
+
+
+plot_venn_diagram <-
+  function(cohort_genes_vector,
+           histology_genes_vector,
+           histology_label) {
+    # Given the GISTIC result `amp_genes_conf_90.txt` or `del_genes_conf_90.txt`
+    # files for the entire cohort and a specific histology, plot a Venn Diagram
+    # showing the counts of rows that overlap/do not overlap between the two
+    # files.
+    #
+    # Args:
+    #   cohort_genes_vector: a vector of all the genes in the amp/del file for
+    #                           the entire cohort
+    #   histology_genes_vector: a vector of all the genes in the amp/del file
+    #                              for an individual histology
+    #   histology_label: string indicating the individual histology, for the
+    #                    purpose of labeling the Venn Diagram plots
+    #
+    # Returns:
+    #  This function displays a Venn Diagram that represents the data that
+    #  overlaps/does not overlap between the two given files
+    
+    # Define list for input in `venn` function
+    input <-
+      list(cohort_genes_vector, histology_genes_vector)
+    
+    names(input) <- c("cohort_genes", histology_label)
+    
+    # Display Venn Diagram
+    gplots::venn(input)
+    
+  }
+
+plot_genes_venn_diagram_wrapper <- function(cohort_genes_file,
+                                            lgat_genes_file,
+                                            hgat_genes_file,
+                                            medulloblastoma_genes_file) {
+  # Given the GISTIC result `amp_genes_conf_90.txt` or `del_genes_conf_90.txt`
+  # files for the entire cohort and the three individual histologies, run the
+  # `get_genes_vector` and `plot_venn_diagram` functions to plot the overlaps
+  # between the results for the entire cohort and the each of the individual
+  # histologies.
+  #
+  # Args:
+  #    cohort_genes_file: file path to the `amp_genes.conf_90.txt` or
+  #                       `del_genes.conf_90.txt` file for the entire
+  #                       cohort
+  #    lgat_genes_file: file path to the `amp_genes.conf_90.txt` or
+  #                     `del_genes.conf_90.txt` file for the LGAT
+  #                     histology
+  #    hgat_genes_file: file path to the `amp_genes.conf_90.txt` or
+  #                     `del_genes.conf_90.txt` file for the HGAT
+  #                     histology
+  #    medulloblastoma_genes_file: file path to the `amp_genes.conf_90.txt` or
+  #                                `del_genes.conf_90.txt` file for the
+  #                                 medulloblastoma histology
+  
+  # Run `get_genes_vector` function on each of the files
+  cohort_genes_vector <- get_genes_vector(cohort_genes_file)
+  lgat_genes_vector <- get_genes_vector(lgat_genes_file)
+  hgat_genes_vector <- get_genes_vector(hgat_genes_file)
+  medulloblastoma_genes_vector <- get_genes_vector(medulloblastoma_genes_file)
+  
+  # Run `plot_venn_diagram` for each comparison case
+  lgat_venn <- plot_venn_diagram(cohort_genes_vector, lgat_genes_vector, "lgat_genes")
+  hgat_venn <- plot_venn_diagram(cohort_genes_vector, hgat_genes_vector, "hgat_genes")
+  medulloblastoma_venn <- plot_venn_diagram(cohort_genes_vector, medulloblastoma_genes_vector, "medulloblastoma_genes")
+  
+  # Save plots to list
+  venn_plot_list <- list(lgat_venn, hgat_venn, medulloblastoma_venn)
+  
+  # Return the plot list
+  return(venn_plot_list)
+  
+}
+```
+
+## Compare "scores.gistic" files
+
+### Unzip GISTIC results folders
+
+```{r}
+# Unzip and set up GISTIC results folders and files.
+cohort_gistic_dir <- file.path(data_dir, "pbta-cnv-consensus-gistic")
+cohort_gistic_zip <- file.path(data_dir, "pbta-cnv-consensus-gistic.zip")
+
+if (!dir.exists(cohort_gistic_dir)) {
+  unzip(cohort_gistic_zip, 
+        exdir = data_dir)
+}
+
+lgat_gistic_dir <- file.path(data_dir, "pbta-cnv-consensus-lgat-gistic")
+lgat_gistic_zip <- file.path(data_dir, "pbta-cnv-consensus-lgat-gistic.zip")
+
+if (!dir.exists(lgat_gistic_dir)) {
+  unzip(lgat_gistic_zip, 
+        exdir = data_dir)
+}
+
+hgat_gistic_dir <- file.path(data_dir, "pbta-cnv-consensus-hgat-gistic")
+hgat_gistic_zip <- file.path(data_dir, "pbta-cnv-consensus-hgat-gistic.zip")
+
+if (!dir.exists(hgat_gistic_dir)) {
+  unzip(hgat_gistic_zip, 
+        exdir = data_dir)
+}
+
+medulloblastoma_gistic_dir <- file.path(data_dir, "pbta-cnv-consensus-medulloblastoma-gistic")
+medulloblastoma_gistic_zip <- file.path(data_dir, "pbta-cnv-consensus-medulloblastoma-gistic.zip")
+
+if (!dir.exists(medulloblastoma_gistic_dir)) {
+  unzip(medulloblastoma_gistic_zip, 
+        exdir = data_dir)
+}
+
+```
+
+### Run `plot_gistic_scores` for each file
+
+```{r}
+# Define file paths to `scores.gistic` files and run `plot_gistic_scores`
+# function for each file
+cohort_scores <-
+  file.path(cohort_gistic_dir, "scores.gistic")
+cohort_scores_plot <- plot_gistic_scores(cohort_scores)
+
+lgat_scores <-
+  file.path(lgat_gistic_dir, "scores.gistic")
+lgat_scores_plot <- plot_gistic_scores(lgat_scores)
+
+hgat_scores <-
+  file.path(hgat_gistic_dir, "scores.gistic")
+hgat_scores_plot <- plot_gistic_scores(hgat_scores)
+
+medulloblastoma_scores <-
+  file.path(medulloblastoma_gistic_dir, "scores.gistic")
+medulloblastoma_scores_plot <-
+  plot_gistic_scores(medulloblastoma_scores)
+```
+
+### Generate multipanel plots 
+
+```{r fig.height = 10, fig.width = 24}
+lgat_plot_list <- list(lgat_scores_plot, cohort_scores_plot)
+generate_multipanel_plot(plot_list = lgat_plot_list,
+                         plot_title = "LGAT scores versus entire cohort",
+                         output_directory = plots_dir,
+                         output_filename = "lgat_gistic_scores_multipanel_plot.png")
+
+hgat_plot_list <- list(hgat_scores_plot, cohort_scores_plot)
+generate_multipanel_plot(plot_list = hgat_plot_list,
+                         plot_title = "HGAT scores versus entire cohort",
+                         output_directory = plots_dir,
+                         output_filename = "hgat_gistic_scores_multipanel_plot.png")
+
+medulloblastoma_plot_list <- list(medulloblastoma_scores_plot, cohort_scores_plot)
+generate_multipanel_plot(plot_list = medulloblastoma_plot_list,
+                         plot_title = "Medulloblastoma scores versus entire cohort",
+                         output_directory = plots_dir,
+                         output_filename = "medulloblastoma_gistic_scores_multipanel_plot.png")
+```
+
+## Compare `amp_genes.conf_90.txt` and `del_genes.conf_90.txt` files
+
+### Run `plot_genes_venn_diagram_wrapper` on `del_genes.conf_90.txt` files
+
+```{r warning = FALSE, message = FALSE}
+# Define GISTIC del genes file paths
+cohort_del_genes <- file.path(cohort_gistic_dir, "del_genes.conf_90.txt")
+lgat_del_genes <- file.path(lgat_gistic_dir, "del_genes.conf_90.txt")
+hgat_del_genes <- file.path(hgat_gistic_dir, "del_genes.conf_90.txt")
+medulloblastoma_del_genes <- file.path(medulloblastoma_gistic_dir, "del_genes.conf_90.txt")
+
+# Run `plot_genes_venn_diagram_wrapper` function on GISTIC del genes files
+del_plot_list <- plot_genes_venn_diagram_wrapper(cohort_del_genes,
+                                                 lgat_del_genes,
+                                                 hgat_del_genes,
+                                                 medulloblastoma_del_genes)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+

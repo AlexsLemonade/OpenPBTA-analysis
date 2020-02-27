@@ -168,13 +168,9 @@ jobs:
           command: ./scripts/run_in_ci.sh bash analyses/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
 
       - run:
-          name: GISTIC Results Comparison - Entire Cohort vs Histology
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/gistic-cohort-vs-histology-comparison/gistic-cohort-vs-histology-comparison.Rmd', clean = TRUE)"
+          name: GISTIC Results Comparison
+          command: ./scripts/run_in_ci.sh bash analyses/compare-gistic/run-compare-gistic.sh
           
-      - run:
-          name: GISTIC vs Focal CN File Preparation
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/gistic-vs-focal-cn-file-preparation/01-GISTIC-tidy-data-prep.Rmd', clean = TRUE)"
-
 
          ################################
          #### Add your analysis here ####

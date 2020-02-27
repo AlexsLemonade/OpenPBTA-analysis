@@ -1,0 +1,335 @@
+---
+title: "GISTIC tidy data preparation"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell for ALSF CCDL
+date: 2020
+---
+
+This notebook will tidy the GISTIC data files required to compare the GISTIC's gene level calls with our gene level calls in `analyses/focal-cn-file-prepartion/results`. The required GISTIC files include `all_lesions.conf_90.txt`, `amp_genes.conf_90.txt`, and `del_genes.conf_90.txt` (these file are stored in `analyses/run-gistic/results`). 
+
+The purpose of this notebook is to prepare GISTIC data in a format that can be compared to our focal CN files (both on a gene level and cytoband level). 
+
+## Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/compare-gistic/02-GISTIC-tidy-data-prep.Rmd', clean = TRUE)"
+```
+
+## Set up
+
+```{r}
+library(tidyverse)
+```
+
+### Files and Directories
+
+```{r}
+# Path to input directory
+gistic_data_dir <- file.path("..", "run-gistic", "results")
+
+# Path to output directory
+results_dir <- "results"
+
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+```
+
+### Unzip GISTIC results
+
+```{r}
+# Unzip and set up GISTIC results folders and files.
+cohort_gistic_dir <-
+  file.path(gistic_data_dir, "pbta-cnv-consensus-gistic")
+cohort_gistic_zip <-
+  file.path(gistic_data_dir, "pbta-cnv-consensus-gistic.zip")
+
+if (!dir.exists(cohort_gistic_dir)) {
+  unzip(cohort_gistic_zip,
+        exdir = data_dir)
+}
+
+lgat_gistic_dir <-
+  file.path(gistic_data_dir, "pbta-cnv-consensus-lgat-gistic")
+lgat_gistic_zip <-
+  file.path(gistic_data_dir, "pbta-cnv-consensus-lgat-gistic.zip")
+
+if (!dir.exists(lgat_gistic_dir)) {
+  unzip(lgat_gistic_zip,
+        exdir = data_dir)
+}
+```
+
+### Define file paths for GISTIC `all_lesions.conf_90.txt` files
+
+```{r}
+cohort_all_lesions_file <- file.path(cohort_gistic_dir, "all_lesions.conf_90.txt")
+
+lgat_all_lesions_file <- file.path(lgat_gistic_dir, "all_lesions.conf_90.txt")
+```
+
+### Define file path for GISTIC `amp_genes.conf_90.txt` and `del_genes.conf_90.txt` result files
+
+```{r}
+cohort_amp_genes_file <- file.path(cohort_gistic_dir, "amp_genes.conf_90.txt")
+
+lgat_amp_genes_file <- file.path(lgat_gistic_dir, "amp_genes.conf_90.txt")
+
+cohort_del_genes_file <- file.path(cohort_gistic_dir, "del_genes.conf_90.txt")
+
+lgat_del_genes_file <- file.path(lgat_gistic_dir, "del_genes.conf_90.txt")
+```
+
+## Functions to tidy data
+
+```{r}
+# Code adapted from `analyses/gistic-cohort-vs-histology-comparison/gistic-cohort-vs-histology-comparison.Rmd`
+get_genes_df <- function(genes_df) {
+  # Given the GISTIC result `amp_genes_conf_90.txt` or `del_genes_conf_90.txt`
+  # data.frame for the entire cohort or a specific histology, get a data.frame
+  # of genes for each amplification/deletion peak.
+  #
+  # Args:
+  #  genes_file: data.frame with data from the `amp_genes.conf_90.txt`
+  #              or `del_genes.conf_90.txt` file
+  #
+  # Return:
+  #  genes_df: a data.frame with all the genes included in the file separated by peak
+  
+  genes_list <- as.list(genes_df)
+  genes_list <- genes_list %>%
+    # This removes any element from the list that is all NA -- most likely a
+    # result of reading in a ragged array
+    purrr::discard(~ all(is.na(.))) %>%
+    # This removes the element of the list that is essentially the "header" for
+    # the file
+    purrr::discard(~ any(str_detect(., "cytoband|q value"))) %>% 
+    # Remove everything before and including the wide peak boundaries for each
+    # remaining element of the list
+    purrr::modify(~ .[-c(1:((str_which(., "chr")))-1)]) %>%
+    # Remove blanks -- result of ragged data.frame
+    purrr::modify(~ .[. != ""])
+  # This will give us the vector of all the genes that were included
+  # genes_vector <- unique(unname(unlist(genes_list)))
+  
+  # Turn the list into a data.frame
+  genes_df <-
+    data.table::rbindlist(lapply(genes_list, function(x)
+      data.frame(t(x))),
+      fill = TRUE)
+  
+  # Tidy the data.frame into a key and value format where the detection peak
+  # region is the key and the genes in that region are the values
+  genes_df <- genes_df %>%
+    dplyr::rename(peak_region = X1) %>%
+    tidyr::gather("region", "gene_symbol", -peak_region) %>%
+    dplyr::select(-region) %>%
+    dplyr::filter(!(is.na(gene_symbol)))
+  
+}
+
+prepare_gene_level_gistic <- function(all_lesions_file,
+                                      amp_genes_file,
+                                      del_genes_file,
+                                      output_filename) {
+  
+  # Given the file paths to GISTIC's `all_lesion.conf_90.txt`,
+  # `amp_genes.conf_90.txt`, and `del_genes.conf_90.txt` files,
+  # read in and tidy this data into a data.frame that contains
+  # the amplified/deleted genes, the detection peak, and
+  # the IDs of the samples in the corresponding peaks along with
+  # with their CN status call.
+  #
+  # Args:
+  #   all_lesions_file: file path to GISTIC's `all_lesion.conf_90.txt` file
+  #   amp_genes_file: file path to GISTIC's `amp_genes.conf_90.txt` file
+  #   del_genes_file: file path to GISTIC's `del_genes.conf_90.txt` file
+  #   output_filename: string to save the output file as
+  #
+  # Return:
+  #   final_df: data.frame with the relevant data from the `all_lesions`,
+  #             `amp_genes`, and `del_genes` files
+  
+  # Read in files
+  gistic_all_lesions_df <- data.table::fread(all_lesions_file,
+                                             data.table = FALSE)
+  
+  gistic_amp_genes_df <- data.table::fread(amp_genes_file,
+                                           data.table = FALSE)
+  
+  gistic_del_genes_df <- data.table::fread(del_genes_file,
+                                           data.table = FALSE)
+  
+  # Run `get_genes_df` function on `amp_genes` and `del_genes` files to get
+  # a data.frame with just the genes and their correspondind detection peak
+  amp_genes_df <- get_genes_df(gistic_amp_genes_df)
+  
+  del_genes_df <- get_genes_df(gistic_del_genes_df)
+  
+  # Bind the rows from the above data.frames into one data.frame
+  final_df <- rbind(amp_genes_df, del_genes_df)
+  
+  
+  # Wrangle the GISTIC all lesions data to be in a comparable format with our CN calls
+  gistic_all_lesions_df <- gistic_all_lesions_df %>%
+    dplyr::select(
+      -c(
+        "Descriptor",
+        "Peak Limits",
+        "Region Limits",
+        "q values",
+        "Residual q values after removing segments shared with higher peaks",
+        "Broad or Focal",
+        "Amplitude Threshold"
+      )
+    ) %>%
+    as.data.frame() %>%
+    tidyr::gather("Kids_First_Biospecimen_ID",
+                  "status",
+                  -`Unique Name`,
+                  -`Wide Peak Limits`) %>%
+    arrange(desc(`Wide Peak Limits`)) %>%
+    dplyr::mutate(status = dplyr::case_when(status < 0 ~ "loss",
+                                            status > 0 ~ "gain",
+                                            status == 0 ~ "neutral")) %>%
+    dplyr::distinct()
+  
+  # Keep just the range information in the `Wide Peak Limits` column
+  # (In order to merge with the amp/del genes data.frame)
+  gistic_all_lesions_df$`Wide Peak Limits` <-
+    gsub("[(].*", "", gistic_all_lesions_df$`Wide Peak Limits`)
+  
+  # Keep just the detection peak name
+  gistic_all_lesions_df$`Unique Name` <-
+    gsub(" -.*", "", gistic_all_lesions_df$`Unique Name`)
+  
+  # Merge the data from the `all_lesions.conf_90.txt` file with the amp/del gene
+  # data.frame prepped above
+  final_df <- final_df %>%
+    dplyr::left_join(gistic_all_lesions_df, by = c("peak_region" = "Wide Peak Limits")) %>%
+    dplyr::select(gene_symbol, Kids_First_Biospecimen_ID, status, detection_peak = `Unique Name`) %>%
+    dplyr::distinct()
+  
+  # Save data.frame to file
+  readr::write_tsv(final_df, file.path(results_dir, output_filename))
+  
+}
+
+prepare_cytoband_level_gistic <- function(all_lesions_file,
+                                      output_filename) {
+  
+  # Given the file path to GISTIC's `all_lesion.conf_90.txt` file,
+  # read in and tidy this data into a data.frame that contains
+  # the cytoband, sample IDs, and their corresponding CN status call.
+  #
+  # Args:
+  #   all_lesions_file: file path to GISTIC's `all_lesion.conf_90.txt` file
+  #   output_filename: string to save the output file as
+  #
+  # Return:
+  #   final_df: data.frame with the relevant data from the `all_lesions` file
+  
+  # Read in files
+  gistic_all_lesions_df <- data.table::fread(all_lesions_file,
+                                             data.table = FALSE)
+  
+  
+  # Wrangle the GISTIC all lesions data to be in a comparable format with our CN calls
+  gistic_all_lesions_df <- gistic_all_lesions_df %>%
+    dplyr::select(
+      -c(
+        "Unique Name",
+        "Wide Peak Limits",
+        "Peak Limits",
+        "Region Limits",
+        "q values",
+        "Residual q values after removing segments shared with higher peaks",
+        "Broad or Focal",
+        "Amplitude Threshold"
+      )
+    ) %>%
+    as.data.frame() %>%
+    tidyr::gather("Kids_First_Biospecimen_ID",
+                  "status",
+                  -Descriptor) %>%
+    dplyr::mutate(status = dplyr::case_when(status < 0 ~ "loss",
+                                            status > 0 ~ "gain",
+                                            status == 0 ~ "neutral")) %>%
+    dplyr::distinct() %>%
+    dplyr::rename(cytoband = Descriptor)
+  
+  # Save data.frame to file (for later cytoband level comparison)
+  readr::write_tsv(gistic_all_lesions_df, file.path(results_dir, output_filename))
+  
+}
+
+```
+
+## Generate gene-level tidy tables
+
+### Use GISTIC results for LGAT histology
+
+```{r warning = FALSE, message = FALSE}
+lgat_merged_calls_table <- prepare_gene_level_gistic(
+  lgat_all_lesions_file,
+  lgat_amp_genes_file,
+  lgat_del_genes_file,
+  "lgat_gistic_calls_table.tsv.gz"
+)
+
+lgat_merged_calls_table %>%
+  dplyr::filter(detection_peak == "Deletion Peak 1")
+```
+
+### Use GISTIC results for entire cohort
+
+```{r warning = FALSE, message = FALSE}
+cohort_merged_calls_table <- prepare_gene_level_gistic(
+  cohort_all_lesions_file,
+  cohort_amp_genes_file,
+  cohort_del_genes_file,
+  "cohort_gistic_calls_table.tsv.gz"
+)
+
+cohort_merged_calls_table %>%
+  dplyr::filter(detection_peak == "Deletion Peak  1")
+```
+
+## Generate cytoband-level tidy tables
+
+### Use GISTIC results for LGAT histology
+
+```{r warning = FALSE, message = FALSE}
+lgat_cytoband_status_table <- prepare_cytoband_level_gistic(
+  lgat_all_lesions_file,
+  "lgat_gistic_cytoband_status_table.tsv.gz"
+)
+
+lgat_cytoband_status_table %>%
+  dplyr::filter(cytoband == "3q29")
+```
+
+### Use GISTIC results for entire cohort
+
+```{r warning = FALSE, message = FALSE}
+cohort_cytoband_status_table <- prepare_cytoband_level_gistic(
+  cohort_all_lesions_file,
+  "cohort_gistic_cytoband_status_table.tsv.gz"
+)
+
+cohort_cytoband_status_table %>%
+  dplyr::filter(cytoband == "3q29")
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
