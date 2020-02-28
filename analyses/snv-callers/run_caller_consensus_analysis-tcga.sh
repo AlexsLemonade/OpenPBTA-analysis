@@ -82,8 +82,3 @@ Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
 ########################## Compress consensus file #############################
 gzip $consensus_file
 
-############################# Comparison Plots #################################
-if [ "$run_plots_nb" -gt "0" ]
-then
- Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots-tcga.Rmd', clean = TRUE)"
-fi
