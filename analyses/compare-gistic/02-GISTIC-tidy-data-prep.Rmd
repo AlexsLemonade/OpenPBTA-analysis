@@ -52,7 +52,8 @@ cohort_gistic_zip <-
 
 if (!dir.exists(cohort_gistic_dir)) {
   unzip(cohort_gistic_zip,
-        exdir = data_dir)
+    exdir = data_dir
+  )
 }
 
 lgat_gistic_dir <-
@@ -62,7 +63,8 @@ lgat_gistic_zip <-
 
 if (!dir.exists(lgat_gistic_dir)) {
   unzip(lgat_gistic_zip,
-        exdir = data_dir)
+    exdir = data_dir
+  )
 }
 ```
 
@@ -102,7 +104,7 @@ lgat_merged_calls_table <- prepare_gene_level_gistic(
   lgat_all_lesions_file,
   lgat_amp_genes_file,
   lgat_del_genes_file,
-  "lgat_gistic_calls_table.tsv.gz"
+  "lgat_gistic_gene_cn_status_table.tsv.gz"
 )
 
 lgat_merged_calls_table %>%
@@ -116,7 +118,7 @@ cohort_merged_calls_table <- prepare_gene_level_gistic(
   cohort_all_lesions_file,
   cohort_amp_genes_file,
   cohort_del_genes_file,
-  "cohort_gistic_calls_table.tsv.gz"
+  "cohort_gistic_gene_cn_status_table.tsv.gz"
 )
 
 cohort_merged_calls_table %>%
@@ -130,7 +132,7 @@ cohort_merged_calls_table %>%
 ```{r warning = FALSE, message = FALSE}
 lgat_cytoband_status_table <- prepare_cytoband_level_gistic(
   lgat_all_lesions_file,
-  "lgat_gistic_cytoband_status_table.tsv.gz"
+  "lgat_gistic_cytoband_cn_status_table.tsv.gz"
 )
 
 lgat_cytoband_status_table %>%
@@ -142,7 +144,7 @@ lgat_cytoband_status_table %>%
 ```{r warning = FALSE, message = FALSE}
 cohort_cytoband_status_table <- prepare_cytoband_level_gistic(
   cohort_all_lesions_file,
-  "cohort_gistic_cytoband_status_table.tsv.gz"
+  "cohort_gistic_cytoband_cn_status_table.tsv.gz"
 )
 
 cohort_cytoband_status_table %>%

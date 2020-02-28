@@ -21,12 +21,12 @@ The output of this notebook includes three multipanel plots, found in this `plot
 [`02-GISTIC-tidy-data-prep.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/01-GISTIC-cohort-vs-histology-comparison/02-GISTIC-tidy-data-prep.nb.html) is a notebook written to tidy and format the GISTIC files needed to compare GISTIC's copy number calls to the copy number calls we prepared in the [focal-cn-file-preparation](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/focal-cn-file-preparation/results) module of this repository.
 The output of this notebook includes tables to be consumed for both a gene-level comparison and cytoband-level comparison of copy number calls analysis notebooks.
 
-The `cohort_gistic_calls_table.tsv.gz` and `lgat_gistic_calls_table.tsv.gz` output files are formatted to be consumed in a gene-level copy number call comparison as follows:
+The `cohort_gistic_gene_cn_status_table.tsv.gz` and `lgat_gistic_gene_cn_status_table.tsv.gz` output files are formatted to be consumed in a gene-level copy number call comparison as follows:
 
 | `gene_symbol` | `Kids_First_Biospecimen_ID` | `status` | `detection_peak` |
 | ------------- | --------------------------- | ---------| ---------------- |
 
-The `cohort_gistic_cytoband_status_table.tsv.gz` and `lgat_gistic_cytoband_status_table.tsv.gz` output files are formatted to be consumed in a cytoband-level copy number call comparison as follows:
+The `cohort_gistic_cytoband_cn_status_table.tsv.gz` and `lgat_gistic_cytoband_cn_status_table.tsv.gz` output files are formatted to be consumed in a cytoband-level copy number call comparison as follows:
 
 | `cytoband` | `Kids_First_Biospecimen_ID` | `status` |
 | ---------- | --------------------------- | -------- |
@@ -44,10 +44,10 @@ The `cohort_gistic_cytoband_status_table.tsv.gz` and `lgat_gistic_cytoband_statu
 │   ├── lgat_gistic_scores_multipanel_plot.png
 │   └── medulloblastoma_gistic_scores_multipanel_plot.png
 ├── results
-│   ├── cohort_gistic_calls_table.tsv.gz
-│   ├── cohort_gistic_cytoband_status_table.tsv.gz
-│   ├── lgat_gistic_calls_table.tsv.gz
-│   └── lgat_gistic_cytoband_status_table.tsv.gz
+│   ├── cohort_gistic_gene_cn_status_table.tsv.gz
+│   ├── cohort_gistic_cytoband_cn_status_table.tsv.gz
+│   ├── lgat_gistic_gene_cn_status_table.tsv.gz
+│   └── lgat_gistic_cytoband_cn_status_table.tsv.gz
 ├── run-compare-gistic.sh
 └── util
     └── GISTIC-comparison-functions.R
