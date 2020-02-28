@@ -83,19 +83,18 @@ bedtools intersect \
 bedtools intersect \
   -a scratch/wgs_coding_mutect.bed \
   -b scratch/wgs_coding_strelka.bed \
-   > scratch/wgs_coding_strelka_mutect.bed
-
-# Merge these ranges into one
-sort -k 1,1 -k 2,2n scratch/wgs_coding_strelka_mutect.bed | 
-bedtools merge -i stdin > $coding_wgs_bed
+  | sort -k 1,1 -k 2,2n \
+  | bedtools merge \
+  > $coding_wgs_bed
    
 ##################### Make WXS coding BED file
 # Intersect coding and WXS ranges, sort and merge 
 bedtools intersect \
   -a data/WXS.hg38.100bp_padded.bed  \
-  -b $cds_file |
-sort -k 1,1 -k 2,2n -i stdin |
-bedtools merge -i stdin > $coding_wxs_bed
+  -b $cds_file \
+  | sort -k 1,1 -k 2,2n  \
+  | bedtools merge \
+  > $coding_wxs_bed
 
 ######################### Calculate consensus TMB ##############################
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \

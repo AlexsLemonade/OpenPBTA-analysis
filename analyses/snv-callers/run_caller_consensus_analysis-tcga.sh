@@ -66,11 +66,9 @@ gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
 bedtools intersect \
   -a analyses/snv-callers/ref_files/gencode.v19.basic.exome.hg38liftover.bed  \
   -b $cds_file \
-  > scratch/coding_wxs.bed
-
-# Sort so we can merge
-sort -k 1,1 -k 2,2n scratch/coding_wxs.bed | 
-bedtools merge -i stdin  > $coding_wxs_bed
+  | sort -k 1,1 -k 2,2n \
+  | bedtools merge \
+  > $coding_wxs_bed
 
 ######################### Calculate consensus TMB ##############################
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
