@@ -65,7 +65,7 @@ gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
   > scratch/coding_sequences.bed
 
 # Sort so we can merge
-bedtools sort -i coding_sequences.bed | 
+sort -k 1,1 -k 2,2n coding_sequences.bed | 
 bedtools merge -i stdin  > $cds_file
   
 ##################### Make WGS coding BED file  
@@ -88,7 +88,7 @@ bedtools intersect \
    > scratch/wgs_coding_strelka_mutect.bed
 
 # Merge these ranges into one
-bedtools sort -i scratch/wgs_coding_strelka_mutect.bed | 
+sort -k 1,1 -k 2,2n scratch/wgs_coding_strelka_mutect.bed | 
 bedtools merge -i stdin > $coding_wgs_bed
    
 ##################### Make WXS coding BED file
@@ -96,7 +96,7 @@ bedtools merge -i stdin > $coding_wgs_bed
 bedtools intersect \
   -a data/WXS.hg38.100bp_padded.bed  \
   -b $cds_file |
-bedtools sort -i stdin |
+sort -k 1,1 -k 2,2n -i stdin |
 bedtools merge -i stdin > $coding_wxs_bed
 
 ######################### Calculate consensus TMB ##############################

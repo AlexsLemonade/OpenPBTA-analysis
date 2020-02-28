@@ -60,19 +60,18 @@ gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
   > scratch/coding_sequences.bed
 
 # Sort so we can merge
-bedtools sort -i coding_sequences.bed | 
+sort -k 1,1 -k 2,2n coding_sequences.bed | 
 bedtools merge -i stdin  > $cds_file
 
 # Make WXS coding BED file
-# TODO: This file path will need to be updated when the TCGA target BED file is 
-# added to the data release
+# TODO: Update this BED when we get the target BEDs updated in v15/v16
 bedtools intersect \
   -a analyses/snv-callers/ref_files/gencode.v19.basic.exome.hg38liftover.bed  \
   -b $cds_file \
   > scratch/coding_wxs.bed
 
 # Sort so we can merge
-bedtools sort -i scratch/coding_wxs.bed | 
+sort -k 1,1 -k 2,2n scratch/coding_wxs.bed | 
 bedtools merge -i stdin  > $coding_wxs_bed
 
 ######################### Calculate consensus TMB ##############################
