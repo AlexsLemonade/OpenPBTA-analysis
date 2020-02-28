@@ -21,7 +21,7 @@
   - Updated fusion files to add additional kinase genes, remove residual polyA stranded samples, andfix order of filtering operations per [comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/539#issuecomment-587167746), [comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/521#issuecomment-582990375), [#530](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/530), and [#553](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/530), and [PR #567](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/567):
     - pbta-fusion-recurrently-fused-genes-byhistology.tsv
     - pbta-fusion-putative-oncogenic.tsv
-    - pbta-fusion-recurrently-fused-genes-bysample.tsv per
+    - pbta-fusion-recurrently-fused-genes-bysample.tsv
 - folder structure:
 ```
 data
@@ -794,5 +794,4 @@ data
     ├── strelka2.maf.gz
     └── tumor-normal-pair.tsv
 ```
-
 
