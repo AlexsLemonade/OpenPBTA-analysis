@@ -57,11 +57,9 @@ python3 analyses/snv-callers/scripts/01-setup_db.py \
 gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
   | awk '$3 ~ /CDS/' \
   | convert2bed --do-not-sort --input=gtf - \
-  > scratch/coding_sequences.bed
-
-# Sort so we can merge
-sort -k 1,1 -k 2,2n coding_sequences.bed | 
-bedtools merge -i stdin  > $cds_file
+  | sort -k 1,1 -k 2,2n \
+  | bedtools merge  \
+  > $cds_file
 
 # Make WXS coding BED file
 # TODO: Update this BED when we get the target BEDs updated in v15/v16
