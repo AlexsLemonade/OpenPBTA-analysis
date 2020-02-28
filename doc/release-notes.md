@@ -1,5 +1,4 @@
 # release notes
-# release notes
 ## current release
 ### release-v15-20200228
 - release date: 2020-02-28
