@@ -49,30 +49,51 @@ python3 analyses/snv-callers/scripts/01-setup_db.py \
   --db-file $dbfile \
   --consensus-file $consensus_file
 
-###################### Create intersection BED files ###########################
-# Make All mutations BED file
+############# Create intersection BED files for TMB calculations ###############
+# Make All mutations BED files
 bedtools intersect \
   -a data/WGS.hg38.strelka2.unpadded.bed \
-  -b data/WGS.hg38.mutect2.vardict.unpadded.bed > $all_mut_wgs_bed
+  -b data/WGS.hg38.mutect2.vardict.unpadded.bed \
+  > $all_mut_wgs_bed
 
+#################### Make coding regions file 
 # Convert GTF to BED file for use in bedtools
 # Here we are only extracting lines with as a CDS i.e. are coded in protein
 gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
   | awk '$3 ~ /CDS/' \
   | convert2bed --do-not-sort --input=gtf - \
+  | sort -k 1,1 -k 2,2n \
+  | bedtools merge  \
   > $cds_file
   
-# Make WGS coding BED file
+##################### Make WGS coding BED file  
+# Make WGS coding BED file for strelka
 bedtools intersect \
   -a data/WGS.hg38.strelka2.unpadded.bed \
-  -b data/WGS.hg38.mutect2.vardict.unpadded.bed \
-  $cds_file \
-  > $coding_wgs_bed
+  -b $cds_file \
+  > scratch/wgs_coding_strelka.bed
 
-# Make WXS coding BED file
+# Make WGS coding BED file for mutect
+bedtools intersect \
+  -a data/WGS.hg38.mutect2.vardict.unpadded.bed \
+  -b $cds_file \
+  > scratch/wgs_coding_mutect.bed
+
+# Intersect the mutect and strelka coding beds into one
+bedtools intersect \
+  -a scratch/wgs_coding_mutect.bed \
+  -b scratch/wgs_coding_strelka.bed \
+  | sort -k 1,1 -k 2,2n \
+  | bedtools merge \
+  > $coding_wgs_bed
+   
+##################### Make WXS coding BED file
+# Intersect coding and WXS ranges, sort and merge 
 bedtools intersect \
   -a data/WXS.hg38.100bp_padded.bed  \
   -b $cds_file \
+  | sort -k 1,1 -k 2,2n  \
+  | bedtools merge \
   > $coding_wxs_bed
 
 ######################### Calculate consensus TMB ##############################
