@@ -260,8 +260,8 @@ RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remote
 # pyarrow for comparative-RNASeq-analysis, to read/write .feather files
 RUN pip3 install "pyarrow==0.16.0"
 
-# ComplexHeatmap was apparently not explicitly installed anywhere, but is used throughout
-RUN R -e "BiocManager::install('ComplexHeatmap', update = FALSE)"
+# ComplexHeatmap and circlize were apparently not explicitly installed anywhere, but is used throughout
+RUN R -e "BiocManager::install(c('ComplexHeatmap', 'circlize'), update = FALSE)"
 
 # MATLAB Compiler Runtime is required for GISTIC, MutSigCV
 # Install steps are adapted from usuresearch/matlab-runtime
