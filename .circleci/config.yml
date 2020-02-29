@@ -44,9 +44,9 @@ jobs:
           name: Molecular Subtyping and Plotting - ATRT
           command:  OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-ATRT/run-molecular-subtyping-ATRT.sh
 
-      - run:
-          name: Molecular subtyping Chordoma
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-chordoma/01-Subtype-chordoma.Rmd', clean = TRUE)"
+      # - run:
+      #     name: Molecular subtyping Chordoma
+      #     command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-chordoma/01-Subtype-chordoma.Rmd', clean = TRUE)"
       
       # - run:
       #     name: Molecular subtyping - Ependymoma
