@@ -12,20 +12,7 @@
 
 #### Set Up --------------------------------------------------------------------
 
-# Install and load in ComplexHeatMap
-if (!("ComplexHeatmap" %in% installed.packages())) {
-  install.packages("ComplexHeatmap")
-}
 library(ComplexHeatmap)
-
-if (!("matrixStats" %in% installed.packages())) {
-  install.packages("matrixStats")
-}
-
-if (!("ggfortify" %in% installed.packages())) {
-  install.packages("ggfortify")
-}
-
 library(ggfortify)
 library(dplyr)
 
