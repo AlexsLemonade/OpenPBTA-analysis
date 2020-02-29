@@ -257,6 +257,12 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 # package required for shatterseek
 RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remotes::install_github('parklab/ShatterSeek', ref = '83ab3effaf9589cc391ecc2ac45a6eaf578b5046', dependencies = TRUE))"
 
+# pyarrow for comparative-RNASeq-analysis, to read/write .feather files
+RUN pip3 install "pyarrow==0.16.0"
+
+# ComplexHeatmap was apparently not explicitly installed anywhere, but is used throughout
+RUN R -e "BiocManager::install('ComplexHeatmap', update = FALSE)"
+
 # MATLAB Compiler Runtime is required for GISTIC, MutSigCV
 # Install steps are adapted from usuresearch/matlab-runtime
 # https://hub.docker.com/r/usuresearch/matlab-runtime/dockerfile
@@ -289,9 +295,6 @@ RUN mkdir -p gistic_install && \
 
 RUN chown -R rstudio:rstudio /home/rstudio/gistic_install
 RUN chmod 755 /home/rstudio/gistic_install
-
-# pyarrow for comparative-RNASeq-analysis, to read/write .feather files
-RUN pip3 install "pyarrow==0.16.0"
 
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
