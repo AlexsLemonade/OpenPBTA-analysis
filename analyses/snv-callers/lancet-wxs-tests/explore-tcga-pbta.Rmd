@@ -54,6 +54,7 @@ Declare directory paths.
 ```{r}
 scratch_dir <- file.path("..", "..", "..", "scratch")
 data_dir <- file.path("..", "..", "..", "data")
+ref_dir <- file.path("..", "ref_files")
 plots_dir <- file.path("plots", "tcga-vs-pbta-plots")
 
 if (!dir.exists(plots_dir)) {
@@ -191,9 +192,6 @@ tmb_cdf_plot <- function(tmb_df, plot_title) {
                   plot = cdf_plot, 
                   width = 10, 
                   height = 7.5)
-
-  # Print out plot here
-  cdf_plot
 }
 ```
 
@@ -357,16 +355,18 @@ Lancet only TMB:
 lancet_tmb <- dplyr::bind_rows(list(
   pbta = calculate_tmb(pbta_lancet,
     bed_wgs = file.path(data_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
-    bed_wxs = file.path(scratch_dir, "intersect_cds_WXS.bed")
+    bed_wxs = file.path(data_dir, "intersect_cds_lancet_WXS.bed")
   ),
   tcga = calculate_tmb(tcga_lancet,
-    bed_wgs = file.path(scratch_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"), # There's no TCGA WGS samples, this is just a place holder and won't be used.
-    bed_wxs = file.path("..", "ref_files", "hg38_liftover_genome_gencode.v19.basic.exome.bed")
+    bed_wgs = file.path(data_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"), # There's no TCGA WGS samples, this is just a place holder and won't be used.
+    bed_wxs = file.path(ref_dir, "intersect_cds_gencode_liftover_WXS.bed")
   )
 ), .id = "datasets")
 
 tmb_cdf_plot(lancet_tmb, plot_title = "Lancet")
 ```
+
+[Lancet TMB](plots/tcga-vs-pbta-plots/tmb-cdf-Lancet.png)
 
 Mutect only TMB:
 
@@ -374,11 +374,11 @@ Mutect only TMB:
 mutect_tmb <- dplyr::bind_rows(list(
   pbta = calculate_tmb(pbta_mutect,
     bed_wgs = file.path(data_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
-    bed_wxs = file.path(scratch_dir, "intersect_cds_WXS.bed")
+    bed_wxs = file.path(data_dir, "intersect_cds_lancet_WXS.bed")
   ),
   tcga = calculate_tmb(tcga_mutect,
-    bed_wgs = file.path(scratch_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
-    bed_wxs = file.path("..", "ref_files", "hg38_liftover_genome_gencode.v19.basic.exome.bed")
+    bed_wgs = file.path(data_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
+    bed_wxs = file.path(ref_dir, "intersect_cds_gencode_liftover_WXS.bed")
   )
 ), .id = "datasets")
 
@@ -386,17 +386,19 @@ mutect_tmb <- dplyr::bind_rows(list(
 tmb_cdf_plot(mutect_tmb, plot_title = "Mutect2")
 ```
 
+[Mutect2 TMB](plots/tcga-vs-pbta-plots/tmb-cdf-Mutect2.png)
+
 Strelka only TMB:
 
 ```{r}
 strelka_tmb <- dplyr::bind_rows(list(
   pbta = calculate_tmb(pbta_strelka,
     bed_wgs = file.path(data_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
-    bed_wxs = file.path(scratch_dir, "intersect_cds_WXS.bed")
+    bed_wxs = file.path(data_dir, "intersect_cds_lancet_WXS.bed")
   ),
   tcga = calculate_tmb(tcga_strelka,
-    bed_wgs = file.path(scratch_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
-    bed_wxs = file.path("..", "ref_files", "hg38_liftover_genome_gencode.v19.basic.exome.bed")
+    bed_wgs = file.path(data_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
+    bed_wxs = file.path(ref_dir, "intersect_cds_gencode_liftover_WXS.bed")
   )
 ), .id = "datasets")
 
@@ -404,23 +406,27 @@ strelka_tmb <- dplyr::bind_rows(list(
 tmb_cdf_plot(strelka_tmb, plot_title = "Strelka2")
 ```
 
+[Strelka2 TMB](plots/tcga-vs-pbta-plots/tmb-cdf-Strelka2.png)
+
 Consensus TMB:
 
 ```{r}
 consensus_tmb <- dplyr::bind_rows(list(
   pbta = calculate_tmb(pbta_consensus,
     bed_wgs = file.path(data_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
-    bed_wxs = file.path(scratch_dir, "intersect_cds_WXS.bed")
+    bed_wxs = file.path(data_dir, "intersect_cds_lancet_WXS.bed")
   ),
   tcga = calculate_tmb(tcga_consensus,
-    bed_wgs = file.path(scratch_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
-    bed_wxs = file.path("..", "ref_files", "hg38_liftover_genome_gencode.v19.basic.exome.bed")
+    bed_wgs = file.path(data_dir, "intersect_cds_lancet_strelka_mutect_WGS.bed"),
+    bed_wxs = file.path(ref_dir, "intersect_cds_gencode_liftover_WXS.bed")
   )
 ), .id = "datasets")
 
 # Make a CDF plot
 tmb_cdf_plot(consensus_tmb, plot_title = "Consensus")
 ```
+
+[Consensus TMB](plots/tcga-vs-pbta-plots/tmb-cdf-Consensus.png)
 
 ## Overlap of the target regions of both datasets
 
@@ -431,7 +437,7 @@ be `chr`, save as a TSV file.
 tcga_bed <- readr::read_tsv("https://api.gdc.cancer.gov/data/7f0d3ab9-8bef-4e3b-928a-6090caae885b", col_names = c("chr", "start", "end")) %>%
   dplyr::filter(!is.na(chr)) %>%
   dplyr::mutate(chr = paste0("chr", chr)) %>%
-  readr::write_tsv(file.path("..", "ref_files", "gencode.v19.basic.exome.tsv"),
+  readr::write_tsv(file.path(ref_dir, "gencode.v19.basic.exome.tsv"),
     col_names = FALSE
   )
 ```
@@ -441,7 +447,7 @@ from the Target BED regions for TCGA data from hg19 to hg38 (What the PBTA data 
 
 ```{r}
 tcga_lift_bed <- readr::read_tsv(file.path(
-  "..", "ref_files",
+  ref_dir,
   "hg38_liftover_genome_gencode.v19.basic.exome.bed"
 ),
 col_names = c("chr", "start", "end")
