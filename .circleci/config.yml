@@ -40,9 +40,9 @@ jobs:
       #     name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors 
       #     command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
   
-      - run:
-          name: Molecular Subtyping and Plotting - ATRT
-          command:  OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-ATRT/run-molecular-subtyping-ATRT.sh
+      # - run:
+      #     name: Molecular Subtyping and Plotting - ATRT
+      #     command:  OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-ATRT/run-molecular-subtyping-ATRT.sh
 
       # - run:
       #     name: Molecular subtyping Chordoma
