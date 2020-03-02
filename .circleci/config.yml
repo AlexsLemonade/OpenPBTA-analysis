@@ -156,9 +156,9 @@ jobs:
           name: Gene set enrichment analysis to generate GSVA scores
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh"
 
-      - run:
-          name: Fusion Summary
-          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
+      # - run:
+      #    name: Fusion Summary
+      #    command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
           
       - run:
           name: Add Shatterseek
