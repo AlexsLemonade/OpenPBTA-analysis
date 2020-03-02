@@ -11,10 +11,11 @@ Primary goals include:
 ## Usage:
 
 Note that running this analyis on the full dataset requires > 16GB of memory. 
-With this analysis folder (`gene-set-enrichment-analysis`) as your current directory, run the bash script:
+Run the bash script of this analysis module:
 ```
-bash run-gsea.sh
+bash analyses/gene-set-enrichment-analysis/run-gsea.sh
 ```
+*This command above assumes you are in the top directory, OpenPBTA-analysis*
 
 ## Folder Content
 
