@@ -16,13 +16,13 @@ jobs:
           name: List Data Directory Contents
           command: ./scripts/run_in_ci.sh ls data/testing
     
-#      - run:
-#          name: Sample Distribution Analyses
-#          command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
-#
-#      - run:
-#          name: Transcriptome dimensionality reduction
-#          command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
+      - run:
+          name: Sample Distribution Analyses
+          command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
+
+      - run:
+          name: Transcriptome dimensionality reduction
+          command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
           
       # The analysis no longer needs to be tested as it has been retired and is better covered by 'SNV Caller Analysis' below.
       #- run:
