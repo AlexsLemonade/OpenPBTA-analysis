@@ -37,7 +37,7 @@ subset_metadata <- histologies_df %>%
 
 ```{r}
 subset_focal_cn_df <- 
-  data.table::fread(file.path(input_dir, "chordoma-only_seg_annotated_cn_autosomes.tsv.gz"))
+  data.table::fread(file.path(input_dir, "chordoma-only_cn_autosomes.tsv.gz"))
 ```
 
 ```{r}

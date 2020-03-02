@@ -45,9 +45,7 @@ select_metadata <- metadata %>%
 
 #### Filter metadata -----------------------------------------------------------
 chordoma_df <- metadata %>%
-  dplyr::filter(short_histology == "Chordoma",
-                sample_type == "Tumor",
-                composition == "Solid Tissue")
+  dplyr::filter(short_histology == "Chordoma")
 
 #### Filter expression data ----------------------------------------------------
 # Read in the stranded expression data file
