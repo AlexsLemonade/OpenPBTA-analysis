@@ -17,7 +17,7 @@
   - Add consensus focal CN files from [analysis](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/46cf6ccb119312ccae6122ac94c51710df01f6da/analyses/focal-cn-file-preparation):
     - consensus_seg_annotated_cn_autosomes.tsv.gz
     - consensus_seg_annotated_cn_x_and_y.tsv.gz
-  - Updated fusion files to add additional kinase genes, remove residual polyA stranded samples, andfix order of filtering operations per [comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/539#issuecomment-587167746), [comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/521#issuecomment-582990375), [#530](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/530), and [#553](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/530), and [PR #567](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/567):
+  - Updated fusion files to add additional kinase genes, remove residual polyA stranded samples, and fix order of filtering operations per [comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/539#issuecomment-587167746), [comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/521#issuecomment-582990375), [#530](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/530), and [#553](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/530), and [PR #567](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/567):
     - pbta-fusion-recurrently-fused-genes-byhistology.tsv
     - pbta-fusion-putative-oncogenic.tsv
     - pbta-fusion-recurrently-fused-genes-bysample.tsv
@@ -793,4 +793,3 @@ data
     ├── strelka2.maf.gz
     └── tumor-normal-pair.tsv
 ```
-
