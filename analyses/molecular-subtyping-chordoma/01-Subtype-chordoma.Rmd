@@ -18,20 +18,26 @@ library(ggplot2)
 ### Read in data
 
 ```{r}
-data_dir <- file.path("..", "..", "data")
-histologies_df <- read_tsv(file.path(data_dir,
-                                     "pbta-histologies.tsv"),
-                           col_types = cols(
-                             molecular_subtype = col_character()
-                           ))
+# File path to subsetted files directory 
+input_dir <- "chordoma-subset"
+```
+
+Set up metadata
+
+```{r}
+# Read in non-subsetted metadata
+histologies_df <- readr::read_tsv(file.path("..", "..", "data", "pbta-histologies.tsv"))
+
+# Subset metadata
+subset_metadata <- histologies_df %>%
+  dplyr::filter(short_histology == "Chordoma") %>% 
+  select(Kids_First_Biospecimen_ID, sample_id, Kids_First_Participant_ID,
+         experimental_strategy)
 ```
 
 ```{r}
-# TODO: update to use consensus file with annotations included in the data 
-# download?
-focal_cn_df <- 
-  read_tsv(file.path("..", "focal-cn-file-preparation", "results",
-                     "consensus_seg_annotated_cn_autosomes.tsv.gz"))
+subset_focal_cn_df <- 
+  data.table::fread(file.path(input_dir, "chordoma-only_seg_annotated_cn_autosomes.tsv.gz"))
 ```
 
 ```{r}
@@ -41,9 +47,9 @@ focal_cn_df <-
 # event for a given individual). To get the SMARCB1 jitter plot in the photo 
 # here #250 (comment), you will first need to read in the collapsed expression 
 # data
-expression_data <- 
-  read_rds(file.path(data_dir, 
-                     "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
+subset_expression_data <- 
+  read_rds(file.path(input_dir,
+                     "chordoma-only-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
 ```
 
 ### Output
@@ -66,43 +72,18 @@ output_file <- file.path(results_dir, "chordoma_smarcb1_status.tsv")
 
 ## Prepare the data
 
-Extracting the biospecimen IDs that correspond to chordoma samples
+Extracting the chordoma samples that have a loss of SMARCB1 from `subset_focal_cn_df`
 
 ```{r}
-chordoma_samples <- histologies_df %>%
-  filter(short_histology == "Chordoma") %>% 
-  pull(Kids_First_Biospecimen_ID)
-```
-
-Extracting the chordoma samples that have a loss of SMARCB1 from `focal_cn_df`
-
-```{r}
-chordoma_loss <- focal_cn_df %>% 
-  filter(biospecimen_id %in% chordoma_samples, 
-         gene_symbol == "SMARCB1",
+chordoma_loss <- subset_focal_cn_df %>% 
+  filter(gene_symbol == "SMARCB1",
          status == "loss")
 chordoma_loss 
 ```
 
-```{r}
-# remove large copy number data frame
-rm(focal_cn_df)
-```
-
-Modifying the output file to filter only chorodoma diagnoses and removing columns with information not relevant to the study
-```{r}
-chordoma_id_df <- histologies_df %>% 
-  # only rows with chordoma samples
-  filter(short_histology == "Chordoma") %>%
-  # select only these columns that we'll need later
-  select(Kids_First_Biospecimen_ID, sample_id, Kids_First_Participant_ID,
-         experimental_strategy)
-chordoma_id_df
-```
-
 Distinguishing the chordoma samples with no copy number change chromosome 22
 ```{r}
-copy_neutral_df <- chordoma_id_df %>% 
+copy_neutral_df <- subset_metadata %>% 
   # the copy events can only be taken from WGS data not RNA-seq data
   # we also only want biospecimens where a loss was not recorded to avoid duplicates
   filter(experimental_strategy == "WGS",
@@ -129,7 +110,7 @@ Need to get the sample_id that corresponds to biospecimen_id into chordoma_copy 
 chordoma_copy <- chordoma_copy %>%
   # get only the Kids_First_Biospecimen_ID, sample_id columns from our identifier data.frame
   # then use biospecimen IDs to add the sample_id info
-  inner_join(select(chordoma_id_df,
+  inner_join(select(subset_metadata,
                     Kids_First_Biospecimen_ID,
                     sample_id),
              by = c("biospecimen_id" = "Kids_First_Biospecimen_ID"))
@@ -141,16 +122,15 @@ Look at SMARCB1 expression values only in chordoma
 ```{r}
 # get the row that contains the SMARCB1 values
 # gene symbols are rownames
-smarcb1_expression <- expression_data[which(rownames(expression_data) == "SMARCB1"), ]
-
-# now only the columns correspond to chordoma samples
-smarcb1_expression <- smarcb1_expression[, which(colnames(expression_data) %in% chordoma_samples) ]
-smarcb1_expression
+smarcb1_expression <- subset_expression_data[which(rownames(subset_expression_data) == "SMARCB1"), ]
 ```
 
 ```{r}
-# remove large expression matrix that's no longer needed
-rm(expression_data)
+# now only the columns correspond to chordoma samples
+smarcb1_expression <- smarcb1_expression[, which(colnames(subset_expression_data) %in% subset_metadata$Kids_First_Biospecimen_ID) ]
+
+# Print out the expression for SMARCB1
+smarcb1_expression
 ```
 
 The `smarcb1_expression` is a not a friendly form ^^; Transposing needed: 
@@ -170,7 +150,7 @@ smarcb1_expression
 This also needs sample_id to add it in
 ```{r}
 smarcb1_expression <- smarcb1_expression %>%
-  inner_join(select(chordoma_id_df,
+  inner_join(select(subset_metadata,
                     Kids_First_Biospecimen_ID,
                     sample_id),
              by = "Kids_First_Biospecimen_ID")
@@ -186,7 +166,7 @@ chordoma_smarcb1_df <- smarcb1_expression %>%
          Kids_First_Biospecimen_ID_RNA = biospecimen_id)
 
 # this step adds in the participant identifier (sample_id to match between the two data.frame)
-chordoma_smarcb1_df <- chordoma_id_df %>%
+chordoma_smarcb1_df <- subset_metadata %>%
   select(sample_id, Kids_First_Participant_ID) %>%
   distinct() %>%
   inner_join(chordoma_smarcb1_df,
@@ -243,4 +223,10 @@ Write the table to file.
 ```{r}
 chordoma_smarcb1_df %>%
   write_tsv(output_file)
+```
+
+### Session Info
+
+```{r}
+sessionInfo()
 ```
