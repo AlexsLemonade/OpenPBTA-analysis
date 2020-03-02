@@ -76,9 +76,10 @@ jobs:
           name: Sex prediction from RNA-seq - Clean data-train elasticnet-evaluate model
           command: OPENPBTA_PERCENT=0 ./scripts/run_in_ci.sh bash analyses/sex-prediction-from-RNASeq/run-sex-prediction-from-RNASeq.sh
 
-      - run:
-          name: Selection Strategy Comparison
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/selection-strategy-comparison/01-selection-strategies.rmd', params = list(neighbors = 2), clean = TRUE)"
+      # Deprecated: this comparison is no longer needed after separating Poly-A and stranded.
+      # - run:
+      #     name: Selection Strategy Comparison
+      #     command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/selection-strategy-comparison/01-selection-strategies.rmd', params = list(neighbors = 2), clean = TRUE)"
 
       - run:
           name: TP53 NF1 classifier run
