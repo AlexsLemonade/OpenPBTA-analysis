@@ -180,13 +180,13 @@ jobs:
           name: SNV Caller Analysis 
           command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-pbta.sh
       
-      - run:
-          name: Lancet WXS vs WGS test
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/lancet-paired-WXS-WGS.Rmd', clean = TRUE)"
+    #   - run:
+    #       name: Lancet WXS vs WGS test
+    #       command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/lancet-paired-WXS-WGS.Rmd', clean = TRUE)"
       
-      - run:
-          name: Lancet padded vs unpadded test
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/lancet-padded-vs-unpadded.Rmd', clean = TRUE)"
+    #   - run:
+    #       name: Lancet padded vs unpadded test
+    #       command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/lancet-padded-vs-unpadded.Rmd', clean = TRUE)"
 
        # This analysis was a side concept question and no longer needs to be run. 
        # - run:
