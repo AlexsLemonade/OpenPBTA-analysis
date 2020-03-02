@@ -1,11 +1,20 @@
 # Gene Set Enrichment Analysis
 
-Written by Stephanie J. Spielman to supercede previous analyses in [`ssgsea-hallmark`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/ssgsea-hallmark). Primary goals include:
+Written by Stephanie J. Spielman to supercede previous analyses in [`ssgsea-hallmark`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/ssgsea-hallmark).
+
+Primary goals include:
 
 1. Score hallmark pathways based on expression data using GSVA analysis, using a strategy that produces Gaussian-distributed scores.
 2. Analyze scores for highly significant differences among tumor classifications 
 3. [Pending] generate heatmaps and templates for boxplot figures 
 
+## Usage:
+
+Note that running this analyis on the full dataset requires > 16GB of memory. 
+With this analysis folder (`gene-set-enrichment-analysis`) as your current directory, run the bash script:
+```
+bash run-gsea.sh
+```
 
 ## Folder Content
 
@@ -21,7 +30,7 @@ Written by Stephanie J. Spielman to supercede previous analyses in [`ssgsea-hall
 	+ File created with: `Rscript --vanilla 01-conduct-gsea-analysis.R --input pbta-gene-expression-rsem-fpkm-collapsed.polya.rds --output gsva_scores_stranded.tsv`
 
 
-+ **Eight** files named as `results/gsva_<tukey/anova>_<stranded/polya>_<disease_type_new/short_histology>.tsv` represent results from modeling
++ **Eight** files named as `results/gsva_<tukey/anova>_<stranded/polya>_<integrated_diagnosis/short_histology>.tsv` represent results from modeling
 	+ Files created with: `Rscript --vanilla 02-model-gsea.R`
 	+ Assumes `results/gsva_scores_stranded.tsv` and `results/gsva_scores_polya.tsv` exist
  
