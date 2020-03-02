@@ -165,3 +165,4 @@ consensus_df %>%
   as.data.frame() %>%
   # Write to a TSV file, change NAs back to "."
   readr::write_tsv(opt$output_file, na = ".")
+
