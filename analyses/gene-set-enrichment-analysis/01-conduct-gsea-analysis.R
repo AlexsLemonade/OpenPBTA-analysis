@@ -76,7 +76,7 @@ if (is.na(opt$output)) stop("\n\nERROR: You must provide an output file for savi
 #### Set Up paths and file names --------------------------------------------------------------------
 
 ## Define directories
-data_dir    <- file.path("..", "..", "data", "testing", "release-v15-20200228") 
+data_dir    <- file.path("..", "..", "data") 
 results_dir <- "results"
 if (!dir.exists(results_dir)) dir.create(results_dir)
 
