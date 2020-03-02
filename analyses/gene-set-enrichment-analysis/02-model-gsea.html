@@ -1666,7 +1666,7 @@ $(document).ready(function () {
 <p>The purpose of this analysis is to assess significant differences in GSVA scores for each hallmark pathways. Using ANOVA and subsequent Tukey tests, we ask:</p>
 <ul>
 <li><p>For each pathway, are GSVA scores significantly different across <code>short_histology</code>? If so, which histologies are significantly different?</p></li>
-<li><p>For each pathway, are GSVA scores significantly different across <code>disease_type_new</code>? If so, which types are significantly different?</p></li>
+<li><p>For each pathway, are GSVA scores significantly different across <code>integrated_diagnosis</code>? If so, which types are significantly different?</p></li>
 </ul>
 <p>We perform this using both GSVA scores calculated from the stranded and polyA RNA-seq libraries. Code is also flexible enough to test a different variable besides <code>short_histology</code>, etc.</p>
 </div>
@@ -1714,13 +1714,13 @@ scores_polya_file    &lt;- file.path(results_dir, &quot;gsva_scores_polya.tsv&qu
 ######## Define output files
 file_anova_stranded_short_histology  &lt;- file.path(results_dir, &quot;gsva_anova_stranded_short_histology.tsv&quot;)
 file_anova_polya_short_histology     &lt;- file.path(results_dir, &quot;gsva_anova_polya_short_histology.tsv&quot;)
-file_anova_stranded_disease_type_new &lt;- file.path(results_dir, &quot;gsva_anova_stranded_disease_type_new.tsv&quot;)
-file_anova_polya_disease_type_new    &lt;- file.path(results_dir, &quot;gsva_anova_polya_disease_type_new.tsv&quot;)
+file_anova_stranded_integrated_diagnosis &lt;- file.path(results_dir, &quot;gsva_anova_stranded_integrated_diagnosis.tsv&quot;)
+file_anova_polya_integrated_diagnosis    &lt;- file.path(results_dir, &quot;gsva_anova_polya_integrated_diagnosis.tsv&quot;)
 
 file_tukey_stranded_short_histology  &lt;- file.path(results_dir, &quot;gsva_tukey_stranded_short_histology.tsv&quot;)
 file_tukey_polya_short_histology     &lt;- file.path(results_dir, &quot;gsva_tukey_polya_short_histology.tsv&quot;)
-file_tukey_stranded_disease_type_new &lt;- file.path(results_dir, &quot;gsva_tukey_stranded_disease_type_new.tsv&quot;)
-file_tukey_polya_disease_type_new    &lt;- file.path(results_dir, &quot;gsva_tukey_polya_disease_type_new.tsv&quot;)
+file_tukey_stranded_integrated_diagnosis &lt;- file.path(results_dir, &quot;gsva_tukey_stranded_integrated_diagnosis.tsv&quot;)
+file_tukey_polya_integrated_diagnosis    &lt;- file.path(results_dir, &quot;gsva_tukey_polya_integrated_diagnosis.tsv&quot;)
 
 
 ######## Load input files
@@ -1730,7 +1730,7 @@ scores_polya    &lt;- readr::read_tsv(scores_polya_file)</code></pre>
 </div>
 <div id="anova-and-tukey-analysis-of-gsva-scores" class="section level3">
 <h3>ANOVA and Tukey analysis of GSVA scores</h3>
-<p>Here we perform a series of ANOVAs, for polyA and stranded libraries separately, to determine whether mean GSVA scores for a given grouping are significantly different across hallmarks (pathways). The given groupings examined here are <code>short_histology</code> and <code>disease_type_new</code>. In other words, we perform an ANOVA (and associated posthoc Tukey test) for each hallmark as, <code>hallmark ~ grouping</code>. Users can specify the grouping variable.</p>
+<p>Here we perform a series of ANOVAs, for polyA and stranded libraries separately, to determine whether mean GSVA scores for a given grouping are significantly different across hallmarks (pathways). The given groupings examined here are <code>short_histology</code> and <code>integrated_diagnosis</code>. In other words, we perform an ANOVA (and associated posthoc Tukey test) for each hallmark as, <code>hallmark ~ grouping</code>. Users can specify the grouping variable.</p>
 <p>First, prepare the data for modeling:</p>
 <pre class="r"><code>### Merge histology metadata with each set of gsea scores
 scores_stranded  &lt;- scores_stranded %&gt;% mutate(data_type = &quot;stranded&quot;)
@@ -1745,23 +1745,23 @@ metadata_with_gsva &lt;- metadata %&gt;%
 <p>Now, model:</p>
 <pre class="r"><code>short_histology_stranded_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, short_histology, &quot;stranded&quot;, SIGNIFICANCE_THRESHOLD) </code></pre>
 <pre><code>## [1] 50</code></pre>
-<pre class="r"><code>disease_type_new_stranded_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, disease_type_new, &quot;stranded&quot;, SIGNIFICANCE_THRESHOLD) </code></pre>
+<pre class="r"><code>integrated_diagnosis_stranded_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, integrated_diagnosis, &quot;stranded&quot;, SIGNIFICANCE_THRESHOLD) </code></pre>
 <pre><code>## [1] 50</code></pre>
 <pre class="r"><code>head(short_histology_stranded_model_results)</code></pre>
 <pre><code>## $anova
 ## # A tibble: 50 x 5
 ##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
 ##    &lt;fct&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI…             12.8     4.02e- 58        2.01e- 56
-##  2 HALLMARK_ALL…             22.3     3.79e- 99        1.89e- 97
-##  3 HALLMARK_AND…             17.5     1.55e- 79        7.77e- 78
-##  4 HALLMARK_ANG…             15.0     3.04e- 68        1.52e- 66
-##  5 HALLMARK_API…             21.1     1.31e- 94        6.57e- 93
-##  6 HALLMARK_API…             29.7     7.62e-127        3.81e-125
-##  7 HALLMARK_APO…             21.0     5.73e- 94        2.87e- 92
-##  8 HALLMARK_BIL…             30.2     1.12e-128        5.62e-127
-##  9 HALLMARK_CHO…             18.4     4.52e- 83        2.26e- 81
-## 10 HALLMARK_COA…             23.9     1.18e-105        5.89e-104
+##  1 HALLMARK_ADI…             12.7     1.14e- 57        5.70e- 56
+##  2 HALLMARK_ALL…             22.0     5.39e- 98        2.70e- 96
+##  3 HALLMARK_AND…             17.4     8.05e- 79        4.02e- 77
+##  4 HALLMARK_ANG…             14.7     6.30e- 67        3.15e- 65
+##  5 HALLMARK_API…             21.4     1.57e- 95        7.86e- 94
+##  6 HALLMARK_API…             29.4     8.88e-126        4.44e-124
+##  7 HALLMARK_APO…             21.0     5.15e- 94        2.57e- 92
+##  8 HALLMARK_BIL…             30.3     5.82e-129        2.91e-127
+##  9 HALLMARK_CHO…             18.4     2.46e- 83        1.23e- 81
+## 10 HALLMARK_COA…             23.7     1.20e-104        5.98e-103
 ## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
 ## 
 ## $tukey
@@ -1774,64 +1774,64 @@ metadata_with_gsva &lt;- metadata %&gt;%
 ##  4 HALLMARK_ADI… Chordoma-…          0.00733         1                    1
 ##  5 HALLMARK_ADI… Choroid p…         -0.0605          1                    1
 ##  6 HALLMARK_ADI… CNS EFT-C…         -0.142           1.000                1
-##  7 HALLMARK_ADI… CNS Embry…         -0.229           1.000                1
-##  8 HALLMARK_ADI… CNS gangl…         -0.524           0.677                1
-##  9 HALLMARK_ADI… CNS lymph…         -0.179           1                    1
-## 10 HALLMARK_ADI… CNS neuro…         -0.167           1.000                1
+##  7 HALLMARK_ADI… CNS lymph…         -0.179           1                    1
+##  8 HALLMARK_ADI… CNS neuro…         -0.167           1.000                1
+##  9 HALLMARK_ADI… CNS Rhabd…         -0.395           0.998                1
+## 10 HALLMARK_ADI… CNS sarco…         -0.0157          1                    1
 ## # … with 31,490 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
 ## #   significant_tukey_bonf &lt;lgl&gt;</code></pre>
-<pre class="r"><code>head(disease_type_new_stranded_model_results)</code></pre>
+<pre class="r"><code>head(integrated_diagnosis_stranded_model_results)</code></pre>
 <pre><code>## $anova
 ## # A tibble: 50 x 5
 ##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
 ##    &lt;fct&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI…             7.59     5.01e- 52        2.51e- 50
-##  2 HALLMARK_ALL…            12.7      2.77e- 90        1.39e- 88
-##  3 HALLMARK_AND…             9.49     4.53e- 67        2.26e- 65
-##  4 HALLMARK_ANG…             8.71     5.81e- 61        2.90e- 59
-##  5 HALLMARK_API…            12.1      1.71e- 86        8.54e- 85
-##  6 HALLMARK_API…            16.7      3.39e-116        1.70e-114
-##  7 HALLMARK_APO…            11.8      2.23e- 84        1.12e- 82
-##  8 HALLMARK_BIL…            16.6      1.05e-115        5.25e-114
-##  9 HALLMARK_CHO…             9.80     2.09e- 69        1.05e- 67
-## 10 HALLMARK_COA…            13.4      1.75e- 95        8.75e- 94
+##  1 HALLMARK_ADI…             7.67     4.88e- 51        2.44e- 49
+##  2 HALLMARK_ALL…            13.3      7.11e- 92        3.55e- 90
+##  3 HALLMARK_AND…             9.83     1.56e- 67        7.81e- 66
+##  4 HALLMARK_ANG…             9.04     1.29e- 61        6.46e- 60
+##  5 HALLMARK_API…            12.9      5.58e- 89        2.79e- 87
+##  6 HALLMARK_API…            17.2      2.76e-116        1.38e-114
+##  7 HALLMARK_APO…            12.4      8.15e- 86        4.08e- 84
+##  8 HALLMARK_BIL…            17.5      5.67e-118        2.83e-116
+##  9 HALLMARK_CHO…            10.3      5.93e- 71        2.97e- 69
+## 10 HALLMARK_COA…            14.3      3.71e- 98        1.85e- 96
 ## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
 ## 
 ## $tukey
-## # A tibble: 113,900 x 7
+## # A tibble: 104,000 x 7
 ##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
 ##    &lt;fct&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
 ##  1 HALLMARK_ADI… Atypical …         -0.115           1                    1
 ##  2 HALLMARK_ADI… Brain art…         -0.411           1.000                1
-##  3 HALLMARK_ADI… Brainstem…         -0.251           1.000                1
+##  3 HALLMARK_ADI… Brainstem…         -0.192           1                    1
 ##  4 HALLMARK_ADI… Cavernoma…         -0.0511          1                    1
 ##  5 HALLMARK_ADI… Chondrosa…         -0.279           1                    1
 ##  6 HALLMARK_ADI… Chordoma-…         -0.00240         1                    1
 ##  7 HALLMARK_ADI… Choroid p…          0.0219          1                    1
 ##  8 HALLMARK_ADI… Choroid p…          0.0404          1                    1
 ##  9 HALLMARK_ADI… Choroid p…         -0.0668          1                    1
-## 10 HALLMARK_ADI… CNS embry…         -0.0123          1                    1
-## # … with 113,890 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
+## 10 HALLMARK_ADI… CNS Embry…         -0.281           1.000                1
+## # … with 103,990 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
 ## #   significant_tukey_bonf &lt;lgl&gt;</code></pre>
 <pre class="r"><code>## Save stranded library results
 write_tsv(short_histology_stranded_model_results[[&quot;anova&quot;]],  file_anova_stranded_short_histology)
-write_tsv(disease_type_new_stranded_model_results[[&quot;anova&quot;]], file_anova_stranded_disease_type_new)
+write_tsv(integrated_diagnosis_stranded_model_results[[&quot;anova&quot;]], file_anova_stranded_integrated_diagnosis)
 write_tsv(short_histology_stranded_model_results[[&quot;tukey&quot;]],  file_tukey_stranded_short_histology)
-write_tsv(disease_type_new_stranded_model_results[[&quot;tukey&quot;]], file_tukey_stranded_disease_type_new)
+write_tsv(integrated_diagnosis_stranded_model_results[[&quot;tukey&quot;]], file_tukey_stranded_integrated_diagnosis)
 
 
 ### Don't run polyA samples in CI due to data limitations, won't be enough levels for ANOVA
 if (!(running_in_ci)){
   short_histology_polya_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, short_histology, &quot;polya&quot;, SIGNIFICANCE_THRESHOLD)
-  disease_type_new_polya_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, disease_type_new, &quot;polya&quot;, SIGNIFICANCE_THRESHOLD)
+  integrated_diagnosis_polya_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, integrated_diagnosis, &quot;polya&quot;, SIGNIFICANCE_THRESHOLD)
   head(short_histology_polya_model_results)
-  head(disease_type_new_polya_model_results)
+  head(integrated_diagnosis_polya_model_results)
 
   ### Save polya library results
   write_tsv(short_histology_polya_model_results[[&quot;anova&quot;]],     file_anova_polya_short_histology)
-  write_tsv(disease_type_new_polya_model_results[[&quot;anova&quot;]],    file_anova_polya_disease_type_new)
+  write_tsv(integrated_diagnosis_polya_model_results[[&quot;anova&quot;]],    file_anova_polya_integrated_diagnosis)
   write_tsv(short_histology_polya_model_results[[&quot;tukey&quot;]],     file_tukey_polya_short_histology)
-  write_tsv(disease_type_new_polya_model_results[[&quot;tukey&quot;]],    file_tukey_polya_disease_type_new)
+  write_tsv(integrated_diagnosis_polya_model_results[[&quot;tukey&quot;]],    file_tukey_polya_integrated_diagnosis)
 
 }</code></pre>
 <pre><code>## [1] 50
@@ -1855,8 +1855,8 @@ if (!(running_in_ci)){
 <blockquote>
 <p>All are significantly different for stranded, none for polya. Likely due to data/power limitations.</p>
 </blockquote>
-<p><strong>How many <code>disease_type_new</code> have significant ANOVAs across hallmark pathways, for each library?</strong></p>
-<pre class="r"><code>disease_type_new_stranded_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)</code></pre>
+<p><strong>How many <code>integrated_diagnosis</code> have significant ANOVAs across hallmark pathways, for each library?</strong></p>
+<pre class="r"><code>integrated_diagnosis_stranded_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["significant_anova"],"name":[1],"type":["lgl"],"align":["right"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"TRUE","2":"50"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
@@ -1864,7 +1864,7 @@ if (!(running_in_ci)){
 </div>
 <pre class="r"><code>if (!(running_in_ci))
 {
-  disease_type_new_polya_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)
+  integrated_diagnosis_polya_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)
 }</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
