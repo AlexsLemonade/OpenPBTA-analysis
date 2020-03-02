@@ -142,7 +142,7 @@ option_list <- list(
   make_option(
     opt_str = "--vaf",
     type = "numeric",
-    default = 0.2,
+    default = NA,
     help = "Minimum variant allele fraction to include",
     metavar = "numeric"
   ),
@@ -286,12 +286,13 @@ maf_filtered <- maf_df %>%
 gene_sample_counts <- maf_filtered %>%
   dplyr::filter(Entrez_Gene_Id > 0) %>% # remove unknowns
   dplyr::group_by(gene = Hugo_Symbol, sample = Tumor_Sample_Barcode) %>%
-  dplyr::tally(name = "mutations")
+  dplyr::tally(name = "mutations") %>%
+  dplyr::filter(sample %in% samples) 
+  
 
 
 # count # of samples mutated by gene
 gene_counts <- gene_sample_counts %>%
-  dplyr::filter(sample %in% samples) %>%
   dplyr::group_by(gene) %>%
   dplyr::summarize(
     mutant_samples = dplyr::n(),

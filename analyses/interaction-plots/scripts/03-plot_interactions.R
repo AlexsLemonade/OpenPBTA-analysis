@@ -82,8 +82,17 @@ cooccur_df <-
 
 labels <- unique(c(cooccur_df$label1, cooccur_df$label2))
 
+# check the order of the labels to be decreasing by mut count 
+label_counts <- as.numeric(stringr::str_extract(labels, "\\b\\d+\\b"))
+labels <- labels[order(label_counts, decreasing = TRUE)]
+# order genes the same way, in case we ant to use those
+genes <- stringr::str_extract(labels, "^.+?\\b")
+genes <- genes[order(label_counts, decreasing = TRUE)]
+
 cooccur_df <- cooccur_df %>%
   dplyr::mutate(
+    gene1 = factor(gene1, levels = genes),
+    gene2 = factor(gene2, levels = genes),
     label1 = factor(label1, levels = labels),
     label2 = factor(label2, levels = labels)
   )
@@ -150,11 +159,11 @@ if (is.na(opts$disease_table)) {
 
 disease_file = file.path(root_dir, opts$disease_table)
 disease_df <-
-  readr::read_tsv(disease_file, col_types = readr::cols())
+  readr::read_tsv(disease_file, col_types = readr::cols()) %>%
+  dplyr::mutate(gene = factor(gene, levels = genes))
 
-disease_barplot <- ggplot(
+ggplot(
   disease_df,
   aes(x = gene, y = mutations, fill = disease)) + 
-  geom_col() +
-  theme_void()
+  geom_col() 
 
