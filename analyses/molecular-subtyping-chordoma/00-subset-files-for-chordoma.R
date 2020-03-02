@@ -31,22 +31,18 @@ if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
 
-scratch_dir <- file.path(root_dir, "scratch")
-
 # Read in metadata
 metadata <-
   readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"))
 
+#### Filter metadata -----------------------------------------------------------
 # Select wanted columns in metadata for merging and assign to a new object
-select_metadata <- metadata %>%
+chordoma_metadata <- metadata %>%
   dplyr::select(
     sample_id,
     Kids_First_Participant_ID,
     Kids_First_Biospecimen_ID
-  )
-
-#### Filter metadata -----------------------------------------------------------
-chordoma_df <- metadata %>%
+  ) %>%
   dplyr::filter(short_histology == "Chordoma")
 
 #### Filter expression data ----------------------------------------------------
@@ -60,7 +56,7 @@ expression_data <- read_rds(file.path(
 # RNA-seq samples
 expression_data <- expression_data %>%
   dplyr::select(intersect(
-    chordoma_df$Kids_First_Biospecimen_ID,
+    chordoma_metadata$Kids_First_Biospecimen_ID,
     colnames(expression_data)
   )) %>%
   readr::write_rds(file.path(
@@ -75,7 +71,7 @@ cn_metadata <- data.table::fread(file.path(
   "data",
   "consensus_seg_annotated_cn_autosomes.tsv.gz"
 )) %>%
-  dplyr::left_join(select_metadata,
+  dplyr::left_join(chordoma_metadata,
     by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")
   ) %>%
   dplyr::select(
@@ -85,6 +81,6 @@ cn_metadata <- data.table::fread(file.path(
     biospecimen_id,
     status
   ) %>%
-  dplyr::filter(sample_id %in% chordoma_df$sample_id) %>%
+  dplyr::filter(sample_id %in% chordoma_metadata$sample_id) %>%
   # Write to file
   readr::write_tsv(file.path(results_dir, "chordoma-only_cn_autosomes.tsv.gz"))
