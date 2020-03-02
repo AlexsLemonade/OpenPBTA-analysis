@@ -1,7 +1,7 @@
-# This script subsets the focal copy number, RNA expression, histologies` 
+# This script subsets the focal copy number, RNA expression, histologies`
 # files to include only Chordoma samples.
 
-# Written originally Chante Bethell 2019 
+# Written originally Chante Bethell 2019
 # (Adapted for this module by Candace Savonen 2020)
 #
 # #### USAGE
@@ -39,9 +39,11 @@ metadata <-
 
 # Select wanted columns in metadata for merging and assign to a new object
 select_metadata <- metadata %>%
-  dplyr::select(sample_id,
-                Kids_First_Participant_ID,
-                Kids_First_Biospecimen_ID)
+  dplyr::select(
+    sample_id,
+    Kids_First_Participant_ID,
+    Kids_First_Biospecimen_ID
+  )
 
 #### Filter metadata -----------------------------------------------------------
 chordoma_df <- metadata %>%
@@ -49,29 +51,40 @@ chordoma_df <- metadata %>%
 
 #### Filter expression data ----------------------------------------------------
 # Read in the stranded expression data file
-expression_data <- read_rds(file.path("data", 
-                                      "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")) 
+expression_data <- read_rds(file.path(
+  "data",
+  "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+))
 
 # Filter to Chordoma samples only -- we can use chordoma_df because it is subset to
 # RNA-seq samples
 expression_data <- expression_data %>%
-  dplyr::select(intersect(chordoma_df$Kids_First_Biospecimen_ID,
-                          colnames(expression_data))) %>% 
-  readr::write_rds(file.path(results_dir,
-                             "chordoma-only-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
+  dplyr::select(intersect(
+    chordoma_df$Kids_First_Biospecimen_ID,
+    colnames(expression_data)
+  )) %>%
+  readr::write_rds(file.path(
+    results_dir,
+    "chordoma-only-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+  ))
 
 #### Filter focal CN data ------------------------------------------------------
 
 # Filter focal CN to Chordoma samples only
-cn_metadata <-  data.table::fread(file.path("data",
-                                            "consensus_seg_annotated_cn_autosomes.tsv.gz")) %>%
+cn_metadata <- data.table::fread(file.path(
+  "data",
+  "consensus_seg_annotated_cn_autosomes.tsv.gz"
+)) %>%
   dplyr::left_join(select_metadata,
-                   by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
-  dplyr::select(gene_symbol,
-                sample_id,
-                Kids_First_Participant_ID,
-                biospecimen_id,
-                status) %>%
+    by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")
+  ) %>%
+  dplyr::select(
+    gene_symbol,
+    sample_id,
+    Kids_First_Participant_ID,
+    biospecimen_id,
+    status
+  ) %>%
   dplyr::filter(sample_id %in% chordoma_df$sample_id) %>%
   # Write to file
   readr::write_tsv(file.path(results_dir, "chordoma-only_cn_autosomes.tsv.gz"))

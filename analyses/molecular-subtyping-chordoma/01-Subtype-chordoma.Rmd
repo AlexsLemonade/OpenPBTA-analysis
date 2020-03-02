@@ -18,7 +18,7 @@ library(ggplot2)
 ### Read in data
 
 ```{r}
-# File path to subsetted files directory 
+# File path to subsetted files directory
 input_dir <- "chordoma-subset"
 ```
 
@@ -30,26 +30,30 @@ histologies_df <- readr::read_tsv(file.path("..", "..", "data", "pbta-histologie
 
 # Subset metadata
 subset_metadata <- histologies_df %>%
-  dplyr::filter(short_histology == "Chordoma") %>% 
-  select(Kids_First_Biospecimen_ID, sample_id, Kids_First_Participant_ID,
-         experimental_strategy)
+  dplyr::filter(short_histology == "Chordoma") %>%
+  select(
+    Kids_First_Biospecimen_ID, sample_id, Kids_First_Participant_ID,
+    experimental_strategy
+  )
 ```
 
 ```{r}
-subset_focal_cn_df <- 
+subset_focal_cn_df <-
   data.table::fread(file.path(input_dir, "chordoma-only_cn_autosomes.tsv.gz"))
 ```
 
 ```{r}
-# we need to include the sample_id field from pbta-histologies.tsv in the final 
-# table (field will allow #us to map between RNA-seq (e.g., SMARCB1 expression 
-# values) and WGS data (e.g., SMARCB1 focal copy number status) from the same 
-# event for a given individual). To get the SMARCB1 jitter plot in the photo 
-# here #250 (comment), you will first need to read in the collapsed expression 
+# we need to include the sample_id field from pbta-histologies.tsv in the final
+# table (field will allow #us to map between RNA-seq (e.g., SMARCB1 expression
+# values) and WGS data (e.g., SMARCB1 focal copy number status) from the same
+# event for a given individual). To get the SMARCB1 jitter plot in the photo
+# here #250 (comment), you will first need to read in the collapsed expression
 # data
-subset_expression_data <- 
-  read_rds(file.path(input_dir,
-                     "chordoma-only-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
+subset_expression_data <-
+  read_rds(file.path(
+    input_dir,
+    "chordoma-only-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+  ))
 ```
 
 ### Output
@@ -75,19 +79,23 @@ output_file <- file.path(results_dir, "chordoma_smarcb1_status.tsv")
 Extracting the chordoma samples that have a loss of SMARCB1 from `subset_focal_cn_df`
 
 ```{r}
-chordoma_loss <- subset_focal_cn_df %>% 
-  filter(gene_symbol == "SMARCB1",
-         status == "loss")
-chordoma_loss 
+chordoma_loss <- subset_focal_cn_df %>%
+  filter(
+    gene_symbol == "SMARCB1",
+    status == "loss"
+  )
+chordoma_loss
 ```
 
 Distinguishing the chordoma samples with no copy number change chromosome 22
 ```{r}
-copy_neutral_df <- subset_metadata %>% 
+copy_neutral_df <- subset_metadata %>%
   # the copy events can only be taken from WGS data not RNA-seq data
   # we also only want biospecimens where a loss was not recorded to avoid duplicates
-  filter(experimental_strategy == "WGS",
-         !(Kids_First_Biospecimen_ID %in% chordoma_loss$biospecimen_id)) %>%
+  filter(
+    experimental_strategy == "WGS",
+    !(Kids_First_Biospecimen_ID %in% chordoma_loss$biospecimen_id)
+  ) %>%
   # if there's no loss, let's assume status is copy neutral
   mutate(status = "neutral") %>%
   # let's get the columns to match chordoma_loss
@@ -98,8 +106,8 @@ copy_neutral_df
 
 Joining chordoma samples (both with chr 22 loss and no copy number change)
 ```{r}
-chordoma_copy <- chordoma_loss %>% 
-  #join the losses with the neutrals to get a new data frame
+chordoma_copy <- chordoma_loss %>%
+  # join the losses with the neutrals to get a new data frame
   select(biospecimen_id, status) %>%
   bind_rows(copy_neutral_df)
 chordoma_copy
@@ -110,10 +118,13 @@ Need to get the sample_id that corresponds to biospecimen_id into chordoma_copy 
 chordoma_copy <- chordoma_copy %>%
   # get only the Kids_First_Biospecimen_ID, sample_id columns from our identifier data.frame
   # then use biospecimen IDs to add the sample_id info
-  inner_join(select(subset_metadata,
-                    Kids_First_Biospecimen_ID,
-                    sample_id),
-             by = c("biospecimen_id" = "Kids_First_Biospecimen_ID"))
+  inner_join(select(
+    subset_metadata,
+    Kids_First_Biospecimen_ID,
+    sample_id
+  ),
+  by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")
+  )
 chordoma_copy
 ```
 
@@ -150,10 +161,13 @@ smarcb1_expression
 This also needs sample_id to add it in
 ```{r}
 smarcb1_expression <- smarcb1_expression %>%
-  inner_join(select(subset_metadata,
-                    Kids_First_Biospecimen_ID,
-                    sample_id),
-             by = "Kids_First_Biospecimen_ID")
+  inner_join(select(
+    subset_metadata,
+    Kids_First_Biospecimen_ID,
+    sample_id
+  ),
+  by = "Kids_First_Biospecimen_ID"
+  )
 smarcb1_expression
 ```
 
@@ -162,27 +176,32 @@ Joining the copy number data with the expression data in this step
 chordoma_smarcb1_df <- smarcb1_expression %>%
   # any missing samples will get filled with NA when using a full join
   full_join(chordoma_copy, by = "sample_id") %>%
-  dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID,
-         Kids_First_Biospecimen_ID_RNA = biospecimen_id)
+  dplyr::rename(
+    Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID,
+    Kids_First_Biospecimen_ID_RNA = biospecimen_id
+  )
 
 # this step adds in the participant identifier (sample_id to match between the two data.frame)
 chordoma_smarcb1_df <- subset_metadata %>%
   select(sample_id, Kids_First_Participant_ID) %>%
   distinct() %>%
   inner_join(chordoma_smarcb1_df,
-             by = "sample_id")
+    by = "sample_id"
+  )
 
 chordoma_smarcb1_df
 ```
 
 ```{r}
 chordoma_smarcb1_df <- chordoma_smarcb1_df %>%
-  select(Kids_First_Participant_ID, 
-         Kids_First_Biospecimen_ID_DNA,
-         Kids_First_Biospecimen_ID_RNA,
-         sample_id,
-         status,
-         SMARCB1_expression) %>%
+  select(
+    Kids_First_Participant_ID,
+    Kids_First_Biospecimen_ID_DNA,
+    Kids_First_Biospecimen_ID_RNA,
+    sample_id,
+    status,
+    SMARCB1_expression
+  ) %>%
   # 'status' is replaced a more descriptive name
   dplyr::rename(focal_SMARCB1_status = status)
 chordoma_smarcb1_df
@@ -198,20 +217,24 @@ chordoma_smarcb1_df %>%
   # drop the sample that doesn't have WGS data
   tidyr::drop_na() %>%
   # this step specifies what should go on the x- and y-axes
-  ggplot(aes(x = focal_SMARCB1_status,
-             y = SMARCB1_expression)) +
-  # we want a jitter plot where the points aren't too far 
+  ggplot(aes(
+    x = focal_SMARCB1_status,
+    y = SMARCB1_expression
+  )) +
+  # we want a jitter plot where the points aren't too far
   # apart that's what width does
   geom_jitter(width = 0.1) +
   # this is plotting the median as a blue diamond
-  stat_summary(fun.y = "median", 
-               geom = "point", 
-               size = 3, 
-               color = "blue", 
-               shape = 18) +
-               xlab("SMARCB1 status") +
-   xlab("SMARCB1 status") +
-   ylab("SMARCB1 expression")
+  stat_summary(
+    fun.y = "median",
+    geom = "point",
+    size = 3,
+    color = "blue",
+    shape = 18
+  ) +
+  xlab("SMARCB1 status") +
+  xlab("SMARCB1 status") +
+  ylab("SMARCB1 expression")
 ```
 
 ```{r}
