@@ -110,7 +110,7 @@ copy_neutral_df <- chordoma_id_df %>%
   # if there's no loss, let's assume status is copy neutral
   mutate(status = "neutral") %>%
   # let's get the columns to match chordoma_loss
-  rename(biospecimen_id = Kids_First_Biospecimen_ID) %>%
+  dplyr::rename(biospecimen_id = Kids_First_Biospecimen_ID) %>%
   select(biospecimen_id, status)
 copy_neutral_df
 ```
@@ -163,7 +163,7 @@ smarcb1_expression <- t(smarcb1_expression) %>%
   # we want the rownames that are biospecimen identifers as their own column called Kids_First_Biospecimen_ID
   tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
   # give SMARCB1 column a slightly better column name
-  rename(SMARCB1_expression = SMARCB1)
+  dplyr::rename(SMARCB1_expression = SMARCB1)
 smarcb1_expression
 ```
 
@@ -182,7 +182,7 @@ Joining the copy number data with the expression data in this step
 chordoma_smarcb1_df <- smarcb1_expression %>%
   # any missing samples will get filled with NA when using a full join
   full_join(chordoma_copy, by = "sample_id") %>%
-  rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID,
+  dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID,
          Kids_First_Biospecimen_ID_RNA = biospecimen_id)
 
 # this step adds in the participant identifier (sample_id to match between the two data.frame)
@@ -204,7 +204,7 @@ chordoma_smarcb1_df <- chordoma_smarcb1_df %>%
          status,
          SMARCB1_expression) %>%
   # 'status' is replaced a more descriptive name
-  rename(focal_SMARCB1_status = status)
+  dplyr::rename(focal_SMARCB1_status = status)
 chordoma_smarcb1_df
 ```
 
