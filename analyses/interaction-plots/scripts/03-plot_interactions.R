@@ -19,7 +19,7 @@
 #
 # Rscript analyses/interaction-plots/02-plot_interactions.R \
 #   --infile analysis/interaction-plots/results/cooccur.tsv \
-#   --outfile analysis/interaction-plots/results/cooccur.png
+#   --outfile analysis/interaction-plots/results/cooccur.png 
 
 #### Initial Set Up
 # Establish base dir
@@ -55,13 +55,26 @@ option_list <- list(
     opt_str = "--disease_table",
     type = "character",
     default = NA,
-    help = "File path where geneXdisease table is located (optional)",
+    help = "File path where gene X disease table is located (optional)",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = "--disease_plot",
+    type = "character",
+    default = NA,
+    help = "File path where gene X disease plot should be placed (required if --disease_table specified)",
     metavar = "character"
   )
 )
 
 # Parse options
 opts <- parse_args(OptionParser(option_list = option_list))
+
+if (!is.na(opts$disease_table)){
+  if (is.na(opts$disease_plot)){
+    stop("If disease_table is specified, disease_plot  must also be specified")
+  }
+}
 
 cooccur_file <- opts$infile
 plot_file <- opts$outfile
@@ -157,10 +170,44 @@ disease_df <-
   readr::read_tsv(disease_file, col_types = readr::cols()) %>%
   dplyr::mutate(gene = factor(gene, levels = genes))
 
+
+display_diseases <- disease_df %>%
+  dplyr::group_by(disease) %>%
+  dplyr::tally(wt = mutant_samples) %>%
+  dplyr::arrange(desc(n)) %>%
+  head(7) %>% # seven so we end up with 8 total for color reasons
+  dplyr::pull(disease)
+
+disease_df <- disease_df %>%
+  dplyr::mutate(disease_factor = 
+           forcats::fct_other(disease, keep = display_diseases) %>%
+           forcats::fct_relevel(display_diseases)
+  )
+
+okabe_ito <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442",
+               "#0072B2", "#D55E00", "#CC79A7", "#444444")
+
 disease_plot <- ggplot(
   disease_df,
-  aes(x = gene, y = mutant_samples, fill = disease)) + 
+  aes(x = gene, y = mutant_samples, fill = disease_factor)) + 
   geom_col() +
-  theme_classic()
+  labs(
+    x = "",
+    y = "Samples with mutations",
+    fill = "Diagnosis"
+  ) + 
+  scale_fill_manual(values = okabe_ito) + 
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(
+      angle = 90,
+      hjust = 1,
+      vjust = 0.5
+    ),
+    axis.text.y = element_text(size = 6),
+    legend.position = c(1,1),
+    legend.justification = c(1,1),
+    legend.key.size = unit(1, "char"))
 
+ggsave(opts$disease_plot, disease_plot)
 

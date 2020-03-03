@@ -80,8 +80,8 @@ option_list <- list(
   make_option(
     opt_str = "--disease_table",
     type = "character",
-    default = file.path("results", "disease-counts.tsv"),
-    help = "File path where table of geneXdisease mutation counts will be placed.",
+    default = NA,
+    help = "File path where table of gene X disease mutation counts will be placed. (optional)",
     metavar = "character"
   ),
   make_option(
@@ -306,6 +306,10 @@ cooccur_summary <- coocurrence(gene_sample_counts, top_count_genes)
 
 readr::write_tsv(cooccur_summary, out_file)
 
+# only count genes if requested
+if (is.na(disease_file)){
+  quit()
+}
 # count mutated samples by disease types
 gene_disease_counts <- gene_sample_counts %>%
   dplyr::filter(gene %in% top_count_genes) %>%

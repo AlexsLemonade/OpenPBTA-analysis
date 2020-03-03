@@ -29,14 +29,14 @@ metadata=${base_dir}/data/pbta-histologies.tsv
 # using consensus
 maf=${base_dir}/data/pbta-snv-consensus-mutation.maf.tsv.gz
 
-cooccur=${results_dir}/consensus_top50
+cooccur=${results_dir}/cooccur_top50
 gene_disease=${results_dir}/gene_disease_top50
-plot=${plot_dir}/consensus_top50
+plot=${plot_dir}/cooccur_top50
+disease_plot=${plot_dir}/gene_disease_top50
 
 # associative array of diseases to test; chosen by those that are most common
 # in the openPBTA dataset
 declare -A disease
-disease[All]="All"
 disease[Medulloblastoma]="Medulloblastoma"
 if [ "$ALL" -gt "0" ]; then
   disease[LGAT]="Low-grade astrocytic tumor"
@@ -54,9 +54,35 @@ mkdir -p $plot_dir
 
 # run scripts
 
+# all samples first
+echo "All"
+Rscript ${script_dir}/01-disease-specimen-lists.R \
+  --metadata ${metadata} \
+  --specimen_list ${ind_samples} \
+  --disease "All" \
+  --outfile ${temp_dir}/ALL.tsv
 
+Rscript ${script_dir}/02-process_mutations.R \
+  --maf ${maf} \
+  --metadata ${metadata} \
+  --specimen_list ${temp_dir}/ALL.tsv \
+  --vaf 0.05 \
+  --min_mutated 5 \
+  --max_genes 50 \
+  --out ${cooccur}.ALL.tsv \
+  --disease_table ${gene_disease}.tsv
+
+Rscript ${script_dir}/03-plot_interactions.R \
+  --infile ${cooccur}.ALL.tsv \
+  --outfile ${plot}.ALL.png \
+  --disease_table ${gene_disease}.tsv \
+  --disease_plot ${disease_plot}.png \
+  --plotsize 50
+    
+# now individual diseases
 for disease_id in "${!disease[@]}"; do
   echo $disease_id
+
   Rscript ${script_dir}/01-disease-specimen-lists.R \
     --metadata ${metadata} \
     --specimen_list ${ind_samples} \
@@ -70,8 +96,7 @@ for disease_id in "${!disease[@]}"; do
     --vaf 0.05 \
     --min_mutated 5 \
     --max_genes 50 \
-    --out ${cooccur}.${disease_id}.tsv \
-    --disease_table ${gene_disease}.${disease_id}.tsv
+    --out ${cooccur}.${disease_id}.tsv
 
   Rscript ${script_dir}/03-plot_interactions.R \
     --infile ${cooccur}.${disease_id}.tsv \
