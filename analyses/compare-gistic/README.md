@@ -15,7 +15,7 @@ bash run-compare-gistic.sh
 
 ## Folder content
 
-[`01-GISTIC-cohort-vs-histology-comparison.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/01-GISTIC-cohort-vs-histology-comparison/gistic-cohort-vs-histology-comparison.nb.html) identifies, if any, disagreement between GISTIC results for the entire cohort versus the three individual histologies that we have GISTIC results for (LGAT, HGAT, and medulloblastoma).
+[`01-GISTIC-cohort-vs-histology-comparison.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/01-GISTIC-cohort-vs-histology-comparison/gistic-cohort-vs-histology-comparison.nb.html) identifies, if any, disagreement between GISTIC results for the entire cohort versus the three largest histology groups (of the cohort) that we have GISTIC results for (LGAT, HGAT, and medulloblastoma).
 The output of this notebook includes three multipanel plots, found in this `plots` directory, depicting the distribution of amplifications/deletions across chromosomes (using [G-scores](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2011-12-4-r41)) for the specified individual histology versus the entire PBTA cohort.
 
 [`02-GISTIC-tidy-data-prep.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/01-GISTIC-cohort-vs-histology-comparison/02-GISTIC-tidy-data-prep.nb.html) formats the [GISTIC files](https://www.genepattern.org/modules/docs/GISTIC_2.0) needed to compare GISTIC's copy number calls to the copy number calls we prepared in the [focal-cn-file-preparation](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/focal-cn-file-preparation/results) module.
