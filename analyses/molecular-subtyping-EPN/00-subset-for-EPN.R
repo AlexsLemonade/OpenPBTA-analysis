@@ -52,7 +52,7 @@ expression <- readr::read_rds(opts$expression)
 
 epn_samples <- histologies %>%
   filter(experimental_strategy == "RNA-Seq",
-         disease_type_new == "Ependymoma") %>%
+         integrated_diagnosis == "Ependymoma") %>%
   pull(Kids_First_Biospecimen_ID)
 
 # Subsetting expression columns with column names/BSIDs that are in the list of ependymoma samples

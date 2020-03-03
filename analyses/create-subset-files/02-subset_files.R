@@ -96,7 +96,11 @@ subset_files <- function(filename, biospecimen_ids, output_directory) {
     cnv_file %>%
       dplyr::filter(!!rlang::sym(biospecimen_column) %in% biospecimen_ids) %>%
       readr::write_tsv(output_file)
-
+  } else if (grepl("consensus_seg_annotated", filename)) {
+    annotated_cn_file <- readr::read_tsv(filename)
+    annotated_cn_file %>%
+      dplyr::filter(biospecimen_id %in% biospecimen_ids) %>%
+      readr::write_tsv(output_file)
   } else if (grepl("pbta-fusion", filename)) {
     # original files contain the biospecimen IDs in a column called 'tumor_id',
     # the filtered/prioritized list biospecimen IDs are in 'Sample'

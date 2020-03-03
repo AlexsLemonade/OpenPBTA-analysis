@@ -57,14 +57,17 @@ python3 analyses/snv-callers/scripts/01-setup_db.py \
 gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
   | awk '$3 ~ /CDS/' \
   | convert2bed --do-not-sort --input=gtf - \
+  | sort -k 1,1 -k 2,2n \
+  | bedtools merge  \
   > $cds_file
 
 # Make WXS coding BED file
-# TODO: This file path will need to be updated when the TCGA target BED file is 
-# added to the data release
+# TODO: Update this BED when we get the target BEDs updated in v15/v16
 bedtools intersect \
   -a analyses/snv-callers/ref_files/gencode.v19.basic.exome.hg38liftover.bed  \
   -b $cds_file \
+  | sort -k 1,1 -k 2,2n \
+  | bedtools merge \
   > $coding_wxs_bed
 
 ######################### Calculate consensus TMB ##############################
@@ -87,4 +90,3 @@ if [ "$run_plots_nb" -gt "0" ]
 then
  Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots-tcga.Rmd', clean = TRUE)"
 fi
-

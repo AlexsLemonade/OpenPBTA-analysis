@@ -16,7 +16,7 @@
 #     consideration. This number will be 10% of num_matched.
 #   - We include (and hardcode) a set of biospecimen IDs for samples that have
 #     TP53 and NF1 mutations that meet the criteria in the tp53_nf1_module and
-#     are represented in the stranded RNA-seq dataset. 
+#     are represented in the stranded RNA-seq dataset.
 #     See 00-enrich-positive-examples for more information.
 #
 # EXAMPLE USAGE:
@@ -73,6 +73,9 @@ get_biospecimen_ids <- function(filename, id_mapping_df) {
     } else {
       biospecimen_ids <- unique(cnv_file$ID)
     }
+  } else if (grepl("consensus_seg_annotated", filename)) {
+    annotated_cn_file <- read_tsv(filename)
+    biospecimen_ids <- unique(annotated_cn_file$biospecimen_id)
   } else if (grepl("pbta-fusion", filename)) {
     fusion_file <- read_tsv(filename)
     # the biospecimen IDs in the filtered/prioritize fusion list included with
@@ -127,7 +130,7 @@ option_list <- list(
   make_option(
     c("-r", "--supported_string"),
     type = "character",
-    default = "pbta-snv|pbta-cnv|pbta-fusion|pbta-isoform|pbta-sv|pbta-gene|cnv_consensus",
+    default = "pbta-snv|pbta-cnv|pbta-fusion|pbta-isoform|pbta-sv|pbta-gene|consensus_seg_annotated",
     help = "string for pattern matching used to subset to only supported files"
   ),
   make_option(
