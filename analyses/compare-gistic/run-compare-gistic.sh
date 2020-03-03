@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Chante Bethell for CCDL 2019
+# Chante Bethell for CCDL 2020
 #
 # Run the GISTIC comparison R notebooks in this module sequentially.
 
