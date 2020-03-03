@@ -140,7 +140,7 @@ head(all_caller_df)
 ```
 
 ```{r}
-# Set up the data as a data.frame
+# Set up as data.frame with each column a caller's VAF
 vaf_df <- all_caller_df %>% 
   dplyr::select("VAF_lancet", "VAF_strelka", "VAF_mutect",
                 "Variant_Classification") %>%
