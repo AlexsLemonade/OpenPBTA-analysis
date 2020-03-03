@@ -116,7 +116,11 @@ coocurrence <- function(gene_sample_df,
         "sample" = "sample"
       )
     ) %>%
-    dplyr::rename(muts2 = mutations)
+    dplyr::rename(muts2 = mutations) %>%
+    dplyr::mutate(
+      gene1 = factor(gene1, levels = genes),
+      gene2 = factor(gene2, levels = genes)
+    )
 
   gene_pair_summary <- gene_pair_counts %>%
     dplyr::group_by(gene1, gene2) %>%
@@ -133,7 +137,7 @@ coocurrence <- function(gene_sample_df,
     dplyr::ungroup() %>%
     dplyr::mutate(
       q = p.adjust(p, method = "BH"),
-      cooccur_score = cooccur_sign * -log10(q)
+      cooccur_score = cooccur_sign * -log10(p)
     )
 
   return(gene_pair_summary)
