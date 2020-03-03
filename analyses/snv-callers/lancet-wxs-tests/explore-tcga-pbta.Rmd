@@ -510,7 +510,7 @@ Read in the coding sequence regions file.
 ```{r}
 cds_bed <- readr::read_tsv(file.path(
   scratch_dir,
-  "exon_gencode.v27.primary_assembly.annotation.bed"
+  "gencode.v27.primary_assembly.annotation.bed"
 ),
 col_names = c("chr", "start", "end")
 ) %>%
