@@ -10,21 +10,24 @@
 set -e
 set -o pipefail
 
-base_dir=analyses/interaction-plots
-script_dir=${base_dir}/scripts
-results_dir=${base_dir}/results
-plot_dir=${base_dir}/plots
-temp_dir=scratch/interaction
+# Set the working directory to the directory of this file
+cd "$(dirname "${BASH_SOURCE[0]}")"
+
+base_dir=../..
+script_dir=scripts
+results_dir=results
+plot_dir=plots
+temp_dir=${base_dir}/scratch/interaction
 
 mkdir -p $temp_dir
 
 ALL=${OPENPBTA_ALL:-1}
 
-ind_samples=data/independent-specimens.wgs.primary-plus.tsv
-metadata=data/pbta-histologies.tsv
+ind_samples=${base_dir}/data/independent-specimens.wgs.primary-plus.tsv
+metadata=${base_dir}/data/pbta-histologies.tsv
 
 # using consensus
-maf=data/pbta-snv-consensus-mutation.maf.tsv.gz
+maf=${base_dir}/data/pbta-snv-consensus-mutation.maf.tsv.gz
 
 cooccur=${results_dir}/consensus_top50
 gene_disease=${results_dir}/gene_disease_top50

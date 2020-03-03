@@ -6,10 +6,9 @@
 #
 # Option descriptions
 #
-# --infile The input file location (relative to root) with a summaries of
-#   gene-gene mutation co-occurence, minimally including gene1, gene2, and
-#   cooccur_score columns.
-#
+# --infile The input file  with a summaries of gene-gene mutation co-occurence,
+#    minimally including gene1, gene2, and cooccur_score columns.
+#   
 # --outfile The output plot location. Specify type of file with the extension
 #   (.png or .pdf, most likely).
 #
@@ -24,7 +23,6 @@
 
 #### Initial Set Up
 # Establish base dir
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
@@ -37,15 +35,13 @@ option_list <- list(
   make_option(
     opt_str = "--infile",
     type = "character",
-    help = "Relative file path (from top directory of 'OpenPBTA-analysis')
-            where cooccurence summary table is located",
+    help = "File path where cooccurence summary table is located",
     metavar = "character"
   ),
   make_option(
     opt_str = "--outfile",
     type = "character",
-    help = "Relative file path (from top directory of 'OpenPBTA-analysis')
-            where output plot will be located. Extension specifies format of plot",
+    help = "File path where output plot will be located. Extension specifies format of plot",
     metavar = "character"
   ),
   make_option(
@@ -59,8 +55,7 @@ option_list <- list(
     opt_str = "--disease_table",
     type = "character",
     default = NA,
-    help = "Relative file path (from top directory of 'OpenPBTA-analysis')
-            where geneXdisease table is located (optional)",
+    help = "File path where geneXdisease table is located (optional)",
     metavar = "character"
   )
 )
@@ -68,8 +63,8 @@ option_list <- list(
 # Parse options
 opts <- parse_args(OptionParser(option_list = option_list))
 
-cooccur_file <- file.path(root_dir, opts$infile)
-plot_file <- file.path(root_dir, opts$outfile)
+cooccur_file <- opts$infile
+plot_file <- opts$outfile
 
 cooccur_df <-
   readr::read_tsv(cooccur_file, col_types = readr::cols()) %>%
@@ -157,7 +152,7 @@ if (is.na(opts$disease_table)) {
 }
 # otherwise make a gene by disease stacked bar chart
 
-disease_file = file.path(root_dir, opts$disease_table)
+disease_file = opts$disease_table
 disease_df <-
   readr::read_tsv(disease_file, col_types = readr::cols()) %>%
   dplyr::mutate(gene = factor(gene, levels = genes))
