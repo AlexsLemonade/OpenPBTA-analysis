@@ -71,12 +71,12 @@ tmb_cdf_plot <- function(tmb_df, plot_title, colour) {
     dplyr::filter(dplyr::n() > 5) %>%
     # Calculate histology group mean
     dplyr::mutate(
-      hist_mean = mean(tmb),
+      hist_median = median(tmb),
       hist_rank = rank(tmb, ties.method = "first") / dplyr::n(),
       sample_size = paste0("n = ", dplyr::n())
     ) %>%
     dplyr::ungroup() %>%
-    dplyr::mutate(short_histology = reorder(short_histology, hist_mean)) %>%
+    dplyr::mutate(short_histology = reorder(short_histology, hist_median)) %>%
     # Now we will plot these as cummulative distribution plots
     ggplot2::ggplot(ggplot2::aes(
       x = hist_rank,
@@ -86,7 +86,7 @@ tmb_cdf_plot <- function(tmb_df, plot_title, colour) {
     # Add summary line for mean
     ggplot2::geom_segment(
       x = 0, xend = 1, color = "grey",
-      ggplot2::aes(y = hist_mean, yend = hist_mean)
+      ggplot2::aes(y = hist_median, yend = hist_median)
     ) +
     # Separate by histology
     ggplot2::facet_wrap(~ short_histology + sample_size, nrow = 1, strip.position = "bottom") +
@@ -115,7 +115,7 @@ tmb_cdf_plot <- function(tmb_df, plot_title, colour) {
 Read in the consensus TMB file. 
 
 ```{r}
-# TODO: update if the consensus file gets updated in a future data release
+# TODO: update if the this tmb consensus file gets updated in a future data release
 tmb_pbta <- data.table::fread(file.path("..", 
                                         "snv-callers",
                                         "results",
@@ -128,7 +128,7 @@ tmb_pbta <- data.table::fread(file.path("..",
 
 
 ```{r}
-# TODO: update if the consensus file gets updated in a future data release
+# TODO: update if this tmb consensus file gets updated in a future data release
 tmb_tcga <- data.table::fread(file.path("..", 
                                         "snv-callers",
                                         "results",
