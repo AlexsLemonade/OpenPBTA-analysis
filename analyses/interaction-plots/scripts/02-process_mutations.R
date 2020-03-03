@@ -319,9 +319,7 @@ gene_disease_counts <- gene_sample_counts %>%
   dplyr::arrange(
     desc(mutant_samples),
     desc(muts_per_sample)
-  ) %>%
-  dplyr::filter(mutant_samples >= opts$min_mutated |
-                  dplyr::row_number() <= 2) # keep at least 2 genes
+  )
 
 readr::write_tsv(gene_disease_counts, disease_file)
 
