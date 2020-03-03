@@ -76,8 +76,6 @@ if (!dir.exists(lgat_gistic_dir)) {
 cohort_all_lesions_file <- file.path(cohort_gistic_dir, "all_lesions.conf_90.txt")
 
 lgat_all_lesions_file <- file.path(lgat_gistic_dir, "all_lesions.conf_90.txt")
-
-lgat <- data.table::fread(lgat_all_lesions_file, data.table = FALSE)
 ```
 
 ### Define file path for GISTIC `amp_genes.conf_90.txt` and `del_genes.conf_90.txt` result files
