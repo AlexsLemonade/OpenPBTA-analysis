@@ -34,7 +34,7 @@ bash run-embryonal-subtyping.sh
 The samples are identified using the following criteria:
 
 1. An RNA-seq biospecimen sample includes a _TTYH1_ fusion (5' partner) [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/401#issuecomment-573669727).
-2. Any sample with "Embryonal tumor" in the `broad_histology` column of the metadata `pbta-histologies.tsv` that is not labeled "Medulloblastoma" or "Atypical Teratoid Rhabdoid Tumor (ATRT)" in `disease_type_old` or `disease_type_new` columns [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251#issuecomment-568220913).
+2. Any sample with "Embryonal tumor" in the `broad_histology` column of the metadata `pbta-histologies.tsv` that is not labeled "Medulloblastoma" or "Atypical Teratoid Rhabdoid Tumor (ATRT)" in `pathology_diagnosis` or `integrated_diagnosis` columns [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251#issuecomment-568220913).
 The output of this notebook is a TSV file, named `biospecimen_ids_embryonal_subtyping.tsv`, containing the biospeciemen IDs identified based on the above criteria (stored in the `results` directory of this module.
 
 [`02-generate-subset-files.R`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-embryonal/02-generate-subset-files.R) is a script written to subset the files required for the subtyping of non-MB and non-ATRT embryonal tumors.

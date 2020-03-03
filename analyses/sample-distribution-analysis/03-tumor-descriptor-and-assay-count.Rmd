@@ -205,7 +205,7 @@ For `PT_HT4HJXY6`, there is WGS data for both the primary CNS tumor and the seco
 
 ## By histology
 
-We're going to use the `disease_type_new` column here.
+We're going to use the `integrated_diagnosis` column here.
 
 ### Primary only
 
@@ -215,8 +215,8 @@ This table is different than what is plotted upstream in this module because we 
 ```{r}
 tumor_df %>%
   filter(tumor_descriptor == "Initial CNS Tumor") %>%
-  distinct(Kids_First_Participant_ID, disease_type_new) %>%
-  group_by(disease_type_new) %>%
+  distinct(Kids_First_Participant_ID, integrated_diagnosis) %>%
+  group_by(integrated_diagnosis) %>%
   tally() %>%
   arrange(desc(n)) %>% 
   regulartable() %>%
@@ -228,7 +228,7 @@ tumor_df %>%
 ```{r}
 disease_types_descriptors <- tumor_df %>%
   group_by(Kids_First_Participant_ID) %>%
-  summarize(disease_types = paste(sort(unique(disease_type_new)),
+  summarize(disease_types = paste(sort(unique(integrated_diagnosis)),
                                   collapse = ", "),
             descriptors = paste(sort(unique(tumor_descriptor)),
                                 collapse = ", ")) %>%

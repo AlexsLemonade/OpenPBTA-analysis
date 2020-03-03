@@ -40,7 +40,7 @@ def group_disease(primary_site):
 
 
 # Filtering for ependymoma samples 
-EP = pbta_histologies[pbta_histologies["disease_type_new"]=="Ependymoma"]
+EP = pbta_histologies[pbta_histologies["integrated_diagnosis"]=="Ependymoma"]
 EP_rnaseq_samples = EP[EP["experimental_strategy"] == "RNA-Seq"][["Kids_First_Biospecimen_ID", "primary_site", 
 	"Kids_First_Participant_ID", "sample_id", "experimental_strategy"]]
 EP_rnaseq_samples["disease_group"] = [group_disease(primary) for primary in EP_rnaseq_samples["primary_site"]]
