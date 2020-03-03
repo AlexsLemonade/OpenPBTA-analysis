@@ -22,7 +22,7 @@ row_fisher <- function(w, x, y, z) {
 #' Filter mutations based on VAF and effect
 #'
 #' @param maf_df a data frame of a maf file or subset of one. Minimally includes
-#'   `Consequence` column and either `vaf` or both `t_ref_count`` and `t_alt_count`.
+#'   `Consequence` column and either `vaf` or both `t_ref_count` and `t_alt_count`.
 #' @param min_vaf The minimum VAF to include.
 #' @param min_depth The minimum sequencing depth to include.
 #' @param exclude_consequence A vector of consequences (as strings) that should
@@ -116,11 +116,7 @@ coocurrence <- function(gene_sample_df,
         "sample" = "sample"
       )
     ) %>%
-    dplyr::rename(muts2 = mutations) %>%
-    dplyr::mutate(
-      gene1 = factor(gene1, levels = genes),
-      gene2 = factor(gene2, levels = genes)
-    )
+    dplyr::rename(muts2 = mutations)
 
   gene_pair_summary <- gene_pair_counts %>%
     dplyr::group_by(gene1, gene2) %>%
@@ -137,7 +133,7 @@ coocurrence <- function(gene_sample_df,
     dplyr::ungroup() %>%
     dplyr::mutate(
       q = p.adjust(p, method = "BH"),
-      cooccur_score = cooccur_sign * -log10(p)
+      cooccur_score = cooccur_sign * -log10(q)
     )
 
   return(gene_pair_summary)

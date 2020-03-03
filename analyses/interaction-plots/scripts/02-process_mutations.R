@@ -52,14 +52,14 @@ option_list <- list(
   make_option(
     opt_str = "--maf",
     type = "character",
-    default = file.path("data", "pbta-snv-lancet.vep.maf.gz"),
+    default = file.path("..", "..", "data", "pbta-snv-consensus-mutation.maf.tsv.gz"),
     help = "File path of MAF file to be analyzed. Can be .gz compressed.",
     metavar = "character"
   ),
   make_option(
     opt_str = "--cnv",
     type = "character",
-    default = file.path("..", "..", "data", "pbta-cnv-cnvkit.seg.gz"),
+    default = file.path("..", "..", "data", "pbta-cnv-consensus.seg.gz"),
     help = "File path of CNV file to be analyzed in seg format. Can be .gz compressed.",
     metavar = "character"
   ),
@@ -278,8 +278,7 @@ gene_sample_counts <- maf_filtered %>%
   dplyr::filter(Entrez_Gene_Id > 0) %>% # remove unknowns
   dplyr::group_by(gene = Hugo_Symbol, sample = Tumor_Sample_Barcode) %>%
   dplyr::tally(name = "mutations") %>%
-  dplyr::filter(sample %in% samples) 
-  
+  dplyr::ungroup()
 
 
 # count # of samples mutated by gene
@@ -290,6 +289,7 @@ gene_counts <- gene_sample_counts %>%
     total_muts = sum(mutations),
     muts_per_sample = mean(mutations)
   ) %>%
+  dplyr::ungroup() %>%
   dplyr::arrange(
     desc(mutant_samples),
     desc(muts_per_sample)
@@ -297,6 +297,8 @@ gene_counts <- gene_sample_counts %>%
   dplyr::filter(mutant_samples >= opts$min_mutated |
     dplyr::row_number() <= 2) # keep at least 2 genes
 
+
+  
 # get most often mutated genes
 top_count_genes <- head(gene_counts, opts$max_genes)$gene
 
@@ -304,13 +306,22 @@ cooccur_summary <- coocurrence(gene_sample_counts, top_count_genes)
 
 readr::write_tsv(cooccur_summary, out_file)
 
-# count mutations by disease types
+# count mutated samples by disease types
 gene_disease_counts <- gene_sample_counts %>%
   dplyr::filter(gene %in% top_count_genes) %>%
   dplyr::left_join(sample_meta, 
                    by = c("sample" = "Kids_First_Biospecimen_ID")) %>%
   dplyr::group_by(gene, disease = integrated_diagnosis) %>%
-  dplyr::summarize(mutations = sum(mutations))
+  dplyr::summarize(mutant_samples = dplyr::n(),
+                   total_muts = sum(mutations),
+                   muts_per_sample = mean(mutations)) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(
+    desc(mutant_samples),
+    desc(muts_per_sample)
+  ) %>%
+  dplyr::filter(mutant_samples >= opts$min_mutated |
+                  dplyr::row_number() <= 2) # keep at least 2 genes
 
 readr::write_tsv(gene_disease_counts, disease_file)
 

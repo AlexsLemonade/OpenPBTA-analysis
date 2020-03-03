@@ -157,8 +157,10 @@ disease_df <-
   readr::read_tsv(disease_file, col_types = readr::cols()) %>%
   dplyr::mutate(gene = factor(gene, levels = genes))
 
-ggplot(
+disease_plot <- ggplot(
   disease_df,
-  aes(x = gene, y = mutations, fill = disease)) + 
-  geom_col() 
+  aes(x = gene, y = mutant_samples, fill = disease)) + 
+  geom_col() +
+  theme_classic()
+
 
