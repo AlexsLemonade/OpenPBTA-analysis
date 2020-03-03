@@ -1,10 +1,10 @@
-gene	disease	mutations
-CTNNB1	Medulloblastoma	11
-DDX3X	Medulloblastoma	10
-KDM6A	Medulloblastoma	6
-KMT2C	Medulloblastoma	6
-KMT2D	Medulloblastoma	9
-PTCH1	Medulloblastoma	6
-SMARCA4	Medulloblastoma	6
-TP53	Medulloblastoma	6
-TTN	Medulloblastoma	8
+gene	disease	mutant_samples	total_muts	muts_per_sample
+CTNNB1	Medulloblastoma	11	11	1
+DDX3X	Medulloblastoma	9	10	1.1111111111111112
+KMT2D	Medulloblastoma	8	9	1.125
+TTN	Medulloblastoma	6	8	1.3333333333333333
+KDM6A	Medulloblastoma	6	6	1
+KMT2C	Medulloblastoma	6	6	1
+TP53	Medulloblastoma	6	6	1
+PTCH1	Medulloblastoma	5	6	1.2
+SMARCA4	Medulloblastoma	5	6	1.2

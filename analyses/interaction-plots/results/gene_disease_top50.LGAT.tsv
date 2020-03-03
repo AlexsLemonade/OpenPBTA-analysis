@@ -1,4 +1,4 @@
-gene	disease	mutations
-BRAF	Low-grade astrocytic tumor	29
-FGFR1	Low-grade astrocytic tumor	12
-PIK3CA	Low-grade astrocytic tumor	5
+gene	disease	mutant_samples	total_muts	muts_per_sample
+BRAF	Low-grade astrocytic tumor	29	29	1
+FGFR1	Low-grade astrocytic tumor	8	12	1.5
+PIK3CA	Low-grade astrocytic tumor	5	5	1

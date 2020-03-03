@@ -1,3 +1,3 @@
-gene	disease	mutations
-NF2	Ependymoma	4
-SLC35A1	Ependymoma	3
+gene	disease	mutant_samples	total_muts	muts_per_sample
+NF2	Ependymoma	3	4	1.3333333333333333
+SLC35A1	Ependymoma	2	3	1.5

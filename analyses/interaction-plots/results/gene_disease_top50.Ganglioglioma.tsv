@@ -1,3 +1,3 @@
-gene	disease	mutations
-BRAF	Ganglioglioma	13
-GPR158	Ganglioglioma	2
+gene	disease	mutant_samples	total_muts	muts_per_sample
+BRAF	Ganglioglioma	13	13	1
+GPR158	Ganglioglioma	2	2	1

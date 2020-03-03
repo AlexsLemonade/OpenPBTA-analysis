@@ -1,51 +1,51 @@
-gene	disease	mutations
-ABCA13	High-grade glioma	13
-ACACB	High-grade glioma	7
-ADCY9	High-grade glioma	14
-APC2	High-grade glioma	15
-APOB	High-grade glioma	8
-ASCC3	High-grade glioma	8
-ATM	High-grade glioma	11
-ATRX	High-grade glioma	16
-BCOR	High-grade glioma	7
-BSN	High-grade glioma	12
-DNAH5	High-grade glioma	13
-DNAH6	High-grade glioma	12
-DNAH8	High-grade glioma	12
-DNHD1	High-grade glioma	11
-EGFR	High-grade glioma	14
-ESPL1	High-grade glioma	8
-FBN2	High-grade glioma	9
-FSIP2	High-grade glioma	18
-GLI2	High-grade glioma	12
-GREB1L	High-grade glioma	9
-HELZ2	High-grade glioma	9
-IQSEC1	High-grade glioma	8
-KIAA1109	High-grade glioma	14
-KIAA1549	High-grade glioma	12
-LAMA3	High-grade glioma	13
-LRP1	High-grade glioma	13
-MAGEL2	High-grade glioma	10
-MUC5B	High-grade glioma	7
-NAV2	High-grade glioma	11
-NEB	High-grade glioma	24
-NF1	High-grade glioma	14
-OBSCN	High-grade glioma	28
-PCLO	High-grade glioma	12
-PITRM1	High-grade glioma	7
-PLCB3	High-grade glioma	9
-PTEN	High-grade glioma	6
-RERE	High-grade glioma	10
-RYR2	High-grade glioma	21
-SDK2	High-grade glioma	9
-SETD2	High-grade glioma	12
-SMARCA4	High-grade glioma	12
-SPTBN2	High-grade glioma	10
-SYNE1	High-grade glioma	20
-TNRC6B	High-grade glioma	7
-TP53	High-grade glioma	28
-TSC2	High-grade glioma	11
-TTN	High-grade glioma	72
-UBR1	High-grade glioma	7
-VPS13D	High-grade glioma	14
-ZAN	High-grade glioma	7
+gene	disease	mutant_samples	total_muts	muts_per_sample
+TP53	High-grade glioma	20	28	1.4
+ATRX	High-grade glioma	9	16	1.7777777777777777
+EGFR	High-grade glioma	9	14	1.5555555555555556
+NF1	High-grade glioma	9	14	1.5555555555555556
+OBSCN	High-grade glioma	8	28	3.5
+TTN	High-grade glioma	6	72	12
+KIAA1109	High-grade glioma	6	14	2.3333333333333335
+DNAH8	High-grade glioma	6	12	2
+TSC2	High-grade glioma	6	11	1.8333333333333333
+MAGEL2	High-grade glioma	6	10	1.6666666666666667
+ASCC3	High-grade glioma	6	8	1.3333333333333333
+ESPL1	High-grade glioma	6	8	1.3333333333333333
+PTEN	High-grade glioma	6	6	1
+NEB	High-grade glioma	5	24	4.8
+RYR2	High-grade glioma	5	21	4.2
+SYNE1	High-grade glioma	5	20	4
+FSIP2	High-grade glioma	5	18	3.6
+APC2	High-grade glioma	5	15	3
+ADCY9	High-grade glioma	5	14	2.8
+VPS13D	High-grade glioma	5	14	2.8
+ABCA13	High-grade glioma	5	13	2.6
+DNAH5	High-grade glioma	5	13	2.6
+LAMA3	High-grade glioma	5	13	2.6
+LRP1	High-grade glioma	5	13	2.6
+BSN	High-grade glioma	5	12	2.4
+DNAH6	High-grade glioma	5	12	2.4
+GLI2	High-grade glioma	5	12	2.4
+KIAA1549	High-grade glioma	5	12	2.4
+PCLO	High-grade glioma	5	12	2.4
+SETD2	High-grade glioma	5	12	2.4
+SMARCA4	High-grade glioma	5	12	2.4
+ATM	High-grade glioma	5	11	2.2
+DNHD1	High-grade glioma	5	11	2.2
+NAV2	High-grade glioma	5	11	2.2
+RERE	High-grade glioma	5	10	2
+SPTBN2	High-grade glioma	5	10	2
+FBN2	High-grade glioma	5	9	1.8
+GREB1L	High-grade glioma	5	9	1.8
+HELZ2	High-grade glioma	5	9	1.8
+PLCB3	High-grade glioma	5	9	1.8
+SDK2	High-grade glioma	5	9	1.8
+APOB	High-grade glioma	5	8	1.6
+IQSEC1	High-grade glioma	5	8	1.6
+ACACB	High-grade glioma	5	7	1.4
+BCOR	High-grade glioma	5	7	1.4
+MUC5B	High-grade glioma	5	7	1.4
+PITRM1	High-grade glioma	5	7	1.4
+TNRC6B	High-grade glioma	5	7	1.4
+UBR1	High-grade glioma	5	7	1.4
+ZAN	High-grade glioma	5	7	1.4
