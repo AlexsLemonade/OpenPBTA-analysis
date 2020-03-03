@@ -275,7 +275,7 @@ prepare_gene_level_gistic <- function(all_lesions_file,
                                             status == 0 ~ "neutral")) %>%
     dplyr::distinct()
   
-  # Keep just the range information in the `Wide Peak Limits` column
+  # Keep just the chromosomal coordinates in the `Wide Peak Limits` column
   # (In order to merge with the amp/del genes data.frame)
   gistic_all_lesions_df$`Wide Peak Limits` <-
     gsub("[(].*", "", gistic_all_lesions_df$`Wide Peak Limits`)

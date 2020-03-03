@@ -15,18 +15,18 @@ bash run-compare-gistic.sh
 
 ## Folder content
 
-[`01-GISTIC-cohort-vs-histology-comparison.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/01-GISTIC-cohort-vs-histology-comparison/gistic-cohort-vs-histology-comparison.nb.html) is a notebook written to identify, if any, disagreement between GISTIC results for the entire cohort versus the three individual histologies that we have GISTIC results for (LGAT, HGAT, and medulloblastoma).
-The output of this notebook includes three multipanel plots, found in this `plots` directory, depicting the distribution of amplifications/deletions across chromosomes (using G-scores) for the specified individual histology versus the entire PBTA cohort.
+[`01-GISTIC-cohort-vs-histology-comparison.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/01-GISTIC-cohort-vs-histology-comparison/gistic-cohort-vs-histology-comparison.nb.html) identifies, if any, disagreement between GISTIC results for the entire cohort versus the three individual histologies that we have GISTIC results for (LGAT, HGAT, and medulloblastoma).
+The output of this notebook includes three multipanel plots, found in this `plots` directory, depicting the distribution of amplifications/deletions across chromosomes (using [G-scores](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2011-12-4-r41)) for the specified individual histology versus the entire PBTA cohort.
 
-[`02-GISTIC-tidy-data-prep.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/01-GISTIC-cohort-vs-histology-comparison/02-GISTIC-tidy-data-prep.nb.html) is a notebook written to tidy and format the GISTIC files needed to compare GISTIC's copy number calls to the copy number calls we prepared in the [focal-cn-file-preparation](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/focal-cn-file-preparation/results) module of this repository.
+[`02-GISTIC-tidy-data-prep.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/01-GISTIC-cohort-vs-histology-comparison/02-GISTIC-tidy-data-prep.nb.html) formats the GISTIC files needed to compare GISTIC's copy number calls to the copy number calls we prepared in the [focal-cn-file-preparation](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/focal-cn-file-preparation/results) module.
 The output of this notebook includes tables to be consumed for both a gene-level comparison and cytoband-level comparison of copy number calls analysis notebooks.
 
-The `cohort_gistic_gene_cn_status_table.tsv.gz` and `lgat_gistic_gene_cn_status_table.tsv.gz` output files are formatted to be consumed in a gene-level copy number call comparison as follows:
+Gene-level copy number call comparison tables are saved to  `cohort_gistic_gene_cn_status_table.tsv.gz` and `lgat_gistic_gene_cn_status_table.tsv.gz` and contain the following fields: 
 
 | `gene_symbol` | `Kids_First_Biospecimen_ID` | `status` | `detection_peak` |
 | ------------- | --------------------------- | ---------| ---------------- |
 
-The `cohort_gistic_cytoband_cn_status_table.tsv.gz` and `lgat_gistic_cytoband_cn_status_table.tsv.gz` output files are formatted to be consumed in a cytoband-level copy number call comparison as follows:
+Cytoband-level copy number call comparison tables are saved to  `cohort_gistic_cytoband_cn_status_table.tsv.gz` and `lgat_gistic_cytoband_cn_status_table.tsv.gz` and contain the following fields: 
 
 | `cytoband` | `Kids_First_Biospecimen_ID` | `status` |
 | ---------- | --------------------------- | -------- |

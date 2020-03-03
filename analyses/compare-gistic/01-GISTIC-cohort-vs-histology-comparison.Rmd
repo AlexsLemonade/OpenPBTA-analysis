@@ -8,7 +8,7 @@ author: Chante Bethell for ALSF CCDL
 date: 2020
 ---
 
-This notebook will look at the files in the `run-gistic/results` directory and compare those for the entire cohort to those of three individual histologies, namely, LGAT, HGAT and medulloblastoma.
+This notebook will look at the files in the `run-gistic/results` directory and compare those for the entire cohort to the three largest histology groups, namely, LGAT, HGAT and medulloblastoma.
 
 The purpose is to identify, if any, disagreement between GISTIC results for the entire cohort versus the three individual histologies.
 
@@ -165,4 +165,3 @@ del_plot_list <- plot_genes_venn_diagram_wrapper(cohort_del_genes,
 ```{r}
 sessionInfo()
 ```
-
