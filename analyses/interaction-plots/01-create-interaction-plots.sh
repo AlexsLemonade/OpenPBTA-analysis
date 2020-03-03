@@ -14,7 +14,9 @@ base_dir=analyses/interaction-plots
 script_dir=${base_dir}/scripts
 results_dir=${base_dir}/results
 plot_dir=${base_dir}/plots
-temp_dir=scratch
+temp_dir=scratch/interaction
+
+mkdir -p $temp_dir
 
 ALL=${OPENPBTA_ALL:-1}
 
@@ -32,9 +34,9 @@ plot=${plot_dir}/consensus_top50
 # in the openPBTA dataset
 declare -A disease
 disease[All]="All"
-disease[LGAT]="Low-grade astrocytic tumor"
+disease[Medulloblastoma]="Medulloblastoma"
 if [ "$ALL" -gt "0" ]; then
-  disease[Medulloblastoma]="Medulloblastoma"
+  disease[LGAT]="Low-grade astrocytic tumor"
   disease[Ependymoma]="Ependymoma"
   disease[HGAT]="High-grade glioma"
   disease[DMG]="Diffuse midline glioma"
@@ -62,7 +64,7 @@ for disease_id in "${!disease[@]}"; do
     --maf ${maf} \
     --metadata ${metadata} \
     --specimen_list ${temp_dir}/${disease_id}.tsv \
-    --vaf 0.2 \
+    --vaf 0.05 \
     --min_mutated 5 \
     --max_genes 50 \
     --out ${cooccur}.${disease_id}.tsv \
