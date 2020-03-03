@@ -284,7 +284,7 @@ prepare_gene_level_gistic <- function(all_lesions_file,
       status == 0 ~ "neutral"
     )) %>%
     # The `select` function above got rid of some extra fields (fields that are
-    # not needed for this analysis) from the `gistic_all_lesions_df` 
+    # not needed for this analysis) from the `gistic_all_lesions_df`
     # object -- `distinct` removes any duplicate rows resulting from
     # the removal of the extra variables
     dplyr::distinct()
@@ -308,14 +308,16 @@ prepare_gene_level_gistic <- function(all_lesions_file,
     dplyr::left_join(gistic_all_lesions_df, by = c("peak_region" = "Wide Peak Limits")) %>%
     dplyr::select(gene_symbol, Kids_First_Biospecimen_ID, status, detection_peak = `Unique Name`) %>%
     # The `select` function above got rid of some extra fields (fields that are
-    # not needed for this analysis) from the `gistic_all_lesions_df` 
+    # not needed for this analysis) from the `gistic_all_lesions_df`
     # object -- `distinct` removes any duplicate rows resulting from
     # the removal of the extra variables
     dplyr::distinct()
 
   # Save data.frame to file
-  readr::write_tsv(final_df,
-                   file.path(results_dir, gene_level_output_tsv_filename))
+  readr::write_tsv(
+    final_df,
+    file.path(results_dir, gene_level_output_tsv_filename)
+  )
 }
 
 prepare_cytoband_level_gistic <- function(all_lesions_file,
@@ -364,7 +366,7 @@ prepare_cytoband_level_gistic <- function(all_lesions_file,
       status == 0 ~ "neutral"
     )) %>%
     # The `select` function above got rid of some extra fields (fields that are
-    # not needed for this analysis) from the `gistic_all_lesions_df` 
+    # not needed for this analysis) from the `gistic_all_lesions_df`
     # object -- `distinct` removes any duplicate rows resulting from
     # the removal of the extra variables
     dplyr::distinct() %>%
