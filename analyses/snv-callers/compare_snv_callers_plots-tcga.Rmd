@@ -156,7 +156,7 @@ vaf_df$VAF_consensus[consensus_index] <- NA
 
 # Make this long form for plotting
 long_vaf_df <- vaf_df %>% 
-  # This index needs to be a function so tapply step in the next chunk works more seamlessly
+  # This index needs to be a factor so tapply step in the next chunk works more seamlessly
   dplyr::mutate(index = factor(1:nrow(.))) %>% 
   tidyr::gather(key = "caller", value = "vaf", -index, -Variant_Classification) %>% 
   dplyr::mutate(caller = gsub("VAF_", "", caller)) %>% 
