@@ -38,32 +38,32 @@ gsva_anova_tukey <- function(df, predictor_variable, library_type, significance_
   ### Returns a named list with two items:
   ##### 1. "anova" is a tibble of all ANOVAs performed, for each hallmark
   ##### 2. "tukey" is a tibble of all Tukey HSD tests performed, comparing each level of `predictor_variable` for each hallmark
-  
+
   ### Input arguments:
   ### 1. `df`:   the data frame containing scores (`gsea_score`) and assumed to contain the specified `predictor_variable` and a column `data_type` referring to either "stranded" or "polyA" libraries
-  ### 2. `predictor_variable`: A _string_ indicating the predictor variable, such as `short_histology`, `disease_type_new`, etc.
+  ### 2. `predictor_variable`: A _string_ indicating the predictor variable, such as `short_histology`, `integrated_diagnosis`, etc.
   ### 3. `library_type`:  Which RNAseq library to analyze? Specify either `polyA` or `stranded`
   ### 4. `significance_threshold`:  What threshold is used for significance (aka alpha, FPR)?
 
-  predictor_variable        <- enquo(predictor_variable)  
+  predictor_variable        <- enquo(predictor_variable)
   predictor_variable_string <- quo_name(predictor_variable)
   library_type <- str_to_lower(library_type)
   ######## Sanity check #########
   if (!(predictor_variable_string %in% colnames(df))) stop("ERROR: The provided `predictor_variable` is not found in the data frame.")
   if (!("hallmark_name" %in% colnames(df))) stop("ERROR: The needed column `hallmark_name` is not found in the data frame.")
   if (!("gsea_score" %in% colnames(df))) stop("ERROR: The needed column `gsea_score` is not found in the data frame.")
-  if (!(library_type %in% unique(df$data_type))) stop(paste("ERROR: The provided `library_type` must be one of:", 
+  if (!(library_type %in% unique(df$data_type))) stop(paste("ERROR: The provided `library_type` must be one of:",
                                                          paste(unique(df$data_type), collapse= " or "),
                                                          "."))
 
   ### Determine how many ANOVAs we will be doing
-  df %>% 
+  df %>%
     dplyr::select(hallmark_name, data_type) %>%
-    distinct() %>% 
+    distinct() %>%
     count(data_type) %>%
     filter(data_type == library_type) %>%
-    pull(n) -> number_of_tests 
-  
+    pull(n) -> number_of_tests
+
   print(number_of_tests)
   ############### Perform modeling, including ANOVAs and Tukey across hallmarks
   df %>%
@@ -72,7 +72,7 @@ gsva_anova_tukey <- function(df, predictor_variable, library_type, significance_
     nest() %>%
     mutate(anova_fit = pmap(list(data, predictor_variable_string), perform_anova),
            tukey_fit = map(anova_fit, TukeyHSD)) -> fitted_results
-  
+
   ############## Tidy the ANOVA fits
   fitted_results %>%
     dplyr::select(hallmark_name, anova_fit) %>%
@@ -87,7 +87,7 @@ gsva_anova_tukey <- function(df, predictor_variable, library_type, significance_
     mutate(anova_p_value_bonferroni = anova_p_value * number_of_tests,
            anova_p_value_bonferroni = ifelse(anova_p_value_bonferroni >= 1, 1, anova_p_value_bonferroni),
            significant_anova = ifelse(anova_p_value_bonferroni <= significance_threshold, TRUE, FALSE)) -> final_anova_results
-    
+
   ############## Tidy the Tukey tests
   fitted_results %>%
     dplyr::select(hallmark_name, tukey_fit) %>%
@@ -98,10 +98,10 @@ gsva_anova_tukey <- function(df, predictor_variable, library_type, significance_
     dplyr::rename(pathway_score_difference = estimate,
                   tukey_p_value            = adj.p.value) %>%
     mutate(bonferroni_pvalue = tukey_p_value * number_of_tests,
-           bonferroni_pvalue = ifelse(bonferroni_pvalue >= 1, 1, bonferroni_pvalue), 
+           bonferroni_pvalue = ifelse(bonferroni_pvalue >= 1, 1, bonferroni_pvalue),
            significant_tukey = tukey_p_value <= significance_threshold,
            significant_tukey_bonf = bonferroni_pvalue <= significance_threshold) -> final_tukey_results
 
-  
+
   return(list("anova" = final_anova_results, "tukey" = final_tukey_results))
 }

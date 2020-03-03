@@ -17,8 +17,8 @@ To summarize - we will identify biospecimen IDs that should be included for down
 1. An RNA-seq biospecimen includes a _TTYH1_ fusion (5' partner).
    We can consume the files from the [`fusion-summary` module](../fusion-summary/) for this step.
    (See also: [this comment on `AlexsLemonade/OpenPBTA-analysis#401`](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/401#issuecomment-573669727).)
-2. Any sample with `"Embryonal tumor"` in the `broad_histology` column of `pbta-histologies.tsv` that is not labeled `"Medulloblastoma"` or `"Atypical Teratoid Rhabdoid Tumor (ATRT)"` in `disease_type_old` per [this comment on `AlexsLemonade/OpenPBTA-analysis#251`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251#issuecomment-568220913).
-   We'll look at the `disease_type_new` column as well.
+2. Any sample with `"Embryonal tumor"` in the `broad_histology` column of `pbta-histologies.tsv` that is not labeled `"Medulloblastoma"` or `"Atypical Teratoid Rhabdoid Tumor (ATRT)"` in `pathology_diagnosis` per [this comment on `AlexsLemonade/OpenPBTA-analysis#251`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251#issuecomment-568220913).
+   We'll look at the `integrated_diagnosis` column as well.
 
 ## Usage
 
@@ -121,19 +121,19 @@ embryonal_df <- histologies_df %>%
          composition == "Solid Tissue")
 ```
 
-Drop medulloblastoma and ATRT samples using the `disease_type_old` labels.
+Drop medulloblastoma and ATRT samples using the `pathology_diagnosis` labels.
 
 ```{r}
 embryonal_df <- embryonal_df %>%
-  filter(!(disease_type_old %in% c("Medulloblastoma",
+  filter(!(pathology_diagnosis %in% c("Medulloblastoma",
                                    "Atypical Teratoid Rhabdoid Tumor (ATRT)")))
 ```
 
-Is there anything in the `disease_type_new` column we should be concerned about removing?
+Is there anything in the `integrated_diagnosis` column we should be concerned about removing?
 
 ```{r}
 embryonal_df %>%
-  group_by(disease_type_new) %>%
+  group_by(integrated_diagnosis) %>%
   count()
 ```
 

@@ -69,7 +69,7 @@ option_list <- list(
     opt_str = "--disease",
     type = "character",
     default = "All",
-    help = "Disease type, as found in the `disease_type_new` column of the histology file.",
+    help = "Disease type, as found in the `integrated_diagnosis` column of the histology file.",
     metavar = "character"
   )
 )
@@ -85,16 +85,15 @@ out_file <- file.path(root_dir, opts$outfile)
 
 #### Read files
 
-meta_df <- readr::read_tsv(meta_file, col_types = readr::cols())
+meta_df <- readr::read_tsv(meta_file, col_types = readr::cols(), guess_max = 10000)
 specimen_df <- readr::read_tsv(specimen_file, col_types = readr::cols())
-
 
 ### reduce metadata to specimen list and disease type
 
 disease_df <- meta_df %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in% specimen_df$Kids_First_Biospecimen_ID) %>%
   dplyr::filter(tolower(opts$disease) == "all" |
-    tolower(disease_type_new) == tolower(opts$disease)) %>%
+    tolower(integrated_diagnosis) == tolower(opts$disease)) %>%
   dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID)
 
 readr::write_tsv(disease_df, out_file)
