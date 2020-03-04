@@ -2,7 +2,7 @@
 #
 # JA Shapiro for ALSF - CCDL
 #
-# 2019
+# 2019-2020
 #
 # Option descriptions
 #
@@ -93,7 +93,7 @@ labels <- unique(c(cooccur_df$label1, cooccur_df$label2))
 # check the order of the labels to be decreasing by mut count 
 label_counts <- as.numeric(stringr::str_extract(labels, "\\b\\d+\\b"))
 labels <- labels[order(label_counts, decreasing = TRUE)]
-# order genes the same way, in case we ant to use those
+# order genes the same way, in case we want to use those
 genes <- stringr::str_extract(labels, "^.+?\\b")
 genes <- genes[order(label_counts, decreasing = TRUE)]
 
@@ -184,8 +184,6 @@ disease_df <- disease_df %>%
            forcats::fct_relevel(display_diseases)
   )
 
-okabe_ito <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442",
-               "#0072B2", "#D55E00", "#CC79A7", "#444444")
 
 disease_plot <- ggplot(
   disease_df,
@@ -196,7 +194,7 @@ disease_plot <- ggplot(
     y = "Samples with mutations",
     fill = "Diagnosis"
   ) + 
-  scale_fill_manual(values = okabe_ito) + 
+  colorblindr::scale_fill_OkabeIto() + 
   theme_classic() +
   theme(
     axis.text.x = element_text(

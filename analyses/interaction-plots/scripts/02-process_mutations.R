@@ -287,12 +287,12 @@ gene_counts <- gene_sample_counts %>%
   dplyr::summarize(
     mutant_samples = dplyr::n(),
     total_muts = sum(mutations),
-    muts_per_sample = mean(mutations)
+    mean_muts_per_sample = mean(mutations)
   ) %>%
   dplyr::ungroup() %>%
   dplyr::arrange(
     desc(mutant_samples),
-    desc(muts_per_sample)
+    desc(mean_muts_per_sample)
   ) %>%
   dplyr::filter(mutant_samples >= opts$min_mutated |
     dplyr::row_number() <= 2) # keep at least 2 genes
@@ -318,11 +318,11 @@ gene_disease_counts <- gene_sample_counts %>%
   dplyr::group_by(gene, disease = integrated_diagnosis) %>%
   dplyr::summarize(mutant_samples = dplyr::n(),
                    total_muts = sum(mutations),
-                   muts_per_sample = mean(mutations)) %>%
+                   mean_muts_per_sample = mean(mutations)) %>%
   dplyr::ungroup() %>%
   dplyr::arrange(
     desc(mutant_samples),
-    desc(muts_per_sample)
+    desc(mean_muts_per_sample)
   )
 
 readr::write_tsv(gene_disease_counts, disease_file)
