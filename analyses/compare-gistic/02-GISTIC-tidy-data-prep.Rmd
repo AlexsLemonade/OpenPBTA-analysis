@@ -1,0 +1,157 @@
+---
+title: "GISTIC tidy data preparation"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell for ALSF CCDL
+date: 2020
+---
+
+This notebook will tidy the GISTIC data files required to compare the GISTIC's gene level calls with our gene level calls in `analyses/focal-cn-file-prepartion/results`. The required GISTIC files include `all_lesions.conf_90.txt`, `amp_genes.conf_90.txt`, and `del_genes.conf_90.txt` (these files are stored in `analyses/run-gistic/results`). 
+
+The purpose of this notebook is to prepare GISTIC data in a format that can be compared to our focal CN files (both on a gene level and cytoband level). 
+
+_Note_: This notebook will focus on preparing the GISTIC result files for the LGAT histology (the largest histology group in the cohort) and for the entire cohort. This decision was made for the purpose of developing this analysis in both a time efficient and informative manner.
+
+## Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/compare-gistic/02-GISTIC-tidy-data-prep.Rmd', clean = TRUE)"
+```
+
+## Set up
+
+```{r}
+# Load in the tidyverse library of packages and functions
+library(tidyverse)
+
+# Source this module's custom functions R script
+source(file.path("util", "GISTIC-comparison-functions.R"))
+```
+
+### Files and Directories
+
+```{r}
+# Path to input directory
+data_dir <- file.path("..", "run-gistic", "results")
+
+# Path to output directory
+results_dir <- "results"
+
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+```
+
+### Unzip GISTIC results
+
+```{r}
+# Unzip and set up GISTIC results folders and files.
+cohort_gistic_dir <-
+  file.path(data_dir, "pbta-cnv-consensus-gistic")
+cohort_gistic_zip <-
+  file.path(data_dir, "pbta-cnv-consensus-gistic.zip")
+
+if (!dir.exists(cohort_gistic_dir)) {
+  unzip(cohort_gistic_zip,
+    exdir = data_dir
+  )
+}
+
+lgat_gistic_dir <-
+  file.path(data_dir, "pbta-cnv-consensus-lgat-gistic")
+lgat_gistic_zip <-
+  file.path(data_dir, "pbta-cnv-consensus-lgat-gistic.zip")
+
+if (!dir.exists(lgat_gistic_dir)) {
+  unzip(lgat_gistic_zip,
+    exdir = data_dir
+  )
+}
+```
+
+### Define file paths for GISTIC `all_lesions.conf_90.txt` files
+
+```{r}
+cohort_all_lesions_file <- file.path(cohort_gistic_dir, "all_lesions.conf_90.txt")
+
+lgat_all_lesions_file <- file.path(lgat_gistic_dir, "all_lesions.conf_90.txt")
+```
+
+### Define file path for GISTIC `amp_genes.conf_90.txt` and `del_genes.conf_90.txt` result files
+
+```{r}
+cohort_amp_genes_file <- file.path(cohort_gistic_dir, "amp_genes.conf_90.txt")
+
+lgat_amp_genes_file <- file.path(lgat_gistic_dir, "amp_genes.conf_90.txt")
+
+cohort_del_genes_file <- file.path(cohort_gistic_dir, "del_genes.conf_90.txt")
+
+lgat_del_genes_file <- file.path(lgat_gistic_dir, "del_genes.conf_90.txt")
+```
+
+## Generate gene-level tidy tables
+
+### Use GISTIC results for LGAT histology
+
+```{r warning = FALSE, message = FALSE}
+lgat_merged_calls_table <- prepare_gene_level_gistic(
+  lgat_all_lesions_file,
+  lgat_amp_genes_file,
+  lgat_del_genes_file,
+  output_filename = "lgat_gistic_gene_cn_status_table.tsv.gz"
+)
+
+lgat_merged_calls_table %>%
+  dplyr::filter(detection_peak == "Deletion Peak 1")
+```
+
+### Use GISTIC results for entire cohort
+
+```{r warning = FALSE, message = FALSE}
+cohort_merged_calls_table <- prepare_gene_level_gistic(
+  cohort_all_lesions_file,
+  cohort_amp_genes_file,
+  cohort_del_genes_file,
+  output_filename = "cohort_gistic_gene_cn_status_table.tsv.gz"
+)
+
+cohort_merged_calls_table %>%
+  dplyr::filter(detection_peak == "Deletion Peak  1")
+```
+
+## Generate cytoband-level tidy tables
+
+### Use GISTIC results for LGAT histology
+
+```{r warning = FALSE, message = FALSE}
+lgat_cytoband_status_table <- prepare_cytoband_level_gistic(
+  lgat_all_lesions_file,
+  output_filename = "lgat_gistic_cytoband_cn_status_table.tsv.gz"
+)
+
+lgat_cytoband_status_table %>%
+  dplyr::filter(cytoband == "3q29")
+```
+
+### Use GISTIC results for entire cohort
+
+```{r warning = FALSE, message = FALSE}
+cohort_cytoband_status_table <-
+  prepare_cytoband_level_gistic(cohort_all_lesions_file,
+                                output_filename = "cohort_gistic_cytoband_cn_status_table.tsv.gz")
+
+cohort_cytoband_status_table %>%
+  dplyr::filter(cytoband == "3q29")
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
