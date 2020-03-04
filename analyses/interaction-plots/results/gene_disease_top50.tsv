@@ -1,4 +1,4 @@
-gene	disease	mutant_samples	total_muts	muts_per_sample
+gene	disease	mutant_samples	total_muts	mean_muts_per_sample
 H3F3A	Diffuse midline glioma	36	36	1
 BRAF	Low-grade astrocytic tumor	29	29	1
 TP53	Diffuse midline glioma	25	28	1.12
