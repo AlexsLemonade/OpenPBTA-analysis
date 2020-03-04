@@ -29,6 +29,12 @@ Although it may be partially a caller-specific thing, we also suspect a problem 
 Lancet's TCGA calls which is likely because it is all WXS data. 
 This issue is further investigated in the [Lancet WXS-WGS analysis notebook](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/lancet-wxs-tests/lancet-paired-WXS-WGS.Rmd) and the [Lancet padded-unpadded analysis notebook](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/lancet-wxs-tests/lancet-padded-vs-unpadded.Rmd). 
 
+**Post notes: 
+It was later determined that the BED files used for these TMB calculations were incorrect See Related Issues: 
+- [568](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/568)  
+- [565](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/565)  
+- [564](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/564)  
+
 #### Usage
 
 To run this from the command line, use:
@@ -89,6 +95,7 @@ set_up_pbta <- function(data.name) {
           experimental_strategy, short_histology
         )
     ) 
+  DBI::dbDisconnect(con)
   return(df)
 }
 ```
@@ -122,7 +129,7 @@ set_up_tcga <- function(data.name) {
           experimental_strategy
           )
       )
-
+  DBI::dbDisconnect(con)
   return(df)
 }
 ```
@@ -208,6 +215,9 @@ bed_overlap <- function(bed_granges_1,
   # Find intersection
   overlaps <- GenomicRanges::intersect(bed_granges_1, bed_granges_2)
 
+  # Reduce these ranges for good measure in case they have overlaps 
+  overlaps <- GenomicRanges::reduce(overlaps)
+  
   # Percent of TCGA Target region covered by overlap
   sum(overlaps@ranges@width) / sum(bed_granges_2@ranges@width)
 
@@ -331,20 +341,22 @@ We'll plot the tumor sequencing depth for each caller as a series of density plo
 
 ```{r}
 lancet %>%
-  ggplot2::ggplot(ggplot2::aes(x = log10(t_depth), color = dataset)) +
-  ggplot2::geom_density()
+  ggplot2::ggplot(ggplot2::aes(x = log10(t_depth), y = ..scaled..,
+                               color = dataset)) +
+  ggplot2::geom_density(bw = 0.5)
 ```
 
 ```{r}
 mutect %>%
-  ggplot2::ggplot(ggplot2::aes(x = log10(t_depth), color = dataset)) +
-  ggplot2::geom_density()
+  ggplot2::ggplot(ggplot2::aes(x = log10(t_depth), y = ..scaled..,
+                               color = dataset)) +
+  ggplot2::geom_density(bw = 0.2)
 ```
 
 ```{r}
 strelka %>%
-  ggplot2::ggplot(ggplot2::aes(x = log10(t_depth), color = dataset)) +
-  ggplot2::geom_density()
+  ggplot2::ggplot(ggplot2::aes(x = log10(t_depth), y = ..scaled.., color = dataset)) +
+  ggplot2::geom_density(bw = 0.2)
 ```
 
 ## How does the TMB comparison look for each caller by itself? 
