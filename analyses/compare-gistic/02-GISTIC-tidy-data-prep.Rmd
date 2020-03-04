@@ -26,7 +26,11 @@ Rscript -e "rmarkdown::render('analyses/compare-gistic/02-GISTIC-tidy-data-prep.
 ## Set up
 
 ```{r}
+# Load in the tidyverse library of packages and functions
 library(tidyverse)
+
+# Source this module's custom functions R script
+source(file.path("util", "GISTIC-comparison-functions.R"))
 ```
 
 ### Files and Directories
@@ -88,13 +92,6 @@ lgat_amp_genes_file <- file.path(lgat_gistic_dir, "amp_genes.conf_90.txt")
 cohort_del_genes_file <- file.path(cohort_gistic_dir, "del_genes.conf_90.txt")
 
 lgat_del_genes_file <- file.path(lgat_gistic_dir, "del_genes.conf_90.txt")
-```
-
-### Source functions to tidy data
-
-```{r}
-# Source this module's custom functions R script
-source(file.path("util", "GISTIC-comparison-functions.R"))
 ```
 
 ## Generate gene-level tidy tables
