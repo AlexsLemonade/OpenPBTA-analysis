@@ -175,7 +175,7 @@ seg_data <- seg_data %>%
   dplyr::mutate(chrom = factor(gsub("chr", "", chrom), 
                                levels = c(1:22, "X", "Y"))) %>% 
   # Recode the copy number status based on ploidy
-  dplyr::mutate(status = case_when(
+  dplyr::mutate(status = dplyr::case_when(
     # when the copy number is less than inferred ploidy, mark this as a loss
     copy.num < tumor_ploidy ~ "loss",
     # if copy number is higher than ploidy, mark as a gain
@@ -267,6 +267,8 @@ bins <- GenomicRanges::tileGenome(chr_sizes_vector,
 bins <- unlist(bins)
 ```
 
+Run the bin status calling on each sample. 
+
 ```{r}
 sample_ids <- unique(seg_data$ID)
 
@@ -274,7 +276,8 @@ bin_calls_list <- lapply(sample_ids,
        call_bin_status, 
        bin_ranges = bins, 
        seg_ranges = seg_ranges, 
-       perc_delta_threshold = 0.05)
+       # %20 difference for it to be called a particular status
+       perc_delta_threshold = 0.2)
 
 # Bring along sample IDs
 names(bin_calls_list) <- sample_ids
@@ -326,13 +329,21 @@ Replace these bins with NAs.
 bin_calls_df[, bin_indices] <- NA
 ```
 
+Format a matrix with rownames for ComplexHeatmap to use. 
+
+```{r}
+bin_calls_mat <- bin_calls_df %>% 
+  tibble::column_to_rownames("biospecimen_id") %>% 
+  as.matrix()
+```
+
 ## Set up heatmap annotation objects
 
 Make color key. 
 
 ```{r}
-color_key <- structure(c("#f4a582", "#0571b0", "#ca0020"), 
-                       names = unique(bin_calls_df$status)) 
+color_key <- structure(c("#ca0020", "#f7f7f7", "#0571b0"), 
+                       names = c("loss", "neutral", "gain"))
 ```
 
 ### Make column annotation object
@@ -341,7 +352,7 @@ Extract chromosome labels and make an alternating color key for them.
 
 ```{r}
 # Set up chromosome labels from bins as a factor vector
-chrs <- paste0("chr", decode(bins@seqnames))
+chrs <- paste0("chr", S4Vectors::decode(bins@seqnames))
 chrs <- as.factor(chrs)
 
 # Make a key for assigning alternating colors to the chromosomes
@@ -369,7 +380,7 @@ Make histology labeling `HeatmapAnnotation` object.
 ```{r}
 # Get the histologies for the samples in this set and order them by histology
 histologies <-
-  data.frame(Kids_First_Biospecimen_ID = rownames(bin_calls_df)) %>%
+  data.frame(Kids_First_Biospecimen_ID = rownames(bin_calls_mat)) %>%
   # Join samples of this dataset to the metadata we need
   dplyr::inner_join(metadata %>%
     dplyr::select(Kids_First_Biospecimen_ID, short_histology)) %>%
@@ -417,16 +428,16 @@ hist_annot <- ComplexHeatmap::HeatmapAnnotation(
 
 ```{r}
 # Plot on a heatmap
-heatmap <- ComplexHeatmap::Heatmap(as.matrix(status_df),
+heatmap <- ComplexHeatmap::Heatmap(bin_calls_mat,
   heatmap_legend_param = list(title = "CN status"),
   col = color_key,
   cluster_columns = FALSE,
   cluster_rows = FALSE,
   show_column_names = FALSE,
   show_row_names = FALSE,
-  bottom_annotation = arm_annot,
+  bottom_annotation = chr_annot,
   left_annotation = hist_annot,
-  na_col = "#f7f7f7"
+  na_col = "#cccccc"
 )
 ```
 
