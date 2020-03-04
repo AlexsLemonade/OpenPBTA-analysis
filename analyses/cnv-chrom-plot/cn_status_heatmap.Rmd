@@ -67,66 +67,7 @@ bp_per_bin <- function(bins, status_ranges) {
   }
 ```
 
-### Read in data 
-
 ```{r}
-gistic_zip <- file.path(input_dir, "pbta-cnv-consensus-gistic.zip")
-gistic_dir <- file.path(input_dir, "pbta-cnv-consensus-gistic")
-
-if (!dir.exists(gistic_dir)) {
-  unzip(gistic_zip,
-    exdir = input_dir,
-    files = file.path("pbta-cnv-consensus-gistic", "broad_values_by_arm.txt")
-  )
-}
-```
-
-### Read in data 
-
-```{r}
-# Read in metadata
-metadata <-
-  readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv"))
-```
-
-
-```{r}
-# Read in the segment copy number data
-seg_df <- data.table::fread(file.path(
-  "..",
-  "focal-cn-file-preparation", 
-  "results", 
-  "consensus_seg_annotated_cn_autosomes.tsv.gz"), 
-  data.table = FALSE) %>% 
-  dplyr::filter(!is.na(cytoband))
-```
-
-Set up uncallable regions as GenomicRanges. 
-
-```{r}
-uncallable_ranges <- GenomicRanges::GRanges(
-  seqnames = uncallable_bed$chrom,
-  ranges = IRanges::IRanges(
-    start = uncallable_bed$start,
-    end = uncallable_bed$end
-  )
-)
-```
-
-## Bin the genome
-
-```{r}
-# Find which regions of the chromosome are uncallable
-bins <- GenomicRanges::tileGenome(chr_sizes_vector, 
-                                  tilewidth = 1e6)
-bins <- unlist(bins)
-```
-
-## Combine the data objects into one
-
-```{r}
-sample_id <- seg_ranges$biospecimen[1]
-
 call_bin_status <- function(sample_id,
                             seg_ranges, 
                             perc_delta_threshold = .05) {
@@ -183,6 +124,139 @@ call_bin_status <- function(sample_id,
 }
 ```
 
+### Read in data 
+
+```{r}
+# Read in metadata
+metadata <-
+  readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv"))
+```
+
+Read consensus seg file. 
+
+```{r}
+# Read in the segment copy number data
+seg_data <- data.table::fread(file.path(
+  input_dir, 
+  "pbta-cnv-consensus.seg.gz"),
+  data.table = FALSE
+) 
+```
+
+Set up the status for each consensus segment
+
+```{r}
+seg_data <- seg_data %>%
+  # Join the histology column to this data
+  dplyr::inner_join(dplyr::select(
+    metadata,
+    "Kids_First_Biospecimen_ID",
+    "short_histology", 
+    "tumor_ploidy"
+  ),
+  by = c("ID" = "Kids_First_Biospecimen_ID")
+  ) %>% 
+  # Reformat the chromosome variable to drop the "chr"
+  dplyr::mutate(chrom = factor(gsub("chr", "", chrom), 
+                               levels = c(1:22, "X", "Y"))) %>% 
+  # Recode the copy number status based on ploidy
+  dplyr::mutate(status = case_when(
+    # when the copy number is less than inferred ploidy, mark this as a loss
+    copy.num < tumor_ploidy ~ "loss",
+    # if copy number is higher than ploidy, mark as a gain
+    copy.num > tumor_ploidy ~ "gain",
+    copy.num == tumor_ploidy ~ "neutral"
+  )) %>%
+  # Remove sex chromosomes
+  dplyr::filter(!(chrom %in% c("X", "Y", "M")))
+```
+
+Set up seg data as GenomicRanges. 
+
+```{r}
+seg_ranges <- GenomicRanges::GRanges(
+  seqnames = seg_data$chrom,
+  ranges = IRanges::IRanges(
+    start = seg_data$loc.start,
+    end = seg_data$loc.end
+  ),
+  status = seg_data$status, 
+  histology = seg_data$short_histology, 
+  biospecimen = seg_data$ID
+)
+
+```
+
+Read in the chromosomal sizes for making bins. 
+(This has nothing to do with Strelka, but it just so happens this is a file with the sizes 
+of the chromosomes in this genome build, hg38).
+
+```{r}
+chr_sizes <- readr::read_tsv(file.path(input_dir, "WGS.hg38.strelka2.unpadded.bed"),
+  col_names = c("chrom", "start", "end")
+) %>%
+  # Reformat the chromosome variable to drop the "chr"
+  dplyr::mutate(chrom = factor(gsub("chr", "", chrom),
+    levels = c(1:22, "X", "Y", "M")
+  )) %>%
+  # Remove sex chromosomes
+  dplyr::filter(!(chrom %in% c("X", "Y", "M")))
+
+
+# Make chromosome size named vector for Heatmap annotation
+chr_sizes_vector <- chr_sizes$end
+names(chr_sizes_vector) <- chr_sizes$chrom
+```
+
+Read in uncallable regions file. 
+Regions that were not able to be accurately called will need to be color coded gray. 
+
+```{r}
+uncallable_bed <- readr::read_tsv(
+  file.path("..", 
+            "copy_number_consensus_call", 
+            "ref", 
+            "cnv_excluded_regions.bed"),
+  col_names = c("chrom", "start", "end")
+) %>%
+  # Reformat the chromosome variable to drop the "chr"
+  dplyr::mutate(chrom = factor(gsub("chr", "", chrom),
+    levels = c(1:22, "X", "Y")
+  )) %>%
+  dplyr::filter(
+    !is.na(chrom),
+    # Drop sex chromosomes
+    !(chrom %in% c("X", "Y", "M"))
+  )
+```
+
+Set up uncallable regions as GenomicRanges. 
+
+```{r}
+uncallable_ranges <- GenomicRanges::GRanges(
+  seqnames = uncallable_bed$chrom,
+  ranges = IRanges::IRanges(
+    start = uncallable_bed$start,
+    end = uncallable_bed$end
+  )
+)
+```
+
+## Bin the genome
+
+```{r}
+# Find which regions of the chromosome are uncallable
+bins <- GenomicRanges::tileGenome(chr_sizes_vector, 
+                                  tilewidth = 1e6)
+bins <- unlist(bins)
+```
+
+## Call bin CN statuses for each samples
+
+```{r}
+lapply()
+```
+
 ## Determine NA regions of the genome
 
 We'll determine NA regions based on what percent of that window of that region is uncallable. 
@@ -222,7 +296,7 @@ bin_indices <- names(pct_overlap)[which(pct_overlap > perc_uncallable)]
 uncallable_bins <- bins[as.numeric(bin_indices)]
 ```
 
-Replace these bins with 
+Replace these bins with NAs.
 
 ```{r}
 
@@ -347,4 +421,5 @@ dev.off()
 ```{r}
 sessionInfo()
 ```
+
 
