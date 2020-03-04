@@ -1,0 +1,245 @@
+---
+title: "GISTIC copy number calls comparison at the gene level"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell for ALSF CCDL
+date: 2020
+---
+
+This notebook will use the files prepared in `02-GISTIC-tidy-data-prep.Rmd` and stored in this module's `results` directory to compare the copy number calls made by GISTIC to the copy number calls we have prepared in the `analyses/focal-cn-file-preparation` module.
+
+The purpose of this notebook is to compare GISTIC's copy number calls to our copy number calls at a gene level. 
+
+## Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/compare-gistic/03-GISTIC-gene-level-cn-status-comparison.Rmd', clean = TRUE)"
+```
+
+## Set up
+
+```{r}
+library(tidyverse)
+```
+
+### Files and Directories
+
+```{r}
+# Path to results directory -- this is the input and output directory for this
+# notebook
+results_dir <- "results"
+
+# Path to our focal CN files directory
+focal_dir <- file.path("..", "focal-cn-file-preparation", "results")
+```
+
+#### Read in files
+
+```{r}
+# Read in the gene level files prepared in `02-GISTIC-tidy-data-prep.Rmd`
+lgat_gene_level_calls <-
+  readr::read_tsv(file.path(results_dir, "lgat_gistic_gene_cn_status_table.tsv.gz"))
+
+cohort_gene_level_calls <-
+  readr::read_tsv(file.path(results_dir, "cohort_gistic_gene_cn_status_table.tsv.gz"))
+
+# Read in the consensus focal CN calls file
+consensus_focal_cn_calls <-
+  readr::read_tsv(file.path(focal_dir, "consensus_seg_annotated_cn_autosomes.tsv.gz"))
+```
+
+## Wrangle Data
+
+### Function to wrangle calls data and tally the number of samples per gene for each call
+
+```{r}
+tally_calls <- function(gistic_calls_df,
+                        focal_calls_df,
+                        focal_or_gistic,
+                        output_filename) {
+  # Given a data.frame with calls data, tally the number of samples per gene
+  # that fall under each call category and return the table of counts.
+  #
+  # Args:
+  #   gistic_calls_df: the data.frame containing prepared GISTIC calls
+  #   focal_calls_df: the data.frame containing prepared focal calls
+  #   focal_or_gistic: the string indicating whether or not the function should
+  #                    tally the GISTIC calls or the focal calls
+  #   output_filename: the string to save the output table as
+  #
+  # Return:
+  #   final_df: the data.frame containing the final counts of samples per gene
+  #             for each call category
+
+  # Merge the GISTIC and focal CN calls
+  final_df <- gistic_calls_df %>%
+    dplyr::rename(gistic_status = status) %>%
+    select(-Kids_First_Biospecimen_ID) %>%
+    distinct() %>%
+    left_join(focal_calls_df, by = "gene_symbol")
+
+  # Add loss, gain, amplification, and neutral columns to final table --
+  # these columns will have the values "gistic" if the call came from gistic
+  # and "focal" if the call came from our `focal-cn-file-preparation` module
+  final_df <- final_df %>%
+    mutate(
+      loss = case_when(
+        gistic_status == "loss" ~ "gistic",
+        focal_status == "loss" ~ "focal",
+        TRUE ~ "NA"
+      ),
+      gain = case_when(
+        gistic_status == "gain" ~ "gistic",
+        focal_status == "gain" ~ "focal",
+        TRUE ~ "NA"
+      ),
+      amplification = case_when(
+        gistic_status == "amplification" ~ "gistic",
+        focal_status == "amplification" ~ "focal",
+        TRUE ~ "NA"
+      ),
+      neutral = case_when(
+        gistic_status == "neutral" ~ "gistic",
+        focal_status == "neutral" ~ "focal",
+        TRUE ~ "NA"
+      )
+    ) %>%
+    select(-c("gistic_status", "focal_status"))
+
+  final_loss_df <- final_df %>%
+    group_by(gene_symbol, detection_peak, loss) %>%
+    tally()
+
+  final_gain_df <- final_df %>%
+    group_by(gene_symbol, detection_peak, gain) %>%
+    tally()
+
+  final_amplification_df <- final_df %>%
+    group_by(gene_symbol, detection_peak, amplification) %>%
+    tally()
+
+  final_neutral_df <- final_df %>%
+    group_by(gene_symbol, detection_peak, neutral) %>%
+    tally()
+
+  if (focal_or_gistic == "focal") {
+    # We do not join the neutral data here because we filter neutral calls out
+    # of the focal data in the `focal-cn-file-preparation` module
+    final_df <- final_loss_df %>%
+      inner_join(final_gain_df, by = c("gene_symbol", "detection_peak")) %>%
+      inner_join(final_amplification_df,
+        by = c("gene_symbol", "detection_peak")
+      ) %>%
+      # Filter out non-focal calls
+      filter(
+        loss == "focal",
+        gain == "focal",
+        amplification == "focal"
+      ) %>%
+      mutate(
+        loss = n.x,
+        gain = n.y,
+        amplification = n
+      ) %>%
+      select(-c("n.x", "n.y", "n"))
+  } else {
+    # We do not join the amplification data here because there are no
+    # amplification calls in the GISTIC data
+    final_df <- final_loss_df %>%
+      inner_join(final_gain_df, by = c("gene_symbol", "detection_peak")) %>%
+      inner_join(final_neutral_df,
+        by = c("gene_symbol", "detection_peak")
+      ) %>%
+      # Filter out non-gistic calls
+      filter(
+        loss == "gistic",
+        gain == "gistic",
+        neutral == "gistic"
+      ) %>%
+      mutate(
+        loss = n.x,
+        gain = n.y,
+        neutral = n
+      ) %>%
+      select(-c("n.x", "n.y", "n"))
+  }
+
+  # Save final table
+  write_tsv(final_df, file.path(results_dir, output_filename))
+
+  # Display final table -- arrange by loss count and display the top 15 rows
+  final_df %>%
+    arrange(desc(loss)) %>%
+    head(n = 15)
+}
+```
+
+### Select relevant fields from consensus focal data
+
+```{r}
+# Keep only the relevant variables from the consensus focal CN file
+consensus_focal_cn_calls <- consensus_focal_cn_calls %>%
+  select(focal_status = status, gene_symbol) %>%
+  distinct()
+```
+
+### Run `tally_calls` function on LGAT GISTIC calls
+
+```{r}
+# Run `tally_calls` function on LGAT GISTIC calls and focal consensus calls
+# data -- specify that we want to tally the number of focal calls per gene and
+# peak
+tally_calls(
+  gistic_calls_df = lgat_gene_level_calls,
+  focal_calls_df = consensus_focal_cn_calls,
+  focal_or_gistic = "focal",
+  output_filename = "lgat_gene_level_focal_cn_counts.tsv"
+)
+
+# Run `tally_calls` function on LGAT GISTIC calls and focal consensus calls
+# data -- specify that we want to tally the number of gistic calls per gene and
+# peak
+tally_calls(
+  gistic_calls_df = lgat_gene_level_calls,
+  focal_calls_df = consensus_focal_cn_calls,
+  focal_or_gistic = "gistic",
+  output_filename = "lgat_gene_level_gistic_cn_counts.tsv"
+)
+```
+
+### Run `tally_calls` function on entire cohort GISTIC calls
+
+```{r}
+# Run `tally_calls` function on entire cohort GISTIC calls and focal consensus calls
+# data -- specify that we want to tally the number of focal calls per gene and
+# peak
+tally_calls(
+  gistic_calls_df = cohort_gene_level_calls,
+  focal_calls_df = consensus_focal_cn_calls,
+  focal_or_gistic = "focal",
+  output_filename = "cohort_gene_level_focal_cn_counts.tsv"
+)
+
+# Run `tally_calls` function on entire cohort GISTIC calls and focal consensus calls
+# data -- specify that we want to tally the number of gistic calls per gene and
+# peak
+tally_calls(
+  gistic_calls_df = cohort_gene_level_calls,
+  focal_calls_df = consensus_focal_cn_calls,
+  focal_or_gistic = "gistic",
+  output_filename = "cohort_gene_level_gistic_cn_counts.tsv"
+)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
+
