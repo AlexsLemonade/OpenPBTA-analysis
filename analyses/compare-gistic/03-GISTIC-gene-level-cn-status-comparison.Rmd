@@ -79,8 +79,6 @@ tally_calls <- function(gistic_calls_df,
   # Merge the GISTIC and focal CN calls
   final_df <- gistic_calls_df %>%
     dplyr::rename(gistic_status = status) %>%
-    select(-Kids_First_Biospecimen_ID) %>%
-    distinct() %>%
     left_join(focal_calls_df, by = "gene_symbol")
 
   # Add loss, gain, amplification, and neutral columns to final table --
@@ -172,9 +170,9 @@ tally_calls <- function(gistic_calls_df,
   # Save final table
   write_tsv(final_df, file.path(results_dir, output_filename))
 
-  # Display final table -- arrange by loss count and display the top 15 rows
+  # Display final table -- arrange by loss count
   final_df %>%
-    arrange(desc(loss))
+    arrange(detection_peak)
 }
 ```
 
