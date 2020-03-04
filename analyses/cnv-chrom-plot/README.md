@@ -1,18 +1,33 @@
-## Plotting GISTIC results
+## Plotting Copy Number Results
 
 **Module Author:** Candace Savonen ([@cansavvy](https://www.github.com/cansavvy))
 
-The goal of this analysis is to plot GISTIC results and make CNV plots by histology groups. 
+This module contains visualizations of copy number data in various forms.
 
-### Running the analysis
+### Creating the GISTIC plot
 
-This analysis consists of a single R Notebook, that can be run with the following from the top directory of the project:
+The GISTIC chromosomal plots can be re-ran by running this notebook:
 
 ```
 Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', clean = TRUE)"
 ```
 
+### Creating the CN status heatmap plot
+
+The CN status heatmap can be re-ran by running this notebook:
+
+```
+Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/cn_status_heatmap.Rmd', clean = TRUE)"
+```
+
 ### Output
 
-The output is a plot of the GISTIC scores (`plots/gistic_plot.png`) as well as
-plots of the `seg.mean` by each histology group (e.g. `plots/Chondrosarcoma_plot.png`).
+The output of these notebooks is a series of plots:
+- barplot of the GISTIC scores (`plots/gistic_plot.png`)
+- line plots of the `seg.mean` by each histology group (e.g. `plots/Chondrosarcoma_plot.png`)
+- heatmap of CN status by genome bin: (`plots/cn_status_heatmap.pdf`)
+
+### Custom functions:
+`bp_per_bin` - Given a binned genome ranges object and another GenomicRanges object, return the number of bp covered per bin.
+`call_bin_status` - Given a sample_id, CN segment ranges, and binned genome ranges object, 
+make a call for each bin on what CN copy status has the most coverage in the bin.
