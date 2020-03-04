@@ -192,11 +192,19 @@ Copy number consensus calls from the copy number and structural variant callers 
 
 * `pbta-cnv-consensus.seg.gz` contains consensus segments and segment means (log R ratios) from two or more callers, as described in the [analysis README](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/copy_number_consensus_call/README.md).
 
+##### Focal Copy Number Files
+
+Focal copy number files map the consensus calls (genomic segments) above to genes for downstream analysis and are a product of the [`analysis/focal-cn-file-preparation`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/46cf6ccb119312ccae6122ac94c51710df01f6da/analyses/focal-cn-file-preparation).
+Note: these files contain biospecimens and genes with copy number changes; neutral regions are excluded.
+
+  - `consensus_seg_annotated_cn_autosomes.tsv.gz` contains focal gene copy number alterations for all autosomes.
+  - `consensus_seg_annotated_cn_x_and_y.tsv.gz` contains focal gene copy number alterations for the sex chromosomes.
+
 #### GISTIC Output File Formats
 
 `pbta-cnv-cnvkit-gistic.zip` is the output of running GISTIC 2.0 on the CNVkit results (`pbta-cnv-cnvkit.seg`).
 `pbta-cnv-consensus-gistic.zip` is the output of running GISTIC 2.0 on the CNV consensus calls (`pbta-cnv-consensus.seg.gz`), described below.
-The scripts used to run GISTIC are linked here: [CNVkit](https://github.com/d3b-center/OpenPBTA-workflows/blob/master/bash/run-gistic.sh) and [Consensus calls](https://github.com/d3b-center/OpenPBTA-workflows/blob/master/bash/run_gistic_consensus.sh).
+The scripts used to run GISTIC are linked here: [CNVkit](https://github.com/d3b-center/OpenPBTA-workflows/blob/master/bash/run-gistic.sh) and [Consensus calls](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/run-gistic/scripts/run-gistic-openpbta.sh).
 
 Note that GISTIC is run on the _entire cohort_ and therefore the output reflects regions that are significantly amplified or deleted across the entire cohort.
 
