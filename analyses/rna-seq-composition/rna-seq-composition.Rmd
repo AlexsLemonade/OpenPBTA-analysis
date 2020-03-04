@@ -1,0 +1,579 @@
+---
+title: "`r gsub('.Rmd', ' ', gsub('_', ' ', knitr::current_input()))`"
+author: "Holly Beale"
+date: "`r format(Sys.time(), '%a %b %d %X %Y')`"
+output:
+  html_document:
+    toc: yes
+
+---
+
+
+```{r}
+library(tidyverse) # present in image
+library(gridExtra) # present in image
+library(grid) # present in image
+
+library(EnvStats) # installed from MRAN in Dockerfile
+library(janitor) # installed from MRAN in Dockerfile
+library(patchwork) # installed from Github in Dockerfile
+
+```
+
+
+```{r}
+
+data_dir <- file.path("..", "..", "data")
+scratch_dir <- file.path("..", "..", "scratch")
+
+results_dir <- "results"
+plots_dir <- "plots"
+
+lapply(c(results_dir, plots_dir), function(output_dir){
+# Create output dirs if they do not exist
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir, recursive = TRUE)
+}
+})
+
+```
+
+
+# Extract tar files
+```{r}
+
+lapply(file.path(data_dir, c("pbta-mend-qc-results.tar.gz", "pbta-star-log-final.tar.gz")), 
+       untar, 
+       exdir = file.path(scratch_dir))
+
+```
+
+
+# Import MEND data
+```{r}
+
+mend_results_cols <- cols(
+  input = col_character(),
+  uniqMappedNonDupeReadCount = col_double(),
+  estExonicUniqMappedNonDupeReadCount = col_double(),
+  qc = col_character()
+)
+
+read_count_results_col_names <- c("n1", "n2", "read_counts")
+read_count_results_cols <- cols(
+  n1 = col_character(),
+  n2 = col_character(),
+  read_counts = col_double()
+)
+
+# MEND results
+mend_results <- tibble(MEND_results_file = list.files(scratch_dir, "bam_umend_qc.tsv")) %>%
+  mutate(mnd_and_mend = map(file.path(scratch_dir, MEND_results_file), read_tsv, col_types = mend_results_cols)) %>%
+  unnest(mnd_and_mend) %>%
+  rename(MND = uniqMappedNonDupeReadCount ,
+         MEND = estExonicUniqMappedNonDupeReadCount) %>%
+  select(-input)
+
+```
+
+# Import STAR data
+```{r}
+
+read_measurement_names <- 
+  tibble(orig_col_name = c("Number of input reads", 
+                           "Uniquely mapped reads number",
+                           "Number of reads mapped to multiple loci"),
+         short_name = c("Total_reads", "UM_reads", "Multimapped"))
+
+parse_star_log <- function(file_name) {
+  tibble(raw=scan(file_name, what = "list", sep ="\n",  quiet = TRUE)) %>%
+    filter(grepl(paste(read_measurement_names$orig_col_name,collapse="|"), raw)) %>%
+    mutate(measurement_name = gsub(" \\|\t.*$", "", raw),
+           measurement_value = as.numeric(gsub("^.*\t", "", raw)),
+           star_results_file = gsub(paste0(scratch_dir, "/"), "", file_name),
+           measurement_name = str_trim(measurement_name)) %>%
+    select(-raw)
+}
+
+# STAR results
+star_results <-   lapply(
+  file.path(scratch_dir, list.files(scratch_dir, ".Log.final.out")), 
+  parse_star_log) %>%
+  bind_rows %>%
+  left_join(read_measurement_names, by=c("measurement_name"="orig_col_name")) %>% 
+  select(-measurement_name) %>%
+  spread(key=short_name, value = measurement_value)
+
+```
+
+
+
+
+# Combine data by sample
+```{r}
+
+# Import manifest info required to combine results from different outputs
+pbta_mend_qc_manifest <- read_tsv(
+  file.path(data_dir, "pbta-mend-qc-manifest.tsv"), 
+  col_types = cols(.default = col_character()))
+
+pbta_star_log_manifest <- read_tsv(file.path(data_dir,"pbta-star-log-manifest.tsv"), 
+                                  col_types = cols(.default = col_character())) %>%
+  mutate(Sample = gsub(".Log.final.out", "", name))
+
+star_results_w_biospec <- left_join(star_results, pbta_star_log_manifest, by=c("star_results_file"="name"))
+
+mend_results_w_biospec <- left_join(mend_results, pbta_mend_qc_manifest, by=c("MEND_results_file"="name"))
+
+# Check whether all samples are present in both
+table(star_results_w_biospec$Kids.First.Biospecimen.ID %in% mend_results_w_biospec$Kids.First.Biospecimen.ID)
+table(mend_results_w_biospec$Kids.First.Biospecimen.ID %in% star_results_w_biospec$Kids.First.Biospecimen.ID)
+
+
+# Combine results from different outputs
+comb_results <- full_join(star_results_w_biospec, 
+                          mend_results_w_biospec, 
+                          by="Kids.First.Biospecimen.ID") %>%
+  select(-star_results_file, -MEND_results_file, -qc, -Sample) %>%
+  rename(sample_id = Kids.First.Biospecimen.ID) 
+
+```
+
+
+# Groom data 
+
+```{r}
+
+read_counts <- comb_results %>%
+  mutate(Mapped = Multimapped + UM_reads) %>%
+  select(-UM_reads) 
+
+
+samples_in_depth_order <- read_counts$sample_id[order(desc(read_counts$Total_reads))]
+
+
+```
+
+
+# Filter for library prep method
+```{r}
+
+metadata_raw <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"), 
+                     col_types = cols(
+                       .default = col_character())) 
+
+metadata <- metadata_raw %>%
+  filter(experimental_strategy == "RNA-Seq") %>%
+  select(Kids_First_Biospecimen_ID, RNA_library, composition, sample_type)
+
+# How many samples of each type are present?
+metadata %>% tabyl(RNA_library, composition, sample_type)
+
+stranded_samples <- metadata %>% 
+  filter(RNA_library == "stranded") %>%
+  pull(Kids_First_Biospecimen_ID)
+
+selected_read_counts <- read_counts %>%
+  filter(sample_id %in% stranded_samples)
+```
+
+This analysis is performed only on ribo-deplete data (stranded). Data from cell lines and solid tissues are both included. 
+
+# Calculate percentages for reference range calcs
+```{r}
+
+read_counts_with_ref_range_fractions <- selected_read_counts %>% 
+  arrange(desc(Total_reads)) %>% 
+  mutate(pct_unmapped_of_total = (Total_reads - Mapped)/Total_reads,
+         pct_multi_mapped_of_mapped = Multimapped/Mapped, # Mapped = UM + MM
+         pct_dupe_of_mapped = (Mapped - MND) / Mapped,
+         pct_non_exonic_of_non_dupe = (MND - MEND)/MND)
+
+read_fracs_with_ref_range_fractions_long <- read_counts_with_ref_range_fractions %>%
+  select(c(sample_id, starts_with("pct_"))) %>% 
+  gather(key="ref_range_name", value = "value", -sample_id) 
+
+```
+
+# Calculate reference ranges
+```{r}
+
+ref_range_codes <- as_tibble(
+  list(ref_range_abbrev = c("NM", "MM", "D", "NE"), 
+       ref_range_description = 
+         c("Not mapped", "Multi-mapped", "Duplicate reads", "Non exonic reads"), 
+       ref_range_name = 
+         c("pct_unmapped_of_total", "pct_multi_mapped_of_mapped", 
+           "pct_dupe_of_mapped", "pct_non_exonic_of_non_dupe"
+         )))
+
+ref_range_stats <- function(mean1, sd1) {
+  c(mean_minus_one_sd = mean1-sd1,
+    mean_plus_one_sd = mean1+sd1,
+    mean_minus_two_sd = mean1-(2*sd1),
+    mean_plus_two_sd = mean1+(2*sd1))}
+
+ref_range_mean_sd <- read_counts_with_ref_range_fractions %>%
+  select(starts_with("pct_")) %>% 
+  gather(key="ref_range_name") %>%
+  group_by(ref_range_name) %>%
+  summarise(mean = mean(value), sd = sd(value)) %>%
+  mutate(stats = pmap(list(mean, sd), ref_range_stats))  %>%
+  mutate(r = map(stats, ~ data.frame(t(.)))) %>%
+  unnest(r) %>%
+  select(-stats)
+
+all_stats <- ref_range_mean_sd %>% 
+  select(-sd) %>%
+  gather(key="stat_name", value = "value", -ref_range_name) %>%
+  mutate(minmax = ifelse(grepl("plus", stat_name), "max",
+                         ifelse(grepl("minus", stat_name), "min",
+                                "mean")),
+         stat = gsub("^.*_([[:lower:]]{3}_.*)", "\\1", stat_name),
+        ref_range_name = factor(ref_range_name, 
+                                levels = ref_range_codes$ref_range_name))
+
+
+```
+
+
+# Groom reference ranges 
+```{r}
+
+read_type_pct_thresholds <- all_stats %>% 
+  filter(stat == "two_sd") %>%
+  select(-stat, -stat_name) %>%
+  spread(key = "minmax", value = "value") %>%
+  rename(min_pct = min, max_pct = max)
+
+```
+
+
+## Identify samples within reference range
+
+```{r}
+
+read_fracs_with_thresholds <- left_join(read_fracs_with_ref_range_fractions_long, read_type_pct_thresholds, by = "ref_range_name") %>%
+  rename(sample_value = value) %>%
+  mutate(within_limits = ifelse(sample_value > min_pct,
+                                ifelse(sample_value<max_pct,
+                                       "within_limits",
+                                       "above_limit"),
+                                "below_limit"))
+
+n_ref_ranges <- n_distinct(read_type_pct_thresholds$ref_range_name)
+
+samples_within_limits <- read_fracs_with_thresholds %>% 
+  group_by(sample_id) %>%
+  filter(sum(grepl("within_limits", within_limits)) == n_ref_ranges) %>%
+  pull(sample_id) %>% unique
+
+depth_status <- read_counts_with_ref_range_fractions %>%
+  select(sample_id, MEND) %>%
+  mutate(
+    status=ifelse( MEND<10E6,
+                   "<10M_MEND_reads",
+                   ifelse(MEND<20E6, 
+                          "10-20 MEND_reads",
+                          ">20M_MEND_reads")
+    ),
+  all_read_types_within_read_type_limits = sample_id %in% samples_within_limits,
+  within_read_type_limits_label = c( "not_WNL", "WNL")[1 + all_read_types_within_read_type_limits]
+  )
+
+# How many samples were outside ref range?
+table(read_fracs_with_thresholds$within_limits)
+
+# How many samples in each MEND depth group were outside ref range?
+tabyl(depth_status, within_read_type_limits_label, status)
+
+threshold_flag_annotations <- read_fracs_with_thresholds %>% 
+  left_join(ref_range_codes, by="ref_range_name") %>%
+  mutate(threshold_code = ifelse(within_limits == "within_limits", NA, ref_range_abbrev)) %>%
+  group_by(sample_id) %>%
+  summarize(flagged_thresholds = paste(na.omit(threshold_code), collapse=", "))
+
+read_fracs_with_thresholds <- read_fracs_with_thresholds %>% 
+  left_join(threshold_flag_annotations, by="sample_id")
+
+```
+
+# Prepare data for summary plot
+## Specify labels and levels
+```{r}
+
+stat_names = c("pct_unmapped_of_total", "pct_multi_mapped_of_mapped", "pct_dupe_of_mapped", "pct_non_exonic_of_non_dupe") 
+stat_label = c("% unmapped", "% multi-mapped \n(of mapped)", "% duplicate \n(of mapped)", "% non-exonic \n(of non-duplicate)")
+names(stat_label) = stat_names
+
+
+limit_status_levels <- c("below_limit", "within_limits", "above_limit")
+limit_status_colors <- c("white", "grey", "black")
+names(limit_status_colors) <- limit_status_levels
+
+MEND_depth_codes <- c("<10M_MEND_reads", "10-20 MEND_reads", ">20M_MEND_reads")
+MEND_depth_colors <- c("red", "pink", "springgreen4")
+names(MEND_depth_colors) <- MEND_depth_codes
+
+limit_and_MEND_vec <- c(limit_status_colors, MEND_depth_colors)
+
+```
+
+## Add factors and prepare text
+```{r}
+read_fracs_with_thresholds_anno <- read_fracs_with_thresholds %>%
+  mutate(ref_range_name = factor(ref_range_name, levels = ref_range_codes$ref_range_name),
+         within_limits = factor(within_limits, levels = limit_status_levels))
+
+```
+
+
+## Tabulate excluded samples
+```{r}
+
+flag_summary_stats <- read_fracs_with_thresholds_anno  %>%
+  mutate(`Fraction of sample` = gsub("\n", "", stat_label[match(ref_range_name, names(stat_label))])) %>%
+  #  group_by(ref_range_name) %>%
+  tabyl(`Fraction of sample`, within_limits) %>%
+  adorn_totals(where = c("col")) %>%
+  adorn_percentages(denominator = "row") %>% 
+  adorn_pct_formatting(digits = 0) %>%
+  adorn_ns() %>%
+  mutate(`Fraction of sample` = factor(`Fraction of sample`, 
+                                       levels = gsub("\n", "", stat_label))) %>%
+  arrange(`Fraction of sample`)
+```
+
+
+## Histogram portion of plot
+```{r}
+
+plot_title <- paste0(sum(threshold_flag_annotations$flagged_thresholds!=""), " samples are outside reference ranges")
+
+p20 <-  ggplot(read_fracs_with_thresholds_anno) + 
+  geom_histogram(aes(x = sample_value, fill = ref_range_name)) + 
+  geom_vline(data=all_stats,
+             aes(xintercept = value, linetype = stat, color = ref_range_name)) +
+    scale_fill_viridis_d() +
+  scale_color_viridis_d() +
+  facet_wrap(~ref_range_name, nrow=1, labeller = labeller(
+    ref_range_name=stat_label) )
+
+p20b <- p20 + 
+  theme(legend.position = "none") +
+  ylab("Samples") + 
+  xlab(paste0("Relative sample composition, n=", length(unique(read_fracs_with_thresholds$sample_id)))) 
+
+padding_from_line <- -0.04
+
+read_type_pct_thresholds_for_fig2 <- all_stats %>%
+  filter(grepl("two_sd", stat_name)) %>%
+  mutate(
+    x = ifelse(stat_name=="mean_plus_two_sd", value + padding_from_line, value - padding_from_line),
+    y = ifelse(stat_name=="mean_plus_two_sd", 200,300),
+    label = ifelse(stat_name=="mean_plus_two_sd",
+                   paste0("mean\n+ 2sd\n", round(value, 3)),
+                   paste0("mean\n- 2sd\n", round(value, 3))
+                   )
+    )
+
+p20c <- 
+  p20b + 
+  scale_x_continuous(breaks = seq(0, 1, by=0.25)) +
+  expand_limits(x = c(-0.25, 0.9)) +
+  ggtitle(plot_title)
+
+p20d <- 
+  p20c + 
+  geom_label(data = read_type_pct_thresholds_for_fig2, 
+            aes(x = x, y = y, label = round(value, 3)),#, hjust = hjust)
+  ) 
+
+```
+
+# Generate summary plot
+```{r}
+
+tbl <- tableGrob(flag_summary_stats, rows=NULL)
+
+wrap_plots(p20c, tbl, ncol=1, heights = 2:1)
+
+ggsave(file.path(plots_dir, "fractions_and_reference_ranges.png"), width = 8, height = 6)
+
+```
+
+# Export table of flagged samples
+```{r}
+
+samples_to_export <- c(read_fracs_with_thresholds_anno %>%
+  filter(flagged_thresholds !="") %>%
+  pull(sample_id) %>%
+  unique, 
+  depth_status %>%
+    filter(status == "<10M_MEND_reads") %>%
+    pull(sample_id))
+  
+read_fracs_with_thresholds_anno %>%
+  filter(sample_id %in% samples_to_export) %>%
+  mutate(within_limits = gsub("within_limits", "", within_limits)) %>%
+  select(sample_id, ref_range_name, within_limits) %>%
+  spread(key = "ref_range_name", value = "within_limits") %>%
+  #  pivot_wider(names_from = "ref_range_name", values_from = "within_limits") %>%
+  left_join(depth_status %>% select(sample_id, status)) %>%
+  write_tsv(file.path(results_dir, "samples_with_flags.tsv"))
+
+```
+
+# Visualize overlap in flags accrued per sample
+```{r}
+
+stat_names_plus_MEND <- c(stat_names, "MEND count")
+stat_label_plus_MEND  <- c(stat_label, "MEND count range")
+
+
+flag_analysis <- read_fracs_with_thresholds_anno %>%
+  bind_rows(depth_status %>%
+              mutate(ref_range_name = "MEND count") %>%
+              rename(within_limits=status)) %>%
+  filter(! sample_id %in% samples_within_limits) %>%
+  group_by(sample_id) %>%
+  mutate(n_flags=sum(within_limits == "within_limits")) %>%
+  arrange(desc(n_flags)) %>%
+  ungroup() %>%
+  mutate(sample_id = factor(sample_id, levels = unique(sample_id)),
+         ref_range_name = factor(ref_range_name, levels = rev(stat_names_plus_MEND)) )
+
+
+ggplot(flag_analysis) + 
+  geom_tile(aes(x=sample_id, y=ref_range_name, fill = within_limits)) +
+   theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) +
+  scale_y_discrete(breaks=stat_names_plus_MEND, labels=stat_label_plus_MEND) +
+  scale_fill_manual("", values=limit_and_MEND_vec) +
+  ylab("") + xlab("Sample")
+
+```
+
+
+Samples are ordered by the number of read fractions for which they exceed the reference range. Samples that exceed the range of non-exonic reads often only exceed that range and no other. Conversely, samples that exceed the unmapped threshold often also exceed the multi-mapper threshold; some of those samples also exceed the duplicate read threshold.
+
+# Characterize excluded samples
+```{r fig.height=9, fig.width=9}
+
+samples_by_MEND <- read_fracs_with_thresholds_anno %>%
+  left_join(read_counts_with_ref_range_fractions %>% 
+              select(sample_id, MEND, Total_reads), 
+            by="sample_id")
+
+p_total_reads_in_all <- ggplot(samples_by_MEND %>% 
+         select(sample_id, Total_reads) %>%
+         distinct %>%
+           mutate(value_name="all samples"), 
+         aes(y=Total_reads/1e6, x=value_name)
+         ) +
+  geom_boxplot() +
+  EnvStats::stat_n_text(size=3) +
+  theme(axis.title.x = element_blank()) +
+  ylab("Total reads (million)") 
+
+p_MEND_reads_in_all <- ggplot(samples_by_MEND %>% 
+         select(sample_id, MEND) %>%
+         distinct %>%
+           mutate(value_name="all samples"),
+         aes(y=MEND/1e6, x=value_name)
+         ) +
+  geom_boxplot() + 
+  EnvStats::stat_n_text(size=3) +
+  theme(axis.title.x = element_blank()) +
+  ylab("MEND reads (million)")
+
+p_MEND_reads_by_ref_range <-
+  ggplot(samples_by_MEND, aes(x=within_limits, y=MEND/1e6)) + 
+  geom_boxplot() + 
+  EnvStats::stat_n_text(size=3) +
+  scale_x_discrete(breaks=c("within_limits", "below_limit", "above_limit"),
+                   labels = c("within", "below", "above")) +
+  facet_wrap(~ref_range_name, nrow=1, labeller = labeller(
+    ref_range_name=stat_label) ) +
+  theme(axis.title = element_blank())
+
+p_total_reads_by_ref_range <- 
+  ggplot(samples_by_MEND, aes(x=within_limits, y=Total_reads/1e6)) + 
+  geom_boxplot() + 
+  EnvStats::stat_n_text(size=3) +
+  scale_x_discrete(breaks=c("within_limits", "below_limit", "above_limit"),
+                   labels = c("within", "below", "above")) +
+  facet_wrap(~ref_range_name, nrow=1, labeller = labeller(
+    ref_range_name=stat_label) ) +
+  theme(axis.title = element_blank())
+
+p_total_reads_in_all + p_total_reads_by_ref_range + 
+  p_MEND_reads_in_all + p_MEND_reads_by_ref_range + 
+  plot_layout(widths = c(1, 6)) + 
+  plot_annotation(
+  title = "Breakdown of read counts by reference range status",
+  subtitle = "Samples outside of reference ranges do not systemically differ in total
+  read counts, but they do have fewer total MEND reads",
+  caption = stringr::str_wrap('A. Total reads in all samples. B. Total reads in samples by reference range status for each of the four reference ranges. C. Total MEND reads in all samples. D. Total MEND reads in samples by reference range status for each of the four reference ranges', width = 120),
+  tag_levels = 'A'
+)
+
+
+```
+
+As seen in C and D, and by definition, samples that have high fractions of non-MEND reads have fewer MEND reads than other samples. However, they do not vary much from other samples in the number of total reads (A and B). In other words, the number of total reads does not determine whether a sample is within range for a subcomponent of the sample. 
+
+
+
+# Number of measured genes
+```{r}
+expr <- readRDS(file.path(data_dir,"pbta-gene-expression-rsem-tpm.stranded.rds"))
+
+genes_gt_zero <- apply(expr[,-1], 2, function(x) sum(x>0))
+
+metadata_gene_counts <- metadata_raw %>%
+  filter(RNA_library == "stranded",
+         experimental_strategy == "RNA-Seq") %>%
+  mutate(genes_gt_zero = genes_gt_zero[match(Kids_First_Biospecimen_ID, names(genes_gt_zero))]) %>%
+  left_join(threshold_flag_annotations, by =c("Kids_First_Biospecimen_ID"="sample_id"))
+
+read_fracs_with_thresholds_anno2 <- read_fracs_with_thresholds_anno %>%
+  mutate(genes_gt_zero = genes_gt_zero[match(sample_id, names(genes_gt_zero))])
+
+p_gene_counts_in_all <- ggplot(read_fracs_with_thresholds_anno2 %>% 
+         select(sample_id, genes_gt_zero) %>%
+         distinct %>%
+           mutate(value_name="all samples"), 
+         aes(y=genes_gt_zero/1e3, x=value_name)
+         ) +
+  geom_boxplot() +
+  EnvStats::stat_n_text(size=3) +
+  theme(axis.title.x = element_blank()) +
+  ylab("Number of genes (thousands)") 
+
+
+p_gene_counts_by_ref_range <- ggplot(read_fracs_with_thresholds_anno2, aes(x=within_limits, y=genes_gt_zero/1e3)) + 
+  geom_boxplot() + 
+  EnvStats::stat_n_text(size = 3) +
+  scale_x_discrete(breaks=c("within_limits", "below_limit", "above_limit"),
+                   labels = c("within", "below", "above")) +
+  facet_wrap(~ref_range_name, nrow=1, labeller = labeller(
+    ref_range_name=stat_label) ) +
+  theme(axis.title.x = element_blank())
+
+
+p_gene_counts_in_all + p_gene_counts_by_ref_range + 
+  plot_layout(widths = c(1, 6)) + 
+  plot_annotation(
+  title = "Breakdown of measured genes by reference range status",
+  caption = stringr::str_wrap('A. Genes measured in all samples. B. Genes measured in samples by reference range status for each of the four reference ranges.', width = 80),
+  tag_levels = 'A'
+)
+
+ggsave(file.path(plots_dir, "Expressed_genes_by_status.png"), width = 8, height = 6)
+
+```
+
+Samples that exceed unmapped, multi-mapped or duplicate read fraction thresholds generally measure fewer genes than their within-range counterparts. The reverse is true for samples that exceed the non-exonic read fraction threshold. If it reflects genomic contamination, that genomic contamination might also result in apparent exonic reads from DNA from genes that are not producing RNA in the same. In that scenario, the non-exonic reads would not be directly contributing to the higher gene count.
+
+
+
