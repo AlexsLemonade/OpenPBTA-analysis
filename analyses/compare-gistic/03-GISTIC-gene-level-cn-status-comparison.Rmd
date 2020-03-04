@@ -174,8 +174,7 @@ tally_calls <- function(gistic_calls_df,
 
   # Display final table -- arrange by loss count and display the top 15 rows
   final_df %>%
-    arrange(desc(loss)) %>%
-    head(n = 15)
+    arrange(desc(loss))
 }
 ```
 
