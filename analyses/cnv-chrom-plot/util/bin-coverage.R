@@ -39,14 +39,14 @@ bp_per_bin <- function(bin_ranges, status_ranges) {
   
   # Format as data.frame with rows = bins
   per_bin_df <- data.frame(
-    bin = names(bp_per_bin),
-    bp_per_bin
+    bin = as.numeric(names(bp_per_bin)),
+    bp_per_bin = as.numeric(bp_per_bin)
   )
   
-  # Store dummy counts if there are no ranges that co
+  # Store dummy counts if there are no ranges that are in the bins
   if (nrow(per_bin_df) == 0) {
     per_bin_df <- data.frame(
-      bin = factor(1:length(bin_ranges)),
+      bin = as.numeric(1:length(bin_ranges)),
       bp_per_bin = 0
     )
   }
@@ -88,7 +88,7 @@ call_bin_status <- function(sample_id,
   
   # Format this data into one data.frame where each row is a bin
   bin_bp_status <- data.frame(
-    bin = factor(1:length(bin_ranges)),
+    bin = as.numeric(1:length(bin_ranges)),
     # Keep bin width
     bin_width = bin_ranges@ranges@width
   ) %>%

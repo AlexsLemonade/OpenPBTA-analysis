@@ -154,7 +154,7 @@ ggplot2::qplot(seg_ranges@ranges@width, geom= "density") +
 Filter out segments that are longer than our cutoff. 
 
 ```{r}
-seg_ranges <- seg_ranges[which(seg_ranges@ranges@width < length_max)]
+filtered_seg_ranges <- seg_ranges[which(seg_ranges@ranges@width < length_max)]
 ```
 
 ### Set up chromosomal sizes for making bins. 
@@ -230,7 +230,7 @@ bins <- unlist(bins)
 
 Run the bin status calling on each sample. 
 
-```{r}
+```{r echo=FALSE}
 # Get a vector of the biospecimen IDs
 sample_ids <- unique(seg_data$ID)
 
@@ -238,7 +238,7 @@ sample_ids <- unique(seg_data$ID)
 bin_calls_list <- lapply(sample_ids,
   call_bin_status,
   bin_ranges = bins,
-  seg_ranges = seg_ranges,
+  seg_ranges = filtered_seg_ranges,
   # Percent coverage difference for a bin to be called a particular status
   perc_delta_threshold = perc_delta_threshold
 )
