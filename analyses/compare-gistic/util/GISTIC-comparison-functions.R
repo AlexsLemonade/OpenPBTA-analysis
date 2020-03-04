@@ -219,7 +219,7 @@ plot_genes_venn_diagram_wrapper <- function(cohort_genes_file,
 prepare_gene_level_gistic <- function(all_lesions_file,
                                       amp_genes_file,
                                       del_genes_file,
-                                      gene_level_output_tsv_filename) {
+                                      output_filename) {
 
   # Given the file paths to GISTIC's `all_lesion.conf_90.txt`,
   # `amp_genes.conf_90.txt`, and `del_genes.conf_90.txt` files,
@@ -232,7 +232,7 @@ prepare_gene_level_gistic <- function(all_lesions_file,
   #   all_lesions_file: file path to GISTIC's `all_lesion.conf_90.txt` file
   #   amp_genes_file: file path to GISTIC's `amp_genes.conf_90.txt` file
   #   del_genes_file: file path to GISTIC's `del_genes.conf_90.txt` file
-  #   gene_level_output_tsv_filename: string to save the output file as
+  #   output_filename: string to save the output file as
   #
   # Return:
   #   final_df: data.frame with the relevant data from the `all_lesions`,
@@ -316,12 +316,12 @@ prepare_gene_level_gistic <- function(all_lesions_file,
   # Save data.frame to file
   readr::write_tsv(
     final_df,
-    file.path(results_dir, gene_level_output_tsv_filename)
+    file.path(results_dir, output_filename)
   )
 }
 
 prepare_cytoband_level_gistic <- function(all_lesions_file,
-                                          cytoband_level_output_tsv_filename) {
+                                          output_filename) {
 
   # Given the file path to GISTIC's `all_lesion.conf_90.txt` file,
   # read in and tidy this data into a data.frame that contains
@@ -329,7 +329,7 @@ prepare_cytoband_level_gistic <- function(all_lesions_file,
   #
   # Args:
   #   all_lesions_file: file path to GISTIC's `all_lesion.conf_90.txt` file
-  #   cytoband_level_output_tsv_filename: string to save the output file as
+  #   output_filename: string to save the output file as
   #
   # Return:
   #   final_df: data.frame with the relevant data from the `all_lesions` file
@@ -375,6 +375,6 @@ prepare_cytoband_level_gistic <- function(all_lesions_file,
   # Save data.frame to file (for later cytoband level comparison)
   readr::write_tsv(
     gistic_all_lesions_df,
-    file.path(results_dir, cytoband_level_output_tsv_filename)
+    file.path(results_dir, output_filename)
   )
 }
