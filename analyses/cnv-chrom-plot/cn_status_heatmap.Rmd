@@ -1,5 +1,5 @@
 ---
-title: "CN Status Heatmaps"
+title: "CN Status Heatmap"
 output:   
   html_notebook: 
     toc: true
@@ -314,7 +314,7 @@ color_key <- structure(c("#ca0020", "#f7f7f7", "#0571b0"),
 ### Make column annotation object
 
 Extract chromosome labels and make an alternating color key for them. 
-This annotation object strategy was originally from [chromosomal-nstability](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/b5a33838d1e9bd7e7913a89201ec26125c16c94c/analyses/chromosomal-instability/02a-plot-chr-instability-heatmaps.Rmd#L73).
+This annotation object strategy was originally from [chromosomal-instability](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/b5a33838d1e9bd7e7913a89201ec26125c16c94c/analyses/chromosomal-instability/02a-plot-chr-instability-heatmaps.Rmd#L73).
 
 ```{r}
 # Set up chromosome labels from bins as a factor vector
