@@ -5,7 +5,7 @@ output:
     toc: TRUE
     toc_float: TRUE
 author: C. Savonen for ALSF CCDL
-date: 2019
+date: 2020
 ---
 
 Purpose: After creating a TCGA consensus file with `02-merge_callers.R`, this notebook 
@@ -13,7 +13,8 @@ plots these data in a series of plots to compare the consensus calls to the indi
 callers. 
 
 ### Summary of Findings:
-
+Lancet does not appear to be doing well with the WXS data. 
+See the further analyses on this in the `lancet-wxs-tests` folder in this analysis folder. 
 
 #### Individual Caller's Reports 
 
@@ -123,8 +124,7 @@ mutect <- dplyr::tbl(con, "mutect") %>%
   as.data.frame()
 ```
 
-Because `DBI` does not support full_join, we had to use a series of `left_join` and
-`union_all` calls in order to get a full join of all the callers. 
+Full join to get the summary of mutations called by each caller. 
 
 ```{r}
 # Bring out the data.frame
@@ -140,13 +140,13 @@ head(all_caller_df)
 ```
 
 ```{r}
-# Set up the data as a data.frame
+# Set up as data.frame with each column a caller's VAF
 vaf_df <- all_caller_df %>% 
   dplyr::select("VAF_lancet", "VAF_strelka", "VAF_mutect",
                 "Variant_Classification") %>%
   dplyr::mutate(VAF_consensus = VAF_strelka)     
  
-# Determine which mutations are part of the consensus
+# Determine which mutations are not part of the consensus
 consensus_index <- vaf_df %>%
   dplyr::select(-c(VAF_consensus, Variant_Classification)) %>%
   rowSums(is.na(.)) > 0
@@ -154,8 +154,9 @@ consensus_index <- vaf_df %>%
 # Make non consensus VAF into an NA
 vaf_df$VAF_consensus[consensus_index] <- NA
 
-# Make this long form for plotting and 
+# Make this long form for plotting
 long_vaf_df <- vaf_df %>% 
+  # This index needs to be a factor so tapply step in the next chunk works more seamlessly
   dplyr::mutate(index = factor(1:nrow(.))) %>% 
   tidyr::gather(key = "caller", value = "vaf", -index, -Variant_Classification) %>% 
   dplyr::mutate(caller = gsub("VAF_", "", caller)) %>% 
@@ -387,52 +388,6 @@ perc_var_df %>%
 ```{r}
 # Save this plot
 ggplot2::ggsave(file.path(plots_dir, "tcga-variant_classification_plot.png"))
-```
-
-## Where are the unique Lancet calls? 
-
-```{r}
-source(file.path("..", "chromosomal-instability", "util", "chr-break-plot.R"))
-source(file.path("..", "chromosomal-instability", "util", "chr-break-calculate.R"))
-```
-
-```{r}
-# Set up Chr sizes
-chr_sizes <- readr::read_tsv(file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed"),
-  col_names = FALSE
-) %>%
-  # Reformat the chromosome variable to drop the "chr"
-  dplyr::mutate(X1 = factor(gsub("chr", "", X1),
-    levels = c(1:22, "X", "Y", "M")
-  )) %>%
-  # Remove sex chromosomes
-  dplyr::filter(!(X1 %in% c("X", "Y", "M")))
-# Make chromosome size named vector
-chr_sizes_vector <- chr_sizes$X3
-names(chr_sizes_vector) <- chr_sizes$X1
-```
-
-```{r}
-only_lancet <- all_caller_df %>% 
-  dplyr::filter(!is.na(VAF_lancet) & is.na(VAF_strelka) & is.na(VAF_mutect)) %>% 
-  dplyr::mutate(Chromosome = gsub("chr", "", Chromosome))
-
-lancet_densities <- break_density(breaks_df = only_lancet, 
-             sample_id = "all",
-             samples_col = "Tumor_Sample_Barcode",
-             chrom_col = "Chromosome",
-             start_col = "Start_Position",
-             end_col = "Start_Position", 
-             window_size = 1e7,
-             chr_sizes_vector = chr_sizes_vector)
-
-map_breaks_plot(lancet_densities, 
-                y_val = "total_counts", 
-                color = "blue", 
-                y_lab = "Total Num of Calls", 
-                main_title = "Lancet Only Calls"
-                )
-
 ```
 
 ## Session Info

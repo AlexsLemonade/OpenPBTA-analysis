@@ -20,6 +20,10 @@ jobs:
           name: Sample Distribution Analyses
           command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
 
+      - run:
+          name: Transcriptome dimensionality reduction
+          command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
+          
       # The analysis no longer needs to be tested as it has been retired and is better covered by 'SNV Caller Analysis' below.
       #- run:
       #    name: Mutect2 vs Strelka2
@@ -42,7 +46,7 @@ jobs:
 
       - run:
           name: Molecular subtyping Chordoma
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-chordoma/01-Subtype-chordoma.Rmd', clean = TRUE)"
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-chordoma/run-molecular-subtyping-chordoma.sh
       
       - run:
           name: Molecular subtyping - Ependymoma
@@ -69,16 +73,13 @@ jobs:
           command: ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
 
       - run:
-          name: Transcriptome dimensionality reduction
-          command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
-
-      - run:
           name: Sex prediction from RNA-seq - Clean data-train elasticnet-evaluate model
           command: OPENPBTA_PERCENT=0 ./scripts/run_in_ci.sh bash analyses/sex-prediction-from-RNASeq/run-sex-prediction-from-RNASeq.sh
 
-      - run:
-          name: Selection Strategy Comparison
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/selection-strategy-comparison/01-selection-strategies.rmd', params = list(neighbors = 2), clean = TRUE)"
+      # Deprecated: this comparison is no longer needed after separating Poly-A and stranded.
+      # - run:
+      #     name: Selection Strategy Comparison
+      #     command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/selection-strategy-comparison/01-selection-strategies.rmd', params = list(neighbors = 2), clean = TRUE)"
 
       - run:
           name: TP53 NF1 classifier run
@@ -107,10 +108,6 @@ jobs:
           name: Mutational Signatures 
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutational-signatures/mutational_signatures.Rmd', clean = TRUE)" 
       
-      - run:
-          name: Tumor mutation burden with TCGA
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
-
       - run:
           name: Chromosomal instability breakpoints
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
@@ -155,9 +152,9 @@ jobs:
           name: Gene set enrichment analysis to generate GSVA scores
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh"
 
-      - run:
-          name: Fusion Summary
-          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
+      # - run:
+      #    name: Fusion Summary
+      #    command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
           
       - run:
           name: Add Shatterseek
@@ -166,8 +163,6 @@ jobs:
       - run:
           name: Telomerase activity
           command: ./scripts/run_in_ci.sh bash analyses/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
-      
-
 
          ################################
          #### Add your analysis here ####
@@ -177,9 +172,25 @@ jobs:
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/rna-seq-composition/rna-seq-composition.Rmd', clean = TRUE)"
 
       - run:
+          name: TCGA SNV Caller Analysis 
+          command: ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-tcga.sh     
+
+      - run:
           name: SNV Caller Analysis 
-          command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis.sh
-          
+          command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-pbta.sh
+
+      - run:
+          name: Tumor mutation burden with TCGA
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
+  
+      - run:
+          name: Lancet WXS vs WGS test
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/lancet-paired-WXS-WGS.Rmd', clean = TRUE)"
+      
+      - run:
+          name: Lancet padded vs unpadded test
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/lancet-padded-vs-unpadded.Rmd', clean = TRUE)"
+
        # This analysis was a side concept question and no longer needs to be run. 
        # - run:
           # name: SNV Caller VAF Cutoff Experiment
@@ -189,6 +200,10 @@ jobs:
       - run:
           name: GISTIC proof of concept
           command: OPENPBTA_CI=1 ./scripts/run_in_ci.sh bash analyses/run-gistic/run-gistic-module.sh
+          
+      - run:
+          name: GISTIC Results Comparison - Entire Cohort vs Histology
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/gistic-cohort-vs-histology-comparison/gistic-cohort-vs-histology-comparison.Rmd', clean = TRUE)"
 
   deploy:
     machine: 

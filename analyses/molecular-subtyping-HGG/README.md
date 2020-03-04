@@ -69,6 +69,12 @@ A table with the molecular subtype information for each HGG sample at `results/H
 The GISTIC `broad_values_by_arm.txt` file is used to identify samples with `1p` and `19q` loss, then the consensus mutation file is filtered to the identified samples in order to check for _IDH1_ mutations.
 **Note:** Per [this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/435#issuecomment-576898275), very few samples in the OpenPBTA dataset, if any, are expected to fit into the `1p/19q co-deleted oligodendrogliomas` subtype.
 
+[`09-HGG-with-braf-clustering.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/09-HGG-with-braf-clustering.nb.html) is a notebook written to identify high grade glioma samples without histone mutations that have `BRAF V600E` mutations and observe how they cluster alongside low grade gliomas and high grade gliomas without the `BRAF V600E` mutation in the stranded RNA-seq data (which contains both histologies) in RNA-seq data.
+We plotted the t-SNE and UMAP results from the `transcriptomic-dimension-reduction`, highlighting samples without histone mutations and with a _BRAF_ V600E mutation. 
+The results, shown below, suggest that one sample may be a candidate for reclassification (also saved in the `plots` directory of this module).
+
+![09_umap_tsne](plots/HGG_stranded.png)
+
 ## Folder structure
 
 The structure of this folder is as follows:
@@ -89,6 +95,8 @@ The structure of this folder is as follows:
 ├── 07-HGG-molecular-subtyping-combine-table.nb.html
 ├── 08-1p19q-codeleted-oligodendrogliomas.Rmd
 ├── 08-1p19q-codeleted-oligodendrogliomas.nb.html
+├── 09-HGG-with-braf-clustering.Rmd
+├── 09-HGG-with-braf-clustering.nb.html
 ├── README.md
 ├── hgg-subset
 │   ├── hgg_focal_cn.tsv.gz
@@ -97,6 +105,9 @@ The structure of this folder is as follows:
 │   ├── hgg_snv_maf.tsv.gz
 │   ├── hgg_zscored_expression.polya.RDS
 │   └── hgg_zscored_expression.stranded.RDS
+├── plots
+│   ├── HGG_stranded.pdf
+│   └── HGG_stranded.png
 ├── results
 │   ├── HGG_cleaned_all_table.tsv
 │   ├── HGG_cleaned_cnv.tsv
