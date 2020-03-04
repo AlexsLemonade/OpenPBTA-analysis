@@ -296,6 +296,13 @@ RUN mkdir -p gistic_install && \
 RUN chown -R rstudio:rstudio /home/rstudio/gistic_install
 RUN chmod 755 /home/rstudio/gistic_install
 
+# Install CrossMap for liftover
+RUN pip3 install "cython==0.29.15" && \
+    pip3 install "bx-python==0.8.8" && \
+    pip3 install "pybigwig==0.3.17" && \
+    pip3 install "pysam==0.15.4" && \
+    pip3 install "CrossMap==0.3.9" 
+
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
 
