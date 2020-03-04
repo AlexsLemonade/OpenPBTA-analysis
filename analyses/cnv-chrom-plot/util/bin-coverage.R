@@ -132,10 +132,11 @@ call_bin_status <- function(sample_id,
       )
     )
   
-  # Format this data as a status
+  # Format this data as a status per bin
   status_df <- bin_bp_status %>%
     dplyr::select(bin, status) %>%
     tidyr::spread(bin, status) %>%
+    # Order bins numerically
     dplyr::select(order(as.numeric(colnames(.))))
   
   return(status_df)
