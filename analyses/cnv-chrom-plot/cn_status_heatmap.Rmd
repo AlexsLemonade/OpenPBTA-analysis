@@ -44,11 +44,11 @@ if (!dir.exists(plots_dir)) {
 Custom function for calculating number of base pairs of coverage for each bin. 
 
 ```{r}
-bp_per_bin <- function(bins, status_ranges) {
+bp_per_bin <- function(bin_ranges, status_ranges) {
     # Find the portions of each segment that overlap with each bin. 
     bin_overlaps <- GenomicRanges::pintersect(
-      IRanges::findOverlapPairs(bins, 
-                                 status_ranges)
+      IRanges::findOverlapPairs(bin_ranges, 
+                                status_ranges)
       )
   
     # Which segs are a part of which bins?
@@ -62,16 +62,25 @@ bp_per_bin <- function(bins, status_ranges) {
       sum
     ) # Add up per bin
     
-    data.frame(bin = names(bp_per_bin),
-               bp_per_bin)
+    # Format as data.frame with rows = bins
+    per_bin_df <- data.frame(bin = names(bp_per_bin), 
+                             bp_per_bin)
+    
+    # Store dummy counts if there are no ranges that co
+    if (nrow(per_bin_df) == 0) {
+      per_bin_df <- data.frame(bin = factor(1:length(bin_ranges)), 
+                               bp_per_bin = 0)
+    }
+    return(per_bin_df)
   }
 ```
 
 ```{r}
 call_bin_status <- function(sample_id,
                             seg_ranges, 
+                            bin_ranges, 
                             perc_delta_threshold = .05) {
-  
+  message(sample_id)
   # Extract the ranges for this sample
   sample_seg_ranges <- seg_ranges[which(seg_ranges$biospecimen == sample_id)]
   
@@ -81,14 +90,14 @@ call_bin_status <- function(sample_id,
   neutral_ranges <- sample_seg_ranges[sample_seg_ranges$status == "neutral"]
 
   # Calculate length of each type of status per bin
-  gain_per_bin <- bp_per_bin(bins, gain_ranges)
-  loss_per_bin <- bp_per_bin(bins, loss_ranges)
-  neutral_per_bin <- bp_per_bin(bins, neutral_ranges)
+  gain_per_bin <- bp_per_bin(bin_ranges, gain_ranges)
+  loss_per_bin <- bp_per_bin(bin_ranges, loss_ranges)
+  neutral_per_bin <- bp_per_bin(bin_ranges, neutral_ranges)
 
   # Format this data into one data.frame where each row is a bin
-  bin_bp_status <- data.frame(bin = factor(1:length(bins)), 
+  bin_bp_status <- data.frame(bin = factor(1:length(bin_ranges)), 
                               # Keep bin width
-                              bin_width = bins@ranges@width) %>%
+                              bin_width = bin_ranges@ranges@width) %>%
   # Join gains coverage data
   dplyr::left_join(gain_per_bin, 
                    by = "bin") %>% 
@@ -168,7 +177,8 @@ seg_data <- seg_data %>%
     copy.num == tumor_ploidy ~ "neutral"
   )) %>%
   # Remove sex chromosomes
-  dplyr::filter(!(chrom %in% c("X", "Y", "M")))
+  dplyr::filter(!(chrom %in% c("X", "Y", "M")), 
+                !is.na(status))
 ```
 
 Set up seg data as GenomicRanges. 
@@ -242,7 +252,7 @@ uncallable_ranges <- GenomicRanges::GRanges(
 )
 ```
 
-## Bin the genome
+## Call bin CN statuses for each sample
 
 ```{r}
 # Find which regions of the chromosome are uncallable
@@ -251,10 +261,18 @@ bins <- GenomicRanges::tileGenome(chr_sizes_vector,
 bins <- unlist(bins)
 ```
 
-## Call bin CN statuses for each samples
-
 ```{r}
-lapply()
+sample_ids <- unique(seg_data$ID)
+
+bin_calls_list <- lapply(sample_ids, 
+       call_bin_status, 
+       bin_ranges = bins, 
+       seg_ranges = seg_ranges, 
+       perc_delta_threshold = 0.05)
+
+names(bin_calls_list ) <- sample_ids
+
+dplyr::bind_rows(bin_calls_list, .id = "biospecimen_id")
 ```
 
 ## Determine NA regions of the genome
