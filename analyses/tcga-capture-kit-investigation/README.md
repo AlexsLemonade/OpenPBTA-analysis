@@ -42,4 +42,9 @@ We created script to prepare the input dataframe for the boxplot script. This sc
 ![](plots/boxplot-strelka2.png)
 
 ### (WIP) coverage-comparison
+| sample name                  | # of bases > 20x vs GDC BED | % of bases > 20x vs GDC BED | # of bases > 20x vs MC3 BED | % of bases > 20x vs MC3 BED | 
+|------------------------------|------------------------------|------------------------------|-----------------------------|-----------------------------| 
+| TCGA-HT-7684-01A-11D-2253-08 | 27755836                     | 84%                          | 8787516                     | 31%                         | 
+| TCGA-SP-A6QF-01A-12D-A35I-08 | 27350549                     | 82%                          | 30060356                    | 31%                         | 
+
 ### (Planned) rerun-tcga-with-new-bed
