@@ -1,5 +1,5 @@
 ---
-title: "CNV GISTIC Plots"
+title: "CN Status Heatmaps"
 output:   
   html_notebook: 
     toc: true
@@ -8,14 +8,37 @@ author: Candace Savonen for ALSF - CCDL
 date: 2020
 ---
 
+## Purpose: 
+Create a summary heatmap of copy number status from the consensus CNV call data. 
+This is done by binning the genome and calculating the segment's coverage of the CNV consensus segments. 
+A bin is declared a particular copy number status if that status's base pair coverage is a certain threshold percentage larger than the other statuses' coverage. 
+
 ### Usage
 
 This notebook can be run via the command line from the top directory of the 
 repository as follows:
 
 ```
-Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', 
+Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/cn_status_heatmap.Rmd', 
                               clean = TRUE)"
+```
+
+
+### Cutoffs: 
+
+```{r}
+# The max length of a segment to use the data. 
+# segments that are too long may dominate the heatmap and/or be indicators of 
+# broader structural changes
+length_max <- 1e7
+
+# Set minimum percentage of a bin that should be callable to report data. 
+perc_uncallable <- 0.75
+
+# Percent coverage difference for a bin to be called a particular status 
+# (0.2 means anything where a status is 20% bigger than the others will 
+# be called).
+perc_delta_threshold <- 0.2
 ```
 
 ### Set Up
@@ -45,45 +68,80 @@ Custom function for calculating number of base pairs of coverage for each bin.
 
 ```{r}
 bp_per_bin <- function(bin_ranges, status_ranges) {
-    # Find the portions of each segment that overlap with each bin. 
-    bin_overlaps <- GenomicRanges::pintersect(
-      IRanges::findOverlapPairs(bin_ranges, 
-                                status_ranges)
-      )
-  
-    # Which segs are a part of which bins?
-    bin_indices <- GenomicRanges::findOverlaps(bin_overlaps, 
-                                                status_ranges)
-  
-    # Get the sum of the length of all excluded regions for each bin.
-    bp_per_bin <- tapply(
-      bin_overlaps@ranges@width[bin_indices@to], # Get length of each sequence
-      bin_indices@from, # Index of which bin it overlaps
-      sum
-    ) # Add up per bin
-    
-    # Format as data.frame with rows = bins
-    per_bin_df <- data.frame(bin = names(bp_per_bin), 
-                             bp_per_bin)
-    
-    # Store dummy counts if there are no ranges that co
-    if (nrow(per_bin_df) == 0) {
-      per_bin_df <- data.frame(bin = factor(1:length(bin_ranges)), 
-                               bp_per_bin = 0)
-    }
-    return(per_bin_df)
+  # Given a binned genome ranges object and another GenomicRanges object, 
+  # Return the number of bp covered per bin.
+  #
+  # Args:
+  #   bin_ranges: A binned GenomicRanges made from tileGenome. 
+  #   status_ranges:A GenomicRanges object to calculate what percent coverage of each bin. 
+  #
+  # Returns:
+  #  a data.frame with bins x number of bp 
+
+  # Find the portions of each segment that overlap with each bin.
+  bin_overlaps <- GenomicRanges::pintersect(
+    IRanges::findOverlapPairs(
+      bin_ranges,
+      status_ranges
+    )
+  )
+
+  # Which segs are a part of which bins?
+  bin_indices <- GenomicRanges::findOverlaps(
+    bin_overlaps,
+    status_ranges
+  )
+
+  # Get the sum of the length of all excluded regions for each bin.
+  bp_per_bin <- tapply(
+    bin_overlaps@ranges@width[bin_indices@to], # Get length of each sequence
+    bin_indices@from, # Index of which bin it overlaps
+    sum
+  ) # Add up per bin
+
+  # Format as data.frame with rows = bins
+  per_bin_df <- data.frame(
+    bin = names(bp_per_bin),
+    bp_per_bin
+  )
+
+  # Store dummy counts if there are no ranges that co
+  if (nrow(per_bin_df) == 0) {
+    per_bin_df <- data.frame(
+      bin = factor(1:length(bin_ranges)),
+      bp_per_bin = 0
+    )
   }
+  return(per_bin_df)
+}
 ```
+
+Function that determines the overall CN status of each genome bin. 
 
 ```{r}
 call_bin_status <- function(sample_id,
-                            seg_ranges, 
-                            bin_ranges = bins, 
-                            perc_delta_threshold = .05) {
-  message(sample_id)
+                            seg_ranges,
+                            bin_ranges,
+                            perc_delta_threshold) {
+  # Given a sample_id, CN segment ranges, and binned genome ranges object, 
+  # make a call for each bin on what CN copy status has the most coverage in the bin. 
+  #
+  #
+  # Args:
+  #   sample_id: A string that corresponds to the biospecimen s
+  #   seg_ranges: A GenomicRanges object that contains a `status` and a `biospecimen` slot.  
+  #               The `biospecimen slot will be used to split out the `sample_id`'s corresponding ranges.   
+  #               The `status` slot should have the that has the gain/loss/neutral 
+  #               status call for each segment. Data will be split up by this variable. 
+  #   bin_ranges: A binned GenomicRanges made from tileGenome that has been uncompressed with `unlist`. 
+  #   perc_delta_threshold: What covereage percent difference do you need to make the call?
+  #
+  # Returns:
+  #  a small data.frame that contains the status call of the sample for each bin. 
+  #
   # Extract the ranges for this sample
   sample_seg_ranges <- seg_ranges[which(seg_ranges$biospecimen == sample_id)]
-  
+
   # Split ranges into their respective statuses
   gain_ranges <- sample_seg_ranges[sample_seg_ranges$status == "gain"]
   loss_ranges <- sample_seg_ranges[sample_seg_ranges$status == "loss"]
@@ -95,47 +153,58 @@ call_bin_status <- function(sample_id,
   neutral_per_bin <- bp_per_bin(bin_ranges, neutral_ranges)
 
   # Format this data into one data.frame where each row is a bin
-  bin_bp_status <- data.frame(bin = factor(1:length(bin_ranges)), 
-                              # Keep bin width
-                              bin_width = bin_ranges@ranges@width) %>%
-  # Join gains coverage data
-  dplyr::left_join(gain_per_bin, 
-                   by = "bin") %>% 
-  # Join loss coverage data
-  dplyr::left_join(loss_per_bin, 
-                   by = "bin",
-                   suffix = c(".gain", ".loss")) %>% 
-  # Join neutral coverage data
-  dplyr::left_join(neutral_per_bin, 
-                   by = "bin") %>% 
-  # If there is an NA, at this point we can assume it means 0
-  dplyr::mutate_at(dplyr::vars(
-    dplyr::starts_with("bp_per_bin")),
-     ~ tidyr::replace_na(., 0)) %>% 
+  bin_bp_status <- data.frame(
+    bin = factor(1:length(bin_ranges)),
+    # Keep bin width
+    bin_width = bin_ranges@ranges@width
+  ) %>%
+    # Join gains coverage data
+    dplyr::left_join(gain_per_bin,
+      by = "bin"
+    ) %>%
+    # Join loss coverage data
+    dplyr::left_join(loss_per_bin,
+      by = "bin",
+      suffix = c(".gain", ".loss")
+    ) %>%
+    # Join neutral coverage data
+    dplyr::left_join(neutral_per_bin,
+      by = "bin"
+    ) %>%
+    # If there is an NA, at this point we can assume it means 0
+    dplyr::mutate_at(
+      dplyr::vars(
+        dplyr::starts_with("bp_per_bin")
+      ),
+      ~ tidyr::replace_na(., 0)
+    ) %>%
     # Reformat neutral so it is like the others
-    dplyr::rename(bp_per_bin.neutral = bp_per_bin) %>% 
+    dplyr::rename(bp_per_bin.neutral = bp_per_bin) %>%
     # Calculate the bins percentage of each status
-    dplyr::mutate(perc_gain = bp_per_bin.gain / bin_width, 
-                  perc_loss = bp_per_bin.loss / bin_width, 
-                  perc_neutral = bp_per_bin.neutral / bin_width) %>% 
-    # Use these percentages for declaring final call per bin based on 
+    dplyr::mutate(
+      perc_gain = bp_per_bin.gain / bin_width,
+      perc_loss = bp_per_bin.loss / bin_width,
+      perc_neutral = bp_per_bin.neutral / bin_width
+    ) %>%
+    # Use these percentages for declaring final call per bin based on
     # the perc_delta_threshold
     dplyr::mutate(
       status = dplyr::case_when(
-      (perc_gain - perc_loss) > perc_delta_threshold & 
-        (perc_gain - perc_neutral) > perc_delta_threshold  ~ "gain", 
-            (perc_loss - perc_gain) > perc_delta_threshold & 
-        (perc_loss - perc_neutral) > perc_delta_threshold  ~ "loss", 
-      TRUE ~ "neutral"
-    )) 
-    
-    # Format this data as a status
-    status_df <- bin_bp_status %>% 
-      dplyr::select(bin, status) %>% 
-      tidyr::spread(bin, status) %>%
-      dplyr::select(order(as.numeric(colnames(.))))
-    
-    return(status_df)
+        (perc_gain - perc_loss) > perc_delta_threshold &
+          (perc_gain - perc_neutral) > perc_delta_threshold ~ "gain",
+        (perc_loss - perc_gain) > perc_delta_threshold &
+          (perc_loss - perc_neutral) > perc_delta_threshold ~ "loss",
+        TRUE ~ "neutral"
+      )
+    )
+
+  # Format this data as a status
+  status_df <- bin_bp_status %>%
+    dplyr::select(bin, status) %>%
+    tidyr::spread(bin, status) %>%
+    dplyr::select(order(as.numeric(colnames(.))))
+
+  return(status_df)
 }
 ```
 
@@ -147,18 +216,19 @@ metadata <-
   readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv"))
 ```
 
-Read consensus seg file. 
+### Set up consensus copy number data
 
 ```{r}
 # Read in the segment copy number data
 seg_data <- data.table::fread(file.path(
-  input_dir, 
-  "pbta-cnv-consensus.seg.gz"),
-  data.table = FALSE
-) 
+  input_dir,
+  "pbta-cnv-consensus.seg.gz"
+),
+data.table = FALSE
+)
 ```
 
-Set up the status for each consensus segment
+Set up the status for each consensus segment. 
 
 ```{r}
 seg_data <- seg_data %>%
@@ -166,14 +236,15 @@ seg_data <- seg_data %>%
   dplyr::inner_join(dplyr::select(
     metadata,
     "Kids_First_Biospecimen_ID",
-    "short_histology", 
+    "short_histology",
     "tumor_ploidy"
   ),
   by = c("ID" = "Kids_First_Biospecimen_ID")
-  ) %>% 
+  ) %>%
   # Reformat the chromosome variable to drop the "chr"
-  dplyr::mutate(chrom = factor(gsub("chr", "", chrom), 
-                               levels = c(1:22, "X", "Y"))) %>% 
+  dplyr::mutate(chrom = factor(gsub("chr", "", chrom),
+    levels = c(1:22, "X", "Y")
+  )) %>%
   # Recode the copy number status based on ploidy
   dplyr::mutate(status = dplyr::case_when(
     # when the copy number is less than inferred ploidy, mark this as a loss
@@ -183,8 +254,10 @@ seg_data <- seg_data %>%
     copy.num == tumor_ploidy ~ "neutral"
   )) %>%
   # Remove sex chromosomes
-  dplyr::filter(!(chrom %in% c("X", "Y", "M")), 
-                !is.na(status))
+  dplyr::filter(
+    !(chrom %in% c("X", "Y", "M")),
+    !is.na(status)
+  )
 ```
 
 Set up seg data as GenomicRanges. 
@@ -196,16 +269,33 @@ seg_ranges <- GenomicRanges::GRanges(
     start = seg_data$loc.start,
     end = seg_data$loc.end
   ),
-  status = seg_data$status, 
-  histology = seg_data$short_histology, 
+  status = seg_data$status,
+  histology = seg_data$short_histology,
   biospecimen = seg_data$ID
 )
-
 ```
 
-Read in the chromosomal sizes for making bins. 
-(This has nothing to do with Strelka, but it just so happens this is a file with the sizes 
-of the chromosomes in this genome build, hg38).
+Explore the distribution of segment lengths. 
+
+```{r}
+ggplot2::qplot(seg_ranges@ranges@width, geom= "density") + 
+  ggplot2::theme_classic() + 
+  ggplot2::ylab("density") + 
+  ggplot2::xlab("Segment length in bp") + 
+  # Let's put a vertical line where we will make a filter cutoff
+  ggplot2::geom_vline(xintercept = length_max, color = "red")
+```
+
+Filter out segments that are longer than our cutoff. 
+
+```{r}
+seg_ranges <- seg_ranges[which(seg_ranges@ranges@width < length_max)]
+```
+
+### Set up chromosomal sizes for making bins. 
+
+(This has nothing to do with Strelka, but it just so happens this is a file 
+with the sizes of the chromosomes in this genome build, hg38).
 
 ```{r}
 chr_sizes <- readr::read_tsv(file.path(input_dir, "WGS.hg38.strelka2.unpadded.bed"),
@@ -224,15 +314,17 @@ chr_sizes_vector <- chr_sizes$end
 names(chr_sizes_vector) <- chr_sizes$chrom
 ```
 
-Read in uncallable regions file. 
+### Set up uncallable regions data 
 Regions that were not able to be accurately called will need to be color coded gray. 
 
 ```{r}
 uncallable_bed <- readr::read_tsv(
-  file.path("..", 
-            "copy_number_consensus_call", 
-            "ref", 
-            "cnv_excluded_regions.bed"),
+  file.path(
+    "..",
+    "copy_number_consensus_call",
+    "ref",
+    "cnv_excluded_regions.bed"
+  ),
   col_names = c("chrom", "start", "end")
 ) %>%
   # Reformat the chromosome variable to drop the "chr"
@@ -260,44 +352,51 @@ uncallable_ranges <- GenomicRanges::GRanges(
 
 ## Call bin CN statuses for each sample
 
+Set up binned genome ranges. 
+
 ```{r}
 # Find which regions of the chromosome are uncallable
-bins <- GenomicRanges::tileGenome(chr_sizes_vector, 
-                                  tilewidth = 1e6)
+bins <- GenomicRanges::tileGenome(chr_sizes_vector,
+  tilewidth = 1e6
+)
+# Uncompress these ranges
 bins <- unlist(bins)
 ```
 
 Run the bin status calling on each sample. 
 
 ```{r}
+# Get a vector of the biospecimen IDs
 sample_ids <- unique(seg_data$ID)
 
-bin_calls_list <- lapply(sample_ids, 
-       call_bin_status, 
-       bin_ranges = bins, 
-       seg_ranges = seg_ranges, 
-       # %20 difference for it to be called a particular status
-       perc_delta_threshold = 0.2)
+# Run call_bin_status for each biospecimen's segments. 
+bin_calls_list <- lapply(sample_ids,
+  call_bin_status,
+  bin_ranges = bins,
+  seg_ranges = seg_ranges,
+  # Percent coverage difference for a bin to be called a particular status
+  perc_delta_threshold = perc_delta_threshold
+)
 
 # Bring along sample IDs
 names(bin_calls_list) <- sample_ids
 
 # Format into data.frame
-bin_calls_df <- dplyr::bind_rows(bin_calls_list, 
-                                 .id = "biospecimen_id")
+bin_calls_df <- dplyr::bind_rows(bin_calls_list,
+  .id = "biospecimen_id"
+)
 ```
 
-## Determine NA regions of the genome
+## Determine uncallable bins of the genome
 
 We'll determine NA regions based on what percent of that window of that region is uncallable. 
-These methods are borrowed from chromosomal-instability. 
+These methods are borrowed from [chromosomal-instability methods](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/b5a33838d1e9bd7e7913a89201ec26125c16c94c/analyses/chromosomal-instability/util/chr-break-calculate.R#L216). 
 
 ```{r}
-perc_uncallable <- .75
-
 # Find the NA region(s) for each bin without combining close regions
 na_regions <- GenomicRanges::pintersect(
-  IRanges::findOverlapPairs(bins, uncallable_ranges))
+  IRanges::findOverlapPairs(bins, uncallable_ranges)
+)
 
 # Find overlap between na_regions and bin
 na_overlaps <- GenomicRanges::findOverlaps(bins, na_regions)
@@ -329,11 +428,11 @@ Replace these bins with NAs.
 bin_calls_df[, bin_indices] <- NA
 ```
 
-Format a matrix with rownames for ComplexHeatmap to use. 
+Format a matrix with rownames for `ComplexHeatmap` to use. 
 
 ```{r}
-bin_calls_mat <- bin_calls_df %>% 
-  tibble::column_to_rownames("biospecimen_id") %>% 
+bin_calls_mat <- bin_calls_df %>%
+  tibble::column_to_rownames("biospecimen_id") %>%
   as.matrix()
 ```
 
@@ -342,13 +441,15 @@ bin_calls_mat <- bin_calls_df %>%
 Make color key. 
 
 ```{r}
-color_key <- structure(c("#ca0020", "#f7f7f7", "#0571b0"), 
-                       names = c("loss", "neutral", "gain"))
+color_key <- structure(c("#ca0020", "#f7f7f7", "#0571b0"),
+  names = c("loss", "neutral", "gain")
+)
 ```
 
 ### Make column annotation object
 
 Extract chromosome labels and make an alternating color key for them. 
+This annotation object strategy was originally from [chromosomal-nstability](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/b5a33838d1e9bd7e7913a89201ec26125c16c94c/analyses/chromosomal-instability/02a-plot-chr-instability-heatmaps.Rmd#L73).
 
 ```{r}
 # Set up chromosome labels from bins as a factor vector
@@ -376,6 +477,7 @@ chr_annot <- ComplexHeatmap::HeatmapAnnotation(
 ### Make row annotation object
 
 Make histology labeling `HeatmapAnnotation` object.
+This annotation object strategy was originally from [chromosomal-nstability](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/b5a33838d1e9bd7e7913a89201ec26125c16c94c/analyses/chromosomal-instability/02a-plot-chr-instability-heatmaps.Rmd#L73).
 
 ```{r}
 # Get the histologies for the samples in this set and order them by histology
@@ -424,7 +526,7 @@ hist_annot <- ComplexHeatmap::HeatmapAnnotation(
 )
 ```
 
-## Assemble heatmap
+## Assemble CN status heatmap
 
 ```{r}
 # Plot on a heatmap
@@ -441,12 +543,13 @@ heatmap <- ComplexHeatmap::Heatmap(bin_calls_mat,
 )
 ```
 
-## Print out heatmap
+Print out heatmap. 
 
 ```{r}
 heatmap
 ```
 
+Save to PDF. 
 
 ```{r}
 # Save plot as PDF
