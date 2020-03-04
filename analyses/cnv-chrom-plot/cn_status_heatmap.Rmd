@@ -78,7 +78,7 @@ bp_per_bin <- function(bin_ranges, status_ranges) {
 ```{r}
 call_bin_status <- function(sample_id,
                             seg_ranges, 
-                            bin_ranges, 
+                            bin_ranges = bins, 
                             perc_delta_threshold = .05) {
   message(sample_id)
   # Extract the ranges for this sample
@@ -118,8 +118,6 @@ call_bin_status <- function(sample_id,
     dplyr::mutate(perc_gain = bp_per_bin.gain / bin_width, 
                   perc_loss = bp_per_bin.loss / bin_width, 
                   perc_neutral = bp_per_bin.neutral / bin_width) %>% 
-    # Tuck away bin names as rownames before next step
-    tibble::column_to_rownames("bin") %>%
     # Use these percentages for declaring final call per bin based on 
     # the perc_delta_threshold
     dplyr::mutate(
@@ -129,7 +127,15 @@ call_bin_status <- function(sample_id,
             (perc_loss - perc_gain) > perc_delta_threshold & 
         (perc_loss - perc_neutral) > perc_delta_threshold  ~ "loss", 
       TRUE ~ "neutral"
-    ))
+    )) 
+    
+    # Format this data as a status
+    status_df <- bin_bp_status %>% 
+      dplyr::select(bin, status) %>% 
+      tidyr::spread(bin, status) %>%
+      dplyr::select(order(as.numeric(colnames(.))))
+    
+    return(status_df)
 }
 ```
 
@@ -270,9 +276,12 @@ bin_calls_list <- lapply(sample_ids,
        seg_ranges = seg_ranges, 
        perc_delta_threshold = 0.05)
 
-names(bin_calls_list ) <- sample_ids
+# Bring along sample IDs
+names(bin_calls_list) <- sample_ids
 
-dplyr::bind_rows(bin_calls_list, .id = "biospecimen_id")
+# Format into data.frame
+bin_calls_df <- dplyr::bind_rows(bin_calls_list, 
+                                 .id = "biospecimen_id")
 ```
 
 ## Determine NA regions of the genome
@@ -309,66 +318,76 @@ names(pct_overlap) <- unique(na_overlaps@from)
 
 # Get the bin indices that correspond to less than the cutoff
 bin_indices <- names(pct_overlap)[which(pct_overlap > perc_uncallable)]
-
-# Call the portion bin NA
-uncallable_bins <- bins[as.numeric(bin_indices)]
 ```
 
 Replace these bins with NAs.
 
 ```{r}
-
-
+bin_calls_df[, bin_indices] <- NA
 ```
-
 
 ## Set up heatmap annotation objects
-
-Extract chromosome labels and make an alternating color key for them. 
-
-```{r}
-# Make a key for cytoband to gene
-gene_cytoband_key <- seg_df$cytoband
-names(gene_cytoband_key) <- seg_df$gene_symbol
-
-# Make a key for assigning alternating colors to the cytobands
-cytoband_colors <- rep(c("grey", "lightblue"), 
-                  length.out = length(unique(gene_cytoband_key)))
-names(cytoband_colors) <- unique(gene_cytoband_key)
-
-# Gene color key for coloring alternating by cytoband
-gene_color_key <- dplyr::recode(colnames(status_df), !!!cytoband_colors)
-names(gene_color_key) <- colnames(status_df)
-```
 
 Make color key. 
 
 ```{r}
 color_key <- structure(c("#f4a582", "#0571b0", "#ca0020"), 
-                       names = unique(seg_df$status)) 
+                       names = unique(bin_calls_df$status)) 
 ```
 
-### Set up for making heatmaps of the breakpoints
+### Make column annotation object
 
-Given the `GenomicRanges` objects for each sample, create a combined plot for 
-each. 
+Extract chromosome labels and make an alternating color key for them. 
+
+```{r}
+# Set up chromosome labels from bins as a factor vector
+chrs <- paste0("chr", decode(bins@seqnames))
+chrs <- as.factor(chrs)
+
+# Make a key for assigning alternating colors to the chromosomes
+chr_colors <- rep(c("grey", "lightblue"), length.out = length(unique(chrs)))
+names(chr_colors) <- unique(chrs)
+```
+
+Make chromosomal labeling `HeatmapAnnotation` object.
+
+```{r}
+# Create the Heatmap annotation object
+chr_annot <- ComplexHeatmap::HeatmapAnnotation(
+  df = data.frame(chrs),
+  col = list(chrs = chr_colors),
+  name = "",
+  show_legend = FALSE,
+  show_annotation_name = FALSE
+)
+```
+
+### Make row annotation object
 
 Make histology labeling `HeatmapAnnotation` object.
 
 ```{r}
 # Get the histologies for the samples in this set and order them by histology
 histologies <-
-  data.frame(Kids_First_Biospecimen_ID = rownames(status_df)) %>%
+  data.frame(Kids_First_Biospecimen_ID = rownames(bin_calls_df)) %>%
+  # Join samples of this dataset to the metadata we need
   dplyr::inner_join(metadata %>%
     dplyr::select(Kids_First_Biospecimen_ID, short_histology)) %>%
   dplyr::mutate(
+    # Make the terms more uniform in their capitalization
     short_histology = tools::toTitleCase(short_histology),
     short_histology = as.factor(short_histology)
   ) %>%
+  # Remove samples that don't have histology
   dplyr::filter(!is.na(short_histology)) %>%
   dplyr::arrange(short_histology) %>%
+  # ComplexHeatmap matches using rownames
   tibble::column_to_rownames("Kids_First_Biospecimen_ID")
+```
 
+Set up histology color key. 
+
+```{r}
 # TODO: Better colors
 # Get values that can be used to make colors equi distant hues away for the
 # number of histology groups we have
@@ -386,17 +405,6 @@ names(histologies_colors) <- unique(histologies$short_histology)
 
 ```{r}
 # Create the Heatmap annotation object
-arm_annot <- ComplexHeatmap::HeatmapAnnotation(
-  df = data.frame(gene_color_key),
-  col = list(cytoband = gene_color_key),
-  name = "",
-  show_legend = FALSE,
-  show_annotation_name = FALSE
-)
-```
-
-```{r}
-# Create the Heatmap annotation object
 hist_annot <- ComplexHeatmap::HeatmapAnnotation(
   df = data.frame(histologies),
   col = list(short_histology = histologies_colors),
@@ -404,6 +412,8 @@ hist_annot <- ComplexHeatmap::HeatmapAnnotation(
   show_annotation_name = FALSE
 )
 ```
+
+## Assemble heatmap
 
 ```{r}
 # Plot on a heatmap
