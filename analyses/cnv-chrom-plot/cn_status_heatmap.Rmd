@@ -41,6 +41,32 @@ if (!dir.exists(plots_dir)) {
 }
 ```
 
+Custom function for calculating number of base pairs of coverage for each bin. 
+
+```{r}
+bp_per_bin <- function(bins, status_ranges) {
+    # Find the portions of each segment that overlap with each bin. 
+    bin_overlaps <- GenomicRanges::pintersect(
+      IRanges::findOverlapPairs(bins, 
+                                 status_ranges)
+      )
+  
+    # Which segs are a part of which bins?
+    bin_indices <- GenomicRanges::findOverlaps(bin_overlaps, 
+                                                status_ranges)
+  
+    # Get the sum of the length of all excluded regions for each bin.
+    bp_per_bin <- tapply(
+      bin_overlaps@ranges@width[bin_indices@to], # Get length of each sequence
+      bin_indices@from, # Index of which bin it overlaps
+      sum
+    ) # Add up per bin
+    
+    data.frame(bin = names(bp_per_bin),
+               bp_per_bin)
+  }
+```
+
 ### Read in data 
 
 ```{r}
@@ -150,19 +176,6 @@ seg_ranges <- GenomicRanges::GRanges(
 
 ```
 
-Set up chromosomal data as GenomicRanges. 
-
-```{r}
-chr_ranges <- GenomicRanges::GRanges(
-  seqnames = chr_sizes$chrom,
-  ranges = IRanges::IRanges(
-    start = chr_sizes$start,
-    end = chr_sizes$end
-  ),
-  status = "neutral"
-)
-```
-
 Set up uncallable regions as GenomicRanges. 
 
 ```{r}
@@ -171,9 +184,78 @@ uncallable_ranges <- GenomicRanges::GRanges(
   ranges = IRanges::IRanges(
     start = uncallable_bed$start,
     end = uncallable_bed$end
-  ), 
-  status = NA
+  )
 )
+```
+
+## Bin the genome
+
+```{r}
+# Find which regions of the chromosome are uncallable
+bins <- GenomicRanges::tileGenome(chr_sizes_vector, 
+                                  tilewidth = 1e6)
+bins <- unlist(bins)
+```
+
+## Combine the data objects into one
+
+```{r}
+sample_id <- seg_ranges$biospecimen[1]
+
+call_bin_status <- function(sample_id,
+                            seg_ranges, 
+                            perc_delta_threshold = .05) {
+  
+  # Extract the ranges for this sample
+  sample_seg_ranges <- seg_ranges[which(seg_ranges$biospecimen == sample_id)]
+  
+  # Split ranges into their respective statuses
+  gain_ranges <- sample_seg_ranges[sample_seg_ranges$status == "gain"]
+  loss_ranges <- sample_seg_ranges[sample_seg_ranges$status == "loss"]
+  neutral_ranges <- sample_seg_ranges[sample_seg_ranges$status == "neutral"]
+
+  # Calculate length of each type of status per bin
+  gain_per_bin <- bp_per_bin(bins, gain_ranges)
+  loss_per_bin <- bp_per_bin(bins, loss_ranges)
+  neutral_per_bin <- bp_per_bin(bins, neutral_ranges)
+
+  # Format this data into one data.frame where each row is a bin
+  bin_bp_status <- data.frame(bin = factor(1:length(bins)), 
+                              # Keep bin width
+                              bin_width = bins@ranges@width) %>%
+  # Join gains coverage data
+  dplyr::left_join(gain_per_bin, 
+                   by = "bin") %>% 
+  # Join loss coverage data
+  dplyr::left_join(loss_per_bin, 
+                   by = "bin",
+                   suffix = c(".gain", ".loss")) %>% 
+  # Join neutral coverage data
+  dplyr::left_join(neutral_per_bin, 
+                   by = "bin") %>% 
+  # If there is an NA, at this point we can assume it means 0
+  dplyr::mutate_at(dplyr::vars(
+    dplyr::starts_with("bp_per_bin")),
+     ~ tidyr::replace_na(., 0)) %>% 
+    # Reformat neutral so it is like the others
+    dplyr::rename(bp_per_bin.neutral = bp_per_bin) %>% 
+    # Calculate the bins percentage of each status
+    dplyr::mutate(perc_gain = bp_per_bin.gain / bin_width, 
+                  perc_loss = bp_per_bin.loss / bin_width, 
+                  perc_neutral = bp_per_bin.neutral / bin_width) %>% 
+    # Tuck away bin names as rownames before next step
+    tibble::column_to_rownames("bin") %>%
+    # Use these percentages for declaring final call per bin based on 
+    # the perc_delta_threshold
+    dplyr::mutate(
+      status = dplyr::case_when(
+      (perc_gain - perc_loss) > perc_delta_threshold & 
+        (perc_gain - perc_neutral) > perc_delta_threshold  ~ "gain", 
+            (perc_loss - perc_gain) > perc_delta_threshold & 
+        (perc_loss - perc_neutral) > perc_delta_threshold  ~ "loss", 
+      TRUE ~ "neutral"
+    ))
+}
 ```
 
 ## Determine NA regions of the genome
@@ -182,12 +264,11 @@ We'll determine NA regions based on what percent of that window of that region i
 These methods are borrowed from chromosomal-instability. 
 
 ```{r}
-# Find which regions of the chromosome are uncallable
-bins <- GenomicRanges::tileGenome(chr_sizes_vector, tilewidth = 1e6)
-bins <- unlist(bins)
-  
+perc_uncallable <- .75
+
 # Find the NA region(s) for each bin without combining close regions
-na_regions <- GenomicRanges::pintersect(IRanges::findOverlapPairs(bins, uncallable_ranges))
+na_regions <- GenomicRanges::pintersect(
+  IRanges::findOverlapPairs(bins, uncallable_ranges))
 
 # Find overlap between na_regions and bin
 na_overlaps <- GenomicRanges::findOverlaps(bins, na_regions)
@@ -210,52 +291,18 @@ pct_overlap <- excluded_length_per_bin / bin_length
 names(pct_overlap) <- unique(na_overlaps@from)
 
 # Get the bin indices that correspond to less than the cutoff
-bin_indices <- names(pct_overlap)[which(pct_overlap > .75)]
+bin_indices <- names(pct_overlap)[which(pct_overlap > perc_uncallable)]
 
-# Only keep the NA regions
-uncallable_binned_regions <- bins[as.numeric(bin_indices)] 
-
-# Make a status that is already NA
-uncallable_binned_regions$status <- NA
+# Call the portion bin NA
+uncallable_bins <- bins[as.numeric(bin_indices)]
 ```
 
-## Combine the data objects into one
+Replace these bins with 
 
 ```{r}
-sample_id <- seg_ranges$biospecimen[1]
 
-color_ranges <- function(sample_id, 
-                         seg_ranges, 
-                         chr_ranges, 
-                         uncallable_ranges) {
-  # Extract the ranges for this sample
-  sample_seg_ranges <- seg_ranges[which(seg_ranges$biospecimen == sample_id)]
-  
-  # Put Neutral if no data and still in a chromosome
-  diff_ranges <- IRanges::setdiff(chr_ranges, sample_seg_ranges)
-  diff_ranges$status <- "neutral"
-  
-  # Combine with data
-  sample_seg_ranges <- GenomicRanges::GRangesList(diff_ranges, sample_seg_ranges)
-  sample_seg_ranges <- unlist(sample_seg_ranges)
-  
-  sample_seg_ranges$status
-  
-sample_seg_ranges <- GenomicRanges::pintersect(IRanges::findOverlapPairs(sample_seg_ranges,
-                                                           uncallable_binned_regions))
-na_indices <- GenomicRanges::findOverlaps(tmp, uncallable_binned_regions)
-  
-sample_seg_ranges$status[na_indices] <- NA
-
-  uncallable_regions
-  # Find overlap between na_regions and bin
-  GenomicRanges::psetdiff(uncallable_regions)
-}
 
 ```
-
-
-
 
 
 ## Set up heatmap annotation objects
