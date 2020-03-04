@@ -2,7 +2,7 @@
 
 **Module Author:** Candace Savonen ([@cansavvy](https://www.github.com/cansavvy))
 
-This module contains visualizations of copy number data in various forms.
+This module makes genome wide visualizations relating to copy number results
 
 ### Creating the GISTIC plot
 
@@ -29,5 +29,5 @@ The output of these notebooks is a series of plots:
 
 ### Custom functions:
 `bp_per_bin` - Given a binned genome ranges object and another GenomicRanges object, return the number of bp covered per bin.
-`call_bin_status` - Given a sample_id, CN segment ranges, and binned genome ranges object, 
+`call_bin_status` - Given a sample_id, CN segment ranges, and binned genome ranges object,
 make a call for each bin on what CN copy status has the most coverage in the bin.
