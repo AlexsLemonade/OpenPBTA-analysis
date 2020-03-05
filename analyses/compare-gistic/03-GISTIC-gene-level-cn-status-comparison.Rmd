@@ -75,13 +75,13 @@ tally_calls <- function(gistic_calls_df,
   # Return:
   #   final_df: the data.frame containing the final counts of samples per gene
   #             for each call category
-
+  
   # Merge the GISTIC and focal CN calls
   final_df <- gistic_calls_df %>%
     dplyr::rename(gistic_status = status) %>%
     left_join(focal_calls_df,
               by = c("Kids_First_Biospecimen_ID" = "biospecimen_id", "gene_symbol"))
-
+  
   # Add loss, gain, amplification, and neutral columns to final table --
   # these columns will have the values "gistic" if the call came from gistic
   # and "focal" if the call came from our `focal-cn-file-preparation` module
@@ -108,7 +108,10 @@ tally_calls <- function(gistic_calls_df,
         TRUE ~ "NA"
       )
     ) %>%
-    select(-c("gistic_status", "focal_status"))
+    select(-c("gistic_status", "focal_status")) %>%
+    # We are removing some fields here -- the `distinct` function is removing
+    # the resulting duplicated rows
+    distinct()
   
   final_loss_df <- final_df %>%
     group_by(gene_symbol, detection_peak, loss) %>%
@@ -131,16 +134,12 @@ tally_calls <- function(gistic_calls_df,
     # of the focal data in the `focal-cn-file-preparation` module
     final_df <- final_loss_df %>%
       inner_join(final_gain_df, by = c("gene_symbol", "detection_peak")) %>%
-      inner_join(final_amplification_df,
-                 by = c("gene_symbol", "detection_peak")) %>%
       # Filter out non-focal calls
       filter(loss == "focal",
-             gain == "focal",
-             amplification == "focal") %>%
+             gain == "focal") %>%
       mutate(loss = n.x,
-             gain = n.y,
-             amplification = n) %>%
-      select(-c("n.x", "n.y", "n")) %>%
+             gain = n.y) %>%
+      select(-c("n.x", "n.y")) %>%
       distinct()
   } else {
     # We do not join the amplification data here because there are no
@@ -156,13 +155,27 @@ tally_calls <- function(gistic_calls_df,
       mutate(loss = n.x,
              gain = n.y,
              neutral = n) %>%
-      select(-c("n.x", "n.y", "n"))
+      select(-c("n.x", "n.y", "n")) %>%
+      distinct()
   }
-
+  
+  if (output_filename == "cohort_gene_level_focal_cn_counts.tsv") {
+    # We join the amplification data separately because the LGAT focal data
+    # do not contain amplification calls
+    final_df <- final_df %>%
+      inner_join(final_amplification_df,
+                 by = c("gene_symbol", "detection_peak")) %>%
+      # Filter out non-focal calls
+      filter(amplification == "focal") %>%
+      mutate(amplification = n) %>%
+      select(-n) %>%
+      distinct()
+  }
+  
   # Save final table
   write_tsv(final_df, file.path(results_dir, output_filename))
-
-  # Display final table -- arrange by loss count
+  
+  # Display final table -- arrange by detection peak
   final_df %>%
     arrange(detection_peak)
 }
@@ -174,6 +187,9 @@ tally_calls <- function(gistic_calls_df,
 # Keep only the relevant variables from the consensus focal CN file
 consensus_focal_cn_calls <- consensus_focal_cn_calls %>%
   select(focal_status = status, gene_symbol, biospecimen_id) %>%
+  # We are selecting only the fields we need from this data.frame -- the
+  # `distinct` function removes duplicated rows left due to the removal of
+  # the other fields
   distinct()
 ```
 
@@ -183,7 +199,7 @@ consensus_focal_cn_calls <- consensus_focal_cn_calls %>%
 # Run `tally_calls` function on LGAT GISTIC calls and focal consensus calls
 # data -- specify that we want to tally the number of focal calls per gene and
 # peak
-lgat_focal <- tally_calls(
+tally_calls(
   gistic_calls_df = lgat_gene_level_calls,
   focal_calls_df = consensus_focal_cn_calls,
   focal_or_gistic = "focal",
