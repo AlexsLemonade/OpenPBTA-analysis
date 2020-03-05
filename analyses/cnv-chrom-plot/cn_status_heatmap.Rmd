@@ -41,7 +41,7 @@ perc_uncallable <- 0.75
 # Percent coverage difference for a bin to be called a particular status 
 # (0.2 means anything where a status is 20% bigger than the others will 
 # be called).
-perc_delta_threshold <- 0.2
+perc_delta_threshold <- 0.1
 ```
 
 ### Set Up
