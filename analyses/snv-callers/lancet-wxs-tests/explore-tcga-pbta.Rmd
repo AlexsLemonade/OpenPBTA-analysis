@@ -99,14 +99,10 @@ set_up_data <- function(data_name,
     # Only keep the columns we want
     dplyr::select(cols_to_keep) %>%
     # Turn into data.frame
-    as.data.frame() 
-  
-  # This step is only needed for TCGA data
-  if (is_tcga) {
-    df <- df %>% 
-      # Shorten the Tumor_Sample_Barcode so it matches
-      dplyr::mutate(Tumor_Sample_Barcode = substr(Tumor_Sample_Barcode, 0, 12))
-  } 
+    as.data.frame() %>% 
+    # This step is only needed for TCGA data but PBTA barcodes are 11 characters 
+    # Shorten the Tumor_Sample_Barcode so it matches
+    dplyr::mutate(Tumor_Sample_Barcode = substr(Tumor_Sample_Barcode, 0, 12))
   
   # Tack on the metadata columns we want
   df  <- df %>% 
@@ -332,19 +328,19 @@ pbta_lancet <- set_up_data(data_name = "lancet",
                            is_tcga = FALSE, 
                            cols_to_keep)
 
-pbta_mutect <- set_up_data("mutect",
+pbta_mutect <- set_up_data(data_name = "mutect",
                            database_path = pbta_db_file, 
                            metadata = pbta_metadata, 
                            is_tcga = FALSE, 
                            cols_to_keep)
 
-pbta_strelka <- set_up_data("strelka",
+pbta_strelka <- set_up_data(data_name = "strelka",
                             database_path = pbta_db_file, 
                             metadata = pbta_metadata, 
                             is_tcga = FALSE, 
                             cols_to_keep)
 
-pbta_consensus <- set_up_data("consensus",
+pbta_consensus <- set_up_data(data_name = "consensus",
                               database_path = pbta_db_file, 
                               metadata = pbta_metadata, 
                               is_tcga = FALSE, 
