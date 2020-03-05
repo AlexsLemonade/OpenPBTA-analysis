@@ -22,7 +22,9 @@ Since we got the TCGA data manifest from the [GDC portal](https://portal.gdc.can
 - output: `results/tcga-capture_kit-info.csv`
 
 ### 02. prepare-tcga-capture_kit
-By checking the `results/tcga-capture_kit-info.csv`, it turns out there are BAMs with `|` in the returned capture kit name and url which are those with more than one capture kit which neither the GDC nor its origin data center could retrieve/figure out what the actual capture kit had been applied. We should just generate intersec BED for those samples and used that for our analysis. We created scripts to download all uniq BED files and added prefix `chr` for [UCSC liftover](https://genome.ucsc.edu/cgi-bin/hgLiftOver) and saved the liftover'd BED under the using the same BED filename root with prefix of `hg38lft-`
+By checking the `results/tcga-capture_kit-info.csv`, it turns out there are BAMs with `|` in the returned capture kit name and url which are those with more than one capture kit which neither the GDC nor its origin data center could retrieve/figure out what the actual capture kit had been applied. 
+We should just generate intersect BED for those samples and use that for our analysis. 
+We created scripts to download all uniq BED files and added prefix `chr` for [UCSC liftover](https://genome.ucsc.edu/cgi-bin/hgLiftOver) and saved the liftover'd BED under the using the same BED filename root with prefix of `hg38lft-`
 
 - script: `scripts/prepare-tcga-capture_kit.sh`
 - notebook: [`02-prepare-tcga-capture_kit.ipynb`](./notebooks/02-prepare-tcga-capture_kit.ipynb)
