@@ -14,6 +14,7 @@
 #   - Some number of biospecimen IDs that correspond to participant IDs that
 #     are *not* represented across strategies but are present in the file under
 #     consideration. This number will be 10% of num_matched.
+#   - We stratify based on `reported_gender`.
 #   - We include (and hardcode) a set of biospecimen IDs for samples that have
 #     TP53 and NF1 mutations that meet the criteria in the tp53_nf1_module and
 #     are represented in the stranded RNA-seq dataset.
