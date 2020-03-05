@@ -42,7 +42,7 @@ We created script to prepare the input dataframe for the boxplot script. This sc
 ![](plots/boxplot-strelka2.png)
 
 ### Coverage-Comparison
-In order to show in the form of coverage that the downloaded BED files were  correct, we calculated the number of bases that are covered  at atleast 20x in both old TCGA BED file(`gencode.v19.basic.exome`) and the new downloaded BED files (`results/*Gh38.bed`). The coverage table in `results/TCGA_oldandnew_coverage_comparisons.txt` gives  a  tabular summary of  number of bases and percentages within corresponding BED files. Boxplot comparison for the same data is available here(`plots/TCGA_oldandnew_coverage_plots.png`)
+In order to show in the form of coverage that the downloaded BED files were  correct, we calculated the number of bases that are covered  at least at 20x in both old TCGA BED file(`gencode.v19.basic.exome`) and the new downloaded BED files (`results/*Gh38.bed`). The coverage table in `results/TCGA_oldandnew_coverage_comparisons.txt` gives  a  tabular summary of  number of bases and percentages within corresponding BED files. Boxplot comparison for the same data is available here(`plots/TCGA_oldandnew_coverage_plots.png`)
 ![](plots/TCGA_oldandnew_coverage_plots.png)
 
 
