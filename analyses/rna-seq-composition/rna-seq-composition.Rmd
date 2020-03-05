@@ -96,9 +96,8 @@ parse_star_log <- function(file_name) {
 }
 
 # STAR results
-star_results <-   lapply(
-  file.path(scratch_dir, list.files(scratch_dir, ".Log.final.out")), 
-  parse_star_log) %>%
+star_results <- file.path(scratch_dir, list.files(scratch_dir, ".Log.final.out")) %>% 
+  lapply(parse_star_log) %>%
   bind_rows %>%
   left_join(read_measurement_names, by=c("measurement_name"="orig_col_name")) %>% 
   select(-measurement_name) %>%
@@ -574,6 +573,5 @@ ggsave(file.path(plots_dir, "Expressed_genes_by_status.png"), width = 8, height 
 ```
 
 Samples that exceed unmapped, multi-mapped or duplicate read fraction thresholds generally measure fewer genes than their within-range counterparts. The reverse is true for samples that exceed the non-exonic read fraction threshold. If it reflects genomic contamination, that genomic contamination might also result in apparent exonic reads from DNA from genes that are not producing RNA in the same. In that scenario, the non-exonic reads would not be directly contributing to the higher gene count.
-
 
 
