@@ -74,6 +74,8 @@ mend_results <- tibble(MEND_results_file = list.files(scratch_dir, "bam_umend_qc
          MEND = estExonicUniqMappedNonDupeReadCount) %>%
   select(-input)
 
+head(mend_results)
+
 ```
 
 # Import STAR data
@@ -102,6 +104,9 @@ star_results <- file.path(scratch_dir, list.files(scratch_dir, ".Log.final.out")
   left_join(read_measurement_names, by=c("measurement_name"="orig_col_name")) %>% 
   select(-measurement_name) %>%
   spread(key=short_name, value = measurement_value)
+
+
+head(star_results)
 
 ```
 
@@ -183,13 +188,13 @@ This analysis is performed only on ribo-deplete data (stranded). Data from cell 
 
 read_counts_with_ref_range_fractions <- selected_read_counts %>% 
   arrange(desc(Total_reads)) %>% 
-  mutate(pct_unmapped_of_total = (Total_reads - Mapped)/Total_reads,
-         pct_multi_mapped_of_mapped = Multimapped/Mapped, # Mapped = UM + MM
-         pct_dupe_of_mapped = (Mapped - MND) / Mapped,
-         pct_non_exonic_of_non_dupe = (MND - MEND)/MND)
+  mutate(frac_unmapped_of_total = (Total_reads - Mapped)/Total_reads,
+         frac_multi_mapped_of_mapped = Multimapped/Mapped, # Mapped = UM + MM
+         frac_dupe_of_mapped = (Mapped - MND) / Mapped,
+         frac_non_exonic_of_non_dupe = (MND - MEND)/MND)
 
 read_fracs_with_ref_range_fractions_long <- read_counts_with_ref_range_fractions %>%
-  select(c(sample_id, starts_with("pct_"))) %>% 
+  select(c(sample_id, starts_with("frac_"))) %>% 
   gather(key="ref_range_name", value = "value", -sample_id) 
 
 ```
@@ -202,18 +207,19 @@ ref_range_codes <- as_tibble(
        ref_range_description = 
          c("Not mapped", "Multi-mapped", "Duplicate reads", "Non exonic reads"), 
        ref_range_name = 
-         c("pct_unmapped_of_total", "pct_multi_mapped_of_mapped", 
-           "pct_dupe_of_mapped", "pct_non_exonic_of_non_dupe"
+         c("frac_unmapped_of_total", "frac_multi_mapped_of_mapped", 
+           "frac_dupe_of_mapped", "frac_non_exonic_of_non_dupe"
          )))
 
 ref_range_stats <- function(mean1, sd1) {
-  c(mean_minus_one_sd = mean1-sd1,
-    mean_plus_one_sd = mean1+sd1,
-    mean_minus_two_sd = mean1-(2*sd1),
-    mean_plus_two_sd = mean1+(2*sd1))}
+  c(mean_minus_one_sd = mean1 - sd1,
+    mean_plus_one_sd = mean1 + sd1,
+    mean_minus_two_sd = mean1 - (2 * sd1),
+    mean_plus_two_sd = mean1 + (2 * sd1))}
 
+# Calculate summary statistics for each read type (wide)
 ref_range_mean_sd <- read_counts_with_ref_range_fractions %>%
-  select(starts_with("pct_")) %>% 
+  select(starts_with("frac_")) %>% 
   gather(key="ref_range_name") %>%
   group_by(ref_range_name) %>%
   summarise(mean = mean(value), sd = sd(value)) %>%
@@ -222,24 +228,25 @@ ref_range_mean_sd <- read_counts_with_ref_range_fractions %>%
   unnest(r) %>%
   select(-stats)
 
+# Longify summary statistics and annoate for plotting
 all_stats <- ref_range_mean_sd %>% 
   select(-sd) %>%
   gather(key="stat_name", value = "value", -ref_range_name) %>%
-  mutate(minmax = ifelse(grepl("plus", stat_name), "max",
-                         ifelse(grepl("minus", stat_name), "min",
-                                "mean")),
-         stat = gsub("^.*_([[:lower:]]{3}_.*)", "\\1", stat_name),
-        ref_range_name = factor(ref_range_name, 
-                                levels = ref_range_codes$ref_range_name))
-
+  mutate(minmax = case_when(
+    grepl("plus", stat_name) ~ "max",
+    grepl("minus", stat_name) ~ "min",
+    stat_name == "mean" ~ "mean"),
+    stat = gsub("^.*_([[:lower:]]{3}_.*)", "\\1", stat_name),
+    ref_range_name = factor(ref_range_name, 
+                            levels = ref_range_codes$ref_range_name))
 
 ```
 
 
-# Groom reference ranges 
+# Select reference ranges that will be used to flag samples
 ```{r}
 
-read_type_pct_thresholds <- all_stats %>% 
+read_type_frac_thresholds <- all_stats %>% 
   filter(stat == "two_sd") %>%
   select(-stat, -stat_name) %>%
   spread(key = "minmax", value = "value") %>%
@@ -252,7 +259,7 @@ read_type_pct_thresholds <- all_stats %>%
 
 ```{r}
 
-read_fracs_with_thresholds <- left_join(read_fracs_with_ref_range_fractions_long, read_type_pct_thresholds, by = "ref_range_name") %>%
+read_fracs_with_thresholds <- left_join(read_fracs_with_ref_range_fractions_long, read_type_frac_thresholds, by = "ref_range_name") %>%
   rename(sample_value = value) %>%
   mutate(within_limits = ifelse(sample_value > min_pct,
                                 ifelse(sample_value<max_pct,
@@ -260,7 +267,7 @@ read_fracs_with_thresholds <- left_join(read_fracs_with_ref_range_fractions_long
                                        "above_limit"),
                                 "below_limit"))
 
-n_ref_ranges <- n_distinct(read_type_pct_thresholds$ref_range_name)
+n_ref_ranges <- n_distinct(read_type_frac_thresholds$ref_range_name)
 
 samples_within_limits <- read_fracs_with_thresholds %>% 
   group_by(sample_id) %>%
@@ -301,7 +308,7 @@ read_fracs_with_thresholds <- read_fracs_with_thresholds %>%
 ## Specify labels and levels
 ```{r}
 
-stat_names = c("pct_unmapped_of_total", "pct_multi_mapped_of_mapped", "pct_dupe_of_mapped", "pct_non_exonic_of_non_dupe") 
+stat_names = c("frac_unmapped_of_total", "frac_multi_mapped_of_mapped", "frac_dupe_of_mapped", "frac_non_exonic_of_non_dupe") 
 stat_label = c("% unmapped", "% multi-mapped \n(of mapped)", "% duplicate \n(of mapped)", "% non-exonic \n(of non-duplicate)")
 names(stat_label) = stat_names
 
@@ -365,7 +372,7 @@ p20b <- p20 +
 
 padding_from_line <- -0.04
 
-read_type_pct_thresholds_for_fig2 <- all_stats %>%
+read_type_frac_thresholds_for_fig2 <- all_stats %>%
   filter(grepl("two_sd", stat_name)) %>%
   mutate(
     x = ifelse(stat_name=="mean_plus_two_sd", value + padding_from_line, value - padding_from_line),
@@ -384,7 +391,7 @@ p20c <-
 
 p20d <- 
   p20c + 
-  geom_label(data = read_type_pct_thresholds_for_fig2, 
+  geom_label(data = read_type_frac_thresholds_for_fig2, 
             aes(x = x, y = y, label = round(value, 3)),#, hjust = hjust)
   ) 
 
