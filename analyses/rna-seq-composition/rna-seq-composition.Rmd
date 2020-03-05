@@ -10,13 +10,13 @@ output:
 
 
 ```{r}
-library(tidyverse) # present in image
-library(gridExtra) # present in image
-library(grid) # present in image
+library(tidyverse)
+library(gridExtra)
+library(grid)
 
-library(EnvStats) # installed from MRAN in Dockerfile
-library(janitor) # installed from MRAN in Dockerfile
-library(patchwork) # installed from Github in Dockerfile
+library(EnvStats)
+library(janitor)
+library(patchwork)
 
 ```
 
@@ -24,12 +24,12 @@ library(patchwork) # installed from Github in Dockerfile
 ```{r}
 
 data_dir <- file.path("..", "..", "data")
-scratch_dir <- file.path("..", "..", "scratch")
+scratch_dir <- file.path("..", "..", "scratch", "rna-seq-composition")
 
 results_dir <- "results"
 plots_dir <- "plots"
 
-lapply(c(results_dir, plots_dir), function(output_dir){
+lapply(c(results_dir, plots_dir, scratch_dir), function(output_dir){
 # Create output dirs if they do not exist
 if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
