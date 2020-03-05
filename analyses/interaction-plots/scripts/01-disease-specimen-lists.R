@@ -26,8 +26,6 @@
 #   --outfile scratch/medulloblastoma_specimens.tsv
 
 #### Initial Set Up
-# Establish base dir
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
@@ -41,28 +39,25 @@ option_list <- list(
   make_option(
     opt_str = "--metadata",
     type = "character",
-    default = file.path("data", "pbta-histologies.tsv"),
-    help = "Relative file path (from top directory of 'OpenPBTA-analysis')
-            to MAF file to be analyzed. Can be .gz compressed.",
+    default = file.path("..", "..", "data", "pbta-histologies.tsv"),
+    help = "File path to MAF file to be analyzed. Can be .gz compressed.",
     metavar = "character"
   ),
   make_option(
     opt_str = "--specimen_list",
     type = "character",
     default = file.path(
-      "data",
+      "..", "..", "data",
       "independent-specimens.wgs.primary.tsv"
     ),
-    help = "Relative file path (from top directory of 'OpenPBTA-analysis')
-            to MAF file to be analyzed. Can be .gz compressed.",
+    help = "File path to MAF file to be analyzed. Can be .gz compressed.",
     metavar = "character"
   ),
   make_option(
     opt_str = "--outfile",
     type = "character",
-    default = file.path("analyses", "interaction-plots", "results", "cooccurence.tsv"),
-    help = "Relative file path (from top directory of 'OpenPBTA-analysis')
-            where output table will be placed.",
+    default = file.path("results", "cooccurence.tsv"),
+    help = "File path where output table will be placed.",
     metavar = "character"
   ),
   make_option(
@@ -78,9 +73,9 @@ option_list <- list(
 opts <- parse_args(OptionParser(option_list = option_list))
 
 # file locations
-meta_file <- file.path(root_dir, opts$metadata)
-specimen_file <- file.path(root_dir, opts$specimen_list)
-out_file <- file.path(root_dir, opts$outfile)
+meta_file <- file.path(opts$metadata)
+specimen_file <- file.path(opts$specimen_list)
+out_file <- file.path(opts$outfile)
 
 
 #### Read files
