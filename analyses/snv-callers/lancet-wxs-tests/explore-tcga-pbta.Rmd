@@ -71,65 +71,57 @@ if (!dir.exists(plots_dir)) {
 ### Special functions 
 
 Function for setting up PBTA data from the database. 
-This database was originally created by the [run consensus bash script](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/run_caller_consensus_analysis-pbta.sh)
+These databases were originally created by the [run consensus bash script for pbta](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/run_caller_consensus_analysis-pbta.sh) and  [run consensus bash script for tcga](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/run_caller_consensus_analysis-tcga.sh)
 
 ```{r}
-set_up_pbta <- function(data.name) {
-  # Given the name of dataset in the PBTA database, set up the TCGA data. 
-
-  # Start up connection
-  con <- DBI::dbConnect(
-    RSQLite::SQLite(),
-    file.path(scratch_dir, "snv_db.sqlite")
-  )
-  # Connect to SQL
-  df <- dplyr::tbl(con, data.name) %>%
-    # Only keep the columns we want
-    dplyr::select(cols_to_keep) %>%
-    as.data.frame() %>%
-    # Tack on the metadata columns we want
-    dplyr::inner_join(
-      pbta_metadata %>%
-        dplyr::select(
-          Tumor_Sample_Barcode = Kids_First_Biospecimen_ID,
-          experimental_strategy, short_histology
-        )
-    ) 
-  DBI::dbDisconnect(con)
-  return(df)
-}
-```
-
-Function for setting up TCGA data from the database. 
-This database was originally created by the [run consensus bash script for tcga](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/run_caller_consensus_analysis-tcga.sh)
-
-```{r}
-set_up_tcga <- function(data.name) {
-  # Given the name of dataset in the TCGA database, set up the TCGA data. 
+set_up_data <- function(data_name, 
+                        database_path, 
+                        metadata, 
+                        is_tcga, 
+                        cols_to_keep) {
+  
+  # Given the name of dataset in the database set up the data with the metadata
+  #
+  # Args:
+  #  data_name: A string that is the name of the table in the SQLite file you'd like to pull out.
+  #  database_path: file path to an SQlite file made previously by a run_consensus script
+  #  metadata: associated metadata with this database
+  #  is_tcga: TRUE or FALSE for whether or not this is TCGA data. FALSE = PBTA data
+  #  cols_to_keep: A vector of strings indicating the column names to keep
   
   # Start up connection
   con <- DBI::dbConnect(
-    RSQLite::SQLite(), 
-    file.path(scratch_dir, "tcga_snv_db.sqlite")
-    )
-
+    RSQLite::SQLite(),
+    database_path
+  )
   # Connect to SQL
-  df <- dplyr::tbl(con, data.name) %>%
+  df <- dplyr::tbl(con, data_name) %>%
     # Only keep the columns we want
     dplyr::select(cols_to_keep) %>%
-    as.data.frame() %>%
-    # Shorten the Tumor_Sample_Barcode so it matches
-    dplyr::mutate(Tumor_Sample_Barcode = substr(Tumor_Sample_Barcode, 0, 12)) %>%
-    # Tack on the metadata columns we want
+    # Turn into data.frame
+    as.data.frame() 
+  
+  # This step is only needed for TCGA data
+  if (is_tcga) {
+    df <- df %>% 
+      # Shorten the Tumor_Sample_Barcode so it matches
+      dplyr::mutate(Tumor_Sample_Barcode = substr(Tumor_Sample_Barcode, 0, 12))
+  } 
+  
+  # Tack on the metadata columns we want
+  df  <- df %>% 
     dplyr::inner_join(
-      tcga_metadata %>% 
+      metadata %>%
         dplyr::select(
-          Tumor_Sample_Barcode, 
-          short_histology,
-          experimental_strategy
-          )
-      )
+          Tumor_Sample_Barcode,
+          experimental_strategy, 
+          short_histology
+        )
+    ) 
+  # Disconnect this database
   DBI::dbDisconnect(con)
+  
+  # Return this data.frame
   return(df)
 }
 ```
@@ -261,10 +253,14 @@ bed_overlap <- function(bed_granges_1,
 }
 ```
 
-## Read in the metadata. 
+## Read in the metadata 
+Do some minor formatting so it works with the `set_up_data` function. 
 
 ```{r}
-pbta_metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
+pbta_metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) %>% 
+  # MAF files generally call this Tumor_Sample_Barcode and we will need to join by this ID
+  dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID)
+
 tcga_metadata <- readr::read_tsv(file.path(data_dir, "pbta-tcga-manifest.tsv")) %>%
   dplyr::mutate(
     experimental_strategy = "WXS", # This field doesn't exist for this data, but all is WXS
@@ -298,19 +294,61 @@ cols_to_keep <- c(
 Set up TCGA data. 
 
 ```{r}
-tcga_lancet <- set_up_tcga("lancet")
-tcga_mutect <- set_up_tcga("mutect")
-tcga_strelka <- set_up_tcga("strelka")
-tcga_consensus <- set_up_tcga("consensus")
+tcga_db_file <- file.path(scratch_dir, "tcga_snv_db.sqlite")
+
+tcga_lancet <- set_up_data(data_name = "lancet", 
+                           database_path = tcga_db_file, 
+                           metadata = tcga_metadata, 
+                           is_tcga = TRUE, 
+                           cols_to_keep)
+
+tcga_mutect <- set_up_data(data_name = "mutect",
+                           database_path = tcga_db_file, 
+                           metadata = tcga_metadata, 
+                           is_tcga = TRUE, 
+                           cols_to_keep)
+
+tcga_strelka <- set_up_data(data_name ="strelka",
+                            database_path = tcga_db_file, 
+                            metadata = tcga_metadata, 
+                            is_tcga = TRUE, 
+                            cols_to_keep)
+
+tcga_consensus <- set_up_data("consensus",
+                              database_path = tcga_db_file, 
+                              metadata = tcga_metadata, 
+                              is_tcga = TRUE, 
+                              cols_to_keep)
 ```
 
 Set up PBTA data. 
 
 ```{r}
-pbta_lancet <- set_up_pbta("lancet")
-pbta_mutect <- set_up_pbta("mutect")
-pbta_strelka <- set_up_pbta("strelka")
-pbta_consensus <- set_up_pbta("consensus")
+pbta_db_file <- file.path(scratch_dir, "snv_db.sqlite")
+
+pbta_lancet <- set_up_data(data_name = "lancet",
+                           database_path = pbta_db_file, 
+                           metadata = pbta_metadata, 
+                           is_tcga = FALSE, 
+                           cols_to_keep)
+
+pbta_mutect <- set_up_data("mutect",
+                           database_path = pbta_db_file, 
+                           metadata = pbta_metadata, 
+                           is_tcga = FALSE, 
+                           cols_to_keep)
+
+pbta_strelka <- set_up_data("strelka",
+                            database_path = pbta_db_file, 
+                            metadata = pbta_metadata, 
+                            is_tcga = FALSE, 
+                            cols_to_keep)
+
+pbta_consensus <- set_up_data("consensus",
+                              database_path = pbta_db_file, 
+                              metadata = pbta_metadata, 
+                              is_tcga = FALSE, 
+                              cols_to_keep)
 ```
 
 ## How does the tumor sequencing depth compare for each TCGA and PBTA data?
