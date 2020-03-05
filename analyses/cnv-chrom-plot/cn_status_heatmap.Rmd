@@ -154,7 +154,9 @@ ggplot2::qplot(seg_ranges@ranges@width, geom= "density") +
 Filter out segments that are longer than our cutoff. 
 
 ```{r}
-filtered_seg_ranges <- seg_ranges[which(seg_ranges@ranges@width < length_max)]
+#filtered_seg_ranges <- seg_ranges[which(seg_ranges@ranges@width < length_max)]
+filtered_seg_ranges <- seg_ranges
+
 ```
 
 ### Set up chromosomal sizes for making bins. 
