@@ -80,7 +80,8 @@ tmb_tcga <- data.table::fread(file.path(snv_callers_dir,
 # Make PBTA TMB plot
 pbta_plot <- tmb_cdf_plot(tmb_pbta, plot_title = "PBTA", colour = "#3BC8A2") +
   ggplot2::theme(
-    strip.text.x = ggplot2::element_text(size = 12)
+    strip.text.x = ggplot2::element_text(size = 12), 
+    plot.margin = ggplot2::unit(c(1, 1, -2, 1), "cm")
   )
 
 # Make TCGA plot
@@ -89,7 +90,8 @@ tcga_plot <- tmb_cdf_plot(tmb_tcga, plot_title = "TCGA (Adult)", colour = "#6308
     axis.title.y = ggplot2::element_blank(),
     axis.text.y = ggplot2::element_blank(),
     axis.ticks.y = ggplot2::element_blank(),
-    strip.text.x = ggplot2::element_text(size = 9)
+    strip.text.x = ggplot2::element_text(size = 11), 
+    plot.margin = ggplot2::unit(c(1, 1, -4, 0), "cm")
   ) 
 
 # Set up cosmic signature plots
@@ -103,24 +105,30 @@ cosmic_sigs_df <- readr::read_tsv(file.path(mut_sig_dir,
 
 mut_sig_plot_cosmic <- bubble_matrix_plot(cosmic_sigs_df, 
                                           label = "COSMIC") + 
-  ggplot2::theme(legend.position = "none")
+  ggplot2::theme(legend.position = "none",
+                 axis.text = ggplot2::element_text(size = 10), 
+                 plot.margin = ggplot2::unit(c(.5, 1, .5, .5), "cm")) 
 
 mut_sig_plot_nature <- bubble_matrix_plot(nature_sigs_df, 
-                                          label = "Alexandrov et al, 2013") 
+                                          label = "Alexandrov et al, 2013") +
+  ggplot2::theme(axis.text = ggplot2::element_text(size = 10), 
+                 plot.margin = ggplot2::unit(c(.5, .5, .5, .5), "cm")) 
 
 # Arrange plots in grid
 ggpubr::ggarrange(ggpubr::ggarrange(pbta_plot, 
                                     tcga_plot, 
                                     ncol = 2, 
                                     labels = c("A", ""), 
-                                    widths = c(2, 1)),
+                                    widths = c(2, 1), 
+                                    font.label = list(size = 22)),
                   ggpubr::ggarrange(mut_sig_plot_cosmic, 
                                     mut_sig_plot_nature, 
                                     ncol = 2, 
                                     labels = c("B", "C"), 
-                                    widths = c(1.4, 2)),
+                                    widths = c(1.6, 2), 
+                                    font.label = list(size = 22)),
                   nrow = 2, 
-                  labels = "A")
+                  heights = c(1.5, 2))
 
 # Save to PNG
 ggplot2::ggsave(file.path("figures", "fig2-mutational-landscapes.png"), 
