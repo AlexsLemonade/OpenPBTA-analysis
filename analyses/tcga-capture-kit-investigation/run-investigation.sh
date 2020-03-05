@@ -11,14 +11,7 @@ python3 $WORKDIR/scripts/get-tcga-capture_kit.py
 
 
 # download all BED from tcga-capture_kit-info.tsv and add chr prefix
-sed 1d $WORKDIR/results/tcga-capture_kit-info.tsv \
-| cut -f3 | tr "\|" "\n" | sort -u \
-| while read i
-do 
-    filename=`basename $i`
-    curl -s $i | awk '{print "chr"$0}' > scratch/$filename
-done
-
+bash scripts/prepare-tcga-capture_kit.sh
 
 ## get intersection between all the BED files
 bedtools intersect -a data/WGS.hg38.strelka2.unpadded.bed -b data/WGS.hg38.mutect2.vardict.unpadded.bed \
@@ -60,4 +53,3 @@ done | paste scratch/somatic-count.tsv - > scratch/somatic-count_with-histologie
 
 ## boxplot from ggplot and saved to plots folder
 Rscript $WORKDIR/scripts/boxplot.R scratch/somatic-count_with-histologies.tsv $WORKDIR/plots
-
