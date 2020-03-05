@@ -74,8 +74,6 @@ df = pd.DataFrame(capture_kits).drop_duplicates()
 df.columns = ['filename','kit_name','kit_url']
 
 # 5. output the capture kit data frame
-df.to_csv(
-    os.path.join('results', 'tcga-capture_kit-info.tsv'),
-    sep='\t',
-    index=False
-)
+py_path = os.path.dirname(os.path.realpath(__file__))
+output_csv_path = os.path.join(py_path, '../results/tcga-capture_kit-info.tsv')
+df.to_csv(output_csv_path, sep='\t', index=False)
