@@ -261,11 +261,11 @@ read_type_frac_thresholds <- all_stats %>%
 
 read_fracs_with_thresholds <- left_join(read_fracs_with_ref_range_fractions_long, read_type_frac_thresholds, by = "ref_range_name") %>%
   rename(sample_value = value) %>%
-  mutate(within_limits = ifelse(sample_value > min_pct,
-                                ifelse(sample_value<max_pct,
-                                       "within_limits",
-                                       "above_limit"),
-                                "below_limit"))
+  mutate(within_limits = case_when(
+      sample_value >= max_pct ~ "above_limit",
+      sample_value <= min_pct ~ "below_limit",
+      is.finite(sample_value) ~ "within_limit" ))
+
 
 n_ref_ranges <- n_distinct(read_type_frac_thresholds$ref_range_name)
 
@@ -580,5 +580,4 @@ ggsave(file.path(plots_dir, "Expressed_genes_by_status.png"), width = 8, height 
 ```
 
 Samples that exceed unmapped, multi-mapped or duplicate read fraction thresholds generally measure fewer genes than their within-range counterparts. The reverse is true for samples that exceed the non-exonic read fraction threshold. If it reflects genomic contamination, that genomic contamination might also result in apparent exonic reads from DNA from genes that are not producing RNA in the same. In that scenario, the non-exonic reads would not be directly contributing to the higher gene count.
-
 
