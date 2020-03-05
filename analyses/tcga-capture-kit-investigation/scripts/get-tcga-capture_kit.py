@@ -18,12 +18,12 @@ RELEASE = 'release-v14-20200203/'
 
 ## GET and load manifest
 tcga_manifest = requests.get(
-    PBTA_BUCKET+RELEASE+"pbta-tcga-manifest.tsv").content
+    PBTA_BUCKET+RELEASE+"pbta-tcga-manifest.tsv").content.decode("utf-8")
 
 ## iterate TCGA manifest, to get all the file names
-tcga_manifest_lines = tcga_manifest.split("\n")
+tcga_manifest_lines = tcga_manifest.splitlines()
 tcga_filenames = []
-for line in tcga_manifest_lines:
+for line in tcga_manifest_lines[1:]:
     tcga_filenames.append(line.split("\t")[0])
 
 # 2. hit GDC file API endpoint to get the details of the capture kit
@@ -74,8 +74,6 @@ df = pd.DataFrame(capture_kits).drop_duplicates()
 df.columns = ['filename','kit_name','kit_url']
 
 # 5. output the capture kit data frame
-df.to_csv(
-    os.path.join('results', 'tcga-capture_kit-info.tsv'),
-    sep='\t',
-    index=False
-)
+py_path = os.path.dirname(os.path.realpath(__file__))
+output_csv_path = os.path.join(py_path, '../results/tcga-capture_kit-info.tsv')
+df.to_csv(output_csv_path, sep='\t', index=False)

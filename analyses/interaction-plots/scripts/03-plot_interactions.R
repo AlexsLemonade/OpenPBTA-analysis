@@ -2,14 +2,13 @@
 #
 # JA Shapiro for ALSF - CCDL
 #
-# 2019
+# 2019-2020
 #
 # Option descriptions
 #
-# --infile The input file location (relative to root) with a summaries of
-#   gene-gene mutation co-occurence, minimally including gene1, gene2, and
-#   cooccur_score columns.
-#
+# --infile The input file  with a summaries of gene-gene mutation co-occurence,
+#    minimally including gene1, gene2, and cooccur_score columns.
+#   
 # --outfile The output plot location. Specify type of file with the extension
 #   (.png or .pdf, most likely).
 #
@@ -20,11 +19,10 @@
 #
 # Rscript analyses/interaction-plots/02-plot_interactions.R \
 #   --infile analysis/interaction-plots/results/cooccur.tsv \
-#   --outfile analysis/interaction-plots/results/cooccur.png
+#   --outfile analysis/interaction-plots/results/cooccur.png 
 
 #### Initial Set Up
 # Establish base dir
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
@@ -37,15 +35,13 @@ option_list <- list(
   make_option(
     opt_str = "--infile",
     type = "character",
-    help = "Relative file path (from top directory of 'OpenPBTA-analysis')
-            where cooccurence summary table is located",
+    help = "File path where cooccurence summary table is located",
     metavar = "character"
   ),
   make_option(
     opt_str = "--outfile",
     type = "character",
-    help = "Relative file path (from top directory of 'OpenPBTA-analysis')
-            where output plot will be located. Extension specifies format of plot",
+    help = "File path where output plot will be located. Extension specifies format of plot",
     metavar = "character"
   ),
   make_option(
@@ -54,14 +50,34 @@ option_list <- list(
     type = "numeric",
     help = "Relative size of plots; number of rows and columns to be plotted",
     metavar = "character"
+  ),
+  make_option(
+    opt_str = "--disease_table",
+    type = "character",
+    default = NA,
+    help = "File path where gene X disease table is located (optional)",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = "--disease_plot",
+    type = "character",
+    default = NA,
+    help = "File path where gene X disease plot should be placed (required if --disease_table specified)",
+    metavar = "character"
   )
 )
 
 # Parse options
 opts <- parse_args(OptionParser(option_list = option_list))
 
-cooccur_file <- file.path(root_dir, opts$infile)
-plot_file <- file.path(root_dir, opts$outfile)
+if (!is.na(opts$disease_table)){
+  if (is.na(opts$disease_plot)){
+    stop("If disease_table is specified, disease_plot  must also be specified")
+  }
+}
+
+cooccur_file <- opts$infile
+plot_file <- opts$outfile
 
 cooccur_df <-
   readr::read_tsv(cooccur_file, col_types = readr::cols()) %>%
@@ -74,11 +90,21 @@ cooccur_df <-
 
 labels <- unique(c(cooccur_df$label1, cooccur_df$label2))
 
+# check the order of the labels to be decreasing by mut count 
+label_counts <- as.numeric(stringr::str_extract(labels, "\\b\\d+\\b"))
+labels <- labels[order(label_counts, decreasing = TRUE)]
+# order genes the same way, in case we want to use those
+genes <- stringr::str_extract(labels, "^.+?\\b")
+genes <- genes[order(label_counts, decreasing = TRUE)]
+
 cooccur_df <- cooccur_df %>%
   dplyr::mutate(
+    gene1 = factor(gene1, levels = genes),
+    gene2 = factor(gene2, levels = genes),
     label1 = factor(label1, levels = labels),
     label2 = factor(label2, levels = labels)
   )
+
 
 # create scales for consistent sizing
 xscale <- cooccur_df$label1 %>%
@@ -132,3 +158,54 @@ cooccur_plot <- ggplot(
   )
 
 ggsave(cooccur_plot, filename = plot_file)
+
+# if we don't have a disease table, quit 
+if (is.na(opts$disease_table)) {
+ quit()
+}
+# otherwise make a gene by disease stacked bar chart
+
+disease_file = opts$disease_table
+disease_df <-
+  readr::read_tsv(disease_file, col_types = readr::cols()) %>%
+  dplyr::mutate(gene = factor(gene, levels = genes))
+
+
+display_diseases <- disease_df %>%
+  dplyr::group_by(disease) %>%
+  dplyr::tally(wt = mutant_samples) %>%
+  dplyr::arrange(desc(n)) %>%
+  head(7) %>% # seven so we end up with 8 total for color reasons
+  dplyr::pull(disease)
+
+disease_df <- disease_df %>%
+  dplyr::mutate(disease_factor = 
+           forcats::fct_other(disease, keep = display_diseases) %>%
+           forcats::fct_relevel(display_diseases)
+  )
+
+
+disease_plot <- ggplot(
+  disease_df,
+  aes(x = gene, y = mutant_samples, fill = disease_factor)) + 
+  geom_col() +
+  labs(
+    x = "",
+    y = "Samples with mutations",
+    fill = "Diagnosis"
+  ) + 
+  colorblindr::scale_fill_OkabeIto() + 
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(
+      angle = 90,
+      hjust = 1,
+      vjust = 0.5
+    ),
+    axis.text.y = element_text(size = 6),
+    legend.position = c(1,1),
+    legend.justification = c(1,1),
+    legend.key.size = unit(1, "char"))
+
+ggsave(opts$disease_plot, disease_plot)
+
