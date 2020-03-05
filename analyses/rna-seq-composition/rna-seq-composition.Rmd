@@ -111,8 +111,6 @@ head(star_results)
 ```
 
 
-
-
 # Combine data by sample
 ```{r}
 
@@ -222,23 +220,24 @@ ref_range_mean_sd <- read_counts_with_ref_range_fractions %>%
   select(starts_with("frac_")) %>% 
   gather(key="ref_range_name") %>%
   group_by(ref_range_name) %>%
-  summarise(mean = mean(value), sd = sd(value)) %>%
-  mutate(stats = pmap(list(mean, sd), ref_range_stats))  %>%
-  mutate(r = map(stats, ~ data.frame(t(.)))) %>%
-  unnest(r) %>%
-  select(-stats)
+  summarise(mean = mean(value), 
+            sd = sd(value),
+            mean_minus_one_sd = mean - sd,
+            mean_plus_one_sd = mean + sd,
+            mean_minus_two_sd = mean - (2 * sd),
+            mean_plus_two_sd = mean + (2 * sd)
+  )
 
 # Longify summary statistics and annoate for plotting
 all_stats <- ref_range_mean_sd %>% 
   select(-sd) %>%
   gather(key="stat_name", value = "value", -ref_range_name) %>%
-  mutate(minmax = case_when(
-    grepl("plus", stat_name) ~ "max",
-    grepl("minus", stat_name) ~ "min",
-    stat_name == "mean" ~ "mean"),
-    stat = gsub("^.*_([[:lower:]]{3}_.*)", "\\1", stat_name),
-    ref_range_name = factor(ref_range_name, 
-                            levels = ref_range_codes$ref_range_name))
+  mutate(minmax = case_when(grepl("plus", stat_name) ~ "max",
+                            grepl("minus", stat_name) ~ "min",
+                            stat_name == "mean" ~ "mean"),
+         stat = gsub("^.*_([[:lower:]]{3}_.*)", "\\1", stat_name),
+         ref_range_name = factor(ref_range_name, 
+                                 levels = ref_range_codes$ref_range_name))
 
 ```
 
@@ -277,17 +276,15 @@ samples_within_limits <- read_fracs_with_thresholds %>%
 depth_status <- read_counts_with_ref_range_fractions %>%
   select(sample_id, MEND) %>%
   mutate(
-    status=ifelse( MEND<10E6,
-                   "<10M_MEND_reads",
-                   ifelse(MEND<20E6, 
-                          "10-20 MEND_reads",
-                          ">20M_MEND_reads")
-    ),
-  all_read_types_within_read_type_limits = sample_id %in% samples_within_limits,
-  within_read_type_limits_label = c( "not_WNL", "WNL")[1 + all_read_types_within_read_type_limits]
+    status = case_when(MEND<10E6 ~ "<10M_MEND_reads",
+                       MEND<20E6 ~ "10-20 MEND_reads",
+                       is.finite(MEND) ~ ">20M_MEND_reads"),
+    all_read_types_within_read_type_limits = sample_id %in% samples_within_limits,
+    within_read_type_limits_label = c( "not_WNL", "WNL")[1 + all_read_types_within_read_type_limits]
   )
 
-# How many samples were outside ref range?
+# How many read type fractions are outside ref range? 
+# (total = 4 * n(samples))
 table(read_fracs_with_thresholds$within_limits)
 
 # How many samples in each MEND depth group were outside ref range?
