@@ -26,27 +26,27 @@ bp_per_bin <- function(bin_ranges, status_ranges) {
   
   # Which segs are a part of which bins?
   bin_indices <- GenomicRanges::findOverlaps(
-    bin_overlaps,
-    status_ranges
+    bin_ranges,
+    bin_overlaps
   )
   
-  # Get the sum of the length of all excluded regions for each bin.
+  # Get the sum of the length of all seg portions for each bin.
   bp_per_bin <- tapply(
-    bin_overlaps@ranges@width[bin_indices@to], # Get length of each sequence
+    bin_overlaps@ranges@width, # Get length of each sequence within the bin
     bin_indices@from, # Index of which bin it overlaps
     sum
-  ) # Add up per bin
+  ) # Add up length per bin
   
   # Format as data.frame with rows = bins
   per_bin_df <- data.frame(
-    bin = names(bp_per_bin),
-    bp_per_bin
+    bin = as.numeric(names(bp_per_bin)),
+    bp_per_bin = as.numeric(bp_per_bin)
   )
   
-  # Store dummy counts if there are no ranges that co
+  # Store dummy counts if there are no ranges that are in the bins
   if (nrow(per_bin_df) == 0) {
     per_bin_df <- data.frame(
-      bin = factor(1:length(bin_ranges)),
+      bin = as.numeric(1:length(bin_ranges)),
       bp_per_bin = 0
     )
   }
@@ -88,7 +88,7 @@ call_bin_status <- function(sample_id,
   
   # Format this data into one data.frame where each row is a bin
   bin_bp_status <- data.frame(
-    bin = factor(1:length(bin_ranges)),
+    bin = as.numeric(1:length(bin_ranges)),
     # Keep bin width
     bin_width = bin_ranges@ranges@width
   ) %>%
@@ -124,19 +124,19 @@ call_bin_status <- function(sample_id,
     # the perc_delta_threshold
     dplyr::mutate(
       status = dplyr::case_when(
-        (perc_gain - perc_loss) > perc_delta_threshold &
-          (perc_gain - perc_neutral) > perc_delta_threshold ~ "gain",
-        (perc_loss - perc_gain) > perc_delta_threshold &
-          (perc_loss - perc_neutral) > perc_delta_threshold ~ "loss",
+        (perc_gain - perc_loss) > perc_delta_threshold ~ "gain",
+        (perc_loss - perc_gain) > perc_delta_threshold ~ "loss",
         TRUE ~ "neutral"
       )
     )
   
-  # Format this data as a status per bin
+  # Format this data as a status
   status_df <- bin_bp_status %>%
+    # Only keep the bin and status columns
     dplyr::select(bin, status) %>%
+    # Spread this data so we can make it a sample x bin matrix later
     tidyr::spread(bin, status) %>%
-    # Order bins numerically
+    # Sort the bins data/columns to be in numeric order
     dplyr::select(order(as.numeric(colnames(.))))
   
   return(status_df)
