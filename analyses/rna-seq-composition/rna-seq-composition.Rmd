@@ -263,7 +263,7 @@ read_fracs_with_thresholds <- left_join(read_fracs_with_ref_range_fractions_long
   mutate(within_limits = case_when(
       sample_value >= max_frac ~ "above_limit",
       sample_value <= min_frac ~ "below_limit",
-      is.finite(sample_value) ~ "within_limit" ))
+      is.finite(sample_value) ~ "within_limits" ))
 
 
 n_ref_ranges <- n_distinct(read_type_frac_thresholds$ref_range_name)
