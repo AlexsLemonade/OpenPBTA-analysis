@@ -127,10 +127,8 @@ star_results_w_biospec <- left_join(star_results, pbta_star_log_manifest, by=c("
 
 mend_results_w_biospec <- left_join(mend_results, pbta_mend_qc_manifest, by=c("MEND_results_file"="name"))
 
-# Check whether all samples are present in both
-table(star_results_w_biospec$Kids.First.Biospecimen.ID %in% mend_results_w_biospec$Kids.First.Biospecimen.ID)
-table(mend_results_w_biospec$Kids.First.Biospecimen.ID %in% star_results_w_biospec$Kids.First.Biospecimen.ID)
-
+# Confirm that all samples are present in both
+stopifnot(all(star_results_w_biospec$Kids.First.Biospecimen.ID %in% mend_results_w_biospec$Kids.First.Biospecimen.ID))
 
 # Combine results from different outputs
 comb_results <- full_join(star_results_w_biospec, 
