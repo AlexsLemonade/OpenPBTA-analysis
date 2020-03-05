@@ -17,10 +17,10 @@ SCRATCH='../../scratch'
 ## get intersection between all the BED files
 bedtools intersect -a $DATA/WGS.hg38.strelka2.unpadded.bed -b $DATA/WGS.hg38.mutect2.vardict.unpadded.bed \
 | bedtools intersect -a - -b $DATA/WGS.hg38.lancet.unpadded.bed \
-| bedtools intersect -a - -b results/hg38lft-whole_exome_agilent_1.1_refseq_plus_3_boosters.targetIntervals.bed \
-| bedtools intersect -a - -b results/hg38lft-whole_exome_agilent_designed_120.targetIntervals.bed \
-| bedtools intersect -a - -b results/hg38lft-whole_exome_agilent_plus_tcga_6k.targetIntervals.bed \
-| bedtools intersect -a - -b results/hg38lft-tcga_6k_genes.targetIntervals.bed \
+| bedtools intersect -a - -b results/whole_exome_agilent_1.1_refseq_plus_3_boosters.targetIntervals.Gh38.bed \
+| bedtools intersect -a - -b results/whole_exome_agilent_designed_120.targetIntervals.Gh38.bed \
+| bedtools intersect -a - -b results/whole_exome_agilent_plus_tcga_6k.targetIntervals.Gh38.bed \
+| bedtools intersect -a - -b results/tcga_6k_genes.targetIntervals.Gh38.bed \
 > $SCRATCH/intersect-all-tcga_pbta.bed
 
 
