@@ -13,8 +13,8 @@ Create a summary heatmap of copy number status from the consensus CNV call data.
 This is done by binning the genome and calculating the segment's coverage of the
 CNV consensus segments. 
 A bin is declared a particular copy number status if that status's base pair 
-coverage is a certain threshold percentage larger than the other statuses' 
-coverage. 
+coverage is a certain threshold percentage larger than the other status' 
+coverage (`perc_delta_threshold`).
 
 ### Usage
 
@@ -154,9 +154,7 @@ ggplot2::qplot(seg_ranges@ranges@width, geom= "density") +
 Filter out segments that are longer than our cutoff. 
 
 ```{r}
-#filtered_seg_ranges <- seg_ranges[which(seg_ranges@ranges@width < length_max)]
-filtered_seg_ranges <- seg_ranges
-
+filtered_seg_ranges <- seg_ranges[which(seg_ranges@ranges@width < length_max)]
 ```
 
 ### Set up chromosomal sizes for making bins. 
