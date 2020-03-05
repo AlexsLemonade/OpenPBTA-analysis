@@ -1,0 +1,243 @@
+gene	disease	mutant_samples	total_muts	mean_muts_per_sample
+H3F3A	Diffuse midline glioma	36	36	1
+BRAF	Low-grade astrocytic tumor	29	29	1
+TP53	Diffuse midline glioma	25	28	1.12
+CTNNB1	Craniopharyngioma	22	22	1
+TP53	High-grade glioma	20	28	1.4
+BRAF	Ganglioglioma	13	13	1
+ATRX	Diffuse midline glioma	11	11	1
+CTNNB1	Medulloblastoma	11	11	1
+ATRX	High-grade glioma	9	16	1.7777777777777777
+EGFR	High-grade glioma	9	14	1.5555555555555556
+NF1	High-grade glioma	9	14	1.5555555555555556
+DDX3X	Medulloblastoma	9	10	1.1111111111111112
+OBSCN	High-grade glioma	8	28	3.5
+FGFR1	Low-grade astrocytic tumor	8	12	1.5
+KMT2D	Medulloblastoma	8	9	1.125
+NF1	Diffuse midline glioma	7	10	1.4285714285714286
+NF2	Meningioma	7	7	1
+PPM1D	Diffuse midline glioma	7	7	1
+TTN	High-grade glioma	6	72	12
+DNAH8	High-grade glioma	6	12	2
+MAGEL2	High-grade glioma	6	10	1.6666666666666667
+TTN	Medulloblastoma	6	8	1.3333333333333333
+KDM6A	Medulloblastoma	6	6	1
+KMT2C	Medulloblastoma	6	6	1
+PTEN	High-grade glioma	6	6	1
+TP53	Medulloblastoma	6	6	1
+NEB	High-grade glioma	5	24	4.8
+RYR2	High-grade glioma	5	21	4.2
+SYNE1	High-grade glioma	5	20	4
+FSIP2	High-grade glioma	5	18	3.6
+ABCA13	High-grade glioma	5	13	2.6
+DNAH5	High-grade glioma	5	13	2.6
+KIAA1549	High-grade glioma	5	12	2.4
+PCLO	High-grade glioma	5	12	2.4
+SETD2	High-grade glioma	5	12	2.4
+SMARCA4	High-grade glioma	5	12	2.4
+ATM	High-grade glioma	5	11	2.2
+FBN2	High-grade glioma	5	9	1.8
+APOB	High-grade glioma	5	8	1.6
+BCOR	High-grade glioma	5	7	1.4
+BRAF	High-grade glioma	5	6	1.2
+PIK3CA	High-grade glioma	5	6	1.2
+SMARCA4	Medulloblastoma	5	6	1.2
+MUC16	Diffuse midline glioma	5	5	1
+PDGFRA	High-grade glioma	5	5	1
+PIK3CA	Low-grade astrocytic tumor	5	5	1
+PLEC	High-grade glioma	4	31	7.75
+MUC16	High-grade glioma	4	16	4
+KMT2D	High-grade glioma	4	15	3.75
+DNAH17	High-grade glioma	4	14	3.5
+FAT1	High-grade glioma	4	13	3.25
+CCDC168	High-grade glioma	4	12	3
+KMT2C	High-grade glioma	4	11	2.75
+DNAH14	High-grade glioma	4	10	2.5
+LRP1B	High-grade glioma	4	9	2.25
+BCOR	Low-grade astrocytic tumor	4	4	1
+H3F3A	High-grade glioma	4	4	1
+NF1	Low-grade astrocytic tumor	4	4	1
+PTPN11	Diffuse midline glioma	4	4	1
+TTN	Diffuse midline glioma	4	4	1
+RYR1	High-grade glioma	3	15	5
+DNAH3	High-grade glioma	3	10	3.3333333333333335
+PHLPP1	High-grade glioma	3	7	2.3333333333333335
+DNAH11	High-grade glioma	3	6	2
+PTPN11	High-grade glioma	3	6	2
+FGFR1	High-grade glioma	3	4	1.3333333333333333
+NF2	Ependymoma	3	4	1.3333333333333333
+NF2	Schwannoma	3	4	1.3333333333333333
+PTEN	Diffuse midline glioma	3	4	1.3333333333333333
+DNAH5	Diffuse midline glioma	3	3	1
+IDH1	High-grade glioma	3	3	1
+IDH1	Low-grade astrocytic tumor	3	3	1
+KRAS	Low-grade astrocytic tumor	3	3	1
+MUC16	Low-grade astrocytic tumor	3	3	1
+PIK3CA	Diffuse midline glioma	3	3	1
+PPM1D	High-grade glioma	3	3	1
+RYR1	Diffuse midline glioma	3	3	1
+STAG2	Medulloblastoma	3	3	1
+PDGFRA	Dysembryoplastic neuroepithelial tumor	2	4	2
+PDGFRA	Low-grade astrocytic tumor	2	4	2
+FGFR1	Dysembryoplastic neuroepithelial tumor	2	3	1.5
+RYR1	Medulloblastoma	2	3	1.5
+STAG2	Ewings Sarcoma	2	3	1.5
+APOB	Diffuse midline glioma	2	2	1
+ATM	Low-grade astrocytic tumor	2	2	1
+BRAF	Diffuse midline glioma	2	2	1
+DDX3X	High-grade glioma	2	2	1
+DNAH11	Diffuse midline glioma	2	2	1
+DNAH14	Diffuse midline glioma	2	2	1
+DNAH14	Medulloblastoma	2	2	1
+DNAH3	Medulloblastoma	2	2	1
+FBN2	Medulloblastoma	2	2	1
+IDH1	Ganglioglioma	2	2	1
+KDM6A	High-grade glioma	2	2	1
+KRAS	Ganglioglioma	2	2	1
+KRAS	Germinoma	2	2	1
+KRAS	Neurofibroma	2	2	1
+LRP1B	Ganglioglioma	2	2	1
+PDGFRA	Diffuse midline glioma	2	2	1
+RYR1	Low-grade astrocytic tumor	2	2	1
+RYR2	Medulloblastoma	2	2	1
+SETD2	Medulloblastoma	2	2	1
+STAG2	High-grade glioma	2	2	1
+STAG2	Low-grade astrocytic tumor	2	2	1
+TP53	Low-grade astrocytic tumor	2	2	1
+TTN	Craniopharyngioma	2	2	1
+DNAH17	Diffuse midline glioma	1	2	2
+DNAH3	Neurofibroma	1	2	2
+FBN2	Neuroblastoma	1	2	2
+FGFR1	Dysplasia	1	2	2
+FGFR1	Glial-neuronal tumor NOS	1	2	2
+MUC16	Neuroblastoma	1	2	2
+NF2	High-grade glioma	1	2	2
+PLEC	Ependymoma	1	2	2
+PTEN	Medulloblastoma	1	2	2
+RYR1	CNS Neuroblastoma	1	2	2
+SYNE1	Neuroblastoma	1	2	2
+TTN	Neuroblastoma	1	2	2
+ABCA13	Choroid plexus papilloma	1	1	1
+ABCA13	CNS Embryonal Tumor	1	1	1
+ABCA13	Medulloblastoma	1	1	1
+ABCA13	Meningioma	1	1	1
+ABCA13	Metastatic secondary tumors	1	1	1
+ABCA13	Neuroblastoma	1	1	1
+APOB	Craniopharyngioma	1	1	1
+APOB	Neuroblastoma	1	1	1
+ATM	CNS Embryonal Tumor	1	1	1
+ATM	Diffuse midline glioma	1	1	1
+ATM	Medulloblastoma	1	1	1
+ATRX	Ganglioglioma	1	1	1
+ATRX	Low-grade astrocytic tumor	1	1	1
+ATRX	Sarcoma	1	1	1
+BCOR	Diffuse midline glioma	1	1	1
+BCOR	Dysembryoplastic neuroepithelial tumor	1	1	1
+BCOR	Ependymoma	1	1	1
+BCOR	Ganglioglioma	1	1	1
+BCOR	Neuroblastoma	1	1	1
+BRAF	Dysembryoplastic neuroepithelial tumor	1	1	1
+CCDC168	Atypical Teratoid Rhabdoid Tumor	1	1	1
+CCDC168	Craniopharyngioma	1	1	1
+CCDC168	Diffuse midline glioma	1	1	1
+CCDC168	Germinoma	1	1	1
+CTNNB1	CNS Embryonal Tumor	1	1	1
+CTNNB1	High-grade glioma	1	1	1
+DNAH11	Hemangioblastoma	1	1	1
+DNAH11	Medulloblastoma	1	1	1
+DNAH11	Neuroblastoma	1	1	1
+DNAH14	Low-grade astrocytic tumor	1	1	1
+DNAH14	Neuroblastoma	1	1	1
+DNAH17	Low-grade astrocytic tumor	1	1	1
+DNAH17	Medulloblastoma	1	1	1
+DNAH17	Neuroblastoma	1	1	1
+DNAH3	Diffuse midline glioma	1	1	1
+DNAH3	Neuroblastoma	1	1	1
+DNAH5	Atypical Teratoid Rhabdoid Tumor	1	1	1
+DNAH5	Low-grade astrocytic tumor	1	1	1
+DNAH5	Meningioma	1	1	1
+DNAH5	Metastatic secondary tumors	1	1	1
+DNAH5	Neuroblastoma	1	1	1
+DNAH5	Neurofibroma	1	1	1
+DNAH8	Low-grade astrocytic tumor	1	1	1
+DNAH8	Neuroblastoma	1	1	1
+DNAH8	Oligodendroglioma	1	1	1
+EGFR	Diffuse midline glioma	1	1	1
+FAT1	Diffuse midline glioma	1	1	1
+FAT1	Ependymoma	1	1	1
+FAT1	Low-grade astrocytic tumor	1	1	1
+FAT1	Medulloblastoma	1	1	1
+FBN2	Low-grade astrocytic tumor	1	1	1
+FGFR1	Oligodendroglioma	1	1	1
+FSIP2	CNS Neuroblastoma	1	1	1
+FSIP2	Embryonal tumor with multilayer rosettes	1	1	1
+FSIP2	Metastatic secondary tumors	1	1	1
+FSIP2	Neuroblastoma	1	1	1
+IDH1	Oligodendroglioma	1	1	1
+KDM6A	Low-grade astrocytic tumor	1	1	1
+KIAA1549	CNS Embryonal Tumor	1	1	1
+KIAA1549	Ependymoma	1	1	1
+KIAA1549	Medulloblastoma	1	1	1
+KMT2C	Atypical Teratoid Rhabdoid Tumor	1	1	1
+KMT2C	Neuroblastoma	1	1	1
+KMT2D	Craniopharyngioma	1	1	1
+KMT2D	Primary CNS lymphoma	1	1	1
+LRP1B	Atypical Teratoid Rhabdoid Tumor	1	1	1
+LRP1B	Metastatic secondary tumors	1	1	1
+LRP1B	Neuroblastoma	1	1	1
+LRP1B	Sarcoma	1	1	1
+MAGEL2	Medulloblastoma	1	1	1
+MAGEL2	Rosai-Dorfman Disease	1	1	1
+MUC16	Dysembryoplastic neuroepithelial tumor	1	1	1
+MUC16	Medulloblastoma	1	1	1
+NEB	CNS Neuroblastoma	1	1	1
+NEB	Ependymoma	1	1	1
+NEB	Medulloblastoma	1	1	1
+NEB	Neuroblastoma	1	1	1
+NF1	Dysembryoplastic neuroepithelial tumor	1	1	1
+NF1	Dysplasia	1	1	1
+NF1	Ganglioglioma	1	1	1
+NF1	Germinoma	1	1	1
+NF1	Neuroblastoma	1	1	1
+NF2	Medulloblastoma	1	1	1
+NF2	Sarcoma	1	1	1
+OBSCN	CNS Neuroblastoma	1	1	1
+OBSCN	Diffuse midline glioma	1	1	1
+OBSCN	Neuroblastoma	1	1	1
+PCLO	Craniopharyngioma	1	1	1
+PCLO	Medulloblastoma	1	1	1
+PCLO	Neuroblastoma	1	1	1
+PHLPP1	Craniopharyngioma	1	1	1
+PHLPP1	Dermoid Cyst	1	1	1
+PHLPP1	Low-grade astrocytic tumor	1	1	1
+PHLPP1	Neuroblastoma	1	1	1
+PHLPP1	Teratoma	1	1	1
+PIK3CA	Craniopharyngioma	1	1	1
+PIK3CA	Medulloblastoma	1	1	1
+PLEC	Atypical Teratoid Rhabdoid Tumor	1	1	1
+PLEC	CNS Neuroblastoma	1	1	1
+PLEC	Diffuse midline glioma	1	1	1
+PTPN11	Dysembryoplastic neuroepithelial tumor	1	1	1
+PTPN11	Low-grade astrocytic tumor	1	1	1
+PTPN11	Metastatic secondary tumors	1	1	1
+PTPN11	Oligodendroglioma	1	1	1
+RYR1	Sarcoma	1	1	1
+RYR2	Diffuse midline glioma	1	1	1
+RYR2	Ependymoma	1	1	1
+RYR2	Low-grade astrocytic tumor	1	1	1
+SETD2	Atypical Teratoid Rhabdoid Tumor	1	1	1
+SETD2	Choroid plexus papilloma	1	1	1
+SETD2	Ependymoma	1	1	1
+SETD2	Low-grade astrocytic tumor	1	1	1
+SMARCA4	Craniopharyngioma	1	1	1
+SMARCA4	Low-grade astrocytic tumor	1	1	1
+STAG2	Ependymoma	1	1	1
+SYNE1	Medulloblastoma	1	1	1
+SYNE1	Meningioma	1	1	1
+SYNE1	Sarcoma	1	1	1
+TP53	Myeloid Sarcoma	1	1	1
+TP53	Oligodendroglioma	1	1	1
+TTN	CNS Embryonal Tumor	1	1	1
+TTN	CNS Neuroblastoma	1	1	1
+TTN	Dysembryoplastic neuroepithelial tumor	1	1	1
+TTN	Neurofibroma	1	1	1
