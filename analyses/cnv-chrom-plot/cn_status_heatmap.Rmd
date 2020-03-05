@@ -26,7 +26,6 @@ Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/cn_status_heatmap.Rmd',
                               clean = TRUE)"
 ```
 
-
 ### Cutoffs: 
 
 ```{r}
