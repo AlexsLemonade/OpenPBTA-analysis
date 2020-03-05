@@ -29,8 +29,8 @@ Although it may be partially a caller-specific thing, we also suspect a problem 
 Lancet's TCGA calls which is likely because it is all WXS data. 
 This issue is further investigated in the [Lancet WXS-WGS analysis notebook](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/lancet-wxs-tests/lancet-paired-WXS-WGS.Rmd) and the [Lancet padded-unpadded analysis notebook](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/lancet-wxs-tests/lancet-padded-vs-unpadded.Rmd). 
 
-**Post notes: 
-It was later determined that the BED files used for these TMB calculations were incorrect See Related Issues: 
+**Post notes:**   
+It was later determined that the BED files used for these TMB calculations were incorrect See Related Issues:  
 - [568](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/568)  
 - [565](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/565)  
 - [564](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/564)  
