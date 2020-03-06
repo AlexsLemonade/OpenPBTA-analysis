@@ -53,7 +53,6 @@ create.heatmap <- function(deconv.method, title, fileout) {
     unique() %>%
     group_by(broad_histology) %>%
     summarise(label = n()) %>%
-    filter(label > 1) %>%
     mutate(label = paste0(broad_histology,' (',label,')'))
   
   # add labels to actual data
@@ -73,57 +72,33 @@ create.heatmap <- function(deconv.method, title, fileout) {
   # non-brain tumors
   mat <- deconv.method %>% 
     select(grep(paste0(non.brain.tumors, collapse="|"), colnames(deconv.method), value = TRUE)) 
-<<<<<<< HEAD
-  if(ncol(mat) >= 1){
-    clusterRows <- ifelse(ncol(mat) == 1 , FALSE, TRUE)
-    scale <- ifelse(ncol(mat) == 1, "row", "column")
-=======
   if(ncol(mat) > 1){
->>>>>>> alex/master
     mat <- mat %>%
       rownames_to_column('celltype') %>%
       filter_if(is.numeric, all_vars(. > 0)) %>%
       column_to_rownames('celltype') %>%
       t() %>%
       pheatmap(fontsize = 10,
-<<<<<<< HEAD
-               cluster_rows = clusterRows,
-               scale = scale, angle_col = 45,
+               scale = "column", angle_col = 45,
                main = "Average immune scores normalized by rows\nNon-Brain Tumors", 
                annotation_legend = T, cellwidth = 15, cellheight = 15)
-=======
-             scale = "column", angle_col = 45,
-             main = "Average immune scores normalized by rows\nNon-Brain Tumors", 
-             annotation_legend = T, cellwidth = 15, cellheight = 15)
->>>>>>> alex/master
   }
-   
+  
   # brain tumors 
   mat <- deconv.method %>%
     select(grep(paste0(non.brain.tumors, collapse="|"), colnames(deconv.method), invert = TRUE, value = TRUE))
-<<<<<<< HEAD
-  if(ncol(mat) >= 1){
-    clusterRows <- ifelse(ncol(mat) == 1 , FALSE, TRUE)
-    scale <- ifelse(ncol(mat) == 1, "row", "column")
-=======
   if(ncol(mat) > 1){
->>>>>>> alex/master
     mat <- mat %>%
       rownames_to_column('celltype') %>%
       filter_if(is.numeric, all_vars(. > 0)) %>%
       column_to_rownames('celltype') %>%
       t() %>%
       pheatmap(fontsize = 10, 
-<<<<<<< HEAD
-               cluster_rows = clusterRows,
-               scale = scale, angle_col = 45,
-=======
                scale = "column", angle_col = 45,
->>>>>>> alex/master
                main = "Average immune scores normalized by rows\nBrain Tumors", 
                annotation_legend = T, cellwidth = 15, cellheight = 15)
   }
-    
+  
   dev.off()
 }
 
@@ -189,4 +164,3 @@ create.heatmap(deconv.method = method1, title = method1.name,
 # method2
 create.heatmap(deconv.method = method2, title = method2.name,
                fileout = file.path(output, paste0("heatmap_", m2, ".pdf")))
-
