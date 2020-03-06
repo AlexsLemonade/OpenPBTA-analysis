@@ -59,7 +59,6 @@ mend_results_cols <- cols(
   qc = col_character()
 )
 
-read_count_results_col_names <- c("n1", "n2", "read_counts")
 read_count_results_cols <- cols(
   n1 = col_character(),
   n2 = col_character(),
@@ -85,7 +84,7 @@ read_measurement_names <-
   tibble(orig_col_name = c("Number of input reads", 
                            "Uniquely mapped reads number",
                            "Number of reads mapped to multiple loci"),
-         short_name = c("Total_reads", "UM_reads", "Multimapped"))
+         short_name = c("Total_reads", "UniqMapped_reads", "Multimapped"))
 
 parse_star_log <- function(file_name) {
   tibble(raw=scan(file_name, what = "list", sep ="\n",  quiet = TRUE)) %>%
@@ -145,12 +144,8 @@ comb_results <- full_join(star_results_w_biospec,
 ```{r}
 
 read_counts <- comb_results %>%
-  mutate(Mapped = Multimapped + UM_reads) %>%
-  select(-UM_reads) 
-
-
-samples_in_depth_order <- read_counts$sample_id[order(desc(read_counts$Total_reads))]
-
+  mutate(Mapped = Multimapped + UniqMapped_reads) %>%
+  select(-UniqMapped_reads) 
 
 ```
 
@@ -179,7 +174,7 @@ selected_read_counts <- read_counts %>%
 
 This analysis is performed only on ribo-deplete data (stranded). Data from cell lines and solid tissues are both included. 
 
-# Calculate percentages for reference range calcs
+# Calculate fractions for reference range calcs
 ```{r}
 
 read_counts_with_ref_range_fractions <- selected_read_counts %>% 
@@ -304,7 +299,7 @@ read_fracs_with_thresholds <- read_fracs_with_thresholds %>%
 ```{r}
 
 stat_names = c("frac_unmapped_of_total", "frac_multi_mapped_of_mapped", "frac_dupe_of_mapped", "frac_non_exonic_of_non_dupe") 
-stat_label = c("% unmapped", "% multi-mapped \n(of mapped)", "% duplicate \n(of mapped)", "% non-exonic \n(of non-duplicate)")
+stat_label = c("frac unmapped", "frac multi-mapped \n(of mapped)", "frac duplicate \n(of mapped)", "frac non-exonic \n(of non-duplicate)")
 names(stat_label) = stat_names
 
 
@@ -439,11 +434,10 @@ flag_analysis <- read_fracs_with_thresholds_anno %>%
   filter(! sample_id %in% samples_within_limits) %>%
   group_by(sample_id) %>%
   mutate(n_flags=sum(within_limits == "within_limits")) %>%
-  arrange(desc(n_flags)) %>%
+  arrange(desc(n_flags, flagged_thresholds)) %>%
   ungroup() %>%
   mutate(sample_id = factor(sample_id, levels = unique(sample_id)),
          ref_range_name = factor(ref_range_name, levels = rev(stat_names_plus_MEND)) )
-
 
 ggplot(flag_analysis) + 
   geom_tile(aes(x=sample_id, y=ref_range_name, fill = within_limits)) +
@@ -521,8 +515,7 @@ p_total_reads_in_all + p_total_reads_by_ref_range +
 
 ```
 
-As seen in C and D, and by definition, samples that have high fractions of non-MEND reads have fewer MEND reads than other samples. However, they do not vary much from other samples in the number of total reads (A and B). In other words, the number of total reads does not determine whether a sample is within range for a subcomponent of the sample. 
-
+As seen in C and D, and by definition, samples that have high fractions of non-MEND reads have fewer MEND reads than other samples. However, they do not vary much from other samples in the number of total reads (A and B). In other words, the number of total reads does not determine whether a sample is at the extremes of the read type composition.
 
 
 # Number of measured genes
@@ -574,5 +567,5 @@ ggsave(file.path(plots_dir, "Expressed_genes_by_status.png"), width = 8, height 
 
 ```
 
-Samples that exceed unmapped, multi-mapped or duplicate read fraction thresholds generally measure fewer genes than their within-range counterparts. The reverse is true for samples that exceed the non-exonic read fraction threshold. If it reflects genomic contamination, that genomic contamination might also result in apparent exonic reads from DNA from genes that are not producing RNA in the same. In that scenario, the non-exonic reads would not be directly contributing to the higher gene count.
+Samples that exceed unmapped, multi-mapped or duplicate read fraction thresholds generally measure fewer genes than their within-range counterparts. The reverse is true for samples that exceed the non-exonic read fraction threshold. If it reflects genomic contamination, that genomic contamination might also result in apparent exonic reads from DNA from genes that are not producing RNA in the same. In that scenario, the non-exonic reads would not be directly contributing to the higher gene count, but reflecting the phenomenon that also leads toa higher gene count.
 
