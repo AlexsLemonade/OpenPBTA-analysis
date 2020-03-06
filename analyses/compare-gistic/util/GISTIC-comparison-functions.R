@@ -14,7 +14,7 @@
 
 #### Implemented in both `01-GISTIC-cohort-vs-histology.Rmd` and `02-GISTIC-tidy-data-prep.Rmd`
 format_gistic_genes <- function(genes_file,
-                                include_peak_info = FALSE) {
+                                include_peak_info = TRUE) {
   # Given the GISTIC result `amp_genes_conf_90.txt` or `del_genes_conf_90.txt`
   # files for the entire cohort or a specific histology, get the vector/data.frame
   # of genes for each amplification/deletion.
@@ -22,56 +22,43 @@ format_gistic_genes <- function(genes_file,
   # Args:
   #  genes_file: file path to the `amp_genes.conf_90.txt` or
   #              `del_genes.conf_90.txt` file
-  #   include_peak_info: binary flag indicating weather or not to include the
-  #                      detection peak info
   #
   # Return:
   #  genes_output: a vector/data.frame with all the genes included in the file
-
-  genes_ragged_df <- data.table::fread(genes_file,
-    data.table = FALSE
-  )
-  genes_list <- as.list(genes_ragged_df)
-  genes_list <- genes_list %>%
-    # This removes any element from the list that is all NA -- most likely a
-    # result of reading in a ragged array
-    purrr::discard(~ all(is.na(.))) %>%
-    # This removes the element of the list that is essentially the "header" for
-    # the file
-    purrr::discard(~ any(str_detect(., "cytoband|q value"))) %>%
-    # Remove blanks -- result of ragged data.frame
-    purrr::modify(~ .[. != ""])
-
-  if (include_peak_info == TRUE) {
-    genes_list <- genes_list %>%
-      # Remove everything before and including the wide peak boundaries for each
-      # remaining element of the list
-      purrr::modify(~ .[-c(1:(str_which(., "chr")) - 1)])
-
-    # This will give us the data.frame of all the genes that were included
-    genes_output <-
-      data.table::rbindlist(lapply(genes_list, function(x)
-        data.frame(t(x))),
-      fill = TRUE
-      )
-
-    # Tidy the data.frame into a key and value format where the detection peak
-    # region is the key and the genes in that region are the values
+  
+  genes_ragged_list <- data.table::fread(genes_file,
+                                         data.table = FALSE)
+  
+  # Transpose data
+  genes_transposed <- genes_ragged_list %>%
+    t()
+  
+  # Make the header information in the first row the column names
+  colnames(genes_transposed) <- genes_transposed[1,]
+  
+  genes_df <- genes_transposed %>%
+    # Make into a data.frame object
+    as.data.frame() %>%
+    # Remove the row with header information
+    dplyr::filter(cytoband != "cytoband")
+  
+  # Gather the gene data
+  genes_output <- genes_df %>%
+    tidyr::gather(
+      "wide_peak",
+      "gene",-cytoband,-`q value`,-`residual q value`,-`wide peak boundaries`
+    ) %>%
+    dplyr::select(-wide_peak) %>%
+    # Remove the blanks in the `gene` column that result from the gathering step
+    dplyr::filter(gene != "")
+  
+  if (include_peak_info == FALSE) {
+    # Return only the genes information
     genes_output <- genes_output %>%
-      dplyr::rename(peak_region = X1) %>%
-      tidyr::gather("region", "gene_symbol", -peak_region) %>%
-      dplyr::select(-region) %>%
-      dplyr::filter(!(is.na(gene_symbol)))
+      dplyr::select(gene) %>%
+      dplyr::distinct()
   } else {
-    genes_list <- genes_list %>%
-      # Remove any broad peaks with q-value > 0.05
-      purrr::discard(~ .[3] > 0.05) %>%
-      # Remove everything before and including the wide peak boundaries for each
-      # remaining element of the list
-      purrr::modify(~ .[-c(1:(str_which(., "chr")))])
-
-    # This will give us the vector of all the genes that were included
-    genes_output <- unique(unname(unlist(genes_list)))
+    return(genes_output)
   }
 }
 
@@ -197,10 +184,10 @@ plot_genes_venn_diagram_wrapper <- function(cohort_genes_file,
   #                                 medulloblastoma histology
 
   # Run `format_gistic_genes` function on each of the files
-  cohort_genes_vector <- format_gistic_genes(cohort_genes_file)
-  lgat_genes_vector <- format_gistic_genes(lgat_genes_file)
-  hgat_genes_vector <- format_gistic_genes(hgat_genes_file)
-  medulloblastoma_genes_vector <- format_gistic_genes(medulloblastoma_genes_file)
+  cohort_genes_vector <- format_gistic_genes(cohort_genes_file, include_peak_info = FALSE)
+  lgat_genes_vector <- format_gistic_genes(lgat_genes_file, include_peak_info = FALSE)
+  hgat_genes_vector <- format_gistic_genes(hgat_genes_file, include_peak_info = FALSE)
+  medulloblastoma_genes_vector <- format_gistic_genes(medulloblastoma_genes_file, include_peak_info = FALSE)
 
   # Run `plot_venn_diagram` for each comparison case
   lgat_venn <- plot_venn_diagram(cohort_genes_vector, lgat_genes_vector, "lgat_genes")
@@ -245,13 +232,9 @@ prepare_gene_level_gistic <- function(all_lesions_file,
 
   # Run `format_gistic_genes` function on `amp_genes` and `del_genes` files to get
   # a data.frame with just the genes and their corresponding detection peak
-  amp_genes_df <- format_gistic_genes(amp_genes_file,
-    include_peak_info = TRUE
-  )
+  amp_genes_df <- format_gistic_genes(amp_genes_file)
 
-  del_genes_df <- format_gistic_genes(del_genes_file,
-    include_peak_info = TRUE
-  )
+  del_genes_df <- format_gistic_genes(del_genes_file)
 
   # Bind the rows from the above data.frames into one data.frame
   final_df <- rbind(amp_genes_df, del_genes_df)
@@ -305,8 +288,8 @@ prepare_gene_level_gistic <- function(all_lesions_file,
   # Merge the data from the `all_lesions.conf_90.txt` file with the amp/del gene
   # data.frame prepped above
   final_df <- final_df %>%
-    dplyr::left_join(gistic_all_lesions_df, by = c("peak_region" = "Wide Peak Limits")) %>%
-    dplyr::select(gene_symbol, Kids_First_Biospecimen_ID, status, detection_peak = `Unique Name`) %>%
+    dplyr::left_join(gistic_all_lesions_df, by = c("wide peak boundaries" = "Wide Peak Limits")) %>%
+    dplyr::select(gene, Kids_First_Biospecimen_ID, status, detection_peak = `Unique Name`) %>%
     # The `select` function above got rid of some extra fields (fields that are
     # not needed for this analysis) from the `gistic_all_lesions_df`
     # object -- `distinct` removes any duplicate rows resulting from

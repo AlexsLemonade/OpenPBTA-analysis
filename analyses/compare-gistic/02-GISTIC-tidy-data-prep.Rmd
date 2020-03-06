@@ -96,6 +96,85 @@ lgat_del_genes_file <- file.path(lgat_gistic_dir, "del_genes.conf_90.txt")
 
 ## Generate gene-level tidy tables
 
+### Explore amp and del genes data 
+This section is testing the logic that was updated in the `format_gistic_genes` function of the `GISTIC-comparison-functions.R` script.
+
+```{r}
+#### Amplification genes file -------------------------------------------------
+ amp_genes_ragged_list <- data.table::fread(lgat_amp_genes_file,
+    data.table = FALSE
+  )
+
+# Transpose data
+amp_genes_transposed <- amp_genes_ragged_list %>%
+  t()
+
+# Make the header information in the first row the column names
+colnames(amp_genes_transposed) <- amp_genes_transposed[1, ]
+
+amp_genes_df <- amp_genes_transposed %>%
+  # Make into a data.frame object
+  as.data.frame() %>%
+  # Remove the row with header information
+  dplyr::filter(cytoband != "cytoband")
+
+# Gather the gene data
+amp_genes_gathered <- amp_genes_df %>%
+  tidyr::gather("wide_peak",
+                "gene",
+                -cytoband,
+                -`q value`,
+                -`residual q value`,
+                -`wide peak boundaries`) %>%
+  dplyr::select(-wide_peak) %>%
+  # Remove the blanks in the `gene` column that result from the gathering step
+  dplyr::filter(gene != "")
+
+# Display the amp genes gathered data.frame
+amp_genes_gathered %>%
+  arrange(`wide peak boundaries`)
+
+#### Deletion genes file ------------------------------------------------------
+del_genes_ragged_list <- data.table::fread(lgat_del_genes_file,
+    data.table = FALSE
+  )
+
+# Transpose data
+del_genes_transposed <- del_genes_ragged_list %>%
+  t()
+
+colnames(del_genes_transposed) <- del_genes_transposed[1, ]
+del_genes_df <- del_genes_transposed %>%
+  # Make into a data.frame object
+  as.data.frame() %>%
+  # Remove the row with header information
+  dplyr::filter(cytoband != "cytoband")
+
+del_genes_gathered <- del_genes_df %>%
+  
+  tidyr::gather("wide_peak",
+                "gene",
+                -cytoband,
+                -`q value`,
+                -`residual q value`,
+                -`wide peak boundaries`) %>%
+  dplyr::select(-wide_peak) %>%
+  dplyr::distinct() %>%
+  dplyr::filter(gene != "")
+
+# Display the del genes data.frame
+del_genes_gathered
+
+# Combine amp and del genes data.frames
+all_genes_gathered <- rbind(amp_genes_gathered, del_genes_gathered) %>%
+  dplyr::select(-c("q value", "residual q value"))
+
+# Display the data.frame combining the data from both the amp and del genes
+# files
+all_genes_gathered %>% 
+  arrange(`wide peak boundaries`)
+```
+
 ### Use GISTIC results for LGAT histology
 
 ```{r warning = FALSE, message = FALSE}
