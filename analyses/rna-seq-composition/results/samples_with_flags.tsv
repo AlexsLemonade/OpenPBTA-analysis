@@ -1,4 +1,4 @@
-sample_id	pct_unmapped_of_total	pct_multi_mapped_of_mapped	pct_dupe_of_mapped	pct_non_exonic_of_non_dupe	status
+sample_id	frac_unmapped_of_total	frac_multi_mapped_of_mapped	frac_dupe_of_mapped	frac_non_exonic_of_non_dupe	MEND_depth_bin
 BS_014EVM2D	above_limit				>20M_MEND_reads
 BS_06XH7EVF	above_limit	above_limit			>20M_MEND_reads
 BS_0XEG6SNV				above_limit	>20M_MEND_reads
