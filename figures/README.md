@@ -9,7 +9,8 @@ To refresh all figures, call the main figures script:
 bash scripts/run-figures.sh
 ```
 This assumes your current directory is the top of this repository.
-
+All figures print out to the `./figures` folder and should be linked to the accompanying manuscript repository `OpenPBA-manuscript`.
+ 
 ### Summary for each figure:
 
 | Figure | Script | Run Requirements | Linked Analysis Modules |
