@@ -1,195 +1,160 @@
-gene_symbol	detection_peak	loss	gain	amplification
-AATK	Amplification Peak 23	228	1	2
-ABCA10	Amplification Peak 23	228	1	1
-ABCA5	Amplification Peak 23	228	1	2
-ABCA6	Amplification Peak 23	228	1	1
-ABCA8	Amplification Peak 23	228	1	1
-ABCA9	Amplification Peak 23	228	1	1
-ABCA9-AS1	Amplification Peak 23	228	1	1
-ABCC13	Deletion Peak 20	249	6	2
-ABHD13	Deletion Peak 15	249	5	2
-ADAMTS1	Deletion Peak 20	245	6	2
-ADAMTS5	Deletion Peak 20	245	5	2
-ADCK2	Amplification Peak 10	218	1	1
-ADPRM	Deletion Peak 18	273	7	2
-AKT3	Amplification Peak  2	235	2	2
-AMZ2	Amplification Peak 23	227	1	1
-AMZ2P1	Amplification Peak 23	227	1	1
-APOH	Amplification Peak 23	227	1	1
-APP	Deletion Peak 20	243	5	2
-ARHGAP44	Deletion Peak 18	272	8	2
-ARSG	Amplification Peak 23	227	1	1
-AXIN2	Amplification Peak 23	227	1	1
-BAIAP2	Amplification Peak 23	228	1	2
-BPTF	Amplification Peak 23	228	1	1
-BRAF	Amplification Peak 10	232	1	1
-BTG3	Deletion Peak 20	245	6	2
-C17orf58	Amplification Peak 23	228	1	1
-C1orf100	Amplification Peak  2	235	1	2
-C21orf91	Deletion Peak 20	246	6	2
-C21orf91-OT1	Deletion Peak 20	246	6	2
-CACNG1	Amplification Peak 23	227	1	1
-CACNG4	Amplification Peak 23	227	1	1
-CACNG5	Amplification Peak 23	227	1	1
-CASC17	Amplification Peak 23	228	1	2
-CDRT1	Deletion Peak 18	272	6	2
-CDRT15	Deletion Peak 18	272	9	2
-CDRT4	Deletion Peak 18	272	8	2
-CDRT7	Deletion Peak 18	272	8	2
-CEP112	Amplification Peak 23	227	1	1
-CEP170	Amplification Peak  2	235	1	2
-CFAP52	Deletion Peak 18	272	7	2
-CHODL	Deletion Peak 20	243	6	2
-CHRM3	Amplification Peak  2	236	1	1
-COL4A1	Deletion Peak 15	249	5	2
-COL4A2	Deletion Peak 15	249	5	2
-COX10	Deletion Peak 18	272	9	2
-COX10-AS1	Deletion Peak 18	272	9	2
-CSMD1	Deletion Peak  8	257	12	2
-CXADR	Deletion Peak 20	242	6	2
-CYYR1	Deletion Peak 20	245	6	2
-CYYR1-AS1	Deletion Peak 20	245	6	2
-D21S2088E	Deletion Peak 20	245	6	2
-DENND2A	Amplification Peak 10	218	1	1
-DHRS7C	Deletion Peak 18	272	7	2
-DNAH9	Deletion Peak 18	273	7	2
-ELAC2	Deletion Peak 18	272	8	2
-FAM20A	Amplification Peak 23	227	1	1
-FGF19	Amplification Peak 17	242	1	1
-FGFR2	Deletion Peak 10	273	3	2
-FGFR2	Deletion Peak 11	272	3	2
-GABPA	Deletion Peak 20	243	5	2
-GAS7	Deletion Peak 18	273	7	2
-GLP2R	Deletion Peak 18	273	7	2
-GNA13	Amplification Peak 23	227	1	1
-GSG1L2	Deletion Peak 18	273	7	2
-HABP2	Deletion Peak 10	271	3	2
-HABP2	Deletion Peak 11	270	3	2
-HELZ	Amplification Peak 23	227	1	1
-HS3ST3A1	Deletion Peak 18	272	9	2
-HS3ST3B1	Deletion Peak 18	272	9	2
-HSPA13	Deletion Peak 20	249	6	2
-HTR7	Deletion Peak 10	273	2	2
-IRS2	Deletion Peak 15	249	5	3
-JAM2	Deletion Peak 20	243	5	2
-KCNJ16	Amplification Peak 23	228	1	2
-KCNJ2	Amplification Peak 23	228	1	2
-KCNJ2-AS1	Amplification Peak 23	228	1	2
-KDM7A	Amplification Peak 10	218	1	1
-KIF26B	Amplification Peak  2	235	2	2
-KPNA2	Amplification Peak 23	227	1	1
-LIG4	Deletion Peak 15	249	5	2
-LILRB3	Amplification Peak 24	241	1	2
-LINC00113	Deletion Peak 20	245	5	2
-LINC00158	Deletion Peak 20	243	6	2
-LINC00308	Deletion Peak 20	244	6	2
-LINC00317	Deletion Peak 20	244	7	2
-LINC00320	Deletion Peak 20	244	5	2
-LINC00396	Deletion Peak 15	249	5	2
-LINC00399	Deletion Peak 15	249	6	3
-LINC00511	Amplification Peak 23	228	1	2
-LINC00515	Deletion Peak 20	243	6	2
-LINC00670	Deletion Peak 18	272	8	2
-LINC00676	Deletion Peak 15	249	5	3
-LINC01028	Amplification Peak 23	228	1	2
-LINC01152	Amplification Peak 23	228	1	2
-LINC01425	Deletion Peak 20	245	7	2
-LINC01435	Deletion Peak 10	272	2	2
-LINC01435	Deletion Peak 11	272	2	2
-LINC01482	Amplification Peak 23	228	1	1
-LINC01483	Amplification Peak 23	228	1	2
-LINC01497	Amplification Peak 23	228	1	2
-LIPI	Deletion Peak 20	251	4	2
-LOC100128006	Deletion Peak 18	272	8	2
-LOC100287015	Deletion Peak  8	246	12	2
-LOC101928475	Deletion Peak 18	272	8	2
-LRRC37A3	Amplification Peak 23	230	3	1
-MAP2K4	Deletion Peak 18	273	7	2
-MAP2K6	Amplification Peak 23	228	1	2
-MGC12916	Deletion Peak 18	272	9	2
-MIR1250	Amplification Peak 23	228	1	2
-MIR125B2	Deletion Peak 20	244	7	2
-MIR1269B	Deletion Peak 18	272	8	2
-MIR155	Deletion Peak 20	243	6	2
-MIR155HG	Deletion Peak 20	243	6	2
-MIR3065	Amplification Peak 23	228	1	2
-MIR338	Amplification Peak 23	228	1	2
-MIR4524A	Amplification Peak 23	228	1	1
-MIR4524B	Amplification Peak 23	228	1	1
-MIR4677	Amplification Peak  2	235	3	2
-MIR4731	Deletion Peak 18	272	8	2
-MIR4759	Deletion Peak 20	245	5	2
-MIR548AA2	Amplification Peak 23	228	1	1
-MIR548D2	Amplification Peak 23	228	1	1
-MIR548H3	Deletion Peak 18	272	9	2
-MIR548X	Deletion Peak 20	245	5	2
-MIR548XHG	Deletion Peak 20	247	6	2
-MIR6130	Deletion Peak 20	245	6	2
-MIR634	Amplification Peak 23	227	1	1
-MIR635	Amplification Peak 23	227	1	1
-MIR657	Amplification Peak 23	228	1	2
-MIR744	Deletion Peak 18	273	7	2
-MIR8073	Deletion Peak 15	249	5	2
-MIR99A	Deletion Peak 20	244	6	2
-MIR99AHG	Deletion Peak 20	248	7	2
-MIRLET7C	Deletion Peak 20	244	6	2
-MKRN1	Amplification Peak 10	218	1	1
-MRPL39	Deletion Peak 20	243	6	2
-MYH1	Deletion Peak 18	273	7	2
-MYH13	Deletion Peak 18	273	7	2
-MYH2	Deletion Peak 18	273	7	2
-MYH3	Deletion Peak 18	273	7	2
-MYH4	Deletion Peak 18	273	7	2
-MYH8	Deletion Peak 18	273	7	2
-MYO16	Deletion Peak 15	249	6	3
-MYO16-AS1	Deletion Peak 15	249	6	3
-MYOCD	Deletion Peak 18	272	8	2
-NCAM2	Deletion Peak 20	244	5	2
-NDUFB2	Amplification Peak 10	218	1	1
-NDUFB2-AS1	Amplification Peak 10	218	1	1
-NOL11	Amplification Peak 23	228	1	1
-NRAP	Deletion Peak 10	271	3	2
-NRAP	Deletion Peak 11	270	3	2
-NRIP1	Deletion Peak 20	248	6	2
-PARP12	Amplification Peak 10	218	1	1
-PIRT	Deletion Peak 18	273	7	2
-PITPNC1	Amplification Peak 23	228	1	1
-PMP22	Deletion Peak 18	272	8	2
-PRKAR1A	Amplification Peak 23	227	1	1
-PRKCA	Amplification Peak 23	227	2	1
-PRO1804	Amplification Peak 23	228	1	1
-PSMD12	Amplification Peak 23	228	1	1
-RAB19	Amplification Peak 10	218	1	1
-RBM11	Deletion Peak 20	251	4	2
-RCVRN	Deletion Peak 18	273	7	2
-RGS9	Amplification Peak 23	227	1	1
-SAMSN1	Deletion Peak 20	250	6	2
-SAMSN1-AS1	Deletion Peak 20	250	6	2
-SCO1	Deletion Peak 18	273	7	2
-SDCCAG8	Amplification Peak  2	236	3	2
-SHISA6	Deletion Peak 18	273	7	2
-SLC16A6	Amplification Peak 23	227	1	1
-SLC37A3	Amplification Peak 10	218	1	1
-SLC39A11	Amplification Peak 23	228	1	2
-SMYD3	Amplification Peak  2	236	2	2
-SNORA38B	Amplification Peak 23	228	1	1
-SOX9	Amplification Peak 23	228	1	2
-SOX9-AS1	Amplification Peak 23	228	1	2
-STX8	Deletion Peak 18	274	7	2
-TBXAS1	Amplification Peak 10	218	1	1
-TEKT3	Deletion Peak 18	272	8	2
-TMEM220	Deletion Peak 18	273	7	2
-TMEM220-AS1	Deletion Peak 18	273	7	2
-TMPRSS15	Deletion Peak 20	247	6	2
-TNFSF13B	Deletion Peak 15	249	5	2
-TRIM16	Deletion Peak 18	272	6	2
-TTC26	Amplification Peak 10	218	1	1
-TVP23C	Deletion Peak 18	272	6	2
-TVP23C-CDRT4	Deletion Peak 18	272	8	2
-UBN2	Amplification Peak 10	218	1	1
-USP25	Deletion Peak 20	246	6	2
-USP43	Deletion Peak 18	272	7	2
-WIPI1	Amplification Peak 23	227	1	1
-ZBTB18	Amplification Peak  2	235	2	2
-ZC3HAV1	Amplification Peak 10	218	1	1
-ZNF18	Deletion Peak 18	273	7	2
+gene	detection_peak	loss	gain	amplification
+AATK	Amplification Peak 23 - CN values	227	1	2
+ABCA10	Amplification Peak 23 - CN values	227	1	1
+ABCA5	Amplification Peak 23 - CN values	227	1	2
+ABCA6	Amplification Peak 23 - CN values	227	1	1
+ABCA8	Amplification Peak 23 - CN values	227	1	1
+ABCA9	Amplification Peak 23 - CN values	227	1	1
+ABCA9-AS1	Amplification Peak 23 - CN values	227	1	1
+ABHD13	Deletion Peak 15 - CN values	228	3	1
+ADAMTS1	Deletion Peak 20 - CN values	227	1	1
+ADCK2	Amplification Peak 10 - CN values	211	1	1
+ADPRM	Deletion Peak 18 - CN values	220	2	1
+AKT3	Amplification Peak  2 - CN values	227	2	1
+AMZ2	Amplification Peak 23 - CN values	226	1	1
+AMZ2P1	Amplification Peak 23 - CN values	226	1	1
+APOH	Amplification Peak 23 - CN values	226	1	1
+ARHGAP44	Deletion Peak 18 - CN values	220	3	1
+ARSG	Amplification Peak 23 - CN values	226	1	1
+AXIN2	Amplification Peak 23 - CN values	226	1	1
+BAIAP2	Amplification Peak 23 - CN values	227	1	2
+BPTF	Amplification Peak 23 - CN values	227	1	1
+BRAF	Amplification Peak 10 - CN values	233	1	1
+C17orf58	Amplification Peak 23 - CN values	227	1	1
+C1orf100	Amplification Peak  2 - CN values	227	1	1
+CACNG1	Amplification Peak 23 - CN values	226	1	1
+CACNG4	Amplification Peak 23 - CN values	226	1	1
+CACNG5	Amplification Peak 23 - CN values	226	1	1
+CASC17	Amplification Peak 23 - CN values	227	1	2
+CDRT1	Deletion Peak 18 - CN values	220	1	1
+CDRT15	Deletion Peak 18 - CN values	220	4	1
+CDRT4	Deletion Peak 18 - CN values	220	3	1
+CDRT7	Deletion Peak 18 - CN values	220	3	1
+CEP112	Amplification Peak 23 - CN values	226	1	1
+CEP170	Amplification Peak  2 - CN values	227	1	1
+CFAP52	Deletion Peak 18 - CN values	220	2	1
+CHRM3	Amplification Peak  2 - CN values	227	1	1
+COL4A1	Deletion Peak 15 - CN values	228	4	1
+COL4A2	Deletion Peak 15 - CN values	228	4	1
+COX10	Deletion Peak 18 - CN values	220	4	1
+COX10-AS1	Deletion Peak 18 - CN values	220	4	1
+CSMD1	Deletion Peak  8 - CN values	238	1	1
+CYYR1	Deletion Peak 20 - CN values	227	1	1
+CYYR1-AS1	Deletion Peak 20 - CN values	227	1	1
+DENND2A	Amplification Peak 10 - CN values	211	1	1
+DHRS7C	Deletion Peak 18 - CN values	220	2	1
+DNAH9	Deletion Peak 18 - CN values	220	2	1
+ELAC2	Deletion Peak 18 - CN values	220	3	1
+FAM20A	Amplification Peak 23 - CN values	226	1	1
+FGF19	Amplification Peak 17 - CN values	226	1	1
+FGFR2	Deletion Peak 10 - CN values	222	1	1
+GAS7	Deletion Peak 18 - CN values	220	2	1
+GLP2R	Deletion Peak 18 - CN values	220	2	1
+GNA13	Amplification Peak 23 - CN values	226	1	1
+GSG1L2	Deletion Peak 18 - CN values	220	2	1
+HABP2	Deletion Peak 10 - CN values	219	1	1
+HELZ	Amplification Peak 23 - CN values	226	1	1
+HS3ST3A1	Deletion Peak 18 - CN values	220	4	1
+HS3ST3B1	Deletion Peak 18 - CN values	220	4	1
+IRS2	Deletion Peak 15 - CN values	228	4	2
+KCNJ16	Amplification Peak 23 - CN values	227	1	2
+KCNJ2	Amplification Peak 23 - CN values	227	1	2
+KCNJ2-AS1	Amplification Peak 23 - CN values	227	1	2
+KDM7A	Amplification Peak 10 - CN values	211	1	1
+KIF26B	Amplification Peak  2 - CN values	227	2	1
+KPNA2	Amplification Peak 23 - CN values	226	1	1
+LIG4	Deletion Peak 15 - CN values	228	3	1
+LILRB3	Amplification Peak 24 - CN values	229	1	2
+LINC00158	Deletion Peak 20 - CN values	226	1	1
+LINC00317	Deletion Peak 20 - CN values	227	1	1
+LINC00396	Deletion Peak 15 - CN values	228	4	1
+LINC00399	Deletion Peak 15 - CN values	228	4	2
+LINC00511	Amplification Peak 23 - CN values	227	1	2
+LINC00515	Deletion Peak 20 - CN values	226	1	1
+LINC00670	Deletion Peak 18 - CN values	220	3	1
+LINC00676	Deletion Peak 15 - CN values	228	4	2
+LINC01028	Amplification Peak 23 - CN values	227	1	2
+LINC01152	Amplification Peak 23 - CN values	227	1	2
+LINC01425	Deletion Peak 20 - CN values	227	1	1
+LINC01482	Amplification Peak 23 - CN values	227	1	1
+LINC01483	Amplification Peak 23 - CN values	227	1	2
+LINC01497	Amplification Peak 23 - CN values	227	1	2
+LOC100128006	Deletion Peak 18 - CN values	220	3	1
+LOC100287015	Deletion Peak  8 - CN values	226	1	1
+LOC101928475	Deletion Peak 18 - CN values	220	3	1
+LRRC37A3	Amplification Peak 23 - CN values	230	3	1
+MAP2K4	Deletion Peak 18 - CN values	220	2	1
+MAP2K6	Amplification Peak 23 - CN values	227	1	2
+MGC12916	Deletion Peak 18 - CN values	220	4	1
+MIR1250	Amplification Peak 23 - CN values	227	1	2
+MIR125B2	Deletion Peak 20 - CN values	227	1	1
+MIR1269B	Deletion Peak 18 - CN values	220	3	1
+MIR155	Deletion Peak 20 - CN values	226	1	1
+MIR155HG	Deletion Peak 20 - CN values	226	1	1
+MIR3065	Amplification Peak 23 - CN values	227	1	2
+MIR338	Amplification Peak 23 - CN values	227	1	2
+MIR4524A	Amplification Peak 23 - CN values	227	1	1
+MIR4524B	Amplification Peak 23 - CN values	227	1	1
+MIR4677	Amplification Peak  2 - CN values	227	3	1
+MIR4731	Deletion Peak 18 - CN values	220	3	1
+MIR548AA2	Amplification Peak 23 - CN values	227	1	1
+MIR548D2	Amplification Peak 23 - CN values	227	1	1
+MIR548H3	Deletion Peak 18 - CN values	220	4	1
+MIR634	Amplification Peak 23 - CN values	226	1	1
+MIR635	Amplification Peak 23 - CN values	226	1	1
+MIR657	Amplification Peak 23 - CN values	227	1	2
+MIR744	Deletion Peak 18 - CN values	220	2	1
+MIR8073	Deletion Peak 15 - CN values	228	4	1
+MIR99AHG	Deletion Peak 20 - CN values	231	1	1
+MKRN1	Amplification Peak 10 - CN values	211	1	1
+MRPL39	Deletion Peak 20 - CN values	226	1	1
+MYH1	Deletion Peak 18 - CN values	220	2	1
+MYH13	Deletion Peak 18 - CN values	220	2	1
+MYH2	Deletion Peak 18 - CN values	220	2	1
+MYH3	Deletion Peak 18 - CN values	220	2	1
+MYH4	Deletion Peak 18 - CN values	220	2	1
+MYH8	Deletion Peak 18 - CN values	220	2	1
+MYO16	Deletion Peak 15 - CN values	228	4	2
+MYO16-AS1	Deletion Peak 15 - CN values	228	4	2
+MYOCD	Deletion Peak 18 - CN values	220	3	1
+NDUFB2	Amplification Peak 10 - CN values	211	1	1
+NDUFB2-AS1	Amplification Peak 10 - CN values	211	1	1
+NOL11	Amplification Peak 23 - CN values	227	1	1
+NRAP	Deletion Peak 10 - CN values	219	1	1
+PARP12	Amplification Peak 10 - CN values	211	1	1
+PIRT	Deletion Peak 18 - CN values	220	2	1
+PITPNC1	Amplification Peak 23 - CN values	227	1	1
+PMP22	Deletion Peak 18 - CN values	220	3	1
+PRKAR1A	Amplification Peak 23 - CN values	226	1	1
+PRKCA	Amplification Peak 23 - CN values	226	2	1
+PRO1804	Amplification Peak 23 - CN values	227	1	1
+PSMD12	Amplification Peak 23 - CN values	227	1	1
+RAB19	Amplification Peak 10 - CN values	211	1	1
+RCVRN	Deletion Peak 18 - CN values	220	2	1
+RGS9	Amplification Peak 23 - CN values	226	1	1
+SCO1	Deletion Peak 18 - CN values	220	2	1
+SDCCAG8	Amplification Peak  2 - CN values	228	3	1
+SHISA6	Deletion Peak 18 - CN values	220	2	1
+SLC16A6	Amplification Peak 23 - CN values	226	1	1
+SLC37A3	Amplification Peak 10 - CN values	211	1	1
+SLC39A11	Amplification Peak 23 - CN values	227	1	2
+SMYD3	Amplification Peak  2 - CN values	229	2	1
+SNORA38B	Amplification Peak 23 - CN values	227	1	1
+SOX9	Amplification Peak 23 - CN values	227	1	2
+SOX9-AS1	Amplification Peak 23 - CN values	227	1	2
+STX8	Deletion Peak 18 - CN values	221	2	1
+TBXAS1	Amplification Peak 10 - CN values	211	1	1
+TEKT3	Deletion Peak 18 - CN values	220	3	1
+TMEM220	Deletion Peak 18 - CN values	220	2	1
+TMEM220-AS1	Deletion Peak 18 - CN values	220	2	1
+TNFSF13B	Deletion Peak 15 - CN values	228	3	1
+TRIM16	Deletion Peak 18 - CN values	220	1	1
+TTC26	Amplification Peak 10 - CN values	211	1	1
+TVP23C	Deletion Peak 18 - CN values	220	1	1
+TVP23C-CDRT4	Deletion Peak 18 - CN values	220	3	1
+UBN2	Amplification Peak 10 - CN values	211	1	1
+USP43	Deletion Peak 18 - CN values	220	2	1
+WIPI1	Amplification Peak 23 - CN values	226	1	1
+ZBTB18	Amplification Peak  2 - CN values	227	2	1
+ZC3HAV1	Amplification Peak 10 - CN values	211	1	1
+ZNF18	Deletion Peak 18 - CN values	220	2	1

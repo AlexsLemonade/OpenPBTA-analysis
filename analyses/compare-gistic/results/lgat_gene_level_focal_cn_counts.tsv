@@ -1,30 +1,26 @@
-gene_symbol	detection_peak	loss	gain
-BTNL3	Deletion Peak 3	66	2
-BTNL8	Deletion Peak 3	66	2
-CDKN2B	Deletion Peak 4	68	2
-CDKN2B-AS1	Deletion Peak 4	69	2
-CRYBB2P1	Deletion Peak 5	63	2
-KIAA1671	Deletion Peak 5	63	1
-LRP5L	Deletion Peak 5	63	2
-MIR548F3	Deletion Peak 1	62	4
-MIR548N	Deletion Peak 1	62	10
-MIR548N	Deletion Peak 2	62	10
-MIR6817	Deletion Peak 5	63	2
-PITPNB	Deletion Peak 5	65	1
-RNA5S1	Deletion Peak 1	62	1
-RNA5S10	Deletion Peak 1	62	1
-RNA5S11	Deletion Peak 1	62	1
-RNA5S12	Deletion Peak 1	62	1
-RNA5S13	Deletion Peak 1	62	1
-RNA5S14	Deletion Peak 1	62	1
-RNA5S15	Deletion Peak 1	62	1
-RNA5S16	Deletion Peak 1	62	1
-RNA5S2	Deletion Peak 1	62	1
-RNA5S3	Deletion Peak 1	62	1
-RNA5S4	Deletion Peak 1	62	1
-RNA5S5	Deletion Peak 1	62	1
-RNA5S6	Deletion Peak 1	62	1
-RNA5S7	Deletion Peak 1	62	1
-RNA5S9	Deletion Peak 1	62	1
-RNU6-2	Deletion Peak 1	63	3
-RNU6-2	Deletion Peak 2	63	3
+gene	detection_peak	loss	gain
+CRYBB2P1	Deletion Peak 5 - CN values	56	2
+KIAA1671	Deletion Peak 5 - CN values	56	1
+LRP5L	Deletion Peak 5 - CN values	56	2
+MIR548F3	Deletion Peak 1 - CN values	59	4
+MIR548N	Deletion Peak 1 - CN values	59	10
+MIR548N	Deletion Peak 2 - CN values	59	10
+MIR6817	Deletion Peak 5 - CN values	56	2
+PITPNB	Deletion Peak 5 - CN values	56	1
+RNA5S1	Deletion Peak 1 - CN values	59	1
+RNA5S10	Deletion Peak 1 - CN values	59	1
+RNA5S11	Deletion Peak 1 - CN values	59	1
+RNA5S12	Deletion Peak 1 - CN values	59	1
+RNA5S13	Deletion Peak 1 - CN values	59	1
+RNA5S14	Deletion Peak 1 - CN values	59	1
+RNA5S15	Deletion Peak 1 - CN values	59	1
+RNA5S16	Deletion Peak 1 - CN values	59	1
+RNA5S2	Deletion Peak 1 - CN values	59	1
+RNA5S3	Deletion Peak 1 - CN values	59	1
+RNA5S4	Deletion Peak 1 - CN values	59	1
+RNA5S5	Deletion Peak 1 - CN values	59	1
+RNA5S6	Deletion Peak 1 - CN values	59	1
+RNA5S7	Deletion Peak 1 - CN values	59	1
+RNA5S9	Deletion Peak 1 - CN values	59	1
+RNU6-2	Deletion Peak 1 - CN values	60	3
+RNU6-2	Deletion Peak 2 - CN values	60	3
