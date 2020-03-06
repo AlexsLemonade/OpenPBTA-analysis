@@ -1,19 +1,19 @@
-# Functions for making mutational signature plots and calculations
+# Function for TMB CDF plot
 #
 # C. Savonen for ALSF - CCDL
 
-tmb_cdf_plot <- function(tmb_df, 
-                         plot_title, 
+tmb_cdf_plot <- function(tmb_df,
+                         plot_title,
                          colour) {
   # Print CDF TMB plot
   #
   # Args:
-  #   tmb_df: a data.frame with `tmb` and `short_histology` as column names
-  #   plot_title: A string to be passed to "ggtitle"
-  #   colour
+  #   tmb_df: a data.frame with `tmb` and `short_histology` as column names.
+  #   plot_title: A string to be passed to "ggtitle".
+  #   colour: What color should the points be. Will be passed to `geom_point`. 
   #
   # Returns:
-  # A CDF plot of TMB with histology 
+  # A CDF plot of TMB with histology
   tmb_df %>%
     as.data.frame() %>%
     dplyr::mutate(short_histology = tools::toTitleCase(short_histology)) %>%
@@ -46,7 +46,7 @@ tmb_cdf_plot <- function(tmb_df,
     ggplot2::xlab("") +
     ggplot2::ylab("Coding mutations per Mb") +
     # Transform to log10 make non-log y-axis labels
-    ggplot2::scale_y_continuous(trans = "log1p", breaks = c(0, 1, 3, 10, 30, 100, 1000, 10000, 30000), 
+    ggplot2::scale_y_continuous(trans = "log1p", breaks = c(0, 1, 3, 10, 30, 100, 1000, 10000, 30000),
                                 limits = c(0, 30000)) +
     ggplot2::scale_x_continuous(limits = c(-0.2, 1.2), breaks = c()) +
     # Making it pretty
