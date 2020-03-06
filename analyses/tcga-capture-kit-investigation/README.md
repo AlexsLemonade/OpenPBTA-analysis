@@ -38,7 +38,7 @@ We created script to prepare the input dataframe for the boxplot script. This sc
 ### 04. mutation-counts-boxplot
 - script: [`scripts/boxplot.R`](scripts/boxplot.R)
 - output: `plots/boxplot-*.png`
-![](plots/boxplot-strelka2.png)
+![](plots/boxplot-all.png)
 
 ### (WIP) coverage-comparison
 | sample name                  | # of bases > 20x vs GDC BED | % of bases > 20x vs GDC BED | # of bases > 20x vs MC3 BED | % of bases > 20x vs MC3 BED | 
