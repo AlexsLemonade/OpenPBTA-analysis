@@ -555,7 +555,7 @@ p_gene_counts_by_ref_range <- ggplot(read_fracs_with_thresholds_anno2, aes(x=wit
                    labels = c("within", "below", "above")) +
   facet_wrap(~ref_range_name, nrow=1, labeller = labeller(
     ref_range_name=stat_label) ) +
-  theme(axis.title.x = element_blank())
+  theme(axis.title = element_blank())
 
 
 p_gene_counts_in_all + p_gene_counts_by_ref_range + 
