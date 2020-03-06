@@ -35,21 +35,6 @@ tmb_dir <- file.path(
 source(file.path(mut_sig_dir, "util", "mut_sig_functions.R"))
 source(file.path(tmb_dir, "util", "tmb-plot-function.R"))
 
-# Consensus script file paths
-pbta_consensus_script <- file.path(snv_callers_dir, "run_caller_consensus_analysis-pbta.sh")
-tcga_consensus_script <- file.path(snv_callers_dir, "run_caller_consensus_analysis-tcga.sh")
-
-########################### Run the analyses needed ############################
-# Run both SNV caller consensus scripts
-# Note: This the PBTA consensus script requires at least 128 MB of RAM to run
-system(paste("bash", pbta_consensus_script))
-system(paste("bash", tcga_consensus_script))
-
-# Run mutational signatures analysis
-rmarkdown::render("analyses/mutational-signatures/mutational_signatures.Rmd",
-  clean = TRUE
-)
-
 ###################### Read in associated results ##############################
 # Read in PBTA TMB results
 tmb_pbta <- data.table::fread(file.path(
