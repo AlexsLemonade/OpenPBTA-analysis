@@ -4,7 +4,7 @@
 # C. Savonen for ALSF - CCDL
 #
 # Purpose  Run all steps needed for mutational-landscape Figure.  
-
+#
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
@@ -53,6 +53,7 @@ mut_sig_plot_cosmic_file <- file.path(root_dir,
 
 ########################### Run the analyses needed ############################
 # Run both SNV caller consensus scripts
+# Note: This the PBTA consensus script requires at least 128 MB of RAM to run
 system(paste("bash", pbta_consensus_script))
 system(paste("bash", tcga_consensus_script))
 
@@ -95,26 +96,35 @@ tcga_plot <- tmb_cdf_plot(tmb_tcga, plot_title = "TCGA (Adult)", colour = "#6308
   ) 
 
 # Set up cosmic signature plots
-nature_sigs_df <- readr::read_tsv(file.path(mut_sig_dir, 
-                                            "results",
-                                            "nature_signatures_results.tsv"))
-
 cosmic_sigs_df <- readr::read_tsv(file.path(mut_sig_dir, 
                                             "results",
-                                            "nature_signatures_results.tsv"))
+                                            "cosmic_signatures_results.tsv")) %>%
+  # Get rid of `.` in signature names and factor in order
+  dplyr::mutate(signature = gsub("\\.", " ", signature), 
+                signature = factor(signature, levels = unique(signature)))
 
+# Set up cosmic signature plots
+nature_sigs_df <- readr::read_tsv(file.path(mut_sig_dir, 
+                                            "results",
+                                            "nature_signatures_results.tsv")) %>%
+  # Get rid of `.` in signature names and factor in order
+  dplyr::mutate(signature = gsub("\\.", " ", signature), 
+                signature = factor(signature, levels = unique(signature)))
+
+# Create cosmic signatures bubble plot
 mut_sig_plot_cosmic <- bubble_matrix_plot(cosmic_sigs_df, 
                                           label = "COSMIC") + 
   ggplot2::theme(legend.position = "none",
                  axis.text = ggplot2::element_text(size = 10), 
                  plot.margin = ggplot2::unit(c(.5, 1, .5, .5), "cm")) 
 
+# Create nature signatures bubble plot
 mut_sig_plot_nature <- bubble_matrix_plot(nature_sigs_df, 
                                           label = "Alexandrov et al, 2013") +
   ggplot2::theme(axis.text = ggplot2::element_text(size = 10), 
                  plot.margin = ggplot2::unit(c(.5, .5, .5, .5), "cm")) 
 
-# Arrange plots in grid
+########################### Assemble multipanel plot ###########################
 ggpubr::ggarrange(ggpubr::ggarrange(pbta_plot, 
                                     tcga_plot, 
                                     ncol = 2, 
