@@ -114,7 +114,7 @@ colnames(amp_genes_transposed) <- amp_genes_transposed[1, ]
 
 amp_genes_df <- amp_genes_transposed %>%
   # Make into a data.frame object
-  as.data.frame() %>%
+  as.data.frame(stringsAsFactors = FALSE) %>%
   # Remove the row with header information
   dplyr::filter(cytoband != "cytoband")
 
@@ -146,7 +146,7 @@ del_genes_transposed <- del_genes_ragged_list %>%
 colnames(del_genes_transposed) <- del_genes_transposed[1, ]
 del_genes_df <- del_genes_transposed %>%
   # Make into a data.frame object
-  as.data.frame() %>%
+  as.data.frame(stringsAsFactors = FALSE) %>%
   # Remove the row with header information
   dplyr::filter(cytoband != "cytoband")
 

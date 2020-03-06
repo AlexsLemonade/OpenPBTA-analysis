@@ -38,7 +38,7 @@ format_gistic_genes <- function(genes_file,
   
   genes_df <- genes_transposed %>%
     # Make into a data.frame object
-    as.data.frame() %>%
+    as.data.frame(stringsAsFactors = FALSE) %>%
     # Remove the row with header information
     dplyr::filter(cytoband != "cytoband")
   
@@ -57,9 +57,9 @@ format_gistic_genes <- function(genes_file,
     genes_output <- genes_output %>%
       dplyr::select(gene) %>%
       dplyr::distinct()
-  } else {
-    return(genes_output)
   }
+  
+  return(genes_output)
 }
 
 #### Implemented in `01-GISTIC-cohort-vs-histology-comparison.Rmd` ------------
