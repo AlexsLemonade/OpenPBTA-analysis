@@ -416,6 +416,7 @@ read_fracs_with_thresholds_anno %>%
   spread(key = "ref_range_name", value = "within_limits") %>%
   #  pivot_wider(names_from = "ref_range_name", values_from = "within_limits") %>%
   left_join(depth_status %>% select(sample_id, status)) %>%
+  rename(MEND_depth_bin = status) %>%
   write_tsv(file.path(results_dir, "samples_with_flags.tsv"))
 
 ```
@@ -434,7 +435,7 @@ flag_analysis <- read_fracs_with_thresholds_anno %>%
   filter(! sample_id %in% samples_within_limits) %>%
   group_by(sample_id) %>%
   mutate(n_flags=sum(within_limits == "within_limits")) %>%
-  arrange(desc(n_flags, flagged_thresholds)) %>%
+  arrange(desc(n_flags), flagged_thresholds) %>%
   ungroup() %>%
   mutate(sample_id = factor(sample_id, levels = unique(sample_id)),
          ref_range_name = factor(ref_range_name, levels = rev(stat_names_plus_MEND)) )
@@ -517,6 +518,8 @@ p_total_reads_in_all + p_total_reads_by_ref_range +
 
 As seen in C and D, and by definition, samples that have high fractions of non-MEND reads have fewer MEND reads than other samples. However, they do not vary much from other samples in the number of total reads (A and B). In other words, the number of total reads does not determine whether a sample is at the extremes of the read type composition.
 
+There are only five samples with unusually low duplicate reads fractions, limiting the conclusions that can be drawn.
+
 
 # Number of measured genes
 ```{r}
@@ -567,5 +570,6 @@ ggsave(file.path(plots_dir, "Expressed_genes_by_status.png"), width = 8, height 
 
 ```
 
-Samples that exceed unmapped, multi-mapped or duplicate read fraction thresholds generally measure fewer genes than their within-range counterparts. The reverse is true for samples that exceed the non-exonic read fraction threshold. If it reflects genomic contamination, that genomic contamination might also result in apparent exonic reads from DNA from genes that are not producing RNA in the same. In that scenario, the non-exonic reads would not be directly contributing to the higher gene count, but reflecting the phenomenon that also leads toa higher gene count.
+Samples with extremely high unmapped, multi-mapped or duplicate read fractions generally measure fewer genes than their within-range counterparts. The reverse is true for samples with extremely high non-exonic read fractions. If the high number of non-exonic reads is due to genomic contamination, that genomic contamination might also result in apparent exonic reads from DNA from genes that are not producing RNA. In that scenario, the non-exonic reads would not be directly contributing to the higher gene count but would be another result of the phenomenon that also leads to a higher gene count.
 
+There are only five samples with unusually low duplicate reads fractions, limiting the conclusions that can be drawn.
