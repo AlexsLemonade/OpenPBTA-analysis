@@ -23,7 +23,9 @@ Since we got the TCGA data manifest from the [GDC portal](https://portal.gdc.can
 ### 02. prepare-tcga-capture_kit
 By checking the `results/tcga-capture_kit-info.csv`, it turns out there are BAMs with `|` in the returned capture kit name and url which are those with more than one capture kit which neither the GDC nor its origin data center could retrieve/figure out what the actual capture kit had been applied. We plan to generate an intersected BED for those samples and used that for our analysis. We created scripts to download all unique BED files and added prefix `chr` and used [CrossMap tool](http://crossmap.sourceforge.net/) to convert all hg19 coordinates to Gh38 and saved them in  `results` folder with a `.Gh38.bed` extension
 
-- script: `run-investigation.sh` and `scripts/prepare-tcga-capture_kit.sh`
+- script: 
+  - [`scripts/prepare-tcga-capture_kit.sh`](scripts/prepare-tcga-capture_kit.sh)
+  - [`scripts/CrossMap.sh`](scripts/CrossMap.sh)
 - output: `results/*.Gh38.bed`
 
 ## Check the intersection region for the existing TCGA and PBTA MAF
