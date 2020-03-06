@@ -24,6 +24,10 @@ accompanying manuscript repository `OpenPBTA-manuscript`.
 
 ### Summary for each figure:
 
+Each figure has its own script stored in the `scripts/figure-scripts directory`. 
+All are called by the main bash script, `scripts/run-figures.sh`. 
+However, some are have higher memory requirements than others. 
+
 | Figure | Script | Run Requirements | Linked Analysis Modules |
 |--------|--------|------------------|-------------------------|
-|Figure 2 | [`scripts/fig2-mutational-landscape.R`](./scripts/fig2-mutational-landscape.R) | ~128MB of RAM are needed due to the run_caller_consensus_analysis-pbta.sh handling of large MAF files|[`snv-callers`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers)) [`mutational-signatures`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/mutational-signatures)) |  
+|Figure 2 | [scripts/fig2-mutational-landscape.R`](./scripts/fig2-mutational-landscape.R) | ~128MB of RAM are needed due to the run_caller_consensus_analysis-pbta.sh handling of large MAF files|[`snv-callers`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers)) [`mutational-signatures`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/mutational-signatures)) |  

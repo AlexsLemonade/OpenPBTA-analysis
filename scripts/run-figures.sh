@@ -10,8 +10,8 @@ mkdir figures
 
 ## Sample distribution
 
-## Tumor mutation burden 
-Rscript fig2-mutational-landscape.R
+## Mutational landscape figure
+Rscript figure-scripts/fig2-mutational-landscape.R
 
 ## Interaction plots 
 

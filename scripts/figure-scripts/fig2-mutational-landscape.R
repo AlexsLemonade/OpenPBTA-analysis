@@ -11,6 +11,9 @@
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
+# Declare output directory
+output_dir <- file.path(root_dir, "figures")
+
 ######## Declare relative file paths of modules used for this figure ###########
 snv_callers_dir <- file.path(
   root_dir,
@@ -150,7 +153,7 @@ heights = c(1.5, 2)
 )
 
 # Save to PNG
-ggplot2::ggsave(file.path("figures", "fig2-mutational-landscapes.png"),
+ggplot2::ggsave(file.path(output_dir, "fig2-mutational-landscapes.png"),
   width = 16.5, height = 15,
   units = "in"
 )
