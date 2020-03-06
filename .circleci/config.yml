@@ -152,9 +152,9 @@ jobs:
           name: Gene set enrichment analysis to generate GSVA scores
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh"
 
-      # - run:
-      #    name: Fusion Summary
-      #    command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
+      - run:
+         name: Fusion Summary
+         command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
           
       - run:
           name: Add Shatterseek
@@ -163,6 +163,11 @@ jobs:
       - run:
           name: Telomerase activity
           command: ./scripts/run_in_ci.sh bash analyses/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
+
+      - run:
+          name: GISTIC Results Comparison
+          command: ./scripts/run_in_ci.sh bash analyses/compare-gistic/run-compare-gistic.sh
+          
 
          ################################
          #### Add your analysis here ####
@@ -201,10 +206,6 @@ jobs:
           name: GISTIC proof of concept
           command: OPENPBTA_CI=1 ./scripts/run_in_ci.sh bash analyses/run-gistic/run-gistic-module.sh
           
-      - run:
-          name: GISTIC Results Comparison - Entire Cohort vs Histology
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/gistic-cohort-vs-histology-comparison/gistic-cohort-vs-histology-comparison.Rmd', clean = TRUE)"
-
   deploy:
     machine: 
       docker_layer_caching: true
