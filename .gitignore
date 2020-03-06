@@ -4,3 +4,7 @@
 .snakemake
 # The dictionary of words accrued by `mdspell` for spellcheck
 .spelling
+
+# This is the result of running ./scripts/run_in_ci.sh
+# If someone tests running things in CI locally, we don't want this tracked
+open_pbta_envs.txt
