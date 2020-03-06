@@ -4,13 +4,13 @@
 
 tmb_cdf_plot <- function(tmb_df,
                          plot_title,
-                         colour) {
+                         color) {
   # Print CDF TMB plot
   #
   # Args:
   #   tmb_df: a data.frame with `tmb` and `short_histology` as column names.
   #   plot_title: A string to be passed to "ggtitle".
-  #   colour: What color should the points be. Will be passed to `geom_point`. 
+  #   color: What color should the points be. Will be passed to `geom_point`. 
   #
   # Returns:
   # A CDF plot of TMB with histology
@@ -34,7 +34,7 @@ tmb_cdf_plot <- function(tmb_df,
       x = hist_rank,
       y = tmb
     )) +
-    ggplot2::geom_point(color = colour) +
+    ggplot2::geom_point(color = color) +
     # Add summary line for mean
     ggplot2::geom_segment(
       x = 0, xend = 1, color = "grey",
