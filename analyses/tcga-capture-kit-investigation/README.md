@@ -18,7 +18,6 @@ Genome Browser screen shot around chr1:162317128 for two TCGA samples.
 Since we got the TCGA data manifest from the [GDC portal](https://portal.gdc.cancer.gov/) by querying all the brain tumor data, and GDC actually has the capture kit name and its downloadable URL for each BAM files as part of the file metadata, so we created the python script to retrieve the actual BED files by hitting the [GDC file API endpoint](https://docs.gdc.cancer.gov/API/Users_Guide/Search_and_Retrieval/).
 
 - script: `scripts/get-tcga-capture_kit-info.py`
-- notebook: [`01-get-tcga-capture_kit-info.ipynb`](./notebooks/01-get-tcga-capture_kit-info.ipynb)
 - output: `results/tcga-capture_kit-info.csv`
 
 ### 02. prepare-tcga-capture_kit
@@ -27,7 +26,6 @@ We should just generate intersect BED for those samples and use that for our ana
 We created scripts to download all uniq BED files and added prefix `chr` for [UCSC liftover](https://genome.ucsc.edu/cgi-bin/hgLiftOver) and saved the liftover'd BED under the using the same BED filename root with prefix of `hg38lft-`
 
 - script: `scripts/prepare-tcga-capture_kit.sh`
-- notebook: [`02-prepare-tcga-capture_kit.ipynb`](./notebooks/02-prepare-tcga-capture_kit.ipynb)
 - output: `results/hg38lft-*.bed`
 
 ## Check the intersection region for the existing TCGA and PBTA MAF
@@ -35,7 +33,6 @@ Ideally, we should re-run the TCGA data with the new `hg38lft-*.bed` and re-do t
 ### 03. intersect-bed-maf
 We created script to prepare the input dataframe for the boxplot script. This script intersects all the BED and then use that to intersect with released PBTA and TCGA MAF and then counted all the mutation number within that intersection region, and then mapped that counts to the project(TCGA/PBTA) and tumor type for each sample.
 - script: `scripts/intersect-bed-maf.sh`
-- notebook: [`03-intersect-bed-maf.ipynb`](./notebooks/03-intersect-bed-maf.ipynb)
 - output: `scratch/somatic-count_with-histologies.tsv`
 
 ### 04. mutation-counts-boxplot
