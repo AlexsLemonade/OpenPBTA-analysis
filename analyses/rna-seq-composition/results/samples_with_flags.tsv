@@ -1,113 +1,971 @@
-sample_id	frac_unmapped_of_total	frac_multi_mapped_of_mapped	frac_dupe_of_mapped	frac_non_exonic_of_non_dupe	MEND_depth_bin
-BS_014EVM2D	above_limit				>20M_MEND_reads
-BS_06XH7EVF	above_limit	above_limit			>20M_MEND_reads
-BS_0XEG6SNV				above_limit	>20M_MEND_reads
-BS_15ETQ0E4		above_limit			>20M_MEND_reads
-BS_1BWP5MCT			below_limit	above_limit	>20M_MEND_reads
-BS_1TWCV047				above_limit	>20M_MEND_reads
-BS_21RE8W46				above_limit	>20M_MEND_reads
-BS_23W9EPFE			above_limit		>20M_MEND_reads
-BS_25T139TX				above_limit	>20M_MEND_reads
-BS_2SHWPB5P	above_limit	above_limit	above_limit	above_limit	<10M_MEND_reads
-BS_31TF0P1N		above_limit			>20M_MEND_reads
-BS_3J85TTZM		above_limit			>20M_MEND_reads
-BS_3T6X4BPC			above_limit		>20M_MEND_reads
-BS_44A3ES23				above_limit	>20M_MEND_reads
-BS_46BZ2NNN			above_limit		10-20 MEND_reads
-BS_4JWBB28H	above_limit	above_limit			>20M_MEND_reads
-BS_4NF35AF6	above_limit	above_limit			>20M_MEND_reads
-BS_5JM573JC			above_limit		>20M_MEND_reads
-BS_5P3CZQV8		above_limit	above_limit		>20M_MEND_reads
-BS_680K119G	above_limit				>20M_MEND_reads
-BS_6DCSD5Y6				above_limit	>20M_MEND_reads
-BS_6MY8W3H0	above_limit				>20M_MEND_reads
-BS_6N3AFF66	above_limit	above_limit			>20M_MEND_reads
-BS_6NRTJSYK				above_limit	>20M_MEND_reads
-BS_742RHK1M				above_limit	>20M_MEND_reads
-BS_77317DY4				above_limit	>20M_MEND_reads
-BS_7BW0YRPY	above_limit				>20M_MEND_reads
-BS_893A91ZM			above_limit		>20M_MEND_reads
-BS_8WPNFT03	above_limit	above_limit	above_limit		10-20 MEND_reads
-BS_92MT680S		above_limit	above_limit		<10M_MEND_reads
-BS_94MT16N2				above_limit	>20M_MEND_reads
-BS_97M1E2DW				above_limit	>20M_MEND_reads
-BS_983Z6CA6	above_limit	above_limit	above_limit		10-20 MEND_reads
-BS_9CA93S6D				above_limit	>20M_MEND_reads
-BS_9DZ253JY	above_limit	above_limit	above_limit		<10M_MEND_reads
-BS_9FHSNVS0				above_limit	>20M_MEND_reads
-BS_9HA238XS	above_limit				>20M_MEND_reads
-BS_A7Q8G0Y1			below_limit	above_limit	10-20 MEND_reads
-BS_A87NPZAP				above_limit	>20M_MEND_reads
-BS_A89VAPVV	above_limit				>20M_MEND_reads
-BS_B61168DE	above_limit	above_limit			>20M_MEND_reads
-BS_C0XFDP38			above_limit		>20M_MEND_reads
-BS_C3P5BC92			above_limit		>20M_MEND_reads
-BS_C7N3J4NW	above_limit				>20M_MEND_reads
-BS_CQSAJ7BF				above_limit	>20M_MEND_reads
-BS_CS170P7T			below_limit	above_limit	>20M_MEND_reads
-BS_D0RDN4K5	above_limit	above_limit		above_limit	>20M_MEND_reads
-BS_D4PJYHZ2			above_limit		10-20 MEND_reads
-BS_D5NQV7N5	above_limit	above_limit	above_limit		>20M_MEND_reads
-BS_DBDXCXT5	above_limit	above_limit			>20M_MEND_reads
-BS_DBEX7AG2		above_limit		above_limit	10-20 MEND_reads
-BS_DY9NTFQR	above_limit	above_limit			>20M_MEND_reads
-BS_E054DFJN			above_limit		>20M_MEND_reads
-BS_E2Z940S4				above_limit	>20M_MEND_reads
-BS_EHVYJAVA	above_limit				>20M_MEND_reads
-BS_EXYHZ6D4	above_limit	above_limit	above_limit		<10M_MEND_reads
-BS_F9WKPDFG	above_limit		above_limit		10-20 MEND_reads
-BS_FJZPQZ2C		above_limit			>20M_MEND_reads
-BS_FX2P2WEG				above_limit	>20M_MEND_reads
-BS_G1Y281HX			above_limit		>20M_MEND_reads
-BS_G5QBBHDV				above_limit	>20M_MEND_reads
-BS_GDHH6T5A			above_limit		10-20 MEND_reads
-BS_GM9Y3AZ5	above_limit	above_limit	above_limit		<10M_MEND_reads
-BS_GSVCN2XC				above_limit	>20M_MEND_reads
-BS_HHPA8NJ2				above_limit	>20M_MEND_reads
-BS_J6VKB1VE			below_limit	above_limit	>20M_MEND_reads
-BS_JBGZ7HHZ	above_limit	above_limit	above_limit		10-20 MEND_reads
-BS_JK0VPG1T	above_limit	above_limit			>20M_MEND_reads
-BS_JSPR854S	above_limit				>20M_MEND_reads
-BS_JWCX8R17	above_limit	above_limit			>20M_MEND_reads
-BS_JX7S9MY7			above_limit		10-20 MEND_reads
-BS_KK0JWATQ			above_limit		10-20 MEND_reads
-BS_M4923M40		above_limit			>20M_MEND_reads
-BS_MA2T7ET1	above_limit	above_limit			>20M_MEND_reads
-BS_N0877CX1				above_limit	>20M_MEND_reads
-BS_N5B2CZMH	above_limit		above_limit		>20M_MEND_reads
-BS_NDC69214			above_limit		10-20 MEND_reads
-BS_NH7K4CD9				above_limit	>20M_MEND_reads
-BS_NJ4WPQVK	above_limit				>20M_MEND_reads
-BS_P0W5VJH4	above_limit	above_limit	above_limit		10-20 MEND_reads
-BS_PJPGVD62	above_limit	above_limit			>20M_MEND_reads
-BS_PKK3BZRG				above_limit	>20M_MEND_reads
-BS_PN2CE34A				above_limit	>20M_MEND_reads
-BS_Q13FQ8FV			below_limit	above_limit	<10M_MEND_reads
-BS_QB84TBA3				above_limit	>20M_MEND_reads
-BS_R244Z0WX	above_limit				>20M_MEND_reads
-BS_R4Y180DM		above_limit			>20M_MEND_reads
-BS_S50KQEXV	above_limit	above_limit			>20M_MEND_reads
-BS_S6NJRR5W			above_limit		>20M_MEND_reads
-BS_SAA624A4	above_limit	above_limit	above_limit		<10M_MEND_reads
-BS_SFRQXM76	above_limit	above_limit			10-20 MEND_reads
-BS_T1QMEH1N	above_limit	above_limit	above_limit		>20M_MEND_reads
-BS_T3H5AY8A		above_limit			>20M_MEND_reads
-BS_TNRHHYNC		above_limit	above_limit		>20M_MEND_reads
-BS_TQ5QHR17			above_limit		10-20 MEND_reads
-BS_TZVFR600				above_limit	>20M_MEND_reads
-BS_V72GX2AZ	above_limit	above_limit			>20M_MEND_reads
-BS_V7BJM89K				above_limit	>20M_MEND_reads
-BS_VAAHBH60				above_limit	>20M_MEND_reads
-BS_VPNXJE2S	above_limit	above_limit			>20M_MEND_reads
-BS_VXHWZJDC		above_limit			10-20 MEND_reads
-BS_W311713R				above_limit	>20M_MEND_reads
-BS_W4DB5RP1				above_limit	>20M_MEND_reads
-BS_W60RQAKK				above_limit	>20M_MEND_reads
-BS_WH8G4VFB				above_limit	>20M_MEND_reads
-BS_WJGFDRWK	above_limit				>20M_MEND_reads
-BS_YEB88D32				above_limit	>20M_MEND_reads
-BS_YG0A13JH	above_limit	above_limit		above_limit	10-20 MEND_reads
-BS_YY5B2XDD		above_limit			>20M_MEND_reads
-BS_Z28VKGNS	above_limit	above_limit	above_limit		<10M_MEND_reads
-BS_Z9ZS6ZS2	above_limit				>20M_MEND_reads
-BS_ZA9XT151			above_limit		10-20 MEND_reads
+sample_id	frac_unmapped_of_total	frac_multi_mapped_of_mapped	frac_dupe_of_mapped	frac_non_exonic_of_non_dupe	MEND_depth_bin	summary_flag_status
+BS_014EVM2D	above_limit					NM
+BS_02NZT8CE						not flagged
+BS_03FT4S8B						not flagged
+BS_0448A413						not flagged
+BS_044XZ8ST						not flagged
+BS_052PZFMK						not flagged
+BS_063ERW0R						not flagged
+BS_06AMMCXR						not flagged
+BS_06XH7EVF	above_limit	above_limit				NM, MM
+BS_07ANYSYQ						not flagged
+BS_09R7GDA7						not flagged
+BS_09Z7TC35						not flagged
+BS_0BXY0F9N						not flagged
+BS_0C7VZC0A						not flagged
+BS_0GDJQANN						not flagged
+BS_0HW7W7SD						not flagged
+BS_0J9SHHSC						not flagged
+BS_0QYS36NR						not flagged
+BS_0RF0EZTV						not flagged
+BS_0RQ4P069						not flagged
+BS_0SCXXM6N						not flagged
+BS_0SPCTBZY						not flagged
+BS_0T17SY47						not flagged
+BS_0VRSD9V3						not flagged
+BS_0WQJP6ZG						not flagged
+BS_0WVJYM9R						not flagged
+BS_0X9EGHY2						not flagged
+BS_0XEG6SNV				above_limit		NE
+BS_0Y66ZBWE						not flagged
+BS_1021ZGQT						not flagged
+BS_10APZRVT						not flagged
+BS_11WY983P						not flagged
+BS_13CGKADW						not flagged
+BS_15ETQ0E4		above_limit				MM
+BS_1607397Q						not flagged
+BS_17WYVEEC						not flagged
+BS_196BBNEJ						not flagged
+BS_1A6MQ9ZA						not flagged
+BS_1AYRM596						not flagged
+BS_1BWP5MCT			below_limit	above_limit		D, NE
+BS_1D6PZNKN						not flagged
+BS_1EBQ3T20						not flagged
+BS_1EN5V3XW						not flagged
+BS_1G3WYEN3						not flagged
+BS_1HFK0SXV						not flagged
+BS_1HQ76V6D						not flagged
+BS_1J2WQ08M						not flagged
+BS_1JDG6JV5						not flagged
+BS_1KYGSMA7						not flagged
+BS_1N9XZXGE						not flagged
+BS_1NPD7PVG						not flagged
+BS_1QNTEZPS						not flagged
+BS_1QXEC43H						not flagged
+BS_1RT76ANT						not flagged
+BS_1RXZ3BP7						not flagged
+BS_1SVVER1H						not flagged
+BS_1T19NFJ8						not flagged
+BS_1TPWFSK6						not flagged
+BS_1TWCV047				above_limit		NE
+BS_1XJ73KBQ						not flagged
+BS_1ZVXF5FE						not flagged
+BS_21RE8W46				above_limit		NE
+BS_23M72ABG						not flagged
+BS_23QW0BBA						not flagged
+BS_23W9EPFE			above_limit			D
+BS_24AHZ9ZW						not flagged
+BS_258RRGDM						not flagged
+BS_25T139TX				above_limit		NE
+BS_264RCK7G						not flagged
+BS_273HKCT4						not flagged
+BS_27QE6BV7						not flagged
+BS_28CDASF7						not flagged
+BS_29006KEX					10-20 MEND_reads	10-20M
+BS_29CPJ040						not flagged
+BS_29X4ZX6Q						not flagged
+BS_2A162JH9						not flagged
+BS_2A5R9MEJ						not flagged
+BS_2ADZNNV4						not flagged
+BS_2AR3AP0N						not flagged
+BS_2EMW8ZG3						not flagged
+BS_2EN3X6HB						not flagged
+BS_2HN96129						not flagged
+BS_2KJ2YAZR						not flagged
+BS_2R9TCR03						not flagged
+BS_2SFTWNVE						not flagged
+BS_2SHWPB5P	above_limit	above_limit	above_limit	above_limit	<10M_MEND_reads	NM, MM, D, NE, <10M
+BS_2W3NC4K1					10-20 MEND_reads	10-20M
+BS_2WPQ8YCW						not flagged
+BS_2XD3MNKD						not flagged
+BS_2YCJV2VV						not flagged
+BS_2Z1MKS84						not flagged
+BS_30VC3R2Q						not flagged
+BS_31TF0P1N		above_limit				MM
+BS_34201DKZ						not flagged
+BS_37GTVG4N						not flagged
+BS_398KYV92						not flagged
+BS_399RPKC9						not flagged
+BS_39CGACC7						not flagged
+BS_3BDAG9YN						not flagged
+BS_3BVVWHP5						not flagged
+BS_3DCBDJAT						not flagged
+BS_3EVSN5QD						not flagged
+BS_3F4FQJMR						not flagged
+BS_3F5PR9GS						not flagged
+BS_3G3KWY18						not flagged
+BS_3H71BH6Q						not flagged
+BS_3J85TTZM		above_limit				MM
+BS_3KASVCSQ						not flagged
+BS_3KHXMAJF					10-20 MEND_reads	10-20M
+BS_3MS8WVNR						not flagged
+BS_3MYEMXPQ						not flagged
+BS_3NNQ6PSB						not flagged
+BS_3NWQXPQV						not flagged
+BS_3P20Q2C3						not flagged
+BS_3PYESPHA						not flagged
+BS_3Q0GTSYH						not flagged
+BS_3T6X4BPC			above_limit			D
+BS_3TQSE8HF						not flagged
+BS_3V3KE3VT						not flagged
+BS_3W07B2TG						not flagged
+BS_3X9WMZGJ						not flagged
+BS_3XY76V8T						not flagged
+BS_3Y0QXZQB						not flagged
+BS_401R3KV0						not flagged
+BS_40MP5BWR						not flagged
+BS_42DY6WS7						not flagged
+BS_42Y3YANN						not flagged
+BS_44A3ES23				above_limit		NE
+BS_45J79YTF						not flagged
+BS_46BZ2NNN			above_limit		10-20 MEND_reads	D, 10-20M
+BS_470DYRJQ						not flagged
+BS_478TN841						not flagged
+BS_479S95Q6						not flagged
+BS_47SJZ3PH						not flagged
+BS_49852ZBH						not flagged
+BS_49BQS7Z6						not flagged
+BS_49F4RAA4						not flagged
+BS_49FQXT2E						not flagged
+BS_49VCQD19						not flagged
+BS_4A45GGSW						not flagged
+BS_4B0BAVTX						not flagged
+BS_4BWB0FA0						not flagged
+BS_4C4MZ4NT						not flagged
+BS_4CP4T22V						not flagged
+BS_4D9DD103						not flagged
+BS_4E1G7E3G						not flagged
+BS_4EN8D8Y4						not flagged
+BS_4FZS7TX4						not flagged
+BS_4GTESTSE						not flagged
+BS_4HQ3T2NC						not flagged
+BS_4JWBB28H	above_limit	above_limit				NM, MM
+BS_4NF35AF6	above_limit	above_limit				NM, MM
+BS_4NWHYH53						not flagged
+BS_4PH1MBGR						not flagged
+BS_4QW2S1Q8						not flagged
+BS_4SCWT0FX						not flagged
+BS_4T0HPZDC						not flagged
+BS_4W1DBAN4						not flagged
+BS_4W68NV3M						not flagged
+BS_4Y6BCYK5						not flagged
+BS_4Z2F4P9N						not flagged
+BS_51RA1PGE						not flagged
+BS_52426AMF						not flagged
+BS_52C576HH						not flagged
+BS_52DAPP1Y						not flagged
+BS_52MPKTJH						not flagged
+BS_53CTGDQG						not flagged
+BS_53GQKVEX						not flagged
+BS_53M8PP88						not flagged
+BS_55JW3HFM						not flagged
+BS_55P8HPYD						not flagged
+BS_593HEWBF						not flagged
+BS_5965SFPZ						not flagged
+BS_59ZJWJTF						not flagged
+BS_5AF6ZNJF						not flagged
+BS_5CMGN56B						not flagged
+BS_5CTVXVRX						not flagged
+BS_5GNQC2FF						not flagged
+BS_5JM573JC			above_limit			D
+BS_5K3R0F5D						not flagged
+BS_5NWDARXG						not flagged
+BS_5P1TN10Z						not flagged
+BS_5P3CZQV8		above_limit	above_limit			MM, D
+BS_5PEFNDCY						not flagged
+BS_5PJCHF6V						not flagged
+BS_5PV5N4HQ						not flagged
+BS_5VQP0E6K						not flagged
+BS_5YJEPPTP						not flagged
+BS_60K3EQ9S						not flagged
+BS_61E80SD6						not flagged
+BS_64HCD9K3						not flagged
+BS_66ABA973						not flagged
+BS_66HQ3E4Z						not flagged
+BS_67PX06P3						not flagged
+BS_67Z63A2K						not flagged
+BS_680K119G	above_limit					NM
+BS_68BW2163						not flagged
+BS_699TN5RN						not flagged
+BS_69V8P8A0						not flagged
+BS_6DCSD5Y6				above_limit		NE
+BS_6G6C7VPX						not flagged
+BS_6H1C1ME9						not flagged
+BS_6HTK4YJP						not flagged
+BS_6JHXXVR7						not flagged
+BS_6MY8W3H0	above_limit					NM
+BS_6MZ7FRZH						not flagged
+BS_6N3AFF66	above_limit	above_limit				NM, MM
+BS_6NRTJSYK				above_limit		NE
+BS_6NTXGQAC						not flagged
+BS_6P50QTPP						not flagged
+BS_6R7SFVV2						not flagged
+BS_6T4JGBGY						not flagged
+BS_6VF6VPCG						not flagged
+BS_6VPKXXMR						not flagged
+BS_6WP1FHTE						not flagged
+BS_6YMJ621P						not flagged
+BS_70FFPA51						not flagged
+BS_7327SDAQ						not flagged
+BS_742RHK1M				above_limit		NE
+BS_74FS6GMW						not flagged
+BS_74G5K7JF						not flagged
+BS_769BDPDB						not flagged
+BS_77317DY4				above_limit		NE
+BS_775HDFNY						not flagged
+BS_77CDMEY4						not flagged
+BS_78QX3XDF						not flagged
+BS_7B89YR6K						not flagged
+BS_7BTZQKYY						not flagged
+BS_7BW0YRPY	above_limit					NM
+BS_7C40TRCY						not flagged
+BS_7FWZ518S						not flagged
+BS_7G42J2SK						not flagged
+BS_7GJT4A6A						not flagged
+BS_7H4RFCW9						not flagged
+BS_7N0B2CY1						not flagged
+BS_7P83Z28P						not flagged
+BS_7S6GNG04						not flagged
+BS_7T1J3KET						not flagged
+BS_7WNSZNE3						not flagged
+BS_7XQRH69M						not flagged
+BS_7XRN3CFX						not flagged
+BS_7Z93ZYMS						not flagged
+BS_7ZV3DPGT						not flagged
+BS_81SP2HX4						not flagged
+BS_84XCR9GG						not flagged
+BS_850BAHH9						not flagged
+BS_86Q14TZG						not flagged
+BS_893A91ZM			above_limit			D
+BS_8D0NYM46						not flagged
+BS_8F9BDWY4						not flagged
+BS_8GW1TMV2						not flagged
+BS_8J09S6MZ						not flagged
+BS_8J3B6ZB6						not flagged
+BS_8MA5B8Y9					10-20 MEND_reads	10-20M
+BS_8NY9J9NQ						not flagged
+BS_8PNA0V6R						not flagged
+BS_8Q77HZ4R						not flagged
+BS_8RCR7Y4B						not flagged
+BS_8RHPJ740						not flagged
+BS_8S86CM61						not flagged
+BS_8SKZ7BRN						not flagged
+BS_8T7DZV2F						not flagged
+BS_8VAZSJEN						not flagged
+BS_8WPNFT03	above_limit	above_limit	above_limit		10-20 MEND_reads	NM, MM, D, 10-20M
+BS_8Z3SCKB5						not flagged
+BS_8ZD6J47V						not flagged
+BS_8ZP3CBQA						not flagged
+BS_8ZS9F31R						not flagged
+BS_90B22NGP						not flagged
+BS_912NX4Y0						not flagged
+BS_91VYM11A						not flagged
+BS_92MT680S		above_limit	above_limit		<10M_MEND_reads	MM, D, <10M
+BS_92VDQ0NE						not flagged
+BS_94MT16N2				above_limit		NE
+BS_9755PSCS						not flagged
+BS_97M1E2DW				above_limit		NE
+BS_983Z6CA6	above_limit	above_limit	above_limit		10-20 MEND_reads	NM, MM, D, 10-20M
+BS_996ZS2A4						not flagged
+BS_99B1XRZQ						not flagged
+BS_9BJARSX3						not flagged
+BS_9CA93S6D				above_limit		NE
+BS_9DFBHHB5						not flagged
+BS_9DZ253JY	above_limit	above_limit	above_limit		<10M_MEND_reads	NM, MM, D, <10M
+BS_9E7YVFJM						not flagged
+BS_9F09XV62						not flagged
+BS_9FHSNVS0				above_limit		NE
+BS_9G69F50J						not flagged
+BS_9GJ23RHH						not flagged
+BS_9HA238XS	above_limit					NM
+BS_9HSGV9TJ						not flagged
+BS_9M5XJ10G						not flagged
+BS_9NJHQE9F						not flagged
+BS_9NZ2D6AD						not flagged
+BS_9P9MB8X8						not flagged
+BS_9PB3XH5D						not flagged
+BS_9Q6Z6VJC						not flagged
+BS_9RT63JD9						not flagged
+BS_9SJWWYQ4						not flagged
+BS_9V633J1X						not flagged
+BS_9XVACXP0						not flagged
+BS_9XWJ88Q1						not flagged
+BS_A0DYVX9J						not flagged
+BS_A13BMEF5						not flagged
+BS_A14Z8BBK						not flagged
+BS_A1VEGWTR						not flagged
+BS_A3QZB9Y2						not flagged
+BS_A46RDWGM						not flagged
+BS_A7MC2KR2						not flagged
+BS_A7Q8G0Y1			below_limit	above_limit	10-20 MEND_reads	D, NE, 10-20M
+BS_A87NPZAP				above_limit		NE
+BS_A89VAPVV	above_limit					NM
+BS_AA164D3A						not flagged
+BS_ABYF92Z9						not flagged
+BS_AD4JPN9Q						not flagged
+BS_AG3D3435						not flagged
+BS_AG4H9S3J						not flagged
+BS_AGS1HHGF						not flagged
+BS_AGTPCRR4						not flagged
+BS_AHEFXG7W						not flagged
+BS_AJ6X83G5						not flagged
+BS_AKRHBPNZ						not flagged
+BS_AM70R8RG						not flagged
+BS_AMQGM1V9						not flagged
+BS_AMZ70B6F						not flagged
+BS_AP0SZ364						not flagged
+BS_ARBQDTT5						not flagged
+BS_ARFQ1WG3						not flagged
+BS_AVYNZHSB						not flagged
+BS_AWH9757B						not flagged
+BS_AZN38B7V						not flagged
+BS_B0SVFK4P						not flagged
+BS_B1C6GZ84						not flagged
+BS_B1HVNV0T						not flagged
+BS_B24PKKQB						not flagged
+BS_B3M5SGPA						not flagged
+BS_B53Z0T1Q						not flagged
+BS_B61168DE	above_limit	above_limit				NM, MM
+BS_B6M763JS						not flagged
+BS_B741RZY9						not flagged
+BS_B7GEH89C						not flagged
+BS_B7QS4DHK						not flagged
+BS_B7X8VXQ3						not flagged
+BS_B8T7M0WV						not flagged
+BS_B9V8RGTA						not flagged
+BS_BA6AZWB3						not flagged
+BS_BB0YW800						not flagged
+BS_BC936YNZ						not flagged
+BS_BHR08WGW						not flagged
+BS_BJDNWMJH						not flagged
+BS_BKQZ550R						not flagged
+BS_BKR4E30C						not flagged
+BS_BN986DF6						not flagged
+BS_BPSTSCBJ						not flagged
+BS_BPWEFR89						not flagged
+BS_BSV07M7Z						not flagged
+BS_BVSW4GTG						not flagged
+BS_BWBDH9GM						not flagged
+BS_BXXJ9P8C						not flagged
+BS_C05FKR8X						not flagged
+BS_C0XFDP38			above_limit			D
+BS_C3P5BC92			above_limit			D
+BS_C41DJZ1F						not flagged
+BS_C51RB0YR						not flagged
+BS_C6SKJG3N						not flagged
+BS_C6ZZ3FY5						not flagged
+BS_C7A2TYAC						not flagged
+BS_C7N3J4NW	above_limit					NM
+BS_C80S5N37						not flagged
+BS_CB6VK7PB						not flagged
+BS_CGB2WS2A						not flagged
+BS_CHDGRYHJ						not flagged
+BS_CQEETJ66						not flagged
+BS_CQSAJ7BF				above_limit		NE
+BS_CREQ97QC						not flagged
+BS_CS170P7T			below_limit	above_limit		D, NE
+BS_CS66RYDA						not flagged
+BS_CTR5X93B						not flagged
+BS_CVGFNCBJ						not flagged
+BS_CW9QV8AG						not flagged
+BS_CXVGG342						not flagged
+BS_CXVJK2FY						not flagged
+BS_CYEY58NY						not flagged
+BS_CZ3ER8DY						not flagged
+BS_CZ3NA7KV						not flagged
+BS_CZ82ANWP						not flagged
+BS_D0BGESQF						not flagged
+BS_D0RDN4K5	above_limit	above_limit		above_limit		NM, MM, NE
+BS_D144EJRQ						not flagged
+BS_D29RPBSZ						not flagged
+BS_D2K9C7XR						not flagged
+BS_D3YBV7KB						not flagged
+BS_D4PJYHZ2			above_limit		10-20 MEND_reads	D, 10-20M
+BS_D5NQV7N5	above_limit	above_limit	above_limit			NM, MM, D
+BS_D5P6EZ1M						not flagged
+BS_D8N31T39						not flagged
+BS_D9GEXXHX						not flagged
+BS_DBDXCXT5	above_limit	above_limit				NM, MM
+BS_DBEX7AG2		above_limit		above_limit	10-20 MEND_reads	MM, NE, 10-20M
+BS_DEHJF4C7						not flagged
+BS_DFGS950G						not flagged
+BS_DFWFBYSN						not flagged
+BS_DGTPWJ59						not flagged
+BS_DHA5FMVW						not flagged
+BS_DMZP9G1H						not flagged
+BS_DPF1CX0G						not flagged
+BS_DRD9QXR5						not flagged
+BS_DRY58DTF						not flagged
+BS_DS438CXE						not flagged
+BS_DSS3S5XD						not flagged
+BS_DV86M0Y7						not flagged
+BS_DVCQ8XDZ						not flagged
+BS_DY88N5ZT						not flagged
+BS_DY9NTFQR	above_limit	above_limit				NM, MM
+BS_E054DFJN			above_limit			D
+BS_E0N3PTPN						not flagged
+BS_E1CGF3KV						not flagged
+BS_E2Z940S4				above_limit		NE
+BS_E3BAT4C1						not flagged
+BS_E3EJHXQV						not flagged
+BS_E4F1D721						not flagged
+BS_E4GC9EXR						not flagged
+BS_E4QK839R						not flagged
+BS_E60JZ9Z3						not flagged
+BS_E94QRJDW						not flagged
+BS_EBMCTR80						not flagged
+BS_EF775B3K						not flagged
+BS_EFE4YEK3						not flagged
+BS_EFEZB0ZH						not flagged
+BS_EHVYJAVA	above_limit					NM
+BS_EJ9JKM1C						not flagged
+BS_EK5PCKY0					10-20 MEND_reads	10-20M
+BS_EMMF4PZX						not flagged
+BS_EMYET8F4						not flagged
+BS_EN2VK7NY						not flagged
+BS_ENKG5GF3						not flagged
+BS_ERJAJ0KA						not flagged
+BS_ERWT0ZWE						not flagged
+BS_ET8CJXSF						not flagged
+BS_EVCAC3NH						not flagged
+BS_EXGBH3TD						not flagged
+BS_EXYHZ6D4	above_limit	above_limit	above_limit		<10M_MEND_reads	NM, MM, D, <10M
+BS_EYSS0ZDS						not flagged
+BS_EYYMKWB7						not flagged
+BS_F4E8R9VY						not flagged
+BS_F5BZSF3Q						not flagged
+BS_F6V1Y4QS						not flagged
+BS_F6Z5HFWH						not flagged
+BS_F8N6CFQE						not flagged
+BS_F9WKPDFG	above_limit		above_limit		10-20 MEND_reads	NM, D, 10-20M
+BS_FAQQ0GCQ						not flagged
+BS_FAVRBEW7						not flagged
+BS_FBJ5Q54N						not flagged
+BS_FCAKKZ20						not flagged
+BS_FEPRNEXX						not flagged
+BS_FEV5A0HN						not flagged
+BS_FEYMKEK8						not flagged
+BS_FJWZ3M7V						not flagged
+BS_FJZPQZ2C		above_limit				MM
+BS_FKDQJJB5						not flagged
+BS_FQX1PRAJ						not flagged
+BS_FRM9TG02						not flagged
+BS_FRZ76GEG						not flagged
+BS_FTKPQ5FZ						not flagged
+BS_FW5ECXXK						not flagged
+BS_FWMJPKCV						not flagged
+BS_FX2P2WEG				above_limit		NE
+BS_FYRDYBMZ						not flagged
+BS_G00FHF3Q						not flagged
+BS_G1Y281HX			above_limit			D
+BS_G23JJAZY						not flagged
+BS_G3RJTBZD						not flagged
+BS_G5QBBHDV				above_limit		NE
+BS_G63HYD6N						not flagged
+BS_G7AGNB5G						not flagged
+BS_G9XE3N9T						not flagged
+BS_GAGRGSSX						not flagged
+BS_GC3CH9TY						not flagged
+BS_GCA4GET3						not flagged
+BS_GCQFGDTX						not flagged
+BS_GDHH6T5A			above_limit		10-20 MEND_reads	D, 10-20M
+BS_GE2RVZE6						not flagged
+BS_GFM6EA61						not flagged
+BS_GG9W3J9Y						not flagged
+BS_GHNJ4CYC						not flagged
+BS_GJNCYABP						not flagged
+BS_GM9Y3AZ5	above_limit	above_limit	above_limit		<10M_MEND_reads	NM, MM, D, <10M
+BS_GMDQK06Q						not flagged
+BS_GMJBGBWB						not flagged
+BS_GNV89A5P						not flagged
+BS_GPEGRCCT						not flagged
+BS_GR46VD0Q						not flagged
+BS_GS1KR5PK						not flagged
+BS_GSVCN2XC				above_limit		NE
+BS_GTZCFGRZ						not flagged
+BS_GV3NZ9QD						not flagged
+BS_GW0GKWMS						not flagged
+BS_GWCRMKE6						not flagged
+BS_GXTFW99H						not flagged
+BS_GYA4V1RD						not flagged
+BS_GYXSDZ56						not flagged
+BS_H0QWRJE2						not flagged
+BS_H1XPVS9A						not flagged
+BS_H1ZS5FMZ						not flagged
+BS_H3FE3TH9						not flagged
+BS_H3Y8FWHV						not flagged
+BS_H4B5Y6S0						not flagged
+BS_H4NXBD2D						not flagged
+BS_H8A9PSYA						not flagged
+BS_HA20Y4XY						not flagged
+BS_HB03GSHF						not flagged
+BS_HBJZR69P						not flagged
+BS_HC44ZA0V						not flagged
+BS_HC5M8JTC						not flagged
+BS_HCP5C912						not flagged
+BS_HD4EJYE3						not flagged
+BS_HE57E1RP						not flagged
+BS_HF3RNN2T						not flagged
+BS_HHPA8NJ2				above_limit		NE
+BS_HJRTC9JQ						not flagged
+BS_HKZENFDA						not flagged
+BS_HQ5BJ6MW						not flagged
+BS_HSHN8PBB						not flagged
+BS_HTEPAKCM						not flagged
+BS_HV8PFRBR						not flagged
+BS_HX0S30NE						not flagged
+BS_HZ707C55						not flagged
+BS_HZE3KYZ1						not flagged
+BS_HZRM07TW						not flagged
+BS_J1AB8PMA						not flagged
+BS_J483EMFP						not flagged
+BS_J4GQPZS0						not flagged
+BS_J60G8DMK						not flagged
+BS_J6VKB1VE			below_limit	above_limit		D, NE
+BS_J70GK8SM						not flagged
+BS_J71N7D09						not flagged
+BS_J8G4SH4Z						not flagged
+BS_J8VX4D17						not flagged
+BS_JAEM78XS						not flagged
+BS_JBGZ7HHZ	above_limit	above_limit	above_limit		10-20 MEND_reads	NM, MM, D, 10-20M
+BS_JCPKYHKY						not flagged
+BS_JFB984RG						not flagged
+BS_JFEZA9KE						not flagged
+BS_JFR750KD						not flagged
+BS_JG9JZTA9						not flagged
+BS_JGPR9SR2						not flagged
+BS_JH29M4KG						not flagged
+BS_JHGW42S6						not flagged
+BS_JK0VPG1T	above_limit	above_limit				NM, MM
+BS_JKXA3FQC						not flagged
+BS_JMHG7GCN						not flagged
+BS_JR5ATB7G						not flagged
+BS_JRYJGYC4						not flagged
+BS_JS95PE0J						not flagged
+BS_JSPR854S	above_limit					NM
+BS_JT82QGXF						not flagged
+BS_JTMXAMB7						not flagged
+BS_JVA2NQFF						not flagged
+BS_JVW2JJ39						not flagged
+BS_JWCX8R17	above_limit	above_limit				NM, MM
+BS_JWSR581E						not flagged
+BS_JX449BF5						not flagged
+BS_JX7S9MY7			above_limit		10-20 MEND_reads	D, 10-20M
+BS_JXF8A2A6						not flagged
+BS_JXNZYGCR						not flagged
+BS_JZRM1S3T						not flagged
+BS_K17VQECG						not flagged
+BS_K25F4J3V						not flagged
+BS_K2FHZGTK						not flagged
+BS_K2VYFVKZ						not flagged
+BS_K3ER45RV						not flagged
+BS_K5802F84						not flagged
+BS_K74PZET7						not flagged
+BS_K7MVS0Z7						not flagged
+BS_K81DR8XG						not flagged
+BS_KBT7MQ6H						not flagged
+BS_KDSTG5YY						not flagged
+BS_KE56MMY0						not flagged
+BS_KEA474HN						not flagged
+BS_KF0ZXDER						not flagged
+BS_KK0JWATQ			above_limit		10-20 MEND_reads	D, 10-20M
+BS_KK5C8VCK						not flagged
+BS_KM2EX0K6						not flagged
+BS_KN92S7YQ						not flagged
+BS_KND4B5CW						not flagged
+BS_KP735TJ6						not flagged
+BS_KPT2WPHW						not flagged
+BS_KQ6ZW085						not flagged
+BS_KR4MP5ET						not flagged
+BS_KSKZ9J7J						not flagged
+BS_KVAJYZ6F						not flagged
+BS_KVNGNETA						not flagged
+BS_KVV7001W						not flagged
+BS_KX6J8TRK						not flagged
+BS_KXCY5BN5						not flagged
+BS_KXH37MPN						not flagged
+BS_KXMYBQ6N						not flagged
+BS_KYF0Q0E7						not flagged
+BS_KZPR01BD						not flagged
+BS_M026T44Q						not flagged
+BS_M0QYNVK8						not flagged
+BS_M15PW2N0						not flagged
+BS_M1PVEHCM						not flagged
+BS_M1T1K5WV						not flagged
+BS_M4923M40		above_limit				MM
+BS_M4NVX721						not flagged
+BS_M4TTKPNR						not flagged
+BS_M7HCF7DW						not flagged
+BS_M7QJ8VF0						not flagged
+BS_M84H3KXA						not flagged
+BS_M85CXHDV						not flagged
+BS_M86ECPHK						not flagged
+BS_M8EA6R2A						not flagged
+BS_M8M56Z4Y						not flagged
+BS_M8WP5T16						not flagged
+BS_M9C4RY4P						not flagged
+BS_MA1A3GY0						not flagged
+BS_MA2T7ET1	above_limit	above_limit				NM, MM
+BS_MB7WN0ZB						not flagged
+BS_MBSTWZA6						not flagged
+BS_MD3DT41J						not flagged
+BS_MDBT7S5Z						not flagged
+BS_ME3HKN2C						not flagged
+BS_MF47B9ZW						not flagged
+BS_MF9X3PKH						not flagged
+BS_MGAMKKBD						not flagged
+BS_MKM0EEN1						not flagged
+BS_MKP2Y41Z						not flagged
+BS_MM20BVW9						not flagged
+BS_MMNRZ1EQ						not flagged
+BS_MN5XVP5A						not flagged
+BS_MQCKXD60					10-20 MEND_reads	10-20M
+BS_MT15SGJN					10-20 MEND_reads	10-20M
+BS_MV6ASWV9						not flagged
+BS_MVW01FPB						not flagged
+BS_MWWZBQ60						not flagged
+BS_MX23ZY0Y						not flagged
+BS_MY9D8XZ1						not flagged
+BS_N0877CX1				above_limit		NE
+BS_N1E0H8YQ						not flagged
+BS_N210XMKR						not flagged
+BS_N4B1SZZH						not flagged
+BS_N5B2CZMH	above_limit		above_limit			NM, D
+BS_N5DVEJXT						not flagged
+BS_N6N147BY						not flagged
+BS_N6NE6B3W						not flagged
+BS_N8J1DP02						not flagged
+BS_NB42PWZN						not flagged
+BS_NB5XWMJT						not flagged
+BS_NDC69214			above_limit		10-20 MEND_reads	D, 10-20M
+BS_NDFDQBCZ						not flagged
+BS_NDN62H0S						not flagged
+BS_NDRDM2A9						not flagged
+BS_NFRXNAFE						not flagged
+BS_NGHK9RZP						not flagged
+BS_NGY0TE6S						not flagged
+BS_NH7K4CD9				above_limit		NE
+BS_NJ4WPQVK	above_limit					NM
+BS_NKEAAFMW						not flagged
+BS_NKRYMHEP						not flagged
+BS_NNPEC7W1						not flagged
+BS_NPQJ20KX						not flagged
+BS_NQB91P48						not flagged
+BS_NQFH3GZH						not flagged
+BS_NR3P3GN2						not flagged
+BS_NR9FRY5T						not flagged
+BS_NRFQEQKP						not flagged
+BS_NRPG5K4K						not flagged
+BS_NS7GSHB9						not flagged
+BS_NT9NZYFD						not flagged
+BS_NVKGSMXS						not flagged
+BS_NYS8TRCB						not flagged
+BS_NZ71XCG3						not flagged
+BS_P0QF87WC						not flagged
+BS_P0W5VJH4	above_limit	above_limit	above_limit		10-20 MEND_reads	NM, MM, D, 10-20M
+BS_P277RYX5						not flagged
+BS_P39SQPTS						not flagged
+BS_P44PE00R						not flagged
+BS_P4D8Y3S8						not flagged
+BS_P4NX9MPA						not flagged
+BS_P78SMRBS						not flagged
+BS_P7EY9DXG						not flagged
+BS_P9JP6JFA						not flagged
+BS_PEP9NZXN						not flagged
+BS_PGHK1JRW						not flagged
+BS_PGK832G2						not flagged
+BS_PJPGVD62	above_limit	above_limit				NM, MM
+BS_PK18H7E7						not flagged
+BS_PKK3BZRG				above_limit		NE
+BS_PKW05VZV						not flagged
+BS_PN2CE34A				above_limit		NE
+BS_PNYN0AYD						not flagged
+BS_PQ6QEVE8						not flagged
+BS_PQ7CQFYR						not flagged
+BS_PQVTB6BB						not flagged
+BS_PRAEF32W						not flagged
+BS_PRR8K9GE						not flagged
+BS_PSNBFWQV						not flagged
+BS_PSW27ZTE						not flagged
+BS_PZVHMSYN						not flagged
+BS_Q13FQ8FV			below_limit	above_limit	<10M_MEND_reads	D, NE, <10M
+BS_Q2T9ZRM0						not flagged
+BS_Q3TBCK4V						not flagged
+BS_Q5WZYWCT						not flagged
+BS_Q79NP5YY						not flagged
+BS_Q9V7A95C						not flagged
+BS_QAG1RDXN						not flagged
+BS_QB7YGKN1						not flagged
+BS_QB84TBA3				above_limit		NE
+BS_QBR4WCQ2					10-20 MEND_reads	10-20M
+BS_QC3XCE6X						not flagged
+BS_QEYPFYHD						not flagged
+BS_QF5VVZX5						not flagged
+BS_QH82PBMB						not flagged
+BS_QHS3V0GP						not flagged
+BS_QNAQGAV6						not flagged
+BS_QP6MSKRE						not flagged
+BS_QPPPGYP4						not flagged
+BS_QRDT19KS						not flagged
+BS_QRNSKFMS						not flagged
+BS_QSTAVWGE						not flagged
+BS_QT3NZ2YZ						not flagged
+BS_QTSXW7DA						not flagged
+BS_QV51J756						not flagged
+BS_QW60M0FE						not flagged
+BS_QWNBZ9RJ						not flagged
+BS_QWTE1CWR						not flagged
+BS_QX12J6W1						not flagged
+BS_QXKRN6CR						not flagged
+BS_QYPHA40N						not flagged
+BS_QZFEB94Q						not flagged
+BS_R13X6TMW						not flagged
+BS_R244Z0WX	above_limit					NM
+BS_R439VVPK						not flagged
+BS_R4Y180DM		above_limit				MM
+BS_R5SNFB5B						not flagged
+BS_R634WKN7						not flagged
+BS_R6WNEEE4						not flagged
+BS_R7HZCZ8B						not flagged
+BS_RB2S0KDF						not flagged
+BS_RCC8BXVE						not flagged
+BS_RCCN63K6						not flagged
+BS_RCFQ31XF						not flagged
+BS_RD4D5F9F						not flagged
+BS_RFMQ7T0T						not flagged
+BS_RGPSEMHC						not flagged
+BS_RGSMX7QD						not flagged
+BS_RHD7XPNP						not flagged
+BS_RQSKD7PN						not flagged
+BS_RR12T74P						not flagged
+BS_RRAEQZ97						not flagged
+BS_RSRPX3S8						not flagged
+BS_RVSEDNJ4						not flagged
+BS_RWJZFTP9						not flagged
+BS_RXN5T5YT						not flagged
+BS_S0175QKX						not flagged
+BS_S1KK7XRH						not flagged
+BS_S1M423AB						not flagged
+BS_S2TA8R29						not flagged
+BS_S458NMKH						not flagged
+BS_S4V9E1XJ						not flagged
+BS_S50KQEXV	above_limit	above_limit				NM, MM
+BS_S5P8VTN5						not flagged
+BS_S69QZAJR						not flagged
+BS_S6NJRR5W			above_limit			D
+BS_S6S7SK3P						not flagged
+BS_S71RJ8DH						not flagged
+BS_S7CZY2CH						not flagged
+BS_S9929Z8B						not flagged
+BS_SAA624A4	above_limit	above_limit	above_limit		<10M_MEND_reads	NM, MM, D, <10M
+BS_SBFNFZ8B						not flagged
+BS_SD8YBRBR						not flagged
+BS_SDA4RMMG						not flagged
+BS_SDCNP7MW						not flagged
+BS_SDZY6RZ3						not flagged
+BS_SES41DAX						not flagged
+BS_SFKZSJN1						not flagged
+BS_SFRQXM76	above_limit	above_limit			10-20 MEND_reads	NM, MM, 10-20M
+BS_SHMC4902						not flagged
+BS_SKGJ5SY9						not flagged
+BS_SM8VQFPD						not flagged
+BS_SQX5E15Z						not flagged
+BS_SXCZ3CXN						not flagged
+BS_SXRS2P6T						not flagged
+BS_T0RKFEKR						not flagged
+BS_T1DVKKJB						not flagged
+BS_T1QMEH1N	above_limit	above_limit	above_limit			NM, MM, D
+BS_T1W4JA94						not flagged
+BS_T1YHK6B7						not flagged
+BS_T2QPMZCM						not flagged
+BS_T3H5AY8A		above_limit				MM
+BS_T4JFN54G						not flagged
+BS_T4P3J13C						not flagged
+BS_T55Y4Z0Y						not flagged
+BS_TA9WP4TH						not flagged
+BS_TAHV8N04						not flagged
+BS_TBWYAFSM						not flagged
+BS_TCGEZJ5F						not flagged
+BS_TD1ZEQ7R						not flagged
+BS_TDEFAPNH						not flagged
+BS_TE0GVDNG						not flagged
+BS_TG93XC55						not flagged
+BS_TGS109T3						not flagged
+BS_TGW6HC4X						not flagged
+BS_THSPSG2Z						not flagged
+BS_TJTEF70D						not flagged
+BS_TK84K675						not flagged
+BS_TM9MH0RP						not flagged
+BS_TMTV769C						not flagged
+BS_TNRHHYNC		above_limit	above_limit			MM, D
+BS_TQ5QHR17			above_limit		10-20 MEND_reads	D, 10-20M
+BS_TRKH2SPE						not flagged
+BS_TV5B86ZD						not flagged
+BS_TW8DQH8J						not flagged
+BS_TXY8QYWA						not flagged
+BS_TXZ7KHTQ						not flagged
+BS_TYAYZ9ZW						not flagged
+BS_TYKJ8G2G						not flagged
+BS_TZ5D0A7R						not flagged
+BS_TZVFR600				above_limit		NE
+BS_V0Q1G94N						not flagged
+BS_V3REENH9						not flagged
+BS_V3Z3DB4N						not flagged
+BS_V4W81SFC						not flagged
+BS_V72GX2AZ	above_limit	above_limit				NM, MM
+BS_V72H4RQS						not flagged
+BS_V7BJM89K				above_limit		NE
+BS_V89HGTET						not flagged
+BS_V96WVE3Z						not flagged
+BS_V9HVBBDW						not flagged
+BS_VA5T4KAA						not flagged
+BS_VAAHBH60				above_limit		NE
+BS_VARR255N						not flagged
+BS_VF5XWFXD						not flagged
+BS_VJ2S5DVS						not flagged
+BS_VJAC9H58						not flagged
+BS_VJVDJABP						not flagged
+BS_VMEX27TN						not flagged
+BS_VMMJYN8Z						not flagged
+BS_VMQMGSJY						not flagged
+BS_VNE0ZPBS						not flagged
+BS_VNK9XYV9						not flagged
+BS_VNWKNRY4						not flagged
+BS_VP3C8WZT						not flagged
+BS_VP5Y45Z7						not flagged
+BS_VPBMDMQX						not flagged
+BS_VPMKHW9X						not flagged
+BS_VPNXJE2S	above_limit	above_limit				NM, MM
+BS_VR7FR1NE						not flagged
+BS_VT6C6N6K						not flagged
+BS_VTJ9ESSV						not flagged
+BS_VVFBW0YH						not flagged
+BS_VVTHDRBD						not flagged
+BS_VW85Q4XJ						not flagged
+BS_VXEFKW5P						not flagged
+BS_VXHWZJDC		above_limit			10-20 MEND_reads	MM, 10-20M
+BS_W18SF91A						not flagged
+BS_W311713R				above_limit		NE
+BS_W36RZSFA						not flagged
+BS_W3R88RFP						not flagged
+BS_W41S7B55						not flagged
+BS_W4DB5RP1				above_limit		NE
+BS_W4HGV6E7						not flagged
+BS_W60RQAKK				above_limit		NE
+BS_W644VEVE						not flagged
+BS_W6AC5J3C						not flagged
+BS_W72364MN						not flagged
+BS_W7FP2G3F						not flagged
+BS_W80TJC27						not flagged
+BS_W97QQYKQ						not flagged
+BS_W9AT0MR7						not flagged
+BS_W9N9844Q						not flagged
+BS_WAXJY4XQ						not flagged
+BS_WCRKYV0T						not flagged
+BS_WE3Q8A73						not flagged
+BS_WFD0GE5X						not flagged
+BS_WG203ECV						not flagged
+BS_WGK8ZMVA						not flagged
+BS_WH5HDE0A						not flagged
+BS_WH8G4VFB				above_limit		NE
+BS_WJ9H4NZZ						not flagged
+BS_WJGFDRWK	above_limit					NM
+BS_WKESC3XN						not flagged
+BS_WMEHNDSK						not flagged
+BS_WRHDP7WF						not flagged
+BS_WRQHPSXQ						not flagged
+BS_WSQMAA33						not flagged
+BS_WV0S8N4M						not flagged
+BS_WVS02TZK						not flagged
+BS_WVW3W6ZB						not flagged
+BS_WWKNJSJ5						not flagged
+BS_WYERXS4G						not flagged
+BS_WYG77VVP						not flagged
+BS_X0F9AYEC						not flagged
+BS_X16PENSA						not flagged
+BS_X23724NJ						not flagged
+BS_X2QTK3QD						not flagged
+BS_X4X1SFSE						not flagged
+BS_X59HSFGG						not flagged
+BS_X67GTEM6						not flagged
+BS_X91K8KMG						not flagged
+BS_X9EGD530						not flagged
+BS_XBQZYS8G						not flagged
+BS_XF0ZX2B3						not flagged
+BS_XG0DBWVT						not flagged
+BS_XGSA3GQE						not flagged
+BS_XHCYEE2S						not flagged
+BS_XJTW0P8P						not flagged
+BS_XKKB4MZV						not flagged
+BS_XQ5SFW35						not flagged
+BS_XQYHPBFS						not flagged
+BS_XZTV0J8W						not flagged
+BS_Y08D5P8N					10-20 MEND_reads	10-20M
+BS_Y0PCBNJV						not flagged
+BS_Y3G1X98S						not flagged
+BS_Y7F9E2E9						not flagged
+BS_Y8D1F5WW						not flagged
+BS_YA8RBGD8						not flagged
+BS_YB07VF1X						not flagged
+BS_YB2RXRHT						not flagged
+BS_YBJBSRHV						not flagged
+BS_YCREDZTJ						not flagged
+BS_YE1MAQYJ						not flagged
+BS_YEB88D32				above_limit		NE
+BS_YEQVW4ND						not flagged
+BS_YETBN0RQ						not flagged
+BS_YEW22W35						not flagged
+BS_YG0A13JH	above_limit	above_limit		above_limit	10-20 MEND_reads	NM, MM, NE, 10-20M
+BS_YH05F9DB						not flagged
+BS_YK6VQ9SJ						not flagged
+BS_YMAJC22S						not flagged
+BS_YNEQJ6AH						not flagged
+BS_YVMEEBKC						not flagged
+BS_YY5B2XDD		above_limit				MM
+BS_YZ2Z1Q6Y						not flagged
+BS_Z0AVVB1V						not flagged
+BS_Z1A875MW						not flagged
+BS_Z28VKGNS	above_limit	above_limit	above_limit		<10M_MEND_reads	NM, MM, D, <10M
+BS_Z2NWPQKF						not flagged
+BS_Z45HD492						not flagged
+BS_Z6BWR941						not flagged
+BS_Z6MC4N8D						not flagged
+BS_Z72QAZC7						not flagged
+BS_Z7890YNR						not flagged
+BS_Z7G68ZS2						not flagged
+BS_Z7PKVY9J						not flagged
+BS_Z7Y2466H						not flagged
+BS_Z85M2R3N						not flagged
+BS_Z8F3GM85						not flagged
+BS_Z8YZ6QGS						not flagged
+BS_Z9ZS6ZS2	above_limit					NM
+BS_ZA9XT151			above_limit		10-20 MEND_reads	D, 10-20M
+BS_ZF34SJGN						not flagged
+BS_ZH1FBX50						not flagged
+BS_ZHHAM3AN						not flagged
+BS_ZJZXDPTP						not flagged
+BS_ZN8136D9						not flagged
+BS_ZR96A4FH						not flagged
+BS_ZRM0W01M						not flagged
+BS_ZTWGFWTX						not flagged
+BS_ZV1P6W9C						not flagged
+BS_ZV68CES9						not flagged
+BS_ZV9Z3SY6						not flagged
+BS_ZVWE73JZ						not flagged
+BS_ZVX2GRD6						not flagged
+BS_ZVZDDW2G						not flagged
+BS_ZWR9W4FX						not flagged
+BS_ZXYDSBM9						not flagged
+BS_ZZMYDZJW						not flagged
+BS_ZZPBANDD						not flagged
+BS_ZZWMD6FA						not flagged

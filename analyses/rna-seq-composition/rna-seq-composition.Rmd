@@ -18,6 +18,8 @@ library(EnvStats)
 library(janitor)
 library(patchwork)
 
+library(knitr)
+
 ```
 
 
@@ -238,6 +240,8 @@ read_type_frac_thresholds <- all_read_type_fraction_stats %>%
   spread(key = "minmax", value = "value") %>%
   rename(min_frac = min, max_frac = max)
 
+kable(read_type_frac_thresholds)
+
 ```
 
 
@@ -260,6 +264,10 @@ samples_within_limits <- read_fracs_with_thresholds %>%
   filter(sum(grepl("within_limits", within_limits)) == n_read_types) %>%
   pull(sample_id) %>% unique
 
+mend_count_codes <- tibble(
+  mend_count_label = c("<10M_MEND_reads", ">20M_MEND_reads", "10-20 MEND_reads"),
+  mend_count_flag_abbrev = c("<10M", "", "10-20M"))
+
 depth_status <- read_counts_with_read_type_fractions %>%
   select(sample_id, MEND) %>%
   mutate(
@@ -268,7 +276,8 @@ depth_status <- read_counts_with_read_type_fractions %>%
                        is.finite(MEND) ~ ">20M_MEND_reads"),
     all_read_types_within_read_type_limits = sample_id %in% samples_within_limits,
     within_read_type_limits_label = c( "not_WNL", "WNL")[1 + all_read_types_within_read_type_limits]
-  )
+  ) %>%
+  left_join(mend_count_codes, by=c("status"="mend_count_label"))
 
 # How many read type fractions are outside ref range? 
 # (total = 4 * n(samples))
@@ -335,7 +344,7 @@ flag_summary_stats <- read_fracs_with_thresholds_anno  %>%
 ```
 
 
-## Histogram portion of plot
+## Histogram
 ```{r}
 
 plot_title <- paste0(sum(threshold_flag_annotations$flagged_thresholds!=""), " samples are outside reference ranges")
@@ -395,22 +404,25 @@ ggsave(file.path(plots_dir, "fractions_and_reference_ranges.png"), width = 8, he
 # Export table of flagged samples
 ```{r}
 
-samples_to_export <- c(read_fracs_with_thresholds_anno %>%
-  filter(flagged_thresholds !="") %>%
-  pull(sample_id) %>%
-  unique, 
-  depth_status %>%
-    filter(status == "<10M_MEND_reads") %>%
-    pull(sample_id))
+# extract combined flag codes
+sample_flag_codes <- read_fracs_with_thresholds_anno %>%
+  select(sample_id, flagged_thresholds) %>%
+  distinct
   
 read_fracs_with_thresholds_anno %>%
-  filter(sample_id %in% samples_to_export) %>%
   mutate(within_limits = gsub("within_limits", "", within_limits)) %>%
   select(sample_id, read_type_name, within_limits) %>%
   spread(key = "read_type_name", value = "within_limits") %>%
-  #  pivot_wider(names_from = "read_type_name", values_from = "within_limits") %>%
-  left_join(depth_status %>% select(sample_id, status)) %>%
+  left_join(depth_status %>% select(sample_id, status, mend_count_flag_abbrev)) %>%
   rename(MEND_depth_bin = status) %>%
+  mutate(MEND_depth_bin = gsub(">20M_MEND_reads", "", MEND_depth_bin)) %>%
+  left_join(sample_flag_codes, by="sample_id") %>%
+  mutate(summary_flag_status = case_when(
+    flagged_thresholds==mend_count_flag_abbrev ~ "not flagged", # they are equal if they are both blank
+    flagged_thresholds=="" ~ mend_count_flag_abbrev,
+    mend_count_flag_abbrev=="" ~ flagged_thresholds,
+    TRUE ~ paste(flagged_thresholds, mend_count_flag_abbrev, sep = ", "))) %>%
+  select(-mend_count_flag_abbrev, -flagged_thresholds) %>%
   write_tsv(file.path(results_dir, "samples_with_flags.tsv"))
 
 ```
@@ -446,7 +458,7 @@ ggplot(flag_analysis) +
 
 Samples are ordered by the number of read fractions for which they exceed the reference range. Samples that exceed the range of non-exonic reads often only exceed that range and no other. Conversely, samples that exceed the unmapped threshold often also exceed the multi-mapper threshold; some of those samples also exceed the duplicate read threshold.
 
-# Characterize excluded samples
+# Evaluate total and MEND read counts per read type and flag
 ```{r fig.height=9, fig.width=9}
 
 samples_by_MEND <- read_fracs_with_thresholds_anno %>%
@@ -516,6 +528,9 @@ There are only five samples with unusually low duplicate reads fractions, limiti
 
 
 # Number of measured genes
+
+Here a measured gene is one with a non-zero TPM value.
+
 ```{r}
 expr <- readRDS(file.path(data_dir,"pbta-gene-expression-rsem-tpm.stranded.rds"))
 
