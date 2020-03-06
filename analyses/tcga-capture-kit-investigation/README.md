@@ -21,15 +21,14 @@ Since we got the TCGA data manifest from the [GDC portal](https://portal.gdc.can
 - output: `results/tcga-capture_kit-info.csv`
 
 ### 02. prepare-tcga-capture_kit
-By checking the `results/tcga-capture_kit-info.csv`, it turns out there are BAMs with `|` in the returned capture kit name and url which are those with more than one capture kit which neither the GDC nor its origin data center could retrieve/figure out what the actual capture kit had been applied. 
-We should just generate intersect BED for those samples and use that for our analysis. 
-We created scripts to download all uniq BED files and added prefix `chr` for [UCSC liftover](https://genome.ucsc.edu/cgi-bin/hgLiftOver) and saved the liftover'd BED under the using the same BED filename root with prefix of `hg38lft-`
+By checking the `results/tcga-capture_kit-info.csv`, it turns out there are BAMs with `|` in the returned capture kit name and url which are those with more than one capture kit which neither the GDC nor its origin data center could retrieve/figure out what the actual capture kit had been applied. We plan to generate an intersected BED for those samples and used that for our analysis. We created scripts to download all unique BED files and added prefix `chr` and used [CrossMap tool](http://crossmap.sourceforge.net/) to convert all hg19 coordinates to Gh38 and saved them in  `results` folder with a `.Gh38.bed` extension
 
-- script: [`scripts/prepare-tcga-capture_kit.sh`](scripts/prepare-tcga-capture_kit.sh)
-- output: `results/hg38lft-*.bed`
+- script: `run-investigation.sh` and `scripts/prepare-tcga-capture_kit.sh`
+- output: `results/*.Gh38.bed`
 
 ## Check the intersection region for the existing TCGA and PBTA MAF
-Ideally, we should re-run the TCGA data with the new `hg38lft-*.bed` and re-do the TMB comparison using each sample's actual calling region. But to double check the new BED files, we wanted to intersect all the regions and use the overlapping region to check all the mutations counts before re-run everything.
+The plan is to re-run the TCGA data with the new `*.Gh38.bed*` and re-do the TMB comparison using each sample's actual calling region. But to double check the new BED files, we wanted to intersect all the regions and use the overlapping region to check all the mutations counts before re-run everything.
+
 ### 03. intersect-bed-maf
 We created script to prepare the input dataframe for the boxplot script. This script intersects all the BED and then use that to intersect with released PBTA and TCGA MAF and then counted all the mutation number within that intersection region, and then mapped that counts to the project(TCGA/PBTA) and tumor type for each sample.
 - script: [`scripts/intersect-bed-maf.sh`](scripts/intersect-bed-maf.sh)
@@ -38,12 +37,14 @@ We created script to prepare the input dataframe for the boxplot script. This sc
 ### 04. mutation-counts-boxplot
 - script: [`scripts/boxplot.R`](scripts/boxplot.R)
 - output: `plots/boxplot-*.png`
+
 ![](plots/boxplot-all.png)
 
-### (WIP) coverage-comparison
-| sample name                  | # of bases > 20x vs GDC BED | % of bases > 20x vs GDC BED | # of bases > 20x vs MC3 BED | % of bases > 20x vs MC3 BED | 
-|------------------------------|------------------------------|------------------------------|-----------------------------|-----------------------------| 
-| TCGA-HT-7684-01A-11D-2253-08 | 27755836                     | 84%                          | 8787516                     | 31%                         | 
-| TCGA-SP-A6QF-01A-12D-A35I-08 | 27350549                     | 82%                          | 30060356                    | 31%                         | 
+## Coverage-Comparison
+In order to show in the form of coverage that the downloaded BED files were  correct, we calculated the number of bases that are covered  at least at 20x in both old TCGA BED file(`gencode.v19.basic.exome`) and the new downloaded BED files (`results/*Gh38.bed`). The following command was used to run sambamba coverage per base with a coverage threshold of 20x -
+`sambamba_v0.5.9  depth base -c 20 -L *Gh38.bed *.bam > *.sambamba_basecoverage.txt`
+The coverage table in `results/TCGA_oldandnew_coverage_comparisons.txt` gives  a  tabular summary of  number of bases and percentages within corresponding BED files. Boxplot comparison for the same data is available here(`plots/TCGA_oldandnew_coverage_plots.png`)
 
-### (Planned) rerun-tcga-with-new-bed
+![](plots/TCGA_oldandnew_coverage_plots.png)
+
+## (Planned) rerun-tcga-with-new-bed

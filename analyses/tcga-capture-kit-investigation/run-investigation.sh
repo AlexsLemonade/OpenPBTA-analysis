@@ -16,3 +16,4 @@ bash scripts/intersect-bed-maf.sh
 
 ## boxplot from ggplot and saved to plots folder
 Rscript scripts/boxplot.R ../../scratch/somatic-count_with-histologies.tsv plots/
+
