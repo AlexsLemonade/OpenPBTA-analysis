@@ -61,8 +61,8 @@ system(paste("bash", tcga_consensus_script))
 rmarkdown::render('analyses/mutational-signatures/mutational_signatures.Rmd', 
                   clean = TRUE)
 
-###################### Re-run the individual plots #############################
-# TODO: update if the this tmb consensus file gets updated in a future data release
+###################### Read in associated results ##############################
+# Read in PBTA TMB results
 tmb_pbta <- data.table::fread(file.path(snv_callers_dir,
                                         "results",
                                         "consensus", 
@@ -71,13 +71,30 @@ tmb_pbta <- data.table::fread(file.path(snv_callers_dir,
   dplyr::select(-genome_size) %>% 
   dplyr::filter(experimental_strategy != "Panel")
 
-# TODO: update if this tmb consensus file gets updated in a future data release
+# Read in TCGA TMB results
 tmb_tcga <- data.table::fread(file.path(snv_callers_dir,
                                         "results",
                                         "consensus",
                                         "tcga-snv-mutation-tmb-coding.tsv")) %>% 
   dplyr::select(-genome_size)
 
+# Read in cosmic signature results
+cosmic_sigs_df <- readr::read_tsv(file.path(mut_sig_dir, 
+                                            "results",
+                                            "cosmic_signatures_results.tsv")) %>%
+  # Get rid of `.` in signature names and factor in order
+  dplyr::mutate(signature = gsub("\\.", " ", signature), 
+                signature = factor(signature, levels = unique(signature)))
+
+# Read in nature signature results
+nature_sigs_df <- readr::read_tsv(file.path(mut_sig_dir, 
+                                            "results",
+                                            "nature_signatures_results.tsv")) %>%
+  # Get rid of `.` in signature names and factor in order
+  dplyr::mutate(signature = gsub("\\.", " ", signature), 
+                signature = factor(signature, levels = unique(signature)))
+
+###################### Re-run the individual plots #############################
 # Make PBTA TMB plot
 pbta_plot <- tmb_cdf_plot(tmb_pbta, plot_title = "PBTA", colour = "#3BC8A2") +
   ggplot2::theme(
@@ -94,22 +111,6 @@ tcga_plot <- tmb_cdf_plot(tmb_tcga, plot_title = "TCGA (Adult)", colour = "#6308
     strip.text.x = ggplot2::element_text(size = 11), 
     plot.margin = ggplot2::unit(c(1, 1, -4, 0), "cm")
   ) 
-
-# Set up cosmic signature plots
-cosmic_sigs_df <- readr::read_tsv(file.path(mut_sig_dir, 
-                                            "results",
-                                            "cosmic_signatures_results.tsv")) %>%
-  # Get rid of `.` in signature names and factor in order
-  dplyr::mutate(signature = gsub("\\.", " ", signature), 
-                signature = factor(signature, levels = unique(signature)))
-
-# Set up cosmic signature plots
-nature_sigs_df <- readr::read_tsv(file.path(mut_sig_dir, 
-                                            "results",
-                                            "nature_signatures_results.tsv")) %>%
-  # Get rid of `.` in signature names and factor in order
-  dplyr::mutate(signature = gsub("\\.", " ", signature), 
-                signature = factor(signature, levels = unique(signature)))
 
 # Create cosmic signatures bubble plot
 mut_sig_plot_cosmic <- bubble_matrix_plot(cosmic_sigs_df, 
