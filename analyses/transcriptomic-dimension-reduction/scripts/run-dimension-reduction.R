@@ -160,7 +160,8 @@ gene_count_threshold <- opt$low_count_threshold
 #### Read in data --------------------------------------------------------------
 
 # Read in metadata
-metadata_df <- data.frame(readr::read_tsv(metadata_file))
+metadata_df <- data.frame(readr::read_tsv(metadata_file,
+                                          col_types = readr::cols(molecular_subtype = readr::col_character())))
 
 # Read in expression data
 expression_data <- readr::read_rds(expression_file) %>%

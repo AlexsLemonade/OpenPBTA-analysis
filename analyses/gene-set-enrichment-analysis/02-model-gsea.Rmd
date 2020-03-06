@@ -21,7 +21,7 @@ The purpose of this analysis is to assess significant differences in GSVA scores
 
 + For each pathway, are GSVA scores significantly different across `short_histology`? If so, which histologies are significantly different?
 
-+ For each pathway, are GSVA scores significantly different across `disease_type_new`? If so, which types are significantly different?
++ For each pathway, are GSVA scores significantly different across `integrated_diagnosis`? If so, which types are significantly different?
 
 We perform this using both GSVA scores calculated from the stranded and polyA RNA-seq libraries. Code is also flexible enough to test a different variable besides `short_histology`, etc.
 
@@ -79,13 +79,13 @@ scores_polya_file    <- file.path(results_dir, "gsva_scores_polya.tsv")
 ######## Define output files
 file_anova_stranded_short_histology  <- file.path(results_dir, "gsva_anova_stranded_short_histology.tsv")
 file_anova_polya_short_histology     <- file.path(results_dir, "gsva_anova_polya_short_histology.tsv")
-file_anova_stranded_disease_type_new <- file.path(results_dir, "gsva_anova_stranded_disease_type_new.tsv")
-file_anova_polya_disease_type_new    <- file.path(results_dir, "gsva_anova_polya_disease_type_new.tsv")
+file_anova_stranded_integrated_diagnosis <- file.path(results_dir, "gsva_anova_stranded_integrated_diagnosis.tsv")
+file_anova_polya_integrated_diagnosis    <- file.path(results_dir, "gsva_anova_polya_integrated_diagnosis.tsv")
 
 file_tukey_stranded_short_histology  <- file.path(results_dir, "gsva_tukey_stranded_short_histology.tsv")
 file_tukey_polya_short_histology     <- file.path(results_dir, "gsva_tukey_polya_short_histology.tsv")
-file_tukey_stranded_disease_type_new <- file.path(results_dir, "gsva_tukey_stranded_disease_type_new.tsv")
-file_tukey_polya_disease_type_new    <- file.path(results_dir, "gsva_tukey_polya_disease_type_new.tsv")
+file_tukey_stranded_integrated_diagnosis <- file.path(results_dir, "gsva_tukey_stranded_integrated_diagnosis.tsv")
+file_tukey_polya_integrated_diagnosis    <- file.path(results_dir, "gsva_tukey_polya_integrated_diagnosis.tsv")
 
 
 ######## Load input files
@@ -98,7 +98,7 @@ scores_polya    <- readr::read_tsv(scores_polya_file)
 
 ### ANOVA and Tukey analysis of GSVA scores
 
-Here we perform a series of ANOVAs, for polyA and stranded libraries separately, to determine whether mean GSVA scores for a given grouping are significantly different across hallmarks (pathways). The given groupings examined here are `short_histology` and `disease_type_new`. 
+Here we perform a series of ANOVAs, for polyA and stranded libraries separately, to determine whether mean GSVA scores for a given grouping are significantly different across hallmarks (pathways). The given groupings examined here are `short_histology` and `integrated_diagnosis`. 
 In other words, we perform an ANOVA (and associated posthoc Tukey test) for each hallmark as, `hallmark ~ grouping`. Users can specify the grouping variable.
 
 First, prepare the data for modeling:
@@ -122,30 +122,30 @@ Now, model:
 
 ```{r, aov-perform}
 short_histology_stranded_model_results <- gsva_anova_tukey(metadata_with_gsva, short_histology, "stranded", SIGNIFICANCE_THRESHOLD) 
-disease_type_new_stranded_model_results <- gsva_anova_tukey(metadata_with_gsva, disease_type_new, "stranded", SIGNIFICANCE_THRESHOLD) 
+integrated_diagnosis_stranded_model_results <- gsva_anova_tukey(metadata_with_gsva, integrated_diagnosis, "stranded", SIGNIFICANCE_THRESHOLD) 
 
 head(short_histology_stranded_model_results)
-head(disease_type_new_stranded_model_results)
+head(integrated_diagnosis_stranded_model_results)
 
 ## Save stranded library results
 write_tsv(short_histology_stranded_model_results[["anova"]],  file_anova_stranded_short_histology)
-write_tsv(disease_type_new_stranded_model_results[["anova"]], file_anova_stranded_disease_type_new)
+write_tsv(integrated_diagnosis_stranded_model_results[["anova"]], file_anova_stranded_integrated_diagnosis)
 write_tsv(short_histology_stranded_model_results[["tukey"]],  file_tukey_stranded_short_histology)
-write_tsv(disease_type_new_stranded_model_results[["tukey"]], file_tukey_stranded_disease_type_new)
+write_tsv(integrated_diagnosis_stranded_model_results[["tukey"]], file_tukey_stranded_integrated_diagnosis)
 
 
 ### Don't run polyA samples in CI due to data limitations, won't be enough levels for ANOVA
 if (!(running_in_ci)){
   short_histology_polya_model_results <- gsva_anova_tukey(metadata_with_gsva, short_histology, "polya", SIGNIFICANCE_THRESHOLD)
-  disease_type_new_polya_model_results <- gsva_anova_tukey(metadata_with_gsva, disease_type_new, "polya", SIGNIFICANCE_THRESHOLD)
+  integrated_diagnosis_polya_model_results <- gsva_anova_tukey(metadata_with_gsva, integrated_diagnosis, "polya", SIGNIFICANCE_THRESHOLD)
   head(short_histology_polya_model_results)
-  head(disease_type_new_polya_model_results)
+  head(integrated_diagnosis_polya_model_results)
 
   ### Save polya library results
   write_tsv(short_histology_polya_model_results[["anova"]],     file_anova_polya_short_histology)
-  write_tsv(disease_type_new_polya_model_results[["anova"]],    file_anova_polya_disease_type_new)
+  write_tsv(integrated_diagnosis_polya_model_results[["anova"]],    file_anova_polya_integrated_diagnosis)
   write_tsv(short_histology_polya_model_results[["tukey"]],     file_tukey_polya_short_histology)
-  write_tsv(disease_type_new_polya_model_results[["tukey"]],    file_tukey_polya_disease_type_new)
+  write_tsv(integrated_diagnosis_polya_model_results[["tukey"]],    file_tukey_polya_integrated_diagnosis)
 
 }
 ```
@@ -161,12 +161,12 @@ if (!(running_in_ci))
 
 > All are significantly different for stranded, none for polya. Likely due to data/power limitations.
 
-**How many `disease_type_new` have significant ANOVAs across hallmark pathways, for each library?**
+**How many `integrated_diagnosis` have significant ANOVAs across hallmark pathways, for each library?**
 ```{r}
-disease_type_new_stranded_model_results[["anova"]] %>% count(significant_anova)
+integrated_diagnosis_stranded_model_results[["anova"]] %>% count(significant_anova)
 if (!(running_in_ci))
 {
-  disease_type_new_polya_model_results[["anova"]] %>% count(significant_anova)
+  integrated_diagnosis_polya_model_results[["anova"]] %>% count(significant_anova)
 }
 ```
 

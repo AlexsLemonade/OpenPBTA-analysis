@@ -39,7 +39,7 @@ The output of this notebook is three `_binned_breakpoint_counts.tsv"` for each d
 
 - `02a-plot-chr-instability-heatmaps.Rmd` uses `_binned_breakpoint_counts.tsv"` datasets to create three heatmaps for the intersection, CNV, and SV data respectively. `NA` regions are gray.
 
-- `02b-plot-chr-instability-by-histology.Rmd` uses `intersection_of_breaks_densities.tsv` and `histology_breakpoint_binned_counts.RDS` to plot breakpoint densities by `short_histology` group. 
+- `02b-plot-chr-instability-by-histology.Rmd` uses the `_breaks_densities.tsv` files and `histology_breakpoint_binned_counts.RDS` to plot breakpoint densities by `short_histology` group. 
 
 ## Summary of Custom Functions
 
@@ -48,3 +48,4 @@ For breakpoint analysis:
 - `break_density`: Given data.frame(s) with chr break coordinates, calculate the density of the breaks.
 - `map_breaks_plot`: Given a `GenomicRanges` object, use map the chromosomal coordinates to a `ggplot2`
 - `multipanel_break_plot`: Given a list of `GenomicRanges` objects, plot them in a combined `cowplot`.
+- `breaks_cdf_plot`: Given a genome wide breaks density file path, plot the CDF distribution for it by histology.

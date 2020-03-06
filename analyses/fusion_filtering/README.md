@@ -20,9 +20,11 @@ We also gather counts for recurrent fusions and fused genes found in more than 3
 * pbta-gene-expression-rsem-fpkm.stranded.rds : aggregated stranded fpm data
 
 #### Inputs used as reference
-* genelistreference.txt : known kinases, oncogenes, tumor suppressors, curated transcription factors [@doi:10.1016/j.cell.2018.01.029], COSMIC Cancer Gene Census list[https://cancer.sanger.ac.uk/census] . MYBL1 [@doi:10.1073/pnas.1300252110], SNCAIP [@doi:10.1038/nature11327], FOXR2 [@doi:10.1016/j.cell.2016.01.015], TTYH1 [@doi:10.1038/ng.2849], and TERT [@doi:10.1038/ng.3438; @doi:10.1002/gcc.22110; @doi:10.1016/j.canlet.2014.11.057; @doi:10.1007/s11910-017-0722-5] were added to the oncogene list and BCOR [@doi:10.1016/j.cell.2016.01.015] and QKI [@doi:10.1038/ng.3500] were added to the tumor suppressor gene list based on pediatric cancer literature review
+* genelistreference.txt : known kinases, oncogenes, tumor suppressors, curated transcription factors [@doi:10.1016/j.cell.2018.01.029], COSMIC Cancer Gene Census list[https://cancer.sanger.ac.uk/census] . MYBL1 [@doi:10.1073/pnas.1300252110], SNCAIP [@doi:10.1038/nature11327], FOXR2 [@doi:10.1016/j.cell.2016.01.015], TTYH1 [@doi:10.1038/ng.2849], and TERT [@doi:10.1038/ng.3438; @doi:10.1002/gcc.22110; @doi:10.1016/j.canlet.2014.11.057; @doi:10.1007/s11910-017-0722-5] were added to the oncogene list and BCOR [@doi:10.1016/j.cell.2016.01.015] and QKI [@doi:10.1038/ng.3500] were added to the tumor suppressor gene list based on pediatric cancer literature review. IGH-@,IGH@ , IGL-@ and IGL@ were also added to reference list as oncogenic genes because StarFusion output contains these gene symbols instead of IGL/IGH as per public databases.
 * fusionreference.txt :  known TCGA fusions
 * Brain_FPKM_hg38_matrix.txt.zip : GTex brain samples FPKM data
+The code to generate genelistreference.txt and fusionreference.txt is available here: https://gist.github.com/kgaonkar6/02b3fbcfeeddfa282a1cdf4803704794#file-format_reference_gene_list-r
+
 
 #### Outputs saved to data download
 * pbta-fusion-putative-oncogenic.tsv
