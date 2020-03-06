@@ -11,7 +11,6 @@
 #
 # source(file.path("util", "GISTIC-comparison-functions.R"))
 
-genes_file = lgat_amp_genes_file
 #### Implemented in both `01-GISTIC-cohort-vs-histology.Rmd` and `02-GISTIC-tidy-data-prep.Rmd`
 format_gistic_genes <- function(genes_file,
                                 include_peak_info = TRUE) {
@@ -202,14 +201,10 @@ plot_genes_venn_diagram_wrapper <- function(cohort_genes_file,
 }
 
 #### Implemented in `02-GISTIC-tidy-data-prep.Rmd` ----------------------------
-all_lesions_file = cohort_all_lesions_file
-amp_genes_file = cohort_amp_genes_file
-del_genes_file = cohort_del_genes_file
-
 prepare_gene_level_gistic <- function(all_lesions_file,
                                       amp_genes_file,
                                       del_genes_file,
-                                      output_filename) {
+                                      output_filepath) {
 
   # Given the file paths to GISTIC's `all_lesion.conf_90.txt`,
   # `amp_genes.conf_90.txt`, and `del_genes.conf_90.txt` files,
@@ -222,7 +217,7 @@ prepare_gene_level_gistic <- function(all_lesions_file,
   #   all_lesions_file: file path to GISTIC's `all_lesion.conf_90.txt` file
   #   amp_genes_file: file path to GISTIC's `amp_genes.conf_90.txt` file
   #   del_genes_file: file path to GISTIC's `del_genes.conf_90.txt` file
-  #   output_filename: string to save the output file as
+  #   output_filepath: string of filepath to save the output file to
   #
   # Return:
   #   final_df: data.frame with the relevant data from the `all_lesions`,
@@ -285,7 +280,7 @@ prepare_gene_level_gistic <- function(all_lesions_file,
 }
 
 prepare_cytoband_level_gistic <- function(all_lesions_file,
-                                          output_filename) {
+                                          output_filepath) {
 
   # Given the file path to GISTIC's `all_lesion.conf_90.txt` file,
   # read in and tidy this data into a data.frame that contains
@@ -293,52 +288,40 @@ prepare_cytoband_level_gistic <- function(all_lesions_file,
   #
   # Args:
   #   all_lesions_file: file path to GISTIC's `all_lesion.conf_90.txt` file
-  #   output_filename: string to save the output file as
+  #   output_filepath: string of filepath to save the output file to
   #
   # Return:
   #   final_df: data.frame with the relevant data from the `all_lesions` file
 
-  # Read in files
+  # Read in `all_lesions_file`
   gistic_all_lesions_df <- data.table::fread(all_lesions_file,
-    data.table = FALSE
-  )
+                                             data.table = FALSE
+  ) %>% 
+    # One half of the data is a copy of the other and the Unique Names
+    # with `-CN values` have the actual copy number values. 
+    dplyr::filter(grepl("- CN values", `Unique Name`))
 
 
   # Wrangle the GISTIC all lesions data to be in a comparable format with our CN calls
   gistic_all_lesions_df <- gistic_all_lesions_df %>%
-    dplyr::select(
-      -c(
-        "Unique Name",
-        "Wide Peak Limits",
-        "Peak Limits",
-        "Region Limits",
-        "q values",
-        "Residual q values after removing segments shared with higher peaks",
-        "Broad or Focal",
-        "Amplitude Threshold"
-      )
+    dplyr::select(dplyr::starts_with("BS"), 
+                  "Descriptor"
     ) %>%
-    as.data.frame() %>%
     tidyr::gather(
       "Kids_First_Biospecimen_ID",
       "status",
-      -Descriptor
+      -`Descriptor`
     ) %>%
     dplyr::mutate(status = dplyr::case_when(
       status < 0 ~ "loss",
       status > 0 ~ "gain",
       status == 0 ~ "neutral"
     )) %>%
-    # The `select` function above got rid of some extra fields (fields that are
-    # not needed for this analysis) from the `gistic_all_lesions_df`
-    # object -- `distinct` removes any duplicate rows resulting from
-    # the removal of the extra variables
-    dplyr::distinct() %>%
     dplyr::rename(cytoband = Descriptor)
 
   # Save data.frame to file (for later cytoband level comparison)
   readr::write_tsv(
     gistic_all_lesions_df,
-    file.path(results_dir, output_filename)
+    output_filepath
   )
 }
