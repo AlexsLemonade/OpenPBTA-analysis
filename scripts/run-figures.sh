@@ -6,7 +6,7 @@
 cd "$(dirname "${BASH_SOURCE[0]}")" 
  
 # Make an output folder for all directories
-mkdir figures
+mkdir ../figures
 
 ## Sample distribution
 
