@@ -174,45 +174,39 @@ selected_read_counts <- read_counts %>%
 
 This analysis is performed only on ribo-deplete data (stranded). Data from cell lines and solid tissues are both included. 
 
-# Calculate fractions for reference range calcs
+# Calculate fractions of each read type
 ```{r}
 
-read_counts_with_ref_range_fractions <- selected_read_counts %>% 
+read_counts_with_read_type_fractions <- selected_read_counts %>% 
   arrange(desc(Total_reads)) %>% 
   mutate(frac_unmapped_of_total = (Total_reads - Mapped)/Total_reads,
          frac_multi_mapped_of_mapped = Multimapped/Mapped, # Mapped = UM + MM
          frac_dupe_of_mapped = (Mapped - MND) / Mapped,
          frac_non_exonic_of_non_dupe = (MND - MEND)/MND)
 
-read_fracs_with_ref_range_fractions_long <- read_counts_with_ref_range_fractions %>%
+read_type_fractions_long <- read_counts_with_read_type_fractions %>%
   select(c(sample_id, starts_with("frac_"))) %>% 
-  gather(key="ref_range_name", value = "value", -sample_id) 
+  gather(key="read_type_name", value = "value", -sample_id) 
 
 ```
 
 # Calculate reference ranges
 ```{r}
 
-ref_range_codes <- as_tibble(
-  list(ref_range_abbrev = c("NM", "MM", "D", "NE"), 
-       ref_range_description = 
+read_type_codes <- as_tibble(
+  list(read_type_abbrev = c("NM", "MM", "D", "NE"), 
+       read_type_description = 
          c("Not mapped", "Multi-mapped", "Duplicate reads", "Non exonic reads"), 
-       ref_range_name = 
+       read_type_name = 
          c("frac_unmapped_of_total", "frac_multi_mapped_of_mapped", 
            "frac_dupe_of_mapped", "frac_non_exonic_of_non_dupe"
          )))
 
-ref_range_stats <- function(mean1, sd1) {
-  c(mean_minus_one_sd = mean1 - sd1,
-    mean_plus_one_sd = mean1 + sd1,
-    mean_minus_two_sd = mean1 - (2 * sd1),
-    mean_plus_two_sd = mean1 + (2 * sd1))}
-
 # Calculate summary statistics for each read type (wide)
-ref_range_mean_sd <- read_counts_with_ref_range_fractions %>%
+read_type_fraction_mean_sd <- read_counts_with_read_type_fractions %>%
   select(starts_with("frac_")) %>% 
-  gather(key="ref_range_name") %>%
-  group_by(ref_range_name) %>%
+  gather(key="read_type_name") %>%
+  group_by(read_type_name) %>%
   summarise(mean = mean(value), 
             sd = sd(value),
             mean_minus_one_sd = mean - sd,
@@ -222,15 +216,15 @@ ref_range_mean_sd <- read_counts_with_ref_range_fractions %>%
   )
 
 # Longify summary statistics and annoate for plotting
-all_stats <- ref_range_mean_sd %>% 
+all_read_type_fraction_stats <- read_type_fraction_mean_sd %>% 
   select(-sd) %>%
-  gather(key="stat_name", value = "value", -ref_range_name) %>%
+  gather(key="stat_name", value = "value", -read_type_name) %>%
   mutate(minmax = case_when(grepl("plus", stat_name) ~ "max",
                             grepl("minus", stat_name) ~ "min",
                             stat_name == "mean" ~ "mean"),
          stat = gsub("^.*_([[:lower:]]{3}_.*)", "\\1", stat_name),
-         ref_range_name = factor(ref_range_name, 
-                                 levels = ref_range_codes$ref_range_name))
+         read_type_name = factor(read_type_name, 
+                                 levels = read_type_codes$read_type_name))
 
 ```
 
@@ -238,7 +232,7 @@ all_stats <- ref_range_mean_sd %>%
 # Select reference ranges that will be used to flag samples
 ```{r}
 
-read_type_frac_thresholds <- all_stats %>% 
+read_type_frac_thresholds <- all_read_type_fraction_stats %>% 
   filter(stat == "two_sd") %>%
   select(-stat, -stat_name) %>%
   spread(key = "minmax", value = "value") %>%
@@ -251,7 +245,7 @@ read_type_frac_thresholds <- all_stats %>%
 
 ```{r}
 
-read_fracs_with_thresholds <- left_join(read_fracs_with_ref_range_fractions_long, read_type_frac_thresholds, by = "ref_range_name") %>%
+read_fracs_with_thresholds <- left_join(read_type_fractions_long, read_type_frac_thresholds, by = "read_type_name") %>%
   rename(sample_value = value) %>%
   mutate(within_limits = case_when(
       sample_value >= max_frac ~ "above_limit",
@@ -259,14 +253,14 @@ read_fracs_with_thresholds <- left_join(read_fracs_with_ref_range_fractions_long
       is.finite(sample_value) ~ "within_limits" ))
 
 
-n_ref_ranges <- n_distinct(read_type_frac_thresholds$ref_range_name)
+n_read_types <- n_distinct(read_type_frac_thresholds$read_type_name)
 
 samples_within_limits <- read_fracs_with_thresholds %>% 
   group_by(sample_id) %>%
-  filter(sum(grepl("within_limits", within_limits)) == n_ref_ranges) %>%
+  filter(sum(grepl("within_limits", within_limits)) == n_read_types) %>%
   pull(sample_id) %>% unique
 
-depth_status <- read_counts_with_ref_range_fractions %>%
+depth_status <- read_counts_with_read_type_fractions %>%
   select(sample_id, MEND) %>%
   mutate(
     status = case_when(MEND<10E6 ~ "<10M_MEND_reads",
@@ -284,8 +278,8 @@ table(read_fracs_with_thresholds$within_limits)
 tabyl(depth_status, within_read_type_limits_label, status)
 
 threshold_flag_annotations <- read_fracs_with_thresholds %>% 
-  left_join(ref_range_codes, by="ref_range_name") %>%
-  mutate(threshold_code = ifelse(within_limits == "within_limits", NA, ref_range_abbrev)) %>%
+  left_join(read_type_codes, by="read_type_name") %>%
+  mutate(threshold_code = ifelse(within_limits == "within_limits", NA, read_type_abbrev)) %>%
   group_by(sample_id) %>%
   summarize(flagged_thresholds = paste(na.omit(threshold_code), collapse=", "))
 
@@ -318,7 +312,7 @@ limit_and_MEND_vec <- c(limit_status_colors, MEND_depth_colors)
 ## Add factors and prepare text
 ```{r}
 read_fracs_with_thresholds_anno <- read_fracs_with_thresholds %>%
-  mutate(ref_range_name = factor(ref_range_name, levels = ref_range_codes$ref_range_name),
+  mutate(read_type_name = factor(read_type_name, levels = read_type_codes$read_type_name),
          within_limits = factor(within_limits, levels = limit_status_levels))
 
 ```
@@ -328,8 +322,8 @@ read_fracs_with_thresholds_anno <- read_fracs_with_thresholds %>%
 ```{r}
 
 flag_summary_stats <- read_fracs_with_thresholds_anno  %>%
-  mutate(`Fraction of sample` = gsub("\n", "", stat_label[match(ref_range_name, names(stat_label))])) %>%
-  #  group_by(ref_range_name) %>%
+  mutate(`Fraction of sample` = gsub("\n", "", stat_label[match(read_type_name, names(stat_label))])) %>%
+  #  group_by(read_type_name) %>%
   tabyl(`Fraction of sample`, within_limits) %>%
   adorn_totals(where = c("col")) %>%
   adorn_percentages(denominator = "row") %>% 
@@ -347,13 +341,13 @@ flag_summary_stats <- read_fracs_with_thresholds_anno  %>%
 plot_title <- paste0(sum(threshold_flag_annotations$flagged_thresholds!=""), " samples are outside reference ranges")
 
 p20 <-  ggplot(read_fracs_with_thresholds_anno) + 
-  geom_histogram(aes(x = sample_value, fill = ref_range_name)) + 
-  geom_vline(data=all_stats,
-             aes(xintercept = value, linetype = stat, color = ref_range_name)) +
+  geom_histogram(aes(x = sample_value, fill = read_type_name)) + 
+  geom_vline(data=all_read_type_fraction_stats,
+             aes(xintercept = value, linetype = stat, color = read_type_name)) +
     scale_fill_viridis_d() +
   scale_color_viridis_d() +
-  facet_wrap(~ref_range_name, nrow=1, labeller = labeller(
-    ref_range_name=stat_label) )
+  facet_wrap(~read_type_name, nrow=1, labeller = labeller(
+    read_type_name=stat_label) )
 
 p20b <- p20 + 
   theme(legend.position = "none") +
@@ -362,7 +356,7 @@ p20b <- p20 +
 
 padding_from_line <- -0.04
 
-read_type_frac_thresholds_for_fig2 <- all_stats %>%
+read_type_frac_thresholds_for_fig2 <- all_read_type_fraction_stats %>%
   filter(grepl("two_sd", stat_name)) %>%
   mutate(
     x = ifelse(stat_name=="mean_plus_two_sd", value + padding_from_line, value - padding_from_line),
@@ -412,9 +406,9 @@ samples_to_export <- c(read_fracs_with_thresholds_anno %>%
 read_fracs_with_thresholds_anno %>%
   filter(sample_id %in% samples_to_export) %>%
   mutate(within_limits = gsub("within_limits", "", within_limits)) %>%
-  select(sample_id, ref_range_name, within_limits) %>%
-  spread(key = "ref_range_name", value = "within_limits") %>%
-  #  pivot_wider(names_from = "ref_range_name", values_from = "within_limits") %>%
+  select(sample_id, read_type_name, within_limits) %>%
+  spread(key = "read_type_name", value = "within_limits") %>%
+  #  pivot_wider(names_from = "read_type_name", values_from = "within_limits") %>%
   left_join(depth_status %>% select(sample_id, status)) %>%
   rename(MEND_depth_bin = status) %>%
   write_tsv(file.path(results_dir, "samples_with_flags.tsv"))
@@ -430,7 +424,7 @@ stat_label_plus_MEND  <- c(stat_label, "MEND count range")
 
 flag_analysis <- read_fracs_with_thresholds_anno %>%
   bind_rows(depth_status %>%
-              mutate(ref_range_name = "MEND count") %>%
+              mutate(read_type_name = "MEND count") %>%
               rename(within_limits=status)) %>%
   filter(! sample_id %in% samples_within_limits) %>%
   group_by(sample_id) %>%
@@ -438,10 +432,10 @@ flag_analysis <- read_fracs_with_thresholds_anno %>%
   arrange(desc(n_flags), flagged_thresholds) %>%
   ungroup() %>%
   mutate(sample_id = factor(sample_id, levels = unique(sample_id)),
-         ref_range_name = factor(ref_range_name, levels = rev(stat_names_plus_MEND)) )
+         read_type_name = factor(read_type_name, levels = rev(stat_names_plus_MEND)) )
 
 ggplot(flag_analysis) + 
-  geom_tile(aes(x=sample_id, y=ref_range_name, fill = within_limits)) +
+  geom_tile(aes(x=sample_id, y=read_type_name, fill = within_limits)) +
    theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) +
   scale_y_discrete(breaks=stat_names_plus_MEND, labels=stat_label_plus_MEND) +
   scale_fill_manual("", values=limit_and_MEND_vec) +
@@ -456,7 +450,7 @@ Samples are ordered by the number of read fractions for which they exceed the re
 ```{r fig.height=9, fig.width=9}
 
 samples_by_MEND <- read_fracs_with_thresholds_anno %>%
-  left_join(read_counts_with_ref_range_fractions %>% 
+  left_join(read_counts_with_read_type_fractions %>% 
               select(sample_id, MEND, Total_reads), 
             by="sample_id")
 
@@ -482,28 +476,28 @@ p_MEND_reads_in_all <- ggplot(samples_by_MEND %>%
   theme(axis.title.x = element_blank()) +
   ylab("MEND reads (million)")
 
-p_MEND_reads_by_ref_range <-
+p_MEND_reads_by_read_type <-
   ggplot(samples_by_MEND, aes(x=within_limits, y=MEND/1e6)) + 
   geom_boxplot() + 
   EnvStats::stat_n_text(size=3) +
   scale_x_discrete(breaks=c("within_limits", "below_limit", "above_limit"),
                    labels = c("within", "below", "above")) +
-  facet_wrap(~ref_range_name, nrow=1, labeller = labeller(
-    ref_range_name=stat_label) ) +
+  facet_wrap(~read_type_name, nrow=1, labeller = labeller(
+    read_type_name=stat_label) ) +
   theme(axis.title = element_blank())
 
-p_total_reads_by_ref_range <- 
+p_total_reads_by_read_type <- 
   ggplot(samples_by_MEND, aes(x=within_limits, y=Total_reads/1e6)) + 
   geom_boxplot() + 
   EnvStats::stat_n_text(size=3) +
   scale_x_discrete(breaks=c("within_limits", "below_limit", "above_limit"),
                    labels = c("within", "below", "above")) +
-  facet_wrap(~ref_range_name, nrow=1, labeller = labeller(
-    ref_range_name=stat_label) ) +
+  facet_wrap(~read_type_name, nrow=1, labeller = labeller(
+    read_type_name=stat_label) ) +
   theme(axis.title = element_blank())
 
-p_total_reads_in_all + p_total_reads_by_ref_range + 
-  p_MEND_reads_in_all + p_MEND_reads_by_ref_range + 
+p_total_reads_in_all + p_total_reads_by_read_type + 
+  p_MEND_reads_in_all + p_MEND_reads_by_read_type + 
   plot_layout(widths = c(1, 6)) + 
   plot_annotation(
   title = "Breakdown of read counts by reference range status",
@@ -548,17 +542,17 @@ p_gene_counts_in_all <- ggplot(read_fracs_with_thresholds_anno2 %>%
   ylab("Number of genes (thousands)") 
 
 
-p_gene_counts_by_ref_range <- ggplot(read_fracs_with_thresholds_anno2, aes(x=within_limits, y=genes_gt_zero/1e3)) + 
+p_gene_counts_by_read_type <- ggplot(read_fracs_with_thresholds_anno2, aes(x=within_limits, y=genes_gt_zero/1e3)) + 
   geom_boxplot() + 
   EnvStats::stat_n_text(size = 3) +
   scale_x_discrete(breaks=c("within_limits", "below_limit", "above_limit"),
                    labels = c("within", "below", "above")) +
-  facet_wrap(~ref_range_name, nrow=1, labeller = labeller(
-    ref_range_name=stat_label) ) +
+  facet_wrap(~read_type_name, nrow=1, labeller = labeller(
+    read_type_name=stat_label) ) +
   theme(axis.title = element_blank())
 
 
-p_gene_counts_in_all + p_gene_counts_by_ref_range + 
+p_gene_counts_in_all + p_gene_counts_by_read_type + 
   plot_layout(widths = c(1, 6)) + 
   plot_annotation(
   title = "Breakdown of measured genes by reference range status",
