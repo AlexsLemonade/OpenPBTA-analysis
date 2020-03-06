@@ -21,16 +21,14 @@ Since we got the TCGA data manifest from the [GDC portal](https://portal.gdc.can
 - output: `results/tcga-capture_kit-info.csv`
 
 ### 02. prepare-tcga-capture_kit
-
 By checking the `results/tcga-capture_kit-info.csv`, it turns out there are BAMs with `|` in the returned capture kit name and url which are those with more than one capture kit which neither the GDC nor its origin data center could retrieve/figure out what the actual capture kit had been applied. We plan to generate an intersected BED for those samples and used that for our analysis. We created scripts to download all unique BED files and added prefix `chr` and used [CrossMap tool](http://crossmap.sourceforge.net/) to convert all hg19 coordinates to Gh38 and saved them in  `results` folder with a `.Gh38.bed` extension
 
 - script: `run-investigation.sh` and `scripts/prepare-tcga-capture_kit.sh`
-- notebook: [`02-prepare-tcga-capture_kit.ipynb`](./notebooks/02-prepare-tcga-capture_kit.ipynb)
 - output: `results/*.Gh38.bed`
 
-
-### Check the intersection region for the existing TCGA and PBTA MAF
+## Check the intersection region for the existing TCGA and PBTA MAF
 The plan is to re-run the TCGA data with the new `*.Gh38.bed*` and re-do the TMB comparison using each sample's actual calling region. But to double check the new BED files, we wanted to intersect all the regions and use the overlapping region to check all the mutations counts before re-run everything.
+
 ### 03. intersect-bed-maf
 We created script to prepare the input dataframe for the boxplot script. This script intersects all the BED and then use that to intersect with released PBTA and TCGA MAF and then counted all the mutation number within that intersection region, and then mapped that counts to the project(TCGA/PBTA) and tumor type for each sample.
 - script: [`scripts/intersect-bed-maf.sh`](scripts/intersect-bed-maf.sh)
@@ -42,9 +40,9 @@ We created script to prepare the input dataframe for the boxplot script. This sc
 
 ![](plots/boxplot-all.png)
 
-### Coverage-Comparison
+## Coverage-Comparison
 In order to show in the form of coverage that the downloaded BED files were  correct, we calculated the number of bases that are covered  at least at 20x in both old TCGA BED file(`gencode.v19.basic.exome`) and the new downloaded BED files (`results/*Gh38.bed`). The coverage table in `results/TCGA_oldandnew_coverage_comparisons.txt` gives  a  tabular summary of  number of bases and percentages within corresponding BED files. Boxplot comparison for the same data is available here(`plots/TCGA_oldandnew_coverage_plots.png`)
 
 ![](plots/TCGA_oldandnew_coverage_plots.png)
 
-### (Planned) rerun-tcga-with-new-bed
+## (Planned) rerun-tcga-with-new-bed
