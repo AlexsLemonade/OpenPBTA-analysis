@@ -77,20 +77,19 @@ if (!dir.exists(lgat_gistic_dir)) {
 ### Define file paths for GISTIC `all_lesions.conf_90.txt` files
 
 ```{r}
-cohort_all_lesions_file <- file.path(cohort_gistic_dir, "all_lesions.conf_90.txt")
+cohort_all_lesions_file <- file.path(cohort_gistic_dir, 
+                                     "all_lesions.conf_90.txt")
 
-lgat_all_lesions_file <- file.path(lgat_gistic_dir, "all_lesions.conf_90.txt")
+lgat_all_lesions_file <- file.path(lgat_gistic_dir, 
+                                   "all_lesions.conf_90.txt")
 ```
 
 ### Define file path for GISTIC `amp_genes.conf_90.txt` and `del_genes.conf_90.txt` result files
 
 ```{r}
 cohort_amp_genes_file <- file.path(cohort_gistic_dir, "amp_genes.conf_90.txt")
-
 lgat_amp_genes_file <- file.path(lgat_gistic_dir, "amp_genes.conf_90.txt")
-
 cohort_del_genes_file <- file.path(cohort_gistic_dir, "del_genes.conf_90.txt")
-
 lgat_del_genes_file <- file.path(lgat_gistic_dir, "del_genes.conf_90.txt")
 ```
 
@@ -103,25 +102,28 @@ lgat_merged_calls_table <- prepare_gene_level_gistic(
   lgat_all_lesions_file,
   lgat_amp_genes_file,
   lgat_del_genes_file,
-  output_filepath = file.path("results", "lgat_gistic_gene_cn_status_table.tsv.gz")
+  gene_mapping_filepath = file.path("results",
+                                    "lgat_gistic_peak_assignment.tsv.gz"),
+  gene_status_filepath = file.path("results", 
+                                   "lgat_gistic_gene_cn_status_table.tsv.gz"),
+  residual_q_threshold = 0.2
 )
-
-lgat_merged_calls_table %>%
-  dplyr::filter(detection_peak == "Amplification Peak 3 - CN values")
 ```
 
 ### Use GISTIC results for entire cohort
 
 ```{r warning = FALSE, message = FALSE}
-cohort_merged_calls_table <- prepare_gene_level_gistic(
+prepare_gene_level_gistic(
   cohort_all_lesions_file,
   cohort_amp_genes_file,
   cohort_del_genes_file,
-  output_filepath = file.path("results", "cohort_gistic_gene_cn_status_table.tsv.gz")
+  gene_mapping_filepath = file.path("results",
+                                    "cohort_gistic_peak_assignment.tsv.gz"),
+  gene_status_filepath = file.path("results", 
+                                   "cohort_gistic_gene_cn_status_table.tsv.gz"),
+  residual_q_threshold = 0.2
 )
 
-cohort_merged_calls_table %>%
-  dplyr::filter(detection_peak == "Amplification Peak 3 - CN values")
 ```
 
 ## Generate cytoband-level tidy tables
@@ -129,26 +131,21 @@ cohort_merged_calls_table %>%
 ### Use GISTIC results for LGAT histology
 
 ```{r warning = FALSE, message = FALSE}
-lgat_cytoband_status_table <- prepare_cytoband_level_gistic(
+prepare_cytoband_level_gistic(
   lgat_all_lesions_file,
-  output_filepath = file.path("results", "lgat_gistic_cytoband_cn_status_table.tsv.gz")
+  output_filepath = file.path("results", 
+                              "lgat_gistic_cytoband_cn_status_table.tsv.gz")
 )
-
-lgat_cytoband_status_table %>%
-  dplyr::filter(cytoband == "3q29")
 ```
 
 ### Use GISTIC results for entire cohort
 
 ```{r warning = FALSE, message = FALSE}
-cohort_cytoband_status_table <-
-  prepare_cytoband_level_gistic(
-    cohort_all_lesions_file,
-    output_filepath = file.path("results", "cohort_gistic_cytoband_cn_status_table.tsv.gz")
-  )
-
-cohort_cytoband_status_table %>%
-  dplyr::filter(cytoband == "3q29")
+prepare_cytoband_level_gistic(
+  cohort_all_lesions_file,
+  output_filepath = file.path("results", 
+                              "cohort_gistic_cytoband_cn_status_table.tsv.gz")
+)
 ```
 
 ## Session Info
