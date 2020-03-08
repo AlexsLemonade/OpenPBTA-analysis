@@ -1,160 +1,2552 @@
-gene	detection_peak	loss	gain	amplification
-AATK	Amplification Peak 23 - CN values	227	1	2
-ABCA10	Amplification Peak 23 - CN values	227	1	1
-ABCA5	Amplification Peak 23 - CN values	227	1	2
-ABCA6	Amplification Peak 23 - CN values	227	1	1
-ABCA8	Amplification Peak 23 - CN values	227	1	1
-ABCA9	Amplification Peak 23 - CN values	227	1	1
-ABCA9-AS1	Amplification Peak 23 - CN values	227	1	1
-ABHD13	Deletion Peak 15 - CN values	228	3	1
-ADAMTS1	Deletion Peak 20 - CN values	227	1	1
-ADCK2	Amplification Peak 10 - CN values	211	1	1
-ADPRM	Deletion Peak 18 - CN values	220	2	1
-AKT3	Amplification Peak  2 - CN values	227	2	1
-AMZ2	Amplification Peak 23 - CN values	226	1	1
-AMZ2P1	Amplification Peak 23 - CN values	226	1	1
-APOH	Amplification Peak 23 - CN values	226	1	1
-ARHGAP44	Deletion Peak 18 - CN values	220	3	1
-ARSG	Amplification Peak 23 - CN values	226	1	1
-AXIN2	Amplification Peak 23 - CN values	226	1	1
-BAIAP2	Amplification Peak 23 - CN values	227	1	2
-BPTF	Amplification Peak 23 - CN values	227	1	1
-BRAF	Amplification Peak 10 - CN values	233	1	1
-C17orf58	Amplification Peak 23 - CN values	227	1	1
-C1orf100	Amplification Peak  2 - CN values	227	1	1
-CACNG1	Amplification Peak 23 - CN values	226	1	1
-CACNG4	Amplification Peak 23 - CN values	226	1	1
-CACNG5	Amplification Peak 23 - CN values	226	1	1
-CASC17	Amplification Peak 23 - CN values	227	1	2
-CDRT1	Deletion Peak 18 - CN values	220	1	1
-CDRT15	Deletion Peak 18 - CN values	220	4	1
-CDRT4	Deletion Peak 18 - CN values	220	3	1
-CDRT7	Deletion Peak 18 - CN values	220	3	1
-CEP112	Amplification Peak 23 - CN values	226	1	1
-CEP170	Amplification Peak  2 - CN values	227	1	1
-CFAP52	Deletion Peak 18 - CN values	220	2	1
-CHRM3	Amplification Peak  2 - CN values	227	1	1
-COL4A1	Deletion Peak 15 - CN values	228	4	1
-COL4A2	Deletion Peak 15 - CN values	228	4	1
-COX10	Deletion Peak 18 - CN values	220	4	1
-COX10-AS1	Deletion Peak 18 - CN values	220	4	1
-CSMD1	Deletion Peak  8 - CN values	238	1	1
-CYYR1	Deletion Peak 20 - CN values	227	1	1
-CYYR1-AS1	Deletion Peak 20 - CN values	227	1	1
-DENND2A	Amplification Peak 10 - CN values	211	1	1
-DHRS7C	Deletion Peak 18 - CN values	220	2	1
-DNAH9	Deletion Peak 18 - CN values	220	2	1
-ELAC2	Deletion Peak 18 - CN values	220	3	1
-FAM20A	Amplification Peak 23 - CN values	226	1	1
-FGF19	Amplification Peak 17 - CN values	226	1	1
-FGFR2	Deletion Peak 10 - CN values	222	1	1
-GAS7	Deletion Peak 18 - CN values	220	2	1
-GLP2R	Deletion Peak 18 - CN values	220	2	1
-GNA13	Amplification Peak 23 - CN values	226	1	1
-GSG1L2	Deletion Peak 18 - CN values	220	2	1
-HABP2	Deletion Peak 10 - CN values	219	1	1
-HELZ	Amplification Peak 23 - CN values	226	1	1
-HS3ST3A1	Deletion Peak 18 - CN values	220	4	1
-HS3ST3B1	Deletion Peak 18 - CN values	220	4	1
-IRS2	Deletion Peak 15 - CN values	228	4	2
-KCNJ16	Amplification Peak 23 - CN values	227	1	2
-KCNJ2	Amplification Peak 23 - CN values	227	1	2
-KCNJ2-AS1	Amplification Peak 23 - CN values	227	1	2
-KDM7A	Amplification Peak 10 - CN values	211	1	1
-KIF26B	Amplification Peak  2 - CN values	227	2	1
-KPNA2	Amplification Peak 23 - CN values	226	1	1
-LIG4	Deletion Peak 15 - CN values	228	3	1
-LILRB3	Amplification Peak 24 - CN values	229	1	2
-LINC00158	Deletion Peak 20 - CN values	226	1	1
-LINC00317	Deletion Peak 20 - CN values	227	1	1
-LINC00396	Deletion Peak 15 - CN values	228	4	1
-LINC00399	Deletion Peak 15 - CN values	228	4	2
-LINC00511	Amplification Peak 23 - CN values	227	1	2
-LINC00515	Deletion Peak 20 - CN values	226	1	1
-LINC00670	Deletion Peak 18 - CN values	220	3	1
-LINC00676	Deletion Peak 15 - CN values	228	4	2
-LINC01028	Amplification Peak 23 - CN values	227	1	2
-LINC01152	Amplification Peak 23 - CN values	227	1	2
-LINC01425	Deletion Peak 20 - CN values	227	1	1
-LINC01482	Amplification Peak 23 - CN values	227	1	1
-LINC01483	Amplification Peak 23 - CN values	227	1	2
-LINC01497	Amplification Peak 23 - CN values	227	1	2
-LOC100128006	Deletion Peak 18 - CN values	220	3	1
-LOC100287015	Deletion Peak  8 - CN values	226	1	1
-LOC101928475	Deletion Peak 18 - CN values	220	3	1
-LRRC37A3	Amplification Peak 23 - CN values	230	3	1
-MAP2K4	Deletion Peak 18 - CN values	220	2	1
-MAP2K6	Amplification Peak 23 - CN values	227	1	2
-MGC12916	Deletion Peak 18 - CN values	220	4	1
-MIR1250	Amplification Peak 23 - CN values	227	1	2
-MIR125B2	Deletion Peak 20 - CN values	227	1	1
-MIR1269B	Deletion Peak 18 - CN values	220	3	1
-MIR155	Deletion Peak 20 - CN values	226	1	1
-MIR155HG	Deletion Peak 20 - CN values	226	1	1
-MIR3065	Amplification Peak 23 - CN values	227	1	2
-MIR338	Amplification Peak 23 - CN values	227	1	2
-MIR4524A	Amplification Peak 23 - CN values	227	1	1
-MIR4524B	Amplification Peak 23 - CN values	227	1	1
-MIR4677	Amplification Peak  2 - CN values	227	3	1
-MIR4731	Deletion Peak 18 - CN values	220	3	1
-MIR548AA2	Amplification Peak 23 - CN values	227	1	1
-MIR548D2	Amplification Peak 23 - CN values	227	1	1
-MIR548H3	Deletion Peak 18 - CN values	220	4	1
-MIR634	Amplification Peak 23 - CN values	226	1	1
-MIR635	Amplification Peak 23 - CN values	226	1	1
-MIR657	Amplification Peak 23 - CN values	227	1	2
-MIR744	Deletion Peak 18 - CN values	220	2	1
-MIR8073	Deletion Peak 15 - CN values	228	4	1
-MIR99AHG	Deletion Peak 20 - CN values	231	1	1
-MKRN1	Amplification Peak 10 - CN values	211	1	1
-MRPL39	Deletion Peak 20 - CN values	226	1	1
-MYH1	Deletion Peak 18 - CN values	220	2	1
-MYH13	Deletion Peak 18 - CN values	220	2	1
-MYH2	Deletion Peak 18 - CN values	220	2	1
-MYH3	Deletion Peak 18 - CN values	220	2	1
-MYH4	Deletion Peak 18 - CN values	220	2	1
-MYH8	Deletion Peak 18 - CN values	220	2	1
-MYO16	Deletion Peak 15 - CN values	228	4	2
-MYO16-AS1	Deletion Peak 15 - CN values	228	4	2
-MYOCD	Deletion Peak 18 - CN values	220	3	1
-NDUFB2	Amplification Peak 10 - CN values	211	1	1
-NDUFB2-AS1	Amplification Peak 10 - CN values	211	1	1
-NOL11	Amplification Peak 23 - CN values	227	1	1
-NRAP	Deletion Peak 10 - CN values	219	1	1
-PARP12	Amplification Peak 10 - CN values	211	1	1
-PIRT	Deletion Peak 18 - CN values	220	2	1
-PITPNC1	Amplification Peak 23 - CN values	227	1	1
-PMP22	Deletion Peak 18 - CN values	220	3	1
-PRKAR1A	Amplification Peak 23 - CN values	226	1	1
-PRKCA	Amplification Peak 23 - CN values	226	2	1
-PRO1804	Amplification Peak 23 - CN values	227	1	1
-PSMD12	Amplification Peak 23 - CN values	227	1	1
-RAB19	Amplification Peak 10 - CN values	211	1	1
-RCVRN	Deletion Peak 18 - CN values	220	2	1
-RGS9	Amplification Peak 23 - CN values	226	1	1
-SCO1	Deletion Peak 18 - CN values	220	2	1
-SDCCAG8	Amplification Peak  2 - CN values	228	3	1
-SHISA6	Deletion Peak 18 - CN values	220	2	1
-SLC16A6	Amplification Peak 23 - CN values	226	1	1
-SLC37A3	Amplification Peak 10 - CN values	211	1	1
-SLC39A11	Amplification Peak 23 - CN values	227	1	2
-SMYD3	Amplification Peak  2 - CN values	229	2	1
-SNORA38B	Amplification Peak 23 - CN values	227	1	1
-SOX9	Amplification Peak 23 - CN values	227	1	2
-SOX9-AS1	Amplification Peak 23 - CN values	227	1	2
-STX8	Deletion Peak 18 - CN values	221	2	1
-TBXAS1	Amplification Peak 10 - CN values	211	1	1
-TEKT3	Deletion Peak 18 - CN values	220	3	1
-TMEM220	Deletion Peak 18 - CN values	220	2	1
-TMEM220-AS1	Deletion Peak 18 - CN values	220	2	1
-TNFSF13B	Deletion Peak 15 - CN values	228	3	1
-TRIM16	Deletion Peak 18 - CN values	220	1	1
-TTC26	Amplification Peak 10 - CN values	211	1	1
-TVP23C	Deletion Peak 18 - CN values	220	1	1
-TVP23C-CDRT4	Deletion Peak 18 - CN values	220	3	1
-UBN2	Amplification Peak 10 - CN values	211	1	1
-USP43	Deletion Peak 18 - CN values	220	2	1
-WIPI1	Amplification Peak 23 - CN values	226	1	1
-ZBTB18	Amplification Peak  2 - CN values	227	2	1
-ZC3HAV1	Amplification Peak 10 - CN values	211	1	1
-ZNF18	Deletion Peak 18 - CN values	220	2	1
+gene	gain	loss	neutral	detection_peak
+A4GALT	2	273	640	Deletion Peak 22
+AASDHPPT	10	253	652	Deletion Peak 14
+ABCB10	30	235	650	Amplification Peak  2
+ABCC13	6	244	665	Deletion Peak 20
+ABCC4	4	249	662	Deletion Peak 15
+ABCG4	9	254	652	Deletion Peak 14
+ABHD13	5	247	663	Deletion Peak 15
+ABHD14A	4	251	660	Deletion Peak  2
+ABHD14A-ACY1	4	251	660	Deletion Peak  2
+ABHD14B	4	251	660	Deletion Peak  2
+ABHD6	3	252	660	Deletion Peak  2
+ABLIM1	3	270	642	Deletion Peak 11, Deletion Peak 10
+ABRACL	11	265	639	Deletion Peak  7
+ACADSB	3	271	641	Deletion Peak 11, Deletion Peak 10
+ACAT1	10	253	652	Deletion Peak 14
+ACAT2	10	263	642	Deletion Peak  7
+ACBD3	29	236	650	Amplification Peak  2
+ACCS	9	259	647	Deletion Peak 13
+ACCSL	9	259	647	Deletion Peak 13
+ACOD1	4	245	666	Deletion Peak 15
+ACOX2	3	252	660	Deletion Peak  2
+ACR	0	26	889	Deletion Peak 22
+ACRV1	9	253	653	Deletion Peak 14
+ACSL5	3	270	642	Deletion Peak 11, Deletion Peak 10
+ACTA1	30	235	650	Amplification Peak  2
+ACTN2	26	236	653	Amplification Peak  2
+ACTR8	4	252	659	Deletion Peak  2
+ACY1	4	251	660	Deletion Peak  2
+ADAD2	5	253	657	Deletion Peak 17
+ADAM12	4	264	647	Deletion Peak 11
+ADAM19	12	252	651	Deletion Peak  4
+ADAM8	3	260	652	Deletion Peak 11
+ADAMTS1	6	241	668	Deletion Peak 20
+ADAMTS18	6	253	656	Deletion Peak 17
+ADAMTS5	5	241	669	Deletion Peak 20
+ADAMTS9	3	249	663	Deletion Peak  2
+ADAMTS9-AS1	3	249	663	Deletion Peak  2
+ADAMTS9-AS2	3	249	663	Deletion Peak  2
+ADAT1	6	253	656	Deletion Peak 17
+ADAT2	13	263	639	Deletion Peak  7
+ADD3	2	271	642	Deletion Peak 11, Deletion Peak 10
+ADD3-AS1	2	271	642	Deletion Peak 11, Deletion Peak 10
+ADGB	13	266	636	Deletion Peak  7
+ADGRA1	4	262	649	Deletion Peak 11
+ADGRG6	11	263	641	Deletion Peak  7
+ADM2	0	37	878	Deletion Peak 22
+ADRA1B	12	252	651	Deletion Peak  4
+ADRA2A	3	270	642	Deletion Peak 11, Deletion Peak 10
+ADRB1	3	270	642	Deletion Peak 11, Deletion Peak 10
+AFAP1L2	3	270	642	Deletion Peak 11, Deletion Peak 10
+AFDN	11	262	642	Deletion Peak  7
+AGPAT4	10	263	642	Deletion Peak  7
+AGPAT4-IT1	10	263	642	Deletion Peak  7
+AGT	29	235	651	Amplification Peak  2
+AHCTF1	27	237	651	Amplification Peak  2
+AHI1	10	263	642	Deletion Peak  7
+AIDA	29	236	650	Amplification Peak  2
+AIG1	13	263	639	Deletion Peak  7
+AIRN	10	263	642	Deletion Peak  7
+AK9	12	266	637	Deletion Peak  6
+AKAP10	24	241	650	Amplification Peak 21
+AKAP11	2	251	662	Deletion Peak 15
+AKAP12	10	265	640	Deletion Peak  7
+AKAP7	12	265	638	Deletion Peak  6
+AKIRIN2	11	263	641	Deletion Peak  6
+AKT3	27	235	653	Amplification Peak  2
+ALAS1	5	251	659	Deletion Peak  2
+ALDH3A1	24	241	650	Amplification Peak 21
+ALDH3A2	24	241	650	Amplification Peak 21
+ALDH8A1	10	263	642	Deletion Peak  7
+ALG11	2	253	660	Deletion Peak 15
+ALG12	3	276	636	Deletion Peak 22
+ALG5	2	251	662	Deletion Peak 15
+ALG9	7	256	652	Deletion Peak 14
+ALKBH3	9	259	647	Deletion Peak 13
+ALKBH3-AS1	9	259	647	Deletion Peak 13
+ALKBH8	10	252	653	Deletion Peak 14
+ALOX5AP	3	249	663	Deletion Peak 15
+ALS2CL	5	249	661	Deletion Peak  2
+ALX4	9	259	647	Deletion Peak 13
+AMD1	12	265	638	Deletion Peak  6
+AMER2	3	247	665	Deletion Peak 15
+AMIGO3	4	251	660	Deletion Peak  2
+AMT	4	251	660	Deletion Peak  2
+ANGEL2	25	237	653	Amplification Peak  2
+ANGPTL5	9	251	655	Deletion Peak 14
+ANKK1	7	256	652	Deletion Peak 14
+ANKRD10	5	247	663	Deletion Peak 15
+ANKRD20A11P	2	12	901	Deletion Peak 20
+ANKRD6	11	263	641	Deletion Peak  6
+ANXA6	11	252	652	Deletion Peak  4
+APEH	4	251	660	Deletion Peak  2
+API5	8	258	649	Deletion Peak 13
+APOA1	8	254	653	Deletion Peak 14
+APOA1-AS	8	254	653	Deletion Peak 14
+APOA4	7	254	654	Deletion Peak 14
+APOA5	7	254	654	Deletion Peak 14
+APOC3	8	254	653	Deletion Peak 14
+APP	5	240	670	Deletion Peak 20
+APPL1	3	252	660	Deletion Peak  2
+ARCN1	8	255	652	Deletion Peak 14
+ARF1	30	235	650	Amplification Peak  2
+ARF4	3	252	660	Deletion Peak  2
+ARF4-AS1	3	252	660	Deletion Peak  2
+ARFGAP3	2	274	639	Deletion Peak 22
+ARFGEF3	11	265	639	Deletion Peak  7
+ARG1	12	265	638	Deletion Peak  6
+ARGLU1	5	247	663	Deletion Peak 15
+ARHGAP18	12	265	638	Deletion Peak  6
+ARHGAP20	8	253	654	Deletion Peak 14
+ARHGAP42	9	252	654	Deletion Peak 14
+ARHGAP8	3	275	637	Deletion Peak 22
+ARHGEF12	9	254	652	Deletion Peak 14
+ARHGEF3	3	252	660	Deletion Peak  2
+ARHGEF3-AS1	3	252	660	Deletion Peak  2
+ARHGEF7	4	248	663	Deletion Peak 15
+ARHGEF7-AS2	4	247	664	Deletion Peak 15
+ARID1B	11	268	636	Deletion Peak  7
+ARID4B	26	235	654	Amplification Peak  2
+ARIH2	4	251	660	Deletion Peak  2
+ARIH2OS	4	251	660	Deletion Peak  2
+ARL11	2	253	660	Deletion Peak 15
+ARL3	2	270	643	Deletion Peak 11, Deletion Peak 10
+ARMC2	12	266	637	Deletion Peak  6
+ARMS2	3	272	640	Deletion Peak 11, Deletion Peak 10
+ARMT1	10	265	640	Deletion Peak  7
+ARSA	0	35	880	Deletion Peak 22
+ARV1	29	235	651	Amplification Peak  2
+AS3MT	2	271	642	Deletion Peak 11, Deletion Peak 10
+ASB14	3	252	660	Deletion Peak  2
+ASCC3	11	266	638	Deletion Peak  6
+ASF1A	12	268	635	Deletion Peak  6
+ATE1	3	271	641	Deletion Peak 11, Deletion Peak 10
+ATE1-AS1	3	271	641	Deletion Peak 11, Deletion Peak 10
+ATF3	27	236	652	Amplification Peak  2
+ATG5	11	266	638	Deletion Peak  6
+ATM	10	253	652	Deletion Peak 14
+ATMIN	5	254	656	Deletion Peak 17
+ATOX1	11	251	653	Deletion Peak  4
+ATP10B	12	252	651	Deletion Peak  4
+ATP12A	3	247	665	Deletion Peak 15
+ATP2C2	5	253	657	Deletion Peak 17
+ATP6V0E1	10	254	651	Deletion Peak  4
+ATP7B	2	253	660	Deletion Peak 15
+ATP8A2	3	247	665	Deletion Peak 15
+ATRIP	4	251	660	Deletion Peak  2
+ATRNL1	3	271	641	Deletion Peak 11, Deletion Peak 10
+ATXN10	3	276	636	Deletion Peak 22
+ATXN7	3	249	663	Deletion Peak  2
+B3GALNT2	26	235	654	Amplification Peak  2
+B3GLCT	2	250	663	Deletion Peak 15
+B9D1	23	240	652	Amplification Peak 21
+BACE1	8	255	652	Deletion Peak 14
+BACH1	4	244	667	Deletion Peak 20
+BACH2	12	262	641	Deletion Peak  6
+BAG3	3	272	640	Deletion Peak 11, Deletion Peak 10
+BANP	5	252	658	Deletion Peak 17
+BAP1	5	251	659	Deletion Peak  2
+BATF3	27	236	652	Amplification Peak  2
+BBIP1	3	270	642	Deletion Peak 11, Deletion Peak 10
+BCAR1	6	253	656	Deletion Peak 17
+BCCIP	4	270	641	Deletion Peak 11
+BCL9L	9	255	651	Deletion Peak 14
+BCLAF1	10	263	642	Deletion Peak  7
+BCO1	5	254	656	Deletion Peak 17
+BCO2	7	255	653	Deletion Peak 14
+BECN2	26	236	653	Amplification Peak  2
+BEND3	11	266	638	Deletion Peak  6
+BIK	2	275	638	Deletion Peak 22
+BIRC2	9	251	655	Deletion Peak 14
+BIRC3	9	251	655	Deletion Peak 14
+BIVM	4	249	662	Deletion Peak 15
+BLID	8	253	654	Deletion Peak 14
+BNIP1	10	254	651	Deletion Peak  4
+BNIP3	4	263	648	Deletion Peak 11
+BOD1	12	253	650	Deletion Peak  4
+BORA	2	245	668	Deletion Peak 15
+BORCS7	2	271	642	Deletion Peak 11, Deletion Peak 10
+BPNT1	29	237	649	Amplification Peak  2
+BRCA2	2	251	662	Deletion Peak 15
+BRD1	2	276	637	Deletion Peak 22
+BROX	29	236	650	Amplification Peak  2
+BSN	4	251	660	Deletion Peak  2
+BSX	8	253	654	Deletion Peak 14
+BTBD16	3	272	640	Deletion Peak 11, Deletion Peak 10
+BTG3	6	242	667	Deletion Peak 20
+BTG4	7	253	655	Deletion Peak 14
+BTNL10	30	235	650	Amplification Peak  2
+BTNL3	4	264	647	Deletion Peak  5
+BTNL8	6	265	644	Deletion Peak  5
+BTNL9	3	10	902	Deletion Peak  5
+BUB3	3	271	641	Deletion Peak 11, Deletion Peak 10
+BUD13	7	254	654	Deletion Peak 14
+BVES	12	266	637	Deletion Peak  6
+BVES-AS1	11	266	638	Deletion Peak  6
+C10orf120	3	271	641	Deletion Peak 11, Deletion Peak 10
+C10orf82	3	271	641	Deletion Peak 11, Deletion Peak 10
+C10orf88	3	271	641	Deletion Peak 11, Deletion Peak 10
+C10orf90	3	263	649	Deletion Peak 11
+C11orf1	7	256	652	Deletion Peak 14
+C11orf52	7	256	652	Deletion Peak 14
+C11orf53	8	253	654	Deletion Peak 14
+C11orf65	9	253	653	Deletion Peak 14
+C11orf71	7	256	652	Deletion Peak 14
+C11orf74	8	257	650	Deletion Peak 13
+C11orf87	8	253	654	Deletion Peak 14
+C11orf88	7	253	655	Deletion Peak 14
+C11orf94	8	258	649	Deletion Peak 13
+C11orf96	9	259	647	Deletion Peak 13
+C16orf46	5	254	656	Deletion Peak 17
+C16orf74	5	252	658	Deletion Peak 17
+C16orf95	5	253	657	Deletion Peak 17
+C1orf100	26	235	654	Amplification Peak  2
+C1orf115	29	237	649	Amplification Peak  2
+C1orf131	29	236	650	Amplification Peak  2
+C1orf198	29	235	651	Amplification Peak  2
+C1orf229	27	237	651	Amplification Peak  2
+C1orf35	30	235	650	Amplification Peak  2
+C1orf74	27	237	651	Amplification Peak  2
+C1QTNF2	12	252	651	Deletion Peak  4
+C1QTNF5	9	255	651	Deletion Peak 14
+C1QTNF9	3	247	665	Deletion Peak 15
+C1QTNF9B	3	247	665	Deletion Peak 15
+C21orf62	3	243	669	Deletion Peak 20
+C21orf91	6	244	665	Deletion Peak 20
+C21orf91-OT1	6	243	666	Deletion Peak 20
+C22orf34	2	277	636	Deletion Peak 22
+C2CD2L	9	254	652	Deletion Peak 14
+C3orf14	3	250	662	Deletion Peak  2
+C3orf18	4	251	660	Deletion Peak  2
+C3orf49	3	249	663	Deletion Peak  2
+C3orf62	4	251	660	Deletion Peak  2
+C3orf67	3	252	660	Deletion Peak  2
+C3orf67-AS1	3	252	660	Deletion Peak  2
+C3orf84	4	251	660	Deletion Peak  2
+C5orf47	10	253	652	Deletion Peak  4
+C5orf52	12	252	651	Deletion Peak  4
+C5orf58	12	255	648	Deletion Peak  4
+C6orf118	11	262	642	Deletion Peak  7
+C6orf120	11	260	644	Deletion Peak  7
+C6orf163	11	263	641	Deletion Peak  6
+C6orf58	12	267	636	Deletion Peak  6
+C6orf99	10	264	641	Deletion Peak  7
+C9orf72	12	260	643	Amplification Peak 15
+CA5A	5	252	658	Deletion Peak 17
+CAB39L	2	253	660	Deletion Peak 15
+CACNA1D	4	252	659	Deletion Peak  2
+CACNA2D2	4	251	660	Deletion Peak  2
+CACNA2D3	4	252	659	Deletion Peak  2
+CACNA2D3-AS1	4	252	659	Deletion Peak  2
+CACUL1	3	272	640	Deletion Peak 11, Deletion Peak 10
+CADM1	9	255	651	Deletion Peak 14
+CADPS	3	249	663	Deletion Peak  2
+CAHM	12	263	640	Deletion Peak  7
+CALHM1	2	270	643	Deletion Peak 11, Deletion Peak 10
+CALHM2	2	270	643	Deletion Peak 11, Deletion Peak 10
+CALHM3	2	270	643	Deletion Peak 11, Deletion Peak 10
+CALY	3	35	877	Deletion Peak 11
+CAMK1G	27	237	651	Amplification Peak  2
+CAMKV	4	251	660	Deletion Peak  2
+CAMP	5	250	660	Deletion Peak  2
+CAPN2	29	236	650	Amplification Peak  2
+CAPN8	29	236	650	Amplification Peak  2
+CAPN9	29	235	651	Amplification Peak  2
+CARD16	8	254	653	Deletion Peak 14
+CARD17	8	254	653	Deletion Peak 14
+CARD18	9	253	653	Deletion Peak 14
+CARS2	5	247	663	Deletion Peak 15
+CASC11	26	231	658	Amplification Peak 13
+CASC2	3	272	640	Deletion Peak 11, Deletion Peak 10
+CASC8	26	231	658	Amplification Peak 13
+CASP1	8	254	653	Deletion Peak 14
+CASP12	8	254	653	Deletion Peak 14
+CASP4	8	254	653	Deletion Peak 14
+CASP5	8	254	653	Deletion Peak 14
+CASP7	3	270	642	Deletion Peak 11, Deletion Peak 10
+CASP8AP2	11	262	642	Deletion Peak  6
+CBL	9	255	651	Deletion Peak 14
+CCAT2	26	231	658	Amplification Peak 13
+CCDC12	5	249	661	Deletion Peak  2
+CCDC122	2	251	662	Deletion Peak 15
+CCDC15	8	253	654	Deletion Peak 14
+CCDC153	9	255	651	Deletion Peak 14
+CCDC162P	12	266	637	Deletion Peak  6
+CCDC168	4	249	662	Deletion Peak 15
+CCDC169	2	251	662	Deletion Peak 15
+CCDC169-SOHLH2	2	251	662	Deletion Peak 15
+CCDC170	10	265	640	Deletion Peak  7
+CCDC172	3	271	641	Deletion Peak 11, Deletion Peak 10
+CCDC185	29	236	650	Amplification Peak  2
+CCDC186	3	270	642	Deletion Peak 11, Deletion Peak 10
+CCDC26	32	230	653	Amplification Peak 14
+CCDC28A	11	263	641	Deletion Peak  7
+CCDC36	4	251	660	Deletion Peak  2
+CCDC51	4	251	660	Deletion Peak  2
+CCDC66	4	252	659	Deletion Peak  2
+CCDC69	11	251	653	Deletion Peak  4
+CCDC70	2	253	660	Deletion Peak 15
+CCDC71	4	251	660	Deletion Peak  2
+CCDC84	10	254	651	Deletion Peak 14
+CCNA1	2	251	662	Deletion Peak 15
+CCNC	11	266	638	Deletion Peak  6
+CCND2	14	236	665	Amplification Peak 18
+CCND2-AS1	14	232	669	Amplification Peak 18
+CCNG1	13	253	649	Deletion Peak  4
+CCNJL	13	252	650	Deletion Peak  4
+CCR1	5	249	661	Deletion Peak  2
+CCR2	5	249	661	Deletion Peak  2
+CCR3	5	249	661	Deletion Peak  2
+CCR5	5	249	661	Deletion Peak  2
+CCR6	11	261	643	Deletion Peak  7
+CCR9	5	248	662	Deletion Peak  2
+CCRL2	5	249	661	Deletion Peak  2
+CCSAP	30	235	650	Amplification Peak  2
+CCT8	4	243	668	Deletion Peak 20
+CD164	12	266	637	Deletion Peak  6
+CD24	11	266	638	Deletion Peak  6
+CD34	27	235	653	Amplification Peak  2
+CD3D	7	255	653	Deletion Peak 14
+CD3E	7	255	653	Deletion Peak 14
+CD3G	7	255	653	Deletion Peak 14
+CD46	27	235	653	Amplification Peak  2
+CD82	8	259	648	Deletion Peak 13
+CDADC1	2	253	660	Deletion Peak 15
+CDC25A	5	250	660	Deletion Peak  2
+CDC40	12	265	638	Deletion Peak  6
+CDC42BPA	30	237	648	Amplification Peak  2
+CDH13	5	255	655	Deletion Peak 17
+CDHR4	4	251	660	Deletion Peak  2
+CDK19	12	265	638	Deletion Peak  6
+CDK8	3	248	664	Deletion Peak 15
+CDON	9	254	652	Deletion Peak 14
+CDPF1	3	276	636	Deletion Peak 22
+CDX2	3	248	664	Deletion Peak 15
+CDYL2	5	254	656	Deletion Peak 17
+CELSR1	2	277	636	Deletion Peak 22
+CELSR3	4	251	660	Deletion Peak  2
+CENPF	29	237	649	Amplification Peak  2
+CENPJ	3	247	665	Deletion Peak 15
+CENPN	5	254	656	Deletion Peak 17
+CENPW	12	265	638	Deletion Peak  6
+CEP126	9	251	655	Deletion Peak 14
+CEP162	12	266	637	Deletion Peak  6
+CEP164	8	256	651	Deletion Peak 14
+CEP170	26	235	654	Amplification Peak  2
+CEP57L1	12	266	637	Deletion Peak  6
+CEP85L	12	268	635	Deletion Peak  6
+CERK	2	277	636	Deletion Peak 22
+CFAP206	11	263	641	Deletion Peak  6
+CFAP43	2	271	642	Deletion Peak 11, Deletion Peak 10
+CFAP46	4	262	649	Deletion Peak 11
+CFAP58	2	271	642	Deletion Peak 11, Deletion Peak 10
+CFDP1	6	253	656	Deletion Peak 17
+CGA	11	263	641	Deletion Peak  6
+CHDH	4	252	659	Deletion Peak  2
+CHEK1	9	253	653	Deletion Peak 14
+CHKB	0	35	880	Deletion Peak 22
+CHKB-CPT1B	0	35	880	Deletion Peak 22
+CHML	26	236	653	Amplification Peak  2
+CHODL	6	240	669	Deletion Peak 20
+CHRM3	26	236	653	Amplification Peak  2
+CHRM3-AS1	26	236	653	Amplification Peak  2
+CHRM3-AS2	26	236	653	Amplification Peak  2
+CHST1	8	258	649	Deletion Peak 13
+CHST15	3	271	641	Deletion Peak 11, Deletion Peak 10
+CHST5	6	253	656	Deletion Peak 17
+CHST6	6	253	656	Deletion Peak 17
+CISH	4	251	660	Deletion Peak  2
+CITED2	11	267	637	Deletion Peak  7
+CKAP2	1	252	662	Deletion Peak 15
+CLDN10	4	249	662	Deletion Peak 15
+CLDN10-AS1	4	249	662	Deletion Peak 15
+CLDN17	4	243	668	Deletion Peak 20
+CLDN20	11	267	637	Deletion Peak  7
+CLDN25	7	256	652	Deletion Peak 14
+CLDN8	4	243	668	Deletion Peak 20
+CLEC3A	5	253	657	Deletion Peak 17
+CLINT1	12	252	651	Deletion Peak  4
+CLMP	8	253	654	Deletion Peak 14
+CLN5	4	245	666	Deletion Peak 15
+CLRN3	3	263	649	Deletion Peak 11
+CLVS2	12	266	637	Deletion Peak  6
+CLYBL	4	249	662	Deletion Peak 15
+CLYBL-AS1	4	249	662	Deletion Peak 15
+CLYBL-AS2	4	249	662	Deletion Peak 15
+CMC2	5	254	656	Deletion Peak 17
+CMIP	7	254	654	Deletion Peak 17
+CNIH3	29	235	651	Amplification Peak  2
+CNIH4	29	235	651	Amplification Peak  2
+CNKSR3	11	265	639	Deletion Peak  7
+CNNM2	2	271	642	Deletion Peak 11, Deletion Peak 10
+CNOT8	13	253	649	Deletion Peak  4
+CNR1	11	263	641	Deletion Peak  6
+CNST	27	236	652	Amplification Peak  2
+CNTN5	9	252	654	Deletion Peak 14
+CNTNAP4	6	253	656	Deletion Peak 17
+COA6	27	235	653	Amplification Peak  2
+COG2	29	235	651	Amplification Peak  2
+COG3	2	251	662	Deletion Peak 15
+COG6	2	251	662	Deletion Peak 15
+COL10A1	12	265	638	Deletion Peak  6
+COL17A1	2	271	642	Deletion Peak 11, Deletion Peak 10
+COL4A1	5	247	663	Deletion Peak 15
+COL4A2	5	247	663	Deletion Peak 15
+COL4A2-AS1	5	247	663	Deletion Peak 15
+COL4A2-AS2	5	247	663	Deletion Peak 15
+COL7A1	4	251	660	Deletion Peak  2
+COLCA1	7	253	655	Deletion Peak 14
+COLCA2	7	253	655	Deletion Peak 14
+COMMD6	3	245	667	Deletion Peak 15
+COMMD9	8	257	650	Deletion Peak 13
+COQ3	11	266	638	Deletion Peak  6
+COQ8A	30	235	650	Amplification Peak  2
+COTL1	5	253	657	Deletion Peak 17
+COX20	26	235	654	Amplification Peak  2
+COX4I1	5	252	658	Deletion Peak 17
+CPB2	2	251	662	Deletion Peak 15
+CPB2-AS1	2	251	662	Deletion Peak 15
+CPEB4	10	253	652	Deletion Peak  4
+CPLX2	10	255	650	Deletion Peak  4
+CPT1B	0	35	880	Deletion Peak 22
+CPXM2	3	271	641	Deletion Peak 11, Deletion Peak 10
+CR1	34	239	642	Amplification Peak  2
+CR1L	27	235	653	Amplification Peak  2
+CREBRF	10	254	651	Deletion Peak  4
+CRELD2	3	274	638	Deletion Peak 22
+CRISPLD2	5	253	657	Deletion Peak 17
+CRTAM	8	253	654	Deletion Peak 14
+CRY2	8	258	649	Deletion Peak 13
+CRYAB	7	256	652	Deletion Peak 14
+CRYL1	3	248	664	Deletion Peak 15
+CRYZL1	3	243	669	Deletion Peak 20
+CSMD1	12	258	645	Deletion Peak  8
+CSNK1A1L	2	251	662	Deletion Peak 15
+CSPG5	5	250	660	Deletion Peak  2
+CTAGE10P	2	253	660	Deletion Peak 15
+CTAGE11P	3	245	667	Deletion Peak 15
+CTAGE7P	3	264	648	Deletion Peak 11
+CTB-178M22.2	12	258	645	Deletion Peak  4
+CTBP2	4	269	642	Deletion Peak 11
+CTC-338M12.4	3	9	903	Deletion Peak  5
+CTRB1	6	253	656	Deletion Peak 17
+CTRB2	6	253	656	Deletion Peak 17
+CUL5	10	253	652	Deletion Peak 14
+CUZD1	3	271	641	Deletion Peak 11, Deletion Peak 10
+CWF19L2	10	252	653	Deletion Peak 14
+CXADR	6	239	670	Deletion Peak 20
+CXCR5	9	256	650	Deletion Peak 14
+CXCR6	5	248	662	Deletion Peak  2
+CYB561D2	8	502	405	Deletion Peak  2
+CYB5R3	2	273	640	Deletion Peak 22
+CYB5R4	12	266	637	Deletion Peak  6
+CYFIP2	12	252	651	Deletion Peak  4
+CYP17A1	2	271	642	Deletion Peak 11, Deletion Peak 10
+CYP2E1	2	30	883	Deletion Peak 11
+CYP4F29P	0	3	912	Deletion Peak 20
+CYSLTR2	2	252	661	Deletion Peak 15
+CYYR1	6	241	668	Deletion Peak 20
+CYYR1-AS1	6	241	668	Deletion Peak 20
+D21S2088E	6	241	668	Deletion Peak 20
+DACH1	3	246	666	Deletion Peak 15
+DACT2	11	261	643	Deletion Peak  7
+DAG1	4	251	660	Deletion Peak  2
+DALRD3	4	251	660	Deletion Peak  2
+DAOA	5	248	662	Deletion Peak 15
+DAOA-AS1	5	248	662	Deletion Peak 15
+DCAF1	4	252	659	Deletion Peak  2
+DCBLD1	12	269	634	Deletion Peak  6
+DCLK1	2	252	661	Deletion Peak 15
+DCLRE1A	3	270	642	Deletion Peak 11, Deletion Peak 10
+DCP1A	4	252	659	Deletion Peak  2
+DCPS	10	253	652	Deletion Peak 14
+DCT	4	249	662	Deletion Peak 15
+DCUN1D5	9	252	654	Deletion Peak 14
+DDI1	8	253	654	Deletion Peak 14
+DDO	12	265	638	Deletion Peak  6
+DDX10	9	254	652	Deletion Peak 14
+DDX25	9	253	653	Deletion Peak 14
+DDX6	9	255	651	Deletion Peak 14
+DEGS1	29	235	651	Amplification Peak  2
+DENND6A	3	252	660	Deletion Peak  2
+DENND6B	2	268	645	Deletion Peak 22
+DESI2	26	235	654	Amplification Peak  2
+DGKH	2	251	662	Deletion Peak 15
+DHRS12	2	253	660	Deletion Peak 15
+DHX30	5	250	660	Deletion Peak  2
+DHX32	4	272	639	Deletion Peak 11
+DIAPH3	2	248	665	Deletion Peak 15
+DIAPH3-AS1	2	247	666	Deletion Peak 15
+DIS3	2	245	668	Deletion Peak 15
+DISC1	28	236	651	Amplification Peak  2
+DISC1-IT1	28	236	651	Amplification Peak  2
+DISP1	29	236	650	Amplification Peak  2
+DIXDC1	7	256	652	Deletion Peak 14
+DLAT	7	255	653	Deletion Peak 14
+DLEU1	2	253	660	Deletion Peak 15
+DLEU2	2	253	660	Deletion Peak 15
+DLEU7	2	253	660	Deletion Peak 15
+DLL1	10	259	646	Deletion Peak  7
+DMBT1	3	271	641	Deletion Peak 11, Deletion Peak 10
+DMBT1P1	3	271	641	Deletion Peak 11, Deletion Peak 10
+DNAAF1	5	254	656	Deletion Peak 17
+DNAH1	6	251	658	Deletion Peak  2
+DNAH12	3	252	660	Deletion Peak  2
+DNAH14	29	236	650	Amplification Peak  2
+DNAJC15	2	251	662	Deletion Peak 15
+DNAJC28	3	243	669	Deletion Peak 20
+DNAJC3	4	249	662	Deletion Peak 15
+DNASE1L3	3	252	660	Deletion Peak  2
+DOCK1	4	263	648	Deletion Peak 11
+DOCK2	12	255	648	Deletion Peak  4
+DOCK3	4	254	657	Deletion Peak  2
+DOCK9	4	249	662	Deletion Peak 15
+DOCK9-AS1	4	249	662	Deletion Peak 15
+DONSON	3	243	669	Deletion Peak 20
+DPAGT1	9	254	652	Deletion Peak 14
+DPYSL4	4	262	649	Deletion Peak 11
+DRD1	10	255	650	Deletion Peak  4
+DRD2	7	256	652	Deletion Peak 14
+DSCAML1	8	257	650	Deletion Peak 14
+DSE	12	268	635	Deletion Peak  6
+DTL	27	237	651	Amplification Peak  2
+DUSP1	10	253	652	Deletion Peak  4
+DUSP10	29	236	650	Amplification Peak  2
+DUSP5	2	271	642	Deletion Peak 11, Deletion Peak 10
+DUSP7	4	251	660	Deletion Peak  2
+DUX4	0	2	913	Deletion Peak 11
+DYNC2H1	9	253	653	Deletion Peak 14
+DYNLRB2	5	254	656	Deletion Peak 17
+DYNLT1	11	264	640	Deletion Peak  7
+DZIP1	4	249	662	Deletion Peak 15
+EBF1	12	252	651	Deletion Peak  4
+EBF3	3	264	648	Deletion Peak 11
+EBPL	2	253	660	Deletion Peak 15
+ECHDC1	12	265	638	Deletion Peak  6
+ECHS1	3	34	878	Deletion Peak 11
+ECT2L	11	265	639	Deletion Peak  7
+EDARADD	26	236	653	Amplification Peak  2
+EDNRB	4	245	666	Deletion Peak 15
+EDRF1	4	270	641	Deletion Peak 11
+EDRF1-AS1	3	270	642	Deletion Peak 11
+EEF1AKMT1	3	248	664	Deletion Peak 15
+EFCAB2	27	235	653	Amplification Peak  2
+EFCAB6	2	273	640	Deletion Peak 22
+EFCAB9	10	255	650	Deletion Peak  4
+EFNB2	5	247	663	Deletion Peak 15
+EGLN1	29	236	650	Amplification Peak  2
+EI24	9	253	653	Deletion Peak 14
+EIF3A	3	272	640	Deletion Peak 11, Deletion Peak 10
+ELF1	2	251	662	Deletion Peak 15
+ELMOD1	10	252	653	Deletion Peak 14
+ELP6	5	250	660	Deletion Peak  2
+EMC8	5	252	658	Deletion Peak 17
+EMX2	3	272	640	Deletion Peak 11, Deletion Peak 10
+EMX2OS	3	272	640	Deletion Peak 11, Deletion Peak 10
+ENAH	29	236	650	Amplification Peak  2
+ENO4	3	271	641	Deletion Peak 11, Deletion Peak 10
+ENOX1	2	251	662	Deletion Peak 15
+EPB41L2	12	265	638	Deletion Peak  6
+EPHA7	11	264	640	Deletion Peak  6
+EPHX1	29	236	650	Amplification Peak  2
+EPM2A	13	263	639	Deletion Peak  7
+EPN2	23	243	649	Amplification Peak 21
+EPN2-AS1	23	241	651	Amplification Peak 21
+EPSTI1	2	251	662	Deletion Peak 15
+EQTN	12	261	642	Amplification Peak 15
+ERC2	4	252	659	Deletion Peak  2
+ERC2-IT1	4	252	659	Deletion Peak  2
+ERCC5	4	249	662	Deletion Peak 15
+ERGIC1	10	254	651	Deletion Peak  4
+ERICH6B	2	251	662	Deletion Peak 15
+ERMARD	11	260	644	Deletion Peak  7
+ERO1B	26	236	653	Amplification Peak  2
+ESAM	9	251	655	Deletion Peak 14
+ESD	2	251	662	Deletion Peak 15
+ESR1	11	266	638	Deletion Peak  7
+ESRG	4	252	659	Deletion Peak  2
+ESRRG	28	237	650	Amplification Peak  2
+EVA1C	3	244	668	Deletion Peak 20
+EXO1	26	236	653	Amplification Peak  2
+EXOC8	29	236	650	Amplification Peak  2
+EXOSC8	2	251	662	Deletion Peak 15
+EXPH5	9	253	653	Deletion Peak 14
+EXT2	9	259	647	Deletion Peak 13
+EYA4	11	263	641	Deletion Peak  7
+EZR	11	264	640	Deletion Peak  7
+EZR-AS1	11	264	640	Deletion Peak  7
+FA2H	5	252	658	Deletion Peak 17
+FABP6	13	252	650	Deletion Peak  4
+FABP7	12	268	635	Deletion Peak  6
+FAM107A	3	252	660	Deletion Peak  2
+FAM114A2	12	252	651	Deletion Peak  4
+FAM118A	3	275	637	Deletion Peak 22
+FAM118B	11	253	651	Deletion Peak 14
+FAM120B	10	259	646	Deletion Peak  7
+FAM124A	2	253	660	Deletion Peak 15
+FAM153B	3	249	663	Deletion Peak  4
+FAM155A	5	247	663	Deletion Peak 15
+FAM160B1	3	270	642	Deletion Peak 11, Deletion Peak 10
+FAM162B	12	266	637	Deletion Peak  6
+FAM177B	29	236	650	Amplification Peak  2
+FAM184A	12	268	635	Deletion Peak  6
+FAM204A	3	272	640	Deletion Peak 11, Deletion Peak 10
+FAM216B	2	251	662	Deletion Peak 15
+FAM229B	12	265	638	Deletion Peak  6
+FAM230C	0	2	913	Deletion Peak 15
+FAM24A	3	271	641	Deletion Peak 11, Deletion Peak 10
+FAM24B	3	271	641	Deletion Peak 11, Deletion Peak 10
+FAM3D	3	252	660	Deletion Peak  2
+FAM3D-AS1	3	252	660	Deletion Peak  2
+FAM53B	3	270	642	Deletion Peak 11, Deletion Peak 10
+FAM71A	27	236	652	Amplification Peak  2
+FAM71B	12	252	651	Deletion Peak  4
+FAM89A	29	235	651	Amplification Peak  2
+FAM92B	5	252	658	Deletion Peak 17
+FANK1	4	263	648	Deletion Peak 11
+FANK1-AS1	4	262	649	Deletion Peak 11
+FARP1	4	250	661	Deletion Peak 15
+FAT2	11	251	653	Deletion Peak  4
+FAXC	11	266	638	Deletion Peak  6
+FAXDC2	13	253	649	Deletion Peak  4
+FBLL1	13	255	647	Deletion Peak  4
+FBLN1	3	276	636	Deletion Peak 22
+FBXL3	4	245	666	Deletion Peak 15
+FBXL4	12	266	637	Deletion Peak  6
+FBXO28	29	235	651	Amplification Peak  2
+FBXO30	13	263	639	Deletion Peak  7
+FBXO31	5	253	657	Deletion Peak 17
+FBXO5	11	265	639	Deletion Peak  7
+FBXW11	10	255	650	Deletion Peak  4
+FBXW12	4	251	660	Deletion Peak  2
+FDX1	8	253	654	Deletion Peak 14
+FDXACB1	7	256	652	Deletion Peak 14
+FENDRR	5	252	658	Deletion Peak 17
+FEZ1	9	253	653	Deletion Peak 14
+FEZF2	3	249	663	Deletion Peak  2
+FGF14	4	249	662	Deletion Peak 15
+FGF14-AS1	4	249	662	Deletion Peak 15
+FGF14-AS2	4	249	662	Deletion Peak 15
+FGF14-IT1	4	249	662	Deletion Peak 15
+FGF18	10	255	650	Deletion Peak  4
+FGF9	3	247	665	Deletion Peak 15
+FGFR1OP	12	261	642	Deletion Peak  7
+FGFR2	3	274	638	Deletion Peak 11, Deletion Peak 10
+FH	26	236	653	Amplification Peak  2
+FHIT	3	253	659	Deletion Peak  2
+FHL5	11	264	640	Deletion Peak  6
+FIG4	12	266	637	Deletion Peak  6
+FLJ30679	5	252	658	Deletion Peak 17
+FLJ34503	12	268	635	Deletion Peak  6
+FLNB	3	252	660	Deletion Peak  2
+FLT1	3	248	664	Deletion Peak 15
+FLT3	3	248	664	Deletion Peak 15
+FLVCR1	26	236	653	Amplification Peak  2
+FMN2	26	236	653	Amplification Peak  2
+FNDC1	10	264	641	Deletion Peak  7
+FNDC3A	2	253	660	Deletion Peak 15
+FNDC9	12	252	651	Deletion Peak  4
+FOXC2	5	252	658	Deletion Peak 17
+FOXC2-AS1	5	252	658	Deletion Peak 17
+FOXF1	5	252	658	Deletion Peak 17
+FOXI1	12	255	648	Deletion Peak  4
+FOXI2	3	263	649	Deletion Peak 11
+FOXL1	5	252	658	Deletion Peak 17
+FOXO1	2	251	662	Deletion Peak 15
+FOXO3	12	266	637	Deletion Peak  6
+FOXR1	10	254	651	Deletion Peak 14
+FOXRED1	10	253	652	Deletion Peak 14
+FREM2	3	251	661	Deletion Peak 15
+FRG2B	2	23	890	Deletion Peak 11
+FRK	12	265	638	Deletion Peak  6
+FRMD1	11	261	643	Deletion Peak  7
+FRY	2	251	662	Deletion Peak 15
+FUCA2	13	263	639	Deletion Peak  7
+FUOM	3	35	877	Deletion Peak 11
+FUT9	11	264	640	Deletion Peak  6
+FXYD2	8	255	652	Deletion Peak 14
+FXYD6	7	255	653	Deletion Peak 14
+FXYD6-FXYD2	7	255	653	Deletion Peak 14
+FYCO1	5	248	662	Deletion Peak  2
+FYN	12	265	638	Deletion Peak  6
+G0S2	27	237	651	Amplification Peak  2
+G3BP1	11	251	653	Deletion Peak  4
+GABARAPL2	6	253	656	Deletion Peak 17
+GABPA	5	240	670	Deletion Peak 20
+GABRA1	12	252	651	Deletion Peak  4
+GABRA6	12	252	651	Deletion Peak  4
+GABRB2	12	252	651	Deletion Peak  4
+GABRG2	12	253	650	Deletion Peak  4
+GABRP	12	255	648	Deletion Peak  4
+GABRR1	11	263	641	Deletion Peak  6
+GABRR2	11	263	641	Deletion Peak  6
+GALNT10	12	254	649	Deletion Peak  4
+GALNT2	29	235	651	Amplification Peak  2
+GAN	5	254	656	Deletion Peak 17
+GART	3	243	669	Deletion Peak 20
+GCSAML	26	237	652	Amplification Peak  2
+GCSH	5	254	656	Deletion Peak 17
+GEMIN5	13	253	649	Deletion Peak  4
+GFRA1	3	271	641	Deletion Peak 11, Deletion Peak 10
+GGACT	4	249	662	Deletion Peak 15
+GGPS1	26	235	654	Amplification Peak  2
+GINM1	13	267	635	Deletion Peak  7
+GINS2	5	252	658	Deletion Peak 17
+GJA1	12	268	635	Deletion Peak  6
+GJA10	11	262	642	Deletion Peak  6
+GJA3	3	247	665	Deletion Peak 15
+GJB2	3	247	665	Deletion Peak 15
+GJB6	3	247	665	Deletion Peak 15
+GJB7	11	263	641	Deletion Peak  6
+GJC2	30	235	650	Amplification Peak  2
+GLG1	5	252	658	Deletion Peak 17
+GLRA1	11	251	653	Deletion Peak  4
+GLRX3	3	264	648	Deletion Peak 11
+GLT8D1	4	251	660	Deletion Peak  2
+GLYCTK	6	251	658	Deletion Peak  2
+GM2A	11	251	653	Deletion Peak  4
+GMPPB	4	251	660	Deletion Peak  2
+GNAI2	4	251	660	Deletion Peak  2
+GNAT1	4	251	660	Deletion Peak  2
+GNG4	26	236	653	Amplification Peak  2
+GNL3	4	251	660	Deletion Peak  2
+GNPAT	29	236	650	Amplification Peak  2
+GOPC	12	269	634	Deletion Peak  6
+GPALPP1	2	251	662	Deletion Peak 15
+GPAM	3	270	642	Deletion Peak 11, Deletion Peak 10
+GPATCH2	28	237	650	Amplification Peak  2
+GPC5	4	249	662	Deletion Peak 15
+GPC5-AS1	4	249	662	Deletion Peak 15
+GPC6	4	250	661	Deletion Peak 15
+GPC6-AS1	4	249	662	Deletion Peak 15
+GPR12	3	248	664	Deletion Peak 15
+GPR137B	26	236	653	Amplification Peak  2
+GPR18	4	249	662	Deletion Peak 15
+GPR180	4	249	662	Deletion Peak 15
+GPR183	4	249	662	Deletion Peak 15
+GPR26	3	271	641	Deletion Peak 11, Deletion Peak 10
+GPR31	11	261	643	Deletion Peak  7
+GPR6	11	266	638	Deletion Peak  6
+GPR62	4	251	660	Deletion Peak  2
+GPR63	11	264	640	Deletion Peak  6
+GPRC6A	12	266	637	Deletion Peak  6
+GPX1	4	251	660	Deletion Peak  2
+GPX3	11	251	653	Deletion Peak  4
+GRAMD1B	8	253	654	Deletion Peak 14
+GRAMD4	2	277	636	Deletion Peak 22
+GREM2	26	236	653	Amplification Peak  2
+GRIA1	12	252	651	Deletion Peak  4
+GRIA4	9	254	652	Deletion Peak 14
+GRIK1	4	244	667	Deletion Peak 20
+GRIK2	11	269	635	Deletion Peak  6
+GRIK4	10	255	650	Deletion Peak 14
+GRK5	3	272	640	Deletion Peak 11, Deletion Peak 10
+GRM1	13	263	639	Deletion Peak  7
+GRM2	4	252	659	Deletion Peak  2
+GSE1	5	254	656	Deletion Peak 17
+GSTO1	2	271	642	Deletion Peak 11, Deletion Peak 10
+GSTO2	2	271	642	Deletion Peak 11, Deletion Peak 10
+GSX1	3	248	664	Deletion Peak 15
+GTF2F2	2	251	662	Deletion Peak 15
+GTF2H5	11	265	639	Deletion Peak  7
+GTF3A	3	248	664	Deletion Peak 15
+GTF3C6	12	265	638	Deletion Peak  6
+GTSE1	3	276	636	Deletion Peak 22
+GUCY1A2	10	252	653	Deletion Peak 14
+GUCY1B2	2	253	660	Deletion Peak 15
+GUCY2GP	3	270	642	Deletion Peak 11, Deletion Peak 10
+GUK1	30	235	650	Amplification Peak  2
+GVQW2	11	263	641	Deletion Peak  7
+HABP2	3	270	642	Deletion Peak 11, Deletion Peak 10
+HACE1	12	266	637	Deletion Peak  6
+HAND1	12	253	650	Deletion Peak  4
+HAVCR1	12	253	650	Deletion Peak  4
+HAVCR2	12	253	650	Deletion Peak  4
+HBS1L	10	263	642	Deletion Peak  7
+HDAC10	2	270	643	Deletion Peak 22
+HDAC2	12	268	635	Deletion Peak  6
+HDDC2	12	266	637	Deletion Peak  6
+HEATR1	26	236	653	Amplification Peak  2
+HEBP2	11	265	639	Deletion Peak  7
+HECA	11	267	637	Deletion Peak  7
+HEMK1	4	251	660	Deletion Peak  2
+HEPACAM	8	253	654	Deletion Peak 14
+HEPN1	8	253	654	Deletion Peak 14
+HESX1	3	252	660	Deletion Peak  2
+HEY2	12	265	638	Deletion Peak  6
+HGC6.3	11	262	642	Deletion Peak  7
+HHAT	27	237	651	Amplification Peak  2
+HHIPL2	29	236	650	Amplification Peak  2
+HINFP	9	254	652	Deletion Peak 14
+HINT3	12	265	638	Deletion Peak  6
+HIVEP2	13	263	639	Deletion Peak  7
+HLX	29	236	650	Amplification Peak  2
+HLX-AS1	29	236	650	Amplification Peak  2
+HMBS	9	254	652	Deletion Peak 14
+HMGB1	3	249	663	Deletion Peak 15
+HMMR	13	253	649	Deletion Peak  4
+HMX2	3	271	641	Deletion Peak 11, Deletion Peak 10
+HMX3	3	271	641	Deletion Peak 11, Deletion Peak 10
+HNRNPA1L2	1	252	662	Deletion Peak 15
+HNRNPKP3	8	258	649	Deletion Peak 13
+HNRNPU	26	235	654	Amplification Peak  2
+HRH2	10	255	650	Deletion Peak  4
+HS3ST5	12	266	637	Deletion Peak  6
+HS6ST3	4	249	662	Deletion Peak 15
+HSBP1	5	254	656	Deletion Peak 17
+HSD11B1	27	237	651	Amplification Peak  2
+HSD17B12	9	258	648	Deletion Peak 13
+HSD17B2	5	254	656	Deletion Peak 17
+HSDL1	5	253	657	Deletion Peak 17
+HSF2	12	268	635	Deletion Peak  6
+HSPA12A	3	271	641	Deletion Peak 11, Deletion Peak 10
+HSPA13	6	244	665	Deletion Peak 20
+HSPA8	8	253	654	Deletion Peak 14
+HSPB2	7	256	652	Deletion Peak 14
+HSPB2-C11orf52	7	256	652	Deletion Peak 14
+HSPH1	2	249	664	Deletion Peak 15
+HTR1E	11	263	641	Deletion Peak  6
+HTR2A	2	251	662	Deletion Peak 15
+HTR2A-AS1	2	251	662	Deletion Peak 15
+HTR3A	7	257	651	Deletion Peak 14
+HTR3B	7	257	651	Deletion Peak 14
+HTRA1	3	272	640	Deletion Peak 11, Deletion Peak 10
+HUNK	3	244	668	Deletion Peak 20
+HYAL1	4	251	660	Deletion Peak  2
+HYAL2	4	251	660	Deletion Peak  2
+HYAL3	4	251	660	Deletion Peak  2
+HYLS1	9	254	652	Deletion Peak 14
+HYMAI	13	263	639	Deletion Peak  7
+HYOU1	9	254	652	Deletion Peak 14
+IARS2	29	238	648	Amplification Peak  2
+IBA57	30	235	650	Amplification Peak  2
+IFNAR1	3	243	669	Deletion Peak 20
+IFNAR2	6	486	423	Deletion Peak 20
+IFNGR1	10	263	642	Deletion Peak  7
+IFNGR2	3	243	669	Deletion Peak 20
+IFNK	12	260	643	Amplification Peak 15
+IFRD2	4	251	660	Deletion Peak  2
+IFT46	7	255	653	Deletion Peak 14
+IFT88	3	248	664	Deletion Peak 15
+IGF2R	10	263	642	Deletion Peak  7
+IKZF5	3	271	641	Deletion Peak 11, Deletion Peak 10
+IL10RA	7	255	653	Deletion Peak 14
+IL10RB	3	243	669	Deletion Peak 20
+IL12B	12	252	651	Deletion Peak  4
+IL17D	3	248	664	Deletion Peak 15
+IL17RB	4	252	659	Deletion Peak  2
+IL17RD	3	252	660	Deletion Peak  2
+IL17REL	3	274	638	Deletion Peak 22
+IL18	7	255	653	Deletion Peak 14
+IL20RA	10	263	642	Deletion Peak  7
+IL22RA2	10	263	642	Deletion Peak  7
+IMPDH2	4	251	660	Deletion Peak  2
+INA	2	270	643	Deletion Peak 11, Deletion Peak 10
+ING1	5	247	663	Deletion Peak 15
+INPP5A	4	262	649	Deletion Peak 11
+INPP5F	3	272	640	Deletion Peak 11, Deletion Peak 10
+INTS6	2	253	660	Deletion Peak 15
+INTS6-AS1	2	253	660	Deletion Peak 15
+INTS7	27	237	651	Amplification Peak  2
+IP6K1	4	251	660	Deletion Peak  2
+IP6K2	4	251	660	Deletion Peak  2
+IPCEF1	11	266	638	Deletion Peak  7
+IPO5	4	249	662	Deletion Peak 15
+IQCF1	4	251	660	Deletion Peak  2
+IQCF2	4	251	660	Deletion Peak  2
+IQCF3	4	251	660	Deletion Peak  2
+IQCF4	4	251	660	Deletion Peak  2
+IQCF5	4	251	660	Deletion Peak  2
+IQCF5-AS1	4	251	660	Deletion Peak  2
+IQCF6	4	251	660	Deletion Peak  2
+IRF2BP2	27	235	653	Amplification Peak  2
+IRF6	27	237	651	Amplification Peak  2
+IRF8	5	252	658	Deletion Peak 17
+IRGM	11	251	653	Deletion Peak  4
+IRS2	5	247	663	Amplification Peak 19, Deletion Peak 15
+ITGBL1	4	249	662	Deletion Peak 15
+ITIH1	4	252	659	Deletion Peak  2
+ITIH3	4	252	659	Deletion Peak  2
+ITIH4	4	252	659	Deletion Peak  2
+ITIH4-AS1	4	252	659	Deletion Peak  2
+ITK	12	252	651	Deletion Peak  4
+ITM2B	2	251	662	Deletion Peak 15
+ITPKB	29	235	651	Amplification Peak  2
+ITPRIP	2	271	642	Deletion Peak 11, Deletion Peak 10
+ITSN1	3	244	668	Deletion Peak 20
+IYD	11	267	637	Deletion Peak  7
+JAKMIP1	5	236	674	Amplification Peak  6
+JAKMIP3	4	262	649	Deletion Peak 11
+JAM2	5	240	670	Deletion Peak 20
+JAML	7	255	653	Deletion Peak 14
+JMJD4	30	235	650	Amplification Peak  2
+JPH3	5	252	658	Deletion Peak 17
+KATNA1	13	267	635	Deletion Peak  7
+KATNAL1	3	249	663	Deletion Peak 15
+KBTBD3	9	253	653	Deletion Peak 14
+KBTBD6	2	251	662	Deletion Peak 15
+KBTBD7	2	251	662	Deletion Peak 15
+KCNG4	5	253	657	Deletion Peak 17
+KCNH1	27	238	650	Amplification Peak  2
+KCNIP1	12	255	648	Deletion Peak  4
+KCNK1	27	235	653	Amplification Peak  2
+KCNK18	3	272	640	Deletion Peak 11, Deletion Peak 10
+KCNK2	29	238	648	Amplification Peak  2
+KCNMB1	12	255	648	Deletion Peak  4
+KCNRG	2	253	660	Deletion Peak 15
+KCTD12	4	245	666	Deletion Peak 15
+KCTD3	28	237	650	Amplification Peak  2
+KCTD4	2	251	662	Deletion Peak 15
+KCTD6	3	252	660	Deletion Peak  2
+KIAA0408	12	267	636	Deletion Peak  6
+KIAA0513	5	252	658	Deletion Peak 17
+KIAA0930	3	275	637	Deletion Peak 22
+KIF25	11	262	642	Deletion Peak  7
+KIF25-AS1	11	262	642	Deletion Peak  7
+KIF26B	27	235	653	Amplification Peak  2
+KIF4B	13	253	649	Deletion Peak  4
+KIF9	5	250	660	Deletion Peak  2
+KIR2DL1	7	249	659	Deletion Peak 19
+KIR2DL3	8	250	657	Deletion Peak 19
+KIR2DL4	6	244	665	Deletion Peak 19
+KIR2DS4	7	247	661	Deletion Peak 19
+KIR3DL1	6	247	662	Deletion Peak 19
+KIR3DL3	7	244	664	Deletion Peak 19
+KL	2	251	662	Deletion Peak 15
+KLF12	2	245	668	Deletion Peak 15
+KLF5	2	245	668	Deletion Peak 15
+KLHDC4	5	252	658	Deletion Peak 17
+KLHDC7B	0	37	878	Deletion Peak 22
+KLHDC8B	4	251	660	Deletion Peak  2
+KLHL1	2	248	665	Deletion Peak 15
+KLHL18	5	250	660	Deletion Peak  2
+KLHL32	11	265	639	Deletion Peak  6
+KLHL36	5	253	657	Deletion Peak 17
+KMO	26	236	653	Amplification Peak  2
+KMT2A	7	255	653	Deletion Peak 14
+KNDC1	4	262	649	Deletion Peak 11
+KPNA3	2	253	660	Deletion Peak 15
+KPNA5	12	266	637	Deletion Peak  6
+KRTAP11-1	4	243	668	Deletion Peak 20
+KRTAP13-1	4	243	668	Deletion Peak 20
+KRTAP13-2	4	243	668	Deletion Peak 20
+KRTAP13-3	4	243	668	Deletion Peak 20
+KRTAP13-4	4	243	668	Deletion Peak 20
+KRTAP15-1	4	243	668	Deletion Peak 20
+KRTAP19-1	4	243	668	Deletion Peak 20
+KRTAP19-2	4	243	668	Deletion Peak 20
+KRTAP19-3	4	243	668	Deletion Peak 20
+KRTAP19-4	4	243	668	Deletion Peak 20
+KRTAP19-5	4	243	668	Deletion Peak 20
+KRTAP19-6	4	243	668	Deletion Peak 20
+KRTAP19-7	4	243	668	Deletion Peak 20
+KRTAP19-8	3	243	669	Deletion Peak 20
+KRTAP20-1	4	243	668	Deletion Peak 20
+KRTAP20-2	4	243	668	Deletion Peak 20
+KRTAP20-3	4	243	668	Deletion Peak 20
+KRTAP20-4	4	243	668	Deletion Peak 20
+KRTAP21-1	4	243	668	Deletion Peak 20
+KRTAP21-2	4	243	668	Deletion Peak 20
+KRTAP21-3	4	243	668	Deletion Peak 20
+KRTAP22-1	4	243	668	Deletion Peak 20
+KRTAP22-2	4	243	668	Deletion Peak 20
+KRTAP23-1	4	243	668	Deletion Peak 20
+KRTAP24-1	4	243	668	Deletion Peak 20
+KRTAP25-1	4	243	668	Deletion Peak 20
+KRTAP26-1	4	243	668	Deletion Peak 20
+KRTAP27-1	4	243	668	Deletion Peak 20
+KRTAP6-1	4	243	668	Deletion Peak 20
+KRTAP6-2	4	243	668	Deletion Peak 20
+KRTAP6-3	4	243	668	Deletion Peak 20
+KRTAP7-1	4	243	668	Deletion Peak 20
+KRTAP8-1	4	243	668	Deletion Peak 20
+L3MBTL3	12	265	638	Deletion Peak  6
+LACC1	2	251	662	Deletion Peak 15
+LAMA2	12	265	638	Deletion Peak  6
+LAMA4	12	266	637	Deletion Peak  6
+LAMB2	4	251	660	Deletion Peak  2
+LAMB3	27	237	651	Amplification Peak  2
+LARGE2	8	258	649	Deletion Peak 13
+LARP1	13	253	649	Deletion Peak  4
+LATS1	13	267	635	Deletion Peak  7
+LATS2	3	248	664	Deletion Peak 15
+LAYN	7	253	655	Deletion Peak 14
+LBR	29	236	650	Amplification Peak  2
+LCP1	2	251	662	Deletion Peak 15
+LCP2	12	255	648	Deletion Peak  4
+LDHD	6	253	656	Deletion Peak 17
+LDLRAD3	8	258	649	Deletion Peak 13
+LEFTY1	29	236	650	Amplification Peak  2
+LEFTY2	29	236	650	Amplification Peak  2
+LGALS8	26	236	653	Amplification Peak  2
+LGALS8-AS1	26	236	653	Amplification Peak  2
+LHPP	3	272	640	Deletion Peak 11, Deletion Peak 10
+LIG4	5	247	663	Deletion Peak 15
+LILRA6	12	243	660	Amplification Peak 24
+LILRB3	13	243	659	Amplification Peak 24
+LILRP2	7	243	665	Deletion Peak 19
+LIN28B	12	266	637	Deletion Peak  6
+LIN28B-AS1	12	266	637	Deletion Peak  6
+LIN9	29	235	651	Amplification Peak  2
+LINC00032	12	264	639	Amplification Peak 15
+LINC00113	5	241	669	Deletion Peak 20
+LINC00158	6	240	669	Deletion Peak 20
+LINC00161	4	243	668	Deletion Peak 20
+LINC00184	27	235	653	Amplification Peak  2
+LINC00189	4	243	668	Deletion Peak 20
+LINC00207	3	274	638	Deletion Peak 22
+LINC00210	28	237	650	Amplification Peak  2
+LINC00222	12	266	637	Deletion Peak  6
+LINC00242	11	260	644	Deletion Peak  7
+LINC00271	10	263	642	Deletion Peak  7
+LINC00297	3	249	663	Deletion Peak 15
+LINC00307	4	243	668	Deletion Peak 20
+LINC00308	6	240	669	Deletion Peak 20
+LINC00311	5	252	658	Deletion Peak 17
+LINC00314	4	243	668	Deletion Peak 20
+LINC00317	7	240	668	Deletion Peak 20
+LINC00320	5	240	670	Deletion Peak 20
+LINC00326	11	263	641	Deletion Peak  7
+LINC00327	3	247	665	Deletion Peak 15
+LINC00330	2	251	662	Deletion Peak 15
+LINC00343	5	248	662	Deletion Peak 15
+LINC00346	5	247	663	Deletion Peak 15
+LINC00347	2	245	668	Deletion Peak 15
+LINC00348	2	246	667	Deletion Peak 15
+LINC00350	3	246	666	Deletion Peak 15
+LINC00351	4	244	667	Deletion Peak 15
+LINC00358	2	247	666	Deletion Peak 15
+LINC00364	2	248	665	Deletion Peak 15
+LINC00365	3	249	663	Deletion Peak 15
+LINC00367	3	248	664	Deletion Peak 15
+LINC00374	2	246	667	Deletion Peak 15
+LINC00375	4	244	667	Deletion Peak 15
+LINC00376	2	249	664	Deletion Peak 15
+LINC00381	2	245	668	Deletion Peak 15
+LINC00382	4	245	666	Deletion Peak 15
+LINC00383	3	248	664	Deletion Peak 15
+LINC00395	3	248	664	Deletion Peak 15
+LINC00396	5	247	663	Deletion Peak 15
+LINC00397	4	250	661	Deletion Peak 15
+LINC00398	3	249	663	Deletion Peak 15
+LINC00399	6	247	662	Amplification Peak 19, Deletion Peak 15
+LINC00408	2	18	895	Deletion Peak 15
+LINC00410	4	249	662	Deletion Peak 15
+LINC00421	2	246	667	Deletion Peak 15
+LINC00424	3	247	665	Deletion Peak 15
+LINC00426	3	249	663	Deletion Peak 15
+LINC00442	2	246	667	Deletion Peak 15
+LINC00443	5	247	663	Deletion Peak 15
+LINC00445	2	251	662	Deletion Peak 15
+LINC00449	4	249	662	Deletion Peak 15
+LINC00456	4	249	662	Deletion Peak 15
+LINC00457	2	251	662	Deletion Peak 15
+LINC00458	1	252	662	Deletion Peak 15
+LINC00460	5	247	663	Deletion Peak 15
+LINC00462	2	252	661	Deletion Peak 15
+LINC00463	3	247	665	Deletion Peak 15
+LINC00467	27	237	651	Amplification Peak  2
+LINC00515	6	240	669	Deletion Peak 20
+LINC00538	29	237	649	Amplification Peak  2
+LINC00539	3	248	664	Deletion Peak 15
+LINC00540	3	247	665	Deletion Peak 15
+LINC00543	3	248	664	Deletion Peak 15
+LINC00545	3	249	663	Deletion Peak 15
+LINC00547	2	251	662	Deletion Peak 15
+LINC00548	2	251	662	Deletion Peak 15
+LINC00550	2	248	665	Deletion Peak 15
+LINC00551	5	247	663	Deletion Peak 15
+LINC00554	5	249	661	Deletion Peak 15
+LINC00557	4	249	662	Deletion Peak 15
+LINC00558	1	252	662	Deletion Peak 15
+LINC00559	4	250	661	Deletion Peak 15
+LINC00560	4	249	662	Deletion Peak 15
+LINC00562	2	251	662	Deletion Peak 15
+LINC00563	2	251	662	Deletion Peak 15
+LINC00564	4	246	665	Deletion Peak 15
+LINC00566	3	247	665	Deletion Peak 15
+LINC00567	5	247	663	Deletion Peak 15
+LINC00571	2	251	662	Deletion Peak 15
+LINC00572	3	249	663	Deletion Peak 15
+LINC00574	11	260	644	Deletion Peak  7
+LINC00582	28	236	651	Amplification Peak  2
+LINC00601	3	263	649	Deletion Peak 11
+LINC00602	10	261	644	Deletion Peak  7
+LINC00676	5	247	663	Amplification Peak 19, Deletion Peak 15
+LINC00698	3	249	663	Deletion Peak  2
+LINC00867	3	272	640	Deletion Peak 11, Deletion Peak 10
+LINC00898	1	278	636	Deletion Peak 22
+LINC00917	5	252	658	Deletion Peak 17
+LINC00945	3	243	669	Deletion Peak 20
+LINC00994	3	249	663	Deletion Peak  2
+LINC01010	10	263	642	Deletion Peak  7
+LINC01038	4	244	667	Deletion Peak 15
+LINC01040	4	250	661	Deletion Peak 15
+LINC01047	4	250	661	Deletion Peak 15
+LINC01048	2	251	662	Deletion Peak 15
+LINC01053	3	247	665	Deletion Peak 15
+LINC01058	3	249	663	Deletion Peak 15
+LINC01068	4	244	667	Deletion Peak 15
+LINC01072	3	247	665	Deletion Peak 15
+LINC01082	6	252	657	Deletion Peak 17
+LINC01132	27	235	653	Amplification Peak  2
+LINC01139	26	236	653	Amplification Peak  2
+LINC01163	3	263	649	Deletion Peak 11
+LINC01164	4	263	648	Deletion Peak 11
+LINC01166	4	262	649	Deletion Peak 11
+LINC01167	4	262	649	Deletion Peak 11
+LINC01168	4	262	649	Deletion Peak 11
+LINC01198	2	251	662	Deletion Peak 15
+LINC01227	5	254	656	Deletion Peak 17
+LINC01229	5	254	656	Deletion Peak 17
+LINC01310	3	276	636	Deletion Peak 22
+LINC01315	2	275	638	Deletion Peak 22
+LINC01347	26	235	654	Amplification Peak  2
+LINC01352	29	236	650	Amplification Peak  2
+LINC01354	27	235	653	Amplification Peak  2
+LINC01366	12	254	649	Deletion Peak  4
+LINC01411	10	254	651	Deletion Peak  4
+LINC01425	7	241	667	Deletion Peak 20
+LINC01435	2	271	642	Deletion Peak 11, Deletion Peak 10
+LINC01470	12	253	650	Deletion Peak  4
+LINC01484	10	254	651	Deletion Peak  4
+LINC01485	10	253	652	Deletion Peak  4
+LINC01493	9	257	649	Deletion Peak 13
+LINC01499	8	258	649	Deletion Peak 13
+LINC01558	11	261	643	Deletion Peak  7
+LINC01561	3	272	640	Deletion Peak 11, Deletion Peak 10
+LINC01589	3	275	637	Deletion Peak 22
+LINC01611	12	265	638	Deletion Peak  6
+LINC01615	11	260	644	Deletion Peak  7
+LINC01625	11	265	639	Deletion Peak  7
+LINGO2	12	261	642	Amplification Peak 15
+LIPI	4	246	665	Deletion Peak 20
+LMF2	0	37	878	Deletion Peak 22
+LMO7	4	245	666	Deletion Peak 15
+LMO7-AS1	3	245	667	Deletion Peak 15
+LMO7DN	4	245	666	Deletion Peak 15
+LMO7DN-IT1	4	245	666	Deletion Peak 15
+LNX2	3	248	664	Deletion Peak 15
+LOC100128386	9	251	655	Deletion Peak 14
+LOC100130331	26	236	653	Amplification Peak  2
+LOC100132078	7	253	655	Deletion Peak 14
+LOC100132686	7	255	653	Deletion Peak 14
+LOC100268168	10	254	651	Deletion Peak  4
+LOC100287015	12	242	661	Deletion Peak  8
+LOC100506281	6	253	656	Deletion Peak 17
+LOC100506679	2	274	639	Deletion Peak 22
+LOC100507283	9	251	655	Deletion Peak 14
+LOC100507384	8	258	649	Deletion Peak 13
+LOC100507387	3	249	663	Deletion Peak  4
+LOC100507477	11	267	637	Deletion Peak  7
+LOC100507557	13	263	639	Deletion Peak  7
+LOC100996385	3	19	893	Deletion Peak  4
+LOC101927143	29	235	651	Amplification Peak  2
+LOC101927164	29	235	651	Amplification Peak  2
+LOC101927314	11	266	638	Deletion Peak  6
+LOC101927447	2	273	640	Deletion Peak 22
+LOC101927692	3	270	642	Deletion Peak 11, Deletion Peak 10
+LOC101927787	27	235	653	Amplification Peak  2
+LOC101927851	26	235	654	Amplification Peak  2
+LOC101927908	12	256	647	Deletion Peak  4
+LOC101928093	10	254	651	Deletion Peak  4
+LOC101928107	3	243	669	Deletion Peak 20
+LOC101928304	10	263	642	Deletion Peak  7
+LOC101928417	4	254	657	Deletion Peak 17
+LOC101928424	9	251	655	Deletion Peak 14
+LOC101928446	4	254	657	Deletion Peak 17
+LOC101928535	10	252	653	Deletion Peak 14
+LOC101928557	5	252	658	Deletion Peak 17
+LOC101928659	5	252	658	Deletion Peak 17
+LOC101928661	13	265	637	Deletion Peak  7
+LOC101928682	5	252	658	Deletion Peak 17
+LOC101928708	5	252	658	Deletion Peak 17
+LOC101928737	5	252	658	Deletion Peak 17
+LOC101928847	7	256	652	Deletion Peak 14
+LOC101928894	8	258	649	Deletion Peak 13
+LOC101928940	7	256	652	Deletion Peak 14
+LOC101929054	5	251	659	Deletion Peak  2
+LOC101929089	7	255	653	Deletion Peak 14
+LOC101929140	2	251	662	Deletion Peak 15
+LOC101929227	8	254	653	Deletion Peak 14
+LOC101929297	11	261	643	Deletion Peak  7
+LOC101929340	9	251	655	Deletion Peak 14
+LOC101929420	11	261	643	Deletion Peak  7
+LOC101929427	9	253	653	Deletion Peak 14
+LOC101929460	11	261	643	Deletion Peak  7
+LOC101929657	2	253	660	Deletion Peak 15
+LOC102546299	13	255	647	Deletion Peak  4
+LOC102723833	28	237	650	Amplification Peak  2
+LOC102723838	9	251	655	Deletion Peak 14
+LOC102723968	2	249	664	Deletion Peak 15
+LOC102724163	5	254	656	Deletion Peak 17
+LOC102724301	9	255	651	Deletion Peak 14
+LOC102724357	11	260	644	Deletion Peak  7
+LOC102724511	11	260	644	Deletion Peak  7
+LOC103344931	3	270	642	Deletion Peak 11, Deletion Peak 10
+LOC105369507	7	254	654	Deletion Peak 14
+LOC105373051	2	274	639	Deletion Peak 22
+LOC105373100	0	26	889	Deletion Peak 22
+LOC105377924	11	266	638	Deletion Peak  6
+LOC105378052	11	267	637	Deletion Peak  7
+LOC105378137	11	261	643	Deletion Peak  7
+LOC149373	29	236	650	Amplification Peak  2
+LOC150051	3	243	669	Deletion Peak 20
+LOC153910	11	263	641	Deletion Peak  7
+LOC154449	10	259	646	Deletion Peak  7
+LOC283038	3	270	642	Deletion Peak 11
+LOC284930	1	278	636	Deletion Peak 22
+LOC284933	3	276	636	Deletion Peak 22
+LOC285593	12	253	650	Deletion Peak  4
+LOC285626	12	252	651	Deletion Peak  4
+LOC285804	10	259	646	Deletion Peak  7
+LOC400553	5	250	660	Deletion Peak 17
+LOC403312	9	254	652	Deletion Peak 14
+LOC645967	13	267	635	Deletion Peak  7
+LOC649133	9	254	652	Deletion Peak 14
+LOC729603	10	263	642	Deletion Peak  7
+LOC730668	3	277	635	Deletion Peak 22
+LPA	11	263	641	Deletion Peak  7
+LPAL2	10	263	642	Deletion Peak  7
+LPAR6	2	252	661	Deletion Peak 15
+LPGAT1	27	237	651	Amplification Peak  2
+LRCH1	2	251	662	Deletion Peak 15
+LRP11	13	267	635	Deletion Peak  7
+LRRC2	5	249	661	Deletion Peak  2
+LRRC2-AS1	5	249	661	Deletion Peak  2
+LRRC27	4	262	649	Deletion Peak 11
+LRRC4C	8	262	645	Deletion Peak 13
+LRRC63	2	251	662	Deletion Peak 15
+LRTM1	4	252	659	Deletion Peak  2
+LSM11	12	252	651	Deletion Peak  4
+LSMEM2	4	251	660	Deletion Peak  2
+LTF	5	249	661	Deletion Peak  2
+LTN1	4	243	668	Deletion Peak 20
+LTV1	13	263	639	Deletion Peak  7
+LUADT1	13	266	636	Deletion Peak  7
+LYPD8	16	5	894	Amplification Peak  2
+LYPLAL1	28	237	650	Amplification Peak  2
+LYRM2	11	262	642	Deletion Peak  6
+LYST	26	236	653	Amplification Peak  2
+LZTFL1	5	248	662	Deletion Peak  2
+MAB21L1	2	251	662	Deletion Peak 15
+MAF	5	254	656	Deletion Peak 17
+MAFTRR	5	254	656	Deletion Peak 17
+MAN1A1	12	268	635	Deletion Peak  6
+MANEA	11	264	640	Deletion Peak  6
+MANF	4	254	657	Deletion Peak  2
+MAP10	28	235	652	Amplification Peak  2
+MAP1LC3B	5	253	657	Deletion Peak 17
+MAP1LC3C	26	236	653	Amplification Peak  2
+MAP3K4	10	263	642	Deletion Peak  7
+MAP3K5	10	263	642	Deletion Peak  7
+MAP3K7	12	262	641	Deletion Peak  6
+MAP3K7CL	4	243	668	Deletion Peak 20
+MAP4	5	251	659	Deletion Peak  2
+MAP7	10	263	642	Deletion Peak  7
+MAPK11	2	269	644	Deletion Peak 22
+MAPK12	2	272	641	Deletion Peak 22
+MAPK7	23	240	652	Amplification Peak 21
+MAPK8IP1	8	258	649	Deletion Peak 13
+MAPK8IP2	0	35	880	Deletion Peak 22
+MAPKAPK3	4	251	660	Deletion Peak  2
+MARC1	29	237	649	Amplification Peak  2
+MARC2	29	237	649	Amplification Peak  2
+MARCKS	12	268	635	Deletion Peak  6
+MARK1	29	237	649	Amplification Peak  2
+MAS1	10	263	642	Deletion Peak  7
+MAT2B	13	253	649	Deletion Peak  4
+MBNL2	4	250	661	Deletion Peak 15
+MBTPS1	5	253	657	Deletion Peak 17
+MCAM	9	255	651	Deletion Peak 14
+MCAT	2	274	639	Deletion Peak 22
+MCHR2	11	266	638	Deletion Peak  6
+MCHR2-AS1	11	266	638	Deletion Peak  6
+MCM9	12	268	635	Deletion Peak  6
+MCMBP	3	272	640	Deletion Peak 11, Deletion Peak 10
+MDN1	11	262	642	Deletion Peak  6
+MED23	12	265	638	Deletion Peak  6
+MED4	2	251	662	Deletion Peak 15
+MED4-AS1	2	251	662	Deletion Peak 15
+MED7	12	252	651	Deletion Peak  4
+MEDAG	2	249	664	Deletion Peak 15
+MET	51	228	636	Amplification Peak  9
+METTL21C	4	249	662	Deletion Peak 15
+METTL21EP	4	249	662	Deletion Peak 15
+METTL24	12	265	638	Deletion Peak  6
+MFAP3	12	252	651	Deletion Peak  4
+MFAP4	23	240	652	Amplification Peak 21
+MFSD4B	12	265	638	Deletion Peak  6
+MGMT	4	264	647	Deletion Peak 11
+MIA3	29	236	650	Amplification Peak  2
+MICAL1	12	266	637	Deletion Peak  6
+MICU2	3	247	665	Deletion Peak 15
+MIOX	0	37	878	Deletion Peak 22
+MIPEP	3	247	665	Deletion Peak 15
+MIR100	8	253	654	Deletion Peak 14
+MIR100HG	9	253	653	Deletion Peak 14
+MIR103A1	13	255	647	Deletion Peak  4
+MIR103B1	13	255	647	Deletion Peak  4
+MIR1180	23	240	652	Amplification Peak 21
+MIR1182	29	235	651	Amplification Peak  2
+MIR1202	11	267	637	Deletion Peak  7
+MIR1204	26	232	657	Amplification Peak 13
+MIR1205	25	233	657	Amplification Peak 13
+MIR1206	26	232	657	Amplification Peak 13
+MIR1207	26	232	657	Amplification Peak 13
+MIR1208	26	232	657	Amplification Peak 13
+MIR1226	5	250	660	Deletion Peak  2
+MIR1249	3	275	637	Deletion Peak 22
+MIR125B1	8	253	654	Deletion Peak 14
+MIR125B2	7	241	667	Deletion Peak 20
+MIR1267	5	247	663	Deletion Peak 15
+MIR1273C	11	267	637	Deletion Peak  7
+MIR129-2	8	258	649	Deletion Peak 13
+MIR1294	12	253	650	Deletion Peak  4
+MIR1297	1	252	662	Deletion Peak 15
+MIR1303	13	253	649	Deletion Peak  4
+MIR1307	3	269	643	Deletion Peak 11, Deletion Peak 10
+MIR135A1	6	251	658	Deletion Peak  2
+MIR146A	12	252	651	Deletion Peak  4
+MIR1537	26	236	653	Amplification Peak  2
+MIR155	6	240	669	Deletion Peak 20
+MIR155HG	6	240	669	Deletion Peak 20
+MIR15A	2	253	660	Deletion Peak 15
+MIR16-1	2	253	660	Deletion Peak 15
+MIR17	4	249	662	Deletion Peak 15
+MIR17HG	4	249	662	Deletion Peak 15
+MIR18A	4	249	662	Deletion Peak 15
+MIR191	4	251	660	Deletion Peak  2
+MIR1910	5	252	658	Deletion Peak 17
+MIR1913	11	261	643	Deletion Peak  7
+MIR194-1	29	237	649	Amplification Peak  2
+MIR19A	4	249	662	Deletion Peak 15
+MIR19B1	4	249	662	Deletion Peak 15
+MIR202	3	260	652	Deletion Peak 11
+MIR202HG	3	260	652	Deletion Peak 11
+MIR205	27	237	651	Amplification Peak  2
+MIR205HG	27	237	651	Amplification Peak  2
+MIR20A	4	249	662	Deletion Peak 15
+MIR2110	3	270	642	Deletion Peak 11, Deletion Peak 10
+MIR2113	11	265	639	Deletion Peak  6
+MIR2115	5	250	660	Deletion Peak  2
+MIR215	29	237	649	Amplification Peak  2
+MIR218-2	13	255	647	Deletion Peak  4
+MIR2276	3	247	665	Deletion Peak 15
+MIR2681	4	249	662	Deletion Peak 15
+MIR29B2	27	235	653	Amplification Peak  2
+MIR29C	27	235	653	Amplification Peak  2
+MIR3122	27	237	651	Amplification Peak  2
+MIR3123	26	236	653	Amplification Peak  2
+MIR3124	16	5	894	Amplification Peak  2
+MIR3141	12	253	650	Deletion Peak  4
+MIR3142HG	12	252	651	Deletion Peak  4
+MIR3144	12	268	635	Deletion Peak  6
+MIR3145	11	265	639	Deletion Peak  7
+MIR3168	2	251	662	Deletion Peak 15
+MIR3169	2	248	665	Deletion Peak 15
+MIR3170	4	249	662	Deletion Peak 15
+MIR3182	4	254	657	Deletion Peak 17
+MIR3201	2	276	637	Deletion Peak 22
+MIR34B	7	253	655	Deletion Peak 14
+MIR34C	7	253	655	Deletion Peak 14
+MIR3613	2	253	660	Deletion Peak 15
+MIR3619	3	277	635	Deletion Peak 22
+MIR3620	30	235	650	Amplification Peak  2
+MIR3662	10	263	642	Deletion Peak  7
+MIR3663	3	272	640	Deletion Peak 11, Deletion Peak 10
+MIR3663HG	3	272	640	Deletion Peak 11, Deletion Peak 10
+MIR3665	4	245	666	Deletion Peak 15
+MIR3667	2	276	637	Deletion Peak 22
+MIR3668	11	267	637	Deletion Peak  7
+MIR3692	11	267	637	Deletion Peak  7
+MIR378C	3	264	648	Deletion Peak 11
+MIR378E	12	255	648	Deletion Peak  4
+MIR378H	13	253	649	Deletion Peak  4
+MIR3912	10	255	650	Deletion Peak  4
+MIR3916	27	237	651	Amplification Peak  2
+MIR3918	11	264	640	Deletion Peak  7
+MIR3920	9	251	655	Deletion Peak 14
+MIR3938	4	252	659	Deletion Peak  2
+MIR3939	11	261	643	Deletion Peak  7
+MIR3941	3	272	640	Deletion Peak 11, Deletion Peak 10
+MIR3944	3	34	878	Deletion Peak 11
+MIR3973	8	258	649	Deletion Peak 13
+MIR425	4	251	660	Deletion Peak  2
+MIR4260	27	237	651	Amplification Peak  2
+MIR4271	4	251	660	Deletion Peak  2
+MIR4295	3	270	642	Deletion Peak 11, Deletion Peak 10
+MIR4296	4	269	642	Deletion Peak 11
+MIR4297	3	264	648	Deletion Peak 11
+MIR4301	7	256	652	Deletion Peak 14
+MIR4305	2	251	662	Deletion Peak 15
+MIR4306	4	249	662	Deletion Peak 15
+MIR4327	4	243	668	Deletion Peak 20
+MIR4427	27	235	653	Amplification Peak  2
+MIR4428	26	236	653	Amplification Peak  2
+MIR4443	5	250	660	Deletion Peak  2
+MIR4454	9	237	669	Amplification Peak  2
+MIR4464	12	262	641	Deletion Peak  6
+MIR4465	11	267	637	Deletion Peak  7
+MIR4466	11	265	639	Deletion Peak  7
+MIR4482	2	271	642	Deletion Peak 11, Deletion Peak 10
+MIR4483	3	270	642	Deletion Peak 11, Deletion Peak 10
+MIR4484	4	270	641	Deletion Peak 11
+MIR4491	7	253	655	Deletion Peak 14
+MIR4492	9	254	652	Deletion Peak 14
+MIR4493	8	253	654	Deletion Peak 14
+MIR4499	3	248	664	Deletion Peak 15
+MIR4500	4	250	661	Deletion Peak 15
+MIR4500HG	5	251	659	Deletion Peak 15
+MIR4501	4	249	662	Deletion Peak 15
+MIR4535	3	276	636	Deletion Peak 22
+MIR4634	10	253	652	Deletion Peak  4
+MIR4638	3	10	902	Deletion Peak  5
+MIR4643	11	263	641	Deletion Peak  6
+MIR4644	9	38	868	Deletion Peak  7
+MIR4666A	30	235	650	Amplification Peak  2
+MIR4671	27	235	653	Amplification Peak  2
+MIR4677	28	235	652	Amplification Peak  2
+MIR4680	3	270	642	Deletion Peak 11, Deletion Peak 10
+MIR4681	3	272	640	Deletion Peak 11, Deletion Peak 10
+MIR4682	3	271	641	Deletion Peak 11, Deletion Peak 10
+MIR4693	8	252	655	Deletion Peak 14
+MIR4703	2	253	660	Deletion Peak 15
+MIR4704	2	247	666	Deletion Peak 15
+MIR4705	4	249	662	Deletion Peak 15
+MIR4719	8	253	654	Deletion Peak 17
+MIR4720	5	254	656	Deletion Peak 17
+MIR4742	29	235	651	Amplification Peak  2
+MIR4753	26	235	654	Amplification Peak  2
+MIR4759	5	241	669	Deletion Peak 20
+MIR4762	3	276	636	Deletion Peak 22
+MIR4763	3	277	635	Deletion Peak 22
+MIR4787	4	251	660	Deletion Peak  2
+MIR4793	4	251	660	Deletion Peak  2
+MIR5003	10	254	651	Deletion Peak  4
+MIR5006	2	251	662	Deletion Peak 15
+MIR5007	1	252	662	Deletion Peak 15
+MIR5008	30	235	650	Amplification Peak  2
+MIR5093	5	252	658	Deletion Peak 17
+MIR5193	4	251	660	Deletion Peak  2
+MIR548A2	10	263	642	Deletion Peak  7
+MIR548AI	11	266	638	Deletion Peak  6
+MIR548AS	4	249	662	Deletion Peak 15
+MIR548B	12	268	635	Deletion Peak  6
+MIR548BB	3	249	663	Deletion Peak  2
+MIR548E	3	270	642	Deletion Peak 11, Deletion Peak 10
+MIR548F3	14	246	655	Amplification Peak  2
+MIR548X	5	241	669	Deletion Peak 20
+MIR548X2	2	247	666	Deletion Peak 15
+MIR548XHG	6	243	666	Deletion Peak 20
+MIR5693	2	253	660	Deletion Peak 15
+MIR5787	4	251	660	Deletion Peak  2
+MIR585	13	255	647	Deletion Peak  4
+MIR587	11	266	638	Deletion Peak  6
+MIR588	12	265	638	Deletion Peak  6
+MIR6073	11	258	646	Deletion Peak 12
+MIR609	2	271	642	Deletion Peak 11, Deletion Peak 10
+MIR6130	6	241	668	Deletion Peak 20
+MIR621	2	251	662	Deletion Peak 15
+MIR622	4	250	661	Deletion Peak 15
+MIR623	4	249	662	Deletion Peak 15
+MIR6499	11	251	653	Deletion Peak  4
+MIR6501	3	243	669	Deletion Peak 20
+MIR6504	5	254	656	Deletion Peak 17
+MIR664A	29	237	649	Amplification Peak  2
+MIR670	8	258	649	Deletion Peak 13
+MIR670HG	8	258	649	Deletion Peak 13
+MIR6715A	3	270	642	Deletion Peak 11, Deletion Peak 10
+MIR6715B	3	270	642	Deletion Peak 11, Deletion Peak 10
+MIR6716	8	255	652	Deletion Peak 14
+MIR6741	29	236	650	Amplification Peak  2
+MIR6742	30	235	650	Amplification Peak  2
+MIR6756	9	255	651	Deletion Peak 14
+MIR6774	5	252	658	Deletion Peak 17
+MIR6775	5	252	658	Deletion Peak 17
+MIR6821	3	274	638	Deletion Peak 22
+MIR6823	4	251	660	Deletion Peak  2
+MIR6824	4	251	660	Deletion Peak  2
+MIR6872	4	251	660	Deletion Peak  2
+MIR6890	4	251	660	Deletion Peak  2
+MIR711	4	251	660	Deletion Peak  2
+MIR7154	8	258	649	Deletion Peak 13
+MIR7161	11	264	640	Deletion Peak  7
+MIR759	1	252	662	Deletion Peak 15
+MIR7854	5	254	656	Deletion Peak 17
+MIR8056	10	254	651	Deletion Peak  4
+MIR8058	4	254	657	Deletion Peak 17
+MIR8064	4	252	659	Deletion Peak  2
+MIR8069-1	0	236	679	Deletion Peak 20
+MIR8073	5	247	663	Deletion Peak 15
+MIR8079	2	251	662	Deletion Peak 15
+MIR8089	3	10	902	Deletion Peak  5
+MIR873	12	258	645	Amplification Peak 15
+MIR876	12	258	645	Amplification Peak 15
+MIR92A1	4	249	662	Deletion Peak 15
+MIR936	2	271	642	Deletion Peak 11, Deletion Peak 10
+MIR99A	6	241	668	Deletion Peak 20
+MIR99AHG	7	245	663	Deletion Peak 20
+MIRLET7A2	8	253	654	Deletion Peak 14
+MIRLET7A3	3	277	635	Deletion Peak 22
+MIRLET7B	3	277	635	Deletion Peak 22
+MIRLET7BHG	3	277	635	Deletion Peak 22
+MIRLET7C	6	241	668	Deletion Peak 20
+MIRLET7G	5	251	659	Deletion Peak  2
+MIS18A	3	243	669	Deletion Peak 20
+MIXL1	29	235	651	Amplification Peak  2
+MKI67	3	264	648	Deletion Peak 11
+MLC1	3	272	640	Deletion Peak 22
+MLKL	5	252	658	Deletion Peak 17
+MLNR	2	253	660	Deletion Peak 15
+MLYCD	5	253	657	Deletion Peak 17
+MMP1	9	252	654	Deletion Peak 14
+MMP10	9	252	654	Deletion Peak 14
+MMP12	9	252	654	Deletion Peak 14
+MMP13	9	252	654	Deletion Peak 14
+MMP20	9	252	654	Deletion Peak 14
+MMP21	4	270	641	Deletion Peak 11
+MMP27	9	252	654	Deletion Peak 14
+MMP3	9	252	654	Deletion Peak 14
+MMP7	9	251	655	Deletion Peak 14
+MMP8	9	252	654	Deletion Peak 14
+MMS22L	11	265	639	Deletion Peak  6
+MOB3B	12	262	641	Amplification Peak 15
+MON1A	4	251	660	Deletion Peak  2
+MON1B	6	253	656	Deletion Peak 17
+MOV10L1	2	272	641	Deletion Peak 22
+MPC1	11	261	643	Deletion Peak  7
+MPHOSPH6	5	254	656	Deletion Peak 17
+MPHOSPH8	3	246	666	Deletion Peak 15
+MPPED1	2	274	639	Deletion Peak 22
+MPZL2	7	255	653	Deletion Peak 14
+MPZL3	7	255	653	Deletion Peak 14
+MRAP	3	243	669	Deletion Peak 20
+MRAP2	12	266	637	Deletion Peak  6
+MRPL18	10	263	642	Deletion Peak  7
+MRPL22	13	253	649	Deletion Peak  4
+MRPL39	6	240	669	Deletion Peak 20
+MRPL55	30	235	650	Amplification Peak  2
+MRPL57	3	248	664	Deletion Peak 15
+MRPS31	2	251	662	Deletion Peak 15
+MRPS31P5	2	254	659	Deletion Peak 15
+MSANTD2	9	251	655	Deletion Peak 14
+MSANTD4	9	253	653	Deletion Peak 14
+MST1	4	251	660	Deletion Peak  2
+MST1R	4	251	660	Deletion Peak  2
+MSX2	10	253	652	Deletion Peak  4
+MT1HL1	26	236	653	Amplification Peak  2
+MTFR2	10	263	642	Deletion Peak  7
+MTG1	3	31	881	Deletion Peak 11
+MTHFD1L	10	266	639	Deletion Peak  7
+MTHFSD	5	252	658	Deletion Peak 17
+MTIF3	3	248	664	Deletion Peak 15
+MTMR6	3	247	665	Deletion Peak 15
+MTR	26	236	653	Amplification Peak  2
+MTRF1	2	251	662	Deletion Peak 15
+MTRF1L	11	265	639	Deletion Peak  7
+MTUS2	3	248	664	Deletion Peak 15
+MUSTN1	4	252	659	Deletion Peak  2
+MXI1	2	271	642	Deletion Peak 11, Deletion Peak 10
+MYB	11	264	640	Deletion Peak  7
+MYC	26	231	658	Amplification Peak 13
+MYCBP2	4	245	666	Deletion Peak 15
+MYCBP2-AS1	4	245	666	Deletion Peak 15
+MYCT1	11	265	639	Deletion Peak  7
+MYL3	5	249	661	Deletion Peak  2
+MYO16	6	247	662	Amplification Peak 19, Deletion Peak 15
+MYO16-AS1	6	247	662	Amplification Peak 19, Deletion Peak 15
+MZT1	2	245	668	Deletion Peak 15
+N4BP2L1	2	251	662	Deletion Peak 15
+N4BP2L2	2	251	662	Deletion Peak 15
+N4BP2L2-IT2	2	251	662	Deletion Peak 15
+N6AMT1	4	243	668	Deletion Peak 20
+NAA16	2	251	662	Deletion Peak 15
+NALCN	4	249	662	Deletion Peak 15
+NALCN-AS1	4	249	662	Deletion Peak 15
+NANOS1	3	272	640	Deletion Peak 11, Deletion Peak 10
+NAXD	5	247	663	Deletion Peak 15
+NBEA	3	252	660	Deletion Peak 15
+NBEAL2	5	250	660	Deletion Peak  2
+NCAM1	7	257	651	Deletion Peak 14
+NCAM2	5	240	670	Deletion Peak 20
+NCAPH2	0	37	878	Deletion Peak 22
+NCKIPSD	4	251	660	Deletion Peak  2
+NCOA7	12	267	636	Deletion Peak  6
+NCOA7-AS1	12	267	636	Deletion Peak  6
+NDFIP2	4	244	667	Deletion Peak 15
+NDFIP2-AS1	4	244	667	Deletion Peak 15
+NDUFAF3	4	251	660	Deletion Peak  2
+NDUFAF4	11	265	639	Deletion Peak  6
+NECAB2	5	253	657	Deletion Peak 17
+NECTIN1	9	255	651	Deletion Peak 14
+NEK2	27	237	651	Amplification Peak  2
+NEK3	2	253	660	Deletion Peak 15
+NEK4	4	252	659	Deletion Peak  2
+NEK5	2	253	660	Deletion Peak 15
+NENF	27	236	652	Amplification Peak  2
+NEURL1	2	271	642	Deletion Peak 11, Deletion Peak 10
+NEURL1-AS1	2	271	642	Deletion Peak 11, Deletion Peak 10
+NEURL1B	10	254	651	Deletion Peak  4
+NFAM1	2	275	638	Deletion Peak 22
+NHEG1	10	263	642	Deletion Peak  7
+NHLRC2	3	270	642	Deletion Peak 11, Deletion Peak 10
+NHLRC3	2	251	662	Deletion Peak 15
+NHSL1	11	265	639	Deletion Peak  7
+NICN1	4	251	660	Deletion Peak  2
+NID1	26	236	653	Amplification Peak  2
+NIPAL4	12	252	651	Deletion Peak  4
+NISCH	5	251	659	Deletion Peak  2
+NKAIN2	12	266	637	Deletion Peak  6
+NKX1-2	3	271	641	Deletion Peak 11, Deletion Peak 10
+NKX2-5	10	254	651	Deletion Peak  4
+NKX6-2	4	262	649	Deletion Peak 11
+NLRP3	26	237	652	Amplification Peak  2
+NLRX1	9	255	651	Deletion Peak 14
+NMBR	11	264	640	Deletion Peak  7
+NME6	5	250	660	Deletion Peak  2
+NMUR2	12	252	651	Deletion Peak  4
+NNMT	7	256	652	Deletion Peak 14
+NOX3	11	267	637	Deletion Peak  7
+NPAT	10	252	653	Deletion Peak 14
+NPM1	10	255	650	Deletion Peak  4
+NPRL2	4	251	660	Deletion Peak  2
+NPS	3	263	649	Deletion Peak 11
+NR2E1	12	266	637	Deletion Peak  6
+NRAP	3	270	642	Deletion Peak 11, Deletion Peak 10
+NRGN	9	251	655	Deletion Peak 14
+NRIP1	6	243	666	Deletion Peak 20
+NSL1	27	236	652	Amplification Peak  2
+NSMCE4A	3	271	641	Deletion Peak 11, Deletion Peak 10
+NT5C2	2	271	642	Deletion Peak 11, Deletion Peak 10
+NT5DC1	12	266	637	Deletion Peak  6
+NT5DC2	5	251	659	Deletion Peak  2
+NT5E	13	264	638	Deletion Peak  6
+NTPCR	27	235	653	Amplification Peak  2
+NUDCD2	13	253	649	Deletion Peak  4
+NUDT15	2	251	662	Deletion Peak 15
+NUDT7	6	253	656	Deletion Peak 17
+NUFIP1	2	251	662	Deletion Peak 15
+NUP133	30	235	650	Amplification Peak  2
+NUP43	13	267	635	Deletion Peak  7
+NUP50	3	275	637	Deletion Peak 22
+NUP58	3	247	665	Deletion Peak 15
+NUS1	12	266	637	Deletion Peak  6
+NVL	29	235	651	Amplification Peak  2
+NXPE1	7	257	651	Deletion Peak 14
+NXPE2	7	256	652	Deletion Peak 14
+NXPE4	7	256	652	Deletion Peak 14
+OAF	9	254	652	Deletion Peak 14
+OAT	3	271	641	Deletion Peak 11, Deletion Peak 10
+OBSCN	30	235	650	Amplification Peak  2
+ODF3B	0	37	878	Deletion Peak 22
+OLFM4	1	252	662	Deletion Peak 15
+OLIG1	3	243	669	Deletion Peak 20
+OLIG2	3	243	669	Deletion Peak 20
+OLIG3	10	265	640	Deletion Peak  7
+OPN3	26	236	653	Amplification Peak  2
+OPRM1	11	265	639	Deletion Peak  7
+OR10G4	8	254	653	Deletion Peak 14
+OR10G7	8	254	653	Deletion Peak 14
+OR10G8	8	254	653	Deletion Peak 14
+OR10G9	8	254	653	Deletion Peak 14
+OR10S1	8	254	653	Deletion Peak 14
+OR11L1	26	237	652	Amplification Peak  2
+OR13G1	26	237	652	Amplification Peak  2
+OR14A16	26	237	652	Amplification Peak  2
+OR14C36	23	236	656	Amplification Peak  2
+OR14I1	17	5	893	Amplification Peak  2
+OR1C1	26	237	652	Amplification Peak  2
+OR2A4	11	261	643	Deletion Peak  6
+OR2AK2	25	237	653	Amplification Peak  2
+OR2B11	26	237	652	Amplification Peak  2
+OR2C3	26	237	652	Amplification Peak  2
+OR2G2	26	237	652	Amplification Peak  2
+OR2G3	26	237	652	Amplification Peak  2
+OR2G6	19	6	890	Amplification Peak  2
+OR2L13	25	236	654	Amplification Peak  2
+OR2L1P	25	237	653	Amplification Peak  2
+OR2L2	25	236	654	Amplification Peak  2
+OR2L3	25	236	654	Amplification Peak  2
+OR2L5	25	236	654	Amplification Peak  2
+OR2L8	25	237	653	Amplification Peak  2
+OR2M2	24	236	655	Amplification Peak  2
+OR2M3	24	236	655	Amplification Peak  2
+OR2M4	24	236	655	Amplification Peak  2
+OR2M5	24	236	655	Amplification Peak  2
+OR2M7	23	236	656	Amplification Peak  2
+OR2T1	23	236	656	Amplification Peak  2
+OR2T10	17	5	893	Amplification Peak  2
+OR2T11	17	5	893	Amplification Peak  2
+OR2T12	23	236	656	Amplification Peak  2
+OR2T2	21	7	887	Amplification Peak  2
+OR2T27	17	5	893	Amplification Peak  2
+OR2T29	18	6	891	Amplification Peak  2
+OR2T3	19	7	889	Amplification Peak  2
+OR2T33	23	236	656	Amplification Peak  2
+OR2T34	18	5	892	Amplification Peak  2
+OR2T35	17	5	893	Amplification Peak  2
+OR2T4	23	236	656	Amplification Peak  2
+OR2T5	19	6	890	Amplification Peak  2
+OR2T6	23	236	656	Amplification Peak  2
+OR2T8	25	237	653	Amplification Peak  2
+OR2V1	3	10	902	Deletion Peak  5
+OR2V2	3	10	902	Deletion Peak  5
+OR2W3	26	237	652	Amplification Peak  2
+OR2W5	26	237	652	Amplification Peak  2
+OR4D5	8	254	653	Deletion Peak 14
+OR4F16	0	1	914	Deletion Peak  5
+OR6F1	26	237	652	Amplification Peak  2
+OR6M1	8	254	653	Deletion Peak 14
+OR6T1	8	254	653	Deletion Peak 14
+OR6X1	8	253	654	Deletion Peak 14
+OR8A1	8	253	654	Deletion Peak 14
+OR8B12	8	253	654	Deletion Peak 14
+OR8B2	8	253	654	Deletion Peak 14
+OR8B3	8	253	654	Deletion Peak 14
+OR8B4	8	253	654	Deletion Peak 14
+OR8B8	8	253	654	Deletion Peak 14
+OR8D1	8	253	654	Deletion Peak 14
+OR8D2	8	253	654	Deletion Peak 14
+OR8D4	8	254	653	Deletion Peak 14
+OR8G1	8	254	653	Deletion Peak 14
+OR8G5	8	254	653	Deletion Peak 14
+ORC3	11	263	641	Deletion Peak  6
+OSGIN1	5	253	657	Deletion Peak 17
+OSTCP1	10	264	641	Deletion Peak  7
+OSTM1	12	266	637	Deletion Peak  6
+OXGR1	4	249	662	Deletion Peak 15
+P4HTM	4	251	660	Deletion Peak  2
+PABPC3	3	247	665	Deletion Peak 15
+PACRG	11	263	641	Deletion Peak  7
+PACRG-AS1	11	263	641	Deletion Peak  7
+PACRG-AS2	10	263	642	Deletion Peak  7
+PACRG-AS3	10	263	642	Deletion Peak  7
+PACSIN2	2	274	639	Deletion Peak 22
+PAFAH1B2	8	254	653	Deletion Peak 14
+PAN3	3	248	664	Deletion Peak 15
+PANK3	13	255	647	Deletion Peak  4
+PANX2	2	270	643	Deletion Peak 22
+PANX3	8	253	654	Deletion Peak 14
+PAOX	3	34	878	Deletion Peak 11
+PARP1	29	235	651	Amplification Peak  2
+PARP11	15	233	667	Amplification Peak 18
+PARP3	4	251	660	Deletion Peak  2
+PARP4	3	247	665	Deletion Peak 15
+PARVB	2	275	638	Deletion Peak 22
+PARVG	2	275	638	Deletion Peak 22
+PATE1	9	253	653	Deletion Peak 14
+PATE2	9	253	653	Deletion Peak 14
+PATE3	9	253	653	Deletion Peak 14
+PATE4	9	253	653	Deletion Peak 14
+PAXBP1	3	243	669	Deletion Peak 20
+PAXBP1-AS1	3	243	669	Deletion Peak 20
+PBOV1	11	265	639	Deletion Peak  7
+PBRM1	6	251	658	Deletion Peak  2
+PCBP4	4	251	660	Deletion Peak  2
+PCCA	4	249	662	Deletion Peak 15
+PCDH17	2	247	666	Deletion Peak 15
+PCDH20	2	248	665	Deletion Peak 15
+PCDH8	1	252	662	Deletion Peak 15
+PCDH9	2	249	664	Deletion Peak 15
+PCDH9-AS2	2	247	666	Deletion Peak 15
+PCDH9-AS3	2	247	666	Deletion Peak 15
+PCDH9-AS4	2	248	665	Deletion Peak 15
+PCGF6	3	270	642	Deletion Peak 11, Deletion Peak 10
+PCMT1	13	267	635	Deletion Peak  7
+PCNX2	27	235	653	Amplification Peak  2
+PCSK7	8	255	652	Deletion Peak 14
+PDCD11	3	269	643	Deletion Peak 11, Deletion Peak 10
+PDCD2	6	35	874	Deletion Peak  7
+PDCD4	3	270	642	Deletion Peak 11, Deletion Peak 10
+PDE10A	11	262	642	Deletion Peak  7
+PDE12	3	252	660	Deletion Peak  2
+PDE7B	10	263	642	Deletion Peak  7
+PDGFD	8	254	653	Deletion Peak 14
+PDHB	3	252	660	Deletion Peak  2
+PDS5B	2	251	662	Deletion Peak 15
+PDSS2	12	266	637	Deletion Peak  6
+PDX1	3	248	664	Deletion Peak 15
+PDZD3	9	255	651	Deletion Peak 14
+PDZD8	3	272	640	Deletion Peak 11, Deletion Peak 10
+PERP	11	265	639	Deletion Peak  7
+PEX16	8	259	648	Deletion Peak 13
+PEX3	13	263	639	Deletion Peak  7
+PEX7	10	263	642	Deletion Peak  7
+PFKFB4	4	251	660	Deletion Peak  2
+PGBD2	16	5	894	Amplification Peak  2
+PGBD5	29	235	651	Amplification Peak  2
+PGR	9	252	654	Deletion Peak 14
+PHACTR2	13	263	639	Deletion Peak  7
+PHACTR2-AS1	13	263	639	Deletion Peak  7
+PHF10	11	260	644	Deletion Peak  7
+PHF11	2	253	660	Deletion Peak 15
+PHF21A	8	258	649	Deletion Peak 13
+PHF21B	3	275	637	Deletion Peak 22
+PHF7	5	251	659	Deletion Peak  2
+PHLDB1	8	255	652	Deletion Peak 14
+PIBF1	2	245	668	Deletion Peak 15
+PIH1D2	7	255	653	Deletion Peak 14
+PIM3	3	274	638	Deletion Peak 22
+PKD1L2	5	254	656	Deletion Peak 17
+PKDREJ	3	276	636	Deletion Peak 22
+PKIB	12	268	635	Deletion Peak  6
+PKNOX2	8	253	654	Deletion Peak 14
+PKNOX2-AS1	8	253	654	Deletion Peak 14
+PLAGL1	13	263	639	Deletion Peak  7
+PLCG2	5	254	656	Deletion Peak 17
+PLD5	26	236	653	Amplification Peak  2
+PLEKHA1	3	272	640	Deletion Peak 11, Deletion Peak 10
+PLEKHG1	10	266	639	Deletion Peak  7
+PLEKHS1	3	270	642	Deletion Peak 11, Deletion Peak 10
+PLET1	7	255	653	Deletion Peak 14
+PLG	10	263	642	Deletion Peak  7
+PLN	12	268	635	Deletion Peak  6
+PLPP4	3	272	640	Deletion Peak 11, Deletion Peak 10
+PLXNA2	27	235	653	Amplification Peak  2
+PLXNB1	4	251	660	Deletion Peak  2
+PLXNB2	2	270	643	Deletion Peak 22
+PM20D2	11	263	641	Deletion Peak  6
+PNISR	11	266	638	Deletion Peak  6
+PNLDC1	10	263	642	Deletion Peak  7
+PNLIP	3	271	641	Deletion Peak 11, Deletion Peak 10
+PNLIPRP1	3	271	641	Deletion Peak 11, Deletion Peak 10
+PNLIPRP2	3	271	641	Deletion Peak 11, Deletion Peak 10
+PNLIPRP3	3	271	641	Deletion Peak 11, Deletion Peak 10
+PNPLA3	2	274	639	Deletion Peak 22
+PNPLA5	2	274	639	Deletion Peak 22
+PNRC1	11	263	641	Deletion Peak  6
+POC1A	5	251	659	Deletion Peak  2
+POLDIP3	2	273	640	Deletion Peak 22
+POLR1D	3	248	664	Deletion Peak 15
+POMP	3	248	664	Deletion Peak 15
+POPDC3	11	266	638	Deletion Peak  6
+POSTN	2	251	662	Deletion Peak 15
+POU2AF1	7	253	655	Deletion Peak 14
+POU2F3	9	254	652	Deletion Peak 14
+POU3F2	12	266	637	Deletion Peak  6
+POU4F1	4	244	667	Deletion Peak 15
+POU5F1B	26	231	658	Amplification Peak 13
+PPARA	3	277	635	Deletion Peak 22
+PPIL4	13	267	635	Deletion Peak  7
+PPIL6	12	266	637	Deletion Peak  6
+PPM1M	5	251	659	Deletion Peak  2
+PPP1R14C	11	267	637	Deletion Peak  7
+PPP2R1B	7	255	653	Deletion Peak 14
+PPP2R2C	5	234	676	Amplification Peak  6
+PPP2R2D	4	263	648	Deletion Peak 11
+PPP2R5A	27	236	652	Amplification Peak  2
+PPP6R2	1	40	874	Deletion Peak 22
+PRAP1	3	35	877	Deletion Peak 11
+PRDM1	11	266	638	Deletion Peak  6
+PRDM11	8	259	648	Deletion Peak 13
+PRDM13	11	266	638	Deletion Peak  6
+PRDX3	3	272	640	Deletion Peak 11, Deletion Peak 10
+PREP	11	266	638	Deletion Peak  6
+PRICKLE2	3	249	663	Deletion Peak  2
+PRICKLE2-AS1	3	249	663	Deletion Peak  2
+PRICKLE2-AS3	3	249	663	Deletion Peak  2
+PRKAR2A	4	251	660	Deletion Peak  2
+PRKAR2A-AS1	4	251	660	Deletion Peak  2
+PRKCD	4	252	659	Deletion Peak  2
+PRLHR	3	272	640	Deletion Peak 11, Deletion Peak 10
+PROSER1	2	251	662	Deletion Peak 15
+PROX1	29	237	649	Amplification Peak  2
+PROX1-AS1	29	237	649	Amplification Peak  2
+PRR18	11	261	643	Deletion Peak  7
+PRR20A	1	247	667	Deletion Peak 15
+PRR20B	1	246	668	Deletion Peak 15
+PRR20C	1	247	667	Deletion Peak 15
+PRR20D	1	246	668	Deletion Peak 15
+PRR5	3	275	637	Deletion Peak 22
+PRR5-ARHGAP8	3	275	637	Deletion Peak 22
+PRR5L	8	257	650	Deletion Peak 13
+PRSS1	54	226	635	Amplification Peak 11
+PRSS38	30	235	650	Amplification Peak  2
+PRSS50	5	249	661	Deletion Peak  2
+PSEN2	30	235	650	Amplification Peak  2
+PSMB1	6	35	874	Deletion Peak  7
+PSMD6	3	249	663	Deletion Peak  2
+PSMD6-AS2	3	249	663	Deletion Peak  2
+PSPC1	3	246	666	Deletion Peak 15
+PSTK	3	271	641	Deletion Peak 11, Deletion Peak 10
+PTH1R	5	249	661	Deletion Peak  2
+PTPN14	29	237	649	Amplification Peak  2
+PTPN23	5	250	660	Deletion Peak  2
+PTPRE	3	264	648	Deletion Peak 11
+PTPRG	3	251	661	Deletion Peak  2
+PTPRG-AS1	3	251	661	Deletion Peak  2
+PTPRK	12	267	636	Deletion Peak  6
+PTS	7	255	653	Deletion Peak 14
+PTTG1	12	252	651	Deletion Peak  4
+PUS3	9	253	653	Deletion Peak 14
+PVT1	26	234	655	Amplification Peak 13
+PWWP2A	12	252	651	Deletion Peak  4
+PWWP2B	4	262	649	Deletion Peak 11
+PXK	3	252	660	Deletion Peak  2
+PYCR2	29	236	650	Amplification Peak  2
+QKI	12	267	636	Deletion Peak  7
+QRICH1	4	251	660	Deletion Peak  2
+QRSL1	11	266	638	Deletion Peak  6
+RAB11FIP2	3	272	640	Deletion Peak 11, Deletion Peak 10
+RAB20	5	247	663	Deletion Peak 15
+RAB32	13	265	637	Deletion Peak  7
+RAB39A	10	253	652	Deletion Peak 14
+RAB3GAP2	29	238	648	Amplification Peak  2
+RAB4A	30	235	650	Amplification Peak  2
+RABL2B	0	23	892	Deletion Peak 22
+RACK1	3	10	902	Deletion Peak  5
+RAD54L2	4	251	660	Deletion Peak  2
+RAET1E	13	267	635	Deletion Peak  7
+RAET1E-AS1	26	534	355	Deletion Peak  7
+RAET1G	11	267	637	Deletion Peak  7
+RAET1K	11	267	637	Deletion Peak  7
+RAET1L	11	267	637	Deletion Peak  7
+RAG1	8	257	650	Deletion Peak 13
+RAG2	8	257	650	Deletion Peak 13
+RANBP17	13	255	647	Deletion Peak  4
+RAP2A	4	249	662	Deletion Peak 15
+RARS2	11	263	641	Deletion Peak  6
+RASL11A	3	248	664	Deletion Peak 15
+RASSF1	4	251	660	Deletion Peak  2
+RASSF1-AS1	4	251	660	Deletion Peak  2
+RB1	2	252	661	Deletion Peak 15
+RBM11	4	245	666	Deletion Peak 20
+RBM15B	4	252	659	Deletion Peak  2
+RBM20	3	270	642	Deletion Peak 11, Deletion Peak 10
+RBM26	4	244	667	Deletion Peak 15
+RBM26-AS1	4	244	667	Deletion Peak 15
+RBM34	26	235	654	Amplification Peak  2
+RBM5	4	251	660	Deletion Peak  2
+RBM5-AS1	4	251	660	Deletion Peak  2
+RBM6	4	251	660	Deletion Peak  2
+RBM7	7	256	652	Deletion Peak 14
+RCBTB1	2	253	660	Deletion Peak 15
+RCBTB2	2	252	661	Deletion Peak 15
+RCOR3	27	237	651	Amplification Peak  2
+RD3	27	237	651	Amplification Peak  2
+RDX	8	253	654	Deletion Peak 14
+REPS1	11	265	639	Deletion Peak  7
+REV3L	12	265	638	Deletion Peak  6
+REXO2	7	256	652	Deletion Peak 14
+RFC3	2	251	662	Deletion Peak 15
+RFPL4B	12	266	637	Deletion Peak  6
+RFT1	4	252	659	Deletion Peak  2
+RFWD3	5	252	658	Deletion Peak 17
+RFX6	12	266	637	Deletion Peak  6
+RFXAP	2	251	662	Deletion Peak 15
+RGCC	2	251	662	Deletion Peak 15
+RGS10	3	272	640	Deletion Peak 11, Deletion Peak 10
+RGS17	11	265	639	Deletion Peak  7
+RGS7	26	236	653	Amplification Peak  2
+RHOA	4	251	660	Deletion Peak  2
+RHOU	30	235	650	Amplification Peak  2
+RIBC2	3	275	637	Deletion Peak 22
+RIPPLY2	12	264	639	Deletion Peak  6
+RMND1	10	265	640	Deletion Peak  7
+RNA5S1	35	234	646	Amplification Peak  2
+RNA5S10	35	234	646	Amplification Peak  2
+RNA5S11	35	234	646	Amplification Peak  2
+RNA5S12	35	234	646	Amplification Peak  2
+RNA5S13	35	234	646	Amplification Peak  2
+RNA5S14	35	234	646	Amplification Peak  2
+RNA5S15	35	234	646	Amplification Peak  2
+RNA5S16	34	234	647	Amplification Peak  2
+RNA5S17	32	234	649	Amplification Peak  2
+RNA5S2	35	234	646	Amplification Peak  2
+RNA5S3	35	234	646	Amplification Peak  2
+RNA5S4	35	234	646	Amplification Peak  2
+RNA5S5	35	234	646	Amplification Peak  2
+RNA5S6	35	234	646	Amplification Peak  2
+RNA5S7	35	234	646	Amplification Peak  2
+RNA5S9	35	234	646	Amplification Peak  2
+RNASEH2B	2	253	660	Deletion Peak 15
+RNASET2	11	261	643	Deletion Peak  7
+RNF112	25	240	650	Amplification Peak 21
+RNF113B	4	249	662	Deletion Peak 15
+RNF123	4	251	660	Deletion Peak  2
+RNF145	12	252	651	Deletion Peak  4
+RNF146	12	265	638	Deletion Peak  6
+RNF17	3	247	665	Deletion Peak 15
+RNF187	30	235	650	Amplification Peak  2
+RNF214	8	255	652	Deletion Peak 14
+RNF217	12	265	638	Deletion Peak  6
+RNF217-AS1	12	265	638	Deletion Peak  6
+RNF26	9	255	651	Deletion Peak 14
+RNF6	3	247	665	Deletion Peak 15
+RNGTT	11	263	641	Deletion Peak  6
+RNU12	2	273	640	Deletion Peak 22
+ROBO3	8	253	654	Deletion Peak 14
+ROBO4	8	253	654	Deletion Peak 14
+ROS1	12	271	632	Deletion Peak  6
+RPEL1	2	270	643	Deletion Peak 11, Deletion Peak 10
+RPF2	12	265	638	Deletion Peak  6
+RPL13AP6	3	270	642	Deletion Peak 11, Deletion Peak 10
+RPL21	3	248	664	Deletion Peak 11, Deletion Peak 15, Deletion Peak 10
+RPL21P28	27	237	651	Amplification Peak  2
+RPL26L1	10	254	651	Deletion Peak  4
+RPL29	4	251	660	Deletion Peak  2
+RPP14	3	252	660	Deletion Peak  2
+RPS12	11	263	641	Deletion Peak  7
+RPS25	10	254	651	Deletion Peak 14
+RPS6KA2	11	261	643	Deletion Peak  7
+RPS6KA2-IT1	11	261	643	Deletion Peak  7
+RPS6KC1	25	237	653	Amplification Peak  2
+RPUSD4	10	253	652	Deletion Peak 14
+RRAGD	11	263	641	Deletion Peak  6
+RRP15	28	238	649	Amplification Peak  2
+RRP7A	3	270	642	Deletion Peak 22
+RRP7BP	3	276	636	Deletion Peak 22
+RRP9	4	251	660	Deletion Peak  2
+RSPH3	10	264	641	Deletion Peak  7
+RSPH4A	12	266	637	Deletion Peak  6
+RSPO3	12	265	638	Deletion Peak  6
+RTN4IP1	11	266	638	Deletion Peak  6
+RTP3	5	249	661	Deletion Peak  2
+RUBCNL	2	251	662	Deletion Peak 15
+RWDD1	12	266	637	Deletion Peak  6
+RWDD2B	4	243	668	Deletion Peak 20
+RXFP2	2	251	662	Deletion Peak 15
+RYR2	26	236	653	Amplification Peak  2
+SACM1L	5	249	661	Deletion Peak  2
+SACS	3	247	665	Deletion Peak 15
+SACS-AS1	3	247	665	Deletion Peak 15
+SAMD3	12	265	638	Deletion Peak  6
+SAMD5	13	266	636	Deletion Peak  7
+SAMM50	2	274	639	Deletion Peak 22
+SAMSN1	6	245	664	Deletion Peak 20
+SAMSN1-AS1	6	245	664	Deletion Peak 20
+SAP18	3	248	664	Deletion Peak 15
+SAP30L	12	253	650	Deletion Peak  4
+SAP30L-AS1	12	253	650	Deletion Peak  4
+SASH1	13	265	637	Deletion Peak  7
+SBF1	0	37	878	Deletion Peak 22
+SC5D	10	253	652	Deletion Peak 14
+SCAF4	3	244	668	Deletion Peak 20
+SCAF8	11	267	637	Deletion Peak  7
+SCAP	5	250	660	Deletion Peak  2
+SCART1	3	30	882	Deletion Peak 11
+SCCPDH	27	236	652	Amplification Peak  2
+SCEL	4	245	666	Deletion Peak 15
+SCEL-AS1	4	245	666	Deletion Peak 15
+SCML4	12	266	637	Deletion Peak  6
+SCN2B	7	255	653	Deletion Peak 14
+SCN3B	8	253	654	Deletion Peak 14
+SCN4B	7	255	653	Deletion Peak 14
+SCO2	0	37	878	Deletion Peak 22
+SCUBE1	2	274	639	Deletion Peak 22
+SDCCAG8	28	236	651	Amplification Peak  2
+SDE2	29	236	650	Amplification Peak  2
+SDHD	7	255	653	Deletion Peak 14
+SDR42E1	5	254	656	Deletion Peak 17
+SEC14L1P1	9	259	647	Deletion Peak 13
+SEC23IP	3	272	640	Deletion Peak 11, Deletion Peak 10
+SEC63	12	265	638	Deletion Peak  6
+SEMA3B	4	251	660	Deletion Peak  2
+SEMA3B-AS1	4	251	660	Deletion Peak  2
+SEMA3F	4	251	660	Deletion Peak  2
+SEMA3F-AS1	4	251	660	Deletion Peak  2
+SEMA3G	5	251	659	Deletion Peak  2
+SERAC1	11	265	639	Deletion Peak  7
+SERHL	2	279	634	Deletion Peak 22
+SERHL2	3	274	638	Deletion Peak 22
+SERINC1	12	268	635	Deletion Peak  6
+SERP2	2	251	662	Deletion Peak 15
+SERPINE3	2	253	660	Deletion Peak 15
+SERTAD4	26	238	651	Amplification Peak  2
+SERTM1	2	251	662	Deletion Peak 15
+SESN1	12	266	637	Deletion Peak  6
+SETD2	5	250	660	Deletion Peak  2
+SETDB2	2	253	660	Deletion Peak 15
+SF3B5	13	263	639	Deletion Peak  7
+SFMBT1	4	252	659	Deletion Peak  2
+SFR1	2	271	642	Deletion Peak 11, Deletion Peak 10
+SFT2D1	11	261	643	Deletion Peak  7
+SFXN1	10	255	650	Deletion Peak  4
+SFXN2	2	270	643	Deletion Peak 11, Deletion Peak 10
+SFXN4	3	272	640	Deletion Peak 11, Deletion Peak 10
+SGCD	12	254	649	Deletion Peak  4
+SGCG	3	247	665	Deletion Peak 15
+SGK1	10	263	642	Deletion Peak  7
+SH3BP5L	16	5	894	Amplification Peak  2
+SH3PXD2A	2	271	642	Deletion Peak 11, Deletion Peak 10
+SH3PXD2A-AS1	2	270	643	Deletion Peak 11, Deletion Peak 10
+SH3PXD2B	10	255	650	Deletion Peak  4
+SHANK3	0	33	882	Deletion Peak 22
+SHISA2	3	247	665	Deletion Peak 15
+SHISA5	4	251	660	Deletion Peak  2
+SHOC2	3	270	642	Deletion Peak 11, Deletion Peak 10
+SHPRH	13	263	639	Deletion Peak  7
+SHTN1	3	273	639	Deletion Peak 11, Deletion Peak 10
+SIAE	8	253	654	Deletion Peak 14
+SIAH3	2	251	662	Deletion Peak 15
+SIDT2	8	254	653	Deletion Peak 14
+SIK2	7	253	655	Deletion Peak 14
+SIK3	9	254	652	Deletion Peak 14
+SIM1	11	266	638	Deletion Peak  6
+SIPA1L2	28	235	652	Amplification Peak  2
+SKA3	3	248	664	Deletion Peak 15
+SLAIN1	4	245	666	Deletion Peak 15
+SLC10A2	4	249	662	Deletion Peak 15
+SLC15A1	4	250	661	Deletion Peak 15
+SLC16A10	12	265	638	Deletion Peak  6
+SLC18A2	3	272	640	Deletion Peak 11, Deletion Peak 10
+SLC18B1	11	263	641	Deletion Peak  7
+SLC22A1	10	263	642	Deletion Peak  7
+SLC22A16	12	265	638	Deletion Peak  6
+SLC22A2	10	263	642	Deletion Peak  7
+SLC22A3	10	263	642	Deletion Peak  7
+SLC25A15	2	251	662	Deletion Peak 15
+SLC25A20	4	251	660	Deletion Peak  2
+SLC25A30	2	250	663	Deletion Peak 15
+SLC25A30-AS1	2	251	662	Deletion Peak 15
+SLC26A6	4	251	660	Deletion Peak  2
+SLC2A12	10	263	642	Deletion Peak  7
+SLC30A1	27	237	651	Amplification Peak  2
+SLC30A10	29	237	649	Amplification Peak  2
+SLC35A1	11	263	641	Deletion Peak  6
+SLC35C1	8	258	649	Deletion Peak 13
+SLC35D3	10	263	642	Deletion Peak  7
+SLC35F1	12	269	634	Deletion Peak  6
+SLC35F2	10	253	652	Deletion Peak 14
+SLC35F3	27	235	653	Amplification Peak  2
+SLC36A1	11	251	653	Deletion Peak  4
+SLC36A2	11	251	653	Deletion Peak  4
+SLC36A3	11	251	653	Deletion Peak  4
+SLC37A2	8	253	654	Deletion Peak 14
+SLC37A4	9	254	652	Deletion Peak 14
+SLC38A3	4	251	660	Deletion Peak  2
+SLC38A8	5	253	657	Deletion Peak 17
+SLC46A3	3	248	664	Deletion Peak 15
+SLC47A1	25	241	649	Amplification Peak 21
+SLC47A2	24	241	650	Amplification Peak 21
+SLC6A20	5	248	662	Deletion Peak  2
+SLC7A1	3	249	663	Deletion Peak 15
+SLC7A5	5	252	658	Deletion Peak 17
+SLIT3	13	256	646	Deletion Peak  4
+SLITRK1	4	245	666	Deletion Peak 15
+SLITRK5	4	250	661	Deletion Peak 15
+SLITRK6	4	244	667	Deletion Peak 15
+SLK	2	271	642	Deletion Peak 11, Deletion Peak 10
+SLMAP	3	252	660	Deletion Peak  2
+SLN	10	252	653	Deletion Peak 14
+SLU7	12	252	651	Deletion Peak  4
+SMAD9	2	251	662	Deletion Peak 15
+SMARCC1	5	250	660	Deletion Peak  2
+SMC1B	3	276	636	Deletion Peak 22
+SMC3	3	270	642	Deletion Peak 11, Deletion Peak 10
+SMIM2	2	251	662	Deletion Peak 15
+SMIM2-AS1	2	251	662	Deletion Peak 15
+SMIM2-IT1	2	251	662	Deletion Peak 15
+SMIM23	10	255	650	Deletion Peak  4
+SMIM4	5	251	659	Deletion Peak  2
+SMIM8	11	263	641	Deletion Peak  6
+SMLR1	12	265	638	Deletion Peak  6
+SMNDC1	2	271	642	Deletion Peak 11, Deletion Peak 10
+SMOC2	11	261	643	Deletion Peak  7
+SMPD2	12	266	637	Deletion Peak  6
+SMPDL3A	12	268	635	Deletion Peak  6
+SMYD2	29	237	649	Amplification Peak  2
+SMYD3	27	237	651	Amplification Peak  2
+SNAP47	30	235	650	Amplification Peak  2
+SNHG5	12	264	639	Deletion Peak  6
+SNORA14B	26	235	654	Amplification Peak  2
+SNORA16B	27	236	652	Amplification Peak  2
+SNORA19	3	272	640	Deletion Peak 11, Deletion Peak 10
+SNORA20	10	263	642	Deletion Peak  7
+SNORA27	3	248	664	Deletion Peak 15
+SNORA29	10	263	642	Deletion Peak  7
+SNORA31	2	250	663	Deletion Peak 15
+SNORA33	11	263	641	Deletion Peak  7
+SNORA36B	29	237	649	Amplification Peak  2
+SNORA59A	2	243	670	Amplification Peak 21
+SNORA74B	10	254	651	Deletion Peak  4
+SNORA80A	3	243	669	Deletion Peak 20
+SNORD100	11	263	641	Deletion Peak  7
+SNORD101	11	263	641	Deletion Peak  7
+SNORD102	3	248	664	Deletion Peak 15
+SNORD14C	8	253	654	Deletion Peak 14
+SNORD14D	8	253	654	Deletion Peak 14
+SNORD14E	8	253	654	Deletion Peak 14
+SNORD19	4	251	660	Deletion Peak  2
+SNORD19B	4	251	660	Deletion Peak  2
+SNORD50B	12	264	639	Deletion Peak  6
+SNORD69	4	251	660	Deletion Peak  2
+SNORD95	3	10	902	Deletion Peak  5
+SNORD96A	3	10	902	Deletion Peak  5
+SNTN	3	249	663	Deletion Peak  2
+SNX14	13	264	638	Deletion Peak  6
+SNX3	12	266	637	Deletion Peak  6
+SNX9	11	267	637	Deletion Peak  7
+SOBP	12	266	637	Deletion Peak  6
+SOD1	3	243	669	Deletion Peak 20
+SOD2	10	263	642	Deletion Peak  7
+SOGA3	24	534	357	Deletion Peak  6
+SOHLH2	2	251	662	Deletion Peak 15
+SON	3	243	669	Deletion Peak 20
+SORCS1	2	271	642	Deletion Peak 11, Deletion Peak 10
+SORCS3	2	271	642	Deletion Peak 11, Deletion Peak 10
+SORCS3-AS1	2	271	642	Deletion Peak 11, Deletion Peak 10
+SORL1	9	254	652	Deletion Peak 14
+SOX21	4	249	662	Deletion Peak 15
+SOX21-AS1	4	249	662	Deletion Peak 15
+SOX30	12	252	651	Deletion Peak  4
+SOX6	12	267	636	Deletion Peak 12
+SPA17	8	253	654	Deletion Peak 14
+SPACA1	11	263	641	Deletion Peak  6
+SPARC	11	251	653	Deletion Peak  4
+SPATA12	3	252	660	Deletion Peak  2
+SPATA13	9	741	165	Deletion Peak 15
+SPATA13-AS1	3	247	665	Deletion Peak 15
+SPATA17	28	237	650	Amplification Peak  2
+SPATA17-AS1	28	237	650	Amplification Peak  2
+SPATA45	26	236	653	Amplification Peak  2
+SPCS1	4	251	660	Deletion Peak  2
+SPDL1	12	255	648	Deletion Peak  4
+SPECC1	24	241	650	Amplification Peak 21
+SPINK8	5	250	660	Deletion Peak  2
+SPRN	3	30	882	Deletion Peak 11
+SPRTN	29	236	650	Amplification Peak  2
+SPRY2	4	245	666	Deletion Peak 15
+SPRYD7	2	253	660	Deletion Peak 15
+SRP9	29	236	650	Amplification Peak  2
+SRPRA	10	253	652	Deletion Peak 14
+SRSF12	11	263	641	Deletion Peak  6
+ST3GAL4	9	253	653	Deletion Peak 14
+STAB1	5	251	659	Deletion Peak  2
+STARD13	2	251	662	Deletion Peak 15
+STARD13-AS	2	251	662	Deletion Peak 15
+STC2	10	254	651	Deletion Peak  4
+STK10	10	255	650	Deletion Peak  4
+STK24	4	250	661	Deletion Peak 15
+STK32C	4	262	649	Deletion Peak 11
+STOML3	2	251	662	Deletion Peak 15
+STT3A	9	253	653	Deletion Peak 14
+STUM	29	235	651	Amplification Peak  2
+STX11	13	263	639	Deletion Peak  7
+STXBP5	13	266	636	Deletion Peak  7
+STXBP5-AS1	13	266	636	Deletion Peak  7
+SUCLA2	2	251	662	Deletion Peak 15
+SUFU	2	271	642	Deletion Peak 11, Deletion Peak 10
+SUGT1	1	252	662	Deletion Peak 15
+SUGT1P3	2	251	662	Deletion Peak 15
+SULT4A1	2	274	639	Deletion Peak 22
+SUMO4	13	267	635	Deletion Peak  7
+SUPT20H	2	251	662	Deletion Peak 15
+SUSD4	29	236	650	Amplification Peak  2
+SYCE1	2	30	883	Deletion Peak 11
+SYCE1L	6	253	656	Deletion Peak 17
+SYCE3	0	37	878	Deletion Peak 22
+SYNCRIP	12	264	639	Deletion Peak  6
+SYNE1	11	265	639	Deletion Peak  7
+SYNJ1	3	244	668	Deletion Peak 20
+SYNJ2	11	265	639	Deletion Peak  7
+SYNJ2-IT1	11	265	639	Deletion Peak  7
+SYNPR	3	249	663	Deletion Peak  2
+SYNPR-AS1	3	249	663	Deletion Peak  2
+SYT13	8	258	649	Deletion Peak 13
+SYT14	26	238	651	Amplification Peak  2
+SYTL3	11	264	640	Deletion Peak  7
+TAB2	26	534	355	Deletion Peak  7
+TACC2	3	272	640	Deletion Peak 11, Deletion Peak 10
+TAF1A	29	236	650	Amplification Peak  2
+TAF1A-AS1	29	236	650	Amplification Peak  2
+TAF1C	5	253	657	Deletion Peak 17
+TAF5	3	269	643	Deletion Peak 11, Deletion Peak 10
+TAF5L	30	235	650	Amplification Peak  2
+TAGAP	10	264	641	Deletion Peak  7
+TAGLN	8	254	653	Deletion Peak 14
+TARBP1	27	235	653	Amplification Peak  2
+TARID	11	263	641	Deletion Peak  7
+TATDN3	27	236	652	Amplification Peak  2
+TBC1D22A	1	278	636	Deletion Peak 22
+TBC1D22A-AS1	1	278	636	Deletion Peak 22
+TBC1D32	12	268	635	Deletion Peak  6
+TBC1D4	3	245	667	Deletion Peak 15
+TBCEL	10	254	651	Deletion Peak 14
+TBP	6	35	874	Deletion Peak  7
+TBPL1	10	263	642	Deletion Peak  7
+TBRG1	8	253	654	Deletion Peak 14
+TBX18	12	263	640	Deletion Peak  6
+TBX18-AS1	12	263	640	Deletion Peak  6
+TCERG1L	4	264	647	Deletion Peak 11
+TCERG1L-AS1	3	264	648	Deletion Peak 11
+TCF21	10	263	642	Deletion Peak  7
+TCF7L2	4	270	641	Deletion Peak 11, Deletion Peak 10
+TCP1	10	263	642	Deletion Peak  7
+TCP10	11	261	643	Deletion Peak  7
+TCP10L	3	244	668	Deletion Peak 20
+TCP10L2	11	261	643	Deletion Peak  7
+TCTA	4	251	660	Deletion Peak  2
+TCTE3	11	260	644	Deletion Peak  7
+TDGF1	5	249	661	Deletion Peak  2
+TDRD1	3	270	642	Deletion Peak 11, Deletion Peak 10
+TDRD3	2	249	664	Deletion Peak 15
+TECTA	10	253	652	Deletion Peak 14
+TECTB	3	270	642	Deletion Peak 11, Deletion Peak 10
+TENM2	13	260	642	Deletion Peak  4
+TERF2IP	6	253	656	Deletion Peak 17
+TEX12	7	255	653	Deletion Peak 14
+TEX26	2	249	664	Deletion Peak 15
+TEX26-AS1	3	249	663	Deletion Peak 15
+TEX264	4	251	660	Deletion Peak  2
+TEX29	4	247	664	Deletion Peak 15
+TEX30	4	249	662	Deletion Peak 15
+TEX36	3	270	642	Deletion Peak 11
+TEX36-AS1	3	270	642	Deletion Peak 11
+TFB1M	11	267	637	Deletion Peak  7
+TFB2M	27	236	652	Amplification Peak  2
+TGDS	4	249	662	Deletion Peak 15
+TGFB2	28	239	648	Amplification Peak  2
+TGFB2-AS1	28	238	649	Amplification Peak  2
+TGFB2-OT1	28	238	649	Amplification Peak  2
+THBS2	11	260	644	Deletion Peak  7
+THEMIS	12	267	636	Deletion Peak  6
+THG1L	12	252	651	Deletion Peak  4
+THOC3	8	253	654	Deletion Peak  4
+THOC7	3	249	663	Deletion Peak  2
+THOC7-AS1	3	249	663	Deletion Peak  2
+THSD1	1	252	662	Deletion Peak 15
+THY1	9	255	651	Deletion Peak 14
+TIAL1	3	272	640	Deletion Peak 11, Deletion Peak 10
+TIAM1	3	243	669	Deletion Peak 20
+TIAM2	11	267	637	Deletion Peak  7
+TIMD4	12	253	650	Deletion Peak  4
+TIMM8B	7	255	653	Deletion Peak 14
+TIRAP	10	253	652	Deletion Peak 14
+TKT	4	252	659	Deletion Peak  2
+TLR5	29	236	650	Amplification Peak  2
+TLR9	5	251	659	Deletion Peak  2
+TLX3	12	255	648	Deletion Peak  4
+TM9SF2	4	249	662	Deletion Peak 15
+TMA7	4	251	660	Deletion Peak  2
+TMEM115	4	251	660	Deletion Peak  2
+TMEM123	9	251	655	Deletion Peak 14
+TMEM170A	6	253	656	Deletion Peak 17
+TMEM181	11	264	640	Deletion Peak  7
+TMEM200A	12	265	638	Deletion Peak  6
+TMEM218	8	253	654	Deletion Peak 14
+TMEM225	8	254	653	Deletion Peak 14
+TMEM231	6	253	656	Deletion Peak 17
+TMEM242	11	267	637	Deletion Peak  7
+TMEM244	12	265	638	Deletion Peak  6
+TMEM25	7	255	653	Deletion Peak 14
+TMEM50B	3	243	669	Deletion Peak 20
+TMEM63A	29	236	650	Amplification Peak  2
+TMEM75	25	233	657	Amplification Peak 13
+TMEM89	4	251	660	Deletion Peak  2
+TMIE	5	249	661	Deletion Peak  2
+TMPRSS13	7	255	653	Deletion Peak 14
+TMPRSS15	6	243	666	Deletion Peak 20
+TMPRSS4	7	255	653	Deletion Peak 14
+TMPRSS5	7	256	652	Deletion Peak 14
+TMTC4	4	249	662	Deletion Peak 15
+TNFAIP3	10	265	640	Deletion Peak  7
+TNFRSF19	3	247	665	Deletion Peak 15
+TNFSF11	2	251	662	Deletion Peak 15
+TNFSF13B	5	247	663	Amplification Peak 19, Deletion Peak 15
+TNIP1	11	251	653	Deletion Peak  4
+TNNC1	5	251	659	Deletion Peak  2
+TOMM20	26	235	654	Amplification Peak  2
+TP53BP2	29	236	650	Amplification Peak  2
+TP53I11	8	259	648	Deletion Peak 13
+TPD52L1	12	266	637	Deletion Peak  6
+TPP2	4	249	662	Deletion Peak 15
+TPT1	2	250	663	Deletion Peak 15
+TPTE2	3	246	666	Deletion Peak 15
+TRABD	2	270	643	Deletion Peak 22
+TRAF3IP2	12	265	638	Deletion Peak  6
+TRAF3IP2-AS1	12	265	638	Deletion Peak  6
+TRAF3IP3	27	237	651	Amplification Peak  2
+TRAF5	27	237	651	Amplification Peak  2
+TRAF6	8	257	650	Deletion Peak 13
+TRAIP	4	251	660	Deletion Peak  2
+TRAPPC3L	12	266	637	Deletion Peak  6
+TRAPPC4	10	254	651	Deletion Peak 14
+TRDN	12	266	637	Deletion Peak  6
+TREH	8	255	652	Deletion Peak 14
+TREX1	4	251	660	Deletion Peak  2
+TRIM11	30	235	650	Amplification Peak  2
+TRIM13	2	253	660	Deletion Peak 15
+TRIM17	30	235	650	Amplification Peak  2
+TRIM29	9	255	651	Deletion Peak 14
+TRIM41	3	10	902	Deletion Peak  5
+TRIM52	3	9	903	Deletion Peak  5
+TRIM52-AS1	3	9	903	Deletion Peak  5
+TRIM58	26	237	652	Amplification Peak  2
+TRIM67	29	236	650	Amplification Peak  2
+TRIM7	3	10	902	Deletion Peak  5
+TRIM8	2	270	643	Deletion Peak 11, Deletion Peak 10
+TRMT11	12	265	638	Deletion Peak  6
+TRMU	3	277	635	Deletion Peak 22
+TRPC4	2	251	662	Deletion Peak 15
+TRPC6	9	252	654	Deletion Peak 14
+TRUB1	3	270	642	Deletion Peak 11, Deletion Peak 10
+TSC22D1	2	251	662	Deletion Peak 15
+TSC22D1-AS1	2	251	662	Deletion Peak 15
+TSNAX	28	236	651	Amplification Peak  2
+TSNAX-DISC1	28	236	651	Amplification Peak  2
+TSPAN18	8	259	648	Deletion Peak 13
+TSPO	2	274	639	Deletion Peak 22
+TSPYL1	12	266	637	Deletion Peak  6
+TSPYL4	12	266	637	Deletion Peak  6
+TSTD3	11	266	638	Deletion Peak  6
+TTC1	12	252	651	Deletion Peak  4
+TTC12	7	256	652	Deletion Peak 14
+TTC13	29	235	651	Amplification Peak  2
+TTC17	8	259	648	Deletion Peak 13
+TTC36	7	255	653	Deletion Peak 14
+TTC38	3	276	636	Deletion Peak 22
+TTLL1	2	275	638	Deletion Peak 22
+TTLL12	2	274	639	Deletion Peak 22
+TTLL2	11	261	643	Deletion Peak  7
+TUBA3C	2	246	667	Deletion Peak 15
+TUBE1	12	265	638	Deletion Peak  6
+TUBGCP2	3	260	652	Deletion Peak 11
+TUBGCP6	2	271	642	Deletion Peak 22
+TULP4	11	265	639	Deletion Peak  7
+TUSC2	4	251	660	Deletion Peak  2
+TUSC8	2	251	662	Deletion Peak 15
+TWF2	5	251	659	Deletion Peak  2
+TXLNB	11	267	637	Deletion Peak  7
+TYMP	0	37	878	Deletion Peak 22
+UBA7	4	251	660	Deletion Peak  2
+UBAC2	4	249	662	Deletion Peak 15
+UBAC2-AS1	4	249	662	Deletion Peak 15
+UBASH3B	8	253	654	Deletion Peak 14
+UBE2J1	11	263	641	Deletion Peak  6
+UBE4A	7	255	653	Deletion Peak 14
+UBL3	3	249	663	Deletion Peak 15
+UBLCP1	12	252	651	Deletion Peak  4
+UBTD2	10	255	650	Deletion Peak  4
+UCHL3	4	245	666	Deletion Peak 15
+UCN2	4	251	660	Deletion Peak  2
+UFL1	11	264	640	Deletion Peak  6
+UFM1	3	251	661	Deletion Peak 15
+UGGT2	4	249	662	Deletion Peak 15
+ULBP1	11	267	637	Deletion Peak  7
+ULBP2	11	267	637	Deletion Peak  7
+ULBP3	11	267	637	Deletion Peak  7
+ULK2	24	241	650	Amplification Peak 21
+UNC93A	11	261	643	Deletion Peak  7
+UPK2	9	254	652	Deletion Peak 14
+UPK3A	3	275	637	Deletion Peak 22
+UQCRC1	4	251	660	Deletion Peak  2
+URAD	3	248	664	Deletion Peak 15
+URB1	3	244	668	Deletion Peak 20
+URB1-AS1	3	244	668	Deletion Peak 20
+URB2	30	235	650	Amplification Peak  2
+UROS	4	270	641	Deletion Peak 11
+USH2A	28	237	650	Amplification Peak  2
+USP10	5	253	657	Deletion Peak 17
+USP12	3	248	664	Deletion Peak 15
+USP16	4	243	668	Deletion Peak 20
+USP19	4	251	660	Deletion Peak  2
+USP2	9	255	651	Deletion Peak 14
+USP25	6	242	667	Deletion Peak 20
+USP28	7	257	651	Deletion Peak 14
+USP4	4	251	660	Deletion Peak  2
+USP45	11	266	638	Deletion Peak  6
+USPL1	3	249	663	Deletion Peak 15
+UST	13	266	636	Deletion Peak  7
+UTF1	3	260	652	Deletion Peak 11
+UTP14C	2	253	660	Deletion Peak 15
+UTRN	13	263	639	Deletion Peak  7
+VASH2	25	237	653	Amplification Peak  2
+VAT1L	6	253	656	Deletion Peak 17
+VAX1	3	272	640	Deletion Peak 11, Deletion Peak 10
+VENTX	3	262	650	Deletion Peak 11
+VGLL2	12	266	637	Deletion Peak  6
+VIP	11	265	639	Deletion Peak  7
+VN1R5	26	237	652	Amplification Peak  2
+VNN2	11	263	641	Deletion Peak  7
+VNN3	11	263	641	Deletion Peak  7
+VPS11	9	254	652	Deletion Peak 14
+VPS36	1	252	662	Deletion Peak 15
+VSIG2	9	251	655	Deletion Peak 14
+VTA1	11	264	640	Deletion Peak  7
+VTI1A	3	270	642	Deletion Peak 11, Deletion Peak 10
+VWA2	3	270	642	Deletion Peak 11, Deletion Peak 10
+VWA5A	8	254	653	Deletion Peak 14
+VWA8	2	251	662	Deletion Peak 15
+VWA8-AS1	2	251	662	Deletion Peak 15
+WASF1	12	265	638	Deletion Peak  6
+WASF3	3	248	664	Deletion Peak 15
+WBP1L	2	270	643	Deletion Peak 11, Deletion Peak 10
+WBP4	2	251	662	Deletion Peak 15
+WDFY2	2	253	660	Deletion Peak 15
+WDR11	3	272	640	Deletion Peak 11, Deletion Peak 10
+WDR11-AS1	3	272	640	Deletion Peak 11, Deletion Peak 10
+WDR26	29	235	651	Amplification Peak  2
+WDR27	11	260	644	Deletion Peak  7
+WDR59	6	253	656	Deletion Peak 17
+WDR6	4	251	660	Deletion Peak  2
+WDR64	26	236	653	Amplification Peak  2
+WDR82	6	251	658	Deletion Peak  2
+WFDC1	5	253	657	Deletion Peak 17
+WFS1	5	233	677	Amplification Peak  6
+WNT3A	30	235	650	Amplification Peak  2
+WNT5A	4	253	658	Deletion Peak  2
+WNT7B	3	277	635	Deletion Peak 22
+WNT9A	30	235	650	Amplification Peak  2
+WTAP	10	263	642	Deletion Peak  7
+WTAPP1	9	252	654	Deletion Peak 14
+WWC1	13	258	644	Deletion Peak  4
+WWOX	5	255	655	Deletion Peak 17
+XCR1	5	248	662	Deletion Peak  2
+XPNPEP1	2	271	642	Deletion Peak 11, Deletion Peak 10
+XPO4	3	248	664	Deletion Peak 15
+YAP1	9	252	654	Deletion Peak 14
+ZAR1L	2	251	662	Deletion Peak 15
+ZBED4	3	276	636	Deletion Peak 22
+ZBED8	12	252	651	Deletion Peak  4
+ZBTB16	7	257	651	Deletion Peak 14
+ZBTB18	27	235	653	Amplification Peak  2
+ZBTB2	10	265	640	Deletion Peak  7
+ZBTB24	12	266	637	Deletion Peak  6
+ZC2HC1B	13	263	639	Deletion Peak  7
+ZC3H12C	8	254	653	Deletion Peak 14
+ZC3H12D	13	267	635	Deletion Peak  7
+ZC3H13	2	251	662	Deletion Peak 15
+ZCCHC14	5	252	658	Deletion Peak 17
+ZDHHC14	11	267	637	Deletion Peak  7
+ZDHHC20	3	251	661	Deletion Peak 15
+ZDHHC6	3	270	642	Deletion Peak 11, Deletion Peak 10
+ZDHHC7	5	252	658	Deletion Peak 17
+ZFP1	6	253	656	Deletion Peak 17
+ZIC2	6	249	660	Deletion Peak 15
+ZIC5	6	249	660	Deletion Peak 15
+ZMYM2	3	247	665	Deletion Peak 15
+ZMYM5	3	247	665	Deletion Peak 15
+ZMYND10	4	251	660	Deletion Peak  2
+ZNF124	27	237	651	Amplification Peak  2
+ZNF202	8	253	654	Deletion Peak 14
+ZNF292	11	263	641	Deletion Peak  6
+ZNF300	11	251	653	Deletion Peak  4
+ZNF496	26	237	652	Amplification Peak  2
+ZNF511	3	36	876	Deletion Peak 11
+ZNF589	5	251	659	Deletion Peak  2
+ZNF609	5	240	670	Amplification Peak 20
+ZNF669	27	237	651	Amplification Peak  2
+ZNF670	27	237	651	Amplification Peak  2
+ZNF670-ZNF695	27	237	651	Amplification Peak  2
+ZNF672	16	5	894	Amplification Peak  2
+ZNF678	30	235	650	Amplification Peak  2
+ZNF692	16	5	894	Amplification Peak  2
+ZNF695	27	237	651	Amplification Peak  2
+ZNRF1	6	253	656	Deletion Peak 17
+ZP4	26	236	653	Amplification Peak  2
+ZPR1	7	254	654	Deletion Peak 14
+ZRANB1	4	269	642	Deletion Peak 11
+ZW10	7	256	652	Deletion Peak 14
