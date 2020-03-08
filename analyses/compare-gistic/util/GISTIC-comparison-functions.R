@@ -25,23 +25,23 @@ format_gistic_genes <- function(genes_file,
   #
   # Return:
   #  genes_output: a vector/data.frame with all the genes included in the file
-  
+
   genes_ragged_list <- data.table::fread(genes_file,
                                          data.table = FALSE)
-  
+
   # Transpose data
   genes_transposed <- genes_ragged_list %>%
     t()
-  
+
   # Make the header information in the first row the column names
   colnames(genes_transposed) <- genes_transposed[1,]
-  
+
   genes_df <- genes_transposed %>%
     # Make into a data.frame object
     as.data.frame(stringsAsFactors = FALSE) %>%
     # Remove the row with header information
     dplyr::filter(cytoband != "cytoband")
-  
+
   # Gather the gene data
   genes_output <- genes_df %>%
     tidyr::gather("wide_peak",
@@ -53,11 +53,11 @@ format_gistic_genes <- function(genes_file,
     dplyr::select(-wide_peak) %>%
     # Remove the blanks in the `gene` column that result from the gathering step
     dplyr::filter(gene != "")
-  
+
   if (genes_only == TRUE) {
     # Return only the genes information
     genes_output <- genes_output %>%
-      dplyr::select(gene) 
+      dplyr::select(gene)
   }
   return(genes_output)
 }
@@ -205,48 +205,64 @@ plot_genes_venn_diagram_wrapper <- function(cohort_genes_file,
 prepare_gene_level_gistic <- function(all_lesions_file,
                                       amp_genes_file,
                                       del_genes_file,
-                                      output_filepath) {
+                                      gene_mapping_filepath,
+                                      gene_status_filepath,
+                                      residual_q_threshold = 1) {
 
   # Given the file paths to GISTIC's `all_lesion.conf_90.txt`,
   # `amp_genes.conf_90.txt`, and `del_genes.conf_90.txt` files,
-  # read in and tidy this data into a data.frame that contains
-  # the amplified/deleted genes, the detection peak, and
-  # the IDs of the samples in the corresponding peaks along with
-  # with their CN status call.
+  # read in and tidy this data into a two data.frames that are written to file.
   #
   # Args:
   #   all_lesions_file: file path to GISTIC's `all_lesion.conf_90.txt` file
   #   amp_genes_file: file path to GISTIC's `amp_genes.conf_90.txt` file
   #   del_genes_file: file path to GISTIC's `del_genes.conf_90.txt` file
-  #   output_filepath: string of filepath to save the output file to
+  #   gene_mapping_filepath: TSV file path for the first data.frame that
+  #                          contains
+  #                          1. gene
+  #                          2. detection peak name
+  #                          3. cytoband
+  #                          4. wide peak boundaries
+  #                          5. q-value
+  #                          6. residual q-value
+  #   gene_status_filepath: TSV file path for the second data.frame that
+  #                         contains
+  #                          1. gene
+  #                          2. Kids_First_Biospecimen_ID
+  #                          3. status
+  #   residual_q_threshold: a numeric value to be used as threshold to filter
+  #                         the gene status data.frame, all values retained will
+  #                         be less than this threshold (default = 1). The
+  #                         rationale for including this value is because
+  #                         peaks will sometimes be overlapping and contain
+  #                         the same gene symbols.
   #
   # Return:
-  #   final_df: data.frame with the relevant data from the `all_lesions`,
-  #             `amp_genes`, and `del_genes` files
+  #   NULL; writes two data.frame to TSV files
 
   # Read in `all_lesions_file`
   gistic_all_lesions_df <- data.table::fread(all_lesions_file,
     data.table = FALSE
-  ) %>% 
+  ) %>%
     # One half of the data is a copy of the other and the Unique Names
-    # with `-CN values` have the actual copy number values. 
+    # with `-CN values` have the actual copy number values.
     dplyr::filter(grepl("- CN values", `Unique Name`))
 
   # Run `format_gistic_genes` function on `amp_genes` and `del_genes` files to get
   # a data.frame with just the genes and their corresponding detection peak
   amp_genes_df <- format_gistic_genes(amp_genes_file)
-
   del_genes_df <- format_gistic_genes(del_genes_file)
-  
+
   # Bind the rows from the above data.frames into one data.frame
-  final_df <- bind_rows("amp" = amp_genes_df, 
-                        "del" = del_genes_df, 
+  final_df <- bind_rows("amp" = amp_genes_df,
+                        "del" = del_genes_df,
                         .id = "direction")
-  
-  # Wrangle the GISTIC all lesions data to be in a comparable format with our CN calls
+
+  # Wrangle the GISTIC all lesions data to be in a comparable format with our
+  # CN calls
   gistic_all_lesions_df <- gistic_all_lesions_df %>%
-    dplyr::select(dplyr::starts_with("BS"), 
-                  "Unique Name", 
+    dplyr::select(dplyr::starts_with("BS"),
+                  "Unique Name",
                   "Wide Peak Limits"
     ) %>%
     tidyr::gather(
@@ -260,7 +276,7 @@ prepare_gene_level_gistic <- function(all_lesions_file,
       status < 0 ~ "loss",
       status > 0 ~ "gain",
       status == 0 ~ "neutral"
-    )) %>% 
+    )) %>%
     dplyr::mutate(
       # Keep just the chromosomal coordinates in the `Wide Peak Limits` column
       # (In order to merge with the amp/del genes data.frame)
@@ -270,14 +286,40 @@ prepare_gene_level_gistic <- function(all_lesions_file,
   # Merge the data from the `all_lesions.conf_90.txt` file with the amp/del gene
   # data.frame prepped above
   final_df <- final_df %>%
-    dplyr::left_join(gistic_all_lesions_df, by = c("wide peak boundaries" = "Wide Peak Limits")) %>%
-    dplyr::select(gene, Kids_First_Biospecimen_ID, status, detection_peak = `Unique Name`)
-  
-  # Save data.frame to file
-  readr::write_tsv(
-    final_df,
-    output_filepath
-  )
+    dplyr::left_join(gistic_all_lesions_df,
+                     by = c("wide peak boundaries" = "Wide Peak Limits"))
+
+  # Output peak to gene assignment
+  peak_assignment_df <- final_df %>%
+    select(gene,
+           detection_peak = `Unique Name`,
+           cytoband,
+           `wide peak boundaries`,
+           `q value`,
+           `residual q value`) %>%
+    mutate(detection_peak = sub(" - CN values", "", detection_peak)) %>%
+    # Because we will have a value for each biospecimen ID, we'll have a lot
+    # of duplicate information where we're only interested in the stats and
+    # relationship between peaks, genes, etc.
+    distinct()
+
+  # Write to file
+  write_tsv(peak_assignment_df, gene_mapping_filepath)
+
+  # Sometimes GISTIC peaks are overlapping and will include the same genes.
+  # The first step will be to remove peaks with residual q-values below a
+  # threshold — these values are q-values after removing amplifications or
+  # deletions that overlap other more significant peak regions according to the
+  # GISTIC documentation.
+  gene_status_df <- final_df %>%
+    filter(`residual q value` < residual_q_threshold) %>%
+    select(gene, Kids_First_Biospecimen_ID, status) %>%
+    distinct()
+
+  # Write to file
+  write_tsv(gene_status_df, gene_status_filepath)
+
+  return(NULL)
 }
 
 prepare_cytoband_level_gistic <- function(all_lesions_file,
@@ -297,15 +339,16 @@ prepare_cytoband_level_gistic <- function(all_lesions_file,
   # Read in `all_lesions_file`
   gistic_all_lesions_df <- data.table::fread(all_lesions_file,
                                              data.table = FALSE
-  ) %>% 
+  ) %>%
     # One half of the data is a copy of the other and the Unique Names
-    # with `-CN values` have the actual copy number values. 
+    # with `-CN values` have the actual copy number values.
     dplyr::filter(grepl("- CN values", `Unique Name`))
 
 
-  # Wrangle the GISTIC all lesions data to be in a comparable format with our CN calls
+  # Wrangle the GISTIC all lesions data to be in a comparable format with
+  # our CN calls
   gistic_all_lesions_df <- gistic_all_lesions_df %>%
-    dplyr::select(dplyr::starts_with("BS"), 
+    dplyr::select(dplyr::starts_with("BS"),
                   "Descriptor"
     ) %>%
     tidyr::gather(
