@@ -107,7 +107,7 @@ Below is a table of number of tumor biospecimens by phase of therapy (DNA and RN
 
 | Phase of Therapy | N |
 |---------------------------------|------|
-| Diagnosis/Initial CNS Tumor | 1465 |
+| Initial CNS Tumor | 1465 |
 | Progressive | 289 |
 | Progressive Disease Post-Mortem | 11 |
 | Recurrence | 128 |
