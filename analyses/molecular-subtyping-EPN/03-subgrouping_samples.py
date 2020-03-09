@@ -2,6 +2,11 @@
 #	sets some rules and thresholds so samples can be  subgrouped
 #	and adds the sub group name in the last "subgroup" column
 
+## python 03-subgrouping_samples.py 
+#	--final_table results/EPN_all_data.tsv 
+#	--subgroup_table results/EPN_all_data_withsubgroup.tsv 
+#	--temp_folder_name subgrouping_samples   ## This folder will keep all the histograms to view  the outliers but can  be deleted  after review
+
 
 ## Importing modules to be used
 import pandas as pd
