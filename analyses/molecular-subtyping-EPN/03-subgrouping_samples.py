@@ -1,3 +1,9 @@
+# This script takes in the final EPN table with all the columns (in results folder  results/EPN_all.tsv), 
+#	sets some rules and thresholds so samples can be  subgrouped
+#	and adds the sub group name in the last "subgroup" column
+
+
+## Importing modules to be used
 import pandas as pd
 import numpy as np 
 import sys
@@ -15,12 +21,18 @@ args = parser.parse_args()
 
 # REading in input table  
 EPN_final = pd.read_csv(args.final_table, sep="\t")
+# Adding a column with empty strings so subgroup name can be added
 EPN_final["subgroup"] = ""
 
 # File to write all the data to
 outfile = open(args.subgroup_table, "w")
 
-
+# This function takes ina  row, value in the column from EPN_final table, 
+#	subgroupname that  should be returned if threshold is met, 
+#	value of the  threshold that  should  be higher in the row
+# It returns the subgroupname(which will be added to the final column)
+#	Before returning the subgroup name, it also checks if there is a subgroupname and
+#	appends to it  with a "," separator  
 def subgroup_func(row, columnname, subgroupname, value):
     if row[columnname] > value:
         if row["subgroup"] == '':
@@ -33,7 +45,7 @@ def subgroup_func(row, columnname, subgroupname, value):
         return(row["subgroup"])
 
 ## There is no set thresholds for gene expression outliers, so creating histograms for each of them. 
-## If gene expression Z-score is very high(outliers), that. gene might be overexpressed in that sample and 
+## If gene expression Z-score is very high(outliers), that gene might be overexpressed in that sample and 
 ## helps the sample to be subgrouped accordingly?? 
     
     
