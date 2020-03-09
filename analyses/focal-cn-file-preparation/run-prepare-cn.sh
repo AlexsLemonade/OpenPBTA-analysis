@@ -18,13 +18,29 @@ cd "$script_directory" || exit
 
 scratch_dir=../../scratch
 data_dir=../../data
+results_dir=../../analyses/focal-cn-file-preparation/results
 histologies_file=${data_dir}/pbta-histologies.tsv
 gtf_file=${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz
 goi_file=../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt
 independent_specimens_file=${data_dir}/independent-specimens.wgswxs.primary.tsv
+ucsc_bed_file=${results_dir}/ucsc_cytoband.bed
+consensus_bed_file=${scratch_dir}/consensus_seg_with_status.tsv
+intersect_with_cytoband_file=${results_dir}/intersect_with_cytoband.tsv
 
 # Prep the consensus SEG file data
 Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd', clean = TRUE)"
+
+# Prep bed files
+Rscript --vanilla 00-prepare-ucsc-cytoband-file.R
+
+# Use bedtools intersect to find the intersection between the UCSC file with
+# cytoband data and the `scratch/consensus_with_status.tsv` file prepared in
+# `02-add-ploidy-consensus.Rmd`
+bedtools intersect -wa \
+    -a ../../analyses/focal-cn-file-preparation/results/ucsc_cytoband.bed \
+    -b ../../analyses/focal-cn-file-preparation/results/consensus_with_status.bed \
+    -f 0.1 \
+    > $intersect_with_cytoband_file
 
 # Run annotation step for consensus file
 Rscript --vanilla 03-prepare-cn-file.R \
