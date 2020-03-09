@@ -48,14 +48,15 @@ ucsc_cytoband <-
     "http://hgdownload.cse.ucsc.edu/goldenpath/hg38/database/cytoBand.txt.gz"
   )
 
-# Make the UCSC cytoband data.frame a GRanges object
+# Select variables needed in the UCSC cytoband data -- must be in the
+# required bedtools format: chr, start, end 
 ucsc_cytoband_bed <- ucsc_cytoband %>%
   dplyr::select(chr = V1, start = V2, end = V3, cytoband = V4) %>%
   dplyr::mutate(cytoband = paste0(gsub("chr", "", chr), cytoband),
                 chr = gsub("_.*","", chr)) %>%
   dplyr::filter(!(chr %in% c("chrUn", "chrM")))
 
-
+# Save as bed file
 readr::write_tsv(
   ucsc_cytoband_bed,
   file.path(results_dir, "ucsc_cytoband.bed")
@@ -63,12 +64,16 @@ readr::write_tsv(
 
 #### Prepare consensus seg file -----------------------------------------------
 
+# Read in the consensus copy number file produced in `02-add-ploid-consensus.Rmd`
 consensus_with_status <-
   readr::read_tsv(file.path(root_dir, "scratch", "consensus_seg_with_status.tsv"))
 
+# Select variables needed in the consensus copy number data -- must be in the
+# required bedtools format: chr, start, end 
 consensus_with_status_bed <- consensus_with_status %>%
   dplyr::select(chr = chrom, start = loc.start, end = loc.end, status, Kids_First_Biospecimen_ID)
 
+# Save as bed file
 readr::write_tsv(
   consensus_with_status_bed,
   file.path(results_dir, "consensus_with_status.bed")

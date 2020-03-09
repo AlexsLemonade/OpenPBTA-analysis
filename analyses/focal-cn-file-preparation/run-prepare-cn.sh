@@ -31,7 +31,7 @@ intersect_with_cytoband_file=${results_dir}/intersect_with_cytoband.tsv
 Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd', clean = TRUE)"
 
 # Prep bed files
-Rscript --vanilla 00-prepare-ucsc-cytoband-file.R
+Rscript --vanilla 00-prepare-bed-files.R
 
 # Use bedtools intersect to find the intersection between the UCSC file with
 # cytoband data and the `scratch/consensus_with_status.tsv` file prepared in
