@@ -4,13 +4,16 @@
 
 tmb_cdf_plot <- function(tmb_df,
                          plot_title,
-                         color) {
+                         color, 
+                         n_group) {
   # Print CDF TMB plot
   #
   # Args:
   #   tmb_df: a data.frame with `tmb` and `short_histology` as column names.
   #   plot_title: A string to be passed to "ggtitle".
   #   color: What color should the points be. Will be passed to `geom_point`. 
+  #   n_group: What is the minimum number of samples needed in a histology group 
+  #            for it to be plotted. 
   #
   # Returns:
   # A CDF plot of TMB with histology
@@ -20,7 +23,7 @@ tmb_cdf_plot <- function(tmb_df,
     # Only plot histologies groups with more than `min_samples` number of samples
     dplyr::group_by(short_histology, add = TRUE) %>%
     # Only keep groups with this amount of samples
-    dplyr::filter(dplyr::n() > 5) %>%
+    dplyr::filter(dplyr::n() > n_group) %>%
     # Calculate histology group mean
     dplyr::mutate(
       hist_median = median(tmb),

@@ -92,14 +92,20 @@ tmb_tcga <- data.table::fread(file.path("..",
 Plot each dataset as its own CDF plot. 
 
 ```{r}
-pbta_plot <- tmb_cdf_plot(tmb_pbta, plot_title = "PBTA", color = "#3BC8A2") +
+pbta_plot <- tmb_cdf_plot(tmb_pbta, 
+                          plot_title = "PBTA", 
+                          color = "#3BC8A2", 
+                          n_group = 5) +
     ggplot2::theme(
     strip.text.x = ggplot2::element_text(size = 12)
     )
 ```
 
 ```{r}
-tcga_plot <- tmb_cdf_plot(tmb_tcga, plot_title = "TCGA (Adult)", color = "#630882") +
+tcga_plot <- tmb_cdf_plot(tmb_tcga, 
+                          plot_title = "TCGA (Adult)", 
+                          color = "#630882", 
+                          n_group = 5) +
     ggplot2::theme(
     axis.title.y = ggplot2::element_blank(),
     axis.text.y = ggplot2::element_blank(),
