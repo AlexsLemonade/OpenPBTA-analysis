@@ -82,7 +82,6 @@ Below is a detailed table of [broad histologies](https://github.com/AlexsLemonad
 |-----------------------------------------------|-----|
 | Benign tumor | 38 |
 | Choroid plexus tumor | 11 |
-| CNS Embryonal tumor | 5 |
 | CNS neuroblastoma | 5 |
 | Diffuse astrocytic and oligodendroglial tumor | 188 |
 | Embryonal tumor | 180 |
