@@ -29,9 +29,6 @@ _This assumes you are in the top directory of the repository._
 ```{r}
 # magrittr pipe
 `%>%` <- dplyr::`%>%`
-
-# Load in these functions so we can use `maf_to_granges`
-source(file.path("..", "snv-callers", "util", "tmb_functions.R"))
 ```
 
 Declare names of input and output directories.
@@ -57,7 +54,7 @@ if (!dir.exists(plots_dir)) {
 Custom function for plotting the TMB. 
 
 ```{r}
-source(file.path("util", "tmb-plot-function.R"))
+source(file.path("util", "cdf-plot-function.R"))
 ```
 
 ## Set up consensus data
@@ -92,20 +89,32 @@ tmb_tcga <- data.table::fread(file.path("..",
 Plot each dataset as its own CDF plot. 
 
 ```{r}
-pbta_plot <- tmb_cdf_plot(tmb_pbta, 
-                          plot_title = "PBTA", 
-                          color = "#3BC8A2", 
-                          n_group = 5) +
+pbta_plot <- cdf_plot(df = tmb_pbta,
+                      plot_title = "PBTA",
+                      num_col = "tmb", 
+                      group_col = "short_histology", 
+                      color = "#3BC8A2", 
+                      n_group = 5,
+                      x_lim = c(-1.2, 1.2), 
+                      y_lim = c(0, 30000), 
+                      x_lab = "",
+                      y_lab = "Coding Mutations per Mb") +
     ggplot2::theme(
     strip.text.x = ggplot2::element_text(size = 12)
     )
 ```
 
 ```{r}
-tcga_plot <- tmb_cdf_plot(tmb_tcga, 
-                          plot_title = "TCGA (Adult)", 
-                          color = "#630882", 
-                          n_group = 5) +
+tcga_plot <- cdf_plot(df = tmb_tcga,
+                      plot_title = "TCGA (Adult)",
+                      num_col = "tmb", 
+                      group_col = "short_histology", 
+                      color = "#3BC8A2", 
+                      n_group = 5,
+                      x_lim = c(-1.2, 1.2), 
+                      y_lim = c(0, 30000), 
+                      x_lab = "",
+                      y_lab = "Coding Mutations per Mb") +
     ggplot2::theme(
     axis.title.y = ggplot2::element_blank(),
     axis.text.y = ggplot2::element_blank(),
