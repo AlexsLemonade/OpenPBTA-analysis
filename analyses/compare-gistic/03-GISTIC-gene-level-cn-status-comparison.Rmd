@@ -29,6 +29,8 @@ library(tidyverse)
 
 ### Functions
 
+For tallying up copy number status
+
 ```{r}
 get_gene_tally <- function(gene_status_df,
                            gene_mapping_df,
@@ -122,10 +124,88 @@ get_gene_tally <- function(gene_status_df,
                         detection_peak),
                by = "gene") %>%
     group_by(gene, gain, loss, neutral) %>%
-    summarize(detection_peak = paste(detection_peak, collapse = ", "))
+    summarize(detection_peak = paste(detection_peak, collapse = ", ")) %>%
+    ungroup()
   
 }
 ```
+
+For creating a heatmap that shows the proportion of samples with a copy number status for an individual gene
+
+```{r}
+create_heatmap <- function(gene_tally_df,
+                           detection_peak_filter,
+                           plot_title = "EXON OVERLAPS",
+                           high_color = "red") {
+  # For a given detection peak in the output data.frame of get_gene_tally,
+  # filter to only those genes and create a heatmap with cells that are filled
+  # by the proportion of samples that have the corresponding status value.
+  # 
+  # Args:
+  #   gene_tally_df: output of get_gene_tally
+  #   detection_peak_filter: character value supplied to dplyr::filter to filter
+  #                          to rows that are in a given detection peak
+  #   high_color: the high value supplied to scale_fill_gradient; low = "white"
+  #   
+  # Returns:
+  #   A heatmap (geom_tile) where the rows are genes and the columns are status
+  
+  gene_tally_df %>%
+    filter(detection_peak == detection_peak_filter) %>%
+    group_by(gene) %>%
+    summarize(gain = gain / sum(gain, loss, neutral),
+           loss = loss / sum(gain, loss, neutral),
+           neutral = neutral / sum(gain, loss, neutral)) %>%
+    reshape2::melt(variable.name = "status",
+                   value.name = "proportion_of_samples") %>%
+    ggplot(aes(status, gene)) +
+    geom_tile(aes(fill = proportion_of_samples)) +  
+    scale_fill_gradient(low = "white", high = high_color) +
+    labs(title = plot_title)
+}
+
+plot_detection_peak <- function(exon_tally_df,
+                                gistic_tally_df,
+                                peak_filter) {
+  # Make a panel (row) of heatmaps for a given detection peak
+  # 
+  # Arguments:
+  #   exon_tally_df: output of get_gene_tally using `focal-cn-file-preparation`
+  #                  results
+  #   gistic_tally_df: output of get_gene_tally using prepare_gene_level_gistic
+  #   peak_filter: will be supplied as detection_peak_filter to create_heatmap
+  # 
+  # Returns:
+  #   Two heatmaps titled with peak_filter
+  
+  exon_heatmap <- create_heatmap(gene_tally_df = exon_tally_df,
+                                 detection_peak_filter = peak_filter,
+                                 plot_title = "EXON OVERLAPS",
+                                 high_color = "red")
+  gistic_heatmap <- create_heatmap(gene_tally_df = gistic_tally_df,
+                                   detection_peak_filter = peak_filter,
+                                   plot_title = "GISTIC",
+                                   high_color = "navy")
+  
+  plot_row <- cowplot::plot_grid(exon_heatmap + 
+                                   theme(legend.position = "none"),
+                                 gistic_heatmap + 
+                                   theme(legend.position = "none"))
+  title_pane <- cowplot::ggdraw() + 
+    cowplot::draw_label(
+      peak_filter,
+      fontface = 'bold',
+      x = 0,
+      hjust = 0
+    ) 
+  
+  cowplot::plot_grid(title_pane, 
+                     plot_row,
+                     ncol = 1,
+                     rel_heights = c(0.1, 1))
+}
+```
+
 
 ### Files and Directories
 
@@ -133,6 +213,11 @@ get_gene_tally <- function(gene_status_df,
 # Path to results directory -- this is the input and output directory for this
 # notebook
 results_dir <- "results"
+# Plots
+plots_dir <- "plots"
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir)
+}
 # Path to our focal CN files directory
 focal_dir <- file.path("..", "focal-cn-file-preparation", "results")
 # Path to GISTIC results
@@ -177,6 +262,14 @@ lgat_exon_file <- file.path(results_dir,
 lgat_gistic_file <- file.path(results_dir,
                               "lgat_gene_level_gistic_cn_counts.tsv")
 ```
+
+Plots
+
+```{r}
+cohort_hm_file <- file.path(plots_dir, "cohort_detection_peak_heatmaps.png")
+lgat_hm_file <- file.path(plots_dir, "lgat_detection_peak_heatmaps.png")
+```
+
 
 ## Read in files
 
@@ -229,12 +322,39 @@ lgat_gistic_tally <- get_gene_tally(gene_status_df = lgat_gene_level_calls,
                                       method = "gistic") %>%
   write_tsv(lgat_gistic_file)
 lgat_exon_tally <- get_gene_tally(gene_status_df = consensus_focal_cn_calls,
-                                    gene_mapping_df = lgat_gene_mapping,
-                                    method = "exon",
-                                    biospecimens_included = lgat_ids_in_consensus,
-                                    genes_included = lgat_gistic_tally$gene) %>%
+                                  gene_mapping_df = lgat_gene_mapping,
+                                  method = "exon",
+                                  biospecimens_included = lgat_ids_in_consensus,
+                                  genes_included = lgat_gistic_tally$gene) %>%
   write_tsv(lgat_exon_file)
 ```
+
+## Heatmap
+
+First, only retain genes that are in the exon files.
+
+```{r}
+cohort_gistic_tally <- cohort_gistic_tally %>%
+  filter(gene %in% cohort_exon_tally$gene)
+lgat_gistic_tally <- lgat_gistic_tally %>%
+  filter(gene %in% lgat_exon_tally$gene)
+```
+
+### LGAT only
+
+```{r message=FALSE}
+lgat_heatmaps <- 
+  purrr::map(unique(lgat_exon_tally$detection_peak),
+             ~ plot_detection_peak(exon_tally_df = lgat_exon_tally,
+                                   gistic_tally_df = lgat_gistic_tally,
+                                   peak_filter = .x))
+
+lgat_hm_panels <- cowplot::plot_grid(plotlist = lgat_heatmaps,
+                                     nrow = length(lgat_heatmaps))
+
+ggsave(lgat_hm_file, plot = lgat_hm_panels, width = 8.5, height = 14)
+```
+
 
 ## Session Info
 
