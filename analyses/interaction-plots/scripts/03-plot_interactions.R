@@ -193,7 +193,7 @@ disease_df <- disease_df %>%
            forcats::fct_relevel(display_diseases)
   )
 
-# get scale to match above
+# get scale to match cooccurence plot
 xscale2 <- levels(disease_df$gene) %>%
   c(rep("", opts$plotsize - length(.)))
 
@@ -210,6 +210,7 @@ disease_plot <- ggplot(
   scale_x_discrete(
     limits = xscale2,
   ) + 
+  scale_y_continuous(expand = c(0, 0.5, 0.1, 0))+ 
   theme_classic() +
   theme(
     axis.text.x = element_text(
@@ -232,7 +233,6 @@ if (is.na(opts$combined_plot)){
 
 
 # Modify cooccur plot to drop counts and X axis
-
 ylabels  <- cooccur_df$gene2%>%
   as.character() %>%
   unique() %>%
@@ -246,24 +246,33 @@ cooccur_plot2 <- cooccur_plot +
   scale_y_discrete(
     limits = yscale,
     labels = ylabels
-  ) +
+  ) + 
   theme(
-    
+    plot.margin = unit(c(-1,0,0,0), "char") # negative top margin to move plots together
   )
 
-# Move labels and themes
+# Move labels and themes for disease plot
 disease_plot2 <- disease_plot + 
   theme(
     axis.text.x = element_text(
       angle = -90,
       hjust = 1,
       vjust = 0.5
-    ))
+    ),
+    axis.title.y = element_text(
+      vjust = -10 # keep the label close when combined
+    )
+)
 
 # Patchwork black magic
 combined_plot <- disease_plot2 + cooccur_plot2 +
-  plot_layout(ncol = 1)
+  plot_layout(ncol = 1) & 
+  theme( # adjust for uniform labels
+    axis.text.x = element_text(size = 9),
+    axis.text.y = element_text(size = 9)
+  )
 
+combined_plot
 
 ggsave(combined_plot, 
        filename = opts$combined_plot, 
