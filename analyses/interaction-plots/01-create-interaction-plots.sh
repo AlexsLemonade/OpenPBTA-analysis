@@ -33,6 +33,7 @@ cooccur=${results_dir}/cooccur_top50
 gene_disease=${results_dir}/gene_disease_top50
 plot=${plot_dir}/cooccur_top50
 disease_plot=${plot_dir}/gene_disease_top50
+combined_plot=${plot_dir}/combined_top50
 
 # associative array of diseases to test; chosen by those that are most common
 # in the openPBTA dataset
@@ -77,6 +78,7 @@ Rscript ${script_dir}/03-plot_interactions.R \
   --outfile ${plot}.ALL.png \
   --disease_table ${gene_disease}.tsv \
   --disease_plot ${disease_plot}.png \
+  --combined_plot ${combinded_plot}.png \
   --plotsize 50
     
 # now individual diseases
