@@ -14,6 +14,8 @@ cdf_plot <- function(df = tmb_tcga,
                      y_lab) {
   # For a data.frame, create a Cummulative distribution function plot of the
   # `num_col` and `group_col` column data provided.
+  # Groups in group_col will be plotted separately and reordered based on 
+  # medians. Data is transformed for y-axis. 
   #
   # Args:
   #   df: a data.frame that includes the columns specified in `group_col` and
@@ -74,7 +76,7 @@ cdf_plot <- function(df = tmb_tcga,
     dplyr::group_by(group) %>%
     # Only keep groups with the specified minimum number of samples
     dplyr::filter(dplyr::n() > n_group) %>%
-    # Calculate group mean
+    # Calculate group median
     dplyr::mutate(
       group_median = median(number),
       group_rank = rank(number, ties.method = "first") / dplyr::n(),
@@ -82,13 +84,13 @@ cdf_plot <- function(df = tmb_tcga,
     ) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(group = reorder(group, group_median)) %>%
-    # Now we will plot these as cummulative distribution plots
+    # Now we will plot these as cumulative distribution plots
     ggplot2::ggplot(ggplot2::aes(
       x = group_rank,
       y = number
     )) +
     ggplot2::geom_point(color = color) +
-    # Add summary line for mean
+    # Add summary line for median
     ggplot2::geom_segment(
       x = 0, xend = 1, color = "grey",
       ggplot2::aes(y = group_median, yend = group_median)
