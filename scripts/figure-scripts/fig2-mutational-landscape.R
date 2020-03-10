@@ -33,7 +33,7 @@ tmb_dir <- file.path(
 
 # Import specialized functions from mutational-signatures
 source(file.path(mut_sig_dir, "util", "mut_sig_functions.R"))
-source(file.path(tmb_dir, "util", "tmb-plot-function.R"))
+source(file.path(tmb_dir, "util", "cdf-plot-function.R"))
 
 ###################### Read in associated results ##############################
 # Read in PBTA TMB results
@@ -83,14 +83,38 @@ nature_sigs_df <- readr::read_tsv(file.path(
 
 ###################### Re-run the individual plots #############################
 # Make PBTA TMB plot
-pbta_plot <- tmb_cdf_plot(tmb_pbta, plot_title = "PBTA", colour = "#3BC8A2") +
+pbta_plot <- cdf_plot(
+  df = tmb_pbta,
+  plot_title = "PBTA",
+  num_col = "tmb",
+  group_col = "short_histology",
+  color = "#3BC8A2",
+  n_group = 5,
+  x_lim = c(-1.2, 1.2),
+  y_lim = c(0, 30000),
+  x_lab = "",
+  y_lab = "Coding Mutations per Mb", 
+  breaks = c(0, 3, 10, 30, 100, 300, 1000, 3000, 10000, 30000)
+) +
   ggplot2::theme(
     strip.text.x = ggplot2::element_text(size = 12),
     plot.margin = ggplot2::unit(c(1, 1, -2, 1), "cm")
   )
 
 # Make TCGA plot
-tcga_plot <- tmb_cdf_plot(tmb_tcga, plot_title = "TCGA (Adult)", colour = "#630882") +
+tcga_plot <- cdf_plot(
+  df = tmb_tcga,
+  plot_title = "TCGA (Adult)",
+  num_col = "tmb",
+  group_col = "short_histology",
+  color = "#630882",
+  n_group = 5,
+  x_lim = c(-1.2, 1.2),
+  y_lim = c(0, 30000),
+  x_lab = "",
+  y_lab = "Coding Mutations per Mb",
+  breaks = c()
+) +
   ggplot2::theme(
     axis.title.y = ggplot2::element_blank(),
     axis.text.y = ggplot2::element_blank(),
