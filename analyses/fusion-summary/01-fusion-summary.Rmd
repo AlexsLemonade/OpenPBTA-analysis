@@ -3,19 +3,11 @@ title: "Generate Fusion Summary Files"
 output: html_notebook
 author: Daniel Miller (D3b) and Jaclyn Taroni (CCDL)
 date: January 2020
-params:
-  is_ci: 0
 ---
 
 Generate fusion files specifically for consumption by molecular subtyping analyses
 
 ## Set up
-
-```{r}
-# if running in CI, we need to skip the EPN steps
-if (params$is_ci == 0) running_in_ci <- FALSE
-if (params$is_ci == 1) running_in_ci <- TRUE
-```
 
 ### Libraries and functions
 
@@ -151,16 +143,14 @@ specimensUnion<- union(arribaDF$tumor_id, starfusionDF$tumor_id)
 #### Write non-MB, non-ATRT embryonal fusions to file
 
 ```{r}
-if (!running_in_ci) {
-  allFuseEmbry <- allFuseEmbry %>%
-    prepareOutput(specimensUnion)
-  allFuseEmbry %>%
-    mutate(
-      `CIC--NUTM1` = 0,
-      `MN1--BEND2` = 0
-    ) %>%
-    write_tsv(embryFile)
-}
+allFuseEmbry <- allFuseEmbry %>%
+  prepareOutput(specimensUnion)
+allFuseEmbry %>%
+  mutate(
+    `CIC--NUTM1` = 0,
+    `MN1--BEND2` = 0
+  ) %>%
+  write_tsv(embryFile)
 ```
 
 #### Write ependymoma fusions to file
