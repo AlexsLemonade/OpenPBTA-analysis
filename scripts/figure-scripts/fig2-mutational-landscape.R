@@ -3,7 +3,7 @@
 # 2020
 # C. Savonen for ALSF - CCDL
 #
-# Purpose  Run all steps needed for mutational-landscape Figure.
+# Purpose  Run steps needed to create mutational-landscape Figure.
 #
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
@@ -43,8 +43,6 @@ tmb_pbta <- data.table::fread(file.path(
   "consensus",
   "pbta-snv-mutation-tmb-coding.tsv"
 )) %>%
-  # This variable is weird when binding but we don't need it for the plot so we'll just remove it.
-  dplyr::select(-genome_size) %>%
   # Remove Panel samples
   dplyr::filter(experimental_strategy != "Panel")
 
@@ -54,8 +52,7 @@ tmb_tcga <- data.table::fread(file.path(
   "results",
   "consensus",
   "tcga-snv-mutation-tmb-coding.tsv"
-)) %>%
-  dplyr::select(-genome_size)
+)) 
 
 # Read in cosmic signature results
 cosmic_sigs_df <- readr::read_tsv(file.path(
