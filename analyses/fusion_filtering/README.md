@@ -41,6 +41,8 @@ The code to generate genelistreference.txt and fusionreference.txt is available 
 
 `03-Calc-zscore-annotate.R` : Calculates z-score for gene fused gene's expression compared to GTeX brain samples and annotates differential expression status
 
+`00-QC_putative_onco_fusion_dustribution.Rmd` : Plots fusions found in multiple (more than 4) histologies to review as these will be removed in 04-project-specific-filtering.Rmd  
+
 `04-project-specific-filtering.Rmd` : Performs project specific filtering. We removed fusions with genes fused more than 5 times in a samples as potential artifact. We kept fusions that were called by both callers and if >2 samples per histology called the fusion. We then prioritize the fusions as putative-oncogenic fusions if any fused gene in the fusion is annotated as kinases, oncogenes, tumor suppressors, curated transcription factors or present in COSMIC Cancer Gene Census list. We also annotated fusions if they are present in TCGA fusions list. 
 Annotated fusions do not need to be in both callers to be retained.
 
