@@ -116,7 +116,7 @@ tcga_plot <- cdf_plot(
   plot_title = "TCGA (Adult)",
   num_col = "tmb",
   group_col = "short_histology",
-  color = "#3BC8A2",
+  color = "#630882",
   n_group = 5,
   x_lim = c(-1.2, 1.2),
   y_lim = c(0, 30000),

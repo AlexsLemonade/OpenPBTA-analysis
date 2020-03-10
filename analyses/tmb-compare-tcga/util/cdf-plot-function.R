@@ -97,11 +97,7 @@ cdf_plot <- function(df,
       ggplot2::aes(y = group_median, yend = group_median)
     ) +
     # Separate by histology
-    ggplot2::facet_wrap(~ {
-      {
-        group_col
-      }
-    } + sample_size, nrow = 1, strip.position = "bottom") +
+    ggplot2::facet_wrap(~ group + sample_size, nrow = 1, strip.position = "bottom") +
     ggplot2::theme_classic() +
     ggplot2::xlab(x_lab) +
     ggplot2::ylab(y_lab) +
