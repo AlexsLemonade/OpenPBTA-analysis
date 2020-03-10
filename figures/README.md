@@ -16,16 +16,13 @@ This script will run all the steps needed to take the
 ```
 bash scripts/run-figures.sh
 ```
-All figures print out to the `./figures` folder and will be linked to the
+All figures print out to the `figures/pngs` folder and will be linked to the
 accompanying manuscript repository `OpenPBTA-manuscript`.
 
-4) Refresh manubot?
+## Summary for each figure:
 
-
-### Summary for each figure:
-
-Each figure has its own script stored in the `scripts/figure-scripts directory`.
-All are called by the main bash script, `scripts/run-figures.sh`.
+Each figure has its own script stored in the `figures/scripts`.
+All are called by the main bash script, `figures/run-figures.sh`.
 However, some are have higher memory requirements than others.
 
 | Figure | Script | Run Requirements | Linked Analysis Modules | Files consumed |

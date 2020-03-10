@@ -12,7 +12,7 @@
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # Declare output directory
-output_dir <- file.path(root_dir, "figures")
+output_dir <- file.path(root_dir, "figures", "pngs")
 
 ######## Declare relative file paths of modules used for this figure ###########
 snv_callers_dir <- file.path(
@@ -52,7 +52,7 @@ tmb_tcga <- data.table::fread(file.path(
   "results",
   "consensus",
   "tcga-snv-mutation-tmb-coding.tsv"
-)) 
+))
 
 # Read in cosmic signature results
 cosmic_sigs_df <- readr::read_tsv(file.path(
@@ -90,7 +90,7 @@ pbta_plot <- cdf_plot(
   x_lim = c(-1.2, 1.2),
   y_lim = c(0, 30000),
   x_lab = "",
-  y_lab = "Coding Mutations per Mb", 
+  y_lab = "Coding Mutations per Mb",
   breaks = c(0, 3, 10, 30, 100, 300, 1000, 3000, 10000, 30000)
 ) +
   ggplot2::theme(
