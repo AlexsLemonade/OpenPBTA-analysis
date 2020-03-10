@@ -1,8 +1,9 @@
 # Function for CDF plot
 #
 # C. Savonen for ALSF - CCDL
+# 2020 
 
-cdf_plot <- function(df = tmb_tcga,
+cdf_plot <- function(df,
                      plot_title,
                      num_col,
                      group_col,
