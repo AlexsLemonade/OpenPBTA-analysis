@@ -355,8 +355,10 @@ p20 <-  ggplot(read_fracs_with_thresholds_anno) +
              aes(xintercept = value, linetype = stat, color = read_type_name)) +
     scale_fill_viridis_d() +
   scale_color_viridis_d() +
-  facet_wrap(~read_type_name, nrow=1, labeller = labeller(
-    read_type_name=stat_label) )
+  facet_wrap(~read_type_name, 
+             nrow=1,
+             scales="free_x",
+             labeller = labeller(read_type_name=stat_label) )
 
 p20b <- p20 + 
   theme(legend.position = "none") +
