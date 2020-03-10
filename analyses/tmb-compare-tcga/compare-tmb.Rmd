@@ -29,9 +29,6 @@ _This assumes you are in the top directory of the repository._
 ```{r}
 # magrittr pipe
 `%>%` <- dplyr::`%>%`
-
-# Load in these functions so we can use `maf_to_granges`
-source(file.path("..", "snv-callers", "util", "tmb_functions.R"))
 ```
 
 Declare names of input and output directories.
@@ -57,7 +54,7 @@ if (!dir.exists(plots_dir)) {
 Custom function for plotting the TMB. 
 
 ```{r}
-source(file.path("util", "tmb-plot-function.R"))
+source(file.path("util", "cdf-plot-function.R"))
 ```
 
 ## Set up consensus data
@@ -66,24 +63,28 @@ Read in the consensus TMB file.
 
 ```{r}
 # TODO: update if the this tmb consensus file gets updated in a future data release
-tmb_pbta <- data.table::fread(file.path("..", 
-                                        "snv-callers",
-                                        "results",
-                                        "consensus", 
-                                        "pbta-snv-mutation-tmb-coding.tsv")) %>% 
-  # This variable is weird when binding but we don't need it for the plot so we'll just remove it. 
-  dplyr::select(-genome_size) %>% 
+tmb_pbta <- data.table::fread(file.path(
+  "..",
+  "snv-callers",
+  "results",
+  "consensus",
+  "pbta-snv-mutation-tmb-coding.tsv"
+)) %>%
+  # This variable is weird when binding but we don't need it for the plot so we'll just remove it.
+  dplyr::select(-genome_size) %>%
   dplyr::filter(experimental_strategy != "Panel")
 ```
 
 
 ```{r}
 # TODO: update if this tmb consensus file gets updated in a future data release
-tmb_tcga <- data.table::fread(file.path("..", 
-                                        "snv-callers",
-                                        "results",
-                                        "consensus",
-                                        "tcga-snv-mutation-tmb-coding.tsv")) %>% 
+tmb_tcga <- data.table::fread(file.path(
+  "..",
+  "snv-callers",
+  "results",
+  "consensus",
+  "tcga-snv-mutation-tmb-coding.tsv"
+)) %>%
   dplyr::select(-genome_size)
 ```
 
@@ -92,20 +93,44 @@ tmb_tcga <- data.table::fread(file.path("..",
 Plot each dataset as its own CDF plot. 
 
 ```{r}
-pbta_plot <- tmb_cdf_plot(tmb_pbta, plot_title = "PBTA", color = "#3BC8A2") +
-    ggplot2::theme(
+pbta_plot <- cdf_plot(
+  df = tmb_pbta,
+  plot_title = "PBTA",
+  num_col = "tmb",
+  group_col = "short_histology",
+  color = "#3BC8A2",
+  n_group = 5,
+  x_lim = c(-1.2, 1.2),
+  y_lim = c(0, 30000),
+  x_lab = "",
+  y_lab = "Coding Mutations per Mb", 
+  breaks = c(0, 3, 10, 30, 100, 300, 1000, 3000, 10000, 30000)
+) +
+  ggplot2::theme(
     strip.text.x = ggplot2::element_text(size = 12)
-    )
+  )
 ```
 
 ```{r}
-tcga_plot <- tmb_cdf_plot(tmb_tcga, plot_title = "TCGA (Adult)", color = "#630882") +
-    ggplot2::theme(
+tcga_plot <- cdf_plot(
+  df = tmb_tcga,
+  plot_title = "TCGA (Adult)",
+  num_col = "tmb",
+  group_col = "short_histology",
+  color = "#630882",
+  n_group = 5,
+  x_lim = c(-1.2, 1.2),
+  y_lim = c(0, 30000),
+  x_lab = "",
+  y_lab = "Coding Mutations per Mb",
+  breaks = c()
+) +
+  ggplot2::theme(
     axis.title.y = ggplot2::element_blank(),
     axis.text.y = ggplot2::element_blank(),
     axis.ticks.y = ggplot2::element_blank(),
     strip.text.x = ggplot2::element_text(size = 9)
-  ) 
+  )
 ```
 
 Combine both TMB data.frames into one plot
@@ -117,15 +142,16 @@ tmb_plot <- cowplot::plot_grid(pbta_plot, tcga_plot,
   axis = "left",
   rel_widths = c(2.5, 1),
   label_size = 12
-  )
+)
 ```
 
 Save this final plot to a png file.
 
 ```{r}
 # Save the plot to a png
-cowplot::save_plot(file.path(plots_dir, "tmb-cdf-pbta-tcga.png"), 
-                   plot = tmb_plot, base_width = 35, base_height = 20, unit = "cm")
+cowplot::save_plot(file.path(plots_dir, "tmb-cdf-pbta-tcga.png"),
+  plot = tmb_plot, base_width = 35, base_height = 20, unit = "cm"
+)
 ```
 
 Print from png so rendering is smoother
