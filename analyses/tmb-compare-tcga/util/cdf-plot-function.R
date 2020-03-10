@@ -1,4 +1,4 @@
-# Function for TMB CDF plot
+# Function for CDF plot
 #
 # C. Savonen for ALSF - CCDL
 
@@ -15,7 +15,7 @@ cdf_plot <- function(df = tmb_tcga,
   # For a data.frame, create a Cummulative distribution function plot of the
   # `num_col` and `group_col` column data provided.
   # Groups in group_col will be plotted separately and reordered based on 
-  # medians. Data is transformed for y-axis. 
+  # medians. Data is transformed to log10 for y-axis. 
   #
   # Args:
   #   df: a data.frame that includes the columns specified in `group_col` and
