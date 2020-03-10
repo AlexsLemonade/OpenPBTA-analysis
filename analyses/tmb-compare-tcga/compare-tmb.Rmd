@@ -103,7 +103,8 @@ pbta_plot <- cdf_plot(
   x_lim = c(-1.2, 1.2),
   y_lim = c(0, 30000),
   x_lab = "",
-  y_lab = "Coding Mutations per Mb"
+  y_lab = "Coding Mutations per Mb", 
+  breaks = c(0, 3, 10, 30, 100, 300, 1000, 3000, 10000, 30000)
 ) +
   ggplot2::theme(
     strip.text.x = ggplot2::element_text(size = 12)
@@ -121,7 +122,8 @@ tcga_plot <- cdf_plot(
   x_lim = c(-1.2, 1.2),
   y_lim = c(0, 30000),
   x_lab = "",
-  y_lab = "Coding Mutations per Mb"
+  y_lab = "Coding Mutations per Mb",
+  breaks = c()
 ) +
   ggplot2::theme(
     axis.title.y = ggplot2::element_blank(),

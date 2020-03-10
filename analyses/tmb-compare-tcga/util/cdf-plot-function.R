@@ -10,9 +10,10 @@ cdf_plot <- function(df,
                      color = "black",
                      n_group = 5,
                      x_lim = c(-1.2, 1.2),
-                     y_lim = c(0, 30000),
+                     y_lim,
                      x_lab,
-                     y_lab) {
+                     y_lab, 
+                     breaks) {
   # For a data.frame, create a Cummulative distribution function plot of the
   # `num_col` and `group_col` column data provided.
   # Groups in group_col will be plotted separately and reordered based on 
@@ -35,6 +36,8 @@ cdf_plot <- function(df,
   #          axis limits
   #   x_lab: a string to be passed to ggplot2::xlab() for an x-axis label
   #   y_lab: a string to be passed to ggplot2::ylab() for an y-axis label
+  #   breaks: A numeric vector to be passed to ggplot2::scale_y_continuous for 
+  #           marking ticks on the y axis. 
   #
   #
   # Returns:
@@ -104,7 +107,8 @@ cdf_plot <- function(df,
     # Transform to log10 make non-log y-axis labels
     ggplot2::scale_y_continuous(
       trans = "log1p",
-      limits = y_lim
+      limits = y_lim, 
+      breaks = breaks
     ) +
     ggplot2::scale_x_continuous(limits = x_lim) +
     # Making it pretty
