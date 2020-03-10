@@ -36,6 +36,12 @@ set.seed(2020)
 
 # Need the plotting functions
 source(file.path("util", "chr-break-plot.R"))
+
+# Using the CDF plotting function
+source(file.path("..", 
+                 "tmb-compare-tcga", 
+                 "util", 
+                 "cdf-plot-function.R"))
 ```
 
 Set up option for how many samples minimum we need to include in CDF plot. 
@@ -85,6 +91,33 @@ cnv_cdf_plot_file <- file.path(plots_dir, "cnv_breaks_cdf_plot.png")
 sv_cdf_plot_file <- file.path(plots_dir, "sv_breaks_cdf_plot.png")
 ```
 
+Tiny custom function for setting up each of the density files and joining the 
+`short_histology` metadata to them. 
+
+```{r}
+# Read in the breaks file
+read_n_join <- function(density_file, 
+                        metadata_df) {
+  # Given a genome wide breaks density file path, join the metadata's 
+  # short_histology group to it based on `Kids_First_Biospecimen_ID`.
+  #
+  # Args:
+  #   density_file: a chromosomal breaks density file path where each sample is
+  #                 a row with `samples` and `breaks_count` columns. 
+  #   metadata_df: a data.frame with Kids_First_Biospecimen_ID, short_histology
+  #                columns
+  #   
+  # Returns:
+  #  set up data.frame with `short_histology`
+  readr::read_tsv(density_file) %>%
+    # Add on the short histology column from the metadata for plotting purposes
+    dplyr::inner_join(metadata_df %>%
+                        dplyr::select(Kids_First_Biospecimen_ID, short_histology),
+                      by = c("samples" = "Kids_First_Biospecimen_ID")
+    )
+}
+```
+
 ### Read in data 
 
 Set up metadata
@@ -105,26 +138,67 @@ hist_break_local <- readr::read_rds(hist_binned_breaks_file)
 #### Intersection breaks density plot. 
 
 ```{r}
-breaks_cdf_plot(density_file = intersection_densities_file, 
-                metadata_df = metadata, 
-                cdf_plot_file = intersection_cdf_plot_file)
+intersection_plot <- read_n_join(density_file = intersection_densities_file, 
+            metadata_df = metadata) %>% 
+  cdf_plot(plot_title = "Intersection of Breaks",
+           num_col = "breaks_count",
+           group_col = "short_histology",
+           color = "#630882",
+           n_group = 5,
+           x_lim = c(-1.2, 1.2),
+           y_lim = c(0, 30),
+           x_lab = "",
+           y_lab = "Chromosomal Breaks per Genome", 
+           breaks = c(0, 3, 10, 30))
+
+# Save plot
+ggplot2::ggsave(intersection_cdf_plot_file)
 ```
+![intersection breaks](plots/intersection_breaks_cdf_plot.png)
 
 #### CNV breaks density plot. 
 
 ```{r}
-breaks_cdf_plot(density_file = cnv_densities_file, 
-                metadata_df = metadata, 
-                cdf_plot_file = cnv_cdf_plot_file)
+cnv_plot <- read_n_join(density_file = cnv_densities_file, 
+            metadata_df = metadata) %>% 
+  cdf_plot(plot_title = "CNV Breaks",
+           num_col = "breaks_count",
+           group_col = "short_histology",
+           color = "#630882",
+           n_group = 5,
+           x_lim = c(-1.2, 1.2),
+           y_lim = c(0, 30),
+           x_lab = "",
+           y_lab = "Chromosomal Breaks per Genome", 
+           breaks = c(0, 3, 10, 30))
+
+# Save plot
+ggplot2::ggsave(cnv_cdf_plot_file)
 ```
+
+![CNV breaks](plots/cnv_breaks_cdf_plot.png)
 
 #### SV breaks density plot. 
 
 ```{r}
-breaks_cdf_plot(density_file = sv_densities_file, 
-                metadata_df = metadata, 
-                cdf_plot_file = sv_cdf_plot_file)
+sv_plot <- read_n_join(density_file = sv_densities_file, 
+            metadata_df = metadata) %>% 
+  cdf_plot(plot_title = "SV Breaks",
+           num_col = "breaks_count",
+           group_col = "short_histology",
+           color = "#630882",
+           n_group = 5,
+           x_lim = c(-1.2, 1.2),
+           y_lim = c(0, 30),
+           x_lab = "",
+           y_lab = "Chromosomal Breaks per Genome", 
+           breaks = c(0, 3, 10, 30))
+
+# Save plot
+ggplot2::ggsave(sv_cdf_plot_file)
 ```
+
+![SV breaks](plots/sv_breaks_cdf_plot.png)
 
 ### Plot the breakpoints for each tumor-type
 
