@@ -108,9 +108,10 @@ binary_col_palette <- c("#67001f",
 # names(binary_col_palette) <- c("Amp", "Del")
 
 ######################## Write these to an RDS file ############################
-readr::write_rds(list(na_color,
-                      histologies_color_key,
-                      gradient_col_palette, 
-                      divergent_col_palette, 
-                      binary_col_palette),
+readr::write_rds(list(na_color = na_color,
+                      histologies_color_key = histologies_color_key,
+                      gradient_col_palette = gradient_col_palette, 
+                      divergent_col_palette = divergent_col_palette, 
+                      binary_col_palette = binary_col_palette),
                  file.path(output_dir, "hex_color_palettes.rds"))
+
