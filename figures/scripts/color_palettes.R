@@ -5,10 +5,6 @@
 #  Anywhere a plot is being made, source this file and use the color palette for 
 #  each appropriate data type. 
 #
-# Example: 
-# source(file.path("scripts", "color_palettes.R"))
-#
-#
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
@@ -93,7 +89,7 @@ divergent_col_palette <- c("#67001f",
                            "#2166ac",
                            "#053061")
 ## Example usage: 
-# gradient_col_val <- c(seq(from = min(divergent_variable), 
+# divergent_col_val <- c(seq(from = min(divergent_variable), 
 #                           to = 0,
 #                           length = 5), 
 #                       0, 
@@ -101,14 +97,12 @@ divergent_col_palette <- c("#67001f",
 #                           to = max(divergent_variable),
 #                           length = 5)
 #
-# col_fun <- circlize::colorRamp2(gradient_col_val, 
-#                                 gradient_col_palette)
+# col_fun <- circlize::colorRamp2(divergent_col_val, 
+#                                 divergent_col_palette)
 
 ### 5) A binary color key which are the most extreme colors in the divergent color scale. 
 binary_col_palette <- c("#b2182b", 
                         "#2166ac")
-## Example usage: 
-# names(binary_col_palette) <- c("Amp", "Del")
 
 ######################## Write these to an RDS file ############################
 readr::write_rds(list(na_color = na_color,
