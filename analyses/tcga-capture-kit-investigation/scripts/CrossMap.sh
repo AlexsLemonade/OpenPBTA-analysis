@@ -12,11 +12,10 @@ done
 
 
 ## This command uses sort and merge from bedtools to merge any overalpping BED regions
-mkdir -p results/bedfiles/
 for i in `ls ../../scratch/*.targetIntervals.Gh38.bed`; do 
   bedtools sort -i $i \
   | bedtools merge \
-  > results/bedfiles/(basename $i)
+  > results/$(basename $i)
 done
 
 
