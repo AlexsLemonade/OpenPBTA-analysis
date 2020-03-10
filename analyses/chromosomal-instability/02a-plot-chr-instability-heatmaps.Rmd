@@ -31,6 +31,9 @@ set.seed(2020)
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
+
+# Import standard color palette for project
+source(file.path("..", "..", "color_palettes.R"))
 ```
 
 ### Directories and Files
@@ -91,7 +94,7 @@ breaks_heatmap <- function(binned_counts_df,
   #
   # Returns:
   # A heatmap of the chromosomal breaks
-
+  
   # Drop chr bin names
   binned_counts_mat <- binned_counts_df %>%
     dplyr::select(rownames(histologies)) %>%
@@ -122,7 +125,7 @@ breaks_heatmap <- function(binned_counts_df,
     show_row_names = FALSE,
     bottom_annotation = chr_annot,
     left_annotation = hist_annot,
-    na_col = "#f1f1f1"
+    na_col = na_color
   )
   # Return plot
   return(heatmap)
@@ -162,7 +165,7 @@ chrs <- paste0("chr", binned_counts[[1]]$chr_bin_names)
 chrs <- as.factor(chrs)
 
 # Make a key for assigning alternating colors to the chromosomes
-chr_colors <- rep(c("grey", "lightblue"), length.out = length(unique(chrs)))
+chr_colors <- rep(binary_col_palette, length.out = length(unique(chrs)))
 names(chr_colors) <- unique(chrs)
 ```
 
@@ -187,34 +190,24 @@ Make histology labeling `HeatmapAnnotation` object.
 # Get the histologies for the samples in this set and order them by histology
 histologies <-
   data.frame(Kids_First_Biospecimen_ID = common_samples) %>%
-  dplyr::inner_join(dplyr::select(metadata, Kids_First_Biospecimen_ID, short_histology)) %>%
-  dplyr::mutate(short_histology = tools::toTitleCase(short_histology), 
-                short_histology = as.factor(short_histology)) %>%
-  dplyr::filter(!is.na(short_histology)) %>%
-  dplyr::arrange(short_histology) %>%
+  dplyr::inner_join(histology_col_by_sample) %>%
+  dplyr::arrange(short_histology) %>% 
   tibble::column_to_rownames("Kids_First_Biospecimen_ID")
 
-#TODO: Better colors
-# Get values that can be used to make colors equi distant hues away for the
-# number of histology groups we have
-col_val <- seq(
-  from = 0, to = 1,
-  length.out = length(unique(histologies$short_histology))
-)
+# Make color key specific to these samples
+histologies_color_key_filtered <- histologies$sample_color
+names(histologies_color_key_filtered) <- histologies$short_histology
 
-# Translate into colors
-histologies_colors <- hsv(h = col_val, s = col_val, v = 1)
-
-# Make this named based on histology
-names(histologies_colors) <- unique(histologies$short_histology)
+# Drop this column so ComplexHeatmap isn't tempted to plot it
+histologies <- dplyr::select(histologies, -sample_color)
 ```
 
 Make a color function. 
 
 ```{r}
 col_fun <- circlize::colorRamp2(
-  c(0, .25, .5, 1, 3),
-  c("#edf8fb", "#b2e2e2", "#66c2a4", "#2ca25f", "#006d2c")
+  c(0, .125, .25, .3, .5, 1, 1.5, 2, 3),
+  gradient_col_palette
 )
 ```
 
@@ -226,7 +219,7 @@ intersection_of_heatmap <- breaks_heatmap(
   chrs,
   histologies,
   chr_colors,
-  histologies_colors,
+  histologies_color_key_filtered,
   col_fun
 )
 # Print out here
@@ -246,7 +239,7 @@ cnv_heatmap <- breaks_heatmap(
   chrs,
   histologies,
   chr_colors,
-  histologies_colors,
+  histologies_color_key_filtered,
   col_fun
 )
 # Print out here
@@ -266,7 +259,7 @@ sv_heatmap <- breaks_heatmap(
   chrs,
   histologies,
   chr_colors,
-  histologies_colors,
+  histologies_color_key_filtered,
   col_fun
 )
 # Print out here
