@@ -55,7 +55,7 @@ Import color palettes.
 
 ```{r}
 # Import standard color palette for project
-palettes <- read_rds(file.path(figures_dir, "palettes", "hex_color_palettes.rds"))
+palettes <- readr::read_rds(file.path(figures_dir, "palettes", "hex_color_palettes.rds"))
 
 # Read in the by sample palette table
 histology_col_by_sample <- readr::read_tsv(
