@@ -67,7 +67,7 @@ Below is a summary of biospecimens by sequencing strategy:
 | Experimental Strategy | Normal | Tumor |
 |-----------------------|--------|-------|
 | Targeted DNA Panel | 1 | 1 |
-| RNA-Seq | 0 | 1072 |
+| RNA-Seq | 0 | 1028 |
 | WGS | 801 | 940 |
 | WXS | 31 | 31 |
 
