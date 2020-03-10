@@ -55,7 +55,11 @@ Import color palettes.
 
 ```{r}
 # Import standard color palette for project
-read_rds(file.path(figures_dir, "palettes", "hex_color_palettes.rds"))
+palettes <- read_rds(file.path(figures_dir, "palettes", "hex_color_palettes.rds"))
+
+# Read in the by sample palette table
+histology_col_by_sample <- readr::read_tsv(
+  file.path(figures_dir, "palettes", "histology_color_by_sample.tsv"))
 ```
 
 Here's all the input files we will need: 
@@ -131,7 +135,7 @@ breaks_heatmap <- function(binned_counts_df,
     show_row_names = FALSE,
     bottom_annotation = chr_annot,
     left_annotation = hist_annot,
-    na_col = na_color
+    na_col = palettes$na_color
   )
   # Return plot
   return(heatmap)
@@ -171,7 +175,7 @@ chrs <- paste0("chr", binned_counts[[1]]$chr_bin_names)
 chrs <- as.factor(chrs)
 
 # Make a key for assigning alternating colors to the chromosomes
-chr_colors <- rep(binary_col_palette, length.out = length(unique(chrs)))
+chr_colors <- rep(palettes$binary_col_palette, length.out = length(unique(chrs)))
 names(chr_colors) <- unique(chrs)
 ```
 
@@ -213,7 +217,7 @@ Make a color function.
 ```{r}
 col_fun <- circlize::colorRamp2(
   c(0, .125, .25, .3, .5, 1, 1.5, 2, 3),
-  gradient_col_palette
+  palettes$gradient_col_palette
 )
 ```
 
