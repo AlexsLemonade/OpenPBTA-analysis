@@ -15,6 +15,9 @@
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
+# Output to palette directory
+output_dir <- file.path(root_dir, "figures", "palettes")
+
 ### 1) A color for NA data
 na_color <- "#f1f1f1"
 
@@ -32,8 +35,8 @@ n_histologies <- length(histologies)
 
 # Create named list that can be used with dplyr::recode
 histologies_color_key <- hsv(h = 1:n_histologies/n_histologies * .85, 
-                   v = c(.8,1,1), 
-                   s = c(1,1, .6))
+                             v = c(.8,1,1), 
+                             s = c(1,1, .6))
 
 # Bring along histologies names
 names(histologies_color_key) <- histologies
@@ -45,7 +48,8 @@ histologies_color_key[names(histologies_color_key) == "none"] <- na_color
 histology_col_by_sample <- metadata %>% 
   dplyr::select(Kids_First_Biospecimen_ID, short_histology) %>%
   dplyr::mutate(sample_color = dplyr::recode(short_histology, 
-                                             !!!histologies_color_key))
+                                             !!!histologies_color_key)) %>% 
+  readr::write_tsv(file.path(output_dir, "histology_color_by_sample.tsv"))
 
 # Drop "none" category from histology color key
 histologies_color_key <- histologies_color_key[histologies_color_key != "none"]
@@ -103,3 +107,10 @@ binary_col_palette <- c("#67001f",
 ## Example usage: 
 # names(binary_col_palette) <- c("Amp", "Del")
 
+######################## Write these to an RDS file ############################
+readr::write_rds(list(na_color,
+                      histologies_color_key,
+                      gradient_col_palette, 
+                      divergent_col_palette, 
+                      binary_col_palette),
+                 file.path(output_dir, "hex_color_palettes.rds"))

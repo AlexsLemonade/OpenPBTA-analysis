@@ -33,7 +33,7 @@ set.seed(2020)
 `%>%` <- dplyr::`%>%`
 
 # Import standard color palette for project
-source(file.path("..", "..", "color_palettes.R"))
+source(file.path("..", "..", "scripts", "color_palettes.R"))
 ```
 
 ### Directories and Files
