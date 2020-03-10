@@ -29,7 +29,7 @@ BEDTOOLS_CMD="""bedtools intersect -a $DATA/WGS.hg38.strelka2.unpadded.bed -b $D
 | bedtools intersect -a - -b $DATA/WGS.hg38.lancet.unpadded.bed"""
 ## loop all liftover'd TCGA BED from ../results/ folder and add on to the cmd
 # ls bedfiles/*.Gh38.bed | while read tcga_bedfile
-for tcga_bedfile in results/bedfiles/*
+for tcga_bedfile in results/bedfiles/*.bed
 do BEDTOOLS_CMD+="| bedtools intersect -a - -b $tcga_bedfile "; done
 ## excute the BEDTOOLS_CMD
 echo $BEDTOOLS_CMD | sh - > $SCRATCH/intersect-all-tcga_pbta.bed
