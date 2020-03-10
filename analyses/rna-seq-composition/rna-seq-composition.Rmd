@@ -360,35 +360,12 @@ p20 <-  ggplot(read_fracs_with_thresholds_anno) +
              scales="free_x",
              labeller = labeller(read_type_name=stat_label) )
 
-p20b <- p20 + 
+p20c <- p20 + 
   theme(legend.position = "none") +
   ylab("Samples") + 
-  xlab(paste0("Relative sample composition, n=", length(unique(read_fracs_with_thresholds$sample_id)))) 
-
-padding_from_line <- -0.04
-
-read_type_frac_thresholds_for_fig2 <- all_read_type_fraction_stats %>%
-  filter(grepl("two_sd", stat_name)) %>%
-  mutate(
-    x = ifelse(stat_name=="mean_plus_two_sd", value + padding_from_line, value - padding_from_line),
-    y = ifelse(stat_name=="mean_plus_two_sd", 200,300),
-    label = ifelse(stat_name=="mean_plus_two_sd",
-                   paste0("mean\n+ 2sd\n", round(value, 3)),
-                   paste0("mean\n- 2sd\n", round(value, 3))
-                   )
-    )
-
-p20c <- 
-  p20b + 
-  scale_x_continuous(breaks = seq(0, 1, by=0.25)) +
-  expand_limits(x = c(-0.25, 0.9)) +
+  xlab(paste0("Relative sample composition, n=", length(unique(read_fracs_with_thresholds$sample_id)))) +
   ggtitle(plot_title)
 
-p20d <- 
-  p20c + 
-  geom_label(data = read_type_frac_thresholds_for_fig2, 
-            aes(x = x, y = y, label = round(value, 3)),#, hjust = hjust)
-  ) 
 
 ```
 
