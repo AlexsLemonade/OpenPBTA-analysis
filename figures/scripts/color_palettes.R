@@ -25,34 +25,37 @@ na_color <- "#f1f1f1"
 
 # Read in metadata file
 metadata <- readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv")) %>% 
-  dplyr::mutate(short_histology = as.character(tidyr::replace_na(short_histology, "none")))
+  dplyr::mutate(short_histology = as.character(tidyr::replace_na(short_histology, "none"))) %>% 
+  dplyr::arrange(short_histology)
 
 # Get unique histology categories
 histologies <- unique(metadata$short_histology)
 
-# Get number of unique histology categories
-n_histologies <- length(histologies)
-
 # Create named list that can be used with dplyr::recode
-histologies_color_key <- hsv(h = 1:n_histologies/n_histologies * .85, 
-                             v = c(.8,1,1), 
-                             s = c(1,1, .6))
+# These hex codes were retrieved from http://phrogz.net/css/distinct-colors.html
+# With the settings on default for 37 colors. 
+histology_color_key <- c("#f23d3d", "#731d1d", "#b38686", "#cc5c33", "#331c0d", 
+"#ffb380", "#b25f00", "#f2d6b6", "#736556", "#ffaa00", "#4c3d00", "#e2f200", 
+"#919926", "#d6f2b6", "#304d26", "#00f241", "#009929", "#698c7c", "#39e6c3", 
+"#005359", "#263233", "#00c2f2", "#40a6ff", "#406280", "#0044ff", "#00144d", 
+"#acbbe6", "#7373e6", "#3d0099", "#c200f2", "#917399", "#731d6d", "#f279da", 
+"#cc0052", "#994d6b", "#4d2636", "#ffbfd9")
 
 # Bring along histologies names
-names(histologies_color_key) <- histologies
+names(histology_color_key) <- histologies
 
 # NA for histology we want to match the standard NA color
-histologies_color_key[names(histologies_color_key) == "none"] <- na_color
+histology_color_key[names(histology_color_key) == "none"] <- na_color
 
 # Add a column that has the color for each sample
 histology_col_by_sample <- metadata %>% 
   dplyr::select(Kids_First_Biospecimen_ID, short_histology) %>%
   dplyr::mutate(sample_color = dplyr::recode(short_histology, 
-                                             !!!histologies_color_key)) %>% 
+                                             !!!histology_color_key)) %>% 
   readr::write_tsv(file.path(output_dir, "histology_color_by_sample.tsv"))
 
 # Drop "none" category from histology color key
-histologies_color_key <- histologies_color_key[histologies_color_key != "none"]
+histology_color_key <- histology_color_key[histology_color_key != "none"]
 
 # Example Usage: 
 # histologies_w_color_key <-
@@ -102,16 +105,23 @@ divergent_col_palette <- c("#67001f",
 #                                 gradient_col_palette)
 
 ### 5) A binary color key which are the most extreme colors in the divergent color scale. 
-binary_col_palette <- c("#67001f", 
-                        "#053061")
+binary_col_palette <- c("#b2182b", 
+                        "#2166ac")
 ## Example usage: 
 # names(binary_col_palette) <- c("Amp", "Del")
 
 ######################## Write these to an RDS file ############################
 readr::write_rds(list(na_color = na_color,
-                      histologies_color_key = histologies_color_key,
+                      histology_color_key = histology_color_key,
                       gradient_col_palette = gradient_col_palette, 
                       divergent_col_palette = divergent_col_palette, 
                       binary_col_palette = binary_col_palette),
                  file.path(output_dir, "hex_color_palettes.rds"))
 
+#### Quick little function for writing HEX table in README so I can copy and paste it
+#color_format <- function(color, color_names) {
+#  #Description: Provide color and color names vector, this outputs the text to render swatches 
+#  # in a GitHub markdown table. 
+#  color <- gsub("#", "", color)
+#  paste0("<br>", color_names, ":![", color, "](https://placehold.it/150x40/", color, "/FFFFFF?text=", color, ")")
+#}
