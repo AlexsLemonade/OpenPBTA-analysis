@@ -38,7 +38,10 @@ params:
     label: "results folder for *tsv files"
     value: results
     input: string     
-
+  countHistology:
+    label: "Integer cutoff of fusion found in more than N histologies"
+    value: 4
+    input: integer     
     
 ---
 
@@ -101,6 +104,8 @@ numGroup<-params$numGroup
 # Max number of times gene can be fused per sample
 limitMultiFused<-params$limitMultiFused
 
+#### get count cutoff for histology
+countHistology<-params$countHistology
 
 print("Raw calls from STARfusion and Arriba for PBTA")
 table(fusion_calls$Caller)
@@ -132,7 +137,13 @@ putative_driver_annotated_fusions <- fusion_calls %>%
   dplyr::filter(!is.na(Gene1A_anno) | !is.na(Gene1B_anno) | !is.na(Gene2A_anno) | !is.na(Gene2B_anno)) %>%
   unique()
 
+# filter fusions found in more than 4 histologies
+FusionInNhist<-putative_driver_annotated_fusions %>% dplyr::select(FusionName,broad_histology) %>% unique() %>% group_by(FusionName) %>% summarise(count=n())
+FusionInNhist<-FusionInNhist[FusionInNhist$count>countHistology,]
+FusionInNhist<-FusionInNhist[order(FusionInNhist$count,decreasing = TRUE),]
+FusionInNhist
 
+putative_driver_annotated_fusions<-putative_driver_annotated_fusions %>% filter(!FusionName %in% FusionInNhist$FusionName)
 
 
 ```
