@@ -316,4 +316,13 @@ RUN R -e "devtools::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd4
 #### Please install your dependencies here
 #### Add a comment to indicate what analysis it is required for
 
+# Packages required for rna-seq-composition
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    && install2.r --error \
+    --deps TRUE \
+    EnvStats \
+    janitor 
+
+RUN R -e "devtools::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd46899f17197f9858bc5672e9f4')"
+
 WORKDIR /rocker-build/
