@@ -93,10 +93,9 @@ Set up filenames.
 ```{r}
 # full clinical file
 histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
-# TODO: update when the new files with union of sample IDs get included in the
-# in the data download (v14)
-fusion_file <- file.path("..", "fusion-summary", "results",
-                         "fusion_summary_embryonal_foi.tsv")
+# full fusions of interest file
+fusion_file <- file.path(data_dir,"fusion_summary_embryonal_foi.tsv")
+# subset files
 manta_file <- file.path(subset_dir, "embryonal_manta_sv.tsv")
 polya_file <- file.path(subset_dir, "embryonal_zscored_exp.polya.rds")
 stranded_file <- file.path(subset_dir, "embryonal_zscored_exp.stranded.rds")
