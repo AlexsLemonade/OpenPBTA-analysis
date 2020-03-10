@@ -31,17 +31,16 @@ set.seed(2020)
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
-
-# Import standard color palette for project
-source(file.path("..", "..", "scripts", "color_palettes.R"))
 ```
 
 ### Directories and Files
 
 ```{r}
 # Path to data directory
-data_dir <- file.path("..", "..", "data")
-scratch_dir <- file.path("..", "..", "scratch")
+base_dir <- file.path("..", "..")
+data_dir <- file.path(base_dir, "data")
+scratch_dir <- file.path(base_dir, "scratch")
+figures_dir <- file.path(base_dir, "figures")
 
 # Path to output directory
 plots_dir <- "plots"
@@ -50,6 +49,13 @@ plots_dir <- "plots"
 if (!dir.exists(plots_dir)) {
   dir.create(plots_dir, recursive = TRUE)
 }
+```
+
+Import color palettes. 
+
+```{r}
+# Import standard color palette for project
+read_rds(file.path(figures_dir, "palettes", "hex_color_palettes.rds"))
 ```
 
 Here's all the input files we will need: 
