@@ -11,6 +11,9 @@ python3 scripts/get-tcga-capture_kit.py
 # download all BED from tcga-capture_kit-info.tsv and add chr prefix
 bash scripts/prepare-tcga-capture_kit.sh
 
+# Convert BED from hg19 to Gh38
+bash scripts/CrossMap.sh
+
 ## get somatic mutation counts for intersection regions
 bash scripts/intersect-bed-maf.sh
 
