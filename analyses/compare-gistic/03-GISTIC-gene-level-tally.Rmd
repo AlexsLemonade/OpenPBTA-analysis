@@ -1,16 +1,21 @@
 ---
-title: "GISTIC copy number calls comparison at the gene level"
+title: "Tally copy number calls at the gene-level"
 output: 
   html_notebook:
     toc: TRUE
     toc_float: TRUE
 author: Chante Bethell for ALSF CCDL
 date: 2020
+params:
+  is_ci: 0
 ---
 
-This notebook will use the files prepared in `02-GISTIC-tidy-data-prep.Rmd` and stored in this module's `results` directory to compare the copy number calls made by GISTIC to the copy number calls we have prepared in the `analyses/focal-cn-file-preparation` module.
+This notebook will tally the number of samples with a `loss`, `gain`, or `neutral` status for an individual gene in two sets of files:
 
-The purpose of this notebook is to compare GISTIC's copy number calls to our copy number calls at a gene level. 
+* Files prepared in `02-GISTIC-tidy-data-prep.Rmd` and stored in this module's `results` directory (referred to as "gistic" throughout)
+* Files from `analyses/focal-cn-file-preparation/results` (referred to as "exon" throughout)
+
+Note that we will prepare only files derived from the consensus SEG file.
 
 ## Usage
 
@@ -25,6 +30,16 @@ Rscript -e "rmarkdown::render('analyses/compare-gistic/03-GISTIC-gene-level-cn-s
 
 ```{r}
 library(tidyverse)
+```
+
+If this is running in CI, skip the LGAT steps because there will not be enough samples.
+
+```{r}
+if (params$is_ci == 0) {
+  run_lgat <- TRUE
+} else {
+  run_lgat <- FALSE
+}
 ```
 
 ### Functions
@@ -130,6 +145,8 @@ get_gene_tally <- function(gene_status_df,
 }
 ```
 
+<!-- TODO: remove
+
 For creating a heatmap that shows the proportion of samples with a copy number status for an individual gene
 
 ```{r}
@@ -205,7 +222,7 @@ plot_detection_peak <- function(exon_tally_df,
                      rel_heights = c(0.1, 1))
 }
 ```
-
+-->
 
 ### Files and Directories
 
@@ -213,11 +230,13 @@ plot_detection_peak <- function(exon_tally_df,
 # Path to results directory -- this is the input and output directory for this
 # notebook
 results_dir <- "results"
+
 # Plots
-plots_dir <- "plots"
-if (!dir.exists(plots_dir)) {
-  dir.create(plots_dir)
-}
+# plots_dir <- "plots"
+# if (!dir.exists(plots_dir)) {
+#  dir.create(plots_dir)
+# }
+
 # Path to our focal CN files directory
 focal_dir <- file.path("..", "focal-cn-file-preparation", "results")
 # Path to GISTIC results
@@ -263,6 +282,8 @@ lgat_gistic_file <- file.path(results_dir,
                               "lgat_gene_level_gistic_cn_counts.tsv")
 ```
 
+<!--
+
 Plots
 
 ```{r}
@@ -270,6 +291,7 @@ cohort_hm_file <- file.path(plots_dir, "cohort_detection_peak_heatmaps.png")
 lgat_hm_file <- file.path(plots_dir, "lgat_detection_peak_heatmaps.png")
 ```
 
+--> 
 
 ## Read in files
 
@@ -317,17 +339,22 @@ cohort_exon_tally <- get_gene_tally(gene_status_df = consensus_focal_cn_calls,
 ### LGAT only
 
 ```{r}
-lgat_gistic_tally <- get_gene_tally(gene_status_df = lgat_gene_level_calls,
+# only run when params$is_ci == 0, the default
+if (run_lgat) {
+  lgat_gistic_tally <- get_gene_tally(gene_status_df = lgat_gene_level_calls,
                                       gene_mapping_df = lgat_gene_mapping,
                                       method = "gistic") %>%
-  write_tsv(lgat_gistic_file)
-lgat_exon_tally <- get_gene_tally(gene_status_df = consensus_focal_cn_calls,
-                                  gene_mapping_df = lgat_gene_mapping,
-                                  method = "exon",
-                                  biospecimens_included = lgat_ids_in_consensus,
-                                  genes_included = lgat_gistic_tally$gene) %>%
-  write_tsv(lgat_exon_file)
+    write_tsv(lgat_gistic_file)
+  lgat_exon_tally <- get_gene_tally(gene_status_df = consensus_focal_cn_calls,
+                                    gene_mapping_df = lgat_gene_mapping,
+                                    method = "exon",
+                                    biospecimens_included = lgat_ids_in_consensus,
+                                    genes_included = lgat_gistic_tally$gene) %>%
+    write_tsv(lgat_exon_file)
+}
 ```
+
+<!--
 
 ## Heatmap
 
@@ -355,6 +382,7 @@ lgat_hm_panels <- cowplot::plot_grid(plotlist = lgat_heatmaps,
 ggsave(lgat_hm_file, plot = lgat_hm_panels, width = 8.5, height = 14)
 ```
 
+-->
 
 ## Session Info
 

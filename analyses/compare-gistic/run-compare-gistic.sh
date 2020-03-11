@@ -7,6 +7,8 @@
 set -e
 set -o pipefail
 
+IS_CI=${OPENPBTA_TESTING:-0}
+
 # This script should always run as if it were being called from
 # the directory it lives in.
 script_directory="$(perl -e 'use File::Basename;
@@ -16,4 +18,4 @@ cd "$script_directory" || exit
 
 Rscript -e "rmarkdown::render('01-GISTIC-cohort-vs-histology-comparison.Rmd', clean = TRUE)"
 Rscript -e "rmarkdown::render('02-GISTIC-tidy-data-prep.Rmd', clean = TRUE)"
-Rscript -e "rmarkdown::render('03-GISTIC-gene-level-cn-status-comparison.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('03-GISTIC-gene-level-cn-status-comparison.Rmd', clean = TRUE, params = list(is_ci = ${IS_CI})"
