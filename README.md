@@ -4,7 +4,7 @@ Pediatric brain tumors are the most common solid tumors and the leading cause of
 Our ability to understand and successfully treat these diseases is hindered by small sample sizes due to the overall rarity of unique molecular subtypes and tainted grouped analyses resulting from misclassification. 
 In September of 2018, the [Children's Brain Tumor Tissue Consortium](https://cbttc.org/) released the [Pediatric Brain Tumor Atlas (PBTA)](https://cbttc.org/pediatric-brain-tumor-atlas/), a genomic dataset (whole genome sequencing, whole exome sequencing, RNA sequencing, proteomic, and clinical data) for nearly 1,000 tumors, available from the [Gabriella Miller Kids First Portal](https://kidsfirstdrc.org/). 
 
-The Open Pediatric Brain Tumor Atlas (OpenPBTA) Project is a global open science initiative to comprehensively define the molecular landscape of tumors of 944 patients from the CBTTC and the PNOC003 DIPG clinical trial from the [Pediatric Pacific Neuro-oncology Consortium](http://www.pnoc.us/) through real-time, collaborative analyses and [collaborative manuscript writing](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) on GitHub. 
+The Open Pediatric Brain Tumor Atlas (OpenPBTA) Project is a global open science initiative to comprehensively define the molecular landscape of tumors of 943 patients from the CBTTC and the PNOC003 DIPG clinical trial from the [Pediatric Pacific Neuro-oncology Consortium](http://www.pnoc.us/) through real-time, collaborative analyses and [collaborative manuscript writing](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) on GitHub. 
 
 The OpenPBTA operates on a pull request model to accept contributions from community participants.
 The maintainers have set up continuous integration software to confirm the reproducibility of analyses within the project’s Docker container.
@@ -67,7 +67,7 @@ Below is a summary of biospecimens by sequencing strategy:
 | Experimental Strategy | Normal | Tumor |
 |-----------------------|--------|-------|
 | Targeted DNA Panel | 1 | 1 |
-| RNA-Seq | 0 | 1072 |
+| RNA-Seq | 0 | 1028 |
 | WGS | 801 | 940 |
 | WXS | 31 | 31 |
 
@@ -75,18 +75,17 @@ Below is a summary of biospecimens by sequencing strategy:
 All sequencing was performed on nucleic acids extracted from fresh-frozen tissues using paired-end strategies.
 The [manuscript methods section](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#data-generation) has additional details.
 
-Below is a detailed table of [broad histologies](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#who-classification-of-disease-types) for the 1072 RNA-Seq biospecimens:
+Below is a detailed table of [broad histologies](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#who-classification-of-disease-types) for the 1028 RNA-Seq biospecimens:
 
 
 | Broad Histology | N |
 |-----------------------------------------------|-----|
 | Benign tumor | 38 |
 | Choroid plexus tumor | 11 |
-| CNS Embryonal tumor | 5 |
 | CNS neuroblastoma | 5 |
-| Diffuse astrocytic and oligodendroglial tumor | 225 |
-| Embryonal tumor | 161 |
-| Ependymal tumor | 93 |
+| Diffuse astrocytic and oligodendroglial tumor | 188 |
+| Embryonal tumor | 180 |
+| Ependymal tumor | 91 |
 | Germ cell tumor | 13 |
 | Histiocytic tumor | 5 |
 | Low-grade astrocytic tumor | 256 |
@@ -94,12 +93,11 @@ Below is a detailed table of [broad histologies](https://github.com/AlexsLemonad
 | Meningioma | 29 |
 | Mesenchymal non-meningothelial tumor | 21 |
 | Metastatic secondary tumors | 7 |
-| Neuronal and mixed neuronal-glial tumor | 80 |
-| NOS Embryonal tumor | 17 |
+| Neuronal and mixed neuronal-glial tumor | 79 |
 | Other tumor | 6 |
 | Pre-cancerous lesion | 14 |
 | Tumor of cranial and paraspinal nerves | 44 |
-| Tumor of pineal region | 5 |
+| Tumor of pineal region | 4 |
 | Tumors of sellar region | 36 |
 
 
@@ -108,8 +106,8 @@ Below is a table of number of tumor biospecimens by phase of therapy (DNA and RN
 
 | Phase of Therapy | N |
 |---------------------------------|------|
-| Diagnosis/Initial CNS Tumor | 1507 |
-| Progressive | 291 |
+| Initial CNS Tumor | 1465 |
+| Progressive | 289 |
 | Progressive Disease Post-Mortem | 11 |
 | Recurrence | 128 |
 | Second Malignancy | 35 |
