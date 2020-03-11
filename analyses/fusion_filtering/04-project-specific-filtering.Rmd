@@ -90,7 +90,7 @@ group<-params$group
 
 # get histology file
 clinical<-read.delim(file.path(root_dir, params$histology), stringsAsFactors = FALSE)
-clinical<-clinical[,c("Kids_First_Biospecimen_ID","Kids_First_Participant_ID","broad_histology")]
+clinical<-clinical[,c("Kids_First_Biospecimen_ID","Kids_First_Participant_ID",group)]
 
 # Least number of callers
 numCaller<-params$numCaller
@@ -138,7 +138,7 @@ putative_driver_annotated_fusions <- fusion_calls %>%
   unique()
 
 # filter fusions found in more than 4 histologies
-FusionInNhist<-putative_driver_annotated_fusions %>% dplyr::select(FusionName,broad_histology) %>% unique() %>% group_by(FusionName) %>% summarise(count=n())
+FusionInNhist<-putative_driver_annotated_fusions %>% dplyr::select(FusionName,group) %>% unique() %>% group_by(FusionName) %>% summarise(count=n())
 FusionInNhist<-FusionInNhist[FusionInNhist$count>countHistology,]
 FusionInNhist<-FusionInNhist[order(FusionInNhist$count,decreasing = TRUE),]
 FusionInNhist
@@ -174,7 +174,7 @@ fusion_calls.summary <- fusion_calls %>%
 # 2. Found in at least n samples in each group
 sample.count <- fusion_calls %>%
   dplyr::filter(Fusion_Type != "other") %>%
-  dplyr::select(FusionName, Sample, !!as.name(group),-Fusion_Type) %>%
+  dplyr::select(FusionName, Sample, group,-Fusion_Type) %>%
   unique() %>%
   group_by(FusionName, !!as.name(group)) %>%
   dplyr::mutate(sample.count = n(),Sample = toString(Sample)) %>%
@@ -203,7 +203,7 @@ QCGeneFiltered_recFusion<-fusion_calls %>%
 ```{r}
 # remove fusions that are in > numGroup
 group.count <- fusion_calls %>%
-  dplyr::select(FusionName, !!as.name(group)) %>%
+  dplyr::select(FusionName, group) %>%
   unique() %>%
   group_by(FusionName) %>%
   dplyr::mutate(group.ct = n(),Sample = toString(!!(as.name(group)))) %>%
@@ -259,7 +259,7 @@ QCGeneFiltered_recFusionUniq<-QCGeneFiltered_recFusion %>%
   
 # merge putative annotated oncogenic and scavenged back non-oncogenic annotated, recurrent fusions
 putative_driver_fusions<-rbind(QCGeneFiltered_recFusionUniq,putative_driver_annotated_fusions) %>%
-  unique() %>% dplyr::select (-broad_histology) %>%
+  unique() %>% dplyr::select (-group) %>%
   as.data.frame()
 
 write.table(putative_driver_fusions,file.path(outputfolder,"pbta-fusion-putative-oncogenic.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
