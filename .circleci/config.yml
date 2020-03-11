@@ -211,7 +211,11 @@ jobs:
       - run:
           name: GISTIC proof of concept
           command: OPENPBTA_CI=1 ./scripts/run_in_ci.sh bash analyses/run-gistic/run-gistic-module.sh
-          
+
+      - run:
+          name: TCGA Capture Kit Investigation
+          command: ./scripts/run_in_ci.sh bash analyses/tcga-capture-kit-investigation/run-investigation.sh
+
   deploy:
     machine: 
       docker_layer_caching: true
