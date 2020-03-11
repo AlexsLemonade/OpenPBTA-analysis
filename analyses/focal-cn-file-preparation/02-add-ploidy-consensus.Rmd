@@ -146,3 +146,31 @@ add_status_df %>%
 output_file <- file.path("..", "..", "scratch", "consensus_seg_with_status.tsv")
 write_tsv(add_status_df, output_file)
 ```
+
+### Prepare separate bed files for losses/gains for bedtools coverage function
+
+```{r}
+bed_status_df <- add_status_df %>%
+  select(chrom, loc.start, loc.end, everything())
+
+losses_bed_status_df <- add_status_df %>%
+  select(chrom, loc.start, loc.end, everything()) %>%
+  filter(status == "loss")
+
+gains_bed_status_df <- add_status_df %>%
+  select(chrom, loc.start, loc.end, everything()) %>%
+  filter(status == "gain")
+```
+
+### Write to file
+
+```{r}
+bed_output_file <- file.path("..", "..", "scratch", "consensus_seg_with_status.bed")
+loss_bed_output_file <- file.path("..", "..", "scratch", "consensus_seg_with_status_losses.bed")
+gain_bed_output_file <- file.path("..", "..", "scratch", "consensus_seg_with_status_gains.bed")
+
+write_tsv(bed_status_df, bed_output_file)
+write_tsv(losses_bed_status_df, loss_bed_output_file)
+write_tsv(gains_bed_status_df, gain_bed_output_file)
+```
+

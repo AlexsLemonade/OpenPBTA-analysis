@@ -11,7 +11,7 @@
 # This script is intended to be run via the command line.
 # This example assumes it is being run from the root of the repository.
 #
-# Rscript --vanilla analyses/oncoprint-landscape/03-prepare-cn-file.R \
+# Rscript --vanilla analyses/focal-cn-file-preparation/03-prepare-cn-file.R \
 #   --cnv_file data/pbta-cnv-controlfreec.tsv.gz \
 #   --gtf_file data/gencode.v27.primary_assembly.annotation.gtf.gz \
 #   --metadata data/pbta-histologies.tsv \
