@@ -49,7 +49,7 @@ For tallying up copy number status
 ```{r}
 get_gene_tally <- function(gene_status_df,
                            gene_mapping_df,
-                           method = "gistic",
+                           method,
                            biospecimens_included = NULL,
                            genes_included = NULL) {
   # This function takes two data.frames: 1) either an annotated seg file 
@@ -65,10 +65,10 @@ get_gene_tally <- function(gene_status_df,
   #   gene_mapping_df: the peak assignment output of prepare_gene_level_gistic 
   #   method: "gistic" or "exon", see above
   #   biospecimens_included: a vector of biospecimen identifiers to be used
-  #                          to filter gene_status_df; intended to be used when
+  #                          to filter gene_status_df; only used when
   #                          method = "exon"
   #   genes_included: a vector of gene symbols to be used to filter 
-  #                   gene_status_df; intended to be used when method = "exon"
+  #                   gene_status_df; only used when method = "exon"
   # 
   # Returns:
   #   gene_tally_df: a data.frame with the following columns
@@ -79,25 +79,34 @@ get_gene_tally <- function(gene_status_df,
   #                  5. detection_peak: all peaks a gene symbol mapped to 
   #                                     via GISTIC, comma-separated
   
-  # TODO: error-handling throughout this function could probably be a bit more
-  # robust
-  if ((method == "exon") & any(c(is.null(biospecimens_included), 
-                                 is.null(genes_included)))) {
-    stop("The 'exon' method is intended to be used with the 
-         biospecimens_included and genes_included arguments")
+  # Handles the case where someone writes GISTIC
+  method <- tolower(method)
+  # Handles unsupported methods
+  if (!(method %in% c("gistic", "exon"))) {
+    stop("method must be 'gistic' or 'exon'")
   }
   
-  # If a vector of biospecimen IDs is provided, filter only to those biospecimen
-  # ids
-  if (!is.null(biospecimens_included)) {
-    gene_status_df <- gene_status_df %>%
-      filter(Kids_First_Biospecimen_ID %in% biospecimens_included)
+  # Check if filtering arguments are used or not
+  null_filtering_args <- c(is.null(biospecimens_included),
+                           is.null(genes_included))
+  
+  # If we're using the exon method, we need the biospecimens_included and
+  # genes_included arguments
+  if ((method == "exon") & any(null_filtering_args)) {
+    stop("The 'exon' method is intended to be used with the biospecimens_included and genes_included arguments")
   }
   
-  # If a vector of genes is provided, filter only to those genes
-  if (!is.null(genes_included)) {
-    gene_status_df <- gene_status_df %>%
-      filter(gene %in% genes_included)
+  # If the method is gistic and one of biospecimens_included or genes_included
+  # was used, warn the user
+  if ((method == "gistic") & !all(null_filtering_args)) {
+    warning("biospecimen_included and genes_included arguments are only used when method = 'exon', they will be ignored")
+  }
+  
+  # Filtering by biospecimen and gene are only necessary when method = "exon"
+  if (method == "exon") {
+     gene_status_df <- gene_status_df %>%
+        filter(Kids_First_Biospecimen_ID %in% biospecimens_included,
+                gene %in% genes_included)
   }
   
   gene_tally_df <- gene_status_df %>%
@@ -145,7 +154,10 @@ get_gene_tally <- function(gene_status_df,
 }
 ```
 
-<!-- TODO: remove
+<!-- TODO: one way to compare the different outcomes is to use a visualization
+that demonstrates what proportion of samples have a particular status for an 
+individual gene (a heatmap) and because of the large number of genes we can
+make panels on a per detection peak basis.
 
 For creating a heatmap that shows the proportion of samples with a copy number status for an individual gene
 
@@ -231,6 +243,7 @@ plot_detection_peak <- function(exon_tally_df,
 # notebook
 results_dir <- "results"
 
+# Comment out because heatmap functionality is commented out
 # Plots
 # plots_dir <- "plots"
 # if (!dir.exists(plots_dir)) {
@@ -305,7 +318,8 @@ lgat_ids_in_consensus <- read_tsv(lgat_seg_counts) %>%
 # columns
 consensus_focal_cn_calls <- read_tsv(annotated_cn_file) %>%
   rename(gene = gene_symbol,
-         Kids_First_Biospecimen_ID = biospecimen_id)
+         Kids_First_Biospecimen_ID = biospecimen_id) %>%
+  mutate(status = dplyr::recode(status, amplification = "gain"))
 ```
 
 ## Count copy number alterations
@@ -343,7 +357,7 @@ if (run_lgat) {
 }
 ```
 
-<!--
+<!--This is using the heatmap code that is commented out above.
 
 ## Heatmap
 
@@ -378,5 +392,4 @@ ggsave(lgat_hm_file, plot = lgat_hm_panels, width = 8.5, height = 14)
 ```{r}
 sessionInfo()
 ```
-
 
