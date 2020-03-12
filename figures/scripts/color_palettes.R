@@ -50,9 +50,6 @@ histology_col_by_sample <- metadata %>%
                                              !!!histology_color_key)) %>% 
   readr::write_tsv(file.path(output_dir, "histology_color_by_sample.tsv"))
 
-# Drop "none" category from histology color key
-histology_color_key <- histology_color_key[histology_color_key != "none"]
-
 # Example Usage: 
 # histologies_w_color_key <-
 #  data.frame(Kids_First_Biospecimen_ID = common_samples) %>%
@@ -67,7 +64,11 @@ gradient_col_palette <- c("#f7fcf5",
                           "#41ab5d",
                           "#238b45",
                           "#006d2c",
-                          "#00441b")
+                          "#00441b", 
+                          na_color)  
+  # Format as data.frame
+  data.frame(hex_codes = gradient_col_palette) %>%
+  readr::write_tsv(file.path(output_dir, "gradient_color_palette.tsv"))
 
 ## Example usage for variable: 
 # gradient_col_val <- seq(from = min(variable), to = max(variable), 
@@ -87,7 +88,12 @@ divergent_col_palette <- c("#67001f",
                            "#92c5de",
                            "#4393c3",
                            "#2166ac",
-                           "#053061")
+                           "#053061", 
+                           na_color)
+  # Format as data.frame
+  data.frame(hex_codes = divergent_col_palette) %>%
+  readr::write_tsv(file.path(output_dir, "divergent_color_palette.tsv"))
+  
 ## Example usage: 
 # divergent_col_val <- c(seq(from = min(divergent_variable), 
 #                           to = 0,
@@ -102,15 +108,12 @@ divergent_col_palette <- c("#67001f",
 
 ### 5) A binary color key which are the most extreme colors in the divergent color scale. 
 binary_col_palette <- c("#b2182b", 
-                        "#2166ac")
+                        "#2166ac", 
+                         na_color) 
 
-######################## Write these to an RDS file ############################
-readr::write_rds(list(na_color = na_color,
-                      histology_color_key = histology_color_key,
-                      gradient_col_palette = gradient_col_palette, 
-                      divergent_col_palette = divergent_col_palette, 
-                      binary_col_palette = binary_col_palette),
-                 file.path(output_dir, "hex_color_palettes.rds"))
+  # Format as data.frame
+  data.frame(hex_codes = binary_col_palette) %>%
+  readr::write_tsv(file.path(output_dir, "binary_color_palette.tsv"))
 
 #### Quick little function for writing HEX table in README so I can copy and paste it
 #color_format <- function(color, color_names) {
