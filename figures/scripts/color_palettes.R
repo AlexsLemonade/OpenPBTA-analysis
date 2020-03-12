@@ -85,8 +85,8 @@ gradient_col_names <- c("gradient_0",
                         "gradient_9", 
                         "na_color") 
 # Format as data.frame
-gradient_df <- data.frame(hex_codes = gradient_col_palette, 
-                          color_names = gradient_col_names) %>%
+gradient_df <- data.frame(color_names = gradient_col_names, 
+                          hex_codes = gradient_col_palette) %>%
   readr::write_tsv(file.path(output_dir, "gradient_color_palette.tsv"))
 
 ## Example usage for variable: 
@@ -124,8 +124,8 @@ divergent_color_names <- c("divergent_low_5",
                            "na_color") 
 
 # Format as data.frame
-divergent_df <- data.frame(hex_codes = divergent_col_palette, 
-                           color_names = divergent_color_names) %>%
+divergent_df <- data.frame(color_names = divergent_color_names, 
+                           hex_codes = divergent_col_palette) %>%
   readr::write_tsv(file.path(output_dir, "divergent_color_palette.tsv"))
   
 ## Example usage: 
@@ -150,18 +150,15 @@ binary_color_names <- c("binary_1",
                         "na_color") 
 
 # Format as data.frame
-binary_df <- data.frame(hex_codes = binary_col_palette, 
-             color_names = binary_color_names) %>%
+binary_df <- data.frame(color_names = binary_color_names, 
+                        hex_codes = binary_col_palette) %>%
   readr::write_tsv(file.path(output_dir, "binary_color_palette.tsv"))
 
 #### Quick little function for writing HEX table in README so I can copy and paste it
-color_format <- function(color_df) {
+#color_format <- function(color_df) {
 #  #Description: Provide color data.frame, this outputs the text to render swatches 
 #  #in a GitHub markdown table. 
-  
-  colors <- gsub("#", "", color_df$hex_codes)
-  paste0("<br>", color_df$color_names, 
-         ":![", colors, "](https://placehold.it/150x40/", colors, "/FFFFFF?text=", colors, ")")
-}
-
-cat(color_format(divergent_df))
+#  colors <- gsub("#", "", color_df$hex_codes)
+#  paste0("<br>", color_df$color_names, 
+#         ":![", colors, "](https://placehold.it/150x40/", colors, "/FFFFFF?text=", colors, ")")
+#}
