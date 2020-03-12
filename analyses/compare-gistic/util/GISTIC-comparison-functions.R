@@ -217,7 +217,7 @@ prepare_gene_level_gistic <- function(all_lesions_file,
   #   all_lesions_file: file path to GISTIC's `all_lesion.conf_90.txt` file
   #   amp_genes_file: file path to GISTIC's `amp_genes.conf_90.txt` file
   #   del_genes_file: file path to GISTIC's `del_genes.conf_90.txt` file
-  #   gene_mapping_filepath: TSV file path for the first data.frame that
+  #   gene_mapping_filepath: file path for output TSV which has these columns: 
   #                          contains
   #                          1. gene
   #                          2. detection peak name
