@@ -2,7 +2,7 @@
 # C. Savonen for ALSF - CCDL 
 #
 # Usage: 
-#  Anywhere a plot is being made, source this file and use the color palette for 
+#  Anywhere a plot is being made, source these TSV file and use the color palette for 
 #  each appropriate data type. 
 #
 # Magrittr pipe
@@ -50,6 +50,10 @@ histology_col_by_sample <- metadata %>%
                                              !!!histology_color_key)) %>% 
   readr::write_tsv(file.path(output_dir, "histology_color_by_sample.tsv"))
 
+# Make a version with the color coding by group
+data.frame(histology_color_key) %>% 
+  readr::write_tsv(file.path(output_dir, "histology_color_by_group.tsv"))
+
 # Example Usage: 
 # histologies_w_color_key <-
 #  data.frame(Kids_First_Biospecimen_ID = common_samples) %>%
@@ -66,8 +70,20 @@ gradient_col_palette <- c("#f7fcf5",
                           "#006d2c",
                           "#00441b", 
                           na_color)  
+
+gradient_col_names <- c("gradient_1",
+                        "gradient_2",
+                        "gradient_3",
+                        "gradient_4",
+                        "gradient_5",
+                        "gradient_6",
+                        "gradient_7",
+                        "gradient_8",
+                        "gradient_9", 
+                        "na_color") 
   # Format as data.frame
-  data.frame(hex_codes = gradient_col_palette) %>%
+  data.frame(hex_codes = gradient_col_palette, 
+             color_names = gradient_col_names) %>%
   readr::write_tsv(file.path(output_dir, "gradient_color_palette.tsv"))
 
 ## Example usage for variable: 
@@ -90,8 +106,21 @@ divergent_col_palette <- c("#67001f",
                            "#2166ac",
                            "#053061", 
                            na_color)
+
+divergent_color_names <- c("divergent_low_1",
+                           "divergent_low_2",
+                           "divergent_low_3",
+                           "divergent_low_4",
+                           "divergent_neutral",
+                           "divergent_high_1",
+                           "divergent_high_2",
+                           "divergent_high_3",
+                           "divergent_high_4", 
+                           "na_color") 
+
   # Format as data.frame
-  data.frame(hex_codes = divergent_col_palette) %>%
+  data.frame(hex_codes = divergent_col_palette, 
+             color_names = divergent_color_names) %>%
   readr::write_tsv(file.path(output_dir, "divergent_color_palette.tsv"))
   
 ## Example usage: 
@@ -111,8 +140,13 @@ binary_col_palette <- c("#b2182b",
                         "#2166ac", 
                          na_color) 
 
+binary_color_names <- c("binary_1", 
+                        "binary_2", 
+                        "na_color") 
+
   # Format as data.frame
-  data.frame(hex_codes = binary_col_palette) %>%
+  data.frame(hex_codes = binary_col_palette, 
+             color_names = binary_color_names) %>%
   readr::write_tsv(file.path(output_dir, "binary_color_palette.tsv"))
 
 #### Quick little function for writing HEX table in README so I can copy and paste it
