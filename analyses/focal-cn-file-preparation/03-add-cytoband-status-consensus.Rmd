@@ -1,0 +1,121 @@
+---
+title: "Add dominant status column to consensus SEG file with cytoband field"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell for ALSF CCDL
+date: 2020
+---
+
+This notebook adds dominant status information per cytoband to the consensus SEG files prepared in `run-prepare-cn.sh` using the `bedtools coverage` function (these files are stored in the project's scratch directory as bed files).
+
+## Usage
+
+This notebook is intended to be run from the command line with the following (assumes you are in the root directory of the repository):
+
+```
+Rscript -e "rmarkdown::render('analyses/focal-cn-file-preparation/03-.Rmd', clean = TRUE)"
+```
+
+## Set up
+
+### Libraries and functions
+
+```{r}
+library(tidyverse)
+```
+
+### Files and directories
+
+```{r}
+scratch_dir <- file.path("..", "..", "scratch")
+```
+
+### Read in files 
+
+The files we are reading in here are the bed files prepared in the shell script using `bedtools coverage`.
+
+```{r message = FALSE}
+all_callable_cytoband_status_df <-
+  read_tsv(file.path(scratch_dir, "intersect_with_cytoband_callable.bed"),
+                  col_names = FALSE)
+
+losses_cytoband_status_df <-
+  read_tsv(file.path(scratch_dir, "intersect_with_cytoband_losses.bed"),
+                  col_names = FALSE)
+
+gains_cytoband_status_df <-
+  read_tsv(file.path(scratch_dir, "intersect_with_cytoband_gains.bed"),
+                  col_names = FALSE)
+```
+
+## Wrangle and Merge Data
+
+### Filter each of the cytoband status data.frames
+
+```{r}
+all_callable_cytoband_status_df <- all_callable_cytoband_status_df %>%
+  select(chr = X1, cytoband = X4, coverage_ratio_callable = X9) %>%
+  filter(!is.na(cytoband))
+
+gains_cytoband_status_df <- gains_cytoband_status_df %>%
+  select(chr = X1, cytoband = X4, coverage_ratio_gains = X9) %>%
+  filter(!is.na(cytoband))
+
+losses_cytoband_status_df <- losses_cytoband_status_df %>%
+  select(chr = X1, cytoband = X4, coverage_ratio_losses = X9) %>%
+  filter(!is.na(cytoband))
+```
+
+### Join all data.frames together
+
+```{r}
+final_df <- all_callable_cytoband_status_df %>%
+  left_join(gains_cytoband_status_df, by = c("chr", "cytoband")) %>%
+  left_join(losses_cytoband_status_df, by = c("chr", "cytoband"))
+```
+
+### Add `dominant_status` field to final data.frame
+
+```{r}
+final_df <- final_df %>%
+  mutate(dominant_status = case_when((coverage_ratio_gains > coverage_ratio_losses) ~ "gain",
+                                     (coverage_ratio_losses > coverage_ratio_gains) ~ "loss",
+                                     coverage_ratio_callable == 0 ~ "uncallable",
+                                     TRUE ~ "neutral"
+  ))
+
+# Display final table
+final_df %>%
+  select(chr, cytoband, dominant_status, everything())
+```
+
+### Read in and join original UCSC cytoband data
+
+This step is to define any additional uncallable cytoband regions.
+
+```{r message = FALSE}
+ucsc_cytoband_df <- data.table::fread("http://hgdownload.cse.ucsc.edu/goldenpath/hg38/database/cytoBand.txt.gz", data.table = FALSE)
+
+ucsc_cytoband_df <- ucsc_cytoband_df %>%
+  select(chr = V1, cytoband = V4)
+
+# Join the cytoband data from the original UCSC cytoband file with the data
+# bedtools coverage files wrangled in the steps above
+final_df <- final_df %>%
+  right_join(ucsc_cytoband_df, by = c("chr", "cytoband"))
+
+final_df$dominant_status <- replace_na(final_df$dominant_status, "uncallable")
+
+# Display final table with `uncallable` value added to `dominant_status` column
+final_df %>%
+  select(chr, cytoband, dominant_status, everything())
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
