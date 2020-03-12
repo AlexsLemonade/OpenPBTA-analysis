@@ -149,7 +149,7 @@ get_gene_tally <- function(gene_status_df,
 
 For creating a heatmap that shows the proportion of samples with a copy number status for an individual gene
 
-```{r}
+```{r eval=FALSE}
 create_heatmap <- function(gene_tally_df,
                            detection_peak_filter,
                            plot_title = "EXON OVERLAPS",
@@ -282,17 +282,6 @@ lgat_gistic_file <- file.path(results_dir,
                               "lgat_gene_level_gistic_cn_counts.tsv")
 ```
 
-<!--
-
-Plots
-
-```{r}
-cohort_hm_file <- file.path(plots_dir, "cohort_detection_peak_heatmaps.png")
-lgat_hm_file <- file.path(plots_dir, "lgat_detection_peak_heatmaps.png")
-```
-
---> 
-
 ## Read in files
 
 ```{r}
@@ -360,7 +349,7 @@ if (run_lgat) {
 
 First, only retain genes that are in the exon files.
 
-```{r}
+```{r eval=FALSE}
 cohort_gistic_tally <- cohort_gistic_tally %>%
   filter(gene %in% cohort_exon_tally$gene)
 lgat_gistic_tally <- lgat_gistic_tally %>%
@@ -369,7 +358,7 @@ lgat_gistic_tally <- lgat_gistic_tally %>%
 
 ### LGAT only
 
-```{r message=FALSE}
+```{r eval=FALSE}
 lgat_heatmaps <- 
   purrr::map(unique(lgat_exon_tally$detection_peak),
              ~ plot_detection_peak(exon_tally_df = lgat_exon_tally,

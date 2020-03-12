@@ -18,4 +18,4 @@ cd "$script_directory" || exit
 
 Rscript -e "rmarkdown::render('01-GISTIC-cohort-vs-histology-comparison.Rmd', clean = TRUE)"
 Rscript -e "rmarkdown::render('02-GISTIC-tidy-data-prep.Rmd', clean = TRUE)"
-Rscript -e "rmarkdown::render('03-GISTIC-gene-level-cn-status-comparison.Rmd', clean = TRUE, params = list(is_ci = ${IS_CI}))"
+Rscript -e "rmarkdown::render('03-GISTIC-gene-level-tally.Rmd', clean = TRUE, params = list(is_ci = ${IS_CI}))"
