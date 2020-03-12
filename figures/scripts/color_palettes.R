@@ -24,6 +24,7 @@ metadata <- readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"))
   dplyr::mutate(short_histology = as.character(tidyr::replace_na(short_histology, "none"))) %>% 
   dplyr::arrange(short_histology)
 
+sort(summary(as.factor(metadata$short_histology)), decreasing = TRUE)
 # Get unique histology categories
 histologies <- unique(metadata$short_histology)
 
@@ -44,14 +45,14 @@ names(histology_color_key) <- histologies
 histology_color_key[names(histology_color_key) == "none"] <- na_color
 
 # Add a column that has the color for each sample
-histology_col_by_sample <- metadata %>% 
+histology_sample_df <- metadata %>% 
   dplyr::select(Kids_First_Biospecimen_ID, short_histology) %>%
   dplyr::mutate(sample_color = dplyr::recode(short_histology, 
                                              !!!histology_color_key)) %>% 
   readr::write_tsv(file.path(output_dir, "histology_color_by_sample.tsv"))
 
 # Make a version with the color coding by group
-data.frame(histology_color_key) %>% 
+histology_group_df <- data.frame(histology_color_key) %>% 
   readr::write_tsv(file.path(output_dir, "histology_color_by_group.tsv"))
 
 # Example Usage: 
@@ -60,7 +61,8 @@ data.frame(histology_color_key) %>%
 #  dplyr::inner_join(histology_col_by_sample)
 #
 ### 3) A gradient color scale for numeric data.
-gradient_col_palette <- c("#f7fcf5",
+gradient_col_palette <- c("#f7f7f7",
+                          "#f7fcf5",
                           "#e5f5e0",
                           "#c7e9c0",
                           "#a1d99b",
@@ -71,7 +73,8 @@ gradient_col_palette <- c("#f7fcf5",
                           "#00441b", 
                           na_color)  
 
-gradient_col_names <- c("gradient_1",
+gradient_col_names <- c("gradient_0", 
+                        "gradient_1",
                         "gradient_2",
                         "gradient_3",
                         "gradient_4",
@@ -81,9 +84,9 @@ gradient_col_names <- c("gradient_1",
                         "gradient_8",
                         "gradient_9", 
                         "na_color") 
-  # Format as data.frame
-  data.frame(hex_codes = gradient_col_palette, 
-             color_names = gradient_col_names) %>%
+# Format as data.frame
+gradient_df <- data.frame(hex_codes = gradient_col_palette, 
+                          color_names = gradient_col_names) %>%
   readr::write_tsv(file.path(output_dir, "gradient_color_palette.tsv"))
 
 ## Example usage for variable: 
@@ -107,20 +110,22 @@ divergent_col_palette <- c("#67001f",
                            "#053061", 
                            na_color)
 
-divergent_color_names <- c("divergent_low_1",
-                           "divergent_low_2",
-                           "divergent_low_3",
+divergent_color_names <- c("divergent_low_5",
                            "divergent_low_4",
+                           "divergent_low_3",
+                           "divergent_low_2",
+                           "divergent_low_1",
                            "divergent_neutral",
                            "divergent_high_1",
                            "divergent_high_2",
                            "divergent_high_3",
-                           "divergent_high_4", 
+                           "divergent_high_4",
+                           "divergent_high_5", 
                            "na_color") 
 
-  # Format as data.frame
-  data.frame(hex_codes = divergent_col_palette, 
-             color_names = divergent_color_names) %>%
+# Format as data.frame
+divergent_df <- data.frame(hex_codes = divergent_col_palette, 
+                           color_names = divergent_color_names) %>%
   readr::write_tsv(file.path(output_dir, "divergent_color_palette.tsv"))
   
 ## Example usage: 
@@ -144,15 +149,19 @@ binary_color_names <- c("binary_1",
                         "binary_2", 
                         "na_color") 
 
-  # Format as data.frame
-  data.frame(hex_codes = binary_col_palette, 
+# Format as data.frame
+binary_df <- data.frame(hex_codes = binary_col_palette, 
              color_names = binary_color_names) %>%
   readr::write_tsv(file.path(output_dir, "binary_color_palette.tsv"))
 
 #### Quick little function for writing HEX table in README so I can copy and paste it
-#color_format <- function(color, color_names) {
-#  #Description: Provide color and color names vector, this outputs the text to render swatches 
-#  # in a GitHub markdown table. 
-#  color <- gsub("#", "", color)
-#  paste0("<br>", color_names, ":![", color, "](https://placehold.it/150x40/", color, "/FFFFFF?text=", color, ")")
-#}
+color_format <- function(color_df) {
+#  #Description: Provide color data.frame, this outputs the text to render swatches 
+#  #in a GitHub markdown table. 
+  
+  colors <- gsub("#", "", color_df$hex_codes)
+  paste0("<br>", color_df$color_names, 
+         ":![", colors, "](https://placehold.it/150x40/", colors, "/FFFFFF?text=", colors, ")")
+}
+
+cat(color_format(divergent_df))
