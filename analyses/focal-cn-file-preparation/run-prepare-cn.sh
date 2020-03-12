@@ -24,10 +24,10 @@ gtf_file=${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz
 goi_file=../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt
 independent_specimens_file=${data_dir}/independent-specimens.wgswxs.primary.tsv
 ucsc_bed_file=${results_dir}/ucsc_cytoband.bed
-consensus_bed_file=${scratch_dir}/consensus_seg_with_status.tsv
-loss_intersect_with_cytoband_file=${scratch_dir}/intersect_with_cytoband_losses.tsv
-gain_intersect_with_cytoband_file=${scratch_dir}/intersect_with_cytoband_gains.tsv
-callable_intersect_with_cytoband_file=${scratch_dir}/intersect_with_cytoband_callable.tsv
+consensus_bed_file=${scratch_dir}/consensus_seg_with_status.bed
+loss_intersect_with_cytoband_file=${scratch_dir}/intersect_with_cytoband_losses.bed
+gain_intersect_with_cytoband_file=${scratch_dir}/intersect_with_cytoband_gains.bed
+callable_intersect_with_cytoband_file=${scratch_dir}/intersect_with_cytoband_callable.bed
 
 # Prep the consensus SEG file data
 Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd', clean = TRUE)"
@@ -42,19 +42,19 @@ wget -O ${scratch_dir}/ucsc_cytoband.bed http://hgdownload.cse.ucsc.edu/goldenpa
 bedtools coverage \
     -a ${scratch_dir}/ucsc_cytoband.bed \
     -b ${scratch_dir}/consensus_seg_with_status_losses.bed \
-    -f 0.75 \
+    -sorted \
     > $loss_intersect_with_cytoband_file
 
 bedtools coverage \
     -a ${scratch_dir}/ucsc_cytoband.bed \
     -b ${scratch_dir}/consensus_seg_with_status_gains.bed \
-    -f 0.75 \
+    -sorted \
     > $gain_intersect_with_cytoband_file
 
 bedtools coverage \
     -a ${scratch_dir}/ucsc_cytoband.bed \
-    -b ${scratch_dir}/consensus_seg_with_status.bed \
-    -f 0.75 \
+    -b $consensus_bed_file \
+    -sorted \
     > $callable_intersect_with_cytoband_file
 
 # # Run annotation step for consensus file

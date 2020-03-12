@@ -151,23 +151,25 @@ write_tsv(add_status_df, output_file)
 
 ```{r}
 bed_status_df <- add_status_df %>%
-  select(chrom, loc.start, loc.end, everything())
-
-losses_bed_status_df <- add_status_df %>%
   select(chrom, loc.start, loc.end, everything()) %>%
+  arrange(chrom, loc.start, loc.end)
+
+losses_bed_status_df <- bed_status_df %>%
   filter(status == "loss")
 
-gains_bed_status_df <- add_status_df %>%
-  select(chrom, loc.start, loc.end, everything()) %>%
+gains_bed_status_df <- bed_status_df %>%
   filter(status == "gain")
 ```
 
 ### Write to file
 
 ```{r}
-bed_output_file <- file.path("..", "..", "scratch", "consensus_seg_with_status.bed")
-loss_bed_output_file <- file.path("..", "..", "scratch", "consensus_seg_with_status_losses.bed")
-gain_bed_output_file <- file.path("..", "..", "scratch", "consensus_seg_with_status_gains.bed")
+bed_output_file <-
+  file.path("..", "..", "scratch", "consensus_seg_with_status.bed")
+loss_bed_output_file <-
+  file.path("..", "..", "scratch", "consensus_seg_with_status_losses.bed")
+gain_bed_output_file <-
+  file.path("..", "..", "scratch", "consensus_seg_with_status_gains.bed")
 
 write_tsv(bed_status_df, bed_output_file)
 write_tsv(losses_bed_status_df, loss_bed_output_file)
