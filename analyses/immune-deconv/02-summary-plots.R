@@ -29,6 +29,16 @@ deconvout <- opt$input
 output <- opt$output
 load(deconvout) 
 
+# if short histology is Medulloblastoma or ATRT, use them as broad histology
+deconv.res$broad_histology <- ifelse(deconv.res$short_histology %in% c("ATRT", "Medulloblastoma"),
+                                     deconv.res$short_histology, deconv.res$broad_histology)
+
+# add molecular subtype info
+deconv.res$broad_histology <- ifelse(is.na(deconv.res$molecular_subtype), 
+                                     deconv.res$broad_histology, 
+                                     paste0(deconv.res$broad_histology, '-', deconv.res$molecular_subtype))
+
+
 # extract names of the methods used
 methods <- unique(deconv.res$method)
 method1.name <- methods[1]
@@ -62,20 +72,20 @@ create.heatmap <- function(deconv.method, title, fileout) {
   deconv.method <- deconv.method %>% 
     filter(!cell_type %in% c("microenvironment score", "stroma score", "immune score")) %>%
     group_by(cell_type, label) %>%
-    summarise(mean = mean(fraction)) %>%
+    dplyr::summarise(mean = mean(fraction)) %>%
     # convert into matrix of cell type vs histology
     spread(key = label, value = mean) %>% 
     column_to_rownames('cell_type')
   
   # plot non-brain and brain tumors separately
-  pdf(file = fileout, width = 13, height = 8)
+  pdf(file = fileout, width = 15, height = 10)
   # non-brain tumors
   mat <- deconv.method %>% 
-    select(grep(paste0(non.brain.tumors, collapse="|"), colnames(deconv.method), value = TRUE)) 
+    dplyr::select(grep(paste0(non.brain.tumors, collapse="|"), colnames(deconv.method), value = TRUE)) 
   if(ncol(mat) > 1){
     mat <- mat %>%
       rownames_to_column('celltype') %>%
-      filter_if(is.numeric, all_vars(. > 0)) %>%
+      filter_at(vars(-celltype), any_vars(. != 0)) %>%
       column_to_rownames('celltype') %>%
       t() %>%
       pheatmap(fontsize = 10,
@@ -86,11 +96,11 @@ create.heatmap <- function(deconv.method, title, fileout) {
   
   # brain tumors 
   mat <- deconv.method %>%
-    select(grep(paste0(non.brain.tumors, collapse="|"), colnames(deconv.method), invert = TRUE, value = TRUE))
+    dplyr::select(grep(paste0(non.brain.tumors, collapse="|"), colnames(deconv.method), invert = TRUE, value = TRUE))
   if(ncol(mat) > 1){
     mat <- mat %>%
       rownames_to_column('celltype') %>%
-      filter_if(is.numeric, all_vars(. > 0)) %>%
+      filter_at(vars(-celltype), any_vars(. != 0)) %>%
       column_to_rownames('celltype') %>%
       t() %>%
       pheatmap(fontsize = 10, 
@@ -113,7 +123,7 @@ method2.sub <- method2 %>%
   filter(cell_type %in% common.types) %>%
   mutate(!!method2.name := fraction) %>%
   dplyr::select(-c(method, fraction))
-total <- merge(method1.sub, method2.sub, by = c("sample","cell_type", "broad_histology"))
+total <- merge(method1.sub, method2.sub, by = c("sample","cell_type", "broad_histology", "molecular_subtype"))
 
 # Overall correlation
 avg.cor <- round(cor(total[,method1.name], total[,method2.name]), 2)
