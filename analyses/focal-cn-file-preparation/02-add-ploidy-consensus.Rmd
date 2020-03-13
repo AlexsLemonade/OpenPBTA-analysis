@@ -34,6 +34,10 @@ library(tidyverse)
 
 ```{r}
 scratch_dir <- file.path("..", "..", "scratch")
+output_dir <- file.path(scratch_dir, "cytoband_status")
+if(!dir.exists(output_dir)) {
+  dir.create(output_dir)
+}
 ```
 
 ```{r}
@@ -152,6 +156,7 @@ write_tsv(add_status_df, output_file)
 ```{r}
 bed_status_df <- add_status_df %>%
   select(chrom, loc.start, loc.end, everything()) %>%
+  group_by(Kids_First_Biospecimen_ID) %>%
   arrange(chrom, loc.start, loc.end)
 
 losses_bed_status_df <- bed_status_df %>%
@@ -159,20 +164,55 @@ losses_bed_status_df <- bed_status_df %>%
 
 gains_bed_status_df <- bed_status_df %>%
   filter(status == "gain")
+
+# make lists of data frames by sample
+bed_status_list <- bed_status_df %>%
+  group_split()
+names(bed_status_list) <- bed_status_df %>%
+  group_keys() %>%
+  pull(Kids_First_Biospecimen_ID)
+
+bed_loss_list <- losses_bed_status_df %>%
+  group_split()
+names(bed_loss_list) <- losses_bed_status_df %>%
+  group_keys() %>%
+  pull(Kids_First_Biospecimen_ID)
+
+bed_gain_list <- gains_bed_status_df %>%
+  group_split()
+names(bed_gain_list) <- gains_bed_status_df %>%
+  group_keys() %>%
+  pull(Kids_First_Biospecimen_ID)
 ```
 
 ### Write to file
 
 ```{r}
-bed_output_file <-
-  file.path("..", "..", "scratch", "consensus_seg_with_status.bed")
-loss_bed_output_file <-
-  file.path("..", "..", "scratch", "consensus_seg_with_status_losses.bed")
-gain_bed_output_file <-
-  file.path("..", "..", "scratch", "consensus_seg_with_status_gains.bed")
+temp <- purrr::imap(bed_status_list,
+                    ~ write_tsv(.x,
+                                file.path(
+                                  output_dir, paste0("consensus_status.", .y, ".bed")
+                                ),
+                                col_names = FALSE))
 
-write_tsv(bed_status_df, bed_output_file)
-write_tsv(losses_bed_status_df, loss_bed_output_file)
-write_tsv(gains_bed_status_df, gain_bed_output_file)
+temp_loss <- purrr::imap(bed_loss_list,
+                         ~ write_tsv(.x,
+                                     file.path(
+                                       output_dir, paste0("consensus_loss_status.", .y, ".bed")
+                                     ),
+                                     col_names = FALSE))
+
+temp_gain <- purrr::imap(bed_gain_list,
+                         ~ write_tsv(.x,
+                                     file.path(
+                                       output_dir, paste0("consensus_gain_status.", .y, ".bed")
+                                     ),
+                                     col_names = FALSE))
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
 ```
 

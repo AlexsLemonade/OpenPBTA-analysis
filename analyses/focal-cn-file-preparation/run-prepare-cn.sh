@@ -23,39 +23,14 @@ histologies_file=${data_dir}/pbta-histologies.tsv
 gtf_file=${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz
 goi_file=../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt
 independent_specimens_file=${data_dir}/independent-specimens.wgswxs.primary.tsv
-ucsc_bed_file=${results_dir}/ucsc_cytoband.bed
-consensus_bed_file=${scratch_dir}/consensus_seg_with_status.bed
-loss_intersect_with_cytoband_file=${scratch_dir}/intersect_with_cytoband_losses.bed
-gain_intersect_with_cytoband_file=${scratch_dir}/intersect_with_cytoband_gains.bed
-callable_intersect_with_cytoband_file=${scratch_dir}/intersect_with_cytoband_callable.bed
 
 # Prep the consensus SEG file data
 Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd', clean = TRUE)"
 
-# Download and save UCSC cytoband file as bed file
-wget -O ${scratch_dir}/ucsc_cytoband.bed http://hgdownload.cse.ucsc.edu/goldenpath/hg38/database/cytoBand.txt.gz
-    
-# Use bedtools intersect to find the intersection between the UCSC file with
-# cytoband data and the `scratch/consensus_with_status.tsv` file prepared in
+# Run shell script implementing `bedtools coverage` for each sample bed file in
+# `scratch/cytoband_status` -- these files are generated in 
 # `02-add-ploidy-consensus.Rmd`
-
-bedtools coverage \
-    -a ${scratch_dir}/ucsc_cytoband.bed \
-    -b ${scratch_dir}/consensus_seg_with_status_losses.bed \
-    -sorted \
-    > $loss_intersect_with_cytoband_file
-
-bedtools coverage \
-    -a ${scratch_dir}/ucsc_cytoband.bed \
-    -b ${scratch_dir}/consensus_seg_with_status_gains.bed \
-    -sorted \
-    > $gain_intersect_with_cytoband_file
-
-bedtools coverage \
-    -a ${scratch_dir}/ucsc_cytoband.bed \
-    -b $consensus_bed_file \
-    -sorted \
-    > $callable_intersect_with_cytoband_file
+bash run-bedtools.sh
 
 # # Run annotation step for consensus file
 # Rscript --vanilla 03-prepare-cn-file.R \
