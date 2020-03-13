@@ -218,7 +218,7 @@ disease_plot <- ggplot(
     limits = xscale2,
     breaks = disease_df$gene
   ) + 
-  scale_y_continuous(expand = c(0, 0.5, 0.1, 0))+ 
+  scale_y_continuous(expand = c(0, 0.5, 0.1, 0)) + 
   theme_classic() +
   theme(
     axis.text.x = element_text(
