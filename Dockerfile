@@ -243,3 +243,11 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 
 # Bioconductor package GSVA needed for gene-set-enrichment-analysis
 RUN R -e "BiocManager::install(c('GSVA'), update = FALSE)"
+
+# packages needed for batch-effects-analysis
+RUN R -e "BiocManager::install(c('BatchQC'))"
+RUN R -e "BiocManager::install(c("sva"))"
+RUN R -e "install.packages('here', dependencies = TRUE)"
+
+
+
