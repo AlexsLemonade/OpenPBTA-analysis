@@ -243,7 +243,7 @@ RUN R -e "BiocManager::install(c('GSVA'), update = FALSE)"
 
 # packages needed for batch-effects-analysis
 RUN R -e "BiocManager::install(c('BatchQC'))"
-RUN R -e "BiocManager::install(c("sva"))"
+RUN R -e "BiocManager::install(c('sva'))"
 RUN R -e "install.packages('here', dependencies = TRUE)"
 
 # remote package EXTEND needed for telomerase-activity-prediciton analysis
