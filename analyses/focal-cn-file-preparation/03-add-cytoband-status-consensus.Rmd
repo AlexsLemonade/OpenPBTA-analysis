@@ -50,7 +50,7 @@ gains_cytoband_status_df <-
                   col_names = FALSE)
 ```
 
-## Wrangle and Merge Data
+## Wrangle and merge consensus cytoband status data
 
 ### Filter each of the cytoband status data.frames
 
@@ -76,10 +76,22 @@ final_df <- all_callable_cytoband_status_df %>%
   left_join(losses_cytoband_status_df, by = c("chr", "cytoband"))
 ```
 
+### Add chromosome arm column
+
+```{r}
+# Add a column that tells us the position of the p or q and then use this to
+# split the cytoband column
+final_df <- final_df %>%
+  mutate(cytoband_with_arm = paste0(gsub("chr", "", chr), cytoband),
+         chromosome_arm = gsub("(p|q).*", "\\1", cytoband_with_arm)) %>%
+  select(-cytoband_with_arm)
+```
+
 ### Add `dominant_status` field to final data.frame
 
 ```{r}
 final_df <- final_df %>%
+  group_by(chromosome_arm) %>%
   mutate(dominant_status = case_when((coverage_ratio_gains > coverage_ratio_losses) ~ "gain",
                                      (coverage_ratio_losses > coverage_ratio_gains) ~ "loss",
                                      coverage_ratio_callable == 0 ~ "uncallable",
@@ -112,6 +124,107 @@ final_df$dominant_status <- replace_na(final_df$dominant_status, "uncallable")
 final_df %>%
   select(chr, cytoband, dominant_status, everything())
 ```
+
+## Wrangle GISTIC
+
+### Read in GISTIC chromosome arm file
+
+```{r}
+# Path to gistic zip file results
+gistic_zip <-
+  file.path("..", "..", "data", "pbta-cnv-cnvkit-gistic.zip")
+# Get the name of the folder first since this changes with updates to the date
+folder_name <- unzip(zipfile = gistic_zip, list = TRUE) %>%
+  dplyr::filter(Length == 0) %>%
+  dplyr::pull("Name")
+# Path to gistic results directory
+gistic_results <- "gistic-results"
+
+# Extract files if it hasn't been done yet
+if (!dir.exists(gistic_results)) {
+  # Unzip but only extract the files not the folder
+  unzip(zipfile = gistic_zip,
+        exdir = gistic_results)
+}
+# Designate GISTIC results folder to extract to
+gistic_results <- file.path(gistic_results, folder_name)
+# Read in broad values by arm GISTIC output file
+gistic_df <-
+  data.table::fread(
+    paste0(
+      gistic_results,
+      "broad_values_by_arm.txt"
+    ),
+    data.table = FALSE
+  )
+```
+
+### Tidy the GISTIC arm data
+
+The GISTIC arm data contains chromosome arms in the first column and all other columns correspond to a WGS biospecimen identifier.
+We want to get this into long format.
+
+```{r}
+tidy_gistic_arm_df <- gistic_df %>%
+  column_to_rownames("Chromosome Arm") %>%
+  t() %>%
+  as.data.frame() %>%
+  reshape2::melt(variable.name = "chromosome_arm",
+                 value.name = "gistic_arm_value") %>%
+  mutate(gistic_arm_status = case_when(
+    gistic_arm_value < 0 ~ "loss",
+    gistic_arm_value > 0 ~ "gain",
+    TRUE ~ "neutral"
+  )) %>%
+  group_by(chromosome_arm, gistic_arm_status) %>%
+  tally() %>%
+  # Determine the most frequent status call for each arm
+  mutate(dominant_gistic_status = max(n)) %>%
+  # Filter to only rows that contain the most frequent status call
+  filter(n == dominant_gistic_status) %>%
+  select(-c("n", "dominant_gistic_status"))
+```
+
+### Join together GISTIC and annotated SEG file with cytoband status
+
+```{r}
+final_gistic_df <- final_df %>%
+  select(-c(
+    "coverage_ratio_callable",
+    "coverage_ratio_gains",
+    "coverage_ratio_losses",
+    "cytoband"
+  )) %>%
+  # The `distinct` function here is removing duplicate rows that resulted from
+  # removing the cytoband column above
+  distinct() %>%
+  left_join(tidy_gistic_arm_df, by = "chromosome_arm")
+
+final_gistic_df <- final_gistic_df %>%
+  arrange(dominant_status) %>%
+  group_by(chromosome_arm) %>%
+  mutate(
+    dominant_status = case_when(
+      length(unique(dominant_status)) > 1 ~ dominant_status[[1]],
+      TRUE ~ dominant_status
+    )
+  ) %>%
+  # The `distinct` function here is removing duplicate rows that resulted from
+  # keeping only the non-neutral value in the `dominant_status` column where
+  # there were more than one status value for a chromosome arm
+  distinct()
+
+# Write to file
+write_tsv(final_gistic_df, file.path("results", "consensus_seg_gistic_cytoband_status.tsv"))
+
+# Display final table
+final_gistic_df
+
+# Tally how many times gistic arm status and our arm status agree
+sum(final_gistic_df$dominant_status %in% final_gistic_df$gistic_arm_status)
+```
+
+GISTIC's arm status and our consensus arm status appear to agree for a total of 35 out of 48 instances.
 
 ## Session Info
 
