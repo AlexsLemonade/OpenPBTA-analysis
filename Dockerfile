@@ -60,7 +60,7 @@ RUN R -e "BiocManager::install(c('annotatr', 'TxDb.Hsapiens.UCSC.hg38.knownGene'
 RUN R -e "BiocManager::install(c('preprocessCore', 'sva'), update = FALSE)"
 
 
-## This is deprecated 
+## This is deprecated
 #  # These packages are for single-sample GSEA analysis
 #  RUN R -e "BiocManager::install(c('GSEABase', 'GSVA'), update = FALSE)"
 
@@ -129,12 +129,12 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 
 # Add bedops per the BEDOPS documentation
 RUN wget https://github.com/bedops/bedops/releases/download/v2.4.37/bedops_linux_x86_64-v2.4.37.tar.bz2
-RUN tar -jxvf bedops_linux_x86_64-v2.4.37.tar.bz2
+RUN tar -jxvf bedops_linux_x86_64-v2.4.37.tar.bz2 && rm -f bedops_linux_x86_64-v2.4.37.tar.bz2
 RUN cp bin/* /usr/local/bin
 
 # HTSlib
 RUN wget https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar.bz2
-RUN tar -jxvf htslib-1.9.tar.bz2
+RUN tar -jxvf htslib-1.9.tar.bz2 && rm -f htslib-1.9.tar.bz2
 RUN cd htslib-1.9 && \
     ./configure && \
     make && \
@@ -180,7 +180,7 @@ RUN R -e "BiocManager::install(c('TCGAbiolinks'), update = FALSE)"
 
 # Install python3 data science basics (pandas)
 # using pip to get more current versions
-RUN apt-get update -qq && apt-get -y --no-install-recommends install python3-pip  python3-dev 
+RUN apt-get update -qq && apt-get -y --no-install-recommends install python3-pip  python3-dev
 RUN pip3 install "numpy==1.17.3" && \
    pip3 install "six==1.13.0" "setuptools==41.6.0" && \
    pip3 install "cycler==0.10.0" "kiwisolver==1.1.0" "pyparsing==2.4.5" "python-dateutil==2.8.1" "pytz==2019.3" && \
@@ -212,7 +212,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     survival \
     cmprsk \
     survMisc \
-    survminer 
+    survminer
 
 # pyreadr for comparative-RNASeq-analysis
 RUN pip3 install "pyreadr==0.2.1"
@@ -232,9 +232,6 @@ RUN R -e "install.packages('corrplot', dependencies = TRUE)"
 # Install for mutation signature analysis
 RUN R -e "BiocManager::install('ggbio')"
 
-#### Please install your dependencies here
-#### Add a comment to indicate what analysis it is required for
-
 # CRAN package msigdbr needed for gene-set-enrichment-analysis
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
@@ -249,5 +246,78 @@ RUN R -e "BiocManager::install(c('BatchQC'))"
 RUN R -e "BiocManager::install(c("sva"))"
 RUN R -e "install.packages('here', dependencies = TRUE)"
 
+# remote package EXTEND needed for telomerase-activity-prediciton analysis
+RUN R -e "devtools::install_github('NNoureen/EXTEND', ref = '467c2724e1324ef05ad9260c3079e5b0b0366420', dependencies = TRUE)"
 
+# Required for installing pdftools, which is a dependency of gridGraphics
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    libpoppler-cpp-dev
 
+# CRAN package gridGraphics needed for telomerase-activity-prediction
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    && install2.r --error \
+    --deps TRUE \
+    gridGraphics
+
+# package required for shatterseek
+RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remotes::install_github('parklab/ShatterSeek', ref = '83ab3effaf9589cc391ecc2ac45a6eaf578b5046', dependencies = TRUE))"
+
+# pyarrow for comparative-RNASeq-analysis, to read/write .feather files
+RUN pip3 install "pyarrow==0.16.0"
+
+# ComplexHeatmap and circlize were apparently not explicitly installed anywhere, but is used throughout
+RUN R -e "BiocManager::install(c('ComplexHeatmap', 'circlize'), update = FALSE)"
+
+# MATLAB Compiler Runtime is required for GISTIC, MutSigCV
+# Install steps are adapted from usuresearch/matlab-runtime
+# https://hub.docker.com/r/usuresearch/matlab-runtime/dockerfile
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get -q update && \
+    apt-get install -q -y --no-install-recommends \
+    xorg
+
+# This is the version of MCR required to run the precompiled version of GISTIC
+RUN mkdir /mcr-install-v83 && \
+    mkdir /opt/mcr && \
+    cd /mcr-install-v83 && \
+    wget https://www.mathworks.com/supportfiles/downloads/R2014a/deployment_files/R2014a/installers/glnxa64/MCR_R2014a_glnxa64_installer.zip && \
+    unzip -q MCR_R2014a_glnxa64_installer.zip && \
+    rm -f MCR_R2014a_glnxa64_installer.zip && \
+    ./install -destinationFolder /opt/mcr -agreeToLicense yes -mode silent && \
+    cd / && \
+    rm -rf mcr-install-v83
+
+WORKDIR /home/rstudio/
+
+# GISTIC installation
+RUN mkdir -p gistic_install && \
+    cd gistic_install && \
+    wget -q ftp://ftp.broadinstitute.org/pub/GISTIC2.0/GISTIC_2_0_23.tar.gz && \
+    tar zxf GISTIC_2_0_23.tar.gz && \
+    rm -f GISTIC_2_0_23.tar.gz && \
+    rm -rf MCR_Installer
+
+RUN chown -R rstudio:rstudio /home/rstudio/gistic_install
+RUN chmod 755 /home/rstudio/gistic_install
+
+# Install CrossMap for liftover
+RUN pip3 install "cython==0.29.15" && \
+    pip3 install "bx-python==0.8.8" && \
+    pip3 install "pybigwig==0.3.17" && \
+    pip3 install "pysam==0.15.4" && \
+    pip3 install "CrossMap==0.3.9" 
+
+#### Please install your dependencies here
+#### Add a comment to indicate what analysis it is required for
+
+# Packages required for rna-seq-composition
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    && install2.r --error \
+    --deps TRUE \
+    EnvStats \
+    janitor 
+
+RUN R -e "devtools::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd46899f17197f9858bc5672e9f4')"
+
+WORKDIR /rocker-build/

@@ -96,19 +96,30 @@ subset_files <- function(filename, biospecimen_ids, output_directory) {
     cnv_file %>%
       dplyr::filter(!!rlang::sym(biospecimen_column) %in% biospecimen_ids) %>%
       readr::write_tsv(output_file)
-
+  } else if (grepl("consensus_seg_annotated", filename)) {
+    annotated_cn_file <- readr::read_tsv(filename)
+    annotated_cn_file %>%
+      dplyr::filter(biospecimen_id %in% biospecimen_ids) %>%
+      readr::write_tsv(output_file)
   } else if (grepl("pbta-fusion", filename)) {
+    fusion_file <- readr::read_tsv(filename)
     # original files contain the biospecimen IDs in a column called 'tumor_id',
     # the filtered/prioritized list biospecimen IDs are in 'Sample'
-    if (grepl("putative-oncogenic|bysample", filename)) {
-      biospecimen_column <- "Sample"
+    if (grepl("putative-oncogenic", filename)) {
+      fusion_file %>%
+        dplyr::filter(Sample %in% biospecimen_ids |
+                        # this is required for the the fusion-summary module
+                        grepl("RELA|MN1", FusionName)) %>%
+        readr::write_tsv(output_file)
+    } else if (grepl("bysample", filename)) {
+      fusion_file %>%
+        dplyr::filter(Sample %in% biospecimen_ids) %>%
+        readr::write_tsv(output_file)
     } else {
-      biospecimen_column <- "tumor_id"
+      fusion_file %>%
+        dplyr::filter(tumor_id %in% biospecimen_ids) %>%
+        readr::write_tsv(output_file)
     }
-    fusion_file <- readr::read_tsv(filename)
-    fusion_file %>%
-      dplyr::filter(!!rlang::sym(biospecimen_column) %in% biospecimen_ids) %>%
-      readr::write_tsv(output_file)
 
   } else if (grepl("pbta-sv", filename)) {
 

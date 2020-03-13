@@ -1,2 +1,5 @@
 # AnnotationDbi object is too large to be committed
 annotation_files/txdb_from_gencode.v27.gtf.db
+
+# Some GISTIC files are too large to be committed
+gistic-results

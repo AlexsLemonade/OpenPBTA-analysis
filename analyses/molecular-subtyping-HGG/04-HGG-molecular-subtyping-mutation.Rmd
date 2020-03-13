@@ -8,7 +8,7 @@ author: Chante Bethell and Jaclyn Taroni for ALSF CCDL
 date: 2020
 ---
 
-This notebook prepares consensus mutation data for the purposes of subtyping HGG samples 
+This notebook prepares consensus mutation data for the purpose of subtyping HGG samples 
 ([`AlexsLemonade/OpenPBTA-analysis#249`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249)).
 
 ## Usage
@@ -83,7 +83,7 @@ From [`@jharenza`](https://github.com/jharenza):
 > Any sample that harbors _H3F3A_ K28M, _H3F3A_ G35R/V, or _HIST1H3B_ K28M, if not classified as a high-grade glioma, should be, as this is a defining lesion. Eg: three former PNET tumors were re-classified as such.
 
 Samples were examined for the presence or absence of these defining lesions in [`01-HGG-molecular-subtyping-defining-lesions`](./01-HGG-molecular-subtyping-defining-lesions.Rmd).
-Samples that were classified as High-grade glioma in the `disease_type_new` column of `pbta-histologies.tsv` and those with one of these defining lesions were included in the subset files (see: [`02-HGG-molecular-subtyping-subset-files.R`](./02-HGG-molecular-subtyping-subset-files.R)).
+Samples that were classified as HGAT in the `short_histology` column of `pbta-histologies.tsv` and those with one of these defining lesions were included in the subset files (see: [`02-HGG-molecular-subtyping-subset-files.R`](./02-HGG-molecular-subtyping-subset-files.R)).
 Thus, we are not concerned with cleaning data for these specific mutations here.
 Instead, we can look at the defining lesions `data.frame` we read in above.
 
@@ -123,7 +123,8 @@ idh_genes_of_interest <- c("IDH1", "TP53")
 These tumors do not have _H3F3A_ or _IDH1_ mutations, but harbor _TP53_ and _TERT_ mutations.
 
 ```{r}
-wildtype_genes_of_interest <- c("H3F3A", "IDH1", "TP53", "TERT")
+wildtype_genes_of_interest <- c("H3F3A", "HIST1H3B", "HIST1H3C", "HIST2H3C",
+                                "IDH1", "TP53", "TERT")
 ```
 
 ### 1p/19q co-deleted oligodendrogliomas
@@ -296,7 +297,7 @@ We'll include specific information from the defining lesions table.
 defining_lesions_df <- defining_lesions_df %>%
   # We're not concerned with disease type classifications at the moment
   dplyr::select(-dplyr::starts_with("disease"),
-                -short_histology) %>%
+                -dplyr::contains("histology")) %>%
   # Filter to tumor biospecimens that are in the subset file
   dplyr::filter(Kids_First_Biospecimen_ID %in% subset_bsid) %>%
   # All other data.frame use 'Tumor_Sample_Barcode' for the column that contains

@@ -1,0 +1,93 @@
+---
+title: "Identify samples with _TP53_ and _NF1_ mutations in the stranded RNA-seq dataset"
+output: html_notebook
+author: Jaclyn Taroni for ALSF CCDL
+date: 2020
+---
+
+To run and fully test the `tp53_nf1_score` module in continuous integration, we must ensure that there are positive examples of _TP53_ and _NF1_ mutations.
+Furthermore, we need to include the same samples in the RNA-seq data.
+Because we skip running the `tp53_nf1_score` classifier and evaluation steps on the poly-A dataset in CI, we can focus on the stranded data.
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+set.seed(2020)
+```
+
+The table prepped in `tp53_nf1_score` contains all of the information we need regarding positive examples.
+The histologies file contains the information we need for identifying samples that are in the stranded RNA-seq dataset.
+
+```{r}
+mutations_table <- read_tsv(file.path("..", "tp53_nf1_score", "results", 
+                                      "TP53_NF1_snv_alteration.tsv"))
+histologies_df <- read_tsv(file.path("..", "..", "data", 
+                                     "pbta-histologies.tsv"),
+                           col_types = cols(
+                             molecular_subtype = col_character()
+                           ))
+```
+
+Get biospecimen identifiers for samples with mutations of interest.
+
+```{r}
+tp53_examples <- mutations_table %>%
+  filter(Hugo_Symbol == "TP53") %>%
+  pull(Tumor_Sample_Barcode)
+nf1_examples <- mutations_table %>%
+  filter(Hugo_Symbol == "NF1") %>%
+  pull(Tumor_Sample_Barcode)
+```
+
+### _TP53_ positive examples
+
+```{r}
+# randomly select samples that also have stranded RNA-seq data
+tp53_samples <- histologies_df %>%
+  filter(Kids_First_Biospecimen_ID %in% tp53_examples) %>%
+  inner_join(histologies_df %>%
+               filter(RNA_library == "stranded",
+                      sample_type == "Tumor") %>%
+               select(sample_id)) %>%
+  distinct()
+
+tp53_samples <- sample(tp53_samples$sample_id, size = 3)
+```
+
+```{r}
+histologies_df %>%
+  filter(sample_id %in% tp53_samples,
+         sample_type == "Tumor") %>%
+  arrange(sample_id)
+```
+
+### _NF1_ positive examples
+
+```{r}
+# randomly select samples that also have stranded RNA-seq data
+nf1_samples <- histologies_df %>%
+  filter(Kids_First_Biospecimen_ID %in% nf1_examples) %>%
+  inner_join(histologies_df %>%
+               filter(RNA_library == "stranded",
+                      sample_type == "Tumor") %>%
+               select(sample_id)) %>%
+  distinct()
+
+nf1_samples <- sample(nf1_samples$sample_id, size = 3)
+```
+
+```{r}
+histologies_df %>%
+  filter(sample_id %in% nf1_samples,
+         sample_type == "Tumor") %>%
+  arrange(sample_id)
+```
+
+### Session Info
+
+```{r}
+sessionInfo()
+```
+

@@ -111,28 +111,26 @@ table(fusion_calls$Caller)
 
 # aggregate caller 
 fusion_caller.summary <- fusion_calls %>%
-  dplyr::filter(Fusion_Type != "other") %>%
   dplyr::select(Sample,FusionName,Caller,Fusion_Type) %>%
   group_by(FusionName, Sample ,Fusion_Type) %>%
   unique() %>%
   dplyr::mutate(CalledBy = toString(Caller), caller.count = n()) %>%
   dplyr::select(-Caller)
 
-# remove fusion within local rearrangement
-fusion_calls <- fusion_calls %>%
-  # remove local rearrangement/adjacent genes
-  dplyr::filter(!grepl("LOCAL_REARRANGEMENT|LOCAL_INVERSION",annots))
-
 #to add aggregated caller from fusion_caller.summary
 fusion_calls<-fusion_calls %>% 
-  dplyr::filter(Fusion_Type != "other") %>% dplyr::select(-Caller,-annots) %>%
   left_join(fusion_caller.summary,by=(c("Sample","FusionName","Fusion_Type"))) %>%
   dplyr::select(-JunctionReadCount,-SpanningFragCount,-Confidence,-LeftBreakpoint,-RightBreakpoint) %>% unique()
 
 #merge with histology file
 fusion_calls<-merge(fusion_calls,clinical,by.x="Sample",by.y="Kids_First_Biospecimen_ID")
 
-
+# filter for putative driver genes
+putative_driver_annotated_fusions <- fusion_calls %>%
+  dplyr::select(-Caller,-annots) %>%
+  unique() %>%
+  dplyr::filter(!is.na(Gene1A_anno) | !is.na(Gene1B_anno) | !is.na(Gene2A_anno) | !is.na(Gene2B_anno)) %>%
+  unique()
 
 
 
@@ -141,7 +139,17 @@ fusion_calls<-merge(fusion_calls,clinical,by.x="Sample",by.y="Kids_First_Biospec
 
 
 ```{r}
-# Gene fusion should be in-frame
+# remove local rearrangements
+fusion_calls<-fusion_calls %>%
+  # remove local rearrangement/adjacent genes
+  dplyr::filter(!grepl("LOCAL_REARRANGEMENT|LOCAL_INVERSION",annots)) %>%
+  dplyr::select(-Caller,-annots) %>%
+  unique()
+
+
+# Gene fusion should be in-frame/frameshift 
+fusion_calls<-fusion_calls %>% 
+  dplyr::filter(Fusion_Type != "other")
 # AND
 #
 # 1. Called by at least n callers
@@ -237,15 +245,10 @@ QCGeneFiltered_recFusionUniq<-QCGeneFiltered_recFusion %>%
 
 
 ```{r}
-
-# filter for putative driver genes and mutifused genes per sample
-putative_driver_annotated_fusions <- fusion_calls %>%
-  dplyr::filter(!is.na(Gene1A_anno) | !is.na(Gene1B_anno) | !is.na(Gene2A_anno) | !is.na(Gene2B_anno)) %>%
-  unique()
   
 # merge putative annotated oncogenic and scavenged back non-oncogenic annotated, recurrent fusions
 putative_driver_fusions<-rbind(QCGeneFiltered_recFusionUniq,putative_driver_annotated_fusions) %>%
-  unique() %>% select (-broad_histology) %>%
+  unique() %>% dplyr::select (-broad_histology) %>%
   as.data.frame()
 
 write.table(putative_driver_fusions,file.path(outputfolder,"pbta-fusion-putative-oncogenic.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
