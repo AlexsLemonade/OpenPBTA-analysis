@@ -1,6 +1,6 @@
 ## Running the figure generation script
 
-Steps to refreshing all publication-ready figures. 
+Steps to refresh all publication-ready figures. 
 All steps assume your current directory is the top of this repository.
 
 #### 1. Obtain the current dataset.
