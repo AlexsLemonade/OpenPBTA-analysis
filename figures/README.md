@@ -5,7 +5,7 @@ All steps assume your current directory is the top of this repository.
 
 #### 1. Obtain the current dataset.
 
-See [these instructions](https://github.com/AlexsLemonade/OpenPBTA-analysis#how-to-obtain-openpbta-data) for obtaining the current data release.
+See [these instructions](https://github.com/AlexsLemonade/OpenPBTA-analysis#how-to-obtain-openpbta-data) to obtain the current data release.
 We recommend [using the download script](https://github.com/AlexsLemonade/OpenPBTA-analysis#data-access-via-download-script) to obtain data because this will automatically create symlinks in `data/` to the latest files. 
 
 #### 2. Set up an up-to-date project Docker container.
