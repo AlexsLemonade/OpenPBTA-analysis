@@ -1,7 +1,7 @@
 # Function for CDF plot
 #
 # C. Savonen for ALSF - CCDL
-# 2020 
+# 2020
 
 cdf_plot <- function(df,
                      plot_title,
@@ -12,12 +12,12 @@ cdf_plot <- function(df,
                      x_lim = c(-1.2, 1.2),
                      y_lim = NA,
                      x_lab,
-                     y_lab, 
+                     y_lab,
                      breaks) {
-  # For a data.frame, create a Cummulative distribution function plot of the
+  # For a data.frame, create a Cumulative distribution function plot of the
   # `num_col` and `group_col` column data provided.
-  # Groups in group_col will be plotted separately and reordered based on 
-  # medians. Data is transformed to log10 for y-axis. 
+  # Groups in group_col will be plotted separately and reordered based on
+  # medians. Data is transformed to log10 for y-axis.
   #
   # Args:
   #   df: a data.frame that includes the columns specified in `group_col` and
@@ -36,8 +36,8 @@ cdf_plot <- function(df,
   #          axis limits
   #   x_lab: a string to be passed to ggplot2::xlab() for an x-axis label
   #   y_lab: a string to be passed to ggplot2::ylab() for an y-axis label
-  #   breaks: A numeric vector to be passed to ggplot2::scale_y_continuous for 
-  #           marking ticks on the y axis. 
+  #   breaks: A numeric vector to be passed to ggplot2::scale_y_continuous for
+  #           marking ticks on the y axis.
   #
   #
   # Returns:
@@ -83,21 +83,21 @@ cdf_plot <- function(df,
     dplyr::filter(dplyr::n() > n_group) %>%
     # Calculate group median
     dplyr::mutate(
-      group_median = median(number),
+      group_median = median(number, na.rm = TRUE),
       group_rank = rank(number, ties.method = "first") / dplyr::n(),
       sample_size = paste0("n = ", dplyr::n())
     ) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(group = reorder(group, group_median))
-  
+
   # Set y_lim as min and max if it was not set
   if (is.na(y_lim)) {
-    y_lim = c(min(df$number), 
+    y_lim = c(min(df$number),
               max(df$number))
     }
-  
+
   # Plot this
-  df %>% 
+  df %>%
     # Now we will plot these as cumulative distribution plots
     ggplot2::ggplot(ggplot2::aes(
       x = group_rank,
@@ -117,7 +117,7 @@ cdf_plot <- function(df,
     # Transform to log10 make non-log y-axis labels
     ggplot2::scale_y_continuous(
       trans = "log1p",
-      limits = y_lim, 
+      limits = y_lim,
       breaks = breaks
     ) +
     ggplot2::scale_x_continuous(limits = x_lim) +
