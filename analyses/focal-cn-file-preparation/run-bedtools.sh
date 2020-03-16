@@ -4,9 +4,9 @@
 # Usage: bash run-bedtools.sh
 
 scratch_dir=../../scratch
-callable_intersect_with_cytoband_file=${scratch_dir}/intersect_with_cytoband_callable.bed
-loss_intersect_with_cytoband_file=${scratch_dir}/intersect_with_cytoband_losses.bed
-gain_intersect_with_cytoband_file=${scratch_dir}/intersect_with_cytoband_gains.bed
+callable_intersect_with_cytoband_file=${scratch_dir}/cytoband_status/intersect_with_cytoband_callable.bed
+loss_intersect_with_cytoband_file=${scratch_dir}/cytoband_status/intersect_with_cytoband_losses.bed
+gain_intersect_with_cytoband_file=${scratch_dir}/cytoband_status/intersect_with_cytoband_gains.bed
 
 # Download and save UCSC cytoband file as bed file
 wget -O ${scratch_dir}/ucsc_cytoband.bed http://hgdownload.cse.ucsc.edu/goldenpath/hg38/database/cytoBand.txt.gz
