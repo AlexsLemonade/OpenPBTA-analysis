@@ -9,7 +9,8 @@ loss_intersect_with_cytoband_file=${scratch_dir}/cytoband_status/intersect_with_
 gain_intersect_with_cytoband_file=${scratch_dir}/cytoband_status/intersect_with_cytoband_gains.bed
 
 # Download and save UCSC cytoband file as bed file
-wget -O ${scratch_dir}/ucsc_cytoband.bed http://hgdownload.cse.ucsc.edu/goldenpath/hg38/database/cytoBand.txt.gz
+wget -O - http://hgdownload.cse.ucsc.edu/goldenpath/hg38/database/cytoBand.txt.gz \
+  | gunzip -c > ${scratch_dir}/ucsc_cytoband.bed 
 
 # Use bedtools coverage to find the intersection between the UCSC file with
 # cytoband data and the `consensus_status` bed files prepared in
