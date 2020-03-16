@@ -6,7 +6,11 @@ They are created by running `scripts/color-palettes.R` which creates 6 TSV files
 in the `figures/palettes` folder
 Each palette TSV file has two columns of data: `hex_codes` and `color_names`.
 `hex_codes` contains the colors to be passed to your plotting code and `color_names` contains short descriptors of each color (e.g. `gradient_1`, or `divergent_neutral`).
-Each palette contains an `na_color` that is the same color in all palettes.
+Each palette contains an `na_color` that is the same color in all palettes it 
+is always the last value in the list.
+So depending on the circumstance, if `na_color` is not needed or will be supplied
+to a plot's argument in a different way, you can use a `dplyr::filter(hex_code != "na_color")`
+to remove the `na_color`. 
 Biospecimens without a `short_histology` designation are assigned the `NA` color
 for this project.
 
@@ -17,19 +21,66 @@ for this project.
 |`divergent_col_palette.tsv`|<br>divergent_low_5:![67001f](https://placehold.it/150x40/67001f/FFFFFF?text=67001f) <br>divergent_low_4:![b2182b](https://placehold.it/150x40/b2182b/FFFFFF?text=b2182b) <br>divergent_low_3:![d6604d](https://placehold.it/150x40/d6604d/FFFFFF?text=d6604d) <br>divergent_low_2:![f4a582](https://placehold.it/150x40/f4a582/FFFFFF?text=f4a582) <br>divergent_low_1:![fddbc7](https://placehold.it/150x40/fddbc7/000000?text=fddbc7) <br>divergent_neutral:![f7f7f7](https://placehold.it/150x40/f7f7f7/000000?text=f7f7f7) <br>divergent_high_1:![d1e5f0](https://placehold.it/150x40/d1e5f0/000000?text=d1e5f0) <br>divergent_high_2:![92c5de](https://placehold.it/150x40/92c5de/FFFFFF?text=92c5de) <br>divergent_high_3:![4393c3](https://placehold.it/150x40/4393c3/FFFFFF?text=4393c3) <br>divergent_high_4:![2166ac](https://placehold.it/150x40/2166ac/FFFFFF?text=2166ac) <br>divergent_high_5:![053061](https://placehold.it/150x40/053061/FFFFFF?text=053061) <br>na_color:![f1f1f1](https://placehold.it/150x40/f1f1f1/000000?text=f1f1f1)|12 hex codes where the numbers in the name indicate distance from `divergent_neutral`.|For data has that is bidirectional e.g. Amplification/Deletion values like `seg.mean`|
 |`binary_col_palette.tsv` |<br>binary_1:![2166ac](https://placehold.it/150x40/2166ac/FFFFFF?text=2166ac) <br>binary_2:![b2182b](https://placehold.it/150x40/b2182b/FFFFFF?text=b2182b) <br>na_color:![f1f1f1](https://placehold.it/150x40/f1f1f1/000000?text=f1f1f1)|A vector of two hex codes|For binary variables e.g. presence/absence or Amp/Del as statuses|
 
-##### Example code 
 
+## Color coding examples in R 
+
+### Example color coding by `short_histology`. 
+
+Step 1) Read in color palette and format as a named list
 ```
-# Step 1) Read in color palette and format as a named list
 histology_col_palette <- readr::read_tsv(
   file.path("figures", "palettes", "histology_color_palette.tsv")
   ) %>% 
   # We'll use deframe so we can use it as a recoding list
   tibble::deframe()
-  
-# Step 2) For a data.frame with a short_histology column, use dplyr::recode
+```
+ 
+Step 2) For any data.frame with a `short_histology` column, recode NAs as "none".
+```
 metadata <- readr::read_tsv(file.path("data", "pbta-histologies.tsv") %>%
+  # Easier to deal with NA short histologies if they are labeled something different
+  dplyr::mutate(short_histology = as.character(tidyr::replace_na(short_histology, "none")))
+```
+
+Step 3) Use dplyr::recode on `short_histology` column to make a new color column. 
+```
+metadata <- metadata %>% 
   # Tack on the sample color using the short_histology column and a recode
   dplyr::mutate(sample_color = dplyr::recode(short_histology, 
-                                             !!!histology_color_key)) 
+                                             !!!histology_col_palette)) 
+```
+
+Step 4) Make your plot and use the `sample_color` column
+Using the `ggplot2::scale_fill_identity()` or `ggplot2::scale_color_identity()` 
+allows you to supply an exact `hex_code` column to `ggplot2` with a `fill` or 
+`color` argument respectively. 
+For base R plots, you should be able to supply the `sample_color` column as your 
+`col` argument. 
+```
+metadata %>% 
+  dplyr::group_by(short_histology, sample_color) %>% 
+  dplyr::summarize(count = dplyr::n()) %>%
+  ggplot2::ggplot(ggplot2::aes(x = short_histology, y = count, fill = sample_color)) +
+  ggplot2::geom_bar(stat = "identity") +
+  ggplot2::scale_fill_identity() 
+```
+
+### Example color coding by numeric data 
+
+Step 1) Import the palette
+```
+gradient_col_palette <- readr::read_tsv(
+  file.path(figures_dir, "palettes", "gradient_color_palette.tsv")
+  ) %>% 
+  # We won't need NA color in this instance, ComplexHeatmap has a separate argument for that
+  dplyr::filter(color_names != "na_color")
+```
+Step 2) Make a color function. 
+
+Note that the last value in every data.frame is the NA color. 
+```
+col_fun <- circlize::colorRamp2(
+  c(0, .125, .25, .3, .5, 1, 1.5, 2, 2.5, 3, NA),
+  gradient_col_palette$hex_codes
+)
 ```

@@ -182,7 +182,7 @@ metadata <- readr::read_tsv(metadata_file) %>%
   dplyr::mutate(short_histology = as.character(tidyr::replace_na(short_histology, "none"))) %>% 
   # Tack on the sample color using the short_histology column and a recode
   dplyr::mutate(sample_color = dplyr::recode(short_histology, 
-                                             !!!histology_col_palette)) 
+                                             !!!histology_col_palette))
 ```
 
 Load in the previously localized breakpoint data. 
