@@ -68,16 +68,28 @@ metadata %>%
 #### Example 2) Color coding by numeric data
 
 **Step 1)** Import the palette.
+
+You may want to remove the `na_color` at the end of the list depending on what
+your data look like.
 ```
 gradient_col_palette <- readr::read_tsv(
   file.path(figures_dir, "palettes", "gradient_color_palette.tsv")
-  ) %>%
-  # We won't need NA color in this instance, ComplexHeatmap has a separate argument for that
+  )
+```
+
+If we need the `NA` color separated, like for use with `ComplexHeatmap` which has
+a separate argument for the color for `NA` values.
+
+```
+na_color <- gradient_col_palette %>%
+  dplyr::filter(color_names != "na_color")
+
+gradient_col_palette <- gradient_col_palette %>%
   dplyr::filter(color_names != "na_color")
 ```
-**Step 2)** Make a color function.
 
-Note that the last value in every data.frame is the `NA` color.
+**Step 2)** Make a color function.  
+
 The numbers supplied here will be highly dependent on what your data's distribution looks like.
 ```
 gradient_col_val <- seq(from = min(df$variable), to = max(df$variable),
@@ -86,9 +98,10 @@ gradient_col_val <- seq(from = min(df$variable), to = max(df$variable),
 col_fun <- circlize::colorRamp2(gradient_col_val,
                                 gradient_col_palette)
 ```
-**Step 3)** Apply to numeric data, or supply to your plotting code
+**Step 3)** Apply to numeric data, or supply to your plotting code.  
+
 This step depends on how your main plotting function would like the data supplied.
-For example, ComplexHeatmap wants a user to supply a `function`.
+For example, `ComplexHeatmap` wants a function to be supplied to their `col` argument.
 ```
 # Apply to variable directly and make a new column
 df <- df %>%
@@ -98,5 +111,7 @@ df <- df %>%
 
 # Some plotting packages want a color function
 ComplexHeatmap::heatmap(df,
-  col = col_fun)
+  col = col_fun, 
+  na_col = na_color
+  )
 ```
