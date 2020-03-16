@@ -29,7 +29,7 @@ library(tidyverse)
 ### Files and directories
 
 ```{r}
-scratch_dir <- file.path("..", "..", "scratch")
+scratch_dir <- file.path("..", "..", "scratch", "cytoband_status")
 ```
 
 ### Read in files 
@@ -55,16 +55,32 @@ gains_cytoband_status_df <-
 ### Filter each of the cytoband status data.frames
 
 ```{r}
-all_callable_cytoband_status_df <- all_callable_cytoband_status_df %>%
-  select(chr = X1, cytoband = X4, coverage_ratio_callable = X9) %>%
+all_callable_cytoband_status_df <-
+  all_callable_cytoband_status_df %>%
+  select(
+    chr = X1,
+    cytoband = X4,
+    coverage_ratio_callable = X9,
+    Kids_First_Biospecimen_ID = X10
+  ) %>%
   filter(!is.na(cytoband))
 
 gains_cytoband_status_df <- gains_cytoband_status_df %>%
-  select(chr = X1, cytoband = X4, coverage_ratio_gains = X9) %>%
+  select(
+    chr = X1,
+    cytoband = X4,
+    coverage_ratio_gains = X9,
+    Kids_First_Biospecimen_ID = X10
+  ) %>%
   filter(!is.na(cytoband))
 
 losses_cytoband_status_df <- losses_cytoband_status_df %>%
-  select(chr = X1, cytoband = X4, coverage_ratio_losses = X9) %>%
+  select(
+    chr = X1,
+    cytoband = X4,
+    coverage_ratio_losses = X9,
+    Kids_First_Biospecimen_ID = X10
+  ) %>%
   filter(!is.na(cytoband))
 ```
 
@@ -72,8 +88,10 @@ losses_cytoband_status_df <- losses_cytoband_status_df %>%
 
 ```{r}
 final_df <- all_callable_cytoband_status_df %>%
-  left_join(gains_cytoband_status_df, by = c("chr", "cytoband")) %>%
-  left_join(losses_cytoband_status_df, by = c("chr", "cytoband"))
+  left_join(gains_cytoband_status_df,
+            by = c("chr", "cytoband", "Kids_First_Biospecimen_ID")) %>%
+  left_join(losses_cytoband_status_df,
+            by = c("chr", "cytoband", "Kids_First_Biospecimen_ID"))
 ```
 
 ### Add chromosome arm column
@@ -90,6 +108,11 @@ final_df <- final_df %>%
 ### Add `dominant_status` field to final data.frame
 
 ```{r}
+# Replace NA's with 0
+final_df$coverage_ratio_gains <- replace_na(final_df$coverage_ratio_gains, 0)
+final_df$coverage_ratio_losses <- replace_na(final_df$coverage_ratio_losses, 0)
+
+# Create a dominant status column
 final_df <- final_df %>%
   group_by(chromosome_arm) %>%
   mutate(dominant_status = case_when((coverage_ratio_gains > coverage_ratio_losses) ~ "gain",
@@ -118,6 +141,8 @@ ucsc_cytoband_df <- ucsc_cytoband_df %>%
 final_df <- final_df %>%
   right_join(ucsc_cytoband_df, by = c("chr", "cytoband"))
 
+# If there are any NA's in the `dominant_status` column after we merge the
+# original cytoband data, replace with "uncallable"
 final_df$dominant_status <- replace_na(final_df$dominant_status, "uncallable")
 
 # Display final table with `uncallable` value added to `dominant_status` column
@@ -193,7 +218,8 @@ final_gistic_df <- final_df %>%
     "coverage_ratio_callable",
     "coverage_ratio_gains",
     "coverage_ratio_losses",
-    "cytoband"
+    "cytoband",
+    "Kids_First_Biospecimen_ID"
   )) %>%
   # The `distinct` function here is removing duplicate rows that resulted from
   # removing the cytoband column above
@@ -223,8 +249,6 @@ final_gistic_df
 # Tally how many times gistic arm status and our arm status agree
 sum(final_gistic_df$dominant_status %in% final_gistic_df$gistic_arm_status)
 ```
-
-GISTIC's arm status and our consensus arm status appear to agree for a total of 35 out of 48 instances.
 
 ## Session Info
 
