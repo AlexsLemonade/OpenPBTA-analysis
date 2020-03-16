@@ -54,7 +54,6 @@ if (!(is.numeric(params$min_samples))) {
 ```{r}
 # Path to data directory
 data_dir <- file.path("..", "..", "data")
-figures_dir <- file.path(base_dir, "figures")
 
 # Path to output directory
 plots_dir <- "plots"
@@ -87,14 +86,6 @@ sv_cdf_plot_file <- file.path(plots_dir, "sv_breaks_cdf_plot.png")
 ```
 
 ### Read in data 
-
-```{r}
-histology_col_palette <- readr::read_tsv(
-  file.path(figures_dir, "palettes", "histology_color_palette.tsv")
-  ) %>% 
-  # We'll use deframe so we can use it as a recoding list
-  tibble::deframe()
-```
 
 Set up metadata
 
