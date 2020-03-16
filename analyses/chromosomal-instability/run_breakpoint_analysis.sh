@@ -37,8 +37,10 @@ surveyed_wgs=${module_scratch_dir}/cnv_surveyed_wgs.bed
   -b ${cn_consensus_dir}/ref/cnv_excluded_regions.bed > $surveyed_wgs
 
 # WXS effectively surveyed BED file
-# TODO: potentially we should be using an unpadded BED file here to get a more accurate estimate of the surveyed genome.
-# TODO: we may also want to subtract <unsurveyed_regions.bed> regions from this BED regions.
+# Currently there is no WXS CNV data in the data release, so this WXS BED file is 
+# just a place holder for if that happens and is not actually used. 
+# TODO: If WXS data is added, we may also want to subtract <unsurveyed_regions.bed> 
+# regions from this BED regions as well (like is done above with WGS)
 surveyed_wxs=${data_dir}/WXS.hg38.100bp_padded.bed
 
 ############################ Run setup data script #############################
