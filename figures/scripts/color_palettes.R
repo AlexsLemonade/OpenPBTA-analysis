@@ -151,8 +151,8 @@ binary_df <- data.frame(color_names = binary_color_names,
 
 #### Quick little function for writing HEX table in README so I can copy and paste it
 #color_format <- function(color_df) {
-#  #Description: Provide color data.frame, this outputs the text to render swatches 
-#  #in a GitHub markdown table. 
+  #Description: Provide color data.frame, this outputs the text to render swatches 
+  #in a GitHub markdown table. 
 #  colors <- gsub("#", "", color_df$hex_codes)
 #  paste0("<br>", color_df$color_names, 
 #         ":![", colors, "](https://placehold.it/150x40/", colors, "/FFFFFF?text=", colors, ")")

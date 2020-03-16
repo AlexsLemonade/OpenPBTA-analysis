@@ -24,9 +24,9 @@ for this project.
 
 ## Color coding examples in R
 
-### Example color coding by `short_histology`.
+#### Example 1) Color coding by `short_histology`.
 
-Step 1) Read in color palette and format as a named list
+**Step 1)** Read in color palette and format as a named list
 ```
 histology_col_palette <- readr::read_tsv(
   file.path("figures", "palettes", "histology_color_palette.tsv")
@@ -35,14 +35,14 @@ histology_col_palette <- readr::read_tsv(
   tibble::deframe()
 ```
 
-Step 2) For any data.frame with a `short_histology` column, recode NAs as "none".
+**Step 2)** For any data.frame with a `short_histology` column, recode NAs as "none".
 ```
 metadata <- readr::read_tsv(file.path("data", "pbta-histologies.tsv") %>%
   # Easier to deal with NA short histologies if they are labeled something different
   dplyr::mutate(short_histology = as.character(tidyr::replace_na(short_histology, "none")))
 ```
 
-Step 3) Use dplyr::recode on `short_histology` column to make a new color column.
+**Step 3)** Use dplyr::recode on `short_histology` column to make a new color column.
 ```
 metadata <- metadata %>%
   # Tack on the sample color using the short_histology column and a recode
@@ -50,7 +50,7 @@ metadata <- metadata %>%
                                              !!!histology_col_palette))
 ```
 
-Step 4) Make your plot and use the `sample_color` column
+**Step 4)** Make your plot and use the `sample_color` column.  
 Using the `ggplot2::scale_fill_identity()` or `ggplot2::scale_color_identity()`
 allows you to supply an exact `hex_code` column to `ggplot2` with a `fill` or
 `color` argument respectively.
@@ -65,9 +65,9 @@ metadata %>%
   ggplot2::scale_fill_identity()
 ```
 
-### Example color coding by numeric data
+#### Example 2) Color coding by numeric data
 
-Step 1) Import the palette
+**Step 1)** Import the palette.
 ```
 gradient_col_palette <- readr::read_tsv(
   file.path(figures_dir, "palettes", "gradient_color_palette.tsv")
@@ -75,12 +75,28 @@ gradient_col_palette <- readr::read_tsv(
   # We won't need NA color in this instance, ComplexHeatmap has a separate argument for that
   dplyr::filter(color_names != "na_color")
 ```
-Step 2) Make a color function.
+**Step 2)** Make a color function.
 
-Note that the last value in every data.frame is the NA color.
+Note that the last value in every data.frame is the `NA` color.
+The numbers supplied here will be highly dependent on what your data's distribution looks like.
 ```
-col_fun <- circlize::colorRamp2(
-  c(0, .125, .25, .3, .5, 1, 1.5, 2, 2.5, 3, NA),
-  gradient_col_palette$hex_codes
-)
+gradient_col_val <- seq(from = min(df$variable), to = max(df$variable),
+                        length.out = length(gradient_col_palette))
+
+col_fun <- circlize::colorRamp2(gradient_col_val,
+                                gradient_col_palette)
+```
+**Step 3)** Apply to numeric data, or supply to your plotting code
+This step depends on how your main plotting function would like the data supplied.
+For example, ComplexHeatmap wants a user to supply a `function`.
+```
+# Apply to variable directly and make a new column
+df <- df %>%
+  dplyr::mutate(color_key = col_fun(variable))
+
+## OR ##
+
+# Some plotting packages want a color function
+ComplexHeatmap::heatmap(df,
+  col = col_fun)
 ```
