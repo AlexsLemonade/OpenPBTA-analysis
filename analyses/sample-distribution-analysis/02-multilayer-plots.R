@@ -70,6 +70,20 @@ tm <-
     draw = TRUE
   )$tm
 
+# Save treemap -- throws an error as is so an alternative method of saving
+# the treemap plot still needs to be established
+# ggplot2::ggsave(
+#   treemap::treemap(
+#     final_df,
+#     index = c("level1", "level2", "level3"),
+#     vSize = "counter",
+#     vColor = color,
+#     title = "Sample Distribution Across Cancer Types"),
+#   file = file.path(plots_dir, "distribution_across_cancer_types_treemap.pdf"),
+#   width = 22,
+#   height = 10
+# )
+
 # Convert the tm data.frame into a d3.js hierarchy object which is needed
 # for the sund2b plot
 tmnest <-
