@@ -17,5 +17,5 @@ Future analyses will include creating plots by tumor type, and for specific list
 
 To run a basic analysis and create a co-occurence plot:
 ```
-sh analyses/interaction-plots/01-create-interaction-plots.sh
+bash analyses/interaction-plots/01-create-interaction-plots.sh
 ```
