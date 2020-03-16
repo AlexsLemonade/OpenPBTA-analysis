@@ -172,7 +172,7 @@ intersection_plot <- read_n_join(density_file = intersection_densities_file,
            breaks = yaxis_breaks)
 
 # Save plot
-ggplot2::ggsave(intersection_cdf_plot_file)
+ggplot2::ggsave(intersection_cdf_plot_file, width = 40, height = 20, units = "cm")
 ```
 ![intersection breaks](plots/intersection_breaks_cdf_plot.png)
 
@@ -193,7 +193,7 @@ cnv_plot <- read_n_join(density_file = cnv_densities_file,
            breaks = yaxis_breaks)
 
 # Save plot
-ggplot2::ggsave(cnv_cdf_plot_file)
+ggplot2::ggsave(cnv_cdf_plot_file, width = 40, height = 20, units = "cm")
 ```
 
 ![CNV breaks](plots/cnv_breaks_cdf_plot.png)
@@ -218,7 +218,7 @@ sv_plot <- read_n_join(density_file = sv_densities_file,
            breaks = c(50, 200, 500, 1000, 5000, 15000, 30000))
 
 # Save plot
-ggplot2::ggsave(sv_cdf_plot_file)
+ggplot2::ggsave(sv_cdf_plot_file, width = 40, height = 20, units = "cm")
 ```
 
 ![SV breaks](plots/sv_breaks_cdf_plot.png)
