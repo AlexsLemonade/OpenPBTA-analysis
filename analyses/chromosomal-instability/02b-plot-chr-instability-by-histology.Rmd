@@ -200,6 +200,9 @@ ggplot2::ggsave(cnv_cdf_plot_file)
 
 #### SV breaks density plot. 
 
+SV breaks has a very different distribution from the CNV and intersection breaks data. 
+The `breaks` and `y_lim` arguments had to be set differently here. 
+
 ```{r}
 sv_plot <- read_n_join(density_file = sv_densities_file, 
                        metadata_df = metadata) %>% 
@@ -209,10 +212,10 @@ sv_plot <- read_n_join(density_file = sv_densities_file,
            color = point_color,
            n_group = min_num_samples,
            x_lim = xlimits,
-           y_lim = ylimits,
+           y_lim = c(50, 30000),
            x_lab = xlabel,
            y_lab = ylabel, 
-           breaks = yaxis_breaks)
+           breaks = c(50, 200, 500, 1000, 5000, 15000, 30000))
 
 # Save plot
 ggplot2::ggsave(sv_cdf_plot_file)

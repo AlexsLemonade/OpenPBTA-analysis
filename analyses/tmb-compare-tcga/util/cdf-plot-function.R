@@ -10,7 +10,7 @@ cdf_plot <- function(df,
                      color = "black",
                      n_group = 5,
                      x_lim = c(-1.2, 1.2),
-                     y_lim,
+                     y_lim = NA,
                      x_lab,
                      y_lab, 
                      breaks) {
@@ -70,6 +70,7 @@ cdf_plot <- function(df,
   num_var <- df %>%
     dplyr::pull(!!num_col)
 
+  # Set up the data.frame for plotting
   df <- df %>%
     # We only really need these two variables from data.frame
     dplyr::transmute(
@@ -87,7 +88,16 @@ cdf_plot <- function(df,
       sample_size = paste0("n = ", dplyr::n())
     ) %>%
     dplyr::ungroup() %>%
-    dplyr::mutate(group = reorder(group, group_median)) %>%
+    dplyr::mutate(group = reorder(group, group_median))
+  
+  # Set y_lim as min and max if it was not set
+  if (is.na(y_lim)) {
+    y_lim = c(min(df$number), 
+              max(df$number))
+    }
+  
+  # Plot this
+  df %>% 
     # Now we will plot these as cumulative distribution plots
     ggplot2::ggplot(ggplot2::aes(
       x = group_rank,
