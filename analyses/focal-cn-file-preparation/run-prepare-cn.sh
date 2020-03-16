@@ -27,10 +27,11 @@ independent_specimens_file=${data_dir}/independent-specimens.wgswxs.primary.tsv
 # Prep the consensus SEG file data
 Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd', clean = TRUE)"
 
-# Run shell script implementing `bedtools coverage` for each sample bed file in
+# Run snakemake script implementing `bedtools coverage` for each sample bed file in
 # `scratch/cytoband_status` -- these files are generated in 
 # `02-add-ploidy-consensus.Rmd`
-bash run-bedtools.sh
+# currently runs 10 jobs in parallel, which should be fine for most implementations
+snakemake -j 10 --snakefile run-bedtools.snakemake
 
 # # Run annotation step for consensus file
 # Rscript --vanilla 03-prepare-cn-file.R \

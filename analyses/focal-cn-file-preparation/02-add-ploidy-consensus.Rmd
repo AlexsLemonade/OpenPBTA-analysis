@@ -34,9 +34,9 @@ library(tidyverse)
 
 ```{r}
 scratch_dir <- file.path("..", "..", "scratch")
-output_dir <- file.path(scratch_dir, "cytoband_status")
+output_dir <- file.path(scratch_dir, "cytoband_status", "segments")
 if(!dir.exists(output_dir)) {
-  dir.create(output_dir)
+  dir.create(output_dir, recursive = TRUE)
 }
 ```
 
@@ -191,21 +191,21 @@ names(bed_gain_list) <- gains_bed_status_df %>%
 temp <- purrr::imap(bed_status_list,
                     ~ write_tsv(.x,
                                 file.path(
-                                  output_dir, paste0("consensus_status.", .y, ".bed")
+                                  output_dir, paste0("consensus_callable.", .y, ".bed")
                                 ),
                                 col_names = FALSE))
 
 temp_loss <- purrr::imap(bed_loss_list,
                          ~ write_tsv(.x,
                                      file.path(
-                                       output_dir, paste0("consensus_loss_status.", .y, ".bed")
+                                       output_dir, paste0("consensus_loss.", .y, ".bed")
                                      ),
                                      col_names = FALSE))
 
 temp_gain <- purrr::imap(bed_gain_list,
                          ~ write_tsv(.x,
                                      file.path(
-                                       output_dir, paste0("consensus_gain_status.", .y, ".bed")
+                                       output_dir, paste0("consensus_gain.", .y, ".bed")
                                      ),
                                      col_names = FALSE))
 ```
