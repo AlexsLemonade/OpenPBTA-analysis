@@ -24,7 +24,6 @@ metadata <- readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"))
   dplyr::mutate(short_histology = as.character(tidyr::replace_na(short_histology, "none"))) %>% 
   dplyr::arrange(short_histology)
 
-sort(summary(as.factor(metadata$short_histology)), decreasing = TRUE)
 # Get unique histology categories
 histologies <- unique(metadata$short_histology)
 
@@ -44,21 +43,17 @@ names(histology_color_key) <- histologies
 # NA for histology we want to match the standard NA color
 histology_color_key[names(histology_color_key) == "none"] <- na_color
 
-# Add a column that has the color for each sample
-histology_sample_df <- metadata %>% 
-  dplyr::select(Kids_First_Biospecimen_ID, short_histology) %>%
-  dplyr::mutate(sample_color = dplyr::recode(short_histology, 
-                                             !!!histology_color_key)) %>% 
-  readr::write_tsv(file.path(output_dir, "histology_color_by_sample.tsv"))
-
-# Make a version with the color coding by group
-histology_group_df <- data.frame(histology_color_key) %>% 
-  readr::write_tsv(file.path(output_dir, "histology_color_by_group.tsv"))
+# Structure this as a data.frame and save to TSV
+data.frame(color_names = names(histology_color_key), 
+           hex_codes = unlist(histology_color_key)) %>% 
+  readr::write_tsv(file.path(output_dir, "histology_color_palette.tsv"))
 
 # Example Usage: 
-# histologies_w_color_key <-
-#  data.frame(Kids_First_Biospecimen_ID = common_samples) %>%
-#  dplyr::inner_join(histology_col_by_sample)
+# # Add a column that has the color for each sample
+# histology_sample_df <- metadata %>% 
+#  dplyr::select(Kids_First_Biospecimen_ID, short_histology) %>%
+#  dplyr::mutate(sample_color = dplyr::recode(short_histology, 
+#                                             !!!histology_color_key)) 
 #
 ### 3) A gradient color scale for numeric data.
 gradient_col_palette <- c("#f7f7f7",
@@ -141,8 +136,8 @@ divergent_df <- data.frame(color_names = divergent_color_names,
 #                                 divergent_col_palette)
 
 ### 5) A binary color key which are the most extreme colors in the divergent color scale. 
-binary_col_palette <- c("#b2182b", 
-                        "#2166ac", 
+binary_col_palette <- c("#2166ac", 
+                        "#b2182b", 
                          na_color) 
 
 binary_color_names <- c("binary_1", 
