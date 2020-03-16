@@ -20,9 +20,16 @@ for this project.
 ##### Example code 
 
 ```
-# # Add a column that has the color for each sample
-# histology_sample_df <- metadata %>% 
-#  dplyr::select(Kids_First_Biospecimen_ID, short_histology) %>%
-#  dplyr::mutate(sample_color = dplyr::recode(short_histology, 
-#                                             !!!histology_color_key)) 
+# Step 1) Read in color palette and format as a named list
+histology_col_palette <- readr::read_tsv(
+  file.path("figures", "palettes", "histology_color_palette.tsv")
+  ) %>% 
+  # We'll use deframe so we can use it as a recoding list
+  tibble::deframe()
+  
+# Step 2) For a data.frame with a short_histology column, use dplyr::recode
+metadata <- readr::read_tsv(file.path("data", "pbta-histologies.tsv") %>%
+  # Tack on the sample color using the short_histology column and a recode
+  dplyr::mutate(sample_color = dplyr::recode(short_histology, 
+                                             !!!histology_color_key)) 
 ```
