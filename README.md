@@ -271,7 +271,7 @@ See the [continuous integration instructions for adding analyses with multiple s
 The CI system that we use will generate, as artifacts, the contents of the `analyses` directory applied over a small test dataset.
 Our goal is to capture all of the outputs that will be used for the [OpenPBTA-manuscript](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) as artifacts.
 Files that are primarily graphic should be placed in a `plots` subdirectory of the analysis's folder.
-Whenever possible, plots should use the specified color palettes for this project.
+Plots should use the specified color palettes for this project.
 See more [specific instructions on how to use the color palette here](./figures/README.md#color-palette-usage).
 Files that are primarily tabular results files should be placed in a `results` subdirectory of the analysis's folder.
 Files that are intermediate, which means that they are useful within an analysis but do not provide outputs intended for tables, figures, or supplementary tables or figures of the [OpenPBTA-manuscript](https://github.com/AlexsLemonade/OpenPBTA-manuscript/), should be placed in `../../scratch`.
