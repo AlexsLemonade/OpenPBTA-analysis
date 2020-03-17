@@ -72,9 +72,9 @@ n <- length(unique(final_df$level3))
 
 # Now calculate the colors for each data point
 final_df2 <- final_df %>%
-  mutate(index = as.numeric(factor(final_df$level3))- 1) %>%
-  group_by(index) %>%
-  mutate(
+  dplyr::mutate(index = as.numeric(factor(final_df$level3))- 1) %>%
+  dplyr::group_by(index) %>%
+  dplyr::mutate(
     max_size = max(size),
     color = gradient_n_pal(
       sequential_hcl(
