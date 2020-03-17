@@ -12,6 +12,12 @@
 #
 # Rscript analyses/sample-distribution-analysis/02-multilayer-plots.R
 
+# Load in libraries
+library(ggplot2)
+library(colorspace)
+library(scales)
+library(treemapify)
+
 # magrittr pipe
 `%>%` <- dplyr::`%>%`
 
@@ -60,7 +66,54 @@ final_df <- histologies_df %>%
 # Save to tsv file
 readr::write_tsv(final_df, file.path(results_dir, "plots_df.tsv"))
 
-# Create a treemap
+# Create and save treemap using ggplot2
+# Number of palettes needed
+n <- length(unique(final_df$level3))
+
+# Now calculate the colors for each data point
+final_df2 <- final_df %>%
+  mutate(index = as.numeric(factor(final_df$level3))- 1) %>%
+  group_by(index) %>%
+  mutate(
+    max_size = max(size),
+    color = gradient_n_pal(
+      sequential_hcl(
+        6,
+        h = 360 * index[1]/n,
+        c = c(45, 20),
+        l = c(30, 80),
+        power = .5)
+    )(size/max_size)
+  )
+
+# Now plot using `geom_treemap` and save
+ggsave(
+ggplot(final_df2, aes(area = size, fill = color, label=level3, subgroup=level2, subgroup2=level1)) +
+  geom_treemap() +
+  geom_treemap_subgroup_border(colour="white") +
+  geom_treemap_text(fontface = "italic",
+                    colour = "white",
+                    place = "centre",
+                    grow = F,
+                    reflow=T) +
+  geom_treemap_subgroup_text(place = "top",
+                             grow = T,
+                             reflow = T,
+                             alpha = 0.6,
+                             colour = "#FAFAFA",
+                             min.size = 0) +
+  geom_treemap_subgroup2_text(place = "centre",
+                             grow = T,
+                             alpha = 0.8,
+                             colour = "#FAFAFA",
+                             min.size = 0) +
+  scale_fill_identity(),
+file = file.path(plots_dir, "distribution_across_cancer_types_treemap.pdf"),
+width = 22,
+height = 10
+)
+
+# Create a treemap (for interactive treemap)
 tm <-
   treemap::treemap(
     final_df,
@@ -69,20 +122,6 @@ tm <-
     vColor = color,
     draw = TRUE
   )$tm
-
-# Save treemap -- throws an error as is so an alternative method of saving
-# the treemap plot still needs to be established
-# ggplot2::ggsave(
-#   treemap::treemap(
-#     final_df,
-#     index = c("level1", "level2", "level3"),
-#     vSize = "counter",
-#     vColor = color,
-#     title = "Sample Distribution Across Cancer Types"),
-#   file = file.path(plots_dir, "distribution_across_cancer_types_treemap.pdf"),
-#   width = 22,
-#   height = 10
-# )
 
 # Convert the tm data.frame into a d3.js hierarchy object which is needed
 # for the sund2b plot

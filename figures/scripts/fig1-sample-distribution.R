@@ -5,6 +5,12 @@
 #
 # This script is intended to run steps needed to create Figure 1.
 
+# Load in libraries
+library(dplyr)
+library(colorspace)
+library(scales)
+library(treemapify)
+
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
@@ -59,25 +65,71 @@ gg_types_bar <- disease_expression %>%
   ggplot2::geom_text(nudge_y = 5.5, size = 1,
                      ggplot2::aes(label = paste0(disease_expression$percent)))
 
-# Create a treemap -- if we decide to use the treemap this would need to be
-# transformed into a ggplot object for `ggarrange` function in the section below
-# tm <-
-#   treemap::treemap(
-#     plots_df,
-#     index = c("level1", "level2", "level3"),
-#     vSize = "counter",
-#     vColor = color,
-#     draw = TRUE
-#   )$draw
+# Create a treemap of broad histology, short histology, and integrated diagnosis
+# Number of palettes needed
+n <- length(unique(plots_df$level3))
 
-## TODO: Re-run Github Contributions plot/table here
+# Now calculate the colors for each data point
+plots_df2 <- plots_df %>%
+  mutate(index = as.numeric(factor(plots_df$level3))- 1) %>%
+  group_by(index) %>%
+  mutate(
+    max_size = max(size),
+    color = gradient_n_pal(
+      sequential_hcl(
+        6,
+        h = 360 * index[1]/n,
+        c = c(45, 20),
+        l = c(30, 80),
+        power = .5)
+    )(size/max_size)
+  )
+
+# Plot the treemap
+treemap <- ggplot(plots_df2, aes(area = size, fill = color, label=level3, subgroup=level2, subgroup2=level1)) +
+    geom_treemap() +
+    geom_treemap_subgroup_border(colour="white") +
+    geom_treemap_text(fontface = "italic",
+                      colour = "white",
+                      place = "centre",
+                      grow = F,
+                      reflow=T) +
+    geom_treemap_subgroup_text(place = "top",
+                               grow = T,
+                               reflow = T,
+                               alpha = 0.6,
+                               colour = "#FAFAFA",
+                               min.size = 0) +
+    geom_treemap_subgroup2_text(place = "centre",
+                                grow = T,
+                                alpha = 0.8,
+                                colour = "#FAFAFA",
+                                min.size = 0) +
+    scale_fill_identity()
+
+## TODO: Re-run Github Contributions plot/table here -- for now we will define
+## this plot as NULL
+github_contributions_plot <- NULL
+
+## TODO: Re-run or load in plots of the project features and assays -- for now
+## we will define these plots as NULL
+project_assays_plot <- NULL
+project_features_plot <- NULL
 
 #### Assemble multipanel plot -------------------------------------------------
-ggpubr::ggarrange(ggpubr::ggarrange(gg_types_bar,
+ggpubr::ggarrange(ggpubr::ggarrange(treemap,
+                                    project_features_plot,
                                     ncol = 2,
-                                    labels = c("A", ""),
-                                    widths = c(2, 1),
-                                    font.label = list(size = 22)
+                                    labels = c("A", "C"),
+                                    widths = c(2, 1.6),
+                                    font.label = list(size = 20)
+),
+ggpubr::ggarrange(project_assays_plot,
+                  github_contributions_plot,
+                  ncol = 2,
+                  labels = c("B", "D"),
+                  widths = c(1.6, 2),
+                  font.label = list(size = 20)
 ),
 nrow = 2,
 heights = c(2, 2)
