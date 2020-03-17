@@ -1,5 +1,6 @@
 ---
 title: "Project specific filtering"
+author: "K S Gaonkar (D3B); Jaclyn Taroni (CCDL)"
 output: html_notebook
 params:
   histology:
@@ -45,7 +46,7 @@ params:
     
 ---
 
-K S Gaonkar
+
 
 Filtered Fusions:
 1. In-frame fusions is called in atleast 2 samples per histology OR
@@ -62,7 +63,9 @@ This notebook assumes you are in OpenPBTA-analysis project folder structure.
 
 
 ```{r}
+
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
 #load required packages
 suppressPackageStartupMessages(library("readr"))
 suppressPackageStartupMessages(library("tidyverse"))
@@ -79,11 +82,12 @@ QCGeneFiltered_filtFusion<-rbind(strandedQCGeneFiltered_filtFusion,polyaQCGeneFi
 
 write.table(QCGeneFiltered_filtFusion, file.path(outputfolder, "FilteredFusion.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
 
-# subset for recurrent fusion detection and multifused genes QC
-fusion_calls<-unique(QCGeneFiltered_filtFusion)
-# remove distance from intergenic fusions
-fusion_calls$FusionName<-unlist(lapply(fusion_calls$FusionName,function(x) rm_between(x, "(", ")", extract = F)))
+# remove strandedQCGeneFiltered_filtFusion and polyaQCGeneFiltered_filtFusion
+rm(strandedQCGeneFiltered_filtFusion)
+rm(polyaQCGeneFiltered_filtFusion)
 
+# subset for recurrent fusion detection and multifused genes QC
+fusion_calls<-QCGeneFiltered_filtFusion %>% mutate(FusionName=rm_between(.data$FusionName,"(",")",extract = F))
 
 # get grouping column id
 group<-params$group
@@ -132,18 +136,18 @@ fusion_calls<-merge(fusion_calls,clinical,by.x="Sample",by.y="Kids_First_Biospec
 
 # filter for putative driver genes
 putative_driver_annotated_fusions <- fusion_calls %>%
-  dplyr::select(-Caller,-annots) %>%
+  dplyr::select(-Caller) %>%
   unique() %>%
   dplyr::filter(!is.na(Gene1A_anno) | !is.na(Gene1B_anno) | !is.na(Gene2A_anno) | !is.na(Gene2B_anno)) %>%
   unique()
 
 # filter fusions found in more than 4 histologies
-FusionInNhist<-putative_driver_annotated_fusions %>% dplyr::select(FusionName,group) %>% unique() %>% group_by(FusionName) %>% summarise(count=n())
-FusionInNhist<-FusionInNhist[FusionInNhist$count>countHistology,]
-FusionInNhist<-FusionInNhist[order(FusionInNhist$count,decreasing = TRUE),]
-FusionInNhist
-
-putative_driver_annotated_fusions<-putative_driver_annotated_fusions %>% filter(!FusionName %in% FusionInNhist$FusionName)
+# FusionInNhist<-putative_driver_annotated_fusions %>% dplyr::select(FusionName,group) %>% unique() %>% group_by(FusionName) %>% summarise(count=n())
+# FusionInNhist<-FusionInNhist[FusionInNhist$count>countHistology,]
+# FusionInNhist<-FusionInNhist[order(FusionInNhist$count,decreasing = TRUE),]
+# FusionInNhist
+# 
+# putative_driver_annotated_fusions<-putative_driver_annotated_fusions %>% filter(!FusionName %in% FusionInNhist$FusionName)
 
 
 ```
@@ -154,7 +158,7 @@ putative_driver_annotated_fusions<-putative_driver_annotated_fusions %>% filter(
 fusion_calls<-fusion_calls %>%
   # remove local rearrangement/adjacent genes
   dplyr::filter(!grepl("LOCAL_REARRANGEMENT|LOCAL_INVERSION",annots)) %>%
-  dplyr::select(-Caller,-annots) %>%
+  dplyr::select(-Caller) %>%
   unique()
 
 
@@ -262,7 +266,7 @@ putative_driver_fusions<-rbind(QCGeneFiltered_recFusionUniq,putative_driver_anno
   unique() %>% dplyr::select (-group) %>%
   as.data.frame()
 
-write.table(putative_driver_fusions,file.path(outputfolder,"pbta-fusion-putative-oncogenic.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
+write.table(putative_driver_fusions,file.path(root_dir,"scratch","pbta-fusion-putative-oncogenic-preQC.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
 
 ```
 
