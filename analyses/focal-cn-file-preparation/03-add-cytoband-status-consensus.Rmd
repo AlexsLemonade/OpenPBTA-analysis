@@ -29,7 +29,7 @@ library(tidyverse)
 ### Files and directories
 
 ```{r}
-scratch_dir <- file.path("..", "..", "scratch", "cytoband_status")
+scratch_dir <- file.path("..", "..", "scratch")
 ```
 
 ### Read in files 
@@ -41,12 +41,12 @@ all_callable_cytoband_status_df <-
   read_tsv(file.path(scratch_dir, "intersect_with_cytoband_callable.bed"),
                   col_names = FALSE)
 
-losses_cytoband_status_df <-
-  read_tsv(file.path(scratch_dir, "intersect_with_cytoband_losses.bed"),
+loss_cytoband_status_df <-
+  read_tsv(file.path(scratch_dir, "intersect_with_cytoband_loss.bed"),
                   col_names = FALSE)
 
-gains_cytoband_status_df <-
-  read_tsv(file.path(scratch_dir, "intersect_with_cytoband_gains.bed"),
+gain_cytoband_status_df <-
+  read_tsv(file.path(scratch_dir, "intersect_with_cytoband_gain.bed"),
                   col_names = FALSE)
 ```
 
@@ -65,7 +65,7 @@ all_callable_cytoband_status_df <-
   ) %>%
   filter(!is.na(cytoband))
 
-gains_cytoband_status_df <- gains_cytoband_status_df %>%
+gain_cytoband_status_df <- gain_cytoband_status_df %>%
   select(
     chr = X1,
     cytoband = X4,
@@ -74,7 +74,7 @@ gains_cytoband_status_df <- gains_cytoband_status_df %>%
   ) %>%
   filter(!is.na(cytoband))
 
-losses_cytoband_status_df <- losses_cytoband_status_df %>%
+loss_cytoband_status_df <- loss_cytoband_status_df %>%
   select(
     chr = X1,
     cytoband = X4,
@@ -88,9 +88,9 @@ losses_cytoband_status_df <- losses_cytoband_status_df %>%
 
 ```{r}
 final_df <- all_callable_cytoband_status_df %>%
-  left_join(gains_cytoband_status_df,
+  left_join(gain_cytoband_status_df,
             by = c("chr", "cytoband", "Kids_First_Biospecimen_ID")) %>%
-  left_join(losses_cytoband_status_df,
+  left_join(loss_cytoband_status_df,
             by = c("chr", "cytoband", "Kids_First_Biospecimen_ID"))
 ```
 
@@ -108,18 +108,22 @@ final_df <- final_df %>%
 ### Add `dominant_status` field to final data.frame
 
 ```{r}
-# Replace NA's with 0
-final_df$coverage_ratio_gains <- replace_na(final_df$coverage_ratio_gains, 0)
-final_df$coverage_ratio_losses <- replace_na(final_df$coverage_ratio_losses, 0)
-
 # Create a dominant status column
 final_df <- final_df %>%
+  replace_na(list(
+    coverage_ratio_gains = 0,
+    coverage_ratio_losses = 0
+  )) %>%
   group_by(chromosome_arm) %>%
-  mutate(dominant_status = case_when((coverage_ratio_gains > coverage_ratio_losses) ~ "gain",
-                                     (coverage_ratio_losses > coverage_ratio_gains) ~ "loss",
-                                     coverage_ratio_callable == 0 ~ "uncallable",
-                                     TRUE ~ "neutral"
-  ))
+  mutate(
+    dominant_status = case_when(
+      coverage_ratio_callable < 0.5 ~ "uncallable",
+      coverage_ratio_gains / coverage_ratio_callable > 0.5 ~ "gain",
+      coverage_ratio_losses / coverage_ratio_callable > 0.5 ~ "loss",
+      (coverage_ratio_gains + coverage_ratio_losses) / coverage_ratio_callable > 0.5 ~ "unstable",
+      TRUE ~ "neutral"
+    )
+  )
 
 # Display final table
 final_df %>%
@@ -229,6 +233,10 @@ final_gistic_df <- final_df %>%
 final_gistic_df <- final_gistic_df %>%
   arrange(dominant_status) %>%
   group_by(chromosome_arm) %>%
+  # Keep only the first of the `dominant_status` values for a chromosome arm
+  # when there are more than one -- the `domaninant_status` values are arranged,
+  # therefore, "neutral" will be the second of two values when paired with
+  # "loss" or "gain"
   mutate(
     dominant_status = case_when(
       length(unique(dominant_status)) > 1 ~ dominant_status[[1]],
@@ -246,8 +254,9 @@ write_tsv(final_gistic_df, file.path("results", "consensus_seg_gistic_cytoband_s
 # Display final table
 final_gistic_df
 
-# Tally how many times gistic arm status and our arm status agree
-sum(final_gistic_df$dominant_status %in% final_gistic_df$gistic_arm_status)
+# Display only rows where gistic arm status and our arm status agree
+final_gistic_df %>%
+  filter(dominant_status == gistic_arm_status)
 ```
 
 ## Session Info
