@@ -209,7 +209,7 @@ Choose a name that is unique from other analyses and somewhat detailed.
 For example, instead of `gene-expression`, choose `gene-expression-clustering` if you are clustering samples by their gene expression values.
 You should assume that any data files are in the `../../data` directory and that their file names match what the `download-data.sh` script produces.
 These files should be read in at their relative path, so that we can re-run analyses if the underlying data change.
-Files that are primarily graphic should be placed in a `plots` subdirectory and should adhere to the [color palette guide](./figures/README#color-palette-usage).
+Files that are primarily graphic should be placed in a `plots` subdirectory and should adhere to the [color palette guide](./figures/README.md#color-palette-usage).
 Files that are primarily tabular results files should be placed in a `results` subdirectory.
 Intermediate files that are useful within the processing steps but that do not represent final results should be placed in `../../scratch/`.
 It is safe to assume that files placed in `../../scratch` will be available to all analyses within the same folder.
@@ -272,7 +272,7 @@ The CI system that we use will generate, as artifacts, the contents of the `anal
 Our goal is to capture all of the outputs that will be used for the [OpenPBTA-manuscript](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) as artifacts.
 Files that are primarily graphic should be placed in a `plots` subdirectory of the analysis's folder.
 Whenever possible, plots should use the specified color palettes for this project.
-See more [specific instructions on how to use the color palette here](./figures/README#color-palette-usage).
+See more [specific instructions on how to use the color palette here](./figures/README.md#color-palette-usage).
 Files that are primarily tabular results files should be placed in a `results` subdirectory of the analysis's folder.
 Files that are intermediate, which means that they are useful within an analysis but do not provide outputs intended for tables, figures, or supplementary tables or figures of the [OpenPBTA-manuscript](https://github.com/AlexsLemonade/OpenPBTA-manuscript/), should be placed in `../../scratch`.
 
