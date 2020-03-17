@@ -41,9 +41,11 @@ The code to generate genelistreference.txt and fusionreference.txt is available 
 
 `03-Calc-zscore-annotate.R` : Calculates z-score for gene fused gene's expression compared to GTeX brain samples and annotates differential expression status
 
-`00-QC_putative_onco_fusion_dustribution.Rmd` : Plots fusions found in multiple (more than 4) histologies to review as these will be removed in 04-project-specific-filtering.Rmd  
+`04-project-specific-filtering.Rmd` : Performs project specific filtering. We prioritize the fusions as putative-oncogenic fusions if any fused gene in the fusion is annotated as kinases, oncogenes, tumor suppressors, curated transcription factors or present in COSMIC Cancer Gene Census list. We also annotated fusions if they are present in TCGA fusions list.
+Oncogene annotated fusions do not need to be in both callers to be retained however if these fusions are found in more than 4 histologies we treat them as false calls and remove them.
+To scavenge back non-oncogenic fusions that are recurrently found uniquely in a broad_histology we kept fusions that were called by both callers and if >2 samples per histology called the fusion.
+We removed the non-oncogenic fusions with genes fused more than 5 times in a samples or found in more than 1 histology as potential artifact. 
 
-`04-project-specific-filtering.Rmd` : Performs project specific filtering. We removed fusions with genes fused more than 5 times in a samples as potential artifact. We kept fusions that were called by both callers and if >2 samples per histology called the fusion. We then prioritize the fusions as putative-oncogenic fusions if any fused gene in the fusion is annotated as kinases, oncogenes, tumor suppressors, curated transcription factors or present in COSMIC Cancer Gene Census list. We also annotated fusions if they are present in TCGA fusions list. 
-Annotated fusions do not need to be in both callers to be retained.
+`05-QC_putative_onco_fusion_dustribution.Rmd` : Plots fusions found in multiple (more than 4) histologies in scratch/pbta-fusion-putative-oncogenic-preQC.tsv from 04-project-specific-filtering.Rmd and removes fusion calls found in more than 4 histologies as QC filtering.
 
-`05-recurrent-fusions-per-histology.R` : Identifies recurrent fusions and genes that are recurrently observed in fusions. We identified RNA-seq samples that can be used independently for each patient. After the selection of samples we identify which fusions and genes are recurrent (found in >3 participants per histology) in our `pbta-fusion-putative-oncogenic.tsv` dataset.
+`06-recurrent-fusions-per-histology.R` : Identifies recurrent fusions and genes that are recurrently observed in fusions. We identified RNA-seq samples that can be used independently for each patient. After the selection of samples we identify which fusions and genes are recurrent (found in >3 participants per histology) in our `pbta-fusion-putative-oncogenic.tsv` dataset.
