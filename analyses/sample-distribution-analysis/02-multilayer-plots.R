@@ -67,50 +67,66 @@ final_df <- histologies_df %>%
 readr::write_tsv(final_df, file.path(results_dir, "plots_df.tsv"))
 
 # Create and save treemap using ggplot2
-# Number of palettes needed
-n <- length(unique(final_df$level3))
+# Read in the histology color palette
+color_palette <-
+  readr::read_tsv(file.path(
+    root_dir,
+    "figures",
+    "palettes",
+    "histology_color_palette.tsv"
+  ))
 
-# Now calculate the colors for each data point
+# Join the color palette for the colors for each short histology value --
+# palette is generated in `figures/scripts/color_palettes.R`
 final_df2 <- final_df %>%
-  dplyr::mutate(index = as.numeric(factor(final_df$level3))- 1) %>%
-  dplyr::group_by(index) %>%
-  dplyr::mutate(
-    max_size = max(size),
-    color = gradient_n_pal(
-      sequential_hcl(
-        6,
-        h = 360 * index[1]/n,
-        c = c(45, 20),
-        l = c(30, 80),
-        power = .5)
-    )(size/max_size)
-  )
+  dplyr::left_join(color_palette, by = c("level2" = "color_names"))
 
-# Now plot using `geom_treemap` and save
-ggsave(
-ggplot(final_df2, aes(area = size, fill = color, label=level3, subgroup=level2, subgroup2=level1)) +
+# Plot the treemap
+treemap <-
+  ggplot(
+    final_df2,
+    aes(
+      area = size,
+      fill = hex_codes,
+      label = level1,
+      subgroup = level2,
+      subgroup2 = level3
+    )
+  ) +
   geom_treemap() +
-  geom_treemap_subgroup_border(colour="white") +
-  geom_treemap_text(fontface = "italic",
-                    colour = "white",
-                    place = "centre",
-                    grow = F,
-                    reflow=T) +
-  geom_treemap_subgroup_text(place = "top",
-                             grow = T,
-                             reflow = T,
-                             alpha = 0.6,
-                             colour = "#FAFAFA",
-                             min.size = 0) +
-  geom_treemap_subgroup2_text(place = "centre",
-                             grow = T,
-                             alpha = 0.8,
-                             colour = "#FAFAFA",
-                             min.size = 0) +
-  scale_fill_identity(),
-file = file.path(plots_dir, "distribution_across_cancer_types_treemap.pdf"),
-width = 22,
-height = 10
+  geom_treemap_subgroup_border(colour = "white") +
+  geom_treemap_text(
+    fontface = "italic",
+    colour = "white",
+    place = "center",
+    alpha = 0.4,
+    grow = T,
+    reflow = T
+  ) +
+  geom_treemap_subgroup_text(
+    place = "top",
+    grow = T,
+    reflow = T,
+    alpha = 0.6,
+    colour = "#FAFAFA",
+    min.size = 0
+  ) +
+  geom_treemap_subgroup2_text(
+    place = "bottom",
+    grow = T,
+    reflow = T,
+    alpha = 0.5,
+    colour = "#FAFAFA",
+    min.size = 0
+  ) +
+  theme(legend.position = "none")
+
+# Save treemap
+ggsave(
+  treemap,
+  file = file.path(plots_dir, "distribution_across_cancer_types_treemap.pdf"),
+  width = 22,
+  height = 10
 )
 
 # Create a treemap (for interactive treemap)

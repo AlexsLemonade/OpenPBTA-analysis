@@ -8,7 +8,12 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 # Make an output folder for all directories
 mkdir -p pngs
 
-## Sample distribution
+################ Sample distribution figure
+# Run sample distribution analysis
+bash ../analyses/sample-distribution-analysis/run-sample-distribution.sh
+
+# Run the figure assembly
+Rscript scripts/fig1-sample-distribution.R
 
 ################ Mutational landscape figure
 # Run both SNV caller consensus scripts
