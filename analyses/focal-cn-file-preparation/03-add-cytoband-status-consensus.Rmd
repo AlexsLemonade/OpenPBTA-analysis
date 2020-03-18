@@ -152,6 +152,9 @@ final_df$dominant_status <- replace_na(final_df$dominant_status, "uncallable")
 # Display final table with `uncallable` value added to `dominant_status` column
 final_df %>%
   select(chr, cytoband, dominant_status, everything())
+
+# Write to file
+write_tsv(final_df, file.path("results", "consensus_seg_with_ucsc_cytoband.tsv.gz"))
 ```
 
 ## Wrangle GISTIC

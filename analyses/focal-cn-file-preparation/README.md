@@ -1,6 +1,6 @@
 ## Focal copy number file preparation
 
-**Module authors:** Chante Bethell ([@cbethell](https://github.com/cbethell)) and Jaclyn Taroni ([@jaclyn-taroni](https://github.com/jaclyn-taroni))
+**Module authors:** Chante Bethell ([@cbethell](https://github.com/cbethell)), Joshua Shapiro ([@jashapiro](https://github.com/jashapiro)), and Jaclyn Taroni ([@jaclyn-taroni](https://github.com/jaclyn-taroni))
 
 The copy number data from OpenPBTA are provided as ranges or segments.
 The purpose of this module is to map from those ranges to gene identifiers for consumption by downstream analyses (e.g., OncoPrint plotting).
@@ -12,6 +12,8 @@ To run this analysis _only on consensus SEG file_, use the following (from the r
 ```
 bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
 ```
+**Note**: The `run-bedtools.snakemake` script is implemented in `run-prepare-cn.sh` to run the bedtools coverage steps between the UCSC cytoband file and the samples in the copy number files produced in `02-add-ploidy-consensus.Rmd`.
+This script currently takes a while to run, and therefore slows down the processing speed of the main shell script `run-prepare-cn.sh`.
 
 Running the following from the root directory of the repository will run the steps for the original copy number call files (CNVkit and ControlFreeC) in addition to the consensus SEG file:
 
@@ -28,9 +30,11 @@ RUN_ORIGINAL=1 bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
 
 * `02-add-ploidy-consensus.Rmd` - This is very similar to the CNVkit file prep (`01-add-ploidy-cnvkit.Rmd`).
 However, there are instances in the consensus SEG file where `copy.num` is `NA` which are removed.
-See the notebook for more information.
+See the notebook for more information. This notebook also prepares lists of copy number bed files by sample for use in the implementation of bedtools coverage in `run-bedtools.snakemake`.
 
-* `03-prepare-cn-file.R` - This script performs the ranges to annotation mapping using the GENCODE v27 GTF included via the data download step; it takes the ControlFreeC file or a SEG (e.g., CNVkit, consensus SEG) file prepared with `01-add-ploidy-cnvkit.Rmd` and  `02-add-ploidy-cnvkit.Rmd` as input.
+* `03-add-cytoband-status-consensus.Rmd` - This notebook reads in the bedtools coverage output files and defines the dominant copy number status for each chromosome arm. The GISTIC dominant status by chromsome arm is then compared to our calls. 
+
+* `04-prepare-cn-file.R` - This script performs the ranges to annotation mapping using the GENCODE v27 GTF included via the data download step; it takes the ControlFreeC file or a SEG (e.g., CNVkit, consensus SEG) file prepared with `01-add-ploidy-cnvkit.Rmd` and  `02-add-ploidy-cnvkit.Rmd` as input.
   **The mapping is limited to _exons_.**
   Mapping to cytobands is performed with the [`org.Hs.eg.db`](https://doi.org/doi:10.18129/B9.bioc.org.Hs.eg.db) package.
   A table with the following columns is returned:
@@ -38,6 +42,8 @@ See the notebook for more information.
   | biospecimen_id | status | copy_number | ploidy | ensembl | gene_symbol | cytoband |
   |----------------|--------|-------------|--------|---------|-------------|---------|
   Any segment that is copy neutral is filtered out of this table. In addition, [any segments with copy number > (2 * ploidy) are marked as amplifications](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/e2058dd43d9b1dd41b609e0c3429c72f79ff3be6/analyses/focal-cn-file-preparation/03-prepare-cn-file.R#L275) in the `status` column.
+
+* `05-define-most-focal-cn-units.Rmd` - This notebook defines the _most focal units_ of the recurrent CNVs using the output file of `03-add-cytoband-status-consensus.Rmd` to filter out entire chromosome arm loss or gain. **This notebook is still in progress.**
 
 * `rna-expression-validation.R` - This script examines RNA-seq expression levels (RSEM FPKM) of genes that are called as deletions.
 It produces loss/neutral and zero/neutral correlation plots, as well as stacked barplots displaying the distribution of ranges in expression across each of the calls (loss, neutral, zero).
@@ -66,9 +72,45 @@ focal-cn-file-preparation
 ├── 01-add-ploidy-cnvkit.nb.html
 ├── 02-add-ploidy-consensus.Rmd
 ├── 02-add-ploidy-consensus.nb.html
-├── 03-prepare-cn-file.R
+├── 03-add-cytoband-status-consensus.Rmd
+├── 03-add-cytoband-status-consensus.nb.html
+├── 04-prepare-cn-file.R
+├── 05-define-most-focal-cn-units.Rmd
+├── 05-define-most-focal-cn-units.nb.html
 ├── README.md
+├── annotation_files
+│   └── txdb_from_gencode.v27.gtf.db
 ├── display-plots.md
+├── gistic-results
+│   └── pbta-cnv-cnvkit-gistic
+│       ├── D.cap1.5.mat
+│       ├── all_data_by_genes.txt
+│       ├── all_lesions.conf_90.txt
+│       ├── all_thresholded.by_genes.txt
+│       ├── amp_genes.conf_90.txt
+│       ├── amp_qplot.pdf
+│       ├── amp_qplot.png
+│       ├── broad_data_by_genes.txt
+│       ├── broad_gistic_plot.pdf
+│       ├── broad_significance_results.txt
+│       ├── broad_values_by_arm.txt
+│       ├── del_genes.conf_90.txt
+│       ├── del_qplot.pdf
+│       ├── del_qplot.png
+│       ├── focal_dat.0.98.mat
+│       ├── focal_data_by_genes.txt
+│       ├── freqarms_vs_ngenes.pdf
+│       ├── gistic_inputs.mat
+│       ├── peak_regs.mat
+│       ├── perm_ads.mat
+│       ├── raw_copy_number.pdf
+│       ├── raw_copy_number.png
+│       ├── regions_track.conf_90.bed
+│       ├── sample_cutoffs.txt
+│       ├── sample_seg_counts.txt
+│       ├── scores.0.98.mat
+│       ├── scores.gistic
+│       └── wide_peak_regs.mat
 ├── plots
 │   ├── cnvkit_annotated_cn_autosomes_polya_loss_cor_plot.png
 │   ├── cnvkit_annotated_cn_autosomes_polya_stacked_plot.png
@@ -111,9 +153,12 @@ focal-cn-file-preparation
 │   ├── cnvkit_annotated_cn_x_and_y.tsv.gz
 │   ├── consensus_seg_annotated_cn_autosomes.tsv.gz
 │   ├── consensus_seg_annotated_cn_x_and_y.tsv.gz
+│   ├── consensus_seg_gistic_cytoband_status.tsv
+│   ├── consensus_seg_with_ucsc_cytoband.tsv.gz
 │   ├── controlfreec_annotated_cn_autosomes.tsv.gz
 │   └── controlfreec_annotated_cn_x_and_y.tsv.gz
 ├── rna-expression-validation.R
+├── run-bedtools.snakemake
 ├── run-prepare-cn.sh
 └── util
     └── rna-expression-functions.R

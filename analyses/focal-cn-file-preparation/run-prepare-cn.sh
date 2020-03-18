@@ -33,14 +33,17 @@ Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd', clean = T
 # currently runs 10 jobs in parallel, which should be fine for most implementations
 snakemake -j 10 --snakefile run-bedtools.snakemake
 
-# # Run annotation step for consensus file
-# Rscript --vanilla 03-prepare-cn-file.R \
-#   --cnv_file ${scratch_dir}/consensus_seg_with_status.tsv \
-#   --gtf_file $gtf_file \
-#   --metadata $histologies_file \
-#   --filename_lead "consensus_seg_annotated_cn" \
-#   --seg
-# 
+# Determine the dominant status for each chromosome arm and compare with GISTIC's arm status calls
+Rscript --vanilla -e "rmarkdown::render('03-add-cytoband-status-consensus.Rmd', clean = TRUE)"
+
+# Run annotation step for consensus file
+Rscript --vanilla 04-prepare-cn-file.R \
+  --cnv_file ${scratch_dir}/consensus_seg_with_status.tsv \
+  --gtf_file $gtf_file \
+  --metadata $histologies_file \
+  --filename_lead "consensus_seg_annotated_cn" \
+  --seg
+
 # libraryStrategies=("polya" "stranded")
 # chromosomesType=("autosomes" "x_and_y")
 # for strategy in ${libraryStrategies[@]}; do
@@ -65,7 +68,7 @@ snakemake -j 10 --snakefile run-bedtools.snakemake
 #   Rscript --vanilla -e "rmarkdown::render('01-add-ploidy-cnvkit.Rmd', clean = TRUE)"
 # 
 #   # Run annotation step for CNVkit
-#   Rscript --vanilla 03-prepare-cn-file.R \
+#   Rscript --vanilla 04-prepare-cn-file.R \
 #     --cnv_file ${scratch_dir}/cnvkit_with_status.tsv \
 #     --gtf_file $gtf_file \
 #     --metadata $histologies_file \
@@ -73,7 +76,7 @@ snakemake -j 10 --snakefile run-bedtools.snakemake
 #     --seg
 # 
 #   # Run annotation step for ControlFreeC
-#   Rscript --vanilla 03-prepare-cn-file.R \
+#   Rscript --vanilla 04-prepare-cn-file.R \
 #     --cnv_file ${data_dir}/pbta-cnv-controlfreec.tsv.gz \
 #     --gtf_file $gtf_file \
 #     --metadata $histologies_file \
