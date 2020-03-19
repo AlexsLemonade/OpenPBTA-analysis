@@ -8,7 +8,7 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 subset_dir<-file.path(root_dir,"analyses","molecular-subtyping-LGAT","lgat-subset")
 
 # clinical file
-clinical<- read_tsv(file.path(root_dir,"data","pbta-histologies.tsv"))
+clinical<- readr::read_tsv(file.path(root_dir,"data","pbta-histologies.tsv"))
 # consensus mutation data
 consensusMutation <-read_tsv(file.path(root_dir,"data","pbta-snv-consensus-mutation.maf.tsv.gz"))
 
@@ -39,6 +39,5 @@ rm(consensusMutation)
 
 # save to subset folder
 write_tsv(consensusMutationSubset,file.path(subset_dir, "LGAT_snv_subset.tsv"))
-
 
 
