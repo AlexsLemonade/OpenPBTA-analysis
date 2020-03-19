@@ -70,7 +70,7 @@ deconv <- function(expr.input, method) {
   # subset clinical
   clin.sub  <- clin %>% 
     filter(Kids_First_Biospecimen_ID %in% colnames(expr.input)) %>%
-    dplyr::select(Kids_First_Biospecimen_ID, broad_histology)
+    dplyr::select(Kids_First_Biospecimen_ID, broad_histology, short_histology, molecular_subtype)
   
   # deconvolute using specified method
   res <- deconvolute(gene_expression = as.matrix(expr.input), method = method)
