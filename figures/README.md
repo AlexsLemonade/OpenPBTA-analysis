@@ -1,4 +1,3 @@
-
 ## Running the figure generation script
 
 Steps to refresh all publication-ready figures. 
@@ -61,12 +60,12 @@ Biospecimens without a `short_histology` designation are coded as `none` and ass
 |`divergent_col_palette.tsv`|<br>divergent_low_5:![053061](https://placehold.it/150x40/053061/FFFFFF?text=053061) <br>divergent_low_4:![2166ac](https://placehold.it/150x40/2166ac/FFFFFF?text=2166ac) <br>divergent_low_3:![4393c3](https://placehold.it/150x40/4393c3/FFFFFF?text=4393c3) <br>divergent_low_2:![92c5de](https://placehold.it/150x40/92c5de/FFFFFF?text=92c5de) <br>divergent_low_1:![d1e5f0](https://placehold.it/150x40/d1e5f0/FFFFFF?text=d1e5f0) <br>divergent_neutral:![f7f7f7](https://placehold.it/150x40/f7f7f7/FFFFFF?text=f7f7f7) <br>divergent_high_1:![fddbc7](https://placehold.it/150x40/fddbc7/FFFFFF?text=fddbc7) <br>divergent_high_2:![f4a582](https://placehold.it/150x40/f4a582/FFFFFF?text=f4a582) <br>divergent_high_3:![d6604d](https://placehold.it/150x40/d6604d/FFFFFF?text=d6604d) <br>divergent_high_4:![b2182b](https://placehold.it/150x40/b2182b/FFFFFF?text=b2182b) <br>divergent_high_5:![67001f](https://placehold.it/150x40/67001f/FFFFFF?text=67001f) <br>na_color:![f1f1f1](https://placehold.it/150x40/f1f1f1/FFFFFF?text=f1f1f1)|12 hex codes where the numbers in the name indicate distance from `divergent_neutral`.|For data has that is bidirectional e.g. Amplification/Deletion values like `seg.mean`|
 |`binary_col_palette.tsv` |<br>binary_1:![2166ac](https://placehold.it/150x40/2166ac/FFFFFF?text=2166ac) <br>binary_2:![b2182b](https://placehold.it/150x40/b2182b/FFFFFF?text=b2182b) <br>na_color:![f1f1f1](https://placehold.it/150x40/f1f1f1/000000?text=f1f1f1)|A vector of two hex codes|For binary variables e.g. presence/absence or Amp/Del as statuses|
 
-
 ## Color coding examples in R
 
 #### Example 1) Color coding by `short_histology`.
 
 **Step 1)** Read in color palette and format as a named list
+
 ```
 histology_col_palette <- readr::read_tsv(
   file.path("figures", "palettes", "histology_color_palette.tsv")
@@ -76,6 +75,7 @@ histology_col_palette <- readr::read_tsv(
 ```
 
 **Step 2)** For any data.frame with a `short_histology` column, recode NAs as "none".
+
 ```
 metadata <- readr::read_tsv(file.path("data", "pbta-histologies.tsv") %>%
   # Easier to deal with NA short histologies if they are labeled something different
@@ -83,6 +83,7 @@ metadata <- readr::read_tsv(file.path("data", "pbta-histologies.tsv") %>%
 ```
 
 **Step 3)** Use dplyr::recode on `short_histology` column to make a new color column.
+
 ```
 metadata <- metadata %>%
   # Tack on the sample color using the short_histology column and a recode
@@ -92,10 +93,9 @@ metadata <- metadata %>%
 
 **Step 4)** Make your plot and use the `sample_color` column.  
 
-Using the `ggplot2::scale_fill_identity()` or `ggplot2::scale_color_identity()`
-allows you to supply the `hex_code` column from a color palette to `ggplot2` with a `fill` or `color` argument respectively.
-For base R plots, you should be able to supply the `sample_color` column as your
-`col` argument.
+Using the `ggplot2::scale_fill_identity()` or `ggplot2::scale_color_identity()` allows you to supply the `hex_code` column from a color palette to `ggplot2` with a `fill` or `color` argument respectively.
+For base R plots, you should be able to supply the `sample_color` column as your `col` argument.
+
 ```
 metadata %>%
   dplyr::group_by(short_histology, sample_color) %>%
@@ -109,16 +109,15 @@ metadata %>%
 
 **Step 1)** Import the palette.
 
-You may want to remove the `na_color` at the end of the list depending on what
-your data look like.
+You may want to remove the `na_color` at the end of the list depending on what your data look like.
+
 ```
 gradient_col_palette <- readr::read_tsv(
   file.path(figures_dir, "palettes", "gradient_color_palette.tsv")
   )
 ```
 
-If we need the `NA` color separated, like for use with `ComplexHeatmap` which has
-a separate argument for the color for `NA` values.
+If we need the `NA` color separated, like for use with `ComplexHeatmap` which has a separate argument for the color for `NA` values.
 
 ```
 na_color <- gradient_col_palette %>%
@@ -132,8 +131,7 @@ gradient_col_palette <- gradient_col_palette %>%
 
 In this example, we are building a `colorRamp2` function based on a regular interval between the minimum and maximum of our variable `df$variable` by using `seq`. 
 However, depending on your data's distribution a regular interval based palette might not represent your data well on the plot. 
-You can provide any numeric vector to color code a palette using `circlize::colorRamp2` as long as that numeric vector is the same length as the 
-palette itself.
+You can provide any numeric vector to color code a palette using `circlize::colorRamp2` as long as that numeric vector is the same length as the palette itself.
 
 ```
 gradient_col_val <- seq(from = min(df$variable), to = max(df$variable),
@@ -146,6 +144,7 @@ col_fun <- circlize::colorRamp2(gradient_col_val,
 
 This step depends on how your main plotting function would like the data supplied.
 For example, `ComplexHeatmap` wants a function to be supplied to their `col` argument.
+
 ```
 # Apply to variable directly and make a new column
 df <- df %>%
@@ -162,9 +161,8 @@ ComplexHeatmap::heatmap(df,
 
 ### Updating color palettes
 
-The color palette TSV files are created by running `scripts/color_palettes.R`, which 
-can be called by `Rscript scripts/color_palettes.R`. 
+The color palette TSV files are created by running `scripts/color_palettes.R`, which can be called by `Rscript scripts/color_palettes.R`. 
 Hex codes for the palettes are hard-coded in this script. 
-The script can be called from anywhere in this repository (will look for the `.git` file)
-The hex codes table in figures/README.md and its swatches should also be updated by using the `swatches_table` function at the end of the script and copy and pasting this function's output to the appropriate place in the table. 
+The script can be called from anywhere in this repository (will look for the `.git` file).
+The hex codes table in `figures/README.md` and its swatches should also be updated by using the `swatches_table` function at the end of the script and copy and pasting this function's output to the appropriate place in the table. 
 
