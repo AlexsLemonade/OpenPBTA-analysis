@@ -50,7 +50,7 @@ There are 6 sets of hex color keys to be used for all final figures, stored as 6
 Each palette contains an `na_color` that is the same color in all palettes. 
 This color should be used for all `NA` values.
 `na_color` is always the last value in the  palette.
-If `na_color` is not needed or is be supplied separately to a plotting function, you can use a `dplyr::filter(hex_code != "na_color")` to remove `na_color`.
+If `na_color` is not needed or is supplied separately to a plotting function, you can use a `dplyr::filter(hex_code != "na_color")` to remove `na_color`.
 Biospecimens without a `short_histology` designation are coded as `none` and assigned the `na_color` in `palettes/histology_color_palette.tsv`. 
 
 | Palette File Name | HEX color key | Color Notes | Variable application |
@@ -165,4 +165,3 @@ The color palette TSV files are created by running `scripts/color_palettes.R`, w
 Hex codes for the palettes are hard-coded in this script. 
 The script can be called from anywhere in this repository (will look for the `.git` file).
 The hex codes table in `figures/README.md` and its swatches should also be updated by using the `swatches_table` function at the end of the script and copy and pasting this function's output to the appropriate place in the table. 
-
