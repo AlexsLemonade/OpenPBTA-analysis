@@ -84,9 +84,6 @@ standardFusionCalls<-standardFusionCalls %>%
   left_join(clinical,by=c("Sample"="Kids_First_Biospecimen_ID","Kids_First_Participant_ID")) %>% 
   dplyr::filter(!is.na(broad_histology)) %>% as.data.frame()
 
-#remove fusions found in more than 4 histologies as internal false positive control
-# for example KCNH1--AL590132.1 and AL590132.1--KCNH1 come up as recurrent in multiple histologies are now being removed as potential false positive
-
 # keep only inframe fusions 
 standardFusionCalls <- standardFusionCalls %>%
   # filter to keep inframe fusions 

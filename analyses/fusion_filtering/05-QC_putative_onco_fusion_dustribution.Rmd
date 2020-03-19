@@ -39,7 +39,7 @@ This removal of filtering lets us gather fusion calls known in oncogenic genes p
 
 ### QC filtering proposed
 
-Here I plot some barplots to identify fusions found in more than 4 broad_histologies to tackle the issue above. (We have decided more than 4 here because we have seen that some known fusions like EWSR1−−FLI1 is seen is 4 different broad_histologies in our current clinical file)
+Here I plot some barplots to identify fusions found in more than 4 broad_histologies to remove fusions found to be artefactual because of the multiple diverse histologies it's found in across OpenPBTA dataset. (We have decided more than 4 here because we have seen that some known fusions like EWSR1−−FLI1 is seen is 4 different broad_histologies in our current clinical file)
 
 
 dataPutativeFusion file used as input is
@@ -174,11 +174,21 @@ plotNhist(fusion_calls, filterN = countHistology,plot_title = "Total putative on
 FusionInNhist<-fusion_calls %>% dplyr::select(FusionName,broad_histology) %>% unique() %>% group_by(FusionName) %>% tally(name="count")
 FusionInNhist<-FusionInNhist[FusionInNhist$count>countHistology,]
 FusionInNhist
+
+# plot broad_histologies that have Fusions that are potential false positives and found in multiple histologies
+multiHistFusion<-fusion_calls %>% dplyr::filter(FusionName %in% FusionInNhist$FusionName) %>%
+  # we want to remove annots column since there is difference in arriba annotation (uniquely has duplication/translocation/deletion values) and StarFusion annotation which will be counted twice since they are not unique
+  dplyr::select(-annots) %>% 
+  unique() 
+
+ggplot(multiHistFusion,aes(x=multiHistFusion$FusionName,fill=multiHistFusion$broad_histology))+geom_bar()+theme(axis.text.x = element_text(angle=90))+coord_flip()+ylab("count")+xlab("FusionName(Total)")
+
+
 ```
 
 ### Filtering fusions found in more than 4 histologies removes 1183 fusions.  
 
-We can assume these fusions to be potential false calls because it is highly unlikely that fusions of biological importance occur in these highly divese histolgies. We (Krutika, Jo Lynne and Payal ) also manually reviewed "Total putative oncogene fusion" plots to look for genes that are found in more than 4 histologies and none seemed to interesting/relevant.
+We can assume these fusions to be potential false calls because it is highly unlikely that fusions of biological importance occur in these highly divese histologies. We (Krutika, Jo Lynne and Payal ) also manually reviewed "Total putative oncogene fusion" plots to look for genes that are found in more than 4 histologies and none seemed to interesting/relevant.
 
 ```{r final filtering }
 putative_driver_fusions<-fusion_calls %>% dplyr::filter(!FusionName %in% FusionInNhist$FusionName) %>%
