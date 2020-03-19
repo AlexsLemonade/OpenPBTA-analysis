@@ -34,8 +34,8 @@ See the notebook for more information. This notebook also prepares lists of copy
 
 * `03-add-cytoband-status-consensus.Rmd` - This notebook reads in the bedtools coverage output files and defines the dominant copy number status for each chromosome arm. The output of this notebook is a table with the following columns:
 
-  | `Kids_First_Biospecimen_ID` | chr | cytoband | dominant_status | callable_fraction | gain_fraction | loss_fraction | chromosome_arm |
-  |----------------|--------|-------------|--------|---------|-------------|---------|---------------|
+  | `Kids_First_Biospecimen_ID` | chr | cytoband | dominant_status | band_length | callable_fraction | gain_fraction | loss_fraction | chromosome_arm |
+  |----------------|--------|-------------|--------|---------|----------|-------------|---------|---------------|
   
 * `04-prepare-cn-file.R` - This script performs the ranges to annotation mapping using the GENCODE v27 GTF included via the data download step; it takes the ControlFreeC file or a SEG (e.g., CNVkit, consensus SEG) file prepared with `01-add-ploidy-cnvkit.Rmd` and  `02-add-ploidy-cnvkit.Rmd` as input.
   **The mapping is limited to _exons_.**
