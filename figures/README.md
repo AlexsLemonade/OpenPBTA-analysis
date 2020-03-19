@@ -109,7 +109,7 @@ metadata %>%
 
 **Step 1)** Import the palette.
 
-You may want to remove the `na_color` at the end of the list depending on what your data look like.
+You may want to remove the `na_color` at the end of the list depending on whether your data include `NA`s or if the plotting function you are using has the `na_color` supplied separately.
 
 ```
 gradient_col_palette <- readr::read_tsv(
