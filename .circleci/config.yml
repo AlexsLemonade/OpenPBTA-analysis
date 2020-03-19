@@ -170,7 +170,7 @@ jobs:
 
       - run:
           name: GISTIC Results Comparison
-          command: ./scripts/run_in_ci.sh bash analyses/compare-gistic/run-compare-gistic.sh
+          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/compare-gistic/run-compare-gistic.sh
           
 
          ################################
