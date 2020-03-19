@@ -38,5 +38,4 @@ consensusMutationSubset <- consensusMutation %>%
 rm(consensusMutation)
 
 # save to subset folder
-write_tsv(consensusMutationSubset,file.path(subset_dir, "LGAT_snv_subset.tsv"))
-
+readr::write_tsv(consensusMutationSubset,file.path(subset_dir, "LGAT_snv_subset.tsv"))
