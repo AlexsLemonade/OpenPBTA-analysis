@@ -60,6 +60,7 @@ all_callable_cytoband_status_df <-
   select(
     chr = X1,
     cytoband = X4,
+    band_length = X8,
     callable_fraction = X9,
     Kids_First_Biospecimen_ID = X10
   ) %>%
@@ -134,13 +135,15 @@ This step is to define any additional uncallable cytoband regions.
 ucsc_cytoband_df <- data.table::fread("http://hgdownload.cse.ucsc.edu/goldenpath/hg38/database/cytoBand.txt.gz", data.table = FALSE)
 
 ucsc_cytoband_df <- ucsc_cytoband_df %>%
-  select(chr = V1, cytoband = V4)
+  mutate(band_length = V3 - V2) %>%
+  select(chr = V1, cytoband = V4, band_length) %>%
+  filter(chr %in% paste0("chr", 1:23)) # remove nonstandard chroms.
 
 # Join the cytoband data from the original UCSC cytoband file with the data
 # bedtools coverage files wrangled in the steps above
 final_df <- final_df %>%
-  right_join(ucsc_cytoband_df, by = c("chr", "cytoband")) %>%
-  select(Kids_First_Biospecimen_ID, chr, cytoband, dominant_status, everything())
+  right_join(ucsc_cytoband_df, by = c("chr", "cytoband", "band_length")) %>%
+  select(Kids_First_Biospecimen_ID, chr, cytoband, dominant_status, band_length, everything())
 
 # If there are any NA's in the `dominant_status` column after we merge the
 # original cytoband data, replace with "uncallable"
@@ -157,4 +160,3 @@ write_tsv(final_df, file.path("results", "consensus_seg_with_ucsc_cytoband_statu
 ```{r}
 sessionInfo()
 ```
-
