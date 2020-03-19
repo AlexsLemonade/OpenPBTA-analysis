@@ -109,7 +109,7 @@ subset_files <- function(filename, biospecimen_ids, output_directory) {
       fusion_file %>%
         dplyr::filter(Sample %in% biospecimen_ids |
                         # this is required for the the fusion-summary module
-                        grepl("RELA|MN1|EWSR1", FusionName)) %>%
+                        grepl("RELA|MN1", FusionName)) %>%
         readr::write_tsv(output_file)
     } else if (grepl("bysample", filename)) {
       fusion_file %>%
