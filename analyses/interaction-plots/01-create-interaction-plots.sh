@@ -87,7 +87,7 @@ Rscript ${script_dir}/03-plot_interactions.R \
   --outfile ${plot}.ALL.png \
   --disease_table ${gene_disease}.tsv \
   --disease_plot ${disease_plot}.png \
-  --combined_plot ${combined_plot}.png \
+  --combined_plot ${combined_plot}.pdf \
   --plotsize 50
     
 # now individual diseases
