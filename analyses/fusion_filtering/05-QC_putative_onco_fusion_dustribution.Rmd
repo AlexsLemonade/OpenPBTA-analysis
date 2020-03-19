@@ -44,7 +44,7 @@ Here I plot some barplots to identify fusions found in more than 4 broad_histolo
 
 dataPutativeFusion file used as input is
 
-+ Filtered fusion calls for general cancer specific genes (oncogenic,transcription factor, kinase,COSMIC and TCGA fusions)
++ Filtered fusion calls for general cancer specific genes (oncogenic, transcription factor,  kinase, COSMIC and TCGA fusions)
 
 + Plus non-oncogenic fusion which are called by both callers and found in more than 2 samples in each histology(these non-oncogenic fusions are removed if they fuse to more than 5 partner fusions or found in more than 1 histology.)
 
