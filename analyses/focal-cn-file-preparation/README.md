@@ -32,8 +32,11 @@ RUN_ORIGINAL=1 bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
 However, there are instances in the consensus SEG file where `copy.num` is `NA` which are removed.
 See the notebook for more information. This notebook also prepares lists of copy number bed files by sample for use in the implementation of bedtools coverage in `run-bedtools.snakemake`.
 
-* `03-add-cytoband-status-consensus.Rmd` - This notebook reads in the bedtools coverage output files and defines the dominant copy number status for each chromosome arm. The GISTIC dominant status by chromsome arm is then compared to our calls. 
+* `03-add-cytoband-status-consensus.Rmd` - This notebook reads in the bedtools coverage output files and defines the dominant copy number status for each chromosome arm. The output of this notebook is a table with the following columns:
 
+  | `Kids_First_Biospecimen_ID` | chr | cytoband | dominant_status | callable_fraction | gain_fraction | loss_fraction | chromosome_arm |
+  |----------------|--------|-------------|--------|---------|-------------|---------|---------------|
+  
 * `04-prepare-cn-file.R` - This script performs the ranges to annotation mapping using the GENCODE v27 GTF included via the data download step; it takes the ControlFreeC file or a SEG (e.g., CNVkit, consensus SEG) file prepared with `01-add-ploidy-cnvkit.Rmd` and  `02-add-ploidy-cnvkit.Rmd` as input.
   **The mapping is limited to _exons_.**
   Mapping to cytobands is performed with the [`org.Hs.eg.db`](https://doi.org/doi:10.18129/B9.bioc.org.Hs.eg.db) package.
@@ -42,8 +45,6 @@ See the notebook for more information. This notebook also prepares lists of copy
   | biospecimen_id | status | copy_number | ploidy | ensembl | gene_symbol | cytoband |
   |----------------|--------|-------------|--------|---------|-------------|---------|
   Any segment that is copy neutral is filtered out of this table. In addition, [any segments with copy number > (2 * ploidy) are marked as amplifications](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/e2058dd43d9b1dd41b609e0c3429c72f79ff3be6/analyses/focal-cn-file-preparation/03-prepare-cn-file.R#L275) in the `status` column.
-
-* `05-define-most-focal-cn-units.Rmd` - This notebook defines the _most focal units_ of the recurrent CNVs using the output file of `03-add-cytoband-status-consensus.Rmd` to filter out entire chromosome arm loss or gain. **This notebook is still in progress.**
 
 * `rna-expression-validation.R` - This script examines RNA-seq expression levels (RSEM FPKM) of genes that are called as deletions.
 It produces loss/neutral and zero/neutral correlation plots, as well as stacked barplots displaying the distribution of ranges in expression across each of the calls (loss, neutral, zero).
@@ -75,8 +76,6 @@ focal-cn-file-preparation
 ├── 03-add-cytoband-status-consensus.Rmd
 ├── 03-add-cytoband-status-consensus.nb.html
 ├── 04-prepare-cn-file.R
-├── 05-define-most-focal-cn-units.Rmd
-├── 05-define-most-focal-cn-units.nb.html
 ├── README.md
 ├── annotation_files
 │   └── txdb_from_gencode.v27.gtf.db
@@ -153,7 +152,6 @@ focal-cn-file-preparation
 │   ├── cnvkit_annotated_cn_x_and_y.tsv.gz
 │   ├── consensus_seg_annotated_cn_autosomes.tsv.gz
 │   ├── consensus_seg_annotated_cn_x_and_y.tsv.gz
-│   ├── consensus_seg_gistic_cytoband_status.tsv
 │   ├── consensus_seg_with_ucsc_cytoband.tsv.gz
 │   ├── controlfreec_annotated_cn_autosomes.tsv.gz
 │   └── controlfreec_annotated_cn_x_and_y.tsv.gz

@@ -60,7 +60,7 @@ all_callable_cytoband_status_df <-
   select(
     chr = X1,
     cytoband = X4,
-    coverage_ratio_callable = X9,
+    callable_fraction = X9,
     Kids_First_Biospecimen_ID = X10
   ) %>%
   filter(!is.na(cytoband))
@@ -69,7 +69,7 @@ gain_cytoband_status_df <- gain_cytoband_status_df %>%
   select(
     chr = X1,
     cytoband = X4,
-    coverage_ratio_gains = X9,
+    gain_fraction = X9,
     Kids_First_Biospecimen_ID = X10
   ) %>%
   filter(!is.na(cytoband))
@@ -78,7 +78,7 @@ loss_cytoband_status_df <- loss_cytoband_status_df %>%
   select(
     chr = X1,
     cytoband = X4,
-    coverage_ratio_losses = X9,
+    loss_fraction = X9,
     Kids_First_Biospecimen_ID = X10
   ) %>%
   filter(!is.na(cytoband))
@@ -111,23 +111,19 @@ final_df <- final_df %>%
 # Create a dominant status column
 final_df <- final_df %>%
   replace_na(list(
-    coverage_ratio_gains = 0,
-    coverage_ratio_losses = 0
+    gain_fraction = 0,
+    loss_fraction = 0
   )) %>%
   group_by(chromosome_arm) %>%
   mutate(
     dominant_status = case_when(
-      coverage_ratio_callable < 0.5 ~ "uncallable",
-      coverage_ratio_gains / coverage_ratio_callable > 0.5 ~ "gain",
-      coverage_ratio_losses / coverage_ratio_callable > 0.5 ~ "loss",
-      (coverage_ratio_gains + coverage_ratio_losses) / coverage_ratio_callable > 0.5 ~ "unstable",
+      callable_fraction < 0.5 ~ "uncallable",
+      gain_fraction / callable_fraction > 0.5 ~ "gain",
+      loss_fraction / callable_fraction > 0.5 ~ "loss",
+      (gain_fraction + loss_fraction) / callable_fraction > 0.5 ~ "unstable",
       TRUE ~ "neutral"
     )
   )
-
-# Display final table
-final_df %>%
-  select(chr, cytoband, dominant_status, everything())
 ```
 
 ### Read in and join original UCSC cytoband data
@@ -143,125 +139,19 @@ ucsc_cytoband_df <- ucsc_cytoband_df %>%
 # Join the cytoband data from the original UCSC cytoband file with the data
 # bedtools coverage files wrangled in the steps above
 final_df <- final_df %>%
-  right_join(ucsc_cytoband_df, by = c("chr", "cytoband"))
+  right_join(ucsc_cytoband_df, by = c("chr", "cytoband")) %>%
+  select(Kids_First_Biospecimen_ID, chr, cytoband, dominant_status, everything())
 
 # If there are any NA's in the `dominant_status` column after we merge the
 # original cytoband data, replace with "uncallable"
 final_df$dominant_status <- replace_na(final_df$dominant_status, "uncallable")
 
 # Display final table with `uncallable` value added to `dominant_status` column
-final_df %>%
-  select(chr, cytoband, dominant_status, everything())
+final_df
 
 # Write to file
-write_tsv(final_df, file.path("results", "consensus_seg_with_ucsc_cytoband.tsv.gz"))
+write_tsv(final_df, file.path("results", "consensus_seg_with_ucsc_cytoband_status.tsv.gz"))
 ```
-
-## Wrangle GISTIC
-
-### Read in GISTIC chromosome arm file
-
-```{r}
-# Path to gistic zip file results
-gistic_zip <-
-  file.path("..", "..", "data", "pbta-cnv-cnvkit-gistic.zip")
-# Get the name of the folder first since this changes with updates to the date
-folder_name <- unzip(zipfile = gistic_zip, list = TRUE) %>%
-  dplyr::filter(Length == 0) %>%
-  dplyr::pull("Name")
-# Path to gistic results directory
-gistic_results <- "gistic-results"
-
-# Extract files if it hasn't been done yet
-if (!dir.exists(gistic_results)) {
-  # Unzip but only extract the files not the folder
-  unzip(zipfile = gistic_zip,
-        exdir = gistic_results)
-}
-# Designate GISTIC results folder to extract to
-gistic_results <- file.path(gistic_results, folder_name)
-# Read in broad values by arm GISTIC output file
-gistic_df <-
-  data.table::fread(
-    paste0(
-      gistic_results,
-      "broad_values_by_arm.txt"
-    ),
-    data.table = FALSE
-  )
-```
-
-### Tidy the GISTIC arm data
-
-The GISTIC arm data contains chromosome arms in the first column and all other columns correspond to a WGS biospecimen identifier.
-We want to get this into long format.
-
-```{r}
-tidy_gistic_arm_df <- gistic_df %>%
-  column_to_rownames("Chromosome Arm") %>%
-  t() %>%
-  as.data.frame() %>%
-  reshape2::melt(variable.name = "chromosome_arm",
-                 value.name = "gistic_arm_value") %>%
-  mutate(gistic_arm_status = case_when(
-    gistic_arm_value < 0 ~ "loss",
-    gistic_arm_value > 0 ~ "gain",
-    TRUE ~ "neutral"
-  )) %>%
-  group_by(chromosome_arm, gistic_arm_status) %>%
-  tally() %>%
-  # Determine the most frequent status call for each arm
-  mutate(dominant_gistic_status = max(n)) %>%
-  # Filter to only rows that contain the most frequent status call
-  filter(n == dominant_gistic_status) %>%
-  select(-c("n", "dominant_gistic_status"))
-```
-
-### Join together GISTIC and annotated SEG file with cytoband status
-
-```{r}
-final_gistic_df <- final_df %>%
-  select(-c(
-    "coverage_ratio_callable",
-    "coverage_ratio_gains",
-    "coverage_ratio_losses",
-    "cytoband",
-    "Kids_First_Biospecimen_ID"
-  )) %>%
-  # The `distinct` function here is removing duplicate rows that resulted from
-  # removing the cytoband column above
-  distinct() %>%
-  left_join(tidy_gistic_arm_df, by = "chromosome_arm")
-
-final_gistic_df <- final_gistic_df %>%
-  arrange(dominant_status) %>%
-  group_by(chromosome_arm) %>%
-  # Keep only the first of the `dominant_status` values for a chromosome arm
-  # when there are more than one -- the `domaninant_status` values are arranged,
-  # therefore, "neutral" will be the second of two values when paired with
-  # "loss" or "gain"
-  mutate(
-    dominant_status = case_when(
-      length(unique(dominant_status)) > 1 ~ dominant_status[[1]],
-      TRUE ~ dominant_status
-    )
-  ) %>%
-  # The `distinct` function here is removing duplicate rows that resulted from
-  # keeping only the non-neutral value in the `dominant_status` column where
-  # there were more than one status value for a chromosome arm
-  distinct()
-
-# Write to file
-write_tsv(final_gistic_df, file.path("results", "consensus_seg_gistic_cytoband_status.tsv"))
-
-# Display final table
-final_gistic_df
-
-# Display only rows where gistic arm status and our arm status agree
-final_gistic_df %>%
-  filter(dominant_status == gistic_arm_status)
-```
-
 ## Session Info
 
 ```{r}
