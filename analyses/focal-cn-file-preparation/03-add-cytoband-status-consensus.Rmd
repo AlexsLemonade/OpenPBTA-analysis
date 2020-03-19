@@ -95,17 +95,6 @@ final_df <- all_callable_cytoband_status_df %>%
             by = c("chr", "cytoband", "Kids_First_Biospecimen_ID"))
 ```
 
-### Add chromosome arm column
-
-```{r}
-# Add a column that tells us the position of the p or q and then use this to
-# split the cytoband column
-final_df <- final_df %>%
-  mutate(cytoband_with_arm = paste0(gsub("chr", "", chr), cytoband),
-         chromosome_arm = gsub("(p|q).*", "\\1", cytoband_with_arm)) %>%
-  select(-cytoband_with_arm)
-```
-
 ### Add `dominant_status` field to final data.frame
 
 ```{r}
@@ -115,7 +104,6 @@ final_df <- final_df %>%
     gain_fraction = 0,
     loss_fraction = 0
   )) %>%
-  group_by(chromosome_arm) %>%
   mutate(
     dominant_status = case_when(
       callable_fraction < 0.5 ~ "uncallable",
@@ -142,19 +130,40 @@ ucsc_cytoband_df <- ucsc_cytoband_df %>%
 # Join the cytoband data from the original UCSC cytoband file with the data
 # bedtools coverage files wrangled in the steps above
 final_df <- final_df %>%
-  right_join(ucsc_cytoband_df, by = c("chr", "cytoband", "band_length")) %>%
-  select(Kids_First_Biospecimen_ID, chr, cytoband, dominant_status, band_length, everything())
+  right_join(ucsc_cytoband_df, by = c("chr", "cytoband", "band_length")) 
+```
 
-# If there are any NA's in the `dominant_status` column after we merge the
-# original cytoband data, replace with "uncallable"
-final_df$dominant_status <- replace_na(final_df$dominant_status, "uncallable")
+### Add chromosome arm column
 
+```{r}
+# Add a column that tells us the position of the p or q and then use this to
+# split the cytoband column
+final_df <- final_df %>%
+  mutate(
+    cytoband_with_arm = paste0(gsub("chr", "", chr), cytoband),
+    chromosome_arm = gsub("(p|q).*", "\\1", cytoband_with_arm)
+  ) %>%
+  select(
+    Kids_First_Biospecimen_ID,
+    chr,
+    cytoband,
+    dominant_status,
+    band_length,
+    everything(),
+    -cytoband_with_arm,
+  )
+```
+
+### Display and save final table
+
+```{r}
 # Display final table with `uncallable` value added to `dominant_status` column
 final_df
 
 # Write to file
 write_tsv(final_df, file.path("results", "consensus_seg_with_ucsc_cytoband_status.tsv.gz"))
 ```
+
 ## Session Info
 
 ```{r}
