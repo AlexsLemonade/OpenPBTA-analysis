@@ -10,7 +10,7 @@ subset_dir<-file.path(root_dir,"analyses","molecular-subtyping-LGAT","lgat-subse
 # clinical file
 clinical<- readr::read_tsv(file.path(root_dir,"data","pbta-histologies.tsv"))
 # consensus mutation data
-consensusMutation <-read_tsv(file.path(root_dir,"data","pbta-snv-consensus-mutation.maf.tsv.gz"))
+consensusMutation <- readr::read_tsv(file.path(root_dir,"data","pbta-snv-consensus-mutation.maf.tsv.gz"))
 
 
 # Filter for LGAT samples
@@ -39,5 +39,4 @@ rm(consensusMutation)
 
 # save to subset folder
 write_tsv(consensusMutationSubset,file.path(subset_dir, "LGAT_snv_subset.tsv"))
-
 
