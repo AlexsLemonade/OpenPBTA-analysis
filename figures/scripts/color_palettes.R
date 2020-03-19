@@ -149,11 +149,31 @@ binary_df <- data.frame(color_names = binary_color_names,
                         hex_codes = binary_col_palette) %>%
   readr::write_tsv(file.path(output_dir, "binary_color_palette.tsv"))
 
-#### Quick little function for writing HEX table in README so I can copy and paste it
-#color_format <- function(color_df) {
-  #Description: Provide color data.frame, this outputs the text to render swatches 
-  #in a GitHub markdown table. 
-#  colors <- gsub("#", "", color_df$hex_codes)
-#  paste0("<br>", color_df$color_names, 
-#         ":![", colors, "](https://placehold.it/150x40/", colors, "/FFFFFF?text=", colors, ")")
-#}
+#### Quick function for writing HEX code table in figures/README.md
+
+ swatches_table <- function(color_df) {
+  # For a given color data.frame with columns `hex_codes` and `color_names`, 
+  # this function outputs the text to render swatches in a GitHub markdown table. 
+   
+  # These urls need the `#`` dropped
+  colors <- gsub("#", "", color_df$hex_codes)
+  
+  # Paste the url together
+  swatches <- paste0("<br>", color_df$color_names, 
+                     ":![", 
+                     colors, 
+                     "](https://placehold.it/150x40/", 
+                     colors, 
+                     "/FFFFFF?text=", 
+                     colors, ")")
+  # Cat this out
+  cat(swatches)
+}
+#
+# Usage: 
+# Put whichever color palette you are updating into function. 
+# Copy the output from this function and paste it into the appropriate section 
+# of the table in the figures/README.md
+#
+# swatches_table(color_df)
+
