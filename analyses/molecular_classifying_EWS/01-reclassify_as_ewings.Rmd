@@ -21,7 +21,7 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 dataDir <- file.path(root_dir, "data")
 # histology files
 clinical <- readr::read_tsv(file.path(dataDir, "pbta-histologies.tsv")) %>%
-  select("Kids_First_Biospecimen_ID","integrated_diagnosis","short_histology","broad_histology")
+  select("Kids_First_Biospecimen_ID","integrated_diagnosis","short_histology","broad_histology","Kids_First_Participant_ID","experimental_strategy")
 # get ewings fusion calls from fusion-summary results file
 ewings_foi_bsids <- readr::read_tsv(file.path(root_dir,"analyses","fusion-summary","results","fusion_summary_ewings_foi.tsv")) 
 
@@ -51,6 +51,14 @@ readr::write_tsv(clinical,file.path(results_dir,"reclassified_ewings_samples.tsv
 
 ### list which samples are reclassfied
 ```{r}
-clinical %>% dplyr::filter(!is.na(integrated_diagnosis_reclassified) & !is.na(short_histology_reclassified))
+# print RNAseq samples with ewings sarcoma hallmark fusions 
+check<-clinical %>% dplyr::filter(!is.na(integrated_diagnosis_reclassified) & !is.na(short_histology_reclassified))
+
+check
+
+# check what other datatype is associated with this participants which belong to the newly reclassified ewings sarcoma samples
+clinical %>% dplyr::filter(Kids_First_Participant_ID %in% check$Kids_First_Participant_ID) %>% select(experimental_strategy,Kids_First_Biospecimen_ID,Kids_First_Participant_ID,integrated_diagnosis,integrated_diagnosis_reclassified) %>% dplyr::arrange(Kids_First_Participant_ID)
+
+
 ```
 
