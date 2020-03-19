@@ -29,7 +29,7 @@ Certain analysis modules have required modifications to the subset file creation
 * [`sex-prediction-from-RNASeq`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/sex-prediction-from-RNASeq) required that we specified `Male` and `Female` samples (`reported_gender`) were both represented in the `stranded` RNA-seq data.
 * `tp53_nf1_module` requires us to include a set of biospecimen IDs for samples that have _TP53_ and _NF1_ mutations and are present in the `stranded` RNA-seq dataset.
 See the `00-enrich-positive-examples` notebook for more information.
-* `fusion-summary` requires us to include fusions that involve _MN1_ or _RELA_.
+* `fusion-summary` requires us to include fusions that involve _MN1_, _RELA_, or _EWSR1_.
 
 ### Local development
 
