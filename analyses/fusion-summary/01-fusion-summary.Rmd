@@ -52,7 +52,11 @@ filterFusion <- function(df, bioid, fuses, genes) {
 #' @return Data frame that contains fusion counts
 prepareOutput <- function(fuseDF, bioid) {
   fuseDF %>% 
-    reshape2::dcast(Sample ~ FusionName) %>%
+    # some fusions have in-frame and frameshift fusion calls for a sample
+    # this will make unique fusionName and Sample dataset to get 1/0 values
+    dplyr::select(Sample,FusionName) %>%
+    unique() %>%
+    reshape2::dcast(Sample ~ FusionName,fun.aggregate = length) %>%
     right_join(data.frame(Sample = bioid)) %>%
     replace(is.na(.), 0) %>%
     rename(Kids_First_Biospecimen_ID = Sample)
@@ -83,11 +87,12 @@ if (!dir.exists(resultsDir)) {
 }
 ependFile <- file.path(resultsDir, "fusion_summary_ependymoma_foi.tsv")
 embryFile <- file.path(resultsDir, "fusion_summary_embryonal_foi.tsv")
+ewingsFile <- file.path(resultsDir, "fusion_summary_ewings_foi.tsv")
 ```
 
 ## Fusions and genes of interest
 
-Taken from [`AlexsLemonade/OpenPBTA-analysis#245`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/245) and [`AlexsLemonade/OpenPBTA-analysis#251`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251), respectively.
+Taken from [`AlexsLemonade/OpenPBTA-analysis#245`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/245), [`AlexsLemonade/OpenPBTA-analysis#251`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251), and [`AlexsLemonade/OpenPBTA-analysis#623`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/623) respectively. 
 
 ```{r}
 #' **Filters**
@@ -119,6 +124,15 @@ embryGenes <- c(
   "MN1",
   "TTYH1"
 )
+
+#' 3: Exact match a list of fusions which are hallmark fusions in Ewings Sarcoma
+ewingsFuses<- c(
+  "EWSR1--FLI1", 
+  "EWSR1--ERG",
+  "EWSR1--PATZ1",
+  "FUS--ERG"
+)
+
 ```
 
 ### Filter putative oncogenic fusions list
@@ -130,6 +144,9 @@ allFuseEpend <- filterFusion(df = putativeOncogenicDF,
 allFuseEmbry <- filterFusion(df = putativeOncogenicDF,
                              fuses = embryFuses,
                              genes = embryGenes)
+allFuseEwing <- filterFusion(df = putativeOncogenicDF,
+                             fuses = ewingsFuses)
+
 ```
 
 Get the biospecimen IDs that are present in *either* caller file (Arriba, STARFusion).
@@ -165,4 +182,19 @@ allFuseEpend %>%
     `YAP1--MAMLD2` = 0
   ) %>%
   write_tsv(ependFile)
+```
+
+
+#### Write ewings sarcoma fusions to file
+
+```{r}
+
+allFuseEwing %>%
+  prepareOutput(specimensUnion) %>%
+  mutate(
+    `EWSR1--ERG` = 0,
+    `FUS--ERG` = 0
+  ) %>%
+  write_tsv(ewingsFile)
+
 ```
