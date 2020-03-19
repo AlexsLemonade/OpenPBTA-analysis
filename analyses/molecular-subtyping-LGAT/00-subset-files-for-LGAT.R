@@ -7,6 +7,11 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 # get subset folder
 subset_dir<-file.path(root_dir,"analyses","molecular-subtyping-LGAT","lgat-subset")
 
+# create if doesn't exist
+if (!dir.exists(subset_dir)) {
+  dir.create(subset_dir)
+}
+
 # clinical file
 clinical<- readr::read_tsv(file.path(root_dir,"data","pbta-histologies.tsv"))
 # consensus mutation data
@@ -18,12 +23,13 @@ lgat_wgs_subset <- clinical %>%
   dplyr::filter(short_histology == "LGAT",
                 sample_type == "Tumor",
                 composition == "Solid Tissue",
-                experimental_strategy == "WGS")
+                experimental_strategy == "WGS") %>%
+  select(Kids_First_Biospecimen_ID)
 
 # Filter consensus mutation files for LGAT subset
 consensusMutationSubset <- consensusMutation %>%
   # find lgat samples
-  dplyr::filter(Tumor_Sample_Barcode %in% lgat_subset$Kids_First_Biospecimen_ID) %>%
+  dplyr::filter(Tumor_Sample_Barcode %in% lgat_wgs_subset$Kids_First_Biospecimen_ID) %>%
   # look for BRAF V600E mutations and make a column for BRAF_V600E
   dplyr::filter(Hugo_Symbol == "BRAF" & HGVSp_Short == "p.V600E") %>%
   # select tumor sample barcode
