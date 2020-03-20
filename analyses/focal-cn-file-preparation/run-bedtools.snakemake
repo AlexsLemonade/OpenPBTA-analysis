@@ -71,5 +71,5 @@ rule get_cytobands:
     shell:
         "wget -O - {params.url}"
         " | gunzip -c"
-        " | grep '^chr[0-9]\+\s' " # filter to only canonical autosomes
+        " | grep '^chr[0-9XY]\+\s' " # filter to only canonical autosomes
         " > {output}"
