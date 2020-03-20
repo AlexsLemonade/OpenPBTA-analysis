@@ -91,7 +91,7 @@ loss_cytoband_status_df <- loss_cytoband_status_df %>%
 final_df <- all_callable_cytoband_status_df %>%
   left_join(gain_cytoband_status_df,
             by = c("chr", "cytoband", "Kids_First_Biospecimen_ID")) %>%
-  left_join(loss_cytoband_status_df,
+  inner_join(loss_cytoband_status_df,
             by = c("chr", "cytoband", "Kids_First_Biospecimen_ID"))
 ```
 
@@ -113,24 +113,6 @@ final_df <- final_df %>%
       TRUE ~ "neutral"
     )
   )
-```
-
-### Read in and join original UCSC cytoband data
-
-This step is to define any additional uncallable cytoband regions.
-
-```{r message = FALSE}
-ucsc_cytoband_df <- data.table::fread("http://hgdownload.cse.ucsc.edu/goldenpath/hg38/database/cytoBand.txt.gz", data.table = FALSE)
-
-ucsc_cytoband_df <- ucsc_cytoband_df %>%
-  mutate(band_length = V3 - V2) %>%
-  select(chr = V1, cytoband = V4, band_length) %>%
-  filter(chr %in% paste0("chr", 1:23)) # remove nonstandard chroms.
-
-# Join the cytoband data from the original UCSC cytoband file with the data
-# bedtools coverage files wrangled in the steps above
-final_df <- final_df %>%
-  right_join(ucsc_cytoband_df, by = c("chr", "cytoband", "band_length")) 
 ```
 
 ### Add chromosome arm column
