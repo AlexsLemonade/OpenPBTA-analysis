@@ -1,22 +1,22 @@
 # OpenPBTA-analysis
 
 Pediatric brain tumors are the most common solid tumors and the leading cause of cancer-related death in children.
-Our ability to understand and successfully treat these diseases is hindered by small sample sizes due to the overall rarity of unique molecular subtypes and tainted grouped analyses resulting from misclassification. 
-In September of 2018, the [Children's Brain Tumor Tissue Consortium](https://cbttc.org/) released the [Pediatric Brain Tumor Atlas (PBTA)](https://cbttc.org/pediatric-brain-tumor-atlas/), a genomic dataset (whole genome sequencing, whole exome sequencing, RNA sequencing, proteomic, and clinical data) for nearly 1,000 tumors, available from the [Gabriella Miller Kids First Portal](https://kidsfirstdrc.org/). 
+Our ability to understand and successfully treat these diseases is hindered by small sample sizes due to the overall rarity of unique molecular subtypes and tainted grouped analyses resulting from misclassification.
+In September of 2018, the [Children's Brain Tumor Tissue Consortium](https://cbttc.org/) released the [Pediatric Brain Tumor Atlas (PBTA)](https://cbttc.org/pediatric-brain-tumor-atlas/), a genomic dataset (whole genome sequencing, whole exome sequencing, RNA sequencing, proteomic, and clinical data) for nearly 1,000 tumors, available from the [Gabriella Miller Kids First Portal](https://kidsfirstdrc.org/).
 
-The Open Pediatric Brain Tumor Atlas (OpenPBTA) Project is a global open science initiative to comprehensively define the molecular landscape of tumors of 943 patients from the CBTTC and the PNOC003 DIPG clinical trial from the [Pediatric Pacific Neuro-oncology Consortium](http://www.pnoc.us/) through real-time, collaborative analyses and [collaborative manuscript writing](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) on GitHub. 
+The Open Pediatric Brain Tumor Atlas (OpenPBTA) Project is a global open science initiative to comprehensively define the molecular landscape of tumors of 943 patients from the CBTTC and the PNOC003 DIPG clinical trial from the [Pediatric Pacific Neuro-oncology Consortium](http://www.pnoc.us/) through real-time, collaborative analyses and [collaborative manuscript writing](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) on GitHub.
 
 The OpenPBTA operates on a pull request model to accept contributions from community participants.
 The maintainers have set up continuous integration software to confirm the reproducibility of analyses within the project’s Docker container.
-The collaborative manuscript is authored using [Manubot](https://manubot.org) software to provide an up-to-date public version of the manuscript. 
+The collaborative manuscript is authored using [Manubot](https://manubot.org) software to provide an up-to-date public version of the manuscript.
 The project maintainers include scientists from [Alex's Lemonade Stand Foundation's Childhood Cancer Data Lab](https://www.ccdatalab.org/) and the [Center for Data-Driven Discovery in Biomedicine at the Children's Hospital of Philadelphia](https://d3b.center/).
-We invite researchers to join OpenPBTA to help rigorously characterize the genomic landscape of these diseases to enable more rapid discovery of additional mechanisms contributing to the pathogenesis of pediatric brain and spinal cord tumors and overall accelerate clinical translation on behalf of patients. 
+We invite researchers to join OpenPBTA to help rigorously characterize the genomic landscape of these diseases to enable more rapid discovery of additional mechanisms contributing to the pathogenesis of pediatric brain and spinal cord tumors and overall accelerate clinical translation on behalf of patients.
 
 **New to the project? Please be sure to read the following documentation before contributing:**
 
 1. Learn about the fundamental data used for this project in [**`doc/data-formats.md`**](./doc/data-formats.md) and [**`doc/data-files-description.md`**](./doc/data-files-description.md)
 	+ A history of data releases can be found in [**`doc/release-notes.md`**](./doc/release-notes.md)
-2. See what analyses are being performed in [**`analyses/README.md`**](./analyses/README.md) 
+2. See what analyses are being performed in [**`analyses/README.md`**](./analyses/README.md)
 3. Read the remainder of this README document in full.
 4. Read our contributing guidelines in [**`CONTRIBUTING.md`**](./CONTRIBUTING.md) in full.
 
@@ -127,7 +127,7 @@ Use the [data issue template](https://github.com/AlexsLemonade/OpenPBTA-analysis
 ### Data Access via Download Script
 
 We have created a shell script that will download the latest release from AWS S3.
-macOS users must install `md5sum` before running the download script the first time. 
+macOS users must install `md5sum` before running the download script the first time.
 This can be installed with [homebrew](https://brew.sh/) via the command `brew install coreutils` or [conda/miniconda](https://docs.conda.io/projects/conda/en/latest/) via the command `conda install -c conda-forge coreutils`.
 _Note: the `download-data.sh` script now has the ability to skip downloads of unchanged files, but if you previously installed md5sum via brew you'll need to run `brew unlink md5sha1sum && brew install coreutils` first to take advantage of this new feature._
 
@@ -209,7 +209,7 @@ Choose a name that is unique from other analyses and somewhat detailed.
 For example, instead of `gene-expression`, choose `gene-expression-clustering` if you are clustering samples by their gene expression values.
 You should assume that any data files are in the `../../data` directory and that their file names match what the `download-data.sh` script produces.
 These files should be read in at their relative path, so that we can re-run analyses if the underlying data change.
-Files that are primarily graphic should be placed in a `plots` subdirectory.
+Files that are primarily graphic should be placed in a `plots` subdirectory and should adhere to the [color palette guide](./figures/README.md#color-palette-usage).
 Files that are primarily tabular results files should be placed in a `results` subdirectory.
 Intermediate files that are useful within the processing steps but that do not represent final results should be placed in `../../scratch/`.
 It is safe to assume that files placed in `../../scratch` will be available to all analyses within the same folder.
@@ -254,7 +254,7 @@ As such, documenting your analytical code via comments and including information
 
 When you file the first pull request creating a new analysis module, add your module to the [Modules At A Glance table](analyses#modules-at-a-glance).
 This table contains fields for the directory name, what input files are required, a short description, and any files that you expect other analyses will rely on.
-As your analysis develops and input or output files change, please check this table remains up to date. 
+As your analysis develops and input or output files change, please check this table remains up to date.
 This step is included in the pull request reproducibility checklist.
 
 When an analysis module contains multiple steps or is nearing completion, add a `README.md` file that summarizes the purpose of the module, any known limitations or required updates, and includes examples for how to run the analyses to the folder.
@@ -271,6 +271,8 @@ See the [continuous integration instructions for adding analyses with multiple s
 The CI system that we use will generate, as artifacts, the contents of the `analyses` directory applied over a small test dataset.
 Our goal is to capture all of the outputs that will be used for the [OpenPBTA-manuscript](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) as artifacts.
 Files that are primarily graphic should be placed in a `plots` subdirectory of the analysis's folder.
+Plots should use the specified color palettes for this project.
+See more [specific instructions on how to use the color palette here](./figures/README.md#color-palette-usage).
 Files that are primarily tabular results files should be placed in a `results` subdirectory of the analysis's folder.
 Files that are intermediate, which means that they are useful within an analysis but do not provide outputs intended for tables, figures, or supplementary tables or figures of the [OpenPBTA-manuscript](https://github.com/AlexsLemonade/OpenPBTA-manuscript/), should be placed in `../../scratch`.
 
