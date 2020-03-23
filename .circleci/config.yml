@@ -220,6 +220,11 @@ jobs:
           name: TCGA Capture Kit Investigation
           command: ./scripts/run_in_ci.sh bash analyses/tcga-capture-kit-investigation/run-investigation.sh
 
+      - run:
+         name: EWS classification
+         command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EWS/run_reclassification.sh 
+
+
   deploy:
     machine: 
       docker_layer_caching: true
