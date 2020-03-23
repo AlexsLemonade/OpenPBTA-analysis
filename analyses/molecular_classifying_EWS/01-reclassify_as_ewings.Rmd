@@ -1,5 +1,5 @@
 ---
-title: "Reclassify integrated_diagnosis,short_histology metadata column for samples that have hallmark Ewings Sarcoma fusions"
+title: "Reclassify integrated_diagnosis,short_histology metadata column for samples that have hallmark Ewing Sarcoma fusions"
 output: html_notebook
 author: K S Gaonkar for D3b
 date: January 2020
@@ -61,4 +61,3 @@ clinical %>% dplyr::filter(Kids_First_Participant_ID %in% check$Kids_First_Parti
 
 
 ```
-
