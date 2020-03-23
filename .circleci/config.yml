@@ -219,9 +219,6 @@ jobs:
       - run:
           name: LGAT subtyping
           command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-LGAT/run_subtyping.sh
-
-
-
   deploy:
     machine: 
       docker_layer_caching: true
