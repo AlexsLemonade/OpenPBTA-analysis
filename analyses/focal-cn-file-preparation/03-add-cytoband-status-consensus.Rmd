@@ -91,7 +91,7 @@ loss_cytoband_status_df <- loss_cytoband_status_df %>%
 final_df <- all_callable_cytoband_status_df %>%
   left_join(gain_cytoband_status_df,
             by = c("chr", "cytoband", "Kids_First_Biospecimen_ID")) %>%
-  inner_join(loss_cytoband_status_df,
+  left_join(loss_cytoband_status_df,
             by = c("chr", "cytoband", "Kids_First_Biospecimen_ID"))
 ```
 

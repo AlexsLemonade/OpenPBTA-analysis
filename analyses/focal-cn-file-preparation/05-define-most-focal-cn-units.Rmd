@@ -1,0 +1,98 @@
+---
+title: "Find most focal recurrent copy number units"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell for ALSF CCDL
+date: 2020
+---
+
+This notebook defines the most focal recurrent copy number units by separating out entire chromsome arm losses and gains.
+
+## Usage
+
+This notebook is intended to be run from the command line with the following (assumes you are in the root directory of the repository):
+
+```
+Rscript -e "rmarkdown::render('analyses/focal-cn-file-preparation/05-define-most-focal-cn-units.Rmd', clean = TRUE)"
+```
+
+## Set up
+
+### Libraries and functions
+
+```{r}
+library(tidyverse)
+```
+
+### Files and directories
+
+```{r}
+results_dir <- "results"
+```
+
+### Read in files
+
+```{r}
+# Read in the file with consensus CN status data and the UCSC cytoband data --
+# generated in `03-add-cytoband-status-consensus.Rmd`
+consensus_seg_cytoband_status_df <-
+  read_tsv(file.path("results", "consensus_seg_with_ucsc_cytoband_status.tsv.gz"))
+
+# Read in the annotated CN file (without the UCSC data)
+consensus_seg_autosomes_df <-
+  read_tsv(file.path(results_dir, "consensus_seg_annotated_cn_autosomes.tsv.gz"))
+```
+
+## Define most focal units
+
+### First, we want find entire chromosome arm losses/gains.
+
+```{r}
+consensus_seg_cytoband_status_df <-
+  consensus_seg_cytoband_status_df %>%
+  select(chromosome_arm,
+         dominant_status,
+         cytoband,
+         Kids_First_Biospecimen_ID)
+
+status_count <- consensus_seg_cytoband_status_df %>%
+  # Count the amount og times each arm has a specific `dominant_status` value
+  count(chromosome_arm, dominant_status) %>%
+  # Spread the data -- each row represents a unique chromosome arm
+  spread(dominant_status, n) %>%
+  select(-c("uncallable", "unstable")) %>%
+  replace_na(list(
+    gain = 0,
+    loss = 0,
+    neutral = 0
+  )) %>%
+  group_by(chromosome_arm) %>%
+  # The logic here is to define the arm status based on the majority of calls
+  # in the chromosome arm -- if the number of calls for a specific status is
+  # responsible for more than 50% of the total calls in that arm, then it is
+  # used to define the arm status
+  mutate(
+    dominant = case_when(
+      gain > (0.5 * (gain + loss + neutral)) ~ "arm_gain",
+      loss > (0.5 * (gain + loss + neutral)) ~ "arm_loss",
+      neutral > (0.5 * (gain + loss + neutral)) ~ "arm_neutral",
+      TRUE ~ "uncallable"
+    )
+  )
+
+# Display table
+status_count
+```
+
+### Next we want to use the annotated CN data to join the cytoband calls
+
+We want to include cytoband calls for chromosome arms that have not been defined as a gain or loss.
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
