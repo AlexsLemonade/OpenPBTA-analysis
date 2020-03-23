@@ -74,7 +74,7 @@ arm_status_count <- consensus_seg_cytoband_status_df %>%
   # responsible for more than 50% of the total calls in that arm, then it is
   # used to define the arm status
   mutate(
-    dominant = case_when(
+    arm_dominant = case_when(
       gain > (0.5 * (gain + loss + neutral)) ~ "arm_gain",
       loss > (0.5 * (gain + loss + neutral)) ~ "arm_loss",
       neutral > (0.5 * (gain + loss + neutral)) ~ "arm_neutral",
@@ -86,15 +86,15 @@ arm_status_count <- consensus_seg_cytoband_status_df %>%
 arm_status_count
 ```
 
-### Next we want to use the annotated CN data to join the cytoband calls
+### Next we want to use the annotated CN data to define the cytoband gains/losses 
 
 We want to include cytoband and gene level calls for chromosome arms that have not been defined as a gain or loss.
 
 ```{r}
-# There are the chromosome arms that have not been defined as gain or loss --
+# These are the chromosome arms that have not been defined as gain or loss --
 # we want to define their cytoband/gene level status
 neutral_arm_status_df <- arm_status_count %>%
-  filter(dominant == "arm_neutral")
+  filter(arm_dominant == "arm_neutral")
 
 # Filter the annotated CN data to include only these chromosome arms
 consensus_seg_autosomes_df_develop <- consensus_seg_autosomes_df %>%
@@ -104,10 +104,76 @@ consensus_seg_autosomes_df_develop <- consensus_seg_autosomes_df %>%
 
 # Now count the cytoband level calls (for each status call) and define
 # the cytoband as that status if more than 50% of the total counts are
-# for that particular status -- then filter out the determined cytoband
-# gains/losses and find the gene level calls for the remaining observations
+# for that particular status
+cytoband_status_count <- consensus_seg_autosomes_df_develop %>%
+  count(cytoband, status) %>%
+  # Spread the data -- each row represents a unique chromosome arm
+  spread(status, n) %>%
+  replace_na(list(
+    gain = 0,
+    loss = 0,
+    amplification = 0
+  )) %>%
+  group_by(cytoband) %>%
+  # The logic here is to define the arm status based on the majority of calls
+  # in the cytoband -- if the number of calls for a specific status is
+  # responsible for more than 50% of the total calls in that cytoband, then it is
+  # used to define the cytoband status
+  mutate(
+    cytoband_dominant = case_when(
+      gain > (0.5 * (gain + loss + amplification)) ~ "cytoband_gain",
+      loss > (0.5 * (gain + loss + amplification)) ~ "cytoband_loss",
+      amplification > (0.5 * (gain + loss + amplification)) ~ "cytoband_amplification",
+      TRUE ~ "cytoband_neutral"
+    )
+  )
+
+# These are the cytobands that have not been defined as gain or loss --
+# we want to define their gene level status
+neutral_cytoband_status_df <- cytoband_status_count %>%
+  filter(cytoband_dominant == "cytoband_neutral")
+
+# Display table
+cytoband_status_count
 ```
 
+### Now we want to use the annotated CN data to define the gene level gains/losses 
+
+```{r}
+# Filter the annotated CN data to include only these cytobands
+consensus_seg_autosomes_df_develop <- consensus_seg_autosomes_df %>%
+  select(biospecimen_id, gene_symbol, cytoband, status) %>%
+  filter(cytoband %in% neutral_cytoband_status_df$cytoband)
+
+# Now count the gene level calls (for each status call) and define
+# the gene as that status if more than 50% of the total counts are
+# for that particular status
+gene_status_count <- consensus_seg_autosomes_df_develop %>%
+  count(gene_symbol, status) %>%
+  # Spread the data -- each row represents a unique chromosome arm
+  spread(status, n) %>%
+  replace_na(list(
+    gain = 0,
+    loss = 0,
+    amplification = 0
+  )) %>%
+  group_by(gene_symbol) %>%
+  # The logic here is to define the gene level status based on the majority of calls
+  # in the gene -- if the number of calls for a specific status is
+  # responsible for more than 50% of the total calls in that gene, then it is
+  # used to define the gene status
+  mutate(
+    gene_dominant = case_when(
+      gain > (0.5 * (gain + loss + amplification)) ~ "gene_gain",
+      loss > (0.5 * (gain + loss + amplification)) ~ "gene_loss",
+      amplification > (0.5 * (gain + loss + amplification)) ~ "gene_amplification",
+      TRUE ~ "gene_neutral"
+    )
+  )
+
+# Display table
+gene_status_count
+```
 
 ## Session Info
 
