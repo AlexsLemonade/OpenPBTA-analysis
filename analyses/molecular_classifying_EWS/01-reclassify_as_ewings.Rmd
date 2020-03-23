@@ -5,7 +5,7 @@ author: K S Gaonkar for D3b
 date: January 2020
 ---
 
-Identify "integrated_diagnosis","short_histology" from clinical file for sample IDs with hallmark EWSR1 fusions and reclassify as Ewings Sarcoma (integrated_diagnosis) and EWS (short_histology)
+Identify "integrated_diagnosis","short_histology" from clinical file for sample IDs with hallmark EWSR1 fusions and reclassify as Ewing Sarcoma (integrated_diagnosis) and EWS (short_histology)
 
 ```{r}
 library("tidyverse")
