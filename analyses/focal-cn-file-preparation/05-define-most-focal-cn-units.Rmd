@@ -93,7 +93,7 @@ We want to include cytoband and gene level calls for chromosome arms that have n
 ```{r}
 # There are the chromosome arms that have not been defined as gain or loss --
 # we want to define their cytoband/gene level status
-neutral_arm_status_df <- status_count %>%
+neutral_arm_status_df <- arm_status_count %>%
   filter(dominant == "arm_neutral")
 
 # Filter the annotated CN data to include only these chromosome arms
