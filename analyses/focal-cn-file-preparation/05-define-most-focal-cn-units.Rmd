@@ -57,7 +57,7 @@ consensus_seg_cytoband_status_df <-
          cytoband,
          Kids_First_Biospecimen_ID)
 
-status_count <- consensus_seg_cytoband_status_df %>%
+arm_status_count <- consensus_seg_cytoband_status_df %>%
   # Count the amount og times each arm has a specific `dominant_status` value
   count(chromosome_arm, dominant_status) %>%
   # Spread the data -- each row represents a unique chromosome arm
@@ -83,12 +83,31 @@ status_count <- consensus_seg_cytoband_status_df %>%
   )
 
 # Display table
-status_count
+arm_status_count
 ```
 
 ### Next we want to use the annotated CN data to join the cytoband calls
 
-We want to include cytoband calls for chromosome arms that have not been defined as a gain or loss.
+We want to include cytoband and gene level calls for chromosome arms that have not been defined as a gain or loss.
+
+```{r}
+# There are the chromosome arms that have not been defined as gain or loss --
+# we want to define their cytoband/gene level status
+neutral_arm_status_df <- status_count %>%
+  filter(dominant == "arm_neutral")
+
+# Filter the annotated CN data to include only these chromosome arms
+consensus_seg_autosomes_df_develop <- consensus_seg_autosomes_df %>%
+  select(biospecimen_id, gene_symbol, cytoband, status) %>%
+  mutate(chromosome_arm = gsub("(p|q).*", "\\1", cytoband)) %>%
+  filter(chromosome_arm %in% neutral_arm_status_df$chromosome_arm)
+
+# Now count the cytoband level calls (for each status call) and define
+# the cytoband as that status if more than 50% of the total counts are
+# for that particular status -- then filter out the determined cytoband
+# gains/losses and find the gene level calls for the remaining observations
+```
+
 
 ## Session Info
 
