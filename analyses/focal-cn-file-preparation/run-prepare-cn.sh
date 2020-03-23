@@ -44,6 +44,9 @@ Rscript --vanilla 04-prepare-cn-file.R \
   --filename_lead "consensus_seg_annotated_cn" \
   --seg
 
+# Define most focal units of recurrent CNVs
+Rscript --vanilla -e "rmarkdown::render('05-define-most-focal-cn-units.Rmd', clean = TRUE)"
+
 # libraryStrategies=("polya" "stranded")
 # chromosomesType=("autosomes" "x_and_y")
 # for strategy in ${libraryStrategies[@]}; do
