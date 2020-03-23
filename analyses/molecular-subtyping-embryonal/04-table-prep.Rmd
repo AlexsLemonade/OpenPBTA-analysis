@@ -93,10 +93,9 @@ Set up filenames.
 ```{r}
 # full clinical file
 histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
-# TODO: update when the new files with union of sample IDs get included in the
-# in the data download (v14)
-fusion_file <- file.path("..", "fusion-summary", "results",
-                         "fusion_summary_embryonal_foi.tsv")
+# full fusions of interest file
+fusion_file <- file.path(data_dir,"fusion_summary_embryonal_foi.tsv")
+# subset files
 manta_file <- file.path(subset_dir, "embryonal_manta_sv.tsv")
 polya_file <- file.path(subset_dir, "embryonal_zscored_exp.polya.rds")
 stranded_file <- file.path(subset_dir, "embryonal_zscored_exp.stranded.rds")
@@ -339,8 +338,8 @@ relevant_clinical_data <- histologies_df %>%
          sample_id,
          age_at_diagnosis_days,
          germline_sex_estimate,
-         disease_type_old,
-         disease_type_new) %>%
+         pathology_diagnosis,
+         integrated_diagnosis) %>%
   distinct() %>%
   # convert age to years
   mutate(age_at_diagnosis_yrs = 
@@ -361,8 +360,8 @@ all_data_df %>%
          Kids_First_Biospecimen_ID_RNA,
          age_at_diagnosis_yrs,
          germline_sex_estimate,
-         disease_type_old,
-         disease_type_new,
+         pathology_diagnosis,
+         integrated_diagnosis,
          LIN28A,
          TTYH1_fusions,
          chr19_amplification,
@@ -388,7 +387,7 @@ all_data_df %>%
   # evidence of C19MC amplification
   filter(LIN28A > 3 | chr19_amplification == "Yes") %>%
   select(ends_with("ID"), 
-         starts_with("disease"),
+         ends_with("diagnosis"),
          LIN28A,
          TTYH1_fusions,
          chr19_amplification)
@@ -428,7 +427,7 @@ all_data_df %>%
   # 3 standard deviations above the mean
   filter(MN1_fusions != "None") %>%
   select(ends_with("ID"), 
-         starts_with("disease"),
+         ends_with("diagnosis"),
          germline_sex_estimate,
          MN1_fusions)
 ```
@@ -450,8 +449,8 @@ histologies_df %>%
   select(Kids_First_Participant_ID, 
          sample_id, 
          Kids_First_Biospecimen_ID,
-         disease_type_old,
-         disease_type_new,
+         pathology_diagnosis,
+         integrated_diagnosis,
          germline_sex_estimate)
 ```
 
@@ -485,7 +484,7 @@ We have no clear evidence of _BCOR_ alterations.
 all_data_df %>%
   filter(FOXR2_fusions != "None" | FOXR2 > 3) %>%
   select(ends_with("ID"), 
-         starts_with("disease"),
+         ends_with("diagnosis"),
          FOXR2,
          FOXR2_fusions)
 ```

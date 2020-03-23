@@ -56,7 +56,7 @@ select_metadata <- metadata %>%
                 Kids_First_Biospecimen_ID,
                 broad_histology,
                 short_histology,
-                disease_type_new)
+                integrated_diagnosis)
 
 # Read in snv consensus mutation data
 snv_df <-
@@ -122,7 +122,7 @@ snv_lesions_df <- select_metadata %>%
     dplyr::starts_with("H"),
     broad_histology,
     short_histology,
-    disease_type_new
+    integrated_diagnosis
   ) %>%
   dplyr::mutate(
     disease_type_reclassified = dplyr::case_when(
@@ -132,7 +132,7 @@ snv_lesions_df <- select_metadata %>%
       HIST2H3C.K28M == "Yes" ~ "Diffuse midline glioma, H3 K28 mutant",
       H3F3A.G35R == "Yes" ~ "High-grade glioma, H3 G35 mutant",
       H3F3A.G35V == "Yes" ~ "High-grade glioma, H3 G35 mutant",
-      TRUE ~ as.character(disease_type_new)),
+      TRUE ~ as.character(integrated_diagnosis)),
     short_histology_reclassified = dplyr::case_when(
       H3F3A.K28M == "Yes" ~ "HGAT",
       HIST1H3B.K28M == "Yes" ~ "HGAT",
@@ -171,7 +171,7 @@ readr::write_tsv(snv_lesions_df,
 snv_lesions_df %>%
   dplyr::filter(
     grepl("High-grade glioma|Diffuse midline glioma", disease_type_reclassified) &
-      !(disease_type_new %in% c("High-grade glioma", 
+      !(integrated_diagnosis %in% c("High-grade glioma", 
                                 "Brainstem glioma- Diffuse intrinsic pontine glioma"))
   )
 ```

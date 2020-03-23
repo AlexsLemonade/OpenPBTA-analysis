@@ -257,6 +257,12 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 # package required for shatterseek
 RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remotes::install_github('parklab/ShatterSeek', ref = '83ab3effaf9589cc391ecc2ac45a6eaf578b5046', dependencies = TRUE))"
 
+# pyarrow for comparative-RNASeq-analysis, to read/write .feather files
+RUN pip3 install "pyarrow==0.16.0"
+
+# ComplexHeatmap and circlize were apparently not explicitly installed anywhere, but is used throughout
+RUN R -e "BiocManager::install(c('ComplexHeatmap', 'circlize'), update = FALSE)"
+
 # MATLAB Compiler Runtime is required for GISTIC, MutSigCV
 # Install steps are adapted from usuresearch/matlab-runtime
 # https://hub.docker.com/r/usuresearch/matlab-runtime/dockerfile
@@ -290,10 +296,25 @@ RUN mkdir -p gistic_install && \
 RUN chown -R rstudio:rstudio /home/rstudio/gistic_install
 RUN chmod 755 /home/rstudio/gistic_install
 
-# pyarrow for comparative-RNASeq-analysis, to read/write .feather files
-RUN pip3 install "pyarrow==0.16.0"
+# Install CrossMap for liftover
+RUN pip3 install "cython==0.29.15" && \
+    pip3 install "bx-python==0.8.8" && \
+    pip3 install "pybigwig==0.3.17" && \
+    pip3 install "pysam==0.15.4" && \
+    pip3 install "CrossMap==0.3.9" 
 
-#### Please install your dependencies here
+# Packages required for rna-seq-composition
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    && install2.r --error \
+    --deps TRUE \
+    EnvStats \
+    janitor
+
+# Patchwork for plot compositions
+RUN R -e "devtools::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd46899f17197f9858bc5672e9f4')"
+
+#### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
+
 
 WORKDIR /rocker-build/
