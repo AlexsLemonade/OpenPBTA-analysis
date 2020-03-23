@@ -79,7 +79,8 @@ color_palette <-
 # Join the color palette for the colors for each short histology value --
 # palette is generated in `figures/scripts/color_palettes.R`
 final_df2 <- final_df %>%
-  dplyr::left_join(color_palette, by = c("level2" = "color_names"))
+  dplyr::left_join(color_palette, by = c("level2" = "color_names")) %>%
+  distinct() # Remove the redundant rows from prep for the `treemap` function
 
 # Plot the treemap
 treemap <-
@@ -88,9 +89,8 @@ treemap <-
     aes(
       area = size,
       fill = hex_codes,
-      label = level1,
-      subgroup = level2,
-      subgroup2 = level3
+      label = level2,
+      subgroup = level3
     )
   ) +
   geom_treemap() +
@@ -98,24 +98,17 @@ treemap <-
   geom_treemap_text(
     fontface = "italic",
     colour = "white",
-    place = "center",
+    place = "topleft",
     alpha = 0.4,
-    grow = T,
-    reflow = T
+    grow = F,
+    reflow = T,
+    size = 16
   ) +
   geom_treemap_subgroup_text(
-    place = "top",
+    place = "bottomright",
     grow = T,
     reflow = T,
     alpha = 0.6,
-    colour = "#FAFAFA",
-    min.size = 0
-  ) +
-  geom_treemap_subgroup2_text(
-    place = "bottom",
-    grow = T,
-    reflow = T,
-    alpha = 0.5,
     colour = "#FAFAFA",
     min.size = 0
   ) +

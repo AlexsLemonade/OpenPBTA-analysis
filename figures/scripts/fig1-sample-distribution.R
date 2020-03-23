@@ -64,7 +64,8 @@ color_palette <-
 # Join the color palette for the colors for each short histology value --
 # palette is generated in `figures/scripts/color_palettes.R`
 plots_df2 <- plots_df %>%
-  left_join(color_palette, by = c("level2" = "color_names"))
+  left_join(color_palette, by = c("level2" = "color_names")) %>%
+  distinct()
 
 # Plot the treemap where level1 is `broad_histology`,
 # level2 is `short_histology`, and level3 is `integrated_diagnosis`
@@ -74,9 +75,8 @@ treemap <-
     aes(
       area = size,
       fill = hex_codes,
-      label = level1,
-      subgroup = level2,
-      subgroup2 = level3
+      label = level2,
+      subgroup = level3
     )
   ) +
   geom_treemap() +
@@ -84,24 +84,17 @@ treemap <-
   geom_treemap_text(
     fontface = "italic",
     colour = "white",
-    place = "center",
-    alpha = 0.4,
-    grow = T,
-    reflow = T
+    place = "topleft",
+    alpha = 0.3,
+    grow = F,
+    reflow = T,
+    size = 14
   ) +
   geom_treemap_subgroup_text(
-    place = "top",
+    place = "bottomright",
     grow = T,
     reflow = T,
     alpha = 0.6,
-    colour = "#FAFAFA",
-    min.size = 0
-  ) +
-  geom_treemap_subgroup2_text(
-    place = "bottom",
-    grow = T,
-    reflow = T,
-    alpha = 0.5,
     colour = "#FAFAFA",
     min.size = 0
   ) +
@@ -130,6 +123,6 @@ combined_plot <- treemap + project_features_plot +
 
 # Save to PDF
 ggplot2::ggsave(file.path(output_dir, "fig1-openpbta-distribution.pdf"),
-                width = 10, height = 8,
+                width = 12, height = 8,
                 units = "in"
 )
