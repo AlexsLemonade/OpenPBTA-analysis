@@ -68,17 +68,17 @@ final_table<-clinical %>%
   # add metadata to wgs dataset
   left_join(subsetWgs,by=c("Kids_First_Participant_ID","sample_id","short_histology")) %>%
   # add molecular_subtype column 
-  dplyr::mutate(molecular_subtype=dplyr::case_when(
+ dplyr::mutate(molecular_subtype=dplyr::case_when(
     # if RNAseq sample has BRAF fusion and WGS sample is not available or is present without BRAF V600E; a condition is.na(BRAF) is also used to capture instances where the sample was not selected in recurrent-fusion sample selection( for example progressive sample was not selected if a initial tumor RNAseq was found for that patient)
     FusionName=="KIAA1549--BRAF" & (BRAF==1|is.na(BRAF)) & (BRAF_V600E=="No"|is.na(BRAF_V600E)) ~"LGG, BRAF fusion",
-                                                   # if RNAseq sample doesn't have BRAF fusion and WGS sample has BRAF V600E
-                                                   is.na(FusionName) & is.na(BRAF) & BRAF_V600E=="Yes"~ "LGG, BRAF V600E",
-                                                   # if RNAseq sample doesn't have BRAF fusion and WGS sample doesn't have BRAF V600E
-                                                   is.na(FusionName) & is.na(BRAF) & BRAF_V600E=="No" ~ "LGG, BRAF wildtype",
-                                                   # if RNAseq sample has braf fusion and WGS has BRAF V600E mutation; a condition is.na(BRAF) is also used to capture instances where the sample was not selected in recurrent-fusion sample selection( for example progressive sample was not selected if a initial tumor RNAseq was found for that patient)
-                                                   FusionName=="KIAA1549--BRAF" & (BRAF==1|is.na(BRAF)) & BRAF_V600E=="Yes" ~"LGG, BRAF V600E/fusion",
-                                                   # if no fusion calls present in RNAseq and no WGS data is available
-                                                   is.na(FusionName) & is.na(BRAF) & is.na(BRAF_V600E) ~ "LGG,To be classified")) %>%
+    # if RNAseq sample doesn't have BRAF fusion and WGS sample has BRAF V600E
+    is.na(FusionName) & is.na(BRAF) & BRAF_V600E=="Yes"~ "LGG, BRAF V600E",
+    # if RNAseq sample doesn't have BRAF fusion and WGS sample doesn't have BRAF V600E
+    is.na(FusionName) & is.na(BRAF) & BRAF_V600E=="No" ~ "LGG, BRAF wildtype",
+    # if RNAseq sample has braf fusion and WGS has BRAF V600E mutation; a condition is.na(BRAF) is also used to capture instances where the sample was not selected in recurrent-fusion sample selection( for example progressive sample was not selected if a initial tumor RNAseq was found for that patient)
+    FusionName=="KIAA1549--BRAF" & (BRAF==1|is.na(BRAF)) & BRAF_V600E=="Yes" ~"LGG, BRAF V600E/fusion",
+    # if no fusion calls present in RNAseq and no WGS data is available
+    is.na(FusionName) & is.na(BRAF) & is.na(BRAF_V600E) ~ "LGG,To be classified")) %>%
   dplyr::select("Kids_First_Participant_ID","sample_id","Kids_First_Biospecimen_ID_DNA","Kids_First_Biospecimen_ID_RNA","molecular_subtype")
 
                                                    
