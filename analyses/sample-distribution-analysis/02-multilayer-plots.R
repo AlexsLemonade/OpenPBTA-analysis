@@ -80,7 +80,7 @@ color_palette <-
 # palette is generated in `figures/scripts/color_palettes.R`
 final_df2 <- final_df %>%
   dplyr::left_join(color_palette, by = c("level2" = "color_names")) %>%
-  distinct() # Remove the redundant rows from prep for the `treemap` function
+  dplyr::distinct() # Remove the redundant rows from prep for the `treemap` function
 
 # Plot the treemap
 treemap <-

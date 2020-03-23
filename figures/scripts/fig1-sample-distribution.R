@@ -65,7 +65,7 @@ color_palette <-
 # palette is generated in `figures/scripts/color_palettes.R`
 plots_df2 <- plots_df %>%
   left_join(color_palette, by = c("level2" = "color_names")) %>%
-  distinct()
+  distinct() # Remove the redundant rows from prep for the `treemap` function
 
 # Plot the treemap where level1 is `broad_histology`,
 # level2 is `short_histology`, and level3 is `integrated_diagnosis`
