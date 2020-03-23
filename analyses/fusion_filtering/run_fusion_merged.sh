@@ -75,8 +75,11 @@ Rscript analyses/fusion_filtering/03-Calc-zscore-annotate.R --standardFusionCall
 # Project specific filtering
 Rscript -e "rmarkdown::render('analyses/fusion_filtering/04-project-specific-filtering.Rmd')"
 
+# QC filter putative oncogene found in more than 4 histologies
+Rscript -e "rmarkdown::render('analyses/fusion_filtering/05-QC_putative_onco_fusion_dustribution.Rmd')"
+
 # Recurrent fusion/fused genes
-Rscript analyses/fusion_filtering/05-recurrent-fusions-per-histology.R --standardFusionCalls $putative_oncogenic_fusion \
+Rscript analyses/fusion_filtering/06-recurrent-fusions-per-histology.R --standardFusionCalls $putative_oncogenic_fusion \
                                                                        --clinicalFile $histologies_file \
                                                                        --outputfolder $results_folder \
                                                                        --independentSpecimensFile $independent_samples_file

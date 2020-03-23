@@ -34,6 +34,10 @@ library(tidyverse)
 
 ```{r}
 scratch_dir <- file.path("..", "..", "scratch")
+output_dir <- file.path(scratch_dir, "cytoband_status", "segments")
+if(!dir.exists(output_dir)) {
+  dir.create(output_dir, recursive = TRUE)
+}
 ```
 
 ```{r}
@@ -146,3 +150,69 @@ add_status_df %>%
 output_file <- file.path("..", "..", "scratch", "consensus_seg_with_status.tsv")
 write_tsv(add_status_df, output_file)
 ```
+
+### Prepare separate bed files for losses/gains for bedtools coverage function
+
+```{r}
+bed_status_df <- add_status_df %>%
+  select(chrom, loc.start, loc.end, everything()) %>%
+  group_by(Kids_First_Biospecimen_ID) %>%
+  arrange(chrom, loc.start, loc.end)
+
+losses_bed_status_df <- bed_status_df %>%
+  filter(status == "loss")
+
+gains_bed_status_df <- bed_status_df %>%
+  filter(status == "gain")
+
+# make lists of data frames by sample
+bed_status_list <- bed_status_df %>%
+  group_split()
+names(bed_status_list) <- bed_status_df %>%
+  group_keys() %>%
+  pull(Kids_First_Biospecimen_ID)
+
+bed_loss_list <- losses_bed_status_df %>%
+  group_split()
+names(bed_loss_list) <- losses_bed_status_df %>%
+  group_keys() %>%
+  pull(Kids_First_Biospecimen_ID)
+
+bed_gain_list <- gains_bed_status_df %>%
+  group_split()
+names(bed_gain_list) <- gains_bed_status_df %>%
+  group_keys() %>%
+  pull(Kids_First_Biospecimen_ID)
+```
+
+### Write to file
+
+```{r}
+temp <- purrr::imap(bed_status_list,
+                    ~ write_tsv(.x,
+                                file.path(
+                                  output_dir, paste0("consensus_callable.", .y, ".bed")
+                                ),
+                                col_names = FALSE))
+
+temp_loss <- purrr::imap(bed_loss_list,
+                         ~ write_tsv(.x,
+                                     file.path(
+                                       output_dir, paste0("consensus_loss.", .y, ".bed")
+                                     ),
+                                     col_names = FALSE))
+
+temp_gain <- purrr::imap(bed_gain_list,
+                         ~ write_tsv(.x,
+                                     file.path(
+                                       output_dir, paste0("consensus_gain.", .y, ".bed")
+                                     ),
+                                     col_names = FALSE))
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
