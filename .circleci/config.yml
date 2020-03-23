@@ -218,7 +218,7 @@ jobs:
 
       - run:
          name: EWS classification
-         command: ./scripts/run_in_ci.sh bash analyses/molecular_classifying_EWS/run_reclassification.sh 
+         command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EWS/run_reclassification.sh 
 
 
   deploy:
