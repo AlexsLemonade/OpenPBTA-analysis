@@ -6,4 +6,4 @@ set -o pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 # Run notebook to get molecular subtype for LGAT samples 
 
-Rscript -e "rmarkdown::render('analyses/molecular-subtyping-LGAT/01-make-lgat-final-table.Rmd')"
+Rscript -e "rmarkdown::render('01-make-lgat-final-table.Rmd')"
