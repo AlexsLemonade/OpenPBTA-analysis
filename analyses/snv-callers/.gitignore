@@ -1,3 +1,5 @@
 # ignore folders with big results files
 results
-ref_files
+ref_files/*
+!ref_files/gencode.v19.basic.exome.hg38liftover.bed
+!ref_files/intersect_cds_gencode_liftover_WXS.bed

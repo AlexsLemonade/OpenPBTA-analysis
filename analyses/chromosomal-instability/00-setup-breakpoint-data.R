@@ -7,24 +7,21 @@
 # Code adapted from [svcnvplus](https://github.com/gonzolgarcia/svcnvplus).
 #
 # Option descriptions
-# --cnv_seg: Relative file path (assuming from top directory of
-#            'OpenPBTA-analysis') to CNV segment file to be used for breakpoint 
+# --cnv_seg: File path to CNV segment file to be used for breakpoint
 #            calculations.
-# --sv: Relative file path (assuming from top directory of
-#       'OpenPBTA-analysis') to SV file to be used for breakpoint calculations.
-# --metadata: Relative file path (assuming from top directory of
-#             'OpenPBTA-analysis') to MAF file to be analyzed. It is only needed
+# --sv: File path to SV file to be used for breakpoint calculations.
+# --metadata: File path to metadata file to be analyzed. It is only needed
 #             for identifying which samples are WGS or WXS.
 # --ch.pct: A number between 0 and 1 that specifies the ratio of change needed to
 #           consider a CNV copy number as changed.
 # --output: Path to folder where you would like the output breakpoint calculations
 #           files from this script to be stored
 # --surveyed_wgs: File path that specifies the BED regions file that indicates
-#                 the effectively surveyed regions of the genome for the WGS samples.",
+#                 the effectively surveyed regions of the genome for the WGS samples.
 # --surveyed_wxs: File path that specifies the BED regions file that indicates the
 #                 effectively surveyed regions of the genome for the WXS samples.
-# --gap: An integer that indicates how many base pairs away a CNV and SV and 
-#        still be considered the same. Will be passed to maxgap argument in 
+# --gap: An integer that indicates how many base pairs away a CNV and SV and
+#        still be considered the same. Will be passed to maxgap argument in
 #        GenomicRanges::findOverlaps. Default is 0.
 # --drop_sex: If TRUE, will drop the sex chromosomes. Default is FALSE
 #
@@ -34,18 +31,19 @@
 # --cnv_seg data/pbta-cnv-cnvkit.seg.gz \
 # --sv data/pbta-sv-manta.tsv.gz \
 # --metadata data/pbta-histologies.tsv \
-# --surveyed_wgs  WGS_effectively_surveyed.bed \
+# --surveyed_wgs  scratch/WGS_effectively_surveyed.bed \
 # --surveyed_wxs data/WXS.hg38.100bp_padded.bed
 #
 ################################ Initial Set Up ################################
-# Establish base dir
+# Establish base dir, this is required for correctly sourcing the functions
+# below
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # We need the `make_granges` function from here
-source(file.path(root_dir, 
-                 "analyses", 
-                 "chromosomal-instability", 
-                 "util", 
+source(file.path(root_dir,
+                 "analyses",
+                 "chromosomal-instability",
+                 "util",
                  "chr-break-calculate.R"))
 
 # Magrittr pipe
@@ -57,42 +55,42 @@ library(optparse)
 
 ############################ Intersect function ################################
 intersect_cnv_sv <- function(sample_id, sv_breaks, cnv_breaks, gap = opt$gap) {
-  # For a given sample's data in CNV and SV chromosomal breaks data.frame, 
-  # intersect the two (based on the maxgap allowed to consider two breaks 
-  # identical) and return a data.frame with the intersection breaks. 
+  # For a given sample's data in CNV and SV chromosomal breaks data.frame,
+  # intersect the two (based on the maxgap allowed to consider two breaks
+  # identical) and return a data.frame with the intersection breaks.
   #
   # Args:
   #   sample_id: The sample_id to be looked up in the samples_col
-  #   sv/cnv_breaks: for a data.frame with chromosomal coordinates and sample IDs 
+  #   sv/cnv_breaks: for a data.frame with chromosomal coordinates and sample IDs
   #                  for their respective breaks
   #   sample_id: a character string that designates which sample's data needs to be
   #              extracted and intersected between the two data.frames (CNV and SV)
-  #   gap : The max number of bases between a CNV and SV break for them to be 
-  #         considered the same. 
+  #   gap : The max number of bases between a CNV and SV break for them to be
+  #         considered the same.
   #
   # Returns:
-  # A chromosomal breaks data.frame that contains the intersection of CNV and SV 
+  # A chromosomal breaks data.frame that contains the intersection of CNV and SV
   # chromosomal break data.
-  # 
-  # Make into GenomicRanges objects 
-  sv_ranges <- make_granges(sv_breaks, 
-                            sample_id = sample_id, 
+  #
+  # Make into GenomicRanges objects
+  sv_ranges <- make_granges(sv_breaks,
+                            sample_id = sample_id,
                             start_col = "coord",
                             end_col = "coord")
   cnv_ranges <- make_granges(cnv_breaks,
-                             sample_id = sample_id, 
+                             sample_id = sample_id,
                              start_col = "coord",
                              end_col = "coord")
   # Find overlaps
   intersection_df <- IRanges::mergeByOverlaps(
-    sv_ranges, 
+    sv_ranges,
     cnv_ranges,
-    maxgap = opt$gap) %>% 
+    maxgap = opt$gap) %>%
     # Coerce to data.frame
-    as.data.frame() %>% 
+    as.data.frame() %>%
     # Remove these, they are redundant
     dplyr::select(-dplyr::contains("mcols"))
-  
+
   return(intersection_df)
 }
 
@@ -101,63 +99,48 @@ intersect_cnv_sv <- function(sample_id, sv_breaks, cnv_breaks, gap = opt$gap) {
 option_list <- list(
   make_option(
     opt_str = "--cnv_seg", type = "character", default = "none",
-    help = "Relative file path (assuming from top directory of
-    'OpenPBTA-analysis') to CNV segment file to be used for breakpoint 
-    calculations.",
+    help = "File path to CNV segment file to be used for breakpoint calculations.",
     metavar = "character"
   ),
   make_option(
     opt_str = "--sv", type = "character", default = "none",
-    help = "Relative file path (assuming from top directory of
-    'OpenPBTA-analysis') to SV file to be used for breakpoint 
-    calculations.",
+    help = "File path to SV file to be used for breakpoint calculations.",
     metavar = "character"
   ),
   make_option(
     opt_str = "--metadata", type = "character", default = "none",
-    help = "Relative file path (assuming from top directory of
-    'OpenPBTA-analysis') to MAF file to be analyzed. It is only needed
-    for identifying which samples are WGS or WXS. ",
+    help = "File path to MAF file to be analyzed. It is only needed for identifying which samples are WGS or WXS.",
     metavar = "character"
   ),
   make_option(
     opt_str = "--ch.pct", default = 0,
-    help = "A number between 0 and 1 that specifies the ratio of change needed to
-    consider a CNV copy number as changed.",
+    help = "A number between 0 and 1 that specifies the ratio of change needed to consider a CNV copy number as changed.",
     metavar = "number"
   ),
   make_option(
     opt_str = c("-o", "--output"), type = "character",
-    default = NULL, help = "Path to folder where you would like the
-              output breakpoint calculations files from this script to be stored.",
+    default = NULL,
+    help = "Path to folder where you would like the output breakpoint calculations files from this script to be stored.",
     metavar = "character"
   ),
   make_option(
     opt_str = "--surveyed_wgs", type = "character", default = "none",
-    help = "Relative file path (assuming from top directory of
-    'OpenPBTA-analysis') that specifies the BED regions file that indicates the 
-    effectively surveyed regions of the genome for the WGS samples.",
+    help = "File path that specifies the BED regions file that indicates the effectively surveyed regions of the genome for the WGS samples.",
     metavar = "character"
   ),
   make_option(
     opt_str = "--surveyed_wxs", type = "character", default = "none",
-    help = "Relative file path (assuming from top directory of
-    'OpenPBTA-analysis') that specifies the BED regions file that indicates the 
-    effectively surveyed regions of the genome for the WXS samples.",
+    help = "File path that specifies the BED regions file that indicates the effectively surveyed regions of the genome for the WXS samples.",
     metavar = "character"
-  ), 
+  ),
   make_option(
     opt_str = "--uncalled_samples", type = "character", default = "none",
-    help = "Relative file path (assuming from top directory of
-    'OpenPBTA-analysis') that specifies the regions that were uncalled in CNV
-    analysis.",
+    help = "File path that specifies the regions that were uncalled in CNV analysis.",
     metavar = "character"
-  ), 
+  ),
   make_option(
     opt_str = "--gap", default = 0,
-    help = "An integer that indicates how many base pairs away a CNV and SV 
-    breakpoint can be and still be considered the same. Will be passed to maxgap
-    argument in GenomicRanges::findOverlaps.",
+    help = "An integer that indicates how many base pairs away a CNV and SV breakpoint can be and still be considered the same. Will be passed to maxgap argument in GenomicRanges::findOverlaps.",
     metavar = "number"
   ),
   make_option(
@@ -169,13 +152,6 @@ option_list <- list(
 
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
-
-# Make everything relative to root path
-opt$cnv_seg <- file.path(root_dir, opt$cnv_seg)
-opt$sv <- file.path(root_dir, opt$sv)
-opt$metadata <- file.path(root_dir, opt$metadata)
-opt$surveyed_wgs <- file.path(root_dir, opt$surveyed_wgs)
-opt$surveyed_wxs <- file.path(root_dir, opt$surveyed_wxs)
 
 ########### Check that the files we need are in the paths specified ############
 needed_files <- c(
@@ -195,8 +171,6 @@ if (!all(files_found)) {
 }
 
 ############################## Set Up Output ###################################
-# Set and make the plots directory
-opt$output <- file.path(root_dir, opt$output)
 
 # Make output folder
 if (!dir.exists(opt$output)) {
@@ -253,10 +227,10 @@ sv_samples <- unique(sv_df$Kids.First.Biospecimen.ID.Tumor)
 
 ####################### Drop Sex Chr if option is on ###########################
 if (opt$drop_sex){
-  sv_df <- sv_df %>% 
+  sv_df <- sv_df %>%
     dplyr::filter(!(chrom %in% c("X", "Y", "M")))
-  
-  cnv_df <- cnv_df %>% 
+
+  cnv_df <- cnv_df %>%
     dplyr::filter(!(chrom %in% c("X", "Y", "M")))
 }
 #################### Format the data as chromosomes breaks #####################
@@ -294,16 +268,16 @@ common_samples <- dplyr::intersect(
 intersection_of_breaks <- lapply(common_samples,
                                  intersect_cnv_sv, # Special intersect function
                                  sv_breaks = sv_breaks,
-                                 cnv_breaks = cnv_breaks, 
+                                 cnv_breaks = cnv_breaks,
                                  gap = opt$gap) # The maxgap allowed
 
 # Bring along sample names
 names(intersection_of_breaks) <- common_samples
 
 # Collapse into a data.frame
-intersection_of_breaks <- dplyr::bind_rows(intersection_of_breaks, 
-                                           .id = "samples") %>% 
-  # Only need one chromosome 
+intersection_of_breaks <- dplyr::bind_rows(intersection_of_breaks,
+                                           .id = "samples") %>%
+  # Only need one chromosome
   dplyr::select(chrom = sv_ranges.seqnames, dplyr::everything(), -cnv_ranges.seqnames)
 
 # Put all the breaks into a list.
@@ -333,7 +307,7 @@ wxs_size <- as.numeric(wxs_size)
 # Read in uncalled samples from consensus module
 uncalled_samples <- readr::read_tsv(opt$uncalled)$sample
 
-# Get vector of all samples 
+# Get vector of all samples
 all_samples <- unique(c(cnv_samples, sv_samples, uncalled_samples))
 
 
@@ -346,7 +320,7 @@ metadata <- readr::read_tsv(opt$metadata, guess_max = 10000) %>%
   # For an easier time matching to our breaks data.frames, lets just rename this.
   dplyr::rename(samples = Kids_First_Biospecimen_ID) %>%
   # samples not in cnv_samples were were noisy or otherwise bad data
-  dplyr::mutate(surveyed = samples %in% cnv_samples) 
+  dplyr::mutate(surveyed = samples %in% cnv_samples)
 
 
 # Calculate the breaks density for each data.frame
@@ -364,16 +338,16 @@ breaks_density_list <- lapply(breaks_list, function(breaks_df) {
       samples, experimental_strategy, genome_size, surveyed
     ) %>%
     # Count number of mutations for that sample but find out if it is NA
-    dplyr::summarize(is_na = any(is.na(chrom)), 
+    dplyr::summarize(is_na = any(is.na(chrom)),
                      breaks_count = dplyr::n()) %>%
-    # Calculate breaks density, but put NA for breaks_count if the sample was 
+    # Calculate breaks density, but put NA for breaks_count if the sample was
     # dropped from CNV consensus analysis
     dplyr::mutate(breaks_count = dplyr::case_when(
-      !is_na ~ as.numeric(breaks_count), 
+      !is_na ~ as.numeric(breaks_count),
       is_na & surveyed ~ as.numeric(0),
       TRUE ~ as.numeric(NA)
-      ), 
-    breaks_density = breaks_count / (genome_size / 1000000)) %>% 
+      ),
+    breaks_density = breaks_count / (genome_size / 1000000)) %>%
     # Drop the is_na column, we only needed if for recoding
     dplyr::select(-is_na, -surveyed)
 })

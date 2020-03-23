@@ -37,8 +37,10 @@ set.seed(2020)
 
 ```{r}
 # Path to data directory
-data_dir <- file.path("..", "..", "data")
-scratch_dir <- file.path("..", "..", "scratch")
+base_dir <- file.path("..", "..")
+data_dir <- file.path(base_dir, "data")
+scratch_dir <- file.path(base_dir, "scratch")
+figures_dir <- file.path(base_dir, "figures")
 
 # Path to output directory
 plots_dir <- "plots"
@@ -47,6 +49,44 @@ plots_dir <- "plots"
 if (!dir.exists(plots_dir)) {
   dir.create(plots_dir, recursive = TRUE)
 }
+```
+
+Import color palettes. 
+
+```{r}
+# Import standard color palettes for project
+histology_col_palette <- readr::read_tsv(
+  file.path(figures_dir, "palettes", "histology_color_palette.tsv")
+  ) %>% 
+  # We'll use deframe so we can use it as a recoding list
+  tibble::deframe()
+
+# We'll use this for numeric data on the heatmap 
+gradient_col_palette <- readr::read_tsv(
+  file.path(figures_dir, "palettes", "gradient_color_palette.tsv")
+  ) %>% 
+  # We won't need NA color in this instance, ComplexHeatmap has a separate argument for that
+  dplyr::filter(color_names != "na_color")
+
+# We'll use this for chromosome labeling
+binary_col_palette <- readr::read_tsv(
+  file.path(figures_dir, "palettes", "binary_color_palette.tsv")
+  )
+```
+
+Store na color separately because in this instance, ComplexHeatmap has a 
+separate argument for that. 
+
+```{r}
+# Store na color separately because in this instance, ComplexHeatmap has a 
+# separate argument for that
+na_color <- binary_col_palette %>% 
+  dplyr::filter(color_names == "na_color") %>% 
+  dplyr::pull("hex_codes")
+
+# Drop na color from this color palette
+binary_col_palette <- binary_col_palette %>% 
+  dplyr::filter(color_names != "na_color")
 ```
 
 Here's all the input files we will need: 
@@ -75,7 +115,8 @@ breaks_heatmap <- function(binned_counts_df,
                            histologies,
                            chr_colors,
                            histologies_colors,
-                           col_fun) {
+                           col_fun, 
+                           na_color) {
   # A wrapper function for making a heatmap from the samples GenomicRanges list.
   #
   # Args:
@@ -88,10 +129,11 @@ breaks_heatmap <- function(binned_counts_df,
   # chr_colors: A named vector to be used for coloring chromosomes.
   # histologies_colors: A named vector to be used for coloring histologies.
   # col_fun: a color key for the heatmap itself. Provided as a function.
+  # na_color: what color should na regions be?
   #
   # Returns:
   # A heatmap of the chromosomal breaks
-
+    
   # Drop chr bin names
   binned_counts_mat <- binned_counts_df %>%
     dplyr::select(rownames(histologies)) %>%
@@ -122,7 +164,7 @@ breaks_heatmap <- function(binned_counts_df,
     show_row_names = FALSE,
     bottom_annotation = chr_annot,
     left_annotation = hist_annot,
-    na_col = "#f1f1f1"
+    na_col = na_color
   )
   # Return plot
   return(heatmap)
@@ -135,7 +177,12 @@ Set up metadata
 
 ```{r}
 # Read in the metadata
-metadata <- readr::read_tsv(metadata_file)
+metadata <- readr::read_tsv(metadata_file) %>%
+  # Easier to deal with NA short histologies if they are labeled something different
+  dplyr::mutate(short_histology = as.character(tidyr::replace_na(short_histology, "none"))) %>% 
+  # Tack on the sample color using the short_histology column and a recode
+  dplyr::mutate(sample_color = dplyr::recode(short_histology, 
+                                             !!!histology_col_palette))
 ```
 
 Load in the previously localized breakpoint data. 
@@ -162,7 +209,7 @@ chrs <- paste0("chr", binned_counts[[1]]$chr_bin_names)
 chrs <- as.factor(chrs)
 
 # Make a key for assigning alternating colors to the chromosomes
-chr_colors <- rep(c("grey", "lightblue"), length.out = length(unique(chrs)))
+chr_colors <- rep(binary_col_palette$hex_codes, length.out = length(unique(chrs)))
 names(chr_colors) <- unique(chrs)
 ```
 
@@ -187,34 +234,25 @@ Make histology labeling `HeatmapAnnotation` object.
 # Get the histologies for the samples in this set and order them by histology
 histologies <-
   data.frame(Kids_First_Biospecimen_ID = common_samples) %>%
-  dplyr::inner_join(dplyr::select(metadata, Kids_First_Biospecimen_ID, short_histology)) %>%
-  dplyr::mutate(short_histology = tools::toTitleCase(short_histology), 
-                short_histology = as.factor(short_histology)) %>%
-  dplyr::filter(!is.na(short_histology)) %>%
-  dplyr::arrange(short_histology) %>%
+  dplyr::inner_join(metadata %>% 
+                      dplyr::select(Kids_First_Biospecimen_ID, short_histology, sample_color)) %>%
+  dplyr::arrange(short_histology) %>% 
   tibble::column_to_rownames("Kids_First_Biospecimen_ID")
 
-#TODO: Better colors
-# Get values that can be used to make colors equi distant hues away for the
-# number of histology groups we have
-col_val <- seq(
-  from = 0, to = 1,
-  length.out = length(unique(histologies$short_histology))
-)
+# Make color key specific to these samples
+histologies_color_key_filtered <- unique(histologies$sample_color)
+names(histologies_color_key_filtered) <- unique(histologies$short_histology)
 
-# Translate into colors
-histologies_colors <- hsv(h = col_val, s = col_val, v = 1)
-
-# Make this named based on histology
-names(histologies_colors) <- unique(histologies$short_histology)
+# Drop this column so ComplexHeatmap isn't tempted to plot it
+histologies <- dplyr::select(histologies, -sample_color)
 ```
 
 Make a color function. 
 
 ```{r}
 col_fun <- circlize::colorRamp2(
-  c(0, .25, .5, 1, 3),
-  c("#edf8fb", "#b2e2e2", "#66c2a4", "#2ca25f", "#006d2c")
+  c(0, .125, .25, .3, .5, 1, 1.5, 2, 2.5, 3),
+  gradient_col_palette$hex_codes
 )
 ```
 
@@ -226,8 +264,9 @@ intersection_of_heatmap <- breaks_heatmap(
   chrs,
   histologies,
   chr_colors,
-  histologies_colors,
-  col_fun
+  histologies_color_key_filtered,
+  col_fun, 
+  na_color
 )
 # Print out here
 intersection_of_heatmap
@@ -246,8 +285,9 @@ cnv_heatmap <- breaks_heatmap(
   chrs,
   histologies,
   chr_colors,
-  histologies_colors,
-  col_fun
+  histologies_color_key_filtered,
+  col_fun, 
+  na_color
 )
 # Print out here
 cnv_heatmap
@@ -266,8 +306,9 @@ sv_heatmap <- breaks_heatmap(
   chrs,
   histologies,
   chr_colors,
-  histologies_colors,
-  col_fun
+  histologies_color_key_filtered,
+  col_fun, 
+  na_color
 )
 # Print out here
 sv_heatmap

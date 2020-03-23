@@ -1,5 +1,100 @@
 # release notes
 ## current release
+### release-v15-20200228
+- release date: 2020-02-28
+- status: available
+- changes:
+  - Update Strelka2, Mutect2, and Lancet TCGA MAF files per [#257](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/257); files updated:
+    - pbta-tcga-snv-mutect2.vep.maf.gz
+    - pbta-tcga-snv-strelka2.vep.maf.gz
+    - pbta-tcga-snv-lancet.vep.maf.gz
+  - Add TCGA WXS BED regions file lifted from hg19 to hg38 and padded by 100bp, which was used for variant calling:
+    - gencode.v19.basic.exome.hg38liftover.100bp_padded.bed, obtained from [the GDC website](https://gdc.cancer.gov/about-data/publications/mc3-20170); NOTE: this BED file is almost certainly wrong per [#568](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/568).
+  - Replace pbta-cnv-consensus-gistic.zip with the file from the [OpenPBTA analysis master repository](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/46cf6ccb119312ccae6122ac94c51710df01f6da/analyses/run-gistic/results) now that GISTIC has been installed [comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/543#issuecomment-587514075).
+  - Updated `pbta-histologies.tsv` to:
+    - Harmonize `Embryonal Tumor` and `Embryonal tumor` [#541](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/541)
+    - Change `disease_type_old` to `pathology_diagnosis` and `disease_type_new` to `integrated_diagnosis` per request in [comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/543#issuecomment-589248029).
+  - Add consensus focal CN files from [analysis](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/46cf6ccb119312ccae6122ac94c51710df01f6da/analyses/focal-cn-file-preparation):
+    - consensus_seg_annotated_cn_autosomes.tsv.gz
+    - consensus_seg_annotated_cn_x_and_y.tsv.gz
+  - Updated fusion files to add additional kinase genes, remove residual polyA stranded samples, and fix order of filtering operations per [comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/539#issuecomment-587167746), [comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/521#issuecomment-582990375), [#530](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/530), and [#553](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/530), and [PR #567](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/567):
+    - pbta-fusion-recurrently-fused-genes-byhistology.tsv
+    - pbta-fusion-putative-oncogenic.tsv
+    - pbta-fusion-recurrently-fused-genes-bysample.tsv
+- folder structure:
+```
+data
+└── release-v15-20200228
+    ├── release-notes.md
+    ├── data-files-description.md
+    ├── StrexomeLite_Targets_CrossMap_hg38_filtered_chr_prefixed.bed
+    ├── StrexomeLite_hg38_liftover_100bp_padded.bed
+    ├── WGS.hg38.lancet.300bp_padded.bed
+    ├── WGS.hg38.lancet.unpadded.bed
+    ├── WGS.hg38.mutect2.vardict.unpadded.bed
+    ├── WGS.hg38.strelka2.unpadded.bed
+    ├── WGS.hg38.vardict.100bp_padded.bed
+    ├── WXS.hg38.100bp_padded.bed
+    ├── WXS.hg38.lancet.400bp_padded.bed
+    ├── md5sum.txt
+    ├── pbta-cnv-cnvkit.seg.gz
+    ├── pbta-cnv-consensus.seg.gz
+    ├── pbta-cnv-controlfreec.tsv.gz
+    ├── pbta-cnv-cnvkit-gistic.zip
+    ├── pbta-cnv-consensus-gistic.zip
+    ├── pbta-fusion-arriba.tsv.gz
+    ├── pbta-fusion-starfusion.tsv.gz
+    ├── pbta-fusion-putative-oncogenic.tsv
+    ├── pbta-gene-counts-rsem-expected_count.polya.rds
+    ├── pbta-gene-counts-rsem-expected_count.stranded.rds
+    ├── pbta-gene-expression-kallisto.polya.rds
+    ├── pbta-gene-expression-kallisto.stranded.rds
+    ├── pbta-gene-expression-rsem-fpkm.polya.rds
+    ├── pbta-gene-expression-rsem-fpkm.stranded.rds
+    ├── pbta-histologies.tsv
+    ├── pbta-snv-lancet.vep.maf.gz
+    ├── pbta-snv-mutect2.vep.maf.gz
+    ├── pbta-snv-strelka2.vep.maf.gz
+    ├── pbta-snv-vardict.vep.maf.gz
+    ├── pbta-sv-manta.tsv.gz
+    ├── independent-specimens.wgs.primary-plus.tsv
+    ├── independent-specimens.wgs.primary.tsv
+    ├── independent-specimens.wgswxs.primary-plus.tsv
+    ├── independent-specimens.wgswxs.primary.tsv
+    ├── pbta-gene-expression-rsem-fpkm-collapsed.polya.rds
+    ├── pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds
+    ├── pbta-gene-expression-rsem-tpm.polya.rds
+    ├── pbta-gene-expression-rsem-tpm.stranded.rds
+    ├── pbta-isoform-expression-rsem-tpm.polya.rds
+    ├── pbta-isoform-expression-rsem-tpm.stranded.rds
+    ├── pbta-isoform-counts-rsem-expected_count.polya.rds
+    ├── pbta-isoform-counts-rsem-expected_count.stranded.rds
+    ├── pbta-snv-consensus-mutation.maf.tsv.gz
+    ├── pbta-snv-consensus-mutation-tmb-all.tsv
+    ├── pbta-snv-consensus-mutation-tmb-coding.tsv
+    ├── pbta-fusion-recurrently-fused-genes-byhistology.tsv
+    ├── pbta-fusion-recurrently-fused-genes-bysample.tsv
+    ├── pbta-tcga-snv-lancet.vep.maf.gz
+    ├── pbta-tcga-snv-strelka2.vep.maf.gz
+    ├── pbta-tcga-snv-mutect2.vep.maf.gz
+    ├── pbta-tcga-manifest.tsv
+    ├── pbta-mend-qc-results.tar.gz
+    ├── pbta-mend-qc-manifest.tsv
+    ├── pbta-star-log-final.tar.gz
+    ├── pbta-star-log-manifest.tsv
+    ├── intersect_cds_lancet_strelka_mutect_WGS.bed
+    ├── intersect_cds_lancet.bed
+    ├── intersect_strelka_mutect_WGS.bed
+    ├── fusion_summary_embryonal_foi.tsv
+    ├── fusion_summary_ependymoma_foi.tsv
+    ├── gencode.v19.basic.exome.hg38liftover.100bp_padded.bed
+    ├── consensus_seg_annotated_cn_autosomes.tsv.gz
+    └── consensus_seg_annotated_cn_x_and_y.tsv.gz
+```
+
+
+
+## archived release
 ### release-v14-20200203
 - release date: 2020-02-03
 - status: available
@@ -109,8 +204,6 @@ data
     ├── fusion_summary_embryonal_foi.tsv
     └── fusion_summary_ependymoma_foi.tsv
 ```
-
-
 
 ## archived releases
 ### release-v13-20200116
@@ -700,5 +793,3 @@ data
     ├── strelka2.maf.gz
     └── tumor-normal-pair.tsv
 ```
-
-
