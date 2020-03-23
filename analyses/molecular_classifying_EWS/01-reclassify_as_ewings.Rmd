@@ -39,7 +39,7 @@ if (!dir.exists(results_dir)) {
 ### reclassify integrated diagnosis and short_histology of samples that have hallmark ewings sarcoma EWSR1 fusion
 ```{r}
 reclassifySamplesEwings<-ewings_foi_bsids %>% 
-  dplyr::mutate(integrated_diagnosis_reclassified=dplyr::case_when(.data$`EWSR1--FLI1` !=0 | .data$`EWSR1--PATZ1` !=0 | .data$`EWSR1--ERG` !=0  |.data$`FUS--ERG` !=0  ~ "Ewings Sarcoma"),
+  dplyr::mutate(integrated_diagnosis_reclassified=dplyr::case_when(.data$`EWSR1--FLI1` !=0 | .data$`EWSR1--PATZ1` !=0 | .data$`EWSR1--ERG` !=0  |.data$`FUS--ERG` !=0  ~ "Ewing Sarcoma"),
                 short_histology_reclassified=dplyr::case_when(.data$`EWSR1--FLI1` !=0 | .data$`EWSR1--PATZ1` !=0 | .data$`EWSR1--ERG` !=0  |.data$`FUS--ERG` !=0 ~ "EWS"))
 
 clinical<-clinical %>% left_join(reclassifySamplesEwings ,by=c("Kids_First_Biospecimen_ID"))
