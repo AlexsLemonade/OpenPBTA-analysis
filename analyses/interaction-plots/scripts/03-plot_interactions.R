@@ -258,7 +258,7 @@ cooccur_plot2 <- cooccur_plot +
     labels = ylabels
   ) + 
   theme(
-    plot.margin = unit(c(-3,0,0,0), "char") # negative top margin to move plots together
+    plot.margin = unit(c(-3.5,0,0,0), "char") # negative top margin to move plots together
   )
 
 # Move labels and themes for disease plot
@@ -278,7 +278,8 @@ disease_plot2 <- disease_plot +
 # Layout of the two plots will be one over the other (1 column), 
 # with the upper plot 3/4 the height of the lower plot
 combined_plot <- disease_plot2 + cooccur_plot2 +
-  plot_layout(ncol = 1, heights = c(3, 4)) & 
+  plot_layout(ncol = 1, heights = c(3, 4)) +
+  plot_annotation(tag_levels = "A") & 
   theme( # add uniform labels
     axis.text.x = element_text(size = 9),
     axis.text.y = element_text(size = 9)
