@@ -27,7 +27,7 @@ You may choose to use [`docker exec`](https://docs.docker.com/engine/reference/c
 This script runs **_all_** the intermediate steps needed to generate figures starting with the original data files.
 
 ```
-bash scripts/run-figures.sh
+bash scripts/generate-figures.sh
 ```
 
 Figures are saved to the `figures/pngs` folder and will be linked to the accompanying manuscript repository [`AlexsLemonade/OpenPBTA-manuscript`](https://github.com/AlexsLemonade/OpenPBTA-manuscript/).
