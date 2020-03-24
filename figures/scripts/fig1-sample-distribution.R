@@ -118,7 +118,8 @@ project_features_plot <- NULL
 # (2 columns and 2 rows)
 combined_plot <- treemap + project_features_plot +
   project_assays_plot + github_contributions_plot +
-  plot_layout(ncol = 2, nrow = 2) &
+  plot_layout(ncol = 2, nrow = 2) +
+  plot_annotation(tag_levels = 'A') &
   theme(# add uniform labels
     axis.text.x = element_text(size = 9),
     axis.text.y = element_text(size = 9))
