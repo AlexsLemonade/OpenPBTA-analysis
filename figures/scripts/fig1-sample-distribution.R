@@ -86,10 +86,10 @@ treemap <-
     colour = "white",
     place = "topright",
     alpha = 0.3,
-    grow = T,
+    grow = F,
     reflow = T,
     min.size = 0,
-    max.size = 2
+    size = 6
   ) +
   geom_treemap_subgroup_text(
     place = "bottomleft",
