@@ -75,8 +75,8 @@ treemap <-
     aes(
       area = size,
       fill = hex_codes,
-      label = level2,
-      subgroup = level3
+      label = level3,
+      subgroup = level1
     )
   ) +
   geom_treemap() +
@@ -84,19 +84,20 @@ treemap <-
   geom_treemap_text(
     fontface = "italic",
     colour = "white",
-    place = "topleft",
+    place = "topright",
     alpha = 0.3,
-    grow = F,
+    grow = T,
     reflow = T,
-    size = 14
+    min.size = 0,
+    max.size = 2
   ) +
   geom_treemap_subgroup_text(
-    place = "bottomright",
-    grow = T,
+    place = "bottomleft",
+    grow = F,
     reflow = T,
     alpha = 0.6,
     colour = "#FAFAFA",
-    min.size = 0
+    size = 10
   ) +
   theme(legend.position = "none")
 
