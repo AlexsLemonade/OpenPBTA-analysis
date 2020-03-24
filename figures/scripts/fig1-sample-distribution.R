@@ -99,7 +99,8 @@ treemap <-
     colour = "#FAFAFA",
     size = 10
   ) +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  scale_fill_identity()
 
 ## TODO: Re-run Github Contributions plot/table here -- for now we will define
 ## this plot as NULL
