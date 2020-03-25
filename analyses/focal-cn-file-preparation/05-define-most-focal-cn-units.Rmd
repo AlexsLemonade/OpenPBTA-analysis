@@ -318,11 +318,12 @@ if (!(running_in_ci)) {
   
   gene_amplification_status_plot <- plot_dominant_status_calls(gene_status_count,
                                                                "percent_amplification")
+  
+  # Display plots using the `list` function
+  list(gene_gain_status_plot,
+       gene_loss_status_plot,
+       gene_amplification_status_plot)
 }
-
-gene_gain_status_plot
-gene_loss_status_plot
-gene_amplification_status_plot
 ```
 
 ## Combine arm, cytoband, and gene level status data
