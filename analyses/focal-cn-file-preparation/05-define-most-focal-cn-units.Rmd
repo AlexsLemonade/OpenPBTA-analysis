@@ -310,24 +310,19 @@ cytoband_amplification_status_plot
 ```{r}
 # Plot if not running in circleCI
 if (!(running_in_ci)) {
-gene_gain_status_plot <- plot_dominant_status_calls(
-  gene_status_count,
-  "percent_gain"
-)
-gene_gain_status_plot
-
-gene_loss_status_plot <- plot_dominant_status_calls(
-  gene_status_count,
-  "percent_loss"
-)
-gene_loss_status_plot
-
-gene_amplification_status_plot <- plot_dominant_status_calls(
-  gene_status_count,
-  "percent_amplification"
-)
-gene_amplification_status_plot
+  gene_gain_status_plot <- plot_dominant_status_calls(gene_status_count,
+                                                      "percent_gain")
+  
+  gene_loss_status_plot <- plot_dominant_status_calls(gene_status_count,
+                                                      "percent_loss")
+  
+  gene_amplification_status_plot <- plot_dominant_status_calls(gene_status_count,
+                                                               "percent_amplification")
 }
+
+gene_gain_status_plot
+gene_loss_status_plot
+gene_amplification_status_plot
 ```
 
 ## Combine arm, cytoband, and gene level status data
