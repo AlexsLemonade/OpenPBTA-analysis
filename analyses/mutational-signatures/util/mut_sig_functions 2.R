@@ -7,9 +7,7 @@
 library(deconstructSigs)
 
 ################################################################################
-sample_mut_sig_plot <- function(which_sig_list, 
-                                label = "none", 
-                                output_dir = getwd()) {
+sample_mut_sig_plot <- function(which_sig_list, label = "none", output_dir = getwd()) {
   # Given a list of `deconstructSigs::WhichSignature` output, make plots for each sample using
   # deconstructSigs::plotSignatures
   #
@@ -101,10 +99,7 @@ calc_mut_per_sig <- function(which_sig_list,
   return(sig_num_df)
 }
 
-bubble_matrix_plot <- function(sig_num_df, 
-                               label = "none", 
-                               color_palette = NA, 
-                               color_breaks = NA) {
+bubble_matrix_plot <- function(sig_num_df, label = "none") {
   # Given the data.frame output from `calc_mut_per_sig` that has the number of 
   # mutations per Mb that belong to each sample x signature combo, make a bubble 
   # matrix plot that displays this information for all samples but summarized by 
@@ -115,10 +110,7 @@ bubble_matrix_plot <- function(sig_num_df,
   #   sig_num_df: a data.frame with number of mutations per Mb that belong to
   #               each sample x signature combo
   #   label: a character string for the title of the plot to be passed to ggplot2::ggtitle
-  #   color_palette: a set of colors to use for a color palette. 
-  #   color_breaks: a set of numeric breaks to be used for color palette, needs to be 
-  #                 the same length as the color palette provided. 
-  #    
+  #
   # Returns:
   #   A bubble matrix plot with the number of mutations per Mb and proportion of 
   #   tumors with a non-zero weight for all samples summarized by histology.
@@ -135,36 +127,20 @@ bubble_matrix_plot <- function(sig_num_df,
   
   # Turn 0's into NAs so they are not actually plotted
   grouped_sig_num$prop_tumors[which(grouped_sig_num$prop_tumors == 0)] <-  NA
-  
-  summary(grouped_sig_num$med_num)
-  # If color palette is not specified use color brewer's YlGnBu
-  if (is.na(color_palette)) {
-    color_palette <- RColorBrewer::brewer.pal(9, name = "YlGnBu")
-  }
-  # Set up sequence of values for color key if they aren't given
-  if (is.na(color_breaks)) {
-    color_breaks <- seq(from = min(grouped_sig_num$med_num), 
-                        to = max(grouped_sig_num$med_num),
-                        length.out = length(color_palette))
-  }
+
   # Make the bubble matrix plot
-  ggplot2::ggplot(grouped_sig_num, ggplot2::aes(x = short_histology, 
-                                                y = forcats::fct_rev(signature))) +
-    ggplot2::geom_point(ggplot2::aes(color = med_num,
-                                     size = prop_tumors)) +
-    ggplot2::scale_size("Proportion of Samples", 
-                        range = c(0, 4)) +
+  ggplot2::ggplot(grouped_sig_num, ggplot2::aes(x = short_histology, y = forcats::fct_rev(signature))) +
+    ggplot2::geom_point(ggplot2::aes(color = med_num, size = prop_tumors)) +
+    ggplot2::scale_size("Proportion of Samples", range = c(0, 4)) +
+    ggplot2::scale_color_distiller("Median Number of Mutations per Mb", palette = "YlGnBu") +
     ggplot2::theme_classic() +
+    # Make labels on top
+    ggplot2::scale_x_discrete(position = "top") +
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(angle = 55, hjust = -.01),
       axis.text.y = ggplot2::element_text(size = ggplot2::rel(.75)),
       legend.key.size = ggplot2::unit(.5, "cm")
     ) +
-    ggplot2::scale_color_gradientn(name = "Median Number of \n Mutations per Mb", 
-                                  colors = color_palette,
-                                  values = color_breaks) +
-    # Make labels on top
-    ggplot2::scale_x_discrete(position = "top") +
     ggplot2::xlab("") +
     ggplot2::ylab("") +
     ggplot2::ggtitle(label)
