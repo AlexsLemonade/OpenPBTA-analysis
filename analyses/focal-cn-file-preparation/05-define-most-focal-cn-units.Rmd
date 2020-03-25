@@ -10,7 +10,10 @@ params:
   is_ci: FALSE
 ---
 
-This notebook defines the most focal recurrent copy number units by separating out entire chromsome arm losses and gains.
+This notebook defines the most focal recurrent copy number units by removing focal changes that are within entire chromosome arm losses and gains.
+_Most focal_ here meaning: 
+- If a chromosome arm is not clearly defined as a gain or loss (and is callable) we look to define the cytoband level status
+- If a cytoband is not clearly defined as a gain or loss (and is callable) we then look to define the gene level status
 
 ## Usage
 
@@ -188,6 +191,9 @@ gene_status_count
 ## Combine arm, cytoband, and gene level status data
 
 ```{r}
+# The logic variable `running_in_ci` is needed here because the CI testing
+# files do not contain any of the genes in the `gene_status_count` data.frame
+# generated above (when `running_in_ci` == FALSE)
 if (!(running_in_ci)) {
   final_df <- consensus_seg_autosomes_df %>%
     mutate(chromosome_arm = gsub("(p|q).*", "\\1", cytoband)) %>%
