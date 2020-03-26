@@ -1,6 +1,6 @@
 ## Apply classifiers trained on TCGA RNA-seq data
 
-**Module author:** Krutika Gaonkar ([@kgaonkar6](https://github.com/kgaonkar6))
+**Module author:** edited Greg Way @gwaygenomics' code by Krutika Gaonkar ([@kgaonkar6](https://github.com/kgaonkar6)) Chante Bethell (@cbethell) and Jaclyn Taroni (@jaclyn-taroni)
 
 This module is adapted from: [`marislab/pdx-classification`](https://github.com/marislab/pdx-classification).
 Now published in [Rokita et al. _Cell Reports._ 2019.](https://doi.org/10.1016/j.celrep.2019.09.071)
