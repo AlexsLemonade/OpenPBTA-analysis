@@ -149,9 +149,9 @@ bubble_matrix_plot <- function(sig_num_df,
   }
   # Make the bubble matrix plot
   ggplot2::ggplot(grouped_sig_num, ggplot2::aes(x = short_histology, 
-                                                y = forcats::fct_rev(signature))) +
-    ggplot2::geom_point(ggplot2::aes(color = med_num,
-                                     size = prop_tumors)) +
+                                                y = forcats::fct_rev(signature), 
+                                                color = med_num)) +
+    ggplot2::geom_point(ggplot2::aes(size = prop_tumors)) +
     ggplot2::scale_size("Proportion of Samples", 
                         range = c(0, 4)) +
     ggplot2::theme_classic() +
