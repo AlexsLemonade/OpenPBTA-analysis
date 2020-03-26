@@ -22,7 +22,6 @@
 #   --outfile analysis/interaction-plots/results/cooccur.png 
 
 #### Initial Set Up
-# Establish base dir
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
@@ -30,7 +29,9 @@
 # Load libraries:
 library(optparse)
 library(ggplot2)
+library(patchwork)
 
+# define options
 option_list <- list(
   make_option(
     opt_str = "--infile",
@@ -64,6 +65,13 @@ option_list <- list(
     default = NA,
     help = "File path where gene X disease plot should be placed (required if --disease_table specified)",
     metavar = "character"
+  ),
+  make_option(
+    opt_str = "--combined_plot",
+    type = "character",
+    default = NA,
+    help = "File path where gene X disease plot should be placed (required if --disease_table specified)",
+    metavar = "character"
   )
 )
 
@@ -71,8 +79,8 @@ option_list <- list(
 opts <- parse_args(OptionParser(option_list = option_list))
 
 if (!is.na(opts$disease_table)){
-  if (is.na(opts$disease_plot)){
-    stop("If disease_table is specified, disease_plot  must also be specified")
+  if (is.na(opts$disease_plot) | is.na(opts$combined_plot)){
+    stop("If disease_table is specified, disease_plot and/or combined plot must also be specified")
   }
 }
 
@@ -107,6 +115,10 @@ cooccur_df <- cooccur_df %>%
 
 
 # create scales for consistent sizing
+# The scales will need to have opts$plotsize elements, 
+# so after getting the unique list, we concatenate on extra elements.
+# for convenience, these are just numbers 1:n 
+# where n is the number of extra labels needed for the scale
 xscale <- cooccur_df$label1 %>%
   as.character() %>%
   unique() %>%
@@ -114,6 +126,8 @@ xscale <- cooccur_df$label1 %>%
 yscale <- cooccur_df$label2 %>%
   as.character() %>%
   unique() %>%
+  # the concatenated labels need to be at the front of the Y scale, 
+  # since this will be at the bottom in the plot.
   c(1:(opts$plotsize - length(.)), .)
 
 ### make plot
@@ -121,7 +135,7 @@ cooccur_plot <- ggplot(
   cooccur_df,
   aes(x = label1, y = label2, fill = cooccur_score)
 ) +
-  geom_tile(color = "white", size = 1) +
+  geom_tile(width = 0.7, height = 0.7) +
   scale_x_discrete(
     position = "top",
     limits = xscale,
@@ -144,6 +158,7 @@ cooccur_plot <- ggplot(
   ) +
   theme_classic() +
   theme(
+    aspect.ratio = 1,
     axis.text.x = element_text(
       angle = -90,
       hjust = 1,
@@ -184,17 +199,26 @@ disease_df <- disease_df %>%
            forcats::fct_relevel(display_diseases)
   )
 
+# get scale to match cooccurence plot
+# Extra scale units for the case where there are fewer genes than opts$plotsize
+xscale2 <- levels(disease_df$gene) %>%
+  c(rep("", opts$plotsize - length(.)))
 
 disease_plot <- ggplot(
   disease_df,
   aes(x = gene, y = mutant_samples, fill = disease_factor)) + 
-  geom_col() +
+  geom_col(width = 0.7) +
   labs(
     x = "",
     y = "Samples with mutations",
     fill = "Diagnosis"
   ) + 
   colorblindr::scale_fill_OkabeIto() + 
+  scale_x_discrete(
+    limits = xscale2,
+    breaks = disease_df$gene
+  ) + 
+  scale_y_continuous(expand = c(0, 0.5, 0.1, 0)) + 
   theme_classic() +
   theme(
     axis.text.x = element_text(
@@ -202,10 +226,67 @@ disease_plot <- ggplot(
       hjust = 1,
       vjust = 0.5
     ),
-    axis.text.y = element_text(size = 6),
     legend.position = c(1,1),
     legend.justification = c(1,1),
     legend.key.size = unit(1, "char"))
 
-ggsave(opts$disease_plot, disease_plot)
+if (!is.na(opts$disease_plot)){
+  ggsave(opts$disease_plot, disease_plot)
+}
 
+# only proceed if we want a combined plot
+if (is.na(opts$combined_plot)){
+  quit()
+}
+
+
+# Modify cooccur plot to drop counts and X axis
+
+# labels for y axis will be gene names, with extra spaces (at bottom) blank
+ylabels  <- cooccur_df$gene2%>%
+  as.character() %>%
+  unique() %>%
+  c(rep("", opts$plotsize - length(.)), .)
+
+cooccur_plot2 <- cooccur_plot +
+  scale_x_discrete(
+    limits = xscale,
+    breaks = c()
+  ) +
+  scale_y_discrete(
+    limits = yscale,
+    labels = ylabels
+  ) + 
+  theme(
+    plot.margin = unit(c(-3.5,0,0,0), "char") # negative top margin to move plots together
+  )
+
+# Move labels and themes for disease plot
+disease_plot2 <- disease_plot + 
+  theme(
+    axis.text.x = element_text(
+      angle = -90,
+      hjust = 1,
+      vjust = 0.5
+    ),
+    axis.title.y = element_text(
+      vjust = -10 # keep the label close when combined
+    )
+  )
+
+# Combine plots with <patchwork>
+# Layout of the two plots will be one over the other (1 column), 
+# with the upper plot 3/4 the height of the lower plot
+combined_plot <- disease_plot2 + cooccur_plot2 +
+  plot_layout(ncol = 1, heights = c(3, 4)) +
+  plot_annotation(tag_levels = "A") & 
+  theme( # add uniform labels
+    axis.text.x = element_text(size = 9),
+    axis.text.y = element_text(size = 9)
+  )
+
+
+ggsave(combined_plot, 
+       filename = opts$combined_plot, 
+       width = 8,
+       height = 14)

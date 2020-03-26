@@ -1,0 +1,106 @@
+---
+title: "Reclassify integrated_diagnosis,short_histology metadata column for samples that have hallmark Ewing Sarcoma fusions"
+output: html_notebook
+author: K S Gaonkar for D3b
+date: January 2020
+---
+
+Identify "integrated_diagnosis","short_histology" from clinical file for sample IDs with hallmark EWSR1 fusions and reclassify as Ewing Sarcoma (integrated_diagnosis) and EWS (short_histology)
+
+```{r}
+library("tidyverse")
+```
+
+
+### Read in data
+
+```{r}
+# to get root directory
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+# data directory
+dataDir <- file.path(root_dir, "data")
+# histology files
+clinical <- readr::read_tsv(file.path(dataDir, "pbta-histologies.tsv")) %>%
+  select("Kids_First_Biospecimen_ID","integrated_diagnosis","short_histology","broad_histology","Kids_First_Participant_ID","experimental_strategy", "sample_id","sample_type")
+# get ewings fusion calls from fusion-summary results file
+ewings_foi_bsids <- readr::read_tsv(file.path(root_dir,"analyses","fusion-summary","results","fusion_summary_ewings_foi.tsv")) 
+
+# get subset folder
+results_dir<-"results"
+
+# create if doesn't exist
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+
+
+```
+
+### reclassify integrated diagnosis and short_histology of samples that have hallmark ewings sarcoma EWSR1 fusion
+
+```{r}
+# get a vector of biospecimen IDs for those biospecimens that should be reclassified
+have_ews_fusion <- rowSums(ewings_foi_bsids[, -1]) > 0
+ews_rnaseq_bsids <- ewings_foi_bsids %>%
+  filter(have_ews_fusion) %>%
+  pull(Kids_First_Biospecimen_ID)
+
+# recode the different disease labels for RNA-seq samples only
+# because we have fusion information for RNA-seq samples
+clinical_rnaseq <- clinical %>%
+  filter(experimental_strategy == "RNA-Seq") %>%
+  select(-experimental_strategy) %>%
+  # the `TRUE ~` steps leave the original disease label 
+  mutate(
+    integrated_diagnosis_reclassified = case_when(
+      Kids_First_Biospecimen_ID %in% ews_rnaseq_bsids ~ "Ewing Sarcoma",
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology_reclassified = case_when(
+      Kids_First_Biospecimen_ID %in% ews_rnaseq_bsids ~ "EWS",
+      TRUE ~ short_histology
+    ),
+    broad_histology_reclassified = case_when(
+      Kids_First_Biospecimen_ID %in% ews_rnaseq_bsids ~ "Mesenchymal non-meningothelial tumor",
+      TRUE ~ broad_histology
+    )
+  ) %>%
+  # remove this step if you want to filter later to show what has changed
+  select(-integrated_diagnosis, 
+         -short_histology, 
+         -broad_histology)
+
+# we're going to join the WGS samples to RNA-seq
+# so that the WGS biospecimens that correspond to RNA-seq specimens 
+# are reclassified as well
+clinical_wgs <- clinical %>%
+  filter(experimental_strategy == "WGS" & sample_type == "Tumor") %>%
+  select(Kids_First_Biospecimen_ID, 
+         Kids_First_Participant_ID, 
+         sample_id)
+
+# this drops normal samples
+clinical <- clinical_rnaseq %>% 
+  inner_join(clinical_wgs,
+             by = c("Kids_First_Participant_ID",
+                    "sample_id"),
+             suffix = c("_RNA", "_DNA")) %>%
+  select(Kids_First_Participant_ID,
+         Kids_First_Biospecimen_ID_RNA,
+         Kids_First_Biospecimen_ID_DNA,
+         sample_id,
+         everything())
+
+readr::write_tsv(clinical,file.path(results_dir,"reclassified_ewings_samples.tsv"))
+
+
+```
+
+### list which samples are reclassfied
+```{r}
+# print RNAseq and WGS samples with ewings sarcoma hallmark fusions 
+check<-clinical %>% dplyr::filter(integrated_diagnosis_reclassified=="Ewing Sarcoma")
+check
+
+
+```

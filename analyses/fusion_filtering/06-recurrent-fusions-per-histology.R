@@ -8,6 +8,8 @@ suppressPackageStartupMessages(library("tidyverse"))
 suppressPackageStartupMessages(library("reshape2"))
 
 option_list <- list(
+  make_option(c("-n", "--seed"),type = "integer",
+             help="seed integer",default = 2020),
   make_option(c("-S", "--standardFusionCalls"),type="character",
               help="Standardized fusion calls (.tsv) "),
   make_option(c("-c","--clinicalFile"),type="character",
@@ -23,10 +25,13 @@ standardFusionCalls<-opt$standardFusionCalls
 clinicalFile<-opt$clinicalFile
 outputfolder<-opt$outputfolder
 independentSpecimensFile<-opt$independentSpecimensFile
+seed <- opt$seed
+
+set.seed(seed)
 
 # input data
 standardFusionCalls <- read_tsv(standardFusionCalls) %>% as.data.frame()
-clinical<-read_tsv(clinicalFile)
+clinical<-read_tsv(clinicalFile,col_types = readr::cols(molecular_subtype = readr::col_character()))
 # gather RNA-seq from WGS/WXS samples in independent-specimens.wgswxs.primary-plus.tsv
 independentSpecimens<-read_tsv(independentSpecimensFile) %>% as.data.frame()
 
@@ -57,7 +62,7 @@ clinical_rna_v2<-clinical %>%
 
 clinical_rna_intial<-clinical_rna_v2 %>% 
   dplyr::filter(composition=="Solid Tissue",tumor_descriptor=="Initial CNS Tumor") %>% 
-  select("Kids_First_Participant_ID","Kids_First_Biospecimen_ID")
+  dplyr::select("Kids_First_Participant_ID","Kids_First_Biospecimen_ID")
 
 clinical_rna_non_initial<- clinical_rna_v2 %>% 
   dplyr::filter(!Kids_First_Participant_ID %in% clinical_rna_intial$Kids_First_Participant_ID ) %>% 
@@ -79,22 +84,12 @@ standardFusionCalls<-standardFusionCalls %>%
   left_join(clinical,by=c("Sample"="Kids_First_Biospecimen_ID","Kids_First_Participant_ID")) %>% 
   dplyr::filter(!is.na(broad_histology)) %>% as.data.frame()
 
-#remove fusions found in benign tumors as internal false positive control
-# KCNH1--AL590132.1 and AL590132.1--KCNH1 come up as recurrent in multiple histologies but using the following filter helps remove such fusions.
-
-# get the names of fusions that are present in benign tumors
-fusions_in_benign <- standardFusionCalls %>%
-  dplyr::filter(broad_histology == "Benign tumor") %>%
-  unique() %>%
-  dplyr::pull(FusionName)
-
-# remove fusions found in benign tumors as internal false positive control
+# keep only inframe fusions 
 standardFusionCalls <- standardFusionCalls %>%
-  dplyr::filter(!(FusionName %in% fusions_in_benign)) %>% 
-  # keep only inframe fusions 
+  # filter to keep inframe fusions 
   dplyr::filter(Fusion_Type %in% c("in-frame"))
 
-# running this to remove GeneA==GeneB which might be non-canonical transcripts/ false positives from arriba documentation 
+# running this to remove GeneA==GeneB which might be non-canonical transcripts/ false positives from arriba documentation ; still unknown function/relevance
 standardFusionCalls<-standardFusionCalls %>%
   dplyr::mutate(removal = dplyr::case_when(
     Gene1A == Gene2A | Gene1A == Gene2B | Gene2A == Gene1B | Gene1A == Gene1B | Gene2A == Gene2B ~ TRUE,

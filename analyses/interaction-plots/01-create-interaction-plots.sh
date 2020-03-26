@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# JA Shapiro for CCDL 2019
+# JA Shapiro for CCDL 2019-2020
 #
 # Runs scripts/01-process_mutations.R with some default settings.
 # Takes one enviroment variable, `OPENPBTA_ALL`, which if 0 runs only
@@ -33,6 +33,7 @@ cooccur=${results_dir}/cooccur_top50
 gene_disease=${results_dir}/gene_disease_top50
 plot=${plot_dir}/cooccur_top50
 disease_plot=${plot_dir}/gene_disease_top50
+combined_plot=${plot_dir}/combined_top50
 
 # associative array of diseases to test; chosen by those that are most common
 # in the openPBTA dataset
@@ -46,6 +47,14 @@ if [ "$ALL" -gt "0" ]; then
   disease[Ganglioglioma]="Ganglioglioma"
   disease[Craniopharyngioma]="Craniopharyngioma"
 fi
+
+
+# Get FLAG file and add header
+# include top 50 frequently mutated
+exclude_file=FLAGS.tsv
+echo gene$'\t'count > $exclude_file
+head -n 50 <(curl -s https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5706417/bin/12920_2017_309_MOESM3_ESM.txt)\
+  >> $exclude_file
 
 
 # make output directories if they don't exist
@@ -66,6 +75,7 @@ Rscript ${script_dir}/02-process_mutations.R \
   --maf ${maf} \
   --metadata ${metadata} \
   --specimen_list ${temp_dir}/ALL.tsv \
+  --exclude_genes $exclude_file \
   --vaf 0.05 \
   --min_mutated 5 \
   --max_genes 50 \
@@ -77,6 +87,7 @@ Rscript ${script_dir}/03-plot_interactions.R \
   --outfile ${plot}.ALL.png \
   --disease_table ${gene_disease}.tsv \
   --disease_plot ${disease_plot}.png \
+  --combined_plot ${combined_plot}.png \
   --plotsize 50
     
 # now individual diseases
