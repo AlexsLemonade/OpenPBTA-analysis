@@ -124,7 +124,7 @@ combined_plot <- treemap + project_features_plot +
     axis.text.x = element_text(size = 9),
     axis.text.y = element_text(size = 9))
 
-# Save to PDF
+# Save to PNG
 ggplot2::ggsave(file.path(output_dir, "fig1-openpbta-distribution.png"),
                 width = 12, height = 8,
                 units = "in"
