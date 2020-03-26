@@ -11,3 +11,4 @@ _EWSR1_ fusions are hallmark alterations of Ewing Sarcoma but we see these fusio
 ## Folder description
 `01-reclassify_as_ewings.Rmd` Identifies `integrated_diagnosis`, `short_histology` from clinical file for sample IDs with hallmark _EWSR1_ fusions and reclassifies as Ewing Sarcoma (integrated_diagnosis) and EWS (short_histology)
 
+`results/reclassified_ewings_samples.tsv` tabular format with Kids_First_Participant_IDs which present the hallmark Ewings Sarcoma fusion 
