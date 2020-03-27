@@ -219,6 +219,7 @@ We want to include cytoband and gene level calls for chromosome arms that have n
 combined_status_df_arm <- combined_status_df %>%
   filter(chromosome_arm %in% neutral_arm_status_df$chromosome_arm)
 
+if (!(running_in_ci)) {
 # Now count the cytoband level calls (for each status call) and define
 # the cytoband as that status if more than 50% of the total counts are
 # for that particular status
@@ -236,6 +237,7 @@ neutral_cytoband_status_df <- cytoband_status_count %>%
 
 # Display table
 cytoband_status_count
+}
 ```
 
 ### Now we want to use the annotated CN data to define the gene level gains/losses 
