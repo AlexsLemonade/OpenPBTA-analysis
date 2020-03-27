@@ -91,7 +91,8 @@ option_list <- list(
       "..", "..", "data",
       "independent-specimens.wgs.primary.tsv"
     ),
-    help = "File path to MAF file to be analyzed. Can be .gz compressed.",
+    help = "File path of specimen list file to be analyzed.
+            A tsv file which must contain a column named 'Kids_First_Biospecimen_ID`",
     metavar = "character"
   ),
   make_option(
@@ -102,6 +103,13 @@ option_list <- list(
             mutations, so the n most mutated genes will have their co-occurence
             calculated and will appear in the resulting figure.",
     metavar = "character"
+  ),
+  make_option(
+    opt_str = "--exclude_genes",
+    type = "character",
+    default = NA,
+    help = "File path with a table of genes to be excluded from the figure.
+            A tsv file which must contain a column named 'gene` that contains Hugo Symbols"
   ),
   make_option(
     opt_str = "--min_mutated",
@@ -160,6 +168,10 @@ if (!is.na(opts$specimen_list)) {
   specimen_file <- opts$specimen_list
 }
 
+if (!is.na(opts$exclude_genes)) {
+  exclude_file <- opts$exclude_genes
+}
+
 
 
 #### Read files
@@ -169,6 +181,9 @@ cnv_df <- data.table::fread(cnv_file, data.table = FALSE)
 meta_df <- data.table::fread(meta_file, data.table = FALSE)
 if (exists("specimen_file")) {
   specimen_df <- data.table::fread(specimen_file, data.table = FALSE)
+}
+if (exists("exclude_file")) {
+  exclude_df <- data.table::fread(exclude_file, data.table = FALSE)
 }
 
 
@@ -202,7 +217,11 @@ if (exists("specimen_df")) {
 } else {
   samples <- unique(maf_df$Tumor_Sample_Barcode)
 }
+
 genes <- unique(maf_df$Hugo_Symbol)
+if (exists("exclude_df")){
+  genes <- genes[!genes %in% exclude_df$gene]
+}
 
 # reduce metadata to only chosen samples
 sample_meta <- meta_df %>%
@@ -275,11 +294,11 @@ maf_filtered <- maf_df %>%
 
 # count mutations by gene/sample pair
 gene_sample_counts <- maf_filtered %>%
-  dplyr::filter(Entrez_Gene_Id > 0) %>% # remove unknowns
+  dplyr::filter(Entrez_Gene_Id > 0, # remove unknowns
+                Hugo_Symbol %in% genes) %>% # include only desired genes
   dplyr::group_by(gene = Hugo_Symbol, sample = Tumor_Sample_Barcode) %>%
   dplyr::tally(name = "mutations") %>%
   dplyr::ungroup()
-
 
 # count # of samples mutated by gene
 gene_counts <- gene_sample_counts %>%
@@ -298,7 +317,6 @@ gene_counts <- gene_sample_counts %>%
     dplyr::row_number() <= 2) # keep at least 2 genes
 
 
-  
 # get most often mutated genes
 top_count_genes <- head(gene_counts, opts$max_genes)$gene
 
