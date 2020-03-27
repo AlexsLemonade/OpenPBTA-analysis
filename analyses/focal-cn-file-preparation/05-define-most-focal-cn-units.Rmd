@@ -24,6 +24,24 @@ This notebook is intended to be run from the command line with the following (as
 Rscript -e "rmarkdown::render('analyses/focal-cn-file-preparation/05-define-most-focal-cn-units.Rmd', clean = TRUE)"
 ```
 
+### Cutoffs: 
+
+```{r}
+# The percentage of calls a particular status needs to be 
+# above to be called the majority status -- the decision
+# for a cutoff of 90% here was made to ensure that the status
+# is not only the majority status but it is also significantly
+# called more than the other status values in the region
+percent_threshold <- 0.9
+
+# The percentage threshold for determining if enough of a region
+# (arm, cytoband, or gene) is callable to determine its status --
+# the decision for a cutoff of 50% here was made as it seems reasonable
+# to expect a region to be more than 50% callable for a dominant status
+# call to be made
+uncallable_threshold <- 0.5
+```
+
 ## Set up
 
 ### Libraries and functions
@@ -38,8 +56,8 @@ library(tidyverse)
 status_majority_caller <- function(status_df,
                                    region_variable,
                                    status_column_name,
-                                   percent_threshold, 
-                                   uncallable_threshold = 0.5) {
+                                   percent_threshold_value, 
+                                   uncallable_threshold_value = uncallable_threshold) {
   # Given a data.frame with cytoband/gene level copy number status data,
   # find the dominant status of the cytoband/gene region by calculating
   # the percentages of the region that each call represents.
@@ -50,9 +68,9 @@ status_majority_caller <- function(status_df,
   #                    status percentages for
   #   status_column_name: string of the column name that holds the relevant copy
   #                       number status data
-  #   percent_threshold: What percent of calls a particular status needs to be 
+  #   percent_threshold_value: What percent of calls a particular status needs to be 
   #                      above to be called the majority. 
-  #   uncallable_threshold: a threshold for determining if enough of a region is 
+  #   uncallable_threshold_value: a threshold for determining if enough of a region is 
   #                         callable to determine its status. 
   #   
   # Return:
@@ -97,12 +115,12 @@ status_majority_caller <- function(status_df,
     # Bring back our region variable as its own column
     dplyr::mutate(!!region_variable := region_vector)
 
-      # The logic here is to define the region status based on the majority of calls
-      # in the region -- if the number of calls for a specific status is 
-      # responsible for more than 90% of the total calls in that region, then it is
-      # used to define the region's status (exception is for the uncallable status
-      # where we define the region as uncallable when more than 50% of the calls
-      # in that region are uncallable)
+  # The logic here is to define the region status based on the majority of calls
+  # in the region -- if the number of calls for a specific status is 
+  # responsible for more than `percent_threshold` value of the total calls in that
+  # region, then it is used to define the region's status (exception is for the 
+  # uncallable status where we define the region as uncallable when more than the
+  # `uncallable_threshold` of the calls in that region are uncallable)
   if ((region_variable == "chromosome_arm") | (region_variable == "gene_symbol")) {
     status_count <- status_count %>%
       mutate(
@@ -132,34 +150,30 @@ status_majority_caller <- function(status_df,
 
 ```{r}
 plot_dominant_status_calls <- function(status_count_df,
-                                       status_variable) {
-  # Given a data.frame with the percentage values for each unique status in
-  # each unique region (arm/cytoband/gene) and the dominant status for that region,
-  # plot the dominant status call on the x-axis with the percentage values for a
-  # specified status variable on the y-axis.
+                                       region_variable) {
+  # Given a data.frame with the percentage values for each region and the
+  # dominant status for that region, plot the dominant status call on the
+  # x-axis with the percentage values on the y-axis.
   #
   # Args:
   #   status_count_df: data.frame with percentage values for each unique status
   #                    in each unique region (arm/cytoband/gene) and the
   #                    dominant status for that region
-  #   status_variable: string of the column/status that contains the percentage
-  #                    values that should be plotted on the y-axis
+  #   region_variable: string of the region (which will also be a column name)
+  #                    that the data.frame holds percentage values for
   # Return:
   #   status_plot: plot representing the dominant status call on the x-axis and
-  #                the specified status coverage percentage values on the y-axis
-
-  # Make variable a symbol for plotting
-  status_sym <- rlang::sym(status_variable)
-
-  status_plot <- ggplot2::ggplot(
-    status_count_df,
-    ggplot2::aes(
-      x = dominant_status,
-      y = !!status_sym
-    )
-  ) +
+  #                the percentage values on the y-axis
+  
+  status_count_df %>%
+    select(-total) %>%
+    dplyr::ungroup() %>%
+    tibble::column_to_rownames(region_variable) %>%
+    tidyr::gather(status, percent,-dominant_status) %>%
+    ggplot2::ggplot(ggplot2::aes(x = status,
+                                 y = percent)) +
     ggplot2::geom_jitter() +
-    ggplot2::ylab(status_variable)
+    ggplot2::facet_wrap( ~ dominant_status)
 }
 ```
 
@@ -222,7 +236,7 @@ arm_status_count <- status_majority_caller(
   combined_status_df,
   "chromosome_arm",
   "status", 
-  percent_threshold = .9
+  percent_threshold = percent_threshold
 )
 
 # Display table
@@ -257,9 +271,10 @@ if (!(running_in_ci)) {
 # the cytoband as that status if more than 50% of the total counts are
 # for that particular status
 cytoband_status_count <- status_majority_caller(
-  combined_status_df_arm,
+  neutral_status_arm_df,
   "cytoband",
-  "dominant_cytoband_status"
+  "dominant_cytoband_status",
+  percent_threshold = percent_threshold
 )
 
 # Display table
@@ -277,7 +292,6 @@ if (!(running_in_ci)) {
     filter(dominant_status %in% c("unstable", "neutral")) %>%
     dplyr::pull("cytoband")
 
-
   # Filter the annotated CN data to include only these cytobands
   neutral_status_cytoband_df <- combined_status_df %>%
     filter(cytoband %in% neutral_cytobands)
@@ -285,10 +299,10 @@ if (!(running_in_ci)) {
   # Now count the gene level calls (for each status call) and define
   # the gene as that status if more than 50% of the total counts are
   # for that particular status
-  gene_status_count <- status_majority_caller(combined_status_df_cytoband,
+  gene_status_count <- status_majority_caller(neutral_status_cytoband_df,
                                               "gene_symbol",
                                               "status", 
-                                              percent_threshold = .9)
+                                              percent_threshold = percent_threshold)
   
   # Display table
   gene_status_count
@@ -302,74 +316,22 @@ Plot the final dominant status call on the x-axis and the percent of each status
 ### Plot chromosome arm status calls
 
 ```{r}
-#TODO: Functionalize this plotting thingy
-arm_status_count %>% 
-  dplyr::ungroup() %>% 
-  tibble::column_to_rownames("chromosome_arm") %>%
-  tidyr::gather(status, percent, -dominant_status) %>% 
-    ggplot2::ggplot(ggplot2::aes(
-      x = status,
-      y = percent
-    )
-  ) +
-    ggplot2::geom_jitter() +
-  ggplot2::facet_wrap(~dominant_status)
-```
-
-```{r}
-# Run `plot_dominant_status_calls` function for each specific status' set of
-# percentage values
-arm_gain_status_plot <- plot_dominant_status_calls(
+# Run `plot_dominant_status_calls` function for the chromosome arm calls
+plot_dominant_status_calls(
   arm_status_count,
-  "percent_gain"
+  "chromosome_arm"
 )
-
-arm_loss_status_plot <- plot_dominant_status_calls(
-  arm_status_count,
-  "percent_loss"
-)
-
-arm_amplification_status_plot <- plot_dominant_status_calls(
-  arm_status_count,
-  "percent_amplification"
-)
-
-# Display plots
-arm_gain_status_plot + arm_loss_status_plot + arm_amplification_status_plot + plot_layout(ncol = 2, nrow = 2)
 ```
 
 ### Plot cytoband status calls
 
-```{r}
-# Run `plot_dominant_status_calls` function for each specific status' set of
-# percentage values
-cytoband_gain_status_plot <- plot_dominant_status_calls(
-  cytoband_status_count,
-  "percent_gain"
-)
-
-cytoband_loss_status_plot <- plot_dominant_status_calls(
-  cytoband_status_count,
-  "percent_loss"
-)
-
-cytoband_neutral_status_plot <- plot_dominant_status_calls(
-  cytoband_status_count,
-  "percent_neutral"
-)
-
-cytoband_uncallable_status_plot <- plot_dominant_status_calls(
-  cytoband_status_count,
-  "percent_uncallable"
-)
-
-cytoband_unstable_status_plot <- plot_dominant_status_calls(
-  cytoband_status_count,
-  "percent_unstable"
-)
-
-cytoband_gain_status_plot + cytoband_loss_status_plot + cytoband_neutral_status_plot +
-  cytoband_uncallable_status_plot + cytoband_unstable_status_plot + plot_layout(ncol = 2, nrow = 3)
+```{r fig.width = 10}
+# Run `plot_dominant_status_calls` function for the cytoband calls if not
+# running in CI
+if (!(running_in_ci)) {
+  plot_dominant_status_calls(cytoband_status_count,
+                             "cytoband")
+}
 ```
 
 ### Plot gene status calls
@@ -377,18 +339,8 @@ cytoband_gain_status_plot + cytoband_loss_status_plot + cytoband_neutral_status_
 ```{r}
 # Plot if not running in circleCI
 if (!(running_in_ci)) {
-  gene_gain_status_plot <- plot_dominant_status_calls(gene_status_count,
-                                                      "percent_gain")
-  
-  gene_loss_status_plot <- plot_dominant_status_calls(gene_status_count,
-                                                      "percent_loss")
-  
-  gene_amplification_status_plot <- plot_dominant_status_calls(gene_status_count,
-                                                               "percent_amplification")
-  
-  # Display plots using the `list` function
-  gene_gain_status_plot + gene_loss_status_plot + gene_amplification_status_plot +
-    plot_layout(ncol = 2, nrow = 2)
+  plot_dominant_status_calls(gene_status_count,
+                             "gene_symbol")
 }
 ```
 
@@ -433,20 +385,7 @@ if (!(running_in_ci)) {
   final_df <- consensus_seg_autosomes_df %>%
     mutate(chromosome_arm = gsub("(p|q).*", "\\1", cytoband)) %>%
     inner_join(arm_status_count, by = "chromosome_arm") %>%
-    left_join(cytoband_status_count,
-              by = "cytoband",
-              suffix = c(".arm", ".cytoband")) %>%
-    mutate(focal_call = paste0(dominant_status.arm, ", ", dominant_status.cytoband),
-           # Here we want to define the most focal call based on the arm, cytoband,
-           # and gene status information -- if a loss/gain is defined at the arm
-           # level then the focal call will be "arm_loss" or "arm_gain" respectively,
-           # and so on.
-           focal_call = case_when(focal_call == "loss, NA" ~ "arm_loss",
-                             focal_call == "neutral, uncallable" ~ "uncallable",
-                             focal_call == "neutral, loss" ~ "cytoband_loss",
-                             focal_call == "neutral, NA" ~ "arm_neutral",
-                             focal_call == "neutral, unstable" ~ "cytoband_unstable",
-                             TRUE ~ "Other"))
+    mutate(focal_call = dominant_status)
 }
 
 # Write final table to file
