@@ -95,6 +95,17 @@ divergent_col_palette <- readr::read_tsv(
   dplyr::pull("hex_codes")
 ```
 
+Binary color palette for chromosomes.
+
+```{r}
+# Read in color palette
+binary_col_palette <- readr::read_tsv(
+  file.path(figure_dir, "palettes", "binary_color_palette.tsv")
+  ) %>%
+  # Drop na color from this color palette
+  dplyr::filter(color_names != "na_color")
+```
+
 ### Read in data 
 
 ```{r}
@@ -351,7 +362,7 @@ chrs <- paste0("chr", S4Vectors::decode(bins@seqnames))
 chrs <- as.factor(chrs)
 
 # Make a key for assigning alternating colors to the chromosomes
-chr_colors <- rep(c("grey", "lightblue"), length.out = length(unique(chrs)))
+chr_colors <- rep(binary_col_palette$hex_codes, length.out = length(unique(chrs)))
 names(chr_colors) <- unique(chrs)
 ```
 
@@ -394,7 +405,7 @@ histologies <- dplyr::select(histologies, -sample_color)
 # Create the Heatmap annotation object
 hist_annot <- ComplexHeatmap::HeatmapAnnotation(
   df = data.frame(histologies),
-  col = list(short_histology = histologies_colors),
+  col = list(short_histology = histologies_color_key_filtered),
   which = "row",
   show_annotation_name = FALSE
 )
