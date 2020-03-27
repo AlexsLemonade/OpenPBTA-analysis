@@ -1,0 +1,198 @@
+---
+title: "Compile molecular subtyping results"
+output: 
+  html_notebook:
+    toc: true
+    toc_float: true
+author: Jaclyn Taroni for CCDL
+date: 2020
+params:
+   is_ci: FALSE
+---
+
+The purpose of this notebook is to aggregate molecular subtyping results from the following mature analysis modules:
+
+* [`molecular-subtyping-EWS`](https://github.com/jaclyn-taroni/OpenPBTA-analysis/tree/645-pathology-feedback/analyses/molecular-subtyping-EWS)
+* [`molecular-subtyping-HGG`](https://github.com/jaclyn-taroni/OpenPBTA-analysis/tree/645-pathology-feedback/analyses/molecular-subtyping-HGG)
+* [`molecular-subtyping-LGAT`](https://github.com/jaclyn-taroni/OpenPBTA-analysis/tree/645-pathology-feedback/analyses/molecular-subtyping-LGAT)
+* [`molecular-subtyping-embryonal`](https://github.com/jaclyn-taroni/OpenPBTA-analysis/tree/645-pathology-feedback/analyses/molecular-subtyping-embryonal)
+
+## Set up
+
+### Libraries and functions
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+bind_exp_strategies <- function(results_df) {
+  # Many of the molecular subtyping tables contain a 
+  # Kids_First_Biospecimen_ID_RNA and Kids_First_Biospecimen_ID_DNA column,
+  # this function separates those out and binds the rows to mirror how 
+  # pbta-histologies.tsv is organized
+  #
+  # Args:
+  #   results_df: a molecular subtyping table with Kids_First_Biospecimen_ID_RNA
+  #               and Kids_First_Biospecimen_ID_DNA columns
+  # Returns:
+  #   A data.frame where each biospecimen is a row
+  rna_df <- results_df %>%
+    select(-Kids_First_Biospecimen_ID_DNA) %>%
+    filter(!is.na(Kids_First_Biospecimen_ID_RNA)) %>%
+    rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA)
+  
+  dna_df <- results_df %>%
+    select(-Kids_First_Biospecimen_ID_RNA) %>%
+    filter(!is.na(Kids_First_Biospecimen_ID_DNA)) %>%
+    rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_DNA)
+  
+  # sometimes there will be multiple RNA-seq assays per single DNA-seq assay
+  # or vice versa, which is why this distinct is necessary
+  return(bind_rows(rna_df, dna_df) %>% distinct())
+}
+```
+
+### Directories and files
+
+```{r}
+data_dir <- file.path("..", "..", "data")
+analyses_dir <- ".."
+
+# directories for upstream subtyping modules
+ews_dir <- file.path(analyses_dir, "molecular-subtyping-EWS")
+hgg_dir <- file.path(analyses_dir, "molecular-subtyping-HGG")
+lgat_dir <- file.path(analyses_dir, "molecular-subtyping-LGAT")
+embryonal_dir <- file.path(analyses_dir, "molecular-subtyping-embryonal")
+
+# the folder that contains the tabular results is standardized across modules
+results_dir <- "results"
+# create the results directory for this module if it does not yet exist
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+```
+
+#### Input files
+
+When we run this locally, we want to tie it to a specific version of the histologies file _prior_ to feedback we received from pathology that is recorded on [#609](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/609).
+
+```{r}
+if (params$is_ci) {
+  histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
+} else {
+  histologies_file <- file.path(data_dir, "release-v15-20200228",
+                                "pbta-histologies.tsv")
+}
+```
+
+Results files from individual modules.
+
+```{r}
+ews_results_file <- file.path(ews_dir, results_dir, "EWS_results.tsv")
+hgg_results_file <- file.path(hgg_dir, results_dir, "HGG_molecular_subtype.tsv")
+lgat_results_file <- file.path(lgat_dir, results_dir, "lgat_subtyping.tsv")
+embryonal_results_file <- file.path(embryonal_dir, results_dir,
+                                    "embryonal_tumor_molecular_subtypes.tsv")
+```
+
+#### Output file
+
+```{r}
+output_file <- file.path(results_dir, "compiled_molecular_subtypes.tsv")
+```
+
+## Read in data
+
+```{r message=FALSE}
+histologies_df <- read_tsv(histologies_file, guess_max = 10000)
+ews_results_df <- read_tsv(ews_results_file)
+hgg_results_df <- read_tsv(hgg_results_file)
+lgat_results_df <- read_tsv(lgat_results_file)
+embryonal_results_df <- read_tsv(embryonal_results_file)
+```
+
+## Compile the subtyping resutls
+
+### Handling non-ATRT/non-MB embryonal tumors
+
+The molecular subtyping information from these tumors went into the v15 release, so we can use the `integrated_diagnosis`, `short_histology`, `broad_histology`, and `Notes` columns from the histologies file from that release.
+
+```{r}
+embryonal_results_df <- bind_exp_strategies(embryonal_results_df) %>%
+  inner_join(select(histologies_df,
+                    Kids_First_Biospecimen_ID,
+                    integrated_diagnosis,
+                    short_histology,
+                    broad_histology,
+                    Notes),
+             by = "Kids_First_Biospecimen_ID")
+```
+
+### Handling EWS
+
+The EWS results were post-v15 and come with their own `Notes` column.
+
+```{r}
+ews_results_df <- bind_exp_strategies(ews_results_df) %>%
+  rename(integrated_diagnosis = integrated_diagnosis_reclassified,
+         short_histology = short_histology_reclassified,
+         broad_histology = broad_histology_reclassified) %>%
+  select(-sample_type)
+```
+
+### Handling HGG
+
+Like the non-ATRT/non-MB embryonal tumors, HGG subtyping was performed prior to v15.
+
+```{r}
+hgg_results_df <- bind_exp_strategies(hgg_results_df) %>%
+  inner_join(select(histologies_df,
+                    Kids_First_Biospecimen_ID,
+                    integrated_diagnosis,
+                    short_histology,
+                    broad_histology,
+                    Notes),
+             by = "Kids_First_Biospecimen_ID")
+```
+
+### Handling LGAT
+
+No columns that are disease labels have been changed yet.
+
+```{r}
+lgat_results_df <- bind_exp_strategies(lgat_results_df) %>%
+  inner_join(select(histologies_df,
+                    Kids_First_Biospecimen_ID,
+                    integrated_diagnosis,
+                    short_histology,
+                    broad_histology,
+                    Notes),
+             by = "Kids_First_Biospecimen_ID")
+```
+
+### Handling EPN 
+
+```
+# TODO
+```
+
+### All results
+
+Compile results and write to file
+
+```{r}
+all_results_df <- bind_rows(embryonal_results_df,
+                            ews_results_df,
+                            hgg_results_df,
+                            lgat_results_df) %>%
+  
+  write_tsv(output_file)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
