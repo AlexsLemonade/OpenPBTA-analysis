@@ -16,12 +16,7 @@ analyses_dir="$BASEDIR/analyses"
 # Make output folders for all figures
 mkdir -p pngs
 
-################ Sample distribution
-# Run sample distribution analysis
-bash ${analyses_dir}/sample-distribution-analysis/run-sample-distribution.sh
-
-# Run the figure assembly
-Rscript scripts/fig1-sample-distribution.R
+## Sample distribution
 
 ################ Mutational landscape figure
 # Run both SNV caller consensus scripts
