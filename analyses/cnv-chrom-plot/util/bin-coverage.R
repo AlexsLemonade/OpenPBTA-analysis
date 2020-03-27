@@ -10,7 +10,7 @@ bp_per_bin <- function(bin_ranges, status_ranges) {
   #
   # Args:
   #   bin_ranges: A binned GenomicRanges made from tileGenome. 
-  #   status_ranges:A GenomicRanges object to calculate what percent coverage of
+  #   status_ranges: A GenomicRanges object to calculate what percent coverage of
   #   each bin. 
   #
   # Returns:
