@@ -243,20 +243,18 @@ cytoband_status_count
 ### Now we want to use the annotated CN data to define the gene level gains/losses 
 
 ```{r}
-# Filter the annotated CN data to include only these cytobands
-combined_status_df_cytoband <- combined_status_df %>%
-  filter(cytoband %in% neutral_cytoband_status_df$cytoband)
-
 if (!(running_in_ci)) {
+  # Filter the annotated CN data to include only these cytobands
+  combined_status_df_cytoband <- combined_status_df %>%
+    filter(cytoband %in% neutral_cytoband_status_df$cytoband)
+  
   # Now count the gene level calls (for each status call) and define
   # the gene as that status if more than 50% of the total counts are
   # for that particular status
-  gene_status_count <- status_majority_caller(
-    combined_status_df_cytoband,
-    "gene_symbol",
-    "status"
-  )
-
+  gene_status_count <- status_majority_caller(combined_status_df_cytoband,
+                                              "gene_symbol",
+                                              "status")
+  
   # Display table
   gene_status_count
 }
