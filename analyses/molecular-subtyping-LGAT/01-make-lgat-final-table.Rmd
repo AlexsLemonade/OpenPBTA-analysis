@@ -128,7 +128,12 @@ final_table <- all_lgat_df %>%
     # If there is a BRAF fusion detected and a BRAF V600E mutation, note both
     !(FusionName %in% c(NA, "None")) & 
       BRAF_V600E == "Yes" ~ "LGG, BRAF fusion/V600E"
-  ))
+  )) %>%
+  select(Kids_First_Participant_ID,
+         sample_id,
+         Kids_First_Biospecimen_ID_DNA,
+         Kids_First_Biospecimen_ID_RNA,
+         molecular_subtype)
 
 write_tsv(final_table, file.path(results_dir,"lgat_subtyping.tsv"))
 ```
