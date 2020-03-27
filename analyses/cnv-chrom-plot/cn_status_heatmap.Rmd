@@ -55,6 +55,7 @@ perc_delta_threshold <- 0.1
 ```{r}
 # Path to input directory
 input_dir <- file.path("..", "..", "data")
+figure_dir <- file.path("..", "..", "figures")
 scratch_dir <- file.path("..", "..", "scratch")
 
 # Path to output directory
@@ -72,12 +73,39 @@ Read in custom functions.
 source(file.path("util", "bin-coverage.R"))
 ```
 
+Import color palettes. 
+
+```{r}
+# Import standard color palettes for project
+histology_col_palette <- readr::read_tsv(
+  file.path(figure_dir, "palettes", "histology_color_palette.tsv")
+  ) %>% 
+  # We'll use deframe so we can use it as a recoding list
+  tibble::deframe()
+```
+
+Read in the divergent color palette and set it up with three colors. 
+
+```{r}
+divergent_col_palette <- readr::read_tsv(
+  file.path(figure_dir, "palettes", "divergent_color_palette.tsv")) %>% 
+  # Only keep only these three colors
+  dplyr::filter(
+    color_names %in% c("divergent_low_4", "divergent_neutral", "divergent_high_4")) %>% 
+  dplyr::pull("hex_codes")
+```
+
 ### Read in data 
 
 ```{r}
 # Read in metadata
 metadata <-
-  readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv"))
+  readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv")) %>%
+  # Easier to deal with NA short histologies if they are labeled something different
+  dplyr::mutate(short_histology = as.character(tidyr::replace_na(short_histology, "none"))) %>% 
+  # Tack on the sample color using the short_histology column and a recode
+  dplyr::mutate(sample_color = dplyr::recode(short_histology, 
+                                             !!!histology_col_palette))
 ```
 
 ### Set up consensus copy number data
@@ -196,6 +224,7 @@ uncallable_bed <- readr::read_tsv(
     levels = c(1:22, "X", "Y")
   )) %>%
   dplyr::filter(
+    # Drop CNVs that don't have chromosome labels
     !is.na(chrom),
     # Drop sex chromosomes
     !(chrom %in% c("X", "Y", "M"))
@@ -220,7 +249,8 @@ Set up binned genome ranges.
 
 ```{r}
 # Find which regions of the chromosome are uncallable
-bins <- GenomicRanges::tileGenome(chr_sizes_vector,
+bins <- GenomicRanges::tileGenome(
+  chr_sizes_vector,
   tilewidth = 1e6
 )
 # Uncompress these ranges
@@ -305,7 +335,7 @@ bin_calls_mat <- bin_calls_df %>%
 Make color key. 
 
 ```{r}
-color_key <- structure(c("#ca0020", "#f7f7f7", "#0571b0"),
+color_key <- structure(divergent_col_palette,
   names = c("loss", "neutral", "gain")
 )
 ```
@@ -346,38 +376,18 @@ This annotation object strategy was originally from [chromosomal-nstability](htt
 ```{r}
 # Get the histologies for the samples in this set and order them by histology
 histologies <-
-  data.frame(Kids_First_Biospecimen_ID = rownames(bin_calls_mat)) %>%
-  # Join samples of this dataset to the metadata we need
-  dplyr::inner_join(metadata %>%
-    dplyr::select(Kids_First_Biospecimen_ID, short_histology)) %>%
-  dplyr::mutate(
-    # Make the terms more uniform in their capitalization
-    short_histology = tools::toTitleCase(short_histology),
-    short_histology = as.factor(short_histology)
-  ) %>%
-  # Remove samples that don't have histology
-  dplyr::filter(!is.na(short_histology)) %>%
-  dplyr::arrange(short_histology) %>%
-  # ComplexHeatmap matches using rownames
+  data.frame(Kids_First_Biospecimen_ID = rownames(bin_calls_mat)) %>% 
+  dplyr::inner_join(metadata %>% 
+                      dplyr::select(Kids_First_Biospecimen_ID, short_histology, sample_color)) %>%
+  dplyr::arrange(short_histology) %>% 
   tibble::column_to_rownames("Kids_First_Biospecimen_ID")
-```
 
-Set up histology color key. 
+# Make color key specific to these samples
+histologies_color_key_filtered <- unique(histologies$sample_color)
+names(histologies_color_key_filtered) <- unique(histologies$short_histology)
 
-```{r}
-# TODO: Better colors
-# Get values that can be used to make colors equi distant hues away for the
-# number of histology groups we have
-col_val <- seq(
-  from = 0, to = 1,
-  length.out = length(unique(histologies$short_histology))
-)
-
-# Translate into colors
-histologies_colors <- hsv(h = col_val, s = col_val, v = 1)
-
-# Make this named based on histology
-names(histologies_colors) <- unique(histologies$short_histology)
+# Drop this column so ComplexHeatmap isn't tempted to plot it
+histologies <- dplyr::select(histologies, -sample_color)
 ```
 
 ```{r}
