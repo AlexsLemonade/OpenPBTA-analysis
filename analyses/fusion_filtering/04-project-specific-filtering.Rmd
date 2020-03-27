@@ -1,5 +1,6 @@
 ---
 title: "Project specific filtering"
+author: "K S Gaonkar (D3B); Jaclyn Taroni (CCDL)"
 output: html_notebook
 params:
   histology:
@@ -37,12 +38,10 @@ params:
   outputfolder:
     label: "results folder for *tsv files"
     value: results
-    input: string     
-
-    
+    input: string
 ---
 
-K S Gaonkar
+
 
 Filtered Fusions:
 1. In-frame fusions is called in atleast 2 samples per histology OR
@@ -59,7 +58,9 @@ This notebook assumes you are in OpenPBTA-analysis project folder structure.
 
 
 ```{r}
+
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
 #load required packages
 suppressPackageStartupMessages(library("readr"))
 suppressPackageStartupMessages(library("tidyverse"))
@@ -76,18 +77,19 @@ QCGeneFiltered_filtFusion<-rbind(strandedQCGeneFiltered_filtFusion,polyaQCGeneFi
 
 write.table(QCGeneFiltered_filtFusion, file.path(outputfolder, "FilteredFusion.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
 
-# subset for recurrent fusion detection and multifused genes QC
-fusion_calls<-unique(QCGeneFiltered_filtFusion)
-# remove distance from intergenic fusions
-fusion_calls$FusionName<-unlist(lapply(fusion_calls$FusionName,function(x) rm_between(x, "(", ")", extract = F)))
+# remove strandedQCGeneFiltered_filtFusion and polyaQCGeneFiltered_filtFusion
+rm(strandedQCGeneFiltered_filtFusion)
+rm(polyaQCGeneFiltered_filtFusion)
 
+# subset for recurrent fusion detection and multifused genes QC
+fusion_calls<-QCGeneFiltered_filtFusion %>% mutate(FusionName=rm_between(.data$FusionName,"(",")",extract = F))
 
 # get grouping column id
 group<-params$group
 
 # get histology file
 clinical<-read.delim(file.path(root_dir, params$histology), stringsAsFactors = FALSE)
-clinical<-clinical[,c("Kids_First_Biospecimen_ID","Kids_First_Participant_ID","broad_histology")]
+clinical<-clinical[,c("Kids_First_Biospecimen_ID","Kids_First_Participant_ID",group)]
 
 # Least number of callers
 numCaller<-params$numCaller
@@ -100,7 +102,6 @@ numGroup<-params$numGroup
 
 # Max number of times gene can be fused per sample
 limitMultiFused<-params$limitMultiFused
-
 
 print("Raw calls from STARfusion and Arriba for PBTA")
 table(fusion_calls$Caller)
@@ -127,12 +128,10 @@ fusion_calls<-merge(fusion_calls,clinical,by.x="Sample",by.y="Kids_First_Biospec
 
 # filter for putative driver genes
 putative_driver_annotated_fusions <- fusion_calls %>%
-  dplyr::select(-Caller,-annots) %>%
+  dplyr::select(-Caller) %>%
   unique() %>%
   dplyr::filter(!is.na(Gene1A_anno) | !is.na(Gene1B_anno) | !is.na(Gene2A_anno) | !is.na(Gene2B_anno)) %>%
   unique()
-
-
 
 
 ```
@@ -143,7 +142,7 @@ putative_driver_annotated_fusions <- fusion_calls %>%
 fusion_calls<-fusion_calls %>%
   # remove local rearrangement/adjacent genes
   dplyr::filter(!grepl("LOCAL_REARRANGEMENT|LOCAL_INVERSION",annots)) %>%
-  dplyr::select(-Caller,-annots) %>%
+  dplyr::select(-Caller) %>%
   unique()
 
 
@@ -163,7 +162,7 @@ fusion_calls.summary <- fusion_calls %>%
 # 2. Found in at least n samples in each group
 sample.count <- fusion_calls %>%
   dplyr::filter(Fusion_Type != "other") %>%
-  dplyr::select(FusionName, Sample, !!as.name(group),-Fusion_Type) %>%
+  dplyr::select(FusionName, Sample, group,-Fusion_Type) %>%
   unique() %>%
   group_by(FusionName, !!as.name(group)) %>%
   dplyr::mutate(sample.count = n(),Sample = toString(Sample)) %>%
@@ -192,7 +191,7 @@ QCGeneFiltered_recFusion<-fusion_calls %>%
 ```{r}
 # remove fusions that are in > numGroup
 group.count <- fusion_calls %>%
-  dplyr::select(FusionName, !!as.name(group)) %>%
+  dplyr::select(FusionName, group) %>%
   unique() %>%
   group_by(FusionName) %>%
   dplyr::mutate(group.ct = n(),Sample = toString(!!(as.name(group)))) %>%
@@ -248,10 +247,10 @@ QCGeneFiltered_recFusionUniq<-QCGeneFiltered_recFusion %>%
   
 # merge putative annotated oncogenic and scavenged back non-oncogenic annotated, recurrent fusions
 putative_driver_fusions<-rbind(QCGeneFiltered_recFusionUniq,putative_driver_annotated_fusions) %>%
-  unique() %>% dplyr::select (-broad_histology) %>%
+  unique() %>% dplyr::select (-group) %>%
   as.data.frame()
 
-write.table(putative_driver_fusions,file.path(outputfolder,"pbta-fusion-putative-oncogenic.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
+write.table(putative_driver_fusions,file.path(root_dir,"scratch","pbta-fusion-putative-oncogenic-preQC.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
 
 ```
 

@@ -313,6 +313,9 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 # Patchwork for plot compositions
 RUN R -e "devtools::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd46899f17197f9858bc5672e9f4')"
 
+# This is required for creating a treemap of the broad histology and integrated diagnoses
+RUN R -e "devtools::install_github('wilkox/treemapify', ref = 'e70adf727f4d13223de8146458db9bef97f872cb', dependencies = TRUE)"
+
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
 

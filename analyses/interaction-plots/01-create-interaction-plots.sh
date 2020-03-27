@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# JA Shapiro for CCDL 2019
+# JA Shapiro for CCDL 2019-2020
 #
 # Runs scripts/01-process_mutations.R with some default settings.
 # Takes one enviroment variable, `OPENPBTA_ALL`, which if 0 runs only
@@ -49,6 +49,14 @@ if [ "$ALL" -gt "0" ]; then
 fi
 
 
+# Get FLAG file and add header
+# include top 50 frequently mutated
+exclude_file=FLAGS.tsv
+echo gene$'\t'count > $exclude_file
+head -n 50 <(curl -s https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5706417/bin/12920_2017_309_MOESM3_ESM.txt)\
+  >> $exclude_file
+
+
 # make output directories if they don't exist
 mkdir -p $results_dir
 mkdir -p $plot_dir
@@ -67,6 +75,7 @@ Rscript ${script_dir}/02-process_mutations.R \
   --maf ${maf} \
   --metadata ${metadata} \
   --specimen_list ${temp_dir}/ALL.tsv \
+  --exclude_genes $exclude_file \
   --vaf 0.05 \
   --min_mutated 5 \
   --max_genes 50 \

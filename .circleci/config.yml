@@ -21,6 +21,10 @@ jobs:
           command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
 
       - run:
+          name: Sample Distribution Figure
+          command: ./scripts/run_in_ci.sh Rscript figures/scripts/fig1-sample-distribution.R
+          
+      - run:
           name: Transcriptome dimensionality reduction
           command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
           
@@ -181,6 +185,14 @@ jobs:
           name: RNA-Seq composition
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/rna-seq-composition/rna-seq-composition.Rmd', clean = TRUE)"
 
+      - run:
+          name: LGAT subtyping
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-LGAT/run_subtyping.sh
+
+      - run:
+         name: EWS classification
+         command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EWS/run_reclassification.sh 
+    
       - run:
           name: TCGA SNV Caller Analysis 
           command: ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-tcga.sh     
