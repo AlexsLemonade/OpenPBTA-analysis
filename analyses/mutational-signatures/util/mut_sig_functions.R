@@ -122,7 +122,7 @@ bubble_matrix_plot <- function(sig_num_df,
   # Returns:
   #   A bubble matrix plot with the number of mutations per Mb and proportion of 
   #   tumors with a non-zero weight for all samples summarized by histology.
-  #
+  
   # Summarize the mut_per_mb column by histology
   grouped_sig_num <- sig_num_df %>%
     dplyr::group_by(short_histology, signature) %>%
@@ -130,22 +130,15 @@ bubble_matrix_plot <- function(sig_num_df,
       # Calculate the proportion of tumors with a non-zero weight for each signature
       prop_tumors = sum(num_mutations > 0) / length(num_mutations),
       # Calculate the median number of mutations per Md
-      med_num = median(mut_per_mb)
+      med_num = median(mut_per_mb, na.rm = TRUE)
     )
   
   # Turn 0's into NAs so they are not actually plotted
   grouped_sig_num$prop_tumors[which(grouped_sig_num$prop_tumors == 0)] <-  NA
   
-  summary(grouped_sig_num$med_num)
   # If color palette is not specified use color brewer's YlGnBu
-  if (is.na(color_palette)) {
+  if (is.na(color_palette[1])) {
     color_palette <- RColorBrewer::brewer.pal(9, name = "YlGnBu")
-  }
-  # Set up sequence of values for color key if they aren't given
-  if (is.na(color_breaks)) {
-    color_breaks <- seq(from = min(grouped_sig_num$med_num), 
-                        to = max(grouped_sig_num$med_num),
-                        length.out = length(color_palette))
   }
   # Make the bubble matrix plot
   ggplot2::ggplot(grouped_sig_num, ggplot2::aes(x = short_histology, 
@@ -160,9 +153,8 @@ bubble_matrix_plot <- function(sig_num_df,
       axis.text.y = ggplot2::element_text(size = ggplot2::rel(.75)),
       legend.key.size = ggplot2::unit(.5, "cm")
     ) +
-    ggplot2::scale_color_gradientn(name = "Median Number of \n Mutations per Mb", 
-                                  colors = color_palette,
-                                  values = color_breaks) +
+    ggplot2::scale_colour_gradientn(name = "Median Number of \n Mutations per Mb", 
+                                    colors = color_palette) +
     # Make labels on top
     ggplot2::scale_x_discrete(position = "top") +
     ggplot2::xlab("") +

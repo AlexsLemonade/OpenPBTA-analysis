@@ -100,6 +100,7 @@ histology_col_palette <- readr::read_tsv(
   # We'll use deframe so we can use it as a recoding list
   tibble::deframe()
 ```
+
 Set up gradient color palette for the bubble matrix plots. 
 
 ```{r}
@@ -257,7 +258,7 @@ sample_mut_sig_plot(
 sample_mut_sig_plot(
   sample_sigs_nature,
   label = "nature",
-  output_dir = file.path(nature_plots, "individual_mutation_sig"), 
+  output_dir = file.path(nature_plots, "individual_mutation_sig") 
 )
 ```
 
@@ -308,11 +309,14 @@ nature_sigs_df
 ```{r}
 bubble_matrix_plot(cosmic_sigs_df, 
                    label = "COSMIC Signatures", 
-                   color_palette = gradient_col_palette$hex_codes)
+                   color_palette = gradient_col_palette$hex_codes
+                   )
 ```
 
 ```{r}
-ggplot2::ggsave(file.path(cosmic_plots, paste0("bubble_matrix_cosmic_mutation_sig.png")), width = 30, height = 20, units = "cm")
+ggplot2::ggsave(
+  file.path(cosmic_plots, "bubble_matrix_cosmic_mutation_sig.png"),
+  width = 30, height = 20, units = "cm")
 ```
 
 ```{r}
@@ -322,7 +326,9 @@ bubble_matrix_plot(nature_sigs_df,
 ```
 
 ```{r}
-ggplot2::ggsave(file.path(nature_plots, paste0("bubble_matrix_nature_mutation_sig.png")), width = 30, height = 20, units = "cm")
+ggplot2::ggsave(
+  file.path(nature_plots, "bubble_matrix_nature_mutation_sig.png"), 
+  width = 30, height = 20, units = "cm")
 ```
 
 ## Mutation signature grouped bar plots for each histology group
