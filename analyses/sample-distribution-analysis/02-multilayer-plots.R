@@ -12,6 +12,12 @@
 #
 # Rscript analyses/sample-distribution-analysis/02-multilayer-plots.R
 
+# Load in libraries
+library(ggplot2)
+library(colorspace)
+library(scales)
+library(treemapify)
+
 # magrittr pipe
 `%>%` <- dplyr::`%>%`
 
@@ -60,7 +66,63 @@ final_df <- histologies_df %>%
 # Save to tsv file
 readr::write_tsv(final_df, file.path(results_dir, "plots_df.tsv"))
 
-# Create a treemap
+# Create and save treemap using ggplot2
+# Read in the histology color palette
+color_palette <-
+  readr::read_tsv(file.path(
+    root_dir,
+    "figures",
+    "palettes",
+    "histology_color_palette.tsv"
+  ))
+
+# Join the color palette for the colors for each short histology value --
+# palette is generated in `figures/scripts/color_palettes.R`
+final_df2 <- final_df %>%
+  dplyr::left_join(color_palette, by = c("level2" = "color_names")) %>%
+  dplyr::distinct() # Remove the redundant rows from prep for the `treemap` function
+
+# Plot the treemap
+treemap <-
+  ggplot(
+    final_df2,
+    aes(
+      area = size,
+      fill = hex_codes,
+      label = level2,
+      subgroup = level3
+    )
+  ) +
+  geom_treemap() +
+  geom_treemap_subgroup_border(colour = "white") +
+  geom_treemap_text(
+    fontface = "italic",
+    colour = "white",
+    place = "topleft",
+    alpha = 0.4,
+    grow = F,
+    reflow = T,
+    size = 16
+  ) +
+  geom_treemap_subgroup_text(
+    place = "bottomright",
+    grow = T,
+    reflow = T,
+    alpha = 0.6,
+    colour = "#FAFAFA",
+    min.size = 0
+  ) +
+  theme(legend.position = "none")
+
+# Save treemap
+ggsave(
+  treemap,
+  file = file.path(plots_dir, "distribution_across_cancer_types_treemap.pdf"),
+  width = 22,
+  height = 10
+)
+
+# Create a treemap (for interactive treemap)
 tm <-
   treemap::treemap(
     final_df,

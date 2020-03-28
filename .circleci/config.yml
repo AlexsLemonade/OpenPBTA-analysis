@@ -21,6 +21,10 @@ jobs:
           command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
 
       - run:
+          name: Sample Distribution Figure
+          command: ./scripts/run_in_ci.sh Rscript figures/scripts/fig1-sample-distribution.R
+          
+      - run:
           name: Transcriptome dimensionality reduction
           command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
           
