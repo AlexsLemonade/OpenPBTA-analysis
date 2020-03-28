@@ -19,6 +19,20 @@ The purpose of this notebook is to aggregate molecular subtyping results from th
 
 ## Set up
 
+```{r}
+# This logic is the same as analyses/gene-set-enrichment-analysis/02-model-gsea.Rmd
+# Assigning params$is_ci to running_in_ci avoids a locked binding error
+running_in_ci <- params$is_ci
+
+# Are we testing? In case of a non 0/1 number, we recast as logical, and then 
+# ensure logical.
+if (running_in_ci %in% c(0,1)) running_in_ci <- as.logical(running_in_ci)
+if (!(is.logical(running_in_ci)))
+{
+  stop("\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).")
+}
+```
+
 ### Libraries and functions
 
 ```{r}
@@ -78,7 +92,7 @@ if (!dir.exists(results_dir)) {
 When we run this locally, we want to tie it to a specific version of the histologies file _prior_ to feedback we received from pathology that is recorded on [#609](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/609).
 
 ```{r}
-if (params$is_ci) {
+if (running_in_ci) {
   histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
 } else {
   histologies_file <- file.path(data_dir, "release-v15-20200228",
