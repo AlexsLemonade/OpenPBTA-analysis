@@ -56,6 +56,10 @@ jobs:
           name: Molecular subtyping - Ependymoma
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
 
+      - run:
+         name: Molecular Subtyping / Reclassification - EWS
+         command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EWS/run_reclassification.sh 
+
 
       # Deprecated - these results do not include germline calls and therefore are insufficient by subtyping
       # - run:
@@ -184,10 +188,6 @@ jobs:
       - run:
           name: LGAT subtyping
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-LGAT/run_subtyping.sh
-
-      - run:
-         name: EWS classification
-         command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EWS/run_reclassification.sh 
     
       - run:
           name: TCGA SNV Caller Analysis 
