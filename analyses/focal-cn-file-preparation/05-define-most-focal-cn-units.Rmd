@@ -393,7 +393,18 @@ write_tsv(final_df, file.path(results_dir, "consensus_seg_most_focal_cn_status.t
 
 # Display final table
 final_df %>%
-  arrange(focal_call)
+  arrange(focal_call) %>%
+  group_by(biospecimen_id, focal_call)
+```
+
+### Find recurrent calls
+
+```{r}
+# Tally recurrent calls
+final_df %>%
+  group_by(chromosome_arm, focal_call) %>%
+  tally() %>%
+  arrange(chromosome_arm)
 ```
 
 ## Session Info
