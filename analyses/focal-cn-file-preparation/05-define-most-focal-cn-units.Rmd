@@ -244,7 +244,7 @@ arm_status_count %>%
   group_by(dominant_status)
 ```
 
-These are the chromosome arms that have not been defined as gain or loss -- we want to define their cytoband/gene level status
+These are the chromosome arms that have not been defined as gain or loss -- we want to define their cytoband/gene-level status
 
 ```{r}
 # Let's get a vector of the neutral arms
@@ -412,4 +412,3 @@ final_df %>%
 ```{r}
 sessionInfo()
 ```
-
