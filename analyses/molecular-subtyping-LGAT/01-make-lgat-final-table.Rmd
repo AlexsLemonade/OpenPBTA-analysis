@@ -109,7 +109,7 @@ all_lgat_df %>%
 # TODO: if we update to tidyr 1.0.0 I think using unite would be better here
 final_table <- all_lgat_df %>%
   mutate(molecular_subtype = case_when(
-    # When we don't have RNA-seq or mutation data, this is to be classified
+    # When we don't have RNA-seq and mutation data, this is to be classified
     is.na(FusionName) & is.na(BRAF_V600E) ~ "LGG, To be classified",
     # When there is no BRAF fusion detected and there is no DNA-seq data
     # to be classified
