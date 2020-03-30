@@ -137,7 +137,7 @@ bubble_matrix_plot <- function(sig_num_df,
   grouped_sig_num$prop_tumors[which(grouped_sig_num$prop_tumors == 0)] <-  NA
   
   # If color palette is not specified use color brewer's YlGnBu
-  if (is.na(color_palette[1])) {
+  if (any(is.na(color_palette))) {
     color_palette <- RColorBrewer::brewer.pal(9, name = "YlGnBu")
   }
   # Make the bubble matrix plot

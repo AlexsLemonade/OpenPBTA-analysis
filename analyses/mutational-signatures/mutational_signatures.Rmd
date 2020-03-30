@@ -276,9 +276,10 @@ cosmic_sigs_df <- calc_mut_per_sig(
   metadata = metadata_df
   ) 
 
-# Write this to a file  
-readr::write_tsv(cosmic_sigs_df, 
-                 file.path(results_dir, "cosmic_signatures_results.tsv"))
+# Write this to a file but drop the color column
+cosmic_sigs_df %>% 
+  dplyr::select(-sample_color) %>% 
+  readr::write_tsv(file.path(results_dir, "cosmic_signatures_results.tsv"))
 
 # Print out a preview
 cosmic_sigs_df
@@ -296,9 +297,10 @@ nature_sigs_df <- calc_mut_per_sig(
   metadata = metadata_df 
 ) 
 
-# Write this to a file  
-readr::write_tsv(nature_sigs_df, 
-                 file.path(results_dir, "nature_signatures_results.tsv"))
+# Write this to a file but drop the color column
+nature_sigs_df %>% 
+  dplyr::select(-sample_color) %>% 
+  readr::write_tsv(file.path(results_dir, "nature_signatures_results.tsv"))
 
 # Print out a preview
 nature_sigs_df
