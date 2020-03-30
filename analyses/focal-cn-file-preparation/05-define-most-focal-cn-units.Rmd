@@ -408,13 +408,29 @@ final_df %>%
 ### Tranform the chromosome arm status data
 
 ```{r}
-final_arm_status_df <- final_df %>%
-  # Filter to only non-neutral chromosome arms
-  filter(dominant_status.arm != "neutral") %>%
-  select(Kids_First_Biospecimen_ID = biospecimen_id,
-         region = chromosome_arm,
-         status = dominant_status.arm) %>%
-  distinct()
+if (!(running_in_ci)) {
+  final_arm_status_df <- final_df %>%
+    # Filter to only non-neutral chromosome arms
+    filter(dominant_status.arm != "neutral") %>%
+    select(
+      Kids_First_Biospecimen_ID = biospecimen_id,
+      region = chromosome_arm,
+      status = dominant_status.arm
+    ) %>%
+    distinct() %>%
+    mutate(region_type = "chromosome_arm")
+} else {
+  final_arm_status_df <- final_df %>%
+    # Filter to only non-neutral chromosome arms
+    filter(dominant_status != "neutral") %>%
+    select(
+      Kids_First_Biospecimen_ID = biospecimen_id,
+      region = chromosome_arm,
+      status = dominant_status
+    ) %>%
+    distinct() %>%
+    mutate(region_type = "chromosome_arm")
+}
 ```
 
 ### Transform the cytoband status data
@@ -431,7 +447,8 @@ if (!(running_in_ci)) {
       region = cytoband,
       status = dominant_status.cytoband
     ) %>%
-    distinct()
+    distinct() %>%
+    mutate(region_type = "cytoband")
 }
 ```
 
@@ -449,7 +466,8 @@ if (!(running_in_ci)) {
       region = gene_symbol,
       status = dominant_status
     ) %>%
-    distinct()
+    distinct() %>%
+    mutate(region_type = "gene_symbol")
 }
 ```
 
@@ -460,9 +478,11 @@ if (!(running_in_ci)) {
   # Bind the rows of each region's data.frame
   final_long_status_df <- bind_rows(final_arm_status_df,
                                     final_cytoband_status_df,
-                                    final_gene_status_df)
+                                    final_gene_status_df) %>%
+    filter(status != "uncallable")
 } else {
-  final_long_status_df <- final_arm_status_df
+  final_long_status_df <- final_arm_status_df %>%
+    filter(status != "uncallable")
 }
 
 # Write final long status table to file
@@ -473,16 +493,19 @@ final_long_status_df
 ```
 
 **Note:** There are no gene region status data in the final long status data.frame using the logic above.
+There are also no gain status calls in this final data.frame.
 
-## Find recurrent calls
+### Spread status data
 
 ```{r}
-# Tally recurrent calls
-final_long_status_df %>%
-  group_by(region, status) %>%
-  tally() %>%
-  arrange(desc(n))
+final_wide_status_df <- final_long_status_df %>%
+  tidyr::spread(Kids_First_Biospecimen_ID, status)
+
+# Display status data spread across samples in wide format -- each row is a
+# unique region
+final_wide_status_df
 ```
+
 
 ## Session Info
 
