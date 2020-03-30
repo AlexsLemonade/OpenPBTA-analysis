@@ -360,7 +360,7 @@ if (!(running_in_ci)) {
 # files do not contain any of the genes in the `gene_status_count` data.frame
 # generated above (when `running_in_ci` == FALSE)
 if (!(running_in_ci)) {
-  final_df <- consensus_seg_autosomes_df %>%
+  combined_status_count_df <- consensus_seg_autosomes_df %>%
     mutate(chromosome_arm = gsub("(p|q).*", "\\1", cytoband)) %>%
     inner_join(arm_status_count,
                by = "chromosome_arm") %>%
@@ -391,14 +391,14 @@ if (!(running_in_ci)) {
                              TRUE ~ "Other")
     )
 } else {
-  final_df <- consensus_seg_autosomes_df %>%
+  combined_status_count_df <- consensus_seg_autosomes_df %>%
     mutate(chromosome_arm = gsub("(p|q).*", "\\1", cytoband)) %>%
     inner_join(arm_status_count, by = "chromosome_arm") %>%
     mutate(focal_call = dominant_status)
 }
 
-# Display final table
-final_df %>%
+# Display combined status counts table
+combined_status_count_df %>%
   arrange(focal_call) %>%
   group_by(biospecimen_id, focal_call)
 ```
@@ -409,7 +409,7 @@ final_df %>%
 
 ```{r}
 if (!(running_in_ci)) {
-  final_arm_status_df <- final_df %>%
+  final_arm_status_df <- combined_status_count_df %>%
     # Filter to only non-neutral chromosome arms
     filter(dominant_status.arm != "neutral") %>%
     select(
@@ -420,7 +420,7 @@ if (!(running_in_ci)) {
     distinct() %>%
     mutate(region_type = "chromosome_arm")
 } else {
-  final_arm_status_df <- final_df %>%
+  final_arm_status_df <- combined_status_count_df %>%
     # Filter to only non-neutral chromosome arms
     filter(dominant_status != "neutral") %>%
     select(
@@ -437,7 +437,7 @@ if (!(running_in_ci)) {
 
 ```{r}
 if (!(running_in_ci)) {
-  final_cytoband_status_df <- final_df %>%
+  final_cytoband_status_df <- combined_status_count_df %>%
     # Filter to only neutral chromosome arms and cytobands
     # that are not NA
     filter(dominant_status.arm == "neutral",
@@ -456,11 +456,11 @@ if (!(running_in_ci)) {
 
 ```{r}
 if (!(running_in_ci)) {
-  final_gene_status_df <- final_df %>%
-    # Filter to only neutral chromosome arms and cytoband
-    # that are NA
+  final_gene_status_df <- combined_status_count_df %>%
+    # Filter to only neutral chromosome arms and cytobands
+    # that are NA or unstable (do not have a clear gain or loss call)
     filter(dominant_status.arm == "neutral",
-           dominant_status.cytoband == "NA") %>%
+           dominant_status.cytoband == c("NA", "unstable")) %>%
     select(
       Kids_First_Biospecimen_ID = biospecimen_id,
       region = gene_symbol,
@@ -489,11 +489,12 @@ if (!(running_in_ci)) {
 write_tsv(final_long_status_df, file.path(results_dir, "consensus_seg_most_focal_cn_status.tsv.gz"))
 
 # Display final long status table
-final_long_status_df
+final_long_status_df %>%
+  arrange(region_type)
 ```
 
-**Note:** There are no gene region status data in the final long status data.frame using the logic above.
-There are also no gain status calls in this final data.frame.
+**Note:** There are gain status calls in this final data.frame.
+This is not completely unexpected as there were many loss calls noticed in the data to begin with, but this may be something that is worth taking note of.
 
 ### Spread status data
 
