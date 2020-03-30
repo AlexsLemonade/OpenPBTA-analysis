@@ -14,7 +14,7 @@ This notebook defines the most focal recurrent copy number units by removing foc
 _Most focal_ here meaning:
 
 - If a chromosome arm is not clearly defined as a gain or loss (and is callable) we look to define the cytoband level status
-- If a cytoband is not clearly defined as a gain or loss (and is callable) we then look to define the gene level status
+- If a cytoband is not clearly defined as a gain or loss (and is callable) we then look to define the gene-level status
 
 ## Usage
 
@@ -58,12 +58,12 @@ status_majority_caller <- function(status_df,
                                    status_column_name,
                                    percent_threshold_value, 
                                    uncallable_threshold_value = uncallable_threshold) {
-  # Given a data.frame with cytoband/gene level copy number status data,
+  # Given a data.frame with cytoband/gene-level copy number status data,
   # find the dominant status of the cytoband/gene region by calculating
   # the percentages of the region that each call represents.
   #
   # Args:
-  #   status_df: data.frame with cytoband/gene level copy number status data
+  #   status_df: data.frame with cytoband/gene-level copy number status data
   #   region_variable: string of the column name/region to calculate copy number
   #                    status percentages for
   #   status_column_name: string of the column name that holds the relevant copy
@@ -166,13 +166,22 @@ plot_dominant_status_calls <- function(status_count_df,
   #                the percentage values on the y-axis
   
   status_count_df %>%
+    # Remove the total column -- we don't want to plot this
     select(-total) %>%
     dplyr::ungroup() %>%
+    # Store the non-percentage value column variable as rownames
     tibble::column_to_rownames(region_variable) %>%
+    # Gather the data.frame to have columns and values in the format of
+    # our status call, the percentage of total calls that status call is
+    # responisble for, and the dominant status call made based on the
+    # percentage value
     tidyr::gather(status, percent,-dominant_status) %>%
+    # Plot our focal status values on the x-axis and the percentage values
+    # on the y-axis
     ggplot2::ggplot(ggplot2::aes(x = status,
                                  y = percent)) +
     ggplot2::geom_jitter() +
+    # Facet wrap around each dominant status value
     ggplot2::facet_wrap( ~ dominant_status)
 }
 ```
@@ -255,7 +264,7 @@ neutral_arms <- arm_status_count %>%
 
 ### Determine cytoband status
 
-We want to include cytoband and gene level calls for chromosome arms that have not been defined as a gain or loss.
+We want to include cytoband and gene-level calls for chromosome arms that have not been defined as a gain or loss.
 
 ```{r}
 # Filter the annotated CN data to include only neutral chromosome arms
@@ -287,7 +296,7 @@ cytoband_status_count
 ```{r}
 if (!(running_in_ci)) {
   # These are the cytobands that have not been defined as gain or loss --
-  # we want to define their gene level status
+  # we want to define their gene-level status
   neutral_cytobands <- cytoband_status_count %>%
     filter(dominant_status %in% c("unstable", "neutral")) %>%
     dplyr::pull("cytoband")
@@ -296,7 +305,7 @@ if (!(running_in_ci)) {
   neutral_status_cytoband_df <- combined_status_df %>%
     filter(cytoband %in% neutral_cytobands)
   
-  # Now count the gene level calls (for each status call) and define
+  # Now count the gene-level calls (for each status call) and define
   # the gene as that status if more than 50% of the total counts are
   # for that particular status
   gene_status_count <- status_majority_caller(neutral_status_cytoband_df,
@@ -344,7 +353,7 @@ if (!(running_in_ci)) {
 }
 ```
 
-## Combine arm, cytoband, and gene level status data
+## Combine arm, cytoband, and gene-level status data
 
 ```{r}
 # The logic variable `running_in_ci` is needed here because the CI testing
@@ -388,23 +397,91 @@ if (!(running_in_ci)) {
     mutate(focal_call = dominant_status)
 }
 
-# Write final table to file
-write_tsv(final_df, file.path(results_dir, "consensus_seg_most_focal_cn_status.tsv.gz"))
-
 # Display final table
 final_df %>%
   arrange(focal_call) %>%
   group_by(biospecimen_id, focal_call)
 ```
 
-### Find recurrent calls
+## Transform data into long format
+
+### Tranform the chromosome arm status data
+
+```{r}
+final_arm_status_df <- final_df %>%
+  # Filter to only non-neutral chromosome arms
+  filter(dominant_status.arm != "neutral") %>%
+  select(Kids_First_Biospecimen_ID = biospecimen_id,
+         region = chromosome_arm,
+         status = dominant_status.arm) %>%
+  distinct()
+```
+
+### Transform the cytoband status data
+
+```{r}
+if (!(running_in_ci)) {
+  final_cytoband_status_df <- final_df %>%
+    # Filter to only neutral chromosome arms and cytobands
+    # that are not NA
+    filter(dominant_status.arm == "neutral",
+           dominant_status.cytoband != "NA") %>%
+    select(
+      Kids_First_Biospecimen_ID = biospecimen_id,
+      region = cytoband,
+      status = dominant_status.cytoband
+    ) %>%
+    distinct()
+}
+```
+
+### Transform the gene-level status data
+
+```{r}
+if (!(running_in_ci)) {
+  final_gene_status_df <- final_df %>%
+    # Filter to only neutral chromosome arms and cytoband
+    # that are NA
+    filter(dominant_status.arm == "neutral",
+           dominant_status.cytoband == "NA") %>%
+    select(
+      Kids_First_Biospecimen_ID = biospecimen_id,
+      region = gene_symbol,
+      status = dominant_status
+    ) %>%
+    distinct()
+}
+```
+
+### Combine status data for all regions
+
+```{r}
+if (!(running_in_ci)) {
+  # Bind the rows of each region's data.frame
+  final_long_status_df <- bind_rows(final_arm_status_df,
+                                    final_cytoband_status_df,
+                                    final_gene_status_df)
+} else {
+  final_long_status_df <- final_arm_status_df
+}
+
+# Write final long status table to file
+write_tsv(final_long_status_df, file.path(results_dir, "consensus_seg_most_focal_cn_status.tsv.gz"))
+
+# Display final long status table
+final_long_status_df
+```
+
+**Note:** There are no gene region status data in the final long status data.frame using the logic above.
+
+## Find recurrent calls
 
 ```{r}
 # Tally recurrent calls
-final_df %>%
-  group_by(chromosome_arm, focal_call) %>%
+final_long_status_df %>%
+  group_by(region, status) %>%
   tally() %>%
-  arrange(chromosome_arm)
+  arrange(desc(n))
 ```
 
 ## Session Info
