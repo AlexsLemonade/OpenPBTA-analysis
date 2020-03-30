@@ -120,7 +120,8 @@ clinical_reclassified <- clinical_rnaseq %>%
          Kids_First_Biospecimen_ID_RNA,
          Kids_First_Biospecimen_ID_DNA,
          sample_id,
-         everything())
+         everything(),
+         -sample_type)
 ```
 
 
