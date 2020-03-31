@@ -56,6 +56,7 @@ library(tidyverse)
 status_majority_caller <- function(status_df,
                                    region_variable,
                                    status_column_name,
+                                   id_column_name,
                                    percent_threshold_value, 
                                    uncallable_threshold_value = uncallable_threshold) {
   # Given a data.frame with cytoband/gene-level copy number status data,
@@ -68,6 +69,7 @@ status_majority_caller <- function(status_df,
   #                    status percentages for
   #   status_column_name: string of the column name that holds the relevant copy
   #                       number status data
+  #   id_column_name: string of the column name that holds the sample id values
   #   percent_threshold_value: What percent of calls a particular status needs to be 
   #                      above to be called the majority. 
   #   uncallable_threshold_value: a threshold for determining if enough of a region is 
@@ -81,9 +83,11 @@ status_majority_caller <- function(status_df,
   # Tidyeval for these columns 
   region_sym <- rlang::sym(region_variable)
   status_sym <- rlang::sym(status_column_name)
+  id_sym <- rlang::sym(id_column_name)
   
   # Format the data and group it
   status_count <- status_df %>%
+    group_by(!!id_sym) %>%
     count(!!region_sym, !!status_sym) %>%
     # Spread the data -- each row represents a unique chromosome arm
     spread(!!status_sym, n) %>%
@@ -97,23 +101,29 @@ status_majority_caller <- function(status_df,
       unstable = 0
     )) %>%
     # Getting counts by region 
-    group_by(!!region_sym) 
+    group_by(!!region_sym)
   
   # Let's store the regions separately so as to avoid weird coercions
   region_vector <- 
     status_count %>% 
     dplyr::pull(!!region_sym)
   
+  # Let's store the sample id values separately as well
+  id_vector <- status_count %>%
+    dplyr::pull(!!id_sym)
+  
   # Calculate percent 
   status_count <- status_count %>%
+    dplyr::ungroup() %>%
     # Store region variable column out of the way as rownames
-    tibble::column_to_rownames(region_variable) %>% 
+    select(-!!id_sym, -!!region_sym) %>%
     # Obtain a total counts variable column
     dplyr::mutate(total = apply(., 1, sum)) %>% 
     # Get the ratio of each status count to the total
     dplyr::mutate_at(dplyr::vars(-total), dplyr::funs(. / total)) %>% 
     # Bring back our region variable as its own column
-    dplyr::mutate(!!region_variable := region_vector)
+    dplyr::mutate(!!region_variable := region_vector,
+                  !!id_sym := id_vector)
 
   # The logic here is to define the region status based on the majority of calls
   # in the region -- if the number of calls for a specific status is 
@@ -166,11 +176,9 @@ plot_dominant_status_calls <- function(status_count_df,
   #                the percentage values on the y-axis
   
   status_count_df %>%
-    # Remove the total column -- we don't want to plot this
-    select(-total) %>%
+    # Remove the columns we don't want to plot
+    select(-total, -region_variable, -biospecimen_id) %>%
     dplyr::ungroup() %>%
-    # Store the non-percentage value column variable as rownames
-    tibble::column_to_rownames(region_variable) %>%
     # Gather the data.frame to have columns and values in the format of
     # our status call, the percentage of total calls that status call is
     # responisble for, and the dominant status call made based on the
@@ -245,6 +253,7 @@ arm_status_count <- status_majority_caller(
   combined_status_df,
   "chromosome_arm",
   "status", 
+  "biospecimen_id",
   percent_threshold = percent_threshold
 )
 
@@ -283,6 +292,7 @@ cytoband_status_count <- status_majority_caller(
   neutral_status_arm_df,
   "cytoband",
   "dominant_cytoband_status",
+  "biospecimen_id",
   percent_threshold = percent_threshold
 )
 
@@ -310,7 +320,8 @@ if (!(running_in_ci)) {
   # for that particular status
   gene_status_count <- status_majority_caller(neutral_status_cytoband_df,
                                               "gene_symbol",
-                                              "status", 
+                                              "status",
+                                              "biospecimen_id",
                                               percent_threshold = percent_threshold)
   
   # Display table
@@ -360,47 +371,19 @@ if (!(running_in_ci)) {
 # files do not contain any of the genes in the `gene_status_count` data.frame
 # generated above (when `running_in_ci` == FALSE)
 if (!(running_in_ci)) {
-  combined_status_count_df <- consensus_seg_autosomes_df %>%
-    mutate(chromosome_arm = gsub("(p|q).*", "\\1", cytoband)) %>%
-    inner_join(arm_status_count,
-               by = "chromosome_arm") %>%
-    left_join(cytoband_status_count,
-              by = "cytoband",
+  combined_status_count_df <- arm_status_count %>%
+    inner_join(cytoband_status_count,
+              by = "biospecimen_id",
               suffix = c(".arm", ".cytoband")) %>%
-    left_join(gene_status_count,
-              by = "gene_symbol",
-              suffix = c(".arm", ".gene")) %>%
-    mutate(
-      focal_call = paste0(
-        dominant_status.arm,
-        ", ",
-        dominant_status.cytoband,
-        ", ",
-        dominant_status
-      ),
-      # Here we want to define the most focal call based on the arm, cytoband,
-      # and gene status information -- if a loss/gain is defined at the arm
-      # level then the focal call will be "arm_loss" or "arm_gain" respectively,
-      # and so on.
-      focal_call = case_when(focal_call == "loss, NA, NA" ~ "arm_loss",
-                             focal_call == "neutral, uncallable, NA" ~ "uncallable",
-                             focal_call == "neutral, loss, NA" ~ "cytoband_loss",
-                             focal_call == "neutral, NA, NA" ~ "arm_neutral",
-                             focal_call == "neutral, unstable, neutral" ~ "gene_neutral",
-                             focal_call == "neutral, unstable, loss" ~ "gene_loss",
-                             TRUE ~ "Other")
-    )
+    inner_join(gene_status_count,
+              by = "biospecimen_id",
+              suffix = c(".arm", ".gene"))
 } else {
-  combined_status_count_df <- consensus_seg_autosomes_df %>%
-    mutate(chromosome_arm = gsub("(p|q).*", "\\1", cytoband)) %>%
-    inner_join(arm_status_count, by = "chromosome_arm") %>%
-    mutate(focal_call = dominant_status)
+  combined_status_count_df <- arm_status_count
 }
 
 # Display combined status counts table
-combined_status_count_df %>%
-  arrange(focal_call) %>%
-  group_by(biospecimen_id, focal_call)
+combined_status_count_df
 ```
 
 ## Transform data into long format
@@ -417,8 +400,7 @@ if (!(running_in_ci)) {
       region = chromosome_arm,
       status = dominant_status.arm
     ) %>%
-    distinct() %>%
-    mutate(region_type = "chromosome_arm")
+    distinct()
 } else {
   final_arm_status_df <- combined_status_count_df %>%
     # Filter to only non-neutral chromosome arms
@@ -478,7 +460,8 @@ if (!(running_in_ci)) {
   # Bind the rows of each region's data.frame
   final_long_status_df <- bind_rows(final_arm_status_df,
                                     final_cytoband_status_df,
-                                    final_gene_status_df) %>%
+                                    final_gene_status_df,
+                                    .id = "region") %>%
     filter(status != "uncallable")
 } else {
   final_long_status_df <- final_arm_status_df %>%
