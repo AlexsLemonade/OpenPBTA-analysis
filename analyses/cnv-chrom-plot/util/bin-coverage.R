@@ -10,7 +10,7 @@ bp_per_bin <- function(bin_ranges, status_ranges) {
   #
   # Args:
   #   bin_ranges: A binned GenomicRanges made from tileGenome. 
-  #   status_ranges: A GenomicRanges object to calculate what percent coverage of
+  #   status_ranges:A GenomicRanges object to calculate what percent coverage of
   #   each bin. 
   #
   # Returns:
@@ -62,11 +62,10 @@ call_bin_status <- function(sample_id,
   # Uses bp_per_bin function. 
   #
   # Args:
-  #   sample_id: A string that corresponds to the biospecimen s
+  #   sample_id: A string that corresponds to a single biospecimen id
   #   seg_ranges: A GenomicRanges object that contains a `status` and a `biospecimen` slot.  
   #               The `biospecimen slot will be used to split out the `sample_id`'s corresponding ranges.   
-  #               The `status` slot should have the that has the gain/loss/neutral 
-  #               status call for each segment. Data will be split up by this variable. 
+  #               The `status` slot should have gain/loss/neutral. 
   #   bin_ranges: A binned GenomicRanges made from tileGenome that has been uncompressed with `unlist`. 
   #   perc_delta_threshold: What covereage percent difference do you need to make the call?
   #
