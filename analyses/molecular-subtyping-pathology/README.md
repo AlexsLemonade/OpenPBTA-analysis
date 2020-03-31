@@ -18,3 +18,15 @@ Specifically, there are instances where the final `integrated_diagnosis` calls f
 The goal is to make sure that the _final calls_ are recorded in an aggregated table (see point 1 above) and documented in this repository.
 
 For more background, see [#609](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/609).
+
+### Usage
+
+To run all steps in this module, run the following command:
+
+```sh
+bash run-subtyping-aggregation.sh
+```
+
+### Module contents
+
+`01-compile-subtyping-results.Rmd` aggregates results from the modules listed above into a single table (`results/compiled_molecular_subtypes.tsv`).
