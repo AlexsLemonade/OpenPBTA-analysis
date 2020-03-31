@@ -151,8 +151,7 @@ The EWS results were post-v15 and come with their own `Notes` column.
 ews_results_df <- bind_exp_strategies(ews_results_df) %>%
   rename(integrated_diagnosis = integrated_diagnosis_reclassified,
          short_histology = short_histology_reclassified,
-         broad_histology = broad_histology_reclassified) %>%
-  select(-sample_type)
+         broad_histology = broad_histology_reclassified)
 ```
 
 ### Handling HGG
