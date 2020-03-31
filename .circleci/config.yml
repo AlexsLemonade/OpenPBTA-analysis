@@ -191,7 +191,7 @@ jobs:
       - run:
           name: RNA-Seq composition
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/rna-seq-composition/rna-seq-composition.Rmd', clean = TRUE)"
-
+          
       - run:
           name: TCGA SNV Caller Analysis 
           command: ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-tcga.sh     
