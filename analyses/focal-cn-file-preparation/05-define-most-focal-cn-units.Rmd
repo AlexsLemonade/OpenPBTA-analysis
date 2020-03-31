@@ -84,7 +84,7 @@ status_majority_caller <- function(status_df,
   region_sym <- rlang::sym(region_variable)
   status_sym <- rlang::sym(status_column_name)
   id_sym <- rlang::sym(id_column_name)
-  
+
   # Format the data and group it
   status_df <- status_df %>%
     # Keep only the columns we need
@@ -237,7 +237,10 @@ combined_status_df <- consensus_seg_autosomes_df %>%
   inner_join(
     consensus_seg_cytoband_status_df,
     by = c("biospecimen_id" = "Kids_First_Biospecimen_ID", "cytoband")
-  )
+  ) 
+
+gene_cytoband_key <- combined_status_df$cytoband
+names(gene_cytoband_key) <- combined_status_df$gene_symbol
 ```
 
 ## Define most focal units
@@ -291,7 +294,9 @@ cytoband_status_count <- status_majority_caller(
   "dominant_cytoband_status",
   "biospecimen_id",
   percent_threshold_val = percent_threshold
-)
+) %>% 
+  # Add on a chromosome column we can match to chromosome arms later
+  mutate(chromosome_arm = gsub("(p|q).*", "\\1", cytoband)) 
 
 # Display table
 cytoband_status_count %>%
@@ -320,7 +325,14 @@ if (!(running_in_ci)) {
                                               "gene_symbol",
                                               "status",
                                               "biospecimen_id",
-                                              percent_threshold_val = percent_threshold)
+                                              percent_threshold) %>% 
+    # Tack on a cyoband column so we can match by that later
+    left_join(
+      select(neutral_status_cytoband_df, gene_symbol, cytoband) %>% 
+        # Only keep distinct gene - cytoband matches
+        distinct(), 
+              # Join by gene_symbol
+              by = "gene_symbol")
   
   # Display table
   gene_status_count
@@ -370,19 +382,26 @@ if (!(running_in_ci)) {
 # generated above (when `running_in_ci` == FALSE)
 if (!(running_in_ci)) {
   
-  # Mutate a chromosome arm column variable for joining with the chromosome
-  # arm data
-  cytoband_status_count <- cytoband_status_count %>%
-    mutate(chromosome_arm = gsub("(p|q).*", "\\1", cytoband))
-  
+  # For each of the datasets we're joining, we'll only keep these columns: 
+  cols_to_keep <- c("biospecimen_id", "dominant_status")
+   
   # Combine the arm, cytoband, and gene status count data
   combined_status_count_df <- arm_status_count %>%
-    inner_join(cytoband_status_count,
+    # Only keep these columns
+    select(cols_to_keep, chromosome_arm) %>% 
+    # Join on the cytoband statuses
+    inner_join(cytoband_status_count %>%
+                 select(cols_to_keep,  cytoband, chromosome_arm),
               by = c("biospecimen_id", "chromosome_arm"),
               suffix = c(".arm", ".cytoband")) %>%
-    inner_join(gene_status_count,
-              by = "biospecimen_id",
-              suffix = c(".arm", ".gene"))
+    # Join on the gene statuses
+    inner_join(gene_status_count %>% 
+                 select(cols_to_keep, cytoband, gene_symbol),
+              by = c("biospecimen_id", "cytoband"),
+              suffix = c(".arm", ".gene")) %>% 
+    # Rename so we know this is the gene symbol based dominant_status
+    rename(dominant_status.gene = dominant_status, 
+           Kids_First_Biospecimen_ID = biospecimen_id) # Keep this consistent with the other datasets
 } else {
   combined_status_count_df <- arm_status_count
 }
@@ -393,102 +412,23 @@ combined_status_count_df
 
 ## Transform data into long format
 
-### Tranform the chromosome arm status data
-
 ```{r}
-if (!(running_in_ci)) {
-  final_arm_status_df <- combined_status_count_df %>%
-    # Filter to only non-neutral chromosome arms
-    filter(dominant_status.arm != "neutral") %>%
-    select(
-      Kids_First_Biospecimen_ID = biospecimen_id,
-      region = chromosome_arm,
-      status = dominant_status.arm
-    ) %>%
-    distinct()
-} else {
-  final_arm_status_df <- combined_status_count_df %>%
-    # Filter to only non-neutral chromosome arms
-    filter(dominant_status != "neutral") %>%
-    select(
-      Kids_First_Biospecimen_ID = biospecimen_id,
-      region = chromosome_arm,
-      status = dominant_status
-    ) %>%
-    distinct()
-}
+combined_status_count_df %>% 
+  # Gather statuses into one column
+  gather(region_type, status, -Kids_First_Biospecimen_ID, -cytoband, gene_symbol) %>% 
+  # Get rid of `dominant_status` prefix
+  mutate(region = gsub("dominant_status.", "", region_type))
 ```
 
-### Transform the cytoband status data
-
 ```{r}
-if (!(running_in_ci)) {
-  final_cytoband_status_df <- combined_status_count_df %>%
-    # Filter to only neutral chromosome arms and cytobands
-    # that are not NA
-    filter(dominant_status.arm == "neutral",
-           dominant_status.cytoband != "NA") %>%
-    select(
-      Kids_First_Biospecimen_ID = biospecimen_id,
-      region = cytoband,
-      status = dominant_status.cytoband
-    ) %>%
-    distinct()
-}
-```
-
-### Transform the gene-level status data
-
-```{r}
-if (!(running_in_ci)) {
-  final_gene_status_df <- combined_status_count_df %>%
-    # Filter to only neutral chromosome arms and cytobands
-    # that are NA or unstable (do not have a clear gain or loss call)
-    filter(dominant_status.arm == "neutral",
-           dominant_status.cytoband == c("NA", "unstable")) %>%
-    select(
-      Kids_First_Biospecimen_ID = biospecimen_id,
-      region = gene_symbol,
-      status = dominant_status
-    ) %>%
-    distinct()
-}
-```
-
-### Combine status data for all regions
-
-```{r}
-if (!(running_in_ci)) {
-  # Bind the rows of each region's data.frame
-  final_long_status_df <- bind_rows(list(chromosome_arm = final_arm_status_df,
-                                    cytoband = final_cytoband_status_df,
-                                    gene_symbol = final_gene_status_df),
-                                    .id = "region_type") %>%
-    filter(status != "uncallable")
-} else {
-  final_long_status_df <- final_arm_status_df %>%
-    filter(status != "uncallable")
-}
-
 # Write final long status table to file
-write_tsv(final_long_status_df, file.path(results_dir, "consensus_seg_most_focal_cn_status.tsv.gz"))
+write_tsv(final_long_status_df, 
+          file.path(results_dir, "consensus_seg_most_focal_cn_status.tsv.gz"))
 
 # Display final long status table
 final_long_status_df %>%
   arrange(region_type)
 ```
-
-### Spread status data
-
-```{r}
-final_wide_status_df <- final_long_status_df %>%
-  tidyr::spread(Kids_First_Biospecimen_ID, status)
-
-# Display status data spread across samples in wide format -- each row is a
-# unique region
-final_wide_status_df
-```
-
 
 ## Session Info
 
