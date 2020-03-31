@@ -31,7 +31,7 @@ independent_specimens_file=${data_dir}/independent-specimens.wgswxs.primary.tsv
 Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd', clean = TRUE)"
 
 # Run snakemake script implementing `bedtools coverage` for each sample bed file in
-# `scratch/cytoband_status` -- these files are generated in 
+# `scratch/cytoband_status` -- these files are generated in
 # `02-add-ploidy-consensus.Rmd`
 # currently runs 10 jobs in parallel, which should be fine for most implementations
 snakemake -j 10 --snakefile run-bedtools.snakemake
@@ -48,7 +48,7 @@ Rscript --vanilla 04-prepare-cn-file.R \
   --seg
 
 # Define most focal units of recurrent CNVs
-Rscript --vanilla -e "rmarkdown::render('05-define-most-focal-cn-units.Rmd', clean = TRUE, params=list(is_ci = ${IS_CI}))"
+Rscript --vanilla -e "rmarkdown::render('05-define-most-focal-cn-units.Rmd', clean = TRUE)"
 
 libraryStrategies=("polya" "stranded")
 chromosomesType=("autosomes" "x_and_y")
