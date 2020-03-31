@@ -290,11 +290,12 @@ cytoband_status_count <- status_majority_caller(
   "cytoband",
   "dominant_cytoband_status",
   "biospecimen_id",
-  percent_threshold
+  percent_threshold_val = percent_threshold
 )
 
 # Display table
-cytoband_status_count
+cytoband_status_count %>%
+  group_by(dominant_status)
 }
 ```
 
@@ -305,7 +306,7 @@ if (!(running_in_ci)) {
   # These are the cytobands that have not been defined as gain or loss --
   # we want to define their gene-level status
   neutral_cytobands <- cytoband_status_count %>%
-    filter(dominant_status %in% c("unstable", "neutral")) %>%
+    filter(dominant_status %in% c("unstable", "NA")) %>%
     dplyr::pull("cytoband")
 
   # Filter the annotated CN data to include only these cytobands
@@ -368,9 +369,16 @@ if (!(running_in_ci)) {
 # files do not contain any of the genes in the `gene_status_count` data.frame
 # generated above (when `running_in_ci` == FALSE)
 if (!(running_in_ci)) {
+  
+  # Mutate a chromosome arm column variable for joining with the chromosome
+  # arm data
+  cytoband_status_count <- cytoband_status_count %>%
+    mutate(chromosome_arm = gsub("(p|q).*", "\\1", cytoband))
+  
+  # Combine the arm, cytoband, and gene status count data
   combined_status_count_df <- arm_status_count %>%
     inner_join(cytoband_status_count,
-              by = "biospecimen_id",
+              by = c("biospecimen_id", "chromosome_arm"),
               suffix = c(".arm", ".cytoband")) %>%
     inner_join(gene_status_count,
               by = "biospecimen_id",
@@ -407,8 +415,7 @@ if (!(running_in_ci)) {
       region = chromosome_arm,
       status = dominant_status
     ) %>%
-    distinct() %>%
-    mutate(region_type = "chromosome_arm")
+    distinct()
 }
 ```
 
@@ -426,8 +433,7 @@ if (!(running_in_ci)) {
       region = cytoband,
       status = dominant_status.cytoband
     ) %>%
-    distinct() %>%
-    mutate(region_type = "cytoband")
+    distinct()
 }
 ```
 
@@ -445,8 +451,7 @@ if (!(running_in_ci)) {
       region = gene_symbol,
       status = dominant_status
     ) %>%
-    distinct() %>%
-    mutate(region_type = "gene_symbol")
+    distinct()
 }
 ```
 
@@ -455,10 +460,10 @@ if (!(running_in_ci)) {
 ```{r}
 if (!(running_in_ci)) {
   # Bind the rows of each region's data.frame
-  final_long_status_df <- bind_rows(final_arm_status_df,
-                                    final_cytoband_status_df,
-                                    final_gene_status_df,
-                                    .id = "region") %>%
+  final_long_status_df <- bind_rows(list(chromosome_arm = final_arm_status_df,
+                                    cytoband = final_cytoband_status_df,
+                                    gene_symbol = final_gene_status_df),
+                                    .id = "region_type") %>%
     filter(status != "uncallable")
 } else {
   final_long_status_df <- final_arm_status_df %>%
@@ -472,9 +477,6 @@ write_tsv(final_long_status_df, file.path(results_dir, "consensus_seg_most_focal
 final_long_status_df %>%
   arrange(region_type)
 ```
-
-**Note:** There are gain status calls in this final data.frame.
-This is not completely unexpected as there were many loss calls noticed in the data to begin with, but this may be something that is worth taking note of.
 
 ### Spread status data
 
