@@ -12,6 +12,8 @@
     - `pbta-fusion-putative-oncogenic.tsv`
     - `pbta-fusion-recurrently-fused-genes-byhistology.tsv`
     - `pbta-fusion-recurrently-fused-genes-bysample.tsv`
+  - new fusion summarys from `analyses/fusion-summary`
+    - `fusion_summary_ewings_foi.tsv`
 - folder structure:
 ```
 data
@@ -21,6 +23,7 @@ data
     ├── data-files-description.md
     ├── fusion_summary_embryonal_foi.tsv
     ├── fusion_summary_ependymoma_foi.tsv
+    ├── fusion_summary_ewings_foi.tsv
     ├── independent-specimens.wgs.primary-plus.tsv
     ├── independent-specimens.wgs.primary.tsv
     ├── independent-specimens.wgswxs.primary-plus.tsv
