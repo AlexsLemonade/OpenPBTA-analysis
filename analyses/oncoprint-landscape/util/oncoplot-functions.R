@@ -65,7 +65,7 @@ prepare_and_plot_oncoprint <- function(maf_df,
     
     # Subset for genes in the histology-specific list
     subset_gene_sum <-
-      subset(gene_sum, Hugo_Symbol %in% gene_list$gene)
+      subset(gene_sum, Hugo_Symbol %in% gene_list)
     
     # Get top altered genes
     gene_ordered <-

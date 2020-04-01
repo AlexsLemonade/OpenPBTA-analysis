@@ -125,7 +125,7 @@ opt <- optparse::parse_args(opt_parser)
 # even if they are NULL
 cnv_file <- opt$cnv_file
 fusion_file <- opt$fusion_file
-genes <- opt$goi_list
+goi_list <- opt$goi_list
 
 #### Read in data --------------------------------------------------------------
 
@@ -150,12 +150,8 @@ if (!is.null(opt$fusion_file)) {
 
 # Read in genes list
 if (!is.null(opt$goi_file)) {
-  genes <- read.delim(
-    file.path(opt$goi_list),
-    sep = "\t",
-    header = FALSE,
-    as.is = TRUE
-  )
+  genes <- readr::read_tsv(file.path(opt$goi_list)) %>%
+    dplyr::pull("gene")
 }
 #### Prepare, Plot and Save Oncoprint ---------------------------------------------------
 

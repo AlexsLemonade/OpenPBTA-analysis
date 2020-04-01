@@ -125,7 +125,8 @@ gene_list <-
       "results",
       "gene_disease_top50.tsv"
     )
-  )
+  ) %>%
+  dplyr::pull("gene")
 
 #### Functions ----------------------------------------------------------
 
