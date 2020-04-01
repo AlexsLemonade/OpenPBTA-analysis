@@ -16,7 +16,7 @@ bp_per_bin <- function(bin_ranges, status_ranges) {
   # Returns:
   #  a data.frame with bins x number of bp 
   
-  # Find the portions of each segment that overlap with each bin.
+  # Find the portions of each copy number segment that overlap with each bin.
   bin_overlaps <- GenomicRanges::pintersect(
     IRanges::findOverlapPairs(
       bin_ranges,
@@ -24,7 +24,7 @@ bp_per_bin <- function(bin_ranges, status_ranges) {
     )
   )
   
-  # Which segs are a part of which bins?
+  # Which bins do the segs in `bin_overlaps` overlap with?
   bin_indices <- GenomicRanges::findOverlaps(
     bin_ranges,
     bin_overlaps
