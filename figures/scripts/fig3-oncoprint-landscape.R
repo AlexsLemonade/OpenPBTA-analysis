@@ -33,12 +33,13 @@ data_dir <- file.path(root_dir, "data")
 # Declare output directory
 output_dir <- file.path(root_dir, "figures", "pngs")
 
+# Path to oncoprint landscape directory
+oncoprint_dir <- file.path(root_dir, "analyses", "oncoprint-landscape")
+
 # Source the color palette for plots
 source(
   file.path(
-    root_dir,
-    "analyses",
-    "oncoprint-landscape",
+    oncoprint_dir,
     "util",
     "oncoplot-palette.R"
   )
@@ -126,101 +127,27 @@ gene_list <-
     )
   )
 
-#### Custom function ----------------------------------------------------------
+#### Functions ----------------------------------------------------------
 
-prepare_and_plot_oncoprint <- function(maf_df,
-                                       cnv_file,
-                                       fusion_file,
-                                       gene_list) {
-  # Given the maf, cnv, and fusion data.frames prepared in `00-map-to-sample_id.R`,
-  # along with a list of genes prepared in the `interaction-plots` directory,
-  # plot an oncoprint landscape figure.
-  
-  # Bind rows of maf and fusion data frames
-  maf_df <- dplyr::bind_rows(maf_df, fusion_file)
-  
-  # Convert into MAF object
-  maf_object <-
-    read.maf(
-      maf = maf_df,
-      clinicalData = metadata,
-      cnTable = cnv_file,
-      removeDuplicatedVariants = FALSE,
-      vc_nonSyn = c(
-        "Frame_Shift_Del",
-        "Frame_Shift_Ins",
-        "Splice_Site",
-        "Nonsense_Mutation",
-        "Nonstop_Mutation",
-        "In_Frame_Del",
-        "In_Frame_Ins",
-        "Missense_Mutation",
-        "Fusion",
-        "Multi_Hit",
-        "Multi_Hit_Fusion",
-        "Hom_Deletion",
-        "Hem_Deletion",
-        "amplification",
-        "gain",
-        "loss"
-      )
-    )
-  
-  #### Specify genes
-  # Get top mutated this data and goi list
-  gene_sum <- mafSummary(maf_object)$gene.summary
-  
-  # Subset for genes in the histology-specific list
-  subset_gene_sum <-
-    subset(gene_sum, Hugo_Symbol %in% gene_list$gene)
-  
-  # Get top altered genes
-  goi_ordered <-
-    subset_gene_sum[order(subset_gene_sum$AlteredSamples, decreasing = TRUE),]
-  
-  # Select n top genes
-  num_genes <- ifelse(nrow(goi_ordered) > 20, 20, nrow(goi_ordered))
-  goi_ordered_num <- goi_ordered[1:num_genes,]
-  genes <- goi_ordered_num$Hugo_Symbol
-  
-  #### Plot Oncoprint
-  
-  # Given a maf file, plot an oncoprint of the variants in the
-  # dataset and save as a png file.
-  oncoplot(
-    maf_object,
-    clinicalFeatures = c(
-      "broad_histology",
-      "short_histology",
-      "reported_gender",
-      "tumor_descriptor",
-      "molecular_subtype"
-    ),
-    genes = genes,
-    logColBar = TRUE,
-    sortByAnnotation = TRUE,
-    showTumorSampleBarcodes = TRUE,
-    removeNonMutated = TRUE,
-    annotationFontSize = 0.7,
-    SampleNamefontSize = 0.5,
-    fontSize = 0.7,
-    colors = color_palette
-    ## TODO: Implement use of color palettes in `figures/palettes` directory
-  )
-
-}
+source(file.path(
+  oncoprint_dir,
+  "util",
+  "oncoplot-functions.R"
+))
 
 #### Generate Oncoprints ------------------------------------------------------
 
 primary_plus_oncoprint <- prepare_and_plot_oncoprint(maf_df_primary_plus,
                                                      cnv_file_primary_plus,
                                                      fusion_file_primary_plus,
-                                                     gene_list = gene_list)
+                                                     gene_list = gene_list,
+                                                     color_palette = color_palette)
 
 primary_only_oncoprint <- prepare_and_plot_oncoprint(maf_df_primary_only,
                                                      cnv_file_primary_only,
                                                      fusion_file_primary_only,
-                                                     gene_list = gene_list)
+                                                     gene_list = gene_list,
+                                                     color_palette = color_palette)
 
 #### Assemble multipanel plot -------------------------------------------------
 

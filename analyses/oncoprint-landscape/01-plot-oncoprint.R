@@ -61,6 +61,17 @@ source(
   )
 )
 
+# Source the custom functions script
+source(
+  file.path(
+    root_dir,
+    "analyses",
+    "oncoprint-landscape",
+    "util",
+    "oncoplot-functions.R"
+  )
+)
+
 #### Command line options ------------------------------------------------------
 
 # Declare command line options
@@ -108,9 +119,13 @@ option_list <- list(
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
-# Define cnv_file object here as it still needs to be defined for the `read.maf`
-# function, even if it is NULL
+# Define cnv_file, fusion_file, and genes object here as they still need to
+# be defined for the `prepare_and_plot_oncoprint` custom function (the 
+# cnv_file specifically for the `read.maf` function within the custom function),
+# even if they are NULL
 cnv_file <- opt$cnv_file
+fusion_file <- opt$fusion_file
+genes <- opt$goi_list
 
 #### Read in data --------------------------------------------------------------
 
@@ -131,71 +146,18 @@ if (!is.null(opt$cnv_file)) {
 # Read in fusion file and join
 if (!is.null(opt$fusion_file)) {
   fusion_file <- readr::read_tsv(opt$fusion_file)
-  maf_df <- dplyr::bind_rows(maf_df, fusion_file)
 }
 
-#### Convert into MAF object ---------------------------------------------------
-
-maf_object <-
-  read.maf(
-    maf = maf_df,
-    clinicalData = metadata,
-    cnTable = cnv_file,
-    removeDuplicatedVariants = FALSE,
-    vc_nonSyn = c(
-      "Frame_Shift_Del",
-      "Frame_Shift_Ins",
-      "Splice_Site",
-      "Nonsense_Mutation",
-      "Nonstop_Mutation",
-      "In_Frame_Del",
-      "In_Frame_Ins",
-      "Missense_Mutation",
-      "Fusion",
-      "Multi_Hit",
-      "Multi_Hit_Fusion",
-      "Hom_Deletion",
-      "Hem_Deletion",
-      "amplification",
-      "gain",
-      "loss"
-    )
+# Read in genes list
+if (!is.null(opt$goi_file)) {
+  genes <- read.delim(
+    file.path(opt$goi_list),
+    sep = "\t",
+    header = FALSE,
+    as.is = TRUE
   )
-
-#### Specify genes -------------------------------------------------------------
-
-if (!is.null(opt$goi_list)) {
-  # Read in gene list
-  goi_list <-
-    read.delim(
-      file.path(opt$goi_list),
-      sep = "\t",
-      header = FALSE,
-      as.is = TRUE
-    )
-
-  # Get top mutated this data and goi list
-  gene_sum <- mafSummary(maf_object)$gene.summary
-
-  # Subset for genes in the histology-specific list
-  subset_gene_sum <- subset(gene_sum, Hugo_Symbol %in% goi_list$V1)
-
-  # Get top altered genes
-  goi_ordered <-
-    subset_gene_sum[order(subset_gene_sum$AlteredSamples, decreasing = TRUE), ]
-
-  # Select n top genes
-  num_genes <- ifelse(nrow(goi_ordered) > 20, 20, nrow(goi_ordered))
-  goi_ordered_num <- goi_ordered[1:num_genes, ]
-  genes <- goi_ordered_num$Hugo_Symbol
-
-} else {
-  # If a gene list is not supplied, we do not want the `oncoplot` function to
-  # filter the genes to be plotted, so we assign NULL to the `genes` object.
-  genes <- NULL
 }
-
-#### Plot and Save Oncoprint ---------------------------------------------------
+#### Prepare, Plot and Save Oncoprint ---------------------------------------------------
 
 # Given a maf file, plot an oncoprint of the variants in the
 # dataset and save as a png file.
@@ -206,23 +168,9 @@ png(
   units = "cm",
   res = 300
 )
-oncoplot(
-  maf_object,
-  clinicalFeatures = c(
-    "broad_histology",
-    "short_histology",
-    "reported_gender",
-    "tumor_descriptor",
-    "molecular_subtype"
-  ),
-  genes = genes,
-  logColBar = TRUE,
-  sortByAnnotation = TRUE,
-  showTumorSampleBarcodes = TRUE,
-  removeNonMutated = TRUE,
-  annotationFontSize = 0.7,
-  SampleNamefontSize = 0.5,
-  fontSize = 0.7,
-  colors = color_palette
-)
+prepare_and_plot_oncoprint(maf_df = maf_df,
+                           cnv_df = cnv_file,
+                           fusion_df = fusion_file,
+                           gene_list = genes,
+                           color_palette = color_palette)
 dev.off()
