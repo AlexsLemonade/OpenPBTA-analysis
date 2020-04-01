@@ -28,5 +28,6 @@ The output of these notebooks is a series of plots:
 - heatmap of CN status by genome bin: (`plots/cn_status_heatmap.pdf`)
 
 ### Custom functions:
-`bp_per_bin` - Given a binned genome ranges object and another `GenomicRanges` object, return the number of base pairs covered per bin.
+`bp_per_bin` - Given a binned genome ranges object and another `GenomicRanges` object, return the number of base pairs covered per bin. 
+Can be used with any `GenomicRanges` object, but in this context is used within `call_bin_status` to find the number of base pairs of each CN status per bin.   
 `call_bin_status` - Given a sample_id, copy number segment ranges, and binned genome ranges object, make a call for each bin on what CN copy status has the most coverage in the bin.
