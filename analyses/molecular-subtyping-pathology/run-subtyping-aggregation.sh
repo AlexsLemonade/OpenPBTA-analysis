@@ -18,3 +18,6 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 # Run the first notebook that compiles all the results from other modules into
 # a single table
 Rscript -e "rmarkdown::render('01-compile-subtyping-results.Rmd', params=list(is_ci = ${IS_CI}), clean = TRUE)"
+
+# Run the second notebook that incorporates pathology feedback into final labels
+Rscript -e "rmarkdown::render('02-incorporate-pathology-feedback.Rmd', params=list(is_ci = ${IS_CI}), clean = TRUE)"
