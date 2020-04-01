@@ -186,7 +186,7 @@ status_count_df %>%
       y = percent
     )) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-    ggforce::geom_sina(alpha = .2) +
+    geom_jitter(alpha = .2) +
     # Facet wrap around each dominant status value
     facet_wrap(~ dominant_status)
 }
@@ -290,9 +290,7 @@ cytoband_status_count <- status_majority_caller(
   "dominant_cytoband_status",
   "biospecimen_id",
   percent_threshold
-) %>%
-  # Add on a chromosome column we can match to chromosome arms later
-  mutate(chromosome_arm = gsub("(p|q).*", "\\1", cytoband))
+) 
 
 # Display table
 cytoband_status_count %>%
@@ -323,15 +321,7 @@ gene_status_count <- status_majority_caller(
   "status",
   "biospecimen_id",
   percent_threshold
-) %>%
-  # Tack on a cyoband column so we can match by that later
-  left_join(
-    select(neutral_status_cytoband_df, gene_symbol, cytoband) %>%
-      # Only keep distinct gene - cytoband matches
-      distinct(),
-    # Join by gene_symbol
-    by = "gene_symbol"
-  )
+)
 
 # Display table
 gene_status_count
@@ -372,56 +362,30 @@ plot_dominant_status_calls(
 ```{r}
 # For each of the datasets we're joining, we'll only keep these columns:
 cols_to_keep <- c("biospecimen_id", "dominant_status")
-
-# Combine the arm, cytoband, and gene status count data
-combined_status_count_df <- arm_status_count %>%
-  # Only keep these columns
-  select(cols_to_keep, chromosome_arm) %>%
-  # Join on the cytoband statuses
-  inner_join(cytoband_status_count %>%
-    select(cols_to_keep, cytoband, chromosome_arm),
-  by = c("biospecimen_id", "chromosome_arm"),
-  suffix = c(".arm", ".cytoband")
-  ) %>%
-  # Join on the gene statuses
-  inner_join(gene_status_count %>%
-    select(cols_to_keep, cytoband, gene_symbol),
-  by = c("biospecimen_id", "cytoband"),
-  suffix = c(".arm", ".gene")
-  ) %>%
-  # Rename so we know this is the gene symbol based dominant_status
-  rename(
-    dominant_status.gene = dominant_status,
-    Kids_First_Biospecimen_ID = biospecimen_id
-  ) # Keep this consistent with the other datasets
-
-# Display combined status counts table
-combined_status_count_df
-
-arm_status_count
-
-
-cytoband_status_count
 ```
 
-## Transform data into long format
+Combine into one long data frame
 
 ```{r}
-final_long_status_df <- combined_status_count_df %>%
-  # Gather statuses into one column
-  gather(
-    region_type,
-    status,
-    -Kids_First_Biospecimen_ID,
-    -chromosome_arm,
-    -cytoband,
-    -gene_symbol
-  ) %>%
-  # Get rid of `dominant_status` prefix
-  mutate(region_type = gsub("dominant_status.", "", region_type))
+# Combine the arm, cytoband, and gene status count data
+final_df <- bind_rows(arm =  select(arm_status_count, 
+                                    cols_to_keep, 
+                                    region = chromosome_arm),
+                      cytoband = select(cytoband_status_count, 
+                                        cols_to_keep, 
+                                        region = cytoband),
+                      gene = select(gene_status_count, 
+                                    cols_to_keep, 
+                                    region = gene_symbol), 
+                      .id = "region_type") %>% 
+  # Reorder columns more sensibly
+  select(Kids_First_Biospecimen_ID = biospecimen_id, 
+         status = dominant_status, 
+         region, 
+         region_type)
 
 # Print out preview
-final_long_status_df
+final_df 
 ```
 
 ## Write to a TSV file 
@@ -429,12 +393,12 @@ final_long_status_df
 ```{r}
 # Write final long status table to file
 write_tsv(
-  final_long_status_df,
+  final_df,
   file.path(results_dir, "consensus_seg_most_focal_cn_status.tsv.gz")
 )
 
 # Display final long status table
-final_long_status_df %>%
+final_df %>%
   arrange(region_type)
 ```
 
