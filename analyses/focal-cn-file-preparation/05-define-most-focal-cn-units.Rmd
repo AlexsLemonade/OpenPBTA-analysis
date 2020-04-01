@@ -159,10 +159,10 @@ status_majority_caller <- function(status_df,
 
 ```{r}
 plot_dominant_status_calls <- function(status_count_df) {
-  # TODO: Update this documentation to reflect the select `starts_with` stategy.
   # Given a data.frame with the percentage values for each region and the
-  # dominant status for that region, plot the dominant status call on the
-  # x-axis with the percentage values on the y-axis.
+  # dominant status for that region, plot our copy number status call on the
+  # x-axis with the values from each column that starts with `percent_` on the
+  # y-axis, facetted around each unique dominant status label.
   #
   # Args:
   #   status_count_df: data.frame with percentage values for each unique status
