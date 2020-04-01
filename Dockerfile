@@ -308,16 +308,21 @@ RUN pip3 install "cython==0.29.15" && \
     pip3 install "pysam==0.15.4" && \
     pip3 install "CrossMap==0.3.9" 
 
-#### Please install your dependencies here
-#### Add a comment to indicate what analysis it is required for
-
 # Packages required for rna-seq-composition
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
     --deps TRUE \
     EnvStats \
-    janitor 
+    janitor
 
+# Patchwork for plot compositions
 RUN R -e "devtools::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd46899f17197f9858bc5672e9f4')"
+
+# This is required for creating a treemap of the broad histology and integrated diagnoses
+RUN R -e "devtools::install_github('wilkox/treemapify', ref = 'e70adf727f4d13223de8146458db9bef97f872cb', dependencies = TRUE)"
+
+#### Please install your dependencies immediately above this comment.
+#### Add a comment to indicate what analysis it is required for
+
 
 WORKDIR /rocker-build/

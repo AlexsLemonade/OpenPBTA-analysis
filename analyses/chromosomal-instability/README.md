@@ -19,13 +19,13 @@ This analysis can be run via the command line from the top directory of the
 repository as follows:
 
 ```
-bash run-breakpoint-analysis.sh
+bash analyses/chromosome-instability/run_breakpoint_analysis.sh
 ```
 
 ## Methods and Output
 
 - `00-setup-breakpoint-data.R` CNV and SV data are transformed into single breakpoint data as well as their intersection.
-These three datasets (intersection, CNV, and SV) are used to calculate genome wide breakpoint densities for each sample which are saved to three `_breaks_densities.tsv` files. Note that this script is set up to handle WXS and WGS separately, however currently our PBTA dataset only has CNV and SV data for WGS samples.
+These three datasets (intersection, CNV, and SV) are used to calculate genome wide breakpoint densities for each sample which are saved to three `_breaks_densities.tsv` files. Note that this script is set up to handle WXS and WGS separately, however **currently our PBTA dataset only has CNV and SV data for WGS samples**.
 Additionally, a  `breakpoint-data/breaks_lists.RDS` file is saved which contains three data.frames:
 1) `intersection_of_breaks` contains the intersection break counts for both SV and CNV break data.  
 2) `cnv_breaks` contains the number of break counts for CNV.   
