@@ -57,3 +57,12 @@ python3 02_ependymoma_generate_all_data.py \
     --subfile-gistic-focalbygene $GISTIC_SUBFILE_FOCALBYGENE \
     --outfile $OUTPUT
 
+
+python 03-subgrouping_samples.py \
+	--final_table results/EPN_all_data.tsv 
+	--subgroup_table results/EPN_all_data_withsubgroup.tsv 
+	--temp_folder_name subgrouping_samples	
+
+
+
+

@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# Author Teja Koganti (D3B)
+
 # This script takes in the final EPN table with all the columns (in results folder  results/EPN_all.tsv), 
 #	sets some rules and thresholds so samples can be  subgrouped
 #	and adds the sub group name in the last "subgroup" column
