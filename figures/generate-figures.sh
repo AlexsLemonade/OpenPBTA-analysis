@@ -12,6 +12,7 @@ BASEDIR="$(pwd)"
 cd -
 
 analyses_dir="$BASEDIR/analyses"
+data_dir="$BASEDIR/data"
 
 # Make output folders for all figures
 mkdir -p pngs
@@ -56,4 +57,23 @@ cp ${analyses_dir}/interaction-plots/plots/combined_top50.png pngs/mutation_cooc
 
 ## Copy number status heatmap
 
-## Transcriptomic overview
+####### Transcriptomic overview
+
+# First run the dimension reduction steps 
+bash ${analyses_dir}/transcriptomic-dimension-reduction/dimension-reduction-plots.sh
+
+# Then collapse RNA-seq data, which is required for GSVA and immune deconvolution
+bash ${analyses_dir}/collapse-rnaseq/run-collapse-rnaseq.sh
+
+# Generate GSVA scores
+Rscript --vanilla ${analyses_dir}/gene-set-enrichment-analysis/01-conduct-gsea-analysis.R \
+  --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
+  --output ${analyses_dir}/gene-set-enrichment-analysis/results/gsva_scores_stranded.tsv
+
+# Immune deconvolution - we can't use CIBERSORT because we don't have access to it
+Rscript --vanilla ${analyses_dir}/immune-deconv/01-immune-deconv.R \
+  --polyaexprs ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
+  --strandedexprs ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
+  --clin ${data_dir}/pbta-histologies.tsv \
+  --method "mcp_counter" \
+  --output ${analyses_dir}/immune-deconv/results/deconv-output-for-figures.RData
