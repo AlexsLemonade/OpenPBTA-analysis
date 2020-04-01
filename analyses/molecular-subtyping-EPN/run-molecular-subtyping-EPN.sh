@@ -29,7 +29,7 @@ BREAKPOINTS_SV=../chromosomal-instability/breakpoint-data/sv_breaks_densities.ts
 FOCAL_GENE_CN=../focal-cn-file-preparation/results/consensus_seg_annotated_cn_autosomes.tsv.gz
 GISTIC_SUBFILE_FOCALBYGENE=pbta-cnv-consensus-gistic/focal_data_by_genes.txt
 
-OUTPUT=results/EPN_all_data.tsv
+EPN_TABLE=results/EPN_all_data.tsv
 
 # make the subset and results directory if they don't exist
 mkdir -p epn-subset
@@ -55,12 +55,12 @@ python3 02_ependymoma_generate_all_data.py \
     --breakpoints-sv $BREAKPOINTS_SV \
     --focal-gene-cn $FOCAL_GENE_CN \
     --subfile-gistic-focalbygene $GISTIC_SUBFILE_FOCALBYGENE \
-    --outfile $OUTPUT
+    --outfile $EPN_TABLE
 
 
 python3 03-subgrouping_samples.py \
-	--final_table results/EPN_all_data.tsv 
-	--subgroup_table results/EPN_all_data_withsubgroup.tsv 
+	--final_table $EPN_TABLE \
+	--subgroup_table results/EPN_all_data_withsubgroup.tsv \
 	--temp_folder_name subgrouping_samples	
 
 
