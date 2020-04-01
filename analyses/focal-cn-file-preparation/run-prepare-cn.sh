@@ -48,7 +48,7 @@ Rscript --vanilla 04-prepare-cn-file.R \
   --seg
 
 # Define most focal units of recurrent CNVs
-Rscript --vanilla -e "rmarkdown::render('05-define-most-focal-cn-units.Rmd', clean = TRUE)"
+Rscript --vanilla -e "rmarkdown::render('05-define-most-focal-cn-units.Rmd', clean = TRUE, params=list(is_ci = ${IS_CI}))"
 
 libraryStrategies=("polya" "stranded")
 chromosomesType=("autosomes" "x_and_y")
