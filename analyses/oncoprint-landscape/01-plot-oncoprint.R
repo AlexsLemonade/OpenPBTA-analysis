@@ -170,7 +170,7 @@ color_palette <- as.data.frame(color_palette) %>%
   # Rename the column containing hex code values for the `rbind` step below
   dplyr::rename(hex_codes = color_palette) %>%
   # Bind the rows of the histology color palette
-  rbind(col_palette)
+  rbind(histology_col_palette)
 
 #### Prepare, Plot and Save Oncoprint ---------------------------------------------------
 
