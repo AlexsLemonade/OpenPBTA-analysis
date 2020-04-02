@@ -76,11 +76,11 @@ EPN_final["subgroup"] = EPN_final.apply(subgroup_func,
 
 # Cannot find clear outliers from the histogram plots for RELA Z-scores 
 # One Z-score above 3 
-fig = plt.figure(figsize=(20,10))
-L1CAM_fig = plt.figure()
+L1CAM_fig = plt.figure(figsize=(20,10))
+#L1CAM_fig = plt.figure()
 plt.hist(list(EPN_final["L1CAM_expr_zscore"])) 
 plt.suptitle('L1CAM expression')
-fig.savefig(args.temp_folder_name+"/L1CAM_hist.png", dpi=L1CAM_fig.dpi)
+L1CAM_fig.savefig(args.temp_folder_name+"/L1CAM_hist.png", dpi=L1CAM_fig.dpi)
 
 
 
@@ -104,12 +104,12 @@ EPN_final["subgroup"] = EPN_final.apply(subgroup_func,
 ARL4D_fig = plt.figure()
 plt.hist(list(EPN_final["ARL4D_expr_zscore"])) 
 plt.suptitle('ARL4D expression')
-fig.savefig(args.temp_folder_name+"/ARL4D_hist.png", dpi=ARL4D_fig.dpi)
+ARL4D_fig.savefig(args.temp_folder_name+"/ARL4D_hist.png", dpi=ARL4D_fig.dpi)
 # One sample higher than 1.0, another sample at 0.28 also look like an outlier but a cutoff value of 0.25 maybe too small?? 
 CLDN1_fig = plt.figure()
 plt.hist(list(EPN_final["CLDN1_expr_zscore"])) 
 plt.suptitle('CLDN1 expression')
-fig.savefig(args.temp_folder_name+"/CLDN1_hist.png", dpi=CLDN1_fig.dpi)
+CLDN1_fig.savefig(args.temp_folder_name+"/CLDN1_hist.png", dpi=CLDN1_fig.dpi)
 
 
 
@@ -128,12 +128,12 @@ EPN_final["subgroup"] = EPN_final.apply(subgroup_func,
 TKTL1_fig = plt.figure()
 plt.hist(list(EPN_final["TKTL1_expr_zscore"])) 
 plt.suptitle('TKTL1 expression')
-fig.savefig(args.temp_folder_name+"/TKTL1_hist.png", dpi=TKTL1_fig.dpi)
+TKTL1_fig.savefig(args.temp_folder_name+"/TKTL1_hist.png", dpi=TKTL1_fig.dpi)
 # Any score above 2.0? Two samples at 2.03 and 2.07
 CXorf67_fig = plt.figure()
 plt.hist(list(EPN_final["CXorf67_expr_zscore"])) 
 plt.suptitle('CXorf67 expression')
-fig.savefig(args.temp_folder_name+"/CXorf67_hist.png", dpi=CXorf67_fig.dpi)
+CXorf67_fig.savefig(args.temp_folder_name+"/CXorf67_hist.png", dpi=CXorf67_fig.dpi)
 
 
 
@@ -148,12 +148,12 @@ pt_epn_b_tests = [("6q_loss", 0),
 IFT46_fig = plt.figure()
 plt.hist(list(EPN_final["IFT46_expr_zscore"])) 
 plt.suptitle('IFT46 expression')
-fig.savefig(args.temp_folder_name+"/IFT46_hist.png", dpi=IFT46_fig.dpi)
+IFT46_fig.savefig(args.temp_folder_name+"/IFT46_hist.png", dpi=IFT46_fig.dpi)
 # Look at GPB1 expression Z-scores  
 GPBP1_fig = plt.figure()
 plt.hist(list(EPN_final["GPBP1_expr_zscore"])) 
 plt.suptitle('GPBP1 expression')
-fig.savefig(args.temp_folder_name+"/GPBP1_hist.png", dpi=GPBP1_fig.dpi)
+IFT46_fig.savefig(args.temp_folder_name+"/GPBP1_hist.png", dpi=GPBP1_fig.dpi)
 
 EPN_final.to_csv(outfile, sep="\t", header=True, index=False)
 outfile.close()
