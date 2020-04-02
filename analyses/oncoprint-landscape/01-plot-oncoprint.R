@@ -150,7 +150,7 @@ if (!is.null(opt$fusion_file)) {
 
 # Read in genes list
 if (!is.null(opt$goi_file)) {
-  genes <- readr::read_tsv(file.path(opt$goi_list)) %>%
+  goi_list <- readr::read_tsv(file.path(opt$goi_list)) %>%
     dplyr::pull("gene")
 }
 
@@ -186,6 +186,6 @@ png(
 prepare_and_plot_oncoprint(maf_df = maf_df,
                            cnv_df = cnv_file,
                            fusion_df = fusion_file,
-                           gene_list = genes,
+                           gene_list = goi_list,
                            color_palette = color_palette)
 dev.off()
