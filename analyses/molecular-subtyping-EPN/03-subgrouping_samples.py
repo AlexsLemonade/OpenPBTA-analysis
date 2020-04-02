@@ -12,10 +12,12 @@
 
 
 ## Importing modules to be used
-import pandas as pd
-import numpy as np 
-import sys
 import argparse
+import os
+import sys
+import numpy as np 
+import pandas as pd
+
 from matplotlib import pyplot as plt
 
 parser = argparse.ArgumentParser()
@@ -157,5 +159,4 @@ IFT46_fig.savefig(args.temp_folder_name+"/GPBP1_hist.png", dpi=GPBP1_fig.dpi)
 
 EPN_final.to_csv(outfile, sep="\t", header=True, index=False)
 outfile.close()
-
 
