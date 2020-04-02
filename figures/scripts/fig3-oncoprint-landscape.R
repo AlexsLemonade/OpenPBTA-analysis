@@ -136,6 +136,22 @@ source(file.path(
   "oncoplot-functions.R"
 ))
 
+#### Format the color palette -----------------------------------------------------------
+
+# Read in the histology color palette from the `figures/palettes` directory
+histology_col_palette <- readr::read_tsv(
+  file.path(root_dir, "figures", "palettes", "histology_color_palette.tsv")) %>%
+  as.data.frame() %>%
+  # Store the histology names as row names for use with the `oncoplot`` function
+  tibble::column_to_rownames("color_names")
+
+# Make the sourced color palette a data.frame and join the `histology_col_palette`
+# values -- this paletter will have hex codes for short histologies, SNVs, CNVs,
+# and fusion data categories
+color_palette <- as.data.frame(color_palette) %>%
+  select(hex_codes = color_palette) %>%
+  rbind(col_palette)
+
 #### Generate Oncoprints ------------------------------------------------------
 
 primary_plus_oncoprint <- prepare_and_plot_oncoprint(maf_df_primary_plus,
