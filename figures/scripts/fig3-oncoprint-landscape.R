@@ -146,10 +146,12 @@ histology_col_palette <- readr::read_tsv(
   tibble::column_to_rownames("color_names")
 
 # Make the sourced color palette a data.frame and join the `histology_col_palette`
-# values -- this paletter will have hex codes for short histologies, SNVs, CNVs,
+# values -- this palette will have hex codes for short histologies, SNVs, CNVs,
 # and fusion data categories
 color_palette <- as.data.frame(color_palette) %>%
-  select(hex_codes = color_palette) %>%
+  # Rename the column containing hex code values for the `rbind` step below
+  dplyr::rename(hex_codes = color_palette) %>%
+  # Bind the rows of the histology color palette
   rbind(col_palette)
 
 #### Generate Oncoprints ------------------------------------------------------
