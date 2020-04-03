@@ -59,10 +59,10 @@ snv_ranges_filter <- function(maf_df,
   if (is.data.frame(keep_ranges)) {
     # Turn the bed regions df into a GRanges object
     keep_ranges <- GenomicRanges::GRanges(
-      seqnames = keep_ranges[, 1],
+      seqnames = keep_ranges$X1,
       ranges = IRanges::IRanges(
-        start = keep_ranges[, 2],
-        end = keep_ranges[, 3]
+        start = keep_ranges$X2,
+        end = keep_ranges$X3
       )
     )
   }
