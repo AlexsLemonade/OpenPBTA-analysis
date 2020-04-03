@@ -34,7 +34,7 @@ A subset of TCGA brain tumor MAF files are also provided and denoted with the `p
 The manifest file `pbta-tcga-manifest.tsv` contains primary diagnosis information as well as a columns denoting which BED files correspond to that sample. 
 `Capture_Kit` refers to the BED file(s) obtained from GDC (hg19).
 `BED_In_Use` is the file used for mutation calling and what should be used for downstream analyses (lifted over to hg38).
-For some samples, the capture kit could not be identified (denoted by `|` in `Capture_Kit`) and the intersection of multiple BEDs was used.
+For some samples, the capture kit was not uniquely identified by the GDC (denoted by `|` in `Capture_Kit`) and the intersection of multiple BEDs was used.
 These new BED files are included in the data download. 
 
 ### Somatic Copy Number Variant (CNV) Data
