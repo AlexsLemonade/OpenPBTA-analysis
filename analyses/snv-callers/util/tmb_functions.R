@@ -32,7 +32,9 @@ maf_to_granges <- function(maf_df) {
   )
 }
 
-snv_ranges_filter <- function(maf_df, keep_ranges = NULL, bp_window = 0) {
+snv_ranges_filter <- function(maf_df, 
+                              keep_ranges = NULL,
+                              bp_window = 0) {
   # Given a MAF formatted data.frame and a BED regions data.frame; filter out
   # any variants of the MAF df that are not within the BED regions.
   #
@@ -57,10 +59,10 @@ snv_ranges_filter <- function(maf_df, keep_ranges = NULL, bp_window = 0) {
   if (is.data.frame(keep_ranges)) {
     # Turn the bed regions df into a GRanges object
     keep_ranges <- GenomicRanges::GRanges(
-      seqnames = keep_ranges$X1,
+      seqnames = keep_ranges[, 1],
       ranges = IRanges::IRanges(
-        start = keep_ranges$X2,
-        end = keep_ranges$X3
+        start = keep_ranges[, 2],
+        end = keep_ranges[, 3]
       )
     )
   }
@@ -74,8 +76,8 @@ snv_ranges_filter <- function(maf_df, keep_ranges = NULL, bp_window = 0) {
   )
   
   # Calculate of ratio of variants in this BED using the @from slot which
-  # indicates the indices of the ranges in `wxs_maf_ranges` that have overlaps
-  # with `wxs_bed_ranges`
+  # indicates the indices of the ranges in `maf_ranges` that have overlaps
+  # with `keep_ranges`
   ratio <- length(overlap@from) / nrow(maf_df)
   
   # What fraction of mutations are in these bed regions?
@@ -91,69 +93,41 @@ snv_ranges_filter <- function(maf_df, keep_ranges = NULL, bp_window = 0) {
   return(filt_maf_df)
 }
 
-calculate_tmb <- function(maf_df, bed_wgs, bed_wxs) {
-  # Calculate Tumor Mutational Burden for each sample given their WGS or WXS
-  # sizes in bp. Based on the BED files provided, tthis function filters out SNV 
-  # outside those ranges and uses the total size in bp of those BED ranges for th
-  # TMB denominator. 
+calculate_tmb <- function(tumor_sample_barcode = NULL, 
+                          maf_df, 
+                          bed_df) {
+  # Calculate Tumor Mutational Burden a given sample in `Tumor_Sample_Barcode` 
+  # given a target region BED frame. This function uses `snv_ranges_filter` to
+  # filter out SNVs outside those target BED ranges and uses the total size in 
+  # bp of those BED ranges for the TMB denominator. 
   #
-  # TMB = # variants / size of the genome or exome surveyed
+  # TMB = # variants / size of the genome or exome surveyed / Mb
   #
   # Args:
+  #   tumor_sample_barcode: A single character string corresponding to a sample 
+  #                         id in the `Tumor_Sample_Barcode` MAF file in maf_df.
   #   maf_df: maf data.frame that has been turned into a data.frame, has had
   #           the experimental_stategy column added from the metadata (can be
   #           done with the `set_up_maf` function) and has WXS mutations filtered
   #           using `wxs_bed_filter` function (If the situation calls for it).
-  #   bed_wgs: BED file path with genome ranges to be used for filtering and 
-  #            genome size denominator for WGS samples
-  #   bed_wxs: BED file path genome ranges to be used for filtering and genome 
-  #            size denominator for WXS samples
+  #   bed_df: BED formatted data.frame of the target regions to use for TMB 
+  #           calculations. 
   #
   # Returns:
-  # A sample-wise data.frame with Tumor Mutation Burden statistics calculated
-  # using the given WGS and WXS sizes.
-  
-  # Read in the BED files we need
-  bed_wgs <- readr::read_tsv(bed_wgs, col_names = FALSE)
-  bed_wxs <- readr::read_tsv(bed_wxs, col_names = FALSE)
+  # A calculated genome size and TMB for the given Tumor_Sample_Barcode. 
   
   # Sum up genome sizes
-  wgs_size <- sum(bed_wgs[, 3] - bed_wgs[, 2])
-  wxs_size <- sum(bed_wxs[, 3] - bed_wxs[, 2])
-  
+  bed_size <- sum(bed_wgs[, 3] - bed_wgs[, 2])
+
   # Don't want integers per se
-  wgs_size <- as.numeric(wgs_size)
-  wxs_size <- as.numeric(wxs_size)
+  bed_size <- as.numeric(bed_size)
   
-  # For WXS samples, filter out mutations that are outside of these coding regions.
-  filt_wxs_maf_df <- snv_ranges_filter(dplyr::filter(
-    maf_df,
-    experimental_strategy == "WXS"
-  ),
-  keep_ranges = bed_wxs
-  )
-  
-  # For WXS samples, filter out mutations that are outside of these coding regions.
-  filt_wgs_maf_df <- snv_ranges_filter(dplyr::filter(
-    maf_df,
-    experimental_strategy == "WGS"
-  ),
-  keep_ranges = bed_wgs
-  )
-  
-  # Bind the filtered WXS sample rows back to the WGS samples
-  filt_maf_df <- dplyr::bind_rows(filt_wxs_maf_df, filt_wgs_maf_df)
+  # Filter out mutations that are outside of these coding regions.
+  filt_maf_df <- snv_ranges_filter(maf_df, keep_ranges = bed_df)
   
   # Make a genome size variable
   tmb <- maf_df %>%
-    dplyr::mutate(genome_size = dplyr::recode(experimental_strategy,
-                                              "WGS" = wgs_size,
-                                              "WXS" = wxs_size
-    )) %>%
-    dplyr::group_by(
-      Tumor_Sample_Barcode, experimental_strategy, genome_size,
-      short_histology
-    ) %>%
+    dplyr::mutate(genome_size = bed_size) %>%
     # Count number of mutations for that sample
     dplyr::summarize(mutation_count = dplyr::n()) %>%
     # Calculate TMB

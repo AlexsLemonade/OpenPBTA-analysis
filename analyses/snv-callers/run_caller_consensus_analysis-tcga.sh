@@ -75,10 +75,7 @@ Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --db_file $dbfile \
   --output analyses/snv-callers/results/consensus \
   --metadata data/pbta-tcga-manifest.tsv \
-  --all_bed_wgs $all_mut_wgs_bed \
-  --all_bed_wxs $all_mut_wxs_bed \
-  --coding_bed_wgs $coding_wgs_bed \
-  --coding_bed_wxs $coding_wxs_bed \
+  --coding_regions $cds_file \
   --overwrite \
   --tcga
  

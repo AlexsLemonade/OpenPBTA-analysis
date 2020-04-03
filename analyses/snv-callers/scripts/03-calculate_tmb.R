@@ -100,16 +100,19 @@ opt <- parse_args(OptionParser(option_list = option_list))
 
 opt$metadata <- "data/pbta-tcga-manifest.tsv"
 opt$db_file <- "scratch/tcga_snv_db.sqlite"
+opt$output <- "analyses/snv-callers/results/consensus"
+opt$coding_regions <- "scratch/gencode.v27.primary_assembly.annotation.bed"
 opt$overwrite <- TRUE
 opt$tcga <- TRUE
 
 # Make everything relative to root path
 opt$metadata <- file.path(root_dir, opt$metadata)
 opt$db_file <- file.path(root_dir, opt$db_file)
-
+opt$coding_regions <- file.path(root_dir, opt$coding_regions)
+  
 ########### Check that the files we need are in the paths specified ############
 needed_files <- c(
-  opt$metadata, opt$db_file
+  opt$metadata, opt$db_file, opt$coding_regions
 )
 
 # Get list of which files were found
@@ -212,9 +215,12 @@ if (opt$tcga) {
   # Format two fields of metadata for use with functions
   metadata <- readr::read_tsv(opt$metadata) %>%
     dplyr::mutate(
-      experimental_strategy = "WXS", # This field doesn't exist for this data, but all is WXS
-      short_histology = Primary_diagnosis
-    ) # This field is named differently
+      short_histology = Primary_diagnosis, 
+      target_bed_path = file.path(root_dir, "data", BED_In_Use), 
+      experimental_strategy = "WXS"
+    ) %>% 
+    dplyr::rename(Tumor_Sample_Barcode = tumorID, 
+                  target_bed = BED_In_Use) # This field is named differently
 
   # Manifest files only have first 12 letters of the barcode so we gotta chop the end off
   strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
@@ -224,7 +230,14 @@ if (opt$tcga) {
   metadata <- readr::read_tsv(opt$metadata) %>%
     dplyr::filter(Kids_First_Biospecimen_ID %in% strelka_mutect_maf_df$Tumor_Sample_Barcode) %>%
     dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
-    dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID)
+    dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID) %>% 
+    # Make a Target BED regions column
+    dplyr::mutate(target_bed = dplyr::recode(experimental_strategy,
+                                             "WGS" = "scratch/intersect_strelka_mutect_WGS.bed",
+                                             "WXS" = "data/WXS.hg38.100bp_padded.bed"
+                                             ), 
+                  target_bed_path = file.path(root_dir, target_bed)
+                  )
 
   # Make sure that we have metadata for all these samples.
   if (!all(unique(strelka_mutect_maf_df$Tumor_Sample_Barcode) %in% metadata$Tumor_Sample_Barcode)) {
@@ -237,9 +250,64 @@ strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
                       dplyr::select(
                         Tumor_Sample_Barcode,
                         experimental_strategy,
-                        short_histology
+                        short_histology, 
+                        target_bed, 
+                        target_bed_path
                       ), 
                     by = "Tumor_Sample_Barcode")
+
+############################# Set Up BED Files #################################
+# Make a data.frame of the unique BED file paths and their names
+bed_file_paths_df <- strelka_mutect_maf_df %>% 
+  dplyr::select(target_bed, target_bed_path) %>% 
+  dplyr::distinct()
+
+# Pull out file paths as a vector 
+bed_file_paths <- bed_file_paths_df$target_bed_path
+
+# Make it a named vector
+names(bed_file_paths) <- bed_file_paths_df$target_bed
+
+# Read in each unique BED file and turn into GenomicRanges object
+bed_ranges_list <- lapply(bed_file_paths, function(bed_file) {
+  
+  # Read in BED file as data.frame
+  bed_df <- readr::read_tsv(bed_file, 
+                            col_names = c("chr", "start", "end"))
+  
+  # Make into a GenomicRanges object
+  bed_ranges <- GenomicRanges::GRanges(
+    seqnames = bed_df$chr,
+    ranges = IRanges::IRanges(
+      start = bed_df$start,
+      end = bed_df$end
+    )
+  )
+  return(bed_ranges)
+  })
+
+#################### Set up Coding Region version of BED ranges ################
+# Read in the coding regions BED file
+coding_regions_df <- readr::read_tsv(opt$coding_regions,
+                                     col_names = c("chr", "start", "end"))
+# Make into a GenomicRanges object
+coding_ranges <- GenomicRanges::GRanges(
+  seqnames = coding_regions_df$chr,
+  ranges = IRanges::IRanges(
+    start = coding_regions_df$start,
+    end = coding_regions_df$end
+  )
+)
+
+# For each BED range, find the coding regions intersection 
+coding_bed_ranges_list <- lapply(bed_ranges_list, function(bed_range, 
+                                                           coding_grange = coding_ranges){
+  # Find the intersection 
+  coding_intersect_ranges <- GenomicRanges::intersect(bed_range, coding_grange)
+  
+  # Return the reduce version of these ranges
+  return(GenomicRanges::reduce(coding_intersect_ranges))
+})
 
 ############################# Coding TMB file ##################################
 # If the file exists or the overwrite option is not being used, run TMB calculations
@@ -260,9 +328,10 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   message(paste("Calculating 'coding only' TMB..."))
 
   # Calculate coding only TMBs and write to file
-  tmb_coding_df <- calculate_tmb(strelka_mutect_maf_df,
-    bed_wgs = opt$coding_bed_wgs,
-    bed_wxs = opt$coding_bed_wxs
+  tmb_coding_df <- calculate_tmb(
+    strelka_mutect_maf_df,
+    bed_df = 
+    coding_df
   )
   readr::write_tsv(tmb_coding_df, tmb_coding_file)
 
@@ -285,9 +354,9 @@ if (file.exists(tmb_all_file) && !opt$overwrite) {
     warning("Overwriting existing 'all mutations' TMB file.")
   }
   # Calculate TMBs and write to TMB file
-  tmb_all_df <- calculate_tmb(strelka_mutect_maf_df,
-    bed_wgs = opt$all_bed_wgs,
-    bed_wxs = opt$all_bed_wxs
+  tmb_all_df <- calculate_tmb(
+    strelka_mutect_maf_df,
+    bed_df = 
   )
   readr::write_tsv(tmb_all_df, tmb_all_file)
 

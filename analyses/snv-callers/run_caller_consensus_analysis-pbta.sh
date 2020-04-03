@@ -16,10 +16,8 @@ consensus_file=analyses/snv-callers/results/consensus/pbta-snv-consensus-mutatio
 
 # BED and GTF file paths
 cds_file=scratch/gencode.v27.primary_assembly.annotation.bed
-all_mut_wgs_bed=scratch/intersect_strelka_mutect_WGS.bed
-all_mut_wxs_bed=data/WXS.hg38.100bp_padded.bed
-coding_wgs_bed=scratch/intersect_cds_strelka_mutect_WGS.bed
-coding_wxs_bed=scratch/intersect_cds_strelka_mutect_WXS.bed
+wgs_bed=scratch/intersect_strelka_mutect_WGS.bed
+wxs_bed=data/WXS.hg38.100bp_padded.bed
 
 # Set a default for the VAF filter if none is specified
 vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}
@@ -101,10 +99,7 @@ Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --db_file $dbfile \
   --output analyses/snv-callers/results/consensus \
   --metadata data/pbta-histologies.tsv \
-  --all_bed_wgs $all_mut_wgs_bed \
-  --all_bed_wxs $all_mut_wxs_bed \
-  --coding_bed_wgs $coding_wgs_bed \
-  --coding_bed_wxs $coding_wxs_bed \
+  --coding_regions $cds_file \
   --overwrite
  
 ########################## Compress consensus file #############################
