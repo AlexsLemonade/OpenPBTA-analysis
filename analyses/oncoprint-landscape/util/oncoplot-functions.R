@@ -10,8 +10,9 @@
 
 prepare_and_plot_oncoprint <- function(maf_df,
                                        cnv_df,
+                                       metadata,
                                        fusion_df = NULL,
-                                       gene_list = NULL,
+                                       goi_list = NULL,
                                        color_palette) {
   # Given maf, cnv, and fusion data.frames prepared in `00-map-to-sample_id.R`,
   # along with a list of genes prepared in the `interaction-plots` directory,
@@ -20,15 +21,22 @@ prepare_and_plot_oncoprint <- function(maf_df,
   # Args:
   #   maf_df: data.frame with data from a MAF file
   #   cnv_df: data.frame with copy number variant data
+  #   metadata: data.frame with the relavant metadata
   #   fusion_df: data.frame with fusion data. This is NULL by default.
-  #   gene_list: a list or vector of genes that should be represented on the
-  #              oncoprint. This is NULL by default.
+  #   goi_list: a list or vector of genes of interest that should be
+  #             represented on the oncoprint. This is NULL by default.
   #   color_palette: vector of colors (hex codes) corresponding to the data
   #                  that will be represented on the oncoprint
   
   if (!is.null(fusion_df)) {
     # Bind rows of maf and fusion data frames
     maf_df <- dplyr::bind_rows(maf_df, fusion_df)
+  }
+  
+  if (!is.null(goi_list)) {
+    # Filter `goi_list` to include only the unique genes of interest
+    # that are also in `maf_df`
+    goi_list <- unique(goi_list[goi_list %in% maf_df$Hugo_Symbol])
   }
   
   # Convert into MAF object
@@ -58,26 +66,6 @@ prepare_and_plot_oncoprint <- function(maf_df,
       )
     )
   
-  if (!is.null(gene_list)) {
-    #### Specify genes
-    # Get top mutated this data and goi list
-    gene_sum <- mafSummary(maf_object)$gene.summary
-    
-    # Subset for genes in the histology-specific list
-    subset_gene_sum <-
-      subset(gene_sum, Hugo_Symbol %in% gene_list)
-    
-    # Get top altered genes
-    gene_ordered <-
-      subset_gene_sum[order(subset_gene_sum$AlteredSamples, decreasing = TRUE), ]
-    
-    # Select n top genes
-    num_genes <-
-      ifelse(nrow(gene_ordered) > 20, 20, nrow(gene_ordered))
-    gene_ordered_num <- gene_ordered[1:num_genes, ]
-    gene_list <- gene_ordered_num$Hugo_Symbol
-  }
-  
   #### Plot Oncoprint
   
   # Given a maf file, plot an oncoprint of the variants in the
@@ -91,7 +79,7 @@ prepare_and_plot_oncoprint <- function(maf_df,
       "tumor_descriptor",
       "molecular_subtype"
     ),
-    genes = gene_list,
+    genes = goi_list,
     logColBar = TRUE,
     sortByAnnotation = TRUE,
     showTumorSampleBarcodes = TRUE,
@@ -100,7 +88,5 @@ prepare_and_plot_oncoprint <- function(maf_df,
     SampleNamefontSize = 0.5,
     fontSize = 0.7,
     colors = color_palette
-    ## TODO: Implement use of color palettes in `figures/palettes` directory
   )
-  
 }

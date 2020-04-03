@@ -13,24 +13,16 @@ script_directory="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
-#### Download the driver lists from the PPTC repository
-
-# mkdir -p driver-lists
-# wget -N --directory-prefix=driver-lists -O driver-lists/brain-goi-list-long.txt https://github.com/marislab/create-pptc-pdx-oncoprints/raw/2c9ed2a2331bcef3003d6aa25a130485d76a3535/data/brain-goi-list-old.txt
-# wget -N --directory-prefix=driver-lists -O driver-lists/brain-goi-list-short.txt https://github.com/marislab/create-pptc-pdx-oncoprints/raw/2c9ed2a2331bcef3003d6aa25a130485d76a3535/data/brain-goi-list.txt
-
 #### Download consensus mutation files
 
 maf_consensus=../../data/pbta-snv-consensus-mutation.maf.tsv.gz
-controlfreec_autosomes=../focal-cn-file-preparation/results/controlfreec_annotated_cn_autosomes.tsv.gz
-consensus_autosomes=../focal-cn-file-preparation/results/consensus_seg_annotated_cn_autosomes.tsv.gz
+consensus_autosomes=../../data/consensus_seg_annotated_cn_autosomes.tsv.gz
 fusion_file=../../data/pbta-fusion-putative-oncogenic.tsv
 histologies_file=../../data/pbta-histologies.tsv
 intermediate_directory=../../scratch/oncoprint_files
 primary_filename="all_participants_primary_only"
 primaryplus_filename="all_participants_primary-plus"
 genes_list=../interaction-plots/results/gene_disease_top50.tsv
-
 
 #### Primary only oncoprint
 

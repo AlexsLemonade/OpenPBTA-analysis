@@ -149,28 +149,10 @@ if (!is.null(opt$fusion_file)) {
 }
 
 # Read in genes list
-if (!is.null(opt$goi_file)) {
+if (!is.null(opt$goi_list)) {
   goi_list <- readr::read_tsv(file.path(opt$goi_list)) %>%
     dplyr::pull("gene")
 }
-
-#### Format the color palette -----------------------------------------------------------
-
-# Read in the histology color palette from the `figures/palettes` directory
-histology_col_palette <- readr::read_tsv(
-  file.path(root_dir, "figures", "palettes", "histology_color_palette.tsv")) %>%
-  as.data.frame() %>%
-  # Store the histology names as row names for use with the `oncoplot`` function
-  tibble::column_to_rownames("color_names")
-
-# Make the sourced color palette a data.frame and join the `histology_col_palette`
-# values -- this palette will have hex codes for short histologies, SNVs, CNVs,
-# and fusion data categories
-color_palette <- as.data.frame(color_palette) %>%
-  # Rename the column containing hex code values for the `rbind` step below
-  dplyr::rename(hex_codes = color_palette) %>%
-  # Bind the rows of the histology color palette
-  rbind(histology_col_palette)
 
 #### Prepare, Plot and Save Oncoprint ---------------------------------------------------
 
@@ -185,7 +167,8 @@ png(
 )
 prepare_and_plot_oncoprint(maf_df = maf_df,
                            cnv_df = cnv_file,
+                           metadata = metadata,
                            fusion_df = fusion_file,
-                           gene_list = goi_list,
+                           goi_list = goi_list,
                            color_palette = color_palette)
 dev.off()

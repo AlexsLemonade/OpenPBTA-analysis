@@ -27,8 +27,8 @@ library(patchwork)
 # it is called from.
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
-# Path to the data obtained via `bash download-data.sh`.
-data_dir <- file.path(root_dir, "data")
+# Path to the data obtained via `00-map-to-sample_id.R`
+scratch_oncoprint_dir <- file.path(root_dir, "scratch", "oncoprint_files")
 
 # Declare output directory
 output_dir <- file.path(root_dir, "figures", "pngs")
@@ -36,7 +36,7 @@ output_dir <- file.path(root_dir, "figures", "pngs")
 # Path to oncoprint landscape directory
 oncoprint_dir <- file.path(root_dir, "analyses", "oncoprint-landscape")
 
-# Source the color palette for plots
+# Source the color palette for the oncoprint plots
 source(
   file.path(
     oncoprint_dir,
@@ -54,66 +54,42 @@ metadata <-
 
 # Read in MAF files
 maf_df_primary_plus <-
-  readr::read_tsv(
-    file.path(
-      root_dir,
-      "scratch",
-      "oncoprint_files",
-      "all_participants_primary-plus_maf.tsv"
-    )
-  )
+  readr::read_tsv(file.path(
+    scratch_oncoprint_dir,
+    "all_participants_primary-plus_maf.tsv"
+  ))
 
 maf_df_primary_only <-
-  readr::read_tsv(
-    file.path(
-      root_dir,
-      "scratch",
-      "oncoprint_files",
-      "all_participants_primary-only_maf.tsv"
-    )
-  )
+  readr::read_tsv(file.path(
+    scratch_oncoprint_dir,
+    "all_participants_primary_only_maf.tsv"
+  ))
 
 # Read in cnv files
 cnv_file_primary_plus <-
-  readr::read_tsv(
-    file.path(
-      root_dir,
-      "scratch",
-      "oncoprint_files",
-      "all_participants_primary-plus_cnv.tsv"
-    )
-  )
+  readr::read_tsv(file.path(
+    scratch_oncoprint_dir,
+    "all_participants_primary-plus_cnv.tsv"
+  ))
 
 cnv_file_primary_only <-
-  readr::read_tsv(
-    file.path(
-      root_dir,
-      "scratch",
-      "oncoprint_files",
-      "all_participants_primary-only_cnv.tsv"
-    )
-  )
+  readr::read_tsv(file.path(
+    scratch_oncoprint_dir,
+    "all_participants_primary_only_cnv.tsv"
+  ))
 
 # Read in fusion files
-fusion_file_primary_plus <- 
-  readr::read_tsv(
-    file.path(
-      root_dir,
-      "scratch",
-      "oncoprint_files",
-      "all_participants_primary-plus_fusions.tsv"
-    )
-  )
+fusion_file_primary_plus <-
+  readr::read_tsv(file.path(
+    scratch_oncoprint_dir,
+    "all_participants_primary-plus_fusions.tsv"
+  ))
 
-fusion_file_primary_only <- 
-  readr::read_tsv(
-    file.path(
-      root_dir,
-      "scratch",
-      "oncoprint_files",
-      "all_participants_primary-only_fusions.tsv"
-    )
-  )
+fusion_file_primary_only <-
+  readr::read_tsv(file.path(
+    scratch_oncoprint_dir,
+    "all_participants_primary_only_fusions.tsv"
+  ))
 
 # Read in gene list
 gene_list <-
@@ -136,51 +112,45 @@ source(file.path(
   "oncoplot-functions.R"
 ))
 
-#### Format the color palette -----------------------------------------------------------
-
-# Read in the histology color palette from the `figures/palettes` directory
-histology_col_palette <- readr::read_tsv(
-  file.path(root_dir, "figures", "palettes", "histology_color_palette.tsv")) %>%
-  as.data.frame() %>%
-  # Store the histology names as row names for use with the `oncoplot`` function
-  tibble::column_to_rownames("color_names")
-
-# Make the sourced color palette a data.frame and join the `histology_col_palette`
-# values -- this palette will have hex codes for short histologies, SNVs, CNVs,
-# and fusion data categories
-color_palette <- as.data.frame(color_palette) %>%
-  # Rename the column containing hex code values for the `rbind` step below
-  dplyr::rename(hex_codes = color_palette) %>%
-  # Bind the rows of the histology color palette
-  rbind(histology_col_palette)
-
 #### Generate Oncoprints ------------------------------------------------------
 
-primary_plus_oncoprint <- prepare_and_plot_oncoprint(maf_df_primary_plus,
-                                                     cnv_file_primary_plus,
-                                                     fusion_file_primary_plus,
-                                                     gene_list = gene_list,
-                                                     color_palette = color_palette)
+# Generate the primary-plus oncoprint
+png(
+  file.path(output_dir, "fig3a-oncoprint-lanscape.png"),
+  width = 65,
+  height = 30,
+  units = "cm",
+  res = 300
+)
+prepare_and_plot_oncoprint(
+  maf_df_primary_plus,
+  cnv_file_primary_plus,
+  metadata,
+  fusion_file_primary_plus,
+  goi_list = gene_list,
+  color_palette = color_palette
+)
+dev.off()
 
-primary_only_oncoprint <- prepare_and_plot_oncoprint(maf_df_primary_only,
-                                                     cnv_file_primary_only,
-                                                     fusion_file_primary_only,
-                                                     gene_list = gene_list,
-                                                     color_palette = color_palette)
+# Generate the primary-only oncoprint
+png(
+  file.path(output_dir, "fig3b-oncoprint-lanscape.png"),
+  width = 65,
+  height = 30,
+  units = "cm",
+  res = 300
+)
+prepare_and_plot_oncoprint(
+  maf_df_primary_only,
+  cnv_file_primary_only,
+  metadata,
+  fusion_file_primary_only,
+  goi_list = gene_list,
+  color_palette = color_palette
+)
+dev.off()
 
 #### Assemble multipanel plot -------------------------------------------------
 
-# Combine plots with patchwork
-# Layout of the two plots will be one over the other (1 column and 2 rows)
-combined_plot <- primary_plus_oncoprint + primary_only_oncoprint +
-  plot_layout(ncol = 1, nrow = 2) +
-  plot_annotation(tag_levels = 'A') &
-  theme(# add uniform labels
-    axis.text.x = element_text(size = 9),
-    axis.text.y = element_text(size = 9))
-
-# Save to PNG
-ggplot2::ggsave(file.path(output_dir, "fig3-oncoprint-lanscape.png"),
-                width = 12, height = 8,
-                units = "in"
-)
+# TODO: Determine the best way to do this as pathwork::plot_layout was not
+#       successful
