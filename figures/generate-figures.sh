@@ -22,7 +22,7 @@ mkdir -p pngs
 bash ${analyses_dir}/sample-distribution-analysis/run-sample-distribution.sh
 
 # Run the figure assembly
-Rscript scripts/fig1-sample-distribution.R
+Rscript --vanilla scripts/fig1-sample-distribution.R
 
 ################ Mutational landscape figure
 # Run both SNV caller consensus scripts
@@ -38,7 +38,7 @@ cd $WORKDIR
 Rscript -e "rmarkdown::render('../analyses/mutational-signatures/mutational_signatures.Rmd', clean = TRUE)"
 
 # Run the figure assembly
-Rscript scripts/fig2-mutational-landscape.R
+Rscript --vanilla scripts/fig2-mutational-landscape.R
 
 ######################
 ## Interaction plots
