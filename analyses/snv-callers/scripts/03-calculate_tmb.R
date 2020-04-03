@@ -79,6 +79,15 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
+
+opt$db_file <- "scratch/snv_db.sqlite"
+opt$output <- "analyses/snv-callers/results/consensus" 
+opt$metadata <- "data/pbta-histologies.tsv" 
+opt$coding_regions <- "scratch/gencode.v27.primary_assembly.annotation.bed"
+opt$overwrite <- TRUE
+opt$tcga <- FALSE
+
+
 # Make everything relative to root path
 opt$metadata <- file.path(root_dir, opt$metadata)
 opt$db_file <- file.path(root_dir, opt$db_file)
@@ -287,8 +296,7 @@ coding_bed_ranges_list <- lapply(bed_ranges_list, function(bed_range,
   return(GenomicRanges::reduce(coding_intersect_ranges))
 })
 
-
-#### Calculating 
+#### These vectors will be passed into the TMB calculations 
 # Get unique sample_IDs 
 tumor_sample_barcodes <- bed_file_paths_df %>% 
   dplyr::pull(Tumor_Sample_Barcode)
@@ -296,7 +304,6 @@ tumor_sample_barcodes <- bed_file_paths_df %>%
 # Get unique bed names
 bed_names <-  bed_file_paths_df %>% 
   dplyr::pull(target_bed)
-
 
 ########################### All mutations TMB file #############################
 # If the file exists or the overwrite option is not being used, run TMB calculations

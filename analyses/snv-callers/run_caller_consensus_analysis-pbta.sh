@@ -17,7 +17,6 @@ consensus_file=analyses/snv-callers/results/consensus/pbta-snv-consensus-mutatio
 # BED and GTF file paths
 cds_file=scratch/gencode.v27.primary_assembly.annotation.bed
 wgs_bed=scratch/intersect_strelka_mutect_WGS.bed
-wxs_bed=data/WXS.hg38.100bp_padded.bed
 
 # Set a default for the VAF filter if none is specified
 vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}
