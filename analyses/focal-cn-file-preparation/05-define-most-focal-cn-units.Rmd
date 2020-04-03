@@ -27,14 +27,14 @@ Rscript -e "rmarkdown::render('analyses/focal-cn-file-preparation/05-define-most
 ### Cutoffs: 
 
 ```{r}
-# The percentage of calls a particular status needs to be
+# The fraction of calls a particular status needs to be
 # above to be called the majority status -- the decision
 # for a cutoff of 90% here was made to ensure that the status
 # is not only the majority status but it is also significantly
 # called more than the other status values in the region
 percent_threshold <- 0.9
 
-# The percentage threshold for determining if enough of a region
+# The fraction threshold for determining if enough of a region
 # (arm, cytoband, or gene) is callable to determine its status --
 # the decision for a cutoff of 50% here was made as it seems reasonable
 # to expect a region to be more than 50% callable for a dominant status
@@ -65,11 +65,11 @@ status_majority_caller <- function(status_df,
   #
   # Args:
   #   status_df: data.frame with cytoband/gene-level copy number status data
-  #   region_variable: string of the column name/region to calculate copy number
+  #   region_variable: the column name/region to calculate copy number
   #                    status percentages for
-  #   status_column_name: string of the column name that holds the relevant copy
+  #   status_column_name: the column name that holds the relevant copy
   #                       number status data
-  #   id_column_name: string of the column name that holds the sample id values
+  #   id_column_name: the column name that holds the sample id values
   #   percent_threshold_val: What percent of calls a particular status needs to be
   #                      above to be called the majority.
   #   uncallable_threshold_val: a threshold for determining if enough of a region is
@@ -229,12 +229,12 @@ consensus_seg_cytoband_status_df <-
 Read in the chromosome-level and gene-level data. 
 
 ```{r}
-# Read in the annotated CN file (without the UCSC data)
+# Read in the annotated gene level CN file
 consensus_seg_autosomes_df <-
   read_tsv(file.path(results_dir, "consensus_seg_annotated_cn_autosomes.tsv.gz"))
 ```
 
-Joining the gene-level, cytoband-level, and arm-level data into one data frame.
+Joining the gene-level and cytoband-level into one data frame.
 
 ```{r}
 combined_status_df <- consensus_seg_autosomes_df %>%
