@@ -16,17 +16,26 @@ MendQC [output files](https://github.com/UCSC-Treehouse/mend_qc#output) `*readDi
 
 ### Somatic Single Nucleotide Variant (SNV) Data
 
-Somatic Single Nucleotide Variant (SNV) data are provided in [Annotated MAF format](format/vep-maf.md) files for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-single-nucleotide-variant-calling) and denoted with the `pbta-snv` prefix.
-A subset of TCGA brain tumor MAF files are also provided, along with a manifest, `pbta-tcga-manifest.tsv`, and denoted with the `pbta-tcga-snv` prefix.
-Briefly, VCFs are VEP annotated and converted to MAF format via [vcf2maf](https://github.com/mskcc/vcf2maf/blob/master/maf2vcf.pl) to produce the following files:
+Somatic Single Nucleotide Variant (SNV) data are provided in [Annotated MAF format](format/vep-maf.md) files for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-single-nucleotide-variant-calling) and denoted with the `pbta-snv` prefix. Briefly, VCFs are VEP annotated and converted to MAF format via [vcf2maf](https://github.com/mskcc/vcf2maf/blob/master/maf2vcf.pl) to produce the following files.
 
 * `pbta-snv-lancet.vep.maf.gz`
 * `pbta-snv-mutect2.vep.maf.gz`
 * `pbta-snv-strelka2.vep.maf.gz`
 * `pbta-snv-vardict.vep.maf.gz`
+
+#### TCGA
+
+A subset of TCGA brain tumor MAF files are also provided and denoted with the `pbta-tcga-snv` prefix:
+
 * `pbta-tcga-snv-lancet.vep.maf.gz`
 * `pbta-tcga-snv-mutect2.vep.maf.gz`
 * `pbta-tcga-snv-strelka2.vep.maf.gz`
+
+The manifest file `pbta-tcga-manifest.tsv` contains primary diagnosis information as well as a columns denoting which BED files correspond to that sample. 
+`Capture_Kit` refers to the BED file(s) obtained from GDC (hg19).
+`BED_In_Use` is the file used for mutation calling and what should be used for downstream analyses (lifted over to hg38).
+For some samples, the capture kit could not be identified (denoted by `|` in `Capture_Kit`) and the intersection of multiple BEDs was used.
+These new BED files are included in the data download. 
 
 ### Somatic Copy Number Variant (CNV) Data
 
