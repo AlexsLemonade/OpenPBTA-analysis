@@ -150,9 +150,10 @@ join_cols <- c(
 strelka_mutect_maf_df <- strelka %>%
   # We'll keep the Strelka2 columns and drop Mutect2 columns
   dplyr::inner_join(mutect %>%
-                      dplyr::select(join_cols),
-                    by = join_cols,
-                    copy = TRUE) %>%
+    dplyr::select(join_cols),
+  by = join_cols,
+  copy = TRUE
+  ) %>%
   as.data.frame()
 
 # Get Multi-nucleotide calls from mutect as SNVs
@@ -177,7 +178,7 @@ if (opt$tcga) {
 # Merge in the MNVs
 strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
   dplyr::union(strelka_mutect_mnv,
-               by = join_cols
+    by = join_cols
   )
 
 ########################### Set up metadata columns ############################
@@ -193,8 +194,10 @@ if (opt$tcga) {
       target_bed_path = file.path(root_dir, "data", BED_In_Use),
       experimental_strategy = "WXS"
     ) %>%
-    dplyr::rename(Tumor_Sample_Barcode = tumorID,
-                  target_bed = BED_In_Use) # This field is named differently
+    dplyr::rename(
+      Tumor_Sample_Barcode = tumorID,
+      target_bed = BED_In_Use
+    ) # This field is named differently
 
   # Manifest files only have first 12 letters of the barcode so we gotta chop the end off
   strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
@@ -206,12 +209,13 @@ if (opt$tcga) {
     dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
     dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID) %>%
     # Make a Target BED regions column
-    dplyr::mutate(target_bed = dplyr::recode(experimental_strategy,
-                                             "WGS" = "scratch/intersect_strelka_mutect_WGS.bed",
-                                             "WXS" = "data/WXS.hg38.100bp_padded.bed"
-                                             ),
-                  target_bed_path = file.path(root_dir, target_bed)
-                  )
+    dplyr::mutate(
+      target_bed = dplyr::recode(experimental_strategy,
+        "WGS" = "scratch/intersect_strelka_mutect_WGS.bed",
+        "WXS" = "data/WXS.hg38.100bp_padded.bed"
+      ),
+      target_bed_path = file.path(root_dir, target_bed)
+    )
 
   # Make sure that we have metadata for all these samples.
   if (!all(unique(strelka_mutect_maf_df$Tumor_Sample_Barcode) %in% metadata$Tumor_Sample_Barcode)) {
@@ -221,14 +225,15 @@ if (opt$tcga) {
 # Add in metadata
 strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
   dplyr::inner_join(metadata %>%
-                      dplyr::select(
-                        Tumor_Sample_Barcode,
-                        experimental_strategy,
-                        short_histology,
-                        target_bed,
-                        target_bed_path
-                      ),
-                    by = "Tumor_Sample_Barcode")
+    dplyr::select(
+      Tumor_Sample_Barcode,
+      experimental_strategy,
+      short_histology,
+      target_bed,
+      target_bed_path
+    ),
+  by = "Tumor_Sample_Barcode"
+  )
 
 ############################# Set Up BED Files #################################
 # Make a data.frame of the unique BED file paths and their names
@@ -237,13 +242,17 @@ bed_file_paths_df <- strelka_mutect_maf_df %>%
   dplyr::distinct()
 
 # Pull out file paths as a vector
-bed_file_paths <- dplyr::distinct(bed_file_paths_df,
-                                  target_bed, target_bed_path) %>%
+bed_file_paths <- dplyr::distinct(
+  bed_file_paths_df,
+  target_bed, target_bed_path
+) %>%
   dplyr::pull(target_bed_path)
 
 # Make it a named vector
-names(bed_file_paths) <- dplyr::distinct(bed_file_paths_df,
-                                         target_bed, target_bed_path) %>%
+names(bed_file_paths) <- dplyr::distinct(
+  bed_file_paths_df,
+  target_bed, target_bed_path
+) %>%
   dplyr::pull(target_bed)
 
 # Read in each unique BED file and turn into GenomicRanges object
@@ -251,7 +260,8 @@ bed_ranges_list <- lapply(bed_file_paths, function(bed_file) {
 
   # Read in BED file as data.frame
   bed_df <- readr::read_tsv(bed_file,
-                            col_names = c("chr", "start", "end"))
+    col_names = c("chr", "start", "end")
+  )
 
   # Make into a GenomicRanges object
   bed_ranges <- GenomicRanges::GRanges(
@@ -262,12 +272,13 @@ bed_ranges_list <- lapply(bed_file_paths, function(bed_file) {
     )
   )
   return(bed_ranges)
-  })
+})
 
 #################### Set up Coding Region version of BED ranges ################
 # Read in the coding regions BED file
 coding_regions_df <- readr::read_tsv(opt$coding_regions,
-                                     col_names = c("chr", "start", "end"))
+  col_names = c("chr", "start", "end")
+)
 # Make into a GenomicRanges object
 coding_ranges <- GenomicRanges::GRanges(
   seqnames = coding_regions_df$chr,
@@ -293,7 +304,7 @@ tumor_sample_barcodes <- bed_file_paths_df %>%
   dplyr::pull(Tumor_Sample_Barcode)
 
 # Get unique bed names
-bed_names <-  bed_file_paths_df %>%
+bed_names <- bed_file_paths_df %>%
   dplyr::pull(target_bed)
 
 ########################### All mutations TMB file #############################
@@ -312,13 +323,15 @@ if (file.exists(tmb_all_file) && !opt$overwrite) {
   }
 
   # Run TMB calculation on each tumor sample and its respective BED range
-  tmb_all_df <- purrr::map2_df(tumor_sample_barcodes,
-                           bed_names,
+  tmb_all_df <- purrr::map2_df(
+    tumor_sample_barcodes,
+    bed_names,
     ~ calculate_tmb(
-        tumor_sample_barcode = .x,
-        maf_df = strelka_mutect_maf_df,
-        bed_ranges = bed_ranges_list[[.y]])
+      tumor_sample_barcode = .x,
+      maf_df = strelka_mutect_maf_df,
+      bed_ranges = bed_ranges_list[[.y]]
     )
+  )
 
   # Write to TSV file
   readr::write_tsv(tmb_all_df, tmb_all_file)
@@ -346,11 +359,13 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
 
   # Run coding TMB calculation on each tumor sample and its
   # respective coding BED range
-  tmb_coding_df <- purrr::map2_df(tumor_sample_barcodes, bed_names,
-                               ~ calculate_tmb(
-                                 tumor_sample_barcode = .x,
-                                 maf_df = strelka_mutect_maf_df,
-                                 bed_ranges = coding_bed_ranges_list[[.y]])
+  tmb_coding_df <- purrr::map2_df(
+    tumor_sample_barcodes, bed_names,
+    ~ calculate_tmb(
+      tumor_sample_barcode = .x,
+      maf_df = strelka_mutect_maf_df,
+      bed_ranges = coding_bed_ranges_list[[.y]]
+    )
   )
 
   # Write to TSV file
