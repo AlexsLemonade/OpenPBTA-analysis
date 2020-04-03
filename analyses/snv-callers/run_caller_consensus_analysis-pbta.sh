@@ -28,11 +28,11 @@ run_plots_nb=${OPENPBTA_PLOTS:-0}
 ################################ Set Up Database ################################
 python3 analyses/snv-callers/scripts/01-setup_db.py \
   --db-file $dbfile \
-  --strelka-file data/testing/release-v16-20200320/pbta-snv-strelka2.vep.maf.gz \
-  --mutect-file data/testing/release-v16-20200320/pbta-snv-mutect2.vep.maf.gz \
-  --lancet-file data/testing/release-v16-20200320/pbta-snv-lancet.vep.maf.gz \
-  --vardict-file data/testing/release-v16-20200320/pbta-snv-vardict.vep.maf.gz \
-  --meta-file data/testing/release-v16-20200320/pbta-histologies.tsv
+  --strelka-file data/pbta-snv-strelka2.vep.maf.gz \
+  --mutect-file data/pbta-snv-mutect2.vep.maf.gz \
+  --lancet-file data/pbta-snv-lancet.vep.maf.gz \
+  --vardict-file data/pbta-snv-vardict.vep.maf.gz \
+  --meta-file data/pbta-histologies.tsv
 
 ##################### Merge callers' files into total files ####################
 Rscript analyses/snv-callers/scripts/02-merge_callers.R \
