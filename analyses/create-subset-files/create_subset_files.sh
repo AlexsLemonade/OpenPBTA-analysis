@@ -68,9 +68,6 @@ cp $FULL_DIRECTORY/independent-specimens*.tsv $SUBSET_DIRECTORY
 # all bed files
 cp $FULL_DIRECTORY/*.bed $SUBSET_DIRECTORY
 
-# the release notes
-cp $FULL_DIRECTORY/release-notes.md $SUBSET_DIRECTORY
-
 # data file description
 cp $FULL_DIRECTORY/data-files-description.md $SUBSET_DIRECTORY
 
@@ -91,3 +88,6 @@ cd $SUBSET_DIRECTORY
 rm -f md5sum.txt
 # create a new md5sum.txt file
 md5sum * > md5sum.txt
+
+# the release notes and not included in md5sum.txt
+cp $FULL_DIRECTORY/release-notes.md $SUBSET_DIRECTORY
