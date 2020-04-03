@@ -9,6 +9,14 @@
 # --db_file : Path to sqlite database file made from 01-setup_db.py
 # --metadata : Relative file path to MAF file to be analyzed. Can be .gz compressed.
 #              Assumes file path is given from top directory of 'OpenPBTA-analysis'.
+# --all_bed_wgs : File path that specifies the BED regions file to be used for the
+#                 denominator for all mutations TMB for WGS samples.
+# --all_bed_wxs : File path that specifies the BED regions file to be used for the
+#                 denominator for all mutations TMB for WXS samples.
+# --coding_bed_wgs : File path that specifies the BED regions file to be used for the
+#                 denominator for coding only TMB for WGS samples.
+# --coding_bed_wxs : File path that specifies the BED regions file to be used for the
+#                 denominator for coding only TMB for WXS samples.
 # --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
 # --tcga: If TRUE, will skip PBTA metadata specific steps
 #
@@ -98,18 +106,18 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
-opt$metadata <- "data/pbta-tcga-manifest.tsv"
-opt$db_file <- "scratch/tcga_snv_db.sqlite"
-opt$overwrite <- TRUE
-opt$tcga <- TRUE
-
 # Make everything relative to root path
 opt$metadata <- file.path(root_dir, opt$metadata)
 opt$db_file <- file.path(root_dir, opt$db_file)
+opt$all_bed_wgs <- file.path(root_dir, opt$all_bed_wgs)
+opt$all_bed_wxs <- file.path(root_dir, opt$all_bed_wxs)
+opt$coding_bed_wgs <- file.path(root_dir, opt$coding_bed_wgs)
+opt$coding_bed_wxs <- file.path(root_dir, opt$coding_bed_wxs)
 
 ########### Check that the files we need are in the paths specified ############
 needed_files <- c(
-  opt$metadata, opt$db_file
+  opt$metadata, opt$db_file, opt$all_bed_wgs, opt$all_bed_wxs,
+  opt$coding_bed_wgs, opt$coding_bed_wxs
 )
 
 # Get list of which files were found
