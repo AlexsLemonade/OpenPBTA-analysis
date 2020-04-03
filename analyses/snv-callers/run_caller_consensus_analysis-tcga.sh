@@ -17,13 +17,6 @@ consensus_file=analyses/snv-callers/results/consensus/tcga-snv-consensus-snv.maf
 # BED and GTF file paths
 cds_file=scratch/gencode.v27.primary_assembly.annotation.bed
 
-# The WGS files are really just place holders and aren't used since the TCGA data is all WGS
-all_mut_wgs_bed=analyses/snv-callers/ref_files/gencode.v19.basic.exome.hg38liftover.bed 
-coding_wgs_bed=analyses/snv-callers/ref_files/gencode.v19.basic.exome.hg38liftover.bed
-
-all_mut_wxs_bed=analyses/snv-callers/ref_files/gencode.v19.basic.exome.hg38liftover.bed
-coding_wxs_bed=scratch/intersect_cds_gencode_liftover_WXS.bed
-
 # Set a default for the VAF filter if none is specified
 vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}
 
@@ -60,15 +53,6 @@ gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
   | sort -k 1,1 -k 2,2n \
   | bedtools merge  \
   > $cds_file
-
-# Make WXS coding BED file
-# TODO: Update this BED when we get the target BEDs updated in v15/v16
-bedtools intersect \
-  -a analyses/snv-callers/ref_files/gencode.v19.basic.exome.hg38liftover.bed  \
-  -b $cds_file \
-  | sort -k 1,1 -k 2,2n \
-  | bedtools merge \
-  > $coding_wxs_bed
 
 ######################### Calculate consensus TMB ##############################
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \

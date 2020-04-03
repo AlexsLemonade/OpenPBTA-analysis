@@ -29,11 +29,11 @@ run_plots_nb=${OPENPBTA_PLOTS:-0}
 ################################ Set Up Database ################################
 python3 analyses/snv-callers/scripts/01-setup_db.py \
   --db-file $dbfile \
-  --strelka-file data/pbta-snv-strelka2.vep.maf.gz \
-  --mutect-file data/pbta-snv-mutect2.vep.maf.gz \
-  --lancet-file data/pbta-snv-lancet.vep.maf.gz \
-  --vardict-file data/pbta-snv-vardict.vep.maf.gz \
-  --meta-file data/pbta-histologies.tsv
+  --strelka-file data/testing/release-v16-20200320/pbta-snv-strelka2.vep.maf.gz \
+  --mutect-file data/testing/release-v16-20200320/pbta-snv-mutect2.vep.maf.gz \
+  --lancet-file data/testing/release-v16-20200320/pbta-snv-lancet.vep.maf.gz \
+  --vardict-file data/testing/release-v16-20200320/pbta-snv-vardict.vep.maf.gz \
+  --meta-file data/testing/release-v16-20200320/pbta-histologies.tsv
 
 ##################### Merge callers' files into total files ####################
 Rscript analyses/snv-callers/scripts/02-merge_callers.R \
@@ -52,7 +52,7 @@ python3 analyses/snv-callers/scripts/01-setup_db.py \
 bedtools intersect \
   -a data/WGS.hg38.strelka2.unpadded.bed \
   -b data/WGS.hg38.mutect2.vardict.unpadded.bed \
-  > $all_mut_wgs_bed
+  > $wgs_bed
 
 #################### Make coding regions file 
 # Convert GTF to BED file for use in bedtools
@@ -63,36 +63,6 @@ gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
   | sort -k 1,1 -k 2,2n \
   | bedtools merge  \
   > $cds_file
-  
-##################### Make WGS coding BED file  
-# Make WGS coding BED file for strelka
-bedtools intersect \
-  -a data/WGS.hg38.strelka2.unpadded.bed \
-  -b $cds_file \
-  > scratch/wgs_coding_strelka.bed
-
-# Make WGS coding BED file for mutect
-bedtools intersect \
-  -a data/WGS.hg38.mutect2.vardict.unpadded.bed \
-  -b $cds_file \
-  > scratch/wgs_coding_mutect.bed
-
-# Intersect the mutect and strelka coding beds into one
-bedtools intersect \
-  -a scratch/wgs_coding_mutect.bed \
-  -b scratch/wgs_coding_strelka.bed \
-  | sort -k 1,1 -k 2,2n \
-  | bedtools merge \
-  > $coding_wgs_bed
-   
-##################### Make WXS coding BED file
-# Intersect coding and WXS ranges, sort and merge 
-bedtools intersect \
-  -a data/WXS.hg38.100bp_padded.bed  \
-  -b $cds_file \
-  | sort -k 1,1 -k 2,2n  \
-  | bedtools merge \
-  > $coding_wxs_bed
 
 ######################### Calculate consensus TMB ##############################
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \

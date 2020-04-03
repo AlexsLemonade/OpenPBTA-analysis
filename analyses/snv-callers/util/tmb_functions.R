@@ -95,7 +95,7 @@ snv_ranges_filter <- function(maf_df,
 
 calculate_tmb <- function(tumor_sample_barcode = NULL, 
                           maf_df, 
-                          bed_df) {
+                          bed_ranges) {
   # Calculate Tumor Mutational Burden a given sample in `Tumor_Sample_Barcode` 
   # given a target region BED frame. This function uses `snv_ranges_filter` to
   # filter out SNVs outside those target BED ranges and uses the total size in 
@@ -117,21 +117,25 @@ calculate_tmb <- function(tumor_sample_barcode = NULL,
   # A calculated genome size and TMB for the given Tumor_Sample_Barcode. 
   
   # Sum up genome sizes
-  bed_size <- sum(bed_wgs[, 3] - bed_wgs[, 2])
-
-  # Don't want integers per se
-  bed_size <- as.numeric(bed_size)
-  
+  bed_size <- as.numeric(sum(bed_ranges@ranges@width))
+   
+  # Filter to only the sample's mutations
+  sample_maf_df <- maf_df %>% 
+    dplyr::filter(Tumor_Sample_Barcode == tumor_sample_barcode)
+    
   # Filter out mutations that are outside of these coding regions.
-  filt_maf_df <- snv_ranges_filter(maf_df, keep_ranges = bed_df)
+  filt_maf_df <- snv_ranges_filter(sample_maf_df, keep_ranges = bed_ranges)
   
   # Make a genome size variable
-  tmb <- maf_df %>%
-    dplyr::mutate(genome_size = bed_size) %>%
+  tmb <- sample_maf_df %>%
+    dplyr::group_by(Tumor_Sample_Barcode = tumor_sample_barcode,
+                    experimental_strategy, 
+                    short_histology) %>% 
     # Count number of mutations for that sample
     dplyr::summarize(mutation_count = dplyr::n()) %>%
     # Calculate TMB
-    dplyr::mutate(tmb = mutation_count / (genome_size / 1000000))
+    dplyr::mutate(genome_size = bed_size, 
+                  tmb = mutation_count / (bed_size / 1000000))
   
   return(tmb)
 }

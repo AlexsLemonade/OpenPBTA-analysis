@@ -9,6 +9,8 @@
 # --db_file : Path to sqlite database file made from 01-setup_db.py
 # --metadata : Relative file path to MAF file to be analyzed. Can be .gz compressed.
 #              Assumes file path is given from top directory of 'OpenPBTA-analysis'.
+# --coding_regions : File path that specifies the BED regions file that specifies
+#                     coding regions should be used for coding only TMB calculations.
 # --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
 # --tcga: If TRUE, will skip PBTA metadata specific steps
 #
@@ -18,10 +20,7 @@
 # --db_file scratch/testing_snv_db.sqlite \
 # --output analyses/snv-callers/results/consensus \
 # --metadata data/pbta-histologies.tsv \
-# --all_bed_wgs scratch/intersect_strelka_mutect_WGS.bed \
-# --all_bed_wxs data/WXS.hg38.100bp_padded.bed \
-# --coding_bed_wgs scratch/intersect_cds_lancet_strelka_mutect_WGS.bed \
-# --coding_bed_wxs scratch/intersect_cds_WXS.bed \
+# --coding_regions scratch/gencode.v27.primary_assembly.annotation.bed \
 # --overwrite
 
 ################################ Initial Set Up ################################
@@ -59,27 +58,9 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
-    opt_str = "--all_bed_wgs", type = "character", default = "none",
-    help = "File path that specifies the BED regions file to be used for the
-    denominator for all mutations TMB for WGS samples.",
-    metavar = "character"
-  ),
-  make_option(
-    opt_str = "--all_bed_wxs", type = "character", default = "none",
-    help = "File path that specifies the BED regions file to be used for the
-    denominator for all mutations TMB for WXS samples.",
-    metavar = "character"
-  ),
-  make_option(
-    opt_str = "--coding_bed_wgs", type = "character", default = "none",
-    help = "File path that specifies the BED regions file to be used for the
-    denominator for coding only TMB for WXS samples. 'OpenPBTA-analysis'",
-    metavar = "character"
-  ),
-  make_option(
-    opt_str = "--coding_bed_wxs", type = "character", default = "none",
-    help = "File path that specifies the BED regions file to be used for the
-    denominator for coding only TMB for WXS samples. 'OpenPBTA-analysis'",
+    opt_str = "--coding_regions", type = "character", default = "none",
+    help = "File path that specifies the BED regions file that specifies what 
+    coding regions should be used for coding only TMB.",
     metavar = "character"
   ),
   make_option(
@@ -97,13 +78,6 @@ option_list <- list(
 
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
-
-opt$metadata <- "data/pbta-tcga-manifest.tsv"
-opt$db_file <- "scratch/tcga_snv_db.sqlite"
-opt$output <- "analyses/snv-callers/results/consensus"
-opt$coding_regions <- "scratch/gencode.v27.primary_assembly.annotation.bed"
-opt$overwrite <- TRUE
-opt$tcga <- TRUE
 
 # Make everything relative to root path
 opt$metadata <- file.path(root_dir, opt$metadata)
@@ -259,14 +233,18 @@ strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
 ############################# Set Up BED Files #################################
 # Make a data.frame of the unique BED file paths and their names
 bed_file_paths_df <- strelka_mutect_maf_df %>% 
-  dplyr::select(target_bed, target_bed_path) %>% 
+  dplyr::select(Tumor_Sample_Barcode, target_bed, target_bed_path) %>% 
   dplyr::distinct()
 
 # Pull out file paths as a vector 
-bed_file_paths <- bed_file_paths_df$target_bed_path
+bed_file_paths <- dplyr::distinct(bed_file_paths_df, 
+                                  target_bed, target_bed_path) %>% 
+  dplyr::pull(target_bed_path)
 
 # Make it a named vector
-names(bed_file_paths) <- bed_file_paths_df$target_bed
+names(bed_file_paths) <- dplyr::distinct(bed_file_paths_df,
+                                         target_bed, target_bed_path) %>% 
+  dplyr::pull(target_bed)
 
 # Read in each unique BED file and turn into GenomicRanges object
 bed_ranges_list <- lapply(bed_file_paths, function(bed_file) {
@@ -301,7 +279,7 @@ coding_ranges <- GenomicRanges::GRanges(
 
 # For each BED range, find the coding regions intersection 
 coding_bed_ranges_list <- lapply(bed_ranges_list, function(bed_range, 
-                                                           coding_grange = coding_ranges){
+                                                           coding_grange = coding_ranges) {
   # Find the intersection 
   coding_intersect_ranges <- GenomicRanges::intersect(bed_range, coding_grange)
   
@@ -309,35 +287,16 @@ coding_bed_ranges_list <- lapply(bed_ranges_list, function(bed_range,
   return(GenomicRanges::reduce(coding_intersect_ranges))
 })
 
-############################# Coding TMB file ##################################
-# If the file exists or the overwrite option is not being used, run TMB calculations
-if (file.exists(tmb_coding_file) && !opt$overwrite) {
-  # Stop if this file exists and overwrite is set to FALSE
-  warning(cat(
-    "The 'coding only' Tumor Mutation Burden file already exists: \n",
-    tmb_coding_file, "\n",
-    "Use --overwrite if you want to overwrite it."
-  ))
-} else {
-  # Print out warning if this file is going to be overwritten
-  if (file.exists(tmb_coding_file)) {
-    warning("Overwriting existing 'coding only' TMB file.")
-  }
 
-  # Print out progress message
-  message(paste("Calculating 'coding only' TMB..."))
+#### Calculating 
+# Get unique sample_IDs 
+tumor_sample_barcodes <- bed_file_paths_df %>% 
+  dplyr::pull(Tumor_Sample_Barcode)
 
-  # Calculate coding only TMBs and write to file
-  tmb_coding_df <- calculate_tmb(
-    strelka_mutect_maf_df,
-    bed_df = 
-    coding_df
-  )
-  readr::write_tsv(tmb_coding_df, tmb_coding_file)
+# Get unique bed names
+bed_names <-  bed_file_paths_df %>% 
+  dplyr::pull(target_bed)
 
-  # Print out completion message
-  message(paste("TMB 'coding only' calculations saved to:", tmb_coding_file))
-}
 
 ########################### All mutations TMB file #############################
 # If the file exists or the overwrite option is not being used, run TMB calculations
@@ -353,13 +312,52 @@ if (file.exists(tmb_all_file) && !opt$overwrite) {
   if (file.exists(tmb_coding_file)) {
     warning("Overwriting existing 'all mutations' TMB file.")
   }
-  # Calculate TMBs and write to TMB file
-  tmb_all_df <- calculate_tmb(
-    strelka_mutect_maf_df,
-    bed_df = 
-  )
+  
+  # Run TMB calculation on each tumor sample and its respective BED range
+  tmb_all_df <- purrr::map2_df(tumor_sample_barcodes, 
+                           bed_names, 
+    ~ calculate_tmb(
+        tumor_sample_barcode = .x,
+        maf_df = strelka_mutect_maf_df,
+        bed_ranges = bed_ranges_list[[.y]])
+    )
+  
+  # Write to TSV file
   readr::write_tsv(tmb_all_df, tmb_all_file)
 
   # Print out completion message
   message(paste("TMB 'all' calculations saved to:", tmb_all_file))
+}
+############################# Coding TMB file ##################################
+# If the file exists or the overwrite option is not being used, run TMB calculations
+if (file.exists(tmb_coding_file) && !opt$overwrite) {
+  # Stop if this file exists and overwrite is set to FALSE
+  warning(cat(
+    "The 'coding only' Tumor Mutation Burden file already exists: \n",
+    tmb_coding_file, "\n",
+    "Use --overwrite if you want to overwrite it."
+  ))
+} else {
+  # Print out warning if this file is going to be overwritten
+  if (file.exists(tmb_coding_file)) {
+    warning("Overwriting existing 'coding only' TMB file.")
+  }
+  
+  # Print out progress message
+  message(paste("Calculating 'coding only' TMB..."))
+  
+  # Run coding TMB calculation on each tumor sample and its 
+  # respective coding BED range
+  tmb_coding_df <- purrr::map2_df(tumor_sample_barcodes, bed_names, 
+                               ~ calculate_tmb(
+                                 tumor_sample_barcode = .x,
+                                 maf_df = strelka_mutect_maf_df,
+                                 bed_ranges = coding_bed_ranges_list[[.y]])
+  )
+  
+  # Write to TSV file
+  readr::write_tsv(tmb_coding_df, tmb_coding_file)
+  
+  # Print out completion message
+  message(paste("TMB 'coding only' calculations saved to:", tmb_coding_file))
 }
