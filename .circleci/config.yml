@@ -192,29 +192,31 @@ jobs:
           name: RNA-Seq composition
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/rna-seq-composition/rna-seq-composition.Rmd', clean = TRUE)"
           
-      - run:
-          name: TCGA SNV Caller Analysis 
-          command: ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-tcga.sh     
+      # - run:
+      #     name: TCGA SNV Caller Analysis 
+      #     command: ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-tcga.sh     
 
       - run:
           name: SNV Caller Analysis 
           command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-pbta.sh
 
-      - run:
-          name: Tumor mutation burden with TCGA
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
+      # - run:
+      #     name: Tumor mutation burden with TCGA
+      #     command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
   
-      - run:
-          name: PBTA vs TCGA explore 
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/explore-tcga-pbta.Rmd', clean = TRUE)"
+      # - run:
+      #     name: PBTA vs TCGA explore 
+      #     command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/explore-tcga-pbta.Rmd', clean = TRUE)"
      
-      - run:
-          name: Lancet WXS vs WGS test
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/lancet-paired-WXS-WGS.Rmd', clean = TRUE)"
+      # Retired analysis
+      # - run:
+      #     name: Lancet WXS vs WGS test
+      #     command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/lancet-paired-WXS-WGS.Rmd', clean = TRUE)"
       
-      - run:
-          name: Lancet padded vs unpadded test
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/lancet-padded-vs-unpadded.Rmd', clean = TRUE)"
+      # Retired analysis
+      # - run:
+      #     name: Lancet padded vs unpadded test
+      #     command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/lancet-padded-vs-unpadded.Rmd', clean = TRUE)"
 
 
        # This analysis was a side concept question and no longer needs to be run. 
