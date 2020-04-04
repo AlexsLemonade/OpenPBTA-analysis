@@ -13,7 +13,8 @@ prepare_and_plot_oncoprint <- function(maf_df,
                                        metadata,
                                        fusion_df = NULL,
                                        goi_list = NULL,
-                                       color_palette) {
+                                       color_palette,
+                                       running_in_figures_script = FALSE) {
   # Given maf, cnv, and fusion data.frames prepared in `00-map-to-sample_id.R`,
   # along with a list of genes prepared in the `interaction-plots` directory,
   # plot an oncoprint landscape figure.
@@ -27,6 +28,9 @@ prepare_and_plot_oncoprint <- function(maf_df,
   #             represented on the oncoprint. This is NULL by default.
   #   color_palette: vector of colors (hex codes) corresponding to the data
   #                  that will be represented on the oncoprint
+  #   running_in_figures_script: TRUE or FALSE statement indicating whether
+  #                              or not this function is being run in the
+  #                              figures generation script
   
   if (!is.null(fusion_df)) {
     # Bind rows of maf and fusion data frames
@@ -66,27 +70,34 @@ prepare_and_plot_oncoprint <- function(maf_df,
       )
     )
   
-  #### Plot Oncoprint
+  # If this function is being run in the figures generation script, return the
+  # maf object (instead of the final plot)
+  if (running_in_figures_script) {
+    return(maf_object)
+  }
   
-  # Given a maf file, plot an oncoprint of the variants in the
-  # dataset and save as a png file.
-  oncoplot(
-    maf_object,
-    clinicalFeatures = c(
-      "broad_histology",
-      "short_histology",
-      "reported_gender",
-      "tumor_descriptor",
-      "molecular_subtype"
-    ),
-    genes = goi_list,
-    logColBar = TRUE,
-    sortByAnnotation = TRUE,
-    showTumorSampleBarcodes = TRUE,
-    removeNonMutated = TRUE,
-    annotationFontSize = 0.7,
-    SampleNamefontSize = 0.5,
-    fontSize = 0.7,
-    colors = color_palette
-  )
+  #### Plot Oncoprint
+  if (!(running_in_figures_script)) {
+    # Given a maf file, plot an oncoprint of the variants in the
+    # dataset and save as a png file.
+    oncoplot(
+      maf_object,
+      clinicalFeatures = c(
+        "broad_histology",
+        "short_histology",
+        "reported_gender",
+        "tumor_descriptor",
+        "molecular_subtype"
+      ),
+      genes = goi_list,
+      logColBar = TRUE,
+      sortByAnnotation = TRUE,
+      showTumorSampleBarcodes = TRUE,
+      removeNonMutated = TRUE,
+      annotationFontSize = 0.7,
+      SampleNamefontSize = 0.5,
+      fontSize = 0.7,
+      colors = color_palette
+    )
+  }
 }

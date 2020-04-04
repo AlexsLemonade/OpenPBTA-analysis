@@ -92,7 +92,7 @@ fusion_file_primary_only <-
   ))
 
 # Read in gene list
-gene_list <-
+goi_list <-
   readr::read_tsv(
     file.path(
       root_dir,
@@ -115,42 +115,63 @@ source(file.path(
 #### Generate Oncoprints ------------------------------------------------------
 
 # Generate the primary-plus oncoprint
-png(
-  file.path(output_dir, "fig3a-oncoprint-lanscape.png"),
-  width = 65,
-  height = 30,
-  units = "cm",
-  res = 300
-)
-prepare_and_plot_oncoprint(
+primary_plus <- prepare_and_plot_oncoprint(
   maf_df_primary_plus,
   cnv_file_primary_plus,
   metadata,
   fusion_file_primary_plus,
-  goi_list = gene_list,
-  color_palette = color_palette
+  goi_list = goi_list,
+  color_palette = color_palette,
+  running_in_figures_script = TRUE
 )
-dev.off()
 
 # Generate the primary-only oncoprint
+primary_only <- prepare_and_plot_oncoprint(
+  maf_df_primary_only,
+  cnv_file_primary_only,
+  metadata,
+  fusion_file_primary_only,
+  goi_list = goi_list,
+  color_palette = color_palette,
+  running_in_figures_script = TRUE
+)
+
+#### Assemble multipanel plot -------------------------------------------------
+
 png(
-  file.path(output_dir, "fig3b-oncoprint-lanscape.png"),
+  file.path(output_dir, "fig3-oncoprint-lanscape.png"),
   width = 65,
   height = 30,
   units = "cm",
   res = 300
 )
-prepare_and_plot_oncoprint(
-  maf_df_primary_only,
-  cnv_file_primary_only,
-  metadata,
-  fusion_file_primary_only,
-  goi_list = gene_list,
-  color_palette = color_palette
+# Given a maf file, plot an oncoprint of the variants in the
+# dataset and save as a png file.
+coOncoplot(
+  primary_plus,
+  primary_only,
+  clinicalFeatures1 = c(
+    "broad_histology",
+    "short_histology",
+    "reported_gender",
+    "tumor_descriptor",
+    "molecular_subtype"
+  ),
+  clinicalFeatures2 = c(
+    "broad_histology",
+    "short_histology",
+    "reported_gender",
+    "tumor_descriptor",
+    "molecular_subtype"
+  ),
+  genes = goi_list,
+  sortByAnnotation1 = TRUE,
+  sortByAnnotation2 = TRUE,
+  showSampleNames = TRUE,
+  removeNonMutated = TRUE,
+  annotationFontSize = 0.7,
+  SampleNamefont = 0.5,
+  geneNamefont = 0.25,
+  colors = color_palette
 )
 dev.off()
-
-#### Assemble multipanel plot -------------------------------------------------
-
-# TODO: Determine the best way to do this as pathwork::plot_layout was not
-#       successful
