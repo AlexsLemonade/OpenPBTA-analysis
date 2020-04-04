@@ -71,6 +71,7 @@ Rscript --vanilla ${analyses_dir}/gene-set-enrichment-analysis/01-conduct-gsea-a
   --output ${analyses_dir}/gene-set-enrichment-analysis/results/gsva_scores_stranded.tsv
 
 # Immune deconvolution - we can't use CIBERSORT because we don't have access to it
+# By not supplying an argument to --method, we are electing only to use xCell
 Rscript --vanilla ${analyses_dir}/immune-deconv/01-immune-deconv.R \
   --polyaexprs ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
   --strandedexprs ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
