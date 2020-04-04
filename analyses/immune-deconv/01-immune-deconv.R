@@ -45,8 +45,12 @@ cibersort_bin <- opt$cibersortbin
 cibersort_mat <- opt$cibersortgenemat 
 output.file <- opt$outputfile
 
-print(cibersort_bin)
-print(cibersort_mat)
+#### Check model parameter - must be in deconvolution_methods (immunedeconv accepted options)
+if (!(deconv.method %in% deconvolution_methods )){
+    stop( paste(c("Specified method not available. Must be one of the following: ", deconvolution_methods), collapse=" ") )
+}
+
+
 # if cibersort_bin and cibersort_mat are defined
 # then, set path to cibersort binary and matrix
 if(cibersort_bin != "NA" & cibersort_mat != "NA"){
