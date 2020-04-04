@@ -75,5 +75,4 @@ Rscript --vanilla ${analyses_dir}/immune-deconv/01-immune-deconv.R \
   --polyaexprs ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
   --strandedexprs ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
   --clin ${data_dir}/pbta-histologies.tsv \
-  --method "mcp_counter" \
   --output ${analyses_dir}/immune-deconv/results/deconv-output-for-figures.RData
