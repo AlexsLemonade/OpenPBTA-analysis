@@ -46,8 +46,10 @@ cibersort_mat <- opt$cibersortgenemat
 output.file <- opt$outputfile
 
 #### Check model parameter - must be in deconvolution_methods (immunedeconv accepted options)
-if (!(deconv.method %in% deconvolution_methods )){
+if (!is.null(deconv.method)){
+  if (!(deconv.method %in% deconvolution_methods)) {
     stop( paste(c("Specified method not available. Must be one of the following: ", deconvolution_methods), collapse=" ") )
+  }
 }
 
 
@@ -90,8 +92,7 @@ deconv <- function(expr.input, method) {
 }
 
 # Deconvolute using xCell and the second chosen method
-# these two methods have the max number of immune cell types
-deconv.method <- c("xcell", deconv.method)
+deconv.method <- unique(c("xcell", deconv.method))
 expr.input <- c("polya", "stranded") # datasets
 combo <- expand.grid(expr.input, deconv.method, stringsAsFactors = F) # combination of dataset and methods
 deconv.res <- apply(combo, 1, FUN = function(x) deconv(expr.input = x[1], method = x[2]))
