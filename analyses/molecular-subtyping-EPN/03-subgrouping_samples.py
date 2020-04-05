@@ -50,11 +50,24 @@ def subgroup_func(row, subgroupname, column_values):
     return(current_subgroup)
 
 # This function will look at consensus_focal_CN_CDKN2 and return
-# ST-EPN-RELA subgroup name, if it returns "loss"
+# ST-EPN-RELA subgroup name, if column value is "loss"
 def subgroup_CDKN2Aloss(row):
      current_subgroup = row["subgroup"]
      if row["consensus_focal_CN_CDKN2"] == "loss":
              if current_subgroup == '': 
+                 current_subgroup = "ST_EPN_RELA"
+             elif "ST_EPN_RELA" in current_subgroup.split(","):
+                 pass
+             else:
+                 current_subgroup = current_subgroup + "," + "ST_EPN_RELA"
+     return(current_subgroup)
+
+# This functions will look at GISTIC_focal_CN_CDKN2A and return
+# ST-EPN-RELA subgroup name, if column value is less than 0
+def subgroup_GISTIC_CDKN2A(row):
+     current_subgroup = row["subgroup"]
+     if row["GISTIC_focal_CN_CDKN2A"] < 0.0:
+             if current_subgroup == '':
                  current_subgroup = "ST_EPN_RELA"
              elif "ST_EPN_RELA" in current_subgroup.split(","):
                  pass
@@ -78,8 +91,9 @@ EPN_final["subgroup"] = EPN_final.apply(subgroup_func,
                                         axis=1,
                                         subgroupname="ST_EPN_RELA",
                                         column_values=st_epn_rela_tests)
-
+# Checking for CDKN2A loss 
 EPN_final["subgroup"] = EPN_final.apply(subgroup_CDKN2Aloss, axis=1)
+EPN_final["subgroup"] = EPN_final.apply(subgroup_GISTIC_CDKN2A, axis=1)
 
 #### Looking for ST_EPN_YAP1 sub-group samples
 st_epn_yap1_tests = [("C11orf95--YAP1", 0),
