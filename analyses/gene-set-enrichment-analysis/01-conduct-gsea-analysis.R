@@ -1,5 +1,5 @@
 ################################################################################
-# This script conducts gene set enrichment analysis, specifically using the GSVA method [1] for scoring hallmark human pathway enrichment from RNA-Seq results. 
+# This script conducts gene set enrichment analysis, specifically using the GSVA method [1] for scoring hallmark human pathway enrichment from RNA-Seq results.
 #
 # The GSVA scores (i.e., enrichment scores) are calculated to produce a **Gaussian distribution of scores** "under the null hypothesis of no change in the pathway activity throughout the sample population."
 # The authors claim a benefit to this approach:
@@ -14,9 +14,9 @@
 #
 # ####### USAGE, assumed to be run from top-level of project:
 # Rscript --vanilla 'analyses/gene-set-enrichment-analysis/01-conduct-gsea-analysis.R --input <expression input file> --output <output file for writing scores>
-#     --input : The name of the input expression data file to use for calculating scores. This file is assumed to live in the project's `data/` directory.
-#     --output: The name of the TSV-formatted output file of GSVA scores, to be saved in the `results/` directory of this analysis.
-# 
+#     --input_file: The name of the input expression data file to use for calculating scores.
+#     --output_file: The name of the TSV-formatted output file of GSVA scores.
+#
 # Reference:
 # 1. Sonja Hänzelmann, Robert Castelo, and Justin Guinney. 2013. “GSVA: Gene Set Variation Analysis for Microarray and RNA-Seq Data.” BMC Bioinformatics 14 (1): 7. https://doi.org/10.1186/1471-2105-14-7.
 ################################################################################
@@ -53,15 +53,15 @@ library(GSVA)    ## Performs GSEA analysis
 ## Define arguments
 option_list <- list(
   optparse::make_option(
-    c("--input"),
+    c("--input_file"),
     type = "character",
     default = NA,
     help = "The input file of expression data from which scores will be calculated."
   ),
-    optparse::make_option(
-    c("--output"),
+  optparse::make_option(
+    c("--output_file"),
     type = "character",
-    default = NA, 
+    default = NA,
     help = "The output file for writing GSVA scores in TSV format."
   )
 )
@@ -69,23 +69,22 @@ option_list <- list(
 ## Read in arguments
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
-if (is.na(opt$input)) stop("\n\nERROR: You must provide an input file with expression data with the flag --input, assumed to be in the `data/` directory of the OpenPBTA repository..") 
-if (is.na(opt$output)) stop("\n\nERROR: You must provide an output file for saving GSVA scores with the flag --output, assumed to be placed in the `results/` directory of this analysis.") 
+if (is.na(opt$input_file)) stop("\n\nERROR: You must provide an input file with expression data with the flag --input, assumed to be in the `data/` directory of the OpenPBTA repository..")
+if (is.na(opt$output_file)) stop("\n\nERROR: You must provide an output file for saving GSVA scores with the flag --output, assumed to be placed in the `results/` directory of this analysis.")
 
 
 #### Set Up paths and file names --------------------------------------------------------------------
 
-## Define directories
-data_dir    <- file.path("..", "..", "data") 
-results_dir <- "results"
-if (!dir.exists(results_dir)) dir.create(results_dir)
+# If the output directory does not exist, create it
+output_dir <- dirname(opt$output_file)
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir, recursive = TRUE)
+}
 
-## Ensure the input file exists in `data/` and specify input/output files 
-expression_data_file <- file.path(data_dir, basename(opt$input))
+## Ensure the input file exists in `data/` and specify input/output files
+expression_data_file <- opt$input_file
 if (!file.exists(expression_data_file)) stop("\n\nERROR: Provided input file does not exist.")
-scores_output_file <- file.path(results_dir, basename(opt$output))
-
-
+scores_output_file <- file.path(output_dir, basename(opt$output_file))
 
 #### Load input files --------------------------------------------------------------------
 expression_data <- as.data.frame( readr::read_rds(expression_data_file) )
@@ -114,14 +113,14 @@ gsea_scores <- GSVA::gsva(expression_data_log2_matrix,
 ### Clean scoring into tidy format
 gsea_scores_df <- as.data.frame(gsea_scores) %>%
                     rownames_to_column(var = "hallmark_name")
-  
+
 #first/last_bs needed for use in gather (we are not on tidyr1.0)
 first_bs <- head(colnames(gsea_scores), n=1)
 last_bs  <- tail(colnames(gsea_scores), n=1)
-  
+
 gsea_scores_df_tidy <- gsea_scores_df %>%
                         tidyr::gather(Kids_First_Biospecimen_ID, gsea_score, !!first_bs : !!last_bs) %>%
-                        dplyr::select(Kids_First_Biospecimen_ID, hallmark_name, gsea_score) 
+                        dplyr::select(Kids_First_Biospecimen_ID, hallmark_name, gsea_score)
 
 
 #### Export GSEA scores to TSV --------------------------------------------------------------------
