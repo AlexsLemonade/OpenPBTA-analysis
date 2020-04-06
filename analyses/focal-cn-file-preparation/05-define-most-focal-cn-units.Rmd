@@ -6,8 +6,6 @@ output:
     toc_float: TRUE
 author: Chante Bethell and Candace Savonen for ALSF CCDL
 date: 2020
-params:
-  is_ci: FALSE
 ---
 
 This notebook defines the most focal recurrent copy number units by removing focal changes that are within entire chromosome arm losses and gains.
@@ -21,7 +19,7 @@ _Most focal_ here meaning:
 This notebook is intended to be run from the command line with the following (assumes you are in the root directory of the repository):
 
 ```
-Rscript -e "rmarkdown::render('analyses/focal-cn-file-preparation/05-define-most-focal-cn-units.Rmd', clean = TRUE, params=list(is_ci = ${IS_CI}))"
+Rscript -e "rmarkdown::render('analyses/focal-cn-file-preparation/05-define-most-focal-cn-units.Rmd', clean = TRUE)"
 ```
 
 ### Cutoffs: 
@@ -54,9 +52,6 @@ library(tidyverse)
 
 ```{r}
 results_dir <- "results"
-
-# Define a logical object for running in CI
-running_in_ci <- params$is_ci
 ```
 
 ### Read in files
