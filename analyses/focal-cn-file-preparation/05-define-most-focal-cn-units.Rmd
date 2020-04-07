@@ -86,7 +86,12 @@ Read in the gene-level data.
 ```{r}
 # Read in the annotated gene level CN file
 consensus_seg_autosomes_df <-
-  read_tsv(file.path(results_dir, "consensus_seg_annotated_cn_autosomes.tsv.gz"))
+  read_tsv(file.path(results_dir, "consensus_seg_annotated_cn_autosomes.tsv.gz")) %>%
+  mutate(chromosome_arm = gsub("(p|q).*", "\\1", cytoband))
+
+# Rename "amplification" status calls to be "gain" for the purpose of this script
+consensus_seg_autosomes_df$status <-
+  gsub("amplification", "gain", consensus_seg_autosomes_df$status)
 ```
 
 ## Define most focal units
@@ -125,25 +130,28 @@ consensus_seg_arm_status
 We want to include cytoband and gene-level calls for chromosome arms that have not been defined as a gain or loss to make the cytoband-level majority calls.
 
 ```{r}
-# Now count the cytoband level calls (for each status call) and define
-# the cytoband as that status if more than the `status_threshold` fraction
-# value of the total counts are for that particular status
+# Now define the cytoband as that status if more than the `status_threshold` 
+# fraction value of the total counts are for that particular status
 consensus_seg_cytoband_status <-
   consensus_seg_cytoband_status_df %>%
+  mutate(
+    dominant_cytoband_status = case_when(
+      callable_fraction < (1 - uncallable_threshold) ~ "uncallable",
+      loss_fraction > status_threshold ~ "loss",
+      gain_fraction > status_threshold ~ "gain",
+      loss_fraction + gain_fraction > status_threshold ~ "unstable",
+      TRUE ~ "neutral"
+    )
+  ) 
+
+# Join the consensus seg arm status data and filter to include only neutral
+# chromosome arms and non-neutral cytobands
+filtered_consensus_cytoband_status <- consensus_seg_cytoband_status %>%
   left_join(
     consensus_seg_arm_status,
     by = c(
       "Kids_First_Biospecimen_ID",
       "chromosome_arm"
-    )
-  ) %>%
-  mutate(
-    dominant_cytoband_status = case_when(
-      callable_fraction.x < (1 - uncallable_threshold) ~ "uncallable",
-      loss_fraction.x > status_threshold ~ "loss",
-      gain_fraction.x > status_threshold ~ "gain",
-      loss_fraction.x + gain_fraction.x > status_threshold ~ "unstable",
-      TRUE ~ "neutral"
     )
   ) %>%
   # Filter the annotated CN data to include only neutral chromosome arms and disagreements
@@ -165,44 +173,57 @@ consensus_seg_cytoband_status <-
   )
 
 # Display table
-consensus_seg_cytoband_status
+filtered_consensus_cytoband_status
 ```
 
 ### Determine gene-level status
 
 ```{r}
+# Create separate rows for genes span multiple cytobands
+# CAUTION: This will require addition of a distinct() statment later to resolve duplicates
+# Filtering to only multiband genes first because regexes are slow.
+multi_band_genes <- consensus_seg_autosomes_df %>%
+  filter(grepl("-", cytoband)) %>%
+  extract(cytoband, into = c("chrom", "band"), regex = "([0-9]+)(.+)") %>% # make chrom and band cols
+  separate_rows(band, sep = "-") %>% # duplicate rows with more than one band
+  unite(cytoband, chrom, band, sep = "") # rejoin chrom and band
+
+# Filter to singleband genes
+single_band_genes <- consensus_seg_autosomes_df %>%
+  filter(!grepl("-", cytoband))
+gene_df <- bind_rows(single_band_genes, multi_band_genes)
+
 # Now create a data.frame with the gene-level status calls for the
-# neutral, uncallable, and unstable cytoband-level calls
-consensus_seg_gene_status <- consensus_seg_autosomes_df %>%
-  # Create a cytoband column that keeps only the first half of the ranges
-  # for joining purposes
-  mutate(cytoband_no_ranges = gsub("-.*", "\\1", cytoband)) %>%
+# neutral, uncallable, and unstable cytoband-level and chromosome arm-level
+# calls
+filtered_consensus_gene_status <- gene_df %>%
   left_join(
-    consensus_seg_cytoband_status_df,
-    by = c(
-      "biospecimen_id" = "Kids_First_Biospecimen_ID",
-      "cytoband_no_ranges" = "cytoband"
-    )
+    consensus_seg_arm_status,
+    by = c("biospecimen_id" = "Kids_First_Biospecimen_ID",
+           "chromosome_arm")
   ) %>%
-  # Filter the annotated CN data to include only neutral cytobands and disagreements
+  left_join(
+    consensus_seg_cytoband_status,
+    by = c("biospecimen_id" = "Kids_First_Biospecimen_ID",
+           "cytoband")
+  ) %>%
+  # Filter the annotated CN data to include only neutral arms and cytobands,
+  # and disagreements
   filter(
-    dominant_cytoband_status %in% c("neutral", "uncallable", "unstable") |
-      (status != dominant_cytoband_status &
-         # bands that disagree with arm, but are not neutral (or uncallable)
-         !(status %in% c("neutral", "uncallable", "unstable")
-      ))
-    ) %>%
-  select(
-    Kids_First_Biospecimen_ID = biospecimen_id,
-    gene_symbol,
-    loss_fraction,
-    gain_fraction,
-    callable_fraction,
-    status
-  )
+    dominant_arm_status %in% c("neutral", "uncallable", "unstable") |
+      dominant_cytoband_status %in% c("neutral", "uncallable", "unstable") |
+      status != dominant_arm_status |
+      status != dominant_cytoband_status
+  ) %>%
+  select(Kids_First_Biospecimen_ID = biospecimen_id,
+         gene_symbol,
+         status) %>%
+  # The `distinct()` function is needed to remove duplicates resulting from
+  # the band separation into multiple rows step above
+  distinct()
 
 # Display table
-consensus_seg_gene_status
+filtered_consensus_gene_status
 ```
 
 ## Combine arm, cytoband, and gene-level status data
@@ -213,12 +234,12 @@ consensus_seg_gene_status
 consensus_seg_arm_status <- consensus_seg_arm_status %>%
   filter(!(dominant_arm_status == "neutral")) %>%
   rename(dominant_status = dominant_arm_status)
-consensus_seg_cytoband_status <- consensus_seg_cytoband_status %>%
+filtered_consensus_cytoband_status <- filtered_consensus_cytoband_status %>%
   filter(!(dominant_cytoband_status == "neutral")) %>%
   rename(dominant_status = dominant_cytoband_status)
 # There are no "neutral" calls at the gene level so we do not need to filter
 # out those calls here
-consensus_seg_gene_status <- consensus_seg_gene_status %>%
+filtered_consensus_gene_status <- filtered_consensus_gene_status %>%
   rename(dominant_status = status)
 
 # For each of the datasets we're joining, we'll only keep these columns:
@@ -233,10 +254,10 @@ final_df <- bind_rows(
   arm = select(consensus_seg_arm_status,
                cols_to_keep,
                region = chromosome_arm),
-  cytoband = select(consensus_seg_cytoband_status,
+  cytoband = select(filtered_consensus_cytoband_status,
                     cols_to_keep,
                     region = cytoband),
-  gene = select(consensus_seg_gene_status,
+  gene = select(filtered_consensus_gene_status,
                 cols_to_keep,
                 region = gene_symbol),
   .id = "region_type"
