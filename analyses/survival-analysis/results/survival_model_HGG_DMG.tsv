@@ -1,0 +1,7 @@
+strata	median	lower	upper
+molecular_subtype=BRAF V600E	515	NA	NA
+molecular_subtype=DMG, H3 K28	375	302	515
+molecular_subtype=DMG, H3 K28, BRAF V600E	244	NA	NA
+molecular_subtype=HGG, H3 G35	NA	NA	NA
+molecular_subtype=HGG, H3 wildtype	547	389	NA
+molecular_subtype=HGG, IDH	1311	NA	NA
