@@ -10,7 +10,7 @@
 # --metadata : Relative file path to MAF file to be analyzed. Can be .gz compressed.
 #              Assumes file path is given from top directory of 'OpenPBTA-analysis'.
 # --coding_regions : File path that specifies the BED regions file that specifies
-#                     coding regions should be used for coding only TMB calculations.
+#                     coding regions that should be used for coding only TMB calculations.
 # --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
 # --tcga: If TRUE, will skip PBTA metadata specific steps
 #
@@ -237,23 +237,14 @@ strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
 
 ############################# Set Up BED Files #################################
 # Make a data.frame of the unique BED file paths and their names
-bed_file_paths_df <- strelka_mutect_maf_df %>%
+bed_files_key_df <- strelka_mutect_maf_df %>%
   dplyr::select(Tumor_Sample_Barcode, target_bed, target_bed_path) %>%
   dplyr::distinct()
 
-# Pull out file paths as a vector
-bed_file_paths <- dplyr::distinct(
-  bed_file_paths_df,
-  target_bed, target_bed_path
-) %>%
-  dplyr::pull(target_bed_path)
-
-# Make it a named vector
-names(bed_file_paths) <- dplyr::distinct(
-  bed_file_paths_df,
-  target_bed, target_bed_path
-) %>%
-  dplyr::pull(target_bed)
+# Get the file paths for the bed files
+bed_file_paths <- bed_files_key_df %>%
+  dplyr::distinct(target_bed, target_bed_path) %>%
+  tibble::deframe()
 
 # Read in each unique BED file and turn into GenomicRanges object
 bed_ranges_list <- lapply(bed_file_paths, function(bed_file) {
@@ -298,15 +289,6 @@ coding_bed_ranges_list <- lapply(bed_ranges_list, function(bed_range,
   return(GenomicRanges::reduce(coding_intersect_ranges))
 })
 
-#### These vectors will be passed into the TMB calculations
-# Get unique sample_IDs
-tumor_sample_barcodes <- bed_file_paths_df %>%
-  dplyr::pull(Tumor_Sample_Barcode)
-
-# Get unique bed names
-bed_names <- bed_file_paths_df %>%
-  dplyr::pull(target_bed)
-
 ########################### All mutations TMB file #############################
 # If the file exists or the overwrite option is not being used, run TMB calculations
 if (file.exists(tmb_all_file) && !opt$overwrite) {
@@ -324,8 +306,8 @@ if (file.exists(tmb_all_file) && !opt$overwrite) {
 
   # Run TMB calculation on each tumor sample and its respective BED range
   tmb_all_df <- purrr::map2_df(
-    tumor_sample_barcodes,
-    bed_names,
+    bed_files_key_df$Tumor_Sample_Barcode,
+    bed_files_key_df$target_bed,
     ~ calculate_tmb(
       tumor_sample_barcode = .x,
       maf_df = strelka_mutect_maf_df,
@@ -360,7 +342,8 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   # Run coding TMB calculation on each tumor sample and its
   # respective coding BED range
   tmb_coding_df <- purrr::map2_df(
-    tumor_sample_barcodes, bed_names,
+    bed_files_key_df$Tumor_Sample_Barcode,
+    bed_files_key_df$target_bed,
     ~ calculate_tmb(
       tumor_sample_barcode = .x,
       maf_df = strelka_mutect_maf_df,

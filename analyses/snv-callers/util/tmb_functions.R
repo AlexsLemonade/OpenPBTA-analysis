@@ -104,17 +104,17 @@ calculate_tmb <- function(tumor_sample_barcode = NULL,
   # TMB = # variants / size of the genome or exome surveyed / Mb
   #
   # Args:
-  #   tumor_sample_barcode: A single character string corresponding to a sample
+  #   tumor_sample_barcode: A string corresponding to a sample
   #                         id in the `Tumor_Sample_Barcode` MAF file in maf_df.
   #   maf_df: maf data.frame that has been turned into a data.frame, has had
   #           the experimental_stategy column added from the metadata (can be
   #           done with the `set_up_maf` function) and has WXS mutations filtered
   #           using `wxs_bed_filter` function (If the situation calls for it).
-  #   bed_df: BED formatted data.frame of the target regions to use for TMB
+  #   bed_ranges: A GenomicRanges made from the BED file of the target regions to use for TMB
   #           calculations.
   #
   # Returns:
-  # A calculated genome size, and TMB for the given Tumor_Sample_Barcode,
+  # A calculated total region size, and TMB for the given Tumor_Sample_Barcode,
   # returned as a single row data.frame. `experimental_strategy`, `short_histology`
   # columns are carried along.
 
@@ -136,12 +136,12 @@ calculate_tmb <- function(tumor_sample_barcode = NULL,
       short_histology
     ) %>%
     # Count number of mutations for that sample
-    dplyr::summarize(mutation_count = dplyr::n()) %>%
-    # Calculate TMB
-    dplyr::mutate(
-      genome_size = bed_size,
-      tmb = mutation_count / (bed_size / 1000000)
-    )
+    dplyr::summarize(
+      mutation_count = dplyr::n(),
+      region_size = bed_size,
+      tmb = mutation_count / (region_size / 1000000)
+      )
+
 
   return(tmb)
 }
