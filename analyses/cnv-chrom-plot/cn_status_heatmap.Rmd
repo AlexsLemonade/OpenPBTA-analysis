@@ -278,7 +278,6 @@ bin_calls_list <- lapply(sample_ids,
   bin_ranges = bins,
   seg_ranges = filtered_seg_ranges,
   uncallable_ranges = uncallable_ranges,
-  # Percent coverage difference for a bin to be called a particular status
   frac_threshold_val = frac_threshold, 
   frac_uncallable_val = frac_uncallable
 )
@@ -290,22 +289,6 @@ names(bin_calls_list) <- sample_ids
 bin_calls_df <- dplyr::bind_rows(bin_calls_list,
   .id = "biospecimen_id"
 )
-```
-
-## Determine uncallable bins of the genome
-
-We'll determine NA regions based on what percent of that window of that region is uncallable. 
-These methods are borrowed from [chromosomal-instability methods](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/b5a33838d1e9bd7e7913a89201ec26125c16c94c/analyses/chromosomal-instability/util/chr-break-calculate.R#L216). 
-
-```{r}
-# Get the bin indices that correspond to less than the cutoff
-bin_indices <- names(pct_overlap)[which(pct_overlap > frac_uncallable)]
-```
-
-Replace these bins with NAs.
-
-```{r}
-bin_calls_df[, bin_indices] <- NA
 ```
 
 Format a matrix with rownames for `ComplexHeatmap` to use. 
@@ -321,8 +304,8 @@ bin_calls_mat <- bin_calls_df %>%
 Make color key. 
 
 ```{r}
-color_key <- structure(c(divergent_col_palette, "#9932CC"), 
-  names = c("loss", "neutral", "gain", "unstable")
+color_key <- structure(c(divergent_col_palette, "#9932CC", "#cccccc"), 
+  names = c("loss", "neutral", "gain", "unstable", "uncallable")
 )
 ```
 
@@ -398,8 +381,7 @@ heatmap <- ComplexHeatmap::Heatmap(bin_calls_mat,
   show_column_names = FALSE,
   show_row_names = FALSE,
   bottom_annotation = chr_annot,
-  left_annotation = hist_annot,
-  na_col = "#cccccc"
+  left_annotation = hist_annot
 )
 ```
 
