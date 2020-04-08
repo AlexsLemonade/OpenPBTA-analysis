@@ -16,7 +16,7 @@ bp_per_bin <- function(bin_ranges, status_ranges) {
   # Returns:
   #  a data.frame with bins x number of bp 
   
-  # Find the portions of each segment that overlap with each bin.
+  # Find the portions of each copy number segment that overlap with each bin.
   bin_overlaps <- GenomicRanges::pintersect(
     IRanges::findOverlapPairs(
       bin_ranges,
@@ -24,7 +24,7 @@ bp_per_bin <- function(bin_ranges, status_ranges) {
     )
   )
   
-  # Which segs are a part of which bins?
+  # Which bins do the segs in `bin_overlaps` overlap with?
   bin_indices <- GenomicRanges::findOverlaps(
     bin_ranges,
     bin_overlaps
@@ -56,19 +56,22 @@ bp_per_bin <- function(bin_ranges, status_ranges) {
 call_bin_status <- function(sample_id,
                             seg_ranges,
                             bin_ranges,
-                            perc_delta_threshold) {
+                            frac_delta_threshold, 
+                            unstable_threshold = .75) {
+  
   # Given a sample_id, CN segment ranges, and binned genome ranges object, 
   # make a call for each bin on what CN copy status has the most coverage in the bin. 
   # Uses bp_per_bin function. 
   #
   # Args:
-  #   sample_id: A string that corresponds to the biospecimen s
+  #   sample_id: A string that corresponds to a single biospecimen id
   #   seg_ranges: A GenomicRanges object that contains a `status` and a `biospecimen` slot.  
   #               The `biospecimen slot will be used to split out the `sample_id`'s corresponding ranges.   
-  #               The `status` slot should have the that has the gain/loss/neutral 
-  #               status call for each segment. Data will be split up by this variable. 
+  #               The `status` slot should have gain/loss/neutral. 
   #   bin_ranges: A binned GenomicRanges made from tileGenome that has been uncompressed with `unlist`. 
-  #   perc_delta_threshold: What covereage percent difference do you need to make the call?
+  #   frac_delta_threshold: What coverage fraction difference do you need to make the call?
+  #   unstable_threshold: If neither frac_gain and frac_loss aren dominant, what combined 
+  #                       coverage fraction is needed to call a bin `unstable`?
   #
   # Returns:
   #  a small data.frame that contains the status call of the sample for each bin. 
@@ -92,19 +95,24 @@ call_bin_status <- function(sample_id,
     # Keep bin width
     bin_width = bin_ranges@ranges@width
   ) %>%
-    # Join gains coverage data
-    dplyr::left_join(gain_per_bin,
-                     by = "bin"
-    ) %>%
-    # Join loss coverage data
-    dplyr::left_join(loss_per_bin,
-                     by = "bin",
-                     suffix = c(".gain", ".loss")
-    ) %>%
-    # Join neutral coverage data
-    dplyr::left_join(neutral_per_bin,
-                     by = "bin"
-    ) %>%
+  # Join loss coverage data
+  dplyr::left_join(gain_per_bin,
+                   by = "bin"
+  ) %>%
+  # Rename as .gain
+  dplyr::rename(bp_per_bin.gain = bp_per_bin) %>%
+  # Join loss coverage data
+  dplyr::left_join(loss_per_bin,
+                   by = "bin"
+  ) %>%
+  # Rename as .loss
+  dplyr::rename(bp_per_bin.loss = bp_per_bin) %>%
+  # Join neutral coverage data
+  dplyr::left_join(neutral_per_bin,
+                   by = "bin"
+  ) %>%
+  # Rename as .neutral
+  dplyr::rename(bp_per_bin.neutral = bp_per_bin) %>%
     # If there is an NA, at this point we can assume it means 0
     dplyr::mutate_at(
       dplyr::vars(
@@ -112,20 +120,19 @@ call_bin_status <- function(sample_id,
       ),
       ~ tidyr::replace_na(., 0)
     ) %>%
-    # Reformat neutral so it is like the others
-    dplyr::rename(bp_per_bin.neutral = bp_per_bin) %>%
     # Calculate the bins percentage of each status
     dplyr::mutate(
-      perc_gain = bp_per_bin.gain / bin_width,
-      perc_loss = bp_per_bin.loss / bin_width,
-      perc_neutral = bp_per_bin.neutral / bin_width
+      frac_gain = bp_per_bin.gain / bin_width,
+      frac_loss = bp_per_bin.loss / bin_width,
+      frac_neutral = bp_per_bin.neutral / bin_width
     ) %>%
     # Use these percentages for declaring final call per bin based on
-    # the perc_delta_threshold
+    # the frac_delta_threshold
     dplyr::mutate(
       status = dplyr::case_when(
-        (perc_gain - perc_loss) > perc_delta_threshold ~ "gain",
-        (perc_loss - perc_gain) > perc_delta_threshold ~ "loss",
+        (frac_gain - frac_loss) > frac_delta_threshold ~ "gain",
+        (frac_loss - frac_gain) > frac_delta_threshold ~ "loss",
+        frac_loss + frac_gain > unstable_threshold ~ "unstable",
         TRUE ~ "neutral"
       )
     )
@@ -134,10 +141,10 @@ call_bin_status <- function(sample_id,
   status_df <- bin_bp_status %>%
     # Only keep the bin and status columns
     dplyr::select(bin, status) %>%
+    # Arrange the bins in order
+    dplyr::arrange(bin) %>%
     # Spread this data so we can make it a sample x bin matrix later
-    tidyr::spread(bin, status) %>%
-    # Sort the bins data/columns to be in numeric order
-    dplyr::select(order(as.numeric(colnames(.))))
+    tidyr::spread(bin, status) 
   
   return(status_df)
 }
