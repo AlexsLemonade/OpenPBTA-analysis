@@ -131,6 +131,7 @@ calculate_tmb <- function(tumor_sample_barcode = NULL,
   # Make a genome size variable
   tmb <- sample_maf_df %>%
     dplyr::group_by(
+      #TODO: Make this column passing stuff more flexible with some tidyeval maybe
       Tumor_Sample_Barcode = tumor_sample_barcode,
       experimental_strategy,
       short_histology

@@ -213,6 +213,7 @@ if (opt$tcga) {
       target_bed = dplyr::recode(experimental_strategy,
         "WGS" = "scratch/intersect_strelka_mutect_WGS.bed",
         "WXS" = "data/WXS.hg38.100bp_padded.bed"
+        #TODO: make a padded/unpadded script option
       ),
       target_bed_path = file.path(root_dir, target_bed)
     )
