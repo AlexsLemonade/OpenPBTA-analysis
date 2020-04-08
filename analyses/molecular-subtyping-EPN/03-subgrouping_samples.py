@@ -15,6 +15,7 @@ import os
 import sys
 import numpy as np 
 import pandas as pd
+from scipy.stats import iqr
 
 from matplotlib import pyplot as plt
 parser = argparse.ArgumentParser()
@@ -31,6 +32,7 @@ EPN_final["subgroup"] = ""
 
 # File to write all the data to
 outfile = open(args.subgroup_table, "w")
+
 
 # This function takes in every row from EPN_final, 
 #	subgroup name to be returned(if values are higher than threshold),
@@ -127,10 +129,23 @@ pt_epn_b_tests = [("6q_loss", 0),
                   ("IFT46_expr_zscore", 3),
                   ("GPBP1_expr_zscore", 3)] 
 
+
 EPN_final["subgroup"] = EPN_final.apply(subgroup_func,
                                           axis=1,
                                           subgroupname="PT_EPN_B",
                                           column_values=pt_epn_b_tests)
+
+
+## Creating columns for SV and CNV breaks density
+EPN_final["SV instability"] = ""
+EPN_final["CNV_instability"] = ""
+sv_iqr = iqr(np.array(EPN_final["breaks_density-chromosomal_instability_SV"].dropna()))
+sv_median = np.median(np.array(EPN_final["breaks_density-chromosomal_instability_SV"].dropna()))
+cnv_iqr = iqr(np.array(EPN_final["breaks_density-chromosomal_instability_CNV"].dropna()))
+cnv_median = np.median(np.array(EPN_final["breaks_density-chromosomal_instability_CNV"].dropna()))
+EPN_final["SV instability"] = EPN_final.apply(lambda x: (x["breaks_density-chromosomal_instability_SV"]-sv_median)/sv_iqr, axis=1)
+EPN_final["CNV_instability"] = EPN_final.apply(lambda x: (x["breaks_density-chromosomal_instability_CNV"]-cnv_median)/cnv_iqr, axis=1)
+
 
 EPN_final.to_csv(outfile, sep="\t", header=True, index=False)
 outfile.close()
