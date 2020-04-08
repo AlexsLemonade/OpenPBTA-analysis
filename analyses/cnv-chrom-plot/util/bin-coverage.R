@@ -138,14 +138,14 @@ call_bin_status <- function(sample_id,
     # Use these percentages for declaring final call per bin based on
     # the frac_delta_threshold
     dplyr::mutate(
-      status = dplyr::case_when(
-        frac_uncallable > frac_uncallable_val ~ "uncallable", 
-        frac_gain > frac_threshold_val ~ "gain",
-        frac_loss > frac_threshold_val ~ "loss",
-        frac_gain + frac_loss > frac_threshold_val ~ "unstable",
-        TRUE  ~ "neutral"
-        )
+      status =  dplyr::case_when(
+        frac_uncallable > uncallable_threshold ~ "uncallable"
+        frac_gain > threshold ~ "gain",
+        frac_loss > threshold ~ "loss",
+        frac_neutral > threshold ~ "neutral",
+        TRUE ~ "unstable"
       )
+    )
   
   # Format this data as a status
   status_df <- bin_bp_status %>%
