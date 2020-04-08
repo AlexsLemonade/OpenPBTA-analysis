@@ -13,8 +13,8 @@ Create a summary heatmap of copy number status from the consensus CNV call data.
 This is done by binning the genome and calculating the segment's coverage of the
 CNV consensus segments. 
 A bin is declared a particular copy number status if that status's base pair 
-coverage is a certain threshold percentage larger than the other status' 
-coverage (`perc_delta_threshold`).
+coverage is a certain threshold larger than the other status' 
+coverage (`frac_delta_threshold`).
 
 ### Usage
 
@@ -35,12 +35,12 @@ Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/cn_status_heatmap.Rmd',
 length_max <- 1e7
 
 # Set minimum percentage of a bin that should be callable to report data. 
-perc_uncallable <- 0.75
+frac_uncallable <- 0.75
 
 # Percent coverage difference for a bin to be called a particular status 
 # (0.2 means anything where a status is 20% bigger than the others will 
 # be called).
-perc_delta_threshold <- 0.1
+frac_delta_threshold <- 0.1
 ```
 
 ### Set Up
@@ -280,7 +280,7 @@ bin_calls_list <- lapply(sample_ids,
   bin_ranges = bins,
   seg_ranges = filtered_seg_ranges,
   # Percent coverage difference for a bin to be called a particular status
-  perc_delta_threshold = perc_delta_threshold
+  frac_delta_threshold = frac_delta_threshold
 )
 
 # Bring along sample IDs
@@ -324,7 +324,7 @@ pct_overlap <- excluded_length_per_bin / bin_length
 names(pct_overlap) <- unique(na_overlaps@from)
 
 # Get the bin indices that correspond to less than the cutoff
-bin_indices <- names(pct_overlap)[which(pct_overlap > perc_uncallable)]
+bin_indices <- names(pct_overlap)[which(pct_overlap > frac_uncallable)]
 ```
 
 Replace these bins with NAs.
@@ -346,8 +346,8 @@ bin_calls_mat <- bin_calls_df %>%
 Make color key. 
 
 ```{r}
-color_key <- structure(divergent_col_palette,
-  names = c("loss", "neutral", "gain")
+color_key <- structure(c(divergent_col_palette, "#9932CC"), 
+  names = c("loss", "neutral", "gain", "unstable")
 )
 ```
 
