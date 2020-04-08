@@ -122,7 +122,7 @@ If we need the `NA` color separated, like for use with `ComplexHeatmap` which ha
 
 ```
 na_color <- gradient_col_palette %>%
-  dplyr::filter(color_names != "na_color")
+  dplyr::filter(color_names == "na_color")
 
 gradient_col_palette <- gradient_col_palette %>%
   dplyr::filter(color_names != "na_color")
