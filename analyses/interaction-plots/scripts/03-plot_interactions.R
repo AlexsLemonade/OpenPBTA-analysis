@@ -87,6 +87,10 @@ if (!is.na(opts$disease_table)){
 cooccur_file <- opts$infile
 plot_file <- opts$outfile
 
+# get root directory
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+
 cooccur_df <-
   readr::read_tsv(cooccur_file, col_types = readr::cols()) %>%
   dplyr::mutate(
@@ -112,6 +116,23 @@ cooccur_df <- cooccur_df %>%
     label1 = factor(label1, levels = labels),
     label2 = factor(label2, levels = labels)
   )
+
+
+# Get color palettes
+
+palette_dir <- file.path(root_dir, "figures", "palettes")
+divergent_palette <- readr::read_tsv(file.path(palette_dir, "divergent_color_palette.tsv"), 
+                                     col_types = readr::cols())
+divergent_colors <- divergent_palette %>%
+  dplyr::filter(color_names != "na_color") %>%
+  dplyr::pull(hex_codes)
+na_color <- divergent_palette %>%
+  dplyr::filter(color_names == "na_color") %>%
+  dplyr::pull(hex_codes)
+# not currently using "histologies_color_palette.tsv" as the current 
+# implementation uses `integrated_diagnosis``, which is not covered in that color scheme
+# Since we are only showing the most common subset of diseases, we don't need all colors,
+# but this should probably be updated in the future
 
 
 # create scales for consistent sizing
@@ -145,9 +166,9 @@ cooccur_plot <- ggplot(
     limits = yscale,
     breaks = unique(cooccur_df$label2)
   ) +
-  scale_fill_distiller(
-    type = "div",
-    palette = 5,
+  scale_fill_gradientn(
+    colors = divergent_colors,
+    na.value = na_color,
     limits = c(-10, 10),
     oob = scales::squish,
   ) +
@@ -213,6 +234,7 @@ disease_plot <- ggplot(
     y = "Samples with mutations",
     fill = "Diagnosis"
   ) + 
+  # TODO: update to project color scheme (currently requires translation of disease to short_histology)
   colorblindr::scale_fill_OkabeIto() + 
   scale_x_discrete(
     limits = xscale2,

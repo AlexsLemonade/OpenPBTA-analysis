@@ -1,6 +1,6 @@
 ## Apply classifiers trained on TCGA RNA-seq data
 
-**Module author:** Krutika Gaonkar ([@kgaonkar6](https://github.com/kgaonkar6))
+**Module author:** Krutika Gaonkar ([@kgaonkar6](https://github.com/kgaonkar6)) and Jaclyn Taroni (@jaclyn-taroni); code adapted from Gregory Way ([@gwaygenomics](https://github.com/gwaygenomics))
 
 This module is adapted from: [`marislab/pdx-classification`](https://github.com/marislab/pdx-classification).
 Now published in [Rokita et al. _Cell Reports._ 2019.](https://doi.org/10.1016/j.celrep.2019.09.071)
@@ -42,5 +42,4 @@ ROC curve for NF1 classifier scores for stranded RNAseq data
 
 ROC curve for NF1 classifier scores for polya RNASeq data
 ![polya RNASeq NF1 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/polya_NF1.png)
-
 
