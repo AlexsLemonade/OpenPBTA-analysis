@@ -1,6 +1,6 @@
 #!/bin/bash
-# 
-# Run all figure making scripts. 
+#
+# Run all figure making scripts.
 
 # Find current directory based on this script
 WORKDIR=$(dirname "${BASH_SOURCE[0]}")
@@ -27,7 +27,7 @@ Rscript --vanilla scripts/fig1-sample-distribution.R
 ################ Mutational landscape figure
 # Run both SNV caller consensus scripts
 # Note: This the PBTA consensus script requires at least 128 MB of RAM to run
-# These scripts are intended to run from the base directory, 
+# These scripts are intended to run from the base directory,
 # so we will temporarily move there
 cd $BASEDIR
 bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh
@@ -35,7 +35,7 @@ bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh
 cd $WORKDIR
 
 # Run mutational signatures analysis
-Rscript -e "rmarkdown::render('../analyses/mutational-signatures/mutational_signatures.Rmd', clean = TRUE)"
+Rscript --vanilla -e "rmarkdown::render('../analyses/mutational-signatures/mutational_signatures.Rmd', clean = TRUE)"
 
 # Run the figure assembly
 Rscript --vanilla scripts/fig2-mutational-landscape.R
@@ -59,7 +59,7 @@ cp ${analyses_dir}/interaction-plots/plots/combined_top50.png pngs/mutation_cooc
 
 ####### Transcriptomic overview
 
-# First run the dimension reduction steps 
+# First run the dimension reduction steps
 bash ${analyses_dir}/transcriptomic-dimension-reduction/dimension-reduction-plots.sh
 
 # Then collapse RNA-seq data, which is required for GSVA and immune deconvolution
@@ -69,6 +69,11 @@ bash ${analyses_dir}/collapse-rnaseq/run-collapse-rnaseq.sh
 Rscript --vanilla ${analyses_dir}/gene-set-enrichment-analysis/01-conduct-gsea-analysis.R \
   --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
   --output ${analyses_dir}/gene-set-enrichment-analysis/results/gsva_scores_stranded.tsv
+
+# This notebook tests for differences between `short_histology`
+# and `integrated_diagnosis` - we can use this to filter what pathways are
+# displayed in a heatmap
+Rscript --vanilla -e "rmarkdown::render('${analyses_dir}/gene-set-enrichment-analysis/02-model-gsea.Rmd', clean = TRUE)"
 
 # Immune deconvolution - we can't use CIBERSORT because we don't have access to it
 # By not supplying an argument to --method, we are electing only to use xCell
