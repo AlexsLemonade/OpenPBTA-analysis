@@ -37,10 +37,8 @@ length_max <- 1e7
 # Set minimum percentage of a bin that should be callable to report data. 
 frac_uncallable <- 0.75
 
-# Percent coverage difference for a bin to be called a particular status 
-# (0.2 means anything where a status is 20% bigger than the others will 
-# be called).
-frac_delta_threshold <- 0.1
+# Absolute fraction needed a bin to be called a particular status 
+frac_threshold <- 0.75
 ```
 
 ### Set Up
@@ -279,8 +277,10 @@ bin_calls_list <- lapply(sample_ids,
   call_bin_status,
   bin_ranges = bins,
   seg_ranges = filtered_seg_ranges,
+  uncallable_ranges = uncallable_ranges,
   # Percent coverage difference for a bin to be called a particular status
-  frac_delta_threshold = frac_delta_threshold
+  frac_threshold_val = frac_threshold, 
+  frac_uncallable_val = frac_uncallable
 )
 
 # Bring along sample IDs
@@ -298,31 +298,6 @@ We'll determine NA regions based on what percent of that window of that region i
 These methods are borrowed from [chromosomal-instability methods](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/b5a33838d1e9bd7e7913a89201ec26125c16c94c/analyses/chromosomal-instability/util/chr-break-calculate.R#L216). 
 
 ```{r}
-# Find the NA region(s) for each bin without combining close regions
-na_regions <- GenomicRanges::pintersect(
-  IRanges::findOverlapPairs(bins, uncallable_ranges)
-)
-
-# Find overlap between na_regions and bin
-na_overlaps <- GenomicRanges::findOverlaps(bins, na_regions)
-
-# Get the sum of the length of all excluded regions for each bin.
-excluded_length_per_bin <- tapply(
-  na_regions@ranges@width, # Get length of each sequence
-  na_overlaps@from, # Index of which bin it overlaps
-  sum
-) # Add up per bin
-
-# Get the total bin length for each bin that has excluded regions
-bin_length <- bins[unique(na_overlaps@from)]@ranges@width
-
-# Calculate the percent overlap, adding up the na regions within a bin
-pct_overlap <- excluded_length_per_bin / bin_length
-
-# Store bins as names for sanity checking
-# Note that unique and tapply put the bins in the same order
-names(pct_overlap) <- unique(na_overlaps@from)
-
 # Get the bin indices that correspond to less than the cutoff
 bin_indices <- names(pct_overlap)[which(pct_overlap > frac_uncallable)]
 ```
