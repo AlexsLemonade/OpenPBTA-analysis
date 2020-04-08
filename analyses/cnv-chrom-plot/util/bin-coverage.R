@@ -59,12 +59,7 @@ call_bin_status <- function(sample_id,
                             uncallable_ranges, 
                             frac_threshold_val = .75, 
                             frac_uncallable_val = .75) {
-  bin_ranges = bins
-  sample_id = sample_ids[1]
-  seg_ranges = filtered_seg_ranges
-  uncallable_ranges = uncallable_ranges
-  frac_threshold_val = frac_threshold
-  frac_uncallable_val = frac_uncallable
+  
   # Given a sample_id, CN segment ranges, and binned genome ranges object, 
   # make a call for each bin on what CN copy status has the most coverage in the bin. 
   # Uses bp_per_bin function. 
