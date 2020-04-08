@@ -115,7 +115,7 @@ You may want to remove the `na_color` at the end of the list depending on whethe
 ```
 gradient_col_palette <- readr::read_tsv(
   file.path(figures_dir, "palettes", "gradient_color_palette.tsv")
-  )
+)
 ```
 
 If we need the `NA` color separated, like for use with `ComplexHeatmap` which has a separate argument for the color for `NA` values.
@@ -136,10 +136,10 @@ You can provide any numeric vector to color code a palette using `circlize::colo
 
 ```
 gradient_col_val <- seq(from = min(df$variable), to = max(df$variable),
-                        length.out = length(gradient_col_palette))
+                        length.out = nrow(gradient_col_palette))
 
 col_fun <- circlize::colorRamp2(gradient_col_val,
-                                gradient_col_palette)
+                                gradient_col_palette$hex_codes)
 ```
 **Step 3)** Apply to numeric data, or supply to your plotting code.  
 
@@ -154,10 +154,11 @@ df <- df %>%
 ## OR ##
 
 # Some plotting packages want a color function
-ComplexHeatmap::heatmap(df,
+ComplexHeatmap::Heatmap(
+  df,
   col = col_fun, 
-  na_col = na_color
-  )
+  na_col = na_color$hex_codes
+)
 ```
 
 ### Updating color palettes
