@@ -108,6 +108,9 @@ gsva_scores_mat <- gsva_scores_df %>%
 # What gene sets are we going to include in our heatmap?
 # We'll filter based on whether the ANOVA has a significant p-value
 included_genesets <- gsva_stats_df %>%
+  mutate(hallmark_name = stringr::str_replace_all(
+    stringr::str_remove(hallmark_name, "HALLMARK_"), "_", " ")
+  ) %>%
   filter(significant_anova) %>%
   pull(hallmark_name)
 
