@@ -316,6 +316,12 @@ RUN R -e "devtools::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd4
 # This is required for creating a treemap of the broad histology and integrated diagnoses
 RUN R -e "devtools::install_github('wilkox/treemapify', ref = 'e70adf727f4d13223de8146458db9bef97f872cb', dependencies = TRUE)"
 
+# Install multipanelfigure, required for transcriptomic overview figure
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    && install2.r --error \
+    --deps TRUE \
+    multipanelfigure
+
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
 
