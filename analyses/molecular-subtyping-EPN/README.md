@@ -17,4 +17,76 @@ This above  script is designed to change to this directory to run, so it should 
 
 3. <b>`02_ependymoma_generate_all_data.py`</b>  is a script that takes in expression, GISTIC, fusion, breakpoint, GISTIC, GSVA files to add values from these tables as new columns to the input notebook. Output from `01-make_notebook_RNAandDNA.py` script is used as input notebook. The output notebook from this is saved to `results/EPN_all_data.tsv`
 
-4. <b> `03-subgrouping_samples.py`  </b>  is a script that takes the table `results/EPN_all_data.tsv`  as input and adds a column that groups the samples into one of these groups - ST-EPN-RELA, ST-EPN-YAP1, PF-EPN-A, and PF-EPN-B
+4. <b> `03-subgrouping_samples.py`  </b>  is a script that takes the table `results/EPN_all_data.tsv`  as input and adds a column that groups the samples into one of these groups - ST-EPN-RELA, ST-EPN-YAP1, PF-EPN-A, and PF-EPN-B. The logic for subtyping these are as follows - 
+    - If fusion column values in results table is higher  than 0, then the corresponding subtype is added to the last column. The  below table shows which fusion is associated with which Ependymoma subtype
+            <table>
+                <tr>
+                    <th>Subtype name</th>
+                    <th>Fusion genes</th>
+                </tr>
+                <tr>
+                    <td>ST_EPN_RELA</td>
+                    <td>C11orf95--RELA, LTBP3--RELA, PTEN--TAS2R1</td>
+                </tr>
+                <tr>
+                    <td>ST_EPN_YAP1</td>
+                    <td>YAP1--MAMLD1, C11orf95--MAML2, YAP1--FAM118B</td>
+                </tr>
+                <tr>
+                    <td>PT_EPN_A</td>
+                    <td>--</td>
+                </tr>
+                <tr>
+                    <td>PT_EPN_B</td>
+                    <td>--</td>
+                </tr>
+            </table>
+     
+    - If gene expression column for the genes given below under each subtype is greater than 3, then the subtype is added to the last column 
+            <table>
+                <tr>
+                    <th>Subtype name</th>
+                    <th>Gene expressions</th>
+                </tr>
+                <tr>
+                    <td>ST_EPN_RELA</td>
+                    <td>L1CAM</td>
+                </tr>
+                <tr>
+                    <td>ST_EPN_YAP1</td>
+                    <td>ARL4D, CLDN1</td>
+                </tr>
+                <tr>
+                    <td>PT_EPN_A</td>
+                    <td>CXorf67</td>
+                </tr>
+                <tr>
+                    <td>PT_EPN_B</td>
+                    <td>GPBP1</td>
+                </tr>
+            </table>
+    -  If all CNV columns have a value greater than 1, then the below subtype is assigned
+            <table>
+                <tr>
+                    <th>Subtype name</th>
+                    <th>CNV gain/loss</th>
+                </tr>
+                <tr>
+                    <td>ST_EPN_RELA</td>
+                    <td>9p_loss, 9q_loss</td>
+                </tr>
+                <tr>
+                    <td>ST_EPN_YAP1</td>
+                    <td>11q_loss, 11q_gain</td>
+                </tr>
+                <tr>
+                    <td>PT_EPN_A</td>
+                    <td>1q_loss</td>
+                </tr>
+                <tr>
+                    <td>PT_EPN_B</td>
+                    <td>6q_loss, 6p_loss</td>
+                </tr>
+            </table>       
+
+
