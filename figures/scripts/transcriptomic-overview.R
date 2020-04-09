@@ -6,12 +6,16 @@
 
 library(tidyverse)
 library(ComplexHeatmap)
+library(multipanelfigure)
 
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # Declare output directory
 output_dir <- file.path(root_dir, "figures", "pngs")
+
+# Final figure filename
+output_png <- file.path(output_dir, "transcriptomic-overview.png")
 
 # Data directory
 data_dir <- file.path(root_dir, "data")
@@ -273,7 +277,7 @@ cell_type_deconv_heatmap <- Heatmap(
 # We can use the `%v%` operator from ComplexHeatmap to make the immune
 # deconvolution panel
 deconv_panel <- scores_deconv_heatmap %v% cell_type_deconv_heatmap
-png(deconv_png, width = 5, height = 4.25, units = "in", res = 1200)
+png(deconv_png, width = 5, height = 4.6, units = "in", res = 1200)
 draw(deconv_panel, heatmap_legend_side = "bottom")
 dev.off()
 
@@ -288,3 +292,42 @@ short_histology_legend <- Legend(
 png(legend_png, width = 2, height = 6, unit = "in", res = 600)
 draw(short_histology_legend)
 dev.off()
+
+#### Assemble multipanel figure ------------------------------------------------
+
+transcriptomic_figure <- multi_panel_figure(columns = 7,
+                                            rows = 1,
+                                            width = 1200,
+                                            height = 300,
+                                            panel_label_type = "none")
+
+transcriptomic_figure <- fill_panel(transcriptomic_figure,
+                                    umap_png,
+                                    col = 1:2,
+                                    scaling = "fit")
+
+transcriptomic_figure <- fill_panel(transcriptomic_figure,
+                                    gsva_png,
+                                    col = 3:4,
+                                    scaling = "fit")
+
+transcriptomic_figure <- fill_panel(transcriptomic_figure,
+                                    deconv_png,
+                                    col = 5:6,
+                                    scaling = "fit")
+
+transcriptomic_figure <- fill_panel(transcriptomic_figure,
+                                    legend_png,
+                                    label = NULL,
+                                    scaling = "fit")
+
+save_multi_panel_figure(transcriptomic_figure, output_png)
+
+#### Remove temporary PNGs -----------------------------------------------------
+
+# Now that we've constructed and saved the final output we can remove the PNG
+# files for the individual panels and the legend
+file.remove(c(umap_png,
+              gsva_png,
+              deconv_png,
+              legend_png))
