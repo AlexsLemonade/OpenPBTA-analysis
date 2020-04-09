@@ -60,8 +60,7 @@ python3 02_ependymoma_generate_all_data.py \
 
 python3 03-subgrouping_samples.py \
 	--final_table $EPN_TABLE \
-	--subgroup_table results/EPN_all_data_withsubgroup.tsv \
-	--temp_folder_name subgrouping_samples	
+	--subgroup_table results/EPN_all_data_withsubgroup.tsv 
 
 
 
