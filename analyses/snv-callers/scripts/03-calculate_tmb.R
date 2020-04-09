@@ -205,9 +205,7 @@ if (opt$tcga) {
 } else { # pbta data
   # Isolate metadata to only the samples that are in the datasets
   metadata <- readr::read_tsv(opt$metadata) %>%
-    dplyr::filter(Kids_First_Biospecimen_ID %in% strelka_mutect_maf_df$Tumor_Sample_Barcode, 
-                  # Drop Panel samples
-                  experimental_strategy != "Panel") %>%
+    dplyr::filter(Kids_First_Biospecimen_ID %in% strelka_mutect_maf_df$Tumor_Sample_Barcode) %>%
     dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
     dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID) %>%
     # Make a Target BED regions column
@@ -236,7 +234,9 @@ strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
       target_bed_path
     ),
   by = "Tumor_Sample_Barcode"
-  )
+  ) %>% 
+  # Remove samples if they are labeled "Panel"
+  dplyr::filter(experimental_strategy != "Panel")
 
 ############################# Set Up BED Files #################################
 # Make a data.frame of the unique BED file paths and their names
