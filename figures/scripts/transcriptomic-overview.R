@@ -23,6 +23,17 @@ analyses_dir <- file.path(root_dir, "analyses")
 histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"),
                            guess_max = 10000)
 
+#### Temporary PNG names -------------------------------------------------------
+# Because we are mixing Heatmaps and ggplots in this figure, one of the best
+# ways to control sizes is to create PNGs and then use multipanelfigure to
+# put the final figure together.
+#
+# Here we'll set up the file names used throughout
+umap_png <- file.path(output_dir, "temp_umap.png")
+gsva_png <- file.path(output_dir, "temp_gsva.png")
+deconv_png <- file.path(output_dir, "temp_deconv.png")
+legend_png <- file.path(output_dir, "temp_legend.png")
+
 #### Color palettes ------------------------------------------------------------
 
 palette_dir <- file.path(root_dir, "figures", "palettes")
@@ -54,7 +65,11 @@ umap_plot <- read_tsv(rsem_umap_file) %>%
   plot_dimension_reduction(point_color = "short_histology",
                            x_label = "UMAP1",
                            y_label = "UMAP2",
-                           color_palette = histology_palette)
+                           color_palette = histology_palette) +
+  theme(text = element_text(size = 15))
+
+# Save temporary PNG
+ggsave(umap_png, plot = umap_plot, width = 4, height = 4)
 
 #### GSVA scores ---------------------------------------------------------------
 
@@ -144,9 +159,14 @@ gsva_heatmap <- Heatmap(
   name = "GSVA Scores",
   na_col = na_color$hex_codes,
   show_column_names = FALSE,
-  row_names_gp = grid::gpar(fontsize = 9),
-  top_annotation = column_heatmap_annotation
+  row_names_gp = grid::gpar(fontsize = 5),
+  top_annotation = column_heatmap_annotation,
+  heatmap_legend_param = list(direction = "horizontal")
 )
+
+png(gsva_png, width = 5.5, height = 5, units = "in", res = 1200)
+draw(gsva_heatmap, heatmap_legend_side = "bottom")
+dev.off()
 
 #### Immune deconvolution ------------------------------------------------------
 
@@ -246,20 +266,25 @@ cell_type_deconv_heatmap <- Heatmap(
   show_column_names = FALSE,
   row_names_gp = grid::gpar(fontsize = 9),
   cluster_columns = FALSE,
-  show_row_dend = FALSE
+  show_row_dend = FALSE,
+  heatmap_legend_param = list(direction = "horizontal")
 )
 
 # We can use the `%v%` operator from ComplexHeatmap to make the immune
 # deconvolution panel
 deconv_panel <- scores_deconv_heatmap %v% cell_type_deconv_heatmap
+png(deconv_png, width = 5, height = 4.25, units = "in", res = 1200)
+draw(deconv_panel, heatmap_legend_side = "bottom")
+dev.off()
 
-#### PNGs ----------------------------------------------------------------------
-# We're mixing Heatmaps and ggplots - we can write everything to PNG and then
-# reassemble because viewports were not playing nicely :(
+#### Short histology legend ----------------------------------------------------
 
+# And now just the legend which will serve as the legend for the entire figure
+short_histology_legend <- Legend(
+  labels = histology_palette$color_names,
+  legend_gp = gpar(fill = histology_palette$hex_codes)
+)
 
-
-
-
-
-
+png(legend_png, width = 2, height = 6, unit = "in", res = 600)
+draw(short_histology_legend)
+dev.off()
