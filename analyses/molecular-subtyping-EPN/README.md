@@ -17,8 +17,8 @@ This above  script is designed to change to this directory to run, so it should 
 
 3. <b>`02_ependymoma_generate_all_data.py`</b>  is a script that takes in expression, GISTIC, fusion, breakpoint, GISTIC, GSVA files to add values from these tables as new columns to the input notebook. Output from `01-make_notebook_RNAandDNA.py` script is used as input notebook. The output notebook from this is saved to `results/EPN_all_data.tsv`
 
-4. <b> `03-subgrouping_samples.py`  </b>  is a script that takes the table `results/EPN_all_data.tsv`  as input and adds a column that groups the samples into one of these groups - ST-EPN-RELA, ST-EPN-YAP1, PF-EPN-A, and PF-EPN-B. The logic for subtyping these are as follows - 
-    - If fusion column values in results table is higher  than 0, then the corresponding subtype is added to the last column. The  below table shows which fusion is associated with which Ependymoma subtype
+4. <b> `03-subgrouping_samples.py`  </b>  is a script that takes the table `results/EPN_all_data.tsv`  as input and adds a column that groups the samples into one of these groups - ST-EPN-RELA, ST-EPN-YAP1, PF-EPN-A, and PF-EPN-B. A new column named `subgroup` is added to the input table and saved in `resilts/EPN_all_data_withsubgroup.tsv`. It is possible that a sample is assigned more than one subgroup based on the conditions below. In those cases multiple subtypes are added to the subgroup column.  The logic for subtyping these are as follows - 
+    - If fusion column values in [input](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-EPN/results/EPN_all_data.tsv) table is higher  than 0, then the corresponding subtype is added to the last column. The  below table shows which fusion is associated with which Ependymoma subtype
             <table>
                 <tr>
                     <th>Subtype name</th>
@@ -93,6 +93,8 @@ This above  script is designed to change to this directory to run, so it should 
 
         -   The following formula was implemented for these two columns `breaks_density-chromosomal_instability_CNV` and `breaks_density-chromosomal_instability_SV` from input table and the values were added as column names `SV instability` and `CNV instability`
 
-                `(break density value for sample - median) / interquartile range`          
+                `(break density value for sample - median) / interquartile range`   
+
+
 
 
