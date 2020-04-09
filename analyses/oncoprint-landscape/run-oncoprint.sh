@@ -48,7 +48,7 @@ Rscript --vanilla 01-plot-oncoprint.R \
   --cnv_file ${intermediate_directory}/${primary_filename}_cnv.tsv \
   --fusion_file ${intermediate_directory}/${primary_filename}_fusions.tsv \
   --metadata_file ${histologies_file} \
-  --goi_list ${genes_list} \
+  --goi_file ${genes_list} \
   --png_name ${primary_filename}_goi_oncoprint.png
 
 #### Primary plus samples oncoprint
@@ -75,5 +75,5 @@ Rscript --vanilla 01-plot-oncoprint.R \
   --cnv_file ${intermediate_directory}/${primaryplus_filename}_cnv.tsv \
   --fusion_file ${intermediate_directory}/${primaryplus_filename}_fusions.tsv \
   --metadata_file ${histologies_file} \
-  --goi_list ${genes_list} \
+  --goi_file ${genes_list} \
   --png_name ${primaryplus_filename}_goi_oncoprint.png

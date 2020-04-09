@@ -20,6 +20,16 @@ library(patchwork)
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
+# Define clinical features object for plotting -- this will be the same
+# across maf objects
+clinical_features = c(
+  "broad_histology",
+  "short_histology",
+  "reported_gender",
+  "tumor_descriptor",
+  "molecular_subtype"
+)
+
 #### Directories and Files -----------------------------------------------------
 
 # Detect the ".git" folder -- this will in the project root directory.
@@ -66,26 +76,26 @@ maf_df_primary_only <-
   ))
 
 # Read in cnv files
-cnv_file_primary_plus <-
+cnv_df_primary_plus <-
   readr::read_tsv(file.path(
     scratch_oncoprint_dir,
     "all_participants_primary-plus_cnv.tsv"
   ))
 
-cnv_file_primary_only <-
+cnv_df_primary_only <-
   readr::read_tsv(file.path(
     scratch_oncoprint_dir,
     "all_participants_primary_only_cnv.tsv"
   ))
 
 # Read in fusion files
-fusion_file_primary_plus <-
+fusion_df_primary_plus <-
   readr::read_tsv(file.path(
     scratch_oncoprint_dir,
     "all_participants_primary-plus_fusions.tsv"
   ))
 
-fusion_file_primary_only <-
+fusion_df_primary_only <-
   readr::read_tsv(file.path(
     scratch_oncoprint_dir,
     "all_participants_primary_only_fusions.tsv"
@@ -104,6 +114,9 @@ goi_list <-
   ) %>%
   dplyr::pull("gene")
 
+# Filter `goi_list` to include only the unique genes of interest
+goi_list <- unique(goi_list)
+
 #### Functions ----------------------------------------------------------
 
 source(file.path(
@@ -112,28 +125,23 @@ source(file.path(
   "oncoplot-functions.R"
 ))
 
-#### Generate Oncoprints ------------------------------------------------------
 
-# Generate the primary-plus oncoprint
-primary_plus <- prepare_and_plot_oncoprint(
-  maf_df_primary_plus,
-  cnv_file_primary_plus,
-  metadata,
-  fusion_file_primary_plus,
-  goi_list = goi_list,
-  color_palette = color_palette,
-  running_in_figures_script = TRUE
+#### Generate MAF objects for plotting ----------------------------------------
+
+# Generate the primary-plus maf_object
+primary_plus <- prepare_maf_object(
+  maf_df = maf_df_primary_plus,
+  cnv_df = cnv_df_primary_plus,
+  metadata = metadata,
+  fusion_df = fusion_df_primary_plus
 )
 
-# Generate the primary-only oncoprint
-primary_only <- prepare_and_plot_oncoprint(
-  maf_df_primary_only,
-  cnv_file_primary_only,
-  metadata,
-  fusion_file_primary_only,
-  goi_list = goi_list,
-  color_palette = color_palette,
-  running_in_figures_script = TRUE
+# Generate the primary-only maf object
+primary_only <- prepare_maf_object(
+  maf_df = maf_df_primary_only,
+  cnv_df = cnv_df_primary_only,
+  metadata = metadata,
+  fusion_df = fusion_df_primary_only
 )
 
 #### Assemble multipanel plot -------------------------------------------------
@@ -150,28 +158,18 @@ png(
 coOncoplot(
   primary_plus,
   primary_only,
-  clinicalFeatures1 = c(
-    "broad_histology",
-    "short_histology",
-    "reported_gender",
-    "tumor_descriptor",
-    "molecular_subtype"
-  ),
-  clinicalFeatures2 = c(
-    "broad_histology",
-    "short_histology",
-    "reported_gender",
-    "tumor_descriptor",
-    "molecular_subtype"
-  ),
+  m1Name = "Primary and Secondary Independent Samples Oncoprint",
+  m2Name = "Primary Only Independent Samples Oncoprint",
+  clinicalFeatures1 = clinical_features,
+  clinicalFeatures2 = clinical_features,
   genes = goi_list,
   sortByAnnotation1 = TRUE,
   sortByAnnotation2 = TRUE,
   showSampleNames = TRUE,
   removeNonMutated = TRUE,
-  annotationFontSize = 0.7,
-  SampleNamefont = 0.5,
-  geneNamefont = 0.25,
+  annotationFontSize = 0.65,
+  SampleNamefont = 0.6,
+  geneNamefont = 0.5,
   colors = color_palette
 )
 dev.off()

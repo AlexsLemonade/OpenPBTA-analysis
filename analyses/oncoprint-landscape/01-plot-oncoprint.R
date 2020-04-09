@@ -101,7 +101,7 @@ option_list <- list(
     help = "file path to the histologies file"
   ),
   optparse::make_option(
-    c("-g", "--goi_list"),
+    c("-g", "--goi_file"),
     type = "character",
     default = NULL,
     help = "file path to file that contains list of genes to include on
@@ -123,9 +123,9 @@ opt <- optparse::parse_args(opt_parser)
 # be defined for the `prepare_and_plot_oncoprint` custom function (the 
 # cnv_file specifically for the `read.maf` function within the custom function),
 # even if they are NULL
-cnv_file <- opt$cnv_file
-fusion_file <- opt$fusion_file
-goi_list <- opt$goi_list
+cnv_df <- opt$cnv_file
+fusion_df <- opt$fusion_file
+goi_list <- opt$goi_file
 
 #### Read in data --------------------------------------------------------------
 
@@ -140,23 +140,35 @@ maf_df <- data.table::fread(opt$maf_file,
 
 # Read in cnv file
 if (!is.null(opt$cnv_file)) {
-  cnv_file <- readr::read_tsv(cnv_file)
+  cnv_df <- readr::read_tsv(opt$cnv_file)
 }
 
 # Read in fusion file and join
 if (!is.null(opt$fusion_file)) {
-  fusion_file <- readr::read_tsv(opt$fusion_file)
+  fusion_df <- readr::read_tsv(opt$fusion_file)
 }
 
 # Read in genes list
-if (!is.null(opt$goi_list)) {
-  goi_list <- readr::read_tsv(file.path(opt$goi_list)) %>%
+if (!is.null(opt$goi_file)) {
+  goi_list <- readr::read_tsv(file.path(opt$goi_file)) %>%
     dplyr::pull("gene")
+    
+  # Filter `goi_list` to include only the unique genes of interest
+  goi_list <- unique(goi_list)
 }
 
-#### Prepare, Plot and Save Oncoprint ---------------------------------------------------
+#### Prepare MAF object for plotting ------------------------------------------
 
-# Given a maf file, plot an oncoprint of the variants in the
+maf_object <- prepare_maf_object(
+  maf_df = maf_df,
+  cnv_df = cnv_df,
+  metadata = metadata,
+  fusion_df = fusion_df
+)
+
+#### Plot and Save Oncoprint --------------------------------------------------
+
+# Given a maf object, plot an oncoprint of the variants in the
 # dataset and save as a png file.
 png(
   file.path(plots_dir, opt$png_name),
@@ -165,10 +177,23 @@ png(
   units = "cm",
   res = 300
 )
-prepare_and_plot_oncoprint(maf_df = maf_df,
-                           cnv_df = cnv_file,
-                           metadata = metadata,
-                           fusion_df = fusion_file,
-                           goi_list = goi_list,
-                           color_palette = color_palette)
+oncoplot(
+  maf_object,
+  clinicalFeatures = c(
+    "broad_histology",
+    "short_histology",
+    "reported_gender",
+    "tumor_descriptor",
+    "molecular_subtype"
+  ),
+  genes = goi_list,
+  logColBar = TRUE,
+  sortByAnnotation = TRUE,
+  showTumorSampleBarcodes = TRUE,
+  removeNonMutated = TRUE,
+  annotationFontSize = 0.7,
+  SampleNamefontSize = 0.5,
+  fontSize = 0.7,
+  colors = color_palette
+)
 dev.off()
