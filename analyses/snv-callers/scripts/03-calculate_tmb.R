@@ -205,7 +205,9 @@ if (opt$tcga) {
 } else { # pbta data
   # Isolate metadata to only the samples that are in the datasets
   metadata <- readr::read_tsv(opt$metadata) %>%
-    dplyr::filter(Kids_First_Biospecimen_ID %in% strelka_mutect_maf_df$Tumor_Sample_Barcode) %>%
+    dplyr::filter(Kids_First_Biospecimen_ID %in% strelka_mutect_maf_df$Tumor_Sample_Barcode, 
+                  # Drop Panel samples
+                  experimental_strategy != "Panel") %>%
     dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
     dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID) %>%
     # Make a Target BED regions column
