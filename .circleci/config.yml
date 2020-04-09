@@ -233,9 +233,9 @@ jobs:
           name: TCGA Capture Kit Investigation
           command: ./scripts/run_in_ci.sh bash analyses/tcga-capture-kit-investigation/run-investigation.sh
 
-     - run:
-         name: Run survival plots
-         command: ./scripts/run_in_ci.sh bash analyses/survival-analysis/run_survival.sh
+      - run:
+          name: Run survival plots
+          command: ./scripts/run_in_ci.sh bash analyses/survival-analysis/run_survival.sh
 
 
   deploy:
