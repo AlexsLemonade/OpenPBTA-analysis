@@ -233,6 +233,8 @@ plot_dimension_reduction <- function(aligned_scores_df,
         tibble::deframe()
     }
 
+    `%>%` <- dplyr::`%>%`
+
     aligned_scores_df <- aligned_scores_df %>%
       dplyr::mutate(sample_color = dplyr::recode(!!color_sym,
                                                  !!!color_palette))
