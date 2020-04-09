@@ -75,7 +75,7 @@ kap_meier_model_file <- file.path(results_dir,"survival_model_HGG_DMG.tsv")
 # remove cell-lines from this analysis as well
 metadata <- readr::read_tsv(metadata_file,
                             col_types = readr::cols(molecular_subtype = readr::col_character())) %>%
-  filter(experimental_strategy!="RNA-Seq" & 
+  filter(experimental_strategy !="RNA-Seq" & 
            broad_histology=="Diffuse astrocytic and oligodendroglial tumor" &
            broad_composition !="cell-line") %>% 
   as.data.frame()
