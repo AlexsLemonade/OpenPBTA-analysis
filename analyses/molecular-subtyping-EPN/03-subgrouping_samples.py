@@ -79,7 +79,6 @@ def subgroup_GISTIC_CDKN2A(row):
 
 
 #### Looking for  ST_EPN_RELA sub-group samples
-# PTEN--TAS2R1 fusion column is all zeros
 # Creating  a list with tuples 
 # Each tuple containin g column header  and threshold value
 st_epn_rela_tests = [("C11orf95--RELA", 0), 
@@ -87,6 +86,7 @@ st_epn_rela_tests = [("C11orf95--RELA", 0),
 		     ("PTEN--TAS2R1",  0),
                      ("9p_loss", 0),
                      ("9q_loss", 0),
+		     ("RELA_expr_zscore", 3),
 		     ("L1CAM_expr_zscore",3)]
 # Calling function subgroup_func to  set  the values for last column "subgroup"		     	
 EPN_final["subgroup"] = EPN_final.apply(subgroup_func,

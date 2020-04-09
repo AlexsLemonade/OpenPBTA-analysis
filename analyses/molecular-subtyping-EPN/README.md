@@ -50,7 +50,7 @@ This above  script is designed to change to this directory to run, so it should 
                 </tr>
                 <tr>
                     <td>ST_EPN_RELA</td>
-                    <td>L1CAM</td>
+                    <td>L1CAM, RELA</td>
                 </tr>
                 <tr>
                     <td>ST_EPN_YAP1</td>
@@ -65,7 +65,7 @@ This above  script is designed to change to this directory to run, so it should 
                     <td>GPBP1</td>
                 </tr>
             </table>
-    -  If all CNV columns have a value greater than 1, then the below subtype is assigned
+    -  If CNV columns have a value greater than 1, then the below subtype is assigned
             <table>
                 <tr>
                     <th>Subtype name</th>
@@ -87,6 +87,12 @@ This above  script is designed to change to this directory to run, so it should 
                     <td>PT_EPN_B</td>
                     <td>6q_loss, 6p_loss</td>
                 </tr>
-            </table>       
+            </table>  
+
+        - ST_EPN_RELA subtype is associated with `CDKN2A loss`. If the column `consensus_focal_CN_CDKN2` shows loss or `GISTIC_focal_CN_CDKN2A` has a value less than 0.0, then those samples are associated with the ST_EPN_RELA subtype 
+
+        -   The following formula was implemented for these two columns `breaks_density-chromosomal_instability_CNV` and `breaks_density-chromosomal_instability_SV` from input table and the values were added as column names `SV instability` and `CNV instability`
+
+                `(break density value for sample - median) / interquartile range`          
 
 
