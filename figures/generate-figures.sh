@@ -82,3 +82,6 @@ Rscript --vanilla ${analyses_dir}/immune-deconv/01-immune-deconv.R \
   --strandedexprs ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
   --clin ${data_dir}/pbta-histologies.tsv \
   --output ${analyses_dir}/immune-deconv/results/deconv-output-for-figures.RData
+
+# Step that generates the transcriptomic overview figure itself
+Rscript --vanilla scripts/transcriptomic-overview.R
