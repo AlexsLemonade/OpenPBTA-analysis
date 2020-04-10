@@ -99,24 +99,23 @@ consensus_seg_autosomes_df$status <-
 ### Determine chromosome arm status
 
 ```{r}
-# Use our custom function to make the arm status calls
 consensus_seg_arm_status <- consensus_seg_cytoband_status_df %>%
     # Group by biospecimen ID and region
     group_by(Kids_First_Biospecimen_ID, chromosome_arm) %>%
     # Summarize the weighted means for each status
     summarize(
-      loss_fraction = weighted.mean(loss_fraction, band_length),
-      gain_fraction = weighted.mean(gain_fraction, band_length),
-      callable_fraction = weighted.mean(callable_fraction, band_length)
+      loss_fraction_arm = weighted.mean(loss_fraction, band_length),
+      gain_fraction_arm = weighted.mean(gain_fraction, band_length),
+      callable_fraction_arm = weighted.mean(callable_fraction, band_length)
     ) %>%
     # Define dominant status based the weighted means meeting a status
     # threshold
     mutate(
       dominant_arm_status = case_when(
-        callable_fraction < (1 - uncallable_threshold) ~ "uncallable",
-        loss_fraction > status_threshold ~ "loss",
-        gain_fraction > status_threshold ~ "gain",
-        loss_fraction + gain_fraction > status_threshold ~ "unstable",
+        callable_fraction_arm < (1 - uncallable_threshold) ~ "uncallable",
+        loss_fraction_arm > status_threshold ~ "loss",
+        gain_fraction_arm > status_threshold ~ "gain",
+        loss_fraction_arm + gain_fraction_arm > status_threshold ~ "unstable",
         TRUE ~ "neutral"
       )
     )
@@ -166,9 +165,9 @@ filtered_consensus_cytoband_status <- consensus_seg_cytoband_status %>%
   select(
     Kids_First_Biospecimen_ID,
     cytoband,
-    loss_fraction = loss_fraction.x,
-    gain_fraction = gain_fraction.x,
-    callable_fraction = callable_fraction.x,
+    loss_fraction,
+    gain_fraction,
+    callable_fraction,
     dominant_cytoband_status
   )
 
@@ -210,10 +209,22 @@ filtered_consensus_gene_status <- gene_df %>%
   # Filter the annotated CN data to include only neutral arms and cytobands,
   # and disagreements
   filter(
-    dominant_arm_status %in% c("neutral", "uncallable", "unstable") |
-      dominant_cytoband_status %in% c("neutral", "uncallable", "unstable") |
-      status != dominant_arm_status |
+    # Case 1) Gene call disagrees with both arm and cytoband (This captures most
+    # we want to keep, including all of when arm and cytoband are neutral, uncallable
+    # or unstable, since we have no neutral gene calls in this df):
+    (
+      status != dominant_arm_status & status != dominant_cytoband_status
+    )
+    # Case 2) Gene call disagrees with a non-neutral cytoband call.
+    # Keep no matter what the arm status
+    | (
       status != dominant_cytoband_status
+      & dominant_cytoband_status %in% c("gain", "loss")
+    )
+    # I think that captures everything we want. Cases we don't want include:
+    # gene & arm agree, but cytoband is neutral
+    # gene & cytoband agree
+    # all 3 agree
   ) %>%
   select(Kids_First_Biospecimen_ID = biospecimen_id,
          gene_symbol,
@@ -234,9 +245,11 @@ filtered_consensus_gene_status
 consensus_seg_arm_status <- consensus_seg_arm_status %>%
   filter(!(dominant_arm_status == "neutral")) %>%
   rename(dominant_status = dominant_arm_status)
+
 filtered_consensus_cytoband_status <- filtered_consensus_cytoband_status %>%
   filter(!(dominant_cytoband_status == "neutral")) %>%
   rename(dominant_status = dominant_cytoband_status)
+
 # There are no "neutral" calls at the gene level so we do not need to filter
 # out those calls here
 filtered_consensus_gene_status <- filtered_consensus_gene_status %>%
