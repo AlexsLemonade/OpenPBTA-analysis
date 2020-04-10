@@ -20,7 +20,7 @@ prepare_maf_object <- function(maf_df,
   # Args:
   #   maf_df: data.frame with data from a MAF file
   #   cnv_df: data.frame with copy number variant data
-  #   metadata: data.frame with the relavant metadata
+  #   metadata: data.frame with the relevant metadata
   #   fusion_df: data.frame with fusion data. This is NULL by default.
   
   if (!is.null(fusion_df)) {
