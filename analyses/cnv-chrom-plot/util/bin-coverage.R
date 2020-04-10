@@ -119,7 +119,7 @@ call_bin_status <- function(sample_id,
   dplyr::left_join(uncallable_per_bin,
                      by = "bin"
                    ) %>%
-  # Rename as .gain
+  # Rename as .uncallable
   dplyr::rename(bp_per_bin.uncallable = bp_per_bin) %>% 
     # If there is an NA, at this point we can assume it means 0
     dplyr::mutate_at(
@@ -128,7 +128,7 @@ call_bin_status <- function(sample_id,
       ),
       ~ tidyr::replace_na(., 0)
     ) %>%
-    # Calculate the bins percentage of each status
+    # Calculate the bins fraction of each status
     dplyr::mutate(
       frac_gain = bp_per_bin.gain / bin_width,
       frac_loss = bp_per_bin.loss / bin_width,
