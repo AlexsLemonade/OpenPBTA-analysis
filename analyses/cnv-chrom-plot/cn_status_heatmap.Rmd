@@ -291,14 +291,6 @@ bin_calls_df <- dplyr::bind_rows(bin_calls_list,
 )
 ```
 
-Format a matrix with rownames for `ComplexHeatmap` to use. 
-
-```{r}
-bin_calls_mat <- bin_calls_df %>%
-  tibble::column_to_rownames("biospecimen_id") %>%
-  as.matrix()
-```
-
 ## Set up heatmap annotation objects
 
 Make color key. 
@@ -320,7 +312,8 @@ chrs <- paste0("chr", S4Vectors::decode(bins@seqnames))
 chrs <- as.factor(chrs)
 
 # Make a key for assigning alternating colors to the chromosomes
-chr_colors <- rep(binary_col_palette$hex_codes, length.out = length(unique(chrs)))
+chr_colors <- rep(binary_col_palette$hex_codes, 
+                  length.out = length(unique(chrs)))
 names(chr_colors) <- unique(chrs)
 ```
 
@@ -367,6 +360,20 @@ hist_annot <- ComplexHeatmap::HeatmapAnnotation(
   which = "row",
   show_annotation_name = FALSE
 )
+```
+
+Format `bin_calls_df` as a matrix with rownames for `ComplexHeatmap` to use. 
+
+```{r}
+bin_calls_mat <- bin_calls_df %>% 
+  tibble::column_to_rownames("biospecimen_id") %>%
+  as.matrix() 
+
+# Ensure that this matrix is in the same order as the annotation
+bin_calls_mat <- bin_calls_mat[rownames(histologies), ] 
+
+# Double check its in thte same order
+all.equal(rownames(bin_calls_mat), rownames(histologies))
 ```
 
 ## Assemble CN status heatmap
