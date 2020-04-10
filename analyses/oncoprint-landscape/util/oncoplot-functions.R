@@ -24,6 +24,22 @@ prepare_maf_object <- function(maf_df,
   #   fusion_df: data.frame with fusion data. This is NULL by default.
   
   if (!is.null(fusion_df)) {
+    # Want to check that the fusion file has these columns before we `bind_rows``
+    # The MAF file will already have them and `read.maf` will check
+    needed_col <- c("Hugo_Symbol", 
+                    "Variant_Classification", 
+                    "Variant_Type", 
+                    "Tumor_Sample_Barcode")
+  
+    # Which columns do we have in `fusion_df`?
+    cols_found <- needed_col %in% colnames(fusion_df)
+  
+    # Print out error message if fusion df doesn't have needed columns
+    if(!all(cols_found)){
+      stop(paste("Fusion file is missing the necessary column(s):\n", 
+                paste(needed_col[which(cols_found)], collapse = "\n ")))
+    }
+
     # Bind rows of maf and fusion data frames
     maf_df <- dplyr::bind_rows(maf_df, fusion_df)
   }
