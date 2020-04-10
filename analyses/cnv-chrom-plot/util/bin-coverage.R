@@ -59,7 +59,7 @@ call_bin_status <- function(sample_id,
                             uncallable_ranges, 
                             frac_threshold_val = .75, 
                             frac_uncallable_val = .75) {
-  
+
   # Given a sample_id, CN segment ranges, and binned genome ranges object, 
   # make a call for each bin on what CN copy status has the most coverage in the bin. 
   # Uses bp_per_bin function. 
@@ -119,7 +119,7 @@ call_bin_status <- function(sample_id,
   dplyr::left_join(uncallable_per_bin,
                      by = "bin"
                    ) %>%
-  # Rename as .gain
+  # Rename as .uncallable
   dplyr::rename(bp_per_bin.uncallable = bp_per_bin) %>% 
     # If there is an NA, at this point we can assume it means 0
     dplyr::mutate_at(
@@ -128,7 +128,7 @@ call_bin_status <- function(sample_id,
       ),
       ~ tidyr::replace_na(., 0)
     ) %>%
-    # Calculate the bins percentage of each status
+    # Calculate the bins fraction of each status
     dplyr::mutate(
       frac_gain = bp_per_bin.gain / bin_width,
       frac_loss = bp_per_bin.loss / bin_width,
@@ -138,13 +138,12 @@ call_bin_status <- function(sample_id,
     # Use these percentages for declaring final call per bin based on
     # the frac_delta_threshold
     dplyr::mutate(
-      status = dplyr::case_when(
-        frac_uncallable > frac_uncallable_val ~ "uncallable", 
-        frac_gain > frac_threshold_val ~ "gain",
-        frac_loss > frac_threshold_val ~ "loss",
-        frac_gain + frac_loss > frac_threshold_val ~ "unstable",
-        TRUE  ~ "neutral"
-        )
+      status =  dplyr::case_when(
+        frac_uncallable > uncallable_threshold ~ "uncallable"
+        frac_gain > threshold ~ "gain",
+        frac_loss > threshold ~ "loss",
+        frac_neutral > threshold ~ "neutral",
+        TRUE ~ "unstable"
       )
   
   # Format this data as a status
