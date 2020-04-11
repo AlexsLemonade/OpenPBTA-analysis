@@ -167,8 +167,8 @@ coOncoplot(
   sortByAnnotation2 = TRUE,
   showSampleNames = TRUE,
   removeNonMutated = TRUE,
-  annotationFontSize = 0.65,
-  SampleNamefont = 0.6,
+  annotationFontSize = 1.5,
+  SampleNamefont = 0.7,
   geneNamefont = 0.5,
   colors = color_palette
 )
