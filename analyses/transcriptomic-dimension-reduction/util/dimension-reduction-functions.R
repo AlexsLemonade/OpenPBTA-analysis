@@ -227,15 +227,13 @@ plot_dimension_reduction <- function(aligned_scores_df,
       point_shape <- rlang::sym(point_shape)
     }
 
-    if (!is.null(color_palette)) {
-      color_palette <- color_palette %>%
-        # We'll use deframe so we can use it as a recoding list
-        tibble::deframe()
-    }
-
     `%>%` <- dplyr::`%>%`
 
     if (!is.null(color_palette)) {
+
+      color_palette <- color_palette %>%
+        # We'll use deframe so we can use it as a recoding list
+        tibble::deframe()
 
       aligned_scores_df <- aligned_scores_df %>%
         dplyr::mutate(sample_color = dplyr::recode(!!color_sym,
