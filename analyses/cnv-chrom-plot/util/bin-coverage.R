@@ -142,8 +142,8 @@ call_bin_status <- function(sample_id,
         frac_uncallable > frac_uncallable_val ~ "uncallable",
         frac_gain > frac_threshold_val ~ "gain",
         frac_loss > frac_threshold_val ~ "loss",
-        frac_neutral > frac_threshold_val ~ "neutral",
-        TRUE ~ "unstable"
+        frac_gain + frac_loss > frac_threshold_val ~ "unstable",
+        TRUE ~ "neutral"
       )
     )
   
