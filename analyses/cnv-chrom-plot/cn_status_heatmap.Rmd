@@ -13,8 +13,7 @@ Create a summary heatmap of copy number status from the consensus CNV call data.
 This is done by binning the genome and calculating the segment's coverage of the
 CNV consensus segments. 
 A bin is declared a particular copy number status if that status's base pair 
-coverage is a certain threshold larger than the other status' 
-coverage (`frac_delta_threshold`).
+coverage fraction is above a certain threshold (`frac_threshold_val`).
 
 ### Usage
 
@@ -338,7 +337,7 @@ This annotation object strategy was originally from [chromosomal-nstability](htt
 ```{r}
 # Get the histologies for the samples in this set and order them by histology
 histologies <-
-  data.frame(Kids_First_Biospecimen_ID = rownames(bin_calls_mat)) %>% 
+  data.frame(Kids_First_Biospecimen_ID = bin_calls_df$biospecimen_id) %>% 
   dplyr::inner_join(metadata %>% 
                       dplyr::select(Kids_First_Biospecimen_ID, short_histology, sample_color)) %>%
   dplyr::arrange(short_histology) %>% 
