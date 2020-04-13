@@ -7,7 +7,7 @@ set -o pipefail
 
 # Set defaults for release and biospecimen file name
 BIOSPECIMEN_FILE=${BIOSPECIMEN_FILE:-biospecimen_ids_for_subset.RDS}
-RELEASE=${RELEASE:-release-v15-20200228}
+RELEASE=${RELEASE:-release-v16-20200320}
 NUM_MATCHED=${NUM_MATCHED:-15}
 
 # This option controls whether or not the two larger MAF files are skipped as
@@ -68,9 +68,6 @@ cp $FULL_DIRECTORY/independent-specimens*.tsv $SUBSET_DIRECTORY
 # all bed files
 cp $FULL_DIRECTORY/*.bed $SUBSET_DIRECTORY
 
-# the release notes
-cp $FULL_DIRECTORY/release-notes.md $SUBSET_DIRECTORY
-
 # data file description
 cp $FULL_DIRECTORY/data-files-description.md $SUBSET_DIRECTORY
 
@@ -91,3 +88,6 @@ cd $SUBSET_DIRECTORY
 rm -f md5sum.txt
 # create a new md5sum.txt file
 md5sum * > md5sum.txt
+
+# the release notes and not included in md5sum.txt
+cp $FULL_DIRECTORY/release-notes.md $SUBSET_DIRECTORY

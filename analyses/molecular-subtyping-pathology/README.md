@@ -30,3 +30,6 @@ bash run-subtyping-aggregation.sh
 ### Module contents
 
 `01-compile-subtyping-results.Rmd` aggregates results from the modules listed above into a single table (`results/compiled_molecular_subtypes.tsv`).
+
+`02-incorporate-pathology-feedback.Rmd` incorporates pathology feedback for specific samples when the labels for those samples either need to be updated as a result of molecular subtyping or deviate from the logic in upstream molecular subtyping modules. 
+The output is an updated version of the table from `01-compile-subtyping-results.Rmd` (`results/compiled_molecular_subtypes_with_pathology_feedback.tsv`).

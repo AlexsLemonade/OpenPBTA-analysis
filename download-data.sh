@@ -4,8 +4,8 @@ set -o pipefail
 
 # Use the OpenPBTA bucket as the default.
 URL=${OPENPBTA_URL:-https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data}
-RELEASE=${OPENPBTA_RELEASE:-release-v15-20200228}
-PREVIOUS=${OPENPBTA_RELEASE:-release-v14-20200203}
+RELEASE=${OPENPBTA_RELEASE:-release-v16-20200320}
+PREVIOUS=${OPENPBTA_RELEASE:-release-v15-20200228}
 
 # Remove old symlinks in data
 find data -type l -delete
@@ -13,8 +13,8 @@ find data -type l -delete
 # The md5sum file provides our single point of truth for which files are in a release.
 curl --create-dirs $URL/$RELEASE/md5sum.txt -o data/$RELEASE/md5sum.txt -z data/$RELEASE/md5sum.txt
 
-# Consider the filenames in the md5sum file
-FILES=(`tr -s ' ' < data/$RELEASE/md5sum.txt | cut -d ' ' -f 2`)
+# Consider the filenames in the md5sum file and the release notes
+FILES=(`tr -s ' ' < data/$RELEASE/md5sum.txt | cut -d ' ' -f 2` release-notes.md)
 
 if [ -d "data/$PREVIOUS" ]
 then
