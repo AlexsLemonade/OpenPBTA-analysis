@@ -58,9 +58,12 @@ python3 02_ependymoma_generate_all_data.py \
     --outfile $EPN_TABLE
 
 
-python3 03-subgrouping_samples.py \
-	--final_table $EPN_TABLE \
-	--subgroup_table results/EPN_all_data_withsubgroup.tsv 
+#python3 03-subgrouping_samples.py \
+#	--final_table $EPN_TABLE \
+#	--subgroup_table results/EPN_all_data_withsubgroup.tsv 
+
+jupyter nbconvert --to notebook --execute  03-subgrouping_samples.ipynb
+
 
 
 
