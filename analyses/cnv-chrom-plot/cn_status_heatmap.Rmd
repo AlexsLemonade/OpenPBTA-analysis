@@ -36,7 +36,7 @@ length_max <- 1e7
 # Set minimum percentage of a bin that should be callable to report data. 
 frac_uncallable <- 0.75
 
-# Absolute fraction needed a bin to be called a particular status 
+# Absolute fraction needed for a bin to be called a particular status 
 frac_threshold <- 0.75
 ```
 
@@ -82,6 +82,7 @@ histology_col_palette <- readr::read_tsv(
 ```
 
 Read in the divergent color palette and set it up with three colors. 
+In this instance, we only need three values for `gain`, `neutral`, and `loss`.
 
 ```{r}
 divergent_col_palette <- readr::read_tsv(
@@ -215,7 +216,9 @@ names(chr_sizes_vector) <- chr_sizes$chrom
 ```
 
 ### Set up uncallable regions data 
-Regions that were not able to be accurately called will need to be color coded gray. 
+
+Regions that were not able to be accurately called will need to be color coded gray later. 
+Here, we are setting up the uncallable regions like we did with the callable regions.
 
 ```{r}
 uncallable_bed <- readr::read_tsv(
@@ -256,7 +259,7 @@ uncallable_ranges <- GenomicRanges::GRanges(
 Set up binned genome ranges. 
 
 ```{r}
-# Find which regions of the chromosome are uncallable
+# Set up bins of ~1Mb size
 bins <- GenomicRanges::tileGenome(
   chr_sizes_vector,
   tilewidth = 1e6
@@ -332,7 +335,7 @@ chr_annot <- ComplexHeatmap::HeatmapAnnotation(
 ### Make row annotation object
 
 Make histology labeling `HeatmapAnnotation` object.
-This annotation object strategy was originally from [chromosomal-nstability](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/b5a33838d1e9bd7e7913a89201ec26125c16c94c/analyses/chromosomal-instability/02a-plot-chr-instability-heatmaps.Rmd#L73).
+This annotation object strategy was originally from [chromosomal-instability](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/b5a33838d1e9bd7e7913a89201ec26125c16c94c/analyses/chromosomal-instability/02a-plot-chr-instability-heatmaps.Rmd#L73).
 
 ```{r}
 # Get the histologies for the samples in this set and order them by histology
