@@ -1,11 +1,14 @@
 ---
-title: "Mutational Signatures"
-output: 
+title: "Mutational Signatures Alternative"
+author: "C. Savonen for ALSF CCDL and Anna R Poetsch"
+date: "2019"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
   html_notebook:
-    toc: TRUE
-    toc_float: TRUE
-author: C. Savonen for ALSF CCDL
-date: 2019
+    toc: yes
+    toc_float: yes
 ---
 
 **Purpose:**
@@ -38,6 +41,13 @@ if (!("deconstructSigs" %in% installed.packages())) {
   BiocManager::install("BSgenome.Hsapiens.UCSC.hg38")
   install.packages("deconstructSigs")
 }
+if (!("devtools" %in% installed.packages())) {
+  install.packages("devtools")
+}
+if (!("sigfit" %in% installed.packages())) {
+  devtools::install_github("kgori/sigfit", build_vignettes = TRUE,
+    build_opts = c("--no-resave-data", "--no-manual"))
+}
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
@@ -46,6 +56,7 @@ source(file.path("util", "mut_sig_functions.R"))
 
 # Load this library
 library(deconstructSigs)
+library(sigfit)
 ```
 
 Set up directory paths. 
@@ -56,6 +67,7 @@ results_dir <- "results"
 plots_dir <- "plots"
 cosmic_plots <- file.path(plots_dir, "cosmic")
 nature_plots <- file.path(plots_dir, "nature")
+denovo_plots <- file.path(plots_dir, "denovo")
 ```
 
 Make new directories for the results. 
@@ -320,6 +332,247 @@ lapply(unique(nature_sigs_primary$short_histology),
   sig_num_df = nature_sigs_primary,
   output_dir = file.path(nature_plots, "signature_grouped_barplots"),
   label = "nature"
+)
+```
+
+## Determine Signatures de novo  
+This section is included, because the previous strategies imply that there are mutagenic mechanisms in operation that are unlikely to be a major factor in this dataset, such as smoking and UV light.
+This is happening due to overfitting problems when fitting existing signatures.  De novo signature calling is used to provide an alternative for discussion. It is determined, which signatures can be extracted from the data themselves. These signatures are then fitted back to the known signatures that are used for the fitting approach above. 
+
+### De novo calling
+
+To prevent the loading of big data files into memory and intense processing, I have muted this part of the script and it loads the preprocessed parameters. 
+```{r}
+# determine the ideal number of signatures. 
+# the choice of 10 signatures is now hard coded, because otherwise it has to be rerun.
+# this step requires extensive ressources, the signature file is > 8 GB in size. Therefore a loop is included to load a preprocessed file, if available. 
+
+if(!file.exists("results/sigfit_signatures_10.rdat")){
+  
+  samples_extr <- extract_signatures(counts = sigs_input,
+                                        nsignatures = 5:15,
+                                        iter = 1000, 
+                                        seed = 42)
+  dev.off()
+  
+  samples_extr10 <- extract_signatures(counts = sigs_input,
+                                        nsignatures = 10,
+                                        iter = 10000, 
+                                        seed = 42)
+    
+  save(samples_extr10, file="results/sigfit_signatures_10.rdat")
+}
+```
+
+```{r}
+if(!file.exists("results/sigfit_signatures_10_signatures.rdat")){
+  load("results/sigfit_signatures_10.rdat")
+  signatures <- retrieve_pars(samples_extr10,
+                            par = "signatures")
+  save(signatures,file="results/sigfit_signatures_10_signatures.rdat")
+}else{
+   load("results/sigfit_signatures_10_signatures.rdat")
+}
+
+if(!file.exists("results/sigfit_signatures_10_exposures.rdat")){
+  load("results/sigfit_signatures_10.rdat")
+  exposures <- retrieve_pars(samples_extr10,
+                            par = "exposures")
+  save(exposures,file="results/sigfit_signatures_10_exposures.rdat")
+}else{
+   load("results/sigfit_signatures_10_exposures.rdat")
+}
+
+if(!file.exists("results/sigfit_signatures_10_reconstructions.rdat")){
+  load("results/sigfit_signatures_10.rdat")
+  reconstructions <- retrieve_pars(samples_extr10,
+                            par = "reconstructions")
+  save(reconstructions,file="results/sigfit_signatures_10_reconstructions.rdat")
+}else{
+   load("results/sigfit_signatures_10_reconstructions.rdat")
+}
+  
+  recmean <- reconstructions$mean
+  rownames(recmean)<- rownames(sigs_input) 
+  expmean <- exposures$mean
+  explow95 <- exposures$lower_95
+  rownames(expmean)<- rownames(sigs_input)
+  
+  # set exposures to 0, if lower confidence interval hits 1%
+  expmean[explow95<0.01]<-0
+```
+
+Plotting signatures
+
+```{r}
+
+pdf(file.path(denovo_plots, "denovo_signatures.pdf"), width=30, height=8)
+par(mar=c(0,0,0,0)+7)
+plot_spectrum(signatures)  
+dev.off()
+
+```
+
+Comparing de novo signatures to published signature lists.  
+This also concludes cosmic 3, which is not included in the fitting approach. It would also not be rommended to use it in the fitting approach, as especially the now very detailed differentiation of signatures made the problems apparent. 
+
+```{r}
+  data("cosmic_signatures_v3")
+  CNS_sigs <- read.csv("results/Cancer_Substitution_Signatures_CNS.csv")
+    rownames(CNS_sigs)<-CNS_sigs[,1]
+  CNS_sigs <- CNS_sigs[,-1]
+  colnames(CNS_sigs) <- colnames(signatures.cosmic)
+  sigmeans<-signatures$mean
+  
+pdf(file.path(denovo_plots, "CNS_signatures.pdf"), width=30, height=8)
+par(mar=c(0,0,0,0)+7)
+plot_spectrum(CNS_sigs)  
+dev.off()
+
+pdf(file.path(denovo_plots, "Nature2013_signatures.pdf"), width=30, height=8)
+par(mar=c(0,0,0,0)+7)
+plot_spectrum(signatures.nature2013)  
+dev.off()
+
+pdf(file.path(denovo_plots, "Cosmic_signatures.pdf"), width=30, height=8)
+par(mar=c(0,0,0,0)+7)
+plot_spectrum(signatures.cosmic)  
+dev.off()
+
+pdf(file.path(denovo_plots, "Cosmic3_signatures.pdf"), width=30, height=8)
+par(mar=c(0,0,0,0)+7)
+plot_spectrum(cosmic_signatures_v3)  
+dev.off()
+```
+
+
+matching with CNS signatures (https://signal.mutationalsignatures.com/)
+  
+```{r}
+  library(lsa)
+  library(viridis)
+  library(ggplot2)
+  library(cowplot)
+  library(reshape2)
+  
+  
+  mat <- matrix(nrow=nrow(sigmeans),ncol=nrow(CNS_sigs))
+  for(i in 1:nrow(sigmeans)){
+    for(j in 1:nrow(CNS_sigs)){
+      mat[i,j]<- cosine(as.numeric(sigmeans[i,]),as.numeric(CNS_sigs[j,]))
+      }
+    }
+  df<- data.frame(mat)
+  rownames(df)<- rownames(sigmeans)
+  colnames(df)<- rownames(CNS_sigs)
+  melted <- melt(df)
+  colnames(melted) <- c("CNS_sigs","cosine")
+  melted$denovo_sigs <- rep(rownames(df),ncol(df))
+  
+  ggplot(melted, aes(x=denovo_sigs,y=CNS_sigs, fill=cosine))+
+   geom_tile()+
+    scale_fill_viridis(direction=-1)+
+    theme_cowplot()+
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+    NULL
+  ggsave(file.path(denovo_plots, "CNS_signatures_cosine.pdf"), width=10,height=10)
+  
+ best_match <- data.frame(CNS_sig=apply(df,1,function(x) names(x)[which(x==max(x))]),
+                     cosine=apply(df,1,function(x) x[which(x==max(x))]))
+knitr::kable(best_match)
+```
+
+matching with Cosmic3
+
+```{r}
+mat <- matrix(nrow=nrow(sigmeans),ncol=nrow(cosmic_signatures_v3))
+  for(i in 1:nrow(sigmeans)){
+    for(j in 1:nrow(cosmic_signatures_v3)){
+      mat[i,j]<- cosine(as.numeric(sigmeans[i,]),as.numeric(cosmic_signatures_v3[j,]))
+      }
+    }
+  df<- data.frame(mat)
+  rownames(df)<- rownames(sigmeans)
+  colnames(df)<- rownames(cosmic_signatures_v3)
+  melted <- melt(df)
+  colnames(melted) <- c("cosmic_signatures_v3","cosine")
+  melted$denovo_sigs <- rep(rownames(df),ncol(df))
+  
+  ggplot(melted, aes(x=denovo_sigs,y=cosmic_signatures_v3, fill=cosine))+
+   geom_tile()+
+    scale_fill_viridis(direction=-1)+
+    theme_cowplot()+
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+    NULL
+  ggsave(file.path(denovo_plots, "cosmic3_signatures_cosine.pdf"), width=10,height=20)
+  
+ best_match <- data.frame(cosmic_signatures_v3=apply(df,1,function(x) names(x)[which(x==max(x))]),
+                     cosine=apply(df,1,function(x) x[which(x==max(x))]))
+knitr::kable(best_match)
+```
+
+Plot exposures
+
+```{r, eval=FALSE}
+pdf(file.path(denovo_plots, "denovo_exposures.pdf"), width=60, height=15)
+par(mar=c(0,0,0,0)+10)
+plot_exposures(samples_extr10)
+dev.off()
+```
+
+De novo signatures per sample
+
+```{r}
+sample_sigs_denovo <- lapply(tumor_sample_ids, function(sample_id){
+  list(
+    weights = expmean[sample_id,],
+    tumor = sigs_input[sample_id,]/sum(sigs_input[sample_id,]),
+    product = recmean[sample_id,]/sum(sigs_input[sample_id,]),
+    diff =  expmean[sample_id,]/sum(expmean[sample_id,])-recmean[sample_id,]/sum(recmean[sample_id,])
+  )})                     
+
+# Bring along the names
+names(sample_sigs_denovo) <- tumor_sample_ids
+```
+
+```{r}
+# Calculate mutations per signature
+denovo_sigs_df <- calc_mut_per_sig(sample_sigs_denovo,
+  muts_per_sample = total_muts,
+  wgs_genome_size = wgs_size,
+  wxs_exome_size = wxs_size,
+  metadata = metadata_df
+) 
+
+# Write this to a file  
+readr::write_tsv(denovo_sigs_df, 
+                 file.path(results_dir, "denovo_signatures_results.tsv"))
+
+# Print out a preview
+denovo_sigs_df
+```
+
+### Bubble plot from de novo signatures
+
+```{r}
+bubble_matrix_plot(denovo_sigs_df, label = "de novo signatures")
+
+ggplot2::ggsave(file.path(denovo_plots, paste0("bubble_matrix_denovo_mutation_sig.png")), width = 30, height = 20, units = "cm")
+```
+
+Make  plots for denovo signatures. 
+
+```{r, results = "hide"}
+# Keep only primary tumors
+denovo_sigs_primary <- denovo_sigs_df %>%
+  dplyr::filter(Tumor_Sample_Barcode %in% ind_samples$Kids_First_Biospecimen_ID)
+
+# Make grouped bar plots
+lapply(unique(denovo_sigs_primary$short_histology),
+  grouped_sig_barplot,
+  sig_num_df = denovo_sigs_primary,
+  output_dir = file.path(denovo_plots, "signature_grouped_barplots"),
+  label = "denovo"
 )
 ```
 
