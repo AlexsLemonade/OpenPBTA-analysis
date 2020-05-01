@@ -3,7 +3,7 @@ stringsAsFactors=FALSE
 library(grid)
 library(forcats) ### for fct_reorder()
 library(optparse)
-############################################################### Combining Histology with EXTEND Scores (Figure 3) ###############################################################################
+############################################################### Comparing EXTEND Scores of Medulloblastoma molecular subtypes (Figure 4)  ###############################################################################
 
 
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git")) 
@@ -26,7 +26,7 @@ option_list <- list(
 # where each element is named by the long flag option
 opt <- parse_args(OptionParser(option_list = option_list))
 
-PBTA_EXTEND_HistologyCompPlot <- opt$output
+PBTA_EXTEND_MedulloSubtypes <- opt$output
 
 
 
@@ -39,15 +39,12 @@ PTBA_GE_Standard_TMScores = read.table(B,sep='\t',head=T)  ## Reading Stranded F
 
 PTBA_GE_Standard_Histology = merge(PTBA_Histology,PTBA_GE_Standard_TMScores,by='SampleID')   ### Merging Clinical data with the Telomerase scores
 
-Stranded_Histology = PTBA_GE_Standard_Histology
-Stranded_Histology = Stranded_Histology[-which(Stranded_Histology$short_histology == "Other"),]   ### Removing the tumors with catagory labelled as "Others"
-Frequency = data.frame(table(Stranded_Histology$short_histology))  ### Counting the number of cases for all histologies to avoid less number further
-colnames(Frequency)=c('Variables','Freq')
-Frequency = Frequency[which(Frequency$Freq == 1),]
-Stranded_Histology = Stranded_Histology[-which(Stranded_Histology$short_histology %in% Frequency$Variables),]     ### Removing the tumors with only one case in histologies 
+PTBA_GE_Standard_Histology = PTBA_GE_Standard_Histology[which(PTBA_GE_Standard_Histology$short_histology == "Medulloblastoma"),]   ### Select tumors with catagory labelled as "Medulloblastoma"
+
+my_comparisons = list(c("Group3","Group4"),c("Group3","SHH"),c("Group3","WNT"),c("SHH","WNT"))
 
 
-pdf(PBTA_EXTEND_HistologyCompPlot)
+pdf(PBTA_EXTEND_MedulloSubtypes)
 
 ## Globally set the theme in one step, so it gets applied to both plots
 theme_set(theme_classic() + 
@@ -61,20 +58,18 @@ theme_set(theme_classic() +
 )
 
 
-P1 = ggplot(Stranded_Histology, aes(x=fct_reorder(short_histology,NormEXTENDScores,.desc =TRUE),y=NormEXTENDScores))+geom_boxplot(size= 0.1,notch=FALSE,outlier.size = 0,outlier.shape=NA,fill="cyan3")+ geom_jitter(shape=16, cex=0.5)
-P2 = ggplot(Stranded_Histology, aes(x=fct_reorder(broad_histology,NormEXTENDScores,.desc =TRUE),y=NormEXTENDScores))+geom_boxplot(size= 0.1,notch=FALSE,outlier.size = 0,outlier.shape=NA,fill="cyan3")+ geom_jitter(shape=16, cex=0.5)
+P1 = ggplot(PTBA_GE_Standard_Histology, aes(x=fct_reorder(molecular_subtype,NormEXTENDScores,.desc =TRUE),y=NormEXTENDScores))+geom_boxplot(size= 0.2,notch=FALSE,outlier.size = 0,outlier.shape=NA,fill="pink")+ geom_jitter(shape=16, width = 0.2)+stat_compare_means(comparisons = my_comparisons, method= "t.test",size=5)
 
 grid.newpage()
-# Create layout : nrow = 2, ncol = 1
-pushViewport(viewport(layout = grid.layout(nrow =2, ncol = 1)))
+# Create layout : nrow = 1, ncol = 1
+pushViewport(viewport(layout = grid.layout(nrow =1, ncol = 1)))
 # A helper function to define a region on the layout
 define_region <- function(row, col){
   viewport(layout.pos.row = row, layout.pos.col = col)
 } 
 
 
-print(ggpar(P1,font.xtickslab =c("black",6),font.ytickslab =c("black",7),font.x = 7,font.y=7,font.legend=6,xlab="Tumor Histology(short)",ylab="EXTEND Scores"),vp = define_region(row = 1, col = 1))
-print(ggpar(P2,font.xtickslab =c("black",6),font.ytickslab =c("black",7),font.x = 7,font.y=7,font.legend=6,xlab="Tumor Histology(broad)",ylab="EXTEND Scores"),vp = define_region(row = 2, col = 1))
+print(ggpar(P1,font.xtickslab =c("black",14),font.ytickslab =c("black",14),font.x = 12,font.y=12,font.legend=6,xlab="Molecular Subgroups Medulloblastoma",ylab="EXTEND Scores"),vp = define_region(row = 1, col = 1))
 
 
 dev.off()
