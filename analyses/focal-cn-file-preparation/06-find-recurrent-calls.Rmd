@@ -1,0 +1,95 @@
+---
+title: "Determine the recurrent focal CN dominant status calls"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell for ALSF CCDL
+date: 2020
+---
+
+This notebook determines the recurrent focal copy number dominant status calls by region using the output of `05-define-most-focal-cn-units.Rmd`.
+
+Recurrence here has been arbitrarily defined based on the plotting of the distribution of status calls and a [similar decision](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/d197f2717eb0d067fe35644db91c4910b6d# 46c06/analyses/fusion_filtering/06-recurrent-fusions-per-histology.R#L111) made in `analyses/fusion_filtering/06-recurrent-fusions-per-histology.R`
+
+## Usage
+
+This notebook is intended to be run from the command line with the following (assumes you are in the root directory of the repository):
+
+```
+Rscript -e "rmarkdown::render('analyses/focal-cn-file-preparation/06-find-recurrent-calls.Rmd', clean = TRUE)"
+```
+
+## Set up
+
+### Libraries and functions
+
+```{r}
+library(tidyverse)
+```
+
+### Files and directories
+
+```{r}
+results_dir <- "results"
+```
+
+### Read in files
+
+Read in focal CN dominant status calls prepared in `05-define-most-focal-cn-units.Rmd`.
+
+```{r}
+focal_cn_df <- read_tsv(file.path(results_dir, "consensus_seg_most_focal_cn_status.tsv.gz"))
+```
+
+## Find recurrent calls
+
+### Tally the sample counts of each unique status call by region.
+
+```{r}
+# Tally the number of samples that have the same status call by region
+final_df_tally <- focal_cn_df %>%
+  group_by(status, region, region_type) %>%
+  tally() %>%
+  rename(count = n)
+
+# Display table with counts of each unique status call by region
+final_df_tally %>%
+  arrange(desc(count))
+```
+
+### Plot the distribution of counts
+
+```{r}
+# Plot the distribution of counts
+ggplot(final_df_tally, aes(x = count)) +
+  geom_histogram(bins = 100) +
+  geom_vline(aes(xintercept = 3), linetype = "longdash", color = "red", size = .4)
+```
+
+### Isolate recurrent calls
+
+```{r}
+# Here, we arbitrarily define recurrence to be greater than 3 based on 
+# the plot above and on a similar decision made in
+# `analyses/fusion_filtering/06-recurrent-fusions-per-histology.R`
+# https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/d197f2717eb0d067fe35644db91c4910b6d# 46c06/analyses/fusion_filtering/06-recurrent-fusions-per-histology.R#L111
+final_df_recurrent <- final_df_tally %>%
+  filter(count > 3)
+
+# Display table
+final_df_recurrent
+```
+
+### Write to file
+
+```{r}
+# Write the recurrent focal CN calls by region data frame to file
+write_tsv(final_df_recurrent, file.path(results_dir, "consensus_seg_recurrent_focal_cn_units.tsv"))
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
