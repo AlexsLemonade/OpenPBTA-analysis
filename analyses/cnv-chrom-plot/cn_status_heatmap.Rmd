@@ -419,7 +419,6 @@ all.equal(rownames(bin_calls_mat), rownames(histologies))
 heatmap <- ComplexHeatmap::Heatmap(
   bin_calls_mat,
   name = "CN status",            
-  heatmap_legend_param = list(direction = "horizontal"),
   col = color_key,
   cluster_columns = FALSE,
   cluster_rows = FALSE,
@@ -427,13 +426,14 @@ heatmap <- ComplexHeatmap::Heatmap(
   show_row_names = FALSE,
   bottom_annotation = chr_annot,
   right_annotation = hist_annot, 
+  heatmap_legend_param = list(nrow = 1)
   ) 
 ```
 
 Print out heatmap. 
 
 ```{r}
-heatmap
+ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
 ```
 
 Save to PDF. 
