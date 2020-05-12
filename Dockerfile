@@ -35,7 +35,6 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     --deps TRUE \
     R.utils \
     treemap \
-    d3r \
     hexbin \
     VennDiagram \
     Rtsne \
@@ -45,7 +44,9 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     pheatmap \
     RColorBrewer \
     viridis \
-    data.table
+    data.table # \
+   # d3r 
+
 
 # maftools for proof of concept in create-subset-files
 RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
