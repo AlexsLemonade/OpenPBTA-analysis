@@ -143,7 +143,7 @@ interactive_tm <-
 # Create HTML outputs for the interactive plots
 mapview::mapshot(interactive_tm, url = file.path(plots_dir,
                                                  "histology-treemap.html"))
-mapview::mapshot(p, url = file.path(plots_dir, "histology-pie.html"))
+# mapview::mapshot(p, url = file.path(plots_dir, "histology-pie.html"))
 
 
 ##########################################################################################
