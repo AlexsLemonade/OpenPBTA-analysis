@@ -3,7 +3,7 @@
 This analysis evaluates [MAF files](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from different SNV callers, compares their output, and creates a [consensus mutation file](./results/consensus/consensus_mutation.maf.tsv.zip).
 This consensus mutation file is [MAF-like](#consensus-mutation-call) meaning it is TSV file that contains the fields of a [MAF file](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) but adds [VAF](#variant-allele-fraction-calculation), but does not contain a starting comment line with a version number.
 
-The resulting MAF and TMB files from this analysis are saved to `snv-callers/results/consensus/` folder and used by downstream analyses. 
+The resulting MAF and TMB files from this analysis are saved to `snv-callers/results/consensus/` folder and used by downstream analyses.
 
 See the comparison results plots [here](https://cansavvy.github.io/openpbta-notebook-concept/snv-callers/compare_snv_callers_plots.nb.html).
 
@@ -27,16 +27,16 @@ See the comparison results plots [here](https://cansavvy.github.io/openpbta-note
 
 ## How to run the caller consensus analysis
 
-To run the evaluations and comparisons of all the SNV callers, call the bash script:
+To run the evaluations and comparisons of all the SNV callers for the PBTA data, call the bash script:
 
 ```
-bash run_caller_analysis.sh
+bash run_caller_consensus_analysis-pbta.sh
 ```
 
 The TCGA data is processed by its own script to run the same methods:
 
 ```
-bash run_caller_analysis-tcga.sh
+bash run_caller_consensus_analysis-tcga.sh
 ```
 
 This bash script will return:
@@ -47,7 +47,7 @@ This bash script will return:
   These files combine the [MAF file data](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from 3 different SNV callers: [Mutect2](https://software.broadinstitute.org/cancer/cga/mutect), [Strelka2](https://github.com/Illumina/strelka), and [Lancet](https://github.com/nygenome/lancet).
   See the methods on the callers' settings [here](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#somatic-single-nucleotide-variant-calling) and see [the methods of this caller analysis and comparison below](#summary-of-methods).  
   - `pbta/tcga-snv-mutation-tmb-coding.tsv` - Tumor Mutation burden calculations using *coding only* mutations identified by both Mutect2 and Strelka2 only within coding sequence regions of the genome.
-  - `pbta/tcga-snv--mutation-tmb-all.tsv` - Tumor Mutation burden calculations using *all* mutations identified by both of Mutect2 and Strelka2 throughout the genome.
+  - `pbta/tcga-snv-mutation-tmb-all.tsv` - Tumor Mutation burden calculations using *all* mutations identified by both of Mutect2 and Strelka2 throughout the genome.
 
 ## Summary of Methods
 
