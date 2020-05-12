@@ -16,11 +16,15 @@ This analysis compares the Pediatric Brain Tumor samples of this dataset to the 
 
 ## Usage
 
-To run this from the command line, use:
+To run this from the command line, first, the `snv-caller` scripts: `snv-caller/run_caller_consensus_analysis-tcga.sh` and `snv-caller/run_caller_consensus_analysis-pbta.sh` must be run.  
+The results from those scripts are saved to `snv-caller/results/consensus/` folder and used here. 
+Some versions of these files are incorporated into the data release and saved to `data` folder so this module could be altered to use the file versions in the `data` folder.  
+Then you can run this module's analysis by the following command to create the plot: 
 ```
 Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd',
                               clean = TRUE)"
 ```
+These steps are also run soup to nutes in the figures script: `figures/scripts/fig2-mutational-landscape.R`. 
 
 ## Results
 
