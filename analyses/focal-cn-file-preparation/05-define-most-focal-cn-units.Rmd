@@ -279,7 +279,8 @@ final_df <- bind_rows(
   select(Kids_First_Biospecimen_ID,
          status = dominant_status,
          region,
-         region_type)
+         region_type) %>%
+  arrange(Kids_First_Biospecimen_ID)
 
 # Print out preview
 final_df
