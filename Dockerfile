@@ -4,43 +4,45 @@ WORKDIR /rocker-build/
 
 ### Install apt-getable packages to start
 #########################################
-RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialog
 
-RUN apt-get install dialog apt-utils -y
+# Add curl
+RUN apt-get -y --no-install-recommends install curl
+
+# Install pip3
+RUN apt-get -y --no-install-recommends install \
+    python3-pip  python3-dev
 
 # Required for installing htslib
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+RUN apt-get -y --no-install-recommends install \
     zlib1g \
     libbz2-dev \
     liblzma-dev
 
 # libmagick++-dev is needed for coloblindr to install
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+RUN apt-get -y --no-install-recommends install \
     libgdal-dev \
     libudunits2-dev \
     libmagick++-dev
 
 # Required for installing pdftools, which is a dependency of gridGraphics
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+RUN apt-get -y --no-install-recommends install \
     libpoppler-cpp-dev
 
 # Install java and rJava for some of the snv plotting comparison packages
-RUN apt-get -y update && apt-get install -y \
+RUN apt-get -y --no-install-recommends install \
    default-jdk \
    r-cran-rjava \
    && apt-get clean \
    && rm -rf /var/lib/apt/lists/
 
-# Install pip3
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    python3-pip  python3-dev
+
 
 #### R packages and python below
 ################################
 
 # Commonly used R packages
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
+RUN install2.r --error \
     --deps TRUE \
     rprojroot \
     optparse \
@@ -65,8 +67,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 
 # Required for interactive sample distribution plots
 # map view is needed to create HTML outputs of the interactive plots
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
+RUN install2.r --error \
     --deps TRUE \
     gdalUtils \
     leafem \
@@ -80,8 +81,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 # Installs packages needed for still treemap, interactive plots, and hex plots
 # Rtsne and umap are required for dimension reduction analyses
 # optparse is needed for passing arguments from the command line to R script
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
+RUN install2.r --error \
     --deps TRUE \
     treemap \
     hexbin \
@@ -119,8 +119,7 @@ RUN R -e "remotes::install_github('timelyportfolio/d3treeR', ref = '0eaba7f1c643
 RUN R -e "remotes::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
 
 # Required for sex prediction from RNA-seq data
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
+RUN install2.r --error \
     --deps TRUE \
     glmnet \
     glmnetUtils \
@@ -129,8 +128,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 
 
 # Install for SNV comparison plots
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
+RUN install2.r --error \
     --deps TRUE \
     UpSetR
 
@@ -159,8 +157,7 @@ RUN cd htslib-1.9 && \
 RUN mv bin/* /usr/local/bin
 
 # bedr package
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
+RUN install2.r --error \
     bedr
 
 # Check to make sure the binaries are available by loading the bedr library
@@ -171,8 +168,7 @@ RUN R -e "BiocManager::install(c('BSgenome.Hsapiens.UCSC.hg19', 'BSgenome.Hsapie
 
 # Also install for mutation signature analysis
 # qdapRegex is for the fusion analysis
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
+RUN install2.r --error \
     --deps TRUE \
     deconstructSigs \
     qdapRegex
@@ -207,12 +203,9 @@ RUN pip3 install "statsmodels==0.10.2" && \
    pip3 install "tzlocal"
 
 
-# Add curl
-RUN apt-get update && apt-get install -y --no-install-recommends curl
 
 # Need for survminer for doing survival analysis
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
+RUN install2.r --error \
     --deps TRUE \
     cmprsk \
     survMisc \
@@ -222,8 +215,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 RUN pip3 install "pyreadr==0.2.1"
 
 # ggfortify for plotting
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
+RUN install2.r --error \
     --deps TRUE \
     spatial \
     ggfortify
@@ -237,8 +229,7 @@ RUN R -e "install.packages('corrplot', dependencies = TRUE)"
 RUN R -e "BiocManager::install('ggbio')"
 
 # CRAN package msigdbr needed for gene-set-enrichment-analysis
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
+RUN install2.r --error \
     --deps TRUE \
     msigdbr
 
@@ -251,8 +242,7 @@ RUN R -e "remotes::install_github('NNoureen/EXTEND', ref = '467c2724e1324ef05ad9
 
 
 # CRAN package gridGraphics needed for telomerase-activity-prediction
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
+RUN install2.r --error \
     --deps TRUE \
     gridGraphics
 
@@ -306,8 +296,7 @@ RUN pip3 install "cython==0.29.15" && \
     pip3 install "CrossMap==0.3.9"
 
 # Packages required for rna-seq-composition
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
+RUN install2.r --error \
     --deps TRUE \
     EnvStats \
     janitor
