@@ -1,4 +1,4 @@
-FROM rocker/tidyverse:3.6.0
+FROM rocker/tidyverse:3.6.2
 MAINTAINER ccdl@alexslemonade.org
 WORKDIR /rocker-build/
 
@@ -13,7 +13,32 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     libudunits2-dev \
     libmagick++-dev
 
-# Required forinteractive sample distribution plots
+# Commonly used R packages
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    && install2.r --error \
+    --deps TRUE \
+    rprojroot \
+    optparse \
+    data.table \
+    RColorBrewer \
+    viridis \
+    R.utils \
+    lattice \
+    rpart \
+    class \
+    MASS \
+    GGally \
+    Matrix \
+    survival \
+    nlme \
+    cluster \
+    foreign \
+    nnet \
+    mgcv \
+    flextable
+
+
+# Required for interactive sample distribution plots
 # map view is needed to create HTML outputs of the interactive plots
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
@@ -33,19 +58,12 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
     --deps TRUE \
-    R.utils \
     treemap \
     hexbin \
     VennDiagram \
     Rtsne \
-    umap \
-    rprojroot \
-    optparse \
-    pheatmap \
-    RColorBrewer \
-    viridis \
-    data.table # \
-   # d3r 
+    umap # \
+    # d3r
 
 
 # maftools for proof of concept in create-subset-files
@@ -67,13 +85,13 @@ RUN R -e "BiocManager::install(c('preprocessCore', 'sva'), update = FALSE)"
 
 
 # This is needed to create the interactive pie chart
-RUN R -e "devtools::install_github('timelyportfolio/sunburstR', ref = 'd40d7ed71ee87ca4fbb9cb8b7cf1e198a23605a9', dependencies = TRUE)"
+RUN R -e "remotes::install_github('timelyportfolio/sunburstR', ref = 'd40d7ed71ee87ca4fbb9cb8b7cf1e198a23605a9', dependencies = TRUE)"
 
 # This is needed to create the interactive treemap
-RUN R -e "devtools::install_github('timelyportfolio/d3treeR', ref = '0eaba7f1c6438e977f8a5c082f1474408ac1fd80', dependencies = TRUE)"
+RUN R -e "remotes::install_github('timelyportfolio/d3treeR', ref = '0eaba7f1c6438e977f8a5c082f1474408ac1fd80', dependencies = TRUE)"
 
 # Need this package to make plots colorblind friendly
-RUN R -e "devtools::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
+RUN R -e "remotes::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
 
 # Required for sex prediction from RNA-seq data
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
@@ -97,22 +115,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     --deps TRUE \
     UpSetR
 
-RUN R -e "devtools::install_github('const-ae/ggupset', ref = '7a33263cc5fafdd72a5bfcbebe5185fafe050c73', dependencies = TRUE)"
-
-# GGally and its required packages
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
-    lattice \
-    rpart \
-    class \
-    MASS \
-    GGally \
-    Matrix
-
-# Help display tables in R Notebooks
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
-    flextable
+RUN R -e "remotes::install_github('const-ae/ggupset', ref = '7a33263cc5fafdd72a5bfcbebe5185fafe050c73', dependencies = TRUE)"
 
 # Required for mapping segments to genes
 # Add bedtools
@@ -165,16 +168,6 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 RUN R -e "install.packages('DT', dependencies = TRUE)"
 RUN R -e "BiocManager::install(c('rtracklayer'), update = FALSE)"
 
-# Needed to install TCGAbiolinks
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
-    --deps TRUE \
-    survival \
-    nlme \
-    cluster \
-    foreign \
-    nnet \
-    mgcv
 
 # TCGAbiolinks for TMB compare analysis
 RUN R -e "BiocManager::install(c('TCGAbiolinks'), update = FALSE)"
@@ -210,7 +203,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
     --deps TRUE \
-    survival \
     cmprsk \
     survMisc \
     survminer
@@ -243,7 +235,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 RUN R -e "BiocManager::install(c('GSVA'), update = FALSE)"
 
 # remote package EXTEND needed for telomerase-activity-prediciton analysis
-RUN R -e "devtools::install_github('NNoureen/EXTEND', ref = '467c2724e1324ef05ad9260c3079e5b0b0366420', dependencies = TRUE)"
+RUN R -e "remotes::install_github('NNoureen/EXTEND', ref = '467c2724e1324ef05ad9260c3079e5b0b0366420', dependencies = TRUE)"
 
 # Required for installing pdftools, which is a dependency of gridGraphics
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
@@ -312,10 +304,10 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     janitor
 
 # Patchwork for plot compositions
-RUN R -e "devtools::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd46899f17197f9858bc5672e9f4')"
+RUN R -e "remotes::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd46899f17197f9858bc5672e9f4')"
 
 # This is required for creating a treemap of the broad histology and integrated diagnoses
-RUN R -e "devtools::install_github('wilkox/treemapify', ref = 'e70adf727f4d13223de8146458db9bef97f872cb', dependencies = TRUE)"
+RUN R -e "remotes::install_github('wilkox/treemapify', ref = 'e70adf727f4d13223de8146458db9bef97f872cb', dependencies = TRUE)"
 
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
