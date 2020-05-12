@@ -311,25 +311,41 @@ This annotation object strategy was originally from [chromosomal-instability](ht
 ```{r}
 # Set up chromosome labels from bins as a factor vector
 chrs <- paste0("chr", S4Vectors::decode(bins@seqnames))
-chrs <- as.factor(chrs)
+chrs <- factor(chrs, levels = paste0("chr", 1:22))
 
 # Make a key for assigning alternating colors to the chromosomes
 chr_colors <- rep(binary_col_palette$hex_codes, 
                   length.out = length(unique(chrs)))
 names(chr_colors) <- unique(chrs)
+
+# Get coordinate start positions
+chr_pos <- match(unique(chrs), chrs)
+
+# Get mid points of chromosome labels
+mid_points <- ceiling((c(chr_pos[2:length(chr_pos)], length(chrs)) + chr_pos[1:length(chr_pos)]) / 2)
 ```
 
 Make chromosomal labeling `HeatmapAnnotation` object.
 
 ```{r}
+# Make text labels for chromosome text
+chr_text <- ComplexHeatmap::anno_mark(
+  at = mid_points,
+  labels = levels(chrs), 
+  which = "column", 
+  side = "bottom", 
+  labels_rot = 45, 
+  labels_gp = grid::gpar(cex = 0.65))
+
 # Create the Heatmap annotation object
 chr_annot <- ComplexHeatmap::HeatmapAnnotation(
   df = data.frame(chrs),
   col = list(chrs = chr_colors),
   name = "",
   show_legend = FALSE,
-  show_annotation_name = FALSE
-)
+  show_annotation_name = FALSE, 
+  mark = chr_text # Put the text in
+  )
 ```
 
 ### Make row annotation object
@@ -343,6 +359,7 @@ histologies <-
   data.frame(Kids_First_Biospecimen_ID = bin_calls_df$biospecimen_id) %>% 
   dplyr::inner_join(metadata %>% 
                       dplyr::select(Kids_First_Biospecimen_ID, short_histology, sample_color)) %>%
+  dplyr::mutate(short_histology = factor(short_histology)) %>% 
   dplyr::arrange(short_histology) %>% 
   tibble::column_to_rownames("Kids_First_Biospecimen_ID")
 
@@ -352,16 +369,33 @@ names(histologies_color_key_filtered) <- unique(histologies$short_histology)
 
 # Drop this column so ComplexHeatmap isn't tempted to plot it
 histologies <- dplyr::select(histologies, -sample_color)
+
+# Get coordinate start positions
+hist_pos <- match(names(histologies_color_key_filtered), histologies$short_histology)
+
+# Get mid points of chromosome labels
+mid_points <- ceiling((c(hist_pos[2:length(hist_pos)], length(histologies$short_histology)) + hist_pos[1:length(hist_pos)]) / 2)
 ```
 
 ```{r}
+# Make text labels for chromosome text
+hist_text <- ComplexHeatmap::anno_mark(
+  at = mid_points, 
+  labels = levels(histologies$short_histology), 
+  which = "row", 
+  side = "right", 
+  labels_gp = grid::gpar(cex = 0.65), 
+  link_width = grid::unit(15, "mm"))
+
 # Create the Heatmap annotation object
 hist_annot <- ComplexHeatmap::HeatmapAnnotation(
   df = data.frame(histologies),
   col = list(short_histology = histologies_color_key_filtered),
   which = "row",
-  show_annotation_name = FALSE
-)
+  show_annotation_name = FALSE, 
+  show_legend = FALSE,
+  mark = hist_text # Put the text in
+  )
 ```
 
 Format `bin_calls_df` as a matrix with rownames for `ComplexHeatmap` to use. 
@@ -382,16 +416,18 @@ all.equal(rownames(bin_calls_mat), rownames(histologies))
 
 ```{r}
 # Plot on a heatmap
-heatmap <- ComplexHeatmap::Heatmap(bin_calls_mat,
-  heatmap_legend_param = list(title = "CN status"),
+heatmap <- ComplexHeatmap::Heatmap(
+  bin_calls_mat,
+  name = "CN status",            
+  heatmap_legend_param = list(direction = "horizontal"),
   col = color_key,
   cluster_columns = FALSE,
   cluster_rows = FALSE,
   show_column_names = FALSE,
   show_row_names = FALSE,
   bottom_annotation = chr_annot,
-  left_annotation = hist_annot
-)
+  right_annotation = hist_annot, 
+  ) 
 ```
 
 Print out heatmap. 
@@ -405,7 +441,7 @@ Save to PDF.
 ```{r}
 # Save plot as PDF
 pdf(file.path(plots_dir, "cn_status_heatmap.pdf"))
-heatmap
+ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
 dev.off()
 ```
 
