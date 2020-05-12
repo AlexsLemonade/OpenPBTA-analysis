@@ -9,9 +9,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialo
 # Add curl
 RUN apt-get -y --no-install-recommends install curl
 
-# Install pip3
+# Install pip3 and instalation tools
 RUN apt-get -y --no-install-recommends install \
     python3-pip  python3-dev
+RUN pip3 install "setuptools==46.2.0" "wheel==0.34.2" "six==1.14.0"
 
 # Required for installing htslib
 RUN apt-get -y --no-install-recommends install \
@@ -80,15 +81,14 @@ RUN install2.r --error \
 
 # Installs packages needed for still treemap, interactive plots, and hex plots
 # Rtsne and umap are required for dimension reduction analyses
-# optparse is needed for passing arguments from the command line to R script
 RUN install2.r --error \
     --deps TRUE \
     treemap \
     hexbin \
     VennDiagram \
     Rtsne \
-    umap # \
-    # d3r
+    umap  \
+    d3r
 
 
 # maftools for proof of concept in create-subset-files
@@ -136,16 +136,17 @@ RUN R -e "remotes::install_github('const-ae/ggupset', ref = '7a33263cc5fafdd72a5
 
 # Required for mapping segments to genes
 # Add bedtools
-RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.28.0/bedtools-2.28.0.tar.gz
-RUN tar -zxvf bedtools-2.28.0.tar.gz
-RUN cd bedtools2 && \
+RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.28.0/bedtools-2.28.0.tar.gz && \
+    tar -zxvf bedtools-2.28.0.tar.gz && \
+    cd bedtools2 && \
     make && \
     mv bin/* /usr/local/bin
 
 # Add bedops per the BEDOPS documentation
-RUN wget https://github.com/bedops/bedops/releases/download/v2.4.37/bedops_linux_x86_64-v2.4.37.tar.bz2
-RUN tar -jxvf bedops_linux_x86_64-v2.4.37.tar.bz2 && rm -f bedops_linux_x86_64-v2.4.37.tar.bz2
-RUN cp bin/* /usr/local/bin
+RUN wget https://github.com/bedops/bedops/releases/download/v2.4.37/bedops_linux_x86_64-v2.4.37.tar.bz2 && \
+    tar -jxvf bedops_linux_x86_64-v2.4.37.tar.bz2 && \
+    rm -f bedops_linux_x86_64-v2.4.37.tar.bz2 && \
+    cp bin/* /usr/local/bin
 
 # HTSlib
 RUN wget https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar.bz2
@@ -153,8 +154,8 @@ RUN tar -jxvf htslib-1.9.tar.bz2 && rm -f htslib-1.9.tar.bz2
 RUN cd htslib-1.9 && \
     ./configure && \
     make && \
-    make install
-RUN mv bin/* /usr/local/bin
+    make install && \
+    mv bin/* /usr/local/bin
 
 # bedr package
 RUN install2.r --error \
@@ -183,7 +184,6 @@ RUN R -e "BiocManager::install(c('TCGAbiolinks'), update = FALSE)"
 
 # Install python3 data science basics (pandas)
 RUN pip3 install "numpy==1.17.3" && \
-   pip3 install "six==1.13.0" "setuptools==41.6.0" && \
    pip3 install "cycler==0.10.0" "kiwisolver==1.1.0" "pyparsing==2.4.5" "python-dateutil==2.8.1" "pytz==2019.3" && \
    pip3 install "matplotlib==3.0.3" && \
    pip3 install "scipy==1.3.2" && \
@@ -200,9 +200,19 @@ RUN pip3 install "statsmodels==0.10.2" && \
    pip3 install "jupyter==1.0.0" && \
    pip3 install "ipykernel==4.8.1" && \
    pip3 install "widgetsnbextension==2.0.0" && \
-   pip3 install "tzlocal"
+   pip3 install "tzlocal==2.1"
 
 
+# pyreadr for comparative-RNASeq-analysis
+RUN pip3 install "pyreadr==0.2.1" && \
+    pip3 install "pyarrow==0.16.0"
+
+# Install CrossMap for liftover
+RUN pip3 install "cython==0.29.15" && \
+    pip3 install "bx-python==0.8.8" && \
+    pip3 install "pybigwig==0.3.17" && \
+    pip3 install "pysam==0.15.4" && \
+    pip3 install "CrossMap==0.3.9"
 
 # Need for survminer for doing survival analysis
 RUN install2.r --error \
@@ -211,9 +221,6 @@ RUN install2.r --error \
     survMisc \
     survminer
 
-# pyreadr for comparative-RNASeq-analysis
-RUN pip3 install "pyreadr==0.2.1"
-
 # ggfortify for plotting
 RUN install2.r --error \
     --deps TRUE \
@@ -221,9 +228,10 @@ RUN install2.r --error \
     ggfortify
 
 # package required for immune deconvolution
-RUN R -e "install.packages('remotes', dependencies = TRUE)"
 RUN R -e "remotes::install_github('icbi-lab/immunedeconv', ref = '493bcaa9e1f73554ac2d25aff6e6a7925b0ea7a6', dependencies = TRUE)"
-RUN R -e "install.packages('corrplot', dependencies = TRUE)"
+RUN install2.r --error \
+    --deps TRUE \
+    corrplot
 
 # Install for mutation signature analysis
 RUN R -e "BiocManager::install('ggbio')"
@@ -249,8 +257,6 @@ RUN install2.r --error \
 # package required for shatterseek
 RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remotes::install_github('parklab/ShatterSeek', ref = '83ab3effaf9589cc391ecc2ac45a6eaf578b5046', dependencies = TRUE))"
 
-# pyarrow for comparative-RNASeq-analysis, to read/write .feather files
-RUN pip3 install "pyarrow==0.16.0"
 
 # ComplexHeatmap and circlize were apparently not explicitly installed anywhere, but is used throughout
 RUN R -e "BiocManager::install(c('ComplexHeatmap', 'circlize'), update = FALSE)"
@@ -288,12 +294,6 @@ RUN mkdir -p gistic_install && \
 RUN chown -R rstudio:rstudio /home/rstudio/gistic_install
 RUN chmod 755 /home/rstudio/gistic_install
 
-# Install CrossMap for liftover
-RUN pip3 install "cython==0.29.15" && \
-    pip3 install "bx-python==0.8.8" && \
-    pip3 install "pybigwig==0.3.17" && \
-    pip3 install "pysam==0.15.4" && \
-    pip3 install "CrossMap==0.3.9"
 
 # Packages required for rna-seq-composition
 RUN install2.r --error \
