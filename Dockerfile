@@ -2,16 +2,41 @@ FROM rocker/tidyverse:3.6.2
 MAINTAINER ccdl@alexslemonade.org
 WORKDIR /rocker-build/
 
+### Install apt-getable packages to start
+#########################################
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 
 RUN apt-get install dialog apt-utils -y
 
-# Required for installing mapview for interactive sample distribution plots
+# Required for installing htslib
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    zlib1g \
+    libbz2-dev \
+    liblzma-dev
+
 # libmagick++-dev is needed for coloblindr to install
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     libgdal-dev \
     libudunits2-dev \
     libmagick++-dev
+
+# Required for installing pdftools, which is a dependency of gridGraphics
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    libpoppler-cpp-dev
+
+# Install java and rJava for some of the snv plotting comparison packages
+RUN apt-get -y update && apt-get install -y \
+   default-jdk \
+   r-cran-rjava \
+   && apt-get clean \
+   && rm -rf /var/lib/apt/lists/
+
+# Install pip3
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    python3-pip  python3-dev
+
+#### R packages and python below
+################################
 
 # Commonly used R packages
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
@@ -102,12 +127,6 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     caret \
     e1071
 
-# Install java and rJava for some of the snv plotting comparison packages
-RUN apt-get -y update && apt-get install -y \
-   default-jdk \
-   r-cran-rjava \
-   && apt-get clean \
-   && rm -rf /var/lib/apt/lists/
 
 # Install for SNV comparison plots
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
@@ -124,12 +143,6 @@ RUN tar -zxvf bedtools-2.28.0.tar.gz
 RUN cd bedtools2 && \
     make && \
     mv bin/* /usr/local/bin
-
-# Required for installing htslib
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    zlib1g \
-    libbz2-dev \
-    liblzma-dev
 
 # Add bedops per the BEDOPS documentation
 RUN wget https://github.com/bedops/bedops/releases/download/v2.4.37/bedops_linux_x86_64-v2.4.37.tar.bz2
@@ -173,8 +186,6 @@ RUN R -e "BiocManager::install(c('rtracklayer'), update = FALSE)"
 RUN R -e "BiocManager::install(c('TCGAbiolinks'), update = FALSE)"
 
 # Install python3 data science basics (pandas)
-# using pip to get more current versions
-RUN apt-get update -qq && apt-get -y --no-install-recommends install python3-pip  python3-dev
 RUN pip3 install "numpy==1.17.3" && \
    pip3 install "six==1.13.0" "setuptools==41.6.0" && \
    pip3 install "cycler==0.10.0" "kiwisolver==1.1.0" "pyparsing==2.4.5" "python-dateutil==2.8.1" "pytz==2019.3" && \
@@ -237,9 +248,7 @@ RUN R -e "BiocManager::install(c('GSVA'), update = FALSE)"
 # remote package EXTEND needed for telomerase-activity-prediciton analysis
 RUN R -e "remotes::install_github('NNoureen/EXTEND', ref = '467c2724e1324ef05ad9260c3079e5b0b0366420', dependencies = TRUE)"
 
-# Required for installing pdftools, which is a dependency of gridGraphics
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    libpoppler-cpp-dev
+
 
 # CRAN package gridGraphics needed for telomerase-activity-prediction
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
@@ -294,7 +303,7 @@ RUN pip3 install "cython==0.29.15" && \
     pip3 install "bx-python==0.8.8" && \
     pip3 install "pybigwig==0.3.17" && \
     pip3 install "pysam==0.15.4" && \
-    pip3 install "CrossMap==0.3.9" 
+    pip3 install "CrossMap==0.3.9"
 
 # Packages required for rna-seq-composition
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
