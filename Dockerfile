@@ -57,8 +57,8 @@ RUN wget https://github.com/bedops/bedops/releases/download/v2.4.37/bedops_linux
     mv bin/* /usr/local/bin
 
 # HTSlib
-RUN wget https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar.bz2 \
-    tar -jxvf htslib-1.9.tar.bz2 && rm -f htslib-1.9.tar.bz2 \
+RUN wget https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar.bz2 && \
+    tar -jxvf htslib-1.9.tar.bz2 && rm -f htslib-1.9.tar.bz2 && \
     cd htslib-1.9 && \
     ./configure && \
     make && \
