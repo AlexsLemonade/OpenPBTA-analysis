@@ -33,7 +33,7 @@ plots_dir <- file.path(output_dir, "plots")
 
 # Read in dataset
 histologies_df <- readr::read_tsv(file.path(root_dir, "data",
-                                 "pbta-histologies.tsv"))
+                                            "pbta-histologies.tsv"))
 
 # Create a colorblind-friendly color vector
 color <- colorblindr::palette_OkabeIto
@@ -132,6 +132,11 @@ tm <-
     draw = TRUE
   )$tm
 
+# Convert the tm data.frame into a d3.js hierarchy object which is needed
+# for the sund2b plot
+tmnest <-
+  d3r::d3_nest(tm[, c("level1", "level2", "level3", "vSize")],
+               value_cols = c("vSize"))
 
 # Create an interactive treemap
 interactive_tm <-
@@ -140,34 +145,20 @@ interactive_tm <-
                   width = 1200,
                   height = 700)
 
+# Create a sunburst plot
+sun_plot <-
+  sunburstR::sunburst(
+    data = tmnest,
+    valueField = "vSize",
+    count = TRUE,
+    sumNodes = FALSE,
+    colors = color
+  )
+
+# Create an interactive sund2b plot
+p <- sunburstR::sund2b(tmnest, colors = color, valueField = "vSize")
+
 # Create HTML outputs for the interactive plots
 mapview::mapshot(interactive_tm, url = file.path(plots_dir,
                                                  "histology-treemap.html"))
-# mapview::mapshot(p, url = file.path(plots_dir, "histology-pie.html"))
-
-
-##########################################################################################
-# NOTE: Below is commented out due to d3r leading to CI build fails via tidyselect version conflicts
-
-# Convert the tm data.frame into a d3.js hierarchy object which is needed
-# for the sund2b plot
-# NOTE: Commented out due to d3r leading to CI build fails via tidyselect version conflicts
-#tmnest <-
-#  d3r::d3_nest(tm[, c("level1", "level2", "level3", "vSize")],
-#               value_cols = c("vSize"))
-
-
-#
-## Create a sunburst plot
-#sun_plot <-
-#  sunburstR::sunburst(
-#    data = tmnest,
-#    valueField = "vSize",
-#    count = TRUE,
-#    sumNodes = FALSE,
-#    colors = color
-#  )
-
-# Create an interactive sund2b plot
-#p <- sunburstR::sund2b(tmnest, colors = color, valueField = "vSize")
-#########################################################################################
+mapview::mapshot(p, url = file.path(plots_dir, "histology-pie.html"))
