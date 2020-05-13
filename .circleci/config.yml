@@ -21,6 +21,22 @@ jobs:
           command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
 
       - run:
+          name: Oncoprint plotting
+          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
+
+      - run:
+          name: Survival analysis
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/survival-analysis/survival-analysis_template.Rmd', params = list(plot_ci = FALSE), clean = TRUE)" 
+
+      - run:
+          name: TP53 NF1 classifier run
+          command: OPENPBTA_POLYAPLOT=0 ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"  
+
+      - run:
+          name: Immune deconvolution using xCell and MCP-Counter
+          command: OPENPBTA_DECONV_METHOD="mcp_counter" ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
+
+      - run:
           name: Sample Distribution Figure
           command: ./scripts/run_in_ci.sh Rscript figures/scripts/fig1-sample-distribution.R
           
@@ -80,10 +96,6 @@ jobs:
           command: ./scripts/run_in_ci.sh bash analyses/collapse-rnaseq/run-collapse-rnaseq.sh
 
       - run:
-          name: Immune deconvolution using xCell and MCP-Counter
-          command: OPENPBTA_DECONV_METHOD="mcp_counter" ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
-
-      - run:
           name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded data and creates recurrent fusion list
           command: ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
 
@@ -96,9 +108,6 @@ jobs:
       #     name: Selection Strategy Comparison
       #     command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/selection-strategy-comparison/01-selection-strategies.rmd', params = list(neighbors = 2), clean = TRUE)"
 
-      - run:
-          name: TP53 NF1 classifier run
-          command: OPENPBTA_POLYAPLOT=0 ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"  
 
 # This is deprecated       
 #      - run:
@@ -136,10 +145,6 @@ jobs:
           command: ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
           
       - run:
-          name: Survival analysis
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/survival-analysis/survival-analysis_template.Rmd', params = list(plot_ci = FALSE), clean = TRUE)" 
-
-      - run:
           name: Comparative RNASeq - generate correlation matrix - rsem-tpm.polya
           command: ./scripts/run_in_ci.sh python3 analyses/comparative-RNASeq-analysis/01-correlation-matrix.py ../../data/pbta-gene-expression-rsem-tpm.polya.rds --clinical-path ../../data/pbta-histologies.tsv --qc-manifest-path ../../data/pbta-mend-qc-manifest.tsv --qc-results-path ../../data/pbta-mend-qc-results.tar.gz --prefix rsem-tpm-polya- --verbose
 
@@ -154,10 +159,6 @@ jobs:
       - run:
           name: Process SV file
           command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/01-process-sv-file.R
-
-      - run:
-          name: Oncoprint plotting
-          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
       
       - run:
           name: GISTIC Plots
