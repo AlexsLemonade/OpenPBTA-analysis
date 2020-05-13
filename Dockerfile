@@ -32,7 +32,7 @@ RUN apt-get -y --no-install-recommends install \
     python3-pip  python3-dev
 RUN pip3 install "setuptools==46.2.0" "wheel==0.34.2" "six==1.14.0"
 
-# Install java and rJava for some of the snv plotting comparison packages
+# Install java
 RUN apt-get -y --no-install-recommends install \
    default-jdk
 
@@ -117,7 +117,7 @@ RUN install2.r --error \
 # Install rjava
 RUN install2.r --error \
     --deps TRUE \
-    rjava
+    rJava
 
 # maftools for proof of concept in create-subset-files
 RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
