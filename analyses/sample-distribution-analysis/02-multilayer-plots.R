@@ -12,6 +12,10 @@
 #
 # Rscript analyses/sample-distribution-analysis/02-multilayer-plots.R
 
+print("PRINTING SESSION INFO 0")
+print(sessionInfo())
+
+
 # Load in libraries
 library(ggplot2)
 library(colorspace)
@@ -75,6 +79,8 @@ color_palette <-
     "palettes",
     "histology_color_palette.tsv"
   ))
+  
+
 
 # Join the color palette for the colors for each short histology value --
 # palette is generated in `figures/scripts/color_palettes.R`
@@ -145,6 +151,8 @@ mapview::mapshot(interactive_tm, url = file.path(plots_dir,
                                                  "histology-treemap.html"))
 # mapview::mapshot(p, url = file.path(plots_dir, "histology-pie.html"))
 
+print("PRINTING SESSION INFO 2")
+print(sessionInfo())
 
 ##########################################################################################
 # NOTE: Below is commented out due to d3r leading to CI build fails via tidyselect version conflicts
@@ -152,9 +160,12 @@ mapview::mapshot(interactive_tm, url = file.path(plots_dir,
 # Convert the tm data.frame into a d3.js hierarchy object which is needed
 # for the sund2b plot
 # NOTE: Commented out due to d3r leading to CI build fails via tidyselect version conflicts
-#tmnest <-
-#  d3r::d3_nest(tm[, c("level1", "level2", "level3", "vSize")],
-#               value_cols = c("vSize"))
+tmnest <-
+  d3r::d3_nest(tm[, c("level1", "level2", "level3", "vSize")],
+               value_cols = c("vSize"))
+
+print("PRINTING SESSION INFO 3")
+print(sessionInfo())
 
 
 #
