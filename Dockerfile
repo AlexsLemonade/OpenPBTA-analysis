@@ -182,25 +182,22 @@ RUN R -e "BiocManager::install(c('rtracklayer'), update = FALSE)"
 # TCGAbiolinks for TMB compare analysis
 RUN R -e "BiocManager::install(c('TCGAbiolinks'), update = FALSE)"
 
-# Install python3 data science basics (pandas)
-RUN pip3 install "numpy==1.17.3" && \
-   pip3 install "cycler==0.10.0" "kiwisolver==1.1.0" "pyparsing==2.4.5" "python-dateutil==2.8.1" "pytz==2019.3" && \
-   pip3 install "matplotlib==3.0.3" && \
-   pip3 install "scipy==1.3.2" && \
-   pip3 install "pandas==0.25.3" && \
-   pip3 install "snakemake==5.8.1"
-
-
-# pip install for modules Ras, NF1, and TP53 Classifiers
-RUN pip3 install "statsmodels==0.10.2" && \
-   pip3 install "plotnine==0.3.0" && \
-   pip3 install "scikit-learn==0.19.1" &&\
-   pip3 install "rpy2==2.9.3" && \
-   pip3 install "seaborn==0.8.1" && \
-   pip3 install "jupyter==1.0.0" && \
-   pip3 install "ipykernel==4.8.1" && \
-   pip3 install "widgetsnbextension==2.0.0" && \
-   pip3 install "tzlocal==2.1"
+# Install python3 data science tools
+RUN pip3 install "numpy==1.18.4" && \
+    pip3 install "cycler==0.10.0" "kiwisolver==1.1.0" "pyparsing==2.4.5" "python-dateutil==2.8.1" "pytz==2019.3" && \
+    pip3 install "matplotlib==3.2.1" && \
+    pip3 install "scipy==1.4.1" && \
+    pip3 install "pandas==1.0.3" && \
+    pip3 install "scikit-learn==0.23.0" &&\
+    pip3 install "jupyter==1.0.0" && \
+    pip3 install "ipykernel==5.2.1" && \
+    pip3 install "widgetsnbextension==3.5.1" && \
+    pip3 install "snakemake==5.17.0"
+    pip3 install "statsmodels==0.11.1" && \
+    pip3 install "plotnine==0.6.0" && \
+    pip3 install "rpy2==3.3.2" && \
+    pip3 install "seaborn==0.10.1" && \
+    pip3 install "tzlocal==2.1"
 
 
 # pyreadr for comparative-RNASeq-analysis
