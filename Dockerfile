@@ -142,6 +142,8 @@ RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.28.0/bedtools-2
     make && \
     mv bin/* /usr/local/bin
 
+RUN apt-get -y --no-install-recommends install bzip2
+
 # Add bedops per the BEDOPS documentation
 RUN wget https://github.com/bedops/bedops/releases/download/v2.4.37/bedops_linux_x86_64-v2.4.37.tar.bz2 && \
     tar -jxvf bedops_linux_x86_64-v2.4.37.tar.bz2 && \
