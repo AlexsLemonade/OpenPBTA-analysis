@@ -35,7 +35,7 @@ RUN pip3 install "setuptools==46.2.0" "wheel==0.34.2" "six==1.14.0"
 # Install java and rJava for some of the snv plotting comparison packages
 RUN apt-get -y --no-install-recommends install \
    default-jdk \
-   r-cran-rjava # \
+   r-cran-rjava 
 #    && apt-get clean \
 #    && rm -rf /var/lib/apt/lists/
 
