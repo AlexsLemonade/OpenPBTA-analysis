@@ -133,7 +133,7 @@ RUN R -e "BiocManager::install(c('GenVisR'), update = FALSE)"
 RUN R -e "BiocManager::install(c('annotatr', 'TxDb.Hsapiens.UCSC.hg38.knownGene', 'org.Hs.eg.db'), update = FALSE)"
 
 # Install for mutation signature analysis
-RUN R -e "BiocManager::install(c('BSgenome.Hsapiens.UCSC.hg19', 'BSgenome.Hsapiens.UCSC.hg38'))"
+RUN R -e "BiocManager::install(c('BSgenome.Hsapiens.UCSC.hg19', 'BSgenome.Hsapiens.UCSC.hg38'), update = FALSE)"
 
 # Packages for expression normalization and batch correction
 RUN R -e "BiocManager::install(c('preprocessCore', 'sva'), update = FALSE)"
@@ -213,7 +213,7 @@ RUN install2.r --error \
     corrplot
 
 # Install for mutation signature analysis
-RUN R -e "BiocManager::install('ggbio')"
+RUN R -e "BiocManager::install('ggbio', update = FALSE)"
 
 # CRAN package msigdbr needed for gene-set-enrichment-analysis
 RUN install2.r --error \
