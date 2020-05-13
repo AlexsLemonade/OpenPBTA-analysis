@@ -192,7 +192,7 @@ RUN pip3 install "numpy==1.18.4" && \
     pip3 install "jupyter==1.0.0" && \
     pip3 install "ipykernel==5.2.1" && \
     pip3 install "widgetsnbextension==3.5.1" && \
-    pip3 install "snakemake==5.17.0"
+    pip3 install "snakemake==5.17.0" && \
     pip3 install "statsmodels==0.11.1" && \
     pip3 install "plotnine==0.6.0" && \
     pip3 install "rpy2==3.3.2" && \
