@@ -86,7 +86,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 
 # Install java and rJava for some of the snv plotting comparison packages
 RUN apt-get install -y \
-    default-jdk \
+    default-jdk 
 RUN install2.r --error \
     --deps TRUE \
     rJava
