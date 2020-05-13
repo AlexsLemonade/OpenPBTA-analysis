@@ -85,11 +85,11 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     e1071
 
 # Install java and rJava for some of the snv plotting comparison packages
-RUN apt-get -y update && apt-get install -y \
-   default-jdk \
-   r-cran-rjava \
-   && apt-get clean \
-   && rm -rf /var/lib/apt/lists/
+RUN apt-get install -y \
+    default-jdk \
+RUN install2.r --error \
+    --deps TRUE \
+    rJava
 
 # Install for SNV comparison plots
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
@@ -102,6 +102,7 @@ RUN R -e "devtools::install_github('const-ae/ggupset', ref = '7a33263cc5fafdd72a
 # GGally and its required packages
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     && install2.r --error \
+    --deps TRUE \
     lattice \
     rpart \
     class \
@@ -152,6 +153,7 @@ RUN Rscript -e "library(bedr)"
 
 # Install for mutation signature analysis
 RUN R -e "BiocManager::install(c('BSgenome.Hsapiens.UCSC.hg19', 'BSgenome.Hsapiens.UCSC.hg38'), update=FALSE)"
+
 
 # Also install for mutation signature analysis
 # qdapRegex is for the fusion analysis
