@@ -137,7 +137,7 @@ survival_analysis <- function(metadata,
     metadata_sample_col <- enquo(metadata_sample_col)
     
     # Set up the sample by thing
-    sample_by <- set_names(quo_name(ind_data_sample_col), quo_name(metadata_sample_col))
+    sample_by <- rlang::set_names(quo_name(ind_data_sample_col), quo_name(metadata_sample_col))
 
     # Join this ind_data to the metadata
     metadata <- dplyr::inner_join(metadata, ind_data,
