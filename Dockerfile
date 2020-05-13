@@ -27,18 +27,17 @@ RUN apt-get -y --no-install-recommends install \
 RUN apt-get -y --no-install-recommends install \
     libpoppler-cpp-dev
 
-# Install java and rJava for some of the snv plotting comparison packages
-RUN apt-get -y --no-install-recommends install \
-   default-jdk \
-   r-cran-rjava \
-   && apt-get clean \
-   && rm -rf /var/lib/apt/lists/
-
 # Install pip3 and instalation tools
 RUN apt-get -y --no-install-recommends install \
     python3-pip  python3-dev
 RUN pip3 install "setuptools==46.2.0" "wheel==0.34.2" "six==1.14.0"
 
+# Install java and rJava for some of the snv plotting comparison packages
+RUN apt-get -y --no-install-recommends install \
+   default-jdk \
+   r-cran-rjava # \
+#    && apt-get clean \
+#    && rm -rf /var/lib/apt/lists/
 
 #### R packages and python below
 ################################
