@@ -74,8 +74,10 @@ final_df_tally %>%
 # Plot the distribution of counts
 ggplot(final_df_tally, aes(x = count)) +
   geom_histogram(bins = 100) +
-  geom_vline(aes(xintercept = 3), linetype = "longdash", color = "green", size = .4)
+  geom_vline(aes(xintercept = recurrence_cutoff), linetype = "longdash", color = "green", size = .4)
 ```
+
+The `recurrence_cutoff` defined as 3 appears to be reasonable as seen in the distribution of counts plot above.
 
 ### Isolate recurrent calls
 
