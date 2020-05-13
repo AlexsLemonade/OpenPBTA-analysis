@@ -151,7 +151,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 RUN Rscript -e "library(bedr)"
 
 # Install for mutation signature analysis
-RUN R -e "BiocManager::install(c('BSgenome.Hsapiens.UCSC.hg19', 'BSgenome.Hsapiens.UCSC.hg38'))"
+RUN R -e "BiocManager::install(c('BSgenome.Hsapiens.UCSC.hg19', 'BSgenome.Hsapiens.UCSC.hg38'), update=FALSE)"
 
 # Also install for mutation signature analysis
 # qdapRegex is for the fusion analysis
@@ -231,7 +231,7 @@ RUN R -e "remotes::install_github('icbi-lab/immunedeconv', ref = '493bcaa9e1f735
 RUN R -e "install.packages('corrplot', dependencies = TRUE)"
 
 # Install for mutation signature analysis
-RUN R -e "BiocManager::install('ggbio')"
+RUN R -e "BiocManager::install('ggbio', update=FALSE)"
 
 # CRAN package msigdbr needed for gene-set-enrichment-analysis
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
