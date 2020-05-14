@@ -258,11 +258,14 @@ RUN pip3 install \
     "snakemake==5.8.1" \
     "statsmodels==0.10.2" \
     "plotnine==0.3.0" \
-    "rpy2==2.9.3" \
     "seaborn==0.8.1" \
     "tzlocal==2.0" \
     "pyreadr==0.2.1" \
     "pyarrow==0.16.0"
+
+# Install Rpy2
+RUN pip3 install \
+    "rpy2==2.9.3"
 
 # Install CrossMap for liftover
 RUN pip3 install \
