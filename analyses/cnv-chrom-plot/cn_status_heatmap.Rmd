@@ -28,15 +28,15 @@ Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/cn_status_heatmap.Rmd',
 ### Cutoffs: 
 
 ```{r}
-# The max length of a segment to use the data. 
-# segments that are too long may dominate the heatmap and/or be indicators of 
+# The max length of a segment to use the data.
+# segments that are too long may dominate the heatmap and/or be indicators of
 # broader structural changes
 length_max <- 1e7
 
-# Set minimum percentage of a bin that should be callable to report data. 
+# Set minimum percentage of a bin that should be callable to report data.
 frac_uncallable <- 0.75
 
-# Absolute fraction needed for a bin to be called a particular status 
+# Absolute fraction needed for a bin to be called a particular status
 frac_threshold <- 0.75
 ```
 
@@ -76,7 +76,7 @@ Import color palettes.
 # Import standard color palettes for project
 histology_col_palette <- readr::read_tsv(
   file.path(figure_dir, "palettes", "histology_color_palette.tsv")
-  ) %>% 
+) %>%
   # We'll use deframe so we can use it as a recoding list
   tibble::deframe()
 ```
@@ -86,10 +86,12 @@ In this instance, we only need three values for `gain`, `neutral`, and `loss`.
 
 ```{r}
 divergent_col_palette <- readr::read_tsv(
-  file.path(figure_dir, "palettes", "divergent_color_palette.tsv")) %>% 
+  file.path(figure_dir, "palettes", "divergent_color_palette.tsv")
+) %>%
   # Only keep only these three colors
   dplyr::filter(
-    color_names %in% c("divergent_low_4", "divergent_neutral", "divergent_high_4")) %>% 
+    color_names %in% c("divergent_low_4", "divergent_neutral", "divergent_high_4")
+  ) %>%
   dplyr::pull("hex_codes")
 ```
 
@@ -99,7 +101,7 @@ Binary color palette for chromosomes.
 # Read in color palette
 binary_col_palette <- readr::read_tsv(
   file.path(figure_dir, "palettes", "binary_color_palette.tsv")
-  ) %>%
+) %>%
   # Drop na color from this color palette
   dplyr::filter(color_names != "na_color")
 ```
@@ -111,10 +113,12 @@ binary_col_palette <- readr::read_tsv(
 metadata <-
   readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv")) %>%
   # Easier to deal with NA short histologies if they are labeled something different
-  dplyr::mutate(short_histology = as.character(tidyr::replace_na(short_histology, "none"))) %>% 
+  dplyr::mutate(short_histology = as.character(tidyr::replace_na(short_histology, "none"))) %>%
   # Tack on the sample color using the short_histology column and a recode
-  dplyr::mutate(sample_color = dplyr::recode(short_histology, 
-                                             !!!histology_col_palette))
+  dplyr::mutate(sample_color = dplyr::recode(
+    short_histology,
+    !!!histology_col_palette
+  ))
 ```
 
 ### Set up consensus copy number data
@@ -179,10 +183,10 @@ seg_ranges <- GenomicRanges::GRanges(
 Explore the distribution of segment lengths. 
 
 ```{r}
-ggplot2::qplot(seg_ranges@ranges@width, geom= "density") + 
-  ggplot2::theme_classic() + 
-  ggplot2::ylab("density") + 
-  ggplot2::xlab("Segment length in bp") + 
+ggplot2::qplot(seg_ranges@ranges@width, geom = "density") +
+  ggplot2::theme_classic() +
+  ggplot2::ylab("density") +
+  ggplot2::xlab("Segment length in bp") +
   # Let's put a vertical line where we will make a filter cutoff
   ggplot2::geom_vline(xintercept = length_max, color = "red")
 ```
@@ -274,13 +278,13 @@ Run the bin status calling on each sample.
 # Get a vector of the biospecimen IDs
 sample_ids <- unique(seg_data$ID)
 
-# Run call_bin_status for each biospecimen's segments. 
+# Run call_bin_status for each biospecimen's segments.
 bin_calls_list <- lapply(sample_ids,
   call_bin_status,
   bin_ranges = bins,
   seg_ranges = filtered_seg_ranges,
   uncallable_ranges = uncallable_ranges,
-  frac_threshold_val = frac_threshold, 
+  frac_threshold_val = frac_threshold,
   frac_uncallable_val = frac_uncallable
 )
 
@@ -298,7 +302,7 @@ bin_calls_df <- dplyr::bind_rows(bin_calls_list,
 Make color key. 
 
 ```{r}
-color_key <- structure(c(divergent_col_palette, "#9932CC", "#cccccc"), 
+color_key <- structure(c(divergent_col_palette, "#9932CC", "#cccccc"),
   names = c("loss", "neutral", "gain", "unstable", "uncallable")
 )
 ```
@@ -314,8 +318,9 @@ chrs <- paste0("chr", S4Vectors::decode(bins@seqnames))
 chrs <- factor(chrs, levels = paste0("chr", 1:22))
 
 # Make a key for assigning alternating colors to the chromosomes
-chr_colors <- rep(binary_col_palette$hex_codes, 
-                  length.out = length(unique(chrs)))
+chr_colors <- rep(binary_col_palette$hex_codes,
+  length.out = length(unique(chrs))
+)
 names(chr_colors) <- unique(chrs)
 
 # Get coordinate start positions
@@ -331,11 +336,12 @@ Make chromosomal labeling `HeatmapAnnotation` object.
 # Make text labels for chromosome text
 chr_text <- ComplexHeatmap::anno_mark(
   at = mid_points,
-  labels = levels(chrs), 
-  which = "column", 
-  side = "bottom", 
-  labels_rot = 45, 
-  labels_gp = grid::gpar(cex = 0.65))
+  labels = levels(chrs),
+  which = "column",
+  side = "bottom",
+  labels_rot = 45,
+  labels_gp = grid::gpar(cex = 0.65)
+)
 
 # Create the Heatmap annotation object
 chr_annot <- ComplexHeatmap::HeatmapAnnotation(
@@ -343,9 +349,9 @@ chr_annot <- ComplexHeatmap::HeatmapAnnotation(
   col = list(chrs = chr_colors),
   name = "",
   show_legend = FALSE,
-  show_annotation_name = FALSE, 
+  show_annotation_name = FALSE,
   mark = chr_text # Put the text in
-  )
+)
 ```
 
 ### Make row annotation object
@@ -356,11 +362,11 @@ This annotation object strategy was originally from [chromosomal-instability](ht
 ```{r}
 # Get the histologies for the samples in this set and order them by histology
 histologies <-
-  data.frame(Kids_First_Biospecimen_ID = bin_calls_df$biospecimen_id) %>% 
-  dplyr::inner_join(metadata %>% 
-                      dplyr::select(Kids_First_Biospecimen_ID, short_histology, sample_color)) %>%
-  dplyr::mutate(short_histology = factor(short_histology)) %>% 
-  dplyr::arrange(short_histology) %>% 
+  data.frame(Kids_First_Biospecimen_ID = bin_calls_df$biospecimen_id) %>%
+  dplyr::inner_join(metadata %>%
+    dplyr::select(Kids_First_Biospecimen_ID, short_histology, sample_color)) %>%
+  dplyr::mutate(short_histology = factor(short_histology)) %>%
+  dplyr::arrange(short_histology) %>%
   tibble::column_to_rownames("Kids_First_Biospecimen_ID")
 
 # Make color key specific to these samples
@@ -380,33 +386,34 @@ mid_points <- ceiling((c(hist_pos[2:length(hist_pos)], length(histologies$short_
 ```{r}
 # Make text labels for chromosome text
 hist_text <- ComplexHeatmap::anno_mark(
-  at = mid_points, 
-  labels = levels(histologies$short_histology), 
-  which = "row", 
-  side = "right", 
-  labels_gp = grid::gpar(cex = 0.65), 
-  link_width = grid::unit(15, "mm"))
+  at = mid_points,
+  labels = levels(histologies$short_histology),
+  which = "row",
+  side = "right",
+  labels_gp = grid::gpar(cex = 0.65),
+  link_width = grid::unit(15, "mm")
+)
 
 # Create the Heatmap annotation object
 hist_annot <- ComplexHeatmap::HeatmapAnnotation(
   df = data.frame(histologies),
   col = list(short_histology = histologies_color_key_filtered),
   which = "row",
-  show_annotation_name = FALSE, 
+  show_annotation_name = FALSE,
   show_legend = FALSE,
   mark = hist_text # Put the text in
-  )
+)
 ```
 
 Format `bin_calls_df` as a matrix with rownames for `ComplexHeatmap` to use. 
 
 ```{r}
-bin_calls_mat <- bin_calls_df %>% 
+bin_calls_mat <- bin_calls_df %>%
   tibble::column_to_rownames("biospecimen_id") %>%
-  as.matrix() 
+  as.matrix()
 
 # Ensure that this matrix is in the same order as the annotation
-bin_calls_mat <- bin_calls_mat[rownames(histologies), ] 
+bin_calls_mat <- bin_calls_mat[rownames(histologies), ]
 
 # Double check its in thte same order
 all.equal(rownames(bin_calls_mat), rownames(histologies))
@@ -418,16 +425,16 @@ all.equal(rownames(bin_calls_mat), rownames(histologies))
 # Plot on a heatmap
 heatmap <- ComplexHeatmap::Heatmap(
   bin_calls_mat,
-  name = "CN status",            
+  name = "CN status",
   col = color_key,
   cluster_columns = FALSE,
   cluster_rows = FALSE,
   show_column_names = FALSE,
   show_row_names = FALSE,
   bottom_annotation = chr_annot,
-  right_annotation = hist_annot, 
+  right_annotation = hist_annot,
   heatmap_legend_param = list(nrow = 1)
-  ) 
+)
 ```
 
 Print out heatmap. 
