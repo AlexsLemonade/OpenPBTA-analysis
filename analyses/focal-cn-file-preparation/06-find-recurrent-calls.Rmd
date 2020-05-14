@@ -83,17 +83,27 @@ The `recurrence_cutoff` defined as 3 appears to be reasonable as seen in the dis
 
 ```{r}
 # Create a data frame of only observations that have counts greater than the `recurrence_cutoff`
-final_df_recurrent <- final_df_tally %>%
+recurrent_df <- final_df_tally %>%
   filter(count > recurrence_cutoff)
 
 # Display table
-final_df_recurrent
+recurrent_df
+```
+
+### Filter focal CN data frame to include only recurrent observations
+
+```{r}
+# Filter the focal CN data frame to include only the recurrent observations
+final_df_recurrent <- focal_cn_df %>%
+  select(-region_type) %>%
+  inner_join(recurrent_df, by = c("region", "status"))
 ```
 
 ### Write to file
 
 ```{r}
-# Write the recurrent focal CN calls by region data frame to file
+# Write the recurrent focal CN calls by region at a sample level data frame to
+# file
 write_tsv(final_df_recurrent, file.path(results_dir, "consensus_seg_recurrent_focal_cn_units.tsv"))
 ```
 
