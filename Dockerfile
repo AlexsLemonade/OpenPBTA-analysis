@@ -66,8 +66,7 @@ RUN wget https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar
 ###############
 
 # Commonly used R packages
-RUN install2.r --error \
-    --deps TRUE \
+RUN install2.r --error --deps TRUE \
     rprojroot \
     optparse \
     data.table \
@@ -86,13 +85,13 @@ RUN install2.r --error \
     foreign \
     nnet \
     mgcv \
-    flextable
+    flextable \
+    DT
 
 
 # Required for interactive sample distribution plots
 # map view is needed to create HTML outputs of the interactive plots
-RUN install2.r --error \
-    --deps TRUE \
+RUN install2.r --error --deps TRUE \
     gdalUtils \
     leafem \
     lwgeom \
@@ -102,28 +101,42 @@ RUN install2.r --error \
     sf \
     mapview
 
-# Installs packages needed for still treemap, interactive plots, and hex plots
+# Installs packages needed for plottings
+# treemap, interactive plots, and hex plots
 # Rtsne and umap are required for dimension reduction analyses
-RUN install2.r --error \
-    --deps TRUE \
+RUN install2.r --error --deps TRUE \
     treemap \
     hexbin \
     VennDiagram \
     Rtsne \
     umap  \
     d3r \
-    pheatmap
+    pheatmap \
+    circlize \
+    ggpubr \
+    ggrepel \
+    ggsci \
+    ggsignif \
+    spatial \
+    ggfortify \
+    gridGraphics \
+    UpSetR
 
 # Install rjava
-RUN install2.r --error \
-    --deps TRUE \
+RUN install2.r --error --deps TRUE \
     rJava
+
+# Need for survminer for doing survival analysis
+RUN install2.r --error --deps TRUE \
+    cmprsk \
+    survMisc \
+    survminer
 
 # maftools for proof of concept in create-subset-files
 RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
 
-# ComplexHeatmap and circlize
-RUN R -e "BiocManager::install(c('ComplexHeatmap', 'circlize'), update = FALSE)"
+# ComplexHeatmap
+RUN R -e "BiocManager::install(c('ComplexHeatmap'), update = FALSE)"
 
 
 # This is needed for the CNV frequency and proportion aberration plots
@@ -143,6 +156,46 @@ RUN R -e "BiocManager::install(c('preprocessCore', 'sva'), update = FALSE)"
 #  # These packages are for single-sample GSEA analysis
 #  RUN R -e "BiocManager::install(c('GSEABase', 'GSVA'), update = FALSE)"
 
+# Required for sex prediction from RNA-seq data
+RUN install2.r --error --deps TRUE \
+    glmnet \
+    glmnetUtils \
+    caret \
+    e1071
+
+
+# bedr package
+RUN install2.r --error --deps TRUE \
+    bedr
+# Check to make sure the binaries are available by loading the bedr library
+RUN Rscript -e "library(bedr)"
+
+# Also install for mutation signature analysis
+# qdapRegex is for the fusion analysis
+RUN install2.r --error --deps TRUE \
+    deconstructSigs \
+    qdapRegex
+
+# packages required for collapsing RNA-seq data by removing duplicated gene symbols
+RUN R -e "BiocManager::install(c('rtracklayer'), update = FALSE)"
+
+# TCGAbiolinks for TMB compare analysis
+RUN R -e "BiocManager::install(c('TCGAbiolinks'), update = FALSE)"
+
+# Install for mutation signature analysis
+RUN R -e "BiocManager::install('ggbio', update = FALSE)"
+
+# CRAN package msigdbr needed for gene-set-enrichment-analysis
+RUN install2.r --error --deps TRUE \
+    msigdbr
+# Bioconductor package GSVA needed for gene-set-enrichment-analysis
+RUN R -e "BiocManager::install(c('GSVA'), update = FALSE)"
+
+
+# package required for immune deconvolution
+RUN R -e "remotes::install_github('icbi-lab/immunedeconv', ref = '493bcaa9e1f73554ac2d25aff6e6a7925b0ea7a6', dependencies = TRUE)"
+
+RUN R -e "remotes::install_github('const-ae/ggupset', ref = '7a33263cc5fafdd72a5bfcbebe5185fafe050c73', dependencies = TRUE)"
 
 # This is needed to create the interactive pie chart
 RUN R -e "remotes::install_github('timelyportfolio/sunburstR', ref = 'd40d7ed71ee87ca4fbb9cb8b7cf1e198a23605a9', dependencies = TRUE)"
@@ -153,90 +206,15 @@ RUN R -e "remotes::install_github('timelyportfolio/d3treeR', ref = '0eaba7f1c643
 # Need this package to make plots colorblind friendly
 RUN R -e "remotes::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
 
-# Required for sex prediction from RNA-seq data
-RUN install2.r --error \
-    --deps TRUE \
-    glmnet \
-    glmnetUtils \
-    caret \
-    e1071
-
-
-# Install for SNV comparison plots
-RUN install2.r --error \
-    --deps TRUE \
-    UpSetR
-
-RUN R -e "remotes::install_github('const-ae/ggupset', ref = '7a33263cc5fafdd72a5bfcbebe5185fafe050c73', dependencies = TRUE)"
-
-# bedr package
-RUN install2.r --error \
-    --deps TRUE \
-    bedr
-# Check to make sure the binaries are available by loading the bedr library
-RUN Rscript -e "library(bedr)"
-
-# Also install for mutation signature analysis
-# qdapRegex is for the fusion analysis
-RUN install2.r --error \
-    --deps TRUE \
-    deconstructSigs \
-    qdapRegex
-
-# packages required for collapsing RNA-seq data by removing duplicated gene symbols
-RUN install2.r --error \
-    --deps TRUE \
-    DT
-RUN R -e "BiocManager::install(c('rtracklayer'), update = FALSE)"
-
-
-# TCGAbiolinks for TMB compare analysis
-RUN R -e "BiocManager::install(c('TCGAbiolinks'), update = FALSE)"
-
-# Need for survminer for doing survival analysis
-RUN install2.r --error \
-    --deps TRUE \
-    cmprsk \
-    survMisc \
-    survminer
-
-# ggfortify for plotting
-RUN install2.r --error \
-    --deps TRUE \
-    spatial \
-    ggfortify
-
-# package required for immune deconvolution
-RUN R -e "remotes::install_github('icbi-lab/immunedeconv', ref = '493bcaa9e1f73554ac2d25aff6e6a7925b0ea7a6', dependencies = TRUE)"
-RUN install2.r --error \
-    --deps TRUE \
-    corrplot
-
-# Install for mutation signature analysis
-RUN R -e "BiocManager::install('ggbio', update = FALSE)"
-
-# CRAN package msigdbr needed for gene-set-enrichment-analysis
-RUN install2.r --error \
-    --deps TRUE \
-    msigdbr
-
-# Bioconductor package GSVA needed for gene-set-enrichment-analysis
-RUN R -e "BiocManager::install(c('GSVA'), update = FALSE)"
 
 # remote package EXTEND needed for telomerase-activity-prediciton analysis
 RUN R -e "remotes::install_github('NNoureen/EXTEND', ref = '467c2724e1324ef05ad9260c3079e5b0b0366420', dependencies = TRUE)"
-
-# CRAN package gridGraphics needed for telomerase-activity-prediction
-RUN install2.r --error \
-    --deps TRUE \
-    gridGraphics
 
 # package required for shatterseek
 RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remotes::install_github('parklab/ShatterSeek', ref = '83ab3effaf9589cc391ecc2ac45a6eaf578b5046', dependencies = TRUE))"
 
 # Packages required for rna-seq-composition
-RUN install2.r --error \
-    --deps TRUE \
+RUN install2.r --error --deps TRUE \
     EnvStats \
     janitor
 
