@@ -18,4 +18,6 @@ opts <- docopt(doc)
 bioc_repos <- BiocManager::repositories()
 bioc_repos <- bioc_repos[names(bioc_repos) != "CRAN"]
 
+# We want errors not just warnings
+options(warn = 2)
 install.packages(opts$PACKAGES, repos = c(bioc_repos, getOption('repos')))
