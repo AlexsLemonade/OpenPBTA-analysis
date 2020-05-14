@@ -101,21 +101,46 @@ fusion_df_primary_only <-
     "all_participants_primary_only_fusions.tsv"
   ))
 
-# Read in gene list
-goi_list <-
+# Read in most focal CNV units file
+most_focal_cnvs <-
   readr::read_tsv(
     file.path(
       root_dir,
       "analyses",
-      "interaction-plots",
+      "focal-cn-file-preparation",
       "results",
-      "gene_disease_top50.tsv"
+      "consensus_seg_most_focal_cn_status.tsv.gz"
     )
-  ) %>%
-  dplyr::pull("gene")
+  )
+
+# Read in recurrent focal CNVs file
+recurrent_cnvs <-
+  readr::read_tsv(
+    file.path(
+      root_dir,
+      "analyses",
+      "focal-cn-file-preparation",
+      "results",
+      "consensus_seg_recurrent_focal_cn_units.tsv"
+    )
+  )
+
+# Read in gene list --- commenting this step out because the most focal
+# recurrent genes files are being used
+# goi_list <-
+#   readr::read_tsv(
+#     file.path(
+#       root_dir,
+#       "analyses",
+#       "interaction-plots",
+#       "results",
+#       "gene_disease_top50.tsv"
+#     )
+#   ) %>%
+#   dplyr::pull("gene")
 
 # Filter `goi_list` to include only the unique genes of interest
-goi_list <- unique(goi_list)
+# goi_list <- unique(goi_list)
 
 #### Functions ----------------------------------------------------------
 
@@ -126,12 +151,32 @@ source(file.path(
 ))
 
 
+#### Format recurrent focal CN objects ----------------------------------------
+
+# Let's filter the most focal calls to those that are considered recurrent, then
+# filter to the primary plus samples
+most_focal_recurrent_primary_plus <- most_focal_cnvs %>%
+  filter(region %in% recurrent_cnvs$region,
+         status != "uncallable") %>%
+  left_join(metadata, by = "Kids_First_Biospecimen_ID") %>%
+  select(Hugo_Symbol = region, Tumor_Sample_Barcode, Variant_Classification = status) %>%
+  filter(Tumor_Sample_Barcode %in% cnv_df_primary_plus$Tumor_Sample_Barcode)
+
+# Filter the most focal calls to those that are considered recurrent, then
+# filter to the primary only samples
+most_focal_recurrent_primary_only <- most_focal_cnvs %>%
+  filter(region %in% recurrent_cnvs$region,
+         status != "uncallable") %>%
+  left_join(metadata, by = "Kids_First_Biospecimen_ID") %>%
+  select(Hugo_Symbol = region, Tumor_Sample_Barcode, Variant_Classification = status) %>%
+  filter(Tumor_Sample_Barcode %in% cnv_df_primary_only$Tumor_Sample_Barcode)
+
 #### Generate MAF objects for plotting ----------------------------------------
 
 # Generate the primary-plus maf_object
 primary_plus <- prepare_maf_object(
   maf_df = maf_df_primary_plus,
-  cnv_df = cnv_df_primary_plus,
+  cnv_df = most_focal_recurrent_primary_plus,
   metadata = metadata,
   fusion_df = fusion_df_primary_plus
 )
@@ -139,7 +184,7 @@ primary_plus <- prepare_maf_object(
 # Generate the primary-only maf object
 primary_only <- prepare_maf_object(
   maf_df = maf_df_primary_only,
-  cnv_df = cnv_df_primary_only,
+  cnv_df = most_focal_recurrent_primary_only,
   metadata = metadata,
   fusion_df = fusion_df_primary_only
 )
@@ -162,7 +207,6 @@ coOncoplot(
   m2Name = "Primary Only Independent Samples Oncoprint",
   clinicalFeatures1 = clinical_features,
   clinicalFeatures2 = clinical_features,
-  genes = goi_list,
   sortByAnnotation1 = TRUE,
   sortByAnnotation2 = TRUE,
   showSampleNames = TRUE,

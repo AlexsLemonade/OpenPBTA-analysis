@@ -112,7 +112,19 @@ option_list <- list(
     type = "character",
     default = NULL,
     help = "oncoprint output png file name"
-  )
+  ),
+  optparse::make_option(
+    c("-o", "--focal_file"),
+    type = "character",
+    default = NULL,
+    help = "file path to most focal CN units file"
+  ),
+  optparse::make_option(
+    c("-r", "--recurrent_file"),
+    type = "character",
+    default = NULL,
+    help = "file path to recurrent focal CN units file"
+  )    
 )
 
 # Read the arguments passed
@@ -155,6 +167,31 @@ if (!is.null(opt$goi_file)) {
     
   # Filter `goi_list` to include only the unique genes of interest
   goi_list <- unique(goi_list)
+}
+
+#opt$focal_file <- file.path(root_dir, "analyses", "focal-cn-file-preparation", "results", "consensus_seg_most_focal_cn_status.tsv.gz")
+# Read in most focal CN units file
+if (!is.null(opt$focal_file)) {
+most_focal_df <- readr::read_tsv(file.path(opt$focal_file))
+}
+
+#opt$recurrent_file <- file.path(root_dir, "analyses", "focal-cn-file-preparation", "results", "consensus_seg_recurrent_focal_cn_units.tsv")
+if (!is.null(opt$recurrent_file)) {
+# Read in recurrent focal CN units file
+recurrent_focal_df <- readr::read_tsv(file.path(opt$recurrent_file))
+}
+
+#### Format recurrent focal CN object -----------------------------------------
+
+if (!is.null(opt$focal_file) & !is.null(opt$recurrent_file)) {
+# Let's filter the most focal calls to those that are considered recurrent, then
+# filter to the primary plus samples
+cnv_df <- most_focal_df %>%
+  dplyr::filter(region %in% recurrent_focal_df$region,
+         status != "uncallable") %>%
+  dplyr::left_join(metadata, by = "Kids_First_Biospecimen_ID") %>%
+  dplyr::select(Hugo_Symbol = region, Tumor_Sample_Barcode, Variant_Classification = status) %>%
+  dplyr::filter(Tumor_Sample_Barcode %in% cnv_df$Tumor_Sample_Barcode)
 }
 
 #### Prepare MAF object for plotting ------------------------------------------
