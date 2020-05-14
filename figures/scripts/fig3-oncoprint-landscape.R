@@ -97,20 +97,8 @@ fusion_df_primary_only <-
     "all_participants_primary_only_fusions.tsv"
   ))
 
-# Read in most focal CNV units file
-most_focal_cnvs <-
-  readr::read_tsv(
-    file.path(
-      root_dir,
-      "analyses",
-      "focal-cn-file-preparation",
-      "results",
-      "consensus_seg_most_focal_cn_status.tsv.gz"
-    )
-  )
-
 # Read in recurrent focal CNVs file
-recurrent_cnvs <-
+recurrent_focal_cnvs <-
   readr::read_tsv(
     file.path(
       root_dir,
@@ -149,22 +137,26 @@ source(file.path(
 
 #### Format recurrent focal CN objects ----------------------------------------
 
-# Let's filter the most focal calls to those that are considered recurrent, then
-# filter to the primary plus samples
-most_focal_recurrent_primary_plus <- most_focal_cnvs %>%
-  filter(region %in% recurrent_cnvs$region,
-         status != "uncallable") %>%
+# Let's filter the recurrent focal calls data frame to include the primary
+# plus samples
+most_focal_recurrent_primary_plus <- recurrent_focal_cnvs %>%
+  filter(status != "uncallable") %>%
+  # Join the metadata to get the `Tumor_Sample_Barcode` column
   left_join(metadata, by = "Kids_First_Biospecimen_ID") %>%
+  # Select and rename the needed columns for creating the maf object
   select(Hugo_Symbol = region, Tumor_Sample_Barcode, Variant_Classification = status) %>%
+  # Filter for primary plus samples
   filter(Tumor_Sample_Barcode %in% cnv_df_primary_plus$Tumor_Sample_Barcode)
 
-# Filter the most focal calls to those that are considered recurrent, then
-# filter to the primary only samples
-most_focal_recurrent_primary_only <- most_focal_cnvs %>%
-  filter(region %in% recurrent_cnvs$region,
-         status != "uncallable") %>%
+# Filter the recurrent focal calls data frame to include the primary only
+# samples
+most_focal_recurrent_primary_only <- recurrent_focal_cnvs %>%
+  filter(status != "uncallable") %>%
+  # Join the metadata to get the `Tumor_Sample_Barcode` column
   left_join(metadata, by = "Kids_First_Biospecimen_ID") %>%
+  # Select and rename the needed columns for creating the maf object
   select(Hugo_Symbol = region, Tumor_Sample_Barcode, Variant_Classification = status) %>%
+  # Filter for primary only samples
   filter(Tumor_Sample_Barcode %in% cnv_df_primary_only$Tumor_Sample_Barcode)
 
 #### Generate MAF objects for plotting ----------------------------------------
