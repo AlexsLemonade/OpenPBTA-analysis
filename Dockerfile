@@ -187,7 +187,7 @@ RUN install2.r --error --deps TRUE \
 RUN ./install_bioc.r \
     rtracklayer
 
-# Temporarily commenting out TMB comparison
+# Temporarily comment out TCGAbiolinks
 # # TCGAbiolinks for TMB compare analysis
 # RUN R -e "remotes::install_github('RDocTaskForce/testextra', ref = '4e5dfac8853c08d5c2a8790a0a1f8165f293b4be', dependencies = TRUE)"
 # RUN R -e "remotes::install_github('halpo/purrrogress', ref = '54f2130477f161896e7b271ed3ea828c7e4ccb1c', dependencies = TRUE)"
@@ -266,12 +266,11 @@ RUN pip3 install \
     "rpy2==2.9.3"
 
 # Install CrossMap for liftover
-RUN pip3 install \
-    "cython==0.29.15"  \
-    "bx-python==0.8.8" \
-    "pybigwig==0.3.17" \
-    "pysam==0.15.4" \
-    "CrossMap==0.3.9"
+RUN pip3 install "cython==0.29.15" && \
+    pip3 install "bx-python==0.8.8" && \
+    pip3 install "pybigwig==0.3.17" && \
+    pip3 install "pysam==0.15.4" && \
+    pip3 install "CrossMap==0.3.9"
 
 
 # MATLAB Compiler Runtime is required for GISTIC, MutSigCV
