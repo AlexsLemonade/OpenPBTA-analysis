@@ -1,4 +1,4 @@
-#!/usr/bin/env r
+#!/usr/bin/env Rscript
 #
 # Installs bioconductor packages, but without including
 #
