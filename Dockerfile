@@ -189,10 +189,12 @@ RUN install2.r --error --deps TRUE \
 RUN ./install_bioc.r \
     rtracklayer
 
-# TCGAbiolinks for TMB compare analysis
-RUN R -e "remotes::install_github('halpo/purrrogress', ref = '54f2130477f161896e7b271ed3ea828c7e4ccb1c', dependencies = TRUE)"
-RUN ./install_bioc.r \
-    TCGAbiolinks
+# Temporarily commenting out TMB comparison
+# # TCGAbiolinks for TMB compare analysis
+# RUN R -e "remotes::install_github('RDocTaskForce/testextra', ref = '4e5dfac8853c08d5c2a8790a0a1f8165f293b4be', dependencies = TRUE)"
+# RUN R -e "remotes::install_github('halpo/purrrogress', ref = '54f2130477f161896e7b271ed3ea828c7e4ccb1c', dependencies = TRUE)"
+# RUN ./install_bioc.r \
+#     TCGAbiolinks
 
 # Install for mutation signature analysis
 RUN ./install_bioc.r \

@@ -200,9 +200,10 @@ jobs:
           name: SNV Caller Analysis 
           command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-pbta.sh
 
-      - run:
-          name: Tumor mutation burden with TCGA
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
+    # Temporarily commenting out for Docker tests
+    #   - run:
+    #       name: Tumor mutation burden with TCGA
+    #       command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
        
       # This analysis was used to explore the TCGA PBTA data when the BED files used to calculate TCGA 
       # were incorrect https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/568
