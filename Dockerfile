@@ -8,16 +8,14 @@ COPY scripts/install_bioc.r .
 #########################################
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialog
 
-# Add curl & bzip2
+# Add curl, bzip2 and some dev libs
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     curl \
-    bzip2
-
-# Required for installing htslib
-RUN apt-get -y --no-install-recommends install \
+    bzip2 \
     zlib1g \
     libbz2-dev \
-    liblzma-dev
+    liblzma-dev \
+    libreadline-dev
 
 # libmagick++-dev is needed for coloblindr to install
 RUN apt-get -y --no-install-recommends install \
