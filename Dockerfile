@@ -1,4 +1,4 @@
-FROM rocker/tidyverse:3.6.2
+FROM rocker/tidyverse:3.6.0
 MAINTAINER ccdl@alexslemonade.org
 WORKDIR /rocker-build/
 
@@ -30,7 +30,7 @@ RUN apt-get -y --no-install-recommends install \
 # Install pip3 and instalation tools
 RUN apt-get -y --no-install-recommends install \
     python3-pip  python3-dev
-RUN pip3 install "setuptools==46.2.0" "wheel==0.34.2" "six==1.14.0"
+RUN pip3 install "setuptools==41.6.0" "six==1.13.0"
 
 # Install java
 RUN apt-get -y --no-install-recommends install \
@@ -229,25 +229,22 @@ RUN R -e "remotes::install_github('wilkox/treemapify', ref = 'e70adf727f4d13223d
 ##########################
 
 # Install python3 data science tools
-RUN pip3 install "numpy==1.18.4" && \
+RUN pip3 install "numpy==1.17.3" && \
     pip3 install "cycler==0.10.0" "kiwisolver==1.1.0" "pyparsing==2.4.5" "python-dateutil==2.8.1" "pytz==2019.3" && \
-    pip3 install "matplotlib==3.2.1" && \
-    pip3 install "scipy==1.4.1" && \
-    pip3 install "pandas==1.0.3" && \
+    pip3 install "matplotlib==3.0.3" && \
+    pip3 install "scipy==1.3.2" && \
+    pip3 install "pandas==0.25.3" && \
     pip3 install "scikit-learn==0.23.0" &&\
     pip3 install "jupyter==1.0.0" && \
     pip3 install "ipykernel==5.2.1" && \
     pip3 install "widgetsnbextension==3.5.1" && \
-    pip3 install "snakemake==5.17.0" && \
-    pip3 install "statsmodels==0.11.1" && \
-    pip3 install "plotnine==0.6.0" && \
-    pip3 install "rpy2==3.3.2" && \
-    pip3 install "seaborn==0.10.1" && \
-    pip3 install "tzlocal==2.1"
-
-
-# pyreadr for comparative-RNASeq-analysis
-RUN pip3 install "pyreadr==0.2.1" && \
+    pip3 install "snakemake==5.8.1" && \
+    pip3 install "statsmodels==0.10.2" && \
+    pip3 install "plotnine==0.3.0" && \
+    pip3 install "rpy2==2.9.3" && \
+    pip3 install "seaborn==0.8.1" && \
+    pip3 install "tzlocal==2.1" && \
+    pip3 install "pyreadr==0.2.1" && \
     pip3 install "pyarrow==0.16.0"
 
 # Install CrossMap for liftover
