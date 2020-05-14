@@ -32,7 +32,7 @@ RUN apt-get -y --no-install-recommends install \
 # Install pip3 and instalation tools
 RUN apt-get -y --no-install-recommends install \
     python3-pip  python3-dev
-RUN pip3 install "setuptools==41.6.0" "six==1.13.0"
+RUN pip3 install "setuptools==46.3.0" "six==1.14.0" "wheel==0.34.2"
 
 # Install java
 RUN apt-get -y --no-install-recommends install \
@@ -190,6 +190,7 @@ RUN ./install_bioc.r \
     rtracklayer
 
 # TCGAbiolinks for TMB compare analysis
+RUN R -e "remotes::install_github('halpo/purrrogress', ref = '54f2130477f161896e7b271ed3ea828c7e4ccb1c', dependencies = TRUE)"
 RUN ./install_bioc.r \
     TCGAbiolinks
 
@@ -242,30 +243,32 @@ RUN R -e "remotes::install_github('wilkox/treemapify', ref = 'e70adf727f4d13223d
 ##########################
 
 # Install python3 data science tools
-RUN pip3 install "numpy==1.17.3" && \
-    pip3 install "cycler==0.10.0" "kiwisolver==1.1.0" "pyparsing==2.4.5" "python-dateutil==2.8.1" "pytz==2019.3" && \
-    pip3 install "matplotlib==3.0.3" && \
-    pip3 install "scipy==1.3.2" && \
-    pip3 install "pandas==0.25.3" && \
-    pip3 install "scikit-learn==0.19.1" &&\
-    pip3 install "jupyter==1.0.0" && \
-    pip3 install "ipykernel==4.8.1" && \
-    pip3 install "widgetsnbextension==2.0.0" && \
-    pip3 install "snakemake==5.8.1" && \
-    pip3 install "statsmodels==0.10.2" && \
-    pip3 install "plotnine==0.3.0" && \
-    pip3 install "rpy2==2.9.3" && \
-    pip3 install "seaborn==0.8.1" && \
-    pip3 install "tzlocal==2.0" && \
-    pip3 install "pyreadr==0.2.1" && \
-    pip3 install "pyarrow==0.16.0"
+RUN pip3 install \
+    "numpy==1.17.3" \
+    "cycler==0.10.0" "kiwisolver==1.1.0" "pyparsing==2.4.5" "python-dateutil==2.8.1" "pytz==2019.3" \
+    "matplotlib==3.0.3" \
+    "scipy==1.3.2" \
+    "pandas==0.25.3" \
+    "scikit-learn==0.19.1" \
+    "jupyter==1.0.0" \
+    "ipykernel==4.8.1" \
+    "widgetsnbextension==2.0.0" \
+    "snakemake==5.8.1" \
+    "statsmodels==0.10.2" \
+    "plotnine==0.3.0" \
+    "rpy2==2.9.3" \
+    "seaborn==0.8.1" \
+    "tzlocal==2.0" \
+    "pyreadr==0.2.1" \
+    "pyarrow==0.16.0"
 
 # Install CrossMap for liftover
-RUN pip3 install "cython==0.29.15" && \
-    pip3 install "bx-python==0.8.8" && \
-    pip3 install "pybigwig==0.3.17" && \
-    pip3 install "pysam==0.15.4" && \
-    pip3 install "CrossMap==0.3.9"
+RUN pip3 install \
+    "cython==0.29.15"  \
+    "bx-python==0.8.8" \
+    "pybigwig==0.3.17" \
+    "pysam==0.15.4" \
+    "CrossMap==0.3.9"
 
 
 # MATLAB Compiler Runtime is required for GISTIC, MutSigCV
