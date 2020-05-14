@@ -2,6 +2,8 @@ FROM rocker/tidyverse:3.6.0
 MAINTAINER ccdl@alexslemonade.org
 WORKDIR /rocker-build/
 
+COPY scripts/install_bioc.r .
+
 ### Install apt-getable packages to start
 #########################################
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialog
@@ -133,28 +135,34 @@ RUN install2.r --error --deps TRUE \
     survminer
 
 # maftools for proof of concept in create-subset-files
-RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
+RUN ./install_bioc.r \
+    maftools
 
 # ComplexHeatmap
-RUN R -e "BiocManager::install(c('ComplexHeatmap'), update = FALSE)"
+RUN ./install_bioc.r \
+    ComplexHeatmap
 
 
 # This is needed for the CNV frequency and proportion aberration plots
-RUN R -e "BiocManager::install(c('GenVisR'), update = FALSE)"
+RUN ./install_bioc.r \
+    GenVisR
 
 # These packages are for the genomic region analysis for snv-callers
-RUN R -e "BiocManager::install(c('annotatr', 'TxDb.Hsapiens.UCSC.hg38.knownGene', 'org.Hs.eg.db'), update = FALSE)"
-
-# Install for mutation signature analysis
-RUN R -e "BiocManager::install(c('BSgenome.Hsapiens.UCSC.hg19', 'BSgenome.Hsapiens.UCSC.hg38'), update = FALSE)"
+RUN ./install_bioc.r annotatr \
+    TxDb.Hsapiens.UCSC.hg38.knownGene \
+    org.Hs.eg.db \
+    BSgenome.Hsapiens.UCSC.hg19 \
+    BSgenome.Hsapiens.UCSC.hg38 
 
 # Packages for expression normalization and batch correction
-RUN R -e "BiocManager::install(c('preprocessCore', 'sva'), update = FALSE)"
+RUN ./install_bioc.r \
+    preprocessCore \
+    sva
 
 
 ## This is deprecated
 #  # These packages are for single-sample GSEA analysis
-#  RUN R -e "BiocManager::install(c('GSEABase', 'GSVA'), update = FALSE)"
+#  RUN ./install_bioc.r 'GSEABase', 'GSVA'
 
 # Required for sex prediction from RNA-seq data
 RUN install2.r --error --deps TRUE \
@@ -177,19 +185,23 @@ RUN install2.r --error --deps TRUE \
     qdapRegex
 
 # packages required for collapsing RNA-seq data by removing duplicated gene symbols
-RUN R -e "BiocManager::install(c('rtracklayer'), update = FALSE)"
+RUN ./install_bioc.r \
+    rtracklayer
 
 # TCGAbiolinks for TMB compare analysis
-RUN R -e "BiocManager::install(c('TCGAbiolinks'), update = FALSE)"
+RUN ./install_bioc.r \
+    TCGAbiolinks
 
 # Install for mutation signature analysis
-RUN R -e "BiocManager::install('ggbio', update = FALSE)"
+RUN ./install_bioc.r \
+    ggbio
 
 # CRAN package msigdbr needed for gene-set-enrichment-analysis
 RUN install2.r --error --deps TRUE \
     msigdbr
 # Bioconductor package GSVA needed for gene-set-enrichment-analysis
-RUN R -e "BiocManager::install(c('GSVA'), update = FALSE)"
+RUN ./install_bioc.r \
+    GSVA
 
 
 # package required for immune deconvolution
