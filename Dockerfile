@@ -247,16 +247,16 @@ RUN pip3 install "numpy==1.17.3" && \
     pip3 install "matplotlib==3.0.3" && \
     pip3 install "scipy==1.3.2" && \
     pip3 install "pandas==0.25.3" && \
-    pip3 install "scikit-learn==0.23.0" &&\
+    pip3 install "scikit-learn==0.19.1" &&\
     pip3 install "jupyter==1.0.0" && \
-    pip3 install "ipykernel==5.2.1" && \
-    pip3 install "widgetsnbextension==3.5.1" && \
+    pip3 install "ipykernel==4.8.1" && \
+    pip3 install "widgetsnbextension==2.0.0" && \
     pip3 install "snakemake==5.8.1" && \
     pip3 install "statsmodels==0.10.2" && \
     pip3 install "plotnine==0.3.0" && \
     pip3 install "rpy2==2.9.3" && \
     pip3 install "seaborn==0.8.1" && \
-    pip3 install "tzlocal==2.1" && \
+    pip3 install "tzlocal==2.0" && \
     pip3 install "pyreadr==0.2.1" && \
     pip3 install "pyarrow==0.16.0"
 
