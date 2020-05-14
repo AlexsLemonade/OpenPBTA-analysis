@@ -15,6 +15,7 @@ doc <- "Usage: install_bioc.r [-h] [PACKAGES ...]
 
 opts <- docopt(doc)
 
-bioc_repo <- BiocManager::repositories()[1]
+bioc_repos <- BiocManager::repositories()
+bioc_repos <- bioc_repos[names(bioc_repos) != "CRAN"]
 
-install.packages(opts$PACKAGES, repos = c(bioc_repo, getOption('repos')))
+install.packages(opts$PACKAGES, repos = c(bioc_repos, getOption('repos')))
