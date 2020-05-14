@@ -7,11 +7,7 @@
 
 #### Set Up --------------------------------------------------------------------
 
-# Install maftools
-if (!("maftools" %in% installed.packages())) {
-  install.packages("BiocManager")
-  BiocManager::install("maftools")
-}
+# Load maftools
 library(maftools)
 
 # Load in patchwork for assembling the final multipanel figure
