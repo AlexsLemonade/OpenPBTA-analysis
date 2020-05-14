@@ -187,12 +187,12 @@ RUN install2.r --error --deps TRUE \
 RUN ./install_bioc.r \
     rtracklayer
 
-# Temporarily comment out TCGAbiolinks
-# # TCGAbiolinks for TMB compare analysis
-# RUN R -e "remotes::install_github('RDocTaskForce/testextra', ref = '4e5dfac8853c08d5c2a8790a0a1f8165f293b4be', dependencies = TRUE)"
-# RUN R -e "remotes::install_github('halpo/purrrogress', ref = '54f2130477f161896e7b271ed3ea828c7e4ccb1c', dependencies = TRUE)"
-# RUN ./install_bioc.r \
-#     TCGAbiolinks
+# TCGAbiolinks for TMB compare analysis
+RUN R -e "remotes::install_github('RDocTaskForce/parsetools', ref = '1e682a9f4c5c7192d22e8985ce7723c09e98d62b', dependencies = TRUE)"
+RUN R -e "remotes::install_github('RDocTaskForce/testextra', ref = '4e5dfac8853c08d5c2a8790a0a1f8165f293b4be', dependencies = TRUE)"
+RUN R -e "remotes::install_github('halpo/purrrogress', ref = '54f2130477f161896e7b271ed3ea828c7e4ccb1c', dependencies = TRUE)"
+RUN ./install_bioc.r \
+    TCGAbiolinks
 
 # Install for mutation signature analysis
 RUN ./install_bioc.r \
@@ -262,8 +262,7 @@ RUN pip3 install \
     "pyarrow==0.16.0"
 
 # Install Rpy2
-RUN pip3 install \
-    "rpy2==2.9.3"
+RUN pip3 install "rpy2==2.9.3"
 
 # Install CrossMap for liftover
 RUN pip3 install "cython==0.29.15" && \
