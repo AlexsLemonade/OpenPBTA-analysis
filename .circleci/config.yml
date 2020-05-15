@@ -98,7 +98,7 @@ jobs:
 
       - run:
           name: TP53 NF1 classifier run
-          command: OPENPBTA_POLYAPLOT=0 ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"  
+          command: OPENPBTA_POLYAPLOT=0 ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"
 
 # This is deprecated       
 #      - run:
@@ -122,11 +122,12 @@ jobs:
       - run:
           name: Mutational Signatures 
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutational-signatures/mutational_signatures.Rmd', clean = TRUE)" 
-      
-      - run:
-          name: Chromosomal instability breakpoints
-          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
-          
+
+    # Temporarily commented out for docker changes  
+    #   - run:
+    #       name: Chromosomal instability breakpoints
+    #       command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
+
       - run:
           name: Copy number consensus
           command: ./scripts/run_in_ci.sh bash "analyses/copy_number_consensus_call/run_consensus_call.sh"
@@ -203,7 +204,7 @@ jobs:
       - run:
           name: Tumor mutation burden with TCGA
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
-       
+
       # This analysis was used to explore the TCGA PBTA data when the BED files used to calculate TCGA 
       # were incorrect https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/568
       #- run:
