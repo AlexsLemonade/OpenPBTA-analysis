@@ -9,11 +9,13 @@ date: 2020
 ---
 
 ## Purpose: 
+
 Create a summary heatmap of copy number status from the consensus CNV call data. 
 This is done by binning the genome and calculating the segment's coverage of the
 CNV consensus segments. 
 A bin is declared a particular copy number status if that status's base pair 
-coverage fraction is above a certain threshold (`frac_threshold_val`).
+coverage fraction is above a certain threshold (`frac_threshold`) and the callable 
+portion of the bin is higher than the threshold, `frac_uncallable`.
 
 ### Usage
 
@@ -93,17 +95,6 @@ divergent_col_palette <- readr::read_tsv(
     color_names %in% c("divergent_low_4", "divergent_neutral", "divergent_high_4")
   ) %>%
   dplyr::pull("hex_codes")
-```
-
-Binary color palette for chromosomes.
-
-```{r}
-# Read in color palette
-binary_col_palette <- readr::read_tsv(
-  file.path(figure_dir, "palettes", "binary_color_palette.tsv")
-) %>%
-  # Drop na color from this color palette
-  dplyr::filter(color_names != "na_color")
 ```
 
 ### Read in data 
@@ -318,7 +309,7 @@ chrs <- paste0("chr", S4Vectors::decode(bins@seqnames))
 chrs <- factor(chrs, levels = paste0("chr", 1:22))
 
 # Make a key for assigning alternating colors to the chromosomes
-chr_colors <- rep(binary_col_palette$hex_codes,
+chr_colors <- rep(c("gray", "lightblue"),
   length.out = length(unique(chrs))
 )
 names(chr_colors) <- unique(chrs)

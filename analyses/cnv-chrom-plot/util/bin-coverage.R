@@ -136,7 +136,7 @@ call_bin_status <- function(sample_id,
       frac_uncallable = bp_per_bin.uncallable / bin_width
     ) %>%
     # Use these percentages for declaring final call per bin based on
-    # the frac_delta_threshold
+    # the frac_threshold_val
     dplyr::mutate(
       status = dplyr::case_when(
         frac_uncallable > frac_uncallable_val ~ "uncallable",
