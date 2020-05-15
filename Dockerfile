@@ -306,6 +306,9 @@ RUN mkdir -p gistic_install && \
 RUN chown -R rstudio:rstudio /home/rstudio/gistic_install
 RUN chmod 755 /home/rstudio/gistic_install
 
+
+
+
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
 
