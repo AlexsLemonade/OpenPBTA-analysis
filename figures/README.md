@@ -1,12 +1,12 @@
 ## Running the figure generation script
 
-Steps to refresh all publication-ready figures. 
+Steps to refresh all publication-ready figures.
 All steps assume your current directory is the top of this repository.
 
 #### 1. Obtain the current dataset.
 
 See [these instructions](https://github.com/AlexsLemonade/OpenPBTA-analysis#how-to-obtain-openpbta-data) to obtain the current data release.
-We recommend [using the download script](https://github.com/AlexsLemonade/OpenPBTA-analysis#data-access-via-download-script) to obtain data because this will automatically create symlinks in `data/` to the latest files. 
+We recommend [using the download script](https://github.com/AlexsLemonade/OpenPBTA-analysis#data-access-via-download-script) to obtain data because this will automatically create symlinks in `data/` to the latest files.
 
 #### 2. Set up an up-to-date project Docker container.
 
@@ -22,7 +22,7 @@ docker run \
 ```
 You may choose to use [`docker exec`](https://docs.docker.com/engine/reference/commandline/exec/) to interact with the container from there or if you'd prefer the RStudio interface, you can navigate to `localhost:8787` and enter username `rstudio` and the password you set with the `run` command above.
 
-#### 3. Run the bash script that generates the figures (`scripts/run-figures.sh`). 
+#### 3. Run the bash script that generates the figures (`scripts/run-figures.sh`).
 
 This script runs **_all_** the intermediate steps needed to generate figures starting with the original data files.
 
@@ -49,11 +49,11 @@ However, we list information about the resources, intermediate steps, and [PBTA 
 This project has a set of unified color palettes.
 There are 6 sets of hex color keys to be used for all final figures, stored as 6 TSV files in the `figures/palettes` folder.
 `hex_codes` contains the colors to be passed to your plotting code and `color_names` contains short descriptors of each color (e.g. `gradient_1`, or `divergent_neutral`).
-Each palette contains an `na_color` that is the same color in all palettes. 
+Each palette contains an `na_color` that is the same color in all palettes.
 This color should be used for all `NA` values.
 `na_color` is always the last value in the  palette.
 If `na_color` is not needed or is supplied separately to a plotting function, you can use a `dplyr::filter(hex_code != "na_color")` to remove `na_color`.
-Biospecimens without a `short_histology` designation are coded as `none` and assigned the `na_color` in `palettes/histology_color_palette.tsv`. 
+Biospecimens without a `short_histology` designation are coded as `none` and assigned the `na_color` in `palettes/histology_color_palette.tsv`.
 
 | Palette File Name | HEX color key | Color Notes | Variable application |
 |--------------|--------------------|-----------|----------------------|
@@ -131,8 +131,8 @@ gradient_col_palette <- gradient_col_palette %>%
 
 **Step 2)** Make a color function.  
 
-In this example, we are building a `colorRamp2` function based on a regular interval between the minimum and maximum of our variable `df$variable` by using `seq`. 
-However, depending on your data's distribution a regular interval based palette might not represent your data well on the plot. 
+In this example, we are building a `colorRamp2` function based on a regular interval between the minimum and maximum of our variable `df$variable` by using `seq`.
+However, depending on your data's distribution a regular interval based palette might not represent your data well on the plot.
 You can provide any numeric vector to color code a palette using `circlize::colorRamp2` as long as that numeric vector is the same length as the palette itself.
 
 ```
@@ -155,6 +155,7 @@ df <- df %>%
 ## OR ##
 
 # Some plotting packages want a color function
+
 ComplexHeatmap::Heatmap(
   df,
   col = col_fun, 
@@ -164,7 +165,7 @@ ComplexHeatmap::Heatmap(
 
 ### Updating color palettes
 
-The color palette TSV files are created by running `scripts/color_palettes.R`, which can be called by `Rscript scripts/color_palettes.R`. 
-Hex codes for the palettes are hard-coded in this script. 
+The color palette TSV files are created by running `scripts/color_palettes.R`, which can be called by `Rscript scripts/color_palettes.R`.
+Hex codes for the palettes are hard-coded in this script.
 The script can be called from anywhere in this repository (will look for the `.git` file).
-The hex codes table in `figures/README.md` and its swatches should also be updated by using the `swatches_table` function at the end of the script and copy and pasting this function's output to the appropriate place in the table. 
+The hex codes table in `figures/README.md` and its swatches should also be updated by using the `swatches_table` function at the end of the script and copy and pasting this function's output to the appropriate place in the table.

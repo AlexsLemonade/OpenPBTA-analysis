@@ -132,7 +132,7 @@ tcga_plot <- cdf_plot(
 # Create cosmic signatures bubble plot
 mut_sig_plot_cosmic <- bubble_matrix_plot(cosmic_sigs_df,
   label = "COSMIC",
-  color_palette = gradient_col_palette$hex_codes)
+  color_palette = gradient_col_palette$hex_codes
 ) +
   ggplot2::theme(
     legend.position = "none",
@@ -143,7 +143,7 @@ mut_sig_plot_cosmic <- bubble_matrix_plot(cosmic_sigs_df,
 # Create nature signatures bubble plot
 mut_sig_plot_nature <- bubble_matrix_plot(nature_sigs_df,
   label = "Alexandrov et al, 2013",
-  color_palette = gradient_col_palette$hex_codes)
+  color_palette = gradient_col_palette$hex_codes
 ) +
   ggplot2::theme(
     axis.text = ggplot2::element_text(size = 10),
