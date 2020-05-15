@@ -116,11 +116,12 @@ metadata <-
 
 ```{r}
 # Read in the segment copy number data
-seg_data <- data.table::fread(file.path(
-  input_dir,
-  "pbta-cnv-consensus.seg.gz"
-),
-data.table = FALSE
+seg_data <- data.table::fread(
+  file.path(
+    input_dir,
+    "pbta-cnv-consensus.seg.gz"
+  ),
+  data.table = FALSE
 )
 ```
 
@@ -129,13 +130,14 @@ Set up the status for each consensus segment.
 ```{r}
 seg_data <- seg_data %>%
   # Join the histology column to this data
-  dplyr::inner_join(dplyr::select(
-    metadata,
-    "Kids_First_Biospecimen_ID",
-    "short_histology",
-    "tumor_ploidy"
-  ),
-  by = c("ID" = "Kids_First_Biospecimen_ID")
+  dplyr::inner_join(
+    dplyr::select(
+      metadata,
+      "Kids_First_Biospecimen_ID",
+      "short_histology",
+      "tumor_ploidy"
+    ),
+    by = c("ID" = "Kids_First_Biospecimen_ID")
   ) %>%
   # Reformat the chromosome variable to drop the "chr"
   dplyr::mutate(chrom = factor(gsub("chr", "", chrom),
@@ -424,7 +426,8 @@ heatmap <- ComplexHeatmap::Heatmap(
   show_row_names = FALSE,
   bottom_annotation = chr_annot,
   right_annotation = hist_annot,
-  heatmap_legend_param = list(nrow = 1)
+  heatmap_legend_param = list(nrow = 1),
+  raster_quality = 8
 )
 ```
 
@@ -448,5 +451,3 @@ dev.off()
 ```{r}
 sessionInfo()
 ```
-
-
