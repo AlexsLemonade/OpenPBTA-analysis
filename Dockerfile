@@ -67,27 +67,26 @@ RUN wget https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar
 
 # Commonly used R packages
 RUN install2.r --error --deps TRUE \
-    rprojroot \
-    optparse \
-    data.table \
-    RColorBrewer \
-    viridis \
-    R.utils \
-    lattice \
-    rpart \
     class \
-    MASS \
-    GGally \
-    Matrix \
-    survival \
-    nlme \
     cluster \
-    foreign \
-    nnet \
-    mgcv \
+    data.table \
+    DT \
     flextable \
-    corrplot \
-    DT
+    foreign \
+    GGally \
+    lattice \
+    MASS \
+    Matrix \
+    mgcv \
+    nlme \
+    nnet \
+    optparse \
+    R.utils \
+    RColorBrewer \
+    rpart \
+    rprojroot \
+    survival \
+    viridis
 
 
 # Required for interactive sample distribution plots
@@ -95,33 +94,34 @@ RUN install2.r --error --deps TRUE \
 RUN install2.r --error --deps TRUE \
     gdalUtils \
     leafem \
-    lwgeom \
-    stars \
     leafpop \
+    lwgeom \
+    mapview \
     plainview \
     sf \
-    mapview
+    stars
 
 # Installs packages needed for plottings
 # treemap, interactive plots, and hex plots
 # Rtsne and umap are required for dimension reduction analyses
 RUN install2.r --error --deps TRUE \
-    treemap \
-    hexbin \
-    VennDiagram \
-    Rtsne \
-    umap  \
-    d3r \
-    pheatmap \
     circlize \
+    corrplot \
+    d3r \
+    ggfortify \
     ggpubr \
     ggrepel \
     ggsci \
     ggsignif \
-    spatial \
-    ggfortify \
     gridGraphics \
-    UpSetR
+    hexbin \
+    pheatmap \
+    Rtsne \
+    spatial \
+    treemap \
+    umap  \
+    UpSetR \
+    VennDiagram
 
 # Install rjava
 RUN install2.r --error --deps TRUE \
@@ -245,22 +245,22 @@ RUN R -e "remotes::install_github('wilkox/treemapify', ref = 'e70adf727f4d13223d
 
 # Install python3 data science tools
 RUN pip3 install \
-    "numpy==1.17.3" \
     "cycler==0.10.0" "kiwisolver==1.1.0" "pyparsing==2.4.5" "python-dateutil==2.8.1" "pytz==2019.3" \
-    "matplotlib==3.0.3" \
-    "scipy==1.3.2" \
-    "pandas==0.25.3" \
-    "scikit-learn==0.19.1" \
-    "jupyter==1.0.0" \
     "ipykernel==4.8.1" \
-    "widgetsnbextension==2.0.0" \
+    "jupyter==1.0.0" \
+    "matplotlib==3.0.3" \
+    "numpy==1.17.3" \
+    "pandas==0.25.3" \
+    "plotnine==0.3.0" \
+    "pyarrow==0.16.0" \
+    "pyreadr==0.2.1" \
+    "scikit-learn==0.19.1" \
+    "scipy==1.3.2" \
+    "seaborn==0.8.1" \
     "snakemake==5.8.1" \
     "statsmodels==0.10.2" \
-    "plotnine==0.3.0" \
-    "seaborn==0.8.1" \
     "tzlocal==2.0" \
-    "pyreadr==0.2.1" \
-    "pyarrow==0.16.0"
+    "widgetsnbextension==2.0.0"
 
 # Install Rpy2
 RUN pip3 install "rpy2==2.9.3"
