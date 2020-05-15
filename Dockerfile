@@ -86,6 +86,7 @@ RUN install2.r --error --deps TRUE \
     nnet \
     mgcv \
     flextable \
+    corrplot \
     DT
 
 
