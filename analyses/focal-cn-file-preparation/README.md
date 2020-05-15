@@ -45,6 +45,15 @@ See the notebook for more information. This notebook also prepares lists of copy
   | biospecimen_id | status | copy_number | ploidy | ensembl | gene_symbol | cytoband |
   |----------------|--------|-------------|--------|---------|-------------|---------|
   Any segment that is copy neutral is filtered out of this table. In addition, [any segments with copy number > (2 * ploidy) are marked as amplifications](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/e2058dd43d9b1dd41b609e0c3429c72f79ff3be6/analyses/focal-cn-file-preparation/03-prepare-cn-file.R#L275) in the `status` column.
+  
+* `05-define-most-focal-cn-units.Rmd` - This notebook defines the _most focal_ recurrent copy number units by removing focal changes that are within entire chromosome arm losses and gains.
+_Most focal_ here meaning if a chromosome arm is not clearly defined as a gain or loss (and is callable) we look to define the cytoband level status.
+Similarly, if a cytoband is not clearly defined as a gain or loss (and is callable) we then look to define the gene level status.
+To make these calls, the following decisions around cutoffs were made:
+	- The percentage of calls a particular status needs to be above to be called the majority status is currently 	90%.
+	This decision was made to ensure that the status is not only the majority status but is also 	significantly called more than the other status values in the region.
+	- The percentage of a region (arm, cytoband, or gene) that should be callable is more than 50%.
+	This decision was made because it seems reasonable to expect a region to be more than 50% callable for a 	dominant status call to be made.
 
 * `rna-expression-validation.R` - This script examines RNA-seq expression levels (RSEM FPKM) of genes that are called as deletions.
 It produces loss/neutral and zero/neutral correlation plots, as well as stacked barplots displaying the distribution of ranges in expression across each of the calls (loss, neutral, zero).
