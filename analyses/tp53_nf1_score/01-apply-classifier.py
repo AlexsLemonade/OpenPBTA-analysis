@@ -42,8 +42,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import rpy2.robjects as robjects
 from sklearn.preprocessing import StandardScaler
-from rpy2.robjects import pandas2ri, conversion
-from rpy2.robjects.conversion import localconverter
+from rpy2.robjects import pandas2ri
 from utils import apply_classifier, shuffle_columns
 from optparse import OptionParser
 
@@ -66,8 +65,7 @@ file = os.path.join("data", inputfile)
 name = re.sub("\.rds$", "", inputfile)
 
 exprs_rds = readRDS(file)
-with localconverter(robjects.default_converter + pandas2ri.converter):
-    exprs_df = conversion.rpy2py(exprs_rds)
+exprs_df = pandas2ri.ri2py(exprs_rds)
 exprs_df.index = rownamesRDS(exprs_rds)
 
 # transpose
