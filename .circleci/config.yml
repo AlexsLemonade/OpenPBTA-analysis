@@ -123,10 +123,9 @@ jobs:
           name: Mutational Signatures 
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutational-signatures/mutational_signatures.Rmd', clean = TRUE)" 
 
-    # Temporarily commented out for docker changes  
-    #   - run:
-    #       name: Chromosomal instability breakpoints
-    #       command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
+      - run:
+          name: Chromosomal instability breakpoints
+          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
 
       - run:
           name: Copy number consensus
