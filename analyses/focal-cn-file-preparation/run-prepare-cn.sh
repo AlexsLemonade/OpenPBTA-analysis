@@ -74,8 +74,8 @@ done
 if [ "$RUN_ORIGINAL" -gt "0" ]; then
 
   # Prep the CNVkit data
-
   Rscript --vanilla -e "rmarkdown::render('01-add-ploidy-cnvkit.Rmd', clean = TRUE)"
+
   # Run annotation step for CNVkit
   Rscript --vanilla 04-prepare-cn-file.R \
     --cnv_file ${scratch_dir}/cnvkit_with_status.tsv \
@@ -83,8 +83,8 @@ if [ "$RUN_ORIGINAL" -gt "0" ]; then
     --metadata $histologies_file \
     --filename_lead "cnvkit_annotated_cn" \
     --seg
-  # Run annotation step for ControlFreeC
 
+  # Run annotation step for ControlFreeC
   Rscript --vanilla 04-prepare-cn-file.R \
     --cnv_file ${data_dir}/pbta-cnv-controlfreec.tsv.gz \
     --gtf_file $gtf_file \
@@ -96,14 +96,14 @@ if [ "$RUN_ORIGINAL" -gt "0" ]; then
   for filename in ${filenameLead[@]}; do
     for strategy in ${libraryStrategies[@]}; do
       for chromosome_type in ${chromosomesType[@]}; do
-          --annotated_cnv_file results/${filename}_${chromosome_type}.tsv.gz \
         Rscript --vanilla rna-expression-validation.R \
+          --annotated_cnv_file results/${filename}_${chromosome_type}.tsv.gz \
           --expression_file ${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.${strategy}.rds \
-          --metadata $histologies_file \
           --independent_specimens_file $independent_specimens_file \
+          --metadata $histologies_file \
           --goi_list $goi_file \
-      done
           --filename_lead ${filename}_${chromosome_type}_${strategy}
+      done
     done
   done
 

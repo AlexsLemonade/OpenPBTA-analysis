@@ -55,6 +55,10 @@ To make these calls, the following decisions around cutoffs were made:
 	- The percentage of a region (arm, cytoband, or gene) that should be callable is more than 50%.
 	This decision was made because it seems reasonable to expect a region to be more than 50% callable for a 	dominant status call to be made.
 
+* `06-find-recurrent-calls.Rmd` - This notebook determines the recurrent focal copy number dominant status calls by region using the output of `05-define-most-focal-cn-units.Rmd`.
+Recurrence here has been arbitrarily defined based on the plotting of the distribution of status calls and a [similar decision](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/66bb67a7bf29aad4510a0913a2dbc88da0013be8/analyses/fusion_filtering/06-recurrent-fusions-per-histology.R#L152) made in `analyses/fusion_filtering/06-recurrent-fusions-per-histology.R` to make the cutoff for recurrence to be greater than a count of 3 samples that have the same CN status call in the same region.
+This notebook returns a `TSV` file with the recurrent copy number status calls, regions and biospecimen IDs.
+
 * `rna-expression-validation.R` - This script examines RNA-seq expression levels (RSEM FPKM) of genes that are called as deletions.
 It produces loss/neutral and zero/neutral correlation plots, as well as stacked barplots displaying the distribution of ranges in expression across each of the calls (loss, neutral, zero).
 _Note: The shell script's default behavior is to produce these plots using the annotated consensus SEG autosome and sex chromsome files found in this module's `results` directory and listed below._
@@ -70,6 +74,9 @@ results
 ├── cnvkit_annotated_cn_x_and_y.tsv.gz
 ├── consensus_seg_annotated_cn_autosomes.tsv.gz
 ├── consensus_seg_annotated_cn_x_and_y.tsv.gz
+├── consensus_seg_most_focal_cn_status.tsv.gz
+├── consensus_seg_recurrent_focal_cn_units.tsv
+├── consensus_seg_with_ucsc_cytoband_status.tsv.gz
 ├── controlfreec_annotated_cn_autosomes.tsv.gz
 └── controlfreec_annotated_cn_x_and_y.tsv.gz
 ```
@@ -85,10 +92,15 @@ focal-cn-file-preparation
 ├── 03-add-cytoband-status-consensus.Rmd
 ├── 03-add-cytoband-status-consensus.nb.html
 ├── 04-prepare-cn-file.R
+├── 05-define-most-focal-cn-units.Rmd
+├── 05-define-most-focal-cn-units.nb.html
+├── 06-find-recurrent-calls.Rmd
+├── 06-find-recurrent-calls.nb.html
 ├── README.md
 ├── annotation_files
 │   └── txdb_from_gencode.v27.gtf.db
 ├── display-plots.md
+├── driver-lists
 ├── gistic-results
 │   └── pbta-cnv-cnvkit-gistic
 │       ├── D.cap1.5.mat
@@ -161,7 +173,9 @@ focal-cn-file-preparation
 │   ├── cnvkit_annotated_cn_x_and_y.tsv.gz
 │   ├── consensus_seg_annotated_cn_autosomes.tsv.gz
 │   ├── consensus_seg_annotated_cn_x_and_y.tsv.gz
-│   ├── consensus_seg_with_ucsc_cytoband.tsv.gz
+│   ├── consensus_seg_most_focal_cn_status.tsv.gz
+│   ├── consensus_seg_recurrent_focal_cn_units.tsv
+│   ├── consensus_seg_with_ucsc_cytoband_status.tsv.gz
 │   ├── controlfreec_annotated_cn_autosomes.tsv.gz
 │   └── controlfreec_annotated_cn_x_and_y.tsv.gz
 ├── rna-expression-validation.R
