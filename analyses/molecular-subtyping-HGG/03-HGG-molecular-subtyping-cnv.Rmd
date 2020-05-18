@@ -47,7 +47,7 @@ We will need the clinical/histologies file and the defining lesions file to dist
 
 ```{r message=FALSE}
 histologies_df <- read_tsv(file.path(root_dir, "data",
-                                     "pbta-histologies.tsv"))
+                                     "pbta-histologies.tsv"), guess_max = 10000)
 defining_lesions_df <- read_tsv(file.path(results_dir, 
                                           "HGG_defining_lesions.tsv"))
 ```
