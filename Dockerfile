@@ -237,24 +237,90 @@ RUN R -e "remotes::install_github('wilkox/treemapify', ref = 'e70adf727f4d13223d
 # Install python libraries
 ##########################
 
-# Install python3 data science tools
+# Install python3 data science tools and all dependencies (versioned)
 RUN pip3 install \
-    "cycler==0.10.0" "kiwisolver==1.1.0" "pyparsing==2.4.5" "python-dateutil==2.8.1" "pytz==2019.3" \
+    "MarkupSafe==1.1.1" \
+    "Send2Trash==1.5.0" \
+    "appdirs==1.4.4" \
+    "attrs==19.3.0" \
+    "backcall==0.1.0" \
+    "bleach==3.1.5" \
+    "certifi==2020.4.5.1" \
+    "chardet==3.0.4" \
+    "configargparse==1.2.3" \
+    "cycler==0.10.0" \
+    "datrie==0.8.2" \
+    "decorator==4.4.2" \
+    "defusedxml==0.6.0" \
+    "docutils==0.16" \
+    "entrypoints==0.3" \
+    "gitdb==4.0.5" \
+    "gitpython==3.1.2" \
+    "idna==2.9" \
+    "importlib==metadata-1.6.0" \
     "ipykernel==5.2.1" \
+    "ipython==7.14.0" \
+    "ipython==genutils-0.2.0" \
+    "ipywidgets==7.5.1" \
+    "jedi==0.17.0" \
+    "jinja2==2.11.2" \
+    "joblib==0.15.1" \
+    "jsonschema==3.2.0" \
     "jupyter==1.0.0" \
+    "jupyter==client-6.1.3" \
+    "jupyter==console-6.1.0" \
+    "jupyter==core-4.6.3" \
+    "kiwisolver==1.1.0" \
     "matplotlib==3.2.1" \
+    "mistune==0.8.4" \
+    "mizani==0.6.0" \
+    "nbconvert==5.6.1" \
+    "nbformat==5.0.6" \
+    "notebook==6.0.3" \
     "numpy==1.18.4" \
-    "pandas==1.0.1" \
+    "packaging==20.3" \
+    "palettable==3.3.0" \
+    "pandas==0.25.3" \
+    "pandocfilters==1.4.2" \
+    "parso==0.7.0" \
+    "patsy==0.5.1" \
+    "pexpect==4.8.0" \
+    "pickleshare==0.7.5" \
     "plotnine==0.3.0" \
+    "prometheus==client-0.7.1" \
+    "prompt==toolkit-3.0.5" \
+    "psutil==5.7.0" \
+    "ptyprocess==0.6.0" \
     "pyarrow==0.16.0" \
+    "pygments==2.6.1" \
+    "pyparsing==2.4.5" \
     "pyreadr==0.2.6" \
-    "scikit-learn==0.22.2" \
+    "pyrsistent==0.16.0" \
+    "python==dateutil-2.8.1" \
+    "pytz==2019.3" \
+    "pyyaml==5.3.1" \
+    "pyzmq==19.0.1" \
+    "qtconsole==4.7.4" \
+    "qtpy==1.9.0" \
+    "ratelimiter==1.2.0.post0" \
+    "requests==2.23.0" \
+    "scikit==learn-0.22.2" \
     "scipy==1.4.1" \
     "seaborn==0.9.0" \
+    "smmap==3.0.4" \
     "snakemake==5.8.1" \
     "statsmodels==0.10.2" \
-    "tzlocal==2.0" \
-    "widgetsnbextension==2.0.0"
+    "terminado==0.8.3" \
+    "testpath==0.4.4" \
+    "tornado==6.0.4" \
+    "traitlets==4.3.3" \
+    "tzlocal==2.0.0" \
+    "urllib3==1.25.9" \
+    "wcwidth==0.1.9" \
+    "webencodings==0.5.1" \
+    "widgetsnbextension==3.5.1" \
+    "wrapt==1.12.1" \
+    "zipp==3.1.0"
 
 # Install Rpy2
 RUN pip3 install "rpy2==3.2.7"
@@ -280,7 +346,7 @@ RUN apt-get -q update && \
 RUN mkdir /mcr-install-v83 && \
     mkdir /opt/mcr && \
     cd /mcr-install-v83 && \
-    wget https://www.mathworks.com/supportfiles/downloads/R2014a/deployment_files/R2014a/installers/glnxa64/MCR_R2014a_glnxa64_installer.zip && \
+    wget -q https://www.mathworks.com/supportfiles/downloads/R2014a/deployment_files/R2014a/installers/glnxa64/MCR_R2014a_glnxa64_installer.zip && \
     unzip -q MCR_R2014a_glnxa64_installer.zip && \
     rm -f MCR_R2014a_glnxa64_installer.zip && \
     ./install -destinationFolder /opt/mcr -agreeToLicense yes -mode silent && \
