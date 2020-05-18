@@ -9,14 +9,8 @@
 # --db_file : Path to sqlite database file made from 01-setup_db.py
 # --metadata : Relative file path to MAF file to be analyzed. Can be .gz compressed.
 #              Assumes file path is given from top directory of 'OpenPBTA-analysis'.
-# --all_bed_wgs : File path that specifies the BED regions file to be used for the
-#                 denominator for all mutations TMB for WGS samples.
-# --all_bed_wxs : File path that specifies the BED regions file to be used for the
-#                 denominator for all mutations TMB for WXS samples.
-# --coding_bed_wgs : File path that specifies the BED regions file to be used for the
-#                 denominator for coding only TMB for WGS samples.
-# --coding_bed_wxs : File path that specifies the BED regions file to be used for the
-#                 denominator for coding only TMB for WXS samples.
+# --coding_regions : File path that specifies the BED regions file that specifies
+#                     coding regions that should be used for coding only TMB calculations.
 # --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
 # --tcga: If TRUE, will skip PBTA metadata specific steps
 #
@@ -26,10 +20,7 @@
 # --db_file scratch/testing_snv_db.sqlite \
 # --output analyses/snv-callers/results/consensus \
 # --metadata data/pbta-histologies.tsv \
-# --all_bed_wgs scratch/intersect_strelka_mutect_WGS.bed \
-# --all_bed_wxs data/WXS.hg38.100bp_padded.bed \
-# --coding_bed_wgs scratch/intersect_cds_lancet_strelka_mutect_WGS.bed \
-# --coding_bed_wxs scratch/intersect_cds_WXS.bed \
+# --coding_regions scratch/gencode.v27.primary_assembly.annotation.bed \
 # --overwrite
 
 ################################ Initial Set Up ################################
@@ -67,27 +58,9 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
-    opt_str = "--all_bed_wgs", type = "character", default = "none",
-    help = "File path that specifies the BED regions file to be used for the
-    denominator for all mutations TMB for WGS samples.",
-    metavar = "character"
-  ),
-  make_option(
-    opt_str = "--all_bed_wxs", type = "character", default = "none",
-    help = "File path that specifies the BED regions file to be used for the
-    denominator for all mutations TMB for WXS samples.",
-    metavar = "character"
-  ),
-  make_option(
-    opt_str = "--coding_bed_wgs", type = "character", default = "none",
-    help = "File path that specifies the BED regions file to be used for the
-    denominator for coding only TMB for WXS samples. 'OpenPBTA-analysis'",
-    metavar = "character"
-  ),
-  make_option(
-    opt_str = "--coding_bed_wxs", type = "character", default = "none",
-    help = "File path that specifies the BED regions file to be used for the
-    denominator for coding only TMB for WXS samples. 'OpenPBTA-analysis'",
+    opt_str = "--coding_regions", type = "character", default = "none",
+    help = "File path that specifies the BED regions file that specifies what
+    coding regions should be used for coding only TMB.",
     metavar = "character"
   ),
   make_option(
@@ -109,15 +82,11 @@ opt <- parse_args(OptionParser(option_list = option_list))
 # Make everything relative to root path
 opt$metadata <- file.path(root_dir, opt$metadata)
 opt$db_file <- file.path(root_dir, opt$db_file)
-opt$all_bed_wgs <- file.path(root_dir, opt$all_bed_wgs)
-opt$all_bed_wxs <- file.path(root_dir, opt$all_bed_wxs)
-opt$coding_bed_wgs <- file.path(root_dir, opt$coding_bed_wgs)
-opt$coding_bed_wxs <- file.path(root_dir, opt$coding_bed_wxs)
+opt$coding_regions <- file.path(root_dir, opt$coding_regions)
 
 ########### Check that the files we need are in the paths specified ############
 needed_files <- c(
-  opt$metadata, opt$db_file, opt$all_bed_wgs, opt$all_bed_wxs,
-  opt$coding_bed_wgs, opt$coding_bed_wxs
+  opt$metadata, opt$db_file, opt$coding_regions
 )
 
 # Get list of which files were found
@@ -180,15 +149,16 @@ join_cols <- c(
 # Create the consensus for non-MNVs
 strelka_mutect_maf_df <- strelka %>%
   # We'll keep the Strelka2 columns and drop Mutect2 columns
-  dplyr::inner_join(mutect %>% 
-                      dplyr::select(join_cols), 
-                    by = join_cols, 
-                    copy = TRUE) %>%
+  dplyr::inner_join(mutect %>%
+    dplyr::select(join_cols),
+  by = join_cols,
+  copy = TRUE
+  ) %>%
   as.data.frame()
 
 # Get Multi-nucleotide calls from mutect as SNVs
-split_mutect_df <- split_mnv(mutect) %>% 
-  dplyr::select(join_cols) 
+split_mutect_df <- split_mnv(mutect) %>%
+  dplyr::select(join_cols)
 
 # join MNV calls with strelka
 strelka_mutect_mnv <- strelka %>%
@@ -208,8 +178,8 @@ if (opt$tcga) {
 # Merge in the MNVs
 strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
   dplyr::union(strelka_mutect_mnv,
-               by = join_cols
-  ) 
+    by = join_cols
+  )
 
 ########################### Set up metadata columns ############################
 # Print progress message
@@ -220,19 +190,33 @@ if (opt$tcga) {
   # Format two fields of metadata for use with functions
   metadata <- readr::read_tsv(opt$metadata) %>%
     dplyr::mutate(
-      experimental_strategy = "WXS", # This field doesn't exist for this data, but all is WXS
-      short_histology = Primary_diagnosis
+      short_histology = Primary_diagnosis,
+      target_bed_path = file.path(root_dir, "data", BED_In_Use),
+      experimental_strategy = "WXS"
+    ) %>%
+    dplyr::rename(
+      Tumor_Sample_Barcode = tumorID,
+      target_bed = BED_In_Use
     ) # This field is named differently
 
   # Manifest files only have first 12 letters of the barcode so we gotta chop the end off
   strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
     dplyr::mutate(Tumor_Sample_Barcode = substr(Tumor_Sample_Barcode, 0, 12))
-} else { # pbta data 
+} else { # pbta data
   # Isolate metadata to only the samples that are in the datasets
   metadata <- readr::read_tsv(opt$metadata) %>%
     dplyr::filter(Kids_First_Biospecimen_ID %in% strelka_mutect_maf_df$Tumor_Sample_Barcode) %>%
     dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
-    dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID)
+    dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID) %>%
+    # Make a Target BED regions column
+    dplyr::mutate(
+      target_bed = dplyr::recode(experimental_strategy,
+        "WGS" = "scratch/intersect_strelka_mutect_WGS.bed",
+        "WXS" = "data/WXS.hg38.100bp_padded.bed"
+        #TODO: make a padded/unpadded script option
+      ),
+      target_bed_path = file.path(root_dir, target_bed)
+    )
 
   # Make sure that we have metadata for all these samples.
   if (!all(unique(strelka_mutect_maf_df$Tumor_Sample_Barcode) %in% metadata$Tumor_Sample_Barcode)) {
@@ -242,13 +226,104 @@ if (opt$tcga) {
 # Add in metadata
 strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
   dplyr::inner_join(metadata %>%
-                      dplyr::select(
-                        Tumor_Sample_Barcode,
-                        experimental_strategy,
-                        short_histology
-                      ), 
-                    by = "Tumor_Sample_Barcode")
+    dplyr::select(
+      Tumor_Sample_Barcode,
+      experimental_strategy,
+      short_histology,
+      target_bed,
+      target_bed_path
+    ),
+  by = "Tumor_Sample_Barcode"
+  ) %>% 
+  # Remove samples if they are labeled "Panel"
+  dplyr::filter(experimental_strategy != "Panel")
 
+############################# Set Up BED Files #################################
+# Make a data.frame of the unique BED file paths and their names
+bed_files_key_df <- strelka_mutect_maf_df %>%
+  dplyr::select(Tumor_Sample_Barcode, target_bed, target_bed_path) %>%
+  dplyr::distinct()
+
+# Get the file paths for the bed files
+bed_file_paths <- bed_files_key_df %>%
+  dplyr::distinct(target_bed, target_bed_path) %>%
+  tibble::deframe()
+
+# Read in each unique BED file and turn into GenomicRanges object
+bed_ranges_list <- lapply(bed_file_paths, function(bed_file) {
+
+  # Read in BED file as data.frame
+  bed_df <- readr::read_tsv(bed_file,
+    col_names = c("chr", "start", "end")
+  )
+
+  # Make into a GenomicRanges object
+  bed_ranges <- GenomicRanges::GRanges(
+    seqnames = bed_df$chr,
+    ranges = IRanges::IRanges(
+      start = bed_df$start,
+      end = bed_df$end
+    )
+  )
+  return(bed_ranges)
+})
+
+#################### Set up Coding Region version of BED ranges ################
+# Read in the coding regions BED file
+coding_regions_df <- readr::read_tsv(opt$coding_regions,
+  col_names = c("chr", "start", "end")
+)
+# Make into a GenomicRanges object
+coding_ranges <- GenomicRanges::GRanges(
+  seqnames = coding_regions_df$chr,
+  ranges = IRanges::IRanges(
+    start = coding_regions_df$start,
+    end = coding_regions_df$end
+  )
+)
+
+# For each BED range, find the coding regions intersection
+coding_bed_ranges_list <- lapply(bed_ranges_list, function(bed_range,
+                                                           coding_grange = coding_ranges) {
+  # Find the intersection
+  coding_intersect_ranges <- GenomicRanges::intersect(bed_range, coding_grange)
+
+  # Return the reduce version of these ranges
+  return(GenomicRanges::reduce(coding_intersect_ranges))
+})
+
+########################### All mutations TMB file #############################
+# If the file exists or the overwrite option is not being used, run TMB calculations
+if (file.exists(tmb_all_file) && !opt$overwrite) {
+  # Stop if this file exists and overwrite is set to FALSE
+  warning(cat(
+    "The 'all mutations' Tumor Mutation Burden file already exists: \n",
+    tmb_all_file, "\n",
+    "Use --overwrite if you want to overwrite it."
+  ))
+} else {
+  # Print out warning if this file is going to be overwritten
+  if (file.exists(tmb_coding_file)) {
+    warning("Overwriting existing 'all mutations' TMB file.")
+  }
+
+  # Run TMB calculation on each tumor sample and its respective BED range
+  tmb_all_df <- purrr::map2_df(
+    bed_files_key_df$Tumor_Sample_Barcode,
+    bed_files_key_df$target_bed,
+    ~ calculate_tmb(
+      tumor_sample_barcode = .x,
+      maf_df = strelka_mutect_maf_df,
+      bed_ranges = bed_ranges_list[[.y]]
+    )
+  )
+
+  # Write to TSV file
+  readr::write_tsv(tmb_all_df, tmb_all_file)
+
+  # Print out completion message
+  message(paste("TMB 'all' calculations saved to:", tmb_all_file))
+}
 ############################# Coding TMB file ##################################
 # If the file exists or the overwrite option is not being used, run TMB calculations
 if (file.exists(tmb_coding_file) && !opt$overwrite) {
@@ -267,38 +342,21 @@ if (file.exists(tmb_coding_file) && !opt$overwrite) {
   # Print out progress message
   message(paste("Calculating 'coding only' TMB..."))
 
-  # Calculate coding only TMBs and write to file
-  tmb_coding_df <- calculate_tmb(strelka_mutect_maf_df,
-    bed_wgs = opt$coding_bed_wgs,
-    bed_wxs = opt$coding_bed_wxs
+  # Run coding TMB calculation on each tumor sample and its
+  # respective coding BED range
+  tmb_coding_df <- purrr::map2_df(
+    bed_files_key_df$Tumor_Sample_Barcode,
+    bed_files_key_df$target_bed,
+    ~ calculate_tmb(
+      tumor_sample_barcode = .x,
+      maf_df = strelka_mutect_maf_df,
+      bed_ranges = coding_bed_ranges_list[[.y]]
+    )
   )
+
+  # Write to TSV file
   readr::write_tsv(tmb_coding_df, tmb_coding_file)
 
   # Print out completion message
   message(paste("TMB 'coding only' calculations saved to:", tmb_coding_file))
-}
-
-########################### All mutations TMB file #############################
-# If the file exists or the overwrite option is not being used, run TMB calculations
-if (file.exists(tmb_all_file) && !opt$overwrite) {
-  # Stop if this file exists and overwrite is set to FALSE
-  warning(cat(
-    "The 'all mutations' Tumor Mutation Burden file already exists: \n",
-    tmb_all_file, "\n",
-    "Use --overwrite if you want to overwrite it."
-  ))
-} else {
-  # Print out warning if this file is going to be overwritten
-  if (file.exists(tmb_coding_file)) {
-    warning("Overwriting existing 'all mutations' TMB file.")
-  }
-  # Calculate TMBs and write to TMB file
-  tmb_all_df <- calculate_tmb(strelka_mutect_maf_df,
-    bed_wgs = opt$all_bed_wgs,
-    bed_wxs = opt$all_bed_wxs
-  )
-  readr::write_tsv(tmb_all_df, tmb_all_file)
-
-  # Print out completion message
-  message(paste("TMB 'all' calculations saved to:", tmb_all_file))
 }

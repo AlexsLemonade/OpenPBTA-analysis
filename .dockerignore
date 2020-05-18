@@ -1,7 +1,10 @@
+# don't include git history
+.git
 # we don't want to build the data into the image
 data
 # analyses are also large now
 analyses
 # scratch may be large locally
 scratch
-
+# Other files to ignore
+.Rproj.user

@@ -71,7 +71,7 @@ tmb_pbta <- data.table::fread(file.path(
   "pbta-snv-mutation-tmb-coding.tsv"
 )) %>%
   # This variable is weird when binding but we don't need it for the plot so we'll just remove it.
-  dplyr::select(-genome_size) %>%
+  dplyr::select(-region_size) %>%
   dplyr::filter(experimental_strategy != "Panel")
 ```
 
@@ -85,7 +85,7 @@ tmb_tcga <- data.table::fread(file.path(
   "consensus",
   "tcga-snv-mutation-tmb-coding.tsv"
 )) %>%
-  dplyr::select(-genome_size)
+  dplyr::select(-region_size)
 ```
 
 ## Plot the TMB as a CDF plot
