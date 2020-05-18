@@ -7,20 +7,19 @@ assignees: ''
 
 ---
 
-#### File(s)
+#### What data file(s) does this issue pertain to?
 
-_What data file(s) does this issue pertain to?_
 
-#### Release
 
-_What release are you using?_
-
+#### What release are you using?
 <!--You may want to check if the issue has been resolved in an updated release-->
 
-#### Link to [OpenPBTA-manuscript](https://github.com/AlexsLemonade/OpenPBTA-manuscript/)
 
-_Put a link to the relevant section of the OpenPBTA manuscript here._
 
-#### Question/issue
+#### Put a link to the relevant section of the [OpenPBTA-manuscript](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) here.
 
-_Put your question or report your issue here._
+
+
+#### Put your question or report your issue here.
+
+

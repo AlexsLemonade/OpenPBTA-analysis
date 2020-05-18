@@ -1,0 +1,167 @@
+---
+title: "GISTIC entire PBTA cohort versus individual histology comparison of results"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell for ALSF CCDL
+date: 2020
+---
+
+This notebook will look at the files in the `run-gistic/results` directory and compare those for the entire cohort to the three largest histology groups, namely, LGAT, HGAT and medulloblastoma.
+
+The purpose is to identify, if any, disagreement between GISTIC results for the entire cohort versus the three individual histologies.
+
+## Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/compare-gistic/01-GISTIC-cohort-vs-histology-comparison.Rmd', clean = TRUE)"
+```
+
+## Set up
+
+```{r}
+library(tidyverse)
+```
+
+### Files and Directories
+
+```{r}
+# Path to input directory
+data_dir <- file.path("..", "run-gistic", "results")
+
+# Path to output directory
+plots_dir <- "plots"
+
+# Create the plots_dir if it does not exist
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir, recursive = TRUE)
+}
+```
+
+### Functions
+
+```{r}
+# Source `generate-multipanel-plot-functions.R` script
+source(file.path("..",
+                 "..",
+                 "analyses",
+                 "transcriptomic-dimension-reduction",
+                 "util",
+                 "generate-multipanel-plot-functions.R"))
+
+# Source this module's custom functions R script
+source(file.path("util", "GISTIC-comparison-functions.R"))
+```
+
+## Compare "scores.gistic" files
+
+### Unzip GISTIC results folders
+
+```{r}
+# Unzip and set up GISTIC results folders and files.
+cohort_gistic_dir <- file.path(data_dir, "pbta-cnv-consensus-gistic")
+cohort_gistic_zip <- file.path(data_dir, "pbta-cnv-consensus-gistic.zip")
+
+if (!dir.exists(cohort_gistic_dir)) {
+  unzip(cohort_gistic_zip, 
+        exdir = data_dir)
+}
+
+lgat_gistic_dir <- file.path(data_dir, "pbta-cnv-consensus-lgat-gistic")
+lgat_gistic_zip <- file.path(data_dir, "pbta-cnv-consensus-lgat-gistic.zip")
+
+if (!dir.exists(lgat_gistic_dir)) {
+  unzip(lgat_gistic_zip, 
+        exdir = data_dir)
+}
+
+hgat_gistic_dir <- file.path(data_dir, "pbta-cnv-consensus-hgat-gistic")
+hgat_gistic_zip <- file.path(data_dir, "pbta-cnv-consensus-hgat-gistic.zip")
+
+if (!dir.exists(hgat_gistic_dir)) {
+  unzip(hgat_gistic_zip, 
+        exdir = data_dir)
+}
+
+medulloblastoma_gistic_dir <- file.path(data_dir, "pbta-cnv-consensus-medulloblastoma-gistic")
+medulloblastoma_gistic_zip <- file.path(data_dir, "pbta-cnv-consensus-medulloblastoma-gistic.zip")
+
+if (!dir.exists(medulloblastoma_gistic_dir)) {
+  unzip(medulloblastoma_gistic_zip, 
+        exdir = data_dir)
+}
+
+```
+
+### Run `plot_gistic_scores` for each file
+
+```{r}
+# Define file paths to `scores.gistic` files and run `plot_gistic_scores`
+# function for each file
+cohort_scores <-
+  file.path(cohort_gistic_dir, "scores.gistic")
+cohort_scores_plot <- plot_gistic_scores(cohort_scores)
+
+lgat_scores <-
+  file.path(lgat_gistic_dir, "scores.gistic")
+lgat_scores_plot <- plot_gistic_scores(lgat_scores)
+
+hgat_scores <-
+  file.path(hgat_gistic_dir, "scores.gistic")
+hgat_scores_plot <- plot_gistic_scores(hgat_scores)
+
+medulloblastoma_scores <-
+  file.path(medulloblastoma_gistic_dir, "scores.gistic")
+medulloblastoma_scores_plot <-
+  plot_gistic_scores(medulloblastoma_scores)
+```
+
+### Generate multipanel plots 
+
+```{r fig.height = 10, fig.width = 24}
+lgat_plot_list <- list(lgat_scores_plot, cohort_scores_plot)
+generate_multipanel_plot(plot_list = lgat_plot_list,
+                         plot_title = "LGAT scores versus entire cohort",
+                         output_directory = plots_dir,
+                         output_filename = "lgat_gistic_scores_multipanel_plot.png")
+
+hgat_plot_list <- list(hgat_scores_plot, cohort_scores_plot)
+generate_multipanel_plot(plot_list = hgat_plot_list,
+                         plot_title = "HGAT scores versus entire cohort",
+                         output_directory = plots_dir,
+                         output_filename = "hgat_gistic_scores_multipanel_plot.png")
+
+medulloblastoma_plot_list <- list(medulloblastoma_scores_plot, cohort_scores_plot)
+generate_multipanel_plot(plot_list = medulloblastoma_plot_list,
+                         plot_title = "Medulloblastoma scores versus entire cohort",
+                         output_directory = plots_dir,
+                         output_filename = "medulloblastoma_gistic_scores_multipanel_plot.png")
+```
+
+## Compare `amp_genes.conf_90.txt` and `del_genes.conf_90.txt` files
+
+### Run `plot_genes_venn_diagram_wrapper` on `del_genes.conf_90.txt` files
+
+```{r warning = FALSE, message = FALSE}
+# Define GISTIC del genes file paths
+cohort_del_genes <- file.path(cohort_gistic_dir, "del_genes.conf_90.txt")
+lgat_del_genes <- file.path(lgat_gistic_dir, "del_genes.conf_90.txt")
+hgat_del_genes <- file.path(hgat_gistic_dir, "del_genes.conf_90.txt")
+medulloblastoma_del_genes <- file.path(medulloblastoma_gistic_dir, "del_genes.conf_90.txt")
+
+# Run `plot_genes_venn_diagram_wrapper` function on GISTIC del genes files
+del_plot_list <- plot_genes_venn_diagram_wrapper(cohort_del_genes,
+                                                 lgat_del_genes,
+                                                 hgat_del_genes,
+                                                 medulloblastoma_del_genes)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```

@@ -1,8 +1,8 @@
 # Bethell and Taroni for CCDL 2019
-# This generates multipanel dimension reduction plots for RSEM and kallisto 
+# This generates multipanel dimension reduction plots for RSEM and kallisto
 # data, with points colored either by RNA library or broad histology
 #
-# Usage: bash 04-multipanel-plots.sh
+# Usage: bash 03-multipanel-plots.sh
 
 # This script should always run as if it were being called from
 # the directory it lives in.

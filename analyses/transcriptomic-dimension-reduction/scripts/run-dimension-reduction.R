@@ -145,7 +145,7 @@ if (!dir.exists(output_directory)) {
 # Character string that will be used to name files
 filename_lead <- opt$filename_lead
 
-# Define seed as the parmeter passed via the command line
+# Define seed as the parameter passed via the command line
 seed <- opt$seed
 
 # Define t-SNE perplexity parameter as the parameter passed via command line
@@ -160,7 +160,8 @@ gene_count_threshold <- opt$low_count_threshold
 #### Read in data --------------------------------------------------------------
 
 # Read in metadata
-metadata_df <- data.frame(readr::read_tsv(metadata_file))
+metadata_df <- data.frame(readr::read_tsv(metadata_file,
+                                          col_types = readr::cols(molecular_subtype = readr::col_character())))
 
 # Read in expression data
 expression_data <- readr::read_rds(expression_file) %>%

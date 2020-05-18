@@ -1,0 +1,395 @@
+---
+title: "Tally copy number calls at the gene-level"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell for ALSF CCDL
+date: 2020
+params:
+  is_ci: 0
+---
+
+This notebook will tally the number of samples with a `loss`, `gain`, or `neutral` status for an individual gene in two sets of files:
+
+* Files prepared in `02-GISTIC-tidy-data-prep.Rmd` and stored in this module's `results` directory (referred to as "gistic" throughout)
+* Files from `analyses/focal-cn-file-preparation/results` (referred to as "exon" throughout)
+
+Note that we will prepare only files derived from the consensus SEG file.
+
+## Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/compare-gistic/03-GISTIC-gene-level-cn-status-comparison.Rmd', clean = TRUE)"
+```
+
+## Set up
+
+```{r}
+library(tidyverse)
+```
+
+If this is running in CI, skip the LGAT steps because there will not be enough samples.
+
+```{r}
+if (params$is_ci == 0) {
+  run_lgat <- TRUE
+} else {
+  run_lgat <- FALSE
+}
+```
+
+### Functions
+
+For tallying up copy number status
+
+```{r}
+get_gene_tally <- function(gene_status_df,
+                           gene_mapping_df,
+                           method,
+                           biospecimens_included = NULL,
+                           genes_included = NULL) {
+  # This function takes two data.frames: 1) either an annotated seg file 
+  # (method = "exon") from `focal-cn-file-preparation` or the gene status 
+  # data.frame from prepare_gene_level_gistic (method = "gistic") and 2) the 
+  # peak assignment output of prepare_gene_level_gistic and returns a tally of 
+  # copy number status for individual genes
+  # 
+  # Args:
+  #   gene_status_df: either an annotated seg file (set method = "exon") from 
+  #                   `focal-cn-file-preparation` or the gene status data.frame 
+  #                   from prepare_gene_level_gistic (set method = "gistic")
+  #   gene_mapping_df: the peak assignment output of prepare_gene_level_gistic 
+  #   method: "gistic" or "exon", see above
+  #   biospecimens_included: a vector of biospecimen identifiers to be used
+  #                          to filter gene_status_df; only used when
+  #                          method = "exon"
+  #   genes_included: a vector of gene symbols to be used to filter 
+  #                   gene_status_df; only used when method = "exon"
+  # 
+  # Returns:
+  #   gene_tally_df: a data.frame with the following columns
+  #                  1. gene: gene symbol
+  #                  2. gain: number of gains tallied
+  #                  3. loss: number of losses tallied
+  #                  4. neutral: number of copy neutral events tallied
+  #                  5. detection_peak: all peaks a gene symbol mapped to 
+  #                                     via GISTIC, comma-separated
+  
+  # Handles the case where someone writes GISTIC
+  method <- tolower(method)
+  # Handles unsupported methods
+  if (!(method %in% c("gistic", "exon"))) {
+    stop("method must be 'gistic' or 'exon'")
+  }
+  
+  # Check if filtering arguments are used or not
+  null_filtering_args <- c(is.null(biospecimens_included),
+                           is.null(genes_included))
+  
+  # If we're using the exon method, we need the biospecimens_included and
+  # genes_included arguments
+  if ((method == "exon") & any(null_filtering_args)) {
+    stop("The 'exon' method is intended to be used with the biospecimens_included and genes_included arguments")
+  }
+  
+  # If the method is gistic and one of biospecimens_included or genes_included
+  # was used, warn the user
+  if ((method == "gistic") & !all(null_filtering_args)) {
+    warning("biospecimen_included and genes_included arguments are only used when method = 'exon', they will be ignored")
+  }
+  
+  # Filtering by biospecimen and gene are only necessary when method = "exon"
+  if (method == "exon") {
+     gene_status_df <- gene_status_df %>%
+        filter(Kids_First_Biospecimen_ID %in% biospecimens_included,
+                gene %in% genes_included)
+  }
+  
+  gene_tally_df <- gene_status_df %>%
+    # Remove any genes that are "nearest genes." We don't expect them to be *in*
+    # the peak and therefore do not expect them to be comparable to the other
+    # method that we used.
+    filter(str_detect(gene, "\\[", negate = TRUE)) %>%
+    # Count the number of times a copy number alteration occurs in an individual
+    # gene
+    group_by(gene, status) %>%
+    tally() %>%
+    spread(status, n) %>%
+    # Any instances where a copy number alteration is NA are equivalent to a 
+    # count of zero
+    replace_na(list(loss = 0, 
+                    gain = 0))
+  
+  # In the GISTIC case, missing values in the neutral column are the same as
+  # zero counts
+  if (method == "gistic") {
+    gene_tally_df <- gene_tally_df %>%
+      replace_na(list(neutral = 0))
+  }
+  
+  # Because neutral calls are not included in the annotated consensus file,
+  # we can assume the number of neutral calls is the number of samples included 
+  # minus any alterations (gain + loss)
+  if (method == "exon") {
+    gene_tally_df <- gene_tally_df %>%
+       mutate(neutral = length(biospecimens_included) - (gain + loss))
+  }
+  
+  gene_tally_df %>%
+    # Add detection peak information to this data.frame. Peaks can be 
+    # overlapping in GISTIC and contain the same gene symbols, so we need to 
+    # summarize the detection_peak column
+    inner_join(gene_mapping_df %>%
+                 select(gene,
+                        detection_peak),
+               by = "gene") %>%
+    group_by(gene, gain, loss, neutral) %>%
+    summarize(detection_peak = paste(detection_peak, collapse = ", ")) %>%
+    ungroup()
+  
+}
+```
+
+<!-- TODO: one way to compare the different outcomes is to use a visualization
+that demonstrates what proportion of samples have a particular status for an 
+individual gene (a heatmap) and because of the large number of genes we can
+make panels on a per detection peak basis.
+
+For creating a heatmap that shows the proportion of samples with a copy number status for an individual gene
+
+```{r eval=FALSE}
+create_heatmap <- function(gene_tally_df,
+                           detection_peak_filter,
+                           plot_title = "EXON OVERLAPS",
+                           high_color = "red") {
+  # For a given detection peak in the output data.frame of get_gene_tally,
+  # filter to only those genes and create a heatmap with cells that are filled
+  # by the proportion of samples that have the corresponding status value.
+  # 
+  # Args:
+  #   gene_tally_df: output of get_gene_tally
+  #   detection_peak_filter: character value supplied to dplyr::filter to filter
+  #                          to rows that are in a given detection peak
+  #   high_color: the high value supplied to scale_fill_gradient; low = "white"
+  #   
+  # Returns:
+  #   A heatmap (geom_tile) where the rows are genes and the columns are status
+  
+  gene_tally_df %>%
+    filter(detection_peak == detection_peak_filter) %>%
+    group_by(gene) %>%
+    summarize(gain = gain / sum(gain, loss, neutral),
+           loss = loss / sum(gain, loss, neutral),
+           neutral = neutral / sum(gain, loss, neutral)) %>%
+    reshape2::melt(variable.name = "status",
+                   value.name = "proportion_of_samples") %>%
+    ggplot(aes(status, gene)) +
+    geom_tile(aes(fill = proportion_of_samples)) +  
+    scale_fill_gradient(low = "white", high = high_color) +
+    labs(title = plot_title)
+}
+
+plot_detection_peak <- function(exon_tally_df,
+                                gistic_tally_df,
+                                peak_filter) {
+  # Make a panel (row) of heatmaps for a given detection peak
+  # 
+  # Arguments:
+  #   exon_tally_df: output of get_gene_tally using `focal-cn-file-preparation`
+  #                  results
+  #   gistic_tally_df: output of get_gene_tally using prepare_gene_level_gistic
+  #   peak_filter: will be supplied as detection_peak_filter to create_heatmap
+  # 
+  # Returns:
+  #   Two heatmaps titled with peak_filter
+  
+  exon_heatmap <- create_heatmap(gene_tally_df = exon_tally_df,
+                                 detection_peak_filter = peak_filter,
+                                 plot_title = "EXON OVERLAPS",
+                                 high_color = "red")
+  gistic_heatmap <- create_heatmap(gene_tally_df = gistic_tally_df,
+                                   detection_peak_filter = peak_filter,
+                                   plot_title = "GISTIC",
+                                   high_color = "navy")
+  
+  plot_row <- cowplot::plot_grid(exon_heatmap + 
+                                   theme(legend.position = "none"),
+                                 gistic_heatmap + 
+                                   theme(legend.position = "none"))
+  title_pane <- cowplot::ggdraw() + 
+    cowplot::draw_label(
+      peak_filter,
+      fontface = 'bold',
+      x = 0,
+      hjust = 0
+    ) 
+  
+  cowplot::plot_grid(title_pane, 
+                     plot_row,
+                     ncol = 1,
+                     rel_heights = c(0.1, 1))
+}
+```
+-->
+
+### Files and Directories
+
+```{r}
+# Path to results directory -- this is the input and output directory for this
+# notebook
+results_dir <- "results"
+
+# Comment out because heatmap functionality is commented out
+# Plots
+# plots_dir <- "plots"
+# if (!dir.exists(plots_dir)) {
+#  dir.create(plots_dir)
+# }
+
+# Path to our focal CN files directory
+focal_dir <- file.path("..", "focal-cn-file-preparation", "results")
+# Path to GISTIC results
+gistic_dir <- file.path("..", "run-gistic", "results")
+```
+
+#### Input
+
+```{r}
+# Files related to the entire cohort
+cohort_mapping_file <- file.path(results_dir, 
+                                 "cohort_gistic_peak_assignment.tsv.gz")
+cohort_gene_status <- file.path(results_dir, 
+                                "cohort_gistic_gene_cn_status_table.tsv.gz")
+cohort_seg_counts <- file.path(gistic_dir, 
+                               "pbta-cnv-consensus-gistic",
+                               "sample_seg_counts.txt")
+
+# Files related to LGAT samples only
+lgat_mapping_file <- file.path(results_dir, 
+                               "lgat_gistic_peak_assignment.tsv.gz")
+lgat_gene_status <- file.path(results_dir, 
+                              "lgat_gistic_gene_cn_status_table.tsv.gz")
+lgat_seg_counts <- file.path(gistic_dir, 
+                             "pbta-cnv-consensus-lgat-gistic",
+                             "sample_seg_counts.txt")
+
+# File generated via the overlapping exons method 
+annotated_cn_file <- file.path(focal_dir, 
+                               "consensus_seg_annotated_cn_autosomes.tsv.gz")
+```
+
+#### Output
+
+```{r}
+cohort_exon_file <- file.path(results_dir,
+                              "cohort_gene_level_focal_cn_counts.tsv")
+cohort_gistic_file <- file.path(results_dir,
+                                "cohort_gene_level_gistic_cn_counts.tsv")
+lgat_exon_file <- file.path(results_dir,
+                            "lgat_gene_level_focal_cn_counts.tsv")
+lgat_gistic_file <- file.path(results_dir,
+                              "lgat_gene_level_gistic_cn_counts.tsv")
+```
+
+## Read in files
+
+```{r}
+# Read in the gene level files prepared in `02-GISTIC-tidy-data-prep.Rmd`
+cohort_gene_mapping <- read_tsv(cohort_mapping_file)
+cohort_gene_level_calls <- read_tsv(cohort_gene_status)
+lgat_gene_mapping <- read_tsv(lgat_mapping_file)
+lgat_gene_level_calls <- read_tsv(lgat_gene_status)
+
+# Get the biospecimen identifiers for samples that were included in the GISTIC
+# run
+all_ids_in_consensus <- read_tsv(cohort_seg_counts) %>%
+  filter(included == "yes") %>%
+  pull(`sample`)
+
+lgat_ids_in_consensus <- read_tsv(lgat_seg_counts) %>%
+  filter(included == "yes") %>%
+  pull(`sample`)
+
+# Read in the consensus focal CN calls file and rename gene and biospecimen
+# columns
+consensus_focal_cn_calls <- read_tsv(annotated_cn_file) %>%
+  rename(gene = gene_symbol,
+         Kids_First_Biospecimen_ID = biospecimen_id) %>%
+  mutate(status = dplyr::recode(status, amplification = "gain"))
+```
+
+## Count copy number alterations
+
+### Entire cohort
+
+```{r}
+cohort_gistic_tally <- get_gene_tally(gene_status_df = cohort_gene_level_calls,
+                                      gene_mapping_df = cohort_gene_mapping,
+                                      method = "gistic") %>%
+  write_tsv(cohort_gistic_file)
+cohort_exon_tally <- get_gene_tally(gene_status_df = consensus_focal_cn_calls,
+                                    gene_mapping_df = cohort_gene_mapping,
+                                    method = "exon",
+                                    biospecimens_included = all_ids_in_consensus,
+                                    genes_included = cohort_gistic_tally$gene) %>%
+  write_tsv(cohort_exon_file)
+```
+
+### LGAT only
+
+```{r}
+# only run when params$is_ci == 0, the default
+if (run_lgat) {
+  lgat_gistic_tally <- get_gene_tally(gene_status_df = lgat_gene_level_calls,
+                                      gene_mapping_df = lgat_gene_mapping,
+                                      method = "gistic") %>%
+    write_tsv(lgat_gistic_file)
+  lgat_exon_tally <- get_gene_tally(gene_status_df = consensus_focal_cn_calls,
+                                    gene_mapping_df = lgat_gene_mapping,
+                                    method = "exon",
+                                    biospecimens_included = lgat_ids_in_consensus,
+                                    genes_included = lgat_gistic_tally$gene) %>%
+    write_tsv(lgat_exon_file)
+}
+```
+
+<!--This is using the heatmap code that is commented out above.
+
+## Heatmap
+
+First, only retain genes that are in the exon files.
+
+```{r eval=FALSE}
+cohort_gistic_tally <- cohort_gistic_tally %>%
+  filter(gene %in% cohort_exon_tally$gene)
+lgat_gistic_tally <- lgat_gistic_tally %>%
+  filter(gene %in% lgat_exon_tally$gene)
+```
+
+### LGAT only
+
+```{r eval=FALSE}
+lgat_heatmaps <- 
+  purrr::map(unique(lgat_exon_tally$detection_peak),
+             ~ plot_detection_peak(exon_tally_df = lgat_exon_tally,
+                                   gistic_tally_df = lgat_gistic_tally,
+                                   peak_filter = .x))
+
+lgat_hm_panels <- cowplot::plot_grid(plotlist = lgat_heatmaps,
+                                     nrow = length(lgat_heatmaps))
+
+ggsave(lgat_hm_file, plot = lgat_hm_panels, width = 8.5, height = 14)
+```
+
+-->
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+

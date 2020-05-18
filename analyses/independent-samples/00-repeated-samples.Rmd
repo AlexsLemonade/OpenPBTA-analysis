@@ -209,8 +209,8 @@ Just for reference, lets see what tumor types we end up with in this set:
 
 ```{r}
 sample_df %>% 
-  filter(Kids_First_Biospecimen_ID %in% independents) %>%
-  group_by(tumor_descriptor) %>%
+  filter(Kids_First_Biospecimen_ID %in% independents$Kids_First_Biospecimen_ID) %>%
+  group_by(broad_histology) %>%
   summarize(n = n())
 ```
 

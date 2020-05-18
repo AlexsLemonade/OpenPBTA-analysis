@@ -19,7 +19,7 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --metadata ../../data/pbta-histologies.tsv \
   --filename_lead rsem_stranded \
   --output_directory results \
-  --perplexity 5 
+  --perplexity 3 
 
 # Run poly-A kallisto file, skipping t-SNE
 Rscript --vanilla scripts/run-dimension-reduction.R \

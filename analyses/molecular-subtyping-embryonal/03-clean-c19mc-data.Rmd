@@ -1,0 +1,221 @@
+---
+title: "Molecularly Subtyping Embryonal Tumors - C19MC amplifications"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Jo Lynne Rokita, Stephanie J. Spielman, and Jaclyn N. Taroni
+date: 2020
+---
+
+The purpose of this notebook is to clean copy number data related to C19MC amplifications in non-MB, non-ATRT embryonal tumors ([`AlexsLemonade/OpenPBTA-analysis#251`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251)).
+
+Specifically, we are trying to identify Embryonal tumor with multilayered rosettes (ETMR), C19MC-altered tumors.
+
+## Usage
+
+This notebook can be run via the command line from the root directory of the repository with:
+
+```
+Rscript -e "rmarkdown::render('analyses/molecular-subtyping-embryonal/03-clean-c19mc-data.Rmd', clean = TRUE)"
+```
+
+## Set up
+
+### Libraries and functions
+
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(ggbio))
+```
+
+We're going to adapt code from the [`cnv-chrom-plot`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/eadb78d9ef02d35ae06a88104b29b4d0325499a6/analyses/cnv-chrom-plot) module to plot chromosome 19.
+
+```{r}
+plot_chr19 <- function(cn_df, biospecimen_id) {
+ # This function takes a seg data.frame and a biospecimen identifier and 
+ # returns a plot of the chromosome 19 segment mean for that biospecimen.
+ # It fills missing seg.mean values with zeroes.
+ # 
+ # Args:
+ #   cn_df: data.frame in SEG format
+ #   biospecimen_id: A Kids First Biospecimen ID used to filter cn_df
+ # 
+ # Returns: essentially a barplot of the non-neutral segment means
+  
+  bsid_data <- cn_df %>%  
+    # For visualization purposes fill the missing seg.mean values with zeroes
+    tidyr::replace_na(list(seg.mean = 0)) %>%
+    # Reformat the chromosome variable to drop the "chr"
+    dplyr::mutate(chrom = factor(gsub("chr", "", chrom), 
+                                 levels = c(1:22, "X", "Y"))) %>%
+    # Only look at chr19 in the relevant sample
+    filter(ID == biospecimen_id,
+           chrom == 19) %>%
+    # Make Del/Amp variable
+    dplyr::mutate(Type = dplyr::case_when(
+      seg.mean < 0 ~ "Del",
+      seg.mean > 0 ~ "Amp",
+      seg.mean == 0 ~ "Neutral"
+    ))
+  
+  # Turn into a GRanges for easier mapping
+  bsid_ranges <- GenomicRanges::GRanges(
+    seqnames = bsid_data$chrom,
+    ranges = IRanges::IRanges(
+      start = bsid_data$loc.start,
+      end = bsid_data$loc.end
+    ),
+    score = bsid_data$seg.mean,
+    mcols = bsid_data$Type
+  )
+  
+  # Map this on a plot
+  bsid_plot <- 
+    ggbio::autoplot(bsid_ranges,
+                    ggplot2::aes(y = score, fill = mcols),
+                    geom = "bar") +
+    ggplot2::theme_bw() +
+    ggplot2::ylim(c(-2, 2)) +
+    colorblindr::scale_fill_OkabeIto(name = "Type") +
+    ggplot2::labs(
+      title = paste(biospecimen_id, "chr19"),
+      y = "segment mean"
+    )
+  
+  return(bsid_plot)
+}
+```
+
+### Directories
+
+```{r}
+results_dir <- "results"
+data_dir <- file.path("..", "..", "data")
+```
+
+### Read in Files
+
+```{r message=FALSE}
+# full clinical file
+histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
+histologies_df <- read_tsv(histologies_file,
+                           col_types = cols(
+                             molecular_subtype = col_character()
+                           ))
+
+# copy number consensus file (analysis file)
+# TODO: get this from data download
+cn_consensus_seg <- file.path("..", "copy_number_consensus_call", "results",
+                              "pbta-cnv-consensus.seg.gz")
+# file that contains the biospecimen IDs that met criteria for subtyping
+biospecimen_file <- file.path(results_dir, 
+                              "biospecimen_ids_embryonal_subtyping.tsv")
+
+# get biospecimen ids as a vector rather than data frame
+biospecimen_ids <- read_tsv(biospecimen_file) %>%
+  pull(Kids_First_Biospecimen_ID)
+
+# we'll filter to only the relevant biospecimens for the copy number alteration
+# data that is committed to the repository
+cn_consensus <- read_tsv(cn_consensus_seg) %>%
+  filter(ID %in% biospecimen_ids)
+```
+
+### Output file
+
+```{r}
+output_file <- file.path(results_dir, "cleaned_chr19_cn.tsv")
+```
+
+## Look at copy number alterations on chr 19
+
+We're interested in focal amplification of C19MC (miRNA cluster on chr19) for the **ETMR, C19MC-altered** subtype.
+
+```{r}
+chr19_cn_df <- cn_consensus %>% 
+  filter(chrom == "chr19",
+         seg.mean > 0)
+
+chr19_cn_df
+```
+
+These are not within the ranges from @sjspielman provided [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/401/files#diff-77e96177f89b99ad2b1f0fe51ec5c22eR110):
+
+```
+## From UCSC Genome Brower, these are positions corresponding to 19q13.41 (C19MC region)
+c19mc_region <- "19q13.41"
+c19mc_start  <- 51400001
+c19mc_end    <- 53600000
+```
+
+But they do overlap with coordinates from other papers.
+These are from Jo Lynne Rokita in [this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/458#issuecomment-581050051).
+
+From [Bentwich et al. _Nature Genetics._ 2005.](https://doi.org/10.1038/ng1590):
+
+> Cluster on chromosome 19 located at positions 58,861,745–58,961,404 (HG17) and comprising 54 microRNA genes grouped into four families on the basis of hairpin sequence similarity.
+
+| version | chr | start | end |
+|---------|-------|----------|----------|
+| hg17 | chr19 | 58861745 | 58961404 |
+| hg19 | chr19 | 54169933 | 54269592 |
+| hg38 | chr19 | 53666679 | 53766338 |
+
+and from [Bortolin-Cavaillé et al. _NAR._ 2009.](https://dx.doi.org/10.1093%2Fnar%2Fgkp205):
+
+> Schematic representation of the ∼100-kb long C19MC (HG18: 58 860 000–58 962 300) mapping at human chromosome 19q13.41
+
+| version | chr | start | end |
+|---------|-------|----------|----------|
+| hg18 | chr19 | 58860000 | 58962300 |
+| hg38 | chr19 | 53664934 | 53767234 |
+
+### Visualization
+
+For visualization purposes, we are filling in the missing `seg.mean` values with zeroes.
+
+```{r}
+plot_chr19(cn_df = cn_consensus,
+           biospecimen_id = "BS_69VS8PS1")
+```
+
+
+```{r}
+plot_chr19(cn_df = cn_consensus,
+           biospecimen_id = "BS_K07KNTFY")
+```
+
+```{r}
+plot_chr19(cn_df = cn_consensus,
+           biospecimen_id = "BS_TE8QFF7T")
+```
+
+### Generate cleaned table for joining to fusion and expression data
+
+The copy numbers in all of the above cases are high - we'll simplify the column name to `chr19_amplification`.
+
+```{r}
+# get a data.frame of the relevant WGS biospecimen_ids
+wgs_ids <- intersect(histologies_df %>%
+                       filter(experimental_strategy == "WGS") %>%
+                       pull(Kids_First_Biospecimen_ID),
+                     biospecimen_ids) %>%
+  as.data.frame(stringsAsFactors = FALSE) %>%
+  rename(Kids_First_Biospecimen_ID = ".")
+          
+chr19_cn_df <- chr19_cn_df %>%
+  mutate(chr19_amplification = "Yes") %>%
+  select(ID, chr19_amplification) %>%
+  right_join(wgs_ids, by = c("ID" = "Kids_First_Biospecimen_ID")) %>%
+  replace(is.na(.), "No")
+```
+
+Write to file.
+
+```{r}
+chr19_cn_df %>% 
+  rename(Kids_First_Biospecimen_ID = ID) %>%
+  write_tsv(output_file)
+```
+

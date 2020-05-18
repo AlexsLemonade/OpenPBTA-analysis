@@ -1,0 +1,191 @@
+---
+title: "HGAT samples without histone mutations that have `BRAF V600E` mutations"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell for ALSF CCDL
+date: 2020
+---
+
+This notebook will look at HGAT samples without histone mutations that have `BRAF V600E` mutations using t-SNE and UMAP clustering from `transcriptomic-dimension-reduction`.
+The purpose is to identify samples that are candidates for recategorization.
+
+## Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/09-HGG-with-braf-clustering.Rmd', clean = TRUE)"
+```
+
+## Set up
+
+### Libraries and functions
+
+```{r}
+# Load in tidyverse functions
+library(tidyverse)
+```
+
+### Directories
+
+```{r}
+# File path to data directory
+data_dir <- file.path("..",
+                      "..",
+                      "analyses",
+                      "transcriptomic-dimension-reduction",
+                      "results")
+
+# File path to plots directory -- this contains the multipanel output plots
+plots_dir <- file.path("plots")
+
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir)
+}
+```
+
+### Functions
+
+```{r}
+# Source the functions for plotting dimension reduction scores
+source(
+  file.path(
+    "..",
+    "transcriptomic-dimension-reduction",
+    "util",
+    "dimension-reduction-functions.R"
+  )
+)
+
+# Source the function for generating a multipanel plot
+source(
+  file.path(
+    "..",
+    "transcriptomic-dimension-reduction",
+    "util",
+    "generate-multipanel-plot-functions.R"
+  )
+)
+```
+
+
+
+### Read in data
+
+```{r}
+# Read in expression files. Note: only the relevant stranded expression score files
+# are used here as the polyA expression score files do not retain information
+# regarding low grade glioma samples.
+stranded_tsne_aligned_scores <- read_tsv(
+  file.path(data_dir,
+            "rsem_stranded_log_tsne_scores_aligned.tsv"),
+  col_types = cols(molecular_subtype = col_character())
+)
+
+stranded_umap_aligned_scores <- read_tsv(
+  file.path(data_dir,
+            "rsem_stranded_log_umap_scores_aligned.tsv"),
+  col_types = cols(molecular_subtype = col_character())
+)
+
+molecular_subtype_file <- file.path("results", "HGG_molecular_subtype.tsv")
+molecular_subtype_df <- read_tsv(molecular_subtype_file)
+```
+
+## Wrangle Data for Plotting
+
+```{r}
+# Add variables to aligned scores data.frames for plotting
+stranded_tsne_aligned_scores <- stranded_tsne_aligned_scores %>%
+  filter(broad_histology %in% c("Diffuse astrocytic and oligodendroglial tumor",
+                                "Low-grade astrocytic tumor")) %>%
+  mutate(subtype_class = case_when(
+    molecular_subtype == "BRAF V600E" &
+      broad_histology == "Diffuse astrocytic and oligodendroglial tumor" ~ "HGAT_NO_HISTONE_BRAF",
+    broad_histology == "Low-grade astrocytic tumor" ~ "LGAT",
+    TRUE ~ "OTHER_HGAT"
+  )) %>%
+  mutate(
+    HGAT_NO_HISTONE_BRAF = if_else(
+      subtype_class == "HGAT_NO_HISTONE_BRAF",
+      "yes",
+      "no"
+    )
+  )
+
+stranded_umap_aligned_scores <- stranded_umap_aligned_scores %>%
+  filter(broad_histology %in% c("Diffuse astrocytic and oligodendroglial tumor",
+                                "Low-grade astrocytic tumor")) %>%
+  mutate(subtype_class = case_when(
+    molecular_subtype == "BRAF V600E" &
+      broad_histology == "Diffuse astrocytic and oligodendroglial tumor" ~ "HGAT_NO_HISTONE_BRAF",
+    broad_histology == "Low-grade astrocytic tumor" ~ "LGAT",
+    TRUE ~ "OTHER_HGAT"
+  )) %>%
+  mutate(
+    HGAT_NO_HISTONE_BRAF = if_else(
+      subtype_class == "HGAT_NO_HISTONE_BRAF",
+      "yes",
+      "no"
+    )
+  )
+```
+
+## Dimension Reduction and Plotting
+
+```{r message = FALSE, warning = FALSE, fig.width = 20, fig.height = 8}
+# Plot generation
+stranded_tsne_plot <-
+  plot_dimension_reduction(
+    aligned_scores_df = stranded_tsne_aligned_scores,
+    point_color = "subtype_class",
+    point_size = "HGAT_NO_HISTONE_BRAF",
+    point_shape = "HGAT_NO_HISTONE_BRAF",
+    x_label = "t-SNE1",
+    y_label = "t-SNE2"
+  ) +
+  scale_color_manual(values = c("#0a7fb2", "#799d10", "#F3E500")) +
+  geom_text(aes(X1, X2, label = Kids_First_Biospecimen_ID),
+            data = filter(stranded_tsne_aligned_scores, 
+                   subtype_class == "HGAT_NO_HISTONE_BRAF"))
+
+stranded_umap_plot <-
+  plot_dimension_reduction(
+    aligned_scores_df = stranded_umap_aligned_scores,
+    point_color = "subtype_class",
+    point_size = "HGAT_NO_HISTONE_BRAF",
+    point_shape = "HGAT_NO_HISTONE_BRAF",
+    x_label = "UMAP1",
+    y_label = "UMAP2"
+  ) +
+  scale_color_manual(values = c("#0a7fb2", "#799d10", "#F3E500")) +
+  geom_text(aes(X1, X2, label = Kids_First_Biospecimen_ID),
+            data = filter(stranded_umap_aligned_scores, 
+                   subtype_class == "HGAT_NO_HISTONE_BRAF"))
+
+# Put plots together in a list to satisfy function argument
+plot_list <- list(stranded_tsne_plot, stranded_umap_plot)
+
+# Generate multipanel plots with custom function and save
+generate_multipanel_plot(
+  plot_list = plot_list,
+  plot_title = "HGG Stranded Clustering",
+  output_directory = plots_dir,
+  output_filename = "HGG_stranded.pdf"
+)
+
+ggsave(file.path(plots_dir, "HGG_stranded.png"), plot = last_plot())
+```
+
+In both aligned scores data frames (t-SNE and UMAP), the `Kids_First_Biospecimen_ID` of the sample with no histone mutation but with _BRAF V600E_ mutation, that has been identified to cluster with LGAT samples, is **`BS_H1XPVS9A`**.
+`BS_H1XPVS9A` is a candidate for reclassification.
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+

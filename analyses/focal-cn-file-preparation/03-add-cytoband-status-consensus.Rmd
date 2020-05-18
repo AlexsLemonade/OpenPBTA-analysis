@@ -1,0 +1,153 @@
+---
+title: "Add dominant status column to consensus SEG file with cytoband field"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell for ALSF CCDL
+date: 2020
+---
+
+This notebook adds dominant status information per cytoband to the consensus SEG files prepared in `run-prepare-cn.sh` using the `bedtools coverage` function (these files are stored in the project's scratch directory as bed files).
+
+## Usage
+
+This notebook is intended to be run from the command line with the following (assumes you are in the root directory of the repository):
+
+```
+Rscript -e "rmarkdown::render('analyses/focal-cn-file-preparation/03-add-cytoband-status-consensus.Rmd', clean = TRUE)"
+```
+
+## Set up
+
+### Libraries and functions
+
+```{r}
+library(tidyverse)
+```
+
+### Files and directories
+
+```{r}
+scratch_dir <- file.path("..", "..", "scratch")
+```
+
+### Read in files 
+
+The files we are reading in here are the bed files prepared in the shell script using `bedtools coverage`.
+
+```{r message = FALSE}
+all_callable_cytoband_status_df <-
+  read_tsv(file.path(scratch_dir, "intersect_with_cytoband_callable.bed"),
+                  col_names = FALSE)
+
+loss_cytoband_status_df <-
+  read_tsv(file.path(scratch_dir, "intersect_with_cytoband_loss.bed"),
+                  col_names = FALSE)
+
+gain_cytoband_status_df <-
+  read_tsv(file.path(scratch_dir, "intersect_with_cytoband_gain.bed"),
+                  col_names = FALSE)
+```
+
+## Wrangle and merge consensus cytoband status data
+
+### Filter each of the cytoband status data.frames
+
+```{r}
+all_callable_cytoband_status_df <-
+  all_callable_cytoband_status_df %>%
+  select(
+    chr = X1,
+    cytoband = X4,
+    band_length = X8,
+    callable_fraction = X9,
+    Kids_First_Biospecimen_ID = X10
+  ) %>%
+  filter(!is.na(cytoband))
+
+gain_cytoband_status_df <- gain_cytoband_status_df %>%
+  select(
+    chr = X1,
+    cytoband = X4,
+    gain_fraction = X9,
+    Kids_First_Biospecimen_ID = X10
+  ) %>%
+  filter(!is.na(cytoband))
+
+loss_cytoband_status_df <- loss_cytoband_status_df %>%
+  select(
+    chr = X1,
+    cytoband = X4,
+    loss_fraction = X9,
+    Kids_First_Biospecimen_ID = X10
+  ) %>%
+  filter(!is.na(cytoband))
+```
+
+### Join all data.frames together
+
+```{r}
+final_df <- all_callable_cytoband_status_df %>%
+  left_join(gain_cytoband_status_df,
+            by = c("chr", "cytoband", "Kids_First_Biospecimen_ID")) %>%
+  left_join(loss_cytoband_status_df,
+            by = c("chr", "cytoband", "Kids_First_Biospecimen_ID"))
+```
+
+### Add `dominant_status` field to final data.frame
+
+```{r}
+# Create a dominant status column
+final_df <- final_df %>%
+  replace_na(list(
+    gain_fraction = 0,
+    loss_fraction = 0
+  )) %>%
+  mutate(
+    dominant_status = case_when(
+      callable_fraction < 0.5 ~ "uncallable",
+      gain_fraction / callable_fraction > 0.5 ~ "gain",
+      loss_fraction / callable_fraction > 0.5 ~ "loss",
+      (gain_fraction + loss_fraction) / callable_fraction > 0.5 ~ "unstable",
+      TRUE ~ "neutral"
+    )
+  )
+```
+
+### Add chromosome arm column
+
+```{r}
+# Add a column that tells us the position of the p or q and then use this to
+# split the cytoband column
+final_df <- final_df %>%
+  mutate(
+    cytoband_with_arm = paste0(gsub("chr", "", chr), cytoband),
+    chromosome_arm = gsub("(p|q).*", "\\1", cytoband_with_arm)
+  ) %>%
+  select(
+    Kids_First_Biospecimen_ID,
+    chr,
+    cytoband,
+    dominant_status,
+    band_length,
+    everything(),
+    -cytoband_with_arm,
+  )
+```
+
+### Display and save final table
+
+```{r}
+# Display final table with `uncallable` value added to `dominant_status` column
+final_df
+
+# Write to file
+write_tsv(final_df, file.path("results", "consensus_seg_with_ucsc_cytoband_status.tsv.gz"))
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```

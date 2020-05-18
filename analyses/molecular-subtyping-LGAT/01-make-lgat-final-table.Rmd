@@ -1,0 +1,139 @@
+---
+title: "LGAT final table for BRAF V600E and _BRAF_ fusion"
+output: html_notebook
+---
+
+This script uses subsetted LGAT mutation and fusion files from data release to identify samples with BRAF V600E mutations and _BRAF_ fusions per [#631](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/631).
+
+```{r}
+library("tidyverse")
+```
+
+### Directories
+
+```{r}
+# to get root directory
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+
+results_dir <- "results"
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+```
+
+
+### Read files
+    
+```{r}
+# clinical file
+clinical_df <- readr::read_tsv(file.path(data_dir, 
+                                      "pbta-histologies.tsv"),
+                            guess_max = 10000)
+
+# identifiers only for joining with other data
+identifiers_df <- clinical_df %>%
+  select(Kids_First_Participant_ID,
+         Kids_First_Biospecimen_ID,
+         sample_id)
+
+# get all RNA-Seq biospecimen IDs where short_histology == LGAT
+lgat_rnaseq_bsids <- clinical_df %>% 
+  filter(short_histology == "LGAT",
+         experimental_strategy == "RNA-Seq") %>%
+  pull(Kids_First_Biospecimen_ID)
+
+# get subsetted mutation file
+subsetWgs <- readr::read_tsv(file.path("lgat-subset", 
+                                       "LGAT_snv_subset.tsv")) %>% 
+  select(Tumor_Sample_Barcode, 
+         BRAF_V600E) %>%
+  rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode)
+  
+# get putative oncogene fusion list
+brafFusion <- readr::read_tsv(file.path(data_dir,
+                                        "pbta-fusion-putative-oncogenic.tsv")) %>%
+  select(Sample, FusionName) %>% 
+  distinct() %>%
+  filter(grepl("BRAF", FusionName),
+         Sample %in% lgat_rnaseq_bsids) %>%
+  rename(Kids_First_Biospecimen_ID = Sample)
+```
+
+### Fusion Data
+
+Some samples will have multiple _BRAF_ fusions, so we'll collapse multiple fusions into a single column.
+
+```{r}
+brafFusion <- brafFusion %>%
+  group_by(Kids_First_Biospecimen_ID) %>%
+  summarize(FusionName = paste(sort(unique(FusionName)),
+                               collapse = ", "))
+```
+
+
+All RNA-seq samples are represented in at least one of the fusion methods files.
+_BRAF_ fusions are in the list that are prioritized in the putative oncogenic fusion file (which can be retained even in instances where only one caller supports the call).
+Therefore, a _BRAF_ fusion can be detected in any RNA-seq biospecimen and if a _BRAF_ fusion is not present in `brafFusion` we can assume no _BRAF_ is detected.
+
+```{r}
+fusion_df <- brafFusion %>%
+  right_join(filter(identifiers_df,
+                    Kids_First_Biospecimen_ID %in% lgat_rnaseq_bsids)) %>%
+  replace_na(list(FusionName = "None"))
+```
+
+### Merge all subset data for _BRAF_ fusion and BRAF V600E mutations
+
+```{r}
+# LGAT WGS subset with kids_first_participant and sample_id
+subsetWgs <- subsetWgs %>% 
+  left_join(identifiers_df, 
+            by = "Kids_First_Biospecimen_ID") 
+```
+
+```{r}
+all_lgat_df <- subsetWgs %>%
+  full_join(fusion_df, 
+            by = c("sample_id", "Kids_First_Participant_ID"),
+            suffix = c("_DNA", "_RNA"))
+
+# write the data underlying the calls to file
+all_lgat_df %>% 
+  write_tsv(file.path(results_dir, "lgat_cleaned_all_table.tsv"))
+```
+
+### Logic for subtyping
+
+```{r}
+# TODO: if we update to tidyr 1.0.0 I think using unite would be better here
+final_table <- all_lgat_df %>%
+  mutate(molecular_subtype = case_when(
+    # When we don't have RNA-seq and mutation data, this is to be classified
+    is.na(FusionName) & is.na(BRAF_V600E) ~ "LGG, To be classified",
+    # When there is no BRAF fusion detected and there is no DNA-seq data
+    # to be classified
+    FusionName == "None" & is.na(BRAF_V600E) ~ "LGG, To be classified",
+    # If there is no fusion data or BRAF fusion detection, but there is a 
+    # BRAF V600E mutation, call BRAF V600E
+    (FusionName %in% c(NA, "None")) & 
+      BRAF_V600E == "Yes" ~ "LGG, BRAF V600E",
+    # If there's no fusion data or BRAF fusion detected or V600E, wildtype call 
+    (FusionName %in% c(NA, "None"))  &
+      BRAF_V600E == "No" ~ "LGG, BRAF wildtype",
+    # If there is a BRAF fusion detected but no BRAF V600E / the absence of 
+    # a DNA-seq sample, call is BRAF fusion
+    !(FusionName %in% c(NA, "None")) & 
+      (BRAF_V600E %in% c("No", NA)) ~ "LGG, BRAF fusion",
+    # If there is a BRAF fusion detected and a BRAF V600E mutation, note both
+    !(FusionName %in% c(NA, "None")) & 
+      BRAF_V600E == "Yes" ~ "LGG, BRAF fusion/V600E"
+  )) %>%
+  select(Kids_First_Participant_ID,
+         sample_id,
+         Kids_First_Biospecimen_ID_DNA,
+         Kids_First_Biospecimen_ID_RNA,
+         molecular_subtype)
+
+write_tsv(final_table, file.path(results_dir,"lgat_subtyping.tsv"))
+```

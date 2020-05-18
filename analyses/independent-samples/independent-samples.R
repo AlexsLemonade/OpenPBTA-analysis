@@ -44,15 +44,18 @@ independent_samples <- function(sample_df,
       dplyr::filter(Kids_First_Participant_ID %in% no_primary)
     sample_df <- dplyr::bind_rows(primary_df, noprimary_df)
   } 
-  
+
   # get the samples from the earliest timepoints for each Participant
+  # age_at_diagnosis_days is no longer relevant,
+  # as it is the same for all samples from an participant, but
+  # leaving this in for future use in case we get specimen order data 
   early_samples <- sample_df %>%
    dplyr::group_by(Kids_First_Participant_ID) %>%
    dplyr::summarize(age_at_diagnosis_days = min(age_at_diagnosis_days)) %>%
-   dplyr::left_join(sample_df, by = c("Kids_First_Participant_ID", 
+   dplyr::left_join(sample_df, by = c("Kids_First_Participant_ID",
                                       "age_at_diagnosis_days"))
-   
-  # Choose randomly among specimens from the same participant 
+
+  # Choose randomly among specimens from the same participant
   early_ind <- early_samples %>%
     dplyr::group_by(Kids_First_Participant_ID) %>%
     dplyr::summarize(Kids_First_Biospecimen_ID = sample(Kids_First_Biospecimen_ID, 1)) 

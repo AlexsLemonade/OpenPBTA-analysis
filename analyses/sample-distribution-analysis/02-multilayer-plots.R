@@ -12,6 +12,12 @@
 #
 # Rscript analyses/sample-distribution-analysis/02-multilayer-plots.R
 
+# Load in libraries
+library(ggplot2)
+library(colorspace)
+library(scales)
+library(treemapify)
+
 # magrittr pipe
 `%>%` <- dplyr::`%>%`
 
@@ -27,7 +33,7 @@ plots_dir <- file.path(output_dir, "plots")
 
 # Read in dataset
 histologies_df <- readr::read_tsv(file.path(root_dir, "data",
-                                 "pbta-histologies.tsv"))
+                                            "pbta-histologies.tsv"))
 
 # Create a colorblind-friendly color vector
 color <- colorblindr::palette_OkabeIto
@@ -37,13 +43,13 @@ final_df <- histologies_df %>%
   dplyr::filter(sample_type == "Tumor",
                 composition == "Solid Tissue") %>%
   dplyr::distinct(Kids_First_Participant_ID, broad_histology,
-                  short_histology, disease_type_new) %>%
+                  short_histology, integrated_diagnosis) %>%
   # Select our 3 columns of interest
-  dplyr::select(broad_histology, short_histology, disease_type_new) %>%
+  dplyr::select(broad_histology, short_histology, integrated_diagnosis) %>%
   # Remove any row that has an NA
   dplyr::filter(complete.cases(.)) %>%
   # Group by all 3 columns in order to count
-  dplyr::group_by(broad_histology, short_histology, disease_type_new) %>%
+  dplyr::group_by(broad_histology, short_histology, integrated_diagnosis) %>%
   # Add the count to a column named size
   dplyr::add_count(name = "size") %>%
   # Place the value 1 in a column named counter for treemap and sunburt plots
@@ -51,7 +57,7 @@ final_df <- histologies_df %>%
   # Change the column names
   dplyr::rename(level1 = broad_histology,
                 level2 = short_histology,
-                level3 = disease_type_new) %>%
+                level3 = integrated_diagnosis) %>%
   # Reorder the rows according to the 3 levels
   dplyr::arrange(level1, level2, level3) %>%
   # tbl_df -> data.frame
@@ -60,7 +66,63 @@ final_df <- histologies_df %>%
 # Save to tsv file
 readr::write_tsv(final_df, file.path(results_dir, "plots_df.tsv"))
 
-# Create a treemap
+# Create and save treemap using ggplot2
+# Read in the histology color palette
+color_palette <-
+  readr::read_tsv(file.path(
+    root_dir,
+    "figures",
+    "palettes",
+    "histology_color_palette.tsv"
+  ))
+
+# Join the color palette for the colors for each short histology value --
+# palette is generated in `figures/scripts/color_palettes.R`
+final_df2 <- final_df %>%
+  dplyr::left_join(color_palette, by = c("level2" = "color_names")) %>%
+  dplyr::distinct() # Remove the redundant rows from prep for the `treemap` function
+
+# Plot the treemap
+treemap <-
+  ggplot(
+    final_df2,
+    aes(
+      area = size,
+      fill = hex_codes,
+      label = level2,
+      subgroup = level3
+    )
+  ) +
+  geom_treemap() +
+  geom_treemap_subgroup_border(colour = "white") +
+  geom_treemap_text(
+    fontface = "italic",
+    colour = "white",
+    place = "topleft",
+    alpha = 0.4,
+    grow = F,
+    reflow = T,
+    size = 16
+  ) +
+  geom_treemap_subgroup_text(
+    place = "bottomright",
+    grow = T,
+    reflow = T,
+    alpha = 0.6,
+    colour = "#FAFAFA",
+    min.size = 0
+  ) +
+  theme(legend.position = "none")
+
+# Save treemap
+ggsave(
+  treemap,
+  file = file.path(plots_dir, "distribution_across_cancer_types_treemap.pdf"),
+  width = 22,
+  height = 10
+)
+
+# Create a treemap (for interactive treemap)
 tm <-
   treemap::treemap(
     final_df,

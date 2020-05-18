@@ -1,21 +1,21 @@
 primary_site	number_of_types	max_type	second_max_type
-Frontal Lobe	26	High-grade glioma;astrocytoma (WHO grade III/IV)	Low-grade glioma;astrocytoma (WHO grade I/II)
-Parietal Lobe	25	Low-grade glioma;astrocytoma (WHO grade I/II)	High-grade glioma;astrocytoma (WHO grade III/IV)
-Temporal Lobe	25	Ganglioglioma	Low-grade glioma;astrocytoma (WHO grade I/II)
+Frontal Lobe	26	High-grade glioma	Low-grade astrocytic tumor
+Temporal Lobe	25	Ganglioglioma	Low-grade astrocytic tumor
+Parietal Lobe	24	Low-grade astrocytic tumor	High-grade glioma
 Ventricles	22	Ependymoma	Choroid plexus papilloma
-Spinal Cord	21	Ependymoma	Neurofibroma;Plexiform
-Cerebellum	20	Low-grade glioma;astrocytoma (WHO grade I/II)	Medulloblastoma
+Spinal Cord	21	Ependymoma	Neurofibroma
+Cerebellum	20	Low-grade astrocytic tumor	Medulloblastoma
 Occipital Lobe	14	Ependymoma	Ganglioglioma
-Suprasellar/Hypothalamic/Pituitary	13	Craniopharyngioma	Low-grade glioma;astrocytoma (WHO grade I/II)
+Suprasellar/Hypothalamic/Pituitary	14	Craniopharyngioma	Low-grade astrocytic tumor
 Skull	12	Langerhans Cell histiocytosis	Atypical Teratoid Rhabdoid Tumor
-Brain Stem- Midbrain	7	Low-grade glioma;astrocytoma (WHO grade I/II)	High-grade glioma;astrocytoma (WHO grade III/IV)
-Thalamus	7	High-grade glioma;astrocytoma (WHO grade III/IV)	Low-grade glioma;astrocytoma (WHO grade I/II)
-Brain Stem-Medulla	6	High-grade glioma;astrocytoma (WHO grade III/IV)	Low-grade glioma;astrocytoma (WHO grade I/II)
+Brain Stem- Midbrain	7	Low-grade astrocytic tumor	High-grade glioma
+Brain Stem-Medulla	7	High-grade glioma	Low-grade astrocytic tumor
+Thalamus	7	Diffuse midline glioma	High-grade glioma
+Pons	7	Diffuse midline glioma	High-grade glioma
+Basal Ganglia	6	Low-grade astrocytic tumor	Atypical Teratoid Rhabdoid Tumor
 Meninges	6	Meningioma	Atypical Teratoid Rhabdoid Tumor
-Pineal Gland	6	Teratoma	Germinoma
-Pons	6	Brainstem glioma- Diffuse intrinsic pontine glioma	Atypical Teratoid Rhabdoid Tumor
+Optic Pathway	6	Low-grade astrocytic tumor	Diffuse midline glioma
 Spine NOS	6	Schwannoma	Ependymoma
-Basal Ganglia	5	High-grade glioma;astrocytoma (WHO grade III/IV)	Low-grade glioma;astrocytoma (WHO grade I/II)
-Optic Pathway	5	Low-grade glioma;astrocytoma (WHO grade I/II)	Germinoma
+Pineal Gland	5	Germinoma	Teratoma
 Cranial Nerves NOS	3	Schwannoma	Atypical Teratoid Rhabdoid Tumor
-Hippocampus	3	Dysembryoplastic neuroepithelial tumor (DNET);Ganglioglioma	High-grade glioma;astrocytoma (WHO grade III/IV)
+Hippocampus	3	Dysembryoplastic neuroepithelial tumor	High-grade glioma

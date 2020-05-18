@@ -1,0 +1,218 @@
+---
+title: "Add ploidy column, status to consensus SEG file"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell and Jaclyn Taroni for ALSF CCDL
+date: 2020
+---
+
+The `pbta-histologies.tsv` file contains a `tumor_ploidy` column, which is tumor ploidy as inferred by ControlFreeC.
+The copy number information should be interpreted in the light of this information (see: [current version of Data Formats file](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/0e642ef0602ad04b8d0fbd80be626d4374fee928/doc/data-formats.md#a-note-on-ploidy)).
+
+This notebook adds ploidy information to the consensus SEG file and adds a status column that defines gain and loss broadly.
+**Note** that the consensus SEG file does not have copy number information for sex chromosomes.
+
+## Usage
+
+This notebook is intended to be run from the command line with the following (assumes you are in the root directory of the repository):
+
+```
+Rscript -e "rmarkdown::render('analyses/focal-cn-file-preparation/02-add-ploidy-consensus.Rmd', clean = TRUE)"
+```
+
+## Set up
+
+### Libraries and functions
+
+```{r}
+library(tidyverse)
+```
+
+### Files and directories
+
+```{r}
+scratch_dir <- file.path("..", "..", "scratch")
+output_dir <- file.path(scratch_dir, "cytoband_status", "segments")
+if(!dir.exists(output_dir)) {
+  dir.create(output_dir, recursive = TRUE)
+}
+```
+
+```{r}
+# TODO: the consensus SEG file is not currently in the data download -- when it
+# gets included we will have to change the file path here
+consensus_seg_file <- file.path("..", "copy_number_consensus_call", "results", 
+                                "pbta-cnv-consensus.seg.gz")
+histologies_file <- file.path("..", "..", "data", "pbta-histologies.tsv")
+
+consensus_seg_df <- read_tsv(consensus_seg_file)
+histologies_df <- read_tsv(histologies_file,
+                           col_types = cols(
+                             molecular_subtype = col_character()
+                           ))
+```
+
+## Add ploidy and status
+
+As noted above, the sex chromosomes do not have copy number information included in the consensus SEG file, but other copy number values can be missing.
+
+From the [consensus SEG file methods](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/0e642ef0602ad04b8d0fbd80be626d4374fee928/analyses/copy_number_consensus_call#consensus-cnv-creation): 
+
+> The `copy.num` column is the weighted median of CNVkit segment values where they exist, or Control-FREEC values in the absence of CNVkit data. Because some software (notably GISTIC) requires all samples to have the same regions called, the copy number variants from `cnv_consensus.tsv` are supplementented with "neutral" segments where no call was made. These include all non-variant regions present in `ref/cnv_callable.bed` The neutral regions are assigned copy.num 2, except on chrX and chrY, where the copy number is left NA.
+
+For segments with missing `copy.num`, what chromosomes are they on?
+
+```{r}
+consensus_seg_df %>%
+  filter(is.na(copy.num)) %>%
+  group_by(chrom) %>%
+  tally()
+```
+
+The majority are on the sex chromosomes, which is expected.
+We can remove these, as we can not add status using the ploidy information without the `copy.num` information.
+We need to add in the `tumor_ploidy` column from the histologies file.
+
+```{r}
+add_ploidy_df <- consensus_seg_df %>%
+  filter(!is.na(copy.num)) %>%
+  inner_join(select(histologies_df, 
+                    Kids_First_Biospecimen_ID, 
+                    tumor_ploidy,
+                    germline_sex_estimate), 
+             by = c("ID" = "Kids_First_Biospecimen_ID")) %>%
+  select(-tumor_ploidy, -germline_sex_estimate, everything())
+```
+
+### Handle autosomes first
+
+```{r}
+add_autosomes_df <- add_ploidy_df %>%
+  # x and y chromosomes must be handled differently
+  filter(!(chrom %in% c("chrX", "chrY"))) %>%
+  mutate(status = case_when(
+    # when the copy number is less than inferred ploidy, mark this as a loss
+    copy.num < tumor_ploidy ~ "loss",
+    # if copy number is higher than ploidy, mark as a gain
+    copy.num > tumor_ploidy ~ "gain",
+    copy.num == tumor_ploidy ~ "neutral"
+  ))
+```
+
+### Handle sex chromosomes
+
+```{r}
+# this logic is consistent with what is observed in the controlfreec file
+# specifically, in samples where germline sex estimate = Female, X chromosomes
+# appear to be treated the same way as autosomes
+add_xy_df <- add_ploidy_df %>%
+  filter(chrom %in% c("chrX", "chrY")) %>%  
+  mutate(status = case_when(
+    germline_sex_estimate == "Male" & copy.num < (0.5 * tumor_ploidy) ~ "loss",
+    germline_sex_estimate == "Male" & copy.num > (0.5 * tumor_ploidy) ~ "gain",
+    germline_sex_estimate == "Male" & copy.num == (0.5 * tumor_ploidy) ~ "neutral",
+    # there are some instances where there are chromosome Y segments are in
+    # samples where the germline_sex_estimate is Female
+    chrom == "chrY" & germline_sex_estimate == "Female" & copy.num > 0 ~ "unknown",
+    chrom == "chrY" & germline_sex_estimate == "Female" & copy.num == 0 ~ "neutral",
+    # mirroring controlfreec, X treated same as autosomes
+    chrom == "chrX" & germline_sex_estimate == "Female" & copy.num < tumor_ploidy ~ "loss",
+    chrom == "chrX" & germline_sex_estimate == "Female" & copy.num > tumor_ploidy ~ "gain",
+    chrom == "chrX" & germline_sex_estimate == "Female" & copy.num == tumor_ploidy ~ "neutral"
+  ))
+
+add_status_df <- bind_rows(add_autosomes_df, add_xy_df) %>%
+  select(-germline_sex_estimate) %>%
+  rename(Kids_First_Biospecimen_ID = ID)
+```
+
+### Does `seg.mean` agree with `status`?
+
+```{r}
+add_status_df %>%
+  filter(!is.na(seg.mean)) %>%
+  ggplot(aes(x = status, y = seg.mean, group = status)) +
+  geom_jitter()
+```
+
+```{r}
+add_status_df %>%
+  filter(!is.na(seg.mean)) %>%
+  group_by(status) %>%
+  summarize(mean = mean(seg.mean), sd = sd(seg.mean))
+```
+
+### Write to file
+
+```{r}
+output_file <- file.path("..", "..", "scratch", "consensus_seg_with_status.tsv")
+write_tsv(add_status_df, output_file)
+```
+
+### Prepare separate bed files for losses/gains for bedtools coverage function
+
+```{r}
+bed_status_df <- add_status_df %>%
+  select(chrom, loc.start, loc.end, everything()) %>%
+  group_by(Kids_First_Biospecimen_ID) %>%
+  arrange(chrom, loc.start, loc.end)
+
+losses_bed_status_df <- bed_status_df %>%
+  filter(status == "loss")
+
+gains_bed_status_df <- bed_status_df %>%
+  filter(status == "gain")
+
+# make lists of data frames by sample
+bed_status_list <- bed_status_df %>%
+  group_split()
+names(bed_status_list) <- bed_status_df %>%
+  group_keys() %>%
+  pull(Kids_First_Biospecimen_ID)
+
+bed_loss_list <- losses_bed_status_df %>%
+  group_split()
+names(bed_loss_list) <- losses_bed_status_df %>%
+  group_keys() %>%
+  pull(Kids_First_Biospecimen_ID)
+
+bed_gain_list <- gains_bed_status_df %>%
+  group_split()
+names(bed_gain_list) <- gains_bed_status_df %>%
+  group_keys() %>%
+  pull(Kids_First_Biospecimen_ID)
+```
+
+### Write to file
+
+```{r}
+temp <- purrr::imap(bed_status_list,
+                    ~ write_tsv(.x,
+                                file.path(
+                                  output_dir, paste0("consensus_callable.", .y, ".bed")
+                                ),
+                                col_names = FALSE))
+
+temp_loss <- purrr::imap(bed_loss_list,
+                         ~ write_tsv(.x,
+                                     file.path(
+                                       output_dir, paste0("consensus_loss.", .y, ".bed")
+                                     ),
+                                     col_names = FALSE))
+
+temp_gain <- purrr::imap(bed_gain_list,
+                         ~ write_tsv(.x,
+                                     file.path(
+                                       output_dir, paste0("consensus_gain.", .y, ".bed")
+                                     ),
+                                     col_names = FALSE))
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+

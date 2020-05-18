@@ -2,7 +2,7 @@
 # Run dimension reduction for all subsets of gene expression for both methods:
 # RSEM and kallisto
 #
-# Usage: bash 02-dimension-reduction.sh
+# Usage: bash 01-dimension-reduction.sh
 
 # This script should always run as if it were being called from
 # the directory it lives in.
