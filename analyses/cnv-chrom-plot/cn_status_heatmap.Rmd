@@ -443,7 +443,7 @@ Save to PDF.
 
 ```{r}
 # Save plot as PDF
-pdf(file.path(plots_dir, "cn_status_heatmap.pdf"))
+png(file.path(plots_dir, "cn_status_heatmap.png"))
 ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
 dev.off()
 ```
