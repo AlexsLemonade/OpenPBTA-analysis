@@ -18,11 +18,11 @@ This above  script is designed to change to this directory to run, so it should 
 3. <b>`02_ependymoma_generate_all_data.py`</b>  is a script that takes in expression, GISTIC, fusion, breakpoint, GISTIC, GSVA files to add values from these tables as new columns to the input notebook. Output from `01-make_notebook_RNAandDNA.py` script is used as input notebook. The output notebook from this is saved to `results/EPN_all_data.tsv`
 
 4. <b> `03-subgrouping_samples.py`  </b>  is a script that takes the table `results/EPN_all_data.tsv`  as input and adds a column that groups the samples into one of these groups - ST-EPN-RELA, ST-EPN-YAP1, PF-EPN-A, and PF-EPN-B. A new column named `subgroup` is added to the input table and saved in `results/EPN_all_data_withsubgroup.tsv`.
-  - This script prioritizes features of subgroups first and does not assign those samples to any other subgroups. For example `RELA` fusions are prioritized for `ST_EPN_RELA` subgroup and not assigedn to any other  groups. Two functions help achieve this in the script - 1) `prioritized_fusion` for `ST-SPN_RELA` and `ST-EPN-YAP1` groups and 2) `prioritizing_PT_EPN` for `PT_EPN_A` and `PT_EPN_B` groups
+    - This script prioritizes features of subgroups first and does not assign those samples to any other subgroups. For example `RELA` fusions are prioritized for `ST_EPN_RELA` subgroup and not assigedn to any other  groups. Two functions help achieve this in the script - 1) `prioritized_fusion` for `ST-SPN_RELA` and `ST-EPN-YAP1` groups and 2) `prioritizing_PT_EPN` for `PT_EPN_A` and `PT_EPN_B` groups
 
-  - There is another function `subgroup_func` that checks that samples are not in `samples_assigned`  list  and checks the  value of certain columns and assigns subgroups to samples accordingly.
+    - There is another function `subgroup_func` that checks that samples are not in `samples_assigned`  list  and checks the  value of certain columns and assigns subgroups to samples accordingly.
 
-  - From the [input file here](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-EPN/results/EPN_all_data.tsv) values for various columns are considered for assigning subgroups. Following are  the columns and values used (prioritized column shows `yes`, then samples  that have  that feature are ONLY assigned to that subgroup) -
+    - From the [input file here](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-EPN/results/EPN_all_data.tsv) values for various columns are considered for assigning subgroups. Following are  the columns and values used (prioritized column shows `yes`, then samples  that have  that feature are _only_ assigned to that subgroup) -
             <table>
                 <tr>
                     <th>Subtype name</th>
@@ -38,16 +38,6 @@ This above  script is designed to change to this directory to run, so it should 
                     <td>ST_EPN_YAP1</td>
                     <td>YAP1--MAMLD1, C11orf95--MAML2, YAP1--FAM118B</td>
                     <td>Yes</td>
-                </tr>
-                <tr>
-                    <td>PT_EPN_A</td>
-                    <td>--</td>
-                    <td>--</td>
-                </tr>
-                <tr>
-                    <td>PT_EPN_B</td>
-                    <td>--</td>
-                    <td>--</td>
                 </tr>
             </table>
 
@@ -94,7 +84,7 @@ This above  script is designed to change to this directory to run, so it should 
                     <td>Yes</td>
                 </tr>
             </table>
-    -  Gene expressions and CNV values that  were considered for assigning subgroups. This  table contains featured that were _not_ prioritized meaning if a sample has `PTEN--TAS2R1` and `C11orf95--MAML2` fusions, that sample will show as subgroupoed under both  `ST_EPN_RELA`  and `ST_EPN_YAP1`
+    -  Gene expressions and CNV values that  were considered for assigning subgroups. This  table contains featured that were _not_ prioritized meaning if a sample has `PTEN--TAS2R1` and `C11orf95--MAML2` fusions, that sample will show as subgrouped under both  `ST_EPN_RELA`  and `ST_EPN_YAP1`
             <table>
                 <tr>
                     <th>Subtype name</th>
@@ -103,22 +93,16 @@ This above  script is designed to change to this directory to run, so it should 
                 </tr>
                 <tr>
                     <td>ST_EPN_RELA</td>
-                    <td>PTEN--TAS2R1>0, 9p_loss>0, 9q_loss>0, RELA_expr_zscore>3, L1CAM_expr_zscore>3 </td>
+                    <td>PTEN--TAS2R1>0, <br/> 9p_loss>0, <br/> 9q_loss>0, <br/> RELA_expr_zscore>3, <br/> L1CAM_expr_zscore>3 </td>
+                    <td>No</td>
                 </tr>
                 <tr>
                     <td>ST_EPN_YAP1</td>
-                    <td>11q_loss, 11q_gain</td>
-                </tr>
-                <tr>
-                    <td>PT_EPN_A</td>
-                    <td>1q_loss</td>
-                </tr>
-                <tr>
-                    <td>PT_EPN_B</td>
-                    <td>6q_loss, 6p_loss</td>
+                    <td>C11orf95--MAML2>0, <br/> 11q_loss>0, <br/> 11q_gain>0, <br/> ARL4D_expr_zscore>3, <br/>CLDN1_expr_zscore>3</td>
+                    <td>No</td>
                 </tr>
             </table>  
 
-        -   The following formula was implemented for these two columns `breaks_density-chromosomal_instability_CNV` and `breaks_density-chromosomal_instability_SV` from input table and the values were added as column names `SV instability` and `CNV instability`
+      -   The following formula was implemented for these two columns `breaks_density-chromosomal_instability_CNV` and `breaks_density-chromosomal_instability_SV` from input table and the values were added as column names `SV instability` and `CNV instability`
 
                 `(break density value for sample - median) / interquartile range`   
