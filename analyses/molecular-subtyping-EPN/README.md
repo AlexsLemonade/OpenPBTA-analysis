@@ -94,15 +94,16 @@ This above  script is designed to change to this directory to run, so it should 
                     <td>Yes</td>
                 </tr>
             </table>
-    -  If CNV columns have a value greater than 1, then the below subtype is assigned
+    -  Gene expressions and CNV values that  were considered for assigning subgroups. This  table contains featured that were _not_ prioritized meaning if a sample has `PTEN--TAS2R1` and `C11orf95--MAML2` fusions, that sample will show as subgroupoed under both  `ST_EPN_RELA`  and `ST_EPN_YAP1`
             <table>
                 <tr>
                     <th>Subtype name</th>
                     <th>CNV gain/loss</th>
+                    <th>prioritized</th>
                 </tr>
                 <tr>
                     <td>ST_EPN_RELA</td>
-                    <td>9p_loss, 9q_loss</td>
+                    <td>PTEN--TAS2R1>0, 9p_loss>0, 9q_loss>0, RELA_expr_zscore>3, L1CAM_expr_zscore>3 </td>
                 </tr>
                 <tr>
                     <td>ST_EPN_YAP1</td>
@@ -117,8 +118,6 @@ This above  script is designed to change to this directory to run, so it should 
                     <td>6q_loss, 6p_loss</td>
                 </tr>
             </table>  
-
-        - ST_EPN_RELA subtype is associated with `CDKN2A loss`. If the column `consensus_focal_CN_CDKN2` shows loss or `GISTIC_focal_CN_CDKN2A` has a value less than 0.0, then those samples are associated with the ST_EPN_RELA subtype
 
         -   The following formula was implemented for these two columns `breaks_density-chromosomal_instability_CNV` and `breaks_density-chromosomal_instability_SV` from input table and the values were added as column names `SV instability` and `CNV instability`
 
