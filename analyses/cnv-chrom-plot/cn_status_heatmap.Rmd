@@ -6,8 +6,9 @@ output:
     toc_float: true
 author: Candace Savonen for ALSF - CCDL
 date: 2020
+params:
+  final_figure: FALSE
 ---
-
 ## Purpose: 
 
 Create a summary heatmap of copy number status from the consensus CNV call data. 
@@ -56,9 +57,10 @@ frac_threshold <- 0.75
 input_dir <- file.path("..", "..", "data")
 figure_dir <- file.path("..", "..", "figures")
 scratch_dir <- file.path("..", "..", "scratch")
+cnv_dir <- file.path("..", "copy_number_consensus_call", "results")
 
-# Path to output directory
-plots_dir <- "plots"
+# Path to output directory based on whether this is called by the generrate-figures.sh script or not
+plots_dir <- ifelse(params$final_figure, file.path(figure_dir, "pngs"),  "plots")
 
 # Create the plots_dir if it does not exist
 if (!dir.exists(plots_dir)) {
@@ -118,7 +120,7 @@ metadata <-
 # Read in the segment copy number data
 seg_data <- data.table::fread(
   file.path(
-    input_dir,
+    cnv_dir,
     "pbta-cnv-consensus.seg.gz"
   ),
   data.table = FALSE
