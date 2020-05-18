@@ -1,4 +1,4 @@
-FROM rocker/tidyverse:3.6.0
+FROM rocker/tidyverse:3.6.2
 MAINTAINER ccdl@alexslemonade.org
 WORKDIR /rocker-build/
 
@@ -136,10 +136,10 @@ RUN install2.r --error --deps TRUE \
 RUN ./install_bioc.r \
     maftools
 
-# ComplexHeatmap
+# ComplexHeatmap & circlize
 RUN ./install_bioc.r \
-    ComplexHeatmap
-
+    ComplexHeatmap \
+    circlize
 
 # This is needed for the CNV frequency and proportion aberration plots
 RUN ./install_bioc.r \
@@ -188,9 +188,6 @@ RUN ./install_bioc.r \
     rtracklayer
 
 # TCGAbiolinks for TMB compare analysis
-RUN R -e "remotes::install_github('RDocTaskForce/parsetools', ref = '1e682a9f4c5c7192d22e8985ce7723c09e98d62b', dependencies = TRUE)"
-RUN R -e "remotes::install_github('RDocTaskForce/testextra', ref = '4e5dfac8853c08d5c2a8790a0a1f8165f293b4be', dependencies = TRUE)"
-RUN R -e "remotes::install_github('halpo/purrrogress', ref = '54f2130477f161896e7b271ed3ea828c7e4ccb1c', dependencies = TRUE)"
 RUN ./install_bioc.r \
     TCGAbiolinks
 
@@ -237,33 +234,30 @@ RUN R -e "remotes::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd46
 # This is required for creating a treemap of the broad histology and integrated diagnoses
 RUN R -e "remotes::install_github('wilkox/treemapify', ref = 'e70adf727f4d13223de8146458db9bef97f872cb', dependencies = TRUE)"
 
-# Need this specific version of circlize so it has hg38
-RUN R -e "remotes::install_github('jokergoo/circlize', ref = 'b7d86409d7f893e881980b705ba1dbc758df847d', dependencies = TRUE)"
-
 # Install python libraries
 ##########################
 
 # Install python3 data science tools
 RUN pip3 install \
     "cycler==0.10.0" "kiwisolver==1.1.0" "pyparsing==2.4.5" "python-dateutil==2.8.1" "pytz==2019.3" \
-    "ipykernel==4.8.1" \
+    "ipykernel==5.2.1" \
     "jupyter==1.0.0" \
-    "matplotlib==3.0.3" \
-    "numpy==1.17.3" \
-    "pandas==0.25.3" \
+    "matplotlib==3.2.1" \
+    "numpy==1.18.4" \
+    "pandas==1.0.1" \
     "plotnine==0.3.0" \
     "pyarrow==0.16.0" \
-    "pyreadr==0.2.1" \
-    "scikit-learn==0.19.1" \
-    "scipy==1.3.2" \
-    "seaborn==0.8.1" \
+    "pyreadr==0.2.6" \
+    "scikit-learn==0.22.2" \
+    "scipy==1.4.1" \
+    "seaborn==0.9.0" \
     "snakemake==5.8.1" \
     "statsmodels==0.10.2" \
     "tzlocal==2.0" \
     "widgetsnbextension==2.0.0"
 
 # Install Rpy2
-RUN pip3 install "rpy2==2.9.3"
+RUN pip3 install "rpy2==3.2.7"
 
 # Install CrossMap for liftover
 RUN pip3 install "cython==0.29.15" && \
@@ -294,7 +288,6 @@ RUN mkdir /mcr-install-v83 && \
     rm -rf mcr-install-v83
 
 WORKDIR /home/rstudio/
-
 # GISTIC installation
 RUN mkdir -p gistic_install && \
     cd gistic_install && \
@@ -302,10 +295,9 @@ RUN mkdir -p gistic_install && \
     tar zxf GISTIC_2_0_23.tar.gz && \
     rm -f GISTIC_2_0_23.tar.gz && \
     rm -rf MCR_Installer
-
-RUN chown -R rstudio:rstudio /home/rstudio/gistic_install
-RUN chmod 755 /home/rstudio/gistic_install
-
+RUN chown -R rstudio:rstudio /home/rstudio/gistic_install && \
+    chmod 755 /home/rstudio/gistic_install
+WORKDIR /rocker-build/
 
 
 
