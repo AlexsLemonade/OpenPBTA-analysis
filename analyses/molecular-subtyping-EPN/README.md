@@ -1,4 +1,4 @@
-# Molecular Subtyping of Ependymoma 
+# Molecular Subtyping of Ependymoma
 
 <b>Module Authors:</b> Teja Koganti(<a href="https://github.com/tkoganti">@tkoganti</a>) and Josh Shapiro(<a href="https://github.com/jashapiro">@jashapiro</a>)
 
@@ -17,52 +17,81 @@ This above  script is designed to change to this directory to run, so it should 
 
 3. <b>`02_ependymoma_generate_all_data.py`</b>  is a script that takes in expression, GISTIC, fusion, breakpoint, GISTIC, GSVA files to add values from these tables as new columns to the input notebook. Output from `01-make_notebook_RNAandDNA.py` script is used as input notebook. The output notebook from this is saved to `results/EPN_all_data.tsv`
 
-4. <b> `03-subgrouping_samples.py`  </b>  is a script that takes the table `results/EPN_all_data.tsv`  as input and adds a column that groups the samples into one of these groups - ST-EPN-RELA, ST-EPN-YAP1, PF-EPN-A, and PF-EPN-B. A new column named `subgroup` is added to the input table and saved in `resilts/EPN_all_data_withsubgroup.tsv`. It is possible that a sample is assigned more than one subgroup based on the conditions below. In those cases multiple subtypes are added to the subgroup column.  The logic for subtyping these are as follows - 
-    - If fusion column values in [input](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-EPN/results/EPN_all_data.tsv) table is higher  than 0, then the corresponding subtype is added to the last column. The  below table shows which fusion is associated with which Ependymoma subtype
+4. <b> `03-subgrouping_samples.py`  </b>  is a script that takes the table `results/EPN_all_data.tsv`  as input and adds a column that groups the samples into one of these groups - ST-EPN-RELA, ST-EPN-YAP1, PF-EPN-A, and PF-EPN-B. A new column named `subgroup` is added to the input table and saved in `results/EPN_all_data_withsubgroup.tsv`.
+  - This script prioritizes features of subgroups first and does not assign those samples to any other subgroups. For example `RELA` fusions are prioritized for `ST_EPN_RELA` subgroup and not assigedn to any other  groups. Two functions help achieve this in the script - 1) `prioritized_fusion` for `ST-SPN_RELA` and `ST-EPN-YAP1` groups and 2) `prioritizing_PT_EPN` for `PT_EPN_A` and `PT_EPN_B` groups
+
+  - There is another function `subgroup_func` that checks that samples are not in `samples_assigned`  list  and checks the  value of certain columns and assigns subgroups to samples accordingly.
+
+  - From the [input file here](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-EPN/results/EPN_all_data.tsv) values for various columns are considered for assigning subgroups. Following are  the columns and values used (prioritized column shows `yes`, then samples  that have  that feature are ONLY assigned to that subgroup) -
             <table>
                 <tr>
                     <th>Subtype name</th>
                     <th>Fusion genes</th>
+                    <th>proiritized?</th>
                 </tr>
                 <tr>
                     <td>ST_EPN_RELA</td>
                     <td>C11orf95--RELA, LTBP3--RELA, PTEN--TAS2R1</td>
+                    <td>Yes</td>
                 </tr>
                 <tr>
                     <td>ST_EPN_YAP1</td>
                     <td>YAP1--MAMLD1, C11orf95--MAML2, YAP1--FAM118B</td>
+                    <td>Yes</td>
                 </tr>
                 <tr>
                     <td>PT_EPN_A</td>
                     <td>--</td>
+                    <td>--</td>
                 </tr>
                 <tr>
                     <td>PT_EPN_B</td>
+                    <td>--</td>
                     <td>--</td>
                 </tr>
             </table>
-     
-    - If gene expression column for the genes given below under each subtype is greater than 3, then the subtype is added to the last column 
+
+    - Combination of gene expression and CNV gain/loss were checked below.
             <table>
                 <tr>
                     <th>Subtype name</th>
-                    <th>Gene expressions</th>
-                </tr>
-                <tr>
-                    <td>ST_EPN_RELA</td>
-                    <td>L1CAM, RELA</td>
-                </tr>
-                <tr>
-                    <td>ST_EPN_YAP1</td>
-                    <td>ARL4D, CLDN1</td>
+                    <th>Gene expressions and CNV with  value</th>
+                    <th>prioritized</th>
                 </tr>
                 <tr>
                     <td>PT_EPN_A</td>
-                    <td>CXorf67</td>
+                    <td>CXorf67_expr_zscore>3 and 1q_gain>0</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>PT_EPN_A</td>
+                    <td>TKTL1_expr_zscore>3 and 1q_gain>0</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>PT_EPN_A</td>
+                    <td>TKTL1_expr_zscore>3 and 1q_gain>0</td>
+                    <td>Yes</td>
                 </tr>
                 <tr>
                     <td>PT_EPN_B</td>
-                    <td>GPBP1</td>
+                    <td>GPBP1_expr_zscore>3 and 6q_loss>0</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>PT_EPN_B</td>
+                    <td>GPBP1_expr_zscore>3 and 6p_loss>0</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>PT_EPN_B</td>
+                    <td>IFT46_expr_zscore>3 and 6q_loss>0</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>PT_EPN_B</td>
+                    <td>IFT46_expr_zscore>3 and 6p_loss>0</td>
+                    <td>Yes</td>
                 </tr>
             </table>
     -  If CNV columns have a value greater than 1, then the below subtype is assigned
@@ -89,12 +118,8 @@ This above  script is designed to change to this directory to run, so it should 
                 </tr>
             </table>  
 
-        - ST_EPN_RELA subtype is associated with `CDKN2A loss`. If the column `consensus_focal_CN_CDKN2` shows loss or `GISTIC_focal_CN_CDKN2A` has a value less than 0.0, then those samples are associated with the ST_EPN_RELA subtype 
+        - ST_EPN_RELA subtype is associated with `CDKN2A loss`. If the column `consensus_focal_CN_CDKN2` shows loss or `GISTIC_focal_CN_CDKN2A` has a value less than 0.0, then those samples are associated with the ST_EPN_RELA subtype
 
         -   The following formula was implemented for these two columns `breaks_density-chromosomal_instability_CNV` and `breaks_density-chromosomal_instability_SV` from input table and the values were added as column names `SV instability` and `CNV instability`
 
                 `(break density value for sample - median) / interquartile range`   
-
-
-
-

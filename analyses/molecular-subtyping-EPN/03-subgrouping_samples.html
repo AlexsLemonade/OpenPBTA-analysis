@@ -13156,7 +13156,7 @@ div#notebook {
 <span class="c1"># The fusions are gievn as a list, every row here is given as input</span>
 <span class="c1"># If the samples have the fusions, the subgroup is assigned and sample_id </span>
 <span class="c1"># is added to samples_assigned  and they will omitted when assessing other categories</span>
-<span class="n">st_epn_rela_fusions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;C11orf95--RELA&quot;</span><span class="p">,</span> <span class="s2">&quot;LTBP3--RELA&quot;</span><span class="p">]</span>
+<span class="n">st_epn_rela_fusions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;C11orf95--RELA&quot;</span><span class="p">,</span> <span class="s2">&quot;LTBP3--RELA&quot;</span><span class="p">,</span> <span class="s2">&quot;PTEN--TAS2R1&quot;</span><span class="p">]</span>
 <span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">prioritized_fusion</span><span class="p">,</span>
                                         <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                                         <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;ST_EPN_RELA&quot;</span><span class="p">,</span>
@@ -13173,7 +13173,6 @@ div#notebook {
 
 <span class="c1"># Same as the two subgroups above ET_EPN A and B are prioritized for certain gene expressions and </span>
 <span class="c1"># CNV changes, after these are assigned, samples are not considered for further categories</span>
-<span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">prioritizing_PT_EPN</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
 <span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">prioritizing_PT_EPN</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
 
 
