@@ -1,0 +1,453 @@
+---
+title: "CN Status Heatmap"
+output:   
+  html_notebook: 
+    toc: true
+    toc_float: true
+author: Candace Savonen for ALSF - CCDL
+date: 2020
+---
+
+## Purpose: 
+
+Create a summary heatmap of copy number status from the consensus CNV call data. 
+This is done by binning the genome and calculating the segment's coverage of the
+CNV consensus segments. 
+A bin is declared a particular copy number status if that status's base pair 
+coverage fraction is above a certain threshold (`frac_threshold`) and the callable 
+portion of the bin is higher than the threshold, `frac_uncallable`.
+
+### Usage
+
+This notebook can be run via the command line from the top directory of the 
+repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/cn_status_heatmap.Rmd', 
+                              clean = TRUE)"
+```
+
+### Cutoffs: 
+
+```{r}
+# The max length of a segment to use the data.
+# segments that are too long may dominate the heatmap and/or be indicators of
+# broader structural changes
+length_max <- 1e7
+
+# Set minimum percentage of a bin that should be callable to report data.
+frac_uncallable <- 0.75
+
+# Absolute fraction needed for a bin to be called a particular status
+frac_threshold <- 0.75
+```
+
+### Set Up
+
+```{r}
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+### Directories and Files
+
+```{r}
+# Path to input directory
+input_dir <- file.path("..", "..", "data")
+figure_dir <- file.path("..", "..", "figures")
+scratch_dir <- file.path("..", "..", "scratch")
+
+# Path to output directory
+plots_dir <- "plots"
+
+# Create the plots_dir if it does not exist
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir, recursive = TRUE)
+}
+```
+
+Read in custom functions.
+
+```{r}
+source(file.path("util", "bin-coverage.R"))
+```
+
+Import color palettes. 
+
+```{r}
+# Import standard color palettes for project
+histology_col_palette <- readr::read_tsv(
+  file.path(figure_dir, "palettes", "histology_color_palette.tsv")
+) %>%
+  # We'll use deframe so we can use it as a recoding list
+  tibble::deframe()
+```
+
+Read in the divergent color palette and set it up with three colors. 
+In this instance, we only need three values for `gain`, `neutral`, and `loss`.
+
+```{r}
+divergent_col_palette <- readr::read_tsv(
+  file.path(figure_dir, "palettes", "divergent_color_palette.tsv")
+) %>%
+  # Only keep only these three colors
+  dplyr::filter(
+    color_names %in% c("divergent_low_4", "divergent_neutral", "divergent_high_4")
+  ) %>%
+  dplyr::pull("hex_codes")
+```
+
+### Read in data 
+
+```{r}
+# Read in metadata
+metadata <-
+  readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv")) %>%
+  # Easier to deal with NA short histologies if they are labeled something different
+  dplyr::mutate(short_histology = as.character(tidyr::replace_na(short_histology, "none"))) %>%
+  # Tack on the sample color using the short_histology column and a recode
+  dplyr::mutate(sample_color = dplyr::recode(
+    short_histology,
+    !!!histology_col_palette
+  ))
+```
+
+### Set up consensus copy number data
+
+```{r}
+# Read in the segment copy number data
+seg_data <- data.table::fread(
+  file.path(
+    input_dir,
+    "pbta-cnv-consensus.seg.gz"
+  ),
+  data.table = FALSE
+)
+```
+
+Set up the status for each consensus segment. 
+
+```{r}
+seg_data <- seg_data %>%
+  # Join the histology column to this data
+  dplyr::inner_join(
+    dplyr::select(
+      metadata,
+      "Kids_First_Biospecimen_ID",
+      "short_histology",
+      "tumor_ploidy"
+    ),
+    by = c("ID" = "Kids_First_Biospecimen_ID")
+  ) %>%
+  # Reformat the chromosome variable to drop the "chr"
+  dplyr::mutate(chrom = factor(gsub("chr", "", chrom),
+    levels = c(1:22, "X", "Y")
+  )) %>%
+  # Recode the copy number status based on ploidy
+  dplyr::mutate(status = dplyr::case_when(
+    # when the copy number is less than inferred ploidy, mark this as a loss
+    copy.num < tumor_ploidy ~ "loss",
+    # if copy number is higher than ploidy, mark as a gain
+    copy.num > tumor_ploidy ~ "gain",
+    copy.num == tumor_ploidy ~ "neutral"
+  )) %>%
+  # Remove sex chromosomes
+  dplyr::filter(
+    !(chrom %in% c("X", "Y", "M")),
+    !is.na(status)
+  )
+```
+
+Set up seg data as GenomicRanges. 
+
+```{r}
+seg_ranges <- GenomicRanges::GRanges(
+  seqnames = seg_data$chrom,
+  ranges = IRanges::IRanges(
+    start = seg_data$loc.start,
+    end = seg_data$loc.end
+  ),
+  status = seg_data$status,
+  histology = seg_data$short_histology,
+  biospecimen = seg_data$ID
+)
+```
+
+Explore the distribution of segment lengths. 
+
+```{r}
+ggplot2::qplot(seg_ranges@ranges@width, geom = "density") +
+  ggplot2::theme_classic() +
+  ggplot2::ylab("density") +
+  ggplot2::xlab("Segment length in bp") +
+  # Let's put a vertical line where we will make a filter cutoff
+  ggplot2::geom_vline(xintercept = length_max, color = "red")
+```
+
+Filter out segments that are longer than our cutoff. 
+
+```{r}
+filtered_seg_ranges <- seg_ranges[which(seg_ranges@ranges@width < length_max)]
+```
+
+### Set up chromosomal sizes for making bins. 
+
+(This has nothing to do with Strelka, but it just so happens this is a file 
+with the sizes of the chromosomes in this genome build, hg38).
+
+```{r}
+chr_sizes <- readr::read_tsv(file.path(input_dir, "WGS.hg38.strelka2.unpadded.bed"),
+  col_names = c("chrom", "start", "end")
+) %>%
+  # Reformat the chromosome variable to drop the "chr"
+  dplyr::mutate(chrom = factor(gsub("chr", "", chrom),
+    levels = c(1:22, "X", "Y", "M")
+  )) %>%
+  # Remove sex chromosomes
+  dplyr::filter(!(chrom %in% c("X", "Y", "M")))
+
+
+# Make chromosome size named vector for Heatmap annotation
+chr_sizes_vector <- chr_sizes$end
+names(chr_sizes_vector) <- chr_sizes$chrom
+```
+
+### Set up uncallable regions data 
+
+Regions that were not able to be accurately called will need to be color coded gray later. 
+Here, we are setting up the uncallable regions like we did with the callable regions.
+
+```{r}
+uncallable_bed <- readr::read_tsv(
+  file.path(
+    "..",
+    "copy_number_consensus_call",
+    "ref",
+    "cnv_excluded_regions.bed"
+  ),
+  col_names = c("chrom", "start", "end")
+) %>%
+  # Reformat the chromosome variable to drop the "chr"
+  dplyr::mutate(chrom = factor(gsub("chr", "", chrom),
+    levels = c(1:22, "X", "Y")
+  )) %>%
+  dplyr::filter(
+    # Drop CNVs that don't have chromosome labels
+    !is.na(chrom),
+    # Drop sex chromosomes
+    !(chrom %in% c("X", "Y", "M"))
+  )
+```
+
+Set up uncallable regions as GenomicRanges. 
+
+```{r}
+uncallable_ranges <- GenomicRanges::GRanges(
+  seqnames = uncallable_bed$chrom,
+  ranges = IRanges::IRanges(
+    start = uncallable_bed$start,
+    end = uncallable_bed$end
+  )
+)
+```
+
+## Call bin CN statuses for each sample
+
+Set up binned genome ranges. 
+
+```{r}
+# Set up bins of ~1Mb size
+bins <- GenomicRanges::tileGenome(
+  chr_sizes_vector,
+  tilewidth = 1e6
+)
+# Uncompress these ranges
+bins <- unlist(bins)
+```
+
+Run the bin status calling on each sample. 
+
+```{r echo=FALSE}
+# Get a vector of the biospecimen IDs
+sample_ids <- unique(seg_data$ID)
+
+# Run call_bin_status for each biospecimen's segments.
+bin_calls_list <- lapply(sample_ids,
+  call_bin_status,
+  bin_ranges = bins,
+  seg_ranges = filtered_seg_ranges,
+  uncallable_ranges = uncallable_ranges,
+  frac_threshold_val = frac_threshold,
+  frac_uncallable_val = frac_uncallable
+)
+
+# Bring along sample IDs
+names(bin_calls_list) <- sample_ids
+
+# Format into data.frame
+bin_calls_df <- dplyr::bind_rows(bin_calls_list,
+  .id = "biospecimen_id"
+)
+```
+
+## Set up heatmap annotation objects
+
+Make color key. 
+
+```{r}
+color_key <- structure(c(divergent_col_palette, "#9932CC", "#cccccc"),
+  names = c("loss", "neutral", "gain", "unstable", "uncallable")
+)
+```
+
+### Make column annotation object
+
+Extract chromosome labels and make an alternating color key for them. 
+This annotation object strategy was originally from [chromosomal-instability](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/b5a33838d1e9bd7e7913a89201ec26125c16c94c/analyses/chromosomal-instability/02a-plot-chr-instability-heatmaps.Rmd#L73).
+
+```{r}
+# Set up chromosome labels from bins as a factor vector
+chrs <- paste0("chr", S4Vectors::decode(bins@seqnames))
+chrs <- factor(chrs, levels = paste0("chr", 1:22))
+
+# Make a key for assigning alternating colors to the chromosomes
+chr_colors <- rep(c("gray", "lightblue"),
+  length.out = length(unique(chrs))
+)
+names(chr_colors) <- unique(chrs)
+
+# Get coordinate start positions
+chr_pos <- match(unique(chrs), chrs)
+
+# Get mid points of chromosome labels
+mid_points <- ceiling((c(chr_pos[2:length(chr_pos)], length(chrs)) + chr_pos[1:length(chr_pos)]) / 2)
+```
+
+Make chromosomal labeling `HeatmapAnnotation` object.
+
+```{r}
+# Make text labels for chromosome text
+chr_text <- ComplexHeatmap::anno_mark(
+  at = mid_points,
+  labels = levels(chrs),
+  which = "column",
+  side = "bottom",
+  labels_rot = 45,
+  labels_gp = grid::gpar(cex = 0.65)
+)
+
+# Create the Heatmap annotation object
+chr_annot <- ComplexHeatmap::HeatmapAnnotation(
+  df = data.frame(chrs),
+  col = list(chrs = chr_colors),
+  name = "",
+  show_legend = FALSE,
+  show_annotation_name = FALSE,
+  mark = chr_text # Put the text in
+)
+```
+
+### Make row annotation object
+
+Make histology labeling `HeatmapAnnotation` object.
+This annotation object strategy was originally from [chromosomal-instability](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/b5a33838d1e9bd7e7913a89201ec26125c16c94c/analyses/chromosomal-instability/02a-plot-chr-instability-heatmaps.Rmd#L73).
+
+```{r}
+# Get the histologies for the samples in this set and order them by histology
+histologies <-
+  data.frame(Kids_First_Biospecimen_ID = bin_calls_df$biospecimen_id) %>%
+  dplyr::inner_join(metadata %>%
+    dplyr::select(Kids_First_Biospecimen_ID, short_histology, sample_color)) %>%
+  dplyr::mutate(short_histology = factor(short_histology)) %>%
+  dplyr::arrange(short_histology) %>%
+  tibble::column_to_rownames("Kids_First_Biospecimen_ID")
+
+# Make color key specific to these samples
+histologies_color_key_filtered <- unique(histologies$sample_color)
+names(histologies_color_key_filtered) <- unique(histologies$short_histology)
+
+# Drop this column so ComplexHeatmap isn't tempted to plot it
+histologies <- dplyr::select(histologies, -sample_color)
+
+# Get coordinate start positions
+hist_pos <- match(names(histologies_color_key_filtered), histologies$short_histology)
+
+# Get mid points of chromosome labels
+mid_points <- ceiling((c(hist_pos[2:length(hist_pos)], length(histologies$short_histology)) + hist_pos[1:length(hist_pos)]) / 2)
+```
+
+```{r}
+# Make text labels for chromosome text
+hist_text <- ComplexHeatmap::anno_mark(
+  at = mid_points,
+  labels = levels(histologies$short_histology),
+  which = "row",
+  side = "right",
+  labels_gp = grid::gpar(cex = 0.65),
+  link_width = grid::unit(15, "mm")
+)
+
+# Create the Heatmap annotation object
+hist_annot <- ComplexHeatmap::HeatmapAnnotation(
+  df = data.frame(histologies),
+  col = list(short_histology = histologies_color_key_filtered),
+  which = "row",
+  show_annotation_name = FALSE,
+  show_legend = FALSE,
+  mark = hist_text # Put the text in
+)
+```
+
+Format `bin_calls_df` as a matrix with rownames for `ComplexHeatmap` to use. 
+
+```{r}
+bin_calls_mat <- bin_calls_df %>%
+  tibble::column_to_rownames("biospecimen_id") %>%
+  as.matrix()
+
+# Ensure that this matrix is in the same order as the annotation
+bin_calls_mat <- bin_calls_mat[rownames(histologies), ]
+
+# Double check its in thte same order
+all.equal(rownames(bin_calls_mat), rownames(histologies))
+```
+
+## Assemble CN status heatmap
+
+```{r}
+# Plot on a heatmap
+heatmap <- ComplexHeatmap::Heatmap(
+  bin_calls_mat,
+  name = "CN status",
+  col = color_key,
+  cluster_columns = FALSE,
+  cluster_rows = FALSE,
+  show_column_names = FALSE,
+  show_row_names = FALSE,
+  bottom_annotation = chr_annot,
+  right_annotation = hist_annot,
+  heatmap_legend_param = list(nrow = 1),
+  raster_quality = 8
+)
+```
+
+Print out heatmap. 
+
+```{r}
+ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
+```
+
+Save to PDF. 
+
+```{r}
+# Save plot as PDF
+pdf(file.path(plots_dir, "cn_status_heatmap.pdf"))
+ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
+dev.off()
+```
+
+# Session Info
+
+```{r}
+sessionInfo()
+```

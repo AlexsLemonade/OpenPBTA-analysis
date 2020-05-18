@@ -105,7 +105,6 @@ RUN install2.r --error --deps TRUE \
 # treemap, interactive plots, and hex plots
 # Rtsne and umap are required for dimension reduction analyses
 RUN install2.r --error --deps TRUE \
-    circlize \
     corrplot \
     d3r \
     ggfortify \
@@ -221,7 +220,6 @@ RUN R -e "remotes::install_github('timelyportfolio/d3treeR', ref = '0eaba7f1c643
 # Need this package to make plots colorblind friendly
 RUN R -e "remotes::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
 
-
 # remote package EXTEND needed for telomerase-activity-prediciton analysis
 RUN R -e "remotes::install_github('NNoureen/EXTEND', ref = '467c2724e1324ef05ad9260c3079e5b0b0366420', dependencies = TRUE)"
 
@@ -239,6 +237,8 @@ RUN R -e "remotes::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd46
 # This is required for creating a treemap of the broad histology and integrated diagnoses
 RUN R -e "remotes::install_github('wilkox/treemapify', ref = 'e70adf727f4d13223de8146458db9bef97f872cb', dependencies = TRUE)"
 
+# Need this specific version of circlize so it has hg38
+RUN R -e "remotes::install_github('jokergoo/circlize', ref = 'b7d86409d7f893e881980b705ba1dbc758df847d', dependencies = TRUE)"
 
 # Install python libraries
 ##########################
@@ -305,6 +305,7 @@ RUN mkdir -p gistic_install && \
 
 RUN chown -R rstudio:rstudio /home/rstudio/gistic_install
 RUN chmod 755 /home/rstudio/gistic_install
+
 
 
 
