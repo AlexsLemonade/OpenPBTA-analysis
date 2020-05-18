@@ -109,23 +109,6 @@ recurrent_focal_cnvs <-
     )
   )
 
-# Read in gene list --- commenting this step out because the most focal
-# recurrent genes files are being used
-# goi_list <-
-#   readr::read_tsv(
-#     file.path(
-#       root_dir,
-#       "analyses",
-#       "interaction-plots",
-#       "results",
-#       "gene_disease_top50.tsv"
-#     )
-#   ) %>%
-#   dplyr::pull("gene")
-
-# Filter `goi_list` to include only the unique genes of interest
-# goi_list <- unique(goi_list)
-
 #### Functions ----------------------------------------------------------
 
 source(file.path(
@@ -177,31 +160,66 @@ primary_only <- prepare_maf_object(
   fusion_df = fusion_df_primary_only
 )
 
-#### Assemble multipanel plot -------------------------------------------------
+#### Generate oncoprint plots -------------------------------------------------
 
+# Given a the `primary_plus` maf object, plot an oncoprint of the variants in
+# the dataset and save as a png file in the scratch directory.
 png(
-  file.path(output_dir, "fig3-oncoprint-lanscape.png"),
-  width = 65,
-  height = 30,
+  file.path(scratch_oncoprint_dir, "fig3a_oncoprint.png"),
+  width = 45,
+  height = 35,
   units = "cm",
   res = 300
 )
-# Given a maf file, plot an oncoprint of the variants in the
-# dataset and save as a png file.
-coOncoplot(
+oncoplot(
   primary_plus,
-  primary_only,
-  m1Name = "Primary and Secondary Independent Samples Oncoprint",
-  m2Name = "Primary Only Independent Samples Oncoprint",
-  clinicalFeatures1 = clinical_features,
-  clinicalFeatures2 = clinical_features,
-  sortByAnnotation1 = TRUE,
-  sortByAnnotation2 = TRUE,
-  showSampleNames = TRUE,
+  clinicalFeatures = clinical_features,
+  logColBar = TRUE,
+  sortByAnnotation = TRUE,
+  showTumorSampleBarcodes = TRUE,
   removeNonMutated = TRUE,
-  annotationFontSize = 1.5,
-  SampleNamefont = 0.7,
-  geneNamefont = 0.5,
-  colors = color_palette
+  annotationFontSize = 0.8,
+  SampleNamefontSize = 0.5,
+  fontSize = 0.7,
+  colors = color_palette,
+  showTitle = FALSE
 )
 dev.off()
+
+# Given a the `primary_only` maf object, plot an oncoprint of the variants in
+# the dataset and save as a png file in the scratch directory.
+png(
+  file.path(scratch_oncoprint_dir, "fig3b_oncoprint.png"),
+  width = 45,
+  height = 35,
+  units = "cm",
+  res = 300
+)
+oncoplot(
+  primary_only,
+  clinicalFeatures = clinical_features,
+  logColBar = TRUE,
+  sortByAnnotation = TRUE,
+  showTumorSampleBarcodes = TRUE,
+  removeNonMutated = TRUE,
+  annotationFontSize = 0.8,
+  SampleNamefontSize = 0.5,
+  fontSize = 0.7,
+  colors = color_palette,
+  showTitle = FALSE
+)
+dev.off()
+
+#### Assemble multipanel plot -------------------------------------------------
+
+# Read in the `primary_plus` and `primary_only` oncoprints
+primary_plus_onco <- magick::image_read(file.path(scratch_oncoprint_dir, "fig3a_oncoprint.png")) %>%
+  magick::image_annotate( "Primary and Secondary Independent Samples Oncoprint", size = 70, gravity = "north", color = "black")
+primary_only_onco <- magick::image_read(file.path(scratch_oncoprint_dir, "fig3b_oncoprint.png")) %>%
+  magick::image_annotate("Primary Only Independent Samples Oncoprint", size = 70, gravity = "north", color = "black")
+
+# Combine the oncoprints into one plot
+combined_oncoprint <- magick::image_append(c(primary_plus_onco, primary_only_onco))
+
+# Write the final image as a PNG file
+magick::image_write(combined_oncoprint, file.path(output_dir, "fig3-oncoprint-lanscape.png"))
