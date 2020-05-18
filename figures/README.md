@@ -42,6 +42,7 @@ However, we list information about the resources, intermediate steps, and [PBTA 
 |--------|--------|------------------|-------------------------|-----------------------------|
 | Figure 1 | [scripts/fig1-sample-distribution.R`](./scripts/fig1-sample-distribution.R) | No high RAM requirements | [`sample-distribution-analysis`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/sample-distribution-analysis) |  `pbta-histologies.tsv` |
 | Figure 2 | [scripts/fig2-mutational-landscape.R`](./scripts/fig2-mutational-landscape.R) | 256GB of RAM are needed due to the run_caller_consensus_analysis-pbta.sh handling of large MAF files|[`snv-callers`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers) <br> [`mutational-signatures`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/mutational-signatures) |  `pbta-snv-lancet.vep.maf.gz` <br> `pbta-snv-mutect2.vep.maf.gz` <br> `pbta-snv-strelka2.vep.maf.gz` <br> `pbta-snv-vardict.vep.maf.gz` <br> `tcga-snv-lancet.vep.maf.gz` <br> `tcga-snv-mutect2.vep.maf.gz` <br> `tcga-snv-strelka2.vep.maf.gz` |
+| CN status heatmap | [`analyses/copy_number_consensus_call/run_consensus_call.sh`](./analyses/copy_number_consensus_call/run_consensus_call.sh) and [`analyses/cnv-chrom-plot/cn_status_heatmap.Rmd`](./analyses/cnv-chrom-plot/cn_status_heatmap.Rmd) | No high RAM requirements | [`cnv-chrom-plot`](./analyses/cnv-chrom-plot) |  `pbta-cnv-controlfreec.tsv.gz` <br> `pbta-sv-manta.tsv.gz` <br> `pbta-cnv-cnvkit.seg.gz` |
 
 ## Color Palette Usage
 

@@ -77,3 +77,11 @@ Rscript --vanilla ${analyses_dir}/immune-deconv/01-immune-deconv.R \
   --strandedexprs ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
   --clin ${data_dir}/pbta-histologies.tsv \
   --output ${analyses_dir}/immune-deconv/results/deconv-output-for-figures.RData
+
+####### CN Status Heatmap
+# Run consensus CNV so we have a refreshed `pbta-cnv-consensus.seg.gz` file
+bash ${analyses_dir}/copy_number_consensus_call/run_consensus_call.sh
+
+# Run CN status heatmap but use parameter so file is saved to figures folder
+Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.Rmd',
+                              clean = TRUE, params = list(final_figure=TRUE))"
