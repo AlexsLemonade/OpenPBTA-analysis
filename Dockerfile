@@ -257,19 +257,19 @@ RUN pip3 install \
     "gitdb==4.0.5" \
     "gitpython==3.1.2" \
     "idna==2.9" \
-    "importlib==metadata-1.6.0" \
+    "importlib-metadata==1.6.0" \
     "ipykernel==5.2.1" \
     "ipython==7.14.0" \
-    "ipython==genutils-0.2.0" \
+    "ipython-genutils==0.2.0" \
     "ipywidgets==7.5.1" \
     "jedi==0.17.0" \
     "jinja2==2.11.2" \
     "joblib==0.15.1" \
     "jsonschema==3.2.0" \
     "jupyter==1.0.0" \
-    "jupyter==client-6.1.3" \
-    "jupyter==console-6.1.0" \
-    "jupyter==core-4.6.3" \
+    "jupyter-client==6.1.3" \
+    "jupyter-console==6.1.0" \
+    "jupyter-core==4.6.3" \
     "kiwisolver==1.1.0" \
     "matplotlib==3.2.1" \
     "mistune==0.8.4" \
@@ -304,7 +304,7 @@ RUN pip3 install \
     "qtpy==1.9.0" \
     "ratelimiter==1.2.0.post0" \
     "requests==2.23.0" \
-    "scikit==learn-0.22.2" \
+    "scikit-learn==0.22.2" \
     "scipy==1.4.1" \
     "seaborn==0.9.0" \
     "smmap==3.0.4" \
