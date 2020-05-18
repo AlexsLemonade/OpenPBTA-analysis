@@ -287,8 +287,8 @@ RUN pip3 install \
     "pexpect==4.8.0" \
     "pickleshare==0.7.5" \
     "plotnine==0.3.0" \
-    "prometheus==client-0.7.1" \
-    "prompt==toolkit-3.0.5" \
+    "prometheus-client=0.7.1" \
+    "prompt-toolkit=3.0.5" \
     "psutil==5.7.0" \
     "ptyprocess==0.6.0" \
     "pyarrow==0.16.0" \
@@ -296,7 +296,7 @@ RUN pip3 install \
     "pyparsing==2.4.5" \
     "pyreadr==0.2.6" \
     "pyrsistent==0.16.0" \
-    "python==dateutil-2.8.1" \
+    "python-dateutil=2.8.1" \
     "pytz==2019.3" \
     "pyyaml==5.3.1" \
     "pyzmq==19.0.1" \
