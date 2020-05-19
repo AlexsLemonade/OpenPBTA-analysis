@@ -305,12 +305,16 @@ RUN mkdir -p gistic_install && \
 
 RUN chown -R rstudio:rstudio /home/rstudio/gistic_install
 RUN chmod 755 /home/rstudio/gistic_install
+WORKDIR /rocker-build/
 
+# Packages required for de novo mutational signatures
+RUN install2.r --error --deps TRUE \
+  lsa
 
-
+# Build arguments are according to the sigfit instructions
+RUN R -e "devtools::install_github('kgori/sigfit', ref = '209776ee1d2193ad4b682b2e2472f848bd7c67a6', build_vignettes = TRUE, build_opts = c('--no-resave-data', '--no-manual'), dependencies = TRUE)"
 
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
 
 
-WORKDIR /rocker-build/
