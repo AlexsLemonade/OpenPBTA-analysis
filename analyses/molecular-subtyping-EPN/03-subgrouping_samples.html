@@ -13074,18 +13074,12 @@ div#notebook {
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
 
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Setup">Setup<a class="anchor-link" href="#Setup">&#182;</a></h2>
 </div>
 </div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -13099,19 +13093,44 @@ div#notebook {
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">iqr</span>
+</pre></div>
 
-<span class="c1"># Reading in table from results folder without the subgroup column</span>
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Reading in table from results folder without the subgroup column</span>
 <span class="n">EPN_final</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;results/EPN_all_data.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
 <span class="c1"># Output to write </span>
-<span class="n">outfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;results/EPN_all_data_withsubgroup.tsv&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+<span class="n">outfile</span> <span class="o">=</span> <span class="s2">&quot;results/EPN_all_data_withsubgroup.tsv&quot;</span>
+</pre></div>
 
-<span class="c1"># This list will hold samples that have been assigned subgroups</span>
-<span class="c1"># that are of priority and cannot be used to assign multiple subgroup names</span>
-<span class="n">samples_assigned</span> <span class="o">=</span> <span class="p">[]</span>
+    </div>
+</div>
+</div>
 
-<span class="c1"># This function will take every row with fusions that are associated with a subgroup</span>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Function-Definitions">Function Definitions<a class="anchor-link" href="#Function-Definitions">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># This function will take every row with fusions that are associated with a subgroup</span>
 <span class="c1"># It returns the subgroup and adds sample_id to the sample_list</span>
 <span class="k">def</span> <span class="nf">prioritized_fusion</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">subgroupname</span><span class="p">,</span> <span class="n">fusionlist</span><span class="p">,</span> <span class="n">sample_list</span><span class="p">):</span>
     <span class="n">fusion_boolean</span> <span class="o">=</span> <span class="p">[]</span>
@@ -13126,8 +13145,19 @@ div#notebook {
         <span class="k">return</span><span class="p">(</span><span class="n">subgroupname</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">])</span> 
+</pre></div>
 
-<span class="c1"># This function is the same as above but except for fusions</span>
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># This function is the same as above but except for fusions</span>
 <span class="c1"># it. assigns subgroups if certain column are higher than a value</span>
 <span class="c1"># Here also sample_ids are added to a list that are not not consideted </span>
 <span class="c1"># for subgrouping in the future</span>
@@ -13151,36 +13181,19 @@ div#notebook {
           
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">])</span>
+</pre></div>
 
-<span class="c1"># Certain fusion  are prioritized in RELA and YAP1 subgroups</span>
-<span class="c1"># The fusions are gievn as a list, every row here is given as input</span>
-<span class="c1"># If the samples have the fusions, the subgroup is assigned and sample_id </span>
-<span class="c1"># is added to samples_assigned  and they will omitted when assessing other categories</span>
-<span class="n">st_epn_rela_fusions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;C11orf95--RELA&quot;</span><span class="p">,</span> <span class="s2">&quot;LTBP3--RELA&quot;</span><span class="p">]</span>
-<span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">prioritized_fusion</span><span class="p">,</span>
-                                        <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                                        <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;ST_EPN_RELA&quot;</span><span class="p">,</span>
-                                        <span class="n">fusionlist</span><span class="o">=</span><span class="n">st_epn_rela_fusions</span><span class="p">,</span>
-                                        <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
+    </div>
+</div>
+</div>
 
-<span class="n">st_epn_yap1_fusions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;C11orf95--YAP1&quot;</span><span class="p">,</span> <span class="s2">&quot;YAP1--MAMLD1&quot;</span><span class="p">,</span> <span class="s2">&quot;YAP1--FAM118B&quot;</span><span class="p">]</span>
-<span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">prioritized_fusion</span><span class="p">,</span>
-                                        <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                                        <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;ST_EPN_YAP1&quot;</span><span class="p">,</span>
-                                        <span class="n">fusionlist</span><span class="o">=</span><span class="n">st_epn_yap1_fusions</span><span class="p">,</span>
-                                        <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
-
-
-<span class="c1"># Same as the two subgroups above ET_EPN A and B are prioritized for certain gene expressions and </span>
-<span class="c1"># CNV changes, after these are assigned, samples are not considered for further categories</span>
-<span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">prioritizing_PT_EPN</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
-
-
-<span class="c1"># Things to note at this point of the script - 31 samples are categorized with  subgroups </span>
-<span class="c1"># and will not be considered for further subgrouping</span>
-
-
-<span class="c1"># This function will take a list. of tuples</span>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># This function will take a list. of tuples</span>
 <span class="c1"># Each tuple has a length of two, 1)column_name and 2)value which will be compared </span>
 <span class="c1"># for the particular row under the given column_name</span>
 <span class="c1"># This also omits samples within sample_list</span>
@@ -13195,8 +13208,167 @@ div#notebook {
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">current_subgroup</span> <span class="o">=</span> <span class="n">current_subgroup</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="n">subgroupname</span>
     <span class="k">return</span><span class="p">(</span><span class="n">current_subgroup</span><span class="p">)</span>
+</pre></div>
 
-<span class="c1"># List fo tuple for subgroup_func</span>
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Processing-EPN-Samples">Processing EPN Samples<a class="anchor-link" href="#Processing-EPN-Samples">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># This list will hold samples that have been assigned subgroups</span>
+<span class="c1"># that are of priority and cannot be used to assign multiple subgroup names</span>
+<span class="n">samples_assigned</span> <span class="o">=</span> <span class="p">[]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Certain fusion  are prioritized in RELA and YAP1 subgroups</span>
+<span class="c1"># The fusions are gievn as a list, every row here is given as input</span>
+<span class="c1"># If the samples have the fusions, the subgroup is assigned and sample_id </span>
+<span class="c1"># is added to samples_assigned  and they will omitted when assessing other categories</span>
+<span class="n">st_epn_rela_fusions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;C11orf95--RELA&quot;</span><span class="p">,</span> <span class="s2">&quot;LTBP3--RELA&quot;</span><span class="p">]</span>
+<span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">prioritized_fusion</span><span class="p">,</span>
+                                        <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                        <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;ST_EPN_RELA&quot;</span><span class="p">,</span>
+                                        <span class="n">fusionlist</span><span class="o">=</span><span class="n">st_epn_rela_fusions</span><span class="p">,</span>
+                                        <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[7]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>28</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">st_epn_yap1_fusions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;C11orf95--YAP1&quot;</span><span class="p">,</span> <span class="s2">&quot;YAP1--MAMLD1&quot;</span><span class="p">,</span> <span class="s2">&quot;YAP1--FAM118B&quot;</span><span class="p">]</span>
+<span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">prioritized_fusion</span><span class="p">,</span>
+                                        <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                        <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;ST_EPN_YAP1&quot;</span><span class="p">,</span>
+                                        <span class="n">fusionlist</span><span class="o">=</span><span class="n">st_epn_yap1_fusions</span><span class="p">,</span>
+                                        <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[8]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>29</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Same as the two subgroups above ET_EPN A and B are prioritized for certain gene expressions and </span>
+<span class="c1"># CNV changes, after these are assigned, samples are not considered for further categories</span>
+<span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">prioritizing_PT_EPN</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[9]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>31</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Things to note at this point of the script - 31 samples are categorized with subgroups and will not be considered for further subgrouping</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># List of tuple for subgroup_func</span>
 <span class="n">st_epn_rela_tests</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;PTEN--TAS2R1&quot;</span><span class="p">,</span>  <span class="mi">0</span><span class="p">),</span>
                      <span class="p">(</span><span class="s2">&quot;9p_loss&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
                      <span class="p">(</span><span class="s2">&quot;9q_loss&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
@@ -13208,9 +13380,40 @@ div#notebook {
                                         <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;ST_EPN_RELA&quot;</span><span class="p">,</span>
                                         <span class="n">column_values</span><span class="o">=</span><span class="n">st_epn_rela_tests</span><span class="p">,</span>
                                         <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
 
 
-<span class="c1">#### Looking for ST_EPN_YAP1 sub-group samples</span>
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[10]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>31</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#### Looking for ST_EPN_YAP1 sub-group samples</span>
 <span class="n">st_epn_yap1_tests</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;C11orf95--MAML2&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
              <span class="p">(</span><span class="s2">&quot;11q_loss&quot;</span><span class="p">,</span>  <span class="mi">0</span><span class="p">),</span>
              <span class="p">(</span><span class="s2">&quot;11q_gain&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
@@ -13222,10 +13425,40 @@ div#notebook {
                                         <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;ST_EPN_YAP1&quot;</span><span class="p">,</span>
                                         <span class="n">column_values</span><span class="o">=</span><span class="n">st_epn_yap1_tests</span><span class="p">,</span>
                                         <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[11]:</div>
 
 
 
-<span class="c1">## Creating columns for SV and CNV breaks density</span>
+
+<div class="output_text output_subarea output_execute_result">
+<pre>31</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## Creating columns for SV and CNV breaks density</span>
 <span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;SV instability&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 <span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;CNV_instability&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 <span class="n">sv_iqr</span> <span class="o">=</span> <span class="n">iqr</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;breaks_density-chromosomal_instability_SV&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()))</span>
@@ -13234,9 +13467,6 @@ div#notebook {
 <span class="n">cnv_median</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;breaks_density-chromosomal_instability_CNV&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()))</span>
 <span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;SV instability&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;breaks_density-chromosomal_instability_SV&quot;</span><span class="p">]</span><span class="o">-</span><span class="n">sv_median</span><span class="p">)</span><span class="o">/</span><span class="n">sv_iqr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;CNV_instability&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;breaks_density-chromosomal_instability_CNV&quot;</span><span class="p">]</span><span class="o">-</span><span class="n">cnv_median</span><span class="p">)</span><span class="o">/</span><span class="n">cnv_iqr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="n">EPN_final</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">outfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -13246,49 +13476,11 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+    <span class="n">EPN_final</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
     </div>
