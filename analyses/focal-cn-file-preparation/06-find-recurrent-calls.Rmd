@@ -95,10 +95,7 @@ recurrent_df
 ```{r}
 # Filter the focal CN data frame to include only the recurrent observations
 final_df_recurrent <- focal_cn_df %>%
-  # Remove the `region_type` column before joining the `recurrent_df` object to
-  # avoid a duplicate `region_type` column
-  select(-region_type) %>%
-  inner_join(recurrent_df, by = c("region", "status"))
+  inner_join(recurrent_df, by = c("region", "status", "region_type"))
 ```
 
 ### Write to file
