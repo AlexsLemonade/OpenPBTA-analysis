@@ -2,266 +2,276 @@ FROM rocker/tidyverse:3.6.0
 MAINTAINER ccdl@alexslemonade.org
 WORKDIR /rocker-build/
 
-RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
+COPY scripts/install_bioc.r .
 
-RUN apt-get install dialog apt-utils -y
+### Install apt-getable packages to start
+#########################################
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialog
 
-# Required for installing mapview for interactive sample distribution plots
-# libmagick++-dev is needed for coloblindr to install
+# Add curl, bzip2 and some dev libs
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    curl \
+    bzip2 \
+    zlib1g \
+    libbz2-dev \
+    liblzma-dev \
+    libreadline-dev
+
+# libmagick++-dev is needed for coloblindr to install
+RUN apt-get -y --no-install-recommends install \
     libgdal-dev \
     libudunits2-dev \
     libmagick++-dev
 
-# Required forinteractive sample distribution plots
+# Required for installing pdftools, which is a dependency of gridGraphics
+RUN apt-get -y --no-install-recommends install \
+    libpoppler-cpp-dev
+
+# Install pip3 and instalation tools
+RUN apt-get -y --no-install-recommends install \
+    python3-pip  python3-dev
+RUN pip3 install "setuptools==46.3.0" "six==1.14.0" "wheel==0.34.2"
+
+# Install java
+RUN apt-get -y --no-install-recommends install \
+   default-jdk
+
+# Standalone tools and libraries
+################################
+
+# Required for mapping segments to genes
+# Add bedtools
+RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.28.0/bedtools-2.28.0.tar.gz && \
+    tar -zxvf bedtools-2.28.0.tar.gz && \
+    cd bedtools2 && \
+    make && \
+    mv bin/* /usr/local/bin
+
+# Add bedops per the BEDOPS documentation
+RUN wget https://github.com/bedops/bedops/releases/download/v2.4.37/bedops_linux_x86_64-v2.4.37.tar.bz2 && \
+    tar -jxvf bedops_linux_x86_64-v2.4.37.tar.bz2 && \
+    rm -f bedops_linux_x86_64-v2.4.37.tar.bz2 && \
+    mv bin/* /usr/local/bin
+
+# HTSlib
+RUN wget https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar.bz2 && \
+    tar -jxvf htslib-1.9.tar.bz2 && rm -f htslib-1.9.tar.bz2 && \
+    cd htslib-1.9 && \
+    ./configure && \
+    make && \
+    make install
+
+
+#### R packages
+###############
+
+# Commonly used R packages
+RUN install2.r --error --deps TRUE \
+    class \
+    cluster \
+    data.table \
+    DT \
+    flextable \
+    foreign \
+    GGally \
+    lattice \
+    MASS \
+    Matrix \
+    mgcv \
+    nlme \
+    nnet \
+    optparse \
+    R.utils \
+    RColorBrewer \
+    rpart \
+    rprojroot \
+    survival \
+    viridis
+
+
+# Required for interactive sample distribution plots
 # map view is needed to create HTML outputs of the interactive plots
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
-    --deps TRUE \
+RUN install2.r --error --deps TRUE \
     gdalUtils \
     leafem \
-    lwgeom \
-    stars \
     leafpop \
+    lwgeom \
+    mapview \
     plainview \
     sf \
-    mapview
+    stars
 
-# Installs packages needed for still treemap, interactive plots, and hex plots
+# Installs packages needed for plottings
+# treemap, interactive plots, and hex plots
 # Rtsne and umap are required for dimension reduction analyses
-# optparse is needed for passing arguments from the command line to R script
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
-    --deps TRUE \
-    R.utils \
-    treemap \
+RUN install2.r --error --deps TRUE \
+    corrplot \
     d3r \
+    ggfortify \
+    ggpubr \
+    ggrepel \
+    ggsci \
+    ggsignif \
+    gridGraphics \
     hexbin \
-    VennDiagram \
-    Rtsne \
-    umap \
-    rprojroot \
-    optparse \
     pheatmap \
-    RColorBrewer \
-    viridis \
-    data.table
+    Rtsne \
+    spatial \
+    treemap \
+    umap  \
+    UpSetR \
+    VennDiagram
+
+# Install rjava
+RUN install2.r --error --deps TRUE \
+    rJava
+
+# Need for survminer for doing survival analysis
+RUN install2.r --error --deps TRUE \
+    cmprsk \
+    survMisc \
+    survminer
 
 # maftools for proof of concept in create-subset-files
-RUN R -e "BiocManager::install(c('maftools'), update = FALSE)"
+RUN ./install_bioc.r \
+    maftools
+
+# ComplexHeatmap
+RUN ./install_bioc.r \
+    ComplexHeatmap
+
 
 # This is needed for the CNV frequency and proportion aberration plots
-RUN R -e "BiocManager::install(c('GenVisR'), update = FALSE)"
+RUN ./install_bioc.r \
+    GenVisR
 
 # These packages are for the genomic region analysis for snv-callers
-RUN R -e "BiocManager::install(c('annotatr', 'TxDb.Hsapiens.UCSC.hg38.knownGene', 'org.Hs.eg.db'), update = FALSE)"
+RUN ./install_bioc.r \
+    annotatr \
+    TxDb.Hsapiens.UCSC.hg38.knownGene \
+    org.Hs.eg.db \
+    BSgenome.Hsapiens.UCSC.hg19 \
+    BSgenome.Hsapiens.UCSC.hg38
 
 # Packages for expression normalization and batch correction
-RUN R -e "BiocManager::install(c('preprocessCore', 'sva'), update = FALSE)"
+RUN ./install_bioc.r \
+    preprocessCore \
+    sva
 
 
 ## This is deprecated
 #  # These packages are for single-sample GSEA analysis
-#  RUN R -e "BiocManager::install(c('GSEABase', 'GSVA'), update = FALSE)"
-
-
-# This is needed to create the interactive pie chart
-RUN R -e "devtools::install_github('timelyportfolio/sunburstR', ref = 'd40d7ed71ee87ca4fbb9cb8b7cf1e198a23605a9', dependencies = TRUE)"
-
-# This is needed to create the interactive treemap
-RUN R -e "devtools::install_github('timelyportfolio/d3treeR', ref = '0eaba7f1c6438e977f8a5c082f1474408ac1fd80', dependencies = TRUE)"
-
-# Need this package to make plots colorblind friendly
-RUN R -e "devtools::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
+#  RUN ./install_bioc.r 'GSEABase', 'GSVA'
 
 # Required for sex prediction from RNA-seq data
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
-    --deps TRUE \
+RUN install2.r --error --deps TRUE \
     glmnet \
     glmnetUtils \
     caret \
     e1071
 
-# Install java and rJava for some of the snv plotting comparison packages
-RUN apt-get -y update && apt-get install -y \
-   default-jdk \
-   r-cran-rjava \
-   && apt-get clean \
-   && rm -rf /var/lib/apt/lists/
-
-# Install for SNV comparison plots
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
-    --deps TRUE \
-    UpSetR
-
-RUN R -e "devtools::install_github('const-ae/ggupset', ref = '7a33263cc5fafdd72a5bfcbebe5185fafe050c73', dependencies = TRUE)"
-
-# GGally and its required packages
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
-    lattice \
-    rpart \
-    class \
-    MASS \
-    GGally \
-    Matrix
-
-# Help display tables in R Notebooks
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
-    flextable
-
-# Required for mapping segments to genes
-# Add bedtools
-RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.28.0/bedtools-2.28.0.tar.gz
-RUN tar -zxvf bedtools-2.28.0.tar.gz
-RUN cd bedtools2 && \
-    make && \
-    mv bin/* /usr/local/bin
-
-# Required for installing htslib
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    zlib1g \
-    libbz2-dev \
-    liblzma-dev
-
-# Add bedops per the BEDOPS documentation
-RUN wget https://github.com/bedops/bedops/releases/download/v2.4.37/bedops_linux_x86_64-v2.4.37.tar.bz2
-RUN tar -jxvf bedops_linux_x86_64-v2.4.37.tar.bz2 && rm -f bedops_linux_x86_64-v2.4.37.tar.bz2
-RUN cp bin/* /usr/local/bin
-
-# HTSlib
-RUN wget https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar.bz2
-RUN tar -jxvf htslib-1.9.tar.bz2 && rm -f htslib-1.9.tar.bz2
-RUN cd htslib-1.9 && \
-    ./configure && \
-    make && \
-    make install
-RUN mv bin/* /usr/local/bin
 
 # bedr package
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
+RUN install2.r --error --deps TRUE \
     bedr
-
 # Check to make sure the binaries are available by loading the bedr library
 RUN Rscript -e "library(bedr)"
 
-# Install for mutation signature analysis
-RUN R -e "BiocManager::install(c('BSgenome.Hsapiens.UCSC.hg19', 'BSgenome.Hsapiens.UCSC.hg38'))"
-
 # Also install for mutation signature analysis
 # qdapRegex is for the fusion analysis
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
-    --deps TRUE \
+RUN install2.r --error --deps TRUE \
     deconstructSigs \
     qdapRegex
 
 # packages required for collapsing RNA-seq data by removing duplicated gene symbols
-RUN R -e "install.packages('DT', dependencies = TRUE)"
-RUN R -e "BiocManager::install(c('rtracklayer'), update = FALSE)"
-
-# Needed to install TCGAbiolinks
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
-    --deps TRUE \
-    survival \
-    nlme \
-    cluster \
-    foreign \
-    nnet \
-    mgcv
+RUN ./install_bioc.r \
+    rtracklayer
 
 # TCGAbiolinks for TMB compare analysis
-RUN R -e "BiocManager::install(c('TCGAbiolinks'), update = FALSE)"
-
-# Install python3 data science basics (pandas)
-# using pip to get more current versions
-RUN apt-get update -qq && apt-get -y --no-install-recommends install python3-pip  python3-dev
-RUN pip3 install "numpy==1.17.3" && \
-   pip3 install "six==1.13.0" "setuptools==41.6.0" && \
-   pip3 install "cycler==0.10.0" "kiwisolver==1.1.0" "pyparsing==2.4.5" "python-dateutil==2.8.1" "pytz==2019.3" && \
-   pip3 install "matplotlib==3.0.3" && \
-   pip3 install "scipy==1.3.2" && \
-   pip3 install "pandas==0.25.3" && \
-   pip3 install "snakemake==5.8.1"
-
-
-# pip install for modules Ras, NF1, and TP53 Classifiers
-RUN pip3 install "statsmodels==0.10.2" && \
-   pip3 install "plotnine==0.3.0" && \
-   pip3 install "scikit-learn==0.19.1" &&\
-   pip3 install "rpy2==2.9.3" && \
-   pip3 install "seaborn==0.8.1" && \
-   pip3 install "jupyter==1.0.0" && \
-   pip3 install "ipykernel==4.8.1" && \
-   pip3 install "widgetsnbextension==2.0.0" && \
-   pip3 install "tzlocal"
-
-
-# Add curl
-RUN apt-get update && apt-get install -y --no-install-recommends curl
-
-# Need for survminer for doing survival analysis
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
-    --deps TRUE \
-    survival \
-    cmprsk \
-    survMisc \
-    survminer
-
-# pyreadr for comparative-RNASeq-analysis
-RUN pip3 install "pyreadr==0.2.1"
-
-# ggfortify for plotting
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
-    --deps TRUE \
-    spatial \
-    ggfortify
-
-# package required for immune deconvolution
-RUN R -e "install.packages('remotes', dependencies = TRUE)"
-RUN R -e "remotes::install_github('icbi-lab/immunedeconv', ref = '493bcaa9e1f73554ac2d25aff6e6a7925b0ea7a6', dependencies = TRUE)"
-RUN R -e "install.packages('corrplot', dependencies = TRUE)"
+RUN R -e "remotes::install_github('RDocTaskForce/parsetools', ref = '1e682a9f4c5c7192d22e8985ce7723c09e98d62b', dependencies = TRUE)"
+RUN R -e "remotes::install_github('RDocTaskForce/testextra', ref = '4e5dfac8853c08d5c2a8790a0a1f8165f293b4be', dependencies = TRUE)"
+RUN R -e "remotes::install_github('halpo/purrrogress', ref = '54f2130477f161896e7b271ed3ea828c7e4ccb1c', dependencies = TRUE)"
+RUN ./install_bioc.r \
+    TCGAbiolinks
 
 # Install for mutation signature analysis
-RUN R -e "BiocManager::install('ggbio')"
+RUN ./install_bioc.r \
+    ggbio
 
 # CRAN package msigdbr needed for gene-set-enrichment-analysis
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
-    --deps TRUE \
+RUN install2.r --error --deps TRUE \
     msigdbr
-
 # Bioconductor package GSVA needed for gene-set-enrichment-analysis
-RUN R -e "BiocManager::install(c('GSVA'), update = FALSE)"
+RUN ./install_bioc.r \
+    GSVA
+
+
+# package required for immune deconvolution
+RUN R -e "remotes::install_github('icbi-lab/immunedeconv', ref = '493bcaa9e1f73554ac2d25aff6e6a7925b0ea7a6', dependencies = TRUE)"
+
+RUN R -e "remotes::install_github('const-ae/ggupset', ref = '7a33263cc5fafdd72a5bfcbebe5185fafe050c73', dependencies = TRUE)"
+
+# This is needed to create the interactive pie chart
+RUN R -e "remotes::install_github('timelyportfolio/sunburstR', ref = 'd40d7ed71ee87ca4fbb9cb8b7cf1e198a23605a9', dependencies = TRUE)"
+
+# This is needed to create the interactive treemap
+RUN R -e "remotes::install_github('timelyportfolio/d3treeR', ref = '0eaba7f1c6438e977f8a5c082f1474408ac1fd80', dependencies = TRUE)"
+
+# Need this package to make plots colorblind friendly
+RUN R -e "remotes::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
 
 # remote package EXTEND needed for telomerase-activity-prediciton analysis
-RUN R -e "devtools::install_github('NNoureen/EXTEND', ref = '467c2724e1324ef05ad9260c3079e5b0b0366420', dependencies = TRUE)"
-
-# Required for installing pdftools, which is a dependency of gridGraphics
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    libpoppler-cpp-dev
-
-# CRAN package gridGraphics needed for telomerase-activity-prediction
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
-    --deps TRUE \
-    gridGraphics
+RUN R -e "remotes::install_github('NNoureen/EXTEND', ref = '467c2724e1324ef05ad9260c3079e5b0b0366420', dependencies = TRUE)"
 
 # package required for shatterseek
 RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remotes::install_github('parklab/ShatterSeek', ref = '83ab3effaf9589cc391ecc2ac45a6eaf578b5046', dependencies = TRUE))"
 
-# pyarrow for comparative-RNASeq-analysis, to read/write .feather files
-RUN pip3 install "pyarrow==0.16.0"
+# Packages required for rna-seq-composition
+RUN install2.r --error --deps TRUE \
+    EnvStats \
+    janitor
 
-# ComplexHeatmap and circlize were apparently not explicitly installed anywhere, but is used throughout
-RUN R -e "BiocManager::install(c('ComplexHeatmap', 'circlize'), update = FALSE)"
+# Patchwork for plot compositions
+RUN R -e "remotes::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd46899f17197f9858bc5672e9f4')"
+
+# This is required for creating a treemap of the broad histology and integrated diagnoses
+RUN R -e "remotes::install_github('wilkox/treemapify', ref = 'e70adf727f4d13223de8146458db9bef97f872cb', dependencies = TRUE)"
+
+# Need this specific version of circlize so it has hg38
+RUN R -e "remotes::install_github('jokergoo/circlize', ref = 'b7d86409d7f893e881980b705ba1dbc758df847d', dependencies = TRUE)"
+
+# Install python libraries
+##########################
+
+# Install python3 data science tools
+RUN pip3 install \
+    "cycler==0.10.0" "kiwisolver==1.1.0" "pyparsing==2.4.5" "python-dateutil==2.8.1" "pytz==2019.3" \
+    "ipykernel==4.8.1" \
+    "jupyter==1.0.0" \
+    "matplotlib==3.0.3" \
+    "numpy==1.17.3" \
+    "pandas==0.25.3" \
+    "plotnine==0.3.0" \
+    "pyarrow==0.16.0" \
+    "pyreadr==0.2.1" \
+    "scikit-learn==0.19.1" \
+    "scipy==1.3.2" \
+    "seaborn==0.8.1" \
+    "snakemake==5.8.1" \
+    "statsmodels==0.10.2" \
+    "tzlocal==2.0" \
+    "widgetsnbextension==2.0.0"
+
+# Install Rpy2
+RUN pip3 install "rpy2==2.9.3"
+
+# Install CrossMap for liftover
+RUN pip3 install "cython==0.29.15" && \
+    pip3 install "bx-python==0.8.8" && \
+    pip3 install "pybigwig==0.3.17" && \
+    pip3 install "pysam==0.15.4" && \
+    pip3 install "CrossMap==0.3.9"
+
 
 # MATLAB Compiler Runtime is required for GISTIC, MutSigCV
 # Install steps are adapted from usuresearch/matlab-runtime
@@ -296,25 +306,8 @@ RUN mkdir -p gistic_install && \
 RUN chown -R rstudio:rstudio /home/rstudio/gistic_install
 RUN chmod 755 /home/rstudio/gistic_install
 
-# Install CrossMap for liftover
-RUN pip3 install "cython==0.29.15" && \
-    pip3 install "bx-python==0.8.8" && \
-    pip3 install "pybigwig==0.3.17" && \
-    pip3 install "pysam==0.15.4" && \
-    pip3 install "CrossMap==0.3.9" 
 
-# Packages required for rna-seq-composition
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    && install2.r --error \
-    --deps TRUE \
-    EnvStats \
-    janitor
 
-# Patchwork for plot compositions
-RUN R -e "devtools::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd46899f17197f9858bc5672e9f4')"
-
-# This is required for creating a treemap of the broad histology and integrated diagnoses
-RUN R -e "devtools::install_github('wilkox/treemapify', ref = 'e70adf727f4d13223de8146458db9bef97f872cb', dependencies = TRUE)"
 
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
