@@ -53,30 +53,11 @@ cp ${analyses_dir}/interaction-plots/plots/combined_top50.png pngs/mutation_cooc
 ######################
 ## Oncoprint plot(s)
 
-# Primary only oncoprint
+# Run the `oncoprint-landscape` module shell script
+bash ${analyses_dir}/oncoprint-landscape/run-oncoprint.sh
 
-Rscript --vanilla ${analyses_dir}/oncoprint-landscape/00-map-to-sample_id.R \
-  --maf_file ${data_dir}//pbta-snv-consensus-mutation.maf.tsv.gz \
-  --cnv_file ${analyses_dir}/focal-cn-file-preparation/results/consensus_seg_annotated_cn_autosomes.tsv.gz \
-  --fusion_file ${data_dir}/pbta-fusion-putative-oncogenic.tsv \
-  --metadata_file ${data_dir}/pbta-histologies.tsv \
-  --output_directory ${scratch_dir}/oncoprint_files \
-  --filename_lead "all_participants_primary-only" \
-  --independent_specimens ${data_dir}/independent-specimens.wgswxs.primary.tsv
-  
-# Primary plus samples oncoprint
-
-Rscript --vanilla ${analyses_dir}/oncoprint-landscape/00-map-to-sample_id.R \
-  --maf_file ${data_dir}/pbta-snv-consensus-mutation.maf.tsv.gz \
-  --cnv_file ${analyses_dir}/focal-cn-file-preparation/results/consensus_seg_annotated_cn_autosomes.tsv.gz \
-  --fusion_file ${data_dir}/pbta-fusion-putative-oncogenic.tsv \
-  --metadata_file ${data_dir}/pbta-histologies.tsv \
-  --output_directory ${scratch_dir}/oncoprint_files \
-  --filename_lead "all_participants_primary-plus" \
-  --independent_specimens ${data_dir}/independent-specimens.wgswxs.primary-plus.tsv
-
-# Run the figure assembly
-Rscript scripts/fig3-oncoprint-landscape.R
+# Copy the primary plus samples oncoprint figure to final directory
+cp ${analyses_dir}/oncoprint-landscape/plots/all_participants_primary-plus_oncoprint.png pngs/fig3-oncoprint-landscape.png
 
 ## Copy number status heatmap
 

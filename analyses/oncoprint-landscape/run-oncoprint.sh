@@ -34,7 +34,7 @@ Rscript --vanilla 00-map-to-sample_id.R \
   --metadata_file ${histologies_file} \
   --output_directory ${intermediate_directory} \
   --filename_lead ${primary_filename} \
-  --independent_specimens ../../data/independent-specimens.wgswxs.primary.tsv
+  --independent_specimens ../../data/independent-specimens.wgs.primary.tsv
 
 Rscript --vanilla 01-plot-oncoprint.R \
   --maf_file ${intermediate_directory}/${primary_filename}_maf.tsv \
@@ -63,7 +63,7 @@ Rscript --vanilla 00-map-to-sample_id.R \
   --metadata_file ${histologies_file} \
   --output_directory ${intermediate_directory} \
   --filename_lead ${primaryplus_filename} \
-  --independent_specimens ../../data/independent-specimens.wgswxs.primary-plus.tsv
+  --independent_specimens ../../data/independent-specimens.wgs.primary-plus.tsv
 
 Rscript --vanilla 01-plot-oncoprint.R \
   --maf_file ${intermediate_directory}/${primaryplus_filename}_maf.tsv \
