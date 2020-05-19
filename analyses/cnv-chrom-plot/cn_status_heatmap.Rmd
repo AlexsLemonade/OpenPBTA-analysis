@@ -59,7 +59,7 @@ figure_dir <- file.path("..", "..", "figures")
 scratch_dir <- file.path("..", "..", "scratch")
 cnv_dir <- file.path("..", "copy_number_consensus_call", "results")
 
-# Path to output directory based on whether this is called by the generrate-figures.sh script or not
+# Path to output directory based on whether this is called by the generate-figures.sh script or not
 plots_dir <- ifelse(params$final_figure, file.path(figure_dir, "pngs"),  "plots")
 
 # Create the plots_dir if it does not exist
@@ -439,11 +439,12 @@ Print out heatmap.
 ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
 ```
 
-Save to PDF. 
+Save to PNG. 
 
 ```{r}
-# Save plot as PDF
-png(file.path(plots_dir, "cn_status_heatmap.png"))
+# Save plot as PNG
+png(file.path(plots_dir, "cn_status_heatmap.png"), 
+    res = 800, width = 8.5, height = 11.5, units = "in")
 ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
 dev.off()
 ```
