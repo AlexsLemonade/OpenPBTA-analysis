@@ -37,17 +37,6 @@ _This assumes you are in the top directory of the repository._
 Import necessary functions.
 
 ```{r}
-if (!("deconstructSigs" %in% installed.packages())) {
-  BiocManager::install("BSgenome.Hsapiens.UCSC.hg38")
-  install.packages("deconstructSigs")
-}
-if (!("devtools" %in% installed.packages())) {
-  install.packages("devtools")
-}
-if (!("sigfit" %in% installed.packages())) {
-  devtools::install_github("kgori/sigfit", build_vignettes = TRUE,
-    build_opts = c("--no-resave-data", "--no-manual"))
-}
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
