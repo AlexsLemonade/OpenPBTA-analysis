@@ -17,7 +17,7 @@ This above  script is designed to change to this directory to run, so it should 
 
 3. <b>`02_ependymoma_generate_all_data.py`</b>  is a script that takes in expression, GISTIC, fusion, breakpoint, GISTIC, GSVA files to add values from these tables as new columns to the input notebook. Output from `01-make_notebook_RNAandDNA.py` script is used as input notebook. The output notebook from this is saved to `results/EPN_all_data.tsv`
 
-4. <b> `03-subgrouping_samples.py`  </b>  is a script that takes the table `results/EPN_all_data.tsv`  as input and adds a column that groups the samples into one of these groups - ST-EPN-RELA, ST-EPN-YAP1, PF-EPN-A, and PF-EPN-B. A new column named `subgroup` is added to the input table and saved in `results/EPN_all_data_withsubgroup.tsv`.
+4. <b> `03-subgrouping_samples.ipynb`  </b>  is a script that takes the table `results/EPN_all_data.tsv`  as input and adds a column that groups the samples into one of these groups - ST-EPN-RELA, ST-EPN-YAP1, PF-EPN-A, and PF-EPN-B. A new column named `subgroup` is added to the input table and saved in `results/EPN_all_data_withsubgroup.tsv`.
     - This script prioritizes features of subgroups first and does not assign those samples to any other subgroups. For example `RELA` fusions are prioritized for `ST_EPN_RELA` subgroup and not assigedn to any other  groups. Two functions help achieve this in the script - 1) `prioritized_fusion` for `ST-SPN_RELA` and `ST-EPN-YAP1` groups and 2) `prioritizing_PT_EPN` for `PT_EPN_A` and `PT_EPN_B` groups
 
     - There is another function `subgroup_func` that checks that samples are not in `samples_assigned`  list  and checks the  value of certain columns and assigns subgroups to samples accordingly.
