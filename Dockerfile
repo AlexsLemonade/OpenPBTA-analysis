@@ -311,8 +311,14 @@ WORKDIR /rocker-build/
 RUN install2.r --error --deps TRUE \
   lsa
 
+# To install sigfit, we need a more recent version of rstantools than we can obtain via the MRAN snapshot route
+# We're using the ref for the most recent release on GitHub (2.0.0)
+RUN R -e "remotes::install_github('stan-dev/rstantools', ref = 'd43bf9fb6120d40a60e708853e4b80cdb4689d19', dependencies = TRUE)"
+
 # Build arguments are according to the sigfit instructions
-RUN R -e "devtools::install_github('kgori/sigfit', ref = '209776ee1d2193ad4b682b2e2472f848bd7c67a6', build_vignettes = TRUE, build_opts = c('--no-resave-data', '--no-manual'), dependencies = TRUE)"
+RUN R -e "remotes::install_github('kgori/sigfit', ref = '209776ee1d2193ad4b682b2e2472f848bd7c67a6', build_vignettes = TRUE, build_opts = c('--no-resave-data', '--no-manual'), dependencies = TRUE)"
+
+
 
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
