@@ -39,6 +39,8 @@ The TCGA data is processed by its own script to run the same methods:
 bash run_caller_consensus_analysis-tcga.sh
 ```
 
+**Note** All file paths set in these bash scripts are based on finding the root directory of this Git repository and therefore are given relative to `OpenPBTA-analysis`. 
+
 This bash script will return:
 
 - Comparison plots in a notebook: [`compare_snv_callers_plots.nb.html`](https://cansavvy.github.io/openpbta-notebook-concept/snv-callers/compare_snv_callers_plots.nb.html).
@@ -105,8 +107,8 @@ intersection_wxs_strelka_mutect_CDS_genome_size
 ## General usage of scripts
 
 **Overall notes about these scripts:**
+- All file paths are based on finding the root directory of this Git repository and therefore are given relative to `OpenPBTA-analysis`. 
 - The scripts are sequential as noted by their number.
-- All file path-related options assume the file path given is relative to `OpenPBTA-analysis`.
 - By default, the scripts will not overwrite existing files of the same name. However,
 this can be overridden with `--overwrite` option.
 
