@@ -206,9 +206,8 @@ Save this plot to a png
 
 ```{r}
 # We can save the plot like a normal ggplot
-png(file = file.path(plots_dir, "tcga-upset_plot.png"))
-upsettr_plot
-dev.off()
+ggplot2::ggsave(upsettr_plot, 
+                file = file.path(plots_dir, "tcga-upset_plot.png"))
 ```
 
 Transcripts only upset plot. 
@@ -235,7 +234,7 @@ Graph the median VAF for each combination of callers.
 
 ```{r}
 # Make this plot
-callers_per_mutation %>%
+median_vaf_plot <- callers_per_mutation %>%
   ggplot2::ggplot(ggplot2::aes(x = caller_combo, y = median_vaf)) +
   ggplot2::geom_violin() +
   ggplot2::theme_classic() +
@@ -243,11 +242,14 @@ callers_per_mutation %>%
   ggupset::axis_combmatrix(sep = "-") +
   ggplot2::xlab("") +
   ggplot2::ylab("Median VAF Across Callers")
+
+# Print out plot
+median_vaf_plot 
 ```
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(file.path(plots_dir, "tcga-upset_median_vaf_plot.png"))
+ggplot2::ggsave(plot = median_vaf_plot, file.path(plots_dir, "tcga-upset_median_vaf_plot.png"))
 ```
 
 ## Base Changes 
