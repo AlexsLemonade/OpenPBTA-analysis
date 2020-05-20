@@ -13138,10 +13138,10 @@ div#notebook {
         <span class="c1">#print(row[fusionname])</span>
         <span class="k">if</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">fusionname</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
             <span class="n">sample_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;sample_id&quot;</span><span class="p">])</span>
-            <span class="n">fusion_boolean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">fusion_boolean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">fusion_boolean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">fusion_boolean</span><span class="p">:</span>
+            <span class="n">fusion_boolean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">fusion_boolean</span><span class="p">):</span>
         <span class="k">return</span><span class="p">(</span><span class="n">subgroupname</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">])</span> 
@@ -13252,7 +13252,9 @@ div#notebook {
                                         <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;ST_EPN_RELA&quot;</span><span class="p">,</span>
                                         <span class="n">fusionlist</span><span class="o">=</span><span class="n">st_epn_rela_fusions</span><span class="p">,</span>
                                         <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
-<span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">))</span>
+
+<span class="n">display</span><span class="p">(</span><span class="n">EPN_final</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -13265,13 +13267,188 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[7]:</div>
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>28
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
 
 
 
+<div class="output_html rendered_html output_subarea ">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<div class="output_text output_subarea output_execute_result">
-<pre>28</pre>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Kids_First_Participant_ID</th>
+      <th>sample_id</th>
+      <th>Kids_First_Biospecimen_ID_DNA</th>
+      <th>Kids_First_Biospecimen_ID_RNA</th>
+      <th>disease_group</th>
+      <th>1q_loss</th>
+      <th>1q_gain</th>
+      <th>9p_loss</th>
+      <th>9q_loss</th>
+      <th>6p_loss</th>
+      <th>...</th>
+      <th>consensus_focal_CN_CDKN2</th>
+      <th>RELA_expr_zscore</th>
+      <th>L1CAM_expr_zscore</th>
+      <th>ARL4D_expr_zscore</th>
+      <th>CLDN1_expr_zscore</th>
+      <th>CXorf67_expr_zscore</th>
+      <th>TKTL1_expr_zscore</th>
+      <th>GPBP1_expr_zscore</th>
+      <th>IFT46_expr_zscore</th>
+      <th>subgroup</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>PT_S4H6KA09</td>
+      <td>7316-2134</td>
+      <td>BS_K6A9Z04J</td>
+      <td>BS_07ANYSYQ</td>
+      <td>supratentorial</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>loss</td>
+      <td>0.667614</td>
+      <td>0.487470</td>
+      <td>0.166855</td>
+      <td>-0.216807</td>
+      <td>-0.733550</td>
+      <td>-0.379140</td>
+      <td>0.230703</td>
+      <td>-0.798158</td>
+      <td>ST_EPN_RELA</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>PT_164RNWTT</td>
+      <td>7316-1078</td>
+      <td>BS_5D24XV4T</td>
+      <td>BS_0BXY0F9N</td>
+      <td>infratentorial</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>-0.669468</td>
+      <td>-0.536139</td>
+      <td>0.943212</td>
+      <td>-0.253911</td>
+      <td>0.606873</td>
+      <td>-0.184479</td>
+      <td>-1.135558</td>
+      <td>-0.004348</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>PT_V3Q78E6F</td>
+      <td>7316-455</td>
+      <td>BS_7RQCH5Y7</td>
+      <td>BS_0QYS36NR</td>
+      <td>undetermined</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>-0.441425</td>
+      <td>-0.547948</td>
+      <td>0.146395</td>
+      <td>-0.259969</td>
+      <td>0.249427</td>
+      <td>0.453800</td>
+      <td>-1.603039</td>
+      <td>-0.851185</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>PT_Y6Y9JJ9P</td>
+      <td>7316-425</td>
+      <td>NaN</td>
+      <td>BS_0WQJP6ZG</td>
+      <td>supratentorial</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>-0.145624</td>
+      <td>-0.303262</td>
+      <td>0.893197</td>
+      <td>-0.223623</td>
+      <td>-0.759494</td>
+      <td>-0.379140</td>
+      <td>0.622200</td>
+      <td>-1.025133</td>
+      <td>ST_EPN_RELA</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>PT_82A9SDRN</td>
+      <td>7316-2313</td>
+      <td>BS_NWYBD9CA</td>
+      <td>BS_0XEG6SNV</td>
+      <td>supratentorial</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>1.302490</td>
+      <td>3.919198</td>
+      <td>-0.209387</td>
+      <td>-0.186519</td>
+      <td>-0.171437</td>
+      <td>-0.375096</td>
+      <td>-0.408285</td>
+      <td>-0.195971</td>
+      <td>ST_EPN_RELA</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 34 columns</p>
+</div>
 </div>
 
 </div>
@@ -13291,7 +13468,9 @@ div#notebook {
                                         <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;ST_EPN_YAP1&quot;</span><span class="p">,</span>
                                         <span class="n">fusionlist</span><span class="o">=</span><span class="n">st_epn_yap1_fusions</span><span class="p">,</span>
                                         <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
-<span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">))</span>
+<span class="c1"># This step assigned one sample to ST_EPN_YAP1</span>
+<span class="n">display</span><span class="p">(</span><span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;ST_EPN_YAP1&quot;</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -13304,13 +13483,92 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[8]:</div>
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>29
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
 
 
 
+<div class="output_html rendered_html output_subarea ">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<div class="output_text output_subarea output_execute_result">
-<pre>29</pre>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Kids_First_Participant_ID</th>
+      <th>sample_id</th>
+      <th>Kids_First_Biospecimen_ID_DNA</th>
+      <th>Kids_First_Biospecimen_ID_RNA</th>
+      <th>disease_group</th>
+      <th>1q_loss</th>
+      <th>1q_gain</th>
+      <th>9p_loss</th>
+      <th>9q_loss</th>
+      <th>6p_loss</th>
+      <th>...</th>
+      <th>consensus_focal_CN_CDKN2</th>
+      <th>RELA_expr_zscore</th>
+      <th>L1CAM_expr_zscore</th>
+      <th>ARL4D_expr_zscore</th>
+      <th>CLDN1_expr_zscore</th>
+      <th>CXorf67_expr_zscore</th>
+      <th>TKTL1_expr_zscore</th>
+      <th>GPBP1_expr_zscore</th>
+      <th>IFT46_expr_zscore</th>
+      <th>subgroup</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>78</th>
+      <td>PT_W17NV5YG</td>
+      <td>7316-2079</td>
+      <td>BS_FVPMPMRJ</td>
+      <td>BS_V4W81SFC</td>
+      <td>undetermined</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>-0.404841</td>
+      <td>-0.546348</td>
+      <td>7.682619</td>
+      <td>6.264276</td>
+      <td>-0.762376</td>
+      <td>-0.383183</td>
+      <td>-0.721627</td>
+      <td>-0.510522</td>
+      <td>ST_EPN_YAP1</td>
+    </tr>
+  </tbody>
+</table>
+<p>1 rows × 34 columns</p>
+</div>
 </div>
 
 </div>
@@ -13327,7 +13585,11 @@ div#notebook {
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Same as the two subgroups above ET_EPN A and B are prioritized for certain gene expressions and </span>
 <span class="c1"># CNV changes, after these are assigned, samples are not considered for further categories</span>
 <span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">prioritizing_PT_EPN</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
-<span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">))</span>
+
+<span class="c1"># This step assigned two samples to PT_EPN_A sub group and none to PT_EPN_B subgroup</span>
+<span class="n">display</span><span class="p">(</span><span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;PT_EPN_A&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="n">display</span><span class="p">(</span><span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;PT_EPN_B&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </pre></div>
 
     </div>
@@ -13340,13 +13602,173 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[9]:</div>
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>31
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
 
 
 
+<div class="output_html rendered_html output_subarea ">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<div class="output_text output_subarea output_execute_result">
-<pre>31</pre>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Kids_First_Participant_ID</th>
+      <th>sample_id</th>
+      <th>Kids_First_Biospecimen_ID_DNA</th>
+      <th>Kids_First_Biospecimen_ID_RNA</th>
+      <th>disease_group</th>
+      <th>1q_loss</th>
+      <th>1q_gain</th>
+      <th>9p_loss</th>
+      <th>9q_loss</th>
+      <th>6p_loss</th>
+      <th>...</th>
+      <th>consensus_focal_CN_CDKN2</th>
+      <th>RELA_expr_zscore</th>
+      <th>L1CAM_expr_zscore</th>
+      <th>ARL4D_expr_zscore</th>
+      <th>CLDN1_expr_zscore</th>
+      <th>CXorf67_expr_zscore</th>
+      <th>TKTL1_expr_zscore</th>
+      <th>GPBP1_expr_zscore</th>
+      <th>IFT46_expr_zscore</th>
+      <th>subgroup</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>22</th>
+      <td>PT_ZA95JQEB</td>
+      <td>7316-384</td>
+      <td>BS_ZZJF26C4</td>
+      <td>BS_8RHPJ740</td>
+      <td>undetermined</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>gain</td>
+      <td>0.364269</td>
+      <td>-0.547396</td>
+      <td>-0.117316</td>
+      <td>-0.236495</td>
+      <td>0.396441</td>
+      <td>5.493027</td>
+      <td>-1.045101</td>
+      <td>-0.101164</td>
+      <td>PT_EPN_A</td>
+    </tr>
+    <tr>
+      <th>89</th>
+      <td>PT_ZZRBX5JT</td>
+      <td>7316-3319</td>
+      <td>BS_9N3B3HZB</td>
+      <td>BS_YE1MAQYJ</td>
+      <td>infratentorial</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>-0.646265</td>
+      <td>-0.546845</td>
+      <td>-0.151416</td>
+      <td>-0.211507</td>
+      <td>2.515174</td>
+      <td>3.836389</td>
+      <td>-0.322893</td>
+      <td>0.879046</td>
+      <td>PT_EPN_A</td>
+    </tr>
+  </tbody>
+</table>
+<p>2 rows × 34 columns</p>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Kids_First_Participant_ID</th>
+      <th>sample_id</th>
+      <th>Kids_First_Biospecimen_ID_DNA</th>
+      <th>Kids_First_Biospecimen_ID_RNA</th>
+      <th>disease_group</th>
+      <th>1q_loss</th>
+      <th>1q_gain</th>
+      <th>9p_loss</th>
+      <th>9q_loss</th>
+      <th>6p_loss</th>
+      <th>...</th>
+      <th>consensus_focal_CN_CDKN2</th>
+      <th>RELA_expr_zscore</th>
+      <th>L1CAM_expr_zscore</th>
+      <th>ARL4D_expr_zscore</th>
+      <th>CLDN1_expr_zscore</th>
+      <th>CXorf67_expr_zscore</th>
+      <th>TKTL1_expr_zscore</th>
+      <th>GPBP1_expr_zscore</th>
+      <th>IFT46_expr_zscore</th>
+      <th>subgroup</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+<p>0 rows × 34 columns</p>
+</div>
 </div>
 
 </div>
@@ -13380,7 +13802,10 @@ div#notebook {
                                         <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;ST_EPN_RELA&quot;</span><span class="p">,</span>
                                         <span class="n">column_values</span><span class="o">=</span><span class="n">st_epn_rela_tests</span><span class="p">,</span>
                                         <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
-<span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">))</span>
+<span class="c1"># This step assigns ST_EPN_RELA  subgroup  which are not priroritized and based on length of assigned</span>
+<span class="c1"># samples, no samples were assigned any subgroups form this step </span>
 </pre></div>
 
     </div>
@@ -13393,15 +13818,13 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[10]:</div>
+    <div class="prompt"></div>
 
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>31</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>31
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -13425,7 +13848,9 @@ div#notebook {
                                         <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;ST_EPN_YAP1&quot;</span><span class="p">,</span>
                                         <span class="n">column_values</span><span class="o">=</span><span class="n">st_epn_yap1_tests</span><span class="p">,</span>
                                         <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
-<span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">))</span>
+<span class="c1"># This step assigns ST_EPN_YAP1  subgroup  which are not priroritized and based on length of assigned</span>
+<span class="c1"># samples, no samples were assigned any subgroups form this step </span>
 </pre></div>
 
     </div>
@@ -13438,15 +13863,13 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[11]:</div>
+    <div class="prompt"></div>
 
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>31</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>31
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -13459,6 +13882,7 @@ div#notebook {
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## Creating columns for SV and CNV breaks density</span>
+<span class="n">display</span><span class="p">(</span><span class="n">EPN_final</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
 <span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;SV instability&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 <span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;CNV_instability&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 <span class="n">sv_iqr</span> <span class="o">=</span> <span class="n">iqr</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;breaks_density-chromosomal_instability_SV&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()))</span>
@@ -13467,9 +13891,373 @@ div#notebook {
 <span class="n">cnv_median</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;breaks_density-chromosomal_instability_CNV&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()))</span>
 <span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;SV instability&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;breaks_density-chromosomal_instability_SV&quot;</span><span class="p">]</span><span class="o">-</span><span class="n">sv_median</span><span class="p">)</span><span class="o">/</span><span class="n">sv_iqr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;CNV_instability&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;breaks_density-chromosomal_instability_CNV&quot;</span><span class="p">]</span><span class="o">-</span><span class="n">cnv_median</span><span class="p">)</span><span class="o">/</span><span class="n">cnv_iqr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">display</span><span class="p">(</span><span class="n">EPN_final</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="c1"># EPN_final printed before and after adding the columns instability and instability</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Kids_First_Participant_ID</th>
+      <th>sample_id</th>
+      <th>Kids_First_Biospecimen_ID_DNA</th>
+      <th>Kids_First_Biospecimen_ID_RNA</th>
+      <th>disease_group</th>
+      <th>1q_loss</th>
+      <th>1q_gain</th>
+      <th>9p_loss</th>
+      <th>9q_loss</th>
+      <th>6p_loss</th>
+      <th>...</th>
+      <th>consensus_focal_CN_CDKN2</th>
+      <th>RELA_expr_zscore</th>
+      <th>L1CAM_expr_zscore</th>
+      <th>ARL4D_expr_zscore</th>
+      <th>CLDN1_expr_zscore</th>
+      <th>CXorf67_expr_zscore</th>
+      <th>TKTL1_expr_zscore</th>
+      <th>GPBP1_expr_zscore</th>
+      <th>IFT46_expr_zscore</th>
+      <th>subgroup</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>PT_S4H6KA09</td>
+      <td>7316-2134</td>
+      <td>BS_K6A9Z04J</td>
+      <td>BS_07ANYSYQ</td>
+      <td>supratentorial</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>loss</td>
+      <td>0.667614</td>
+      <td>0.487470</td>
+      <td>0.166855</td>
+      <td>-0.216807</td>
+      <td>-0.733550</td>
+      <td>-0.379140</td>
+      <td>0.230703</td>
+      <td>-0.798158</td>
+      <td>ST_EPN_RELA</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>PT_164RNWTT</td>
+      <td>7316-1078</td>
+      <td>BS_5D24XV4T</td>
+      <td>BS_0BXY0F9N</td>
+      <td>infratentorial</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>-0.669468</td>
+      <td>-0.536139</td>
+      <td>0.943212</td>
+      <td>-0.253911</td>
+      <td>0.606873</td>
+      <td>-0.184479</td>
+      <td>-1.135558</td>
+      <td>-0.004348</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>PT_V3Q78E6F</td>
+      <td>7316-455</td>
+      <td>BS_7RQCH5Y7</td>
+      <td>BS_0QYS36NR</td>
+      <td>undetermined</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>-0.441425</td>
+      <td>-0.547948</td>
+      <td>0.146395</td>
+      <td>-0.259969</td>
+      <td>0.249427</td>
+      <td>0.453800</td>
+      <td>-1.603039</td>
+      <td>-0.851185</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>PT_Y6Y9JJ9P</td>
+      <td>7316-425</td>
+      <td>NaN</td>
+      <td>BS_0WQJP6ZG</td>
+      <td>supratentorial</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>-0.145624</td>
+      <td>-0.303262</td>
+      <td>0.893197</td>
+      <td>-0.223623</td>
+      <td>-0.759494</td>
+      <td>-0.379140</td>
+      <td>0.622200</td>
+      <td>-1.025133</td>
+      <td>ST_EPN_RELA</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>PT_82A9SDRN</td>
+      <td>7316-2313</td>
+      <td>BS_NWYBD9CA</td>
+      <td>BS_0XEG6SNV</td>
+      <td>supratentorial</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>1.302490</td>
+      <td>3.919198</td>
+      <td>-0.209387</td>
+      <td>-0.186519</td>
+      <td>-0.171437</td>
+      <td>-0.375096</td>
+      <td>-0.408285</td>
+      <td>-0.195971</td>
+      <td>ST_EPN_RELA</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 34 columns</p>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Kids_First_Participant_ID</th>
+      <th>sample_id</th>
+      <th>Kids_First_Biospecimen_ID_DNA</th>
+      <th>Kids_First_Biospecimen_ID_RNA</th>
+      <th>disease_group</th>
+      <th>1q_loss</th>
+      <th>1q_gain</th>
+      <th>9p_loss</th>
+      <th>9q_loss</th>
+      <th>6p_loss</th>
+      <th>...</th>
+      <th>L1CAM_expr_zscore</th>
+      <th>ARL4D_expr_zscore</th>
+      <th>CLDN1_expr_zscore</th>
+      <th>CXorf67_expr_zscore</th>
+      <th>TKTL1_expr_zscore</th>
+      <th>GPBP1_expr_zscore</th>
+      <th>IFT46_expr_zscore</th>
+      <th>subgroup</th>
+      <th>SV instability</th>
+      <th>CNV_instability</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>PT_S4H6KA09</td>
+      <td>7316-2134</td>
+      <td>BS_K6A9Z04J</td>
+      <td>BS_07ANYSYQ</td>
+      <td>supratentorial</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.487470</td>
+      <td>0.166855</td>
+      <td>-0.216807</td>
+      <td>-0.733550</td>
+      <td>-0.379140</td>
+      <td>0.230703</td>
+      <td>-0.798158</td>
+      <td>ST_EPN_RELA</td>
+      <td>0.718310</td>
+      <td>1.555556</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>PT_164RNWTT</td>
+      <td>7316-1078</td>
+      <td>BS_5D24XV4T</td>
+      <td>BS_0BXY0F9N</td>
+      <td>infratentorial</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>-0.536139</td>
+      <td>0.943212</td>
+      <td>-0.253911</td>
+      <td>0.606873</td>
+      <td>-0.184479</td>
+      <td>-1.135558</td>
+      <td>-0.004348</td>
+      <td></td>
+      <td>-0.556338</td>
+      <td>0.148148</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>PT_V3Q78E6F</td>
+      <td>7316-455</td>
+      <td>BS_7RQCH5Y7</td>
+      <td>BS_0QYS36NR</td>
+      <td>undetermined</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>-0.547948</td>
+      <td>0.146395</td>
+      <td>-0.259969</td>
+      <td>0.249427</td>
+      <td>0.453800</td>
+      <td>-1.603039</td>
+      <td>-0.851185</td>
+      <td></td>
+      <td>-1.232394</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>PT_Y6Y9JJ9P</td>
+      <td>7316-425</td>
+      <td>NaN</td>
+      <td>BS_0WQJP6ZG</td>
+      <td>supratentorial</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>-0.303262</td>
+      <td>0.893197</td>
+      <td>-0.223623</td>
+      <td>-0.759494</td>
+      <td>-0.379140</td>
+      <td>0.622200</td>
+      <td>-1.025133</td>
+      <td>ST_EPN_RELA</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>PT_82A9SDRN</td>
+      <td>7316-2313</td>
+      <td>BS_NWYBD9CA</td>
+      <td>BS_0XEG6SNV</td>
+      <td>supratentorial</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>3.919198</td>
+      <td>-0.209387</td>
+      <td>-0.186519</td>
+      <td>-0.171437</td>
+      <td>-0.375096</td>
+      <td>-0.408285</td>
+      <td>-0.195971</td>
+      <td>ST_EPN_RELA</td>
+      <td>-0.338028</td>
+      <td>0.814815</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 36 columns</p>
+</div>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13481,6 +14269,19 @@ div#notebook {
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
     <span class="n">EPN_final</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>
