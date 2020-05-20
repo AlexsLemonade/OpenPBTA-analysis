@@ -85,12 +85,18 @@ call_bin_status <- function(sample_id,
   loss_ranges <- sample_seg_ranges[sample_seg_ranges$status == "loss"]
   neutral_ranges <- sample_seg_ranges[sample_seg_ranges$status == "neutral"]
 
+  # Print out status message
+  message(paste("Calculating statuses' bp per each bin for", sample_id, "..."))
+  
   # Calculate length of each type of status per bin
   gain_per_bin <- bp_per_bin(bin_ranges, gain_ranges)
   loss_per_bin <- bp_per_bin(bin_ranges, loss_ranges)
   neutral_per_bin <- bp_per_bin(bin_ranges, neutral_ranges)
   uncallable_per_bin <- bp_per_bin(bin_ranges, uncallable_ranges)
 
+  # Put another progress message
+  message(paste("Formatting bp per bin data for", sample_id, "..."))
+  
   # Format this data into one data.frame where each row is a bin
   bin_bp_status <- data.frame(
     bin = as.numeric(1:length(bin_ranges)),

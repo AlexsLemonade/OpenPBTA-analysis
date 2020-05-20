@@ -61,10 +61,16 @@ cnv_dir <- file.path("..", "copy_number_consensus_call", "results")
 
 # Path to output directory based on whether this is called by the generate-figures.sh script or not
 plots_dir <- ifelse(params$final_figure, file.path(figure_dir, "pngs"),  "plots")
+results_dir <- "results"
 
 # Create the plots_dir if it does not exist
 if (!dir.exists(plots_dir)) {
   dir.create(plots_dir, recursive = TRUE)
+}
+
+# Create the results_dir if it does not exist
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir, recursive = TRUE)
 }
 ```
 
@@ -273,23 +279,29 @@ Run the bin status calling on each sample.
 # Get a vector of the biospecimen IDs
 sample_ids <- unique(seg_data$ID)
 
-# Run call_bin_status for each biospecimen's segments.
-bin_calls_list <- lapply(sample_ids,
-  call_bin_status,
-  bin_ranges = bins,
-  seg_ranges = filtered_seg_ranges,
-  uncallable_ranges = uncallable_ranges,
-  frac_threshold_val = frac_threshold,
-  frac_uncallable_val = frac_uncallable
-)
+if (!file.exists(file.path(results_dir, "cn_status_bp_per_bin.tsv"))) {
+  # Run call_bin_status for each biospecimen's segments.
+  bin_calls_list <- lapply(sample_ids,
+    call_bin_status,
+    bin_ranges = bins,
+    seg_ranges = filtered_seg_ranges,
+    uncallable_ranges = uncallable_ranges,
+    frac_threshold_val = frac_threshold,
+    frac_uncallable_val = frac_uncallable
+  )
 
-# Bring along sample IDs
-names(bin_calls_list) <- sample_ids
+  # Bring along sample IDs
+  names(bin_calls_list) <- sample_ids
 
-# Format into data.frame
-bin_calls_df <- dplyr::bind_rows(bin_calls_list,
-  .id = "biospecimen_id"
-)
+  # Format into data.frame
+  bin_calls_df <- dplyr::bind_rows(bin_calls_list,
+   .id = "biospecimen_id"
+  )
+  # Write calculations to file
+  readr::write_tsv(bin_calls_df, file.path(results_dir, "cn_status_bp_per_bin.tsv"))
+} else {
+  bin_calls_df <- readr::read_tsv(file.path(results_dir, "cn_status_bp_per_bin.tsv"))
+}
 ```
 
 ## Set up heatmap annotation objects
