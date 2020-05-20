@@ -43,15 +43,6 @@ _This assumes you are in the top directory of the repository._
 Read in set up script.
 
 ```{r}
-if (!("ggupset" %in% installed.packages())) {
-  install.packages("ggupset", repos = "http://cran.us.r-project.org")
-}
-if (!("UpSetR" %in% installed.packages())) {
-  install.packages("UpSetR", repos = "http://cran.us.r-project.org")
-}
-if (!("GGally" %in% installed.packages())) {
-  install.packages("GGally", repos = "http://cran.us.r-project.org")
-}
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 ```
