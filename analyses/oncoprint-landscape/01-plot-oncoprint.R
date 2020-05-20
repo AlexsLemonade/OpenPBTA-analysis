@@ -47,17 +47,6 @@ if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
 }
 
-# Source the color palette for plots
-source(
-  file.path(
-    root_dir,
-    "analyses",
-    "oncoprint-landscape",
-    "util",
-    "oncoplot-palette.R"
-  )
-)
-
 # Source the custom functions script
 source(
   file.path(
@@ -165,6 +154,54 @@ if (!is.null(opt$focal_file)) {
   focal_df <- readr::read_tsv(file.path(opt$focal_file))
 }
 
+# Read in histology standard color palette for project
+histology_col_palette <-
+  readr::read_tsv(file.path(
+    root_dir,
+    "figures",
+    "palettes",
+    "histology_color_palette.tsv"
+  ))
+
+# Read in the divergent color palette
+divergent_col_palette <- readr::read_tsv(file.path(
+  root_dir,
+  "figures",
+  "palettes",
+  "divergent_color_palette.tsv"
+)) 
+
+#### Set up oncoprint annotation objects --------------------------------------
+
+# Set up the divergent color palette to be used for CNVs/Fusions/SNVs
+divergent_col_palette$color_names <- c(
+  "loss",
+  "gain",
+  "Fusion",
+  "Multi_Hit",
+  "Multi_Hit_Fusion",
+  "Missense_Mutation",
+  "Nonsense_Mutation",
+  "In_Frame_Del",
+  "In_Frame_Ins",
+  "Frame_Shift_Del",
+  "Frame_Shift_Ins",
+  "Splice_Site"
+)
+
+# Bind the color names and hex codes of the two color palettes
+color_key <- histology_col_palette %>%
+  dplyr::bind_rows(divergent_col_palette) %>%
+  # Save to file for future use before changing the structure of the object
+  readr::write_tsv(file.path(
+    root_dir,
+    "figures",
+    "palettes",
+    "oncoprint_color_palette.tsv"
+  )) %>%
+  # Use deframe so we can use it as a recoding list
+  tibble::deframe()
+
 #### Format recurrent focal CN object -----------------------------------------
 
 if (!is.null(opt$focal_file)) {
@@ -220,6 +257,6 @@ oncoplot(
   annotationFontSize = 0.7,
   SampleNamefontSize = 0.5,
   fontSize = 0.7,
-  colors = color_palette
+  colors = color_key
 )
 dev.off()
