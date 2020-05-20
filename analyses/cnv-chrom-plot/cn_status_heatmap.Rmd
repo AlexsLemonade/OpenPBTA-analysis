@@ -117,7 +117,11 @@ metadata <-
   dplyr::mutate(sample_color = dplyr::recode(
     short_histology,
     !!!histology_col_palette
-  ))
+  )) %>% 
+  dplyr::group_by(short_histology) %>% 
+  dplyr::mutate(group_n = dplyr::n()) %>% 
+  dplyr::ungroup() #%>% 
+  #dplyr::filter(group_n < 10)
 ```
 
 ### Set up consensus copy number data
@@ -279,7 +283,11 @@ Run the bin status calling on each sample.
 # Get a vector of the biospecimen IDs
 sample_ids <- unique(seg_data$ID)
 
-if (!file.exists(file.path(results_dir, "cn_status_bp_per_bin.tsv"))) {
+# Read in the calculation file if it was already made
+if (file.exists(file.path(results_dir, "cn_status_bp_per_bin.tsv"))) {
+  # Read in file
+  bin_calls_df <- readr::read_tsv(file.path(results_dir, "cn_status_bp_per_bin.tsv"))
+} else {
   # Run call_bin_status for each biospecimen's segments.
   bin_calls_list <- lapply(sample_ids,
     call_bin_status,
@@ -299,8 +307,6 @@ if (!file.exists(file.path(results_dir, "cn_status_bp_per_bin.tsv"))) {
   )
   # Write calculations to file
   readr::write_tsv(bin_calls_df, file.path(results_dir, "cn_status_bp_per_bin.tsv"))
-} else {
-  bin_calls_df <- readr::read_tsv(file.path(results_dir, "cn_status_bp_per_bin.tsv"))
 }
 ```
 
@@ -309,7 +315,7 @@ if (!file.exists(file.path(results_dir, "cn_status_bp_per_bin.tsv"))) {
 Make color key. 
 
 ```{r}
-color_key <- structure(c(divergent_col_palette, "#9932CC", "#cccccc"),
+color_key <- structure(c(divergent_col_palette, "#9932CC", "#fed8b1"),
   names = c("loss", "neutral", "gain", "unstable", "uncallable")
 )
 ```
@@ -325,7 +331,7 @@ chrs <- paste0("chr", S4Vectors::decode(bins@seqnames))
 chrs <- factor(chrs, levels = paste0("chr", 1:22))
 
 # Make a key for assigning alternating colors to the chromosomes
-chr_colors <- rep(c("gray", "lightblue"),
+chr_colors <- rep(c("white", "black"),
   length.out = length(unique(chrs))
 )
 names(chr_colors) <- unique(chrs)
@@ -357,7 +363,8 @@ chr_annot <- ComplexHeatmap::HeatmapAnnotation(
   name = "",
   show_legend = FALSE,
   show_annotation_name = FALSE,
-  mark = chr_text # Put the text in
+  mark = chr_text, # Put the text in
+  border = TRUE
 )
 ```
 
@@ -408,7 +415,8 @@ hist_annot <- ComplexHeatmap::HeatmapAnnotation(
   which = "row",
   show_annotation_name = FALSE,
   show_legend = FALSE,
-  mark = hist_text # Put the text in
+  mark = hist_text, # Put the text in
+  border = TRUE
 )
 ```
 
@@ -434,21 +442,26 @@ heatmap <- ComplexHeatmap::Heatmap(
   bin_calls_mat,
   name = "CN status",
   col = color_key,
+  row_split = histologies$short_histology,
   cluster_columns = FALSE,
   cluster_rows = FALSE,
+  rect_gp = grid::gpar(col = "black", lwd = .01),
   show_column_names = FALSE,
   show_row_names = FALSE,
+  row_labels = FALSE,
   bottom_annotation = chr_annot,
   right_annotation = hist_annot,
-  heatmap_legend_param = list(nrow = 1),
-  raster_quality = 8
+  heatmap_legend_param = list(nrow = 1, border = "black"),
+  raster_quality = 8, 
+  border = "black", 
 )
 ```
 
 Print out heatmap. 
 
 ```{r}
-ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
+ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom",
+                     row_title_gp = gpar(col = "white"))
 ```
 
 Save to PNG. 
