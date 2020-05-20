@@ -163,42 +163,19 @@ histology_col_palette <-
     "histology_color_palette.tsv"
   ))
 
-# Read in the divergent color palette
-divergent_col_palette <- readr::read_tsv(file.path(
+# Read in the oncoprint color palette
+oncoprint_col_palette <- readr::read_tsv(file.path(
   root_dir,
   "figures",
   "palettes",
-  "divergent_color_palette.tsv"
+  "oncoprint_color_palette.tsv"
 )) 
 
 #### Set up oncoprint annotation objects --------------------------------------
 
-# Set up the divergent color palette to be used for CNVs/Fusions/SNVs
-divergent_col_palette$color_names <- c(
-  "loss",
-  "gain",
-  "Fusion",
-  "Multi_Hit",
-  "Multi_Hit_Fusion",
-  "Missense_Mutation",
-  "Nonsense_Mutation",
-  "In_Frame_Del",
-  "In_Frame_Ins",
-  "Frame_Shift_Del",
-  "Frame_Shift_Ins",
-  "Splice_Site"
-)
-
 # Bind the color names and hex codes of the two color palettes
 color_key <- histology_col_palette %>%
-  dplyr::bind_rows(divergent_col_palette) %>%
-  # Save to file for future use before changing the structure of the object
-  readr::write_tsv(file.path(
-    root_dir,
-    "figures",
-    "palettes",
-    "oncoprint_color_palette.tsv"
-  )) %>%
+  dplyr::bind_rows(oncoprint_col_palette) %>%
   # Use deframe so we can use it as a recoding list
   tibble::deframe()
 
