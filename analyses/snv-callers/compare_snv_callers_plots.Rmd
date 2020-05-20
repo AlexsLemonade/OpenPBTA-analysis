@@ -1,4 +1,4 @@
----
+q---
 title: "Plot Caller Comparisons"
 output: 
   html_notebook:
@@ -50,15 +50,6 @@ _This assumes you are in the top directory of the repository._
 Read in set up script.
 
 ```{r}
-if (!("ggupset" %in% installed.packages())) {
-  install.packages("ggupset", repos = "http://cran.us.r-project.org")
-}
-if (!("UpSetR" %in% installed.packages())) {
-  install.packages("UpSetR", repos = "http://cran.us.r-project.org")
-}
-if (!("GGally" %in% installed.packages())) {
-  install.packages("GGally", repos = "http://cran.us.r-project.org")
-}
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 ```
@@ -92,6 +83,10 @@ callers_per_mutation_df %>%
   ggplot2::xlab("") +
   ggplot2::ylab("")
 }
+
+
+tmp <- data.table::fread("../../data/pbta-snv-consensus-mutation.maf.tsv.gz")
+tmp[which(tmp %>% duplicated()), ]
 ```
 ## Connect to database
 
@@ -124,10 +119,10 @@ lancet <- dplyr::tbl(con, "lancet") %>%
   dplyr::select(join_cols, "VAF")
 
 mutect <- dplyr::tbl(con, "mutect") %>% 
-  dplyr::select(join_cols, "VAF") 
+  dplyr::select(join_cols, "VAF")
 
 vardict <- dplyr::tbl(con, "vardict") %>% 
-  dplyr::select(join_cols, "VAF") 
+  dplyr::select(join_cols, "VAF")
 ```
 
 Because `DBI` does not support full_join, we had to use a series of `left_join` and
@@ -347,18 +342,13 @@ ggplot2::ggsave(file.path(plots_dir, "vaf_violin_plot.png"))
 
 ## VAF correlations
 
-Make the plot with ggpairs. 
+Correlate VAF's across callers
 
 ```{r}
-GGally::ggpairs(vaf_df %>% dplyr::select(-VAF_consensus, -Variant_Classification), 
-                mapping = ggplot2::aes(alpha = 0.05)) +
-  ggplot2::theme_classic()
+vaf_df %>% 
+  dplyr::select(-VAF_consensus, -Variant_Classification) %>% 
+  cor()
 ``` 
-
-```{r}
-# Save this plot
-ggplot2::ggsave(file.path(plots_dir, "vaf_correlations_plot.png"))
-```
 
 ## Mutation Region barplot
 
