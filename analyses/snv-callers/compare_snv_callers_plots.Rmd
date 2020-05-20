@@ -83,11 +83,8 @@ callers_per_mutation_df %>%
   ggplot2::xlab("") +
   ggplot2::ylab("")
 }
-
-
-tmp <- data.table::fread("../../data/pbta-snv-consensus-mutation.maf.tsv.gz")
-tmp[which(tmp %>% duplicated()), ]
 ```
+
 ## Connect to database
 
 Connect to SQLite database.
@@ -347,7 +344,8 @@ Correlate VAF's across callers
 ```{r}
 vaf_df %>% 
   dplyr::select(-VAF_consensus, -Variant_Classification) %>% 
-  cor()
+  cor() %>% 
+  knitr::kable()
 ``` 
 
 ## Mutation Region barplot
