@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 
 <meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="C. Savonen for ALSF CCDL" />
@@ -2559,7 +2559,7 @@ window.initializeCodeFolding = function(show) {
 
     // create a collapsable div to wrap the code in
     var div = $('<div class="collapse r-code-collapse"></div>');
-    if (show || $(this)[0].classList.contains('fold-show'))
+    if (show)
       div.addClass('in');
     var id = 'rcode-643E0F36' + currentIndex++;
     div.attr('id', id);
@@ -2689,6 +2689,7 @@ code {
 }
 img {
   max-width:100%;
+  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -2774,7 +2775,6 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
-  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -2787,12 +2787,57 @@ summary {
 }
 </style>
 
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
 <!-- code folding -->
 <style type="text/css">
 .code-folding-btn { margin-bottom: 4px; }
 </style>
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("compare_snv_callers_plots.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
 
 
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <style type="text/css">
 
@@ -2806,12 +2851,6 @@ summary {
 }
 }
 
-@media print {
-.toc-content {
-  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
-  float: right;
-}
-}
 
 .toc-content {
   padding-left: 30px;
@@ -2925,7 +2964,7 @@ div.tocify {
 <div id="usage" class="section level4">
 <h4>Usage</h4>
 <p>To run this from the command line, use:</p>
-<pre><code>Rscript -e &quot;rmarkdown::render(&#39;analyses/snv-callers/compare_snv_callers_plots.Rmd&#39;, 
+<pre><code>Rscript -e &quot;rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots.Rmd', 
                               clean = TRUE)&quot;</code></pre>
 <p><em>This assumes you are in the top directory of the repository.</em></p>
 </div>
@@ -2937,45 +2976,26 @@ div.tocify {
 <p>Read in set up script.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBNYWdyaXR0ciBwaXBlXG5gJT4lYCA8LSBkcGx5cjo6YCU+JWBcbmBgYCJ9 -->
-<pre class="r"><code># Magrittr pipe
-`%&gt;%` &lt;- dplyr::`%&gt;%`</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxudXBzZXRfcGxvdCA8LSBmdW5jdGlvbihjYWxsZXJzX3Blcl9tdXRhdGlvbl9kZikge1xuY2FsbGVyc19wZXJfbXV0YXRpb25fZGYgJT4lIFxuICBkcGx5cjo6Z3JvdXBfYnkoY2FsbGVyX2NvbWJvKSAlPiVcbiAgZHBseXI6OnRhbGx5KCkgJT4lIFxuICBnZ3Bsb3QyOjpnZ3Bsb3QoZ2dwbG90Mjo6YWVzKHggPSByZW9yZGVyKGNhbGxlcl9jb21ibywgLW4pLCB5ID0gbikpICtcbiAgZ2dwbG90Mjo6Z2VvbV9iYXIoXG4gICAgICAgIHBvc2l0aW9uID0gXFxkb2RnZVxcLCBzdGF0ID0gXFxpZGVudGl0eVxcKSArXG4gIGdncGxvdDI6OnRoZW1lX2NsYXNzaWMoKSArXG4gIGdndXBzZXQ6OnNjYWxlX3hfbWVyZ2VsaXN0KHNlcCA9IFxcLVxcKSArXG4gIGdndXBzZXQ6OmF4aXNfY29tYm1hdHJpeChzZXAgPSBcXC1cXCkgK1xuICBnZ3Bsb3QyOjp4bGFiKFxcXFwpICtcbiAgZ2dwbG90Mjo6eWxhYihcXFxcKVxufVxuYGBgXG5gYGAifQ== -->
+<p><code>r</code>r upset_plot &lt;- function(callers_per_mutation_df) { callers_per_mutation_df %&gt;% dplyr::group_by(caller_combo) %&gt;% dplyr::tally() %&gt;% ggplot2::ggplot(ggplot2::aes(x = reorder(caller_combo, -n), y = n)) + ggplot2::geom_bar( position = , stat = ) + ggplot2::theme_classic() + ggupset::scale_x_mergelist(sep = -) + ggupset::axis_combmatrix(sep = -) + ggplot2::xlab(\) + ggplot2::ylab(\) }</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Set up directories.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2NyYXRjaF9kaXIgPC0gZmlsZS5wYXRoKFwiLi5cIiwgXCIuLlwiLCBcInNjcmF0Y2hcIilcbnJlc3VsdHNfZGlyIDwtIGZpbGUucGF0aChcInJlc3VsdHNcIiwgXCJjb21wYXJpc29uXCIpXG5wbG90c19kaXIgPC0gZmlsZS5wYXRoKFwicGxvdHNcIiwgXCJjb21wYXJpc29uXCIpXG5cbmlmICghZGlyLmV4aXN0cyhyZXN1bHRzX2RpcikpIHtcbiAgZGlyLmNyZWF0ZShyZXN1bHRzX2Rpcilcbn1cbmlmICghZGlyLmV4aXN0cyhwbG90c19kaXIpKSB7XG4gIGRpci5jcmVhdGUocGxvdHNfZGlyKVxufVxuYGBgIn0= -->
-<pre class="r"><code>scratch_dir &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;scratch&quot;)
-results_dir &lt;- file.path(&quot;results&quot;, &quot;comparison&quot;)
-plots_dir &lt;- file.path(&quot;plots&quot;, &quot;comparison&quot;)
-
-if (!dir.exists(results_dir)) {
-  dir.create(results_dir)
-}
-if (!dir.exists(plots_dir)) {
-  dir.create(plots_dir)
-}</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBTdGFydCB1cCBjb25uZWN0aW9uXG5jb24gPC0gREJJOjpkYkNvbm5lY3QoUlNRTGl0ZTo6U1FMaXRlKCksIFxuICAgICAgICAgICAgICAgICAgICAgIGZpbGUucGF0aChzY3JhdGNoX2RpciwgXFxzbnZfZGIuc3FsaXRlXFwpKVxuYGBgXG5gYGAifQ== -->
+<p><code>r</code>r # Start up connection con &lt;- DBI::dbConnect(RSQLite::SQLite(), file.path(scratch_dir, _db.sqlite))</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudXBzZXRfcGxvdCA8LSBmdW5jdGlvbihjYWxsZXJzX3Blcl9tdXRhdGlvbl9kZikge1xuY2FsbGVyc19wZXJfbXV0YXRpb25fZGYgJT4lIFxuICBkcGx5cjo6Z3JvdXBfYnkoY2FsbGVyX2NvbWJvKSAlPiVcbiAgZHBseXI6OnRhbGx5KCkgJT4lIFxuICBnZ3Bsb3QyOjpnZ3Bsb3QoZ2dwbG90Mjo6YWVzKHggPSByZW9yZGVyKGNhbGxlcl9jb21ibywgLW4pLCB5ID0gbikpICtcbiAgZ2dwbG90Mjo6Z2VvbV9iYXIoXG4gICAgICAgIHBvc2l0aW9uID0gXCJkb2RnZVwiLCBzdGF0ID0gXCJpZGVudGl0eVwiKSArXG4gIGdncGxvdDI6OnRoZW1lX2NsYXNzaWMoKSArXG4gIGdndXBzZXQ6OnNjYWxlX3hfbWVyZ2VsaXN0KHNlcCA9IFwiLVwiKSArXG4gIGdndXBzZXQ6OmF4aXNfY29tYm1hdHJpeChzZXAgPSBcIi1cIikgK1xuICBnZ3Bsb3QyOjp4bGFiKFwiXCIpICtcbiAgZ2dwbG90Mjo6eWxhYihcIlwiKVxufVxuYGBgIn0= -->
-<pre class="r"><code>upset_plot &lt;- function(callers_per_mutation_df) {
-callers_per_mutation_df %&gt;% 
-  dplyr::group_by(caller_combo) %&gt;%
-  dplyr::tally() %&gt;% 
-  ggplot2::ggplot(ggplot2::aes(x = reorder(caller_combo, -n), y = n)) +
-  ggplot2::geom_bar(
-        position = &quot;dodge&quot;, stat = &quot;identity&quot;) +
-  ggplot2::theme_classic() +
-  ggupset::scale_x_mergelist(sep = &quot;-&quot;) +
-  ggupset::axis_combmatrix(sep = &quot;-&quot;) +
-  ggplot2::xlab(&quot;&quot;) +
-  ggplot2::ylab(&quot;&quot;)
-}</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuam9pbl9jb2xzID0gYyhcXENocm9tb3NvbWVcXCxcbiAgICAgICAgICAgICAgXFxTdGFydF9Qb3NpdGlvblxcLFxuICAgICAgICAgICAgICBcXFJlZmVyZW5jZV9BbGxlbGVcXCxcbiAgICAgICAgICAgICAgXFxBbGxlbGVcXCxcbiAgICAgICAgICAgICAgXFxUdW1vcl9TYW1wbGVfQmFyY29kZVxcLCBcbiAgICAgICAgICAgICAgXFxWYXJpYW50X0NsYXNzaWZpY2F0aW9uXFwpXG5gYGBcbmBgYCJ9 -->
+<p><code>r</code>r join_cols = c(, _Position, _Allele, , _Sample_Barcode, _Classification)</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2986,167 +3006,131 @@ callers_per_mutation_df %&gt;%
 <p>Connect to SQLite database.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTdGFydCB1cCBjb25uZWN0aW9uXG5jb24gPC0gREJJOjpkYkNvbm5lY3QoUlNRTGl0ZTo6U1FMaXRlKCksIFxuICAgICAgICAgICAgICAgICAgICAgIGZpbGUucGF0aChzY3JhdGNoX2RpciwgXCJzbnZfZGIuc3FsaXRlXCIpKVxuYGBgIn0= -->
-<pre class="r"><code># Start up connection
-con &lt;- DBI::dbConnect(RSQLite::SQLite(), 
-                      file.path(scratch_dir, &quot;snv_db.sqlite&quot;))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuc3RyZWxrYSA8LSBkcGx5cjo6dGJsKGNvbiwgXFxzdHJlbGthXFwpICU+JSBcbiAgZHBseXI6OnNlbGVjdChqb2luX2NvbHMsIFxcVkFGXFwpXG5cbmxhbmNldCA8LSBkcGx5cjo6dGJsKGNvbiwgXFxsYW5jZXRcXCkgJT4lIFxuICBkcGx5cjo6c2VsZWN0KGpvaW5fY29scywgXFxWQUZcXClcblxubXV0ZWN0IDwtIGRwbHlyOjp0YmwoY29uLCBcXG11dGVjdFxcKSAlPiUgXG4gIGRwbHlyOjpzZWxlY3Qoam9pbl9jb2xzLCBcXFZBRlxcKVxuXG52YXJkaWN0IDwtIGRwbHlyOjp0YmwoY29uLCBcXHZhcmRpY3RcXCkgJT4lIFxuICBkcGx5cjo6c2VsZWN0KGpvaW5fY29scywgXFxWQUZcXClcbmBgYFxuYGBgIn0= -->
+<p><code>r</code>r strelka &lt;- dplyr::tbl(con, ) %&gt;% dplyr::select(join_cols, )</p>
+<p>lancet &lt;- dplyr::tbl(con, ) %&gt;% dplyr::select(join_cols, )</p>
+<p>mutect &lt;- dplyr::tbl(con, ) %&gt;% dplyr::select(join_cols, )</p>
+<p>vardict &lt;- dplyr::tbl(con, ) %&gt;% dplyr::select(join_cols, )</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Note what columns we will join by.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuam9pbl9jb2xzID0gYyhcIkNocm9tb3NvbWVcIixcbiAgICAgICAgICAgICAgXCJTdGFydF9Qb3NpdGlvblwiLFxuICAgICAgICAgICAgICBcIlJlZmVyZW5jZV9BbGxlbGVcIixcbiAgICAgICAgICAgICAgXCJBbGxlbGVcIixcbiAgICAgICAgICAgICAgXCJUdW1vcl9TYW1wbGVfQmFyY29kZVwiLCBcbiAgICAgICAgICAgICAgXCJWYXJpYW50X0NsYXNzaWZpY2F0aW9uXCIpXG5gYGAifQ== -->
-<pre class="r"><code>join_cols = c(&quot;Chromosome&quot;,
-              &quot;Start_Position&quot;,
-              &quot;Reference_Allele&quot;,
-              &quot;Allele&quot;,
-              &quot;Tumor_Sample_Barcode&quot;, 
-              &quot;Variant_Classification&quot;)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBUaGlzIHNjcmlwdCB3aWxsIGRvIHRoZSBmdWxsIGpvaW4gb2YgdGhlIGRhdGEgZm9yIHVzXG5zb3VyY2UoZmlsZS5wYXRoKFxcdXRpbFxcLCBcXGZ1bGxfam9pbl9jYWxsZXJzLlJcXCkpXG5cbiMgQnJpbmcgb3V0IHRoZSBkYXRhLmZyYW1lXG5hbGxfY2FsbGVyX2RmIDwtIGFsbF9jYWxsZXIgJT4lXG4gIGFzLmRhdGEuZnJhbWVcblxuIyBUYWtlIGEgcGVlayBhdCB3aGF0IHRoaXMgbG9va3MgbGlrZVxuaGVhZChhbGxfY2FsbGVyX2RmKVxuYGBgXG5gYGAifQ== -->
+<p><code>r</code>r # This script will do the full join of the data for us source(file.path(, _join_callers.R))</p>
+</div>
+<div id="bring-out-the-data.frame" class="section level1">
+<h1>Bring out the data.frame</h1>
+<p>all_caller_df &lt;- all_caller %&gt;% as.data.frame</p>
+</div>
+<div id="take-a-peek-at-what-this-looks-like" class="section level1">
+<h1>Take a peek at what this looks like</h1>
+<p>head(all_caller_df)</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Set up tables from the database but only call the columns we need.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyZWxrYSA8LSBkcGx5cjo6dGJsKGNvbiwgXCJzdHJlbGthXCIpICU+JSBcbiAgZHBseXI6OnNlbGVjdChqb2luX2NvbHMsIFwiVkFGXCIpXG5cbmxhbmNldCA8LSBkcGx5cjo6dGJsKGNvbiwgXCJsYW5jZXRcIikgJT4lIFxuICBkcGx5cjo6c2VsZWN0KGpvaW5fY29scywgXCJWQUZcIilcblxubXV0ZWN0IDwtIGRwbHlyOjp0YmwoY29uLCBcIm11dGVjdFwiKSAlPiUgXG4gIGRwbHlyOjpzZWxlY3Qoam9pbl9jb2xzLCBcIlZBRlwiKVxuXG52YXJkaWN0IDwtIGRwbHlyOjp0YmwoY29uLCBcInZhcmRpY3RcIikgJT4lIFxuICBkcGx5cjo6c2VsZWN0KGpvaW5fY29scywgXCJWQUZcIilcbmBgYCJ9 -->
-<pre class="r"><code>strelka &lt;- dplyr::tbl(con, &quot;strelka&quot;) %&gt;% 
-  dplyr::select(join_cols, &quot;VAF&quot;)
-
-lancet &lt;- dplyr::tbl(con, &quot;lancet&quot;) %&gt;% 
-  dplyr::select(join_cols, &quot;VAF&quot;)
-
-mutect &lt;- dplyr::tbl(con, &quot;mutect&quot;) %&gt;% 
-  dplyr::select(join_cols, &quot;VAF&quot;)
-
-vardict &lt;- dplyr::tbl(con, &quot;vardict&quot;) %&gt;% 
-  dplyr::select(join_cols, &quot;VAF&quot;)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBTZXQgdXAgdGhlIGRhdGEgYXMgYSBkYXRhLmZyYW1lXG52YWZfZGYgPC0gYWxsX2NhbGxlcl9kZiAlPiUgXG4gIGRwbHlyOjpzZWxlY3QoXFxWQUZfbGFuY2V0XFwsIFxcVkFGX3N0cmVsa2FcXCwgXFxWQUZfdmFyZGljdFxcLCBcXFZBRl9tdXRlY3RcXCxcbiAgICAgICAgICAgICAgICBcXFZhcmlhbnRfQ2xhc3NpZmljYXRpb25cXCkgJT4lXG4gIGRwbHlyOjptdXRhdGUoVkFGX2NvbnNlbnN1cyA9IFZBRl9zdHJlbGthKSAgICAgXG4gXG4jIERldGVybWluZSB3aGljaCBtdXRhdGlvbnMgYXJlIHBhcnQgb2YgdGhlIGNvbnNlbnN1c1xuY29uc2Vuc3VzX2luZGV4IDwtIHZhZl9kZiAlPiVcbiAgZHBseXI6OnNlbGVjdCgtYyhWQUZfdmFyZGljdCwgVkFGX2NvbnNlbnN1cywgVmFyaWFudF9DbGFzc2lmaWNhdGlvbikpICU+JVxuICByb3dTdW1zKGlzLm5hKC4pKSA+IDBcblxuIyBNYWtlIG5vbiBjb25zZW5zdXMgVkFGIGludG8gYW4gTkFcbnZhZl9kZiRWQUZfY29uc2Vuc3VzW2NvbnNlbnN1c19pbmRleF0gPC0gTkFcblxuIyBNYWtlIHRoaXMgbG9uZyBmb3JtIGZvciBwbG90dGluZyBhbmQgXG5sb25nX3ZhZl9kZiA8LSB2YWZfZGYgJT4lIFxuICBkcGx5cjo6bXV0YXRlKGluZGV4ID0gZmFjdG9yKDE6bnJvdyguKSkpICU+JSBcbiAgdGlkeXI6OmdhdGhlcihrZXkgPSBcXGNhbGxlclxcLCB2YWx1ZSA9IFxcdmFmXFwsIC1pbmRleCwgLVZhcmlhbnRfQ2xhc3NpZmljYXRpb24pICU+JSBcbiAgZHBseXI6Om11dGF0ZShjYWxsZXIgPSBnc3ViKFxcVkFGX1xcLCBcXFxcLCBjYWxsZXIpKSAlPiUgXG4gIGRwbHlyOjpmaWx0ZXIoIWlzLm5hKHZhZikpXG5gYGBcbmBgYCJ9 -->
+<p><code>r</code>r # Set up the data as a data.frame vaf_df &lt;- all_caller_df %&gt;% dplyr::select(_lancet, _strelka, _vardict, _mutect, _Classification) %&gt;% dplyr::mutate(VAF_consensus = VAF_strelka)</p>
+</div>
+<div id="determine-which-mutations-are-part-of-the-consensus" class="section level1">
+<h1>Determine which mutations are part of the consensus</h1>
+<p>consensus_index &lt;- vaf_df %&gt;% dplyr::select(-c(VAF_vardict, VAF_consensus, Variant_Classification)) %&gt;% rowSums(is.na(.)) &gt; 0</p>
+</div>
+<div id="make-non-consensus-vaf-into-an-na" class="section level1">
+<h1>Make non consensus VAF into an NA</h1>
+<p>vaf_df$VAF_consensus[consensus_index] &lt;- NA</p>
+</div>
+<div id="make-this-long-form-for-plotting-and" class="section level1">
+<h1>Make this long form for plotting and</h1>
+<p>long_vaf_df &lt;- vaf_df %&gt;% dplyr::mutate(index = factor(1:nrow(.))) %&gt;% tidyr::gather(key = , value = , -index, -Variant_Classification) %&gt;% dplyr::mutate(caller = gsub(_, \, caller)) %&gt;% dplyr::filter(!is.na(vaf))</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Because <code>DBI</code> does not support full_join, we had to use a series of <code>left_join</code> and <code>union_all</code> calls in order to get a full join of all the callers.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUaGlzIHNjcmlwdCB3aWxsIGRvIHRoZSBmdWxsIGpvaW4gb2YgdGhlIGRhdGEgZm9yIHVzXG5zb3VyY2UoZmlsZS5wYXRoKFwidXRpbFwiLCBcImZ1bGxfam9pbl9jYWxsZXJzLlJcIikpXG5cbiMgQnJpbmcgb3V0IHRoZSBkYXRhLmZyYW1lXG5hbGxfY2FsbGVyX2RmIDwtIGFsbF9jYWxsZXIgJT4lXG4gIGFzLmRhdGEuZnJhbWVcblxuIyBUYWtlIGEgcGVlayBhdCB3aGF0IHRoaXMgbG9va3MgbGlrZVxuaGVhZChhbGxfY2FsbGVyX2RmKVxuYGBgIn0= -->
-<pre class="r"><code># This script will do the full join of the data for us
-source(file.path(&quot;util&quot;, &quot;full_join_callers.R&quot;))
-
-# Bring out the data.frame
-all_caller_df &lt;- all_caller %&gt;%
-  as.data.frame
-
-# Take a peek at what this looks like
-head(all_caller_df)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBUYWtlIG91dCB0aGUgY29uc2Vuc3VzIFZBRiBmb3IgdGhpcyBjb21iaW5hdGlvblxubG9uZ19jYWxsZXJfZGYgPC0gbG9uZ192YWZfZGYgJT4lIFxuICBkcGx5cjo6ZmlsdGVyKGNhbGxlciAhPSBcXGNvbnNlbnN1c1xcKVxuXG4jIERldGVybWluZSB0aGUgY29tYmluYXRpb24gb2YgY2FsbGVycyBmb3IgZWFjaCBtdXRhdGlvblxuY2FsbGVyc19wZXJfbXV0YXRpb24gPC0gdGFwcGx5KFxuICAgIGxvbmdfY2FsbGVyX2RmJGNhbGxlcixcbiAgICBsb25nX2NhbGxlcl9kZiRpbmRleCxcbiAgICBwYXN0ZTAsXG4gICAgY29sbGFwc2UgPSBcXC1cXFxuICApICU+JSBcbiAgYXMuZGF0YS5mcmFtZSgpICU+JVxuICB0aWJibGU6OnJvd25hbWVzX3RvX2NvbHVtbihcXGluZGV4XFwpXG5cbiMgRGV0ZXJtaW5lIE1lZGlhbiBWQUYgZm9yIGVhY2ggbXV0YXRpb24gXG52YWZfbWVkIDwtIHRhcHBseShcbiAgICBsb25nX2NhbGxlcl9kZiR2YWYsXG4gICAgbG9uZ19jYWxsZXJfZGYkaW5kZXgsXG4gICAgbWVkaWFuXG4gICkgJT4lIFxuICBhcy5kYXRhLmZyYW1lKCkgJT4lXG4gIHRpYmJsZTo6cm93bmFtZXNfdG9fY29sdW1uKFxcaW5kZXhcXClcblxuIyBKb2luIHRoZSBtZWRpYW4gVkFGIGFuZCB0aGUgY2FsbGVycyB0aGF0IGNhbGwgdGhhdCBtdXRhdGlvbiBpbnRvIG9uZSBkYXRhLmZyYW1lXG5jYWxsZXJzX3Blcl9tdXRhdGlvbiA8LSBjYWxsZXJzX3Blcl9tdXRhdGlvbiAlPiVcbiAgZHBseXI6OmlubmVyX2pvaW4odmFmX21lZCwgYnkgPSBcXGluZGV4XFwpICU+JVxuICBkcGx5cjo6bGVmdF9qb2luKGxvbmdfY2FsbGVyX2RmICU+JSBcbiAgICAgICAgICAgICAgICAgICAgICBkcGx5cjo6c2VsZWN0KFZhcmlhbnRfQ2xhc3NpZmljYXRpb24sIGluZGV4KSwgXG4gICAgICAgICAgICAgICAgICAgYnkgPSBcXGluZGV4XFwpICU+JVxuICAjIE1ha2UgY29sdW1uIG5hbWVzIG1vcmUgc2Vuc2libGVcbiAgZHBseXI6OnJlbmFtZShjYWxsZXJfY29tYm8gPSBcXC4ueFxcLCBtZWRpYW5fdmFmID0gXFwuLnlcXCkgXG5gYGBcbmBgYCJ9 -->
+<p><code>r</code>r # Take out the consensus VAF for this combination long_caller_df &lt;- long_vaf_df %&gt;% dplyr::filter(caller != )</p>
+</div>
+<div id="determine-the-combination-of-callers-for-each-mutation" class="section level1">
+<h1>Determine the combination of callers for each mutation</h1>
+<p>callers_per_mutation &lt;- tapply( long_caller_df<span class="math inline">\(caller,  long_caller_df\)</span>index, paste0, collapse = -<br />
+) %&gt;% as.data.frame() %&gt;% tibble::rownames_to_column()</p>
+</div>
+<div id="determine-median-vaf-for-each-mutation" class="section level1">
+<h1>Determine Median VAF for each mutation</h1>
+<p>vaf_med &lt;- tapply( long_caller_df<span class="math inline">\(vaf,  long_caller_df\)</span>index, median ) %&gt;% as.data.frame() %&gt;% tibble::rownames_to_column()</p>
+</div>
+<div id="join-the-median-vaf-and-the-callers-that-call-that-mutation-into-one-data.frame" class="section level1">
+<h1>Join the median VAF and the callers that call that mutation into one data.frame</h1>
+<p>callers_per_mutation &lt;- callers_per_mutation %&gt;% dplyr::inner_join(vaf_med, by = ) %&gt;% dplyr::left_join(long_caller_df %&gt;% dplyr::select(Variant_Classification, index), by = ) %&gt;% # Make column names more sensible dplyr::rename(caller_combo = ..x, median_vaf = ..y)</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTZXQgdXAgdGhlIGRhdGEgYXMgYSBkYXRhLmZyYW1lXG52YWZfZGYgPC0gYWxsX2NhbGxlcl9kZiAlPiUgXG4gIGRwbHlyOjpzZWxlY3QoXCJWQUZfbGFuY2V0XCIsIFwiVkFGX3N0cmVsa2FcIiwgXCJWQUZfdmFyZGljdFwiLCBcIlZBRl9tdXRlY3RcIixcbiAgICAgICAgICAgICAgICBcIlZhcmlhbnRfQ2xhc3NpZmljYXRpb25cIikgJT4lXG4gIGRwbHlyOjptdXRhdGUoVkFGX2NvbnNlbnN1cyA9IFZBRl9zdHJlbGthKSAgICAgXG4gXG4jIERldGVybWluZSB3aGljaCBtdXRhdGlvbnMgYXJlIHBhcnQgb2YgdGhlIGNvbnNlbnN1c1xuY29uc2Vuc3VzX2luZGV4IDwtIHZhZl9kZiAlPiVcbiAgZHBseXI6OnNlbGVjdCgtYyhWQUZfdmFyZGljdCwgVkFGX2NvbnNlbnN1cywgVmFyaWFudF9DbGFzc2lmaWNhdGlvbikpICU+JVxuICByb3dTdW1zKGlzLm5hKC4pKSA+IDBcblxuIyBNYWtlIG5vbiBjb25zZW5zdXMgVkFGIGludG8gYW4gTkFcbnZhZl9kZiRWQUZfY29uc2Vuc3VzW2NvbnNlbnN1c19pbmRleF0gPC0gTkFcblxuIyBNYWtlIHRoaXMgbG9uZyBmb3JtIGZvciBwbG90dGluZyBhbmQgXG5sb25nX3ZhZl9kZiA8LSB2YWZfZGYgJT4lIFxuICBkcGx5cjo6bXV0YXRlKGluZGV4ID0gZmFjdG9yKDE6bnJvdyguKSkpICU+JSBcbiAgdGlkeXI6OmdhdGhlcihrZXkgPSBcImNhbGxlclwiLCB2YWx1ZSA9IFwidmFmXCIsIC1pbmRleCwgLVZhcmlhbnRfQ2xhc3NpZmljYXRpb24pICU+JSBcbiAgZHBseXI6Om11dGF0ZShjYWxsZXIgPSBnc3ViKFwiVkFGX1wiLCBcIlwiLCBjYWxsZXIpKSAlPiUgXG4gIGRwbHlyOjpmaWx0ZXIoIWlzLm5hKHZhZikpXG5gYGAifQ== -->
-<pre class="r"><code># Set up the data as a data.frame
-vaf_df &lt;- all_caller_df %&gt;% 
-  dplyr::select(&quot;VAF_lancet&quot;, &quot;VAF_strelka&quot;, &quot;VAF_vardict&quot;, &quot;VAF_mutect&quot;,
-                &quot;Variant_Classification&quot;) %&gt;%
-  dplyr::mutate(VAF_consensus = VAF_strelka)     
- 
-# Determine which mutations are part of the consensus
-consensus_index &lt;- vaf_df %&gt;%
-  dplyr::select(-c(VAF_vardict, VAF_consensus, Variant_Classification)) %&gt;%
-  rowSums(is.na(.)) &gt; 0
-
-# Make non consensus VAF into an NA
-vaf_df$VAF_consensus[consensus_index] &lt;- NA
-
-# Make this long form for plotting and 
-long_vaf_df &lt;- vaf_df %&gt;% 
-  dplyr::mutate(index = factor(1:nrow(.))) %&gt;% 
-  tidyr::gather(key = &quot;caller&quot;, value = &quot;vaf&quot;, -index, -Variant_Classification) %&gt;% 
-  dplyr::mutate(caller = gsub(&quot;VAF_&quot;, &quot;&quot;, caller)) %&gt;% 
-  dplyr::filter(!is.na(vaf))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxudXBzZXR0cl9wbG90IDwtIGNhbGxlcnNfcGVyX211dGF0aW9uICU+JVxuICB1cHNldF9wbG90KClcblxuIyBQcmludCB0aGlzIG91dCBoZXJlXG51cHNldHRyX3Bsb3RcbmBgYFxuYGBgIn0= -->
+<p><code>r</code>r upsettr_plot &lt;- callers_per_mutation %&gt;% upset_plot()</p>
+</div>
+<div id="print-this-out-here" class="section level1">
+<h1>Print this out here</h1>
+<p>upsettr_plot</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Get median vaf for each mutation with each caller combination.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUYWtlIG91dCB0aGUgY29uc2Vuc3VzIFZBRiBmb3IgdGhpcyBjb21iaW5hdGlvblxubG9uZ19jYWxsZXJfZGYgPC0gbG9uZ192YWZfZGYgJT4lIFxuICBkcGx5cjo6ZmlsdGVyKGNhbGxlciAhPSBcImNvbnNlbnN1c1wiKVxuXG4jIERldGVybWluZSB0aGUgY29tYmluYXRpb24gb2YgY2FsbGVycyBmb3IgZWFjaCBtdXRhdGlvblxuY2FsbGVyc19wZXJfbXV0YXRpb24gPC0gdGFwcGx5KFxuICAgIGxvbmdfY2FsbGVyX2RmJGNhbGxlcixcbiAgICBsb25nX2NhbGxlcl9kZiRpbmRleCxcbiAgICBwYXN0ZTAsXG4gICAgY29sbGFwc2UgPSBcIi1cIlxuICApICU+JSBcbiAgYXMuZGF0YS5mcmFtZSgpICU+JVxuICB0aWJibGU6OnJvd25hbWVzX3RvX2NvbHVtbihcImluZGV4XCIpXG5cbiMgRGV0ZXJtaW5lIE1lZGlhbiBWQUYgZm9yIGVhY2ggbXV0YXRpb24gXG52YWZfbWVkIDwtIHRhcHBseShcbiAgICBsb25nX2NhbGxlcl9kZiR2YWYsXG4gICAgbG9uZ19jYWxsZXJfZGYkaW5kZXgsXG4gICAgbWVkaWFuXG4gICkgJT4lIFxuICBhcy5kYXRhLmZyYW1lKCkgJT4lXG4gIHRpYmJsZTo6cm93bmFtZXNfdG9fY29sdW1uKFwiaW5kZXhcIilcblxuIyBKb2luIHRoZSBtZWRpYW4gVkFGIGFuZCB0aGUgY2FsbGVycyB0aGF0IGNhbGwgdGhhdCBtdXRhdGlvbiBpbnRvIG9uZSBkYXRhLmZyYW1lXG5jYWxsZXJzX3Blcl9tdXRhdGlvbiA8LSBjYWxsZXJzX3Blcl9tdXRhdGlvbiAlPiVcbiAgZHBseXI6OmlubmVyX2pvaW4odmFmX21lZCwgYnkgPSBcImluZGV4XCIpICU+JVxuICBkcGx5cjo6bGVmdF9qb2luKGxvbmdfY2FsbGVyX2RmICU+JSBcbiAgICAgICAgICAgICAgICAgICAgICBkcGx5cjo6c2VsZWN0KFZhcmlhbnRfQ2xhc3NpZmljYXRpb24sIGluZGV4KSwgXG4gICAgICAgICAgICAgICAgICAgYnkgPSBcImluZGV4XCIpICU+JVxuICAjIE1ha2UgY29sdW1uIG5hbWVzIG1vcmUgc2Vuc2libGVcbiAgZHBseXI6OnJlbmFtZShjYWxsZXJfY29tYm8gPSBcIi4ueFwiLCBtZWRpYW5fdmFmID0gXCIuLnlcIikgXG5gYGAifQ== -->
-<pre class="r"><code># Take out the consensus VAF for this combination
-long_caller_df &lt;- long_vaf_df %&gt;% 
-  dplyr::filter(caller != &quot;consensus&quot;)
-
-# Determine the combination of callers for each mutation
-callers_per_mutation &lt;- tapply(
-    long_caller_df$caller,
-    long_caller_df$index,
-    paste0,
-    collapse = &quot;-&quot;
-  ) %&gt;% 
-  as.data.frame() %&gt;%
-  tibble::rownames_to_column(&quot;index&quot;)
-
-# Determine Median VAF for each mutation 
-vaf_med &lt;- tapply(
-    long_caller_df$vaf,
-    long_caller_df$index,
-    median
-  ) %&gt;% 
-  as.data.frame() %&gt;%
-  tibble::rownames_to_column(&quot;index&quot;)
-
-# Join the median VAF and the callers that call that mutation into one data.frame
-callers_per_mutation &lt;- callers_per_mutation %&gt;%
-  dplyr::inner_join(vaf_med, by = &quot;index&quot;) %&gt;%
-  dplyr::left_join(long_caller_df %&gt;% 
-                      dplyr::select(Variant_Classification, index), 
-                   by = &quot;index&quot;) %&gt;%
-  # Make column names more sensible
-  dplyr::rename(caller_combo = &quot;..x&quot;, median_vaf = &quot;..y&quot;) </code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBXZSBjYW4gc2F2ZSB0aGUgcGxvdCBsaWtlIGEgbm9ybWFsIGdncGxvdFxucG5nKGZpbGUgPSBmaWxlLnBhdGgocGxvdHNfZGlyLCBcXHVwc2V0X3Bsb3QucG5nXFwpKVxudXBzZXR0cl9wbG90XG5kZXYub2ZmKClcbmBgYFxuYGBgIn0= -->
+<p><code>r</code>r # We can save the plot like a normal ggplot png(file = file.path(plots_dir, _plot.png)) upsettr_plot dev.off()</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-</div>
 <div id="upset-graph" class="section level2">
 <h2>Upset graph</h2>
 <p>Make the upset plot.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudXBzZXR0cl9wbG90IDwtIGNhbGxlcnNfcGVyX211dGF0aW9uICU+JVxuICB1cHNldF9wbG90KClcblxuIyBQcmludCB0aGlzIG91dCBoZXJlXG51cHNldHRyX3Bsb3RcbmBgYCJ9 -->
-<pre class="r"><code>upsettr_plot &lt;- callers_per_mutation %&gt;%
-  upset_plot()
-
-# Print this out here
-upsettr_plot</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuY2FsbGVyc19wZXJfbXV0YXRpb24gJT4lIFxuICBkcGx5cjo6ZmlsdGVyKCEoVmFyaWFudF9DbGFzc2lmaWNhdGlvbiAlaW4lIGMoXFw1J0ZsYW5rXFwsIFxcMydGbGFua1xcLCBcXElHUlxcLCBcXEludHJvblxcKSkpICU+JVxuICB1cHNldF9wbG90KClcbmBgYFxuYGBgIn0= -->
+<p><code>r</code>r callers_per_mutation %&gt;% dplyr::filter(!(Variant_Classification %in% c(\5’Flank, \3’Flank, , ))) %&gt;% upset_plot()</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Save this plot to a png</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBXZSBjYW4gc2F2ZSB0aGUgcGxvdCBsaWtlIGEgbm9ybWFsIGdncGxvdFxucG5nKGZpbGUgPSBmaWxlLnBhdGgocGxvdHNfZGlyLCBcInVwc2V0X3Bsb3QucG5nXCIpKVxudXBzZXR0cl9wbG90XG5kZXYub2ZmKClcbmBgYCJ9 -->
-<pre class="r"><code># We can save the plot like a normal ggplot
-png(file = file.path(plots_dir, &quot;upset_plot.png&quot;))
-upsettr_plot
-dev.off()</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuY2FsbGVyc19wZXJfbXV0YXRpb24gJT4lIFxuICBkcGx5cjo6ZmlsdGVyKFZhcmlhbnRfQ2xhc3NpZmljYXRpb24gJWluJSBjKFxcNSdGbGFua1xcLCBcXDMnRmxhbmtcXCwgXFxJR1JcXCwgXFxJbnRyb25cXCkpICU+JVxuICB1cHNldF9wbG90KClcbmBgYFxuYGBgIn0= -->
+<p><code>r</code>r callers_per_mutation %&gt;% dplyr::filter(Variant_Classification %in% c(\5’Flank, \3’Flank, , )) %&gt;% upset_plot()</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Transcripts only upset plot.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2FsbGVyc19wZXJfbXV0YXRpb24gJT4lIFxuICBkcGx5cjo6ZmlsdGVyKCEoVmFyaWFudF9DbGFzc2lmaWNhdGlvbiAlaW4lIGMoXCI1J0ZsYW5rXCIsIFwiMydGbGFua1wiLCBcIklHUlwiLCBcIkludHJvblwiKSkpICU+JVxuICB1cHNldF9wbG90KClcbmBgYCJ9 -->
-<pre class="r"><code>callers_per_mutation %&gt;% 
-  dplyr::filter(!(Variant_Classification %in% c(&quot;5&#39;Flank&quot;, &quot;3&#39;Flank&quot;, &quot;IGR&quot;, &quot;Intron&quot;))) %&gt;%
-  upset_plot()</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBNYWtlIHRoaXMgcGxvdFxuY2FsbGVyc19wZXJfbXV0YXRpb24gJT4lXG4gIGdncGxvdDI6OmdncGxvdChnZ3Bsb3QyOjphZXMoeCA9IGNhbGxlcl9jb21ibywgeSA9IG1lZGlhbl92YWYpKSArXG4gIGdncGxvdDI6Omdlb21fdmlvbGluKCkgK1xuICBnZ3Bsb3QyOjp0aGVtZV9jbGFzc2ljKCkgK1xuICBnZ3Vwc2V0OjpzY2FsZV94X21lcmdlbGlzdChzZXAgPSBcXC1cXCkgK1xuICBnZ3Vwc2V0OjpheGlzX2NvbWJtYXRyaXgoc2VwID0gXFwtXFwpICtcbiAgZ2dwbG90Mjo6eGxhYihcXFxcKSArXG4gIGdncGxvdDI6OnlsYWIoXFxNZWRpYW4gVkFGIEFjcm9zcyBDYWxsZXJzXFwpXG5gYGBcbmBgYCJ9 -->
+<p><code>r</code>r # Make this plot callers_per_mutation %&gt;% ggplot2::ggplot(ggplot2::aes(x = caller_combo, y = median_vaf)) + ggplot2::geom_violin() + ggplot2::theme_classic() + ggupset::scale_x_mergelist(sep = -) + ggupset::axis_combmatrix(sep = -) + ggplot2::xlab(\) + ggplot2::ylab(VAF Across Callers)</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Non transcript upset plot.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2FsbGVyc19wZXJfbXV0YXRpb24gJT4lIFxuICBkcGx5cjo6ZmlsdGVyKFZhcmlhbnRfQ2xhc3NpZmljYXRpb24gJWluJSBjKFwiNSdGbGFua1wiLCBcIjMnRmxhbmtcIiwgXCJJR1JcIiwgXCJJbnRyb25cIikpICU+JVxuICB1cHNldF9wbG90KClcbmBgYCJ9 -->
-<pre class="r"><code>callers_per_mutation %&gt;% 
-  dplyr::filter(Variant_Classification %in% c(&quot;5&#39;Flank&quot;, &quot;3&#39;Flank&quot;, &quot;IGR&quot;, &quot;Intron&quot;)) %&gt;%
-  upset_plot()</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBTYXZlIHRoaXMgcGxvdFxuZ2dwbG90Mjo6Z2dzYXZlKGZpbGUucGF0aChwbG90c19kaXIsIFxcdXBzZXRfbWVkaWFuX3ZhZl9wbG90LnBuZ1xcKSlcbmBgYFxuYGBgIn0= -->
+<p><code>r</code>r # Save this plot ggplot2::ggsave(file.path(plots_dir, _median_vaf_plot.png))</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3156,24 +3140,17 @@ dev.off()</code></pre>
 <p>Graph mutations by combinations of callers and plot the VAF density. Get list of callers per mutation and the median vaf for each. Graph the median VAF for each combination of callers.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBNYWtlIHRoaXMgcGxvdFxuY2FsbGVyc19wZXJfbXV0YXRpb24gJT4lXG4gIGdncGxvdDI6OmdncGxvdChnZ3Bsb3QyOjphZXMoeCA9IGNhbGxlcl9jb21ibywgeSA9IG1lZGlhbl92YWYpKSArXG4gIGdncGxvdDI6Omdlb21fdmlvbGluKCkgK1xuICBnZ3Bsb3QyOjp0aGVtZV9jbGFzc2ljKCkgK1xuICBnZ3Vwc2V0OjpzY2FsZV94X21lcmdlbGlzdChzZXAgPSBcIi1cIikgK1xuICBnZ3Vwc2V0OjpheGlzX2NvbWJtYXRyaXgoc2VwID0gXCItXCIpICtcbiAgZ2dwbG90Mjo6eGxhYihcIlwiKSArXG4gIGdncGxvdDI6OnlsYWIoXCJNZWRpYW4gVkFGIEFjcm9zcyBDYWxsZXJzXCIpXG5gYGAifQ== -->
-<pre class="r"><code># Make this plot
-callers_per_mutation %&gt;%
-  ggplot2::ggplot(ggplot2::aes(x = caller_combo, y = median_vaf)) +
-  ggplot2::geom_violin() +
-  ggplot2::theme_classic() +
-  ggupset::scale_x_mergelist(sep = &quot;-&quot;) +
-  ggupset::axis_combmatrix(sep = &quot;-&quot;) +
-  ggplot2::xlab(&quot;&quot;) +
-  ggplot2::ylab(&quot;Median VAF Across Callers&quot;)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBTdW1tYXJpemUgYnkgdGhlIG51bWJlciBvZiB0aW1lcyBlYWNoIGJhc2UgY2hhbmdlIHNob3dzIHVwIGluIGVhY2ggY2F0ZWdvcnkuXG5wZXJjX2NoYW5nZV9kZiA8LSBhbGxfY2FsbGVyX2RmICU+JSBcbiAgIyBNYWtlIGNoYW5nZSB2YXJpYWJsZVxuICBkcGx5cjo6bXV0YXRlKGJhc2VfY2hhbmdlID0gcGFzdGUwKEFsbGVsZSwgXFw+XFwsIFJlZmVyZW5jZV9BbGxlbGUpKSAlPiUgXG4gIGRwbHlyOjptdXRhdGUoXG4gICAgIyBGcm9tIHRoZSBiYXNlX2NoYW5nZSB2YXJpYWJsZSwgc3VtbWFyaXplIGluc2VydGlvbnMsIGRlbGV0aW9ucywgYW5kXG4gICAgIyBjaGFuZ2VzIHRoYXQgYXJlIG1vcmUgdGhhbiBvbmUgYmFzZSBpbnRvIHRoZWlyIG93biBncm91cHMuXG4gICAgY2hhbmdlID0gZHBseXI6OmNhc2Vfd2hlbihcbiAgICAgIGdyZXBsKFxcXi1cXCwgYmFzZV9jaGFuZ2UpIH4gXFxpbnNcXCxcbiAgICAgIGdyZXBsKFxcLSRcXCwgYmFzZV9jaGFuZ2UpIH4gXFxkZWxcXCxcbiAgICAgIG5jaGFyKGJhc2VfY2hhbmdlKSA+IDMgfiBcXGxvbmdfY2hhbmdlXFwsXG4gICAgICBUUlVFIH4gYmFzZV9jaGFuZ2VcbiAgICApXG4gICkgJT4lXG4gICMgV2hpdHRsZSBkb3duIHRvIG5lY2Vzc2FyeSBjb2x1bW5zXG4gIGRwbHlyOjpzZWxlY3QoY2hhbmdlLCBkcGx5cjo6c3RhcnRzX3dpdGgoXFxWQUZfXFwpKSAlPiUgXG4gICMgTWFrZSB0aGlzIGxvbmcgZm9ybVxuICB0aWR5cjo6Z2F0aGVyKGtleSA9IFxcY2FsbGVyXFwsIHZhbHVlID0gXFx2YWZcXCwgLWNoYW5nZSkgJT4lIFxuICAjIERyb3AgdGhlIHByZWZpeFxuICBkcGx5cjo6bXV0YXRlKGNhbGxlciA9IGdzdWIoXFxWQUZfXFwsIFxcXFwsIGNhbGxlcikpICU+JSBcbiAgIyBHZXQgcmlkIG9mIE5BIHJvd3NcbiAgZHBseXI6OmZpbHRlcighaXMubmEodmFmKSkgJT4lXG4gICMgU3VtbWFyaXplIHRoZSBudW1iZXIgb2YgbXV0YXRpb25zIHBlciBjYWxsZXJcbiAgZHBseXI6OmNvdW50KGNhbGxlciwgY2hhbmdlLCBuYW1lID0gXFxjb3VudFxcKSAlPiVcbiAgZHBseXI6OmFkZF9jb3VudChjYWxsZXIsIHd0ID0gY291bnQpICU+JVxuICAjIENhbGN1bGF0ZSB0aGUgcGVyY2VudCBvZiBlYWNoIFxuICBkcGx5cjo6bXV0YXRlKHBlcmNlbnQgPSBjb3VudCAvIG4pICU+JVxuICAjIERyb3Agbm9uc2Vuc2ljYWwgY2hhbmdlXG4gIGRwbHlyOjpmaWx0ZXIoIWdyZXBsKFxcTj4qfCo+TnxDPkN8VD5UfEE+QXxHPkdcXCwgY2hhbmdlKSwgXG4gICAgICAgICAgICAgICAgIWlzLm5hKGNoYW5nZSkpICU+JVxuICBkcGx5cjo6bXV0YXRlKFxuICAgIGNoYW5nZSA9IGFzLmZhY3RvcihjaGFuZ2UpLFxuICAgICMgQ2hhbmdlIGZhY3RvciBsZXZlbCBvcmRlciBzbyBpbnMgYW5kIGRlbCBhcmUgYXQgdGhlIGVuZFxuICAgIGNoYW5nZSA9IGZvcmNhdHM6OmZjdF9yZWxldmVsKGNoYW5nZSwgXFxpbnNcXCwgXFxkZWxcXCwgXFxsb25nX2NoYW5nZVxcLCBhZnRlciA9IEluZilcbiAgKSBcbmBgYFxuYGBgIn0= -->
+<p><code>r</code>r # Summarize by the number of times each base change shows up in each category. perc_change_df &lt;- all_caller_df %&gt;% # Make change variable dplyr::mutate(base_change = paste0(Allele, &gt;, Reference_Allele)) %&gt;% dplyr::mutate( # From the base_change variable, summarize insertions, deletions, and # changes that are more than one base into their own groups. change = dplyr::case_when( grepl(^-, base_change) ~ , grepl(-$, base_change) ~ , nchar(base_change) &gt; 3 ~ <em>change, TRUE ~ base_change ) ) %&gt;% # Whittle down to necessary columns dplyr::select(change, dplyr::starts_with(</em>)) %&gt;% # Make this long form tidyr::gather(key = , value = , -change) %&gt;% # Drop the prefix dplyr::mutate(caller = gsub(_, \, caller)) %&gt;% # Get rid of NA rows dplyr::filter(!is.na(vaf)) %&gt;% # Summarize the number of mutations per caller dplyr::count(caller, change, name = ) %&gt;% dplyr::add_count(caller, wt = count) %&gt;% # Calculate the percent of each dplyr::mutate(percent = count / n) %&gt;% # Drop nonsensical change dplyr::filter(!grepl(&gt;<em>|</em>&gt;N|C&gt;C|T&gt;T|A&gt;A|G&gt;G, change), !is.na(change)) %&gt;% dplyr::mutate( change = as.factor(change), # Change factor level order so ins and del are at the end change = forcats::fct_relevel(change, , , _change, after = Inf) )</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTYXZlIHRoaXMgcGxvdFxuZ2dwbG90Mjo6Z2dzYXZlKGZpbGUucGF0aChwbG90c19kaXIsIFwidXBzZXRfbWVkaWFuX3ZhZl9wbG90LnBuZ1wiKSlcbmBgYCJ9 -->
-<pre class="r"><code># Save this plot
-ggplot2::ggsave(file.path(plots_dir, &quot;upset_median_vaf_plot.png&quot;))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxucGVyY19jaGFuZ2VfZGYgJT4lXG4gIGdncGxvdDI6OmdncGxvdChnZ3Bsb3QyOjphZXMoeCA9IGNoYW5nZSwgeSA9IHBlcmNlbnQpKSArXG4gIGdncGxvdDI6OnRoZW1lX2NsYXNzaWMoKSArXG4gIGdncGxvdDI6Omdlb21fYmFyKFxuICAgIHBvc2l0aW9uID0gXFxkb2RnZVxcLCBzdGF0ID0gXFxpZGVudGl0eVxcLFxuICAgIGdncGxvdDI6OmFlcyhmaWxsID0gY2FsbGVyKVxuICApICtcbiAgZ2dwbG90Mjo6dGhlbWUoYXhpcy50ZXh0LnggPSBnZ3Bsb3QyOjplbGVtZW50X3RleHQoYW5nbGUgPSA0NSwgaGp1c3QgPSAxKSkgK1xuICBnZ3Bsb3QyOjp4bGFiKFxcXFwpICtcbiAgZ2dwbG90Mjo6eWxhYihcXFBlcmNlbnQgb2YgY2FsbGVycycgbXV0YXRpb25zXFwpICtcbiAgY29sb3JibGluZHI6OnNjYWxlX2ZpbGxfT2thYmVJdG8oKVxuYGBgXG5gYGAifQ== -->
+<p><code>r</code>r perc_change_df %&gt;% ggplot2::ggplot(ggplot2::aes(x = change, y = percent)) + ggplot2::theme_classic() + ggplot2::geom_bar( position = , stat = , ggplot2::aes(fill = caller) ) + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) + ggplot2::xlab(\) + ggplot2::ylab(of callers’ mutations) + colorblindr::scale_fill_OkabeIto()</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3183,68 +3160,26 @@ ggplot2::ggsave(file.path(plots_dir, &quot;upset_median_vaf_plot.png&quot;))</co
 <p>Summarize base change information per caller.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTdW1tYXJpemUgYnkgdGhlIG51bWJlciBvZiB0aW1lcyBlYWNoIGJhc2UgY2hhbmdlIHNob3dzIHVwIGluIGVhY2ggY2F0ZWdvcnkuXG5wZXJjX2NoYW5nZV9kZiA8LSBhbGxfY2FsbGVyX2RmICU+JSBcbiAgIyBNYWtlIGNoYW5nZSB2YXJpYWJsZVxuICBkcGx5cjo6bXV0YXRlKGJhc2VfY2hhbmdlID0gcGFzdGUwKEFsbGVsZSwgXCI+XCIsIFJlZmVyZW5jZV9BbGxlbGUpKSAlPiUgXG4gIGRwbHlyOjptdXRhdGUoXG4gICAgIyBGcm9tIHRoZSBiYXNlX2NoYW5nZSB2YXJpYWJsZSwgc3VtbWFyaXplIGluc2VydGlvbnMsIGRlbGV0aW9ucywgYW5kXG4gICAgIyBjaGFuZ2VzIHRoYXQgYXJlIG1vcmUgdGhhbiBvbmUgYmFzZSBpbnRvIHRoZWlyIG93biBncm91cHMuXG4gICAgY2hhbmdlID0gZHBseXI6OmNhc2Vfd2hlbihcbiAgICAgIGdyZXBsKFwiXi1cIiwgYmFzZV9jaGFuZ2UpIH4gXCJpbnNcIixcbiAgICAgIGdyZXBsKFwiLSRcIiwgYmFzZV9jaGFuZ2UpIH4gXCJkZWxcIixcbiAgICAgIG5jaGFyKGJhc2VfY2hhbmdlKSA+IDMgfiBcImxvbmdfY2hhbmdlXCIsXG4gICAgICBUUlVFIH4gYmFzZV9jaGFuZ2VcbiAgICApXG4gICkgJT4lXG4gICMgV2hpdHRsZSBkb3duIHRvIG5lY2Vzc2FyeSBjb2x1bW5zXG4gIGRwbHlyOjpzZWxlY3QoY2hhbmdlLCBkcGx5cjo6c3RhcnRzX3dpdGgoXCJWQUZfXCIpKSAlPiUgXG4gICMgTWFrZSB0aGlzIGxvbmcgZm9ybVxuICB0aWR5cjo6Z2F0aGVyKGtleSA9IFwiY2FsbGVyXCIsIHZhbHVlID0gXCJ2YWZcIiwgLWNoYW5nZSkgJT4lIFxuICAjIERyb3AgdGhlIHByZWZpeFxuICBkcGx5cjo6bXV0YXRlKGNhbGxlciA9IGdzdWIoXCJWQUZfXCIsIFwiXCIsIGNhbGxlcikpICU+JSBcbiAgIyBHZXQgcmlkIG9mIE5BIHJvd3NcbiAgZHBseXI6OmZpbHRlcighaXMubmEodmFmKSkgJT4lXG4gICMgU3VtbWFyaXplIHRoZSBudW1iZXIgb2YgbXV0YXRpb25zIHBlciBjYWxsZXJcbiAgZHBseXI6OmNvdW50KGNhbGxlciwgY2hhbmdlLCBuYW1lID0gXCJjb3VudFwiKSAlPiVcbiAgZHBseXI6OmFkZF9jb3VudChjYWxsZXIsIHd0ID0gY291bnQpICU+JVxuICAjIENhbGN1bGF0ZSB0aGUgcGVyY2VudCBvZiBlYWNoIFxuICBkcGx5cjo6bXV0YXRlKHBlcmNlbnQgPSBjb3VudCAvIG4pICU+JVxuICAjIERyb3Agbm9uc2Vuc2ljYWwgY2hhbmdlXG4gIGRwbHlyOjpmaWx0ZXIoIWdyZXBsKFwiTj4qfCo+TnxDPkN8VD5UfEE+QXxHPkdcIiwgY2hhbmdlKSwgXG4gICAgICAgICAgICAgICAgIWlzLm5hKGNoYW5nZSkpICU+JVxuICBkcGx5cjo6bXV0YXRlKFxuICAgIGNoYW5nZSA9IGFzLmZhY3RvcihjaGFuZ2UpLFxuICAgICMgQ2hhbmdlIGZhY3RvciBsZXZlbCBvcmRlciBzbyBpbnMgYW5kIGRlbCBhcmUgYXQgdGhlIGVuZFxuICAgIGNoYW5nZSA9IGZvcmNhdHM6OmZjdF9yZWxldmVsKGNoYW5nZSwgXCJpbnNcIiwgXCJkZWxcIiwgXCJsb25nX2NoYW5nZVwiLCBhZnRlciA9IEluZilcbiAgKSBcbmBgYCJ9 -->
-<pre class="r"><code># Summarize by the number of times each base change shows up in each category.
-perc_change_df &lt;- all_caller_df %&gt;% 
-  # Make change variable
-  dplyr::mutate(base_change = paste0(Allele, &quot;&gt;&quot;, Reference_Allele)) %&gt;% 
-  dplyr::mutate(
-    # From the base_change variable, summarize insertions, deletions, and
-    # changes that are more than one base into their own groups.
-    change = dplyr::case_when(
-      grepl(&quot;^-&quot;, base_change) ~ &quot;ins&quot;,
-      grepl(&quot;-$&quot;, base_change) ~ &quot;del&quot;,
-      nchar(base_change) &gt; 3 ~ &quot;long_change&quot;,
-      TRUE ~ base_change
-    )
-  ) %&gt;%
-  # Whittle down to necessary columns
-  dplyr::select(change, dplyr::starts_with(&quot;VAF_&quot;)) %&gt;% 
-  # Make this long form
-  tidyr::gather(key = &quot;caller&quot;, value = &quot;vaf&quot;, -change) %&gt;% 
-  # Drop the prefix
-  dplyr::mutate(caller = gsub(&quot;VAF_&quot;, &quot;&quot;, caller)) %&gt;% 
-  # Get rid of NA rows
-  dplyr::filter(!is.na(vaf)) %&gt;%
-  # Summarize the number of mutations per caller
-  dplyr::count(caller, change, name = &quot;count&quot;) %&gt;%
-  dplyr::add_count(caller, wt = count) %&gt;%
-  # Calculate the percent of each 
-  dplyr::mutate(percent = count / n) %&gt;%
-  # Drop nonsensical change
-  dplyr::filter(!grepl(&quot;N&gt;*|*&gt;N|C&gt;C|T&gt;T|A&gt;A|G&gt;G&quot;, change), 
-                !is.na(change)) %&gt;%
-  dplyr::mutate(
-    change = as.factor(change),
-    # Change factor level order so ins and del are at the end
-    change = forcats::fct_relevel(change, &quot;ins&quot;, &quot;del&quot;, &quot;long_change&quot;, after = Inf)
-  ) </code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBTYXZlIHRoaXMgcGxvdFxuZ2dwbG90Mjo6Z2dzYXZlKGZpbGUucGF0aChwbG90c19kaXIsIFxccGVyY19iYXNlX2NoYW5nZV9wbG90LnBuZ1xcKSlcbmBgYFxuYGBgIn0= -->
+<p><code>r</code>r # Save this plot ggplot2::ggsave(file.path(plots_dir, _base_change_plot.png))</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Make a barplot illustrating the percent of the mutations for each caller that that are each type of change.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGVyY19jaGFuZ2VfZGYgJT4lXG4gIGdncGxvdDI6OmdncGxvdChnZ3Bsb3QyOjphZXMoeCA9IGNoYW5nZSwgeSA9IHBlcmNlbnQpKSArXG4gIGdncGxvdDI6OnRoZW1lX2NsYXNzaWMoKSArXG4gIGdncGxvdDI6Omdlb21fYmFyKFxuICAgIHBvc2l0aW9uID0gXCJkb2RnZVwiLCBzdGF0ID0gXCJpZGVudGl0eVwiLFxuICAgIGdncGxvdDI6OmFlcyhmaWxsID0gY2FsbGVyKVxuICApICtcbiAgZ2dwbG90Mjo6dGhlbWUoYXhpcy50ZXh0LnggPSBnZ3Bsb3QyOjplbGVtZW50X3RleHQoYW5nbGUgPSA0NSwgaGp1c3QgPSAxKSkgK1xuICBnZ3Bsb3QyOjp4bGFiKFwiXCIpICtcbiAgZ2dwbG90Mjo6eWxhYihcIlBlcmNlbnQgb2YgY2FsbGVycycgbXV0YXRpb25zXCIpICtcbiAgY29sb3JibGluZHI6OnNjYWxlX2ZpbGxfT2thYmVJdG8oKVxuYGBgIn0= -->
-<pre class="r"><code>perc_change_df %&gt;%
-  ggplot2::ggplot(ggplot2::aes(x = change, y = percent)) +
-  ggplot2::theme_classic() +
-  ggplot2::geom_bar(
-    position = &quot;dodge&quot;, stat = &quot;identity&quot;,
-    ggplot2::aes(fill = caller)
-  ) +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
-  ggplot2::xlab(&quot;&quot;) +
-  ggplot2::ylab(&quot;Percent of callers&#39; mutations&quot;) +
-  colorblindr::scale_fill_OkabeIto()</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxubG9uZ192YWZfZGYgJT4lXG4gIGdncGxvdDI6OmdncGxvdChnZ3Bsb3QyOjphZXMoeCA9IGNhbGxlciwgeSA9IHZhZiwgY29sb3IgPSBjYWxsZXIpKSArXG4gIGdncGxvdDI6Omdlb21fdmlvbGluKCkgK1xuICBnZ3Bsb3QyOjp0aGVtZV9jbGFzc2ljKCkgK1xuICBjb2xvcmJsaW5kcjo6c2NhbGVfY29sb3JfT2thYmVJdG8oKVxuYGBgXG5gYGAifQ== -->
+<p><code>r</code>r long_vaf_df %&gt;% ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, color = caller)) + ggplot2::geom_violin() + ggplot2::theme_classic() + colorblindr::scale_color_OkabeIto()</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTYXZlIHRoaXMgcGxvdFxuZ2dwbG90Mjo6Z2dzYXZlKGZpbGUucGF0aChwbG90c19kaXIsIFwicGVyY19iYXNlX2NoYW5nZV9wbG90LnBuZ1wiKSlcbmBgYCJ9 -->
-<pre class="r"><code># Save this plot
-ggplot2::ggsave(file.path(plots_dir, &quot;perc_base_change_plot.png&quot;))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBTYXZlIHRoaXMgcGxvdFxuZ2dwbG90Mjo6Z2dzYXZlKGZpbGUucGF0aChwbG90c19kaXIsIFxcdmFmX3Zpb2xpbl9wbG90LnBuZ1xcKSlcbmBgYFxuYGBgIn0= -->
+<p><code>r</code>r # Save this plot ggplot2::ggsave(file.path(plots_dir, _violin_plot.png))</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3254,20 +3189,17 @@ ggplot2::ggsave(file.path(plots_dir, &quot;perc_base_change_plot.png&quot;))</co
 <p>Make a violin plot of each caller.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubG9uZ192YWZfZGYgJT4lXG4gIGdncGxvdDI6OmdncGxvdChnZ3Bsb3QyOjphZXMoeCA9IGNhbGxlciwgeSA9IHZhZiwgY29sb3IgPSBjYWxsZXIpKSArXG4gIGdncGxvdDI6Omdlb21fdmlvbGluKCkgK1xuICBnZ3Bsb3QyOjp0aGVtZV9jbGFzc2ljKCkgK1xuICBjb2xvcmJsaW5kcjo6c2NhbGVfY29sb3JfT2thYmVJdG8oKVxuYGBgIn0= -->
-<pre class="r"><code>long_vaf_df %&gt;%
-  ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, color = caller)) +
-  ggplot2::geom_violin() +
-  ggplot2::theme_classic() +
-  colorblindr::scale_color_OkabeIto()</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxudmFmX2RmICU+JSBcbiAgZHBseXI6OnNlbGVjdCgtVkFGX2NvbnNlbnN1cywgLVZhcmlhbnRfQ2xhc3NpZmljYXRpb24pICU+JSBcbiAgY29yKCkgJT4lIFxuICBrbml0cjo6a2FibGUoKVxuYGBgXG5gYGAifQ== -->
+<p><code>r</code>r vaf_df %&gt;% dplyr::select(-VAF_consensus, -Variant_Classification) %&gt;% cor() %&gt;% knitr::kable()</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTYXZlIHRoaXMgcGxvdFxuZ2dwbG90Mjo6Z2dzYXZlKGZpbGUucGF0aChwbG90c19kaXIsIFwidmFmX3Zpb2xpbl9wbG90LnBuZ1wiKSlcbmBgYCJ9 -->
-<pre class="r"><code># Save this plot
-ggplot2::ggsave(file.path(plots_dir, &quot;vaf_violin_plot.png&quot;))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBTdW1tYXJpemUgYnkgdGhlIG51bWJlciBvZiB0aW1lcyBlYWNoIGJhc2UgY2hhbmdlIHNob3dzIHVwIGluIGVhY2ggY2F0ZWdvcnkuXG5wZXJjX3Zhcl9kZiA8LSBsb25nX3ZhZl9kZiAlPiUgXG4gICMgU3VtbWFyaXplIHRoZSBudW1iZXIgb2YgbXV0YXRpb25zIHBlciBjYWxsZXJcbiAgZHBseXI6OmNvdW50KGNhbGxlciwgVmFyaWFudF9DbGFzc2lmaWNhdGlvbiwgbmFtZSA9IFxcY291bnRcXCkgJT4lXG4gIGRwbHlyOjphZGRfY291bnQoY2FsbGVyLCB3dCA9IGNvdW50KSAlPiVcbiAgIyBDYWxjdWxhdGUgdGhlIHBlcmNlbnQgb2YgZWFjaCBcbiAgZHBseXI6Om11dGF0ZShwZXJjZW50ID0gY291bnQgLyBuKVxuYGBgXG5gYGAifQ== -->
+<p><code>r</code>r # Summarize by the number of times each base change shows up in each category. perc_var_df &lt;- long_vaf_df %&gt;% # Summarize the number of mutations per caller dplyr::count(caller, Variant_Classification, name = ) %&gt;% dplyr::add_count(caller, wt = count) %&gt;% # Calculate the percent of each dplyr::mutate(percent = count / n)</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3277,11 +3209,9 @@ ggplot2::ggsave(file.path(plots_dir, &quot;vaf_violin_plot.png&quot;))</code></p
 <p>Correlate VAF’s across callers</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudmFmX2RmICU+JSBcbiAgZHBseXI6OnNlbGVjdCgtVkFGX2NvbnNlbnN1cywgLVZhcmlhbnRfQ2xhc3NpZmljYXRpb24pICU+JSBcbiAgY29yKCkgJT4lIFxuICBrbml0cjo6a2FibGUoKVxuYGBgIn0= -->
-<pre class="r"><code>vaf_df %&gt;% 
-  dplyr::select(-VAF_consensus, -Variant_Classification) %&gt;% 
-  cor() %&gt;% 
-  knitr::kable()</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxucGVyY192YXJfZGYgJT4lXG4gIGdncGxvdDI6OmdncGxvdChnZ3Bsb3QyOjphZXMoeCA9IGNhbGxlciwgeSA9IHBlcmNlbnQpKSArXG4gIGdncGxvdDI6OnRoZW1lX2NsYXNzaWMoKSArXG4gIGdncGxvdDI6Omdlb21fYmFyKFxuICAgIHBvc2l0aW9uID0gXFxzdGFja1xcLCBzdGF0ID0gXFxpZGVudGl0eVxcLFxuICAgIGdncGxvdDI6OmFlcyhmaWxsID0gVmFyaWFudF9DbGFzc2lmaWNhdGlvbilcbiAgKSArXG4gIGdncGxvdDI6OnRoZW1lKGF4aXMudGV4dC54ID0gZ2dwbG90Mjo6ZWxlbWVudF90ZXh0KGFuZ2xlID0gNDUsIGhqdXN0ID0gMSkpICtcbiAgZ2dwbG90Mjo6eGxhYihcXFxcKSArXG4gIGdncGxvdDI6OnlsYWIoXFxQZXJjZW50IG9mIGNhbGxlcnMnIG11dGF0aW9uc1xcKVxuYGBgXG5gYGAifQ== -->
+<p><code>r</code>r perc_var_df %&gt;% ggplot2::ggplot(ggplot2::aes(x = caller, y = percent)) + ggplot2::theme_classic() + ggplot2::geom_bar( position = , stat = , ggplot2::aes(fill = Variant_Classification) ) + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) + ggplot2::xlab(\) + ggplot2::ylab(of callers’ mutations)</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3291,31 +3221,18 @@ ggplot2::ggsave(file.path(plots_dir, &quot;vaf_violin_plot.png&quot;))</code></p
 <p>Summarize <code>Variant_Classification</code> information per caller.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTdW1tYXJpemUgYnkgdGhlIG51bWJlciBvZiB0aW1lcyBlYWNoIGJhc2UgY2hhbmdlIHNob3dzIHVwIGluIGVhY2ggY2F0ZWdvcnkuXG5wZXJjX3Zhcl9kZiA8LSBsb25nX3ZhZl9kZiAlPiUgXG4gICMgU3VtbWFyaXplIHRoZSBudW1iZXIgb2YgbXV0YXRpb25zIHBlciBjYWxsZXJcbiAgZHBseXI6OmNvdW50KGNhbGxlciwgVmFyaWFudF9DbGFzc2lmaWNhdGlvbiwgbmFtZSA9IFwiY291bnRcIikgJT4lXG4gIGRwbHlyOjphZGRfY291bnQoY2FsbGVyLCB3dCA9IGNvdW50KSAlPiVcbiAgIyBDYWxjdWxhdGUgdGhlIHBlcmNlbnQgb2YgZWFjaCBcbiAgZHBseXI6Om11dGF0ZShwZXJjZW50ID0gY291bnQgLyBuKVxuYGBgIn0= -->
-<pre class="r"><code># Summarize by the number of times each base change shows up in each category.
-perc_var_df &lt;- long_vaf_df %&gt;% 
-  # Summarize the number of mutations per caller
-  dplyr::count(caller, Variant_Classification, name = &quot;count&quot;) %&gt;%
-  dplyr::add_count(caller, wt = count) %&gt;%
-  # Calculate the percent of each 
-  dplyr::mutate(percent = count / n)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBTYXZlIHRoaXMgcGxvdFxuZ2dwbG90Mjo6Z2dzYXZlKGZpbGUucGF0aChwbG90c19kaXIsIFxcdmFyaWFudF9jbGFzc2lmaWNhdGlvbl9wbG90LnBuZ1xcKSlcbmBgYFxuYGBgIn0= -->
+<p><code>r</code>r # Save this plot ggplot2::ggsave(file.path(plots_dir, _classification_plot.png))</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Make a barplot illustrating the percent of the mutations for each caller that that are each type of change.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGVyY192YXJfZGYgJT4lXG4gIGdncGxvdDI6OmdncGxvdChnZ3Bsb3QyOjphZXMoeCA9IGNhbGxlciwgeSA9IHBlcmNlbnQpKSArXG4gIGdncGxvdDI6OnRoZW1lX2NsYXNzaWMoKSArXG4gIGdncGxvdDI6Omdlb21fYmFyKFxuICAgIHBvc2l0aW9uID0gXCJzdGFja1wiLCBzdGF0ID0gXCJpZGVudGl0eVwiLFxuICAgIGdncGxvdDI6OmFlcyhmaWxsID0gVmFyaWFudF9DbGFzc2lmaWNhdGlvbilcbiAgKSArXG4gIGdncGxvdDI6OnRoZW1lKGF4aXMudGV4dC54ID0gZ2dwbG90Mjo6ZWxlbWVudF90ZXh0KGFuZ2xlID0gNDUsIGhqdXN0ID0gMSkpICtcbiAgZ2dwbG90Mjo6eGxhYihcIlwiKSArXG4gIGdncGxvdDI6OnlsYWIoXCJQZXJjZW50IG9mIGNhbGxlcnMnIG11dGF0aW9uc1wiKVxuYGBgIn0= -->
-<pre class="r"><code>perc_var_df %&gt;%
-  ggplot2::ggplot(ggplot2::aes(x = caller, y = percent)) +
-  ggplot2::theme_classic() +
-  ggplot2::geom_bar(
-    position = &quot;stack&quot;, stat = &quot;identity&quot;,
-    ggplot2::aes(fill = Variant_Classification)
-  ) +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
-  ggplot2::xlab(&quot;&quot;) +
-  ggplot2::ylab(&quot;Percent of callers&#39; mutations&quot;)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgXG5gYGAifQ== -->
+<p><code>r</code>r sessionInfo()</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3337,8 +3254,9 @@ ggplot2::ggsave(file.path(plots_dir, &quot;variant_classification_plot.png&quot;
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 </div>
+</div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUGxvdCBDYWxsZXIgQ29tcGFyaXNvbnMiCm91dHB1dDogCiAgaHRtbF9ub3RlYm9vazoKICAgIHRvYzogVFJVRQogICAgdG9jX2Zsb2F0OiBUUlVFCmF1dGhvcjogQy4gU2F2b25lbiBmb3IgQUxTRiBDQ0RMCmRhdGU6IDIwMTkKLS0tCgpQdXJwb3NlOiBBZnRlciBjcmVhdGluZyBhIGNvbnNlbnN1cyBmaWxlIHdpdGggYDAyLW1lcmdlX2NhbGxlcnMuUmAsIHRoaXMgbm90ZWJvb2sgCnBsb3RzIHRoZXNlIGRhdGEgaW4gYSBzZXJpZXMgb2YgcGxvdHMgdG8gY29tcGFyZSB0aGUgY29uc2Vuc3VzIGNhbGxzIHRvIHRoZSBpbmRpdmlkdWFsIApjYWxsZXJzLiAKCiMjIyBTdW1tYXJ5IG9mIEZpbmRpbmdzOgoKCiMjIyMgSW5kaXZpZHVhbCBDYWxsZXIncyBSZXBvcnRzIAoKCipOb3RhYmxlIEZpbmRpbmdzOiogIAoKLSBbVmFyRGljdCBjYWxscyBtb3JlIG11dGF0aW9uc10oI3Vwc2V0LWdyYXBoKSB0aGFuIGFueSBvZiB0aGUgb3RoZXIgY2FsbGVycy4gCk1hbnkgb2YgdGhlc2UgaGF2ZSBbdmVyeSBsb3cgXSgjdmFmLWRpc3RyaWJ1dGlvbnMpIHN1Z2dlc3RpbmcgdGhhdCBzb21lIG1heSBiZSBzZXF1ZW5jaW5nIGVycm9ycy4gCgotIE11dGVjdDIsIFN0cmVsa2EyLCBhbmQgTGFuY2V0IGRvIGhhdmUgW3BsZW50eSBvZiBtdXRhdGlvbnMgaW4gY29tbW9uXSgjdXBzZXQtZ3JhcGgpLiAKCiMjIyBPdXRsaW5lIG9mIGFuYWx5c2VzIGNvbXBsZXRlZDoKCi0gW1Vwc2V0IGdyYXBoXSgjdXBzZXQtZ3JhcGgpICAKLSBbVkFGIG9mIGNvbWJpbmF0aW9ucyBvZiBjYWxsZXJzXSgjdmFmLWZvci1jb21iaW5hdGlvbi1zZXRzLW9mLWNhbGxlcnMpCi0gW0Jhc2UgY2hhbmdlcyBieSBjYWxsZXJdKCNiYXNlLWNoYW5nZXMpCi0gW1ZBRiBkaXN0cmlidXRpb25zIGJ5IGNhbGxlcl0oI3ZhZi1kaXN0cmlidXRpb25zKQotIFtWQUYgY29ycmVsYXRpb25zIGJldHdlZW4gY2FsbGVyc10oI3ZhZi1jb3JyZWxhdGlvbnMpCgojIyMjIFVzYWdlCgpUbyBydW4gdGhpcyBmcm9tIHRoZSBjb21tYW5kIGxpbmUsIHVzZToKYGBgClJzY3JpcHQgLWUgInJtYXJrZG93bjo6cmVuZGVyKCdhbmFseXNlcy9zbnYtY2FsbGVycy9jb21wYXJlX3Nudl9jYWxsZXJzX3Bsb3RzLlJtZCcsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbGVhbiA9IFRSVUUpIgpgYGAKCl9UaGlzIGFzc3VtZXMgeW91IGFyZSBpbiB0aGUgdG9wIGRpcmVjdG9yeSBvZiB0aGUgcmVwb3NpdG9yeS5fCgojIyBTZXR1cAoKIyMjIyBQYWNrYWdlcyBhbmQgZnVuY3Rpb25zCgpSZWFkIGluIHNldCB1cCBzY3JpcHQuCgpgYGB7cn0KIyBNYWdyaXR0ciBwaXBlCmAlPiVgIDwtIGRwbHlyOjpgJT4lYApgYGAKClNldCB1cCBkaXJlY3Rvcmllcy4gCgpgYGB7cn0Kc2NyYXRjaF9kaXIgPC0gZmlsZS5wYXRoKCIuLiIsICIuLiIsICJzY3JhdGNoIikKcmVzdWx0c19kaXIgPC0gZmlsZS5wYXRoKCJyZXN1bHRzIiwgImNvbXBhcmlzb24iKQpwbG90c19kaXIgPC0gZmlsZS5wYXRoKCJwbG90cyIsICJjb21wYXJpc29uIikKCmlmICghZGlyLmV4aXN0cyhyZXN1bHRzX2RpcikpIHsKICBkaXIuY3JlYXRlKHJlc3VsdHNfZGlyKQp9CmlmICghZGlyLmV4aXN0cyhwbG90c19kaXIpKSB7CiAgZGlyLmNyZWF0ZShwbG90c19kaXIpCn0KYGBgCgpgYGB7cn0KdXBzZXRfcGxvdCA8LSBmdW5jdGlvbihjYWxsZXJzX3Blcl9tdXRhdGlvbl9kZikgewpjYWxsZXJzX3Blcl9tdXRhdGlvbl9kZiAlPiUgCiAgZHBseXI6Omdyb3VwX2J5KGNhbGxlcl9jb21ibykgJT4lCiAgZHBseXI6OnRhbGx5KCkgJT4lIAogIGdncGxvdDI6OmdncGxvdChnZ3Bsb3QyOjphZXMoeCA9IHJlb3JkZXIoY2FsbGVyX2NvbWJvLCAtbiksIHkgPSBuKSkgKwogIGdncGxvdDI6Omdlb21fYmFyKAogICAgICAgIHBvc2l0aW9uID0gImRvZGdlIiwgc3RhdCA9ICJpZGVudGl0eSIpICsKICBnZ3Bsb3QyOjp0aGVtZV9jbGFzc2ljKCkgKwogIGdndXBzZXQ6OnNjYWxlX3hfbWVyZ2VsaXN0KHNlcCA9ICItIikgKwogIGdndXBzZXQ6OmF4aXNfY29tYm1hdHJpeChzZXAgPSAiLSIpICsKICBnZ3Bsb3QyOjp4bGFiKCIiKSArCiAgZ2dwbG90Mjo6eWxhYigiIikKfQpgYGAKCiMjIENvbm5lY3QgdG8gZGF0YWJhc2UKCkNvbm5lY3QgdG8gU1FMaXRlIGRhdGFiYXNlLgoKYGBge3J9CiMgU3RhcnQgdXAgY29ubmVjdGlvbgpjb24gPC0gREJJOjpkYkNvbm5lY3QoUlNRTGl0ZTo6U1FMaXRlKCksIAogICAgICAgICAgICAgICAgICAgICAgZmlsZS5wYXRoKHNjcmF0Y2hfZGlyLCAic252X2RiLnNxbGl0ZSIpKQpgYGAKCk5vdGUgd2hhdCBjb2x1bW5zIHdlIHdpbGwgam9pbiBieS4KCmBgYHtyfQpqb2luX2NvbHMgPSBjKCJDaHJvbW9zb21lIiwKICAgICAgICAgICAgICAiU3RhcnRfUG9zaXRpb24iLAogICAgICAgICAgICAgICJSZWZlcmVuY2VfQWxsZWxlIiwKICAgICAgICAgICAgICAiQWxsZWxlIiwKICAgICAgICAgICAgICAiVHVtb3JfU2FtcGxlX0JhcmNvZGUiLCAKICAgICAgICAgICAgICAiVmFyaWFudF9DbGFzc2lmaWNhdGlvbiIpCmBgYAoKU2V0IHVwIHRhYmxlcyBmcm9tIHRoZSBkYXRhYmFzZSBidXQgb25seSBjYWxsIHRoZSBjb2x1bW5zIHdlIG5lZWQuCgpgYGB7cn0Kc3RyZWxrYSA8LSBkcGx5cjo6dGJsKGNvbiwgInN0cmVsa2EiKSAlPiUgCiAgZHBseXI6OnNlbGVjdChqb2luX2NvbHMsICJWQUYiKQoKbGFuY2V0IDwtIGRwbHlyOjp0YmwoY29uLCAibGFuY2V0IikgJT4lIAogIGRwbHlyOjpzZWxlY3Qoam9pbl9jb2xzLCAiVkFGIikKCm11dGVjdCA8LSBkcGx5cjo6dGJsKGNvbiwgIm11dGVjdCIpICU+JSAKICBkcGx5cjo6c2VsZWN0KGpvaW5fY29scywgIlZBRiIpCgp2YXJkaWN0IDwtIGRwbHlyOjp0YmwoY29uLCAidmFyZGljdCIpICU+JSAKICBkcGx5cjo6c2VsZWN0KGpvaW5fY29scywgIlZBRiIpCmBgYAoKQmVjYXVzZSBgREJJYCBkb2VzIG5vdCBzdXBwb3J0IGZ1bGxfam9pbiwgd2UgaGFkIHRvIHVzZSBhIHNlcmllcyBvZiBgbGVmdF9qb2luYCBhbmQKYHVuaW9uX2FsbGAgY2FsbHMgaW4gb3JkZXIgdG8gZ2V0IGEgZnVsbCBqb2luIG9mIGFsbCB0aGUgY2FsbGVycy4gCgpgYGB7cn0KIyBUaGlzIHNjcmlwdCB3aWxsIGRvIHRoZSBmdWxsIGpvaW4gb2YgdGhlIGRhdGEgZm9yIHVzCnNvdXJjZShmaWxlLnBhdGgoInV0aWwiLCAiZnVsbF9qb2luX2NhbGxlcnMuUiIpKQoKIyBCcmluZyBvdXQgdGhlIGRhdGEuZnJhbWUKYWxsX2NhbGxlcl9kZiA8LSBhbGxfY2FsbGVyICU+JQogIGFzLmRhdGEuZnJhbWUKCiMgVGFrZSBhIHBlZWsgYXQgd2hhdCB0aGlzIGxvb2tzIGxpa2UKaGVhZChhbGxfY2FsbGVyX2RmKQpgYGAKCmBgYHtyfQojIFNldCB1cCB0aGUgZGF0YSBhcyBhIGRhdGEuZnJhbWUKdmFmX2RmIDwtIGFsbF9jYWxsZXJfZGYgJT4lIAogIGRwbHlyOjpzZWxlY3QoIlZBRl9sYW5jZXQiLCAiVkFGX3N0cmVsa2EiLCAiVkFGX3ZhcmRpY3QiLCAiVkFGX211dGVjdCIsCiAgICAgICAgICAgICAgICAiVmFyaWFudF9DbGFzc2lmaWNhdGlvbiIpICU+JQogIGRwbHlyOjptdXRhdGUoVkFGX2NvbnNlbnN1cyA9IFZBRl9zdHJlbGthKSAgICAgCiAKIyBEZXRlcm1pbmUgd2hpY2ggbXV0YXRpb25zIGFyZSBwYXJ0IG9mIHRoZSBjb25zZW5zdXMKY29uc2Vuc3VzX2luZGV4IDwtIHZhZl9kZiAlPiUKICBkcGx5cjo6c2VsZWN0KC1jKFZBRl92YXJkaWN0LCBWQUZfY29uc2Vuc3VzLCBWYXJpYW50X0NsYXNzaWZpY2F0aW9uKSkgJT4lCiAgcm93U3Vtcyhpcy5uYSguKSkgPiAwCgojIE1ha2Ugbm9uIGNvbnNlbnN1cyBWQUYgaW50byBhbiBOQQp2YWZfZGYkVkFGX2NvbnNlbnN1c1tjb25zZW5zdXNfaW5kZXhdIDwtIE5BCgojIE1ha2UgdGhpcyBsb25nIGZvcm0gZm9yIHBsb3R0aW5nIGFuZCAKbG9uZ192YWZfZGYgPC0gdmFmX2RmICU+JSAKICBkcGx5cjo6bXV0YXRlKGluZGV4ID0gZmFjdG9yKDE6bnJvdyguKSkpICU+JSAKICB0aWR5cjo6Z2F0aGVyKGtleSA9ICJjYWxsZXIiLCB2YWx1ZSA9ICJ2YWYiLCAtaW5kZXgsIC1WYXJpYW50X0NsYXNzaWZpY2F0aW9uKSAlPiUgCiAgZHBseXI6Om11dGF0ZShjYWxsZXIgPSBnc3ViKCJWQUZfIiwgIiIsIGNhbGxlcikpICU+JSAKICBkcGx5cjo6ZmlsdGVyKCFpcy5uYSh2YWYpKQpgYGAKCkdldCBtZWRpYW4gdmFmIGZvciBlYWNoIG11dGF0aW9uIHdpdGggZWFjaCBjYWxsZXIgY29tYmluYXRpb24uIAoKYGBge3J9CiMgVGFrZSBvdXQgdGhlIGNvbnNlbnN1cyBWQUYgZm9yIHRoaXMgY29tYmluYXRpb24KbG9uZ19jYWxsZXJfZGYgPC0gbG9uZ192YWZfZGYgJT4lIAogIGRwbHlyOjpmaWx0ZXIoY2FsbGVyICE9ICJjb25zZW5zdXMiKQoKIyBEZXRlcm1pbmUgdGhlIGNvbWJpbmF0aW9uIG9mIGNhbGxlcnMgZm9yIGVhY2ggbXV0YXRpb24KY2FsbGVyc19wZXJfbXV0YXRpb24gPC0gdGFwcGx5KAogICAgbG9uZ19jYWxsZXJfZGYkY2FsbGVyLAogICAgbG9uZ19jYWxsZXJfZGYkaW5kZXgsCiAgICBwYXN0ZTAsCiAgICBjb2xsYXBzZSA9ICItIgogICkgJT4lIAogIGFzLmRhdGEuZnJhbWUoKSAlPiUKICB0aWJibGU6OnJvd25hbWVzX3RvX2NvbHVtbigiaW5kZXgiKQoKIyBEZXRlcm1pbmUgTWVkaWFuIFZBRiBmb3IgZWFjaCBtdXRhdGlvbiAKdmFmX21lZCA8LSB0YXBwbHkoCiAgICBsb25nX2NhbGxlcl9kZiR2YWYsCiAgICBsb25nX2NhbGxlcl9kZiRpbmRleCwKICAgIG1lZGlhbgogICkgJT4lIAogIGFzLmRhdGEuZnJhbWUoKSAlPiUKICB0aWJibGU6OnJvd25hbWVzX3RvX2NvbHVtbigiaW5kZXgiKQoKIyBKb2luIHRoZSBtZWRpYW4gVkFGIGFuZCB0aGUgY2FsbGVycyB0aGF0IGNhbGwgdGhhdCBtdXRhdGlvbiBpbnRvIG9uZSBkYXRhLmZyYW1lCmNhbGxlcnNfcGVyX211dGF0aW9uIDwtIGNhbGxlcnNfcGVyX211dGF0aW9uICU+JQogIGRwbHlyOjppbm5lcl9qb2luKHZhZl9tZWQsIGJ5ID0gImluZGV4IikgJT4lCiAgZHBseXI6OmxlZnRfam9pbihsb25nX2NhbGxlcl9kZiAlPiUgCiAgICAgICAgICAgICAgICAgICAgICBkcGx5cjo6c2VsZWN0KFZhcmlhbnRfQ2xhc3NpZmljYXRpb24sIGluZGV4KSwgCiAgICAgICAgICAgICAgICAgICBieSA9ICJpbmRleCIpICU+JQogICMgTWFrZSBjb2x1bW4gbmFtZXMgbW9yZSBzZW5zaWJsZQogIGRwbHlyOjpyZW5hbWUoY2FsbGVyX2NvbWJvID0gIi4ueCIsIG1lZGlhbl92YWYgPSAiLi55IikgCmBgYAoKIyMgVXBzZXQgZ3JhcGgKCk1ha2UgdGhlIHVwc2V0IHBsb3QuIAoKYGBge3J9CnVwc2V0dHJfcGxvdCA8LSBjYWxsZXJzX3Blcl9tdXRhdGlvbiAlPiUKICB1cHNldF9wbG90KCkKCiMgUHJpbnQgdGhpcyBvdXQgaGVyZQp1cHNldHRyX3Bsb3QKYGBgCgpTYXZlIHRoaXMgcGxvdCB0byBhIHBuZwoKYGBge3J9CiMgV2UgY2FuIHNhdmUgdGhlIHBsb3QgbGlrZSBhIG5vcm1hbCBnZ3Bsb3QKcG5nKGZpbGUgPSBmaWxlLnBhdGgocGxvdHNfZGlyLCAidXBzZXRfcGxvdC5wbmciKSkKdXBzZXR0cl9wbG90CmRldi5vZmYoKQpgYGAKClRyYW5zY3JpcHRzIG9ubHkgdXBzZXQgcGxvdC4gCgpgYGB7cn0KY2FsbGVyc19wZXJfbXV0YXRpb24gJT4lIAogIGRwbHlyOjpmaWx0ZXIoIShWYXJpYW50X0NsYXNzaWZpY2F0aW9uICVpbiUgYygiNSdGbGFuayIsICIzJ0ZsYW5rIiwgIklHUiIsICJJbnRyb24iKSkpICU+JQogIHVwc2V0X3Bsb3QoKQpgYGAKCk5vbiB0cmFuc2NyaXB0IHVwc2V0IHBsb3QuIAoKYGBge3J9CmNhbGxlcnNfcGVyX211dGF0aW9uICU+JSAKICBkcGx5cjo6ZmlsdGVyKFZhcmlhbnRfQ2xhc3NpZmljYXRpb24gJWluJSBjKCI1J0ZsYW5rIiwgIjMnRmxhbmsiLCAiSUdSIiwgIkludHJvbiIpKSAlPiUKICB1cHNldF9wbG90KCkKYGBgCgojIyBWQUYgZm9yIGNvbWJpbmF0aW9uIHNldHMgb2YgY2FsbGVycwoKR3JhcGggbXV0YXRpb25zIGJ5IGNvbWJpbmF0aW9ucyBvZiBjYWxsZXJzIGFuZCBwbG90IHRoZSBWQUYgZGVuc2l0eS4KR2V0IGxpc3Qgb2YgY2FsbGVycyBwZXIgbXV0YXRpb24gYW5kIHRoZSBtZWRpYW4gdmFmIGZvciBlYWNoLiAKR3JhcGggdGhlIG1lZGlhbiBWQUYgZm9yIGVhY2ggY29tYmluYXRpb24gb2YgY2FsbGVycy4KCmBgYHtyfQojIE1ha2UgdGhpcyBwbG90CmNhbGxlcnNfcGVyX211dGF0aW9uICU+JQogIGdncGxvdDI6OmdncGxvdChnZ3Bsb3QyOjphZXMoeCA9IGNhbGxlcl9jb21ibywgeSA9IG1lZGlhbl92YWYpKSArCiAgZ2dwbG90Mjo6Z2VvbV92aW9saW4oKSArCiAgZ2dwbG90Mjo6dGhlbWVfY2xhc3NpYygpICsKICBnZ3Vwc2V0OjpzY2FsZV94X21lcmdlbGlzdChzZXAgPSAiLSIpICsKICBnZ3Vwc2V0OjpheGlzX2NvbWJtYXRyaXgoc2VwID0gIi0iKSArCiAgZ2dwbG90Mjo6eGxhYigiIikgKwogIGdncGxvdDI6OnlsYWIoIk1lZGlhbiBWQUYgQWNyb3NzIENhbGxlcnMiKQpgYGAKCmBgYHtyfQojIFNhdmUgdGhpcyBwbG90CmdncGxvdDI6Omdnc2F2ZShmaWxlLnBhdGgocGxvdHNfZGlyLCAidXBzZXRfbWVkaWFuX3ZhZl9wbG90LnBuZyIpKQpgYGAKCiMjIEJhc2UgQ2hhbmdlcyAKClN1bW1hcml6ZSBiYXNlIGNoYW5nZSBpbmZvcm1hdGlvbiBwZXIgY2FsbGVyLiAKCmBgYHtyfQojIFN1bW1hcml6ZSBieSB0aGUgbnVtYmVyIG9mIHRpbWVzIGVhY2ggYmFzZSBjaGFuZ2Ugc2hvd3MgdXAgaW4gZWFjaCBjYXRlZ29yeS4KcGVyY19jaGFuZ2VfZGYgPC0gYWxsX2NhbGxlcl9kZiAlPiUgCiAgIyBNYWtlIGNoYW5nZSB2YXJpYWJsZQogIGRwbHlyOjptdXRhdGUoYmFzZV9jaGFuZ2UgPSBwYXN0ZTAoQWxsZWxlLCAiPiIsIFJlZmVyZW5jZV9BbGxlbGUpKSAlPiUgCiAgZHBseXI6Om11dGF0ZSgKICAgICMgRnJvbSB0aGUgYmFzZV9jaGFuZ2UgdmFyaWFibGUsIHN1bW1hcml6ZSBpbnNlcnRpb25zLCBkZWxldGlvbnMsIGFuZAogICAgIyBjaGFuZ2VzIHRoYXQgYXJlIG1vcmUgdGhhbiBvbmUgYmFzZSBpbnRvIHRoZWlyIG93biBncm91cHMuCiAgICBjaGFuZ2UgPSBkcGx5cjo6Y2FzZV93aGVuKAogICAgICBncmVwbCgiXi0iLCBiYXNlX2NoYW5nZSkgfiAiaW5zIiwKICAgICAgZ3JlcGwoIi0kIiwgYmFzZV9jaGFuZ2UpIH4gImRlbCIsCiAgICAgIG5jaGFyKGJhc2VfY2hhbmdlKSA+IDMgfiAibG9uZ19jaGFuZ2UiLAogICAgICBUUlVFIH4gYmFzZV9jaGFuZ2UKICAgICkKICApICU+JQogICMgV2hpdHRsZSBkb3duIHRvIG5lY2Vzc2FyeSBjb2x1bW5zCiAgZHBseXI6OnNlbGVjdChjaGFuZ2UsIGRwbHlyOjpzdGFydHNfd2l0aCgiVkFGXyIpKSAlPiUgCiAgIyBNYWtlIHRoaXMgbG9uZyBmb3JtCiAgdGlkeXI6OmdhdGhlcihrZXkgPSAiY2FsbGVyIiwgdmFsdWUgPSAidmFmIiwgLWNoYW5nZSkgJT4lIAogICMgRHJvcCB0aGUgcHJlZml4CiAgZHBseXI6Om11dGF0ZShjYWxsZXIgPSBnc3ViKCJWQUZfIiwgIiIsIGNhbGxlcikpICU+JSAKICAjIEdldCByaWQgb2YgTkEgcm93cwogIGRwbHlyOjpmaWx0ZXIoIWlzLm5hKHZhZikpICU+JQogICMgU3VtbWFyaXplIHRoZSBudW1iZXIgb2YgbXV0YXRpb25zIHBlciBjYWxsZXIKICBkcGx5cjo6Y291bnQoY2FsbGVyLCBjaGFuZ2UsIG5hbWUgPSAiY291bnQiKSAlPiUKICBkcGx5cjo6YWRkX2NvdW50KGNhbGxlciwgd3QgPSBjb3VudCkgJT4lCiAgIyBDYWxjdWxhdGUgdGhlIHBlcmNlbnQgb2YgZWFjaCAKICBkcGx5cjo6bXV0YXRlKHBlcmNlbnQgPSBjb3VudCAvIG4pICU+JQogICMgRHJvcCBub25zZW5zaWNhbCBjaGFuZ2UKICBkcGx5cjo6ZmlsdGVyKCFncmVwbCgiTj4qfCo+TnxDPkN8VD5UfEE+QXxHPkciLCBjaGFuZ2UpLCAKICAgICAgICAgICAgICAgICFpcy5uYShjaGFuZ2UpKSAlPiUKICBkcGx5cjo6bXV0YXRlKAogICAgY2hhbmdlID0gYXMuZmFjdG9yKGNoYW5nZSksCiAgICAjIENoYW5nZSBmYWN0b3IgbGV2ZWwgb3JkZXIgc28gaW5zIGFuZCBkZWwgYXJlIGF0IHRoZSBlbmQKICAgIGNoYW5nZSA9IGZvcmNhdHM6OmZjdF9yZWxldmVsKGNoYW5nZSwgImlucyIsICJkZWwiLCAibG9uZ19jaGFuZ2UiLCBhZnRlciA9IEluZikKICApIApgYGAKCk1ha2UgYSBiYXJwbG90IGlsbHVzdHJhdGluZyB0aGUgcGVyY2VudCBvZiB0aGUgbXV0YXRpb25zIGZvciBlYWNoIGNhbGxlciB0aGF0IAp0aGF0IGFyZSBlYWNoIHR5cGUgb2YgY2hhbmdlLiAKCmBgYHtyfQpwZXJjX2NoYW5nZV9kZiAlPiUKICBnZ3Bsb3QyOjpnZ3Bsb3QoZ2dwbG90Mjo6YWVzKHggPSBjaGFuZ2UsIHkgPSBwZXJjZW50KSkgKwogIGdncGxvdDI6OnRoZW1lX2NsYXNzaWMoKSArCiAgZ2dwbG90Mjo6Z2VvbV9iYXIoCiAgICBwb3NpdGlvbiA9ICJkb2RnZSIsIHN0YXQgPSAiaWRlbnRpdHkiLAogICAgZ2dwbG90Mjo6YWVzKGZpbGwgPSBjYWxsZXIpCiAgKSArCiAgZ2dwbG90Mjo6dGhlbWUoYXhpcy50ZXh0LnggPSBnZ3Bsb3QyOjplbGVtZW50X3RleHQoYW5nbGUgPSA0NSwgaGp1c3QgPSAxKSkgKwogIGdncGxvdDI6OnhsYWIoIiIpICsKICBnZ3Bsb3QyOjp5bGFiKCJQZXJjZW50IG9mIGNhbGxlcnMnIG11dGF0aW9ucyIpICsKICBjb2xvcmJsaW5kcjo6c2NhbGVfZmlsbF9Pa2FiZUl0bygpCmBgYAoKYGBge3J9CiMgU2F2ZSB0aGlzIHBsb3QKZ2dwbG90Mjo6Z2dzYXZlKGZpbGUucGF0aChwbG90c19kaXIsICJwZXJjX2Jhc2VfY2hhbmdlX3Bsb3QucG5nIikpCmBgYAoKIyMgVkFGIGRpc3RyaWJ1dGlvbnMKCk1ha2UgYSB2aW9saW4gcGxvdCBvZiBlYWNoIGNhbGxlci4gCgpgYGB7cn0KbG9uZ192YWZfZGYgJT4lCiAgZ2dwbG90Mjo6Z2dwbG90KGdncGxvdDI6OmFlcyh4ID0gY2FsbGVyLCB5ID0gdmFmLCBjb2xvciA9IGNhbGxlcikpICsKICBnZ3Bsb3QyOjpnZW9tX3Zpb2xpbigpICsKICBnZ3Bsb3QyOjp0aGVtZV9jbGFzc2ljKCkgKwogIGNvbG9yYmxpbmRyOjpzY2FsZV9jb2xvcl9Pa2FiZUl0bygpCmBgYAoKYGBge3J9CiMgU2F2ZSB0aGlzIHBsb3QKZ2dwbG90Mjo6Z2dzYXZlKGZpbGUucGF0aChwbG90c19kaXIsICJ2YWZfdmlvbGluX3Bsb3QucG5nIikpCmBgYAoKIyMgVkFGIGNvcnJlbGF0aW9ucwoKQ29ycmVsYXRlIFZBRidzIGFjcm9zcyBjYWxsZXJzCgpgYGB7cn0KdmFmX2RmICU+JSAKICBkcGx5cjo6c2VsZWN0KC1WQUZfY29uc2Vuc3VzLCAtVmFyaWFudF9DbGFzc2lmaWNhdGlvbikgJT4lIAogIGNvcigpICU+JSAKICBrbml0cjo6a2FibGUoKQpgYGAgCgojIyBNdXRhdGlvbiBSZWdpb24gYmFycGxvdAoKU3VtbWFyaXplIGBWYXJpYW50X0NsYXNzaWZpY2F0aW9uYCBpbmZvcm1hdGlvbiBwZXIgY2FsbGVyLiAKCmBgYHtyfQojIFN1bW1hcml6ZSBieSB0aGUgbnVtYmVyIG9mIHRpbWVzIGVhY2ggYmFzZSBjaGFuZ2Ugc2hvd3MgdXAgaW4gZWFjaCBjYXRlZ29yeS4KcGVyY192YXJfZGYgPC0gbG9uZ192YWZfZGYgJT4lIAogICMgU3VtbWFyaXplIHRoZSBudW1iZXIgb2YgbXV0YXRpb25zIHBlciBjYWxsZXIKICBkcGx5cjo6Y291bnQoY2FsbGVyLCBWYXJpYW50X0NsYXNzaWZpY2F0aW9uLCBuYW1lID0gImNvdW50IikgJT4lCiAgZHBseXI6OmFkZF9jb3VudChjYWxsZXIsIHd0ID0gY291bnQpICU+JQogICMgQ2FsY3VsYXRlIHRoZSBwZXJjZW50IG9mIGVhY2ggCiAgZHBseXI6Om11dGF0ZShwZXJjZW50ID0gY291bnQgLyBuKQpgYGAKCk1ha2UgYSBiYXJwbG90IGlsbHVzdHJhdGluZyB0aGUgcGVyY2VudCBvZiB0aGUgbXV0YXRpb25zIGZvciBlYWNoIGNhbGxlciB0aGF0IAp0aGF0IGFyZSBlYWNoIHR5cGUgb2YgY2hhbmdlLiAKCmBgYHtyfQpwZXJjX3Zhcl9kZiAlPiUKICBnZ3Bsb3QyOjpnZ3Bsb3QoZ2dwbG90Mjo6YWVzKHggPSBjYWxsZXIsIHkgPSBwZXJjZW50KSkgKwogIGdncGxvdDI6OnRoZW1lX2NsYXNzaWMoKSArCiAgZ2dwbG90Mjo6Z2VvbV9iYXIoCiAgICBwb3NpdGlvbiA9ICJzdGFjayIsIHN0YXQgPSAiaWRlbnRpdHkiLAogICAgZ2dwbG90Mjo6YWVzKGZpbGwgPSBWYXJpYW50X0NsYXNzaWZpY2F0aW9uKQogICkgKwogIGdncGxvdDI6OnRoZW1lKGF4aXMudGV4dC54ID0gZ2dwbG90Mjo6ZWxlbWVudF90ZXh0KGFuZ2xlID0gNDUsIGhqdXN0ID0gMSkpICsKICBnZ3Bsb3QyOjp4bGFiKCIiKSArCiAgZ2dwbG90Mjo6eWxhYigiUGVyY2VudCBvZiBjYWxsZXJzJyBtdXRhdGlvbnMiKQpgYGAKCmBgYHtyfQojIFNhdmUgdGhpcyBwbG90CmdncGxvdDI6Omdnc2F2ZShmaWxlLnBhdGgocGxvdHNfZGlyLCAidmFyaWFudF9jbGFzc2lmaWNhdGlvbl9wbG90LnBuZyIpKQpgYGAKCiMjIFNlc3Npb24gSW5mbwoKYGBge3J9CnNlc3Npb25JbmZvKCkKYGBgCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUGxvdCBDYWxsZXIgQ29tcGFyaXNvbnMiCm91dHB1dDogCiAgaHRtbF9ub3RlYm9vazoKICAgIHRvYzogVFJVRQogICAgdG9jX2Zsb2F0OiBUUlVFCmF1dGhvcjogQy4gU2F2b25lbiBmb3IgQUxTRiBDQ0RMCmRhdGU6IDIwMTkKLS0tCgpQdXJwb3NlOiBBZnRlciBjcmVhdGluZyBhIGNvbnNlbnN1cyBmaWxlIHdpdGggYDAyLW1lcmdlX2NhbGxlcnMuUmAsIHRoaXMgbm90ZWJvb2sgCnBsb3RzIHRoZXNlIGRhdGEgaW4gYSBzZXJpZXMgb2YgcGxvdHMgdG8gY29tcGFyZSB0aGUgY29uc2Vuc3VzIGNhbGxzIHRvIHRoZSBpbmRpdmlkdWFsIApjYWxsZXJzLiAKCiMjIyBTdW1tYXJ5IG9mIEZpbmRpbmdzOgoKCiMjIyMgSW5kaXZpZHVhbCBDYWxsZXIncyBSZXBvcnRzIAoKCipOb3RhYmxlIEZpbmRpbmdzOiogIAoKLSBbVmFyRGljdCBjYWxscyBtb3JlIG11dGF0aW9uc10oI3Vwc2V0LWdyYXBoKSB0aGFuIGFueSBvZiB0aGUgb3RoZXIgY2FsbGVycy4gCk1hbnkgb2YgdGhlc2UgaGF2ZSBbdmVyeSBsb3cgXSgjdmFmLWRpc3RyaWJ1dGlvbnMpIHN1Z2dlc3RpbmcgdGhhdCBzb21lIG1heSBiZSBzZXF1ZW5jaW5nIGVycm9ycy4gCgotIE11dGVjdDIsIFN0cmVsa2EyLCBhbmQgTGFuY2V0IGRvIGhhdmUgW3BsZW50eSBvZiBtdXRhdGlvbnMgaW4gY29tbW9uXSgjdXBzZXQtZ3JhcGgpLiAKCiMjIyBPdXRsaW5lIG9mIGFuYWx5c2VzIGNvbXBsZXRlZDoKCi0gW1Vwc2V0IGdyYXBoXSgjdXBzZXQtZ3JhcGgpICAKLSBbVkFGIG9mIGNvbWJpbmF0aW9ucyBvZiBjYWxsZXJzXSgjdmFmLWZvci1jb21iaW5hdGlvbi1zZXRzLW9mLWNhbGxlcnMpCi0gW0Jhc2UgY2hhbmdlcyBieSBjYWxsZXJdKCNiYXNlLWNoYW5nZXMpCi0gW1ZBRiBkaXN0cmlidXRpb25zIGJ5IGNhbGxlcl0oI3ZhZi1kaXN0cmlidXRpb25zKQotIFtWQUYgY29ycmVsYXRpb25zIGJldHdlZW4gY2FsbGVyc10oI3ZhZi1jb3JyZWxhdGlvbnMpCgojIyMjIFVzYWdlCgpUbyBydW4gdGhpcyBmcm9tIHRoZSBjb21tYW5kIGxpbmUsIHVzZToKYGBgClJzY3JpcHQgLWUgInJtYXJrZG93bjo6cmVuZGVyKCdhbmFseXNlcy9zbnYtY2FsbGVycy9jb21wYXJlX3Nudl9jYWxsZXJzX3Bsb3RzLlJtZCcsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbGVhbiA9IFRSVUUpIgpgYGAKCl9UaGlzIGFzc3VtZXMgeW91IGFyZSBpbiB0aGUgdG9wIGRpcmVjdG9yeSBvZiB0aGUgcmVwb3NpdG9yeS5fCgojIyBTZXR1cAoKIyMjIyBQYWNrYWdlcyBhbmQgZnVuY3Rpb25zCgpSZWFkIGluIHNldCB1cCBzY3JpcHQuCgpgYGB7cn0KIyBNYWdyaXR0ciBwaXBlCmAlPiVgIDwtIGRwbHlyOjpgJT4lYApgYGAKClNldCB1cCBkaXJlY3Rvcmllcy4gCgpgYGB7cn0Kc2NyYXRjaF9kaXIgPC0gZmlsZS5wYXRoKCIuLiIsICIuLiIsICJzY3JhdGNoIikKcmVzdWx0c19kaXIgPC0gZmlsZS5wYXRoKCJyZXN1bHRzIiwgInBidGEtY29tcGFyaXNvbiIpCnBsb3RzX2RpciA8LSBmaWxlLnBhdGgoInBsb3RzIiwgInBidGEtY29tcGFyaXNvbiIpCgppZiAoIWRpci5leGlzdHMocmVzdWx0c19kaXIpKSB7CiAgZGlyLmNyZWF0ZShyZXN1bHRzX2RpcikKfQppZiAoIWRpci5leGlzdHMocGxvdHNfZGlyKSkgewogIGRpci5jcmVhdGUocGxvdHNfZGlyKQp9CmBgYAoKYGBge3J9CnVwc2V0X3Bsb3QgPC0gZnVuY3Rpb24oY2FsbGVyc19wZXJfbXV0YXRpb25fZGYpIHsKY2FsbGVyc19wZXJfbXV0YXRpb25fZGYgJT4lIAogIGRwbHlyOjpncm91cF9ieShjYWxsZXJfY29tYm8pICU+JQogIGRwbHlyOjp0YWxseSgpICU+JSAKICBnZ3Bsb3QyOjpnZ3Bsb3QoZ2dwbG90Mjo6YWVzKHggPSByZW9yZGVyKGNhbGxlcl9jb21ibywgLW4pLCB5ID0gbikpICsKICBnZ3Bsb3QyOjpnZW9tX2JhcigKICAgICAgICBwb3NpdGlvbiA9ICJkb2RnZSIsIHN0YXQgPSAiaWRlbnRpdHkiKSArCiAgZ2dwbG90Mjo6dGhlbWVfY2xhc3NpYygpICsKICBnZ3Vwc2V0OjpzY2FsZV94X21lcmdlbGlzdChzZXAgPSAiLSIpICsKICBnZ3Vwc2V0OjpheGlzX2NvbWJtYXRyaXgoc2VwID0gIi0iKSArCiAgZ2dwbG90Mjo6eGxhYigiIikgKwogIGdncGxvdDI6OnlsYWIoIiIpCn0KYGBgCgojIyBDb25uZWN0IHRvIGRhdGFiYXNlCgpDb25uZWN0IHRvIFNRTGl0ZSBkYXRhYmFzZS4KCmBgYHtyfQojIFN0YXJ0IHVwIGNvbm5lY3Rpb24KY29uIDwtIERCSTo6ZGJDb25uZWN0KFJTUUxpdGU6OlNRTGl0ZSgpLCAKICAgICAgICAgICAgICAgICAgICAgIGZpbGUucGF0aChzY3JhdGNoX2RpciwgInNudl9kYi5zcWxpdGUiKSkKYGBgCgpOb3RlIHdoYXQgY29sdW1ucyB3ZSB3aWxsIGpvaW4gYnkuCgpgYGB7cn0Kam9pbl9jb2xzID0gYygiQ2hyb21vc29tZSIsCiAgICAgICAgICAgICAgIlN0YXJ0X1Bvc2l0aW9uIiwKICAgICAgICAgICAgICAiUmVmZXJlbmNlX0FsbGVsZSIsCiAgICAgICAgICAgICAgIkFsbGVsZSIsCiAgICAgICAgICAgICAgIlR1bW9yX1NhbXBsZV9CYXJjb2RlIiwgCiAgICAgICAgICAgICAgIlZhcmlhbnRfQ2xhc3NpZmljYXRpb24iKQpgYGAKClNldCB1cCB0YWJsZXMgZnJvbSB0aGUgZGF0YWJhc2UgYnV0IG9ubHkgY2FsbCB0aGUgY29sdW1ucyB3ZSBuZWVkLgoKYGBge3J9CnN0cmVsa2EgPC0gZHBseXI6OnRibChjb24sICJzdHJlbGthIikgJT4lIAogIGRwbHlyOjpzZWxlY3Qoam9pbl9jb2xzLCAiVkFGIikKCmxhbmNldCA8LSBkcGx5cjo6dGJsKGNvbiwgImxhbmNldCIpICU+JSAKICBkcGx5cjo6c2VsZWN0KGpvaW5fY29scywgIlZBRiIpCgptdXRlY3QgPC0gZHBseXI6OnRibChjb24sICJtdXRlY3QiKSAlPiUgCiAgZHBseXI6OnNlbGVjdChqb2luX2NvbHMsICJWQUYiKQoKdmFyZGljdCA8LSBkcGx5cjo6dGJsKGNvbiwgInZhcmRpY3QiKSAlPiUgCiAgZHBseXI6OnNlbGVjdChqb2luX2NvbHMsICJWQUYiKQpgYGAKCkJlY2F1c2UgYERCSWAgZG9lcyBub3Qgc3VwcG9ydCBmdWxsX2pvaW4sIHdlIGhhZCB0byB1c2UgYSBzZXJpZXMgb2YgYGxlZnRfam9pbmAgYW5kCmB1bmlvbl9hbGxgIGNhbGxzIGluIG9yZGVyIHRvIGdldCBhIGZ1bGwgam9pbiBvZiBhbGwgdGhlIGNhbGxlcnMuIAoKYGBge3J9CiMgVGhpcyBzY3JpcHQgd2lsbCBkbyB0aGUgZnVsbCBqb2luIG9mIHRoZSBkYXRhIGZvciB1cwpzb3VyY2UoZmlsZS5wYXRoKCJ1dGlsIiwgImZ1bGxfam9pbl9jYWxsZXJzLlIiKSkKCiMgQnJpbmcgb3V0IHRoZSBkYXRhLmZyYW1lCmFsbF9jYWxsZXJfZGYgPC0gYWxsX2NhbGxlciAlPiUKICBhcy5kYXRhLmZyYW1lCgojIFRha2UgYSBwZWVrIGF0IHdoYXQgdGhpcyBsb29rcyBsaWtlCmhlYWQoYWxsX2NhbGxlcl9kZikKYGBgCgpgYGB7cn0KIyBTZXQgdXAgdGhlIGRhdGEgYXMgYSBkYXRhLmZyYW1lCnZhZl9kZiA8LSBhbGxfY2FsbGVyX2RmICU+JSAKICBkcGx5cjo6c2VsZWN0KCJWQUZfbGFuY2V0IiwgIlZBRl9zdHJlbGthIiwgIlZBRl92YXJkaWN0IiwgIlZBRl9tdXRlY3QiLAogICAgICAgICAgICAgICAgIlZhcmlhbnRfQ2xhc3NpZmljYXRpb24iKSAlPiUKICBkcGx5cjo6bXV0YXRlKFZBRl9jb25zZW5zdXMgPSBWQUZfc3RyZWxrYSkgICAgIAogCiMgRGV0ZXJtaW5lIHdoaWNoIG11dGF0aW9ucyBhcmUgcGFydCBvZiB0aGUgY29uc2Vuc3VzCmNvbnNlbnN1c19pbmRleCA8LSB2YWZfZGYgJT4lCiAgZHBseXI6OnNlbGVjdCgtYyhWQUZfdmFyZGljdCwgVkFGX2NvbnNlbnN1cywgVmFyaWFudF9DbGFzc2lmaWNhdGlvbikpICU+JQogIHJvd1N1bXMoaXMubmEoLikpID4gMAoKIyBNYWtlIG5vbiBjb25zZW5zdXMgVkFGIGludG8gYW4gTkEKdmFmX2RmJFZBRl9jb25zZW5zdXNbY29uc2Vuc3VzX2luZGV4XSA8LSBOQQoKIyBNYWtlIHRoaXMgbG9uZyBmb3JtIGZvciBwbG90dGluZyBhbmQgCmxvbmdfdmFmX2RmIDwtIHZhZl9kZiAlPiUgCiAgZHBseXI6Om11dGF0ZShpbmRleCA9IGZhY3RvcigxOm5yb3coLikpKSAlPiUgCiAgdGlkeXI6OmdhdGhlcihrZXkgPSAiY2FsbGVyIiwgdmFsdWUgPSAidmFmIiwgLWluZGV4LCAtVmFyaWFudF9DbGFzc2lmaWNhdGlvbikgJT4lIAogIGRwbHlyOjptdXRhdGUoY2FsbGVyID0gZ3N1YigiVkFGXyIsICIiLCBjYWxsZXIpKSAlPiUgCiAgZHBseXI6OmZpbHRlcighaXMubmEodmFmKSkKYGBgCgpHZXQgbWVkaWFuIHZhZiBmb3IgZWFjaCBtdXRhdGlvbiB3aXRoIGVhY2ggY2FsbGVyIGNvbWJpbmF0aW9uLiAKCmBgYHtyfQojIFRha2Ugb3V0IHRoZSBjb25zZW5zdXMgVkFGIGZvciB0aGlzIGNvbWJpbmF0aW9uCmxvbmdfY2FsbGVyX2RmIDwtIGxvbmdfdmFmX2RmICU+JSAKICBkcGx5cjo6ZmlsdGVyKGNhbGxlciAhPSAiY29uc2Vuc3VzIikKCiMgRGV0ZXJtaW5lIHRoZSBjb21iaW5hdGlvbiBvZiBjYWxsZXJzIGZvciBlYWNoIG11dGF0aW9uCmNhbGxlcnNfcGVyX211dGF0aW9uIDwtIHRhcHBseSgKICAgIGxvbmdfY2FsbGVyX2RmJGNhbGxlciwKICAgIGxvbmdfY2FsbGVyX2RmJGluZGV4LAogICAgcGFzdGUwLAogICAgY29sbGFwc2UgPSAiLSIKICApICU+JSAKICBhcy5kYXRhLmZyYW1lKCkgJT4lCiAgdGliYmxlOjpyb3duYW1lc190b19jb2x1bW4oImluZGV4IikKCiMgRGV0ZXJtaW5lIE1lZGlhbiBWQUYgZm9yIGVhY2ggbXV0YXRpb24gCnZhZl9tZWQgPC0gdGFwcGx5KAogICAgbG9uZ19jYWxsZXJfZGYkdmFmLAogICAgbG9uZ19jYWxsZXJfZGYkaW5kZXgsCiAgICBtZWRpYW4KICApICU+JSAKICBhcy5kYXRhLmZyYW1lKCkgJT4lCiAgdGliYmxlOjpyb3duYW1lc190b19jb2x1bW4oImluZGV4IikKCiMgSm9pbiB0aGUgbWVkaWFuIFZBRiBhbmQgdGhlIGNhbGxlcnMgdGhhdCBjYWxsIHRoYXQgbXV0YXRpb24gaW50byBvbmUgZGF0YS5mcmFtZQpjYWxsZXJzX3Blcl9tdXRhdGlvbiA8LSBjYWxsZXJzX3Blcl9tdXRhdGlvbiAlPiUKICBkcGx5cjo6aW5uZXJfam9pbih2YWZfbWVkLCBieSA9ICJpbmRleCIpICU+JQogIGRwbHlyOjpsZWZ0X2pvaW4obG9uZ19jYWxsZXJfZGYgJT4lIAogICAgICAgICAgICAgICAgICAgICAgZHBseXI6OnNlbGVjdChWYXJpYW50X0NsYXNzaWZpY2F0aW9uLCBpbmRleCksIAogICAgICAgICAgICAgICAgICAgYnkgPSAiaW5kZXgiKSAlPiUKICAjIE1ha2UgY29sdW1uIG5hbWVzIG1vcmUgc2Vuc2libGUKICBkcGx5cjo6cmVuYW1lKGNhbGxlcl9jb21ibyA9ICIuLngiLCBtZWRpYW5fdmFmID0gIi4ueSIpIApgYGAKCiMjIFVwc2V0IGdyYXBoCgpNYWtlIHRoZSB1cHNldCBwbG90LiAKCmBgYHtyfQp1cHNldHRyX3Bsb3QgPC0gY2FsbGVyc19wZXJfbXV0YXRpb24gJT4lCiAgdXBzZXRfcGxvdCgpCgojIFByaW50IHRoaXMgb3V0IGhlcmUKdXBzZXR0cl9wbG90CmBgYAoKU2F2ZSB0aGlzIHBsb3QgdG8gYSBwbmcKCmBgYHtyfQojIFdlIGNhbiBzYXZlIHRoZSBwbG90IGxpa2UgYSBub3JtYWwgZ2dwbG90CmdncGxvdDI6Omdnc2F2ZSh1cHNldHRyX3Bsb3QsIAogICAgICAgICAgICAgICAgZmlsZSA9IGZpbGUucGF0aChwbG90c19kaXIsICJwYnRhLXVwc2V0X3Bsb3QucG5nIikpCmBgYAoKVHJhbnNjcmlwdHMgb25seSB1cHNldCBwbG90LiAKCmBgYHtyfQpjYWxsZXJzX3Blcl9tdXRhdGlvbiAlPiUgCiAgZHBseXI6OmZpbHRlcighKFZhcmlhbnRfQ2xhc3NpZmljYXRpb24gJWluJSBjKCI1J0ZsYW5rIiwgIjMnRmxhbmsiLCAiSUdSIiwgIkludHJvbiIpKSkgJT4lCiAgdXBzZXRfcGxvdCgpCmBgYAoKTm9uIHRyYW5zY3JpcHQgdXBzZXQgcGxvdC4gCgpgYGB7cn0KY2FsbGVyc19wZXJfbXV0YXRpb24gJT4lIAogIGRwbHlyOjpmaWx0ZXIoVmFyaWFudF9DbGFzc2lmaWNhdGlvbiAlaW4lIGMoIjUnRmxhbmsiLCAiMydGbGFuayIsICJJR1IiLCAiSW50cm9uIikpICU+JQogIHVwc2V0X3Bsb3QoKQpgYGAKCiMjIFZBRiBmb3IgY29tYmluYXRpb24gc2V0cyBvZiBjYWxsZXJzCgpHcmFwaCBtdXRhdGlvbnMgYnkgY29tYmluYXRpb25zIG9mIGNhbGxlcnMgYW5kIHBsb3QgdGhlIFZBRiBkZW5zaXR5LgpHZXQgbGlzdCBvZiBjYWxsZXJzIHBlciBtdXRhdGlvbiBhbmQgdGhlIG1lZGlhbiB2YWYgZm9yIGVhY2guIApHcmFwaCB0aGUgbWVkaWFuIFZBRiBmb3IgZWFjaCBjb21iaW5hdGlvbiBvZiBjYWxsZXJzLgoKYGBge3J9CiMgTWFrZSB0aGlzIHBsb3QKbWVkaWFuX3ZhZl9wbG90IDwtIGNhbGxlcnNfcGVyX211dGF0aW9uICU+JQogIGdncGxvdDI6OmdncGxvdChnZ3Bsb3QyOjphZXMoeCA9IGNhbGxlcl9jb21ibywgeSA9IG1lZGlhbl92YWYpKSArCiAgZ2dwbG90Mjo6Z2VvbV92aW9saW4oKSArCiAgZ2dwbG90Mjo6dGhlbWVfY2xhc3NpYygpICsKICBnZ3Vwc2V0OjpzY2FsZV94X21lcmdlbGlzdChzZXAgPSAiLSIpICsKICBnZ3Vwc2V0OjpheGlzX2NvbWJtYXRyaXgoc2VwID0gIi0iKSArCiAgZ2dwbG90Mjo6eGxhYigiIikgKwogIGdncGxvdDI6OnlsYWIoIk1lZGlhbiBWQUYgQWNyb3NzIENhbGxlcnMiKQoKIyBQcmludCBvdXQKbWVkaWFuX3ZhZl9wbG90CmBgYAoKYGBge3J9CiMgU2F2ZSB0aGlzIHBsb3QKZ2dwbG90Mjo6Z2dzYXZlKG1lZGlhbl92YWZfcGxvdCwgCiAgICAgICAgICAgICAgICBmaWxlLnBhdGgocGxvdHNfZGlyLCAidXBzZXRfbWVkaWFuX3ZhZl9wbG90LnBuZyIpKQpgYGAKCiMjIEJhc2UgQ2hhbmdlcyAKClN1bW1hcml6ZSBiYXNlIGNoYW5nZSBpbmZvcm1hdGlvbiBwZXIgY2FsbGVyLiAKCmBgYHtyfQojIFN1bW1hcml6ZSBieSB0aGUgbnVtYmVyIG9mIHRpbWVzIGVhY2ggYmFzZSBjaGFuZ2Ugc2hvd3MgdXAgaW4gZWFjaCBjYXRlZ29yeS4KcGVyY19jaGFuZ2VfZGYgPC0gYWxsX2NhbGxlcl9kZiAlPiUgCiAgIyBNYWtlIGNoYW5nZSB2YXJpYWJsZQogIGRwbHlyOjptdXRhdGUoYmFzZV9jaGFuZ2UgPSBwYXN0ZTAoQWxsZWxlLCAiPiIsIFJlZmVyZW5jZV9BbGxlbGUpKSAlPiUgCiAgZHBseXI6Om11dGF0ZSgKICAgICMgRnJvbSB0aGUgYmFzZV9jaGFuZ2UgdmFyaWFibGUsIHN1bW1hcml6ZSBpbnNlcnRpb25zLCBkZWxldGlvbnMsIGFuZAogICAgIyBjaGFuZ2VzIHRoYXQgYXJlIG1vcmUgdGhhbiBvbmUgYmFzZSBpbnRvIHRoZWlyIG93biBncm91cHMuCiAgICBjaGFuZ2UgPSBkcGx5cjo6Y2FzZV93aGVuKAogICAgICBncmVwbCgiXi0iLCBiYXNlX2NoYW5nZSkgfiAiaW5zIiwKICAgICAgZ3JlcGwoIi0kIiwgYmFzZV9jaGFuZ2UpIH4gImRlbCIsCiAgICAgIG5jaGFyKGJhc2VfY2hhbmdlKSA+IDMgfiAibG9uZ19jaGFuZ2UiLAogICAgICBUUlVFIH4gYmFzZV9jaGFuZ2UKICAgICkKICApICU+JQogICMgV2hpdHRsZSBkb3duIHRvIG5lY2Vzc2FyeSBjb2x1bW5zCiAgZHBseXI6OnNlbGVjdChjaGFuZ2UsIGRwbHlyOjpzdGFydHNfd2l0aCgiVkFGXyIpKSAlPiUgCiAgIyBNYWtlIHRoaXMgbG9uZyBmb3JtCiAgdGlkeXI6OmdhdGhlcihrZXkgPSAiY2FsbGVyIiwgdmFsdWUgPSAidmFmIiwgLWNoYW5nZSkgJT4lIAogICMgRHJvcCB0aGUgcHJlZml4CiAgZHBseXI6Om11dGF0ZShjYWxsZXIgPSBnc3ViKCJWQUZfIiwgIiIsIGNhbGxlcikpICU+JSAKICAjIEdldCByaWQgb2YgTkEgcm93cwogIGRwbHlyOjpmaWx0ZXIoIWlzLm5hKHZhZikpICU+JQogICMgU3VtbWFyaXplIHRoZSBudW1iZXIgb2YgbXV0YXRpb25zIHBlciBjYWxsZXIKICBkcGx5cjo6Y291bnQoY2FsbGVyLCBjaGFuZ2UsIG5hbWUgPSAiY291bnQiKSAlPiUKICBkcGx5cjo6YWRkX2NvdW50KGNhbGxlciwgd3QgPSBjb3VudCkgJT4lCiAgIyBDYWxjdWxhdGUgdGhlIHBlcmNlbnQgb2YgZWFjaCAKICBkcGx5cjo6bXV0YXRlKHBlcmNlbnQgPSBjb3VudCAvIG4pICU+JQogICMgRHJvcCBub25zZW5zaWNhbCBjaGFuZ2UKICBkcGx5cjo6ZmlsdGVyKCFncmVwbCgiTj4qfCo+TnxDPkN8VD5UfEE+QXxHPkciLCBjaGFuZ2UpLCAKICAgICAgICAgICAgICAgICFpcy5uYShjaGFuZ2UpKSAlPiUKICBkcGx5cjo6bXV0YXRlKAogICAgY2hhbmdlID0gYXMuZmFjdG9yKGNoYW5nZSksCiAgICAjIENoYW5nZSBmYWN0b3IgbGV2ZWwgb3JkZXIgc28gaW5zIGFuZCBkZWwgYXJlIGF0IHRoZSBlbmQKICAgIGNoYW5nZSA9IGZvcmNhdHM6OmZjdF9yZWxldmVsKGNoYW5nZSwgImlucyIsICJkZWwiLCAibG9uZ19jaGFuZ2UiLCBhZnRlciA9IEluZikKICApIApgYGAKCk1ha2UgYSBiYXJwbG90IGlsbHVzdHJhdGluZyB0aGUgcGVyY2VudCBvZiB0aGUgbXV0YXRpb25zIGZvciBlYWNoIGNhbGxlciB0aGF0IAp0aGF0IGFyZSBlYWNoIHR5cGUgb2YgY2hhbmdlLiAKCmBgYHtyfQpwZXJjX2NoYW5nZV9kZiAlPiUKICBnZ3Bsb3QyOjpnZ3Bsb3QoZ2dwbG90Mjo6YWVzKHggPSBjaGFuZ2UsIHkgPSBwZXJjZW50KSkgKwogIGdncGxvdDI6OnRoZW1lX2NsYXNzaWMoKSArCiAgZ2dwbG90Mjo6Z2VvbV9iYXIoCiAgICBwb3NpdGlvbiA9ICJkb2RnZSIsIHN0YXQgPSAiaWRlbnRpdHkiLAogICAgZ2dwbG90Mjo6YWVzKGZpbGwgPSBjYWxsZXIpCiAgKSArCiAgZ2dwbG90Mjo6dGhlbWUoYXhpcy50ZXh0LnggPSBnZ3Bsb3QyOjplbGVtZW50X3RleHQoYW5nbGUgPSA0NSwgaGp1c3QgPSAxKSkgKwogIGdncGxvdDI6OnhsYWIoIiIpICsKICBnZ3Bsb3QyOjp5bGFiKCJQZXJjZW50IG9mIGNhbGxlcnMnIG11dGF0aW9ucyIpICsKICBjb2xvcmJsaW5kcjo6c2NhbGVfZmlsbF9Pa2FiZUl0bygpCmBgYAoKYGBge3J9CiMgU2F2ZSB0aGlzIHBsb3QKZ2dwbG90Mjo6Z2dzYXZlKGZpbGUucGF0aChwbG90c19kaXIsICJwZXJjX2Jhc2VfY2hhbmdlX3Bsb3QucG5nIikpCmBgYAoKIyMgVkFGIGRpc3RyaWJ1dGlvbnMKCk1ha2UgYSB2aW9saW4gcGxvdCBvZiBlYWNoIGNhbGxlci4gCgpgYGB7cn0KbG9uZ192YWZfZGYgJT4lCiAgZ2dwbG90Mjo6Z2dwbG90KGdncGxvdDI6OmFlcyh4ID0gY2FsbGVyLCB5ID0gdmFmLCBjb2xvciA9IGNhbGxlcikpICsKICBnZ3Bsb3QyOjpnZW9tX3Zpb2xpbigpICsKICBnZ3Bsb3QyOjp0aGVtZV9jbGFzc2ljKCkgKwogIGNvbG9yYmxpbmRyOjpzY2FsZV9jb2xvcl9Pa2FiZUl0bygpCmBgYAoKYGBge3J9CiMgU2F2ZSB0aGlzIHBsb3QKZ2dwbG90Mjo6Z2dzYXZlKGZpbGUucGF0aChwbG90c19kaXIsICJ2YWZfdmlvbGluX3Bsb3QucG5nIikpCmBgYAoKIyMgVkFGIGNvcnJlbGF0aW9ucwoKQ29ycmVsYXRlIFZBRidzIGFjcm9zcyBjYWxsZXJzCgpgYGB7cn0KdmFmX2RmICU+JSAKICBkcGx5cjo6c2VsZWN0KC1WQUZfY29uc2Vuc3VzLCAtVmFyaWFudF9DbGFzc2lmaWNhdGlvbikgJT4lIAogIGNvcigpICU+JSAKICBrbml0cjo6a2FibGUoKQpgYGAgCgojIyBNdXRhdGlvbiBSZWdpb24gYmFycGxvdAoKU3VtbWFyaXplIGBWYXJpYW50X0NsYXNzaWZpY2F0aW9uYCBpbmZvcm1hdGlvbiBwZXIgY2FsbGVyLiAKCmBgYHtyfQojIFN1bW1hcml6ZSBieSB0aGUgbnVtYmVyIG9mIHRpbWVzIGVhY2ggYmFzZSBjaGFuZ2Ugc2hvd3MgdXAgaW4gZWFjaCBjYXRlZ29yeS4KcGVyY192YXJfZGYgPC0gbG9uZ192YWZfZGYgJT4lIAogICMgU3VtbWFyaXplIHRoZSBudW1iZXIgb2YgbXV0YXRpb25zIHBlciBjYWxsZXIKICBkcGx5cjo6Y291bnQoY2FsbGVyLCBWYXJpYW50X0NsYXNzaWZpY2F0aW9uLCBuYW1lID0gImNvdW50IikgJT4lCiAgZHBseXI6OmFkZF9jb3VudChjYWxsZXIsIHd0ID0gY291bnQpICU+JQogICMgQ2FsY3VsYXRlIHRoZSBwZXJjZW50IG9mIGVhY2ggCiAgZHBseXI6Om11dGF0ZShwZXJjZW50ID0gY291bnQgLyBuKQpgYGAKCk1ha2UgYSBiYXJwbG90IGlsbHVzdHJhdGluZyB0aGUgcGVyY2VudCBvZiB0aGUgbXV0YXRpb25zIGZvciBlYWNoIGNhbGxlciB0aGF0IAp0aGF0IGFyZSBlYWNoIHR5cGUgb2YgY2hhbmdlLiAKCmBgYHtyfQpwZXJjX3Zhcl9kZiAlPiUKICBnZ3Bsb3QyOjpnZ3Bsb3QoZ2dwbG90Mjo6YWVzKHggPSBjYWxsZXIsIHkgPSBwZXJjZW50KSkgKwogIGdncGxvdDI6OnRoZW1lX2NsYXNzaWMoKSArCiAgZ2dwbG90Mjo6Z2VvbV9iYXIoCiAgICBwb3NpdGlvbiA9ICJzdGFjayIsIHN0YXQgPSAiaWRlbnRpdHkiLAogICAgZ2dwbG90Mjo6YWVzKGZpbGwgPSBWYXJpYW50X0NsYXNzaWZpY2F0aW9uKQogICkgKwogIGdncGxvdDI6OnRoZW1lKGF4aXMudGV4dC54ID0gZ2dwbG90Mjo6ZWxlbWVudF90ZXh0KGFuZ2xlID0gNDUsIGhqdXN0ID0gMSkpICsKICBnZ3Bsb3QyOjp4bGFiKCIiKSArCiAgZ2dwbG90Mjo6eWxhYigiUGVyY2VudCBvZiBjYWxsZXJzJyBtdXRhdGlvbnMiKQpgYGAKCmBgYHtyfQojIFNhdmUgdGhpcyBwbG90CmdncGxvdDI6Omdnc2F2ZShmaWxlLnBhdGgocGxvdHNfZGlyLCAidmFyaWFudF9jbGFzc2lmaWNhdGlvbl9wbG90LnBuZyIpKQpgYGAKCiMjIFNlc3Npb24gSW5mbwoKYGBge3J9CnNlc3Npb25JbmZvKCkKYGBgCg==</div>
 
 
 </div>
@@ -3368,55 +3286,6 @@ $(document).ready(function () {
   });
 });
 
-</script>
-
-<!-- tabsets -->
-
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
-<!-- code folding -->
-<script>
-$(document).ready(function () {
-  window.initializeSourceEmbed("compare_snv_callers_plots.Rmd");
-  window.initializeCodeFolding("show" === "show");
-});
-</script>
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
