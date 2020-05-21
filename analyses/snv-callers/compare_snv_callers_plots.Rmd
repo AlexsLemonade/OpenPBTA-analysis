@@ -212,8 +212,8 @@ Save this plot to a png
 
 ```{r}
 # We can save the plot like a normal ggplot
-ggplot2::ggsave(upsettr_plot, 
-                file = file.path(plots_dir, "pbta-upset_plot.png"))
+ggplot2::ggsave(plot = upsettr_plot, 
+                file.path(plots_dir, "pbta-upset_plot.png"))
 ```
 
 Transcripts only upset plot. 
@@ -255,7 +255,7 @@ median_vaf_plot
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(median_vaf_plot, 
+ggplot2::ggsave(plot = median_vaf_plot, 
                 file.path(plots_dir, "upset_median_vaf_plot.png"))
 ```
 
