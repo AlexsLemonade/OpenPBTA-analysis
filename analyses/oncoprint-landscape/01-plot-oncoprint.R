@@ -112,7 +112,7 @@ opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
 # Define cnv_file, fusion_file, and genes object here as they still need to
-# be defined for the `prepare_and_plot_oncoprint` custom function (the 
+# be defined for the `prepare_and_plot_oncoprint` custom function (the
 # cnv_file specifically for the `read.maf` function within the custom function),
 # even if they are NULL
 cnv_df <- opt$cnv_file
@@ -122,7 +122,8 @@ goi_list <- opt$goi_file
 #### Read in data --------------------------------------------------------------
 
 # Read in metadata
-metadata <- readr::read_tsv(opt$metadata_file) %>%
+metadata <- readr::read_tsv(opt$metadata_file,
+                            guess_max = 10000) %>%
   dplyr::rename(Tumor_Sample_Barcode = sample_id)
 
 # Read in MAF file
@@ -144,7 +145,7 @@ if (!is.null(opt$fusion_file)) {
 if (!is.null(opt$goi_file)) {
   goi_list <- readr::read_tsv(file.path(opt$goi_file)) %>%
     dplyr::pull("gene")
-    
+
   # Filter `goi_list` to include only the unique genes of interest
   goi_list <- unique(goi_list)
 }
@@ -169,7 +170,7 @@ oncoprint_col_palette <- readr::read_tsv(file.path(
   "figures",
   "palettes",
   "oncoprint_color_palette.tsv"
-)) 
+))
 
 #### Set up oncoprint annotation objects --------------------------------------
 

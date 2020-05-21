@@ -22,28 +22,34 @@ prepare_maf_object <- function(maf_df,
   #   cnv_df: data.frame with copy number variant data
   #   metadata: data.frame with the relevant metadata
   #   fusion_df: data.frame with fusion data. This is NULL by default.
-  
+
   if (!is.null(fusion_df)) {
     # Want to check that the fusion file has these columns before we `bind_rows``
     # The MAF file will already have them and `read.maf` will check
-    needed_col <- c("Hugo_Symbol", 
-                    "Variant_Classification", 
-                    "Variant_Type", 
+    needed_col <- c("Hugo_Symbol",
+                    "Variant_Classification",
+                    "Variant_Type",
                     "Tumor_Sample_Barcode")
-  
+
     # Which columns do we have in `fusion_df`?
     cols_found <- needed_col %in% colnames(fusion_df)
-  
+
     # Print out error message if fusion df doesn't have needed columns
     if(!all(cols_found)){
-      stop(paste("Fusion file is missing the necessary column(s):\n", 
+      stop(paste("Fusion file is missing the necessary column(s):\n",
                 paste(needed_col[which(cols_found)], collapse = "\n ")))
     }
 
     # Bind rows of maf and fusion data frames
     maf_df <- dplyr::bind_rows(maf_df, fusion_df)
   }
-  
+
+  # Filter metadata to only include tumor samples that are included in
+  metadata <- dplyr::filter(metadata,
+                            composition == "Solid Tissue",
+                            sample_type == "Tumor",
+                            Tumor_Sample_Barcode %in% maf_df$Tumor_Sample_Barcode)
+
   # Convert into MAF object
   maf_object <-
     read.maf(
@@ -70,8 +76,8 @@ prepare_maf_object <- function(maf_df,
         "loss"
       )
     )
-  
+
   # Return the maf object
   return(maf_object)
-  
+
 }
