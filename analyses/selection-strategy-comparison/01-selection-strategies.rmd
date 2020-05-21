@@ -16,6 +16,20 @@ params:
 ### R setup
 
 ```{r setup}
+# install packages 
+
+if (!("umap" %in% installed.packages())) {
+  install.packages("umap")
+}
+
+if (!("preprocessCore" %in% installed.packages())) {
+  BiocManager::install("preprocessCore", update = FALSE)
+}
+
+if (!("sva" %in% installed.packages())) {
+  BiocManager::install("sva", update = FALSE)
+}
+
 # load packages
 library(ggplot2)
 
