@@ -21,11 +21,6 @@ Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd',
 ### Set Up
 
 ```{r}
-if (!("ggbio" %in% installed.packages())) {
-  install.packages("BiocManager")
-  BiocManager::install("ggbio")
-}
-
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 ```

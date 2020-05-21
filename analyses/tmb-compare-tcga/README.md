@@ -16,17 +16,28 @@ This analysis compares the Pediatric Brain Tumor samples of this dataset to the 
 
 ## Usage
 
-To run this from the command line, use:
+To run this from the command line, first, the [`snv-callers`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers#usage) scripts must be run with a machine that has at least 256 GB of RAM.
+
+```
+bash analyses/snv-callers/run_caller_consensus_analysis-pbta.sh
+
+bash analyses/snv-callers/run_caller_consensus_analysis-tcga.sh
+```
+
+The results from those scripts are saved to `snv-callers/results/consensus/` folder and used here.
+Some versions of these files are incorporated into the data release and saved to `data` folder so this module could be altered to use the file versions in the `data` folder.  
+Then you can run this module's analysis by the following command to create the plot:
 ```
 Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd',
                               clean = TRUE)"
 ```
+These steps are also run soup to nuts in the [figures](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/figures) script: [`figures/scripts/fig2-mutational-landscape.R`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/figures/scripts/fig2-mutational-landscape.R).
 
 ## Results
 
 The results of this analysis are the TMB calculations for PBTA and TCGA datasets plotted side by side:
 
-![](plots/tmb_tcga_and_pbta_plot.png)
+![](plots/tmb-cdf-pbta-tcga.png)
 
 Additionally, the resulting TCGA TMB calculations used are saved to `results/brain_related_tcga_tmb.tsv` in this folder.
 
@@ -54,4 +65,4 @@ For calculating TCGA tumor mutation burden, TCGA brain-related tumor projects on
 - [LGG (Lower-grade Glioma)](https://www.nejm.org/doi/full/10.1056/NEJMoa1402121)
 - [GBM (Glioblastoma Multiforme)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3910500/)
 
-The size of the [exome BED regions file included with the MC3 project](https://api.gdc.cancer.gov/data/7f0d3ab9-8bef-4e3b-928a-6090caae885b) overlapped with the same coding sequences used for PBTA data. 
+The size of the [exome BED regions file included with the MC3 project](https://api.gdc.cancer.gov/data/7f0d3ab9-8bef-4e3b-928a-6090caae885b) overlapped with the same coding sequences used for PBTA data.
