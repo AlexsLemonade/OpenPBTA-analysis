@@ -21,12 +21,6 @@
 
 
 #### Set Up --------------------------------------------------------------------
-
-# Install maftools
-if (!("maftools" %in% installed.packages())) {
-  install.packages("BiocManager")
-  BiocManager::install("maftools")
-}
 library(maftools)
 
 # Get `magrittr` pipe
