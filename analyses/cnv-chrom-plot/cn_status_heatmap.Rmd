@@ -378,8 +378,8 @@ This annotation object strategy was originally from [chromosomal-instability](ht
 histologies <-
   data.frame(Kids_First_Biospecimen_ID = bin_calls_df$biospecimen_id) %>%
   dplyr::inner_join(metadata %>%
-    dplyr::select(Kids_First_Biospecimen_ID, short_histology, sample_color)) %>%
-  dplyr::mutate(short_histology = factor(short_histology)) %>%
+    dplyr::select(Kids_First_Biospecimen_ID, short_histology, sample_color, group_n)) %>%
+  dplyr::mutate(short_histology = factor(paste0(short_histology, " (n = ", group_n, ")"))) %>%
   dplyr::arrange(short_histology) %>%
   tibble::column_to_rownames("Kids_First_Biospecimen_ID")
 
@@ -388,7 +388,7 @@ histologies_color_key_filtered <- unique(histologies$sample_color)
 names(histologies_color_key_filtered) <- unique(histologies$short_histology)
 
 # Drop this column so ComplexHeatmap isn't tempted to plot it
-histologies <- dplyr::select(histologies, -sample_color)
+histologies <- dplyr::select(histologies, -sample_color, -group_n)
 
 # Get coordinate start positions
 hist_pos <- match(names(histologies_color_key_filtered), histologies$short_histology)
@@ -454,14 +454,14 @@ heatmap <- ComplexHeatmap::Heatmap(
   heatmap_legend_param = list(nrow = 1, border = "black"),
   raster_quality = 8, 
   border = "black", 
+  row_title = NULL
 )
 ```
 
 Print out heatmap. 
 
 ```{r}
-ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom",
-                     row_title_gp = gpar(col = "white"))
+ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
 ```
 
 Save to PNG. 
