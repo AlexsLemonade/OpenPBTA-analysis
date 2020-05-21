@@ -2989,11 +2989,16 @@ div.tocify {
 <p>Read in set up script.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUaGlzIHNjcmlwdCBjb250YWlucyBhIHdyYXBwZXIgZnVuY3Rpb24gdGhhdCBjYW4gY29uZHVjdCB0aGUgc3Vydml2YWwgYW5hbHlzZXNcbnNvdXJjZShmaWxlLnBhdGgoXCJ1dGlsXCIsIFwic3Vydml2YWxfbW9kZWxzLlJcIikpXG5cbiMgTWFncml0dHIgcGlwZVxuYCU+JWAgPC0gZHBseXI6OmAlPiVgXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUaGlzIHNjcmlwdCBjb250YWlucyBhIHdyYXBwZXIgZnVuY3Rpb24gdGhhdCBjYW4gY29uZHVjdCB0aGUgc3Vydml2YWwgYW5hbHlzZXNcbnNvdXJjZShmaWxlLnBhdGgoXCJ1dGlsXCIsIFwic3Vydml2YWxfbW9kZWxzLlJcIikpXG5gYGAifQ== -->
 <pre class="r"><code># This script contains a wrapper function that can conduct the survival analyses
-source(file.path(&quot;util&quot;, &quot;survival_models.R&quot;))
-
-# Magrittr pipe
+source(file.path(&quot;util&quot;, &quot;survival_models.R&quot;))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBnZ3B1YnJcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogbWFncml0dHJcbiJ9 -->
+<pre><code>Loading required package: ggpubr
+Loading required package: magrittr</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBNYWdyaXR0ciBwaXBlXG5gJT4lYCA8LSBkcGx5cjo6YCU+JWBcbmBgYCJ9 -->
+<pre class="r"><code># Magrittr pipe
 `%&gt;%` &lt;- dplyr::`%&gt;%`</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -3052,7 +3057,7 @@ cox_table_file &lt;- file.path(results_dir, &quot;cox_regression_tmb.tsv&quot;)<
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWV0YWRhdGEgPC0gcmVhZHI6OnJlYWRfdHN2KG1ldGFkYXRhX2ZpbGUpXG5gYGAifQ== -->
 <pre class="r"><code>metadata &lt;- readr::read_tsv(metadata_file)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgT1NfZGF5cyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBhZ2VfbGFzdF91cGRhdGVfZGF5cyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBub3JtYWxfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfcGxvaWR5ID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW1cbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgT1NfZGF5cyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBhZ2VfbGFzdF91cGRhdGVfZGF5cyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBub3JtYWxfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfcGxvaWR5ID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIG1vbGVjdWxhcl9zdWJ0eXBlID0gXHUwMDFiWzMzbWNvbF9sb2dpY2FsKClcdTAwMWJbMzltXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbjQ5MyBwYXJzaW5nIGZhaWx1cmVzLlxuIHJvdyAgICAgICAgICAgICAgIGNvbCAgICAgICAgICAgZXhwZWN0ZWQgYWN0dWFsICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZmlsZVxuMjMzNCBtb2xlY3VsYXJfc3VidHlwZSAxLzAvVC9GL1RSVUUvRkFMU0UgR3JvdXAzICcuLi8uLi9kYXRhL3BidGEtaGlzdG9sb2dpZXMudHN2J1xuMjMzNSBtb2xlY3VsYXJfc3VidHlwZSAxLzAvVC9GL1RSVUUvRkFMU0UgR3JvdXA0ICcuLi8uLi9kYXRhL3BidGEtaGlzdG9sb2dpZXMudHN2J1xuMjMzNiBtb2xlY3VsYXJfc3VidHlwZSAxLzAvVC9GL1RSVUUvRkFMU0UgR3JvdXAzICcuLi8uLi9kYXRhL3BidGEtaGlzdG9sb2dpZXMudHN2J1xuMjMzNyBtb2xlY3VsYXJfc3VidHlwZSAxLzAvVC9GL1RSVUUvRkFMU0UgR3JvdXAzICcuLi8uLi9kYXRhL3BidGEtaGlzdG9sb2dpZXMudHN2J1xuMjMzOCBtb2xlY3VsYXJfc3VidHlwZSAxLzAvVC9GL1RSVUUvRkFMU0UgR3JvdXAzICcuLi8uLi9kYXRhL3BidGEtaGlzdG9sb2dpZXMudHN2J1xuLi4uLiAuLi4uLi4uLi4uLi4uLi4uLiAuLi4uLi4uLi4uLi4uLi4uLi4gLi4uLi4uIC4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLlxuU2VlIHByb2JsZW1zKC4uLikgZm9yIG1vcmUgZGV0YWlscy5cbiJ9 -->
 <pre><code>Parsed with column specification:
 cols(
   .default = col_character(),
@@ -3060,9 +3065,19 @@ cols(
   age_last_update_days = [32mcol_double()[39m,
   normal_fraction = [32mcol_double()[39m,
   tumor_fraction = [32mcol_double()[39m,
-  tumor_ploidy = [32mcol_double()[39m
+  tumor_ploidy = [32mcol_double()[39m,
+  molecular_subtype = [33mcol_logical()[39m
 )
-See spec(...) for full column specifications.</code></pre>
+See spec(...) for full column specifications.
+493 parsing failures.
+ row               col           expected actual                              file
+2334 molecular_subtype 1/0/T/F/TRUE/FALSE Group3 '../../data/pbta-histologies.tsv'
+2335 molecular_subtype 1/0/T/F/TRUE/FALSE Group4 '../../data/pbta-histologies.tsv'
+2336 molecular_subtype 1/0/T/F/TRUE/FALSE Group3 '../../data/pbta-histologies.tsv'
+2337 molecular_subtype 1/0/T/F/TRUE/FALSE Group3 '../../data/pbta-histologies.tsv'
+2338 molecular_subtype 1/0/T/F/TRUE/FALSE Group3 '../../data/pbta-histologies.tsv'
+.... ................. .................. ...... .................................
+See problems(...) for more details.</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3266,12 +3281,12 @@ cox_fit$table %&gt;%
 <tbody>
 <tr class="odd">
 <td align="left">tmb</td>
-<td align="right">0.052</td>
+<td align="right">0.053</td>
 <td align="right">0.013</td>
-<td align="right">3.884</td>
+<td align="right">3.967</td>
 <td align="right">0</td>
-<td align="right">0.026</td>
-<td align="right">0.078</td>
+<td align="right">0.027</td>
+<td align="right">0.079</td>
 </tr>
 </tbody>
 </table>
@@ -3297,7 +3312,7 @@ readr::write_tsv(cox_fit$table, cox_table_file)</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgICBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgIFxuIFs0XSBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgICBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgICBMQ19BRERSRVNTPUMgICAgICAgICAgICAgIFxuWzEwXSBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgICBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHBhcmFsbGVsICBzdGF0czQgICAgc3RhdHMgICAgIGdyYXBoaWNzICBnckRldmljZXMgdXRpbHMgICAgIGRhdGFzZXRzICBtZXRob2RzICBcbls5XSBiYXNlICAgICBcblxub3RoZXIgYXR0YWNoZWQgcGFja2FnZXM6XG5bMV0gc3Vydm1pbmVyXzAuNC40ICAgICAgZ2dwdWJyXzAuMi40ICAgICAgICAgbWFncml0dHJfMS41ICAgICAgICAgZ2dwbG90Ml8zLjIuMCAgICAgICBcbls1XSBHZW5vbWljUmFuZ2VzXzEuMzguMCBHZW5vbWVJbmZvRGJfMS4yMi4wICBJUmFuZ2VzXzIuMjAuMSAgICAgICBTNFZlY3RvcnNfMC4yNC4xICAgIFxuWzldIEJpb2NHZW5lcmljc18wLjMyLjAgXG5cbmxvYWRlZCB2aWEgYSBuYW1lc3BhY2UgKGFuZCBub3QgYXR0YWNoZWQpOlxuICBbMV0gY29sb3JzcGFjZV8xLjQtMSAgICAgICAgICAgIGdnc2lnbmlmXzAuNi4wICAgICAgICAgICAgICBiaW92aXpCYXNlXzEuMzQuMSAgICAgICAgICBcbiAgWzRdIGh0bWxUYWJsZV8xLjEzLjEgICAgICAgICAgICBYVmVjdG9yXzAuMjYuMCAgICAgICAgICAgICAgYmFzZTY0ZW5jXzAuMS0zICAgICAgICAgICAgXG4gIFs3XSBkaWNocm9tYXRfMi4wLTAgICAgICAgICAgICAgcnN0dWRpb2FwaV8wLjEwICAgICAgICAgICAgIGZhcnZlcl8xLjEuMCAgICAgICAgICAgICAgIFxuIFsxMF0gYml0NjRfMC45LTcgICAgICAgICAgICAgICAgIEFubm90YXRpb25EYmlfMS40OC4wICAgICAgICBzcGxpbmVzXzMuNi4wICAgICAgICAgICAgICBcbiBbMTNdIFIubWV0aG9kc1MzXzEuNy4xICAgICAgICAgICBnZ2Jpb18xLjM0LjAgICAgICAgICAgICAgICAga25pdHJfMS4yMyAgICAgICAgICAgICAgICAgXG4gWzE2XSBwb2x5Y2xpcF8xLjEwLTAgICAgICAgICAgICAgRm9ybXVsYV8xLjItMyAgICAgICAgICAgICAgIGpzb25saXRlXzEuNiAgICAgICAgICAgICAgIFxuIFsxOV0gY29sb3JibGluZHJfMC4xLjAgICAgICAgICAgIFJzYW10b29sc18yLjIuMSAgICAgICAgICAgICBrbS5jaV8wLjUtMiAgICAgICAgICAgICAgICBcbiBbMjJdIGJyb29tXzAuNS4yICAgICAgICAgICAgICAgICBjbHVzdGVyXzIuMS4wICAgICAgICAgICAgICAgZGJwbHlyXzEuNC4yICAgICAgICAgICAgICAgXG4gWzI1XSBSLm9vXzEuMjIuMCAgICAgICAgICAgICAgICAgZ3JhcGhfMS42NC4wICAgICAgICAgICAgICAgIGdnZm9yY2VfMC4yLjIgICAgICAgICAgICAgIFxuIFsyOF0gQmlvY01hbmFnZXJfMS4zMC40ICAgICAgICAgIHJlYWRyXzEuMy4xICAgICAgICAgICAgICAgICBjb21waWxlcl8zLjYuMCAgICAgICAgICAgICBcbiBbMzFdIGh0dHJfMS40LjAgICAgICAgICAgICAgICAgICBiYWNrcG9ydHNfMS4xLjQgICAgICAgICAgICAgYXNzZXJ0dGhhdF8wLjIuMSAgICAgICAgICAgXG4gWzM0XSBNYXRyaXhfMS4yLTE3ICAgICAgICAgICAgICAgbGF6eWV2YWxfMC4yLjIgICAgICAgICAgICAgIHR3ZWVucl8xLjAuMSAgICAgICAgICAgICAgIFxuIFszN10gYWNlcGFja18xLjQuMSAgICAgICAgICAgICAgIGh0bWx0b29sc18wLjMuNiAgICAgICAgICAgICBwcmV0dHl1bml0c18xLjAuMiAgICAgICAgICBcbiBbNDBdIHRvb2xzXzMuNi4wICAgICAgICAgICAgICAgICBndGFibGVfMC4zLjAgICAgICAgICAgICAgICAgZ2x1ZV8xLjMuMSAgICAgICAgICAgICAgICAgXG4gWzQzXSBHZW5vbWVJbmZvRGJEYXRhXzEuMi4yICAgICAgcmVzaGFwZTJfMS40LjMgICAgICAgICAgICAgIGRwbHlyXzAuOC4zICAgICAgICAgICAgICAgIFxuIFs0Nl0gcmFwcGRpcnNfMC4zLjEgICAgICAgICAgICAgIFJjcHBfMS4wLjEgICAgICAgICAgICAgICAgICBCaW9iYXNlXzIuNDYuMCAgICAgICAgICAgICBcbiBbNDldIEJpb3N0cmluZ3NfMi41NC4wICAgICAgICAgICBubG1lXzMuMS0xNDAgICAgICAgICAgICAgICAgcnRyYWNrbGF5ZXJfMS40Ni4wICAgICAgICAgXG4gWzUyXSB4ZnVuXzAuOCAgICAgICAgICAgICAgICAgICAgc3RyaW5ncl8xLjQuMCAgICAgICAgICAgICAgIGVuc2VtYmxkYl8yLjEwLjIgICAgICAgICAgIFxuIFs1NV0gWE1MXzMuOTgtMS4yMCAgICAgICAgICAgICAgIHpvb18xLjgtNiAgICAgICAgICAgICAgICAgICB6bGliYmlvY18xLjMyLjAgICAgICAgICAgICBcbiBbNThdIE1BU1NfNy4zLTUxLjQgICAgICAgICAgICAgICBzY2FsZXNfMS4wLjAgICAgICAgICAgICAgICAgQlNnZW5vbWVfMS41NC4wICAgICAgICAgICAgXG4gWzYxXSBWYXJpYW50QW5ub3RhdGlvbl8xLjMyLjAgICAgaG1zXzAuNC4yICAgICAgICAgICAgICAgICAgIFByb3RHZW5lcmljc18xLjE4LjAgICAgICAgIFxuIFs2NF0gU3VtbWFyaXplZEV4cGVyaW1lbnRfMS4xNi4wIFJCR0xfMS42Mi4xICAgICAgICAgICAgICAgICBBbm5vdGF0aW9uRmlsdGVyXzEuMTAuMCAgICBcbiBbNjddIFJDb2xvckJyZXdlcl8xLjEtMiAgICAgICAgICB5YW1sXzIuMi4wICAgICAgICAgICAgICAgICAgY3VybF8zLjMgICAgICAgICAgICAgICAgICAgXG4gWzcwXSBtZW1vaXNlXzEuMS4wICAgICAgICAgICAgICAgZ3JpZEV4dHJhXzIuMyAgICAgICAgICAgICAgIEtNc3Vydl8wLjEtNSAgICAgICAgICAgICAgIFxuIFs3M10gYmlvbWFSdF8yLjQyLjAgICAgICAgICAgICAgIHJwYXJ0XzQuMS0xNSAgICAgICAgICAgICAgICByZXNoYXBlXzAuOC44ICAgICAgICAgICAgICBcbiBbNzZdIGxhdHRpY2VFeHRyYV8wLjYtMjggICAgICAgICBzdHJpbmdpXzEuNC4zICAgICAgICAgICAgICAgUlNRTGl0ZV8yLjEuMSAgICAgICAgICAgICAgXG4gWzc5XSBoaWdocl8wLjggICAgICAgICAgICAgICAgICAgY2hlY2ttYXRlXzEuOS40ICAgICAgICAgICAgIEdlbm9taWNGZWF0dXJlc18xLjM4LjAgICAgIFxuIFs4Ml0gQmlvY1BhcmFsbGVsXzEuMjAuMCAgICAgICAgIHJsYW5nXzAuNC4wICAgICAgICAgICAgICAgICBwa2djb25maWdfMi4wLjIgICAgICAgICAgICBcbiBbODVdIG1hdHJpeFN0YXRzXzAuNTUuMCAgICAgICAgICBiaXRvcHNfMS4wLTYgICAgICAgICAgICAgICAgZXZhbHVhdGVfMC4xNCAgICAgICAgICAgICAgXG4gWzg4XSBsYXR0aWNlXzAuMjAtMzggICAgICAgICAgICAgcHVycnJfMC4zLjIgICAgICAgICAgICAgICAgIGNtcHJza18yLjItOCAgICAgICAgICAgICAgIFxuIFs5MV0gR2Vub21pY0FsaWdubWVudHNfMS4yMi4xICAgIGh0bWx3aWRnZXRzXzEuMyAgICAgICAgICAgICBsYWJlbGluZ18wLjMgICAgICAgICAgICAgICBcbiBbOTRdIGNvd3Bsb3RfMC45LjQgICAgICAgICAgICAgICBiaXRfMS4xLTE0ICAgICAgICAgICAgICAgICAgdGlkeXNlbGVjdF8wLjIuNSAgICAgICAgICAgXG4gWzk3XSBHR2FsbHlfMS40LjAgICAgICAgICAgICAgICAgcGx5cl8xLjguNCAgICAgICAgICAgICAgICAgIFI2XzIuNC4wICAgICAgICAgICAgICAgICAgIFxuWzEwMF0gZ2VuZXJpY3NfMC4wLjIgICAgICAgICAgICAgIEhtaXNjXzQuMi0wICAgICAgICAgICAgICAgICBEZWxheWVkQXJyYXlfMC4xMi4wICAgICAgICBcblsxMDNdIERCSV8xLjAuMCAgICAgICAgICAgICAgICAgICB3aXRocl8yLjEuMiAgICAgICAgICAgICAgICAgcGlsbGFyXzEuNC4yICAgICAgICAgICAgICAgXG5bMTA2XSBmb3JlaWduXzAuOC03MSAgICAgICAgICAgICAgc3Vydml2YWxfMi40NC0xLjEgICAgICAgICAgIFJDdXJsXzEuOTUtNC4xMiAgICAgICAgICAgIFxuWzEwOV0gbm5ldF83LjMtMTIgICAgICAgICAgICAgICAgIHRpYmJsZV8yLjEuMyAgICAgICAgICAgICAgICBjcmF5b25fMS4zLjQgICAgICAgICAgICAgICBcblsxMTJdIHN1cnZNaXNjXzAuNS41ICAgICAgICAgICAgICBPcmdhbmlzbURiaV8xLjI4LjAgICAgICAgICAgQmlvY0ZpbGVDYWNoZV8xLjEwLjIgICAgICAgXG5bMTE1XSBybWFya2Rvd25fMS4xMyAgICAgICAgICAgICAgcHJvZ3Jlc3NfMS4yLjIgICAgICAgICAgICAgIGdyaWRfMy42LjAgICAgICAgICAgICAgICAgIFxuWzExOF0gZGF0YS50YWJsZV8xLjEyLjIgICAgICAgICAgIGJsb2JfMS4xLjEgICAgICAgICAgICAgICAgICBkaWdlc3RfMC42LjIwICAgICAgICAgICAgICBcblsxMjFdIHh0YWJsZV8xLjgtNCAgICAgICAgICAgICAgICB0aWR5cl8wLjguMyAgICAgICAgICAgICAgICAgUi51dGlsc18yLjkuMCAgICAgICAgICAgICAgXG5bMTI0XSBvcGVuc3NsXzEuNCAgICAgICAgICAgICAgICAgbXVuc2VsbF8wLjUuMCAgICAgICAgICAgICAgIGFza3Bhc3NfMS4xICAgICAgICAgICAgICAgIFxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgICBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgIFxuIFs0XSBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgICBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgICBMQ19BRERSRVNTPUMgICAgICAgICAgICAgIFxuWzEwXSBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgICBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBzdXJ2bWluZXJfMC40LjQgZ2dwdWJyXzAuMi4xICAgIG1hZ3JpdHRyXzEuNSAgICBnZ3Bsb3QyXzMuMi4wICBcblxubG9hZGVkIHZpYSBhIG5hbWVzcGFjZSAoYW5kIG5vdCBhdHRhY2hlZCk6XG4gWzFdIHpvb18xLjgtNiAgICAgICAgIHRpZHlzZWxlY3RfMC4yLjUgIHhmdW5fMC44ICAgICAgICAgIHB1cnJyXzAuMy4yICAgICAgIHNwbGluZXNfMy42LjAgICAgXG4gWzZdIGxhdHRpY2VfMC4yMC0zOCAgIGNvbG9yc3BhY2VfMS40LTEgIGdlbmVyaWNzXzAuMC4yICAgIGh0bWx0b29sc18wLjMuNiAgIHlhbWxfMi4yLjAgICAgICAgXG5bMTFdIGJhc2U2NGVuY18wLjEtMyAgIHN1cnZpdmFsXzIuNDQtMS4xIHN1cnZNaXNjXzAuNS41ICAgIHJsYW5nXzAuNC4wICAgICAgIHBpbGxhcl8xLjQuMiAgICAgXG5bMTZdIGdsdWVfMS4zLjEgICAgICAgIHdpdGhyXzIuMS4yICAgICAgIG11bnNlbGxfMC41LjAgICAgIGdnc2lnbmlmXzAuNS4wICAgIGd0YWJsZV8wLjMuMCAgICAgXG5bMjFdIGV2YWx1YXRlXzAuMTQgICAgIGxhYmVsaW5nXzAuMyAgICAgIGtuaXRyXzEuMjMgICAgICAgIGhpZ2hyXzAuOCAgICAgICAgIGJyb29tXzAuNS4yICAgICAgXG5bMjZdIFJjcHBfMS4wLjEgICAgICAgIHh0YWJsZV8xLjgtNCAgICAgIHJlYWRyXzEuMy4xICAgICAgIGJhY2twb3J0c18xLjEuNCAgIHNjYWxlc18xLjAuMCAgICAgXG5bMzFdIGNtcHJza18yLjItOCAgICAgIGpzb25saXRlXzEuNiAgICAgIGttLmNpXzAuNS0yICAgICAgIGdyaWRFeHRyYV8yLjMgICAgIGhtc18wLjQuMiAgICAgICAgXG5bMzZdIGRpZ2VzdF8wLjYuMjAgICAgIGRwbHlyXzAuOC4zICAgICAgIEtNc3Vydl8wLjEtNSAgICAgIGdyaWRfMy42LjAgICAgICAgIHJwcm9qcm9vdF8xLjMtMiAgXG5bNDFdIGNvd3Bsb3RfMC45LjQgICAgIHRvb2xzXzMuNi4wICAgICAgIGxhenlldmFsXzAuMi4yICAgIHRpYmJsZV8yLjEuMyAgICAgIGNyYXlvbl8xLjMuNCAgICAgXG5bNDZdIHRpZHlyXzAuOC4zICAgICAgIHBrZ2NvbmZpZ18yLjAuMiAgIE1hdHJpeF8xLjItMTcgICAgIGRhdGEudGFibGVfMS4xMi4yIGFzc2VydHRoYXRfMC4yLjEgXG5bNTFdIHJtYXJrZG93bl8xLjEzICAgIHJzdHVkaW9hcGlfMC4xMCAgIFI2XzIuNC4wICAgICAgICAgIG5sbWVfMy4xLTE0MCAgICAgIGNvbXBpbGVyXzMuNi4wICAgXG4ifQ== -->
 <pre><code>R version 3.6.0 (2019-04-26)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Debian GNU/Linux 9 (stretch)
@@ -3312,57 +3327,23 @@ locale:
 [10] LC_TELEPHONE=C             LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
-[1] parallel  stats4    stats     graphics  grDevices utils     datasets  methods  
-[9] base     
+[1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] survminer_0.4.4      ggpubr_0.2.4         magrittr_1.5         ggplot2_3.2.0       
-[5] GenomicRanges_1.38.0 GenomeInfoDb_1.22.0  IRanges_2.20.1       S4Vectors_0.24.1    
-[9] BiocGenerics_0.32.0 
+[1] survminer_0.4.4 ggpubr_0.2.1    magrittr_1.5    ggplot2_3.2.0  
 
 loaded via a namespace (and not attached):
-  [1] colorspace_1.4-1            ggsignif_0.6.0              biovizBase_1.34.1          
-  [4] htmlTable_1.13.1            XVector_0.26.0              base64enc_0.1-3            
-  [7] dichromat_2.0-0             rstudioapi_0.10             farver_1.1.0               
- [10] bit64_0.9-7                 AnnotationDbi_1.48.0        splines_3.6.0              
- [13] R.methodsS3_1.7.1           ggbio_1.34.0                knitr_1.23                 
- [16] polyclip_1.10-0             Formula_1.2-3               jsonlite_1.6               
- [19] colorblindr_0.1.0           Rsamtools_2.2.1             km.ci_0.5-2                
- [22] broom_0.5.2                 cluster_2.1.0               dbplyr_1.4.2               
- [25] R.oo_1.22.0                 graph_1.64.0                ggforce_0.2.2              
- [28] BiocManager_1.30.4          readr_1.3.1                 compiler_3.6.0             
- [31] httr_1.4.0                  backports_1.1.4             assertthat_0.2.1           
- [34] Matrix_1.2-17               lazyeval_0.2.2              tweenr_1.0.1               
- [37] acepack_1.4.1               htmltools_0.3.6             prettyunits_1.0.2          
- [40] tools_3.6.0                 gtable_0.3.0                glue_1.3.1                 
- [43] GenomeInfoDbData_1.2.2      reshape2_1.4.3              dplyr_0.8.3                
- [46] rappdirs_0.3.1              Rcpp_1.0.1                  Biobase_2.46.0             
- [49] Biostrings_2.54.0           nlme_3.1-140                rtracklayer_1.46.0         
- [52] xfun_0.8                    stringr_1.4.0               ensembldb_2.10.2           
- [55] XML_3.98-1.20               zoo_1.8-6                   zlibbioc_1.32.0            
- [58] MASS_7.3-51.4               scales_1.0.0                BSgenome_1.54.0            
- [61] VariantAnnotation_1.32.0    hms_0.4.2                   ProtGenerics_1.18.0        
- [64] SummarizedExperiment_1.16.0 RBGL_1.62.1                 AnnotationFilter_1.10.0    
- [67] RColorBrewer_1.1-2          yaml_2.2.0                  curl_3.3                   
- [70] memoise_1.1.0               gridExtra_2.3               KMsurv_0.1-5               
- [73] biomaRt_2.42.0              rpart_4.1-15                reshape_0.8.8              
- [76] latticeExtra_0.6-28         stringi_1.4.3               RSQLite_2.1.1              
- [79] highr_0.8                   checkmate_1.9.4             GenomicFeatures_1.38.0     
- [82] BiocParallel_1.20.0         rlang_0.4.0                 pkgconfig_2.0.2            
- [85] matrixStats_0.55.0          bitops_1.0-6                evaluate_0.14              
- [88] lattice_0.20-38             purrr_0.3.2                 cmprsk_2.2-8               
- [91] GenomicAlignments_1.22.1    htmlwidgets_1.3             labeling_0.3               
- [94] cowplot_0.9.4               bit_1.1-14                  tidyselect_0.2.5           
- [97] GGally_1.4.0                plyr_1.8.4                  R6_2.4.0                   
-[100] generics_0.0.2              Hmisc_4.2-0                 DelayedArray_0.12.0        
-[103] DBI_1.0.0                   withr_2.1.2                 pillar_1.4.2               
-[106] foreign_0.8-71              survival_2.44-1.1           RCurl_1.95-4.12            
-[109] nnet_7.3-12                 tibble_2.1.3                crayon_1.3.4               
-[112] survMisc_0.5.5              OrganismDbi_1.28.0          BiocFileCache_1.10.2       
-[115] rmarkdown_1.13              progress_1.2.2              grid_3.6.0                 
-[118] data.table_1.12.2           blob_1.1.1                  digest_0.6.20              
-[121] xtable_1.8-4                tidyr_0.8.3                 R.utils_2.9.0              
-[124] openssl_1.4                 munsell_0.5.0               askpass_1.1                </code></pre>
+ [1] zoo_1.8-6         tidyselect_0.2.5  xfun_0.8          purrr_0.3.2       splines_3.6.0    
+ [6] lattice_0.20-38   colorspace_1.4-1  generics_0.0.2    htmltools_0.3.6   yaml_2.2.0       
+[11] base64enc_0.1-3   survival_2.44-1.1 survMisc_0.5.5    rlang_0.4.0       pillar_1.4.2     
+[16] glue_1.3.1        withr_2.1.2       munsell_0.5.0     ggsignif_0.5.0    gtable_0.3.0     
+[21] evaluate_0.14     labeling_0.3      knitr_1.23        highr_0.8         broom_0.5.2      
+[26] Rcpp_1.0.1        xtable_1.8-4      readr_1.3.1       backports_1.1.4   scales_1.0.0     
+[31] cmprsk_2.2-8      jsonlite_1.6      km.ci_0.5-2       gridExtra_2.3     hms_0.4.2        
+[36] digest_0.6.20     dplyr_0.8.3       KMsurv_0.1-5      grid_3.6.0        rprojroot_1.3-2  
+[41] cowplot_0.9.4     tools_3.6.0       lazyeval_0.2.2    tibble_2.1.3      crayon_1.3.4     
+[46] tidyr_0.8.3       pkgconfig_2.0.2   Matrix_1.2-17     data.table_1.12.2 assertthat_0.2.1 
+[51] rmarkdown_1.13    rstudioapi_0.10   R6_2.4.0          nlme_3.1-140      compiler_3.6.0   </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 </div>
