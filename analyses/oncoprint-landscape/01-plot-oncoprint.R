@@ -164,16 +164,6 @@ histology_col_palette <-
     "histology_color_palette.tsv"
   ))
 
-# Read in binary color palette for purpose of coding `reported_gender`
-gender_col_palette <-
-  readr::read_tsv(file.path(
-    root_dir,
-    "figures",
-    "palettes",
-    "binary_color_palette.tsv"
-  )) %>%
-  tibble::deframe()
-
 # Read in the oncoprint color palette
 oncoprint_col_palette <- readr::read_tsv(file.path(
   root_dir,
@@ -186,9 +176,6 @@ oncoprint_col_palette <- readr::read_tsv(file.path(
 
 #### Set up oncoprint annotation objects --------------------------------------
 
-# Color coding for `reported_gender` classification
-names(gender_col_palette) <- c("Male", "Female", "NA")
-
 # Color coding for `short_histology` classification
 # Get unique tumor descriptor categories
 short_histologies <- unique(metadata$short_histology) %>%
@@ -196,94 +183,13 @@ short_histologies <- unique(metadata$short_histology) %>%
   sort()
 
 # Save the vector of hex codes from the short histology palette
-short_histology_col_codes <- histology_col_palette$hex_codes
+short_histology_col_key <- histology_col_palette$hex_codes
 
 # Now assign the color names
-names(short_histology_col_codes) <- short_histologies
+names(short_histology_col_key) <- short_histologies
 
-# Color coding for `tumor_descriptor` classification
-# Get unique tumor descriptor categories
-tumor_descriptors <- unique(metadata$tumor_descriptor) %>%
-  tidyr::replace_na("none")
-
-descriptor_col_codes <- c("#35978f",
-                          "#000000",
-                          "#56B4E9",
-                          "#FFBBFF",
-                          "#F0E442",
-                          "#191970",
-                          "#f1f1f1")
-
-names(descriptor_col_codes) <- tumor_descriptors
-
-# Color coding for `molecular_subtype` classification
-# Get unique molecular subtype categories
-molecular_subtypes <- unique(metadata$molecular_subtype) %>%
-  tidyr::replace_na("none")
-
-subtype_col_codes <- c(
-  "#191970",
-  "#545454",
-  "#CAE1FF",
-  "#FFE4E1",
-  "#CC79A7",
-  "#56B4E9",
-  "#7B68EE",
-  "#00F021",
-  "#313695",
-  "#abd9e9",
-  "#c51b7d",
-  "#0072B2",
-  "#D55E00",
-  "#FF0000",
-  "#CD96CD",
-  "#f1f1f1"
-)
-
-names(subtype_col_codes) <- molecular_subtypes
-
-# Color coding for `broad_histology` classification
-# Get unique histology categories
-broad_histologies <- unique(metadata$broad_histology) %>%
-  tidyr::replace_na("none")
-
-broad_histology_col_codes <-
-  c(
-    "#00f241",
-    "#f1f1f1",
-    "#00144d",
-    "#0044ff",
-    "#b25f00",
-    "#e2f200",
-    "#ffb380",
-    "#4d2636",
-    "#406280",
-    "#731d1d",
-    "#331c0d",
-    "#919926",
-    "#f2d6b6",
-    "#3d0099",
-    "#ffbfd9",
-    "#736556",
-    "#cc0052",
-    "#c200f2",
-    "#994d6b",
-    "#d6f2b6"
-  )
-
-# Bring along histologies names
-names(broad_histology_col_codes) <- broad_histologies
-
-# This is the final colored annotation list -- names of the list elements
-# should match those in clinicalFeatures arguments
-color_key <-
-  list(
-    broad_histology = broad_histology_col_codes,
-    short_histology = short_histology_col_codes,
-    reported_gender = gender_col_palette,
-    tumor_descriptor = descriptor_col_codes,
-    molecular_subtype = subtype_col_codes
-  )
+# Now format the color key objet into a list
+annotation_colors <- list(short_histology = short_histology_col_key)
 
 #### Format recurrent focal CN object -----------------------------------------
 
@@ -325,22 +231,16 @@ png(
 )
 oncoplot(
   maf_object,
-  clinicalFeatures = c(
-    "broad_histology",
-    "short_histology",
-    "reported_gender",
-    "tumor_descriptor",
-    "molecular_subtype"
-  ),
+  clinicalFeatures = "short_histology",
   genes = goi_list,
   logColBar = TRUE,
   sortByAnnotation = TRUE,
   showTumorSampleBarcodes = TRUE,
   removeNonMutated = TRUE,
-  annotationFontSize = 0.6,
+  annotationFontSize = 1.0,
   SampleNamefontSize = 0.5,
   fontSize = 0.7,
   colors = oncoprint_col_palette,
-  annotationColor = color_key
+  annotationColor = annotation_colors
 )
 dev.off()
