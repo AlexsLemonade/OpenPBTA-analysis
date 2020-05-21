@@ -3,6 +3,7 @@ stringsAsFactors=FALSE
 library(grid)
 library(forcats) ### for fct_reorder()
 library(optparse)
+library(cowplot)
 ############################################################### Combining Histology with EXTEND Scores (Figure 3) ###############################################################################
 
 
@@ -50,8 +51,8 @@ Stranded_Histology = Stranded_Histology[-which(Stranded_Histology$short_histolog
 pdf(PBTA_EXTEND_HistologyCompPlot)
 
 ## Globally set the theme in one step, so it gets applied to both plots
-theme_set(theme_classic() + 
-          theme(axis.text.x=element_text(angle=50,size=7,vjust=1,hjust=1),
+theme_set(theme_classic() +
+          theme(plot.title = element_text(size=10, face="bold"),axis.text.x=element_text(angle=50,size=6,vjust=1,hjust=1),axis.text.y=element_text(size=7), axis.title.x = element_text(size=0), axis.title.y = element_text(size=8),
           legend.position = "top",
           legend.key.size= unit(0.3,"cm"),
           legend.key.width = unit(0.3,"cm"),
@@ -61,21 +62,10 @@ theme_set(theme_classic() +
 )
 
 
-P1 = ggplot(Stranded_Histology, aes(x=fct_reorder(short_histology,NormEXTENDScores,.desc =TRUE),y=NormEXTENDScores))+geom_boxplot(size= 0.1,notch=FALSE,outlier.size = 0,outlier.shape=NA,fill="cyan3")
-P2 = ggplot(Stranded_Histology, aes(x=fct_reorder(broad_histology,NormEXTENDScores,.desc =TRUE),y=NormEXTENDScores))+geom_boxplot(size= 0.1,notch=FALSE,outlier.size = 0,outlier.shape=NA,fill="cyan3")
+P1 = ggplot(Stranded_Histology, aes(x=fct_reorder(short_histology,NormEXTENDScores,.desc =TRUE),y=NormEXTENDScores))+geom_boxplot(size= 0.1,notch=FALSE,outlier.size = 0,outlier.shape=NA,fill="pink",alpha=0.5)+ geom_jitter(alpha= 0.5,shape=16, cex=0.3)+  ylab("EXTEND Scores")+ ggtitle("Tumor Short Histology")
+P2 = ggplot(Stranded_Histology, aes(x=fct_reorder(broad_histology,NormEXTENDScores,.desc =TRUE),y=NormEXTENDScores))+geom_boxplot(size= 0.1,notch=FALSE,outlier.size = 0,outlier.shape=NA,fill="pink",alpha=0.5)+ geom_jitter(alpha=0.5,shape=16, cex=0.3)+ ylab("EXTEND Scores")+ ggtitle("Tumor Broad Histology")
 
-grid.newpage()
-# Create layout : nrow = 2, ncol = 1
-pushViewport(viewport(layout = grid.layout(nrow =2, ncol = 1)))
-# A helper function to define a region on the layout
-define_region <- function(row, col){
-  viewport(layout.pos.row = row, layout.pos.col = col)
-} 
-
-
-print(ggpar(P1,font.xtickslab =c("black",6),font.ytickslab =c("black",7),font.x = 7,font.y=7,font.legend=6,xlab="Tumor Histology(short)",ylab="EXTEND Scores"),vp = define_region(row = 1, col = 1))
-print(ggpar(P2,font.xtickslab =c("black",6),font.ytickslab =c("black",7),font.x = 7,font.y=7,font.legend=6,xlab="Tumor Histology(broad)",ylab="EXTEND Scores"),vp = define_region(row = 2, col = 1))
-
+plot_grid(P1,P2, nrow = 2,labels = "AUTO", label_size = 12, scale=c(0.95,0.95),  align = "v")
 
 dev.off()
 
