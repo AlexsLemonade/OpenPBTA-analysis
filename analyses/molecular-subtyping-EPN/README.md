@@ -59,11 +59,6 @@ This above  script is designed to change to this directory to run, so it should 
                     <td>Yes</td>
                 </tr>
                 <tr>
-                    <td>PT_EPN_A</td>
-                    <td>TKTL1_expr_zscore>3 and 1q_gain>0</td>
-                    <td>Yes</td>
-                </tr>
-                <tr>
                     <td>PT_EPN_B</td>
                     <td>GPBP1_expr_zscore>3 and 6q_loss>0</td>
                     <td>Yes</td>
