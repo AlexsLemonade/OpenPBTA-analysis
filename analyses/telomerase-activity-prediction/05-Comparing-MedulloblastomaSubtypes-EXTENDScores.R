@@ -41,10 +41,18 @@ PTBA_GE_Standard_Histology = merge(PTBA_Histology,PTBA_GE_Standard_TMScores,by='
 
 PTBA_GE_Standard_Histology = PTBA_GE_Standard_Histology[which(PTBA_GE_Standard_Histology$short_histology == "Medulloblastoma"),]   ### Select tumors with catagory labelled as "Medulloblastoma"
 
-my_comparisons = list(c("Group3","Group4"),c("Group3","SHH"),c("Group3","WNT"),c("SHH","WNT"))
+stat.test <- data.frame(compare_means(
+  NormEXTENDScores ~ molecular_subtype, data = PTBA_GE_Standard_Histology,
+  method = "t.test"
+)) 
+
+combinations = nrow(stat.test)
+
+statistics = stat.test%>%
+  mutate(y.position = seq(1,by=0.04,length.out=combinations))
 
 
-pdf(PBTA_EXTEND_MedulloSubtypes)
+pdf(PBTA_EXTEND_MedulloSubtypes,height = 3, width = 3)
 
 ## Globally set the theme in one step, so it gets applied to both plots
 theme_set(theme_classic() + 
@@ -58,7 +66,12 @@ theme_set(theme_classic() +
 )
 
 
-P1 = ggplot(PTBA_GE_Standard_Histology, aes(x=fct_reorder(molecular_subtype,NormEXTENDScores,.desc =TRUE),y=NormEXTENDScores))+geom_boxplot(size= 0.2,notch=FALSE,outlier.size = 0,outlier.shape=NA,fill="pink")+ geom_jitter(shape=16, width = 0.2)+stat_compare_means(comparisons = my_comparisons, method= "t.test",size=5)
+P1 = ggplot(PTBA_GE_Standard_Histology, aes(x=fct_reorder(molecular_subtype,NormEXTENDScores,.desc =TRUE),y=NormEXTENDScores))+geom_boxplot(width=0.5,size= 0.1,notch=FALSE,outlier.size = 0,outlier.shape=NA,fill="pink")+ geom_jitter(shape=16, width = 0.1,size=0.4)+stat_pvalue_manual(
+    data = statistics, label = "p.adj",size=1.5,
+    xmin = "group1", xmax = "group2",tip.length = 0.006,
+    y.position = "y.position"
+    )
+
 
 grid.newpage()
 # Create layout : nrow = 2, ncol = 1
@@ -69,7 +82,7 @@ define_region <- function(row, col){
 } 
 
 
-print(ggpar(P1,font.xtickslab =c("black",14),font.ytickslab =c("black",14),font.x = 12,font.y=12,font.legend=6,xlab="Molecular Subgroups Medulloblastoma",ylab="EXTEND Scores"),vp = define_region(row = 1, col = 1))
+print(ggpar(P1,font.xtickslab =c("black",4),font.ytickslab =c("black",5),font.x = 5,font.y=5,font.legend=6,xlab="Molecular Subgroups Medulloblastoma",ylab="EXTEND Scores"),vp = define_region(row = 1, col = 1))
 
 
 dev.off()
