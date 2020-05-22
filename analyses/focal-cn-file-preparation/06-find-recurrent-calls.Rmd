@@ -51,6 +51,8 @@ Read in focal CN dominant status calls prepared in `05-define-most-focal-cn-unit
 
 ```{r}
 focal_cn_df <- read_tsv(file.path(results_dir, "consensus_seg_most_focal_cn_status.tsv.gz"))
+
+metadata <- read_tsv(file.path("..", "..", "data", "pbta-histologies.tsv"))
 ```
 
 ## Find recurrent calls
@@ -61,18 +63,47 @@ focal_cn_df <- read_tsv(file.path(results_dir, "consensus_seg_most_focal_cn_stat
 # Tally the number of samples that have the same status call by region
 final_df_tally <- focal_cn_df %>%
   group_by(status, region, region_type) %>%
-  tally(name = "count")
+  tally(name = "count") %>%
+  # Add column named `short_histology` for joining later
+  mutate(short_histology = "All")
 
 # Display table with counts of each unique status call by region
 final_df_tally %>%
   arrange(desc(count))
 ```
 
+### Tally the sample counts of each unique status call by region and short histology.
+
+```{r}
+# Tally the number of samples that have the same status call by region
+final_df_tally_histology <- focal_cn_df %>%
+  # Join the metadata by biospecimen IDs to get short histology data
+  inner_join(select(metadata,
+                    c(
+                      "Kids_First_Biospecimen_ID", "short_histology"
+                    )),
+             by = "Kids_First_Biospecimen_ID") %>%
+  group_by(status, region, region_type, short_histology) %>%
+  tally(name = "count")
+
+# Display table with counts of each unique status call by region and short
+# histology
+final_df_tally_histology %>%
+  arrange(desc(count))
+```
+
 ### Plot the distribution of counts
 
 ```{r}
-# Plot the distribution of counts
+# Plot the distribution of counts for all histologies
 ggplot(final_df_tally, aes(x = count)) +
+  geom_histogram(bins = 100) +
+  geom_vline(aes(xintercept = recurrence_cutoff), linetype = "longdash", color = "green", size = .4)
+```
+
+```{r}
+# Plot the distribution of counts for histologies separated
+ggplot(final_df_tally_histology, aes(x = count)) +
   geom_histogram(bins = 100) +
   geom_vline(aes(xintercept = recurrence_cutoff), linetype = "longdash", color = "green", size = .4)
 ```
@@ -80,6 +111,8 @@ ggplot(final_df_tally, aes(x = count)) +
 The `recurrence_cutoff` defined as 3 appears to be reasonable as seen in the distribution of counts plot above.
 
 ### Isolate recurrent calls
+
+#### All histologies represented
 
 ```{r}
 # Create a data frame of only observations that have counts greater than the `recurrence_cutoff`
@@ -90,18 +123,56 @@ recurrent_df <- final_df_tally %>%
 recurrent_df
 ```
 
-### Filter focal CN data frame to include only recurrent observations
+#### Separated by histology
 
 ```{r}
-# Filter the focal CN data frame to include only the recurrent observations
-final_df_recurrent <- focal_cn_df %>%
-  inner_join(recurrent_df, by = c("region", "status", "region_type"))
+# Create a data frame of only observations that have counts greater than the `recurrence_cutoff`
+recurrent_df_histology <- final_df_tally_histology %>%
+  filter(count > recurrence_cutoff)
+
+# Display table
+recurrent_df_histology
 ```
 
-### Write to file
+#### Combine all histology recurrent data with the data separated by histology 
 
 ```{r}
-# Write the recurrent focal CN calls by region at a sample level data frame to
+final_df_recurrent <- recurrent_df %>%
+  bind_rows(recurrent_df_histology) %>%
+  arrange(region) %>%
+  select(region, status, short_histology, count, region_type)
+
+# Display table
+final_df_recurrent
+```
+
+### Save list of genes that have `recurrent` calls
+
+```{r}
+# Save list of genes that have `recurrent` status calls for use in downstream
+# analyses
+recurrent_genes <- final_df_recurrent %>%
+  # Filter to only gene regions
+  filter(region_type == "gene") %>%
+  # Ungroup data from previos step
+  ungroup() %>%
+  # Select only the gene names
+  select(gene = region) %>%
+  # Use the distinct function to remove resulting duplicates from above step
+  distinct()
+
+# Save list of recurrent genes to file
+write_tsv(
+  recurrent_genes,
+  file.path(results_dir, "consensus_seg_focal_cn_recurrent_genes.tsv")
+)
+```
+
+
+### Write final data frame to file
+
+```{r}
+# Write the recurrent focal CN calls by region and histology data frame to
 # file
 write_tsv(final_df_recurrent, file.path(results_dir, "consensus_seg_recurrent_focal_cn_units.tsv"))
 ```
