@@ -3043,12 +3043,14 @@ count_patient_subtype &lt;- metadata %&gt;%
 <p>This way we use only primary samples only and maybe will help filter cases where multiple subtypes are present per patient ID</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWYgKG5yb3coY291bnRfcGF0aWVudF9zdWJ0eXBlKSA+IDApIHtcbiAgd2FybmluZyhnbHVlOjpnbHVlX2NvbGxhcHNlKFxuICAgIGNvdW50X3BhdGllbnRfc3VidHlwZSRLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELFxuICAgIHNlcCA9IFwiLFwiKVxuICAgICAgICAgICxcImhhdmUgYXJlIHBhdGllbnRzIHdpdGggbXVsdGlwbGUgc3VidHlwZXMuXCIpXG4gIHdhcm5pbmcoXCJVc2luZyBpbmRlcGVuZGVudCBwcmltYXJ5IGxpc3QgdG8gZ2V0IGluZGl2aWR1YWwgc2FtcGxlc1wiKVxuXG5pbmRlcGVuZGVudF9wcmltYXJ5IDwtIHJlYWRyOjpyZWFkX3RzdihpbmRlcGVuZGVudF9wcmltYXJ5X2ZpbGUpXG4jIHNlbGVjdCBvbmx5IGluZGVwZW5kZW50IHByaW1hcnkgYnNfaWRzIHRvIGdldCBvdmVyYWxsIHN1cnZpdmFsXG5tZXRhZGF0YSA8LSBtZXRhZGF0YSAlPiVcbiAgZHBseXI6OmZpbHRlcihLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiVcbiAgICAgICAgICAgICAgICAgIGluZGVwZW5kZW50X3ByaW1hcnkkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRClcbn1cblxuYGBgIn0= -->
-<pre class="r"><code>if (nrow(count_patient_subtype) &gt; 0) {
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIFBhdGllbnRzIHdpdGggbXVsdGlwbGUgZGlmZmVyZW50IG1vbGVjdWxhciBzdWJ0eXBlIG1pZ2h0IGFmZmVjdCBkb3duc3RyZWFtIGFuYWx5c2lzIGZvciBzdXJ2aXZhbCBzbyB1c2luZyBpbmRlcGVuZGVudF9wcmltYXJ5IHNhbXBsZSBzZXQgd2hpY2ggaGFzIDEtMSBzYW1wbGUtcGF0aWVudCBtYXRjaGVzXG5pZiAobnJvdyhjb3VudF9wYXRpZW50X3N1YnR5cGUpID4gMCkge1xuICB3YXJuaW5nKGdsdWU6OmdsdWVfY29sbGFwc2UoXG4gICAgY291bnRfcGF0aWVudF9zdWJ0eXBlJEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsXG4gICAgc2VwID0gXCIsXCIpXG4gICAgICAgICAgLCBcImhhdmUgYXJlIHBhdGllbnRzIHdpdGggbXVsdGlwbGUgc3VidHlwZXMuXCIpXG4gIHdhcm5pbmcoXCJVc2luZyBpbmRlcGVuZGVudCBwcmltYXJ5IGxpc3QgdG8gZ2V0IGluZGl2aWR1YWwgc2FtcGxlc1wiKVxuXG5pbmRlcGVuZGVudF9wcmltYXJ5IDwtIHJlYWRyOjpyZWFkX3RzdihpbmRlcGVuZGVudF9wcmltYXJ5X2ZpbGUpXG4jIHNlbGVjdCBvbmx5IGluZGVwZW5kZW50IHByaW1hcnkgYnNfaWRzIHRvIGdldCBvdmVyYWxsIHN1cnZpdmFsXG5tZXRhZGF0YSA8LSBtZXRhZGF0YSAlPiVcbiAgZHBseXI6OmZpbHRlcihLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiVcbiAgICAgICAgICAgICAgICAgIGluZGVwZW5kZW50X3ByaW1hcnkkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRClcbn1cbmBgYCJ9 -->
+<pre class="r"><code>
+# Patients with multiple different molecular subtype might affect downstream analysis for survival so using independent_primary sample set which has 1-1 sample-patient matches
+if (nrow(count_patient_subtype) &gt; 0) {
   warning(glue::glue_collapse(
     count_patient_subtype$Kids_First_Participant_ID,
     sep = &quot;,&quot;)
-          ,&quot;have are patients with multiple subtypes.&quot;)
+          , &quot;have are patients with multiple subtypes.&quot;)
   warning(&quot;Using independent primary list to get individual samples&quot;)
 
 independent_primary &lt;- readr::read_tsv(independent_primary_file)
@@ -3056,8 +3058,7 @@ independent_primary &lt;- readr::read_tsv(independent_primary_file)
 metadata &lt;- metadata %&gt;%
   dplyr::filter(Kids_First_Biospecimen_ID %in%
                   independent_primary$Kids_First_Biospecimen_ID)
-}
-</code></pre>
+}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiUFRfS1RSSjhURlksUFRfTks4QTQ5WDUsUFRfUUE5V0o2NzksUFRfV0dWRUY5NkJoYXZlIGFyZSBwYXRpZW50cyB3aXRoIG11bHRpcGxlIHN1YnR5cGVzLlVzaW5nIGluZGVwZW5kZW50IHByaW1hcnkgbGlzdCB0byBnZXQgaW5kaXZpZHVhbCBzYW1wbGVzUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bVxuKVxuIn0= -->
 <pre><code>PT_KTRJ8TFY,PT_NK8A49X5,PT_QA9WJ679,PT_WGVEF96Bhave are patients with multiple subtypes.Using independent primary list to get individual samplesParsed with column specification:
