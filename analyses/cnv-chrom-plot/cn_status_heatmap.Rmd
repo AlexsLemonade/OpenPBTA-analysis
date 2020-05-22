@@ -279,8 +279,8 @@ Run the bin status calling on each sample.
 # Get a vector of the biospecimen IDs
 sample_ids <- unique(seg_data$ID)
 
-# Read in the calculation file if it was already made
-if (file.exists(file.path(results_dir, "cn_status_bp_per_bin.tsv"))) {
+# Read in the calculation file if it was already made and this isn't the final figure
+if (file.exists(file.path(results_dir, "cn_status_bp_per_bin.tsv")) & !params$final_figure) {
   # Read in file
   bin_calls_df <- readr::read_tsv(file.path(results_dir, "cn_status_bp_per_bin.tsv"))
 } else {
