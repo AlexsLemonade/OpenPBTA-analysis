@@ -82,38 +82,23 @@ metadata <- readr::read_tsv(
   dplyr::filter(
     experimental_strategy != "RNA-Seq" &
       broad_histology == "Diffuse astrocytic and oligodendroglial tumor" &
-      broad_composition != "cell-line") %>%
+      broad_composition == "tumor") %>%
   as.data.frame()
-
-# find patients where multiple subtypes are present 
-count_patient_subtype <- metadata %>%
-  dplyr::select(Kids_First_Participant_ID, molecular_subtype) %>%
-  unique() %>%
-  group_by(Kids_First_Participant_ID ) %>%
-  dplyr::summarise(count = n(), subtype = toString(molecular_subtype)) %>%
-  dplyr::filter(count > 1)
 
 ```
 
 #### Using independent_primary if multiple subtypes per patient are found 
-This way we use only primary samples only and maybe will help filter cases where multiple subtypes are present per patient ID
+This way we subset the metadata to 1 single primary sample per patient ID
 
 ```{r Read in independent}
 
 # Patients with multiple different molecular subtype might affect downstream analysis for survival so using independent_primary sample set which has 1-1 sample-patient matches
-if (nrow(count_patient_subtype) > 0) {
-  warning(glue::glue_collapse(
-    count_patient_subtype$Kids_First_Participant_ID,
-    sep = ",")
-          , "have are patients with multiple subtypes.")
-  warning("Using independent primary list to get individual samples")
-
 independent_primary <- readr::read_tsv(independent_primary_file)
 # select only independent primary bs_ids to get overall survival
 metadata <- metadata %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in%
                   independent_primary$Kids_First_Biospecimen_ID)
-}
+
 
 
 ```
