@@ -117,11 +117,7 @@ metadata <-
   dplyr::mutate(sample_color = dplyr::recode(
     short_histology,
     !!!histology_col_palette
-  )) %>% 
-  dplyr::group_by(short_histology) %>% 
-  dplyr::mutate(group_n = dplyr::n()) %>% 
-  dplyr::ungroup() #%>% 
-  #dplyr::filter(group_n < 10)
+  ))
 ```
 
 ### Set up consensus copy number data
@@ -337,10 +333,13 @@ chr_colors <- rep(c("white", "black"),
 names(chr_colors) <- unique(chrs)
 
 # Get coordinate start positions
-chr_pos <- match(unique(chrs), chrs)
+chr_start <- match(unique(chrs), chrs)
+
+# Get coordinate end positions
+chr_end <- chr_start + summary(chrs)
 
 # Get mid points of chromosome labels
-mid_points <- ceiling((c(chr_pos[2:length(chr_pos)], length(chrs)) + chr_pos[1:length(chr_pos)]) / 2)
+mid_points <- floor((chr_start + chr_end) / 2)
 ```
 
 Make chromosomal labeling `HeatmapAnnotation` object.
@@ -378,11 +377,18 @@ This annotation object strategy was originally from [chromosomal-instability](ht
 histologies <-
   data.frame(Kids_First_Biospecimen_ID = bin_calls_df$biospecimen_id) %>%
   dplyr::inner_join(metadata %>%
-    dplyr::select(Kids_First_Biospecimen_ID, short_histology, sample_color, group_n)) %>%
+    dplyr::select(Kids_First_Biospecimen_ID, short_histology, sample_color)) %>%
+  # Count numbers of samples per histology group and make new variable with counts
+  dplyr::group_by(short_histology) %>% 
+  dplyr::mutate(group_n = dplyr::n()) %>% 
+  # Ungroup the data
+  dplyr::ungroup() %>%
   dplyr::mutate(short_histology = factor(paste0(short_histology, " (n = ", group_n, ")"))) %>%
   dplyr::arrange(short_histology) %>%
   tibble::column_to_rownames("Kids_First_Biospecimen_ID")
+```
 
+```{r}
 # Make color key specific to these samples
 histologies_color_key_filtered <- unique(histologies$sample_color)
 names(histologies_color_key_filtered) <- unique(histologies$short_histology)
@@ -391,10 +397,13 @@ names(histologies_color_key_filtered) <- unique(histologies$short_histology)
 histologies <- dplyr::select(histologies, -sample_color, -group_n)
 
 # Get coordinate start positions
-hist_pos <- match(names(histologies_color_key_filtered), histologies$short_histology)
+hist_start <- match(names(histologies_color_key_filtered), histologies$short_histology)
 
-# Get mid points of chromosome labels
-mid_points <- ceiling((c(hist_pos[2:length(hist_pos)], length(histologies$short_histology)) + hist_pos[1:length(hist_pos)]) / 2)
+# Get coordinate end positions for each histology group
+hist_end <- hist_start + summary(histologies$short_histology)
+
+# Get mid points of 
+mid_points <- floor((hist_start + hist_end) /2)
 ```
 
 ```{r}
@@ -417,7 +426,7 @@ hist_annot <- ComplexHeatmap::HeatmapAnnotation(
   show_legend = FALSE,
   mark = hist_text, # Put the text in
   border = TRUE
-)
+  )
 ```
 
 Format `bin_calls_df` as a matrix with rownames for `ComplexHeatmap` to use. 
@@ -445,7 +454,7 @@ heatmap <- ComplexHeatmap::Heatmap(
   row_split = histologies$short_histology,
   cluster_columns = FALSE,
   cluster_rows = FALSE,
-  rect_gp = grid::gpar(col = "black", lwd = .01),
+  rect_gp = grid::gpar(col = "black", lwd = .0005),
   show_column_names = FALSE,
   show_row_names = FALSE,
   row_labels = FALSE,
