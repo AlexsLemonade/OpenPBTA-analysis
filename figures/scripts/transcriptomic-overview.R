@@ -42,11 +42,11 @@ legend_png <- file.path(output_dir, "temp_legend.png")
 
 palette_dir <- file.path(root_dir, "figures", "palettes")
 histology_palette <- read_tsv(file.path(palette_dir,
-                                               "histology_color_palette.tsv"))
+                                        "histology_color_palette.tsv"))
 divergent_palette <- read_tsv(file.path(palette_dir,
-                                               "divergent_color_palette.tsv"))
+                                        "divergent_color_palette.tsv"))
 gradient_palette <- read_tsv(file.path(palette_dir,
-                                              "gradient_color_palette.tsv"))
+                                       "gradient_color_palette.tsv"))
 
 #### UMAP plot -----------------------------------------------------------------
 
@@ -138,7 +138,7 @@ short_histology_df <- histologies_df %>%
   filter(experimental_strategy == "RNA-Seq",
                 RNA_library == "stranded") %>%
   select(Kids_First_Biospecimen_ID,
-                short_histology) %>%
+         "short histology" = short_histology) %>%
   arrange(Kids_First_Biospecimen_ID) %>%
   tibble::column_to_rownames("Kids_First_Biospecimen_ID") %>%
   as.data.frame()
@@ -209,8 +209,8 @@ gradient_palette  <- gradient_palette %>%
   filter(color_names != "na_color")
 
 gradient_col_val <- seq(from = min(deconv_mat),
-                         to = max(deconv_mat),
-                         length.out = nrow(gradient_palette))
+                        to = max(deconv_mat),
+                        length.out = nrow(gradient_palette))
 
 deconv_col_fun <- circlize::colorRamp2(gradient_col_val,
                                        gradient_palette$hex_codes)
