@@ -15,28 +15,6 @@ region	status	short_histology	count	region_type
 10p	loss	Other	10	arm
 10p	loss	Schwannoma	5	arm
 10p	loss	Teratoma	4	arm
-10p11.1	uncallable	All	662	cytoband
-10p11.1	uncallable	ATRT	22	cytoband
-10p11.1	uncallable	Chordoma	6	cytoband
-10p11.1	uncallable	Choroid plexus tumor	7	cytoband
-10p11.1	uncallable	CNS EFT-CIC	5	cytoband
-10p11.1	uncallable	CNS neuroblastoma	4	cytoband
-10p11.1	uncallable	Craniopharyngioma	32	cytoband
-10p11.1	uncallable	DNET	22	cytoband
-10p11.1	uncallable	Dysplasia	9	cytoband
-10p11.1	uncallable	Embryonal Tumor	13	cytoband
-10p11.1	uncallable	Ependymoma	59	cytoband
-10p11.1	uncallable	Ganglioglioma	34	cytoband
-10p11.1	uncallable	Germinoma	4	cytoband
-10p11.1	uncallable	HGAT	93	cytoband
-10p11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-10p11.1	uncallable	LGAT	178	cytoband
-10p11.1	uncallable	Medulloblastoma	68	cytoband
-10p11.1	uncallable	Meningioma	22	cytoband
-10p11.1	uncallable	Neurofibroma	12	cytoband
-10p11.1	uncallable	Other	25	cytoband
-10p11.1	uncallable	Schwannoma	13	cytoband
-10p11.1	uncallable	Teratoma	5	cytoband
 10p11.22	loss	All	7	cytoband
 10p11.22	loss	HGAT	6	cytoband
 10p11.23	loss	All	7	cytoband
@@ -74,28 +52,6 @@ region	status	short_histology	count	region_type
 10q	loss	Neurofibroma	5	arm
 10q	loss	Other	10	arm
 10q	loss	Schwannoma	5	arm
-10q11.1	uncallable	All	670	cytoband
-10q11.1	uncallable	ATRT	22	cytoband
-10q11.1	uncallable	Chordoma	6	cytoband
-10q11.1	uncallable	Choroid plexus tumor	8	cytoband
-10q11.1	uncallable	CNS EFT-CIC	5	cytoband
-10q11.1	uncallable	CNS neuroblastoma	4	cytoband
-10q11.1	uncallable	Craniopharyngioma	32	cytoband
-10q11.1	uncallable	DNET	22	cytoband
-10q11.1	uncallable	Dysplasia	9	cytoband
-10q11.1	uncallable	Embryonal Tumor	13	cytoband
-10q11.1	uncallable	Ependymoma	61	cytoband
-10q11.1	uncallable	Ganglioglioma	36	cytoband
-10q11.1	uncallable	Germinoma	4	cytoband
-10q11.1	uncallable	HGAT	92	cytoband
-10q11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-10q11.1	uncallable	LGAT	179	cytoband
-10q11.1	uncallable	Medulloblastoma	70	cytoband
-10q11.1	uncallable	Meningioma	22	cytoband
-10q11.1	uncallable	Neurofibroma	12	cytoband
-10q11.1	uncallable	Other	25	cytoband
-10q11.1	uncallable	Schwannoma	13	cytoband
-10q11.1	uncallable	Teratoma	6	cytoband
 10q11.23	loss	All	6	cytoband
 10q21.1	loss	All	5	cytoband
 10q21.2	loss	All	9	cytoband
@@ -177,28 +133,6 @@ region	status	short_histology	count	region_type
 11p	loss	Neurofibroma	5	arm
 11p	loss	Other	10	arm
 11p	loss	Schwannoma	5	arm
-11p11.11	uncallable	All	671	cytoband
-11p11.11	uncallable	ATRT	21	cytoband
-11p11.11	uncallable	Chordoma	6	cytoband
-11p11.11	uncallable	Choroid plexus tumor	7	cytoband
-11p11.11	uncallable	CNS EFT-CIC	5	cytoband
-11p11.11	uncallable	CNS neuroblastoma	4	cytoband
-11p11.11	uncallable	Craniopharyngioma	32	cytoband
-11p11.11	uncallable	DNET	22	cytoband
-11p11.11	uncallable	Dysplasia	9	cytoband
-11p11.11	uncallable	Embryonal Tumor	13	cytoband
-11p11.11	uncallable	Ependymoma	63	cytoband
-11p11.11	uncallable	Ganglioglioma	36	cytoband
-11p11.11	uncallable	Germinoma	4	cytoband
-11p11.11	uncallable	HGAT	91	cytoband
-11p11.11	uncallable	Langerhans Cell histiocytosis	4	cytoband
-11p11.11	uncallable	LGAT	180	cytoband
-11p11.11	uncallable	Medulloblastoma	71	cytoband
-11p11.11	uncallable	Meningioma	22	cytoband
-11p11.11	uncallable	Neurofibroma	12	cytoband
-11p11.11	uncallable	Other	25	cytoband
-11p11.11	uncallable	Schwannoma	13	cytoband
-11p11.11	uncallable	Teratoma	6	cytoband
 11p11.12	gain	All	4	cytoband
 11p11.2	gain	All	5	cytoband
 11p11.2	loss	All	10	cytoband
@@ -252,28 +186,6 @@ region	status	short_histology	count	region_type
 11q	loss	Neurofibroma	5	arm
 11q	loss	Other	8	arm
 11q	loss	Schwannoma	5	arm
-11q11	uncallable	All	671	cytoband
-11q11	uncallable	ATRT	21	cytoband
-11q11	uncallable	Chordoma	6	cytoband
-11q11	uncallable	Choroid plexus tumor	7	cytoband
-11q11	uncallable	CNS EFT-CIC	5	cytoband
-11q11	uncallable	CNS neuroblastoma	4	cytoband
-11q11	uncallable	Craniopharyngioma	32	cytoband
-11q11	uncallable	DNET	22	cytoband
-11q11	uncallable	Dysplasia	9	cytoband
-11q11	uncallable	Embryonal Tumor	13	cytoband
-11q11	uncallable	Ependymoma	62	cytoband
-11q11	uncallable	Ganglioglioma	36	cytoband
-11q11	uncallable	Germinoma	4	cytoband
-11q11	uncallable	HGAT	91	cytoband
-11q11	uncallable	Langerhans Cell histiocytosis	4	cytoband
-11q11	uncallable	LGAT	179	cytoband
-11q11	uncallable	Medulloblastoma	70	cytoband
-11q11	uncallable	Meningioma	22	cytoband
-11q11	uncallable	Neurofibroma	12	cytoband
-11q11	uncallable	Other	27	cytoband
-11q11	uncallable	Schwannoma	13	cytoband
-11q11	uncallable	Teratoma	6	cytoband
 11q12.1	gain	All	4	cytoband
 11q12.3	gain	All	5	cytoband
 11q12.3	loss	All	5	cytoband
@@ -328,28 +240,6 @@ region	status	short_histology	count	region_type
 12p	loss	Other	8	arm
 12p	loss	Schwannoma	5	arm
 12p11.1	gain	All	4	cytoband
-12p11.1	uncallable	All	673	cytoband
-12p11.1	uncallable	ATRT	22	cytoband
-12p11.1	uncallable	Chordoma	5	cytoband
-12p11.1	uncallable	Choroid plexus tumor	7	cytoband
-12p11.1	uncallable	CNS EFT-CIC	5	cytoband
-12p11.1	uncallable	CNS neuroblastoma	4	cytoband
-12p11.1	uncallable	Craniopharyngioma	32	cytoband
-12p11.1	uncallable	DNET	22	cytoband
-12p11.1	uncallable	Dysplasia	9	cytoband
-12p11.1	uncallable	Embryonal Tumor	13	cytoband
-12p11.1	uncallable	Ependymoma	62	cytoband
-12p11.1	uncallable	Ganglioglioma	36	cytoband
-12p11.1	uncallable	Germinoma	4	cytoband
-12p11.1	uncallable	HGAT	93	cytoband
-12p11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-12p11.1	uncallable	LGAT	180	cytoband
-12p11.1	uncallable	Medulloblastoma	72	cytoband
-12p11.1	uncallable	Meningioma	21	cytoband
-12p11.1	uncallable	Neurofibroma	12	cytoband
-12p11.1	uncallable	Other	27	cytoband
-12p11.1	uncallable	Schwannoma	13	cytoband
-12p11.1	uncallable	Teratoma	6	cytoband
 12p11.21	gain	All	7	cytoband
 12p11.21	loss	All	6	cytoband
 12p11.22	gain	All	8	cytoband
@@ -389,28 +279,6 @@ region	status	short_histology	count	region_type
 12q	loss	Neurofibroma	5	arm
 12q	loss	Other	9	arm
 12q	loss	Schwannoma	5	arm
-12q11	uncallable	All	667	cytoband
-12q11	uncallable	ATRT	22	cytoband
-12q11	uncallable	Chordoma	5	cytoband
-12q11	uncallable	Choroid plexus tumor	6	cytoband
-12q11	uncallable	CNS EFT-CIC	5	cytoband
-12q11	uncallable	CNS neuroblastoma	4	cytoband
-12q11	uncallable	Craniopharyngioma	32	cytoband
-12q11	uncallable	DNET	22	cytoband
-12q11	uncallable	Dysplasia	9	cytoband
-12q11	uncallable	Embryonal Tumor	13	cytoband
-12q11	uncallable	Ependymoma	62	cytoband
-12q11	uncallable	Ganglioglioma	36	cytoband
-12q11	uncallable	Germinoma	4	cytoband
-12q11	uncallable	HGAT	91	cytoband
-12q11	uncallable	Langerhans Cell histiocytosis	4	cytoband
-12q11	uncallable	LGAT	179	cytoband
-12q11	uncallable	Medulloblastoma	71	cytoband
-12q11	uncallable	Meningioma	21	cytoband
-12q11	uncallable	Neurofibroma	12	cytoband
-12q11	uncallable	Other	26	cytoband
-12q11	uncallable	Schwannoma	13	cytoband
-12q11	uncallable	Teratoma	6	cytoband
 12q12	loss	All	5	cytoband
 12q13.11	loss	All	6	cytoband
 12q13.11	loss	Medulloblastoma	4	cytoband
@@ -464,112 +332,6 @@ region	status	short_histology	count	region_type
 12q24.32	gain	Medulloblastoma	6	cytoband
 12q24.33	gain	All	6	cytoband
 12q24.33	gain	Medulloblastoma	6	cytoband
-13p	uncallable	All	915	arm
-13p	uncallable	ATRT	29	arm
-13p	uncallable	Chordoma	9	arm
-13p	uncallable	Choroid plexus tumor	15	arm
-13p	uncallable	CNS EFT-CIC	7	arm
-13p	uncallable	CNS neuroblastoma	4	arm
-13p	uncallable	Craniopharyngioma	34	arm
-13p	uncallable	DNET	27	arm
-13p	uncallable	Dysplasia	13	arm
-13p	uncallable	Embryonal Tumor	15	arm
-13p	uncallable	Ependymoma	79	arm
-13p	uncallable	Ganglioglioma	47	arm
-13p	uncallable	Germinoma	5	arm
-13p	uncallable	HGAT	142	arm
-13p	uncallable	Langerhans Cell histiocytosis	4	arm
-13p	uncallable	LGAT	242	arm
-13p	uncallable	Medulloblastoma	101	arm
-13p	uncallable	Meningioma	30	arm
-13p	uncallable	Neurofibroma	17	arm
-13p	uncallable	Other	35	arm
-13p	uncallable	Pineoblastoma	4	arm
-13p	uncallable	Schwannoma	18	arm
-13p	uncallable	Teratoma	9	arm
-13p11.1	uncallable	All	915	cytoband
-13p11.1	uncallable	ATRT	29	cytoband
-13p11.1	uncallable	Chordoma	9	cytoband
-13p11.1	uncallable	Choroid plexus tumor	15	cytoband
-13p11.1	uncallable	CNS EFT-CIC	7	cytoband
-13p11.1	uncallable	CNS neuroblastoma	4	cytoband
-13p11.1	uncallable	Craniopharyngioma	34	cytoband
-13p11.1	uncallable	DNET	27	cytoband
-13p11.1	uncallable	Dysplasia	13	cytoband
-13p11.1	uncallable	Embryonal Tumor	15	cytoband
-13p11.1	uncallable	Ependymoma	79	cytoband
-13p11.1	uncallable	Ganglioglioma	47	cytoband
-13p11.1	uncallable	Germinoma	5	cytoband
-13p11.1	uncallable	HGAT	142	cytoband
-13p11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-13p11.1	uncallable	LGAT	242	cytoband
-13p11.1	uncallable	Medulloblastoma	101	cytoband
-13p11.1	uncallable	Meningioma	30	cytoband
-13p11.1	uncallable	Neurofibroma	17	cytoband
-13p11.1	uncallable	Other	35	cytoband
-13p11.1	uncallable	Pineoblastoma	4	cytoband
-13p11.1	uncallable	Schwannoma	18	cytoband
-13p11.1	uncallable	Teratoma	9	cytoband
-13p11.2	uncallable	All	915	cytoband
-13p11.2	uncallable	ATRT	29	cytoband
-13p11.2	uncallable	Chordoma	9	cytoband
-13p11.2	uncallable	Choroid plexus tumor	15	cytoband
-13p11.2	uncallable	CNS EFT-CIC	7	cytoband
-13p11.2	uncallable	CNS neuroblastoma	4	cytoband
-13p11.2	uncallable	Craniopharyngioma	34	cytoband
-13p11.2	uncallable	DNET	27	cytoband
-13p11.2	uncallable	Dysplasia	13	cytoband
-13p11.2	uncallable	Embryonal Tumor	15	cytoband
-13p11.2	uncallable	Ependymoma	79	cytoband
-13p11.2	uncallable	Ganglioglioma	47	cytoband
-13p11.2	uncallable	Germinoma	5	cytoband
-13p11.2	uncallable	HGAT	142	cytoband
-13p11.2	uncallable	Langerhans Cell histiocytosis	4	cytoband
-13p11.2	uncallable	LGAT	242	cytoband
-13p11.2	uncallable	Medulloblastoma	101	cytoband
-13p11.2	uncallable	Meningioma	30	cytoband
-13p11.2	uncallable	Neurofibroma	17	cytoband
-13p11.2	uncallable	Other	35	cytoband
-13p11.2	uncallable	Pineoblastoma	4	cytoband
-13p11.2	uncallable	Schwannoma	18	cytoband
-13p11.2	uncallable	Teratoma	9	cytoband
-13p12	loss	All	236	cytoband
-13p12	loss	ATRT	7	cytoband
-13p12	loss	Choroid plexus tumor	7	cytoband
-13p12	loss	DNET	5	cytoband
-13p12	loss	Dysplasia	4	cytoband
-13p12	loss	Ependymoma	16	cytoband
-13p12	loss	Ganglioglioma	11	cytoband
-13p12	loss	HGAT	47	cytoband
-13p12	loss	LGAT	62	cytoband
-13p12	loss	Medulloblastoma	29	cytoband
-13p12	loss	Meningioma	8	cytoband
-13p12	loss	Neurofibroma	5	cytoband
-13p12	loss	Other	9	cytoband
-13p12	loss	Schwannoma	5	cytoband
-13p13	uncallable	All	915	cytoband
-13p13	uncallable	ATRT	29	cytoband
-13p13	uncallable	Chordoma	9	cytoband
-13p13	uncallable	Choroid plexus tumor	15	cytoband
-13p13	uncallable	CNS EFT-CIC	7	cytoband
-13p13	uncallable	CNS neuroblastoma	4	cytoband
-13p13	uncallable	Craniopharyngioma	34	cytoband
-13p13	uncallable	DNET	27	cytoband
-13p13	uncallable	Dysplasia	13	cytoband
-13p13	uncallable	Embryonal Tumor	15	cytoband
-13p13	uncallable	Ependymoma	79	cytoband
-13p13	uncallable	Ganglioglioma	47	cytoband
-13p13	uncallable	Germinoma	5	cytoband
-13p13	uncallable	HGAT	142	cytoband
-13p13	uncallable	Langerhans Cell histiocytosis	4	cytoband
-13p13	uncallable	LGAT	242	cytoband
-13p13	uncallable	Medulloblastoma	101	cytoband
-13p13	uncallable	Meningioma	30	cytoband
-13p13	uncallable	Neurofibroma	17	cytoband
-13p13	uncallable	Other	35	cytoband
-13p13	uncallable	Pineoblastoma	4	cytoband
-13p13	uncallable	Schwannoma	18	cytoband
-13p13	uncallable	Teratoma	9	cytoband
 13q	loss	All	241	arm
 13q	loss	ATRT	7	arm
 13q	loss	Choroid plexus tumor	7	arm
@@ -584,28 +346,6 @@ region	status	short_histology	count	region_type
 13q	loss	Neurofibroma	5	arm
 13q	loss	Other	9	arm
 13q	loss	Schwannoma	5	arm
-13q11	uncallable	All	671	cytoband
-13q11	uncallable	ATRT	22	cytoband
-13q11	uncallable	Chordoma	6	cytoband
-13q11	uncallable	Choroid plexus tumor	7	cytoband
-13q11	uncallable	CNS EFT-CIC	5	cytoband
-13q11	uncallable	CNS neuroblastoma	4	cytoband
-13q11	uncallable	Craniopharyngioma	32	cytoband
-13q11	uncallable	DNET	22	cytoband
-13q11	uncallable	Dysplasia	9	cytoband
-13q11	uncallable	Embryonal Tumor	12	cytoband
-13q11	uncallable	Ependymoma	62	cytoband
-13q11	uncallable	Ganglioglioma	36	cytoband
-13q11	uncallable	Germinoma	4	cytoband
-13q11	uncallable	HGAT	90	cytoband
-13q11	uncallable	Langerhans Cell histiocytosis	4	cytoband
-13q11	uncallable	LGAT	180	cytoband
-13q11	uncallable	Medulloblastoma	72	cytoband
-13q11	uncallable	Meningioma	22	cytoband
-13q11	uncallable	Neurofibroma	12	cytoband
-13q11	uncallable	Other	26	cytoband
-13q11	uncallable	Schwannoma	13	cytoband
-13q11	uncallable	Teratoma	6	cytoband
 13q12.11	loss	All	6	cytoband
 13q12.11	loss	HGAT	4	cytoband
 13q12.12	loss	All	6	cytoband
@@ -663,112 +403,6 @@ region	status	short_histology	count	region_type
 13q33.2	loss	HGAT	4	cytoband
 13q33.3	loss	All	7	cytoband
 13q33.3	loss	HGAT	4	cytoband
-14p	uncallable	All	915	arm
-14p	uncallable	ATRT	29	arm
-14p	uncallable	Chordoma	9	arm
-14p	uncallable	Choroid plexus tumor	15	arm
-14p	uncallable	CNS EFT-CIC	7	arm
-14p	uncallable	CNS neuroblastoma	4	arm
-14p	uncallable	Craniopharyngioma	34	arm
-14p	uncallable	DNET	27	arm
-14p	uncallable	Dysplasia	13	arm
-14p	uncallable	Embryonal Tumor	15	arm
-14p	uncallable	Ependymoma	79	arm
-14p	uncallable	Ganglioglioma	47	arm
-14p	uncallable	Germinoma	5	arm
-14p	uncallable	HGAT	142	arm
-14p	uncallable	Langerhans Cell histiocytosis	4	arm
-14p	uncallable	LGAT	242	arm
-14p	uncallable	Medulloblastoma	101	arm
-14p	uncallable	Meningioma	30	arm
-14p	uncallable	Neurofibroma	17	arm
-14p	uncallable	Other	35	arm
-14p	uncallable	Pineoblastoma	4	arm
-14p	uncallable	Schwannoma	18	arm
-14p	uncallable	Teratoma	9	arm
-14p11.1	uncallable	All	915	cytoband
-14p11.1	uncallable	ATRT	29	cytoband
-14p11.1	uncallable	Chordoma	9	cytoband
-14p11.1	uncallable	Choroid plexus tumor	15	cytoband
-14p11.1	uncallable	CNS EFT-CIC	7	cytoband
-14p11.1	uncallable	CNS neuroblastoma	4	cytoband
-14p11.1	uncallable	Craniopharyngioma	34	cytoband
-14p11.1	uncallable	DNET	27	cytoband
-14p11.1	uncallable	Dysplasia	13	cytoband
-14p11.1	uncallable	Embryonal Tumor	15	cytoband
-14p11.1	uncallable	Ependymoma	79	cytoband
-14p11.1	uncallable	Ganglioglioma	47	cytoband
-14p11.1	uncallable	Germinoma	5	cytoband
-14p11.1	uncallable	HGAT	142	cytoband
-14p11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-14p11.1	uncallable	LGAT	242	cytoband
-14p11.1	uncallable	Medulloblastoma	101	cytoband
-14p11.1	uncallable	Meningioma	30	cytoband
-14p11.1	uncallable	Neurofibroma	17	cytoband
-14p11.1	uncallable	Other	35	cytoband
-14p11.1	uncallable	Pineoblastoma	4	cytoband
-14p11.1	uncallable	Schwannoma	18	cytoband
-14p11.1	uncallable	Teratoma	9	cytoband
-14p11.2	uncallable	All	915	cytoband
-14p11.2	uncallable	ATRT	29	cytoband
-14p11.2	uncallable	Chordoma	9	cytoband
-14p11.2	uncallable	Choroid plexus tumor	15	cytoband
-14p11.2	uncallable	CNS EFT-CIC	7	cytoband
-14p11.2	uncallable	CNS neuroblastoma	4	cytoband
-14p11.2	uncallable	Craniopharyngioma	34	cytoband
-14p11.2	uncallable	DNET	27	cytoband
-14p11.2	uncallable	Dysplasia	13	cytoband
-14p11.2	uncallable	Embryonal Tumor	15	cytoband
-14p11.2	uncallable	Ependymoma	79	cytoband
-14p11.2	uncallable	Ganglioglioma	47	cytoband
-14p11.2	uncallable	Germinoma	5	cytoband
-14p11.2	uncallable	HGAT	142	cytoband
-14p11.2	uncallable	Langerhans Cell histiocytosis	4	cytoband
-14p11.2	uncallable	LGAT	242	cytoband
-14p11.2	uncallable	Medulloblastoma	101	cytoband
-14p11.2	uncallable	Meningioma	30	cytoband
-14p11.2	uncallable	Neurofibroma	17	cytoband
-14p11.2	uncallable	Other	35	cytoband
-14p11.2	uncallable	Pineoblastoma	4	cytoband
-14p11.2	uncallable	Schwannoma	18	cytoband
-14p11.2	uncallable	Teratoma	9	cytoband
-14p12	loss	All	236	cytoband
-14p12	loss	ATRT	7	cytoband
-14p12	loss	Choroid plexus tumor	7	cytoband
-14p12	loss	DNET	5	cytoband
-14p12	loss	Dysplasia	4	cytoband
-14p12	loss	Ependymoma	16	cytoband
-14p12	loss	Ganglioglioma	11	cytoband
-14p12	loss	HGAT	47	cytoband
-14p12	loss	LGAT	62	cytoband
-14p12	loss	Medulloblastoma	29	cytoband
-14p12	loss	Meningioma	8	cytoband
-14p12	loss	Neurofibroma	5	cytoband
-14p12	loss	Other	9	cytoband
-14p12	loss	Schwannoma	5	cytoband
-14p13	uncallable	All	915	cytoband
-14p13	uncallable	ATRT	29	cytoband
-14p13	uncallable	Chordoma	9	cytoband
-14p13	uncallable	Choroid plexus tumor	15	cytoband
-14p13	uncallable	CNS EFT-CIC	7	cytoband
-14p13	uncallable	CNS neuroblastoma	4	cytoband
-14p13	uncallable	Craniopharyngioma	34	cytoband
-14p13	uncallable	DNET	27	cytoband
-14p13	uncallable	Dysplasia	13	cytoband
-14p13	uncallable	Embryonal Tumor	15	cytoband
-14p13	uncallable	Ependymoma	79	cytoband
-14p13	uncallable	Ganglioglioma	47	cytoband
-14p13	uncallable	Germinoma	5	cytoband
-14p13	uncallable	HGAT	142	cytoband
-14p13	uncallable	Langerhans Cell histiocytosis	4	cytoband
-14p13	uncallable	LGAT	242	cytoband
-14p13	uncallable	Medulloblastoma	101	cytoband
-14p13	uncallable	Meningioma	30	cytoband
-14p13	uncallable	Neurofibroma	17	cytoband
-14p13	uncallable	Other	35	cytoband
-14p13	uncallable	Pineoblastoma	4	cytoband
-14p13	uncallable	Schwannoma	18	cytoband
-14p13	uncallable	Teratoma	9	cytoband
 14q	loss	All	241	arm
 14q	loss	ATRT	7	arm
 14q	loss	Choroid plexus tumor	7	arm
@@ -783,28 +417,6 @@ region	status	short_histology	count	region_type
 14q	loss	Neurofibroma	5	arm
 14q	loss	Other	8	arm
 14q	loss	Schwannoma	5	arm
-14q11.1	uncallable	All	671	cytoband
-14q11.1	uncallable	ATRT	21	cytoband
-14q11.1	uncallable	Chordoma	6	cytoband
-14q11.1	uncallable	Choroid plexus tumor	8	cytoband
-14q11.1	uncallable	CNS EFT-CIC	5	cytoband
-14q11.1	uncallable	CNS neuroblastoma	4	cytoband
-14q11.1	uncallable	Craniopharyngioma	32	cytoband
-14q11.1	uncallable	DNET	22	cytoband
-14q11.1	uncallable	Dysplasia	9	cytoband
-14q11.1	uncallable	Embryonal Tumor	13	cytoband
-14q11.1	uncallable	Ependymoma	62	cytoband
-14q11.1	uncallable	Ganglioglioma	36	cytoband
-14q11.1	uncallable	Germinoma	4	cytoband
-14q11.1	uncallable	HGAT	88	cytoband
-14q11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-14q11.1	uncallable	LGAT	180	cytoband
-14q11.1	uncallable	Medulloblastoma	71	cytoband
-14q11.1	uncallable	Meningioma	21	cytoband
-14q11.1	uncallable	Neurofibroma	12	cytoband
-14q11.1	uncallable	Other	27	cytoband
-14q11.1	uncallable	Schwannoma	13	cytoband
-14q11.1	uncallable	Teratoma	7	cytoband
 14q12	gain	All	4	cytoband
 14q13.2	loss	All	4	cytoband
 14q13.3	loss	All	5	cytoband
@@ -857,112 +469,6 @@ region	status	short_histology	count	region_type
 14q32.32	gain	All	4	cytoband
 14q32.32	loss	All	11	cytoband
 14q32.32	loss	HGAT	6	cytoband
-15p	uncallable	All	915	arm
-15p	uncallable	ATRT	29	arm
-15p	uncallable	Chordoma	9	arm
-15p	uncallable	Choroid plexus tumor	15	arm
-15p	uncallable	CNS EFT-CIC	7	arm
-15p	uncallable	CNS neuroblastoma	4	arm
-15p	uncallable	Craniopharyngioma	34	arm
-15p	uncallable	DNET	27	arm
-15p	uncallable	Dysplasia	13	arm
-15p	uncallable	Embryonal Tumor	15	arm
-15p	uncallable	Ependymoma	79	arm
-15p	uncallable	Ganglioglioma	47	arm
-15p	uncallable	Germinoma	5	arm
-15p	uncallable	HGAT	142	arm
-15p	uncallable	Langerhans Cell histiocytosis	4	arm
-15p	uncallable	LGAT	242	arm
-15p	uncallable	Medulloblastoma	101	arm
-15p	uncallable	Meningioma	30	arm
-15p	uncallable	Neurofibroma	17	arm
-15p	uncallable	Other	35	arm
-15p	uncallable	Pineoblastoma	4	arm
-15p	uncallable	Schwannoma	18	arm
-15p	uncallable	Teratoma	9	arm
-15p11.1	uncallable	All	915	cytoband
-15p11.1	uncallable	ATRT	29	cytoband
-15p11.1	uncallable	Chordoma	9	cytoband
-15p11.1	uncallable	Choroid plexus tumor	15	cytoband
-15p11.1	uncallable	CNS EFT-CIC	7	cytoband
-15p11.1	uncallable	CNS neuroblastoma	4	cytoband
-15p11.1	uncallable	Craniopharyngioma	34	cytoband
-15p11.1	uncallable	DNET	27	cytoband
-15p11.1	uncallable	Dysplasia	13	cytoband
-15p11.1	uncallable	Embryonal Tumor	15	cytoband
-15p11.1	uncallable	Ependymoma	79	cytoband
-15p11.1	uncallable	Ganglioglioma	47	cytoband
-15p11.1	uncallable	Germinoma	5	cytoband
-15p11.1	uncallable	HGAT	142	cytoband
-15p11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-15p11.1	uncallable	LGAT	242	cytoband
-15p11.1	uncallable	Medulloblastoma	101	cytoband
-15p11.1	uncallable	Meningioma	30	cytoband
-15p11.1	uncallable	Neurofibroma	17	cytoband
-15p11.1	uncallable	Other	35	cytoband
-15p11.1	uncallable	Pineoblastoma	4	cytoband
-15p11.1	uncallable	Schwannoma	18	cytoband
-15p11.1	uncallable	Teratoma	9	cytoband
-15p11.2	uncallable	All	915	cytoband
-15p11.2	uncallable	ATRT	29	cytoband
-15p11.2	uncallable	Chordoma	9	cytoband
-15p11.2	uncallable	Choroid plexus tumor	15	cytoband
-15p11.2	uncallable	CNS EFT-CIC	7	cytoband
-15p11.2	uncallable	CNS neuroblastoma	4	cytoband
-15p11.2	uncallable	Craniopharyngioma	34	cytoband
-15p11.2	uncallable	DNET	27	cytoband
-15p11.2	uncallable	Dysplasia	13	cytoband
-15p11.2	uncallable	Embryonal Tumor	15	cytoband
-15p11.2	uncallable	Ependymoma	79	cytoband
-15p11.2	uncallable	Ganglioglioma	47	cytoband
-15p11.2	uncallable	Germinoma	5	cytoband
-15p11.2	uncallable	HGAT	142	cytoband
-15p11.2	uncallable	Langerhans Cell histiocytosis	4	cytoband
-15p11.2	uncallable	LGAT	242	cytoband
-15p11.2	uncallable	Medulloblastoma	101	cytoband
-15p11.2	uncallable	Meningioma	30	cytoband
-15p11.2	uncallable	Neurofibroma	17	cytoband
-15p11.2	uncallable	Other	35	cytoband
-15p11.2	uncallable	Pineoblastoma	4	cytoband
-15p11.2	uncallable	Schwannoma	18	cytoband
-15p11.2	uncallable	Teratoma	9	cytoband
-15p12	loss	All	236	cytoband
-15p12	loss	ATRT	7	cytoband
-15p12	loss	Choroid plexus tumor	7	cytoband
-15p12	loss	DNET	5	cytoband
-15p12	loss	Dysplasia	4	cytoband
-15p12	loss	Ependymoma	16	cytoband
-15p12	loss	Ganglioglioma	11	cytoband
-15p12	loss	HGAT	47	cytoband
-15p12	loss	LGAT	62	cytoband
-15p12	loss	Medulloblastoma	29	cytoband
-15p12	loss	Meningioma	8	cytoband
-15p12	loss	Neurofibroma	5	cytoband
-15p12	loss	Other	9	cytoband
-15p12	loss	Schwannoma	5	cytoband
-15p13	uncallable	All	915	cytoband
-15p13	uncallable	ATRT	29	cytoband
-15p13	uncallable	Chordoma	9	cytoband
-15p13	uncallable	Choroid plexus tumor	15	cytoband
-15p13	uncallable	CNS EFT-CIC	7	cytoband
-15p13	uncallable	CNS neuroblastoma	4	cytoband
-15p13	uncallable	Craniopharyngioma	34	cytoband
-15p13	uncallable	DNET	27	cytoband
-15p13	uncallable	Dysplasia	13	cytoband
-15p13	uncallable	Embryonal Tumor	15	cytoband
-15p13	uncallable	Ependymoma	79	cytoband
-15p13	uncallable	Ganglioglioma	47	cytoband
-15p13	uncallable	Germinoma	5	cytoband
-15p13	uncallable	HGAT	142	cytoband
-15p13	uncallable	Langerhans Cell histiocytosis	4	cytoband
-15p13	uncallable	LGAT	242	cytoband
-15p13	uncallable	Medulloblastoma	101	cytoband
-15p13	uncallable	Meningioma	30	cytoband
-15p13	uncallable	Neurofibroma	17	cytoband
-15p13	uncallable	Other	35	cytoband
-15p13	uncallable	Pineoblastoma	4	cytoband
-15p13	uncallable	Schwannoma	18	cytoband
-15p13	uncallable	Teratoma	9	cytoband
 15q	loss	All	230	arm
 15q	loss	ATRT	7	arm
 15q	loss	Choroid plexus tumor	6	arm
@@ -977,52 +483,8 @@ region	status	short_histology	count	region_type
 15q	loss	Neurofibroma	5	arm
 15q	loss	Other	9	arm
 15q	loss	Schwannoma	5	arm
-15q11.1	uncallable	All	685	cytoband
-15q11.1	uncallable	ATRT	22	cytoband
-15q11.1	uncallable	Chordoma	6	cytoband
-15q11.1	uncallable	Choroid plexus tumor	9	cytoband
-15q11.1	uncallable	CNS EFT-CIC	5	cytoband
-15q11.1	uncallable	CNS neuroblastoma	4	cytoband
-15q11.1	uncallable	Craniopharyngioma	32	cytoband
-15q11.1	uncallable	DNET	22	cytoband
-15q11.1	uncallable	Dysplasia	9	cytoband
-15q11.1	uncallable	Embryonal Tumor	13	cytoband
-15q11.1	uncallable	Ependymoma	63	cytoband
-15q11.1	uncallable	Ganglioglioma	36	cytoband
-15q11.1	uncallable	Germinoma	4	cytoband
-15q11.1	uncallable	HGAT	99	cytoband
-15q11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-15q11.1	uncallable	LGAT	180	cytoband
-15q11.1	uncallable	Medulloblastoma	73	cytoband
-15q11.1	uncallable	Meningioma	22	cytoband
-15q11.1	uncallable	Neurofibroma	12	cytoband
-15q11.1	uncallable	Other	26	cytoband
-15q11.1	uncallable	Schwannoma	13	cytoband
-15q11.1	uncallable	Teratoma	6	cytoband
 15q12	loss	All	6	cytoband
 15q12	loss	HGAT	6	cytoband
-15q13.2	uncallable	All	682	cytoband
-15q13.2	uncallable	ATRT	22	cytoband
-15q13.2	uncallable	Chordoma	6	cytoband
-15q13.2	uncallable	Choroid plexus tumor	8	cytoband
-15q13.2	uncallable	CNS EFT-CIC	5	cytoband
-15q13.2	uncallable	CNS neuroblastoma	4	cytoband
-15q13.2	uncallable	Craniopharyngioma	32	cytoband
-15q13.2	uncallable	DNET	22	cytoband
-15q13.2	uncallable	Dysplasia	9	cytoband
-15q13.2	uncallable	Embryonal Tumor	13	cytoband
-15q13.2	uncallable	Ependymoma	63	cytoband
-15q13.2	uncallable	Ganglioglioma	36	cytoband
-15q13.2	uncallable	Germinoma	4	cytoband
-15q13.2	uncallable	HGAT	98	cytoband
-15q13.2	uncallable	Langerhans Cell histiocytosis	4	cytoband
-15q13.2	uncallable	LGAT	180	cytoband
-15q13.2	uncallable	Medulloblastoma	72	cytoband
-15q13.2	uncallable	Meningioma	22	cytoband
-15q13.2	uncallable	Neurofibroma	12	cytoband
-15q13.2	uncallable	Other	26	cytoband
-15q13.2	uncallable	Schwannoma	13	cytoband
-15q13.2	uncallable	Teratoma	6	cytoband
 15q14	loss	All	9	cytoband
 15q14	loss	HGAT	8	cytoband
 15q15.1	loss	All	11	cytoband
@@ -1071,29 +533,6 @@ region	status	short_histology	count	region_type
 15q26.2	gain	All	8	cytoband
 15q26.2	loss	All	4	cytoband
 15q26.2	gain	HGAT	6	cytoband
-16p11.1	uncallable	All	909	cytoband
-16p11.1	uncallable	ATRT	29	cytoband
-16p11.1	uncallable	Chordoma	9	cytoband
-16p11.1	uncallable	Choroid plexus tumor	15	cytoband
-16p11.1	uncallable	CNS EFT-CIC	7	cytoband
-16p11.1	uncallable	CNS neuroblastoma	4	cytoband
-16p11.1	uncallable	Craniopharyngioma	34	cytoband
-16p11.1	uncallable	DNET	27	cytoband
-16p11.1	uncallable	Dysplasia	13	cytoband
-16p11.1	uncallable	Embryonal Tumor	15	cytoband
-16p11.1	uncallable	Ependymoma	79	cytoband
-16p11.1	uncallable	Ganglioglioma	47	cytoband
-16p11.1	uncallable	Germinoma	5	cytoband
-16p11.1	uncallable	HGAT	140	cytoband
-16p11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-16p11.1	uncallable	LGAT	241	cytoband
-16p11.1	uncallable	Medulloblastoma	99	cytoband
-16p11.1	uncallable	Meningioma	30	cytoband
-16p11.1	uncallable	Neurofibroma	17	cytoband
-16p11.1	uncallable	Other	35	cytoband
-16p11.1	uncallable	Pineoblastoma	4	cytoband
-16p11.1	uncallable	Schwannoma	18	cytoband
-16p11.1	uncallable	Teratoma	9	cytoband
 16p12.1	loss	All	235	cytoband
 16p12.1	loss	ATRT	7	cytoband
 16p12.1	loss	Choroid plexus tumor	7	cytoband
@@ -1182,52 +621,6 @@ region	status	short_histology	count	region_type
 16p13.3	loss	Other	9	cytoband
 16p13.3	loss	Schwannoma	5	cytoband
 16q	loss	All	5	arm
-16q11.1	uncallable	All	908	cytoband
-16q11.1	uncallable	ATRT	29	cytoband
-16q11.1	uncallable	Chordoma	8	cytoband
-16q11.1	uncallable	Choroid plexus tumor	15	cytoband
-16q11.1	uncallable	CNS EFT-CIC	7	cytoband
-16q11.1	uncallable	CNS neuroblastoma	4	cytoband
-16q11.1	uncallable	Craniopharyngioma	34	cytoband
-16q11.1	uncallable	DNET	27	cytoband
-16q11.1	uncallable	Dysplasia	13	cytoband
-16q11.1	uncallable	Embryonal Tumor	15	cytoband
-16q11.1	uncallable	Ependymoma	79	cytoband
-16q11.1	uncallable	Ganglioglioma	47	cytoband
-16q11.1	uncallable	Germinoma	5	cytoband
-16q11.1	uncallable	HGAT	140	cytoband
-16q11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-16q11.1	uncallable	LGAT	241	cytoband
-16q11.1	uncallable	Medulloblastoma	99	cytoband
-16q11.1	uncallable	Meningioma	30	cytoband
-16q11.1	uncallable	Neurofibroma	17	cytoband
-16q11.1	uncallable	Other	35	cytoband
-16q11.1	uncallable	Pineoblastoma	4	cytoband
-16q11.1	uncallable	Schwannoma	18	cytoband
-16q11.1	uncallable	Teratoma	9	cytoband
-16q11.2	uncallable	All	908	cytoband
-16q11.2	uncallable	ATRT	29	cytoband
-16q11.2	uncallable	Chordoma	8	cytoband
-16q11.2	uncallable	Choroid plexus tumor	15	cytoband
-16q11.2	uncallable	CNS EFT-CIC	7	cytoband
-16q11.2	uncallable	CNS neuroblastoma	4	cytoband
-16q11.2	uncallable	Craniopharyngioma	34	cytoband
-16q11.2	uncallable	DNET	27	cytoband
-16q11.2	uncallable	Dysplasia	13	cytoband
-16q11.2	uncallable	Embryonal Tumor	15	cytoband
-16q11.2	uncallable	Ependymoma	79	cytoband
-16q11.2	uncallable	Ganglioglioma	47	cytoband
-16q11.2	uncallable	Germinoma	5	cytoband
-16q11.2	uncallable	HGAT	140	cytoband
-16q11.2	uncallable	Langerhans Cell histiocytosis	4	cytoband
-16q11.2	uncallable	LGAT	241	cytoband
-16q11.2	uncallable	Medulloblastoma	99	cytoband
-16q11.2	uncallable	Meningioma	30	cytoband
-16q11.2	uncallable	Neurofibroma	17	cytoband
-16q11.2	uncallable	Other	35	cytoband
-16q11.2	uncallable	Pineoblastoma	4	cytoband
-16q11.2	uncallable	Schwannoma	18	cytoband
-16q11.2	uncallable	Teratoma	9	cytoband
 16q12.1	loss	All	240	cytoband
 16q12.1	loss	ATRT	7	cytoband
 16q12.1	loss	Choroid plexus tumor	7	cytoband
@@ -1388,29 +781,6 @@ region	status	short_histology	count	region_type
 16q24.2	loss	Neurofibroma	5	cytoband
 16q24.2	loss	Other	9	cytoband
 16q24.2	loss	Schwannoma	5	cytoband
-17p11.1	uncallable	All	909	cytoband
-17p11.1	uncallable	ATRT	29	cytoband
-17p11.1	uncallable	Chordoma	9	cytoband
-17p11.1	uncallable	Choroid plexus tumor	15	cytoband
-17p11.1	uncallable	CNS EFT-CIC	7	cytoband
-17p11.1	uncallable	CNS neuroblastoma	4	cytoband
-17p11.1	uncallable	Craniopharyngioma	34	cytoband
-17p11.1	uncallable	DNET	27	cytoband
-17p11.1	uncallable	Dysplasia	13	cytoband
-17p11.1	uncallable	Embryonal Tumor	15	cytoband
-17p11.1	uncallable	Ependymoma	79	cytoband
-17p11.1	uncallable	Ganglioglioma	47	cytoband
-17p11.1	uncallable	Germinoma	5	cytoband
-17p11.1	uncallable	HGAT	139	cytoband
-17p11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-17p11.1	uncallable	LGAT	242	cytoband
-17p11.1	uncallable	Medulloblastoma	98	cytoband
-17p11.1	uncallable	Meningioma	30	cytoband
-17p11.1	uncallable	Neurofibroma	17	cytoband
-17p11.1	uncallable	Other	35	cytoband
-17p11.1	uncallable	Pineoblastoma	4	cytoband
-17p11.1	uncallable	Schwannoma	18	cytoband
-17p11.1	uncallable	Teratoma	9	cytoband
 17p11.2	loss	All	230	cytoband
 17p11.2	loss	ATRT	7	cytoband
 17p11.2	loss	Choroid plexus tumor	7	cytoband
@@ -1494,28 +864,6 @@ region	status	short_histology	count	region_type
 17q	loss	Neurofibroma	5	arm
 17q	loss	Other	7	arm
 17q	loss	Schwannoma	5	arm
-17q11.1	uncallable	All	680	cytoband
-17q11.1	uncallable	ATRT	22	cytoband
-17q11.1	uncallable	Chordoma	6	cytoband
-17q11.1	uncallable	Choroid plexus tumor	8	cytoband
-17q11.1	uncallable	CNS EFT-CIC	5	cytoband
-17q11.1	uncallable	CNS neuroblastoma	4	cytoband
-17q11.1	uncallable	Craniopharyngioma	32	cytoband
-17q11.1	uncallable	DNET	22	cytoband
-17q11.1	uncallable	Dysplasia	9	cytoband
-17q11.1	uncallable	Embryonal Tumor	13	cytoband
-17q11.1	uncallable	Ependymoma	63	cytoband
-17q11.1	uncallable	Ganglioglioma	36	cytoband
-17q11.1	uncallable	Germinoma	4	cytoband
-17q11.1	uncallable	HGAT	97	cytoband
-17q11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-17q11.1	uncallable	LGAT	180	cytoband
-17q11.1	uncallable	Medulloblastoma	68	cytoband
-17q11.1	uncallable	Meningioma	22	cytoband
-17q11.1	uncallable	Neurofibroma	12	cytoband
-17q11.1	uncallable	Other	28	cytoband
-17q11.1	uncallable	Schwannoma	13	cytoband
-17q11.1	uncallable	Teratoma	6	cytoband
 17q11.2	gain	All	20	cytoband
 17q11.2	loss	All	9	cytoband
 17q11.2	gain	Medulloblastoma	18	cytoband
@@ -1568,29 +916,6 @@ region	status	short_histology	count	region_type
 17q25.3	gain	All	28	cytoband
 17q25.3	gain	HGAT	6	cytoband
 17q25.3	gain	Medulloblastoma	17	cytoband
-18p11.1	uncallable	All	914	cytoband
-18p11.1	uncallable	ATRT	29	cytoband
-18p11.1	uncallable	Chordoma	9	cytoband
-18p11.1	uncallable	Choroid plexus tumor	15	cytoband
-18p11.1	uncallable	CNS EFT-CIC	7	cytoband
-18p11.1	uncallable	CNS neuroblastoma	4	cytoband
-18p11.1	uncallable	Craniopharyngioma	34	cytoband
-18p11.1	uncallable	DNET	27	cytoband
-18p11.1	uncallable	Dysplasia	13	cytoband
-18p11.1	uncallable	Embryonal Tumor	15	cytoband
-18p11.1	uncallable	Ependymoma	79	cytoband
-18p11.1	uncallable	Ganglioglioma	47	cytoband
-18p11.1	uncallable	Germinoma	5	cytoband
-18p11.1	uncallable	HGAT	141	cytoband
-18p11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-18p11.1	uncallable	LGAT	242	cytoband
-18p11.1	uncallable	Medulloblastoma	101	cytoband
-18p11.1	uncallable	Meningioma	30	cytoband
-18p11.1	uncallable	Neurofibroma	17	cytoband
-18p11.1	uncallable	Other	35	cytoband
-18p11.1	uncallable	Pineoblastoma	4	cytoband
-18p11.1	uncallable	Schwannoma	18	cytoband
-18p11.1	uncallable	Teratoma	9	cytoband
 18p11.21	loss	All	5	cytoband
 18p11.21	loss	HGAT	4	cytoband
 18p11.22	gain	All	13	cytoband
@@ -1661,27 +986,6 @@ region	status	short_histology	count	region_type
 18q	loss	Neurofibroma	5	arm
 18q	loss	Other	8	arm
 18q	loss	Schwannoma	5	arm
-18q11.1	uncallable	All	663	cytoband
-18q11.1	uncallable	ATRT	22	cytoband
-18q11.1	uncallable	Chordoma	6	cytoband
-18q11.1	uncallable	Choroid plexus tumor	6	cytoband
-18q11.1	uncallable	CNS EFT-CIC	5	cytoband
-18q11.1	uncallable	Craniopharyngioma	32	cytoband
-18q11.1	uncallable	DNET	22	cytoband
-18q11.1	uncallable	Dysplasia	9	cytoband
-18q11.1	uncallable	Embryonal Tumor	13	cytoband
-18q11.1	uncallable	Ependymoma	60	cytoband
-18q11.1	uncallable	Ganglioglioma	36	cytoband
-18q11.1	uncallable	Germinoma	4	cytoband
-18q11.1	uncallable	HGAT	92	cytoband
-18q11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-18q11.1	uncallable	LGAT	181	cytoband
-18q11.1	uncallable	Medulloblastoma	63	cytoband
-18q11.1	uncallable	Meningioma	22	cytoband
-18q11.1	uncallable	Neurofibroma	12	cytoband
-18q11.1	uncallable	Other	27	cytoband
-18q11.1	uncallable	Schwannoma	13	cytoband
-18q11.1	uncallable	Teratoma	6	cytoband
 18q12.2	gain	All	5	cytoband
 18q12.2	gain	HGAT	4	cytoband
 18q21.1	loss	All	4	cytoband
@@ -1695,52 +999,6 @@ region	status	short_histology	count	region_type
 18q22.2	loss	HGAT	5	cytoband
 18q22.3	loss	All	5	cytoband
 18q22.3	loss	HGAT	4	cytoband
-19p11	uncallable	All	915	cytoband
-19p11	uncallable	ATRT	29	cytoband
-19p11	uncallable	Chordoma	9	cytoband
-19p11	uncallable	Choroid plexus tumor	15	cytoband
-19p11	uncallable	CNS EFT-CIC	7	cytoband
-19p11	uncallable	CNS neuroblastoma	4	cytoband
-19p11	uncallable	Craniopharyngioma	34	cytoband
-19p11	uncallable	DNET	27	cytoband
-19p11	uncallable	Dysplasia	13	cytoband
-19p11	uncallable	Embryonal Tumor	15	cytoband
-19p11	uncallable	Ependymoma	79	cytoband
-19p11	uncallable	Ganglioglioma	47	cytoband
-19p11	uncallable	Germinoma	5	cytoband
-19p11	uncallable	HGAT	142	cytoband
-19p11	uncallable	Langerhans Cell histiocytosis	4	cytoband
-19p11	uncallable	LGAT	242	cytoband
-19p11	uncallable	Medulloblastoma	101	cytoband
-19p11	uncallable	Meningioma	30	cytoband
-19p11	uncallable	Neurofibroma	17	cytoband
-19p11	uncallable	Other	35	cytoband
-19p11	uncallable	Pineoblastoma	4	cytoband
-19p11	uncallable	Schwannoma	18	cytoband
-19p11	uncallable	Teratoma	9	cytoband
-19p12	uncallable	All	914	cytoband
-19p12	uncallable	ATRT	29	cytoband
-19p12	uncallable	Chordoma	9	cytoband
-19p12	uncallable	Choroid plexus tumor	15	cytoband
-19p12	uncallable	CNS EFT-CIC	7	cytoband
-19p12	uncallable	CNS neuroblastoma	4	cytoband
-19p12	uncallable	Craniopharyngioma	34	cytoband
-19p12	uncallable	DNET	27	cytoband
-19p12	uncallable	Dysplasia	13	cytoband
-19p12	uncallable	Embryonal Tumor	15	cytoband
-19p12	uncallable	Ependymoma	79	cytoband
-19p12	uncallable	Ganglioglioma	47	cytoband
-19p12	uncallable	Germinoma	5	cytoband
-19p12	uncallable	HGAT	142	cytoband
-19p12	uncallable	Langerhans Cell histiocytosis	4	cytoband
-19p12	uncallable	LGAT	241	cytoband
-19p12	uncallable	Medulloblastoma	101	cytoband
-19p12	uncallable	Meningioma	30	cytoband
-19p12	uncallable	Neurofibroma	17	cytoband
-19p12	uncallable	Other	35	cytoband
-19p12	uncallable	Pineoblastoma	4	cytoband
-19p12	uncallable	Schwannoma	18	cytoband
-19p12	uncallable	Teratoma	9	cytoband
 19p13.11	gain	All	10	cytoband
 19p13.11	loss	All	234	cytoband
 19p13.11	loss	ATRT	7	cytoband
@@ -1815,52 +1073,6 @@ region	status	short_histology	count	region_type
 19p13.3	loss	Neurofibroma	4	cytoband
 19p13.3	loss	Other	9	cytoband
 19p13.3	loss	Schwannoma	5	cytoband
-19q11	uncallable	All	915	cytoband
-19q11	uncallable	ATRT	29	cytoband
-19q11	uncallable	Chordoma	9	cytoband
-19q11	uncallable	Choroid plexus tumor	15	cytoband
-19q11	uncallable	CNS EFT-CIC	7	cytoband
-19q11	uncallable	CNS neuroblastoma	4	cytoband
-19q11	uncallable	Craniopharyngioma	34	cytoband
-19q11	uncallable	DNET	27	cytoband
-19q11	uncallable	Dysplasia	13	cytoband
-19q11	uncallable	Embryonal Tumor	15	cytoband
-19q11	uncallable	Ependymoma	79	cytoband
-19q11	uncallable	Ganglioglioma	47	cytoband
-19q11	uncallable	Germinoma	5	cytoband
-19q11	uncallable	HGAT	142	cytoband
-19q11	uncallable	Langerhans Cell histiocytosis	4	cytoband
-19q11	uncallable	LGAT	242	cytoband
-19q11	uncallable	Medulloblastoma	101	cytoband
-19q11	uncallable	Meningioma	30	cytoband
-19q11	uncallable	Neurofibroma	17	cytoband
-19q11	uncallable	Other	35	cytoband
-19q11	uncallable	Pineoblastoma	4	cytoband
-19q11	uncallable	Schwannoma	18	cytoband
-19q11	uncallable	Teratoma	9	cytoband
-19q12	uncallable	All	913	cytoband
-19q12	uncallable	ATRT	29	cytoband
-19q12	uncallable	Chordoma	9	cytoband
-19q12	uncallable	Choroid plexus tumor	15	cytoband
-19q12	uncallable	CNS EFT-CIC	7	cytoband
-19q12	uncallable	CNS neuroblastoma	4	cytoband
-19q12	uncallable	Craniopharyngioma	34	cytoband
-19q12	uncallable	DNET	27	cytoband
-19q12	uncallable	Dysplasia	13	cytoband
-19q12	uncallable	Embryonal Tumor	15	cytoband
-19q12	uncallable	Ependymoma	79	cytoband
-19q12	uncallable	Ganglioglioma	47	cytoband
-19q12	uncallable	Germinoma	5	cytoband
-19q12	uncallable	HGAT	142	cytoband
-19q12	uncallable	Langerhans Cell histiocytosis	4	cytoband
-19q12	uncallable	LGAT	241	cytoband
-19q12	uncallable	Medulloblastoma	100	cytoband
-19q12	uncallable	Meningioma	30	cytoband
-19q12	uncallable	Neurofibroma	17	cytoband
-19q12	uncallable	Other	35	cytoband
-19q12	uncallable	Pineoblastoma	4	cytoband
-19q12	uncallable	Schwannoma	18	cytoband
-19q12	uncallable	Teratoma	9	cytoband
 19q13.11	gain	All	4	cytoband
 19q13.11	loss	All	232	cytoband
 19q13.11	loss	ATRT	7	cytoband
@@ -2014,50 +1226,6 @@ region	status	short_histology	count	region_type
 1p	loss	Neurofibroma	5	arm
 1p	loss	Other	8	arm
 1p	loss	Schwannoma	5	arm
-1p11.1	uncallable	All	678	cytoband
-1p11.1	uncallable	ATRT	22	cytoband
-1p11.1	uncallable	Chordoma	6	cytoband
-1p11.1	uncallable	Choroid plexus tumor	8	cytoband
-1p11.1	uncallable	CNS EFT-CIC	5	cytoband
-1p11.1	uncallable	CNS neuroblastoma	4	cytoband
-1p11.1	uncallable	Craniopharyngioma	32	cytoband
-1p11.1	uncallable	DNET	22	cytoband
-1p11.1	uncallable	Dysplasia	9	cytoband
-1p11.1	uncallable	Embryonal Tumor	13	cytoband
-1p11.1	uncallable	Ependymoma	63	cytoband
-1p11.1	uncallable	Ganglioglioma	36	cytoband
-1p11.1	uncallable	Germinoma	4	cytoband
-1p11.1	uncallable	HGAT	92	cytoband
-1p11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-1p11.1	uncallable	LGAT	180	cytoband
-1p11.1	uncallable	Medulloblastoma	72	cytoband
-1p11.1	uncallable	Meningioma	22	cytoband
-1p11.1	uncallable	Neurofibroma	12	cytoband
-1p11.1	uncallable	Other	27	cytoband
-1p11.1	uncallable	Schwannoma	13	cytoband
-1p11.1	uncallable	Teratoma	6	cytoband
-1p11.2	uncallable	All	679	cytoband
-1p11.2	uncallable	ATRT	22	cytoband
-1p11.2	uncallable	Chordoma	6	cytoband
-1p11.2	uncallable	Choroid plexus tumor	8	cytoband
-1p11.2	uncallable	CNS EFT-CIC	5	cytoband
-1p11.2	uncallable	CNS neuroblastoma	4	cytoband
-1p11.2	uncallable	Craniopharyngioma	32	cytoband
-1p11.2	uncallable	DNET	22	cytoband
-1p11.2	uncallable	Dysplasia	9	cytoband
-1p11.2	uncallable	Embryonal Tumor	13	cytoband
-1p11.2	uncallable	Ependymoma	63	cytoband
-1p11.2	uncallable	Ganglioglioma	36	cytoband
-1p11.2	uncallable	Germinoma	4	cytoband
-1p11.2	uncallable	HGAT	93	cytoband
-1p11.2	uncallable	Langerhans Cell histiocytosis	4	cytoband
-1p11.2	uncallable	LGAT	180	cytoband
-1p11.2	uncallable	Medulloblastoma	72	cytoband
-1p11.2	uncallable	Meningioma	22	cytoband
-1p11.2	uncallable	Neurofibroma	12	cytoband
-1p11.2	uncallable	Other	27	cytoband
-1p11.2	uncallable	Schwannoma	13	cytoband
-1p11.2	uncallable	Teratoma	6	cytoband
 1p13.1	gain	All	5	cytoband
 1p13.1	loss	All	5	cytoband
 1p13.2	loss	All	5	cytoband
@@ -2143,75 +1311,6 @@ region	status	short_histology	count	region_type
 1p36.23	loss	All	12	cytoband
 1p36.31	loss	All	13	cytoband
 1p36.32	loss	All	8	cytoband
-1q11	uncallable	All	910	cytoband
-1q11	uncallable	ATRT	29	cytoband
-1q11	uncallable	Chordoma	9	cytoband
-1q11	uncallable	Choroid plexus tumor	15	cytoband
-1q11	uncallable	CNS EFT-CIC	7	cytoband
-1q11	uncallable	CNS neuroblastoma	4	cytoband
-1q11	uncallable	Craniopharyngioma	34	cytoband
-1q11	uncallable	DNET	27	cytoband
-1q11	uncallable	Dysplasia	13	cytoband
-1q11	uncallable	Embryonal Tumor	15	cytoband
-1q11	uncallable	Ependymoma	78	cytoband
-1q11	uncallable	Ganglioglioma	47	cytoband
-1q11	uncallable	Germinoma	5	cytoband
-1q11	uncallable	HGAT	139	cytoband
-1q11	uncallable	Langerhans Cell histiocytosis	4	cytoband
-1q11	uncallable	LGAT	241	cytoband
-1q11	uncallable	Medulloblastoma	101	cytoband
-1q11	uncallable	Meningioma	30	cytoband
-1q11	uncallable	Neurofibroma	17	cytoband
-1q11	uncallable	Other	35	cytoband
-1q11	uncallable	Pineoblastoma	4	cytoband
-1q11	uncallable	Schwannoma	18	cytoband
-1q11	uncallable	Teratoma	9	cytoband
-1q12	uncallable	All	910	cytoband
-1q12	uncallable	ATRT	29	cytoband
-1q12	uncallable	Chordoma	9	cytoband
-1q12	uncallable	Choroid plexus tumor	15	cytoband
-1q12	uncallable	CNS EFT-CIC	7	cytoband
-1q12	uncallable	CNS neuroblastoma	4	cytoband
-1q12	uncallable	Craniopharyngioma	34	cytoband
-1q12	uncallable	DNET	27	cytoband
-1q12	uncallable	Dysplasia	13	cytoband
-1q12	uncallable	Embryonal Tumor	15	cytoband
-1q12	uncallable	Ependymoma	78	cytoband
-1q12	uncallable	Ganglioglioma	47	cytoband
-1q12	uncallable	Germinoma	5	cytoband
-1q12	uncallable	HGAT	139	cytoband
-1q12	uncallable	Langerhans Cell histiocytosis	4	cytoband
-1q12	uncallable	LGAT	241	cytoband
-1q12	uncallable	Medulloblastoma	101	cytoband
-1q12	uncallable	Meningioma	30	cytoband
-1q12	uncallable	Neurofibroma	17	cytoband
-1q12	uncallable	Other	35	cytoband
-1q12	uncallable	Pineoblastoma	4	cytoband
-1q12	uncallable	Schwannoma	18	cytoband
-1q12	uncallable	Teratoma	9	cytoband
-1q21.1	uncallable	All	907	cytoband
-1q21.1	uncallable	ATRT	29	cytoband
-1q21.1	uncallable	Chordoma	9	cytoband
-1q21.1	uncallable	Choroid plexus tumor	15	cytoband
-1q21.1	uncallable	CNS EFT-CIC	7	cytoband
-1q21.1	uncallable	CNS neuroblastoma	4	cytoband
-1q21.1	uncallable	Craniopharyngioma	34	cytoband
-1q21.1	uncallable	DNET	27	cytoband
-1q21.1	uncallable	Dysplasia	13	cytoband
-1q21.1	uncallable	Embryonal Tumor	15	cytoband
-1q21.1	uncallable	Ependymoma	77	cytoband
-1q21.1	uncallable	Ganglioglioma	47	cytoband
-1q21.1	uncallable	Germinoma	5	cytoband
-1q21.1	uncallable	HGAT	138	cytoband
-1q21.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-1q21.1	uncallable	LGAT	241	cytoband
-1q21.1	uncallable	Medulloblastoma	100	cytoband
-1q21.1	uncallable	Meningioma	30	cytoband
-1q21.1	uncallable	Neurofibroma	17	cytoband
-1q21.1	uncallable	Other	35	cytoband
-1q21.1	uncallable	Pineoblastoma	4	cytoband
-1q21.1	uncallable	Schwannoma	18	cytoband
-1q21.1	uncallable	Teratoma	9	cytoband
 1q21.2	gain	All	6	cytoband
 1q21.3	gain	All	23	cytoband
 1q21.3	loss	All	225	cytoband
@@ -2663,29 +1762,6 @@ region	status	short_histology	count	region_type
 1q44	loss	Other	9	cytoband
 1q44	loss	Schwannoma	5	cytoband
 20p	loss	All	8	arm
-20p11.1	uncallable	All	904	cytoband
-20p11.1	uncallable	ATRT	29	cytoband
-20p11.1	uncallable	Chordoma	9	cytoband
-20p11.1	uncallable	Choroid plexus tumor	14	cytoband
-20p11.1	uncallable	CNS EFT-CIC	7	cytoband
-20p11.1	uncallable	CNS neuroblastoma	4	cytoband
-20p11.1	uncallable	Craniopharyngioma	34	cytoband
-20p11.1	uncallable	DNET	27	cytoband
-20p11.1	uncallable	Dysplasia	13	cytoband
-20p11.1	uncallable	Embryonal Tumor	15	cytoband
-20p11.1	uncallable	Ependymoma	78	cytoband
-20p11.1	uncallable	Ganglioglioma	47	cytoband
-20p11.1	uncallable	Germinoma	5	cytoband
-20p11.1	uncallable	HGAT	138	cytoband
-20p11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-20p11.1	uncallable	LGAT	241	cytoband
-20p11.1	uncallable	Medulloblastoma	99	cytoband
-20p11.1	uncallable	Meningioma	30	cytoband
-20p11.1	uncallable	Neurofibroma	17	cytoband
-20p11.1	uncallable	Other	33	cytoband
-20p11.1	uncallable	Pineoblastoma	4	cytoband
-20p11.1	uncallable	Schwannoma	18	cytoband
-20p11.1	uncallable	Teratoma	9	cytoband
 20p11.21	gain	All	4	cytoband
 20p11.21	loss	All	228	cytoband
 20p11.21	loss	ATRT	7	cytoband
@@ -2804,28 +1880,6 @@ region	status	short_histology	count	region_type
 20q	loss	Neurofibroma	5	arm
 20q	loss	Other	9	arm
 20q	loss	Schwannoma	5	arm
-20q11.1	uncallable	All	679	cytoband
-20q11.1	uncallable	ATRT	22	cytoband
-20q11.1	uncallable	Chordoma	6	cytoband
-20q11.1	uncallable	Choroid plexus tumor	6	cytoband
-20q11.1	uncallable	CNS EFT-CIC	5	cytoband
-20q11.1	uncallable	CNS neuroblastoma	4	cytoband
-20q11.1	uncallable	Craniopharyngioma	32	cytoband
-20q11.1	uncallable	DNET	22	cytoband
-20q11.1	uncallable	Dysplasia	9	cytoband
-20q11.1	uncallable	Embryonal Tumor	13	cytoband
-20q11.1	uncallable	Ependymoma	63	cytoband
-20q11.1	uncallable	Ganglioglioma	36	cytoband
-20q11.1	uncallable	Germinoma	4	cytoband
-20q11.1	uncallable	HGAT	95	cytoband
-20q11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-20q11.1	uncallable	LGAT	180	cytoband
-20q11.1	uncallable	Medulloblastoma	71	cytoband
-20q11.1	uncallable	Meningioma	23	cytoband
-20q11.1	uncallable	Neurofibroma	12	cytoband
-20q11.1	uncallable	Other	26	cytoband
-20q11.1	uncallable	Schwannoma	13	cytoband
-20q11.1	uncallable	Teratoma	7	cytoband
 20q11.22	gain	All	7	cytoband
 20q11.23	gain	All	7	cytoband
 20q12	gain	All	7	cytoband
@@ -2838,112 +1892,6 @@ region	status	short_histology	count	region_type
 20q13.31	gain	HGAT	5	cytoband
 20q13.32	gain	All	13	cytoband
 20q13.32	gain	HGAT	5	cytoband
-21p	uncallable	All	915	arm
-21p	uncallable	ATRT	29	arm
-21p	uncallable	Chordoma	9	arm
-21p	uncallable	Choroid plexus tumor	15	arm
-21p	uncallable	CNS EFT-CIC	7	arm
-21p	uncallable	CNS neuroblastoma	4	arm
-21p	uncallable	Craniopharyngioma	34	arm
-21p	uncallable	DNET	27	arm
-21p	uncallable	Dysplasia	13	arm
-21p	uncallable	Embryonal Tumor	15	arm
-21p	uncallable	Ependymoma	79	arm
-21p	uncallable	Ganglioglioma	47	arm
-21p	uncallable	Germinoma	5	arm
-21p	uncallable	HGAT	142	arm
-21p	uncallable	Langerhans Cell histiocytosis	4	arm
-21p	uncallable	LGAT	242	arm
-21p	uncallable	Medulloblastoma	101	arm
-21p	uncallable	Meningioma	30	arm
-21p	uncallable	Neurofibroma	17	arm
-21p	uncallable	Other	35	arm
-21p	uncallable	Pineoblastoma	4	arm
-21p	uncallable	Schwannoma	18	arm
-21p	uncallable	Teratoma	9	arm
-21p11.1	uncallable	All	915	cytoband
-21p11.1	uncallable	ATRT	29	cytoband
-21p11.1	uncallable	Chordoma	9	cytoband
-21p11.1	uncallable	Choroid plexus tumor	15	cytoband
-21p11.1	uncallable	CNS EFT-CIC	7	cytoband
-21p11.1	uncallable	CNS neuroblastoma	4	cytoband
-21p11.1	uncallable	Craniopharyngioma	34	cytoband
-21p11.1	uncallable	DNET	27	cytoband
-21p11.1	uncallable	Dysplasia	13	cytoband
-21p11.1	uncallable	Embryonal Tumor	15	cytoband
-21p11.1	uncallable	Ependymoma	79	cytoband
-21p11.1	uncallable	Ganglioglioma	47	cytoband
-21p11.1	uncallable	Germinoma	5	cytoband
-21p11.1	uncallable	HGAT	142	cytoband
-21p11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-21p11.1	uncallable	LGAT	242	cytoband
-21p11.1	uncallable	Medulloblastoma	101	cytoband
-21p11.1	uncallable	Meningioma	30	cytoband
-21p11.1	uncallable	Neurofibroma	17	cytoband
-21p11.1	uncallable	Other	35	cytoband
-21p11.1	uncallable	Pineoblastoma	4	cytoband
-21p11.1	uncallable	Schwannoma	18	cytoband
-21p11.1	uncallable	Teratoma	9	cytoband
-21p11.2	uncallable	All	915	cytoband
-21p11.2	uncallable	ATRT	29	cytoband
-21p11.2	uncallable	Chordoma	9	cytoband
-21p11.2	uncallable	Choroid plexus tumor	15	cytoband
-21p11.2	uncallable	CNS EFT-CIC	7	cytoband
-21p11.2	uncallable	CNS neuroblastoma	4	cytoband
-21p11.2	uncallable	Craniopharyngioma	34	cytoband
-21p11.2	uncallable	DNET	27	cytoband
-21p11.2	uncallable	Dysplasia	13	cytoband
-21p11.2	uncallable	Embryonal Tumor	15	cytoband
-21p11.2	uncallable	Ependymoma	79	cytoband
-21p11.2	uncallable	Ganglioglioma	47	cytoband
-21p11.2	uncallable	Germinoma	5	cytoband
-21p11.2	uncallable	HGAT	142	cytoband
-21p11.2	uncallable	Langerhans Cell histiocytosis	4	cytoband
-21p11.2	uncallable	LGAT	242	cytoband
-21p11.2	uncallable	Medulloblastoma	101	cytoband
-21p11.2	uncallable	Meningioma	30	cytoband
-21p11.2	uncallable	Neurofibroma	17	cytoband
-21p11.2	uncallable	Other	35	cytoband
-21p11.2	uncallable	Pineoblastoma	4	cytoband
-21p11.2	uncallable	Schwannoma	18	cytoband
-21p11.2	uncallable	Teratoma	9	cytoband
-21p12	loss	All	236	cytoband
-21p12	loss	ATRT	7	cytoband
-21p12	loss	Choroid plexus tumor	7	cytoband
-21p12	loss	DNET	5	cytoband
-21p12	loss	Dysplasia	4	cytoband
-21p12	loss	Ependymoma	16	cytoband
-21p12	loss	Ganglioglioma	11	cytoband
-21p12	loss	HGAT	47	cytoband
-21p12	loss	LGAT	62	cytoband
-21p12	loss	Medulloblastoma	29	cytoband
-21p12	loss	Meningioma	8	cytoband
-21p12	loss	Neurofibroma	5	cytoband
-21p12	loss	Other	9	cytoband
-21p12	loss	Schwannoma	5	cytoband
-21p13	uncallable	All	915	cytoband
-21p13	uncallable	ATRT	29	cytoband
-21p13	uncallable	Chordoma	9	cytoband
-21p13	uncallable	Choroid plexus tumor	15	cytoband
-21p13	uncallable	CNS EFT-CIC	7	cytoband
-21p13	uncallable	CNS neuroblastoma	4	cytoband
-21p13	uncallable	Craniopharyngioma	34	cytoband
-21p13	uncallable	DNET	27	cytoband
-21p13	uncallable	Dysplasia	13	cytoband
-21p13	uncallable	Embryonal Tumor	15	cytoband
-21p13	uncallable	Ependymoma	79	cytoband
-21p13	uncallable	Ganglioglioma	47	cytoband
-21p13	uncallable	Germinoma	5	cytoband
-21p13	uncallable	HGAT	142	cytoband
-21p13	uncallable	Langerhans Cell histiocytosis	4	cytoband
-21p13	uncallable	LGAT	242	cytoband
-21p13	uncallable	Medulloblastoma	101	cytoband
-21p13	uncallable	Meningioma	30	cytoband
-21p13	uncallable	Neurofibroma	17	cytoband
-21p13	uncallable	Other	35	cytoband
-21p13	uncallable	Pineoblastoma	4	cytoband
-21p13	uncallable	Schwannoma	18	cytoband
-21p13	uncallable	Teratoma	9	cytoband
 21q	loss	All	230	arm
 21q	loss	ATRT	7	arm
 21q	loss	Choroid plexus tumor	7	arm
@@ -2958,28 +1906,6 @@ region	status	short_histology	count	region_type
 21q	loss	Neurofibroma	5	arm
 21q	loss	Other	8	arm
 21q	loss	Schwannoma	5	arm
-21q11.1	uncallable	All	685	cytoband
-21q11.1	uncallable	ATRT	22	cytoband
-21q11.1	uncallable	Chordoma	6	cytoband
-21q11.1	uncallable	Choroid plexus tumor	8	cytoband
-21q11.1	uncallable	CNS EFT-CIC	5	cytoband
-21q11.1	uncallable	CNS neuroblastoma	4	cytoband
-21q11.1	uncallable	Craniopharyngioma	32	cytoband
-21q11.1	uncallable	DNET	22	cytoband
-21q11.1	uncallable	Dysplasia	9	cytoband
-21q11.1	uncallable	Embryonal Tumor	13	cytoband
-21q11.1	uncallable	Ependymoma	64	cytoband
-21q11.1	uncallable	Ganglioglioma	36	cytoband
-21q11.1	uncallable	Germinoma	4	cytoband
-21q11.1	uncallable	HGAT	96	cytoband
-21q11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-21q11.1	uncallable	LGAT	180	cytoband
-21q11.1	uncallable	Medulloblastoma	73	cytoband
-21q11.1	uncallable	Meningioma	22	cytoband
-21q11.1	uncallable	Neurofibroma	12	cytoband
-21q11.1	uncallable	Other	27	cytoband
-21q11.1	uncallable	Schwannoma	13	cytoband
-21q11.1	uncallable	Teratoma	7	cytoband
 21q21.1	gain	All	6	cytoband
 21q21.1	loss	All	7	cytoband
 21q21.1	loss	HGAT	6	cytoband
@@ -2999,160 +1925,10 @@ region	status	short_histology	count	region_type
 21q22.2	gain	All	5	cytoband
 21q22.2	loss	All	9	cytoband
 21q22.2	loss	HGAT	4	cytoband
-22p	uncallable	All	915	arm
-22p	uncallable	ATRT	29	arm
-22p	uncallable	Chordoma	9	arm
-22p	uncallable	Choroid plexus tumor	15	arm
-22p	uncallable	CNS EFT-CIC	7	arm
-22p	uncallable	CNS neuroblastoma	4	arm
-22p	uncallable	Craniopharyngioma	34	arm
-22p	uncallable	DNET	27	arm
-22p	uncallable	Dysplasia	13	arm
-22p	uncallable	Embryonal Tumor	15	arm
-22p	uncallable	Ependymoma	79	arm
-22p	uncallable	Ganglioglioma	47	arm
-22p	uncallable	Germinoma	5	arm
-22p	uncallable	HGAT	142	arm
-22p	uncallable	Langerhans Cell histiocytosis	4	arm
-22p	uncallable	LGAT	242	arm
-22p	uncallable	Medulloblastoma	101	arm
-22p	uncallable	Meningioma	30	arm
-22p	uncallable	Neurofibroma	17	arm
-22p	uncallable	Other	35	arm
-22p	uncallable	Pineoblastoma	4	arm
-22p	uncallable	Schwannoma	18	arm
-22p	uncallable	Teratoma	9	arm
-22p11.1	uncallable	All	915	cytoband
-22p11.1	uncallable	ATRT	29	cytoband
-22p11.1	uncallable	Chordoma	9	cytoband
-22p11.1	uncallable	Choroid plexus tumor	15	cytoband
-22p11.1	uncallable	CNS EFT-CIC	7	cytoband
-22p11.1	uncallable	CNS neuroblastoma	4	cytoband
-22p11.1	uncallable	Craniopharyngioma	34	cytoband
-22p11.1	uncallable	DNET	27	cytoband
-22p11.1	uncallable	Dysplasia	13	cytoband
-22p11.1	uncallable	Embryonal Tumor	15	cytoband
-22p11.1	uncallable	Ependymoma	79	cytoband
-22p11.1	uncallable	Ganglioglioma	47	cytoband
-22p11.1	uncallable	Germinoma	5	cytoband
-22p11.1	uncallable	HGAT	142	cytoband
-22p11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-22p11.1	uncallable	LGAT	242	cytoband
-22p11.1	uncallable	Medulloblastoma	101	cytoband
-22p11.1	uncallable	Meningioma	30	cytoband
-22p11.1	uncallable	Neurofibroma	17	cytoband
-22p11.1	uncallable	Other	35	cytoband
-22p11.1	uncallable	Pineoblastoma	4	cytoband
-22p11.1	uncallable	Schwannoma	18	cytoband
-22p11.1	uncallable	Teratoma	9	cytoband
-22p11.2	uncallable	All	915	cytoband
-22p11.2	uncallable	ATRT	29	cytoband
-22p11.2	uncallable	Chordoma	9	cytoband
-22p11.2	uncallable	Choroid plexus tumor	15	cytoband
-22p11.2	uncallable	CNS EFT-CIC	7	cytoband
-22p11.2	uncallable	CNS neuroblastoma	4	cytoband
-22p11.2	uncallable	Craniopharyngioma	34	cytoband
-22p11.2	uncallable	DNET	27	cytoband
-22p11.2	uncallable	Dysplasia	13	cytoband
-22p11.2	uncallable	Embryonal Tumor	15	cytoband
-22p11.2	uncallable	Ependymoma	79	cytoband
-22p11.2	uncallable	Ganglioglioma	47	cytoband
-22p11.2	uncallable	Germinoma	5	cytoband
-22p11.2	uncallable	HGAT	142	cytoband
-22p11.2	uncallable	Langerhans Cell histiocytosis	4	cytoband
-22p11.2	uncallable	LGAT	242	cytoband
-22p11.2	uncallable	Medulloblastoma	101	cytoband
-22p11.2	uncallable	Meningioma	30	cytoband
-22p11.2	uncallable	Neurofibroma	17	cytoband
-22p11.2	uncallable	Other	35	cytoband
-22p11.2	uncallable	Pineoblastoma	4	cytoband
-22p11.2	uncallable	Schwannoma	18	cytoband
-22p11.2	uncallable	Teratoma	9	cytoband
-22p12	loss	All	236	cytoband
-22p12	loss	ATRT	7	cytoband
-22p12	loss	Choroid plexus tumor	7	cytoband
-22p12	loss	DNET	5	cytoband
-22p12	loss	Dysplasia	4	cytoband
-22p12	loss	Ependymoma	16	cytoband
-22p12	loss	Ganglioglioma	11	cytoband
-22p12	loss	HGAT	47	cytoband
-22p12	loss	LGAT	62	cytoband
-22p12	loss	Medulloblastoma	29	cytoband
-22p12	loss	Meningioma	8	cytoband
-22p12	loss	Neurofibroma	5	cytoband
-22p12	loss	Other	9	cytoband
-22p12	loss	Schwannoma	5	cytoband
-22p13	uncallable	All	915	cytoband
-22p13	uncallable	ATRT	29	cytoband
-22p13	uncallable	Chordoma	9	cytoband
-22p13	uncallable	Choroid plexus tumor	15	cytoband
-22p13	uncallable	CNS EFT-CIC	7	cytoband
-22p13	uncallable	CNS neuroblastoma	4	cytoband
-22p13	uncallable	Craniopharyngioma	34	cytoband
-22p13	uncallable	DNET	27	cytoband
-22p13	uncallable	Dysplasia	13	cytoband
-22p13	uncallable	Embryonal Tumor	15	cytoband
-22p13	uncallable	Ependymoma	79	cytoband
-22p13	uncallable	Ganglioglioma	47	cytoband
-22p13	uncallable	Germinoma	5	cytoband
-22p13	uncallable	HGAT	142	cytoband
-22p13	uncallable	Langerhans Cell histiocytosis	4	cytoband
-22p13	uncallable	LGAT	242	cytoband
-22p13	uncallable	Medulloblastoma	101	cytoband
-22p13	uncallable	Meningioma	30	cytoband
-22p13	uncallable	Neurofibroma	17	cytoband
-22p13	uncallable	Other	35	cytoband
-22p13	uncallable	Pineoblastoma	4	cytoband
-22p13	uncallable	Schwannoma	18	cytoband
-22p13	uncallable	Teratoma	9	cytoband
 22q	loss	All	14	arm
-22q11.1	uncallable	All	901	cytoband
-22q11.1	uncallable	ATRT	27	cytoband
-22q11.1	uncallable	Chordoma	8	cytoband
-22q11.1	uncallable	Choroid plexus tumor	15	cytoband
-22q11.1	uncallable	CNS EFT-CIC	7	cytoband
-22q11.1	uncallable	CNS neuroblastoma	4	cytoband
-22q11.1	uncallable	Craniopharyngioma	34	cytoband
-22q11.1	uncallable	DNET	27	cytoband
-22q11.1	uncallable	Dysplasia	13	cytoband
-22q11.1	uncallable	Embryonal Tumor	15	cytoband
-22q11.1	uncallable	Ependymoma	77	cytoband
-22q11.1	uncallable	Ganglioglioma	47	cytoband
-22q11.1	uncallable	Germinoma	5	cytoband
-22q11.1	uncallable	HGAT	142	cytoband
-22q11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-22q11.1	uncallable	LGAT	240	cytoband
-22q11.1	uncallable	Medulloblastoma	101	cytoband
-22q11.1	uncallable	Meningioma	27	cytoband
-22q11.1	uncallable	Neurofibroma	17	cytoband
-22q11.1	uncallable	Other	35	cytoband
-22q11.1	uncallable	Schwannoma	16	cytoband
-22q11.1	uncallable	Teratoma	9	cytoband
 22q11.22	loss	All	19	cytoband
-22q11.22	uncallable	All	876	cytoband
 22q11.22	loss	Ependymoma	5	cytoband
 22q11.22	loss	Meningioma	4	cytoband
-22q11.22	uncallable	ATRT	24	cytoband
-22q11.22	uncallable	Chordoma	8	cytoband
-22q11.22	uncallable	Choroid plexus tumor	15	cytoband
-22q11.22	uncallable	CNS EFT-CIC	7	cytoband
-22q11.22	uncallable	CNS neuroblastoma	4	cytoband
-22q11.22	uncallable	Craniopharyngioma	34	cytoband
-22q11.22	uncallable	DNET	27	cytoband
-22q11.22	uncallable	Dysplasia	13	cytoband
-22q11.22	uncallable	Embryonal Tumor	14	cytoband
-22q11.22	uncallable	Ependymoma	71	cytoband
-22q11.22	uncallable	Ganglioglioma	47	cytoband
-22q11.22	uncallable	Germinoma	5	cytoband
-22q11.22	uncallable	HGAT	138	cytoband
-22q11.22	uncallable	Langerhans Cell histiocytosis	4	cytoband
-22q11.22	uncallable	LGAT	239	cytoband
-22q11.22	uncallable	Medulloblastoma	100	cytoband
-22q11.22	uncallable	Meningioma	21	cytoband
-22q11.22	uncallable	Neurofibroma	16	cytoband
-22q11.22	uncallable	Other	35	cytoband
-22q11.22	uncallable	Schwannoma	14	cytoband
-22q11.22	uncallable	Teratoma	9	cytoband
 22q11.23	loss	All	252	cytoband
 22q11.23	loss	ATRT	13	cytoband
 22q11.23	loss	Choroid plexus tumor	7	cytoband
@@ -3285,27 +2061,6 @@ region	status	short_histology	count	region_type
 2p	loss	Other	9	arm
 2p	loss	Schwannoma	5	arm
 2p11.1	gain	All	4	cytoband
-2p11.1	uncallable	All	670	cytoband
-2p11.1	uncallable	ATRT	22	cytoband
-2p11.1	uncallable	Chordoma	6	cytoband
-2p11.1	uncallable	Choroid plexus tumor	7	cytoband
-2p11.1	uncallable	CNS EFT-CIC	5	cytoband
-2p11.1	uncallable	Craniopharyngioma	32	cytoband
-2p11.1	uncallable	DNET	22	cytoband
-2p11.1	uncallable	Dysplasia	9	cytoband
-2p11.1	uncallable	Embryonal Tumor	13	cytoband
-2p11.1	uncallable	Ependymoma	62	cytoband
-2p11.1	uncallable	Ganglioglioma	36	cytoband
-2p11.1	uncallable	Germinoma	4	cytoband
-2p11.1	uncallable	HGAT	90	cytoband
-2p11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-2p11.1	uncallable	LGAT	180	cytoband
-2p11.1	uncallable	Medulloblastoma	72	cytoband
-2p11.1	uncallable	Meningioma	21	cytoband
-2p11.1	uncallable	Neurofibroma	12	cytoband
-2p11.1	uncallable	Other	26	cytoband
-2p11.1	uncallable	Schwannoma	13	cytoband
-2p11.1	uncallable	Teratoma	6	cytoband
 2p12	gain	All	5	cytoband
 2p13.1	gain	All	6	cytoband
 2p13.2	gain	All	7	cytoband
@@ -3359,27 +2114,6 @@ region	status	short_histology	count	region_type
 2q	loss	Neurofibroma	5	arm
 2q	loss	Other	9	arm
 2q	loss	Schwannoma	5	arm
-2q11.1	uncallable	All	676	cytoband
-2q11.1	uncallable	ATRT	22	cytoband
-2q11.1	uncallable	Chordoma	6	cytoband
-2q11.1	uncallable	Choroid plexus tumor	7	cytoband
-2q11.1	uncallable	CNS EFT-CIC	5	cytoband
-2q11.1	uncallable	Craniopharyngioma	32	cytoband
-2q11.1	uncallable	DNET	22	cytoband
-2q11.1	uncallable	Dysplasia	9	cytoband
-2q11.1	uncallable	Embryonal Tumor	13	cytoband
-2q11.1	uncallable	Ependymoma	61	cytoband
-2q11.1	uncallable	Ganglioglioma	36	cytoband
-2q11.1	uncallable	Germinoma	4	cytoband
-2q11.1	uncallable	HGAT	95	cytoband
-2q11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-2q11.1	uncallable	LGAT	180	cytoband
-2q11.1	uncallable	Medulloblastoma	72	cytoband
-2q11.1	uncallable	Meningioma	22	cytoband
-2q11.1	uncallable	Neurofibroma	12	cytoband
-2q11.1	uncallable	Other	26	cytoband
-2q11.1	uncallable	Schwannoma	13	cytoband
-2q11.1	uncallable	Teratoma	6	cytoband
 2q11.2	loss	All	4	cytoband
 2q12.1	loss	All	4	cytoband
 2q12.2	loss	All	4	cytoband
@@ -3450,10 +2184,10 @@ region	status	short_histology	count	region_type
 2q37.1	loss	All	8	cytoband
 2q37.1	loss	HGAT	7	cytoband
 2q37.2	gain	All	4	cytoband
-2q37.2	loss	All	13	cytoband
+2q37.2	loss	All	12	cytoband
 2q37.2	loss	HGAT	8	cytoband
 2q37.3	gain	All	4	cytoband
-2q37.3	loss	All	13	cytoband
+2q37.3	loss	All	12	cytoband
 2q37.3	loss	HGAT	8	cytoband
 3p	loss	All	236	arm
 3p	loss	ATRT	7	arm
@@ -3469,28 +2203,6 @@ region	status	short_histology	count	region_type
 3p	loss	Neurofibroma	5	arm
 3p	loss	Other	9	arm
 3p	loss	Schwannoma	5	arm
-3p11.1	uncallable	All	676	cytoband
-3p11.1	uncallable	ATRT	22	cytoband
-3p11.1	uncallable	Chordoma	6	cytoband
-3p11.1	uncallable	Choroid plexus tumor	7	cytoband
-3p11.1	uncallable	CNS EFT-CIC	5	cytoband
-3p11.1	uncallable	CNS neuroblastoma	4	cytoband
-3p11.1	uncallable	Craniopharyngioma	32	cytoband
-3p11.1	uncallable	DNET	22	cytoband
-3p11.1	uncallable	Dysplasia	9	cytoband
-3p11.1	uncallable	Embryonal Tumor	13	cytoband
-3p11.1	uncallable	Ependymoma	62	cytoband
-3p11.1	uncallable	Ganglioglioma	36	cytoband
-3p11.1	uncallable	Germinoma	4	cytoband
-3p11.1	uncallable	HGAT	94	cytoband
-3p11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-3p11.1	uncallable	LGAT	180	cytoband
-3p11.1	uncallable	Medulloblastoma	72	cytoband
-3p11.1	uncallable	Meningioma	22	cytoband
-3p11.1	uncallable	Neurofibroma	12	cytoband
-3p11.1	uncallable	Other	26	cytoband
-3p11.1	uncallable	Schwannoma	13	cytoband
-3p11.1	uncallable	Teratoma	6	cytoband
 3p12.1	loss	All	4	cytoband
 3p12.2	loss	All	5	cytoband
 3p12.3	loss	All	5	cytoband
@@ -3571,51 +2283,7 @@ region	status	short_histology	count	region_type
 3q	loss	Neurofibroma	5	arm
 3q	loss	Other	8	arm
 3q	loss	Schwannoma	5	arm
-3q11.1	uncallable	All	677	cytoband
-3q11.1	uncallable	ATRT	22	cytoband
-3q11.1	uncallable	Chordoma	6	cytoband
-3q11.1	uncallable	Choroid plexus tumor	7	cytoband
-3q11.1	uncallable	CNS EFT-CIC	5	cytoband
-3q11.1	uncallable	CNS neuroblastoma	4	cytoband
-3q11.1	uncallable	Craniopharyngioma	32	cytoband
-3q11.1	uncallable	DNET	22	cytoband
-3q11.1	uncallable	Dysplasia	9	cytoband
-3q11.1	uncallable	Embryonal Tumor	13	cytoband
-3q11.1	uncallable	Ependymoma	62	cytoband
-3q11.1	uncallable	Ganglioglioma	36	cytoband
-3q11.1	uncallable	Germinoma	4	cytoband
-3q11.1	uncallable	HGAT	96	cytoband
-3q11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-3q11.1	uncallable	LGAT	179	cytoband
-3q11.1	uncallable	Medulloblastoma	72	cytoband
-3q11.1	uncallable	Meningioma	21	cytoband
-3q11.1	uncallable	Neurofibroma	12	cytoband
-3q11.1	uncallable	Other	27	cytoband
-3q11.1	uncallable	Schwannoma	13	cytoband
-3q11.1	uncallable	Teratoma	6	cytoband
 3q11.2	loss	All	5	cytoband
-3q11.2	uncallable	All	674	cytoband
-3q11.2	uncallable	ATRT	22	cytoband
-3q11.2	uncallable	Chordoma	6	cytoband
-3q11.2	uncallable	Choroid plexus tumor	7	cytoband
-3q11.2	uncallable	CNS EFT-CIC	5	cytoband
-3q11.2	uncallable	CNS neuroblastoma	4	cytoband
-3q11.2	uncallable	Craniopharyngioma	32	cytoband
-3q11.2	uncallable	DNET	22	cytoband
-3q11.2	uncallable	Dysplasia	9	cytoband
-3q11.2	uncallable	Embryonal Tumor	13	cytoband
-3q11.2	uncallable	Ependymoma	62	cytoband
-3q11.2	uncallable	Ganglioglioma	36	cytoband
-3q11.2	uncallable	Germinoma	4	cytoband
-3q11.2	uncallable	HGAT	94	cytoband
-3q11.2	uncallable	Langerhans Cell histiocytosis	4	cytoband
-3q11.2	uncallable	LGAT	179	cytoband
-3q11.2	uncallable	Medulloblastoma	71	cytoband
-3q11.2	uncallable	Meningioma	21	cytoband
-3q11.2	uncallable	Neurofibroma	12	cytoband
-3q11.2	uncallable	Other	27	cytoband
-3q11.2	uncallable	Schwannoma	13	cytoband
-3q11.2	uncallable	Teratoma	6	cytoband
 3q12.1	loss	All	10	cytoband
 3q12.1	loss	HGAT	4	cytoband
 3q12.2	loss	All	10	cytoband
@@ -3733,28 +2401,6 @@ region	status	short_histology	count	region_type
 4p	loss	Neurofibroma	5	arm
 4p	loss	Other	9	arm
 4p	loss	Schwannoma	5	arm
-4p11	uncallable	All	678	cytoband
-4p11	uncallable	ATRT	22	cytoband
-4p11	uncallable	Chordoma	6	cytoband
-4p11	uncallable	Choroid plexus tumor	8	cytoband
-4p11	uncallable	CNS EFT-CIC	5	cytoband
-4p11	uncallable	CNS neuroblastoma	4	cytoband
-4p11	uncallable	Craniopharyngioma	32	cytoband
-4p11	uncallable	DNET	22	cytoband
-4p11	uncallable	Dysplasia	9	cytoband
-4p11	uncallable	Embryonal Tumor	13	cytoband
-4p11	uncallable	Ependymoma	63	cytoband
-4p11	uncallable	Ganglioglioma	36	cytoband
-4p11	uncallable	Germinoma	4	cytoband
-4p11	uncallable	HGAT	95	cytoband
-4p11	uncallable	Langerhans Cell histiocytosis	4	cytoband
-4p11	uncallable	LGAT	181	cytoband
-4p11	uncallable	Medulloblastoma	70	cytoband
-4p11	uncallable	Meningioma	22	cytoband
-4p11	uncallable	Neurofibroma	12	cytoband
-4p11	uncallable	Other	26	cytoband
-4p11	uncallable	Schwannoma	13	cytoband
-4p11	uncallable	Teratoma	6	cytoband
 4p12	gain	All	8	cytoband
 4p12	gain	HGAT	5	cytoband
 4p13	gain	All	7	cytoband
@@ -3792,28 +2438,6 @@ region	status	short_histology	count	region_type
 4q	loss	Other	8	arm
 4q	loss	Schwannoma	5	arm
 4q	loss	Teratoma	4	arm
-4q11	uncallable	All	678	cytoband
-4q11	uncallable	ATRT	22	cytoband
-4q11	uncallable	Chordoma	6	cytoband
-4q11	uncallable	Choroid plexus tumor	8	cytoband
-4q11	uncallable	CNS EFT-CIC	5	cytoband
-4q11	uncallable	CNS neuroblastoma	4	cytoband
-4q11	uncallable	Craniopharyngioma	32	cytoband
-4q11	uncallable	DNET	22	cytoband
-4q11	uncallable	Dysplasia	9	cytoband
-4q11	uncallable	Embryonal Tumor	13	cytoband
-4q11	uncallable	Ependymoma	62	cytoband
-4q11	uncallable	Ganglioglioma	36	cytoband
-4q11	uncallable	Germinoma	4	cytoband
-4q11	uncallable	HGAT	94	cytoband
-4q11	uncallable	Langerhans Cell histiocytosis	4	cytoband
-4q11	uncallable	LGAT	183	cytoband
-4q11	uncallable	Medulloblastoma	69	cytoband
-4q11	uncallable	Meningioma	23	cytoband
-4q11	uncallable	Neurofibroma	12	cytoband
-4q11	uncallable	Other	27	cytoband
-4q11	uncallable	Schwannoma	13	cytoband
-4q11	uncallable	Teratoma	5	cytoband
 4q13.1	loss	All	4	cytoband
 4q13.2	loss	All	7	cytoband
 4q13.2	loss	HGAT	5	cytoband
@@ -3892,27 +2516,6 @@ region	status	short_histology	count	region_type
 5p	loss	Neurofibroma	5	arm
 5p	loss	Other	8	arm
 5p	loss	Schwannoma	5	arm
-5p11	uncallable	All	668	cytoband
-5p11	uncallable	ATRT	21	cytoband
-5p11	uncallable	Chordoma	6	cytoband
-5p11	uncallable	Choroid plexus tumor	8	cytoband
-5p11	uncallable	CNS EFT-CIC	5	cytoband
-5p11	uncallable	Craniopharyngioma	32	cytoband
-5p11	uncallable	DNET	21	cytoband
-5p11	uncallable	Dysplasia	9	cytoband
-5p11	uncallable	Embryonal Tumor	13	cytoband
-5p11	uncallable	Ependymoma	60	cytoband
-5p11	uncallable	Ganglioglioma	35	cytoband
-5p11	uncallable	Germinoma	4	cytoband
-5p11	uncallable	HGAT	94	cytoband
-5p11	uncallable	Langerhans Cell histiocytosis	4	cytoband
-5p11	uncallable	LGAT	176	cytoband
-5p11	uncallable	Medulloblastoma	72	cytoband
-5p11	uncallable	Meningioma	22	cytoband
-5p11	uncallable	Neurofibroma	12	cytoband
-5p11	uncallable	Other	27	cytoband
-5p11	uncallable	Schwannoma	13	cytoband
-5p11	uncallable	Teratoma	6	cytoband
 5p12	gain	All	5	cytoband
 5p13.1	gain	All	5	cytoband
 5p13.2	gain	All	5	cytoband
@@ -3938,28 +2541,6 @@ region	status	short_histology	count	region_type
 5q	loss	Neurofibroma	5	arm
 5q	loss	Other	9	arm
 5q	loss	Schwannoma	5	arm
-5q11.1	uncallable	All	671	cytoband
-5q11.1	uncallable	ATRT	21	cytoband
-5q11.1	uncallable	Chordoma	6	cytoband
-5q11.1	uncallable	Choroid plexus tumor	8	cytoband
-5q11.1	uncallable	CNS EFT-CIC	5	cytoband
-5q11.1	uncallable	CNS neuroblastoma	4	cytoband
-5q11.1	uncallable	Craniopharyngioma	32	cytoband
-5q11.1	uncallable	DNET	22	cytoband
-5q11.1	uncallable	Dysplasia	9	cytoband
-5q11.1	uncallable	Embryonal Tumor	13	cytoband
-5q11.1	uncallable	Ependymoma	62	cytoband
-5q11.1	uncallable	Ganglioglioma	35	cytoband
-5q11.1	uncallable	Germinoma	4	cytoband
-5q11.1	uncallable	HGAT	94	cytoband
-5q11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-5q11.1	uncallable	LGAT	177	cytoband
-5q11.1	uncallable	Medulloblastoma	71	cytoband
-5q11.1	uncallable	Meningioma	22	cytoband
-5q11.1	uncallable	Neurofibroma	12	cytoband
-5q11.1	uncallable	Other	26	cytoband
-5q11.1	uncallable	Schwannoma	13	cytoband
-5q11.1	uncallable	Teratoma	6	cytoband
 5q11.2	gain	All	5	cytoband
 5q12.1	gain	All	7	cytoband
 5q12.1	loss	All	5	cytoband
@@ -4048,50 +2629,6 @@ region	status	short_histology	count	region_type
 6p	gain	All	6	arm
 6p	loss	All	14	arm
 6p	loss	Medulloblastoma	8	arm
-6p11.1	uncallable	All	894	cytoband
-6p11.1	uncallable	ATRT	28	cytoband
-6p11.1	uncallable	Chordoma	9	cytoband
-6p11.1	uncallable	Choroid plexus tumor	15	cytoband
-6p11.1	uncallable	CNS EFT-CIC	7	cytoband
-6p11.1	uncallable	Craniopharyngioma	34	cytoband
-6p11.1	uncallable	DNET	27	cytoband
-6p11.1	uncallable	Dysplasia	13	cytoband
-6p11.1	uncallable	Embryonal Tumor	15	cytoband
-6p11.1	uncallable	Ependymoma	77	cytoband
-6p11.1	uncallable	Ganglioglioma	46	cytoband
-6p11.1	uncallable	Germinoma	5	cytoband
-6p11.1	uncallable	HGAT	139	cytoband
-6p11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-6p11.1	uncallable	LGAT	239	cytoband
-6p11.1	uncallable	Medulloblastoma	91	cytoband
-6p11.1	uncallable	Meningioma	30	cytoband
-6p11.1	uncallable	Neurofibroma	17	cytoband
-6p11.1	uncallable	Other	35	cytoband
-6p11.1	uncallable	Pineoblastoma	4	cytoband
-6p11.1	uncallable	Schwannoma	18	cytoband
-6p11.1	uncallable	Teratoma	9	cytoband
-6p11.2	uncallable	All	889	cytoband
-6p11.2	uncallable	ATRT	28	cytoband
-6p11.2	uncallable	Chordoma	9	cytoband
-6p11.2	uncallable	Choroid plexus tumor	15	cytoband
-6p11.2	uncallable	CNS EFT-CIC	7	cytoband
-6p11.2	uncallable	Craniopharyngioma	34	cytoband
-6p11.2	uncallable	DNET	26	cytoband
-6p11.2	uncallable	Dysplasia	13	cytoband
-6p11.2	uncallable	Embryonal Tumor	15	cytoband
-6p11.2	uncallable	Ependymoma	77	cytoband
-6p11.2	uncallable	Ganglioglioma	46	cytoband
-6p11.2	uncallable	Germinoma	5	cytoband
-6p11.2	uncallable	HGAT	138	cytoband
-6p11.2	uncallable	Langerhans Cell histiocytosis	4	cytoband
-6p11.2	uncallable	LGAT	239	cytoband
-6p11.2	uncallable	Medulloblastoma	89	cytoband
-6p11.2	uncallable	Meningioma	30	cytoband
-6p11.2	uncallable	Neurofibroma	17	cytoband
-6p11.2	uncallable	Other	34	cytoband
-6p11.2	uncallable	Pineoblastoma	4	cytoband
-6p11.2	uncallable	Schwannoma	18	cytoband
-6p11.2	uncallable	Teratoma	9	cytoband
 6p12.1	gain	All	5	cytoband
 6p12.1	loss	All	230	cytoband
 6p12.1	loss	ATRT	6	cytoband
@@ -4182,50 +2719,6 @@ region	status	short_histology	count	region_type
 6p21.31	loss	Neurofibroma	5	cytoband
 6p21.31	loss	Other	7	cytoband
 6p21.31	loss	Schwannoma	5	cytoband
-6p21.32	uncallable	All	889	cytoband
-6p21.32	uncallable	ATRT	28	cytoband
-6p21.32	uncallable	Chordoma	9	cytoband
-6p21.32	uncallable	Choroid plexus tumor	15	cytoband
-6p21.32	uncallable	CNS EFT-CIC	7	cytoband
-6p21.32	uncallable	Craniopharyngioma	34	cytoband
-6p21.32	uncallable	DNET	27	cytoband
-6p21.32	uncallable	Dysplasia	13	cytoband
-6p21.32	uncallable	Embryonal Tumor	14	cytoband
-6p21.32	uncallable	Ependymoma	77	cytoband
-6p21.32	uncallable	Ganglioglioma	46	cytoband
-6p21.32	uncallable	Germinoma	5	cytoband
-6p21.32	uncallable	HGAT	138	cytoband
-6p21.32	uncallable	Langerhans Cell histiocytosis	4	cytoband
-6p21.32	uncallable	LGAT	239	cytoband
-6p21.32	uncallable	Medulloblastoma	90	cytoband
-6p21.32	uncallable	Meningioma	30	cytoband
-6p21.32	uncallable	Neurofibroma	17	cytoband
-6p21.32	uncallable	Other	33	cytoband
-6p21.32	uncallable	Pineoblastoma	4	cytoband
-6p21.32	uncallable	Schwannoma	18	cytoband
-6p21.32	uncallable	Teratoma	9	cytoband
-6p21.33	uncallable	All	889	cytoband
-6p21.33	uncallable	ATRT	28	cytoband
-6p21.33	uncallable	Chordoma	9	cytoband
-6p21.33	uncallable	Choroid plexus tumor	15	cytoband
-6p21.33	uncallable	CNS EFT-CIC	7	cytoband
-6p21.33	uncallable	Craniopharyngioma	34	cytoband
-6p21.33	uncallable	DNET	27	cytoband
-6p21.33	uncallable	Dysplasia	13	cytoband
-6p21.33	uncallable	Embryonal Tumor	14	cytoband
-6p21.33	uncallable	Ependymoma	76	cytoband
-6p21.33	uncallable	Ganglioglioma	46	cytoband
-6p21.33	uncallable	Germinoma	5	cytoband
-6p21.33	uncallable	HGAT	137	cytoband
-6p21.33	uncallable	Langerhans Cell histiocytosis	4	cytoband
-6p21.33	uncallable	LGAT	240	cytoband
-6p21.33	uncallable	Medulloblastoma	91	cytoband
-6p21.33	uncallable	Meningioma	30	cytoband
-6p21.33	uncallable	Neurofibroma	17	cytoband
-6p21.33	uncallable	Other	33	cytoband
-6p21.33	uncallable	Pineoblastoma	4	cytoband
-6p21.33	uncallable	Schwannoma	18	cytoband
-6p21.33	uncallable	Teratoma	9	cytoband
 6p22.1	loss	All	5	cytoband
 6p22.2	loss	All	7	cytoband
 6p22.3	gain	All	4	cytoband
@@ -4349,28 +2842,6 @@ region	status	short_histology	count	region_type
 6q	loss	Neurofibroma	5	arm
 6q	loss	Other	9	arm
 6q	loss	Schwannoma	5	arm
-6q11.1	uncallable	All	650	cytoband
-6q11.1	uncallable	ATRT	22	cytoband
-6q11.1	uncallable	Chordoma	6	cytoband
-6q11.1	uncallable	Choroid plexus tumor	8	cytoband
-6q11.1	uncallable	CNS EFT-CIC	5	cytoband
-6q11.1	uncallable	CNS neuroblastoma	4	cytoband
-6q11.1	uncallable	Craniopharyngioma	32	cytoband
-6q11.1	uncallable	DNET	21	cytoband
-6q11.1	uncallable	Dysplasia	9	cytoband
-6q11.1	uncallable	Embryonal Tumor	12	cytoband
-6q11.1	uncallable	Ependymoma	57	cytoband
-6q11.1	uncallable	Ganglioglioma	35	cytoband
-6q11.1	uncallable	Germinoma	4	cytoband
-6q11.1	uncallable	HGAT	91	cytoband
-6q11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-6q11.1	uncallable	LGAT	178	cytoband
-6q11.1	uncallable	Medulloblastoma	60	cytoband
-6q11.1	uncallable	Meningioma	20	cytoband
-6q11.1	uncallable	Neurofibroma	12	cytoband
-6q11.1	uncallable	Other	26	cytoband
-6q11.1	uncallable	Schwannoma	13	cytoband
-6q11.1	uncallable	Teratoma	6	cytoband
 6q14.2	gain	All	4	cytoband
 6q14.2	loss	All	7	cytoband
 6q14.3	loss	All	8	cytoband
@@ -4442,28 +2913,6 @@ region	status	short_histology	count	region_type
 7p	loss	Other	8	arm
 7p	loss	Schwannoma	5	arm
 7p11.1	gain	All	4	cytoband
-7p11.1	uncallable	All	653	cytoband
-7p11.1	uncallable	ATRT	22	cytoband
-7p11.1	uncallable	Chordoma	6	cytoband
-7p11.1	uncallable	Choroid plexus tumor	6	cytoband
-7p11.1	uncallable	CNS EFT-CIC	5	cytoband
-7p11.1	uncallable	CNS neuroblastoma	4	cytoband
-7p11.1	uncallable	Craniopharyngioma	32	cytoband
-7p11.1	uncallable	DNET	21	cytoband
-7p11.1	uncallable	Dysplasia	9	cytoband
-7p11.1	uncallable	Embryonal Tumor	13	cytoband
-7p11.1	uncallable	Ependymoma	59	cytoband
-7p11.1	uncallable	Ganglioglioma	33	cytoband
-7p11.1	uncallable	Germinoma	4	cytoband
-7p11.1	uncallable	HGAT	94	cytoband
-7p11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-7p11.1	uncallable	LGAT	173	cytoband
-7p11.1	uncallable	Medulloblastoma	64	cytoband
-7p11.1	uncallable	Meningioma	22	cytoband
-7p11.1	uncallable	Neurofibroma	12	cytoband
-7p11.1	uncallable	Other	27	cytoband
-7p11.1	uncallable	Schwannoma	13	cytoband
-7p11.1	uncallable	Teratoma	6	cytoband
 7p11.2	gain	All	4	cytoband
 7p12.1	gain	All	21	cytoband
 7p12.1	gain	HGAT	10	cytoband
@@ -4536,28 +2985,6 @@ region	status	short_histology	count	region_type
 7q	loss	Neurofibroma	5	arm
 7q	loss	Other	8	arm
 7q	loss	Schwannoma	5	arm
-7q11.1	uncallable	All	673	cytoband
-7q11.1	uncallable	ATRT	22	cytoband
-7q11.1	uncallable	Chordoma	6	cytoband
-7q11.1	uncallable	Choroid plexus tumor	8	cytoband
-7q11.1	uncallable	CNS EFT-CIC	5	cytoband
-7q11.1	uncallable	CNS neuroblastoma	4	cytoband
-7q11.1	uncallable	Craniopharyngioma	32	cytoband
-7q11.1	uncallable	DNET	22	cytoband
-7q11.1	uncallable	Dysplasia	9	cytoband
-7q11.1	uncallable	Embryonal Tumor	13	cytoband
-7q11.1	uncallable	Ependymoma	62	cytoband
-7q11.1	uncallable	Ganglioglioma	36	cytoband
-7q11.1	uncallable	Germinoma	4	cytoband
-7q11.1	uncallable	HGAT	92	cytoband
-7q11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-7q11.1	uncallable	LGAT	177	cytoband
-7q11.1	uncallable	Medulloblastoma	72	cytoband
-7q11.1	uncallable	Meningioma	22	cytoband
-7q11.1	uncallable	Neurofibroma	12	cytoband
-7q11.1	uncallable	Other	27	cytoband
-7q11.1	uncallable	Schwannoma	13	cytoband
-7q11.1	uncallable	Teratoma	6	cytoband
 7q11.21	gain	All	5	cytoband
 7q11.22	gain	All	40	cytoband
 7q11.22	loss	All	8	cytoband
@@ -4685,27 +3112,6 @@ region	status	short_histology	count	region_type
 8p	loss	Neurofibroma	5	arm
 8p	loss	Other	7	arm
 8p	loss	Schwannoma	5	arm
-8p11.1	uncallable	All	681	cytoband
-8p11.1	uncallable	ATRT	23	cytoband
-8p11.1	uncallable	Chordoma	6	cytoband
-8p11.1	uncallable	Choroid plexus tumor	8	cytoband
-8p11.1	uncallable	CNS EFT-CIC	6	cytoband
-8p11.1	uncallable	CNS neuroblastoma	4	cytoband
-8p11.1	uncallable	Craniopharyngioma	32	cytoband
-8p11.1	uncallable	DNET	22	cytoband
-8p11.1	uncallable	Dysplasia	9	cytoband
-8p11.1	uncallable	Embryonal Tumor	13	cytoband
-8p11.1	uncallable	Ependymoma	62	cytoband
-8p11.1	uncallable	Ganglioglioma	36	cytoband
-8p11.1	uncallable	HGAT	96	cytoband
-8p11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-8p11.1	uncallable	LGAT	180	cytoband
-8p11.1	uncallable	Medulloblastoma	71	cytoband
-8p11.1	uncallable	Meningioma	22	cytoband
-8p11.1	uncallable	Neurofibroma	12	cytoband
-8p11.1	uncallable	Other	28	cytoband
-8p11.1	uncallable	Schwannoma	13	cytoband
-8p11.1	uncallable	Teratoma	6	cytoband
 8p11.21	gain	All	9	cytoband
 8p11.21	loss	All	6	cytoband
 8p11.22	gain	All	9	cytoband
@@ -4748,27 +3154,6 @@ region	status	short_histology	count	region_type
 8q	loss	Neurofibroma	5	arm
 8q	loss	Other	8	arm
 8q	loss	Schwannoma	5	arm
-8q11.1	uncallable	All	671	cytoband
-8q11.1	uncallable	ATRT	23	cytoband
-8q11.1	uncallable	Chordoma	6	cytoband
-8q11.1	uncallable	Choroid plexus tumor	6	cytoband
-8q11.1	uncallable	CNS EFT-CIC	5	cytoband
-8q11.1	uncallable	CNS neuroblastoma	4	cytoband
-8q11.1	uncallable	Craniopharyngioma	32	cytoband
-8q11.1	uncallable	DNET	22	cytoband
-8q11.1	uncallable	Dysplasia	9	cytoband
-8q11.1	uncallable	Embryonal Tumor	13	cytoband
-8q11.1	uncallable	Ependymoma	60	cytoband
-8q11.1	uncallable	Ganglioglioma	36	cytoband
-8q11.1	uncallable	HGAT	97	cytoband
-8q11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-8q11.1	uncallable	LGAT	180	cytoband
-8q11.1	uncallable	Medulloblastoma	68	cytoband
-8q11.1	uncallable	Meningioma	22	cytoband
-8q11.1	uncallable	Neurofibroma	12	cytoband
-8q11.1	uncallable	Other	26	cytoband
-8q11.1	uncallable	Schwannoma	13	cytoband
-8q11.1	uncallable	Teratoma	5	cytoband
 8q11.21	gain	All	7	cytoband
 8q11.21	loss	All	6	cytoband
 8q11.21	gain	HGAT	5	cytoband
@@ -4850,75 +3235,6 @@ region	status	short_histology	count	region_type
 8q24.3	gain	All	8	cytoband
 9p	loss	All	13	arm
 9p	loss	Ependymoma	5	arm
-9p11.1	uncallable	All	901	cytoband
-9p11.1	uncallable	ATRT	29	cytoband
-9p11.1	uncallable	Chordoma	9	cytoband
-9p11.1	uncallable	Choroid plexus tumor	15	cytoband
-9p11.1	uncallable	CNS EFT-CIC	7	cytoband
-9p11.1	uncallable	CNS neuroblastoma	4	cytoband
-9p11.1	uncallable	Craniopharyngioma	34	cytoband
-9p11.1	uncallable	DNET	27	cytoband
-9p11.1	uncallable	Dysplasia	13	cytoband
-9p11.1	uncallable	Embryonal Tumor	15	cytoband
-9p11.1	uncallable	Ependymoma	74	cytoband
-9p11.1	uncallable	Ganglioglioma	46	cytoband
-9p11.1	uncallable	Germinoma	5	cytoband
-9p11.1	uncallable	HGAT	140	cytoband
-9p11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-9p11.1	uncallable	LGAT	239	cytoband
-9p11.1	uncallable	Medulloblastoma	99	cytoband
-9p11.1	uncallable	Meningioma	30	cytoband
-9p11.1	uncallable	Neurofibroma	17	cytoband
-9p11.1	uncallable	Other	35	cytoband
-9p11.1	uncallable	Pineoblastoma	4	cytoband
-9p11.1	uncallable	Schwannoma	18	cytoband
-9p11.1	uncallable	Teratoma	9	cytoband
-9p11.2	uncallable	All	900	cytoband
-9p11.2	uncallable	ATRT	29	cytoband
-9p11.2	uncallable	Chordoma	9	cytoband
-9p11.2	uncallable	Choroid plexus tumor	15	cytoband
-9p11.2	uncallable	CNS EFT-CIC	7	cytoband
-9p11.2	uncallable	CNS neuroblastoma	4	cytoband
-9p11.2	uncallable	Craniopharyngioma	34	cytoband
-9p11.2	uncallable	DNET	27	cytoband
-9p11.2	uncallable	Dysplasia	13	cytoband
-9p11.2	uncallable	Embryonal Tumor	15	cytoband
-9p11.2	uncallable	Ependymoma	74	cytoband
-9p11.2	uncallable	Ganglioglioma	46	cytoband
-9p11.2	uncallable	Germinoma	5	cytoband
-9p11.2	uncallable	HGAT	139	cytoband
-9p11.2	uncallable	Langerhans Cell histiocytosis	4	cytoband
-9p11.2	uncallable	LGAT	239	cytoband
-9p11.2	uncallable	Medulloblastoma	99	cytoband
-9p11.2	uncallable	Meningioma	30	cytoband
-9p11.2	uncallable	Neurofibroma	17	cytoband
-9p11.2	uncallable	Other	35	cytoband
-9p11.2	uncallable	Pineoblastoma	4	cytoband
-9p11.2	uncallable	Schwannoma	18	cytoband
-9p11.2	uncallable	Teratoma	9	cytoband
-9p12	uncallable	All	900	cytoband
-9p12	uncallable	ATRT	29	cytoband
-9p12	uncallable	Chordoma	9	cytoband
-9p12	uncallable	Choroid plexus tumor	15	cytoband
-9p12	uncallable	CNS EFT-CIC	7	cytoband
-9p12	uncallable	CNS neuroblastoma	4	cytoband
-9p12	uncallable	Craniopharyngioma	34	cytoband
-9p12	uncallable	DNET	27	cytoband
-9p12	uncallable	Dysplasia	13	cytoband
-9p12	uncallable	Embryonal Tumor	15	cytoband
-9p12	uncallable	Ependymoma	74	cytoband
-9p12	uncallable	Ganglioglioma	46	cytoband
-9p12	uncallable	Germinoma	5	cytoband
-9p12	uncallable	HGAT	139	cytoband
-9p12	uncallable	Langerhans Cell histiocytosis	4	cytoband
-9p12	uncallable	LGAT	239	cytoband
-9p12	uncallable	Medulloblastoma	99	cytoband
-9p12	uncallable	Meningioma	30	cytoband
-9p12	uncallable	Neurofibroma	17	cytoband
-9p12	uncallable	Other	35	cytoband
-9p12	uncallable	Pineoblastoma	4	cytoband
-9p12	uncallable	Schwannoma	18	cytoband
-9p12	uncallable	Teratoma	9	cytoband
 9p13.1	loss	All	6	cytoband
 9p13.1	loss	HGAT	5	cytoband
 9p13.2	gain	All	7	cytoband
@@ -4954,7 +3270,6 @@ region	status	short_histology	count	region_type
 9p13.3	loss	Schwannoma	5	cytoband
 9p21.1	gain	All	6	cytoband
 9p21.1	loss	All	237	cytoband
-9p21.1	unstable	All	5	cytoband
 9p21.1	loss	ATRT	7	cytoband
 9p21.1	loss	Choroid plexus tumor	7	cytoband
 9p21.1	loss	DNET	5	cytoband
@@ -4968,7 +3283,6 @@ region	status	short_histology	count	region_type
 9p21.1	loss	Neurofibroma	5	cytoband
 9p21.1	loss	Other	8	cytoband
 9p21.1	loss	Schwannoma	5	cytoband
-9p21.1	unstable	HGAT	5	cytoband
 9p21.2	gain	All	11	cytoband
 9p21.2	loss	All	244	cytoband
 9p21.2	gain	HGAT	5	cytoband
@@ -5098,98 +3412,6 @@ region	status	short_histology	count	region_type
 9p24.3	loss	All	17	cytoband
 9p24.3	gain	Ependymoma	4	cytoband
 9p24.3	loss	HGAT	11	cytoband
-9q11	uncallable	All	913	cytoband
-9q11	uncallable	ATRT	29	cytoband
-9q11	uncallable	Chordoma	9	cytoband
-9q11	uncallable	Choroid plexus tumor	15	cytoband
-9q11	uncallable	CNS EFT-CIC	7	cytoband
-9q11	uncallable	CNS neuroblastoma	4	cytoband
-9q11	uncallable	Craniopharyngioma	34	cytoband
-9q11	uncallable	DNET	27	cytoband
-9q11	uncallable	Dysplasia	13	cytoband
-9q11	uncallable	Embryonal Tumor	15	cytoband
-9q11	uncallable	Ependymoma	79	cytoband
-9q11	uncallable	Ganglioglioma	47	cytoband
-9q11	uncallable	Germinoma	5	cytoband
-9q11	uncallable	HGAT	141	cytoband
-9q11	uncallable	Langerhans Cell histiocytosis	4	cytoband
-9q11	uncallable	LGAT	241	cytoband
-9q11	uncallable	Medulloblastoma	101	cytoband
-9q11	uncallable	Meningioma	30	cytoband
-9q11	uncallable	Neurofibroma	17	cytoband
-9q11	uncallable	Other	35	cytoband
-9q11	uncallable	Pineoblastoma	4	cytoband
-9q11	uncallable	Schwannoma	18	cytoband
-9q11	uncallable	Teratoma	9	cytoband
-9q12	uncallable	All	913	cytoband
-9q12	uncallable	ATRT	29	cytoband
-9q12	uncallable	Chordoma	9	cytoband
-9q12	uncallable	Choroid plexus tumor	15	cytoband
-9q12	uncallable	CNS EFT-CIC	7	cytoband
-9q12	uncallable	CNS neuroblastoma	4	cytoband
-9q12	uncallable	Craniopharyngioma	34	cytoband
-9q12	uncallable	DNET	27	cytoband
-9q12	uncallable	Dysplasia	13	cytoband
-9q12	uncallable	Embryonal Tumor	15	cytoband
-9q12	uncallable	Ependymoma	79	cytoband
-9q12	uncallable	Ganglioglioma	47	cytoband
-9q12	uncallable	Germinoma	5	cytoband
-9q12	uncallable	HGAT	141	cytoband
-9q12	uncallable	Langerhans Cell histiocytosis	4	cytoband
-9q12	uncallable	LGAT	241	cytoband
-9q12	uncallable	Medulloblastoma	101	cytoband
-9q12	uncallable	Meningioma	30	cytoband
-9q12	uncallable	Neurofibroma	17	cytoband
-9q12	uncallable	Other	35	cytoband
-9q12	uncallable	Pineoblastoma	4	cytoband
-9q12	uncallable	Schwannoma	18	cytoband
-9q12	uncallable	Teratoma	9	cytoband
-9q13	uncallable	All	913	cytoband
-9q13	uncallable	ATRT	29	cytoband
-9q13	uncallable	Chordoma	9	cytoband
-9q13	uncallable	Choroid plexus tumor	15	cytoband
-9q13	uncallable	CNS EFT-CIC	7	cytoband
-9q13	uncallable	CNS neuroblastoma	4	cytoband
-9q13	uncallable	Craniopharyngioma	34	cytoband
-9q13	uncallable	DNET	27	cytoband
-9q13	uncallable	Dysplasia	13	cytoband
-9q13	uncallable	Embryonal Tumor	15	cytoband
-9q13	uncallable	Ependymoma	79	cytoband
-9q13	uncallable	Ganglioglioma	47	cytoband
-9q13	uncallable	Germinoma	5	cytoband
-9q13	uncallable	HGAT	141	cytoband
-9q13	uncallable	Langerhans Cell histiocytosis	4	cytoband
-9q13	uncallable	LGAT	241	cytoband
-9q13	uncallable	Medulloblastoma	101	cytoband
-9q13	uncallable	Meningioma	30	cytoband
-9q13	uncallable	Neurofibroma	17	cytoband
-9q13	uncallable	Other	35	cytoband
-9q13	uncallable	Pineoblastoma	4	cytoband
-9q13	uncallable	Schwannoma	18	cytoband
-9q13	uncallable	Teratoma	9	cytoband
-9q21.11	uncallable	All	908	cytoband
-9q21.11	uncallable	ATRT	29	cytoband
-9q21.11	uncallable	Chordoma	9	cytoband
-9q21.11	uncallable	Choroid plexus tumor	15	cytoband
-9q21.11	uncallable	CNS EFT-CIC	7	cytoband
-9q21.11	uncallable	CNS neuroblastoma	4	cytoband
-9q21.11	uncallable	Craniopharyngioma	34	cytoband
-9q21.11	uncallable	DNET	27	cytoband
-9q21.11	uncallable	Dysplasia	13	cytoband
-9q21.11	uncallable	Embryonal Tumor	15	cytoband
-9q21.11	uncallable	Ependymoma	76	cytoband
-9q21.11	uncallable	Ganglioglioma	47	cytoband
-9q21.11	uncallable	Germinoma	5	cytoband
-9q21.11	uncallable	HGAT	140	cytoband
-9q21.11	uncallable	Langerhans Cell histiocytosis	4	cytoband
-9q21.11	uncallable	LGAT	241	cytoband
-9q21.11	uncallable	Medulloblastoma	100	cytoband
-9q21.11	uncallable	Meningioma	30	cytoband
-9q21.11	uncallable	Neurofibroma	17	cytoband
-9q21.11	uncallable	Other	35	cytoband
-9q21.11	uncallable	Pineoblastoma	4	cytoband
-9q21.11	uncallable	Schwannoma	18	cytoband
-9q21.11	uncallable	Teratoma	9	cytoband
 9q21.12	loss	All	244	cytoband
 9q21.12	loss	ATRT	7	cytoband
 9q21.12	loss	Choroid plexus tumor	7	cytoband
@@ -25624,1088 +23846,153 @@ XKR6	loss	All	10	gene
 XKR6	loss	Medulloblastoma	4	gene
 XKR7	gain	All	7	gene
 Xp	loss	All	9	arm
-Xp	uncallable	All	849	arm
 Xp	loss	Medulloblastoma	4	arm
-Xp	uncallable	ATRT	28	arm
-Xp	uncallable	Chordoma	9	arm
-Xp	uncallable	Choroid plexus tumor	14	arm
-Xp	uncallable	CNS EFT-CIC	6	arm
-Xp	uncallable	CNS neuroblastoma	4	arm
-Xp	uncallable	Craniopharyngioma	33	arm
-Xp	uncallable	DNET	27	arm
-Xp	uncallable	Dysplasia	12	arm
-Xp	uncallable	Embryonal Tumor	15	arm
-Xp	uncallable	Ependymoma	72	arm
-Xp	uncallable	Ganglioglioma	41	arm
-Xp	uncallable	Germinoma	5	arm
-Xp	uncallable	HGAT	128	arm
-Xp	uncallable	Langerhans Cell histiocytosis	4	arm
-Xp	uncallable	LGAT	229	arm
-Xp	uncallable	Medulloblastoma	89	arm
-Xp	uncallable	Meningioma	27	arm
-Xp	uncallable	Neurofibroma	17	arm
-Xp	uncallable	Other	34	arm
-Xp	uncallable	Schwannoma	17	arm
-Xp	uncallable	Teratoma	9	arm
-Xp11.1	loss	All	8	cytoband
-Xp11.1	uncallable	All	895	cytoband
-Xp11.1	loss	HGAT	4	cytoband
-Xp11.1	uncallable	ATRT	29	cytoband
-Xp11.1	uncallable	Chordoma	8	cytoband
-Xp11.1	uncallable	Choroid plexus tumor	15	cytoband
-Xp11.1	uncallable	CNS EFT-CIC	7	cytoband
-Xp11.1	uncallable	Craniopharyngioma	34	cytoband
-Xp11.1	uncallable	DNET	27	cytoband
-Xp11.1	uncallable	Dysplasia	13	cytoband
-Xp11.1	uncallable	Embryonal Tumor	15	cytoband
-Xp11.1	uncallable	Ependymoma	76	cytoband
-Xp11.1	uncallable	Ganglioglioma	47	cytoband
-Xp11.1	uncallable	Germinoma	5	cytoband
-Xp11.1	uncallable	HGAT	137	cytoband
-Xp11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xp11.1	uncallable	LGAT	238	cytoband
-Xp11.1	uncallable	Medulloblastoma	97	cytoband
-Xp11.1	uncallable	Meningioma	30	cytoband
-Xp11.1	uncallable	Neurofibroma	17	cytoband
-Xp11.1	uncallable	Other	34	cytoband
-Xp11.1	uncallable	Pineoblastoma	4	cytoband
-Xp11.1	uncallable	Schwannoma	18	cytoband
-Xp11.1	uncallable	Teratoma	9	cytoband
-Xp11.21	loss	All	37	cytoband
-Xp11.21	uncallable	All	862	cytoband
-Xp11.21	loss	HGAT	11	cytoband
-Xp11.21	loss	LGAT	10	cytoband
-Xp11.21	uncallable	ATRT	27	cytoband
-Xp11.21	uncallable	Chordoma	8	cytoband
-Xp11.21	uncallable	Choroid plexus tumor	14	cytoband
-Xp11.21	uncallable	CNS EFT-CIC	6	cytoband
-Xp11.21	uncallable	Craniopharyngioma	34	cytoband
-Xp11.21	uncallable	DNET	26	cytoband
-Xp11.21	uncallable	Dysplasia	13	cytoband
-Xp11.21	uncallable	Embryonal Tumor	15	cytoband
-Xp11.21	uncallable	Ependymoma	73	cytoband
-Xp11.21	uncallable	Ganglioglioma	43	cytoband
-Xp11.21	uncallable	Germinoma	5	cytoband
-Xp11.21	uncallable	HGAT	129	cytoband
-Xp11.21	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xp11.21	uncallable	LGAT	230	cytoband
-Xp11.21	uncallable	Medulloblastoma	95	cytoband
-Xp11.21	uncallable	Meningioma	30	cytoband
-Xp11.21	uncallable	Neurofibroma	17	cytoband
-Xp11.21	uncallable	Other	33	cytoband
-Xp11.21	uncallable	Pineoblastoma	4	cytoband
-Xp11.21	uncallable	Schwannoma	17	cytoband
-Xp11.21	uncallable	Teratoma	9	cytoband
-Xp11.22	loss	All	32	cytoband
-Xp11.22	uncallable	All	866	cytoband
-Xp11.22	loss	HGAT	11	cytoband
-Xp11.22	loss	LGAT	9	cytoband
-Xp11.22	uncallable	ATRT	27	cytoband
-Xp11.22	uncallable	Chordoma	8	cytoband
-Xp11.22	uncallable	Choroid plexus tumor	15	cytoband
-Xp11.22	uncallable	CNS EFT-CIC	7	cytoband
-Xp11.22	uncallable	Craniopharyngioma	34	cytoband
-Xp11.22	uncallable	DNET	26	cytoband
-Xp11.22	uncallable	Dysplasia	13	cytoband
-Xp11.22	uncallable	Embryonal Tumor	15	cytoband
-Xp11.22	uncallable	Ependymoma	75	cytoband
-Xp11.22	uncallable	Ganglioglioma	45	cytoband
-Xp11.22	uncallable	Germinoma	5	cytoband
-Xp11.22	uncallable	HGAT	127	cytoband
-Xp11.22	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xp11.22	uncallable	LGAT	230	cytoband
-Xp11.22	uncallable	Medulloblastoma	94	cytoband
-Xp11.22	uncallable	Meningioma	30	cytoband
-Xp11.22	uncallable	Neurofibroma	17	cytoband
-Xp11.22	uncallable	Other	33	cytoband
-Xp11.22	uncallable	Pineoblastoma	4	cytoband
-Xp11.22	uncallable	Schwannoma	17	cytoband
-Xp11.22	uncallable	Teratoma	9	cytoband
-Xp11.23	loss	All	38	cytoband
-Xp11.23	uncallable	All	857	cytoband
-Xp11.23	loss	HGAT	14	cytoband
-Xp11.23	loss	LGAT	9	cytoband
-Xp11.23	uncallable	ATRT	27	cytoband
-Xp11.23	uncallable	Chordoma	8	cytoband
-Xp11.23	uncallable	Choroid plexus tumor	15	cytoband
-Xp11.23	uncallable	CNS EFT-CIC	6	cytoband
-Xp11.23	uncallable	Craniopharyngioma	33	cytoband
-Xp11.23	uncallable	DNET	26	cytoband
-Xp11.23	uncallable	Dysplasia	13	cytoband
-Xp11.23	uncallable	Embryonal Tumor	15	cytoband
-Xp11.23	uncallable	Ependymoma	73	cytoband
-Xp11.23	uncallable	Ganglioglioma	44	cytoband
-Xp11.23	uncallable	Germinoma	5	cytoband
-Xp11.23	uncallable	HGAT	126	cytoband
-Xp11.23	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xp11.23	uncallable	LGAT	231	cytoband
-Xp11.23	uncallable	Medulloblastoma	91	cytoband
-Xp11.23	uncallable	Meningioma	29	cytoband
-Xp11.23	uncallable	Neurofibroma	17	cytoband
-Xp11.23	uncallable	Other	33	cytoband
-Xp11.23	uncallable	Pineoblastoma	4	cytoband
-Xp11.23	uncallable	Schwannoma	17	cytoband
-Xp11.23	uncallable	Teratoma	9	cytoband
-Xp11.3	loss	All	44	cytoband
-Xp11.3	uncallable	All	857	cytoband
-Xp11.3	loss	Ganglioglioma	4	cytoband
-Xp11.3	loss	HGAT	13	cytoband
-Xp11.3	loss	LGAT	8	cytoband
+Xp11.21	loss	All	18	cytoband
+Xp11.21	loss	HGAT	4	cytoband
+Xp11.21	loss	LGAT	5	cytoband
+Xp11.22	loss	All	14	cytoband
+Xp11.22	loss	HGAT	5	cytoband
+Xp11.22	loss	LGAT	4	cytoband
+Xp11.23	loss	All	18	cytoband
+Xp11.23	loss	HGAT	6	cytoband
+Xp11.23	loss	LGAT	4	cytoband
+Xp11.3	loss	All	27	cytoband
+Xp11.3	loss	HGAT	6	cytoband
+Xp11.3	loss	LGAT	5	cytoband
 Xp11.3	loss	Medulloblastoma	5	cytoband
-Xp11.3	uncallable	ATRT	27	cytoband
-Xp11.3	uncallable	Chordoma	8	cytoband
-Xp11.3	uncallable	Choroid plexus tumor	15	cytoband
-Xp11.3	uncallable	CNS EFT-CIC	6	cytoband
-Xp11.3	uncallable	Craniopharyngioma	33	cytoband
-Xp11.3	uncallable	DNET	26	cytoband
-Xp11.3	uncallable	Dysplasia	13	cytoband
-Xp11.3	uncallable	Embryonal Tumor	15	cytoband
-Xp11.3	uncallable	Ependymoma	71	cytoband
-Xp11.3	uncallable	Ganglioglioma	43	cytoband
-Xp11.3	uncallable	Germinoma	5	cytoband
-Xp11.3	uncallable	HGAT	127	cytoband
-Xp11.3	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xp11.3	uncallable	LGAT	232	cytoband
-Xp11.3	uncallable	Medulloblastoma	92	cytoband
-Xp11.3	uncallable	Meningioma	29	cytoband
-Xp11.3	uncallable	Neurofibroma	17	cytoband
-Xp11.3	uncallable	Other	33	cytoband
-Xp11.3	uncallable	Pineoblastoma	4	cytoband
-Xp11.3	uncallable	Schwannoma	17	cytoband
-Xp11.3	uncallable	Teratoma	9	cytoband
-Xp11.4	loss	All	33	cytoband
-Xp11.4	uncallable	All	869	cytoband
-Xp11.4	loss	HGAT	11	cytoband
-Xp11.4	loss	LGAT	5	cytoband
-Xp11.4	uncallable	ATRT	28	cytoband
-Xp11.4	uncallable	Chordoma	8	cytoband
-Xp11.4	uncallable	Choroid plexus tumor	15	cytoband
-Xp11.4	uncallable	CNS EFT-CIC	7	cytoband
-Xp11.4	uncallable	Craniopharyngioma	33	cytoband
-Xp11.4	uncallable	DNET	26	cytoband
-Xp11.4	uncallable	Dysplasia	13	cytoband
-Xp11.4	uncallable	Embryonal Tumor	15	cytoband
-Xp11.4	uncallable	Ependymoma	72	cytoband
-Xp11.4	uncallable	Ganglioglioma	44	cytoband
-Xp11.4	uncallable	Germinoma	5	cytoband
-Xp11.4	uncallable	HGAT	129	cytoband
-Xp11.4	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xp11.4	uncallable	LGAT	235	cytoband
-Xp11.4	uncallable	Medulloblastoma	94	cytoband
-Xp11.4	uncallable	Meningioma	29	cytoband
-Xp11.4	uncallable	Neurofibroma	17	cytoband
-Xp11.4	uncallable	Other	33	cytoband
-Xp11.4	uncallable	Pineoblastoma	4	cytoband
-Xp11.4	uncallable	Schwannoma	18	cytoband
-Xp11.4	uncallable	Teratoma	9	cytoband
+Xp11.4	loss	All	15	cytoband
+Xp11.4	loss	HGAT	4	cytoband
 Xp21.1	loss	All	13	cytoband
-Xp21.1	uncallable	All	848	cytoband
 Xp21.1	loss	HGAT	4	cytoband
-Xp21.1	uncallable	ATRT	28	cytoband
-Xp21.1	uncallable	Chordoma	9	cytoband
-Xp21.1	uncallable	Choroid plexus tumor	14	cytoband
-Xp21.1	uncallable	CNS EFT-CIC	6	cytoband
-Xp21.1	uncallable	CNS neuroblastoma	4	cytoband
-Xp21.1	uncallable	Craniopharyngioma	33	cytoband
-Xp21.1	uncallable	DNET	27	cytoband
-Xp21.1	uncallable	Dysplasia	11	cytoband
-Xp21.1	uncallable	Embryonal Tumor	15	cytoband
-Xp21.1	uncallable	Ependymoma	72	cytoband
-Xp21.1	uncallable	Ganglioglioma	41	cytoband
-Xp21.1	uncallable	Germinoma	5	cytoband
-Xp21.1	uncallable	HGAT	128	cytoband
-Xp21.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xp21.1	uncallable	LGAT	229	cytoband
-Xp21.1	uncallable	Medulloblastoma	89	cytoband
-Xp21.1	uncallable	Meningioma	27	cytoband
-Xp21.1	uncallable	Neurofibroma	17	cytoband
-Xp21.1	uncallable	Other	34	cytoband
-Xp21.1	uncallable	Schwannoma	17	cytoband
-Xp21.1	uncallable	Teratoma	9	cytoband
 Xp21.2	gain	All	5	cytoband
-Xp21.2	loss	All	53	cytoband
-Xp21.2	uncallable	All	848	cytoband
+Xp21.2	loss	All	51	cytoband
 Xp21.2	loss	Ependymoma	4	cytoband
 Xp21.2	loss	Ganglioglioma	6	cytoband
 Xp21.2	loss	HGAT	13	cytoband
-Xp21.2	loss	LGAT	11	cytoband
+Xp21.2	loss	LGAT	10	cytoband
 Xp21.2	loss	Medulloblastoma	7	cytoband
-Xp21.2	uncallable	ATRT	28	cytoband
-Xp21.2	uncallable	Chordoma	9	cytoband
-Xp21.2	uncallable	Choroid plexus tumor	14	cytoband
-Xp21.2	uncallable	CNS EFT-CIC	6	cytoband
-Xp21.2	uncallable	CNS neuroblastoma	4	cytoband
-Xp21.2	uncallable	Craniopharyngioma	33	cytoband
-Xp21.2	uncallable	DNET	27	cytoband
-Xp21.2	uncallable	Dysplasia	11	cytoband
-Xp21.2	uncallable	Embryonal Tumor	15	cytoband
-Xp21.2	uncallable	Ependymoma	72	cytoband
-Xp21.2	uncallable	Ganglioglioma	41	cytoband
-Xp21.2	uncallable	Germinoma	5	cytoband
-Xp21.2	uncallable	HGAT	128	cytoband
-Xp21.2	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xp21.2	uncallable	LGAT	229	cytoband
-Xp21.2	uncallable	Medulloblastoma	89	cytoband
-Xp21.2	uncallable	Meningioma	27	cytoband
-Xp21.2	uncallable	Neurofibroma	17	cytoband
-Xp21.2	uncallable	Other	34	cytoband
-Xp21.2	uncallable	Schwannoma	17	cytoband
-Xp21.2	uncallable	Teratoma	9	cytoband
 Xp21.3	gain	All	5	cytoband
-Xp21.3	loss	All	54	cytoband
-Xp21.3	uncallable	All	845	cytoband
-Xp21.3	loss	Ependymoma	5	cytoband
+Xp21.3	loss	All	51	cytoband
+Xp21.3	loss	Ependymoma	4	cytoband
 Xp21.3	loss	Ganglioglioma	6	cytoband
 Xp21.3	loss	HGAT	13	cytoband
-Xp21.3	loss	LGAT	11	cytoband
+Xp21.3	loss	LGAT	10	cytoband
 Xp21.3	loss	Medulloblastoma	7	cytoband
-Xp21.3	uncallable	ATRT	28	cytoband
-Xp21.3	uncallable	Chordoma	9	cytoband
-Xp21.3	uncallable	Choroid plexus tumor	14	cytoband
-Xp21.3	uncallable	CNS EFT-CIC	6	cytoband
-Xp21.3	uncallable	CNS neuroblastoma	4	cytoband
-Xp21.3	uncallable	Craniopharyngioma	33	cytoband
-Xp21.3	uncallable	DNET	27	cytoband
-Xp21.3	uncallable	Dysplasia	11	cytoband
-Xp21.3	uncallable	Embryonal Tumor	15	cytoband
-Xp21.3	uncallable	Ependymoma	70	cytoband
-Xp21.3	uncallable	Ganglioglioma	41	cytoband
-Xp21.3	uncallable	Germinoma	5	cytoband
-Xp21.3	uncallable	HGAT	128	cytoband
-Xp21.3	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xp21.3	uncallable	LGAT	228	cytoband
-Xp21.3	uncallable	Medulloblastoma	89	cytoband
-Xp21.3	uncallable	Meningioma	27	cytoband
-Xp21.3	uncallable	Neurofibroma	17	cytoband
-Xp21.3	uncallable	Other	34	cytoband
-Xp21.3	uncallable	Schwannoma	17	cytoband
-Xp21.3	uncallable	Teratoma	9	cytoband
 Xp22.11	gain	All	5	cytoband
-Xp22.11	loss	All	56	cytoband
-Xp22.11	uncallable	All	844	cytoband
-Xp22.11	loss	Ependymoma	6	cytoband
+Xp22.11	loss	All	52	cytoband
+Xp22.11	loss	Ependymoma	4	cytoband
 Xp22.11	loss	Ganglioglioma	6	cytoband
 Xp22.11	loss	HGAT	13	cytoband
-Xp22.11	loss	LGAT	12	cytoband
+Xp22.11	loss	LGAT	11	cytoband
 Xp22.11	loss	Medulloblastoma	7	cytoband
-Xp22.11	uncallable	ATRT	28	cytoband
-Xp22.11	uncallable	Chordoma	9	cytoband
-Xp22.11	uncallable	Choroid plexus tumor	14	cytoband
-Xp22.11	uncallable	CNS EFT-CIC	6	cytoband
-Xp22.11	uncallable	CNS neuroblastoma	4	cytoband
-Xp22.11	uncallable	Craniopharyngioma	33	cytoband
-Xp22.11	uncallable	DNET	27	cytoband
-Xp22.11	uncallable	Dysplasia	11	cytoband
-Xp22.11	uncallable	Embryonal Tumor	15	cytoband
-Xp22.11	uncallable	Ependymoma	70	cytoband
-Xp22.11	uncallable	Ganglioglioma	41	cytoband
-Xp22.11	uncallable	Germinoma	5	cytoband
-Xp22.11	uncallable	HGAT	127	cytoband
-Xp22.11	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xp22.11	uncallable	LGAT	228	cytoband
-Xp22.11	uncallable	Medulloblastoma	89	cytoband
-Xp22.11	uncallable	Meningioma	27	cytoband
-Xp22.11	uncallable	Neurofibroma	17	cytoband
-Xp22.11	uncallable	Other	34	cytoband
-Xp22.11	uncallable	Schwannoma	17	cytoband
-Xp22.11	uncallable	Teratoma	9	cytoband
 Xp22.12	gain	All	4	cytoband
-Xp22.12	loss	All	53	cytoband
-Xp22.12	uncallable	All	845	cytoband
+Xp22.12	loss	All	52	cytoband
 Xp22.12	loss	Ependymoma	4	cytoband
 Xp22.12	loss	Ganglioglioma	6	cytoband
 Xp22.12	loss	HGAT	13	cytoband
-Xp22.12	loss	LGAT	12	cytoband
+Xp22.12	loss	LGAT	11	cytoband
 Xp22.12	loss	Medulloblastoma	7	cytoband
-Xp22.12	uncallable	ATRT	28	cytoband
-Xp22.12	uncallable	Chordoma	9	cytoband
-Xp22.12	uncallable	Choroid plexus tumor	14	cytoband
-Xp22.12	uncallable	CNS EFT-CIC	6	cytoband
-Xp22.12	uncallable	CNS neuroblastoma	4	cytoband
-Xp22.12	uncallable	Craniopharyngioma	33	cytoband
-Xp22.12	uncallable	DNET	27	cytoband
-Xp22.12	uncallable	Dysplasia	11	cytoband
-Xp22.12	uncallable	Embryonal Tumor	15	cytoband
-Xp22.12	uncallable	Ependymoma	70	cytoband
-Xp22.12	uncallable	Ganglioglioma	41	cytoband
-Xp22.12	uncallable	Germinoma	5	cytoband
-Xp22.12	uncallable	HGAT	127	cytoband
-Xp22.12	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xp22.12	uncallable	LGAT	228	cytoband
-Xp22.12	uncallable	Medulloblastoma	89	cytoband
-Xp22.12	uncallable	Meningioma	27	cytoband
-Xp22.12	uncallable	Neurofibroma	17	cytoband
-Xp22.12	uncallable	Other	35	cytoband
-Xp22.12	uncallable	Schwannoma	17	cytoband
-Xp22.12	uncallable	Teratoma	9	cytoband
 Xp22.13	gain	All	4	cytoband
-Xp22.13	loss	All	52	cytoband
-Xp22.13	uncallable	All	848	cytoband
+Xp22.13	loss	All	51	cytoband
 Xp22.13	loss	Ependymoma	4	cytoband
 Xp22.13	loss	Ganglioglioma	6	cytoband
 Xp22.13	loss	HGAT	12	cytoband
-Xp22.13	loss	LGAT	12	cytoband
+Xp22.13	loss	LGAT	11	cytoband
 Xp22.13	loss	Medulloblastoma	7	cytoband
-Xp22.13	uncallable	ATRT	28	cytoband
-Xp22.13	uncallable	Chordoma	9	cytoband
-Xp22.13	uncallable	Choroid plexus tumor	14	cytoband
-Xp22.13	uncallable	CNS EFT-CIC	6	cytoband
-Xp22.13	uncallable	CNS neuroblastoma	4	cytoband
-Xp22.13	uncallable	Craniopharyngioma	33	cytoband
-Xp22.13	uncallable	DNET	27	cytoband
-Xp22.13	uncallable	Dysplasia	12	cytoband
-Xp22.13	uncallable	Embryonal Tumor	15	cytoband
-Xp22.13	uncallable	Ependymoma	70	cytoband
-Xp22.13	uncallable	Ganglioglioma	41	cytoband
-Xp22.13	uncallable	Germinoma	5	cytoband
-Xp22.13	uncallable	HGAT	129	cytoband
-Xp22.13	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xp22.13	uncallable	LGAT	228	cytoband
-Xp22.13	uncallable	Medulloblastoma	89	cytoband
-Xp22.13	uncallable	Meningioma	27	cytoband
-Xp22.13	uncallable	Neurofibroma	17	cytoband
-Xp22.13	uncallable	Other	35	cytoband
-Xp22.13	uncallable	Schwannoma	17	cytoband
-Xp22.13	uncallable	Teratoma	9	cytoband
 Xp22.2	gain	All	4	cytoband
-Xp22.2	loss	All	51	cytoband
-Xp22.2	uncallable	All	848	cytoband
+Xp22.2	loss	All	50	cytoband
 Xp22.2	loss	Ependymoma	4	cytoband
 Xp22.2	loss	Ganglioglioma	6	cytoband
 Xp22.2	loss	HGAT	11	cytoband
-Xp22.2	loss	LGAT	12	cytoband
+Xp22.2	loss	LGAT	11	cytoband
 Xp22.2	loss	Medulloblastoma	7	cytoband
-Xp22.2	uncallable	ATRT	28	cytoband
-Xp22.2	uncallable	Chordoma	9	cytoband
-Xp22.2	uncallable	Choroid plexus tumor	14	cytoband
-Xp22.2	uncallable	CNS EFT-CIC	6	cytoband
-Xp22.2	uncallable	CNS neuroblastoma	4	cytoband
-Xp22.2	uncallable	Craniopharyngioma	33	cytoband
-Xp22.2	uncallable	DNET	27	cytoband
-Xp22.2	uncallable	Dysplasia	12	cytoband
-Xp22.2	uncallable	Embryonal Tumor	15	cytoband
-Xp22.2	uncallable	Ependymoma	70	cytoband
-Xp22.2	uncallable	Ganglioglioma	41	cytoband
-Xp22.2	uncallable	Germinoma	5	cytoband
-Xp22.2	uncallable	HGAT	129	cytoband
-Xp22.2	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xp22.2	uncallable	LGAT	228	cytoband
-Xp22.2	uncallable	Medulloblastoma	89	cytoband
-Xp22.2	uncallable	Meningioma	27	cytoband
-Xp22.2	uncallable	Neurofibroma	17	cytoband
-Xp22.2	uncallable	Other	35	cytoband
-Xp22.2	uncallable	Schwannoma	17	cytoband
-Xp22.2	uncallable	Teratoma	9	cytoband
 Xp22.31	gain	All	4	cytoband
-Xp22.31	loss	All	49	cytoband
-Xp22.31	uncallable	All	852	cytoband
-Xp22.31	loss	Ependymoma	5	cytoband
+Xp22.31	loss	All	47	cytoband
+Xp22.31	loss	Ependymoma	4	cytoband
 Xp22.31	loss	Ganglioglioma	6	cytoband
 Xp22.31	loss	HGAT	9	cytoband
 Xp22.31	loss	LGAT	11	cytoband
 Xp22.31	loss	Medulloblastoma	6	cytoband
-Xp22.31	uncallable	ATRT	27	cytoband
-Xp22.31	uncallable	Chordoma	9	cytoband
-Xp22.31	uncallable	Choroid plexus tumor	14	cytoband
-Xp22.31	uncallable	CNS EFT-CIC	6	cytoband
-Xp22.31	uncallable	CNS neuroblastoma	4	cytoband
-Xp22.31	uncallable	Craniopharyngioma	33	cytoband
-Xp22.31	uncallable	DNET	27	cytoband
-Xp22.31	uncallable	Dysplasia	12	cytoband
-Xp22.31	uncallable	Embryonal Tumor	15	cytoband
-Xp22.31	uncallable	Ependymoma	71	cytoband
-Xp22.31	uncallable	Ganglioglioma	41	cytoband
-Xp22.31	uncallable	Germinoma	5	cytoband
-Xp22.31	uncallable	HGAT	132	cytoband
-Xp22.31	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xp22.31	uncallable	LGAT	229	cytoband
-Xp22.31	uncallable	Medulloblastoma	89	cytoband
-Xp22.31	uncallable	Meningioma	27	cytoband
-Xp22.31	uncallable	Neurofibroma	17	cytoband
-Xp22.31	uncallable	Other	35	cytoband
-Xp22.31	uncallable	Schwannoma	17	cytoband
-Xp22.31	uncallable	Teratoma	9	cytoband
 Xp22.32	gain	All	4	cytoband
-Xp22.32	loss	All	50	cytoband
-Xp22.32	uncallable	All	851	cytoband
-Xp22.32	loss	Ependymoma	6	cytoband
+Xp22.32	loss	All	46	cytoband
+Xp22.32	loss	Ependymoma	4	cytoband
 Xp22.32	loss	Ganglioglioma	6	cytoband
 Xp22.32	loss	HGAT	9	cytoband
 Xp22.32	loss	LGAT	11	cytoband
-Xp22.32	loss	Medulloblastoma	7	cytoband
-Xp22.32	uncallable	ATRT	27	cytoband
-Xp22.32	uncallable	Chordoma	9	cytoband
-Xp22.32	uncallable	Choroid plexus tumor	14	cytoband
-Xp22.32	uncallable	CNS EFT-CIC	6	cytoband
-Xp22.32	uncallable	CNS neuroblastoma	4	cytoband
-Xp22.32	uncallable	Craniopharyngioma	33	cytoband
-Xp22.32	uncallable	DNET	27	cytoband
-Xp22.32	uncallable	Dysplasia	12	cytoband
-Xp22.32	uncallable	Embryonal Tumor	15	cytoband
-Xp22.32	uncallable	Ependymoma	70	cytoband
-Xp22.32	uncallable	Ganglioglioma	41	cytoband
-Xp22.32	uncallable	Germinoma	5	cytoband
-Xp22.32	uncallable	HGAT	132	cytoband
-Xp22.32	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xp22.32	uncallable	LGAT	229	cytoband
-Xp22.32	uncallable	Medulloblastoma	89	cytoband
-Xp22.32	uncallable	Meningioma	28	cytoband
-Xp22.32	uncallable	Neurofibroma	17	cytoband
-Xp22.32	uncallable	Other	35	cytoband
-Xp22.32	uncallable	Schwannoma	17	cytoband
-Xp22.32	uncallable	Teratoma	9	cytoband
-Xp22.33	loss	All	7	cytoband
-Xp22.33	uncallable	All	879	cytoband
-Xp22.33	uncallable	ATRT	29	cytoband
-Xp22.33	uncallable	Chordoma	9	cytoband
-Xp22.33	uncallable	Choroid plexus tumor	15	cytoband
-Xp22.33	uncallable	CNS EFT-CIC	7	cytoband
-Xp22.33	uncallable	CNS neuroblastoma	4	cytoband
-Xp22.33	uncallable	Craniopharyngioma	33	cytoband
-Xp22.33	uncallable	DNET	27	cytoband
-Xp22.33	uncallable	Dysplasia	13	cytoband
-Xp22.33	uncallable	Embryonal Tumor	15	cytoband
-Xp22.33	uncallable	Ependymoma	73	cytoband
-Xp22.33	uncallable	Ganglioglioma	45	cytoband
-Xp22.33	uncallable	Germinoma	5	cytoband
-Xp22.33	uncallable	HGAT	136	cytoband
-Xp22.33	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xp22.33	uncallable	LGAT	238	cytoband
-Xp22.33	uncallable	Medulloblastoma	90	cytoband
-Xp22.33	uncallable	Meningioma	29	cytoband
-Xp22.33	uncallable	Neurofibroma	17	cytoband
-Xp22.33	uncallable	Other	34	cytoband
-Xp22.33	uncallable	Schwannoma	17	cytoband
-Xp22.33	uncallable	Teratoma	9	cytoband
+Xp22.32	loss	Medulloblastoma	6	cytoband
+Xp22.33	loss	All	4	cytoband
 XPNPEP3	loss	All	11	gene
 Xq	loss	All	17	arm
-Xq	uncallable	All	863	arm
 Xq	loss	LGAT	5	arm
 Xq	loss	Medulloblastoma	6	arm
-Xq	uncallable	ATRT	28	arm
-Xq	uncallable	Chordoma	9	arm
-Xq	uncallable	Choroid plexus tumor	14	arm
-Xq	uncallable	CNS EFT-CIC	6	arm
-Xq	uncallable	CNS neuroblastoma	4	arm
-Xq	uncallable	Craniopharyngioma	34	arm
-Xq	uncallable	DNET	27	arm
-Xq	uncallable	Dysplasia	12	arm
-Xq	uncallable	Embryonal Tumor	15	arm
-Xq	uncallable	Ependymoma	74	arm
-Xq	uncallable	Ganglioglioma	44	arm
-Xq	uncallable	Germinoma	5	arm
-Xq	uncallable	HGAT	131	arm
-Xq	uncallable	Langerhans Cell histiocytosis	4	arm
-Xq	uncallable	LGAT	225	arm
-Xq	uncallable	Medulloblastoma	92	arm
-Xq	uncallable	Meningioma	29	arm
-Xq	uncallable	Neurofibroma	17	arm
-Xq	uncallable	Other	35	arm
-Xq	uncallable	Schwannoma	17	arm
-Xq	uncallable	Teratoma	9	arm
-Xq11.1	loss	All	9	cytoband
-Xq11.1	uncallable	All	886	cytoband
-Xq11.1	loss	HGAT	4	cytoband
-Xq11.1	uncallable	ATRT	28	cytoband
-Xq11.1	uncallable	Chordoma	9	cytoband
-Xq11.1	uncallable	Choroid plexus tumor	15	cytoband
-Xq11.1	uncallable	CNS EFT-CIC	7	cytoband
-Xq11.1	uncallable	Craniopharyngioma	34	cytoband
-Xq11.1	uncallable	DNET	27	cytoband
-Xq11.1	uncallable	Dysplasia	13	cytoband
-Xq11.1	uncallable	Embryonal Tumor	15	cytoband
-Xq11.1	uncallable	Ependymoma	75	cytoband
-Xq11.1	uncallable	Ganglioglioma	47	cytoband
-Xq11.1	uncallable	Germinoma	5	cytoband
-Xq11.1	uncallable	HGAT	138	cytoband
-Xq11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq11.1	uncallable	LGAT	234	cytoband
-Xq11.1	uncallable	Medulloblastoma	94	cytoband
-Xq11.1	uncallable	Meningioma	30	cytoband
-Xq11.1	uncallable	Neurofibroma	17	cytoband
-Xq11.1	uncallable	Other	34	cytoband
-Xq11.1	uncallable	Schwannoma	17	cytoband
-Xq11.1	uncallable	Teratoma	9	cytoband
-Xq11.2	gain	All	4	cytoband
-Xq11.2	loss	All	32	cytoband
-Xq11.2	uncallable	All	861	cytoband
-Xq11.2	loss	HGAT	9	cytoband
-Xq11.2	loss	LGAT	11	cytoband
-Xq11.2	uncallable	ATRT	28	cytoband
-Xq11.2	uncallable	Chordoma	9	cytoband
-Xq11.2	uncallable	Choroid plexus tumor	14	cytoband
-Xq11.2	uncallable	CNS EFT-CIC	6	cytoband
-Xq11.2	uncallable	Craniopharyngioma	34	cytoband
-Xq11.2	uncallable	DNET	27	cytoband
-Xq11.2	uncallable	Dysplasia	12	cytoband
-Xq11.2	uncallable	Embryonal Tumor	15	cytoband
-Xq11.2	uncallable	Ependymoma	73	cytoband
-Xq11.2	uncallable	Ganglioglioma	44	cytoband
-Xq11.2	uncallable	Germinoma	5	cytoband
-Xq11.2	uncallable	HGAT	131	cytoband
-Xq11.2	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq11.2	uncallable	LGAT	225	cytoband
-Xq11.2	uncallable	Medulloblastoma	93	cytoband
-Xq11.2	uncallable	Meningioma	30	cytoband
-Xq11.2	uncallable	Neurofibroma	17	cytoband
-Xq11.2	uncallable	Other	34	cytoband
-Xq11.2	uncallable	Schwannoma	17	cytoband
-Xq11.2	uncallable	Teratoma	9	cytoband
-Xq12	gain	All	5	cytoband
-Xq12	loss	All	31	cytoband
-Xq12	uncallable	All	858	cytoband
-Xq12	loss	HGAT	9	cytoband
-Xq12	loss	LGAT	11	cytoband
-Xq12	uncallable	ATRT	28	cytoband
-Xq12	uncallable	Chordoma	9	cytoband
-Xq12	uncallable	Choroid plexus tumor	14	cytoband
-Xq12	uncallable	CNS EFT-CIC	6	cytoband
-Xq12	uncallable	Craniopharyngioma	34	cytoband
-Xq12	uncallable	DNET	27	cytoband
-Xq12	uncallable	Dysplasia	12	cytoband
-Xq12	uncallable	Embryonal Tumor	15	cytoband
-Xq12	uncallable	Ependymoma	73	cytoband
-Xq12	uncallable	Ganglioglioma	44	cytoband
-Xq12	uncallable	Germinoma	5	cytoband
-Xq12	uncallable	HGAT	131	cytoband
-Xq12	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq12	uncallable	LGAT	225	cytoband
-Xq12	uncallable	Medulloblastoma	92	cytoband
-Xq12	uncallable	Meningioma	29	cytoband
-Xq12	uncallable	Neurofibroma	17	cytoband
-Xq12	uncallable	Other	34	cytoband
-Xq12	uncallable	Schwannoma	17	cytoband
-Xq12	uncallable	Teratoma	9	cytoband
-Xq13.1	gain	All	6	cytoband
-Xq13.1	loss	All	31	cytoband
-Xq13.1	uncallable	All	858	cytoband
-Xq13.1	loss	HGAT	9	cytoband
-Xq13.1	loss	LGAT	12	cytoband
-Xq13.1	uncallable	ATRT	28	cytoband
-Xq13.1	uncallable	Chordoma	9	cytoband
-Xq13.1	uncallable	Choroid plexus tumor	14	cytoband
-Xq13.1	uncallable	CNS EFT-CIC	6	cytoband
-Xq13.1	uncallable	Craniopharyngioma	34	cytoband
-Xq13.1	uncallable	DNET	27	cytoband
-Xq13.1	uncallable	Dysplasia	12	cytoband
-Xq13.1	uncallable	Embryonal Tumor	15	cytoband
-Xq13.1	uncallable	Ependymoma	72	cytoband
-Xq13.1	uncallable	Ganglioglioma	45	cytoband
-Xq13.1	uncallable	Germinoma	5	cytoband
-Xq13.1	uncallable	HGAT	130	cytoband
-Xq13.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq13.1	uncallable	LGAT	224	cytoband
-Xq13.1	uncallable	Medulloblastoma	92	cytoband
-Xq13.1	uncallable	Meningioma	29	cytoband
-Xq13.1	uncallable	Neurofibroma	17	cytoband
-Xq13.1	uncallable	Other	34	cytoband
-Xq13.1	uncallable	Schwannoma	17	cytoband
-Xq13.1	uncallable	Teratoma	9	cytoband
-Xq13.2	gain	All	6	cytoband
-Xq13.2	loss	All	33	cytoband
-Xq13.2	uncallable	All	858	cytoband
-Xq13.2	loss	Ependymoma	4	cytoband
-Xq13.2	loss	HGAT	8	cytoband
-Xq13.2	loss	LGAT	13	cytoband
-Xq13.2	uncallable	ATRT	28	cytoband
-Xq13.2	uncallable	Chordoma	9	cytoband
-Xq13.2	uncallable	Choroid plexus tumor	14	cytoband
-Xq13.2	uncallable	CNS EFT-CIC	6	cytoband
-Xq13.2	uncallable	Craniopharyngioma	34	cytoband
-Xq13.2	uncallable	DNET	27	cytoband
-Xq13.2	uncallable	Dysplasia	12	cytoband
-Xq13.2	uncallable	Embryonal Tumor	15	cytoband
-Xq13.2	uncallable	Ependymoma	71	cytoband
-Xq13.2	uncallable	Ganglioglioma	45	cytoband
-Xq13.2	uncallable	Germinoma	5	cytoband
-Xq13.2	uncallable	HGAT	131	cytoband
-Xq13.2	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq13.2	uncallable	LGAT	223	cytoband
-Xq13.2	uncallable	Medulloblastoma	92	cytoband
-Xq13.2	uncallable	Meningioma	29	cytoband
-Xq13.2	uncallable	Neurofibroma	17	cytoband
-Xq13.2	uncallable	Other	35	cytoband
-Xq13.2	uncallable	Schwannoma	17	cytoband
-Xq13.2	uncallable	Teratoma	9	cytoband
-Xq13.3	gain	All	6	cytoband
-Xq13.3	loss	All	35	cytoband
-Xq13.3	uncallable	All	855	cytoband
-Xq13.3	loss	Ependymoma	4	cytoband
-Xq13.3	loss	HGAT	10	cytoband
-Xq13.3	loss	LGAT	13	cytoband
-Xq13.3	uncallable	ATRT	28	cytoband
-Xq13.3	uncallable	Chordoma	9	cytoband
-Xq13.3	uncallable	Choroid plexus tumor	14	cytoband
-Xq13.3	uncallable	CNS EFT-CIC	6	cytoband
-Xq13.3	uncallable	Craniopharyngioma	34	cytoband
-Xq13.3	uncallable	DNET	27	cytoband
-Xq13.3	uncallable	Dysplasia	12	cytoband
-Xq13.3	uncallable	Embryonal Tumor	15	cytoband
-Xq13.3	uncallable	Ependymoma	71	cytoband
-Xq13.3	uncallable	Ganglioglioma	45	cytoband
-Xq13.3	uncallable	Germinoma	5	cytoband
-Xq13.3	uncallable	HGAT	129	cytoband
-Xq13.3	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq13.3	uncallable	LGAT	223	cytoband
-Xq13.3	uncallable	Medulloblastoma	92	cytoband
-Xq13.3	uncallable	Meningioma	29	cytoband
-Xq13.3	uncallable	Neurofibroma	17	cytoband
-Xq13.3	uncallable	Other	35	cytoband
-Xq13.3	uncallable	Schwannoma	17	cytoband
-Xq13.3	uncallable	Teratoma	9	cytoband
-Xq21.1	gain	All	5	cytoband
-Xq21.1	loss	All	34	cytoband
-Xq21.1	uncallable	All	854	cytoband
-Xq21.1	loss	HGAT	11	cytoband
-Xq21.1	loss	LGAT	12	cytoband
-Xq21.1	uncallable	ATRT	28	cytoband
-Xq21.1	uncallable	Chordoma	9	cytoband
-Xq21.1	uncallable	Choroid plexus tumor	14	cytoband
-Xq21.1	uncallable	CNS EFT-CIC	6	cytoband
-Xq21.1	uncallable	Craniopharyngioma	34	cytoband
-Xq21.1	uncallable	DNET	27	cytoband
-Xq21.1	uncallable	Dysplasia	12	cytoband
-Xq21.1	uncallable	Embryonal Tumor	15	cytoband
-Xq21.1	uncallable	Ependymoma	73	cytoband
-Xq21.1	uncallable	Ganglioglioma	45	cytoband
-Xq21.1	uncallable	Germinoma	5	cytoband
-Xq21.1	uncallable	HGAT	128	cytoband
-Xq21.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq21.1	uncallable	LGAT	223	cytoband
-Xq21.1	uncallable	Medulloblastoma	91	cytoband
-Xq21.1	uncallable	Meningioma	29	cytoband
-Xq21.1	uncallable	Neurofibroma	17	cytoband
-Xq21.1	uncallable	Other	34	cytoband
-Xq21.1	uncallable	Schwannoma	17	cytoband
-Xq21.1	uncallable	Teratoma	8	cytoband
-Xq21.2	gain	All	5	cytoband
-Xq21.2	loss	All	34	cytoband
-Xq21.2	uncallable	All	858	cytoband
-Xq21.2	loss	HGAT	11	cytoband
-Xq21.2	loss	LGAT	12	cytoband
-Xq21.2	uncallable	ATRT	28	cytoband
-Xq21.2	uncallable	Chordoma	9	cytoband
-Xq21.2	uncallable	Choroid plexus tumor	14	cytoband
-Xq21.2	uncallable	CNS EFT-CIC	6	cytoband
-Xq21.2	uncallable	CNS neuroblastoma	4	cytoband
-Xq21.2	uncallable	Craniopharyngioma	34	cytoband
-Xq21.2	uncallable	DNET	27	cytoband
-Xq21.2	uncallable	Dysplasia	12	cytoband
-Xq21.2	uncallable	Embryonal Tumor	15	cytoband
-Xq21.2	uncallable	Ependymoma	73	cytoband
-Xq21.2	uncallable	Ganglioglioma	45	cytoband
-Xq21.2	uncallable	Germinoma	5	cytoband
-Xq21.2	uncallable	HGAT	129	cytoband
-Xq21.2	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq21.2	uncallable	LGAT	224	cytoband
-Xq21.2	uncallable	Medulloblastoma	91	cytoband
-Xq21.2	uncallable	Meningioma	29	cytoband
-Xq21.2	uncallable	Neurofibroma	17	cytoband
-Xq21.2	uncallable	Other	35	cytoband
-Xq21.2	uncallable	Schwannoma	17	cytoband
-Xq21.2	uncallable	Teratoma	8	cytoband
-Xq21.31	loss	All	33	cytoband
-Xq21.31	uncallable	All	864	cytoband
-Xq21.31	loss	HGAT	11	cytoband
-Xq21.31	loss	LGAT	12	cytoband
-Xq21.31	uncallable	ATRT	28	cytoband
-Xq21.31	uncallable	Chordoma	9	cytoband
-Xq21.31	uncallable	Choroid plexus tumor	14	cytoband
-Xq21.31	uncallable	CNS EFT-CIC	6	cytoband
-Xq21.31	uncallable	CNS neuroblastoma	4	cytoband
-Xq21.31	uncallable	Craniopharyngioma	34	cytoband
-Xq21.31	uncallable	DNET	27	cytoband
-Xq21.31	uncallable	Dysplasia	12	cytoband
-Xq21.31	uncallable	Embryonal Tumor	15	cytoband
-Xq21.31	uncallable	Ependymoma	75	cytoband
-Xq21.31	uncallable	Ganglioglioma	44	cytoband
-Xq21.31	uncallable	Germinoma	5	cytoband
-Xq21.31	uncallable	HGAT	131	cytoband
-Xq21.31	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq21.31	uncallable	LGAT	225	cytoband
-Xq21.31	uncallable	Medulloblastoma	93	cytoband
-Xq21.31	uncallable	Meningioma	29	cytoband
-Xq21.31	uncallable	Neurofibroma	17	cytoband
-Xq21.31	uncallable	Other	35	cytoband
-Xq21.31	uncallable	Schwannoma	17	cytoband
-Xq21.31	uncallable	Teratoma	8	cytoband
-Xq21.32	loss	All	34	cytoband
-Xq21.32	uncallable	All	860	cytoband
-Xq21.32	loss	HGAT	12	cytoband
-Xq21.32	loss	LGAT	12	cytoband
-Xq21.32	uncallable	ATRT	28	cytoband
-Xq21.32	uncallable	Chordoma	9	cytoband
-Xq21.32	uncallable	Choroid plexus tumor	13	cytoband
-Xq21.32	uncallable	CNS EFT-CIC	6	cytoband
-Xq21.32	uncallable	CNS neuroblastoma	4	cytoband
-Xq21.32	uncallable	Craniopharyngioma	34	cytoband
-Xq21.32	uncallable	DNET	27	cytoband
-Xq21.32	uncallable	Dysplasia	12	cytoband
-Xq21.32	uncallable	Embryonal Tumor	15	cytoband
-Xq21.32	uncallable	Ependymoma	75	cytoband
-Xq21.32	uncallable	Ganglioglioma	44	cytoband
-Xq21.32	uncallable	Germinoma	5	cytoband
-Xq21.32	uncallable	HGAT	130	cytoband
-Xq21.32	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq21.32	uncallable	LGAT	224	cytoband
-Xq21.32	uncallable	Medulloblastoma	93	cytoband
-Xq21.32	uncallable	Meningioma	29	cytoband
-Xq21.32	uncallable	Neurofibroma	17	cytoband
-Xq21.32	uncallable	Other	35	cytoband
-Xq21.32	uncallable	Schwannoma	17	cytoband
-Xq21.32	uncallable	Teratoma	8	cytoband
-Xq21.33	gain	All	4	cytoband
-Xq21.33	loss	All	34	cytoband
-Xq21.33	uncallable	All	859	cytoband
-Xq21.33	loss	HGAT	12	cytoband
+Xq11.1	loss	All	5	cytoband
+Xq11.2	loss	All	24	cytoband
+Xq11.2	loss	HGAT	7	cytoband
+Xq11.2	loss	LGAT	9	cytoband
+Xq12	loss	All	23	cytoband
+Xq12	loss	HGAT	7	cytoband
+Xq12	loss	LGAT	9	cytoband
+Xq13.1	loss	All	25	cytoband
+Xq13.1	loss	HGAT	7	cytoband
+Xq13.1	loss	LGAT	10	cytoband
+Xq13.2	gain	All	4	cytoband
+Xq13.2	loss	All	26	cytoband
+Xq13.2	loss	HGAT	7	cytoband
+Xq13.2	loss	LGAT	11	cytoband
+Xq13.3	gain	All	4	cytoband
+Xq13.3	loss	All	28	cytoband
+Xq13.3	loss	HGAT	9	cytoband
+Xq13.3	loss	LGAT	11	cytoband
+Xq21.1	loss	All	29	cytoband
+Xq21.1	loss	HGAT	9	cytoband
+Xq21.1	loss	LGAT	11	cytoband
+Xq21.2	loss	All	29	cytoband
+Xq21.2	loss	HGAT	9	cytoband
+Xq21.2	loss	LGAT	11	cytoband
+Xq21.31	loss	All	29	cytoband
+Xq21.31	loss	HGAT	9	cytoband
+Xq21.31	loss	LGAT	11	cytoband
+Xq21.32	loss	All	29	cytoband
+Xq21.32	loss	HGAT	9	cytoband
+Xq21.32	loss	LGAT	11	cytoband
+Xq21.33	loss	All	29	cytoband
+Xq21.33	loss	HGAT	9	cytoband
 Xq21.33	loss	LGAT	11	cytoband
-Xq21.33	uncallable	ATRT	28	cytoband
-Xq21.33	uncallable	Chordoma	9	cytoband
-Xq21.33	uncallable	Choroid plexus tumor	13	cytoband
-Xq21.33	uncallable	CNS EFT-CIC	6	cytoband
-Xq21.33	uncallable	CNS neuroblastoma	4	cytoband
-Xq21.33	uncallable	Craniopharyngioma	34	cytoband
-Xq21.33	uncallable	DNET	27	cytoband
-Xq21.33	uncallable	Dysplasia	12	cytoband
-Xq21.33	uncallable	Embryonal Tumor	15	cytoband
-Xq21.33	uncallable	Ependymoma	74	cytoband
-Xq21.33	uncallable	Ganglioglioma	44	cytoband
-Xq21.33	uncallable	Germinoma	5	cytoband
-Xq21.33	uncallable	HGAT	129	cytoband
-Xq21.33	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq21.33	uncallable	LGAT	225	cytoband
-Xq21.33	uncallable	Medulloblastoma	92	cytoband
-Xq21.33	uncallable	Meningioma	29	cytoband
-Xq21.33	uncallable	Neurofibroma	17	cytoband
-Xq21.33	uncallable	Other	35	cytoband
-Xq21.33	uncallable	Schwannoma	17	cytoband
-Xq21.33	uncallable	Teratoma	8	cytoband
-Xq22.1	gain	All	4	cytoband
-Xq22.1	loss	All	34	cytoband
-Xq22.1	uncallable	All	855	cytoband
-Xq22.1	loss	HGAT	12	cytoband
+Xq22.1	loss	All	29	cytoband
+Xq22.1	loss	HGAT	9	cytoband
 Xq22.1	loss	LGAT	11	cytoband
-Xq22.1	uncallable	ATRT	28	cytoband
-Xq22.1	uncallable	Chordoma	9	cytoband
-Xq22.1	uncallable	Choroid plexus tumor	13	cytoband
-Xq22.1	uncallable	CNS EFT-CIC	6	cytoband
-Xq22.1	uncallable	CNS neuroblastoma	4	cytoband
-Xq22.1	uncallable	Craniopharyngioma	34	cytoband
-Xq22.1	uncallable	DNET	27	cytoband
-Xq22.1	uncallable	Dysplasia	12	cytoband
-Xq22.1	uncallable	Embryonal Tumor	15	cytoband
-Xq22.1	uncallable	Ependymoma	72	cytoband
-Xq22.1	uncallable	Ganglioglioma	44	cytoband
-Xq22.1	uncallable	Germinoma	5	cytoband
-Xq22.1	uncallable	HGAT	128	cytoband
-Xq22.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq22.1	uncallable	LGAT	225	cytoband
-Xq22.1	uncallable	Medulloblastoma	92	cytoband
-Xq22.1	uncallable	Meningioma	29	cytoband
-Xq22.1	uncallable	Neurofibroma	17	cytoband
-Xq22.1	uncallable	Other	35	cytoband
-Xq22.1	uncallable	Schwannoma	17	cytoband
-Xq22.1	uncallable	Teratoma	8	cytoband
-Xq22.2	gain	All	4	cytoband
-Xq22.2	loss	All	28	cytoband
-Xq22.2	uncallable	All	858	cytoband
-Xq22.2	loss	HGAT	11	cytoband
+Xq22.2	loss	All	24	cytoband
+Xq22.2	loss	HGAT	9	cytoband
 Xq22.2	loss	LGAT	8	cytoband
-Xq22.2	uncallable	ATRT	28	cytoband
-Xq22.2	uncallable	Chordoma	9	cytoband
-Xq22.2	uncallable	Choroid plexus tumor	13	cytoband
-Xq22.2	uncallable	CNS EFT-CIC	6	cytoband
-Xq22.2	uncallable	CNS neuroblastoma	4	cytoband
-Xq22.2	uncallable	Craniopharyngioma	34	cytoband
-Xq22.2	uncallable	DNET	27	cytoband
-Xq22.2	uncallable	Dysplasia	12	cytoband
-Xq22.2	uncallable	Embryonal Tumor	15	cytoband
-Xq22.2	uncallable	Ependymoma	74	cytoband
-Xq22.2	uncallable	Ganglioglioma	44	cytoband
-Xq22.2	uncallable	Germinoma	5	cytoband
-Xq22.2	uncallable	HGAT	129	cytoband
-Xq22.2	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq22.2	uncallable	LGAT	225	cytoband
-Xq22.2	uncallable	Medulloblastoma	92	cytoband
-Xq22.2	uncallable	Meningioma	29	cytoband
-Xq22.2	uncallable	Neurofibroma	17	cytoband
-Xq22.2	uncallable	Other	35	cytoband
-Xq22.2	uncallable	Schwannoma	17	cytoband
-Xq22.2	uncallable	Teratoma	8	cytoband
-Xq22.3	gain	All	5	cytoband
-Xq22.3	loss	All	28	cytoband
-Xq22.3	uncallable	All	863	cytoband
-Xq22.3	loss	HGAT	11	cytoband
+Xq22.3	loss	All	24	cytoband
+Xq22.3	loss	HGAT	9	cytoband
 Xq22.3	loss	LGAT	8	cytoband
-Xq22.3	uncallable	ATRT	28	cytoband
-Xq22.3	uncallable	Chordoma	9	cytoband
-Xq22.3	uncallable	Choroid plexus tumor	13	cytoband
-Xq22.3	uncallable	CNS EFT-CIC	6	cytoband
-Xq22.3	uncallable	CNS neuroblastoma	4	cytoband
-Xq22.3	uncallable	Craniopharyngioma	34	cytoband
-Xq22.3	uncallable	DNET	27	cytoband
-Xq22.3	uncallable	Dysplasia	13	cytoband
-Xq22.3	uncallable	Embryonal Tumor	15	cytoband
-Xq22.3	uncallable	Ependymoma	73	cytoband
-Xq22.3	uncallable	Ganglioglioma	46	cytoband
-Xq22.3	uncallable	Germinoma	5	cytoband
-Xq22.3	uncallable	HGAT	129	cytoband
-Xq22.3	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq22.3	uncallable	LGAT	228	cytoband
-Xq22.3	uncallable	Medulloblastoma	92	cytoband
-Xq22.3	uncallable	Meningioma	29	cytoband
-Xq22.3	uncallable	Neurofibroma	17	cytoband
-Xq22.3	uncallable	Other	35	cytoband
-Xq22.3	uncallable	Schwannoma	17	cytoband
-Xq22.3	uncallable	Teratoma	8	cytoband
-Xq23	gain	All	4	cytoband
-Xq23	loss	All	20	cytoband
-Xq23	uncallable	All	862	cytoband
-Xq23	loss	HGAT	9	cytoband
+Xq23	loss	All	17	cytoband
+Xq23	loss	HGAT	7	cytoband
 Xq23	loss	LGAT	4	cytoband
-Xq23	uncallable	ATRT	28	cytoband
-Xq23	uncallable	Chordoma	9	cytoband
-Xq23	uncallable	Choroid plexus tumor	13	cytoband
-Xq23	uncallable	CNS EFT-CIC	6	cytoband
-Xq23	uncallable	CNS neuroblastoma	4	cytoband
-Xq23	uncallable	Craniopharyngioma	34	cytoband
-Xq23	uncallable	DNET	27	cytoband
-Xq23	uncallable	Dysplasia	12	cytoband
-Xq23	uncallable	Embryonal Tumor	15	cytoband
-Xq23	uncallable	Ependymoma	73	cytoband
-Xq23	uncallable	Ganglioglioma	46	cytoband
-Xq23	uncallable	Germinoma	5	cytoband
-Xq23	uncallable	HGAT	128	cytoband
-Xq23	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq23	uncallable	LGAT	228	cytoband
-Xq23	uncallable	Medulloblastoma	92	cytoband
-Xq23	uncallable	Meningioma	29	cytoband
-Xq23	uncallable	Neurofibroma	17	cytoband
-Xq23	uncallable	Other	35	cytoband
-Xq23	uncallable	Schwannoma	17	cytoband
-Xq23	uncallable	Teratoma	8	cytoband
-Xq24	loss	All	15	cytoband
-Xq24	uncallable	All	876	cytoband
-Xq24	loss	HGAT	10	cytoband
-Xq24	uncallable	ATRT	28	cytoband
-Xq24	uncallable	Chordoma	9	cytoband
-Xq24	uncallable	Choroid plexus tumor	13	cytoband
-Xq24	uncallable	CNS EFT-CIC	7	cytoband
-Xq24	uncallable	CNS neuroblastoma	4	cytoband
-Xq24	uncallable	Craniopharyngioma	34	cytoband
-Xq24	uncallable	DNET	27	cytoband
-Xq24	uncallable	Dysplasia	12	cytoband
-Xq24	uncallable	Embryonal Tumor	15	cytoband
-Xq24	uncallable	Ependymoma	75	cytoband
-Xq24	uncallable	Ganglioglioma	46	cytoband
-Xq24	uncallable	Germinoma	5	cytoband
-Xq24	uncallable	HGAT	131	cytoband
-Xq24	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq24	uncallable	LGAT	233	cytoband
-Xq24	uncallable	Medulloblastoma	93	cytoband
-Xq24	uncallable	Meningioma	30	cytoband
-Xq24	uncallable	Neurofibroma	17	cytoband
-Xq24	uncallable	Other	35	cytoband
-Xq24	uncallable	Schwannoma	17	cytoband
-Xq24	uncallable	Teratoma	9	cytoband
-Xq25	loss	All	29	cytoband
-Xq25	uncallable	All	863	cytoband
-Xq25	loss	HGAT	14	cytoband
+Xq24	loss	All	13	cytoband
+Xq24	loss	HGAT	8	cytoband
+Xq25	loss	All	22	cytoband
+Xq25	loss	HGAT	9	cytoband
 Xq25	loss	LGAT	5	cytoband
-Xq25	uncallable	ATRT	28	cytoband
-Xq25	uncallable	Chordoma	9	cytoband
-Xq25	uncallable	Choroid plexus tumor	14	cytoband
-Xq25	uncallable	CNS EFT-CIC	6	cytoband
-Xq25	uncallable	CNS neuroblastoma	4	cytoband
-Xq25	uncallable	Craniopharyngioma	34	cytoband
-Xq25	uncallable	DNET	27	cytoband
-Xq25	uncallable	Dysplasia	12	cytoband
-Xq25	uncallable	Embryonal Tumor	15	cytoband
-Xq25	uncallable	Ependymoma	74	cytoband
-Xq25	uncallable	Ganglioglioma	44	cytoband
-Xq25	uncallable	Germinoma	5	cytoband
-Xq25	uncallable	HGAT	125	cytoband
-Xq25	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq25	uncallable	LGAT	232	cytoband
-Xq25	uncallable	Medulloblastoma	92	cytoband
-Xq25	uncallable	Meningioma	29	cytoband
-Xq25	uncallable	Neurofibroma	16	cytoband
-Xq25	uncallable	Other	35	cytoband
-Xq25	uncallable	Schwannoma	17	cytoband
-Xq25	uncallable	Teratoma	9	cytoband
-Xq26.1	loss	All	28	cytoband
-Xq26.1	uncallable	All	868	cytoband
-Xq26.1	loss	HGAT	15	cytoband
+Xq26.1	loss	All	21	cytoband
+Xq26.1	loss	HGAT	9	cytoband
 Xq26.1	loss	LGAT	4	cytoband
-Xq26.1	uncallable	ATRT	28	cytoband
-Xq26.1	uncallable	Chordoma	9	cytoband
-Xq26.1	uncallable	Choroid plexus tumor	15	cytoband
-Xq26.1	uncallable	CNS EFT-CIC	6	cytoband
-Xq26.1	uncallable	CNS neuroblastoma	4	cytoband
-Xq26.1	uncallable	Craniopharyngioma	34	cytoband
-Xq26.1	uncallable	DNET	27	cytoband
-Xq26.1	uncallable	Dysplasia	12	cytoband
-Xq26.1	uncallable	Embryonal Tumor	15	cytoband
-Xq26.1	uncallable	Ependymoma	75	cytoband
-Xq26.1	uncallable	Ganglioglioma	44	cytoband
-Xq26.1	uncallable	Germinoma	5	cytoband
-Xq26.1	uncallable	HGAT	127	cytoband
-Xq26.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq26.1	uncallable	LGAT	233	cytoband
-Xq26.1	uncallable	Medulloblastoma	92	cytoband
-Xq26.1	uncallable	Meningioma	28	cytoband
-Xq26.1	uncallable	Neurofibroma	17	cytoband
-Xq26.1	uncallable	Other	35	cytoband
-Xq26.1	uncallable	Schwannoma	17	cytoband
-Xq26.1	uncallable	Teratoma	9	cytoband
-Xq26.2	loss	All	28	cytoband
-Xq26.2	uncallable	All	869	cytoband
-Xq26.2	loss	HGAT	15	cytoband
+Xq26.2	loss	All	20	cytoband
+Xq26.2	loss	HGAT	9	cytoband
 Xq26.2	loss	LGAT	4	cytoband
-Xq26.2	uncallable	ATRT	28	cytoband
-Xq26.2	uncallable	Chordoma	9	cytoband
-Xq26.2	uncallable	Choroid plexus tumor	15	cytoband
-Xq26.2	uncallable	CNS EFT-CIC	6	cytoband
-Xq26.2	uncallable	CNS neuroblastoma	4	cytoband
-Xq26.2	uncallable	Craniopharyngioma	34	cytoband
-Xq26.2	uncallable	DNET	27	cytoband
-Xq26.2	uncallable	Dysplasia	12	cytoband
-Xq26.2	uncallable	Embryonal Tumor	15	cytoband
-Xq26.2	uncallable	Ependymoma	76	cytoband
-Xq26.2	uncallable	Ganglioglioma	45	cytoband
-Xq26.2	uncallable	Germinoma	5	cytoband
-Xq26.2	uncallable	HGAT	127	cytoband
-Xq26.2	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq26.2	uncallable	LGAT	233	cytoband
-Xq26.2	uncallable	Medulloblastoma	91	cytoband
-Xq26.2	uncallable	Meningioma	28	cytoband
-Xq26.2	uncallable	Neurofibroma	17	cytoband
-Xq26.2	uncallable	Other	35	cytoband
-Xq26.2	uncallable	Schwannoma	17	cytoband
-Xq26.2	uncallable	Teratoma	9	cytoband
-Xq26.3	loss	All	22	cytoband
-Xq26.3	uncallable	All	871	cytoband
-Xq26.3	loss	HGAT	12	cytoband
-Xq26.3	uncallable	ATRT	28	cytoband
-Xq26.3	uncallable	Chordoma	9	cytoband
-Xq26.3	uncallable	Choroid plexus tumor	15	cytoband
-Xq26.3	uncallable	CNS EFT-CIC	6	cytoband
-Xq26.3	uncallable	CNS neuroblastoma	4	cytoband
-Xq26.3	uncallable	Craniopharyngioma	34	cytoband
-Xq26.3	uncallable	DNET	27	cytoband
-Xq26.3	uncallable	Dysplasia	13	cytoband
-Xq26.3	uncallable	Embryonal Tumor	15	cytoband
-Xq26.3	uncallable	Ependymoma	74	cytoband
-Xq26.3	uncallable	Ganglioglioma	45	cytoband
-Xq26.3	uncallable	Germinoma	5	cytoband
-Xq26.3	uncallable	HGAT	129	cytoband
-Xq26.3	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq26.3	uncallable	LGAT	232	cytoband
-Xq26.3	uncallable	Medulloblastoma	92	cytoband
-Xq26.3	uncallable	Meningioma	29	cytoband
-Xq26.3	uncallable	Neurofibroma	17	cytoband
-Xq26.3	uncallable	Other	35	cytoband
-Xq26.3	uncallable	Schwannoma	17	cytoband
-Xq26.3	uncallable	Teratoma	9	cytoband
-Xq27.1	loss	All	26	cytoband
-Xq27.1	uncallable	All	871	cytoband
-Xq27.1	loss	HGAT	13	cytoband
+Xq26.3	loss	All	14	cytoband
+Xq26.3	loss	HGAT	7	cytoband
+Xq27.1	loss	All	17	cytoband
+Xq27.1	loss	HGAT	7	cytoband
 Xq27.1	loss	LGAT	5	cytoband
-Xq27.1	uncallable	ATRT	28	cytoband
-Xq27.1	uncallable	Chordoma	9	cytoband
-Xq27.1	uncallable	Choroid plexus tumor	15	cytoband
-Xq27.1	uncallable	CNS EFT-CIC	6	cytoband
-Xq27.1	uncallable	CNS neuroblastoma	4	cytoband
-Xq27.1	uncallable	Craniopharyngioma	34	cytoband
-Xq27.1	uncallable	DNET	27	cytoband
-Xq27.1	uncallable	Dysplasia	13	cytoband
-Xq27.1	uncallable	Embryonal Tumor	15	cytoband
-Xq27.1	uncallable	Ependymoma	74	cytoband
-Xq27.1	uncallable	Ganglioglioma	45	cytoband
-Xq27.1	uncallable	Germinoma	5	cytoband
-Xq27.1	uncallable	HGAT	129	cytoband
-Xq27.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq27.1	uncallable	LGAT	232	cytoband
-Xq27.1	uncallable	Medulloblastoma	92	cytoband
-Xq27.1	uncallable	Meningioma	29	cytoband
-Xq27.1	uncallable	Neurofibroma	17	cytoband
-Xq27.1	uncallable	Other	35	cytoband
-Xq27.1	uncallable	Schwannoma	17	cytoband
-Xq27.1	uncallable	Teratoma	9	cytoband
-Xq27.2	loss	All	26	cytoband
-Xq27.2	uncallable	All	868	cytoband
-Xq27.2	loss	HGAT	14	cytoband
+Xq27.2	loss	All	18	cytoband
+Xq27.2	loss	HGAT	8	cytoband
 Xq27.2	loss	LGAT	5	cytoband
-Xq27.2	uncallable	ATRT	28	cytoband
-Xq27.2	uncallable	Chordoma	9	cytoband
-Xq27.2	uncallable	Choroid plexus tumor	15	cytoband
-Xq27.2	uncallable	CNS EFT-CIC	6	cytoband
-Xq27.2	uncallable	CNS neuroblastoma	4	cytoband
-Xq27.2	uncallable	Craniopharyngioma	34	cytoband
-Xq27.2	uncallable	DNET	27	cytoband
-Xq27.2	uncallable	Dysplasia	13	cytoband
-Xq27.2	uncallable	Embryonal Tumor	15	cytoband
-Xq27.2	uncallable	Ependymoma	73	cytoband
-Xq27.2	uncallable	Ganglioglioma	45	cytoband
-Xq27.2	uncallable	Germinoma	5	cytoband
-Xq27.2	uncallable	HGAT	128	cytoband
-Xq27.2	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq27.2	uncallable	LGAT	231	cytoband
-Xq27.2	uncallable	Medulloblastoma	91	cytoband
-Xq27.2	uncallable	Meningioma	30	cytoband
-Xq27.2	uncallable	Neurofibroma	17	cytoband
-Xq27.2	uncallable	Other	35	cytoband
-Xq27.2	uncallable	Schwannoma	17	cytoband
-Xq27.2	uncallable	Teratoma	9	cytoband
-Xq27.3	loss	All	19	cytoband
-Xq27.3	uncallable	All	872	cytoband
-Xq27.3	loss	HGAT	8	cytoband
+Xq27.3	loss	All	14	cytoband
+Xq27.3	loss	HGAT	4	cytoband
 Xq27.3	loss	LGAT	5	cytoband
-Xq27.3	uncallable	ATRT	28	cytoband
-Xq27.3	uncallable	Chordoma	9	cytoband
-Xq27.3	uncallable	Choroid plexus tumor	14	cytoband
-Xq27.3	uncallable	CNS EFT-CIC	6	cytoband
-Xq27.3	uncallable	CNS neuroblastoma	4	cytoband
-Xq27.3	uncallable	Craniopharyngioma	34	cytoband
-Xq27.3	uncallable	DNET	27	cytoband
-Xq27.3	uncallable	Dysplasia	12	cytoband
-Xq27.3	uncallable	Embryonal Tumor	15	cytoband
-Xq27.3	uncallable	Ependymoma	74	cytoband
-Xq27.3	uncallable	Ganglioglioma	45	cytoband
-Xq27.3	uncallable	Germinoma	5	cytoband
-Xq27.3	uncallable	HGAT	133	cytoband
-Xq27.3	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq27.3	uncallable	LGAT	231	cytoband
-Xq27.3	uncallable	Medulloblastoma	92	cytoband
-Xq27.3	uncallable	Meningioma	29	cytoband
-Xq27.3	uncallable	Neurofibroma	17	cytoband
-Xq27.3	uncallable	Other	35	cytoband
-Xq27.3	uncallable	Schwannoma	17	cytoband
-Xq27.3	uncallable	Teratoma	9	cytoband
-Xq28	loss	All	10	cytoband
-Xq28	uncallable	All	873	cytoband
-Xq28	loss	HGAT	5	cytoband
-Xq28	uncallable	ATRT	28	cytoband
-Xq28	uncallable	Chordoma	9	cytoband
-Xq28	uncallable	Choroid plexus tumor	14	cytoband
-Xq28	uncallable	CNS EFT-CIC	7	cytoband
-Xq28	uncallable	CNS neuroblastoma	4	cytoband
-Xq28	uncallable	Craniopharyngioma	34	cytoband
-Xq28	uncallable	DNET	27	cytoband
-Xq28	uncallable	Dysplasia	12	cytoband
-Xq28	uncallable	Embryonal Tumor	15	cytoband
-Xq28	uncallable	Ependymoma	72	cytoband
-Xq28	uncallable	Ganglioglioma	45	cytoband
-Xq28	uncallable	Germinoma	5	cytoband
-Xq28	uncallable	HGAT	135	cytoband
-Xq28	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Xq28	uncallable	LGAT	232	cytoband
-Xq28	uncallable	Medulloblastoma	92	cytoband
-Xq28	uncallable	Meningioma	28	cytoband
-Xq28	uncallable	Neurofibroma	17	cytoband
-Xq28	uncallable	Other	35	cytoband
-Xq28	uncallable	Schwannoma	17	cytoband
-Xq28	uncallable	Teratoma	9	cytoband
+Xq28	loss	All	6	cytoband
 XRCC2	gain	All	9	gene
 XRCC3	gain	All	4	gene
 XRCC3	loss	All	11	gene
@@ -26747,122 +24034,6 @@ YES1	loss	Meningioma	8	gene
 YES1	loss	Neurofibroma	5	gene
 YES1	loss	Other	7	gene
 YES1	loss	Schwannoma	5	gene
-Yp	uncallable	All	915	arm
-Yp	uncallable	ATRT	29	arm
-Yp	uncallable	Chordoma	9	arm
-Yp	uncallable	Choroid plexus tumor	15	arm
-Yp	uncallable	CNS EFT-CIC	7	arm
-Yp	uncallable	CNS neuroblastoma	4	arm
-Yp	uncallable	Craniopharyngioma	34	arm
-Yp	uncallable	DNET	27	arm
-Yp	uncallable	Dysplasia	13	arm
-Yp	uncallable	Embryonal Tumor	15	arm
-Yp	uncallable	Ependymoma	79	arm
-Yp	uncallable	Ganglioglioma	47	arm
-Yp	uncallable	Germinoma	5	arm
-Yp	uncallable	HGAT	142	arm
-Yp	uncallable	Langerhans Cell histiocytosis	4	arm
-Yp	uncallable	LGAT	242	arm
-Yp	uncallable	Medulloblastoma	101	arm
-Yp	uncallable	Meningioma	30	arm
-Yp	uncallable	Neurofibroma	17	arm
-Yp	uncallable	Other	35	arm
-Yp	uncallable	Pineoblastoma	4	arm
-Yp	uncallable	Schwannoma	18	arm
-Yp	uncallable	Teratoma	9	arm
-Yp11.1	loss	All	4	cytoband
-Yp11.1	uncallable	All	910	cytoband
-Yp11.1	uncallable	ATRT	29	cytoband
-Yp11.1	uncallable	Chordoma	9	cytoband
-Yp11.1	uncallable	Choroid plexus tumor	15	cytoband
-Yp11.1	uncallable	CNS EFT-CIC	7	cytoband
-Yp11.1	uncallable	CNS neuroblastoma	4	cytoband
-Yp11.1	uncallable	Craniopharyngioma	34	cytoband
-Yp11.1	uncallable	DNET	27	cytoband
-Yp11.1	uncallable	Dysplasia	12	cytoband
-Yp11.1	uncallable	Embryonal Tumor	15	cytoband
-Yp11.1	uncallable	Ependymoma	79	cytoband
-Yp11.1	uncallable	Ganglioglioma	47	cytoband
-Yp11.1	uncallable	Germinoma	5	cytoband
-Yp11.1	uncallable	HGAT	141	cytoband
-Yp11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Yp11.1	uncallable	LGAT	239	cytoband
-Yp11.1	uncallable	Medulloblastoma	101	cytoband
-Yp11.1	uncallable	Meningioma	30	cytoband
-Yp11.1	uncallable	Neurofibroma	17	cytoband
-Yp11.1	uncallable	Other	35	cytoband
-Yp11.1	uncallable	Pineoblastoma	4	cytoband
-Yp11.1	uncallable	Schwannoma	18	cytoband
-Yp11.1	uncallable	Teratoma	9	cytoband
-Yp11.2	uncallable	All	915	cytoband
-Yp11.2	uncallable	ATRT	29	cytoband
-Yp11.2	uncallable	Chordoma	9	cytoband
-Yp11.2	uncallable	Choroid plexus tumor	15	cytoband
-Yp11.2	uncallable	CNS EFT-CIC	7	cytoband
-Yp11.2	uncallable	CNS neuroblastoma	4	cytoband
-Yp11.2	uncallable	Craniopharyngioma	34	cytoband
-Yp11.2	uncallable	DNET	27	cytoband
-Yp11.2	uncallable	Dysplasia	13	cytoband
-Yp11.2	uncallable	Embryonal Tumor	15	cytoband
-Yp11.2	uncallable	Ependymoma	79	cytoband
-Yp11.2	uncallable	Ganglioglioma	47	cytoband
-Yp11.2	uncallable	Germinoma	5	cytoband
-Yp11.2	uncallable	HGAT	142	cytoband
-Yp11.2	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Yp11.2	uncallable	LGAT	242	cytoband
-Yp11.2	uncallable	Medulloblastoma	101	cytoband
-Yp11.2	uncallable	Meningioma	30	cytoband
-Yp11.2	uncallable	Neurofibroma	17	cytoband
-Yp11.2	uncallable	Other	35	cytoband
-Yp11.2	uncallable	Pineoblastoma	4	cytoband
-Yp11.2	uncallable	Schwannoma	18	cytoband
-Yp11.2	uncallable	Teratoma	9	cytoband
-Yp11.31	uncallable	All	915	cytoband
-Yp11.31	uncallable	ATRT	29	cytoband
-Yp11.31	uncallable	Chordoma	9	cytoband
-Yp11.31	uncallable	Choroid plexus tumor	15	cytoband
-Yp11.31	uncallable	CNS EFT-CIC	7	cytoband
-Yp11.31	uncallable	CNS neuroblastoma	4	cytoband
-Yp11.31	uncallable	Craniopharyngioma	34	cytoband
-Yp11.31	uncallable	DNET	27	cytoband
-Yp11.31	uncallable	Dysplasia	13	cytoband
-Yp11.31	uncallable	Embryonal Tumor	15	cytoband
-Yp11.31	uncallable	Ependymoma	79	cytoband
-Yp11.31	uncallable	Ganglioglioma	47	cytoband
-Yp11.31	uncallable	Germinoma	5	cytoband
-Yp11.31	uncallable	HGAT	142	cytoband
-Yp11.31	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Yp11.31	uncallable	LGAT	242	cytoband
-Yp11.31	uncallable	Medulloblastoma	101	cytoband
-Yp11.31	uncallable	Meningioma	30	cytoband
-Yp11.31	uncallable	Neurofibroma	17	cytoband
-Yp11.31	uncallable	Other	35	cytoband
-Yp11.31	uncallable	Pineoblastoma	4	cytoband
-Yp11.31	uncallable	Schwannoma	18	cytoband
-Yp11.31	uncallable	Teratoma	9	cytoband
-Yp11.32	uncallable	All	915	cytoband
-Yp11.32	uncallable	ATRT	29	cytoband
-Yp11.32	uncallable	Chordoma	9	cytoband
-Yp11.32	uncallable	Choroid plexus tumor	15	cytoband
-Yp11.32	uncallable	CNS EFT-CIC	7	cytoband
-Yp11.32	uncallable	CNS neuroblastoma	4	cytoband
-Yp11.32	uncallable	Craniopharyngioma	34	cytoband
-Yp11.32	uncallable	DNET	27	cytoband
-Yp11.32	uncallable	Dysplasia	13	cytoband
-Yp11.32	uncallable	Embryonal Tumor	15	cytoband
-Yp11.32	uncallable	Ependymoma	79	cytoband
-Yp11.32	uncallable	Ganglioglioma	47	cytoband
-Yp11.32	uncallable	Germinoma	5	cytoband
-Yp11.32	uncallable	HGAT	142	cytoband
-Yp11.32	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Yp11.32	uncallable	LGAT	242	cytoband
-Yp11.32	uncallable	Medulloblastoma	101	cytoband
-Yp11.32	uncallable	Meningioma	30	cytoband
-Yp11.32	uncallable	Neurofibroma	17	cytoband
-Yp11.32	uncallable	Other	35	cytoband
-Yp11.32	uncallable	Pineoblastoma	4	cytoband
-Yp11.32	uncallable	Schwannoma	18	cytoband
-Yp11.32	uncallable	Teratoma	9	cytoband
 YPEL1	loss	All	243	gene
 YPEL1	loss	ATRT	9	gene
 YPEL1	loss	Choroid plexus tumor	7	gene
@@ -26892,198 +24063,6 @@ YPEL3	loss	Meningioma	8	gene
 YPEL3	loss	Neurofibroma	5	gene
 YPEL3	loss	Other	9	gene
 YPEL3	loss	Schwannoma	5	gene
-Yq	uncallable	All	915	arm
-Yq	uncallable	ATRT	29	arm
-Yq	uncallable	Chordoma	9	arm
-Yq	uncallable	Choroid plexus tumor	15	arm
-Yq	uncallable	CNS EFT-CIC	7	arm
-Yq	uncallable	CNS neuroblastoma	4	arm
-Yq	uncallable	Craniopharyngioma	34	arm
-Yq	uncallable	DNET	27	arm
-Yq	uncallable	Dysplasia	13	arm
-Yq	uncallable	Embryonal Tumor	15	arm
-Yq	uncallable	Ependymoma	79	arm
-Yq	uncallable	Ganglioglioma	47	arm
-Yq	uncallable	Germinoma	5	arm
-Yq	uncallable	HGAT	142	arm
-Yq	uncallable	Langerhans Cell histiocytosis	4	arm
-Yq	uncallable	LGAT	242	arm
-Yq	uncallable	Medulloblastoma	101	arm
-Yq	uncallable	Meningioma	30	arm
-Yq	uncallable	Neurofibroma	17	arm
-Yq	uncallable	Other	35	arm
-Yq	uncallable	Pineoblastoma	4	arm
-Yq	uncallable	Schwannoma	18	arm
-Yq	uncallable	Teratoma	9	arm
-Yq11.1	loss	All	4	cytoband
-Yq11.1	uncallable	All	910	cytoband
-Yq11.1	uncallable	ATRT	29	cytoband
-Yq11.1	uncallable	Chordoma	9	cytoband
-Yq11.1	uncallable	Choroid plexus tumor	15	cytoband
-Yq11.1	uncallable	CNS EFT-CIC	7	cytoband
-Yq11.1	uncallable	CNS neuroblastoma	4	cytoband
-Yq11.1	uncallable	Craniopharyngioma	34	cytoband
-Yq11.1	uncallable	DNET	27	cytoband
-Yq11.1	uncallable	Dysplasia	12	cytoband
-Yq11.1	uncallable	Embryonal Tumor	15	cytoband
-Yq11.1	uncallable	Ependymoma	79	cytoband
-Yq11.1	uncallable	Ganglioglioma	47	cytoband
-Yq11.1	uncallable	Germinoma	5	cytoband
-Yq11.1	uncallable	HGAT	141	cytoband
-Yq11.1	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Yq11.1	uncallable	LGAT	239	cytoband
-Yq11.1	uncallable	Medulloblastoma	101	cytoband
-Yq11.1	uncallable	Meningioma	30	cytoband
-Yq11.1	uncallable	Neurofibroma	17	cytoband
-Yq11.1	uncallable	Other	35	cytoband
-Yq11.1	uncallable	Pineoblastoma	4	cytoband
-Yq11.1	uncallable	Schwannoma	18	cytoband
-Yq11.1	uncallable	Teratoma	9	cytoband
-Yq11.21	uncallable	All	897	cytoband
-Yq11.21	uncallable	ATRT	29	cytoband
-Yq11.21	uncallable	Chordoma	9	cytoband
-Yq11.21	uncallable	Choroid plexus tumor	15	cytoband
-Yq11.21	uncallable	CNS EFT-CIC	7	cytoband
-Yq11.21	uncallable	CNS neuroblastoma	4	cytoband
-Yq11.21	uncallable	Craniopharyngioma	34	cytoband
-Yq11.21	uncallable	DNET	27	cytoband
-Yq11.21	uncallable	Dysplasia	12	cytoband
-Yq11.21	uncallable	Embryonal Tumor	15	cytoband
-Yq11.21	uncallable	Ependymoma	79	cytoband
-Yq11.21	uncallable	Ganglioglioma	46	cytoband
-Yq11.21	uncallable	Germinoma	5	cytoband
-Yq11.21	uncallable	HGAT	134	cytoband
-Yq11.21	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Yq11.21	uncallable	LGAT	237	cytoband
-Yq11.21	uncallable	Medulloblastoma	99	cytoband
-Yq11.21	uncallable	Meningioma	30	cytoband
-Yq11.21	uncallable	Neurofibroma	17	cytoband
-Yq11.21	uncallable	Other	34	cytoband
-Yq11.21	uncallable	Pineoblastoma	4	cytoband
-Yq11.21	uncallable	Schwannoma	18	cytoband
-Yq11.21	uncallable	Teratoma	9	cytoband
-Yq11.221	loss	All	45	cytoband
-Yq11.221	uncallable	All	868	cytoband
-Yq11.221	loss	HGAT	12	cytoband
-Yq11.221	loss	LGAT	11	cytoband
-Yq11.221	loss	Medulloblastoma	8	cytoband
-Yq11.221	uncallable	ATRT	28	cytoband
-Yq11.221	uncallable	Chordoma	9	cytoband
-Yq11.221	uncallable	Choroid plexus tumor	15	cytoband
-Yq11.221	uncallable	CNS EFT-CIC	6	cytoband
-Yq11.221	uncallable	CNS neuroblastoma	4	cytoband
-Yq11.221	uncallable	Craniopharyngioma	34	cytoband
-Yq11.221	uncallable	DNET	27	cytoband
-Yq11.221	uncallable	Dysplasia	12	cytoband
-Yq11.221	uncallable	Embryonal Tumor	15	cytoband
-Yq11.221	uncallable	Ependymoma	76	cytoband
-Yq11.221	uncallable	Ganglioglioma	44	cytoband
-Yq11.221	uncallable	Germinoma	5	cytoband
-Yq11.221	uncallable	HGAT	130	cytoband
-Yq11.221	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Yq11.221	uncallable	LGAT	230	cytoband
-Yq11.221	uncallable	Medulloblastoma	93	cytoband
-Yq11.221	uncallable	Meningioma	29	cytoband
-Yq11.221	uncallable	Neurofibroma	17	cytoband
-Yq11.221	uncallable	Other	34	cytoband
-Yq11.221	uncallable	Schwannoma	17	cytoband
-Yq11.221	uncallable	Teratoma	8	cytoband
-Yq11.222	loss	All	36	cytoband
-Yq11.222	uncallable	All	878	cytoband
-Yq11.222	loss	HGAT	11	cytoband
-Yq11.222	loss	LGAT	10	cytoband
-Yq11.222	loss	Medulloblastoma	6	cytoband
-Yq11.222	uncallable	ATRT	28	cytoband
-Yq11.222	uncallable	Chordoma	9	cytoband
-Yq11.222	uncallable	Choroid plexus tumor	15	cytoband
-Yq11.222	uncallable	CNS EFT-CIC	7	cytoband
-Yq11.222	uncallable	CNS neuroblastoma	4	cytoband
-Yq11.222	uncallable	Craniopharyngioma	34	cytoband
-Yq11.222	uncallable	DNET	27	cytoband
-Yq11.222	uncallable	Dysplasia	12	cytoband
-Yq11.222	uncallable	Embryonal Tumor	15	cytoband
-Yq11.222	uncallable	Ependymoma	77	cytoband
-Yq11.222	uncallable	Ganglioglioma	45	cytoband
-Yq11.222	uncallable	Germinoma	5	cytoband
-Yq11.222	uncallable	HGAT	131	cytoband
-Yq11.222	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Yq11.222	uncallable	LGAT	231	cytoband
-Yq11.222	uncallable	Medulloblastoma	95	cytoband
-Yq11.222	uncallable	Meningioma	30	cytoband
-Yq11.222	uncallable	Neurofibroma	17	cytoband
-Yq11.222	uncallable	Other	34	cytoband
-Yq11.222	uncallable	Pineoblastoma	4	cytoband
-Yq11.222	uncallable	Schwannoma	17	cytoband
-Yq11.222	uncallable	Teratoma	9	cytoband
-Yq11.223	uncallable	All	908	cytoband
-Yq11.223	uncallable	ATRT	29	cytoband
-Yq11.223	uncallable	Chordoma	9	cytoband
-Yq11.223	uncallable	Choroid plexus tumor	15	cytoband
-Yq11.223	uncallable	CNS EFT-CIC	7	cytoband
-Yq11.223	uncallable	CNS neuroblastoma	4	cytoband
-Yq11.223	uncallable	Craniopharyngioma	34	cytoband
-Yq11.223	uncallable	DNET	27	cytoband
-Yq11.223	uncallable	Dysplasia	13	cytoband
-Yq11.223	uncallable	Embryonal Tumor	15	cytoband
-Yq11.223	uncallable	Ependymoma	79	cytoband
-Yq11.223	uncallable	Ganglioglioma	47	cytoband
-Yq11.223	uncallable	Germinoma	5	cytoband
-Yq11.223	uncallable	HGAT	138	cytoband
-Yq11.223	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Yq11.223	uncallable	LGAT	240	cytoband
-Yq11.223	uncallable	Medulloblastoma	101	cytoband
-Yq11.223	uncallable	Meningioma	30	cytoband
-Yq11.223	uncallable	Neurofibroma	17	cytoband
-Yq11.223	uncallable	Other	34	cytoband
-Yq11.223	uncallable	Pineoblastoma	4	cytoband
-Yq11.223	uncallable	Schwannoma	18	cytoband
-Yq11.223	uncallable	Teratoma	9	cytoband
-Yq11.23	uncallable	All	912	cytoband
-Yq11.23	uncallable	ATRT	29	cytoband
-Yq11.23	uncallable	Chordoma	9	cytoband
-Yq11.23	uncallable	Choroid plexus tumor	15	cytoband
-Yq11.23	uncallable	CNS EFT-CIC	7	cytoband
-Yq11.23	uncallable	CNS neuroblastoma	4	cytoband
-Yq11.23	uncallable	Craniopharyngioma	34	cytoband
-Yq11.23	uncallable	DNET	27	cytoband
-Yq11.23	uncallable	Dysplasia	13	cytoband
-Yq11.23	uncallable	Embryonal Tumor	15	cytoband
-Yq11.23	uncallable	Ependymoma	79	cytoband
-Yq11.23	uncallable	Ganglioglioma	47	cytoband
-Yq11.23	uncallable	Germinoma	5	cytoband
-Yq11.23	uncallable	HGAT	140	cytoband
-Yq11.23	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Yq11.23	uncallable	LGAT	242	cytoband
-Yq11.23	uncallable	Medulloblastoma	101	cytoband
-Yq11.23	uncallable	Meningioma	30	cytoband
-Yq11.23	uncallable	Neurofibroma	17	cytoband
-Yq11.23	uncallable	Other	34	cytoband
-Yq11.23	uncallable	Pineoblastoma	4	cytoband
-Yq11.23	uncallable	Schwannoma	18	cytoband
-Yq11.23	uncallable	Teratoma	9	cytoband
-Yq12	uncallable	All	915	cytoband
-Yq12	uncallable	ATRT	29	cytoband
-Yq12	uncallable	Chordoma	9	cytoband
-Yq12	uncallable	Choroid plexus tumor	15	cytoband
-Yq12	uncallable	CNS EFT-CIC	7	cytoband
-Yq12	uncallable	CNS neuroblastoma	4	cytoband
-Yq12	uncallable	Craniopharyngioma	34	cytoband
-Yq12	uncallable	DNET	27	cytoband
-Yq12	uncallable	Dysplasia	13	cytoband
-Yq12	uncallable	Embryonal Tumor	15	cytoband
-Yq12	uncallable	Ependymoma	79	cytoband
-Yq12	uncallable	Ganglioglioma	47	cytoband
-Yq12	uncallable	Germinoma	5	cytoband
-Yq12	uncallable	HGAT	142	cytoband
-Yq12	uncallable	Langerhans Cell histiocytosis	4	cytoband
-Yq12	uncallable	LGAT	242	cytoband
-Yq12	uncallable	Medulloblastoma	101	cytoband
-Yq12	uncallable	Meningioma	30	cytoband
-Yq12	uncallable	Neurofibroma	17	cytoband
-Yq12	uncallable	Other	35	cytoband
-Yq12	uncallable	Pineoblastoma	4	cytoband
-Yq12	uncallable	Schwannoma	18	cytoband
-Yq12	uncallable	Teratoma	9	cytoband
 YTHDF1	gain	All	12	gene
 YTHDF1	gain	HGAT	6	gene
 YWHAE	loss	All	223	gene

@@ -50,7 +50,10 @@ results_dir <- "results"
 Read in focal CN dominant status calls prepared in `05-define-most-focal-cn-units.Rmd`.
 
 ```{r}
-focal_cn_df <- read_tsv(file.path(results_dir, "consensus_seg_most_focal_cn_status.tsv.gz"))
+focal_cn_df <-
+  read_tsv(file.path(results_dir, "consensus_seg_most_focal_cn_status.tsv.gz")) %>%
+  # Filter out the `uncallable` statuses
+  filter(!(status == "uncallable"))
 
 metadata <- read_tsv(file.path("..", "..", "data", "pbta-histologies.tsv"))
 ```
@@ -151,9 +154,13 @@ final_df_recurrent
 ```{r}
 # Save list of genes that have `recurrent` status calls for use in downstream
 # analyses
-recurrent_genes <- final_df_recurrent %>%
-  # Filter to only gene regions
-  filter(region_type == "gene") %>%
+top_recurrent_genes <- final_df_recurrent %>%
+  # Arrange my descending count
+  arrange(desc(count)) %>%
+  # Filter to only gene regions and to genes with more than 200 samples in
+  # agreement
+  filter(region_type == "gene",
+         count > 200) %>%
   # Ungroup data from previos step
   ungroup() %>%
   # Select only the gene names
@@ -163,7 +170,7 @@ recurrent_genes <- final_df_recurrent %>%
 
 # Save list of recurrent genes to file
 write_tsv(
-  recurrent_genes,
+  top_recurrent_genes,
   file.path(results_dir, "consensus_seg_focal_cn_recurrent_genes.tsv")
 )
 ```
