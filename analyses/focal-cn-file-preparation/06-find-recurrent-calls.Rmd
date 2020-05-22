@@ -155,18 +155,16 @@ final_df_recurrent
 # Save list of genes that have `recurrent` status calls for use in downstream
 # analyses
 top_recurrent_genes <- final_df_recurrent %>%
-  # Arrange my descending count
-  arrange(desc(count)) %>%
-  # Filter to only gene regions and to genes with more than 240 samples in
-  # agreement -- the count of 240 was chosen based on the distribution of counts
-  filter(region_type == "gene",
-         count > 240) %>%
-  # Ungroup data from previos step
+  # Ungroup data from previous step
   ungroup() %>%
+  # Arrange by descending count
+  arrange(desc(count)) %>%
+  # Filter to only gene regions
+  filter(region_type == "gene") %>%
+  # Select the top genes by count
+  top_n(20, count) %>%
   # Select only the gene names
-  select(gene = region) %>%
-  # Use the distinct function to remove resulting duplicates from above step
-  distinct()
+  select(gene = region)
 
 # Save list of recurrent genes to file
 write_tsv(
