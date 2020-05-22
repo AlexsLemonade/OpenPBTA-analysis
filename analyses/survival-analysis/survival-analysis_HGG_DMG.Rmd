@@ -65,8 +65,8 @@ independent_primary_file <- file.path(
 Declare output file paths for HGG/DMG all subtypes. 
 
 ```{r Set output file paths}
-kap_meier_plot_file <- file.path(plots_dir, "survival_curve_HGG_DMG.pdf")
-kap_meier_model_file <- file.path(results_dir, "survival_model_HGG_DMG.tsv")
+kap_meier_plot_file <- file.path(plots_dir, "survival_curve_DMG_H3_K28_v_HGG_H3_wildtype.pdf")
+kap_meier_model_file <- file.path(results_dir, "survival_model_DMG_H3_K28_v_HGG_H3_wildtype.tsv")
 ```
 
 ## Import the metadata
@@ -94,12 +94,19 @@ This way we subset the metadata to 1 single primary sample per patient ID
 
 # Patients with multiple different molecular subtype might affect downstream analysis for survival so using independent_primary sample set which has 1-1 sample-patient matches
 independent_primary <- readr::read_tsv(independent_primary_file)
+
 # select only independent primary bs_ids to get overall survival
 metadata <- metadata %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in%
                   independent_primary$Kids_First_Biospecimen_ID)
 
+# find molecular subtypes which have more than 3 participants
+filter_molecular_subtype <- metadata %>% group_by(molecular_subtype) %>% dplyr::tally() %>% dplyr::filter(n>3)
 
+# select only molecular_subtypes that have more than 3 participants
+metadata <- metadata %>%
+  dplyr::filter(molecular_subtype %in%
+                  filter_molecular_subtype$molecular_subtype)
 
 ```
 ## Kaplan-Meier for all HGG/DMG subtypes
@@ -155,66 +162,7 @@ cowplot::save_plot(filename = kap_meier_plot_file, plot = surv_plot_all_subtype)
 readr::write_tsv(surv_median(kap_fit$model), kap_meier_model_file)
 ```
 
-### Subtypes comapred to wildtype
-Lets look at Kap Meier plots for each mutant subtype to H3 wildtype
 
-```{r Kaplan Meier per subtype compared to wildtype}
-
-list_subtypes <- c("DMG, H3 K28",
-                   "BRAF V600E",
-                   "HGG, H3 G35",
-                   "HGG, IDH",
-                   "DMG, H3 K28,BRAF V600E")
-for (i in 1:length(list_subtypes)){
-  kap_meier_plot_file <-
-    file.path(plots_dir,
-              paste0("Kap_meier_Diffuse_astrocytic_and_oligodendroglial_tumor_",
-                     gsub(" ", "_", list_subtypes[i]), ".pdf"))
-  kap_meier_model_file <-
-    file.path(results_dir,
-              paste0("Kap_meier_Diffuse_astrocytic_and_oligodendroglial_tumor_",
-                     gsub(" ", "_", list_subtypes[i]), ".tsv"))
-  metadata_test <- metadata %>%
-    dplyr::filter(
-      molecular_subtype %in% c(list_subtypes[i], "HGG, H3 wildtype") )
-  kap_fit <- survival_analysis(metadata_test,
-                               ind_var = "molecular_subtype",
-                               test = "kap.meier",
-                               metadata_sample_col = "Kids_First_Biospecimen_ID"
-  )
-
-  #plot curve
-  surv_plot <- survminer::ggsurvplot(kap_fit$model,
-                                     pval = TRUE,
-                                     data = kap_fit$original_data,
-                                     risk.table = TRUE,
-                                     xlim = c(0, 3000),
-                                     break.time.by = 500,
-                                     ggtheme = theme_minimal(),
-                                     risk.table.y.text.col = TRUE,
-                                     risk.table.y.text = FALSE
-  )
-
-  surv_plot$plot <- surv_plot$plot + ggtitle(
-    paste0("Kap_meier_Diffuse_astrocytic_and_oligodendroglial_tumor")) +
-    theme(legend.position = "right")
-
-  # Make this plot a combined plot
-  surv_plot <- cowplot::plot_grid(
-    surv_plot[[1]],
-    surv_plot[[2]],
-    nrow = 2,
-    rel_heights = c(2.5, 1))
-
-  # Print to file
-  cowplot::save_plot(
-    filename = kap_meier_plot_file,
-    plot = surv_plot,
-    base_height = 10)
-  # Save to file
-  readr::write_tsv(surv_median(kap_fit$model), kap_meier_model_file)
-}
-```
 
 
 
