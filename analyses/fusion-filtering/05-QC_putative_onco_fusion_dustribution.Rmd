@@ -48,7 +48,7 @@ dataPutativeFusion file used as input is
 
 + Plus non-oncogenic fusion which are called by both callers and found in more than 2 samples in each histology (these non-oncogenic fusions are removed if they fuse to more than 5 partner fusions or found in more than 1 histology.)
 
-This notebook assumes you are in OpenPBTA-analysis project folder structure and have run steps 1:4 of fusion_filtering
+This notebook assumes you are in OpenPBTA-analysis project folder structure and have run steps 1:4 of fusion-filtering
 
 ### Load data
 

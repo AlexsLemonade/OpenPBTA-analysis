@@ -18,7 +18,7 @@ Copy number aberrations are not currently considered when evaluating the classif
 The analysis can be run with the following (assuming you are in the root repository of the project):
 
 ```
-bash analyses/tp53_nf1_score/run_classifier.sh
+bash analyses/tp53-nf1-score/run_classifier.sh
 ```
 
 #### Output
@@ -32,14 +32,14 @@ _NF1_ positive examples are additionally filtered to remove missense mutations, 
 Because some of the classifier genes are not present in the OpenPBTA dataset, the scores should be interpreted as continuous values representing relative gene alterations and not as probabilities.
 
 ROC curve for TP53 classifier scores for stranded RNAseq data
-![stranded RNAseq TP53 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/stranded_TP53.png)
+![stranded RNAseq TP53 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53-nf1-score/results/stranded_TP53.png)
 
 ROC curve for TP53 classifier scores for polya RNAseq data
-![polya RNAseq TP53 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/polya_TP53.png)
+![polya RNAseq TP53 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53-nf1-score/results/polya_TP53.png)
 
 ROC curve for NF1 classifier scores for stranded RNAseq data
-![stranded RNAseq NF1 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/stranded_NF1.png)
+![stranded RNAseq NF1 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53-nf1-score/results/stranded_NF1.png)
 
 ROC curve for NF1 classifier scores for polya RNASeq data
-![polya RNASeq NF1 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/polya_NF1.png)
+![polya RNASeq NF1 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53-nf1-score/results/polya_NF1.png)
 

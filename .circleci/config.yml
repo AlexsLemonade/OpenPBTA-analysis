@@ -85,7 +85,7 @@ jobs:
 
       - run:
           name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded data and creates recurrent fusion list
-          command: ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
+          command: ./scripts/run_in_ci.sh bash "analyses/fusion-filtering/run_fusion_merged.sh"
 
       - run:
           name: Sex prediction from RNA-seq - Clean data-train elasticnet-evaluate model
@@ -98,7 +98,7 @@ jobs:
 
       - run:
           name: TP53 NF1 classifier run
-          command: OPENPBTA_POLYAPLOT=0 ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"
+          command: OPENPBTA_POLYAPLOT=0 ./scripts/run_in_ci.sh bash "analyses/tp53-nf1-score/run_classifier.sh"
 
 # This is deprecated       
 #      - run:

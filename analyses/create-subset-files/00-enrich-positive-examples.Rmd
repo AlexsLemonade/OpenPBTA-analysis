@@ -5,9 +5,9 @@ author: Jaclyn Taroni for ALSF CCDL
 date: 2020
 ---
 
-To run and fully test the `tp53_nf1_score` module in continuous integration, we must ensure that there are positive examples of _TP53_ and _NF1_ mutations.
+To run and fully test the `tp53-nf1-score` module in continuous integration, we must ensure that there are positive examples of _TP53_ and _NF1_ mutations.
 Furthermore, we need to include the same samples in the RNA-seq data.
-Because we skip running the `tp53_nf1_score` classifier and evaluation steps on the poly-A dataset in CI, we can focus on the stranded data.
+Because we skip running the `tp53-nf1-score` classifier and evaluation steps on the poly-A dataset in CI, we can focus on the stranded data.
 
 ```{r}
 library(tidyverse)
@@ -17,11 +17,11 @@ library(tidyverse)
 set.seed(2020)
 ```
 
-The table prepped in `tp53_nf1_score` contains all of the information we need regarding positive examples.
+The table prepped in `tp53-nf1-score` contains all of the information we need regarding positive examples.
 The histologies file contains the information we need for identifying samples that are in the stranded RNA-seq dataset.
 
 ```{r}
-mutations_table <- read_tsv(file.path("..", "tp53_nf1_score", "results", 
+mutations_table <- read_tsv(file.path("..", "tp53-nf1-score", "results", 
                                       "TP53_NF1_snv_alteration.tsv"))
 histologies_df <- read_tsv(file.path("..", "..", "data", 
                                      "pbta-histologies.tsv"),

@@ -184,7 +184,7 @@ Note that these independent specimen files do not address the issue of participa
 
 ### Derived Fusion Files
 
-The filtered and prioritized fusion and downstream files are a product of the [`analyses/fusion_filtering`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/fusion_filtering) analysis module. 
+The filtered and prioritized fusion and downstream files are a product of the [`analyses/fusion-filtering`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/fusion-filtering) analysis module. 
 
   * `pbta-fusion-putative-oncogenic.tsv` contains the filtered and prioritized fusions. 
   The methods are [described here](https://alexslemonade.github.io/OpenPBTA-manuscript/#fusion-prioritization).

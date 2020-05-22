@@ -28,7 +28,7 @@ Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/04-HGG-molecular
 `%>%` <- dplyr::`%>%`
 ```
 
-We'll take a similar approach to the [`tp53_nf1_score`](../tp53_nf1_score/) module and use functions from the [`snv-callers`](../snv-callers/) module.
+We'll take a similar approach to the [`tp53-nf1-score`](../tp53-nf1-score/) module and use functions from the [`snv-callers`](../snv-callers/) module.
 
 ```{r}
 # TODO: if a common util folder is established, use that instead

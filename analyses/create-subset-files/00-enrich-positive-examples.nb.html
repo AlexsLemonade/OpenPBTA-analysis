@@ -1771,7 +1771,7 @@ $(document).ready(function () {
 
 
 <!-- rnb-text-begin -->
-<p>To run and fully test the <code>tp53_nf1_score</code> module in continuous integration, we must ensure that there are positive examples of <em>TP53</em> and <em>NF1</em> mutations. Furthermore, we need to include the same samples in the RNA-seq data. Because we skip running the <code>tp53_nf1_score</code> classifier and evaluation steps on the poly-A dataset in CI, we can focus on the stranded data.</p>
+<p>To run and fully test the <code>tp53-nf1-score</code> module in continuous integration, we must ensure that there are positive examples of <em>TP53</em> and <em>NF1</em> mutations. Furthermore, we need to include the same samples in the RNA-seq data. Because we skip running the <code>tp53-nf1-score</code> classifier and evaluation steps on the poly-A dataset in CI, we can focus on the stranded data.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
@@ -1799,11 +1799,11 @@ $(document).ready(function () {
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>The table prepped in <code>tp53_nf1_score</code> contains all of the information we need regarding positive examples. The histologies file contains the information we need for identifying samples that are in the stranded RNA-seq dataset.</p>
+<p>The table prepped in <code>tp53-nf1-score</code> contains all of the information we need regarding positive examples. The histologies file contains the information we need for identifying samples that are in the stranded RNA-seq dataset.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubXV0YXRpb25zX3RhYmxlIDwtIHJlYWRfdHN2KGZpbGUucGF0aChcIi4uXCIsIFwidHA1M19uZjFfc2NvcmVcIiwgXCJyZXN1bHRzXCIsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIlRQNTNfTkYxX3Nudl9hbHRlcmF0aW9uLnRzdlwiKSlcbmBgYCJ9 -->
-<pre class="r"><code>mutations_table &lt;- read_tsv(file.path(&quot;..&quot;, &quot;tp53_nf1_score&quot;, &quot;results&quot;, 
+<pre class="r"><code>mutations_table &lt;- read_tsv(file.path(&quot;..&quot;, &quot;tp53-nf1-score&quot;, &quot;results&quot;, 
                                       &quot;TP53_NF1_snv_alteration.tsv&quot;))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBDaHJvbW9zb21lID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIFN0YXJ0X1Bvc2l0aW9uID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIEVuZF9Qb3NpdGlvbiA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBTdHJhbmQgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgVmFyaWFudF9DbGFzc2lmaWNhdGlvbiA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBUdW1vcl9TYW1wbGVfQmFyY29kZSA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBIdWdvX1N5bWJvbCA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltXG4pXG4ifQ== -->

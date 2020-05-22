@@ -5,7 +5,7 @@
 # oncogenic drivers of a tumor and in some cases, appropriate therapy
 
 # Example run:
-# Rscript analyses/fusion_filtering/02-fusion-filtering.R -S scratch/arriba.tsv --expressionMatrix data/pbta-gene-expression-rsem-fpkm.stranded.rds --readthroughFilter --artifactFilter "GTEx|HGNC_GENEFAM|DGD_PARALOGS|Normal|BodyMap|ConjoinG" --junctionReadCountFilter 1 --spanningFragCountFilter 10 --readingFrameFilter "in-frame|frameshift|other" --referenceFolder analyses/fusion_filtering/references/ --outputfile scratch/arriba_stranded_V2 -t 1
+# Rscript analyses/fusion-filtering/02-fusion-filtering.R -S scratch/arriba.tsv --expressionMatrix data/pbta-gene-expression-rsem-fpkm.stranded.rds --readthroughFilter --artifactFilter "GTEx|HGNC_GENEFAM|DGD_PARALOGS|Normal|BodyMap|ConjoinG" --junctionReadCountFilter 1 --spanningFragCountFilter 10 --readingFrameFilter "in-frame|frameshift|other" --referenceFolder analyses/fusion-filtering/references/ --outputfile scratch/arriba_stranded_V2 -t 1
 #
 # Command line arguments
 #
@@ -168,7 +168,7 @@ fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFra
 }
 
 # QC filter: artifact and read support
-QCFiltered<-fusion_filtering_QC(standardFusioncalls = standardFusioncalls,junctionReadCountFilter = junctionReadCountFilter,spanningFragCountFilter = spanningFragCountFilter,readingFrameFilter = readingFrameFilter,artifactFilter = artifactFilter,readthroughFilter = readthroughFilter)
+QCFiltered<-fusion-filtering_QC(standardFusioncalls = standardFusioncalls,junctionReadCountFilter = junctionReadCountFilter,spanningFragCountFilter = spanningFragCountFilter,readingFrameFilter = readingFrameFilter,artifactFilter = artifactFilter,readthroughFilter = readthroughFilter)
 
 ############################################
 

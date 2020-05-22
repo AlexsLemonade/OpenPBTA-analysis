@@ -189,7 +189,7 @@ num_nonmatched <- ceiling(0.1 * num_matched_participants)
 # set the seed
 set.seed(opt$seed)
 
-#### Samples we need to include to run tp53_nf1_score --------------------------
+#### Samples we need to include to run tp53-nf1-score --------------------------
 # For more information, see the 00-enrich-positive-examples notebook
 
 tp53_dnaseq <- c("BS_3E5C1PN1", "BS_KHSYAB3J", "BS_ZR75EKKX")
@@ -337,14 +337,14 @@ biospecimen_ids_for_subset <- purrr::map(
 )
 
 # for each stranded instance, add in biospecimen IDs for samples we know have a
-# positive example of NF1 mutation and TP53 for tp53_nf1_score
+# positive example of NF1 mutation and TP53 for tp53-nf1-score
 stranded_index <- stringr::str_which(names(biospecimen_ids_for_subset),
                                      "stranded")
 biospecimen_ids_for_subset <- biospecimen_ids_for_subset %>%
   purrr::modify_at(stranded_index, ~ append(.x, c(tp53_stranded, nf1_stranded)))
 
 # for each pbta-snv instance, add in biospecimen IDs for samples we know have a
-# positive example of NF1 mutation and TP53 for tp53_nf1_score
+# positive example of NF1 mutation and TP53 for tp53-nf1-score
 pbta_snv_index <- stringr::str_which(names(biospecimen_ids_for_subset),
                                      "pbta-snv")
 biospecimen_ids_for_subset <- biospecimen_ids_for_subset %>%
