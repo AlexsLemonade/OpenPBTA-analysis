@@ -42,7 +42,7 @@ Rscript --vanilla 01-plot-oncoprint.R \
   --fusion_file ${intermediate_directory}/${primary_filename}_fusions.tsv \
   --metadata_file ${histologies_file} \
   --png_name ${primary_filename}_oncoprint.png \
-  --focal_file ${focal_directory}/consensus_seg_recurrent_focal_cn_units.tsv
+  --focal_file ${focal_directory}/consensus_seg_most_focal_cn_status.tsv.gz
 
 # Genes of interest only version of oncoprint
 Rscript --vanilla 01-plot-oncoprint.R \
@@ -52,7 +52,7 @@ Rscript --vanilla 01-plot-oncoprint.R \
   --metadata_file ${histologies_file} \
   --goi_file ${genes_list} \
   --png_name ${primary_filename}_goi_oncoprint.png \
-  --focal_file ${focal_directory}/consensus_seg_recurrent_focal_cn_units.tsv
+  --focal_file ${focal_directory}/consensus_seg_most_focal_cn_status.tsv.gz
 
 #### Primary plus samples oncoprint
 
@@ -71,7 +71,7 @@ Rscript --vanilla 01-plot-oncoprint.R \
   --fusion_file ${intermediate_directory}/${primaryplus_filename}_fusions.tsv \
   --metadata_file ${histologies_file} \
   --png_name ${primaryplus_filename}_oncoprint.png \
-  --focal_file ${focal_directory}/consensus_seg_recurrent_focal_cn_units.tsv
+  --focal_file ${focal_directory}/consensus_seg_most_focal_cn_status.tsv.gz
 
 # Genes of interest only version of oncoprint
 Rscript --vanilla 01-plot-oncoprint.R \
@@ -81,4 +81,4 @@ Rscript --vanilla 01-plot-oncoprint.R \
   --metadata_file ${histologies_file} \
   --goi_file ${genes_list} \
   --png_name ${primaryplus_filename}_goi_oncoprint.png \
-  --focal_file ${focal_directory}/consensus_seg_recurrent_focal_cn_units.tsv
+  --focal_file ${focal_directory}/consensus_seg_most_focal_cn_status.tsv.gz
