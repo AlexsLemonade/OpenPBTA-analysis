@@ -157,10 +157,10 @@ final_df_recurrent
 top_recurrent_genes <- final_df_recurrent %>%
   # Arrange my descending count
   arrange(desc(count)) %>%
-  # Filter to only gene regions and to genes with more than 200 samples in
-  # agreement
+  # Filter to only gene regions and to genes with more than 240 samples in
+  # agreement -- the count of 240 was chosen based on the distribution of counts
   filter(region_type == "gene",
-         count > 200) %>%
+         count > 240) %>%
   # Ungroup data from previos step
   ungroup() %>%
   # Select only the gene names
