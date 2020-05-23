@@ -260,7 +260,7 @@ plot_dimension_reduction <- function(aligned_scores_df,
           size = !!point_size,
           shape = !!point_shape
         )
-      )
+      ) +
       ggplot2::scale_color_manual(values = (c(
         "#2b3fff", "#ec102f", "#235e31",
         "#1a6587", "#11e38c", "#a22f80",
