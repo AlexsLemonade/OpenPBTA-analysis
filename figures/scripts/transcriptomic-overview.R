@@ -48,6 +48,42 @@ divergent_palette <- read_tsv(file.path(palette_dir,
 gradient_palette <- read_tsv(file.path(palette_dir,
                                        "gradient_color_palette.tsv"))
 
+# The NA color is consistent across palettes
+na_color <- divergent_palette %>% filter(color_names == "na_color")
+
+# The palettes we will use for heatmaps need NA color removed and specified
+# separately
+divergent_palette  <- divergent_palette %>% filter(color_names != "na_color")
+gradient_palette  <- gradient_palette %>% filter(color_names != "na_color")
+
+#### Column heatmap annotation -------------------------------------------------
+# Annotation bar for short histology - this is used in the GSVA and immune
+# deconvolution heatmaps
+
+# First get a data frame for the annotation and order samples by short histology
+short_histology_df <- histologies_df %>%
+  filter(experimental_strategy == "RNA-Seq",
+         RNA_library == "stranded") %>%
+  select(Kids_First_Biospecimen_ID,
+         "short histology" = short_histology) %>%
+  arrange(`short histology`) %>%
+  tibble::column_to_rownames("Kids_First_Biospecimen_ID") %>%
+  as.data.frame()
+
+# The colors supplied to HeatmapAnnotation need to be a named
+# list of named vectors
+annotation_colors <-  tibble::deframe(histology_palette)
+
+# Annotation bar intended for the top of the heatmap
+column_heatmap_annotation <- HeatmapAnnotation(
+  df = short_histology_df,
+  name = "short histology",
+  col = list("short histology" = annotation_colors),
+  na_col = na_color$hex_codes,
+  annotation_name_side = "left",
+  show_legend = FALSE
+)
+
 #### UMAP plot -----------------------------------------------------------------
 
 dim_red_dir <- file.path(
@@ -70,7 +106,7 @@ umap_plot <- read_tsv(rsem_umap_file) %>%
                            x_label = "UMAP1",
                            y_label = "UMAP2",
                            color_palette = histology_palette) +
-  theme(text = element_text(size = 15))
+  theme(text = element_text(size = 10))
 
 # Save temporary PNG
 ggsave(umap_png, plot = umap_plot, width = 4, height = 4)
@@ -97,33 +133,25 @@ gsva_stats_file <- file.path(
 gsva_scores_df <- read_tsv(gsva_scores_file)
 gsva_stats_df <- read_tsv(gsva_stats_file)
 
+# What gene sets are we going to include in our heatmap?
+# We'll filter based on whether the ANOVA has a significant p-value
+included_genesets <- gsva_stats_df %>%
+  filter(significant_anova) %>%
+  pull(hallmark_name)
+
 gsva_scores_mat <- gsva_scores_df %>%
   spread(Kids_First_Biospecimen_ID, gsea_score) %>%
+  # Only include the significant gene sets from above
+  filter(hallmark_name %in% included_genesets) %>%
+  # Clean up gene set names for display
   mutate(hallmark_name = stringr::str_replace_all(
     stringr::str_remove(hallmark_name, "HALLMARK_"), "_", " ")
   ) %>%
   tibble::column_to_rownames("hallmark_name") %>%
   as.matrix()
 
-# What gene sets are we going to include in our heatmap?
-# We'll filter based on whether the ANOVA has a significant p-value
-included_genesets <- gsva_stats_df %>%
-  mutate(hallmark_name = stringr::str_replace_all(
-    stringr::str_remove(hallmark_name, "HALLMARK_"), "_", " ")
-  ) %>%
-  filter(significant_anova) %>%
-  pull(hallmark_name)
-
-# Filter to only those gene sets
-gsva_scores_mat <- gsva_scores_mat[included_genesets, ]
-
-# Let's deal with the color palette for the heatmap we will make
-na_color <- divergent_palette %>%
-  filter(color_names == "na_color")
-
-divergent_palette  <- divergent_palette %>%
-  filter(color_names != "na_color")
-
+# Let's deal with the color palette for the heatmap we will make - the values
+# for the palette will be based on the scores themselves
 divergent_col_val <- seq(from = min(gsva_scores_mat),
                          to = max(gsva_scores_mat),
                          length.out = nrow(divergent_palette))
@@ -131,33 +159,9 @@ divergent_col_val <- seq(from = min(gsva_scores_mat),
 gsva_col_fun <- circlize::colorRamp2(divergent_col_val,
                                      divergent_palette$hex_codes)
 
-# Annotation bar for short histology
-# First get a data frame for the annotation and ensure samples are in the
-# same order
-short_histology_df <- histologies_df %>%
-  filter(experimental_strategy == "RNA-Seq",
-                RNA_library == "stranded") %>%
-  select(Kids_First_Biospecimen_ID,
-         "short histology" = short_histology) %>%
-  arrange(Kids_First_Biospecimen_ID) %>%
-  tibble::column_to_rownames("Kids_First_Biospecimen_ID") %>%
-  as.data.frame()
-
-gsva_scores_mat <- gsva_scores_mat[, order(colnames(gsva_scores_mat))]
-
-# The colors supplied to HeatmapAnnotation need to be a named
-# list of named vectors
-annotation_colors <- list(
-  short_histology = tibble::deframe(histology_palette)
-)
-
-# Annotation bar intended for the top of the heatmap
-column_heatmap_annotation <- HeatmapAnnotation(
-  df = short_histology_df,
-  col = annotation_colors,
-  name = "short histology",
-  show_legend = FALSE
-)
+# Order by short histology - the biospecimens are the rownames and the data
+# frame used for the annotation is already ordered by short histology
+gsva_scores_mat <- gsva_scores_mat[, rownames(short_histology_df)]
 
 ## Heatmap itself!
 gsva_heatmap <- Heatmap(
@@ -166,12 +170,13 @@ gsva_heatmap <- Heatmap(
   name = "GSVA Scores",
   na_col = na_color$hex_codes,
   show_column_names = FALSE,
+  cluster_columns = FALSE,
   row_names_gp = grid::gpar(fontsize = 5),
   top_annotation = column_heatmap_annotation,
   heatmap_legend_param = list(direction = "horizontal")
 )
 
-png(gsva_png, width = 5.5, height = 5, units = "in", res = 1200)
+png(gsva_png, width = 5.75, height = 5, units = "in", res = 1200)
 draw(gsva_heatmap, heatmap_legend_side = "bottom")
 dev.off()
 
@@ -201,13 +206,7 @@ deconv_mat <- deconv.res %>%
 # RNA-seq datasets
 deconv_mat <- deconv_mat[, colnames(gsva_scores_mat)]
 
-# We need a new color palette, etc.
-na_color <- gradient_palette %>%
-  filter(color_names == "na_color")
-
-gradient_palette  <- gradient_palette %>%
-  filter(color_names != "na_color")
-
+# Palette will be specific to the values
 gradient_col_val <- seq(from = min(deconv_mat),
                         to = max(deconv_mat),
                         length.out = nrow(gradient_palette))
@@ -221,31 +220,11 @@ deconv_col_fun <- circlize::colorRamp2(gradient_col_val,
 scores_deconv_mat <- deconv_mat[grep("score", rownames(deconv_mat)), ]
 cell_type_deconv_mat <- deconv_mat[-grep("score", rownames(deconv_mat)), ]
 
-# To keep ordering consistent across the two xCell heatmaps, we'll order by
-# histology
-short_histology_df <- short_histology_df %>%
-  # We lose the rownames if we use arrange without this step
-  tibble::rownames_to_column("biospecimen") %>%
-  arrange(short_histology)
-
 # Order both xCell matrices by histology
-scores_deconv_mat <- scores_deconv_mat[, short_histology_df$biospecimen]
-cell_type_deconv_mat <- cell_type_deconv_mat[, short_histology_df$biospecimen]
+scores_deconv_mat <- scores_deconv_mat[, rownames(short_histology_df)]
+cell_type_deconv_mat <- cell_type_deconv_mat[, rownames(short_histology_df)]
 
-# Make the biospecimen ID the rownames again
-short_histology_df <- short_histology_df %>%
-  tibble::column_to_rownames("biospecimen")
-
-# Annotation bar intended for the top of the heatmap needs to be remade because
-# of the ordering but the colors are the same
-column_heatmap_annotation <- HeatmapAnnotation(
-  df = short_histology_df,
-  col = annotation_colors,
-  name = "short histology",
-  show_legend = FALSE
-)
-
-# Scores heatmap
+# Scores heatmap - use the same annotation as above
 scores_deconv_heatmap <- Heatmap(
   scores_deconv_mat,
   col = deconv_col_fun,
@@ -280,7 +259,7 @@ cell_type_deconv_heatmap <- Heatmap(
 # We can use the `%v%` operator from ComplexHeatmap to make the immune
 # deconvolution panel
 deconv_panel <- scores_deconv_heatmap %v% cell_type_deconv_heatmap
-png(deconv_png, width = 5, height = 4.6, units = "in", res = 1200)
+png(deconv_png, width = 5.25, height = 5, units = "in", res = 1200)
 draw(deconv_panel, heatmap_legend_side = "bottom")
 dev.off()
 
