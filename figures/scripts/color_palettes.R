@@ -149,6 +149,54 @@ binary_df <- data.frame(color_names = binary_color_names,
                         hex_codes = binary_col_palette) %>%
   readr::write_tsv(file.path(output_dir, "binary_color_palette.tsv"))
 
+### 6) An oncoprint color key for each CNV, SNV and Fusion category.
+oncoprint_col_palette <- c("#35978f",
+                           "#000000",
+                           "#56B4E9",
+                           "#FFBBFF",
+                           "#F0E442",
+                           "#191970",
+                           "#545454",
+                           "#CAE1FF",
+                           "#FFE4E1",
+                           "#CC79A7",
+                           "#56B4E9",
+                           "#7B68EE",
+                           "#00F021",
+                           "#313695",
+                           "#abd9e9",
+                           "#c51b7d",
+                           "#0072B2",
+                           "#D55E00",
+                           "#FF0000",
+                           "#CD96CD")
+
+oncoprint_color_names <- c("Missense_Mutation",
+                           "Nonsense_Mutation",
+                           "Frame_Shift_Del",
+                           "Frame_Shift_Ins",
+                           "Splice_Site",
+                           "Translation_Start_Site",
+                           "Nonstop_Mutation",
+                           "In_Frame_Del",
+                           "In_Frame_Ins",
+                           "Stop_Codon_Ins",
+                           "Start_Codon_Del",
+                           "Fusion",
+                           "Multi_Hit",
+                           "Hom_Deletion",
+                           "Hem_Deletion",
+                           "amplification",
+                           "loss",
+                           "gain",
+                           "High_Level_Gain",
+                           "Multi_Hit_Fusion") 
+
+# Format as data.frame
+oncoprint_df <- data.frame(color_names = oncoprint_color_names, 
+                           hex_codes = oncoprint_col_palette) %>%
+  readr::write_tsv(file.path(output_dir, "oncoprint_color_palette.tsv"))
+
 #### Quick function for writing HEX code table in figures/README.md
 
  swatches_table <- function(color_df) {

@@ -13,6 +13,7 @@ cd -
 
 analyses_dir="$BASEDIR/analyses"
 data_dir="$BASEDIR/data"
+scratch_dir="$BASEDIR/scratch"
 
 # Make output folders for all figures
 mkdir -p pngs
@@ -49,11 +50,18 @@ bash ${analyses_dir}/interaction-plots/01-create-interaction-plots.sh
 # Copy the main figure to final directory
 cp ${analyses_dir}/interaction-plots/plots/combined_top50.png pngs/mutation_cooccurrence_figure.png
 
-
-
-
-
+######################
 ## Oncoprint plot(s)
+
+# Run the `focal-cn-file-preparation` module shell script to prepare the focal
+# CN file so that it can be represented on the oncoprint
+bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn.sh
+
+# Run the `oncoprint-landscape` module shell script
+bash ${analyses_dir}/oncoprint-landscape/run-oncoprint.sh
+
+# Copy the primary plus samples oncoprint figure to final directory
+cp ${analyses_dir}/oncoprint-landscape/plots/all_participants_primary-plus_oncoprint.png pngs/fig3-oncoprint-landscape.png
 
 ## Copy number status heatmap
 
