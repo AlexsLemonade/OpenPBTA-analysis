@@ -168,7 +168,7 @@ fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFra
 }
 
 # QC filter: artifact and read support
-QCFiltered<-fusion-filtering_QC(standardFusioncalls = standardFusioncalls,junctionReadCountFilter = junctionReadCountFilter,spanningFragCountFilter = spanningFragCountFilter,readingFrameFilter = readingFrameFilter,artifactFilter = artifactFilter,readthroughFilter = readthroughFilter)
+QCFiltered<-fusion_filtering_QC(standardFusioncalls = standardFusioncalls,junctionReadCountFilter = junctionReadCountFilter,spanningFragCountFilter = spanningFragCountFilter,readingFrameFilter = readingFrameFilter,artifactFilter = artifactFilter,readthroughFilter = readthroughFilter)
 
 ############################################
 
