@@ -55,7 +55,7 @@ log_expression <-
   ))
 
 # Read in the subset histologies file
-metadata_df <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
+metadata_df <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max = 10000)
 
 # Read in final output data.frame from `01-ATRT-molecular-subtyping-data-prep.Rmd`
 final_df <-

@@ -53,7 +53,7 @@ consensus_snv <- data.table::fread(snvConsensusFile,
 # gencode cds region BED file
 gencode_cds <- read_tsv(gencodeBed, col_names = FALSE)
 # clinical file
-clinical <- read_tsv(clinicalFile)
+clinical <- read_tsv(clinicalFile, guess_max = 10000)
 
 # filter the MAF data.frame to only include entries that fall within the
 # CDS bed file regions

@@ -90,7 +90,7 @@ cnv_output <- file.path(output_dir, paste0(opt$filename_lead, "_cnv.tsv"))
 
 #### Read in data --------------------------------------------------------------
 
-histologies_df <- readr::read_tsv(opt$metadata_file)
+histologies_df <- readr::read_tsv(opt$metadata_file, guess_max = 10000)
 maf_df <- readr::read_tsv(opt$maf_file)
 cnv_df <- readr::read_tsv(opt$cnv_file)
 fusion_df <- readr::read_tsv(opt$fusion_file)
