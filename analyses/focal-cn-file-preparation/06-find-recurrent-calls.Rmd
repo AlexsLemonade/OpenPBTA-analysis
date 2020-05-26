@@ -53,9 +53,9 @@ Read in focal CN dominant status calls prepared in `05-define-most-focal-cn-unit
 focal_cn_df <-
   read_tsv(file.path(results_dir, "consensus_seg_most_focal_cn_status.tsv.gz")) %>%
   # Filter out the `uncallable` statuses
-  filter(!(status == "uncallable"))
+  filter(status != "uncallable")
 
-metadata <- read_tsv(file.path("..", "..", "data", "pbta-histologies.tsv"))
+metadata <- read_tsv(file.path("..", "..", "data", "pbta-histologies.tsv"), guess_max = 10000)
 ```
 
 ## Find recurrent calls
