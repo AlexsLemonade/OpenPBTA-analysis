@@ -30,6 +30,11 @@ Rscript -e "rmarkdown::render('analyses/focal-cn-file-preparation/06-find-recurr
 # `analyses/fusion_filtering/06-recurrent-fusions-per-histology.R`
 # https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/66bb67a7bf29aad4510a0913a2dbc88da0013be8/analyses/fusion_filtering/06-recurrent-fusions-per-histology.R#L152
 recurrence_cutoff <- 3
+
+# Define the cutoff for the number of genes to keep after counting and
+# arranging by copy number status recurrence in all regions -- these genes
+# will be considered the genes with the most recurrent CNVs
+top_genes_cutoff <- 20
 ```
 
 
@@ -162,7 +167,7 @@ top_recurrent_genes <- final_df_recurrent %>%
   # Filter to only gene regions
   filter(region_type == "gene") %>%
   # Select the top genes by count
-  top_n(20, count) %>%
+  top_n(top_genes_cutoff, count) %>%
   # Select only the gene names
   select(gene = region)
 
