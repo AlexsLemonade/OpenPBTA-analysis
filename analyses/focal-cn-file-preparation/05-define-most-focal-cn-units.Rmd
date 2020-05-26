@@ -155,7 +155,7 @@ filtered_consensus_cytoband_status <- consensus_seg_cytoband_status %>%
   ) %>%
   # Filter the annotated CN data to include only neutral chromosome arms and disagreements
   filter(
-    dominant_arm_status %in% c("neutral", "unstable") &
+    dominant_arm_status %in% c("neutral", "uncallable", "unstable") |
       (
         dominant_cytoband_status != dominant_arm_status &
           # bands that disagree with arm, but are not neutral (or uncallable)
