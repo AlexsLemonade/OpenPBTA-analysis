@@ -110,7 +110,27 @@ divergent_col_palette <- readr::read_tsv(
 ```{r}
 # Read in metadata
 metadata <-
-  readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv")) %>%
+  readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv")) 
+```
+
+Temporarily we will put the n = 1 `short_histology` samples in the `Other` group. 
+
+```{r}
+#TODO: Remove this when this is split into two panels
+small_group <- metadata %>% 
+  dplyr::filter(Kids_First_Biospecimen_ID %in% bin_calls_df$biospecimen_id) %>%
+  dplyr::group_by(short_histology) %>%  
+  dplyr::summarize(group_n = dplyr::n()) %>% 
+  dplyr::filter(group_n < 2) %>% 
+  dplyr::pull(short_histology)
+
+metadata$short_histology[metadata$short_histology %in% small_group] <- "Other"
+```
+
+Add the sample color column.
+
+```{r}
+metadata <- metadata%>%
   # Easier to deal with NA short histologies if they are labeled something different
   dplyr::mutate(short_histology = as.character(tidyr::replace_na(short_histology, "none"))) %>%
   # Tack on the sample color using the short_histology column and a recode
@@ -118,7 +138,7 @@ metadata <-
     short_histology,
     !!!histology_col_palette
   ))
-```
+``` 
 
 ### Set up consensus copy number data
 
