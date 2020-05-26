@@ -17,10 +17,13 @@
 #  --fusion_file ../../scratch/all_primary_samples_fusions.tsv \
 #  --metadata_file ../../data/pbta-histologies.tsv \
 #  --goi_list ${genes_list} \
-#  --png_name ${primary_filename}_goi_oncoprint.png
+#  --png_name ${primary_filename}_goi_oncoprint.png \
+#  --focal_file ${focal_directory}/consensus_seg_most_focal_cn_status.tsv.gz
 
 
 #### Set Up --------------------------------------------------------------------
+
+# Load maftools
 library(maftools)
 
 # Get `magrittr` pipe
@@ -44,14 +47,14 @@ if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
 }
 
-# Source the color palette for plots
+# Source the custom functions script
 source(
   file.path(
     root_dir,
     "analyses",
     "oncoprint-landscape",
     "util",
-    "oncoplot-palette.R"
+    "oncoplot-functions.R"
   )
 )
 
@@ -84,7 +87,7 @@ option_list <- list(
     help = "file path to the histologies file"
   ),
   optparse::make_option(
-    c("-g", "--goi_list"),
+    c("-g", "--goi_file"),
     type = "character",
     default = NULL,
     help = "file path to file that contains list of genes to include on
@@ -95,6 +98,12 @@ option_list <- list(
     type = "character",
     default = NULL,
     help = "oncoprint output png file name"
+  ),
+  optparse::make_option(
+    c("-o", "--focal_file"),
+    type = "character",
+    default = NULL,
+    help = "file path to most focal CN units file"
   )
 )
 
@@ -102,14 +111,19 @@ option_list <- list(
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
-# Define cnv_file object here as it still needs to be defined for the `read.maf`
-# function, even if it is NULL
-cnv_file <- opt$cnv_file
+# Define cnv_file, fusion_file, and genes object here as they still need to
+# be defined for the `prepare_and_plot_oncoprint` custom function (the
+# cnv_file specifically for the `read.maf` function within the custom function),
+# even if they are NULL
+cnv_df <- opt$cnv_file
+fusion_df <- opt$fusion_file
+goi_list <- opt$goi_file
 
 #### Read in data --------------------------------------------------------------
 
 # Read in metadata
-metadata <- readr::read_tsv(opt$metadata_file) %>%
+metadata <- readr::read_tsv(opt$metadata_file,
+                            guess_max = 10000) %>%
   dplyr::rename(Tumor_Sample_Barcode = sample_id)
 
 # Read in MAF file
@@ -119,79 +133,94 @@ maf_df <- data.table::fread(opt$maf_file,
 
 # Read in cnv file
 if (!is.null(opt$cnv_file)) {
-  cnv_file <- readr::read_tsv(cnv_file)
+  cnv_df <- readr::read_tsv(opt$cnv_file)
 }
 
 # Read in fusion file and join
 if (!is.null(opt$fusion_file)) {
-  fusion_file <- readr::read_tsv(opt$fusion_file)
-  maf_df <- dplyr::bind_rows(maf_df, fusion_file)
+  fusion_df <- readr::read_tsv(opt$fusion_file)
 }
 
-#### Convert into MAF object ---------------------------------------------------
+# Read in genes list
+if (!is.null(opt$goi_file)) {
+  goi_list <- readr::read_tsv(file.path(opt$goi_file)) %>%
+    dplyr::pull("gene")
 
-maf_object <-
-  read.maf(
-    maf = maf_df,
-    clinicalData = metadata,
-    cnTable = cnv_file,
-    removeDuplicatedVariants = FALSE,
-    vc_nonSyn = c(
-      "Frame_Shift_Del",
-      "Frame_Shift_Ins",
-      "Splice_Site",
-      "Nonsense_Mutation",
-      "Nonstop_Mutation",
-      "In_Frame_Del",
-      "In_Frame_Ins",
-      "Missense_Mutation",
-      "Fusion",
-      "Multi_Hit",
-      "Multi_Hit_Fusion",
-      "Hom_Deletion",
-      "Hem_Deletion",
-      "amplification",
-      "gain",
-      "loss"
-    )
-  )
-
-#### Specify genes -------------------------------------------------------------
-
-if (!is.null(opt$goi_list)) {
-  # Read in gene list
-  goi_list <-
-    read.delim(
-      file.path(opt$goi_list),
-      sep = "\t",
-      header = FALSE,
-      as.is = TRUE
-    )
-
-  # Get top mutated this data and goi list
-  gene_sum <- mafSummary(maf_object)$gene.summary
-
-  # Subset for genes in the histology-specific list
-  subset_gene_sum <- subset(gene_sum, Hugo_Symbol %in% goi_list$V1)
-
-  # Get top altered genes
-  goi_ordered <-
-    subset_gene_sum[order(subset_gene_sum$AlteredSamples, decreasing = TRUE), ]
-
-  # Select n top genes
-  num_genes <- ifelse(nrow(goi_ordered) > 20, 20, nrow(goi_ordered))
-  goi_ordered_num <- goi_ordered[1:num_genes, ]
-  genes <- goi_ordered_num$Hugo_Symbol
-
-} else {
-  # If a gene list is not supplied, we do not want the `oncoplot` function to
-  # filter the genes to be plotted, so we assign NULL to the `genes` object.
-  genes <- NULL
+  # Filter `goi_list` to include only the unique genes of interest
+  goi_list <- unique(goi_list)
 }
 
-#### Plot and Save Oncoprint ---------------------------------------------------
+# Read in recurrent focal CNVs file
+if (!is.null(opt$focal_file)) {
+  focal_df <- readr::read_tsv(file.path(opt$focal_file))
+}
 
-# Given a maf file, plot an oncoprint of the variants in the
+# Read in histology standard color palette for project
+histology_col_palette <-
+  readr::read_tsv(file.path(
+    root_dir,
+    "figures",
+    "palettes",
+    "histology_color_palette.tsv"
+  ))
+
+# Read in the oncoprint color palette
+oncoprint_col_palette <- readr::read_tsv(file.path(
+  root_dir,
+  "figures",
+  "palettes",
+  "oncoprint_color_palette.tsv"
+)) %>%
+  # Use deframe so we can use it as a recoding list
+  tibble::deframe()
+
+#### Set up oncoprint annotation objects --------------------------------------
+
+# Color coding for `short_histology` classification
+# Get unique tumor descriptor categories
+short_histologies <- unique(metadata$short_histology) %>%
+  tidyr::replace_na("none") %>%
+  sort()
+
+# Save the vector of hex codes from the short histology palette
+short_histology_col_key <- histology_col_palette$hex_codes
+
+# Now assign the color names
+names(short_histology_col_key) <- short_histologies
+
+# Now format the color key objet into a list
+annotation_colors <- list(short_histology = short_histology_col_key)
+
+#### Format recurrent focal CN object -----------------------------------------
+
+if (!is.null(opt$focal_file)) {
+  # Filter the recurrent focal calls data frame to include the samples in
+  # `cnv_df`
+  cnv_df <- focal_df %>%
+    dplyr::filter(status != "uncallable") %>%
+    # Join the metadata to get the `Tumor_Sample_Barcode` column
+    dplyr::left_join(metadata, by = "Kids_First_Biospecimen_ID") %>%
+    # Select and rename the needed columns for creating the maf object
+    dplyr::select(
+      Hugo_Symbol = region,
+      Tumor_Sample_Barcode,
+      Variant_Classification = status
+    ) %>%
+    dplyr::filter(Tumor_Sample_Barcode %in% cnv_df$Tumor_Sample_Barcode)
+}
+
+#### Prepare MAF object for plotting ------------------------------------------
+
+maf_object <- prepare_maf_object(
+  maf_df = maf_df,
+  cnv_df = cnv_df,
+  metadata = metadata,
+  fusion_df = fusion_df
+)
+
+#### Plot and Save Oncoprint --------------------------------------------------
+
+# Given a maf object, plot an oncoprint of the variants in the
 # dataset and save as a png file.
 png(
   file.path(plots_dir, opt$png_name),
@@ -202,21 +231,16 @@ png(
 )
 oncoplot(
   maf_object,
-  clinicalFeatures = c(
-    "broad_histology",
-    "short_histology",
-    "reported_gender",
-    "tumor_descriptor",
-    "molecular_subtype"
-  ),
-  genes = genes,
+  clinicalFeatures = "short_histology",
+  genes = goi_list,
   logColBar = TRUE,
   sortByAnnotation = TRUE,
   showTumorSampleBarcodes = TRUE,
   removeNonMutated = TRUE,
-  annotationFontSize = 0.7,
+  annotationFontSize = 1.0,
   SampleNamefontSize = 0.5,
   fontSize = 0.7,
-  colors = color_palette
+  colors = oncoprint_col_palette,
+  annotationColor = annotation_colors
 )
 dev.off()
