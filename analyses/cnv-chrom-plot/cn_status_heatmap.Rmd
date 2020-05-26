@@ -413,7 +413,6 @@ Make a color key that's formatted for ComplexHeatmap.
 histologies_color_key_filtered <- unique(histologies$sample_color)
 names(histologies_color_key_filtered) <- unique(histologies$short_histology)
 
-unique(histologies$short_histology)
 # Drop this column so ComplexHeatmap isn't tempted to plot it
 histologies <- dplyr::select(histologies, -sample_color, -group_n)
 
