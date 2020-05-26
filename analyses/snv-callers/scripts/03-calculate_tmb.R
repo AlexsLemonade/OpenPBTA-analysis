@@ -204,7 +204,7 @@ if (opt$tcga) {
     dplyr::mutate(Tumor_Sample_Barcode = substr(Tumor_Sample_Barcode, 0, 12))
 } else { # pbta data
   # Isolate metadata to only the samples that are in the datasets
-  metadata <- readr::read_tsv(opt$metadata) %>%
+  metadata <- readr::read_tsv(opt$metadata, guess_max = 10000) %>%
     dplyr::filter(Kids_First_Biospecimen_ID %in% strelka_mutect_maf_df$Tumor_Sample_Barcode) %>%
     dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
     dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID) %>%
