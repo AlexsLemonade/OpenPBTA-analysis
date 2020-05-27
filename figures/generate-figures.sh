@@ -61,13 +61,13 @@ bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn.sh
 bash ${analyses_dir}/oncoprint-landscape/run-oncoprint.sh
 
 # Copy the primary plus samples oncoprint figure to final directory
-cp ${analyses_dir}/oncoprint-landscape/plots/all_participants_primary-plus_oncoprint.png pngs/fig3-oncoprint-landscape.png
+cp ${analyses_dir}/oncoprint-landscape/plots/all_participants_primary-plus_goi_oncoprint.png pngs/fig3-oncoprint-landscape.png
 
 ## Copy number status heatmap
 
 ####### Transcriptomic overview
 
-# First run the dimension reduction steps 
+# First run the dimension reduction steps
 bash ${analyses_dir}/transcriptomic-dimension-reduction/dimension-reduction-plots.sh
 
 # Then collapse RNA-seq data, which is required for GSVA and immune deconvolution
