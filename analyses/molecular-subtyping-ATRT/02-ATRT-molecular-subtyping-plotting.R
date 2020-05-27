@@ -12,20 +12,6 @@
 
 #### Set Up --------------------------------------------------------------------
 
-# Install and load in ComplexHeatMap
-if (!("ComplexHeatmap" %in% installed.packages())) {
-  install.packages("ComplexHeatmap")
-}
-library(ComplexHeatmap)
-
-if (!("matrixStats" %in% installed.packages())) {
-  install.packages("matrixStats")
-}
-
-if (!("ggfortify" %in% installed.packages())) {
-  install.packages("ggfortify")
-}
-
 library(ggfortify)
 library(dplyr)
 
@@ -102,7 +88,7 @@ annotation_df <- final_df %>%
   tibble::column_to_rownames("sample_id")
 
 # Make into an annotation object
-column_annotation <- HeatmapAnnotation(df = annotation_df)
+column_annotation <- ComplexHeatmap::HeatmapAnnotation(df = annotation_df)
 
 # Plot and save the Heatmap
 png(
@@ -111,7 +97,7 @@ png(
   height = 604,
   units = "px"
 )
-Heatmap(
+ComplexHeatmap::Heatmap(
   high_var_exp,
   heatmap_legend_param = list(title = "zscore"),
   top_annotation = column_annotation,

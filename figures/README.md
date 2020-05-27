@@ -27,7 +27,7 @@ You may choose to use [`docker exec`](https://docs.docker.com/engine/reference/c
 This script runs **_all_** the intermediate steps needed to generate figures starting with the original data files.
 
 ```
-bash scripts/generate-figures.sh
+bash figures/generate-figures.sh
 ```
 
 Figures are saved to the `figures/pngs` folder and will be linked to the accompanying manuscript repository [`AlexsLemonade/OpenPBTA-manuscript`](https://github.com/AlexsLemonade/OpenPBTA-manuscript/).
@@ -42,7 +42,10 @@ However, we list information about the resources, intermediate steps, and [PBTA 
 |--------|--------|------------------|-------------------------|-----------------------------|
 | Figure 1 | [scripts/fig1-sample-distribution.R`](./scripts/fig1-sample-distribution.R) | No high RAM requirements | [`sample-distribution-analysis`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/sample-distribution-analysis) |  `pbta-histologies.tsv` |
 | Figure 2 | [scripts/fig2-mutational-landscape.R`](./scripts/fig2-mutational-landscape.R) | 256GB of RAM are needed due to the run_caller_consensus_analysis-pbta.sh handling of large MAF files|[`snv-callers`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers) <br> [`mutational-signatures`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/mutational-signatures) |  `pbta-snv-lancet.vep.maf.gz` <br> `pbta-snv-mutect2.vep.maf.gz` <br> `pbta-snv-strelka2.vep.maf.gz` <br> `pbta-snv-vardict.vep.maf.gz` <br> `tcga-snv-lancet.vep.maf.gz` <br> `tcga-snv-mutect2.vep.maf.gz` <br> `tcga-snv-strelka2.vep.maf.gz` |
+| CN status heatmap | [`analyses/copy_number_consensus_call/run_consensus_call.sh`](./analyses/copy_number_consensus_call/run_consensus_call.sh) and [`analyses/cnv-chrom-plot/cn_status_heatmap.Rmd`](./analyses/cnv-chrom-plot/cn_status_heatmap.Rmd) | No high RAM requirements | [`cnv-chrom-plot`](./analyses/cnv-chrom-plot) |  `pbta-cnv-controlfreec.tsv.gz` <br> `pbta-sv-manta.tsv.gz` <br> `pbta-cnv-cnvkit.seg.gz` |
 | Figure 3 | No individual script <br> ([`focal-cn-file-preparation/run-prepare-cn.sh`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/focal-cn-file-preparation/run-prepare-cn.sh) and [`oncoprint-landscape/run-oncoprint.sh`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/oncoprint-landscape/run-oncoprint.sh) scripts are used)              | 24GB of RAM are needed due to the `run-prepare-cn.sh` handling of large copy number files | [`focal-cn-file-preparation`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/focal-cn-file-preparation) <br> [`oncoprint-landscape`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/oncoprint-landscape) | `pbta-histologies.tsv` <br> `pbta-snv-consensus-mutation.maf.tsv.gz` <br> `pbta-fusion-putative-oncogenic.tsv` <br> `consensus_seg_annotated_cn_autosomes.tsv.gz` <br> `independent-specimens.wgs.primary-plus.tsv` |
+| Transcriptomic overview | [scripts/transcriptomic-overview.R](./scripts/transcriptomic-overiew.R) | Due to the GSVA steps, we recommend ~32 GB of RAM for generating this figure | [`transcriptomic-dimension-reduction`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/transcriptomic-dimension-reduction) <br> [`collapse-rnaseq`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/collapse-rnaseq) <br> [`gene-set-enrichment-analysis`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/gene-set-enrichment-analysis) <br> [`immune-deconv`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/immune-deconv) | `pbta-histologies.tsv` <br> `pbta-gene-expression-rsem-fpkm.stranded.rds` |
+
 
 ## Color Palette Usage
 
@@ -117,14 +120,14 @@ You may want to remove the `na_color` at the end of the list depending on whethe
 ```
 gradient_col_palette <- readr::read_tsv(
   file.path(figures_dir, "palettes", "gradient_color_palette.tsv")
-  )
+)
 ```
 
 If we need the `NA` color separated, like for use with `ComplexHeatmap` which has a separate argument for the color for `NA` values.
 
 ```
 na_color <- gradient_col_palette %>%
-  dplyr::filter(color_names != "na_color")
+  dplyr::filter(color_names == "na_color")
 
 gradient_col_palette <- gradient_col_palette %>%
   dplyr::filter(color_names != "na_color")
@@ -138,10 +141,10 @@ You can provide any numeric vector to color code a palette using `circlize::colo
 
 ```
 gradient_col_val <- seq(from = min(df$variable), to = max(df$variable),
-                        length.out = length(gradient_col_palette))
+                        length.out = nrow(gradient_col_palette))
 
 col_fun <- circlize::colorRamp2(gradient_col_val,
-                                gradient_col_palette)
+                                gradient_col_palette$hex_codes)
 ```
 **Step 3)** Apply to numeric data, or supply to your plotting code.  
 
@@ -156,10 +159,12 @@ df <- df %>%
 ## OR ##
 
 # Some plotting packages want a color function
-ComplexHeatmap::heatmap(df,
-  col = col_fun,
-  na_col = na_color
-  )
+
+ComplexHeatmap::Heatmap(
+  df,
+  col = col_fun, 
+  na_col = na_color$hex_codes
+)
 ```
 
 ### Updating color palettes
