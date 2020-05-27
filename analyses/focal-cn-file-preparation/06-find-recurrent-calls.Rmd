@@ -48,6 +48,8 @@ library(tidyverse)
 
 ```{r}
 results_dir <- "results"
+
+plots_dir <- "plots"
 ```
 
 ### Read in files
@@ -106,14 +108,32 @@ final_df_tally_histology %>%
 # Plot the distribution of counts for all histologies
 ggplot(final_df_tally, aes(x = count)) +
   geom_histogram(bins = 100) +
-  geom_vline(aes(xintercept = recurrence_cutoff), linetype = "longdash", color = "green", size = .4)
+  geom_vline(
+    aes(xintercept = recurrence_cutoff),
+    linetype = "longdash",
+    color = "green",
+    size = .4
+  ) +
+  xlab("recurrence_count")
+
+# Save plot
+ggsave(file.path(plots_dir, "all_histology_cn_counts.png"), plot = last_plot())
 ```
 
 ```{r}
 # Plot the distribution of counts for histologies separated
 ggplot(final_df_tally_histology, aes(x = count)) +
   geom_histogram(bins = 100) +
-  geom_vline(aes(xintercept = recurrence_cutoff), linetype = "longdash", color = "green", size = .4)
+  geom_vline(
+    aes(xintercept = recurrence_cutoff),
+    linetype = "longdash",
+    color = "green",
+    size = .4
+  ) +
+  xlab("recurrence_count")
+
+# Save plot
+ggsave(file.path(plots_dir, "separate_histology_cn_counts.png"), plot = last_plot())
 ```
 
 The `recurrence_cutoff` defined as 3 appears to be reasonable as seen in the distribution of counts plot above.
