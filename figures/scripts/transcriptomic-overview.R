@@ -56,9 +56,11 @@ na_color <- divergent_palette %>% filter(color_names == "na_color")
 divergent_palette  <- divergent_palette %>% filter(color_names != "na_color")
 gradient_palette  <- gradient_palette %>% filter(color_names != "na_color")
 
-#### Column heatmap annotation -------------------------------------------------
-# Annotation bar for short histology - this is used in the GSVA and immune
-# deconvolution heatmaps
+#### Data prep for column heatmap annotation -----------------------------------
+
+# We will construct an annotation bar for short histology - this is used in the
+# GSVA and immune deconvolution heatmaps. In this section, we prep the data
+# frame and color palette required for that.
 
 # First get a data frame for the annotation and order samples by short histology
 short_histology_df <- histologies_df %>%
@@ -73,16 +75,6 @@ short_histology_df <- histologies_df %>%
 # The colors supplied to HeatmapAnnotation need to be a named
 # list of named vectors
 annotation_colors <-  tibble::deframe(histology_palette)
-
-# Annotation bar intended for the top of the heatmap
-column_heatmap_annotation <- HeatmapAnnotation(
-  df = short_histology_df,
-  name = "short histology",
-  col = list("short histology" = annotation_colors),
-  na_col = na_color$hex_codes,
-  annotation_name_side = "left",
-  show_legend = FALSE
-)
 
 #### UMAP plot -----------------------------------------------------------------
 
@@ -163,6 +155,16 @@ gsva_col_fun <- circlize::colorRamp2(divergent_col_val,
 # frame used for the annotation is already ordered by short histology
 gsva_scores_mat <- gsva_scores_mat[, rownames(short_histology_df)]
 
+# Annotation bar intended for the top of the heatmap
+column_heatmap_annotation <- HeatmapAnnotation(
+  df = short_histology_df,
+  name = "short histology",
+  col = list("short histology" = annotation_colors),
+  na_col = na_color$hex_codes,
+  annotation_name_side = "left",
+  show_legend = FALSE
+)
+
 ## Heatmap itself!
 gsva_heatmap <- Heatmap(
   gsva_scores_mat,
@@ -224,6 +226,16 @@ cell_type_deconv_mat <- deconv_mat[-grep("score", rownames(deconv_mat)), ]
 scores_deconv_mat <- scores_deconv_mat[, rownames(short_histology_df)]
 cell_type_deconv_mat <- cell_type_deconv_mat[, rownames(short_histology_df)]
 
+# Annotation bar intended for the top of the heatmap
+column_heatmap_annotation <- HeatmapAnnotation(
+  df = short_histology_df,
+  name = "short histology",
+  col = list("short histology" = annotation_colors),
+  na_col = na_color$hex_codes,
+  show_annotation_name = FALSE,
+  show_legend = FALSE
+)
+
 # Scores heatmap - use the same annotation as above
 scores_deconv_heatmap <- Heatmap(
   scores_deconv_mat,
@@ -259,7 +271,7 @@ cell_type_deconv_heatmap <- Heatmap(
 # We can use the `%v%` operator from ComplexHeatmap to make the immune
 # deconvolution panel
 deconv_panel <- scores_deconv_heatmap %v% cell_type_deconv_heatmap
-png(deconv_png, width = 5.25, height = 5, units = "in", res = 1200)
+png(deconv_png, width = 5, height = 5, units = "in", res = 1200)
 draw(deconv_panel, heatmap_legend_side = "bottom")
 dev.off()
 
