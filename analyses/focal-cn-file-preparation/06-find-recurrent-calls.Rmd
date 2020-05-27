@@ -114,7 +114,15 @@ ggplot(final_df_tally, aes(x = count)) +
     color = "green",
     size = .4
   ) +
-  xlab("recurrence_count")
+  xlab("number of samples with a copy number alteration") +
+  ggtitle("Distribution of copy number status counts by region across all histologies") +
+  geom_text(
+    aes(x = recurrence_cutoff, label = "recurrence cutoff", y = 5000),
+    colour = "darkgreen",
+    angle = 90,
+    vjust = 1.2,
+    size = 4
+  )
 
 # Save plot
 ggsave(file.path(plots_dir, "all_histology_cn_counts.png"), plot = last_plot())
@@ -130,7 +138,15 @@ ggplot(final_df_tally_histology, aes(x = count)) +
     color = "green",
     size = .4
   ) +
-  xlab("recurrence_count")
+  xlab("number of samples with a copy number alteration") +
+  ggtitle("Distribution of copy number status counts by region and histology") +
+  geom_text(
+    aes(x = recurrence_cutoff, label = "recurrence cutoff", y = 5000),
+    colour = "darkgreen",
+    angle = 90,
+    vjust = 1.2,
+    size = 4
+  )
 
 # Save plot
 ggsave(file.path(plots_dir, "separate_histology_cn_counts.png"), plot = last_plot())
