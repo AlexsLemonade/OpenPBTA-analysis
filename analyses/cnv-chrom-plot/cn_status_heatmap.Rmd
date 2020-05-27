@@ -42,8 +42,8 @@ frac_uncallable <- 0.75
 # Absolute fraction needed for a bin to be called a particular status
 frac_threshold <- 0.75
 
-# Any groups this size or smaller will be added into the `Other` group for the resulting heatmap
-min_group_size <- 1
+# Any groups smaller than this will be added into the `Other` group for the resulting heatmap
+min_group_size <- 2
 ```
 
 ### Set Up
@@ -390,7 +390,7 @@ histologies <-
   #TODO: Remove lines 387 - 400 when this is split into two panels
   dplyr::mutate(
     short_histology = dplyr::case_when(
-      group_n <= min_group_size ~ "Other", 
+      group_n < min_group_size ~ "Other", 
       TRUE ~ as.character(short_histology))) %>% 
   # Reapply colors to groups
    dplyr::mutate(sample_color = dplyr::recode(
