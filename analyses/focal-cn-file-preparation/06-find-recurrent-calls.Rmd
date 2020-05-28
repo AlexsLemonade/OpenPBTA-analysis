@@ -1,0 +1,230 @@
+---
+title: "Determine the recurrent focal CN dominant status calls"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell for ALSF CCDL
+date: 2020
+---
+
+This notebook determines the recurrent focal copy number dominant status calls by region using the output of `05-define-most-focal-cn-units.Rmd`.
+
+Recurrence here has been arbitrarily defined based on the plotting of the distribution of status calls and a [similar decision](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/66bb67a7bf29aad4510a0913a2dbc88da0013be8/analyses/fusion_filtering/06-recurrent-fusions-per-histology.R#L152) made in `analyses/fusion_filtering/06-recurrent-fusions-per-histology.R` to make the cutoff for recurrence to be greater than a count of 3 samples that have the same CN status call in the same region.
+
+## Usage
+
+This notebook is intended to be run from the command line with the following (assumes you are in the root directory of the repository):
+
+```
+Rscript -e "rmarkdown::render('analyses/focal-cn-file-preparation/06-find-recurrent-calls.Rmd', clean = TRUE)"
+```
+
+## Set up
+
+### Cutoffs
+
+```{r}
+# Here, we arbitrarily define recurrence to be greater than 3 based on 
+# the plot above and on a similar decision made in
+# `analyses/fusion_filtering/06-recurrent-fusions-per-histology.R`
+# https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/66bb67a7bf29aad4510a0913a2dbc88da0013be8/analyses/fusion_filtering/06-recurrent-fusions-per-histology.R#L152
+recurrence_cutoff <- 3
+
+# Define the cutoff for the number of genes to keep after counting and
+# arranging by copy number status recurrence in all regions -- these genes
+# will be considered the genes with the most recurrent CNVs
+top_genes_cutoff <- 20
+```
+
+
+### Libraries and functions
+
+```{r}
+library(tidyverse)
+```
+
+### Files and directories
+
+```{r}
+results_dir <- "results"
+
+plots_dir <- "plots"
+```
+
+### Read in files
+
+Read in focal CN dominant status calls prepared in `05-define-most-focal-cn-units.Rmd`.
+
+```{r}
+focal_cn_df <-
+  read_tsv(file.path(results_dir, "consensus_seg_most_focal_cn_status.tsv.gz")) %>%
+  # Filter out the `uncallable` statuses
+  filter(status != "uncallable")
+
+metadata <- read_tsv(file.path("..", "..", "data", "pbta-histologies.tsv"), guess_max = 10000)
+```
+
+## Find recurrent calls
+
+### Tally the sample counts of each unique status call by region.
+
+```{r}
+# Tally the number of samples that have the same status call by region
+final_df_tally <- focal_cn_df %>%
+  group_by(status, region, region_type) %>%
+  tally(name = "count") %>%
+  # Add column named `short_histology` for joining later
+  mutate(short_histology = "All")
+
+# Display table with counts of each unique status call by region
+final_df_tally %>%
+  arrange(desc(count))
+```
+
+### Tally the sample counts of each unique status call by region and short histology.
+
+```{r}
+# Tally the number of samples that have the same status call by region
+final_df_tally_histology <- focal_cn_df %>%
+  # Join the metadata by biospecimen IDs to get short histology data
+  inner_join(select(metadata,
+                    c(
+                      "Kids_First_Biospecimen_ID", "short_histology"
+                    )),
+             by = "Kids_First_Biospecimen_ID") %>%
+  group_by(status, region, region_type, short_histology) %>%
+  tally(name = "count")
+
+# Display table with counts of each unique status call by region and short
+# histology
+final_df_tally_histology %>%
+  arrange(desc(count))
+```
+
+### Plot the distribution of counts
+
+```{r}
+# Plot the distribution of counts for all histologies
+ggplot(final_df_tally, aes(x = count)) +
+  geom_histogram(bins = 100) +
+  geom_vline(
+    aes(xintercept = recurrence_cutoff),
+    linetype = "longdash",
+    color = "green",
+    size = .4
+  ) +
+  xlab("number of samples with a copy number alteration") +
+  ggtitle("Distribution of copy number status counts by region across all histologies") +
+  geom_text(
+    aes(x = recurrence_cutoff, label = "recurrence cutoff", y = 5000),
+    colour = "darkgreen",
+    angle = 90,
+    vjust = 1.2,
+    size = 4
+  )
+
+# Save plot
+ggsave(file.path(plots_dir, "all_histology_cn_counts.png"), plot = last_plot())
+```
+
+```{r}
+# Plot the distribution of counts for histologies separated
+ggplot(final_df_tally_histology, aes(x = count)) +
+  geom_histogram(bins = 100) +
+  geom_vline(
+    aes(xintercept = recurrence_cutoff),
+    linetype = "longdash",
+    color = "green",
+    size = .4
+  ) +
+  xlab("number of samples with a copy number alteration") +
+  ggtitle("Distribution of copy number status counts by region and histology") +
+  geom_text(
+    aes(x = recurrence_cutoff, label = "recurrence cutoff", y = 5000),
+    colour = "darkgreen",
+    angle = 90,
+    vjust = 1.2,
+    size = 4
+  )
+
+# Save plot
+ggsave(file.path(plots_dir, "separate_histology_cn_counts.png"), plot = last_plot())
+```
+
+The `recurrence_cutoff` defined as 3 appears to be reasonable as seen in the distribution of counts plot above.
+
+### Isolate recurrent calls
+
+#### All histologies represented
+
+```{r}
+# Create a data frame of only observations that have counts greater than the `recurrence_cutoff`
+recurrent_df <- final_df_tally %>%
+  filter(count > recurrence_cutoff)
+
+# Display table
+recurrent_df
+```
+
+#### Separated by histology
+
+```{r}
+# Create a data frame of only observations that have counts greater than the `recurrence_cutoff`
+recurrent_df_histology <- final_df_tally_histology %>%
+  filter(count > recurrence_cutoff)
+
+# Display table
+recurrent_df_histology
+```
+
+#### Combine all histology recurrent data with the data separated by histology 
+
+```{r}
+final_df_recurrent <- recurrent_df %>%
+  bind_rows(recurrent_df_histology) %>%
+  arrange(region) %>%
+  select(region, status, short_histology, count, region_type)
+
+# Display table
+final_df_recurrent
+```
+
+### Save list of genes that have `recurrent` calls
+
+```{r}
+# Save list of genes that have `recurrent` status calls for use in downstream
+# analyses
+top_recurrent_genes <- final_df_recurrent %>%
+  # Ungroup data from previous step
+  ungroup() %>%
+  # Arrange by descending count
+  arrange(desc(count)) %>%
+  # Filter to only gene regions
+  filter(region_type == "gene") %>%
+  # Select the top genes by count
+  top_n(top_genes_cutoff, count) %>%
+  # Select only the gene names
+  select(gene = region)
+
+# Save list of recurrent genes to file
+write_tsv(
+  top_recurrent_genes,
+  file.path(results_dir, "consensus_seg_focal_cn_recurrent_genes.tsv")
+)
+```
+
+
+### Write final data frame to file
+
+```{r}
+# Write the recurrent focal CN calls by region and histology data frame to
+# file
+write_tsv(final_df_recurrent, file.path(results_dir, "consensus_seg_recurrent_focal_cn_units.tsv"))
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
