@@ -41,6 +41,9 @@ frac_uncallable <- 0.75
 
 # Absolute fraction needed for a bin to be called a particular status
 frac_threshold <- 0.75
+
+# Any groups smaller than this will be added into the `Other` group for the resulting heatmap
+min_group_size <- 2
 ```
 
 ### Set Up
@@ -382,11 +385,32 @@ histologies <-
   dplyr::group_by(short_histology) %>% 
   dplyr::mutate(group_n = dplyr::n()) %>% 
   # Ungroup the data
-  dplyr::ungroup() %>%
+  dplyr::ungroup() %>% 
+  # Temporarily we will put the n = 1 `short_histology` samples in the `Other` group. 
+  #TODO: Remove lines 387 - 400 when this is split into two panels
+  dplyr::mutate(
+    short_histology = dplyr::case_when(
+      group_n < min_group_size ~ "Other", 
+      TRUE ~ as.character(short_histology))) %>% 
+  # Reapply colors to groups
+   dplyr::mutate(sample_color = dplyr::recode(
+    short_histology,
+    !!!histology_col_palette
+  )) %>%
+  # ReCount numbers after the Other switches
+  dplyr::group_by(short_histology) %>% 
+  dplyr::mutate(group_n = dplyr::n()) %>% 
+  # Ungroup the data
+  dplyr::ungroup() %>% 
+  # Add sample sizes
   dplyr::mutate(short_histology = factor(paste0(short_histology, " (n = ", group_n, ")"))) %>%
+  # Put in alphabetical order
   dplyr::arrange(short_histology) %>%
+  # ComplexHeatmap wants this. 
   tibble::column_to_rownames("Kids_First_Biospecimen_ID")
 ```
+
+Make a color key that's formatted for ComplexHeatmap. 
 
 ```{r}
 # Make color key specific to these samples
