@@ -20,12 +20,9 @@ bash run-oncoprint.sh
   * The `Tumor_Sample_Barcode` column in the output corresponds to the `sample_id` column in the histologies file
   * We remove ambiguous `sample_id` -- i.e., where there are more than two tumor biospecimens that map to the same sample identifier.
   * Filtering via an [independent specimen file](https://alexslemonade.github.io/OpenPBTA-manuscript/#selection-of-independent-samples) is optional, but highly recommended.
-* `01-plot-oncoprint.R` takes the files from above and optionally a list of top mutated genes (generated in `analyses/interaction-plots/scripts/01-disease-specimen-lists.R`, top genes with recurrent CNVs (generated in `analyses/focal-cn-file-preparation/06-find-recurrent-calls.Rmd`, or a concatenated list of these genes (generated in this module's `util/concatenate-gene-lists.R` script).
+* `01-plot-oncoprint.R` takes the files from above and optionally a list of top mutated genes (generated in `analyses/interaction-plots/scripts/01-disease-specimen-lists.R`, top genes with recurrent CNVs (generated in `analyses/focal-cn-file-preparation/06-find-recurrent-calls.Rmd`, or a concatenated list of these genes.
 This script generates an oncoprint displaying the landscape across PBTA given
 the relevant metadata.
-* `concatenate-gene-lists.R` takes two separate gene lists as input and combines them into a list with one column for use in the oncoprint plotting.
-The output of this script is a TSV file with the combined list of genes, stored in this module's `results` directory.
-This script is found in this module's `util` directory.
 
 ### Folder Structure
 
@@ -40,10 +37,7 @@ oncoprint-landscape
 │   ├── all_participants_primary-plus_oncoprint.png
 │   ├── all_participants_primary_only_goi_oncoprint.png
 │   └── all_participants_primary_only_oncoprint.png
-├── results
-│   └── combined_goi_list.tsv
 ├── run-oncoprint.sh
 └── util
-    ├── concatenate-gene-lists.R
     └── oncoplot-functions.R
 ```
