@@ -180,9 +180,6 @@ maf_df <- maf_df %>%
 readr::write_tsv(maf_df, maf_output)
 
 #### Fusion file preparation ---------------------------------------------------
-# TODO: Once the consensus calls of the fusion data are obtained, this section
-# will need to be adapted to the format of the fusion input file. For example,
-# the way we separate the genes out of `FusionName` may need to be adapted.
 
 message("Preparing fusion file...")
 
