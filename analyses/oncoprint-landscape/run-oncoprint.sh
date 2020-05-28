@@ -45,8 +45,6 @@ Rscript --vanilla 00-map-to-sample_id.R \
   --filename_lead ${primary_filename} \
   --independent_specimens ../../data/independent-specimens.wgs.primary.tsv
 
-gene_list=$(join_by , "${genes_list[@]}")
-
 Rscript --vanilla 01-plot-oncoprint.R \
   --maf_file ${intermediate_directory}/${primary_filename}_maf.tsv \
   --cnv_file ${intermediate_directory}/${primary_filename}_cnv.tsv \
