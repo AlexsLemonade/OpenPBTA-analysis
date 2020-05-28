@@ -87,11 +87,11 @@ option_list <- list(
     help = "file path to the histologies file"
   ),
   optparse::make_option(
-    c("-g", "--goi_file"),
+    c("-g", "--goi_list"),
     type = "character",
     default = NULL,
-    help = "file path to file that contains list of genes to include on
-            oncoprint"
+    help = "list of genes of interest files that contain the genes to include
+            on oncoprint"
   ),
   optparse::make_option(
     c("-p", "--png_name"),
@@ -117,7 +117,23 @@ opt <- optparse::parse_args(opt_parser)
 # even if they are NULL
 cnv_df <- opt$cnv_file
 fusion_df <- opt$fusion_file
-goi_list <- opt$goi_file
+goi_list <- opt$goi_list
+
+#### Functions ----------------------------------------------------------------
+
+read_genes <- function(gene_list) {
+  # This function takes in the file path to a gene list and pulls out
+  # the gene information from that list
+  #
+  # Args:
+  #   gene_list: file path to genes of interest file
+  #
+  # Return:
+  #   genes: a vector of genes from the genes of interest file
+  
+  genes <- readr::read_tsv(gene_list) %>%
+    dplyr::pull("gene")
+}
 
 #### Read in data --------------------------------------------------------------
 
@@ -141,13 +157,13 @@ if (!is.null(opt$fusion_file)) {
   fusion_df <- readr::read_tsv(opt$fusion_file)
 }
 
-# Read in genes list
-if (!is.null(opt$goi_file)) {
-  goi_list <- readr::read_tsv(file.path(opt$goi_file)) %>%
-    dplyr::pull("gene")
-
-  # Filter `goi_list` to include only the unique genes of interest
-  goi_list <- unique(goi_list)
+# Read in gene information from the list of genes of interest files
+if (!is.null(opt$goi_list)) {
+  # Read in using the `read_genes` custom function and unlist the gene column
+  # data from the genes of interest file paths given
+  goi_list <- unlist(lapply(goi_list, read_genes)) %>%
+    # Include only the unique genes of interest
+    unique()
 }
 
 # Read in recurrent focal CNVs file
