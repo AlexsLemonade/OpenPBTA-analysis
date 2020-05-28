@@ -294,7 +294,6 @@ RUN mkdir /mcr-install-v83 && \
     rm -rf mcr-install-v83
 
 WORKDIR /home/rstudio/
-
 # GISTIC installation
 RUN mkdir -p gistic_install && \
     cd gistic_install && \
@@ -302,12 +301,13 @@ RUN mkdir -p gistic_install && \
     tar zxf GISTIC_2_0_23.tar.gz && \
     rm -f GISTIC_2_0_23.tar.gz && \
     rm -rf MCR_Installer
+RUN chown -R rstudio:rstudio /home/rstudio/gistic_install && \
+    chmod 755 /home/rstudio/gistic_install
+WORKDIR /rocker-build/
 
-RUN chown -R rstudio:rstudio /home/rstudio/gistic_install
-RUN chmod 755 /home/rstudio/gistic_install
-
-
-
+# Install multipanelfigure, required for transcriptomic overview figure
+RUN install2.r --error --deps TRUE \
+    multipanelfigure
 
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
