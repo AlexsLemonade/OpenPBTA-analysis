@@ -36,9 +36,6 @@ library(maftools)
 # it is called from.
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
-# Path to the data obtained via `bash download-data.sh`.
-data_dir <- file.path(root_dir, "data")
-
 # Path to output directory for plots produced
 plots_dir <-
   file.path(root_dir, "analyses", "oncoprint-landscape", "plots")
@@ -90,8 +87,8 @@ option_list <- list(
     c("-g", "--goi_list"),
     type = "character",
     default = NULL,
-    help = "list of genes of interest files that contain the genes to include
-            on oncoprint"
+    help = "comma-separated list of genes of interest files that contain the
+            genes to include on oncoprint"
   ),
   optparse::make_option(
     c("-p", "--png_name"),
@@ -130,7 +127,7 @@ read_genes <- function(gene_list) {
   #
   # Return:
   #   genes: a vector of genes from the genes of interest file
-  
+
   genes <- readr::read_tsv(gene_list) %>%
     dplyr::pull("gene")
 }
@@ -159,11 +156,12 @@ if (!is.null(opt$fusion_file)) {
 
 # Read in gene information from the list of genes of interest files
 if (!is.null(opt$goi_list)) {
+  goi_files <- unlist(stringr::str_split(goi_list, ",| "))
   # Read in using the `read_genes` custom function and unlist the gene column
   # data from the genes of interest file paths given
-  goi_list <- unlist(lapply(goi_list, read_genes)) %>%
+  goi_list <- lapply(goi_files, read_genes)
     # Include only the unique genes of interest
-    unique()
+  goi_list <- unique(unlist(goi_list))
 }
 
 # Read in recurrent focal CNVs file
