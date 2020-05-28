@@ -127,7 +127,7 @@ biospecimens_to_remove <- unique(c(ambiguous_biospecimens,
 maf_df <- maf_df %>%
   dplyr::filter(!(Tumor_Sample_Barcode %in% biospecimens_to_remove))
 cnv_df <- cnv_df %>%
-  dplyr::filter(!(biospecimen_id %in% biospecimens_to_remove))
+  dplyr::filter(!(Kids_First_Biospecimen_ID %in% biospecimens_to_remove))
 fusion_df <- fusion_df %>%
   dplyr::filter(!(Sample %in% biospecimens_to_remove))
 
@@ -143,7 +143,7 @@ if (!is.null(opt$independent_specimens)) {
   maf_df <- maf_df %>%
     filter(Tumor_Sample_Barcode %in% ind_biospecimen)
   cnv_df <- cnv_df %>%
-    filter(biospecimen_id %in% ind_biospecimen)
+    filter(Kids_First_Biospecimen_ID %in% ind_biospecimen)
 
   # for the RNA-seq samples, we need to map from the sample identifier
   # associated with the independent specimen and back to a biospecimen ID
@@ -216,7 +216,7 @@ multihit_fusions <- fus_sep %>%
 
 # Filter out multi-hit fusions from the other fusions that we will
 # label based on whether they are the 5' or 3' gene
-single_fusion <- fus_sep %>% 
+single_fusion <- fus_sep %>%
   anti_join(multihit_fusions,
             by = c("Sample", "Hugo_Symbol")) %>%
   select(Sample, Hugo_Symbol) %>%
@@ -245,10 +245,11 @@ cnv_df <- cnv_df %>%
   inner_join(select(histologies_df,
                     Kids_First_Biospecimen_ID,
                     sample_id),
-             by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
+             by = "Kids_First_Biospecimen_ID") %>%
+  filter(status != "uncallable") %>%
   mutate(Tumor_Sample_Barcode =  sample_id) %>%
   rename(Variant_Classification = status,
-         Hugo_Symbol = gene_symbol) %>%
+         Hugo_Symbol = region) %>%
   select(Hugo_Symbol, Tumor_Sample_Barcode, Variant_Classification)
 
 # Write to file

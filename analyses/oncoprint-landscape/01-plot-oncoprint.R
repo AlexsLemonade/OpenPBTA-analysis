@@ -2,7 +2,6 @@
 # the relevant metadata. It addresses issue #6 in the OpenPBTA-analysis
 # github repository. It uses the output of 00-map-to-sample_id.R. It can
 # accept a gene list (via --goi_list) that restricts plotting to those genes.
-# Gene lists should be a single column with no header and use gene symbols.
 #
 # Code adapted from the PPTC PDX Oncoprint Generation repository here:
 # https://github.com/marislab/create-pptc-pdx-oncoprints/tree/master/R
@@ -95,12 +94,6 @@ option_list <- list(
     type = "character",
     default = NULL,
     help = "oncoprint output png file name"
-  ),
-  optparse::make_option(
-    c("-o", "--focal_file"),
-    type = "character",
-    default = NULL,
-    help = "file path to most focal CN units file"
   )
 )
 
@@ -204,24 +197,6 @@ names(short_histology_col_key) <- short_histologies
 
 # Now format the color key objet into a list
 annotation_colors <- list(short_histology = short_histology_col_key)
-
-#### Format recurrent focal CN object -----------------------------------------
-
-if (!is.null(opt$focal_file)) {
-  # Filter the recurrent focal calls data frame to include the samples in
-  # `cnv_df`
-  cnv_df <- focal_df %>%
-    dplyr::filter(status != "uncallable") %>%
-    # Join the metadata to get the `Tumor_Sample_Barcode` column
-    dplyr::left_join(metadata, by = "Kids_First_Biospecimen_ID") %>%
-    # Select and rename the needed columns for creating the maf object
-    dplyr::select(
-      Hugo_Symbol = region,
-      Tumor_Sample_Barcode,
-      Variant_Classification = status
-    ) %>%
-    dplyr::filter(Tumor_Sample_Barcode %in% cnv_df$Tumor_Sample_Barcode)
-}
 
 #### Prepare MAF object for plotting ------------------------------------------
 
