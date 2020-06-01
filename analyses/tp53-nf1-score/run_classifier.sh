@@ -17,16 +17,10 @@ data_dir="data"
 scratch_dir="scratch"
 # cds gencode bed file  
 cds_file="${scratch_dir}/gencode.v27.primary_assembly.annotation.bed"
-<<<<<<< HEAD:analyses/tp53-nf1-score/run_classifier.sh
-consensus_file="${data_dir}/pbta-snv-consensus-mutation.maf.tsv.gz"
-clinical_file="${data_dir}/pbta-histologies.tsv"
-analysis_dir="analyses/tp53-nf1-score"
-=======
 snvconsensus_file="${data_dir}/pbta-snv-consensus-mutation.maf.tsv.gz"
 cnvconsensus_file="${data_dir}/consensus_seg_annotated_cn_autosomes.tsv.gz"
 histology_file="${data_dir}/pbta-histologies.tsv"
-analysis_dir="analyses/tp53_nf1_score"
->>>>>>> master:analyses/tp53_nf1_score/run_classifier.sh
+analysis_dir="analyses/tp53-nf1-score"
 
 # Convert GTF to BED file
 # Here we are only extracting lines with as a CDS i.e. are coded in protein
