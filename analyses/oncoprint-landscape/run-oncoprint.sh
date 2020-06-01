@@ -13,33 +13,37 @@ script_directory="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
-#### Download the driver lists from the PPTC repository
+# For the genes lists
+# https://stackoverflow.com/questions/1527049/how-can-i-join-elements-of-an-array-in-bash
+function join_by { local IFS="$1"; shift; echo "$*"; }
 
-mkdir -p driver-lists
-wget -N --directory-prefix=driver-lists -O driver-lists/brain-goi-list-long.txt https://github.com/marislab/create-pptc-pdx-oncoprints/raw/2c9ed2a2331bcef3003d6aa25a130485d76a3535/data/brain-goi-list-old.txt
-wget -N --directory-prefix=driver-lists -O driver-lists/brain-goi-list-short.txt https://github.com/marislab/create-pptc-pdx-oncoprints/raw/2c9ed2a2331bcef3003d6aa25a130485d76a3535/data/brain-goi-list.txt
-
-#### Download consensus mutation files
+#### Files
 
 maf_consensus=../../data/pbta-snv-consensus-mutation.maf.tsv.gz
-controlfreec_autosomes=../focal-cn-file-preparation/results/controlfreec_annotated_cn_autosomes.tsv.gz
 fusion_file=../../data/pbta-fusion-putative-oncogenic.tsv
 histologies_file=../../data/pbta-histologies.tsv
 intermediate_directory=../../scratch/oncoprint_files
 primary_filename="all_participants_primary_only"
 primaryplus_filename="all_participants_primary-plus"
-genes_list=driver-lists/brain-goi-list-long.txt
+focal_directory=../focal-cn-file-preparation/results
+focal_cnv_file=${focal_directory}/consensus_seg_most_focal_cn_status.tsv.gz
+
+# each element of the array is a file that contains genes of interest
+genes_list=("../interaction-plots/results/gene_disease_top50.tsv" \
+            "../focal-cn-file-preparation/results/consensus_seg_focal_cn_recurrent_genes.tsv")
+# join into a string, where file paths are separated by commas
+genes_list=$(join_by , "${genes_list[@]}")
 
 #### Primary only oncoprint
 
 Rscript --vanilla 00-map-to-sample_id.R \
   --maf_file ${maf_consensus} \
-  --cnv_file ${controlfreec_autosomes} \
+  --cnv_file ${focal_cnv_file} \
   --fusion_file ${fusion_file} \
   --metadata_file ${histologies_file} \
   --output_directory ${intermediate_directory} \
   --filename_lead ${primary_filename} \
-  --independent_specimens ../../data/independent-specimens.wgswxs.primary.tsv
+  --independent_specimens ../../data/independent-specimens.wgs.primary.tsv
 
 Rscript --vanilla 01-plot-oncoprint.R \
   --maf_file ${intermediate_directory}/${primary_filename}_maf.tsv \
@@ -61,12 +65,12 @@ Rscript --vanilla 01-plot-oncoprint.R \
 
 Rscript --vanilla 00-map-to-sample_id.R \
   --maf_file ${maf_consensus} \
-  --cnv_file ${controlfreec_autosomes} \
+  --cnv_file ${focal_cnv_file} \
   --fusion_file ${fusion_file} \
   --metadata_file ${histologies_file} \
   --output_directory ${intermediate_directory} \
   --filename_lead ${primaryplus_filename} \
-  --independent_specimens ../../data/independent-specimens.wgswxs.primary-plus.tsv
+  --independent_specimens ../../data/independent-specimens.wgs.primary-plus.tsv
 
 Rscript --vanilla 01-plot-oncoprint.R \
   --maf_file ${intermediate_directory}/${primaryplus_filename}_maf.tsv \

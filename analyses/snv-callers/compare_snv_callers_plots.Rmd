@@ -50,15 +50,6 @@ _This assumes you are in the top directory of the repository._
 Read in set up script.
 
 ```{r}
-if (!("ggupset" %in% installed.packages())) {
-  install.packages("ggupset", repos = "http://cran.us.r-project.org")
-}
-if (!("UpSetR" %in% installed.packages())) {
-  install.packages("UpSetR", repos = "http://cran.us.r-project.org")
-}
-if (!("GGally" %in% installed.packages())) {
-  install.packages("GGally", repos = "http://cran.us.r-project.org")
-}
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 ```
@@ -67,8 +58,8 @@ Set up directories.
 
 ```{r}
 scratch_dir <- file.path("..", "..", "scratch")
-results_dir <- file.path("results", "comparison")
-plots_dir <- file.path("plots", "comparison")
+results_dir <- file.path("results", "pbta-comparison")
+plots_dir <- file.path("plots", "pbta-comparison")
 
 if (!dir.exists(results_dir)) {
   dir.create(results_dir)
@@ -93,6 +84,7 @@ callers_per_mutation_df %>%
   ggplot2::ylab("")
 }
 ```
+
 ## Connect to database
 
 Connect to SQLite database.
@@ -124,10 +116,10 @@ lancet <- dplyr::tbl(con, "lancet") %>%
   dplyr::select(join_cols, "VAF")
 
 mutect <- dplyr::tbl(con, "mutect") %>% 
-  dplyr::select(join_cols, "VAF") 
+  dplyr::select(join_cols, "VAF")
 
 vardict <- dplyr::tbl(con, "vardict") %>% 
-  dplyr::select(join_cols, "VAF") 
+  dplyr::select(join_cols, "VAF")
 ```
 
 Because `DBI` does not support full_join, we had to use a series of `left_join` and
@@ -220,9 +212,8 @@ Save this plot to a png
 
 ```{r}
 # We can save the plot like a normal ggplot
-png(file = file.path(plots_dir, "upset_plot.png"))
-upsettr_plot
-dev.off()
+ggplot2::ggsave(plot = upsettr_plot, 
+                file.path(plots_dir, "pbta-upset_plot.png"))
 ```
 
 Transcripts only upset plot. 
@@ -249,7 +240,7 @@ Graph the median VAF for each combination of callers.
 
 ```{r}
 # Make this plot
-callers_per_mutation %>%
+median_vaf_plot <- callers_per_mutation %>%
   ggplot2::ggplot(ggplot2::aes(x = caller_combo, y = median_vaf)) +
   ggplot2::geom_violin() +
   ggplot2::theme_classic() +
@@ -257,11 +248,15 @@ callers_per_mutation %>%
   ggupset::axis_combmatrix(sep = "-") +
   ggplot2::xlab("") +
   ggplot2::ylab("Median VAF Across Callers")
+
+# Print out
+median_vaf_plot
 ```
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(file.path(plots_dir, "upset_median_vaf_plot.png"))
+ggplot2::ggsave(plot = median_vaf_plot, 
+                file.path(plots_dir, "upset_median_vaf_plot.png"))
 ```
 
 ## Base Changes 
@@ -347,18 +342,14 @@ ggplot2::ggsave(file.path(plots_dir, "vaf_violin_plot.png"))
 
 ## VAF correlations
 
-Make the plot with ggpairs. 
+Correlate VAF's across callers
 
 ```{r}
-GGally::ggpairs(vaf_df %>% dplyr::select(-VAF_consensus, -Variant_Classification), 
-                mapping = ggplot2::aes(alpha = 0.05)) +
-  ggplot2::theme_classic()
+vaf_df %>% 
+  dplyr::select(-VAF_consensus, -Variant_Classification) %>% 
+  cor() %>% 
+  knitr::kable()
 ``` 
-
-```{r}
-# Save this plot
-ggplot2::ggsave(file.path(plots_dir, "vaf_correlations_plot.png"))
-```
 
 ## Mutation Region barplot
 

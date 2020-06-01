@@ -90,7 +90,8 @@ cnv_output <- file.path(output_dir, paste0(opt$filename_lead, "_cnv.tsv"))
 
 #### Read in data --------------------------------------------------------------
 
-histologies_df <- readr::read_tsv(opt$metadata_file)
+histologies_df <- readr::read_tsv(opt$metadata_file,
+                                  guess_max = 10000)
 maf_df <- readr::read_tsv(opt$maf_file)
 cnv_df <- readr::read_tsv(opt$cnv_file)
 fusion_df <- readr::read_tsv(opt$fusion_file)
@@ -126,7 +127,7 @@ biospecimens_to_remove <- unique(c(ambiguous_biospecimens,
 maf_df <- maf_df %>%
   dplyr::filter(!(Tumor_Sample_Barcode %in% biospecimens_to_remove))
 cnv_df <- cnv_df %>%
-  dplyr::filter(!(biospecimen_id %in% biospecimens_to_remove))
+  dplyr::filter(!(Kids_First_Biospecimen_ID %in% biospecimens_to_remove))
 fusion_df <- fusion_df %>%
   dplyr::filter(!(Sample %in% biospecimens_to_remove))
 
@@ -142,7 +143,7 @@ if (!is.null(opt$independent_specimens)) {
   maf_df <- maf_df %>%
     filter(Tumor_Sample_Barcode %in% ind_biospecimen)
   cnv_df <- cnv_df %>%
-    filter(biospecimen_id %in% ind_biospecimen)
+    filter(Kids_First_Biospecimen_ID %in% ind_biospecimen)
 
   # for the RNA-seq samples, we need to map from the sample identifier
   # associated with the independent specimen and back to a biospecimen ID
@@ -179,38 +180,57 @@ maf_df <- maf_df %>%
 readr::write_tsv(maf_df, maf_output)
 
 #### Fusion file preparation ---------------------------------------------------
-# TODO: Once the consensus calls of the fusion data are obtained, this section
-# will need to be adapted to the format of the fusion input file. For example,
-# the way we separate the genes out of `FusionName` may need to be adapted.
 
 message("Preparing fusion file...")
-# Separate fusion gene partners and add variant classification and center
+
+# Separate fusion gene partners
 fus_sep <- fusion_df %>%
   # Separate the 5' and 3' genes
   tidyr::separate(FusionName, c("Gene1", "Gene2"), sep = "--") %>%
-  select(Sample, Gene1, Gene2)
+  # Use row numbers to mark unique fusions - this will help us when
+  # we melt and remove selfie fusions below
+  tibble::rowid_to_column("Fusion_ID") %>%
+  select(Fusion_ID, Sample, Gene1, Gene2) %>%
+  reshape2::melt(id.vars = c("Fusion_ID", "Sample"),
+                 variable.name = "Partner",
+                 value.name = "Hugo_Symbol") %>%
+  arrange(Fusion_ID)
 
-reformat_fusion <- fus_sep %>%
-  # Here we want to tally how many times the 5' gene shows up as a fusion hit
-  # in a sample
-  group_by(Sample, Gene1) %>%
-  tally() %>%
-  # If the sample-5' gene pair shows up more than once, call it a multi hit
-  # fusion
-  mutate(Variant_Classification =
-           if_else(n == 1, "Fusion", "Multi_Hit_Fusion"),
-         # Required column for joining with MAF
-         Variant_Type = "OTHER") %>%
+multihit_fusions <- fus_sep %>%
+  # For looking at multi-hit fusions, we want to remove selfie fusions
+  # If we drop the 5', 3' information in Partner, we can use distinct
+  # to remove the selfie fusions because Fusion_ID marks what fusion
+  # it came from
+  select(-Partner) %>%
+  distinct() %>%
+  # Now we want to count how many times a gene is fused within a sample
+  # Anything with more than one count is considered multi-hit
+  group_by(Sample, Hugo_Symbol) %>%
+  count() %>%
+  filter(n > 1) %>%
   select(-n) %>%
-  ungroup() %>%
-  # Correct format for joining with MAF
-  rename(Tumor_Sample_Barcode = Sample, Hugo_Symbol = Gene1) %>%
-  # Create a new identifier from participant ID + sample_id
+  mutate(Variant_Classification = "Multi_Hit_Fusion")
+
+# Filter out multi-hit fusions from the other fusions that we will
+# label based on whether they are the 5' or 3' gene
+single_fusion <- fus_sep %>%
+  anti_join(multihit_fusions,
+            by = c("Sample", "Hugo_Symbol")) %>%
+  select(Sample, Hugo_Symbol) %>%
+  distinct() %>%
+  mutate(Variant_Classification = "Fusion")
+
+# Combine multi-hit and single fusions into one data frame
+# And add the other identifiers!
+reformat_fusion <- multihit_fusions %>%
+  bind_rows(single_fusion) %>%
+  mutate(Variant_Type = "OTHER") %>%
   inner_join(select(histologies_df,
                     Kids_First_Biospecimen_ID,
                     sample_id),
-             by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
-  mutate(Tumor_Sample_Barcode = sample_id)
+             by = c("Sample" = "Kids_First_Biospecimen_ID")) %>%
+  rename(Tumor_Sample_Barcode = sample_id,
+         Kids_First_Biospecimen_ID = Sample)
 
 # Write to file
 readr::write_tsv(reformat_fusion, fusion_output)
@@ -222,10 +242,11 @@ cnv_df <- cnv_df %>%
   inner_join(select(histologies_df,
                     Kids_First_Biospecimen_ID,
                     sample_id),
-             by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
+             by = "Kids_First_Biospecimen_ID") %>%
+  filter(status != "uncallable") %>%
   mutate(Tumor_Sample_Barcode =  sample_id) %>%
   rename(Variant_Classification = status,
-         Hugo_Symbol = gene_symbol) %>%
+         Hugo_Symbol = region) %>%
   select(Hugo_Symbol, Tumor_Sample_Barcode, Variant_Classification)
 
 # Write to file
