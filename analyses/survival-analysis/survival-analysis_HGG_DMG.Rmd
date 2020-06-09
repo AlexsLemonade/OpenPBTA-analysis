@@ -53,13 +53,16 @@ if (!dir.exists(plots_dir)) {
 }
 ```
 
-Declare input file paths. 
+Declare input file paths and useful variables.
 
 ```{r Set input file paths}
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
 independent_primary_file <- file.path(
   data_dir,
   "independent-specimens.wgswxs.primary.tsv")
+
+# Number of participants required to consider a subtype in survival analysis
+n_participants <- 3
 ```
 
 Declare output file paths for HGG/DMG all subtypes. 
@@ -100,10 +103,10 @@ metadata <- metadata %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in%
                   independent_primary$Kids_First_Biospecimen_ID)
 
-# find molecular subtypes which have more than 3 participants
-filter_molecular_subtype <- metadata %>% group_by(molecular_subtype) %>% dplyr::tally() %>% dplyr::filter(n>3)
+# find molecular subtypes which have more than n_participants (3) participants
+filter_molecular_subtype <- metadata %>% group_by(molecular_subtype) %>% dplyr::tally() %>% dplyr::filter(n>n_participants)
 
-# select only molecular_subtypes that have more than 3 participants
+# select only molecular_subtypes that have more than n_participants (3) participants
 metadata <- metadata %>%
   dplyr::filter(molecular_subtype %in%
                   filter_molecular_subtype$molecular_subtype)
@@ -122,6 +125,13 @@ kap_fit <- survival_analysis(metadata,
 )
 # median and 0.95CI survival days
 kap_fit$model
+```
+Note that upper 95% bounds (0.95UCL) which are denoted "NA" are the consequence of underlying skew in the data. The upper confidence limit is therefore not defined (or may be interpreted as infinity). This can be confirmed by plotting the output. Dashed lines represent upper and lower bounds. Because the upper bound for HGG H3 wildtype (blue) never reaches as low as 0.5 along the Y-axis (Survival), its upper bound is undefined. By contrast, the upper bound for DMB H3 K28 (red) *does* go below 0.5 and has an associated non-NA upper bound.
+
+```{r explain na}
+plot(kap_fit$model, mark.time=FALSE, conf.int=TRUE, col=c("red", "blue"))
+legend("topright", legend=c("DMG, H3 K28", "HGG, H3 wildtype"),col=c("red", "blue"), lty=1)
+
 ```
 
 `survminer` package comes with a convenient plotting function which uses `ggplot2`
