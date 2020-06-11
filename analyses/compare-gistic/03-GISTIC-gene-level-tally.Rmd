@@ -250,8 +250,9 @@ results_dir <- "results"
 #  dir.create(plots_dir)
 # }
 
-# Path to our focal CN files directory
-focal_dir <- file.path("..", "focal-cn-file-preparation", "results")
+# Path to our data directory
+data_dir <- file.path("..", "..", "data")
+
 # Path to GISTIC results
 gistic_dir <- file.path("..", "run-gistic", "results")
 ```
@@ -278,7 +279,7 @@ lgat_seg_counts <- file.path(gistic_dir,
                              "sample_seg_counts.txt")
 
 # File generated via the overlapping exons method 
-annotated_cn_file <- file.path(focal_dir, 
+annotated_cn_file <- file.path(data_dir, 
                                "consensus_seg_annotated_cn_autosomes.tsv.gz")
 ```
 
