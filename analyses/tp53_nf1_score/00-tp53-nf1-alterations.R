@@ -1,9 +1,10 @@
 # Author: Krutika Gaonkar
 #
-# Read in concensus snv calls to gather alterations in TP53 and NF1
+# Read in consensus snv calls to gather alterations in TP53 and NF1
 # to evaluate classifier
-# @params snvConcensus multi-caller concensus snv calls
-# @params clincalFile clinical file: pbta-histologies.tsv
+# @params snvConsensus multi-caller consensus snv calls
+# @params cnvConsensus multi-caller consensus cnv calls
+# @params histologyFile histology file: pbta-histologies.tsv
 # @params outputFolder output folder for alteration file
 # @params gencode cds bed file from gencode
 
@@ -16,7 +17,10 @@ suppressPackageStartupMessages(library("GenomicRanges"))
 # We can use functions from the `snv-callers` module of the OpenPBTA project
 # TODO: if a common util folder is established, use that instead
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-source(file.path(root_dir, "analyses", "snv-callers", "util",
+source(file.path(root_dir, 
+                 "analyses", 
+                 "snv-callers", 
+                 "util",
                  "tmb_functions.R"))
 
 #### Parse command line options ------------------------------------------------
@@ -24,19 +28,22 @@ source(file.path(root_dir, "analyses", "snv-callers", "util",
 option_list <- list(
   make_option(c("-s", "--snvConsensus"),type="character",
               help="Consensus snv calls (.tsv) "),
-  make_option(c("-c","--clinicalFile"),type="character",
-              help="clinical file for all samples (.tsv)"),
+  make_option(c("-c","--cnvConsensus"),type="character",
+               help="consensus cnv calls (.tsv) "),
+  make_option(c("-h","--histologyFile"),type="character",
+              help="histology file for all samples (.tsv)"),
   make_option(c("-o","--outputFolder"),type="character",
               help="output folder for results "),
   make_option(c("-g","--gencode"),type="character",
               help="cds gencode bed file")
 )
 
-opt <- parse_args(OptionParser(option_list=option_list))
+opt <- parse_args(OptionParser(option_list=option_list,add_help_option = FALSE))
 snvConsensusFile <- opt$snvConsensus
-clinicalFile <- opt$clinicalFile
+histologyFile <- opt$histologyFile
 outputFolder <- opt$outputFolder
 gencodeBed <- opt$gencode
+cnvConsesusFile <- opt$cnvConsensus
 
 #### Generate files with TP53, NF1 mutations -----------------------------------
 
@@ -50,10 +57,18 @@ consensus_snv <- data.table::fread(snvConsensusFile,
                                               "Tumor_Sample_Barcode",
                                               "Hugo_Symbol"),
                                    data.table = FALSE)
+
+# read in consensus CNV file
+cnvConsesus <- data.table::fread( cnvConsesusFile,
+                          select=c("gene_symbol",
+                                   "biospecimen_id",
+                                   "status"),
+)
+
 # gencode cds region BED file
 gencode_cds <- read_tsv(gencodeBed, col_names = FALSE)
-# clinical file
-clinical <- read_tsv(clinicalFile)
+# histology file
+histology <- read_tsv(histologyFile)
 
 # filter the MAF data.frame to only include entries that fall within the
 # CDS bed file regions
@@ -65,6 +80,14 @@ tp53_coding <- coding_consensus_snv %>%
   filter(Hugo_Symbol == "TP53") %>%
   filter(!(Variant_Classification %in% c("Silent", "Intron")))
 
+# subset to TP53 cnv loss and format to tp53_coding file format
+tp53_loss<-cnvConsesus %>% 
+  filter(gene_symbol=="TP53",
+         status=="loss") %>%
+  rename("biospecimen_id"="Tumor_Sample_Barcode",
+         "status"="Variant_Classification",
+         "gene_symbol"="Hugo_Symbol")
+
 # subset to NF1, removing silent mutations, mutations in introns, and missense
 # mutations -- we exclude missense mutations because they are not annotated
 # with OncoKB
@@ -75,12 +98,21 @@ nf1_coding <- coding_consensus_snv %>%
                                          "Intron",
                                          "Missense_Mutation")))
 
-# include only the relevant columns from the MAF file
+# subset to NF1 loss and format to nf1_coding file format
+nf1_loss<-cnvConsesus %>% 
+  filter(gene_symbol=="NF1",
+         status=="loss") %>%
+  rename("biospecimen_id"="Tumor_Sample_Barcode",
+         "status"="Variant_Classification",
+         "gene_symbol"="Hugo_Symbol")
+
+
+# include only the relevant columns from the MAF file and merge cnv loss dataframes as well
 tp53_nf1_coding <- tp53_coding %>%
-  bind_rows(nf1_coding)
+  bind_rows(tp53_loss,nf1_coding,nf1_loss)
 
 # biospecimen IDs for tumor or cell line DNA-seq
-bs_ids <- clinical %>%
+bs_ids <- histology %>%
   filter(sample_type != "Normal",
          experimental_strategy != "RNA-Seq") %>%
   pull(Kids_First_Biospecimen_ID)

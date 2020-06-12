@@ -1,8 +1,8 @@
 # This script displays an oncoprint displaying the landscape across PBTA given
 # the relevant metadata. It addresses issue #6 in the OpenPBTA-analysis
 # github repository. It uses the output of 00-map-to-sample_id.R. It can
-# accept a gene list (via --goi_list) that restricts plotting to those genes.
-# Gene lists should be a single column with no header and use gene symbols.
+# accept a gene list file or a comma-separated set of gene list files that will
+# be concatenated and restricts plotting to those genes (via --goi_list).
 #
 # Code adapted from the PPTC PDX Oncoprint Generation repository here:
 # https://github.com/marislab/create-pptc-pdx-oncoprints/tree/master/R
@@ -17,8 +17,7 @@
 #  --fusion_file ../../scratch/all_primary_samples_fusions.tsv \
 #  --metadata_file ../../data/pbta-histologies.tsv \
 #  --goi_list ${genes_list} \
-#  --png_name ${primary_filename}_goi_oncoprint.png \
-#  --focal_file ${focal_directory}/consensus_seg_most_focal_cn_status.tsv.gz
+#  --png_name ${primary_filename}_goi_oncoprint.png
 
 
 #### Set Up --------------------------------------------------------------------
@@ -35,9 +34,6 @@ library(maftools)
 # Use this as the root directory to ensure proper execution, no matter where
 # it is called from.
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-
-# Path to the data obtained via `bash download-data.sh`.
-data_dir <- file.path(root_dir, "data")
 
 # Path to output directory for plots produced
 plots_dir <-
@@ -87,23 +83,17 @@ option_list <- list(
     help = "file path to the histologies file"
   ),
   optparse::make_option(
-    c("-g", "--goi_file"),
+    c("-g", "--goi_list"),
     type = "character",
     default = NULL,
-    help = "file path to file that contains list of genes to include on
-            oncoprint"
+    help = "comma-separated list of genes of interest files that contain the
+            genes to include on oncoprint"
   ),
   optparse::make_option(
     c("-p", "--png_name"),
     type = "character",
     default = NULL,
     help = "oncoprint output png file name"
-  ),
-  optparse::make_option(
-    c("-o", "--focal_file"),
-    type = "character",
-    default = NULL,
-    help = "file path to most focal CN units file"
   )
 )
 
@@ -117,7 +107,23 @@ opt <- optparse::parse_args(opt_parser)
 # even if they are NULL
 cnv_df <- opt$cnv_file
 fusion_df <- opt$fusion_file
-goi_list <- opt$goi_file
+goi_list <- opt$goi_list
+
+#### Functions ----------------------------------------------------------------
+
+read_genes <- function(gene_list) {
+  # This function takes in the file path to a gene list and pulls out
+  # the gene information from that list
+  #
+  # Args:
+  #   gene_list: file path to genes of interest file
+  #
+  # Return:
+  #   genes: a vector of genes from the genes of interest file
+
+  genes <- readr::read_tsv(gene_list) %>%
+    dplyr::pull("gene")
+}
 
 #### Read in data --------------------------------------------------------------
 
@@ -141,13 +147,14 @@ if (!is.null(opt$fusion_file)) {
   fusion_df <- readr::read_tsv(opt$fusion_file)
 }
 
-# Read in genes list
-if (!is.null(opt$goi_file)) {
-  goi_list <- readr::read_tsv(file.path(opt$goi_file)) %>%
-    dplyr::pull("gene")
-
-  # Filter `goi_list` to include only the unique genes of interest
-  goi_list <- unique(goi_list)
+# Read in gene information from the list of genes of interest files
+if (!is.null(opt$goi_list)) {
+  goi_files <- unlist(stringr::str_split(goi_list, ",| "))
+  # Read in using the `read_genes` custom function and unlist the gene column
+  # data from the genes of interest file paths given
+  goi_list <- lapply(goi_files, read_genes)
+    # Include only the unique genes of interest
+  goi_list <- unique(unlist(goi_list))
 }
 
 # Read in recurrent focal CNVs file
@@ -190,24 +197,6 @@ names(short_histology_col_key) <- short_histologies
 
 # Now format the color key objet into a list
 annotation_colors <- list(short_histology = short_histology_col_key)
-
-#### Format recurrent focal CN object -----------------------------------------
-
-if (!is.null(opt$focal_file)) {
-  # Filter the recurrent focal calls data frame to include the samples in
-  # `cnv_df`
-  cnv_df <- focal_df %>%
-    dplyr::filter(status != "uncallable") %>%
-    # Join the metadata to get the `Tumor_Sample_Barcode` column
-    dplyr::left_join(metadata, by = "Kids_First_Biospecimen_ID") %>%
-    # Select and rename the needed columns for creating the maf object
-    dplyr::select(
-      Hugo_Symbol = region,
-      Tumor_Sample_Barcode,
-      Variant_Classification = status
-    ) %>%
-    dplyr::filter(Tumor_Sample_Barcode %in% cnv_df$Tumor_Sample_Barcode)
-}
 
 #### Prepare MAF object for plotting ------------------------------------------
 

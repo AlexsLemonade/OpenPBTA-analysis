@@ -281,7 +281,13 @@ Files that are intermediate, which means that they are useful within an analysis
 We build our project Docker image from a versioned [`tidyverse`](https://hub.docker.com/r/rocker/tidyverse) image from the [Rocker Project](https://www.rocker-project.org/) (v3.6.0).
 
 To add dependencies that are required for your analysis to the project Docker image, you must alter the project [`Dockerfile`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/Dockerfile).
-Note: R packages installed on this image will be installed from an [MRAN snapshot](https://mran.microsoft.com/documents/rro/reproducibility#reproducibility) corresponding to the last day that R 3.6.0 was the most recent release ([ref](https://hub.docker.com/r/rocker/tidyverse)).
+
+* R packages installed on this image will be installed from an [MRAN snapshot](https://mran.microsoft.com/documents/rro/reproducibility#reproducibility) corresponding to the last day that R 3.6.0 was the most recent release ([ref](https://hub.docker.com/r/rocker/tidyverse)).
+  * The simplest installation for most R packages is with the `install2.R` script that is included in the base Docker image.
+  * Because `BiocManager::install()` does not install from the MRAN snapshot, any R packages installed from Bioconductor should be installed with our `install_bioc.R` script, which works similarly to the `install2.R` script used for other R package installs.
+  * R packages that are not available in the MRAN snapshot can be installed via github with the `remotes::install_github()` function, with the commit specified by the `ref` argument.
+* Python packages should be installed with `pip3 install` with version numbers for all packages and dependencies specified.
+* Other software can be installed with `apt-get`, but this should *never* be used for R packages.
 
 If you need assistance adding a dependency to the Dockerfile, [file a new issue on this repository](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/new) to request help.
 
