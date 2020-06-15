@@ -50,3 +50,6 @@ if [ "$POLYA" -gt "0" ]; then
   python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_polya}
   python3 ${analysis_dir}/02-evaluate-classifier.py -s ${analysis_dir}/results/TP53_NF1_snv_alteration.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv -c ${data_dir}/pbta-histologies.tsv -o polya
 fi
+
+# plots to show distribution of status|broad histology|snv 
+Rscript -e "rmarkdown::render('analyses/tp53_nf1_score/03-plot-distribution-scores.Rmd')"
