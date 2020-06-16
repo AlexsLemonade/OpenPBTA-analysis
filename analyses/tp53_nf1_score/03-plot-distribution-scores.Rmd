@@ -32,7 +32,7 @@ score_polya_long<-reshape2::melt(score_polya_df,id=c("tp53_status","sample_id","
 score_polya_long$tp53_status<-factor(score_polya_long$tp53_status)
 
 
-histology<-read_tsv(file.path(data_dir,"release-v16-20200320","pbta-histologies.tsv"))
+histology<-read_tsv(file.path(data_dir,"pbta-histologies.tsv"))
 
 tp53_status<-read_tsv(file.path(analyses_dir,"results","TP53_NF1_snv_alteration.tsv")) %>%
   # select only tp53
