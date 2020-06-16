@@ -105,7 +105,7 @@ biospecimen_file <- file.path(results_dir,
 # cleaned chr19 data
 chr19_file <- file.path(results_dir, "cleaned_chr19_cn.tsv")
 # annotated sex chromosomes copy number alterations
-sex_chr_consensus <- file.path("..", "focal-cn-file-preparation", "results", 
+sex_chr_consensus <- file.path(data_dir,
                                "consensus_seg_annotated_cn_x_and_y.tsv.gz")
 sex_chr_cnvkit <- file.path("..", "focal-cn-file-preparation", "results", 
                             "cnvkit_annotated_cn_x_and_y.tsv.gz")
