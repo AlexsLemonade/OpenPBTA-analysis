@@ -208,6 +208,9 @@ def get_roc_plot(scores_df, gene, outputfilename, color):
     lgd = plt.legend(bbox_to_anchor=(0.3, 0.15), loc=2, borderaxespad=0.0, fontsize=10)
     plt.savefig(outputfilename + "_" + gene + ".png")
 
+# save score file 
+score_status_file = "score_status_" + outputfilename + ".tsv"
+scores_df.to_csv(os.path.join("analyses", "tp53_nf1_score", "results", score_status_file),sep="\t")
 
 outputfilename = os.path.join("analyses", "tp53_nf1_score", "results", outputfilename)
 

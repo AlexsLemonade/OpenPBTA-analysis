@@ -12,23 +12,29 @@ tp53 inactivation without tp53 mutations/losses.
 
 Read in scores from tp53-nf1-classifier and tp53 status file used for the evaluation
 ```{r}
+
+#rootdir
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+analyses_dir<-file.path(root_dir,"analyses","tp53_nf1_score")
+data_dir<-file.path(root_dir,"data")
+
 library("ggpubr")
 library("ggthemes")
 library("tidyverse")
-score_stranded_df<-read_tsv("results/scores_df_stranded.tsv") %>% dplyr::select("TP53_SCORE","tp53_status","sample_id","Kids_First_Biospecimen_ID","Kids_First_Participant_ID") %>% unique()
+score_stranded_df<-read_tsv(file.path(analyses_dir,"results","score_status_stranded.tsv")) %>% dplyr::select("TP53_SCORE","tp53_status","sample_id","Kids_First_Biospecimen_ID","Kids_First_Participant_ID") %>% unique()
 
 score_stranded_long<-reshape2::melt(score_stranded_df,id=c("tp53_status","sample_id","Kids_First_Biospecimen_ID","Kids_First_Participant_ID")) 
 score_stranded_long$tp53_status<-factor(score_stranded_long$tp53_status)
 
-score_polya_df<-read_tsv("results/scores_df_polya.tsv") %>% dplyr::select("TP53_SCORE","tp53_status","sample_id","Kids_First_Biospecimen_ID","Kids_First_Participant_ID") %>% unique()
+score_polya_df<-read_tsv(file.path(analyses_dir,"results","score_status_polya.tsv")) %>% dplyr::select("TP53_SCORE","tp53_status","sample_id","Kids_First_Biospecimen_ID","Kids_First_Participant_ID") %>% unique()
 
 score_polya_long<-reshape2::melt(score_polya_df,id=c("tp53_status","sample_id","Kids_First_Biospecimen_ID","Kids_First_Participant_ID")) 
 score_polya_long$tp53_status<-factor(score_polya_long$tp53_status)
 
-data_dir<-file.path("..","..","data")
+
 histology<-read_tsv(file.path(data_dir,"release-v16-20200320","pbta-histologies.tsv"))
 
-tp53_status<-read_tsv("results/TP53_NF1_snv_alteration.tsv") %>%
+tp53_status<-read_tsv(file.path(analyses_dir,"results","TP53_NF1_snv_alteration.tsv")) %>%
   # select only tp53
   dplyr::filter(Hugo_Symbol=="TP53") %>%
   dplyr::left_join(histology,by=c("Tumor_Sample_Barcode"="Kids_First_Biospecimen_ID"))
@@ -44,7 +50,7 @@ Get boxplot for SNV versus loss TP53
 ```{r}
 tp53_mutant_status_score<-score_stranded_df %>%
   dplyr::filter(tp53_status==1) %>%
-  dplyr::left_join(tp53_status,by=c("sample_id"))
+  dplyr::left_join(tp53_status,by=c("sample_id","Kids_First_Participant_ID"))
  
 ggplot(tp53_mutant_status_score)+ geom_boxplot(aes(x=Variant_Classification ,y = TP53_SCORE))+stat_compare_means(aes(x=Variant_Classification ,y = TP53_SCORE))+theme_bw()+ggtitle("Distribution of scores across abberations")+theme(axis.text.x = element_text(angle=60))
 ```
