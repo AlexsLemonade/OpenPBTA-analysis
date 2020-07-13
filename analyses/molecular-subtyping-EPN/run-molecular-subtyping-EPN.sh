@@ -26,7 +26,7 @@ GSVA=../gene-set-enrichment-analysis/results/gsva_scores_stranded.tsv
 FUSION=../../data/fusion_summary_ependymoma_foi.tsv
 BREAKPOINTS_CNV=../chromosomal-instability/breakpoint-data/cnv_breaks_densities.tsv
 BREAKPOINTS_SV=../chromosomal-instability/breakpoint-data/sv_breaks_densities.tsv
-FOCAL_GENE_CN=../focal-cn-file-preparation/results/consensus_seg_annotated_cn_autosomes.tsv.gz
+FOCAL_GENE_CN=../../data/consensus_seg_annotated_cn_autosomes.tsv.gz
 GISTIC_SUBFILE_FOCALBYGENE=pbta-cnv-consensus-gistic/focal_data_by_genes.txt
 
 EPN_TABLE=results/EPN_all_data.tsv

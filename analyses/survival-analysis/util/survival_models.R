@@ -4,10 +4,6 @@
 #
 # 2019
 #
-# Install the packages we need
-if (!("survminer" %in% installed.packages())) {
-  install.packages("survminer")
-}
 
 # Attach this package
 library(survminer)
@@ -73,7 +69,7 @@ survival_analysis <- function(metadata,
 
   # Don't continue if there's no variable specified
   if (is.null(ind_var)) {
-    stop("No variable has been supplied to test with using the `ind_var` argument. 
+    stop("No variable has been supplied to test with using the `ind_var` argument.
          Stopping.")
   }
 
@@ -111,7 +107,7 @@ survival_analysis <- function(metadata,
 
     # Check that a sample column was specified
     if (is.null(ind_data_sample_col)) {
-      stop("A `ind_data` data.frame was specified but the column with the sample information 
+      stop("A `ind_data` data.frame was specified but the column with the sample information
            was not specified using `ind_data_sample_col`.")
     }
 
@@ -135,7 +131,7 @@ survival_analysis <- function(metadata,
     # Set up the enquosures
     ind_data_sample_col <- enquo(ind_data_sample_col)
     metadata_sample_col <- enquo(metadata_sample_col)
-    
+
     # Set up the sample by thing
     sample_by <- set_names(quo_name(ind_data_sample_col), quo_name(metadata_sample_col))
 
@@ -146,7 +142,7 @@ survival_analysis <- function(metadata,
   } else {
     # Set up
     metadata_sample_col <- enquo(metadata_sample_col)
-    
+
     # Look for the independent variable columns in the metadata
     found_cols <- (ind_var %in% colnames(metadata))
 

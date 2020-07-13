@@ -172,7 +172,8 @@ plot_dimension_reduction <- function(aligned_scores_df,
                                      x_label,
                                      y_label,
                                      score1 = 1,
-                                     score2 = 2) {
+                                     score2 = 2,
+                                     color_palette = NULL) {
     # Given a data.frame that contains the scores of a dimension reduction
     # analysis and the information we want from the metadata, make a scatterplot.
     #
@@ -191,6 +192,9 @@ plot_dimension_reduction <- function(aligned_scores_df,
     #           want to plot, 1 by default
     #   score2: the column number of the second dimension reduction score that
     #           we want to plot, 2 by default
+    #   color_palette: color palette to be used for the point color - one column
+    #                  should contain the same values as what is in point_color
+    #                  and the second column should contain hex codes
     #
     # Returns:
     #   dimension_reduction_plot: the plot representing the dimension reduction
@@ -201,7 +205,7 @@ plot_dimension_reduction <- function(aligned_scores_df,
     if (!(point_color %in% colnames(aligned_scores_df))) {
       stop(paste(point_color, "is not column in aligned_scores_df"))
     }
-    
+
     if (!(is.null(point_shape)) && !(point_shape %in% colnames(aligned_scores_df))) {
       stop(paste(point_shape, "is not column in aligned_scores_df"))
     }
@@ -209,32 +213,54 @@ plot_dimension_reduction <- function(aligned_scores_df,
     if (!(is.null(point_size)) && !(point_size %in% colnames(aligned_scores_df))) {
       stop(paste(point_size, "is not column in aligned_scores_df"))
     }
-  
+
     # transform the strings `point_color` into symbols for plotting
     color_sym <- rlang::sym(point_color)
-    
+
     # transform the strings `point_size` and `point_shape` into symbols for
     # plotting when they are not NULL
     if (!(is.null(point_size))) {
       point_size <- rlang::sym(point_size)
     }
-    
+
     if (!is.null(point_shape)) {
       point_shape <- rlang::sym(point_shape)
     }
 
-    # plot
-    dimension_reduction_plot <- ggplot2::ggplot(
-      aligned_scores_df,
-      ggplot2::aes(
-        x = dplyr::pull(aligned_scores_df, score1),
-        y = dplyr::pull(aligned_scores_df, score2),
-        color = !!color_sym,
-        size = !!point_size,
-        shape = !!point_shape
-      )
-    ) +
-      ggplot2::geom_point(alpha = 0.3) +
+    `%>%` <- dplyr::`%>%`
+
+    if (!is.null(color_palette)) {
+
+      color_palette <- color_palette %>%
+        # We'll use deframe so we can use it as a recoding list
+        tibble::deframe()
+
+      aligned_scores_df <- aligned_scores_df %>%
+        dplyr::mutate(sample_color = dplyr::recode(!!color_sym,
+                                                   !!!color_palette))
+
+      dimension_reduction_plot <- ggplot2::ggplot(
+        aligned_scores_df,
+        ggplot2::aes(
+          x = dplyr::pull(aligned_scores_df, score1),
+          y = dplyr::pull(aligned_scores_df, score2),
+          color = sample_color,
+          size = !!point_size,
+          shape = !!point_shape
+        )
+      ) +
+      ggplot2::scale_color_identity()
+    } else {
+      dimension_reduction_plot <- ggplot2::ggplot(
+        aligned_scores_df,
+        ggplot2::aes(
+          x = dplyr::pull(aligned_scores_df, score1),
+          y = dplyr::pull(aligned_scores_df, score2),
+          color = !!color_sym,
+          size = !!point_size,
+          shape = !!point_shape
+        )
+      ) +
       ggplot2::scale_color_manual(values = (c(
         "#2b3fff", "#ec102f", "#235e31",
         "#1a6587", "#11e38c", "#a22f80",
@@ -243,9 +269,13 @@ plot_dimension_reduction <- function(aligned_scores_df,
         "#3fc6f8", "#fe5cde", "#0a7fb2",
         "#f2945a", "#6b4472", "#f4d403",
         "#76480d", "#a6b6f9", "#000000"
-      ))) +
+      )))
+    }
+
+    dimension_reduction_plot <- dimension_reduction_plot +
+      ggplot2::geom_point(alpha = 0.3) +
       ggplot2::labs(x = x_label, y = y_label) +
       ggplot2::theme_bw()
-    
+
     return(dimension_reduction_plot)
 }
