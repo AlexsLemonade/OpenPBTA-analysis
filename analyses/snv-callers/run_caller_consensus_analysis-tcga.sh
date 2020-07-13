@@ -62,7 +62,7 @@ Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --coding_regions $cds_file \
   --overwrite \
   --tcga \
-  --nonsyn-filter
+  --nonsynfilter
  
 ########################## Compress consensus file #############################
 gzip $consensus_file
