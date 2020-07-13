@@ -1,0 +1,5 @@
+disease_column=short_histology
+samplename_column=kids_first_biospecimen_id
+cohort_column=cohort
+typeoftargetcolumn=experimental_strategy
+Variants_to_use_for_TMB=Missense_Mutation,Nonsense_Mutation,Frame_Shift_Del,Frame_Shift_Ins,In_Frame_Del,In_Frame_Ins
