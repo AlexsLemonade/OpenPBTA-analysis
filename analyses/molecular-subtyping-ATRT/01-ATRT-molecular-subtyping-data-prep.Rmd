@@ -22,14 +22,6 @@ of the repository as follows:
 ```{r}
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
-
-# Install `DT` and `htmlwidgets` packages for displaying tables
-if (!("DT" %in% installed.packages())) {
-  install.packages("DT")
-}
-if (!("htmlwidgets" %in% installed.packages())) {
-  install.packages("htmlwidgets")
-}
 ```
 
 ## Directories and Files
