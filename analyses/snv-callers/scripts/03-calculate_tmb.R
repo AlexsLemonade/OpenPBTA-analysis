@@ -203,7 +203,7 @@ strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
   )
 
 # If the non-synonymous filter is on, filter out synonymous mutations
-if (opt$nonsynfilter){
+if (opt$nonsynfilter) {
   strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
   dplyr::filter(Variant_Classification %in% nonsynonymous)
 }
