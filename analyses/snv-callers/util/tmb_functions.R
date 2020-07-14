@@ -129,7 +129,7 @@ calculate_tmb <- function(tumor_sample_barcode = NULL,
   filt_maf_df <- snv_ranges_filter(sample_maf_df, keep_ranges = bed_ranges)
 
   # Make a genome size variable
-  tmb <- sample_maf_df %>%
+  tmb <- filt_maf_df %>%
     dplyr::group_by(
       #TODO: Make this column passing stuff more flexible with some tidyeval maybe
       Tumor_Sample_Barcode = tumor_sample_barcode,
