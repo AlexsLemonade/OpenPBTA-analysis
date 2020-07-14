@@ -107,7 +107,8 @@ pbta_plot <- cdf_plot(
   breaks = c(0, 3, 10, 30, 100, 300, 1000, 3000, 10000, 30000)
 ) +
   ggplot2::theme(
-    strip.text.x = ggplot2::element_text(size = 12)
+    strip.text.x = ggplot2::element_text(size = 12), 
+    plot.margin = grid::unit(c(0.5, 0, 0.6, 0.5), "cm")
   )
 ```
 
@@ -129,7 +130,8 @@ tcga_plot <- cdf_plot(
     axis.title.y = ggplot2::element_blank(),
     axis.text.y = ggplot2::element_blank(),
     axis.ticks.y = ggplot2::element_blank(),
-    strip.text.x = ggplot2::element_text(size = 9)
+    strip.text.x = ggplot2::element_text(size = 9), 
+    plot.margin = grid::unit(c(0.5, 1, 0.1, 0), "cm")
   )
 ```
 

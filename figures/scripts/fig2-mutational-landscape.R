@@ -126,7 +126,7 @@ tcga_plot <- cdf_plot(
     axis.text.y = ggplot2::element_blank(),
     axis.ticks.y = ggplot2::element_blank(),
     strip.text.x = ggplot2::element_text(size = 11),
-    plot.margin = ggplot2::unit(c(1, 1, -4, 0), "cm")
+    plot.margin = ggplot2::unit(c(1, 1, -4.4, 0), "cm")
   )
 
 # Create cosmic signatures bubble plot
