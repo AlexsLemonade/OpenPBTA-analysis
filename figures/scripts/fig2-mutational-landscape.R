@@ -97,7 +97,7 @@ pbta_plot <- cdf_plot(
   color = "#3BC8A2",
   n_group = 5,
   x_lim = c(-1.2, 1.2),
-  y_lim = c(0, 30000),
+  y_lim = c(0, 400),
   x_lab = "",
   y_lab = "Coding Mutations per Mb",
   breaks = c(0, 3, 10, 30, 100, 300, 1000, 3000, 10000, 30000)
@@ -116,7 +116,7 @@ tcga_plot <- cdf_plot(
   color = "#630882",
   n_group = 5,
   x_lim = c(-1.2, 1.2),
-  y_lim = c(0, 30000),
+  y_lim = c(0, 400),
   x_lab = "",
   y_lab = "Coding Mutations per Mb",
   breaks = c()
