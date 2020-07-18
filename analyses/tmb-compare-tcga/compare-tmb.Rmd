@@ -101,13 +101,14 @@ pbta_plot <- cdf_plot(
   color = "#3BC8A2",
   n_group = 5,
   x_lim = c(-1.2, 1.2),
-  y_lim = c(0, 30000),
+  y_lim = c(0, 400),
   x_lab = "",
   y_lab = "Coding Mutations per Mb", 
-  breaks = c(0, 3, 10, 30, 100, 300, 1000, 3000, 10000, 30000)
+  breaks = c(0, 3, 10, 30, 100, 300)
 ) +
   ggplot2::theme(
-    strip.text.x = ggplot2::element_text(size = 12)
+    strip.text.x = ggplot2::element_text(size = 12), 
+    plot.margin = grid::unit(c(0.5, 0, 0.6, 0.5), "cm")
   )
 ```
 
@@ -120,7 +121,7 @@ tcga_plot <- cdf_plot(
   color = "#630882",
   n_group = 5,
   x_lim = c(-1.2, 1.2),
-  y_lim = c(0, 30000),
+  y_lim = c(0, 400),
   x_lab = "",
   y_lab = "Coding Mutations per Mb",
   breaks = c()
@@ -129,7 +130,8 @@ tcga_plot <- cdf_plot(
     axis.title.y = ggplot2::element_blank(),
     axis.text.y = ggplot2::element_blank(),
     axis.ticks.y = ggplot2::element_blank(),
-    strip.text.x = ggplot2::element_text(size = 9)
+    strip.text.x = ggplot2::element_text(size = 9), 
+    plot.margin = grid::unit(c(0.5, 1, 0.1, 0), "cm")
   )
 ```
 
