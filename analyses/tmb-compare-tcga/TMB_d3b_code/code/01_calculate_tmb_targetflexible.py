@@ -29,6 +29,7 @@ import numpy as np
 import pybedtools
 import sys
 import pip
+import json
 
 
 # This function returns a dictionary where the keys are the experimental_strategy
@@ -138,18 +139,12 @@ needed_cols = [
 ]
 
 with open(args.configfile) as configlines:
-    for line in configlines.readlines():
-        if line.startswith("Variants_to_use_for_TMB="):
-            var_class = line.split("=")[1].split(",")
-        if line.startswith("disease_column="):
-            disease_col = line.split("=")[1].strip("\n")
-        if line.startswith("samplename_column="):
-            samplename_col = line.split("=")[1].strip("\n")
-        if line.startswith("cohort_column="):
-            cohort_col = line.split("=")[1].strip("\n")
-        if line.startswith("typeoftargetcolumn="):
-            typeoftargetcol = line.split("=")[1].strip("\n")
-
+    config = json.load(configlines)
+    var_class = config["Variants_to_use_for_TMB"] # this will already be a list!
+    disease_col = config["disease_column"]
+    samplename_col = config["samplename_column"]
+    cohort_col = config["cohort_column"]
+    typeoftargetcol = config["typeoftargetcolumn"]
 
 ###########################################################
 
