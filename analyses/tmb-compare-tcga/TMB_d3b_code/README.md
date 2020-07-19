@@ -3,7 +3,7 @@
 ###### Authors : Teja Koganti for D3B
 
 This analysis computes tumor mutation burden for different disease types.
-The first script takes single MAF file and filters variants  based filtering strategies from [Friends of Cancer research](https://jitc.bmj.com/content/8/1/e000147#DC1). TMB is computed  based on
+The first script takes single MAF file and filters variants  based on `Types of mutations counted` from [Friends of Cancer research](https://jitc.bmj.com/content/8/1/e000147#DC1). TMB is computed  based on
 `(filtered variant counts* 1000000) / target BED length`
 
 ### Calculate TMB
@@ -15,7 +15,7 @@ The first script takes single MAF file and filters variants  based filtering str
 
   4. Calculates TMB
       - Calculates TMB based on `((# of variants)*1000000) / size of BED)`
-      - Prints out the samplename, TMB, counts, cohort and disease type for every sample
+      - Prints out the `Samplename`,	`experimental_strategy`,	`cohort`,	`disease`,	`count`,	`bedlength of target BED`	`TMB` for every sample
 
     `Usage`: 01_calculate_tmb_targetflexible_withbothexperstrt_and_cohort.py
        [-h] -i MAF -m METADATAFILE -o OUTFILENAME -c CONFIGFILE -w
@@ -44,7 +44,19 @@ The first script takes single MAF file and filters variants  based filtering str
 
 ### Plot TMB scores
 
-    1. Takes an input file that has sample name, cohort and TMB
+    1. Takes an input file that has `Tumor_Sample_Barcode`, `cohort` and `TMB`
     2. Using matplotlib module to implement cumulative distribution function plot for every disease type
     3. Uses minimum number of samples under each disease to filter out disease types  
     4. Calculates the median line for each disease type
+
+      `Usage` : 02_cumulative_freq_TMBplot.py [-h] -t TMB_SCORES -o OUTFILENAME -s
+                                     MINSAMPLESTOPLOT
+
+          optional arguments:
+            -h, --help            show this help message and exit
+            -t TMB_SCORES, --tmb_scores TMB_SCORES
+                        file with TMB scores
+            -o OUTFILENAME, --outfilename OUTFILENAME
+                        Name of the out plot, no extension
+            -s MINSAMPLESTOPLOT, --minsamplestoplot MINSAMPLESTOPLOT
+                        Minimum samples from each histology/disease to plot

@@ -58,7 +58,6 @@ def calculate_tmb(
     exp_strategy = meta_data.at[samplename, targetcol]
     cohort = meta_data.at[samplename, cohortcol]
     sample_target_identifier = exp_strategy+"_"+cohort
-    print(sample_target_identifier)
     disease = meta_data.at[samplename, diseasecol]
     if sample_target_identifier in target_dict.keys():
         grouped_df["Start_Position"] = grouped_df.apply(
@@ -172,7 +171,7 @@ target_dict = get_target_dict(args.targetconfig)
 
 ############  Groupby and calculate TMB #####################
 outfile = open(args.outfilename, "w")
-outfile.write("Samplename\texperimental_strategy\tcohort\tdisease\tcount\tbedlength\tTMB\n")
+outfile.write("Tumor_Sample_Barcode\texperimental_strategy\tcohort\tdisease\tcount\tbedlength\tTMB\n")
 metadata_df = pd.read_csv(args.metadatafile, sep="\t")
 grouped_maf = maf_file.groupby("Tumor_Sample_Barcode")
 line = grouped_maf.apply(
