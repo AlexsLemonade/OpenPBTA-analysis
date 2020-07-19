@@ -44,7 +44,7 @@ The first script takes single MAF file and filters variants  based filtering str
 
 ### Plot TMB scores
 
-    1. Takes an input file that has sample name, cohort and TMB 
+    1. Takes an input file that has sample name, cohort and TMB
     2. Using matplotlib module to implement cumulative distribution function plot for every disease type
     3. Uses minimum number of samples under each disease to filter out disease types  
     4. Calculates the median line for each disease type
