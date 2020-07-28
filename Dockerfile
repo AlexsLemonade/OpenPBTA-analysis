@@ -310,7 +310,7 @@ RUN install2.r --error --deps TRUE \
     multipanelfigure
 
 # pybedtools for D3B TMB analysis
-RUN pip3 install "pybedtools=0.8.1"
+RUN pip3 install "pybedtools==0.8.1"
 
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
