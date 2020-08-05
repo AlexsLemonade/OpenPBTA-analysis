@@ -18,18 +18,16 @@
 #   -w ../inputs/target_cfg \
 #   -o ../output/pbta-snv-consensus-TMB_intarget.txt
 
-import subprocess
-import argparse
-import sys
-
 
 # Importing packges
-import pandas as pd
-import numpy as np
-import pybedtools
-import sys
-import pip
+import argparse
 import json
+import subprocess
+import sys
+
+import numpy as np
+import pandas as pd
+import pybedtools
 
 
 # This function returns a dictionary where the keys are the experimental_strategy

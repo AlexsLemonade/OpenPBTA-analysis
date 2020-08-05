@@ -15,40 +15,13 @@
 #   -o ../output/pbta-snv-consensus \
 #   -s 10
 
-
-import subprocess
 import argparse
+import subprocess
 import sys
-
-# This checks the packages to be installed if not already
-#   installed by user
-def install_package(package, package_list):
-    if not package in package_list:
-        print("Installing package " + package)
-        pip._internal.main(["install", package])
-
-
-###################################################################
-############# Checking if all packages are installed ##############
-
-reqs = subprocess.check_output([sys.executable, "-m", "pip", "freeze"])
-installed_packages = [r.decode().split("==")[0] for r in reqs.split()]
-
-needed_packages = [
-    "pandas",
-    "numpy",
-    "matplotlib",
-]
-
-for package in needed_packages:
-    install_package(package, installed_packages)
-
-##################################################################
 
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import pip
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-t", "--tmb_scores", required=True, help="file with TMB scores")
