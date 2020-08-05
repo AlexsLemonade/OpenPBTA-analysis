@@ -34,13 +34,13 @@ The first script takes single MAF file and filters variants  based on `Types of 
           -w TARGETCONFIG, --targetconfig TARGETCONFIG
                         File with experimental strategy and path to BED file
 
-     `Inputs`  :
-          1. cohort based MAF files [here](https://s3.console.aws.amazon.com/s3/buckets/d3b-bix-dev-data-bucket/hgg-dmg-integration/openPBTA-consensus/?region=us-east-1&tab=overview)
-          2. config file for target  and calculating TMB  (in config folder)
-          3. Histology files for metadata  [here](https://github.com/d3b-center/d3b-bix-analysis-toolkit/tree/master/data/histologies)
-
-     `Outputs` :
-          `temp_pbta_wxs_OUTTMB`
+     Example -
+     python3 analyses/tmb-compare-tcga/TMB_d3b_code/code/01_calculate_tmb_targetflexible.py  
+        -i data/pbta-snv-consensus-mutation.maf.tsv.gz
+        -m analyses/tmb-compare-tcga/TMB_d3b_code/inputs/pnoc003_and_pnoc008_and_cbttc_v17_candidate.tsv
+        -o analyses/tmb-compare-tcga/TMB_d3b_code/pbta-snv-consensus.TMB.OUT.txt
+        -c analyses/tmb-compare-tcga/TMB_d3b_code/config_files/calculate_tmb.cfg.json  
+        -w analyses/tmb-compare-tcga/TMB_d3b_code/config_files/target_cfg.targetcombos.txt 
 
 ### Plot TMB scores
 
