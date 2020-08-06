@@ -17,6 +17,6 @@ python3 code/01_calculate_tmb_targetflexible.py \
   -o outputs/pbta-snv-consensus-TMB_intarget.txt
 
 python3 code/02_cumulative_freq_TMBplot.py  \
-  -i outputs/pbta-snv-consensus-TMB_intarget.txt \
+  -t outputs/pbta-snv-consensus-TMB_intarget.txt \
   -o outputs/pbta-snv-consensus \
   -s 10

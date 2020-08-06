@@ -28,6 +28,11 @@ import sys
 import numpy as np
 import pandas as pd
 import pybedtools
+import os
+
+BASE_DIR = os.getcwd()
+
+BASE_DIR = "/".join(BASE_DIR.split("/")[:-3])+"/analyses/tmb-compare-tcga/TMB_d3b_code/inputs/target_files/"
 
 
 # This function returns a dictionary where the keys are the experimental_strategy
@@ -37,8 +42,7 @@ def get_target_dict(target_config):
     with open(target_config, "r") as target_cfg:
         for line in target_cfg.readlines():
             line = line.split()
-            # print(line)
-            dict_to_return[line[0]] = line[1]
+            dict_to_return[line[0]] = BASE_DIR+"/"+line[1]
     return dict_to_return
 
 
@@ -187,13 +191,13 @@ line = grouped_maf.apply(
 missing_samples = np.setdiff1d(allsamples, filteredsamples)
 for sample in missing_samples:
     cohort = (
-        metadata_df[metadata_df["kids_first_biospecimen_id"] == sample][cohort_col]
+        metadata_df[metadata_df["Kids_First_Biospecimen_ID"] == sample][cohort_col]
         ).values[0]
     diseasetype = (
-        metadata_df[metadata_df["kids_first_biospecimen_id"] == sample][disease_col]
+        metadata_df[metadata_df["Kids_First_Biospecimen_ID"] == sample][disease_col]
     ).values[0]
     exper_strategy = (
-        metadata_df[metadata_df["kids_first_biospecimen_id"] == sample][typeoftargetcol]
+        metadata_df[metadata_df["Kids_First_Biospecimen_ID"] == sample][typeoftargetcol]
     ).values[0]
     outfile.write(sample + "\t" + exper_strategy + "\t"+cohort+"\t"+diseasetype + "\t0\t0\t0\n")
 outfile.close()

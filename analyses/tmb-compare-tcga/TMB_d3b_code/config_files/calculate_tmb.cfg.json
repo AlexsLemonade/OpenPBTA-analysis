@@ -1,6 +1,6 @@
 {
   "disease_column": "short_histology",
-  "samplename_column": "kids_first_biospecimen_id",
+  "samplename_column": "Kids_First_Biospecimen_ID",
   "Variants_to_use_for_TMB": [ "Missense_Mutation",
 				                        "Nonsense_Mutation",
                                 "Frame_Shift_Del",
