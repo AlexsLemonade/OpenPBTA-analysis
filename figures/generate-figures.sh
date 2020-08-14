@@ -101,3 +101,35 @@ bash ${analyses_dir}/copy_number_consensus_call/run_consensus_call.sh
 # Run CN status heatmap but use parameter so file is saved to figures folder
 Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.Rmd',
                               clean = TRUE, params = list(final_figure=TRUE))"
+
+							  
+####### Telomerase Activities
+
+
+#enviroment settings
+
+set -e
+set -o pipefail
+
+# This script should always run as if it were being called from
+# the directory it lives in.
+script_directory="$(perl -e 'use File::Basename;
+  use Cwd "abs_path";
+  print dirname(abs_path(@ARGV[0]));' -- "$0")"
+cd "$script_directory" || exit
+
+#generate collapsed data for count files 
+Rscript ../collapse-rnaseq/01-summarize_matrices.R -i ../../data/pbta-gene-counts-rsem-expected_count.stranded.rds -g ../../data/gencode.v27.primary_assembly.annotation.gtf.gz -m ../collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.stranded.rds -t ../collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed_table.stranded.rds
+Rscript ../collapse-rnaseq/01-summarize_matrices.R -i ../../data/pbta-gene-counts-rsem-expected_count.polya.rds -g ../../data/gencode.v27.primary_assembly.annotation.gtf.gz -m ../collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.polya.rds -t ../collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed_table.polya.rds
+
+mkdir -p results
+
+
+#generate telomerase activities using gene expression data from collapse RNA seq data files
+Rscript --vanilla 01-run-EXTEND.R --input ../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds --output results/TelomeraseScores_PTBAStranded_FPKM.txt
+Rscript --vanilla 01-run-EXTEND.R --input ../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds --output results/TelomeraseScores_PTBAPolya_FPKM.txt
+Rscript --vanilla 01-run-EXTEND.R --input ../collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.stranded.rds --output results/TelomeraseScores_PTBAStranded_counts.txt
+Rscript --vanilla 01-run-EXTEND.R --input ../collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.polya.rds --output results/TelomeraseScores_PTBAPolya_counts.txt
+
+
+Rscript --vanilla scripts/TelomeraseActivitites.R
