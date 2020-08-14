@@ -11,7 +11,7 @@ set -o pipefail
 # The sqlite database made from the callers will be called:
 dbfile=scratch/snv_db.sqlite
 
-# Designate output file 
+# Designate output file
 consensus_file=analyses/snv-callers/results/consensus/pbta-snv-consensus-mutation.maf.tsv
 
 # BED and GTF file paths
@@ -53,7 +53,7 @@ bedtools intersect \
   -b data/WGS.hg38.mutect2.vardict.unpadded.bed \
   > $wgs_bed
 
-#################### Make coding regions file 
+#################### Make coding regions file
 # Convert GTF to BED file for use in bedtools
 # Here we are only extracting lines with as a CDS i.e. are coded in protein
 gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
@@ -71,7 +71,14 @@ Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --coding_regions $cds_file \
   --overwrite \
   --nonsynfilter
-  
+
+Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
+  --db_file $dbfile \
+  --output analyses/snv-callers/results/no_filter \
+  --metadata data/pbta-histologies.tsv \
+  --coding_regions $cds_file \
+  --overwrite 
+
 ########################## Compress consensus file #############################
 
 gzip $consensus_file
