@@ -63,10 +63,11 @@ polya_expression <-
 
 # Read in focal CN data
 ## TODO: If annotated files get included in data download
-cn_df <- readr::read_tsv(
-  file.path(root_dir, "analyses", "focal-cn-file-preparation", "results",
-            "consensus_seg_annotated_cn_autosomes.tsv.gz")
-)
+cn_df <- readr::read_tsv(file.path(
+  root_dir,
+  "data",
+  "consensus_seg_annotated_cn_autosomes.tsv.gz"
+))
 
 # Read in fusion data
 fusion_df <- readr::read_tsv(

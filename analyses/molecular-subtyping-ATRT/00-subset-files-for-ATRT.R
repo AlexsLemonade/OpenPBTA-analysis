@@ -68,9 +68,7 @@ stranded_expression <-
 cn_df <- readr::read_tsv(
   file.path(
     root_dir,
-    "analyses",
-    "focal-cn-file-preparation",
-    "results",
+    "data",
     "consensus_seg_annotated_cn_autosomes.tsv.gz"
   )
 )
