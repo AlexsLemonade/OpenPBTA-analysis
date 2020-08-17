@@ -72,13 +72,6 @@ Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --overwrite \
   --nonsynfilter
 
-Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
-  --db_file $dbfile \
-  --output analyses/snv-callers/results/no_filter \
-  --metadata data/pbta-histologies.tsv \
-  --coding_regions $cds_file \
-  --overwrite 
-
 ########################## Compress consensus file #############################
 
 gzip $consensus_file

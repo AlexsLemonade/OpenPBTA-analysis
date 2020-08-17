@@ -15,7 +15,7 @@ As far as the TMB comparisons go, it doesn't matter if we use `Variant_Classific
 
 To run this from the command line, use:
 ```
-Rscript -e "rmarkdown::render('analyses/snv-callers/explore_noonsynfilter.Rmd', 
+Rscript -e "rmarkdown::render('analyses/snv-callers/explore_nonsynfilter.Rmd', 
                               clean = TRUE)"
 ```
 
@@ -32,17 +32,8 @@ Read in set up script.
 `%>%` <- dplyr::`%>%`
 ```
 
-Set up directories. 
 
-```{r}
-plots_dir <- file.path("..", "plots", "explore_var_class")
-
-if (!dir.exists(plots_dir)) {
-  dir.create(plots_dir)
-}
-```
-
-Ran this on AWS to get the TMB files. 
+On AWS, if both `run_caller_consensus_analysis-tcga.sh` and `run_caller_consensus_analysis-pbta.sh` have been run, you can run this to get the TMB files. 
 ```
 # bash calculate_tmb_no_nonsynfilter.sh
 ```

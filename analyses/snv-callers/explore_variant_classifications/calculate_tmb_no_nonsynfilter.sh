@@ -21,8 +21,8 @@ Rscript ../scripts/03-calculate_tmb.R \
   --output analyses/snv-callers/results/no_filter \
   --metadata data/pbta-histologies.tsv \
   --coding_regions $cds_file \
-  --overwrite 
-  
+  --overwrite
+
 # For TCGA
 Rscript ../scripts/03-calculate_tmb.R \
   --db_file $tcga_dbfile \
@@ -31,4 +31,3 @@ Rscript ../scripts/03-calculate_tmb.R \
   --coding_regions $cds_file \
   --overwrite \
   --tcga
-  

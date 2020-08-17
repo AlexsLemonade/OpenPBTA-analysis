@@ -64,14 +64,6 @@ Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --tcga \
   --nonsynfilter
 
-Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
-  --db_file $dbfile \
-  --output analyses/snv-callers/results/no_filter \
-  --metadata data/pbta-tcga-manifest.tsv \
-  --coding_regions $cds_file \
-  --overwrite \
-  --tcga 
-
 ########################## Compress consensus file #############################
 gzip $consensus_file
 
