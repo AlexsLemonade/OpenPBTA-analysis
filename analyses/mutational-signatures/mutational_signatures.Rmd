@@ -34,10 +34,6 @@ _This assumes you are in the top directory of the repository._
 Import necessary functions.
 
 ```{r}
-if (!("deconstructSigs" %in% installed.packages())) {
-  BiocManager::install("BSgenome.Hsapiens.UCSC.hg38")
-  install.packages("deconstructSigs")
-}
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 

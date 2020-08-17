@@ -512,7 +512,7 @@ molecular_subtype_table <- bind_rows(h3_g35_df_biospecimen,
 # We'll add HGG, H3 wildtype values in cases that do not yet have labels
 molecular_subtype_table <- all_data_df %>%
   select(Kids_First_Participant_ID, sample_id,
-         Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_DNA) %>%
+         Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA) %>%
   left_join(molecular_subtype_table) %>%
   distinct() %>%
   replace_na(list(molecular_subtype = "HGG, H3 wildtype"))

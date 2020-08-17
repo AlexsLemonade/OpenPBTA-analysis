@@ -12,6 +12,7 @@
 # --coding_regions : File path that specifies the BED regions file that specifies
 #                     coding regions that should be used for coding only TMB calculations.
 # --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
+# --nonsynfilter: If TRUE, filter out synonymous mutations, keep non-synonymous mutations.
 # --tcga: If TRUE, will skip PBTA metadata specific steps
 #
 # Command line example:
@@ -21,6 +22,7 @@
 # --output analyses/snv-callers/results/consensus \
 # --metadata data/pbta-histologies.tsv \
 # --coding_regions scratch/gencode.v27.primary_assembly.annotation.bed \
+# --nonsynfilter
 # --overwrite
 
 ################################ Initial Set Up ################################
@@ -67,6 +69,12 @@ option_list <- list(
     opt_str = "--overwrite", action = "store_true",
     default = FALSE, help = "If TRUE, will overwrite any files of
               the same name. Default is FALSE",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = "--nonsynfilter", action = "store_true",
+    default = FALSE, help = "If TRUE, filter out synonymous mutations, keep
+    non-synonymous mutations.",
     metavar = "character"
   ),
   make_option(
@@ -146,6 +154,19 @@ join_cols <- c(
   "Tumor_Sample_Barcode"
 )
 
+# Variant Classification with High/Moderate variant consequences from maftools
+nonsynonymous <- c(
+  "Missense_Mutation",
+  "Frame_Shift_Del",
+  "In_Frame_Ins",
+  "Frame_Shift_Ins",
+  "Splice_Site",
+  "Nonsense_Mutation",
+  "In_Frame_Del",
+  "Nonstop_Mutation",
+  "Translation_Start_Site"
+)
+
 # Create the consensus for non-MNVs
 strelka_mutect_maf_df <- strelka %>%
   # We'll keep the Strelka2 columns and drop Mutect2 columns
@@ -180,6 +201,12 @@ strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
   dplyr::union(strelka_mutect_mnv,
     by = join_cols
   )
+
+# If the non-synonymous filter is on, filter out synonymous mutations
+if (opt$nonsynfilter) {
+  strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
+  dplyr::filter(Variant_Classification %in% nonsynonymous)
+}
 
 ########################### Set up metadata columns ############################
 # Print progress message
@@ -234,7 +261,7 @@ strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
       target_bed_path
     ),
   by = "Tumor_Sample_Barcode"
-  ) %>% 
+  ) %>%
   # Remove samples if they are labeled "Panel"
   dplyr::filter(experimental_strategy != "Panel")
 

@@ -34,16 +34,6 @@ library(optparse)
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
-if (!("msigdbr" %in% installed.packages())) {
-  install.packages("msigdbr")
-}
-if (!("BiocManager" %in% installed.packages())) {
-  install.packages("BiocManager")
-}
-library(BiocManager, quietly = TRUE)
-if (!("GSVA" %in% installed.packages())) {
-  BiocManager::install("GSVA")
-}
 library(msigdbr) ## Contains the hallmark data sets
 library(GSVA)    ## Performs GSEA analysis
 
@@ -69,6 +59,7 @@ option_list <- list(
 ## Read in arguments
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
+
 if (is.na(opt$input_file)) stop("\n\nERROR: You must provide an input file with expression data with the flag --input, assumed to be in the `data/` directory of the OpenPBTA repository..")
 if (is.na(opt$output_file)) stop("\n\nERROR: You must provide an output file for saving GSVA scores with the flag --output, assumed to be placed in the `results/` directory of this analysis.")
 

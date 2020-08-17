@@ -27,7 +27,7 @@ You may choose to use [`docker exec`](https://docs.docker.com/engine/reference/c
 This script runs **_all_** the intermediate steps needed to generate figures starting with the original data files.
 
 ```
-bash scripts/generate-figures.sh
+bash figures/generate-figures.sh
 ```
 
 Figures are saved to the `figures/pngs` folder and will be linked to the accompanying manuscript repository [`AlexsLemonade/OpenPBTA-manuscript`](https://github.com/AlexsLemonade/OpenPBTA-manuscript/).
@@ -40,8 +40,13 @@ However, we list information about the resources, intermediate steps, and [PBTA 
 
 | Figure | Individual script | Notes on requirements | Linked analysis modules | PBTA data files consumed |
 |--------|--------|------------------|-------------------------|-----------------------------|
-| Figure 1 | [scripts/fig1-sample-distribution.R`](./scripts/fig1-sample-distribution.R) | No high RAM requirements | [`sample-distribution-analysis`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/sample-distribution-analysis) |  `pbta-histologies.tsv` |
-| Figure 2 | [scripts/fig2-mutational-landscape.R`](./scripts/fig2-mutational-landscape.R) | 256GB of RAM are needed due to the run_caller_consensus_analysis-pbta.sh handling of large MAF files|[`snv-callers`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers) <br> [`mutational-signatures`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/mutational-signatures) |  `pbta-snv-lancet.vep.maf.gz` <br> `pbta-snv-mutect2.vep.maf.gz` <br> `pbta-snv-strelka2.vep.maf.gz` <br> `pbta-snv-vardict.vep.maf.gz` <br> `tcga-snv-lancet.vep.maf.gz` <br> `tcga-snv-mutect2.vep.maf.gz` <br> `tcga-snv-strelka2.vep.maf.gz` |
+| Figure 1 | [`scripts/fig1-sample-distribution.R`](./scripts/fig1-sample-distribution.R) | No high RAM requirements | [`sample-distribution-analysis`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/sample-distribution-analysis) |  `pbta-histologies.tsv` |
+| Figure 2 | [`scripts/fig2-mutational-landscape.R`](./scripts/fig2-mutational-landscape.R) | 256GB of RAM are needed due to the run_caller_consensus_analysis-pbta.sh handling of large MAF files|[`snv-callers`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers) <br> [`mutational-signatures`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/mutational-signatures) |  `pbta-snv-lancet.vep.maf.gz` <br> `pbta-snv-mutect2.vep.maf.gz` <br> `pbta-snv-strelka2.vep.maf.gz` <br> `pbta-snv-vardict.vep.maf.gz` <br> `tcga-snv-lancet.vep.maf.gz` <br> `tcga-snv-mutect2.vep.maf.gz` <br> `tcga-snv-strelka2.vep.maf.gz` |
+| CN status heatmap | [`analyses/copy_number_consensus_call/run_consensus_call.sh`](./analyses/copy_number_consensus_call/run_consensus_call.sh) and [`analyses/cnv-chrom-plot/cn_status_heatmap.Rmd`](./analyses/cnv-chrom-plot/cn_status_heatmap.Rmd) | No high RAM requirements | [`cnv-chrom-plot`](./analyses/cnv-chrom-plot) |  `pbta-cnv-controlfreec.tsv.gz` <br> `pbta-sv-manta.tsv.gz` <br> `pbta-cnv-cnvkit.seg.gz` |
+| Figure 3 | No individual script <br> ([`analyses/focal-cn-file-preparation/run-prepare-cn.sh`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/focal-cn-file-preparation/run-prepare-cn.sh) and [`analyses/oncoprint-landscape/run-oncoprint.sh`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/oncoprint-landscape/run-oncoprint.sh) scripts are used)              | 24GB of RAM are needed due to the `run-prepare-cn.sh` handling of large copy number files | [`focal-cn-file-preparation`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/focal-cn-file-preparation) <br> [`oncoprint-landscape`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/oncoprint-landscape) | `pbta-histologies.tsv` <br> `pbta-snv-consensus-mutation.maf.tsv.gz` <br> `pbta-fusion-putative-oncogenic.tsv` <br> `consensus_seg_annotated_cn_autosomes.tsv.gz` <br> `independent-specimens.wgs.primary-plus.tsv` |
+| Transcriptomic overview | [scripts/transcriptomic-overview.R](./scripts/transcriptomic-overiew.R) | Due to the GSVA steps, we recommend ~32 GB of RAM for generating this figure | [`transcriptomic-dimension-reduction`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/transcriptomic-dimension-reduction) <br> [`collapse-rnaseq`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/collapse-rnaseq) <br> [`gene-set-enrichment-analysis`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/gene-set-enrichment-analysis) <br> [`immune-deconv`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/immune-deconv) | `pbta-histologies.tsv` <br> `pbta-gene-expression-rsem-fpkm.stranded.rds` |
+| Mutation co-occurrence | No individual script <br> ([`analyses/interaction-plots/01-create-interaction-plots.sh`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/interaction-plots/01-create-interaction-plots.sh) is used) |  No high RAM requirements | [`interaction-plots`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/interaction-plots) |`independent-specimens.wgs.primary-plus.tsv` <br> `pbta-snv-consensus-mutation.maf.tsv.gz`  |
+
 
 ## Color Palette Usage
 
@@ -60,6 +65,7 @@ Biospecimens without a `short_histology` designation are coded as `none` and ass
 |`gradient_col_palette.tsv`| <br>gradient_0:![f7f7f7](https://placehold.it/150x40/f7f7f7/000000?text=f7f7f7) <br>gradient_1:![f7fcf5](https://placehold.it/150x40/f7fcf5/000000?text=f7fcf5) <br>gradient_2:![e5f5e0](https://placehold.it/150x40/e5f5e0/000000?text=e5f5e0) <br>gradient_3:![c7e9c0](https://placehold.it/150x40/c7e9c0/000000?text=c7e9c0) <br>gradient_4:![a1d99b](https://placehold.it/150x40/a1d99b/FFFFFF?text=a1d99b) <br>gradient_5:![74c476](https://placehold.it/150x40/74c476/FFFFFF?text=74c476) <br>gradient_6:![41ab5d](https://placehold.it/150x40/41ab5d/FFFFFF?text=41ab5d) <br>gradient_7:![238b45](https://placehold.it/150x40/238b45/FFFFFF?text=238b45) <br>gradient_8:![006d2c](https://placehold.it/150x40/006d2c/FFFFFF?text=006d2c) <br>gradient_9:![00441b](https://placehold.it/150x40/00441b/FFFFFF?text=00441b) <br>na_color:![f1f1f1](https://placehold.it/150x40/f1f1f1/000000?text=f1f1f1)|10 hex_codes where gradient_0 is for an absolute `0` but may need to be removed from the palette depending on the application|For numeric data being plotted e.g. tumor mutation burden|
 |`divergent_col_palette.tsv`|<br>divergent_low_5:![053061](https://placehold.it/150x40/053061/FFFFFF?text=053061) <br>divergent_low_4:![2166ac](https://placehold.it/150x40/2166ac/FFFFFF?text=2166ac) <br>divergent_low_3:![4393c3](https://placehold.it/150x40/4393c3/FFFFFF?text=4393c3) <br>divergent_low_2:![92c5de](https://placehold.it/150x40/92c5de/FFFFFF?text=92c5de) <br>divergent_low_1:![d1e5f0](https://placehold.it/150x40/d1e5f0/FFFFFF?text=d1e5f0) <br>divergent_neutral:![f7f7f7](https://placehold.it/150x40/f7f7f7/FFFFFF?text=f7f7f7) <br>divergent_high_1:![fddbc7](https://placehold.it/150x40/fddbc7/FFFFFF?text=fddbc7) <br>divergent_high_2:![f4a582](https://placehold.it/150x40/f4a582/FFFFFF?text=f4a582) <br>divergent_high_3:![d6604d](https://placehold.it/150x40/d6604d/FFFFFF?text=d6604d) <br>divergent_high_4:![b2182b](https://placehold.it/150x40/b2182b/FFFFFF?text=b2182b) <br>divergent_high_5:![67001f](https://placehold.it/150x40/67001f/FFFFFF?text=67001f) <br>na_color:![f1f1f1](https://placehold.it/150x40/f1f1f1/FFFFFF?text=f1f1f1)|12 hex codes where the numbers in the name indicate distance from `divergent_neutral`.|For data has that is bidirectional e.g. Amplification/Deletion values like `seg.mean`|
 |`binary_col_palette.tsv` |<br>binary_1:![2166ac](https://placehold.it/150x40/2166ac/FFFFFF?text=2166ac) <br>binary_2:![b2182b](https://placehold.it/150x40/b2182b/FFFFFF?text=b2182b) <br>na_color:![f1f1f1](https://placehold.it/150x40/f1f1f1/000000?text=f1f1f1)|A vector of two hex codes|For binary variables e.g. presence/absence or Amp/Del as statuses|
+| `oncoprint_color_palette.tsv` | <br>Missense_Mutation:![35978f](https://placehold.it/150x40/35978f/FFFFFF?text=35978f) <br>Nonsense_Mutation:![000000](https://placehold.it/150x40/000000/FFFFFF?text=000000) <br>Frame_Shift_Del:![56B4E9](https://placehold.it/150x40/56B4E9/FFFFFF?text=56B4E9) <br>Frame_Shift_Ins:![FFBBFF](https://placehold.it/150x40/FFBBFF/FFFFFF?text=FFBBFF) <br>Splice_Site:![F0E442](https://placehold.it/150x40/F0E442/FFFFFF?text=F0E442) <br>Translation_Start_Site:![191970](https://placehold.it/150x40/191970/FFFFFF?text=191970) <br>Nonstop_Mutation:![545454](https://placehold.it/150x40/545454/FFFFFF?text=545454) <br>In_Frame_Del:![CAE1FF](https://placehold.it/150x40/CAE1FF/FFFFFF?text=CAE1FF) <br>In_Frame_Ins:![FFE4E1](https://placehold.it/150x40/FFE4E1/FFFFFF?text=FFE4E1) <br>Stop_Codon_Ins:![CC79A7](https://placehold.it/150x40/CC79A7/FFFFFF?text=CC79A7) <br>Start_Codon_Del:![56B4E9](https://placehold.it/150x40/56B4E9/FFFFFF?text=56B4E9) <br>Fusion:![7B68EE](https://placehold.it/150x40/7B68EE/FFFFFF?text=7B68EE) <br>Multi_Hit:![00F021](https://placehold.it/150x40/00F021/FFFFFF?text=00F021) <br>Hom_Deletion:![313695](https://placehold.it/150x40/313695/FFFFFF?text=313695) <br>Hem_Deletion:![abd9e9](https://placehold.it/150x40/abd9e9/FFFFFF?text=abd9e9) <br>amplification:![c51b7d](https://placehold.it/150x40/c51b7d/FFFFFF?text=c51b7d) <br>loss:![0072B2](https://placehold.it/150x40/0072B2/FFFFFF?text=0072B2) <br>gain:![D55E00](https://placehold.it/150x40/D55E00/FFFFFF?text=D55E00) <br>High_Level_Gain:![FF0000](https://placehold.it/150x40/FF0000/FFFFFF?text=FF0000) <br>Multi_Hit_Fusion:![CD96CD](https://placehold.it/150x40/CD96CD/FFFFFF?text=CD96CD) | A named vector of hex codes assigned to each `short_histology` and to each `CNV`, `SNV` and `Fusion` category | For plotting an oncoprint figure, this vector provides hex codes for `CNV`, `SNV`, and `Fusion` categories |
 
 ## Color coding examples in R
 
@@ -115,14 +121,14 @@ You may want to remove the `na_color` at the end of the list depending on whethe
 ```
 gradient_col_palette <- readr::read_tsv(
   file.path(figures_dir, "palettes", "gradient_color_palette.tsv")
-  )
+)
 ```
 
 If we need the `NA` color separated, like for use with `ComplexHeatmap` which has a separate argument for the color for `NA` values.
 
 ```
 na_color <- gradient_col_palette %>%
-  dplyr::filter(color_names != "na_color")
+  dplyr::filter(color_names == "na_color")
 
 gradient_col_palette <- gradient_col_palette %>%
   dplyr::filter(color_names != "na_color")
@@ -136,10 +142,10 @@ You can provide any numeric vector to color code a palette using `circlize::colo
 
 ```
 gradient_col_val <- seq(from = min(df$variable), to = max(df$variable),
-                        length.out = length(gradient_col_palette))
+                        length.out = nrow(gradient_col_palette))
 
 col_fun <- circlize::colorRamp2(gradient_col_val,
-                                gradient_col_palette)
+                                gradient_col_palette$hex_codes)
 ```
 **Step 3)** Apply to numeric data, or supply to your plotting code.  
 
@@ -154,10 +160,12 @@ df <- df %>%
 ## OR ##
 
 # Some plotting packages want a color function
-ComplexHeatmap::heatmap(df,
-  col = col_fun,
-  na_col = na_color
-  )
+
+ComplexHeatmap::Heatmap(
+  df,
+  col = col_fun, 
+  na_col = na_color$hex_codes
+)
 ```
 
 ### Updating color palettes
