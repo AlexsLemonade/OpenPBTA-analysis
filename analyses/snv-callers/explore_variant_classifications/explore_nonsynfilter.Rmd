@@ -8,27 +8,14 @@ author: C. Savonen for ALSF CCDL
 date: 2020
 ---
 
-Purpose: After creating a TCGA consensus file with `02-merge_callers.R`, this notebook 
-plots these data in a series of plots to compare the consensus calls to the individual 
-callers. 
-
 ### Summary of Findings:
-
-#### Individual Caller's Reports 
-
-### Outline of analyses completed:
-
-- [Upset graph](#upset-graph)  
-- [VAF of combinations of callers](#vaf-for-combination-sets-of-callers)
-- [Base changes by caller](#base-changes)
-- [VAF distributions by caller](#vaf-distributions)
-- [VAF correlations between callers](#vaf-correlations)
+As far as the TMB comparisons go, it doesn't matter if we use `Variant_Classification` filters or not. 
 
 #### Usage
 
 To run this from the command line, use:
 ```
-Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots-tcga.Rmd', 
+Rscript -e "rmarkdown::render('analyses/snv-callers/explore_noonsynfilter.Rmd', 
                               clean = TRUE)"
 ```
 
@@ -48,325 +35,132 @@ Read in set up script.
 Set up directories. 
 
 ```{r}
-scratch_dir <- file.path("..", "..", "..", "scratch")
-results_dir <- file.path("..", "results", "explore_var_class")
 plots_dir <- file.path("..", "plots", "explore_var_class")
 
-if (!dir.exists(results_dir)) {
-  dir.create(results_dir)
-}
 if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
 }
 ```
 
-```{sh}
-bash calculate_tmb_no_nonsynfilter.sh
+Ran this on AWS to get the TMB files. 
+```
+# bash calculate_tmb_no_nonsynfilter.sh
 ```
 
-## Connect to TCGA database
+## Read in the TMB files
 
-Connect to SQLite database.
-
-```{r}
-# Start up connection
-con <- DBI::dbConnect(RSQLite::SQLite(), 
-                      file.path(scratch_dir, "tcga_snv_db.sqlite"))
-```
-
-Note what columns we will join by.
+### Read in PBTA data
 
 ```{r}
-join_cols = c("Chromosome",
-              "Start_Position",
-              "Reference_Allele",
-              "Allele",
-              "Tumor_Sample_Barcode", 
-              "Variant_Classification")
-```
-
-Set up tables from the database but only call the columns we need.
-
-```{r}
-strelka <- dplyr::tbl(con, "strelka") %>% 
-  dplyr::select(join_cols, "VAF") %>% 
-  as.data.frame()
-
-lancet <- dplyr::tbl(con, "lancet") %>% 
-  dplyr::select(join_cols, "VAF") %>% 
-  as.data.frame()
-
-mutect <- dplyr::tbl(con, "mutect") %>% 
-  dplyr::select(join_cols, "VAF") %>% 
-  as.data.frame()
-```
-
-Full join to get the summary of mutations called by each caller. 
-
-```{r}
-# Bring out the data.frame
-all_caller_df <- strelka %>%
-  dplyr::full_join(mutect, by = join_cols, 
-                   suffix = c("_strelka", "_mutect")) %>%
-  dplyr::full_join(lancet, 
-                   by = join_cols) %>% 
-  dplyr::rename(VAF_lancet = VAF)
-
-# Take a peek at what this looks like
-head(all_caller_df)
+tmb_pbta_no_filter <- data.table::fread(file.path(
+  "..",
+  "results",
+  "no_filter",
+  "pbta-snv-mutation-tmb-coding.tsv"
+)) %>%
+  # This variable is weird when binding but we don't need it for the plot so we'll just remove it.
+  dplyr::select(-region_size) %>%
+  dplyr::filter(experimental_strategy != "Panel") %>% 
+  dplyr::mutate(filter = "no filter")
 ```
 
 ```{r}
-# Set up as data.frame with each column a caller's VAF
-vaf_df <- all_caller_df %>% 
-  dplyr::select("VAF_lancet", "VAF_strelka", "VAF_mutect",
-                "Variant_Classification") %>%
-  dplyr::mutate(VAF_consensus = VAF_strelka)     
- 
-# Determine which mutations are not part of the consensus
-consensus_index <- vaf_df %>%
-  dplyr::select(-c(VAF_consensus, Variant_Classification)) %>%
-  rowSums(is.na(.)) > 0
-
-# Make non consensus VAF into an NA
-vaf_df$VAF_consensus[consensus_index] <- NA
-
-# Make this long form for plotting
-long_vaf_df <- vaf_df %>% 
-  # This index needs to be a factor so tapply step in the next chunk works more seamlessly
-  dplyr::mutate(index = factor(1:nrow(.))) %>% 
-  tidyr::gather(key = "caller", value = "vaf", -index, -Variant_Classification) %>% 
-  dplyr::mutate(caller = gsub("VAF_", "", caller)) %>% 
-  dplyr::filter(!is.na(vaf))
-```
-
-Get median vaf for each mutation with each caller combination. 
-
-```{r}
-# Take out the consensus VAF for this combination
-long_caller_df <- long_vaf_df %>% 
-  dplyr::filter(caller != "consensus")
-
-# Determine the combination of callers for each mutation
-callers_per_mutation <- tapply(
-    long_caller_df$caller,
-    long_caller_df$index,
-    paste0,
-    collapse = "-"
-  ) %>% 
-  as.data.frame() %>%
-  tibble::rownames_to_column("index")
-
-# Determine Median VAF for each mutation 
-vaf_med <- tapply(
-    long_caller_df$vaf,
-    long_caller_df$index,
-    median
-  ) %>% 
-  as.data.frame() %>%
-  tibble::rownames_to_column("index")
-
-# Join the median VAF and the callers that call that mutation into one data.frame
-callers_per_mutation <- callers_per_mutation %>%
-  dplyr::inner_join(vaf_med, by = "index") %>%
-  dplyr::left_join(long_caller_df %>% 
-                      dplyr::select(Variant_Classification, index), 
-                   by = "index") %>%
-  # Make column names more sensible
-  dplyr::rename(caller_combo = "..x", median_vaf = "..y") 
-```
-
-## Upset graph
-
-Make the upset plot. 
-
-```{r}
-upsettr_plot <- callers_per_mutation %>%
-  upset_plot()
-
-# Print this out here
-upsettr_plot
-```
-
-Save this plot to a png
-
-```{r}
-# We can save the plot like a normal ggplot
-ggplot2::ggsave(upsettr_plot, 
-                file = file.path(plots_dir, "tcga-upset_plot.png"))
-```
-
-Transcripts only upset plot. 
-
-```{r}
-callers_per_mutation %>% 
-  dplyr::filter(!(Variant_Classification %in% c("5'Flank", "3'Flank", "IGR", "Intron"))) %>%
-  upset_plot()
-```
-
-Non transcript upset plot. 
-
-```{r}
-callers_per_mutation %>% 
-  dplyr::filter(Variant_Classification %in% c("5'Flank", "3'Flank", "IGR", "Intron")) %>%
-  upset_plot()
-```
-
-## VAF for combination sets of callers
-
-Graph mutations by combinations of callers and plot the VAF density.
-Get list of callers per mutation and the median vaf for each. 
-Graph the median VAF for each combination of callers.
-
-```{r}
-# Make this plot
-median_vaf_plot <- callers_per_mutation %>%
-  ggplot2::ggplot(ggplot2::aes(x = caller_combo, y = median_vaf)) +
-  ggplot2::geom_violin() +
-  ggplot2::theme_classic() +
-  ggupset::scale_x_mergelist(sep = "-") +
-  ggupset::axis_combmatrix(sep = "-") +
-  ggplot2::xlab("") +
-  ggplot2::ylab("Median VAF Across Callers")
-
-# Print out plot
-median_vaf_plot 
+tmb_pbta_with_filter <- data.table::fread(file.path(
+  "..",
+  "results",
+  "consensus",
+  "pbta-snv-mutation-tmb-coding.tsv"
+)) %>%
+  # This variable is weird when binding but we don't need it for the plot so we'll just remove it.
+  dplyr::select(-region_size) %>%
+  dplyr::filter(experimental_strategy != "Panel") %>% 
+  dplyr::mutate(filter = "filter")
 ```
 
 ```{r}
-# Save this plot
-ggplot2::ggsave(plot = median_vaf_plot, file.path(plots_dir, "tcga-upset_median_vaf_plot.png"))
+tmb_pbta <- dplyr::inner_join(tmb_pbta_no_filter, 
+                              dplyr::select(tmb_pbta_with_filter, Tumor_Sample_Barcode, tmb),
+                              by = "Tumor_Sample_Barcode", 
+                              suffix = c("_no_filter", "_filter"))
 ```
 
-## Base Changes 
-
-Summarize base change information per caller. 
+### Read in TCGA data
 
 ```{r}
-# Summarize by the number of times each base change shows up in each category.
-perc_change_df <- all_caller_df %>% 
-  # Make change variable
-  dplyr::mutate(base_change = paste0(Allele, ">", Reference_Allele)) %>% 
-  dplyr::mutate(
-    # From the base_change variable, summarize insertions, deletions, and
-    # changes that are more than one base into their own groups.
-    change = dplyr::case_when(
-      grepl("^-", base_change) ~ "ins",
-      grepl("-$", base_change) ~ "del",
-      nchar(base_change) > 3 ~ "long_change",
-      TRUE ~ base_change
-    )
-  ) %>%
-  # Whittle down to necessary columns
-  dplyr::select(change, dplyr::starts_with("VAF_")) %>% 
-  # Make this long form
-  tidyr::gather(key = "caller", value = "vaf", -change) %>% 
-  # Drop the prefix
-  dplyr::mutate(caller = gsub("VAF_", "", caller)) %>% 
-  # Get rid of NA rows
-  dplyr::filter(!is.na(vaf)) %>%
-  # Summarize the number of mutations per caller
-  dplyr::count(caller, change, name = "count") %>%
-  dplyr::add_count(caller, wt = count) %>%
-  # Calculate the percent of each 
-  dplyr::mutate(percent = count / n) %>%
-  # Drop nonsensical change
-  dplyr::filter(!grepl("N>*|*>N|C>C|T>T|A>A|G>G", change), 
-                !is.na(change)) %>%
-  dplyr::mutate(
-    change = as.factor(change),
-    # Change factor level order so ins and del are at the end
-    change = forcats::fct_relevel(change, "ins", "del", "long_change", after = Inf)
-  ) 
-```
-
-Make a barplot illustrating the percent of the mutations for each caller that 
-that are each type of change. 
-
-```{r}
-perc_change_df %>%
-  ggplot2::ggplot(ggplot2::aes(x = change, y = percent)) +
-  ggplot2::theme_classic() +
-  ggplot2::geom_bar(
-    position = "dodge", stat = "identity",
-    ggplot2::aes(fill = caller)
-  ) +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
-  ggplot2::xlab("") +
-  ggplot2::ylab("Percent of callers' mutations") +
-  colorblindr::scale_fill_OkabeIto()
+tmb_tcga_no_filter <- data.table::fread(file.path(
+  "..",
+  "results",
+  "no_filter",
+  "tcga-snv-mutation-tmb-coding.tsv"
+)) %>%
+  dplyr::select(-region_size) %>% 
+  dplyr::mutate(filter = "no filter")
 ```
 
 ```{r}
-# Save this plot
-ggplot2::ggsave(file.path(plots_dir, "tcga-perc_base_change_plot.png"))
+tmb_tcga_with_filter <- data.table::fread(file.path(
+  "..",
+  "results",
+  "consensus",
+  "tcga-snv-mutation-tmb-coding.tsv"
+)) %>%
+  dplyr::select(-region_size) %>% 
+  dplyr::mutate(filter = "filter")
 ```
 
-## VAF distributions
-
-Make a violin plot of each caller. 
+Join these together. 
 
 ```{r}
-long_vaf_df %>%
-  ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, color = caller)) +
-  ggplot2::geom_violin() +
-  ggplot2::theme_classic() +
-  colorblindr::scale_color_OkabeIto()
+tmb_tcga <- dplyr::inner_join(tmb_tcga_no_filter, 
+                              dplyr::select(tmb_tcga_with_filter, Tumor_Sample_Barcode, tmb),
+                              by = "Tumor_Sample_Barcode", 
+                              suffix = c("_no_filter", "_filter"))
 ```
 
-```{r}
-# Save this plot
-ggplot2::ggsave(file.path(plots_dir, "tcga-vaf_violin_plot.png"))
-```
-
-## VAF correlations
-
-Make the plot with ggpairs. 
+### Plot PBTA data
 
 ```{r}
-GGally::ggpairs(vaf_df %>% dplyr::select(-VAF_consensus, -Variant_Classification), 
-                mapping = ggplot2::aes(alpha = 0.05)) +
-  ggplot2::theme_classic()
-``` 
-
-```{r}
-# Save this plot
-ggplot2::ggsave(file.path(plots_dir, "tcga-vaf_correlations_plot.png"))
-```
-
-## Mutation Region barplot
-
-Summarize `Variant_Classification` information per caller. 
-
-```{r}
-# Summarize by the number of times each base change shows up in each category.
-perc_var_df <- long_vaf_df %>% 
-  # Summarize the number of mutations per caller
-  dplyr::count(caller, Variant_Classification, name = "count") %>%
-  dplyr::add_count(caller, wt = count) %>%
-  # Calculate the percent of each 
-  dplyr::mutate(percent = count / n)
-```
-
-Make a barplot illustrating the percent of the mutations for each caller that 
-that are each type of change. 
-
-```{r}
-perc_var_df %>%
-  ggplot2::ggplot(ggplot2::aes(x = caller, y = percent)) +
-  ggplot2::theme_classic() +
-  ggplot2::geom_bar(
-    position = "stack", stat = "identity",
-    ggplot2::aes(fill = Variant_Classification)
-  ) +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
-  ggplot2::xlab("") +
-  ggplot2::ylab("Percent of callers' mutations")
+cor.test(tmb_pbta$tmb_filter, tmb_pbta$tmb_no_filter)
 ```
 
 ```{r}
-# Save this plot
-ggplot2::ggsave(file.path(plots_dir, "tcga-variant_classification_plot.png"))
+ggplot2::ggplot(tmb_pbta, ggplot2::aes(x = tmb_no_filter, y = tmb_filter, color = short_histology)) +
+ ggplot2::geom_point() +
+ ggplot2::xlim(0, 5) + 
+ ggplot2::ylim(0, 5) +
+ ggplot2::theme_classic() 
+```
+
+### Plot TCGA data
+
+```{r}
+cor.test(tmb_tcga$tmb_filter, tmb_tcga$tmb_no_filter)
+```
+
+```{r}
+ggplot2::ggplot(tmb_tcga, ggplot2::aes(x = tmb_no_filter, y = tmb_filter, color = short_histology)) +
+ ggplot2::geom_point() +
+ ggplot2::xlim(0, 5) + 
+ ggplot2::ylim(0, 5) +
+ ggplot2::theme_classic() + 
+ ggplot2::facet_wrap(~short_histology)
+```
+
+### Does the comparison change 
+
+```{r}
+all_data <- dplyr::bind_rows(list(tcga = tmb_tcga, pbta = tmb_pbta), .id = "dataset") %>%
+  dplyr::select(tmb_filter, tmb_no_filter, dataset, Tumor_Sample_Barcode, short_histology) %>% 
+  tidyr::gather("filter", "tmb", -Tumor_Sample_Barcode, -dataset, -short_histology)
+```
+
+```{r}
+ggplot2::ggplot(all_data, ggplot2::aes(x = dataset, y = tmb)) +
+ ggforce::geom_sina() +
+ ggplot2::theme_classic() + 
+ ggplot2::ylim(0, 10) + 
+ ggplot2::theme(legend.position = "none") + 
+ ggplot2::facet_wrap("filter")
 ```
 
 ## Session Info
