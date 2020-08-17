@@ -157,7 +157,7 @@ ge <- readRDS(gene_expression_file_name)
 #Metadata is in pbta-histologies.tsv.  train_target_column is our target variable.
 #Kids_First_Biospecimen_ID is the unique identifier for each sample.
 
-histologies <- readr::read_tsv(histologies_file_name, guess_max = 10000)
+histologies <- read.delim(histologies_file_name, header=TRUE, sep="\t", stringsAsFactors = FALSE)
 
 samples_list <- list()
 
