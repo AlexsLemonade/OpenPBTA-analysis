@@ -59,7 +59,7 @@ def calculate_tmb(
     cols = list(grouped_df.columns)
     exp_strategy = meta_data.at[samplename, targetcol]
     cohort = meta_data.at[samplename, cohortcol]
-    sample_target_identifier = exp_strategy+"_"+cohort
+    sample_target_identifier = exp_strategy + "_" + cohort
     disease = meta_data.at[samplename, diseasecol]
     if sample_target_identifier in target_dict.keys():
         grouped_df["Start_Position"] = grouped_df.apply(
