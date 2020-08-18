@@ -309,6 +309,8 @@ WORKDIR /rocker-build/
 RUN install2.r --error --deps TRUE \
     multipanelfigure
 
+# Molecular subtyping MB
+RUN R -e "remotes::install_github('d3b-center/medullo-classifier-package', ref = 'master', dependencies = TRUE)"
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
 
