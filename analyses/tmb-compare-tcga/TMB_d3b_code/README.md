@@ -15,7 +15,7 @@ The first script takes single MAF file and filters variants  based on `Types of 
 
   4. Calculates TMB
       - Calculates TMB based on `((# of variants)*1000000) / size of BED)`
-      - Prints out the `Samplename`,	`experimental_strategy`,	`cohort`,	`disease`,	`count`,	`bedlength of target BED`	`TMB` for every sample
+      - Prints out the `Samplename`, `experimental_strategy`, `cohort`, `disease`, `count`, `bedlength of target BED`, `TMB` for every sample
 
     `Usage`: 01_calculate_tmb_targetflexible_withbothexperstrt_and_cohort.py
        [-h] -i MAF -m METADATAFILE -o OUTFILENAME -c CONFIGFILE -w
