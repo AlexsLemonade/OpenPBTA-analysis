@@ -3,8 +3,8 @@
 ###### Authors : Teja Koganti for D3B
 
 This analysis computes tumor mutation burden for different disease types.
-The first script takes single MAF file and filters variants  based on `Types of mutations counted` from [Friends of Cancer research](https://jitc.bmj.com/content/8/1/e000147#DC1). TMB is computed  based on
-`(filtered variant counts* 1000000) / target BED length`
+The first script takes single MAF file and filters variants based on `Types of mutations counted` from [Friends of Cancer research](https://jitc.bmj.com/content/8/1/e000147#DC1). 
+TMB is computed as `(filtered variant counts* 1000000) / target BED length`.
 
 ### Calculate TMB
   1. Reads the MAF file and filters based on variant_classification column
