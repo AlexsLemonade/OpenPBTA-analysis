@@ -25,11 +25,12 @@ Rscript --vanilla 01-classify-mb.R \
 --clin ../../data/pbta-histologies.tsv \
 --batch_col RNA_library \
 --hist_column integrated_diagnosis \
---outputfile results/mb-molecular-subtypes-v1.rds
+--method MM2S \
+--outputfile results/mb-molecular-subtypes-batch-correct-MM2S.rds
 
 # merge expected and observed outputs
 Rscript 02-compare-classes.R \
---observed_class results/mb-molecular-subtypes-v1.rds \
+--observed_class results/mb-molecular-subtypes-batch-correct-MM2S.rds \
 --expected_class input/expected_class.rds \
---outputfile results/comparison_v1.rds
+--outputfile results/comparison-batch-correct-MM2S.rds
 

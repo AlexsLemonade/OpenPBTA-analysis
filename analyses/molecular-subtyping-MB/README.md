@@ -4,7 +4,7 @@
 
 ### Description
 
-The goal of this analysis is to use the R package [medulloPackage](https://github.com/d3b-center/medullo-classifier-package) to leverage expression data from RNA-seq or array to classify the medulloblastoma samples into four subtypes i.e Group3, Group4, SHH, WNT.
+The goal of this analysis is to utilize the R packages [medulloPackage](https://github.com/d3b-center/medullo-classifier-package) and [MM2S](https://github.com/cran/MM2S) that leverage expression data from RNA-seq or array to classify the medulloblastoma samples into four subtypes i.e Group3, Group4, SHH, WNT.
 
 ### Analysis scripts
 
@@ -20,16 +20,12 @@ pbta-histologies.tsv
 
 2. Function
 
-This script first subsets the input matrices to Medulloblastoma samples only. Next, the two matrices containing MB samples are merged together using common genes. Then, if the value of the input parameter `batch_col` is set, a batch correction is performed using that column from the clinical file. Finally, the script runs the medulloblastoma classifier as described [here](https://github.com/d3b-center/medullo-classifier-package).
+This script first subsets the input matrices to Medulloblastoma samples only. Next, the two matrices containing MB samples are merged together using common genes. Then, if the value of the input parameter `batch_col` is set, a batch correction is performed using that column from the clinical file. Finally, the script runs either the [MM2S](https://github.com/cran/MM2S) package or the medulloblastoma classifier as described [here](https://github.com/d3b-center/medullo-classifier-package) depending on the `--method` parameter.
 
 3. Output: 
 
 ```
-# with batch correction
-results/mb-molecular-subtypes-v1.rds
-
-# no batch correction
-results/mb-molecular-subtypes-v2.rds
+results/mb-molecular-subtypes*.rds
 ```
 
 The results in the rds object contain the samples, best.fit which is medulloblastoma subtype assigned to the sample and associated p-value.
@@ -39,11 +35,7 @@ The results in the rds object contain the samples, best.fit which is medulloblas
 1. Input
 
 ```
-# using batch correction
-results/mb-molecular-subtypes-v1.rds
-
-# no batch correction
-results/mb-molecular-subtypes-v2.rds
+results/mb-molecular-subtypes*.rds
 ```
 
 2. Function:
@@ -53,21 +45,13 @@ This script takes in the expected classification from pathology reports and merg
 3. Output
 
 ```
-# using batch correction
-results/comparison_v1.rds
-
-# no batch correction
-results/comparison_v2.rds
+results/comparison-*.rds
 ```
 
 ### Running the analysis
 
-```sh
-# with batch correction using library type as batch 
-bash run-molecular-subtyping-MB-v1.sh
-
-# without batch correction
-bash run-molecular-subtyping-MB-v2.sh
+```sh 
+bash run-molecular-subtyping-MB*.sh
 ```
 
 
