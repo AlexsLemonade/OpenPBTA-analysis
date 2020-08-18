@@ -9,7 +9,7 @@ The first script takes single MAF file and filters variants  based on `Types of 
 ### Calculate TMB
   1. Reads the MAF file and filters based on variant_classification column
 
-  2. Reads in config file and defines metadata specific fields/columns and variants  list etc.
+  2. Reads in config file and defines metadata specific fields/columns and variants list etc.
 
   3. Reads in a target config file and determines `experimental strategy` and `cohort` from metadata file. MAF  variants  are filtered within this target file and the BED length is calculated
 
