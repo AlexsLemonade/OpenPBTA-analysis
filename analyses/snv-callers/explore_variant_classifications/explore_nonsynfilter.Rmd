@@ -1,5 +1,5 @@
 ---
-title: "Explore Non Synonymous Filters"
+title: "Explore impact of Non Synonymous Filters"
 output: 
   html_notebook:
     toc: TRUE
@@ -9,7 +9,9 @@ date: 2020
 ---
 
 ### Summary of Findings:
+
 As far as the TMB comparisons go, it doesn't matter if we use `Variant_Classification` filters or not. 
+They are highly correlated no matter what and the same general TCGA to PBTA differences seem to persist. 
 
 #### Usage
 
@@ -108,6 +110,8 @@ tmb_tcga <- dplyr::inner_join(tmb_tcga_no_filter,
                               suffix = c("_no_filter", "_filter"))
 ```
 
+## Does the filter change a participant's TMB?
+
 ### Plot PBTA data
 
 ```{r}
@@ -137,7 +141,7 @@ ggplot2::ggplot(tmb_tcga, ggplot2::aes(x = tmb_no_filter, y = tmb_filter, color 
  ggplot2::facet_wrap(~short_histology)
 ```
 
-### Does the comparison change 
+## Does the filter affect the TCGA-PBTA comparison change?
 
 ```{r}
 all_data <- dplyr::bind_rows(list(tcga = tmb_tcga, pbta = tmb_pbta), .id = "dataset") %>%
