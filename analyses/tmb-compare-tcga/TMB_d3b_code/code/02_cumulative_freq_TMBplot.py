@@ -73,7 +73,7 @@ for i, disease in enumerate(
         np.arange(1, len(TMB) + 1) / len(TMB)
     ) + i  # this generate an array in every loop that clusters
     # all disease x-axis together and adds so the next disease
-    # x-axis numbers are spaced separaetly from previous disease
+    # x-axis numbers are spaced separately from previous disease
     # print(np.median(x))
     tick_locs.append(
         np.median(x)
