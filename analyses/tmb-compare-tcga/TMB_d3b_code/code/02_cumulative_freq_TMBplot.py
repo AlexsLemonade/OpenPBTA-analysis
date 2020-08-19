@@ -40,21 +40,12 @@ args = parser.parse_args()
 # Loading TMB scres text file into a  dataframe
 tmbfile = pd.read_csv(args.tmb_scores, sep="\t")
 
-# Choosing disease list to plot
-#tmbfile["new_TMB"] = ( tmbfile["count"] + 1 * 1000000) / tmbfile["bedlength"]
-#tmbfile["new_TMB"] = tmbfile["count"] + 1 / tmbfile["bedlength"]
-
 
 tmbfile["new_TMB"] = tmbfile.apply(lambda x:
-    (x["count"] + 1 * 1000000) / x["bedlength"] if x["count"]==0
-    else x["TMB"],axis=1)
-#( tmbfile["count"] + 1 * 1000000) / tmbfile["bedlength"]
-#value_to_add = np.min(tmbfile[tmbfile["TMB"] != 0]["TMB"])*0.8
-#tmbfile["new_TMB"] = tmbfile["TMB"].replace({0: value_to_add})
-#tmbfile = tmbfile.sort_values(by=['new_TMB'])
+    ((x["count"] + 1) * 1000000) / x["bedlength"],
+    axis=1)
 
-
-
+# Choosing diseses to plot
 # Counting number of lines under each disease and saving it as disease_number
 # If lines per disease is greater than minsamplestoplot, then add disease to top_diseases
 
