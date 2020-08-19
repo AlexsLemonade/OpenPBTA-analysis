@@ -9,7 +9,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 
 BASE_DIR=../../../
 
-python3 code/01_calculate_tmb_targetflexible.py \
+python3 code/01_calculate_tmb.py \
   -i $BASE_DIR/data/pbta-snv-consensus-mutation.maf.tsv.gz \
   -m $BASE_DIR/data/pbta-histologies.tsv \
   -c config_files/calculate_tmb.cfg.json \
