@@ -141,7 +141,9 @@ if(!is.na(batch_col)){
   
   # batch correct using batch_col
   expr.input.mb <- ComBat(dat = log2(expr.input.mb + 1), batch = clin.mb$RNA_library)
-  expr.input.mb <- 2^expr.input.mb
+} else {
+  # log transform
+  expr.input.mb <- log2(expr.input.mb + 1)
 }
 
 # classify mb samples
