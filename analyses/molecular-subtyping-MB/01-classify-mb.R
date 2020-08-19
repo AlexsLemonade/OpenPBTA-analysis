@@ -11,6 +11,10 @@ suppressPackageStartupMessages(library(medulloPackage))
 suppressPackageStartupMessages(library(MM2S))
 suppressPackageStartupMessages(library(org.Hs.eg.db))
 
+# source classification function
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+source(file.path(root_dir, "analyses", "molecular-subtyping-MB", "util", "classify-mb.R"))
+
 option_list <- list(
   make_option(c("--polyaexprs"), type = "character",
               help = "PolyA Expression data: HUGO symbol x Sample identifiers (.rds)"),
@@ -26,7 +30,7 @@ option_list <- list(
   make_option(c("--method"), type = "character", 
               help = "Method to use for classification: MM2S or medullo-classifier"),
   make_option(c("--outputfile"), type = "character",
-              help = "Subtyping Output (.rds)")
+              help = "Output file path (.rds)")
 )
 
 # parse parameters
@@ -37,7 +41,7 @@ batch_col <- opt$batch_col
 clin.file <- opt$clin
 hist_column <- opt$hist_column
 method <- opt$method
-output.file <- opt$outputfile
+outputfile <- opt$outputfile
 
 # check input method 
 if(!method %in% c("MM2S", "medullo-classifier")){
@@ -55,7 +59,7 @@ clin.mb  <- clin %>%
          !!as.name(hist_column) == "Medulloblastoma") %>%
   dplyr::select(Kids_First_Biospecimen_ID, sample_id, RNA_library)
 
-# filter to MB samples
+# function to filter only MB samples
 filter.mat <- function(expr.input, clin.mb) {
 
   # get data
@@ -67,55 +71,6 @@ filter.mat <- function(expr.input, clin.mb) {
     dplyr::select(all_of(mb.samples))
   
   return(expr.input)
-}
-
-# function to run molecular subtyping
-classify.mat <- function(expr.mb, clin.mb, method){
-  if(method == "medullo-classifier"){
-    # run medulloPackage
-    res <- medulloPackage::classify(expr.mb)
-  } else {
-    # MM2S package uses ENTREZ gene ids whereas expression data contains gene symbols
-    hs <- org.Hs.eg.db
-    mapping <- select(hs, 
-           keys = rownames(expr.mb),
-           columns = c("ENTREZID", "SYMBOL"),
-           keytype = "SYMBOL")
-    mapping <- mapping %>%
-      filter(!is.na(ENTREZID)) 
-    
-    # replace gene symbols with ENTREZ gene id as rownames
-    expr.mb <- expr.mb %>%
-      as.data.frame() %>%
-      rownames_to_column('SYMBOL') %>%
-      inner_join(mapping, by = 'SYMBOL') %>%
-      dplyr::select(-c(SYMBOL)) %>%
-      column_to_rownames('ENTREZID')
-    
-    # run MM2S
-    res <- MM2S.human(InputMatrix = expr.mb,
-               parallelize = 4,
-               seed = 12345, tempdir())
-    
-    # get scores
-    scores <- res$Predictions %>% 
-      as.data.frame() %>%
-      rownames_to_column('sample') %>% 
-      gather(best.fit, MM2S_score, -sample)
-    
-    # get predicted subtype
-    subtype <- res$MM2S_Subtype %>%
-      as.data.frame() %>%
-      mutate(MM2S_Prediction = replace(MM2S_Prediction, MM2S_Prediction=="NORMAL", "Normal"))
-    
-    # merge predicted subtype and associated scores
-    res <- scores %>%
-      inner_join(subtype, by = c("sample" = "SampleName",
-                                 "best.fit" = "MM2S_Prediction"))
-  }
-  
-  res <- clin.mb %>%
-    inner_join(res, by = c("Kids_First_Biospecimen_ID" = "sample"))
 }
 
 # filter matrices to MB only 
@@ -148,9 +103,9 @@ if(!is.na(batch_col)){
 
 # classify mb samples
 print("Classify medulloblastoma subtypes...")
-mb.classify <- classify.mat(expr.mb = expr.input.mb, clin.mb = clin.mb, method = method)
+mb.classify <- classify.mb(expr.mb = expr.input.mb, clin.mb = clin.mb, method = method)
 
 # save output to RData object
 print("Writing output to file..")
-saveRDS(mb.classify, file = output.file)
+saveRDS(mb.classify, file = outputfile)
 print("Done!")
