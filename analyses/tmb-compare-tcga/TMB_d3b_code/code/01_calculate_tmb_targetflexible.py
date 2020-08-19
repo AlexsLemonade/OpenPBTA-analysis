@@ -30,19 +30,19 @@ import pandas as pd
 import pybedtools
 import os
 
-BASE_DIR = os.getcwd()
+#BASE_DIR = os.getcwd()
 
-BASE_DIR = "/".join(BASE_DIR.split("/")[:-3])+"/analyses/tmb-compare-tcga/TMB_d3b_code/inputs/target_files/"
+#BASE_DIR = "/".join(BASE_DIR.split("/")[:-3])+"/analyses/tmb-compare-tcga/TMB_d3b_code/inputs/target_files/"
 
 
 # This function returns a dictionary where the keys are the experimental_strategy
 #   and the values are the BED files for those target exp_strategies
-def get_target_dict(target_config):
+def get_target_dict(target_config, target_dir):
     dict_to_return = {}
     with open(target_config, "r") as target_cfg:
-        for line in target_cfg.readlines():
+        for line in target_cfg:
             line = line.split()
-            dict_to_return[line[0]] = BASE_DIR+"/"+line[1]
+            dict_to_return[line[0]] = target_dir+"/"+line[1]
     return dict_to_return
 
 
@@ -54,7 +54,20 @@ def get_target_dict(target_config):
 def calculate_tmb(
     grouped_df, meta_data, target_dict, out, diseasecol, samplenamecol, targetcol,
     cohortcol):
-    samplename = np.unique(grouped_df["Tumor_Sample_Barcode"])[0]
+    """ Function inputs.
+
+    grouped_df -- This DF contains all lines for each sample in input MAF
+    metadata -- histology file with information like cohort, annotations, etc.
+    target_dict -- DIctionary for target files where :
+        keys -  experimental_strategy +_+ cohort
+        values - path for the corresponding BED file
+    out - out file name
+    diseasecol -  disease column name in meta_data file
+    samplenamecol - Samplename column in meta_data file
+    targetcol - experimental_strategy in meta_data file
+    cohortcol - Name of cohort column in meta_data file
+    """
+    samplename = grouped_df.at[grouped_df.index[0], "Tumor_Sample_Barcode"]
     meta_data = meta_data.set_index(samplenamecol)
     cols = list(grouped_df.columns)
     exp_strategy = meta_data.at[samplename, targetcol]
@@ -75,21 +88,8 @@ def calculate_tmb(
         count = mafdf_within_target.shape[0]
         bed_length = calculate_bed_length(open(target_bed, "r"))
         tmb = (count * 1000000) / bed_length
-        out_line = (
-            samplename
-            + "\t"
-            + exp_strategy
-            +"\t"
-            + cohort
-            + "\t"
-            + disease
-            + "\t"
-            + str(count)
-            + "\t"
-            + str(bed_length)
-            + "\t"
-            + str(tmb)
-        )
+        out_line = "\t".join([samplename, exp_strategy, cohort, disease,
+                              str(count), str(bed_length),  str(tmb)])
         out.write(out_line + "\n")
 
 
@@ -125,6 +125,12 @@ parser.add_argument(
     required=True,
     help="File with experimental strategy  and path to BED file",
 )
+parser.add_argument(
+    "-d",
+    "--targetdir",
+    required=True,
+    help="Path to directory where the target files are saved",
+)
 args = parser.parse_args()
 
 
@@ -149,7 +155,6 @@ with open(args.configfile) as configlines:
 
 ###########################################################
 
-
 ####### Preparing MAF file ##################################
 # Loading MAF file
 maf_file = pd.read_table(args.maf, na_values=["."], comment="#", sep="\t")
@@ -167,7 +172,7 @@ filteredsamples = np.unique(maf_file["Tumor_Sample_Barcode"])
 
 
 ########### Preparing target files ########################
-target_dict = get_target_dict(args.targetconfig)
+target_dict = get_target_dict(args.targetconfig, args.targetdir)
 ############################################################
 
 
@@ -199,6 +204,11 @@ for sample in missing_samples:
     exper_strategy = (
         metadata_df[metadata_df["Kids_First_Biospecimen_ID"] == sample][typeoftargetcol]
     ).values[0]
-    outfile.write(sample + "\t" + exper_strategy + "\t"+cohort+"\t"+diseasetype + "\t0\t0\t0\n")
+    sample_target_identifier = exper_strategy + "_" + cohort
+    if sample_target_identifier in target_dict.keys():
+        target_bed = target_dict.get(sample_target_identifier)
+        bed_length = calculate_bed_length(open(target_bed, "r"))
+    outfile.write("\t".join([sample, exper_strategy, cohort, diseasetype,
+                      str(0), str(bed_length),  str(0)])+"\n")
 outfile.close()
 ###############################################################

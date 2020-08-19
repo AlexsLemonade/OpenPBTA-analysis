@@ -41,15 +41,30 @@ args = parser.parse_args()
 tmbfile = pd.read_csv(args.tmb_scores, sep="\t")
 
 # Choosing disease list to plot
-#tmbfile["new_TMB"] = tmbfile["TMB"]+1
-value_to_add = np.min(tmbfile[tmbfile["TMB"] != 0]["TMB"])*0.8
-tmbfile["new_TMB"] = tmbfile["TMB"].replace({0: value_to_add})
-tmbfile = tmbfile.sort_values(by=['new_TMB'])
+#tmbfile["new_TMB"] = ( tmbfile["count"] + 1 * 1000000) / tmbfile["bedlength"]
+#tmbfile["new_TMB"] = tmbfile["count"] + 1 / tmbfile["bedlength"]
 
 
-disease_number = tmbfile.groupby("cohort").count()["new_TMB"]
+tmbfile["new_TMB"] = tmbfile.apply(lambda x:
+    (x["count"] + 1 * 1000000) / x["bedlength"] if x["count"]==0
+    else x["TMB"],axis=1)
+#( tmbfile["count"] + 1 * 1000000) / tmbfile["bedlength"]
+#value_to_add = np.min(tmbfile[tmbfile["TMB"] != 0]["TMB"])*0.8
+#tmbfile["new_TMB"] = tmbfile["TMB"].replace({0: value_to_add})
+#tmbfile = tmbfile.sort_values(by=['new_TMB'])
+
+
+
+# Counting number of lines under each disease and saving it as disease_number
+# If lines per disease is greater than minsamplestoplot, then add disease to top_diseases
+
+# Count how many samples in each disease
+disease_number = tmbfile.groupby("disease").count()["new_TMB"]
+# List only diseases that have a higher number of samples than minsamples input
 top_diseases = disease_number[disease_number > int(args.minsamplestoplot)].index
-sorted_diseases = tmbfile.groupby("cohort").median().sort_values("new_TMB")
+# Sort disease list based on median value. Output plot will use this sorting
+sorted_diseases = tmbfile.groupby("disease").median().sort_values("new_TMB")
+
 
 sorted_diseases_final = []
 for dis in sorted_diseases.index:
@@ -61,7 +76,7 @@ for dis in sorted_diseases.index:
 
 ############### Creating TMB plots #############################
 # Creating TMB cumulative dist plot
-perdisease = tmbfile.groupby("cohort")
+perdisease = tmbfile.groupby("disease")
 plt.figure(figsize=(20, 10))
 tick_locs = []
 for i, disease in enumerate(
