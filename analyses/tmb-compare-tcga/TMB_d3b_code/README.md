@@ -7,7 +7,7 @@ The first script takes single MAF file and filters variants based on `Types of m
 TMB is computed as `(filtered variant counts* 1000000) / target BED length`.
 
 ### Calculate TMB
-  1. Reads the MAF file and filters based on variant_classification column
+  1. Reads the MAF file and filters based on `Variant_Classification` column
 
   2. Reads in config file and defines metadata specific fields/columns and variants list etc.
 
