@@ -23,7 +23,6 @@ Rscript --vanilla 01-classify-mb.R \
 --polyaexprs ../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
 --strandedexprs ../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
 --clin ../../data/pbta-histologies.tsv \
---batch_col NA \
 --hist_column integrated_diagnosis \
 --method medullo-classifier \
 --outputfile results/mb-molecular-subtypes-medullo-classifier.rds

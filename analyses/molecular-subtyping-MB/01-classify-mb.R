@@ -21,7 +21,7 @@ option_list <- list(
   make_option(c("--strandedexprs"), type = "character",
               help = "Stranded Expression data: HUGO symbol x Sample identifiers (.rds)"),
   make_option(c("--batch_col"), type = "character", 
-              default = NA,
+              default = NULL,
               help = "Combine and batch correct input matrices using which column?"),
   make_option(c("--clin"), type = "character",
               help = "Clinical file (.tsv)"),
@@ -68,7 +68,7 @@ filter.mat <- function(expr.input, clin.mb) {
   # subset expression to MB samples
   mb.samples <- intersect(clin.mb$Kids_First_Biospecimen_ID, colnames(expr.input))
   expr.input <- expr.input %>%
-    dplyr::select(all_of(mb.samples))
+    dplyr::select(mb.samples)
   
   return(expr.input)
 }
@@ -85,17 +85,14 @@ expr.input.mb <- expr.input.mb[[1]] %>%
   column_to_rownames('gene')
 
 # if batch_col is set, do the following:
-if(!is.na(batch_col)){
+if(!is.null(batch_col)){
   print("Batch correct input matrices...")
   
   # match clinical rows and expression cols
-  clin.mb <- clin.mb %>%
-    mutate(tmp = Kids_First_Biospecimen_ID) %>%
-    column_to_rownames('tmp')
-  expr.input.mb  <- expr.input.mb[,rownames(clin.mb)]
+  expr.input.mb  <- as.matrix(expr.input.mb[,clin.mb$Kids_First_Biospecimen_ID])
   
   # batch correct using batch_col
-  expr.input.mb <- ComBat(dat = log2(expr.input.mb + 1), batch = clin.mb$RNA_library)
+  expr.input.mb <- ComBat(dat = log2(expr.input.mb + 1), batch = clin.mb[, batch_col])
 } else {
   # log transform
   expr.input.mb <- log2(expr.input.mb + 1)
