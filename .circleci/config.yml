@@ -238,6 +238,10 @@ jobs:
           command: ./scripts/run_in_ci.sh bash analyses/tcga-capture-kit-investigation/run-investigation.sh
 
       - run:
+          name: d3b TMB code
+          command: ./scripts/run_in_ci.sh bash analyses/tmb-compare-tcga/TMB_d3b_code/run_tmb_d3b.sh
+      
+      - run:
           name: Run survival plots
           command: ./scripts/run_in_ci.sh bash analyses/survival-analysis/run_survival.sh
 
