@@ -68,6 +68,10 @@ jobs:
          name: Molecular Subtyping - Compile and incorporate pathology feedback
          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-pathology/run-subtyping-aggregation.sh
 
+      - run:
+          name: Molecular Subtyping - MB
+          command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-MB/run-molecular-subtyping-mb.sh
+
       # Deprecated - these results do not include germline calls and therefore are insufficient by subtyping
       # - run:
       #     name: SHH TP53 Molecular Subtyping
@@ -240,10 +244,6 @@ jobs:
       - run:
           name: Run survival plots
           command: ./scripts/run_in_ci.sh bash analyses/survival-analysis/run_survival.sh
-
-      - run:
-          name: Molecular Subtyping - MB (MM2S)
-          command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-MB/run-molecular-subtyping-mb.sh
 
   deploy:
     machine: 
