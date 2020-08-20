@@ -15,7 +15,7 @@ jobs:
       - run:
           name: List Data Directory Contents
           command: ./scripts/run_in_ci.sh ls data/testing
-    
+
       - run:
           name: Sample Distribution Analyses
           command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
@@ -23,11 +23,11 @@ jobs:
       - run:
           name: Sample Distribution Figure
           command: ./scripts/run_in_ci.sh Rscript figures/scripts/fig1-sample-distribution.R
-          
+
       - run:
           name: Transcriptome dimensionality reduction
-          command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh 
-          
+          command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh
+
       # The analysis no longer needs to be tested as it has been retired and is better covered by 'SNV Caller Analysis' below.
       #- run:
       #    name: Mutect2 vs Strelka2
@@ -41,9 +41,9 @@ jobs:
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
 
       - run:
-          name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors 
+          name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
-  
+
       - run:
           name: Molecular Subtyping and Plotting - ATRT
           command:  OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-ATRT/run-molecular-subtyping-ATRT.sh
@@ -51,7 +51,7 @@ jobs:
       - run:
           name: Molecular subtyping Chordoma
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-chordoma/run-molecular-subtyping-chordoma.sh
-      
+
       - run:
           name: Molecular subtyping - Ependymoma
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
@@ -62,7 +62,7 @@ jobs:
 
       - run:
          name: Molecular Subtyping / Reclassification - EWS
-         command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EWS/run_reclassification.sh 
+         command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EWS/run_reclassification.sh
 
       - run:
          name: Molecular Subtyping - Compile and incorporate pathology feedback
@@ -100,7 +100,7 @@ jobs:
           name: TP53 NF1 classifier run
           command: OPENPBTA_POLYAPLOT=0 ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"
 
-# This is deprecated       
+# This is deprecated
 #      - run:
 #          name: ssGSEA Analysis
 #          command: OPENPBTA_ANOVAPVALUE=0.25 OPENPBTA_TUKEYPVALUE=0.50 OPENPBTA_PERCKEEP=0.50 ./scripts/run_in_ci.sh bash analyses/ssgsea-hallmark/run-ssgsea-hallmark.sh
@@ -108,20 +108,20 @@ jobs:
 
 # The second method - ControlFREEC - was not included as of v6, so the comparison can no longer be performed
 #      - run:
-#          name: CNV Caller Comparison  
+#          name: CNV Caller Comparison
 #          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-comparison/01-cnv-comparison-plotting.Rmd', clean = TRUE)"
-  
+
       - run:
           name: Independent samples
-          command: ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh 
-               
+          command: ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh
+
       - run:
           name: Interaction plot
           command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh
 
       - run:
-          name: Mutational Signatures 
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutational-signatures/mutational_signatures.Rmd', clean = TRUE)" 
+          name: Mutational Signatures
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutational-signatures/mutational_signatures.Rmd', clean = TRUE)"
 
       - run:
           name: Chromosomal instability breakpoints
@@ -134,10 +134,10 @@ jobs:
       - run:
           name: Focal CN Preparation
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
-          
+
       - run:
           name: Survival analysis
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/survival-analysis/survival-analysis_template.Rmd', params = list(plot_ci = FALSE), clean = TRUE)" 
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/survival-analysis/survival-analysis_template.Rmd', params = list(plot_ci = FALSE), clean = TRUE)"
 
       - run:
           name: Comparative RNASeq - generate correlation matrix - rsem-tpm.polya
@@ -158,15 +158,15 @@ jobs:
       - run:
           name: Oncoprint plotting
           command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
-      
+
       - run:
           name: GISTIC Plots
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', clean = TRUE)"
-      
+
       - run:
           name: CN Status Heatmap
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/cn_status_heatmap.Rmd', clean = TRUE)"
-        
+
       - run:
           name: Gene set enrichment analysis to generate GSVA scores
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh"
@@ -174,7 +174,7 @@ jobs:
       - run:
          name: Fusion Summary
          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
-          
+
       - run:
           name: Add Shatterseek
           command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/02-shatterseek.R
@@ -186,47 +186,47 @@ jobs:
       - run:
           name: GISTIC Results Comparison
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/compare-gistic/run-compare-gistic.sh
-          
+
 
          ################################
          #### Add your analysis here ####
          ################################
-         
+
       - run:
           name: RNA-Seq composition
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/rna-seq-composition/rna-seq-composition.Rmd', clean = TRUE)"
-          
-      - run:
-          name: TCGA SNV Caller Analysis 
-          command: ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-tcga.sh     
 
       - run:
-          name: SNV Caller Analysis 
+          name: TCGA SNV Caller Analysis
+          command: ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-tcga.sh
+
+      - run:
+          name: SNV Caller Analysis
           command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-pbta.sh
 
       - run:
           name: Tumor mutation burden with TCGA
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tcga-pbta.Rmd', clean = TRUE)"
 
-      # This analysis was used to explore the TCGA PBTA data when the BED files used to calculate TCGA 
+      # This analysis was used to explore the TCGA PBTA data when the BED files used to calculate TCGA
       # were incorrect https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/568
       #- run:
-      #    name: PBTA vs TCGA explore 
+      #    name: PBTA vs TCGA explore
       #    command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/explore-tcga-pbta.Rmd', clean = TRUE)"
-     
+
       # This analysis arose from 'PBTA vs TCGA explore' and was used to explore Lancet's ability to handle WXS data      #- run:
       #    name: Lancet WXS vs WGS test
       #    command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/lancet-paired-WXS-WGS.Rmd', clean = TRUE)"
-      
+
       # This analysis arose from PBTA vs TCGA explore' and was used to explore Lancet's results with padded vs unpadded
       #- run:
       #    name: Lancet padded vs unpadded test
       #    command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/lancet-padded-vs-unpadded.Rmd', clean = TRUE)"
 
-      # This analysis was a side concept question and no longer needs to be run. 
+      # This analysis was a side concept question and no longer needs to be run.
       # - run:
           # name: SNV Caller VAF Cutoff Experiment
-          # command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)" 
+          # command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)"
 
       # This checks that the GISTIC install still works, but not the modules code
       - run:
@@ -239,15 +239,15 @@ jobs:
 
       - run:
           name: d3b TMB code
-          command: ./scripts/run_in_ci.sh bash analyses/tmb-compare-tcga/TMB_d3b_code/run_tmb_d3b.sh
-      
+          command: ./scripts/run_in_ci.sh bash analyses/tmb-compare/TMB_d3b_code/run_tmb_d3b.sh
+
       - run:
           name: Run survival plots
           command: ./scripts/run_in_ci.sh bash analyses/survival-analysis/run_survival.sh
 
 
   deploy:
-    machine: 
+    machine:
       docker_layer_caching: true
     working_directory: ~/OpenPBTA-analysis
     steps:
