@@ -1,3 +1,6 @@
+# Author: Komal S. Rathi
+# Date: 08/19/2020
+# Function: Script to filter MB samples and/or batch correct 
 
 # load libraries
 suppressPackageStartupMessages(library(optparse))
@@ -12,7 +15,6 @@ option_list <- list(
               help = "Output directory"),
   make_option(c("--output_prefix"), type = "character",
               help = "Output file prefix")
-
 )
 
 # parse options
@@ -27,12 +29,9 @@ data_dir <- file.path(root_dir, "data")
 dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 
 # input files
-polya.file <- file.path(data_dir, 
-                        "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds")
-stranded.file <- file.path(data_dir,
-                           "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
-clin.file <- file.path(data_dir,
-                       "pbta-histologies.tsv")
+polya.file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds")
+stranded.file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
+clin.file <- file.path(data_dir, "pbta-histologies.tsv")
 
 # output files
 uncorrected.file <- file.path(output_dir, paste0(output_prefix, ".rds"))
@@ -74,9 +73,11 @@ expr.input.mb <- expr.input.mb[[1]] %>%
                rownames_to_column('gene'), by = 'gene') %>%
   column_to_rownames('gene')
 
+# save uncorrected matrix
 uncorrected.df <- log2(expr.input.mb + 1)
 write_rds(uncorrected.df, uncorrected.file)
 
+# batch correct if batch_col not null
 if(!is.null(batch_col)){
   print("Batch correct input matrices...")
   
@@ -86,6 +87,7 @@ if(!is.null(batch_col)){
   # batch correct using batch_col
   corrected.mat <- ComBat(dat = log2(expr.input.mb + 1), batch = clin.mb[, batch_col])
   
+  # save corrected matrix
   write_rds(corrected.mat, corrected.file)
 }
 

@@ -9,10 +9,17 @@ suppressPackageStartupMessages(library(MM2S))
 suppressPackageStartupMessages(library(org.Hs.eg.db))
 
 # function to run molecular subtyping
-classify.mb <- function(expr.mb, clin.mb, method){
+classify.mb <- function(expr.input, method){
+  # get object
+  expr.mb <- get(expr.input)
+  
   if(method == "medullo-classifier"){
     # run medulloPackage
     res <- medulloPackage::classify(expr.mb)
+    res <- res %>%
+      mutate(classifier = method,
+             dataset = expr.input) %>%
+      arrange(sample)
   } else {
     # MM2S package uses ENTREZ gene ids whereas expression data contains gene symbols
     hs <- org.Hs.eg.db
@@ -40,19 +47,19 @@ classify.mb <- function(expr.mb, clin.mb, method){
     scores <- res$Predictions %>% 
       as.data.frame() %>%
       rownames_to_column('sample') %>% 
-      gather(best.fit, MM2S_score, -sample)
+      gather(best.fit, score, -sample)
     
     # get predicted subtype
     subtype <- res$MM2S_Subtype %>%
       as.data.frame() %>%
-      mutate(MM2S_Prediction = replace(MM2S_Prediction, MM2S_Prediction=="NORMAL", "Normal"))
+      mutate(MM2S_Prediction = replace(MM2S_Prediction, MM2S_Prediction == "NORMAL", "Normal"))
     
     # merge predicted subtype and associated scores
     res <- scores %>%
-      inner_join(subtype, by = c("sample" = "SampleName",
-                                 "best.fit" = "MM2S_Prediction"))
+      inner_join(subtype, by = c("sample" = "SampleName", 
+                                 "best.fit" = "MM2S_Prediction")) %>%
+      mutate(classifier = method,
+             dataset = expr.input) %>%
+      arrange(sample)
   }
-  
-  res <- clin.mb %>%
-    inner_join(res, by = c("Kids_First_Biospecimen_ID" = "sample"))
 }
