@@ -10,21 +10,37 @@ date: 2020
 
 ### Summary of Findings:
 
+This was an exploration of how TMB is affected by using nonsynonymous filters. 
+It addresses part 1 of [this OpenPBTA issue](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/729)
 As far as the TMB comparisons go, it doesn't matter if we use `Variant_Classification` filters or not. 
 They are highly correlated no matter what and the same general TCGA to PBTA differences seem to persist. 
 
-
 ### Usage
 
-On AWS, if both `run_caller_consensus_analysis-tcga.sh` and `run_caller_consensus_analysis-pbta.sh` have been run, you can run this to get this analysis ran.
+If both `run_caller_consensus_analysis-tcga.sh` and `run_caller_consensus_analysis-pbta.sh` have been run, you can run this to get this analysis ran.
 
 ```
 # bash run_explorations.sh
 ```
 
-## Setup
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+- [Setup](#setup)
+- [Read in the TMB files](#read-in-the-tmb-files)
+  - [Read in PBTA data](#read-in-pbta-data)
+  - [Read in TCGA data](#read-in-tcga-data)
+- [Does the filter change a participant's TMB?](#does-the-filter-change-a-participants-tmb)
+  - [Plot PBTA data](#plot-pbta-data)
+  - [Plot TCGA data](#plot-tcga-data)
+- [Are some histologies affected more than others?](#are-some-histologies-affected-more-than-others)
+- [Does the filter affect the TCGA-PBTA comparison change?](#does-the-filter-affect-the-tcga-pbta-comparison-change)
+- [Plot the TMB plot with no filter data](#plot-the-tmb-plot-with-no-filter-data)
+- [Session Info](#session-info)
 
-#### Packages and functions
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Setup
 
 ```{r}
 # Magrittr pipe
@@ -247,9 +263,12 @@ cowplot::save_plot(file.path("plots", "no_filter_tmb-cdf-pbta-tcga.png"),
 ```
 
 Print from png
-![No Filter TMB Plot](./plots/no_filter_tmb-cdf-pbta-tcga.png)
 
-![Original TMB Plot](../../tmb-compare-tcga/plots/tmb-cdf-pbta-tcga.png)
+### No filter TMB Plot
+![](./plots/no_filter_tmb-cdf-pbta-tcga.png)
+
+### With filter TMB Plot
+![](../../tmb-compare-tcga/plots/tmb-cdf-pbta-tcga.png)
 ## Session Info
 
 ```{r}
