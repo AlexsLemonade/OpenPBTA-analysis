@@ -317,6 +317,10 @@ RUN R -e "remotes::install_github('d3b-center/medullo-classifier-package', ref =
 RUN install2.r --error --deps TRUE \
     MM2S
 
+# More recent version of sva required for molecular subtyping MB
+RUN R -e "remotes::install_github('jtleek/sva-devel@123be9b2b9fd7c7cd495fab7d7d901767964ce9e', dependencies = FALSE, upgrade = FALSE)"
+
+
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
 
