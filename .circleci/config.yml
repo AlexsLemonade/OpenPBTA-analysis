@@ -243,20 +243,7 @@ jobs:
 
       - run:
           name: Molecular Subtyping - MB (MM2S)
-          command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-MB/run-molecular-subtyping-MB-MM2S.sh
-
-      - run:
-          name: Molecular Subtyping - MB (MM2S + batch correction)
-          command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-MB/run-molecular-subtyping-MB-batch-correct-MM2S.sh
-
-      - run:
-          name: Molecular Subtyping - MB (medulloPackage)
-          command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-MB/run-molecular-subtyping-MB-medullo-classifier.sh
-
-      - run:
-          name: Molecular Subtyping - MB (medulloPackage + batch correction)
-          command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-MB/run-molecular-subtyping-MB-batch-correct-medullo-classifier.sh
-
+          command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-MB/run-molecular-subtyping-mb.sh
 
   deploy:
     machine: 
