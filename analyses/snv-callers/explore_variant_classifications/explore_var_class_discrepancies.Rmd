@@ -25,16 +25,13 @@ Rscript -e "rmarkdown::render("explore_var_class_discrepancies.Rmd", clean = TRU
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
 - [Setup](#setup)
 - [Read in the TMB files](#read-in-the-tmb-files)
   - [Read in PBTA data](#read-in-pbta-data)
-  - [Read in TCGA data](#read-in-tcga-data)
-- [Does the filter change a participant's TMB?](#does-the-filter-change-a-participants-tmb)
-  - [Plot PBTA data](#plot-pbta-data)
-  - [Plot TCGA data](#plot-tcga-data)
-- [Are some histologies affected more than others?](#are-some-histologies-affected-more-than-others)
-- [Does the filter affect the TCGA-PBTA comparison change?](#does-the-filter-affect-the-tcga-pbta-comparison-change)
-- [Plot the TMB plot with no filter data](#plot-the-tmb-plot-with-no-filter-data)
+  - [Declare Variant_Classification definitions](#declare-variant_classification-definitions)
+  - [Data wranglin'](#data-wranglin)
+- [Barplot of Variant Classification](#barplot-of-variant-classification)
 - [Session Info](#session-info)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
