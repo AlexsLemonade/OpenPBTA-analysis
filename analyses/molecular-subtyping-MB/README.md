@@ -63,7 +63,6 @@ results/mb-classified.rds
 
 The .rds object contains a list of dataframes with outputs corresponding to the four runs as described above. Each dataframe contains 5 columns: sample (Kids_First_Biospecimen_ID), best.fit (i.e. medulloblastoma subtype assigned to the sample), classifier (MM2S or medullo-classifier), dataset (corrected or uncorrected matrix) and score (in case of MM2S) or p-value (in case of medulloPackage).  
 
-<<<<<<< HEAD
 #### 02-compare-classes.Rmd
 
 1. Input
@@ -90,8 +89,6 @@ For each input type, it uses the consensus subtype from the two classifiers and 
 # html output
 02-compare-classes.html
 ```
-=======
->>>>>>> origin/master
 
 ### Running the full analysis
 
