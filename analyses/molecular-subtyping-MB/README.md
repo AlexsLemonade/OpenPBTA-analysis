@@ -63,6 +63,32 @@ results/mb-classified.rds
 
 The .rds object contains a list of dataframes with outputs corresponding to the four runs as described above. Each dataframe contains 5 columns: sample (Kids_First_Biospecimen_ID), best.fit (i.e. medulloblastoma subtype assigned to the sample), classifier (MM2S or medullo-classifier), dataset (corrected or uncorrected matrix) and score (in case of MM2S) or p-value (in case of medulloPackage).  
 
+#### 02-compare-classes.Rmd
+
+1. Input
+
+```
+# expected output from pathology reports
+input/expected_class.rds
+
+# observed output from 01-classify-mb.R 
+results/mb-classified.rds
+``` 
+
+2. Function:
+
+This notebook summarizes the performance of the two classifiers on batch corrected and uncorrected expression matrix. 
+
+% Accuracy is calculated by matching observed and expected subtypes where expected subtype info is available. In case of ambiguous subtypes, we treat it as a match if the observed subtype matches with any one of the expected subtypes.
+
+For each input type, it uses the consensus subtype from the two classifiers and assigns as the `molecular_subtype`, leaving all other samples unclassified.
+
+3. Output
+
+```
+# html output
+02-compare-classes.html
+```
 
 ### Running the full analysis
 
