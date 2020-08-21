@@ -88,30 +88,30 @@ focr_nonsynonymous <- c(
 
 # These are included in maftools definition, but not FoCR
 discrepant_classes <- c(
-  "Translation_Start_Site", 
-  "Nonstop_Mutation", 
+  "Translation_Start_Site",
+  "Nonstop_Mutation",
   "Splice_Site"
-  )
+)
 
-# All other Variant_Classes are considered synonymous by both mafools and FoCR
+# All other variant classes are considered synonymous by both mafools and FoCR
 ```
 
-### Data wranglin'
+### Data wrangling
 
-Summarize each dataset by these Variant_Classification definitions. 
+Summarize each dataset by these `Variant_Classification` definitions. 
 
 Do this for PBTA data:
 
 ```{r}
 pbta_summarize_syn_df <- tcga_df %>%
   dplyr::mutate(var_def = dplyr::case_when(
-  Variant_Classification %in% discrepant_classes ~ "maftools_only", 
-  Variant_Classification %in% focr_nonsynonymous ~ "nonsynonymous", 
-  TRUE ~ "synonymous"
-  )) %>% 
+    Variant_Classification %in% discrepant_classes ~ "maftools_only",
+    Variant_Classification %in% focr_nonsynonymous ~ "nonsynonymous",
+    TRUE ~ "synonymous"
+  )) %>%
   # Group and summarize
-  dplyr::group_by(Variant_Classification, var_def) %>% 
-  dplyr::summarize(counts = dplyr::n()) 
+  dplyr::group_by(Variant_Classification, var_def) %>%
+  dplyr::summarize(counts = dplyr::n())
 ```
 
 Repeat same steps for TCGA data. 
@@ -119,31 +119,34 @@ Repeat same steps for TCGA data.
 ```{r}
 tcga_summarize_syn_df <- tcga_df %>%
   dplyr::mutate(var_def = dplyr::case_when(
-  Variant_Classification %in% discrepant_classes ~ "maftools_only", 
-  Variant_Classification %in% focr_nonsynonymous ~ "nonsynonymous", 
-  TRUE ~ "synonymous"
-  )) %>% 
+    Variant_Classification %in% discrepant_classes ~ "maftools_only",
+    Variant_Classification %in% focr_nonsynonymous ~ "nonsynonymous",
+    TRUE ~ "synonymous"
+  )) %>%
   # Group and summarize
-  dplyr::group_by(Variant_Classification, var_def) %>% 
-  dplyr::summarize(counts = dplyr::n()) 
+  dplyr::group_by(Variant_Classification, var_def) %>%
+  dplyr::summarize(counts = dplyr::n())
 ```
 
 Let's make this into one dataset for convenience. 
 
 ```{r}
-summarized_df <- dplyr::bind_rows(list(pbta = pbta_summarize_syn_df, tcga = tcga_summarize_syn_df), 
-                                       .id = "dataset") %>% 
-  as.data.frame() %>% 
+summarized_df <- dplyr::bind_rows(list(pbta = pbta_summarize_syn_df, tcga = tcga_summarize_syn_df),
+  .id = "dataset"
+) %>%
+  as.data.frame() %>%
   dplyr::mutate(var_def = as.factor(var_def))
 ```
 
 ## Barplot of Variant Classification
 
 ```{r}
-summarized_df %>%   
-ggplot2::ggplot(ggplot2::aes(x = forcats::fct_reorder(Variant_Classification, as.numeric(var_def)), 
-                             y = counts, 
-                             fill = var_def)) +
+summarized_df %>%
+  ggplot2::ggplot(ggplot2::aes(
+    x = forcats::fct_reorder(Variant_Classification, as.numeric(var_def)),
+    y = counts,
+    fill = var_def
+  )) +
   ggplot2::theme_classic() +
   ggplot2::geom_bar(
     position = "dodge", stat = "identity"
@@ -151,7 +154,7 @@ ggplot2::ggplot(ggplot2::aes(x = forcats::fct_reorder(Variant_Classification, as
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
   ggplot2::xlab("") +
   ggplot2::ylab("Number of mutations") +
-  colorblindr::scale_fill_OkabeIto() + 
+  colorblindr::scale_fill_OkabeIto() +
   ggplot2::facet_wrap(~dataset)
 ```
 
@@ -159,11 +162,13 @@ Summarize by definition inclusion/exclusion.
 
 ```{r}
 summarized_df %>%
-  dplyr::group_by(var_def, dataset) %>% 
+  dplyr::group_by(var_def, dataset) %>%
   dplyr::summarize(total_count = sum(counts)) %>%
-  ggplot2::ggplot(ggplot2::aes(x = var_def, 
-                               y = total_count, 
-                               fill = var_def)) +
+  ggplot2::ggplot(ggplot2::aes(
+    x = var_def,
+    y = total_count,
+    fill = var_def
+  )) +
   ggplot2::theme_classic() +
   ggplot2::geom_bar(
     position = "dodge", stat = "identity"
@@ -171,7 +176,7 @@ summarized_df %>%
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
   ggplot2::xlab("") +
   ggplot2::ylab("Number of TCGA mutations") +
-  colorblindr::scale_fill_OkabeIto()  + 
+  colorblindr::scale_fill_OkabeIto() +
   ggplot2::facet_wrap(~dataset)
 ```
 
