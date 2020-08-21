@@ -15,7 +15,7 @@ Compare D3b and CCDL TMB calculations as a response to this [GitHub comment](htt
 ### Summary of findings: 
 
 Mutation counts seem to be fairly related but the bed sizes are very different and that seems to be what's causing the differences in TMB calculations ranges.
-CCDL TMB is a much larger range (0 - ~300), while D3B TMB is smaller range (0 - ~5) but that is because the BED size for CCDL TMB is much smallerr than the BED size for D3B TMB. 
+CCDL TMB is a much larger range (0 - ~300), while D3B TMB is smaller range (0 - ~5) but that is because the BED size for CCDL TMB is much smaller than the BED size for D3B TMB. 
 This problem is exacerbated in (mostly) HGAT samples because they outliers and seem to have some high variance (we've seen this before). 
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -57,19 +57,6 @@ Declare names of input and output directories.
 ```{r}
 data_dir <- file.path("..", "..", "data")
 scratch_dir <- file.path("..", "..", "scratch")
-results_dir <- file.path("results", "calculation-comparisons")
-plots_dir <- file.path("plots", "calculation-comparisons")
-```
-
-Create output directories for this analysis. 
-
-```{r}
-if (!dir.exists(results_dir)) {
-  dir.create(results_dir, recursive = TRUE)
-}
-if (!dir.exists(plots_dir)) {
-  dir.create(plots_dir, recursive = TRUE)
-}
 ```
 
 Custom function for plotting the TMB. 
@@ -80,7 +67,7 @@ source(file.path("util", "cdf-plot-function.R"))
 
 ## Set up consensus data
 
-Read in the consensus TMB file. 
+Read in the two consensus TMB files. 
 
 ```{r}
 tmb_ccdl <- data.table::fread(file.path(
@@ -92,7 +79,6 @@ tmb_ccdl <- data.table::fread(file.path(
 ))
 ```
 
-
 ```{r}
 tmb_d3b <- data.table::fread(file.path(
   "TMB_d3b_code",
@@ -100,6 +86,8 @@ tmb_d3b <- data.table::fread(file.path(
   "pbta-snv-consensus-TMB_intarget.txt"
 ))
 ```
+
+Combine the two datasets into one data.frame. 
 
 ```{r}
 all_tmb <- tmb_ccdl %>% 
@@ -131,6 +119,8 @@ cor.test(all_tmb$mutation_count, all_tmb$count, method = "spearman")
 Results are about the same as with TMB. 
 
 ## Plot this but separate by experimental strategy
+
+Plot this separately by `experimental_strategy` (while noting that the WXS samples are also all of the same histology).
 
 ```{r}
 ggplot2::ggplot(all_tmb, 
