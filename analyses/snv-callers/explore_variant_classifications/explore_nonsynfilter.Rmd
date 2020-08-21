@@ -17,7 +17,8 @@ They are highly correlated no matter what and the same general TCGA to PBTA diff
 
 ### Usage
 
-If both `run_caller_consensus_analysis-tcga.sh` and `run_caller_consensus_analysis-pbta.sh` have been run, you can run this to get this analysis ran.
+If both `run_caller_consensus_analysis-tcga.sh` and `run_caller_consensus_analysis-pbta.sh` have been run, you can run this command. 
+This will prepare the files needed for this notebook and run this notebook:
 
 ```
 # bash run_explorations.sh
@@ -26,7 +27,6 @@ If both `run_caller_consensus_analysis-tcga.sh` and `run_caller_consensus_analys
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-- [Setup](#setup)
 - [Read in the TMB files](#read-in-the-tmb-files)
   - [Read in PBTA data](#read-in-pbta-data)
   - [Read in TCGA data](#read-in-tcga-data)
@@ -59,6 +59,8 @@ dir.create("plots", showWarnings = FALSE)
 
 ### Read in PBTA data
 
+Import the tmb calculations that are not filtered by nonsynonymous classifications.
+
 ```{r}
 tmb_pbta_no_filter <- data.table::fread(file.path(
   "..",
@@ -72,6 +74,8 @@ tmb_pbta_no_filter <- data.table::fread(file.path(
   dplyr::mutate(filter = "no filter")
 ```
 
+Repeat same steps for original tmb calculations (with filter).
+
 ```{r}
 tmb_pbta_with_filter <- data.table::fread(file.path(
   "..",
@@ -79,11 +83,12 @@ tmb_pbta_with_filter <- data.table::fread(file.path(
   "consensus",
   "pbta-snv-mutation-tmb-coding.tsv"
 )) %>%
-  # This variable is weird when binding but we don't need it for the plot so we'll just remove it.
   dplyr::select(-region_size) %>%
   dplyr::filter(experimental_strategy != "Panel") %>%
   dplyr::mutate(filter = "filter")
 ```
+
+Combine the unfilter and filtered data sets into one. 
 
 ```{r}
 tmb_pbta <- dplyr::inner_join(tmb_pbta_no_filter,
@@ -94,6 +99,8 @@ tmb_pbta <- dplyr::inner_join(tmb_pbta_no_filter,
 ```
 
 ### Read in TCGA data
+
+Repeat the same steps for the TCGA data. 
 
 ```{r}
 tmb_tcga_no_filter <- data.table::fread(file.path(
@@ -131,6 +138,8 @@ tmb_tcga <- dplyr::inner_join(tmb_tcga_no_filter,
 
 ### Plot PBTA data
 
+Correlate first with Pearson's. 
+
 ```{r}
 cor.test(tmb_pbta$tmb_filter, tmb_pbta$tmb_no_filter)
 ```
@@ -141,13 +150,19 @@ pbta_cor_plot <- ggplot2::ggplot(
   ggplot2::aes(x = tmb_no_filter, y = tmb_filter, color = short_histology)
 ) +
   ggplot2::geom_point() +
-  ggplot2::xlim(0, 5) +
-  ggplot2::ylim(0, 5) +
   ggplot2::theme_classic() +
   ggplot2::theme(legend.position = "none")
 
 pbta_cor_plot
 ```
+
+This data is very skewed, let's try a nonparametric correlation. 
+
+```{r}
+cor.test(tmb_pbta$tmb_filter, tmb_pbta$tmb_no_filter, method = "spearman")
+```
+
+Still pretty good. 
 
 ### Plot TCGA data
 
@@ -169,12 +184,24 @@ tcga_cor_plot <- ggplot2::ggplot(
 tcga_cor_plot
 ```
 
+Correlate with nonparametric correlation since we did that for PBTA. 
+
+```{r}
+cor.test(tmb_tcga$tmb_filter, tmb_tcga$tmb_no_filter, method = "spearman")
+```
+
 ## Are some histologies affected more than others? 
+
+Let's make the same plots but by  `short_histology`. 
+
+Plotting PBTA data, but setting the scales to "free" since the histologies have very different tmb ranges. 
 
 ```{r}
 pbta_cor_plot + 
-  ggplot2::facet_wrap(~short_histology)
+  ggplot2::facet_wrap(~short_histology, scales = "free")
 ```
+
+Make the same plot for TCGA. 
 
 ```{r}
 tcga_cor_plot + 
@@ -183,11 +210,15 @@ tcga_cor_plot +
 
 ## Does the filter affect the TCGA-PBTA comparison change?
 
+Put PBTA and TCGA data into one long format data frame. 
+
 ```{r}
 all_data <- dplyr::bind_rows(list(tcga = tmb_tcga, pbta = tmb_pbta), .id = "dataset") %>%
   dplyr::select(tmb_filter, tmb_no_filter, dataset, Tumor_Sample_Barcode, short_histology) %>%
   tidyr::gather("filter", "tmb", -Tumor_Sample_Barcode, -dataset, -short_histology)
 ```
+
+Plot the data overall. 
 
 ```{r}
 ggplot2::ggplot(all_data, ggplot2::aes(x = dataset, y = tmb)) +
