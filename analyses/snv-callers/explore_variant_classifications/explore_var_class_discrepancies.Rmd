@@ -16,7 +16,7 @@ This addresses part 2 of [this OpenPBTA issue](https://github.com/AlexsLemonade/
 
 ### Usage
 
-If both `run_caller_consensus_analysis-tcga.sh` and `run_caller_consensus_analysis-pbta.sh` have been run, you can run this command to run this notebook:
+If both `run_caller_consensus_analysis-tcga.sh` and `run_caller_consensus_analysis-pbta.sh` have been run, you can run this command:
 
 ```
 Rscript -e "rmarkdown::render("explore_var_class_discrepancies.Rmd", clean = TRUE)
@@ -53,7 +53,7 @@ dir.create("plots", showWarnings = FALSE)
 
 ## Read in the TMB files
 
-### Read in PBTA data
+Read in PBTA data. 
 
 ```{r}
 pbta_df <- data.table::fread(file.path(
@@ -63,6 +63,8 @@ pbta_df <- data.table::fread(file.path(
   "pbta-snv-consensus-mutation.maf.tsv.gz"
 ))
 ```
+
+Read in TCGA data. 
 
 ```{r}
 tcga_df <- data.table::fread(file.path(
@@ -100,7 +102,7 @@ discrepant_classes <- c(
 
 Summarize each dataset by these `Variant_Classification` definitions. 
 
-Do this for PBTA data:
+Do this for PBTA data. 
 
 ```{r}
 pbta_summarize_syn_df <- tcga_df %>%
@@ -139,6 +141,8 @@ summarized_df <- dplyr::bind_rows(list(pbta = pbta_summarize_syn_df, tcga = tcga
 ```
 
 ## Barplot of Variant Classification
+
+Make a barplot of each `Variant_Classification` and color code by which are included in which definition sets. 
 
 ```{r}
 summarized_df %>%
@@ -179,6 +183,8 @@ summarized_df %>%
   colorblindr::scale_fill_OkabeIto() +
   ggplot2::facet_wrap(~dataset)
 ```
+
+The discrepant classes don't seem to show up often. 
 
 ## Session Info
 
