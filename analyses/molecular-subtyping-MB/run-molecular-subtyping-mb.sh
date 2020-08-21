@@ -32,6 +32,3 @@ Rscript --vanilla 01-classify-mb.R \
 --corrected_mat input/medulloblastoma-exprs-batch-corrected.rds \
 --uncorrected_mat input/medulloblastoma-exprs.rds \
 --output_prefix mb-classified
-
-# summarize expected and observed classification
-Rscript -e "rmarkdown::render('02-compare-classes.Rmd', clean = TRUE)"
