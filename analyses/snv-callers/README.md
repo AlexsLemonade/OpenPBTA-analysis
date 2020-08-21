@@ -39,7 +39,7 @@ The TCGA data is processed by its own script to run the same methods:
 bash run_caller_consensus_analysis-tcga.sh
 ```
 
-**Note** All file paths set in these bash scripts are based on finding the root directory of this Git repository and therefore are given relative to `OpenPBTA-analysis`. 
+**Note** All file paths set in these bash scripts are based on finding the root directory of this Git repository and therefore are given relative to `OpenPBTA-analysis`.
 
 This bash script will return:
 
@@ -107,7 +107,7 @@ intersection_wxs_strelka_mutect_CDS_genome_size
 ## General usage of scripts
 
 **Overall notes about these scripts:**
-- All file paths are based on finding the root directory of this Git repository and therefore are given relative to `OpenPBTA-analysis`. 
+- All file paths are based on finding the root directory of this Git repository and therefore are given relative to `OpenPBTA-analysis`.
 - The scripts are sequential as noted by their number.
 - By default, the scripts will not overwrite existing files of the same name. However,
 this can be overridden with `--overwrite` option.
@@ -170,5 +170,10 @@ Two TMB files are created, one including *all snv* and a *coding snvs only*, the
  --coding_bed_wxs : File path that specifies the BED regions file to be used for the
                  denominator for coding only TMB for WXS samples.
  --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
- --tcga: If used will skip PBTA metadata specific steps and do TCGA metdata steps.
+ --tcga: If used will skip PBTA metadata specific steps and do TCGA metadata steps.
+ --nonsynfilter_maf: If used will filter out synonymous mutations, keep
+                     non-synonymous mutations, according to maftools definition.
+ --nonsynfilter_focr: If used will filter out synonymous mutations, keep
+                      non-synonymous mutations, according to Friends of Cancer
+                       Research definition.
 ```
