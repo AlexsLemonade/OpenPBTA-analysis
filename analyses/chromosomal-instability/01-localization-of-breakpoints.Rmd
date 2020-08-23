@@ -137,7 +137,7 @@ Set up metadata
 
 ```{r}
 # Read in the metadata
-metadata <- readr::read_tsv(metadata_file) %>%
+metadata <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
   # Only keep metadata for the samples we are working with here
   dplyr::filter(Kids_First_Biospecimen_ID %in% common_samples)
 ```

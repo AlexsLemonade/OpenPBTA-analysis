@@ -53,7 +53,7 @@ if (!dir.exists(plots_dir)) {
 
 # Read in dataset and remove NAs
 histologies_df <-
-  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv")) %>%
+  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"), guess_max = 10000) %>%
   as.data.frame() %>%
   dplyr::filter(!is.na(integrated_diagnosis))
 

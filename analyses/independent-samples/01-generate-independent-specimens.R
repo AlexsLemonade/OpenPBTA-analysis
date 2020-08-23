@@ -67,6 +67,7 @@ wgswxs_primplus_file <- file.path(out_dir,
 
 # Read histology file
 sample_df <- readr::read_tsv(file.path(root_dir, opts$histology_file), 
+                              guess_max = 10000,
                              col_types = readr::cols()) # suppress parse message
 
 

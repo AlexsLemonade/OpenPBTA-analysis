@@ -26,7 +26,7 @@ Set up metadata
 
 ```{r}
 # Read in non-subsetted metadata
-histologies_df <- readr::read_tsv(file.path("..", "..", "data", "pbta-histologies.tsv"))
+histologies_df <- readr::read_tsv(file.path("..", "..", "data", "pbta-histologies.tsv"), guess_max = 10000)
 
 # Subset metadata
 subset_metadata <- histologies_df %>%
