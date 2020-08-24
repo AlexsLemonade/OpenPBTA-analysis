@@ -253,11 +253,11 @@ bed_overlap <- function(bed_granges_1,
 Do some minor formatting so it works with the `set_up_data` function. 
 
 ```{r}
-pbta_metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) %>% 
+pbta_metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max = 10000) %>%
   # MAF files generally call this Tumor_Sample_Barcode and we will need to join by this ID
   dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID)
 
-tcga_metadata <- readr::read_tsv(file.path(data_dir, "pbta-tcga-manifest.tsv")) %>%
+tcga_metadata <- readr::read_tsv(file.path(data_dir, "pbta-tcga-manifest.tsv"), guess_max = 10000) %>%
   dplyr::mutate(
     experimental_strategy = "WXS", # This field doesn't exist for this data, but all is WXS
     short_histology = Primary_diagnosis

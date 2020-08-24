@@ -32,7 +32,7 @@ PBTA_EXTEND_HistologyCompPlot <- opt$output
 
 
 
-PTBA_Histology = read.table(A,sep='\t',head=T)    ## Reading the clinical data
+PTBA_Histology = readr::read_tsv(A, guess_max = 10000)    ## Reading the clinical data
 
 colnames(PTBA_Histology)[colnames(PTBA_Histology)=="Kids_First_Biospecimen_ID"]='SampleID'   ## Renaming "Kids_First_Biospecimen_ID" as SampleID for comparison purpose
 

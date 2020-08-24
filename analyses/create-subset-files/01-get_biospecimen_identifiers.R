@@ -236,7 +236,7 @@ if (running_locally) {
 }
 
 # get the participant ID to biospecimen ID
-id_gender_df <- read_tsv(file.path(data_directory, "pbta-histologies.tsv")) %>%
+id_gender_df <- read_tsv(file.path(data_directory, "pbta-histologies.tsv"), guess_max = 10000) %>%
   dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID,
                 reported_gender) %>%
   dplyr::distinct()
