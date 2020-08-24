@@ -126,7 +126,7 @@ cox_table_file <- file.path(results_dir, "cox_regression_tmb.tsv")
 ## Import the metadata
 
 ```{r Read in metadata}
-metadata <- readr::read_tsv(metadata_file)
+metadata <- readr::read_tsv(metadata_file, guess_max = 10000)
 ```
 
 ## Kaplan-Meier Example

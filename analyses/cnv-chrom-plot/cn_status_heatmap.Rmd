@@ -113,7 +113,7 @@ divergent_col_palette <- readr::read_tsv(
 ```{r}
 # Read in metadata
 metadata <-
-  readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv")) %>%
+  readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv"), guess_max = 10000) %>%
   # Easier to deal with NA short histologies if they are labeled something different
   dplyr::mutate(short_histology = as.character(tidyr::replace_na(short_histology, "none"))) %>%
   # Tack on the sample color using the short_histology column and a recode

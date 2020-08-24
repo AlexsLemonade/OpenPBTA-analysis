@@ -69,8 +69,9 @@ Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --output analyses/snv-callers/results/consensus \
   --metadata data/pbta-histologies.tsv \
   --coding_regions $cds_file \
-  --overwrite
- 
+  --overwrite \
+  --nonsynfilter
+  
 ########################## Compress consensus file #############################
 
 gzip $consensus_file
