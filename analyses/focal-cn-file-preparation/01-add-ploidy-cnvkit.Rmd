@@ -23,7 +23,7 @@ cnvkit_df <- readr::read_tsv(cnvkit_file)
 
 ```{r}
 histologies_file <- file.path("..", "..", "data", "pbta-histologies.tsv")
-histologies_df <- readr::read_tsv(histologies_file)
+histologies_df <- readr::read_tsv(histologies_file, guess_max = 10000)
 ```
 
 ### Add inferred ploidy information to CNVkit results
