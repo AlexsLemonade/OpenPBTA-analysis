@@ -51,7 +51,7 @@ if (!dir.exists(results_dir)) {
 ### Read in relevant files
 
 ```{r message=FALSE}
-histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
+histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max = 10000)
 fusion_summary_df <- read_tsv(file.path(data_dir,
                                         "fusion_summary_embryonal_foi.tsv"))
 ```
