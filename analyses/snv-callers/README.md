@@ -20,9 +20,9 @@ Their use of medulloblastoma in their investigation further led us to believe th
 This diagram here shows Short Tandem Repeats which according to Narzisi et al, were the regions with the worst false positive rates for each of the callers.
 We expect that the reduction in false positive rates with the combinations of more callers might also hold true in non-STR regions.
 
-Tumor Mutation Burden calculations only used Mutect2 and Strelka2 agreement due to [Lancet's calling particularly low VAF mutations for WXS sample data](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers/lancet-wxs-tests) and [its tendency to have a coding region bias](https://cansavvy.github.io/openpbta-notebook-concept/snv-callers/compare_snv_callers_plots.nb.html#mutation_region_barplot) which the other callers do not have.
+Tumor Mutation Burden calculations only used Mutect2 and Strelka2 agreement due to [Lancet's calling particularly low VAF mutations for WXS sample data](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers/lancet-wxs-tests) and [its tendency to have a coding region bias](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/snv-callers/compare_snv_callers_plots.nb.html#mutation_region_barplot) which the other callers do not have.
 
-See comparison of the performances of all four original callers used [here](https://cansavvy.github.io/openpbta-notebook-concept/snv-callers/compare_snv_callers_plots.nb.html).
+See comparison of the performances of all four original callers used [here](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/snv-callers/compare_snv_callers_plots.nb.html).
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -60,7 +60,7 @@ bash run_caller_consensus_analysis-tcga.sh
 
 This bash script will return:
 
-- Comparison plots in a notebook: [`compare_snv_callers_plots.nb.html`](https://cansavvy.github.io/openpbta-notebook-concept/snv-callers/compare_snv_callers_plots.nb.html).
+- Comparison plots in a notebook: [`compare_snv_callers_plots.nb.html`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/snv-callers/compare_snv_callers_plots.nb.html).
 - A zip file containing:
 - `(pbta|tcga)-snv-consensus-mutation.maf.tsv` - [MAF-like files](#consensus-mutation-call) that contain the snvs that were called by all callers described below for a given sample.
   These files combine the [MAF file data](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from 3 different SNV callers: [Mutect2](https://software.broadinstitute.org/cancer/cga/mutect), [Strelka2](https://github.com/Illumina/strelka), and [Lancet](https://github.com/nygenome/lancet).
