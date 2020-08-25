@@ -17,8 +17,10 @@ The overlap of all three was used for the consensus calls since their [data](htt
 (Narzisi, G., et al. 2018, _Commun Biol_)
 
 Their use of medulloblastoma in their investigation further led us to believe this would be nicely generalizable to this use case.
+This diagram here shows Short Tandem Repeats which according to Narzisi et al, were the regions with the worst false positive rates for each of the callers.
+We expect that the reduction in false positive rates with the combinations of more callers might also hold true in non-STR regions.
 
-Tumor Mutation Burden calculations only used Mutect2 and Strelka2 agreement due to [Lancet's calling particularly low VAF mutations for WXS sample data](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers/lancet-wxs-tests) and its tendency to have a coding region bias which the other callers do not have.
+Tumor Mutation Burden calculations only used Mutect2 and Strelka2 agreement due to [Lancet's calling particularly low VAF mutations for WXS sample data](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers/lancet-wxs-tests) and [its tendency to have a coding region bias](https://cansavvy.github.io/openpbta-notebook-concept/snv-callers/compare_snv_callers_plots.nb.html#mutation_region_barplot) which the other callers do not have.
 
 See comparison of the performances of all four original callers used [here](https://cansavvy.github.io/openpbta-notebook-concept/snv-callers/compare_snv_callers_plots.nb.html).
 
