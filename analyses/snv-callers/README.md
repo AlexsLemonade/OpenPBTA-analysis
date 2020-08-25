@@ -13,7 +13,7 @@ Their use of medulloblastoma in their investigation further led us to believe th
 Tumor Mutation Burden calculations only used Mutect2 and Strelka2 agreement due to some complications with Lancet's calls [particularly for WXS data](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers/lancet-wxs-tests) and its tendency to have a coding region bias
 
 See comparison of the performances of all four original callers used [here](https://cansavvy.github.io/openpbta-notebook-concept/snv-callers/compare_snv_callers_plots.nb.html).
-VarDict was dropped because it suspiciously called very low VAF mutations that only it and none of the other three callers identified.
+VarDict was dropped from any downstream results because it suspiciously called very low VAF mutations that only it and none of the other three callers identified.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
