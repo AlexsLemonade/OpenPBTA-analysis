@@ -67,8 +67,10 @@ cnvConsesus <- data.table::fread( cnvConsesusFile,
 
 # gencode cds region BED file
 gencode_cds <- read_tsv(gencodeBed, col_names = FALSE)
+
 # histology file
-histology <- read_tsv(histologyFile)
+histology <- read_tsv(histologyFile, guess_max = 10000)
+
 
 # filter the MAF data.frame to only include entries that fall within the
 # CDS bed file regions

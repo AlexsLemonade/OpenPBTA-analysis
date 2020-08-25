@@ -65,7 +65,7 @@ polya <- readRDS(polya)
 stranded <- readRDS(stranded)
 
 # read clinical data
-clin <- read.delim(clin.file, stringsAsFactors = F)
+clin <- readr::read_tsv(clin.file, guess_max = 10000)
 
 # function to run immunedeconv
 deconv <- function(expr.input, method) {

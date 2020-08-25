@@ -82,7 +82,7 @@ Set up metadata
 
 ```{r}
 # Read in the metadata
-metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
+metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max = 10000)
 ```
 
 Read in the CNV data. 

@@ -1724,7 +1724,7 @@ file_tukey_polya_integrated_diagnosis    &lt;- file.path(results_dir, &quot;gsva
 
 
 ######## Load input files
-metadata        &lt;- readr::read_tsv(metadata_file)
+metadata        &lt;- readr::read_tsv(metadata_file, guess_max = 10000)
 scores_stranded &lt;- readr::read_tsv(scores_stranded_file)
 scores_polya    &lt;- readr::read_tsv(scores_polya_file)</code></pre>
 </div>
