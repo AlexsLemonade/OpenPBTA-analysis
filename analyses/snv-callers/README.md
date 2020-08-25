@@ -8,7 +8,7 @@ The resulting MAF and TMB files from this analysis are saved to `snv-callers/res
 Consensus mutations saved to `pbta-snv-consensus-mutation.maf.tsv.gz` are decided from agreement [3 out of 3 of the snv callers used](#02-merge_callersr).
 Mutect2, Strelka2, and Lancet's performances were compared in [Narzisi et al](https://www.nature.com/articles/s42003-018-0023-9.pdf).
 Their [data](https://static-content.springer.com/esm/art%3A10.1038%2Fs42003-018-0023-9/MediaObjects/42003_2018_23_MOESM1_ESM.pdf) suggests that overlapping more callers would reduce the number of false positives called (Supplementary Figure 13, panel d).
-Their use of Medulloblastoma in their investigation further led us to believe this would be applicable to our use case.
+Their use of medulloblastoma in their investigation further led us to believe this would be applicable to our use case.
 
 Tumor Mutation Burden calculations only used Mutect2 and Strelka2 agreement due to some complications with Lancet's calls [particularly for WXS data](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers/lancet-wxs-tests) and its tendency to have a coding region bias
 
