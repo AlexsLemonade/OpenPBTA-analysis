@@ -24,8 +24,8 @@ suppressPackageStartupMessages(library(DT))
 
 ```{r read_data, echo = TRUE}
 # read input
-exp.class <- readRDS('input/expected_class.rds')
-obs.class <- readRDS('results/mb-classified.rds')
+exp.class <- readRDS(params$expected_input)
+obs.class <- readRDS(params$observed_input)
 
 # format ambiguous expected classes 
 exp.class <- exp.class %>%
