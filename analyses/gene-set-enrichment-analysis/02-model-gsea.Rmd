@@ -89,7 +89,7 @@ file_tukey_polya_integrated_diagnosis    <- file.path(results_dir, "gsva_tukey_p
 
 
 ######## Load input files
-metadata        <- readr::read_tsv(metadata_file)
+metadata        <- readr::read_tsv(metadata_file, guess_max = 10000)
 scores_stranded <- readr::read_tsv(scores_stranded_file)
 scores_polya    <- readr::read_tsv(scores_polya_file)
 ```

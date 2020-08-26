@@ -309,6 +309,18 @@ WORKDIR /rocker-build/
 RUN install2.r --error --deps TRUE \
     multipanelfigure
 
+# pybedtools for D3B TMB analysis
+RUN pip3 install "pybedtools==0.8.1"
+
+# Molecular subtyping MB
+RUN R -e "remotes::install_github('d3b-center/medullo-classifier-package', ref = 'e3d12f64e2e4e00f5ea884f3353eb8c4b612abe8', dependencies = TRUE, upgrade = FALSE)"
+RUN install2.r --error --deps TRUE \
+    MM2S
+
+# More recent version of sva required for molecular subtyping MB
+RUN R -e "remotes::install_github('jtleek/sva-devel@123be9b2b9fd7c7cd495fab7d7d901767964ce9e', dependencies = FALSE, upgrade = FALSE)"
+
+
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
 

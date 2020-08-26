@@ -177,7 +177,7 @@ Set up metadata
 
 ```{r}
 # Read in the metadata
-metadata <- readr::read_tsv(metadata_file) %>%
+metadata <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
   # Easier to deal with NA short histologies if they are labeled something different
   dplyr::mutate(short_histology = as.character(tidyr::replace_na(short_histology, "none"))) %>% 
   # Tack on the sample color using the short_histology column and a recode
