@@ -171,7 +171,7 @@ exp.count <- exp.class %>%
 viewDataTable(exp.count)
 ```
 
-#### Individual classifier output:
+#### Individual classifier and Consensus outputs:
 
 ## {.tabset .tabset-fade}
 
@@ -235,10 +235,6 @@ medullo.classifier.uncorrected <- out$merged.table
 viewDataTable(medullo.classifier.uncorrected)
 ```
 
-#### Consensus output:
-
-## {.tabset .tabset-fade}
-
 ### Consensus (batch-corrected)
 
 ```{r, echo = TRUE, warning = FALSE, message = FALSE}
@@ -283,4 +279,43 @@ consensus.uncorrected.out <- clin.merged %>%
 write.table(consensus.uncorrected.out, 
             file = file.path(results_dir, 'MB_molecular_subtype.tsv'), 
             row.names = F, quote = F, sep = "\t")
+```
+
+### Consensus comparison
+
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
+# count of matches with pathology (corrected consensus)
+consensus.corrected.match <- consensus.corrected %>%
+  group_by(match) %>% 
+  tally()
+print(consensus.corrected.match)
+
+# count of matches with pathology (uncorrected consensus)
+consensus.uncorrected.match <- consensus.uncorrected %>%
+  group_by(match) %>% 
+  tally()
+print(consensus.uncorrected.match)
+
+# matches between the two consensus outputs
+matches <- intersect(consensus.corrected %>%
+                       filter(match == TRUE) %>%
+                       .$Kids_First_Biospecimen_ID, 
+                     consensus.uncorrected %>%
+                       filter(match == TRUE) %>%
+                       .$Kids_First_Biospecimen_ID)
+print(length(matches))
+
+# what's the difference?
+consensus.corrected.matches <- consensus.corrected %>%
+  filter(match) %>%
+  .$Kids_First_Biospecimen_ID 
+consensus.uncorrected.matches <- consensus.uncorrected %>%
+  filter(match) %>%
+  .$Kids_First_Biospecimen_ID 
+
+# match in consensus corrected but not consensus uncorrected
+print(setdiff(consensus.corrected.matches, consensus.uncorrected.matches))
+
+# match in consensus uncorrected but not consensus corrected
+print(setdiff(consensus.uncorrected.matches, consensus.corrected.matches))
 ```

@@ -93,6 +93,22 @@ The pathology report has subtype information on 32/122 (26.2%) samples. Followin
 
 For each input expression matrix (i.e. uncorrected and batch-corrected), the molecular subtype is determined by taking a consensus of the two classifiers. If the classifiers do not agree, the sample is treated as unclassified.
 
+For both the consensus corrected output and consensus uncorrected output, 25/32 match with the reported subtype so the % accuracy is the same i.e. 78.125%. Between the two consensus outputs, there is an overlap of 24/25 matched subtypes. The following samples are mismatched between the two consensus outputs:
+
+BS_HB03GSHF is correctly predicted by consensus batch-corrected output but not by uncorrected output:
+
+| Consensus Output | Kids_First_Biospecimen_ID | pathology_subtype | MM2S_best_fit | medulloPackage_best_fit | molecular_subtype | match |
+|------------------|---------------------------|-------------------|---------------|-------------------------|-------------------|-------|
+| Corrected        | BS_HB03GSHF               | WNT               | WNT           | WNT                     | WNT               | TRUE  |
+| Uncorrected      | BS_HB03GSHF               | WNT               | SHH           | WNT                     | NA                | NA    |
+
+BS_V96WVE3Z is correctly predicted by consensus uncorrected output but not by batch-corrected output:
+
+| Consensus Output | Kids_First_Biospecimen_ID | pathology_subtype | MM2S_best_fit | medulloPackage_best_fit | molecular_subtype | match |
+|------------------|---------------------------|-------------------|---------------|-------------------------|-------------------|-------|
+| Uncorrected      | BS_V96WVE3Z               | SHH               | SHH           | SHH                     | SHH               | TRUE  |
+| Corrected        | BS_V96WVE3Z               | SHH               | Group3        | SHH                     | NA                | NA    |
+
 3. Output
 
 The markdown produces one html notebook and a tab-delimited file containing RNA and DNA identifiers mapped to the consensus molecular subtype obtained for each input matrix.
