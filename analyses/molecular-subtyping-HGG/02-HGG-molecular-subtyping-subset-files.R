@@ -35,7 +35,7 @@ if (!dir.exists(subset_dir)) {
 
 # Read in metadata
 metadata <-
-  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"))
+  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"), guess_max = 10000)
 
 # Select wanted columns in metadata for merging and assign to a new object
 select_metadata <- metadata %>%

@@ -46,7 +46,7 @@ option_list <- list(
 opts <- parse_args(OptionParser(option_list = option_list))
 
 # read in files
-histologies <- readr::read_tsv(opts$histology, col_types = readr::cols(.default = "c"))
+histologies <- readr::read_tsv(opts$histology, guess_max = 10000)
 expression <- readr::read_rds(opts$expression)
 
 

@@ -327,7 +327,7 @@ files_needed <- file.exists(metadata_dir, strelka2_dir, mutect2_dir)
 
 if (all(files_needed)) {
   # Read the ready-to-go files if these files exist
-  metadata <- metadata <- readr::read_tsv(metadata_dir)
+  metadata <- readr::read_tsv(metadata_dir, guess_max = 10000)
   strelka2 <- readRDS(strelka2_dir)
   mutect2 <- readRDS(mutect2_dir)
 } else { # If any of the needed files don't exist, rerun this process:
@@ -353,7 +353,7 @@ if (all(files_needed)) {
     dplyr::pull("Tumor_Sample_Barcode")
 
   # Isolate metadata to only the samples that are in the datasets
-  metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) %>%
+  metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max = 10000) %>%
     dplyr::filter(Kids_First_Biospecimen_ID %in% c(strelka2_samples, mutect2_samples)) %>%
     dplyr::distinct(Kids_First_Biospecimen_ID, .keep_all = TRUE) %>%
     dplyr::arrange() %>%
