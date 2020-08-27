@@ -33,7 +33,7 @@ plots_dir <- file.path(output_dir, "plots")
 
 # Read in dataset
 histologies_df <- readr::read_tsv(file.path(root_dir, "data",
-                                            "pbta-histologies.tsv"))
+                                            "pbta-histologies.tsv"), guess_max = 10000)
 
 # Create a colorblind-friendly color vector
 color <- colorblindr::palette_OkabeIto

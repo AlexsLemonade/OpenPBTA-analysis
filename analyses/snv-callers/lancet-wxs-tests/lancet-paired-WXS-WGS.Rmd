@@ -30,7 +30,7 @@ scratch_dir <- file.path("..", "..", "..", "scratch")
 Read in the metadata. 
 
 ```{r}
-metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
+metadata <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max = 10000)
 ```
 
 Retrieve all the participant IDs for participants that have both WGS and WXS data. 

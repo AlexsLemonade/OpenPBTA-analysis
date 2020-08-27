@@ -59,7 +59,7 @@ if (!dir.exists(gistic_dir)) {
 ```{r}
 # Read in metadata
 metadata <-
-  readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv"))
+  readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv"), guess_max = 10000)
 ```
 
 Read in the GISTIC scores file and format the data.
