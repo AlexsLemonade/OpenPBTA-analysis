@@ -95,9 +95,18 @@ For each input expression matrix (i.e. uncorrected and batch-corrected), the mol
 
 3. Output
 
+The markdown produces one html notebook and a tab-delimited file containing RNA and DNA identifiers mapped to the consensus molecular subtype obtained for each input matrix.
+
 ```
 # html output
 02-compare-classes.html
+
+# tsv files containing RNA and DNA identifiers mapped to molecular_subtype
+# uncorrected input consensus output
+results/MB_molecular_subtype.tsv
+
+# batch corrected input consensus output
+results/MB_batchcorrected_molecular_subtype.tsv
 ```
 
 ### Running the full analysis

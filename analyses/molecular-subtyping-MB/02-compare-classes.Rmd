@@ -26,9 +26,21 @@ suppressPackageStartupMessages(library(DT))
 ```
 </details>
 
+<details><summary>Directories</summary>
+```{r}
+# set data directory
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+
+# set results directory
+results_dir <- file.path(root_dir, "analyses", "molecular-subtyping-MB", "results")
+```
+</details>
+
 <details><summary>Read input</summary>
 ```{r read_data, echo = TRUE}
 # read input
+clin <- read.delim(file.path(data_dir, "pbta-histologies.tsv"))
 exp.class <- readRDS(params$expected_input)
 obs.class <- readRDS(params$observed_input)
 
@@ -37,6 +49,23 @@ exp.class <- exp.class %>%
   mutate(pathology_subtype = replace(pathology_subtype, 
                                      pathology_subtype == "Group 3 or 4", "Group3, Group4")) %>%
   mutate(pathology_subtype = gsub(" ", "", pathology_subtype))
+
+# format clinical file
+# RNA MB samples
+clin.rna <- clin  %>%
+  filter(short_histology == "Medulloblastoma",
+         experimental_strategy == "RNA-Seq")  %>%
+  dplyr::rename(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID) %>%
+  dplyr::select(Kids_First_Participant_ID, sample_id, Kids_First_Biospecimen_ID_RNA)
+# DNA MB samples
+clin.wgs <- clin  %>%
+  filter(short_histology == "Medulloblastoma",
+         experimental_strategy == "WGS")  %>%
+  dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID) %>%
+  dplyr::select(Kids_First_Participant_ID, sample_id, Kids_First_Biospecimen_ID_DNA)
+# combine both
+clin.merged <- clin.wgs %>%
+  right_join(clin.rna, by = c('sample_id','Kids_First_Participant_ID'))
 ```
 </details>
 
@@ -223,6 +252,14 @@ print(paste0("Accuracy: ", consensus.corrected.acc))
 # output table
 consensus.corrected <- out$consensus.mat
 viewDataTable(consensus.corrected)
+
+# merge with clinical ids and save output
+consensus.corrected.out <- clin.merged %>%
+  inner_join(consensus.corrected %>% 
+               dplyr::select(sample_id, molecular_subtype), by = 'sample_id')
+write.table(consensus.corrected.out, 
+            file = file.path(results_dir, 'MB_batchcorrected_molecular_subtype.tsv'), 
+            row.names = F, quote = F, sep = "\t")
 ```
 
 ### Consensus (uncorrected)
@@ -238,4 +275,12 @@ print(paste0("Accuracy: ", consensus.uncorrected.acc))
 # output table
 consensus.uncorrected <- out$consensus.mat
 viewDataTable(consensus.uncorrected)
+
+# merge with clinical ids and save output
+consensus.uncorrected.out <- clin.merged %>%
+  inner_join(consensus.uncorrected %>% 
+               dplyr::select(sample_id, molecular_subtype), by = 'sample_id')
+write.table(consensus.uncorrected.out, 
+            file = file.path(results_dir, 'MB_molecular_subtype.tsv'), 
+            row.names = F, quote = F, sep = "\t")
 ```
