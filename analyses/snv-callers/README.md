@@ -5,8 +5,8 @@ This consensus mutation file is [MAF-like](#consensus-mutation-call) meaning it 
 
 The resulting MAF and TMB files from this analysis are saved to `snv-callers/results/consensus/` folder and used by downstream analyses.
 
-Consensus mutations saved to `pbta-snv-consensus-mutation.maf.tsv.gz` are decided from agreement [3 out of 3 of the snv callers used](#02-merge_callersr).
-Four callers were originally run but VarDict was dropped from any downstream results because it suspiciously called very low VAF mutations that only it and none of the other three callers identified.
+Consensus mutations saved to `pbta-snv-consensus-mutation.maf.tsv.gz` are decided from agreement of [3 out of 3 of the snv callers used](#02-merge_callersr).
+Four callers were originally run but VarDict was dropped from downstream analysis because it called a large number of very low VAF mutations that were unique to it, suggesting that most of these were likely to be false positive calls.
 This left us with three callers (Mutect2, Strelka2, and Lancet) whose performances were compared in [Narzisi et al](https://www.nature.com/articles/s42003-018-0023-9.pdf).
 The overlap of all three was used for the consensus calls since their [data](https://static-content.springer.com/esm/art%3A10.1038%2Fs42003-018-0023-9/MediaObjects/42003_2018_23_MOESM1_ESM.pdf) suggested that overlapping more callers would reduce the number of false positives (Supplementary Figure 13, panel d):
 
@@ -16,13 +16,13 @@ The overlap of all three was used for the consensus calls since their [data](htt
 
 (Narzisi, G., et al. 2018, _Commun Biol_)
 
-Their use of medulloblastoma in their investigation further led us to believe this would be nicely generalizable to this use case.
+Their use of medulloblastoma in their investigation further led us to believe this would be generalizable to this use case.
 This diagram here shows Short Tandem Repeats (STRs) which according to Narzisi et al, were the regions with the worst false positive rates for each of the callers.
 We expect that the reduction in false positive rates with the combinations of more callers might also hold true in non-STR regions.
 
-Tumor Mutation Burden calculations only used Mutect2 and Strelka2 agreement due to [Lancet's calling particularly low VAF mutations for WXS sample data](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers/lancet-wxs-tests) and [its tendency to have a coding region bias](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/snv-callers/compare_snv_callers_plots.nb.html#mutation_region_barplot) which the other callers do not have.
+Tumor Mutation Burden calculations only used Mutect2 and Strelka2 agreement due to [Lancet's calling particularly low VAF mutations for WXS sample data](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers/lancet-wxs-tests) and [its apparent coding region bias](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/snv-callers/compare_snv_callers_plots.nb.html#mutation_region_barplot) compared to the other callers.
 
-See comparison of the performances of all four original callers used [here for PBTA data](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/snv-callers/compare_snv_callers_plots.nb.html) and [here for TCGA data](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/snv-callers/compare_snv_callers_plots-tcga.nb.html)
+See comparison of the performances of all four original callers used [here for PBTA data](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/snv-callers/compare_snv_callers_plots.nb.html) and [here for TCGA data](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/snv-callers/compare_snv_callers_plots-tcga.nb.html).
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
