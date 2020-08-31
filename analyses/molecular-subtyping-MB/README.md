@@ -63,6 +63,67 @@ results/mb-classified.rds
 
 The .rds object contains a list of dataframes with outputs corresponding to the four runs as described above. Each dataframe contains 5 columns: sample (Kids_First_Biospecimen_ID), best.fit (i.e. medulloblastoma subtype assigned to the sample), classifier (MM2S or medullo-classifier), dataset (corrected or uncorrected matrix) and score (in case of MM2S) or p-value (in case of medulloPackage).  
 
+#### 02-compare-classes.Rmd
+
+1. Input
+
+```
+# expected output from pathology reports
+input/expected_class.rds
+
+# observed output from 01-classify-mb.R 
+results/mb-classified.rds
+``` 
+
+2. Function:
+
+This notebook summarizes the performance of the two classifiers on batch corrected and uncorrected expression matrix obtained after running 01-classify-mb.R. 
+
+The observed subtypes obtained from each classifier are compared to the expected subtypes in the pathology report in order to determine the classifier accuracy. % Accuracy is calculated by matching observed and expected subtypes only where expected subtype information is available. In case of ambiguous subtypes, a match is determined only if the observed subtype matches with any one of the expected subtypes. 
+
+The pathology report has subtype information on 32/122 (26.2%) samples. Following is the breakdown of pathology identified subtypes:
+
+| pathology_subtype | freq |
+|-------------------|------|
+| Group 3 or 4      | 11   |
+| Group 4           | 2    |
+| non-WNT           | 1    |
+| SHH               | 12   |
+| WNT               | 6    |
+
+For each input expression matrix (i.e. uncorrected and batch-corrected), the molecular subtype is determined by taking a consensus of the two classifiers. If the classifiers do not agree, the sample is treated as unclassified.
+
+For both the consensus corrected output and consensus uncorrected output, 25/32 match with the reported subtype so the % accuracy is the same i.e. 78.125%. Between the two consensus outputs, there is an overlap of 24/25 matched subtypes. The following samples are mismatched between the two consensus outputs:
+
+BS_HB03GSHF is correctly predicted by consensus batch-corrected output but not by uncorrected output:
+
+| Consensus Output | Kids_First_Biospecimen_ID | pathology_subtype | MM2S_best_fit | medulloPackage_best_fit | molecular_subtype | match |
+|------------------|---------------------------|-------------------|---------------|-------------------------|-------------------|-------|
+| Corrected        | BS_HB03GSHF               | WNT               | WNT           | WNT                     | WNT               | TRUE  |
+| Uncorrected      | BS_HB03GSHF               | WNT               | SHH           | WNT                     | NA                | NA    |
+
+BS_V96WVE3Z is correctly predicted by consensus uncorrected output but not by batch-corrected output:
+
+| Consensus Output | Kids_First_Biospecimen_ID | pathology_subtype | MM2S_best_fit | medulloPackage_best_fit | molecular_subtype | match |
+|------------------|---------------------------|-------------------|---------------|-------------------------|-------------------|-------|
+| Uncorrected      | BS_V96WVE3Z               | SHH               | SHH           | SHH                     | SHH               | TRUE  |
+| Corrected        | BS_V96WVE3Z               | SHH               | Group3        | SHH                     | NA                | NA    |
+
+3. Output
+
+The markdown produces one html notebook and a tab-delimited file containing RNA and DNA identifiers mapped to the consensus molecular subtype obtained for each input matrix.
+
+```
+# html output
+02-compare-classes.html
+
+# tsv files containing RNA and DNA identifiers mapped to molecular_subtype
+# uncorrected input consensus output
+results/MB_molecular_subtype.tsv
+
+# batch corrected input consensus output
+results/MB_batchcorrected_molecular_subtype.tsv
+```
 
 ### Running the full analysis
 
