@@ -68,8 +68,6 @@ tmb_pbta_no_filter <- data.table::fread(file.path(
   "no_filter",
   "pbta-snv-mutation-tmb-coding.tsv"
 )) %>%
-  # This variable is weird when binding but we don't need it for the plot so we'll just remove it.
-  dplyr::select(-region_size) %>%
   dplyr::filter(experimental_strategy != "Panel") %>%
   dplyr::mutate(filter = "no filter")
 ```
@@ -83,7 +81,6 @@ tmb_pbta_with_filter <- data.table::fread(file.path(
   "consensus",
   "pbta-snv-mutation-tmb-coding.tsv"
 )) %>%
-  dplyr::select(-region_size) %>%
   dplyr::filter(experimental_strategy != "Panel") %>%
   dplyr::mutate(filter = "filter")
 ```
@@ -109,7 +106,6 @@ tmb_tcga_no_filter <- data.table::fread(file.path(
   "no_filter",
   "tcga-snv-mutation-tmb-coding.tsv"
 )) %>%
-  dplyr::select(-region_size) %>%
   dplyr::mutate(filter = "no filter")
 ```
 
@@ -120,7 +116,6 @@ tmb_tcga_with_filter <- data.table::fread(file.path(
   "consensus",
   "tcga-snv-mutation-tmb-coding.tsv"
 )) %>%
-  dplyr::select(-region_size) %>%
   dplyr::mutate(filter = "filter")
 ```
 
