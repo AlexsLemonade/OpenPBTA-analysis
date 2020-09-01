@@ -162,25 +162,29 @@ specimensUnion<- union(arribaDF$tumor_id, starfusionDF$tumor_id)
 ```{r}
 allFuseEmbry <- allFuseEmbry %>%
   prepareOutput(specimensUnion)
+
+# Which fusions of interest are not present in any samples?
+missingEmbryFusion <- setdiff(embryFuses, colnames(allFuseEmbry)[-1])
+# For the fusions that are not present, fill those columns with 0
+allFuseEmbry[, missingEmbryFusion] <- 0
+
+# Write to file
 allFuseEmbry %>%
-  mutate(
-    `CIC--NUTM1` = 0,
-    `MN1--BEND2` = 0
-  ) %>%
   write_tsv(embryFile)
 ```
 
 #### Write ependymoma fusions to file
 
 ```{r}
+allFuseEpend <- allFuseEpend %>%
+  prepareOutput(specimensUnion) 
+
+# Which fusions of interest are not present in any samples?
+missingEpendFusion <- setdiff(ependFuses, colnames(allFuseEpend)[-1])
+# For the fusions that are not present, fill those columns with 0
+allFuseEpend[, missingEpendFusion] <- 0
+
 allFuseEpend %>%
-  prepareOutput(specimensUnion) %>%
-  mutate(
-    `C11orf95--YAP1` = 0,
-    `LTBP3--RELA` = 0,
-    `PTEN--TAS2R1` = 0,
-    `YAP1--MAMLD2` = 0
-  ) %>%
   write_tsv(ependFile)
 ```
 
@@ -188,13 +192,21 @@ allFuseEpend %>%
 #### Write ewings sarcoma fusions to file
 
 ```{r}
+allFuseEwing <- allFuseEwing %>%
+  prepareOutput(specimensUnion)
+
+# Which fusions of interest are not present in any samples?
+missingEwingFusion <- setdiff(ewingsFuses, colnames(allFuseEwing)[-1])
+# For the fusions that are not present, fill those columns with 0
+allFuseEwing[, missingEwingFusion] <- 0
 
 allFuseEwing %>%
-  prepareOutput(specimensUnion) %>%
-  mutate(
-    `EWSR1--ERG` = 0,
-    `FUS--ERG` = 0
-  ) %>%
   write_tsv(ewingsFile)
-
 ```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
