@@ -112,7 +112,7 @@ gradient_col_palette <- gradient_col_palette %>%
 Read in the metadata and set it up with the color palette. 
 
 ```{r}
-metadata_df <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv")) %>% 
+metadata_df <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max = 10000) %>% 
   dplyr::rename(Tumor_Sample_Barcode = "Kids_First_Biospecimen_ID") %>%
   dplyr::select("Tumor_Sample_Barcode", "experimental_strategy", "short_histology") %>%
   # Easier to deal with NA short histologies if they are labeled something different

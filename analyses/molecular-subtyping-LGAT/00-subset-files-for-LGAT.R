@@ -13,7 +13,7 @@ if (!dir.exists(subset_dir)) {
 }
 
 # clinical file
-clinical<- readr::read_tsv(file.path(root_dir,"data","pbta-histologies.tsv"))
+clinical<- readr::read_tsv(file.path(root_dir,"data","pbta-histologies.tsv"), guess_max = 10000)
 # consensus mutation data
 consensusMutation <- readr::read_tsv(file.path(root_dir,"data","pbta-snv-consensus-mutation.maf.tsv.gz"))
 

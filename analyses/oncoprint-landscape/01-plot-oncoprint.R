@@ -128,8 +128,7 @@ read_genes <- function(gene_list) {
 #### Read in data --------------------------------------------------------------
 
 # Read in metadata
-metadata <- readr::read_tsv(opt$metadata_file,
-                            guess_max = 10000) %>%
+metadata <- readr::read_tsv(opt$metadata_file, guess_max = 10000) %>%
   dplyr::rename(Tumor_Sample_Barcode = sample_id)
 
 # Read in MAF file
