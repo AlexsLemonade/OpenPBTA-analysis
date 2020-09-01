@@ -27,6 +27,7 @@ This will prepare the files needed for this notebook and run this notebook:
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
 - [Read in the TMB files](#read-in-the-tmb-files)
   - [Read in PBTA data](#read-in-pbta-data)
   - [Read in TCGA data](#read-in-tcga-data)
@@ -35,7 +36,10 @@ This will prepare the files needed for this notebook and run this notebook:
   - [Plot TCGA data](#plot-tcga-data)
 - [Are some histologies affected more than others?](#are-some-histologies-affected-more-than-others)
 - [Does the filter affect the TCGA-PBTA comparison change?](#does-the-filter-affect-the-tcga-pbta-comparison-change)
+- [Plot the ratio of the nonfilter/filter tmb](#plot-the-ratio-of-the-nonfilterfilter-tmb)
 - [Plot the TMB plot with no filter data](#plot-the-tmb-plot-with-no-filter-data)
+  - [No filter TMB Plot](#no-filter-tmb-plot)
+  - [With filter TMB Plot](#with-filter-tmb-plot)
 - [Session Info](#session-info)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -221,8 +225,26 @@ ggplot2::ggplot(all_data, ggplot2::aes(x = dataset, y = tmb)) +
   ggplot2::theme_classic() +
   ggplot2::ylim(0, 10) +
   ggplot2::theme(legend.position = "none") +
-  ggplot2::facet_wrap("filter")
+  ggplot2::facet_wrap(~"filter") 
 ```
+
+## Plot the ratio of the nonfilter/filter tmb
+
+We'll plot this by `short_histology`. 
+
+```{r}
+all_data %>% 
+  tidyr::spread("filter","tmb") %>% 
+  dplyr::mutate(ratio = tmb_filter/tmb_no_filter) %>% 
+ggplot2::ggplot(ggplot2::aes(x = short_histology, y = ratio, color = short_histology)) + 
+  ggplot2::geom_violin() + 
+  ggplot2::theme_classic() + 
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1), 
+                 legend.position = "none") + 
+  ggplot2::xlab("") + 
+  ggplot2::ylab("tmb_filter/tmb_no_filter")
+```
+
 
 ## Plot the TMB plot with no filter data
 
