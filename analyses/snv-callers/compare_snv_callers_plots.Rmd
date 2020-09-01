@@ -75,8 +75,9 @@ callers_per_mutation_df %>%
   dplyr::group_by(caller_combo) %>%
   dplyr::tally() %>% 
   ggplot2::ggplot(ggplot2::aes(x = reorder(caller_combo, -n), y = n)) +
-  ggplot2::geom_bar(
-        position = "dodge", stat = "identity") +
+  ggplot2::geom_bar(position = "dodge", stat = "identity") +
+  ggplot2::geom_text(ggplot2::aes(label = n), 
+                     position = ggplot2::position_dodge(width = 0.9), vjust = -0.25) +
   ggplot2::theme_classic() +
   ggupset::scale_x_mergelist(sep = "-") +
   ggupset::axis_combmatrix(sep = "-") +
@@ -194,6 +195,12 @@ callers_per_mutation <- callers_per_mutation %>%
                    by = "index") %>%
   # Make column names more sensible
   dplyr::rename(caller_combo = "..x", median_vaf = "..y") 
+```
+
+Get a breakdown of how many mutations per each caller combo. 
+
+```{r}
+summary(as.factor(callers_per_mutation$caller_combo))
 ```
 
 ## Upset graph
