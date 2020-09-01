@@ -7,7 +7,7 @@ The resulting MAF and TMB files from this analysis are saved to `snv-callers/res
 
 Consensus mutations saved to `pbta-snv-consensus-mutation.maf.tsv.gz` are decided from agreement of [3 out of 3 of the snv callers used](#02-merge_callersr).
 Four callers were originally run but VarDict was dropped from downstream analysis because it called a large number (~39 million) of very low VAF mutations that were unique to it, suggesting that most of these were likely to be false positive calls.
-~187k mutations were called by all three of Mutect2, Strelka2, and Lancet.
+~1.2 million mutations were called by all three of Mutect2, Strelka2, and Lancet and ended up in the consensus file. 
 And between ~73k and ~1 million mutations were shared between combinations of any two these callers.
 
 These three callers' performances (Mutect2, Strelka2, and Lancet) were compared in [Narzisi et al](https://www.nature.com/articles/s42003-018-0023-9.pdf).
