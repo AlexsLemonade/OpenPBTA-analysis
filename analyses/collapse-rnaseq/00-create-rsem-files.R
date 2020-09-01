@@ -41,7 +41,7 @@ manifest <- manifest %>%
   mutate(name = str_replace(string = name, pattern = "[.].*", replacement = ""))
 
 # read histology file and split into polyA and stranded
-clin <- read.delim(clin, stringsAsFactors = F)
+clin <- readr::read_tsv(clin, guess_max = 10000)
 polya <- clin %>% 
   filter(experimental_strategy == "RNA-Seq" & RNA_library == "poly-A") 
 stranded <- clin %>% 

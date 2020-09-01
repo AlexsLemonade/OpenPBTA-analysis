@@ -156,8 +156,7 @@ read_counts <- comb_results %>%
 ```{r}
 
 metadata_raw <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"), 
-                     col_types = cols(
-                       .default = col_character())) 
+                          guess_max = 10000) 
 
 metadata <- metadata_raw %>%
   filter(experimental_strategy == "RNA-Seq") %>%

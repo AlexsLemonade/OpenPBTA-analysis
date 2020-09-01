@@ -198,7 +198,7 @@ if (opt$controlfreec) {
 
 #### Read in metadata file -----------------------------------------------------
 
-histologies_df <- readr::read_tsv(opt$metadata)
+histologies_df <- readr::read_tsv(opt$metadata, guess_max = 10000)
 
 #### Annotation file -----------------------------------------------------------
 

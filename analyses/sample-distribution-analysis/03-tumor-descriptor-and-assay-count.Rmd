@@ -34,7 +34,7 @@ library(flextable)
 
 ```{r}
 histology_file <- file.path("..", "..", "data", "pbta-histologies.tsv")
-histology_df <- readr::read_tsv(histology_file)
+histology_df <- readr::read_tsv(histology_file, guess_max = 10000)
 ```
 
 For WGS and WXS samples, we'll have tumor and normal to get the somatic calls.
