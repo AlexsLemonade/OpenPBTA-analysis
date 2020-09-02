@@ -192,6 +192,25 @@ callers_per_mutation <- callers_per_mutation %>%
   dplyr::rename(caller_combo = "..x", median_vaf = "..y") 
 ```
 
+## Get consensus numbers
+
+Count up how many callers call each mutation: 
+
+```{r}
+num_of_callers <- all_caller_df %>% 
+  dplyr::select(dplyr::starts_with("VAF_")) %>%
+  dplyr::mutate(number_callers = apply(., 1, function(x) sum(!is.na(x)))) %>% 
+  dplyr::pull(number_callers)
+```
+
+Print out the numbers:
+
+```{r}
+cat(" At least 1 out of 3:", length(num_of_callers), "\n",
+    "At least 2 out of 3:", sum(num_of_callers >= 2), "\n",
+    "3 out of 3:", sum(num_of_callers == 3))
+```
+
 ## Upset graph
 
 Make the upset plot. 

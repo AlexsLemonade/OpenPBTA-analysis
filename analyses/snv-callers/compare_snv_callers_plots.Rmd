@@ -12,12 +12,6 @@ Purpose: After creating a consensus file with `02-merge_callers.R`, this noteboo
 plots these data in a series of plots to compare the consensus calls to the individual 
 callers. 
 
-### Summary of Findings:
-
-
-#### Individual Caller's Reports 
-
-
 *Notable Findings:*  
 
 - [VarDict calls more mutations](#upset-graph) than any of the other callers. 
@@ -197,10 +191,23 @@ callers_per_mutation <- callers_per_mutation %>%
   dplyr::rename(caller_combo = "..x", median_vaf = "..y") 
 ```
 
-Get a breakdown of how many mutations per each caller combo. 
+## Get consensus numbers
+
+Count up how many callers call each mutation: 
 
 ```{r}
-summary(as.factor(callers_per_mutation$caller_combo))
+num_of_callers <- all_caller_df %>% 
+  dplyr::select(dplyr::starts_with("VAF_"), -VAF_vardict) %>%
+  dplyr::mutate(number_callers = apply(., 1, function(x) sum(!is.na(x)))) %>% 
+  dplyr::pull(number_callers)
+```
+
+Print out the numbers:
+
+```{r}
+cat(" At least 1 out of 3:", length(num_of_callers), "\n",
+    "At least 2 out of 3:", sum(num_of_callers >= 2), "\n",
+    "3 out of 3:", sum(num_of_callers == 3))
 ```
 
 ## Upset graph
