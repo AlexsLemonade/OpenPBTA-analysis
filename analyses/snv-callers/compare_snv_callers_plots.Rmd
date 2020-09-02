@@ -71,7 +71,8 @@ callers_per_mutation_df %>%
   ggplot2::ggplot(ggplot2::aes(x = reorder(caller_combo, -n), y = n)) +
   ggplot2::geom_bar(position = "dodge", stat = "identity") +
   ggplot2::geom_text(ggplot2::aes(label = n), 
-                     position = ggplot2::position_dodge(width = 0.9), vjust = -0.25) +
+                     position = ggplot2::position_dodge(width = 0.9), angle = 45, 
+                     vjust = -0.25) +
   ggplot2::theme_classic() +
   ggupset::scale_x_mergelist(sep = "-") +
   ggupset::axis_combmatrix(sep = "-") +
