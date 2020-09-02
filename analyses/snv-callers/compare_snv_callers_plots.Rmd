@@ -20,7 +20,7 @@ Many of these have [very low ](#vaf-distributions) suggesting that some may be s
 - Mutect2, Strelka2, and Lancet do have [plenty of mutations in common](#upset-graph). 
 
 ### Outline of analyses completed:
-
+- [Consensus numbers](#get-consensus-numbers)
 - [Upset graph](#upset-graph)  
 - [VAF of combinations of callers](#vaf-for-combination-sets-of-callers)
 - [Base changes by caller](#base-changes)
@@ -72,7 +72,8 @@ callers_per_mutation_df %>%
   ggplot2::geom_bar(position = "dodge", stat = "identity") +
   ggplot2::geom_text(ggplot2::aes(label = n), 
                      position = ggplot2::position_dodge(width = 0.9), angle = 45, 
-                     vjust = -0.25) +
+                     vjust = -0.25, 
+                     vjust = -0.5) +
   ggplot2::theme_classic() +
   ggupset::scale_x_mergelist(sep = "-") +
   ggupset::axis_combmatrix(sep = "-") +
@@ -194,11 +195,14 @@ callers_per_mutation <- callers_per_mutation %>%
 
 ## Get consensus numbers
 
-Count up how many callers call each mutation: 
+Count up how many callers call each mutation (but ignore VarDict). 
 
 ```{r}
 num_of_callers <- all_caller_df %>% 
+  # Isolate to VAFs but ignore VarDict)
   dplyr::select(dplyr::starts_with("VAF_"), -VAF_vardict) %>%
+  # Remove rows that are all NAs
+  dplyr::filter(apply(., 1, function(x) all(is.na(x)))) %>%
   dplyr::mutate(number_callers = apply(., 1, function(x) sum(!is.na(x)))) %>% 
   dplyr::pull(number_callers)
 ```
