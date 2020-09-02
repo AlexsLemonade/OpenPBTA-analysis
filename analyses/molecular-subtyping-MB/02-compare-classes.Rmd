@@ -252,7 +252,9 @@ viewDataTable(consensus.corrected)
 # merge with clinical ids and save output
 consensus.corrected.out <- clin.merged %>%
   inner_join(consensus.corrected %>% 
-               dplyr::select(sample_id, molecular_subtype), by = 'sample_id')
+               mutate(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID) %>%
+               dplyr::select(sample_id, Kids_First_Biospecimen_ID_RNA, molecular_subtype), 
+             by = c('sample_id', 'Kids_First_Biospecimen_ID_RNA'))
 write.table(consensus.corrected.out, 
             file = file.path(results_dir, 'MB_batchcorrected_molecular_subtype.tsv'), 
             row.names = F, quote = F, sep = "\t")
@@ -275,7 +277,9 @@ viewDataTable(consensus.uncorrected)
 # merge with clinical ids and save output
 consensus.uncorrected.out <- clin.merged %>%
   inner_join(consensus.uncorrected %>% 
-               dplyr::select(sample_id, molecular_subtype), by = 'sample_id')
+               mutate(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID) %>%
+               dplyr::select(sample_id, Kids_First_Biospecimen_ID_RNA, molecular_subtype), 
+             by = c('sample_id', 'Kids_First_Biospecimen_ID_RNA'))
 write.table(consensus.uncorrected.out, 
             file = file.path(results_dir, 'MB_molecular_subtype.tsv'), 
             row.names = F, quote = F, sep = "\t")
