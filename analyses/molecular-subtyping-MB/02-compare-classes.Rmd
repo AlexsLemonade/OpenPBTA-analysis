@@ -255,6 +255,7 @@ consensus.corrected.out <- clin.merged %>%
                mutate(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID) %>%
                dplyr::select(sample_id, Kids_First_Biospecimen_ID_RNA, molecular_subtype), 
              by = c('sample_id', 'Kids_First_Biospecimen_ID_RNA'))
+
 write.table(consensus.corrected.out, 
             file = file.path(results_dir, 'MB_batchcorrected_molecular_subtype.tsv'), 
             row.names = F, quote = F, sep = "\t")
@@ -280,6 +281,7 @@ consensus.uncorrected.out <- clin.merged %>%
                mutate(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID) %>%
                dplyr::select(sample_id, Kids_First_Biospecimen_ID_RNA, molecular_subtype), 
              by = c('sample_id', 'Kids_First_Biospecimen_ID_RNA'))
+
 write.table(consensus.uncorrected.out, 
             file = file.path(results_dir, 'MB_molecular_subtype.tsv'), 
             row.names = F, quote = F, sep = "\t")
