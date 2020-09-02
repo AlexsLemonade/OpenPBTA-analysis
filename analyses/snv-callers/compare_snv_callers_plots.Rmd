@@ -202,7 +202,7 @@ num_of_callers <- all_caller_df %>%
   # Isolate to VAFs but ignore VarDict)
   dplyr::select(dplyr::starts_with("VAF_"), -VAF_vardict) %>%
   # Remove rows that are all NAs
-  dplyr::filter(apply(., 1, function(x) all(is.na(x)))) %>%
+  dplyr::filter(apply(., 1, function(x) sum(is.na(x))) == 3) %>%
   dplyr::mutate(number_callers = apply(., 1, function(x) sum(!is.na(x)))) %>% 
   dplyr::pull(number_callers)
 ```
