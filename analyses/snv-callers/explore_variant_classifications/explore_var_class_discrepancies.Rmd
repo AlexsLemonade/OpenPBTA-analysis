@@ -58,8 +58,9 @@ Read in PBTA data.
 ```{r}
 pbta_df <- data.table::fread(file.path(
   "..",
-  "results",
-  "consensus",
+  "..",
+  "..",
+  "data",
   "pbta-snv-consensus-mutation.maf.tsv.gz"
 ))
 ```
@@ -105,7 +106,7 @@ Summarize each dataset by these `Variant_Classification` definitions.
 Do this for PBTA data. 
 
 ```{r}
-pbta_summarize_syn_df <- tcga_df %>%
+pbta_summarize_syn_df <- pbta_df %>%
   dplyr::mutate(var_def = dplyr::case_when(
     Variant_Classification %in% discrepant_classes ~ "maftools_only",
     Variant_Classification %in% focr_nonsynonymous ~ "nonsynonymous",
@@ -142,33 +143,21 @@ summarized_df <- dplyr::bind_rows(list(pbta = pbta_summarize_syn_df, tcga = tcga
 
 ## Barplot of Variant Classification
 
-Make a barplot of each `Variant_Classification` and color code by which are included in which definition sets. 
-
-```{r}
-summarized_df %>%
-  ggplot2::ggplot(ggplot2::aes(
-    x = forcats::fct_reorder(Variant_Classification, as.numeric(var_def)),
-    y = counts,
-    fill = var_def
-  )) +
-  ggplot2::theme_classic() +
-  ggplot2::geom_bar(
-    position = "dodge", stat = "identity"
-  ) +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
-  ggplot2::xlab("") +
-  ggplot2::ylab("Number of mutations") +
-  colorblindr::scale_fill_OkabeIto() +
-  ggplot2::facet_wrap(~dataset)
-```
-
 Summarize by definition inclusion/exclusion. 
 
 ```{r}
-summarized_df %>%
+def_counts <- summarized_df %>%
   dplyr::group_by(var_def, dataset) %>%
-  dplyr::summarize(total_count = sum(counts)) %>%
-  ggplot2::ggplot(ggplot2::aes(
+  dplyr::summarize(total_count = sum(counts))
+
+# Print out this table
+def_counts
+```
+  
+Plot this as a barplot. 
+
+```{r}
+  ggplot2::ggplot(def_counts, ggplot2::aes(
     x = var_def,
     y = total_count,
     fill = var_def
