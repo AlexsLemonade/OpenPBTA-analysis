@@ -22,9 +22,9 @@ This problem is exacerbated in (mostly) HGAT samples because they outliers and s
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
+- [Setup](#setup)
+    - [Packages and functions](#packages-and-functions)
 - [Set up consensus data](#set-up-consensus-data)
-- [Correlate the TMB calculations](#correlate-the-tmb-calculations)
-- [Plot this but separate by experimental strategy](#plot-this-but-separate-by-experimental-strategy)
 - [Calculate percent difference in TMB](#calculate-percent-difference-in-tmb)
   - [Which samples are really differing in TMB calculations](#which-samples-are-really-differing-in-tmb-calculations)
 - [How different are the counts?](#how-different-are-the-counts)
@@ -96,58 +96,6 @@ all_tmb <- tmb_ccdl %>%
                 tmb_ccdl = tmb)
 ```
 
-## Correlate the TMB calculations
-
-Correlate with Pearson's. 
-
-```{r}
-cor.test(all_tmb$tmb_d3b, all_tmb$tmb_ccdl, method = "pearson")
-```
-
-It's super skewed, so let's also try by Spearman's. 
-
-```{r}
-cor.test(all_tmb$tmb_d3b, all_tmb$tmb_ccdl, method = "spearman")
-```
-
-Let's also try this for `mutation_count`. 
-
-```{r}
-cor.test(all_tmb$mutation_count, all_tmb$count, method = "spearman")
-```
-
-Results are about the same as with TMB. 
-
-## Plot this but separate by experimental strategy
-
-Plot this separately by `experimental_strategy` (while noting that the WXS samples are also all of the same histology).
-
-```{r}
-ggplot2::ggplot(all_tmb, 
-                ggplot2::aes(x = tmb_ccdl, y = tmb_d3b, color = disease)) + 
-  ggplot2::geom_point() + 
-  ggplot2::facet_wrap(~experimental_strategy.x, scales = "free") + 
-  ggplot2::theme_classic() + 
-  ggplot2::theme(legend.position = "none")
-```
-
-Mostly I'm seeing the ranges for the TMBs are very different.
-CCDL TMB is a much larger range (0 - ~300), while D3B TMB is smaller range (0 - ~5). 
-But the outliers also make this hard to interpret. 
-Let's try this with counts to see if its the same. 
-
-```{r}
-ggplot2::ggplot(all_tmb, 
-                ggplot2::aes(x = mutation_count, y = count, color = disease)) + 
-  ggplot2::geom_point() + 
-  ggplot2::facet_wrap(~experimental_strategy.x, scales = "free") + 
-  ggplot2::theme_classic() + 
-  ggplot2::theme(legend.position = "none")
-```
-
-Both look the same.
-This is super skewed, still not giving great visuals; let's try something else. 
-
 ## Calculate percent difference in TMB
 
 ```{r}
@@ -204,7 +152,10 @@ all_tmb <- all_tmb %>%
 Let's make a table of this.
 
 ```{r}
-table(all_tmb$region_size, all_tmb$bedlength)
+all_tmb %>%
+  dplyr::rename(ccdl_bed_size = region_size, d3b_bed_size = bedlength) %>%
+  dplyr::group_by(ccdl_bed_size, d3b_bed_size) %>%
+  dplyr::tally()
 ```
 
 So the bed sizes are very different and that seems to be what's causing the differences in TMB calculations. 
