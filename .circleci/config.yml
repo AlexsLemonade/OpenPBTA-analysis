@@ -212,6 +212,10 @@ jobs:
           name: Tumor mutation burden with TCGA
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tcga-pbta.Rmd', clean = TRUE)"
 
+      - run:
+          name: Exploration of nonsynonymous filter
+          command: ./scripts/run_in_ci.sh bash analyses/snv-callers/explore_variant_classifications/run_explorations.sh
+          
       # This analysis was used to explore the TCGA PBTA data when the BED files used to calculate TCGA
       # were incorrect https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/568
       #- run:
