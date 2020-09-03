@@ -72,13 +72,13 @@ callers_per_mutation_df %>%
   ggplot2::geom_bar(position = "dodge", stat = "identity") +
   ggplot2::geom_text(ggplot2::aes(label = n), 
                      position = ggplot2::position_dodge(width = 0.9), angle = 45, 
-                     vjust = -0.25, 
-                     vjust = -0.5) +
+                     hjust = -0.1, 
+                     vjust = -0.1) +
   ggplot2::theme_classic() +
   ggupset::scale_x_mergelist(sep = "-") +
   ggupset::axis_combmatrix(sep = "-") +
   ggplot2::xlab("") +
-  ggplot2::ylab("")
+  ggplot2::ylab("") 
 }
 ```
 
@@ -89,7 +89,7 @@ Connect to SQLite database.
 ```{r}
 # Start up connection
 con <- DBI::dbConnect(RSQLite::SQLite(), 
-                      file.path(scratch_dir, "snv_db.sqlite"))
+                      file.path(scratch_dir, "testing_snv_db.sqlite"))
 ```
 
 Note what columns we will join by.
@@ -202,7 +202,7 @@ num_of_callers <- all_caller_df %>%
   # Isolate to VAFs but ignore VarDict)
   dplyr::select(dplyr::starts_with("VAF_"), -VAF_vardict) %>%
   # Remove rows that are all NAs
-  dplyr::filter(apply(., 1, function(x) sum(is.na(x))) == 3) %>%
+  dplyr::filter(apply(., 1, function(x) sum(is.na(x))) != 3) %>%
   dplyr::mutate(number_callers = apply(., 1, function(x) sum(!is.na(x)))) %>% 
   dplyr::pull(number_callers)
 ```
@@ -221,7 +221,8 @@ Make the upset plot.
 
 ```{r}
 upsettr_plot <- callers_per_mutation %>%
-  upset_plot()
+  upset_plot() + 
+  ggplot2::ylim(c(0, 6e+06)) # So we can see the number
 
 # Print this out here
 upsettr_plot
@@ -240,7 +241,8 @@ Transcripts only upset plot.
 ```{r}
 callers_per_mutation %>% 
   dplyr::filter(!(Variant_Classification %in% c("5'Flank", "3'Flank", "IGR", "Intron"))) %>%
-  upset_plot()
+  upset_plot() + 
+  ggplot2::ylim(c(0, 300000)) # So the label shows up
 ```
 
 Non transcript upset plot. 
@@ -248,7 +250,8 @@ Non transcript upset plot.
 ```{r}
 callers_per_mutation %>% 
   dplyr::filter(Variant_Classification %in% c("5'Flank", "3'Flank", "IGR", "Intron")) %>%
-  upset_plot()
+  upset_plot() +
+  ggplot2::ylim(c(0, 6e+6))
 ```
 
 ## VAF for combination sets of callers
