@@ -222,7 +222,7 @@ Make the upset plot.
 ```{r}
 upsettr_plot <- callers_per_mutation %>%
   upset_plot() + 
-  ggplot2::ylim(c(0, 6e+06)) # So we can see the number
+  ggplot2::ylim(c(0, 7e+06)) # So we can see the number
 
 # Print this out here
 upsettr_plot
@@ -242,7 +242,7 @@ Transcripts only upset plot.
 callers_per_mutation %>% 
   dplyr::filter(!(Variant_Classification %in% c("5'Flank", "3'Flank", "IGR", "Intron"))) %>%
   upset_plot() + 
-  ggplot2::ylim(c(0, 300000)) # So the label shows up
+  ggplot2::ylim(c(0, 400000)) # So the label shows up
 ```
 
 Non transcript upset plot. 
@@ -251,7 +251,7 @@ Non transcript upset plot.
 callers_per_mutation %>% 
   dplyr::filter(Variant_Classification %in% c("5'Flank", "3'Flank", "IGR", "Intron")) %>%
   upset_plot() +
-  ggplot2::ylim(c(0, 6e+6))
+  ggplot2::ylim(c(0, 7e+6))
 ```
 
 ## VAF for combination sets of callers
