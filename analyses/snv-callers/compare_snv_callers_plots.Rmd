@@ -89,7 +89,7 @@ Connect to SQLite database.
 ```{r}
 # Start up connection
 con <- DBI::dbConnect(RSQLite::SQLite(), 
-                      file.path(scratch_dir, "snv_db.sqlite"))
+                      file.path(scratch_dir, "testing_snv_db.sqlite"))
 ```
 
 Note what columns we will join by.
@@ -128,31 +128,61 @@ source(file.path("util", "full_join_callers.R"))
 
 # Bring out the data.frame
 all_caller_df <- all_caller %>%
-  as.data.frame
+  as.data.frame() 
 
 # Take a peek at what this looks like
 head(all_caller_df)
 ```
 
+## Get consensus numbers
+
+Make a data.frame with only the VAFs. 
+
 ```{r}
-# Set up the data as a data.frame
 vaf_df <- all_caller_df %>% 
-  dplyr::select("VAF_lancet", "VAF_strelka", "VAF_vardict", "VAF_mutect",
-                "Variant_Classification") %>%
-  dplyr::mutate(VAF_consensus = VAF_strelka)     
- 
-# Determine which mutations are part of the consensus
-consensus_index <- vaf_df %>%
-  dplyr::select(-c(VAF_vardict, VAF_consensus, Variant_Classification)) %>%
-  rowSums(is.na(.)) > 0
+ dplyr::select(dplyr::starts_with("VAF_")) %>%
+ # The consensus VAF will be what's reported for strelka
+ dplyr::mutate(VAF_consensus = VAF_strelka)
+```
+
+Count up how many callers call each mutation but ignore VarDict 
+
+```{r}
+consensus_count <- vaf_df %>%
+  # Ignore VarDict and consensus
+  dplyr::select(-VAF_vardict, -VAF_consensus) %>%
+  # Remove rows that are all NAs
+  dplyr::transmute_all(is.na) %>%
+  # Get the number of callers that call each mutation
+  dplyr::mutate(num = rowSums(.)) %>% 
+  # Make ids so we can keep track of 
+  tibble::rowid_to_column("index") %>%
+  # Filter out the ones that were there because of VarDict
+  dplyr::filter(num != 0)
+```
+
+Print out the numbers for the three callers' consensus.
+
+```{r}
+cat(" At least 1 out of 3:", nrow(consensus_count), "\n",
+    "At least 2 out of 3:", sum(consensus_count$num >= 2), "\n",
+    "3 out of 3:", sum(consensus_count$num == 3))
+```
+
+Turn the VAFs
+```{r}
+not_consensus <- consensus_count$index[which(consensus_count$num < 3)]
 
 # Make non consensus VAF into an NA
-vaf_df$VAF_consensus[consensus_index] <- NA
+vaf_df$VAF_consensus[not_consensus] <- NA
+```
 
+Make this into long form. 
+
+```{r}
 # Make this long form for plotting and 
 long_vaf_df <- vaf_df %>% 
-  dplyr::mutate(index = factor(1:nrow(.))) %>% 
-  tidyr::gather(key = "caller", value = "vaf", -index, -Variant_Classification) %>% 
+  tidyr::gather(key = "caller", value = "vaf", -index) %>% 
   dplyr::mutate(caller = gsub("VAF_", "", caller)) %>% 
   dplyr::filter(!is.na(vaf))
 ```
@@ -191,28 +221,6 @@ callers_per_mutation <- callers_per_mutation %>%
                    by = "index") %>%
   # Make column names more sensible
   dplyr::rename(caller_combo = "..x", median_vaf = "..y") 
-```
-
-## Get consensus numbers
-
-Count up how many callers call each mutation (but ignore VarDict). 
-
-```{r}
-num_of_callers <- all_caller_df %>% 
-  # Isolate to VAFs but ignore VarDict)
-  dplyr::select(dplyr::starts_with("VAF_"), -VAF_vardict) %>%
-  # Remove rows that are all NAs
-  dplyr::filter(apply(., 1, function(x) sum(is.na(x))) != 3) %>%
-  dplyr::mutate(number_callers = apply(., 1, function(x) sum(!is.na(x)))) %>% 
-  dplyr::pull(number_callers)
-```
-
-Print out the numbers:
-
-```{r}
-cat(" At least 1 out of 3:", length(num_of_callers), "\n",
-    "At least 2 out of 3:", sum(num_of_callers >= 2), "\n",
-    "3 out of 3:", sum(num_of_callers == 3))
 ```
 
 ## Upset graph
