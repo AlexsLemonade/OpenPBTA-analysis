@@ -136,11 +136,11 @@ head(all_caller_df)
 
 ## Get consensus numbers
 
-Make a data.frame with only the VAFs. 
+Make a data.frame with only the VAFs and `Variant_Classification`. 
 
 ```{r}
 vaf_df <- all_caller_df %>% 
- dplyr::select(dplyr::starts_with("VAF_")) %>%
+ dplyr::select(dplyr::starts_with("VAF_"), Variant_Classification) %>%
  # The consensus VAF will be what's reported for strelka
  dplyr::mutate(VAF_consensus = VAF_strelka)
 ```
@@ -150,7 +150,7 @@ Count up how many callers call each mutation but ignore VarDict
 ```{r}
 consensus_count <- vaf_df %>%
   # Ignore VarDict and consensus
-  dplyr::select(-VAF_vardict, -VAF_consensus) %>%
+  dplyr::select(-VAF_vardict, -VAF_consensus, -Variant_Classification) %>%
   # Remove rows that are all NAs
   dplyr::transmute_all(is.na) %>%
   # Get the number of callers that call each mutation
@@ -185,7 +185,7 @@ long_vaf_df <- vaf_df %>%
   # Make ids so we can keep track of 
   tibble::rowid_to_column("index") %>%
   # Make long format
-  tidyr::gather(key = "caller", value = "vaf", -index) %>% 
+  tidyr::gather(key = "caller", value = "vaf", -index, -Variant_Classification) %>% 
   # Drop the `VAF_`
   dplyr::mutate(caller = gsub("VAF_", "", caller)) %>% 
   dplyr::filter(!is.na(vaf))
@@ -223,6 +223,7 @@ vaf_med <- tapply(
 # Join the median VAF and the callers that call that mutation into one data.frame
 callers_per_mutation <- callers_per_mutation %>%
   dplyr::inner_join(vaf_med, by = "index") %>%
+  dplyr::mutate(index = as.integer(index)) %>%
   dplyr::left_join(long_caller_df %>% 
                       dplyr::select(Variant_Classification, index), 
                    by = "index") %>%
@@ -236,8 +237,7 @@ Make the upset plot.
 
 ```{r}
 upsettr_plot <- callers_per_mutation %>%
-  upset_plot() + 
-  ggplot2::ylim(c(0, 7e+06)) # So we can see the number
+  upset_plot() 
 
 # Print this out here
 upsettr_plot
