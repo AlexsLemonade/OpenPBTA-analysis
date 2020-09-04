@@ -136,27 +136,26 @@ head(all_caller_df)
 
 ## Get consensus numbers
 
-Make a data.frame with only the VAFs and `Variant_Classification`. 
+Make a data.frame with only the VAFs and turn into detected or not. 
 
 ```{r}
-vaf_df <- all_caller_df %>% 
- dplyr::select(dplyr::starts_with("VAF_"), Variant_Classification) %>%
- # The consensus VAF will be what's reported for strelka
- dplyr::mutate(VAF_consensus = VAF_strelka)
+detect_df <- all_caller_df %>% 
+ # Bring over VAF columns
+ dplyr::select(dplyr::starts_with("VAF_")) %>% 
+ # Turn into detected or not
+ dplyr::transmute_all(is.na) %>% 
+ # Make row  ids for tracking purposes
+ tibble::rowid_to_column("index")
 ```
 
-Count up how many callers call each mutation but ignore VarDict 
+Count up how many callers call each mutation but ignore VarDict. 
 
 ```{r}
-consensus_count <- vaf_df %>%
+consensus_count <- detect_df %>%
   # Ignore VarDict and consensus
-  dplyr::select(-VAF_vardict, -VAF_consensus, -Variant_Classification) %>%
-  # Remove rows that are all NAs
-  dplyr::transmute_all(is.na) %>%
+  dplyr::select(-VAF_vardict) %>%
   # Get the number of callers that call each mutation
   dplyr::mutate(num = rowSums(.)) %>% 
-  # Make ids so we can keep track of 
-  tibble::rowid_to_column("index") %>%
   # Filter out the ones that were there because of VarDict
   dplyr::filter(num != 0)
 ```
@@ -177,11 +176,11 @@ not_consensus <- consensus_count$index[which(consensus_count$num < 3)]
 vaf_df$VAF_consensus[not_consensus] <- NA
 ```
 
-Make this into long form. 
+Make a long form VAF data.frame for exploring mutations VAFs from each caller. 
 
 ```{r}
-# Make this long form for plotting 
-long_vaf_df <- vaf_df %>% 
+vaf_df <- all_caller_df %>% 
+  dplyr::select(dplyr::starts_with("VAF_"), Variant_Classification) %>%
   # Make ids so we can keep track of 
   tibble::rowid_to_column("index") %>%
   # Make long format
@@ -195,31 +194,23 @@ Get median vaf for each mutation with each caller combination.
 
 ```{r}
 # Take out the consensus VAF for this combination
-long_caller_df <- long_vaf_df %>% 
+consensus_vaf_df <- vaf_df %>% 
   dplyr::filter(caller != "consensus")
-
-# Determine the combination of callers for each mutation
-callers_per_mutation <- tapply(
-    long_caller_df$caller,
-    long_caller_df$index,
-    paste0,
-    collapse = "-"
-  ) %>% 
-  as.data.frame() %>%
-  tibble::rownames_to_column("index")
 ```
 
 Determine Median VAF for each mutation 
 
 ```{r}
 vaf_med <- tapply(
-    long_caller_df$vaf,
-    long_caller_df$index,
+    consensus_vaf_df$vaf,
+    consensus_vaf_df$index,
     median
   ) %>% 
   as.data.frame() %>%
   tibble::rownames_to_column("index")
+```
 
+```{r}
 # Join the median VAF and the callers that call that mutation into one data.frame
 callers_per_mutation <- callers_per_mutation %>%
   dplyr::inner_join(vaf_med, by = "index") %>%
@@ -231,16 +222,23 @@ callers_per_mutation <- callers_per_mutation %>%
   dplyr::rename(caller_combo = "..x", median_vaf = "..y") 
 ```
 
+Make a list that UpsetR can use to find overlap. 
+
+```{r}
+callers_per_mutation <- list(
+  lancet = which(detect_df$VAF_lancet),
+  mutect = which(detect_df$VAF_mutect),
+  strelka = which(detect_df$VAF_strelka), 
+  vardict = which(detect_df$VAF_vardict)
+  )
+```
+
 ## Upset graph
 
 Make the upset plot. 
 
 ```{r}
-upsettr_plot <- callers_per_mutation %>%
-  upset_plot() 
-
-# Print this out here
-upsettr_plot
+UpSetR::upset(UpSetR::fromList(callers_per_mutation), order.by = "freq")
 ```
 
 Save this plot to a png
