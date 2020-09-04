@@ -180,9 +180,13 @@ vaf_df$VAF_consensus[not_consensus] <- NA
 Make this into long form. 
 
 ```{r}
-# Make this long form for plotting and 
+# Make this long form for plotting 
 long_vaf_df <- vaf_df %>% 
+  # Make ids so we can keep track of 
+  tibble::rowid_to_column("index") %>%
+  # Make long format
   tidyr::gather(key = "caller", value = "vaf", -index) %>% 
+  # Drop the `VAF_`
   dplyr::mutate(caller = gsub("VAF_", "", caller)) %>% 
   dplyr::filter(!is.na(vaf))
 ```
@@ -203,8 +207,11 @@ callers_per_mutation <- tapply(
   ) %>% 
   as.data.frame() %>%
   tibble::rownames_to_column("index")
+```
 
-# Determine Median VAF for each mutation 
+Determine Median VAF for each mutation 
+
+```{r}
 vaf_med <- tapply(
     long_caller_df$vaf,
     long_caller_df$index,
