@@ -152,10 +152,12 @@ Count up how many callers call each mutation but ignore VarDict.
 
 ```{r}
 consensus_count <- detect_df %>%
-  # Ignore VarDict and consensus
-  dplyr::select(-VAF_vardict) %>%
+  # Ignore VarDict and index
+  dplyr::select(-VAF_vardict, -index) %>%
   # Get the number of callers that call each mutation
   dplyr::mutate(num = rowSums(.)) %>% 
+  # Bring back the index (again)
+  tibble::rowid_to_column("index") %>%
   # Filter out the ones that were there because of VarDict
   dplyr::filter(num != 0)
 ```
@@ -168,12 +170,17 @@ cat(" At least 1 out of 3:", nrow(consensus_count), "\n",
     "3 out of 3:", sum(consensus_count$num == 3))
 ```
 
-Turn the VAFs
+Create consensus VAF based on strelka's VAFs and which mutations would be included
+
 ```{r}
+# Make new VAF column based on strelka's VAFs
+all_caller_df$VAF_consensus <- all_caller_df$VAF_strelka
+
+# Figure out which mutations are not in the consensus
 not_consensus <- consensus_count$index[which(consensus_count$num < 3)]
 
-# Make non consensus VAF into an NA
-vaf_df$VAF_consensus[not_consensus] <- NA
+# Make non consensus mutations in consensus)VAF an NA
+all_caller_df$VAF_consensus[not_consensus] <- NA
 ```
 
 Make a long form VAF data.frame for exploring mutations VAFs from each caller. 
@@ -194,16 +201,12 @@ Get median vaf for each mutation with each caller combination.
 
 ```{r}
 # Take out the consensus VAF for this combination
-consensus_vaf_df <- vaf_df %>% 
+median_vaf_df <- vaf_df %>% 
   dplyr::filter(caller != "consensus")
-```
 
-Determine Median VAF for each mutation 
-
-```{r}
 vaf_med <- tapply(
-    consensus_vaf_df$vaf,
-    consensus_vaf_df$index,
+    median_vaf_df$vaf,
+    median_vaf_df$index,
     median
   ) %>% 
   as.data.frame() %>%
