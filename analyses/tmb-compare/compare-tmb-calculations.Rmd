@@ -8,26 +8,34 @@ author: C. Savonen for ALSF CCDL
 date: 2019
 ---
 
-#### Purpose
+#### Objectives
 
-Compare D3b and CCDL TMB calculations as a response to this [GitHub comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/729#issuecomment-658259843).
+Compare D3b and CCDL TMB calculations as a response to this [GitHub comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/729#issuecomment-658259843). 
+
+This includes CCDL TMB calculations that used mutation sets with FoCR-defined nonsynonymous filter and maftools-defined nonsynonymous filter. 
+These TMB datasets compared here are obtained by running:
+
+```
+bash analyses/snv-callers/explore_variant_classifications/run_explorations.sh
+```
 
 ### Summary of findings: 
 
 Mutation counts seem to be fairly related but the bed sizes are very different and that seems to be what's causing the differences in TMB calculations ranges.
-CCDL TMB is a much larger range (0 - ~300), while D3B TMB is smaller range (0 - ~5) but that is because the BED size for CCDL TMB is much smaller than the BED size for D3B TMB. 
-This problem is exacerbated in (mostly) HGAT samples because they outliers and seem to have some high variance (we've seen this before). 
+CCDL TMB is a much larger range (0 - ~300), while D3B TMB is smaller range (0 - ~5) because the BED size for CCDL TMB is much smaller than the BED size for D3B TMB. 
+Biggest differences in mutation counts is in (mostly) HGAT samples. 
+They are the bigget outliers as well (we've seen this before).
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
+    - [Usage](#usage)
 - [Setup](#setup)
     - [Packages and functions](#packages-and-functions)
 - [Set up consensus data](#set-up-consensus-data)
-- [Calculate percent difference in TMB](#calculate-percent-difference-in-tmb)
-  - [Which samples are really differing in TMB calculations](#which-samples-are-really-differing-in-tmb-calculations)
-- [How different are the counts?](#how-different-are-the-counts)
+- [Percent Differences in TMB](#percent-differences-in-tmb)
+- [How different are the mutation counts?](#how-different-are-the-mutation-counts)
 - [Calculate percent difference in BED size](#calculate-percent-difference-in-bed-size)
 - [Session Info](#session-info)
 
@@ -67,10 +75,12 @@ source(file.path("util", "cdf-plot-function.R"))
 
 ## Set up consensus data
 
-Read in the two consensus TMB files. 
+Read in the three consensus TMB files. 
+
+This is the main TMB that is used in other downstream results. 
 
 ```{r}
-tmb_ccdl <- data.table::fread(file.path(
+tmb_ccdl_maftools <- data.table::fread(file.path(
   "..",
   "snv-callers",
   "results",
@@ -78,6 +88,20 @@ tmb_ccdl <- data.table::fread(file.path(
   "pbta-snv-mutation-tmb-coding.tsv"
 ))
 ```
+
+This is the FoCR-defined filter TMB results. 
+
+```{r}
+tmb_ccdl_focr <- data.table::fread(file.path(
+  "..",
+  "snv-callers",
+  "results",
+  "focr_filter",
+  "pbta-snv-mutation-tmb-coding.tsv"
+))
+```
+
+This is the d3b calculated results. 
 
 ```{r}
 tmb_d3b <- data.table::fread(file.path(
@@ -87,79 +111,85 @@ tmb_d3b <- data.table::fread(file.path(
 ))
 ```
 
-Combine the two datasets into one data.frame. 
+Combine the three datasets into one data.frame. 
 
 ```{r}
-all_tmb <- tmb_ccdl %>% 
+all_tmb <- tmb_ccdl_maftools %>% 
+  dplyr::inner_join(tmb_ccdl_focr, by = "Tumor_Sample_Barcode", 
+                    suffix = c("_maftools", "_focr")) %>% 
   dplyr::inner_join(tmb_d3b, by = "Tumor_Sample_Barcode") %>% 
   dplyr::rename(tmb_d3b = TMB, 
-                tmb_ccdl = tmb)
+                mutation_count_d3b = count)
 ```
 
-## Calculate percent difference in TMB
+## Percent Differences in TMB
 
 ```{r}
-all_tmb <- all_tmb %>%
-  dplyr::mutate(
-    diff = abs(tmb_d3b - tmb_ccdl),
-    perc_diff  = diff/max(tmb_ccdl, tmb_d3b)
-    ) 
+all_tmb <- all_tmb %>% 
+  dplyr::mutate(perc_diff_focr = abs(tmb_focr - tmb_d3b) / max(tmb_focr, tmb_d3b), 
+                perc_diff_maf = abs(tmb_maftools - tmb_d3b) / max(tmb_maftools, tmb_d3b))
 ```
 
-Plot the percent difference. 
-
-```{r}
-ggplot2::ggplot(all_tmb, 
-                ggplot2::aes(x = experimental_strategy.x, y = perc_diff, fill = experimental_strategy.x)) + 
-  ggplot2::geom_violin() + 
-  ggplot2::theme_classic() +
-  ggplot2::theme(legend.position = "none") 
-```
-
-### Which samples are really differing in TMB calculations 
+This is the same regardless of which definition (maftools/FoCR) is used. 
 
 ```{r}
 all_tmb %>% 
-  dplyr::filter(perc_diff > .05)
+  dplyr::filter(perc_diff_focr > .05)
+
+all_tmb %>% 
+  dplyr::filter(perc_diff_maf > .05)
 ```
 
-Most are HGAT. 
+Most are HGAT samples, but probably because they are outliers. 
 
-## How different are the counts?
+## How different are the mutation counts?
+
+Select the counts columns only. 
 
 ```{r}
-all_tmb %>% 
-  dplyr::filter(perc_diff > .05) %>%
-  ggplot2::ggplot(ggplot2::aes(x = mutation_count, y = count, color = short_histology)) + 
-  ggplot2::geom_point() + 
-  ggplot2::ylab("D3B mutation count") +
-  ggplot2::xlab("CCDL mutation count") + 
+counts_only <- all_tmb %>% 
+  dplyr::select(mutation_count_focr, mutation_count_maftools, mutation_count_d3b)
+
+# Print this out
+counts_only
+```
+
+Plot this. 
+
+```{r}
+counts_only %>%
+  GGally::ggpairs(mapping = ggplot2::aes(alpha = 0.05)) +
   ggplot2::theme_classic()
 ```
 
-Counts look mostly the same. 
+Counts look *mostly* the same, but those outliers make the plots not super useful. 
 
-## Calculate percent difference in BED size
-
-```{r}
-all_tmb <- all_tmb %>%
-  dplyr::mutate(
-    bed_diff = abs(region_size - bedlength),
-    bed_perc_diff  = bed_diff/max(region_size, bedlength)
-    ) 
-```
-
-Let's make a table of this.
+Let's take a closer look at the samples with larger differences in counts. 
+We'll compare things with `mutation_count_maftools` since that is what is in the current consensus file. 
 
 ```{r}
 all_tmb %>%
-  dplyr::rename(ccdl_bed_size = region_size, d3b_bed_size = bedlength) %>%
-  dplyr::group_by(ccdl_bed_size, d3b_bed_size) %>%
+  dplyr::transmute(
+    Tumor_Sample_Barcode,
+    ccdl_filter_diff = mutation_count_maftools - mutation_count_focr,
+    d3b_diff = mutation_count_maftools - mutation_count_d3b) %>% 
+  dplyr::arrange(desc(ccdl_filter_diff))
+```
+
+Those same HGAT samples are the ones with the biggest differences in counts. 
+
+## Calculate percent difference in BED size
+
+Both CCDL TMBs use the same bed regions so it doesn't matter if we use `region_size_focr` or `region_size_maftools`. 
+
+```{r}
+all_tmb %>%
+  dplyr::rename(ccdl_bed_size = region_size_focr, d3b_bed_size = bedlength) %>%
+  dplyr::group_by(ccdl_bed_size, d3b_bed_size, experimental_strategy) %>%
   dplyr::tally()
 ```
 
 So the bed sizes are very different and that seems to be what's causing the differences in TMB calculations. 
-This problem is exacerbated by HGAT samples because they outliers and seem to have some high variance typically. 
 
 ## Session Info
 
