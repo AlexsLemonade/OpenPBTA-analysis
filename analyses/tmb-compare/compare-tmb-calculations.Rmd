@@ -1,0 +1,168 @@
+---
+title: "Tumor Mutation Burden Comparison of Calculations"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: C. Savonen for ALSF CCDL
+date: 2019
+---
+
+#### Purpose
+
+Compare D3b and CCDL TMB calculations as a response to this [GitHub comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/729#issuecomment-658259843).
+
+### Summary of findings: 
+
+Mutation counts seem to be fairly related but the bed sizes are very different and that seems to be what's causing the differences in TMB calculations ranges.
+CCDL TMB is a much larger range (0 - ~300), while D3B TMB is smaller range (0 - ~5) but that is because the BED size for CCDL TMB is much smaller than the BED size for D3B TMB. 
+This problem is exacerbated in (mostly) HGAT samples because they outliers and seem to have some high variance (we've seen this before). 
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Setup](#setup)
+    - [Packages and functions](#packages-and-functions)
+- [Set up consensus data](#set-up-consensus-data)
+- [Calculate percent difference in TMB](#calculate-percent-difference-in-tmb)
+  - [Which samples are really differing in TMB calculations](#which-samples-are-really-differing-in-tmb-calculations)
+- [How different are the counts?](#how-different-are-the-counts)
+- [Calculate percent difference in BED size](#calculate-percent-difference-in-bed-size)
+- [Session Info](#session-info)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+#### Usage
+
+To run this from the command line, use:
+```
+Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tmb-calculations.Rmd', 
+                              clean = TRUE)"
+```
+
+_This assumes you are in the top directory of the repository._
+
+## Setup
+
+#### Packages and functions
+
+```{r}
+# magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+Declare names of input and output directories.
+
+```{r}
+data_dir <- file.path("..", "..", "data")
+scratch_dir <- file.path("..", "..", "scratch")
+```
+
+Custom function for plotting the TMB. 
+
+```{r}
+source(file.path("util", "cdf-plot-function.R"))
+```
+
+## Set up consensus data
+
+Read in the two consensus TMB files. 
+
+```{r}
+tmb_ccdl <- data.table::fread(file.path(
+  "..",
+  "snv-callers",
+  "results",
+  "consensus",
+  "pbta-snv-mutation-tmb-coding.tsv"
+))
+```
+
+```{r}
+tmb_d3b <- data.table::fread(file.path(
+  "TMB_d3b_code",
+  "outputs",
+  "pbta-snv-consensus-TMB_intarget.txt"
+))
+```
+
+Combine the two datasets into one data.frame. 
+
+```{r}
+all_tmb <- tmb_ccdl %>% 
+  dplyr::inner_join(tmb_d3b, by = "Tumor_Sample_Barcode") %>% 
+  dplyr::rename(tmb_d3b = TMB, 
+                tmb_ccdl = tmb)
+```
+
+## Calculate percent difference in TMB
+
+```{r}
+all_tmb <- all_tmb %>%
+  dplyr::mutate(
+    diff = abs(tmb_d3b - tmb_ccdl),
+    perc_diff  = diff/max(tmb_ccdl, tmb_d3b)
+    ) 
+```
+
+Plot the percent difference. 
+
+```{r}
+ggplot2::ggplot(all_tmb, 
+                ggplot2::aes(x = experimental_strategy.x, y = perc_diff, fill = experimental_strategy.x)) + 
+  ggplot2::geom_violin() + 
+  ggplot2::theme_classic() +
+  ggplot2::theme(legend.position = "none") 
+```
+
+### Which samples are really differing in TMB calculations 
+
+```{r}
+all_tmb %>% 
+  dplyr::filter(perc_diff > .05)
+```
+
+Most are HGAT. 
+
+## How different are the counts?
+
+```{r}
+all_tmb %>% 
+  dplyr::filter(perc_diff > .05) %>%
+  ggplot2::ggplot(ggplot2::aes(x = mutation_count, y = count, color = short_histology)) + 
+  ggplot2::geom_point() + 
+  ggplot2::ylab("D3B mutation count") +
+  ggplot2::xlab("CCDL mutation count") + 
+  ggplot2::theme_classic()
+```
+
+Counts look mostly the same. 
+
+## Calculate percent difference in BED size
+
+```{r}
+all_tmb <- all_tmb %>%
+  dplyr::mutate(
+    bed_diff = abs(region_size - bedlength),
+    bed_perc_diff  = bed_diff/max(region_size, bedlength)
+    ) 
+```
+
+Let's make a table of this.
+
+```{r}
+all_tmb %>%
+  dplyr::rename(ccdl_bed_size = region_size, d3b_bed_size = bedlength) %>%
+  dplyr::group_by(ccdl_bed_size, d3b_bed_size) %>%
+  dplyr::tally()
+```
+
+So the bed sizes are very different and that seems to be what's causing the differences in TMB calculations. 
+This problem is exacerbated by HGAT samples because they outliers and seem to have some high variance typically. 
+
+## Session Info
+
+```{r}
+sessionInfo()
+```

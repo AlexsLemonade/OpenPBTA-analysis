@@ -39,7 +39,7 @@ source(file.path("util", "chr-break-plot.R"))
 
 # Using the CDF plotting function
 source(file.path("..", 
-                 "tmb-compare-tcga", 
+                 "tmb-compare", 
                  "util", 
                  "cdf-plot-function.R"))
 ```
