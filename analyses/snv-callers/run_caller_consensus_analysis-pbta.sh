@@ -70,7 +70,7 @@ Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --metadata data/pbta-histologies.tsv \
   --coding_regions $cds_file \
   --overwrite \
-  --nonsynfilter
+  --nonsynfilter_maf
 
 ########################## Compress consensus file #############################
 
