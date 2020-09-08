@@ -93,6 +93,12 @@ The pathology report has subtype information on 32/122 (26.2%) samples. Followin
 
 For each input expression matrix (i.e. uncorrected and batch-corrected), the molecular subtype is determined by taking a consensus of the two classifiers. If the classifiers do not agree, the sample is treated as unclassified.
 
+For each sample_id with multiple RNA samples, the following logic is implemented:
+- IF there are two RNA specimens from the same event (`sample_id`) with the same `tumor_descriptor`, and 
+- IF one of the two RNA specimens has a consensus match from the MB classifiers, and 
+- IF the RNA specimen with mismatched classifications includes a match to the subtype of the consensus of the other RNA specimen, 
+- THEN propagate the subtype to the second RNA specimen.
+
 For both the consensus corrected output and consensus uncorrected output, 25/32 match with the reported subtype so the % accuracy is the same i.e. 78.125%. Between the two consensus outputs, there is an overlap of 24/25 matched subtypes. The following samples are mismatched between the two consensus outputs:
 
 BS_HB03GSHF is correctly predicted by consensus batch-corrected output but not by uncorrected output:
