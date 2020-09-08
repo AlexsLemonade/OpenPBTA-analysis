@@ -50,9 +50,10 @@ Rscript ../scripts/03-calculate_tmb.R \
   --coding_regions $cds_file \
   --overwrite \
   --tcga \
-
-
   --nonsynfilter_focr
+  
+########### Run the plotting notebooks 
+
 # Run the notebook that makes plots
 Rscript -e "rmarkdown::render('explore_nonsynfilter.Rmd', clean = TRUE)"
 
