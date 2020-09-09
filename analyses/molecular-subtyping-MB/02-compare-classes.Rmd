@@ -191,8 +191,10 @@ calc.consensus <- function(mm2s, medullo.classifier, clin){
   
   # subset columns for html output
   consensus.mat <- consensus.mat.out %>%
-    dplyr::select(Kids_First_Participant_ID, sample_id, pathology_subtype, other_molecular_findings, 
-                  MM2S_best_fit, medulloPackage_best_fit, molecular_subtype, match)
+    mutate(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA) %>%
+    dplyr::select(Kids_First_Biospecimen_ID, sample_id, pathology_subtype, other_molecular_findings, 
+                  MM2S_best_fit, medulloPackage_best_fit, molecular_subtype, match) %>%
+    arrange(Kids_First_Biospecimen_ID)
   
   # subset columns for tsv output
   consensus.mat.out <- consensus.mat.out %>%
@@ -320,6 +322,8 @@ viewDataTable(consensus.corrected)
 
 # merged output with clinical ids 
 consensus.corrected.out <- out$consensus.mat.out
+consensus.corrected.out <- consensus.corrected.out %>%
+  arrange(Kids_First_Biospecimen_ID_RNA)
 write.table(consensus.corrected.out, 
             file = file.path(results_dir, 'MB_batchcorrected_molecular_subtype.tsv'), 
             row.names = F, quote = F, sep = "\t")
@@ -342,6 +346,8 @@ viewDataTable(consensus.uncorrected)
 
 # merged output with clinical ids 
 consensus.uncorrected.out <- out$consensus.mat.out
+consensus.uncorrected.out <- consensus.uncorrected.out %>%
+  arrange(Kids_First_Biospecimen_ID_RNA)
 write.table(consensus.uncorrected.out, 
             file = file.path(results_dir, 'MB_molecular_subtype.tsv'), 
             row.names = F, quote = F, sep = "\t")
