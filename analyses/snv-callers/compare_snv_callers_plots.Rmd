@@ -186,9 +186,9 @@ upsettr_plot <- upset_plot(detect_df)
 Save this plot to a png
 
 ```{r}
-# We can save the plot like a normal ggplot
-ggplot2::ggsave(plot = upsettr_plot, 
-                file.path(plots_dir, "pbta-upset_plot.png"))
+png(file.path(plots_dir, "pbta-upset_plot.png"))
+upsettr_plot
+dev.off()
 ```
 
 Transcripts only upset plot. 
@@ -263,11 +263,10 @@ Correlate VAF's across callers
 ```{r}
 all_caller_df %>% 
   dplyr::select(dplyr::starts_with("VAF_"), -VAF_consensus) %>% 
-  cor.test(., na.rm = TRUE) %>% 
-  knitr::kable()
+  GGally::ggpairs(mapping = ggplot2::aes(alpha = 0.05)) 
 ``` 
 
-## Base Changes 
+## Base changes 
 
 Summarize base change information per caller. 
 
@@ -331,7 +330,7 @@ perc_change_df %>%
 ggplot2::ggsave(file.path(plots_dir, "perc_base_change_plot.png"))
 ```
 
-## Mutation Region barplot
+## Mutation region barplot
 
 Summarize `Variant_Classification` information per caller. 
 
