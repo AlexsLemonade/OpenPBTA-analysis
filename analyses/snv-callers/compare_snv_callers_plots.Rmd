@@ -63,22 +63,27 @@ if (!dir.exists(plots_dir)) {
 }
 ```
 
+Set up custom function for upset plot. 
+
 ```{r}
-upset_plot <- function(callers_per_mutation_df) {
-callers_per_mutation_df %>% 
-  dplyr::group_by(caller_combo) %>%
-  dplyr::tally() %>% 
-  ggplot2::ggplot(ggplot2::aes(x = reorder(caller_combo, -n), y = n)) +
-  ggplot2::geom_bar(position = "dodge", stat = "identity") +
-  ggplot2::geom_text(ggplot2::aes(label = n), 
-                     position = ggplot2::position_dodge(width = 0.9), angle = 45, 
-                     hjust = -0.1, 
-                     vjust = -0.1) +
-  ggplot2::theme_classic() +
-  ggupset::scale_x_mergelist(sep = "-") +
-  ggupset::axis_combmatrix(sep = "-") +
-  ggplot2::xlab("") +
-  ggplot2::ylab("") 
+upset_plot <- function(detect_df, subset_vector = NULL) {
+  
+  if (!is.null(subset_vector[1])) {
+    # If subset index is set
+    detect_df <- detect_df %>% 
+      dplyr::filter(subset_vector)
+  }
+  
+  # Set up a list how UpSetR wants it
+  detect_list <- list(
+    lancet = which(detect_df$VAF_lancet),
+    mutect = which(detect_df$VAF_mutect),
+    strelka = which(detect_df$VAF_strelka), 
+    vardict = which(detect_df$VAF_vardict)
+    )
+  
+  # Plot it
+  UpSetR::upset(UpSetR::fromList(detect_list), order.by = "freq")
 }
 ```
 
@@ -143,8 +148,8 @@ detect_df <- all_caller_df %>%
  # Bring over VAF columns
  dplyr::select(dplyr::starts_with("VAF_")) %>% 
  # Turn into detected or not
- dplyr::transmute_all(is.na) %>% 
- # Make row  ids for tracking purposes
+ dplyr::transmute_all(function(x) !is.na(x)) %>% 
+ # Make row ids for tracking purposes
  tibble::rowid_to_column("index")
 ```
 
@@ -169,6 +174,40 @@ cat(" At least 1 out of 3:", nrow(consensus_count), "\n",
     "At least 2 out of 3:", sum(consensus_count$num >= 2), "\n",
     "3 out of 3:", sum(consensus_count$num == 3))
 ```
+
+## Upset graphs
+
+Make the upset plot. 
+
+```{r}
+upsettr_plot <- upset_plot(detect_df)
+```
+
+Save this plot to a png
+
+```{r}
+# We can save the plot like a normal ggplot
+ggplot2::ggsave(plot = upsettr_plot, 
+                file.path(plots_dir, "pbta-upset_plot.png"))
+```
+
+Transcripts only upset plot. 
+
+```{r}
+transcripts <- !(all_caller_df$Variant_Classification %in% c("5'Flank", "3'Flank", "IGR", "Intron"))
+
+upset_plot(detect_df, subset_vector = transcripts)
+```
+
+Non transcript upset plot. 
+
+```{r}
+not_transcripts <- all_caller_df$Variant_Classification %in% c("5'Flank", "3'Flank", "IGR", "Intron") 
+
+upset_plot(detect_df, subset_vector = not_transcripts)
+```
+
+## VAF distribution for each caller
 
 Create consensus VAF based on strelka's VAFs and which mutations would be included
 
@@ -197,105 +236,36 @@ vaf_df <- all_caller_df %>%
   dplyr::filter(!is.na(vaf))
 ```
 
-Get median vaf for each mutation with each caller combination. 
-
-```{r}
-# Take out the consensus VAF for this combination
-median_vaf_df <- vaf_df %>% 
-  dplyr::filter(caller != "consensus")
-
-vaf_med <- tapply(
-    median_vaf_df$vaf,
-    median_vaf_df$index,
-    median
-  ) %>% 
-  as.data.frame() %>%
-  tibble::rownames_to_column("index")
-```
-
-```{r}
-# Join the median VAF and the callers that call that mutation into one data.frame
-callers_per_mutation <- callers_per_mutation %>%
-  dplyr::inner_join(vaf_med, by = "index") %>%
-  dplyr::mutate(index = as.integer(index)) %>%
-  dplyr::left_join(long_caller_df %>% 
-                      dplyr::select(Variant_Classification, index), 
-                   by = "index") %>%
-  # Make column names more sensible
-  dplyr::rename(caller_combo = "..x", median_vaf = "..y") 
-```
-
-Make a list that UpsetR can use to find overlap. 
-
-```{r}
-callers_per_mutation <- list(
-  lancet = which(detect_df$VAF_lancet),
-  mutect = which(detect_df$VAF_mutect),
-  strelka = which(detect_df$VAF_strelka), 
-  vardict = which(detect_df$VAF_vardict)
-  )
-```
-
-## Upset graph
-
-Make the upset plot. 
-
-```{r}
-UpSetR::upset(UpSetR::fromList(callers_per_mutation), order.by = "freq")
-```
-
-Save this plot to a png
-
-```{r}
-# We can save the plot like a normal ggplot
-ggplot2::ggsave(plot = upsettr_plot, 
-                file.path(plots_dir, "pbta-upset_plot.png"))
-```
-
-Transcripts only upset plot. 
-
-```{r}
-callers_per_mutation %>% 
-  dplyr::filter(!(Variant_Classification %in% c("5'Flank", "3'Flank", "IGR", "Intron"))) %>%
-  upset_plot() + 
-  ggplot2::ylim(c(0, 400000)) # So the label shows up
-```
-
-Non transcript upset plot. 
-
-```{r}
-callers_per_mutation %>% 
-  dplyr::filter(Variant_Classification %in% c("5'Flank", "3'Flank", "IGR", "Intron")) %>%
-  upset_plot() +
-  ggplot2::ylim(c(0, 7e+6))
-```
-
-## VAF for combination sets of callers
-
-Graph mutations by combinations of callers and plot the VAF density.
-Get list of callers per mutation and the median vaf for each. 
-Graph the median VAF for each combination of callers.
-
 ```{r}
 # Make this plot
-median_vaf_plot <- callers_per_mutation %>%
-  ggplot2::ggplot(ggplot2::aes(x = caller_combo, y = median_vaf)) +
+vaf_plot <- vaf_df %>%
+  ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, color = caller)) +
   ggplot2::geom_violin() +
   ggplot2::theme_classic() +
-  ggupset::scale_x_mergelist(sep = "-") +
-  ggupset::axis_combmatrix(sep = "-") +
   ggplot2::xlab("") +
-  ggplot2::ylab("Median VAF Across Callers")
+  ggplot2::ylab("VAF") + 
+  ggplot2::theme(legend.position = "none")
 
 # Print out
-median_vaf_plot
+vaf_plot
 ```
 
 ```{r}
 # Save this plot
 ggplot2::ggsave(plot = median_vaf_plot, 
-                file.path(plots_dir, "upset_median_vaf_plot.png"))
+                file.path(plots_dir, "VAF_distribution_plot.png"))
 ```
+
+## VAF correlations
+
+Correlate VAF's across callers
+
+```{r}
+all_caller_df %>% 
+  dplyr::select(dplyr::starts_with("VAF_"), -VAF_consensus) %>% 
+  cor.test(., na.rm = TRUE) %>% 
+  knitr::kable()
+``` 
 
 ## Base Changes 
 
@@ -361,41 +331,13 @@ perc_change_df %>%
 ggplot2::ggsave(file.path(plots_dir, "perc_base_change_plot.png"))
 ```
 
-## VAF distributions
-
-Make a violin plot of each caller. 
-
-```{r}
-long_vaf_df %>%
-  ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, color = caller)) +
-  ggplot2::geom_violin() +
-  ggplot2::theme_classic() +
-  colorblindr::scale_color_OkabeIto()
-```
-
-```{r}
-# Save this plot
-ggplot2::ggsave(file.path(plots_dir, "vaf_violin_plot.png"))
-```
-
-## VAF correlations
-
-Correlate VAF's across callers
-
-```{r}
-vaf_df %>% 
-  dplyr::select(-VAF_consensus, -Variant_Classification) %>% 
-  cor() %>% 
-  knitr::kable()
-``` 
-
 ## Mutation Region barplot
 
 Summarize `Variant_Classification` information per caller. 
 
 ```{r}
 # Summarize by the number of times each base change shows up in each category.
-perc_var_df <- long_vaf_df %>% 
+perc_var_df <- vaf_df %>% 
   # Summarize the number of mutations per caller
   dplyr::count(caller, Variant_Classification, name = "count") %>%
   dplyr::add_count(caller, wt = count) %>%
