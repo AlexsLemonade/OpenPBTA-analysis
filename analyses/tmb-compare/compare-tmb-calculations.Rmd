@@ -35,9 +35,9 @@ CCDL TMB is a much larger range (0 - ~300), while D3B TMB is smaller range (0 - 
 - [Setup](#setup)
     - [Packages and functions](#packages-and-functions)
 - [Set up consensus data](#set-up-consensus-data)
-- [Percent Differences in TMB](#percent-differences-in-tmb)
-- [How different are the mutation counts?](#how-different-are-the-mutation-counts)
-- [Calculate percent difference in BED size](#calculate-percent-difference-in-bed-size)
+- [Fraction differences in TMB](#fraction-differences-in-tmb)
+- [How different are mutation counts?](#how-different-are-mutation-counts)
+- [How different are BED sizes?](#how-different-are-bed-sizes)
 - [Session Info](#session-info)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -123,29 +123,29 @@ all_tmb <- tmb_ccdl_maftools %>%
                 mutation_count_d3b = count)
 ```
 
-## Percent differences in TMB
+## Fraction differences in TMB
 
 Here we use the CCDL's maftools-defined filtered TMB for the denominator since its the current TMB. 
 
-Calculate percent differences in relation to maftools-defined filtered TMB. 
+Calculate fraction differences in relation to maftools-defined filtered TMB. 
 
 ```{r}
 all_tmb <- all_tmb %>% 
-  dplyr::mutate(perc_diff_focr = (tmb_maftools - tmb_focr) / tmb_maftools, 
-                perc_diff_d3b = (tmb_maftools - tmb_d3b) / tmb_maftools)
+  dplyr::mutate(frac_diff_focr = (tmb_maftools - tmb_focr) / tmb_maftools, 
+                frac_diff_d3b = (tmb_maftools - tmb_d3b) / tmb_maftools)
 ```
 
-Let's plot the distribution of percent differences from both d3b and focr-defined TMBs. 
+Let's plot the distribution of fraction differences from both d3b and focr-defined TMBs. 
 
 ```{r}
 all_tmb %>% 
-  dplyr::select(dplyr::starts_with("perc_diff")) %>% 
-  tidyr::gather("tmb_calculation_set", "perc_diff") %>%
-  dplyr::mutate(tmb_calculation_set = gsub("perc_diff_", "", tmb_calculation_set)) %>%
-  ggplot2::ggplot(ggplot2::aes(x = perc_diff, color = tmb_calculation_set)) + 
+  dplyr::select(dplyr::starts_with("frac_diff")) %>% 
+  tidyr::gather("tmb_calculation_set", "frac_diff") %>%
+  dplyr::mutate(tmb_calculation_set = gsub("frac_diff_", "", tmb_calculation_set)) %>%
+  ggplot2::ggplot(ggplot2::aes(x = frac_diff, color = tmb_calculation_set)) + 
   ggplot2::geom_density() + 
   ggplot2::theme_classic() + 
-  ggplot2::ggtitle("Percent difference in TMB in comparison to CCDL maftools-defined TMB")
+  ggplot2::ggtitle("Fraction difference in TMB in comparison to CCDL maftools-defined TMB")
 ```
 
 Most of the D3b TMBs are very different. 
@@ -156,11 +156,11 @@ Let's identify which samples have the biggest differences for FoCR-defined TMB.
 
 ```{r}
 all_tmb %>% 
-  dplyr::filter(abs(perc_diff_focr) > .05) %>% 
-  dplyr::arrange(desc(perc_diff_focr))
+  dplyr::filter(abs(frac_diff_focr) > .05) %>% 
+  dplyr::arrange(desc(frac_diff_focr))
 ```
 
-TMB is very different between CCDL and D3b calculations percent wise. 
+TMB is very different between CCDL and D3b calculations fraction wise. 
 The ranges for the CCDL sets and the D3b sets are very different.  
 
 ```{r}
@@ -173,7 +173,7 @@ cat(
 
 Let's split up the TMB fraction to see where this vast difference in ranges might be. 
 
-## How different are the mutation counts?
+## How different are mutation counts?
 
 Let's take a look at the numerator of the TMB fraction by selecting the counts columns only. 
 
@@ -213,7 +213,7 @@ all_tmb %>%
 
 Some of the HGAT samples are the ones with the biggest differences in counts. 
 
-## Calculate percent difference in BED size
+## How different are BED sizes?
 
 Let's take a look at the denominator of TMB. 
 
