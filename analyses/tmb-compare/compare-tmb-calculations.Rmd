@@ -31,9 +31,7 @@ CCDL TMB is a much larger range (0 - ~300), while D3B TMB is smaller range (0 - 
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-    - [Usage](#usage)
 - [Setup](#setup)
-    - [Packages and functions](#packages-and-functions)
 - [Set up consensus data](#set-up-consensus-data)
 - [Fraction differences in TMB](#fraction-differences-in-tmb)
 - [How different are mutation counts?](#how-different-are-mutation-counts)
@@ -42,7 +40,7 @@ CCDL TMB is a much larger range (0 - ~300), while D3B TMB is smaller range (0 - 
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-#### Usage
+### Usage
 
 To run this from the command line, use:
 ```
@@ -53,8 +51,6 @@ Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tmb-calculations.Rmd
 _This assumes you are in the top directory of the repository._
 
 ## Setup
-
-#### Packages and functions
 
 ```{r}
 # magrittr pipe
@@ -185,7 +181,7 @@ counts_only <- all_tmb %>%
 counts_only
 ```
 
-Let' plot these counts correlations, but turn them into log1p values for easier visualization.
+Let's plot these counts correlations, but turn them into log1p values for easier visualization.
 
 ```{r}
 counts_only %>%
@@ -195,6 +191,17 @@ counts_only %>%
 ```
 
 The samples with high TMB, still usually have a higher TMB in the other datasets. 
+
+Let's take a closer look at one of the comparisons.
+
+```{r}
+counts_only %>%
+  dplyr::transmute_all(log1p) %>%
+  ggplot2::ggplot(ggplot2::aes(x = mutation_count_maftools, y = mutation_count_d3b)) + 
+  ggplot2::geom_point() + 
+  ggplot2::geom_smooth(method = "lm", se = FALSE) + 
+  ggplot2::theme_classic()
+```
 
 Let's take a closer look at the samples with larger differences in counts. 
 We'll compare things with `mutation_count_maftools` since that is what is in the current consensus file. 
