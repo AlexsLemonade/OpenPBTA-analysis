@@ -199,7 +199,7 @@ counts_only %>%
   dplyr::transmute_all(log1p) %>%
   ggplot2::ggplot(ggplot2::aes(x = mutation_count_maftools, y = mutation_count_d3b)) + 
   ggplot2::geom_point() + 
-  ggplot2::geom_abline(intercept = 0, slope = 1) + 
+  ggplot2::geom_abline(intercept = 0, slope = 1, color = "blue") + 
   ggplot2::theme_classic()
 ```
 
