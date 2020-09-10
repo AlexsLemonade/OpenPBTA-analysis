@@ -192,7 +192,7 @@ counts_only %>%
 
 The samples with high TMB, still usually have a higher TMB in the other datasets. 
 
-Let's take a closer look at one of the comparisons.
+Let's take a closer look at one of the comparisons, comparing the FoCR counts to the D3B counts, which should use the same criteria for inclusion.
 
 ```{r}
 counts_only %>%
@@ -202,6 +202,9 @@ counts_only %>%
   ggplot2::geom_abline(intercept = 0, slope = 1, color = "blue") + 
   ggplot2::theme_classic()
 ```
+
+The FoCR count always greater than or equal to the D3B count, despite the fact that these should be using the same criteria and data files. 
+(The maftools count is also strictly greater than or equal to the FoCR count, as expected by its broader criteria for inclusion.)
 
 Let's take a closer look at the samples with larger differences in counts. 
 We'll compare things with `mutation_count_maftools` since that is what is in the current consensus file. 
