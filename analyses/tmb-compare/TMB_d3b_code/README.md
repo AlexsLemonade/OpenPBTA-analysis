@@ -36,12 +36,12 @@ TMB is computed as `(filtered variant counts* 1000000) / target BED length`.
                         File with experimental strategy and path to BED file
 
      Example -
-     python3 analyses/tmb-compare-tcga/TMB_d3b_code/code/01_calculate_tmb_targetflexible.py  
+     python3 analyses/tmb-compare/TMB_d3b_code/code/01_calculate_tmb_targetflexible.py  
         -i data/pbta-snv-consensus-mutation.maf.tsv.gz
-        -m analyses/tmb-compare-tcga/TMB_d3b_code/inputs/pnoc003_and_pnoc008_and_cbttc_v17_candidate.tsv
-        -o analyses/tmb-compare-tcga/TMB_d3b_code/pbta-snv-consensus.TMB.OUT.txt
-        -c analyses/tmb-compare-tcga/TMB_d3b_code/config_files/calculate_tmb.cfg.json  
-        -w analyses/tmb-compare-tcga/TMB_d3b_code/config_files/target_cfg.targetcombos.txt 
+        -m analyses/tmb-compare/TMB_d3b_code/inputs/pnoc003_and_pnoc008_and_cbttc_v17_candidate.tsv
+        -o analyses/tmb-compare/TMB_d3b_code/pbta-snv-consensus.TMB.OUT.txt
+        -c analyses/tmb-compare/TMB_d3b_code/config_files/calculate_tmb.cfg.json  
+        -w analyses/tmb-compare/TMB_d3b_code/config_files/target_cfg.targetcombos.txt 
 
 ### Plot TMB scores
 

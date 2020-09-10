@@ -44,7 +44,7 @@ Rscript -e "rmarkdown::render("explore_var_class_discrepancies.Rmd", clean = TRU
 ```
 
 ```{r}
-source(file.path("..", "..", "tmb-compare-tcga", "util", "cdf-plot-function.R"))
+source(file.path("..", "..", "tmb-compare", "util", "cdf-plot-function.R"))
 ```
 
 ```{r}

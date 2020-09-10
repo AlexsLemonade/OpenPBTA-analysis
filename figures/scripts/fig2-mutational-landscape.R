@@ -28,7 +28,7 @@ mut_sig_dir <- file.path(
 tmb_dir <- file.path(
   root_dir,
   "analyses",
-  "tmb-compare-tcga"
+  "tmb-compare"
 )
 
 # Import specialized functions from mutational-signatures
