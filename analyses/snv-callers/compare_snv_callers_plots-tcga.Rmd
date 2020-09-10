@@ -17,16 +17,23 @@ callers.
 Lancet does not appear to be doing well with the WXS data. 
 See the further analyses on this in the `lancet-wxs-tests` folder in this analysis folder. 
 
-### Outline of analyses completed:
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Consensus numbers](#get-consensus-numbers)
-- [Upset graph](#upset-graph)  
-- [VAF of combinations of callers](#vaf-for-combination-sets-of-callers)
-- [Base changes by caller](#base-changes)
-- [VAF distributions by caller](#vaf-distributions)
-- [VAF correlations between callers](#vaf-correlations)
+- [Setup](#setup)
+- [Connect to database](#connect-to-database)
+- [Get consensus numbers](#get-consensus-numbers)
+- [Upset graphs](#upset-graphs)
+- [VAF distribution for each caller](#vaf-distribution-for-each-caller)
+- [VAF correlations](#vaf-correlations)
+- [Base changes](#base-changes)
+- [Mutation region barplot](#mutation-region-barplot)
+- [Session Info](#session-info)
 
-#### Usage
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+### Usage
 
 To run this from the command line, use:
 ```
@@ -37,8 +44,6 @@ Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots-tc
 _This assumes you are in the top directory of the repository._
 
 ## Setup
-
-#### Packages and functions
 
 Read in set up script.
 
@@ -51,34 +56,43 @@ Set up directories.
 
 ```{r}
 scratch_dir <- file.path("..", "..", "scratch")
-results_dir <- file.path("results", "tcga-comparison")
-plots_dir <- file.path("plots", "tcga-comparison")
+plots_dir <- file.path("plots", "tcga-caller-comparison")
 
-if (!dir.exists(results_dir)) {
-  dir.create(results_dir)
-}
 if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
 }
 ```
 
+Set up custom function for upset plot. 
+
 ```{r}
-upset_plot <- function(callers_per_mutation_df) {
-callers_per_mutation_df %>% 
-  dplyr::group_by(caller_combo) %>%
-  dplyr::tally() %>% 
-  ggplot2::ggplot(ggplot2::aes(x = reorder(caller_combo, -n), y = n)) +
-  ggplot2::geom_bar(
-        position = "dodge", stat = "identity") +
-  ggplot2::geom_text(ggplot2::aes(label = n), 
-                     position = ggplot2::position_dodge(width = 0.9), 
-                     angle = 45, 
-                     vjust = -0.5) +
-  ggplot2::theme_classic() +
-  ggupset::scale_x_mergelist(sep = "-") +
-  ggupset::axis_combmatrix(sep = "-") +
-  ggplot2::xlab("") +
-  ggplot2::ylab("")
+upset_plot <- function(detect_df, subset_vector = NULL) {
+  # Given a detection data frame, where each column represents a caller and contains a TRUE/FALSE 
+  # for whether a mutation was detected, create an upset plot.
+  #
+  # Arguments: 
+  # detect_df: a data frame, where each column represents a caller and contains a TRUE/FALSE 
+  #            for whether a mutation was detected. 
+  # subset_vector: (Optional) a vector to be supplied to dplyr::filter() that will subset the
+  #                detect_df and create the upset plot from that subset.
+  #
+  # Output: An upset plot that represents the number of mutations detected by the combinations of callers
+  
+  if (!is.null(subset_vector[1])) {
+    # If subset index is set
+    detect_df <- detect_df %>% 
+      dplyr::filter(subset_vector)
+  }
+  
+  # Set up a list how UpSetR wants it
+  detect_list <- list(
+    lancet = which(detect_df$VAF_lancet),
+    mutect = which(detect_df$VAF_mutect),
+    strelka = which(detect_df$VAF_strelka)
+    )
+  
+  # Plot it
+  UpSetR::upset(UpSetR::fromList(detect_list), order.by = "freq")
 }
 ```
 
@@ -128,162 +142,158 @@ all_caller_df <- strelka %>%
                    suffix = c("_strelka", "_mutect")) %>%
   dplyr::full_join(lancet, 
                    by = join_cols) %>% 
-  dplyr::rename(VAF_lancet = VAF)
+  dplyr::rename(VAF_lancet = VAF) %>% 
+  # We'll use this to keep track of the original rows/mutations
+  tibble::rowid_to_column("index")
 
 # Take a peek at what this looks like
 head(all_caller_df)
 ```
 
-```{r}
-# Set up as data.frame with each column a caller's VAF
-vaf_df <- all_caller_df %>% 
-  dplyr::select("VAF_lancet", "VAF_strelka", "VAF_mutect",
-                "Variant_Classification") %>%
-  dplyr::mutate(VAF_consensus = VAF_strelka)     
- 
-# Determine which mutations are not part of the consensus
-consensus_index <- vaf_df %>%
-  dplyr::select(-c(VAF_consensus, Variant_Classification)) %>%
-  rowSums(is.na(.)) > 0
-
-# Make non consensus VAF into an NA
-vaf_df$VAF_consensus[consensus_index] <- NA
-
-# Make this long form for plotting
-long_vaf_df <- vaf_df %>% 
-  # This index needs to be a factor so tapply step in the next chunk works more seamlessly
-  dplyr::mutate(index = factor(1:nrow(.))) %>% 
-  tidyr::gather(key = "caller", value = "vaf", -index, -Variant_Classification) %>% 
-  dplyr::mutate(caller = gsub("VAF_", "", caller)) %>% 
-  dplyr::filter(!is.na(vaf))
-```
-
-Get median vaf for each mutation with each caller combination. 
-
-```{r}
-# Take out the consensus VAF for this combination
-long_caller_df <- long_vaf_df %>% 
-  dplyr::filter(caller != "consensus")
-
-# Determine the combination of callers for each mutation
-callers_per_mutation <- tapply(
-    long_caller_df$caller,
-    long_caller_df$index,
-    paste0,
-    collapse = "-"
-  ) %>% 
-  as.data.frame() %>%
-  tibble::rownames_to_column("index")
-
-# Determine Median VAF for each mutation 
-vaf_med <- tapply(
-    long_caller_df$vaf,
-    long_caller_df$index,
-    median
-  ) %>% 
-  as.data.frame() %>%
-  tibble::rownames_to_column("index")
-
-# Join the median VAF and the callers that call that mutation into one data.frame
-callers_per_mutation <- callers_per_mutation %>%
-  dplyr::inner_join(vaf_med, by = "index") %>%
-  dplyr::left_join(long_caller_df %>% 
-                      dplyr::select(Variant_Classification, index), 
-                   by = "index") %>%
-  # Make column names more sensible
-  dplyr::rename(caller_combo = "..x", median_vaf = "..y") 
-```
-
 ## Get consensus numbers
 
-Count up how many callers call each mutation: 
+Make a data.frame with only the VAFs and turn into detected or not. 
 
 ```{r}
-num_of_callers <- all_caller_df %>% 
-  # Reduce to only the VAF columns
-  dplyr::select(dplyr::starts_with("VAF_")) %>%
-  # Count how many callers found that mutation
-  dplyr::mutate(number_callers = apply(., 1, function(x) sum(!is.na(x)))) %>% 
-  dplyr::pull(number_callers)
+detect_df <- all_caller_df %>% 
+ # Bring over VAF columns and the index
+ dplyr::select(dplyr::starts_with("VAF_"), index) %>% 
+ # Turn into detected or not
+ dplyr::mutate_at(dplyr::vars(dplyr::starts_with("VAF_")), function(x) !is.na(x))
 ```
 
-Print out the numbers:
+Count up how many callers call each mutation but ignore VarDict. 
 
 ```{r}
-cat(" At least 1 out of 3:", length(num_of_callers), "\n",
-    "At least 2 out of 3:", sum(num_of_callers >= 2), "\n",
-    "3 out of 3:", sum(num_of_callers == 3))
+consensus_count <- detect_df %>%
+  # Ignore index temporarily
+  dplyr::select(-index) %>%
+  # Get the number of callers that call each mutation
+  dplyr::transmute(num = rowSums(.)) %>% 
+  # Bring back the index (again)
+  tibble::rowid_to_column("index") %>%
+  # Filter out the ones that were there because of VarDict
+  dplyr::filter(num != 0)
 ```
 
-## Upset graph
+Print out the numbers for the three callers' consensus.
+
+```{r}
+cat(" At least 1 out of 3:", nrow(consensus_count), "\n",
+    "At least 2 out of 3:", sum(consensus_count$num >= 2), "\n",
+    "3 out of 3:", sum(consensus_count$num == 3))
+```
+
+
+## Upset graphs
 
 Make the upset plot. 
 
 ```{r}
-upsettr_plot <- callers_per_mutation %>%
-  upset_plot()
-
-# Print this out here
-upsettr_plot
+upsettr_plot <- upset_plot(detect_df)
 ```
 
 Save this plot to a png
 
 ```{r}
-# We can save the plot like a normal ggplot
-ggplot2::ggsave(upsettr_plot, 
-                file = file.path(plots_dir, "tcga-upset_plot.png"))
+png(file.path(plots_dir, "tcga-upset_plot.png"), width = 900, height = 900)
+upsettr_plot
+dev.off()
 ```
 
 Transcripts only upset plot. 
 
 ```{r}
-callers_per_mutation %>% 
-  dplyr::filter(!(Variant_Classification %in% c("5'Flank", "3'Flank", "IGR", "Intron"))) %>%
-  upset_plot()
+transcripts <- !(all_caller_df$Variant_Classification %in% c("5'Flank", "3'Flank", "IGR", "Intron"))
+
+upset_plot(detect_df, subset_vector = transcripts)
 ```
 
 Non transcript upset plot. 
 
 ```{r}
-callers_per_mutation %>% 
-  dplyr::filter(Variant_Classification %in% c("5'Flank", "3'Flank", "IGR", "Intron")) %>%
-  upset_plot()
+not_transcripts <- all_caller_df$Variant_Classification %in% c("5'Flank", "3'Flank", "IGR", "Intron") 
+
+upset_plot(detect_df, subset_vector = not_transcripts)
 ```
 
-## VAF for combination sets of callers
+## VAF distribution for each caller
 
-Graph mutations by combinations of callers and plot the VAF density.
-Get list of callers per mutation and the median vaf for each. 
-Graph the median VAF for each combination of callers.
+Create consensus VAF based on strelka's VAFs and which mutations would be included
+
+```{r}
+# Make new VAF column based on strelka's VAFs
+all_caller_df$VAF_consensus <- all_caller_df$VAF_strelka
+
+# Figure out which mutations are not in the consensus
+not_consensus <- consensus_count$index[which(consensus_count$num < 3)]
+
+# Make non consensus mutations in consensus)VAF an NA
+all_caller_df$VAF_consensus[not_consensus] <- NA
+```
+
+Make a long form VAF data.frame for exploring mutations VAFs from each caller. 
+
+```{r}
+vaf_df <- all_caller_df %>% 
+  dplyr::select(index, dplyr::starts_with("VAF_"), Variant_Classification) %>%
+  # Make long format
+  tidyr::gather(key = "caller", value = "vaf", -index, -Variant_Classification) %>% 
+  # Drop the `VAF_`
+  dplyr::mutate(caller = gsub("VAF_", "", caller)) %>% 
+  dplyr::filter(!is.na(vaf))
+```
 
 ```{r}
 # Make this plot
-median_vaf_plot <- callers_per_mutation %>%
-  ggplot2::ggplot(ggplot2::aes(x = caller_combo, y = median_vaf)) +
+vaf_plot <- vaf_df %>%
+  ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, color = caller)) +
   ggplot2::geom_violin() +
   ggplot2::theme_classic() +
-  ggupset::scale_x_mergelist(sep = "-") +
-  ggupset::axis_combmatrix(sep = "-") +
   ggplot2::xlab("") +
-  ggplot2::ylab("Median VAF Across Callers")
+  ggplot2::ylab("VAF") + 
+  ggplot2::theme(legend.position = "none")
 
-# Print out plot
-median_vaf_plot 
+# Print out
+vaf_plot
 ```
+
+Lancet appears to be calling quite a few low VAF mutations. 
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(plot = median_vaf_plot, file.path(plots_dir, "tcga-upset_median_vaf_plot.png"))
+ggplot2::ggsave(plot = vaf_plot, 
+                file.path(plots_dir, "tcga-vaf_distribution_plot.png"))
 ```
 
-## Base Changes 
+## VAF correlations
+
+Correlate VAF's across callers.
+
+```{r}
+cor_vaf <- all_caller_df %>% 
+  dplyr::select(dplyr::starts_with("VAF_"), -VAF_consensus) %>% 
+  GGally::ggpairs(mapping = ggplot2::aes(alpha = 0.05)) 
+
+# Print out without progress bar
+cor_vaf %>%
+  print(progress = FALSE)
+``` 
+
+VAF's are pretty related across callers. 
+
+```{r}
+ggplot2::ggsave(filename = file.path(plots_dir, "tcga-vaf_cor_matrix.png"), 
+                plot = cor_vaf)
+```
+
+## Base changes 
 
 Summarize base change information per caller. 
 
 ```{r}
 # Summarize by the number of times each base change shows up in each category.
-perc_change_df <- all_caller_df %>% 
+frac_change_df <- all_caller_df %>% 
   # Make change variable
   dplyr::mutate(base_change = paste0(Allele, ">", Reference_Allele)) %>% 
   dplyr::mutate(
@@ -296,20 +306,14 @@ perc_change_df <- all_caller_df %>%
       TRUE ~ base_change
     )
   ) %>%
-  # Whittle down to necessary columns
-  dplyr::select(change, dplyr::starts_with("VAF_")) %>% 
-  # Make this long form
-  tidyr::gather(key = "caller", value = "vaf", -change) %>% 
-  # Drop the prefix
-  dplyr::mutate(caller = gsub("VAF_", "", caller)) %>% 
-  # Get rid of NA rows
-  dplyr::filter(!is.na(vaf)) %>%
+  # Transmute VAFs to TRUE/FALSE
+  dplyr::inner_join(vaf_df, by = "index") %>%
   # Summarize the number of mutations per caller
   dplyr::count(caller, change, name = "count") %>%
   dplyr::add_count(caller, wt = count) %>%
   # Calculate the percent of each 
   dplyr::mutate(percent = count / n) %>%
-  # Drop nonsensical change
+  # Drop nonsensical changes
   dplyr::filter(!grepl("N>*|*>N|C>C|T>T|A>A|G>G", change), 
                 !is.na(change)) %>%
   dplyr::mutate(
@@ -323,7 +327,7 @@ Make a barplot illustrating the percent of the mutations for each caller that
 that are each type of change. 
 
 ```{r}
-perc_change_df %>%
+frac_change_df %>%
   ggplot2::ggplot(ggplot2::aes(x = change, y = percent)) +
   ggplot2::theme_classic() +
   ggplot2::geom_bar(
@@ -338,48 +342,16 @@ perc_change_df %>%
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(file.path(plots_dir, "tcga-perc_base_change_plot.png"))
+ggplot2::ggsave(file.path(plots_dir, "tcga-frac_base_change_plot.png"))
 ```
 
-## VAF distributions
-
-Make a violin plot of each caller. 
-
-```{r}
-long_vaf_df %>%
-  ggplot2::ggplot(ggplot2::aes(x = caller, y = vaf, color = caller)) +
-  ggplot2::geom_violin() +
-  ggplot2::theme_classic() +
-  colorblindr::scale_color_OkabeIto()
-```
-
-```{r}
-# Save this plot
-ggplot2::ggsave(file.path(plots_dir, "tcga-vaf_violin_plot.png"))
-```
-
-## VAF correlations
-
-Make the plot with ggpairs. 
-
-```{r}
-GGally::ggpairs(vaf_df %>% dplyr::select(-VAF_consensus, -Variant_Classification), 
-                mapping = ggplot2::aes(alpha = 0.05)) +
-  ggplot2::theme_classic()
-``` 
-
-```{r}
-# Save this plot
-ggplot2::ggsave(file.path(plots_dir, "tcga-vaf_correlations_plot.png"))
-```
-
-## Mutation Region barplot
+## Mutation region barplot
 
 Summarize `Variant_Classification` information per caller. 
 
 ```{r}
 # Summarize by the number of times each base change shows up in each category.
-perc_var_df <- long_vaf_df %>% 
+frac_var_df <- vaf_df %>% 
   # Summarize the number of mutations per caller
   dplyr::count(caller, Variant_Classification, name = "count") %>%
   dplyr::add_count(caller, wt = count) %>%
@@ -391,7 +363,7 @@ Make a barplot illustrating the percent of the mutations for each caller that
 that are each type of change. 
 
 ```{r}
-perc_var_df %>%
+frac_var_df %>%
   ggplot2::ggplot(ggplot2::aes(x = caller, y = percent)) +
   ggplot2::theme_classic() +
   ggplot2::geom_bar(
@@ -400,7 +372,7 @@ perc_var_df %>%
   ) +
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
   ggplot2::xlab("") +
-  ggplot2::ylab("Percent of callers' mutations")
+  ggplot2::ylab("Fraction of callers' mutations")
 ```
 
 ```{r}

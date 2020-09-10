@@ -19,15 +19,23 @@ Many of these have [very low ](#vaf-distributions) suggesting that some may be s
 
 - Mutect2, Strelka2, and Lancet do have [plenty of mutations in common](#upset-graph). 
 
-### Outline of analyses completed:
-- [Consensus numbers](#get-consensus-numbers)
-- [Upset graph](#upset-graph)  
-- [VAF of combinations of callers](#vaf-for-combination-sets-of-callers)
-- [Base changes by caller](#base-changes)
-- [VAF distributions by caller](#vaf-distributions)
-- [VAF correlations between callers](#vaf-correlations)
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-#### Usage
+- [Setup](#setup)
+- [Connect to database](#connect-to-database)
+- [Get consensus numbers](#get-consensus-numbers)
+- [Upset graphs](#upset-graphs)
+- [VAF distribution for each caller](#vaf-distribution-for-each-caller)
+- [VAF correlations](#vaf-correlations)
+- [Base changes](#base-changes)
+- [Mutation region barplot](#mutation-region-barplot)
+- [Session Info](#session-info)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+### Usage
 
 To run this from the command line, use:
 ```
@@ -38,8 +46,6 @@ Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots.Rm
 _This assumes you are in the top directory of the repository._
 
 ## Setup
-
-#### Packages and functions
 
 Read in set up script.
 
@@ -52,12 +58,8 @@ Set up directories.
 
 ```{r}
 scratch_dir <- file.path("..", "..", "scratch")
-results_dir <- file.path("results", "pbta-comparison")
-plots_dir <- file.path("plots", "pbta-comparison")
+plots_dir <- file.path("plots", "pbta-caller-comparison")
 
-if (!dir.exists(results_dir)) {
-  dir.create(results_dir)
-}
 if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
 }
@@ -67,6 +69,16 @@ Set up custom function for upset plot.
 
 ```{r}
 upset_plot <- function(detect_df, subset_vector = NULL) {
+  # Given a detection data frame, where each column represents a caller and contains a TRUE/FALSE 
+  # for whether a mutation was detected, create an upset plot.
+  #
+  # Arguments: 
+  # detect_df: a data frame, where each column represents a caller and contains a TRUE/FALSE 
+  #            for whether a mutation was detected. 
+  # subset_vector: (Optional) a vector to be supplied to dplyr::filter() that will subset the
+  #                detect_df and create the upset plot from that subset.
+  #
+  # Output: An upset plot that represents the number of mutations detected by the combinations of callers
   
   if (!is.null(subset_vector[1])) {
     # If subset index is set
@@ -94,7 +106,7 @@ Connect to SQLite database.
 ```{r}
 # Start up connection
 con <- DBI::dbConnect(RSQLite::SQLite(), 
-                      file.path(scratch_dir, "testing_snv_db.sqlite"))
+                      file.path(scratch_dir, "snv_db.sqlite"))
 ```
 
 Note what columns we will join by.
@@ -133,7 +145,9 @@ source(file.path("util", "full_join_callers.R"))
 
 # Bring out the data.frame
 all_caller_df <- all_caller %>%
-  as.data.frame() 
+  as.data.frame() %>%
+  # We'll use this to keep track of the original rows/mutations
+  tibble::rowid_to_column("index")
 
 # Take a peek at what this looks like
 head(all_caller_df)
@@ -145,12 +159,10 @@ Make a data.frame with only the VAFs and turn into detected or not.
 
 ```{r}
 detect_df <- all_caller_df %>% 
- # Bring over VAF columns
- dplyr::select(dplyr::starts_with("VAF_")) %>% 
+ # Bring over VAF columns and the index
+ dplyr::select(dplyr::starts_with("VAF_"), index) %>% 
  # Turn into detected or not
- dplyr::transmute_all(function(x) !is.na(x)) %>% 
- # Make row ids for tracking purposes
- tibble::rowid_to_column("index")
+ dplyr::mutate_at(dplyr::vars(dplyr::starts_with("VAF_")), function(x) !is.na(x))
 ```
 
 Count up how many callers call each mutation but ignore VarDict. 
@@ -160,7 +172,7 @@ consensus_count <- detect_df %>%
   # Ignore VarDict and index
   dplyr::select(-VAF_vardict, -index) %>%
   # Get the number of callers that call each mutation
-  dplyr::mutate(num = rowSums(.)) %>% 
+  dplyr::transmute(num = rowSums(.)) %>% 
   # Bring back the index (again)
   tibble::rowid_to_column("index") %>%
   # Filter out the ones that were there because of VarDict
@@ -226,9 +238,7 @@ Make a long form VAF data.frame for exploring mutations VAFs from each caller.
 
 ```{r}
 vaf_df <- all_caller_df %>% 
-  dplyr::select(dplyr::starts_with("VAF_"), Variant_Classification) %>%
-  # Make ids so we can keep track of 
-  tibble::rowid_to_column("index") %>%
+  dplyr::select(index, dplyr::starts_with("VAF_"), Variant_Classification) %>%
   # Make long format
   tidyr::gather(key = "caller", value = "vaf", -index, -Variant_Classification) %>% 
   # Drop the `VAF_`
@@ -252,19 +262,30 @@ vaf_plot
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(plot = median_vaf_plot, 
-                file.path(plots_dir, "VAF_distribution_plot.png"))
+ggplot2::ggsave(plot = vaf_plot, 
+                file.path(plots_dir, "pbta-vaf_distribution_plot.png"))
 ```
 
 ## VAF correlations
 
-Correlate VAF's across callers
+Correlate VAF's across callers.
 
 ```{r}
-all_caller_df %>% 
+cor_vaf <- all_caller_df %>% 
   dplyr::select(dplyr::starts_with("VAF_"), -VAF_consensus) %>% 
   GGally::ggpairs(mapping = ggplot2::aes(alpha = 0.05)) 
+
+# Print out without progress bar
+cor_vaf %>%
+  print(progress = FALSE)
 ``` 
+
+VAF's are pretty related across callers. 
+
+```{r}
+ggplot2::ggsave(filename = file.path(plots_dir, "pbta-vaf_cor_matrix.png"), 
+                plot = cor_vaf)
+```
 
 ## Base changes 
 
@@ -272,7 +293,7 @@ Summarize base change information per caller.
 
 ```{r}
 # Summarize by the number of times each base change shows up in each category.
-perc_change_df <- all_caller_df %>% 
+frac_change_df <- all_caller_df %>% 
   # Make change variable
   dplyr::mutate(base_change = paste0(Allele, ">", Reference_Allele)) %>% 
   dplyr::mutate(
@@ -285,20 +306,14 @@ perc_change_df <- all_caller_df %>%
       TRUE ~ base_change
     )
   ) %>%
-  # Whittle down to necessary columns
-  dplyr::select(change, dplyr::starts_with("VAF_")) %>% 
-  # Make this long form
-  tidyr::gather(key = "caller", value = "vaf", -change) %>% 
-  # Drop the prefix
-  dplyr::mutate(caller = gsub("VAF_", "", caller)) %>% 
-  # Get rid of NA rows
-  dplyr::filter(!is.na(vaf)) %>%
+  # Transmute VAFs to TRUE/FALSE
+  dplyr::inner_join(vaf_df, by = "index") %>%
   # Summarize the number of mutations per caller
   dplyr::count(caller, change, name = "count") %>%
   dplyr::add_count(caller, wt = count) %>%
   # Calculate the percent of each 
   dplyr::mutate(percent = count / n) %>%
-  # Drop nonsensical change
+  # Drop nonsensical changes
   dplyr::filter(!grepl("N>*|*>N|C>C|T>T|A>A|G>G", change), 
                 !is.na(change)) %>%
   dplyr::mutate(
@@ -312,7 +327,7 @@ Make a barplot illustrating the percent of the mutations for each caller that
 that are each type of change. 
 
 ```{r}
-perc_change_df %>%
+frac_change_df %>%
   ggplot2::ggplot(ggplot2::aes(x = change, y = percent)) +
   ggplot2::theme_classic() +
   ggplot2::geom_bar(
@@ -327,7 +342,7 @@ perc_change_df %>%
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(file.path(plots_dir, "perc_base_change_plot.png"))
+ggplot2::ggsave(file.path(plots_dir, "pbta-frac_base_change_plot.png"))
 ```
 
 ## Mutation region barplot
@@ -336,7 +351,7 @@ Summarize `Variant_Classification` information per caller.
 
 ```{r}
 # Summarize by the number of times each base change shows up in each category.
-perc_var_df <- vaf_df %>% 
+frac_var_df <- vaf_df %>% 
   # Summarize the number of mutations per caller
   dplyr::count(caller, Variant_Classification, name = "count") %>%
   dplyr::add_count(caller, wt = count) %>%
@@ -348,7 +363,7 @@ Make a barplot illustrating the percent of the mutations for each caller that
 that are each type of change. 
 
 ```{r}
-perc_var_df %>%
+frac_var_df %>%
   ggplot2::ggplot(ggplot2::aes(x = caller, y = percent)) +
   ggplot2::theme_classic() +
   ggplot2::geom_bar(
@@ -357,12 +372,12 @@ perc_var_df %>%
   ) +
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
   ggplot2::xlab("") +
-  ggplot2::ylab("Percent of callers' mutations")
+  ggplot2::ylab("Fraction of callers' mutations")
 ```
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(file.path(plots_dir, "variant_classification_plot.png"))
+ggplot2::ggsave(file.path(plots_dir, "pbta-variant_classification_plot.png"))
 ```
 
 ## Session Info
