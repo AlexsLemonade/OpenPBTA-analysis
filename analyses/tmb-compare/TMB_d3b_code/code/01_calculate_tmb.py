@@ -32,7 +32,7 @@ import os
 
 #BASE_DIR = os.getcwd()
 
-#BASE_DIR = "/".join(BASE_DIR.split("/")[:-3])+"/analyses/tmb-compare-tcga/TMB_d3b_code/inputs/target_files/"
+#BASE_DIR = "/".join(BASE_DIR.split("/")[:-3])+"/analyses/tmb-compare/TMB_d3b_code/inputs/target_files/"
 
 
 # This function returns a dictionary where the keys are the experimental_strategy

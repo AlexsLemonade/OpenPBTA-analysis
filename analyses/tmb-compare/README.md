@@ -28,7 +28,7 @@ The results from those scripts are saved to `snv-callers/results/consensus/` fol
 Some versions of these files are incorporated into the data release and saved to `data` folder so this module could be altered to use the file versions in the `data` folder.  
 Then you can run this module's analysis by the following command to create the plot:
 ```
-Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd',
+Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tmb.Rmd',
                               clean = TRUE)"
 ```
 These steps are also run soup to nuts in the [figures](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/figures) script: [`figures/scripts/fig2-mutational-landscape.R`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/figures/scripts/fig2-mutational-landscape.R).
