@@ -29,23 +29,24 @@ option_list <- list(
 
 # parse parameters
 opt <- parse_args(OptionParser(option_list = option_list))
-corrected.mat <- opt$corrected_mat
-uncorrected.mat <- opt$uncorrected_mat
+corrected_mat <- opt$corrected_mat
+uncorrected_mat <- opt$uncorrected_mat
 method <- opt$method
 output_prefix <- opt$output_prefix
 
 # expression from polya and stranded data
-corrected.mat <- readRDS(corrected.mat)
-uncorrected.mat <- readRDS(uncorrected.mat)
+corrected_mat <- readRDS(corrected_mat)
+uncorrected_mat <- readRDS(uncorrected_mat)
 
 # combination of dataset and methods
 methods <- c('MM2S', 'medullo-classifier')
-mats <- c('corrected.mat', 'uncorrected.mat')
+mats <- c('corrected_mat', 'uncorrected_mat')
 combo <- expand.grid(mats, methods, stringsAsFactors = F) 
 
 # classify mb samples
 print("Classify medulloblastoma subtypes...")
 mb.classify <- apply(combo, 1, FUN = function(x) classify.mb(expr.input = x[1], method = x[2]))
+names(mb.classify) <- apply(combo, 1, FUN = function(x) paste0(x[1], '_', x[2]))
 
 # save output to rds object
 print("Writing output to file..")
