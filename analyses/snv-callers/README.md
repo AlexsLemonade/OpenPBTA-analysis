@@ -190,5 +190,10 @@ Two TMB files are created, one including *all snv* and a *coding snvs only*, the
  --coding_bed_wxs : File path that specifies the BED regions file to be used for the
                  denominator for coding only TMB for WXS samples.
  --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
- --tcga: If used will skip PBTA metadata specific steps and do TCGA metdata steps.
+ --tcga: If used will skip PBTA metadata specific steps and do TCGA metadata steps.
+ --nonsynfilter_maf: If used will filter out synonymous mutations, keep
+                     non-synonymous mutations, according to maftools definition.
+ --nonsynfilter_focr: If used will filter out synonymous mutations, keep
+                      non-synonymous mutations, according to Friends of Cancer
+                       Research definition.
 ```
