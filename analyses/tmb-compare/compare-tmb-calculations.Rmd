@@ -192,7 +192,22 @@ counts_only %>%
 
 The samples with high TMB, still usually have a higher TMB in the other datasets. 
 
-Let's take a closer look at one of the comparisons, comparing the FoCR counts to the D3B counts, which should use the same criteria for inclusion.
+Let's take a closer look at two of the comparisons.
+Here's comparing the FoCR counts to the D3B counts, which should use the same criteria for inclusion.
+
+```{r}
+counts_only %>%
+  dplyr::transmute_all(log1p) %>%
+  ggplot2::ggplot(ggplot2::aes(x = mutation_count_focr, y = mutation_count_d3b)) + 
+  ggplot2::geom_point() + 
+  ggplot2::geom_abline(intercept = 0, slope = 1, color = "blue") + 
+  ggplot2::theme_classic()
+```
+
+The FoCR count always greater than or equal to the D3B count, despite the fact that these should be using the same criteria and data files. 
+(The maftools count is also strictly greater than or equal to the FoCR count, as expected by its broader criteria for inclusion.)
+
+Here's comparing the maftools counts to the D3B counts.
 
 ```{r}
 counts_only %>%
@@ -202,9 +217,6 @@ counts_only %>%
   ggplot2::geom_abline(intercept = 0, slope = 1, color = "blue") + 
   ggplot2::theme_classic()
 ```
-
-The FoCR count always greater than or equal to the D3B count, despite the fact that these should be using the same criteria and data files. 
-(The maftools count is also strictly greater than or equal to the FoCR count, as expected by its broader criteria for inclusion.)
 
 Let's take a closer look at the samples with larger differences in counts. 
 We'll compare things with `mutation_count_maftools` since that is what is in the current consensus file. 
