@@ -5,7 +5,7 @@
 - status: available
 - changes:
   - pbta-histologies.tsv updates:
-    - clinical updates to columns: `race`, `ethnicity`, ETC.....
+    - clinical updates to columns: `aliquot_id`, `parent_aliquot_id`, `reported_gender`, `race`, `ethnicity`, `tumor_descriptor`, `primary_site`, `age_at_diagnosis_days`, `pathology_diagnosis`, `integrated_diagnosis`, `short_histology`, `broad_histology`, `Notes`, `OS_days`, `OS_status`, `age_last_update_days`,`seq_center`, `cancer_predispositions`, `molecular_subtype`
     - changed column `glioma_brain_region` to `CNS_region`, updated logic and entities, and assigned regions for all tumors
     - added columns `pathology_free_text_diagnosis` and `cohort_participant_id`
     - added sequencing center for `BS_QB84TBA3` and `BS_S2TA8R29` (previously NA)
