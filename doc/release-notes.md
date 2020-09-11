@@ -14,6 +14,7 @@
     - updated medulloblastoma subtypes per [#742](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/742)
     - added LGAT subtyping per [#631](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/631)
     - added EWS diagnoses per [#623](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/623)
+  - update PBTA TMB file `pbta-snv-consensus-mutation-tmb-coding.tsv` post bug fix, etc. per [#727](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/727) and [#728](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/728)
   - new consensus mutation and TMB files from [TCGA analysis](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers) :
     - tcga-snv-consensus-snv.maf.tsv.gz
     - tcga-snv-mutation-tmb-all.tsv
@@ -989,4 +990,3 @@ data
     ├── strelka2.maf.gz
     └── tumor-normal-pair.tsv
 ```
-
