@@ -12,7 +12,8 @@
 # --coding_regions : File path that specifies the BED regions file that specifies
 #                     coding regions that should be used for coding only TMB calculations.
 # --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
-# --nonsynfilter: If TRUE, filter out synonymous mutations, keep non-synonymous mutations.
+# --nonsynfilter_maf: If TRUE, filter out synonymous mutations, keep non-synonymous mutations, based on maftools definition.
+# --nonsynfilter_focr: If TRUE, filter out synonymous mutations, keep non-synonymous mutations, based on Friends of Cancer Research Definition.
 # --tcga: If TRUE, will skip PBTA metadata specific steps
 #
 # Command line example:
@@ -22,7 +23,7 @@
 # --output analyses/snv-callers/results/consensus \
 # --metadata data/pbta-histologies.tsv \
 # --coding_regions scratch/gencode.v27.primary_assembly.annotation.bed \
-# --nonsynfilter
+# --nonsynfilter_maf
 # --overwrite
 
 ################################ Initial Set Up ################################
