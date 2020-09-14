@@ -42,10 +42,11 @@ RUN apt-get -y --no-install-recommends install \
 # Required for mapping segments to genes
 # Add bedtools
 RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.28.0/bedtools-2.28.0.tar.gz && \
-    tar -zxvf bedtools-2.28.0.tar.gz && \
+    tar -zxvf bedtools-2.28.0.tar.gz && rm -f bedtools-2.28.0.tar.gz && \
     cd bedtools2 && \
     make && \
-    mv bin/* /usr/local/bin
+    mv bin/* /usr/local/bin && \
+    cd .. && rm -rf bedtools2
 
 # Add bedops per the BEDOPS documentation
 RUN wget https://github.com/bedops/bedops/releases/download/v2.4.37/bedops_linux_x86_64-v2.4.37.tar.bz2 && \
@@ -59,7 +60,8 @@ RUN wget https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar
     cd htslib-1.9 && \
     ./configure && \
     make && \
-    make install
+    make install && \
+    cd .. && rm -rf htslib-1.9
 
 
 #### R packages
@@ -86,7 +88,8 @@ RUN install2.r --error --deps TRUE \
     rpart \
     rprojroot \
     survival \
-    viridis
+    viridis \
+    && rm -f /tmp/downloaded_packages/*.gz
 
 
 # Required for interactive sample distribution plots
@@ -99,7 +102,8 @@ RUN install2.r --error --deps TRUE \
     mapview \
     plainview \
     sf \
-    stars
+    stars \
+    && rm -f /tmp/downloaded_packages/*.gz
 
 # Installs packages needed for plottings
 # treemap, interactive plots, and hex plots
@@ -120,17 +124,20 @@ RUN install2.r --error --deps TRUE \
     treemap \
     umap  \
     UpSetR \
-    VennDiagram
+    VennDiagram \
+    && rm -f /tmp/downloaded_packages/*.gz
 
 # Install rjava
 RUN install2.r --error --deps TRUE \
-    rJava
+    rJava \
+    && rm -f /tmp/downloaded_packages/*.gz
 
 # Need for survminer for doing survival analysis
 RUN install2.r --error --deps TRUE \
     cmprsk \
     survMisc \
-    survminer
+    survminer \
+    && rm -f /tmp/downloaded_packages/*.gz
 
 # maftools for proof of concept in create-subset-files
 RUN ./install_bioc.r \
@@ -168,7 +175,8 @@ RUN install2.r --error --deps TRUE \
     glmnet \
     glmnetUtils \
     caret \
-    e1071
+    e1071 \
+    && rm -f /tmp/downloaded_packages/*.gz
 
 
 # bedr package
@@ -181,7 +189,8 @@ RUN Rscript -e "library(bedr)"
 # qdapRegex is for the fusion analysis
 RUN install2.r --error --deps TRUE \
     deconstructSigs \
-    qdapRegex
+    qdapRegex \
+    && rm -f /tmp/downloaded_packages/*.gz
 
 # packages required for collapsing RNA-seq data by removing duplicated gene symbols
 RUN ./install_bioc.r \
@@ -200,7 +209,8 @@ RUN ./install_bioc.r \
 
 # CRAN package msigdbr needed for gene-set-enrichment-analysis
 RUN install2.r --error --deps TRUE \
-    msigdbr
+    msigdbr \
+    && rm -f /tmp/downloaded_packages/*.gz
 # Bioconductor package GSVA needed for gene-set-enrichment-analysis
 RUN ./install_bioc.r \
     GSVA
@@ -229,7 +239,8 @@ RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remote
 # Packages required for rna-seq-composition
 RUN install2.r --error --deps TRUE \
     EnvStats \
-    janitor
+    janitor \
+    && rm -f /tmp/downloaded_packages/*.gz
 
 # Patchwork for plot compositions
 RUN R -e "remotes::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd46899f17197f9858bc5672e9f4')"
@@ -315,7 +326,8 @@ RUN pip3 install "pybedtools==0.8.1"
 # Molecular subtyping MB
 RUN R -e "remotes::install_github('d3b-center/medullo-classifier-package', ref = 'e3d12f64e2e4e00f5ea884f3353eb8c4b612abe8', dependencies = TRUE, upgrade = FALSE)"
 RUN install2.r --error --deps TRUE \
-    MM2S
+    MM2S \
+    && rm -f /tmp/downloaded_packages/*.gz
 
 # More recent version of sva required for molecular subtyping MB
 RUN R -e "remotes::install_github('jtleek/sva-devel@123be9b2b9fd7c7cd495fab7d7d901767964ce9e', dependencies = FALSE, upgrade = FALSE)"
