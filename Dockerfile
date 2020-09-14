@@ -271,17 +271,20 @@ RUN pip3 install \
     "snakemake==5.8.1" \
     "statsmodels==0.10.2" \
     "tzlocal==2.0" \
-    "widgetsnbextension==2.0.0"
+    "widgetsnbextension==2.0.0" \
+    && rm -rf /root/.cache/pip/wheels
 
 # Install Rpy2
-RUN pip3 install "rpy2==2.9.3"
+RUN pip3 install "rpy2==2.9.3" \
+    && rm -rf /root/.cache/pip/wheels
 
 # Install CrossMap for liftover
 RUN pip3 install "cython==0.29.15" && \
     pip3 install "bx-python==0.8.8" && \
     pip3 install "pybigwig==0.3.17" && \
     pip3 install "pysam==0.15.4" && \
-    pip3 install "CrossMap==0.3.9"
+    pip3 install "CrossMap==0.3.9" \
+    && rm -rf /root/.cache/pip/wheels
 
 
 # MATLAB Compiler Runtime is required for GISTIC, MutSigCV
