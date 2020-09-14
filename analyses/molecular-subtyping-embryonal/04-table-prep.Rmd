@@ -369,6 +369,7 @@ all_data_df %>%
          FOXR2_fusions,
          MN1_fusions,
          CIC_fusions) %>%
+  arrange(Kids_First_Participant_ID, sample_id) %>%
   write_tsv(output_all)
 ```
 
@@ -531,6 +532,7 @@ subtypes_df <- all_data_df %>%
 
 ```{r}
 subtypes_df %>%
+  arrange(Kids_First_Participant_ID, sample_id) %>%
   write_tsv(output_subtypes)
 ```
 

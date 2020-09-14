@@ -60,17 +60,22 @@ WGS_dnaseqsamples = WGS_dnaseqsamples.rename(columns={"Kids_First_Biospecimen_ID
 
 
 # sample_id is common between both  datafarmes and also unique between RNA and DNA. 
-# Some DNA BSID's are missing for the corresponding RNA samples 
+# Some DNA BSID's are missing for the corresponding RNA samples
 EP_rnaseq_WGS = EP_rnaseq_samples.merge(WGS_dnaseqsamples, 
                                         on = ["sample_id", "Kids_First_Participant_ID"], 
                                         how = "outer")
 EP_rnaseq_WGS.fillna('NA', inplace=True)
 
-EP_rnaseq_WGS[["Kids_First_Participant_ID", 
-		"sample_id", 
-		"Kids_First_Biospecimen_ID_DNA", 
-		"Kids_First_Biospecimen_ID_RNA", 
-		"disease_group"
-		]].to_csv(outnotebook, sep="\t", index=False)
+# Sort for consistency
+EP_rnaseq_WGS = EP_rnaseq_WGS.sort_values(by = ["Kids_First_Participant_ID", "sample_id"])
+
+# Write out
+EP_rnaseq_WGS[[
+    "Kids_First_Participant_ID",
+	"sample_id",
+	"Kids_First_Biospecimen_ID_DNA",
+	"Kids_First_Biospecimen_ID_RNA",
+	"disease_group"
+	]].to_csv(outnotebook, sep="\t", index=False)
 outnotebook.close()
     
