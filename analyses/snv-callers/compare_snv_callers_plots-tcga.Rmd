@@ -63,37 +63,10 @@ if (!dir.exists(plots_dir)) {
 }
 ```
 
-Set up custom function for upset plot. 
+Import custom function for upset plot. 
 
 ```{r}
-upset_plot <- function(detect_df, subset_vector = NULL) {
-  # Given a detection data frame, where each column represents a caller and contains a TRUE/FALSE 
-  # for whether a mutation was detected, create an upset plot.
-  #
-  # Arguments: 
-  # detect_df: a data frame, where each column represents a caller and contains a TRUE/FALSE 
-  #            for whether a mutation was detected. 
-  # subset_vector: (Optional) a vector to be supplied to dplyr::filter() that will subset the
-  #                detect_df and create the upset plot from that subset.
-  #
-  # Output: An upset plot that represents the number of mutations detected by the combinations of callers
-  
-  if (!is.null(subset_vector[1])) {
-    # If subset index is set
-    detect_df <- detect_df %>% 
-      dplyr::filter(subset_vector)
-  }
-  
-  # Set up a list how UpSetR wants it
-  detect_list <- list(
-    lancet = which(detect_df$VAF_lancet),
-    mutect = which(detect_df$VAF_mutect),
-    strelka = which(detect_df$VAF_strelka)
-    )
-  
-  # Plot it
-  UpSetR::upset(UpSetR::fromList(detect_list), order.by = "freq")
-}
+source(file.path("util", "upset_plot.R"))
 ```
 
 ## Connect to TCGA database
@@ -155,78 +128,85 @@ head(all_caller_df)
 Make a data.frame with only the VAFs and turn into detected or not. 
 
 ```{r}
-detect_df <- all_caller_df %>% 
+detect_mat <- all_caller_df %>% 
  # Bring over VAF columns and the index
- dplyr::select(dplyr::starts_with("VAF_"), index) %>% 
- # Turn into detected or not
- dplyr::mutate_at(dplyr::vars(dplyr::starts_with("VAF_")), function(x) !is.na(x))
+ dplyr::select(dplyr::starts_with("VAF_")) %>% 
+ as.matrix()
+
+# Store the indices as dimnames
+dimnames(detect_mat)[[1]] <- all_caller_df$index
+
+# Turn into detected or not
+detect_mat <- !is.na(detect_mat)
 ```
 
 Count up how many callers call each mutation but ignore VarDict. 
 
 ```{r}
-consensus_count <- detect_df %>%
-  # Ignore index temporarily
-  dplyr::select(-index) %>%
-  # Get the number of callers that call each mutation
-  dplyr::transmute(num = rowSums(.)) %>% 
-  # Bring back the index (again)
-  tibble::rowid_to_column("index") %>%
-  # Filter out the ones that were there because of VarDict
-  dplyr::filter(num != 0)
+# Add up how many callers identify each mutation, but ignore VarDict
+consensus_count <- rowSums(detect_mat[, colnames(detect_mat) != "VAF_vardict"])
+
+# Remove the 0's
+consensus_count <- consensus_count[which(consensus_count != 0)]
 ```
 
 Print out the numbers for the three callers' consensus.
 
 ```{r}
-cat(" At least 1 out of 3:", nrow(consensus_count), "\n",
-    "At least 2 out of 3:", sum(consensus_count$num >= 2), "\n",
-    "3 out of 3:", sum(consensus_count$num == 3))
+cat(" At least 1 out of 3:", length(consensus_count), "\n",
+    "At least 2 out of 3:", sum(consensus_count >= 2), "\n",
+    "3 out of 3:", sum(consensus_count == 3))
 ```
-
 
 ## Upset graphs
 
 Make the upset plot. 
 
 ```{r}
-upsettr_plot <- upset_plot(detect_df)
+upset_png(detect_mat, 
+          plot_file_path = file.path(plots_dir, "tcga-upset-plot.png"), 
+          has_vardict = FALSE)
 ```
 
-Save this plot to a png
-
-```{r}
-png(file.path(plots_dir, "tcga-upset_plot.png"), width = 900, height = 900)
-upsettr_plot
-dev.off()
-```
+![Upset plot - all data](plots/tcga-caller-comparison/tcga-upset-plot.png)
 
 Transcripts only upset plot. 
 
 ```{r}
 transcripts <- !(all_caller_df$Variant_Classification %in% c("5'Flank", "3'Flank", "IGR", "Intron"))
 
-upset_plot(detect_df, subset_vector = transcripts)
+upset_png(detect_mat, 
+          plot_file_path = file.path(plots_dir, "tcga-upset-plot-transcipts-only.png"), 
+          subset_vector = transcripts, 
+          has_vardict = FALSE)
 ```
+
+
+![Upset plot - transcripts only](plots/tcga-caller-comparison/tcga-upset-plot-transcipts-only.png)
 
 Non transcript upset plot. 
 
 ```{r}
 not_transcripts <- all_caller_df$Variant_Classification %in% c("5'Flank", "3'Flank", "IGR", "Intron") 
 
-upset_plot(detect_df, subset_vector = not_transcripts)
+upset_png(detect_mat,
+          plot_file_path = file.path(plots_dir, "tcga-upset-plot-not-transcipts-only.png"), 
+          subset_vector = transcripts, 
+          has_vardict = FALSE)
 ```
+
+![Upset plot - transcripts only](plots/tcga-caller-comparison/tcga-upset-plot-not-transcipts-only.png)
 
 ## VAF distribution for each caller
 
-Create consensus VAF based on strelka's VAFs and which mutations would be included
+Create consensus VAF based on strelka's VAFs and which mutations would be included.
 
 ```{r}
 # Make new VAF column based on strelka's VAFs
 all_caller_df$VAF_consensus <- all_caller_df$VAF_strelka
 
 # Figure out which mutations are not in the consensus
-not_consensus <- consensus_count$index[which(consensus_count$num < 3)]
+not_consensus <- dimnames(consensus_count)[[1]][which(consensus_count < 3)]
 
 # Make non consensus mutations in consensus)VAF an NA
 all_caller_df$VAF_consensus[not_consensus] <- NA
@@ -263,7 +243,7 @@ Lancet appears to be calling quite a few low VAF mutations.
 ```{r}
 # Save this plot
 ggplot2::ggsave(plot = vaf_plot, 
-                file.path(plots_dir, "tcga-vaf_distribution_plot.png"))
+                file.path(plots_dir, "tcga-vaf-distribution-plot.png"))
 ```
 
 ## VAF correlations
@@ -283,7 +263,7 @@ cor_vaf %>%
 VAF's are pretty related across callers. 
 
 ```{r}
-ggplot2::ggsave(filename = file.path(plots_dir, "tcga-vaf_cor_matrix.png"), 
+ggplot2::ggsave(filename = file.path(plots_dir, "tcga-vaf-cor-matrix.png"), 
                 plot = cor_vaf)
 ```
 
@@ -342,7 +322,7 @@ frac_change_df %>%
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(file.path(plots_dir, "tcga-frac_base_change_plot.png"))
+ggplot2::ggsave(file.path(plots_dir, "tcga-frac-base-change-plot.png"))
 ```
 
 ## Mutation region barplot
@@ -377,7 +357,7 @@ frac_var_df %>%
 
 ```{r}
 # Save this plot
-ggplot2::ggsave(file.path(plots_dir, "tcga-variant_classification_plot.png"))
+ggplot2::ggsave(file.path(plots_dir, "tcga-variant-classification-plot.png"))
 ```
 
 ## Session Info
