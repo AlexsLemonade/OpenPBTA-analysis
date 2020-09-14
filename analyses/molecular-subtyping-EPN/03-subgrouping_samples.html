@@ -13954,6 +13954,9 @@ div#notebook {
 <span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;SV instability&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;breaks_density-chromosomal_instability_SV&quot;</span><span class="p">]</span><span class="o">-</span><span class="n">sv_median</span><span class="p">)</span><span class="o">/</span><span class="n">sv_iqr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;CNV_instability&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;breaks_density-chromosomal_instability_CNV&quot;</span><span class="p">]</span><span class="o">-</span><span class="n">cnv_median</span><span class="p">)</span><span class="o">/</span><span class="n">cnv_iqr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
+<span class="c1"># Sort final table</span>
+<span class="n">EPN_final</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Kids_First_Participant_ID&quot;</span><span class="p">,</span> <span class="s2">&quot;sample_id&quot;</span><span class="p">])</span>
+
 <span class="n">display</span><span class="p">(</span><span class="n">EPN_final</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span> <span class="c1"># Dataframe after the columns are added  </span>
 </pre></div>
 
@@ -14192,28 +14195,100 @@ div#notebook {
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
-      <td>PT_S4H6KA09</td>
-      <td>7316-2134</td>
-      <td>BS_K6A9Z04J</td>
-      <td>BS_07ANYSYQ</td>
-      <td>supratentorial</td>
+      <th>13</th>
+      <td>PT_06H29FCG</td>
+      <td>7316-1944</td>
+      <td>BS_0W8AWY10</td>
+      <td>BS_4T0HPZDC</td>
+      <td>infratentorial</td>
       <td>0.0</td>
       <td>0.0</td>
       <td>0.0</td>
       <td>0.0</td>
       <td>0.0</td>
       <td>...</td>
-      <td>0.487470</td>
-      <td>0.166855</td>
-      <td>-0.216807</td>
-      <td>-0.733550</td>
+      <td>-0.535366</td>
+      <td>0.008856</td>
+      <td>0.005816</td>
+      <td>0.566516</td>
+      <td>-0.243975</td>
+      <td>-1.339629</td>
+      <td>-0.858416</td>
+      <td></td>
+      <td>0.021127</td>
+      <td>-0.296296</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>PT_0CVRX4SJ</td>
+      <td>7316-764</td>
+      <td>NaN</td>
+      <td>BS_H4NXBD2D</td>
+      <td>supratentorial</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>1.968995</td>
+      <td>-0.301459</td>
+      <td>-0.253911</td>
+      <td>-0.719137</td>
       <td>-0.379140</td>
-      <td>0.230703</td>
-      <td>-0.798158</td>
+      <td>1.128759</td>
+      <td>-0.145354</td>
       <td>ST_EPN_RELA</td>
-      <td>0.718310</td>
-      <td>1.555556</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>68</th>
+      <td>PT_0NY38X3W</td>
+      <td>7316-1706</td>
+      <td>BS_HQFNQHVW</td>
+      <td>BS_S0175QKX</td>
+      <td>infratentorial</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>-0.543534</td>
+      <td>-0.367387</td>
+      <td>-0.261484</td>
+      <td>0.082234</td>
+      <td>-0.172349</td>
+      <td>0.428261</td>
+      <td>-0.297608</td>
+      <td></td>
+      <td>0.267606</td>
+      <td>0.222222</td>
+    </tr>
+    <tr>
+      <th>47</th>
+      <td>PT_0WKX8Q5X</td>
+      <td>7316-88</td>
+      <td>BS_QSMFVHSB</td>
+      <td>BS_KXMYBQ6N</td>
+      <td>infratentorial</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>-0.547728</td>
+      <td>-0.067302</td>
+      <td>-0.062334</td>
+      <td>-0.716254</td>
+      <td>-0.373364</td>
+      <td>-1.137729</td>
+      <td>-0.712188</td>
+      <td></td>
+      <td>-0.204225</td>
+      <td>-0.296296</td>
     </tr>
     <tr>
       <th>1</th>
@@ -14238,78 +14313,6 @@ div#notebook {
       <td></td>
       <td>-0.556338</td>
       <td>0.148148</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>PT_V3Q78E6F</td>
-      <td>7316-455</td>
-      <td>BS_7RQCH5Y7</td>
-      <td>BS_0QYS36NR</td>
-      <td>undetermined</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
-      <td>-0.547948</td>
-      <td>0.146395</td>
-      <td>-0.259969</td>
-      <td>0.249427</td>
-      <td>0.453800</td>
-      <td>-1.603039</td>
-      <td>-0.851185</td>
-      <td></td>
-      <td>-1.232394</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>PT_Y6Y9JJ9P</td>
-      <td>7316-425</td>
-      <td>NaN</td>
-      <td>BS_0WQJP6ZG</td>
-      <td>supratentorial</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>-0.303262</td>
-      <td>0.893197</td>
-      <td>-0.223623</td>
-      <td>-0.759494</td>
-      <td>-0.379140</td>
-      <td>0.622200</td>
-      <td>-1.025133</td>
-      <td>ST_EPN_RELA</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>PT_82A9SDRN</td>
-      <td>7316-2313</td>
-      <td>BS_NWYBD9CA</td>
-      <td>BS_0XEG6SNV</td>
-      <td>supratentorial</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
-      <td>3.919198</td>
-      <td>-0.209387</td>
-      <td>-0.186519</td>
-      <td>-0.171437</td>
-      <td>-0.375096</td>
-      <td>-0.408285</td>
-      <td>-0.195971</td>
-      <td>ST_EPN_RELA</td>
-      <td>-0.338028</td>
-      <td>0.814815</td>
     </tr>
   </tbody>
 </table>
