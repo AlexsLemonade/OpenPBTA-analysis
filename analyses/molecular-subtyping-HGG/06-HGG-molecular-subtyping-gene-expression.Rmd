@@ -93,9 +93,10 @@ clean_wrangle_expression <-
     # and writes the cleaned and filtered expression table to the given output
     # file path.
     
-    cleaned_expression <- filtered_expression %>%
+    cleaned_expression <- polya_expression_matrix %>%
       as.data.frame() %>%
       rownames_to_column("Kids_First_Biospecimen_ID") %>%
+      dplyr::arrange(Kids_First_Biospecimen_ID) %>%
       dplyr::select(Kids_First_Biospecimen_ID,
              FOXG1_expression_zscore = FOXG1,
              OLIG2_expression_zscore = OLIG2,
