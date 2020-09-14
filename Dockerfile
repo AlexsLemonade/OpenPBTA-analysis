@@ -68,7 +68,7 @@ RUN wget https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar
 ###############
 
 # Commonly used R packages
-RUN install2.r --error --deps TRUE \
+RUN ./install_bioc.r \
     class \
     cluster \
     data.table \
@@ -88,13 +88,12 @@ RUN install2.r --error --deps TRUE \
     rpart \
     rprojroot \
     survival \
-    viridis \
-    && rm -f /tmp/downloaded_packages/*.gz
+    viridis 
 
 
 # Required for interactive sample distribution plots
 # map view is needed to create HTML outputs of the interactive plots
-RUN install2.r --error --deps TRUE \
+RUN ./install_bioc.r \
     gdalUtils \
     leafem \
     leafpop \
@@ -102,13 +101,12 @@ RUN install2.r --error --deps TRUE \
     mapview \
     plainview \
     sf \
-    stars \
-    && rm -f /tmp/downloaded_packages/*.gz
+    stars
 
 # Installs packages needed for plottings
 # treemap, interactive plots, and hex plots
 # Rtsne and umap are required for dimension reduction analyses
-RUN install2.r --error --deps TRUE \
+RUN ./install_bioc.r \
     corrplot \
     d3r \
     ggfortify \
@@ -124,20 +122,17 @@ RUN install2.r --error --deps TRUE \
     treemap \
     umap  \
     UpSetR \
-    VennDiagram \
-    && rm -f /tmp/downloaded_packages/*.gz
+    VennDiagram 
 
 # Install rjava
-RUN install2.r --error --deps TRUE \
-    rJava \
-    && rm -f /tmp/downloaded_packages/*.gz
+RUN ./install_bioc.r \
+    rJava 
 
 # Need for survminer for doing survival analysis
-RUN install2.r --error --deps TRUE \
+RUN ./install_bioc.r \
     cmprsk \
     survMisc \
-    survminer \
-    && rm -f /tmp/downloaded_packages/*.gz
+    survminer
 
 # maftools for proof of concept in create-subset-files
 RUN ./install_bioc.r \
@@ -171,26 +166,24 @@ RUN ./install_bioc.r \
 #  RUN ./install_bioc.r 'GSEABase', 'GSVA'
 
 # Required for sex prediction from RNA-seq data
-RUN install2.r --error --deps TRUE \
+RUN ./install_bioc.r \
     glmnet \
     glmnetUtils \
     caret \
-    e1071 \
-    && rm -f /tmp/downloaded_packages/*.gz
+    e1071 
 
 
 # bedr package
-RUN install2.r --error --deps TRUE \
+RUN ./install_bioc.r \
     bedr
 # Check to make sure the binaries are available by loading the bedr library
 RUN Rscript -e "library(bedr)"
 
 # Also install for mutation signature analysis
 # qdapRegex is for the fusion analysis
-RUN install2.r --error --deps TRUE \
+RUN ./install_bioc.r \
     deconstructSigs \
-    qdapRegex \
-    && rm -f /tmp/downloaded_packages/*.gz
+    qdapRegex 
 
 # packages required for collapsing RNA-seq data by removing duplicated gene symbols
 RUN ./install_bioc.r \
@@ -208,9 +201,8 @@ RUN ./install_bioc.r \
     ggbio
 
 # CRAN package msigdbr needed for gene-set-enrichment-analysis
-RUN install2.r --error --deps TRUE \
-    msigdbr \
-    && rm -f /tmp/downloaded_packages/*.gz
+RUN ./install_bioc.r \
+    msigdbr 
 # Bioconductor package GSVA needed for gene-set-enrichment-analysis
 RUN ./install_bioc.r \
     GSVA
@@ -237,10 +229,9 @@ RUN R -e "remotes::install_github('NNoureen/EXTEND', ref = '467c2724e1324ef05ad9
 RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remotes::install_github('parklab/ShatterSeek', ref = '83ab3effaf9589cc391ecc2ac45a6eaf578b5046', dependencies = TRUE))"
 
 # Packages required for rna-seq-composition
-RUN install2.r --error --deps TRUE \
+RUN ./install_bioc.r \
     EnvStats \
-    janitor \
-    && rm -f /tmp/downloaded_packages/*.gz
+    janitor 
 
 # Patchwork for plot compositions
 RUN R -e "remotes::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd46899f17197f9858bc5672e9f4')"
@@ -320,7 +311,7 @@ RUN chown -R rstudio:rstudio /home/rstudio/gistic_install && \
 WORKDIR /rocker-build/
 
 # Install multipanelfigure, required for transcriptomic overview figure
-RUN install2.r --error --deps TRUE \
+RUN ./install_bioc.r \
     multipanelfigure
 
 # pybedtools for D3B TMB analysis
@@ -328,9 +319,8 @@ RUN pip3 install "pybedtools==0.8.1"
 
 # Molecular subtyping MB
 RUN R -e "remotes::install_github('d3b-center/medullo-classifier-package', ref = 'e3d12f64e2e4e00f5ea884f3353eb8c4b612abe8', dependencies = TRUE, upgrade = FALSE)"
-RUN install2.r --error --deps TRUE \
-    MM2S \
-    && rm -f /tmp/downloaded_packages/*.gz
+RUN ./install_bioc.r \
+    MM2S 
 
 # More recent version of sva required for molecular subtyping MB
 RUN R -e "remotes::install_github('jtleek/sva-devel@123be9b2b9fd7c7cd495fab7d7d901767964ce9e', dependencies = FALSE, upgrade = FALSE)"
