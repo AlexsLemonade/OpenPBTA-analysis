@@ -181,8 +181,9 @@ cn_metadata <- cn_df %>%
                 status,
                 cytoband) %>%
   dplyr::filter(biospecimen_id %in% hgg_metadata_df$Kids_First_Biospecimen_ID) %>%
-  dplyr::distinct() # Remove duplicate rows produced as a result of not
+  dplyr::distinct() %>% # Remove duplicate rows produced as a result of not
 # including the copy number variable from `cn_df`
+  dplyr::arrange(Kids_First_Participant_ID, sample_id)
 
 # Write to file
 readr::write_tsv(cn_metadata, file.path(subset_dir, "hgg_focal_cn.tsv.gz"))
@@ -193,7 +194,8 @@ fusion_df <- fusion_df %>%
   dplyr::select(Sample, FusionName) %>%
   dplyr::left_join(select_metadata,
                    by = c("Sample" = "Kids_First_Biospecimen_ID")) %>%
-  dplyr::filter(Sample %in% hgg_metadata_df$Kids_First_Biospecimen_ID)
+  dplyr::filter(Sample %in% hgg_metadata_df$Kids_First_Biospecimen_ID) %>%
+  dplyr::arrange(Kids_First_Participant_ID, sample_id)
 
 # Write to file
 readr::write_tsv(fusion_df, file.path(subset_dir, "hgg_fusion.tsv"))
@@ -207,6 +209,7 @@ gistic_df <- gistic_df %>%
   tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
   dplyr::left_join(select_metadata, by = "Kids_First_Biospecimen_ID") %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in% hgg_metadata_df$Kids_First_Biospecimen_ID) %>%
+  dplyr::arrange(Kids_First_Participant_ID, sample_id) %>%
   dplyr::select(sample_id,
                 Kids_First_Biospecimen_ID,
                 `1p`,
@@ -225,7 +228,8 @@ readr::write_tsv(gistic_df,
 snv_maf_df <- snv_maf_df %>%
   dplyr::left_join(select_metadata,
                    by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
-  dplyr::filter(Tumor_Sample_Barcode %in% hgg_metadata_df$Kids_First_Biospecimen_ID)
+  dplyr::filter(Tumor_Sample_Barcode %in% hgg_metadata_df$Kids_First_Biospecimen_ID) %>%
+  dplyr::arrange(Kids_First_Participant_ID, sample_id)
 
 # Write to file
 readr::write_tsv(snv_maf_df,
