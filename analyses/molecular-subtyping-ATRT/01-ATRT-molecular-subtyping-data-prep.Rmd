@@ -399,7 +399,8 @@ final_df <- final_df %>%
     HALLMARK_MYC_TARGETS_V2,
     !!! rlang::syms(myc_genes),
     dplyr::everything()
-  )
+  ) %>%
+  dplyr::arrange(Kids_First_Participant_ID, sample_id)
 
 # Write final table to file
 readr::write_tsv(final_df,
