@@ -1,0 +1,182 @@
+---
+title: "Explore impact of Variant_Classification categories"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: C. Savonen for ALSF CCDL
+date: 2020
+---
+
+### Summary of Findings:
+
+FoCR does not include `Translation_Start_Site`, `Nonstop_Mutation` or `Splice_Site` in the definition of nonsynonymous mutations but `maftools` does. See these [GitHub comments](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/725#issuecomment-657575733). 
+This notebook explores how ofte those categories come up so we can know whether this will influence downstream analyses. 
+This addresses part 2 of [this OpenPBTA issue](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/729)
+
+### Usage
+
+If both `run_caller_consensus_analysis-tcga.sh` and `run_caller_consensus_analysis-pbta.sh` have been run, you can run this command:
+
+```
+Rscript -e "rmarkdown::render("explore_var_class_discrepancies.Rmd", clean = TRUE)
+```
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Setup](#setup)
+- [Read in the TMB files](#read-in-the-tmb-files)
+  - [Read in PBTA data](#read-in-pbta-data)
+  - [Declare Variant_Classification definitions](#declare-variant_classification-definitions)
+  - [Data wranglin'](#data-wranglin)
+- [Barplot of Variant Classification](#barplot-of-variant-classification)
+- [Session Info](#session-info)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Setup
+
+```{r}
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+```{r}
+source(file.path("..", "..", "tmb-compare", "util", "cdf-plot-function.R"))
+```
+
+```{r}
+dir.create("plots", showWarnings = FALSE)
+```
+
+## Read in the TMB files
+
+Read in PBTA data. 
+
+```{r}
+pbta_df <- data.table::fread(file.path(
+  "..",
+  "..",
+  "..",
+  "data",
+  "pbta-snv-consensus-mutation.maf.tsv.gz"
+))
+```
+
+Read in TCGA data. 
+
+```{r}
+tcga_df <- data.table::fread(file.path(
+  "..",
+  "results",
+  "consensus",
+  "tcga-snv-consensus-snv.maf.tsv.gz"
+))
+```
+
+### Declare Variant_Classification definitions
+
+```{r}
+# These are Friends of Cancer Research included
+focr_nonsynonymous <- c(
+  "Missense_Mutation",
+  "Frame_Shift_Del",
+  "In_Frame_Ins",
+  "Frame_Shift_Ins",
+  "Nonsense_Mutation",
+  "In_Frame_Del"
+)
+
+# These are included in maftools definition, but not FoCR
+discrepant_classes <- c(
+  "Translation_Start_Site",
+  "Nonstop_Mutation",
+  "Splice_Site"
+)
+
+# All other variant classes are considered synonymous by both mafools and FoCR
+```
+
+### Data wrangling
+
+Summarize each dataset by these `Variant_Classification` definitions. 
+
+Do this for PBTA data. 
+
+```{r}
+pbta_summarize_syn_df <- pbta_df %>%
+  dplyr::mutate(var_def = dplyr::case_when(
+    Variant_Classification %in% discrepant_classes ~ "maftools_only",
+    Variant_Classification %in% focr_nonsynonymous ~ "nonsynonymous",
+    TRUE ~ "synonymous"
+  )) %>%
+  # Group and summarize
+  dplyr::group_by(Variant_Classification, var_def) %>%
+  dplyr::summarize(counts = dplyr::n())
+```
+
+Repeat same steps for TCGA data. 
+
+```{r}
+tcga_summarize_syn_df <- tcga_df %>%
+  dplyr::mutate(var_def = dplyr::case_when(
+    Variant_Classification %in% discrepant_classes ~ "maftools_only",
+    Variant_Classification %in% focr_nonsynonymous ~ "nonsynonymous",
+    TRUE ~ "synonymous"
+  )) %>%
+  # Group and summarize
+  dplyr::group_by(Variant_Classification, var_def) %>%
+  dplyr::summarize(counts = dplyr::n())
+```
+
+Let's make this into one dataset for convenience. 
+
+```{r}
+summarized_df <- dplyr::bind_rows(list(pbta = pbta_summarize_syn_df, tcga = tcga_summarize_syn_df),
+  .id = "dataset"
+) %>%
+  as.data.frame() %>%
+  dplyr::mutate(var_def = as.factor(var_def))
+```
+
+## Barplot of Variant Classification
+
+Summarize by definition inclusion/exclusion. 
+
+```{r}
+def_counts <- summarized_df %>%
+  dplyr::group_by(var_def, dataset) %>%
+  dplyr::summarize(total_count = sum(counts))
+
+# Print out this table
+def_counts
+```
+  
+Plot this as a barplot. 
+
+```{r}
+  ggplot2::ggplot(def_counts, ggplot2::aes(
+    x = var_def,
+    y = total_count,
+    fill = var_def
+  )) +
+  ggplot2::theme_classic() +
+  ggplot2::geom_bar(
+    position = "dodge", stat = "identity"
+  ) +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
+  ggplot2::xlab("") +
+  ggplot2::ylab("Number of TCGA mutations") +
+  colorblindr::scale_fill_OkabeIto() +
+  ggplot2::facet_wrap(~dataset)
+```
+
+The discrepant classes don't seem to show up often. 
+
+## Session Info
+
+```{r}
+sessionInfo()
+```

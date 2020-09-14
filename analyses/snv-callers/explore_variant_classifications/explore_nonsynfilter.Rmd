@@ -52,7 +52,7 @@ This will prepare the files needed for this notebook and run this notebook:
 ```
 
 ```{r}
-source(file.path("..", "..", "tmb-compare-tcga", "util", "cdf-plot-function.R"))
+source(file.path("..", "..", "tmb-compare", "util", "cdf-plot-function.R"))
 ```
 
 ```{r}
@@ -316,7 +316,7 @@ Print from png
 ![](./plots/no_filter_tmb-cdf-pbta-tcga.png)
 
 ### With filter TMB Plot
-![](../../tmb-compare-tcga/plots/tmb-cdf-pbta-tcga.png)
+![](../../tmb-compare/plots/tmb-cdf-pbta-tcga.png)
 ## Session Info
 
 ```{r}

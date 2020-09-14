@@ -13,7 +13,7 @@ tcga_dbfile=scratch/tcga_snv_db.sqlite
 # BED and GTF file paths
 cds_file=scratch/gencode.v27.primary_assembly.annotation.bed
 
-# Calculate consensus TMB without nonsynfilter
+######### Calculate consensus TMB without nonsynfilter
 
 # For PBTA
 Rscript ../scripts/03-calculate_tmb.R \
@@ -31,6 +31,31 @@ Rscript ../scripts/03-calculate_tmb.R \
   --coding_regions $cds_file \
   --overwrite \
   --tcga
+  
+######### Calculate consensus TMB with FoCR definition filter
+# For PBTA
+Rscript ../scripts/03-calculate_tmb.R \
+  --db_file $pbta_dbfile \
+  --output analyses/snv-callers/results/focr_filter \
+  --metadata data/pbta-histologies.tsv \
+  --coding_regions $cds_file \
+  --overwrite \
+  --nonsynfilter_focr
+
+# For TCGA
+Rscript ../scripts/03-calculate_tmb.R \
+  --db_file $tcga_dbfile \
+  --output analyses/snv-callers/results/focr_filter \
+  --metadata data/pbta-tcga-manifest.tsv \
+  --coding_regions $cds_file \
+  --overwrite \
+  --tcga \
+  --nonsynfilter_focr
+  
+########### Run the plotting notebooks 
 
 # Run the notebook that makes plots
 Rscript -e "rmarkdown::render('explore_nonsynfilter.Rmd', clean = TRUE)"
+
+# Run the notebook that makes plots
+Rscript -e "rmarkdown::render('explore_var_class_discrepancies.Rmd', clean = TRUE)"
