@@ -33,7 +33,7 @@ parser.add_argument('--subfile-gistic-focalbygene', required = True,
                     help = "subfile of the GISTIC zip folder that contains focal data fro CDKN2A")
 args = parser.parse_args()
 
-# File to write all the data in 
+# File to write all the data in
 outfile = open(args.outfile, "w")
 
 # Reading GISTIC broad_values and focal_by_genefile for CNA
@@ -181,7 +181,10 @@ for gene in expression_cols:
 
 
 # Replacing all Nan values with NA so they are not empty when writing to a file
-EPN_notebook =EPN_notebook.replace(np.nan, 'NA', regex=True)
+EPN_notebook = EPN_notebook.replace(np.nan, 'NA', regex=True)
+# Sort
+EPN_notebook = EPN_notebook.sort_values(by = ["Kids_First_Participant_ID", "sample_id"])
+
 # Writing dataframe to output file
 EPN_notebook.to_csv(outfile, sep="\t", header=True, index=False)
 outfile.close()
