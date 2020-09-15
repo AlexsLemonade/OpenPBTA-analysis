@@ -124,6 +124,7 @@ ntrk_summary_df %>%
     "FGFR1--TACC1",
      "None"
   )) %>%
+  dplyr::arrange(Sample) %>%
   write_tsv(output_file)
 ```
 
