@@ -142,7 +142,6 @@ RUN ./install_bioc.r \
 RUN ./install_bioc.r \
     ComplexHeatmap
 
-
 # This is needed for the CNV frequency and proportion aberration plots
 RUN ./install_bioc.r \
     GenVisR
@@ -173,11 +172,10 @@ RUN ./install_bioc.r \
     e1071 
 
 
-# bedr package
+# bedr package & check to make sure binaries are available by loading
 RUN ./install_bioc.r \
-    bedr
-# Check to make sure the binaries are available by loading the bedr library
-RUN Rscript -e "library(bedr)"
+    bedr \
+    && Rscript -e "library(bedr)"
 
 # Also install for mutation signature analysis
 # qdapRegex is for the fusion analysis
@@ -190,21 +188,18 @@ RUN ./install_bioc.r \
     rtracklayer
 
 # TCGAbiolinks for TMB compare analysis
-RUN R -e "remotes::install_github('RDocTaskForce/parsetools', ref = '1e682a9f4c5c7192d22e8985ce7723c09e98d62b', dependencies = TRUE)"
-RUN R -e "remotes::install_github('RDocTaskForce/testextra', ref = '4e5dfac8853c08d5c2a8790a0a1f8165f293b4be', dependencies = TRUE)"
-RUN R -e "remotes::install_github('halpo/purrrogress', ref = '54f2130477f161896e7b271ed3ea828c7e4ccb1c', dependencies = TRUE)"
-RUN ./install_bioc.r \
-    TCGAbiolinks
+RUN R -e "remotes::install_github('RDocTaskForce/parsetools', ref = '1e682a9f4c5c7192d22e8985ce7723c09e98d62b', dependencies = TRUE)" \
+    && R -e "remotes::install_github('RDocTaskForce/testextra', ref = '4e5dfac8853c08d5c2a8790a0a1f8165f293b4be', dependencies = TRUE)" \
+    && R -e "remotes::install_github('halpo/purrrogress', ref = '54f2130477f161896e7b271ed3ea828c7e4ccb1c', dependencies = TRUE)" \
+    && ./install_bioc.r TCGAbiolinks
 
 # Install for mutation signature analysis
 RUN ./install_bioc.r \
     ggbio
 
-# CRAN package msigdbr needed for gene-set-enrichment-analysis
+# CRAN package msigdbr and GSVA for gene-set-enrichment-analysis
 RUN ./install_bioc.r \
-    msigdbr 
-# Bioconductor package GSVA needed for gene-set-enrichment-analysis
-RUN ./install_bioc.r \
+    msigdbr \
     GSVA
 
 
@@ -270,11 +265,12 @@ RUN pip3 install "rpy2==2.9.3" \
     && rm -rf /root/.cache/pip/wheels
 
 # Install CrossMap for liftover
-RUN pip3 install "cython==0.29.15" && \
-    pip3 install "bx-python==0.8.8" && \
-    pip3 install "pybigwig==0.3.17" && \
-    pip3 install "pysam==0.15.4" && \
-    pip3 install "CrossMap==0.3.9" \
+RUN pip3 install \
+    "cython==0.29.15" \
+    "bx-python==0.8.8" \
+    "pybigwig==0.3.17" \
+    "pysam==0.15.4" \
+    "CrossMap==0.3.9" \
     && rm -rf /root/.cache/pip/wheels
 
 
@@ -305,23 +301,23 @@ RUN mkdir -p gistic_install && \
     wget -q ftp://ftp.broadinstitute.org/pub/GISTIC2.0/GISTIC_2_0_23.tar.gz && \
     tar zxf GISTIC_2_0_23.tar.gz && \
     rm -f GISTIC_2_0_23.tar.gz && \
-    rm -rf MCR_Installer
-RUN chown -R rstudio:rstudio /home/rstudio/gistic_install && \
+    rm -rf MCR_Installer && \
+    chown -R rstudio:rstudio /home/rstudio/gistic_install && \
     chmod 755 /home/rstudio/gistic_install
 WORKDIR /rocker-build/
 
 # Install multipanelfigure, required for transcriptomic overview figure
+# gplots for gistic comparison
 RUN ./install_bioc.r \
-    multipanelfigure
+    multipanelfigure \
+    gplots
 
 # pybedtools for D3B TMB analysis
 RUN pip3 install "pybedtools==0.8.1"
 
 # Molecular subtyping MB
-RUN R -e "remotes::install_github('d3b-center/medullo-classifier-package', ref = 'e3d12f64e2e4e00f5ea884f3353eb8c4b612abe8', dependencies = TRUE, upgrade = FALSE)"
-RUN ./install_bioc.r \
-    MM2S 
-
+RUN R -e "remotes::install_github('d3b-center/medullo-classifier-package', ref = 'e3d12f64e2e4e00f5ea884f3353eb8c4b612abe8', dependencies = TRUE, upgrade = FALSE)" \
+    && ./install_bioc.r MM2S
 # More recent version of sva required for molecular subtyping MB
 RUN R -e "remotes::install_github('jtleek/sva-devel@123be9b2b9fd7c7cd495fab7d7d901767964ce9e', dependencies = FALSE, upgrade = FALSE)"
 
