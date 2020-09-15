@@ -153,6 +153,7 @@ Write to file.
 
 ```{r}
 data.frame(Kids_First_Biospecimen_ID = all_biospecimen_ids) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
   write_tsv(output_file)
 ```
 

@@ -251,7 +251,8 @@ relevant_clinical_df <- histologies_df %>%
 
 ```{r}
 all_data_df <- inner_join(relevant_clinical_df,
-                          all_data_df)
+                          all_data_df) %>%
+  dplyr::arrange(Kids_First_Participant_ID, sample_id)
 ```
 
 Write to file.

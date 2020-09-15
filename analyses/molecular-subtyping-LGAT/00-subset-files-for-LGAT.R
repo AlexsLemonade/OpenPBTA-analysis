@@ -1,6 +1,9 @@
 # K S Gaonkar 2020
 # Subsets the consensus mutation file to biospecimens where short_histology == LGAT
 
+# pipes
+library(magrittr)
+
 # Look for git root folder
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
@@ -24,7 +27,7 @@ lgat_wgs_subset <- clinical %>%
                 sample_type == "Tumor",
                 composition == "Solid Tissue",
                 experimental_strategy == "WGS") %>%
-  select(Kids_First_Biospecimen_ID)
+  dplyr::select(Kids_First_Biospecimen_ID)
 
 # Filter consensus mutation files for LGAT subset
 consensusMutationSubset <- consensusMutation %>%
@@ -34,9 +37,9 @@ consensusMutationSubset <- consensusMutation %>%
   dplyr::filter(Hugo_Symbol == "BRAF" & HGVSp_Short == "p.V600E") %>%
   # select tumor sample barcode
   dplyr::select(Tumor_Sample_Barcode,HGVSp_Short) %>% 
-  unique() %>%
+  dplyr::distinct() %>%
   # join other WGS LGAT samples
-  full_join(lgat_wgs_subset,by=c("Tumor_Sample_Barcode"="Kids_First_Biospecimen_ID")) %>%
+  dplyr::full_join(lgat_wgs_subset,by=c("Tumor_Sample_Barcode"="Kids_First_Biospecimen_ID")) %>%
   # get BRAF_V600E status
   dplyr::mutate(BRAF_V600E=dplyr::case_when(HGVSp_Short=="p.V600E"~"Yes",is.na(HGVSp_Short) ~"No"))
 

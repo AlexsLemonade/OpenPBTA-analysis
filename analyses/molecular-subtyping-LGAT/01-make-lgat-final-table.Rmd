@@ -133,7 +133,9 @@ final_table <- all_lgat_df %>%
          sample_id,
          Kids_First_Biospecimen_ID_DNA,
          Kids_First_Biospecimen_ID_RNA,
-         molecular_subtype)
+         molecular_subtype) %>%
+  arrange(Kids_First_Participant_ID, 
+          sample_id)
 
 write_tsv(final_table, file.path(results_dir,"lgat_subtyping.tsv"))
 ```
