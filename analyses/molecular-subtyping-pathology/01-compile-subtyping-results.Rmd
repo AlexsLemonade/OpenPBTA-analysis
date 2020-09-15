@@ -151,7 +151,7 @@ The EWS results were post-v15 and come with their own `Notes` column.
 ews_results_df <- bind_exp_strategies(ews_results_df) %>%
   rename(integrated_diagnosis = integrated_diagnosis_reclassified,
          short_histology = short_histology_reclassified,
-         broad_histology = broad_histology_reclassified)
+         broad_histology = broad_histology_reclassified) 
 ```
 
 ### Handling HGG
@@ -166,7 +166,7 @@ hgg_results_df <- bind_exp_strategies(hgg_results_df) %>%
                     short_histology,
                     broad_histology,
                     Notes),
-             by = "Kids_First_Biospecimen_ID")
+             by = "Kids_First_Biospecimen_ID") 
 ```
 
 ### Handling LGAT
@@ -181,7 +181,7 @@ lgat_results_df <- bind_exp_strategies(lgat_results_df) %>%
                     short_histology,
                     broad_histology,
                     Notes),
-             by = "Kids_First_Biospecimen_ID")
+             by = "Kids_First_Biospecimen_ID") 
 ```
 
 ### Handling EPN 
@@ -192,14 +192,14 @@ lgat_results_df <- bind_exp_strategies(lgat_results_df) %>%
 
 ### All results
 
-Compile results and write to file
+Compile results, sort, and write to file
 
 ```{r}
 all_results_df <- bind_rows(embryonal_results_df,
                             ews_results_df,
                             hgg_results_df,
                             lgat_results_df) %>%
-  
+  arrange(Kids_First_Participant_ID, sample_id) %>%
   write_tsv(output_file)
 ```
 

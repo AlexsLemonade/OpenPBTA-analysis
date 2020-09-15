@@ -149,7 +149,8 @@ snv_lesions_df <- select_metadata %>%
       H3F3A.G35R == "Yes" ~ "Diffuse astrocytic and oligodendroglial tumor",
       H3F3A.G35V == "Yes" ~ "Diffuse astrocytic and oligodendroglial tumor",
       TRUE ~ as.character(broad_histology)),
-    )
+    ) %>%
+  dplyr::arrange(Kids_First_Participant_ID, sample_id)
 
 # Display `snv_lesions_df`
 snv_lesions_df 
