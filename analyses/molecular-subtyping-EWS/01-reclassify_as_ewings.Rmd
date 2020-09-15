@@ -130,6 +130,7 @@ clinical_reclassified <- clinical_rnaseq %>%
 ```{r}
 clinical_reclassified %>%
   filter(short_histology_reclassified == "EWS") %>%
+  dplyr::arrange(Kids_First_Participant_ID, sample_id) %>%
   readr::write_tsv(file.path(results_dir, "EWS_results.tsv"))
 ```
 
