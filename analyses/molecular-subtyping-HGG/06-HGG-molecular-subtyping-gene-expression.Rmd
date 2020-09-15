@@ -96,6 +96,7 @@ clean_wrangle_expression <-
     cleaned_expression <- filtered_expression %>%
       as.data.frame() %>%
       rownames_to_column("Kids_First_Biospecimen_ID") %>%
+      dplyr::arrange(Kids_First_Biospecimen_ID) %>%
       dplyr::select(Kids_First_Biospecimen_ID,
              FOXG1_expression_zscore = FOXG1,
              OLIG2_expression_zscore = OLIG2,
