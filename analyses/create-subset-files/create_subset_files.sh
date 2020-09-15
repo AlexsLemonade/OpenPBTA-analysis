@@ -7,7 +7,7 @@ set -o pipefail
 
 # Set defaults for release and biospecimen file name
 BIOSPECIMEN_FILE=${BIOSPECIMEN_FILE:-biospecimen_ids_for_subset.RDS}
-RELEASE=${RELEASE:-release-v16-20200320}
+RELEASE=${RELEASE:-release-v17-20200908}
 NUM_MATCHED=${NUM_MATCHED:-15}
 
 # This option controls whether or not the two larger MAF files are skipped as
@@ -73,6 +73,7 @@ cp $FULL_DIRECTORY/data-files-description.md $SUBSET_DIRECTORY
 
 # TCGA related files
 cp $FULL_DIRECTORY/pbta-tcga* $SUBSET_DIRECTORY
+cp $FULL_DIRECTORY/tcga-snv* $SUBSET_DIRECTORY
 
 # STAR logs
 cp $FULL_DIRECTORY/pbta-star* $SUBSET_DIRECTORY
@@ -88,6 +89,7 @@ cd $SUBSET_DIRECTORY
 rm -f md5sum.txt
 # create a new md5sum.txt file
 md5sum * > md5sum.txt
+cd "$script_directory" || exit
 
 # the release notes and not included in md5sum.txt
 cp $FULL_DIRECTORY/release-notes.md $SUBSET_DIRECTORY
