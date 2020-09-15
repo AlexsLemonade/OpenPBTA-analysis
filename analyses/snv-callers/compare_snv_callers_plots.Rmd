@@ -78,7 +78,7 @@ Connect to SQLite database.
 ```{r}
 # Start up connection
 con <- DBI::dbConnect(RSQLite::SQLite(), 
-                      file.path(scratch_dir, "testing_snv_db.sqlite"))
+                      file.path(scratch_dir, "snv_db.sqlite"))
 ```
 
 Note what columns we will join by.
