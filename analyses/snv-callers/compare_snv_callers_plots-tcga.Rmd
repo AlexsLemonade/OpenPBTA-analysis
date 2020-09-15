@@ -140,11 +140,11 @@ dimnames(detect_mat)[[1]] <- all_caller_df$index
 detect_mat <- !is.na(detect_mat)
 ```
 
-Count up how many callers call each mutation but ignore VarDict. 
+Count up how many callers call each mutation. 
 
 ```{r}
-# Add up how many callers identify each mutation, but ignore VarDict
-consensus_count <- rowSums(detect_mat[, colnames(detect_mat) != "VAF_vardict"])
+# Add up how many callers identify each mutation
+consensus_count <- rowSums(detect_mat)
 
 # Remove the 0's
 consensus_count <- consensus_count[which(consensus_count != 0)]
@@ -274,6 +274,8 @@ Summarize base change information per caller.
 ```{r}
 # Summarize by the number of times each base change shows up in each category.
 frac_change_df <- all_caller_df %>% 
+  # Select only the columns we need
+  dplyr::select(index, Allele, Reference_Allele) %>% 
   # Make change variable
   dplyr::mutate(base_change = paste0(Allele, ">", Reference_Allele)) %>% 
   dplyr::mutate(
@@ -286,7 +288,7 @@ frac_change_df <- all_caller_df %>%
       TRUE ~ base_change
     )
   ) %>%
-  # Transmute VAFs to TRUE/FALSE
+  # Join vaf_data
   dplyr::inner_join(vaf_df, by = "index") %>%
   # Summarize the number of mutations per caller
   dplyr::count(caller, change, name = "count") %>%

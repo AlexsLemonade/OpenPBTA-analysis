@@ -269,6 +269,8 @@ Summarize base change information per caller.
 ```{r}
 # Summarize by the number of times each base change shows up in each category.
 frac_change_df <- all_caller_df %>% 
+  # Select only the columns we need
+  dplyr::select(index, Allele, Reference_Allele) %>% 
   # Make change variable
   dplyr::mutate(base_change = paste0(Allele, ">", Reference_Allele)) %>% 
   dplyr::mutate(
@@ -281,7 +283,7 @@ frac_change_df <- all_caller_df %>%
       TRUE ~ base_change
     )
   ) %>%
-  # Transmute VAFs to TRUE/FALSE
+  # Join data by indices
   dplyr::inner_join(vaf_df, by = "index") %>%
   # Summarize the number of mutations per caller
   dplyr::count(caller, change, name = "count") %>%
