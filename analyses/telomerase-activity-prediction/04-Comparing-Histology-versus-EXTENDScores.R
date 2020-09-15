@@ -41,11 +41,14 @@ PTBA_GE_Standard_TMScores = read.table(B,sep='\t',head=T)  ## Reading Stranded F
 PTBA_GE_Standard_Histology = merge(PTBA_Histology,PTBA_GE_Standard_TMScores,by='SampleID')   ### Merging Clinical data with the Telomerase scores
 
 Stranded_Histology = PTBA_GE_Standard_Histology
-Stranded_Histology = Stranded_Histology[-which(Stranded_Histology$short_histology == "Other"),]   ### Removing the tumors with catagory labelled as "Others"
+# If there are any "Other" samples, remove them 
+if (any(Stranded_Histology$short_histology == "Other")) {
+  Stranded_Histology = Stranded_Histology[-which(Stranded_Histology$short_histology == "Other"),]   ### Removing the tumors with catagory labelled as "Others"
+}
 Frequency = data.frame(table(Stranded_Histology$short_histology))  ### Counting the number of cases for all histologies to avoid less number further
 colnames(Frequency)=c('Variables','Freq')
 Frequency = Frequency[which(Frequency$Freq == 1),]
-Stranded_Histology = Stranded_Histology[-which(Stranded_Histology$short_histology %in% Frequency$Variables),]     ### Removing the tumors with only one case in histologies 
+Stranded_Histology = Stranded_Histology[-which(Stranded_Histology$short_histology %in% Frequency$Variables),]     ### Removing the tumors with only one case in histologies
 
 
 pdf(PBTA_EXTEND_HistologyCompPlot)
