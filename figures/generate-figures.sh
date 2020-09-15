@@ -2,6 +2,10 @@
 #
 # Run all figure making scripts.
 
+#enviroment settings
+set -e
+set -o pipefail
+
 # Find current directory based on this script
 WORKDIR=$(dirname "${BASH_SOURCE[0]}")
 cd "$WORKDIR"
@@ -104,12 +108,6 @@ Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.
 
 							  
 ####### Telomerase Activities
-
-
-#enviroment settings
-
-set -e
-set -o pipefail
 
 
 #generate telomerase activities using gene expression data from collapse RNA seq data files
