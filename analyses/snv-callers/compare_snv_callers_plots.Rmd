@@ -14,11 +14,15 @@ callers.
 
 *Notable Findings:*  
 
-- [VarDict calls more mutations](#upset-graph) than any of the other callers. 
-Many of these have [very low ](#vaf-distributions) suggesting that some may be sequencing errors. 
+- [VarDict calls more mutations](#upset-graphs) than any of the other callers. 
+Many of these have [very low Variant Allele Frequencies](#vaf-distribution-for-each-caller) suggesting that they are more likely to be the result sequencing errors. 
 
-- Mutect2, Strelka2, and Lancet do have [plenty of mutations in common](#upset-graph). 
+- Mutect2, Strelka2, and Lancet do have [a large number of mutations in common](#upset-graphs).
 
+- A 2 out of 3 consensus would increase the number of mutations called ~4X, but that set would be almost equivalent to a Mutect2 & Strelka2 consensus.
+
+- There are relatively few mutations found in only Mutect & Lancet or Strelka & Lancet (~125,000 vs 5,600,000 total mutations in at least 2 of 3 callers)
+  
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
@@ -245,10 +249,10 @@ ggplot2::ggsave(plot = vaf_plot,
 
 Correlate VAF's across callers.
 
-```{r}
+```{r warning=FALSE}
 cor_vaf <- all_caller_df %>% 
   dplyr::select(dplyr::starts_with("VAF_"), -VAF_consensus) %>% 
-  GGally::ggpairs(mapping = ggplot2::aes(alpha = 0.05)) 
+  GGally::ggpairs(alpha = 0.05) 
 
 # Print out without progress bar
 cor_vaf %>%
@@ -257,7 +261,7 @@ cor_vaf %>%
 
 VAF's are pretty related across callers. 
 
-```{r}
+```{r warning = FALSE}
 ggplot2::ggsave(filename = file.path(plots_dir, "pbta-vaf_cor_matrix.png"), 
                 plot = cor_vaf)
 ```

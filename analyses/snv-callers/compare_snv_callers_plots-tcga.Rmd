@@ -250,7 +250,7 @@ ggplot2::ggsave(plot = vaf_plot,
 
 Correlate VAF's across callers.
 
-```{r}
+```{r, warning = FALSE}
 cor_vaf <- all_caller_df %>% 
   dplyr::select(dplyr::starts_with("VAF_"), -VAF_consensus) %>% 
   GGally::ggpairs(mapping = ggplot2::aes(alpha = 0.05)) 
@@ -262,7 +262,7 @@ cor_vaf %>%
 
 VAF's are pretty related across callers. 
 
-```{r}
+```{r, warning = FALSE}
 ggplot2::ggsave(filename = file.path(plots_dir, "tcga-vaf-cor-matrix.png"), 
                 plot = cor_vaf)
 ```
