@@ -243,6 +243,7 @@ RUN R -e "remotes::install_github('jokergoo/circlize', ref = 'b7d86409d7f893e881
 # Install python3 data science tools
 RUN pip3 install \
     "cycler==0.10.0" "kiwisolver==1.1.0" "pyparsing==2.4.5" "python-dateutil==2.8.1" "pytz==2019.3" \
+    "cython==0.29.15" \
     "ipykernel==4.8.1" \
     "jupyter==1.0.0" \
     "matplotlib==3.0.3" \
@@ -266,7 +267,6 @@ RUN pip3 install "rpy2==2.9.3" \
 
 # Install CrossMap for liftover
 RUN pip3 install \
-    "cython==0.29.15" \
     "bx-python==0.8.8" \
     "pybigwig==0.3.17" \
     "pysam==0.15.4" \
