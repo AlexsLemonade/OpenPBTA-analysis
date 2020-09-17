@@ -92,13 +92,9 @@ Rscript 03-Calc-zscore-annotate.R --standardFusionCalls "${scratch_path}/standar
 
 # Project specific filtering
 Rscript -e "rmarkdown::render('04-project-specific-filtering.Rmd')"
-#Rscript -e "rmarkdown::render(input = '04-project-specific-filtering.Rmd', params = list(histology = '${histologies_file}', dataStranded = '${scratch_path}/standardFusionStrandedExp_QC_expression_GTExComparison_annotated.RDS', dataPolya = '${scratch_path}/standardFusionPolyaExp_QC_expression_GTExComparison_annotated.RDS', outputfolder = '${results_path}'), clean = TRUE)"
-
 
 # QC filter putative oncogene found in more than 4 histologies
 Rscript -e "rmarkdown::render('05-QC_putative_onco_fusion_dustribution.Rmd')"
-#Rscript -e "rmarkdown::render('05-QC_putative_onco_fusion_dustribution.Rmd', params = list(histology = '${histologies_file}', dataPutativeFusion = '${scratch_path}/pbta-fusion-putative-oncogenic-preQC.tsv', outputfolder = '${results_path}'), clean = TRUE)"
-
 
 # Recurrent fusion/fused genes
 Rscript 06-recurrent-fusions-per-histology.R --standardFusionCalls $putative_oncogenic_fusion \
