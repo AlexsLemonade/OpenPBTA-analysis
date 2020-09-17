@@ -82,7 +82,7 @@ Connect to SQLite database.
 ```{r}
 # Start up connection
 con <- DBI::dbConnect(RSQLite::SQLite(), 
-                      file.path(scratch_dir, "snv_db.sqlite"))
+                      file.path(scratch_dir, "testing_snv_db.sqlite"))
 ```
 
 Note what columns we will join by.
@@ -249,10 +249,10 @@ ggplot2::ggsave(plot = vaf_plot,
 
 Correlate VAF's across callers.
 
-```{r warning=FALSE}
+```{r, warning=FALSE}
 cor_vaf <- all_caller_df %>% 
   dplyr::select(dplyr::starts_with("VAF_"), -VAF_consensus) %>% 
-  GGally::ggpairs(alpha = 0.05) 
+  GGally::ggpairs(mapping = ggplot2::aes(alpha = 0.05))  
 
 # Print out without progress bar
 cor_vaf %>%
@@ -261,7 +261,7 @@ cor_vaf %>%
 
 VAF's are pretty related across callers. 
 
-```{r warning = FALSE}
+```{r, warning = FALSE}
 ggplot2::ggsave(filename = file.path(plots_dir, "pbta-vaf_cor_matrix.png"), 
                 plot = cor_vaf)
 ```
