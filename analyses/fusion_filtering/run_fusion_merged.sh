@@ -44,9 +44,6 @@ independent_samples_file="${data_path}/independent-specimens.wgswxs.primary-plus
 
 # data release files to use for recurrent fusion/fused genes detection
 
-# TODO: once the data release gets updated to v15+, use the putative oncogenic fusion file included in the data download
-#putative_oncogenic_fusion="analyses/fusion_filtering/results/pbta-fusion-putative-oncogenic.tsv"
-# DONE:
 putative_oncogenic_fusion="${data_path}/pbta-fusion-putative-oncogenic.tsv"
 
 
