@@ -36,9 +36,11 @@ jobs:
 
      ### MOLECULAR SUBTYPING ###
 
-      - run:
-          name: Molecular Subtyping - HGG
-          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
+      # TODO: This is currently broken because of a change from glioma_brain_region to CNS_brain_region
+      # The fix is tracked in https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/754#issuecomment-691525827
+      # - run:
+      #     name: Molecular Subtyping - HGG
+      #     command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
 
       - run:
           name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors
@@ -52,9 +54,10 @@ jobs:
           name: Molecular subtyping Chordoma
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-chordoma/run-molecular-subtyping-chordoma.sh
 
-      - run:
-          name: Molecular subtyping - Ependymoma
-          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
+      # This is failing - a fix is tracked in https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/755#issuecomment-692681410
+      # - run:
+      #     name: Molecular subtyping - Ependymoma
+      #     command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
 
       - run:
           name: Molecular Subtyping - LGAT
@@ -210,12 +213,12 @@ jobs:
 
       - run:
           name: Tumor mutation burden with TCGA
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare-tcga/compare-tmb.Rmd', clean = TRUE)"
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tcga-pbta.Rmd', clean = TRUE)"
 
       - run:
           name: Exploration of nonsynonymous filter
           command: ./scripts/run_in_ci.sh bash analyses/snv-callers/explore_variant_classifications/run_explorations.sh
-
+          
       # This analysis was used to explore the TCGA PBTA data when the BED files used to calculate TCGA
       # were incorrect https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/568
       #- run:
@@ -247,8 +250,12 @@ jobs:
 
       - run:
           name: d3b TMB code
-          command: ./scripts/run_in_ci.sh bash analyses/tmb-compare-tcga/TMB_d3b_code/run_tmb_d3b.sh
-      
+          command: ./scripts/run_in_ci.sh bash analyses/tmb-compare/TMB_d3b_code/run_tmb_d3b.sh
+
+      - run:
+          name: Compare TMB calculations
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tmb-calculations.Rmd', clean = TRUE)"
+
       - run:
           name: Run survival plots
           command: ./scripts/run_in_ci.sh bash analyses/survival-analysis/run_survival.sh

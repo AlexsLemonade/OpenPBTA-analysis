@@ -61,4 +61,5 @@
 - [ ] Is doc/data-format.md up to date?
 - [ ] Is doc/release-notes.md up to date?
 - [ ] Is download-data.sh up to date?
+- [ ] Was download-data.sh tested and did it complete without error?
 -->
