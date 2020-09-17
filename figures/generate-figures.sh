@@ -116,6 +116,6 @@ Rscript --vanilla 01-run-EXTEND.R --input ${analyses_dir}/collapse-rnaseq/result
 Rscript --vanilla 01-run-EXTEND.R --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-counts-rsem-expected_count-collapsed.stranded.rds --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_counts.txt
 Rscript --vanilla 01-run-EXTEND.R --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-counts-rsem-expected_count-collapsed.polya.rds --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_counts.txt
 
-
+# Build figures of telomerase activity
 Rscript --vanilla scripts/TelomeraseActivitites.R
 

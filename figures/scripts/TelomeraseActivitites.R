@@ -29,7 +29,7 @@ Histologies = file.path(root_dir, "data", "pbta-histologies.tsv")   ### Variable
 
 
 palette_dir <- file.path(root_dir, "figures", "palettes")
-histology_palette <- read_tsv(file.path(palette_dir,"histology_color_palette.tsv"))				  ### reading in histologies color from the define file 
+histology_palette <- readr::read_tsv(file.path(palette_dir,"histology_color_palette.tsv"))				  ### reading in histologies color from the define file 
 colnames(histology_palette)[1]='short_histology'
 histology_palette = data.frame(histology_palette)
 hex_codes = histology_palette$hex_codes
@@ -97,6 +97,8 @@ statistics = stat.test%>%
 
 #########################################  Saving Figure in PNG format 
 
+
+## Figure for main text: Boxplots 
 png(telomerase_png,width = 5, height = 6, units = "in", res = 1200)
 
 theme_set(theme_classic() +
@@ -144,7 +146,7 @@ dev.off()
 
 
 
-
+## Figure for SI: scatterplots
 png(supplementary_telomerase_png,width = 4, height = 2, units = "in", res = 1200)
 
 theme_set(theme_classic() +
