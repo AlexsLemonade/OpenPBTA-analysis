@@ -20,11 +20,10 @@
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses", "independent-samples")
 
-# Load the optparse library
+# Load the libraries
+library(magrittr)
 library(optparse)
 
-# Magrittr pipe
-`%>%` <- dplyr::`%>%`
 
 # source sample selection function
 source(file.path(analysis_dir, "independent-samples.R"))
@@ -32,26 +31,25 @@ source(file.path(analysis_dir, "independent-samples.R"))
 set.seed(201910)
 
 # Parse options
-
 option_list <- list(
   make_option(
     c("-f", "--histology_file"),
     type = "character",
     default = NULL,
-    help = "path to the histology tsv file, relative to project root",
+    help = "path to the histology tsv file",
   ),
   make_option(
     c("-o", "--output_directory"),
     type = "character",
     default = NULL,
-    help = "path to output directory, relative to project root"
+    help = "path to output directory"
   )
 )
 
 opts <- parse_args(OptionParser(option_list = option_list))
 
 # set output files
-out_dir <- file.path(root_dir, opts$output_directory)
+out_dir <- opts$output_directory
 if (!dir.exists(out_dir)){
   dir.create(out_dir, recursive = TRUE)
 }
@@ -66,8 +64,8 @@ wgswxs_primplus_file <- file.path(out_dir,
                                   "independent-specimens.wgswxs.primary-plus.tsv")
 
 # Read histology file
-sample_df <- readr::read_tsv(file.path(root_dir, opts$histology_file), 
-                              guess_max = 10000,
+sample_df <- readr::read_tsv(opts$histology_file, 
+                             guess_max = 10000,
                              col_types = readr::cols()) # suppress parse message
 
 
@@ -89,7 +87,7 @@ wgs_primary_plus <- independent_samples(wgs_samples, tumor_types = "prefer_prima
 # WGS is generally preferred, so we will only include those where WGS is not available
 wxs_only_samples <-  tumor_samples %>% 
   dplyr::filter(!(Kids_First_Participant_ID %in% 
-                    wgs_samples$Kids_First_Participant_ID))
+                  wgs_samples$Kids_First_Participant_ID))
 
 wxs_primary <- independent_samples(wxs_only_samples, tumor_types = "primary")
 wxs_primary_plus <- independent_samples(wxs_only_samples, tumor_types = "prefer_primary")

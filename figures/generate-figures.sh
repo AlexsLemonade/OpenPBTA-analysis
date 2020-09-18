@@ -2,6 +2,10 @@
 #
 # Run all figure making scripts.
 
+#enviroment settings
+set -e
+set -o pipefail
+
 # Find current directory based on this script
 WORKDIR=$(dirname "${BASH_SOURCE[0]}")
 cd "$WORKDIR"
@@ -101,3 +105,17 @@ bash ${analyses_dir}/copy_number_consensus_call/run_consensus_call.sh
 # Run CN status heatmap but use parameter so file is saved to figures folder
 Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.Rmd',
                               clean = TRUE, params = list(final_figure=TRUE))"
+
+							  
+####### Telomerase Activities
+
+
+#generate telomerase activities using gene expression data from collapse RNA seq data files
+Rscript --vanilla 01-run-EXTEND.R --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt
+Rscript --vanilla 01-run-EXTEND.R --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_FPKM.txt
+Rscript --vanilla 01-run-EXTEND.R --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-counts-rsem-expected_count-collapsed.stranded.rds --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_counts.txt
+Rscript --vanilla 01-run-EXTEND.R --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-counts-rsem-expected_count-collapsed.polya.rds --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_counts.txt
+
+# Build figures of telomerase activity
+Rscript --vanilla scripts/TelomeraseActivitites.R
+

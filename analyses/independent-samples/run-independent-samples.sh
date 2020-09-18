@@ -7,8 +7,11 @@
 set -e
 set -o pipefail
 
-Rscript -e "rmarkdown::render('analyses/independent-samples/00-repeated-samples.Rmd', clean = TRUE)"
+# Set the working directory to the directory of this file
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
-Rscript analyses/independent-samples/01-generate-independent-specimens.R \
-  -f data/pbta-histologies.tsv \
-  -o analyses/independent-samples/results
+Rscript -e "rmarkdown::render('00-repeated-samples.Rmd', clean = TRUE)"
+
+Rscript 01-generate-independent-specimens.R \
+  -f ../../data/pbta-histologies.tsv \
+  -o results
