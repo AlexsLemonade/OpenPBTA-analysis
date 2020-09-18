@@ -52,7 +52,9 @@ expression <- readr::read_rds(opts$expression)
 
 epn_samples <- histologies %>%
   filter(experimental_strategy == "RNA-Seq",
-         integrated_diagnosis == "Ependymoma") %>%
+         # All Ependymoma samples are captured in pathology_diagnosis
+         # pathology_free_text_diagnosis adds no additional samples
+         pathology_diagnosis == "Ependymoma") %>%
   pull(Kids_First_Biospecimen_ID)
 
 # Subsetting expression columns with column names/BSIDs that are in the list of ependymoma samples
