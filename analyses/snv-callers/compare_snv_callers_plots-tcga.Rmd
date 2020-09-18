@@ -195,7 +195,7 @@ upset_png(detect_mat,
           has_vardict = FALSE)
 ```
 
-![Upset plot - transcripts only](plots/tcga-caller-comparison/tcga-upset-plot-not-transcipts-only.png)
+![Upset plot - non-transcripts only](plots/tcga-caller-comparison/tcga-upset-plot-not-transcipts-only.png)
 
 ## VAF distribution for each caller
 

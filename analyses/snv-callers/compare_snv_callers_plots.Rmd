@@ -196,7 +196,7 @@ upset_png(detect_mat,
           subset_vector = not_transcripts)
 ```
 
-![Upset plot - transcripts only](plots/pbta-caller-comparison/pbta-upset-plot-not-transcipts-only.png)
+![Upset plot - non transcripts only](plots/pbta-caller-comparison/pbta-upset-plot-not-transcipts-only.png)
 
 ## VAF distribution for each caller
 
