@@ -191,7 +191,7 @@ not_transcripts <- all_caller_df$Variant_Classification %in% c("5'Flank", "3'Fla
 
 upset_png(detect_mat,
           plot_file_path = file.path(plots_dir, "tcga-upset-plot-not-transcipts-only.png"), 
-          subset_vector = transcripts, 
+          subset_vector = not_transcripts, 
           has_vardict = FALSE)
 ```
 
