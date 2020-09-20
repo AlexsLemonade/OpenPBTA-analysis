@@ -227,7 +227,7 @@ There are 2 instances where there are two stranded biospecimen IDs that map to t
 all_data_df <- left_join(dna_df, rna_df,
                          by = c("Kids_First_Participant_ID",
                                 "sample_id"),
-                                suffix = c("_DNA", "_RNA")) %>%
+                         suffix = c("_DNA", "_RNA")) %>%
   select(starts_with("Kids_First"), sample_id, everything())
 
 head(all_data_df, n = 10)
@@ -243,8 +243,8 @@ relevant_clinical_df <- histologies_df %>%
   mutate(age_at_diagnosis_yr = 
            floor(as.integer(age_at_diagnosis_days)/365)) %>%
   group_by(Kids_First_Participant_ID, sample_id) %>%
-  summarize(glioma_brain_region = paste(sort(unique(glioma_brain_region)), 
-                                        collapse = ", "),
+  summarize(CNS_region = paste(sort(unique(CNS_region)), 
+                               collapse = ", "),
             age_at_diagnosis_yr = paste(sort(unique(age_at_diagnosis_yr)),
                                         collapse = ", "))
 ```
@@ -288,7 +288,7 @@ h3_k28_df <- all_data_df %>%
          H3F3A.G35R,
          H3F3A.G35V,
          age_at_diagnosis_yr,
-         glioma_brain_region,
+         CNS_region,
          relevant_coding_mutations,
          PTEN_focal_status,
          PDGFRA_focal_status,
@@ -312,7 +312,7 @@ any(h3_k28_df$H3F3A.G35V == "Yes")
 Are the majority midline localized?
 
 ```{r}
-table(h3_k28_df$glioma_brain_region)
+table(h3_k28_df$CNS_region)
 ```
 
 Yes.
