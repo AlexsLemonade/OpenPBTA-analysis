@@ -96,7 +96,8 @@ path_dx_terms <- c(
   "Diffuse midline glioma",
   "Diffuse Astrocytoma",
   "DIPG", 
-  "High grade glioma"
+  "High grade glioma",
+  "Gliomatosis Cerebri"
 )
 ```
 
