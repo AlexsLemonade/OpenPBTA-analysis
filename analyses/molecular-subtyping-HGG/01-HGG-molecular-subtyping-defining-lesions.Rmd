@@ -123,6 +123,21 @@ snv_lesions_df <- snv_lesions_df %>%
   )
 ```
 
+Add other identifiers.
+
+Add other identifiers and sort
+
+```{r}
+snv_lesions_df <- metadata %>%
+  dplyr::select(Kids_First_Participant_ID, 
+                sample_id, 
+                Kids_First_Biospecimen_ID) %>%
+  dplyr::inner_join(snv_lesions_df,
+                    by = c("Kids_First_Biospecimen_ID" = "Tumor_Sample_Barcode")) %>%
+  dplyr::arrange(Kids_First_Participant_ID, sample_id)
+```
+
+
 ## Save final table of results
 
 ```{r}
