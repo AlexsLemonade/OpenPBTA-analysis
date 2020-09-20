@@ -15,7 +15,7 @@ Originally, we subtyped tumors in this module if the specimen satisfied one of t
 1. A defining lesion was identified in the SNV consensus file (H3 K28M or G35R/V)
 2. The `short_histology` was `HGAT`.
 
-In an upcoming release, `integrated_diagnosis`, which can be updated as the result of subtyping, will be used to populate the `short_histology` (see [#748](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/748)).
+In an upcoming release, `integrated_diagnosis`, which can be updated as the result of subtyping, will be used to populate the `short_histology` column (see [#748](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/748)).
 Thus, molecular subtyping modules need to be upstream of `short_histology` and use the `pathology_diagnosis` and `pathology_free_text_diagnosis` fields.
 This change for this module is tracked in [#754](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/754).
 
