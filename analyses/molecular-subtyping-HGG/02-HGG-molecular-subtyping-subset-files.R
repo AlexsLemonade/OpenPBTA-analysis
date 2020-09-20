@@ -165,6 +165,13 @@ hgg_metadata_df <- bind_rows(
   # Remove duplicates
   distinct()
 
+# Add a TSV that's the metadata for the samples that will be included in
+# the subtyping
+# Useful intermediate file for examination, but also can be used in the next
+# notebook for inclusion criteria without repeating the logic
+write_tsv(hgg_metadata_df,
+          file.path(subset_dir, "hgg_metadata.tsv"))
+
 #### Filter expression data ----------------------------------------------------
 
 filter_process_expression <- function(expression_mat) {
