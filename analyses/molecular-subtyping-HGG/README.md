@@ -2,7 +2,7 @@
 
 **Module authors:** Chante Bethell ([@cbethell](https://github.com/cbethell)), Stephanie J. Spielman([@sjspielman](https://github.com/sjspielman)), and Jaclyn Taroni ([@jaclyn-taroni](https://github.com/jaclyn-taroni))
 
-**Note: The files in the `hgg-subset` directory were generated via `02-HGG-molecular-subtyping-subset-files.R` using the the files in the [version 13 data release](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/444).
+**Note: The files in the `hgg-subset` directory were generated via `02-HGG-molecular-subtyping-subset-files.R` using the the files in the version 17 data release.
 When re-running this module, you may want to regenerate the HGG subset files using the most recent data release.**
 
 ## Usage
@@ -17,14 +17,23 @@ When run in this manner, `02-HGG-molecular-subtyping-subset-files.R` will genera
 
 `run-molecular-subtyping-HGG.sh` is designed to be run as if it was called from this module directory even when called from outside of this directory.
 
+`00-HGG-select-pathology-dx.Rmd` is not run via this shell script, as it should be run locally, tied to `release-v17-20200908`, and should not be re-rendered when there are changes to the underlying `pbta-histologies.tsv` file in future releases (see [Folder content](#folder-content) and [#748](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/748)).
+
 ## Folder content
 
 This folder contains scripts tasked to molecularly subtype High-grade Glioma samples in the PBTA dataset.
 
+[`00-HGG-select-pathology-dx.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/00-HGG-select-pathology-dx.nb.html) is a notebook used to explore the `pathology_diagnosis` and `pathology_free_text_diagnosis` fields in the `release-v17-20200908` version of `pbta-histologies.tsv`. 
+Prior to `release-v17-20200908`, this module used `short_histology == "HGAT"` to identify samples to be included for subtyping. 
+In future releases, the `short_histology` values will be derived from the `pathology_diagnosis` and `molecular_subtype` values (see [#748](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/748)); this module generates the latter.
+Thus, we must identify the samples to included for subtyping on the basis of the `pathology_diagnosis` and `pathology_free_text_diagnosis` values.
+This notebook looks at what `pathology_diagnosis` and `pathology_free_text_diagnosis` values are associated with samples where `short_histology == "HGAT"` in `release-v17-20200908` and identifies strings to use to include and exclude samples.
+The relevant strings are saved in [`hgg-subset/hgg_subtyping_path_dx_strings.json`](hgg-subset/hgg_subtyping_path_dx_strings.json), which is used downstream in `02-HGG-molecular-subtyping-subset-files` to generate subset files.
+
 [`01-HGG-molecular-subtyping-defining-lesions.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/01-HGG-molecular-subtyping-defining-lesions.nb.html) is a notebook written to look at the high-grade glioma defining lesions (_H3F3A_ K28M, _H3F3A_ G35R/V, _HIST1H3B_ K28M, _HIST1H3C_ K28M, _HIST2H3C_ K28M) for all tumor samples in the PBTA dataset. This notebook produces a results table found at `results/HGG_defining_lesions.tsv`.
 
-`02-HGG-molecular-subtyping-subset-files.R` is a script written to subset the copy number, gene expression, fusion, mutation, SNV and GISTIC's broad values files to include only samples: 1) with defining lesions or 2) labeled as high-grade astrocytic tumors (`HGAT` in `short_histology`).
-This script produces the relevant subset files that can be found in the `hgg-subset` directory.
+`02-HGG-molecular-subtyping-subset-files.R` is a script written to subset the copy number, gene expression, fusion, mutation, SNV and GISTIC's broad values files to include only samples: 1) with defining lesions or 2) on the basis of the `pathology_diagnosis` or `pathology_free_text_diagnosis` values (strings used for inclusion or exclusion are available in [`hgg-subset/hgg_subtyping_path_dx_strings.json`](hgg-subset/hgg_subtyping_path_dx_strings.json)).
+This script produces the relevant subset files that can be found in the `hgg-subset` directory
 
 [`03-HGG-molecular-subtyping-cnv.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/03-HGG-molecular-subtyping-cnv.nb.html) is a notebook written to prepare the copy number data relevant to HGG molecular subtyping.
 The CNVkit focal copy number file generated in the [`focal-cn-file-preparation`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/focal-cn-file-preparation/) module is used as this CNVkit was also used to produce the GISTIC `broad_values_by_arm.txt` file that is also implemented in this module.
@@ -80,6 +89,8 @@ The results, shown below, suggest that one sample may be a candidate for reclass
 The structure of this folder is as follows:
 
 ```
+├── 00-HGG-select-pathology-dx.Rmd
+├── 00-HGG-select-pathology-dx.nb.html
 ├── 01-HGG-molecular-subtyping-defining-lesions.Rmd
 ├── 01-HGG-molecular-subtyping-defining-lesions.nb.html
 ├── 02-HGG-molecular-subtyping-subset-files.R
@@ -102,7 +113,9 @@ The structure of this folder is as follows:
 │   ├── hgg_focal_cn.tsv.gz
 │   ├── hgg_fusion.tsv
 │   ├── hgg_gistic_broad_values.tsv
+│   ├── hgg_metadata.tsv
 │   ├── hgg_snv_maf.tsv.gz
+│   ├── hgg_subtyping_path_dx_strings.json
 │   ├── hgg_zscored_expression.polya.RDS
 │   └── hgg_zscored_expression.stranded.RDS
 ├── plots
