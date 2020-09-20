@@ -105,6 +105,24 @@ snv_lesions_df <- snv_lesions_df %>%
   dplyr::mutate_all(function(x) tidyr::replace_na(x, "No"))
 ```
 
+Add a column that keeps track of the presence of any defining lesion.
+We'll use this to create subset files in the next step.
+
+```{r}
+snv_lesions_df <- snv_lesions_df %>%
+  dplyr::mutate(
+    defining_lesion = dplyr::case_when(
+      H3F3A.K28M == "Yes" ~ TRUE,
+      HIST1H3B.K28M == "Yes" ~ TRUE,
+      HIST1H3C.K28M == "Yes" ~ TRUE,
+      HIST2H3C.K28M == "Yes" ~ TRUE,
+      H3F3A.G35R == "Yes" ~ TRUE,
+      H3F3A.G35V == "Yes" ~ TRUE,
+      TRUE ~ FALSE
+    )
+  )
+```
+
 ## Save final table of results
 
 ```{r}
