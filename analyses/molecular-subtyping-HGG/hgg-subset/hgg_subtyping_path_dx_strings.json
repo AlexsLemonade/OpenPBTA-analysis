@@ -1,0 +1,5 @@
+{
+  "include_path_dx": ["High-grade glioma/astrocytoma", "Diffuse Astrocytoma", "Anaplastic Astrocytoma", "Diffuse intrinsic pontine glioma", "Diffuse midline glioma", "Diffuse Astrocytoma", "DIPG", "High grade glioma"],
+  "include_free_text": ["high grade glioma", "high-grade glioma", "hgg", "anaplastic astrocytoma", "glioblastoma", "diffuse midline glioma", "diffuse astrocytoma", "dipg", "gbm", "anaplastic pilocytic astrocytoma", "anaplastic gliomatosis cerebri", "anaplastic pleomorphic xanthoastrocytoma"],
+  "exclude_path_dx": ["Low-grade glioma/astrocytoma"]
+}
