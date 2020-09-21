@@ -29,6 +29,11 @@ option_list <- list(
 
 # parse parameters
 opt <- parse_args(OptionParser(option_list = option_list))
+
+opt$corrected_mat <- "input/medulloblastoma-exprs-batch-corrected.rds"
+opt$uncorrected_mat <- "input/medulloblastoma-exprs.rds"
+opt$output_prefix <- "mb-classified"
+
 corrected_mat <- opt$corrected_mat
 uncorrected_mat <- opt$uncorrected_mat
 method <- opt$method
