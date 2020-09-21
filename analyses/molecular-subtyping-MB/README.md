@@ -100,6 +100,8 @@ input/expected_class.rds
 results/mb-classified.rds
 ```
 
+TODO: `input/expected_class.rds` doesn't have much information surrounding it, but [this is issue has been tracked](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/746) and this README can be updated once that has been addressed. 
+
 2. Function:
 
 This notebook summarizes the performance of the two classifiers on batch corrected and uncorrected expression matrix obtained after running 01-classify-mb.R.
