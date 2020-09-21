@@ -57,14 +57,13 @@ histologies_df <- read_tsv(histologies_file)
 ### `short_histology == HGAT`
 
 In the current histologies file, if we filter based on `short_histology` as we did originally, what is in the pathology diagnosis fields?
-Note that some of these values will have been altered based on earlier subtyping efforts.
+Note that some of the `short_histology` values will have been altered based on earlier subtyping efforts.
 (That's why we're doing this!)
 
 ```{r}
 histologies_df %>% 
   filter(short_histology == "HGAT") %>%
-  group_by(pathology_diagnosis) %>%
-  tally() %>%
+  count(pathology_diagnosis) %>%
   arrange(desc(n))
 ```
 
@@ -174,7 +173,7 @@ terms_list <- list(include_path_dx = path_dx_terms,
 Save this list as JSON.
 
 ```{r}
-writeLines(jsonlite::toJSON(terms_list, pretty = TRUE), output_file)
+writeLines(jsonlite::prettify(jsonlite::toJSON(terms_list)), output_file)
 ```
 
 ## Session Info
@@ -182,4 +181,3 @@ writeLines(jsonlite::toJSON(terms_list, pretty = TRUE), output_file)
 ```{r}
 sessionInfo()
 ```
-

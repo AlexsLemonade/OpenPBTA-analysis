@@ -123,9 +123,7 @@ snv_lesions_df <- snv_lesions_df %>%
   )
 ```
 
-Add other identifiers.
-
-Add other identifiers and sort
+Add other identifiers and sort.
 
 ```{r}
 snv_lesions_df <- metadata %>%
@@ -152,4 +150,3 @@ readr::write_tsv(snv_lesions_df,
 # Print the session information
 sessionInfo()
 ```
-
