@@ -118,14 +118,6 @@ path_dx_list <- jsonlite::fromJSON(
             "hgg_subtyping_path_dx_strings.json")
 )
 
-#### Filter HGG defining lesions data.frame ------------------------------------
-
-# Filter the output file from `01-HGG-molecular-subtyping-defining-lesions.Rmd`
-# for samples with defining lesions - there is a logical column 
-# `defining_lesion`
-hgg_lesions_df <- hgg_lesions_df %>% 
-  filter(defining_lesion)
-
 #### Filter metadata -----------------------------------------------------------
 
 # Filter metadata based on pathology diagnosis fields and include samples that 
@@ -143,19 +135,24 @@ tumor_metadata_df <- metadata %>%
 path_dx_df <- tumor_metadata_df %>%
   # Inclusion on the basis of strings in pathology_diagnosis and 
   # pathology_free_text_diagnosis
-  filter(str_detect(pathology_diagnosis, 
+  filter(str_detect(str_to_lower(pathology_diagnosis), 
                     paste0(path_dx_list$include_path_dx, collapse = "|")) | 
-           str_detect(pathology_free_text_diagnosis, 
+           str_detect(str_to_lower(pathology_free_text_diagnosis), 
                       paste0(path_dx_list$include_free_text, collapse = "|")),
          # Exclude samples on the basis of this string (LGG, in practice)
-         str_detect(pathology_diagnosis,
+         str_detect(str_to_lower(pathology_diagnosis),
                     paste0(path_dx_list$exclude_path_dx, collapse = "|"),
                     negate = TRUE)
   )
 
+
+
 # Now samples on the basis of the defining lesions
+hgg_sample_ids <- hgg_lesions_df %>% 
+  filter(defining_lesion) %>%
+  pull(sample_id)
 lesions_df <- tumor_metadata_df %>%
-  filter(sample_id %in% hgg_lesions_df$sample_id)
+  filter(sample_id %in% hgg_sample_ids)
 
 # Putting it all together now
 hgg_metadata_df <- bind_rows(
