@@ -1,0 +1,115 @@
+---
+title: "Select pathology diagnoses for inclusion"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Candace Savonen for ALSF CCDL
+date: 2020
+---
+
+## Background
+
+In an upcoming release, `integrated_diagnosis`, which can be updated as the result of subtyping, will be used to populate the `short_histology` column (see [#756](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/756)).
+Thus, molecular subtyping modules need to be upstream of `short_histology` and use the `pathology_diagnosis` and `pathology_free_text_diagnosis` fields.
+This change for this module is tracked in [#754](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/754).
+
+## Set up
+
+```{r}
+library(tidyverse)
+```
+
+### Directories and files
+
+We're going to tie this to a specific release.
+
+```{r}
+data_dir <- file.path("..", "..", "data", "release-v17-20200908")
+histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
+```
+
+We're going to save the pathology diagnosis information we'll use to generate the subset files in a directory `input`.
+
+```{r}
+output_dir <- "input"
+output_file <- file.path(output_dir, 
+                         "subset-mb-clinical.tsv")
+```
+
+## Read in data
+
+```{r}
+histologies_df <- read_tsv(histologies_file)
+```
+
+## Explore the pathology diagnoses
+
+How do `short_histology`, `integrated_diagnosis`, and `pathology_diagnosis` line up for `Medulloblastoma` biospecimens? 
+
+```{r}
+histologies_df %>% 
+  filter(short_histology == "Medulloblastoma" | integrated_diagnosis == "Medulloblastoma" | pathology_diagnosis == "Medulloblastoma") %>%
+  group_by(short_histology, integrated_diagnosis, pathology_diagnosis) %>%
+  tally()
+```
+
+Looks like there are two samples that will be added in by using `pathology_diagnosis`. 
+
+Let's take a look at the free text field.
+
+```{r}
+histologies_df %>% 
+  filter(short_histology == "Medulloblastoma") %>%
+  group_by(pathology_free_text_diagnosis) %>%
+  tally() %>%
+  arrange(desc(n))
+```
+
+This is not as uniform, but that's to be expected. 
+There are a couple `pnet` samples in here according to this field, but we will rely on the other field's labels instead. 
+
+## Pathology diagnosis strings for inclusion
+
+Ignoring the `pnet` samples, in general we can include any samples that have `medulloblastoma` in the `pathology_free_text_diagnosis` field. 
+We can add more terms to this later if needed. 
+
+```{r}
+free_text_dx_terms <- c(
+  "medulloblastoma"
+)
+
+# Collapse with | so we can use with grep
+free_text_dx_terms <- paste0(free_text_dx_terms, collapse = "|")
+```
+
+## Any `Other` samples that shoul be include
+
+```{r}
+other_mb_biospecimens <- histologies_df %>% 
+  filter(short_histology == "Other", 
+         grepl(free_text_dx_terms, pathology_free_text_diagnosis)) %>% 
+  pull(Kids_First_Biospecimen_ID)
+
+other_mb_biospecimens
+```
+
+There's no samples in `Other` that need to be added at this time, but if they do later, we can add them to the filter statements in the next section. 
+
+
+## Subset to Medulloblastoma based on `pathology_diagnosis`
+
+Let's take a look at a first attempt using these terms as described above.
+
+```{r}
+filtered_on_dx_df <- histologies_df %>%
+  filter(pathology_diagnosis == "Medulloblastoma") %>% # Can add `Kids_First_Biospecimen_ID %in% other_mb_biospecimens` statement here if "Other" samples show up. 
+  readr::write_tsv(output_file)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
