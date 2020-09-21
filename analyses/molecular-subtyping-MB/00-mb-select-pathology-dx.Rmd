@@ -10,17 +10,39 @@ date: 2020
 
 ## Background
 
-In an upcoming release, `integrated_diagnosis`, which can be updated as the result of subtyping, will be used to populate the `short_histology` column (see [#756](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/756)).
+In an upcoming release, `integrated_diagnosis`, which can be updated as the result of subtyping, will be used to populate the `short_histology` column (see [#748](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/748)).
 Thus, molecular subtyping modules need to be upstream of `short_histology` and use the `pathology_diagnosis` and `pathology_free_text_diagnosis` fields.
-This change for this module is tracked in [#754](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/754).
+
+This change for this module is tracked in [#756](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/756).
+ 
+_As of 09-21-2020, this is pretty straightforward for Medulloblastoma samples:_  
+
+- `short_histology`, `integrated_diagnosis` and `pathology_diagnosis` are fairly in agreement as far as which samples are `Medulloblastoma`  
+- Most but not all of these samples have `medulloblastoma` some place in `pathology_free_text_diagnosis`, but a couple have `PNET`.   
+- There are no samples currently classified as `short_histology == "Other"` that have `medulloblastoma` as a part of `pathology_free_text_diagnosis`.
+
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Background](#background)
+- [Set up](#set-up)
+- [Read in data](#read-in-data)
+- [Explore the pathology diagnoses](#explore-the-pathology-diagnoses)
+- [Pathology diagnosis strings for inclusion](#pathology-diagnosis-strings-for-inclusion)
+- [Any `Other` samples that should be included based on `pathology_free_text_diagnosis`](#any-other-samples-that-should-be-included-based-on-pathology_free_text_diagnosis)
+- [Subset to Medulloblastoma based on `pathology_diagnosis`](#subset-to-medulloblastoma-based-on-pathology_diagnosis)
+- [Session Info](#session-info)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 
 ## Set up
 
 ```{r}
 library(tidyverse)
 ```
-
-### Directories and files
 
 We're going to tie this to a specific release.
 
@@ -83,7 +105,7 @@ free_text_dx_terms <- c(
 free_text_dx_terms <- paste0(free_text_dx_terms, collapse = "|")
 ```
 
-## Any `Other` samples that shoul be include
+## Any `Other` samples that should be included based on `pathology_free_text_diagnosis`
 
 ```{r}
 other_mb_biospecimens <- histologies_df %>% 
@@ -96,10 +118,9 @@ other_mb_biospecimens
 
 There's no samples in `Other` that need to be added at this time, but if they do later, we can add them to the filter statements in the next section. 
 
-
 ## Subset to Medulloblastoma based on `pathology_diagnosis`
 
-Let's take a look at a first attempt using these terms as described above.
+We will subset these biospecimens based on the `pathology_diagnosis`. 
 
 ```{r}
 filtered_on_dx_df <- histologies_df %>%
@@ -112,4 +133,3 @@ filtered_on_dx_df <- histologies_df %>%
 ```{r}
 sessionInfo()
 ```
-

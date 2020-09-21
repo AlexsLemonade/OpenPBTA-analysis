@@ -22,7 +22,6 @@ option_list <- list(
 
 # parse options
 opt <- parse_args(OptionParser(option_list = option_list))
-clin_file <- opt$clin_file
 batch_col <- opt$batch_col
 output_prefix <- opt$output_prefix
 output_dir <- opt$output_dir
@@ -33,6 +32,7 @@ data_dir <- file.path(root_dir, "data")
 dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 
 # input files
+clin_file <- opt$clin_file
 polya.file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds")
 stranded.file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
 
