@@ -19,7 +19,7 @@ _As of v17 release, this is pretty straightforward for Medulloblastoma samples:_
 
 - `short_histology`, `integrated_diagnosis` and `pathology_diagnosis` are fairly in agreement as far as which samples are `Medulloblastoma`  
 - Most but not all of these samples have `medulloblastoma` some place in `pathology_free_text_diagnosis`, but a couple have `PNET`.   
-- There are no samples currently classified as `short_histology == "Other"` that have `medulloblastoma` as a part of `pathology_free_text_diagnosis`.
+- There are no samples currently classified as `pathology_diagnosis == "Other"` that have `medulloblastoma` as a part of `pathology_free_text_diagnosis`.
 
 
 ## Set up

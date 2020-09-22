@@ -48,8 +48,11 @@ A medulloblastoma terms JSON file:
 1. Inputs
 
 ```
+# the rna-seq expression files
 data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds
 data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds
+
+# medulloblastoma terms file
 molecular-subtyping-MB/inputs/mb_subtyping_path_dx_strings.json
 ```
 
@@ -65,6 +68,9 @@ The batch correction uses the column from the clinical file that matches the val
 3. Output:
 
 ```
+# subset clinical file to medulloblastoma biospecimens only
+input/subset-mb-clinical.tsv
+
 # uncorrected matrix
 results/medulloblastoma-exprs.rds
 
@@ -77,9 +83,6 @@ results/medulloblastoma-exprs-batch-corrected.rds
 1. Input
 
 ```
-# medulloblastoma terms file
-molecular-subtyping-MB/inputs/mb_subtyping_path_dx_strings.json
-
 # uncorrected matrix
 results/medulloblastoma-exprs.rds
 
@@ -104,8 +107,8 @@ The .rds object contains a list of dataframes with outputs corresponding to the 
 1. Input
 
 ```
-# medulloblastoma terms file
-molecular-subtyping-MB/inputs/mb_subtyping_path_dx_strings.json
+# subset clinical file to medulloblastoma biospecimens only
+input/subset-mb-clinical.tsv
 
 # expected output from pathology reports
 input/expected_class.rds
