@@ -9,7 +9,7 @@ suppressPackageStartupMessages(library(MM2S))
 suppressPackageStartupMessages(library(org.Hs.eg.db))
 
 # function to run molecular subtyping
-classify.mb <- function(expr.input = combo$Var1[1], method = combo$Var2[1]){
+classify.mb <- function(expr.input, method){
   # get object
   expr.mb <- get(expr.input)
   
