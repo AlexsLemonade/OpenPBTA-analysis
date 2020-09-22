@@ -193,10 +193,10 @@ not_transcripts <- all_caller_df$Variant_Classification %in% c("5'Flank", "3'Fla
 
 upset_png(detect_mat,
           plot_file_path = file.path(plots_dir, "pbta-upset-plot-not-transcipts-only.png"), 
-          subset_vector = transcripts)
+          subset_vector = not_transcripts)
 ```
 
-![Upset plot - transcripts only](plots/pbta-caller-comparison/pbta-upset-plot-not-transcipts-only.png)
+![Upset plot - non transcripts only](plots/pbta-caller-comparison/pbta-upset-plot-not-transcipts-only.png)
 
 ## VAF distribution for each caller
 
