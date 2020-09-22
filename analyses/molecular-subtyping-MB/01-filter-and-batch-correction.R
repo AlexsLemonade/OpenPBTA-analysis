@@ -8,9 +8,6 @@ suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(sva))
 
 option_list <- list(
-  make_option(c("--clin_file"), type = "character", 
-              default = NULL,
-              help = "subsetted clinical file with only the medulloblastoma biospecimens we want to process"),
   make_option(c("--batch_col"), type = "character", 
               default = NULL,
               help = "Combine and batch correct input matrices using which column?"),
@@ -32,9 +29,14 @@ data_dir <- file.path(root_dir, "data")
 dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 
 # input files
-clin_file <- opt$clin_file
+clin_file <- file.path(data_dir, "pbta-histologies.tsv")
 polya.file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds")
 stranded.file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
+terms.file <- file.path("input", "mb_subtyping_path_dx_strings.json")
+
+# Read in the JSON file that contains the strings we'll use to include or
+# exclude samples for subtyping - see 00-HGG-select-pathology-dx
+path_dx_list <- jsonlite::fromJSON(terms.file)
 
 # output files
 uncorrected.file <- file.path(output_dir, paste0(output_prefix, ".rds"))
@@ -47,7 +49,13 @@ stranded <- readRDS(stranded.file)
 # read and subset clinical file to MB samples
 clin <- read.delim(clin_file, stringsAsFactors = F)
 clin.mb  <- clin %>%
-  filter(experimental_strategy == "RNA-Seq") %>%
+  # Inclusion on the basis of strings in pathology_diagnosis and 
+  # pathology_free_text_diagnosis
+  filter(str_detect(str_to_lower(clin$pathology_diagnosis), 
+                    paste0(path_dx_list$include_path_dx, collapse = "|")) | 
+           str_detect(str_to_lower(clin$pathology_free_text_diagnosis), 
+                      paste0(path_dx_list$include_free_text, collapse = "|")),
+         experimental_strategy == "RNA-Seq") %>%
   dplyr::select(Kids_First_Biospecimen_ID, sample_id, RNA_library)
 
 # function to filter only MB samples

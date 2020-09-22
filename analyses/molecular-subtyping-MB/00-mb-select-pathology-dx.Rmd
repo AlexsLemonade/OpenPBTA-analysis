@@ -45,7 +45,7 @@ library(tidyverse)
 ```
 
 ```{r}
-data_dir <- file.path("..", "..", "data")
+data_dir <- file.path("..", "..", "data", "release-v17-20200908")
 histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
 ```
 
@@ -54,7 +54,7 @@ We're going to save the pathology diagnosis information we'll use to generate th
 ```{r}
 output_dir <- "input"
 output_file <- file.path(output_dir, 
-                         "subset-mb-clinical.tsv")
+                         "mb_subtyping_path_dx_strings.json")
 ```
 
 ## Read in data
@@ -98,9 +98,6 @@ We can add more terms to this later if needed.
 free_text_dx_terms <- c(
   "medulloblastoma"
 )
-
-# Collapse with | so we can use with grep
-free_text_dx_terms <- paste0(free_text_dx_terms, collapse = "|")
 ```
 
 ## Any `Other` samples that should be included based on `pathology_free_text_diagnosis`
@@ -108,7 +105,7 @@ free_text_dx_terms <- paste0(free_text_dx_terms, collapse = "|")
 ```{r}
 other_mb_biospecimens <- histologies_df %>% 
   filter(short_histology == "Other", 
-         grepl(free_text_dx_terms, pathology_free_text_diagnosis)) %>% 
+         grepl(paste0(free_text_dx_terms, collapse = "|"), pathology_free_text_diagnosis)) %>% 
   pull(Kids_First_Biospecimen_ID)
 
 other_mb_biospecimens
@@ -116,14 +113,20 @@ other_mb_biospecimens
 
 There's no samples in `Other` that need to be added at this time, but if they do later, we can add them to the filter statements in the next section. 
 
-## Subset to Medulloblastoma based on `pathology_diagnosis`
+### Save the strings we'll use downstream
 
-We will subset these biospecimens based on the `pathology_diagnosis`. 
+Create a list with the strings we'll use for inclusion.
 
 ```{r}
-filtered_on_dx_df <- histologies_df %>%
-  filter(pathology_diagnosis == "Medulloblastoma") %>% # Can add `Kids_First_Biospecimen_ID %in% other_mb_biospecimens` statement here if "Other" samples show up. 
-  readr::write_tsv(output_file)
+terms_list <- list(include_path_dx = "medulloblastoma",
+                   include_free_text = free_text_dx_terms)
+```
+
+Save this list as JSON.
+
+```{r}
+writeLines(jsonlite::prettify(jsonlite::toJSON(terms_list)), 
+           output_file)
 ```
 
 ## Session Info

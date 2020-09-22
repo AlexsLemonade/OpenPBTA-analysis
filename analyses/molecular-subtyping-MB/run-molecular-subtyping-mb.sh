@@ -18,13 +18,9 @@ script_directory="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
-# get the subsetted clinical file
-Rscript -e "rmarkdown::render('00-mb-select-pathology-dx.Rmd', clean = TRUE)"
-
 if [ "$SUBSET" -gt "0" ]; then
   # filter to MB samples and/or batch correct
   Rscript --vanilla 01-filter-and-batch-correction.R \
-  --clin_file input/subset-mb-clinical.tsv \
   --batch_col RNA_library \
   --output_prefix medulloblastoma-exprs \
   --output_dir input
