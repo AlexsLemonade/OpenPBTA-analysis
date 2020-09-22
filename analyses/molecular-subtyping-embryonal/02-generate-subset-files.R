@@ -3,8 +3,8 @@
 # This script subsets the files required for subtyping non-MB and non-ATRT
 # embryonal tumors. A sample will be included if either of the following
 # conditions are met: 1) the sample is labeled as an embryonal tumor
-# (molecular_subtype) but NOT an MB or ATRT tumor (pathology_diagnosis) OR 2)
-# the sample contains a TTYH1 fusion (5' partner)
+# but NOT an MB or ATRT tumor (pathology_diagnosis) OR 2) the sample contains
+# a TTYH1 fusion (5' partner)
 
 library(tidyverse)
 
