@@ -43,11 +43,6 @@ results_dir <- file.path(root_dir, "analyses", "molecular-subtyping-MB", "result
 subset_clin_file <- file.path("input", "subset-mb-clinical.tsv")
 ```
 
-```{r}
-# Read in the JSON file that contains the strings we'll use to include or
-# exclude samples for subtyping - see 00-HGG-select-pathology-dx
-path_dx_list <- jsonlite::fromJSON(terms.file)
-```
 </details>
 
 <details><summary>Read input</summary>

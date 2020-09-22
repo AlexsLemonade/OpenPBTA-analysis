@@ -22,22 +22,6 @@ _As of v17 release, this is pretty straightforward for Medulloblastoma samples:_
 - There are no samples currently classified as `short_histology == "Other"` that have `medulloblastoma` as a part of `pathology_free_text_diagnosis`.
 
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Background](#background)
-- [Set up](#set-up)
-- [Read in data](#read-in-data)
-- [Explore the pathology diagnoses](#explore-the-pathology-diagnoses)
-- [Pathology diagnosis strings for inclusion](#pathology-diagnosis-strings-for-inclusion)
-- [Any `Other` samples that should be included based on `pathology_free_text_diagnosis`](#any-other-samples-that-should-be-included-based-on-pathology_free_text_diagnosis)
-- [Subset to Medulloblastoma based on `pathology_diagnosis`](#subset-to-medulloblastoma-based-on-pathology_diagnosis)
-- [Session Info](#session-info)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-
 ## Set up
 
 ```{r}
