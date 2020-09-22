@@ -339,7 +339,7 @@ relevant_clinical_data <- histologies_df %>%
          age_at_diagnosis_days,
          germline_sex_estimate,
          pathology_diagnosis,
-         integrated_diagnosis) %>%
+         pathology_free_text_diagnosis) %>%
   distinct() %>%
   # convert age to years
   mutate(age_at_diagnosis_yrs = 
@@ -361,7 +361,7 @@ all_data_df %>%
          age_at_diagnosis_yrs,
          germline_sex_estimate,
          pathology_diagnosis,
-         integrated_diagnosis,
+         pathology_free_text_diagnosis,
          LIN28A,
          TTYH1_fusions,
          chr19_amplification,
@@ -451,7 +451,7 @@ histologies_df %>%
          sample_id, 
          Kids_First_Biospecimen_ID,
          pathology_diagnosis,
-         integrated_diagnosis,
+         pathology_free_text_diagnosis,
          germline_sex_estimate)
 ```
 

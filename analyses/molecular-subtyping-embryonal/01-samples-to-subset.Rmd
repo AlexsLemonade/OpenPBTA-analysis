@@ -46,6 +46,8 @@ results_dir <- "results"
 if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
+
+subset_dir <- "subset-files"
 ```
 
 ### Read in relevant files
@@ -54,6 +56,12 @@ if (!dir.exists(results_dir)) {
 histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max = 10000)
 fusion_summary_df <- read_tsv(file.path(data_dir,
                                         "fusion_summary_embryonal_foi.tsv"))
+# Read in the JSON file that contains the strings we'll use to include or
+# exclude samples for subtyping - see 00-embryonal-select-pathology-dx.Rmd
+path_dx_list <- jsonlite::fromJSON(
+  file.path(subset_dir, 
+            "embryonal_subtyping_path_dx_strings.json")
+)
 ```
 
 ### Output file
@@ -112,32 +120,41 @@ fusion_biospecimens <- c(
 
 ### Disease labels
 
-First subset to embryonal **tumors**, excluding any derived cell lines.
+First subset to solid **tumors**, excluding any derived cell lines.
 
 ```{r}
 embryonal_df <- histologies_df %>%
-  filter(str_detect(broad_histology, "Embryonal tumor"),
-         sample_type == "Tumor",
+  filter(sample_type == "Tumor",
          composition == "Solid Tissue")
 ```
 
-Drop medulloblastoma and ATRT samples using the `pathology_diagnosis` labels.
+Now filter to include and exclude using the `pathology_diagnosis` and `pathology_free_text_diagnosis` labels.
 
 ```{r}
 embryonal_df <- embryonal_df %>%
-  filter(!(pathology_diagnosis %in% c("Medulloblastoma",
-                                   "Atypical Teratoid Rhabdoid Tumor (ATRT)")))
+  # Inclusion on the basis of strings in pathology_diagnosis and 
+  # pathology_free_text_diagnosis
+  filter(str_detect(str_to_lower(pathology_diagnosis), 
+                    paste0(path_dx_list$include_path_dx, collapse = "|")), 
+           str_detect(str_to_lower(pathology_free_text_diagnosis), 
+                      paste0(path_dx_list$include_free_text, collapse = "|")),
+         # Exclude samples on the basis of this string
+         str_detect(str_to_lower(pathology_diagnosis),
+                    paste0(path_dx_list$exclude_path_dx, collapse = "|"),
+                    negate = TRUE)
+  )
 ```
 
-Is there anything in the `integrated_diagnosis` column we should be concerned about removing?
+Is there anything in the `pathology_free_text_diagnosis` column we should be concerned about removing?
 
 ```{r}
 embryonal_df %>%
-  group_by(integrated_diagnosis) %>%
+  group_by(pathology_free_text_diagnosis) %>%
   count()
 ```
 
-No, nothing was changes to MB or ATRT.
+Nothing was changed to MB or ATRT.
+The ependymoblastoma sample may need to be excluded however.
 
 ### Combine biospecimen IDs
 
