@@ -19,6 +19,7 @@ option_list <- list(
 
 # parse options
 opt <- parse_args(OptionParser(option_list = option_list))
+
 batch_col <- opt$batch_col
 output_prefix <- opt$output_prefix
 output_dir <- opt$output_dir
@@ -48,54 +49,53 @@ stranded <- readRDS(stranded.file)
 
 # read and subset clinical file to MB samples
 clin <- read.delim(clin_file, stringsAsFactors = F)
+
+# Filter to medulloblastoma samples only based on criteria determined in 00-mb-select-pathology-dx
 clin.mb  <- clin %>%
   # Inclusion on the basis of strings in pathology_diagnosis and 
-  # pathology_free_text_diagnosis
-  filter(str_detect(str_to_lower(clin$pathology_diagnosis), 
-                    paste0(path_dx_list$include_path_dx, collapse = "|")) | 
-           str_detect(str_to_lower(clin$pathology_free_text_diagnosis), 
-                      paste0(path_dx_list$include_free_text, collapse = "|")),
-         experimental_strategy == "RNA-Seq") %>%
-  dplyr::select(Kids_First_Biospecimen_ID, sample_id, RNA_library)
+  # if 'Other', then based on pathology_free_text_diagnosis
+  filter(pathology_diagnosis %in% path_dx_list$exact_path_dx | 
+         (pathology_diagnosis == "Other" & str_detect(str_to_lower(pathology_free_text_diagnosis), paste0(path_dx_list$include_free_text, collapse = "|")))) 
 
-# function to filter only MB samples
-filter.mat <- function(expr.input, clin.mb) {
-  
-  # get data
-  expr.input <- get(expr.input)
-  
-  # subset expression to MB samples
-  mb.samples <- intersect(clin.mb$Kids_First_Biospecimen_ID, colnames(expr.input))
-  expr.input <- expr.input %>%
-    dplyr::select(mb.samples)
-  
-  return(expr.input)
-}
+# Write to TSV for use later
+readr::write_tsv(clin.mb, file.path("input", "subset-mb-clinical.tsv"))
 
-# filter matrices to MB only 
-expr.input <- c("polya", "stranded") 
-expr.input.mb <- lapply(expr.input, FUN = function(x) filter.mat(expr.input = x, clin = clin.mb))
+# Keep to only RNA-seq for these next step
+clin.mb.rnaseq <- clin.mb %>%
+  dplyr::filter(experimental_strategy == "RNA-Seq") 
 
-# combine both matrices using common genes 
-expr.input.mb <- expr.input.mb[[1]] %>%
-  rownames_to_column('gene') %>%
-  inner_join(expr.input.mb[[2]] %>%
-               rownames_to_column('gene'), by = 'gene') %>%
-  column_to_rownames('gene')
+# Make this a expression so we can match any of these
+biospecimen_ids <- paste0(clin.mb.rnaseq$Kids_First_Biospecimen_ID, collapse = "|")
+
+# Select only the mb biospecimens in polya
+polya.mb <- polya %>% 
+  dplyr::select(dplyr::matches(biospecimen_ids)) %>% 
+  rownames_to_column('gene')
+
+# Select only the mb biospecimens in stranded
+stranded.mb <-  stranded %>% 
+  dplyr::select(dplyr::matches(biospecimen_ids)) %>% 
+  rownames_to_column('gene')
+
+# inner_join by gene, turn into a matrix
+all.exprs.mb <- polya.mb %>% 
+  inner_join(stranded.mb, by = "gene") %>% 
+  column_to_rownames('gene') %>% 
+  as.matrix()
 
 # save uncorrected matrix
-uncorrected.df <- log2(expr.input.mb + 1)
-write_rds(uncorrected.df, uncorrected.file)
+uncorrected.mat <- log2(all.exprs.mb + 1)
+write_rds(uncorrected.mat, uncorrected.file)
 
 # batch correct if batch_col not null
 if(!is.null(batch_col)){
   print("Batch correct input matrices...")
   
   # match clinical rows and expression cols
-  expr.input.mb  <- as.matrix(expr.input.mb[,clin.mb$Kids_First_Biospecimen_ID])
+  expr.input.mb  <- as.matrix(all.exprs.mb[, clin.mb.rnaseq$Kids_First_Biospecimen_ID])
   
   # batch correct using batch_col
-  corrected.mat <- ComBat(dat = log2(expr.input.mb + 1), batch = clin.mb[, batch_col])
+  corrected.mat <- ComBat(dat = log2(expr.input.mb + 1), batch = clin.mb.rnaseq[, batch_col])
   
   # save corrected matrix
   write_rds(corrected.mat, corrected.file)

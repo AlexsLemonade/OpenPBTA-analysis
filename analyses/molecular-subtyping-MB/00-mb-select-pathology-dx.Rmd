@@ -82,7 +82,7 @@ Let's take a look at the free text field.
 
 ```{r}
 histologies_df %>% 
-  filter(short_histology == "Medulloblastoma") %>%
+  filter(pathology_diagnosis == "Medulloblastoma") %>%
   group_by(pathology_free_text_diagnosis) %>%
   tally() %>%
   arrange(desc(n))
@@ -106,7 +106,7 @@ free_text_dx_terms <- c(
 
 ```{r}
 other_mb_biospecimens <- histologies_df %>% 
-  filter(short_histology == "Other", 
+  filter(pathology_diagnosis == "Other", 
          grepl(paste0(free_text_dx_terms, collapse = "|"), pathology_free_text_diagnosis)) %>% 
   pull(Kids_First_Biospecimen_ID)
 
@@ -120,7 +120,7 @@ There's no samples in `Other` that need to be added at this time, but if they do
 Create a list with the strings we'll use for inclusion.
 
 ```{r}
-terms_list <- list(include_path_dx = "medulloblastoma",
+terms_list <- list(exact_path_dx = "Medulloblastoma",
                    include_free_text = free_text_dx_terms)
 ```
 
