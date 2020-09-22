@@ -35,7 +35,7 @@ stranded.file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.s
 terms.file <- file.path("input", "mb_subtyping_path_dx_strings.json")
 
 # Read in the JSON file that contains the strings we'll use to include or
-# exclude samples for subtyping - see 00-HGG-select-pathology-dx
+# exclude samples for subtyping - see 00-mb-select-pathology-dx
 path_dx_list <- jsonlite::fromJSON(terms.file)
 
 # output files

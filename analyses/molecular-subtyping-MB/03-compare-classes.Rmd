@@ -53,7 +53,7 @@ path_dx_list <- jsonlite::fromJSON(terms.file)
 <details><summary>Read input</summary>
 ```{r read_data, echo = TRUE}
 # read input
-subset.clin <- read.delim(subset_clinical_file) %>% 
+subset.clin <- read.delim(clinical_file) %>% 
   filter(str_detect(str_to_lower(clin$pathology_diagnosis), 
                     paste0(path_dx_list$include_path_dx, collapse = "|")) | 
            str_detect(str_to_lower(clin$pathology_free_text_diagnosis), 
