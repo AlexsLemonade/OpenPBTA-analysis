@@ -252,6 +252,9 @@ The `molecular-subtyping-EPN` module has not been completed yet, but the logic t
 ### Write revised table to file
 
 ```{r}
+# sort first
+compiled_df <- compiled_df %>% 
+  arrange(Kids_First_Participant_ID, sample_id)
 write_tsv(compiled_df, output_file)
 ```
 

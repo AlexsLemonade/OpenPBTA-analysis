@@ -12,7 +12,8 @@
 # --coding_regions : File path that specifies the BED regions file that specifies
 #                     coding regions that should be used for coding only TMB calculations.
 # --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
-# --nonsynfilter: If TRUE, filter out synonymous mutations, keep non-synonymous mutations.
+# --nonsynfilter_maf: If TRUE, filter out synonymous mutations, keep non-synonymous mutations, based on maftools definition.
+# --nonsynfilter_focr: If TRUE, filter out synonymous mutations, keep non-synonymous mutations, based on Friends of Cancer Research Definition.
 # --tcga: If TRUE, will skip PBTA metadata specific steps
 #
 # Command line example:
@@ -22,7 +23,7 @@
 # --output analyses/snv-callers/results/consensus \
 # --metadata data/pbta-histologies.tsv \
 # --coding_regions scratch/gencode.v27.primary_assembly.annotation.bed \
-# --nonsynfilter
+# --nonsynfilter_maf
 # --overwrite
 
 ################################ Initial Set Up ################################
@@ -72,9 +73,15 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
-    opt_str = "--nonsynfilter", action = "store_true",
+    opt_str = "--nonsynfilter_maf", action = "store_true",
     default = FALSE, help = "If TRUE, filter out synonymous mutations, keep
-    non-synonymous mutations.",
+    non-synonymous mutations, according to maftools definition.",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = "--nonsynfilter_focr", action = "store_true",
+    default = FALSE, help = "If TRUE, filter out synonymous mutations, keep
+    non-synonymous mutations, according to Friends of Cancer Research definition.",
     metavar = "character"
   ),
   make_option(
@@ -155,7 +162,7 @@ join_cols <- c(
 )
 
 # Variant Classification with High/Moderate variant consequences from maftools
-nonsynonymous <- c(
+maf_nonsynonymous <- c(
   "Missense_Mutation",
   "Frame_Shift_Del",
   "In_Frame_Ins",
@@ -165,6 +172,15 @@ nonsynonymous <- c(
   "In_Frame_Del",
   "Nonstop_Mutation",
   "Translation_Start_Site"
+)
+
+focr_nonsynonymous <- c(
+  "Missense_Mutation",
+  "Frame_Shift_Del",
+  "In_Frame_Ins",
+  "Frame_Shift_Ins",
+  "Nonsense_Mutation",
+  "In_Frame_Del"
 )
 
 # Create the consensus for non-MNVs
@@ -202,10 +218,16 @@ strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
     by = join_cols
   )
 
-# If the non-synonymous filter is on, filter out synonymous mutations
-if (opt$nonsynfilter) {
+# If the maftools non-synonymous filter is on, filter out synonymous mutations
+if (opt$nonsynfilter_maf) {
   strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
-  dplyr::filter(Variant_Classification %in% nonsynonymous)
+  dplyr::filter(Variant_Classification %in% maf_nonsynonymous)
+}
+
+# If the FoCR non-synonymous filter is on, filter out synonymous mutations according to that definition
+if (opt$nonsynfilter_focr) {
+  strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
+  dplyr::filter(Variant_Classification %in% focr_nonsynonymous)
 }
 
 ########################### Set up metadata columns ############################

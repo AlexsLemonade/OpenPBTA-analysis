@@ -213,7 +213,8 @@ We can fill any "missing values" with neutral calls as a result.
 
 ```{r}
 final_hgg_cn_df <- final_hgg_cn_df %>%
-  replace(is.na(.), "neutral")
+  replace(is.na(.), "neutral") %>%
+  dplyr::arrange(Kids_First_Participant_ID, sample_id)
 ```
 
 Write this to file.
