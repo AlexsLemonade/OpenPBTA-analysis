@@ -8,6 +8,14 @@ The goal of this analysis is to leverage the R packages [medulloPackage](https:/
 
 We use the polyA selected (n = 1) and rRNA depleted (n = 121) MB samples as input. Because the classifiers do not work on single-sample, we merge the two matrices by common gene symbols and use the merged matrix as input. To see if batch correction of library type as any effect on the classification, we also use a second input matrix that has been batch corrected for library type using the sva package.
 
+### Running the full analysis
+
+This runs 01 - 03 scripts to create all the output in the `results/` folder.
+
+```sh
+bash run-molecular-subtyping-mb.sh
+```
+
 ### Analysis scripts
 
 #### 00-mb-select-pathology-dx.Rmd
@@ -20,14 +28,20 @@ pbta-histologies.tsv
 
 2. Function
 
+_This 00 script is not run by calling run-molecular-subtyping-mb.sh_ but can be run separately using this command:
+
+```sh
+Rscript -e "rmarkdown::render('analyses/molecular-subtyping-MB/00-mb-select-pathology-dx.Rmd', clean = TRUE)"
+```
+
 This Rmd checks the alignment of `Medulloblastoma` labels across fields:  `pathology_diagnosis`, `integrated_diagnosis`, and `short_histology`.
-It then subsets the clinical file, `pbta-histologies.tsv`, based on `pathology_diagnosis == "Medulloblastoma"`.
-This subset clinical file is used by the subsequent scripts in this module.
+It is tied to a specific release.
+This creates a terms JSON which is used in the other scripts for subsetting.
 
 3. Output:
 
-A medulloblastoma subset histologies file:
-`molecular-subtyping-MB/inputs/subset-mb-clinical.tsv`
+A medulloblastoma terms JSON file:
+`molecular-subtyping-MB/inputs/mb_subtyping_path_dx_strings.json`
 
 #### 01-filter-and-batch-correction.R
 
@@ -36,7 +50,7 @@ A medulloblastoma subset histologies file:
 ```
 data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds
 data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds
-molecular-subtyping-MB/inputs/subset-mb-clinical.tsv
+molecular-subtyping-MB/inputs/mb_subtyping_path_dx_strings.json
 ```
 
 2. Function
@@ -63,8 +77,8 @@ results/medulloblastoma-exprs-batch-corrected.rds
 1. Input
 
 ```
-# medulloblastoma subset histologies file
-molecular-subtyping-MB/inputs/subset-mb-clinical.tsv
+# medulloblastoma terms file
+molecular-subtyping-MB/inputs/mb_subtyping_path_dx_strings.json
 
 # uncorrected matrix
 results/medulloblastoma-exprs.rds
@@ -90,8 +104,8 @@ The .rds object contains a list of dataframes with outputs corresponding to the 
 1. Input
 
 ```
-# medulloblastoma subset histologies file
-molecular-subtyping-MB/inputs/subset-mb-clinical.tsv
+# medulloblastoma terms file
+molecular-subtyping-MB/inputs/mb_subtyping_path_dx_strings.json
 
 # expected output from pathology reports
 input/expected_class.rds
@@ -100,7 +114,7 @@ input/expected_class.rds
 results/mb-classified.rds
 ```
 
-TODO: `input/expected_class.rds` doesn't have much information surrounding it, but [this is issue has been tracked](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/746) and this README can be updated once that has been addressed. 
+TODO: `input/expected_class.rds` doesn't have much information surrounding it, but [this is issue has been tracked](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/746) and this README can be updated once that has been addressed.
 
 2. Function:
 
@@ -156,10 +170,4 @@ results/MB_molecular_subtype.tsv
 
 # batch corrected input consensus output
 results/MB_batchcorrected_molecular_subtype.tsv
-```
-
-### Running the full analysis
-
-```sh
-bash run-molecular-subtyping-mb.sh
 ```
