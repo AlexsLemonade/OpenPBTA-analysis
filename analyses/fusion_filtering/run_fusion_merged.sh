@@ -28,8 +28,10 @@ standard_arriba_file="${scratch_path}/arriba.tsv"
 standard_starfusion_file="${scratch_path}/starfusion.tsv"
 
 # general filtering parameters
-artifact_filter="GTEx_Recurrent|DGD_PARALOGS|Normal|BodyMap|ConjoinG"
+artifact_filter="GTEx_Recurrent|DGD_PARALOGS|Normal|BodyMap"
 reading_frame_filter="in-frame|frameshift|other"
+spanningFragCountFilter=100
+
 
 # relevant gene expression files
 polya_expression_file="${data_path}/pbta-gene-expression-rsem-fpkm.polya.rds"
@@ -62,6 +64,7 @@ Rscript 01-fusion-standardization.R --fusionfile $starfusion_file \
 Rscript 02-fusion-filtering.R --standardFusionFiles $standard_starfusion_file,$standard_arriba_file  \
                               --expressionMatrix $polya_expression_file \
                               --artifactFilter $artifact_filter  \
+                              --spanningFragCountFilter spanningFragCountFilter \
                               --readingFrameFilter $reading_frame_filter \
                               --referenceFolder $references_path \
                               --outputfile "${scratch_path}/standardFusionPolyaExp" \
