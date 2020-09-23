@@ -131,21 +131,14 @@ tumor_metadata_df <- metadata %>%
   )
 
 # Samples included on the basis of the pathology diagnosis fields
-
 path_dx_df <- tumor_metadata_df %>%
-  # Inclusion on the basis of strings in pathology_diagnosis and 
-  # pathology_free_text_diagnosis
-  filter(str_detect(str_to_lower(pathology_diagnosis), 
-                    paste0(path_dx_list$include_path_dx, collapse = "|")) | 
-           str_detect(str_to_lower(pathology_free_text_diagnosis), 
-                      paste0(path_dx_list$include_free_text, collapse = "|")),
-         # Exclude samples on the basis of this string (LGG, in practice)
-         str_detect(str_to_lower(pathology_diagnosis),
-                    paste0(path_dx_list$exclude_path_dx, collapse = "|"),
-                    negate = TRUE)
-  )
+  # Inclusion on the basis of CBTTC harmonized pathology diagnoses
+  filter(pathology_diagnosis %in% path_dx_list$exact_path_dx)
 
-
+# PNOC003 trial samples - the pathology diagnoses are not harmonized so we need
+# to go by the cohort field
+pnoc_df <- tumor_metadata_df %>%
+  filter(cohort == "PNOC003")
 
 # Now samples on the basis of the defining lesions
 hgg_sample_ids <- hgg_lesions_df %>% 
@@ -157,7 +150,8 @@ lesions_df <- tumor_metadata_df %>%
 # Putting it all together now
 hgg_metadata_df <- bind_rows(
   path_dx_df, 
-  lesions_df,
+  pnoc_df,
+  lesions_df
 ) %>%
   # Remove duplicates
   distinct()

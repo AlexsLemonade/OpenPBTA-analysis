@@ -1,32 +1,7 @@
 {
-    "include_path_dx": [
-        "high-grade glioma/astrocytoma",
-        "diffuse astrocytoma",
-        "anaplastic astrocytoma",
-        "diffuse intrinsic pontine glioma",
-        "diffuse midline glioma",
-        "diffuse astrocytoma",
-        "dipg",
-        "high grade glioma",
-        "gliomatosis cerebri",
-        "high grade glial neoplasm"
-    ],
-    "include_free_text": [
-        "high grade glioma",
-        "high-grade glioma",
-        "hgg",
-        "anaplastic astrocytoma",
-        "glioblastoma",
-        "diffuse midline glioma",
-        "diffuse astrocytoma",
-        "dipg",
-        "gbm",
-        "anaplastic pilocytic astrocytoma",
-        "anaplastic gliomatosis cerebri",
-        "anaplastic pleomorphic xanthoastrocytoma"
-    ],
-    "exclude_path_dx": [
-        "low-grade glioma/astrocytoma"
+    "exact_path_dx": [
+        "High-grade glioma/astrocytoma (WHO grade III/IV)",
+        "Brainstem glioma- Diffuse intrinsic pontine glioma"
     ]
 }
 

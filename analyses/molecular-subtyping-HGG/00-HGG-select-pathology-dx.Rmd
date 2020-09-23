@@ -72,7 +72,23 @@ In an initial round of subtyping, PNET specimens were reclassified (see [this co
 We should not and will not include PNET samples in the criteria used for detect samples for subtyping from pathology diagnosis fields. 
 Instead, these samples that were reclassified earlier shouldbe included downstream on the basis of defining lesions.
 
-Let's take a look at the free text field.
+Although some of these terms appear to be part of a defined vocabulary, there are others like `High Grade Glial Neoplasma` that were not subject to the same harmonization.
+These are likely from the completed PNOC trial (see [#754 (comment)] (https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/754#issuecomment-697004412)).
+Let's take a look if we filter by `cohort == "PNOC003"`.
+
+
+```{r}
+histologies_df %>%
+  filter(cohort == "PNOC003",
+         # Filter out normal WGS rows
+         sample_type != "Normal") %>%
+  count(pathology_diagnosis) %>%
+  arrange(desc(n))
+```
+
+As anticipated, these are all indicative samples that should be included for subtyping but they are not harmonized.
+
+Let's take a look at the free text field when filtering with `short_histology == HGAT`.
 
 ```{r}
 histologies_df %>% 
@@ -82,54 +98,29 @@ histologies_df %>%
   arrange(desc(n))
 ```
 
-As we might expect from a free text field, this is a lot less uniform.
+As we might expect from a free text field, this is even less uniform.
 
 ## Pathology diagnosis strings for inclusion
 
-These are the terms that we'll collapse together with `|` to detect strings in the `pathology_diagnosis` column.
+For the CBTTC samples, the `pathology_diagnosis` fields are harmonized, so we can use the terms below to look for exact matches.
 
 ```{r}
-path_dx_terms <- c(
-  "high-grade glioma/astrocytoma",
-  "diffuse astrocytoma",
-  "anaplastic astrocytoma",
-  "diffuse intrinsic pontine glioma",
-  "diffuse midline glioma",
-  "diffuse astrocytoma",
-  "dipg", 
-  "high grade glioma",
-  "gliomatosis cerebri",
-  "high grade glial neoplasm"
+exact_path_dx<- c(
+  "High-grade glioma/astrocytoma (WHO grade III/IV)",
+  "Brainstem glioma- Diffuse intrinsic pontine glioma"
 )
 ```
 
-These are the terms that we'll collapse together with `|` to detect strings in the `pathology_free_text_diagnosis` column.
-
-```{r}
-free_text_dx_terms <- c(
-  "high grade glioma",
-  "high-grade glioma",
-  "hgg",
-  "anaplastic astrocytoma",
-  "glioblastoma",
-  "diffuse midline glioma",
-  "diffuse astrocytoma",
-  "dipg",
-  "gbm",
-  "anaplastic pilocytic astrocytoma",
-  "anaplastic gliomatosis cerebri",
-  "anaplastic pleomorphic xanthoastrocytoma"
-)
-```
+And all samples from the PNOC003 trial should be included.
 
 Let's take a look at a first attempt using these terms as described above.
 
 ```{r}
 filtered_on_dx_df <- histologies_df %>%
-  filter(str_detect(str_to_lower(pathology_diagnosis), 
-                    paste0(path_dx_terms, collapse = "|")) | 
-           str_detect(str_to_lower(pathology_free_text_diagnosis), 
-                      paste0(free_text_dx_terms, collapse = "|"))) %>%
+  filter(pathology_diagnosis %in% exact_path_dx | 
+            cohort == "PNOC003",
+         # Exclude normal samples when filtering on cohort
+         sample_type != "Normal") %>%
   select(Kids_First_Biospecimen_ID, 
          sample_id, 
          Kids_First_Participant_ID,
@@ -149,27 +140,14 @@ filtered_on_dx_df %>%
   arrange(desc(n))
 ```
 
-Why are there low-grade glioma samples included?
-
-```{r}
-filtered_on_dx_df %>%
-  filter(pathology_diagnosis == "Low-grade glioma/astrocytoma (WHO grade I/II)")
-```
-
-We can exclude LGG samples on the basis of the values in `pathology_diagnosis`, too.
-
-```{r}
-exclude_path_dx_terms <- c("low-grade glioma/astrocytoma")
-```
+We are not including any samples with pathology diagnoses outside of what we should include for subtyping.
 
 ### Save the strings we'll use downstream
 
-Create a list with the strings we'll use for inclusion and exclusion.
+Create a list with the strings we'll use for inclusion.
 
 ```{r}
-terms_list <- list(include_path_dx = path_dx_terms,
-                   include_free_text = free_text_dx_terms,
-                   exclude_path_dx = exclude_path_dx_terms)
+terms_list <- list(exact_path_dx = exact_path_dx)
 ```
 
 Save this list as JSON.
