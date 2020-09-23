@@ -1,28 +1,19 @@
 {
     "include_path_dx": [
         "supratentorial or spinal cord pnet",
-        "ganglioneuroblastoma",
-        "pineoblastoma",
+        "neuroblastoma",
         "other"
     ],
     "include_free_text": [
-        "supratentorial pnet",
-        "ganglioneuroblastoma, stage ii favorable histology non n-myc amplified",
-        "cns embryonal tumor, nos (who grade iv)",
         "embryonal tumor with multilayer rosettes, ros (who grade iv)",
+        "embryonal tumor, nos, congenital type",
         "ependymoblastoma",
-        "ganglioneuroblastoma",
-        "pineoblastoma",
-        "pnet",
-        "treated recurrent / residual cns embryonal tumor, nos",
-        "high grade malignant tumor with glial differentiation",
         "medullooepithelioma"
     ],
     "exclude_path_dx": [
         "medulloblastoma",
         "atypical teratoid rhabdoid tumor (atrt)",
         "low-grade glioma/astrocytoma",
-        "high-grade glioma/astrocytoma",
         "neurofibroma/plexiform;other"
     ]
 }

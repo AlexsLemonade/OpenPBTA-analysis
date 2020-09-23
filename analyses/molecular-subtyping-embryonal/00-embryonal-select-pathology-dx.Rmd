@@ -57,14 +57,15 @@ histologies_df <- read_tsv(histologies_file)
 
 ### `broad_histology == Embryonal tumor`
 
-In the current histologies file, if we filter based on `broad_histology` as we did originally, and drop medulloblastoma and ATRT samples using the pathology diagnosis lables, what is left in the pathology diagnosis fields?
+In the current histologies file, if we filter based on `broad_histology` as we did originally, and drop medulloblastoma and ATRT samples using the pathology diagnosis labels, what is left in the pathology diagnosis fields?
 Note that some of the `broad_histology` values will have been altered based on earlier subtyping efforts.
 
 ```{r}
-histologies_df %>% 
-  filter(broad_histology == "Embryonal tumor",
-         !(pathology_diagnosis %in% c("Medulloblastoma",
-                                   "Atypical Teratoid Rhabdoid Tumor (ATRT)"))) %>%
+histologies_df %>%
+  filter(
+    str_detect(str_to_lower(pathology_diagnosis), "neuroblastoma") |
+      pathology_diagnosis == "Supratentorial or Spinal Cord PNET"
+  ) %>%
   count(pathology_diagnosis) %>%
   arrange(desc(n))
 ```
@@ -76,9 +77,10 @@ Let's take a look at the free text field.
 
 ```{r}
 histologies_df %>% 
-  filter(broad_histology == "Embryonal tumor",
-         !(pathology_diagnosis %in% c("Medulloblastoma",
-                                   "Atypical Teratoid Rhabdoid Tumor (ATRT)"))) %>%
+  filter(
+    str_detect(str_to_lower(pathology_diagnosis), "neuroblastoma") |
+      pathology_diagnosis == "Supratentorial or Spinal Cord PNET"
+  ) %>%
   group_by(pathology_free_text_diagnosis) %>%
   tally() %>%
   arrange(desc(n))
@@ -93,8 +95,7 @@ These are the terms that we'll collapse together with `|` to detect strings in t
 ```{r}
 path_dx_terms <- c(
   "supratentorial or spinal cord pnet",
-  "ganglioneuroblastoma",
-  "pineoblastoma",
+  "neuroblastoma",
   "other"
 )
 ```
@@ -103,16 +104,9 @@ These are the terms that we'll collapse together with `|` to detect strings in t
 
 ```{r}
 free_text_dx_terms <- c(
-  "supratentorial pnet",
-  "ganglioneuroblastoma, stage ii favorable histology non n-myc amplified",
-  "cns embryonal tumor, nos (who grade iv)",
   "embryonal tumor with multilayer rosettes, ros (who grade iv)",
+  "embryonal tumor, nos, congenital type",
   "ependymoblastoma",
-  "ganglioneuroblastoma",
-  "pineoblastoma",
-  "pnet",
-  "treated recurrent / residual cns embryonal tumor, nos",
-  "high grade malignant tumor with glial differentiation",
   "medullooepithelioma"
 )
 ```
@@ -122,9 +116,11 @@ Let's take a look at a first attempt using these terms as described above.
 ```{r}
 filtered_on_dx_df <- histologies_df %>%
   filter(str_detect(str_to_lower(pathology_diagnosis), 
-                    paste0(path_dx_terms, collapse = "|")) | 
+                    paste0(path_dx_terms, collapse = "|")) |
+           pathology_diagnosis == "Other" &&
            str_detect(str_to_lower(pathology_free_text_diagnosis), 
-                      paste0(free_text_dx_terms, collapse = "|"))) %>%
+                      paste0(free_text_dx_terms, collapse = "|")) |
+           str_detect(str_to_lower(pathology_diagnosis), "neuroblastoma") && !(str_detect(str_to_lower(primary_site), "other locations nos")) && !(str_detect(str_to_lower(pathology_free_text_diagnosis), "peripheral"))) %>%
   select(Kids_First_Biospecimen_ID, 
          sample_id, 
          Kids_First_Participant_ID,
@@ -144,13 +140,12 @@ filtered_on_dx_df %>%
 ```
 
 We know we need to drop medulloblastoma and ATRT samples.
-We can also exclude LGG, HGG, and neurofibroma samples on the basis of the values in `pathology_diagnosis`.
+We can also exclude LGG and neurofibroma samples on the basis of the values in `pathology_diagnosis`.
 
 ```{r}
 exclude_path_dx_terms <- c("medulloblastoma",
                            "atypical teratoid rhabdoid tumor (atrt)",
                            "low-grade glioma/astrocytoma",
-                           "high-grade glioma/astrocytoma",
                            "neurofibroma/plexiform;other")
 ```
 

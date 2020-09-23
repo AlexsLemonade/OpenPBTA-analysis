@@ -135,13 +135,11 @@ embryonal_df <- embryonal_df %>%
   # Inclusion on the basis of strings in pathology_diagnosis and 
   # pathology_free_text_diagnosis
   filter(str_detect(str_to_lower(pathology_diagnosis), 
-                    paste0(path_dx_list$include_path_dx, collapse = "|")), 
+                    paste0(path_dx_list$include_path_dx, collapse = "|")) |
+           pathology_diagnosis == "Other" &&
            str_detect(str_to_lower(pathology_free_text_diagnosis), 
-                      paste0(path_dx_list$include_free_text, collapse = "|")),
-         # Exclude samples on the basis of this string
-         str_detect(str_to_lower(pathology_diagnosis),
-                    paste0(path_dx_list$exclude_path_dx, collapse = "|"),
-                    negate = TRUE)
+                      paste0(path_dx_list$include_free_text, collapse = "|")) |
+         str_detect(str_to_lower(pathology_diagnosis), "neuroblastoma") && !(str_detect(str_to_lower(primary_site), "other locations nos")) && !(str_detect(str_to_lower(pathology_free_text_diagnosis), "peripheral"))
   )
 ```
 
@@ -153,8 +151,7 @@ embryonal_df %>%
   count()
 ```
 
-Nothing was changed to MB or ATRT.
-The ependymoblastoma sample may need to be excluded however.
+No, nothing was changed to MB or ATRT.
 
 ### Combine biospecimen IDs
 
