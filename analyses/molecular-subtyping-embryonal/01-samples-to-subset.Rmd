@@ -85,12 +85,35 @@ ttyh1_fusions <- fusion_summary_df %>%
 Which samples have these fusions?
 
 ```{r}
-fusion_biospecimens <- ttyh1_fusions %>%
+ttyh1_fusion_biospecimens <- ttyh1_fusions %>%
   # add a column that counts how many TTYH1 fusions are present
   mutate(fusion_count = rowSums(select(., starts_with("TTYH1")))) %>%
   # if there's any TTYH1 fusion - pull out the biospecimen ID
   filter(fusion_count > 0) %>%
   pull(Kids_First_Biospecimen_ID)
+```
+
+### _MN1_ fusions
+
+Now, we'll use the fusion summary file to find samples that contain _MN1_.
+We're only interested in fusions where _MN1_ is the 5' fusion partner.
+
+```{r}
+mn1_fusion_biospecimens <- fusion_summary_df %>%
+  select(Kids_First_Biospecimen_ID, starts_with("MN1"))
+```
+
+Which samples have these fusions?
+
+```{r}
+fusion_biospecimens <- mn1_fusion_biospecimens %>%
+  # add a column that counts how many MN1 fusions are present
+  mutate(fusion_count = rowSums(select(., starts_with("MN1")))) %>%
+  # if there's any MN1 fusion - pull out the biospecimen ID
+  filter(fusion_count > 0) %>%
+  pull(Kids_First_Biospecimen_ID) %>%
+  # Add the TTYH1 fusion biospecimens to this object
+  c(ttyh1_fusion_biospecimens)
 ```
 
 DNA-seq biospecimens associated with the samples that contain the relevant fusions.
@@ -109,7 +132,7 @@ relevant_sample_df <- histologies_df %>%
 relevant_sample_df
 ```
 
-We've captured a medulloblastoma tumor and a pineoblastoma tumor with the _TTYH1_ fusion criterion.
+We've captured a medulloblastoma tumor and a pineoblastoma tumor with the _TTYH1_ fusion criterion, and a low-grade glioma tumor with the _MN1_ fusion criterion.
 
 ```{r}
 fusion_biospecimens <- c(
@@ -139,7 +162,8 @@ embryonal_df <- embryonal_df %>%
            pathology_diagnosis == "Other" &&
            str_detect(str_to_lower(pathology_free_text_diagnosis), 
                       paste0(path_dx_list$include_free_text, collapse = "|")) |
-         str_detect(str_to_lower(pathology_diagnosis), "neuroblastoma") && !(str_detect(str_to_lower(primary_site), "other locations nos")) && !(str_detect(str_to_lower(pathology_free_text_diagnosis), "peripheral"))
+           # "neuroblastoma" will also need to be detected in the `pathology_diagnosis` column, but we need to ensure that the `primary_site` != "Other Locations NOS" and the `pathology_free_text_diagnosis` column does note contain "peripheral"
+         str_detect(str_to_lower(pathology_diagnosis), "neuroblastoma") & !(str_detect(str_to_lower(primary_site), "other locations nos")) & !(str_detect(str_to_lower(pathology_free_text_diagnosis), "peripheral"))
   )
 ```
 

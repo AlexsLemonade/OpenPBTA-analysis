@@ -86,7 +86,7 @@ histologies_df %>%
   arrange(desc(n))
 ```
 
-No medulloblastoma or ATRT samples here, but there is a high-grade glioma and ependymoblastoma that may need to be further filtered out.
+No medulloblastoma or ATRT samples here.
 
 ## Pathology diagnosis strings for inclusion
 
@@ -94,9 +94,8 @@ These are the terms that we'll collapse together with `|` to detect strings in t
  
 ```{r}
 path_dx_terms <- c(
-  "supratentorial or spinal cord pnet",
-  "neuroblastoma"
-)
+  "supratentorial or spinal cord pnet"
+) # "neuroblastoma" will also need to be detect in the `pathology_diagnosis` column, but the logic around it is a bit more complex so we will handle this term specifically when we filter
 ```
 
 These are the terms that we'll collapse together with `|` to detect strings in the `pathology_free_text_diagnosis` column.
@@ -119,13 +118,14 @@ filtered_on_dx_df <- histologies_df %>%
            pathology_diagnosis == "Other" &&
            str_detect(str_to_lower(pathology_free_text_diagnosis), 
                       paste0(free_text_dx_terms, collapse = "|")) |
-           str_detect(str_to_lower(pathology_diagnosis), "neuroblastoma") && !(str_detect(str_to_lower(primary_site), "other locations nos")) && !(str_detect(str_to_lower(pathology_free_text_diagnosis), "peripheral"))) %>%
+           (str_detect(str_to_lower(pathology_diagnosis), "neuroblastoma") & !(str_detect(str_to_lower(primary_site), "other locations nos")) & !(str_detect(str_to_lower(pathology_free_text_diagnosis), "peripheral")))) %>%
   select(Kids_First_Biospecimen_ID, 
          sample_id, 
          Kids_First_Participant_ID,
          pathology_diagnosis,
          pathology_free_text_diagnosis,
-         integrated_diagnosis, 
+         integrated_diagnosis,
+         primary_site,
          broad_histology)
 filtered_on_dx_df
 ```
