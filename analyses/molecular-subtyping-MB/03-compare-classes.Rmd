@@ -5,7 +5,7 @@ output:
     df_print: paged
 params:
   expected_input:
-    value: input/expected_class.rds
+    value: input/expected_class_v17.rds
   observed_input:
     value: results/mb-classified.rds
 ---
