@@ -52,7 +52,8 @@ classify.mb <- function(expr.input, method){
     # get predicted subtype
     subtype <- res$MM2S_Subtype %>%
       as.data.frame() %>%
-      mutate(MM2S_Prediction = replace(MM2S_Prediction, MM2S_Prediction == "NORMAL", "Normal"))
+      mutate(MM2S_Prediction = stringr::str_replace(MM2S_Prediction, "NORMAL", "Normal"), 
+             SampleName = as.character(SampleName))
     
     # merge predicted subtype and associated scores
     res <- scores %>%
