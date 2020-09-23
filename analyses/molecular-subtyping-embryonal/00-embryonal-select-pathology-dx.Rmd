@@ -95,8 +95,7 @@ These are the terms that we'll collapse together with `|` to detect strings in t
 ```{r}
 path_dx_terms <- c(
   "supratentorial or spinal cord pnet",
-  "neuroblastoma",
-  "other"
+  "neuroblastoma"
 )
 ```
 
