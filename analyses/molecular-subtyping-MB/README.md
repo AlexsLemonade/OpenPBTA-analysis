@@ -35,7 +35,7 @@ Rscript -e "rmarkdown::render('analyses/molecular-subtyping-MB/00-mb-select-path
 ```
 
 This Rmd checks the alignment of `Medulloblastoma` labels across fields:  `pathology_diagnosis`, `integrated_diagnosis`, and `short_histology`.
-It is tied to a specific release.
+It is tied to a specific release (`release-v17-20200908`).
 This creates a terms JSON which is used in the other scripts for subsetting.
 
 3. Output:
@@ -111,13 +111,13 @@ The .rds object contains a list of dataframes with outputs corresponding to the 
 input/subset-mb-clinical.tsv
 
 # expected output from pathology reports
-input/expected_class.rds
+input/expected_class_v17.rds
 
 # observed output from 01-classify-mb.R
 results/mb-classified.rds
 ```
 
-TODO: `input/expected_class.rds` doesn't have much information surrounding it, but [this is issue has been tracked](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/746) and this README can be updated once that has been addressed.
+TODO: `input/expected_class_v17.rds` doesn't have much information surrounding it, but [this is issue has been tracked](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/746) and this README can be updated once that has been addressed.
 
 2. Function:
 
