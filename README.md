@@ -139,7 +139,7 @@ We will update the default release number whenever we produce a new release.
 ### Data Access via CAVATICA
 
 For any user registered on CAVATICA, the latest release of OpenPBTA data can be accessed from the CAVATICA public projects below:
-- [Pediatric Brain Tumor Atlas Open Access Data - CBTN](https://cavatica.sbgenomics.com/u/cavatica/pbta-CBTN/)
+- [Pediatric Brain Tumor Atlas Open Access Data - CBTN](https://cavatica.sbgenomics.com/u/cavatica/pbta-cbttc/)
 - [Pediatric Brain Tumor Atlas Open Access Data - PNOC003](https://cavatica.sbgenomics.com/u/cavatica/pbta-pnoc003/)
 
 Users downloading via CAVATICA should place the data files within a `data/release` folder and then create symlinks to those files within `/data`.
