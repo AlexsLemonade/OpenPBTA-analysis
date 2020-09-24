@@ -44,7 +44,7 @@ The samples are identified using the following criteria:
 1. An RNA-seq biospecimen sample includes a _TTYH1_ fusion (5' partner) [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/401#issuecomment-573669727).
 2. An RNA-seq biospecimen sample includes a _MN1_ fusion (5' partner) [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/785#issuecomment-695015488).
 3. Any sample with "Supratentorial or Spinal Cord PNET" in the `pathology_diagnosis` column of the metadata `pbta-histologies.tsv` [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/752#issuecomment-697000066).
-4. Any sample with "Neuroblastoma" in the `pathology_diagnosis` column, `primary_site != "Other locations NOS"`, and `pathology_free_text_diagnosis` does not contain "peripheral".
+4. Any sample with "Neuroblastoma" in the `pathology_diagnosis` column, `primary_site != "Other locations NOS"`, and `pathology_free_text_diagnosis` does not contain "peripheral" [per the same comment as above](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/752#issuecomment-697000066).
 5. Any sample with "Other" in the `pathology_diagnosis` column of the metadata, and with "embryonal tumor with multilayer rosettes, ros (who grade iv)", "embryonal tumor, nos, congenital type", "ependymoblastoma" or "medullooepithelioma" in the `pathology_free_text_diagnosis` column [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/752#issuecomment-697000066).
 The output of this notebook is a TSV file, named `biospecimen_ids_embryonal_subtyping.tsv`, containing the biospeciemen IDs identified based on the above criteria (stored in the `results` directory of this module.
 
