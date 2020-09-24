@@ -170,6 +170,9 @@ fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFra
 # QC filter: artifact and read support
 QCFiltered<-fusion_filtering_QC(standardFusioncalls = standardFusioncalls,junctionReadCountFilter = junctionReadCountFilter,spanningFragCountFilter = spanningFragCountFilter,readingFrameFilter = readingFrameFilter,artifactFilter = artifactFilter,readthroughFilter = readthroughFilter)
 
+saveRDS(QCFiltered,paste0(opt$outputfile,"_QC_filtered.RDS"))
+
+
 ############################################
 
 ########### Expression filtering ###########

@@ -64,7 +64,7 @@ Rscript 01-fusion-standardization.R --fusionfile $starfusion_file \
 Rscript 02-fusion-filtering.R --standardFusionFiles $standard_starfusion_file,$standard_arriba_file  \
                               --expressionMatrix $polya_expression_file \
                               --artifactFilter $artifact_filter  \
-                              --spanningFragCountFilter spanningFragCountFilter \
+                              --spanningFragCountFilter $spanningFragCountFilter \
                               --readingFrameFilter $reading_frame_filter \
                               --referenceFolder $references_path \
                               --outputfile "${scratch_path}/standardFusionPolyaExp" \
@@ -75,6 +75,7 @@ Rscript 02-fusion-filtering.R --standardFusionFiles $standard_starfusion_file,$s
 Rscript 02-fusion-filtering.R --standardFusionFiles $standard_arriba_file,$standard_starfusion_file \
                               --expressionMatrix $stranded_expression_file \
                               --artifactFilter $artifact_filter \
+                              --spanningFragCountFilter $spanningFragCountFilter \
                               --readingFrameFilter $reading_frame_filter \
                               --referenceFolder $references_path \
                               --outputfile "${scratch_path}/standardFusionStrandedExp" \
