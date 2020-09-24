@@ -2,9 +2,9 @@
 
 Pediatric brain tumors are the most common solid tumors and the leading cause of cancer-related death in children.
 Our ability to understand and successfully treat these diseases is hindered by small sample sizes due to the overall rarity of unique molecular subtypes and tainted grouped analyses resulting from misclassification.
-In September of 2018, the [Children's Brain Tumor Tissue Consortium](https://cbttc.org/) released the [Pediatric Brain Tumor Atlas (PBTA)](https://cbttc.org/pediatric-brain-tumor-atlas/), a genomic dataset (whole genome sequencing, whole exome sequencing, RNA sequencing, proteomic, and clinical data) for nearly 1,000 tumors, available from the [Gabriella Miller Kids First Portal](https://kidsfirstdrc.org/).
+In September of 2018, the [Children's Brain Tumor Network (CBTN)](https://cbtn.org/) released the [Pediatric Brain Tumor Atlas (PBTA)](https://cbtn.org/pediatric-brain-tumor-atlas/), a genomic dataset (whole genome sequencing, whole exome sequencing, RNA sequencing, proteomic, and clinical data) for nearly 1,000 tumors, available from the [Gabriella Miller Kids First Portal](https://kidsfirstdrc.org/).
 
-The Open Pediatric Brain Tumor Atlas (OpenPBTA) Project is a global open science initiative to comprehensively define the molecular landscape of tumors of 943 patients from the CBTTC and the PNOC003 DIPG clinical trial from the [Pediatric Pacific Neuro-oncology Consortium](http://www.pnoc.us/) through real-time, collaborative analyses and [collaborative manuscript writing](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) on GitHub.
+The Open Pediatric Brain Tumor Atlas (OpenPBTA) Project is a global open science initiative to comprehensively define the molecular landscape of tumors of 943 patients from the CBTN and the PNOC003 DIPG clinical trial from the [Pediatric Pacific Neuro-oncology Consortium](http://www.pnoc.us/) through real-time, collaborative analyses and [collaborative manuscript writing](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) on GitHub.
 
 The OpenPBTA operates on a pull request model to accept contributions from community participants.
 The maintainers have set up continuous integration software to confirm the reproducibility of analyses within the project’s Docker container.
@@ -83,22 +83,22 @@ Below is a detailed table of [broad histologies](https://github.com/AlexsLemonad
 | Benign tumor | 38 |
 | Choroid plexus tumor | 11 |
 | CNS neuroblastoma | 5 |
-| Diffuse astrocytic and oligodendroglial tumor | 188 |
-| Embryonal tumor | 180 |
-| Ependymal tumor | 91 |
+| Diffuse astrocytic and oligodendroglial tumor | 184 |
+| Embryonal tumor | 178 |
+| Ependymal tumor | 92 |
 | Germ cell tumor | 13 |
 | Histiocytic tumor | 5 |
-| Low-grade astrocytic tumor | 256 |
+| Low-grade astrocytic tumor | 257 |
 | Lymphomas | 1 |
 | Meningioma | 29 |
-| Mesenchymal non-meningothelial tumor | 21 |
-| Metastatic secondary tumors | 7 |
+| Mesenchymal non-meningothelial tumor | 23 |
+| Metastatic secondary tumors | 4 |
 | Neuronal and mixed neuronal-glial tumor | 79 |
 | Other tumor | 6 |
 | Pre-cancerous lesion | 14 |
 | Tumor of cranial and paraspinal nerves | 44 |
 | Tumor of pineal region | 4 |
-| Tumors of sellar region | 36 |
+| Tumors of sellar region | 35 |
 
 
 Below is a table of number of tumor biospecimens by phase of therapy (DNA and RNA):
@@ -106,12 +106,12 @@ Below is a table of number of tumor biospecimens by phase of therapy (DNA and RN
 
 | Phase of Therapy | N |
 |---------------------------------|------|
-| Initial CNS Tumor | 1465 |
-| Progressive | 289 |
-| Progressive Disease Post-Mortem | 11 |
-| Recurrence | 128 |
+| Initial CNS Tumor | 1514 |
+| Progressive | 302 |
+| Progressive Disease Post-Mortem | 13 |
+| Recurrence | 134 |
 | Second Malignancy | 35 |
-| Unavailable | 72 |
+| Unavailable | 2 |
 
 
 ## How to Obtain OpenPBTA Data
@@ -139,7 +139,7 @@ We will update the default release number whenever we produce a new release.
 ### Data Access via CAVATICA
 
 For any user registered on CAVATICA, the latest release of OpenPBTA data can be accessed from the CAVATICA public projects below:
-- [Pediatric Brain Tumor Atlas Open Access Data - CBTTC](https://cavatica.sbgenomics.com/u/cavatica/pbta-cbttc/)
+- [Pediatric Brain Tumor Atlas Open Access Data - CBTN](https://cavatica.sbgenomics.com/u/cavatica/pbta-cbttc/)
 - [Pediatric Brain Tumor Atlas Open Access Data - PNOC003](https://cavatica.sbgenomics.com/u/cavatica/pbta-pnoc003/)
 
 Users downloading via CAVATICA should place the data files within a `data/release` folder and then create symlinks to those files within `/data`.
