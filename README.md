@@ -83,22 +83,22 @@ Below is a detailed table of [broad histologies](https://github.com/AlexsLemonad
 | Benign tumor | 38 |
 | Choroid plexus tumor | 11 |
 | CNS neuroblastoma | 5 |
-| Diffuse astrocytic and oligodendroglial tumor | 188 |
-| Embryonal tumor | 180 |
-| Ependymal tumor | 91 |
+| Diffuse astrocytic and oligodendroglial tumor | 184 |
+| Embryonal tumor | 178 |
+| Ependymal tumor | 92 |
 | Germ cell tumor | 13 |
 | Histiocytic tumor | 5 |
-| Low-grade astrocytic tumor | 256 |
+| Low-grade astrocytic tumor | 257 |
 | Lymphomas | 1 |
 | Meningioma | 29 |
-| Mesenchymal non-meningothelial tumor | 21 |
-| Metastatic secondary tumors | 7 |
+| Mesenchymal non-meningothelial tumor | 23 |
+| Metastatic secondary tumors | 4 |
 | Neuronal and mixed neuronal-glial tumor | 79 |
 | Other tumor | 6 |
 | Pre-cancerous lesion | 14 |
 | Tumor of cranial and paraspinal nerves | 44 |
 | Tumor of pineal region | 4 |
-| Tumors of sellar region | 36 |
+| Tumors of sellar region | 35 |
 
 
 Below is a table of number of tumor biospecimens by phase of therapy (DNA and RNA):
