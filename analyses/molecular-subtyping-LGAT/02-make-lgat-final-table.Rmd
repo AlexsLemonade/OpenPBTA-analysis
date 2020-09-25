@@ -39,7 +39,7 @@ identifiers_df <- clinical_df %>%
          sample_id)
 
 # get all RNA-Seq biospecimen IDs
-lgat_rnaseq_bsids <- identifiers_df %>% 
+lgat_rnaseq_bsids <- clinical_df %>% 
   filter(experimental_strategy == "RNA-Seq") %>%
   pull(Kids_First_Biospecimen_ID)
 
