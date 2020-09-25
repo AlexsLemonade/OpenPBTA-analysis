@@ -107,7 +107,8 @@ For the CBTTC samples, the `pathology_diagnosis` fields are harmonized, so we ca
 ```{r}
 exact_path_dx<- c(
   "High-grade glioma/astrocytoma (WHO grade III/IV)",
-  "Brainstem glioma- Diffuse intrinsic pontine glioma"
+  "Brainstem glioma- Diffuse intrinsic pontine glioma",
+  "Gliomatosis Cerebri"
 )
 ```
 
