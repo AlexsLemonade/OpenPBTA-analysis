@@ -5,7 +5,7 @@
 # oncogenic drivers of a tumor and in some cases, appropriate therapy
 
 # Example run:
-# Rscript analyses/fusion_filtering/02-fusion-filtering.R -S scratch/arriba.tsv --expressionMatrix data/pbta-gene-expression-rsem-fpkm.stranded.rds --readthroughFilter --artifactFilter "GTEx|HGNC_GENEFAM|DGD_PARALOGS|Normal|BodyMap|ConjoinG" --junctionReadCountFilter 1 --spanningFragCountFilter 10 --readingFrameFilter "in-frame|frameshift|other" --referenceFolder analyses/fusion_filtering/references/ --outputfile scratch/arriba_stranded_V2 -t 1
+# Rscript analyses/fusion_filtering/02-fusion-filtering.R -S scratch/arriba.tsv --expressionMatrix data/pbta-gene-expression-rsem-fpkm.stranded.rds --readthroughFilter --artifactFilter "GTEx|HGNC_GENEFAM|DGD_PARALOGS|Normal|BodyMap" --junctionReadCountFilter 1 --spanningFragCountFilter 100 --readingFrameFilter "in-frame|frameshift|other" --referenceFolder analyses/fusion_filtering/references/ --outputfile scratch/arriba_stranded_V2 -t 1
 #
 # Command line arguments
 #
@@ -49,7 +49,7 @@ option_list <- list(
   make_option(c("-j","--junctionReadCountFilter"), type="integer",
               help="threshold for junctionReadCount",default=1),
   make_option(c("-s","--spanningFragCountFilter"),type="integer",
-              help="threshold for  (SpanningFragCount - JunctionReadCount)",default=10),
+              help="threshold for  (SpanningFragCount - JunctionReadCount)",default=100),
   make_option(c("-i","--readingFrameFilter"),type="character",
                help="reading frame filtering ( regex to capture inframe|frameshift|other)"),
   make_option(c("-R","--referenceFolder"),type="character",
