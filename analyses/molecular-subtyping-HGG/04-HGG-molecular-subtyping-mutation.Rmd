@@ -314,6 +314,7 @@ final_mutations_df <- list(defining_lesions_df,
                            tert_summary_df,
                            braf_summary_df) %>%
   purrr::reduce(dplyr::inner_join, by = "Tumor_Sample_Barcode") %>%
+  dplyr::select(-defining_lesion) %>%
   dplyr::arrange(Kids_First_Participant_ID, sample_id)
 
 head(final_mutations_df, n = 10)
