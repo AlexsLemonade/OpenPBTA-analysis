@@ -207,7 +207,7 @@ Summarizing salient points from [`AlexsLemonade/OpenPBTA-analysis#251`](https://
 ```{r}
 exp_genes_of_interest <- c("LIN28A", "FOXR2")
 # set up poly-A data
-polya_exp <- t(polya_exp)[, exp_genes_of_interest] %>%
+polya_exp <- polya_exp[, exp_genes_of_interest] %>%
   as.data.frame() %>%
   tibble::rownames_to_column("Kids_First_Biospecimen_ID")
 # set up stranded data
