@@ -105,8 +105,9 @@ Now, we'll use the fusion summary file to find samples that contain _MN1_.
 We're only interested in fusions where _MN1_ is the 5' fusion partner.
 
 ```{r}
+# We will also filter out specific MN1--PATZ1 fusion based on github comment: https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/788#discussion_r495212879
 mn1_fusion_biospecimens <- fusion_summary_df %>%
-  select(Kids_First_Biospecimen_ID, starts_with("MN1"))
+  select(Kids_First_Biospecimen_ID, starts_with("MN1"), -("MN1--PATZ1"))
 ```
 
 Which samples have these fusions?
