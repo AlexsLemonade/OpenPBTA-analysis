@@ -27,7 +27,7 @@ if (!dir.exists(results_dir)) {
 ### Read files
     
 ```{r}
-# clinical file that has already been filtered to the appropriate 
+# clinical file that has already been filtered to the appropriate samples
 clinical_df <- readr::read_tsv(file.path(subset_dir, 
                                          "lgat_metadata.tsv"),
                                guess_max = 10000)
