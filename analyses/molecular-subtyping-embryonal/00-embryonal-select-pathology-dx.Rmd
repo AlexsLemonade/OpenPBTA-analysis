@@ -8,7 +8,7 @@ author: Chante Bethell for ALSF CCDL
 date: 2020
 ---
 
-Code for this notebooke was adapted from the `analyses/molecular-subtyping-HGG/00-HGG-select-pathology-dx.Rmd`(https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/f65c803706d9c1eea7f2892cb8b638f3d47d15c6/analyses/molecular-subtyping-HGG/00-HGG-select-pathology-dx.Rmd) notebook.
+Code for this notebook was adapted from the `analyses/molecular-subtyping-HGG/00-HGG-select-pathology-dx.Rmd`(https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/f65c803706d9c1eea7f2892cb8b638f3d47d15c6/analyses/molecular-subtyping-HGG/00-HGG-select-pathology-dx.Rmd) notebook.
 
 ## Background
 
@@ -95,7 +95,7 @@ We will need to select free text terms for inclusions because above we can say v
 
 ## Pathology diagnosis strings for inclusion
 
-These are the terms that we'll use too look for exact matches in `pathology_diagnosis`.
+These are the terms that we'll use to look for exact matches in `pathology_diagnosis`.
  
 ```{r}
 path_dx_terms <- c(
@@ -105,7 +105,7 @@ path_dx_terms <- c(
 
 ## Pathology free text diagnosis strings for inclusion
 
-These are the terms that we'll collapse together with `|` to detect strings in the `pathology_free_text_diagnosis` column.
+These are the terms that we'll use to look for exact matches in the `pathology_free_text_diagnosis` column.
 
 ```{r}
 free_text_dx_terms <- c(
