@@ -45,18 +45,10 @@ if (!dir.exists(results_dir)) {
 
 # Read in metadata
 metadata <-
-  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"), guess_max = 10000) %>%
+  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"), 
+                  guess_max = 10000) %>%
   dplyr::filter(sample_type == "Tumor",
                 composition == "Solid Tissue") 
-
-# Select wanted columns in metadata for merging and assign to a new object
-select_metadata <- metadata %>%
-  dplyr::select(Kids_First_Participant_ID,
-                sample_id,
-                Kids_First_Biospecimen_ID,
-                broad_histology,
-                short_histology,
-                integrated_diagnosis)
 
 # Read in snv consensus mutation data
 snv_df <-
@@ -111,50 +103,38 @@ snv_lesions_df <- snv_lesions_df %>%
     )
   ) %>%
   dplyr::mutate_all(function(x) tidyr::replace_na(x, "No"))
+```
 
-# Join the selected variables from the metadata with the snv consensus mutation
-# and defining lesions data.frame
-snv_lesions_df <- select_metadata %>%
+Add a column that keeps track of the presence of any defining lesion.
+We'll use this to create subset files in the next step.
+
+```{r}
+snv_lesions_df <- snv_lesions_df %>%
+  dplyr::mutate(
+    defining_lesion = dplyr::case_when(
+      H3F3A.K28M == "Yes" ~ TRUE,
+      HIST1H3B.K28M == "Yes" ~ TRUE,
+      HIST1H3C.K28M == "Yes" ~ TRUE,
+      HIST2H3C.K28M == "Yes" ~ TRUE,
+      H3F3A.G35R == "Yes" ~ TRUE,
+      H3F3A.G35V == "Yes" ~ TRUE,
+      TRUE ~ FALSE
+    )
+  )
+```
+
+Add other identifiers and sort.
+
+```{r}
+snv_lesions_df <- metadata %>%
+  dplyr::select(Kids_First_Participant_ID, 
+                sample_id, 
+                Kids_First_Biospecimen_ID) %>%
   dplyr::inner_join(snv_lesions_df,
                     by = c("Kids_First_Biospecimen_ID" = "Tumor_Sample_Barcode")) %>%
-  dplyr::select(
-    dplyr::ends_with("ID"),
-    dplyr::starts_with("H"),
-    broad_histology,
-    short_histology,
-    integrated_diagnosis
-  ) %>%
-  dplyr::mutate(
-    disease_type_reclassified = dplyr::case_when(
-      H3F3A.K28M == "Yes" ~ "Diffuse midline glioma, H3 K28 mutant",
-      HIST1H3B.K28M == "Yes" ~ "Diffuse midline glioma, H3 K28 mutant",
-      HIST1H3C.K28M == "Yes" ~ "Diffuse midline glioma, H3 K28 mutant",
-      HIST2H3C.K28M == "Yes" ~ "Diffuse midline glioma, H3 K28 mutant",
-      H3F3A.G35R == "Yes" ~ "High-grade glioma, H3 G35 mutant",
-      H3F3A.G35V == "Yes" ~ "High-grade glioma, H3 G35 mutant",
-      TRUE ~ as.character(integrated_diagnosis)),
-    short_histology_reclassified = dplyr::case_when(
-      H3F3A.K28M == "Yes" ~ "HGAT",
-      HIST1H3B.K28M == "Yes" ~ "HGAT",
-      HIST1H3C.K28M == "Yes" ~ "HGAT",
-      HIST2H3C.K28M == "Yes" ~ "HGAT",
-      H3F3A.G35R == "Yes" ~ "HGAT",
-      H3F3A.G35V == "Yes" ~ "HGAT",
-      TRUE ~ as.character(short_histology)),
-    broad_histology_reclassified = dplyr::case_when(
-      H3F3A.K28M == "Yes" ~ "Diffuse astrocytic and oligodendroglial tumor",
-      HIST1H3B.K28M == "Yes" ~ "Diffuse astrocytic and oligodendroglial tumor",
-      HIST1H3C.K28M == "Yes" ~ "Diffuse astrocytic and oligodendroglial tumor",
-      HIST2H3C.K28M == "Yes" ~ "Diffuse astrocytic and oligodendroglial tumor",
-      H3F3A.G35R == "Yes" ~ "Diffuse astrocytic and oligodendroglial tumor",
-      H3F3A.G35V == "Yes" ~ "Diffuse astrocytic and oligodendroglial tumor",
-      TRUE ~ as.character(broad_histology)),
-    ) %>%
   dplyr::arrange(Kids_First_Participant_ID, sample_id)
-
-# Display `snv_lesions_df`
-snv_lesions_df 
 ```
+
 
 ## Save final table of results
 
@@ -164,23 +144,9 @@ readr::write_tsv(snv_lesions_df,
                  file.path(results_dir, "HGG_defining_lesions.tsv"))
 ```
 
-## Inconsistencies in disease classification
-
-```{r}
-# Isolate the samples with the specified mutations that were not classified
-# as HGG or DIPG
-snv_lesions_df %>%
-  dplyr::filter(
-    grepl("High-grade glioma|Diffuse midline glioma", disease_type_reclassified) &
-      !(integrated_diagnosis %in% c("High-grade glioma", 
-                                "Brainstem glioma- Diffuse intrinsic pontine glioma"))
-  )
-```
-
-# Session Info
+## Session Info
 
 ```{r}
 # Print the session information
 sessionInfo()
 ```
-
