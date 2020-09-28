@@ -36,11 +36,9 @@ jobs:
 
      ### MOLECULAR SUBTYPING ###
 
-      # TODO: This is currently broken because of a change from glioma_brain_region to CNS_brain_region
-      # The fix is tracked in https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/754#issuecomment-691525827
-      # - run:
-      #     name: Molecular Subtyping - HGG
-      #     command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
+      - run:
+          name: Molecular Subtyping - HGG
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
 
       - run:
           name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors
