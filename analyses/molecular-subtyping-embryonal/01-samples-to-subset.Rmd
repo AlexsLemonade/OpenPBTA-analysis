@@ -19,7 +19,7 @@ To summarize - we will identify biospecimen IDs that should be included for down
    (See also: [this comment on `AlexsLemonade/OpenPBTA-analysis#401`](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/401#issuecomment-573669727).)
    
 2. An RNA-seq biospecimen sample includes a _MN1_ fusion (5' partner) [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/785#issuecomment-695015488).
-  Note that the fusion `MN1--PATZ1` is excluded as it is an entity separate of CNS HGNET-MN1 tumors [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/788#discussion_r495302880).
+  Note that the `MN1--PATZ1` fusion is excluded as it is an entity separate of CNS HGNET-MN1 tumors [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/788#discussion_r495302880).
 
 3. Any sample with "Supratentorial or Spinal Cord PNET" in the `pathology_diagnosis` column of the metadata `pbta-histologies.tsv` (also [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/752#issuecomment-697000066)).
 
@@ -106,7 +106,7 @@ Now, we'll use the fusion summary file to find samples that contain _MN1_.
 We're only interested in fusions where _MN1_ is the 5' fusion partner.
 
 ```{r}
-# We will also filter out specific MN1--PATZ1 fusion based on github comment: https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/788#discussion_r495212879
+# We will also filter out the specific _MN1--PATZ1_ fusion based on github comment: https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/788#discussion_r495212879
 mn1_fusion_biospecimens <- fusion_summary_df %>%
   select(Kids_First_Biospecimen_ID, starts_with("MN1"), -("MN1--PATZ1"))
 ```
