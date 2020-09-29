@@ -112,7 +112,8 @@ free_text_dx_terms <- c(
   "embryonal tumor with multilayer rosettes, ros (who grade iv)",
   "embryonal tumor, nos, congenital type",
   "ependymoblastoma",
-  "medullooepithelioma"
+  "medulloepithelioma",
+  "medullooepithelioma" # It was noted that this misspelling was included in the `pathology_free_text_diagnosis` column of the histologies file so we will add it to the JSON file [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/788#issuecomment-700717514)
 )
 ```
 
