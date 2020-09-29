@@ -341,6 +341,7 @@ relevant_clinical_data <- histologies_df %>%
          sample_id,
          age_at_diagnosis_days,
          germline_sex_estimate,
+         primary_site,
          pathology_diagnosis,
          pathology_free_text_diagnosis) %>%
   distinct() %>%
@@ -510,6 +511,27 @@ all_data_df %>%
   filter(CIC_fusions != "None")
 ```
 
+### CNS Neuroblastoma
+
+> * CNS Neuroblastoma tumor 
+> * Primary site does not contain "Other locations NOS"
+> * Pathology free text diagnosis does not contain "peripheral"
+
+```{r}
+neuroblastoma_df <- all_data_df %>%
+  filter(
+    pathology_diagnosis == "Neuroblastoma",
+    str_detect(str_to_lower(primary_site), "other locations nos", negate = TRUE),
+    str_detect(
+      str_to_lower(pathology_free_text_diagnosis),
+      "peripheral",
+      negate = TRUE
+    )
+  ) %>%
+  select(contains("ID")) %>%
+  mutate(molecular_subtype = "CNS Neuroblastoma")
+```
+
 ### CNS Embryonal, NOS
 
 > * CNS Embryonal tumor, not otherwise specified
@@ -524,7 +546,8 @@ subtypes_df <- bind_rows(
   etmr_c19mc_df,
   etmr_nos_df,
   hgnet_mn1_df,
-  nb_foxr2_df
+  nb_foxr2_df,
+  neuroblastoma_df
 )
 
 subtypes_df <- all_data_df %>%

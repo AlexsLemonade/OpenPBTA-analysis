@@ -1,8 +1,9 @@
 # Stephanie J. Spielman and Jaclyn Taroni for ALSF CCDL 2020
 #
 # This script subsets the files required for subtyping non-MB and non-ATRT
-# embryonal tumors. The samples that were subset in `01-samples-to-subset.Rmd`,
-# based on specific conditions outlined in that notebook, will be included here.
+# embryonal tumors. The samples that were subset in 
+# [`01-samples-to-subset.Rmd`](./01-samples-to-subset.Rmd), based on specific
+# conditions outlined in that notebook, will be included here.
 
 library(tidyverse)
 
