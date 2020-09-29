@@ -15,6 +15,7 @@ library("tidyverse")
 # to get root directory
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
+subset_dir <- "lgat-subset"
 
 results_dir <- "results"
 if (!dir.exists(results_dir)) {
@@ -26,10 +27,10 @@ if (!dir.exists(results_dir)) {
 ### Read files
     
 ```{r}
-# clinical file
-clinical_df <- readr::read_tsv(file.path(data_dir, 
-                                      "pbta-histologies.tsv"),
-                            guess_max = 10000)
+# clinical file that has already been filtered to the appropriate samples
+clinical_df <- readr::read_tsv(file.path(subset_dir, 
+                                         "lgat_metadata.tsv"),
+                               guess_max = 10000)
 
 # identifiers only for joining with other data
 identifiers_df <- clinical_df %>%
@@ -37,14 +38,13 @@ identifiers_df <- clinical_df %>%
          Kids_First_Biospecimen_ID,
          sample_id)
 
-# get all RNA-Seq biospecimen IDs where short_histology == LGAT
+# get all RNA-Seq biospecimen IDs
 lgat_rnaseq_bsids <- clinical_df %>% 
-  filter(short_histology == "LGAT",
-         experimental_strategy == "RNA-Seq") %>%
+  filter(experimental_strategy == "RNA-Seq") %>%
   pull(Kids_First_Biospecimen_ID)
 
 # get subsetted mutation file
-subsetWgs <- readr::read_tsv(file.path("lgat-subset", 
+subsetWgs <- readr::read_tsv(file.path(subset_dir, 
                                        "LGAT_snv_subset.tsv")) %>% 
   select(Tumor_Sample_Barcode, 
          BRAF_V600E) %>%
