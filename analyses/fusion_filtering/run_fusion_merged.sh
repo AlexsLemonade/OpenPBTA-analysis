@@ -46,7 +46,7 @@ independent_samples_file="${data_path}/independent-specimens.wgswxs.primary-plus
 
 # data release files to use for recurrent fusion/fused genes detection
 
-putative_oncogenic_fusion="${data_path}/pbta-fusion-putative-oncogenic.tsv"
+putative_oncogenic_fusion="${results_path}/pbta-fusion-putative-oncogenic.tsv"
 
 
 # Run Fusion standardization for arriba caller
