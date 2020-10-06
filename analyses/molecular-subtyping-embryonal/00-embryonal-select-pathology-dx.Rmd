@@ -23,8 +23,8 @@ Thus, molecular subtyping modules need to be upstream of `broad_histology` and u
 Per a [related github comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/752#issuecomment-697000066), the following criteria should be used to subset samples based on `pathology_diagnosis` and `pathology_free_text_diagnosis` for this module:
 
 1. Any sample with "Supratentorial or Spinal Cord PNET" in the `pathology_diagnosis` column of the metadata `pbta-histologies.tsv`.
-2. Any sample with "Neuroblastoma" in the `pathology_diagnosis` column, where `primary_site` does not contain "Other locations NOS", and `pathology_free_text_diagnosis` does not contain "peripheral".
-3. Any sample with "Other" in the `pathology_diagnosis` column of the metadata, and with "embryonal tumor with multilayer rosettes, ros (who grade iv)", "embryonal tumor, nos, congenital type", "ependymoblastoma" or "medullooepithelioma" in the `pathology_free_text_diagnosis` column.
+2. Any sample with "Neuroblastoma" in the `pathology_diagnosis` column, where `primary_site` does not contain "Other locations NOS", `pathology_free_text_diagnosis` does not contain "peripheral", and `pathology_diagnosis` or `pathology_free_text_diagnosis` does not contain "metastatic".
+3. Any sample with "Other" in the `pathology_diagnosis` column of the metadata, and with "embryonal tumor with multilayer rosettes, ros (who grade iv)", "embryonal tumor, nos, congenital type", "ependymoblastoma" or "medulloepithelioma" in the `pathology_free_text_diagnosis` column.
 
 ## Set up
 
@@ -113,7 +113,7 @@ free_text_dx_terms <- c(
   "embryonal tumor, nos, congenital type",
   "ependymoblastoma",
   "medulloepithelioma",
-  "medullooepithelioma" # It was noted that this misspelling was included in the `pathology_free_text_diagnosis` column of the histologies file so we will add it to the JSON file [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/788#issuecomment-700717514)
+  "medulloepithelioma" # It was noted that this misspelling was included in the `pathology_free_text_diagnosis` column of the histologies file so we will add it to the JSON file [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/788#issuecomment-700717514)
 )
 ```
 
@@ -139,7 +139,7 @@ pathology_free_text_df <- histologies_df %>%
          pathology_free_text_diagnosis %in% free_text_dx_terms)
 ```
 
-Any sample with "Neuroblastoma" in the `pathology_diagnosis` column, `primary_site != "Other locations NOS"`, and `pathology_free_text_diagnosis` does not contain "peripheral".
+Any sample with "Neuroblastoma" in the `pathology_diagnosis` column, `primary_site != "Other locations NOS"`, `pathology_free_text_diagnosis` does not contain "peripheral", and `pathology_diagnosis` or `pathology_free_text_diagnosis` does not contain "metastatic".
 
 ```{r}
 neuroblastoma_df <- histologies_df %>%
