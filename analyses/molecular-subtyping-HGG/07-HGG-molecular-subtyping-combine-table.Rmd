@@ -91,11 +91,29 @@ histologies_df %>%
 ```{r}
 dna_df <- mutation_df %>%
   rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
-  left_join(cn_gistic_df)
+  left_join(cn_gistic_df) %>%
+  dplyr::mutate(parent_aliquot_id = gsub("[.]WGS|WXS|Panel","",parent_aliquot_id))
 ```
 
 In earlier work on this module, we observed duplicated `sample_id`.
 We removed non-tumor samples (e.g., derived cell lines), does this issue persist?
+Yes
+
+checking if they have unqiue `parent_aliquot_id`. The parent_aliquot_id is different between cell-lines and solid tumor. For 7316-195 each cell line had different parent_aliquot_id 7316-195-T-203029.WGS, 7316-195-T-202952.WGS
+
+```{r}
+histologies_df %>%
+  filter(sample_id %in% dna_df$sample_id[duplicated(dna_df$sample_id)],
+         experimental_strategy %in% c("WGS"),
+         sample_type == "Tumor") %>%
+  group_by(sample_id) %>%
+  arrange(sample_id) %>%
+  dplyr::select(Kids_First_Biospecimen_ID,sample_id,parent_aliquot_id,composition) %>%
+  summarize(parent_aliquot_id = paste(parent_aliquot_id, collapse = ", "),
+            composition =  paste(composition, collapse = ", "))
+
+```
+
 
 ```{r}
 any(duplicated(dna_df$Kids_First_Biospecimen_ID))
@@ -195,9 +213,10 @@ head(rna_df, n = 10)
 ```{r}
 rna_df <- histologies_df %>%
   select(Kids_First_Participant_ID,
-         sample_id, 
+         sample_id, parent_aliquot_id,
          Kids_First_Biospecimen_ID) %>%
-  inner_join(rna_df)
+  inner_join(rna_df) %>%
+  dplyr::mutate(parent_aliquot_id = gsub("[.]RNA-Seq","",parent_aliquot_id))
 ```
 
 ```{r}
@@ -216,7 +235,9 @@ histologies_df %>%
   filter(sample_id %in% rna_df$sample_id[which(duplicated(rna_df$sample_id))],
          experimental_strategy == "RNA-Seq") %>%
   group_by(sample_id) %>%
-  summarize(RNA_library = paste(RNA_library, collapse = ", "))
+  summarize(RNA_library = paste(RNA_library, collapse = ", "),
+            parent_aliquot_id = paste(parent_aliquot_id, collapse = ", "),
+            composition =  paste(composition, collapse = ", "))
 ```
 
 There are 2 instances where there are two stranded biospecimen IDs that map to the same `sample_id`.
@@ -226,7 +247,7 @@ There are 2 instances where there are two stranded biospecimen IDs that map to t
 ```{r}
 all_data_df <- left_join(dna_df, rna_df,
                          by = c("Kids_First_Participant_ID",
-                                "sample_id"),
+                                "sample_id","parent_aliquot_id"),
                          suffix = c("_DNA", "_RNA")) %>%
   select(starts_with("Kids_First"), sample_id, everything())
 
@@ -238,8 +259,7 @@ Add in brain region and age.
 ```{r}
 relevant_clinical_df <- histologies_df %>%
   filter(sample_id %in% all_data_df$sample_id,
-         sample_type == "Tumor",
-         composition == "Solid Tissue") %>%
+         sample_type == "Tumor") %>%
   mutate(age_at_diagnosis_yr = 
            floor(as.integer(age_at_diagnosis_days)/365)) %>%
   group_by(Kids_First_Participant_ID, sample_id) %>%
@@ -280,7 +300,7 @@ h3_k28_df <- all_data_df %>%
            HIST1H3C.K28M == "Yes" | HIST2H3C.K28M == "Yes") %>%
   # Only the relevant columns
   select(Kids_First_Participant_ID, 
-         sample_id,
+         sample_id,parent_aliquot_id,
          H3F3A.K28M,
          HIST1H3B.K28M,
          HIST1H3C.K28M,
@@ -354,7 +374,7 @@ h3_k28_df_biospecimen <- all_data_df %>%
   filter(H3F3A.K28M == "Yes" | HIST1H3B.K28M == "Yes" |
            HIST1H3C.K28M == "Yes" | HIST2H3C.K28M == "Yes") %>%
   select(Kids_First_Participant_ID,
-         sample_id,
+         sample_id,parent_aliquot_id,
          Kids_First_Biospecimen_ID_DNA,
          Kids_First_Biospecimen_ID_RNA, 
          BRAF_V600E) %>%
@@ -378,7 +398,7 @@ h3_g35_df <- all_data_df %>%
   filter(H3F3A.G35R == "Yes" | H3F3A.G35V == "Yes") %>%
   # Only the relevant columns
   select(Kids_First_Participant_ID, 
-         sample_id,
+         sample_id,parent_aliquot_id,
          H3F3A.K28M,
          HIST1H3B.K28M,
          H3F3A.G35R,
@@ -398,7 +418,7 @@ h3_g35_df_biospecimen <- all_data_df %>%
   # Only rows with H3 G35 mutations
   filter(H3F3A.G35R == "Yes" | H3F3A.G35V == "Yes") %>%
   select(Kids_First_Participant_ID,
-         sample_id,
+         sample_id, parent_aliquot_id,
          Kids_First_Biospecimen_ID_DNA,
          Kids_First_Biospecimen_ID_RNA) %>%
   mutate(molecular_subtype = "HGG, H3 G35")
@@ -425,7 +445,7 @@ Make a biospecimen-centric table.
 idh_df_biospecimen <- all_data_df %>%
   filter(IDH1_mutation == "p.R132H") %>%
   select(Kids_First_Participant_ID,
-         sample_id,
+         sample_id,parent_aliquot_id,
          Kids_First_Biospecimen_ID_DNA,
          Kids_First_Biospecimen_ID_RNA) %>%
   mutate(molecular_subtype = "HGG, IDH")
@@ -447,7 +467,7 @@ wildtype_df <- all_data_df %>%
          H3F3A.G35V == "No",
          !grepl("IDH1", relevant_coding_mutations)) %>%
   select(Kids_First_Participant_ID,
-         sample_id,
+         sample_id,parent_aliquot_id,
          relevant_coding_mutations,
          TERT_variant_classification,
          MYCN_focal_status,
@@ -494,7 +514,7 @@ braf_df_biospecimen <- all_data_df %>%
          H3F3A.G35V == "No",
          BRAF_V600E == "p.V600E") %>%
   select(Kids_First_Participant_ID,
-         sample_id,
+         sample_id,parent_aliquot_id,
          Kids_First_Biospecimen_ID_DNA,
          Kids_First_Biospecimen_ID_RNA) %>%
   mutate(molecular_subtype = "BRAF V600E")
@@ -512,7 +532,7 @@ molecular_subtype_table <- bind_rows(h3_g35_df_biospecimen,
 
 # We'll add HGG, H3 wildtype values in cases that do not yet have labels
 molecular_subtype_table <- all_data_df %>%
-  select(Kids_First_Participant_ID, sample_id,
+  select(Kids_First_Participant_ID, sample_id,parent_aliquot_id,
          Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA) %>%
   left_join(molecular_subtype_table) %>%
   distinct() %>%

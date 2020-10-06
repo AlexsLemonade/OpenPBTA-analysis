@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Chante Bethell and Jaclyn Taroni for ALSF CCDL" />
@@ -2554,13 +2554,13 @@ window.initializeCodeFolding = function(show) {
   var currentIndex = 1;
 
   // select all R code blocks
-  var rCodeBlocks = $('pre.r, pre.python, pre.bash, pre.sql, pre.cpp, pre.stan, pre.julia');
+  var rCodeBlocks = $('pre.r, pre.python, pre.bash, pre.sql, pre.cpp, pre.stan, pre.julia, pre.foldable');
   rCodeBlocks.each(function() {
 
     // create a collapsable div to wrap the code in
     var div = $('<div class="collapse r-code-collapse"></div>');
-    if (show)
-      div.addClass('in');
+    show = (show || $(this).hasClass('fold-show')) && !$(this).hasClass('fold-hide');
+    if (show) div.addClass('in');
     var id = 'rcode-643E0F36' + currentIndex++;
     div.attr('id', id);
     $(this).before(div);
@@ -2689,7 +2689,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -2775,6 +2774,7 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -2787,57 +2787,12 @@ summary {
 }
 </style>
 
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
 <!-- code folding -->
 <style type="text/css">
 .code-folding-btn { margin-bottom: 4px; }
 </style>
-<script>
-$(document).ready(function () {
-  window.initializeSourceEmbed("04-HGG-molecular-subtyping-mutation.Rmd");
-  window.initializeCodeFolding("show" === "show");
-});
-</script>
 
 
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <style type="text/css">
 
@@ -2851,6 +2806,12 @@ $(document).ready(function ()  {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -2951,7 +2912,7 @@ div.tocify {
 <h3>Libraries and Functions</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYCU+JWAgPC0gZHBseXI6OmAlPiVgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYCU+JWAgPC0gZHBseXI6OmAlPiVgXG5gYGAifQ== -->
 <pre class="r"><code>`%&gt;%` &lt;- dplyr::`%&gt;%`</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -2959,7 +2920,7 @@ div.tocify {
 <p>We’ll take a similar approach to the <a href="../tp53_nf1_score/"><code>tp53_nf1_score</code></a> module and use functions from the <a href="../snv-callers/"><code>snv-callers</code></a> module.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbIiMgVE9ETzogaWYgYSBjb21tb24gdXRpbCBmb2xkZXIgaXMgZXN0YWJsaXNoZWQsIHVzZSB0aGF0IGluc3RlYWQiLCJyb290X2RpciA8LSBycHJvanJvb3Q6OmZpbmRfcm9vdChycHJvanJvb3Q6Omhhc19kaXIoXCIuZ2l0XCIpKSIsInNvdXJjZShmaWxlLnBhdGgocm9vdF9kaXIsIFwiYW5hbHlzZXNcIiwgXCJzbnYtY2FsbGVyc1wiLCBcInV0aWxcIixcbiAgICAgICAgICAgICAgICAgXCJ0bWJfZnVuY3Rpb25zLlJcIikpIl19 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUT0RPOiBpZiBhIGNvbW1vbiB1dGlsIGZvbGRlciBpcyBlc3RhYmxpc2hlZCwgdXNlIHRoYXQgaW5zdGVhZFxucm9vdF9kaXIgPC0gcnByb2pyb290OjpmaW5kX3Jvb3QocnByb2pyb290OjpoYXNfZGlyKFwiLmdpdFwiKSlcbnNvdXJjZShmaWxlLnBhdGgocm9vdF9kaXIsIFwiYW5hbHlzZXNcIiwgXCJzbnYtY2FsbGVyc1wiLCBcInV0aWxcIixcbiAgICAgICAgICAgICAgICAgXCJ0bWJfZnVuY3Rpb25zLlJcIikpXG5gYGAifQ== -->
 <pre class="r"><code># TODO: if a common util folder is established, use that instead
 root_dir &lt;- rprojroot::find_root(rprojroot::has_dir(&quot;.git&quot;))
 source(file.path(root_dir, &quot;analyses&quot;, &quot;snv-callers&quot;, &quot;util&quot;,
@@ -2972,7 +2933,7 @@ source(file.path(root_dir, &quot;analyses&quot;, &quot;snv-callers&quot;, &quot;
 <h3>Directories</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbIiMgRmlsZSBwYXRoIHRvIHJlc3VsdHMgZGlyZWN0b3J5IiwiaW5wdXRfZGlyIDwtXG4gIGZpbGUucGF0aChyb290X2RpciwgXCJhbmFseXNlc1wiLCBcIm1vbGVjdWxhci1zdWJ0eXBpbmctSEdHXCIsIFwiaGdnLXN1YnNldFwiKSIsIiMgRmlsZSBwYXRoIHRvIHJlc3VsdHMgZGlyZWN0b3J5IiwicmVzdWx0c19kaXIgPC1cbiAgZmlsZS5wYXRoKHJvb3RfZGlyLCBcImFuYWx5c2VzXCIsIFwibW9sZWN1bGFyLXN1YnR5cGluZy1IR0dcIiwgXCJyZXN1bHRzXCIpIiwiaWYgKCFkaXIuZXhpc3RzKHJlc3VsdHNfZGlyKSkge1xuICBkaXIuY3JlYXRlKHJlc3VsdHNfZGlyKVxufSJdfQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBGaWxlIHBhdGggdG8gcmVzdWx0cyBkaXJlY3RvcnlcbmlucHV0X2RpciA8LVxuICBmaWxlLnBhdGgocm9vdF9kaXIsIFwiYW5hbHlzZXNcIiwgXCJtb2xlY3VsYXItc3VidHlwaW5nLUhHR1wiLCBcImhnZy1zdWJzZXRcIilcbiMgRmlsZSBwYXRoIHRvIHJlc3VsdHMgZGlyZWN0b3J5XG5yZXN1bHRzX2RpciA8LVxuICBmaWxlLnBhdGgocm9vdF9kaXIsIFwiYW5hbHlzZXNcIiwgXCJtb2xlY3VsYXItc3VidHlwaW5nLUhHR1wiLCBcInJlc3VsdHNcIilcbmlmICghZGlyLmV4aXN0cyhyZXN1bHRzX2RpcikpIHtcbiAgZGlyLmNyZWF0ZShyZXN1bHRzX2Rpcilcbn1cbmBgYCJ9 -->
 <pre class="r"><code># File path to results directory
 input_dir &lt;-
   file.path(root_dir, &quot;analyses&quot;, &quot;molecular-subtyping-HGG&quot;, &quot;hgg-subset&quot;)
@@ -2990,7 +2951,7 @@ if (!dir.exists(results_dir)) {
 <h3>Read in Files</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbIiMgQ0RTIGJlZCBmaWxlLCB0byBiZSB1c2VkIHRvIGZpbHRlciB0aGUgY29uc2Vuc3VzIE1BRiBmaWxlIiwiYmVkX2ZpbGUgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcbiAgICAgICAgICAgICAgICAgICAgICBcInNjcmF0Y2hcIiwgXG4gICAgICAgICAgICAgICAgICAgICAgXCJnZW5jb2RlLnYyNy5wcmltYXJ5X2Fzc2VtYmx5LmFubm90YXRpb24uYmVkXCIpIiwiZ2VuY29kZV9jZHNfYmVkIDwtIHJlYWRyOjpyZWFkX3RzdihiZWRfZmlsZSwgY29sX25hbWVzID0gRkFMU0UpIiwiIyBSZWFkIGluIEhHRyBzdWJzZXQgc252IG1hZiBkYXRhICIsInNudl9kZiA8LSByZWFkcjo6cmVhZF90c3YoZmlsZS5wYXRoKGlucHV0X2RpciwgXCJoZ2dfc252X21hZi50c3YuZ3pcIikpIiwiIyBSZWFkIGluIGRlZmluaW5nIGxlc2lvbnMgZmlsZSIsImRlZmluaW5nX2xlc2lvbnNfZGYgPC0gcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChyZXN1bHRzX2RpcixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIkhHR19kZWZpbmluZ19sZXNpb25zLnRzdlwiKSkiXX0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBDRFMgYmVkIGZpbGUsIHRvIGJlIHVzZWQgdG8gZmlsdGVyIHRoZSBjb25zZW5zdXMgTUFGIGZpbGVcbmJlZF9maWxlIDwtIGZpbGUucGF0aChyb290X2RpciwgXG4gICAgICAgICAgICAgICAgICAgICAgXCJzY3JhdGNoXCIsIFxuICAgICAgICAgICAgICAgICAgICAgIFwiZ2VuY29kZS52MjcucHJpbWFyeV9hc3NlbWJseS5hbm5vdGF0aW9uLmJlZFwiKVxuZ2VuY29kZV9jZHNfYmVkIDwtIHJlYWRyOjpyZWFkX3RzdihiZWRfZmlsZSwgY29sX25hbWVzID0gRkFMU0UpXG4jIFJlYWQgaW4gSEdHIHN1YnNldCBzbnYgbWFmIGRhdGEgXG5zbnZfZGYgPC0gcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChpbnB1dF9kaXIsIFwiaGdnX3Nudl9tYWYudHN2Lmd6XCIpKVxuIyBSZWFkIGluIGRlZmluaW5nIGxlc2lvbnMgZmlsZVxuZGVmaW5pbmdfbGVzaW9uc19kZiA8LSByZWFkcjo6cmVhZF90c3YoZmlsZS5wYXRoKHJlc3VsdHNfZGlyLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiSEdHX2RlZmluaW5nX2xlc2lvbnMudHN2XCIpKVxuYGBgIn0= -->
 <pre class="r"><code># CDS bed file, to be used to filter the consensus MAF file
 bed_file &lt;- file.path(root_dir, 
                       &quot;scratch&quot;, 
@@ -3010,7 +2971,7 @@ defining_lesions_df &lt;- readr::read_tsv(file.path(results_dir,
 <h2>Output File</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoib3V0cHV0X2ZpbGUgPC0gZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcIkhHR19jbGVhbmVkX211dGF0aW9uLnRzdlwiKSJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxub3V0cHV0X2ZpbGUgPC0gZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcIkhHR19jbGVhbmVkX211dGF0aW9uLnRzdlwiKVxuYGBgIn0= -->
 <pre class="r"><code>output_file &lt;- file.path(results_dir, &quot;HGG_cleaned_mutation.tsv&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -3028,14 +2989,16 @@ defining_lesions_df &lt;- readr::read_tsv(file.path(results_dir,
 <p>Samples were examined for the presence or absence of these defining lesions in <a href="./01-HGG-molecular-subtyping-defining-lesions.Rmd"><code>01-HGG-molecular-subtyping-defining-lesions</code></a>. Samples that were classified as HGAT in the <code>short_histology</code> column of <code>pbta-histologies.tsv</code> and those with one of these defining lesions were included in the subset files (see: <a href="./02-HGG-molecular-subtyping-subset-files.R"><code>02-HGG-molecular-subtyping-subset-files.R</code></a>). Thus, we are not concerned with cleaning data for these specific mutations here. Instead, we can look at the defining lesions <code>data.frame</code> we read in above.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiaGVhZChkZWZpbmluZ19sZXNpb25zX2RmLCBuID0gMTApIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChkZWZpbmluZ19sZXNpb25zX2RmLCBuID0gMTApXG5gYGAifQ== -->
 <pre class="r"><code>head(defining_lesions_df, n = 10)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MTEsIm5yb3ciOjEwfSwicmRmIjoiSDRzSUFBQUFBQUFBQSsyVlFXK2JNQlRIU2Rwc0sxSFhUZE1xN1VNa01zWmdjd3hwU0ZxVXFFMVFTWEpCTEtHdE5RSVpVRzNIZmVvZG01bld0QVk2ZFpmZEdzbkUvSjcvNy9uL1FIaDZNb2Z5WEpZa3FTbnR0UnBTYzQ5Tjk1dnMwcEQycFlQOC82Y2s3WDFpa3pZYkg5aVFlYUI5N25nQURBSEFKK01Ya0RKZTZ0QWVpZ2llYVgxM29yMkV4cGZMNWN3VkVWbzROb0VURWVtRDZad3NjUW1Ob0dIMVN4WDdBekN5Rm1iRnhRRldGYjBETlZ6STN6MEFERXYzQ09HeXdDQkdhUUV4U0dtQmdrRTVBMFo2dFdSRllTQlVXVUdVeW02UEgzZmJjVHBJVnpXc2ROM2hqRWMvRjF0blFSYlNWYlVXWkQ3eW9JSXh4RUx3K05FVWkyb3FZcE9hbERuTXBVaURDcXBKYzd0NVZJYzZ3RFVwODM0dmhRRFVwWGtqdUJ1aTF4T3pydVJhWWtBVlBxTWx5b08yTUZ0NVI4MloxN3NZMnoweTZRdklCdGllT05aQ1FNNkFYRmdXZGdRRUwwMmlJOE1Va09ZNHV1TWdXMEJqRjZPaHBSSUJxV2NENk9EZVZFQ21Nb2N6RTUwTENMaWs1eTRVSUFxQnE1STVleFhMTHBxVCtEL09YbXU5MXZwN0xabVBmL3lWam81VzVHK0NsRys0emVFWG02NVR6NkpKbW5ubmZwTFJGZDM2VWVhZG5oUWZ2OVRmYk1QQW8yc09QbTc5SkdBci9KQit2NDJ6cDRDWXlxUnh1ZzFXZEJORVQ2bmtrV3FwdmE0TlNYRWNIWTVPWjQ0eVVzM25ZTDhHWVFYeWhFTlZtOWJJSlNkSDYrQ0tSalM2OXNJZ3BYRlVhY3BCRXYvb0ZvMDV6UHY4aTExMnU5M3ZhdmRXb1o4VzNTdWd2UFl6djN1Vk1EMjd1NnRJM3NiYmpGVmtvbVorWXJjcTRrWlNBVWUzVWI2VGRXZDFjeHQ5NjJEK3JCdjhZUjd5dVN6TTJ3OGxtenVlcXNWVHZRbWlheG9GeGQ1RC8yc1E4cHYzelBHOTRlNDJvVkZXT0dFMDdXWng1aGZyNUZVY0Z1VGVtM1QzQjJWMWFVdWZDQUFBIn0= -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID"],"name":[3],"type":["chr"],"align":["left"]},{"label":["H3F3A.K28M"],"name":[4],"type":["chr"],"align":["left"]},{"label":["HIST1H3B.K28M"],"name":[5],"type":["chr"],"align":["left"]},{"label":["HIST1H3C.K28M"],"name":[6],"type":["chr"],"align":["left"]},{"label":["HIST2H3C.K28M"],"name":[7],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35R"],"name":[8],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35V"],"name":[9],"type":["chr"],"align":["left"]},{"label":["defining_lesion"],"name":[10],"type":["lgl"],"align":["right"]}],"data":[{"1":"PT_00G007DM","2":"7316-2577","3":"BS_AQMKA8NC","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_00G007DM","2":"7316-272","3":"BS_K07KNTFY","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_01MZ62KG","2":"7316-447","3":"BS_TE8QFF7T","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_02J5CWN5","2":"7316-2989","3":"BS_2VB8649B","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_02J5CWN5","2":"7316-898","3":"BS_5TT6TT4K","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_02MVZZSW","2":"7316-1702","3":"BS_MW74GF38","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_04YTK82N","2":"7316-746","3":"BS_3JE2T7AR","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_06ERX8Z7","2":"7316-2578","3":"BS_B1X2SB4P","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_06H29FCG","2":"7316-1944","3":"BS_0W8AWY10","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_0CE0HFYB","2":"7316-2581","3":"BS_30W38X77","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["parent_aliquot_id"],"name":[3],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID"],"name":[4],"type":["chr"],"align":["left"]},{"label":["H3F3A.K28M"],"name":[5],"type":["chr"],"align":["left"]},{"label":["HIST1H3B.K28M"],"name":[6],"type":["chr"],"align":["left"]},{"label":["HIST1H3C.K28M"],"name":[7],"type":["chr"],"align":["left"]},{"label":["HIST2H3C.K28M"],"name":[8],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35R"],"name":[9],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35V"],"name":[10],"type":["chr"],"align":["left"]},{"label":["defining_lesion"],"name":[11],"type":["lgl"],"align":["right"]}],"data":[{"1":"PT_00G007DM","2":"7316-2577","3":"7316-2577-T-463571.WGS","4":"BS_AQMKA8NC","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"FALSE"},{"1":"PT_00G007DM","2":"7316-272","3":"7316-272-T-357633.WGS","4":"BS_K07KNTFY","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"FALSE"},{"1":"PT_01MZ62KG","2":"7316-447","3":"7316-447-T-317727.WGS","4":"BS_TE8QFF7T","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"FALSE"},{"1":"PT_02J5CWN5","2":"7316-2989","3":"7316-2989-T-534989.WGS","4":"BS_2VB8649B","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"FALSE"},{"1":"PT_02J5CWN5","2":"7316-898","3":"7316-898-T-345214.WGS","4":"BS_5TT6TT4K","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"FALSE"},{"1":"PT_02MVZZSW","2":"7316-1702","3":"7316-1702-T-362607.WGS","4":"BS_MW74GF38","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"FALSE"},{"1":"PT_04YTK82N","2":"7316-746","3":"7316-746-T-342004.WGS","4":"BS_3JE2T7AR","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"FALSE"},{"1":"PT_06ERX8Z7","2":"7316-2578","3":"7316-2578-T-463586.WGS","4":"BS_B1X2SB4P","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"FALSE"},{"1":"PT_06H29FCG","2":"7316-1944","3":"7316-1944-T-389232.WGS","4":"BS_0W8AWY10","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"FALSE"},{"1":"PT_0CE0HFYB","2":"7316-2581","3":"7316-2581-T-463633.WGS","4":"BS_30W38X77","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"FALSE"}],"options":{"columns":{"min":{},"max":[10],"total":[11]},"rows":{"min":[10],"max":[10],"total":[10]},"pages":{}}}
   </script>
 </div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -3044,7 +3007,7 @@ defining_lesions_df &lt;- readr::read_tsv(file.path(results_dir,
 <p>Co-occurring lesions include <em>ACRV1</em>, <em>TP53</em>, <em>ATRX</em> mutations. Mutually exclusive lesions include <em>FGFR1</em> and <em>IDH1</em> mutations and <em>BRAF</em> V600E (specific for low-grade gliomas).</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiazI4X2dlbmVzX29mX2ludGVyZXN0IDwtIGMoXCJBQ1JWMVwiLCBcIlRQNTNcIiwgXCJBVFJYXCIsIFwiRkdGUjFcIiwgXCJJREgxXCIsIFwiQlJBRlwiKSJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuazI4X2dlbmVzX29mX2ludGVyZXN0IDwtIGMoXCJBQ1JWMVwiLCBcIlRQNTNcIiwgXCJBVFJYXCIsIFwiRkdGUjFcIiwgXCJJREgxXCIsIFwiQlJBRlwiKVxuYGBgIn0= -->
 <pre class="r"><code>k28_genes_of_interest &lt;- c(&quot;ACRV1&quot;, &quot;TP53&quot;, &quot;ATRX&quot;, &quot;FGFR1&quot;, &quot;IDH1&quot;, &quot;BRAF&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -3055,7 +3018,7 @@ defining_lesions_df &lt;- readr::read_tsv(file.path(results_dir,
 <p>Co-occurring lesions include <em>ATRX/DAXX</em>, <em>TP53</em>, <em>SETD2</em> mutations. Mutually exclusive lesions include <em>IDH1</em> mutations.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiZzM1X2dlbmVzX29mX2ludGVyZXN0IDwtIGMoXCJBVFJYXCIsIFwiREFYWFwiLCBcIlRQNTNcIiwgXCJTRVREMlwiLCBcIklESDFcIikifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZzM1X2dlbmVzX29mX2ludGVyZXN0IDwtIGMoXCJBVFJYXCIsIFwiREFYWFwiLCBcIlRQNTNcIiwgXCJTRVREMlwiLCBcIklESDFcIilcbmBgYCJ9 -->
 <pre class="r"><code>g35_genes_of_interest &lt;- c(&quot;ATRX&quot;, &quot;DAXX&quot;, &quot;TP53&quot;, &quot;SETD2&quot;, &quot;IDH1&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -3066,7 +3029,7 @@ defining_lesions_df &lt;- readr::read_tsv(file.path(results_dir,
 <p>These tumors harbor <em>IDH1</em> R132H mutations. Co-occurring lesions include <em>TP53</em> mutations.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiaWRoX2dlbmVzX29mX2ludGVyZXN0IDwtIGMoXCJJREgxXCIsIFwiVFA1M1wiKSJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWRoX2dlbmVzX29mX2ludGVyZXN0IDwtIGMoXCJJREgxXCIsIFwiVFA1M1wiKVxuYGBgIn0= -->
 <pre class="r"><code>idh_genes_of_interest &lt;- c(&quot;IDH1&quot;, &quot;TP53&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -3077,7 +3040,7 @@ defining_lesions_df &lt;- readr::read_tsv(file.path(results_dir,
 <p>These tumors do not have <em>H3F3A</em> or <em>IDH1</em> mutations, but harbor <em>TP53</em> and <em>TERT</em> mutations.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoid2lsZHR5cGVfZ2VuZXNfb2ZfaW50ZXJlc3QgPC0gYyhcIkgzRjNBXCIsIFwiSElTVDFIM0JcIiwgXCJISVNUMUgzQ1wiLCBcIkhJU1QySDNDXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiSURIMVwiLCBcIlRQNTNcIiwgXCJURVJUXCIpIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud2lsZHR5cGVfZ2VuZXNfb2ZfaW50ZXJlc3QgPC0gYyhcIkgzRjNBXCIsIFwiSElTVDFIM0JcIiwgXCJISVNUMUgzQ1wiLCBcIkhJU1QySDNDXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiSURIMVwiLCBcIlRQNTNcIiwgXCJURVJUXCIpXG5gYGAifQ== -->
 <pre class="r"><code>wildtype_genes_of_interest &lt;- c(&quot;H3F3A&quot;, &quot;HIST1H3B&quot;, &quot;HIST1H3C&quot;, &quot;HIST2H3C&quot;,
                                 &quot;IDH1&quot;, &quot;TP53&quot;, &quot;TERT&quot;)</code></pre>
 <!-- rnb-source-end -->
@@ -3094,7 +3057,7 @@ defining_lesions_df &lt;- readr::read_tsv(file.path(results_dir,
 </blockquote>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiY29kZWxldGVkX2dlbmVzX29mX2ludGVyZXN0IDwtIGMoXCJJREgxXCIsIFwiVEVSVFwiLCBcIkNJQ1wiLCBcIkZVQlAxXCIpIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29kZWxldGVkX2dlbmVzX29mX2ludGVyZXN0IDwtIGMoXCJJREgxXCIsIFwiVEVSVFwiLCBcIkNJQ1wiLCBcIkZVQlAxXCIpXG5gYGAifQ== -->
 <pre class="r"><code>codeleted_genes_of_interest &lt;- c(&quot;IDH1&quot;, &quot;TERT&quot;, &quot;CIC&quot;, &quot;FUBP1&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -3106,7 +3069,7 @@ defining_lesions_df &lt;- readr::read_tsv(file.path(results_dir,
 <p>Get a vector of <em>all</em> genes of interest, so we can use this to filter the HGG subset consensus MAF file.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiZ2VuZXNfb2ZfaW50ZXJlc3QgPC0gdW5pcXVlKGMoazI4X2dlbmVzX29mX2ludGVyZXN0LFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZzM1X2dlbmVzX29mX2ludGVyZXN0LFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaWRoX2dlbmVzX29mX2ludGVyZXN0LFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgd2lsZHR5cGVfZ2VuZXNfb2ZfaW50ZXJlc3QsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2RlbGV0ZWRfZ2VuZXNfb2ZfaW50ZXJlc3QpKSJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ2VuZXNfb2ZfaW50ZXJlc3QgPC0gdW5pcXVlKGMoazI4X2dlbmVzX29mX2ludGVyZXN0LFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZzM1X2dlbmVzX29mX2ludGVyZXN0LFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaWRoX2dlbmVzX29mX2ludGVyZXN0LFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgd2lsZHR5cGVfZ2VuZXNfb2ZfaW50ZXJlc3QsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2RlbGV0ZWRfZ2VuZXNfb2ZfaW50ZXJlc3QpKVxuYGBgIn0= -->
 <pre class="r"><code>genes_of_interest &lt;- unique(c(k28_genes_of_interest,
                               g35_genes_of_interest,
                               idh_genes_of_interest,
@@ -3119,7 +3082,7 @@ defining_lesions_df &lt;- readr::read_tsv(file.path(results_dir,
 <h3>Filter the SNV data</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiZmlsdGVyZWRfc252X2RmIDwtIHNudl9kZiAlPiVcbiAgZHBseXI6OmZpbHRlcihIdWdvX1N5bWJvbCAlaW4lIGdlbmVzX29mX2ludGVyZXN0KSJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmlsdGVyZWRfc252X2RmIDwtIHNudl9kZiAlPiVcbiAgZHBseXI6OmZpbHRlcihIdWdvX1N5bWJvbCAlaW4lIGdlbmVzX29mX2ludGVyZXN0KVxuYGBgIn0= -->
 <pre class="r"><code>filtered_snv_df &lt;- snv_df %&gt;%
   dplyr::filter(Hugo_Symbol %in% genes_of_interest)</code></pre>
 <!-- rnb-source-end -->
@@ -3130,24 +3093,26 @@ defining_lesions_df &lt;- readr::read_tsv(file.path(results_dir,
 <p>For all genes other than <em>TERT</em>, we’ll restrict to the coding sequences and drop silent mutations.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiY29kaW5nX3Nudl9kZiA8LSBzbnZfcmFuZ2VzX2ZpbHRlcihtYWZfZGYgPSBmaWx0ZXJlZF9zbnZfZGYsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGtlZXBfcmFuZ2VzID0gZ2VuY29kZV9jZHNfYmVkKSAlPiVcbiAgZHBseXI6OmZpbHRlcihWYXJpYW50X0NsYXNzaWZpY2F0aW9uICE9IFwiU2lsZW50XCIsXG4gICAgICAgICAgICAgICAgSHVnb19TeW1ib2wgIT0gXCJURVJUXCIpIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29kaW5nX3Nudl9kZiA8LSBzbnZfcmFuZ2VzX2ZpbHRlcihtYWZfZGYgPSBmaWx0ZXJlZF9zbnZfZGYsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGtlZXBfcmFuZ2VzID0gZ2VuY29kZV9jZHNfYmVkKSAlPiVcbiAgZHBseXI6OmZpbHRlcihWYXJpYW50X0NsYXNzaWZpY2F0aW9uICE9IFwiU2lsZW50XCIsXG4gICAgICAgICAgICAgICAgSHVnb19TeW1ib2wgIT0gXCJURVJUXCIpXG5gYGAifQ== -->
 <pre class="r"><code>coding_snv_df &lt;- snv_ranges_filter(maf_df = filtered_snv_df,
                                    keep_ranges = gencode_cds_bed) %&gt;%
   dplyr::filter(Variant_Classification != &quot;Silent&quot;,
                 Hugo_Symbol != &quot;TERT&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmF0aW8gb2YgdmFyaWFudHMgaW4gdGhpcyBCRUQ6IDQuNDQyNjIzIFxuIFJhdGlvIG9mIHZhcmlhbnRzIGJlaW5nIGZpbHRlcmVkIG91dDogLTMuNDQyNjIzIFxuIn0= -->
-<pre><code>Ratio of variants in this BED: 4.442623 
- Ratio of variants being filtered out: -3.442623 </code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiUmF0aW8gb2YgdmFyaWFudHMgaW4gdGhpcyBCRUQ6IDAuNDcxNzc0MiBcbiBSYXRpbyBvZiB2YXJpYW50cyBiZWluZyBmaWx0ZXJlZCBvdXQ6IDAuNTI4MjI1OCBcbiJ9 -->
+<pre><code>Ratio of variants in this BED: 0.4717742 
+ Ratio of variants being filtered out: 0.5282258 </code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiaGVhZChjb2Rpbmdfc252X2RmLCBuID0gMTApIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChjb2Rpbmdfc252X2RmLCBuID0gMTApXG5gYGAifQ== -->
 <pre class="r"><code>head(coding_snv_df, n = 10)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MTEsIm5yb3ciOjEwfSwicmRmIjoiSDRzSUFBQUFBQUFBQTgxV1hXL1NVQmd1c0c1UXRtV0xab20zWGhrTkRXMWhIWWszYkh3dGt3VnBNOHFGcVdlbEd5ZURjK3BwaVJwdnBoZkdhLytEaWYvSGYrS0ZsOE56b0FkTFIyS0dMTEhKNmZ1OHozdmV6L1lVMmhWTGxTeEpFSVNra0JJVFFqSkY0VnFTM2hMQ21wQmg4cDBncEI1UWtLVnJoeTRwTkt3NWZhS0dXS1JZMFJjcGJKZjFUeDVhQkI5UXVjMXFLSC8vOGZ3TEJlVlgxWi9YRTlsNExERDU5Y08zTkpOL3MzOUdIMTh6K2VsbDQ0a3d1ZTRyYm5SbWlXZXJCL01aZHB2UTkxM2t1M1p6RklBQVlyUzg0UlNqVllXNmU0NDdKSitmUVBiUXNBK003cWxldCtxcm9CcWEyYTN0MXl1cm9NNDZCZXUwMU5VWFViSFRkVnhwS0J5YnJhSzJDSmZOdHJYa2Z0R29tcFhaWWF6VmEyMGxWc0dHSjdjVlRXMUVWRlhYb3FxaTVGK0VhdHFUcTZxcWw1NnV3am5OZG11bGFMQ3FubGNxc1FJenVxYnM1elJWelM5UHJKZnpwWUp5ZDIwYVNOMHZMQ0RtcTl5YnBjeVp1V2tNdVZNMzd0MjZPV1Z5cHR5eFZzSHR6UnFrMlFwNlVjbVhidFZ5MnhvN21pM1R6amV0bG1rMnRmK09NbG9uellKeHNJaWEvMFVVRVJpNmZ0aGFOaVNsb3o3QlErempvUnN5MjBZQVNHQzNzQThqbjYvTkt1ckZ1WFVqSUFEMStDalBBSUVBQmZiUkFQZyt2SUJPOVBQMzBCd05NYkVOTVBRR3JuMElpSU43UEdPMk1ickV0dkYrZUk0SE02cCtabmkyMGNjazRHK3FQL1dGUE9HdUI0aEw4NEVCZkRQQ3dSL0RveFBZOCswYUpENXRnL1lDSGVpeHdvNHJzWWxrQ0g0cjg2bHMwWlc4cHJmeGVQd3JQanFIOVJTT2pwTlNEd1JBdmlEVW4ybzNNWmNON0xIMnFWT1MvUXNSWTg0SkVpTjJSb2hWMHNzNS9SRzZ5aW5GeWZ2SDdOTnJLOFJTQkdlbk9aUGpNSmJJSDR5TExpSGk0eFVINE56bGc5Mm1MVTg2bGowQ0VaK3RSRmxmRG5BQStEN0p3UVBPVEpvVGJuNERMRmF6Z0hRSkFBQT0ifQ== -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Chromosome"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Start_Position"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["End_Position"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Strand"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Variant_Classification"],"name":[5],"type":["chr"],"align":["left"]},{"label":["Tumor_Sample_Barcode"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Hugo_Symbol"],"name":[7],"type":["chr"],"align":["left"]},{"label":["HGVSp_Short"],"name":[8],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[9],"type":["chr"],"align":["left"]},{"label":["Kids_First_Participant_ID"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"chr2","2":"208248388","3":"208248388","4":"+","5":"Missense_Mutation","6":"BS_8SYN7GXG","7":"IDH1","8":"p.R132H","9":"7316-3220","10":"PT_0MXPTTM3"},{"1":"chr17","2":"7673802","3":"7673802","4":"+","5":"Missense_Mutation","6":"BS_8SYN7GXG","7":"TP53","8":"p.R273H","9":"7316-3220","10":"PT_0MXPTTM3"},{"1":"chr17","2":"7676040","3":"7676040","4":"+","5":"Missense_Mutation","6":"BS_8SYN7GXG","7":"TP53","8":"p.R110L","9":"7316-3220","10":"PT_0MXPTTM3"},{"1":"chrX","2":"77523266","3":"77523266","4":"+","5":"Nonsense_Mutation","6":"BS_8SYN7GXG","7":"ATRX","8":"p.E2279*","9":"7316-3220","10":"PT_0MXPTTM3"},{"1":"chr2","2":"208248388","3":"208248388","4":"+","5":"Missense_Mutation","6":"BS_H3TYF6GD","7":"IDH1","8":"p.R132H","9":"A09410","10":"PT_0MXPTTM3"},{"1":"chr17","2":"7673802","3":"7673802","4":"+","5":"Missense_Mutation","6":"BS_H3TYF6GD","7":"TP53","8":"p.R273H","9":"A09410","10":"PT_0MXPTTM3"},{"1":"chr17","2":"7676040","3":"7676040","4":"+","5":"Missense_Mutation","6":"BS_H3TYF6GD","7":"TP53","8":"p.R110L","9":"A09410","10":"PT_0MXPTTM3"},{"1":"chrX","2":"77523266","3":"77523266","4":"+","5":"Nonsense_Mutation","6":"BS_H3TYF6GD","7":"ATRX","8":"p.E2279*","9":"A09410","10":"PT_0MXPTTM3"},{"1":"chr3","2":"47042604","3":"47042604","4":"+","5":"Nonsense_Mutation","6":"BS_VW4XN9Y7","7":"SETD2","8":"p.R2399*","9":"7316-2640","10":"PT_0SPKM4S8"},{"1":"chr8","2":"38414597","3":"38414597","4":"+","5":"Missense_Mutation","6":"BS_VW4XN9Y7","7":"FGFR1","8":"p.E701D","9":"7316-2640","10":"PT_0SPKM4S8"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Chromosome"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Start_Position"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["End_Position"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Strand"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Variant_Classification"],"name":[5],"type":["chr"],"align":["left"]},{"label":["Tumor_Sample_Barcode"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Hugo_Symbol"],"name":[7],"type":["chr"],"align":["left"]},{"label":["HGVSp_Short"],"name":[8],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[9],"type":["chr"],"align":["left"]},{"label":["parent_aliquot_id"],"name":[10],"type":["chr"],"align":["left"]},{"label":["Kids_First_Participant_ID"],"name":[11],"type":["chr"],"align":["left"]}],"data":[{"1":"chr2","2":"208248388","3":"208248388","4":"+","5":"Missense_Mutation","6":"BS_8SYN7GXG","7":"IDH1","8":"p.R132H","9":"7316-3220","10":"7316-3220-T-A09410.WGS","11":"PT_0MXPTTM3"},{"1":"chr17","2":"7673802","3":"7673802","4":"+","5":"Missense_Mutation","6":"BS_8SYN7GXG","7":"TP53","8":"p.R273H","9":"7316-3220","10":"7316-3220-T-A09410.WGS","11":"PT_0MXPTTM3"},{"1":"chr17","2":"7676040","3":"7676040","4":"+","5":"Missense_Mutation","6":"BS_8SYN7GXG","7":"TP53","8":"p.R110L","9":"7316-3220","10":"7316-3220-T-A09410.WGS","11":"PT_0MXPTTM3"},{"1":"chrX","2":"77523266","3":"77523266","4":"+","5":"Nonsense_Mutation","6":"BS_8SYN7GXG","7":"ATRX","8":"p.E2279*","9":"7316-3220","10":"7316-3220-T-A09410.WGS","11":"PT_0MXPTTM3"},{"1":"chr2","2":"208248388","3":"208248388","4":"+","5":"Missense_Mutation","6":"BS_H3TYF6GD","7":"IDH1","8":"p.R132H","9":"A09410","10":"A09410-T.WXS","11":"PT_0MXPTTM3"},{"1":"chr17","2":"7673802","3":"7673802","4":"+","5":"Missense_Mutation","6":"BS_H3TYF6GD","7":"TP53","8":"p.R273H","9":"A09410","10":"A09410-T.WXS","11":"PT_0MXPTTM3"},{"1":"chr17","2":"7676040","3":"7676040","4":"+","5":"Missense_Mutation","6":"BS_H3TYF6GD","7":"TP53","8":"p.R110L","9":"A09410","10":"A09410-T.WXS","11":"PT_0MXPTTM3"},{"1":"chrX","2":"77523266","3":"77523266","4":"+","5":"Nonsense_Mutation","6":"BS_H3TYF6GD","7":"ATRX","8":"p.E2279*","9":"A09410","10":"A09410-T.WXS","11":"PT_0MXPTTM3"},{"1":"chr3","2":"47042604","3":"47042604","4":"+","5":"Nonsense_Mutation","6":"BS_VW4XN9Y7","7":"SETD2","8":"p.R2399*","9":"7316-2640","10":"7316-2640-T-475109.WGS","11":"PT_0SPKM4S8"},{"1":"chr8","2":"38414597","3":"38414597","4":"+","5":"Missense_Mutation","6":"BS_VW4XN9Y7","7":"FGFR1","8":"p.E701D","9":"7316-2640","10":"7316-2640-T-475109.WGS","11":"PT_0SPKM4S8"}],"options":{"columns":{"min":{},"max":[10],"total":[11]},"rows":{"min":[10],"max":[10],"total":[10]},"pages":{}}}
   </script>
 </div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -3156,18 +3121,20 @@ defining_lesions_df &lt;- readr::read_tsv(file.path(results_dir,
 <p>We likely want to be permissive with the <em>TERT</em> mutations in terms of <em>regions.</em></p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbInRlcnRfc252X2RmIDwtIGZpbHRlcmVkX3Nudl9kZiAlPiVcbiAgZHBseXI6OmZpbHRlcihIdWdvX1N5bWJvbCA9PSBcIlRFUlRcIixcbiAgICAgICAgICAgICAgICBWYXJpYW50X0NsYXNzaWZpY2F0aW9uICE9IFwiU2lsZW50XCIpIiwiIiwidGVydF9zbnZfZGYiXX0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGVydF9zbnZfZGYgPC0gZmlsdGVyZWRfc252X2RmICU+JVxuICBkcGx5cjo6ZmlsdGVyKEh1Z29fU3ltYm9sID09IFwiVEVSVFwiLFxuICAgICAgICAgICAgICAgIFZhcmlhbnRfQ2xhc3NpZmljYXRpb24gIT0gXCJTaWxlbnRcIilcblxudGVydF9zbnZfZGZcbmBgYCJ9 -->
 <pre class="r"><code>tert_snv_df &lt;- filtered_snv_df %&gt;%
   dplyr::filter(Hugo_Symbol == &quot;TERT&quot;,
                 Variant_Classification != &quot;Silent&quot;)
 
 tert_snv_df</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInNwZWNfdGJsX2RmIiwidGJsX2RmIiwidGJsIiwiZGF0YS5mcmFtZSJdLCJuY29sIjoxMSwibnJvdyI6NTF9LCJyZGYiOiJINHNJQUFBQUFBQUFBKzFhejQvYlJCVDJibmZiN202N2FnVUZLaUcxaUVOQktNSDJlT3l4b0lmOGNySXhqcHpZemE5V0NtNlNkdDFtN1dCblZaQTRnSW9RRndUaWpEZ2p3VCtBZXVBQUJ3U3Fla1RpcitEQUJRNWR4anYyZHV4TjA2YnFocTVJSk9kNzgzMStNL1BlOHp4RjNxM2xtL3hxYzVWaG1FWG15UElDczNnRW0wdUwrR3VCV1dKV0FueWZZWTQ4aDQwMWZKM0NGd2lGcGU2bUIrZjIzRDRRbTJIV2cyY3RBMTc1R3lPVEFhOS9UdkN0M3doZS9wM2dKa1B3eTM4SW5qdFA4UHgzQkRmK0lGajdtdUFsbitDMU13US9iaE84ZlpmZ2ozL0YvVis5RTU5bnovL2R1UDhuS1lLZmhYN2YvRXJ3amtQd3B4V0NYM3dZSDc5MlBJempaWUp2L2hEcTV3akNXMkhjUTRJWE53amVXdy96d0JIODlzLzR2SmUvSW5nbDVOLytQbzY5WHdqZUNPTzVmWVhncDJmRGZZZngvRndqbUF2emV2RUdRejd6K2p6YjlUbkZQT2pWQzIvTWpVTnZ4RXQ2ZE1NWmVhNHpkblJhczMyLzcvajlqclk5c2tiMlEyNmJORG9HTGlnRHk3a1pEcGZCaFV0bWJlcFpIbi8wMEMzL2R5dFBUQStNcFdjSzhZbG5uY0x4TVVONk1xK0RIejFXR3VLbllTMXJkT29Ob1ZtUlc5THNLSlJwOFVWTktCNENpbWZOYkx2SXlvZVRNcVdHVm1aUmc2SWtnYy9sMVl4QlVWa2xYMmlyWEk2aUROWUV1YW9zVGFiS1dWQkdmRnVsS0FXcFFyMnFLUlJWMG1CUktWZlExRlJHZ1htQjAvTjBoUlNqbkMveUprVVZzNllnbEF5YU1sU2hCTFZ5bGFKMG9Dc1ExTkZrcWlvVzY3Vk1ndzZvM3N3WG0xVzFUVkVzMzhxMmpXeHJkcFNPR2hYVUxOQUJOVFZkYmxacWN1SkFMNW1GbWptMzUvYUIySWxmeCtta2NXeVlma2RHVUh2b0RVL2R3Q3ZxSEVMbVU1dXRKZ3BpYVhiN0g3OEhCRkYxMGcxMXhJc2JzOWhTdk9BckV1REVGQzhLN0F3SUZzRm5qRGkrUzBEdTJSNExvaGdieTF5OGZCekg4dkVJWmNRK2dnQXNpaEVBY1ZLY1lDR2Fsc0N6SnU3WUk0NW1XQ0FMZkN3T25oV1NtNUltRTREbllYTEpSSEU1SkI4OGdUTWVMeEVudzhUSmVtSHZFS1RNbENCQmpwWFRqYUp4R0ZSOFBnS1ZsVVJXL0Irclo2TERpRVVBT0VIbTUrSTRFYmVuUU9TQktNRjlJdTVWZ1NoQVFaVDJaVDVvWElFS2dTU05xUXR1V2xpRlFNREd0Q3J1YjBGTklaTGsvVTk0ME95d0tySWNITE51ME5lQ21RVWtzUEFwcVMvdE5VaXNHZ3JFVDFwcWZ6NkNmcm5yemZFU1I2a25TUE5NbWVsR001NWUzRUt4QTg5eE9NUGpraUNGU1VCajBqdFJEVG90VmpONEp3S2kxQmYzMnU1dUlCd3J5bUQvMUxoZkJsUHpVSllPaXhxMGRQSXNJcDdiOXhqai9oN2ttZVZsU0E1QTRxV0xiblpZUTFjMXdVQ3pvMEN1bEpWMUZjNnBBNllFdG1UcUxVR21LU0JJN1d5aFNWRXcyMmhuMklwSlVTSW81ZHVsWEdVeUpUVk1VWWNhWGRveXJCaTFCdGVpcVVxaERxVzZPaldsbXJVeU1oVjZMcld1S2RCVUdoU2w4YURLNW5QMEUxMHo4bVpPeVdjb3ltQ3J2RlRtd0dTcXJoZTBURFZiZVFSbGFyeGhGc0RzcUtiRTVhVWlOQ2lxQmRXV3FGYmt4Ti82bHgxcnErK0hwM3d0SkZkem01Njc1ZnJ1Vmo5azFvMlI1WTA2dXV2YjFGdmlFd1dubCtTT0dpUFBjbnBSeTZsYm5tMDVvMDV1WVBtK2ZjM3UwbStabnplM3QxeXZZMWhidzBHL2s3VzhydHVMVmx3cmJWOTNPOFlIVzFmZHdSNVZyQnZEanJIcGVxUG9WNnBQZk8xb3dkTkR5K3ZqOWF5Qi9kNjJPM29nbkZYdG50OVJiTS9IWWVCWTdLNDlERGEya1U5a1pNVnpiNldqckp6RTErSkgrR3RuWitkdU1uWGRJS1l3ZFJHNTJyTkdWdnFhaC8zeDZIN0M1Wmc3RE1MSFRvdkIvMWNzSjV3WHZBUnhhdHNKZHRKTGRUZTNuWnNwVGd4VzJOWEo1MlJvQThwZUkyc3U3b1J6TFVlRjZUdlhiU2RLNy9MQXV0cVBFcnVPUTk2Tk9EMzBiQ2ZLN1NwbS9mVElIVm5SZmF0ZGR4QXh1OEV4OS84RnE5MDc1RTRpQUFBPSJ9 -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Chromosome"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Start_Position"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["End_Position"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Strand"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Variant_Classification"],"name":[5],"type":["chr"],"align":["left"]},{"label":["Tumor_Sample_Barcode"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Hugo_Symbol"],"name":[7],"type":["chr"],"align":["left"]},{"label":["HGVSp_Short"],"name":[8],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[9],"type":["chr"],"align":["left"]},{"label":["Kids_First_Participant_ID"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"chr5","2":"1253881","3":"1253881","4":"+","5":"Intron","6":"BS_VW4XN9Y7","7":"TERT","8":".","9":"7316-2640","10":"PT_0SPKM4S8"},{"1":"chr5","2":"1255821","3":"1255821","4":"+","5":"Intron","6":"BS_VW4XN9Y7","7":"TERT","8":".","9":"7316-2640","10":"PT_0SPKM4S8"},{"1":"chr5","2":"1260491","3":"1260491","4":"+","5":"Missense_Mutation","6":"BS_VW4XN9Y7","7":"TERT","8":"p.L985M","9":"7316-2640","10":"PT_0SPKM4S8"},{"1":"chr5","2":"1268695","3":"1268695","4":"+","5":"Intron","6":"BS_VW4XN9Y7","7":"TERT","8":".","9":"7316-2640","10":"PT_0SPKM4S8"},{"1":"chr5","2":"1271808","3":"1271808","4":"+","5":"Intron","6":"BS_VW4XN9Y7","7":"TERT","8":".","9":"7316-2640","10":"PT_0SPKM4S8"},{"1":"chr5","2":"1282298","3":"1282298","4":"+","5":"Intron","6":"BS_VW4XN9Y7","7":"TERT","8":".","9":"7316-2640","10":"PT_0SPKM4S8"},{"1":"chr5","2":"1253152","3":"1253152","4":"+","5":"3'Flank","6":"BS_8AY2GM4G","7":"TERT","8":".","9":"7316-2085","10":"PT_3CHB9PK5"},{"1":"chr5","2":"1253547","3":"1253547","4":"+","5":"3'UTR","6":"BS_8AY2GM4G","7":"TERT","8":".","9":"7316-2085","10":"PT_3CHB9PK5"},{"1":"chr5","2":"1264090","3":"1264090","4":"+","5":"Intron","6":"BS_8AY2GM4G","7":"TERT","8":".","9":"7316-2085","10":"PT_3CHB9PK5"},{"1":"chr5","2":"1266332","3":"1266332","4":"+","5":"Intron","6":"BS_8AY2GM4G","7":"TERT","8":".","9":"7316-2085","10":"PT_3CHB9PK5"},{"1":"chr5","2":"1267059","3":"1267059","4":"+","5":"Intron","6":"BS_8AY2GM4G","7":"TERT","8":".","9":"7316-2085","10":"PT_3CHB9PK5"},{"1":"chr5","2":"1271317","3":"1271317","4":"+","5":"Intron","6":"BS_8AY2GM4G","7":"TERT","8":".","9":"7316-2085","10":"PT_3CHB9PK5"},{"1":"chr5","2":"1278298","3":"1278298","4":"+","5":"Intron","6":"BS_8AY2GM4G","7":"TERT","8":".","9":"7316-2085","10":"PT_3CHB9PK5"},{"1":"chr5","2":"1278925","3":"1278925","4":"+","5":"Intron","6":"BS_8AY2GM4G","7":"TERT","8":".","9":"7316-2085","10":"PT_3CHB9PK5"},{"1":"chr5","2":"1294324","3":"1294324","4":"+","5":"Missense_Mutation","6":"BS_8AY2GM4G","7":"TERT","8":"p.P188T","9":"7316-2085","10":"PT_3CHB9PK5"},{"1":"chr5","2":"1253547","3":"1253547","4":"+","5":"3'UTR","6":"BS_20TBZG09","7":"TERT","8":".","9":"7316-515","10":"PT_3CHB9PK5"},{"1":"chr5","2":"1254331","3":"1254331","4":"+","5":"Intron","6":"BS_20TBZG09","7":"TERT","8":".","9":"7316-515","10":"PT_3CHB9PK5"},{"1":"chr5","2":"1264090","3":"1264090","4":"+","5":"Intron","6":"BS_20TBZG09","7":"TERT","8":".","9":"7316-515","10":"PT_3CHB9PK5"},{"1":"chr5","2":"1267059","3":"1267059","4":"+","5":"Intron","6":"BS_20TBZG09","7":"TERT","8":".","9":"7316-515","10":"PT_3CHB9PK5"},{"1":"chr5","2":"1271392","3":"1271392","4":"+","5":"Intron","6":"BS_20TBZG09","7":"TERT","8":".","9":"7316-515","10":"PT_3CHB9PK5"},{"1":"chr5","2":"1278298","3":"1278298","4":"+","5":"Intron","6":"BS_20TBZG09","7":"TERT","8":".","9":"7316-515","10":"PT_3CHB9PK5"},{"1":"chr5","2":"1279021","3":"1279021","4":"+","5":"Intron","6":"BS_20TBZG09","7":"TERT","8":".","9":"7316-515","10":"PT_3CHB9PK5"},{"1":"chr5","2":"1280171","3":"1280171","4":"+","5":"Missense_Mutation","6":"BS_20TBZG09","7":"TERT","8":"p.R646H","9":"7316-515","10":"PT_3CHB9PK5"},{"1":"chr5","2":"1285834","3":"1285834","4":"+","5":"Intron","6":"BS_20TBZG09","7":"TERT","8":".","9":"7316-515","10":"PT_3CHB9PK5"},{"1":"chr5","2":"1293166","3":"1293166","4":"+","5":"Intron","6":"BS_20TBZG09","7":"TERT","8":".","9":"7316-515","10":"PT_3CHB9PK5"},{"1":"chr5","2":"1295113","3":"1295113","4":"+","5":"5'Flank","6":"BS_T7WMJ08W","7":"TERT","8":".","9":"7316-466","10":"PT_40HTPY49"},{"1":"chr5","2":"1281916","3":"1281916","4":"+","5":"Intron","6":"BS_742CDKAS","7":"TERT","8":".","9":"7316-913","10":"PT_4347ZBEX"},{"1":"chr5","2":"1295113","3":"1295113","4":"+","5":"5'Flank","6":"BS_BFDEZK1C","7":"TERT","8":".","9":"7316-1102","10":"PT_5BWZA0NT"},{"1":"chr5","2":"1255432","3":"1255432","4":"+","5":"Intron","6":"BS_S0T3CQ97","7":"TERT","8":".","9":"7316-2980","10":"PT_63HDZHCN"},{"1":"chr5","2":"1271836","3":"1271836","4":"+","5":"Intron","6":"BS_S0T3CQ97","7":"TERT","8":".","9":"7316-2980","10":"PT_63HDZHCN"},{"1":"chr5","2":"1257401","3":"1257401","4":"+","5":"Intron","6":"BS_JB3J82ZK","7":"TERT","8":".","9":"7316-2308","10":"PT_7WT6P5M8"},{"1":"chr5","2":"1295135","3":"1295135","4":"+","5":"5'Flank","6":"BS_F8K4VQMF","7":"TERT","8":".","9":"7316-3817","10":"PT_J5NSRW1Y"},{"1":"chr5","2":"1298190","3":"1298190","4":"+","5":"5'Flank","6":"BS_AF5D41PD","7":"TERT","8":".","9":"7316-3230","10":"PT_KTRJ8TFY"},{"1":"chr5","2":"1268529","3":"1268529","4":"+","5":"Missense_Mutation","6":"BS_8FSJDG2T","7":"TERT","8":"p.R858Q","9":"7316-3030","10":"PT_KVMF5TFW"},{"1":"chr5","2":"1288432","3":"1288432","4":"+","5":"Intron","6":"BS_GBT44HST","7":"TERT","8":".","9":"A03942","10":"PT_M23Q0DC3"},{"1":"chr5","2":"1295113","3":"1295113","4":"+","5":"5'Flank","6":"BS_SK4H5MJQ","7":"TERT","8":".","9":"7316-204","10":"PT_RSDTCFDA"},{"1":"chr5","2":"1268626","3":"1268626","4":"+","5":"Missense_Mutation","6":"BS_P3PF53V8","7":"TERT","8":"p.V826I","9":"7316-2307","10":"PT_S0Q27J13"},{"1":"chr5","2":"1268976","3":"1268976","4":"+","5":"Intron","6":"BS_P3PF53V8","7":"TERT","8":".","9":"7316-2307","10":"PT_S0Q27J13"},{"1":"chr5","2":"1260716","3":"1260716","4":"+","5":"Intron","6":"BS_Q6GVRAWK","7":"TERT","8":".","9":"7316-3225","10":"PT_VPEMAQBN"},{"1":"chr5","2":"1270984","3":"1270984","4":"+","5":"Intron","6":"BS_02YBZSBY","7":"TERT","8":".","9":"7316-2189","10":"PT_VTM2STE3"},{"1":"chr5","2":"1272435","3":"1272435","4":"+","5":"Intron","6":"BS_02YBZSBY","7":"TERT","8":".","9":"7316-2189","10":"PT_VTM2STE3"},{"1":"chr5","2":"1278812","3":"1278812","4":"+","5":"Intron","6":"BS_02YBZSBY","7":"TERT","8":".","9":"7316-2189","10":"PT_VTM2STE3"},{"1":"chr5","2":"1279513","3":"1279513","4":"+","5":"Intron","6":"BS_02YBZSBY","7":"TERT","8":".","9":"7316-2189","10":"PT_VTM2STE3"},{"1":"chr5","2":"1293101","3":"1293101","4":"+","5":"Intron","6":"BS_02YBZSBY","7":"TERT","8":".","9":"7316-2189","10":"PT_VTM2STE3"},{"1":"chr5","2":"1295442","3":"1295442","4":"+","5":"5'Flank","6":"BS_02YBZSBY","7":"TERT","8":".","9":"7316-2189","10":"PT_VTM2STE3"},{"1":"chr5","2":"1262368","3":"1262368","4":"+","5":"Intron","6":"BS_P8WN8XEQ","7":"TERT","8":".","9":"7316-1105","10":"PT_X71D7G5S"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Chromosome"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Start_Position"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["End_Position"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Strand"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Variant_Classification"],"name":[5],"type":["chr"],"align":["left"]},{"label":["Tumor_Sample_Barcode"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Hugo_Symbol"],"name":[7],"type":["chr"],"align":["left"]},{"label":["HGVSp_Short"],"name":[8],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[9],"type":["chr"],"align":["left"]},{"label":["parent_aliquot_id"],"name":[10],"type":["chr"],"align":["left"]},{"label":["Kids_First_Participant_ID"],"name":[11],"type":["chr"],"align":["left"]}],"data":[{"1":"chr5","2":"1253881","3":"1253881","4":"+","5":"Intron","6":"BS_VW4XN9Y7","7":"TERT","8":".","9":"7316-2640","10":"7316-2640-T-475109.WGS","11":"PT_0SPKM4S8"},{"1":"chr5","2":"1255821","3":"1255821","4":"+","5":"Intron","6":"BS_VW4XN9Y7","7":"TERT","8":".","9":"7316-2640","10":"7316-2640-T-475109.WGS","11":"PT_0SPKM4S8"},{"1":"chr5","2":"1260491","3":"1260491","4":"+","5":"Missense_Mutation","6":"BS_VW4XN9Y7","7":"TERT","8":"p.L985M","9":"7316-2640","10":"7316-2640-T-475109.WGS","11":"PT_0SPKM4S8"},{"1":"chr5","2":"1268695","3":"1268695","4":"+","5":"Intron","6":"BS_VW4XN9Y7","7":"TERT","8":".","9":"7316-2640","10":"7316-2640-T-475109.WGS","11":"PT_0SPKM4S8"},{"1":"chr5","2":"1271808","3":"1271808","4":"+","5":"Intron","6":"BS_VW4XN9Y7","7":"TERT","8":".","9":"7316-2640","10":"7316-2640-T-475109.WGS","11":"PT_0SPKM4S8"},{"1":"chr5","2":"1282298","3":"1282298","4":"+","5":"Intron","6":"BS_VW4XN9Y7","7":"TERT","8":".","9":"7316-2640","10":"7316-2640-T-475109.WGS","11":"PT_0SPKM4S8"},{"1":"chr5","2":"1253152","3":"1253152","4":"+","5":"3'Flank","6":"BS_8AY2GM4G","7":"TERT","8":".","9":"7316-2085","10":"7316-2085-T-407606.WGS","11":"PT_3CHB9PK5"},{"1":"chr5","2":"1253547","3":"1253547","4":"+","5":"3'UTR","6":"BS_8AY2GM4G","7":"TERT","8":".","9":"7316-2085","10":"7316-2085-T-407606.WGS","11":"PT_3CHB9PK5"},{"1":"chr5","2":"1264090","3":"1264090","4":"+","5":"Intron","6":"BS_8AY2GM4G","7":"TERT","8":".","9":"7316-2085","10":"7316-2085-T-407606.WGS","11":"PT_3CHB9PK5"},{"1":"chr5","2":"1266332","3":"1266332","4":"+","5":"Intron","6":"BS_8AY2GM4G","7":"TERT","8":".","9":"7316-2085","10":"7316-2085-T-407606.WGS","11":"PT_3CHB9PK5"},{"1":"chr5","2":"1267059","3":"1267059","4":"+","5":"Intron","6":"BS_8AY2GM4G","7":"TERT","8":".","9":"7316-2085","10":"7316-2085-T-407606.WGS","11":"PT_3CHB9PK5"},{"1":"chr5","2":"1271317","3":"1271317","4":"+","5":"Intron","6":"BS_8AY2GM4G","7":"TERT","8":".","9":"7316-2085","10":"7316-2085-T-407606.WGS","11":"PT_3CHB9PK5"},{"1":"chr5","2":"1278298","3":"1278298","4":"+","5":"Intron","6":"BS_8AY2GM4G","7":"TERT","8":".","9":"7316-2085","10":"7316-2085-T-407606.WGS","11":"PT_3CHB9PK5"},{"1":"chr5","2":"1278925","3":"1278925","4":"+","5":"Intron","6":"BS_8AY2GM4G","7":"TERT","8":".","9":"7316-2085","10":"7316-2085-T-407606.WGS","11":"PT_3CHB9PK5"},{"1":"chr5","2":"1294324","3":"1294324","4":"+","5":"Missense_Mutation","6":"BS_8AY2GM4G","7":"TERT","8":"p.P188T","9":"7316-2085","10":"7316-2085-T-407606.WGS","11":"PT_3CHB9PK5"},{"1":"chr5","2":"1253547","3":"1253547","4":"+","5":"3'UTR","6":"BS_20TBZG09","7":"TERT","8":".","9":"7316-515","10":"7316-515-T-331492.WGS","11":"PT_3CHB9PK5"},{"1":"chr5","2":"1254331","3":"1254331","4":"+","5":"Intron","6":"BS_20TBZG09","7":"TERT","8":".","9":"7316-515","10":"7316-515-T-331492.WGS","11":"PT_3CHB9PK5"},{"1":"chr5","2":"1264090","3":"1264090","4":"+","5":"Intron","6":"BS_20TBZG09","7":"TERT","8":".","9":"7316-515","10":"7316-515-T-331492.WGS","11":"PT_3CHB9PK5"},{"1":"chr5","2":"1267059","3":"1267059","4":"+","5":"Intron","6":"BS_20TBZG09","7":"TERT","8":".","9":"7316-515","10":"7316-515-T-331492.WGS","11":"PT_3CHB9PK5"},{"1":"chr5","2":"1271392","3":"1271392","4":"+","5":"Intron","6":"BS_20TBZG09","7":"TERT","8":".","9":"7316-515","10":"7316-515-T-331492.WGS","11":"PT_3CHB9PK5"},{"1":"chr5","2":"1278298","3":"1278298","4":"+","5":"Intron","6":"BS_20TBZG09","7":"TERT","8":".","9":"7316-515","10":"7316-515-T-331492.WGS","11":"PT_3CHB9PK5"},{"1":"chr5","2":"1279021","3":"1279021","4":"+","5":"Intron","6":"BS_20TBZG09","7":"TERT","8":".","9":"7316-515","10":"7316-515-T-331492.WGS","11":"PT_3CHB9PK5"},{"1":"chr5","2":"1280171","3":"1280171","4":"+","5":"Missense_Mutation","6":"BS_20TBZG09","7":"TERT","8":"p.R646H","9":"7316-515","10":"7316-515-T-331492.WGS","11":"PT_3CHB9PK5"},{"1":"chr5","2":"1285834","3":"1285834","4":"+","5":"Intron","6":"BS_20TBZG09","7":"TERT","8":".","9":"7316-515","10":"7316-515-T-331492.WGS","11":"PT_3CHB9PK5"},{"1":"chr5","2":"1293166","3":"1293166","4":"+","5":"Intron","6":"BS_20TBZG09","7":"TERT","8":".","9":"7316-515","10":"7316-515-T-331492.WGS","11":"PT_3CHB9PK5"},{"1":"chr5","2":"1295113","3":"1295113","4":"+","5":"5'Flank","6":"BS_T7WMJ08W","7":"TERT","8":".","9":"7316-466","10":"7316-466-T-323675.WGS","11":"PT_40HTPY49"},{"1":"chr5","2":"1281916","3":"1281916","4":"+","5":"Intron","6":"BS_742CDKAS","7":"TERT","8":".","9":"7316-913","10":"7316-913-T-345467.WGS","11":"PT_4347ZBEX"},{"1":"chr5","2":"1295113","3":"1295113","4":"+","5":"5'Flank","6":"BS_BFDEZK1C","7":"TERT","8":".","9":"7316-1102","10":"7316-1102-T-353776.WGS","11":"PT_5BWZA0NT"},{"1":"chr5","2":"1255432","3":"1255432","4":"+","5":"Intron","6":"BS_S0T3CQ97","7":"TERT","8":".","9":"7316-2980","10":"7316-2980-T-534980.WGS","11":"PT_63HDZHCN"},{"1":"chr5","2":"1271836","3":"1271836","4":"+","5":"Intron","6":"BS_S0T3CQ97","7":"TERT","8":".","9":"7316-2980","10":"7316-2980-T-534980.WGS","11":"PT_63HDZHCN"},{"1":"chr5","2":"1257401","3":"1257401","4":"+","5":"Intron","6":"BS_JB3J82ZK","7":"TERT","8":".","9":"7316-2308","10":"7316-2308-T-458799.WGS","11":"PT_7WT6P5M8"},{"1":"chr5","2":"1295135","3":"1295135","4":"+","5":"5'Flank","6":"BS_F8K4VQMF","7":"TERT","8":".","9":"7316-3817","10":"7316-3817-T-601576.WGS","11":"PT_J5NSRW1Y"},{"1":"chr5","2":"1258871","3":"1258871","4":"+","5":"Intron","6":"BS_HM5GFJN8","7":"TERT","8":".","9":"7316-3058","10":"7316-3058-T-548405.WGS","11":"PT_JNEV57VK"},{"1":"chr5","2":"1260400","3":"1260400","4":"+","5":"Intron","6":"BS_HM5GFJN8","7":"TERT","8":".","9":"7316-3058","10":"7316-3058-T-548405.WGS","11":"PT_JNEV57VK"},{"1":"chr5","2":"1260873","3":"1260873","4":"+","5":"Intron","6":"BS_HM5GFJN8","7":"TERT","8":".","9":"7316-3058","10":"7316-3058-T-548405.WGS","11":"PT_JNEV57VK"},{"1":"chr5","2":"1298190","3":"1298190","4":"+","5":"5'Flank","6":"BS_AF5D41PD","7":"TERT","8":".","9":"7316-3230","10":"7316-3230-T-SF5606-7.WGS","11":"PT_KTRJ8TFY"},{"1":"chr5","2":"1268529","3":"1268529","4":"+","5":"Missense_Mutation","6":"BS_8FSJDG2T","7":"TERT","8":"p.R858Q","9":"7316-3030","10":"7316-3030-T-541271.WGS","11":"PT_KVMF5TFW"},{"1":"chr5","2":"1288432","3":"1288432","4":"+","5":"Intron","6":"BS_GBT44HST","7":"TERT","8":".","9":"A03942","10":"A03942-T.WXS","11":"PT_M23Q0DC3"},{"1":"chr5","2":"1295113","3":"1295113","4":"+","5":"5'Flank","6":"BS_SK4H5MJQ","7":"TERT","8":".","9":"7316-204","10":"7316-204-T-211345.WGS","11":"PT_RSDTCFDA"},{"1":"chr5","2":"1268626","3":"1268626","4":"+","5":"Missense_Mutation","6":"BS_P3PF53V8","7":"TERT","8":"p.V826I","9":"7316-2307","10":"7316-2307-T-458786.WGS","11":"PT_S0Q27J13"},{"1":"chr5","2":"1268976","3":"1268976","4":"+","5":"Intron","6":"BS_P3PF53V8","7":"TERT","8":".","9":"7316-2307","10":"7316-2307-T-458786.WGS","11":"PT_S0Q27J13"},{"1":"chr5","2":"1260716","3":"1260716","4":"+","5":"Intron","6":"BS_Q6GVRAWK","7":"TERT","8":".","9":"7316-3225","10":"7316-3225-T-A12748.WGS","11":"PT_VPEMAQBN"},{"1":"chr5","2":"1260716","3":"1260716","4":"+","5":"Intron","6":"BS_VXDGXQKZ","7":"TERT","8":".","9":"7316-3235","10":"7316-3235-T-SF10693.WGS","11":"PT_VPEMAQBN"},{"1":"chr5","2":"1270984","3":"1270984","4":"+","5":"Intron","6":"BS_02YBZSBY","7":"TERT","8":".","9":"7316-2189","10":"7316-2189-T-425973.WGS","11":"PT_VTM2STE3"},{"1":"chr5","2":"1272435","3":"1272435","4":"+","5":"Intron","6":"BS_02YBZSBY","7":"TERT","8":".","9":"7316-2189","10":"7316-2189-T-425973.WGS","11":"PT_VTM2STE3"},{"1":"chr5","2":"1278812","3":"1278812","4":"+","5":"Intron","6":"BS_02YBZSBY","7":"TERT","8":".","9":"7316-2189","10":"7316-2189-T-425973.WGS","11":"PT_VTM2STE3"},{"1":"chr5","2":"1279513","3":"1279513","4":"+","5":"Intron","6":"BS_02YBZSBY","7":"TERT","8":".","9":"7316-2189","10":"7316-2189-T-425973.WGS","11":"PT_VTM2STE3"},{"1":"chr5","2":"1293101","3":"1293101","4":"+","5":"Intron","6":"BS_02YBZSBY","7":"TERT","8":".","9":"7316-2189","10":"7316-2189-T-425973.WGS","11":"PT_VTM2STE3"},{"1":"chr5","2":"1295442","3":"1295442","4":"+","5":"5'Flank","6":"BS_02YBZSBY","7":"TERT","8":".","9":"7316-2189","10":"7316-2189-T-425973.WGS","11":"PT_VTM2STE3"},{"1":"chr5","2":"1262368","3":"1262368","4":"+","5":"Intron","6":"BS_P8WN8XEQ","7":"TERT","8":".","9":"7316-1105","10":"7316-1105-T-353821.WGS","11":"PT_X71D7G5S"},{"1":"chr5","2":"1260906","3":"1260906","4":"+","5":"Intron","6":"BS_XMP9XNR9","7":"TERT","8":".","9":"7316-195","10":"7316-195-T-202952.WGS","11":"PT_Y5KY6KN9"}],"options":{"columns":{"min":{},"max":[10],"total":[11]},"rows":{"min":[10],"max":[10],"total":[51]},"pages":{}}}
   </script>
 </div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -3176,18 +3143,20 @@ tert_snv_df</code></pre>
 <p><em>IDH1</em> mutations are specific - we’ll break them out here.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbImlkaF9zbnZfZGYgPC0gZmlsdGVyZWRfc252X2RmICU+JVxuICBkcGx5cjo6ZmlsdGVyKEh1Z29fU3ltYm9sID09IFwiSURIMVwiLFxuICAgICAgICAgICAgICAgIGdyZXBsKFwiUjEzMnxSMTcyXCIsIEhHVlNwX1Nob3J0KSkiLCIiLCJoZWFkKGlkaF9zbnZfZGYpIl19 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWRoX3Nudl9kZiA8LSBmaWx0ZXJlZF9zbnZfZGYgJT4lXG4gIGRwbHlyOjpmaWx0ZXIoSHVnb19TeW1ib2wgPT0gXCJJREgxXCIsXG4gICAgICAgICAgICAgICAgZ3JlcGwoXCJSMTMyfFIxNzJcIiwgSEdWU3BfU2hvcnQpKVxuXG5oZWFkKGlkaF9zbnZfZGYpXG5gYGAifQ== -->
 <pre class="r"><code>idh_snv_df &lt;- filtered_snv_df %&gt;%
   dplyr::filter(Hugo_Symbol == &quot;IDH1&quot;,
                 grepl(&quot;R132|R172&quot;, HGVSp_Short))
 
 head(idh_snv_df)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MTEsIm5yb3ciOjR9LCJyZGYiOiJINHNJQUFBQUFBQUFBNjFVM1c2Yk1CaDEvbHFGdEZHclRaWDJEQk9JbnpRLzBtN1NKaVZ0bGltTlVVcDJnMXhDRzZ1QW1RRnR1OXZsSG1YdnM5ZVptcGtFWjRDMHFKT0dCQnlmNC9OOS9qNkRad05URlV3QkFGQUdsVm9KbENzTVZzdnNVUUpWVUUvZVh3Q292R0tnd2U2VFJFMkZxcjJpNm9zd0FNMEU5My84ZlBlZGdiKzkvMkZlZGgybHQvdEFmdTdwQkllaDQ0ZU9OWWtqRkdIaS8wOGhuNnR4QWEwdVhIem82S2Flb1VhYXNiaHE2NE1NTlp5cTU0YlJ6ODQ2NzVvZE9MNkJ4WjVmRDBiS2kzRGVkeGhJTTBWVFIzdUg3NHRxUGthOW95bHRVVk5WT1NVTytuS3ZwY2c1V1ZWYWVVTHB0ZHFGUUdlN1FLSWhibU5JZHpwTTFhTXRJeHJTblFsemppUTJjN1RrbnFKbUhXZTdSRXpWdWoyMXJXM1V3blpNRFV1ZW1GUERtR2o3cWR1QlByOFpEK1VzZGZ2UlhNeGFrOEsvVWZPUjU0UnBva1pLQ3BjclNqd1NFczlKbVNhTUVJMnNLUWx4NWdNNkd2ckxJbmNBSTRyOEpTOXNqaWhHZm1SZHVpZ004UU8yc3gvZ2F5UDJDTFVnOGdMWHNTNFF0Y21TWjJ5TTRrZGl3YS9lUFhGM2xENkhnUVZYaEVaOGg4S3RGL09FcHdHaURzdUhYUHdwSnRFZjRjMFlMMFByQ3RPUWxjRnF3VFlPa29WZER3b2RxVlB5V2VKZE9VNk9sVy9zc1Y2dmZ4VmJaeWMxcGEzanBMQkVFWkllS1BPejBYUEJja2lDcEh4bUtpZm5VYTFnTHRFQ2NSTDd5VXFXb3IySy9TZFI2U1FaTnZyMk9rNXhOWU1iMjV6bGRScXJ4amZHOFIreHo5dGJjOUc5d3h2YlpDVnZLcFlDaW4zZVc0R3hvUlNSQ1BGNWdrMWN6bXlLQTgrL0FYY3I4OGwrQlFBQSJ9 -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Chromosome"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Start_Position"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["End_Position"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Strand"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Variant_Classification"],"name":[5],"type":["chr"],"align":["left"]},{"label":["Tumor_Sample_Barcode"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Hugo_Symbol"],"name":[7],"type":["chr"],"align":["left"]},{"label":["HGVSp_Short"],"name":[8],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[9],"type":["chr"],"align":["left"]},{"label":["Kids_First_Participant_ID"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"chr2","2":"208248388","3":"208248388","4":"+","5":"Missense_Mutation","6":"BS_8SYN7GXG","7":"IDH1","8":"p.R132H","9":"7316-3220","10":"PT_0MXPTTM3"},{"1":"chr2","2":"208248388","3":"208248388","4":"+","5":"Missense_Mutation","6":"BS_H3TYF6GD","7":"IDH1","8":"p.R132H","9":"A09410","10":"PT_0MXPTTM3"},{"1":"chr2","2":"208248388","3":"208248388","4":"+","5":"Missense_Mutation","6":"BS_EP25TTAG","7":"IDH1","8":"p.R132L","9":"7316-2140","10":"PT_QDGVJKE0"},{"1":"chr2","2":"208248388","3":"208248388","4":"+","5":"Missense_Mutation","6":"BS_58X7SKJS","7":"IDH1","8":"p.R132H","9":"7316-1946","10":"PT_QQZXYR4M"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Chromosome"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Start_Position"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["End_Position"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Strand"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Variant_Classification"],"name":[5],"type":["chr"],"align":["left"]},{"label":["Tumor_Sample_Barcode"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Hugo_Symbol"],"name":[7],"type":["chr"],"align":["left"]},{"label":["HGVSp_Short"],"name":[8],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[9],"type":["chr"],"align":["left"]},{"label":["parent_aliquot_id"],"name":[10],"type":["chr"],"align":["left"]},{"label":["Kids_First_Participant_ID"],"name":[11],"type":["chr"],"align":["left"]}],"data":[{"1":"chr2","2":"208248388","3":"208248388","4":"+","5":"Missense_Mutation","6":"BS_8SYN7GXG","7":"IDH1","8":"p.R132H","9":"7316-3220","10":"7316-3220-T-A09410.WGS","11":"PT_0MXPTTM3"},{"1":"chr2","2":"208248388","3":"208248388","4":"+","5":"Missense_Mutation","6":"BS_H3TYF6GD","7":"IDH1","8":"p.R132H","9":"A09410","10":"A09410-T.WXS","11":"PT_0MXPTTM3"},{"1":"chr2","2":"208248388","3":"208248388","4":"+","5":"Missense_Mutation","6":"BS_EP25TTAG","7":"IDH1","8":"p.R132L","9":"7316-2140","10":"7316-2140-T-409120.WGS","11":"PT_QDGVJKE0"},{"1":"chr2","2":"208248388","3":"208248388","4":"+","5":"Missense_Mutation","6":"BS_58X7SKJS","7":"IDH1","8":"p.R132H","9":"7316-1946","10":"7316-1946-T-389263.WGS","11":"PT_QQZXYR4M"}],"options":{"columns":{"min":{},"max":[10],"total":[11]},"rows":{"min":[10],"max":[10],"total":[4]},"pages":{}}}
   </script>
 </div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p><em>Note that some samples that did not get included in the subset file (e.g., LGAT, Ganglioglioma, etc.) have R132H mutations. Should they be included in the subset files?</em></p>
@@ -3196,18 +3165,20 @@ head(idh_snv_df)</code></pre>
 <h4><em>BRAF</em> V600E</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbImJyYWZfc252X2RmIDwtIGZpbHRlcmVkX3Nudl9kZiAlPiVcbiAgZHBseXI6OmZpbHRlcihIdWdvX1N5bWJvbCA9PSBcIkJSQUZcIixcbiAgICAgICAgICAgICAgICBncmVwbChcIlY2MDBFXCIsIEhHVlNwX1Nob3J0KSkiLCIiLCJoZWFkKGJyYWZfc252X2RmLCBuID0gMTApIl19 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYnJhZl9zbnZfZGYgPC0gZmlsdGVyZWRfc252X2RmICU+JVxuICBkcGx5cjo6ZmlsdGVyKEh1Z29fU3ltYm9sID09IFwiQlJBRlwiLFxuICAgICAgICAgICAgICAgIGdyZXBsKFwiVjYwMEVcIiwgSEdWU3BfU2hvcnQpKVxuXG5oZWFkKGJyYWZfc252X2RmLCBuID0gMTApXG5gYGAifQ== -->
 <pre class="r"><code>braf_snv_df &lt;- filtered_snv_df %&gt;%
   dplyr::filter(Hugo_Symbol == &quot;BRAF&quot;,
                 grepl(&quot;V600E&quot;, HGVSp_Short))
 
 head(braf_snv_df, n = 10)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MTEsIm5yb3ciOjl9LCJyZGYiOiJINHNJQUFBQUFBQUFBOTJWNzIrYVFCakgwZFoyYXR1MDZiWmtmOE1pNGVjQkw3RWlUR05qaFlqZEczSlRXaTlUamdGbTI3djlLZnR2OWlmdFhkMmhYSGZTWkZtek5VdG1jdkRjNTh0enozMGZCRWFkaWRTWU5EaU9xM0o3dFFwWDNTUGhmcFVjS3R3K1Y4L1Buemh1NzV3RVRUSk95YWdYd3Y1MG5taFBIblBjU1Y3VC9Qb3RqVW53cCtjbldJL3RTZVgxWHd0MkZ6NGJvRFFOb3pRTUJxc01aZ2hILzQyd2E3VFpkZ05yWlBxKzdHZ011bmc3TWxWRDhkaXJGTWwxcit3ZWcvcG1SekZHUUdkUXR5KzNWYmZqTUVpVkxNOFNWSUZObk5nOTBSbllET29wbHVINnFzZ2d1VDJ3dThDK0xEOEk3WkhaZmZKNHQrWmh6SStCSUZqL2JGcmFqaWFMb0tXcnZ6V3RiNmF5S29tN1FMb0hCNlpnS0Fvb1pzKzI2WnF3Yzdrb0NtQVhBQldVdG5WZUZHNTVMVUJrZy9kdDk1R1NZdWlNOVBKKzYwUlVOUUFVOEZDVk51cldBcU1lYlVuTDQvMEpaUytvTlpJZ0s0b21hdytXeTMzbXFpcnI4c05pdWVsY0JZSlJiTFQwT0EyOVFEYjl2ait4eG85R1FPNEMrZXBhWUpCakR5Umg0R3UvUmtQVmNYcTlvY01nVHg4YmxtdklETHJXUjVldTBiTktINXhhQkpkaFd2aG9GckJ4TVUvd0VxZDRHUmJreE0xZ2tnVkRuQ0xtL1hKa1JiTXlPM0N6QkVZejJyY3hUQkNNc3VCaUFkTVUzYUFwKzM1NjdxMldPQWxjdUl3WFlkQ0d5UlRQYU1XbXM3ckZnZnQ1K1E0djdwRTlkdVBBbmVNa28zL0dkSnVMYU1HekdDWWhxUWNYNk1NS1p6K0ZWMzAwUzRNdVNsSmlnM2hCVXhUbkczdlRLWFdrbnVDUFBPM0tNUm5WTCtTd1hxKy9sMXMzelQwVnJhT3dNWU1aNUc4U2trOW1kNldVUXh6bjlrbFNOZi9JMTBySmxhUUVUbGRSdnBOWmF6cGZSZTlib3A1WDJPamIzM0VSMTVtNHVhMVpYUmRyMWVpTkNhTmJGTkgyMWhid1hVZ2JlMElzYnh6emNZSWkydHNHb1NtZjRRelM2eHBUdktCa1k0Njcrd0ZiMk5TRzB3Z0FBQT09In0= -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Chromosome"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Start_Position"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["End_Position"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Strand"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Variant_Classification"],"name":[5],"type":["chr"],"align":["left"]},{"label":["Tumor_Sample_Barcode"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Hugo_Symbol"],"name":[7],"type":["chr"],"align":["left"]},{"label":["HGVSp_Short"],"name":[8],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[9],"type":["chr"],"align":["left"]},{"label":["Kids_First_Participant_ID"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"chr7","2":"140753336","3":"140753336","4":"+","5":"Missense_Mutation","6":"BS_E42SSQGJ","7":"BRAF","8":"p.V600E","9":"7316-85","10":"PT_3AWKWXEV"},{"1":"chr7","2":"140753336","3":"140753336","4":"+","5":"Missense_Mutation","6":"BS_KAD49R68","7":"BRAF","8":"p.V600E","9":"7316-3521","10":"PT_63F63QY0"},{"1":"chr7","2":"140753336","3":"140753336","4":"+","5":"Missense_Mutation","6":"BS_FK3B5SDH","7":"BRAF","8":"p.V600E","9":"7316-3221","10":"PT_HGM20MW7"},{"1":"chr7","2":"140753336","3":"140753336","4":"+","5":"Missense_Mutation","6":"BS_52ETE050","7":"BRAF","8":"p.V600E","9":"A09446","10":"PT_HGM20MW7"},{"1":"chr7","2":"140753336","3":"140753336","4":"+","5":"Missense_Mutation","6":"BS_KXGJ1HMG","7":"BRAF","8":"p.V600E","9":"7316-870","10":"PT_P5HHJJPH"},{"1":"chr7","2":"140753336","3":"140753336","4":"+","5":"Missense_Mutation","6":"BS_J4E9SW51","7":"BRAF","8":"p.V600E","9":"7316-1106","10":"PT_T8V9ES93"},{"1":"chr7","2":"140753336","3":"140753336","4":"+","5":"Missense_Mutation","6":"BS_3BMGF6GN","7":"BRAF","8":"p.V600E","9":"7316-1656","10":"PT_Y8RNS9JE"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Chromosome"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Start_Position"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["End_Position"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Strand"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Variant_Classification"],"name":[5],"type":["chr"],"align":["left"]},{"label":["Tumor_Sample_Barcode"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Hugo_Symbol"],"name":[7],"type":["chr"],"align":["left"]},{"label":["HGVSp_Short"],"name":[8],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[9],"type":["chr"],"align":["left"]},{"label":["parent_aliquot_id"],"name":[10],"type":["chr"],"align":["left"]},{"label":["Kids_First_Participant_ID"],"name":[11],"type":["chr"],"align":["left"]}],"data":[{"1":"chr7","2":"140753336","3":"140753336","4":"+","5":"Missense_Mutation","6":"BS_ERAWW3H7","7":"BRAF","8":"p.V600E","9":"7316-85","10":"7316-85-T-61659.WGS","11":"PT_3AWKWXEV"},{"1":"chr7","2":"140753336","3":"140753336","4":"+","5":"Missense_Mutation","6":"BS_CZRA594T","7":"BRAF","8":"p.V600E","9":"7316-85","10":"7316-85-T-61659.WGS","11":"PT_3AWKWXEV"},{"1":"chr7","2":"140753336","3":"140753336","4":"+","5":"Missense_Mutation","6":"BS_E42SSQGJ","7":"BRAF","8":"p.V600E","9":"7316-85","10":"7316-85-T-61498.WGS","11":"PT_3AWKWXEV"},{"1":"chr7","2":"140753336","3":"140753336","4":"+","5":"Missense_Mutation","6":"BS_KAD49R68","7":"BRAF","8":"p.V600E","9":"7316-3521","10":"7316-3521-T-576646.WGS","11":"PT_63F63QY0"},{"1":"chr7","2":"140753336","3":"140753336","4":"+","5":"Missense_Mutation","6":"BS_FK3B5SDH","7":"BRAF","8":"p.V600E","9":"7316-3221","10":"7316-3221-T-A09446.WGS","11":"PT_HGM20MW7"},{"1":"chr7","2":"140753336","3":"140753336","4":"+","5":"Missense_Mutation","6":"BS_52ETE050","7":"BRAF","8":"p.V600E","9":"A09446","10":"A09446-T.WXS","11":"PT_HGM20MW7"},{"1":"chr7","2":"140753336","3":"140753336","4":"+","5":"Missense_Mutation","6":"BS_KXGJ1HMG","7":"BRAF","8":"p.V600E","9":"7316-870","10":"7316-870-T-344737.WGS","11":"PT_P5HHJJPH"},{"1":"chr7","2":"140753336","3":"140753336","4":"+","5":"Missense_Mutation","6":"BS_J4E9SW51","7":"BRAF","8":"p.V600E","9":"7316-1106","10":"7316-1106-T-353836.WGS","11":"PT_T8V9ES93"},{"1":"chr7","2":"140753336","3":"140753336","4":"+","5":"Missense_Mutation","6":"BS_3BMGF6GN","7":"BRAF","8":"p.V600E","9":"7316-1656","10":"7316-1656-T-360998.WGS","11":"PT_Y8RNS9JE"}],"options":{"columns":{"min":{},"max":[10],"total":[11]},"rows":{"min":[10],"max":[10],"total":[9]},"pages":{}}}
   </script>
 </div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -3217,7 +3188,7 @@ head(braf_snv_df, n = 10)</code></pre>
 <p>Now that we’ve filtered the data, we’ll get it into a form that’s more amenable to presentation. First, let’s include a column that contains all of the coding mutations of interest (excluding <em>TERT</em>). This will contain duplicated information – e.g., <em>H3F3A</em> will be present for tumors with <em>H3F3A</em> K28M mutations – but serve as a “sanity check.”</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbImNvZGluZ19zdW1tYXJ5X2RmIDwtIGNvZGluZ19zbnZfZGYgJT4lIFxuICBkcGx5cjo6c2VsZWN0KFR1bW9yX1NhbXBsZV9CYXJjb2RlLFxuICAgICAgICAgICAgICAgIEh1Z29fU3ltYm9sKSAlPiVcbiAgIyBGb3IgZWFjaCB0dW1vciBiaW9zcGVjaW1lbiwgZ2V0IGEgY29tbWEgc2VwYXJhdGVkXG4gIGRwbHlyOjpncm91cF9ieShUdW1vcl9TYW1wbGVfQmFyY29kZSkgJT4lXG4gIGRwbHlyOjpzdW1tYXJpemUocmVsZXZhbnRfY29kaW5nX211dGF0aW9ucyA9IHBhc3RlKHNvcnQodW5pcXVlKEh1Z29fU3ltYm9sKSksXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbGxhcHNlID0gXCIsIFwiKSkiLCIiLCJoZWFkKGNvZGluZ19zdW1tYXJ5X2RmLCBuID0gMTApIl19 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29kaW5nX3N1bW1hcnlfZGYgPC0gY29kaW5nX3Nudl9kZiAlPiUgXG4gIGRwbHlyOjpzZWxlY3QoVHVtb3JfU2FtcGxlX0JhcmNvZGUsXG4gICAgICAgICAgICAgICAgSHVnb19TeW1ib2wpICU+JVxuICAjIEZvciBlYWNoIHR1bW9yIGJpb3NwZWNpbWVuLCBnZXQgYSBjb21tYSBzZXBhcmF0ZWRcbiAgZHBseXI6Omdyb3VwX2J5KFR1bW9yX1NhbXBsZV9CYXJjb2RlKSAlPiVcbiAgZHBseXI6OnN1bW1hcml6ZShyZWxldmFudF9jb2RpbmdfbXV0YXRpb25zID0gcGFzdGUoc29ydCh1bmlxdWUoSHVnb19TeW1ib2wpKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sbGFwc2UgPSBcIiwgXCIpKVxuXG5oZWFkKGNvZGluZ19zdW1tYXJ5X2RmLCBuID0gMTApXG5gYGAifQ== -->
 <pre class="r"><code>coding_summary_df &lt;- coding_snv_df %&gt;% 
   dplyr::select(Tumor_Sample_Barcode,
                 Hugo_Symbol) %&gt;%
@@ -3228,17 +3199,19 @@ head(braf_snv_df, n = 10)</code></pre>
 
 head(coding_summary_df, n = 10)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MiwibnJvdyI6MTB9LCJyZGYiOiJINHNJQUFBQUFBQUFBNVdTeTAvQ01Cekh5MkFhWmpBa2V2Rkc0czBBMlRvSjRiakNobytRd0RaNVhaWUtVNG1qSTN1b1IvOXFqMkEzT2xObVBMaGs3ZS8zK2ZYMytLNHplMU1vVFNVQWdBQ0tZZ0VJUldxV0JMb1VRQW1Vay8wRGdPSlplZ0NBS24wbEZqaEJsaVBMdGpuVVIxTWV3Um1hVzJqR0k4MitnM0NrY1VnWkRQUzJnU3dlalZyd2VxZ2lIcG0yRHU5MXZyeGl0Y2J0eWFUTElTamJhTjZYT3p5QzQ2N1o3aGs4VW1WTDZjQmVUb1ZvNlhZUE11ZEtzODFwdllaTXphalh1cmZkZXMzb0c2WkN0d2MwcEZ0NnRsNnpoeTAxUzc5UkRmVkgyRDZkUjRmeDFQazcvL0ozKy8vM1BidzlrZUMxR3pMTkFvUG5kcnoyQThmQzY0M25PZ2dIQzMvcHN0aEY0SHJ1R3lhUlErR0tQRHZyT01MUnlpZGhybkk1OE4rYldmVktVdjJUTHJ2ZDdpcy93c0xEWVRaQ0JxVWxqbkR6S2FENTFOdm1Vbzc5RFdzcEpIK2VtRXN1QkRsUWpVa3l5Ykt4ZUluSmEwUHBwQmVjeFBkUGhka1Nad3Y3bnNLTzFSSlpyU09YUEs5STlqbEVEeis2SG5OT3FlUlVjWE1UckVpVVNhRTBiRVoraExOejBzTDNNcEtLQTl0djlpTXcvV2dEQUFBPSJ9 -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Tumor_Sample_Barcode"],"name":[1],"type":["chr"],"align":["left"]},{"label":["relevant_coding_mutations"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"BS_00TRPEQX","2":"SETD2"},{"1":"BS_02YBZSBY","2":"ATRX, BRAF, CIC, FGFR1, FUBP1, SETD2, TP53"},{"1":"BS_0ATJ22QA","2":"H3F3A"},{"1":"BS_1MME7FBS","2":"ATRX, H3F3A"},{"1":"BS_1Q524P3B","2":"H3F3A"},{"1":"BS_1RTE2KEX","2":"H3F3A, TP53"},{"1":"BS_1S5V7WWC","2":"H3F3A"},{"1":"BS_20TBZG09","2":"ATRX, BRAF, CIC, FUBP1, SETD2, TP53"},{"1":"BS_22VCR7DF","2":"H3F3A"},{"1":"BS_230S192D","2":"ATRX, H3F3A"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Tumor_Sample_Barcode"],"name":[1],"type":["chr"],"align":["left"]},{"label":["relevant_coding_mutations"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"BS_00TRPEQX","2":"SETD2"},{"1":"BS_02YBZSBY","2":"ATRX, BRAF, CIC, FGFR1, FUBP1, SETD2, TP53"},{"1":"BS_0ATJ22QA","2":"H3F3A"},{"1":"BS_1MME7FBS","2":"ATRX, H3F3A"},{"1":"BS_1Q524P3B","2":"H3F3A"},{"1":"BS_1RTE2KEX","2":"H3F3A, TP53"},{"1":"BS_1S5V7WWC","2":"H3F3A"},{"1":"BS_20TBZG09","2":"ATRX, BRAF, CIC, FUBP1, SETD2, TP53"},{"1":"BS_22VCR7DF","2":"H3F3A"},{"1":"BS_230S192D","2":"ATRX, H3F3A"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[10]},"pages":{}}}
   </script>
 </div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Add tumors that had no mutations in the relevant genes into this <code>data.frame</code>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbIiMgVGhpcyB3aWxsIGJlIGFsbCBiaW9zcGVjaW1lbiBJRHMgdGhhdCB3ZXJlIGluY2x1ZGVkIGluIHRoZSBIR0cgc3Vic2V0IiwiIyBTTlYgZmlsZSIsInN1YnNldF9ic2lkIDwtIHVuaXF1ZShzbnZfZGYkVHVtb3JfU2FtcGxlX0JhcmNvZGUpIiwiIyBBZGQgdGhlICdtaXNzaW5nJyBiaW9zcGVjaW1lbiBJRHMgaW50byB0aGUgY29kaW5nIHN1bW1hcnkgZGF0YS5mcmFtZSBidXQiLCIjIG1hcmsgcmVsZXZhbnRfY29kaW5nX211dGF0aW9ucyBhcyBcIk5vbmVcIiIsImNvZGluZ19zdW1tYXJ5X2RmIDwtIGNvZGluZ19zdW1tYXJ5X2RmICU+JVxuICBkcGx5cjo6YmluZF9yb3dzKGRhdGEuZnJhbWUoXG4gICAgVHVtb3JfU2FtcGxlX0JhcmNvZGUgPSBzZXRkaWZmKHN1YnNldF9ic2lkLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2Rpbmdfc3VtbWFyeV9kZiRUdW1vcl9TYW1wbGVfQmFyY29kZSlcbiAgKSkgJT4lXG4gIHJlcGxhY2UoaXMubmEoLiksIFwiTm9uZVwiKSJdfQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUaGlzIHdpbGwgYmUgYWxsIGJpb3NwZWNpbWVuIElEcyB0aGF0IHdlcmUgaW5jbHVkZWQgaW4gdGhlIEhHRyBzdWJzZXRcbiMgU05WIGZpbGVcbnN1YnNldF9ic2lkIDwtIHVuaXF1ZShzbnZfZGYkVHVtb3JfU2FtcGxlX0JhcmNvZGUpXG4jIEFkZCB0aGUgJ21pc3NpbmcnIGJpb3NwZWNpbWVuIElEcyBpbnRvIHRoZSBjb2Rpbmcgc3VtbWFyeSBkYXRhLmZyYW1lIGJ1dFxuIyBtYXJrIHJlbGV2YW50X2NvZGluZ19tdXRhdGlvbnMgYXMgXCJOb25lXCJcbmNvZGluZ19zdW1tYXJ5X2RmIDwtIGNvZGluZ19zdW1tYXJ5X2RmICU+JVxuICBkcGx5cjo6YmluZF9yb3dzKGRhdGEuZnJhbWUoXG4gICAgVHVtb3JfU2FtcGxlX0JhcmNvZGUgPSBzZXRkaWZmKHN1YnNldF9ic2lkLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2Rpbmdfc3VtbWFyeV9kZiRUdW1vcl9TYW1wbGVfQmFyY29kZSlcbiAgKSkgJT4lXG4gIHJlcGxhY2UoaXMubmEoLiksIFwiTm9uZVwiKVxuYGBgIn0= -->
 <pre class="r"><code># This will be all biospecimen IDs that were included in the HGG subset
 # SNV file
 subset_bsid &lt;- unique(snv_df$Tumor_Sample_Barcode)
@@ -3251,16 +3224,15 @@ coding_summary_df &lt;- coding_summary_df %&gt;%
   )) %&gt;%
   replace(is.na(.), &quot;None&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZyBpbiBiaW5kX3Jvd3NfKHgsIC5pZCk6IGJpbmRpbmcgY2hhcmFjdGVyIGFuZCBmYWN0b3IgdmVjdG9yLFxuY29lcmNpbmcgaW50byBjaGFyYWN0ZXIgdmVjdG9yXG4ifQ== -->
-<pre><code>Warning in bind_rows_(x, .id): binding character and factor vector,
-coercing into character vector</code></pre>
-<!-- rnb-warning-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiYmluZGluZyBjaGFyYWN0ZXIgYW5kIGZhY3RvciB2ZWN0b3IsIGNvZXJjaW5nIGludG8gY2hhcmFjdGVyIHZlY3RvclxuIn0= -->
+<pre><code>binding character and factor vector, coercing into character vector</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>We’ll make a <code>data.frame</code> that indicates the <code>Variant_Classification</code> of any <em>TERT</em> mutation in a tumor biospecimen.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbInRlcnRfc3VtbWFyeV9kZiA8LSB0ZXJ0X3Nudl9kZiAlPiVcbiAgZHBseXI6OnNlbGVjdChUdW1vcl9TYW1wbGVfQmFyY29kZSxcbiAgICAgICAgICAgICAgICBWYXJpYW50X0NsYXNzaWZpY2F0aW9uKSAlPiVcbiAgZHBseXI6Omdyb3VwX2J5KFR1bW9yX1NhbXBsZV9CYXJjb2RlKSAlPiVcbiAgZHBseXI6OnN1bW1hcml6ZShURVJUX3ZhcmlhbnRfY2xhc3NpZmljYXRpb24gPSBcbiAgICAgICAgICAgICAgICAgICAgIHBhc3RlKHNvcnQodW5pcXVlKFZhcmlhbnRfQ2xhc3NpZmljYXRpb24pKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbGxhcHNlID0gXCIsIFwiKSkiLCJoZWFkKHRlcnRfc3VtbWFyeV9kZikiXX0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGVydF9zdW1tYXJ5X2RmIDwtIHRlcnRfc252X2RmICU+JVxuICBkcGx5cjo6c2VsZWN0KFR1bW9yX1NhbXBsZV9CYXJjb2RlLFxuICAgICAgICAgICAgICAgIFZhcmlhbnRfQ2xhc3NpZmljYXRpb24pICU+JVxuICBkcGx5cjo6Z3JvdXBfYnkoVHVtb3JfU2FtcGxlX0JhcmNvZGUpICU+JVxuICBkcGx5cjo6c3VtbWFyaXplKFRFUlRfdmFyaWFudF9jbGFzc2lmaWNhdGlvbiA9IFxuICAgICAgICAgICAgICAgICAgICAgcGFzdGUoc29ydCh1bmlxdWUoVmFyaWFudF9DbGFzc2lmaWNhdGlvbikpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sbGFwc2UgPSBcIiwgXCIpKVxuaGVhZCh0ZXJ0X3N1bW1hcnlfZGYpXG5gYGAifQ== -->
 <pre class="r"><code>tert_summary_df &lt;- tert_snv_df %&gt;%
   dplyr::select(Tumor_Sample_Barcode,
                 Variant_Classification) %&gt;%
@@ -3270,17 +3242,19 @@ coercing into character vector</code></pre>
                            collapse = &quot;, &quot;))
 head(tert_summary_df)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MiwibnJvdyI6Nn0sInJkZiI6Ikg0c0lBQUFBQUFBQUErMVV6Mi9hTUJnMTRkY0tLNlhxTkduYWhWczFxVVUwcGVwMm1vQVUxbFZJRldGVjZTVXlpUUdMeE01c1p6OXUrNU4zM3FITUFSdEN0S2s5VEpvMERTbUovVDUvejkvN2JON0F1alZMdHlVQWdBR3krUXd3c25LWU0rUXJBM0pnSi81K0FTQjdzRndBUUZVK0JSVW90MjJuWVk3YWQzWjdsSURNeHJCOTEydThTVURuVGJOalhiWHNCUFM2TlRKNy9XWXZDWFh0OTFiUEhDYWdWdmZNYXA1Y1c2bWQ5ODRPdXo0azg2UGFKUkdNRWdYWFRnOC9EQWNhUEtyMU1lZUljT1QwSXdFRlhxOHJiR1c5T3RWa2owemYvMTJncU1wS05UQlBZSUM0a21BbzhOa3dDaWh6YkJpRVBuTGFrTG5VUXlyMmNuZ3hHRHFmSU1PUUNNZjFJZWQ0Z3QzVlZ0dmNPNHgrcm12KzNaai9tM3d0Rm9zZjZTS1dOS29JRFpZOEtHQjl3bVIrYW5tT2g4aFY1eTV2aEJGL3kycXVMa2h1a1pKMDRGTGZSNjZRc3R3WlpOQVZpT2t5MXlFNXVYK0FwN3JoOFdnMDl0RmZJL2xUaXY3ei9MTThjYjZoODh2NmY5V1pNUnBRVGdOOTdTcTJnRXc0MTVUamhHRTh2U0JlR2l2WWdrSGlxZG56RytVQ25XMFhlTmhFeXUraUtYWHNyOEdZK211b2QyT0hqajJqVEdnNWZKV0w5WWI3SVdSSTdnZDkvREdpWWhONGNZVTk3blF4NDFLRzFJSmRITWFGWFZxUGFPamVwcUhUQ0VrZituVXpRVVUrbWJmZkFkaHdyWnViMWRZa2t6UkIwVU1UR1BsYVRZN1BjWmdxUVR2YUU1bm1yRnh0dWRWOXl2R0tOSXc3eTVYWjVWUHBHWllDcWhHSmZkYzdkbWNSbVIrYkovRzVMK09yMzY0YUZ4SmpJeVVwcjg4Y2tTa20rdVR5UGh3amZXWVZhZkJMZjYrSERCTXR0Q1JSWGhkVVFMMnVGSGRGSVVyZ1QrMlpSUy9iQndBQSJ9 -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Tumor_Sample_Barcode"],"name":[1],"type":["chr"],"align":["left"]},{"label":["TERT_variant_classification"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"BS_02YBZSBY","2":"5'Flank, Intron"},{"1":"BS_20TBZG09","2":"3'UTR, Intron, Missense_Mutation"},{"1":"BS_742CDKAS","2":"Intron"},{"1":"BS_8AY2GM4G","2":"3'Flank, 3'UTR, Intron, Missense_Mutation"},{"1":"BS_8FSJDG2T","2":"Missense_Mutation"},{"1":"BS_AF5D41PD","2":"5'Flank"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Tumor_Sample_Barcode"],"name":[1],"type":["chr"],"align":["left"]},{"label":["TERT_variant_classification"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"BS_02YBZSBY","2":"5'Flank, Intron"},{"1":"BS_20TBZG09","2":"3'UTR, Intron, Missense_Mutation"},{"1":"BS_742CDKAS","2":"Intron"},{"1":"BS_8AY2GM4G","2":"3'Flank, 3'UTR, Intron, Missense_Mutation"},{"1":"BS_8FSJDG2T","2":"Missense_Mutation"},{"1":"BS_AF5D41PD","2":"5'Flank"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
   </script>
 </div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Add in tumor biospecimens where no <em>TERT</em> mutation is present.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoidGVydF9zdW1tYXJ5X2RmIDwtIHRlcnRfc3VtbWFyeV9kZiAlPiVcbiAgZHBseXI6OmJpbmRfcm93cyhkYXRhLmZyYW1lKFxuICAgIFR1bW9yX1NhbXBsZV9CYXJjb2RlID0gc2V0ZGlmZihzdWJzZXRfYnNpZCxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdGVydF9zdW1tYXJ5X2RmJFR1bW9yX1NhbXBsZV9CYXJjb2RlKVxuICApKSAlPiVcbiAgcmVwbGFjZShpcy5uYSguKSwgXCJOb25lXCIpIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGVydF9zdW1tYXJ5X2RmIDwtIHRlcnRfc3VtbWFyeV9kZiAlPiVcbiAgZHBseXI6OmJpbmRfcm93cyhkYXRhLmZyYW1lKFxuICAgIFR1bW9yX1NhbXBsZV9CYXJjb2RlID0gc2V0ZGlmZihzdWJzZXRfYnNpZCxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdGVydF9zdW1tYXJ5X2RmJFR1bW9yX1NhbXBsZV9CYXJjb2RlKVxuICApKSAlPiVcbiAgcmVwbGFjZShpcy5uYSguKSwgXCJOb25lXCIpXG5gYGAifQ== -->
 <pre class="r"><code>tert_summary_df &lt;- tert_summary_df %&gt;%
   dplyr::bind_rows(data.frame(
     Tumor_Sample_Barcode = setdiff(subset_bsid,
@@ -3288,16 +3262,15 @@ head(tert_summary_df)</code></pre>
   )) %&gt;%
   replace(is.na(.), &quot;None&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZyBpbiBiaW5kX3Jvd3NfKHgsIC5pZCk6IGJpbmRpbmcgY2hhcmFjdGVyIGFuZCBmYWN0b3IgdmVjdG9yLFxuY29lcmNpbmcgaW50byBjaGFyYWN0ZXIgdmVjdG9yXG4ifQ== -->
-<pre><code>Warning in bind_rows_(x, .id): binding character and factor vector,
-coercing into character vector</code></pre>
-<!-- rnb-warning-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiYmluZGluZyBjaGFyYWN0ZXIgYW5kIGZhY3RvciB2ZWN0b3IsIGNvZXJjaW5nIGludG8gY2hhcmFjdGVyIHZlY3RvclxuIn0= -->
+<pre><code>binding character and factor vector, coercing into character vector</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Now a <code>data.frame</code> that contains the specific IDH1 mutations.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiaWRoX3N1bW1hcnlfZGYgPC0gaWRoX3Nudl9kZiAlPiVcbiAgZHBseXI6OnNlbGVjdChUdW1vcl9TYW1wbGVfQmFyY29kZSwgSEdWU3BfU2hvcnQpICU+JVxuICBkcGx5cjo6cmVuYW1lKElESDFfbXV0YXRpb24gPSBIR1ZTcF9TaG9ydCkgJT4lXG4gIGRwbHlyOjpiaW5kX3Jvd3MoZGF0YS5mcmFtZShcbiAgICBUdW1vcl9TYW1wbGVfQmFyY29kZSA9IHNldGRpZmYoc3Vic2V0X2JzaWQsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlkaF9zbnZfZGYkVHVtb3JfU2FtcGxlX0JhcmNvZGUpXG4gICkpICU+JVxuICByZXBsYWNlKGlzLm5hKC4pLCBcIk5vIFIxMzIgb3IgUjE3MlwiKSJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWRoX3N1bW1hcnlfZGYgPC0gaWRoX3Nudl9kZiAlPiVcbiAgZHBseXI6OnNlbGVjdChUdW1vcl9TYW1wbGVfQmFyY29kZSwgSEdWU3BfU2hvcnQpICU+JVxuICBkcGx5cjo6cmVuYW1lKElESDFfbXV0YXRpb24gPSBIR1ZTcF9TaG9ydCkgJT4lXG4gIGRwbHlyOjpiaW5kX3Jvd3MoZGF0YS5mcmFtZShcbiAgICBUdW1vcl9TYW1wbGVfQmFyY29kZSA9IHNldGRpZmYoc3Vic2V0X2JzaWQsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlkaF9zbnZfZGYkVHVtb3JfU2FtcGxlX0JhcmNvZGUpXG4gICkpICU+JVxuICByZXBsYWNlKGlzLm5hKC4pLCBcIk5vIFIxMzIgb3IgUjE3MlwiKVxuYGBgIn0= -->
 <pre class="r"><code>idh_summary_df &lt;- idh_snv_df %&gt;%
   dplyr::select(Tumor_Sample_Barcode, HGVSp_Short) %&gt;%
   dplyr::rename(IDH1_mutation = HGVSp_Short) %&gt;%
@@ -3307,16 +3280,15 @@ coercing into character vector</code></pre>
   )) %&gt;%
   replace(is.na(.), &quot;No R132 or R172&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZyBpbiBiaW5kX3Jvd3NfKHgsIC5pZCk6IGJpbmRpbmcgY2hhcmFjdGVyIGFuZCBmYWN0b3IgdmVjdG9yLFxuY29lcmNpbmcgaW50byBjaGFyYWN0ZXIgdmVjdG9yXG4ifQ== -->
-<pre><code>Warning in bind_rows_(x, .id): binding character and factor vector,
-coercing into character vector</code></pre>
-<!-- rnb-warning-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiYmluZGluZyBjaGFyYWN0ZXIgYW5kIGZhY3RvciB2ZWN0b3IsIGNvZXJjaW5nIGludG8gY2hhcmFjdGVyIHZlY3RvclxuIn0= -->
+<pre><code>binding character and factor vector, coercing into character vector</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>And a <code>data.frame</code> that contains the specific <em>BRAF</em> mutation.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYnJhZl9zdW1tYXJ5X2RmIDwtIGJyYWZfc252X2RmICU+JVxuICBkcGx5cjo6c2VsZWN0KFR1bW9yX1NhbXBsZV9CYXJjb2RlLCBIR1ZTcF9TaG9ydCkgJT4lXG4gIGRwbHlyOjpyZW5hbWUoQlJBRl9WNjAwRSA9IEhHVlNwX1Nob3J0KSAlPiVcbiAgZHBseXI6OmJpbmRfcm93cyhkYXRhLmZyYW1lKFxuICAgIFR1bW9yX1NhbXBsZV9CYXJjb2RlID0gc2V0ZGlmZihzdWJzZXRfYnNpZCxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJhZl9zbnZfZGYkVHVtb3JfU2FtcGxlX0JhcmNvZGUpXG4gICkpICU+JVxuICByZXBsYWNlKGlzLm5hKC4pLCBcIk5vIFY2MDBFXCIpIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYnJhZl9zdW1tYXJ5X2RmIDwtIGJyYWZfc252X2RmICU+JVxuICBkcGx5cjo6c2VsZWN0KFR1bW9yX1NhbXBsZV9CYXJjb2RlLCBIR1ZTcF9TaG9ydCkgJT4lXG4gIGRwbHlyOjpyZW5hbWUoQlJBRl9WNjAwRSA9IEhHVlNwX1Nob3J0KSAlPiVcbiAgZHBseXI6OmJpbmRfcm93cyhkYXRhLmZyYW1lKFxuICAgIFR1bW9yX1NhbXBsZV9CYXJjb2RlID0gc2V0ZGlmZihzdWJzZXRfYnNpZCxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJhZl9zbnZfZGYkVHVtb3JfU2FtcGxlX0JhcmNvZGUpXG4gICkpICU+JVxuICByZXBsYWNlKGlzLm5hKC4pLCBcIk5vIFY2MDBFXCIpXG5gYGAifQ== -->
 <pre class="r"><code>braf_summary_df &lt;- braf_snv_df %&gt;%
   dplyr::select(Tumor_Sample_Barcode, HGVSp_Short) %&gt;%
   dplyr::rename(BRAF_V600E = HGVSp_Short) %&gt;%
@@ -3326,10 +3298,9 @@ coercing into character vector</code></pre>
   )) %&gt;%
   replace(is.na(.), &quot;No V600E&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZyBpbiBiaW5kX3Jvd3NfKHgsIC5pZCk6IGJpbmRpbmcgY2hhcmFjdGVyIGFuZCBmYWN0b3IgdmVjdG9yLFxuY29lcmNpbmcgaW50byBjaGFyYWN0ZXIgdmVjdG9yXG4ifQ== -->
-<pre><code>Warning in bind_rows_(x, .id): binding character and factor vector,
-coercing into character vector</code></pre>
-<!-- rnb-warning-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiYmluZGluZyBjaGFyYWN0ZXIgYW5kIGZhY3RvciB2ZWN0b3IsIGNvZXJjaW5nIGludG8gY2hhcmFjdGVyIHZlY3RvclxuIn0= -->
+<pre><code>binding character and factor vector, coercing into character vector</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -3339,7 +3310,7 @@ coercing into character vector</code></pre>
 <p>We’ll include specific information from the defining lesions table.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiZGVmaW5pbmdfbGVzaW9uc19kZiA8LSBkZWZpbmluZ19sZXNpb25zX2RmICU+JVxuICAjIFdlJ3JlIG5vdCBjb25jZXJuZWQgd2l0aCBkaXNlYXNlIHR5cGUgY2xhc3NpZmljYXRpb25zIGF0IHRoZSBtb21lbnRcbiAgZHBseXI6OnNlbGVjdCgtZHBseXI6OnN0YXJ0c193aXRoKFwiZGlzZWFzZVwiKSxcbiAgICAgICAgICAgICAgICAtZHBseXI6OmNvbnRhaW5zKFwiaGlzdG9sb2d5XCIpKSAlPiVcbiAgIyBGaWx0ZXIgdG8gdHVtb3IgYmlvc3BlY2ltZW5zIHRoYXQgYXJlIGluIHRoZSBzdWJzZXQgZmlsZVxuICBkcGx5cjo6ZmlsdGVyKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSBzdWJzZXRfYnNpZCkgJT4lXG4gICMgQWxsIG90aGVyIGRhdGEuZnJhbWUgdXNlICdUdW1vcl9TYW1wbGVfQmFyY29kZScgZm9yIHRoZSBjb2x1bW4gdGhhdCBjb250YWluc1xuICAjIHRoZSB0dW1vciBiaW9zcGVjaW1lbiBpZGVudGlmaWVyc1xuICBkcGx5cjo6cmVuYW1lKFR1bW9yX1NhbXBsZV9CYXJjb2RlID0gS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGVmaW5pbmdfbGVzaW9uc19kZiA8LSBkZWZpbmluZ19sZXNpb25zX2RmICU+JVxuICAjIFdlJ3JlIG5vdCBjb25jZXJuZWQgd2l0aCBkaXNlYXNlIHR5cGUgY2xhc3NpZmljYXRpb25zIGF0IHRoZSBtb21lbnRcbiAgZHBseXI6OnNlbGVjdCgtZHBseXI6OnN0YXJ0c193aXRoKFwiZGlzZWFzZVwiKSxcbiAgICAgICAgICAgICAgICAtZHBseXI6OmNvbnRhaW5zKFwiaGlzdG9sb2d5XCIpKSAlPiVcbiAgIyBGaWx0ZXIgdG8gdHVtb3IgYmlvc3BlY2ltZW5zIHRoYXQgYXJlIGluIHRoZSBzdWJzZXQgZmlsZVxuICBkcGx5cjo6ZmlsdGVyKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSBzdWJzZXRfYnNpZCkgJT4lXG4gICMgQWxsIG90aGVyIGRhdGEuZnJhbWUgdXNlICdUdW1vcl9TYW1wbGVfQmFyY29kZScgZm9yIHRoZSBjb2x1bW4gdGhhdCBjb250YWluc1xuICAjIHRoZSB0dW1vciBiaW9zcGVjaW1lbiBpZGVudGlmaWVyc1xuICBkcGx5cjo6cmVuYW1lKFR1bW9yX1NhbXBsZV9CYXJjb2RlID0gS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRClcbmBgYCJ9 -->
 <pre class="r"><code>defining_lesions_df &lt;- defining_lesions_df %&gt;%
   # We're not concerned with disease type classifications at the moment
   dplyr::select(-dplyr::starts_with(&quot;disease&quot;),
@@ -3355,7 +3326,7 @@ coercing into character vector</code></pre>
 <p>Join all mutation <code>data.frame</code> together.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbImZpbmFsX211dGF0aW9uc19kZiA8LSBsaXN0KGRlZmluaW5nX2xlc2lvbnNfZGYsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICBjb2Rpbmdfc3VtbWFyeV9kZixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgIGlkaF9zdW1tYXJ5X2RmLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgdGVydF9zdW1tYXJ5X2RmLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJhZl9zdW1tYXJ5X2RmKSAlPiVcbiAgcHVycnI6OnJlZHVjZShkcGx5cjo6aW5uZXJfam9pbiwgYnkgPSBcIlR1bW9yX1NhbXBsZV9CYXJjb2RlXCIpICU+JVxuICBkcGx5cjo6c2VsZWN0KC1kZWZpbmluZ19sZXNpb24pICU+JVxuICBkcGx5cjo6YXJyYW5nZShLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELCBzYW1wbGVfaWQpIiwiIiwiaGVhZChmaW5hbF9tdXRhdGlvbnNfZGYsIG4gPSAxMCkiXX0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmluYWxfbXV0YXRpb25zX2RmIDwtIGxpc3QoZGVmaW5pbmdfbGVzaW9uc19kZixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvZGluZ19zdW1tYXJ5X2RmLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgaWRoX3N1bW1hcnlfZGYsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICB0ZXJ0X3N1bW1hcnlfZGYsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICBicmFmX3N1bW1hcnlfZGYpICU+JVxuICBwdXJycjo6cmVkdWNlKGRwbHlyOjppbm5lcl9qb2luLCBieSA9IFwiVHVtb3JfU2FtcGxlX0JhcmNvZGVcIikgJT4lXG4gIGRwbHlyOjpzZWxlY3QoLWRlZmluaW5nX2xlc2lvbikgJT4lXG4gIGRwbHlyOjphcnJhbmdlKEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsIHNhbXBsZV9pZClcblxuaGVhZChmaW5hbF9tdXRhdGlvbnNfZGYsIG4gPSAxMClcbmBgYCJ9 -->
 <pre class="r"><code>final_mutations_df &lt;- list(defining_lesions_df,
                            coding_summary_df,
                            idh_summary_df,
@@ -3367,17 +3338,19 @@ coercing into character vector</code></pre>
 
 head(final_mutations_df, n = 10)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MTQsIm5yb3ciOjEwfSwicmRmIjoiSDRzSUFBQUFBQUFBQSsyVzMyK2FVQlRIcVQvYVNhZnJzbVhKc2l6eEQxQURYT1RIbzFZRVN6QVdpRUpmQ0ZQYWtTazR3RzZQKzZ2M1dIY1JzRURwMmpWNzZKS1pJT2Qremozbm51KzlGN2p5UUNOUURVVVFwSVNVcXdkSXFRek5TZ24rSFNBVnBCYmV2eU5JK1EwMEd2QTZnUmNhTzQ0bnFvRU5OR0Z3Y1NhbmthUk5WRlVDRHlCbElrcWt3cVFRM3V2cE9zL3JhVFJRTkhKNkpxVVJCemlLbDRZUElJR1FPVUVsaWxCV1JZMEdPTlVtbUM2ZEFZQWdzQmdjOWpDV3hMRnNmNHE4ZGVNa2piRVpOMDVqVEQ0ZG1VckhNdDJzR3lPSUxBQVl5Qlg2Ymw5b1cyMTNjY0NRZUdmR0t4bHZXRFgwUmdXbnZDOGowbFk3TXkwYkVRcUJFU1RkeFRFMkU3RlRWUkFSYW9NUmdDSW9saTZxZ0l3cWdCcHpGVUJTa0MvVUhpb2ljWndxVUFRbkl2VFNnQ1dZblRlM0NmdUtjVDVUR09aYzQxS0lVZlF4eld0OENnbEExWWNVUDBpaDZZelV4cXhPcHhBdXF4d2hjbG9LaWZwRXVyaFE5QlNpZVhGSVNmdEZEQkdzWHhSN1NpL2RpMVYwVHRCQkNyR1VnazNQKytPY2l0TFlmWlJWMWkzL3NXWTIvbW5qUGMzNlA5YS9QRlpsN0RwV2JKLzBWRmxyTlVjREFXODExVWtYUE1BL1J2eDBkTnBxRHZtaERMMEtwdzZJVEtkakFReEI3KytneWgwN0srYlYyRzNLT0NDYXJnZnZkUEtTUFZwM1Fpb1VOKzhKZWc3NC9xVzZ6MzQvY2dMUGRWcE55Zlo5eS9FdFE5b0VabUM3emg4aytiMmRMZW9GckhsS1lSajM3TnJaYzAzVk1WZndaUmtWMzBobVM3UVh2akcwUFQ4d0pxWVgySE43YlRxQk1VbytHelhmWEsyWGxtRXZZdkI2YlhvVzdHRXU3YThiTjdoMXZGVTNLOWN6bEtoLzMvVG03aUtaTjNTM2t6c2l3U1JIbTdvd1VsUmNBUDBpZUhvSEVqa1lKK1JCVjc1RHBvazJ6MXBhMTZFYVdJbnRYQm1yZUNNa1g0eDYrRHp2YVF3L3FKeXNHdGVtWis4aWw2YnYyNWYyUE4wRjdjdTlvVkUweHpYUC9kWko1cmtldm01K3dML3RkdnN6dnhpN3hQRmlKQkJkbUlIWnVmUmdQR3pkNUVLTzNIVlVQRklLVDZmVlhQQ0Jsd01uR3llc1pOR2VmOTQ0WCtEQlo3ZG5RMy8wcThjMm1ySWIwWmlsYlp5ckd1YzZ0SndyZS84VVZKZm1KMnNaTnhwUThrNXhaKzNaVHBCSWdkVHZCRzVnSnYzUXVidE15RTRjY3ZNTHJ0b2szb3dMQUFBPSJ9 -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Tumor_Sample_Barcode"],"name":[3],"type":["chr"],"align":["left"]},{"label":["H3F3A.K28M"],"name":[4],"type":["chr"],"align":["left"]},{"label":["HIST1H3B.K28M"],"name":[5],"type":["chr"],"align":["left"]},{"label":["HIST1H3C.K28M"],"name":[6],"type":["chr"],"align":["left"]},{"label":["HIST2H3C.K28M"],"name":[7],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35R"],"name":[8],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35V"],"name":[9],"type":["chr"],"align":["left"]},{"label":["relevant_coding_mutations"],"name":[10],"type":["chr"],"align":["left"]},{"label":["IDH1_mutation"],"name":[11],"type":["chr"],"align":["left"]},{"label":["TERT_variant_classification"],"name":[12],"type":["chr"],"align":["left"]},{"label":["BRAF_V600E"],"name":[13],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_0DXHDZJR","2":"7316-2857","3":"BS_QWS88QXE","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"None","11":"No R132 or R172","12":"None","13":"No V600E"},{"1":"PT_0MXPTTM3","2":"7316-3220","3":"BS_8SYN7GXG","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"ATRX, IDH1, TP53","11":"p.R132H","12":"None","13":"No V600E"},{"1":"PT_0MXPTTM3","2":"A09410","3":"BS_H3TYF6GD","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"ATRX, IDH1, TP53","11":"p.R132H","12":"None","13":"No V600E"},{"1":"PT_0SPKM4S8","2":"7316-2640","3":"BS_VW4XN9Y7","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"ATRX, CIC, FGFR1, SETD2, TP53","11":"No R132 or R172","12":"Intron, Missense_Mutation","13":"No V600E"},{"1":"PT_1AAYYGGY","2":"A14709","3":"BS_1RTE2KEX","4":"Yes","5":"No","6":"No","7":"No","8":"No","9":"No","10":"H3F3A, TP53","11":"No R132 or R172","12":"None","13":"No V600E"},{"1":"PT_1DSX4VJM","2":"7316-1708","3":"BS_KYPMZZSY","4":"Yes","5":"No","6":"No","7":"No","8":"No","9":"No","10":"H3F3A, TP53","11":"No R132 or R172","12":"None","13":"No V600E"},{"1":"PT_1E3E6GMF","2":"7316-3224","3":"BS_7GKF6M85","4":"Yes","5":"No","6":"No","7":"No","8":"No","9":"No","10":"H3F3A, TP53","11":"No R132 or R172","12":"None","13":"No V600E"},{"1":"PT_1E3E6GMF","2":"A09985","3":"BS_541KKASA","4":"Yes","5":"No","6":"No","7":"No","8":"No","9":"No","10":"H3F3A, TP53","11":"No R132 or R172","12":"None","13":"No V600E"},{"1":"PT_1H2REHT2","2":"7316-3022","3":"BS_79SYEHY3","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"TP53","11":"No R132 or R172","12":"None","13":"No V600E"},{"1":"PT_1H2REHT2","2":"7316-3303","3":"BS_96S0VQBN","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"TP53","11":"No R132 or R172","12":"None","13":"No V600E"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["parent_aliquot_id"],"name":[3],"type":["chr"],"align":["left"]},{"label":["Tumor_Sample_Barcode"],"name":[4],"type":["chr"],"align":["left"]},{"label":["H3F3A.K28M"],"name":[5],"type":["chr"],"align":["left"]},{"label":["HIST1H3B.K28M"],"name":[6],"type":["chr"],"align":["left"]},{"label":["HIST1H3C.K28M"],"name":[7],"type":["chr"],"align":["left"]},{"label":["HIST2H3C.K28M"],"name":[8],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35R"],"name":[9],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35V"],"name":[10],"type":["chr"],"align":["left"]},{"label":["relevant_coding_mutations"],"name":[11],"type":["chr"],"align":["left"]},{"label":["IDH1_mutation"],"name":[12],"type":["chr"],"align":["left"]},{"label":["TERT_variant_classification"],"name":[13],"type":["chr"],"align":["left"]},{"label":["BRAF_V600E"],"name":[14],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_0DXHDZJR","2":"7316-2857","3":"7316-2857-T-513841.WGS","4":"BS_QWS88QXE","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"None","12":"No R132 or R172","13":"None","14":"No V600E"},{"1":"PT_0MXPTTM3","2":"7316-3220","3":"7316-3220-T-A09410.WGS","4":"BS_8SYN7GXG","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"ATRX, IDH1, TP53","12":"p.R132H","13":"None","14":"No V600E"},{"1":"PT_0MXPTTM3","2":"A09410","3":"A09410-T.WXS","4":"BS_H3TYF6GD","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"ATRX, IDH1, TP53","12":"p.R132H","13":"None","14":"No V600E"},{"1":"PT_0SPKM4S8","2":"7316-2640","3":"7316-2640-T-475109.WGS","4":"BS_VW4XN9Y7","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"ATRX, CIC, FGFR1, SETD2, TP53","12":"No R132 or R172","13":"Intron, Missense_Mutation","14":"No V600E"},{"1":"PT_1AAYYGGY","2":"A14709","3":"A14709-T.WXS","4":"BS_1RTE2KEX","5":"Yes","6":"No","7":"No","8":"No","9":"No","10":"No","11":"H3F3A, TP53","12":"No R132 or R172","13":"None","14":"No V600E"},{"1":"PT_1DSX4VJM","2":"7316-1708","3":"7316-1708-T-362697.WGS","4":"BS_KYPMZZSY","5":"Yes","6":"No","7":"No","8":"No","9":"No","10":"No","11":"H3F3A, TP53","12":"No R132 or R172","13":"None","14":"No V600E"},{"1":"PT_1E3E6GMF","2":"7316-3224","3":"7316-3224-T-A09985.WGS","4":"BS_7GKF6M85","5":"Yes","6":"No","7":"No","8":"No","9":"No","10":"No","11":"H3F3A, TP53","12":"No R132 or R172","13":"None","14":"No V600E"},{"1":"PT_1E3E6GMF","2":"A09985","3":"A09985-T.WXS","4":"BS_541KKASA","5":"Yes","6":"No","7":"No","8":"No","9":"No","10":"No","11":"H3F3A, TP53","12":"No R132 or R172","13":"None","14":"No V600E"},{"1":"PT_1H2REHT2","2":"7316-3022","3":"7316-3022-T-541161.WGS","4":"BS_79SYEHY3","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"TP53","12":"No R132 or R172","13":"None","14":"No V600E"},{"1":"PT_1H2REHT2","2":"7316-3303","3":"7316-3303-T-573928.WGS","4":"BS_96S0VQBN","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"TP53","12":"No R132 or R172","13":"None","14":"No V600E"}],"options":{"columns":{"min":{},"max":[10],"total":[14]},"rows":{"min":[10],"max":[10],"total":[10]},"pages":{}}}
   </script>
 </div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Write the final table to file.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoicmVhZHI6OndyaXRlX3RzdihmaW5hbF9tdXRhdGlvbnNfZGYsIG91dHB1dF9maWxlKSJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVhZHI6OndyaXRlX3RzdihmaW5hbF9tdXRhdGlvbnNfZGYsIG91dHB1dF9maWxlKVxuYGBgIn0= -->
 <pre class="r"><code>readr::write_tsv(final_mutations_df, output_file)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -3387,43 +3360,69 @@ head(final_mutations_df, n = 10)</code></pre>
 <h2>Session Info</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoic2Vzc2lvbkluZm8oKSJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgIFxuIFszXSBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgIFxuWzExXSBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5sb2FkZWQgdmlhIGEgbmFtZXNwYWNlIChhbmQgbm90IGF0dGFjaGVkKTpcbiBbMV0gUmNwcF8xLjAuMSAgICAgICAgICAgICBYVmVjdG9yXzAuMjYuMCAgICAgICAgIGtuaXRyXzEuMjMgICAgICAgICAgICBcbiBbNF0gbWFncml0dHJfMS41ICAgICAgICAgICB6bGliYmlvY18xLjMyLjAgICAgICAgIElSYW5nZXNfMi4yMC4yICAgICAgICBcbiBbN10gQmlvY0dlbmVyaWNzXzAuMzIuMCAgICBHZW5vbWljUmFuZ2VzXzEuMzguMCAgIGhtc18wLjQuMiAgICAgICAgICAgICBcblsxMF0gdGlkeXNlbGVjdF8wLjIuNSAgICAgICBSNl8yLjQuMCAgICAgICAgICAgICAgIHJsYW5nXzAuNC4wICAgICAgICAgICBcblsxM10gR2Vub21lSW5mb0RiXzEuMjIuMSAgICBzdHJpbmdyXzEuNC4wICAgICAgICAgIGRwbHlyXzAuOC4zICAgICAgICAgICBcblsxNl0gdG9vbHNfMy42LjAgICAgICAgICAgICBwYXJhbGxlbF8zLjYuMCAgICAgICAgIHhmdW5fMC44ICAgICAgICAgICAgICBcblsxOV0gaHRtbHRvb2xzXzAuMy42ICAgICAgICB5YW1sXzIuMi4wICAgICAgICAgICAgIGFzc2VydHRoYXRfMC4yLjEgICAgICBcblsyMl0gZGlnZXN0XzAuNi4yMCAgICAgICAgICBycHJvanJvb3RfMS4zLTIgICAgICAgIHRpYmJsZV8yLjEuMyAgICAgICAgICBcblsyNV0gY3JheW9uXzEuMy40ICAgICAgICAgICBHZW5vbWVJbmZvRGJEYXRhXzEuMi4yIHB1cnJyXzAuMy4yICAgICAgICAgICBcblsyOF0gcmVhZHJfMS4zLjEgICAgICAgICAgICBiaXRvcHNfMS4wLTYgICAgICAgICAgIFM0VmVjdG9yc18wLjI0LjQgICAgICBcblszMV0gYmFzZTY0ZW5jXzAuMS0zICAgICAgICBSQ3VybF8xLjk1LTQuMTIgICAgICAgIGdsdWVfMS4zLjEgICAgICAgICAgICBcblszNF0gZXZhbHVhdGVfMC4xNCAgICAgICAgICBybWFya2Rvd25fMS4xMyAgICAgICAgIHN0cmluZ2lfMS40LjMgICAgICAgICBcblszN10gY29tcGlsZXJfMy42LjAgICAgICAgICBwaWxsYXJfMS40LjIgICAgICAgICAgIGJhY2twb3J0c18xLjEuNCAgICAgICBcbls0MF0gc3RhdHM0XzMuNi4wICAgICAgICAgICBqc29ubGl0ZV8xLjYgICAgICAgICAgIHBrZ2NvbmZpZ18yLjAuMiAgICAgICBcbiJ9 -->
-<pre><code>R version 3.6.0 (2019-04-26)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Debian GNU/Linux 9 (stretch)
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNS4xICgyMDE4LTA3LTAyKVxuUGxhdGZvcm06IHg4Nl82NC1hcHBsZS1kYXJ3aW4xNS42LjAgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IG1hY09TIFNpZXJyYSAxMC4xMi42XG5cbk1hdHJpeCBwcm9kdWN0czogZGVmYXVsdFxuQkxBUzogL1N5c3RlbS9MaWJyYXJ5L0ZyYW1ld29ya3MvQWNjZWxlcmF0ZS5mcmFtZXdvcmsvVmVyc2lvbnMvQS9GcmFtZXdvcmtzL3ZlY0xpYi5mcmFtZXdvcmsvVmVyc2lvbnMvQS9saWJCTEFTLmR5bGliXG5MQVBBQ0s6IC9MaWJyYXJ5L0ZyYW1ld29ya3MvUi5mcmFtZXdvcmsvVmVyc2lvbnMvMy41L1Jlc291cmNlcy9saWIvbGliUmxhcGFjay5keWxpYlxuXG5sb2NhbGU6XG5bMV0gZW5fVVMuVVRGLTgvZW5fVVMuVVRGLTgvZW5fVVMuVVRGLTgvQy9lbl9VUy5VVEYtOC9lbl9VUy5VVEYtOFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIGdyaWQgICAgICBwYXJhbGxlbCAgc3RhdHMgICAgIGdyYXBoaWNzICBnckRldmljZXMgdXRpbHMgICAgIGRhdGFzZXRzICBtZXRob2RzICAgYmFzZSAgICAgXG5cbm90aGVyIGF0dGFjaGVkIHBhY2thZ2VzOlxuIFsxXSBwaGVhdG1hcF8xLjAuMTIgICAgICBSQ29sb3JCcmV3ZXJfMS4xLTIgICBybGlzdF8wLjQuNi4xICAgICAgICBncmlkRXh0cmFfMi4zICAgICAgIFxuIFs1XSBicm9vbV8wLjUuNSAgICAgICAgICBDYW5jZXJTdWJ0eXBlc18xLjguMCBOTUZfMC4yMS4wICAgICAgICAgICBCaW9iYXNlXzIuNDIuMCAgICAgIFxuIFs5XSBCaW9jR2VuZXJpY3NfMC4yOC4wICBjbHVzdGVyXzIuMC43LTEgICAgICBybmd0b29sc18xLjMuMSAgICAgICBwa2dtYWtlcl8wLjI3ICAgICAgIFxuWzEzXSByZWdpc3RyeV8wLjUgICAgICAgICBzaWdjbHVzdF8xLjEuMCAgICAgICByZXNoYXBlMl8xLjQuNCAgICAgICBmb3JjYXRzXzAuNS4wICAgICAgIFxuWzE3XSBzdHJpbmdyXzEuNC4wICAgICAgICBkcGx5cl8wLjguNSAgICAgICAgICBwdXJycl8wLjMuNCAgICAgICAgICByZWFkcl8xLjMuMSAgICAgICAgIFxuWzIxXSB0aWR5cl8xLjAuMiAgICAgICAgICB0aWJibGVfMy4wLjAgICAgICAgICBnZ3Bsb3QyXzMuMy4wICAgICAgICB0aWR5dmVyc2VfMS4zLjAgICAgIFxuWzI1XSBvcHRwYXJzZV8xLjYuNiAgICAgIFxuXG5sb2FkZWQgdmlhIGEgbmFtZXNwYWNlIChhbmQgbm90IGF0dGFjaGVkKTpcbiAgWzFdIGNvbG9yc3BhY2VfMS40LTEgICAgICAgICAgICBlbGxpcHNpc18wLjMuMCAgICAgICAgICAgICAgcWRhcFJlZ2V4XzAuNy4yICAgICAgICAgICAgXG4gIFs0XSBycHJvanJvb3RfMS4zLTIgICAgICAgICAgICAgWFZlY3Rvcl8wLjIyLjAgICAgICAgICAgICAgIEdlbm9taWNSYW5nZXNfMS4zNC4wICAgICAgIFxuICBbN10gYmFzZTY0ZW5jXzAuMS0zICAgICAgICAgICAgIGZzXzEuMy4xICAgICAgICAgICAgICAgICAgICByc3R1ZGlvYXBpXzAuMTEgICAgICAgICAgICBcbiBbMTBdIGZhcnZlcl8yLjAuMyAgICAgICAgICAgICAgICBnZXRvcHRfMS4yMC4zICAgICAgICAgICAgICAgYml0NjRfMC45LTcgICAgICAgICAgICAgICAgXG4gWzEzXSBBbm5vdGF0aW9uRGJpXzEuNDQuMCAgICAgICAgZmFuc2lfMC40LjEgICAgICAgICAgICAgICAgIGx1YnJpZGF0ZV8xLjcuOCAgICAgICAgICAgIFxuIFsxNl0geG1sMl8xLjMuMiAgICAgICAgICAgICAgICAgIHNwbGluZXNfMy41LjEgICAgICAgICAgICAgICBjb2RldG9vbHNfMC4yLTE2ICAgICAgICAgICBcbiBbMTldIFIubWV0aG9kc1MzXzEuNy4xICAgICAgICAgICBkb1BhcmFsbGVsXzEuMC4xNCAgICAgICAgICAgaW1wdXRlXzEuNTYuMCAgICAgICAgICAgICAgXG4gWzIyXSBrbml0cl8xLjI4ICAgICAgICAgICAgICAgICAgaGVhdG1hcC5wbHVzXzEuMyAgICAgICAgICAgIGpzb25saXRlXzEuNi4xICAgICAgICAgICAgIFxuIFsyNV0gYWxsdXZpYWxfMC4xLTIgICAgICAgICAgICAgIGdyaWRCYXNlXzAuNC03ICAgICAgICAgICAgICBkYnBseXJfMS40LjIgICAgICAgICAgICAgICBcbiBbMjhdIFIub29fMS4yMy4wICAgICAgICAgICAgICAgICBFeFBvc2l0aW9uXzIuOC4yMyAgICAgICAgICAgY29tcGlsZXJfMy41LjEgICAgICAgICAgICAgXG4gWzMxXSBodHRyXzEuNC4xICAgICAgICAgICAgICAgICAgcHJldHR5R3JhcGhzXzIuMS42ICAgICAgICAgIGJhY2twb3J0c18xLjEuNiAgICAgICAgICAgIFxuIFszNF0gTWF0cml4XzEuMi0xNSAgICAgICAgICAgICAgIGFzc2VydHRoYXRfMC4yLjEgICAgICAgICAgICBsaW1tYV8zLjM4LjMgICAgICAgICAgICAgICBcbiBbMzddIGNsaV8yLjAuMiAgICAgICAgICAgICAgICAgICBodG1sdG9vbHNfMC40LjAgICAgICAgICAgICAgcHJldHR5dW5pdHNfMS4xLjEgICAgICAgICAgXG4gWzQwXSB0b29sc18zLjUuMSAgICAgICAgICAgICAgICAgR2Vub21lSW5mb0RiRGF0YV8xLjIuMCAgICAgIGd0YWJsZV8wLjMuMCAgICAgICAgICAgICAgIFxuIFs0M10gZ2x1ZV8xLjQuMCAgICAgICAgICAgICAgICAgIFJjcHBfMS4wLjQgICAgICAgICAgICAgICAgICBzdHlsZXJfMS4zLjIgICAgICAgICAgICAgICBcbiBbNDZdIGNlbGxyYW5nZXJfMS4xLjAgICAgICAgICAgICB2Y3Ryc18wLjIuNCAgICAgICAgICAgICAgICAgQmlvc3RyaW5nc18yLjUwLjIgICAgICAgICAgXG4gWzQ5XSBubG1lXzMuMS0xMzcgICAgICAgICAgICAgICAgaUNsdXN0ZXJfMi4xLjAgICAgICAgICAgICAgIGl0ZXJhdG9yc18xLjAuMTAgICAgICAgICAgIFxuIFs1Ml0geGZ1bl8wLjEyICAgICAgICAgICAgICAgICAgIHJ2ZXN0XzAuMy41ICAgICAgICAgICAgICAgICBsaWZlY3ljbGVfMC4yLjAgICAgICAgICAgICBcbiBbNTVdIGJpb21hcnRyXzAuOC4wICAgICAgICAgICAgICBYTUxfMy45OC0xLjE3ICAgICAgICAgICAgICAgemxpYmJpb2NfMS4yOC4wICAgICAgICAgICAgXG4gWzU4XSBzY2FsZXNfMS4xLjAgICAgICAgICAgICAgICAgaG1zXzAuNS4zICAgICAgICAgICAgICAgICAgIHJlbWF0Y2gyXzIuMS4yICAgICAgICAgICAgIFxuIFs2MV0gU05GdG9vbF8yLjMuMCAgICAgICAgICAgICAgIHlhbWxfMi4yLjEgICAgICAgICAgICAgICAgICBjdXJsXzQuMyAgICAgICAgICAgICAgICAgICBcbiBbNjRdIG1lbW9pc2VfMS4xLjAgICAgICAgICAgICAgICBiaW9tYVJ0XzIuMzguMCAgICAgICAgICAgICAgc3RyaW5naV8xLjQuNiAgICAgICAgICAgICAgXG4gWzY3XSBSU1FMaXRlXzIuMS4xICAgICAgICAgICAgICAgUzRWZWN0b3JzXzAuMjAuMSAgICAgICAgICAgIGZvcmVhY2hfMS40LjQgICAgICAgICAgICAgIFxuIFs3MF0gYmlidGV4XzAuNC4yICAgICAgICAgICAgICAgIEdlbm9tZUluZm9EYl8xLjE4LjIgICAgICAgICBybGFuZ18wLjQuNiAgICAgICAgICAgICAgICBcbiBbNzNdIHBrZ2NvbmZpZ18yLjAuMyAgICAgICAgICAgICBiaXRvcHNfMS4wLTYgICAgICAgICAgICAgICAgZXZhbHVhdGVfMC4xNCAgICAgICAgICAgICAgXG4gWzc2XSBsYXR0aWNlXzAuMjAtNDEgICAgICAgICAgICAgYml0XzEuMS0xNCAgICAgICAgICAgICAgICAgIHRpZHlzZWxlY3RfMS4wLjAgICAgICAgICAgIFxuIFs3OV0gcGx5cl8xLjguNiAgICAgICAgICAgICAgICAgIG1hZ3JpdHRyXzEuNSAgICAgICAgICAgICAgICBSNl8yLjQuMSAgICAgICAgICAgICAgICAgICBcbiBbODJdIElSYW5nZXNfMi4xNi4wICAgICAgICAgICAgICBnZW5lcmljc18wLjAuMiAgICAgICAgICAgICAgREJJXzEuMS4wICAgICAgICAgICAgICAgICAgXG4gWzg1XSBwaWxsYXJfMS40LjMgICAgICAgICAgICAgICAgaGF2ZW5fMi4yLjAgICAgICAgICAgICAgICAgIHdpdGhyXzIuMi4wICAgICAgICAgICAgICAgIFxuIFs4OF0gc3Vydml2YWxfMi40My0zICAgICAgICAgICAgIFJDdXJsXzEuOTUtNC4xMSAgICAgICAgICAgICBtb2RlbHJfMC4xLjYgICAgICAgICAgICAgICBcbiBbOTFdIGNyYXlvbl8xLjMuNCAgICAgICAgICAgICAgICB1dGY4XzEuMS40ICAgICAgICAgICAgICAgICAgcm1hcmtkb3duXzIuMyAgICAgICAgICAgICAgXG4gWzk0XSBwcm9ncmVzc18xLjIuMiAgICAgICAgICAgICAgcmVhZHhsXzEuMy4xICAgICAgICAgICAgICAgIGRhdGEudGFibGVfMS4xMi44ICAgICAgICAgIFxuIFs5N10gYmxvYl8xLjEuMSAgICAgICAgICAgICAgICAgIENvbnNlbnN1c0NsdXN0ZXJQbHVzXzEuNDYuMCByZXByZXhfMC4zLjAgICAgICAgICAgICAgICBcblsxMDBdIGRpZ2VzdF8wLjYuMjUgICAgICAgICAgICAgICBSLmNhY2hlXzAuMTQuMCAgICAgICAgICAgICAgeHRhYmxlXzEuOC0zICAgICAgICAgICAgICAgXG5bMTAzXSBSLnV0aWxzXzIuOS4wICAgICAgICAgICAgICAgc3RhdHM0XzMuNS4xICAgICAgICAgICAgICAgIG11bnNlbGxfMC41LjAgICAgICAgICAgICAgIFxuIn0= -->
+<pre><code>R version 3.5.1 (2018-07-02)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS Sierra 10.12.6
 
 Matrix products: default
-BLAS/LAPACK: /usr/lib/libopenblasp-r0.2.19.so
+BLAS: /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
+[1] grid      parallel  stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] pheatmap_1.0.12      RColorBrewer_1.1-2   rlist_0.4.6.1        gridExtra_2.3       
+ [5] broom_0.5.5          CancerSubtypes_1.8.0 NMF_0.21.0           Biobase_2.42.0      
+ [9] BiocGenerics_0.28.0  cluster_2.0.7-1      rngtools_1.3.1       pkgmaker_0.27       
+[13] registry_0.5         sigclust_1.1.0       reshape2_1.4.4       forcats_0.5.0       
+[17] stringr_1.4.0        dplyr_0.8.5          purrr_0.3.4          readr_1.3.1         
+[21] tidyr_1.0.2          tibble_3.0.0         ggplot2_3.3.0        tidyverse_1.3.0     
+[25] optparse_1.6.6      
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.1             XVector_0.26.0         knitr_1.23            
- [4] magrittr_1.5           zlibbioc_1.32.0        IRanges_2.20.2        
- [7] BiocGenerics_0.32.0    GenomicRanges_1.38.0   hms_0.4.2             
-[10] tidyselect_0.2.5       R6_2.4.0               rlang_0.4.0           
-[13] GenomeInfoDb_1.22.1    stringr_1.4.0          dplyr_0.8.3           
-[16] tools_3.6.0            parallel_3.6.0         xfun_0.8              
-[19] htmltools_0.3.6        yaml_2.2.0             assertthat_0.2.1      
-[22] digest_0.6.20          rprojroot_1.3-2        tibble_2.1.3          
-[25] crayon_1.3.4           GenomeInfoDbData_1.2.2 purrr_0.3.2           
-[28] readr_1.3.1            bitops_1.0-6           S4Vectors_0.24.4      
-[31] base64enc_0.1-3        RCurl_1.95-4.12        glue_1.3.1            
-[34] evaluate_0.14          rmarkdown_1.13         stringi_1.4.3         
-[37] compiler_3.6.0         pillar_1.4.2           backports_1.1.4       
-[40] stats4_3.6.0           jsonlite_1.6           pkgconfig_2.0.2       </code></pre>
+  [1] colorspace_1.4-1            ellipsis_0.3.0              qdapRegex_0.7.2            
+  [4] rprojroot_1.3-2             XVector_0.22.0              GenomicRanges_1.34.0       
+  [7] base64enc_0.1-3             fs_1.3.1                    rstudioapi_0.11            
+ [10] farver_2.0.3                getopt_1.20.3               bit64_0.9-7                
+ [13] AnnotationDbi_1.44.0        fansi_0.4.1                 lubridate_1.7.8            
+ [16] xml2_1.3.2                  splines_3.5.1               codetools_0.2-16           
+ [19] R.methodsS3_1.7.1           doParallel_1.0.14           impute_1.56.0              
+ [22] knitr_1.28                  heatmap.plus_1.3            jsonlite_1.6.1             
+ [25] alluvial_0.1-2              gridBase_0.4-7              dbplyr_1.4.2               
+ [28] R.oo_1.23.0                 ExPosition_2.8.23           compiler_3.5.1             
+ [31] httr_1.4.1                  prettyGraphs_2.1.6          backports_1.1.6            
+ [34] Matrix_1.2-15               assertthat_0.2.1            limma_3.38.3               
+ [37] cli_2.0.2                   htmltools_0.4.0             prettyunits_1.1.1          
+ [40] tools_3.5.1                 GenomeInfoDbData_1.2.0      gtable_0.3.0               
+ [43] glue_1.4.0                  Rcpp_1.0.4                  styler_1.3.2               
+ [46] cellranger_1.1.0            vctrs_0.2.4                 Biostrings_2.50.2          
+ [49] nlme_3.1-137                iCluster_2.1.0              iterators_1.0.10           
+ [52] xfun_0.12                   rvest_0.3.5                 lifecycle_0.2.0            
+ [55] biomartr_0.8.0              XML_3.98-1.17               zlibbioc_1.28.0            
+ [58] scales_1.1.0                hms_0.5.3                   rematch2_2.1.2             
+ [61] SNFtool_2.3.0               yaml_2.2.1                  curl_4.3                   
+ [64] memoise_1.1.0               biomaRt_2.38.0              stringi_1.4.6              
+ [67] RSQLite_2.1.1               S4Vectors_0.20.1            foreach_1.4.4              
+ [70] bibtex_0.4.2                GenomeInfoDb_1.18.2         rlang_0.4.6                
+ [73] pkgconfig_2.0.3             bitops_1.0-6                evaluate_0.14              
+ [76] lattice_0.20-41             bit_1.1-14                  tidyselect_1.0.0           
+ [79] plyr_1.8.6                  magrittr_1.5                R6_2.4.1                   
+ [82] IRanges_2.16.0              generics_0.0.2              DBI_1.1.0                  
+ [85] pillar_1.4.3                haven_2.2.0                 withr_2.2.0                
+ [88] survival_2.43-3             RCurl_1.95-4.11             modelr_0.1.6               
+ [91] crayon_1.3.4                utf8_1.1.4                  rmarkdown_2.3              
+ [94] progress_1.2.2              readxl_1.3.1                data.table_1.12.8          
+ [97] blob_1.1.1                  ConsensusClusterPlus_1.46.0 reprex_0.3.0               
+[100] digest_0.6.25               R.cache_0.14.0              xtable_1.8-3               
+[103] R.utils_2.9.0               stats4_3.5.1                munsell_0.5.0              </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 </div>
@@ -3458,6 +3457,55 @@ $(document).ready(function () {
   });
 });
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("04-HGG-molecular-subtyping-mutation.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
