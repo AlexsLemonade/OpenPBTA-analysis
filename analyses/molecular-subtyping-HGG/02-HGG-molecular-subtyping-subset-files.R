@@ -39,7 +39,7 @@ metadata <-
 
 # Select wanted columns in metadata for merging and assign to a new object
 select_metadata <- metadata %>%
-  select(sample_id, parent_aliquot_id,
+  select(sample_id,
          Kids_First_Participant_ID,
          Kids_First_Biospecimen_ID)
 
@@ -204,7 +204,7 @@ cn_metadata <- cn_df %>%
   left_join(select_metadata,
             by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
   select(gene_symbol,
-         sample_id, parent_aliquot_id,
+         sample_id,
          Kids_First_Participant_ID,
          biospecimen_id,
          status,
@@ -239,7 +239,7 @@ gistic_df <- gistic_df %>%
   left_join(select_metadata, by = "Kids_First_Biospecimen_ID") %>%
   filter(Kids_First_Biospecimen_ID %in% hgg_metadata_df$Kids_First_Biospecimen_ID) %>%
   arrange(Kids_First_Participant_ID, sample_id) %>%
-  select(sample_id,parent_aliquot_id,
+  select(sample_id,
          Kids_First_Biospecimen_ID,
          `1p`,
          `19q`,
