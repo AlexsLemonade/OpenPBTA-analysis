@@ -484,21 +484,56 @@ We have no clear evidence of _BCOR_ alterations.
 
 > * Central nervous system (CNS) neuroblastoma with _FOXR2_ activation
 > * Over-expression and/or gene fusions in _FOXR2_
+> * CNS Neuroblastoma tumor where primary site does not contain "Other locations NOS"
+> * Pathology free text diagnosis does not contain "peripheral"
+> * Pathology diagnosis or pathology free text diagnosis does not contain "metastic"
 
 ```{r}
 all_data_df %>%
-  filter(FOXR2_fusions != "None" | FOXR2 > 3) %>%
-  select(ends_with("ID"), 
+  filter(
+    FOXR2_fusions != "None" | FOXR2 > 3 |
+      pathology_diagnosis == "Neuroblastoma", # Note that we do not include "Ganglioneuroblastoma" samples here as they will be classified as `CNS Embryonal, NOS` per this comment: https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/788#issuecomment-700717514
+    str_detect(str_to_lower(primary_site), "other locations nos", negate = TRUE),
+    str_detect(
+      str_to_lower(pathology_free_text_diagnosis),
+      "peripheral",
+      negate = TRUE
+    ),
+    str_detect(str_to_lower(pathology_diagnosis),
+               "metastatic",
+               negate = TRUE)
+  ) %>%
+  select(ends_with("ID"),
          ends_with("diagnosis"),
          FOXR2,
          FOXR2_fusions)
 ```
 
+Although the sample `PT_MRTHX2AQ` fit the criteria above for labeling `CNS NB-FOXR2` tumors, it does not actually fit into the group based on molecular alterations per [this GitHub comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/788#pullrequestreview-502513095).
+Therefore, we will this sample without a subtype label.
+
 ```{r}
 nb_foxr2_df <- all_data_df %>%
-  filter(FOXR2_fusions != "None" | FOXR2 > 3) %>%
+  filter(
+    FOXR2_fusions != "None" | FOXR2 > 3 |
+      pathology_diagnosis == "Neuroblastoma",
+    str_detect(str_to_lower(primary_site), "other locations nos", negate = TRUE),
+    str_detect(
+      str_to_lower(pathology_free_text_diagnosis),
+      "peripheral",
+      negate = TRUE
+    ),
+    str_detect(str_to_lower(pathology_diagnosis),
+               "metastatic",
+               negate = TRUE)
+  ) %>%
   select(contains("ID")) %>%
-  mutate(molecular_subtype = "CNS NB-FOXR2")
+  mutate(
+    molecular_subtype = case_when(
+      Kids_First_Participant_ID == "PT_MRTHX2AQ" ~ "NA",
+      TRUE ~ "CNS NB-FOXR2"
+    )
+  )
 ```
 
 ### CNS EFT-CIC
@@ -511,31 +546,11 @@ all_data_df %>%
   filter(CIC_fusions != "None")
 ```
 
-### CNS Neuroblastoma
-
-> * CNS Neuroblastoma tumor 
-> * Primary site does not contain "Other locations NOS"
-> * Pathology free text diagnosis does not contain "peripheral"
-
-```{r}
-neuroblastoma_df <- all_data_df %>%
-  filter(
-    pathology_diagnosis == "Neuroblastoma",
-    str_detect(str_to_lower(primary_site), "other locations nos", negate = TRUE),
-    str_detect(
-      str_to_lower(pathology_free_text_diagnosis),
-      "peripheral",
-      negate = TRUE
-    )
-  ) %>%
-  select(contains("ID")) %>%
-  mutate(molecular_subtype = "CNS Neuroblastoma")
-```
-
 ### CNS Embryonal, NOS
 
 > * CNS Embryonal tumor, not otherwise specified
 > * Tumors previously called PNET that do not fit into other groups above.
+> * Tumors previously called Ganglioneuroblastoma.
 
 All other samples will be called CNS Embryonal, NOS.
 
@@ -546,8 +561,7 @@ subtypes_df <- bind_rows(
   etmr_c19mc_df,
   etmr_nos_df,
   hgnet_mn1_df,
-  nb_foxr2_df,
-  neuroblastoma_df
+  nb_foxr2_df
 )
 
 subtypes_df <- all_data_df %>%

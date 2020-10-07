@@ -178,7 +178,8 @@ pathology_free_text_df <- embryonal_df %>%
          pathology_free_text_diagnosis %in% path_dx_list$include_free_text) 
 ```
 
-Any sample with "Neuroblastoma" in the `pathology_diagnosis` column, `primary_site != "Other locations NOS"`, and `pathology_free_text_diagnosis` does not contain "peripheral".
+Any sample with "Neuroblastoma" in the `pathology_diagnosis` column, where `primary_site` does not contain "Other locations NOS", `pathology_free_text_diagnosis` does not contain "peripheral", and `pathology_diagnosis` or `pathology_free_text_diagnosis` does not contain "metastatic".
+Note that the logic here also captures "Ganglioneuroblastoma" samples on the basis of the `pathology_diagnosis` column.
 
 ```{r}
 neuroblastoma_df <- embryonal_df %>%
@@ -188,6 +189,11 @@ neuroblastoma_df <- embryonal_df %>%
     str_detect(
       str_to_lower(pathology_free_text_diagnosis),
       "peripheral",
+      negate = TRUE
+    ),
+    str_detect(
+      str_to_lower(pathology_free_text_diagnosis),
+      "metastatic",
       negate = TRUE
     )
   )
