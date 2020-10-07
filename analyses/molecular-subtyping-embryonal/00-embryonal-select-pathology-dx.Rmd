@@ -23,7 +23,7 @@ Thus, molecular subtyping modules need to be upstream of `broad_histology` and u
 Per a [related github comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/752#issuecomment-697000066), the following criteria should be used to subset samples based on `pathology_diagnosis` and `pathology_free_text_diagnosis` for this module:
 
 1. Any sample with "Supratentorial or Spinal Cord PNET" in the `pathology_diagnosis` column of the metadata `pbta-histologies.tsv`.
-2. Any sample with "Neuroblastoma" in the `pathology_diagnosis` column, where `primary_site` does not contain "Other locations NOS", `pathology_free_text_diagnosis` does not contain "peripheral", and `pathology_diagnosis` or `pathology_free_text_diagnosis` does not contain "metastatic".
+2. Any sample with "Neuroblastoma" in the `pathology_diagnosis` column, where `primary_site` does not contain "Other locations NOS", `pathology_free_text_diagnosis` does not contain "peripheral" or "metastatic".
 3. Any sample with "Other" in the `pathology_diagnosis` column of the metadata, and with "embryonal tumor with multilayer rosettes, ros (who grade iv)", "embryonal tumor, nos, congenital type", "ependymoblastoma" or "medulloepithelioma" in the `pathology_free_text_diagnosis` column.
 
 ## Set up
@@ -64,56 +64,33 @@ We want to filter rows on the basis of the presence of the values "Supratentoria
 ```{r}
 histologies_df %>%
   filter(
-    str_detect(str_to_lower(pathology_diagnosis), "neuroblastoma") |
-      pathology_diagnosis == "Supratentorial or Spinal Cord PNET"
+      pathology_diagnosis %in% c("Supratentorial or Spinal Cord PNET",
+                                 "Neuroblastoma")
   ) %>%
   count(pathology_diagnosis) %>%
   arrange(desc(n))
 ```
 
-For the most part, this is as we would expect given the 2016 WHO classifications.
 When filtering, we will want to keep CNS neuroblastoma samples and not peripheral neuroblastoma samples for this module.
-Note that the logic here also captures "Ganglioneuroblastoma" samples which will classify later in the module as `molecular_subtype == CNS Embryonal, NOS` per [this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/788#issuecomment-700717514).
-
-### "Other" samples that should be included based on `pathology_free_text_diagnosis`
-
-We will need to filter on the basis of the `pathology_free_text_diagnosis` column when `pathology_diagnosis == "Other"` and in order to distinguish CNS from peripheral neuroblastomas.
-
-Let's take a look at the free text field under the above conditions.
-
-```{r}
-histologies_df %>% 
-  filter(
-    str_detect(str_to_lower(pathology_diagnosis), "neuroblastoma") |
-      pathology_diagnosis == "Other"
-  ) %>%
-  group_by(pathology_free_text_diagnosis) %>%
-  tally() %>%
-  arrange(desc(n))
-```
-
-We will need to select free text terms for inclusions because above we can say values such as `peripheral neuroblastoma` that we do not want to include in this module.
 
 ### Can we use `pathology_diagnosis` alone to filter out metastatic neuroblastoma tumors?
+
+There are instances of `Metastatic secondary tumors;Neuroblastoma` in `pathology_diagnosis`, which should be treated as metastatic tumors in this module ([GitHub comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/788#issuecomment-705141520)). 
+
+If we filter to `pathology_diagnosis === "Neuroblastoma"`, does that remove all specimens marked with metastatic?
 
 ```{r}
 histologies_df %>%
   filter(
-    str_detect(str_to_lower(pathology_diagnosis), "neuroblastoma"),
-    str_detect(
-      str_to_lower(pathology_free_text_diagnosis),
-      "peripheral",
-      negate = TRUE
-    ),
-    str_detect(str_to_lower(pathology_diagnosis),
-               "metastatic",
-               negate = TRUE)
+    pathology_diagnosis == "Neuroblastoma"
   ) %>%
   count(pathology_diagnosis, pathology_free_text_diagnosis) %>%
   arrange(desc(n))
 ```
 
-No, it looks like we need to account for "metastatic" in both the `pathology_diagnosis` and the `pathology_free_text_diagnosis` columns as we still capture "metastatic neuroblastoma" samples when we filter on `pathology_diagnosis` only.
+No, it looks like we need to account for "metastatic" inthe `pathology_free_text_diagnosis` columns as we still capture "metastatic neuroblastoma" samples when we filter on `pathology_diagnosis` only.
+
+We will also need to select free text terms for inclusions because above we can say values such as `peripheral neuroblastoma` that we do not want to include in this module.
 
 ## Pathology diagnosis strings for inclusion
 
@@ -161,21 +138,15 @@ pathology_free_text_df <- histologies_df %>%
 ```
 
 Any sample with "Neuroblastoma" in the `pathology_diagnosis` column, where `primary_site` does not contain "Other locations NOS", `pathology_free_text_diagnosis` does not contain "peripheral", and `pathology_diagnosis` or `pathology_free_text_diagnosis` does not contain "metastatic".
-Remember that the logic here also captures "Ganglioneuroblastoma" samples on the basis of the `pathology_diagnosis` column.
 
 ```{r}
 neuroblastoma_df <- histologies_df %>%
   filter(
-    str_detect(str_to_lower(pathology_diagnosis), "neuroblastoma"),
+    pathology_diagnosis == "Neuroblastoma",
     str_detect(str_to_lower(primary_site), "other locations nos", negate = TRUE),
     str_detect(
       str_to_lower(pathology_free_text_diagnosis),
-      "peripheral",
-      negate = TRUE
-    ),
-    str_detect(
-      str_to_lower(pathology_free_text_diagnosis),
-      "metastatic",
+      "peripheral|metastatic",
       negate = TRUE
     )
   )
@@ -198,6 +169,7 @@ filtered_on_dx_df <- bind_rows(pnet_df,
     primary_site,
     broad_histology
   )
+
 filtered_on_dx_df
 ```
 
