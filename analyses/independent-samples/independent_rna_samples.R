@@ -23,7 +23,7 @@
 #' @param seed An optional random number seed. 
 #' 
 #' @return a data frame of Participant and Specimen IDs, each present only once.
-independent_samples <- function(independent_dna_sample_df, 
+independent_rna_samples <- function(independent_dna_sample_df, 
                                 histology_df,
                                 match_type = c("independent_dna", "independent_dna_plus_only_rna"),
                                 tumor_description_rna_only = c("primary","primary_plus"),
