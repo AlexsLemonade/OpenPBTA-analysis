@@ -91,11 +91,10 @@ histologies_df %>%
 ```{r}
 dna_df <- mutation_df %>%
   rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
-  left_join(cn_gistic_df) 
+  left_join(cn_gistic_df)
 ```
 
 In earlier work on this module, we observed duplicated `sample_id`.
-We removed non-tumor samples (e.g., derived cell lines), does this issue persist?
 Yes
 
 ```{r}
@@ -110,6 +109,7 @@ histologies_df %>%
             composition =  paste(composition, collapse = ", "))
 
 ```
+The duplicates are mostly from multiple Solid tumor samples per sample_id or there are non-tumor ( derived cell-line ) samples for sample_id 
 
 
 
@@ -213,7 +213,7 @@ rna_df <- histologies_df %>%
   select(Kids_First_Participant_ID,
          sample_id, 
          Kids_First_Biospecimen_ID) %>%
-  inner_join(rna_df) 
+  inner_join(rna_df)
 ```
 
 ```{r}
@@ -229,7 +229,6 @@ What are they?
 
 Checking for duplicate rna sample_ids
 
-
 ```{r}
 histologies_df %>%
   filter(sample_id %in% rna_df$sample_id[which(duplicated(rna_df$sample_id))],
@@ -239,7 +238,7 @@ histologies_df %>%
             composition =  paste(composition, collapse = ", "))
 ```
 
-
+The duplicates are mostly from multiple Solid tumor samples per sample_id or there are non-tumor ( derived cell-line ) samples for sample_id 
 
 
 Checking if adding cell-line composition type can uniquely match DNA to RNA
@@ -448,7 +447,7 @@ h3_g35_df_biospecimen <- all_data_df %>%
   # Only rows with H3 G35 mutations
   filter(H3F3A.G35R == "Yes" | H3F3A.G35V == "Yes") %>%
   select(Kids_First_Participant_ID,
-         sample_id, 
+         sample_id,
          Kids_First_Biospecimen_ID_DNA,
          Kids_First_Biospecimen_ID_RNA) %>%
   mutate(molecular_subtype = "HGG, H3 G35")
