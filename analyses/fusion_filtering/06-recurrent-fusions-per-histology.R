@@ -30,10 +30,10 @@ seed <- opt$seed
 set.seed(seed)
 
 # input data
-standardFusionCalls <- read_tsv(standardFusionCalls) %>% as.data.frame()
-clinical<-read_tsv(clinicalFile,col_types = readr::cols(molecular_subtype = readr::col_character()))
+standardFusionCalls <- read_tsv(standardFusionCalls) %>% dplyr::arrange(Sample) %>% as.data.frame()
+clinical<-read_tsv(clinicalFile,col_types = readr::cols(molecular_subtype = readr::col_character())) %>% arrange(Kids_First_Biospecimen_ID,sample_id,tumor_descriptor,experimental_strategy,composition)
 # gather RNA-seq from WGS/WXS samples in independent-specimens.wgswxs.primary-plus.tsv
-independentSpecimens<-read_tsv(independentSpecimensFile) %>% as.data.frame()
+independentSpecimens<-read_tsv(independentSpecimensFile) %>% arrange(Kids_First_Biospecimen_ID) %>% as.data.frame()
 
 sampleIDMatchedIndependent<-clinical %>% dplyr::filter(Kids_First_Biospecimen_ID %in% independentSpecimens$Kids_First_Biospecimen_ID) %>% dplyr::select(sample_id) %>% as.vector() 
 
