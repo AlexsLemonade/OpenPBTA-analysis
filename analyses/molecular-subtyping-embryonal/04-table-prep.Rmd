@@ -498,13 +498,9 @@ If neuroblastoma samples were included on the basis of `pathology_diagnosis`, `p
 ```{r}
 other_nbl_df <- all_data_df %>%
   filter(
+    # All other criteria would have been met to be included in all_data_df
     pathology_diagnosis == "Neuroblastoma",
-    str_detect(str_to_lower(primary_site), "other locations nos", negate = TRUE),
-    str_detect(
-      str_to_lower(pathology_free_text_diagnosis),
-      "peripheral|metastatic",
-      negate = TRUE
-    ),
+    # Exclude samples that *do* meet FOXR2 criteria
     !(sample_id %in% nb_foxr2_df$sample_id)
   )
 
