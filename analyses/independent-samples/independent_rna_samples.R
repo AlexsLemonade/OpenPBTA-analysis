@@ -4,7 +4,7 @@
 #' 
 #' The samples from this function will be unique with respect to participants
 #' i.e. only no two samples will come from the same participant. The input list 
-#' should be pre-filtered by `experimental_strategy` and `sample_type`.  
+#' should be pre-filtered by `composition` and `sample_type`.  
 #' 
 #' 
 #' @param independent_dna_sample_df A data frame of samples, with columns 
