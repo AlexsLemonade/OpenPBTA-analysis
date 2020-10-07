@@ -23,7 +23,7 @@ To summarize - we will identify biospecimen IDs that should be included for down
 
 3. Any sample with "Supratentorial or Spinal Cord PNET" in the `pathology_diagnosis` column of the metadata `pbta-histologies.tsv` (also [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/752#issuecomment-697000066)).
 
-4. Any sample with "Neuroblastoma" in the `pathology_diagnosis` column, where `primary_site` does not contain "Other locations NOS", `pathology_free_text_diagnosis` does not contain "peripheral", and `pathology_diagnosis` or `pathology_free_text_diagnosis` does not contain "metastatic".
+4. Any sample with "Neuroblastoma" in the `pathology_diagnosis` column, where `primary_site` does not contain "Other locations NOS", and `pathology_free_text_diagnosis` does not contain "peripheral" or "metastatic".
 
 5. Any sample with "Other" in the `pathology_diagnosis` column of the metadata, and with "embryonal tumor with multilayer rosettes, ros (who grade iv)", "embryonal tumor, nos, congenital type", "ependymoblastoma" or "medulloepithelioma" in the `pathology_free_text_diagnosis` column [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/752#issuecomment-697000066).
 
@@ -178,22 +178,16 @@ pathology_free_text_df <- embryonal_df %>%
          pathology_free_text_diagnosis %in% path_dx_list$include_free_text) 
 ```
 
-Any sample with "Neuroblastoma" in the `pathology_diagnosis` column, where `primary_site` does not contain "Other locations NOS", `pathology_free_text_diagnosis` does not contain "peripheral", and `pathology_diagnosis` or `pathology_free_text_diagnosis` does not contain "metastatic".
-Note that the logic here also captures "Ganglioneuroblastoma" samples on the basis of the `pathology_diagnosis` column.
+Any sample with "Neuroblastoma" in the `pathology_diagnosis` column, where `primary_site` does not contain "Other locations NOS", and `pathology_free_text_diagnosis` does not contain "peripheral" or "metastatic".
 
 ```{r}
 neuroblastoma_df <- embryonal_df %>%
   filter(
-    str_detect(str_to_lower(pathology_diagnosis), "neuroblastoma"),
+    pathology_diagnosis == "Neuroblastoma",
     str_detect(str_to_lower(primary_site), "other locations nos", negate = TRUE),
     str_detect(
       str_to_lower(pathology_free_text_diagnosis),
-      "peripheral",
-      negate = TRUE
-    ),
-    str_detect(
-      str_to_lower(pathology_free_text_diagnosis),
-      "metastatic",
+      "peripheral|metastatic",
       negate = TRUE
     )
   )
@@ -204,8 +198,8 @@ Now let's bind all of the information in our filtered data frames together into 
 ```{r}
 # Binding all of the rows
 filtered_embryonal_df <- bind_rows(pnet_df,
-                               pathology_free_text_df,
-                               neuroblastoma_df)
+                                   pathology_free_text_df,
+                                   neuroblastoma_df)
 filtered_embryonal_df
 ```
 
