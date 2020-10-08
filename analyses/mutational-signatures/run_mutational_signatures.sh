@@ -20,4 +20,4 @@ Rscript --vanilla \
   --nsignatures_ceiling 15 \
   --num_iterations 1000 \
   --seed 42 \
-  --output_file results/sigfit_signatures.RDS
+  --output_file results/denovo_sigfit_signatures.RDS
