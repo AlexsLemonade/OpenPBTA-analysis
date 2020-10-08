@@ -88,9 +88,9 @@ histologies_df %>%
   arrange(desc(n))
 ```
 
-No, it looks like we need to account for "metastatic" inthe `pathology_free_text_diagnosis` columns as we still capture "metastatic neuroblastoma" samples when we filter on `pathology_diagnosis` only.
+No, it looks like we need to account for "metastatic" in the `pathology_free_text_diagnosis` column as we still capture "metastatic neuroblastoma" samples when we filter on `pathology_diagnosis` only.
 
-We will also need to select free text terms for inclusions because above we can say values such as `peripheral neuroblastoma` that we do not want to include in this module.
+We will also need to select free text terms for inclusions because above we can see values such as `peripheral neuroblastoma` that we do not want to include in this module.
 
 ## Pathology diagnosis strings for inclusion
 
