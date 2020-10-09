@@ -146,8 +146,10 @@ subtype_clinical_review_df <- subtype %>%
       (grepl("H3 WT",.$`H3 Status`) & grepl("HGG",molecular_subtype)) |
         (grepl("K28M",.$`H3 Status`) & grepl("DMG, H3 K28",molecular_subtype)) 
       ~ molecular_subtype,
-      (grepl("H3 WT",.$`H3 Status`) & !grepl("HGG",molecular_subtype)) ~ 
-        gsub("DMG, H3 K28","HGG, H3 wildtype",molecular_subtype),
+      # Don't think we would need to ever change from K28 to H3 wildtype
+      # since there would be evidence for K28 from snv data for the sample
+      #(grepl("H3 WT",.$`H3 Status`) & !grepl("HGG",molecular_subtype)) ~ 
+      #  gsub("DMG, H3 K28","HGG, H3 wildtype",molecular_subtype),
       (grepl("K28M",.$`H3 Status`) & !grepl("DMG, H3 K28",molecular_subtype)) ~ 
         gsub("HGG, H3 wildtype","DMG, H3 K28",molecular_subtype)
     )
