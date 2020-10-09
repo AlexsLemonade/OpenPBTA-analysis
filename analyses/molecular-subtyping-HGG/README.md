@@ -84,6 +84,8 @@ The results, shown below, suggest that one sample may be a candidate for reclass
 
 ![09_umap_tsne](plots/HGG_stranded.png)
 
+[`10-pnoc003-clinical-review-update.Rmd`] is a notebook written to identify differences between clinically reviewed subtype of PNOC003 sample and the subtype from this module. If differences exists it's updated to clinically subtyped value  
+
 ## Folder structure
 
 The structure of this folder is as follows:
@@ -108,6 +110,8 @@ The structure of this folder is as follows:
 ├── 08-1p19q-codeleted-oligodendrogliomas.nb.html
 ├── 09-HGG-with-braf-clustering.Rmd
 ├── 09-HGG-with-braf-clustering.nb.html
+├── 10-pnoc003-clinical-review-update.Rmd
+├── 10-pnoc003-clinical-review-update.nb.html
 ├── README.md
 ├── hgg-subset
 │   ├── hgg_focal_cn.tsv.gz
@@ -118,6 +122,8 @@ The structure of this folder is as follows:
 │   ├── hgg_subtyping_path_dx_strings.json
 │   ├── hgg_zscored_expression.polya.RDS
 │   └── hgg_zscored_expression.stranded.RDS
+├── input
+│   └── pnoc003_clinical_review.tsv
 ├── plots
 │   ├── HGG_stranded.pdf
 │   └── HGG_stranded.png
@@ -129,6 +135,8 @@ The structure of this folder is as follows:
 │   ├── HGG_cleaned_fusion.tsv
 │   ├── HGG_cleaned_mutation.tsv
 │   ├── HGG_defining_lesions.tsv
+│   ├── HGG_molecular_subtype-clinical-review-update.tsv
 │   └── HGG_molecular_subtype.tsv
 └── run-molecular-subtyping-HGG.sh
 ```
+
