@@ -1,0 +1,255 @@
+---
+title: "Match de novo mutational signatures to reference"
+author: Anna R. Poetsch; adapted by J. Taroni for ALSF CCDL
+date: 2020
+output:
+  html_notebook:
+    toc: yes
+    toc_float: yes
+---
+
+## Libraries
+
+```{r}
+library(deconstructSigs)
+library(sigfit)
+library(lsa)
+library(viridis)
+library(ggplot2)
+library(cowplot)
+library(magrittr)
+```
+
+## Functions
+
+### Find matches between sets of signatures
+
+```{r}
+# Can we use sigfit::match_signatures(..., stat = "cosine") instead?
+calculate_cosine_sigs <- function(denovo_sigs, reference_sigs) {
+  # Given the mean values for substitutions for de novo signatures and reference
+  # signatures, return a list comprised of a data frame of cosine measures for 
+  # each pair  of de novo and reference signatures in tidy format and a data 
+  # frame that contains the best matches (highest cosine value)
+  #
+  # Args:
+  #   denovo_sigs: signatures are rows, substitutions are columns
+  #   reference_sigs: signatures are rows, substitutions are columns
+  # 
+  # Returns:
+  #  A list with the following elements
+  #   cosine_df: tidy data frame of cosine measures between each pair of de
+  #              novo and reference signatures
+  #   best_match_df: cosine_df filtered to the best match for each de novo 
+  #                  signature, where the best match is determined by maximum
+  #                  cosine value
+  
+  # TODO: Add 'friendlier' error handling for differing number of columns than
+  # what cosine() will spit out?
+  
+  # This matrix will hold the cosine measure values calculated in the nested
+  # for loop below
+  cosine_mat <- matrix(nrow = nrow(denovo_sigs), 
+                       ncol = nrow(reference_sigs))
+  colnames(cosine_mat) <- rownames(reference_sigs)
+  rownames(cosine_mat) <- rownames(denovo_sigs)
+  
+  # Calculate cosine measure between each pair of de novo signature vs.
+  # reference signature
+  for(denovo_iter in 1:nrow(denovo_sigs)) {  # De novo signatures 
+    for(ref_iter in 1:nrow(reference_sigs)) {  # Reference signatures
+      cosine_mat[denovo_iter, ref_iter] <- 
+        lsa::cosine(
+          as.numeric(denovo_sigs[denovo_iter, ]), 
+          as.numeric(reference_sigs[ref_iter, ])
+        )
+    }
+  }
+  
+  # From matrix to tidy data frame
+  cosine_df <- data.frame(cosine_mat) %>%
+    tibble::rownames_to_column("denovo_sigs") %>%
+    tidyr::gather(reference_sigs, cosine, -denovo_sigs)
+  
+  # Filter the data frame to best matches only, where best matches are defined
+  # as the reference with the highest cosine value for a given de novo 
+  # signature
+  best_match_df <- cosine_df %>% 
+    dplyr::group_by(denovo_sigs) %>% 
+    dplyr::slice(which.max(cosine))
+
+  return(list(
+      cosine_df = cosine_df,
+      best_match_df = best_match_df
+    )
+  )
+  
+}
+
+```
+
+### Plotting functions
+
+```{r}
+# Wrapper for heatmap of cosine measure between sets of signatures
+plot_cosine_tile <- function(cosine_df, 
+                             x_label = "de novo signature", 
+                             y_label = "reference signature") {
+  # Takes the cosine_df element of the list output from calculate_cosine_sigs()
+  # as input and creates a heatmap with geom_tile()
+  ggplot(cosine_df, aes(x = denovo_sigs,
+                        y = reference_sigs, 
+                        fill = cosine)) +
+    geom_tile() +
+    xlab(x_label) +
+    ylab(y_label) +
+    scale_fill_viridis(direction = -1) +
+    theme_cowplot() +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+    NULL
+}
+```
+
+## Files and directories
+
+```{r}
+results_dir <- "results"
+
+# Plots associated with the de novo fitting approach
+denovo_plots_dir <- file.path("plots", "denovo")
+if (!dir.exists(denovo_plots_dir)) {
+  dir.create(denovo_plots_dir, recursive = TRUE)
+}
+
+# To hold mutational spectra plots for reference signatures
+ref_plots_dir <- file.path("plots", "reference")
+if (!dir.exists(ref_plots_dir)) {
+  dir.create(ref_plots_dir, recursive = TRUE)
+}
+```
+
+
+### Reading in and prep k = 10 de novo signatures
+
+These files were derived from the `nsignatures=10` results in the `02-explore_de_novo` notebook.
+
+```{r}
+signatures_file <- file.path(results_dir,
+                            "sigfit_signatures_10_signatures.RDS")
+signatures <- readr::read_rds(signatures_file)
+sigmeans <- signatures$mean
+```
+
+### Read in or load reference signature
+
+```{r}
+# COSMIC 3
+data("cosmic_signatures_v3")
+
+# CNS signatures from https://signal.mutationalsignatures.com/
+cns_sigs_file <- file.path("ref", "Cancer_Substitution_Signatures_CNS.csv")
+cns_sigs <- readr::read_csv(cns_sigs_file) %>%
+  tibble::column_to_rownames("Signature")
+```
+
+## Plotting mutational spectra
+
+Comparing de novo signatures to published signature lists.  
+This also concludes COSMIC 3, which is not included in the fitting approach. 
+It would also not be recommended to use it in the fitting approach, as especially the now very detailed differentiation of signatures made the problems apparent. 
+
+```{r}
+plot_spectrum(signatures, 
+              pdf_path = file.path(denovo_plots_dir, "denovo_signatures.pdf"),
+              pdf_width = 30,
+              pdf_height = 8)
+```
+
+Now for the reference signatures.
+
+```{r}
+# CNS signatures
+plot_spectrum(cns_sigs, 
+              pdf_path = file.path(ref_plots_dir, "CNS_signatures.pdf"),
+              pdf_width = 30,
+              pdf_height = 8)
+
+# Nature 2013 signatures
+plot_spectrum(signatures.nature2013, 
+              pdf_path = file.path(ref_plots_dir, "Nature2013_signatures.pdf"),
+              pdf_width = 30,
+              pdf_height = 8)
+
+# Original COSMIC
+plot_spectrum(signatures.cosmic, 
+              pdf_path = file.path(ref_plots_dir, "Cosmic_signatures.pdf"),
+              pdf_width = 30,
+              pdf_height = 8)
+
+# COSMIC v3
+plot_spectrum(cosmic_signatures_v3, 
+              pdf_path = file.path(ref_plots_dir, "Cosmic3_signatures.pdf"),
+              pdf_width = 30,
+              pdf_height = 8)
+```
+
+## Matching with reference signatures
+
+Calculate cosine measure
+
+### CNS signatures
+  
+```{r}
+cns_cosine_list <- calculate_cosine_sigs(
+  denovo_sigs = sigmeans,
+  reference_sigs = cns_sigs
+)
+
+# Display best matches
+cns_cosine_list$best_match_df
+```
+
+Heatmap
+
+```{r}
+plot_cosine_tile(cns_cosine_list$cosine_df,
+                 y_label = "CNS signatures")
+```
+
+```{r}
+ggsave(file.path(denovo_plots_dir, "CNS_signatures_cosine.pdf"), 
+       width = 10,
+       height = 10)
+```
+
+### COSMIC v3
+
+```{r}
+cosmic_v3_cosine_list <- calculate_cosine_sigs(
+  denovo_sigs = sigmeans,
+  reference_sigs = cosmic_signatures_v3
+)
+
+# Display best matches
+cosmic_v3_cosine_list$best_match_df
+```
+
+Heatmap
+
+```{r}
+plot_cosine_tile(cosmic_v3_cosine_list$cosine_df,
+                 y_label = "COSMIC v3")
+```
+
+```{r}
+ggsave(file.path(denovo_plots_dir, "cosmic3_signatures_cosine.pdf"), 
+       width = 10,
+       height = 10)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+

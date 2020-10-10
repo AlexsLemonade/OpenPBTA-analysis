@@ -24,3 +24,6 @@ Rscript --vanilla \
 
 # Notebook for picking k and deriving k = 10 files - will not get run in CI
 Rscript -e "rmarkdown::render('02-explore_de_novo.Rmd', clean = TRUE)"
+
+# Notebook for matching de novo signatures to reference signatures
+Rscript -e "rmarkdown::render('03-match_de_novo.Rmd', clean = TRUE)"
