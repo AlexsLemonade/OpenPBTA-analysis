@@ -1,0 +1,75 @@
+---
+title: "Explore de novo mutational signatures"
+author: Anna R. Poetsch; adapted by J. Taroni for ALSF CCDL
+date: 2020
+  html_notebook:
+    toc: yes
+    toc_float: yes
+---
+
+## Determine Signatures de novo  
+
+This notebook is included, because the previous strategies imply that there are mutagenic mechanisms in operation that are unlikely to be a major factor in this dataset, such as smoking and UV light.
+This is happening due to overfitting problems when fitting existing signatures. 
+De novo signature calling is used to provide an alternative for discussion. 
+It is determined, which signatures can be extracted from the data themselves. 
+These signatures are then fitted back to the known signatures that are used for the fitting approach above. 
+
+The signatures were extracted with `scripts/de_novo_signature_fitting.R`.
+You can see the parameters we used in `run_mutational_signatures.sh`.
+
+```{r}
+library(deconstructSigs)
+library(sigfit)
+```
+
+```{r}
+# Read in all the results from the range of k as chosen in 
+# run_mutational_signatures.sh
+sigfit_results <- readr::read_rds(file.path("results", 
+                                            "denovo_sigfit_signatures.RDS"))
+```
+
+TODO: Add some analyses in support of picking `nsignatures=10` ?
+
+```{r}
+# Go with k = 10 per @arpoe
+nsig10_results <- sigfit_results[["nsignatures=10"]]
+readr::write_rds(nsig10_results, 
+                 file.path("results", 
+                           "sigfit_signatures_10_results.RDS"), 
+                 compress = "gz")
+```
+
+```{r}
+signatures <- retrieve_pars(nsig10_results, par = "signatures")
+readr::write_rds(signatures, 
+                 file.path("results", 
+                           "sigfit_signatures_10_signatures.RDS"), 
+                 compress = "gz")
+```
+
+
+```{r}
+exposures <- retrieve_pars(nsig10_results, par = "exposures")
+readr::write_rds(exposures, 
+                 file.path("results", 
+                           "sigfit_signatures_10_exposures.RDS"), 
+                 compress = "gz")
+```
+
+
+```{r}
+reconstructions <- retrieve_pars(nsig10_results, par = "reconstructions")
+readr::write_rds(reconstructions, 
+                 file.path("results", 
+                           "sigfit_signatures_10_reconstructions.RDS"), 
+                 compress = "gz")
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+

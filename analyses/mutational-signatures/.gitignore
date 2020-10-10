@@ -3,6 +3,7 @@ individual_mutation_sig
 
 # Ignore large file from de novo signature extraction
 results/denovo_sigfit_signatures.RDS
+results/sigfit_signatures_10_results.RDS
 
 # Extraneous plot output
 Rplots.pdf
