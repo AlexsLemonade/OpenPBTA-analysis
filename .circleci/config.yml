@@ -125,8 +125,7 @@ jobs:
 
       - run:
           name: Mutational Signatures 
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutational-signatures/mutational_signatures.Rmd', clean = TRUE)" 
-          no_output_timeout: 90m
+          command: OPENPBTA_QUICK_MUTSIGS=1 ./scripts/run_in_ci.sh bash analyses/mutational-signatures/run_mutational_signatures.sh
 
       - run:
           name: Chromosomal instability breakpoints
