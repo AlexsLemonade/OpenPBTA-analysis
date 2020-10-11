@@ -1,0 +1,260 @@
+---
+title: "De novo mutational signatures per sample"
+author: Anna R. Poetsch and Candace Savonen; adapted by J. Taroni for ALSF CCDL
+date: 2020
+output:
+  html_notebook:
+    toc: yes
+    toc_float: yes
+---
+
+This notebook outputs the de novo signature results per sample and the following plots:
+
+* Exposures
+* Bubble plot
+* Grouped barplots
+
+## Libraries and functions
+
+```{r}
+# We require the pipe
+library(magrittr)
+
+# Import specialized functions
+source(file.path("util", "mut_sig_functions.R"))
+```
+
+## Files and directories
+
+### Directories
+
+```{r}
+data_dir <- file.path("..", "..", "data")
+results_dir <- "results"
+plots_dir <- "plots"
+denovo_plots_dir <- file.path(plots_dir, "denovo")
+figures_dir <- file.path("..", "..", "figures")
+```
+
+### Color palettes
+
+Read in the histology color palette. 
+
+```{r}
+histology_col_palette <- readr::read_tsv(
+  file.path(figures_dir, "palettes", "histology_color_palette.tsv")
+) %>%
+  # We'll use deframe so we can use it as a recoding list
+  tibble::deframe()
+```
+
+Set up gradient color palette for the bubble matrix plots. 
+
+```{r}
+gradient_col_palette <- readr::read_tsv(
+  file.path(figures_dir, "palettes", "gradient_color_palette.tsv")
+)
+
+# Won't need NA color this time. 
+gradient_col_palette <- gradient_col_palette %>%
+  dplyr::filter(color_names != "na_color")
+```
+
+### Metadata
+
+Read in the metadata and set it up with the color palette. 
+
+```{r}
+metadata_df <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"), 
+                               guess_max = 10000) %>% 
+  dplyr::rename(Tumor_Sample_Barcode = "Kids_First_Biospecimen_ID") %>%
+  dplyr::select("Tumor_Sample_Barcode", 
+                "experimental_strategy", 
+                "short_histology") %>%
+  # Easier to deal with NA short histologies if they are labeled something 
+  # different
+  dplyr::mutate(short_histology = as.character(tidyr::replace_na(short_histology, 
+                                                                 "none"))) %>%
+  # Tack on the sample color using the short_histology column and a recode
+  dplyr::mutate(sample_color = dplyr::recode(short_histology,
+                                             !!!histology_col_palette))
+```
+
+### Independent specimens
+
+Read in this list so we can make sure we keep only primary tumors for the grouped bar plots.
+
+```{r}
+ind_samples <- readr::read_tsv(file.path(
+  data_dir,
+  "independent-specimens.wgswxs.primary.tsv"
+))
+```
+
+### BED files
+
+Read in the WGS and WXS regions so they can be used for the Mb denominator. 
+
+```{r}
+# Set up BED region files for Mb denominator
+wgs_bed <- readr::read_tsv(file.path(data_dir, 
+                                     "WGS.hg38.strelka2.unpadded.bed"),
+                           col_names = FALSE)
+wxs_bed <- readr::read_tsv(file.path(data_dir, 
+                                     "WXS.hg38.100bp_padded.bed"),
+                           col_names = FALSE)
+
+# Calculate size of genome surveyed
+# These files are BED files where the third column is the End position and
+# the second column is the Start position.
+# So End - Start gives the size of each range. Sum the gives the total size in bp.
+wgs_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
+wxs_size <- sum(wxs_bed[, 3] - wxs_bed[, 2])
+```
+
+### Mutation file
+
+```{r}
+maf_file <- file.path(data_dir, "pbta-snv-consensus-mutation.maf.tsv.gz")
+
+# Read in the MAF file
+maf <- data.table::fread(maf_file, data.table = FALSE)
+
+# Prep mutations file for signature extraction
+sigs_input <- deconstructSigs::mut.to.sigs.input(
+  mut.ref = maf,
+  sample.id = "Tumor_Sample_Barcode",
+  chr = "Chromosome",
+  pos = "Start_Position",
+  ref = "Reference_Allele",
+  alt = "Allele",
+  bsg = BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
+)
+```
+
+Get list of tumor sample ids. 
+
+```{r}
+tumor_sample_ids <- maf %>%
+  dplyr::filter(Tumor_Sample_Barcode %in% rownames(sigs_input)) %>%
+  dplyr::distinct(Tumor_Sample_Barcode) %>%
+  dplyr::pull(Tumor_Sample_Barcode)
+```
+
+### De novo signature results (k = 10)
+
+These files were derived from the `nsignatures=10` results in the `02-explore_de_novo` notebook.
+
+```{r}
+nsigs10_results_file <- file.path(results_dir,
+                                  "sigfit_signatures_10_results.RDS")
+exposures_file <- file.path(results_dir,
+                            "sigfit_signatures_10_exposures.RDS")
+signatures_file <- file.path(results_dir,
+                             "sigfit_signatures_10_signatures.RDS")
+reconstructions_file <- file.path(results_dir,
+                                  "sigfit_signatures_10_reconstructions.RDS")
+```
+
+Read in files and prepare data for use.
+
+```{r}
+nsigs10_results <- readr::read_rds(nsigs10_results_file)
+```
+
+```{r}
+signatures <- readr::read_rds(signatures_file)
+sigmeans <- signatures$mean
+```
+
+```{r}
+exposures <- readr::read_rds(exposures_file)
+expmean <- exposures$mean
+explow95 <- exposures$lower_95
+rownames(expmean) <- rownames(sigs_input)
+
+# Set exposures to 0, if lower confidence interval hits 1%
+expmean[explow95 < 0.01] <-0
+```
+
+```{r}
+reconstructions <- readr::read_rds(reconstructions_file)
+recmean <- reconstructions$mean
+rownames(recmean) <- rownames(sigs_input) 
+```
+
+## De novo signatures per sample
+
+```{r}
+sample_sigs_denovo <- lapply(tumor_sample_ids, function(sample_id){
+  list(
+    weights = expmean[sample_id,],
+    tumor = sigs_input[sample_id,]/sum(sigs_input[sample_id,]),
+    product = recmean[sample_id,]/sum(sigs_input[sample_id,]),
+    diff = expmean[sample_id,]/sum(expmean[sample_id,])-recmean[sample_id,]/sum(recmean[sample_id,])
+  )})                     
+
+# Bring along the names
+names(sample_sigs_denovo) <- tumor_sample_ids
+```
+
+```{r}
+# Calculate mutations per signature
+denovo_sigs_df <- calc_mut_per_sig(sample_sigs_denovo,
+                                   muts_per_sample = total_muts,
+                                   wgs_genome_size = wgs_size,
+                                   wxs_exome_size = wxs_size,
+                                   metadata = metadata_df
+) 
+
+# Write this to a file  
+readr::write_tsv(denovo_sigs_df, 
+                 file.path(results_dir, "denovo_signatures_results.tsv"))
+
+# Print out a preview
+denovo_sigs_df
+```
+
+## Plots for de novo signatures
+
+### Exposures
+
+```{r}
+sigfit::plot_exposures(nsigs10_results,
+                       pdf_path = file.path(denovo_plots_dir, 
+                                            "denovo_exposures.pdf"),
+                       pdf_width = 60,
+                       pdf_height = 15)
+```
+
+### Bubble plot
+
+```{r}
+bubble_matrix_plot(denovo_sigs_df, label = "de novo signatures")
+
+ggplot2::ggsave(file.path(denovo_plots_dir, 
+                          "bubble_matrix_denovo_mutation_sig.png"), 
+                width = 30, height = 20, units = "cm")
+```
+
+### Grouped barplots
+
+```{r, results = "hide"}
+# Keep only primary tumors
+denovo_sigs_primary <- denovo_sigs_df %>%
+  dplyr::filter(Tumor_Sample_Barcode %in% ind_samples$Kids_First_Biospecimen_ID)
+
+# Make grouped bar plots
+lapply(unique(denovo_sigs_primary$short_histology),
+       grouped_sig_barplot,
+       sig_num_df = denovo_sigs_primary,
+       output_dir = file.path(denovo_plots_dir, "signature_grouped_barplots"),
+       label = "denovo"
+)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
