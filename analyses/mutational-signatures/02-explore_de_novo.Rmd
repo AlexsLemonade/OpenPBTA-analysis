@@ -2,9 +2,12 @@
 title: "Explore de novo mutational signatures"
 author: Anna R. Poetsch; adapted by J. Taroni for ALSF CCDL
 date: 2020
+output:
   html_notebook:
     toc: yes
     toc_float: yes
+params:
+  is_ci: FALSE
 ---
 
 ## Determine Signatures de novo  
@@ -21,6 +24,17 @@ You can see the parameters we used in `run_mutational_signatures.sh`.
 ```{r}
 library(deconstructSigs)
 library(sigfit)
+
+# Assigning params$is_ci to running_in_ci avoids a locked binding error
+running_in_ci <- params$is_ci
+
+# Are we testing? In case of a non 0/1 number, we recast as logical, 
+# and then ensure logical.
+if (running_in_ci %in% c(0,1)) running_in_ci <- as.logical(running_in_ci)
+if (!(is.logical(running_in_ci))) {
+  stop("\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).")
+}
+
 ```
 
 ```{r}
@@ -33,8 +47,16 @@ sigfit_results <- readr::read_rds(file.path("results",
 TODO: Add some analyses in support of picking `nsignatures=10` ?
 
 ```{r}
-# Go with k = 10 per @arpoe
-nsig10_results <- sigfit_results[["nsignatures=10"]]
+if (running_in_ci) {
+  # if we're running in CI, then the de novo signatures will only be run for
+  # k = 10
+  nsig10_results <- sigfit_results
+} else {
+  # Go with k = 10 per @arpoe
+  nsig10_results <- sigfit_results[["nsignatures=10"]]
+}
+
+# Write to file
 readr::write_rds(nsig10_results, 
                  file.path("results", 
                            "sigfit_signatures_10_results.RDS"), 
