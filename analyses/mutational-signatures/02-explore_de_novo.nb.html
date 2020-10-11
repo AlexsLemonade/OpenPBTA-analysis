@@ -2939,23 +2939,142 @@ div.tocify {
 
 
 <!-- rnb-text-begin -->
+<div id="determine-signatures-de-novo" class="section level2">
+<h2>Determine Signatures de novo</h2>
+<p>This notebook is included, because the previous strategies imply that there are mutagenic mechanisms in operation that are unlikely to be a major factor in this dataset, such as smoking and UV light. This is happening due to overfitting problems when fitting existing signatures. De novo signature calling is used to provide an alternative for discussion. It is determined, which signatures can be extracted from the data themselves. These signatures are then fitted back to the known signatures that are used for the fitting approach above.</p>
+<p>The signatures were extracted with <code>scripts/de_novo_signature_fitting.R</code>. You can see the parameters we used in <code>run_mutational_signatures.sh</code>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShzaWdmaXQpXG5gYGAifQ== -->
-<pre class="r"><code>library(sigfit)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkZWNvbnN0cnVjdFNpZ3MpXG5saWJyYXJ5KHNpZ2ZpdClcbmBgYCJ9 -->
+<pre class="r"><code>library(deconstructSigs)
+library(sigfit)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2lnZml0X3Jlc3VsdHMgPC0gcmVhZHI6OnJlYWRfcmRzKFwicmVzdWx0cy9kZW5vdm9fc2lnZml0X3NpZ25hdHVyZXMuUkRTXCIpXG5gYGAifQ== -->
-<pre class="r"><code>sigfit_results &lt;- readr::read_rds(&quot;results/denovo_sigfit_signatures.RDS&quot;)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RwbHlyJzpcbiAgbWV0aG9kICAgICAgICAgICBmcm9tXG4gIHByaW50LnJvd3dpc2VfZGYgICAgIFxuIn0= -->
+<pre><code>Registered S3 method overwritten by 'dplyr':
+  method           from
+  print.rowwise_df     </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBBc3NpZ25pbmcgcGFyYW1zJGlzX2NpIHRvIHJ1bm5pbmdfaW5fY2kgYXZvaWRzIGEgbG9ja2VkIGJpbmRpbmcgZXJyb3JcbnJ1bm5pbmdfaW5fY2kgPC0gcGFyYW1zJGlzX2NpXG5cbiMgQXJlIHdlIHRlc3Rpbmc/IEluIGNhc2Ugb2YgYSBub24gMC8xIG51bWJlciwgd2UgcmVjYXN0IGFzIGxvZ2ljYWwsIFxuIyBhbmQgdGhlbiBlbnN1cmUgbG9naWNhbC5cbmlmIChydW5uaW5nX2luX2NpICVpbiUgYygwLDEpKSBydW5uaW5nX2luX2NpIDwtIGFzLmxvZ2ljYWwocnVubmluZ19pbl9jaSlcbmlmICghKGlzLmxvZ2ljYWwocnVubmluZ19pbl9jaSkpKSB7XG4gIHN0b3AoXCJcXG5cXG5FUlJPUjogVGhlIHBhcmFtZXRlciBgaXNfY2lgIHNob3VsZCBiZSBGQUxTRS9UUlVFIChvciAwLzEpLlwiKVxufVxuXG5gYGAifQ== -->
+<pre class="r"><code># Assigning params$is_ci to running_in_ci avoids a locked binding error
+running_in_ci &lt;- params$is_ci
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiRXhwbG9yZSBkZSBub3ZvIG11dGF0aW9uYWwgc2lnbmF0dXJlcyIKYXV0aG9yOiBBbm5hIFIuIFBvZXRzY2g7IGFkYXB0ZWQgYnkgSi4gVGFyb25pIGZvciBBTFNGIENDREwKZGF0ZTogMjAyMApvdXRwdXQ6CiAgaHRtbF9kb2N1bWVudDoKICAgIGRmX3ByaW50OiBwYWdlZAogICAgdG9jOiB5ZXMKICBodG1sX25vdGVib29rOgogICAgdG9jOiB5ZXMKICAgIHRvY19mbG9hdDogeWVzCi0tLQoKYGBge3J9CmxpYnJhcnkoc2lnZml0KQpgYGAKCmBgYHtyfQpzaWdmaXRfcmVzdWx0cyA8LSByZWFkcjo6cmVhZF9yZHMoInJlc3VsdHMvZGVub3ZvX3NpZ2ZpdF9zaWduYXR1cmVzLlJEUyIpCmBgYAoK</div>
+# Are we testing? In case of a non 0/1 number, we recast as logical, 
+# and then ensure logical.
+if (running_in_ci %in% c(0,1)) running_in_ci &lt;- as.logical(running_in_ci)
+if (!(is.logical(running_in_ci))) {
+  stop(&quot;\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).&quot;)
+}
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBSZWFkIGluIGFsbCB0aGUgcmVzdWx0cyBmcm9tIHRoZSByYW5nZSBvZiBrIGFzIGNob3NlbiBpbiBcbiMgcnVuX211dGF0aW9uYWxfc2lnbmF0dXJlcy5zaFxuc2lnZml0X3Jlc3VsdHMgPC0gcmVhZHI6OnJlYWRfcmRzKGZpbGUucGF0aChcInJlc3VsdHNcIiwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiZGVub3ZvX3NpZ2ZpdF9zaWduYXR1cmVzLlJEU1wiKSlcbmBgYCJ9 -->
+<pre class="r"><code># Read in all the results from the range of k as chosen in 
+# run_mutational_signatures.sh
+sigfit_results &lt;- readr::read_rds(file.path(&quot;results&quot;, 
+                                            &quot;denovo_sigfit_signatures.RDS&quot;))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>TODO: Add some analyses in support of picking <code>nsignatures=10</code> ?</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWYgKHJ1bm5pbmdfaW5fY2kpIHtcbiAgIyBpZiB3ZSdyZSBydW5uaW5nIGluIENJLCB0aGVuIHRoZSBkZSBub3ZvIHNpZ25hdHVyZXMgd2lsbCBvbmx5IGJlIHJ1biBmb3JcbiAgIyBrID0gMTBcbiAgbnNpZzEwX3Jlc3VsdHMgPC0gc2lnZml0X3Jlc3VsdHNcbn0gZWxzZSB7XG4gICMgR28gd2l0aCBrID0gMTAgcGVyIEBhcnBvZVxuICBuc2lnMTBfcmVzdWx0cyA8LSBzaWdmaXRfcmVzdWx0c1tbXCJuc2lnbmF0dXJlcz0xMFwiXV1cbn1cblxuIyBXcml0ZSB0byBmaWxlXG5yZWFkcjo6d3JpdGVfcmRzKG5zaWcxMF9yZXN1bHRzLCBcbiAgICAgICAgICAgICAgICAgZmlsZS5wYXRoKFwicmVzdWx0c1wiLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgIFwic2lnZml0X3NpZ25hdHVyZXNfMTBfcmVzdWx0cy5SRFNcIiksIFxuICAgICAgICAgICAgICAgICBjb21wcmVzcyA9IFwiZ3pcIilcbmBgYCJ9 -->
+<pre class="r"><code>if (running_in_ci) {
+  # if we're running in CI, then the de novo signatures will only be run for
+  # k = 10
+  nsig10_results &lt;- sigfit_results
+} else {
+  # Go with k = 10 per @arpoe
+  nsig10_results &lt;- sigfit_results[[&quot;nsignatures=10&quot;]]
+}
+
+# Write to file
+readr::write_rds(nsig10_results, 
+                 file.path(&quot;results&quot;, 
+                           &quot;sigfit_signatures_10_results.RDS&quot;), 
+                 compress = &quot;gz&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2lnbmF0dXJlcyA8LSByZXRyaWV2ZV9wYXJzKG5zaWcxMF9yZXN1bHRzLCBwYXIgPSBcInNpZ25hdHVyZXNcIilcbnJlYWRyOjp3cml0ZV9yZHMoc2lnbmF0dXJlcywgXG4gICAgICAgICAgICAgICAgIGZpbGUucGF0aChcInJlc3VsdHNcIiwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICBcInNpZ2ZpdF9zaWduYXR1cmVzXzEwX3NpZ25hdHVyZXMuUkRTXCIpLCBcbiAgICAgICAgICAgICAgICAgY29tcHJlc3MgPSBcImd6XCIpXG5gYGAifQ== -->
+<pre class="r"><code>signatures &lt;- retrieve_pars(nsig10_results, par = &quot;signatures&quot;)
+readr::write_rds(signatures, 
+                 file.path(&quot;results&quot;, 
+                           &quot;sigfit_signatures_10_signatures.RDS&quot;), 
+                 compress = &quot;gz&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZXhwb3N1cmVzIDwtIHJldHJpZXZlX3BhcnMobnNpZzEwX3Jlc3VsdHMsIHBhciA9IFwiZXhwb3N1cmVzXCIpXG5yZWFkcjo6d3JpdGVfcmRzKGV4cG9zdXJlcywgXG4gICAgICAgICAgICAgICAgIGZpbGUucGF0aChcInJlc3VsdHNcIiwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICBcInNpZ2ZpdF9zaWduYXR1cmVzXzEwX2V4cG9zdXJlcy5SRFNcIiksIFxuICAgICAgICAgICAgICAgICBjb21wcmVzcyA9IFwiZ3pcIilcbmBgYCJ9 -->
+<pre class="r"><code>exposures &lt;- retrieve_pars(nsig10_results, par = &quot;exposures&quot;)
+readr::write_rds(exposures, 
+                 file.path(&quot;results&quot;, 
+                           &quot;sigfit_signatures_10_exposures.RDS&quot;), 
+                 compress = &quot;gz&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVjb25zdHJ1Y3Rpb25zIDwtIHJldHJpZXZlX3BhcnMobnNpZzEwX3Jlc3VsdHMsIHBhciA9IFwicmVjb25zdHJ1Y3Rpb25zXCIpXG5yZWFkcjo6d3JpdGVfcmRzKHJlY29uc3RydWN0aW9ucywgXG4gICAgICAgICAgICAgICAgIGZpbGUucGF0aChcInJlc3VsdHNcIiwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICBcInNpZ2ZpdF9zaWduYXR1cmVzXzEwX3JlY29uc3RydWN0aW9ucy5SRFNcIiksIFxuICAgICAgICAgICAgICAgICBjb21wcmVzcyA9IFwiZ3pcIilcbmBgYCJ9 -->
+<pre class="r"><code>reconstructions &lt;- retrieve_pars(nsig10_results, par = &quot;reconstructions&quot;)
+readr::write_rds(reconstructions, 
+                 file.path(&quot;results&quot;, 
+                           &quot;sigfit_signatures_10_reconstructions.RDS&quot;), 
+                 compress = &quot;gz&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="session-info" class="section level2">
+<h2>Session Info</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgICBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgICBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgIFxuIFs2XSBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgICBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgICBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgIFxuWzExXSBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBzaWdmaXRfMi4wLjAgICAgICAgICAgZGVjb25zdHJ1Y3RTaWdzXzEuOC4wXG5cbmxvYWRlZCB2aWEgYSBuYW1lc3BhY2UgKGFuZCBub3QgYXR0YWNoZWQpOlxuIFsxXSBSY3BwXzEuMC4xICAgICAgICAgICAgY29tcGlsZXJfMy42LjAgICAgICAgIHBpbGxhcl8xLjQuMiAgICAgICAgICBwcmV0dHl1bml0c18xLjAuMiAgICAgdG9vbHNfMy42LjAgICAgICAgICAgIHBrZ2J1aWxkXzEuMC4zICAgICAgIFxuIFs3XSB0aWJibGVfMi4xLjMgICAgICAgICAgZ3RhYmxlXzAuMy4wICAgICAgICAgIGxhdHRpY2VfMC4yMC0zOCAgICAgICBjbHVlXzAuMy01NyAgICAgICAgICAgcGtnY29uZmlnXzIuMC4yICAgICAgIHJsYW5nXzAuNC4wICAgICAgICAgIFxuWzEzXSBjbGlfMS4xLjAgICAgICAgICAgICAgcnN0dWRpb2FwaV8wLjEwICAgICAgIHBhcmFsbGVsXzMuNi4wICAgICAgICB5YW1sXzIuMi4wICAgICAgICAgICAgeGZ1bl8wLjggICAgICAgICAgICAgIGxvb18yLjEuMCAgICAgICAgICAgIFxuWzE5XSBncmlkRXh0cmFfMi4zICAgICAgICAgY29kYV8wLjE5LTIgICAgICAgICAgIGRwbHlyXzAuOC4zICAgICAgICAgICBjbHVzdGVyXzIuMS4wICAgICAgICAga25pdHJfMS4yMyAgICAgICAgICAgIGhtc18wLjQuMiAgICAgICAgICAgIFxuWzI1XSBzdGF0czRfMy42LjAgICAgICAgICAgZ3JpZF8zLjYuMCAgICAgICAgICAgIHRpZHlzZWxlY3RfMC4yLjUgICAgICBpbmxpbmVfMC4zLjE1ICAgICAgICAgZ2x1ZV8xLjMuMSAgICAgICAgICAgIFI2XzIuNC4wICAgICAgICAgICAgIFxuWzMxXSBwcm9jZXNzeF8zLjQuMCAgICAgICAgcnN0YW5fMi4xOC4yICAgICAgICAgIHJlYWRyXzEuMy4xICAgICAgICAgICBnZ3Bsb3QyXzMuMi4wICAgICAgICAgY2FsbHJfMy4zLjAgICAgICAgICAgIHB1cnJyXzAuMy4yICAgICAgICAgIFxuWzM3XSBtYWdyaXR0cl8xLjUgICAgICAgICAgY29kZXRvb2xzXzAuMi0xNiAgICAgIG1hdHJpeFN0YXRzXzAuNTQuMCAgICBzY2FsZXNfMS4wLjAgICAgICAgICAgcHNfMS4zLjAgICAgICAgICAgICAgIFN0YW5IZWFkZXJzXzIuMTguMS0xMFxuWzQzXSBhc3NlcnR0aGF0XzAuMi4xICAgICAgY29sb3JzcGFjZV8xLjQtMSAgICAgIGxhenlldmFsXzAuMi4yICAgICAgICBtdW5zZWxsXzAuNS4wICAgICAgICAgY3JheW9uXzEuMy40ICAgICAgICAgXG4ifQ== -->
+<pre><code>R version 3.6.0 (2019-04-26)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Debian GNU/Linux 9 (stretch)
+
+Matrix products: default
+BLAS/LAPACK: /usr/lib/libopenblasp-r0.2.19.so
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C               LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8     LC_MONETARY=en_US.UTF-8   
+ [6] LC_MESSAGES=C              LC_PAPER=en_US.UTF-8       LC_NAME=C                  LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] sigfit_2.0.0          deconstructSigs_1.8.0
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.1            compiler_3.6.0        pillar_1.4.2          prettyunits_1.0.2     tools_3.6.0           pkgbuild_1.0.3       
+ [7] tibble_2.1.3          gtable_0.3.0          lattice_0.20-38       clue_0.3-57           pkgconfig_2.0.2       rlang_0.4.0          
+[13] cli_1.1.0             rstudioapi_0.10       parallel_3.6.0        yaml_2.2.0            xfun_0.8              loo_2.1.0            
+[19] gridExtra_2.3         coda_0.19-2           dplyr_0.8.3           cluster_2.1.0         knitr_1.23            hms_0.4.2            
+[25] stats4_3.6.0          grid_3.6.0            tidyselect_0.2.5      inline_0.3.15         glue_1.3.1            R6_2.4.0             
+[31] processx_3.4.0        rstan_2.18.2          readr_1.3.1           ggplot2_3.2.0         callr_3.3.0           purrr_0.3.2          
+[37] magrittr_1.5          codetools_0.2-16      matrixStats_0.54.0    scales_1.0.0          ps_1.3.0              StanHeaders_2.18.1-10
+[43] assertthat_0.2.1      colorspace_1.4-1      lazyeval_0.2.2        munsell_0.5.0         crayon_1.3.4         </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRXhwbG9yZSBkZSBub3ZvIG11dGF0aW9uYWwgc2lnbmF0dXJlcyIKYXV0aG9yOiBBbm5hIFIuIFBvZXRzY2g7IGFkYXB0ZWQgYnkgSi4gVGFyb25pIGZvciBBTFNGIENDREwKZGF0ZTogMjAyMApvdXRwdXQ6CiAgaHRtbF9ub3RlYm9vazoKICAgIHRvYzogeWVzCiAgICB0b2NfZmxvYXQ6IHllcwpwYXJhbXM6CiAgaXNfY2k6IEZBTFNFCi0tLQoKIyMgRGV0ZXJtaW5lIFNpZ25hdHVyZXMgZGUgbm92byAgCgpUaGlzIG5vdGVib29rIGlzIGluY2x1ZGVkLCBiZWNhdXNlIHRoZSBwcmV2aW91cyBzdHJhdGVnaWVzIGltcGx5IHRoYXQgdGhlcmUgYXJlIG11dGFnZW5pYyBtZWNoYW5pc21zIGluIG9wZXJhdGlvbiB0aGF0IGFyZSB1bmxpa2VseSB0byBiZSBhIG1ham9yIGZhY3RvciBpbiB0aGlzIGRhdGFzZXQsIHN1Y2ggYXMgc21va2luZyBhbmQgVVYgbGlnaHQuClRoaXMgaXMgaGFwcGVuaW5nIGR1ZSB0byBvdmVyZml0dGluZyBwcm9ibGVtcyB3aGVuIGZpdHRpbmcgZXhpc3Rpbmcgc2lnbmF0dXJlcy4gCkRlIG5vdm8gc2lnbmF0dXJlIGNhbGxpbmcgaXMgdXNlZCB0byBwcm92aWRlIGFuIGFsdGVybmF0aXZlIGZvciBkaXNjdXNzaW9uLiAKSXQgaXMgZGV0ZXJtaW5lZCwgd2hpY2ggc2lnbmF0dXJlcyBjYW4gYmUgZXh0cmFjdGVkIGZyb20gdGhlIGRhdGEgdGhlbXNlbHZlcy4gClRoZXNlIHNpZ25hdHVyZXMgYXJlIHRoZW4gZml0dGVkIGJhY2sgdG8gdGhlIGtub3duIHNpZ25hdHVyZXMgdGhhdCBhcmUgdXNlZCBmb3IgdGhlIGZpdHRpbmcgYXBwcm9hY2ggYWJvdmUuIAoKVGhlIHNpZ25hdHVyZXMgd2VyZSBleHRyYWN0ZWQgd2l0aCBgc2NyaXB0cy9kZV9ub3ZvX3NpZ25hdHVyZV9maXR0aW5nLlJgLgpZb3UgY2FuIHNlZSB0aGUgcGFyYW1ldGVycyB3ZSB1c2VkIGluIGBydW5fbXV0YXRpb25hbF9zaWduYXR1cmVzLnNoYC4KCmBgYHtyfQpsaWJyYXJ5KGRlY29uc3RydWN0U2lncykKbGlicmFyeShzaWdmaXQpCgojIEFzc2lnbmluZyBwYXJhbXMkaXNfY2kgdG8gcnVubmluZ19pbl9jaSBhdm9pZHMgYSBsb2NrZWQgYmluZGluZyBlcnJvcgpydW5uaW5nX2luX2NpIDwtIHBhcmFtcyRpc19jaQoKIyBBcmUgd2UgdGVzdGluZz8gSW4gY2FzZSBvZiBhIG5vbiAwLzEgbnVtYmVyLCB3ZSByZWNhc3QgYXMgbG9naWNhbCwgCiMgYW5kIHRoZW4gZW5zdXJlIGxvZ2ljYWwuCmlmIChydW5uaW5nX2luX2NpICVpbiUgYygwLDEpKSBydW5uaW5nX2luX2NpIDwtIGFzLmxvZ2ljYWwocnVubmluZ19pbl9jaSkKaWYgKCEoaXMubG9naWNhbChydW5uaW5nX2luX2NpKSkpIHsKICBzdG9wKCJcblxuRVJST1I6IFRoZSBwYXJhbWV0ZXIgYGlzX2NpYCBzaG91bGQgYmUgRkFMU0UvVFJVRSAob3IgMC8xKS4iKQp9CgpgYGAKCmBgYHtyfQojIFJlYWQgaW4gYWxsIHRoZSByZXN1bHRzIGZyb20gdGhlIHJhbmdlIG9mIGsgYXMgY2hvc2VuIGluIAojIHJ1bl9tdXRhdGlvbmFsX3NpZ25hdHVyZXMuc2gKc2lnZml0X3Jlc3VsdHMgPC0gcmVhZHI6OnJlYWRfcmRzKGZpbGUucGF0aCgicmVzdWx0cyIsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJkZW5vdm9fc2lnZml0X3NpZ25hdHVyZXMuUkRTIikpCmBgYAoKVE9ETzogQWRkIHNvbWUgYW5hbHlzZXMgaW4gc3VwcG9ydCBvZiBwaWNraW5nIGBuc2lnbmF0dXJlcz0xMGAgPwoKYGBge3J9CmlmIChydW5uaW5nX2luX2NpKSB7CiAgIyBpZiB3ZSdyZSBydW5uaW5nIGluIENJLCB0aGVuIHRoZSBkZSBub3ZvIHNpZ25hdHVyZXMgd2lsbCBvbmx5IGJlIHJ1biBmb3IKICAjIGsgPSAxMAogIG5zaWcxMF9yZXN1bHRzIDwtIHNpZ2ZpdF9yZXN1bHRzCn0gZWxzZSB7CiAgIyBHbyB3aXRoIGsgPSAxMCBwZXIgQGFycG9lCiAgbnNpZzEwX3Jlc3VsdHMgPC0gc2lnZml0X3Jlc3VsdHNbWyJuc2lnbmF0dXJlcz0xMCJdXQp9CgojIFdyaXRlIHRvIGZpbGUKcmVhZHI6OndyaXRlX3Jkcyhuc2lnMTBfcmVzdWx0cywgCiAgICAgICAgICAgICAgICAgZmlsZS5wYXRoKCJyZXN1bHRzIiwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICJzaWdmaXRfc2lnbmF0dXJlc18xMF9yZXN1bHRzLlJEUyIpLCAKICAgICAgICAgICAgICAgICBjb21wcmVzcyA9ICJneiIpCmBgYAoKYGBge3J9CnNpZ25hdHVyZXMgPC0gcmV0cmlldmVfcGFycyhuc2lnMTBfcmVzdWx0cywgcGFyID0gInNpZ25hdHVyZXMiKQpyZWFkcjo6d3JpdGVfcmRzKHNpZ25hdHVyZXMsIAogICAgICAgICAgICAgICAgIGZpbGUucGF0aCgicmVzdWx0cyIsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAic2lnZml0X3NpZ25hdHVyZXNfMTBfc2lnbmF0dXJlcy5SRFMiKSwgCiAgICAgICAgICAgICAgICAgY29tcHJlc3MgPSAiZ3oiKQpgYGAKCgpgYGB7cn0KZXhwb3N1cmVzIDwtIHJldHJpZXZlX3BhcnMobnNpZzEwX3Jlc3VsdHMsIHBhciA9ICJleHBvc3VyZXMiKQpyZWFkcjo6d3JpdGVfcmRzKGV4cG9zdXJlcywgCiAgICAgICAgICAgICAgICAgZmlsZS5wYXRoKCJyZXN1bHRzIiwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICJzaWdmaXRfc2lnbmF0dXJlc18xMF9leHBvc3VyZXMuUkRTIiksIAogICAgICAgICAgICAgICAgIGNvbXByZXNzID0gImd6IikKYGBgCgoKYGBge3J9CnJlY29uc3RydWN0aW9ucyA8LSByZXRyaWV2ZV9wYXJzKG5zaWcxMF9yZXN1bHRzLCBwYXIgPSAicmVjb25zdHJ1Y3Rpb25zIikKcmVhZHI6OndyaXRlX3JkcyhyZWNvbnN0cnVjdGlvbnMsIAogICAgICAgICAgICAgICAgIGZpbGUucGF0aCgicmVzdWx0cyIsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAic2lnZml0X3NpZ25hdHVyZXNfMTBfcmVjb25zdHJ1Y3Rpb25zLlJEUyIpLCAKICAgICAgICAgICAgICAgICBjb21wcmVzcyA9ICJneiIpCmBgYAoKIyMgU2Vzc2lvbiBJbmZvCgpgYGB7cn0Kc2Vzc2lvbkluZm8oKQpgYGAKCg==</div>
 
 
 </div>
