@@ -2,7 +2,7 @@
 
 **Module authors:** Chante Bethell ([@cbethell](https://github.com/cbethell)), Stephanie J. Spielman ([@sjspielman](https://github.com/sjspielman)) and Jaclyn Taroni ([@jaclyn-taroni](https://github.com/jaclyn-taroni))
 
-**Note: The files in the `subset-files` directory were generated via `02-generate-subset-files.R` using the the files in the [version 13 data release](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/444).**
+**Note: The files in the `subset-files` directory were generated via `02-generate-subset-files.R` using the the files in the [version 17 data release](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/764).**
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -27,17 +27,30 @@ Files will be regenerated using the symlinked files in `data` by default when ru
 bash run-embryonal-subtyping.sh
 ```
 
+`00-embryonal-select-pathology-dx.Rmd` is not run via this module's shell script, as it should be run locally, tied to `release-v17-20200908`, and should not be re-rendered when there are changes to the underlying `pbta-histologies.tsv` file in future releases (see [Folder content](#folder-content) and [#748](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/748)).
 
 ## Folder Content
+
+[`00-embryonal-select-pathology-dx.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-embryonal/00-embryonal-select-pathology-dx.nb.html) is a notebook used to explore the `pathology_diagnosis` and `pathology_free_text_diagnosis` fields in the `release-v17-20200908` version of `pbta-histologies.tsv`. 
+Prior to `release-v17-20200908`, this module used `broad_histology == "Embryonal tumor"` to identify samples to be included for subtyping.
+ATRT and Medulloblastoma samples were also filtered out with this method of identifying samples.
+In future releases, the `broad_histology` values will be derived from the `pathology_diagnosis` and `molecular_subtype` values (see [#748](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/748)); this module generates the latter.
+Thus, this notebook looks to identify the samples to be included for subtyping based on the `pathology_diagnosis` and `pathology_free_text_diagnosis` values.
+
+The relevant strings from this notebook are saved in [`subset-files/embryonal_subtyping_path_dx_strings.json`](subset-files/embryonal_subtyping_path_dx_strings.json), which is used downstream in `01-samples-to-subset.Rmd` to identify the samples to include in the subset files.
 
 [`01-samples-to-subset.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-embryonal/01-samples-to-subset.nb.html) is a notebook written to identify samples to include in subset files for the purpose of molecularly subtyping non-MB and non-ATRT embryonal tumors.
 The samples are identified using the following criteria:
 
 1. An RNA-seq biospecimen sample includes a _TTYH1_ fusion (5' partner) [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/401#issuecomment-573669727).
-2. Any sample with "Embryonal tumor" in the `broad_histology` column of the metadata `pbta-histologies.tsv` that is not labeled "Medulloblastoma" or "Atypical Teratoid Rhabdoid Tumor (ATRT)" in `pathology_diagnosis` or `integrated_diagnosis` columns [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251#issuecomment-568220913).
+2. An RNA-seq biospecimen sample includes a _MN1_ fusion (5' partner) [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/785#issuecomment-695015488).
+Note that the `MN1--PATZ1` fusion is excluded as it is an entity separate of CNS HGNET-MN1 tumors [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/788#discussion_r495302880).
+3. Any sample with "Supratentorial or Spinal Cord PNET" in the `pathology_diagnosis` column of the metadata `pbta-histologies.tsv` [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/752#issuecomment-697000066).
+4. Any sample with "Neuroblastoma" in the `pathology_diagnosis` column, where `primary_site` does not contain "Other locations NOS", `pathology_free_text_diagnosis` does not contain "peripheral" or "metastatic" [per the same comment as above](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/752#issuecomment-697000066) and [this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/788#discussion_r499948141).
+5. Any sample with "Other" in the `pathology_diagnosis` column of the metadata, and with "embryonal tumor with multilayer rosettes, ros (who grade iv)", "embryonal tumor, nos, congenital type", "ependymoblastoma" or "medulloepithelioma" in the `pathology_free_text_diagnosis` column [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/752#issuecomment-697000066).
 The output of this notebook is a TSV file, named `biospecimen_ids_embryonal_subtyping.tsv`, containing the biospeciemen IDs identified based on the above criteria (stored in the `results` directory of this module.
 
-[`02-generate-subset-files.R`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-embryonal/02-generate-subset-files.R) is a script written to subset the files required for the subtyping of non-MB and non-ATRT embryonal tumors.
+[`02-generate-subset-files.R`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-embryonal/02-generate-subset-files.R) is a script written to subset the files required for the subtyping of non-MB and non-ATRT embryonal tumors, using the output of `01-samples-to-subset.Rmd`.
 The output of this script includes the subsets of the structural variant, poly-A RNA-seq, and stranded RNA-seq data files (stored in the `subset-files` directory of this module).
 
 [`03-clean-c19mc-data.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-embryonal/03-clean-c19mc-data.nb.html) is a notebook written to clean copy number data related to C19MC amplifications in non-MB, non-ATRT embryonal tumors.
@@ -62,6 +75,8 @@ The information in this file is represented in table with the following columns:
 ## Folder Structure
 
 ```
+├── 00-embryonal-select-pathology-dx.Rmd
+├── 00-embryonal-select-pathology-dx.nb.html
 ├── 01-samples-to-subset.Rmd
 ├── 01-samples-to-subset.nb.html
 ├── 02-generate-subset-files.R
@@ -78,6 +93,7 @@ The information in this file is represented in table with the following columns:
 ├── run-embryonal-subtyping.sh
 └── subset-files
     ├── embryonal_manta_sv.tsv
+    ├── embryonal_subtyping_path_dx_strings.json
     ├── embryonal_zscored_exp.polya.rds
     └── embryonal_zscored_exp.stranded.rds
 ```

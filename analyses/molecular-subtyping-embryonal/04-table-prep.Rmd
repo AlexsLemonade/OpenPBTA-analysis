@@ -175,14 +175,17 @@ colnames(fusions_df)
 
 ```{r message=FALSE}
 ttyh1_fusions <- wrangle_fusions(fusions_df, "TTYH1--", "TTYH1_fusions")
-mn1_fusions <- wrangle_fusions(fusions_df, "MN1--", "MN1_fusions") 
+mn1_fusions <- wrangle_fusions(fusions_df, "MN1--", "MN1_fusions")
 foxr2_fusions <- wrangle_fusions(fusions_df, "FOXR2", "FOXR2_fusions")
 cic_fusions <- wrangle_fusions(fusions_df, "CIC--", "CIC_fusions")
 fusions_summary_df <- list(ttyh1_fusions,
                            mn1_fusions,
                            foxr2_fusions,
                            cic_fusions) %>%
-  purrr::reduce(dplyr::inner_join, by = "Kids_First_Biospecimen_ID")
+  purrr::reduce(dplyr::inner_join, by = "Kids_First_Biospecimen_ID") %>%
+  # Filter out specific MN1--PATZ1 fusion based on comment: https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/788#discussion_r495212879
+  filter(!(MN1_fusions == "MN1--PATZ1"))
+
 # remove data.frame we no longer need
 rm(ttyh1_fusions, mn1_fusions, foxr2_fusions, cic_fusions, fusions_df)
 ```
@@ -338,8 +341,9 @@ relevant_clinical_data <- histologies_df %>%
          sample_id,
          age_at_diagnosis_days,
          germline_sex_estimate,
+         primary_site,
          pathology_diagnosis,
-         integrated_diagnosis) %>%
+         pathology_free_text_diagnosis) %>%
   distinct() %>%
   # convert age to years
   mutate(age_at_diagnosis_yrs = 
@@ -361,7 +365,7 @@ all_data_df %>%
          age_at_diagnosis_yrs,
          germline_sex_estimate,
          pathology_diagnosis,
-         integrated_diagnosis,
+         pathology_free_text_diagnosis,
          LIN28A,
          TTYH1_fusions,
          chr19_amplification,
@@ -425,7 +429,6 @@ etmr_nos_df <- all_data_df %>%
 
 ```{r}
 all_data_df %>%
-  # 3 standard deviations above the mean
   filter(MN1_fusions != "None") %>%
   select(ends_with("ID"), 
          ends_with("diagnosis"),
@@ -433,38 +436,12 @@ all_data_df %>%
          MN1_fusions)
 ```
 
-No samples fit this criteria.
-There were other samples that **did** contain _MN1_ fusions.
-
-```{r}
-mn1_fusions <- fusions_summary_df %>%
-  filter(MN1_fusions != "None") 
-
-mn1_fusions
-```
-
-```{r}
-histologies_df %>%
-  filter(Kids_First_Biospecimen_ID %in% pull(mn1_fusions, 
-                                             Kids_First_Biospecimen_ID)) %>%
-  select(Kids_First_Participant_ID, 
-         sample_id, 
-         Kids_First_Biospecimen_ID,
-         pathology_diagnosis,
-         integrated_diagnosis,
-         germline_sex_estimate)
-```
-
-They are classified as `Ependymoma` and `Low-grade astrocytic tumor`.
-
 We will call the sample with the _MN1--CXXC5_ fusion CNS HGNET-MN1.
 
 ```{r}
-hgnet_mn1_df <- histologies_df %>%
-  filter(sample_id == "7316-765") %>%
-  select(Kids_First_Participant_ID,
-         Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID,
-         sample_id) %>%
+hgnet_mn1_df <- all_data_df %>%
+  filter(MN1_fusions != "None") %>%
+  select(contains("ID")) %>%
   mutate(molecular_subtype = "CNS HGNET-MN1")
 ```
 
@@ -483,9 +460,8 @@ We have no clear evidence of _BCOR_ alterations.
 
 ```{r}
 all_data_df %>%
-  filter(FOXR2_fusions != "None" | FOXR2 > 3) %>%
-  select(ends_with("ID"), 
-         ends_with("diagnosis"),
+  filter(FOXR2_fusions != "None" | FOXR2 > 3 )%>%
+  select(ends_with("ID"),
          FOXR2,
          FOXR2_fusions)
 ```
@@ -496,6 +472,7 @@ nb_foxr2_df <- all_data_df %>%
   select(contains("ID")) %>%
   mutate(molecular_subtype = "CNS NB-FOXR2")
 ```
+
 
 ### CNS EFT-CIC
 
@@ -512,7 +489,30 @@ all_data_df %>%
 > * CNS Embryonal tumor, not otherwise specified
 > * Tumors previously called PNET that do not fit into other groups above.
 
-All other samples will be called CNS Embryonal, NOS.
+All other samples will be called CNS Embryonal, NOS with an exception (see below).
+
+### Exclusion of neuroblastoma specimens without FOXR2 alterations
+
+If neuroblastoma samples were included on the basis of `pathology_diagnosis`, `pathology_free_text_diagnosis`, and `primary_site` (see `01-samples-to-subset`), but do not meet the criteria for _FOXR2_ alterations (CNS NB-FOXR2), those samples should not get a subtype label. 
+
+```{r}
+other_nbl_df <- all_data_df %>%
+  filter(
+    # All other criteria would have been met to be included in all_data_df
+    pathology_diagnosis == "Neuroblastoma",
+    # Exclude samples that *do* meet FOXR2 criteria
+    !(sample_id %in% nb_foxr2_df$sample_id)
+  )
+
+other_nbl_df
+```
+
+We're going to use the `sample_id` to exclude from the subtyping table.
+
+```{r}
+exclude_sample_id <- other_nbl_df %>%
+  pull(sample_id)
+```
 
 ### Subtyping file
 
@@ -526,6 +526,8 @@ subtypes_df <- bind_rows(
 
 subtypes_df <- all_data_df %>%
   select(contains("ID")) %>%
+  # Remove any NBL samples that did not meet CNS NB-FOXR2 criteria
+  filter(!(sample_id %in% exclude_sample_id)) %>%
   full_join(subtypes_df) %>%
   replace_na(list(molecular_subtype = "CNS Embryonal, NOS"))
 ```
