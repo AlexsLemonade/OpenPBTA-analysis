@@ -105,7 +105,11 @@ clinical <- readr::read_tsv(file.path(data_dir, "release-v15-20200228",
 library("tidyverse")
 
 # clinical review file for PNOC003 
-pnoc003_review <- readr::read_tsv(file.path("input","pnoc003-clinical-review.tsv"))
+pnoc003_review <- readr::read_tsv(file.path("input","pnoc003-clinical-review.tsv")) %>%
+  # removing these rows since we would have  
+  # the subtyping from molecular-subtyping-HGG 
+  # to over write this
+  dplyr::filter(`H3 Status` != "no report")
   
 # subtyping from molecular-subtype-HGG
 subtype <- readr::read_tsv(file.path(results_dir,
@@ -144,7 +148,8 @@ diff_subtype <- subtype %>% left_join(pnoc003_review,by=c("Kids_First_Participan
                 sample_id,
                 `H3 Status`,
                 molecular_subtype,
-                tumor_descriptor)
+                tumor_descriptor) %>%
+  distinct()
 
 diff_subtype
 
