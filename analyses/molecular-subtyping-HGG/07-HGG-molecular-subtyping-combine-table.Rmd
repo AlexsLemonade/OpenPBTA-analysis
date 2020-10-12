@@ -227,7 +227,7 @@ any(duplicated(rna_df$sample_id))
 ```
 What are they?
 
-Checking for duplicate rna sample_ids
+Checking for duplicate RNA sample_ids
 
 ```{r}
 histologies_df %>%
