@@ -95,7 +95,6 @@ dna_df <- mutation_df %>%
 ```
 
 In earlier work on this module, we observed duplicated `sample_id`.
-Yes
 
 ```{r}
 histologies_df %>%
