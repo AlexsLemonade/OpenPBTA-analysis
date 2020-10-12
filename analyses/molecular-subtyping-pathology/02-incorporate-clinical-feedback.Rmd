@@ -80,33 +80,23 @@ if (!(is.logical(running_in_ci)))
 ```{r}
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
-
+results_dir <- "results"
 ```
 
 
 #### Input
 
-When we run this locally, we want to tie it to a specific version of the histologies file _prior_ to reviewed clinical subtypes for PNOC003 samples [#751](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/751)
+When we run this locally, we want to tie it to a specific version of the histologies file _prior_ to reviewed clinical subtypes for PNOC003 samples and pathology feedback [#751](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/751)
 
 ```{r}
 if (running_in_ci) {
   # clinical pbta histology
-clinical <- read_tsv(file.path(data_dir, 
-                                "pbta-histologies.tsv")) %>%
-  # keep only Tumor
-  dplyr::filter(sample_type == "Tumor",
-                # in v17 we only had solid tissues as part of subtyping
-                # will need remove for v18 
-                composition == "Solid Tissue")
+clinical <- readr::read_tsv(file.path(data_dir, 
+                                "pbta-histologies.tsv")) 
 } else {
     # clinical pbta histology
-clinical <- read_tsv(file.path(data_dir, "release-v17-20200908",
-                                "pbta-histologies.tsv")) %>%
-  # keep only Tumor
-  dplyr::filter(sample_type == "Tumor",
-                # in v17 we only had solid tissues as part of subtyping
-                # will need remove for v18 
-                composition == "Solid Tissue")
+clinical <- readr::read_tsv(file.path(data_dir, "release-v15-20200228",
+                                "pbta-histologies.tsv")) 
 }
 ```
 
@@ -115,22 +105,26 @@ clinical <- read_tsv(file.path(data_dir, "release-v17-20200908",
 library("tidyverse")
 
 # clinical review file for PNOC003 
-pnoc003_review <- read_tsv(file.path("input","pnoc003-clinical-review.tsv"))
+pnoc003_review <- readr::read_tsv(file.path("input","pnoc003-clinical-review.tsv"))
   
 # subtyping from molecular-subtype-HGG
-subtype <- read_tsv(file.path("results",
-                         "compiled_molecular_subtypes_with_pathology_feedback.tsv")) %>%  
+subtype <- readr::read_tsv(file.path(results_dir,
+                         "compiled_molecular_subtypes.tsv")) %>%  
   # ids to match
   left_join(clinical[,c("Kids_First_Participant_ID",
                         "Kids_First_Biospecimen_ID",
                         # need tumor_descriptor to match to clinical review
                         "tumor_descriptor")],by=c("Kids_First_Biospecimen_ID",
-                                       "Kids_First_Participant_ID")) %>%
-  # removing Kids_First_Biospecimen_ID to only match on Kids_First_Participant_ID and
-  # tumor descriptor values
-  dplyr::select(-Kids_First_Biospecimen_ID)
+                                       "Kids_First_Participant_ID")) 
 
 ```
+
+#### Output file
+
+```{r}
+output_file <- file.path(results_dir, "compiled_molecular_subtypes_with_clinical_feedback.tsv")
+```
+
 
 Identify pnoc003 samples that have differences between clinical review subtype
 and molecular subtype from histone variant mutation status
@@ -200,7 +194,7 @@ subtype_clinical_review_df <- subtype %>%
   ) %>%
   # remove extra columns 
   dplyr::select(-`H3 Status`) %>%
-  write_tsv(file.path("results","compiled_molecular_subtypes_with_pathology_feedback_clinical_review.tsv"))
+  write_tsv(file.path(output_file))
   
 ```
 
