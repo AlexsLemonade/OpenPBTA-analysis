@@ -102,7 +102,6 @@ dna_df <- mutation_df %>%
 ```
 
 In earlier work on this module, we observed duplicated `sample_id`.
-Yes
 
 ```{r}
 histologies_df %>%
@@ -234,7 +233,7 @@ any(duplicated(rna_df$sample_id))
 ```
 What are they?
 
-Checking for duplicate rna sample_ids
+Checking for duplicate RNA sample_ids
 
 ```{r}
 histologies_df %>%
