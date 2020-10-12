@@ -18,6 +18,10 @@ Specifically, there are instances where the final `integrated_diagnosis` calls f
 The goal is to make sure that the _final calls_ are recorded in an aggregated table (see point 1 above) and documented in this repository.
 
 For more background, see [#609](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/609).
+ 
+3. Incorporate clinical reviewed subtypes for PNOC003 samples:
+In the original [issue](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/751) added by @jharenza we have the clinically reviewed subtypes for PNOC003 samples. We check if any subtype is different between the results from `molecular-subtyping-HGG` and this file and update to the clinically reviewed subtype. Subtypes for 3 WXS samples and 3 RNA-Seq from PT_NK8A49X5, PT_QA9WJ679 and PT_WGVEF96B were updated.  
+
 
 ### Usage
 
@@ -33,3 +37,5 @@ bash run-subtyping-aggregation.sh
 
 `02-incorporate-pathology-feedback.Rmd` incorporates pathology feedback for specific samples when the labels for those samples either need to be updated as a result of molecular subtyping or deviate from the logic in upstream molecular subtyping modules. 
 The output is an updated version of the table from `01-compile-subtyping-results.Rmd` (`results/compiled_molecular_subtypes_with_pathology_feedback.tsv`).
+
+`03-pnoc003-clinical-review-update.Rmd` incorporate clincally reviewed subtypes for PNOC003 samples and update to the clinically reviewed subtype if they are different from the subtype from `molecular-subtyping-HGG`

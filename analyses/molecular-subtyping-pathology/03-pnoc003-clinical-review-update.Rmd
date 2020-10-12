@@ -1,0 +1,206 @@
+---
+title: "Update clinically reviewed subtype for PNOC003 samples"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Krutika Gaonkar for D3b
+params:
+  is_ci: FALSE
+---
+
+As part of molecular-subtype-HGG analysis we assign a HGG or DMG subtype from looking for K28M histone variants, in this notebook we are identifying samples which have differences between the clinically reviewed subtype and subtype from molecular-subtype-HGG module in PNOC003 and update
+those to the clinical subtypes
+
+Adding information from the original [issue](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/751) added by @jharenza 
+ 
+**UPDATE 2020-10-05** 
+Below is a double-reviewed (by Cassie Kline and myself) table of histone mutations found in the specified patient tumor per the TGEN genomic reports. 
+
+Kids_First_Participant_ID | H3 Status | tumor_descriptor
+-- | -- | --
+PT_M23Q0DC3 | H3F3A K28M | Initial CNS Tumor
+PT_9GKVQ9QS | H3F3A K28M | Initial CNS Tumor
+PT_KBFM551M | H3 WT | Initial CNS Tumor
+PT_KBFM551M | no report | Progressive   Disease Post-Mortem
+PT_V1HNAC2Q | H3F3A K28M | Initial CNS Tumor
+PT_NK8A49X5 | H3F3A K28M | Initial CNS Tumor
+PT_NK8A49X5 | H3F3A K28M | Progressive
+PT_KZ56XHJT | H3F3A K28M | Initial CNS Tumor
+PT_KZ56XHJT | H3F3A K28M | Progressive
+PT_KZ56XHJT | no report | Progressive   Disease Post-Mortem
+PT_QA9WJ679 | H3F3A K28M | Initial CNS Tumor
+PT_WGVEF96B | H3F3A K28M | Initial CNS Tumor
+PT_HGM20MW7 | H3F3A K28M | Initial CNS Tumor
+PT_0MXPTTM3 | H3 WT | Initial CNS Tumor
+PT_M9XXJ4GR | H3F3A K28M | Initial CNS Tumor
+PT_KTRJ8TFY | H3F3A K28M | Initial CNS Tumor
+PT_KTRJ8TFY | no report | Progressive   Disease Post-Mortem
+PT_1E3E6GMF | H3F3A K28M | Initial CNS Tumor
+PT_VPEMAQBN | HIST1H3B K28M | Initial CNS Tumor
+PT_7P6J57H3 | H3F3A K28M | Initial CNS Tumor
+PT_C5FKRB1P | H3 WT | Initial CNS Tumor
+PT_CSKHQB16 | HIST1H3B K28M | Initial CNS Tumor
+PT_1AAYYGGY | H3F3A K28M | Initial CNS Tumor
+PT_NWYSD53S | H3F3A K28M | Initial CNS Tumor
+PT_8P368R5B | No report | Initial CNS Tumor
+PT_C9YDTZPA | H3F3A K28M | Initial CNS Tumor
+PT_KAQMYFYB | H3F3A K28M | Initial CNS Tumor
+PT_Y74CVASJ | H3F3A K28M | Initial CNS Tumor
+PT_W5GP3F6B | H3F3A K28M | Initial CNS Tumor
+PT_A06JR0E5 | H3F3A K28M | Initial CNS Tumor
+PT_EN2RN5Y1 | H3F3A K28M | Initial CNS Tumor
+PT_DMAF1J4A | H3F3A K28M | Initial CNS Tumor
+PT_RYMG3M91 | H3F3A K28M | Initial CNS Tumor
+PT_RE6AXQM1 | H3F3A K28M | Initial CNS Tumor
+PT_G16VK7FR | HIST1H3B K28M | Initial CNS Tumor
+PT_1YQH5NSH | H3F3A K28M | Initial CNS Tumor
+
+## Set up 
+
+```{r}
+# This logic is the same as analyses/gene-set-enrichment-analysis/02-model-gsea.Rmd
+# Assigning params$is_ci to running_in_ci avoids a locked binding error
+running_in_ci <- params$is_ci
+
+# Are we testing? In case of a non 0/1 number, we recast as logical, and then 
+# ensure logical.
+if (running_in_ci %in% c(0,1)) running_in_ci <- as.logical(running_in_ci)
+if (!(is.logical(running_in_ci)))
+{
+  stop("\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).")
+}
+```
+
+
+### Directory and files
+
+#### Directories
+
+```{r}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+
+```
+
+
+#### Input
+
+When we run this locally, we want to tie it to a specific version of the histologies file _prior_ to reviewed clinical subtypes for PNOC003 samples [#751](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/751)
+
+```{r}
+if (running_in_ci) {
+  # clinical pbta histology
+clinical <- read_tsv(file.path(data_dir, 
+                                "pbta-histologies.tsv")) %>%
+  # keep only Tumor
+  dplyr::filter(sample_type == "Tumor",
+                # in v17 we only had solid tissues as part of subtyping
+                # will need remove for v18 
+                composition == "Solid Tissue")
+} else {
+    # clinical pbta histology
+clinical <- read_tsv(file.path(data_dir, "release-v17-20200908",
+                                "pbta-histologies.tsv")) %>%
+  # keep only Tumor
+  dplyr::filter(sample_type == "Tumor",
+                # in v17 we only had solid tissues as part of subtyping
+                # will need remove for v18 
+                composition == "Solid Tissue")
+}
+```
+
+
+```{r}
+library("tidyverse")
+
+# clinical review file for PNOC003 
+pnoc003_review <- read_tsv(file.path("input","pnoc003-clinical-review.tsv"))
+  
+# subtyping from molecular-subtype-HGG
+subtype <- read_tsv(file.path("results",
+                         "compiled_molecular_subtypes_with_pathology_feedback.tsv")) %>%  
+  # ids to match
+  left_join(clinical[,c("Kids_First_Participant_ID",
+                        "Kids_First_Biospecimen_ID",
+                        # need tumor_descriptor to match to clinical review
+                        "tumor_descriptor")],by=c("Kids_First_Biospecimen_ID",
+                                       "Kids_First_Participant_ID")) %>%
+  # removing Kids_First_Biospecimen_ID to only match on Kids_First_Participant_ID and
+  # tumor descriptor values
+  dplyr::select(-Kids_First_Biospecimen_ID)
+
+```
+
+Identify pnoc003 samples that have differences between clinical review subtype
+and molecular subtype from histone variant mutation status
+
+```{r}
+diff_subtype <- subtype %>% left_join(pnoc003_review,by=c("Kids_First_Participant_ID","tumor_descriptor")) %>% 
+  dplyr::filter(
+    # checking for samples where clinically reviewed subtype is H3 WT
+    # but molecular subtype is not HGG
+    (grepl("H3 WT",.$`H3 Status`) & !grepl("HGG",molecular_subtype)) |
+    # checking for samples where clinically reviewed subtype is H3 K28M
+    # but molecular subtype is not DMG H3 K28
+    (grepl("K28M",.$`H3 Status`) & !grepl("DMG, H3 K28",molecular_subtype)) | 
+    # checking for samples were clinical review was not found  
+    grepl("no report",.$`H3 Status`) )  %>%
+  dplyr::select(Kids_First_Participant_ID,
+                sample_id,
+                `H3 Status`,
+                molecular_subtype,
+                tumor_descriptor)
+
+diff_subtype
+
+```
+
+Counts in each type of differences to identify how many samples already 
+have subtyping updated from molecular-subtype-HGG module and how many
+samples need molecular subtype updated from clinical review
+
+```{r}
+
+diff_subtype %>% 
+  group_by(`H3 Status`,molecular_subtype) %>%
+  tally()
+
+```
+
+
+Seems like 6 sample (WXS and matching RNA-Seq from PT_NK8A49X5, PT_QA9WJ679, PT_WGVEF96B) molecular subtype 
+need to be updated and Notes columns for these samples will be updated to capture this 
+information
+
+```{r}
+subtype_clinical_review_df <- subtype %>%
+  # matching only on "Kids_First_Participant_ID","tumor_descriptor"
+  left_join(pnoc003_review,by=c("Kids_First_Participant_ID","tumor_descriptor")) %>% 
+  dplyr::mutate(
+    Notes =  case_when(
+      (grepl("H3 WT",.$`H3 Status`) & !grepl("HGG",molecular_subtype)) 
+      ~ paste(Notes,"Updated to HGG, H3 wildtype from clinical review",sep=","),
+      (grepl("K28M",.$`H3 Status`) & !grepl("DMG, H3 K28",molecular_subtype)) 
+      ~ paste(Notes,"Updated to DMG, H3 K28 from clinical review", sep=","),
+      TRUE ~ Notes
+    ),
+    molecular_subtype =  case_when(
+      (grepl("H3 WT",.$`H3 Status`) & grepl("HGG",molecular_subtype)) |
+        (grepl("K28M",.$`H3 Status`) & grepl("DMG, H3 K28",molecular_subtype)) 
+      ~ molecular_subtype,
+      # Don't think we would need to ever change from K28 to H3 wildtype
+      # since there would be evidence for K28 from snv data for the sample
+      #(grepl("H3 WT",.$`H3 Status`) & !grepl("HGG",molecular_subtype)) ~ 
+      #  gsub("DMG, H3 K28","HGG, H3 wildtype",molecular_subtype),
+      (grepl("K28M",.$`H3 Status`) & !grepl("DMG, H3 K28",molecular_subtype)) ~ 
+        gsub("HGG, H3 wildtype","DMG, H3 K28",molecular_subtype),
+      TRUE ~ molecular_subtype
+    )
+  ) %>%
+  # remove extra columns 
+  dplyr::select(-`H3 Status`) %>%
+  write_tsv(file.path("results","compiled_molecular_subtypes_with_pathology_feedback_clinical_review.tsv"))
+  
+```
+
