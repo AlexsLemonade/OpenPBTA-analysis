@@ -5,8 +5,6 @@ output:
     toc: TRUE
     toc_float: TRUE
 author: Krutika Gaonkar for D3b
-params:
-  is_ci: FALSE
 ---
 
 As part of molecular-subtype-HGG analysis we assign a HGG or DMG subtype from looking for K28M histone variants, in this notebook we are identifying samples which have differences between the clinically reviewed subtype and subtype from molecular-subtype-HGG module in PNOC003 and update
@@ -56,24 +54,6 @@ PT_RE6AXQM1 | H3F3A K28M | Initial CNS Tumor
 PT_G16VK7FR | HIST1H3B K28M | Initial CNS Tumor
 PT_1YQH5NSH | H3F3A K28M | Initial CNS Tumor
 
-## Set up 
-
-```{r}
-# This logic is the same as analyses/gene-set-enrichment-analysis/02-model-gsea.Rmd
-# Assigning params$is_ci to running_in_ci avoids a locked binding error
-running_in_ci <- params$is_ci
-
-# Are we testing? In case of a non 0/1 number, we recast as logical, and then 
-# ensure logical.
-if (running_in_ci %in% c(0,1)) running_in_ci <- as.logical(running_in_ci)
-if (!(is.logical(running_in_ci)))
-{
-  stop("\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).")
-}
-```
-
-
-### Directory and files
 
 #### Directories
 
@@ -86,18 +66,11 @@ results_dir <- "results"
 
 #### Input
 
-When we run this locally, we want to tie it to a specific version of the histologies file _prior_ to reviewed clinical subtypes for PNOC003 samples and pathology feedback [#751](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/751)
-
 ```{r}
-if (running_in_ci) {
-  # clinical pbta histology
-clinical <- readr::read_tsv(file.path(data_dir, 
+# clinical pbta histology
+clinical <- readr::read_tsv(file.path(data_dir,
                                 "pbta-histologies.tsv")) 
-} else {
-    # clinical pbta histology
-clinical <- readr::read_tsv(file.path(data_dir, "release-v15-20200228",
-                                "pbta-histologies.tsv")) 
-}
+
 ```
 
 
