@@ -150,23 +150,37 @@ subtype_clinical_review_df <- subtype %>%
   # matching only on "Kids_First_Participant_ID","tumor_descriptor"
   left_join(pnoc003_review,by=c("Kids_First_Participant_ID","tumor_descriptor")) %>% 
   dplyr::mutate(
+      # Since we have some additional values from IDH/BRAF alterations in 
+      # molecular-subtping-HGG which are not part of the clinical review
+      # I will be using `grepl` to check if the value from clinical review 
+      # and molecular-subtyping-HGG values are different
     Notes =  case_when(
-      (grepl("H3 WT",.$`H3 Status`) & !grepl("HGG",molecular_subtype)) 
-      ~ paste(Notes,"Updated to HGG, H3 wildtype from clinical review",sep=","),
+      # Don't think we would need to ever change from K28 to H3 wildtype
+      # since there would be evidence for K28 from snv data for the sample
+      # (grepl("H3 WT",.$`H3 Status`) & !grepl("HGG",molecular_subtype)) 
+      # ~ paste(Notes,"Updated to HGG, H3 wildtype from clinical review",sep=","),
+      #
+      # IF we have K28M in clinical review and molecular subtype if not DMG K28M
       (grepl("K28M",.$`H3 Status`) & !grepl("DMG, H3 K28",molecular_subtype)) 
+      # THEN the value in Notes will be updated to specify that the value is
+      # updated because of clinical review
       ~ paste(Notes,"Updated to DMG, H3 K28 from clinical review", sep=","),
+      # IF clinical review and molecular subtype match OR 
+      # no clinical review is provided then keep values from Notes
       TRUE ~ Notes
     ),
     molecular_subtype =  case_when(
-      (grepl("H3 WT",.$`H3 Status`) & grepl("HGG",molecular_subtype)) |
-        (grepl("K28M",.$`H3 Status`) & grepl("DMG, H3 K28",molecular_subtype)) 
-      ~ molecular_subtype,
       # Don't think we would need to ever change from K28 to H3 wildtype
       # since there would be evidence for K28 from snv data for the sample
       #(grepl("H3 WT",.$`H3 Status`) & !grepl("HGG",molecular_subtype)) ~ 
       #  gsub("DMG, H3 K28","HGG, H3 wildtype",molecular_subtype),
+      #
+      # IF we have K28M in clinical review and molecular subtype if not DMG K28M
       (grepl("K28M",.$`H3 Status`) & !grepl("DMG, H3 K28",molecular_subtype)) ~ 
+        # THEN the value in molecular subtype will be updated 
         gsub("HGG, H3 wildtype","DMG, H3 K28",molecular_subtype),
+      # IF clinical review and molecular subtype match OR
+      # no clinical review is provided then keep values from molecular subtype
       TRUE ~ molecular_subtype
     )
   ) %>%
