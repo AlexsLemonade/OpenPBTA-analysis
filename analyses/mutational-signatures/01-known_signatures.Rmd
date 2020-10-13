@@ -1,0 +1,371 @@
+---
+title: "Mutational Signatures"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: C. Savonen for ALSF CCDL
+date: 2019
+---
+
+**Purpose:**
+
+Calculate and plot mutational signatures for all samples using [COSMIC signatures](https://cancer.sanger.ac.uk/cosmic) and 
+[Alexandrov et al, 2013](https://www.ncbi.nlm.nih.gov/pubmed/23945592) mutational signatures. 
+
+### Summary of Findings:
+
+Coming soon. 
+
+#### Usage
+
+To run this from the command line, use:
+```
+Rscript -e "rmarkdown::render('analyses/mutational-signatures/mutational_signatures.Rmd', 
+                              clean = TRUE)"
+```
+
+_This assumes you are in the top directory of the repository._
+
+## Setup
+
+#### Packages and functions
+
+Import necessary functions.
+
+```{r}
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+
+# Import specialized functions
+source(file.path("util", "mut_sig_functions.R"))
+
+# Load this library
+library(deconstructSigs)
+```
+
+Set up directory paths. 
+
+```{r}
+data_dir <- file.path("..", "..", "data")
+results_dir <- "results"
+plots_dir <- "plots"
+figures_dir <- file.path("..", "..", "figures")
+cosmic_plots <- file.path(plots_dir, "cosmic")
+nature_plots <- file.path(plots_dir, "nature")
+```
+
+Make new directories for the results. 
+
+```{r}
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+if (!dir.exists(cosmic_plots)) {
+  dir.create(cosmic_plots, recursive = TRUE)
+}
+if (!dir.exists(nature_plots)) {
+  dir.create(nature_plots, recursive = TRUE)
+}
+```
+
+## Read in data
+
+Read in the consensus MAF file. 
+
+```{r}
+# Declare file path for consensus file
+consensus_file <- file.path(data_dir, "pbta-snv-consensus-mutation.maf.tsv.gz")
+```
+
+Read in the consensus MAF file. 
+
+```{r}
+# Read in the file
+maf <- data.table::fread(consensus_file, data.table = FALSE)
+```
+
+### Read in color palettes
+
+Read in the histology color palette. 
+
+```{r}
+histology_col_palette <- readr::read_tsv(
+  file.path(figures_dir, "palettes", "histology_color_palette.tsv")
+  ) %>%
+  # We'll use deframe so we can use it as a recoding list
+  tibble::deframe()
+```
+
+Set up gradient color palette for the bubble matrix plots. 
+
+```{r}
+gradient_col_palette <- readr::read_tsv(
+  file.path(figures_dir, "palettes", "gradient_color_palette.tsv")
+  )
+
+# Won't need NA color this time. 
+gradient_col_palette <- gradient_col_palette %>%
+  dplyr::filter(color_names != "na_color")
+```
+
+Read in the metadata and set it up with the color palette. 
+
+```{r}
+metadata_df <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max = 10000) %>% 
+  dplyr::rename(Tumor_Sample_Barcode = "Kids_First_Biospecimen_ID") %>%
+  dplyr::select("Tumor_Sample_Barcode", "experimental_strategy", "short_histology") %>%
+  # Easier to deal with NA short histologies if they are labeled something different
+  dplyr::mutate(short_histology = as.character(tidyr::replace_na(short_histology, "none"))) %>%
+  # Tack on the sample color using the short_histology column and a recode
+  dplyr::mutate(sample_color = dplyr::recode(short_histology,
+                                             !!!histology_col_palette))
+```
+
+Read in this list so we can make sure we keep only primary tumors for the 
+grouped bar plots.
+
+```{r}
+ind_samples <- readr::read_tsv(file.path(
+  data_dir,
+  "independent-specimens.wgswxs.primary.tsv"
+))
+```
+
+Read in the WGS and WXS regions so they can be used for the Mb denominator. 
+
+```{r}
+# Set up BED region files for TMB calculations
+wgs_bed <- readr::read_tsv(file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed"),
+  col_names = FALSE
+)
+wxs_bed <- readr::read_tsv(file.path(data_dir, "WXS.hg38.100bp_padded.bed"),
+  col_names = FALSE
+)
+
+# Calculate size of genome surveyed
+# These files are BED files where the third column is the End position and
+# the second column is the Start position.
+# So End - Start gives the size of each range. Sum the gives the total size in bp.
+wgs_size <- sum(wgs_bed[, 3] - wgs_bed[, 2])
+wxs_size <- sum(wxs_bed[, 3] - wxs_bed[, 2])
+```
+
+## Set up data
+
+Determine how many mutations we have per sample.
+
+```{r}
+mut_per_sample <- maf %>%
+  dplyr::group_by(Tumor_Sample_Barcode) %>%
+  dplyr::tally() %>%
+  dplyr::arrange(n)
+
+summary(mut_per_sample$n)
+```
+
+Graph this.
+
+```{r}
+ggplot2::ggplot(mut_per_sample, ggplot2::aes(x = n, geom = "density")) +
+  ggplot2::geom_density() +
+  ggplot2::theme_classic()
+```
+
+Make mutation data into `deconstructSigs` input format.
+
+```{r}
+# Convert to deconstructSigs input
+sigs_input <- mut.to.sigs.input(
+  mut.ref = maf,
+  sample.id = "Tumor_Sample_Barcode",
+  chr = "Chromosome",
+  pos = "Start_Position",
+  ref = "Reference_Allele",
+  alt = "Allele",
+  bsg = BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
+)
+```
+
+Add total mutations per sample. 
+
+```{r}
+# Count the total number of signature mutations for each sample
+total_muts <- apply(sigs_input, 1, sum)
+```
+
+## Determine Signatures for COSMIC and Alexandrov et al, 2013
+
+Get list of tumor sample ids. 
+
+```{r}
+tumor_sample_ids <- maf %>%
+  dplyr::filter(Tumor_Sample_Barcode %in% rownames(sigs_input)) %>%
+  dplyr::distinct(Tumor_Sample_Barcode) %>%
+  dplyr::pull(Tumor_Sample_Barcode)
+```
+
+Get [COSMIC signatures](https://cancer.sanger.ac.uk/cosmic) for each sample. 
+This step will take some time. 
+
+```{r}
+sample_sigs_cosmic <- lapply(tumor_sample_ids, function(sample_id) {
+  # Determine the signatures contributing to the sample
+  whichSignatures(
+    tumor.ref = sigs_input,
+    signatures.ref = signatures.cosmic,
+    sample.id = sample_id,
+    contexts.needed = TRUE
+  )
+})
+# Bring along the names
+names(sample_sigs_cosmic) <- tumor_sample_ids
+```
+
+Get [Alexandrov et al, 2013](https://www.ncbi.nlm.nih.gov/pubmed/23945592) signatures for each sample. 
+
+```{r}
+sample_sigs_nature <- lapply(tumor_sample_ids, function(sample_id) {
+  # Determine the signatures contributing to the sample
+  whichSignatures(
+    tumor.ref = sigs_input,
+    signatures.ref = signatures.nature2013,
+    sample.id = sample_id,
+    contexts.needed = TRUE
+  )
+})
+# Bring along the names
+names(sample_sigs_nature) <- tumor_sample_ids
+```
+
+### COSMIC signature plots
+
+```{r}
+sample_mut_sig_plot(
+  sample_sigs_cosmic,
+  label = "cosmic",
+  output_dir = file.path(cosmic_plots, "individual_mutation_sig")
+)
+```
+
+### Alexandrov et al, 2013 signature plots
+
+```{r}
+sample_mut_sig_plot(
+  sample_sigs_nature,
+  label = "nature",
+  output_dir = file.path(nature_plots, "individual_mutation_sig") 
+)
+```
+
+### Calculate the mutations per Mb for each signature
+
+Do this for COSMIC mutation signatures.
+
+```{r}
+# Calculate mutations per signature
+cosmic_sigs_df <- calc_mut_per_sig(
+  sample_sigs_cosmic,
+  muts_per_sample = total_muts,
+  wgs_genome_size = wgs_size,
+  wxs_exome_size = wxs_size,
+  metadata = metadata_df
+  ) 
+
+# Write this to a file but drop the color column
+cosmic_sigs_df %>% 
+  dplyr::select(-sample_color) %>% 
+  readr::write_tsv(file.path(results_dir, "cosmic_signatures_results.tsv"))
+
+# Print out a preview
+cosmic_sigs_df
+```
+
+Do this for Alexandrov et al, 2013 mutation signatures.
+
+```{r}
+# Calculate mutations per signature
+nature_sigs_df <- calc_mut_per_sig(
+  sample_sigs_nature,
+  muts_per_sample = total_muts,
+  wgs_genome_size = wgs_size,
+  wxs_exome_size = wxs_size,
+  metadata = metadata_df 
+) 
+
+# Write this to a file but drop the color column
+nature_sigs_df %>% 
+  dplyr::select(-sample_color) %>% 
+  readr::write_tsv(file.path(results_dir, "nature_signatures_results.tsv"))
+
+# Print out a preview
+nature_sigs_df
+```
+
+## Mutation signature bubble matrix by histology groups
+
+```{r}
+bubble_matrix_plot(cosmic_sigs_df, 
+                   label = "COSMIC Signatures", 
+                   color_palette = gradient_col_palette$hex_codes
+                   )
+```
+
+```{r}
+ggplot2::ggsave(
+  file.path(cosmic_plots, "bubble_matrix_cosmic_mutation_sig.png"),
+  width = 30, height = 20, units = "cm")
+```
+
+```{r}
+bubble_matrix_plot(nature_sigs_df, 
+                   label = "Alexandrov et al, 2013 signatures", 
+                   color_palette = gradient_col_palette$hex_codes)
+```
+
+```{r}
+ggplot2::ggsave(
+  file.path(nature_plots, "bubble_matrix_nature_mutation_sig.png"), 
+  width = 30, height = 20, units = "cm")
+```
+
+## Mutation signature grouped bar plots for each histology group
+
+We will make these plots for primary tumor samples only. 
+Let's make these for COSMIC mutation signatures first. 
+
+```{r, results = "hide"}
+# Keep only primary tumors
+cosmic_sigs_primary <- cosmic_sigs_df %>%
+  dplyr::filter(Tumor_Sample_Barcode %in% ind_samples$Kids_First_Biospecimen_ID)
+
+# Make grouped bar plots
+lapply(unique(cosmic_sigs_primary$short_histology),
+  grouped_sig_barplot,
+  sig_num_df = cosmic_sigs_primary,
+  output_dir = file.path(cosmic_plots, "signature_grouped_barplots"), 
+  label = "cosmic"
+)
+```
+
+Make these plots for Alexandrov et al, 2013 signatures. 
+
+```{r, results = "hide"}
+# Keep only primary tumors
+nature_sigs_primary <- nature_sigs_df %>%
+  dplyr::filter(Tumor_Sample_Barcode %in% ind_samples$Kids_First_Biospecimen_ID)
+
+# Make grouped bar plots
+lapply(unique(nature_sigs_primary$short_histology),
+  grouped_sig_barplot,
+  sig_num_df = nature_sigs_primary,
+  output_dir = file.path(nature_plots, "signature_grouped_barplots"),
+  label = "nature"
+)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
