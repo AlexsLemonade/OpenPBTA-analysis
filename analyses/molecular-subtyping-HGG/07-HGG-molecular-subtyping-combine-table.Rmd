@@ -101,7 +101,13 @@ dna_df <- mutation_df %>%
   left_join(cn_gistic_df)
 ```
 
-In earlier work on this module, we observed duplicated `sample_id`.
+
+```{r}
+any(duplicated(dna_df$sample_id))
+```
+What are they?
+
+If we only group by sample_id what does composition,aliquot_id and cell_line_composition look like:
 
 ```{r}
 histologies_df %>%
@@ -118,19 +124,13 @@ histologies_df %>%
                 aliquot_id) %>%
   summarize(
             composition =  paste(composition, collapse = ", "),
-            aliquot_id = paste(aliquot_id, collapse = ", "),
-            cell_line_composition = paste(cell_line_composition, collapse = ", "))
+            cell_line_composition = paste(cell_line_composition, collapse = ", "),
+            aliquot_id = paste(aliquot_id, collapse = ", "))
 
 ```
-The duplicates are mostly from multiple Solid tumor samples per sample_id or there are non-tumor ( derived cell-line ) samples for sample_id .The `cell_line_composition` seems to be able to differentiate each cell line samples. 
+The duplicates are mostly from multiple Solid tumor samples per sample_id or there are non-tumor ( derived cell-line ) samples for sample_id .
 
 
-
-```{r}
-any(duplicated(dna_df$Kids_First_Biospecimen_ID))
-```
-
-No it doesn't.
 
 ```{r}
 rm(mutation_df, cn_gistic_df)
@@ -240,7 +240,7 @@ any(duplicated(rna_df$sample_id))
 ```
 What are they?
 
-Checking for duplicate RNA sample_ids
+Checking for duplicate RNA sample_ids. If we only group by sample_id what does composition and cell_line_composition look like:
 
 ```{r}
 histologies_df %>%
@@ -254,9 +254,44 @@ histologies_df %>%
             aliquot_id = paste(aliquot_id, collapse = ", "))
 ```
 
-The duplicates are mostly from multiple Solid tumor samples per sample_id or there are non-tumor ( derived cell-line ) samples for sample_id. The `cell_line_composition` seems to be able to differentiate each cell line samples. 
+The duplicates are mostly from multiple Solid tumor samples per sample_id or there are non-tumor ( derived cell-line ) samples for sample_id. 
 
-Let's add `cell_line_composition`column to merged dna and rna files cell-lines appropriately 
+
+We are only trying to find a solution for multiple sample_ids per Kids_First_Participant_ID becuase of additional non-tumor `Derived Cell Line` samples .
+
+Checking : if we group by `sample_id` and `aliquot_id` do we get unique matches between DNA and RNA?
+
+```{r}
+
+histologies_df %>%
+  dplyr::filter(composition=="Derived Cell Line") %>%
+  # grouping by sample_id and aliquot_id
+  group_by(sample_id,aliquot_id) %>%
+  # here we are checking if can aggregate DNA and RNA samples using
+  # grouping by sample_id,aliquot_id
+  summarise(experimental_strategy=paste(experimental_strategy,collapse = ", "),count=n()) %>%
+  # if we can successfully aggregate `count` woulbe be >1
+  dplyr::filter(count >1)
+
+```
+Don't find any aggregated DNA and RNA samples by grouping by `sample_id,aliquot_id`
+
+
+If we group by `sample_id` and `cell_line_composition` do we get unique matches between DNA and RNA?
+```{r}
+histologies_df %>%
+  left_join(cell_line_composition) %>% 
+  dplyr::filter(composition=="Derived Cell Line") %>%
+  # grouping by sample_id and cell_line_composition
+  group_by(sample_id,cell_line_composition) %>%
+  # here we are checking if can aggregate DNA and RNA samples using 
+  # sample_id and cell_line_composition
+  summarise(experimental_strategy=paste(experimental_strategy,collapse = ", "),count=n()) %>%
+  # if we can successfully aggregate`count` woulbe be >1
+  dplyr::filter(count >1)
+
+```
+We find 16 pairs of WGS and RNA-Seq samples grouping by sample_id and cell_line_composition. Let's add `cell_line_composition`column to dna and rna files to match `Derived Cell Line` samples appropriately in `All Data` section of notebook.
 
 ```{r}
 
@@ -267,9 +302,6 @@ rna_df <- rna_df %>%
   left_join(cell_line_composition,by = c("Kids_First_Participant_ID", "sample_id", "Kids_First_Biospecimen_ID"))
 
 ```
-
-
-
 
 
 ### All Data
