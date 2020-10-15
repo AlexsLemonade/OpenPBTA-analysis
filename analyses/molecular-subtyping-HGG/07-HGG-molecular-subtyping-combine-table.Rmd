@@ -224,7 +224,7 @@ There are 2 instances where there are two stranded biospecimen IDs that map to t
 ### All Data
 
 ```{r}
-all_data_df <- left_join(dna_df, rna_df,
+all_data_df <- full_join(dna_df, rna_df,
                          by = c("Kids_First_Participant_ID",
                                 "sample_id"),
                          suffix = c("_DNA", "_RNA")) %>%
@@ -516,7 +516,10 @@ molecular_subtype_table <- all_data_df %>%
          Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA) %>%
   left_join(molecular_subtype_table) %>%
   distinct() %>%
-  replace_na(list(molecular_subtype = "HGG, H3 wildtype"))
+  dplyr::mutate(molecular_subtype = case_when(
+    is.na(molecular_subtype) & !is.na(Kids_First_Biospecimen_ID_DNA) ~ "HGG, H3 wildtype",
+    is.na(molecular_subtype) & is.na(Kids_First_Biospecimen_ID_DNA) ~ "HGG, To be classified",
+    TRUE ~ molecular_subtype))
 ```
 
 Write to file.
