@@ -105,17 +105,24 @@ In earlier work on this module, we observed duplicated `sample_id`.
 
 ```{r}
 histologies_df %>%
+  left_join(cell_line_composition) %>%
   filter(sample_id %in% dna_df$sample_id[duplicated(dna_df$sample_id)],
          experimental_strategy %in% c("WGS"),
          sample_type == "Tumor") %>%
   group_by(sample_id) %>%
   arrange(sample_id) %>%
-  dplyr::select(Kids_First_Biospecimen_ID,sample_id,composition) %>%
+  dplyr::select(Kids_First_Biospecimen_ID,
+                sample_id,
+                composition,
+                cell_line_composition,
+                aliquot_id) %>%
   summarize(
-            composition =  paste(composition, collapse = ", "))
+            composition =  paste(composition, collapse = ", "),
+            aliquot_id = paste(aliquot_id, collapse = ", "),
+            cell_line_composition = paste(cell_line_composition, collapse = ", "))
 
 ```
-The duplicates are mostly from multiple Solid tumor samples per sample_id or there are non-tumor ( derived cell-line ) samples for sample_id 
+The duplicates are mostly from multiple Solid tumor samples per sample_id or there are non-tumor ( derived cell-line ) samples for sample_id .The `cell_line_composition` seems to be able to differentiate each cell line samples. 
 
 
 
@@ -237,28 +244,19 @@ Checking for duplicate RNA sample_ids
 
 ```{r}
 histologies_df %>%
+  left_join(cell_line_composition) %>%
   filter(sample_id %in% rna_df$sample_id[which(duplicated(rna_df$sample_id))],
          experimental_strategy == "RNA-Seq") %>%
   group_by(sample_id) %>%
   summarize(RNA_library = paste(RNA_library, collapse = ", "),
-            composition =  paste(composition, collapse = ", "))
+            composition =  paste(composition, collapse = ", "),
+            cell_line_compositio = paste(cell_line_composition, collapse = ", "),
+            aliquot_id = paste(aliquot_id, collapse = ", "))
 ```
 
-The duplicates are mostly from multiple Solid tumor samples per sample_id or there are non-tumor ( derived cell-line ) samples for sample_id 
+The duplicates are mostly from multiple Solid tumor samples per sample_id or there are non-tumor ( derived cell-line ) samples for sample_id. The `cell_line_composition` seems to be able to differentiate each cell line samples. 
 
-
-Checking if adding cell-line composition type can uniquely match DNA to RNA
-
-```{r}
-
-cell_line_composition %>%
-  left_join(histologies_df) %>%
-  group_by(sample_id,experimental_strategy) %>%
-  summarize(cell_line_composition = paste(cell_line_composition, collapse = ", "),
-            composition =  paste(composition, collapse = ", "))
-
-```
-`cell_line_composition` seems to be able to differentiate each cell line so let's add the column to merged dna and rna files
+Let's add `cell_line_composition`column to merged dna and rna files cell-lines appropriately 
 
 ```{r}
 
