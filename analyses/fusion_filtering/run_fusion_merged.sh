@@ -28,8 +28,10 @@ standard_arriba_file="${scratch_path}/arriba.tsv"
 standard_starfusion_file="${scratch_path}/starfusion.tsv"
 
 # general filtering parameters
-artifact_filter="GTEx_Recurrent|DGD_PARALOGS|Normal|BodyMap|ConjoinG"
+artifact_filter="GTEx_Recurrent|DGD_PARALOGS|Normal|BodyMap"
 reading_frame_filter="in-frame|frameshift|other"
+spanningFragCountFilter=100
+
 
 # relevant gene expression files
 polya_expression_file="${data_path}/pbta-gene-expression-rsem-fpkm.polya.rds"
@@ -44,7 +46,7 @@ independent_samples_file="${data_path}/independent-specimens.wgswxs.primary-plus
 
 # data release files to use for recurrent fusion/fused genes detection
 
-putative_oncogenic_fusion="${data_path}/pbta-fusion-putative-oncogenic.tsv"
+putative_oncogenic_fusion="${results_path}/pbta-fusion-putative-oncogenic.tsv"
 
 
 # Run Fusion standardization for arriba caller
@@ -62,6 +64,7 @@ Rscript 01-fusion-standardization.R --fusionfile $starfusion_file \
 Rscript 02-fusion-filtering.R --standardFusionFiles $standard_starfusion_file,$standard_arriba_file  \
                               --expressionMatrix $polya_expression_file \
                               --artifactFilter $artifact_filter  \
+                              --spanningFragCountFilter $spanningFragCountFilter \
                               --readingFrameFilter $reading_frame_filter \
                               --referenceFolder $references_path \
                               --outputfile "${scratch_path}/standardFusionPolyaExp" \
@@ -72,6 +75,7 @@ Rscript 02-fusion-filtering.R --standardFusionFiles $standard_starfusion_file,$s
 Rscript 02-fusion-filtering.R --standardFusionFiles $standard_arriba_file,$standard_starfusion_file \
                               --expressionMatrix $stranded_expression_file \
                               --artifactFilter $artifact_filter \
+                              --spanningFragCountFilter $spanningFragCountFilter \
                               --readingFrameFilter $reading_frame_filter \
                               --referenceFolder $references_path \
                               --outputfile "${scratch_path}/standardFusionStrandedExp" \

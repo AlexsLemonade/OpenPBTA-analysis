@@ -124,8 +124,8 @@ jobs:
           command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh
 
       - run:
-          name: Mutational Signatures
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutational-signatures/mutational_signatures.Rmd', clean = TRUE)"
+          name: Mutational Signatures 
+          command: OPENPBTA_QUICK_MUTSIGS=1 ./scripts/run_in_ci.sh bash analyses/mutational-signatures/run_mutational_signatures.sh
 
       - run:
           name: Chromosomal instability breakpoints
