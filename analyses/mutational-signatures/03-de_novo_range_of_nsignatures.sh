@@ -40,4 +40,4 @@ Rscript --vanilla \
   --num_iterations $NUM_ITER \
   --seed 42 \
   --output_file "results/denovo_sigfit_signatures.RDS" \
-  --plot_output "${denovo_plot_dir}/test-denovo_sigfit_${FLOOR}_to_${CEILING}_gof.pdf"
+  --plot_output "${denovo_plot_dir}/denovo_sigfit_${FLOOR}_to_${CEILING}_gof.pdf"
