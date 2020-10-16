@@ -105,3 +105,16 @@ ews_subtype %>%
 ews_subtype %>% 
   dplyr::filter(molecular_subtype == "EWS")
 ```
+
+Are there samples that where `pathology_diagnosis` is Ewings Sarcoma and they are not in list above?
+
+```{r}
+
+readr::read_tsv(file.path(dataDir, "pbta-histologies.tsv"),
+                            guess_max = 10000) %>%
+  dplyr::filter(str_detect(pathology_diagnosis,"Ewings Sarcoma"),
+                !sample_id %in% ews_subtype$sample_id) 
+
+
+```
+
