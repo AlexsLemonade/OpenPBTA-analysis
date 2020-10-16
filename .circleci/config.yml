@@ -61,8 +61,8 @@ jobs:
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-LGAT/run_subtyping.sh
 
       - run:
-         name: Molecular Subtyping / Reclassification - EWS
-         command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EWS/run_reclassification.sh
+         name: Molecular Subtyping - EWS
+         command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EWS/run_subtyping.sh
 
       - run:
          name: Molecular Subtyping - Compile and incorporate pathology feedback
