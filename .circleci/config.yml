@@ -64,9 +64,10 @@ jobs:
          name: Molecular Subtyping - EWS
          command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EWS/run_subtyping.sh
 
-      - run:
-         name: Molecular Subtyping - Compile and incorporate pathology feedback
-         command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-pathology/run-subtyping-aggregation.sh
+     # Commenting this out for now; the code is expected to change 
+     # - run:
+     #    name: Molecular Subtyping - Compile and incorporate pathology feedback
+     #    command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-pathology/run-subtyping-aggregation.sh
 
       - run:
           name: Molecular Subtyping - MB
