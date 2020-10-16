@@ -40,8 +40,8 @@ maf_df <- data.table::fread(maf_file, data.table = FALSE) %>%
                 Reference_Allele,
                 Allele)
 
-# Read in the metadata file, we only need the biospecimen ID which is what is
-# used in the
+# Read in the metadata file, we only need the biospecimen ID which is the 
+# identifier in the MAF-like file above
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
 metadata_df <- readr::read_tsv(metadata_file) %>%
   dplyr::select(Kids_First_Biospecimen_ID,
