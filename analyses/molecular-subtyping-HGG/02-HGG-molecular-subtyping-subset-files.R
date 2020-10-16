@@ -126,8 +126,7 @@ path_dx_list <- jsonlite::fromJSON(
 # First, filter to exclude cell lines
 tumor_metadata_df <- metadata %>%
   filter(
-    sample_type == "Tumor",
-    composition == "Solid Tissue"
+    sample_type == "Tumor"
   )
 
 # Samples included on the basis of the pathology diagnosis fields
