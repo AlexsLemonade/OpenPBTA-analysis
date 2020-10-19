@@ -47,8 +47,7 @@ if (!dir.exists(results_dir)) {
 metadata <-
   readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"), 
                   guess_max = 10000) %>%
-  dplyr::filter(sample_type == "Tumor",
-                composition == "Solid Tissue") 
+  dplyr::filter(sample_type == "Tumor") 
 
 # Read in snv consensus mutation data
 snv_df <-
@@ -128,7 +127,7 @@ Add other identifiers and sort.
 ```{r}
 snv_lesions_df <- metadata %>%
   dplyr::select(Kids_First_Participant_ID, 
-                sample_id, 
+                sample_id,
                 Kids_First_Biospecimen_ID) %>%
   dplyr::inner_join(snv_lesions_df,
                     by = c("Kids_First_Biospecimen_ID" = "Tumor_Sample_Barcode")) %>%

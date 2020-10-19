@@ -12,35 +12,12 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 # In CI we'll run an abbreviated version of the de novo signatures extraction
 ABBREVIATED_MUTSIGS=${OPENPBTA_QUICK_MUTSIGS:-0}
 
-data_dir=../../data
-denovo_plot_dir=plots/denovo
-
 # Run the mutational signatures analysis using existing signatures
 Rscript -e "rmarkdown::render('01-known_signatures.Rmd', clean = TRUE)"
 
-# if abbreviated mutsigs is "true", we'll run only one number of signatures and
-# for an unacceptably low number of iterations to do any analysis with
-if [ "$ABBREVIATED_MUTSIGS" -gt "0" ]
-then
-  FLOOR=10
-  CEILING=10
-  NUM_ITER=10
-else
-  FLOOR=5
-  CEILING=15
-  NUM_ITER=1000
-fi
+# Split up the consensus MAF files by experimental strategy (writes to scratch)
+Rscript --vanilla 02-split_experimental_strategy.R
 
-# Directory to hold the goodness-of-fit plot
-mkdir -p $denovo_plot_dir
-
-# De novo signatures extraction
-Rscript --vanilla \
-  scripts/de_novo_signature_extraction.R \
-  --maf_file "${data_dir}/pbta-snv-consensus-mutation.maf.tsv.gz" \
-  --nsignatures_floor $FLOOR \
-  --nsignatures_ceiling $CEILING \
-  --num_iterations $NUM_ITER \
-  --seed 42 \
-  --output_file "results/denovo_sigfit_signatures.RDS" \
-  --plot_output "${denovo_plot_dir}/denovo_sigfit_${FLOOR}_to_${CEILING}_gof.pdf"
+# Run the shell script that is for determining the number of signatures to use
+# with a low number of iterations
+QUICK_MUTSIGS=$ABBREVIATED_MUTSIGS bash 03-de_novo_range_of_nsignatures.sh
