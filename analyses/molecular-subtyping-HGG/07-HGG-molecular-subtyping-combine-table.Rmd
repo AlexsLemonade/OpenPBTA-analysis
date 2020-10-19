@@ -599,8 +599,14 @@ molecular_subtype_table <- all_data_df %>%
   left_join(molecular_subtype_table) %>%
   distinct() %>%
   dplyr::mutate(molecular_subtype = case_when(
+    # molecular_subtype is NA and we didn't find any canonical histone
+    # variant in the DNA sample so the status will be H3 wildtype
     is.na(molecular_subtype) & !is.na(Kids_First_Biospecimen_ID_DNA) ~ "HGG, H3 wildtype",
+    # molecular_subtype is NA and we do not have a DNA sample
+    # to check for histone variant so status will be 
+    # To be classified 
     is.na(molecular_subtype) & is.na(Kids_First_Biospecimen_ID_DNA) ~ "HGG, To be classified",
+    # when molecular_subtype is not NA (we know the H3 variant subtype from DNA )
     TRUE ~ molecular_subtype))
 ```
 
