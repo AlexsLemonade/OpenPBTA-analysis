@@ -334,7 +334,9 @@ RUN R -e "remotes::install_github('kgori/sigfit', ref = '209776ee1d2193ad4b682b2
 
 # Package for kinase domain retention for fusions
 RUN R -e "BiocManager::install(c('EnsDb.Hsapiens.v86', 'ensembldb'))"
-RUN R -e "remotes::install_version('tidyr',dependencies = TRUE,version='1.0.2')"
+RUN R -e "install.packages('lifecycle', 'cpp11',dependencies = TRUE,repos = 'http://cran.us.r-project.org')
+RUN R -e "install.packages('cpp11',dependencies = TRUE,repos = 'http://cran.us.r-project.org')
+RUN R -e "remotes::install_github('tidyverse/tidyr')"
 RUN R -e "remotes::install_github('d3b-center/annoFuse', dependencies = TRUE)"
 
 
