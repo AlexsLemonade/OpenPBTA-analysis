@@ -333,11 +333,11 @@ RUN R -e "remotes::install_github('stan-dev/rstantools', ref = 'd43bf9fb6120d40a
 RUN R -e "remotes::install_github('kgori/sigfit', ref = '209776ee1d2193ad4b682b2e2472f848bd7c67a6', build_vignettes = TRUE, build_opts = c('--no-resave-data', '--no-manual'), dependencies = TRUE)"
 
 # Package for kinase domain retention for fusions
-RUN R -e "BiocManager::install(c('EnsDb.Hsapiens.v86', 'ensembldb'))"
-RUN R -e "install.packages('lifecycle',dependencies = TRUE,repos = 'http://cran.us.r-project.org')"
-RUN R -e "install.packages('cpp11',dependencies = TRUE,repos = 'http://cran.us.r-project.org')"
-RUN R -e "remotes::install_github('tidyverse/tidyr')"
-RUN R -e "remotes::install_github('d3b-center/annoFuse', dependencies = TRUE)"
+RUN ./install_bioc.R \
+     EnsDb.Hsapiens.v86 \
+     ensembldb
+
+RUN R -e "remotes::install_github('d3b-center/annoFuse',ref = 'c6a2111b5949ca2aae3853f7f34de3d0db4ffa33', dependencies = TRUE)"
 
 
 #### Please install your dependencies immediately above this comment.
