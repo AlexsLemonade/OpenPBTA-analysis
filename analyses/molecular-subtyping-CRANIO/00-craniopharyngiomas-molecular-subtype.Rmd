@@ -1,0 +1,180 @@
+---
+title: "Molecularly Subtype Craniopharyngiomas into Adamantinomatous or Papillary"
+author: "Daniel Miller for D3B <millerd15@email.chop.edu>"
+date: "October 2020"
+output:
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+---
+
+# Background
+
+This notebook looks at the defining lesions for all samples for the issue of 
+molecular subtyping craniopharyngiomas into adamantinomatous or papillary samples
+in the OpenPBTA dataset. 
+
+Defining Lesions:
+
+CRANIO, ADAM
+- Contains SNV in exon 3 of CTNNB1
+- Tumor occurs mostly in childhood or young adolescence (0-39 years), but can be seen in adults
+
+CRANIO, PAP
+- Contains BRAF V600E mutation
+- Tumor occurs exclusively in adults (40+ years)
+
+# Usage
+
+This notebook is intended to be run via the command line from the top directory
+of the repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/molecular-subtyping-CRANIO/00-craniopharyngiomas-molecular-subtype.Rmd', clean = TRUE)"
+```
+
+# Set up
+
+```{r load-library}
+library(tidyverse)
+```
+
+## Directories and File Inputs/Outputs
+
+```{r set-dir-and-file-names}
+# Detect the ".git" folder -- this will in the project root directory.
+# Use this as the root directory to ensure proper sourcing of functions no
+# matter where this is called from
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+# File path to results directory
+results_dir <-
+  file.path(root_dir, "analyses", "molecular-subtyping-CRANIO", "results")
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+
+# Outputs
+output_lesions <- file.path(results_dir, "CRANIO_defining_lesions.tsv")
+output_subtype <- file.path(results_dir, "CRANIO_molecular_subtype.tsv")
+```
+
+```{r load-inputs-please-wait}
+# Inputs
+## Read in metadata
+metadata <-
+  read.table(file.path(root_dir, "data", "pbta-histologies.tsv"),
+             header=T,
+             sep='\t') %>%
+  filter(sample_type == "Tumor") 
+## Read in snv consensus mutation data
+snv_df <-
+  read.table(file.path(root_dir, "data", "pbta-snv-consensus-mutation.maf.tsv.gz"),
+             header=T,
+             sep='\t')
+```
+
+# Process Data
+
+## Collecting Tumor Sample Barcodes with Variants of Interest
+
+Collect Tumor_Sample_Barcodes with BRAF V600E mutations.
+
+```{r braf-tsb}
+braf_v600e_tsb <- 
+  snv_df %>%
+  filter(Hugo_Symbol == "BRAF" & HGVSp_Short == "p.V600E") %>%
+  select(Tumor_Sample_Barcode)
+```
+
+Collect Tumor_Sample_Barcodes with CTNNB1 mutation on exon 3.
+
+```{r ctnnb1-tsb}
+ctnnb1_e3_tsb <-
+  snv_df %>%
+  filter(Hugo_Symbol == "CTNNB1" & Exon_Number == "3/15") %>% 
+  select(Tumor_Sample_Barcode)
+```
+
+## Defining Lesion Table
+
+Annotate the metadata table where the Kids_First_Biospecimen_ID matches either of the TSBs collected above
+Lesions are defined where:
+1. patient has BRAF.V600E mutation and is older than the age_of_adulthood (40 years in this case)
+1. patient has CTNNB1.Exon3 mutation and is younger than the age_of_adulthood (40 years in this case)
+Select the columns from the table that the PIs have requested
+
+```{r snv-lesion-table}
+# Dispute this all you like
+age_of_adulthood <- 40 * 365.25
+
+snv_lesion_df <- 
+  metadata %>%
+  mutate(CTNNB1.Exon3 = Kids_First_Biospecimen_ID %in% ctnnb1_e3_tsb$Tumor_Sample_Barcode) %>%
+  mutate(BRAF.V600E = Kids_First_Biospecimen_ID %in% braf_v600e_tsb$Tumor_Sample_Barcode) %>%
+  mutate(defining_lesion =
+           (BRAF.V600E & as.numeric(as.character(age_at_diagnosis_days)) >= age_of_adulthood) |
+           (CTNNB1.Exon3 & as.numeric(as.character(age_at_diagnosis_days)) < age_of_adulthood)) %>%
+  select(Kids_First_Participant_ID,
+         sample_id,
+         Kids_First_Biospecimen_ID,
+         age_at_diagnosis_days,
+         CTNNB1.Exon3,
+         BRAF.V600E,
+         defining_lesion)
+```
+
+## Defining Molecular Subtype Table
+
+Make a frame with DNA and RNA samples per patient
+
+```{r allmeta-table}
+dnameta <-
+  metadata %>%
+  filter(experimental_strategy == c("WGS","WXS")) %>%
+  select(Kids_First_Participant_ID,sample_id,Kids_First_Biospecimen_ID)
+
+rnameta <-
+  metadata %>%
+  filter(experimental_strategy == "RNA-Seq") %>%
+  select(Kids_First_Participant_ID,sample_id,Kids_First_Biospecimen_ID)
+
+allmeta <-
+  full_join(dnameta,
+            rnameta,
+            by=c("Kids_First_Participant_ID","sample_id"),
+            suffix = c("_DNA", "_RNA"))
+```
+
+Append stringified lesion information to the table
+Select the columns from the table that the PIs have requested
+
+```{r meta-subtype-table}
+snv_subtype <-
+  snv_lesion_df %>%
+  mutate(molecular_subtype = 
+           case_when(
+             defining_lesion & BRAF.V600E & !CTNNB1.Exon3 ~ "CRANIO, PAP",
+             defining_lesion & !BRAF.V600E & CTNNB1.Exon3 ~ "CRANIO, ADAM",
+             defining_lesion & BRAF.V600E & CTNNB1.Exon3 ~ "CRANIO, ADAM;CRANIO, PAP",
+             !defining_lesion ~ "CRANIO, To be classified"
+           )) %>%
+  select(Kids_First_Participant_ID,sample_id,molecular_subtype)
+
+meta_subtype <-
+  full_join(allmeta,
+            snv_subtype,
+            by=c("Kids_First_Participant_ID","sample_id"))
+```
+
+# Print Out Tables
+
+```{r print-tables}
+write_tsv(meta_subtype, output_subtype)
+write_tsv(snv_lesion_df, output_lesions)
+```
+
+# SessionInfo
+
+```{r session-info}
+sessionInfo()
+```
