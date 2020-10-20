@@ -37,27 +37,35 @@ if (!dir.exists(results_dir)) {
 outputfile <- file.path(results_dir,"neurocytoma_subtyping.tsv")
 ```
 
-Checking if `pathology_diagnosis` has "Neurocytoma" in their value, and lets view the current short_histology values
+Are there any Neurocytoma samples in `pathology_free_text_diagnosis` that are not listed in pathology_diagnosis?
 
+```{r}
+
+neurocytoma_from_pathology_free_text_diagnosis <- histologies_df %>%
+  filter(str_detect(pathology_free_text_diagnosis, "neurocytoma")
+                    ) 
+
+neurocytoma_from_pathology_diagnosis <- histologies_df %>%
+  filter(str_detect(pathology_diagnosis, "Neurocytoma")
+                    ) 
+
+neurocytoma_from_pathology_free_text_diagnosis %>%
+  dplyr::filter(!Kids_First_Biospecimen_ID %in% neurocytoma_from_pathology_diagnosis$Kids_First_Biospecimen_ID )
+
+```
+There are no Kids_First_Biospecimen_ID in `pathology_free_text_diagnosis` that are not listed as "Neurocytoma" in  `pathology_diagnosis`. So will only use  `pathology_diagnosis` to look up "Neurocytoma" samples for subtyping
+
+
+Checking if `pathology_diagnosis` has "Neurocytoma" what are all primary_site associated with it
 ```{r}
 neurocytoma_from_pathology <- histologies_df %>%
   filter(str_detect(pathology_diagnosis, "Neurocytoma")
                     ) 
   
-neurocytoma_from_pathology$short_histology
+neurocytoma_from_pathology$primary_site %>% unique()
 ```
 
-There's a "CNS neuroblastoma" in short_histology let's check if pathology_diagnosis and pathology_free_text_diagnosis agree
-
-```{r}
-neurocytoma_from_pathology %>%
-  filter(short_histology == "CNS neuroblastoma"
-                    ) %>%
-  select(pathology_diagnosis,pathology_free_text_diagnosis)
-```
-
-
-Both pathology_diagnosis and pathology_free_text_diagnosis is Neurocytoma so keeping it in Neurocytoma list
+The values are only "Ventricles" and "Parietal Lobe" so we can directly check if primary_site== "Ventricles" ~ "CNC" and if primary_site != "Ventricles" ~ "EVN"
 
 ```{r}
 
