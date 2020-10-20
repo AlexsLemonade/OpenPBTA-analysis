@@ -26,6 +26,7 @@ clinical <- readr::read_tsv(file.path(dataDir, "pbta-histologies.tsv"),
   select(Kids_First_Biospecimen_ID,
          Kids_First_Participant_ID, 
          experimental_strategy, 
+         pathology_diagnosis,
          sample_id,
          sample_type)
 
@@ -47,38 +48,60 @@ if (!dir.exists(results_dir)) {
 }
 ```
 
-### Add "EWS" to molecular_subtype for samples that have hallmark ewings sarcoma EWSR1 fusion in RNA and match to DNA per sample_id
+### Get sample_id from RNA-Seq samples that have ewings sarcoma EWSR1 fusion
 
 ```{r}
 # get a vector of biospecimen IDs for those biospecimens that should be subtyped
-have_ews_fusion <- rowSums(ewings_foi_bsids[, -1]) > 0
+has_ews_fusion <- rowSums(ewings_foi_bsids[, -1]) > 0
 
-# get rna BS_IDs which have hallmark fusion 
-ews_rnaseq_bsids <- ewings_foi_bsids %>%
-  filter(have_ews_fusion) %>%
-  pull(Kids_First_Biospecimen_ID)
+# get rna sample_id which have hallmark fusion 
+has_ews_fusion_sampleid <- ewings_foi_bsids %>%
+  filter(has_ews_fusion) %>%
+  left_join(clinical) %>%
+  pull(sample_id)
 
-# Get RNAseq ids because we have fusion information for RNA-seq samples
+```
+
+### Get RNA-Seq where pathology_diagnosis is Ewings Sarcoma OR has Ewings Sarcoma _EWSR1_ fusion
+
+```{r}
+
 ews_rnaseq <- clinical %>%
-  filter(Kids_First_Biospecimen_ID %in% ews_rnaseq_bsids,
-         sample_type == "Tumor") %>%
+  # pathology_diagnosis is Ewings Sarcoma
+  filter(str_detect(pathology_diagnosis,"Ewings Sarcoma")|
+           # OR sample_id associated with the RNA sample with hallmark fusion
+         sample_id %in% has_ews_fusion_sampleid,
+         experimental_strategy == "RNA-Seq") %>%
   select(Kids_First_Biospecimen_ID, 
          Kids_First_Participant_ID, 
          sample_id) 
+```
 
-# we're going to join the WGS samples to RNA-seq with sample_id
-# so that the WGS biospecimens that correspond to RNA-seq specimens 
-# can be merged in the next step
+### Get WGS samples where pathology_diagnosis is Ewings Sarcoma OR has sample_id associated with rna-seq sample with Ewings Sarcoma _EWSR1_ fusion
+
+```{r}
+
 ews_wgs <- clinical %>%
-  filter(sample_id %in% ews_rnaseq$sample_id,
+  # pathology_diagnosis is Ewings Sarcoma
+  filter(str_detect(pathology_diagnosis,"Ewings Sarcoma")|
+         # OR sample_id associated with the RNA sample with hallmark fusion
+         sample_id %in% has_ews_fusion_sampleid,
+         # filter to Tumor since we have Normal WGS as well
          sample_type == "Tumor",
          experimental_strategy == "WGS") %>%
   select(Kids_First_Biospecimen_ID, 
          Kids_First_Participant_ID, 
-         sample_id)
+         sample_id) 
 
-# Join together
+```
+
+
+### Join DNA and RNA sample together to have molecular subtyping per "Kids_First_Participant_ID", and "sample_id"
+
+```{r}
+
 ews_subtype <- ews_rnaseq %>% 
+  # merge DNA and RNA samples by sample_id
   full_join(ews_wgs,
              by = c("Kids_First_Participant_ID",
                     "sample_id"),
@@ -88,9 +111,20 @@ ews_subtype <- ews_rnaseq %>%
          Kids_First_Biospecimen_ID_DNA,
          sample_id,
          everything()) %>%
-  dplyr::mutate(molecular_subtype="EWS")
+  dplyr::mutate(molecular_subtype=
+                  # if sample_id in has_ews_fusion_sampleid
+                  case_when(sample_id %in% has_ews_fusion_sampleid ~ "EWS",
+                            # if sample_id not in has_ews_fusion_sampleid then 
+                            # have molecular_subtype == "To be classified"
+                            TRUE ~ "EWS, To be classified")
+  )
 ```
 
+### List which samples are molecular_subtype == "EWS" or "EWS, To be classified"
+
+```{r}
+ews_subtype 
+```
 
 #### Save to file
 
@@ -99,22 +133,7 @@ ews_subtype %>%
   readr::write_tsv(file.path(results_dir, "EWS_results.tsv"))
 ```
 
-### List which samples are molecular_subtype == "EWS"
-
-```{r}
-ews_subtype %>% 
-  dplyr::filter(molecular_subtype == "EWS")
-```
-
-Are there samples that where `pathology_diagnosis` is Ewings Sarcoma and they are not in list above?
-
-```{r}
-
-readr::read_tsv(file.path(dataDir, "pbta-histologies.tsv"),
-                            guess_max = 10000) %>%
-  dplyr::filter(str_detect(pathology_diagnosis,"Ewings Sarcoma"),
-                !sample_id %in% ews_subtype$sample_id) 
 
 
-```
+
 
