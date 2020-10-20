@@ -10,9 +10,9 @@ output:
 
 # Background
 
-This notebook looks at the defining lesions for all samples for the issue of 
+This notebook looks at the defining lesions for all samples for the issue of
 molecular subtyping craniopharyngiomas into adamantinomatous or papillary samples
-in the OpenPBTA dataset. 
+in the OpenPBTA dataset.
 
 Defining Lesions:
 
@@ -65,7 +65,7 @@ metadata <-
   read.table(file.path(root_dir, "data", "pbta-histologies.tsv"),
              header=T,
              sep='\t') %>%
-  filter(sample_type == "Tumor") 
+  filter(pathology_diagnosis == "Craniopharyngioma")
 ## Read in snv consensus mutation data
 snv_df <-
   read.table(file.path(root_dir, "data", "pbta-snv-consensus-mutation.maf.tsv.gz"),
@@ -80,7 +80,7 @@ snv_df <-
 Collect Tumor_Sample_Barcodes with BRAF V600E mutations.
 
 ```{r braf-tsb}
-braf_v600e_tsb <- 
+braf_v600e_tsb <-
   snv_df %>%
   filter(Hugo_Symbol == "BRAF" & HGVSp_Short == "p.V600E") %>%
   select(Tumor_Sample_Barcode)
@@ -91,7 +91,7 @@ Collect Tumor_Sample_Barcodes with CTNNB1 mutation on exon 3.
 ```{r ctnnb1-tsb}
 ctnnb1_e3_tsb <-
   snv_df %>%
-  filter(Hugo_Symbol == "CTNNB1" & Exon_Number == "3/15") %>% 
+  filter(Hugo_Symbol == "CTNNB1" & Exon_Number == "3/15") %>%
   select(Tumor_Sample_Barcode)
 ```
 
@@ -107,7 +107,7 @@ Select the columns from the table that the PIs have requested
 # Dispute this all you like
 age_of_adulthood <- 40 * 365.25
 
-snv_lesion_df <- 
+snv_lesion_df <-
   metadata %>%
   mutate(CTNNB1.Exon3 = Kids_First_Biospecimen_ID %in% ctnnb1_e3_tsb$Tumor_Sample_Barcode) %>%
   mutate(BRAF.V600E = Kids_First_Biospecimen_ID %in% braf_v600e_tsb$Tumor_Sample_Barcode) %>%
@@ -151,7 +151,7 @@ Select the columns from the table that the PIs have requested
 ```{r meta-subtype-table}
 snv_subtype <-
   snv_lesion_df %>%
-  mutate(molecular_subtype = 
+  mutate(molecular_subtype =
            case_when(
              defining_lesion & BRAF.V600E & !CTNNB1.Exon3 ~ "CRANIO, PAP",
              defining_lesion & !BRAF.V600E & CTNNB1.Exon3 ~ "CRANIO, ADAM",
