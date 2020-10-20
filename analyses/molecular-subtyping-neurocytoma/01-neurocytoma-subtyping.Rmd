@@ -71,7 +71,9 @@ The values are only "Ventricles" and "Parietal Lobe" so we can directly check if
 
 neurocytoma_subtype <- neurocytoma_from_pathology %>% 
   dplyr::mutate(molecular_subtype= 
+                  # primary_site == "Ventricles", then molecular_subtype == CNC (central neurocytoma) 
                   case_when(primary_site == "Ventricles" ~ "CNC",
+                  # primary_site != "Ventricles", then molecular_subtype == EVN (extraventricular neurocytoma)       
                             primary_site != "Ventricles" ~ "EVN"
                             )
   ) %>%
