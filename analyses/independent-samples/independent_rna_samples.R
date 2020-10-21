@@ -63,7 +63,7 @@ independent_rna_samples <- function(independent_dna_sample_df,
       dplyr::filter(experimental_strategy == "RNA-Seq",
                     tumor_descriptor %in% primary_descs,
                     # find and remove participants which have 
-                    # matching dna samples in independend_wgswxs 
+                    # matching dna samples in independent_wgswxs 
                     !Kids_First_Participant_ID %in% independent_dna$Kids_First_Participant_ID)
     
     # has rna samples which match the independent samples provided plus rna only sample which are primary tumors
