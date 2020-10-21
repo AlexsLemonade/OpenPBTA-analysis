@@ -42,6 +42,7 @@ The code to generate genelistreference.txt and fusionreference.txt is available 
 `03-Calc-zscore-annotate.R` : Calculates z-score for gene fused gene's expression compared to GTeX brain samples and annotates differential expression status
 
 `04-project-specific-filtering.Rmd` : Performs project specific filtering. We prioritize the fusions as putative-oncogenic fusions if any fused gene in the fusion is annotated as kinases, oncogenes, tumor suppressors, curated transcription factors or present in COSMIC Cancer Gene Census list. We also annotated fusions if they are present in TCGA fusions list.
+All fusion calls are additionally have columns `reciprocal_exists` to specify if withinn the Sample a fusion GeneX--GeneY has a reciprocal GeneY--GeneX . `DomainRetainedGene1A` and `DomainRetainedGene1B` are added to identify kinase domain retention for Gene1A (5` Gene) and Gene1B (3` Gene).
 Oncogene annotated fusions do not need to be in both callers to be retained however if these fusions are found in more than 4 histologies we treat them as false calls and remove them.
 To scavenge back non-oncogenic fusions that are recurrently found uniquely in a broad_histology we kept fusions that were called by both callers and if >2 samples per histology called the fusion.
 We removed the non-oncogenic fusions with genes fused more than 5 times in a samples or found in more than 1 histology as potential artifact. 
