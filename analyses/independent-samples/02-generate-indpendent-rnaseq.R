@@ -42,7 +42,7 @@ option_list <- list(
     c("-i","--independent_dna_sample_df"),
     type = "character",
     default = NULL,
-    help = "path to independent-specimene.wgs* file"
+    help = "path to independent-specimens.wgs* file"
   )
 )
 

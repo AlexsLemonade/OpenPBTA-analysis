@@ -46,7 +46,7 @@ independent_rna_samples <- function(independent_dna_sample_df,
     matched_rna <- histology_df %>%
       # keep rna from histology_df
       dplyr::filter(experimental_strategy == "RNA-Seq",
-                    # find participants which have matching dna samples in independend_wgswxs
+                    # find participants which have matching dna samples in independent_wgswxs
                     Kids_First_Participant_ID %in% independent_dna$Kids_First_Participant_ID,
                     # keep specific sample_ids since some participants might have multiple sample_ids
                     sample_id %in% independent_dna$sample_id)
@@ -63,7 +63,7 @@ independent_rna_samples <- function(independent_dna_sample_df,
       dplyr::filter(experimental_strategy == "RNA-Seq",
                     tumor_descriptor %in% primary_descs,
                     # find and remove participants which have 
-                    # matching dna samples in independend_wgswxs 
+                    # matching dna samples in independent_wgswxs 
                     !Kids_First_Participant_ID %in% independent_dna$Kids_First_Participant_ID)
     
     # has rna samples which match the independent samples provided plus rna only sample which are primary tumors
