@@ -38,26 +38,33 @@ independent_rna_samples <- function(independent_dna_sample_df,
   primary_descs <- c("Initial CNS Tumor", "Diagnosis")
   
   
-  if(match_type == "independent_dna" | match_type == "independent_dna_plus_only_rna"){
-    # find sample set for the dna independent samples 
-    independent_dna <- histology_df %>%
-      dplyr::filter(Kids_First_Biospecimen_ID %in%
-                      independent_dna_sample_df$Kids_First_Biospecimen_ID)
-    matched_rna <- histology_df %>%
-      # keep rna from histology_df
-      dplyr::filter(experimental_strategy == "RNA-Seq",
-                    # find participants which have matching dna samples in independent_wgswxs
-                    Kids_First_Participant_ID %in% independent_dna$Kids_First_Participant_ID,
-                    # keep specific sample_ids since some participants might have multiple sample_ids
-                    sample_id %in% independent_dna$sample_id)
-    
-    # has rna samples which match the independent samples provided
-    sample_df <- matched_rna
-  } 
   
-  if(match_type == "independent_dna_plus_only_rna" & 
-     (tumor_description_rna_only == "primary" | tumor_description_rna_only == "primary_plus")) {
-    # find sample set where we only find rna samples
+  # Find sample set for the dna independent samples 
+  # This will always be the included since in both the following
+  # conditions "independent_dna" "independent_dna_plus_only_rna"
+  # 
+  independent_dna <- histology_df %>%
+    # include matched independent_dna samples
+    dplyr::filter(Kids_First_Biospecimen_ID %in%
+                    independent_dna_sample_df$Kids_First_Biospecimen_ID)
+  matched_rna <- histology_df %>%
+    # keep rna from histology_df
+    dplyr::filter(experimental_strategy == "RNA-Seq",
+                  # find participants which have matching dna samples in independent_wgswxs
+                  Kids_First_Participant_ID %in% independent_dna$Kids_First_Participant_ID,
+                  # keep specific sample_ids since some participants might have multiple sample_ids
+                  sample_id %in% independent_dna$sample_id)
+  
+  # has rna samples which match the independent samples provided
+  sample_df <- matched_rna
+
+  
+  # Here we are adding only initial only-RNA-Seq samples
+  # since this will always to part of independent_dna_plus_only_rna
+  # regardless tumor_description_rna_only is "primary" OR "primary_plus"
+  #
+  if( match_type == "independent_dna_plus_only_rna" ) {
+    # find sample set where we initial only-RNA-Seq samples
     only_rna_intial <- histology_df %>% 
       # keep rna from histology_df
       dplyr::filter(experimental_strategy == "RNA-Seq",
@@ -70,6 +77,10 @@ independent_rna_samples <- function(independent_dna_sample_df,
     sample_df <- bind_rows(sample_df,only_rna_intial)
   }
   
+  
+  # Here we are adding only-RNA-Seq samples which are not initial
+  # if tumor_description_rna_only == "primary_plus"
+  #
   if(match_type == "independent_dna_plus_only_rna" & tumor_description_rna_only == "primary_plus"){
     # find sample set where we only find rna samples
     only_rna_plus <- histology_df %>% 
