@@ -62,15 +62,11 @@ output_subtype <- file.path(results_dir, "CRANIO_molecular_subtype.tsv")
 # Inputs
 ## Read in metadata
 metadata <-
-  read.table(file.path(root_dir, "data", "pbta-histologies.tsv"),
-             header=T,
-             sep='\t') %>%
+  read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv")) %>%
   filter(pathology_diagnosis == "Craniopharyngioma")
 ## Read in snv consensus mutation data
 snv_df <-
-  read.table(file.path(root_dir, "data", "pbta-snv-consensus-mutation.maf.tsv.gz"),
-             header=T,
-             sep='\t')
+  read_tsv(file.path(root_dir, "data", "pbta-snv-consensus-mutation.maf.tsv.gz"))
 ```
 
 # Process Data
@@ -83,7 +79,7 @@ Collect Tumor_Sample_Barcodes with BRAF V600E mutations.
 braf_v600e_tsb <-
   snv_df %>%
   filter(Hugo_Symbol == "BRAF" & HGVSp_Short == "p.V600E") %>%
-  select(Tumor_Sample_Barcode)
+  pull(Tumor_Sample_Barcode)
 ```
 
 Collect Tumor_Sample_Barcodes with CTNNB1 mutation on exon 3.
@@ -92,12 +88,12 @@ Collect Tumor_Sample_Barcodes with CTNNB1 mutation on exon 3.
 ctnnb1_e3_tsb <-
   snv_df %>%
   filter(Hugo_Symbol == "CTNNB1" & Exon_Number == "3/15") %>%
-  select(Tumor_Sample_Barcode)
+  pull(Tumor_Sample_Barcode)
 ```
 
 ## Defining Lesion Table
 
-Annotate the metadata table where the Kids_First_Biospecimen_ID matches either of the TSBs collected above
+Annotate the metadata table where the Kids_First_Biospecimen_ID matches either of the Tumor_Sample_Barcodes (TSBs) collected above
 Lesions are defined where:
 1. patient has BRAF.V600E mutation and is older than the age_of_adulthood (40 years in this case)
 1. patient has CTNNB1.Exon3 mutation and is younger than the age_of_adulthood (40 years in this case)
@@ -109,11 +105,11 @@ age_of_adulthood <- 40 * 365.25
 
 snv_lesion_df <-
   metadata %>%
-  mutate(CTNNB1.Exon3 = Kids_First_Biospecimen_ID %in% ctnnb1_e3_tsb$Tumor_Sample_Barcode) %>%
-  mutate(BRAF.V600E = Kids_First_Biospecimen_ID %in% braf_v600e_tsb$Tumor_Sample_Barcode) %>%
+  mutate(CTNNB1.Exon3 = Kids_First_Biospecimen_ID %in% ctnnb1_e3_tsb) %>%
+  mutate(BRAF.V600E = Kids_First_Biospecimen_ID %in% braf_v600e_tsb) %>%
   mutate(defining_lesion =
-           (BRAF.V600E & as.numeric(as.character(age_at_diagnosis_days)) >= age_of_adulthood) |
-           (CTNNB1.Exon3 & as.numeric(as.character(age_at_diagnosis_days)) < age_of_adulthood)) %>%
+           (BRAF.V600E & (as.numeric(age_at_diagnosis_days) >= age_of_adulthood)) |
+           (CTNNB1.Exon3 & (as.numeric(age_at_diagnosis_days) < age_of_adulthood))) %>%
   select(Kids_First_Participant_ID,
          sample_id,
          Kids_First_Biospecimen_ID,
@@ -130,7 +126,7 @@ Make a frame with DNA and RNA samples per patient
 ```{r allmeta-table}
 dnameta <-
   metadata %>%
-  filter(experimental_strategy == c("WGS","WXS")) %>%
+  filter(experimental_strategy %in% c("WGS","WXS")) %>%
   select(Kids_First_Participant_ID,sample_id,Kids_First_Biospecimen_ID)
 
 rnameta <-
