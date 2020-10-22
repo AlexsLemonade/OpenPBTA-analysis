@@ -144,12 +144,13 @@ age_of_adulthood <- 40 * 365.25
 
 snv_subtype <-
   snv_lesion_df %>%
+  mutate(fourty_or_older = as.numeric(age_at_diagnosis_days) >= age_of_adulthood) %>%
   mutate(molecular_subtype =
            case_when(
-             (BRAF.V600E & (as.numeric(age_at_diagnosis_days) >= age_of_adulthood)) & !(CTNNB1.Exon3 & (as.numeric(age_at_diagnosis_days) < age_of_adulthood)) ~ "CRANIO, PAP",
-             !(BRAF.V600E & (as.numeric(age_at_diagnosis_days) >= age_of_adulthood)) & (CTNNB1.Exon3 & (as.numeric(age_at_diagnosis_days) < age_of_adulthood)) ~ "CRANIO, ADAM",
-             (BRAF.V600E & (as.numeric(age_at_diagnosis_days) >= age_of_adulthood)) & (CTNNB1.Exon3 & (as.numeric(age_at_diagnosis_days) < age_of_adulthood)) ~ "CRANIO, ADAM;CRANIO, PAP",
-             !(BRAF.V600E & (as.numeric(age_at_diagnosis_days) >= age_of_adulthood)) & !(CTNNB1.Exon3 & (as.numeric(age_at_diagnosis_days) < age_of_adulthood)) ~ "CRANIO, To be classified"
+             (BRAF.V600E & fourty_or_older) & !(CTNNB1.Exon3 & !fourty_or_older) ~ "CRANIO, PAP",
+             !(BRAF.V600E & fourty_or_older) & (CTNNB1.Exon3 & !fourty_or_older) ~ "CRANIO, ADAM",
+             (BRAF.V600E & fourty_or_older) & (CTNNB1.Exon3 & !fourty_or_older) ~ "CRANIO, ADAM;CRANIO, PAP",
+             !(BRAF.V600E & fourty_or_older) & !(CTNNB1.Exon3 & !fourty_or_older) ~ "CRANIO, To be classified"
            )) %>%
   select(Kids_First_Participant_ID,sample_id,molecular_subtype)
 
