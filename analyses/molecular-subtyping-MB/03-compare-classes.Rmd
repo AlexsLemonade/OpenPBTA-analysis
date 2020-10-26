@@ -327,7 +327,11 @@ viewDataTable(consensus.corrected)
 consensus.corrected.out <- out$consensus.mat.out
 consensus.corrected.out <- consensus.corrected.out %>%
   arrange(Kids_First_Biospecimen_ID_RNA)
-write.table(consensus.corrected.out, 
+
+consensus.corrected.out <- consensus.corrected.out %>%
+  # adding "MB" to be consistent with other subtyping values
+  dplyr::mutate(molecular_subtype = if_else(!is.na(molecular_subtype),paste("MB,",molecular_subtype),NA_character_)) %>%
+  write.table(
             file = file.path(results_dir, 'MB_batchcorrected_molecular_subtype.tsv'), 
             row.names = F, quote = F, sep = "\t")
 ```
@@ -351,8 +355,11 @@ viewDataTable(consensus.uncorrected)
 consensus.uncorrected.out <- out$consensus.mat.out
 consensus.uncorrected.out <- consensus.uncorrected.out %>%
   arrange(Kids_First_Biospecimen_ID_RNA)
-write.table(consensus.uncorrected.out, 
-            file = file.path(results_dir, 'MB_molecular_subtype.tsv'), 
+
+consensus.uncorrected.out <- consensus.uncorrected.out %>%
+  # adding "MB" to be consistent with other subtyping values
+  dplyr::mutate(molecular_subtype = if_else(!is.na(molecular_subtype),paste("MB,",molecular_subtype),NA_character_)) %>%
+  write.table(file = file.path(results_dir, 'MB_molecular_subtype.tsv'), 
             row.names = F, quote = F, sep = "\t")
 ```
 

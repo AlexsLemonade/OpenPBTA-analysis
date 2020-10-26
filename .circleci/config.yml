@@ -61,16 +61,21 @@ jobs:
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-LGAT/run_subtyping.sh
 
       - run:
-         name: Molecular Subtyping / Reclassification - EWS
-         command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EWS/run_reclassification.sh
+         name: Molecular Subtyping - EWS
+         command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EWS/run_subtyping.sh
 
-      - run:
-         name: Molecular Subtyping - Compile and incorporate pathology feedback
-         command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-pathology/run-subtyping-aggregation.sh
+     # Commenting this out for now; the code is expected to change 
+     # - run:
+     #    name: Molecular Subtyping - Compile and incorporate pathology feedback
+     #    command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-pathology/run-subtyping-aggregation.sh
 
       - run:
           name: Molecular Subtyping - MB
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-MB/run-molecular-subtyping-mb.sh
+
+      - run:
+          name: Molecular Subtyping - CRANIO
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-CRANIO/run-molecular-subtyping-cranio.sh
 
       # Deprecated - these results do not include germline calls and therefore are insufficient by subtyping
       # - run:
@@ -124,8 +129,8 @@ jobs:
           command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh
 
       - run:
-          name: Mutational Signatures
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutational-signatures/mutational_signatures.Rmd', clean = TRUE)"
+          name: Mutational Signatures 
+          command: OPENPBTA_QUICK_MUTSIGS=1 ./scripts/run_in_ci.sh bash analyses/mutational-signatures/run_mutational_signatures.sh
 
       - run:
           name: Chromosomal instability breakpoints
