@@ -126,7 +126,8 @@ snv_lesion_df <-
          Kids_First_Biospecimen_ID_RNA,
          age_at_diagnosis_days,
          CTNNB1.Exon3,
-         BRAF.V600E)
+         BRAF.V600E) %>%
+  dplyr::arrange(Kids_First_Participant_ID, sample_id)
 ```
 
 ## Defining Molecular Subtype Table
@@ -158,7 +159,8 @@ snv_subtype <-
 meta_subtype <-
   full_join(allmeta,
             snv_subtype,
-            by=c("Kids_First_Participant_ID","sample_id"))
+            by=c("Kids_First_Participant_ID","sample_id")) %>%
+  dplyr::arrange(Kids_First_Participant_ID, sample_id)
 ```
 
 # Print Out Tables
