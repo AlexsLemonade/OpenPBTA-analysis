@@ -8,7 +8,7 @@ author: Krutika Gaonkar for D3b
 date: 2020
 ---
 
-Subtyping conditions as per issue [#805](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/805) are as follows :
+For, "Neurocytoma" samples detected in pathology_diagnosis, subtyping conditions as per issue [#805](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/805) are as follows :
 
  - If primary_site == "Ventricles", then molecular_subtype == CNC (central neurocytoma) 
  - If primary_site != "Ventricles", then molecular_subtype == EVN (extraventricular neurocytoma)
