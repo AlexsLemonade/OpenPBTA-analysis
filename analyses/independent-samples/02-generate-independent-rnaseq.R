@@ -88,7 +88,7 @@ independent_rna_primary_plus_polya <- sample_df %>%
 
 # Filter to only samples from tumors, where composition is known to be Solid Tissue
 # only stranded samples
-independent_rna_primary_plus_polya <- sample_df %>%
+independent_rna_primary_plus_stranded <- sample_df %>%
   filter(sample_type == "Tumor", RNA_library=="stranded",
          composition == "Solid Tissue"
   ) %>%
