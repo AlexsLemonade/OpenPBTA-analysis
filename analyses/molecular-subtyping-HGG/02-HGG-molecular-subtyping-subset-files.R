@@ -21,7 +21,7 @@ library(tidyverse)
 # Use this as the root directory to ensure proper sourcing of functions no
 # matter where this is called from
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-data_dir <- file.path(root_dir, "data")
+data_dir <- file.path(root_dir, "data","release_003_008")
 scratch_dir <- file.path(root_dir, "scratch")
 
 # Set path to subset directory
@@ -34,7 +34,7 @@ if (!dir.exists(subset_dir)) {
 
 # Read in metadata
 metadata <-
-  read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"), 
+  read_tsv(file.path(data_dir, "pbta-histologies.tsv"), 
            guess_max = 10000)
 
 # Select wanted columns in metadata for merging and assign to a new object
@@ -64,9 +64,8 @@ polya_expression <-
 # Read in focal CN data
 ## TODO: If annotated files get included in data download
 cn_df <- read_tsv(file.path(
-  root_dir,
-  "data",
-  "consensus_seg_annotated_cn_autosomes.tsv.gz"
+  data_dir,
+  "pbta-consensus_seg_annotated_cn_autosomes.tsv.gz"
 ))
 
 # Read in fusion data
@@ -74,12 +73,11 @@ fusion_df <- read_tsv(
   file.path(data_dir, "pbta-fusion-putative-oncogenic.tsv"))
 
 # Read in GISTIC `broad_values_by_arm.txt` file
-unzip(file.path(root_dir, "data", "pbta-cnv-consensus-gistic.zip"),
-      exdir = file.path(root_dir, "data"),
+unzip(file.path(data_dir, "pbta-cnv-consensus-gistic.zip"),
+      exdir = file.path(data_dir),
       files = file.path("pbta-cnv-consensus-gistic", "broad_values_by_arm.txt"))
 
-gistic_df <- data.table::fread(file.path(root_dir, 
-                                         "data",
+gistic_df <- data.table::fread(file.path(data_dir, 
                                          "pbta-cnv-consensus-gistic",
                                          "broad_values_by_arm.txt"),
                                data.table = FALSE)
@@ -87,9 +85,8 @@ gistic_df <- data.table::fread(file.path(root_dir,
 
 # Read in snv consensus mutation data
 snv_maf_df <-
-  data.table::fread(file.path(root_dir,
-                              "data",
-                              "pbta-snv-consensus-mutation.maf.tsv.gz"),
+  data.table::fread(file.path(data_dir,
+                              "pbta-merged-chop-method-consensus_somatic.maf.gz"),
                     select = c("Chromosome",
                                "Start_Position",
                                "End_Position",
