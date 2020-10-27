@@ -58,11 +58,7 @@ There are no Kids_First_Biospecimen_ID in `pathology_free_text_diagnosis` that a
 
 Checking if `pathology_diagnosis` has "Neurocytoma" what are all primary_site associated with it
 ```{r}
-neurocytoma_from_pathology <- histologies_df %>%
-  filter(str_detect(pathology_diagnosis, "Neurocytoma")
-                    ) 
-  
-neurocytoma_from_pathology$primary_site %>% unique()
+neurocytoma_from_pathology_diagnosis$primary_site %>% unique()
 ```
 
 The values are only "Ventricles" and "Parietal Lobe" so we can directly check if primary_site== "Ventricles" ~ "CNC" and if primary_site != "Ventricles" ~ "EVN"
@@ -84,4 +80,3 @@ neurocytoma_subtype <- neurocytoma_from_pathology %>%
   write_tsv(outputfile)
 
 ```
-
