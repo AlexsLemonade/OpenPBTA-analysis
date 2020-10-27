@@ -14,9 +14,8 @@ Neurocytoma
 
 `01-neurocytoma-subtyping.Rmd` reads in the histology file and adds molecular_subtype for neurocytoma samples as `CNC` if primary_site == "Ventricles" and `EVN` if primary_site != "Ventricles"  
 
-##o Run script
+### Run script
 
 ```sh
 bash run_subtyping.sh
 ```
-
