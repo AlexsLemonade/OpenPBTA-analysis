@@ -21,7 +21,7 @@ library(tidyverse)
 # Use this as the root directory to ensure proper sourcing of functions no
 # matter where this is called from
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-data_dir <- file.path(root_dir, "data","release_003_008")
+data_dir <- file.path(root_dir, "data")
 scratch_dir <- file.path(root_dir, "scratch")
 
 # Set path to subset directory
@@ -65,7 +65,7 @@ polya_expression <-
 ## TODO: If annotated files get included in data download
 cn_df <- read_tsv(file.path(
   data_dir,
-  "pbta-consensus_seg_annotated_cn_autosomes.tsv.gz"
+  "consensus_seg_annotated_cn_autosomes.tsv.gz"
 ))
 
 # Read in fusion data
@@ -86,7 +86,7 @@ gistic_df <- data.table::fread(file.path(data_dir,
 # Read in snv consensus mutation data
 snv_maf_df <-
   data.table::fread(file.path(data_dir,
-                              "pbta-merged-chop-method-consensus_somatic.maf.gz"),
+                              "pbta-snv-consensus-mutation.maf.tsv.gz"),
                     select = c("Chromosome",
                                "Start_Position",
                                "End_Position",
