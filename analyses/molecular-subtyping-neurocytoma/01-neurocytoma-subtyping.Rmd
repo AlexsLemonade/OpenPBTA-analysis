@@ -37,6 +37,9 @@ if (!dir.exists(results_dir)) {
 outputfile <- file.path(results_dir,"neurocytoma_subtyping.tsv")
 ```
 
+
+## Check if `pathology_free_text_diagnosis` and `pathology_diagnosis` different for any Neurocytoma sample
+
 Are there any Neurocytoma samples in `pathology_free_text_diagnosis` that are not listed in pathology_diagnosis?
 
 ```{r}
@@ -60,6 +63,9 @@ Checking if `pathology_diagnosis` has "Neurocytoma" what are all primary_site as
 ```{r}
 neurocytoma_from_pathology_diagnosis$primary_site %>% unique()
 ```
+
+
+## Subtyping Neurocytoma samples based on primary site 
 
 The values are only "Ventricles" and "Parietal Lobe" so we can directly check if primary_site== "Ventricles" ~ "CNC" and if primary_site != "Ventricles" ~ "EVN"
 
