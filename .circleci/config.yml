@@ -290,4 +290,3 @@ workflows:
             # No branch commit will ever trigger this job.
             branches:
               only: master
-
