@@ -79,7 +79,7 @@ unzip(file.path(root_dir, "data", "pbta-cnv-consensus-gistic.zip"),
       files = file.path("pbta-cnv-consensus-gistic", "broad_values_by_arm.txt"))
 
 gistic_df <- data.table::fread(file.path(root_dir, 
-                                         "data", 
+                                         "data",
                                          "pbta-cnv-consensus-gistic",
                                          "broad_values_by_arm.txt"),
                                data.table = FALSE)
