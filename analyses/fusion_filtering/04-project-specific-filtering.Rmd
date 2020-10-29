@@ -143,7 +143,7 @@ kinaseid<-unique(bioMartDataPfam[grep("kinase",bioMartDataPfam$NAME),
 kinaseid
 ```
 
-Through annoFuse::fusion_driver domain retention status for given kinase pfamID is being added per Gene1A (5` Gene) and Gene1B (3` Gene)
+Through annoFuse::fusion_driver domain retention status for given kinase pfamID is being added per Gene1A (5' Gene) and Gene1B (3' Gene)
 ```{r}
 fusion_calls <- annoFuse::fusion_driver(fusion_calls,
                                   annotated = TRUE,
@@ -314,4 +314,3 @@ putative_driver_fusions<-rbind(QCGeneFiltered_recFusionUniq,putative_driver_anno
 write.table(putative_driver_fusions,file.path(root_dir,"scratch","pbta-fusion-putative-oncogenic-preQC.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
 
 ```
-
