@@ -170,7 +170,7 @@ reciprocal_fusion <- function(FusionName,Sample,standardFusioncalls ){
 }
 
 # run reciprocal_fusion function to get status of fusion if reciprocal
-is_reciprocal <- apply(fusion_calls,1,function(x) recirpocal_fusion(x["FusionName"],x["Sample"],fusion_calls))
+is_reciprocal <- apply(fusion_calls,1,function(x) reciprocal_fusion(x["FusionName"],x["Sample"],fusion_calls))
 
 # convert list to dataframe
 is_reciprocal<-data.frame(Reduce(rbind, is_reciprocal))
@@ -314,5 +314,4 @@ putative_driver_fusions<-rbind(QCGeneFiltered_recFusionUniq,putative_driver_anno
 write.table(putative_driver_fusions,file.path(root_dir,"scratch","pbta-fusion-putative-oncogenic-preQC.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
 
 ```
-
 
