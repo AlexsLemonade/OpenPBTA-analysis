@@ -161,7 +161,7 @@ fusion_calls <- annoFuse::fusion_driver(fusion_calls,
 
 # check for fusions have reciprocal fusions in the same Sample
 # works only for GeneY -- GeneX ; GeneX -- GeneY matches
-recirpocal_fusion <- function(FusionName,Sample,standardFusioncalls ){
+reciprocal_fusion <- function(FusionName,Sample,standardFusioncalls ){
   Gene1A <- strsplit(FusionName,"--")[[1]][1]
   Gene1B <- strsplit(FusionName,"--")[[1]][2]
   reciprocal <- paste0(Gene1B,"--",Gene1A)
@@ -314,6 +314,5 @@ putative_driver_fusions<-rbind(QCGeneFiltered_recFusionUniq,putative_driver_anno
 write.table(putative_driver_fusions,file.path(root_dir,"scratch","pbta-fusion-putative-oncogenic-preQC.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
 
 ```
-
 
 
