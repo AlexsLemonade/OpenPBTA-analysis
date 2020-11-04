@@ -111,13 +111,7 @@ ews_subtype <- ews_rnaseq %>%
          Kids_First_Biospecimen_ID_DNA,
          sample_id,
          everything()) %>%
-  dplyr::mutate(molecular_subtype=
-                  # if sample_id in has_ews_fusion_sampleid
-                  case_when(sample_id %in% has_ews_fusion_sampleid ~ "EWS",
-                            # if sample_id not in has_ews_fusion_sampleid then 
-                            # have molecular_subtype == "To be classified"
-                            TRUE ~ "EWS, To be classified")
-  )
+  dplyr::mutate(molecular_subtype="EWS")
 ```
 
 ### List which samples are molecular_subtype == "EWS" or "EWS, To be classified"
