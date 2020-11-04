@@ -53,7 +53,9 @@ if (!dir.exists(plots_dir)) {
 }
 ```
 
-Declare input file paths and useful variables.
+Declare input file paths and useful variables
+
+Using v17 histologies file
 
 ```{r Set input file paths}
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
@@ -85,7 +87,7 @@ metadata <- readr::read_tsv(
   dplyr::filter(
     experimental_strategy != "RNA-Seq" &
       broad_histology == "Diffuse astrocytic and oligodendroglial tumor" &
-      broad_composition == "tumor") %>%
+      composition=="Solid Tissue") %>%
   as.data.frame()
 
 ```
