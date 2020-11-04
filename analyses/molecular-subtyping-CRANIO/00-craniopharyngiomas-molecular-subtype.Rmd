@@ -1,6 +1,6 @@
 ---
 title: "Molecularly Subtype Craniopharyngiomas into Adamantinomatous or Papillary"
-author: "Daniel Miller for D3B <millerd15@email.chop.edu>"
+author: "Daniel Miller <millerd15@email.chop.edu> and Jo Lynne Rokita <rokita@chop.edu> for D3B"
 date: "October 2020"
 output:
   html_notebook:
@@ -92,50 +92,51 @@ ctnnb1_e3_tsb <-
 ```
 
 ## Defining Lesion Table
-
-Annotate the metadata table where the Kids_First_Biospecimen_ID matches either of the Tumor_Sample_Barcodes (TSBs) collected above
-Select the columns from the table that the PIs have requested
-
-```{r snv-lesion-table}
-snv_lesion_df <-
-  metadata %>%
-  mutate(CTNNB1.Exon3 = Kids_First_Biospecimen_ID %in% ctnnb1_e3_tsb) %>%
-  mutate(BRAF.V600E = Kids_First_Biospecimen_ID %in% braf_v600e_tsb) %>%
-  select(Kids_First_Participant_ID,
-         sample_id,
-         Kids_First_Biospecimen_ID,
-         age_at_diagnosis_days,
-         CTNNB1.Exon3,
-         BRAF.V600E)
-```
-
-## Defining Molecular Subtype Table
-
-Make a frame with DNA and RNA samples per patient
+First, make a frame with DNA and RNA samples per patient as well as age at diagnosis.
 
 ```{r allmeta-table}
 dnameta <-
   metadata %>%
   filter(experimental_strategy %in% c("WGS","WXS")) %>%
-  select(Kids_First_Participant_ID,sample_id,Kids_First_Biospecimen_ID)
+  select(Kids_First_Participant_ID,sample_id,Kids_First_Biospecimen_ID,age_at_diagnosis_days)
 
 rnameta <-
   metadata %>%
   filter(experimental_strategy == "RNA-Seq") %>%
-  select(Kids_First_Participant_ID,sample_id,Kids_First_Biospecimen_ID)
+  select(Kids_First_Participant_ID,sample_id,Kids_First_Biospecimen_ID,age_at_diagnosis_days)
 
 allmeta <-
   full_join(dnameta,
             rnameta,
-            by=c("Kids_First_Participant_ID","sample_id"),
+            by=c("Kids_First_Participant_ID","sample_id", "age_at_diagnosis_days"),
             suffix = c("_DNA", "_RNA"))
 ```
+
+Annotate the metadata table where the Kids_First_Biospecimen_ID_DNA matches the Tumor_Sample_Barcodes (TSBs) collected above.
+Select the columns from the table that the PIs have requested.
+
+```{r snv-lesion-table}
+snv_lesion_df <-
+  allmeta %>%
+  mutate(CTNNB1.Exon3 = Kids_First_Biospecimen_ID_DNA %in% ctnnb1_e3_tsb) %>%
+  mutate(BRAF.V600E = Kids_First_Biospecimen_ID_DNA %in% braf_v600e_tsb) %>%
+  select(Kids_First_Participant_ID,
+         sample_id,
+         Kids_First_Biospecimen_ID_DNA,
+         Kids_First_Biospecimen_ID_RNA,
+         age_at_diagnosis_days,
+         CTNNB1.Exon3,
+         BRAF.V600E) %>%
+  dplyr::arrange(Kids_First_Participant_ID, sample_id)
+```
+
+## Defining Molecular Subtype Table
 
 Append molecular subtypes defined as follows:
 1. `CRANIO, PAP`: patient has BRAF.V600E mutation and is older than the age_of_adulthood (40 years in this case)
 1. `CRANIO, ADAM`:patient has CTNNB1.Exon3 mutation and is younger than the age_of_adulthood (40 years in this case)
 1. `CRANIO, ADAM;CRANIO, PAP` Both of the above (this is actually impossible given the restriction on age)
-1. `CRANIO, To be classified` None of the above
+1. `CRANIO, To be classified` None of the above or DNA sample does not exist
 Select the columns from the table that the PIs have requested
 
 ```{r meta-subtype-table}
@@ -150,14 +151,16 @@ snv_subtype <-
              (BRAF.V600E & fourty_or_older) & !(CTNNB1.Exon3 & !fourty_or_older) ~ "CRANIO, PAP",
              !(BRAF.V600E & fourty_or_older) & (CTNNB1.Exon3 & !fourty_or_older) ~ "CRANIO, ADAM",
              (BRAF.V600E & fourty_or_older) & (CTNNB1.Exon3 & !fourty_or_older) ~ "CRANIO, ADAM;CRANIO, PAP",
-             !(BRAF.V600E & fourty_or_older) & !(CTNNB1.Exon3 & !fourty_or_older) ~ "CRANIO, To be classified"
-           )) %>%
+             !(BRAF.V600E & fourty_or_older) & !(CTNNB1.Exon3 & !fourty_or_older) ~ "CRANIO, To be classified",
+            is.na(Kids_First_Biospecimen_ID_DNA) ~ "CRANIO, To be classified"
+            )) %>%
   select(Kids_First_Participant_ID,sample_id,molecular_subtype)
 
 meta_subtype <-
   full_join(allmeta,
             snv_subtype,
-            by=c("Kids_First_Participant_ID","sample_id"))
+            by=c("Kids_First_Participant_ID","sample_id")) %>%
+  dplyr::arrange(Kids_First_Participant_ID, sample_id)
 ```
 
 # Print Out Tables
