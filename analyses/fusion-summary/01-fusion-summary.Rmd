@@ -129,7 +129,6 @@ embryGenes <- c(
 ewingsFuses<- c(
   "EWSR1--FLI1", 
   "EWSR1--ERG",
-  "EWSR1--PATZ1",
   "FUS--ERG"
 )
 
