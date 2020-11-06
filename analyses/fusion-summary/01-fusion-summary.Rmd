@@ -341,15 +341,15 @@ subsetFuseLGAT <- bind_rows(nonkinaseLGAT, three_prime_kinase_inframe[,c("Sample
 #### Write LGAT fusions to file
 
 ```{r}
-subFuseLGAT <- subFuseLGAT %>%
+subsetFuseLGAT <- subsetFuseLGAT %>%
   prepareOutput(specimensUnion)
 
 # Which fusions of interest are not present in any samples?
-missingLgatFusion <- setdiff(lgatFuses, colnames(subFuseLGAT)[-1])
+missingLgatFusion <- setdiff(lgatFuses, colnames(subsetFuseLGAT)[-1])
 # For the fusions that are not present, fill those columns with 0
-subFuseLGAT[, missingLgatFusion] <- 0
+subsetFuseLGAT[, missingLgatFusion] <- 0
 
-subFuseLGAT %>%
+subsetFuseLGAT %>%
   write_tsv(lgatFile)
 ```
 
