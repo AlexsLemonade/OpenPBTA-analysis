@@ -65,7 +65,7 @@ filterLGATFusion <- function(df, bioid, fuses, genes) {
                    Gene2B %in% genes)
   }
   return(df %>% 
-           select(Sample, FusionName, Fusion_Type, Gene1A, Gene1B, Gene2A,  Gene2B, Gene1A_anno, Gene1B_anno, LeftBreakpoint, RightBreakpoint,      reciprocal_exists, DomainRetainedGene1A, DomainRetainedGene1B) %>%
+           select(Sample, FusionName, Fusion_Type, Gene1A, Gene1B, Gene2A,  Gene2B, Gene1A_anno, Gene1B_anno, reciprocal_exists, DomainRetainedGene1A, DomainRetainedGene1B) %>% 
            distinct())
 }
 
@@ -95,7 +95,7 @@ fusDir <- file.path("..", "..", "analyses", "fusion_filtering", "results")
 annotDir <- file.path("..", "..", "analyses", "fusion_filtering", "references")
 #' The putative oncogenic fusion file is what we'll use to check for the 
 #' annotation file
-annot <- read.delim2(file.path(annotDir, "genelistreference.txt"), sep = "\t", header = T)
+annot <- read.delim2(file.path(annotDir, "genelistreference.txt"), sep = "\t", header = TRUE, stringsAsFactors = FALSE)
 #' presence or absence of the fusions.
 putativeOncogenicDF <- 
   read_tsv(file.path(fusDir, "pbta-fusion-putative-oncogenic.tsv"))
@@ -258,79 +258,106 @@ allFuseEwing %>%
 ```
 
 #### Perform selection for LGAT fusions
-
+First pull the fusions or genes from the goi list which are not kinases for the final output file, since these will not need further interrogation.
 ```{r}
 # Which genes/fusions are not kinases, but in the list?
 # Separate LGAT fusions into genes, combine with gene list, check for not kinase
 lgatFuses_df <- as.data.frame(lgatFuses) %>%
   separate(lgatFuses, into = c("Gene1A", "Gene1B"), remove = F)
+
 kinases <- annot %>%
-  filter(type == "Kinase")
-lgatFuses_df$Gene1A_anno <- ifelse(lgatFuses_df$Gene1A %in% kinases$Gene_Symbol, "kinase", "")
-lgatFuses_df$Gene1B_anno <- ifelse(lgatFuses_df$Gene1B %in% kinases$Gene_Symbol, "kinase", "")
+  filter(type == "Kinase") %>%
+  pull(Gene_Symbol)
+
+lgatFuses_df <- lgatFuses_df %>% 
+  dplyr::mutate(Gene1A_anno = case_when(Gene1A %in% kinases ~ "Kinase"), 
+                Gene1B_anno = case_when(Gene1B %in% kinases ~ "Kinase")) %>%
+   replace_na(list(Gene1A_anno = "Non-Kinase", Gene1B_anno = "Non-Kinase"))
+
 # Only pull fusions that do not contain kinase genes, as ones with kinases will be dealt with sepaately later
-lgatFuses_df <- lgatFuses_df %>%
-  filter(lgatFuses_df$Gene1A_anno != "kinase" & lgatFuses_df$Gene1B_anno != "kinase") %>%
-  select(lgatFuses)
-nonkinase_lgatFuses <- lgatFuses_df$lgatFuses
+nonkinase_lgatFuses <- lgatFuses_df %>%
+  filter(Gene1A_anno == "Non-Kinase" & Gene1B_anno == "Non-Kinase") %>%
+  pull(lgatFuses)
 
 # Identify non-kinase genes in LGAT goi list
-nonkinase_lgatGenes <- setdiff(lgatGenes, kinases$Gene_Symbol)
+nonkinase_lgatGenes <- setdiff(lgatGenes, kinases)
 
 # Pull LGAT non-kinase fusions
 nonkinaseLGAT <- filterFusion(df = putativeOncogenicDF,
                              fuses = nonkinase_lgatFuses,
                              genes = nonkinase_lgatGenes) %>%
   distinct()
+```
 
-# First, filter all fusion dataframe for 3' kinases which are in-frame and retain the kinase domain - keep these
+Next, collect fusions which contain 3' kinases which are in-frame and retain the kinase domain. 
+Keep these for the final output file.
+```{r}
 three_prime_kinase_inframe <- allFuseLGAT %>%
   filter(grepl("Kinase", Gene1B_anno) & Fusion_Type == "in-frame" & DomainRetainedGene1B == "Yes") %>%
   select(Sample, FusionName, Gene1A, Gene1B) %>%
   distinct()
 
+# Are there any fusions that are in-frame, but do not retain the kinase domain? Do they have in-frame fusions retaining the kinase domain in the same fusion?
+three_prime_kinase_outframe <- allFuseLGAT %>%
+  filter(grepl("Kinase", Gene1B_anno) & Fusion_Type == "in-frame" & DomainRetainedGene1B == "No") %>%
+  select(Sample, FusionName) %>%
+  distinct()
+
+three_prime_kinase_outframe
+```
+
+Let's look at these just to be sure the results are as expected.
+```{r}
+# `BS_KE56MMY0 ARHGEF2--NTRK1` one does and will be captured in the `three_prime_kinase_inframe` list, but `BS_B1C6GZ84 CHIC2--PDGFRA2` does not retain the kinase domain, so we do not want to add it.
+intersect(three_prime_kinase_outframe[,c("Sample", "FusionName")], three_prime_kinase_inframe[,c("Sample", "FusionName")])
+```
+
+```{r}
 # Which fusions are not in-frame?
 three_prime_kinase_outframe <- allFuseLGAT %>%
   filter(grepl("Kinase", Gene1B_anno) & Fusion_Type != "in-frame") %>%
   distinct()
 # Check they don't retain the kinase domain. They do not, so leave out.
 table(three_prime_kinase_outframe$DomainRetainedGene1B)
+```
 
-# Filter all fusions for 5' kinase fusions which have reciprocal fusions and have lost the kinase domain. 
+Next, filter all fusions for 5' kinase fusions which have reciprocal fusions and retain the kinase domain.
+Keep these for the final output file.
+```{r}
+# Keep those with kinase domain retained and fusion in-frame - keep this list
+five_prime_domain_intact <- allFuseLGAT %>%
+  filter(grepl("Kinase", Gene1A_anno) & DomainRetainedGene1A == "Yes" & Fusion_Type == "in-frame") %>%
+  select(Sample, FusionName) %>%
+  distinct()
+```
+
+Next, filter all fusions for 5' kinase fusions which have lost the kinase domain for reciprocal fusions which have a kinase domain intact and are in-frame.
+Keep these for the final output file.
+```{r}
+# First, get fusions with 5' kinases which lost the kinase domain and have a reciprocal, then add the reciprocal fusion.
 five_prime_domain_lost <- allFuseLGAT %>%
   filter(grepl("Kinase", Gene1A_anno) & reciprocal_exists == "TRUE") %>%
   select(Sample, FusionName, Gene1A, Gene1B, Fusion_Type, DomainRetainedGene1A) %>%
   filter(DomainRetainedGene1A == "No") %>%
-  distinct()
+  distinct() %>%
+  mutate(reciprocal = paste(Gene1B, Gene1A, sep ="--"))
 
-# Keep those with kinase domain retained and fusion in-frame - keep this list
-five_prime_domain_intact <- allFuseLGAT %>%
-  filter(grepl("Kinase", Gene1A_anno) & reciprocal_exists == "TRUE") %>%
-  select(Sample, FusionName, Gene1A, Gene1B, Fusion_Type, DomainRetainedGene1A) %>%
-  filter(DomainRetainedGene1A == "Yes") %>%
-  distinct()
-
-# Identify reciprocal matched fusions which are in-frame
-five_prime_domain_lost$reciprocal <- paste(five_prime_domain_lost$Gene1B, five_prime_domain_lost$Gene1A, sep ="--")
-five_prime_reciprocals <- five_prime_domain_lost[,c("Sample", "reciprocal")] %>%
-  rename(FusionName = reciprocal)
-five_prime_reciprocals_full <- five_prime_reciprocals %>%
+# Then, select the in-frame reciprocals which have the kinase domain in tact.
+five_prime_reciprocals <- five_prime_domain_lost %>% 
+  select(Sample, FusionName = reciprocal) %>%
   left_join(allFuseLGAT, by = c("Sample", "FusionName")) %>%
-  filter(Fusion_Type == "in-frame")
-# Keep the list of the original 5' kinase fusions with matched reciprocals
-five_prime_kinase_keep <- five_prime_reciprocals_full[,c("Sample", "Gene1A", "Gene1B")] %>%
+  filter(Fusion_Type == "in-frame" & DomainRetainedGene1B == "Yes")
+
+# Add back the reciprocal of the reciprocal (the 5' kinase fusion) and keep this list
+five_prime_kinase_keep <- five_prime_reciprocals %>%
+  mutate(reciprocal = paste(Gene1B, Gene1A, sep ="--")) %>%
+  select(Sample, reciprocal) %>%
+  rename(FusionName = reciprocal) %>%
   distinct()
-  five_prime_kinase_keep$FusionName <- paste(five_prime_kinase_keep$Gene1B, five_prime_kinase_keep$Gene1A, sep ="--")
+```
 
-# Which ones are not in-frame? These are mostly genes fused to self
-out_frame_reciprocals <- setdiff(five_prime_reciprocals[,c("Sample", "FusionName")], five_prime_reciprocals_full[,c("Sample", "FusionName")])
-out_frame_reciprocals
-
-#Check these do not retain the kinase domain. They do not, so will leave out
-out_frame_reciprocals_full <- out_frame_reciprocals %>%
-  left_join(allFuseLGAT, by = c("Sample", "FusionName")) %>%
-  select(Sample, FusionName, Gene1A, Gene1B, Fusion_Type, DomainRetainedGene1A, DomainRetainedGene1B)
-
+Rbind lists for final table of LGAT fusions of interest
+```{r}
 # Rbind lists for final table of LGAT fusions of interest
 subsetFuseLGAT <- bind_rows(nonkinaseLGAT, three_prime_kinase_inframe[,c("Sample", "FusionName")],
                          five_prime_domain_intact[,c("Sample", "FusionName")],  
