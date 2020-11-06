@@ -334,9 +334,11 @@ five_prime_kinase_keep <- five_prime_reciprocals %>%
 Rbind lists for final table of LGAT fusions of interest
 ```{r}
 # Rbind lists for final table of LGAT fusions of interest
-subsetFuseLGAT <- bind_rows(nonkinaseLGAT, three_prime_kinase_inframe[,c("Sample", "FusionName")],
-                         five_prime_domain_intact[,c("Sample", "FusionName")],  
-                         five_prime_kinase_keep[,c("Sample", "FusionName")]) %>%
+subsetFuseLGAT <- bind_rows(nonkinaseLGAT,
+                            three_prime_kinase_inframe[,c("Sample", "FusionName")], 
+                            five_prime_domain_intact[,c("Sample", "FusionName")], 
+                            five_prime_kinase_keep[,c("Sample", "FusionName")]) %>%
+  select(Sample, FusionName) %>%
   distinct()
 ```
 
