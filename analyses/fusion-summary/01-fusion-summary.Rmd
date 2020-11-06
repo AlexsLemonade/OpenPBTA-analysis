@@ -41,38 +41,14 @@ filterFusion <- function(df, bioid, fuses, genes) {
                    Gene1B %in% genes |
                    Gene2B %in% genes)
   }
-  return(df %>% select(Sample, FusionName))
-}
-
-#create function specifically for lgat, since we want more information from the putative oncogenic file
-filterLGATFusion <- function(df, bioid, fuses, genes) {
-  if (!missing(bioid)) {
-    df <- filter(df, Sample %in% bioid)
-  }
-  if (!missing(fuses) & !missing(genes)) {
-    df <- filter(df, FusionName %in% fuses |
-                   Gene1A %in% genes |
-                   Gene2A %in% genes |
-                   Gene1B %in% genes |
-                   Gene2B %in% genes)
-  } else if (!missing(fuses)) {
-    df <- filter(df, FusionName %in% fuses)
-  } else if (!missing(genes)) {
-    df <- filter(df,
-                 Gene1A %in% genes |
-                   Gene2A %in% genes |
-                   Gene1B %in% genes |
-                   Gene2B %in% genes)
-  }
   return(df %>% 
-           select(Sample, FusionName, Fusion_Type, Gene1A, Gene1B, Gene2A,  Gene2B, Gene1A_anno, Gene1B_anno, reciprocal_exists, DomainRetainedGene1A, DomainRetainedGene1B) %>% 
+           select(Sample, FusionName, Fusion_Type, Gene1A, Gene1B, Gene2A, Gene2B, Gene1A_anno, Gene1B_anno, reciprocal_exists, DomainRetainedGene1A, DomainRetainedGene1B) %>%
            distinct())
 }
 
 #' Generate matrix with fusion counts
 #' @param fuseDF Filtered fusion data frame
 #' @param bioid List of biospecimen IDs that should be included in final table
-
 #' @return Data frame that contains fusion counts
 prepareOutput <- function(fuseDF, bioid) {
   fuseDF %>% 
@@ -93,10 +69,9 @@ prepareOutput <- function(fuseDF, bioid) {
 dataDir <- file.path("..", "..", "data")
 fusDir <- file.path("..", "..", "analyses", "fusion_filtering", "results")
 annotDir <- file.path("..", "..", "analyses", "fusion_filtering", "references")
-#' The putative oncogenic fusion file is what we'll use to check for the 
-#' annotation file
+#' Annotation file to be used for identifying kinase genes
 annot <- read.delim2(file.path(annotDir, "genelistreference.txt"), sep = "\t", header = TRUE, stringsAsFactors = FALSE)
-#' presence or absence of the fusions.
+#' The putative oncogenic fusion file is what we'll use to check for the #' presence or absence of the fusions.
 putativeOncogenicDF <- 
   read_tsv(file.path(fusDir, "pbta-fusion-putative-oncogenic.tsv"))
 #' However, some biospecimens are not represented in this filtered, prioritized
@@ -196,7 +171,7 @@ allFuseEmbry <- filterFusion(df = putativeOncogenicDF,
                              genes = embryGenes)
 allFuseEwing <- filterFusion(df = putativeOncogenicDF,
                              fuses = ewingsFuses)
-allFuseLGAT <- filterLGATFusion(df = putativeOncogenicDF,
+allFuseLGAT <- filterFusion(df = putativeOncogenicDF,
                              fuses = lgatFuses,
                              genes = lgatGenes)
 
