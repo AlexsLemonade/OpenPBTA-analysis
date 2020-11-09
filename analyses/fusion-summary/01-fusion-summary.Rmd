@@ -70,7 +70,7 @@ dataDir <- file.path("..", "..", "data")
 fusDir <- file.path("..", "..", "analyses", "fusion_filtering", "results")
 annotDir <- file.path("..", "..", "analyses", "fusion_filtering", "references")
 #' Annotation file to be used for identifying kinase genes
-annot <- read.delim2(file.path(annotDir, "genelistreference.txt"), sep = "\t", header = TRUE, stringsAsFactors = FALSE)
+annot <- read_tsv(file.path(annotDir, "genelistreference.txt"))
 #' The putative oncogenic fusion file is what we'll use to check for the #' presence or absence of the fusions.
 putativeOncogenicDF <- 
   read_tsv(file.path(fusDir, "pbta-fusion-putative-oncogenic.tsv"))
