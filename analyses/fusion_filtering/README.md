@@ -21,6 +21,7 @@ We also gather counts for recurrent fusions and fused genes found in more than 3
 
 #### Inputs used as reference
 * genelistreference.txt and fusionreference.txt formatted in code [here](https://gist.github.com/kgaonkar6/02b3fbcfeeddfa282a1cdf4803704794): 
+
 Annotation | File | Source  
 ------ | ---------- | --------- 
 | pfamID                        | http://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/pfamDesc.txt.gz     | UCSC pfamID Description database |
