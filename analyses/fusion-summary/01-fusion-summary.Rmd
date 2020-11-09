@@ -245,11 +245,10 @@ kinases <- annot %>%
   pull(Gene_Symbol)
 
 lgatFuses_df <- lgatFuses_df %>% 
-  dplyr::mutate(Gene1A_anno = case_when(Gene1A %in% kinases ~ "Kinase"), 
-                Gene1B_anno = case_when(Gene1B %in% kinases ~ "Kinase")) %>%
-   replace_na(list(Gene1A_anno = "Non-Kinase", Gene1B_anno = "Non-Kinase"))
+  dplyr::mutate(Gene1A_anno = case_when(Gene1A %in% kinases ~ "Kinase", TRUE ~ "Non-Kinase"), 
+                Gene1B_anno = case_when(Gene1B %in% kinases ~ "Kinase", TRUE ~ "Non-Kinase"))
 
-# Only pull fusions that do not contain kinase genes, as ones with kinases will be dealt with sepaately later
+# Only pull fusions that do not contain kinase genes, as ones with kinases will be dealt with separately later
 nonkinase_lgatFuses <- lgatFuses_df %>%
   filter(Gene1A_anno == "Non-Kinase" & Gene1B_anno == "Non-Kinase") %>%
   pull(lgatFuses)
@@ -315,19 +314,14 @@ five_prime_domain_lost <- allFuseLGAT %>%
   select(Sample, FusionName, Gene1A, Gene1B, Fusion_Type, DomainRetainedGene1A) %>%
   filter(DomainRetainedGene1A == "No") %>%
   distinct() %>%
-  mutate(reciprocal = paste(Gene1B, Gene1A, sep ="--"))
+  mutate(three_prime_kinase = paste(Gene1B, Gene1A, sep ="--"))
 
-# Then, select the in-frame reciprocals which have the kinase domain in tact.
-five_prime_reciprocals <- five_prime_domain_lost %>% 
-  select(Sample, FusionName = reciprocal) %>%
+# Then, select the in-frame reciprocals which have the kinase domain in tact. Retain 5' kinase fusion information and update 3' fusion column name to FusionName for merging with allFuseLGAT.
+five_prime_kinase_keep <- five_prime_domain_lost %>% 
+  select(Sample, five_prime_kinase = FusionName, FusionName = three_prime_kinase) %>%
   left_join(allFuseLGAT, by = c("Sample", "FusionName")) %>%
-  filter(Fusion_Type == "in-frame" & DomainRetainedGene1B == "Yes")
-
-# Add back the reciprocal of the reciprocal (the 5' kinase fusion) and keep this list
-five_prime_kinase_keep <- five_prime_reciprocals %>%
-  mutate(reciprocal = paste(Gene1B, Gene1A, sep ="--")) %>%
-  select(Sample, reciprocal) %>%
-  rename(FusionName = reciprocal) %>%
+  filter(Fusion_Type == "in-frame" & DomainRetainedGene1B == "Yes") %>%
+  select(Sample, FusionName = five_prime_kinase) %>%
   distinct()
 ```
 
@@ -335,9 +329,9 @@ Rbind lists for final table of LGAT fusions of interest
 ```{r}
 # Rbind lists for final table of LGAT fusions of interest
 subsetFuseLGAT <- bind_rows(nonkinaseLGAT,
-                            three_prime_kinase_inframe[,c("Sample", "FusionName")], 
-                            five_prime_domain_intact[,c("Sample", "FusionName")], 
-                            five_prime_kinase_keep[,c("Sample", "FusionName")]) %>%
+                            three_prime_kinase_inframe, 
+                            five_prime_domain_intact, 
+                            five_prime_kinase_keep) %>%
   select(Sample, FusionName) %>%
   distinct()
 ```
