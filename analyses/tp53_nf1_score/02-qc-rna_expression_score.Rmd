@@ -42,7 +42,6 @@ score_polya_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-fpk
     "tp53_score",
     "sample_id"
   ) %>%
-  unique() %>%
   as.data.frame()
 
 ```
