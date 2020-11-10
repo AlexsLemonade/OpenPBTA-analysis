@@ -1,0 +1,106 @@
+---
+title: "QC correlation of classifier score with RNA-Seq expression"
+author: "K S Gaonkar (D3B)"
+output: html_notebook
+
+---
+    
+In this notebook we will find correlation between RNA-Seq and classifier score
+We will check if the values are inversely correlated as we would expect?
+
+### Setup
+```{r}
+library("ggpubr")
+library("ggthemes")
+library("tidyverse")
+library("broom")
+
+# rootdir
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+results_dir <- "results"
+```
+
+### Classifier scores
+
+ 1) Read in scores from tp53-nf1-classifier for stranded
+```{r}
+
+score_stranded_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv")) %>%
+  dplyr::select(
+    "tp53_score",
+    "sample_id"
+  ) %>%
+  unique() %>%
+  as.data.frame()
+
+```
+
+ 2) Read in scores from tp53-nf1-classifier for polya
+```{r}
+score_polya_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv")) %>%
+  dplyr::select(
+    "tp53_score",
+    "sample_id"
+  ) %>%
+  unique() %>%
+  as.data.frame()
+
+```
+
+### Expression matrices
+
+```{r}
+
+stranded_exp_file <- file.path(data_dir,"pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
+polya_exp_file <- file.path(data_dir,"pbta-gene-expression-rsem-fpkm-collapsed.polya.rds")
+
+```
+
+Format expression matrices to long format
+
+```{r}
+
+expression_mat_to_long <- function(expressionFile,score_df,gene){
+# load expressionMatrix RDS for expression based filtering for less than given threshold
+expressionMatrix<-readRDS(expressionFile) %>% 
+  rownames_to_column()
+
+# Taking snippet from @jaclyn-taroni idea used in expression based fusion call filtering
+
+expression_long_df <- expressionMatrix %>%
+  # rename rowname to GeneSymbol
+  dplyr::rename(GeneSymbol=rowname) %>%
+  # Get the data into long format
+  reshape2::melt(variable.name = "Kids_First_Biospecimen_ID",
+                 value.name = "expression_value") %>%
+  dplyr::mutate(Kids_First_Biospecimen_ID= as.character(Kids_First_Biospecimen_ID)) %>%
+  dplyr::filter(GeneSymbol %in% gene) 
+
+# merge score and expression file
+merge_score_exp <- expression_long_df %>%
+  left_join(score_df, by=c("Kids_First_Biospecimen_ID"="sample_id"))
+
+return(merge_score_exp)
+}
+
+stranded_exp_score <- expression_mat_to_long(stranded_exp_file,score_stranded_df,"TP53")
+polya_exp_score <- expression_mat_to_long(polya_exp_file,score_polya_df,"TP53")
+
+```
+
+
+### Correlation between RNA-expression and classifier sccore
+```{r}
+tidy(cor.test(stranded_exp_score$expression_value,stranded_exp_score$tp53_score))
+tidy(cor.test(polya_exp_score$expression_value,polya_exp_score$tp53_score))
+
+```
+
+
+stranded TP53 expression to classifier_score has a negligible 
+negative correlation estimate -0.05 at p value 0.067
+
+polya TP53 expression to classifier_score has a negligible 
+negative correlation estimate -0.139 at p value 0.297
+
