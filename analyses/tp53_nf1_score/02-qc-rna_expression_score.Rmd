@@ -31,7 +31,6 @@ score_stranded_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-
     "tp53_score",
     "sample_id"
   ) %>%
-  unique() %>%
   as.data.frame()
 
 ```
@@ -103,4 +102,3 @@ negative correlation estimate -0.05 at p value 0.067
 
 polya TP53 expression to classifier_score has a negligible 
 negative correlation estimate -0.139 at p value 0.297
-
