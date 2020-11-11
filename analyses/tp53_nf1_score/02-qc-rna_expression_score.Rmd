@@ -124,3 +124,7 @@ negative correlation estimate -0.05 at p value 0.067
 
 polya TP53 expression to classifier_score has a negligible 
 negative correlation estimate -0.139 at p value 0.297
+
+Overall distribution of expression and classifier score shows 
+negligible correlation so we cannot directly use the expression/classifier 
+score to infer functionality/phenotype of TP53 inactivation in samples
