@@ -93,6 +93,10 @@ jobs:
           command: ./scripts/run_in_ci.sh bash analyses/collapse-rnaseq/run-collapse-rnaseq.sh
 
       - run:
+         name: Fusion Summary
+         command: ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
+
+      - run:
           name: Immune deconvolution using xCell and MCP-Counter
           command: OPENPBTA_DECONV_METHOD="mcp_counter" ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
 
@@ -183,10 +187,6 @@ jobs:
       - run:
           name: Gene set enrichment analysis to generate GSVA scores
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh"
-
-      - run:
-         name: Fusion Summary
-         command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
 
       - run:
           name: Add Shatterseek
