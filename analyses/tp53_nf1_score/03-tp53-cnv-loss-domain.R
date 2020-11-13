@@ -82,7 +82,7 @@ annotated_cn <- data.frame(
   dplyr::distinct() %>%
   # select loss that overlaps the TP53 core domains 
   dplyr::filter(status=="loss") %>%
-  write_tsv(subset_dir,"loss_overlap_domains_tp53.tsv")
+  write_tsv(file.path(subset_dir,"loss_overlap_domains_tp53.tsv"))
 
 
 
