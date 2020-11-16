@@ -13,5 +13,3 @@ if [ "$SUBSET" -gt "0" ]; then
   Rscript --vanilla 01-subset-files-for-LGAT.R
 fi
 
-# Run notebook to get molecular subtype for LGAT samples 
-Rscript -e "rmarkdown::render('02-make-lgat-final-table.Rmd')"
