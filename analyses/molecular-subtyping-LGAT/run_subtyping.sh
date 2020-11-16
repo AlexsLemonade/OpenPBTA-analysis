@@ -11,7 +11,6 @@ SUBSET=${OPENPBTA_SUBSET:-1}
 
 if [ "$SUBSET" -gt "0" ]; then
   Rscript --vanilla 01-subset-files-for-LGAT.R
+  Rscript --vanilla 02-subset-fusion-files-LGAT.R
 fi
 
-# Run notebook to get molecular subtype for LGAT samples 
-Rscript -e "rmarkdown::render('02-make-lgat-final-table.Rmd')"
