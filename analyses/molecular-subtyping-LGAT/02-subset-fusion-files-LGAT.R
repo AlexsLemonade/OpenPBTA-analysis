@@ -42,7 +42,7 @@ fusionOI <- jsonlite::fromJSON(file.path(root_dir,
                                          "input",
                                          "fusionOI_list.json"))
 
-# collapse gene list with "|" for easier grep
+# collapse gene list with "|" for easier match()
 MAPK_fused_gene <- paste(fusionOI$MAPK$gene,collapse = "|")
 RTK_fused_gene <- paste(fusionOI$RTK$gene,collapse = "|")
 FGFR_fused_gene <- paste(fusionOI$FGFR$gene,collapse = "|")
