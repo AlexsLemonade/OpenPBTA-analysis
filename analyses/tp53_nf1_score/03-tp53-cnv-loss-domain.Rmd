@@ -162,6 +162,9 @@ annotated_cn %>%
   # high confidence CNV losses
   # with high TP53 inactivation score
   dplyr::filter(copy_number<=1) %>%
+  # remove columns 
+  dplyr::select(-tp53_score,-Kids_First_Biospecimen_ID) %>%
+  unique() %>%
   write_tsv( file.path(results_dir,"loss_overlap_domains_tp53.tsv"))
 
 ```
