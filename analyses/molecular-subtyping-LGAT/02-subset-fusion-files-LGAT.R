@@ -22,7 +22,7 @@ if (!dir.exists(subset_dir)) {
 lgat_specimens_df<-read_tsv(file.path(subset_dir, "lgat_metadata.tsv"))
 
 # Filter to RNA-Seq samples
-lgat_wgs_df <- lgat_specimens_df %>%
+lgat_rna_df <- lgat_specimens_df %>%
   dplyr::filter(experimental_strategy == "RNA-Seq") %>%
   dplyr::select(Kids_First_Biospecimen_ID)
 
@@ -33,7 +33,7 @@ putativeFusion <- readr::read_tsv(file.path(root_dir,
                                             "results",
                                             "fusion_summary_lgat_foi.tsv")) %>%
   # filter for LGAT RNA-Seq biospecimen
-  dplyr::filter(Kids_First_Biospecimen_ID %in% lgat_wgs_df$Kids_First_Biospecimen_ID)
+  dplyr::filter(Kids_First_Biospecimen_ID %in% lgat_rna_df$Kids_First_Biospecimen_ID)
 
 # fusion list of interest
 fusionOI <- jsonlite::fromJSON(file.path(root_dir,
