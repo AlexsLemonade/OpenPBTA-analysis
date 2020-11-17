@@ -1,0 +1,68 @@
+---
+title: "Gather CNV changes to subtype LGAT biospecimens"
+author: "K S Gaonkar (D3B)"
+output: html_notebook
+
+---
+
+In this notebook, we will look for the following CNV changes that define subtypes of LGAT
+ - LGG, FGFR
+ harbors FGFR1 TKD (tyrosine kinase domain tandem duplication)
+ 
+ - LGG, CDKN2A/B
+ harbors focal CDKN2A and/or CDKN2B deletion
+
+### Setup
+```{r}
+library("tidyverse")
+```
+
+### Input
+```{r}
+# Look for git root folder
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+# get subset folder
+subset_dir <- file.path(root_dir, 
+                        "analyses",
+                        "molecular-subtyping-LGAT",
+                        "lgat-subset")
+
+# create if doesn't exist
+if (!dir.exists(subset_dir)) {
+  dir.create(subset_dir)
+}
+
+# consensus seg calls
+consensus_seg <- read_tsv(file.path(root_dir, 
+                                        "analyses", 
+                                        "copy_number_consensus_call",
+                                        "results",
+                                        "pbta-cnv-consensus.seg.gz")) 
+
+# consensus seg annotated by genes
+consensus_seg_anno <- read_tsv(file.path(root_dir, 
+                                        "data",
+                                        "consensus_seg_annotated_cn_autosomes.tsv.gz"))
+
+# Gene location and domain overlap file 
+bioMartDataPfamFGFR1 <- 
+  readRDS(system.file("extdata", "pfamDataBioMart.RDS", package = "annoFuse")) %>%
+  # to check if biospecimen harbors FGFR1 TKD (tyrosine kinase domain tandem duplication) 
+  dplyr::filter(hgnc_symbol=="FGFR1")
+
+```
+
+```{r}
+# File from 00-LGAT-select-pathology-dx that is used for the pathology diagnosis
+# was used to subset clinical file
+lgat_specimens_df<-read_tsv(file.path(subset_dir, "lgat_metadata.tsv"))
+
+# Filter to RNA-Seq samples
+lgat_wgs_df <- lgat_specimens_df %>%
+  dplyr::filter(experimental_strategy == "WGS") %>%
+  dplyr::select(Kids_First_Biospecimen_ID)
+
+```
+
+
