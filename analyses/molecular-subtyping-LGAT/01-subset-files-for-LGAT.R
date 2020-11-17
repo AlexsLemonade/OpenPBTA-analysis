@@ -160,7 +160,10 @@ consensusMutationSubset <- consensusMutation %>%
                 IDH_mut,
                 H3F3A_mut,
                 HIST1H3B_mut,
-                HIST1H3C_mut)
+                HIST1H3C_mut,
+                MAPK_mut,
+                RTK_mut,
+                NF1_mut)
 
 # remove consensusMutation
 rm(consensusMutation)
