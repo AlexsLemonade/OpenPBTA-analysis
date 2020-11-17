@@ -1,0 +1,169 @@
+---
+title: "Find CNV losses that overlap with TP53 domains"
+author: "K S Gaonkar (D3B)"
+output: html_notebook
+
+---
+    
+In this script we will find CNV losses that overlap with TP53 domains:
+ 
+ - TAD = trans-activating domain (essential for function)
+ - DBD = DNA-binding domain (residues 102–292)
+ - TD = tetramerization domain (residues 326–356)
+
+We want to subset CNV calls where the domain are lost which will possibly	lead to loss of function to use for evaluation of TP53 inactivation score at a later step.
+
+### Setup
+```{r}
+library("ggpubr")
+library("ggthemes")
+library("tidyverse")
+
+# rootdir
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+results_dir <- file.path(root_dir,
+                         "analyses",
+                         "tp53_nf1_score",
+                         "results")
+
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+
+
+```
+
+### Input files
+
+`02-add-ploidy-consensus.Rmd` in focal-cn-file-preparation adds ploidy information to the consensus SEG file and adds a status column that defines gain and loss broadly.
+
+```
+Rscript -e "rmarkdown::render('analyses/focal-cn-file-preparation/02-add-ploidy-consensus.Rmd', clean = TRUE)"
+```
+
+consensus_seg_with_status.tsv was copied from scratch to input folder here so we can access the file in this notebook 
+
+```{r}
+# consensus seg for file for the location of CNVs
+consensus_seg <- read_tsv(file.path(root_dir, 
+                                    "analyses",
+                                    "tp53_nf1_score",
+                                    "input",
+                                    "consensus_seg_with_status.tsv"))
+
+# Gene location and domain overlap file 
+bioMartDataPfamTp53 <- 
+  readRDS(system.file("extdata", "pfamDataBioMart.RDS", package = "annoFuse")) %>%
+  dplyr::filter(hgnc_symbol=="TP53")
+
+# histology file
+histologies_df <- read_tsv(file.path(data_dir,
+                                     "pbta-histologies.tsv")) %>%
+  dplyr::select("Kids_First_Biospecimen_ID",
+                "sample_id")
+
+# Classifier score 
+# 1) Read in scores from tp53-nf1-classifier for stranded
+
+score_stranded_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv")) %>%
+  dplyr::select(
+    "tp53_score",
+    "sample_id"
+  ) %>% 
+  dplyr::rename("Kids_First_Biospecimen_ID"="sample_id") %>%
+  left_join(histologies_df,by=c("Kids_First_Biospecimen_ID")) %>%
+  as.data.frame()
+
+# 2) Read in scores from tp53-nf1-classifier for polya
+score_polya_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv")) %>%
+  dplyr::select(
+    "tp53_score",
+    "sample_id"
+  ) %>%
+  dplyr::rename("Kids_First_Biospecimen_ID"="sample_id") %>%
+  left_join(histologies_df,by=c("Kids_First_Biospecimen_ID")) %>%
+  as.data.frame()
+
+tp53_classifier_score <- rbind(score_stranded_df,score_polya_df)
+
+```
+
+Generating genomics ranges for cnv and domain dataframes
+
+```{r}
+# Genomic range for cnv seg file 
+cnv_gr <- consensus_seg %>%
+  dplyr::rename(chr = chrom, start = loc.start, end = loc.end,
+                copy_number = copy.num) %>%
+  dplyr::select(-num.mark, -seg.mean) %>%
+  GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE,
+                                          starts.in.df.are.0based = FALSE)
+
+# Genomic range for gene location and domain overlap file 
+domain_gr <- bioMartDataPfamTp53 %>%
+  dplyr::filter(!is.na(domain_start),!is.na(domain_end)) %>%
+  dplyr::mutate(strand = if_else(strand=="-1","-","+"),
+                chromosome_name = paste0("chr",chromosome_name)) %>%
+  dplyr::rename(chr = chromosome_name, start = domain_start, end = domain_end) %>%
+  GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE,
+                                          starts.in.df.are.0based = FALSE)
+
+```
+
+
+
+### Overlap CNV and TP53 Domain ranges 
+
+```{r}
+# overlap cnv and domain
+overlaps <- IRanges::mergeByOverlaps(cnv_gr, domain_gr)
+
+# get CNV and domain overlap per BS id
+annotated_cn <- data.frame(
+  biospecimen_id = overlaps$Kids_First_Biospecimen_ID,
+  status = overlaps$status,
+  copy_number = overlaps$copy_number,
+  ploidy = overlaps$tumor_ploidy,
+  hgnc_symbol = overlaps$hgnc_symbol,
+  pfam_id = overlaps$pfam_id,
+  NAME = overlaps$NAME,
+  stringsAsFactors = FALSE
+) %>%
+  dplyr::distinct() %>%
+  # select loss that overlaps the TP53 core domains 
+  dplyr::filter(status=="loss") %>%
+  dplyr::group_by(biospecimen_id,copy_number,ploidy) %>%
+  dplyr::summarise(
+    domain=toString(NAME)) %>%
+  left_join(histologies_df,by=c("biospecimen_id"="Kids_First_Biospecimen_ID")) %>%
+  left_join(tp53_classifier_score,by=c("sample_id"))
+```
+
+### Copy number overlapping TP53 domain
+
+```{r}
+
+ggplot(annotated_cn, aes(x = factor(copy_number), y = tp53_score)) +
+  geom_violin()+
+  geom_jitter(alpha = 0.5, width = 0.2) +
+  stat_compare_means() +
+  theme_bw() +
+  ggtitle("Distribution of scores across aberrations") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  xlab("Copy number")
+
+```
+
+### Save file
+
+```{r}
+annotated_cn %>%
+  # high confidence CNV losses
+  # with high TP53 inactivation score
+  dplyr::filter(copy_number<=1) %>%
+  write_tsv( file.path(results_dir,"loss_overlap_domains_tp53.tsv"))
+
+```
+
+

@@ -54,7 +54,7 @@ python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_stranded}
 Rscript -e "rmarkdown::render('${analysis_dir}/02-qc-rna_expression_score.Rmd')"
 
 # subset cnv where tp53 is lost
-Rscript ${analysis_dir}/03-tp53-cnv-loss-domain.R
+Rscript -e "rmarkdown::render('${analysis_dir}/03-tp53-cnv-loss-domain.Rmd')"
 
 # evaluate classifer scores for stranded data
 python3 ${analysis_dir}/04-evaluate-classifier.py -s ${analysis_dir}/results/TP53_NF1_snv_alteration.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv -c ${data_dir}/pbta-histologies.tsv -o stranded
