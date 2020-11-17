@@ -31,7 +31,8 @@ The files in the `lgat-subset` were generated via `01-subset-files-for-LGAT.R` u
 ### Inputs from data download
 
 * `pbta-histologies.tsv`: is used to subset samples according to [the criteria above](#inclusion-exclusion-criteria)
-* `pbta-snv-consensus-mutation.maf.tsv.gz`: 
+* `pbta-snv-consensus-mutation.maf.tsv.gz` 
+* `fusion_summary_lgat_foi.tsv` subset of fusion as per LGAT subtype  
 
 ### Run script
 
@@ -57,4 +58,11 @@ H3F3A_mut | harbors an H3F3A K28M or G35R/V mutation | "Yes" mutation exists, "N
 HIST1H3B_mut | harbors an HIST1H3B K28M | "Yes" mutation exists, "No" mutation is absent
 HIST1H3C_mut | harbors and HIST1H3C  K28M | "Yes" mutation exists, "No" mutation is absent
  
-
+`02-subset-fusion-files-LGAT.R`: generates subset of rna LGAT sample annotated by subtypes fusion status as per following description:
+columnname | description | values
+--- | --- | ---
+KIAA_BRAF_fus | contains KIAA1549-BRAF fusion | "Yes" fusion exists, "No" fusion is absent
+MAPK_fus | contains non-canonical BRAF fusion other than KIAA1549-BRAF; contains RAF1 fusion | "Yes" fusion exists, "No" fusion is absent
+RTK_fus | harbors a fusion in ALK, ROS1, NTRK1, NTRK2,NTRK3 or PDGFR | "Yes" fusion exists, "No" fusion is absent
+FGFR_fus | harbors FGFR1-TACC1 or other FGFR1 or FGFR2 fusion | "Yes" fusion exists, "No" fusion is absent
+MYB_fus | harbors either a MYB-QKI fusion or other MYB or MYBL1 fusion | "Yes" fusion exists, "No" fusion is absent
