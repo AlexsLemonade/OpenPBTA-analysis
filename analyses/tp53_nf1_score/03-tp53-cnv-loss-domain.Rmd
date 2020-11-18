@@ -155,7 +155,10 @@ ggplot(annotated_cn, aes(x = factor(copy_number), y = tp53_score)) +
 
 ```
 
-### Save file
+
+TP53 with copy_number <=1 show higher tp53 inactivation classifier scores, we will save copy_number <=1 calls for TP53 as high confidence losses.
+
+### Save high confidence TP53 loss in file
 
 ```{r}
 annotated_cn %>%
