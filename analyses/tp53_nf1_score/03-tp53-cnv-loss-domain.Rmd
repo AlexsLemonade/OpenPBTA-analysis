@@ -85,6 +85,7 @@ score_polya_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-fpk
   left_join(histologies_df,by=c("Kids_First_Biospecimen_ID")) %>%
   as.data.frame()
 
+# merge classifier scores
 tp53_classifier_score <- rbind(score_stranded_df,score_polya_df)
 
 ```
@@ -103,6 +104,7 @@ cnv_gr <- consensus_seg %>%
 # Genomic range for gene location and domain overlap file 
 domain_gr <- bioMartDataPfamTp53 %>%
   dplyr::filter(!is.na(domain_start),!is.na(domain_end)) %>%
+  # formatting strand information
   dplyr::mutate(strand = if_else(strand=="-1","-","+"),
                 chromosome_name = paste0("chr",chromosome_name)) %>%
   dplyr::rename(chr = chromosome_name, start = domain_start, end = domain_end) %>%
@@ -134,6 +136,7 @@ annotated_cn <- data.frame(
   # select loss that overlaps the TP53 core domains 
   dplyr::filter(status=="loss") %>%
   dplyr::group_by(biospecimen_id,copy_number,ploidy) %>%
+  # summarise domain NAME per biospecimen_id TP53 loss
   dplyr::summarise(
     domain=toString(NAME)) %>%
   left_join(histologies_df,by=c("biospecimen_id"="Kids_First_Biospecimen_ID")) %>%
@@ -141,6 +144,8 @@ annotated_cn <- data.frame(
 ```
 
 ### Copy number overlapping TP53 domain
+
+We want to check if classifier scores support CNV calls and if support from classifier (higher inactivation score) can be used to filter TP53 loss calls 
 
 ```{r}
 
