@@ -39,9 +39,14 @@ manta <- read_tsv(file.path(root_dir,
                             "pbta-sv-manta.tsv.gz")) 
 
 # consensus seg calls
-cnv_focal_anno <- read_tsv(file.path(root_dir, 
-                                        "data",
-                                        "pbta-cnv-consensus.seg.gz"))
+cnv <- read_tsv(file.path(root_dir,
+                          "data",
+                          "pbta-cnv-consensus.seg.gz"))
+
+# consensus seg annotated with gene
+cnv_anno <- read_tsv(file.path(root_dir,
+                          "data",
+                          "consensus_seg_annotated_cn_autosomes.tsv.gz"))
 
 # Gene location and domain overlap file 
 bioMartDataPfamFGFR1 <- 
@@ -49,45 +54,6 @@ bioMartDataPfamFGFR1 <-
   # to check if biospecimen harbors FGFR1 TKD (tyrosine kinase domain tandem duplication) 
   dplyr::filter(hgnc_symbol == "FGFR1",
                 DESC == "Protein tyrosine kinase")
-
-bioMartDataPfamCDKN <- 
-  readRDS(system.file("extdata", "pfamDataBioMart.RDS", package = "annoFuse")) %>%
-  # to check if biospecimen harbors FGFR1 TKD (tyrosine kinase domain tandem duplication) 
-  dplyr::filter(hgnc_symbol %in% c("CDKN2A,CDKN2B"))
-
-```
-### Gather exon locations
-Code below is adapted from focal-cn-file-preparation/04-prepare-cn-file.R
-
-```{r}
-#### Annotation file -----------------------------------------------------------
-
-# this is the output of GenomicFeatures::makeTxDbFromGFF
-# TODO: possibly update this when the GTF file gets included in the data
-#       download; may also remove the --gtf_file option and hardcode it?
-annotation_directory <- file.path(root_dir,
-                                  "analyses",
-                                  "focal-cn-file-preparation",
-                                  "annotation_files")
-annotation_file <- file.path(annotation_directory,
-                             "txdb_from_gencode.v27.gtf.db")
-
-if (!file.exists(annotation_file)) {
-  # Define the annotations for the hg38 genome
-  txdb <- GenomicFeatures::makeTxDbFromGFF(
-    file = file.path(root_dir,"data","gencode.v27.primary_assembly.annotation.gtf.gz"),
-    format = "gtf"
-  )
-  # can do this even if the directory exists
-  dir.create(annotation_directory, showWarnings = FALSE)
-  # write this to file to save time next time
-  AnnotationDbi::saveDb(txdb, annotation_file)
-} else {
-  txdb <- AnnotationDbi::loadDb(annotation_file)
-}
-
-# extract the exons but include ensembl gene identifiers
-tx_exons <- GenomicFeatures::exons(txdb, columns = "gene_id")
 
 ```
 
@@ -107,32 +73,16 @@ lgat_wgs_df <- lgat_specimens_df %>%
 manta_lgat <- manta %>%
   dplyr::filter(Kids.First.Biospecimen.ID.Tumor %in% lgat_wgs_df$Kids_First_Biospecimen_ID)
 
-cnv_focal_anno_lgat <- cnv_focal_anno %>%
-  dplyr::filter(biospecimen_id %in% lgat_wgs_df$Kids_First_Biospecimen_ID)
+cnv_lgat <- cnv %>%
+  dplyr::filter( ID %in% lgat_wgs_df$Kids_First_Biospecimen_ID)
 
 ```
 
 ### Overlap tandem duplication in FGFR1 with exon
 
 ```{r}
-# Genomic range for manta file 
-manta_gr <- manta_lgat %>%
-  # format
-  dplyr::rename(chr = SV.chrom, start = SV.start, end = SV.end,
-                ALT = ALT) %>%
-  # SV overlaps only FGFR1 gene
-  # ie. breakpoint is within FGFR1 gene
-  dplyr::filter(grepl("^FGFR1$",manta_lgat$Gene.name),
-                # filter for tandem duplication
-                grepl("<DUP:TANDEM>",ALT)) %>%
-  # format with chr to match to cnv
-  dplyr::mutate(chr=paste0("chr",chr)) %>%
-  # make genomic ranges
-  GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE,
-                                          starts.in.df.are.0based = FALSE)
-
 # Genomic range for cnv seg file 
-cnv_gr <- consensus_seg %>%
+cnv_gr <- cnv %>%
   # format
   dplyr::rename(chr = chrom, start = loc.start, end = loc.end,
                 copy_number = copy.num) %>%
@@ -147,8 +97,29 @@ domain_gr <- bioMartDataPfamFGFR1 %>%
   dplyr::filter(!is.na(domain_start),!is.na(domain_end)) %>%
   # format
   dplyr::mutate(strand = if_else(strand=="-1","-","+"),
-                chromosome_name = paste0("chr",chromosome_name)) %>%
-  dplyr::rename(chr = chromosome_name, start = domain_start, end = domain_end) %>%
+                domain_chr = paste0("chr",domain_chr)) %>%
+  dplyr::rename(chr = domain_chr, start = domain_start, end = domain_end) %>%
+  # make genomic ranges
+  GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE,
+                                          starts.in.df.are.0based = FALSE,seqnames.field = "chr")
+
+```
+
+
+
+### Distribution of manta SV
+SV should be annotated as tandem duplicate and overlap 
+"Protein tyrosine kinase" domain of FGFR1 in biospecimens
+
+```{r}
+
+# Genomic range for manta file 
+manta_gr <- manta_lgat %>%
+  # format
+  dplyr::rename(chr = SV.chrom, start = SV.start, end = SV.end,
+                ALT = ALT) %>%
+  # format with chr to match to cnv
+  dplyr::mutate(chr=paste0("chr",chr)) %>%
   # make genomic ranges
   GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE,
                                           starts.in.df.are.0based = FALSE)
@@ -156,53 +127,142 @@ domain_gr <- bioMartDataPfamFGFR1 %>%
 # overlap manta and domain
 overlaps_manta <- IRanges::mergeByOverlaps(manta_gr, domain_gr)
 
-# overlap consensus seg with domain
-overlaps_cnv <- IRanges::mergeByOverlaps(cnv_gr,domain_gr)
+# filter for fgfr only overlap
+overlaps_manta_fgfr <- overlaps_manta[which(overlaps_manta$Gene.name=="FGFR1" &
+                # filter for tandem duplication
+                overlaps_manta$ALT=="<DUP:TANDEM>"), ]
 
-```
-
-### Distribution of manta SV
-CNV that overlap "Protein tyrosine kinase" domain in biospecimens
-
-```{r}
-overlaps_manta_df <- data.frame(
-  biospecimen_id = overlaps_manta$Kids.First.Biospecimen.ID.Tumor,
-  ALT = overlaps_manta$ALT,
-  hgnc_symbol = overlaps_manta$hgnc_symbol,
-  NAME = overlaps_manta$NAME,
+overlaps_manta_fgfr_df <- data.frame(
+  biospecimen_id = overlaps_manta_fgfr$Kids.First.Biospecimen.ID.Tumor,
+  ALT = overlaps_manta_fgfr$ALT,
+  NAME = overlaps_manta_fgfr$NAME,
+  hgnc_symbol = overlaps_manta_fgfr$hgnc_symbol,
+  # annnotation for dup tandem
+  FGFR_DUP_TANDEM = "Yes",
   stringsAsFactors = FALSE
 ) %>%
   dplyr::distinct() 
 
-overlaps_manta_df 
+overlaps_manta_fgfr_df 
 
 ```
 4 biospecimens have tandem duplication that overlap tyrosine kinase domain in FGFR1
 
 
 ### Distribution of copy number
-CNV that overlap "Protein tyrosine kinase" domain in biospecimens
+CNV that are within FGFR1 gene region only and overlap "Protein tyrosine kinase" domain in FGFR1 in biospecimens
 
 ```{r}
+
+# gene region overlap
+fgfr_gene = GenomicRanges::GRanges(seqnames=paste0("chr",domain_gr$chromosome_name),
+          ranges=IRanges::IRanges(start = domain_gr$gene_start, end = domain_gr$gene_end))
+
+# subset cnv+domain grange to be within FGFR1 gene region
+cnv_fgfr_gr <- IRanges::subsetByOverlaps(cnv_gr, fgfr_gene,type="within")
+
+# overlap consensus seg with exon
+overlaps_fgfr_cnv <- IRanges::mergeByOverlaps(cnv_fgfr_gr,domain_gr) 
+
+# filter for fgfr only overlap
+overlaps_fgfr_cnv <- overlaps_fgfr_cnv[which(overlaps_fgfr_cnv$hgnc_symbol=="FGFR1" &
+               # filter for duplication
+               overlaps_fgfr_cnv$copy_number>2), ]
+
+# dataframe
 overlaps_cnv_df <- data.frame(
-  biospecimen_id = overlaps_cnv$ID,
-  copy_number = overlaps_cnv$copy_number,
-  hgnc_symbol = overlaps_cnv$hgnc_symbol,
-  NAME = overlaps_cnv$NAME,
+  biospecimen_id = overlaps_fgfr_cnv$ID,
+  copy_number = overlaps_fgfr_cnv$copy_number,
+  NAME = overlaps_fgfr_cnv$NAME,
   stringsAsFactors = FALSE
 ) %>%
   dplyr::distinct() %>%
-  dplyr::filter(copy_number >2) %>%
-  
+  # keep copy_number > 2
+  dplyr::mutate(FGFR_DUP = if_else(copy_number >2,"Yes","No")) 
 
 overlaps_cnv_df 
 
 ```
-24 samples have copy_number changes > 2 that overlap with tyrosine kinase domain
+5 samples have copy_number changes > 2 that overlap with tyrosine kinase domain
+
+Are there overlap in SV and CNV calls?
+
+```{r}
+intersect(overlaps_manta_fgfr_df$biospecimen_id,overlaps_cnv_df$biospecimen_id)
+```
+Only BS_MW6YMRBJ shows tandem duplication in manta and duplication in consensus seg file that overlaps tyrosine kinase domain in FGFR1
+
+### Checking which exons overlap the above SV and CNV
+
+```{r}
+# Define the annotations for the hg38 genome
+txdb <- GenomicFeatures::makeTxDbFromGFF(
+    file = file.path(root_dir,"data",
+                     "gencode.v27.primary_assembly.annotation.gtf.gz"),
+    format = "gtf"
+  )
+# get exons and exon_id
+tx_exons<-GenomicFeatures::exons(txdb, columns = list("gene_id","exon_rank"))
+  
+```
+
+For manta SV calls that are within FGFR1 gene region
+
+```{r}
+# overlap filtered manta with exons
+overlaps_manta_fgfr_exon <- IRanges::mergeByOverlaps(overlaps_manta_fgfr$manta_gr,tx_exons) 
+
+# overlap filtered cnv with exons
+overlaps_cnv_fgfr_exon <- IRanges::mergeByOverlaps(overlaps_fgfr_cnv$cnv_fgfr_gr,tx_exons) 
+
+# plot exon rank for manta and cnv
+ggplot(rbind(data.frame("exon_number"=unlist(overlaps_manta_fgfr_exon$exon_rank),
+                  "type"="tandem_dup"),
+             data.frame("exon_number"=unlist(overlaps_cnv_fgfr_exon$exon_rank),
+                  "type"="cnv_dup"))
+       ,aes(x=exon_number,color=type))+geom_density()
+
+```
+
+### CDKN deletion 
+
+```{r}
+
+cnv_anno_cdkn2 <- cnv_anno %>%
+  dplyr::filter(gene_symbol %in% c("CDKN2A","CDKN2B")) %>%
+  reshape::cast(biospecimen_id+ploidy~gene_symbol,value = "copy_number") %>%
+  # keep only if copy_number <=1
+  dplyr::mutate(CDKN2A_DEL= if_else(CDKN2A<=1,"Yes","No"),
+                CDKN2B_DEL= if_else(CDKN2B<=1,"Yes","No")) %>%
+  dplyr::distinct() 
+
+cnv_anno_cdkn2
+  
+
+```
+
+### Gather CNV subsets
+
+```{r}
+
+# merge CNV subtype annotation
+merge_CNV_substype <-dplyr::select(overlaps_manta_fgfr_df,biospecimen_id,FGFR_DUP_TANDEM) %>%
+  full_join(dplyr::select(overlaps_cnv_df ,biospecimen_id,FGFR_DUP)) %>%
+  full_join(dplyr::select(cnv_anno_cdkn2, biospecimen_id,CDKN2A_DEL,CDKN2B_DEL)) 
+
+# merge all lgat WGS samples
+lgat_wgs_df %>%
+  left_join(merge_CNV_substype,by=c("Kids_First_Biospecimen_ID"="biospecimen_id")) %>%
+  # change NA to value==No
+  replace_na(list(FGFR_DUP_TANDEM="No",
+                         FGFR_DUP="No",
+                         CDKN2A_DEL="No",
+                         CDKN2B_DEL ="No"
+                         ))%>%
+  write_tsv(file.path(subset_dir,"LGAT_cnv_subset.tsv"))
 
 
-
-
+```
 
 
 
