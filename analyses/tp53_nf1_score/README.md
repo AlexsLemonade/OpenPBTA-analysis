@@ -29,7 +29,7 @@ _NF1_ positive examples are additionally filtered to remove missense mutations, 
 
 `01-apply-classifier.py` produces  `results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv`  and `results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv`, which contains all 3 classifier scores for the stranded data and for shuffled stranded (e.g., random) data.
 
-`02-qc-rna_expression_score.Rmd` here expression of TP53 gene was compared to TP53 classifier score but we didn't find any correlation between TP53 expression is supported by tp53 inactivation score.
+`02-qc-rna_expression_score.Rmd` here expression of TP53 gene was compared to TP53 classifier score. We didn't find a strong correlation between TP53 expression and TP53 inactivation score, thus, expression and classifier score together cannot predict function.
 
 `03-tp53-cnv-loss-domain.Rmd` here copy_number of regions overlapping TP53 functional domains were compared to TP53 classifier score. We find tumors with TP53 copies <=1 have higher TP53 classifier scores, so we only retain biospecimens with <= 1 copy TP53 as high confidence TP53 loss. 
 
