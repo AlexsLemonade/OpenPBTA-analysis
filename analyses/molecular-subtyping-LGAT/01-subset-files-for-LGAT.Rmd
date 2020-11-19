@@ -238,7 +238,7 @@ H3.1_mut | harbors an HIST1H3B K28M|or HIST1H3C  K28M
 
 consensusMutationSubset <- lgat_dna_df %>%
   left_join(consensusMutationSubset,by=c("Kids_First_Biospecimen_ID"="Tumor_Sample_Barcode")) %>%
-  reshape2::dcast(Kids_First_Biospecimen_ID ~ Hugo_Symbol) %>%
+  reshape2::dcast(Kids_First_Biospecimen_ID + sample_id~ Hugo_Symbol) %>%
   dplyr::mutate(BRAF_V600E_mut = if_else(BRAF>=1,"Yes","No"),
                 FGFR_mut = if_else(rowSums(
                   dplyr::select(.,snvOI$FGFR$gene)) >=1,"Yes","No"),
@@ -256,7 +256,7 @@ consensusMutationSubset <- lgat_dna_df %>%
                   rowSums(dplyr::select(.,one_of(snvOI$RTK$gene)))>=1,"Yes","No"),
                 NF1_mut = if_else(
                   rowSums(dplyr::select(.,one_of(snvOI$NF1$gene)))>=1,"Yes","No") ) %>%
-  dplyr::select("Kids_First_Biospecimen_ID",ends_with("mut"))
+  dplyr::select("Kids_First_Biospecimen_ID","sample_id",ends_with("mut"))
 
 consensusMutationSubset 
 
