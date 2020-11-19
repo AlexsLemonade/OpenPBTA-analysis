@@ -53,8 +53,8 @@ MAPK_mut | contains mutation in KRAS, NRAS, HRAS, MAP2K1, MAP2K2, MAP2K1, ARAF S
 RTK_mut | harbors a MET,KIT or PDGFRA SNV | "Yes" mutation exists, "No" mutation is absent
 FGFR_mut | harbors FGFR1 p.N546K, p.K656E, p.N577, or p. K687 hotspot mutations | "Yes" mutation exists, "No" mutation is absent
 IDH_mut | harbors an IDH R132 mutation | "Yes" mutation exists, "No" mutation is absent
-H3F3A_mut | harbors an H3F3A K28M or G35R/V mutation | "Yes" mutation exists, "No" mutation is absent
-HIST1H3B_mut | harbors an HIST1H3B K28M | "Yes" mutation exists, "No" mutation is absent
-HIST1H3C_mut | harbors and HIST1H3C  K28M | "Yes" mutation exists, "No" mutation is absent
+H3.3_mut | harbors an H3F3A K28M or G35R/V mutation | "Yes" mutation exists, "No" mutation is absent
+H3.1_mut | harbors an HIST1H3B K28M|or HIST1H3C  K28M | "Yes" mutation exists, "No" mutation is absent
+
  
 
