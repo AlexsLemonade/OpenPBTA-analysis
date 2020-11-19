@@ -31,7 +31,7 @@ _NF1_ positive examples are additionally filtered to remove missense mutations, 
 
 `02-qc-rna_expression_score.Rmd` here expression of TP53 gene was compared to TP53 classifier score but we didn't find any correlation between TP53 expression is supported by tp53 inactivation score.
 
-`03-tp53-cnv-loss-domain.Rmd` here copy_number of consensus CNV reginos overlapping TP53 were compared to TP53 classifier score. We find TP53<=1 is supported by higher TP53 classifier score so we only keep TP53 <= 1 as high confidence TP53 loss biospecimen list. 
+`03-tp53-cnv-loss-domain.Rmd` here copy_number of regions overlapping TP53 functional domains were compared to TP53 classifier score. We find tumors with TP53 copies <=1 have higher TP53 classifier scores, so we only retain biospecimens with <= 1 copy TP53 as high confidence TP53 loss. 
 
 `04-evaluate-classifier.py` evaluates classifier score with TP53 alterations (non-synonymous SNV and all status == "loss" in consensus CNV file from 00-tp53-nf1-alterations.R) 
 
@@ -48,4 +48,3 @@ ROC curve for NF1 classifier scores for stranded RNAseq data
 
 ROC curve for NF1 classifier scores for polya RNASeq data
 ![polya RNASeq NF1 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/polya_NF1.png)
-
