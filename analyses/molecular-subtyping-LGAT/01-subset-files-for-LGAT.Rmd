@@ -88,7 +88,7 @@ snvOI <- jsonlite::fromJSON(file.path(root_dir,
 
 ```
 
-Collase multiple hotspots in genes with "|" so easy grep calls
+Collapse multiple hotspots in genes with "|" so easy grep calls
 
 ```{r}
 BRAF_hotspot <-paste(snvOI$BRAF_V600E$hotspot[!is.na( snvOI$BRAF_V600E$hotspot)],collapse = "|")
