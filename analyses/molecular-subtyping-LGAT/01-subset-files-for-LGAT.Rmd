@@ -174,6 +174,9 @@ consensusMutationSubset <- consensusMutation %>%
       # get H3F3A mutation status
       # canonical mutations
       HGVSp_Short %in% snvOI$H3F3A$canonical & Hugo_Symbol %in% "H3F3A" | # OR
+      # get H3F3B mutation status
+      # canonical mutations
+      HGVSp_Short %in% snvOI$H3F3B$canonical & Hugo_Symbol %in% "H3F3B" | # OR
       # get HIST1H3B mutation status
       # canonical mutations
       HGVSp_Short %in% snvOI$HIST1H3B$canonical & Hugo_Symbol %in% "HIST1H3B" | # OR
@@ -246,8 +249,8 @@ consensusMutationSubset <- lgat_dna_df %>%
                 IDH_mut  = if_else(any(colnames(.) %in% snvOI$IDH$gene) & 
                                      rowSums(dplyr::select(.,one_of(snvOI$IDH$gene))) >=1,
                                    "Yes","No"),
-                H3.3_mut = if_else(any(colnames(.) %in% "H3F3A") & 
-                                     rowSums(dplyr::select(.,one_of("H3F3A"))) >= 1 ,"Yes","No"),
+                H3.3_mut = if_else(any(colnames(.) %in% c("H3F3A","H3F3B")) & 
+                                     rowSums(dplyr::select(.,one_of(c("H3F3A","H3F3B")))) >= 1 ,"Yes","No"),
                 H3.1_mut = if_else(rowSums(
                   dplyr::select(.,one_of(c("HIST1H3B","HIST1H3C")))) >=1 ,"Yes","No"),  
                 MAPK_mut  = if_else(
