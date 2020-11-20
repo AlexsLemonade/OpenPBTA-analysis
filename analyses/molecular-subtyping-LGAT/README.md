@@ -57,6 +57,7 @@ H3.3_mut | harbors an H3F3A K28M or G35R/V mutation | "Yes" mutation exists, "No
 H3.1_mut | harbors an HIST1H3B K28M|or HIST1H3C  K28M | "Yes" mutation exists, "No" mutation is absent
 
 `02-subset-fusion-files-LGAT.Rmd`: generates subset of rna LGAT sample annotated by subtypes fusion status as per following description:
+
 columnname | description | values
 --- | --- | ---
 KIAA_BRAF_fus | contains KIAA1549-BRAF fusion | "Yes" fusion exists, "No" fusion is absent
@@ -65,4 +66,13 @@ RTK_fus | harbors a fusion in ALK, ROS1, NTRK1, NTRK2,NTRK3 or PDGFR | "Yes" fus
 FGFR_fus | harbors FGFR1-TACC1 or other FGFR1 or FGFR2 fusion | "Yes" fusion exists, "No" fusion is absent
 MYB_fus | harbors either a MYB-QKI fusion or other MYB or MYBL1 fusion | "Yes" fusion exists, "No" fusion is absent
  
+`03-subset-cnv-files-LGAT.Rmd`: generates subset of dna LGAT sample annotated by subtypes defined by CNV as per the following description:
+
+columnname | description | values
+--- | --- | ---
+FGFR_DUP_TANDEM | contains FGFR1 tandem duplication from SV | "Yes" fusion exists, "No" fusion is absent
+FGFR_DUP | contains FGFR1 duplication event from consensus cnv seg | "Yes" fusion exists, "No" fusion is absent
+CDKN2A_DEL | contains CDKN2A deletion | "Yes" fusion exists, "No" fusion is absent
+CDKN2B_DEL | contains CDKN2B deletion | "Yes" fusion exists, "No" fusion is absent
+
 
