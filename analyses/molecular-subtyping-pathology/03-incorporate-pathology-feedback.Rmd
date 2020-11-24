@@ -4,7 +4,7 @@ output:
   html_notebook:
     toc: TRUE
     toc_float: TRUE
-author: Jaclyn Taroni for ALSF CCDL
+author: Jaclyn Taroni for ALSF CCDL, Jo Lynne Rokita for D3b
 date: 2020
 params:
   is_ci: FALSE
@@ -51,7 +51,7 @@ And the notes:
 > #### Few notes:
 > 1. `PT_7E3V3JFX` specimens were consistent with the original EPN dx, so pathology would call this a rare EPN, H3 K28 mutated tumor, rather than DMG.
 > 2. `PT_AQWDQW27` specimen was consistent with meningioma, even though it has a hallmark EPN fusion, so pathology would also call this a rare meningioma with a _YAP1_ fusion.
-> 3. Because 1 is a rare tumor (maybe first seen), the logic of searching for all H3 K28 mutations in [HGG subtyping](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249) would convert this sample by default - how to handle this? 
+> 3. Because 1 is a rare tumor (maybe first seen), the logic of searching for all H3 K28 mutations in [HGG subtyping](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249) would convert this sample by default.
 >  4. Pathology confirmed this HGG BRAF V600E mutant tumor, [`BS_H1XPVS9A`](https://cbethell.github.io/open-pbta-output/09-HGG-with-braf-clustering.nb.html#identify_sample_that_clusters_with_lgat), to be a LGAT (PXA). I updated `molecular_subtype` here based on what it would look like, but this should come through via the LGAT [subtyping](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/631) ticket. How should we add this info?
 
 ## Set up 
@@ -92,7 +92,7 @@ When we run this locally, we want to tie it to a specific version of the histolo
 if (running_in_ci) {
   histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
 } else {
-  histologies_file <- file.path(data_dir, "release-v15-20200228",
+  histologies_file <- file.path(data_dir, "release-v17-20200908",
                                 "pbta-histologies.tsv")
 }
 ```
@@ -217,7 +217,9 @@ compiled_df <- compiled_df %>%
   )
 ```
 
-### HGG BRAF V600E
+### HGG BRAF V600E 
+
+We will be removing this from subtyping, so this can be left for now
 
 The follow point comes from another issue [#627 (comment)](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/627#issuecomment-598789232):
 
@@ -244,9 +246,28 @@ compiled_df <- compiled_df %>%
 
 The `molecular-subtyping-EPN` module has not been completed yet, but the logic that is in that module may mean that we need to include revising the labels of `PT_AQWDQW27`.
 
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_AQWDQW27")
+# This sample is missing from the EPN table, but it should be there - will have to investigate and update this later.
 ```
-# TODO: do we need to update PT_AQWDQW27 once molecular-subtyping-EPN is 
-# complete?
+
+### `PT_6Q0NPVP3`
+
+The specimens for this patient, BS_5JM573JC and BS_E5H6CFYT, were classified as HGAT due to the presence of a histone mutation, but with the removal of LGAT from the HGAT module, this sample will no longer show up in two modules.
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_6Q0NPVP3")
+```
+
+### Are there any other duplicate subtypes?
+```{r}
+unique_subtypes <- compiled_df %>%
+  select(Kids_First_Participant_ID, sample_id, molecular_subtype) %>%
+  distinct()
+
+unique_subtypes[duplicated(unique_subtypes$sample_id),]
+#PT_KTRJ8TFY (fixed in clinical feedback) and PT_6Q0NPVP3 (fixed in HGG module removing LGAT)
 ```
 
 ### Write revised table to file
