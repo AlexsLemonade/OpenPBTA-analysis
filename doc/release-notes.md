@@ -15,6 +15,8 @@
     - Pull latest clinical data
     - Add extent of tumor resection per [comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/750#issue-688364970)
     - Rerun molecular subtyping modules to date
+    - Harmonize PNOC003 `pathology_diagnosis` to CBTN `pathology_diagnosis` and move original diagnosis to `pathology_free_text_diagnosis`
+    - Update CBTTC `cohort` to "CBTN"
 - folder structure:
 ```
 data
