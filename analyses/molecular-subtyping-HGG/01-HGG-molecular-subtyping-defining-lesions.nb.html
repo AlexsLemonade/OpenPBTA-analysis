@@ -7,6 +7,7 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Chante Bethell for ALSF CCDL" />
@@ -2559,7 +2560,7 @@ window.initializeCodeFolding = function(show) {
 
     // create a collapsable div to wrap the code in
     var div = $('<div class="collapse r-code-collapse"></div>');
-    if (show)
+    if (show || $(this)[0].classList.contains('fold-show'))
       div.addClass('in');
     var id = 'rcode-643E0F36' + currentIndex++;
     div.attr('id', id);
@@ -2689,7 +2690,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -2787,57 +2787,12 @@ summary {
 }
 </style>
 
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
 <!-- code folding -->
 <style type="text/css">
 .code-folding-btn { margin-bottom: 4px; }
 </style>
-<script>
-$(document).ready(function () {
-  window.initializeSourceEmbed("01-HGG-molecular-subtyping-defining-lesions.Rmd");
-  window.initializeCodeFolding("show" === "show");
-});
-</script>
 
 
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <style type="text/css">
 
@@ -2943,29 +2898,33 @@ div.tocify {
 <div id="usage" class="section level1">
 <h1>Usage</h1>
 <p>This notebook is intended to be run via the command line from the top directory of the repository as follows:</p>
-<pre><code>Rscript -e &quot;rmarkdown::render('analyses/molecular-subtyping-HGG/01-HGG-molecular-subtyping-defining-lesions.Rmd', clean = TRUE)&quot;</code></pre>
+<pre><code>Rscript -e &quot;rmarkdown::render(&#39;analyses/molecular-subtyping-HGG/01-HGG-molecular-subtyping-defining-lesions.Rmd&#39;, clean = TRUE)&quot;</code></pre>
 </div>
 <div id="set-up" class="section level1">
 <h1>Set Up</h1>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoibGlicmFyeSh0aWR5dmVyc2UpIn0= -->
 <pre class="r"><code>library(tidyverse)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RwbHlyJzpcbiAgbWV0aG9kICAgICAgICAgICBmcm9tXG4gIHByaW50LnJvd3dpc2VfZGYgICAgIFxuXHUwMDFiWzMwbeKUgOKUgCBcdTAwMWJbMW1BdHRhY2hpbmcgcGFja2FnZXNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2UgMS4yLjEg4pSA4pSAXHUwMDFiWzM5bVxuXHUwMDFiWzMwbVx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1nZ3Bsb3QyXHUwMDFiWzMwbSAzLjIuMCAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bXB1cnJyICBcdTAwMWJbMzBtIDAuMy4yXG5cdTAwMWJbMzJt4pyUXHUwMDFiWzMwbSBcdTAwMWJbMzRtdGliYmxlIFx1MDAxYlszMG0gMi4xLjMgICAgIFx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1kcGx5ciAgXHUwMDFiWzMwbSAwLjguM1xuXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bXRpZHlyICBcdTAwMWJbMzBtIDAuOC4zICAgICBcdTAwMWJbMzJt4pyUXHUwMDFiWzMwbSBcdTAwMWJbMzRtc3RyaW5nclx1MDAxYlszMG0gMS40LjBcblx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1yZWFkciAgXHUwMDFiWzMwbSAxLjMuMSAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bWZvcmNhdHNcdTAwMWJbMzBtIDAuNC4wXHUwMDFiWzM5bVxuXHUwMDFiWzMwbeKUgOKUgCBcdTAwMWJbMW1Db25mbGljdHNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2VfY29uZmxpY3RzKCkg4pSA4pSAXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzMwbSBcdTAwMWJbMzRtZHBseXJcdTAwMWJbMzBtOjpcdTAwMWJbMzJtZmlsdGVyKClcdTAwMWJbMzBtIG1hc2tzIFx1MDAxYlszNG1zdGF0c1x1MDAxYlszMG06OmZpbHRlcigpXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzMwbSBcdTAwMWJbMzRtZHBseXJcdTAwMWJbMzBtOjpcdTAwMWJbMzJtbGFnKClcdTAwMWJbMzBtICAgIG1hc2tzIFx1MDAxYlszNG1zdGF0c1x1MDAxYlszMG06OmxhZygpXHUwMDFiWzM5bVxuIn0= -->
-<pre><code>Registered S3 method overwritten by 'dplyr':
-  method           from
-  print.rowwise_df     
-[30m── [1mAttaching packages[22m ──────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──[39m
-[30m[32m✔[30m [34mggplot2[30m 3.2.0     [32m✔[30m [34mpurrr  [30m 0.3.2
-[32m✔[30m [34mtibble [30m 2.1.3     [32m✔[30m [34mdplyr  [30m 0.8.3
-[32m✔[30m [34mtidyr  [30m 0.8.3     [32m✔[30m [34mstringr[30m 1.4.0
-[32m✔[30m [34mreadr  [30m 1.3.1     [32m✔[30m [34mforcats[30m 0.4.0[39m
-[30m── [1mConflicts[22m ─────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-[31m✖[30m [34mdplyr[30m::[32mfilter()[30m masks [34mstats[30m::filter()
-[31m✖[30m [34mdplyr[30m::[32mlag()[30m    masks [34mstats[30m::lag()[39m</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBHZXQgYG1hZ3JpdHRyYCBwaXBlXG5gJT4lYCA8LSBkcGx5cjo6YCU+JWBcbmBgYCJ9 -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIEF0dGFjaGluZyBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDEuMi4xIOKUgOKUgFxuIn0= -->
+<pre><code>── Attaching packages ────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pyUIGdncGxvdDIgMy4yLjEgICAgIOKclCBwdXJyciAgIDAuMy4zXG7inJQgdGliYmxlICAzLjAuMyAgICAg4pyUIGRwbHlyICAgMC44LjNcbuKclCB0aWR5ciAgIDEuMC4wICAgICDinJQgc3RyaW5nciAxLjQuMFxu4pyUIHJlYWRyICAgMS4zLjEgICAgIOKclCBmb3JjYXRzIDAuNC4wXG4ifQ== -->
+<pre><code>✔ ggplot2 3.2.1     ✔ purrr   0.3.3
+✔ tibble  3.0.3     ✔ dplyr   0.8.3
+✔ tidyr   1.0.0     ✔ stringr 1.4.0
+✔ readr   1.3.1     ✔ forcats 0.4.0</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZzogcGFja2FnZSAndGliYmxlJyB3YXMgYnVpbHQgdW5kZXIgUiB2ZXJzaW9uIDMuNi4yXG4ifQ== -->
+<pre><code>Warning: package &#39;tibble&#39; was built under R version 3.6.2</code></pre>
+<!-- rnb-warning-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIENvbmZsaWN0cyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlX2NvbmZsaWN0cygpIOKUgOKUgFxu4pyWIGRwbHlyOjpmaWx0ZXIoKSBtYXNrcyBzdGF0czo6ZmlsdGVyKClcbuKcliBkcGx5cjo6bGFnKCkgICAgbWFza3Mgc3RhdHM6OmxhZygpXG4ifQ== -->
+<pre><code>── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgR2V0IGBtYWdyaXR0cmAgcGlwZSIsImAlPiVgIDwtIGRwbHlyOjpgJT4lYCJdfQ== -->
 <pre class="r"><code># Get `magrittr` pipe
 `%&gt;%` &lt;- dplyr::`%&gt;%`</code></pre>
 <!-- rnb-source-end -->
@@ -2975,7 +2934,7 @@ div.tocify {
 <h2>Directories and Files</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBEZXRlY3QgdGhlIFwiLmdpdFwiIGZvbGRlciAtLSB0aGlzIHdpbGwgaW4gdGhlIHByb2plY3Qgcm9vdCBkaXJlY3RvcnkuXG4jIFVzZSB0aGlzIGFzIHRoZSByb290IGRpcmVjdG9yeSB0byBlbnN1cmUgcHJvcGVyIHNvdXJjaW5nIG9mIGZ1bmN0aW9ucyBub1xuIyBtYXR0ZXIgd2hlcmUgdGhpcyBpcyBjYWxsZWQgZnJvbVxucm9vdF9kaXIgPC0gcnByb2pyb290OjpmaW5kX3Jvb3QocnByb2pyb290OjpoYXNfZGlyKFwiLmdpdFwiKSlcblxuIyBHZXQgbGdhdCBzdWJzZXQgZm9sZGVyIGZyb20gdGhlIG1vZHVsZSBpbiBtYXN0ZXJcbmxnYXRfc3Vic2V0X2RpciA8LSBmaWxlLnBhdGgocm9vdF9kaXIsIFxuICAgICAgICAgICAgICAgICAgICAgICAgXCJhbmFseXNlc1wiLFxuICAgICAgICAgICAgICAgICAgICAgICAgXCJtb2xlY3VsYXItc3VidHlwaW5nLUxHQVRcIixcbiAgICAgICAgICAgICAgICAgICAgICAgIFwibGdhdC1zdWJzZXRcIilcblxuIyBGaWxlIHBhdGggdG8gcmVzdWx0cyBkaXJlY3RvcnlcbnJlc3VsdHNfZGlyIDwtXG4gIGZpbGUucGF0aChyb290X2RpciwgXCJhbmFseXNlc1wiLCBcIm1vbGVjdWxhci1zdWJ0eXBpbmctSEdHXCIsIFwicmVzdWx0c1wiKVxuXG5pZiAoIWRpci5leGlzdHMocmVzdWx0c19kaXIpKSB7XG4gIGRpci5jcmVhdGUocmVzdWx0c19kaXIpXG59XG5cbiMgUmVhZCBpbiBtZXRhZGF0YVxubWV0YWRhdGEgPC1cbiAgcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChyb290X2RpciwgXCJkYXRhXCIsIFwicGJ0YS1oaXN0b2xvZ2llcy50c3ZcIiksIFxuICAgICAgICAgICAgICAgICAgZ3Vlc3NfbWF4ID0gMTAwMDApICU+JVxuICBkcGx5cjo6ZmlsdGVyKHNhbXBsZV90eXBlID09IFwiVHVtb3JcIikgXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgRGV0ZWN0IHRoZSBcIi5naXRcIiBmb2xkZXIgLS0gdGhpcyB3aWxsIGluIHRoZSBwcm9qZWN0IHJvb3QgZGlyZWN0b3J5LiIsIiMgVXNlIHRoaXMgYXMgdGhlIHJvb3QgZGlyZWN0b3J5IHRvIGVuc3VyZSBwcm9wZXIgc291cmNpbmcgb2YgZnVuY3Rpb25zIG5vIiwiIyBtYXR0ZXIgd2hlcmUgdGhpcyBpcyBjYWxsZWQgZnJvbSIsInJvb3RfZGlyIDwtIHJwcm9qcm9vdDo6ZmluZF9yb290KHJwcm9qcm9vdDo6aGFzX2RpcihcIi5naXRcIikpIiwiIiwiIyBHZXQgbGdhdCBzdWJzZXQgZm9sZGVyIGZyb20gdGhlIG1vZHVsZSBpbiBtYXN0ZXIiLCJsZ2F0X3N1YnNldF9kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcbiAgICAgICAgICAgICAgICAgICAgICAgIFwiYW5hbHlzZXNcIixcbiAgICAgICAgICAgICAgICAgICAgICAgIFwibW9sZWN1bGFyLXN1YnR5cGluZy1MR0FUXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICBcImxnYXQtc3Vic2V0XCIpIiwiIiwiIyBGaWxlIHBhdGggdG8gcmVzdWx0cyBkaXJlY3RvcnkiLCJyZXN1bHRzX2RpciA8LVxuICBmaWxlLnBhdGgocm9vdF9kaXIsIFwiYW5hbHlzZXNcIiwgXCJtb2xlY3VsYXItc3VidHlwaW5nLUhHR1wiLCBcInJlc3VsdHNcIikiLCIiLCJpZiAoIWRpci5leGlzdHMocmVzdWx0c19kaXIpKSB7XG4gIGRpci5jcmVhdGUocmVzdWx0c19kaXIpXG59IiwiIiwiIyBSZWFkIGluIG1ldGFkYXRhIiwibWV0YWRhdGEgPC1cbiAgcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChyb290X2RpciwgXCJkYXRhXCIsIFwicGJ0YS1oaXN0b2xvZ2llcy50c3ZcIiksIFxuICAgICAgICAgICAgICAgICAgZ3Vlc3NfbWF4ID0gMTAwMDApICU+JVxuICBkcGx5cjo6ZmlsdGVyKHNhbXBsZV90eXBlID09IFwiVHVtb3JcIikgIl19 -->
 <pre class="r"><code># Detect the &quot;.git&quot; folder -- this will in the project root directory.
 # Use this as the root directory to ensure proper sourcing of functions no
 # matter where this is called from
@@ -3001,19 +2960,21 @@ metadata &lt;-
                   guess_max = 10000) %&gt;%
   dplyr::filter(sample_type == &quot;Tumor&quot;) </code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgT1NfZGF5cyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBhZ2VfbGFzdF91cGRhdGVfZGF5cyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBub3JtYWxfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfcGxvaWR5ID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW1cbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuIn0= -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgT1NfZGF5cyA9IGNvbF9kb3VibGUoKSxcbiAgYWdlX2xhc3RfdXBkYXRlX2RheXMgPSBjb2xfZG91YmxlKCksXG4gIG5vcm1hbF9mcmFjdGlvbiA9IGNvbF9kb3VibGUoKSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBjb2xfZG91YmxlKCksXG4gIHR1bW9yX3Bsb2lkeSA9IGNvbF9kb3VibGUoKVxuKVxuIn0= -->
 <pre><code>Parsed with column specification:
 cols(
   .default = col_character(),
-  OS_days = [32mcol_double()[39m,
-  age_last_update_days = [32mcol_double()[39m,
-  normal_fraction = [32mcol_double()[39m,
-  tumor_fraction = [32mcol_double()[39m,
-  tumor_ploidy = [32mcol_double()[39m
-)
-See spec(...) for full column specifications.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBGaWxlIGZyb20gMDAtTEdBVC1zZWxlY3QtcGF0aG9sb2d5LWR4IHRoYXQgaXMgdXNlZCBmb3IgaW5jbHVzaW9uL2V4Y2x1c2lvblxucGF0aF9keF9saXN0X2xnYXQgPC0ganNvbmxpdGU6OmZyb21KU09OKFxuICBmaWxlLnBhdGgobGdhdF9zdWJzZXRfZGlyLCBcbiAgICAgICAgICAgIFwibGdhdF9zdWJ0eXBpbmdfcGF0aF9keF9zdHJpbmdzLmpzb25cIilcbilcbmBgYCJ9 -->
+  OS_days = col_double(),
+  age_last_update_days = col_double(),
+  normal_fraction = col_double(),
+  tumor_fraction = col_double(),
+  tumor_ploidy = col_double()
+)</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
+<pre><code>See spec(...) for full column specifications.</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgRmlsZSBmcm9tIDAwLUxHQVQtc2VsZWN0LXBhdGhvbG9neS1keCB0aGF0IGlzIHVzZWQgZm9yIGluY2x1c2lvbi9leGNsdXNpb24iLCJwYXRoX2R4X2xpc3RfbGdhdCA8LSBqc29ubGl0ZTo6ZnJvbUpTT04oXG4gIGZpbGUucGF0aChsZ2F0X3N1YnNldF9kaXIsIFxuICAgICAgICAgICAgXCJsZ2F0X3N1YnR5cGluZ19wYXRoX2R4X3N0cmluZ3MuanNvblwiKVxuKSJdfQ== -->
 <pre class="r"><code># File from 00-LGAT-select-pathology-dx that is used for inclusion/exclusion
 path_dx_list_lgat &lt;- jsonlite::fromJSON(
   file.path(lgat_subset_dir, 
@@ -3028,7 +2989,7 @@ path_dx_list_lgat &lt;- jsonlite::fromJSON(
 <h1>Prepare Data</h1>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBHZXQgTEdBVCB0dW1vciBzYW1wbGVzIG9uIHRoZSBiYXNpcyBvZiBwYXRob2xvZ3kgZGlhZ25vc2lzXG5sZ2F0X3NwZWNpbWVucyA8LSBtZXRhZGF0YSAlPiVcbiAgZmlsdGVyKHN0cl9kZXRlY3Qoc3RyX3RvX2xvd2VyKHBhdGhvbG9neV9kaWFnbm9zaXMpLCAgIyBJbmNsdXNpb24gY3JpdGVyaWFcbiAgICAgICAgICAgICAgICAgICAgcGFzdGUwKHBhdGhfZHhfbGlzdF9sZ2F0JGluY2x1ZGVfcGF0aF9keCwgY29sbGFwc2UgPSBcInxcIikpLFxuICAgICAgICAgIyBFeGNsdXNpb24gY3JpdGVyaWFcbiAgICAgICAgIHN0cl9kZXRlY3Qoc3RyX3RvX2xvd2VyKHBhdGhvbG9neV9kaWFnbm9zaXMpLFxuICAgICAgICAgICAgICAgICAgICBwYXN0ZTAocGF0aF9keF9saXN0X2xnYXQkZXhjbHVkZV9wYXRoX2R4LCBjb2xsYXBzZSA9IFwifFwiKSxcbiAgICAgICAgICAgICAgICAgICAgbmVnYXRlID0gVFJVRSksXG4gICAgICAgICAjIFR1bW9yc1xuICAgICAgICAgc2FtcGxlX3R5cGUgPT0gXCJUdW1vclwiLFxuICAgICAgICAgY29tcG9zaXRpb24gPT0gXCJTb2xpZCBUaXNzdWVcIikgJT4lXG4gIHB1bGwoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRClcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgR2V0IExHQVQgdHVtb3Igc2FtcGxlcyBvbiB0aGUgYmFzaXMgb2YgcGF0aG9sb2d5IGRpYWdub3NpcyIsImxnYXRfc3BlY2ltZW5zIDwtIG1ldGFkYXRhICU+JVxuICBmaWx0ZXIoc3RyX2RldGVjdChzdHJfdG9fbG93ZXIocGF0aG9sb2d5X2RpYWdub3NpcyksICAjIEluY2x1c2lvbiBjcml0ZXJpYVxuICAgICAgICAgICAgICAgICAgICBwYXN0ZTAocGF0aF9keF9saXN0X2xnYXQkaW5jbHVkZV9wYXRoX2R4LCBjb2xsYXBzZSA9IFwifFwiKSksXG4gICAgICAgICAjIEV4Y2x1c2lvbiBjcml0ZXJpYVxuICAgICAgICAgc3RyX2RldGVjdChzdHJfdG9fbG93ZXIocGF0aG9sb2d5X2RpYWdub3NpcyksXG4gICAgICAgICAgICAgICAgICAgIHBhc3RlMChwYXRoX2R4X2xpc3RfbGdhdCRleGNsdWRlX3BhdGhfZHgsIGNvbGxhcHNlID0gXCJ8XCIpLFxuICAgICAgICAgICAgICAgICAgICBuZWdhdGUgPSBUUlVFKSxcbiAgICAgICAgICMgVHVtb3JzXG4gICAgICAgICBzYW1wbGVfdHlwZSA9PSBcIlR1bW9yXCIsXG4gICAgICAgICBjb21wb3NpdGlvbiA9PSBcIlNvbGlkIFRpc3N1ZVwiKSAlPiVcbiAgcHVsbChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKSJdfQ== -->
 <pre class="r"><code># Get LGAT tumor samples on the basis of pathology diagnosis
 lgat_specimens &lt;- metadata %&gt;%
   filter(str_detect(str_to_lower(pathology_diagnosis),  # Inclusion criteria
@@ -3049,30 +3010,20 @@ lgat_specimens &lt;- metadata %&gt;%
 <h1>Read in snv consensus mutation data, filtering out LGAT</h1>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc252X2RmIDwtXG4gIGRhdGEudGFibGU6OmZyZWFkKGZpbGUucGF0aChyb290X2RpcixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiZGF0YVwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJwYnRhLXNudi1jb25zZW5zdXMtbXV0YXRpb24ubWFmLnRzdi5nelwiKSkgJT4lXG4gIGZpbHRlcighVHVtb3JfU2FtcGxlX0JhcmNvZGUgJWluJSBsZ2F0X3NwZWNpbWVucykgXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoic252X2RmIDwtXG4gIGRhdGEudGFibGU6OmZyZWFkKGZpbGUucGF0aChyb290X2RpcixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiZGF0YVwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJwYnRhLXNudi1jb25zZW5zdXMtbXV0YXRpb24ubWFmLnRzdi5nelwiKSkgJT4lXG4gIGZpbHRlcighVHVtb3JfU2FtcGxlX0JhcmNvZGUgJWluJSBsZ2F0X3NwZWNpbWVucykgIn0= -->
 <pre class="r"><code>snv_df &lt;-
   data.table::fread(file.path(root_dir,
                               &quot;data&quot;,
                               &quot;pbta-snv-consensus-mutation.maf.tsv.gz&quot;)) %&gt;%
   filter(!Tumor_Sample_Barcode %in% lgat_specimens) </code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RhdGEudGFibGUnOlxuICBtZXRob2QgICAgICAgICAgIGZyb21cbiAgcHJpbnQuZGF0YS50YWJsZSAgICAgXG5SZWdpc3RlcmVkIFMzIG1ldGhvZCBvdmVyd3JpdHRlbiBieSAnUi5vbyc6XG4gIG1ldGhvZCAgICAgICAgZnJvbSAgICAgICBcbiAgdGhyb3cuZGVmYXVsdCBSLm1ldGhvZHNTM1xufC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfFxufD09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09fFxuIn0= -->
-<pre><code>Registered S3 method overwritten by 'data.table':
-  method           from
-  print.data.table     
-Registered S3 method overwritten by 'R.oo':
-  method        from       
-  throw.default R.methodsS3
-|--------------------------------------------------|
-|==================================================|</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <div id="snv-consensus-mutation-data---defining-lesions" class="section level2">
 <h2>SNV consensus mutation data - defining lesions</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBGaWx0ZXIgdGhlIHNudiBjb25zZW5zdXMgbXV0YXRpb24gZGF0YSBmb3IgdGhlIHRhcmdldCBsZXNpb25zXG5zbnZfbGVzaW9uc19kZiA8LSBzbnZfZGYgJT4lXG4gIGRwbHlyOjpmaWx0ZXIoSHVnb19TeW1ib2wgJWluJSBjKFwiSDNGM0FcIiwgXCJISVNUMUgzQlwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIkhJU1QxSDNDXCIsIFwiSElTVDJIM0NcIikgJlxuICAgICAgICAgICAgICAgICAgSEdWU3BfU2hvcnQgJWluJSBjKFwicC5LMjhNXCIsIFwicC5HMzVSXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJwLkczNVZcIikpICU+JVxuICBkcGx5cjo6c2VsZWN0KFR1bW9yX1NhbXBsZV9CYXJjb2RlLCBIdWdvX1N5bWJvbCwgSEdWU3BfU2hvcnQpICU+JVxuICBkcGx5cjo6bXV0YXRlKFxuICAgIEgzRjNBLksyOE0gPSBkcGx5cjo6Y2FzZV93aGVuKEh1Z29fU3ltYm9sID09IFwiSDNGM0FcIiAmXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBIR1ZTcF9TaG9ydCA9PSBcInAuSzI4TVwiIH4gXCJZZXNcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBUUlVFIH4gXCJOb1wiKSxcbiAgICBISVNUMUgzQi5LMjhNID0gZHBseXI6OmNhc2Vfd2hlbihcbiAgICAgIEh1Z29fU3ltYm9sID09IFwiSElTVDFIM0JcIiAmIEhHVlNwX1Nob3J0ID09IFwicC5LMjhNXCIgfiBcIlllc1wiLFxuICAgICAgVFJVRSB+IFwiTm9cIiksXG4gICAgSElTVDFIM0MuSzI4TSA9IGRwbHlyOjpjYXNlX3doZW4oXG4gICAgICBIdWdvX1N5bWJvbCA9PSBcIkhJU1QxSDNDXCIgJiBIR1ZTcF9TaG9ydCA9PSBcInAuSzI4TVwiIH4gXCJZZXNcIixcbiAgICAgIFRSVUUgfiBcIk5vXCIpLFxuICAgIEhJU1QySDNDLksyOE0gPSBkcGx5cjo6Y2FzZV93aGVuKFxuICAgICAgSHVnb19TeW1ib2wgPT0gXCJISVNUMkgzQ1wiICYgSEdWU3BfU2hvcnQgPT0gXCJwLksyOE1cIiB+IFwiWWVzXCIsXG4gICAgICBUUlVFIH4gXCJOb1wiKSxcbiAgICBIM0YzQS5HMzVSID0gZHBseXI6OmNhc2Vfd2hlbihIdWdvX1N5bWJvbCA9PSBcIkgzRjNBXCIgJlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgSEdWU3BfU2hvcnQgPT0gXCJwLkczNVJcIiB+IFwiWWVzXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgVFJVRSB+IFwiTm9cIiksXG4gICAgSDNGM0EuRzM1ViA9IGRwbHlyOjpjYXNlX3doZW4oSHVnb19TeW1ib2wgPT0gXCJIM0YzQVwiICZcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEhHVlNwX1Nob3J0ID09IFwicC5HMzVWXCIgfiBcIlllc1wiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFRSVUUgfiBcIk5vXCIpXG4gICkgJT4lXG4gIGRwbHlyOjpzZWxlY3QoXG4gICAgLUhHVlNwX1Nob3J0LFxuICAgIC1IdWdvX1N5bWJvbFxuICApXG5cbiMgYWRkIGJhY2sgaW4gc2FtcGxlcyB3aXRoIG5vIGV2aWRlbmNlIG9mIHRoZXNlIHNwZWNpZmljIG11dGF0aW9ucyBhbmQgYXJlIG5vdCBMR0FUXG5zbnZfbGVzaW9uc19kZiA8LSBzbnZfbGVzaW9uc19kZiAlPiVcbiAgZHBseXI6OmJpbmRfcm93cyhcbiAgICBkYXRhLmZyYW1lKFxuICAgICAgVHVtb3JfU2FtcGxlX0JhcmNvZGUgPSBzZXRkaWZmKHVuaXF1ZShzbnZfZGYkVHVtb3JfU2FtcGxlX0JhcmNvZGUpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNudl9sZXNpb25zX2RmJFR1bW9yX1NhbXBsZV9CYXJjb2RlKVxuICAgIClcbiAgKSAlPiVcbiAgZHBseXI6Om11dGF0ZV9hbGwoZnVuY3Rpb24oeCkgdGlkeXI6OnJlcGxhY2VfbmEoeCwgXCJOb1wiKSlcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgRmlsdGVyIHRoZSBzbnYgY29uc2Vuc3VzIG11dGF0aW9uIGRhdGEgZm9yIHRoZSB0YXJnZXQgbGVzaW9ucyIsInNudl9sZXNpb25zX2RmIDwtIHNudl9kZiAlPiVcbiAgZHBseXI6OmZpbHRlcihIdWdvX1N5bWJvbCAlaW4lIGMoXCJIM0YzQVwiLCBcIkhJU1QxSDNCXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiSElTVDFIM0NcIiwgXCJISVNUMkgzQ1wiKSAmXG4gICAgICAgICAgICAgICAgICBIR1ZTcF9TaG9ydCAlaW4lIGMoXCJwLksyOE1cIiwgXCJwLkczNVJcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcInAuRzM1VlwiKSkgJT4lXG4gIGRwbHlyOjpzZWxlY3QoVHVtb3JfU2FtcGxlX0JhcmNvZGUsIEh1Z29fU3ltYm9sLCBIR1ZTcF9TaG9ydCkgJT4lXG4gIGRwbHlyOjptdXRhdGUoXG4gICAgSDNGM0EuSzI4TSA9IGRwbHlyOjpjYXNlX3doZW4oSHVnb19TeW1ib2wgPT0gXCJIM0YzQVwiICZcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEhHVlNwX1Nob3J0ID09IFwicC5LMjhNXCIgfiBcIlllc1wiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFRSVUUgfiBcIk5vXCIpLFxuICAgIEhJU1QxSDNCLksyOE0gPSBkcGx5cjo6Y2FzZV93aGVuKFxuICAgICAgSHVnb19TeW1ib2wgPT0gXCJISVNUMUgzQlwiICYgSEdWU3BfU2hvcnQgPT0gXCJwLksyOE1cIiB+IFwiWWVzXCIsXG4gICAgICBUUlVFIH4gXCJOb1wiKSxcbiAgICBISVNUMUgzQy5LMjhNID0gZHBseXI6OmNhc2Vfd2hlbihcbiAgICAgIEh1Z29fU3ltYm9sID09IFwiSElTVDFIM0NcIiAmIEhHVlNwX1Nob3J0ID09IFwicC5LMjhNXCIgfiBcIlllc1wiLFxuICAgICAgVFJVRSB+IFwiTm9cIiksXG4gICAgSElTVDJIM0MuSzI4TSA9IGRwbHlyOjpjYXNlX3doZW4oXG4gICAgICBIdWdvX1N5bWJvbCA9PSBcIkhJU1QySDNDXCIgJiBIR1ZTcF9TaG9ydCA9PSBcInAuSzI4TVwiIH4gXCJZZXNcIixcbiAgICAgIFRSVUUgfiBcIk5vXCIpLFxuICAgIEgzRjNBLkczNVIgPSBkcGx5cjo6Y2FzZV93aGVuKEh1Z29fU3ltYm9sID09IFwiSDNGM0FcIiAmXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBIR1ZTcF9TaG9ydCA9PSBcInAuRzM1UlwiIH4gXCJZZXNcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBUUlVFIH4gXCJOb1wiKSxcbiAgICBIM0YzQS5HMzVWID0gZHBseXI6OmNhc2Vfd2hlbihIdWdvX1N5bWJvbCA9PSBcIkgzRjNBXCIgJlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgSEdWU3BfU2hvcnQgPT0gXCJwLkczNVZcIiB+IFwiWWVzXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgVFJVRSB+IFwiTm9cIilcbiAgKSAlPiVcbiAgZHBseXI6OnNlbGVjdChcbiAgICAtSEdWU3BfU2hvcnQsXG4gICAgLUh1Z29fU3ltYm9sXG4gICkiLCIiLCIjIGFkZCBiYWNrIGluIHNhbXBsZXMgd2l0aCBubyBldmlkZW5jZSBvZiB0aGVzZSBzcGVjaWZpYyBtdXRhdGlvbnMgYW5kIGFyZSBub3QgTEdBVCIsInNudl9sZXNpb25zX2RmIDwtIHNudl9sZXNpb25zX2RmICU+JVxuICBkcGx5cjo6YmluZF9yb3dzKFxuICAgIGRhdGEuZnJhbWUoXG4gICAgICBUdW1vcl9TYW1wbGVfQmFyY29kZSA9IHNldGRpZmYodW5pcXVlKHNudl9kZiRUdW1vcl9TYW1wbGVfQmFyY29kZSksXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc252X2xlc2lvbnNfZGYkVHVtb3JfU2FtcGxlX0JhcmNvZGUpXG4gICAgKVxuICApICU+JVxuICBkcGx5cjo6bXV0YXRlX2FsbChmdW5jdGlvbih4KSB0aWR5cjo6cmVwbGFjZV9uYSh4LCBcIk5vXCIpKSJdfQ== -->
 <pre class="r"><code># Filter the snv consensus mutation data for the target lesions
 snv_lesions_df &lt;- snv_df %&gt;%
   dplyr::filter(Hugo_Symbol %in% c(&quot;H3F3A&quot;, &quot;HIST1H3B&quot;,
@@ -3115,15 +3066,16 @@ snv_lesions_df &lt;- snv_lesions_df %&gt;%
   ) %&gt;%
   dplyr::mutate_all(function(x) tidyr::replace_na(x, &quot;No&quot;))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiYmluZGluZyBjaGFyYWN0ZXIgYW5kIGZhY3RvciB2ZWN0b3IsIGNvZXJjaW5nIGludG8gY2hhcmFjdGVyIHZlY3RvclxuIn0= -->
-<pre><code>binding character and factor vector, coercing into character vector</code></pre>
-<!-- rnb-output-end -->
+<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZyBpbiBiaW5kX3Jvd3NfKHgsIC5pZCk6IGJpbmRpbmcgY2hhcmFjdGVyIGFuZCBmYWN0b3IgdmVjdG9yLFxuY29lcmNpbmcgaW50byBjaGFyYWN0ZXIgdmVjdG9yXG4ifQ== -->
+<pre><code>Warning in bind_rows_(x, .id): binding character and factor vector,
+coercing into character vector</code></pre>
+<!-- rnb-warning-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Add a column that keeps track of the presence of any defining lesion. We’ll use this to create subset files in the next step.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc252X2xlc2lvbnNfZGYgPC0gc252X2xlc2lvbnNfZGYgJT4lXG4gIGRwbHlyOjptdXRhdGUoXG4gICAgZGVmaW5pbmdfbGVzaW9uID0gZHBseXI6OmNhc2Vfd2hlbihcbiAgICAgIEgzRjNBLksyOE0gPT0gXCJZZXNcIiB+IFRSVUUsXG4gICAgICBISVNUMUgzQi5LMjhNID09IFwiWWVzXCIgfiBUUlVFLFxuICAgICAgSElTVDFIM0MuSzI4TSA9PSBcIlllc1wiIH4gVFJVRSxcbiAgICAgIEhJU1QySDNDLksyOE0gPT0gXCJZZXNcIiB+IFRSVUUsXG4gICAgICBIM0YzQS5HMzVSID09IFwiWWVzXCIgfiBUUlVFLFxuICAgICAgSDNGM0EuRzM1ViA9PSBcIlllc1wiIH4gVFJVRSxcbiAgICAgIFRSVUUgfiBGQUxTRVxuICAgIClcbiAgKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoic252X2xlc2lvbnNfZGYgPC0gc252X2xlc2lvbnNfZGYgJT4lXG4gIGRwbHlyOjptdXRhdGUoXG4gICAgZGVmaW5pbmdfbGVzaW9uID0gZHBseXI6OmNhc2Vfd2hlbihcbiAgICAgIEgzRjNBLksyOE0gPT0gXCJZZXNcIiB+IFRSVUUsXG4gICAgICBISVNUMUgzQi5LMjhNID09IFwiWWVzXCIgfiBUUlVFLFxuICAgICAgSElTVDFIM0MuSzI4TSA9PSBcIlllc1wiIH4gVFJVRSxcbiAgICAgIEhJU1QySDNDLksyOE0gPT0gXCJZZXNcIiB+IFRSVUUsXG4gICAgICBIM0YzQS5HMzVSID09IFwiWWVzXCIgfiBUUlVFLFxuICAgICAgSDNGM0EuRzM1ViA9PSBcIlllc1wiIH4gVFJVRSxcbiAgICAgIFRSVUUgfiBGQUxTRVxuICAgIClcbiAgKSJ9 -->
 <pre class="r"><code>snv_lesions_df &lt;- snv_lesions_df %&gt;%
   dplyr::mutate(
     defining_lesion = dplyr::case_when(
@@ -3142,7 +3094,7 @@ snv_lesions_df &lt;- snv_lesions_df %&gt;%
 <p>Add other identifiers and sort.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc252X2xlc2lvbnNfZGYgPC0gbWV0YWRhdGEgJT4lXG4gIGRwbHlyOjpzZWxlY3QoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCwgXG4gICAgICAgICAgICAgICAgc2FtcGxlX2lkLFxuICAgICAgICAgICAgICAgIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpICU+JVxuICBkcGx5cjo6aW5uZXJfam9pbihzbnZfbGVzaW9uc19kZixcbiAgICAgICAgICAgICAgICAgICAgYnkgPSBjKFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiID0gXCJUdW1vcl9TYW1wbGVfQmFyY29kZVwiKSkgJT4lXG4gIGRwbHlyOjphcnJhbmdlKEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsIHNhbXBsZV9pZClcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoic252X2xlc2lvbnNfZGYgPC0gbWV0YWRhdGEgJT4lXG4gIGRwbHlyOjpzZWxlY3QoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCwgXG4gICAgICAgICAgICAgICAgc2FtcGxlX2lkLFxuICAgICAgICAgICAgICAgIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpICU+JVxuICBkcGx5cjo6aW5uZXJfam9pbihzbnZfbGVzaW9uc19kZixcbiAgICAgICAgICAgICAgICAgICAgYnkgPSBjKFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiID0gXCJUdW1vcl9TYW1wbGVfQmFyY29kZVwiKSkgJT4lXG4gIGRwbHlyOjphcnJhbmdlKEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsIHNhbXBsZV9pZCkifQ== -->
 <pre class="r"><code>snv_lesions_df &lt;- metadata %&gt;%
   dplyr::select(Kids_First_Participant_ID, 
                 sample_id,
@@ -3158,7 +3110,7 @@ snv_lesions_df &lt;- snv_lesions_df %&gt;%
 <h2>Save final table of results</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTYXZlIGZpbmFsIGRhdGEuZnJhbWUgdG8gZmlsZVxucmVhZHI6OndyaXRlX3RzdihzbnZfbGVzaW9uc19kZixcbiAgICAgICAgICAgICAgICAgZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcIkhHR19kZWZpbmluZ19sZXNpb25zLnRzdlwiKSlcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgU2F2ZSBmaW5hbCBkYXRhLmZyYW1lIHRvIGZpbGUiLCJyZWFkcjo6d3JpdGVfdHN2KHNudl9sZXNpb25zX2RmLFxuICAgICAgICAgICAgICAgICBmaWxlLnBhdGgocmVzdWx0c19kaXIsIFwiSEdHX2RlZmluaW5nX2xlc2lvbnMudHN2XCIpKSJdfQ== -->
 <pre class="r"><code># Save final data.frame to file
 readr::write_tsv(snv_lesions_df,
                  file.path(results_dir, &quot;HGG_defining_lesions.tsv&quot;))</code></pre>
@@ -3170,41 +3122,48 @@ readr::write_tsv(snv_lesions_df,
 <h2>Session Info</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBQcmludCB0aGUgc2Vzc2lvbiBpbmZvcm1hdGlvblxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgUHJpbnQgdGhlIHNlc3Npb24gaW5mb3JtYXRpb24iLCJzZXNzaW9uSW5mbygpIl19 -->
 <pre class="r"><code># Print the session information
 sessionInfo()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgICBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgIFxuIFs0XSBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgICBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgICBMQ19BRERSRVNTPUMgICAgICAgICAgICAgIFxuWzEwXSBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgICBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBmb3JjYXRzXzAuNC4wICAgc3RyaW5ncl8xLjQuMCAgIGRwbHlyXzAuOC4zICAgICBwdXJycl8wLjMuMiAgICAgcmVhZHJfMS4zLjEgICAgIHRpZHlyXzAuOC4zICAgIFxuWzddIHRpYmJsZV8yLjEuMyAgICBnZ3Bsb3QyXzMuMi4wICAgdGlkeXZlcnNlXzEuMi4xXG5cbmxvYWRlZCB2aWEgYSBuYW1lc3BhY2UgKGFuZCBub3QgYXR0YWNoZWQpOlxuIFsxXSBSY3BwXzEuMC4xICAgICAgICBjZWxscmFuZ2VyXzEuMS4wICBwaWxsYXJfMS40LjIgICAgICBjb21waWxlcl8zLjYuMCAgICBSLm1ldGhvZHNTM18xLjcuMVxuIFs2XSBSLnV0aWxzXzIuOS4wICAgICB0b29sc18zLjYuMCAgICAgICBqc29ubGl0ZV8xLjYgICAgICBsdWJyaWRhdGVfMS43LjQgICBubG1lXzMuMS0xNDAgICAgIFxuWzExXSBndGFibGVfMC4zLjAgICAgICBsYXR0aWNlXzAuMjAtMzggICBwa2djb25maWdfMi4wLjIgICBybGFuZ18wLjQuMCAgICAgICBjbGlfMS4xLjAgICAgICAgIFxuWzE2XSByc3R1ZGlvYXBpXzAuMTAgICBoYXZlbl8yLjEuMSAgICAgICB4ZnVuXzAuOCAgICAgICAgICB3aXRocl8yLjEuMiAgICAgICB4bWwyXzEuMi4wICAgICAgIFxuWzIxXSBodHRyXzEuNC4wICAgICAgICBrbml0cl8xLjIzICAgICAgICBnZW5lcmljc18wLjAuMiAgICBobXNfMC40LjIgICAgICAgICBycHJvanJvb3RfMS4zLTIgIFxuWzI2XSBncmlkXzMuNi4wICAgICAgICB0aWR5c2VsZWN0XzAuMi41ICBkYXRhLnRhYmxlXzEuMTIuMiBnbHVlXzEuMy4xICAgICAgICBSNl8yLjQuMCAgICAgICAgIFxuWzMxXSByZWFkeGxfMS4zLjEgICAgICBtb2RlbHJfMC4xLjQgICAgICBtYWdyaXR0cl8xLjUgICAgICBiYWNrcG9ydHNfMS4xLjQgICBzY2FsZXNfMS4wLjAgICAgIFxuWzM2XSBydmVzdF8wLjMuNCAgICAgICBhc3NlcnR0aGF0XzAuMi4xICBjb2xvcnNwYWNlXzEuNC0xICBzdHJpbmdpXzEuNC4zICAgICBsYXp5ZXZhbF8wLjIuMiAgIFxuWzQxXSBtdW5zZWxsXzAuNS4wICAgICBicm9vbV8wLjUuMiAgICAgICBjcmF5b25fMS4zLjQgICAgICBSLm9vXzEuMjIuMCAgICAgIFxuIn0= -->
-<pre><code>R version 3.6.0 (2019-04-26)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Debian GNU/Linux 9 (stretch)
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4xICgyMDE5LTA3LTA1KVxuUGxhdGZvcm06IHg4Nl82NC1hcHBsZS1kYXJ3aW4xNS42LjAgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IG1hY09TIE1vamF2ZSAxMC4xNC42XG5cbk1hdHJpeCBwcm9kdWN0czogZGVmYXVsdFxuQkxBUzogICAvTGlicmFyeS9GcmFtZXdvcmtzL1IuZnJhbWV3b3JrL1ZlcnNpb25zLzMuNi9SZXNvdXJjZXMvbGliL2xpYlJibGFzLjAuZHlsaWJcbkxBUEFDSzogL0xpYnJhcnkvRnJhbWV3b3Jrcy9SLmZyYW1ld29yay9WZXJzaW9ucy8zLjYvUmVzb3VyY2VzL2xpYi9saWJSbGFwYWNrLmR5bGliXG5cbmxvY2FsZTpcblsxXSBlbl9VUy5VVEYtOC9lbl9VUy5VVEYtOC9lbl9VUy5VVEYtOC9DL2VuX1VTLlVURi04L2VuX1VTLlVURi04XG5cbmF0dGFjaGVkIGJhc2UgcGFja2FnZXM6XG5bMV0gc3RhdHMgICAgIGdyYXBoaWNzICBnckRldmljZXMgdXRpbHMgICAgIGRhdGFzZXRzICBtZXRob2RzICAgYmFzZSAgICAgXG5cbm90aGVyIGF0dGFjaGVkIHBhY2thZ2VzOlxuWzFdIGZvcmNhdHNfMC40LjAgICBzdHJpbmdyXzEuNC4wICAgZHBseXJfMC44LjMgICAgIHB1cnJyXzAuMy4zICAgIFxuWzVdIHJlYWRyXzEuMy4xICAgICB0aWR5cl8xLjAuMCAgICAgdGliYmxlXzMuMC4zICAgIGdncGxvdDJfMy4yLjEgIFxuWzldIHRpZHl2ZXJzZV8xLjIuMVxuXG5sb2FkZWQgdmlhIGEgbmFtZXNwYWNlIChhbmQgbm90IGF0dGFjaGVkKTpcbiBbMV0gUmNwcF8xLjAuNSAgICAgICAgY2VsbHJhbmdlcl8xLjEuMCAgcGlsbGFyXzEuNC42ICAgICBcbiBbNF0gY29tcGlsZXJfMy42LjEgICAgUi5tZXRob2RzUzNfMS44LjAgUi51dGlsc18yLjkuMiAgICBcbiBbN10gYmFzZTY0ZW5jXzAuMS0zICAgdG9vbHNfMy42LjEgICAgICAgZGlnZXN0XzAuNi4yMiAgICBcblsxMF0gbHVicmlkYXRlXzEuNy40ICAganNvbmxpdGVfMS42ICAgICAgZXZhbHVhdGVfMC4xNCAgICBcblsxM10gbGlmZWN5Y2xlXzAuMi4wICAgZ3RhYmxlXzAuMy4wICAgICAgcGtnY29uZmlnXzIuMC4zICBcblsxNl0gcmxhbmdfMC40LjcgICAgICAgY2xpXzEuMS4wICAgICAgICAgcnN0dWRpb2FwaV8wLjEwICBcblsxOV0geWFtbF8yLjIuMCAgICAgICAgaGF2ZW5fMi4xLjEgICAgICAgeGZ1bl8wLjEwICAgICAgICBcblsyMl0gd2l0aHJfMi4xLjIgICAgICAgeG1sMl8xLjIuMiAgICAgICAgaHR0cl8xLjQuMSAgICAgICBcblsyNV0ga25pdHJfMS4yNSAgICAgICAgZ2VuZXJpY3NfMC4wLjIgICAgdmN0cnNfMC4zLjIgICAgICBcblsyOF0gaG1zXzAuNS4xICAgICAgICAgcnByb2pyb290XzEuMy0yICAgZ3JpZF8zLjYuMSAgICAgICBcblszMV0gdGlkeXNlbGVjdF8xLjEuMCAgZGF0YS50YWJsZV8xLjEyLjYgZ2x1ZV8xLjMuMSAgICAgICBcblszNF0gUjZfMi40LjAgICAgICAgICAgcmVhZHhsXzEuMy4xICAgICAgcm1hcmtkb3duXzEuMTYgICBcblszN10gbW9kZWxyXzAuMS41ICAgICAgbWFncml0dHJfMS41ICAgICAgYmFja3BvcnRzXzEuMS41ICBcbls0MF0gc2NhbGVzXzEuMC4wICAgICAgZWxsaXBzaXNfMC4zLjAgICAgaHRtbHRvb2xzXzAuNC4wICBcbls0M10gcnZlc3RfMC4zLjQgICAgICAgYXNzZXJ0dGhhdF8wLjIuMSAgY29sb3JzcGFjZV8xLjQtMSBcbls0Nl0gc3RyaW5naV8xLjQuMyAgICAgbGF6eWV2YWxfMC4yLjIgICAgbXVuc2VsbF8wLjUuMCAgICBcbls0OV0gYnJvb21fMC43LjAgICAgICAgY3JheW9uXzEuMy40ICAgICAgUi5vb18xLjIzLjAgICAgICBcbiJ9 -->
+<pre><code>R version 3.6.1 (2019-07-05)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS Mojave 10.14.6
 
 Matrix products: default
-BLAS/LAPACK: /usr/lib/libopenblasp-r0.2.19.so
+BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C               LC_TIME=en_US.UTF-8       
- [4] LC_COLLATE=en_US.UTF-8     LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                  LC_ADDRESS=C              
-[10] LC_TELEPHONE=C             LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] forcats_0.4.0   stringr_1.4.0   dplyr_0.8.3     purrr_0.3.2     readr_1.3.1     tidyr_0.8.3    
-[7] tibble_2.1.3    ggplot2_3.2.0   tidyverse_1.2.1
+[1] forcats_0.4.0   stringr_1.4.0   dplyr_0.8.3     purrr_0.3.3    
+[5] readr_1.3.1     tidyr_1.0.0     tibble_3.0.3    ggplot2_3.2.1  
+[9] tidyverse_1.2.1
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.1        cellranger_1.1.0  pillar_1.4.2      compiler_3.6.0    R.methodsS3_1.7.1
- [6] R.utils_2.9.0     tools_3.6.0       jsonlite_1.6      lubridate_1.7.4   nlme_3.1-140     
-[11] gtable_0.3.0      lattice_0.20-38   pkgconfig_2.0.2   rlang_0.4.0       cli_1.1.0        
-[16] rstudioapi_0.10   haven_2.1.1       xfun_0.8          withr_2.1.2       xml2_1.2.0       
-[21] httr_1.4.0        knitr_1.23        generics_0.0.2    hms_0.4.2         rprojroot_1.3-2  
-[26] grid_3.6.0        tidyselect_0.2.5  data.table_1.12.2 glue_1.3.1        R6_2.4.0         
-[31] readxl_1.3.1      modelr_0.1.4      magrittr_1.5      backports_1.1.4   scales_1.0.0     
-[36] rvest_0.3.4       assertthat_0.2.1  colorspace_1.4-1  stringi_1.4.3     lazyeval_0.2.2   
-[41] munsell_0.5.0     broom_0.5.2       crayon_1.3.4      R.oo_1.22.0      </code></pre>
+ [1] Rcpp_1.0.5        cellranger_1.1.0  pillar_1.4.6     
+ [4] compiler_3.6.1    R.methodsS3_1.8.0 R.utils_2.9.2    
+ [7] base64enc_0.1-3   tools_3.6.1       digest_0.6.22    
+[10] lubridate_1.7.4   jsonlite_1.6      evaluate_0.14    
+[13] lifecycle_0.2.0   gtable_0.3.0      pkgconfig_2.0.3  
+[16] rlang_0.4.7       cli_1.1.0         rstudioapi_0.10  
+[19] yaml_2.2.0        haven_2.1.1       xfun_0.10        
+[22] withr_2.1.2       xml2_1.2.2        httr_1.4.1       
+[25] knitr_1.25        generics_0.0.2    vctrs_0.3.2      
+[28] hms_0.5.1         rprojroot_1.3-2   grid_3.6.1       
+[31] tidyselect_1.1.0  data.table_1.12.6 glue_1.3.1       
+[34] R6_2.4.0          readxl_1.3.1      rmarkdown_1.16   
+[37] modelr_0.1.5      magrittr_1.5      backports_1.1.5  
+[40] scales_1.0.0      ellipsis_0.3.0    htmltools_0.4.0  
+[43] rvest_0.3.4       assertthat_0.2.1  colorspace_1.4-1 
+[46] stringi_1.4.3     lazyeval_0.2.2    munsell_0.5.0    
+[49] broom_0.7.0       crayon_1.3.4      R.oo_1.23.0      </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 </div>
@@ -3240,6 +3199,55 @@ $(document).ready(function () {
   });
 });
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("01-HGG-molecular-subtyping-defining-lesions.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
