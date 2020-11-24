@@ -246,7 +246,8 @@ epn_results_df <- bind_exp_strategies(epn_results_df) %>%
                     broad_histology,
                     Notes),
              by = "Kids_First_Biospecimen_ID") %>%
-  mutate(molecular_subtype = subgroup,
+  mutate(molecular_subtype = subgroup) %>%
+  mutate(molecular_subtype = ifelse(is.na(molecular_subtype), "EPN, To be classified", molecular_subtype), 
          integrated_diagnosis = ifelse(molecular_subtype == "PT_EPN_A", 
                                        "Posterior Fossa Ependymoma, Type A",
                                        ifelse(molecular_subtype == "ST_EPN_RELA",
