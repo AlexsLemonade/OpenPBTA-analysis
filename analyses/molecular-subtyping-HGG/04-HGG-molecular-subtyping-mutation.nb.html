@@ -7,6 +7,7 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Chante Bethell and Jaclyn Taroni for ALSF CCDL" />
@@ -2559,7 +2560,7 @@ window.initializeCodeFolding = function(show) {
 
     // create a collapsable div to wrap the code in
     var div = $('<div class="collapse r-code-collapse"></div>');
-    if (show)
+    if (show || $(this)[0].classList.contains('fold-show'))
       div.addClass('in');
     var id = 'rcode-643E0F36' + currentIndex++;
     div.attr('id', id);
@@ -2689,7 +2690,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -2787,57 +2787,12 @@ summary {
 }
 </style>
 
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
 <!-- code folding -->
 <style type="text/css">
 .code-folding-btn { margin-bottom: 4px; }
 </style>
-<script>
-$(document).ready(function () {
-  window.initializeSourceEmbed("04-HGG-molecular-subtyping-mutation.Rmd");
-  window.initializeCodeFolding("show" === "show");
-});
-</script>
 
 
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <style type="text/css">
 
@@ -2943,7 +2898,7 @@ div.tocify {
 <div id="usage" class="section level2">
 <h2>Usage</h2>
 <p>This notebook is intended to be run via the command line from the top directory of the repository as follows:</p>
-<pre><code>Rscript -e &quot;rmarkdown::render('analyses/molecular-subtyping-HGG/04-HGG-molecular-subtyping-mutation.Rmd', clean = TRUE)&quot;</code></pre>
+<pre><code>Rscript -e &quot;rmarkdown::render(&#39;analyses/molecular-subtyping-HGG/04-HGG-molecular-subtyping-mutation.Rmd&#39;, clean = TRUE)&quot;</code></pre>
 </div>
 <div id="set-up" class="section level2">
 <h2>Set Up</h2>
@@ -2990,13 +2945,21 @@ if (!dir.exists(results_dir)) {
 <h3>Read in Files</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbIiMgQ0RTIGJlZCBmaWxlLCB0byBiZSB1c2VkIHRvIGZpbHRlciB0aGUgY29uc2Vuc3VzIE1BRiBmaWxlIiwiYmVkX2ZpbGUgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcbiAgICAgICAgICAgICAgICAgICAgICBcInNjcmF0Y2hcIiwgXG4gICAgICAgICAgICAgICAgICAgICAgXCJnZW5jb2RlLnYyNy5wcmltYXJ5X2Fzc2VtYmx5LmFubm90YXRpb24uYmVkXCIpIiwiZ2VuY29kZV9jZHNfYmVkIDwtIHJlYWRyOjpyZWFkX3RzdihiZWRfZmlsZSwgY29sX25hbWVzID0gRkFMU0UpIiwiIyBSZWFkIGluIEhHRyBzdWJzZXQgc252IG1hZiBkYXRhICIsInNudl9kZiA8LSByZWFkcjo6cmVhZF90c3YoZmlsZS5wYXRoKGlucHV0X2RpciwgXCJoZ2dfc252X21hZi50c3YuZ3pcIikpIiwiIyBSZWFkIGluIGRlZmluaW5nIGxlc2lvbnMgZmlsZSIsImRlZmluaW5nX2xlc2lvbnNfZGYgPC0gcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChyZXN1bHRzX2RpcixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIkhHR19kZWZpbmluZ19sZXNpb25zLnRzdlwiKSkiXX0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgQ0RTIGJlZCBmaWxlLCB0byBiZSB1c2VkIHRvIGZpbHRlciB0aGUgY29uc2Vuc3VzIE1BRiBmaWxlIiwiYmVkX2ZpbGUgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcbiAgICAgICAgICAgICAgICAgICAgICBcInNjcmF0Y2hcIiwgXG4gICAgICAgICAgICAgICAgICAgICAgXCJnZW5jb2RlLnYyNy5wcmltYXJ5X2Fzc2VtYmx5LmFubm90YXRpb24uYmVkXCIpIiwiZ2VuY29kZV9jZHNfYmVkIDwtIHJlYWRyOjpyZWFkX3RzdihiZWRfZmlsZSwgY29sX25hbWVzID0gRkFMU0UpIl19 -->
 <pre class="r"><code># CDS bed file, to be used to filter the consensus MAF file
 bed_file &lt;- file.path(root_dir, 
                       &quot;scratch&quot;, 
                       &quot;gencode.v27.primary_assembly.annotation.bed&quot;)
-gencode_cds_bed &lt;- readr::read_tsv(bed_file, col_names = FALSE)
-# Read in HGG subset snv maf data 
+gencode_cds_bed &lt;- readr::read_tsv(bed_file, col_names = FALSE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZzogYGRhdGFfZnJhbWUoKWAgaXMgZGVwcmVjYXRlZCBhcyBvZiB0aWJibGUgMS4xLjAuXG5QbGVhc2UgdXNlIGB0aWJibGUoKWAgaW5zdGVhZC5cblRoaXMgd2FybmluZyBpcyBkaXNwbGF5ZWQgb25jZSBldmVyeSA4IGhvdXJzLlxuQ2FsbCBgbGlmZWN5Y2xlOjpsYXN0X3dhcm5pbmdzKClgIHRvIHNlZSB3aGVyZSB0aGlzIHdhcm5pbmcgd2FzIGdlbmVyYXRlZC5cbiJ9 -->
+<pre><code>Warning: `data_frame()` is deprecated as of tibble 1.1.0.
+Please use `tibble()` instead.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
+<!-- rnb-warning-end -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgUmVhZCBpbiBIR0cgc3Vic2V0IHNudiBtYWYgZGF0YSAiLCJzbnZfZGYgPC0gcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChpbnB1dF9kaXIsIFwiaGdnX3Nudl9tYWYudHN2Lmd6XCIpKSIsIiMgUmVhZCBpbiBkZWZpbmluZyBsZXNpb25zIGZpbGUiLCJkZWZpbmluZ19sZXNpb25zX2RmIDwtIHJlYWRyOjpyZWFkX3RzdihmaWxlLnBhdGgocmVzdWx0c19kaXIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJIR0dfZGVmaW5pbmdfbGVzaW9ucy50c3ZcIikpIl19 -->
+<pre class="r"><code># Read in HGG subset snv maf data 
 snv_df &lt;- readr::read_tsv(file.path(input_dir, &quot;hgg_snv_maf.tsv.gz&quot;))
 # Read in defining lesions file
 defining_lesions_df &lt;- readr::read_tsv(file.path(results_dir,
@@ -3033,7 +2996,7 @@ defining_lesions_df &lt;- readr::read_tsv(file.path(results_dir,
 <!-- rnb-source-end -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID"],"name":[3],"type":["chr"],"align":["left"]},{"label":["H3F3A.K28M"],"name":[4],"type":["chr"],"align":["left"]},{"label":["HIST1H3B.K28M"],"name":[5],"type":["chr"],"align":["left"]},{"label":["HIST1H3C.K28M"],"name":[6],"type":["chr"],"align":["left"]},{"label":["HIST2H3C.K28M"],"name":[7],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35R"],"name":[8],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35V"],"name":[9],"type":["chr"],"align":["left"]},{"label":["defining_lesion"],"name":[10],"type":["lgl"],"align":["right"]}],"data":[{"1":"PT_00G007DM","2":"7316-2577","3":"BS_AQMKA8NC","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_00G007DM","2":"7316-272","3":"BS_K07KNTFY","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_01MZ62KG","2":"7316-447","3":"BS_TE8QFF7T","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_02J5CWN5","2":"7316-2989","3":"BS_2VB8649B","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_02J5CWN5","2":"7316-898","3":"BS_5TT6TT4K","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_02MVZZSW","2":"7316-1702","3":"BS_MW74GF38","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_04YTK82N","2":"7316-746","3":"BS_3JE2T7AR","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_06ERX8Z7","2":"7316-2578","3":"BS_B1X2SB4P","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_06H29FCG","2":"7316-1944","3":"BS_0W8AWY10","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_0CE0HFYB","2":"7316-2581","3":"BS_30W38X77","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID"],"name":[3],"type":["chr"],"align":["left"]},{"label":["H3F3A.K28M"],"name":[4],"type":["chr"],"align":["left"]},{"label":["HIST1H3B.K28M"],"name":[5],"type":["chr"],"align":["left"]},{"label":["HIST1H3C.K28M"],"name":[6],"type":["chr"],"align":["left"]},{"label":["HIST2H3C.K28M"],"name":[7],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35R"],"name":[8],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35V"],"name":[9],"type":["chr"],"align":["left"]},{"label":["defining_lesion"],"name":[10],"type":["lgl"],"align":["right"]}],"data":[{"1":"PT_00G007DM","2":"7316-2577","3":"BS_AQMKA8NC","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_00G007DM","2":"7316-272","3":"BS_K07KNTFY","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_01MZ62KG","2":"7316-447","3":"BS_TE8QFF7T","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_02MVZZSW","2":"7316-1702","3":"BS_MW74GF38","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_04YTK82N","2":"7316-746","3":"BS_3JE2T7AR","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_06ERX8Z7","2":"7316-2578","3":"BS_B1X2SB4P","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_06H29FCG","2":"7316-1944","3":"BS_0W8AWY10","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_0CRPE7YP","2":"7316-2158","3":"BS_YPCTK927","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_0DXHDZJR","2":"7316-2857","3":"BS_QWS88QXE","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"},{"1":"PT_0F3RHT8J","2":"7316-2673","3":"BS_354DTKHE","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"FALSE"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <!-- rnb-chunk-end -->
@@ -3136,16 +3099,25 @@ defining_lesions_df &lt;- readr::read_tsv(file.path(results_dir,
   dplyr::filter(Variant_Classification != &quot;Silent&quot;,
                 Hugo_Symbol != &quot;TERT&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmF0aW8gb2YgdmFyaWFudHMgaW4gdGhpcyBCRUQ6IDAuNDcxNzc0MiBcbiBSYXRpbyBvZiB2YXJpYW50cyBiZWluZyBmaWx0ZXJlZCBvdXQ6IDAuNTI4MjI1OCBcbiJ9 -->
-<pre><code>Ratio of variants in this BED: 0.4717742 
- Ratio of variants being filtered out: 0.5282258 </code></pre>
+<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZzogVW5rbm93biBvciB1bmluaXRpYWxpc2VkIGNvbHVtbjogYFgyYC5cbiJ9 -->
+<pre><code>Warning: Unknown or uninitialised column: `X2`.</code></pre>
+<!-- rnb-warning-end -->
+<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZzogVW5rbm93biBvciB1bmluaXRpYWxpc2VkIGNvbHVtbjogYFgzYC5cbiJ9 -->
+<pre><code>Warning: Unknown or uninitialised column: `X3`.</code></pre>
+<!-- rnb-warning-end -->
+<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZzogVW5rbm93biBvciB1bmluaXRpYWxpc2VkIGNvbHVtbjogYFgxYC5cbiJ9 -->
+<pre><code>Warning: Unknown or uninitialised column: `X1`.</code></pre>
+<!-- rnb-warning-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmF0aW8gb2YgdmFyaWFudHMgaW4gdGhpcyBCRUQ6IDAgXG4gUmF0aW8gb2YgdmFyaWFudHMgYmVpbmcgZmlsdGVyZWQgb3V0OiAxIFxuIn0= -->
+<pre><code>Ratio of variants in this BED: 0 
+ Ratio of variants being filtered out: 1 </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-source-begin eyJkYXRhIjoiaGVhZChjb2Rpbmdfc252X2RmLCBuID0gMTApIn0= -->
 <pre class="r"><code>head(coding_snv_df, n = 10)</code></pre>
 <!-- rnb-source-end -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Chromosome"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Start_Position"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["End_Position"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Strand"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Variant_Classification"],"name":[5],"type":["chr"],"align":["left"]},{"label":["Tumor_Sample_Barcode"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Hugo_Symbol"],"name":[7],"type":["chr"],"align":["left"]},{"label":["HGVSp_Short"],"name":[8],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[9],"type":["chr"],"align":["left"]},{"label":["Kids_First_Participant_ID"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"chr2","2":"208248388","3":"208248388","4":"+","5":"Missense_Mutation","6":"BS_8SYN7GXG","7":"IDH1","8":"p.R132H","9":"7316-3220","10":"PT_0MXPTTM3"},{"1":"chr17","2":"7673802","3":"7673802","4":"+","5":"Missense_Mutation","6":"BS_8SYN7GXG","7":"TP53","8":"p.R273H","9":"7316-3220","10":"PT_0MXPTTM3"},{"1":"chr17","2":"7676040","3":"7676040","4":"+","5":"Missense_Mutation","6":"BS_8SYN7GXG","7":"TP53","8":"p.R110L","9":"7316-3220","10":"PT_0MXPTTM3"},{"1":"chrX","2":"77523266","3":"77523266","4":"+","5":"Nonsense_Mutation","6":"BS_8SYN7GXG","7":"ATRX","8":"p.E2279*","9":"7316-3220","10":"PT_0MXPTTM3"},{"1":"chr2","2":"208248388","3":"208248388","4":"+","5":"Missense_Mutation","6":"BS_H3TYF6GD","7":"IDH1","8":"p.R132H","9":"A09410","10":"PT_0MXPTTM3"},{"1":"chr17","2":"7673802","3":"7673802","4":"+","5":"Missense_Mutation","6":"BS_H3TYF6GD","7":"TP53","8":"p.R273H","9":"A09410","10":"PT_0MXPTTM3"},{"1":"chr17","2":"7676040","3":"7676040","4":"+","5":"Missense_Mutation","6":"BS_H3TYF6GD","7":"TP53","8":"p.R110L","9":"A09410","10":"PT_0MXPTTM3"},{"1":"chrX","2":"77523266","3":"77523266","4":"+","5":"Nonsense_Mutation","6":"BS_H3TYF6GD","7":"ATRX","8":"p.E2279*","9":"A09410","10":"PT_0MXPTTM3"},{"1":"chr3","2":"47042604","3":"47042604","4":"+","5":"Nonsense_Mutation","6":"BS_VW4XN9Y7","7":"SETD2","8":"p.R2399*","9":"7316-2640","10":"PT_0SPKM4S8"},{"1":"chr8","2":"38414597","3":"38414597","4":"+","5":"Missense_Mutation","6":"BS_VW4XN9Y7","7":"FGFR1","8":"p.E701D","9":"7316-2640","10":"PT_0SPKM4S8"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Chromosome"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Start_Position"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["End_Position"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Strand"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Variant_Classification"],"name":[5],"type":["chr"],"align":["left"]},{"label":["Tumor_Sample_Barcode"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Hugo_Symbol"],"name":[7],"type":["chr"],"align":["left"]},{"label":["HGVSp_Short"],"name":[8],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[9],"type":["chr"],"align":["left"]},{"label":["Kids_First_Participant_ID"],"name":[10],"type":["chr"],"align":["left"]}],"data":[],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <!-- rnb-chunk-end -->
@@ -3230,7 +3202,7 @@ head(coding_summary_df, n = 10)</code></pre>
 <!-- rnb-source-end -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Tumor_Sample_Barcode"],"name":[1],"type":["chr"],"align":["left"]},{"label":["relevant_coding_mutations"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"BS_00TRPEQX","2":"SETD2"},{"1":"BS_02YBZSBY","2":"ATRX, BRAF, CIC, FGFR1, FUBP1, SETD2, TP53"},{"1":"BS_0ATJ22QA","2":"H3F3A"},{"1":"BS_1MME7FBS","2":"ATRX, H3F3A"},{"1":"BS_1Q524P3B","2":"H3F3A"},{"1":"BS_1RTE2KEX","2":"H3F3A, TP53"},{"1":"BS_1S5V7WWC","2":"H3F3A"},{"1":"BS_20TBZG09","2":"ATRX, BRAF, CIC, FUBP1, SETD2, TP53"},{"1":"BS_22VCR7DF","2":"H3F3A"},{"1":"BS_230S192D","2":"ATRX, H3F3A"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Tumor_Sample_Barcode"],"name":[1],"type":["chr"],"align":["left"]},{"label":["relevant_coding_mutations"],"name":[2],"type":["chr"],"align":["left"]}],"data":[],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <!-- rnb-chunk-end -->
@@ -3242,7 +3214,7 @@ head(coding_summary_df, n = 10)</code></pre>
 <pre class="r"><code># This will be all biospecimen IDs that were included in the HGG subset
 # SNV file
 subset_bsid &lt;- unique(snv_df$Tumor_Sample_Barcode)
-# Add the 'missing' biospecimen IDs into the coding summary data.frame but
+# Add the &#39;missing&#39; biospecimen IDs into the coding summary data.frame but
 # mark relevant_coding_mutations as &quot;None&quot;
 coding_summary_df &lt;- coding_summary_df %&gt;%
   dplyr::bind_rows(data.frame(
@@ -3341,12 +3313,12 @@ coercing into character vector</code></pre>
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiZGVmaW5pbmdfbGVzaW9uc19kZiA8LSBkZWZpbmluZ19sZXNpb25zX2RmICU+JVxuICAjIFdlJ3JlIG5vdCBjb25jZXJuZWQgd2l0aCBkaXNlYXNlIHR5cGUgY2xhc3NpZmljYXRpb25zIGF0IHRoZSBtb21lbnRcbiAgZHBseXI6OnNlbGVjdCgtZHBseXI6OnN0YXJ0c193aXRoKFwiZGlzZWFzZVwiKSxcbiAgICAgICAgICAgICAgICAtZHBseXI6OmNvbnRhaW5zKFwiaGlzdG9sb2d5XCIpKSAlPiVcbiAgIyBGaWx0ZXIgdG8gdHVtb3IgYmlvc3BlY2ltZW5zIHRoYXQgYXJlIGluIHRoZSBzdWJzZXQgZmlsZVxuICBkcGx5cjo6ZmlsdGVyKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSBzdWJzZXRfYnNpZCkgJT4lXG4gICMgQWxsIG90aGVyIGRhdGEuZnJhbWUgdXNlICdUdW1vcl9TYW1wbGVfQmFyY29kZScgZm9yIHRoZSBjb2x1bW4gdGhhdCBjb250YWluc1xuICAjIHRoZSB0dW1vciBiaW9zcGVjaW1lbiBpZGVudGlmaWVyc1xuICBkcGx5cjo6cmVuYW1lKFR1bW9yX1NhbXBsZV9CYXJjb2RlID0gS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkifQ== -->
 <pre class="r"><code>defining_lesions_df &lt;- defining_lesions_df %&gt;%
-  # We're not concerned with disease type classifications at the moment
+  # We&#39;re not concerned with disease type classifications at the moment
   dplyr::select(-dplyr::starts_with(&quot;disease&quot;),
                 -dplyr::contains(&quot;histology&quot;)) %&gt;%
   # Filter to tumor biospecimens that are in the subset file
   dplyr::filter(Kids_First_Biospecimen_ID %in% subset_bsid) %&gt;%
-  # All other data.frame use 'Tumor_Sample_Barcode' for the column that contains
+  # All other data.frame use &#39;Tumor_Sample_Barcode&#39; for the column that contains
   # the tumor biospecimen identifiers
   dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID)</code></pre>
 <!-- rnb-source-end -->
@@ -3369,7 +3341,7 @@ head(final_mutations_df, n = 10)</code></pre>
 <!-- rnb-source-end -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Tumor_Sample_Barcode"],"name":[3],"type":["chr"],"align":["left"]},{"label":["H3F3A.K28M"],"name":[4],"type":["chr"],"align":["left"]},{"label":["HIST1H3B.K28M"],"name":[5],"type":["chr"],"align":["left"]},{"label":["HIST1H3C.K28M"],"name":[6],"type":["chr"],"align":["left"]},{"label":["HIST2H3C.K28M"],"name":[7],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35R"],"name":[8],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35V"],"name":[9],"type":["chr"],"align":["left"]},{"label":["relevant_coding_mutations"],"name":[10],"type":["chr"],"align":["left"]},{"label":["IDH1_mutation"],"name":[11],"type":["chr"],"align":["left"]},{"label":["TERT_variant_classification"],"name":[12],"type":["chr"],"align":["left"]},{"label":["BRAF_V600E"],"name":[13],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_0DXHDZJR","2":"7316-2857","3":"BS_QWS88QXE","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"None","11":"No R132 or R172","12":"None","13":"No V600E"},{"1":"PT_0MXPTTM3","2":"7316-3220","3":"BS_8SYN7GXG","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"ATRX, IDH1, TP53","11":"p.R132H","12":"None","13":"No V600E"},{"1":"PT_0MXPTTM3","2":"A09410","3":"BS_H3TYF6GD","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"ATRX, IDH1, TP53","11":"p.R132H","12":"None","13":"No V600E"},{"1":"PT_0SPKM4S8","2":"7316-2640","3":"BS_VW4XN9Y7","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"ATRX, CIC, FGFR1, SETD2, TP53","11":"No R132 or R172","12":"Intron, Missense_Mutation","13":"No V600E"},{"1":"PT_1AAYYGGY","2":"A14709","3":"BS_1RTE2KEX","4":"Yes","5":"No","6":"No","7":"No","8":"No","9":"No","10":"H3F3A, TP53","11":"No R132 or R172","12":"None","13":"No V600E"},{"1":"PT_1DSX4VJM","2":"7316-1708","3":"BS_KYPMZZSY","4":"Yes","5":"No","6":"No","7":"No","8":"No","9":"No","10":"H3F3A, TP53","11":"No R132 or R172","12":"None","13":"No V600E"},{"1":"PT_1E3E6GMF","2":"7316-3224","3":"BS_7GKF6M85","4":"Yes","5":"No","6":"No","7":"No","8":"No","9":"No","10":"H3F3A, TP53","11":"No R132 or R172","12":"None","13":"No V600E"},{"1":"PT_1E3E6GMF","2":"A09985","3":"BS_541KKASA","4":"Yes","5":"No","6":"No","7":"No","8":"No","9":"No","10":"H3F3A, TP53","11":"No R132 or R172","12":"None","13":"No V600E"},{"1":"PT_1H2REHT2","2":"7316-3022","3":"BS_79SYEHY3","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"TP53","11":"No R132 or R172","12":"None","13":"No V600E"},{"1":"PT_1H2REHT2","2":"7316-3303","3":"BS_96S0VQBN","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"TP53","11":"No R132 or R172","12":"None","13":"No V600E"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Tumor_Sample_Barcode"],"name":[3],"type":["chr"],"align":["left"]},{"label":["H3F3A.K28M"],"name":[4],"type":["chr"],"align":["left"]},{"label":["HIST1H3B.K28M"],"name":[5],"type":["chr"],"align":["left"]},{"label":["HIST1H3C.K28M"],"name":[6],"type":["chr"],"align":["left"]},{"label":["HIST2H3C.K28M"],"name":[7],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35R"],"name":[8],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35V"],"name":[9],"type":["chr"],"align":["left"]},{"label":["relevant_coding_mutations"],"name":[10],"type":["chr"],"align":["left"]},{"label":["IDH1_mutation"],"name":[11],"type":["chr"],"align":["left"]},{"label":["TERT_variant_classification"],"name":[12],"type":["chr"],"align":["left"]},{"label":["BRAF_V600E"],"name":[13],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_0DXHDZJR","2":"7316-2857","3":"BS_QWS88QXE","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"None","11":"No R132 or R172","12":"None","13":"No V600E"},{"1":"PT_0MXPTTM3","2":"7316-3220","3":"BS_8SYN7GXG","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"None","11":"p.R132H","12":"None","13":"No V600E"},{"1":"PT_0MXPTTM3","2":"A09410","3":"BS_H3TYF6GD","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"None","11":"p.R132H","12":"None","13":"No V600E"},{"1":"PT_0SPKM4S8","2":"7316-2640","3":"BS_VW4XN9Y7","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"None","11":"No R132 or R172","12":"Intron, Missense_Mutation","13":"No V600E"},{"1":"PT_1AAYYGGY","2":"A14709","3":"BS_1RTE2KEX","4":"Yes","5":"No","6":"No","7":"No","8":"No","9":"No","10":"None","11":"No R132 or R172","12":"None","13":"No V600E"},{"1":"PT_1DSX4VJM","2":"7316-1708","3":"BS_KYPMZZSY","4":"Yes","5":"No","6":"No","7":"No","8":"No","9":"No","10":"None","11":"No R132 or R172","12":"None","13":"No V600E"},{"1":"PT_1E3E6GMF","2":"7316-3224","3":"BS_7GKF6M85","4":"Yes","5":"No","6":"No","7":"No","8":"No","9":"No","10":"None","11":"No R132 or R172","12":"None","13":"No V600E"},{"1":"PT_1E3E6GMF","2":"A09985","3":"BS_541KKASA","4":"Yes","5":"No","6":"No","7":"No","8":"No","9":"No","10":"None","11":"No R132 or R172","12":"None","13":"No V600E"},{"1":"PT_1H2REHT2","2":"7316-3022","3":"BS_79SYEHY3","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"None","11":"No R132 or R172","12":"None","13":"No V600E"},{"1":"PT_1H2REHT2","2":"7316-3303","3":"BS_96S0VQBN","4":"No","5":"No","6":"No","7":"No","8":"No","9":"No","10":"None","11":"No R132 or R172","12":"None","13":"No V600E"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <!-- rnb-chunk-end -->
@@ -3390,40 +3362,37 @@ head(final_mutations_df, n = 10)</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoic2Vzc2lvbkluZm8oKSJ9 -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgIFxuIFszXSBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgIFxuWzExXSBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5sb2FkZWQgdmlhIGEgbmFtZXNwYWNlIChhbmQgbm90IGF0dGFjaGVkKTpcbiBbMV0gUmNwcF8xLjAuMSAgICAgICAgICAgICBYVmVjdG9yXzAuMjYuMCAgICAgICAgIGtuaXRyXzEuMjMgICAgICAgICAgICBcbiBbNF0gbWFncml0dHJfMS41ICAgICAgICAgICB6bGliYmlvY18xLjMyLjAgICAgICAgIElSYW5nZXNfMi4yMC4yICAgICAgICBcbiBbN10gQmlvY0dlbmVyaWNzXzAuMzIuMCAgICBHZW5vbWljUmFuZ2VzXzEuMzguMCAgIGhtc18wLjQuMiAgICAgICAgICAgICBcblsxMF0gdGlkeXNlbGVjdF8wLjIuNSAgICAgICBSNl8yLjQuMCAgICAgICAgICAgICAgIHJsYW5nXzAuNC4wICAgICAgICAgICBcblsxM10gR2Vub21lSW5mb0RiXzEuMjIuMSAgICBzdHJpbmdyXzEuNC4wICAgICAgICAgIGRwbHlyXzAuOC4zICAgICAgICAgICBcblsxNl0gdG9vbHNfMy42LjAgICAgICAgICAgICBwYXJhbGxlbF8zLjYuMCAgICAgICAgIHhmdW5fMC44ICAgICAgICAgICAgICBcblsxOV0gaHRtbHRvb2xzXzAuMy42ICAgICAgICB5YW1sXzIuMi4wICAgICAgICAgICAgIGFzc2VydHRoYXRfMC4yLjEgICAgICBcblsyMl0gZGlnZXN0XzAuNi4yMCAgICAgICAgICBycHJvanJvb3RfMS4zLTIgICAgICAgIHRpYmJsZV8yLjEuMyAgICAgICAgICBcblsyNV0gY3JheW9uXzEuMy40ICAgICAgICAgICBHZW5vbWVJbmZvRGJEYXRhXzEuMi4yIHB1cnJyXzAuMy4yICAgICAgICAgICBcblsyOF0gcmVhZHJfMS4zLjEgICAgICAgICAgICBiaXRvcHNfMS4wLTYgICAgICAgICAgIFM0VmVjdG9yc18wLjI0LjQgICAgICBcblszMV0gYmFzZTY0ZW5jXzAuMS0zICAgICAgICBSQ3VybF8xLjk1LTQuMTIgICAgICAgIGdsdWVfMS4zLjEgICAgICAgICAgICBcblszNF0gZXZhbHVhdGVfMC4xNCAgICAgICAgICBybWFya2Rvd25fMS4xMyAgICAgICAgIHN0cmluZ2lfMS40LjMgICAgICAgICBcblszN10gY29tcGlsZXJfMy42LjAgICAgICAgICBwaWxsYXJfMS40LjIgICAgICAgICAgIGJhY2twb3J0c18xLjEuNCAgICAgICBcbls0MF0gc3RhdHM0XzMuNi4wICAgICAgICAgICBqc29ubGl0ZV8xLjYgICAgICAgICAgIHBrZ2NvbmZpZ18yLjAuMiAgICAgICBcbiJ9 -->
-<pre><code>R version 3.6.0 (2019-04-26)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Debian GNU/Linux 9 (stretch)
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4xICgyMDE5LTA3LTA1KVxuUGxhdGZvcm06IHg4Nl82NC1hcHBsZS1kYXJ3aW4xNS42LjAgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IG1hY09TIE1vamF2ZSAxMC4xNC42XG5cbk1hdHJpeCBwcm9kdWN0czogZGVmYXVsdFxuQkxBUzogICAvTGlicmFyeS9GcmFtZXdvcmtzL1IuZnJhbWV3b3JrL1ZlcnNpb25zLzMuNi9SZXNvdXJjZXMvbGliL2xpYlJibGFzLjAuZHlsaWJcbkxBUEFDSzogL0xpYnJhcnkvRnJhbWV3b3Jrcy9SLmZyYW1ld29yay9WZXJzaW9ucy8zLjYvUmVzb3VyY2VzL2xpYi9saWJSbGFwYWNrLmR5bGliXG5cbmxvY2FsZTpcblsxXSBlbl9VUy5VVEYtOC9lbl9VUy5VVEYtOC9lbl9VUy5VVEYtOC9DL2VuX1VTLlVURi04L2VuX1VTLlVURi04XG5cbmF0dGFjaGVkIGJhc2UgcGFja2FnZXM6XG5bMV0gc3RhdHMgICAgIGdyYXBoaWNzICBnckRldmljZXMgdXRpbHMgICAgIGRhdGFzZXRzICBtZXRob2RzICAgYmFzZSAgICAgXG5cbmxvYWRlZCB2aWEgYSBuYW1lc3BhY2UgKGFuZCBub3QgYXR0YWNoZWQpOlxuIFsxXSBSY3BwXzEuMC41ICAgICAgICAgICAgIFhWZWN0b3JfMC4yNC4wICAgICAgICAgcGlsbGFyXzEuNC42ICAgICAgICAgIFxuIFs0XSBjb21waWxlcl8zLjYuMSAgICAgICAgIEdlbm9tZUluZm9EYl8xLjIwLjAgICAgemxpYmJpb2NfMS4zMC4wICAgICAgIFxuIFs3XSBiYXNlNjRlbmNfMC4xLTMgICAgICAgIGJpdG9wc18xLjAtNiAgICAgICAgICAgdG9vbHNfMy42LjEgICAgICAgICAgIFxuWzEwXSBkaWdlc3RfMC42LjIyICAgICAgICAgIGpzb25saXRlXzEuNiAgICAgICAgICAgZXZhbHVhdGVfMC4xNCAgICAgICAgIFxuWzEzXSBsaWZlY3ljbGVfMC4yLjAgICAgICAgIHRpYmJsZV8zLjAuMyAgICAgICAgICAgcGtnY29uZmlnXzIuMC4zICAgICAgIFxuWzE2XSBybGFuZ18wLjQuNyAgICAgICAgICAgIHlhbWxfMi4yLjAgICAgICAgICAgICAgcGFyYWxsZWxfMy42LjEgICAgICAgIFxuWzE5XSB4ZnVuXzAuMTAgICAgICAgICAgICAgIEdlbm9tZUluZm9EYkRhdGFfMS4yLjEgZHBseXJfMC44LjMgICAgICAgICAgIFxuWzIyXSBzdHJpbmdyXzEuNC4wICAgICAgICAgIGtuaXRyXzEuMjUgICAgICAgICAgICAgdmN0cnNfMC4zLjIgICAgICAgICAgIFxuWzI1XSBTNFZlY3RvcnNfMC4yMi4xICAgICAgIGhtc18wLjUuMSAgICAgICAgICAgICAgSVJhbmdlc18yLjE4LjMgICAgICAgIFxuWzI4XSBzdGF0czRfMy42LjEgICAgICAgICAgIHJwcm9qcm9vdF8xLjMtMiAgICAgICAgdGlkeXNlbGVjdF8xLjEuMCAgICAgIFxuWzMxXSBnbHVlXzEuMy4xICAgICAgICAgICAgIFI2XzIuNC4wICAgICAgICAgICAgICAgcm1hcmtkb3duXzEuMTYgICAgICAgIFxuWzM0XSBwdXJycl8wLjMuMyAgICAgICAgICAgIHJlYWRyXzEuMy4xICAgICAgICAgICAgbWFncml0dHJfMS41ICAgICAgICAgIFxuWzM3XSBiYWNrcG9ydHNfMS4xLjUgICAgICAgIGVsbGlwc2lzXzAuMy4wICAgICAgICAgaHRtbHRvb2xzXzAuNC4wICAgICAgIFxuWzQwXSBHZW5vbWljUmFuZ2VzXzEuMzYuMSAgIEJpb2NHZW5lcmljc18wLjMwLjAgICAgYXNzZXJ0dGhhdF8wLjIuMSAgICAgIFxuWzQzXSBzdHJpbmdpXzEuNC4zICAgICAgICAgIFJDdXJsXzEuOTUtNC4xMiAgICAgICAgY3JheW9uXzEuMy40ICAgICAgICAgIFxuIn0= -->
+<pre><code>R version 3.6.1 (2019-07-05)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS Mojave 10.14.6
 
 Matrix products: default
-BLAS/LAPACK: /usr/lib/libopenblasp-r0.2.19.so
+BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.1             XVector_0.26.0         knitr_1.23            
- [4] magrittr_1.5           zlibbioc_1.32.0        IRanges_2.20.2        
- [7] BiocGenerics_0.32.0    GenomicRanges_1.38.0   hms_0.4.2             
-[10] tidyselect_0.2.5       R6_2.4.0               rlang_0.4.0           
-[13] GenomeInfoDb_1.22.1    stringr_1.4.0          dplyr_0.8.3           
-[16] tools_3.6.0            parallel_3.6.0         xfun_0.8              
-[19] htmltools_0.3.6        yaml_2.2.0             assertthat_0.2.1      
-[22] digest_0.6.20          rprojroot_1.3-2        tibble_2.1.3          
-[25] crayon_1.3.4           GenomeInfoDbData_1.2.2 purrr_0.3.2           
-[28] readr_1.3.1            bitops_1.0-6           S4Vectors_0.24.4      
-[31] base64enc_0.1-3        RCurl_1.95-4.12        glue_1.3.1            
-[34] evaluate_0.14          rmarkdown_1.13         stringi_1.4.3         
-[37] compiler_3.6.0         pillar_1.4.2           backports_1.1.4       
-[40] stats4_3.6.0           jsonlite_1.6           pkgconfig_2.0.2       </code></pre>
+ [1] Rcpp_1.0.5             XVector_0.24.0         pillar_1.4.6          
+ [4] compiler_3.6.1         GenomeInfoDb_1.20.0    zlibbioc_1.30.0       
+ [7] base64enc_0.1-3        bitops_1.0-6           tools_3.6.1           
+[10] digest_0.6.22          jsonlite_1.6           evaluate_0.14         
+[13] lifecycle_0.2.0        tibble_3.0.3           pkgconfig_2.0.3       
+[16] rlang_0.4.7            yaml_2.2.0             parallel_3.6.1        
+[19] xfun_0.10              GenomeInfoDbData_1.2.1 dplyr_0.8.3           
+[22] stringr_1.4.0          knitr_1.25             vctrs_0.3.2           
+[25] S4Vectors_0.22.1       hms_0.5.1              IRanges_2.18.3        
+[28] stats4_3.6.1           rprojroot_1.3-2        tidyselect_1.1.0      
+[31] glue_1.3.1             R6_2.4.0               rmarkdown_1.16        
+[34] purrr_0.3.3            readr_1.3.1            magrittr_1.5          
+[37] backports_1.1.5        ellipsis_0.3.0         htmltools_0.4.0       
+[40] GenomicRanges_1.36.1   BiocGenerics_0.30.0    assertthat_0.2.1      
+[43] stringi_1.4.3          RCurl_1.95-4.12        crayon_1.3.4          </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 </div>
@@ -3458,6 +3427,55 @@ $(document).ready(function () {
   });
 });
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("04-HGG-molecular-subtyping-mutation.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
