@@ -12,8 +12,11 @@ This analysis uses information from the following files generated from the 3 cal
 
 The analysis produces the following output files
 
-* `results/cnv_consensus.tsv`:  A tab separated file out consense copy number variants, including the original calls used for each consensus call
-* `results/pbta-cnv-consensus.seg.gz`: A `.seg` formatted file for downstream processing
+* `results/cnv_consensus.tsv`:  A tab separated file of consensus copy number variants, including the original calls used for each consensus call.
+  *Note: only samples that pass QC are included, see below*
+* `results/uncalled_samples.tsv`: A table of sample-caller pairs excluded from the consensus due to QC failure (usually too many CNV calls, see [Methods: Consensus CNV creation](#consensus-cnv-creation)) If a sample fails QC from two or more callers, it will not appear in downstream files.
+* `results/pbta-cnv-consensus.seg.gz`: A `.seg` formatted file for downstream processing. *Only includes samples that pass QC*
+
 * `ref/cnv_excluded_regions.bed`: A `.bed` file of error-prone regions that were filtered from copy number calls
 * `ref/cnv_callable.bed`: A `.bed` file of regions considered "callable" by the analysis pipeline
 
@@ -89,4 +92,3 @@ chr14	103515996	103563240	NULL	103515996:103563363:3:0.237098	103511784:10354153
 One has the start and end coordinates of `103511784:103541532` **on the same chromosome**, has a copy number of `3`, and a seg.mean of `NA`. The other has the coordinates `103543140:103563240`, has a copy number of `3`, and a seg.mean of `NA`
 * Column 7 is the CNVtype. This will be one of DUP or DEL, corresponding to duplications or deletions, respectively. Note that this does not describe the number of copies, only the direction of the copy number change.
 * Column 8 is the Biospecimen Sample name
-
