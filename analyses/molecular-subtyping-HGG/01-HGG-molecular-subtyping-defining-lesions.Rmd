@@ -37,6 +37,12 @@ library(tidyverse)
 # matter where this is called from
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
+# Get lgat subset folder from the module in master
+lgat_subset_dir <- file.path(root_dir, 
+                        "analyses",
+                        "molecular-subtyping-LGAT",
+                        "lgat-subset")
+
 # File path to results directory
 results_dir <-
   file.path(root_dir, "analyses", "molecular-subtyping-HGG", "results")
@@ -51,29 +57,15 @@ metadata <-
                   guess_max = 10000) %>%
   dplyr::filter(sample_type == "Tumor") 
 
-# Read in snv consensus mutation data
-snv_df <-
-  data.table::fread(file.path(root_dir,
-                              "data",
-                              "pbta-snv-consensus-mutation.maf.tsv.gz"))
-
-# get lgat subset folder from the module in master
-lgat_subset_dir <- file.path(root_dir, 
-                        "analyses",
-                        "molecular-subtyping-LGAT",
-                        "lgat-subset")
-
-# File from 00-LGAT-select-pathology-dx that is used for the pathology diagnosis
-# inclusion/exclusion criteria
+# File from 00-LGAT-select-pathology-dx that is used for inclusion/exclusion
 path_dx_list_lgat <- jsonlite::fromJSON(
   file.path(lgat_subset_dir, 
             "lgat_subtyping_path_dx_strings.json")
 )
 ```
 
-# Prepare Data 
+# Prepare Data
 
-##
 ```{r}
 # Get LGAT tumor samples on the basis of pathology diagnosis
 lgat_specimens <- metadata %>%
@@ -87,6 +79,15 @@ lgat_specimens <- metadata %>%
          sample_type == "Tumor",
          composition == "Solid Tissue") %>%
   pull(Kids_First_Biospecimen_ID)
+```
+
+# Read in snv consensus mutation data, filtering out LGAT
+```{r}
+snv_df <-
+  data.table::fread(file.path(root_dir,
+                              "data",
+                              "pbta-snv-consensus-mutation.maf.tsv.gz")) %>%
+  filter(!Tumor_Sample_Barcode %in% lgat_specimens) 
 ```
 
 
@@ -123,11 +124,9 @@ snv_lesions_df <- snv_df %>%
   dplyr::select(
     -HGVSp_Short,
     -Hugo_Symbol
-  ) %>%
-  # Remove LGAT from this list, if captured
-  filter(!Tumor_Sample_Barcode %in% lgat_specimens) 
+  )
 
-# add back in samples with no evidence of these specific mutations
+# add back in samples with no evidence of these specific mutations and are not LGAT
 snv_lesions_df <- snv_lesions_df %>%
   dplyr::bind_rows(
     data.frame(
