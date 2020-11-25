@@ -159,17 +159,17 @@ embryonal_results_df <- bind_exp_strategies(embryonal_results_df) %>%
                     broad_histology,
                     Notes),
              by = "Kids_First_Biospecimen_ID") %>%
-  mutate(integrated_diagnosis = 
-           ifelse(molecular_subtype == "CNS Embryonal, NOS", "CNS Embryonal Tumor, NOS",
-                  ifelse(molecular_subtype == "CNS HGNET-MN1", "CNS Embryonal Tumor, HGNET-MN1",
-                         ifelse(molecular_subtype == "CNS NB-FOXR2", "CNS neuroblastoma",
-                                ifelse(molecular_subtype == "ETMR, C19MC-altered", "Embryonal tumor with multilayer rosettes, C19MC-altered",
-                                       ifelse(molecular_subtype == "ETMR, NOS",
-                "Embryonal tumor with multilayer rosettes, NOS", NA))))),
+  mutate(integrated_diagnosis = case_when(molecular_subtype == "CNS Embryonal, NOS"~ "CNS Embryonal Tumor, NOS",
+                                          molecular_subtype == "CNS HGNET-MN1"~ "CNS Embryonal Tumor, HGNET-MN1",
+                                          molecular_subtype == "CNS NB-FOXR2" ~ "CNS neuroblastoma",
+                                          molecular_subtype == "ETMR, C19MC-altered"~ "Embryonal tumor with multilayer rosettes, C19MC-altered",
+                                          molecular_subtype == "ETMR, NOS"~"Embryonal tumor with multilayer rosettes, NOS",
+                                          TRUE ~ NA_character_), 
         short_histology = 
-          ifelse(molecular_subtype %in% c("ETMR, C19MC-altered", "ETMR, NOS"),
+          if_else(molecular_subtype %in% c("ETMR, C19MC-altered", "ETMR, NOS"),
                 "ETMR", "Embryonal Tumor"),
         broad_histology = "Embryonal Tumor")
+
 ```
 
 ### Handling EWS
@@ -340,4 +340,3 @@ all_results_df <- bind_rows(embryonal_results_df,
 ```{r}
 sessionInfo()
 ```
-
