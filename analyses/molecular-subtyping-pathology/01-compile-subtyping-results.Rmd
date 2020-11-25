@@ -148,7 +148,7 @@ embryonal_results_df <- read_tsv(embryonal_results_file)
 
 ### Handling non-ATRT/non-MB embryonal tumors
 
-The molecular subtyping information from these tumors will go into the v18 release, but we will use the `integrated_diagnosis`, `short_histology`, `broad_histology`, and `Notes` columns from the v17 histologies file until SQL rules PR goes in later.
+The molecular subtyping information from these tumors will go into the v18 release, and we will update `integrated_diagnosis`, `short_histology`, `broad_histology`, and `Notes` columns now, until SQL rules PR [#748](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/748) goes in later.
 
 ```{r}
 embryonal_results_df <- bind_exp_strategies(embryonal_results_df) %>%
@@ -219,6 +219,7 @@ hgg_results_df <- bind_exp_strategies(hgg_results_df) %>%
 ```
 
 ### Handling LGAT
+
 
 ```{r}
 lgat_results_df <- bind_exp_strategies(lgat_results_df) %>%
