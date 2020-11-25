@@ -289,11 +289,11 @@ cranio_results_df <- bind_exp_strategies(cranio_results_df) %>%
                     broad_histology,
                     Notes),
              by = "Kids_First_Biospecimen_ID") %>%
-  mutate(integrated_diagnosis = ifelse(molecular_subtype == "CRANIO, ADAM",
-                                       "Adamantimomatous craniopharyngioma",
-                                       ifelse(molecular_subtype == "CRANIO, PAP","Papillary craniopharyngioma", NA)),
-         broad_histology == "Tumors of sellar region",
-         short_histology == "Craniopharyngioma")
+  mutate(integrated_diagnosis = case_when(molecular_subtype == "CRANIO, ADAM" ~"Adamantimomatous craniopharyngioma",
+                                          molecular_subtype == "CRANIO, PAP" ~"Papillary craniopharyngioma", 
+                                          TRUE ~ NA_character_),
+         broad_histology = "Tumors of sellar region",
+         short_histology = "Craniopharyngioma")
 ```
 
 ### Handling Neurocytoma
