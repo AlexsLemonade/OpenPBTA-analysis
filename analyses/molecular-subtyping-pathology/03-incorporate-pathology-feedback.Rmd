@@ -269,13 +269,212 @@ unique_subtypes <- compiled_df %>%
 unique_subtypes[duplicated(unique_subtypes$sample_id),]
 #PT_KTRJ8TFY (fixed in clinical feedback) and PT_6Q0NPVP3 (fixed in HGG module removing LGAT)
 ```
+### `PT_00G007DM`
+
+This sample has multiple specimens with different diagnoses and subtypes and this is actually expected, as there are two different diagnoses in the CBTN database and the C19MC alteration was only found in one of the samples.
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_00G007DM")
+```
+
+### `PT_5BWZA0NT`
+
+This sample was inspected by pathology and should be annotated as DMG, H3 K28, so let's update that.
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_5BWZA0NT")
+```
+
+```{r}
+compiled_df <- compiled_df %>%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == "7316-1102" ~ "Diffuse midline glioma, H3 K28-mutant",
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == "7316-1102" ~ "HGAT",
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == "7316-1102" ~ "Diffuse astrocytic and oligodendroglial tumor",
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == "7316-1102" ~ "DMG, H3 K28",
+      TRUE ~ molecular_subtype
+    )
+  )
+```
+
+### `PT_80NVYCBS`
+
+This sample was inspected by pathology and should be CNS HGNET-MN1, so we will update here.
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_80NVYCBS")
+```
+```{r}
+compiled_df <- compiled_df %>%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == "7316-765" ~ "CNS Embryonal Tumor, HGNET-MN1",
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == "7316-765" ~ "Embryonal Tumor",
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == "7316-765" ~ "Embryonal Tumor",
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == "7316-765" ~ "CNS HGNET-MN1",
+      TRUE ~ molecular_subtype
+    )
+  )
+```
+
+### `PT_9BZETM0M`
+
+This sample was inspected by pathology and should be HGG, H3 G35, so we will update here.
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_9BZETM0M")
+```
+```{r}
+compiled_df <- compiled_df %>%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == "7316-158" ~ "High-grade glioma/astrocytoma, H3 G35-mutant",
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == "7316-158" ~ "HGAT",
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == "7316-156" ~ "Diffuse astrocytic and oligodendroglial tumor",
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == "7316-158" ~ "HGG, H3 G35",
+      TRUE ~ molecular_subtype
+    )
+  )
+```
+
+### `PT_C2D4JXS1`
+
+This sample has one biospecimen which did not have the H3 variant captured in consensus calls - will inspect this later and possibly will be fixed with [#819](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/854).
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_C2D4JXS1")
+```
+
+### `PT_EHE800JJ`
+
+This sample has a hallmark EWSR1-FLI1 fusion, so could be re-classified as EWS once it goes through pathology review. For now, we will change it here to EWS.
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_EHE800JJ")
+```
+```{r}
+compiled_df <- compiled_df %>%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == "7316-229" ~ "Ewing sarcoma",
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == "7316-229" ~ "EWS",
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == "7316-229" ~ "Mesenchymal non-meningothelial tumor",
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == "7316-229" ~ "EWS",
+      TRUE ~ molecular_subtype
+    )
+  )
+```
+
+### `PT_KTRJ8TFY`
+
+This sample has one biospecimen which did not have the H3 variant captured in consensus calls. It has the variant present only in VarDict calls and in IGV, and expect this will be fixed with [#819](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/854).
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_KTRJ8TFY")
+```
+
+### `PT_X648RVMK`
+
+This sample was reviewed by pathology and confirmed to be ETMR, C19MC-altered. Will change here.
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_X648RVMK")
+```
+```{r}
+compiled_df <- compiled_df %>%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == "7316-238" ~ "Embryonal tumor with multilayer rosettes, C19MC-altered",
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == "7316-238" ~ "ETMR",
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == "7316-238" ~ "Embryonal Tumor",
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == "7316-238" ~ "ETMR, C19MC-altered",
+      TRUE ~ molecular_subtype
+    )
+  )
+```
+
+### `PT_X71D7G5S`
+
+This sample was reviewed by pathology and confirmed to be H3 mutant. Will change here.
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_X71D7G5S")
+```
+```{r}
+compiled_df <- compiled_df %>%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == "7316-1105" ~ "High-grade glioma/astrocytoma, H3 G35-mutant",
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == "7316-1105" ~ "HGAT",
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == "7316-1105" ~ "Diffuse astrocytic and oligodendroglial tumor",
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == "7316-1105" ~ "HGG, H3 G35",
+      TRUE ~ molecular_subtype
+    )
+  )
+```
 
 ### Write revised table to file
 
 ```{r}
 # sort first
 compiled_df <- compiled_df %>% 
-  arrange(Kids_First_Participant_ID, sample_id)
+  arrange(Kids_First_Participant_ID, sample_id) %>%
+  distinct() # to remove duplicates from above
 write_tsv(compiled_df, output_file)
 ```
 
