@@ -305,12 +305,12 @@ neurocytoma_results_df <- neurocytoma_results_df %>%
                     short_histology,
                     broad_histology,
                     Notes),
-             by = "Kids_First_Biospecimen_ID") %>%
-  mutate(integrated_diagnosis = ifelse(molecular_subtype == "CNC",
-                                       "Central Neurocytoma",
-                                       ifelse(molecular_subtype == "EVN","Extraventricular Neurocytoma", NA)),
-         broad_histology == "Neuronal and mixed neuronal-glial tumor",
-         short_histology == "Neurocytoma")
+            by = "Kids_First_Biospecimen_ID") %>%
+  mutate(integrated_diagnosis = case_when(molecular_subtype == "CNC"~ "Central Neurocytoma",
+                                          molecular_subtype == "EVN" ~"Extraventricular Neurocytoma", 
+                                        TRUE ~ NA_character_),
+         broad_histology = "Neuronal and mixed neuronal-glial tumor",
+         short_histology = "Neurocytoma")
 ```
 
 
