@@ -265,16 +265,14 @@ mb_results_df <- bind_exp_strategies(mb_results_df) %>%
                     short_histology,
                     broad_histology,
                     Notes),
-             by = "Kids_First_Biospecimen_ID") %>%
-  mutate(integrated_diagnosis = ifelse(molecular_subtype == "MB, SHH",
-                                       "Medulloblastoma, SHH-activated",
-                                       ifelse(molecular_subtype == "MB, WNT","Medulloblastoma, WNT-activated",
-                                              ifelse(molecular_subtype == "MB, Group3", 
-                                                     "Medulloblastoma, group 3",
-                                                     ifelse(molecular_subtype == "MB, Group4",
-                                                            "Medulloblastoma, group 4", NA)))),
-         broad_histology == "Embryonal Tumor",
-         short_histology == "Medulloblastoma")
+            by = "Kids_First_Biospecimen_ID") %>%
+  mutate(integrated_diagnosis = case_when(molecular_subtype == "MB, SHH"~"Medulloblastoma, SHH-activated",
+                                          molecular_subtype == "MB, WNT"~"Medulloblastoma, WNT-activated",
+                                          molecular_subtype == "MB, Group3"~"Medulloblastoma, group 3",
+                                          molecular_subtype == "MB, Group4"~ "Medulloblastoma, group 4", 
+                                          TRUE ~NA_character_),
+         broad_histology = "Embryonal Tumor",
+         short_histology = "Medulloblastoma")
 ```
 
 
