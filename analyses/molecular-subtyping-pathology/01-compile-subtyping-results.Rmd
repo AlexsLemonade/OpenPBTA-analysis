@@ -245,17 +245,15 @@ epn_results_df <- bind_exp_strategies(epn_results_df) %>%
                     short_histology,
                     broad_histology,
                     Notes),
-             by = "Kids_First_Biospecimen_ID") %>%
+           by = "Kids_First_Biospecimen_ID") %>%
   mutate(molecular_subtype = subgroup) %>%
-  mutate(molecular_subtype = ifelse(is.na(molecular_subtype), "EPN, To be classified", molecular_subtype), 
-         integrated_diagnosis = ifelse(molecular_subtype == "PT_EPN_A", 
-                                       "Posterior Fossa Ependymoma, Type A",
-                                       ifelse(molecular_subtype == "ST_EPN_RELA",
-                                       "Supratentorial Ependymoma, RELA fusion positive",
-                                       ifelse(molecular_subtype == "ST_EPN_YAP1", "Supratentorial Ependymoma, YAP1 fusion positive", NA))),
-         broad_histology == "Ependymal Tumor",
-         short_histology == "Ependymoma")
-```
+  mutate(molecular_subtype = if_else(is.na(molecular_subtype), "EPN, To be classified", molecular_subtype), 
+         integrated_diagnosis = case_when(molecular_subtype == "PT_EPN_A" ~ "Posterior Fossa Ependymoma, Type A",
+                                          molecular_subtype == "ST_EPN_RELA" ~ "Supratentorial Ependymoma, RELA fusion positive",
+                                          molecular_subtype == "ST_EPN_YAP1" ~ "Supratentorial Ependymoma, YAP1 fusion positive", 
+                                          TRUE~ NA_character_),
+         broad_histology = "Ependymal Tumor",
+         short_histology = "Ependymoma")
 
 ### Handling MB
 
