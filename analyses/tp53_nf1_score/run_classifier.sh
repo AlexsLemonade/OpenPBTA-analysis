@@ -41,16 +41,26 @@ Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
 collapsed_stranded="pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
 collapsed_polya="pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
 
-# Run classifier and ROC plotting for stranded data
-python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_stranded}
-# check correlation expression and scores
-Rscript -e "rmarkdown::render('${analysis_dir}/02-qc-rna_expression_score.Rmd')"
-python3 ${analysis_dir}/03-evaluate-classifier.py -s ${analysis_dir}/results/TP53_NF1_snv_alteration.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv -c ${data_dir}/pbta-histologies.tsv -o stranded
 
 # Skip poly-A steps in CI
 if [ "$POLYA" -gt "0" ]; then
   python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_polya}
-  # check correlation between expression and score
-  Rscript -e "rmarkdown::render('${analysis_dir}/02-qc-rna_expression_score.Rmd')"
-  python3 ${analysis_dir}/03-evaluate-classifier.py -s ${analysis_dir}/results/TP53_NF1_snv_alteration.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv -c ${data_dir}/pbta-histologies.tsv -o polya
 fi
+
+# Run classifier and ROC plotting for stranded data
+python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_stranded}
+
+# check correlation expression and scores
+Rscript -e "rmarkdown::render('${analysis_dir}/02-qc-rna_expression_score.Rmd')"
+
+# subset cnv where tp53 is lost
+Rscript -e "rmarkdown::render('${analysis_dir}/03-tp53-cnv-loss-domain.Rmd')"
+
+# evaluate classifer scores for stranded data
+python3 ${analysis_dir}/04-evaluate-classifier.py -s ${analysis_dir}/results/TP53_NF1_snv_alteration.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv -c ${data_dir}/pbta-histologies.tsv -o stranded
+
+# Skip poly-A steps in CI
+if [ "$POLYA" -gt "0" ]; then
+  python3 ${analysis_dir}/04-evaluate-classifier.py -s ${analysis_dir}/results/TP53_NF1_snv_alteration.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv -c ${data_dir}/pbta-histologies.tsv -o polya
+fi
+

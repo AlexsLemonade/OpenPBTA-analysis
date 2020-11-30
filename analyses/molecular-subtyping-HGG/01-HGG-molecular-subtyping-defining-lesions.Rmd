@@ -23,6 +23,8 @@ Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/01-HGG-molecular
 # Set Up
 
 ```{r}
+library(tidyverse)
+
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 ```
@@ -34,6 +36,12 @@ Rscript -e "rmarkdown::render('analyses/molecular-subtyping-HGG/01-HGG-molecular
 # Use this as the root directory to ensure proper sourcing of functions no
 # matter where this is called from
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+# Get lgat subset folder from the module in master
+lgat_subset_dir <- file.path(root_dir, 
+                        "analyses",
+                        "molecular-subtyping-LGAT",
+                        "lgat-subset")
 
 # File path to results directory
 results_dir <-
@@ -49,19 +57,44 @@ metadata <-
                   guess_max = 10000) %>%
   dplyr::filter(sample_type == "Tumor") 
 
-# Read in snv consensus mutation data
+# File from 00-LGAT-select-pathology-dx that is used for inclusion/exclusion
+path_dx_list_lgat <- jsonlite::fromJSON(
+  file.path(lgat_subset_dir, 
+            "lgat_subtyping_path_dx_strings.json")
+)
+```
+
+# Prepare Data
+
+```{r}
+# Get LGAT tumor samples on the basis of pathology diagnosis
+lgat_specimens <- metadata %>%
+  filter(str_detect(str_to_lower(pathology_diagnosis),  # Inclusion criteria
+                    paste0(path_dx_list_lgat$include_path_dx, collapse = "|")),
+         # Exclusion criteria
+         str_detect(str_to_lower(pathology_diagnosis),
+                    paste0(path_dx_list_lgat$exclude_path_dx, collapse = "|"),
+                    negate = TRUE),
+         # Tumors
+         sample_type == "Tumor",
+         composition == "Solid Tissue") %>%
+  pull(Kids_First_Biospecimen_ID)
+```
+
+# Read in snv consensus mutation data, filtering out LGAT
+```{r}
 snv_df <-
   data.table::fread(file.path(root_dir,
                               "data",
-                              "pbta-snv-consensus-mutation.maf.tsv.gz"))
+                              "pbta-snv-consensus-mutation.maf.tsv.gz")) %>%
+  filter(!Tumor_Sample_Barcode %in% lgat_specimens) 
 ```
 
-# Prepare Data 
 
 ## SNV consensus mutation data - defining lesions
 
 ```{r}
-# Filter the snv consensus mutatation data for the target lesions
+# Filter the snv consensus mutation data for the target lesions
 snv_lesions_df <- snv_df %>%
   dplyr::filter(Hugo_Symbol %in% c("H3F3A", "HIST1H3B",
                                    "HIST1H3C", "HIST2H3C") &
@@ -91,9 +124,9 @@ snv_lesions_df <- snv_df %>%
   dplyr::select(
     -HGVSp_Short,
     -Hugo_Symbol
-  ) 
+  )
 
-# add back in samples with no evidence of these specific mutations
+# add back in samples with no evidence of these specific mutations and are not LGAT
 snv_lesions_df <- snv_lesions_df %>%
   dplyr::bind_rows(
     data.frame(

@@ -3,6 +3,8 @@
 # Chante Bethell for CCDL 2020
 #
 # Run the HGG molecular subtyping pipeline.
+# Note: A local install of BEDOPS is required and can be installed using
+# conda install -c bioconda bedops
 # When OPENPBTA_SUBSET=1 (default), new HGG subset files will be generated.
 
 set -e
