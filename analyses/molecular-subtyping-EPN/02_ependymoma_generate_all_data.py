@@ -112,6 +112,8 @@ def broad_CNA_fill_df(row, CNA, arm, loss_gain):
 
 # Function to generate Z-scores column for every gene
 def fill_df_with_fpkm_zscores(df, fpkmdf, gene_name):
+    # Only use Kids_First_Biospecimen_ID_RNA which are not NA
+    df = df[df['Kids_First_Biospecimen_ID_RNA'].notna()]
     zscore_list = stats.zscore(np.array(df.apply(lambda x: fpkmdf.loc[gene_name, x["Kids_First_Biospecimen_ID_RNA"]], axis=1)))
     column_name = gene_name + "_expr_zscore"
     df[column_name] = pd.Series(zscore_list)
