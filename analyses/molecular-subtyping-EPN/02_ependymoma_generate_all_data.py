@@ -74,7 +74,7 @@ focal_cn_gene_CDKN2A = focal_cn_gene.loc[focal_cn_gene['gene_symbol'] == "CDKN2A
 focal_cn_gene_CDKN2A = focal_cn_gene_CDKN2A.set_index("biospecimen_id")
 
 # Reading the input in a  dataframe
-EPN_notebook = pd.read_csv(args.notebook, sep="\t")
+EPN_notebook = pd.read_csv(args.notebook, sep="\t",index_col=False)
 
 
 
@@ -112,11 +112,10 @@ def broad_CNA_fill_df(row, CNA, arm, loss_gain):
 
 # Function to generate Z-scores column for every gene
 def fill_df_with_fpkm_zscores(df, fpkmdf, gene_name):
-    # Only use Kids_First_Biospecimen_ID_RNA which are not NA
-    df = df[df['Kids_First_Biospecimen_ID_RNA'].notna()]
     zscore_list = stats.zscore(np.array(df.apply(lambda x: fpkmdf.loc[gene_name, x["Kids_First_Biospecimen_ID_RNA"]], axis=1)))
     column_name = gene_name + "_expr_zscore"
-    df[column_name] = pd.Series(zscore_list)
+    # add z-score array to df_rna column_name
+    df.loc[df["Kids_First_Biospecimen_ID_RNA"].notna(),column_name] = pd.Series(zscore_list,index=df[df["Kids_First_Biospecimen_ID_RNA"].notna()].index.array)
     return(df)
 
 
@@ -178,9 +177,20 @@ EPN_notebook["consensus_focal_CN_CDKN2"] = EPN_notebook["Kids_First_Biospecimen_
 
 # Adding Z-scores to dataframe
 expression_cols = ["RELA", "L1CAM", "ARL4D", "CLDN1", "CXorf67", "TKTL1", "GPBP1", "IFT46"]
-for gene in expression_cols:
-    EPN_notebook = fill_df_with_fpkm_zscores(EPN_notebook, fpkm_df, gene)
+# samples with rna matched with dna
+EPN_notebook_rna_dna = EPN_notebook[EPN_notebook["Kids_First_Biospecimen_ID_RNA"].notna()]
+# samples with only dna
+EPN_notebook_dna_only = EPN_notebook[EPN_notebook["Kids_First_Biospecimen_ID_RNA"].isna()]
 
+for gene in expression_cols:
+    # rna matched dna samples
+    EPN_notebook_rna_dna = fill_df_with_fpkm_zscores(EPN_notebook_rna_dna, fpkm_df, gene)
+    column_name = gene + "_expr_zscore"
+    # add z-score array to df_rna column_name
+    EPN_notebook_dna_only.loc[EPN_notebook_dna_only["Kids_First_Biospecimen_ID_RNA"].isna(),column_name] = np.nan
+    
+# append    
+EPN_notebook = EPN_notebook_rna_dna.append(EPN_notebook_dna_only)
 
 # Replacing all Nan values with NA so they are not empty when writing to a file
 EPN_notebook = EPN_notebook.replace(np.nan, 'NA', regex=True)
