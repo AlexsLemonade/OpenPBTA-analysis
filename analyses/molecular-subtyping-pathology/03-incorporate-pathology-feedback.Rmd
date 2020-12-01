@@ -355,7 +355,7 @@ compiled_df <- compiled_df %>%
       TRUE ~ short_histology
     ),
     broad_histology = case_when(
-      sample_id == "7316-156" ~ "Diffuse astrocytic and oligodendroglial tumor",
+      sample_id == "7316-158" ~ "Diffuse astrocytic and oligodendroglial tumor",
       TRUE ~ broad_histology
     ),
     molecular_subtype = case_when(
