@@ -270,7 +270,7 @@ unique_subtypes[duplicated(unique_subtypes$sample_id),]
 #PT_KTRJ8TFY (fixed in clinical feedback) and PT_6Q0NPVP3 (fixed in HGG module removing LGAT)
 ```
 ### `PT_00G007DM`
-7316-272 is subtyped as ETMR because a C19MC alteration was found and pathology rerview confirms the new diagnosis
+7316-272 is subtyped as ETMR because a C19MC alteration was found and pathology review confirms the new diagnosis
 
 ```{r}
 compiled_df <- compiled_df %>%
