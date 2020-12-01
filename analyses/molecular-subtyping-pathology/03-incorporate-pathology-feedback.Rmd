@@ -270,6 +270,18 @@ unique_subtypes[duplicated(unique_subtypes$sample_id),]
 #PT_KTRJ8TFY (fixed in clinical feedback) and PT_6Q0NPVP3 (fixed in HGG module removing LGAT)
 ```
 ### `PT_00G007DM`
+7316-272 is subtyped as ETMR because a C19MC alteration was found and pathology rerview confirms the new diagnosis
+
+```{r}
+compiled_df <- compiled_df %>%
+  mutate(molecular_subtype= case_when(sample_id == "7316-272"~"ETMR, C19MC-altered",
+                                      TRUE ~ molecular_subtype),
+         short_histology= case_when(sample_id == "7316-272"~"ETMR",
+                                      TRUE ~ short_histology),
+         integrated_diagnosis = case_when(sample_id == "7316-272"~"Embryonal tumor with multilayer rosettes, C19MC-altered",
+                                      TRUE ~ integrated_diagnosis)
+  ) %>%
+  unique()
 
 This sample has multiple specimens with different diagnoses and subtypes and this is actually expected, as there are two different diagnoses in the CBTN database and the C19MC alteration was only found in one of the samples.
 ```{r}
