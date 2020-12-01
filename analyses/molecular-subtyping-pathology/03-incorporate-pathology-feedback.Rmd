@@ -398,6 +398,9 @@ compiled_df <- compiled_df %>%
     molecular_subtype = case_when(
       sample_id == "7316-229" ~ "EWS",
       TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(sample_id == "7316-229" ~ "Updated via OpenPBTA subtyping",
+      TRUE ~ Notes
     )
   )
 ```
@@ -483,4 +486,3 @@ write_tsv(compiled_df, output_file)
 ```{r}
 sessionInfo()
 ```
-
