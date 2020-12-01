@@ -282,6 +282,7 @@ compiled_df <- compiled_df %>%
                                       TRUE ~ integrated_diagnosis)
   ) %>%
   unique()
+```
 
 This sample has multiple specimens with different diagnoses and subtypes and this is actually expected, as there are two different diagnoses in the CBTN database and the C19MC alteration was only found in one of the samples.
 ```{r}
