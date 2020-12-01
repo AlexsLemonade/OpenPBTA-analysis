@@ -186,10 +186,10 @@ for gene in expression_cols:
     # rna matched dna samples
     EPN_notebook_rna_dna = fill_df_with_fpkm_zscores(EPN_notebook_rna_dna, fpkm_df, gene)
     column_name = gene + "_expr_zscore"
-    # add z-score array to df_rna column_name
+    # add NA to expression zscore columns for dna only samples
     EPN_notebook_dna_only.loc[EPN_notebook_dna_only["Kids_First_Biospecimen_ID_RNA"].isna(),column_name] = np.nan
     
-# append    
+# append dataframes    
 EPN_notebook = EPN_notebook_rna_dna.append(EPN_notebook_dna_only)
 
 # Replacing all Nan values with NA so they are not empty when writing to a file
