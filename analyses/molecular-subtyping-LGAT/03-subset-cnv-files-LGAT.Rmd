@@ -78,7 +78,9 @@ cnv_lgat <- cnv %>%
 
 ```
 
-### Overlap tandem duplication in FGFR1 with exon
+### Overlap tandem duplication in FGFR1 with exons 10-18 which make up the kinase domain, per [comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/790#issuecomment-729229244).
+
+First, create genomic ranges objects for CNV seg file and gene.
 
 ```{r}
 # Genomic range for cnv seg file 
@@ -283,6 +285,5 @@ lgat_wgs_df %>%
 
 
 ```
-
 
 
