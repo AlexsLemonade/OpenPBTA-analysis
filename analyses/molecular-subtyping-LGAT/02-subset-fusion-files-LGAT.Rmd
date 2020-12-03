@@ -100,7 +100,7 @@ MYB_fused_gene <- paste(fusionOI$MYB$gene,collapse = "|")
 
 
 ### Format and annotate biospecimen per subtype based on Fusion
-We will gather summarized fusion call that satisfy the conditions per subtype and save the subset
+We will gather summarized fusion calls that satisfy the conditions per subtype and save the subset
 
 ```{r}
 subsetFusion <- putativeFusion %>%
