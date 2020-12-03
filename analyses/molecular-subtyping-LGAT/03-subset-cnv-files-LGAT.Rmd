@@ -237,7 +237,7 @@ overlaps_manta_fgfr_exon[all(overlaps_manta_fgfr_exon$exon_rank>10  &
 
 ```
 
-any CNV overlap which ha exon overlap for exon less than 10 
+any CNV overlap which overlaps exons 10 through 18 
 ```{r}
 
 overlaps_cnv_fgfr_exon[all(overlaps_cnv_fgfr_exon$exon_rank>10 & overlaps_cnv_fgfr_exon$exon_rank<18)==TRUE,"ID"] %>% unique()
