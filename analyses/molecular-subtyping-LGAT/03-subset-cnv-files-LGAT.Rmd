@@ -228,7 +228,7 @@ ggplot(rbind(data.frame("exon_number"=unlist(overlaps_manta_fgfr_exon$exon_rank)
        ,aes(x=exon_number,color=type))+geom_density()
 
 ```
-Majority SV and CNV overlap >5 exons
+Majority SV and CNV overlap exons downstream of exon 5
 
 any SV overlap which overlaps exons 10 through 18 
 ```{r}
@@ -285,4 +285,3 @@ lgat_wgs_df %>%
 
 
 ```
-
