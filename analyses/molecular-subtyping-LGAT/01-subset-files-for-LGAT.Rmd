@@ -252,8 +252,8 @@ consensusMutationSubset <- lgat_dna_df %>%
                                    "Yes","No"),
                 H3.1_mut = if_else(rowSums(
                   dplyr::select(.,one_of(c("HIST1H3B","HIST1H3C")))) >=1 ,"Yes","No"), 
-                H3.2_mut = if_else(any(colnames(.) %in% snvOI$HIST1H3C$gene) & 
-                                     rowSums(dplyr::select(.,one_of(snvOI$HIST1H3C$gene))) >=1,
+                H3.2_mut = if_else(any(colnames(.) %in% snvOI$HIST2H3C$gene) & 
+                                     rowSums(dplyr::select(.,one_of(snvOI$HIST2H3C$gene))) >=1,
                                    "Yes","No"), 
                 H3.3_mut = if_else(any(colnames(.) %in% c("H3F3A","H3F3B")) & 
                                      rowSums(dplyr::select(.,one_of(c("H3F3A","H3F3B")))) >= 1 ,"Yes","No"),
