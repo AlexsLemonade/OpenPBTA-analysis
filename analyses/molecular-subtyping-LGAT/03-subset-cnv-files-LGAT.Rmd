@@ -230,7 +230,7 @@ ggplot(rbind(data.frame("exon_number"=unlist(overlaps_manta_fgfr_exon$exon_rank)
 ```
 Majority SV and CNV overlap >5 exons
 
-any SV overlap which has exon overlap for exon less than 10 
+any SV overlap which overlaps exons 10 through 18 
 ```{r}
 overlaps_manta_fgfr_exon[all(overlaps_manta_fgfr_exon$exon_rank>10  &
                         overlaps_manta_fgfr_exon$exon_rank<18)==TRUE,"Kids.First.Biospecimen.ID.Tumor"] %>% unique()
@@ -285,5 +285,4 @@ lgat_wgs_df %>%
 
 
 ```
-
 
