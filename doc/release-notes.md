@@ -4,7 +4,6 @@
 - release date: 2020-11-23
 - status: available
 - changes:
-  - Add `pbta-histologies-base.tsv` file, which does not contain `molecular_subtype` nor `integrated_diagnosis` and will be used for molecular subtyping modules in conjunction with data releases
   - Add RNA independent specimen lists from [#795](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/795) and [#797](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/797)
   - Update DNA independent specimen lists per comment [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/750#issuecomment-691526896)
   - Add LGAT fusion summary file from [#808](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/808) and [#830](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/830)
@@ -59,8 +58,7 @@ data
     ├── pbta-gene-expression-rsem-fpkm.stranded.rds
     ├── pbta-gene-expression-rsem-tpm.polya.rds
     ├── pbta-gene-expression-rsem-tpm.stranded.rds
-    ├── pbta-histologies.tsv    
-    ├── pbta-histologies-base.tsv
+    ├── pbta-histologies.tsv
     ├── pbta-isoform-counts-rsem-expected_count.polya.rds
     ├── pbta-isoform-counts-rsem-expected_count.stranded.rds
     ├── pbta-isoform-expression-rsem-tpm.polya.rds
