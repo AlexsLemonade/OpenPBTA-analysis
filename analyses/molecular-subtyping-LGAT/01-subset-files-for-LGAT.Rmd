@@ -138,7 +138,10 @@ consensusMutationSubset <- consensusMutation %>%
                 Hugo_Symbol,
                 HGVSp_Short,
                 DOMAINS,
-                Variant_Classification) %>%
+                Variant_Classification,
+                IMPACT,
+                SIFT,
+                PolyPhen) %>%
   dplyr::filter(
     # get BRAF mutation status
     # canonical mutations V600E
@@ -200,8 +203,10 @@ consensusMutationSubset %>%
   tally() 
 
 ```
+We have some synonymous variants (classified as Intron, 5`Flank and Silent) captured per gene of interest.    
  
-We will remove synonymous variant calls from the list above. The Variant_Classification terms for synonymous SNV are selected as per [interaction-plots/scripts/02-process_mutations.R](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/interaction-plots/scripts/02-process_mutations.R).
+ 
+We will now remove synonymous variant calls from the list above. The Variant_Classification terms for synonymous SNV are selected as per [interaction-plots/scripts/02-process_mutations.R](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/interaction-plots/scripts/02-process_mutations.R).
 ```{r}
 # Variant Classification with Low/Modifier variant consequences 
 #  from maftools http://asia.ensembl.org/Help/Glossary?id=535
@@ -214,9 +219,29 @@ synonymous <- c(
   "De_novo_Start_OutOfFrame"
 )
 
-consensusMutationSubset %>%
+consensusMutationSubset <- consensusMutationSubset %>%
   dplyr::filter(!Variant_Classification %in% synonymous)
 ```
+
+### Review predicted impact of SNVs
+
+```{r}
+consensusMutationSubset %>% 
+  dplyr::select("Tumor_Sample_Barcode", "IMPACT","SIFT","PolyPhen","Hugo_Symbol","Variant_Classification")
+
+```
+ We have some Modifier mutations in the filtered snv subset.
+ 
+ We are removing the LOW/MODIFIER IMPACT annotated by [VEP](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/#impact-categories)
+ 
+ - LOW (L): Assumed to be mostly harmless or unlikely to change protein behavior
+ - MODIFIER (MO): Usually non-coding variants or variants affecting non-coding genes, where predictions are difficult or there is no evidence of impact
+
+```{r}
+consensusMutationSubset <- consensusMutationSubset %>%
+  dplyr::filter(!IMPACT %in% c("MODIFIER","LOW"))
+```
+ 
 
 Let's check whether all LGAT DNA biospecimens have a subtype defining SNV.
  
@@ -267,8 +292,6 @@ consensusMutationSubset <- lgat_dna_df %>%
 dplyr::arrange(Kids_First_Biospecimen_ID, sample_id)
 consensusMutationSubset 
 ```
-
-
 
 ```{r}
 # remove consensusMutation
