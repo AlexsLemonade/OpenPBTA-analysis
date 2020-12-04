@@ -273,15 +273,24 @@ merge_CNV_substype <-dplyr::select(overlaps_manta_fgfr_df,biospecimen_id,FGFR_DU
   full_join(dplyr::select(cnv_anno_cdkn2, biospecimen_id,CDKN2A_DEL,CDKN2B_DEL)) 
 
 # merge all lgat WGS samples
-lgat_wgs_df %>%
+LGAT_cnv_subset <- lgat_wgs_df %>%
   left_join(merge_CNV_substype,by=c("Kids_First_Biospecimen_ID"="biospecimen_id")) %>%
   # change NA to value==No
   replace_na(list(FGFR_DUP_TANDEM="No",
                          FGFR_DUP="No",
                          CDKN2A_DEL="No",
                          CDKN2B_DEL ="No"
-                         ))%>%
-  write_tsv(file.path(subset_dir,"LGAT_cnv_subset.tsv"))
+                         ))
+#check frequency - does this align with the LGG paper of 9.6%? We get ~3.3%, however, the paper also states that this deletion most frequently co-occurs with BRAF V600E, so if we have a lower prevalence of that SNV, then this could make sense. Let's circle back when we put all of the data together.
+CNV_by_part <- LGAT_cnv_subset %>%
+  left_join(lgat_specimens_df) %>%
+  select(Kids_First_Participant_ID, CDKN2A_DEL) %>%
+  distinct()
+
+CNV_by_part %>%
+  tally(CDKN2A_DEL == "Yes")/nrow(CNV_by_part)*100
+ 
+  write_tsv(LGAT_cnv_subset, file.path(subset_dir,"LGAT_cnv_subset.tsv"))
 
 
 ```
