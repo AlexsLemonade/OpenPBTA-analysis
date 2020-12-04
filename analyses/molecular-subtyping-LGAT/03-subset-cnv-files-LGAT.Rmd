@@ -49,6 +49,14 @@ cnv_anno <- read_tsv(file.path(root_dir,
                           "consensus_seg_annotated_cn_autosomes.tsv.gz"))
 
 # Gene location and domain overlap file 
+# Input files used for pfam info (hg38)
+# http://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/pfamDesc.txt.gz
+# http://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/ucscGenePfam.txt.gz
+# biomaRt gene/pfam locations call (hg38) 
+# hsapiens_gene_ensembl == Human genes (GRCh38.p13) 10th Feb 2020 
+# ensembl <- biomaRt::useMart(biomart = "ENSEMBL_MART_ENSEMBL",dataset = "hsapiens_gene_ensembl",host="ensembl.org")
+# Code used to generate pfamDataBioMart.RDS in https://gist.github.com/kgaonkar6/02b3fbcfeeddfa282a1cdf4803704794
+
 bioMartDataPfamFGFR1 <- 
   readRDS(system.file("extdata", "pfamDataBioMart.RDS", package = "annoFuse")) %>%
   # to check if biospecimen harbors FGFR1 TKD (tyrosine kinase domain tandem duplication) 
