@@ -3,9 +3,14 @@
 # K S Gaonkar
 
 # Run fusion_filtering
+# Takes one environment variable, `BASE_SUBTYPING`, if value is 1 then
+# uses pbta-histologies-base.tsv for subtyping if value is 0 runs all modules (Default)
+# with pbta-histologies.tsv
 
 set -e
 set -o pipefail
+
+RUN_FOR_SUBTYPING=${BASE_SUBTYPING:-0}
 
 # This script should always run as if it were being called from
 # the directory it lives in.
@@ -41,6 +46,7 @@ stranded_expression_file="${data_path}/pbta-gene-expression-rsem-fpkm.stranded.r
 normal_expression_file="${references_path}/Brain_FPKM_hg38_matrix.txt.zip"
 
 # metadata files
+base_histologies_file="${data_path}/pbta-histologies-base.tsv"
 histologies_file="${data_path}/pbta-histologies.tsv"
 independent_samples_file="${data_path}/independent-specimens.wgswxs.primary-plus.tsv"
 
@@ -94,6 +100,7 @@ Rscript 03-Calc-zscore-annotate.R --standardFusionCalls "${scratch_path}/standar
                                   --normalExpressionMatrix $normal_expression_file \
                                   --outputfile "${scratch_path}/standardFusionStrandedExp_QC_expression"
 
+if [ "$RUN_FOR_SUBTYPING" == 0 ]; then
 # Project specific filtering
 Rscript -e "rmarkdown::render('04-project-specific-filtering.Rmd')"
 
@@ -105,3 +112,21 @@ Rscript 06-recurrent-fusions-per-histology.R --standardFusionCalls $putative_onc
                                              --clinicalFile $histologies_file \
                                              --outputfolder $results_path \
                                              --independentSpecimensFile $independent_samples_file
+fi
+
+
+if [ "$RUN_FOR_SUBTYPING" == 1 ]; then
+# Project specific filtering
+Rscript -e "rmarkdown::render('04-project-specific-filtering.Rmd',params=list(base_run = 1))"
+
+# QC filter putative oncogene found in more than 4 histologies
+Rscript -e "rmarkdown::render('05-QC_putative_onco_fusion_dustribution.Rmd',params=list(base_run = 1))"
+
+# Recurrent fusion/fused genes
+Rscript 06-recurrent-fusions-per-histology.R --standardFusionCalls $putative_oncogenic_fusion \
+                                             --clinicalFile $base_histologies_file \
+                                             --outputfolder $results_path \
+                                             --independentSpecimensFile $independent_samples_file
+echo "Done running with base histology"
+fi
+
