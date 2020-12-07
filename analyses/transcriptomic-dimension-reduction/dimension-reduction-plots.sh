@@ -7,6 +7,8 @@
 set -e
 set -o pipefail
 
+RUN_FOR_SUBTYPING=${BASE_SUBTYPING:-0}
+
 COLORVAR=${COLOR:-broad_histology}
 
 # This script should always run as if it were being called from
@@ -18,7 +20,10 @@ cd "$script_directory" || exit
 
 # PCA, UMAP, t-SNE step
 bash 01-dimension-reduction.sh
+
+if [ "$RUN_FOR_SUBTYPING" == 0 ]; then
 # Generate plot lists to be used to make multipanel plots
 COLOR=${COLORVAR} bash 02-get-dimension-reduction-plot-lists.sh
 # Make multipanel plots and save as PDFs
 bash 03-multipanel-plots.sh
+fi
