@@ -190,7 +190,7 @@ consensusMutationSubset <- consensusMutation %>%
       # HIST1H3C canonical mutations
       HGVSp_Short %in% snvOI$HIST1H3C$canonical & Hugo_Symbol %in% "HIST1H3C" | # OR
       # HIST2H3C canonical mutations     
-      HGVSp_Short %in% snvOI$HIST1H3C$canonical & Hugo_Symbol %in% "HIST2H3C" 
+      HGVSp_Short %in% snvOI$HIST2H3C$canonical & Hugo_Symbol %in% "HIST2H3C" 
   ) 
 
 consensusMutationSubset
