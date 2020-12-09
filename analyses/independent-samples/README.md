@@ -25,9 +25,16 @@ independent-specimens.rnaseq.primary-plus-stranded.tsv
 
 To generate the independent sample lists and associated analysis of redundancies in the overall data set, run the following script from the project root directory:
 
+use BASE_SUBTYPING=1 to run this module using the pbta-histologies-base.tsv from data folder while running molecular-subtyping modules for release.
+```sh
+BASE_SUBTYPING=1 ../analyses/independent-samples/run-independent-samples.sh 
+```
+
+Default uses pbta-histologies.tsv from data folder
 ```sh
 bash analyses/independent-samples/run-independent-samples.sh
 ```
+
 
 
 ## Methods
