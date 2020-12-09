@@ -11,8 +11,14 @@ To the run the whole pipeline and produce 4 plots
 
 with panels for PCA, UMAP, and t-SNE that have points colored by broad histology, simply run:
 
+using BASE_SUBTYPING=1 to run this module using the pbta-histologies-base.tsv from data folder while running molecular-subtyping modules for release.
+```sh
+BASE_SUBTYPING=1 dimension-reduction-plots.sh
 ```
-./dimension-reduction-plots.sh
+
+OR by default uses pbta-histologies.tsv from data folder
+```sh
+bash dimension-reduction-plots.sh
 ```
 
 ## General usage
