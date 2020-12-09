@@ -30,7 +30,7 @@ use BASE_SUBTYPING=1 to run this module using the pbta-histologies-base.tsv from
 BASE_SUBTYPING=1 ../analyses/independent-samples/run-independent-samples.sh 
 ```
 
-Default uses pbta-histologies.tsv from data folder
+OR by default uses pbta-histologies.tsv from data folder
 ```sh
 bash analyses/independent-samples/run-independent-samples.sh
 ```
