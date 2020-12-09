@@ -41,11 +41,10 @@ def group_disease(primary_site):
 
 # Filtering for ependymoma samples 
 EP = pbta_histologies[pbta_histologies["pathology_diagnosis"]=="Ependymoma"]
-EP_rnaseq_samples = EP[EP["experimental_strategy"] == "RNA-Seq"][["Kids_First_Biospecimen_ID", "primary_site", 
-	"Kids_First_Participant_ID", "sample_id"]]
+EP_rnaseq_samples = EP[EP["experimental_strategy"] == "RNA-Seq"][["Kids_First_Biospecimen_ID","Kids_First_Participant_ID", "sample_id","primary_site"]]
 
 # Filtering for DNA samples 
-WGS_dnaseqsamples = EP[EP["experimental_strategy"]=="WGS"][["Kids_First_Biospecimen_ID", "Kids_First_Participant_ID", "sample_id","primary_site"]]
+WGS_dnaseqsamples = EP[EP["experimental_strategy"] == "WGS"][["Kids_First_Biospecimen_ID", "Kids_First_Participant_ID", "sample_id","primary_site"]]
 
 
 # Renaming the column name so they don't conflict in merge step 
