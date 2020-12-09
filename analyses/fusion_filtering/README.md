@@ -53,7 +53,7 @@ use BASE_SUBTYPING=1 to run this module using the pbta-histologies-base.tsv from
 BASE_SUBTYPING=1 run_fusion_merged.sh 
 ```
 
-Default uses pbta-histologies.tsv from data folder
+OR by default uses pbta-histologies.tsv from data folder
 ```sh
 bash run_fusion_merged.sh
 ```
