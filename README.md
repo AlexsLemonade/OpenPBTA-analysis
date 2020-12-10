@@ -54,7 +54,7 @@ We invite researchers to join OpenPBTA to help rigorously characterize the genom
       - [2. File and merge a pull request for adding `02-cluster-heatmap.R` to the repository.](#2-file-and-merge-a-pull-request-for-adding-02-cluster-heatmapr-to-the-repository)
       - [3. File and merge a pull request for the shell script that runs the entirety of `gene-expression-clustering`.](#3-file-and-merge-a-pull-request-for-the-shell-script-that-runs-the-entirety-of-gene-expression-clustering)
     - [Passing variables only in CI](#passing-variables-only-in-ci)
-    - [Running molecular-subtyping](#running-molecular-subtyping)
+  - [Molecular-subtyping](#molecular-subtyping)
     - [Adding summary analyses to run-for-subtyping.sh](#adding-summary-analyses-to-run-for-subtypingsh)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -481,7 +481,7 @@ In this example `OPENPBTA_PATHSIG=0.75` species an environment variable `OPENPBT
 Any environment variables prefixed with `OPENPBTA_` are passed to the specified shell script.
 Environment variables without this prefix are not passed.
 
-#### Running molecular-subtyping 
+### Molecular-subtyping 
 
 If you would like to identify molecular subtype membership for new RNAseq PBTA samples belonging to the following broad_histology
    * [`molecular-subtyping-EPN`](https://github.com/jaclyn-taroni/OpenPBTA-analysis/tree/645-pathology-feedback/analyses/molecular-subtyping-EPN) (in progress, see [#555](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/555))
@@ -489,7 +489,9 @@ If you would like to identify molecular subtype membership for new RNAseq PBTA s
    * [`molecular-subtyping-HGG`](https://github.com/jaclyn-taroni/OpenPBTA-analysis/tree/645-pathology-feedback/analyses/molecular-subtyping-HGG)
    * [`molecular-subtyping-LGAT`](https://github.com/jaclyn-taroni/OpenPBTA-analysis/tree/645-pathology-feedback/analyses/molecular-subtyping-LGAT)
    * [`molecular-subtyping-embryonal`](https://github.com/jaclyn-taroni/OpenPBTA-analysis/tree/645-pathology-feedback/analyses/molecular-subtyping-embryonal)
-   
+
+Current version of this script runs RNA-seq summary files, To-Do is add WGS/WXS summarization modules.   
+
 ```
 bash scripts/run-for-subtyping.sh
 ```
