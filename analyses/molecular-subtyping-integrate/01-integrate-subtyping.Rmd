@@ -1,0 +1,106 @@
+---
+title: "Integrate molecular subtyping results"
+output: 
+  html_notebook:
+    toc: true
+    toc_float: true
+author: Krutika Gaonkar for D3b
+date: 2020
+params:
+   is_ci: FALSE
+---
+
+The purpose of this notebook is to integrate molecular subtyping results from 
+[molecular-subtyping-pathology](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-pathology) to `pbta-histologies-base.tsv`.
+
+Here we are using v18 `pbta-histologies-base.tsv`
+
+
+## Set up
+
+```{r}
+library(tidyverse)
+data_dir <- "../../data/release-v18-20201123/"
+base_histology <- read_tsv(file.path(data_dir,"pbta-histologies-base.tsv"),
+                           col_types = readr::cols(molecular_subtype = readr::col_character(),
+                                                   short_histology = readr::col_character(),
+                           broad_histology = readr::col_character(),
+                           Notes = readr::col_character())) %>%
+  mutate(molecular_subtype=if_else(sample_type=="Normal",NA_character_,molecular_subtype),
+         short_histology=if_else(sample_type=="Normal",NA_character_,short_histology),
+         broad_histology=if_else(sample_type=="Normal",NA_character_,broad_histology),
+         Notes=if_else(sample_type=="Normal",NA_character_,Notes),
+         pathology_diagnosis = if_else(sample_type=="Normal",NA_character_,pathology_diagnosis)
+  ) %>%
+  unique()
+```
+
+### Read molecular-subtyping-pathology results
+
+Reading molecular_subtype,	integrated_diagnosis, short_histology,	broad_histology and	Notes from `compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` 
+
+```{r}
+
+compiled_subtyping<-read_tsv("../molecular-subtyping-pathology/results/compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv")
+
+```
+#### Check differences in broad_histology 
+Checking for differences in broad_histology to look for changes in molecular_subtype from molecular alteration detected in data or updated from pathology/clinical feedback in molecular-subtyping-pathology.
+
+
+```{r}
+diff_broad_histology <- base_histology %>% 
+  select(-Notes,-molecular_subtype) %>%
+  left_join(compiled_subtyping,by=c("Kids_First_Biospecimen_ID","sample_id","Kids_First_Participant_ID","tumor_descriptor")) %>%
+  filter(toupper(broad_histology.x) != toupper(broad_histology.y)) %>%
+  select(Kids_First_Biospecimen_ID,pathology_diagnosis,pathology_free_text_diagnosis,starts_with("broad_histology"),starts_with("short_histology")) %>%
+  unique()
+
+diff_broad_histology
+```
+
+#### Check differences in short_histology
+Here we want to check for short_histology changes not part of `diff_broad_histology`.
+This will help us check what string assignment has changed from `molecular-subtyping-pathology`
+
+```{r}
+
+diff_short_histology <- base_histology %>% 
+  filter(!Kids_First_Biospecimen_ID %in% diff_broad_histology$Kids_First_Biospecimen_ID) %>%
+  select(-Notes,-molecular_subtype) %>%
+  left_join(compiled_subtyping,by=c("Kids_First_Biospecimen_ID","sample_id","Kids_First_Participant_ID","tumor_descriptor")) %>%
+  filter(toupper(short_histology.x) != toupper(short_histology.y) 
+         ) %>%
+  select(Kids_First_Biospecimen_ID,pathology_diagnosis,pathology_free_text_diagnosis,starts_with("broad_histology"),starts_with("short_histology")) %>%
+  unique()
+
+diff_short_histology
+```
+The above 172 changes occured because of changes in string value assignement
+In compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv sample with broad_histology== `Ependymal tumor` is `EPN`	but in base histology it is `Ependymoma`.
+For samples with broad_histology==`Embryonal tumor`, short_histology is `Embryonal tumor` but in base histlogy it was `ETMR`
+
+### Check if any duplicates
+
+```{r}
+dup_ids<-base_histology$Kids_First_Biospecimen_ID[duplicated(base_histology$Kids_First_Biospecimen_ID)]
+
+base_histology[which(base_histology$Kids_First_Biospecimen_ID %in% dup_ids),]
+```
+
+No more duplicates left. Let's save the final file.
+
+### Add molecular-subtyping-pathology results
+
+We will add molecular_subtype,	integrated_diagnosis, short_histology,	broad_histology and	Notes from `compiled_subtyping`
+
+```{r}
+
+histology <- base_histology %>% 
+  select(-Notes,-molecular_subtype,-broad_histology,-short_histology) %>%
+  left_join(compiled_subtyping,by=c("Kids_First_Biospecimen_ID","sample_id","Kids_First_Participant_ID","tumor_descriptor")) %>%
+  unique() %>%
+  write_tsv(file.path("results","pbta-histlogies.tsv"))
+
+```
+
