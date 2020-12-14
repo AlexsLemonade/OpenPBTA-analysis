@@ -507,7 +507,7 @@ Running this will re-run RNA-seq specific summary file generation modules as wel
 For an analysis to be run for subyping, it must use `pbta-histologies-base.tsv` as input and shouldn't depend on `molecular_subtype` or `integrated_diagnosis` columns for molecular-subtyping-* modules. 
 Please set BASE_SUBTYPING=1 as a condition to run code with `pbta-histologies-base.tsv`.   
 
-Here is an example 
+Here is an example:
 
 ```
 BASE_SUBTYPING=1 analyses/gene-set-enrichment-analysis/run-gsea.sh
