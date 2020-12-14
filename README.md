@@ -499,7 +499,7 @@ If you would like to identify molecular subtype membership for new RNA-seq PBTA 
 bash scripts/run-for-subtyping.sh
 ```
 
-Running this will re-run RNA-seq specific summary file generation modules as well as molecular-subtyping-* modules to generate a `compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` with molecular_subtype which is updated by pathology/clinical feedback information when available.
+Running this will re-run RNA-seq specific summary file generation modules as well as molecular-subtyping-* modules to generate the `compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` file containing the `molecular_subtype` column.
 
 
 #### Adding summary analyses to run-for-subtyping.sh
