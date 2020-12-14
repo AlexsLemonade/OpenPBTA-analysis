@@ -504,7 +504,8 @@ Running this will re-run RNA-seq specific summary file generation modules as wel
 
 #### Adding summary analyses to run-for-subtyping.sh
 
-For an analysis to be run for subyping, it must use pbta-histologies-base.tsv and shouldn't depend on `molecular_subtype` or `integrated_diagnosis` column annotation to generate files which are inputs for molecular-subtyping-* modules. Please set BASE_SUBTYPING=1 as a condition to run code with `pbta-histologies-base.tsv`.   
+For an analysis to be run for subyping, it must use `pbta-histologies-base.tsv` as input and shouldn't depend on `molecular_subtype` or `integrated_diagnosis` columns for molecular-subtyping-* modules. 
+Please set BASE_SUBTYPING=1 as a condition to run code with `pbta-histologies-base.tsv`.   
 
 Here is an example 
 
