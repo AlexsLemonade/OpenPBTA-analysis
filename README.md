@@ -514,7 +514,7 @@ BASE_SUBTYPING=1 analyses/gene-set-enrichment-analysis/run-gsea.sh
 
 ```
 
-This would run the `analyses/gene-set-enrichment-analysis/run-gsea.sh` with pbta-histologies-base.tsv to generate gsva scores that are used in multiple molecular-subtyping-* modules.
+This would run the `analyses/gene-set-enrichment-analysis/run-gsea.sh` with `pbta-histologies-base.tsv` to generate gsva scores that are used in multiple molecular-subtyping-* modules.
 
 
 
