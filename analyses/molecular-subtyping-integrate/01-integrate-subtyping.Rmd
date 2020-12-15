@@ -11,7 +11,7 @@ params:
 ---
 
 The purpose of this notebook is to integrate molecular subtyping results from 
-[molecular-subtyping-pathology](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-pathology) to `pbta-histologies-base.tsv`.
+[molecular-subtyping-pathology](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-pathology) with `pbta-histologies-base.tsv`.
 
 Here we are using v18 `pbta-histologies-base.tsv`
 
