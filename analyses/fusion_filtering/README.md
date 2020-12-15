@@ -48,7 +48,16 @@ The code to generate genelistreference.txt and fusionreference.txt is available 
 * pbta-fusion-recurrently-fused-genes-bysample.tsv
 
 ### Run script
-`bash run_fusion_merged.sh` 
+use BASE_SUBTYPING=1 to run this module using the pbta-histologies-base.tsv from data folder while running molecular-subtyping modules for release.
+```sh
+BASE_SUBTYPING=1 run_fusion_merged.sh 
+```
+
+OR by default uses pbta-histologies.tsv from data folder
+```sh
+bash run_fusion_merged.sh
+```
+
 
 #### Order of scripts in analysis
 `01-fusion-standardization.R` : Standardizes fusion calls from STARFusion and Arriba
