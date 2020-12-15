@@ -76,9 +76,9 @@ diff_short_histology <- base_histology %>%
 
 diff_short_histology
 ```
-The above 172 changes occured because of changes in string value assignement
-In compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv sample with broad_histology== `Ependymal tumor` is `EPN`	but in base histology it is `Ependymoma`.
-For samples with broad_histology==`Embryonal tumor`, short_histology is `Embryonal tumor` but in base histlogy it was `ETMR`
+The above 172 changes occurred because of changes in string value assignment
+In `compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` sample with broad_histology== `Ependymal tumor` is `EPN`, but in base histology it is `Ependymoma`.
+For samples with broad_histology==`Embryonal tumor`, short_histology is `Embryonal tumor` but in base histology it was `ETMR`.
 
 ### Check if any duplicates
 
@@ -103,4 +103,3 @@ histology <- base_histology %>%
   write_tsv(file.path("results","pbta-histlogies.tsv"))
 
 ```
-
