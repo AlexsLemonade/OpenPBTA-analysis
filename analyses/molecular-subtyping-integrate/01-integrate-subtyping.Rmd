@@ -11,7 +11,7 @@ params:
 ---
 
 The purpose of this notebook is to integrate molecular subtyping results from 
-[molecular-subtyping-pathology](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-pathology) to `pbta-histologies-base.tsv`.
+[molecular-subtyping-pathology](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-pathology) with `pbta-histologies-base.tsv`.
 
 Here we are using v18 `pbta-histologies-base.tsv`
 
@@ -76,9 +76,9 @@ diff_short_histology <- base_histology %>%
 
 diff_short_histology
 ```
-The above 172 changes occured because of changes in string value assignement
-In compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv sample with broad_histology== `Ependymal tumor` is `EPN`	but in base histology it is `Ependymoma`.
-For samples with broad_histology==`Embryonal tumor`, short_histology is `Embryonal tumor` but in base histlogy it was `ETMR`
+The above 172 changes occurred because of changes in string value assignment
+In `compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` sample with broad_histology== `Ependymal tumor` is `EPN`, but in base histology it is `Ependymoma`.
+For samples with broad_histology==`Embryonal tumor`, short_histology is `Embryonal tumor` but in base histology it was `ETMR`.
 
 ### Check if any duplicates
 
@@ -103,4 +103,3 @@ histology <- base_histology %>%
   write_tsv(file.path("results","pbta-histlogies.tsv"))
 
 ```
-
