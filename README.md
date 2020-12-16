@@ -483,7 +483,7 @@ Environment variables without this prefix are not passed.
 
 ### Molecular-subtyping 
 
-If you would like to identify molecular subtype membership for new RNAseq PBTA samples belonging to the following broad_histology
+If you would like to identify molecular subtype membership for new RNA-seq PBTA samples belonging to the following broad_histologies, run the bash script below.
  * [`molecular-subtyping-EWS`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-EWS)
  * [`molecular-subtyping-HGG`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-HGG)
  * [`molecular-subtyping-LGAT`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-LGAT)
@@ -499,21 +499,22 @@ If you would like to identify molecular subtype membership for new RNAseq PBTA s
 bash scripts/run-for-subtyping.sh
 ```
 
-Running this will re-run RNA-seq specific summary file generation modules as well as molecular-subtyping-* modules to generate a `compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` with molecular_subtype which is updated by pathology/clinical feedback information when available.
+Running this will re-run RNA-seq specific summary file generation modules as well as molecular-subtyping-* modules to generate the `compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` file containing the `molecular_subtype` column.
 
 
 #### Adding summary analyses to run-for-subtyping.sh
 
-For an analysis to be run for subyping, it must use pbta-histologies-base.tsv and shouldn't depend on `molecular_subtype` or `integrated_diagnosis` column annotation to generate files which are inputs for molecular-subtyping-* modules. Please set BASE_SUBTYPING=1 as a condition to run code with `pbta-histologies-base.tsv`.   
+For an analysis to be run for subyping, it must use `pbta-histologies-base.tsv` as input and shouldn't depend on `molecular_subtype` or `integrated_diagnosis` columns for molecular-subtyping-* modules. 
+Please set BASE_SUBTYPING=1 as a condition to run code with `pbta-histologies-base.tsv`.   
 
-Here is an example 
+Here is an example:
 
 ```
 BASE_SUBTYPING=1 analyses/gene-set-enrichment-analysis/run-gsea.sh
 
 ```
 
-This would run the `analyses/gene-set-enrichment-analysis/run-gsea.sh` with pbta-histologies-base.tsv to generate gsva scores that are used in multiple molecular-subtyping-* modules.
+This would run the `analyses/gene-set-enrichment-analysis/run-gsea.sh` with `pbta-histologies-base.tsv` to generate gsva scores that are used in multiple molecular-subtyping-* modules.
 
 
 
