@@ -106,7 +106,7 @@ jobs:
           
       - run:
           name: Fusion standardization and annotation for STARFusio and Arriba for base subtyping
-          command: ./scripts/run_in_ci.sh OPENPBTA_BASE_SUBTYPING=1 run_fusion_merged.sh 
+          command: OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
 
       - run:
           name: Sex prediction from RNA-seq - Clean data-train elasticnet-evaluate model
