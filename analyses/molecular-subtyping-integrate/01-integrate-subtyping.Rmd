@@ -94,7 +94,9 @@ histology <- base_histology %>%
   select(-Notes,-molecular_subtype,-broad_histology,-short_histology,-integrated_diagnosis) %>%
   left_join(compiled_subtyping,by=c("Kids_First_Biospecimen_ID","sample_id","Kids_First_Participant_ID","tumor_descriptor")) %>%
   unique() %>%
-  mutate(harmonized_diagnosis = if_else(!is.na(integrated_diagnosis),integrated_diagnosis,pathology_diagnosis)) %>%
+  mutate(harmonized_diagnosis = if_else(!is.na(integrated_diagnosis),
+                                        integrated_diagnosis,
+                                        pathology_diagnosis)) %>%
   write_tsv(file.path("results","pbta-histologies.tsv"))
 
 ```
