@@ -134,7 +134,7 @@ jobs:
       
       - run:
           name: Independent sample for base subtyping
-          command: ./scripts/run_in_ci.sh OPENPBTA_BASE_SUBTYPING=1 analyses/independent-samples/run-independent-samples.sh 
+          command: OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh 
 
       - run:
           name: Interaction plot
