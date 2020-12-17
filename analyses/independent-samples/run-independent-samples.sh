@@ -3,13 +3,13 @@
 # Josh Shapiro for CCDL 2019
 #
 # Runs 01-generate-independent-specimens.R with default settings.
-# Takes one environment variable, `BASE_SUBTYPING`, if value is 1 then
+# Takes one environment variable, `OPENPBTA_BASE_SUBTYPING`, if value is 1 then
 # uses pbta-histologies-base.tsv for subtyping if value is 0 runs all modules with pbta-histologies.tsv(Default)
 
 set -e
 set -o pipefail
 
-RUN_FOR_SUBTYPING=${BASE_SUBTYPING:-0}
+RUN_FOR_SUBTYPING=${OPENPBTA_BASE_SUBTYPING:-0}
 
 # Set the working directory to the directory of this file
 cd "$(dirname "${BASH_SOURCE[0]}")"
