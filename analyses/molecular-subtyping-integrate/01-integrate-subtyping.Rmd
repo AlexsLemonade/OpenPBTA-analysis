@@ -69,8 +69,8 @@ dup_ids<-histology$Kids_First_Biospecimen_ID[duplicated(histology$Kids_First_Bio
 histology[which(histology$Kids_First_Biospecimen_ID %in% dup_ids),]
 ```
 
-These 8 duplicates arise from `Notes` column wiith NA or "Updated by OpenPBTA subtyping" values
- 
+No duplicates
+
 ### Check if broad_histology, short_histology or harmonized_diagnosis
 
 Are there NA in broad_histology, short_histology or harmonized_diagnosis
