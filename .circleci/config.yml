@@ -52,9 +52,9 @@ jobs:
           name: Molecular subtyping Chordoma
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-chordoma/run-molecular-subtyping-chordoma.sh
 
-      - run:
-          name: Molecular subtyping - Ependymoma
-          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
+#      - run:
+#          name: Molecular subtyping - Ependymoma
+#          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
 
       - run:
           name: Molecular Subtyping - LGAT
@@ -68,7 +68,7 @@ jobs:
          name: Molecular Subtyping Neurocytoma
          command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-neurocytoma/run_subtyping.sh
 
-     # Commenting this out for now; the code is expected to change 
+     # Commenting this out for now; the code is expected to change
      # - run:
      #    name: Molecular Subtyping - Compile and incorporate pathology feedback
      #    command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-pathology/run-subtyping-aggregation.sh
@@ -137,7 +137,7 @@ jobs:
           command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh
 
       - run:
-          name: Mutational Signatures 
+          name: Mutational Signatures
           command: OPENPBTA_QUICK_MUTSIGS=1 ./scripts/run_in_ci.sh bash analyses/mutational-signatures/run_mutational_signatures.sh
 
       - run:
@@ -224,7 +224,7 @@ jobs:
       - run:
           name: Exploration of nonsynonymous filter
           command: ./scripts/run_in_ci.sh bash analyses/snv-callers/explore_variant_classifications/run_explorations.sh
-          
+
       # This analysis was used to explore the TCGA PBTA data when the BED files used to calculate TCGA
       # were incorrect https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/568
       #- run:
