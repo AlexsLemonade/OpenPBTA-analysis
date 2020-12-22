@@ -38,65 +38,97 @@ Reading molecular_subtype,	integrated_diagnosis, short_histology,	broad_histolog
 compiled_subtyping<-read_tsv("../molecular-subtyping-pathology/results/compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv")
 
 ```
+
+### Add molecular-subtyping-pathology results
+
+We will add molecular_subtype,	integrated_diagnosis and	Notes from `compiled_subtyping`
+
+short_histology and	broad_histology will be added from base histology for samples that are not subtyped as part of `molecular-subtype-pathology`
+
+```{r}
+
+histology <- base_histology %>% 
+  select(-Notes,-molecular_subtype,-integrated_diagnosis) %>%
+  left_join(compiled_subtyping,by=c("Kids_First_Biospecimen_ID","sample_id","Kids_First_Participant_ID","tumor_descriptor"),suffix=c(".base",".subtyped")) %>%
+  unique() %>%
+  mutate(
+    broad_histology = if_else(!is.na(broad_histology.subtyped),broad_histology.subtyped,broad_histology.base),
+    short_histology = if_else(!is.na(short_histology.subtyped),short_histology.subtyped,short_histology.base),
+    harmonized_diagnosis = if_else(!is.na(integrated_diagnosis),
+                                        integrated_diagnosis,
+                                        pathology_diagnosis)) 
+
+```
+
+
+### Check if any duplicates
+
+```{r}
+dup_ids<-histology$Kids_First_Biospecimen_ID[duplicated(histology$Kids_First_Biospecimen_ID)]
+
+histology[which(histology$Kids_First_Biospecimen_ID %in% dup_ids),]
+```
+
+These 8 duplicates arise from `Notes` column wiith NA or "Updated by OpenPBTA subtyping" values
+ 
+### Check if broad_histology, short_histology or harmonized_diagnosis
+
+Are there NA in broad_histology, short_histology or harmonized_diagnosis
+
+```{r}
+histology %>% 
+  filter(sample_type=="Tumor",
+         (is.na(broad_histology)| is.na(short_histology)| is.na(harmonized_diagnosis))) %>%
+  tally()
+
+```
+
+No NAs in broad_histology, short_histology or harmonized_diagnosis
+
 #### Check differences in broad_histology 
-Checking for differences in broad_histology to look for changes in molecular_subtype from molecular alteration detected in data or updated from pathology/clinical feedback in molecular-subtyping-pathology.
+Checking for differences in broad_histology to look for changes in molecular_subtype 
 
 
 ```{r}
-diff_broad_histology <- base_histology %>% 
-  select(-Notes,-molecular_subtype) %>%
-  left_join(compiled_subtyping,by=c("Kids_First_Biospecimen_ID","sample_id","Kids_First_Participant_ID","tumor_descriptor")) %>%
-  filter(toupper(broad_histology.x) != toupper(broad_histology.y)) %>%
-  select(Kids_First_Biospecimen_ID,pathology_diagnosis,pathology_free_text_diagnosis,starts_with("broad_histology"),starts_with("short_histology")) %>%
+diff_broad_histology<- histology %>%
+  filter(toupper(broad_histology.base) != toupper(broad_histology.subtyped)) %>%
+  select(Kids_First_Biospecimen_ID,starts_with("broad_histology"),starts_with("short_histology")) %>%
   unique()
 
 diff_broad_histology
 ```
 
 #### Check differences in short_histology
-Here we want to check for short_histology changes not part of `diff_broad_histology`.
-This will help us check what string assignment has changed from `molecular-subtyping-pathology`
+Here we want to check for short_histology changes not part of `Check differences in broad_histology` chunk.
+This will help us check what string assignment path_dx to short_histology mapping has changed from `molecular-subtyping-pathology`
 
 ```{r}
 
-diff_short_histology <- base_histology %>% 
+histology %>% 
   filter(!Kids_First_Biospecimen_ID %in% diff_broad_histology$Kids_First_Biospecimen_ID) %>%
-  select(-Notes,-molecular_subtype,-integrated_diagnosis) %>%
-  left_join(compiled_subtyping,by=c("Kids_First_Biospecimen_ID","sample_id","Kids_First_Participant_ID","tumor_descriptor")) %>%
-  filter(toupper(short_histology.x) != toupper(short_histology.y) 
+   filter(toupper(short_histology.base) != toupper(short_histology.subtyped) 
          ) %>%
-  select(Kids_First_Biospecimen_ID,pathology_diagnosis,pathology_free_text_diagnosis,starts_with("broad_histology"),starts_with("short_histology")) %>%
+  select(Kids_First_Biospecimen_ID,starts_with("broad_histology"),starts_with("short_histology")) %>%
   unique()
 
-diff_short_histology
 ```
 The above 172 changes occurred because of changes in string value assignment
 In `compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` sample with broad_histology== `Ependymal tumor` is `EPN`, but in base histology it is `Ependymoma`.
 For samples with broad_histology==`Embryonal tumor`, short_histology is `Embryonal tumor` but in base histology it was `ETMR`.
 
-### Check if any duplicates
+### Save
+Let's save the final file.
+
+But first need to remove broad_histology.base, broad_histology.subtyped and short_histology.base
+ and short_histology.subtyped
 
 ```{r}
-dup_ids<-base_histology$Kids_First_Biospecimen_ID[duplicated(base_histology$Kids_First_Biospecimen_ID)]
-
-base_histology[which(base_histology$Kids_First_Biospecimen_ID %in% dup_ids),]
+histology %>% 
+  select(-broad_histology.base,
+         -broad_histology.subtyped,
+         - short_histology.base,
+         -short_histology.subtyped) %>%
+  write_tsv("results/pbta-histologies.tsv")
 ```
 
-No more duplicates left. Let's save the final file.
 
-### Add molecular-subtyping-pathology results
-
-We will add molecular_subtype,	integrated_diagnosis, short_histology,	broad_histology and	Notes from `compiled_subtyping`
-
-```{r}
-
-histology <- base_histology %>% 
-  select(-Notes,-molecular_subtype,-broad_histology,-short_histology,-integrated_diagnosis) %>%
-  left_join(compiled_subtyping,by=c("Kids_First_Biospecimen_ID","sample_id","Kids_First_Participant_ID","tumor_descriptor")) %>%
-  unique() %>%
-  mutate(harmonized_diagnosis = if_else(!is.na(integrated_diagnosis),
-                                        integrated_diagnosis,
-                                        pathology_diagnosis)) %>%
-  write_tsv(file.path("results","pbta-histologies.tsv"))
-
-```
