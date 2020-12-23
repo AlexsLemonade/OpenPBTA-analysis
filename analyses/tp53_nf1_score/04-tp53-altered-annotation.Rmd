@@ -1,0 +1,158 @@
+---
+title: "Tp53 SNV hotspots"
+author: "K S Gaonkar (D3B)"
+output: html_notebook
+
+---
+
+In this PR we will add TP53 alteration status as discussed in [#837](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/837):
+
+**TP53 altered - loss**, if :
+
+ - A sample contains a TP53 hotspot SNV mutation. (Cancer hotspot database and downloadable file available). Please also crosscheck that all mutations from this table are included.
+ - A sample contains two TP53 alterations, suggesting (but not confirming) that both alleles are affected (SNV+SNV, CNV+SNV).
+ - A sample contains one alteration (SNV or CNV) + has cancer_predispositions == "Li-Fraumeni syndrome", suggesting there is a germline variant in addition to the somatic variant we observe.
+ - A sample does not have a TP53 alterations, but has cancer_predispositions == "Li-Fraumeni syndrome" and TP53 classifier score for matched RNA-Seq > 0.5 (or higher cutoff we decide upon later).
+ 
+**TP53 altered - activated**, if:
+
+- A sample contains one of the two TP53 activating mutations R273C and R248W. Reference and reference.
+
+
+
+
+
+## Setup
+```{r}
+
+library("tidyverse")
+
+# rootdir
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+
+input_dir <- file.path(root_dir,
+                         "analyses",
+                         "tp53_nf1_score",
+                         "input")
+# histology
+ histology <- read_tsv(file.path(data_dir,"pbta-histologies.tsv")) %>%
+   select("Kids_First_Biospecimen_ID","sample_id","cancer_predispositions","sample_type")
+
+# Cancer database
+hotspot_database_2017_tp53_snv <- readxl::read_xls(file.path(input_dir,"hotspots_v2.xls"),sheet = 1) %>%
+  filter(Hugo_Symbol == "TP53")
+hotspot_database_2017_tp53_indel <- readxl::read_xls(file.path(input_dir,"hotspots_v2.xls"),sheet = 2) %>%
+  filter(Hugo_Symbol == "TP53")
+
+# p53, p63 and p73 functional sites
+functional_sites_tp53 <- read_tsv(file.path(input_dir,"hotspot_Chen_2006.tsv")) 
+
+results_dir <- file.path(root_dir,
+                         "analyses",
+                         "tp53_nf1_score",
+                         "results")
+
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+
+# classifier scores
+classifier_score_stranded <- read_tsv(
+  file.path(
+    results_dir,
+    "pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv"))%>%
+  select(sample_id,tp53_score)
+classifier_score_polya <-read_tsv(
+  file.path(
+    results_dir,
+    "pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv")) %>%
+  select(sample_id,tp53_score)
+
+classifier_score<- rbind(classifier_score_polya,classifier_score_stranded) %>%
+  rename(biospecimen_id=sample_id) %>%
+  left_join(histology[,c("Kids_First_Biospecimen_ID","sample_id")] ,by=c("biospecimen_id"="Kids_First_Biospecimen_ID")) 
+
+# Copy number per sample 
+# overlapping functional domain
+cnv_domain_overlap <- read_tsv(
+  file.path(
+    results_dir,
+    "loss_overlap_domains_tp53.tsv"))
+
+
+```
+
+### Check if all function sites are in hotspots
+
+All functional sites are just 1 base so checking in `hotspot_database_2017_snv`
+
+```{r}
+
+functional_sites %>%
+  filter(!gsub("[A-Z|a-z]","",p53) %in% hotspot_database_2017_tp53_snv$Amino_Acid_Position )
+
+```
+2 functional sites are missing in hotspots database.
+
+## SNV for TP53
+
+```{r}
+consensus_tp53_snv_indel <- data.table::fread(
+  file.path(data_dir,"pbta-snv-consensus-mutation.maf.tsv.gz"),
+                                   select = c("Chromosome",
+                                              "Start_Position",
+                                              "End_Position",
+                                              "Strand",
+                                              "Variant_Classification",
+                                              "Tumor_Sample_Barcode",
+                                              "Hugo_Symbol",
+                                              "HGVSp_Short"),
+                                   data.table = FALSE) %>%
+  filter(Hugo_Symbol == "TP53") %>%
+  filter(!(Variant_Classification %in% c("Silent", "Intron")))
+```
+
+###  Filter SNV for hotspots
+
+```{r}
+
+consensus_tp53_snv_indel_hotspots <- consensus_tp53_snv_indel %>%
+  filter(gsub("[A-Z|a-z]|[.]","",HGVSp_Short) %in% hotspot_database_2017_tp53_snv$Amino_Acid_Position )
+
+```
+
+## Gather SNV and CNV
+
+```{r}
+
+tp53_alterations_score <- histology %>%
+  # filter for Tumors
+  filter(sample_type=="Tumor") %>%
+  # join consensus calls overlapping hotspots
+  left_join(consensus_tp53_snv_indel_hotspots, 
+            by=c("Kids_First_Biospecimen_ID"="Tumor_Sample_Barcode")) %>%
+  # join filtered cnv losses
+  left_join(cnv_domain_overlap,by=c("Kids_First_Biospecimen_ID"="biospecimen_id",
+                                    "sample_id"))  %>%
+  # add classifier score
+  left_join(classifier_score,by=c("sample_id")) %>%
+  select(sample_id,tp53_score,cancer_predispositions,HGVSp_Short,copy_number) %>%
+  arrange(sample_id) %>%
+  unique() 
+
+```
+
+Let's convert the above to wide format
+
+```{r}
+
+tp53_alterations_score_wide <- tp53_alterations_score %>%
+  group_by(sample_id,tp53_score,cancer_predispositions) %>%
+  summarise(SNV_indel_counts= length(unique(HGVSp_Short[!is.na(HGVSp_Short)])), CNV = length(unique(copy_number[!is.na(copy_number)]))) 
+
+tp53_alterations_score_wide
+
+```
+
+
