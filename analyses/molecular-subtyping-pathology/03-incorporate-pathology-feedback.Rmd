@@ -316,6 +316,10 @@ compiled_df <- compiled_df %>%
     molecular_subtype = case_when(
       sample_id == "7316-1102" ~ "DMG, H3 K28",
       TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(
+      sample_id == "7316-1102" ~ "Updated via OpenPBTA subtyping",
+      TRUE ~ molecular_subtype
     )
   )
 ```
@@ -345,6 +349,10 @@ compiled_df <- compiled_df %>%
     molecular_subtype = case_when(
       sample_id == "7316-765" ~ "CNS HGNET-MN1",
       TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(
+      sample_id == "7316-765" ~ "Updated via OpenPBTA subtyping",
+      TRUE ~ molecular_subtype
     )
   )
 ```
@@ -373,6 +381,10 @@ compiled_df <- compiled_df %>%
     ),
     molecular_subtype = case_when(
       sample_id == "7316-158" ~ "HGG, H3 G35",
+      TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(
+      sample_id == "7316-158" ~ "Updated via OpenPBTA subtyping",
       TRUE ~ molecular_subtype
     )
   )
@@ -451,6 +463,10 @@ compiled_df <- compiled_df %>%
     molecular_subtype = case_when(
       sample_id == "7316-238" ~ "ETMR, C19MC-altered",
       TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(
+      sample_id == "7316-238" ~ "Updated via OpenPBTA subtyping",
+      TRUE ~ molecular_subtype
     )
   )
 ```
@@ -479,6 +495,10 @@ compiled_df <- compiled_df %>%
     ),
     molecular_subtype = case_when(
       sample_id == "7316-1105" ~ "HGG, H3 G35",
+      TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(
+      sample_id == "7316-1105" ~ "Updated via OpenPBTA subtyping",
       TRUE ~ molecular_subtype
     )
   )
