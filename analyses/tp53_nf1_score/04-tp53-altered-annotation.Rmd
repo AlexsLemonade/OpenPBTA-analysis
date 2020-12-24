@@ -24,7 +24,8 @@ In this PR we will add TP53 alteration status as discussed in [#837](https://git
 
 ## Setup
 ```{r}
-
+library("ggpubr")
+library("ggthemes")
 library("tidyverse")
 
 # rootdir
@@ -37,7 +38,11 @@ input_dir <- file.path(root_dir,
                          "input")
 # histology
  histology <- read_tsv(file.path(data_dir,"pbta-histologies.tsv")) %>%
-   select("Kids_First_Biospecimen_ID","sample_id","cancer_predispositions","sample_type")
+   select("Kids_First_Biospecimen_ID",
+          "sample_id",
+          "cancer_predispositions",
+          "sample_type",
+          "composition")
 
 # Cancer database
 hotspot_database_2017_tp53_snv <- readxl::read_xls(file.path(input_dir,"hotspots_v2.xls"),sheet = 1) %>%
@@ -97,6 +102,8 @@ functional_sites %>%
 
 ## SNV for TP53
 
+Removing Silent or Intron classified variants to capture only putative damaging mutations
+
 ```{r}
 consensus_tp53_snv_indel <- data.table::fread(
   file.path(data_dir,"pbta-snv-consensus-mutation.maf.tsv.gz"),
@@ -113,16 +120,34 @@ consensus_tp53_snv_indel <- data.table::fread(
   filter(!(Variant_Classification %in% c("Silent", "Intron")))
 ```
 
-###  Filter SNV for hotspots
+###  Gather annotation for SNV 
+
+hotspots : overlaps AA position which are statistically significant SNV/Indels
+activating : overlaps AA position which are found to act as gain-of-function according to literature
 
 ```{r}
 
-consensus_tp53_snv_indel_hotspots <- consensus_tp53_snv_indel %>%
-  filter(gsub("[A-Z|a-z]|[.]","",HGVSp_Short) %in% hotspot_database_2017_tp53_snv$Amino_Acid_Position )
+consensus_tp53_snv_indel <- consensus_tp53_snv_indel %>%
+  mutate(
+    hotspot = case_when(
+      # strip REF and Variant AA to get Amino_Acid_Position in consensus maf
+      (gsub("[A-Z|a-z]|[.]","",HGVSp_Short) %in% 
+         # if overlaps the hotspot Amino_Acid_Position 
+         hotspot_database_2017_tp53_snv$Amino_Acid_Position)  ~ "Yes"),
+    activating = case_when(
+      # strip REF and Variant AA to get Amino_Acid_Position in consensus maf
+      (gsub("[A-Z|a-z]|[.]","",HGVSp_Short) %in% 
+         # if overlaps the activating  Amino_Acid_Position 
+         c("273","248"))  ~ "Yes"
+    )
+  )
 
 ```
 
-## Gather SNV and CNV
+## Gather SNV,CNV, classifier and cancer_predisposition values
+
+We will gather values per sample_id since DNA and RNA samples can be only matched by `sample_id`
+
 
 ```{r}
 
@@ -130,28 +155,135 @@ tp53_alterations_score <- histology %>%
   # filter for Tumors
   filter(sample_type=="Tumor") %>%
   # join consensus calls overlapping hotspots
-  left_join(consensus_tp53_snv_indel_hotspots, 
+  left_join(consensus_tp53_snv_indel, 
             by=c("Kids_First_Biospecimen_ID"="Tumor_Sample_Barcode")) %>%
   # join filtered cnv losses
   left_join(cnv_domain_overlap,by=c("Kids_First_Biospecimen_ID"="biospecimen_id",
                                     "sample_id"))  %>%
   # add classifier score
   left_join(classifier_score,by=c("sample_id")) %>%
-  select(sample_id,tp53_score,cancer_predispositions,HGVSp_Short,copy_number) %>%
+  # select useful columns
+  select(sample_id,tp53_score,cancer_predispositions,HGVSp_Short,copy_number,hotspot,activating) %>%
   arrange(sample_id) %>%
   unique() 
 
+tp53_alterations_score 
+
 ```
 
-Let's convert the above to wide format
+Convert the above to wide format
 
 ```{r}
 
 tp53_alterations_score_wide <- tp53_alterations_score %>%
+  # group 
   group_by(sample_id,tp53_score,cancer_predispositions) %>%
-  summarise(SNV_indel_counts= length(unique(HGVSp_Short[!is.na(HGVSp_Short)])), CNV = length(unique(copy_number[!is.na(copy_number)]))) 
+  # 
+  # sample_id as rows add SNV counts,CNV loss counts 
+  # and hotspot/activating mutation annotation  
+  summarise(
+    # summarize length of SNV and CNv alterations 
+    SNV_indel_counts= length(unique(HGVSp_Short[!is.na(HGVSp_Short)])), 
+    CNV_loss_counts = length(unique(copy_number[!is.na(copy_number)])),
+    # summarize unique hotspot values per sample_id
+    hotspot = toString(unique(hotspot[!is.na(hotspot) ])),
+    activating = toString(unique(activating[!is.na(activating)]))) 
 
 tp53_alterations_score_wide
+
+```
+
+### Add annotation
+
+As discussed above we want to annotate TP53 mutants that are putative loss-of-function OR  gain-of-function.
+
+```{r}
+
+tp53_alterations_score_wide <- tp53_alterations_score_wide %>%
+  mutate(
+    # add tp53_altered annotation column
+    tp53_altered = 
+      case_when(
+        # when activating == ""
+        activating == "" &
+          # check if mutated variant AA position overlaps hotspot database 
+          ( hotspot == "Yes"  |
+              # check if sample_id has SNV+CNV mutation
+              # suggesting both alleles are mutated
+              (SNV_indel_counts >= 1 & CNV_loss_counts >=1) |
+              # check if more than 1 SNV is present
+              # suggesting both alleles are mutated
+              SNV_indel_counts >= 1 |
+              # check if SNV mutant and has
+              # Li-Fraumeni syndrome suggesting
+              # germline TP53 mutant as cancer predisposition 
+              (SNV_indel_counts >= 1 & 
+                             grepl("Li-Fraumeni syndrome",cancer_predispositions)) |
+              # check if CNV mutant  and has
+              # Li-Fraumeni syndrome suggesting
+              # germline TP53 mutant as cancer predisposition 
+              (CNV_loss_counts >= 1 & 
+                             grepl("Li-Fraumeni syndrome",cancer_predispositions)) |
+              # check if tp53 inactivating score for RNA_Seq is greater that 0.5
+              # and has Li-Fraumeni syndrome suggesting
+              # germline TP53 mutant as cancer predisposition 
+              (tp53_score > 0.5 & 
+                             grepl("Li-Fraumeni syndrome",cancer_predispositions))
+          ) ~ "loss",
+        # when activating == "Yes"
+        activating == "Yes" ~ "activated",
+        # if no evidence supports TP53 inativation or activation 
+        TRUE ~ "No evidence"
+      )
+  )
+
+```
+
+## Explore distribution of tp53_altered status vs tp53 inactivation scores
+
+```{r}
+ggplot(tp53_alterations_score_wide, aes(x = factor(tp53_altered), y = tp53_score)) +
+  geom_violin()+
+  geom_jitter(alpha = 0.5, width = 0.2) +
+  stat_compare_means() +
+  theme_bw() +
+  ggtitle("Distribution of scores across tp53 altered status") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  xlab("tp53 altered status") 
+
+```
+TP53 mutants with gain-of-function (activating) mutants promote tumorigenesis according to literature. [Reference](https://pubmed.ncbi.nlm.nih.gov/17417627/) and [reference](https://pubmed.ncbi.nlm.nih.gov/24677579/) have similar distribution of classifier scores to that of potential loss-of-function (multi-allelic) Tp53 mutations. 
+
+"No evidence" annotated samples either don't have any loss/gain TP53 SNVs nor CNV losses OR DNA sample is not available.
+
+
+
+
+### Check if other cancer predisposition have high TP53 inactivation scores  
+
+```{r}
+
+ggplot(tp53_alterations_score_wide, aes(x = factor(tp53_altered), y = tp53_score)) +
+  geom_violin()+
+  geom_jitter(alpha = 0.5, width = 0.2) +
+  theme_bw() +
+  ggtitle("Distribution of scores across tp53 altered status") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  xlab("tp53 altered status") +
+  facet_wrap(.~cancer_predispositions)
+
+```
+ Some NF-1 and/or Other inherited conditions NOS have high scoring TP53 mutants as well.
+
+## Save file 
+
+Adding DNA and RNA biospecimen ids to `tp53_alterations_score_wide` and saving
+
+```{r}
+
+tp53_alterations_score_wide %>% 
+  left_join(histology[,c("Kids_First_Biospecimen_ID","sample_id")]) %>%
+  write_tsv(file.path(results_dir,"tp53_altered_status.tsv"))
 
 ```
 
