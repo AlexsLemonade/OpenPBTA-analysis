@@ -5,7 +5,7 @@ output: html_notebook
 
 ---
 
-In this PR we will add TP53 alteration status as discussed in [#837](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/837):
+In this notebook we will add TP53 alteration status as discussed in [#837](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/837):
 
 **TP53 altered - loss**, if :
 
