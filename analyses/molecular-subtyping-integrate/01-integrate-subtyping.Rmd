@@ -39,6 +39,55 @@ compiled_subtyping<-read_tsv("../molecular-subtyping-pathology/results/compiled_
 
 ```
 
+Update "Other" sample broad/short histology and harmonized_diagnosis and add to `compiled_subtyping`
+
+```{r}
+
+Other_subtypes <- read_tsv(file.path("input","pathology_dx and pathology_free_text_diagnosis to broad_histology for subtyping module - rules_without_subtype_WIP.tsv"))
+
+compiled_subtyping_other <- base_histology %>%
+  select(
+  Kids_First_Participant_ID ,
+  sample_id,
+  Kids_First_Biospecimen_ID,
+  molecular_subtype,
+  integrated_diagnosis,
+  pathology_diagnosis,
+  pathology_free_text_diagnosis,
+  tumor_descriptor
+) %>%
+  # remove Kids_First_Biospecimen_ID which are subtypes "ETMR/Embryonal"
+  filter(!Kids_First_Biospecimen_ID %in% compiled_subtyping$Kids_First_Biospecimen_ID) %>%
+  # get pathology_diagnosis=="Other"
+  filter(pathology_diagnosis=="Other") %>%
+  left_join(Other_subtypes,by=c("pathology_free_text_diagnosis")) %>%
+  mutate(Notes = "Updated by manual review of WHO diagnosis") %>%
+select(
+  # gather only columns needed to format as `compiled_subtyping`
+  Kids_First_Participant_ID ,
+  sample_id,
+  Kids_First_Biospecimen_ID,
+  molecular_subtype,
+  integrated_diagnosis,
+  tumor_descriptor,
+  broad_histology,
+  short_histology,
+  Notes,
+  # adding harmonized_diagnosis from manual review 
+  # for pathology_diagnosis=="Other"
+  harmonized_diagnosis
+) %>%
+  unique()
+
+
+# combined OpenPBTA subtypes and manual "Other" subtypes
+compiled_subtyping <- compiled_subtyping_other %>%
+  bind_rows(compiled_subtyping)
+
+```
+
+
+
 ### Add molecular-subtyping-pathology results
 
 We will add molecular_subtype,	integrated_diagnosis and	Notes from `compiled_subtyping`
@@ -52,13 +101,22 @@ histology <- base_histology %>%
   left_join(compiled_subtyping,by=c("Kids_First_Biospecimen_ID","sample_id","Kids_First_Participant_ID","tumor_descriptor"),suffix=c(".base",".subtyped")) %>%
   unique() %>%
   mutate(
-    broad_histology = if_else(!is.na(broad_histology.subtyped),broad_histology.subtyped,broad_histology.base),
-    short_histology = if_else(!is.na(short_histology.subtyped),short_histology.subtyped,short_histology.base),
-    harmonized_diagnosis = if_else(!is.na(integrated_diagnosis),
-                                        integrated_diagnosis,
-                                        pathology_diagnosis)) 
-
+    broad_histology = if_else(!is.na(broad_histology.subtyped),
+                              broad_histology.subtyped,
+                              broad_histology.base),
+    short_histology = if_else(!is.na(short_histology.subtyped),
+                              short_histology.subtyped,
+                              short_histology.base),
+    harmonized_diagnosis = 
+      case_when(!is.na(integrated_diagnosis) ~ integrated_diagnosis,
+                is.na(integrated_diagnosis) & 
+                  !is.na(harmonized_diagnosis) ~ harmonized_diagnosis,
+                is.na(integrated_diagnosis) & 
+                  is.na(harmonized_diagnosis) &
+                  !is.na(pathology_diagnosis) ~ pathology_diagnosis
+    )) 
 ```
+
 
 
 ### Check if any duplicates
@@ -85,6 +143,8 @@ histology %>%
 
 No NAs in broad_histology, short_histology or harmonized_diagnosis
 
+Just a note, integrated_diagnosis == NA is expected for samples where subtyping is not performed or is molecular_subtype == "XYZ,To be classified" because no evidence was provided/available for these samples we are not able to add integrated_diagnosis.
+
 #### Check differences in broad_histology 
 Checking for differences in broad_histology to look for changes in molecular_subtype 
 
@@ -109,12 +169,14 @@ histology %>%
    filter(toupper(short_histology.base) != toupper(short_histology.subtyped) 
          ) %>%
   select(Kids_First_Biospecimen_ID,starts_with("broad_histology"),starts_with("short_histology")) %>%
-  unique()
+  unique() 
 
 ```
 The above 172 changes occurred because of changes in string value assignment
 In `compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` sample with broad_histology== `Ependymal tumor` is `EPN`, but in base histology it is `Ependymoma`.
 For samples with broad_histology==`Embryonal tumor`, short_histology is `Embryonal tumor` but in base histology it was `ETMR`.
+
+45 Benign ,Non-(CNS) tumor and other samples where pathology_diagnosis == "Other",have short_histology updated from manual review of WHO diagnosis terms.
 
 ### Save
 Let's save the final file.
