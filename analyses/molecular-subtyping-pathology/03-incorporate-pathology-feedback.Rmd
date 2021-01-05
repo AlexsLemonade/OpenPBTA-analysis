@@ -286,7 +286,10 @@ compiled_df <- compiled_df %>%
          short_histology= case_when(sample_id == "7316-272"~"ETMR",
                                       TRUE ~ short_histology),
          integrated_diagnosis = case_when(sample_id == "7316-272"~"Embryonal tumor with multilayer rosettes, C19MC-altered",
-                                      TRUE ~ integrated_diagnosis)
+                                      TRUE ~ integrated_diagnosis),
+         Notes = case_when(sample_id == "7316-272" ~ "Updated via OpenPBTA subtyping",
+      TRUE ~ Notes
+    )
   ) %>%
   unique()
 ```
@@ -432,7 +435,8 @@ compiled_df <- compiled_df %>%
       sample_id == "7316-229" ~ "EWS",
       TRUE ~ molecular_subtype
     ),
-    Notes = case_when(sample_id == "7316-229" ~ "Updated via OpenPBTA subtyping",
+    Notes = case_when(
+      sample_id == "7316-229" ~ "Updated via OpenPBTA subtyping",
       TRUE ~ Notes
     )
   )
@@ -505,8 +509,7 @@ compiled_df <- compiled_df %>%
       sample_id == "7316-1105" ~ "HGG, H3 G35",
       TRUE ~ molecular_subtype
     ),
-    Notes = case_when(
-      sample_id == "7316-1105" ~ "Updated via OpenPBTA subtyping",
+    Notes = case_when(sample_id == "7316-1105" ~ "Updated via OpenPBTA subtyping",
       TRUE ~ Notes
     )
   )
