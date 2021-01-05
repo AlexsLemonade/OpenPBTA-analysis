@@ -27,6 +27,7 @@ In this notebook we will add TP53 alteration status as discussed in [#837](https
 library("ggpubr")
 library("ggthemes")
 library("tidyverse")
+library("ggfortify")
 
 # rootdir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -36,13 +37,25 @@ input_dir <- file.path(root_dir,
                          "analyses",
                          "tp53_nf1_score",
                          "input")
+# cell composition
+cell_line_composition <- read_tsv(file.path("..",
+                                            "molecular-subtyping-HGG",
+                                            "input",
+                                            "cell-line-composition.tsv"),
+                                  col_types = 
+                                    readr::cols( aliquot_id  = readr::col_character())) 
+
 # histology
  histology <- read_tsv(file.path(data_dir,"pbta-histologies.tsv")) %>%
    select("Kids_First_Biospecimen_ID",
           "sample_id",
           "cancer_predispositions",
           "sample_type",
-          "composition")
+          "experimental_strategy",
+          "composition") %>%
+   # merge cell line composition
+  left_join(cell_line_composition)
+ 
 
 # Cancer database
 hotspot_database_2017_tp53_snv <- readxl::read_xls(file.path(input_dir,"hotspots_v2.xls"),sheet = 1) %>%
@@ -68,6 +81,7 @@ classifier_score_stranded <- read_tsv(
     results_dir,
     "pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv"))%>%
   select(sample_id,tp53_score)
+
 classifier_score_polya <-read_tsv(
   file.path(
     results_dir,
@@ -75,8 +89,8 @@ classifier_score_polya <-read_tsv(
   select(sample_id,tp53_score)
 
 classifier_score<- rbind(classifier_score_polya,classifier_score_stranded) %>%
-  rename(biospecimen_id=sample_id) %>%
-  left_join(histology[,c("Kids_First_Biospecimen_ID","sample_id")] ,by=c("biospecimen_id"="Kids_First_Biospecimen_ID")) 
+  rename(Kids_First_Biospecimen_ID_RNA=sample_id) %>%
+  left_join(histology ,by=c("Kids_First_Biospecimen_ID_RNA"="Kids_First_Biospecimen_ID")) 
 
 # Copy number per sample 
 # overlapping functional domain
@@ -94,7 +108,7 @@ All functional sites are just 1 base so checking in `hotspot_database_2017_snv`
 
 ```{r}
 
-functional_sites %>%
+functional_sites_tp53 %>%
   filter(!gsub("[A-Z|a-z]","",p53) %in% hotspot_database_2017_tp53_snv$Amino_Acid_Position )
 
 ```
@@ -151,7 +165,10 @@ We will gather values per sample_id since DNA and RNA samples can be only matche
 
 ```{r}
 
-tp53_alterations_score <- histology %>%
+tp53_alterations_dna <- histology %>%
+  filter(experimental_strategy != "RNA-Seq") %>%
+  # merge cell line composition
+  left_join(cell_line_composition) %>%
   # filter for Tumors
   filter(sample_type=="Tumor") %>%
   # join consensus calls overlapping hotspots
@@ -159,11 +176,20 @@ tp53_alterations_score <- histology %>%
             by=c("Kids_First_Biospecimen_ID"="Tumor_Sample_Barcode")) %>%
   # join filtered cnv losses
   left_join(cnv_domain_overlap,by=c("Kids_First_Biospecimen_ID"="biospecimen_id",
-                                    "sample_id"))  %>%
+                                    "sample_id")) %>%
+  rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID)
+
+tp53_alterations_score <- tp53_alterations_dna %>%
   # add classifier score
-  left_join(classifier_score,by=c("sample_id")) %>%
+  full_join(classifier_score,by=c("sample_id",
+                                  "cell_line_composition",
+                                  "cancer_predispositions",
+                                  "sample_type",
+                                  "Kids_First_Participant_ID",
+                                  "aliquot_id")) %>%
   # select useful columns
-  select(sample_id,tp53_score,cancer_predispositions,HGVSp_Short,copy_number,hotspot,activating) %>%
+  select(sample_id,Kids_First_Biospecimen_ID_RNA,Kids_First_Biospecimen_ID_DNA,
+         tp53_score,cancer_predispositions,HGVSp_Short,copy_number,hotspot,activating) %>%
   arrange(sample_id) %>%
   unique() 
 
@@ -177,7 +203,11 @@ Convert the above to wide format
 
 tp53_alterations_score_wide <- tp53_alterations_score %>%
   # group 
-  group_by(sample_id,tp53_score,cancer_predispositions) %>%
+  group_by(sample_id,
+           Kids_First_Biospecimen_ID_DNA,
+           Kids_First_Biospecimen_ID_RNA,
+           cancer_predispositions,
+           tp53_score) %>%
   # 
   # sample_id as rows add SNV counts,CNV loss counts 
   # and hotspot/activating mutation annotation  
@@ -256,6 +286,45 @@ TP53 mutants with gain-of-function (activating) mutants promote tumorigenesis ac
 
 "No evidence" annotated samples either don't have any loss/gain TP53 SNVs nor CNV losses OR DNA sample is not available.
 
+### Expression profile for activating vs loss TP53 status
+
+```{r}
+
+# polya <- readRDS(file.path(data_dir,"pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"))
+# 
+# stranded <- readRDS(file.path(data_dir,"pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
+# 
+# stranded_tp53 <- as.data.frame(t(stranded)[,"TP53"]) %>%
+#   rownames_to_column() %>%
+#   left_join(tp53_alterations_score_wide,by=c("rowname"="Kids_First_Biospecimen_ID_RNA")) %>%
+#   rename(TP53='t(stranded)[, "TP53"]')
+# 
+# quantile_tp53 <- quantile(stranded_tp53[,"TP53"],probs=c(.25, .75), na.rm = FALSE)
+#   
+# rv_stranded <- matrixStats::rowVars(as.matrix(stranded))
+# select <- order(rv_stranded, decreasing = TRUE)[1:5000]
+
+# pcaobj_5000 <- stats::prcomp(t(stranded[select,]),
+#                              rank. =5)
+# # run pca
+# summary(pcaobj_5000) # display top 5 PCs
+# 
+# expr_plot_anno <- pcaobj_5000$x %>%
+#   as.data.frame() %>%
+#   rownames_to_column() %>%
+#   left_join(unique(tp53_alterations_score_wide[,c("Kids_First_Biospecimen_ID_RNA","tp53_altered","tp53_score")])
+#             ,by=c("rowname"="Kids_First_Biospecimen_ID_RNA")) %>%
+#   unique()%>%
+#   as.data.frame() 
+# 
+# autoplot(pcaobj_5000,data = expr_plot_anno,colour = 'tp53_altered')
+
+
+
+
+
+```
+
 
 
 
@@ -282,7 +351,6 @@ Adding DNA and RNA biospecimen ids to `tp53_alterations_score_wide` and saving
 ```{r}
 
 tp53_alterations_score_wide %>% 
-  left_join(histology[,c("Kids_First_Biospecimen_ID","sample_id")]) %>%
   write_tsv(file.path(results_dir,"tp53_altered_status.tsv"))
 
 ```
