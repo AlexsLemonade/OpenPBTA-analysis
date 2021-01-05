@@ -1,244 +1,363 @@
 Kids_First_Participant_ID	sample_id	Kids_First_Biospecimen_ID	molecular_subtype	integrated_diagnosis	short_histology	broad_histology	Notes	tumor_descriptor
-PT_00G007DM	7316-2577	BS_FEPRNEXX	CNS Embryonal, NOS	CNS Embryonal Tumor	Embryonal Tumor	Embryonal tumor	changed from other to Ependymoblastoma per CBTTC all sheet;Updated via OpenPBTA subtyping	Recurrence
-PT_00G007DM	7316-2577	BS_AQMKA8NC	CNS Embryonal, NOS	CNS Embryonal Tumor	Embryonal Tumor	Embryonal tumor	changed from other to Ependymoblastoma per CBTTC all sheet;Updated via OpenPBTA subtyping	Recurrence
-PT_00G007DM	7316-272	BS_QWNBZ9RJ	ETMR, C19MC-altered	Embryonal tumor with multilayer rosettes	ETMR	Embryonal tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_00G007DM	7316-272	BS_K07KNTFY	ETMR, C19MC-altered	Embryonal tumor with multilayer rosettes	ETMR	Embryonal tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_01MZ62KG	7316-447	BS_P39SQPTS	ETMR, C19MC-altered	Embryonal tumor with multilayer rosettes	ETMR	Embryonal tumor	Updated via OpenPBTA subtyping	Progressive
-PT_01MZ62KG	7316-447	BS_TE8QFF7T	ETMR, C19MC-altered	Embryonal tumor with multilayer rosettes	ETMR	Embryonal tumor	Updated via OpenPBTA subtyping	Progressive
-PT_02J5CWN5	7316-2989	BS_M8WP5T16	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_02J5CWN5	7316-2989	BS_2VB8649B	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_02J5CWN5	7316-898	BS_1RXZ3BP7	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_02J5CWN5	7316-898	BS_5TT6TT4K	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_0CE0HFYB	7316-2581	BS_E3EJHXQV	LGG, BRAF V600E	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_0CE0HFYB	7316-2581	BS_30W38X77	LGG, BRAF V600E	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_0DXHDZJR	7316-2857	BS_DS438CXE	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Initial CNS Tumor
-PT_0DXHDZJR	7316-2857	BS_QWS88QXE	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_0EWY6S6S	7316-3491	BS_470DYRJQ	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_0EWY6S6S	7316-3491	BS_GAA327FP	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_0K0DPVF6	7316-121	BS_66ABA973	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_0K0DPVF6	7316-121	BS_Z4Q8RH5M	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_0MHKP408	7316-726	BS_JH29M4KG	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_0MHKP408	7316-726	BS_J6VRW67C	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_0MXPTTM3	7316-3220	BS_8SYN7GXG	HGG, IDH	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_0MXPTTM3	A09410	BS_R7NTZR4C	HGG, IDH	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_0MXPTTM3	A09410	BS_H3TYF6GD	HGG, IDH	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_0PT33SCF	7316-1100	BS_09R7GDA7	CNS Embryonal, NOS	CNS Embryonal Tumor	Embryonal Tumor	Embryonal tumor	Updated via OpenPBTA subtyping	Recurrence
-PT_0PT33SCF	7316-1100	BS_KBPBCWA0	CNS Embryonal, NOS	CNS Embryonal Tumor	Embryonal Tumor	Embryonal tumor	Updated via OpenPBTA subtyping	Recurrence
-PT_0SPKM4S8	7316-2640	BS_FX2P2WEG	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Initial CNS Tumor
-PT_0SPKM4S8	7316-2640	BS_VW4XN9Y7	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_0T2EWNYR	7316-1981	BS_7BW0YRPY	CNS Embryonal, NOS	CNS Embryonal Tumor	Embryonal Tumor	Embryonal tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_0T2EWNYR	7316-1981	BS_AHT9PKVE	CNS Embryonal, NOS	CNS Embryonal Tumor	Embryonal Tumor	Embryonal tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_12JTZFC2	7316-3504	BS_42DY6WS7	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_12JTZFC2	7316-3504	BS_P0KQFXNC	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_17W3GJPT	7316-2306	BS_AD4JPN9Q	LGG, BRAF wildtype	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor
-PT_17W3GJPT	7316-2306	BS_ETTZM63Y	LGG, BRAF wildtype	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor
-PT_1AAYYGGY	A14709	BS_C83TK159	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_1AAYYGGY	A14709	BS_1RTE2KEX	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_1BV6ND1D	7316-3203	BS_H3FE3TH9	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_1BV6ND1D	7316-3203	BS_MZJJRDZF	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_1DSX4VJM	7316-1708	BS_Q13FQ8FV	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
-PT_1DSX4VJM	7316-1708	BS_KYPMZZSY	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
-PT_1E3E6GMF	7316-3224	BS_7GKF6M85	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_1E3E6GMF	A09985	BS_JB43XBCQ	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_1E3E6GMF	A09985	BS_541KKASA	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_1H2REHT2	7316-2990	BS_E0N3PTPN	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_1H2REHT2	7316-2990	BS_7M7JNG00	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_1H2REHT2	7316-3022	BS_QWTE1CWR	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Progressive
-PT_1H2REHT2	7316-3022	BS_79SYEHY3	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
-PT_1H2REHT2	7316-3303	BS_WKESC3XN	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Progressive
-PT_1H2REHT2	7316-3303	BS_96S0VQBN	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
-PT_1J2DT6MM	7316-2184	BS_GHNJ4CYC	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_1J2DT6MM	7316-2184	BS_THH0CE5A	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_1KEER2Q1	7316-460	BS_YY5B2XDD	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_1KEER2Q1	7316-460	BS_F1B71HTZ	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_1N6ATKJS	7316-2725	BS_SQX5E15Z	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_1N6ATKJS	7316-2725	BS_KKWQW01N	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_1P436YMM	7316-3917	BS_912NX4Y0	LGG, BRAF wildtype	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor	NA	Progressive
-PT_1P436YMM	7316-3917	BS_6GTKRGNK	LGG, BRAF wildtype	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor	NA	Progressive
-PT_1TGKS073	7316-1659	BS_X91K8KMG	LGG, BRAF V600E	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_1TGKS073	7316-1659	BS_CGCNC41M	LGG, BRAF V600E	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_1VQWQ0TC	7316-3627	BS_47SJZ3PH	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_1VQWQ0TC	7316-3627	BS_QXZTRMWM	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_1YQH5NSH	A20091	BS_R9B92M75	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_1YQH5NSH	A20091	BS_74TZJTW0	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_1ZAWNGWT	7316-319	BS_4GTESTSE	LGG, BRAF wildtype	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor	NA	Progressive
-PT_1ZAWNGWT	7316-319	BS_6X2BQQGE	LGG, BRAF wildtype	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor	NA	Progressive
-PT_1ZAWNGWT	7316-3345	BS_23W9EPFE	LGG, BRAF wildtype	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor
-PT_1ZAWNGWT	7316-3345	BS_4DTX295Z	LGG, BRAF wildtype	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor
-PT_20ZM6THA	7316-3629	BS_E94QRJDW	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Recurrence
-PT_20ZM6THA	7316-3629	BS_9X9E86DY	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Recurrence
-PT_218SX3G4	7316-529	BS_6T4JGBGY	CNS Embryonal, NOS	CNS Embryonal Tumor	Embryonal Tumor	Embryonal tumor	Updated via OpenPBTA subtyping	Progressive
-PT_279D9QZ8	7316-325	BS_PKW05VZV	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Recurrence
-PT_279D9QZ8	7316-325	BS_1YTHM07J	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Recurrence
-PT_27FDWCVZ	7316-184	BS_G5QBBHDV	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_27FDWCVZ	7316-184	BS_D09VWF8H	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_2BJF83GQ	7316-1745	BS_02NZT8CE	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_2BJF83GQ	7316-1745	BS_J5J0EA7Y	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_2C63FJAM	7316-3040	BS_W4HGV6E7	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_2C63FJAM	7316-3040	BS_F48RA7QF	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_2ECVKTTQ	7316-173	BS_W3R88RFP	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Second Malignancy
-PT_2ECVKTTQ	7316-173	BS_DW1CYEXP	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Second Malignancy
-PT_2ECVKTTQ	7316-2154	BS_6P50QTPP	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Recurrence
-PT_2ECVKTTQ	7316-2154	BS_ERMGD2N5	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Recurrence
-PT_2FVTD0WR	7316-2897	BS_YG0A13JH	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_2FVTD0WR	7316-2897	BS_8TFBNHT0	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_2FVTD0WR	7316-917	BS_769BDPDB	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_2FVTD0WR	7316-917	BS_RA0VCMWC	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_2JDDX6TJ	7316-409	BS_XZM79E42	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_2JDDX6TJ	7316-409	BS_B9QP40ER	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_2PRV78FX	7316-176	BS_E1CGF3KV	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_2PRV78FX	7316-176	BS_17AXPP1Y	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_2VSDT9CK	7316-3575	BS_G9XE3N9T	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_2VSDT9CK	7316-3575	BS_CQ8C6X4X	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_2WVW55DA	7316-1890	BS_QAG1RDXN	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_2WVW55DA	7316-1890	BS_NYVVN7SD	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_2WVW55DA	7316-2092	BS_M7HCF7DW	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Progressive
-PT_2WVW55DA	7316-2092	BS_M28HG0NT	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
-PT_2WVW55DA	7316-2100	BS_CXVGG342	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Progressive
-PT_2WVW55DA	7316-2100	BS_RG6JK7ZN	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
-PT_2WVW55DA	7316-502	BS_D8N31T39	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_2WVW55DA	7316-502	BS_R94EDP5H	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_2YCHME6S	7316-2622	BS_EXYHZ6D4	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_2YCHME6S	7316-2622	BS_MZB884N9	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_2YT37G8P	7316-2962	BS_VW85Q4XJ	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Recurrence
-PT_2YT37G8P	7316-2962	BS_ZJZFT0AJ	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Recurrence
-PT_2YT37G8P	7316-399	BS_PK18H7E7	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_2YT37G8P	7316-399	BS_4QFSH7C4	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_2Z7GVDTM	7316-3515	BS_DV86M0Y7	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_2Z7GVDTM	7316-3515	BS_QYWGB52C	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_2ZXR2PDN	7316-1636	BS_DMZP9G1H	LGG, BRAF V600E	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor
-PT_2ZXR2PDN	7316-1636	BS_93B38HPS	LGG, BRAF V600E	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor
-PT_37B5JRP1	7316-2217	BS_M0QYNVK8	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Initial CNS Tumor
-PT_37B5JRP1	7316-2217	BS_EJV0N3BX	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_37B5JRP1	7316-2554	BS_S6S7SK3P	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Progressive
-PT_37B5JRP1	7316-2554	BS_8Q8N6AHW	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
-PT_387VK1T9	7316-3625	BS_9XVACXP0	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Initial CNS Tumor
-PT_387VK1T9	7316-3625	BS_F064HMTP	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_38FS37DP	7316-2686	BS_DBEX7AG2	CNS Embryonal, NOS	CNS Embryonal Tumor	Embryonal Tumor	Embryonal tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_38FS37DP	7316-2686	BS_JX1PK0VW	CNS Embryonal, NOS	CNS Embryonal Tumor	Embryonal Tumor	Embryonal tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_3AWKWXEV	7316-85	BS_BYCX6VK1	HGG, BRAF V600E	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_3AWKWXEV	7316-85	BS_E42SSQGJ	HGG, BRAF V600E	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_3CHB9PK5	7316-2085	BS_G3RJTBZD	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Progressive
-PT_3CHB9PK5	7316-2085	BS_8AY2GM4G	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
-PT_3CHB9PK5	7316-515	BS_W9N9844Q	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Initial CNS Tumor
-PT_3CHB9PK5	7316-515	BS_20TBZG09	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_3CVMBGD7	7316-1963	BS_9SJWWYQ4	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_3CVMBGD7	7316-1963	BS_49JD1V3S	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_3HRS5CWF	7316-925	BS_52426AMF	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_3J0ASVHN	7316-3622	BS_7Z93ZYMS	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_3J0ASVHN	7316-3622	BS_R9V82BC1	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_3KK1F95W	7316-1744	BS_0X9EGHY2	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_3KK1F95W	7316-1744	BS_03SSN1N2	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_3MNY9BRY	7316-2583	BS_6VF6VPCG	LGG, BRAF V600E	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_3MNY9BRY	7316-2583	BS_5R0HHQ1Y	LGG, BRAF V600E	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_3NM45TQ8	7316-1077	BS_AKRHBPNZ	LGG, BRAF wildtype	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor
-PT_3NM45TQ8	7316-1077	BS_N2JD3VX6	LGG, BRAF wildtype	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor
-PT_3RN24N9X	7316-20	BS_NRFQEQKP	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_3RN24N9X	7316-20	BS_VW96PFKQ	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_3SW2VHD5	7316-2984	BS_N5B2CZMH	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_3SW2VHD5	7316-2984	BS_JJNSP29S	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_3T3VGWC6	7316-375	BS_7XRN3CFX	LGG, BRAF V600E	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_3T3VGWC6	7316-375	BS_10AD3EFX	LGG, BRAF V600E	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_3T3VGWC6	7316-3923	BS_FJZPQZ2C	LGG, BRAF V600E	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Recurrence
-PT_3T3VGWC6	7316-3923	BS_NCGGFG6H	LGG, BRAF V600E	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Recurrence
-PT_3V5GTCJR	7316-1646	BS_063ERW0R	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_3V5GTCJR	7316-1646	BS_QZTPJ8YW	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_3WA1XB8G	7316-70	BS_ME3HKN2C	LGG, BRAF wildtype	Low-grade mixed tumor	LGMT	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor
-PT_3WA1XB8G	7316-70	BS_K049HVGR	LGG, BRAF wildtype	Low-grade mixed tumor	LGMT	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor
-PT_3X3MF8ZD	7316-114	BS_23QW0BBA	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Second Malignancy
-PT_3X3MF8ZD	7316-114	BS_3NX3RBCX	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Second Malignancy
-PT_409Y4N1N	7316-84	BS_SFKZSJN1	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_409Y4N1N	7316-84	BS_HW4MYBZ2	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_40HTPY49	7316-466	BS_0VXZCRJS	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_40HTPY49	7316-466	BS_T7WMJ08W	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_4159VCJY	7316-389	BS_WRQHPSXQ	LGG, BRAF V600E	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor
-PT_4159VCJY	7316-389	BS_HTGDSPQA	LGG, BRAF V600E	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor
-PT_41QYPSGV	7316-884	BS_9BJARSX3	LGG, BRAF V600E	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_41QYPSGV	7316-884	BS_CPYV7AHD	LGG, BRAF V600E	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_41WETNRC	7316-3065	BS_BKQZ550R	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_41WETNRC	7316-3065	BS_GFS9JEE6	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_4347ZBEX	7316-913	BS_1EBQ3T20	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Second Malignancy
-PT_4347ZBEX	7316-913	BS_742CDKAS	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Second Malignancy
-PT_44HPG5YT	7316-3067	BS_680K119G	LGG, BRAF V600E	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor
-PT_44HPG5YT	7316-3067	BS_BZWM455T	LGG, BRAF V600E	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor
-PT_45YH276T	7316-499	BS_9P9MB8X8	LGG, BRAF V600E	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_45YH276T	7316-499	BS_QC5FNXGH	LGG, BRAF V600E	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_48N4Y6YP	7316-1866	BS_3G3KWY18	LGG, BRAF V600E	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_48N4Y6YP	7316-1866	BS_8B1YF57H	LGG, BRAF V600E	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_4ADZ9F53	7316-3060	BS_GTZCFGRZ	LGG, BRAF V600E	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor
-PT_4ADZ9F53	7316-3060	BS_FHE6Z73G	LGG, BRAF V600E	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor
-PT_4EDBZRM2	7316-1952	BS_RGSMX7QD	LGG, BRAF fusion	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor
-PT_4EDBZRM2	7316-1952	BS_9M49SGAQ	LGG, BRAF fusion	Ganglioglioma	Ganglioglioma	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor
-PT_4JG5KWE8	7316-50	BS_JKXA3FQC	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_4JG5KWE8	7316-50	BS_N9N1X78X	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_4TASAQKA	7316-3566	BS_JVA2NQFF	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_4TASAQKA	7316-3566	BS_AEMRNSQX	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_4XB3YTJM	7316-388	BS_RX1YTZ7F	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_4XB3YTJM	7316-388	BS_823V5X6Z	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_4XVA57J7	7316-1760	BS_B3M5SGPA	LGG, BRAF V600E	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_4XVA57J7	7316-1760	BS_9NF39QAW	LGG, BRAF V600E	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_4Z34K4XB	7316-733	BS_Q79NP5YY	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_4Z34K4XB	7316-733	BS_P36C0ABE	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_4ZSR5DY8	7316-264	BS_5CMGN56B	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_4ZSR5DY8	7316-264	BS_YH4DYNQ2	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_4ZSR5DY8	7316-2667	BS_HA20Y4XY	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_4ZSR5DY8	7316-2667	BS_W9FW1PAE	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Progressive
-PT_50ZFWMZE	7316-1942	BS_X16PENSA	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_50ZFWMZE	7316-1942	BS_4P25NNZD	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_54MH6Q46	7316-2591	BS_PN2CE34A	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_54MH6Q46	7316-2591	BS_AXM96K20	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_59D00MBQ	7316-1936	BS_ZVWE73JZ	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_59D00MBQ	7316-1936	BS_QG6V29H7	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_59D00MBQ	7316-1937	BS_TM9MH0RP	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_59D00MBQ	7316-1937	BS_3E5C1PN1	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_59FJRPVX	7316-3769	BS_AWH9757B	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Initial CNS Tumor
-PT_59FJRPVX	7316-3769	BS_WJB33V17	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_5ABCFCSK	7316-1851	BS_A1VEGWTR	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_5ABCFCSK	7316-1851	BS_APAQ2X2S	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_5BWZA0NT	7316-1102	BS_MB7WN0ZB	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	from PNET to HGG due to H3F3A mutation;Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_5BWZA0NT	7316-1102	BS_BFDEZK1C	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	from PNET to HGG due to H3F3A mutation;Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_5CNZ47XV	7316-1926	BS_JMHG7GCN	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_5CNZ47XV	7316-1926	BS_QM1Z8R38	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_5GQ76YZJ	7316-168	BS_SDZY6RZ3	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_5GQ76YZJ	7316-168	BS_WXKCR17Q	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_5M8A47WW	7316-436	BS_ZZMYDZJW	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_5M8A47WW	7316-436	BS_50XV7CTQ	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_5P3XJ97K	7316-390	BS_GYXSDZ56	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_5P3XJ97K	7316-390	BS_RB8VSEVG	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_5VAKED5F	7316-2689	BS_49852ZBH	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_5VAKED5F	7316-2689	BS_7M5272WN	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_63F63QY0	7316-3521	BS_VMQMGSJY	DMG, H3 K28, BRAF V600E	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
-PT_63F63QY0	7316-3521	BS_KAD49R68	DMG, H3 K28, BRAF V600E	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
-PT_63HDZHCN	7316-2980	BS_29X4ZX6Q	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Initial CNS Tumor
-PT_63HDZHCN	7316-2980	BS_S0T3CQ97	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_66XN3MT1	7316-936	BS_8Z3SCKB5	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_66XN3MT1	7316-936	BS_DC7XYYG8	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_6DW5NFKX	7316-3150	BS_7H4RFCW9	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_6DW5NFKX	7316-3150	BS_KT9H4B1N	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_6E8JYRXM	7316-2729	BS_JWSR581E	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_6E8JYRXM	7316-2729	BS_3R0KN6Z4	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_6GDPNFA6	7316-2610	BS_45J79YTF	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Initial CNS Tumor
-PT_6GDPNFA6	7316-2610	BS_XGVSX8BX	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_6MWPJ96F	7316-1711	BS_NPQJ20KX	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_6MWPJ96F	7316-1711	BS_6GV08HTE	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_6MWPJ96F	7316-1928	BS_VR7FR1NE	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_6MWPJ96F	7316-1928	BS_M8EBKZDG	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_6N1QWCXE	7316-3169	BS_4HQ3T2NC	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_6N1QWCXE	7316-3169	BS_D2BZ25FW	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_6Q0NPVP3	7316-2255	BS_5JM573JC	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_6Q0NPVP3	7316-2255	BS_E5H6CFYT	DMG, H3 K28	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_6Q0NPVP3	7316-2255	BS_5JM573JC	LGG, BRAF wildtype	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_6Q0NPVP3	7316-2255	BS_E5H6CFYT	LGG, BRAF wildtype	Diffuse midline glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_6R95FQT2	7316-459	BS_8VAZSJEN	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_6R95FQT2	7316-459	BS_YXCVR90M	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_6SH7PV1N	7316-535	BS_FEV5A0HN	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Initial CNS Tumor
-PT_6SH7PV1N	7316-535	BS_MW63FCZC	HGG, H3 wildtype	High-grade glioma	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_6TKJRSPW	7316-162	BS_GCA4GET3	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_6TKJRSPW	7316-162	BS_WRJNMEX2	LGG, BRAF fusion	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_6VJ5PNKS	7316-2174	BS_T2QPMZCM	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_6VJ5PNKS	7316-2174	BS_JJWC13GG	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_76Q72M5T	7316-397	BS_NYS8TRCB	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
-PT_76Q72M5T	7316-397	BS_DT92H1MJ	LGG, BRAF wildtype	Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	NA	Initial CNS Tumor
+PT_00G007DM	7316-2577	BS_FEPRNEXX	CNS Embryonal, NOS	CNS Embryonal Tumor, NOS	Embryonal Tumor	Embryonal Tumor	Updated via OpenPBTA subtyping	Recurrence
+PT_00G007DM	7316-2577	BS_AQMKA8NC	CNS Embryonal, NOS	CNS Embryonal Tumor, NOS	Embryonal Tumor	Embryonal Tumor	Updated via OpenPBTA subtyping	Recurrence
+PT_00G007DM	7316-272	BS_QWNBZ9RJ	ETMR, C19MC-altered	Embryonal tumor with multilayer rosettes, C19MC-altered	ETMR	Embryonal Tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_00G007DM	7316-272	BS_K07KNTFY	ETMR, C19MC-altered	Embryonal tumor with multilayer rosettes, C19MC-altered	ETMR	Embryonal Tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_01MZ62KG	7316-447	BS_P39SQPTS	ETMR, C19MC-altered	Embryonal tumor with multilayer rosettes, C19MC-altered	ETMR	Embryonal Tumor	Updated via OpenPBTA subtyping	Progressive
+PT_01MZ62KG	7316-447	BS_TE8QFF7T	ETMR, C19MC-altered	Embryonal tumor with multilayer rosettes, C19MC-altered	ETMR	Embryonal Tumor	Updated via OpenPBTA subtyping	Progressive
+PT_02J5CWN5	7316-2989	BS_M8WP5T16	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_02J5CWN5	7316-2989	BS_2VB8649B	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_02J5CWN5	7316-898	BS_1RXZ3BP7	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_02J5CWN5	7316-898	BS_5TT6TT4K	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_04YTK82N	7316-746	BS_9PB3XH5D	MB, To be classified	NA	Medulloblastoma	Embryonal Tumor	NA	Initial CNS Tumor
+PT_04YTK82N	7316-746	BS_3JE2T7AR	MB, To be classified	NA	Medulloblastoma	Embryonal Tumor	NA	Initial CNS Tumor
+PT_06H29FCG	7316-1944	BS_4T0HPZDC	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_06H29FCG	7316-1944	BS_0W8AWY10	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_0CE0HFYB	7316-2581	BS_E3EJHXQV	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0CE0HFYB	7316-2581	BS_30W38X77	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0CRPE7YP	7316-2158	BS_R7HZCZ8B	CRANIO, To be classified	NA	Craniopharyngioma	Tumors of sellar region	NA	Initial CNS Tumor
+PT_0CRPE7YP	7316-2158	BS_YPCTK927	CRANIO, To be classified	NA	Craniopharyngioma	Tumors of sellar region	NA	Initial CNS Tumor
+PT_0CVRX4SJ	7316-764	BS_H4NXBD2D	ST_EPN_RELA	Supratentorial Ependymoma, RELA fusion positive	Ependymoma	Ependymal Tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0DWRY9ZX	7316-2221	BS_3NWQXPQV	MB, Group4	Medulloblastoma, group 4	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0DXHDZJR	7316-2857	BS_DS438CXE	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0DXHDZJR	7316-2857	BS_QWS88QXE	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0EWY6S6S	7316-3491	BS_470DYRJQ	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0EWY6S6S	7316-3491	BS_GAA327FP	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0K0DPVF6	7316-121	BS_66ABA973	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0K0DPVF6	7316-121	BS_Z4Q8RH5M	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0MHKP408	7316-726	BS_JH29M4KG	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0MHKP408	7316-726	BS_J6VRW67C	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0MJEAART	7316-549	BS_PZVHMSYN	HGG, To be classified	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Progressive
+PT_0MXPTTM3	7316-3220	BS_8SYN7GXG	HGG, IDH	High-grade glioma/astrocytoma, IDH-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0MXPTTM3	A09410	BS_R7NTZR4C	HGG, IDH	High-grade glioma/astrocytoma, IDH-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0MXPTTM3	A09410	BS_H3TYF6GD	HGG, IDH	High-grade glioma/astrocytoma, IDH-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0NY38X3W	7316-1706	BS_S0175QKX	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Progressive
+PT_0NY38X3W	7316-1706	BS_HQFNQHVW	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Progressive
+PT_0PT33SCF	7316-1100	BS_09R7GDA7	CNS Embryonal, NOS	CNS Embryonal Tumor, NOS	Embryonal Tumor	Embryonal Tumor	Updated via OpenPBTA subtyping	Recurrence
+PT_0PT33SCF	7316-1100	BS_KBPBCWA0	CNS Embryonal, NOS	CNS Embryonal Tumor, NOS	Embryonal Tumor	Embryonal Tumor	Updated via OpenPBTA subtyping	Recurrence
+PT_0SPKM4S8	7316-2640	BS_FX2P2WEG	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0SPKM4S8	7316-2640	BS_VW4XN9Y7	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0T2EWNYR	7316-1981	BS_7BW0YRPY	CNS Embryonal, NOS	CNS Embryonal Tumor, NOS	Embryonal Tumor	Embryonal Tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0T2EWNYR	7316-1981	BS_AHT9PKVE	CNS Embryonal, NOS	CNS Embryonal Tumor, NOS	Embryonal Tumor	Embryonal Tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0WKX8Q5X	7316-88	BS_KXMYBQ6N	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_0WKX8Q5X	7316-88	BS_QSMFVHSB	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_0WMP712K	7316-922	BS_J1AB8PMA	MB, SHH	Medulloblastoma, SHH-activated	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0WMP712K	7316-922	BS_KAZENYZE	MB, SHH	Medulloblastoma, SHH-activated	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_0XN6EYXZ	7316-3512	BS_9F2J6VS1	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_12JTZFC2	7316-3504	BS_42DY6WS7	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_12JTZFC2	7316-3504	BS_P0KQFXNC	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_164RNWTT	7316-1078	BS_0BXY0F9N	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_164RNWTT	7316-1078	BS_5D24XV4T	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_17NG0KW3	7316-1945	BS_YETBN0RQ	MB, WNT	Medulloblastoma, WNT-activated	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_17NG0KW3	7316-1945	BS_JDS0SYST	MB, WNT	Medulloblastoma, WNT-activated	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_17W3GJPT	7316-2306	BS_AD4JPN9Q	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_17W3GJPT	7316-2306	BS_ETTZM63Y	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_18QG3Z4H	7316-1052	BS_TGS109T3	HGG, To be classified	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Initial CNS Tumor
+PT_1AAYYGGY	A14709	BS_C83TK159	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1AAYYGGY	A14709	BS_1RTE2KEX	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1B1Z7BRQ	7316-287	BS_PXCPK5XS	HGG, To be classified	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Initial CNS Tumor
+PT_1BV6ND1D	7316-3203	BS_H3FE3TH9	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1BV6ND1D	7316-3203	BS_MZJJRDZF	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1DSX4VJM	7316-1708	BS_Q13FQ8FV	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
+PT_1DSX4VJM	7316-1708	BS_KYPMZZSY	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
+PT_1DY2TP9N	7316-1786	BS_E4F1D721	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_1DY2TP9N	7316-1786	BS_376Q9QKG	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_1E3E6GMF	7316-3224	BS_7GKF6M85	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1E3E6GMF	A09985	BS_JB43XBCQ	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1E3E6GMF	A09985	BS_541KKASA	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1H2REHT2	7316-2990	BS_E0N3PTPN	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_1H2REHT2	7316-2990	BS_7M7JNG00	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_1H2REHT2	7316-3022	BS_QWTE1CWR	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
+PT_1H2REHT2	7316-3022	BS_79SYEHY3	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
+PT_1H2REHT2	7316-3303	BS_WKESC3XN	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
+PT_1H2REHT2	7316-3303	BS_96S0VQBN	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
+PT_1J2DT6MM	7316-2184	BS_GHNJ4CYC	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1J2DT6MM	7316-2184	BS_THH0CE5A	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1KEER2Q1	7316-460	BS_YY5B2XDD	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1KEER2Q1	7316-460	BS_F1B71HTZ	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1MW98VR1	7316-2558	BS_6H1C1ME9	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_1MW98VR1	7316-2558	BS_007JTNB8	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_1N6ATKJS	7316-2725	BS_SQX5E15Z	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_1N6ATKJS	7316-2725	BS_KKWQW01N	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_1NZGDP3P	7316-1104	BS_VT6C6N6K	MB, SHH	Medulloblastoma, SHH-activated	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1P436YMM	7316-3917	BS_912NX4Y0	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_1P436YMM	7316-3917	BS_6GTKRGNK	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_1T7WF5S1	7316-2934	BS_2Z1MKS84	MB, WNT	Medulloblastoma, WNT-activated	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1T7WF5S1	7316-2934	BS_HSYF7G2D	MB, WNT	Medulloblastoma, WNT-activated	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1TGKS073	7316-1659	BS_X91K8KMG	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1TGKS073	7316-1659	BS_CGCNC41M	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1VQWQ0TC	7316-3627	BS_47SJZ3PH	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1VQWQ0TC	7316-3627	BS_QXZTRMWM	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1YQH5NSH	A20091	BS_R9B92M75	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1YQH5NSH	A20091	BS_74TZJTW0	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1Z015H6V	7316-3516	BS_MA2T7ET1	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_1Z015H6V	7316-3516	BS_A3EV6FXK	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_1ZAWNGWT	7316-319	BS_4GTESTSE	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_1ZAWNGWT	7316-319	BS_6X2BQQGE	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_1ZAWNGWT	7316-3345	BS_23W9EPFE	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_1ZAWNGWT	7316-3345	BS_4DTX295Z	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_20ZM6THA	7316-3629	BS_E94QRJDW	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Recurrence
+PT_20ZM6THA	7316-3629	BS_9X9E86DY	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Recurrence
+PT_218SX3G4	7316-529	BS_6T4JGBGY	CNS Embryonal, NOS	CNS Embryonal Tumor, NOS	Embryonal Tumor	Embryonal Tumor	Updated via OpenPBTA subtyping	Progressive
+PT_23K3YS1P	7316-189	BS_G23JJAZY	ST_EPN_RELA	Supratentorial Ependymoma, RELA fusion positive	Ependymoma	Ependymal Tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_23K3YS1P	7316-189	BS_BBCM52QE	ST_EPN_RELA	Supratentorial Ependymoma, RELA fusion positive	Ependymoma	Ependymal Tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_23NZGSRJ	7316-2659	BS_1BWP5MCT	MB, To be classified	NA	Medulloblastoma	Embryonal Tumor	NA	Initial CNS Tumor
+PT_23NZGSRJ	7316-2659	BS_05S9WJW6	MB, To be classified	NA	Medulloblastoma	Embryonal Tumor	NA	Initial CNS Tumor
+PT_24DDXEB5	7316-1715	BS_QRDT19KS	MB, Group4	Medulloblastoma, group 4	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_26V72ZXB	7316-3576	BS_R439VVPK	MB, To be classified	NA	Medulloblastoma	Embryonal Tumor	NA	Initial CNS Tumor
+PT_26V72ZXB	7316-3576	BS_QZT3SPY7	MB, To be classified	NA	Medulloblastoma	Embryonal Tumor	NA	Initial CNS Tumor
+PT_279D9QZ8	7316-325	BS_PKW05VZV	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Recurrence
+PT_279D9QZ8	7316-325	BS_1YTHM07J	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Recurrence
+PT_27FDWCVZ	7316-184	BS_G5QBBHDV	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_27FDWCVZ	7316-184	BS_D09VWF8H	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2BJF83GQ	7316-1745	BS_02NZT8CE	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_2BJF83GQ	7316-1745	BS_J5J0EA7Y	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_2BTC5TEN	7316-2183	BS_FRZ76GEG	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2BTC5TEN	7316-2183	BS_AQQY8HMR	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2C63FJAM	7316-3040	BS_W4HGV6E7	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2C63FJAM	7316-3040	BS_F48RA7QF	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2CJ31SBX	7316-3624	BS_KDSTG5YY	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_2CJ31SBX	7316-3624	BS_JC2187NA	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_2ECVKTTQ	7316-173	BS_W3R88RFP	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Second Malignancy
+PT_2ECVKTTQ	7316-173	BS_DW1CYEXP	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Second Malignancy
+PT_2ECVKTTQ	7316-2154	BS_6P50QTPP	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Recurrence
+PT_2ECVKTTQ	7316-2154	BS_ERMGD2N5	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Recurrence
+PT_2FK75B27	7316-1700	BS_TE0GVDNG	MB, Group4	Medulloblastoma, group 4	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2FK75B27	7316-1700	BS_B3RH9V17	MB, Group4	Medulloblastoma, group 4	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2FVTD0WR	7316-2897	BS_YG0A13JH	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2FVTD0WR	7316-2897	BS_8TFBNHT0	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2FVTD0WR	7316-917	BS_769BDPDB	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_2FVTD0WR	7316-917	BS_RA0VCMWC	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_2GPH62JS	7316-1775	BS_1HFK0SXV	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2GPH62JS	7316-1775	BS_2VHFP7M8	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2JDDX6TJ	7316-409	BS_XZM79E42	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2JDDX6TJ	7316-409	BS_B9QP40ER	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2NQPX1R2	7316-1116	BS_KND4B5CW	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Recurrence
+PT_2NQPX1R2	7316-1116	BS_YBCQBCQC	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Recurrence
+PT_2PRV78FX	7316-176	BS_E1CGF3KV	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2PRV78FX	7316-176	BS_17AXPP1Y	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2QZJ4T95	7316-715	BS_B1C6GZ84	HGG, To be classified	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Initial CNS Tumor
+PT_2SCVQ2N6	7316-3631	BS_NGHK9RZP	ST_EPN_RELA	Supratentorial Ependymoma, RELA fusion positive	Ependymoma	Ependymal Tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2SCVQ2N6	7316-3631	BS_ST3Z2B9B	ST_EPN_RELA	Supratentorial Ependymoma, RELA fusion positive	Ependymoma	Ependymal Tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2VSDT9CK	7316-3575	BS_G9XE3N9T	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_2VSDT9CK	7316-3575	BS_CQ8C6X4X	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_2WA5PM32	7316-949	BS_86Q14TZG	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Recurrence
+PT_2WA5PM32	7316-949	BS_AJFG2QDD	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Recurrence
+PT_2WVW55DA	7316-1890	BS_QAG1RDXN	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_2WVW55DA	7316-1890	BS_NYVVN7SD	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_2WVW55DA	7316-2092	BS_M7HCF7DW	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
+PT_2WVW55DA	7316-2092	BS_M28HG0NT	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
+PT_2WVW55DA	7316-2100	BS_CXVGG342	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
+PT_2WVW55DA	7316-2100	BS_RG6JK7ZN	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
+PT_2WVW55DA	7316-502	BS_D8N31T39	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_2WVW55DA	7316-502	BS_R94EDP5H	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_2YCHME6S	7316-2622	BS_EXYHZ6D4	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2YCHME6S	7316-2622	BS_MZB884N9	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2YT37G8P	7316-2962	BS_VW85Q4XJ	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Recurrence
+PT_2YT37G8P	7316-2962	BS_ZJZFT0AJ	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Recurrence
+PT_2YT37G8P	7316-399	BS_PK18H7E7	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_2YT37G8P	7316-399	BS_4QFSH7C4	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_2Z7GVDTM	7316-3515	BS_DV86M0Y7	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2Z7GVDTM	7316-3515	BS_QYWGB52C	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2ZTXV44P	7316-310	BS_VA5T4KAA	MB, Group3	Medulloblastoma, group 3	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2ZXR2PDN	7316-1636	BS_DMZP9G1H	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_2ZXR2PDN	7316-1636	BS_93B38HPS	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_30H1KV15	7316-1059	BS_C41DJZ1F	HGG, To be classified	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Initial CNS Tumor
+PT_37B5JRP1	7316-2217	BS_M0QYNVK8	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_37B5JRP1	7316-2217	BS_EJV0N3BX	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_37B5JRP1	7316-2554	BS_S6S7SK3P	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
+PT_37B5JRP1	7316-2554	BS_8Q8N6AHW	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
+PT_387VK1T9	7316-3625	BS_9XVACXP0	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_387VK1T9	7316-3625	BS_F064HMTP	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_38FS37DP	7316-2686	BS_DBEX7AG2	CNS Embryonal, NOS	CNS Embryonal Tumor, NOS	Embryonal Tumor	Embryonal Tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_38FS37DP	7316-2686	BS_JX1PK0VW	CNS Embryonal, NOS	CNS Embryonal Tumor, NOS	Embryonal Tumor	Embryonal Tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_39HBKSGG	7316-908	BS_61E80SD6	MB, Group4	Medulloblastoma, group 4	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_39HBKSGG	7316-908	BS_Z5D6G1S6	MB, Group4	Medulloblastoma, group 4	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3A2Q62RD	7316-2243	BS_RGPSEMHC	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_3AWKWXEV	7316-85	BS_59ZJWJTF	HGG, BRAF V600E	High-grade glioma/astrocytoma, BRAF V600E	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3AWKWXEV	7316-85	BS_BYCX6VK1	HGG, BRAF V600E	High-grade glioma/astrocytoma, BRAF V600E	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3AWKWXEV	7316-85	BS_QYPHA40N	HGG, BRAF V600E	High-grade glioma/astrocytoma, BRAF V600E	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3AWKWXEV	7316-85	BS_CZRA594T	HGG, BRAF V600E	High-grade glioma/astrocytoma, BRAF V600E	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3AWKWXEV	7316-85	BS_E42SSQGJ	HGG, BRAF V600E	High-grade glioma/astrocytoma, BRAF V600E	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3AWKWXEV	7316-85	BS_ERAWW3H7	HGG, BRAF V600E	High-grade glioma/astrocytoma, BRAF V600E	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3C6QA9MA	7316-1279	BS_FW5ECXXK	ST_EPN_RELA	Supratentorial Ependymoma, RELA fusion positive	Ependymoma	Ependymal Tumor	Updated via OpenPBTA subtyping	Recurrence
+PT_3CHB9PK5	7316-2085	BS_G3RJTBZD	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
+PT_3CHB9PK5	7316-2085	BS_8AY2GM4G	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
+PT_3CHB9PK5	7316-515	BS_W9N9844Q	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3CHB9PK5	7316-515	BS_20TBZG09	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3CVMBGD7	7316-1963	BS_9SJWWYQ4	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3CVMBGD7	7316-1963	BS_49JD1V3S	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3HRS5CWF	7316-925	BS_52426AMF	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3J0ASVHN	7316-3622	BS_7Z93ZYMS	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3J0ASVHN	7316-3622	BS_R9V82BC1	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3KK1F95W	7316-1744	BS_0X9EGHY2	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3KK1F95W	7316-1744	BS_03SSN1N2	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3KWSRWZN	7316-2648	BS_SDCNP7MW	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_3KWSRWZN	7316-2648	BS_5V2XCW17	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_3MNY9BRY	7316-2583	BS_6VF6VPCG	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_3MNY9BRY	7316-2583	BS_5R0HHQ1Y	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_3NM45TQ8	7316-1077	BS_AKRHBPNZ	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3NM45TQ8	7316-1077	BS_N2JD3VX6	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3PK66TJY	7316-2609	BS_PRAEF32W	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_3PK66TJY	7316-2609	BS_F5V8CWXT	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_3R0P995B	7316-873	BS_RCFQ31XF	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_3R0P995B	7316-873	BS_75VHXMZN	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_3R0P995B	7316-892	BS_MKP2Y41Z	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Progressive
+PT_3R0P995B	7316-892	BS_C9TNGEA0	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Progressive
+PT_3RN24N9X	7316-20	BS_NRFQEQKP	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3RN24N9X	7316-20	BS_VW96PFKQ	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3SW2VHD5	7316-2984	BS_N5B2CZMH	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3SW2VHD5	7316-2984	BS_JJNSP29S	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3T3VGWC6	7316-375	BS_7XRN3CFX	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3T3VGWC6	7316-375	BS_10AD3EFX	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3T3VGWC6	7316-3923	BS_FJZPQZ2C	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Recurrence
+PT_3T3VGWC6	7316-3923	BS_NCGGFG6H	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Recurrence
+PT_3V5GTCJR	7316-1646	BS_063ERW0R	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3V5GTCJR	7316-1646	BS_QZTPJ8YW	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3VCS1PPF	7316-198	BS_3X9WMZGJ	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_3VCS1PPF	7316-198	BS_B4P1NP87	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_3VCS1PPF	7316-490	BS_99B1XRZQ	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Progressive
+PT_3VCS1PPF	7316-490	BS_QMY84KF4	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Progressive
+PT_3VQEVNDD	7316-1680	BS_AMZ70B6F	MB, SHH	Medulloblastoma, SHH-activated	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3VQEVNDD	7316-1680	BS_9G7ETYHR	MB, SHH	Medulloblastoma, SHH-activated	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3WA1XB8G	7316-70	BS_ME3HKN2C	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3WA1XB8G	7316-70	BS_K049HVGR	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_3X3MF8ZD	7316-114	BS_23QW0BBA	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Second Malignancy
+PT_3X3MF8ZD	7316-114	BS_3NX3RBCX	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Second Malignancy
+PT_409Y4N1N	7316-84	BS_SFKZSJN1	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_409Y4N1N	7316-84	BS_HW4MYBZ2	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_40HTPY49	7316-466	BS_0VXZCRJS	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_40HTPY49	7316-466	BS_T7WMJ08W	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_4159VCJY	7316-389	BS_WRQHPSXQ	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_4159VCJY	7316-389	BS_HTGDSPQA	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_41QYPSGV	7316-884	BS_9BJARSX3	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_41QYPSGV	7316-884	BS_CPYV7AHD	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_41WETNRC	7316-3065	BS_BKQZ550R	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_41WETNRC	7316-3065	BS_GFS9JEE6	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_4347ZBEX	7316-913	BS_8ZD6J47V	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Second Malignancy
+PT_4347ZBEX	7316-913	BS_M8EA6R2A	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Second Malignancy
+PT_4347ZBEX	7316-913	BS_1EBQ3T20	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Second Malignancy
+PT_4347ZBEX	7316-913	BS_FJEZ3ASV	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Second Malignancy
+PT_4347ZBEX	7316-913	BS_PKZ1HWNB	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Second Malignancy
+PT_4347ZBEX	7316-913	BS_742CDKAS	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Second Malignancy
+PT_44HPG5YT	7316-3067	BS_680K119G	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_44HPG5YT	7316-3067	BS_BZWM455T	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_45P9F9MD	7316-314	BS_GNV89A5P	MB, Group4	Medulloblastoma, group 4	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_45P9F9MD	7316-314	BS_0RF0G9SQ	MB, Group4	Medulloblastoma, group 4	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_45YH276T	7316-499	BS_9P9MB8X8	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_45YH276T	7316-499	BS_QC5FNXGH	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_46F28BFH	7316-1799	BS_WYERXS4G	ST_EPN_YAP1	Supratentorial Ependymoma, YAP1 fusion positive	Ependymoma	Ependymal Tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_46F28BFH	7316-1799	BS_H8E4K1DT	ST_EPN_YAP1	Supratentorial Ependymoma, YAP1 fusion positive	Ependymoma	Ependymal Tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_48N4Y6YP	7316-1866	BS_3G3KWY18	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_48N4Y6YP	7316-1866	BS_8B1YF57H	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_4A2H0KNR	7316-2599	BS_S2TA8R29	HGG, To be classified	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Recurrence
+PT_4ADZ9F53	7316-3060	BS_GTZCFGRZ	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_4ADZ9F53	7316-3060	BS_FHE6Z73G	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_4EDBZRM2	7316-1952	BS_RGSMX7QD	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_4EDBZRM2	7316-1952	BS_9M49SGAQ	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_4JG5KWE8	7316-50	BS_JKXA3FQC	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_4JG5KWE8	7316-50	BS_N9N1X78X	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_4RJ2EATN	7316-1653	BS_ZWR9W4FX	CRANIO, To be classified	NA	Craniopharyngioma	Tumors of sellar region	NA	Initial CNS Tumor
+PT_4RJ2EATN	7316-1653	BS_F7KYPE79	CRANIO, To be classified	NA	Craniopharyngioma	Tumors of sellar region	NA	Initial CNS Tumor
+PT_4TASAQKA	7316-3566	BS_JVA2NQFF	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_4TASAQKA	7316-3566	BS_AEMRNSQX	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_4XB3YTJM	7316-388	BS_RX1YTZ7F	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_4XB3YTJM	7316-388	BS_823V5X6Z	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_4XVA57J7	7316-1760	BS_B3M5SGPA	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_4XVA57J7	7316-1760	BS_9NF39QAW	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_4YWZ538V	7316-719	BS_6DCSD5Y6	HGG, To be classified	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Progressive
+PT_4Z34K4XB	7316-733	BS_Q79NP5YY	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_4Z34K4XB	7316-733	BS_P36C0ABE	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_4ZSR5DY8	7316-264	BS_5CMGN56B	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_4ZSR5DY8	7316-264	BS_YH4DYNQ2	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_4ZSR5DY8	7316-2667	BS_HA20Y4XY	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_4ZSR5DY8	7316-2667	BS_W9FW1PAE	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
+PT_50ZFWMZE	7316-1942	BS_X16PENSA	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_50ZFWMZE	7316-1942	BS_4P25NNZD	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_54MH6Q46	7316-2591	BS_PN2CE34A	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_54MH6Q46	7316-2591	BS_AXM96K20	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_59D00MBQ	7316-1936	BS_ZVWE73JZ	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_59D00MBQ	7316-1936	BS_QG6V29H7	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_59D00MBQ	7316-1937	BS_TM9MH0RP	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_59D00MBQ	7316-1937	BS_3E5C1PN1	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_59D00MBQ	7316-2810	BS_NNPEC7W1	HGG, To be classified	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Progressive
+PT_59FJRPVX	7316-3769	BS_AWH9757B	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_59FJRPVX	7316-3769	BS_WJB33V17	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5ABCFCSK	7316-1851	BS_A1VEGWTR	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5ABCFCSK	7316-1851	BS_APAQ2X2S	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5AF1501D	7316-309	BS_VMEX27TN	MB, Group4	Medulloblastoma, group 4	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5BWZA0NT	7316-1102	BS_MB7WN0ZB	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5BWZA0NT	7316-1102	BS_BFDEZK1C	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5CNZ47XV	7316-1926	BS_JMHG7GCN	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5CNZ47XV	7316-1926	BS_QM1Z8R38	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5F4N0CAP	7316-219	BS_JTMXAMB7	MB, WNT	Medulloblastoma, WNT-activated	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5F4N0CAP	7316-219	BS_G12HNXYX	MB, WNT	Medulloblastoma, WNT-activated	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5FR2YA6E	7316-109	BS_KYF0Q0E7	MB, Group4	Medulloblastoma, group 4	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5FR2YA6E	7316-109	BS_VTTTQYQA	MB, Group4	Medulloblastoma, group 4	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5GQ76YZJ	7316-168	BS_SDZY6RZ3	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5GQ76YZJ	7316-168	BS_WXKCR17Q	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5JA1N2H4	7316-839	BS_S69QZAJR	MB, SHH	Medulloblastoma, SHH-activated	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Progressive
+PT_5KRVE8E4	7316-1671	BS_03FT4S8B	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5KRVE8E4	7316-1671	BS_QX754ADQ	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5M8A47WW	7316-436	BS_ZZMYDZJW	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5M8A47WW	7316-436	BS_50XV7CTQ	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5P3XJ97K	7316-390	BS_GYXSDZ56	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5P3XJ97K	7316-390	BS_RB8VSEVG	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5VAKED5F	7316-2689	BS_49852ZBH	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_5VAKED5F	7316-2689	BS_7M5272WN	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_625X34JX	7316-2170	BS_TBWYAFSM	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_625X34JX	7316-2170	BS_6FYTRKJJ	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_62VNQ8C4	7316-1884	BS_3BDAG9YN	MB, SHH	Medulloblastoma, SHH-activated	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Progressive
+PT_62VNQ8C4	7316-968	BS_8T7DZV2F	MB, To be classified	NA	Medulloblastoma	Embryonal Tumor	NA	Initial CNS Tumor
+PT_63F63QY0	7316-3521	BS_VMQMGSJY	DMG, H3 K28, BRAF V600E	Diffuse midline glioma, H3 K28-mutant, BRAF V600E	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
+PT_63F63QY0	7316-3521	BS_KAD49R68	DMG, H3 K28, BRAF V600E	Diffuse midline glioma, H3 K28-mutant, BRAF V600E	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
+PT_63HDZHCN	7316-2980	BS_29X4ZX6Q	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_63HDZHCN	7316-2980	BS_S0T3CQ97	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_66XN3MT1	7316-936	BS_8Z3SCKB5	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_66XN3MT1	7316-936	BS_DC7XYYG8	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_67R1AF5R	7316-889	BS_PSW27ZTE	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_67R1AF5R	7316-889	BS_4PAE19ZC	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
+PT_6BX46NVR	7316-3893	BS_6MZ7FRZH	ST_EPN_RELA	Supratentorial Ependymoma, RELA fusion positive	Ependymoma	Ependymal Tumor	Updated via OpenPBTA subtyping	Progressive
+PT_6BX46NVR	7316-3893	BS_CFPWSZB5	ST_EPN_RELA	Supratentorial Ependymoma, RELA fusion positive	Ependymoma	Ependymal Tumor	Updated via OpenPBTA subtyping	Progressive
+PT_6D9C46GC	7316-620	BS_PS0P3QJ3	HGG, To be classified	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Initial CNS Tumor
+PT_6DW5NFKX	7316-3150	BS_7H4RFCW9	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6DW5NFKX	7316-3150	BS_KT9H4B1N	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6E8JYRXM	7316-2729	BS_JWSR581E	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6E8JYRXM	7316-2729	BS_3R0KN6Z4	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6GDPNFA6	7316-2610	BS_45J79YTF	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6GDPNFA6	7316-2610	BS_XGVSX8BX	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6MB6RED3	7316-226	BS_ABYF92Z9	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6MB6RED3	7316-226	BS_K14VJ1E3	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6MWPJ96F	7316-1711	BS_NPQJ20KX	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6MWPJ96F	7316-1711	BS_6GV08HTE	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6MWPJ96F	7316-1928	BS_VR7FR1NE	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6MWPJ96F	7316-1928	BS_M8EBKZDG	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6N1QWCXE	7316-3169	BS_4HQ3T2NC	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6N1QWCXE	7316-3169	BS_D2BZ25FW	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6PP78VNE	7316-1893	BS_M85CXHDV	HGG, To be classified	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Recurrence
+PT_6PP78VNE	7316-1893	BS_6VPKXXMR	HGG, To be classified	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Recurrence
+PT_6Q0NPVP3	7316-2255	BS_5JM573JC	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6Q0NPVP3	7316-2255	BS_E5H6CFYT	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6R95FQT2	7316-459	BS_8VAZSJEN	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6R95FQT2	7316-459	BS_YXCVR90M	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6SH7PV1N	7316-535	BS_FEV5A0HN	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6SH7PV1N	7316-535	BS_MW63FCZC	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6TKJRSPW	7316-162	BS_GCA4GET3	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6TKJRSPW	7316-162	BS_WRJNMEX2	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6TZR2DH1	7316-100	BS_BHR08WGW	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6TZR2DH1	7316-100	BS_SFZ3A07S	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6VJ5PNKS	7316-2174	BS_T2QPMZCM	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_6VJ5PNKS	7316-2174	BS_JJWC13GG	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_74XM7BV7	7316-312	BS_M86ECPHK	MB, Group3	Medulloblastoma, group 3	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Recurrence
+PT_7570EHD9	7316-1064	BS_JVW2JJ39	HGG, To be classified	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Initial CNS Tumor
+PT_76Q72M5T	7316-397	BS_NYS8TRCB	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_76Q72M5T	7316-397	BS_DT92H1MJ	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_78NQ0QQS	7316-1651	BS_JZRM1S3T	MB, WNT	Medulloblastoma, WNT-activated	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_78NQ0QQS	7316-1651	BS_T8TCEBB1	MB, WNT	Medulloblastoma, WNT-activated	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_7BJBEBZT	7316-1670	BS_ERWT0ZWE	MB, Group4	Medulloblastoma, group 4	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_7BJBEBZT	7316-1670	BS_164KRQJ0	MB, Group4	Medulloblastoma, group 4	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
+PT_7DTGJYA7	7316-1695	BS_1D6PZNKN	HGG, To be classified	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Progressive
+PT_7DTGJYA7	7316-639	BS_30VC3R2Q	HGG, To be classified	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Initial CNS Tumor
 PT_7E3V3JFX	7316-506	BS_J8VX4D17	EPN, H3 K28	Ependymoma	Ependymoma	Ependymal tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
 PT_7E3V3JFX	7316-506	BS_G16NM5WJ	EPN, H3 K28	Ependymoma	Ependymoma	Ependymal tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
 PT_7F485CXV	7316-1114	BS_MF47B9ZW	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
@@ -899,8 +1018,8 @@ PT_NK8A49X5	7316-3216	BS_1MME7FBS	DMG, H3 K28	Diffuse midline glioma, H3 K28-mut
 PT_NK8A49X5	7316-3228	BS_HEJ72V3F	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
 PT_NK8A49X5	7316-3228	BS_AHAXPFG3	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
 PT_NK8A49X5	7316-4448	BS_6JBE0947	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_NK8A49X5	A08692	BS_YDEVMD24	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping,Updated to DMG, H3 K28 from clinical review	Initial CNS Tumor
-PT_NK8A49X5	A08692	BS_6DT506HY	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping,Updated to DMG, H3 K28 from clinical review	Initial CNS Tumor
+PT_NK8A49X5	A08692	BS_YDEVMD24	DMG, H3 K28	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping,Updated to DMG, H3 K28 from clinical review	Initial CNS Tumor
+PT_NK8A49X5	A08692	BS_6DT506HY	DMG, H3 K28	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping,Updated to DMG, H3 K28 from clinical review	Initial CNS Tumor
 PT_NK8A49X5	A14449	BS_1N7MQZGR	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
 PT_NK8A49X5	A14449	BS_GKXD33YH	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
 PT_NNZQ09SH	7316-1109	BS_WVS02TZK	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Recurrence
@@ -969,8 +1088,8 @@ PT_Q3EP24V1	7316-154	BS_235QEYMQ	LGG, BRAF fusion	Low-grade glioma/astrocytoma, 
 PT_Q90R6M3E	7316-897	BS_5PJCHF6V	MB, Group4	Medulloblastoma, group 4	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
 PT_Q90R6M3E	7316-897	BS_XGMXJKFX	MB, Group4	Medulloblastoma, group 4	Medulloblastoma	Embryonal Tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor
 PT_QA9WJ679	7316-3218	BS_7PF3C1P7	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_QA9WJ679	A08768	BS_G3NN392N	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping,Updated to DMG, H3 K28 from clinical review	Initial CNS Tumor
-PT_QA9WJ679	A08768	BS_AEEKJ1QK	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping,Updated to DMG, H3 K28 from clinical review	Initial CNS Tumor
+PT_QA9WJ679	A08768	BS_G3NN392N	DMG, H3 K28	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping,Updated to DMG, H3 K28 from clinical review	Initial CNS Tumor
+PT_QA9WJ679	A08768	BS_AEEKJ1QK	DMG, H3 K28	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping,Updated to DMG, H3 K28 from clinical review	Initial CNS Tumor
 PT_QAX38GM7	7316-3570	BS_044XZ8ST	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
 PT_QAX38GM7	7316-3570	BS_QD22MJJ5	LGG, BRAF fusion	Low-grade glioma/astrocytoma, BRAF fusion	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive
 PT_QDGVJKE0	7316-2140	BS_A0DYVX9J	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive
@@ -1208,8 +1327,8 @@ PT_WE1CHTWK	7316-87	BS_4DY83R02	CNS Embryonal, NOS	CNS Embryonal Tumor, NOS	Embr
 PT_WE7HQN0C	7316-1795	BS_T8C13KNH	CRANIO, To be classified	NA	Craniopharyngioma	Tumors of sellar region	NA	Initial CNS Tumor
 PT_WGVEF96B	7316-3219	BS_TQ0J7WJQ	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
 PT_WGVEF96B	7316-4446	BS_4DQAQFQH	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor
-PT_WGVEF96B	A08958	BS_NB9XXBW6	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping,Updated to DMG, H3 K28 from clinical review	Initial CNS Tumor
-PT_WGVEF96B	A08958	BS_TYFD8ZMG	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping,Updated to DMG, H3 K28 from clinical review	Initial CNS Tumor
+PT_WGVEF96B	A08958	BS_NB9XXBW6	DMG, H3 K28	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping,Updated to DMG, H3 K28 from clinical review	Initial CNS Tumor
+PT_WGVEF96B	A08958	BS_TYFD8ZMG	DMG, H3 K28	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping,Updated to DMG, H3 K28 from clinical review	Initial CNS Tumor
 PT_WGWMA5AZ	7316-148	BS_13CGKADW	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Recurrence
 PT_WGWMA5AZ	7316-148	BS_NEX92KQH	LGG, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Recurrence
 PT_WKNKNYHH	7316-1107	BS_WFD0GE5X	EPN, To be classified	NA	Ependymoma	Ependymal Tumor	NA	Initial CNS Tumor
