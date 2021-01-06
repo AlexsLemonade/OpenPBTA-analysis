@@ -174,9 +174,6 @@ def calculate_correlation(expr_var_filtered_df, all_by_all_path, verbose=False):
 
 def main():
     """Creates correlation matrices for dataset."""
-    # This script should always run as if it were being called from
-    # the directory it lives in.
-    os.chdir(sys.path[0])
 
     p = argparse.ArgumentParser()
     p.add_argument("input_path", metavar="input-path", help="Path to input Rds file.")
