@@ -7,7 +7,7 @@ set -o pipefail
 
 # Set defaults for release and biospecimen file name
 BIOSPECIMEN_FILE=${BIOSPECIMEN_FILE:-biospecimen_ids_for_subset.RDS}
-RELEASE=${RELEASE:-release-v17-20200908}
+RELEASE=${RELEASE:-release-v18-20201123}
 NUM_MATCHED=${NUM_MATCHED:-15}
 
 # This option controls whether or not the two larger MAF files are skipped as
@@ -54,6 +54,9 @@ fi
 
 # histologies file
 cp $FULL_DIRECTORY/pbta-histologies.tsv $SUBSET_DIRECTORY
+
+# base histologies file
+cp $FULL_DIRECTORY/pbta-histologies-base.tsv $SUBSET_DIRECTORY
 
 # recurrently fused genes by histologies file
 cp $FULL_DIRECTORY/pbta-fusion-recurrently-fused-genes-byhistology.tsv $SUBSET_DIRECTORY
