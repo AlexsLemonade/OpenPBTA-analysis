@@ -173,7 +173,7 @@ histology %>%
 
 ```
 The above 172 changes occurred because of changes in string value assignment
-In `compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` sample with broad_histology== `Ependymal tumor` is `EPN`, but in base histology it is `Ependymoma`.
+In `compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` a sample with broad_histology that is `Ependymal tumor` is `EPN`, but in `pbta-histologies-base.tsv` it is `Ependymoma`.
 For samples with broad_histology==`Embryonal tumor`, short_histology is `Embryonal tumor` but in base histology it was `ETMR`.
 
 45 Benign ,Non-(CNS) tumor and other samples where pathology_diagnosis == "Other",have short_histology updated from manual review of WHO diagnosis terms.
@@ -192,4 +192,3 @@ histology %>%
          -short_histology.subtyped) %>%
   write_tsv("results/pbta-histologies.tsv")
 ```
-
