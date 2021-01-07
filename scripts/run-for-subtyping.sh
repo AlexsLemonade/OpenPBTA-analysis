@@ -8,27 +8,27 @@ set -o pipefail
 # Subtyping modules then need to be re-run for 
 # these new samples when needed for data release
 
-BASE_SUBTYPING=1
+OPENPBTA_BASE_SUBTYPING=1
 
 ## Step 1. Generate summary files needed for subtyping
 
 echo "Create collapse rsem files"
-BASE_SUBTYPING=1 ../analyses/collapse-rnaseq/run-collapse-rnaseq.sh
+OPENPBTA_BASE_SUBTYPING=1 ../analyses/collapse-rnaseq/run-collapse-rnaseq.sh
 
 echo "Create independent sample list"
-BASE_SUBTYPING=1 ../analyses/independent-samples/run-independent-samples.sh 
+OPENPBTA_BASE_SUBTYPING=1 ../analyses/independent-samples/run-independent-samples.sh 
 
 echo "Create fusion filtered list" 
-BASE_SUBTYPING=1 ../analyses/fusion_filtering/run_fusion_merged.sh
+OPENPBTA_BASE_SUBTYPING=1 ../analyses/fusion_filtering/run_fusion_merged.sh
 
 echo "Run fusion summary for subtypes"
-BASE_SUBTYPING=1 ../analyses/fusion-summary/run-new-analysis.sh
+OPENPBTA_BASE_SUBTYPING=1 ../analyses/fusion-summary/run-new-analysis.sh
 
 echo "Run tsne"
-BASE_SUBTYPING=1 ../analyses/transcriptomic-dimension-reduction/dimension-reduction-plots.sh
+OPENPBTA_BASE_SUBTYPING=1 ../analyses/transcriptomic-dimension-reduction/dimension-reduction-plots.sh
 
 echo "Run gsea"
-BASE_SUBTYPING=1 ../analyses/gene-set-enrichment-analysis/run-gsea.sh
+OPENPBTA_BASE_SUBTYPING=1 ../analyses/gene-set-enrichment-analysis/run-gsea.sh
 
 
 

@@ -115,6 +115,9 @@ diff_subtype <- subtype %>% left_join(pnoc003_review,by=c("Kids_First_Participan
     # checking for samples where clinically reviewed subtype is H3 K28M
     # but molecular subtype is not DMG H3 K28
     (grepl("K28M",.$`H3 Status`) & !grepl("DMG, H3 K28",molecular_subtype)) | 
+    # checking for only RNA-Seq HGG samples where clinically reviewed subtype is H3 K28M
+    # but molecular subtype is HGG, To be classified
+    (grepl("K28M",.$`H3 Status`) & grepl("HGG, To be classified",molecular_subtype)) |   
     # checking for samples were clinical review was not found  
     grepl("no report",.$`H3 Status`) )  %>%
   dplyr::select(Kids_First_Participant_ID,
@@ -141,9 +144,7 @@ diff_subtype %>%
 ```
 
 
-Seems like 6 sample (WXS and matching RNA-Seq from PT_NK8A49X5, PT_QA9WJ679, PT_WGVEF96B) molecular subtype 
-need to be updated and Notes columns for these samples will be updated to capture this 
-information
+Seems like for a subset of PNOC samples (WXS and matching RNA-Seq samples from PT_NK8A49X5, PT_QA9WJ679, PT_WGVEF96B)  Notes,molecular_subtype and integrated_diagnosis will need to be updated to capture this information.
 
 ```{r}
 subtype_clinical_review_df <- subtype %>%
@@ -165,9 +166,24 @@ subtype_clinical_review_df <- subtype %>%
       # THEN the value in Notes will be updated to specify that the value is
       # updated because of clinical review
       ~ paste(Notes,"Updated to DMG, H3 K28 from clinical review", sep=","),
+      # IF K28M in clinical review and molecular subtype is HGG, To be classified
+      (grepl("K28M",.$`H3 Status`) & grepl("HGG, To be classified",molecular_subtype))
+      # THEN the value in Notes which will be NA will need to be updated to 
+      # specify that the it's DMG K28M from clinical review
+      ~ paste("Updated to DMG, H3 K28 from clinical review", sep=","),
       # IF clinical review and molecular subtype match OR 
       # no clinical review is provided then keep values from Notes
       TRUE ~ Notes
+    ),
+    integrated_diagnosis =  case_when(
+      # IF we have K28M in clinical review and molecular subtype if not DMG K28M
+      (grepl("K28M",.$`H3 Status`) & !grepl("DMG, H3 K28",molecular_subtype)) 
+      # THEN the value in integrated_diagnosis will be updated to specify that the value is
+      # updated because of clinical review
+      ~ "Diffuse midline glioma, H3 K28-mutant",
+      # IF clinical review and molecular subtype match OR 
+      # no clinical review is provided then keep values from Notes
+      TRUE ~ integrated_diagnosis
     ),
     molecular_subtype =  case_when(
       # Don't think we would need to ever change from K28 to H3 wildtype
@@ -175,10 +191,14 @@ subtype_clinical_review_df <- subtype %>%
       #(grepl("H3 WT",.$`H3 Status`) & !grepl("HGG",molecular_subtype)) ~ 
       #  gsub("DMG, H3 K28","HGG, H3 wildtype",molecular_subtype),
       #
-      # IF we have K28M in clinical review and molecular subtype if not DMG K28M
-      (grepl("K28M",.$`H3 Status`) & !grepl("DMG, H3 K28",molecular_subtype)) ~ 
+      # IF we have K28M in clinical review and molecular subtype is "HGG, H3 wildtype"
+      (grepl("K28M",.$`H3 Status`) & grepl("HGG, H3 wildtype",molecular_subtype)) ~ 
         # THEN the value in molecular subtype will be updated 
         gsub("HGG, H3 wildtype","DMG, H3 K28",molecular_subtype),
+      # IF we have K28M in clinical review and molecular subtype is "HGG, To be classified"
+      (grepl("K28M",.$`H3 Status`) & grepl("HGG, To be classified",molecular_subtype)) ~ 
+        # THEN the value in molecular subtype will be updated 
+        gsub("HGG, To be classified","DMG, H3 K28",molecular_subtype),
       # IF clinical review and molecular subtype match OR
       # no clinical review is provided then keep values from molecular subtype
       TRUE ~ molecular_subtype
