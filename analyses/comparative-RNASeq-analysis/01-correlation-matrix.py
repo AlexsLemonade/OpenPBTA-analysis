@@ -42,7 +42,7 @@ def get_qc_status(mend_results_path, mend_manifest_path):
     manifest_files = [file for file in manifest.index.values if file.endswith("bam_umend_qc.tsv")]
     # Open the tarfile and process the QC files
     mend_tgz = tarfile.open(mend_results_path)
-    qc_files = (i for i in mend_tgz.getmembers() if i.name in manifest_files)
+    qc_files = [i for i in mend_tgz.getmembers() if os.path.basename(i.name) in manifest_files]
     # Dictionary of filename (UUID.bam_umend_qc.tsv) to PASS or FAIL string
     filename_map = { i.name : extract_sample_qc_status(mend_tgz.extractfile(i), i.name) for i in qc_files }
     return { manifest.loc[k]["Kids.First.Biospecimen.ID"] : v for k, v in filename_map.items() }
