@@ -44,7 +44,7 @@ def get_qc_status(mend_results_path, mend_manifest_path):
     mend_tgz = tarfile.open(mend_results_path)
     qc_files = [i for i in mend_tgz.getmembers() if os.path.basename(i.name) in manifest_files]
     # Dictionary of filename (UUID.bam_umend_qc.tsv) to PASS or FAIL string
-    filename_map = { i.name : extract_sample_qc_status(mend_tgz.extractfile(i), i.name) for i in qc_files }
+    filename_map = { os.path.basename(i.name) : extract_sample_qc_status(mend_tgz.extractfile(i), i.name) for i in qc_files }
     return { manifest.loc[k]["Kids.First.Biospecimen.ID"] : v for k, v in filename_map.items() }
 
 def filter_samples(input_matrix,
