@@ -7,8 +7,6 @@
 set -e
 set -o pipefail
 
-RUN_FOR_SUBTYPING=${BASE_SUBTYPING:-0}
-
 COLORVAR=${COLOR:-broad_histology}
 
 # This script should always run as if it were being called from
