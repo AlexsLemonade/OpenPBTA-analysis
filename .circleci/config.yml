@@ -103,7 +103,7 @@ jobs:
       - run:
           name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded data and creates recurrent fusion list
           command: ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
-          
+
       - run:
           name: Fusion standardization and annotation for STARFusio and Arriba for base subtyping
           command: OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
@@ -135,10 +135,10 @@ jobs:
       - run:
           name: Independent samples
           command: ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh
-      
+
       - run:
           name: Independent sample for base subtyping
-          command: OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh 
+          command: OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh
 
 #      - run:
 #          name: Interaction plot
@@ -262,9 +262,10 @@ jobs:
           name: TCGA Capture Kit Investigation
           command: ./scripts/run_in_ci.sh bash analyses/tcga-capture-kit-investigation/run-investigation.sh
 
-#      - run:
-#          name: d3b TMB code
-#          command: ./scripts/run_in_ci.sh bash analyses/tmb-compare/TMB_d3b_code/run_tmb_d3b.sh
+    # Deprecated - these results are not included in the final TMB results but were used for a comparison at one point
+    # - run:
+    #     name: d3b TMB code
+    #     command: ./scripts/run_in_ci.sh bash analyses/tmb-compare/TMB_d3b_code/run_tmb_d3b.sh
 
       - run:
           name: Compare TMB calculations
