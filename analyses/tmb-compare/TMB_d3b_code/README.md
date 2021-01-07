@@ -1,8 +1,8 @@
 # DEPRECATED: D3B TMB analysis
 
-This *deprecated* analysis was originally used to compare these TMB calculations to what is calculated in the `snv-callers` module.
+This *deprecated* analysis was originally used to compare these TMB calculations to what is calculated in the [`snv-callers`](../../snv-callers/README.md) module.
 Its results do not end up in the final figures and results so it has since become deprecated.
-It was last up to date from the v17 data release. 
+It was last up to date in the v17 data release.
 
 ###### Authors : Teja Koganti for D3B
 
