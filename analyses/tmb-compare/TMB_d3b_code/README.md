@@ -1,9 +1,13 @@
-## TMB analysis
+# DEPRECATED: D3B TMB analysis
+
+This *deprecated* analysis was originally used to compare these TMB calculations to what is calculated in the `snv-callers` module.
+Its results do not end up in the final figures and results so it has since become deprecated.
+It was last up to date from the v17 data release. 
 
 ###### Authors : Teja Koganti for D3B
 
 This analysis computes tumor mutation burden for different disease types.
-The first script takes single MAF file and filters variants based on `Types of mutations counted` from [Friends of Cancer research](https://jitc.bmj.com/content/8/1/e000147#DC1). 
+The first script takes single MAF file and filters variants based on `Types of mutations counted` from [Friends of Cancer research](https://jitc.bmj.com/content/8/1/e000147#DC1).
 TMB is computed as `(filtered variant counts* 1000000) / target BED length`.
 
 ### Calculate TMB
@@ -11,7 +15,7 @@ TMB is computed as `(filtered variant counts* 1000000) / target BED length`.
 
   2. Reads in config file and defines metadata specific fields/columns and variants list etc.
 
-  3. Reads in a target config file and determines `experimental strategy` and `cohort` from metadata file. 
+  3. Reads in a target config file and determines `experimental strategy` and `cohort` from metadata file.
   MAF variants  are filtered within this target file and the BED length is calculated
 
   4. Calculates TMB
@@ -41,7 +45,7 @@ TMB is computed as `(filtered variant counts* 1000000) / target BED length`.
         -m analyses/tmb-compare/TMB_d3b_code/inputs/pnoc003_and_pnoc008_and_cbttc_v17_candidate.tsv
         -o analyses/tmb-compare/TMB_d3b_code/pbta-snv-consensus.TMB.OUT.txt
         -c analyses/tmb-compare/TMB_d3b_code/config_files/calculate_tmb.cfg.json  
-        -w analyses/tmb-compare/TMB_d3b_code/config_files/target_cfg.targetcombos.txt 
+        -w analyses/tmb-compare/TMB_d3b_code/config_files/target_cfg.targetcombos.txt
 
 ### Plot TMB scores
 
