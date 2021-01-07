@@ -1,6 +1,6 @@
 ---
 title: "Incorporating CHOP pathology input to molecular subtyping calls"
-output: 
+output:
   html_notebook:
     toc: TRUE
     toc_float: TRUE
@@ -14,7 +14,7 @@ _Authorship above refers to this notebook **only**._
 
 ## Background
 
-As part of this project, we have undertaken several analyses that use molecular data to subtype or reclassify biospecimens. 
+As part of this project, we have undertaken several analyses that use molecular data to subtype or reclassify biospecimens.
 In some cases, our analyses have resulted in an update of the `integrated_diagnosis` field included in the clinical file (`pbta-histologies.tsv` [[doc](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/doc/data-formats.md#data-caveats)]).
 However, not all logic included in the code of the repository was ultimately in agreement with feedback from pathologists at CHOP.
 In this notebook, we will make changes and document the cases where the logic in the modules of the repository deviate from the final labels.
@@ -54,14 +54,14 @@ And the notes:
 > 3. Because 1 is a rare tumor (maybe first seen), the logic of searching for all H3 K28 mutations in [HGG subtyping](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249) would convert this sample by default.
 >  4. Pathology confirmed this HGG BRAF V600E mutant tumor, [`BS_H1XPVS9A`](https://cbethell.github.io/open-pbta-output/09-HGG-with-braf-clustering.nb.html#identify_sample_that_clusters_with_lgat), to be a LGAT (PXA). I updated `molecular_subtype` here based on what it would look like, but this should come through via the LGAT [subtyping](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/631) ticket. How should we add this info?
 
-## Set up 
+## Set up
 
 ```{r}
 # This logic is the same as analyses/gene-set-enrichment-analysis/02-model-gsea.Rmd
 # Assigning params$is_ci to running_in_ci avoids a locked binding error
 running_in_ci <- params$is_ci
 
-# Are we testing? In case of a non 0/1 number, we recast as logical, and then 
+# Are we testing? In case of a non 0/1 number, we recast as logical, and then
 # ensure logical.
 if (running_in_ci %in% c(0,1)) running_in_ci <- as.logical(running_in_ci)
 if (!(is.logical(running_in_ci)))
@@ -90,18 +90,21 @@ When we run this locally, we want to tie it to a specific version of the histolo
 
 ```{r}
 if (running_in_ci) {
-  histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
+  histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
 } else {
-  histologies_file <- file.path(data_dir, "release-v17-20200908",
-                                "pbta-histologies.tsv")
+  histologies_file <- file.path(data_dir, "release-v18-20201123",
+                                "pbta-histologies-base.tsv")
 }
 ```
 
 ```{r}
-compiled_results_file <- file.path(results_dir, 
+compiled_results_file <- file.path(results_dir,
                                    "compiled_molecular_subtypes_with_clinical_feedback.tsv")
-fusions_file <- file.path(data_dir,
-                          "pbta-fusion-putative-oncogenic.tsv")
+fusions_file <- file.path(root_dir,
+  "analyses",
+  "fusion_filtering",
+  "results",
+  "pbta-fusion-putative-oncogenic.tsv")
 ```
 
 #### Output
@@ -133,7 +136,7 @@ compiled_df %>%
 The relevant notes above are
 
 > 1. `PT_7E3V3JFX` specimens were consistent with the original EPN dx, so pathology would call this a rare EPN, H3 K28 mutated tumor, rather than DMG.
-> 3. Because 1 is a rare tumor (maybe first seen), the logic of searching for all H3 K28 mutations in [HGG subtyping](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249) would convert this sample by default - how to handle this? 
+> 3. Because 1 is a rare tumor (maybe first seen), the logic of searching for all H3 K28 mutations in [HGG subtyping](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249) would convert this sample by default - how to handle this?
 
 So we will revise the `molecular_subtype`, `integrated_diagnosis`, `short_histology`, and `broad_histology` accordingly.
 
@@ -142,7 +145,7 @@ compiled_df <- compiled_df %>%
   mutate(
     integrated_diagnosis = case_when(
       Kids_First_Participant_ID == "PT_7E3V3JFX" ~ "Ependymoma",
-      TRUE ~ integrated_diagnosis 
+      TRUE ~ integrated_diagnosis
     ),
     short_histology = case_when(
       Kids_First_Participant_ID == "PT_7E3V3JFX" ~ "Ependymoma",
@@ -221,7 +224,7 @@ compiled_df <- compiled_df %>%
   )
 ```
 
-### HGG BRAF V600E 
+### HGG BRAF V600E
 
 We will be removing this from subtyping, so this can be left for now
 
@@ -394,6 +397,7 @@ compiled_df <- compiled_df %>%
       sample_id == "7316-158" ~ "Updated via OpenPBTA subtyping",
       TRUE ~ Notes
     )
+    
   )
 ```
 
@@ -515,7 +519,7 @@ compiled_df <- compiled_df %>%
 
 ```{r}
 # sort first
-compiled_df <- compiled_df %>% 
+compiled_df <- compiled_df %>%
   arrange(Kids_First_Participant_ID, sample_id) %>%
   distinct() # to remove duplicates from above
 write_tsv(compiled_df, output_file)

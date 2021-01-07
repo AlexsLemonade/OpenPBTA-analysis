@@ -102,10 +102,10 @@ When we run this locally, we want to tie it to a specific version of the histolo
 
 ```{r}
 if (running_in_ci) {
-  histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
+  histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
 } else {
-  histologies_file <- file.path(data_dir, "release-v17-20200908",
-                                "pbta-histologies.tsv")
+  histologies_file <- file.path(data_dir, "release-v18-20201123",
+                                "pbta-histologies-base.tsv")
 }
 ```
 
@@ -133,7 +133,7 @@ output_file <- file.path(results_dir, "compiled_molecular_subtypes.tsv")
 
 ```{r message=FALSE}
 # split 
-histologies_df <- read_tsv(histologies_file, guess_max = 10000)
+histologies_df <- read_tsv(histologies_file, guess_max = 10000,col_types = cols(.default = "c"))
 cranio_results_df <- read_tsv(cranio_results_file)
 ews_results_df <- read_tsv(ews_results_file)
 epn_results_df <- read_tsv(epn_results_file)
@@ -154,7 +154,6 @@ The molecular subtyping information from these tumors will go into the v18 relea
 embryonal_results_df <- bind_exp_strategies(embryonal_results_df) %>%
   inner_join(select(histologies_df,
                     Kids_First_Biospecimen_ID,
-                    integrated_diagnosis,
                     short_histology,
                     broad_histology,
                     Notes),
@@ -182,7 +181,6 @@ The EWS results were updated in V18. Adding integrated dx, broad hist, short his
 ews_results_df <- bind_exp_strategies(ews_results_df) %>%
   inner_join(select(histologies_df,
                     Kids_First_Biospecimen_ID,
-                    integrated_diagnosis,
                     short_histology,
                     broad_histology,
                     Notes),
@@ -201,7 +199,6 @@ HGG subtyping was updated with V18.
 hgg_results_df <- bind_exp_strategies(hgg_results_df) %>%
   inner_join(select(histologies_df,
                     Kids_First_Biospecimen_ID,
-                    integrated_diagnosis,
                     short_histology,
                     broad_histology,
                     Notes),
@@ -226,7 +223,6 @@ lgat_results_df <- bind_exp_strategies(lgat_results_df) %>%
   inner_join(select(histologies_df,
                     Kids_First_Biospecimen_ID,
                     pathology_diagnosis,
-                    integrated_diagnosis,
                     short_histology,
                     broad_histology,
                     Notes),
@@ -246,7 +242,6 @@ lgat_results_df <- bind_exp_strategies(lgat_results_df) %>%
 epn_results_df <- bind_exp_strategies(epn_results_df) %>%
   inner_join(select(histologies_df,
                     Kids_First_Biospecimen_ID,
-                    integrated_diagnosis,
                     short_histology,
                     broad_histology,
                     Notes),
@@ -268,7 +263,6 @@ epn_results_df <- bind_exp_strategies(epn_results_df) %>%
 mb_results_df <- bind_exp_strategies(mb_results_df) %>%
   inner_join(select(histologies_df,
                     Kids_First_Biospecimen_ID,
-                    integrated_diagnosis,
                     short_histology,
                     broad_histology,
                     Notes),
@@ -290,7 +284,6 @@ mb_results_df <- bind_exp_strategies(mb_results_df) %>%
 cranio_results_df <- bind_exp_strategies(cranio_results_df) %>%
   inner_join(select(histologies_df,
                     Kids_First_Biospecimen_ID,
-                    integrated_diagnosis,
                     short_histology,
                     broad_histology,
                     Notes),
@@ -308,7 +301,6 @@ cranio_results_df <- bind_exp_strategies(cranio_results_df) %>%
 neurocytoma_results_df <- neurocytoma_results_df %>%
   inner_join(select(histologies_df,
                     Kids_First_Biospecimen_ID,
-                    integrated_diagnosis,
                     short_histology,
                     broad_histology,
                     Notes),
