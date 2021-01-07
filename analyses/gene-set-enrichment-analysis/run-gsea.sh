@@ -21,7 +21,6 @@ set -o pipefail
 
 IS_CI=${OPENPBTA_TESTING:-0}
 RUN_FOR_SUBTYPING=${OPENPBTA_BASE_SUBTYPING:-0}
-echo $RUN_FOR_SUBTYPING
 
 # This script should always run as if it were being called from
 # the directory it lives in.
