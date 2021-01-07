@@ -106,7 +106,6 @@ Rscript 03-Calc-zscore-annotate.R --standardFusionCalls "${scratch_path}/standar
                                   --normalExpressionMatrix $normal_expression_file \
                                   --outputfile "${scratch_path}/standardFusionStrandedExp_QC_expression"
 
-if [ "$RUN_FOR_SUBTYPING" == 0 ]; then
 # Project specific filtering
 Rscript -e "rmarkdown::render('04-project-specific-filtering.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
@@ -118,5 +117,3 @@ Rscript 06-recurrent-fusions-per-histology.R --standardFusionCalls $putative_onc
                                              --clinicalFile $histologies_file \
                                              --outputfolder $results_path \
                                              --independentSpecimensFile $independent_samples_file
-fi
-
