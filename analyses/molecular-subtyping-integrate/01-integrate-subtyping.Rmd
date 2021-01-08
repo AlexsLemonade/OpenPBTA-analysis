@@ -35,7 +35,7 @@ Reading molecular_subtype, integrated_diagnosis, short_histology,	broad_histolog
 
 ```{r}
 
-compiled_subtyping<-read_tsv(file.path("..", "molecular-subtyping-pathology", "results", "compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv")
+compiled_subtyping<-read_tsv(file.path("..", "molecular-subtyping-pathology", "results", "compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv"))
 
 ```
 
