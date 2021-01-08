@@ -6,14 +6,12 @@ output:
     toc_float: true
 author: Krutika Gaonkar for D3b
 date: 2020
-params:
-   is_ci: FALSE
 ---
 
 The purpose of this notebook is to integrate molecular subtyping results from 
 [molecular-subtyping-pathology](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-pathology) with `pbta-histologies-base.tsv`.
 
-Here we are using v18 `pbta-histologies-base.tsv` which has integrated_diagnosis,Notes and molecular_subtype as NA. Through all the following molecular subtyping modules:
+Here we will use `pbta-histologies-base.tsv` in which integrated_diagnosis,Notes and molecular_subtype are all NA. Through all the following molecular subtyping modules:
 
 - molecular-subtyping-MB
 - molecular-subtyping-CRANIO
@@ -25,35 +23,18 @@ Here we are using v18 `pbta-histologies-base.tsv` which has integrated_diagnosis
 - molecular-subtyping-LGAT
 - molecular-subtyping-pathology
 
-we gathered and updated molecular-subtype/integrated_diagnosis/broad_histology/short_histology. 
+we gathere and update molecular-subtype AND integrated_diagnosis AND broad_histology AND short_histology for these histologies.
 
 In this notebook we will add the molecular subtyping done as part as OpenPBTA to the base histology file to create the `pbta-histologies.tsv` for the same release. 
 
-For samples that where pathology_diagnosis is "Other" we also update the file broad_histology and short_histology from a manual review of WHO terms.
+In adddition, for samples that where pathology_diagnosis is "Other" we also update the file broad_histology and short_histology from a manual review of WHO terms.
 
 ## Set up
 
 ```{r}
-# This logic is the same as analyses/gene-set-enrichment-analysis/02-model-gsea.Rmd
-# Assigning params$is_ci to running_in_ci avoids a locked binding error
-running_in_ci <- params$is_ci
-
-# Are we testing? In case of a non 0/1 number, we recast as logical, and then 
-# ensure logical.
-if (running_in_ci %in% c(0,1)) running_in_ci <- as.logical(running_in_ci)
-if (!(is.logical(running_in_ci)))
-{
-  stop("\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).")
-}
-
-
 library(tidyverse)
+data_dir <- "../../data/"
 
-if (running_in_ci) {
-  data_dir <- "../../data/"
-} else {
-data_dir <- "../../data/release-v18-20201123/"
-}
 
 base_histology <- read_tsv(file.path(data_dir,"pbta-histologies-base.tsv"),
                            col_types = readr::cols(molecular_subtype = readr::col_character(),

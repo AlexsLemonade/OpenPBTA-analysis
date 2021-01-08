@@ -2940,7 +2940,7 @@ div.tocify {
 
 <!-- rnb-text-begin -->
 <p>The purpose of this notebook is to integrate molecular subtyping results from <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-pathology">molecular-subtyping-pathology</a> with <code>pbta-histologies-base.tsv</code>.</p>
-<p>Here we are using v18 <code>pbta-histologies-base.tsv</code> which has integrated_diagnosis,Notes and molecular_subtype as NA. Through all the following molecular subtyping modules:</p>
+<p>Here we will use <code>pbta-histologies-base.tsv</code> in which integrated_diagnosis,Notes and molecular_subtype are all NA. Through all the following molecular subtyping modules:</p>
 <ul>
 <li>molecular-subtyping-MB</li>
 <li>molecular-subtyping-CRANIO</li>
@@ -2952,41 +2952,28 @@ div.tocify {
 <li>molecular-subtyping-LGAT</li>
 <li>molecular-subtyping-pathology</li>
 </ul>
-<p>we gathered and updated molecular-subtype/integrated_diagnosis/broad_histology/short_histology.</p>
+<p>we gathere and update molecular-subtype AND integrated_diagnosis AND broad_histology AND short_histology for these histologies.</p>
 <p>In this notebook we will add the molecular subtyping done as part as OpenPBTA to the base histology file to create the <code>pbta-histologies.tsv</code> for the same release.</p>
-<p>For samples that where pathology_diagnosis is “Other” we also update the file broad_histology and short_histology from a manual review of WHO terms.</p>
+<p>In adddition, for samples that where pathology_diagnosis is “Other” we also update the file broad_histology and short_histology from a manual review of WHO terms.</p>
 <div id="set-up" class="section level2">
 <h2>Set up</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUaGlzIGxvZ2ljIGlzIHRoZSBzYW1lIGFzIGFuYWx5c2VzL2dlbmUtc2V0LWVucmljaG1lbnQtYW5hbHlzaXMvMDItbW9kZWwtZ3NlYS5SbWRcbiMgQXNzaWduaW5nIHBhcmFtcyRpc19jaSB0byBydW5uaW5nX2luX2NpIGF2b2lkcyBhIGxvY2tlZCBiaW5kaW5nIGVycm9yXG5ydW5uaW5nX2luX2NpIDwtIHBhcmFtcyRpc19jaVxuXG4jIEFyZSB3ZSB0ZXN0aW5nPyBJbiBjYXNlIG9mIGEgbm9uIDAvMSBudW1iZXIsIHdlIHJlY2FzdCBhcyBsb2dpY2FsLCBhbmQgdGhlbiBcbiMgZW5zdXJlIGxvZ2ljYWwuXG5pZiAocnVubmluZ19pbl9jaSAlaW4lIGMoMCwxKSkgcnVubmluZ19pbl9jaSA8LSBhcy5sb2dpY2FsKHJ1bm5pbmdfaW5fY2kpXG5pZiAoIShpcy5sb2dpY2FsKHJ1bm5pbmdfaW5fY2kpKSlcbntcbiAgc3RvcChcIlxcblxcbkVSUk9SOiBUaGUgcGFyYW1ldGVyIGBpc19jaWAgc2hvdWxkIGJlIEZBTFNFL1RSVUUgKG9yIDAvMSkuXCIpXG59XG5cblxubGlicmFyeSh0aWR5dmVyc2UpXG5cbmlmIChydW5uaW5nX2luX2NpKSB7XG4gIGRhdGFfZGlyIDwtIFwiLi4vLi4vZGF0YS9cIlxufSBlbHNlIHtcbmRhdGFfZGlyIDwtIFwiLi4vLi4vZGF0YS9yZWxlYXNlLXYxOC0yMDIwMTEyMy9cIlxufVxuXG5iYXNlX2hpc3RvbG9neSA8LSByZWFkX3RzdihmaWxlLnBhdGgoZGF0YV9kaXIsXCJwYnRhLWhpc3RvbG9naWVzLWJhc2UudHN2XCIpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sX3R5cGVzID0gcmVhZHI6OmNvbHMobW9sZWN1bGFyX3N1YnR5cGUgPSByZWFkcjo6Y29sX2NoYXJhY3RlcigpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2hvcnRfaGlzdG9sb2d5ID0gcmVhZHI6OmNvbF9jaGFyYWN0ZXIoKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgIGJyb2FkX2hpc3RvbG9neSA9IHJlYWRyOjpjb2xfY2hhcmFjdGVyKCksXG4gICAgICAgICAgICAgICAgICAgICAgICAgICBOb3RlcyA9IHJlYWRyOjpjb2xfY2hhcmFjdGVyKCkpKSAlPiVcbiAgdW5pcXVlKClcbmBgYCJ9 -->
-<pre class="r"><code># This logic is the same as analyses/gene-set-enrichment-analysis/02-model-gsea.Rmd
-# Assigning params$is_ci to running_in_ci avoids a locked binding error
-running_in_ci &lt;- params$is_ci
-
-# Are we testing? In case of a non 0/1 number, we recast as logical, and then 
-# ensure logical.
-if (running_in_ci %in% c(0,1)) running_in_ci &lt;- as.logical(running_in_ci)
-if (!(is.logical(running_in_ci)))
-{
-  stop(&quot;\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).&quot;)
-}
-
-
-library(tidyverse)
-
-if (running_in_ci) {
-  data_dir &lt;- &quot;../../data/&quot;
-} else {
-data_dir &lt;- &quot;../../data/release-v18-20201123/&quot;
-}
-
-base_histology &lt;- read_tsv(file.path(data_dir,&quot;pbta-histologies-base.tsv&quot;),
-                           col_types = readr::cols(molecular_subtype = readr::col_character(),
-                                                   short_histology = readr::col_character(),
-                           broad_histology = readr::col_character(),
-                           Notes = readr::col_character())) %&gt;%
-  unique()</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBUaGlzIGxvZ2ljIGlzIHRoZSBzYW1lIGFzIGFuYWx5c2VzL2dlbmUtc2V0LWVucmljaG1lbnQtYW5hbHlzaXMvMDItbW9kZWwtZ3NlYS5SbWRcbiMgQXNzaWduaW5nIHBhcmFtcyRpc19jaSB0byBydW5uaW5nX2luX2NpIGF2b2lkcyBhIGxvY2tlZCBiaW5kaW5nIGVycm9yXG5ydW5uaW5nX2luX2NpIDwtIHBhcmFtcyRpc19jaVxuXG4jIEFyZSB3ZSB0ZXN0aW5nPyBJbiBjYXNlIG9mIGEgbm9uIDAvMSBudW1iZXIsIHdlIHJlY2FzdCBhcyBsb2dpY2FsLCBhbmQgdGhlbiBcbiMgZW5zdXJlIGxvZ2ljYWwuXG5pZiAocnVubmluZ19pbl9jaSAlaW4lIGMoMCwxKSkgcnVubmluZ19pbl9jaSA8LSBhcy5sb2dpY2FsKHJ1bm5pbmdfaW5fY2kpXG5pZiAoIShpcy5sb2dpY2FsKHJ1bm5pbmdfaW5fY2kpKSlcbntcbiAgc3RvcChcXFxcblxcbkVSUk9SOiBUaGUgcGFyYW1ldGVyIGBpc19jaWAgc2hvdWxkIGJlIEZBTFNFL1RSVUUgKG9yIDAvMSkuXFwpXG59XG5cblxubGlicmFyeSh0aWR5dmVyc2UpXG5cbmlmIChydW5uaW5nX2luX2NpKSB7XG4gIGRhdGFfZGlyIDwtIFxcLi4vLi4vZGF0YS9cXFxufSBlbHNlIHtcbmRhdGFfZGlyIDwtIFxcLi4vLi4vZGF0YS9yZWxlYXNlLXYxOC0yMDIwMTEyMy9cXFxufVxuXG5iYXNlX2hpc3RvbG9neSA8LSByZWFkX3RzdihmaWxlLnBhdGgoZGF0YV9kaXIsXFxwYnRhLWhpc3RvbG9naWVzLWJhc2UudHN2XFwpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sX3R5cGVzID0gcmVhZHI6OmNvbHMobW9sZWN1bGFyX3N1YnR5cGUgPSByZWFkcjo6Y29sX2NoYXJhY3RlcigpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2hvcnRfaGlzdG9sb2d5ID0gcmVhZHI6OmNvbF9jaGFyYWN0ZXIoKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgIGJyb2FkX2hpc3RvbG9neSA9IHJlYWRyOjpjb2xfY2hhcmFjdGVyKCksXG4gICAgICAgICAgICAgICAgICAgICAgICAgICBOb3RlcyA9IHJlYWRyOjpjb2xfY2hhcmFjdGVyKCkpKSAlPiVcbiAgdW5pcXVlKClcbmBgYFxuYGBgIn0= -->
+<p><code>r</code>r # This logic is the same as analyses/gene-set-enrichment-analysis/02-model-gsea.Rmd # Assigning params<span class="math inline">\(is_ci to running_in_ci avoids a locked binding error running_in_ci &lt;- params\)</span>is_ci</p>
+</div>
+<div id="are-we-testing-in-case-of-a-non-01-number-we-recast-as-logical-and-then" class="section level1">
+<h1>Are we testing? In case of a non 0/1 number, we recast as logical, and then</h1>
+</div>
+<div id="ensure-logical." class="section level1">
+<h1>ensure logical.</h1>
+<p>if (running_in_ci %in% c(0,1)) running_in_ci &lt;- as.logical(running_in_ci) if (!(is.logical(running_in_ci))) { stop(\n: The parameter <code>is_ci</code> should be FALSE/TRUE (or 0/1).) }</p>
+<p>library(tidyverse)</p>
+<p>if (running_in_ci) { data_dir &lt;- ../../data/<br />
+} else { data_dir &lt;- ../../data/release-v18-20201123/<br />
+}</p>
+<p>base_histology &lt;- read_tsv(file.path(data_dir,-histologies-base.tsv), col_types = readr::cols(molecular_subtype = readr::col_character(), short_histology = readr::col_character(), broad_histology = readr::col_character(), Notes = readr::col_character())) %&gt;% unique()</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2995,90 +2982,42 @@ base_histology &lt;- read_tsv(file.path(data_dir,&quot;pbta-histologies-base.tsv
 <p>Reading molecular_subtype, integrated_diagnosis, short_histology, broad_histology and Notes from <code>compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv</code></p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5jb21waWxlZF9zdWJ0eXBpbmc8LXJlYWRfdHN2KGZpbGUucGF0aChcIi4uXCIsIFwibW9sZWN1bGFyLXN1YnR5cGluZy1wYXRob2xvZ3lcIiwgXCJyZXN1bHRzXCIsIFwiY29tcGlsZWRfbW9sZWN1bGFyX3N1YnR5cGVzX3dpdGhfY2xpbmljYWxfcGF0aG9sb2d5X2ZlZWRiYWNrLnRzdlwiKSlcblxuYGBgIn0= -->
-<pre class="r"><code>
-compiled_subtyping&lt;-read_tsv(file.path(&quot;..&quot;, &quot;molecular-subtyping-pathology&quot;, &quot;results&quot;, &quot;compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv&quot;))
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuXG5jb21waWxlZF9zdWJ0eXBpbmc8LXJlYWRfdHN2KGZpbGUucGF0aChcXC4uXFwsIFxcbW9sZWN1bGFyLXN1YnR5cGluZy1wYXRob2xvZ3lcXCwgXFxyZXN1bHRzXFwsIFxcY29tcGlsZWRfbW9sZWN1bGFyX3N1YnR5cGVzX3dpdGhfY2xpbmljYWxfcGF0aG9sb2d5X2ZlZWRiYWNrLnRzdlxcKSlcblxuYGBgXG5gYGAifQ== -->
+<p><code>r</code>r</p>
+<p>compiled_subtyping&lt;-read_tsv(file.path(.., -subtyping-pathology, , _molecular_subtypes_with_clinical_pathology_feedback.tsv))</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Update “Other” sample broad/short histology and harmonized_diagnosis and add to <code>compiled_subtyping</code></p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5PdGhlcl9zdWJ0eXBlcyA8LSByZWFkX3RzdihmaWxlLnBhdGgoXCJpbnB1dFwiLFwicGF0aG9sb2d5X2R4IGFuZCBwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3NpcyB0byBicm9hZF9oaXN0b2xvZ3kgZm9yIHN1YnR5cGluZyBtb2R1bGUgLSBydWxlc193aXRob3V0X3N1YnR5cGVfV0lQLnRzdlwiKSlcblxuY29tcGlsZWRfc3VidHlwaW5nX290aGVyIDwtIGJhc2VfaGlzdG9sb2d5ICU+JVxuICBzZWxlY3QoXG4gIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgLFxuICBzYW1wbGVfaWQsXG4gIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQsXG4gIG1vbGVjdWxhcl9zdWJ0eXBlLFxuICBpbnRlZ3JhdGVkX2RpYWdub3NpcyxcbiAgcGF0aG9sb2d5X2RpYWdub3NpcyxcbiAgcGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXMsXG4gIHR1bW9yX2Rlc2NyaXB0b3JcbikgJT4lXG4gICMgcmVtb3ZlIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgd2hpY2ggYXJlIHN1YnR5cGVzIFwiRVRNUi9FbWJyeW9uYWxcIlxuICBmaWx0ZXIoIUtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSBjb21waWxlZF9zdWJ0eXBpbmckS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkgJT4lXG4gICMgZ2V0IHBhdGhvbG9neV9kaWFnbm9zaXM9PVwiT3RoZXJcIlxuICBmaWx0ZXIocGF0aG9sb2d5X2RpYWdub3Npcz09XCJPdGhlclwiKSAlPiVcbiAgbGVmdF9qb2luKE90aGVyX3N1YnR5cGVzLGJ5PWMoXCJwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3Npc1wiKSkgJT4lXG4gIG11dGF0ZShOb3RlcyA9IFwiVXBkYXRlZCBieSBtYW51YWwgcmV2aWV3IG9mIFdITyBkaWFnbm9zaXNcIikgJT4lXG5zZWxlY3QoXG4gICMgZ2F0aGVyIG9ubHkgY29sdW1ucyBuZWVkZWQgdG8gZm9ybWF0IGFzIGBjb21waWxlZF9zdWJ0eXBpbmdgXG4gIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgLFxuICBzYW1wbGVfaWQsXG4gIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQsXG4gIG1vbGVjdWxhcl9zdWJ0eXBlLFxuICBpbnRlZ3JhdGVkX2RpYWdub3NpcyxcbiAgdHVtb3JfZGVzY3JpcHRvcixcbiAgYnJvYWRfaGlzdG9sb2d5LFxuICBzaG9ydF9oaXN0b2xvZ3ksXG4gIE5vdGVzLFxuICAjIGFkZGluZyBoYXJtb25pemVkX2RpYWdub3NpcyBmcm9tIG1hbnVhbCByZXZpZXcgXG4gICMgZm9yIHBhdGhvbG9neV9kaWFnbm9zaXM9PVwiT3RoZXJcIlxuICBoYXJtb25pemVkX2RpYWdub3Npc1xuKSAlPiVcbiAgdW5pcXVlKClcblxuXG4jIGNvbWJpbmVkIE9wZW5QQlRBIHN1YnR5cGVzIGFuZCBtYW51YWwgXCJPdGhlclwiIHN1YnR5cGVzXG5jb21waWxlZF9zdWJ0eXBpbmcgPC0gY29tcGlsZWRfc3VidHlwaW5nX290aGVyICU+JVxuICBiaW5kX3Jvd3MoY29tcGlsZWRfc3VidHlwaW5nKVxuXG5gYGAifQ== -->
-<pre class="r"><code>
-Other_subtypes &lt;- read_tsv(file.path(&quot;input&quot;,&quot;pathology_dx and pathology_free_text_diagnosis to broad_histology for subtyping module - rules_without_subtype_WIP.tsv&quot;))
-
-compiled_subtyping_other &lt;- base_histology %&gt;%
-  select(
-  Kids_First_Participant_ID ,
-  sample_id,
-  Kids_First_Biospecimen_ID,
-  molecular_subtype,
-  integrated_diagnosis,
-  pathology_diagnosis,
-  pathology_free_text_diagnosis,
-  tumor_descriptor
-) %&gt;%
-  # remove Kids_First_Biospecimen_ID which are subtypes &quot;ETMR/Embryonal&quot;
-  filter(!Kids_First_Biospecimen_ID %in% compiled_subtyping$Kids_First_Biospecimen_ID) %&gt;%
-  # get pathology_diagnosis==&quot;Other&quot;
-  filter(pathology_diagnosis==&quot;Other&quot;) %&gt;%
-  left_join(Other_subtypes,by=c(&quot;pathology_free_text_diagnosis&quot;)) %&gt;%
-  mutate(Notes = &quot;Updated by manual review of WHO diagnosis&quot;) %&gt;%
-select(
-  # gather only columns needed to format as `compiled_subtyping`
-  Kids_First_Participant_ID ,
-  sample_id,
-  Kids_First_Biospecimen_ID,
-  molecular_subtype,
-  integrated_diagnosis,
-  tumor_descriptor,
-  broad_histology,
-  short_histology,
-  Notes,
-  # adding harmonized_diagnosis from manual review 
-  # for pathology_diagnosis==&quot;Other&quot;
-  harmonized_diagnosis
-) %&gt;%
-  unique()
-
-
-# combined OpenPBTA subtypes and manual &quot;Other&quot; subtypes
-compiled_subtyping &lt;- compiled_subtyping_other %&gt;%
-  bind_rows(compiled_subtyping)
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuXG5PdGhlcl9zdWJ0eXBlcyA8LSByZWFkX3RzdihmaWxlLnBhdGgoXFxpbnB1dFxcLFxccGF0aG9sb2d5X2R4IGFuZCBwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3NpcyB0byBicm9hZF9oaXN0b2xvZ3kgZm9yIHN1YnR5cGluZyBtb2R1bGUgLSBydWxlc193aXRob3V0X3N1YnR5cGVfV0lQLnRzdlxcKSlcblxuY29tcGlsZWRfc3VidHlwaW5nX290aGVyIDwtIGJhc2VfaGlzdG9sb2d5ICU+JVxuICBzZWxlY3QoXG4gIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgLFxuICBzYW1wbGVfaWQsXG4gIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQsXG4gIG1vbGVjdWxhcl9zdWJ0eXBlLFxuICBpbnRlZ3JhdGVkX2RpYWdub3NpcyxcbiAgcGF0aG9sb2d5X2RpYWdub3NpcyxcbiAgcGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXMsXG4gIHR1bW9yX2Rlc2NyaXB0b3JcbikgJT4lXG4gICMgcmVtb3ZlIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgd2hpY2ggYXJlIHN1YnR5cGVzIFxcRVRNUi9FbWJyeW9uYWxcXFxuICBmaWx0ZXIoIUtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSBjb21waWxlZF9zdWJ0eXBpbmckS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkgJT4lXG4gICMgZ2V0IHBhdGhvbG9neV9kaWFnbm9zaXM9PVxcT3RoZXJcXFxuICBmaWx0ZXIocGF0aG9sb2d5X2RpYWdub3Npcz09XFxPdGhlclxcKSAlPiVcbiAgbGVmdF9qb2luKE90aGVyX3N1YnR5cGVzLGJ5PWMoXFxwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3Npc1xcKSkgJT4lXG4gIG11dGF0ZShOb3RlcyA9IFxcVXBkYXRlZCBieSBtYW51YWwgcmV2aWV3IG9mIFdITyBkaWFnbm9zaXNcXCkgJT4lXG5zZWxlY3QoXG4gICMgZ2F0aGVyIG9ubHkgY29sdW1ucyBuZWVkZWQgdG8gZm9ybWF0IGFzIGBjb21waWxlZF9zdWJ0eXBpbmdgXG4gIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgLFxuICBzYW1wbGVfaWQsXG4gIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQsXG4gIG1vbGVjdWxhcl9zdWJ0eXBlLFxuICBpbnRlZ3JhdGVkX2RpYWdub3NpcyxcbiAgdHVtb3JfZGVzY3JpcHRvcixcbiAgYnJvYWRfaGlzdG9sb2d5LFxuICBzaG9ydF9oaXN0b2xvZ3ksXG4gIE5vdGVzLFxuICAjIGFkZGluZyBoYXJtb25pemVkX2RpYWdub3NpcyBmcm9tIG1hbnVhbCByZXZpZXcgXG4gICMgZm9yIHBhdGhvbG9neV9kaWFnbm9zaXM9PVxcT3RoZXJcXFxuICBoYXJtb25pemVkX2RpYWdub3Npc1xuKSAlPiVcbiAgdW5pcXVlKClcblxuXG4jIGNvbWJpbmVkIE9wZW5QQlRBIHN1YnR5cGVzIGFuZCBtYW51YWwgXFxPdGhlclxcIHN1YnR5cGVzXG5jb21waWxlZF9zdWJ0eXBpbmcgPC0gY29tcGlsZWRfc3VidHlwaW5nX290aGVyICU+JVxuICBiaW5kX3Jvd3MoY29tcGlsZWRfc3VidHlwaW5nKVxuXG5gYGBcbmBgYCJ9 -->
+<p><code>r</code>r</p>
+<p>Other_subtypes &lt;- read_tsv(file.path(\input,_dx and pathology_free_text_diagnosis to broad_histology for subtyping module - rules_without_subtype_WIP.tsv))</p>
+<p>compiled_subtyping_other &lt;- base_histology %&gt;% select( Kids_First_Participant_ID , sample_id, Kids_First_Biospecimen_ID, molecular_subtype, integrated_diagnosis, pathology_diagnosis, pathology_free_text_diagnosis, tumor_descriptor ) %&gt;% # remove Kids_First_Biospecimen_ID which are subtypes /Embryonal<br />
+filter(!Kids_First_Biospecimen_ID %in% compiled_subtyping$Kids_First_Biospecimen_ID) %&gt;% # get pathology_diagnosis==<br />
+filter(pathology_diagnosis==) %&gt;% left_join(Other_subtypes,by=c(_free_text_diagnosis)) %&gt;% mutate(Notes = by manual review of WHO diagnosis) %&gt;% select( # gather only columns needed to format as <code>compiled_subtyping</code> Kids_First_Participant_ID , sample_id, Kids_First_Biospecimen_ID, molecular_subtype, integrated_diagnosis, tumor_descriptor, broad_histology, short_histology, Notes, # adding harmonized_diagnosis from manual review # for pathology_diagnosis==<br />
+harmonized_diagnosis ) %&gt;% unique()</p>
+</div>
+</div>
+<div id="combined-openpbta-subtypes-and-manual-subtypes" class="section level1">
+<h1>combined OpenPBTA subtypes and manual  subtypes</h1>
+<p>compiled_subtyping &lt;- compiled_subtyping_other %&gt;% bind_rows(compiled_subtyping)</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-</div>
 <div id="add-molecular-subtyping-pathology-results" class="section level3">
 <h3>Add molecular-subtyping-pathology results</h3>
 <p>We will add molecular_subtype, integrated_diagnosis and Notes from <code>compiled_subtyping</code></p>
 <p>short_histology and broad_histology will be added from base histology for samples that are not subtyped as part of <code>molecular-subtype-pathology</code></p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5oaXN0b2xvZ3kgPC0gYmFzZV9oaXN0b2xvZ3kgJT4lIFxuICBzZWxlY3QoLU5vdGVzLC1tb2xlY3VsYXJfc3VidHlwZSwtaW50ZWdyYXRlZF9kaWFnbm9zaXMpICU+JVxuICBsZWZ0X2pvaW4oY29tcGlsZWRfc3VidHlwaW5nLGJ5PWMoXCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEXCIsXCJzYW1wbGVfaWRcIixcIktpZHNfRmlyc3RfUGFydGljaXBhbnRfSURcIixcInR1bW9yX2Rlc2NyaXB0b3JcIiksc3VmZml4PWMoXCIuYmFzZVwiLFwiLnN1YnR5cGVkXCIpKSAlPiVcbiAgdW5pcXVlKCkgJT4lXG4gIG11dGF0ZShcbiAgICBicm9hZF9oaXN0b2xvZ3kgPSBpZl9lbHNlKCFpcy5uYShicm9hZF9oaXN0b2xvZ3kuc3VidHlwZWQpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJvYWRfaGlzdG9sb2d5LnN1YnR5cGVkLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJvYWRfaGlzdG9sb2d5LmJhc2UpLFxuICAgIHNob3J0X2hpc3RvbG9neSA9IGlmX2Vsc2UoIWlzLm5hKHNob3J0X2hpc3RvbG9neS5zdWJ0eXBlZCksXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaG9ydF9oaXN0b2xvZ3kuc3VidHlwZWQsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaG9ydF9oaXN0b2xvZ3kuYmFzZSksXG4gICAgaGFybW9uaXplZF9kaWFnbm9zaXMgPSBcbiAgICAgIGNhc2Vfd2hlbighaXMubmEoaW50ZWdyYXRlZF9kaWFnbm9zaXMpIH4gaW50ZWdyYXRlZF9kaWFnbm9zaXMsXG4gICAgICAgICAgICAgICAgaXMubmEoaW50ZWdyYXRlZF9kaWFnbm9zaXMpICYgXG4gICAgICAgICAgICAgICAgICAhaXMubmEoaGFybW9uaXplZF9kaWFnbm9zaXMpIH4gaGFybW9uaXplZF9kaWFnbm9zaXMsXG4gICAgICAgICAgICAgICAgaXMubmEoaW50ZWdyYXRlZF9kaWFnbm9zaXMpICYgXG4gICAgICAgICAgICAgICAgICBpcy5uYShoYXJtb25pemVkX2RpYWdub3NpcykgJlxuICAgICAgICAgICAgICAgICAgIWlzLm5hKHBhdGhvbG9neV9kaWFnbm9zaXMpIH4gcGF0aG9sb2d5X2RpYWdub3Npc1xuICAgICkpIFxuYGBgIn0= -->
-<pre class="r"><code>
-histology &lt;- base_histology %&gt;% 
-  select(-Notes,-molecular_subtype,-integrated_diagnosis) %&gt;%
-  left_join(compiled_subtyping,by=c(&quot;Kids_First_Biospecimen_ID&quot;,&quot;sample_id&quot;,&quot;Kids_First_Participant_ID&quot;,&quot;tumor_descriptor&quot;),suffix=c(&quot;.base&quot;,&quot;.subtyped&quot;)) %&gt;%
-  unique() %&gt;%
-  mutate(
-    broad_histology = if_else(!is.na(broad_histology.subtyped),
-                              broad_histology.subtyped,
-                              broad_histology.base),
-    short_histology = if_else(!is.na(short_histology.subtyped),
-                              short_histology.subtyped,
-                              short_histology.base),
-    harmonized_diagnosis = 
-      case_when(!is.na(integrated_diagnosis) ~ integrated_diagnosis,
-                is.na(integrated_diagnosis) &amp; 
-                  !is.na(harmonized_diagnosis) ~ harmonized_diagnosis,
-                is.na(integrated_diagnosis) &amp; 
-                  is.na(harmonized_diagnosis) &amp;
-                  !is.na(pathology_diagnosis) ~ pathology_diagnosis
-    )) </code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuXG5oaXN0b2xvZ3kgPC0gYmFzZV9oaXN0b2xvZ3kgJT4lIFxuICBzZWxlY3QoLU5vdGVzLC1tb2xlY3VsYXJfc3VidHlwZSwtaW50ZWdyYXRlZF9kaWFnbm9zaXMpICU+JVxuICBsZWZ0X2pvaW4oY29tcGlsZWRfc3VidHlwaW5nLGJ5PWMoXFxLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEXFwsXFxzYW1wbGVfaWRcXCxcXEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSURcXCxcXHR1bW9yX2Rlc2NyaXB0b3JcXCksc3VmZml4PWMoXFwuYmFzZVxcLFxcLnN1YnR5cGVkXFwpKSAlPiVcbiAgdW5pcXVlKCkgJT4lXG4gIG11dGF0ZShcbiAgICBicm9hZF9oaXN0b2xvZ3kgPSBpZl9lbHNlKCFpcy5uYShicm9hZF9oaXN0b2xvZ3kuc3VidHlwZWQpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJvYWRfaGlzdG9sb2d5LnN1YnR5cGVkLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJvYWRfaGlzdG9sb2d5LmJhc2UpLFxuICAgIHNob3J0X2hpc3RvbG9neSA9IGlmX2Vsc2UoIWlzLm5hKHNob3J0X2hpc3RvbG9neS5zdWJ0eXBlZCksXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaG9ydF9oaXN0b2xvZ3kuc3VidHlwZWQsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaG9ydF9oaXN0b2xvZ3kuYmFzZSksXG4gICAgaGFybW9uaXplZF9kaWFnbm9zaXMgPSBcbiAgICAgIGNhc2Vfd2hlbighaXMubmEoaW50ZWdyYXRlZF9kaWFnbm9zaXMpIH4gaW50ZWdyYXRlZF9kaWFnbm9zaXMsXG4gICAgICAgICAgICAgICAgaXMubmEoaW50ZWdyYXRlZF9kaWFnbm9zaXMpICYgXG4gICAgICAgICAgICAgICAgICAhaXMubmEoaGFybW9uaXplZF9kaWFnbm9zaXMpIH4gaGFybW9uaXplZF9kaWFnbm9zaXMsXG4gICAgICAgICAgICAgICAgaXMubmEoaW50ZWdyYXRlZF9kaWFnbm9zaXMpICYgXG4gICAgICAgICAgICAgICAgICBpcy5uYShoYXJtb25pemVkX2RpYWdub3NpcykgJlxuICAgICAgICAgICAgICAgICAgIWlzLm5hKHBhdGhvbG9neV9kaWFnbm9zaXMpIH4gcGF0aG9sb2d5X2RpYWdub3Npc1xuICAgICkpIFxuYGBgXG5gYGAifQ== -->
+<p><code>r</code>r</p>
+<p>histology &lt;- base_histology %&gt;% select(-Notes,-molecular_subtype,-integrated_diagnosis) %&gt;% left_join(compiled_subtyping,by=c(_First_Biospecimen_ID,_id,_First_Participant_ID,_descriptor),suffix=c(.base,.subtyped)) %&gt;% unique() %&gt;% mutate( broad_histology = if_else(!is.na(broad_histology.subtyped), broad_histology.subtyped, broad_histology.base), short_histology = if_else(!is.na(short_histology.subtyped), short_histology.subtyped, short_histology.base), harmonized_diagnosis = case_when(!is.na(integrated_diagnosis) ~ integrated_diagnosis, is.na(integrated_diagnosis) &amp; !is.na(harmonized_diagnosis) ~ harmonized_diagnosis, is.na(integrated_diagnosis) &amp; is.na(harmonized_diagnosis) &amp; !is.na(pathology_diagnosis) ~ pathology_diagnosis ))</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3087,10 +3026,10 @@ histology &lt;- base_histology %&gt;%
 <h3>Check if any duplicates</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZHVwX2lkczwtaGlzdG9sb2d5JEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURbZHVwbGljYXRlZChoaXN0b2xvZ3kkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCldXG5cbmhpc3RvbG9neVt3aGljaChoaXN0b2xvZ3kkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCAlaW4lIGR1cF9pZHMpLF1cbmBgYCJ9 -->
-<pre class="r"><code>dup_ids&lt;-histology$Kids_First_Biospecimen_ID[duplicated(histology$Kids_First_Biospecimen_ID)]
-
-histology[which(histology$Kids_First_Biospecimen_ID %in% dup_ids),]</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZHVwX2lkczwtaGlzdG9sb2d5JEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURbZHVwbGljYXRlZChoaXN0b2xvZ3kkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCldXG5cbmhpc3RvbG9neVt3aGljaChoaXN0b2xvZ3kkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCAlaW4lIGR1cF9pZHMpLF1cbmBgYFxuYGBgIn0= -->
+<p><code>r</code>r dup_ids&lt;-histology<span class="math inline">\(Kids_First_Biospecimen_ID[duplicated(histology\)</span>Kids_First_Biospecimen_ID)]</p>
+<p>histology[which(histology$Kids_First_Biospecimen_ID %in% dup_ids),]</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3101,12 +3040,9 @@ histology[which(histology$Kids_First_Biospecimen_ID %in% dup_ids),]</code></pre>
 <p>Are there NA in broad_histology, short_histology or harmonized_diagnosis</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlzdG9sb2d5ICU+JSBcbiAgZmlsdGVyKHNhbXBsZV90eXBlPT1cIlR1bW9yXCIsXG4gICAgICAgICAoaXMubmEoYnJvYWRfaGlzdG9sb2d5KXwgaXMubmEoc2hvcnRfaGlzdG9sb2d5KXwgaXMubmEoaGFybW9uaXplZF9kaWFnbm9zaXMpKSkgJT4lXG4gIHRhbGx5KClcblxuYGBgIn0= -->
-<pre class="r"><code>histology %&gt;% 
-  filter(sample_type==&quot;Tumor&quot;,
-         (is.na(broad_histology)| is.na(short_histology)| is.na(harmonized_diagnosis))) %&gt;%
-  tally()
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuaGlzdG9sb2d5ICU+JSBcbiAgZmlsdGVyKHNhbXBsZV90eXBlPT1cXFR1bW9yXFwsXG4gICAgICAgICAoaXMubmEoYnJvYWRfaGlzdG9sb2d5KXwgaXMubmEoc2hvcnRfaGlzdG9sb2d5KXwgaXMubmEoaGFybW9uaXplZF9kaWFnbm9zaXMpKSkgJT4lXG4gIHRhbGx5KClcblxuYGBgXG5gYGAifQ== -->
+<p><code>r</code>r histology %&gt;% filter(sample_type==, (is.na(broad_histology)| is.na(short_histology)| is.na(harmonized_diagnosis))) %&gt;% tally()</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3117,13 +3053,10 @@ histology[which(histology$Kids_First_Biospecimen_ID %in% dup_ids),]</code></pre>
 <p>Checking for differences in broad_histology to look for changes in molecular_subtype</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGlmZl9icm9hZF9oaXN0b2xvZ3k8LSBoaXN0b2xvZ3kgJT4lXG4gIGZpbHRlcih0b3VwcGVyKGJyb2FkX2hpc3RvbG9neS5iYXNlKSAhPSB0b3VwcGVyKGJyb2FkX2hpc3RvbG9neS5zdWJ0eXBlZCkpICU+JVxuICBzZWxlY3QoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCxzdGFydHNfd2l0aChcImJyb2FkX2hpc3RvbG9neVwiKSxzdGFydHNfd2l0aChcInNob3J0X2hpc3RvbG9neVwiKSkgJT4lXG4gIHVuaXF1ZSgpXG5cbmRpZmZfYnJvYWRfaGlzdG9sb2d5XG5gYGAifQ== -->
-<pre class="r"><code>diff_broad_histology&lt;- histology %&gt;%
-  filter(toupper(broad_histology.base) != toupper(broad_histology.subtyped)) %&gt;%
-  select(Kids_First_Biospecimen_ID,starts_with(&quot;broad_histology&quot;),starts_with(&quot;short_histology&quot;)) %&gt;%
-  unique()
-
-diff_broad_histology</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZGlmZl9icm9hZF9oaXN0b2xvZ3k8LSBoaXN0b2xvZ3kgJT4lXG4gIGZpbHRlcih0b3VwcGVyKGJyb2FkX2hpc3RvbG9neS5iYXNlKSAhPSB0b3VwcGVyKGJyb2FkX2hpc3RvbG9neS5zdWJ0eXBlZCkpICU+JVxuICBzZWxlY3QoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCxzdGFydHNfd2l0aChcXGJyb2FkX2hpc3RvbG9neVxcKSxzdGFydHNfd2l0aChcXHNob3J0X2hpc3RvbG9neVxcKSkgJT4lXG4gIHVuaXF1ZSgpXG5cbmRpZmZfYnJvYWRfaGlzdG9sb2d5XG5gYGBcbmBgYCJ9 -->
+<p><code>r</code>r diff_broad_histology&lt;- histology %&gt;% filter(toupper(broad_histology.base) != toupper(broad_histology.subtyped)) %&gt;% select(Kids_First_Biospecimen_ID,starts_with(_histology),starts_with(_histology)) %&gt;% unique()</p>
+<p>diff_broad_histology</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3133,15 +3066,10 @@ diff_broad_histology</code></pre>
 <p>Here we want to check for short_histology changes not part of <code>Check differences in broad_histology</code> chunk. This will help us check what string assignment path_dx to short_histology mapping has changed from <code>molecular-subtyping-pathology</code></p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5oaXN0b2xvZ3kgJT4lIFxuICBmaWx0ZXIoIUtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSBkaWZmX2Jyb2FkX2hpc3RvbG9neSRLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKSAlPiVcbiAgIGZpbHRlcih0b3VwcGVyKHNob3J0X2hpc3RvbG9neS5iYXNlKSAhPSB0b3VwcGVyKHNob3J0X2hpc3RvbG9neS5zdWJ0eXBlZCkgXG4gICAgICAgICApICU+JVxuICBzZWxlY3QoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCxzdGFydHNfd2l0aChcImJyb2FkX2hpc3RvbG9neVwiKSxzdGFydHNfd2l0aChcInNob3J0X2hpc3RvbG9neVwiKSkgJT4lXG4gIHVuaXF1ZSgpIFxuXG5gYGAifQ== -->
-<pre class="r"><code>
-histology %&gt;% 
-  filter(!Kids_First_Biospecimen_ID %in% diff_broad_histology$Kids_First_Biospecimen_ID) %&gt;%
-   filter(toupper(short_histology.base) != toupper(short_histology.subtyped) 
-         ) %&gt;%
-  select(Kids_First_Biospecimen_ID,starts_with(&quot;broad_histology&quot;),starts_with(&quot;short_histology&quot;)) %&gt;%
-  unique() 
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuXG5oaXN0b2xvZ3kgJT4lIFxuICBmaWx0ZXIoIUtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSBkaWZmX2Jyb2FkX2hpc3RvbG9neSRLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKSAlPiVcbiAgIGZpbHRlcih0b3VwcGVyKHNob3J0X2hpc3RvbG9neS5iYXNlKSAhPSB0b3VwcGVyKHNob3J0X2hpc3RvbG9neS5zdWJ0eXBlZCkgXG4gICAgICAgICApICU+JVxuICBzZWxlY3QoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCxzdGFydHNfd2l0aChcXGJyb2FkX2hpc3RvbG9neVxcKSxzdGFydHNfd2l0aChcXHNob3J0X2hpc3RvbG9neVxcKSkgJT4lXG4gIHVuaXF1ZSgpIFxuXG5gYGBcbmBgYCJ9 -->
+<p><code>r</code>r</p>
+<p>histology %&gt;% filter(!Kids_First_Biospecimen_ID %in% diff_broad_histology$Kids_First_Biospecimen_ID) %&gt;% filter(toupper(short_histology.base) != toupper(short_histology.subtyped) ) %&gt;% select(Kids_First_Biospecimen_ID,starts_with(_histology),starts_with(_histology)) %&gt;% unique()</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3155,19 +3083,15 @@ histology %&gt;%
 <p>But first need to remove broad_histology.base, broad_histology.subtyped and short_histology.base and short_histology.subtyped</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlzdG9sb2d5ICU+JSBcbiAgc2VsZWN0KC1icm9hZF9oaXN0b2xvZ3kuYmFzZSxcbiAgICAgICAgIC1icm9hZF9oaXN0b2xvZ3kuc3VidHlwZWQsXG4gICAgICAgICAtIHNob3J0X2hpc3RvbG9neS5iYXNlLFxuICAgICAgICAgLXNob3J0X2hpc3RvbG9neS5zdWJ0eXBlZCkgJT4lXG4gIHdyaXRlX3RzdihcInJlc3VsdHMvcGJ0YS1oaXN0b2xvZ2llcy50c3ZcIilcbmBgYCJ9 -->
-<pre class="r"><code>histology %&gt;% 
-  select(-broad_histology.base,
-         -broad_histology.subtyped,
-         - short_histology.base,
-         -short_histology.subtyped) %&gt;%
-  write_tsv(&quot;results/pbta-histologies.tsv&quot;)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuaGlzdG9sb2d5ICU+JSBcbiAgc2VsZWN0KC1icm9hZF9oaXN0b2xvZ3kuYmFzZSxcbiAgICAgICAgIC1icm9hZF9oaXN0b2xvZ3kuc3VidHlwZWQsXG4gICAgICAgICAtIHNob3J0X2hpc3RvbG9neS5iYXNlLFxuICAgICAgICAgLXNob3J0X2hpc3RvbG9neS5zdWJ0eXBlZCkgJT4lXG4gIHdyaXRlX3RzdihcXHJlc3VsdHMvcGJ0YS1oaXN0b2xvZ2llcy50c3ZcXClcbmBgYFxuYGBgIn0= -->
+<p><code>r</code>r histology %&gt;% select(-broad_histology.base, -broad_histology.subtyped, - short_histology.base, -short_histology.subtyped) %&gt;% write_tsv(/pbta-histologies.tsv)</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiSW50ZWdyYXRlIG1vbGVjdWxhciBzdWJ0eXBpbmcgcmVzdWx0cyIKb3V0cHV0OiAKICBodG1sX25vdGVib29rOgogICAgdG9jOiB0cnVlCiAgICB0b2NfZmxvYXQ6IHRydWUKYXV0aG9yOiBLcnV0aWthIEdhb25rYXIgZm9yIEQzYgpkYXRlOiAyMDIwCnBhcmFtczoKICAgaXNfY2k6IEZBTFNFCi0tLQoKVGhlIHB1cnBvc2Ugb2YgdGhpcyBub3RlYm9vayBpcyB0byBpbnRlZ3JhdGUgbW9sZWN1bGFyIHN1YnR5cGluZyByZXN1bHRzIGZyb20gClttb2xlY3VsYXItc3VidHlwaW5nLXBhdGhvbG9neV0oaHR0cHM6Ly9naXRodWIuY29tL0FsZXhzTGVtb25hZGUvT3BlblBCVEEtYW5hbHlzaXMvdHJlZS9tYXN0ZXIvYW5hbHlzZXMvbW9sZWN1bGFyLXN1YnR5cGluZy1wYXRob2xvZ3kpIHdpdGggYHBidGEtaGlzdG9sb2dpZXMtYmFzZS50c3ZgLgoKSGVyZSB3ZSBhcmUgdXNpbmcgdjE4IGBwYnRhLWhpc3RvbG9naWVzLWJhc2UudHN2YCB3aGljaCBoYXMgaW50ZWdyYXRlZF9kaWFnbm9zaXMsTm90ZXMgYW5kIG1vbGVjdWxhcl9zdWJ0eXBlIGFzIE5BLiBUaHJvdWdoIGFsbCB0aGUgZm9sbG93aW5nIG1vbGVjdWxhciBzdWJ0eXBpbmcgbW9kdWxlczoKCi0gbW9sZWN1bGFyLXN1YnR5cGluZy1NQgotIG1vbGVjdWxhci1zdWJ0eXBpbmctQ1JBTklPCi0gbW9sZWN1bGFyLXN1YnR5cGluZy1FUE4KLSBtb2xlY3VsYXItc3VidHlwaW5nLWVtYnJ5b25hbAotIG1vbGVjdWxhci1zdWJ0eXBpbmctRVdTCi0gbW9sZWN1bGFyLXN1YnR5cGluZy1uZXVyb2N5dG9tYQotIG1vbGVjdWxhci1zdWJ0eXBpbmctSEdHCi0gbW9sZWN1bGFyLXN1YnR5cGluZy1MR0FUCi0gbW9sZWN1bGFyLXN1YnR5cGluZy1wYXRob2xvZ3kKCndlIGdhdGhlcmVkIGFuZCB1cGRhdGVkIG1vbGVjdWxhci1zdWJ0eXBlL2ludGVncmF0ZWRfZGlhZ25vc2lzL2Jyb2FkX2hpc3RvbG9neS9zaG9ydF9oaXN0b2xvZ3kuIAoKSW4gdGhpcyBub3RlYm9vayB3ZSB3aWxsIGFkZCB0aGUgbW9sZWN1bGFyIHN1YnR5cGluZyBkb25lIGFzIHBhcnQgYXMgT3BlblBCVEEgdG8gdGhlIGJhc2UgaGlzdG9sb2d5IGZpbGUgdG8gY3JlYXRlIHRoZSBgcGJ0YS1oaXN0b2xvZ2llcy50c3ZgIGZvciB0aGUgc2FtZSByZWxlYXNlLiAKCkZvciBzYW1wbGVzIHRoYXQgd2hlcmUgcGF0aG9sb2d5X2RpYWdub3NpcyBpcyAiT3RoZXIiIHdlIGFsc28gdXBkYXRlIHRoZSBmaWxlIGJyb2FkX2hpc3RvbG9neSBhbmQgc2hvcnRfaGlzdG9sb2d5IGZyb20gYSBtYW51YWwgcmV2aWV3IG9mIFdITyB0ZXJtcy4KCiMjIFNldCB1cAoKYGBge3J9CiMgVGhpcyBsb2dpYyBpcyB0aGUgc2FtZSBhcyBhbmFseXNlcy9nZW5lLXNldC1lbnJpY2htZW50LWFuYWx5c2lzLzAyLW1vZGVsLWdzZWEuUm1kCiMgQXNzaWduaW5nIHBhcmFtcyRpc19jaSB0byBydW5uaW5nX2luX2NpIGF2b2lkcyBhIGxvY2tlZCBiaW5kaW5nIGVycm9yCnJ1bm5pbmdfaW5fY2kgPC0gcGFyYW1zJGlzX2NpCgojIEFyZSB3ZSB0ZXN0aW5nPyBJbiBjYXNlIG9mIGEgbm9uIDAvMSBudW1iZXIsIHdlIHJlY2FzdCBhcyBsb2dpY2FsLCBhbmQgdGhlbiAKIyBlbnN1cmUgbG9naWNhbC4KaWYgKHJ1bm5pbmdfaW5fY2kgJWluJSBjKDAsMSkpIHJ1bm5pbmdfaW5fY2kgPC0gYXMubG9naWNhbChydW5uaW5nX2luX2NpKQppZiAoIShpcy5sb2dpY2FsKHJ1bm5pbmdfaW5fY2kpKSkKewogIHN0b3AoIlxuXG5FUlJPUjogVGhlIHBhcmFtZXRlciBgaXNfY2lgIHNob3VsZCBiZSBGQUxTRS9UUlVFIChvciAwLzEpLiIpCn0KCgpsaWJyYXJ5KHRpZHl2ZXJzZSkKCmlmIChydW5uaW5nX2luX2NpKSB7CiAgZGF0YV9kaXIgPC0gIi4uLy4uL2RhdGEvIgp9IGVsc2UgewpkYXRhX2RpciA8LSAiLi4vLi4vZGF0YS9yZWxlYXNlLXYxOC0yMDIwMTEyMy8iCn0KCmJhc2VfaGlzdG9sb2d5IDwtIHJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpciwicGJ0YS1oaXN0b2xvZ2llcy1iYXNlLnRzdiIpLAogICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xfdHlwZXMgPSByZWFkcjo6Y29scyhtb2xlY3VsYXJfc3VidHlwZSA9IHJlYWRyOjpjb2xfY2hhcmFjdGVyKCksCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNob3J0X2hpc3RvbG9neSA9IHJlYWRyOjpjb2xfY2hhcmFjdGVyKCksCiAgICAgICAgICAgICAgICAgICAgICAgICAgIGJyb2FkX2hpc3RvbG9neSA9IHJlYWRyOjpjb2xfY2hhcmFjdGVyKCksCiAgICAgICAgICAgICAgICAgICAgICAgICAgIE5vdGVzID0gcmVhZHI6OmNvbF9jaGFyYWN0ZXIoKSkpICU+JQogIHVuaXF1ZSgpCmBgYAoKIyMjIFJlYWQgbW9sZWN1bGFyLXN1YnR5cGluZy1wYXRob2xvZ3kgcmVzdWx0cwoKUmVhZGluZyBtb2xlY3VsYXJfc3VidHlwZSwgaW50ZWdyYXRlZF9kaWFnbm9zaXMsIHNob3J0X2hpc3RvbG9neSwgYnJvYWRfaGlzdG9sb2d5IGFuZCBOb3RlcyBmcm9tIGBjb21waWxlZF9tb2xlY3VsYXJfc3VidHlwZXNfd2l0aF9jbGluaWNhbF9wYXRob2xvZ3lfZmVlZGJhY2sudHN2YCAKCmBgYHtyfQoKY29tcGlsZWRfc3VidHlwaW5nPC1yZWFkX3RzdihmaWxlLnBhdGgoIi4uIiwgIm1vbGVjdWxhci1zdWJ0eXBpbmctcGF0aG9sb2d5IiwgInJlc3VsdHMiLCAiY29tcGlsZWRfbW9sZWN1bGFyX3N1YnR5cGVzX3dpdGhfY2xpbmljYWxfcGF0aG9sb2d5X2ZlZWRiYWNrLnRzdiIpKQoKYGBgCgpVcGRhdGUgIk90aGVyIiBzYW1wbGUgYnJvYWQvc2hvcnQgaGlzdG9sb2d5IGFuZCBoYXJtb25pemVkX2RpYWdub3NpcyBhbmQgYWRkIHRvIGBjb21waWxlZF9zdWJ0eXBpbmdgCgpgYGB7cn0KCk90aGVyX3N1YnR5cGVzIDwtIHJlYWRfdHN2KGZpbGUucGF0aCgiaW5wdXQiLCJwYXRob2xvZ3lfZHggYW5kIHBhdGhvbG9neV9mcmVlX3RleHRfZGlhZ25vc2lzIHRvIGJyb2FkX2hpc3RvbG9neSBmb3Igc3VidHlwaW5nIG1vZHVsZSAtIHJ1bGVzX3dpdGhvdXRfc3VidHlwZV9XSVAudHN2IikpCgpjb21waWxlZF9zdWJ0eXBpbmdfb3RoZXIgPC0gYmFzZV9oaXN0b2xvZ3kgJT4lCiAgc2VsZWN0KAogIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgLAogIHNhbXBsZV9pZCwKICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lELAogIG1vbGVjdWxhcl9zdWJ0eXBlLAogIGludGVncmF0ZWRfZGlhZ25vc2lzLAogIHBhdGhvbG9neV9kaWFnbm9zaXMsCiAgcGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXMsCiAgdHVtb3JfZGVzY3JpcHRvcgopICU+JQogICMgcmVtb3ZlIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgd2hpY2ggYXJlIHN1YnR5cGVzICJFVE1SL0VtYnJ5b25hbCIKICBmaWx0ZXIoIUtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSBjb21waWxlZF9zdWJ0eXBpbmckS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkgJT4lCiAgIyBnZXQgcGF0aG9sb2d5X2RpYWdub3Npcz09Ik90aGVyIgogIGZpbHRlcihwYXRob2xvZ3lfZGlhZ25vc2lzPT0iT3RoZXIiKSAlPiUKICBsZWZ0X2pvaW4oT3RoZXJfc3VidHlwZXMsYnk9YygicGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXMiKSkgJT4lCiAgbXV0YXRlKE5vdGVzID0gIlVwZGF0ZWQgYnkgbWFudWFsIHJldmlldyBvZiBXSE8gZGlhZ25vc2lzIikgJT4lCnNlbGVjdCgKICAjIGdhdGhlciBvbmx5IGNvbHVtbnMgbmVlZGVkIHRvIGZvcm1hdCBhcyBgY29tcGlsZWRfc3VidHlwaW5nYAogIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgLAogIHNhbXBsZV9pZCwKICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lELAogIG1vbGVjdWxhcl9zdWJ0eXBlLAogIGludGVncmF0ZWRfZGlhZ25vc2lzLAogIHR1bW9yX2Rlc2NyaXB0b3IsCiAgYnJvYWRfaGlzdG9sb2d5LAogIHNob3J0X2hpc3RvbG9neSwKICBOb3RlcywKICAjIGFkZGluZyBoYXJtb25pemVkX2RpYWdub3NpcyBmcm9tIG1hbnVhbCByZXZpZXcgCiAgIyBmb3IgcGF0aG9sb2d5X2RpYWdub3Npcz09Ik90aGVyIgogIGhhcm1vbml6ZWRfZGlhZ25vc2lzCikgJT4lCiAgdW5pcXVlKCkKCgojIGNvbWJpbmVkIE9wZW5QQlRBIHN1YnR5cGVzIGFuZCBtYW51YWwgIk90aGVyIiBzdWJ0eXBlcwpjb21waWxlZF9zdWJ0eXBpbmcgPC0gY29tcGlsZWRfc3VidHlwaW5nX290aGVyICU+JQogIGJpbmRfcm93cyhjb21waWxlZF9zdWJ0eXBpbmcpCgpgYGAKCgoKIyMjIEFkZCBtb2xlY3VsYXItc3VidHlwaW5nLXBhdGhvbG9neSByZXN1bHRzCgpXZSB3aWxsIGFkZCBtb2xlY3VsYXJfc3VidHlwZSwgaW50ZWdyYXRlZF9kaWFnbm9zaXMgYW5kIE5vdGVzIGZyb20gYGNvbXBpbGVkX3N1YnR5cGluZ2AKCnNob3J0X2hpc3RvbG9neSBhbmQgYnJvYWRfaGlzdG9sb2d5IHdpbGwgYmUgYWRkZWQgZnJvbSBiYXNlIGhpc3RvbG9neSBmb3Igc2FtcGxlcyB0aGF0IGFyZSBub3Qgc3VidHlwZWQgYXMgcGFydCBvZiBgbW9sZWN1bGFyLXN1YnR5cGUtcGF0aG9sb2d5YAoKYGBge3J9CgpoaXN0b2xvZ3kgPC0gYmFzZV9oaXN0b2xvZ3kgJT4lIAogIHNlbGVjdCgtTm90ZXMsLW1vbGVjdWxhcl9zdWJ0eXBlLC1pbnRlZ3JhdGVkX2RpYWdub3NpcykgJT4lCiAgbGVmdF9qb2luKGNvbXBpbGVkX3N1YnR5cGluZyxieT1jKCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEIiwic2FtcGxlX2lkIiwiS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCIsInR1bW9yX2Rlc2NyaXB0b3IiKSxzdWZmaXg9YygiLmJhc2UiLCIuc3VidHlwZWQiKSkgJT4lCiAgdW5pcXVlKCkgJT4lCiAgbXV0YXRlKAogICAgYnJvYWRfaGlzdG9sb2d5ID0gaWZfZWxzZSghaXMubmEoYnJvYWRfaGlzdG9sb2d5LnN1YnR5cGVkKSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJvYWRfaGlzdG9sb2d5LnN1YnR5cGVkLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICBicm9hZF9oaXN0b2xvZ3kuYmFzZSksCiAgICBzaG9ydF9oaXN0b2xvZ3kgPSBpZl9lbHNlKCFpcy5uYShzaG9ydF9oaXN0b2xvZ3kuc3VidHlwZWQpLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaG9ydF9oaXN0b2xvZ3kuc3VidHlwZWQsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNob3J0X2hpc3RvbG9neS5iYXNlKSwKICAgIGhhcm1vbml6ZWRfZGlhZ25vc2lzID0gCiAgICAgIGNhc2Vfd2hlbighaXMubmEoaW50ZWdyYXRlZF9kaWFnbm9zaXMpIH4gaW50ZWdyYXRlZF9kaWFnbm9zaXMsCiAgICAgICAgICAgICAgICBpcy5uYShpbnRlZ3JhdGVkX2RpYWdub3NpcykgJiAKICAgICAgICAgICAgICAgICAgIWlzLm5hKGhhcm1vbml6ZWRfZGlhZ25vc2lzKSB+IGhhcm1vbml6ZWRfZGlhZ25vc2lzLAogICAgICAgICAgICAgICAgaXMubmEoaW50ZWdyYXRlZF9kaWFnbm9zaXMpICYgCiAgICAgICAgICAgICAgICAgIGlzLm5hKGhhcm1vbml6ZWRfZGlhZ25vc2lzKSAmCiAgICAgICAgICAgICAgICAgICFpcy5uYShwYXRob2xvZ3lfZGlhZ25vc2lzKSB+IHBhdGhvbG9neV9kaWFnbm9zaXMKICAgICkpIApgYGAKCgoKIyMjIENoZWNrIGlmIGFueSBkdXBsaWNhdGVzCgpgYGB7cn0KZHVwX2lkczwtaGlzdG9sb2d5JEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURbZHVwbGljYXRlZChoaXN0b2xvZ3kkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCldCgpoaXN0b2xvZ3lbd2hpY2goaGlzdG9sb2d5JEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSBkdXBfaWRzKSxdCmBgYAoKTm8gZHVwbGljYXRlcwoKIyMjIENoZWNrIGlmIGJyb2FkX2hpc3RvbG9neSwgc2hvcnRfaGlzdG9sb2d5IG9yIGhhcm1vbml6ZWRfZGlhZ25vc2lzCgpBcmUgdGhlcmUgTkEgaW4gYnJvYWRfaGlzdG9sb2d5LCBzaG9ydF9oaXN0b2xvZ3kgb3IgaGFybW9uaXplZF9kaWFnbm9zaXMKCmBgYHtyfQpoaXN0b2xvZ3kgJT4lIAogIGZpbHRlcihzYW1wbGVfdHlwZT09IlR1bW9yIiwKICAgICAgICAgKGlzLm5hKGJyb2FkX2hpc3RvbG9neSl8IGlzLm5hKHNob3J0X2hpc3RvbG9neSl8IGlzLm5hKGhhcm1vbml6ZWRfZGlhZ25vc2lzKSkpICU+JQogIHRhbGx5KCkKCmBgYAoKTm8gTkFzIGluIGJyb2FkX2hpc3RvbG9neSwgc2hvcnRfaGlzdG9sb2d5IG9yIGhhcm1vbml6ZWRfZGlhZ25vc2lzCgpKdXN0IGEgbm90ZSwgaW50ZWdyYXRlZF9kaWFnbm9zaXMgaXMgZXhwZWN0ZWQgdG8gYmUgYE5BYCBmb3Igc2FtcGxlcyB3aGVyZSBzdWJ0eXBpbmcgaXMgbm90IHBlcmZvcm1lZCBvciBpZiBtb2xlY3VsYXJfc3VidHlwZSBpcyAiWFlaLFRvIGJlIGNsYXNzaWZpZWQiLiAKVGhpcyBtZWFucyBubyBldmlkZW5jZSB3YXMgcHJvdmlkZWQvYXZhaWxhYmxlIGZvciB0aGVzZSBzYW1wbGVzIHNvIHdlIGFyZSBub3QgYWJsZSB0byBhZGQgaW50ZWdyYXRlZF9kaWFnbm9zaXMuCgojIyMjIENoZWNrIGRpZmZlcmVuY2VzIGluIGJyb2FkX2hpc3RvbG9neSAKQ2hlY2tpbmcgZm9yIGRpZmZlcmVuY2VzIGluIGJyb2FkX2hpc3RvbG9neSB0byBsb29rIGZvciBjaGFuZ2VzIGluIG1vbGVjdWxhcl9zdWJ0eXBlIAoKCmBgYHtyfQpkaWZmX2Jyb2FkX2hpc3RvbG9neTwtIGhpc3RvbG9neSAlPiUKICBmaWx0ZXIodG91cHBlcihicm9hZF9oaXN0b2xvZ3kuYmFzZSkgIT0gdG91cHBlcihicm9hZF9oaXN0b2xvZ3kuc3VidHlwZWQpKSAlPiUKICBzZWxlY3QoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCxzdGFydHNfd2l0aCgiYnJvYWRfaGlzdG9sb2d5Iiksc3RhcnRzX3dpdGgoInNob3J0X2hpc3RvbG9neSIpKSAlPiUKICB1bmlxdWUoKQoKZGlmZl9icm9hZF9oaXN0b2xvZ3kKYGBgCgojIyMjIENoZWNrIGRpZmZlcmVuY2VzIGluIHNob3J0X2hpc3RvbG9neQpIZXJlIHdlIHdhbnQgdG8gY2hlY2sgZm9yIHNob3J0X2hpc3RvbG9neSBjaGFuZ2VzIG5vdCBwYXJ0IG9mIGBDaGVjayBkaWZmZXJlbmNlcyBpbiBicm9hZF9oaXN0b2xvZ3lgIGNodW5rLgpUaGlzIHdpbGwgaGVscCB1cyBjaGVjayB3aGF0IHN0cmluZyBhc3NpZ25tZW50IHBhdGhfZHggdG8gc2hvcnRfaGlzdG9sb2d5IG1hcHBpbmcgaGFzIGNoYW5nZWQgZnJvbSBgbW9sZWN1bGFyLXN1YnR5cGluZy1wYXRob2xvZ3lgCgpgYGB7cn0KCmhpc3RvbG9neSAlPiUgCiAgZmlsdGVyKCFLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiUgZGlmZl9icm9hZF9oaXN0b2xvZ3kkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkgJT4lCiAgIGZpbHRlcih0b3VwcGVyKHNob3J0X2hpc3RvbG9neS5iYXNlKSAhPSB0b3VwcGVyKHNob3J0X2hpc3RvbG9neS5zdWJ0eXBlZCkgCiAgICAgICAgICkgJT4lCiAgc2VsZWN0KEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQsc3RhcnRzX3dpdGgoImJyb2FkX2hpc3RvbG9neSIpLHN0YXJ0c193aXRoKCJzaG9ydF9oaXN0b2xvZ3kiKSkgJT4lCiAgdW5pcXVlKCkgCgpgYGAKVGhlIGFib3ZlIDE3MiBjaGFuZ2VzIG9jY3VycmVkIGJlY2F1c2Ugb2YgY2hhbmdlcyBpbiBzdHJpbmcgdmFsdWUgYXNzaWdubWVudApJbiBgY29tcGlsZWRfbW9sZWN1bGFyX3N1YnR5cGVzX3dpdGhfY2xpbmljYWxfcGF0aG9sb2d5X2ZlZWRiYWNrLnRzdmAgYSBzYW1wbGUgd2l0aCBicm9hZF9oaXN0b2xvZ3kgdGhhdCBpcyBgRXBlbmR5bWFsIHR1bW9yYCBpcyBgRVBOYCwgYnV0IGluIGBwYnRhLWhpc3RvbG9naWVzLWJhc2UudHN2YCBpdCBpcyBgRXBlbmR5bW9tYWAuCkZvciBzYW1wbGVzIHdoZXJlIGJyb2FkX2hpc3RvbG9neSBpcyBgRW1icnlvbmFsIHR1bW9yYCwgc2hvcnRfaGlzdG9sb2d5IGlzIGFsc28gYEVtYnJ5b25hbCB0dW1vcmAgYnV0IGluIGJhc2UgaGlzdG9sb2d5IGl0IHdhcyBgRVRNUmAuCgo0NSBCZW5pZ24gLE5vbi0oQ05TKSB0dW1vciBhbmQgb3RoZXIgc2FtcGxlcyB3aGVyZSBwYXRob2xvZ3lfZGlhZ25vc2lzID09ICJPdGhlciIsaGF2ZSBzaG9ydF9oaXN0b2xvZ3kgdXBkYXRlZCBmcm9tIG1hbnVhbCByZXZpZXcgb2YgV0hPIGRpYWdub3NpcyB0ZXJtcy4KCiMjIyBTYXZlCkxldCdzIHNhdmUgdGhlIGZpbmFsIGZpbGUuCgpCdXQgZmlyc3QgbmVlZCB0byByZW1vdmUgYnJvYWRfaGlzdG9sb2d5LmJhc2UsIGJyb2FkX2hpc3RvbG9neS5zdWJ0eXBlZCBhbmQgc2hvcnRfaGlzdG9sb2d5LmJhc2UKIGFuZCBzaG9ydF9oaXN0b2xvZ3kuc3VidHlwZWQKCmBgYHtyfQpoaXN0b2xvZ3kgJT4lIAogIHNlbGVjdCgtYnJvYWRfaGlzdG9sb2d5LmJhc2UsCiAgICAgICAgIC1icm9hZF9oaXN0b2xvZ3kuc3VidHlwZWQsCiAgICAgICAgIC0gc2hvcnRfaGlzdG9sb2d5LmJhc2UsCiAgICAgICAgIC1zaG9ydF9oaXN0b2xvZ3kuc3VidHlwZWQpICU+JQogIHdyaXRlX3RzdigicmVzdWx0cy9wYnRhLWhpc3RvbG9naWVzLnRzdiIpCmBgYAo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiSW50ZWdyYXRlIG1vbGVjdWxhciBzdWJ0eXBpbmcgcmVzdWx0cyIKb3V0cHV0OiAKICBodG1sX25vdGVib29rOgogICAgdG9jOiB0cnVlCiAgICB0b2NfZmxvYXQ6IHRydWUKYXV0aG9yOiBLcnV0aWthIEdhb25rYXIgZm9yIEQzYgpkYXRlOiAyMDIwCi0tLQoKVGhlIHB1cnBvc2Ugb2YgdGhpcyBub3RlYm9vayBpcyB0byBpbnRlZ3JhdGUgbW9sZWN1bGFyIHN1YnR5cGluZyByZXN1bHRzIGZyb20gClttb2xlY3VsYXItc3VidHlwaW5nLXBhdGhvbG9neV0oaHR0cHM6Ly9naXRodWIuY29tL0FsZXhzTGVtb25hZGUvT3BlblBCVEEtYW5hbHlzaXMvdHJlZS9tYXN0ZXIvYW5hbHlzZXMvbW9sZWN1bGFyLXN1YnR5cGluZy1wYXRob2xvZ3kpIHdpdGggYHBidGEtaGlzdG9sb2dpZXMtYmFzZS50c3ZgLgoKSGVyZSB3ZSB3aWxsIHVzZSBgcGJ0YS1oaXN0b2xvZ2llcy1iYXNlLnRzdmAgaW4gd2hpY2ggaW50ZWdyYXRlZF9kaWFnbm9zaXMsTm90ZXMgYW5kIG1vbGVjdWxhcl9zdWJ0eXBlIGFyZSBhbGwgTkEuIFRocm91Z2ggYWxsIHRoZSBmb2xsb3dpbmcgbW9sZWN1bGFyIHN1YnR5cGluZyBtb2R1bGVzOgoKLSBtb2xlY3VsYXItc3VidHlwaW5nLU1CCi0gbW9sZWN1bGFyLXN1YnR5cGluZy1DUkFOSU8KLSBtb2xlY3VsYXItc3VidHlwaW5nLUVQTgotIG1vbGVjdWxhci1zdWJ0eXBpbmctZW1icnlvbmFsCi0gbW9sZWN1bGFyLXN1YnR5cGluZy1FV1MKLSBtb2xlY3VsYXItc3VidHlwaW5nLW5ldXJvY3l0b21hCi0gbW9sZWN1bGFyLXN1YnR5cGluZy1IR0cKLSBtb2xlY3VsYXItc3VidHlwaW5nLUxHQVQKLSBtb2xlY3VsYXItc3VidHlwaW5nLXBhdGhvbG9neQoKd2UgZ2F0aGVyZSBhbmQgdXBkYXRlIG1vbGVjdWxhci1zdWJ0eXBlIEFORCBpbnRlZ3JhdGVkX2RpYWdub3NpcyBBTkQgYnJvYWRfaGlzdG9sb2d5IEFORCBzaG9ydF9oaXN0b2xvZ3kgZm9yIHRoZXNlIGhpc3RvbG9naWVzLgoKSW4gdGhpcyBub3RlYm9vayB3ZSB3aWxsIGFkZCB0aGUgbW9sZWN1bGFyIHN1YnR5cGluZyBkb25lIGFzIHBhcnQgYXMgT3BlblBCVEEgdG8gdGhlIGJhc2UgaGlzdG9sb2d5IGZpbGUgdG8gY3JlYXRlIHRoZSBgcGJ0YS1oaXN0b2xvZ2llcy50c3ZgIGZvciB0aGUgc2FtZSByZWxlYXNlLiAKCkluIGFkZGRpdGlvbiwgZm9yIHNhbXBsZXMgdGhhdCB3aGVyZSBwYXRob2xvZ3lfZGlhZ25vc2lzIGlzICJPdGhlciIgd2UgYWxzbyB1cGRhdGUgdGhlIGZpbGUgYnJvYWRfaGlzdG9sb2d5IGFuZCBzaG9ydF9oaXN0b2xvZ3kgZnJvbSBhIG1hbnVhbCByZXZpZXcgb2YgV0hPIHRlcm1zLgoKIyMgU2V0IHVwCgpgYGB7cn0KbGlicmFyeSh0aWR5dmVyc2UpCmRhdGFfZGlyIDwtICIuLi8uLi9kYXRhLyIKCgpiYXNlX2hpc3RvbG9neSA8LSByZWFkX3RzdihmaWxlLnBhdGgoZGF0YV9kaXIsInBidGEtaGlzdG9sb2dpZXMtYmFzZS50c3YiKSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sX3R5cGVzID0gcmVhZHI6OmNvbHMobW9sZWN1bGFyX3N1YnR5cGUgPSByZWFkcjo6Y29sX2NoYXJhY3RlcigpLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaG9ydF9oaXN0b2xvZ3kgPSByZWFkcjo6Y29sX2NoYXJhY3RlcigpLAogICAgICAgICAgICAgICAgICAgICAgICAgICBicm9hZF9oaXN0b2xvZ3kgPSByZWFkcjo6Y29sX2NoYXJhY3RlcigpLAogICAgICAgICAgICAgICAgICAgICAgICAgICBOb3RlcyA9IHJlYWRyOjpjb2xfY2hhcmFjdGVyKCkpKSAlPiUKICB1bmlxdWUoKQpgYGAKCiMjIyBSZWFkIG1vbGVjdWxhci1zdWJ0eXBpbmctcGF0aG9sb2d5IHJlc3VsdHMKClJlYWRpbmcgbW9sZWN1bGFyX3N1YnR5cGUsIGludGVncmF0ZWRfZGlhZ25vc2lzLCBzaG9ydF9oaXN0b2xvZ3ksIGJyb2FkX2hpc3RvbG9neSBhbmQgTm90ZXMgZnJvbSBgY29tcGlsZWRfbW9sZWN1bGFyX3N1YnR5cGVzX3dpdGhfY2xpbmljYWxfcGF0aG9sb2d5X2ZlZWRiYWNrLnRzdmAgCgpgYGB7cn0KCmNvbXBpbGVkX3N1YnR5cGluZzwtcmVhZF90c3YoZmlsZS5wYXRoKCIuLiIsICJtb2xlY3VsYXItc3VidHlwaW5nLXBhdGhvbG9neSIsICJyZXN1bHRzIiwgImNvbXBpbGVkX21vbGVjdWxhcl9zdWJ0eXBlc193aXRoX2NsaW5pY2FsX3BhdGhvbG9neV9mZWVkYmFjay50c3YiKSkKCmBgYAoKVXBkYXRlICJPdGhlciIgc2FtcGxlIGJyb2FkL3Nob3J0IGhpc3RvbG9neSBhbmQgaGFybW9uaXplZF9kaWFnbm9zaXMgYW5kIGFkZCB0byBgY29tcGlsZWRfc3VidHlwaW5nYAoKYGBge3J9CgpPdGhlcl9zdWJ0eXBlcyA8LSByZWFkX3RzdihmaWxlLnBhdGgoImlucHV0IiwicGF0aG9sb2d5X2R4IGFuZCBwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3NpcyB0byBicm9hZF9oaXN0b2xvZ3kgZm9yIHN1YnR5cGluZyBtb2R1bGUgLSBydWxlc193aXRob3V0X3N1YnR5cGVfV0lQLnRzdiIpKQoKY29tcGlsZWRfc3VidHlwaW5nX290aGVyIDwtIGJhc2VfaGlzdG9sb2d5ICU+JQogIHNlbGVjdCgKICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEICwKICBzYW1wbGVfaWQsCiAgS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCwKICBtb2xlY3VsYXJfc3VidHlwZSwKICBpbnRlZ3JhdGVkX2RpYWdub3NpcywKICBwYXRob2xvZ3lfZGlhZ25vc2lzLAogIHBhdGhvbG9neV9mcmVlX3RleHRfZGlhZ25vc2lzLAogIHR1bW9yX2Rlc2NyaXB0b3IKKSAlPiUKICAjIHJlbW92ZSBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEIHdoaWNoIGFyZSBzdWJ0eXBlcyAiRVRNUi9FbWJyeW9uYWwiCiAgZmlsdGVyKCFLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiUgY29tcGlsZWRfc3VidHlwaW5nJEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpICU+JQogICMgZ2V0IHBhdGhvbG9neV9kaWFnbm9zaXM9PSJPdGhlciIKICBmaWx0ZXIocGF0aG9sb2d5X2RpYWdub3Npcz09Ik90aGVyIikgJT4lCiAgbGVmdF9qb2luKE90aGVyX3N1YnR5cGVzLGJ5PWMoInBhdGhvbG9neV9mcmVlX3RleHRfZGlhZ25vc2lzIikpICU+JQogIG11dGF0ZShOb3RlcyA9ICJVcGRhdGVkIGJ5IG1hbnVhbCByZXZpZXcgb2YgV0hPIGRpYWdub3NpcyIpICU+JQpzZWxlY3QoCiAgIyBnYXRoZXIgb25seSBjb2x1bW5zIG5lZWRlZCB0byBmb3JtYXQgYXMgYGNvbXBpbGVkX3N1YnR5cGluZ2AKICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEICwKICBzYW1wbGVfaWQsCiAgS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCwKICBtb2xlY3VsYXJfc3VidHlwZSwKICBpbnRlZ3JhdGVkX2RpYWdub3NpcywKICB0dW1vcl9kZXNjcmlwdG9yLAogIGJyb2FkX2hpc3RvbG9neSwKICBzaG9ydF9oaXN0b2xvZ3ksCiAgTm90ZXMsCiAgIyBhZGRpbmcgaGFybW9uaXplZF9kaWFnbm9zaXMgZnJvbSBtYW51YWwgcmV2aWV3IAogICMgZm9yIHBhdGhvbG9neV9kaWFnbm9zaXM9PSJPdGhlciIKICBoYXJtb25pemVkX2RpYWdub3NpcwopICU+JQogIHVuaXF1ZSgpCgoKIyBjb21iaW5lZCBPcGVuUEJUQSBzdWJ0eXBlcyBhbmQgbWFudWFsICJPdGhlciIgc3VidHlwZXMKY29tcGlsZWRfc3VidHlwaW5nIDwtIGNvbXBpbGVkX3N1YnR5cGluZ19vdGhlciAlPiUKICBiaW5kX3Jvd3MoY29tcGlsZWRfc3VidHlwaW5nKQoKYGBgCgoKCiMjIyBBZGQgbW9sZWN1bGFyLXN1YnR5cGluZy1wYXRob2xvZ3kgcmVzdWx0cwoKV2Ugd2lsbCBhZGQgbW9sZWN1bGFyX3N1YnR5cGUsIGludGVncmF0ZWRfZGlhZ25vc2lzIGFuZCBOb3RlcyBmcm9tIGBjb21waWxlZF9zdWJ0eXBpbmdgCgpzaG9ydF9oaXN0b2xvZ3kgYW5kIGJyb2FkX2hpc3RvbG9neSB3aWxsIGJlIGFkZGVkIGZyb20gYmFzZSBoaXN0b2xvZ3kgZm9yIHNhbXBsZXMgdGhhdCBhcmUgbm90IHN1YnR5cGVkIGFzIHBhcnQgb2YgYG1vbGVjdWxhci1zdWJ0eXBlLXBhdGhvbG9neWAKCmBgYHtyfQoKaGlzdG9sb2d5IDwtIGJhc2VfaGlzdG9sb2d5ICU+JSAKICBzZWxlY3QoLU5vdGVzLC1tb2xlY3VsYXJfc3VidHlwZSwtaW50ZWdyYXRlZF9kaWFnbm9zaXMpICU+JQogIGxlZnRfam9pbihjb21waWxlZF9zdWJ0eXBpbmcsYnk9YygiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCIsInNhbXBsZV9pZCIsIktpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQiLCJ0dW1vcl9kZXNjcmlwdG9yIiksc3VmZml4PWMoIi5iYXNlIiwiLnN1YnR5cGVkIikpICU+JQogIHVuaXF1ZSgpICU+JQogIG11dGF0ZSgKICAgIGJyb2FkX2hpc3RvbG9neSA9IGlmX2Vsc2UoIWlzLm5hKGJyb2FkX2hpc3RvbG9neS5zdWJ0eXBlZCksCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJyb2FkX2hpc3RvbG9neS5zdWJ0eXBlZCwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJvYWRfaGlzdG9sb2d5LmJhc2UpLAogICAgc2hvcnRfaGlzdG9sb2d5ID0gaWZfZWxzZSghaXMubmEoc2hvcnRfaGlzdG9sb2d5LnN1YnR5cGVkKSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2hvcnRfaGlzdG9sb2d5LnN1YnR5cGVkLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaG9ydF9oaXN0b2xvZ3kuYmFzZSksCiAgICBoYXJtb25pemVkX2RpYWdub3NpcyA9IAogICAgICBjYXNlX3doZW4oIWlzLm5hKGludGVncmF0ZWRfZGlhZ25vc2lzKSB+IGludGVncmF0ZWRfZGlhZ25vc2lzLAogICAgICAgICAgICAgICAgaXMubmEoaW50ZWdyYXRlZF9kaWFnbm9zaXMpICYgCiAgICAgICAgICAgICAgICAgICFpcy5uYShoYXJtb25pemVkX2RpYWdub3NpcykgfiBoYXJtb25pemVkX2RpYWdub3NpcywKICAgICAgICAgICAgICAgIGlzLm5hKGludGVncmF0ZWRfZGlhZ25vc2lzKSAmIAogICAgICAgICAgICAgICAgICBpcy5uYShoYXJtb25pemVkX2RpYWdub3NpcykgJgogICAgICAgICAgICAgICAgICAhaXMubmEocGF0aG9sb2d5X2RpYWdub3NpcykgfiBwYXRob2xvZ3lfZGlhZ25vc2lzCiAgICApKSAKYGBgCgoKCiMjIyBDaGVjayBpZiBhbnkgZHVwbGljYXRlcwoKYGBge3J9CmR1cF9pZHM8LWhpc3RvbG9neSRLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEW2R1cGxpY2F0ZWQoaGlzdG9sb2d5JEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpXQoKaGlzdG9sb2d5W3doaWNoKGhpc3RvbG9neSRLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiUgZHVwX2lkcyksXQpgYGAKCk5vIGR1cGxpY2F0ZXMKCiMjIyBDaGVjayBpZiBicm9hZF9oaXN0b2xvZ3ksIHNob3J0X2hpc3RvbG9neSBvciBoYXJtb25pemVkX2RpYWdub3NpcwoKQXJlIHRoZXJlIE5BIGluIGJyb2FkX2hpc3RvbG9neSwgc2hvcnRfaGlzdG9sb2d5IG9yIGhhcm1vbml6ZWRfZGlhZ25vc2lzCgpgYGB7cn0KaGlzdG9sb2d5ICU+JSAKICBmaWx0ZXIoc2FtcGxlX3R5cGU9PSJUdW1vciIsCiAgICAgICAgIChpcy5uYShicm9hZF9oaXN0b2xvZ3kpfCBpcy5uYShzaG9ydF9oaXN0b2xvZ3kpfCBpcy5uYShoYXJtb25pemVkX2RpYWdub3NpcykpKSAlPiUKICB0YWxseSgpCgpgYGAKCk5vIE5BcyBpbiBicm9hZF9oaXN0b2xvZ3ksIHNob3J0X2hpc3RvbG9neSBvciBoYXJtb25pemVkX2RpYWdub3NpcwoKSnVzdCBhIG5vdGUsIGludGVncmF0ZWRfZGlhZ25vc2lzIGlzIGV4cGVjdGVkIHRvIGJlIGBOQWAgZm9yIHNhbXBsZXMgd2hlcmUgc3VidHlwaW5nIGlzIG5vdCBwZXJmb3JtZWQgb3IgaWYgbW9sZWN1bGFyX3N1YnR5cGUgaXMgIlhZWixUbyBiZSBjbGFzc2lmaWVkIi4gClRoaXMgbWVhbnMgbm8gZXZpZGVuY2Ugd2FzIHByb3ZpZGVkL2F2YWlsYWJsZSBmb3IgdGhlc2Ugc2FtcGxlcyBzbyB3ZSBhcmUgbm90IGFibGUgdG8gYWRkIGludGVncmF0ZWRfZGlhZ25vc2lzLgoKIyMjIyBDaGVjayBkaWZmZXJlbmNlcyBpbiBicm9hZF9oaXN0b2xvZ3kgCkNoZWNraW5nIGZvciBkaWZmZXJlbmNlcyBpbiBicm9hZF9oaXN0b2xvZ3kgdG8gbG9vayBmb3IgY2hhbmdlcyBpbiBtb2xlY3VsYXJfc3VidHlwZSAKCgpgYGB7cn0KZGlmZl9icm9hZF9oaXN0b2xvZ3k8LSBoaXN0b2xvZ3kgJT4lCiAgZmlsdGVyKHRvdXBwZXIoYnJvYWRfaGlzdG9sb2d5LmJhc2UpICE9IHRvdXBwZXIoYnJvYWRfaGlzdG9sb2d5LnN1YnR5cGVkKSkgJT4lCiAgc2VsZWN0KEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQsc3RhcnRzX3dpdGgoImJyb2FkX2hpc3RvbG9neSIpLHN0YXJ0c193aXRoKCJzaG9ydF9oaXN0b2xvZ3kiKSkgJT4lCiAgdW5pcXVlKCkKCmRpZmZfYnJvYWRfaGlzdG9sb2d5CmBgYAoKIyMjIyBDaGVjayBkaWZmZXJlbmNlcyBpbiBzaG9ydF9oaXN0b2xvZ3kKSGVyZSB3ZSB3YW50IHRvIGNoZWNrIGZvciBzaG9ydF9oaXN0b2xvZ3kgY2hhbmdlcyBub3QgcGFydCBvZiBgQ2hlY2sgZGlmZmVyZW5jZXMgaW4gYnJvYWRfaGlzdG9sb2d5YCBjaHVuay4KVGhpcyB3aWxsIGhlbHAgdXMgY2hlY2sgd2hhdCBzdHJpbmcgYXNzaWdubWVudCBwYXRoX2R4IHRvIHNob3J0X2hpc3RvbG9neSBtYXBwaW5nIGhhcyBjaGFuZ2VkIGZyb20gYG1vbGVjdWxhci1zdWJ0eXBpbmctcGF0aG9sb2d5YAoKYGBge3J9CgpoaXN0b2xvZ3kgJT4lIAogIGZpbHRlcighS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCAlaW4lIGRpZmZfYnJvYWRfaGlzdG9sb2d5JEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpICU+JQogICBmaWx0ZXIodG91cHBlcihzaG9ydF9oaXN0b2xvZ3kuYmFzZSkgIT0gdG91cHBlcihzaG9ydF9oaXN0b2xvZ3kuc3VidHlwZWQpIAogICAgICAgICApICU+JQogIHNlbGVjdChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lELHN0YXJ0c193aXRoKCJicm9hZF9oaXN0b2xvZ3kiKSxzdGFydHNfd2l0aCgic2hvcnRfaGlzdG9sb2d5IikpICU+JQogIHVuaXF1ZSgpIAoKYGBgClRoZSBhYm92ZSAxNzIgY2hhbmdlcyBvY2N1cnJlZCBiZWNhdXNlIG9mIGNoYW5nZXMgaW4gc3RyaW5nIHZhbHVlIGFzc2lnbm1lbnQKSW4gYGNvbXBpbGVkX21vbGVjdWxhcl9zdWJ0eXBlc193aXRoX2NsaW5pY2FsX3BhdGhvbG9neV9mZWVkYmFjay50c3ZgIGEgc2FtcGxlIHdpdGggYnJvYWRfaGlzdG9sb2d5IHRoYXQgaXMgYEVwZW5keW1hbCB0dW1vcmAgaXMgYEVQTmAsIGJ1dCBpbiBgcGJ0YS1oaXN0b2xvZ2llcy1iYXNlLnRzdmAgaXQgaXMgYEVwZW5keW1vbWFgLgpGb3Igc2FtcGxlcyB3aGVyZSBicm9hZF9oaXN0b2xvZ3kgaXMgYEVtYnJ5b25hbCB0dW1vcmAsIHNob3J0X2hpc3RvbG9neSBpcyBhbHNvIGBFbWJyeW9uYWwgdHVtb3JgIGJ1dCBpbiBiYXNlIGhpc3RvbG9neSBpdCB3YXMgYEVUTVJgLgoKNDUgQmVuaWduICxOb24tKENOUykgdHVtb3IgYW5kIG90aGVyIHNhbXBsZXMgd2hlcmUgcGF0aG9sb2d5X2RpYWdub3NpcyA9PSAiT3RoZXIiLGhhdmUgc2hvcnRfaGlzdG9sb2d5IHVwZGF0ZWQgZnJvbSBtYW51YWwgcmV2aWV3IG9mIFdITyBkaWFnbm9zaXMgdGVybXMuCgojIyMgU2F2ZQpMZXQncyBzYXZlIHRoZSBmaW5hbCBmaWxlLgoKQnV0IGZpcnN0IG5lZWQgdG8gcmVtb3ZlIGJyb2FkX2hpc3RvbG9neS5iYXNlLCBicm9hZF9oaXN0b2xvZ3kuc3VidHlwZWQgYW5kIHNob3J0X2hpc3RvbG9neS5iYXNlCiBhbmQgc2hvcnRfaGlzdG9sb2d5LnN1YnR5cGVkCgpgYGB7cn0KaGlzdG9sb2d5ICU+JSAKICBzZWxlY3QoLWJyb2FkX2hpc3RvbG9neS5iYXNlLAogICAgICAgICAtYnJvYWRfaGlzdG9sb2d5LnN1YnR5cGVkLAogICAgICAgICAtIHNob3J0X2hpc3RvbG9neS5iYXNlLAogICAgICAgICAtc2hvcnRfaGlzdG9sb2d5LnN1YnR5cGVkKSAlPiUKICB3cml0ZV90c3YoInJlc3VsdHMvcGJ0YS1oaXN0b2xvZ2llcy50c3YiKQpgYGAK</div>
 
 
 </div>
