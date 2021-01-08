@@ -105,6 +105,10 @@ jobs:
           command: ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
 
       - run:
+          name: Fusion standardization and annotation for STARFusio and Arriba for base subtyping
+          command: OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
+
+      - run:
           name: Sex prediction from RNA-seq - Clean data-train elasticnet-evaluate model
           command: OPENPBTA_PERCENT=0 ./scripts/run_in_ci.sh bash analyses/sex-prediction-from-RNASeq/run-sex-prediction-from-RNASeq.sh
 
@@ -131,6 +135,10 @@ jobs:
       - run:
           name: Independent samples
           command: ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh
+
+      - run:
+          name: Independent sample for base subtyping
+          command: OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh
 
 #      - run:
 #          name: Interaction plot
@@ -190,7 +198,7 @@ jobs:
           
       - run:
           name: Gene set enrichment analysis to generate GSVA scores FOR BASE SUBTYPING
-          command: OPENPBTA_TESTING=1 OPENPBTA_BASE_SUBTYPING ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh"    
+          command: OPENPBTA_TESTING=1 OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh"    
 
       - run:
           name: Add Shatterseek
@@ -258,9 +266,10 @@ jobs:
           name: TCGA Capture Kit Investigation
           command: ./scripts/run_in_ci.sh bash analyses/tcga-capture-kit-investigation/run-investigation.sh
 
-#      - run:
-#          name: d3b TMB code
-#          command: ./scripts/run_in_ci.sh bash analyses/tmb-compare/TMB_d3b_code/run_tmb_d3b.sh
+    # Deprecated - these results are not included in the final TMB results but were used for a comparison at one point
+    # - run:
+    #     name: d3b TMB code
+    #     command: ./scripts/run_in_ci.sh bash analyses/tmb-compare/TMB_d3b_code/run_tmb_d3b.sh
 
       - run:
           name: Compare TMB calculations
