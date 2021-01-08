@@ -13,8 +13,23 @@ params:
 The purpose of this notebook is to integrate molecular subtyping results from 
 [molecular-subtyping-pathology](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-pathology) with `pbta-histologies-base.tsv`.
 
-Here we are using v18 `pbta-histologies-base.tsv`
+Here we are using v18 `pbta-histologies-base.tsv` which has integrated_diagnosis,Notes and molecular_subtype as NA. Through all the following molecular subtyping modules:
 
+- molecular-subtyping-MB
+- molecular-subtyping-CRANIO
+- molecular-subtyping-EPN
+- molecular-subtyping-embryonal
+- molecular-subtyping-EWS
+- molecular-subtyping-neurocytoma
+- molecular-subtyping-HGG
+- molecular-subtyping-LGAT
+- molecular-subtyping-pathology
+
+we gathered and updated molecular-subtype/integrated_diagnosis/broad_histology/short_histology. 
+
+In this notebook we will add the molecular subtyping done as part as OpenPBTA to the base histology file to create the `pbta-histologies.tsv` for the same release. 
+
+For samples that where pathology_diagnosis is "Other" we also update the file broad_histology and short_histology from a manual review of WHO terms.
 
 ## Set up
 
