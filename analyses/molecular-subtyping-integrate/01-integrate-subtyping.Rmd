@@ -23,9 +23,9 @@ Here we will use `pbta-histologies-base.tsv` in which integrated_diagnosis,Notes
 - molecular-subtyping-LGAT
 - molecular-subtyping-pathology
 
-we gathere and update molecular-subtype AND integrated_diagnosis AND broad_histology AND short_histology for these histologies.
+we gathered and updated molecular-subtype AND integrated_diagnosis AND broad_histology AND short_histology for these histologies.
 
-In this notebook we will add the molecular subtyping done as part as OpenPBTA to the base histology file to create the `pbta-histologies.tsv` for the same release. 
+In this notebook we will add the molecular subtyping information compiled and updated by pathology review in `molecular-subtyping-pathology/compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` to create the `pbta-histologies.tsv` for the same release. If samples are not processed by a molecular-subtyping-* module then the br
 
 In adddition, for samples that where pathology_diagnosis is "Other" we also update the file broad_histology and short_histology from a manual review of WHO terms.
 
