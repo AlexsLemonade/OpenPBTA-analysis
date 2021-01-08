@@ -2,7 +2,7 @@
 # CCDL for ALSF 2021
 # Joshua Shapiro
 #
-# Set this so the whole loop stops if there is an error
+# Set so the script stops if there is an error
 set -euo pipefail
 
 # Set the working directory to the directory of this file
