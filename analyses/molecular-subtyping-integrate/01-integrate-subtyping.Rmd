@@ -34,8 +34,27 @@ For samples that where pathology_diagnosis is "Other" we also update the file br
 ## Set up
 
 ```{r}
+# This logic is the same as analyses/gene-set-enrichment-analysis/02-model-gsea.Rmd
+# Assigning params$is_ci to running_in_ci avoids a locked binding error
+running_in_ci <- params$is_ci
+
+# Are we testing? In case of a non 0/1 number, we recast as logical, and then 
+# ensure logical.
+if (running_in_ci %in% c(0,1)) running_in_ci <- as.logical(running_in_ci)
+if (!(is.logical(running_in_ci)))
+{
+  stop("\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).")
+}
+
+
 library(tidyverse)
+
+if (running_in_ci) {
+  data_dir <- "../../data/"
+} else {
 data_dir <- "../../data/release-v18-20201123/"
+}
+
 base_histology <- read_tsv(file.path(data_dir,"pbta-histologies-base.tsv"),
                            col_types = readr::cols(molecular_subtype = readr::col_character(),
                                                    short_histology = readr::col_character(),
