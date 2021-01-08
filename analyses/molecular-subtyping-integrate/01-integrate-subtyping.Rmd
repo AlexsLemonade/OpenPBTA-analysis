@@ -30,6 +30,8 @@ In this notebook we will add the molecular subtyping information compiled and up
 
 In adddition, for samples that where pathology_diagnosis is "Other" we also update the file broad_histology and short_histology from a manual review of WHO terms.
 
+![](https://user-images.githubusercontent.com/34580719/103105428-c63e1f80-45fb-11eb-8548-28bcba0b2dba.png)
+
 ## Set up
 
 ```{r}
