@@ -31,7 +31,7 @@ base_histology <- read_tsv(file.path(data_dir,"pbta-histologies-base.tsv"),
 
 ### Read molecular-subtyping-pathology results
 
-Reading molecular_subtype, integrated_diagnosis, short_histology,	broad_histology and	Notes from `compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` 
+Reading molecular_subtype, integrated_diagnosis, short_histology, broad_histology and Notes from `compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` 
 
 ```{r}
 
@@ -92,7 +92,7 @@ compiled_subtyping <- compiled_subtyping_other %>%
 
 We will add molecular_subtype, integrated_diagnosis and Notes from `compiled_subtyping`
 
-short_histology and	broad_histology will be added from base histology for samples that are not subtyped as part of `molecular-subtype-pathology`
+short_histology and broad_histology will be added from base histology for samples that are not subtyped as part of `molecular-subtype-pathology`
 
 ```{r}
 
