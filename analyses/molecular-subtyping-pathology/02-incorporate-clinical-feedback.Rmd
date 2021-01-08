@@ -69,7 +69,7 @@ results_dir <- "results"
 ```{r}
 # clinical pbta histology
 clinical <- readr::read_tsv(file.path(data_dir,
-                                "pbta-histologies.tsv")) 
+                                "pbta-histologies-base.tsv")) 
 
 ```
 
