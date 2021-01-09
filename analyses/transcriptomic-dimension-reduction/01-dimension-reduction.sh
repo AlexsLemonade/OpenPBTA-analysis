@@ -4,6 +4,10 @@
 #
 # Usage: bash 01-dimension-reduction.sh
 
+# Takes one environment variable, `BASE_SUBTYPING`, if value is 1 then
+# uses pbta-histologies-base.tsv for subtyping if value is 0 runs all modules with pbta-histologies.tsv(Default)
+
+
 # This script should always run as if it were being called from
 # the directory it lives in.
 script_directory="$(perl -e 'use File::Basename;
@@ -11,11 +15,19 @@ script_directory="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
+
+RUN_FOR_SUBTYPING=${BASE_SUBTYPING:-0}
+
 SEED=2019
 PERPLEXITY=10
 NEIGHBORS=15
 COUNT_THRESHOLD=100
+if [ "$RUN_FOR_SUBTYPING" == 0 ]; then
 METADATA="../../data/pbta-histologies.tsv"
+else
+METADATA="../../data/pbta-histologies-base.tsv" 
+fi
+
 OUTPUT="results"
 
 #### RSEM ----------------------------------------------------------------------
