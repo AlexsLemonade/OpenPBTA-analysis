@@ -98,7 +98,7 @@ data_dir <- file.path("..", "..", "data")
 
 ```{r message=FALSE}
 # full clinical file
-histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
+histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
 histologies_df <- read_tsv(histologies_file,
                            col_types = cols(
                              molecular_subtype = col_character()

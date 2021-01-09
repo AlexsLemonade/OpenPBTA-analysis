@@ -25,10 +25,10 @@ if (!dir.exists(results_dir)) {
 
 
 ### Read files
-    
+
 ```{r}
 # clinical file that has already been filtered to the appropriate samples
-clinical_df <- readr::read_tsv(file.path(subset_dir, 
+clinical_df <- readr::read_tsv(file.path(subset_dir,
                                          "lgat_metadata.tsv"),
                                guess_max = 10000)
 
@@ -39,21 +39,24 @@ identifiers_df <- clinical_df %>%
          sample_id)
 
 # get all RNA-Seq biospecimen IDs
-lgat_rnaseq_bsids <- clinical_df %>% 
+lgat_rnaseq_bsids <- clinical_df %>%
   filter(experimental_strategy == "RNA-Seq") %>%
   pull(Kids_First_Biospecimen_ID)
 
 # get subsetted mutation file
-subsetWgs <- readr::read_tsv(file.path(subset_dir, 
-                                       "LGAT_snv_subset.tsv")) %>% 
-  select(Tumor_Sample_Barcode, 
+subsetWgs <- readr::read_tsv(file.path(subset_dir,
+                                       "LGAT_snv_subset.tsv")) %>%
+  select(Tumor_Sample_Barcode,
          BRAF_V600E) %>%
   rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode)
-  
+
 # get putative oncogene fusion list
-brafFusion <- readr::read_tsv(file.path(data_dir,
-                                        "pbta-fusion-putative-oncogenic.tsv")) %>%
-  select(Sample, FusionName) %>% 
+brafFusion <- readr::read_tsv(file.path(root_dir,
+  "analyses",
+  "fusion_filtering",
+  "results",
+  "pbta-fusion-putative-oncogenic.tsv")) %>%
+  select(Sample, FusionName) %>%
   distinct() %>%
   filter(grepl("BRAF", FusionName),
          Sample %in% lgat_rnaseq_bsids) %>%
@@ -87,19 +90,19 @@ fusion_df <- brafFusion %>%
 
 ```{r}
 # LGAT WGS subset with kids_first_participant and sample_id
-subsetWgs <- subsetWgs %>% 
-  left_join(identifiers_df, 
-            by = "Kids_First_Biospecimen_ID") 
+subsetWgs <- subsetWgs %>%
+  left_join(identifiers_df,
+            by = "Kids_First_Biospecimen_ID")
 ```
 
 ```{r}
 all_lgat_df <- subsetWgs %>%
-  full_join(fusion_df, 
+  full_join(fusion_df,
             by = c("sample_id", "Kids_First_Participant_ID"),
             suffix = c("_DNA", "_RNA"))
 
 # write the data underlying the calls to file
-all_lgat_df %>% 
+all_lgat_df %>%
   write_tsv(file.path(results_dir, "lgat_cleaned_all_table.tsv"))
 ```
 
@@ -114,19 +117,19 @@ final_table <- all_lgat_df %>%
     # When there is no BRAF fusion detected and there is no DNA-seq data
     # to be classified
     FusionName == "None" & is.na(BRAF_V600E) ~ "LGG, To be classified",
-    # If there is no fusion data or BRAF fusion detection, but there is a 
+    # If there is no fusion data or BRAF fusion detection, but there is a
     # BRAF V600E mutation, call BRAF V600E
-    (FusionName %in% c(NA, "None")) & 
+    (FusionName %in% c(NA, "None")) &
       BRAF_V600E == "Yes" ~ "LGG, BRAF V600E",
-    # If there's no fusion data or BRAF fusion detected or V600E, wildtype call 
+    # If there's no fusion data or BRAF fusion detected or V600E, wildtype call
     (FusionName %in% c(NA, "None"))  &
       BRAF_V600E == "No" ~ "LGG, BRAF wildtype",
-    # If there is a BRAF fusion detected but no BRAF V600E / the absence of 
+    # If there is a BRAF fusion detected but no BRAF V600E / the absence of
     # a DNA-seq sample, call is BRAF fusion
-    !(FusionName %in% c(NA, "None")) & 
+    !(FusionName %in% c(NA, "None")) &
       (BRAF_V600E %in% c("No", NA)) ~ "LGG, BRAF fusion",
     # If there is a BRAF fusion detected and a BRAF V600E mutation, note both
-    !(FusionName %in% c(NA, "None")) & 
+    !(FusionName %in% c(NA, "None")) &
       BRAF_V600E == "Yes" ~ "LGG, BRAF fusion/V600E"
   )) %>%
   select(Kids_First_Participant_ID,
@@ -134,7 +137,7 @@ final_table <- all_lgat_df %>%
          Kids_First_Biospecimen_ID_DNA,
          Kids_First_Biospecimen_ID_RNA,
          molecular_subtype) %>%
-  arrange(Kids_First_Participant_ID, 
+  arrange(Kids_First_Participant_ID,
           sample_id)
 
 write_tsv(final_table, file.path(results_dir,"lgat_subtyping.tsv"))
