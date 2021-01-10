@@ -21,7 +21,7 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 dataDir <- file.path(root_dir, "data")
 
 # histology file
-clinical <- readr::read_tsv(file.path(dataDir, "pbta-histologies.tsv"),
+clinical <- readr::read_tsv(file.path(dataDir, "pbta-histologies-base.tsv"),
                             guess_max = 10000) %>%
   select(Kids_First_Biospecimen_ID,
          Kids_First_Participant_ID, 

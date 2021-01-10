@@ -18,6 +18,7 @@ cd "$script_directory" || exit
 
 # PCA, UMAP, t-SNE step
 bash 01-dimension-reduction.sh
+
 # Generate plot lists to be used to make multipanel plots
 COLOR=${COLORVAR} bash 02-get-dimension-reduction-plot-lists.sh
 # Make multipanel plots and save as PDFs

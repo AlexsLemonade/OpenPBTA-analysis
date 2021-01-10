@@ -62,7 +62,7 @@ output_subtype <- file.path(results_dir, "CRANIO_molecular_subtype.tsv")
 # Inputs
 ## Read in metadata
 metadata <-
-  read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv")) %>%
+  read_tsv(file.path(root_dir, "data", "pbta-histologies-base.tsv")) %>%
   filter(pathology_diagnosis == "Craniopharyngioma")
 ## Read in snv consensus mutation data
 snv_df <-

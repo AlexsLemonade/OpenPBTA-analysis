@@ -12,9 +12,17 @@ Primary goals include:
 
 Note that running this analyis on the full dataset requires > 16GB of memory. 
 Run the bash script of this analysis module:
+
+using OPENPBTA_BASE_SUBTYPING=1 to run this module using the pbta-histologies-base.tsv from data folder while running molecular-subtyping modules for release.
+```sh
+OPENPBTA_BASE_SUBTYPING=1 analyses/gene-set-enrichment-analysis/run-gsea.sh
 ```
+
+OR by default uses pbta-histologies.tsv from data folder
+```sh
 bash analyses/gene-set-enrichment-analysis/run-gsea.sh
 ```
+
 *This command above assumes you are in the top directory, OpenPBTA-analysis*
 
 ## Folder Content
