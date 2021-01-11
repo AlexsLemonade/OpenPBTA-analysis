@@ -285,7 +285,7 @@ ggplot(tp53_alterations_score_wide, aes(x = factor(tp53_altered), y = tp53_score
 ```
 TP53 mutants with gain-of-function (activating) mutants promote tumorigenesis according to literature. [Reference](https://pubmed.ncbi.nlm.nih.gov/17417627/) and [reference](https://pubmed.ncbi.nlm.nih.gov/24677579/) have similar distribution of classifier scores to that of potential loss-of-function (multi-allelic) Tp53 mutations. 
 
-"No evidence" annotated samples either don't have any loss/gain TP53 SNVs nor CNV losses OR DNA sample is not available.
+"Other" annotated samples either don't have any high-confidence loss/gain TP53 SNVs nor CNV losses OR DNA sample is not available.
 
 ### (stranded) Expression profile for activating vs loss TP53 status
 Using stranded because there are more samples in stranded
@@ -412,4 +412,3 @@ tp53_alterations_score_wide %>%
   write_tsv(file.path(results_dir,"tp53_altered_status.tsv"))
 
 ```
-
