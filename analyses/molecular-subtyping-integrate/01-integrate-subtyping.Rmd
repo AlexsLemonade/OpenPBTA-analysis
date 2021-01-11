@@ -79,7 +79,7 @@ compiled_subtyping_other <- base_histology %>%
   # get pathology_diagnosis=="Other"
   filter(pathology_diagnosis=="Other") %>%
   left_join(Other_subtypes,by=c("pathology_free_text_diagnosis")) %>%
-  mutate(Notes = "Updated by manual review of WHO diagnosis") %>%
+  mutate(Notes = "Updated by manual curation of pathology_free_text_diagnosis") %>%
 select(
   # gather only columns needed to format as `compiled_subtyping`
   Kids_First_Participant_ID ,
