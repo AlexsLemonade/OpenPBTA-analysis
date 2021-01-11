@@ -1,6 +1,6 @@
 ---
 title: "High-Grade Glioma Molecular Subtyping - Combine DNA Assays"
-output: 
+output:
   html_notebook:
     toc: TRUE
     toc_float: TRUE
@@ -8,8 +8,8 @@ author: Chante Bethell and Jaclyn Taroni for ALSF CCDL
 date: 2020
 ---
 
-This notebook joins copy number alteration, mutation, fusion and gene expression data for the 
-purposes of subtyping HGG samples 
+This notebook joins copy number alteration, mutation, fusion and gene expression data for the
+purposes of subtyping HGG samples
 ([`AlexsLemonade/OpenPBTA-analysis#249`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249)).
 
 All data are cleaned in notebooks upstream:
@@ -56,12 +56,19 @@ data_dir <- file.path(root_dir, "data")
 ```{r message=FALSE}
 cn_gistic_df <- read_tsv(file.path(results_dir, "HGG_cleaned_cnv.tsv"))
 mutation_df <- read_tsv(file.path(results_dir, "HGG_cleaned_mutation.tsv"))
-histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max = 10000)
+histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies-base.tsv"), guess_max = 10000)
 fusion_df <- read_tsv(file.path(results_dir, "HGG_cleaned_fusion.tsv"))
-polya_exp <- read_tsv(file.path(results_dir, 
+polya_exp <- read_tsv(file.path(results_dir,
                                 "HGG_cleaned_expression.polya.tsv"))
-stranded_exp <- read_tsv(file.path(results_dir, 
+stranded_exp <- read_tsv(file.path(results_dir,
                                    "HGG_cleaned_expression.stranded.tsv"))
+
+# the cell line composition file comes from #610 in OpenPBTA_analysis repo
+cell_line_composition <- read_tsv(file.path("input","cell-line-composition.tsv"),
+                                  col_types =
+                                    readr::cols( aliquot_id  = readr::col_character()))
+
+
 ```
 
 ### Output Files
@@ -81,8 +88,8 @@ The CNV and SV data, and therefore the GISTIC data that is _downstream_ of the c
 Let's look at what biospecimen identifiers are present in the mutation data but not in the copy number data.
 
 ```{r}
-histologies_df %>% 
-  filter(Kids_First_Biospecimen_ID %in% 
+histologies_df %>%
+  filter(Kids_First_Biospecimen_ID %in%
            setdiff(mutation_df$Tumor_Sample_Barcode,
                    cn_gistic_df$Kids_First_Biospecimen_ID)) %>%
   count(experimental_strategy)
@@ -94,14 +101,36 @@ dna_df <- mutation_df %>%
   left_join(cn_gistic_df)
 ```
 
-In earlier work on this module, we observed duplicated `sample_id`.
-We removed non-tumor samples (e.g., derived cell lines), does this issue persist?
 
 ```{r}
-any(duplicated(dna_df$Kids_First_Biospecimen_ID))
+any(duplicated(dna_df$sample_id))
 ```
+What are they?
 
-No it doesn't.
+If we only group by sample_id what does composition,aliquot_id and cell_line_composition look like:
+
+```{r}
+histologies_df %>%
+  left_join(cell_line_composition) %>%
+  filter(sample_id %in% dna_df$sample_id[duplicated(dna_df$sample_id)],
+         experimental_strategy %in% c("WGS"),
+         sample_type == "Tumor") %>%
+  group_by(sample_id) %>%
+  arrange(sample_id) %>%
+  dplyr::select(Kids_First_Biospecimen_ID,
+                sample_id,
+                composition,
+                cell_line_composition,
+                aliquot_id) %>%
+  summarize(
+            composition =  paste(composition, collapse = ", "),
+            cell_line_composition = paste(cell_line_composition, collapse = ", "),
+            aliquot_id = paste(aliquot_id, collapse = ", "))
+
+```
+The duplicates are mostly from multiple Solid tumor samples per sample_id or there are non-tumor ( derived cell-line ) samples for sample_id .
+
+
 
 ```{r}
 rm(mutation_df, cn_gistic_df)
@@ -136,8 +165,12 @@ Are these samples present in the files prior to subsetting in [`02-HGG-molecular
 
 ```{r}
 # read in full file
-putative_oncogenic_df <- 
-  read_tsv(file.path(data_dir, "pbta-fusion-putative-oncogenic.tsv"))
+putative_oncogenic_df <-
+  read_tsv(file.path(root_dir,
+    "analyses",
+    "fusion_filtering",
+    "results",
+    "pbta-fusion-putative-oncogenic.tsv"))
 ```
 
 ```{r}
@@ -175,7 +208,7 @@ We will consider biospecimen identifiers that were present in the Arriba file to
 
 ```{r}
 fusion_df <- fusion_df %>%
-  # Add in the instances where we have no evidence 
+  # Add in the instances where we have no evidence
   bind_rows(data.frame(Sample = missing_bsids)) %>%
   replace(is.na(.), "None")
 ```
@@ -195,7 +228,7 @@ head(rna_df, n = 10)
 ```{r}
 rna_df <- histologies_df %>%
   select(Kids_First_Participant_ID,
-         sample_id, 
+         sample_id,
          Kids_First_Biospecimen_ID) %>%
   inner_join(rna_df)
 ```
@@ -211,22 +244,76 @@ any(duplicated(rna_df$sample_id))
 ```
 What are they?
 
+Checking for duplicate RNA sample_ids. If we only group by sample_id what does composition and cell_line_composition look like:
+
 ```{r}
 histologies_df %>%
+  left_join(cell_line_composition) %>%
   filter(sample_id %in% rna_df$sample_id[which(duplicated(rna_df$sample_id))],
          experimental_strategy == "RNA-Seq") %>%
   group_by(sample_id) %>%
-  summarize(RNA_library = paste(RNA_library, collapse = ", "))
+  summarize(RNA_library = paste(RNA_library, collapse = ", "),
+            composition =  paste(composition, collapse = ", "),
+            cell_line_compositio = paste(cell_line_composition, collapse = ", "),
+            aliquot_id = paste(aliquot_id, collapse = ", "))
 ```
 
-There are 2 instances where there are two stranded biospecimen IDs that map to the same `sample_id`.
+The duplicates are mostly from multiple Solid tumor samples per sample_id or there are non-tumor ( derived cell-line ) samples for sample_id.
+
+
+We are only trying to find a solution for multiple sample_ids per Kids_First_Participant_ID becuase of additional non-tumor `Derived Cell Line` samples .
+
+Checking : if we group by `sample_id` and `aliquot_id` do we get unique matches between DNA and RNA?
+
+```{r}
+
+histologies_df %>%
+  dplyr::filter(composition=="Derived Cell Line") %>%
+  # grouping by sample_id and aliquot_id
+  group_by(sample_id,aliquot_id) %>%
+  # here we are checking if can aggregate DNA and RNA samples using
+  # grouping by sample_id,aliquot_id
+  summarise(experimental_strategy=paste(experimental_strategy,collapse = ", "),count=n()) %>%
+  # if we can successfully aggregate `count` woulbe be >1
+  dplyr::filter(count >1)
+
+```
+Don't find any aggregated DNA and RNA samples by grouping by `sample_id,aliquot_id`
+
+
+If we group by `sample_id` and `cell_line_composition` do we get unique matches between DNA and RNA?
+```{r}
+histologies_df %>%
+  left_join(cell_line_composition) %>%
+  dplyr::filter(composition=="Derived Cell Line") %>%
+  # grouping by sample_id and cell_line_composition
+  group_by(sample_id,cell_line_composition) %>%
+  # here we are checking if can aggregate DNA and RNA samples using
+  # sample_id and cell_line_composition
+  summarise(experimental_strategy=paste(experimental_strategy,collapse = ", "),count=n()) %>%
+  # if we can successfully aggregate`count` woulbe be >1
+  dplyr::filter(count >1)
+
+```
+We find 16 pairs of WGS and RNA-Seq samples grouping by sample_id and cell_line_composition. Let's add `cell_line_composition`column to dna and rna files to match `Derived Cell Line` samples appropriately in `All Data` section of notebook.
+
+```{r}
+
+dna_df <- dna_df %>%
+  left_join(cell_line_composition,by = c("Kids_First_Participant_ID", "sample_id", "Kids_First_Biospecimen_ID"))
+
+rna_df <- rna_df %>%
+  left_join(cell_line_composition,by = c("Kids_First_Participant_ID", "sample_id", "Kids_First_Biospecimen_ID"))
+
+```
+
 
 ### All Data
 
 ```{r}
-all_data_df <- left_join(dna_df, rna_df,
+all_data_df <- full_join(dna_df, rna_df,
                          by = c("Kids_First_Participant_ID",
-                                "sample_id"),
+                                "sample_id","cell_line_composition"),
                          suffix = c("_DNA", "_RNA")) %>%
   select(starts_with("Kids_First"), sample_id, everything())
 
@@ -238,12 +325,11 @@ Add in brain region and age.
 ```{r}
 relevant_clinical_df <- histologies_df %>%
   filter(sample_id %in% all_data_df$sample_id,
-         sample_type == "Tumor",
-         composition == "Solid Tissue") %>%
-  mutate(age_at_diagnosis_yr = 
+         sample_type == "Tumor") %>%
+  mutate(age_at_diagnosis_yr =
            floor(as.integer(age_at_diagnosis_days)/365)) %>%
   group_by(Kids_First_Participant_ID, sample_id) %>%
-  summarize(CNS_region = paste(sort(unique(CNS_region)), 
+  summarize(CNS_region = paste(sort(unique(CNS_region)),
                                collapse = ", "),
             age_at_diagnosis_yr = paste(sort(unique(age_at_diagnosis_yr)),
                                         collapse = ", "))
@@ -274,12 +360,12 @@ In this section, we'll divide up the table based on the molecular subtypes descr
 > * Majority should be midline localized
 
 ```{r}
-h3_k28_df <- all_data_df %>% 
+h3_k28_df <- all_data_df %>%
   # Only rows with H3 K28M mutations
-  filter(H3F3A.K28M == "Yes" | HIST1H3B.K28M == "Yes" | 
+  filter(H3F3A.K28M == "Yes" | HIST1H3B.K28M == "Yes" |
            HIST1H3C.K28M == "Yes" | HIST2H3C.K28M == "Yes") %>%
   # Only the relevant columns
-  select(Kids_First_Participant_ID, 
+  select(Kids_First_Participant_ID,
          sample_id,
          H3F3A.K28M,
          HIST1H3B.K28M,
@@ -356,7 +442,7 @@ h3_k28_df_biospecimen <- all_data_df %>%
   select(Kids_First_Participant_ID,
          sample_id,
          Kids_First_Biospecimen_ID_DNA,
-         Kids_First_Biospecimen_ID_RNA, 
+         Kids_First_Biospecimen_ID_RNA,
          BRAF_V600E) %>%
   mutate(molecular_subtype = case_when(
     BRAF_V600E == "p.V600E" ~ "DMG, H3 K28, BRAF V600E",
@@ -373,11 +459,11 @@ h3_k28_df_biospecimen <- all_data_df %>%
 > * Average age of 20 years
 
 ```{r}
-h3_g35_df <- all_data_df %>% 
+h3_g35_df <- all_data_df %>%
   # Only rows with H3 G35 mutations
   filter(H3F3A.G35R == "Yes" | H3F3A.G35V == "Yes") %>%
   # Only the relevant columns
-  select(Kids_First_Participant_ID, 
+  select(Kids_First_Participant_ID,
          sample_id,
          H3F3A.K28M,
          HIST1H3B.K28M,
@@ -394,7 +480,7 @@ h3_g35_df
 Make a biospecimen-centric table.
 
 ```{r}
-h3_g35_df_biospecimen <- all_data_df %>% 
+h3_g35_df_biospecimen <- all_data_df %>%
   # Only rows with H3 G35 mutations
   filter(H3F3A.G35R == "Yes" | H3F3A.G35V == "Yes") %>%
   select(Kids_First_Participant_ID,
@@ -516,7 +602,16 @@ molecular_subtype_table <- all_data_df %>%
          Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA) %>%
   left_join(molecular_subtype_table) %>%
   distinct() %>%
-  replace_na(list(molecular_subtype = "HGG, H3 wildtype"))
+  dplyr::mutate(molecular_subtype = case_when(
+    # molecular_subtype is NA and we didn't find any canonical histone
+    # variant in the DNA sample so the status will be H3 wildtype
+    is.na(molecular_subtype) & !is.na(Kids_First_Biospecimen_ID_DNA) ~ "HGG, H3 wildtype",
+    # molecular_subtype is NA and we do not have a DNA sample
+    # to check for histone variant so status will be
+    # To be classified
+    is.na(molecular_subtype) & is.na(Kids_First_Biospecimen_ID_DNA) ~ "HGG, To be classified",
+    # when molecular_subtype is not NA (we know the H3 variant subtype from DNA )
+    TRUE ~ molecular_subtype))
 ```
 
 Write to file.

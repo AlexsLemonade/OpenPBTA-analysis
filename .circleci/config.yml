@@ -61,16 +61,29 @@ jobs:
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-LGAT/run_subtyping.sh
 
       - run:
-         name: Molecular Subtyping / Reclassification - EWS
-         command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EWS/run_reclassification.sh
+         name: Molecular Subtyping - EWS
+         command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EWS/run_subtyping.sh
 
       - run:
-         name: Molecular Subtyping - Compile and incorporate pathology feedback
-         command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-pathology/run-subtyping-aggregation.sh
+         name: Molecular Subtyping Neurocytoma
+         command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-neurocytoma/run_subtyping.sh
+
+     # Commenting this out for now; the code is expected to change
+     # - run:
+     #    name: Molecular Subtyping - Compile and incorporate pathology feedback
+     #    command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-pathology/run-subtyping-aggregation.sh
 
       - run:
           name: Molecular Subtyping - MB
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-MB/run-molecular-subtyping-mb.sh
+
+      - run:
+          name: Molecular Subtyping - CRANIO
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-CRANIO/run-molecular-subtyping-cranio.sh
+
+      - run:
+         name: Molecular Subtyping - INTEGRATE to BASE histology
+         command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-integrate/run-subtyping-integrate.sh
 
       # Deprecated - these results do not include germline calls and therefore are insufficient by subtyping
       # - run:
@@ -84,12 +97,20 @@ jobs:
           command: ./scripts/run_in_ci.sh bash analyses/collapse-rnaseq/run-collapse-rnaseq.sh
 
       - run:
+         name: Fusion Summary
+         command: ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
+
+      - run:
           name: Immune deconvolution using xCell and MCP-Counter
           command: OPENPBTA_DECONV_METHOD="mcp_counter" ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
 
       - run:
           name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded data and creates recurrent fusion list
           command: ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
+
+      - run:
+          name: Fusion standardization and annotation for STARFusio and Arriba for base subtyping
+          command: OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
 
       - run:
           name: Sex prediction from RNA-seq - Clean data-train elasticnet-evaluate model
@@ -120,16 +141,20 @@ jobs:
           command: ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh
 
       - run:
-          name: Interaction plot
-          command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh
+          name: Independent sample for base subtyping
+          command: OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh
+
+#      - run:
+#          name: Interaction plot
+#          command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh
 
       - run:
-          name: Mutational Signatures 
+          name: Mutational Signatures
           command: OPENPBTA_QUICK_MUTSIGS=1 ./scripts/run_in_ci.sh bash analyses/mutational-signatures/run_mutational_signatures.sh
 
-      - run:
-          name: Chromosomal instability breakpoints
-          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
+#      - run:
+#          name: Chromosomal instability breakpoints
+#          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
 
       - run:
           name: Copy number consensus
@@ -143,41 +168,41 @@ jobs:
           name: Survival analysis
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/survival-analysis/survival-analysis_template.Rmd', params = list(plot_ci = FALSE), clean = TRUE)"
 
-      - run:
-          name: Comparative RNASeq - generate correlation matrix - rsem-tpm.polya
-          command: ./scripts/run_in_ci.sh python3 analyses/comparative-RNASeq-analysis/01-correlation-matrix.py ../../data/pbta-gene-expression-rsem-tpm.polya.rds --clinical-path ../../data/pbta-histologies.tsv --qc-manifest-path ../../data/pbta-mend-qc-manifest.tsv --qc-results-path ../../data/pbta-mend-qc-results.tar.gz --prefix rsem-tpm-polya- --verbose
+#      - run:
+#          name: Comparative RNASeq - generate correlation matrix - rsem-tpm.polya
+#          command: ./scripts/run_in_ci.sh python3 analyses/comparative-RNASeq-analysis/01-correlation-matrix.py ../../data/pbta-gene-expression-rsem-tpm.polya.rds --clinical-path ../../data/pbta-histologies.tsv --qc-manifest-path ../../data/pbta-mend-qc-manifest.tsv --qc-results-path ../../data/pbta-mend-qc-results.tar.gz --prefix rsem-tpm-polya- --verbose
 
-      - run:
-          name: Comparative RNASeq - generate correlation matrix - rsem-tpm.stranded
-          command: ./scripts/run_in_ci.sh python3 analyses/comparative-RNASeq-analysis/01-correlation-matrix.py ../../data/pbta-gene-expression-rsem-tpm.stranded.rds --clinical-path ../../data/pbta-histologies.tsv --qc-manifest-path ../../data/pbta-mend-qc-manifest.tsv --qc-results-path ../../data/pbta-mend-qc-results.tar.gz --prefix rsem-tpm-stranded- --verbose
+#      - run:
+#          name: Comparative RNASeq - generate correlation matrix - rsem-tpm.stranded
+#          command: ./scripts/run_in_ci.sh python3 analyses/comparative-RNASeq-analysis/01-correlation-matrix.py ../../data/pbta-gene-expression-rsem-tpm.stranded.rds --clinical-path ../../data/pbta-histologies.tsv --qc-manifest-path ../../data/pbta-mend-qc-manifest.tsv --qc-results-path ../../data/pbta-mend-qc-results.tar.gz --prefix rsem-tpm-stranded- --verbose
 
-      - run:
-          name: Comparative RNASeq - generate thresholds and outliers - rsem-tpm.stranded
-          command: ./scripts/run_in_ci.sh python3 analyses/comparative-RNASeq-analysis/02-thresholds-and-outliers.py --prefix rsem-tpm-stranded- --results results --verbose
+#      - run:
+#          name: Comparative RNASeq - generate thresholds and outliers - rsem-tpm.stranded
+#          command: ./scripts/run_in_ci.sh python3 analyses/comparative-RNASeq-analysis/02-thresholds-and-outliers.py --prefix rsem-tpm-stranded- --results results --verbose
 
       - run:
           name: Process SV file
           command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/01-process-sv-file.R
 
-      - run:
-          name: Oncoprint plotting
-          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
+#      - run:
+#          name: Oncoprint plotting
+#          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
 
       - run:
           name: GISTIC Plots
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', clean = TRUE)"
 
-      - run:
-          name: CN Status Heatmap
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/cn_status_heatmap.Rmd', clean = TRUE)"
+#      - run:
+#          name: CN Status Heatmap
+#          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/cn_status_heatmap.Rmd', clean = TRUE)"
 
       - run:
           name: Gene set enrichment analysis to generate GSVA scores
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh"
-
+          
       - run:
-         name: Fusion Summary
-         command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
+          name: Gene set enrichment analysis to generate GSVA scores FOR BASE SUBTYPING
+          command: OPENPBTA_TESTING=1 OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh"    
 
       - run:
           name: Add Shatterseek
@@ -196,9 +221,9 @@ jobs:
          #### Add your analysis here ####
          ################################
 
-      - run:
-          name: RNA-Seq composition
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/rna-seq-composition/rna-seq-composition.Rmd', clean = TRUE)"
+#      - run:
+#          name: RNA-Seq composition
+#          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/rna-seq-composition/rna-seq-composition.Rmd', clean = TRUE)"
 
       - run:
           name: TCGA SNV Caller Analysis
@@ -215,7 +240,7 @@ jobs:
       - run:
           name: Exploration of nonsynonymous filter
           command: ./scripts/run_in_ci.sh bash analyses/snv-callers/explore_variant_classifications/run_explorations.sh
-          
+
       # This analysis was used to explore the TCGA PBTA data when the BED files used to calculate TCGA
       # were incorrect https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/568
       #- run:
@@ -245,9 +270,10 @@ jobs:
           name: TCGA Capture Kit Investigation
           command: ./scripts/run_in_ci.sh bash analyses/tcga-capture-kit-investigation/run-investigation.sh
 
-      - run:
-          name: d3b TMB code
-          command: ./scripts/run_in_ci.sh bash analyses/tmb-compare/TMB_d3b_code/run_tmb_d3b.sh
+    # Deprecated - these results are not included in the final TMB results but were used for a comparison at one point
+    # - run:
+    #     name: d3b TMB code
+    #     command: ./scripts/run_in_ci.sh bash analyses/tmb-compare/TMB_d3b_code/run_tmb_d3b.sh
 
       - run:
           name: Compare TMB calculations

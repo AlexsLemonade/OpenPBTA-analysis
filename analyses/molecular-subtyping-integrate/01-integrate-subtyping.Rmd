@@ -1,0 +1,213 @@
+---
+title: "Integrate molecular subtyping results"
+output: 
+  html_notebook:
+    toc: true
+    toc_float: true
+author: Krutika Gaonkar for D3b
+date: 2020
+---
+
+The purpose of this notebook is to integrate molecular subtyping results from 
+[molecular-subtyping-pathology](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-pathology) with `pbta-histologies-base.tsv`.
+
+Here we will use `pbta-histologies-base.tsv` in which integrated_diagnosis,Notes and molecular_subtype are all NA. Through all the following molecular subtyping modules:
+
+- molecular-subtyping-MB
+- molecular-subtyping-CRANIO
+- molecular-subtyping-EPN
+- molecular-subtyping-embryonal
+- molecular-subtyping-EWS
+- molecular-subtyping-neurocytoma
+- molecular-subtyping-HGG
+- molecular-subtyping-LGAT
+- molecular-subtyping-pathology
+
+
+We gathered and updated molecular-subtype AND integrated_diagnosis AND broad_histology AND short_histology for these histologies.
+
+In this notebook we will add the molecular subtyping information compiled and updated by pathology review in `molecular-subtyping-pathology/compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` to create the `pbta-histologies.tsv` for the same release. If samples are not processed by a molecular-subtyping-* module then the br
+
+In adddition, for samples that where pathology_diagnosis is "Other" we also update the file broad_histology and short_histology from a manual review of WHO terms.
+
+![](https://user-images.githubusercontent.com/34580719/103105428-c63e1f80-45fb-11eb-8548-28bcba0b2dba.png)
+
+## Set up
+
+```{r}
+library(tidyverse)
+data_dir <- "../../data/"
+
+
+base_histology <- read_tsv(file.path(data_dir,"pbta-histologies-base.tsv"),
+                           col_types = readr::cols(molecular_subtype = readr::col_character(),
+                                                   short_histology = readr::col_character(),
+                           broad_histology = readr::col_character(),
+                           Notes = readr::col_character())) %>%
+  unique()
+```
+
+### Read molecular-subtyping-pathology results
+
+Reading molecular_subtype, integrated_diagnosis, short_histology, broad_histology and Notes from `compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` 
+
+```{r}
+
+compiled_subtyping<-read_tsv(file.path("..", "molecular-subtyping-pathology", "results", "compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv"))
+
+```
+
+Update "Other" sample broad/short histology and harmonized_diagnosis and add to `compiled_subtyping`
+
+```{r}
+
+Other_subtypes <- read_tsv(file.path("input","pathology_dx and pathology_free_text_diagnosis to broad_histology for subtyping module - rules_without_subtype_WIP.tsv"))
+
+compiled_subtyping_other <- base_histology %>%
+  select(
+  Kids_First_Participant_ID ,
+  sample_id,
+  Kids_First_Biospecimen_ID,
+  molecular_subtype,
+  integrated_diagnosis,
+  pathology_diagnosis,
+  pathology_free_text_diagnosis,
+  tumor_descriptor
+) %>%
+  # remove Kids_First_Biospecimen_ID which are subtypes "ETMR/Embryonal"
+  filter(!Kids_First_Biospecimen_ID %in% compiled_subtyping$Kids_First_Biospecimen_ID) %>%
+  # get pathology_diagnosis=="Other"
+  filter(pathology_diagnosis=="Other") %>%
+  left_join(Other_subtypes,by=c("pathology_free_text_diagnosis")) %>%
+  mutate(Notes = "Updated by manual review of WHO diagnosis") %>%
+select(
+  # gather only columns needed to format as `compiled_subtyping`
+  Kids_First_Participant_ID ,
+  sample_id,
+  Kids_First_Biospecimen_ID,
+  molecular_subtype,
+  integrated_diagnosis,
+  tumor_descriptor,
+  broad_histology,
+  short_histology,
+  Notes,
+  # adding harmonized_diagnosis from manual review 
+  # for pathology_diagnosis=="Other"
+  harmonized_diagnosis
+) %>%
+  unique()
+
+
+# combined OpenPBTA subtypes and manual "Other" subtypes
+compiled_subtyping <- compiled_subtyping_other %>%
+  bind_rows(compiled_subtyping)
+
+```
+
+
+
+### Add molecular-subtyping-pathology results
+
+We will add molecular_subtype, integrated_diagnosis and Notes from `compiled_subtyping`
+
+short_histology and broad_histology will be added from base histology for samples that are not subtyped as part of `molecular-subtype-pathology`
+
+```{r}
+
+histology <- base_histology %>% 
+  select(-Notes,-molecular_subtype,-integrated_diagnosis) %>%
+  left_join(compiled_subtyping,by=c("Kids_First_Biospecimen_ID","sample_id","Kids_First_Participant_ID","tumor_descriptor"),suffix=c(".base",".subtyped")) %>%
+  unique() %>%
+  mutate(
+    broad_histology = if_else(!is.na(broad_histology.subtyped),
+                              broad_histology.subtyped,
+                              broad_histology.base),
+    short_histology = if_else(!is.na(short_histology.subtyped),
+                              short_histology.subtyped,
+                              short_histology.base),
+    harmonized_diagnosis = 
+      case_when(!is.na(integrated_diagnosis) ~ integrated_diagnosis,
+                is.na(integrated_diagnosis) & 
+                  !is.na(harmonized_diagnosis) ~ harmonized_diagnosis,
+                is.na(integrated_diagnosis) & 
+                  is.na(harmonized_diagnosis) &
+                  !is.na(pathology_diagnosis) ~ pathology_diagnosis
+    )) 
+```
+
+
+
+### Check if any duplicates
+
+```{r}
+dup_ids<-histology$Kids_First_Biospecimen_ID[duplicated(histology$Kids_First_Biospecimen_ID)]
+
+histology[which(histology$Kids_First_Biospecimen_ID %in% dup_ids),]
+```
+
+No duplicates
+
+### Check if broad_histology, short_histology or harmonized_diagnosis
+
+Are there NA in broad_histology, short_histology or harmonized_diagnosis
+
+```{r}
+histology %>% 
+  filter(sample_type=="Tumor",
+         (is.na(broad_histology)| is.na(short_histology)| is.na(harmonized_diagnosis))) %>%
+  tally()
+
+```
+
+No NAs in broad_histology, short_histology or harmonized_diagnosis
+
+Just a note, integrated_diagnosis is expected to be `NA` for samples where subtyping is not performed or if molecular_subtype is "XYZ,To be classified". 
+This means no evidence was provided/available for these samples so we are not able to add integrated_diagnosis.
+
+#### Check differences in broad_histology 
+Checking for differences in broad_histology to look for changes in molecular_subtype 
+
+
+```{r}
+diff_broad_histology<- histology %>%
+  filter(toupper(broad_histology.base) != toupper(broad_histology.subtyped)) %>%
+  select(Kids_First_Biospecimen_ID,starts_with("broad_histology"),starts_with("short_histology")) %>%
+  unique()
+
+diff_broad_histology
+```
+
+#### Check differences in short_histology
+Here we want to check for short_histology changes not part of `Check differences in broad_histology` chunk.
+This will help us check what string assignment path_dx to short_histology mapping has changed from `molecular-subtyping-pathology`
+
+```{r}
+
+histology %>% 
+  filter(!Kids_First_Biospecimen_ID %in% diff_broad_histology$Kids_First_Biospecimen_ID) %>%
+   filter(toupper(short_histology.base) != toupper(short_histology.subtyped) 
+         ) %>%
+  select(Kids_First_Biospecimen_ID,starts_with("broad_histology"),starts_with("short_histology")) %>%
+  unique() 
+
+```
+The above 172 changes occurred because of changes in string value assignment
+In `compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` a sample with broad_histology that is `Ependymal tumor` is `EPN`, but in `pbta-histologies-base.tsv` it is `Ependymoma`.
+For samples where broad_histology is `Embryonal tumor`, short_histology is also `Embryonal tumor` but in base histology it was `ETMR`.
+
+45 Benign ,Non-(CNS) tumor and other samples where pathology_diagnosis == "Other",have short_histology updated from manual review of WHO diagnosis terms.
+
+### Save
+Let's save the final file.
+
+But first need to remove broad_histology.base, broad_histology.subtyped and short_histology.base
+ and short_histology.subtyped
+
+```{r}
+histology %>% 
+  select(-broad_histology.base,
+         -broad_histology.subtyped,
+         - short_histology.base,
+         -short_histology.subtyped) %>%
+  write_tsv("results/pbta-histologies.tsv")
+```

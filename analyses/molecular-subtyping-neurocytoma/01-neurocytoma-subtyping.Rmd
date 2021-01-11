@@ -1,0 +1,88 @@
+---
+title: "Subtype Neurocytoma tumors as central or extra-ventricular"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Krutika Gaonkar for D3b
+date: 2020
+---
+
+For, "Neurocytoma" samples detected in pathology_diagnosis, subtyping conditions as per issue [#805](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/805) are as follows :
+
+ - If primary_site == "Ventricles", then molecular_subtype == CNC (central neurocytoma) 
+ - If primary_site != "Ventricles", then molecular_subtype == EVN (extraventricular neurocytoma)
+
+## Set up 
+
+```{r}
+library(tidyverse)
+```
+
+## Input directories and files
+
+```{r}
+data_dir <- file.path("..", "..", "data")
+histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies-base.tsv"))
+
+```
+
+## Output directory and file
+
+```{r}
+results_dir <- "results"
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+outputfile <- file.path(results_dir,"neurocytoma_subtyping.tsv")
+```
+
+
+## Check if `pathology_free_text_diagnosis` and `pathology_diagnosis` different for any Neurocytoma sample
+
+Are there any Neurocytoma samples in `pathology_free_text_diagnosis` that are not listed in pathology_diagnosis?
+
+```{r}
+
+neurocytoma_from_pathology_free_text_diagnosis <- histologies_df %>%
+  filter(str_detect(pathology_free_text_diagnosis, "neurocytoma")
+                    ) 
+
+neurocytoma_from_pathology_diagnosis <- histologies_df %>%
+  filter(str_detect(pathology_diagnosis, "Neurocytoma")
+                    ) 
+
+neurocytoma_from_pathology_free_text_diagnosis %>%
+  dplyr::filter(!Kids_First_Biospecimen_ID %in% neurocytoma_from_pathology_diagnosis$Kids_First_Biospecimen_ID )
+
+```
+There are no Kids_First_Biospecimen_ID in `pathology_free_text_diagnosis` that are not listed as "Neurocytoma" in  `pathology_diagnosis`. So will only use  `pathology_diagnosis` to look up "Neurocytoma" samples for subtyping
+
+
+Checking if `pathology_diagnosis` has "Neurocytoma" what are all primary_site associated with it
+```{r}
+neurocytoma_from_pathology_diagnosis$primary_site %>% unique()
+```
+
+
+## Subtyping Neurocytoma samples based on primary site 
+
+The values are only "Ventricles" and "Parietal Lobe" so we can directly check if primary_site== "Ventricles" ~ "CNC" and if primary_site != "Ventricles" ~ "EVN"
+
+```{r}
+
+neurocytoma_subtype <- neurocytoma_from_pathology_diagnosis %>% 
+  dplyr::mutate(molecular_subtype= 
+                  # primary_site == "Ventricles", then molecular_subtype == CNC (central neurocytoma) 
+                  case_when(primary_site == "Ventricles" ~ "CNC",
+                  # primary_site != "Ventricles", then molecular_subtype == EVN (extraventricular neurocytoma)       
+                            primary_site != "Ventricles" ~ "EVN"
+                            )
+  ) %>%
+  dplyr::select(Kids_First_Participant_ID,
+                sample_id,
+                Kids_First_Biospecimen_ID,
+                molecular_subtype) %>%
+  write_tsv(outputfile)
+
+```

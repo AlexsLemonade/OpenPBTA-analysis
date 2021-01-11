@@ -110,7 +110,7 @@ Note that a gene may have evidence for two kinds of copy number alteration (e.g.
 ```{r}
 # Select only the ID information, for use in joining below
 cn_df_ids <- cn_df %>%  
-  select(sample_id, 
+  select(sample_id,
          Kids_First_Biospecimen_ID = biospecimen_id,
          Kids_First_Participant_ID)
 
@@ -135,7 +135,7 @@ cn_df_genes_status <- cn_df_genes %>%
          PDGFRA_focal_status = PDGFRA,
          PTEN_focal_status   = PTEN) %>%
   # Arrange order of columns
-  dplyr::select(sample_id, 
+  dplyr::select(sample_id,
                 Kids_First_Biospecimen_ID, 
                 Kids_First_Participant_ID, 
                 everything())
