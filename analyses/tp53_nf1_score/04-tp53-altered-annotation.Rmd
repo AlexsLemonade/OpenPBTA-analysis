@@ -264,7 +264,7 @@ tp53_alterations_score_wide <- tp53_alterations_score_wide %>%
         # when activating == "Yes"
         activating == "Yes" ~ "activated",
         # if no evidence supports TP53 inativation or activation 
-        TRUE ~ "No evidence"
+        TRUE ~ "Other"
       )
   )
 
@@ -412,5 +412,4 @@ tp53_alterations_score_wide %>%
   write_tsv(file.path(results_dir,"tp53_altered_status.tsv"))
 
 ```
-
 
