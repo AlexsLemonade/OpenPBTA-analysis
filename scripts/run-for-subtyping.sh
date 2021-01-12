@@ -61,3 +61,5 @@ bash ../analyses/molecular-subtyping-LGAT/run_subtyping.sh
 echo "Run compile subtyping"
 bash ../analyses/molecular-subtyping-pathology/run-subtyping-aggregation.sh
 
+echo "Run integrate subtyping"
+bash ../analyses/molecular-subtyping-integrate/run-subtyping-integrate.sh

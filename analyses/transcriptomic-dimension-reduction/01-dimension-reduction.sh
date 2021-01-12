@@ -16,7 +16,7 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 
-RUN_FOR_SUBTYPING=${BASE_SUBTYPING:-0}
+RUN_FOR_SUBTYPING=${OPENPBTA_BASE_SUBTYPING:-0}
 
 SEED=2019
 PERPLEXITY=10

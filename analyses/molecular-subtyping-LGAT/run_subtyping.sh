@@ -10,8 +10,6 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 SUBSET=${OPENPBTA_SUBSET:-1}
 
 if [ "$SUBSET" -gt "0" ]; then
-  Rscript --vanilla 01-subset-files-for-LGAT.R
+  Rscript -e "rmarkdown::render('01-subset-files-for-LGAT.Rmd')"
 fi
 
-# Run notebook to get molecular subtype for LGAT samples 
-Rscript -e "rmarkdown::render('02-make-lgat-final-table.Rmd')"

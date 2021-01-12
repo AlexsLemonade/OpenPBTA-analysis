@@ -345,15 +345,15 @@ compiled_df %>%
 compiled_df <- compiled_df %>%
   mutate(
     integrated_diagnosis = case_when(
-      sample_id == "7316-765" ~ "CNS Embryonal Tumor, HGNET-MN1",
+      sample_id == "7316-765" ~ "CNS Embryonal tumor, HGNET-MN1",
       TRUE ~ integrated_diagnosis
     ),
     short_histology = case_when(
-      sample_id == "7316-765" ~ "Embryonal Tumor",
+      sample_id == "7316-765" ~ "Embryonal tumor",
       TRUE ~ short_histology
     ),
     broad_histology = case_when(
-      sample_id == "7316-765" ~ "Embryonal Tumor",
+      sample_id == "7316-765" ~ "Embryonal tumor",
       TRUE ~ broad_histology
     ),
     molecular_subtype = case_when(
@@ -469,7 +469,7 @@ compiled_df <- compiled_df %>%
       TRUE ~ short_histology
     ),
     broad_histology = case_when(
-      sample_id == "7316-238" ~ "Embryonal Tumor",
+      sample_id == "7316-238" ~ "Embryonal tumor",
       TRUE ~ broad_histology
     ),
     molecular_subtype = case_when(
