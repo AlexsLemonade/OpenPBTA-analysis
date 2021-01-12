@@ -9,7 +9,7 @@ date: 2020
 ---
 ## Purpose: 
 
-Our goal is to get 10- 15 labels based on histologies we can use for plotting. 
+Our goal is to get 10-15 labels based on histologies we can use for plotting. 
 
 ### Usage
 
@@ -24,12 +24,8 @@ Rscript -e "rmarkdown::render('figures/mapping-histology-labels.Rmd',
 ### Set Up
 
 ```{r}
-library(viridis)
-
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
-
-set.seed(2021)
 ```
 
 ### Directories and Files
@@ -141,16 +137,15 @@ summary_groups
 
 ### Add hex codes 
 
-These hex codes were retrieved from http://phrogz.net/css/distinct-colors.html with the settings on default for 37 colors.
+These hex codes were retrieved from http://phrogz.net/css/distinct-colors.html with the settings on default for 18 colors.
 
 ```{r}
 color_palette <- 
-  c("#f23d3d", "#731d1d", "#b38686", "#cc5c33", "#331c0d", 
-    "#ffb380", "#b25f00", "#f2d6b6", "#736556", "#ffaa00", "#4c3d00", "#e2f200", 
-    "#919926", "#d6f2b6", "#304d26", "#00f241", "#009929", "#698c7c", "#39e6c3", 
-    "#005359", "#263233", "#00c2f2", "#40a6ff", "#406280", "#0044ff", "#00144d", 
-    "#acbbe6", "#7373e6", "#3d0099", "#c200f2", "#917399", "#731d6d", "#f279da", 
-    "#cc0052", "#994d6b", "#4d2636", "#ffbfd9")
+  c("#ff0000", "#cc0000", "#995200", "#bfb300", "#fffbbf", 
+    "#2e7300", "#00e65c", "#00ffee", "#103d40", "#0085a6", 
+    "#003380", "#4073ff", "#737899", "#70008c", "#f2b6ee", 
+    "#ff40bf", "#8c0038", "#330d12"
+)
 ```
 
 Declare how many colors we need. 
@@ -162,6 +157,10 @@ n_colors <- nrow(summary_groups)
 Make a named list color key where histologies are the names. 
 
 ```{r}
+# Set seed so the colors are consistent upon re-run
+set.seed(2021)
+
+# Sample from the 18 colors
 subset_colors <- sample(color_palette, n_colors)
 names(subset_colors) <- summary_groups$summary_group
 ```
