@@ -1,0 +1,194 @@
+---
+title: "Mapping histology labels for plots"
+output:   
+  html_notebook: 
+    toc: true
+    toc_float: true
+author: Candace Savonen for ALSF - CCDL
+date: 2020
+---
+## Purpose: 
+
+Our goal is to get 10- 15 labels based on histologies we can use for plotting. 
+
+### Usage
+
+This notebook can be run via the command line from the top directory of the 
+repository as follows:
+
+```
+Rscript -e "rmarkdown::render('figures/mapping-histology-labels.Rmd', 
+                              clean = TRUE)"
+```
+
+### Set Up
+
+```{r}
+library(viridis)
+
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+
+set.seed(2021)
+```
+
+### Directories and Files
+
+```{r}
+# Path to input directory
+input_dir <- file.path("..", "data")
+output_dir <- "palettes"
+```
+
+### Read in data 
+
+Which variables are we keeping for this table? 
+
+```{r}
+histology_variables <- 
+  c("Kids_First_Biospecimen_ID",
+    "sample_type", 
+    "integrated_diagnosis", 
+    "Notes", 
+    "harmonized_diagnosis",
+    "broad_histology", 
+    "short_histology")
+
+```
+
+Let's read in the current pbta-histologies.tsv file and select the variables we mentioned above. 
+
+```{r}
+metadata <-
+  readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv"), guess_max = 10000) %>% 
+  dplyr::select(histology_variables)
+```
+
+Because the `Normal` samples don't have histologies, we'll look at just the Tumor samples at first. 
+
+```{r}
+tumor_only_metadata <- metadata %>% 
+  dplyr::filter(sample_type == "Tumor") 
+```
+
+### Take a look at how many biospecimens per `broad_histology` group
+
+Let's summarize `broad_histology`. 
+
+```{r}
+broad_summary <- tumor_only_metadata %>% 
+  dplyr::count(broad_histology) 
+```
+
+Let's take a look at how big all these groups are with a barplot.
+
+```{r}
+ggplot2::ggplot(broad_summary, ggplot2::aes(x = reorder(broad_histology, -n), y = n)) +
+  ggplot2::geom_bar(position = "dodge", stat = "identity") +
+  ggplot2::theme_classic() +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) + 
+  ggplot2::xlab("broad_histology label")
+```
+
+```{r}
+broad_summary %>% 
+  dplyr::filter(n > 12) %>% 
+  nrow()
+```
+
+There are 13 groups that are bigger than 12 samples and 8 groups that have less than 12 samples.
+
+Now let's get a vector of those small `broad_histology` groups. 
+
+```{r}
+small_groups <- broad_summary %>% 
+  dplyr::filter(n < 12) %>% 
+  dplyr::pull(broad_histology)
+```
+
+### Make new `summary_group`
+
+Here's the major recoding steps done in the next code chunk: 
+
+1) All groups with less than 12 biospecimens assigned to them will be grouped together as `Other`. 
+
+2) "Neuronal and mixed neuronal-glial tumor" and "Diffuse astrocytic and oligodendroglial tumor" were labeled as LGAT in previous releases so we will group these into `Low-grade astrocytic tumor` again. 
+
+3) So its clear why they are `NA`s, we will label all `Normal` samples (non-tumor samples) as `Normal`. 
+
+4) Anything not in the above categories gets its `broad_histology` label carried over. 
+
+```{r}
+histology_table <- metadata %>% 
+  dplyr::mutate(
+    summary_group = dplyr::case_when(
+      broad_histology %in% small_groups ~ "Other",
+      broad_histology %in% c("Neuronal and mixed neuronal-glial tumor", 
+                             "Diffuse astrocytic and oligodendroglial tumor") ~ "Low-grade astrocytic tumor", 
+      sample_type == "Normal" ~ "Normal",
+      TRUE ~ broad_histology)
+    )
+```
+
+Now there are 14 groups!
+
+```{r}
+summary_groups <- histology_table %>% 
+  dplyr::count(summary_group)
+
+summary_groups
+```
+
+### Add hex codes 
+
+These hex codes were retrieved from http://phrogz.net/css/distinct-colors.html with the settings on default for 37 colors.
+
+```{r}
+color_palette <- 
+  c("#f23d3d", "#731d1d", "#b38686", "#cc5c33", "#331c0d", 
+    "#ffb380", "#b25f00", "#f2d6b6", "#736556", "#ffaa00", "#4c3d00", "#e2f200", 
+    "#919926", "#d6f2b6", "#304d26", "#00f241", "#009929", "#698c7c", "#39e6c3", 
+    "#005359", "#263233", "#00c2f2", "#40a6ff", "#406280", "#0044ff", "#00144d", 
+    "#acbbe6", "#7373e6", "#3d0099", "#c200f2", "#917399", "#731d6d", "#f279da", 
+    "#cc0052", "#994d6b", "#4d2636", "#ffbfd9")
+```
+
+Declare how many colors we need. 
+
+```{r}
+n_colors <- nrow(summary_groups)
+```
+
+Make a named list color key where histologies are the names. 
+
+```{r}
+subset_colors <- sample(color_palette, n_colors)
+names(subset_colors) <- summary_groups$summary_group
+```
+
+Use `pie` function to preview what these look like.
+
+```{r}
+pie(rep(1, n_colors), 
+    col = subset_colors, 
+    labels = summary_groups$summary_group)
+```
+
+Add the hex codes to the `histology_table`. 
+
+```{r}
+histology_table <- histology_table %>% 
+  dplyr::mutate(hex_codes = dplyr::recode(summary_group, hex_codes = !!!subset_colors))
+```
+
+Save to the TSV. 
+
+```{r}
+readr::write_tsv(histology_table, file.path(output_dir, "histology_label_color_table.tsv"))
+```
+
+# Session Info
+
+```{r}
+sessionInfo()
+```
