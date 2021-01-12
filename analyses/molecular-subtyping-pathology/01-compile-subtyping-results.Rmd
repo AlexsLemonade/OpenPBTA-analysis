@@ -158,16 +158,16 @@ embryonal_results_df <- bind_exp_strategies(embryonal_results_df) %>%
                     broad_histology,
                     Notes),
              by = "Kids_First_Biospecimen_ID") %>%
-  mutate(integrated_diagnosis = case_when(molecular_subtype == "CNS Embryonal, NOS"~ "CNS Embryonal Tumor, NOS",
-                                          molecular_subtype == "CNS HGNET-MN1"~ "CNS Embryonal Tumor, HGNET-MN1",
+  mutate(integrated_diagnosis = case_when(molecular_subtype == "CNS Embryonal, NOS"~ "CNS Embryonal tumor, NOS",
+                                          molecular_subtype == "CNS HGNET-MN1"~ "CNS Embryonal tumor, HGNET-MN1",
                                           molecular_subtype == "CNS NB-FOXR2" ~ "CNS neuroblastoma",
                                           molecular_subtype == "ETMR, C19MC-altered"~ "Embryonal tumor with multilayer rosettes, C19MC-altered",
                                           molecular_subtype == "ETMR, NOS"~"Embryonal tumor with multilayer rosettes, NOS",
                                           TRUE ~ NA_character_), 
         short_histology = 
           if_else(molecular_subtype %in% c("ETMR, C19MC-altered", "ETMR, NOS"),
-                "ETMR", "Embryonal Tumor"),
-        broad_histology = "Embryonal Tumor",
+                "ETMR", "Embryonal tumor"),
+        broad_histology = "Embryonal tumor",
         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes))
 
 ```
@@ -252,7 +252,7 @@ epn_results_df <- bind_exp_strategies(epn_results_df) %>%
                                           molecular_subtype == "ST_EPN_RELA" ~ "Supratentorial Ependymoma, RELA fusion positive",
                                           molecular_subtype == "ST_EPN_YAP1" ~ "Supratentorial Ependymoma, YAP1 fusion positive", 
                                           TRUE~ NA_character_),
-         broad_histology = "Ependymal Tumor",
+         broad_histology = "Ependymal tumor",
          short_histology = "Ependymoma",
          Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes))
 ```
@@ -272,7 +272,7 @@ mb_results_df <- bind_exp_strategies(mb_results_df) %>%
                                           molecular_subtype == "MB, Group3"~"Medulloblastoma, group 3",
                                           molecular_subtype == "MB, Group4"~ "Medulloblastoma, group 4", 
                                           TRUE ~NA_character_),
-         broad_histology = "Embryonal Tumor",
+         broad_histology = "Embryonal tumor",
          short_histology = "Medulloblastoma",
          Notes = if_else(!is.na(integrated_diagnosis), "Subtype based on prediction;Updated via OpenPBTA subtyping", Notes))
 ```
