@@ -268,7 +268,9 @@ plot_dimension_reduction <- function(aligned_scores_df,
         "#8b20d3", "#799d10", "#881c23",
         "#3fc6f8", "#fe5cde", "#0a7fb2",
         "#f2945a", "#6b4472", "#f4d403",
-        "#76480d", "#a6b6f9", "#000000"
+        "#76480d", "#a6b6f9", "#0d76ff",
+        "#f3e500", "#a72a1b", "#319106",
+        "#0051bc", "#000000"
       )))
     }
 

@@ -23,7 +23,7 @@ library(tidyverse)
 
 ```{r}
 data_dir <- file.path("..", "..", "data")
-histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
+histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies-base.tsv"))
 
 ```
 

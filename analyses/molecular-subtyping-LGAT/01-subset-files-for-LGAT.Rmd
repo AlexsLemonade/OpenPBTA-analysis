@@ -83,10 +83,10 @@ Filter to tumor samples that should be included on the basis of pathology diagno
 ```{r}
 lgat_specimens_df <- clinical %>%
   dplyr::filter(str_detect(str_to_lower(pathology_diagnosis),  # Inclusion criteria
-                           paste0(path_dx_list$include_path_dx, collapse = "|")),
+                           paste(path_dx_list$include_path_dx, collapse = "|")),
                 # Exclusion criteria
                 str_detect(str_to_lower(pathology_diagnosis),
-                           paste0(path_dx_list$exclude_path_dx, collapse = "|"),
+                           paste(path_dx_list$exclude_path_dx, collapse = "|"),
                            negate = TRUE),
                 # Tumors
                 sample_type == "Tumor",
@@ -126,19 +126,22 @@ IDH_hotspot<- paste(snvOI$IDH$hotspot[!is.na( snvOI$IDH$hotspot)],collapse = "|"
 
 
 ### Subset consensus maf and annotate per subtype based on SNV
-We will gather SNV calls that satisfy the conditions per subtype and save the subset along with the  HGVSp_Short, DOMAINS and Variant_Classification 
+We will gather SNV calls that satisfy the conditions per subtype and save the subset along with the HGVSp_Short, DOMAINS and Variant_Classification 
 
 ```{r}
 # Filter consensus mutation files for LGAT subset
 consensusMutationSubset <- consensusMutation %>%
   # find lgat samples
   dplyr::filter(Tumor_Sample_Barcode %in% lgat_dna_df$Kids_First_Biospecimen_ID) %>%
-  # select tumor sample barcode
+  # select tumor sample barcode, gene, short protein annotation, domains, and variant classification
   dplyr::select(Tumor_Sample_Barcode,
                 Hugo_Symbol,
                 HGVSp_Short,
                 DOMAINS,
-                Variant_Classification) %>%
+                Variant_Classification,
+                IMPACT,
+                SIFT,
+                PolyPhen) %>%
   dplyr::filter(
     # get BRAF mutation status
     # canonical mutations V600E
@@ -148,18 +151,22 @@ consensusMutationSubset <- consensusMutation %>%
       grepl(BRAF_hotspot,HGVSp_Short) &
       Hugo_Symbol=="BRAF" | # OR
       # and kinase domain mutation for non-canonical mutation 
+      # Family: PK_Tyr_Ser-Thr https://pfam.xfam.org/family/PF07714
       grepl("PF07714",DOMAINS) & 
       Hugo_Symbol=="BRAF" | # OR
+      
       # get NF1 mutation status
-      # all mutations in MAPK genes
       Hugo_Symbol %in% snvOI$NF1$gene & 
       Variant_Classification %in% c("Missense_Mutation","Nonsense_Mutation") |
-      # other MAPK mutation status
+      
+      # get other MAPK mutation status
       # all mutations in MAPK genes
       Hugo_Symbol %in% snvOI$MAPK$gene | # OR
-      # RTK mutation status
+      
+      # get RTK mutation status
       # all mutations in RTK genes
       Hugo_Symbol %in% snvOI$RTK$gene | # OR
+      
       # get FGFR mutation status
       # canonical mutations
       HGVSp_Short %in% snvOI$FGFR$canonical[!is.na(snvOI$FGFR$canonical)] &
@@ -167,39 +174,40 @@ consensusMutationSubset <- consensusMutation %>%
       # hotspot mutations 
       grepl(FGFR_hotspot,HGVSp_Short) &
       Hugo_Symbol=="FGFR1" | # OR
+      
       # get IDH mutation status
       # hostspot mutations
       grepl(IDH_hotspot,HGVSp_Short) & 
       Hugo_Symbol %in% snvOI$IDH$gene | # OR
-      # get H3F3A mutation status
-      # canonical mutations
+      
+      # get histone mutation status
+      # H3F3A canonical mutations
       HGVSp_Short %in% snvOI$H3F3A$canonical & Hugo_Symbol %in% "H3F3A" | # OR
-      # get H3F3B mutation status
-      # canonical mutations
+      # H3F3B canonical mutations
       HGVSp_Short %in% snvOI$H3F3B$canonical & Hugo_Symbol %in% "H3F3B" | # OR
-      # get HIST1H3B mutation status
-      # canonical mutations
+      # HIST1H3B canonical mutations
       HGVSp_Short %in% snvOI$HIST1H3B$canonical & Hugo_Symbol %in% "HIST1H3B" | # OR
-      # get HIST1H3C mutation status
-      # canonical mutations
-      HGVSp_Short %in% snvOI$HIST1H3C$canonical & Hugo_Symbol %in% "HIST1H3C" 
+      # HIST1H3C canonical mutations
+      HGVSp_Short %in% snvOI$HIST1H3C$canonical & Hugo_Symbol %in% "HIST1H3C" | # OR
+      # HIST2H3C canonical mutations     
+      HGVSp_Short %in% snvOI$HIST2H3C$canonical & Hugo_Symbol %in% "HIST2H3C" 
   ) 
 
 consensusMutationSubset
 ```
 
-What are the distribution of Variant_Classification of the SNVs captured per gene.
-
+What is the distribution of Variant_Classification of the SNVs captured per gene?
 ```{r}
 consensusMutationSubset %>% 
   group_by(Hugo_Symbol,Variant_Classification) %>%
   tally() 
 
 ```
+We have some synonymous variants (classified as Intron, 5`Flank and Silent) captured per gene of interest.    
  
-We will remove synonymous variant calls from the list above. The Variant_Classification terms for synonymous SNV are selected as per interaction-plots/scripts/02-process_mutations.R
+ 
+We will now remove synonymous variant calls from the list above. The Variant_Classification terms for synonymous SNV are selected as per [interaction-plots/scripts/02-process_mutations.R](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/interaction-plots/scripts/02-process_mutations.R).
 ```{r}
-
 # Variant Classification with Low/Modifier variant consequences 
 #  from maftools http://asia.ensembl.org/Help/Glossary?id=535
 synonymous <- c(
@@ -211,61 +219,79 @@ synonymous <- c(
   "De_novo_Start_OutOfFrame"
 )
 
-consensusMutationSubset %>%
+consensusMutationSubset <- consensusMutationSubset %>%
   dplyr::filter(!Variant_Classification %in% synonymous)
-
 ```
 
-Lets check if all LGAT DNA biospecimens have a subtype defining SNV
+### Review predicted impact of SNVs
+
+```{r}
+consensusMutationSubset %>% 
+  dplyr::select("Tumor_Sample_Barcode", "IMPACT","SIFT","PolyPhen","Hugo_Symbol","Variant_Classification")
+
+```
+ We have some Modifier mutations in the filtered snv subset.
+ 
+ We are removing the LOW/MODIFIER IMPACT annotated by [VEP](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/#impact-categories)
+ 
+ - LOW (L): Assumed to be mostly harmless or unlikely to change protein behavior
+ - MODIFIER (MO): Usually non-coding variants or variants affecting non-coding genes, where predictions are difficult or there is no evidence of impact
+
+```{r}
+consensusMutationSubset <- consensusMutationSubset %>%
+  dplyr::filter(!IMPACT %in% c("MODIFIER","LOW"))
+```
+ 
+
+Let's check whether all LGAT DNA biospecimens have a subtype defining SNV.
  
 ```{r}
 all(lgat_dna_df$Kids_First_Biospecimen_ID %in% consensusMutationSubset$Tumor_Sample_Barcode)
 ```
  
 ### Gather status of all SNVs per biospecimen
-To gather the biospecimens we will use all LGAT DNA biospecimen IDs and assign "Yes" or "No" to each subtype column depending on the presence or absence of SNV that define the subtype.
-
+To gather the biospecimens, we will use all LGAT DNA biospecimen IDs and assign "Yes" or "No" to each subtype column depending on the presence or absence of SNV that define the subtype.
 
 columnname  | description 
  --- | --- 
 NF1_mut | somatic loss of NF1 via either missense, nonsense mutation 
 BRAF_V600E_mut | contains BRAF V600E or V599 SNV or non-canonical BRAF alterations such as p.V600ins or p.D594N 
 MAPK_mut | contains mutation in KRAS, NRAS, HRAS, MAP2K1, MAP2K2, MAP2K1, ARAF SNV or indel 
-RTK_mut | harbors a MET,KIT or PDGFRA SNV 
+RTK_mut | harbors a MET, KIT, or PDGFRA SNV 
 FGFR_mut | harbors FGFR1 p.N546K, p.K656E, p.N577, or p. K687 hotspot mutations 
 IDH_mut | harbors an IDH R132 mutation 
+H3.1_mut | harbors an HIST1H3B K28M or HIST1H3C  K28M
+H3.2_mut | harbors an HIST2H3C K28M
 H3.3_mut | harbors an H3F3A K28M or G35R/V mutation 
-H3.1_mut | harbors an HIST1H3B K28M|or HIST1H3C  K28M 
 
 ```{r}
-
 consensusMutationSubset <- lgat_dna_df %>%
   left_join(consensusMutationSubset,by=c("Kids_First_Biospecimen_ID"="Tumor_Sample_Barcode")) %>%
   reshape2::dcast(Kids_First_Biospecimen_ID + sample_id~ Hugo_Symbol) %>%
   dplyr::mutate(BRAF_V600E_mut = if_else(BRAF>=1,"Yes","No"),
                 FGFR_mut = if_else(rowSums(
                   dplyr::select(.,snvOI$FGFR$gene)) >=1,"Yes","No"),
-                # No IDH HIST1H3C and H3F3A mutations found
+                # No IDH HIST1H3C, HIST2H3C, or H3F3A mutations found
                 IDH_mut  = if_else(any(colnames(.) %in% snvOI$IDH$gene) & 
                                      rowSums(dplyr::select(.,one_of(snvOI$IDH$gene))) >=1,
                                    "Yes","No"),
+                H3.1_mut = if_else(rowSums(
+                  dplyr::select(.,one_of(c("HIST1H3B","HIST1H3C")))) >=1 ,"Yes","No"), 
+                H3.2_mut = if_else(any(colnames(.) %in% snvOI$HIST2H3C$gene) & 
+                                     rowSums(dplyr::select(.,one_of(snvOI$HIST2H3C$gene))) >=1,
+                                   "Yes","No"), 
                 H3.3_mut = if_else(any(colnames(.) %in% c("H3F3A","H3F3B")) & 
                                      rowSums(dplyr::select(.,one_of(c("H3F3A","H3F3B")))) >= 1 ,"Yes","No"),
-                H3.1_mut = if_else(rowSums(
-                  dplyr::select(.,one_of(c("HIST1H3B","HIST1H3C")))) >=1 ,"Yes","No"),  
                 MAPK_mut  = if_else(
                   rowSums(dplyr::select(.,one_of(snvOI$MAPK$gene)))>=1,"Yes","No"),
                 RTK_mut  = if_else(
                   rowSums(dplyr::select(.,one_of(snvOI$RTK$gene)))>=1,"Yes","No"),
                 NF1_mut = if_else(
                   rowSums(dplyr::select(.,one_of(snvOI$NF1$gene)))>=1,"Yes","No") ) %>%
-  dplyr::select("Kids_First_Biospecimen_ID","sample_id",ends_with("mut"))
-
+  dplyr::select("Kids_First_Biospecimen_ID","sample_id",ends_with("mut")) %>%
+dplyr::arrange(Kids_First_Biospecimen_ID, sample_id)
 consensusMutationSubset 
-
 ```
-
-
 
 ```{r}
 # remove consensusMutation
