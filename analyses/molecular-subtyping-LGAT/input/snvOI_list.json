@@ -1,0 +1,121 @@
+{
+    "BRAF_V600E": [
+        {
+            "hotspot": 599,
+            "gene": "BRAF"
+        },
+        {
+            "hotspot": 600,
+            "gene": "BRAF",
+            "canonical": "p.V600E"
+        }
+    ],
+    "FGFR": [
+        {
+            "hotspot": 577,
+            "gene": "FGFR1"
+        },
+        {
+            "hotspot": 687,
+            "gene": "FGFR1"
+        },
+        {
+            "gene": "FGFR1",
+            "canonical": "p.N546K"
+        },
+        {
+            "gene": "FGFR1",
+            "canonical": "p.K656E"
+        }
+    ],
+    "MAPK": [
+        {
+            "gene": "KRAS"
+        },
+        {
+            "gene": "ARAF"
+        },
+        {
+            "gene": "NRAS"
+        },
+        {
+            "gene": "HRAS"
+        },
+        {
+            "gene": "MAP2K1"
+        },
+        {
+            "gene": "MAP2K2"
+        }
+    ],
+    "RTK": [
+        {
+            "gene": "KIT"
+        },
+        {
+            "gene": "MET"
+        },
+        {
+            "gene": "PDGFRA"
+        }
+    ],
+    "NF1": [
+        {
+            "gene": "NF1",
+            "cancer_disposition": "NF-1"
+        }
+    ],
+    "H3F3A": [
+        {
+            "canonical": "p.K28M",
+            "gene": "H3F3A"
+        },
+        {
+            "canonical": "p.G35R",
+            "gene": "H3F3A"
+        },
+        {
+            "canonical": "p.G35V",
+            "gene": "H3F3A"
+        }
+    ],
+    "H3F3B": [
+        {
+            "canonical": "p.K28M",
+            "gene": "H3F3B"
+        },
+        {
+            "canonical": "p.G35R",
+            "gene": "H3F3B"
+        },
+        {
+            "canonical": "p.G35V",
+            "gene": "H3F3B"
+        }
+    ],
+     "HIST1H3B": [
+        {
+            "canonical": "p.K28M",
+            "gene": "HIST1H3B"
+        }
+    ],
+    "HIST1H3C": [ 
+        {
+            "canonical": "p.K28M",
+            "gene": "HIST1H3C"
+        }
+    ],
+    "HIST2H3C": [ 
+        {
+            "canonical": "p.K28M",
+            "gene": "HIST2H3C"
+        }
+    ],
+    "IDH": [
+        {
+            "hotspot": 132,
+            "gene": "IDH"
+        }
+    ]
+}
+
