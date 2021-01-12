@@ -14,11 +14,15 @@ The histology label variables included in `pbta-histologies.tsv` from data relea
 
 The goal of this notebook is to use the currently existing `broad_histology` groups from `pbta-histologies.tsv`, to form 10-15 "high level histology" group labels that can used for plotting purposes.
 
-The output of this notebook is a TSV file: `palettes/histology_label_color_table.tsv` that contains...  
-*Copied from `pbta-histologies.tsv`*:    
+## The output table
+
+The output of this notebook is a TSV file: `palettes/histology_label_color_table.tsv` that contains...
+  
+**Copied from `pbta-histologies.tsv`**:    
 - `Kids_First_Biospecimen_ID` (from `pbta-histologies.tsv`)  
 - All the original histology label variables (`broad_histology`, `short_histology`, etc.)  
-*Created in this notebook*:  
+  
+**Created in this notebook**:  
 - `summary_group` - the high-level histology labels that should be used for plotting   
 - `hex_codes` the direct colors that should be used for plotting  
 
