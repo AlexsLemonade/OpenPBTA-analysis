@@ -2959,9 +2959,9 @@ div.tocify {
 <h1>How <code>display_group</code> is made:</h1>
 <p>Here’s how <code>broad-histology</code> groups are <a href="#declare-new-equivalent-groups">combined into the higher-level groupings of <code>display_group</code></a>.</p>
 <ol style="list-style-type: decimal">
-<li><p>“Neuronal and mixed neuronal-glial tumor” and “Diffuse astrocytic and oligodendroglial tumor” were labeled as LGAT in previous releases so we will group these into <code>Low-grade astrocytic tumor</code> in <code>display_group</code>.</p></li>
-<li><p><code>Germ cell tumor</code> samples are combined into the <code>Non-CNS tumor</code> group.</p></li>
+<li><p>“Lymphoma”, “Melanocytic tumor”, “Other tumor”, “Metastatic tumors”, “Non-CNS tumor” are combined into a <code>Other non-CNS group</code> in <code>display_group</code>.</p></li>
 <li><p><code>Benign tumor</code> and <code>Non-tumor</code> biospecimens are combined into a <code>Benign</code> group.</p></li>
+<li><p><code>Other astrocytic tumor</code> samples are combined into the existing <code>Low-grade astrocytic tumor</code>.</p></li>
 <li><p>Anything not in the above categories gets its <code>broad_histology</code> label carried over.</p></li>
 </ol>
 </div>
@@ -3007,26 +3007,22 @@ output_dir &lt;- &quot;palettes&quot;</code></pre>
 <p>Which variables are we keeping for this table?</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlzdG9sb2d5X3ZhcmlhYmxlcyA8LSBcbiAgYyhcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIixcbiAgICBcInNhbXBsZV90eXBlXCIsIFxuICAgIFwiaW50ZWdyYXRlZF9kaWFnbm9zaXNcIiwgXG4gICAgXCJOb3Rlc1wiLCBcbiAgICBcImhhcm1vbml6ZWRfZGlhZ25vc2lzXCIsXG4gICAgXCJicm9hZF9oaXN0b2xvZ3lcIiwgXG4gICAgXCJzaG9ydF9oaXN0b2xvZ3lcIilcblxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlzdG9sb2d5X3ZhcmlhYmxlcyA8LSBcbiAgYyhcImludGVncmF0ZWRfZGlhZ25vc2lzXCIsIFxuICAgIFwiTm90ZXNcIiwgXG4gICAgXCJoYXJtb25pemVkX2RpYWdub3Npc1wiLFxuICAgIFwiYnJvYWRfaGlzdG9sb2d5XCIsIFxuICAgIFwic2hvcnRfaGlzdG9sb2d5XCIpXG5gYGAifQ== -->
 <pre class="r"><code>histology_variables &lt;- 
-  c(&quot;Kids_First_Biospecimen_ID&quot;,
-    &quot;sample_type&quot;, 
-    &quot;integrated_diagnosis&quot;, 
+  c(&quot;integrated_diagnosis&quot;, 
     &quot;Notes&quot;, 
     &quot;harmonized_diagnosis&quot;,
     &quot;broad_histology&quot;, 
-    &quot;short_histology&quot;)
-</code></pre>
+    &quot;short_histology&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Let’s read in the current release’s <code>pbta-histologies.tsv</code> file and select the histology variables we mentioned above.</p>
+<p>Let’s read in the current release’s <code>pbta-histologies.tsv</code> file.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWV0YWRhdGEgPC1cbiAgcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChpbnB1dF9kaXIsIFwicGJ0YS1oaXN0b2xvZ2llcy50c3ZcIiksIGd1ZXNzX21heCA9IDEwMDAwKSAlPiUgXG4gIGRwbHlyOjpzZWxlY3QoaGlzdG9sb2d5X3ZhcmlhYmxlcylcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWV0YWRhdGEgPC1cbiAgcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChpbnB1dF9kaXIsIFwicGJ0YS1oaXN0b2xvZ2llcy50c3ZcIiksIGd1ZXNzX21heCA9IDEwMDAwKVxuYGBgIn0= -->
 <pre class="r"><code>metadata &lt;-
-  readr::read_tsv(file.path(input_dir, &quot;pbta-histologies.tsv&quot;), guess_max = 10000) %&gt;% 
-  dplyr::select(histology_variables)</code></pre>
+  readr::read_tsv(file.path(input_dir, &quot;pbta-histologies.tsv&quot;), guess_max = 10000)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgT1NfZGF5cyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBhZ2VfbGFzdF91cGRhdGVfZGF5cyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBub3JtYWxfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfcGxvaWR5ID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW1cbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuIn0= -->
 <pre><code>Parsed with column specification:
@@ -3042,14 +3038,24 @@ See spec(...) for full column specifications.</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>Now we’ll select histology variables we mentioned above and so capitalization differences don’t get in the way with this process, we will change everything to lower case for now.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud29ya2luZ19tZXRhZGF0YSA8LSBtZXRhZGF0YSAlPiUgXG4gIGRwbHlyOjpzZWxlY3QoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCwgc2FtcGxlX3R5cGUsIGhpc3RvbG9neV92YXJpYWJsZXMpICU+JSBcbiAgZHBseXI6Om11dGF0ZV9hdChoaXN0b2xvZ3lfdmFyaWFibGVzLCB0b2xvd2VyKVxuYGBgIn0= -->
+<pre class="r"><code>working_metadata &lt;- metadata %&gt;% 
+  dplyr::select(Kids_First_Biospecimen_ID, sample_type, histology_variables) %&gt;% 
+  dplyr::mutate_at(histology_variables, tolower)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 </div>
 <div id="take-a-look-at-how-many-biospecimens-per-broad_histology-group" class="section level1">
 <h1>Take a look at how many biospecimens per <code>broad_histology</code> group</h1>
 <p>Let’s summarize <code>broad_histology</code>. Because the <code>Normal</code> samples don’t have histologies, we’ll look at just the <code>Tumor</code> samples at for this summary.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYnJvYWRfc3VtbWFyeSA8LSBtZXRhZGF0YSAlPiUgXG4gIGRwbHlyOjpmaWx0ZXIoc2FtcGxlX3R5cGUgPT0gXCJUdW1vclwiKSAlPiVcbiAgZHBseXI6OmNvdW50KGJyb2FkX2hpc3RvbG9neSkgJT4lIFxuICBkcGx5cjo6YXJyYW5nZShuKVxuYGBgIn0= -->
-<pre class="r"><code>broad_summary &lt;- metadata %&gt;% 
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYnJvYWRfc3VtbWFyeSA8LSB3b3JraW5nX21ldGFkYXRhICU+JSBcbiAgZHBseXI6OmZpbHRlcihzYW1wbGVfdHlwZSA9PSBcIlR1bW9yXCIpICU+JVxuICBkcGx5cjo6Y291bnQoYnJvYWRfaGlzdG9sb2d5KSAlPiUgXG4gIGRwbHlyOjphcnJhbmdlKG4pXG5gYGAifQ== -->
+<pre class="r"><code>broad_summary &lt;- working_metadata %&gt;% 
   dplyr::filter(sample_type == &quot;Tumor&quot;) %&gt;%
   dplyr::count(broad_histology) %&gt;% 
   dplyr::arrange(n)</code></pre>
@@ -3075,91 +3081,91 @@ See spec(...) for full column specifications.</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">Lymphoma</td>
+<td align="left">lymphoma</td>
 <td align="right">2</td>
 </tr>
 <tr class="even">
-<td align="left">Melanocytic tumor</td>
+<td align="left">melanocytic tumor</td>
 <td align="right">2</td>
 </tr>
 <tr class="odd">
-<td align="left">Non-CNS tumor</td>
+<td align="left">non-cns tumor</td>
 <td align="right">2</td>
 </tr>
 <tr class="even">
-<td align="left">Other tumor</td>
+<td align="left">other tumor</td>
 <td align="right">2</td>
 </tr>
 <tr class="odd">
-<td align="left">Non-tumor</td>
+<td align="left">non-tumor</td>
 <td align="right">6</td>
 </tr>
 <tr class="even">
-<td align="left">Other astrocytic tumor</td>
+<td align="left">other astrocytic tumor</td>
 <td align="right">6</td>
 </tr>
 <tr class="odd">
-<td align="left">Metastatic tumors</td>
+<td align="left">metastatic tumors</td>
 <td align="right">9</td>
 </tr>
 <tr class="even">
-<td align="left">Tumor of pineal region</td>
+<td align="left">tumor of pineal region</td>
 <td align="right">10</td>
 </tr>
 <tr class="odd">
-<td align="left">Histiocytic tumor</td>
+<td align="left">histiocytic tumor</td>
 <td align="right">12</td>
 </tr>
 <tr class="even">
-<td align="left">Choroid plexus tumor</td>
+<td align="left">choroid plexus tumor</td>
 <td align="right">21</td>
 </tr>
 <tr class="odd">
-<td align="left">Germ cell tumor</td>
+<td align="left">germ cell tumor</td>
 <td align="right">27</td>
 </tr>
 <tr class="even">
-<td align="left">Pre-cancerous lesion</td>
+<td align="left">pre-cancerous lesion</td>
 <td align="right">27</td>
 </tr>
 <tr class="odd">
-<td align="left">Mesenchymal non-meningothelial tumor</td>
+<td align="left">mesenchymal non-meningothelial tumor</td>
 <td align="right">48</td>
 </tr>
 <tr class="even">
-<td align="left">Meningioma</td>
+<td align="left">meningioma</td>
 <td align="right">59</td>
 </tr>
 <tr class="odd">
-<td align="left">Neuronal and mixed neuronal-glial tumor</td>
+<td align="left">neuronal and mixed neuronal-glial tumor</td>
 <td align="right">67</td>
 </tr>
 <tr class="even">
-<td align="left">Benign tumor</td>
+<td align="left">benign tumor</td>
 <td align="right">72</td>
 </tr>
 <tr class="odd">
-<td align="left">Tumors of sellar region</td>
+<td align="left">tumors of sellar region</td>
 <td align="right">73</td>
 </tr>
 <tr class="even">
-<td align="left">Tumor of cranial and paraspinal nerves</td>
+<td align="left">tumor of cranial and paraspinal nerves</td>
 <td align="right">83</td>
 </tr>
 <tr class="odd">
-<td align="left">Ependymal tumor</td>
+<td align="left">ependymal tumor</td>
 <td align="right">174</td>
 </tr>
 <tr class="even">
-<td align="left">Embryonal tumor</td>
+<td align="left">embryonal tumor</td>
 <td align="right">339</td>
 </tr>
 <tr class="odd">
-<td align="left">Diffuse astrocytic and oligodendroglial tumor</td>
+<td align="left">diffuse astrocytic and oligodendroglial tumor</td>
 <td align="right">370</td>
 </tr>
 <tr class="even">
-<td align="left">Low-grade astrocytic tumor</td>
+<td align="left">low-grade astrocytic tumor</td>
 <td align="right">597</td>
 </tr>
 </tbody>
@@ -3173,29 +3179,27 @@ See spec(...) for full column specifications.</code></pre>
 <p>There’s handful of very small groups (many are n = 2).</p>
 <div id="declare-new-equivalent-groups" class="section level2">
 <h2>Declare new equivalent groups</h2>
-<p>Previously samples with these labels were generally considered <code>LGAT</code> groups, so we will group them back in in <code>display_group</code>.</p>
+<p>These groups we’ll combine into a non-CNS/other tumor group.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGdhdF9hZGphY2VudCA8LSBjKFwiTG93LWdyYWRlIGFzdHJvY3l0aWMgdHVtb3JcIixcbiAgICAgICAgICAgICAgICAgICBcIk5ldXJvbmFsIGFuZCBtaXhlZCBuZXVyb25hbC1nbGlhbCB0dW1vclwiLFxuICAgICAgICAgICAgICAgICAgIFwiRGlmZnVzZSBhc3Ryb2N5dGljIGFuZCBvbGlnb2RlbmRyb2dsaWFsIHR1bW9yXCIpXG5gYGAifQ== -->
-<pre class="r"><code>lgat_adjacent &lt;- c(&quot;Low-grade astrocytic tumor&quot;,
-                   &quot;Neuronal and mixed neuronal-glial tumor&quot;,
-                   &quot;Diffuse astrocytic and oligodendroglial tumor&quot;)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>These groups we’ll combine non-CNS.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubm9uX2NucyA8LSBjKFwiTm9uLUNOUyB0dW1vclwiLCBcIkdlcm0gY2VsbCB0dW1vclwiKVxuYGBgIn0= -->
-<pre class="r"><code>non_cns &lt;- c(&quot;Non-CNS tumor&quot;, &quot;Germ cell tumor&quot;)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxub3RoZXJfdHVtb3IgPC0gYyhcImx5bXBob21hXCIsIFwibWVsYW5vY3l0aWMgdHVtb3JcIiwgXCJvdGhlciB0dW1vclwiLCBcIm1ldGFzdGF0aWMgdHVtb3JzXCIsIFwibm9uLWNucyB0dW1vclwiKVxuYGBgIn0= -->
+<pre class="r"><code>other_tumor &lt;- c(&quot;lymphoma&quot;, &quot;melanocytic tumor&quot;, &quot;other tumor&quot;, &quot;metastatic tumors&quot;, &quot;non-cns tumor&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>These groups we’ll combine as a benign.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYmVnbmlnbiA8LSBjKFwiQmVuaWduIHR1bW9yXCIsIFwiTm9uLXR1bW9yXCIpXG5gYGAifQ== -->
-<pre class="r"><code>begnign &lt;- c(&quot;Benign tumor&quot;, &quot;Non-tumor&quot;)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYmVnbmlnbiA8LSBjKFwiYmVuaWduIHR1bW9yXCIsIFwibm9uLXR1bW9yXCIpXG5gYGAifQ== -->
+<pre class="r"><code>begnign &lt;- c(&quot;benign tumor&quot;, &quot;non-tumor&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Add in the <code>Other astrocytic tumor</code> in with the LGAT group.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGdhdCA8LSBjKFwib3RoZXIgYXN0cm9jeXRpYyB0dW1vclwiLCBcImxvdy1ncmFkZSBhc3Ryb2N5dGljIHR1bW9yXCIpXG5gYGAifQ== -->
+<pre class="r"><code>lgat &lt;- c(&quot;other astrocytic tumor&quot;, &quot;low-grade astrocytic tumor&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3205,34 +3209,30 @@ See spec(...) for full column specifications.</code></pre>
 <h1>Make new <code>display_group</code></h1>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlzdG9sb2d5X3RhYmxlIDwtIG1ldGFkYXRhICU+JSBcbiAgZHBseXI6Om11dGF0ZShcbiAgICAjIE5BcyBhcmUgcmVhbGx5IE5vcm1hbHNcbiAgICBkaXNwbGF5X2dyb3VwID0gdGlkeXI6OnJlcGxhY2VfbmEoYnJvYWRfaGlzdG9sb2d5LCBcIk5vcm1hbFwiKSxcbiAgICAjIE5vdyBkbyB0aGUgZ3JvdXAgY29tYmluaW5nXG4gICAgZGlzcGxheV9ncm91cCA9IGZvcmNhdHM6OmZjdF9jb2xsYXBzZShkaXNwbGF5X2dyb3VwLFxuICAgICAgXCJMb3ctZ3JhZGUgYXN0cm9jeXRpYyB0dW1vciBhbmQgYWRqYWNlbnRcIiA9IGxnYXRfYWRqYWNlbnQsXG4gICAgICBcIk5vbi1DTlMgdHVtb3JcIiA9IG5vbl9jbnMsXG4gICAgICBcIkJlbmlnblwiID0gYmVnbmlnblxuICAgICksXG4gICAgKVxuYGBgIn0= -->
-<pre class="r"><code>histology_table &lt;- metadata %&gt;% 
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlzdG9sb2d5X3RhYmxlIDwtIHdvcmtpbmdfbWV0YWRhdGEgJT4lIFxuICBkcGx5cjo6bXV0YXRlKFxuICAgICMgTkFzIGFyZSByZWFsbHkgTm9ybWFsc1xuICAgIGRpc3BsYXlfZ3JvdXAgPSB0aWR5cjo6cmVwbGFjZV9uYShicm9hZF9oaXN0b2xvZ3ksIFwibm9ybWFsXCIpLFxuICAgICMgTm93IGRvIHRoZSBncm91cCBjb21iaW5pbmdcbiAgICBkaXNwbGF5X2dyb3VwID0gZm9yY2F0czo6ZmN0X2NvbGxhcHNlKGRpc3BsYXlfZ3JvdXAsXG4gICAgICBcImxvdy1ncmFkZSBhc3Ryb2N5dGljIHR1bW9yXCIgPSBsZ2F0LFxuICAgICAgXCJvdGhlciBub24tY25zIHR1bW9yXCIgPSBvdGhlcl90dW1vcixcbiAgICAgIFwiYmVuaWduXCIgPSBiZWduaWduXG4gICAgKSxcbiAgICApXG5gYGAifQ== -->
+<pre class="r"><code>histology_table &lt;- working_metadata %&gt;% 
   dplyr::mutate(
     # NAs are really Normals
-    display_group = tidyr::replace_na(broad_histology, &quot;Normal&quot;),
+    display_group = tidyr::replace_na(broad_histology, &quot;normal&quot;),
     # Now do the group combining
     display_group = forcats::fct_collapse(display_group,
-      &quot;Low-grade astrocytic tumor and adjacent&quot; = lgat_adjacent,
-      &quot;Non-CNS tumor&quot; = non_cns,
-      &quot;Benign&quot; = begnign
+      &quot;low-grade astrocytic tumor&quot; = lgat,
+      &quot;other non-cns tumor&quot; = other_tumor,
+      &quot;benign&quot; = begnign
     ),
     )</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Print out the number of <code>display_group</code> (including <code>Normal</code>)!</p>
+<p>Print out the number of <code>display_group</code> (including <code>normal</code>)!</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGlzcGxheV9ncm91cF9kZiA8LSBoaXN0b2xvZ3lfdGFibGUgJT4lIFxuICBkcGx5cjo6Y291bnQoZGlzcGxheV9ncm91cCkgJT4lIFxuICBkcGx5cjo6YXJyYW5nZShuKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGlzcGxheV9ncm91cF9kZiA8LSBoaXN0b2xvZ3lfdGFibGUgJT4lIFxuICBkcGx5cjo6Y291bnQoZGlzcGxheV9ncm91cCkgJT4lIFxuICBkcGx5cjo6YXJyYW5nZShuKVxuXG5rbml0cjo6a2FibGUoZGlzcGxheV9ncm91cF9kZilcbmBgYCJ9 -->
 <pre class="r"><code>display_group_df &lt;- histology_table %&gt;% 
   dplyr::count(display_group) %&gt;% 
-  dplyr::arrange(n)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRmFjdG9yIGBkaXNwbGF5X2dyb3VwYCBjb250YWlucyBpbXBsaWNpdCBOQSwgY29uc2lkZXIgdXNpbmcgYGZvcmNhdHM6OmZjdF9leHBsaWNpdF9uYWBcbiJ9 -->
-<pre><code>Factor `display_group` contains implicit NA, consider using `forcats::fct_explicit_na`</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxua25pdHI6OmthYmxlKGRpc3BsYXlfZ3JvdXBfZGYpXG5gYGAifQ== -->
-<pre class="r"><code>knitr::kable(display_group_df)</code></pre>
+  dplyr::arrange(n)
+
+knitr::kable(display_group_df)</code></pre>
 <!-- rnb-source-end -->
 
 <!-- rnb-html-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImtuaXRfYXNpcyJdLCJzaXppbmdQb2xpY3kiOltdfX0= -->
@@ -3246,80 +3246,72 @@ See spec(...) for full column specifications.</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">Lymphoma</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td align="left">Melanocytic tumor</td>
-<td align="right">2</td>
-</tr>
-<tr class="odd">
-<td align="left">Other tumor</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td align="left">Other astrocytic tumor</td>
-<td align="right">6</td>
-</tr>
-<tr class="odd">
-<td align="left">Metastatic tumors</td>
-<td align="right">9</td>
-</tr>
-<tr class="even">
-<td align="left">Tumor of pineal region</td>
+<td align="left">tumor of pineal region</td>
 <td align="right">10</td>
 </tr>
-<tr class="odd">
-<td align="left">Histiocytic tumor</td>
+<tr class="even">
+<td align="left">histiocytic tumor</td>
 <td align="right">12</td>
 </tr>
+<tr class="odd">
+<td align="left">other non-cns tumor</td>
+<td align="right">17</td>
+</tr>
 <tr class="even">
-<td align="left">Choroid plexus tumor</td>
+<td align="left">choroid plexus tumor</td>
 <td align="right">21</td>
 </tr>
 <tr class="odd">
-<td align="left">Pre-cancerous lesion</td>
+<td align="left">germ cell tumor</td>
 <td align="right">27</td>
 </tr>
 <tr class="even">
-<td align="left">Non-CNS tumor</td>
-<td align="right">29</td>
+<td align="left">pre-cancerous lesion</td>
+<td align="right">27</td>
 </tr>
 <tr class="odd">
-<td align="left">Mesenchymal non-meningothelial tumor</td>
+<td align="left">mesenchymal non-meningothelial tumor</td>
 <td align="right">48</td>
 </tr>
 <tr class="even">
-<td align="left">Meningioma</td>
+<td align="left">meningioma</td>
 <td align="right">59</td>
 </tr>
 <tr class="odd">
-<td align="left">Tumors of sellar region</td>
+<td align="left">neuronal and mixed neuronal-glial tumor</td>
+<td align="right">67</td>
+</tr>
+<tr class="even">
+<td align="left">tumors of sellar region</td>
 <td align="right">73</td>
 </tr>
-<tr class="even">
-<td align="left">Benign</td>
+<tr class="odd">
+<td align="left">benign</td>
 <td align="right">78</td>
 </tr>
-<tr class="odd">
-<td align="left">Tumor of cranial and paraspinal nerves</td>
+<tr class="even">
+<td align="left">tumor of cranial and paraspinal nerves</td>
 <td align="right">83</td>
 </tr>
-<tr class="even">
-<td align="left">Ependymal tumor</td>
+<tr class="odd">
+<td align="left">ependymal tumor</td>
 <td align="right">174</td>
 </tr>
-<tr class="odd">
-<td align="left">Embryonal tumor</td>
+<tr class="even">
+<td align="left">embryonal tumor</td>
 <td align="right">339</td>
 </tr>
+<tr class="odd">
+<td align="left">diffuse astrocytic and oligodendroglial tumor</td>
+<td align="right">370</td>
+</tr>
 <tr class="even">
-<td align="left">NA</td>
-<td align="right">833</td>
+<td align="left">low-grade astrocytic tumor</td>
+<td align="right">603</td>
 </tr>
 <tr class="odd">
-<td align="left">Low-grade astrocytic tumor and adjacent</td>
-<td align="right">1034</td>
+<td align="left">normal</td>
+<td align="right">833</td>
 </tr>
 </tbody>
 </table>
@@ -3329,19 +3321,31 @@ See spec(...) for full column specifications.</code></pre>
 
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Make this notebook stop if there are more than 15 groups.</p>
+<p>Make this notebook stop if there are more than 16 histology groups + <code>Normal</code>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWYgKG5yb3coZGlzcGxheV9ncm91cF9kZikgPiAxNSkge1xuICBzdG9wKFwiVGhlcmUncyBtb3JlIHRoYW4gMTUgYGRpc3BsYXlfZ3JvdXBgIG1heSB3YW50IHRvIHJlLWV2YWx1YXRlIHRoZSBoaWdoLWxldmVsIGhpc3RvbG9neSBncm91cGluZ3NcIilcbn1cbmBgYCJ9 -->
-<pre class="r"><code>if (nrow(display_group_df) &gt; 15) {
-  stop(&quot;There's more than 15 `display_group` may want to re-evaluate the high-level histology groupings&quot;)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWYgKG5yb3coZGlzcGxheV9ncm91cF9kZikgPiAxNykge1xuICBzdG9wKFwiVGhlcmUncyBtb3JlIHRoYW4gMTYgaGlzdG9sb2d5IGBkaXNwbGF5X2dyb3VwYCBtYXkgd2FudCB0byByZS1ldmFsdWF0ZSB0aGUgaGlnaC1sZXZlbCBoaXN0b2xvZ3kgZ3JvdXBpbmdzXCIpXG59XG5gYGAifQ== -->
+<pre class="r"><code>if (nrow(display_group_df) &gt; 17) {
+  stop(&quot;There's more than 16 histology `display_group` may want to re-evaluate the high-level histology groupings&quot;)
 }</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3I6IFRoZXJlJ3MgbW9yZSB0aGFuIDE1IGBkaXNwbGF5X2dyb3VwYCBtYXkgd2FudCB0byByZS1ldmFsdWF0ZSB0aGUgaGlnaC1sZXZlbCBoaXN0b2xvZ3kgZ3JvdXBpbmdzXG4ifQ== -->
-<pre><code>Error: There's more than 15 `display_group` may want to re-evaluate the high-level histology groupings</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<div id="restore-capitalization" class="section level2">
+<h2>Restore capitalization</h2>
+<p>Now that the string search steps and manipulations are done, let’s restore better-looking capitalization.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGlzcGxheV9ncm91cF9kZiA8LSBkaXNwbGF5X2dyb3VwX2RmICU+JSBcbiAgZHBseXI6Om11dGF0ZShkaXNwbGF5X2dyb3VwID0gc3RyaW5ncjo6c3RyX3RvX3NlbnRlbmNlKGRpc3BsYXlfZ3JvdXApLFxuICAgICAgICAgICAgICAgICMgRGVhbCB3aXRoIENOUyBleGNlcHRpb25cbiAgICAgICAgICAgICAgICBkaXNwbGF5X2dyb3VwID0gc3RyaW5ncjo6c3RyX3JlcGxhY2UoZGlzcGxheV9ncm91cCwgXCJjbnNcIiwgXCJDTlNcIilcbiAgICAgICAgICAgICAgICApXG5gYGAifQ== -->
+<pre class="r"><code>display_group_df &lt;- display_group_df %&gt;% 
+  dplyr::mutate(display_group = stringr::str_to_sentence(display_group),
+                # Deal with CNS exception
+                display_group = stringr::str_replace(display_group, &quot;cns&quot;, &quot;CNS&quot;)
+                )</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
 </div>
 <div id="add-hex-codes" class="section level1">
 <h1>Add hex codes</h1>
@@ -3369,33 +3373,42 @@ See spec(...) for full column specifications.</code></pre>
 <p>Make a named list color key where histologies are the names.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTZXQgc2VlZCBzbyB0aGUgY29sb3JzIGFyZSBjb25zaXN0ZW50IHVwb24gcmUtcnVuXG5zZXQuc2VlZCgyMDIxKVxuXG4jIFNhbXBsZSBmcm9tIHRoZSAxOCBjb2xvcnNcbnN1YnNldF9jb2xvcnMgPC0gc2FtcGxlKGNvbG9yX3BhbGV0dGUsIG5fY29sb3JzKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTZXQgc2VlZCBzbyB0aGUgY29sb3JzIGFyZSBjb25zaXN0ZW50IHVwb24gcmUtcnVuXG5zZXQuc2VlZCgyMDIxKVxuXG4jIFNhbXBsZSBmcm9tIHRoZSAxOCBjb2xvcnNcbnN1YnNldF9jb2xvcnMgPC0gc2FtcGxlKGNvbG9yX3BhbGV0dGUsIG5fY29sb3JzKVxubmFtZXMoc3Vic2V0X2NvbG9ycykgPC0gZGlzcGxheV9ncm91cF9kZiRkaXNwbGF5X2dyb3VwXG5gYGAifQ== -->
 <pre class="r"><code># Set seed so the colors are consistent upon re-run
 set.seed(2021)
 
 # Sample from the 18 colors
-subset_colors &lt;- sample(color_palette, n_colors)</code></pre>
+subset_colors &lt;- sample(color_palette, n_colors)
+names(subset_colors) &lt;- display_group_df$display_group</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gc2FtcGxlLmludChsZW5ndGgoeCksIHNpemUsIHJlcGxhY2UsIHByb2IpIDogXG4gIGNhbm5vdCB0YWtlIGEgc2FtcGxlIGxhcmdlciB0aGFuIHRoZSBwb3B1bGF0aW9uIHdoZW4gJ3JlcGxhY2UgPSBGQUxTRSdcbiJ9 -->
-<pre><code>Error in sample.int(length(x), size, replace, prob) : 
-  cannot take a sample larger than the population when 'replace = FALSE'</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Use <code>pie</code> function to preview what these look like.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGllKHJlcCgxLCBuX2NvbG9ycyksIFxuICAgIGNvbCA9IHN1YnNldF9jb2xvcnMsIFxuICAgIGxhYmVscyA9IGRpc3BsYXlfZ3JvdXBfZGYkZGlzcGxheV9ncm91cClcbmBgYCJ9 -->
+<pre class="r"><code>pie(rep(1, n_colors), 
+    col = subset_colors, 
+    labels = display_group_df$display_group)</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Add the hex codes to the <code>histology_table</code>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlzdG9sb2d5X3RhYmxlIDwtIGhpc3RvbG9neV90YWJsZSAlPiUgXG4gIGRwbHlyOjptdXRhdGUoaGV4X2NvZGVzID0gZHBseXI6OnJlY29kZShkaXNwbGF5X2dyb3VwLCBoZXhfY29kZXMgPSAhISFzdWJzZXRfY29sb3JzKSlcbmBgYCJ9 -->
+<pre class="r"><code>histology_table &lt;- histology_table %&gt;% 
+  dplyr::mutate(hex_codes = dplyr::recode(display_group, hex_codes = !!!subset_colors))</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <div id="save-to-tsv" class="section level2">
 <h2>Save to TSV</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVhZHI6OndyaXRlX3RzdihoaXN0b2xvZ3lfdGFibGUsIGZpbGUucGF0aChvdXRwdXRfZGlyLCBcImhpc3RvbG9neV9sYWJlbF9jb2xvcl90YWJsZS50c3ZcIikpXG5gYGAifQ== -->
+<pre class="r"><code>readr::write_tsv(histology_table, file.path(output_dir, &quot;histology_label_color_table.tsv&quot;))</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -3404,10 +3417,13 @@ subset_colors &lt;- sample(color_palette, n_colors)</code></pre>
 <h1>Session Info</h1>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiTWFwcGluZyBoaXN0b2xvZ3kgbGFiZWxzIGZvciBwbG90cyIKb3V0cHV0OiAgIAogIGh0bWxfbm90ZWJvb2s6IAogICAgdG9jOiB0cnVlCiAgICB0b2NfZmxvYXQ6IHRydWUKYXV0aG9yOiBDYW5kYWNlIFNhdm9uZW4gZm9yIEFMU0YgLSBDQ0RMCmRhdGU6IDIwMjAKLS0tCgojIFB1cnBvc2U6IAoKVGhlIGhpc3RvbG9neSBsYWJlbCB2YXJpYWJsZXMgaW5jbHVkZWQgaW4gYHBidGEtaGlzdG9sb2dpZXMudHN2YCBmcm9tIGRhdGEgcmVsZWFzZXMgYXJlIG5vdCBhbHdheXMgdXNlZnVsIGZvciB2aXN1YWxpemluZyB0aGUgZnVsbCBzZXQgb2YgYmlvc3BlY2ltZW5zIGR1ZSB0byB0aGUgbGFyZ2UgbnVtYmVyIG9mIGRpZmZlcmVudCB2YWx1ZXMuCkhhdmluZyB0b28gbWFueSBkaWZmZXJlbnQgcG9zc2libGUgdmFsdWVzIG1ha2VzIHRoZSBjb2xvcnMgaGFyZGVyIHRvIGRpc3Rpbmd1aXNoLgpJbiBhZGRpdGlvbiwgdGhlcmUgYXJlIHNvbWUgZ3JvdXBzIHRoYXQgYXJlIHJlcHJlc2VudGVkIGJ5IG9ubHkgYSB2ZXJ5IGZldyBzYW1wbGVzOyBnaXZpbmcgc3VjaCBncm91cHMgYSBkaXN0aW5jdCBjb2xvciBtYXkgYmUgY291bnRlcnByb2R1Y3RpdmUuCgpUaGUgZ29hbCBvZiB0aGlzIG5vdGVib29rIGlzIHRvIHVzZSB0aGUgY3VycmVudGx5IGV4aXN0aW5nIGBicm9hZF9oaXN0b2xvZ3lgIGdyb3VwcyBmcm9tIGBwYnRhLWhpc3RvbG9naWVzLnRzdmAsIHRvIGZvcm0gMTAtMTUgImhpZ2ggbGV2ZWwgaGlzdG9sb2d5IiBncm91cCBsYWJlbHMgdGhhdCBjYW4gdXNlZCBmb3IgcGxvdHRpbmcgcHVycG9zZXMuCgojIyBUaGUgb3V0cHV0IHRhYmxlCgpUaGUgb3V0cHV0IG9mIHRoaXMgbm90ZWJvb2sgaXMgYSBUU1YgZmlsZTogYHBhbGV0dGVzL2hpc3RvbG9neV9sYWJlbF9jb2xvcl90YWJsZS50c3ZgIHRoYXQgY29udGFpbnMgdGhlIGZvbGxvd2luZyBmaWVsZHM6CgoqKkNvcGllZCBmcm9tIGBwYnRhLWhpc3RvbG9naWVzLnRzdmAqKjogICAgCi0gYEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURgIChmcm9tIGBwYnRhLWhpc3RvbG9naWVzLnRzdmApICAKLSBBbGwgdGhlIG9yaWdpbmFsIGhpc3RvbG9neSBsYWJlbCB2YXJpYWJsZXMgKGBicm9hZF9oaXN0b2xvZ3lgLCBgc2hvcnRfaGlzdG9sb2d5YCwgZXRjLikgIAogIAoqKkNyZWF0ZWQgaW4gdGhpcyBub3RlYm9vayoqOiAgCi0gYGRpc3BsYXlfZ3JvdXBgIC0gdGhlIGhpZ2gtbGV2ZWwgaGlzdG9sb2d5IGxhYmVscyB0aGF0IHNob3VsZCBiZSB1c2VkIGZvciBwbG90dGluZyAgIAotIGBoZXhfY29kZXNgIHRoZSBkaXJlY3QgY29sb3JzIHRoYXQgc2hvdWxkIGJlIHVzZWQgZm9yIHBsb3R0aW5nICAKCldpdGggdGhpcyBpbmZvLCBgaGlzdG9sb2d5X2xhYmVsX2NvbG9yX3RhYmxlLnRzdmAgY2FuIGJlIHVzZWQgYnkgYWxsIHBsb3RzIGFuZCBmaWd1cmVzIHRoYXQgc3VtbWFyaXplIGhpZ2ggbGV2ZWwgZGF0YSAgd2hpbGUgZGlzcGxheWluZyBoaXN0b2xvZ3kgaW5mb3JtYXRpb24uIAoKIyBIb3cgYGRpc3BsYXlfZ3JvdXBgIGlzIG1hZGU6CgpIZXJlJ3MgaG93IGBicm9hZC1oaXN0b2xvZ3lgIGdyb3VwcyBhcmUgW2NvbWJpbmVkIGludG8gdGhlIGhpZ2hlci1sZXZlbCBncm91cGluZ3Mgb2YgYGRpc3BsYXlfZ3JvdXBgXSgjZGVjbGFyZS1uZXctZXF1aXZhbGVudC1ncm91cHMpLgoKMSkgIk5ldXJvbmFsIGFuZCBtaXhlZCBuZXVyb25hbC1nbGlhbCB0dW1vciIgYW5kICJEaWZmdXNlIGFzdHJvY3l0aWMgYW5kIG9saWdvZGVuZHJvZ2xpYWwgdHVtb3IiIHdlcmUgbGFiZWxlZCBhcyBMR0FUIGluIHByZXZpb3VzIHJlbGVhc2VzIHNvIHdlIHdpbGwgZ3JvdXAgdGhlc2UgaW50byBgTG93LWdyYWRlIGFzdHJvY3l0aWMgdHVtb3JgIGluIGBkaXNwbGF5X2dyb3VwYC4gCgoyKSAgYEdlcm0gY2VsbCB0dW1vcmAgIHNhbXBsZXMgYXJlIGNvbWJpbmVkIGludG8gdGhlIGBOb24tQ05TIHR1bW9yYCBncm91cC4gCgozKSBgQmVuaWduIHR1bW9yYCBhbmQgYE5vbi10dW1vcmAgYmlvc3BlY2ltZW5zIGFyZSBjb21iaW5lZCBpbnRvIGEgYEJlbmlnbmAgZ3JvdXAuIAoKNCkgQW55dGhpbmcgbm90IGluIHRoZSBhYm92ZSBjYXRlZ29yaWVzIGdldHMgaXRzIGBicm9hZF9oaXN0b2xvZ3lgIGxhYmVsIGNhcnJpZWQgb3Zlci4gCgojIFVzYWdlCgpUaGlzIG5vdGVib29rIGNhbiBiZSBydW4gdmlhIHRoZSBjb21tYW5kIGxpbmUgZnJvbSB0aGUgdG9wIGRpcmVjdG9yeSBvZiB0aGUgCnJlcG9zaXRvcnkgYXMgZm9sbG93czoKCmBgYApSc2NyaXB0IC1lICJybWFya2Rvd246OnJlbmRlcignZmlndXJlcy9tYXBwaW5nLWhpc3RvbG9neS1sYWJlbHMuUm1kJywgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsZWFuID0gVFJVRSkiCmBgYAoKIyMgU2V0IFVwCgpgYGB7cn0KIyBNYWdyaXR0ciBwaXBlCmAlPiVgIDwtIGRwbHlyOjpgJT4lYApgYGAKCkZvciBncm91cHMgdGhhdCBhcmUgc21hbGxlciB0aGFuIHRoaXMgY3V0b2ZmLCB0aGV5IHdpbGwgYmUgcHV0IGludG8gYW4gYE90aGVyYCBncm91cCBpbiBgZGlzcGxheV9ncm91cGAuIAoKYGBge3J9CnNtYWxsX2dyb3Vwc19jdXRvZmYgPC0gMTIKYGBgCgojIyMgRGlyZWN0b3JpZXMgYW5kIEZpbGVzCgpgYGB7cn0KIyBQYXRoIHRvIGlucHV0IGRpcmVjdG9yeQppbnB1dF9kaXIgPC0gZmlsZS5wYXRoKCIuLiIsICJkYXRhIikKb3V0cHV0X2RpciA8LSAicGFsZXR0ZXMiCmBgYAoKIyBSZWFkIGluIG1ldGFkYXRhIAoKV2hpY2ggdmFyaWFibGVzIGFyZSB3ZSBrZWVwaW5nIGZvciB0aGlzIHRhYmxlPyAKCmBgYHtyfQpoaXN0b2xvZ3lfdmFyaWFibGVzIDwtIAogIGMoIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQiLAogICAgInNhbXBsZV90eXBlIiwgCiAgICAiaW50ZWdyYXRlZF9kaWFnbm9zaXMiLCAKICAgICJOb3RlcyIsIAogICAgImhhcm1vbml6ZWRfZGlhZ25vc2lzIiwKICAgICJicm9hZF9oaXN0b2xvZ3kiLCAKICAgICJzaG9ydF9oaXN0b2xvZ3kiKQoKYGBgCgpMZXQncyByZWFkIGluIHRoZSBjdXJyZW50IHJlbGVhc2UncyBgcGJ0YS1oaXN0b2xvZ2llcy50c3ZgIGZpbGUgYW5kIHNlbGVjdCB0aGUgaGlzdG9sb2d5IHZhcmlhYmxlcyB3ZSBtZW50aW9uZWQgYWJvdmUuIAoKYGBge3J9Cm1ldGFkYXRhIDwtCiAgcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChpbnB1dF9kaXIsICJwYnRhLWhpc3RvbG9naWVzLnRzdiIpLCBndWVzc19tYXggPSAxMDAwMCkgJT4lIAogIGRwbHlyOjpzZWxlY3QoaGlzdG9sb2d5X3ZhcmlhYmxlcykKYGBgCgojIFRha2UgYSBsb29rIGF0IGhvdyBtYW55IGJpb3NwZWNpbWVucyBwZXIgYGJyb2FkX2hpc3RvbG9neWAgZ3JvdXAKCkxldCdzIHN1bW1hcml6ZSBgYnJvYWRfaGlzdG9sb2d5YC4gCkJlY2F1c2UgdGhlIGBOb3JtYWxgIHNhbXBsZXMgZG9uJ3QgaGF2ZSBoaXN0b2xvZ2llcywgd2UnbGwgbG9vayBhdCBqdXN0IHRoZSBgVHVtb3JgIHNhbXBsZXMgYXQgZm9yIHRoaXMgc3VtbWFyeS4gCgpgYGB7cn0KYnJvYWRfc3VtbWFyeSA8LSBtZXRhZGF0YSAlPiUgCiAgZHBseXI6OmZpbHRlcihzYW1wbGVfdHlwZSA9PSAiVHVtb3IiKSAlPiUKICBkcGx5cjo6Y291bnQoYnJvYWRfaGlzdG9sb2d5KSAlPiUgCiAgZHBseXI6OmFycmFuZ2UobikKYGBgCgpMZXQncyBwcmludCBvdXQgdGhlIHN1bW1hcnkuIAoKYGBge3J9CmJyb2FkX3N1bW1hcnkgJT4lIAogIGtuaXRyOjprYWJsZSgpCmBgYAoKVGhlcmUncyBoYW5kZnVsIG9mIHZlcnkgc21hbGwgZ3JvdXBzIChtYW55IGFyZSBuID0gMikuIAoKIyMgRGVjbGFyZSBuZXcgZXF1aXZhbGVudCBncm91cHMKClByZXZpb3VzbHkgc2FtcGxlcyB3aXRoIHRoZXNlIGxhYmVscyB3ZXJlIGdlbmVyYWxseSBjb25zaWRlcmVkIGBMR0FUYCBncm91cHMsIHNvIHdlIHdpbGwgZ3JvdXAgdGhlbSBiYWNrIGluIGluIGBkaXNwbGF5X2dyb3VwYC4gCgpgYGB7cn0KbGdhdF9hZGphY2VudCA8LSBjKCJMb3ctZ3JhZGUgYXN0cm9jeXRpYyB0dW1vciIsCiAgICAgICAgICAgICAgICAgICAiTmV1cm9uYWwgYW5kIG1peGVkIG5ldXJvbmFsLWdsaWFsIHR1bW9yIiwKICAgICAgICAgICAgICAgICAgICJEaWZmdXNlIGFzdHJvY3l0aWMgYW5kIG9saWdvZGVuZHJvZ2xpYWwgdHVtb3IiKQpgYGAKClRoZXNlIGdyb3VwcyB3ZSdsbCBjb21iaW5lIG5vbi1DTlMuIAoKYGBge3J9Cm5vbl9jbnMgPC0gYygiTm9uLUNOUyB0dW1vciIsICJHZXJtIGNlbGwgdHVtb3IiKQpgYGAKClRoZXNlIGdyb3VwcyB3ZSdsbCBjb21iaW5lIGFzIGEgYmVuaWduLgoKYGBge3J9CmJlZ25pZ24gPC0gYygiQmVuaWduIHR1bW9yIiwgIk5vbi10dW1vciIpCmBgYAoKIyBNYWtlIG5ldyBgZGlzcGxheV9ncm91cGAKCmBgYHtyfQpoaXN0b2xvZ3lfdGFibGUgPC0gbWV0YWRhdGEgJT4lIAogIGRwbHlyOjptdXRhdGUoCiAgICAjIE5BcyBhcmUgcmVhbGx5IE5vcm1hbHMKICAgIGRpc3BsYXlfZ3JvdXAgPSB0aWR5cjo6cmVwbGFjZV9uYShicm9hZF9oaXN0b2xvZ3ksICJOb3JtYWwiKSwKICAgICMgTm93IGRvIHRoZSBncm91cCBjb21iaW5pbmcKICAgIGRpc3BsYXlfZ3JvdXAgPSBmb3JjYXRzOjpmY3RfY29sbGFwc2UoZGlzcGxheV9ncm91cCwKICAgICAgIkxvdy1ncmFkZSBhc3Ryb2N5dGljIHR1bW9yIGFuZCBhZGphY2VudCIgPSBsZ2F0X2FkamFjZW50LAogICAgICAiTm9uLUNOUyB0dW1vciIgPSBub25fY25zLAogICAgICAiQmVuaWduIiA9IGJlZ25pZ24KICAgICksCiAgICApCmBgYAoKUHJpbnQgb3V0IHRoZSBudW1iZXIgb2YgYGRpc3BsYXlfZ3JvdXBgIChpbmNsdWRpbmcgYE5vcm1hbGApIQoKYGBge3J9CmRpc3BsYXlfZ3JvdXBfZGYgPC0gaGlzdG9sb2d5X3RhYmxlICU+JSAKICBkcGx5cjo6Y291bnQoZGlzcGxheV9ncm91cCkgJT4lIAogIGRwbHlyOjphcnJhbmdlKG4pCgprbml0cjo6a2FibGUoZGlzcGxheV9ncm91cF9kZikKYGBgCgpNYWtlIHRoaXMgbm90ZWJvb2sgc3RvcCBpZiB0aGVyZSBhcmUgbW9yZSB0aGFuIDE1IGdyb3Vwcy4gCgpgYGB7cn0KaWYgKG5yb3coZGlzcGxheV9ncm91cF9kZikgPiAxNSkgewogIHN0b3AoIlRoZXJlJ3MgbW9yZSB0aGFuIDE1IGBkaXNwbGF5X2dyb3VwYCBtYXkgd2FudCB0byByZS1ldmFsdWF0ZSB0aGUgaGlnaC1sZXZlbCBoaXN0b2xvZ3kgZ3JvdXBpbmdzIikKfQpgYGAKCiMgQWRkIGhleCBjb2RlcyAKClRoZXNlIGhleCBjb2RlcyB3ZXJlIHJldHJpZXZlZCBmcm9tIGh0dHA6Ly9waHJvZ3oubmV0L2Nzcy9kaXN0aW5jdC1jb2xvcnMuaHRtbCB3aXRoIHRoZSBzZXR0aW5ncyBvbiBkZWZhdWx0IGZvciAxOCBjb2xvcnMuCgpgYGB7cn0KY29sb3JfcGFsZXR0ZSA8LSAKICBjKCIjZmYwMDAwIiwgIiNjYzAwMDAiLCAiIzk5NTIwMCIsICIjYmZiMzAwIiwgIiNmZmZiYmYiLCAKICAgICIjMmU3MzAwIiwgIiMwMGU2NWMiLCAiIzAwZmZlZSIsICIjMTAzZDQwIiwgIiMwMDg1YTYiLCAKICAgICIjMDAzMzgwIiwgIiM0MDczZmYiLCAiIzczNzg5OSIsICIjNzAwMDhjIiwgIiNmMmI2ZWUiLCAKICAgICIjZmY0MGJmIiwgIiM4YzAwMzgiLCAiIzMzMGQxMiIKKQpgYGAKCkRlY2xhcmUgaG93IG1hbnkgY29sb3JzIHdlIG5lZWQuIAoKYGBge3J9Cm5fY29sb3JzIDwtIG5yb3coZGlzcGxheV9ncm91cF9kZikKYGBgCgpNYWtlIGEgbmFtZWQgbGlzdCBjb2xvciBrZXkgd2hlcmUgaGlzdG9sb2dpZXMgYXJlIHRoZSBuYW1lcy4gCgpgYGB7cn0KIyBTZXQgc2VlZCBzbyB0aGUgY29sb3JzIGFyZSBjb25zaXN0ZW50IHVwb24gcmUtcnVuCnNldC5zZWVkKDIwMjEpCgojIFNhbXBsZSBmcm9tIHRoZSAxOCBjb2xvcnMKc3Vic2V0X2NvbG9ycyA8LSBzYW1wbGUoY29sb3JfcGFsZXR0ZSwgbl9jb2xvcnMpCm5hbWVzKHN1YnNldF9jb2xvcnMpIDwtIGRpc3BsYXlfZ3JvdXBfZGYkZGlzcGxheV9ncm91cApgYGAKClVzZSBgcGllYCBmdW5jdGlvbiB0byBwcmV2aWV3IHdoYXQgdGhlc2UgbG9vayBsaWtlLgoKYGBge3J9CnBpZShyZXAoMSwgbl9jb2xvcnMpLCAKICAgIGNvbCA9IHN1YnNldF9jb2xvcnMsIAogICAgbGFiZWxzID0gZGlzcGxheV9ncm91cF9kZiRkaXNwbGF5X2dyb3VwKQpgYGAKCkFkZCB0aGUgaGV4IGNvZGVzIHRvIHRoZSBgaGlzdG9sb2d5X3RhYmxlYC4gCgpgYGB7cn0KaGlzdG9sb2d5X3RhYmxlIDwtIGhpc3RvbG9neV90YWJsZSAlPiUgCiAgZHBseXI6Om11dGF0ZShoZXhfY29kZXMgPSBkcGx5cjo6cmVjb2RlKGRpc3BsYXlfZ3JvdXAsIGhleF9jb2RlcyA9ICEhIXN1YnNldF9jb2xvcnMpKQpgYGAKCiMjIFNhdmUgdG8gVFNWIAoKYGBge3J9CnJlYWRyOjp3cml0ZV90c3YoaGlzdG9sb2d5X3RhYmxlLCBmaWxlLnBhdGgob3V0cHV0X2RpciwgImhpc3RvbG9neV9sYWJlbF9jb2xvcl90YWJsZS50c3YiKSkKYGBgCgojIFNlc3Npb24gSW5mbwoKYGBge3J9CnNlc3Npb25JbmZvKCkKYGBgCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiTWFwcGluZyBoaXN0b2xvZ3kgbGFiZWxzIGZvciBwbG90cyIKb3V0cHV0OiAgIAogIGh0bWxfbm90ZWJvb2s6IAogICAgdG9jOiB0cnVlCiAgICB0b2NfZmxvYXQ6IHRydWUKYXV0aG9yOiBDYW5kYWNlIFNhdm9uZW4gZm9yIEFMU0YgLSBDQ0RMCmRhdGU6IDIwMjAKLS0tCgojIFB1cnBvc2U6IAoKVGhlIGhpc3RvbG9neSBsYWJlbCB2YXJpYWJsZXMgaW5jbHVkZWQgaW4gYHBidGEtaGlzdG9sb2dpZXMudHN2YCBmcm9tIGRhdGEgcmVsZWFzZXMgYXJlIG5vdCBhbHdheXMgdXNlZnVsIGZvciB2aXN1YWxpemluZyB0aGUgZnVsbCBzZXQgb2YgYmlvc3BlY2ltZW5zIGR1ZSB0byB0aGUgbGFyZ2UgbnVtYmVyIG9mIGRpZmZlcmVudCB2YWx1ZXMuCkhhdmluZyB0b28gbWFueSBkaWZmZXJlbnQgcG9zc2libGUgdmFsdWVzIG1ha2VzIHRoZSBjb2xvcnMgaGFyZGVyIHRvIGRpc3Rpbmd1aXNoLgpJbiBhZGRpdGlvbiwgdGhlcmUgYXJlIHNvbWUgZ3JvdXBzIHRoYXQgYXJlIHJlcHJlc2VudGVkIGJ5IG9ubHkgYSB2ZXJ5IGZldyBzYW1wbGVzOyBnaXZpbmcgc3VjaCBncm91cHMgYSBkaXN0aW5jdCBjb2xvciBtYXkgYmUgY291bnRlcnByb2R1Y3RpdmUuCgpUaGUgZ29hbCBvZiB0aGlzIG5vdGVib29rIGlzIHRvIHVzZSB0aGUgY3VycmVudGx5IGV4aXN0aW5nIGBicm9hZF9oaXN0b2xvZ3lgIGdyb3VwcyBmcm9tIGBwYnRhLWhpc3RvbG9naWVzLnRzdmAsIHRvIGZvcm0gMTAtMTUgImhpZ2ggbGV2ZWwgaGlzdG9sb2d5IiBncm91cCBsYWJlbHMgdGhhdCBjYW4gdXNlZCBmb3IgcGxvdHRpbmcgcHVycG9zZXMuCgojIyBUaGUgb3V0cHV0IHRhYmxlCgpUaGUgb3V0cHV0IG9mIHRoaXMgbm90ZWJvb2sgaXMgYSBUU1YgZmlsZTogYHBhbGV0dGVzL2hpc3RvbG9neV9sYWJlbF9jb2xvcl90YWJsZS50c3ZgIHRoYXQgY29udGFpbnMgdGhlIGZvbGxvd2luZyBmaWVsZHM6CgoqKkNvcGllZCBmcm9tIGBwYnRhLWhpc3RvbG9naWVzLnRzdmAqKjogICAgCi0gYEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURgIChmcm9tIGBwYnRhLWhpc3RvbG9naWVzLnRzdmApICAKLSBBbGwgdGhlIG9yaWdpbmFsIGhpc3RvbG9neSBsYWJlbCB2YXJpYWJsZXMgKGBicm9hZF9oaXN0b2xvZ3lgLCBgc2hvcnRfaGlzdG9sb2d5YCwgZXRjLikgIAogIAoqKkNyZWF0ZWQgaW4gdGhpcyBub3RlYm9vayoqOiAgCi0gYGRpc3BsYXlfZ3JvdXBgIC0gdGhlIGhpZ2gtbGV2ZWwgaGlzdG9sb2d5IGxhYmVscyB0aGF0IHNob3VsZCBiZSB1c2VkIGZvciBwbG90dGluZyAgIAotIGBoZXhfY29kZXNgIHRoZSBkaXJlY3QgY29sb3JzIHRoYXQgc2hvdWxkIGJlIHVzZWQgZm9yIHBsb3R0aW5nICAKCldpdGggdGhpcyBpbmZvLCBgaGlzdG9sb2d5X2xhYmVsX2NvbG9yX3RhYmxlLnRzdmAgY2FuIGJlIHVzZWQgYnkgYWxsIHBsb3RzIGFuZCBmaWd1cmVzIHRoYXQgc3VtbWFyaXplIGhpZ2ggbGV2ZWwgZGF0YSAgd2hpbGUgZGlzcGxheWluZyBoaXN0b2xvZ3kgaW5mb3JtYXRpb24uIAoKIyBIb3cgYGRpc3BsYXlfZ3JvdXBgIGlzIG1hZGU6CgpIZXJlJ3MgaG93IGBicm9hZC1oaXN0b2xvZ3lgIGdyb3VwcyBhcmUgW2NvbWJpbmVkIGludG8gdGhlIGhpZ2hlci1sZXZlbCBncm91cGluZ3Mgb2YgYGRpc3BsYXlfZ3JvdXBgXSgjZGVjbGFyZS1uZXctZXF1aXZhbGVudC1ncm91cHMpLgoKMSkgIkx5bXBob21hIiwgIk1lbGFub2N5dGljIHR1bW9yIiwgIk90aGVyIHR1bW9yIiwgIk1ldGFzdGF0aWMgdHVtb3JzIiwgIk5vbi1DTlMgdHVtb3IiIGFyZSBjb21iaW5lZCBpbnRvIGEgYE90aGVyIG5vbi1DTlMgZ3JvdXBgIGluIGBkaXNwbGF5X2dyb3VwYC4gCgoyKSBgQmVuaWduIHR1bW9yYCBhbmQgYE5vbi10dW1vcmAgYmlvc3BlY2ltZW5zIGFyZSBjb21iaW5lZCBpbnRvIGEgYEJlbmlnbmAgZ3JvdXAuIAoKMykgYE90aGVyIGFzdHJvY3l0aWMgdHVtb3JgIHNhbXBsZXMgYXJlIGNvbWJpbmVkIGludG8gdGhlIGV4aXN0aW5nIGBMb3ctZ3JhZGUgYXN0cm9jeXRpYyB0dW1vcmAuCgo0KSBBbnl0aGluZyBub3QgaW4gdGhlIGFib3ZlIGNhdGVnb3JpZXMgZ2V0cyBpdHMgYGJyb2FkX2hpc3RvbG9neWAgbGFiZWwgY2FycmllZCBvdmVyLiAKCiMgVXNhZ2UKClRoaXMgbm90ZWJvb2sgY2FuIGJlIHJ1biB2aWEgdGhlIGNvbW1hbmQgbGluZSBmcm9tIHRoZSB0b3AgZGlyZWN0b3J5IG9mIHRoZSAKcmVwb3NpdG9yeSBhcyBmb2xsb3dzOgoKYGBgClJzY3JpcHQgLWUgInJtYXJrZG93bjo6cmVuZGVyKCdmaWd1cmVzL21hcHBpbmctaGlzdG9sb2d5LWxhYmVscy5SbWQnLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xlYW4gPSBUUlVFKSIKYGBgCgojIyBTZXQgVXAKCmBgYHtyfQojIE1hZ3JpdHRyIHBpcGUKYCU+JWAgPC0gZHBseXI6OmAlPiVgCmBgYAoKRm9yIGdyb3VwcyB0aGF0IGFyZSBzbWFsbGVyIHRoYW4gdGhpcyBjdXRvZmYsIHRoZXkgd2lsbCBiZSBwdXQgaW50byBhbiBgT3RoZXJgIGdyb3VwIGluIGBkaXNwbGF5X2dyb3VwYC4gCgpgYGB7cn0Kc21hbGxfZ3JvdXBzX2N1dG9mZiA8LSAxMgpgYGAKCiMjIyBEaXJlY3RvcmllcyBhbmQgRmlsZXMKCmBgYHtyfQojIFBhdGggdG8gaW5wdXQgZGlyZWN0b3J5CmlucHV0X2RpciA8LSBmaWxlLnBhdGgoIi4uIiwgImRhdGEiKQpvdXRwdXRfZGlyIDwtICJwYWxldHRlcyIKYGBgCgojIFJlYWQgaW4gbWV0YWRhdGEgCgpXaGljaCB2YXJpYWJsZXMgYXJlIHdlIGtlZXBpbmcgZm9yIHRoaXMgdGFibGU/IAoKYGBge3J9Cmhpc3RvbG9neV92YXJpYWJsZXMgPC0gCiAgYygiaW50ZWdyYXRlZF9kaWFnbm9zaXMiLCAKICAgICJOb3RlcyIsIAogICAgImhhcm1vbml6ZWRfZGlhZ25vc2lzIiwKICAgICJicm9hZF9oaXN0b2xvZ3kiLCAKICAgICJzaG9ydF9oaXN0b2xvZ3kiKQpgYGAKCkxldCdzIHJlYWQgaW4gdGhlIGN1cnJlbnQgcmVsZWFzZSdzIGBwYnRhLWhpc3RvbG9naWVzLnRzdmAgZmlsZS4gCgpgYGB7cn0KbWV0YWRhdGEgPC0KICByZWFkcjo6cmVhZF90c3YoZmlsZS5wYXRoKGlucHV0X2RpciwgInBidGEtaGlzdG9sb2dpZXMudHN2IiksIGd1ZXNzX21heCA9IDEwMDAwKQpgYGAKCk5vdyB3ZSdsbCBzZWxlY3QgaGlzdG9sb2d5IHZhcmlhYmxlcyB3ZSBtZW50aW9uZWQgYWJvdmUgYW5kIHNvIGNhcGl0YWxpemF0aW9uIGRpZmZlcmVuY2VzIGRvbid0IGdldCBpbiB0aGUgd2F5IHdpdGggdGhpcyBwcm9jZXNzLCB3ZSB3aWxsIGNoYW5nZSBldmVyeXRoaW5nIHRvIGxvd2VyIGNhc2UgZm9yIG5vdy4gCgpgYGB7cn0Kd29ya2luZ19tZXRhZGF0YSA8LSBtZXRhZGF0YSAlPiUgCiAgZHBseXI6OnNlbGVjdChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lELCBzYW1wbGVfdHlwZSwgaGlzdG9sb2d5X3ZhcmlhYmxlcykgJT4lIAogIGRwbHlyOjptdXRhdGVfYXQoaGlzdG9sb2d5X3ZhcmlhYmxlcywgdG9sb3dlcikKYGBgCgojIFRha2UgYSBsb29rIGF0IGhvdyBtYW55IGJpb3NwZWNpbWVucyBwZXIgYGJyb2FkX2hpc3RvbG9neWAgZ3JvdXAKCkxldCdzIHN1bW1hcml6ZSBgYnJvYWRfaGlzdG9sb2d5YC4gCkJlY2F1c2UgdGhlIGBOb3JtYWxgIHNhbXBsZXMgZG9uJ3QgaGF2ZSBoaXN0b2xvZ2llcywgd2UnbGwgbG9vayBhdCBqdXN0IHRoZSBgVHVtb3JgIHNhbXBsZXMgYXQgZm9yIHRoaXMgc3VtbWFyeS4gCgpgYGB7cn0KYnJvYWRfc3VtbWFyeSA8LSB3b3JraW5nX21ldGFkYXRhICU+JSAKICBkcGx5cjo6ZmlsdGVyKHNhbXBsZV90eXBlID09ICJUdW1vciIpICU+JQogIGRwbHlyOjpjb3VudChicm9hZF9oaXN0b2xvZ3kpICU+JSAKICBkcGx5cjo6YXJyYW5nZShuKQpgYGAKCkxldCdzIHByaW50IG91dCB0aGUgc3VtbWFyeS4gCgpgYGB7cn0KYnJvYWRfc3VtbWFyeSAlPiUgCiAga25pdHI6OmthYmxlKCkKYGBgCgpUaGVyZSdzIGhhbmRmdWwgb2YgdmVyeSBzbWFsbCBncm91cHMgKG1hbnkgYXJlIG4gPSAyKS4gCgojIyBEZWNsYXJlIG5ldyBlcXVpdmFsZW50IGdyb3VwcwoKVGhlc2UgZ3JvdXBzIHdlJ2xsIGNvbWJpbmUgaW50byBhIG5vbi1DTlMvb3RoZXIgdHVtb3IgZ3JvdXAuCgpgYGB7cn0Kb3RoZXJfdHVtb3IgPC0gYygibHltcGhvbWEiLCAibWVsYW5vY3l0aWMgdHVtb3IiLCAib3RoZXIgdHVtb3IiLCAibWV0YXN0YXRpYyB0dW1vcnMiLCAibm9uLWNucyB0dW1vciIpCmBgYAoKVGhlc2UgZ3JvdXBzIHdlJ2xsIGNvbWJpbmUgYXMgYSBiZW5pZ24uCgpgYGB7cn0KYmVnbmlnbiA8LSBjKCJiZW5pZ24gdHVtb3IiLCAibm9uLXR1bW9yIikKYGBgCgpBZGQgaW4gdGhlIGBPdGhlciBhc3Ryb2N5dGljIHR1bW9yYCBpbiB3aXRoIHRoZSBMR0FUIGdyb3VwLiAKCmBgYHtyfQpsZ2F0IDwtIGMoIm90aGVyIGFzdHJvY3l0aWMgdHVtb3IiLCAibG93LWdyYWRlIGFzdHJvY3l0aWMgdHVtb3IiKQpgYGAKCiMgTWFrZSBuZXcgYGRpc3BsYXlfZ3JvdXBgCgpgYGB7cn0KaGlzdG9sb2d5X3RhYmxlIDwtIHdvcmtpbmdfbWV0YWRhdGEgJT4lIAogIGRwbHlyOjptdXRhdGUoCiAgICAjIE5BcyBhcmUgcmVhbGx5IE5vcm1hbHMKICAgIGRpc3BsYXlfZ3JvdXAgPSB0aWR5cjo6cmVwbGFjZV9uYShicm9hZF9oaXN0b2xvZ3ksICJub3JtYWwiKSwKICAgICMgTm93IGRvIHRoZSBncm91cCBjb21iaW5pbmcKICAgIGRpc3BsYXlfZ3JvdXAgPSBmb3JjYXRzOjpmY3RfY29sbGFwc2UoZGlzcGxheV9ncm91cCwKICAgICAgImxvdy1ncmFkZSBhc3Ryb2N5dGljIHR1bW9yIiA9IGxnYXQsCiAgICAgICJvdGhlciBub24tY25zIHR1bW9yIiA9IG90aGVyX3R1bW9yLAogICAgICAiYmVuaWduIiA9IGJlZ25pZ24KICAgICksCiAgICApCmBgYAoKUHJpbnQgb3V0IHRoZSBudW1iZXIgb2YgYGRpc3BsYXlfZ3JvdXBgIChpbmNsdWRpbmcgYG5vcm1hbGApIQoKYGBge3J9CmRpc3BsYXlfZ3JvdXBfZGYgPC0gaGlzdG9sb2d5X3RhYmxlICU+JSAKICBkcGx5cjo6Y291bnQoZGlzcGxheV9ncm91cCkgJT4lIAogIGRwbHlyOjphcnJhbmdlKG4pCgprbml0cjo6a2FibGUoZGlzcGxheV9ncm91cF9kZikKYGBgCgpNYWtlIHRoaXMgbm90ZWJvb2sgc3RvcCBpZiB0aGVyZSBhcmUgbW9yZSB0aGFuIDE2IGhpc3RvbG9neSBncm91cHMgKyBgTm9ybWFsYC4gCgpgYGB7cn0KaWYgKG5yb3coZGlzcGxheV9ncm91cF9kZikgPiAxNykgewogIHN0b3AoIlRoZXJlJ3MgbW9yZSB0aGFuIDE2IGhpc3RvbG9neSBgZGlzcGxheV9ncm91cGAgbWF5IHdhbnQgdG8gcmUtZXZhbHVhdGUgdGhlIGhpZ2gtbGV2ZWwgaGlzdG9sb2d5IGdyb3VwaW5ncyIpCn0KYGBgCgojIyBSZXN0b3JlIGNhcGl0YWxpemF0aW9uCgpOb3cgdGhhdCB0aGUgc3RyaW5nIHNlYXJjaCBzdGVwcyBhbmQgbWFuaXB1bGF0aW9ucyBhcmUgZG9uZSwgbGV0J3MgcmVzdG9yZSBiZXR0ZXItbG9va2luZyBjYXBpdGFsaXphdGlvbi4gCgpgYGB7cn0KZGlzcGxheV9ncm91cF9kZiA8LSBkaXNwbGF5X2dyb3VwX2RmICU+JSAKICBkcGx5cjo6bXV0YXRlKGRpc3BsYXlfZ3JvdXAgPSBzdHJpbmdyOjpzdHJfdG9fc2VudGVuY2UoZGlzcGxheV9ncm91cCksCiAgICAgICAgICAgICAgICAjIERlYWwgd2l0aCBDTlMgZXhjZXB0aW9uCiAgICAgICAgICAgICAgICBkaXNwbGF5X2dyb3VwID0gc3RyaW5ncjo6c3RyX3JlcGxhY2UoZGlzcGxheV9ncm91cCwgImNucyIsICJDTlMiKQogICAgICAgICAgICAgICAgKQpgYGAKCiMgQWRkIGhleCBjb2RlcyAKClRoZXNlIGhleCBjb2RlcyB3ZXJlIHJldHJpZXZlZCBmcm9tIGh0dHA6Ly9waHJvZ3oubmV0L2Nzcy9kaXN0aW5jdC1jb2xvcnMuaHRtbCB3aXRoIHRoZSBzZXR0aW5ncyBvbiBkZWZhdWx0IGZvciAxOCBjb2xvcnMuCgpgYGB7cn0KY29sb3JfcGFsZXR0ZSA8LSAKICBjKCIjZmYwMDAwIiwgIiNjYzAwMDAiLCAiIzk5NTIwMCIsICIjYmZiMzAwIiwgIiNmZmZiYmYiLCAKICAgICIjMmU3MzAwIiwgIiMwMGU2NWMiLCAiIzAwZmZlZSIsICIjMTAzZDQwIiwgIiMwMDg1YTYiLCAKICAgICIjMDAzMzgwIiwgIiM0MDczZmYiLCAiIzczNzg5OSIsICIjNzAwMDhjIiwgIiNmMmI2ZWUiLCAKICAgICIjZmY0MGJmIiwgIiM4YzAwMzgiLCAiIzMzMGQxMiIKKQpgYGAKCkRlY2xhcmUgaG93IG1hbnkgY29sb3JzIHdlIG5lZWQuIAoKYGBge3J9Cm5fY29sb3JzIDwtIG5yb3coZGlzcGxheV9ncm91cF9kZikKYGBgCgpNYWtlIGEgbmFtZWQgbGlzdCBjb2xvciBrZXkgd2hlcmUgaGlzdG9sb2dpZXMgYXJlIHRoZSBuYW1lcy4gCgpgYGB7cn0KIyBTZXQgc2VlZCBzbyB0aGUgY29sb3JzIGFyZSBjb25zaXN0ZW50IHVwb24gcmUtcnVuCnNldC5zZWVkKDIwMjEpCgojIFNhbXBsZSBmcm9tIHRoZSAxOCBjb2xvcnMKc3Vic2V0X2NvbG9ycyA8LSBzYW1wbGUoY29sb3JfcGFsZXR0ZSwgbl9jb2xvcnMpCm5hbWVzKHN1YnNldF9jb2xvcnMpIDwtIGRpc3BsYXlfZ3JvdXBfZGYkZGlzcGxheV9ncm91cApgYGAKClVzZSBgcGllYCBmdW5jdGlvbiB0byBwcmV2aWV3IHdoYXQgdGhlc2UgbG9vayBsaWtlLgoKYGBge3J9CnBpZShyZXAoMSwgbl9jb2xvcnMpLCAKICAgIGNvbCA9IHN1YnNldF9jb2xvcnMsIAogICAgbGFiZWxzID0gZGlzcGxheV9ncm91cF9kZiRkaXNwbGF5X2dyb3VwKQpgYGAKCkFkZCB0aGUgaGV4IGNvZGVzIHRvIHRoZSBgaGlzdG9sb2d5X3RhYmxlYC4gCgpgYGB7cn0KaGlzdG9sb2d5X3RhYmxlIDwtIGhpc3RvbG9neV90YWJsZSAlPiUgCiAgZHBseXI6Om11dGF0ZShoZXhfY29kZXMgPSBkcGx5cjo6cmVjb2RlKGRpc3BsYXlfZ3JvdXAsIGhleF9jb2RlcyA9ICEhIXN1YnNldF9jb2xvcnMpKQpgYGAKCiMjIFNhdmUgdG8gVFNWIAoKYGBge3J9CnJlYWRyOjp3cml0ZV90c3YoaGlzdG9sb2d5X3RhYmxlLCBmaWxlLnBhdGgob3V0cHV0X2RpciwgImhpc3RvbG9neV9sYWJlbF9jb2xvcl90YWJsZS50c3YiKSkKYGBgCgojIFNlc3Npb24gSW5mbwoKYGBge3J9CnNlc3Npb25JbmZvKCkKYGBgCg==</div>
 
 
 </div>

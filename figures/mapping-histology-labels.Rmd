@@ -34,11 +34,11 @@ With this info, `histology_label_color_table.tsv` can be used by all plots and f
 
 Here's how `broad-histology` groups are [combined into the higher-level groupings of `display_group`](#declare-new-equivalent-groups).
 
-1) "Neuronal and mixed neuronal-glial tumor" and "Diffuse astrocytic and oligodendroglial tumor" were labeled as LGAT in previous releases so we will group these into `Low-grade astrocytic tumor` in `display_group`. 
+1) "Lymphoma", "Melanocytic tumor", "Other tumor", "Metastatic tumors", "Non-CNS tumor" are combined into a `Other non-CNS group` in `display_group`. 
 
-2)  `Germ cell tumor`  samples are combined into the `Non-CNS tumor` group. 
+2) `Benign tumor` and `Non-tumor` biospecimens are combined into a `Benign` group. 
 
-3) `Benign tumor` and `Non-tumor` biospecimens are combined into a `Benign` group. 
+3) `Other astrocytic tumor` samples are combined into the existing `Low-grade astrocytic tumor`.
 
 4) Anything not in the above categories gets its `broad_histology` label carried over. 
 
@@ -79,22 +79,26 @@ Which variables are we keeping for this table?
 
 ```{r}
 histology_variables <- 
-  c("Kids_First_Biospecimen_ID",
-    "sample_type", 
-    "integrated_diagnosis", 
+  c("integrated_diagnosis", 
     "Notes", 
     "harmonized_diagnosis",
     "broad_histology", 
     "short_histology")
-
 ```
 
-Let's read in the current release's `pbta-histologies.tsv` file and select the histology variables we mentioned above. 
+Let's read in the current release's `pbta-histologies.tsv` file. 
 
 ```{r}
 metadata <-
-  readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv"), guess_max = 10000) %>% 
-  dplyr::select(histology_variables)
+  readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv"), guess_max = 10000)
+```
+
+Now we'll select histology variables we mentioned above and so capitalization differences don't get in the way with this process, we will change everything to lower case for now. 
+
+```{r}
+working_metadata <- metadata %>% 
+  dplyr::select(Kids_First_Biospecimen_ID, sample_type, histology_variables) %>% 
+  dplyr::mutate_at(histology_variables, tolower)
 ```
 
 # Take a look at how many biospecimens per `broad_histology` group
@@ -103,7 +107,7 @@ Let's summarize `broad_histology`.
 Because the `Normal` samples don't have histologies, we'll look at just the `Tumor` samples at for this summary. 
 
 ```{r}
-broad_summary <- metadata %>% 
+broad_summary <- working_metadata %>% 
   dplyr::filter(sample_type == "Tumor") %>%
   dplyr::count(broad_histology) %>% 
   dplyr::arrange(n)
@@ -120,43 +124,41 @@ There's handful of very small groups (many are n = 2).
 
 ## Declare new equivalent groups
 
-Previously samples with these labels were generally considered `LGAT` groups, so we will group them back in in `display_group`. 
+These groups we'll combine into a non-CNS/other tumor group.
 
 ```{r}
-lgat_adjacent <- c("Low-grade astrocytic tumor",
-                   "Neuronal and mixed neuronal-glial tumor",
-                   "Diffuse astrocytic and oligodendroglial tumor")
-```
-
-These groups we'll combine non-CNS. 
-
-```{r}
-non_cns <- c("Non-CNS tumor", "Germ cell tumor")
+other_tumor <- c("lymphoma", "melanocytic tumor", "other tumor", "metastatic tumors", "non-cns tumor")
 ```
 
 These groups we'll combine as a benign.
 
 ```{r}
-begnign <- c("Benign tumor", "Non-tumor")
+begnign <- c("benign tumor", "non-tumor")
+```
+
+Add in the `Other astrocytic tumor` in with the LGAT group. 
+
+```{r}
+lgat <- c("other astrocytic tumor", "low-grade astrocytic tumor")
 ```
 
 # Make new `display_group`
 
 ```{r}
-histology_table <- metadata %>% 
+histology_table <- working_metadata %>% 
   dplyr::mutate(
     # NAs are really Normals
-    display_group = tidyr::replace_na(broad_histology, "Normal"),
+    display_group = tidyr::replace_na(broad_histology, "normal"),
     # Now do the group combining
     display_group = forcats::fct_collapse(display_group,
-      "Low-grade astrocytic tumor and adjacent" = lgat_adjacent,
-      "Non-CNS tumor" = non_cns,
-      "Benign" = begnign
+      "low-grade astrocytic tumor" = lgat,
+      "other non-cns tumor" = other_tumor,
+      "benign" = begnign
     ),
     )
 ```
 
-Print out the number of `display_group` (including `Normal`)!
+Print out the number of `display_group` (including `normal`)!
 
 ```{r}
 display_group_df <- histology_table %>% 
@@ -166,12 +168,24 @@ display_group_df <- histology_table %>%
 knitr::kable(display_group_df)
 ```
 
-Make this notebook stop if there are more than 15 groups. 
+Make this notebook stop if there are more than 16 histology groups + `Normal`. 
 
 ```{r}
-if (nrow(display_group_df) > 15) {
-  stop("There's more than 15 `display_group` may want to re-evaluate the high-level histology groupings")
+if (nrow(display_group_df) > 17) {
+  stop("There's more than 16 histology `display_group` may want to re-evaluate the high-level histology groupings")
 }
+```
+
+## Restore capitalization
+
+Now that the string search steps and manipulations are done, let's restore better-looking capitalization. 
+
+```{r}
+display_group_df <- display_group_df %>% 
+  dplyr::mutate(display_group = stringr::str_to_sentence(display_group),
+                # Deal with CNS exception
+                display_group = stringr::str_replace(display_group, "cns", "CNS")
+                )
 ```
 
 # Add hex codes 
