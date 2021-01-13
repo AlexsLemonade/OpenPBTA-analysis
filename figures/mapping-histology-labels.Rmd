@@ -32,13 +32,13 @@ With this info, `histology_label_color_table.tsv` can be used by all plots and f
 
 # How `display_group` is made:
 
-Here's how `broad-histology` is [recoded into the high-level groupings of `display_group`](#make_new_display_group).
+Here's how `broad-histology` groups are [combined into the higher-level groupings of `display_group`](#declare-new-equivalent-groups).
 
-1) All biospecimens in `broad_histology` groups with fewer than the number of `small_groups_cutoff` will be now grouped together as `Other` in `display_group`. 
+1) "Neuronal and mixed neuronal-glial tumor" and "Diffuse astrocytic and oligodendroglial tumor" were labeled as LGAT in previous releases so we will group these into `Low-grade astrocytic tumor` in `display_group`. 
 
-2) "Neuronal and mixed neuronal-glial tumor" and "Diffuse astrocytic and oligodendroglial tumor" were labeled as LGAT in previous releases so we will group these into `Low-grade astrocytic tumor` in `display_group`. 
+2)  `Germ cell tumor`  samples are combined into the `Non-CNS tumor` group. 
 
-3) So its clear why they are `NA`s, we will label all `Normal` samples (non-tumor samples) as `Normal` in `display_group`. 
+3) `Benign tumor` and `Non-tumor` biospecimens are combined into a `Benign` group. 
 
 4) Anything not in the above categories gets its `broad_histology` label carried over. 
 
@@ -141,8 +141,6 @@ begnign <- c("Benign tumor", "Non-tumor")
 ```
 
 # Make new `display_group`
-
-This [logic is described at the top of the notebook](#how_display_group_is_made:).
 
 ```{r}
 histology_table <- metadata %>% 
