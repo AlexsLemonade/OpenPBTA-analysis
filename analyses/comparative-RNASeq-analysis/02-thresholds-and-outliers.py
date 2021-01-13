@@ -169,9 +169,6 @@ def main():
     output file: genes are rows, samples are columns,
     values are a fixed width string of keys representing
     QC, outlier, top5, and dropped-gene status."""
-    # This script should always run as if it were being called from
-    # the directory it lives in.
-    os.chdir(sys.path[0])
 
     p = argparse.ArgumentParser()
     p.add_argument("--verbose", action="store_true")
