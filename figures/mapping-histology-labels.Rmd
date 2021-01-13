@@ -10,14 +10,16 @@ date: 2020
 
 # Purpose: 
 
-The histology label variables included in `pbta-histologies.tsv` from data releases, while perhaps specific and accurate, are not useful for summarizing the biospecimens for visuals. 
+The histology label variables included in `pbta-histologies.tsv` from data releases are not always useful for visualizing the full set of biospecimens due to the large number of different values.
+Having too many different possible values makes the colors harder to distinguish.
+In addition, there are some groups that are represented by only a very few samples; giving such groups a distinct color may be counterproductive.
 
 The goal of this notebook is to use the currently existing `broad_histology` groups from `pbta-histologies.tsv`, to form 10-15 "high level histology" group labels that can used for plotting purposes.
 
 ## The output table
 
-The output of this notebook is a TSV file: `palettes/histology_label_color_table.tsv` that contains...
-  
+The output of this notebook is a TSV file: `palettes/histology_label_color_table.tsv` that contains the following fields:
+
 **Copied from `pbta-histologies.tsv`**:    
 - `Kids_First_Biospecimen_ID` (from `pbta-histologies.tsv`)  
 - All the original histology label variables (`broad_histology`, `short_histology`, etc.)  
@@ -26,13 +28,13 @@ The output of this notebook is a TSV file: `palettes/histology_label_color_table
 - `summary_group` - the high-level histology labels that should be used for plotting   
 - `hex_codes` the direct colors that should be used for plotting  
 
-With this info, `histology_label_color_table.tsv` should be used by all plots and figures that need summarizing on a high-level. 
+With this info, `histology_label_color_table.tsv` can be used by all plots and figures that summarize high level data  while displaying histology information. 
 
 # How `summary_group` is made:
 
 Here's how `broad-histology` is [recoded into the high-level groupings of `summary_group`](#make_new_summary_group).
 
-1) All biospecimens in `broad_histology` groups with less than the number of `small_groups_cutoff` will be now grouped together as `Other` in `summary_group`. 
+1) All biospecimens in `broad_histology` groups with fewer than the number of `small_groups_cutoff` will be now grouped together as `Other` in `summary_group`. 
 
 2) "Neuronal and mixed neuronal-glial tumor" and "Diffuse astrocytic and oligodendroglial tumor" were labeled as LGAT in previous releases so we will group these into `Low-grade astrocytic tumor` in `summary_group`. 
 
@@ -103,7 +105,14 @@ Because the `Normal` samples don't have histologies, we'll look at just the `Tum
 ```{r}
 broad_summary <- metadata %>% 
   dplyr::filter(sample_type == "Tumor") %>%
-  dplyr::count(broad_histology) 
+  dplyr::count(broad_histology) %>% 
+  dplyr::arrange(n)
+```
+
+Let's print out the summary. 
+
+```{r}
+knitr::kable(broad_summary)
 ```
 
 Now let's get a vector of those small `broad_histology` groups based on the `small_groups_cutoff`. 
@@ -154,28 +163,30 @@ This [logic is described at the top of the notebook](#how_summary_group_is_made:
 ```{r}
 histology_table <- metadata %>% 
   dplyr::mutate(
-    summary_group = dplyr::case_when(
-      broad_histology %in% small_groups ~ "Other",
-      broad_histology %in% lgat_adjacent ~ "Low-grade astrocytic tumor", 
-      sample_type == "Normal" ~ "Normal",
-      TRUE ~ broad_histology)
+    display_group = forcats::fct_collapse(broad_histology,
+      "Low-grade astrocytic tumor and adjacent" =  c("Low-grade astrocytic tumor",
+                                                     "Neuronal and mixed neuronal-glial tumor", 
+                                                     "Diffuse astrocytic and oligodendroglial tumor"),
+      "Non-CNS tumor" = c("Non-CNS tumor", "Germ cell tumor"),
+      "Benign" = c("Benign tumor", "Non-tumor")
+    )
     )
 ```
 
-Print out the number of `summary_groups` (including `Normal`)!
+Print out the number of `display_group` (including `Normal`)!
 
 ```{r}
-summary_groups <- histology_table %>% 
-  dplyr::count(summary_group)
+display_group_df <- histology_table %>% 
+  dplyr::count(display_group)
 
-nrow(summary_groups)
+knitr::kable(display_group_df)
 ```
 
 Make this notebook stop if there are more than 15 groups. 
 
 ```{r}
-if (nrow(summary_groups) > 15) {
-  stop("There's more than 15 `summary_groups` may want to re-evaluate the high-level histology groupings")
+if (nrow(display_group_df) > 15) {
+  stop("There's more than 15 `display_group` may want to re-evaluate the high-level histology groupings")
 }
 ```
 
@@ -195,7 +206,7 @@ color_palette <-
 Declare how many colors we need. 
 
 ```{r}
-n_colors <- nrow(summary_groups)
+n_colors <- nrow(display_group_df)
 ```
 
 Make a named list color key where histologies are the names. 
@@ -206,7 +217,7 @@ set.seed(2021)
 
 # Sample from the 18 colors
 subset_colors <- sample(color_palette, n_colors)
-names(subset_colors) <- summary_groups$summary_group
+names(subset_colors) <- display_group_df$display_group
 ```
 
 Use `pie` function to preview what these look like.
@@ -214,7 +225,7 @@ Use `pie` function to preview what these look like.
 ```{r}
 pie(rep(1, n_colors), 
     col = subset_colors, 
-    labels = summary_groups$summary_group)
+    labels = display_group_df$display_group)
 ```
 
 Add the hex codes to the `histology_table`. 
