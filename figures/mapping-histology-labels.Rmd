@@ -59,12 +59,6 @@ Rscript -e "rmarkdown::render('figures/mapping-histology-labels.Rmd',
 `%>%` <- dplyr::`%>%`
 ```
 
-For groups that are smaller than this cutoff, they will be put into an `Other` group in `display_group`. 
-
-```{r}
-small_groups_cutoff <- 12
-```
-
 ### Directories and Files
 
 ```{r}
