@@ -145,11 +145,14 @@ begnign <- c("Benign tumor", "Non-tumor")
 ```{r}
 histology_table <- metadata %>% 
   dplyr::mutate(
-    display_group = forcats::fct_collapse(broad_histology,
+    # NAs are really Normals
+    display_group = tidyr::replace_na(broad_histology, "Normal"),
+    # Now do the group combining
+    display_group = forcats::fct_collapse(display_group,
       "Low-grade astrocytic tumor and adjacent" = lgat_adjacent,
       "Non-CNS tumor" = non_cns,
       "Benign" = begnign
-    )
+    ),
     )
 ```
 
