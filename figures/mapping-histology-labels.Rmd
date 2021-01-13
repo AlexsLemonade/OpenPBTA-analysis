@@ -25,20 +25,20 @@ The output of this notebook is a TSV file: `palettes/histology_label_color_table
 - All the original histology label variables (`broad_histology`, `short_histology`, etc.)  
   
 **Created in this notebook**:  
-- `summary_group` - the high-level histology labels that should be used for plotting   
+- `display_group` - the high-level histology labels that should be used for plotting   
 - `hex_codes` the direct colors that should be used for plotting  
 
 With this info, `histology_label_color_table.tsv` can be used by all plots and figures that summarize high level data  while displaying histology information. 
 
-# How `summary_group` is made:
+# How `display_group` is made:
 
-Here's how `broad-histology` is [recoded into the high-level groupings of `summary_group`](#make_new_summary_group).
+Here's how `broad-histology` is [recoded into the high-level groupings of `display_group`](#make_new_display_group).
 
-1) All biospecimens in `broad_histology` groups with fewer than the number of `small_groups_cutoff` will be now grouped together as `Other` in `summary_group`. 
+1) All biospecimens in `broad_histology` groups with fewer than the number of `small_groups_cutoff` will be now grouped together as `Other` in `display_group`. 
 
-2) "Neuronal and mixed neuronal-glial tumor" and "Diffuse astrocytic and oligodendroglial tumor" were labeled as LGAT in previous releases so we will group these into `Low-grade astrocytic tumor` in `summary_group`. 
+2) "Neuronal and mixed neuronal-glial tumor" and "Diffuse astrocytic and oligodendroglial tumor" were labeled as LGAT in previous releases so we will group these into `Low-grade astrocytic tumor` in `display_group`. 
 
-3) So its clear why they are `NA`s, we will label all `Normal` samples (non-tumor samples) as `Normal` in `summary_group`. 
+3) So its clear why they are `NA`s, we will label all `Normal` samples (non-tumor samples) as `Normal` in `display_group`. 
 
 4) Anything not in the above categories gets its `broad_histology` label carried over. 
 
@@ -59,7 +59,7 @@ Rscript -e "rmarkdown::render('figures/mapping-histology-labels.Rmd',
 `%>%` <- dplyr::`%>%`
 ```
 
-For groups that are smaller than this cutoff, they will be put into an `Other` group in `summary_group`. 
+For groups that are smaller than this cutoff, they will be put into an `Other` group in `display_group`. 
 
 ```{r}
 small_groups_cutoff <- 12
@@ -105,70 +105,52 @@ Because the `Normal` samples don't have histologies, we'll look at just the `Tum
 ```{r}
 broad_summary <- metadata %>% 
   dplyr::filter(sample_type == "Tumor") %>%
-  dplyr::count(broad_histology) %>% 
+  dplyr::count(broad_histology, short_histology) %>% 
   dplyr::arrange(n)
 ```
 
 Let's print out the summary. 
 
 ```{r}
-knitr::kable(broad_summary)
-```
-
-Now let's get a vector of those small `broad_histology` groups based on the `small_groups_cutoff`. 
-
-```{r}
-small_groups <- broad_summary %>% 
-  dplyr::filter(n < small_groups_cutoff) %>% 
-  dplyr::pull(broad_histology)
-```
-
-Let's take a look at how big all these groups are with a barplot.
-We'll mark which small histology groups are going to be labeled as "Other". 
-
-```{r}
 broad_summary %>% 
-  dplyr::mutate(now_labeled_other = broad_histology %in% small_groups) %>% 
-ggplot2::ggplot(ggplot2::aes(x = reorder(broad_histology, -n), y = n, fill = now_labeled_other)) +
-  ggplot2::geom_bar(position = "dodge", stat = "identity") +
-  ggplot2::theme_classic() +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) + 
-  ggplot2::xlab("broad_histology label") +
-  ggplot2::ggtitle(paste("Broad histologies: groups <", small_groups_cutoff, "will be 'Other' in `summary_group`"))
+  knitr::kable()
 ```
 
 There's handful of very small groups (many are n = 2). 
 
-# LGAT adjacent groups 
+## Declare new equivalent groups
 
-Previously samples with these labels were generally considered `LGAT` groups, so we will group them back in in `summary_group`. 
+Previously samples with these labels were generally considered `LGAT` groups, so we will group them back in in `display_group`. 
 
 ```{r}
-lgat_adjacent <- c("Neuronal and mixed neuronal-glial tumor", 
+lgat_adjacent <- c("Low-grade astrocytic tumor",
+                   "Neuronal and mixed neuronal-glial tumor",
                    "Diffuse astrocytic and oligodendroglial tumor")
 ```
 
-Stop if these strings aren't detected. 
+These groups we'll combine non-CNS. 
 
 ```{r}
-if (!all(lgat_adjacent %in% metadata$broad_histology)) {
-  stop("LGAT adjacent groups' text strings are not detected in this version of pbta-histologies' broad_histology variable")
-}
+non_cns <- c("Non-CNS tumor", "Germ cell tumor")
 ```
 
-# Make new `summary_group`
+These groups we'll combine as a benign.
 
-This [logic is described at the top of the notebook](#how_summary_group_is_made:).
+```{r}
+begnign <- c("Benign tumor", "Non-tumor")
+```
+
+# Make new `display_group`
+
+This [logic is described at the top of the notebook](#how_display_group_is_made:).
 
 ```{r}
 histology_table <- metadata %>% 
   dplyr::mutate(
     display_group = forcats::fct_collapse(broad_histology,
-      "Low-grade astrocytic tumor and adjacent" =  c("Low-grade astrocytic tumor",
-                                                     "Neuronal and mixed neuronal-glial tumor", 
-                                                     "Diffuse astrocytic and oligodendroglial tumor"),
-      "Non-CNS tumor" = c("Non-CNS tumor", "Germ cell tumor"),
-      "Benign" = c("Benign tumor", "Non-tumor")
+      "Low-grade astrocytic tumor and adjacent" = lgat_adjacent,
+      "Non-CNS tumor" = non_cns,
+      "Benign" = begnign
     )
     )
 ```
@@ -232,7 +214,7 @@ Add the hex codes to the `histology_table`.
 
 ```{r}
 histology_table <- histology_table %>% 
-  dplyr::mutate(hex_codes = dplyr::recode(summary_group, hex_codes = !!!subset_colors))
+  dplyr::mutate(hex_codes = dplyr::recode(display_group, hex_codes = !!!subset_colors))
 ```
 
 ## Save to TSV 
