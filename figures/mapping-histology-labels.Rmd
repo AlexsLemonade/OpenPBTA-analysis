@@ -105,7 +105,7 @@ Because the `Normal` samples don't have histologies, we'll look at just the `Tum
 ```{r}
 broad_summary <- metadata %>% 
   dplyr::filter(sample_type == "Tumor") %>%
-  dplyr::count(broad_histology, short_histology) %>% 
+  dplyr::count(broad_histology) %>% 
   dplyr::arrange(n)
 ```
 
@@ -159,7 +159,8 @@ Print out the number of `display_group` (including `Normal`)!
 
 ```{r}
 display_group_df <- histology_table %>% 
-  dplyr::count(display_group)
+  dplyr::count(display_group) %>% 
+  dplyr::arrange(n)
 
 knitr::kable(display_group_df)
 ```
