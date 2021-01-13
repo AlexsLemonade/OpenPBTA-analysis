@@ -1822,35 +1822,67 @@ if (!dir.exists(subset_dir)) {
 <pre class="r"><code>
 lgat_specimens_df&lt;-read_tsv(file.path(subset_dir, &quot;lgat_metadata.tsv&quot;))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBgPDw8PDw8PCBIRUFEYCA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltXG4pXG4xMTkyIHBhcnNpbmcgZmFpbHVyZXMuXG5yb3cgY29sICBleHBlY3RlZCAgICAgYWN0dWFsICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZpbGVcbiAgMSAgLS0gMSBjb2x1bW5zIDM2IGNvbHVtbnMgJy9ob21lL3JzdHVkaW8vT3BlblBCVEEvYW5hbHlzZXMvbW9sZWN1bGFyLXN1YnR5cGluZy1MR0FUL2xnYXQtc3Vic2V0L2xnYXRfbWV0YWRhdGEudHN2J1xuICAyICAtLSAxIGNvbHVtbnMgMzYgY29sdW1ucyAnL2hvbWUvcnN0dWRpby9PcGVuUEJUQS9hbmFseXNlcy9tb2xlY3VsYXItc3VidHlwaW5nLUxHQVQvbGdhdC1zdWJzZXQvbGdhdF9tZXRhZGF0YS50c3YnXG4gIDMgIC0tIDEgY29sdW1ucyAzNiBjb2x1bW5zICcvaG9tZS9yc3R1ZGlvL09wZW5QQlRBL2FuYWx5c2VzL21vbGVjdWxhci1zdWJ0eXBpbmctTEdBVC9sZ2F0LXN1YnNldC9sZ2F0X21ldGFkYXRhLnRzdidcbiAgNCAgLS0gMSBjb2x1bW5zIDM2IGNvbHVtbnMgJy9ob21lL3JzdHVkaW8vT3BlblBCVEEvYW5hbHlzZXMvbW9sZWN1bGFyLXN1YnR5cGluZy1MR0FUL2xnYXQtc3Vic2V0L2xnYXRfbWV0YWRhdGEudHN2J1xuICA1ICAtLSAxIGNvbHVtbnMgMzYgY29sdW1ucyAnL2hvbWUvcnN0dWRpby9PcGVuUEJUQS9hbmFseXNlcy9tb2xlY3VsYXItc3VidHlwaW5nLUxHQVQvbGdhdC1zdWJzZXQvbGdhdF9tZXRhZGF0YS50c3YnXG4uLi4gLi4uIC4uLi4uLi4uLiAuLi4uLi4uLi4uIC4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi5cblNlZSBwcm9ibGVtcyguLi4pIGZvciBtb3JlIGRldGFpbHMuXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgYWxpcXVvdF9pZCA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBpbnRlZ3JhdGVkX2RpYWdub3NpcyA9IFx1MDAxYlszM21jb2xfbG9naWNhbCgpXHUwMDFiWzM5bSxcbiAgTm90ZXMgPSBcdTAwMWJbMzNtY29sX2xvZ2ljYWwoKVx1MDAxYlszOW0sXG4gIE9TX2RheXMgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgYWdlX2xhc3RfdXBkYXRlX2RheXMgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgbW9sZWN1bGFyX3N1YnR5cGUgPSBcdTAwMWJbMzNtY29sX2xvZ2ljYWwoKVx1MDAxYlszOW0sXG4gIG5vcm1hbF9mcmFjdGlvbiA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICB0dW1vcl9mcmFjdGlvbiA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICB0dW1vcl9wbG9pZHkgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
 <pre><code>Parsed with column specification:
 cols(
-  `&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD` = [31mcol_character()[39m
+  .default = col_character(),
+  aliquot_id = [32mcol_double()[39m,
+  integrated_diagnosis = [33mcol_logical()[39m,
+  Notes = [33mcol_logical()[39m,
+  OS_days = [32mcol_double()[39m,
+  age_last_update_days = [32mcol_double()[39m,
+  molecular_subtype = [33mcol_logical()[39m,
+  normal_fraction = [32mcol_double()[39m,
+  tumor_fraction = [32mcol_double()[39m,
+  tumor_ploidy = [32mcol_double()[39m
 )
-1192 parsing failures.
-row col  expected     actual                                                                                     file
-  1  -- 1 columns 36 columns '/home/rstudio/OpenPBTA/analyses/molecular-subtyping-LGAT/lgat-subset/lgat_metadata.tsv'
-  2  -- 1 columns 36 columns '/home/rstudio/OpenPBTA/analyses/molecular-subtyping-LGAT/lgat-subset/lgat_metadata.tsv'
-  3  -- 1 columns 36 columns '/home/rstudio/OpenPBTA/analyses/molecular-subtyping-LGAT/lgat-subset/lgat_metadata.tsv'
-  4  -- 1 columns 36 columns '/home/rstudio/OpenPBTA/analyses/molecular-subtyping-LGAT/lgat-subset/lgat_metadata.tsv'
-  5  -- 1 columns 36 columns '/home/rstudio/OpenPBTA/analyses/molecular-subtyping-LGAT/lgat-subset/lgat_metadata.tsv'
-... ... ......... .......... ........................................................................................
-See problems(...) for more details.</code></pre>
+See spec(...) for full column specifications.</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBGaWx0ZXIgdG8gUk5BLVNlcSBzYW1wbGVzXG5sZ2F0X3JuYV9kZiA8LSBsZ2F0X3NwZWNpbWVuc19kZiAlPiVcbiAgZHBseXI6OmZpbHRlcihleHBlcmltZW50YWxfc3RyYXRlZ3kgPT0gXCJSTkEtU2VxXCIpICU+JVxuICBkcGx5cjo6c2VsZWN0KEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQsc2FtcGxlX2lkKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBGaWx0ZXIgdG8gUk5BLVNlcSBzYW1wbGVzXG5sZ2F0X3JuYV9kZiA8LSBsZ2F0X3NwZWNpbWVuc19kZiAlPiVcbiAgZHBseXI6OmZpbHRlcihleHBlcmltZW50YWxfc3RyYXRlZ3kgPT0gXCJSTkEtU2VxXCIpICU+JVxuICBkcGx5cjo6c2VsZWN0KEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQsc2FtcGxlX2lkKVxuXG4jIGdldCBwdXRhdGl2ZSBvbmNvZ2VuZSBmdXNpb24gbGlzdFxucHV0YXRpdmVGdXNpb24gPC0gcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChyb290X2RpcixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJhbmFseXNlc1wiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcImZ1c2lvbi1zdW1tYXJ5XCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwicmVzdWx0c1wiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcImZ1c2lvbl9zdW1tYXJ5X2xnYXRfZm9pLnRzdlwiKSkgJT4lXG4gICMgYWRkIHNhbXBsZV9pZCBmb3IgTEdBVCBSTkEtU2VxIGJpb3NwZWNpbWVuXG4gIGRwbHlyOjpsZWZ0X2pvaW4obGdhdF9ybmFfZGYsIGJ5PWMoXCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEXCIpKSAlPiVcbiAgIyBmaWx0ZXIgdG8ga2VlcCBvbmx5IExHQVQgUk5BIFxuICBkcGx5cjo6ZmlsdGVyKCFpcy5uYShzYW1wbGVfaWQpKVxuYGBgIn0= -->
 <pre class="r"><code># Filter to RNA-Seq samples
 lgat_rna_df &lt;- lgat_specimens_df %&gt;%
   dplyr::filter(experimental_strategy == &quot;RNA-Seq&quot;) %&gt;%
-  dplyr::select(Kids_First_Biospecimen_ID,sample_id)</code></pre>
+  dplyr::select(Kids_First_Biospecimen_ID,sample_id)
+
+# get putative oncogene fusion list
+putativeFusion &lt;- readr::read_tsv(file.path(root_dir,
+                                            &quot;analyses&quot;,
+                                            &quot;fusion-summary&quot;,
+                                            &quot;results&quot;,
+                                            &quot;fusion_summary_lgat_foi.tsv&quot;)) %&gt;%
+  # add sample_id for LGAT RNA-Seq biospecimen
+  dplyr::left_join(lgat_rna_df, by=c(&quot;Kids_First_Biospecimen_ID&quot;)) %&gt;%
+  # filter to keep only LGAT RNA 
+  dplyr::filter(!is.na(sample_id))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3I6IG9iamVjdCAnZXhwZXJpbWVudGFsX3N0cmF0ZWd5JyBub3QgZm91bmRcbiJ9 -->
-<pre><code>Error: object 'experimental_strategy' not found</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbiJ9 -->
+<pre><code>Parsed with column specification:
+cols(
+  .default = col_double(),
+  Kids_First_Biospecimen_ID = [31mcol_character()[39m
+)
+See spec(...) for full column specifications.</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Gather gene(s) that define LGAT subtypes Additional information for canonical fusion for each subtype is also provided in the list.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBmdXNpb24gbGlzdCBvZiBpbnRlcmVzdFxuZnVzaW9uT0kgPC0ganNvbmxpdGU6OmZyb21KU09OKGZpbGUucGF0aChyb290X2RpcixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJhbmFseXNlc1wiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIm1vbGVjdWxhci1zdWJ0eXBpbmctTEdBVFwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcImlucHV0XCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiZnVzaW9uT0lfbGlzdC5qc29uXCIpKVxuXG4jIGNvbGxhcHNlIGdlbmUgbGlzdCB3aXRoIFwifFwiIGZvciBlYXNpZXIgbWF0Y2goKVxuTUFQS19mdXNlZF9nZW5lIDwtIHBhc3RlKGZ1c2lvbk9JJE1BUEskZ2VuZSxjb2xsYXBzZSA9IFwifFwiKVxuUlRLX2Z1c2VkX2dlbmUgPC0gcGFzdGUoZnVzaW9uT0kkUlRLJGdlbmUsY29sbGFwc2UgPSBcInxcIilcbkZHRlJfZnVzZWRfZ2VuZSA8LSBwYXN0ZShmdXNpb25PSSRGR0ZSJGdlbmUsY29sbGFwc2UgPSBcInxcIilcbk1ZQl9mdXNlZF9nZW5lIDwtIHBhc3RlKGZ1c2lvbk9JJE1ZQiRnZW5lLGNvbGxhcHNlID0gXCJ8XCIpXG5jYW5vbmljYWxfZnVzaW9uIDwtIHBhc3RlKGZ1c2lvbk9JJGNhbm9uaWNhbCRmdXNpb24sY29sbGFwc2UgPSBcInxcIilcbmBgYCJ9 -->
+<pre class="r"><code># fusion list of interest
+fusionOI &lt;- jsonlite::fromJSON(file.path(root_dir,
+                                         &quot;analyses&quot;,
+                                         &quot;molecular-subtyping-LGAT&quot;,
+                                         &quot;input&quot;,
+                                         &quot;fusionOI_list.json&quot;))
+
+# collapse gene list with &quot;|&quot; for easier match()
+MAPK_fused_gene &lt;- paste(fusionOI$MAPK$gene,collapse = &quot;|&quot;)
+RTK_fused_gene &lt;- paste(fusionOI$RTK$gene,collapse = &quot;|&quot;)
+FGFR_fused_gene &lt;- paste(fusionOI$FGFR$gene,collapse = &quot;|&quot;)
+MYB_fused_gene &lt;- paste(fusionOI$MYB$gene,collapse = &quot;|&quot;)
+canonical_fusion &lt;- paste(fusionOI$canonical$fusion,collapse = &quot;|&quot;)</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -1859,10 +1891,94 @@ lgat_rna_df &lt;- lgat_specimens_df %&gt;%
 <p>We will gather summarized fusion calls that satisfy the conditions per subtype and save the subset</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3Vic2V0RnVzaW9uIDwtIHB1dGF0aXZlRnVzaW9uICU+JVxuICBtdXRhdGUoXG4gICAgIyBnZXQgS0lBQTE1NDktLUJSQUYgc3RhdHVzXG4gICAgS0lBQV9CUkFGX2Z1cyA9IGNhc2Vfd2hlbihcbiAgICAgICMgY2Fub25pY2FsIEJSQUYgZnVzaW9uIFxuICAgICAgcm93U3VtcyhkcGx5cjo6c2VsZWN0KHB1dGF0aXZlRnVzaW9uLGRwbHlyOjptYXRjaGVzKGNhbm9uaWNhbF9mdXNpb24pKSkgPiAwIH4gXCJZZXNcIixcbiAgICAgIFRSVUUgfiBcIk5vXCJcbiAgICApLFxuICAgICMgb3RoZXIgTUFQSyBmdXNpb24gc3RhdHVzXG4gICAgTUFQS19mdXMgPSBjYXNlX3doZW4oXG4gICAgICAjIEZ1c2lvbiB3aXRoIEJSQUYgYW5kIFJBRjEgXG4gICAgICByb3dTdW1zKGRwbHlyOjpzZWxlY3QocHV0YXRpdmVGdXNpb24sZHBseXI6Om1hdGNoZXMoTUFQS19mdXNlZF9nZW5lKSkpID4gMCAmXG4gICAgICAgICMgcmVtb3ZlIGJpb3NwZWNpbWVucyB3aXRoIGNhbm9uaWNhbCBmdXNpb25cbiAgICAgICAgIyB0aGV5IGFyZSBhIHNlcGFyYXRlIHN1YnR5cGUgYXMgc2hvd24gYWJvdmVcbiAgICAgICAgIXJvd1N1bXMoZHBseXI6OnNlbGVjdChwdXRhdGl2ZUZ1c2lvbixkcGx5cjo6bWF0Y2hlcyhjYW5vbmljYWxfZnVzaW9uKSkpID4gMCB+IFwiWWVzXCIsXG4gICAgICBUUlVFIH4gXCJOb1wiXG4gICAgKSxcbiAgICAjIFJUSyBmdXNpb24gc3RhdHVzXG4gICAgUlRLX2Z1cyA9IGNhc2Vfd2hlbihcbiAgICAgICMgZnVzaW9uIGluIGFueSBSVEsgZ2VuZSBBTEt8Uk9TMXxOVFJLMnxOVFJLMXxOVFJLM3xQREdGUkFcbiAgICAgIHJvd1N1bXMoZHBseXI6OnNlbGVjdChwdXRhdGl2ZUZ1c2lvbixkcGx5cjo6bWF0Y2hlcyhSVEtfZnVzZWRfZ2VuZSkpKSA+IDAgfiBcIlllc1wiLFxuICAgICAgVFJVRSB+IFwiTm9cIlxuICAgICksXG4gICAgIyBnZXQgRkdGUiBmdXNpb24gc3RhdHVzXG4gICAgRkdGUl9mdXMgPSBjYXNlX3doZW4oXG4gICAgICAjIGZ1c2lvbiBpbiBhbnkgRkdGUiBnZW5lIEZHRlIxfEZHRlIyXG4gICAgICByb3dTdW1zKGRwbHlyOjpzZWxlY3QocHV0YXRpdmVGdXNpb24sZHBseXI6Om1hdGNoZXMoRkdGUl9mdXNlZF9nZW5lKSkpID4gMCB+IFwiWWVzXCIsXG4gICAgICBUUlVFIH4gXCJOb1wiXG4gICAgKSxcbiAgICAjIGdldCBNWUIgbXV0YXRpb24gc3RhdHVzXG4gICAgTVlCX2Z1cyA9IGNhc2Vfd2hlbihcbiAgICAgICMgZnVzaW9uIGluIGFueSBNWUIgZ2VuZSBNWUJ8TVlCTDFcbiAgICAgIHJvd1N1bXMoZHBseXI6OnNlbGVjdChwdXRhdGl2ZUZ1c2lvbixkcGx5cjo6Y29udGFpbnMoTVlCX2Z1c2VkX2dlbmUpKSkgPiAwIH4gXCJZZXNcIixcbiAgICAgIFRSVUUgfiBcIk5vXCJcbiAgICApXG4gICkgJT4lXG4gIGRwbHlyOjpzZWxlY3QoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCxcbiAgICAgICAgICAgICAgICBzYW1wbGVfaWQsXG4gICAgICAgICAgICAgICAgS0lBQV9CUkFGX2Z1cyxcbiAgICAgICAgICAgICAgICBNQVBLX2Z1cyxcbiAgICAgICAgICAgICAgICBSVEtfZnVzLFxuICAgICAgICAgICAgICAgIEZHRlJfZnVzLFxuICAgICAgICAgICAgICAgIE1ZQl9mdXMpXG5cbiMgc2F2ZSB0byBzdWJzZXQgZm9sZGVyXG53cml0ZV90c3Yoc3Vic2V0RnVzaW9uLGZpbGUucGF0aChzdWJzZXRfZGlyLCBcIkxHQVRfZnVzaW9uX3N1YnNldC50c3ZcIikpXG5gYGAifQ== -->
+<pre class="r"><code>subsetFusion &lt;- putativeFusion %&gt;%
+  mutate(
+    # get KIAA1549--BRAF status
+    KIAA_BRAF_fus = case_when(
+      # canonical BRAF fusion 
+      rowSums(dplyr::select(putativeFusion,dplyr::matches(canonical_fusion))) &gt; 0 ~ &quot;Yes&quot;,
+      TRUE ~ &quot;No&quot;
+    ),
+    # other MAPK fusion status
+    MAPK_fus = case_when(
+      # Fusion with BRAF and RAF1 
+      rowSums(dplyr::select(putativeFusion,dplyr::matches(MAPK_fused_gene))) &gt; 0 &amp;
+        # remove biospecimens with canonical fusion
+        # they are a separate subtype as shown above
+        !rowSums(dplyr::select(putativeFusion,dplyr::matches(canonical_fusion))) &gt; 0 ~ &quot;Yes&quot;,
+      TRUE ~ &quot;No&quot;
+    ),
+    # RTK fusion status
+    RTK_fus = case_when(
+      # fusion in any RTK gene ALK|ROS1|NTRK2|NTRK1|NTRK3|PDGFRA
+      rowSums(dplyr::select(putativeFusion,dplyr::matches(RTK_fused_gene))) &gt; 0 ~ &quot;Yes&quot;,
+      TRUE ~ &quot;No&quot;
+    ),
+    # get FGFR fusion status
+    FGFR_fus = case_when(
+      # fusion in any FGFR gene FGFR1|FGFR2
+      rowSums(dplyr::select(putativeFusion,dplyr::matches(FGFR_fused_gene))) &gt; 0 ~ &quot;Yes&quot;,
+      TRUE ~ &quot;No&quot;
+    ),
+    # get MYB mutation status
+    MYB_fus = case_when(
+      # fusion in any MYB gene MYB|MYBL1
+      rowSums(dplyr::select(putativeFusion,dplyr::contains(MYB_fused_gene))) &gt; 0 ~ &quot;Yes&quot;,
+      TRUE ~ &quot;No&quot;
+    )
+  ) %&gt;%
+  dplyr::select(Kids_First_Biospecimen_ID,
+                sample_id,
+                KIAA_BRAF_fus,
+                MAPK_fus,
+                RTK_fus,
+                FGFR_fus,
+                MYB_fus)
+
+# save to subset folder
+write_tsv(subsetFusion,file.path(subset_dir, &quot;LGAT_fusion_subset.tsv&quot;))</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgICBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgIFxuIFs0XSBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgICBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgICBMQ19BRERSRVNTPUMgICAgICAgICAgICAgIFxuWzEwXSBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgICBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBmb3JjYXRzXzAuNC4wICAgc3RyaW5ncl8xLjQuMCAgIGRwbHlyXzAuOC4zICAgICBwdXJycl8wLjMuMiAgICAgcmVhZHJfMS4zLjEgICAgXG5bNl0gdGlkeXJfMC44LjMgICAgIHRpYmJsZV8yLjEuMyAgICBnZ3Bsb3QyXzMuMi4wICAgdGlkeXZlcnNlXzEuMi4xXG5cbmxvYWRlZCB2aWEgYSBuYW1lc3BhY2UgKGFuZCBub3QgYXR0YWNoZWQpOlxuIFsxXSBSY3BwXzEuMC4xICAgICAgIGNlbGxyYW5nZXJfMS4xLjAgcGlsbGFyXzEuNC4yICAgICBjb21waWxlcl8zLjYuMCAgIHBseXJfMS44LjQgICAgICBcbiBbNl0gYmFzZTY0ZW5jXzAuMS0zICB0b29sc18zLjYuMCAgICAgIGRpZ2VzdF8wLjYuMjAgICAgbHVicmlkYXRlXzEuNy40ICBqc29ubGl0ZV8xLjYgICAgXG5bMTFdIGV2YWx1YXRlXzAuMTQgICAgbmxtZV8zLjEtMTQwICAgICBndGFibGVfMC4zLjAgICAgIGxhdHRpY2VfMC4yMC0zOCAgcGtnY29uZmlnXzIuMC4yIFxuWzE2XSBybGFuZ18wLjQuMCAgICAgIGNsaV8xLjEuMCAgICAgICAgcnN0dWRpb2FwaV8wLjEwICB5YW1sXzIuMi4wICAgICAgIGhhdmVuXzIuMS4xICAgICBcblsyMV0geGZ1bl8wLjggICAgICAgICB3aXRocl8yLjEuMiAgICAgIHhtbDJfMS4yLjAgICAgICAgaHR0cl8xLjQuMCAgICAgICBrbml0cl8xLjIzICAgICAgXG5bMjZdIGhtc18wLjQuMiAgICAgICAgZ2VuZXJpY3NfMC4wLjIgICBycHJvanJvb3RfMS4zLTIgIGdyaWRfMy42LjAgICAgICAgdGlkeXNlbGVjdF8wLjIuNVxuWzMxXSBnbHVlXzEuMy4xICAgICAgIFI2XzIuNC4wICAgICAgICAgcmVhZHhsXzEuMy4xICAgICBybWFya2Rvd25fMS4xMyAgIG1vZGVscl8wLjEuNCAgICBcblszNl0gcmVzaGFwZTJfMS40LjMgICBtYWdyaXR0cl8xLjUgICAgIGJhY2twb3J0c18xLjEuNCAgc2NhbGVzXzEuMC4wICAgICBodG1sdG9vbHNfMC4zLjYgXG5bNDFdIHJ2ZXN0XzAuMy40ICAgICAgYXNzZXJ0dGhhdF8wLjIuMSBjb2xvcnNwYWNlXzEuNC0xIHN0cmluZ2lfMS40LjMgICAgbGF6eWV2YWxfMC4yLjIgIFxuWzQ2XSBtdW5zZWxsXzAuNS4wICAgIGJyb29tXzAuNS4yICAgICAgY3JheW9uXzEuMy40ICAgIFxuIn0= -->
+<pre><code>R version 3.6.0 (2019-04-26)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Debian GNU/Linux 9 (stretch)
+
+Matrix products: default
+BLAS/LAPACK: /usr/lib/libopenblasp-r0.2.19.so
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C               LC_TIME=en_US.UTF-8       
+ [4] LC_COLLATE=en_US.UTF-8     LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                  LC_ADDRESS=C              
+[10] LC_TELEPHONE=C             LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] forcats_0.4.0   stringr_1.4.0   dplyr_0.8.3     purrr_0.3.2     readr_1.3.1    
+[6] tidyr_0.8.3     tibble_2.1.3    ggplot2_3.2.0   tidyverse_1.2.1
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.1       cellranger_1.1.0 pillar_1.4.2     compiler_3.6.0   plyr_1.8.4      
+ [6] base64enc_0.1-3  tools_3.6.0      digest_0.6.20    lubridate_1.7.4  jsonlite_1.6    
+[11] evaluate_0.14    nlme_3.1-140     gtable_0.3.0     lattice_0.20-38  pkgconfig_2.0.2 
+[16] rlang_0.4.0      cli_1.1.0        rstudioapi_0.10  yaml_2.2.0       haven_2.1.1     
+[21] xfun_0.8         withr_2.1.2      xml2_1.2.0       httr_1.4.0       knitr_1.23      
+[26] hms_0.4.2        generics_0.0.2   rprojroot_1.3-2  grid_3.6.0       tidyselect_0.2.5
+[31] glue_1.3.1       R6_2.4.0         readxl_1.3.1     rmarkdown_1.13   modelr_0.1.4    
+[36] reshape2_1.4.3   magrittr_1.5     backports_1.1.4  scales_1.0.0     htmltools_0.3.6 
+[41] rvest_0.3.4      assertthat_0.2.1 colorspace_1.4-1 stringi_1.4.3    lazyeval_0.2.2  
+[46] munsell_0.5.0    broom_0.5.2      crayon_1.3.4    </code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
