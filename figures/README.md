@@ -79,7 +79,7 @@ histology_col_palette <- readr::read_tsv(
   file.path("figures", "palettes", "histology_color_palette.tsv")
 ```
 
-**Step 2)** Use `dplyr::inner_join` using `Kids_First_Biospecimen_ID` to join by so you can add on the `hex_codes` and `summary_group` for each biospecimen
+**Step 2)** Use `dplyr::inner_join` using `Kids_First_Biospecimen_ID` to join by so you can add on the `hex_codes` and `display_group` for each biospecimen
 
 ```
 # Read in the metadata
@@ -87,17 +87,17 @@ metadata <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
   dplyr::inner_join(histology_label_mapping, by = "Kids_First_Biospecimen_ID")
 ```
 
-**Step 4)** Make your plot and use the `hex_codes` and `summary_group` columns.  
+**Step 4)** Make your plot and use the `hex_codes` and `display_group` columns.  
 
 Using the `ggplot2::scale_fill_identity()` or `ggplot2::scale_color_identity()` allows you to supply the `hex_codes` column from a color palette to `ggplot2` with a `fill` or `color` argument respectively.
 For base R plots, you should be able to supply the `hex_codes` column as your `col` argument.
-`summary_group` should be used as the labels in the plot. 
+`display_group` should be used as the labels in the plot.
 
 ```
 metadata %>%
-  dplyr::group_by(summary_group, hex_codes) %>%
+  dplyr::group_by(display_group, hex_codes) %>%
   dplyr::summarize(count = dplyr::n()) %>%
-  ggplot2::ggplot(ggplot2::aes(x = summary_group, y = count, fill = hex_codes)) +
+  ggplot2::ggplot(ggplot2::aes(x = display_group, y = count, fill = hex_codes)) +
   ggplot2::geom_bar(stat = "identity") +
   ggplot2::scale_fill_identity()
 ```
@@ -153,7 +153,7 @@ df <- df %>%
 
 ComplexHeatmap::Heatmap(
   df,
-  col = col_fun, 
+  col = col_fun,
   na_col = na_color$hex_codes
 )
 ```

@@ -58,7 +58,7 @@ Import color palettes.
 histology_label_mapping <- readr::read_tsv(
   file.path(figures_dir, "palettes", "histology_label_color_table.tsv")
   ) %>% 
-  dplyr::select(Kids_First_Biospecimen_ID, summary_group, hex_codes)
+  dplyr::select(Kids_First_Biospecimen_ID, display_group, hex_codes)
 
 # We'll use this for numeric data on the heatmap 
 gradient_col_palette <- readr::read_tsv(
@@ -149,7 +149,7 @@ breaks_heatmap <- function(binned_counts_df,
   # Create the Heatmap annotation object
   hist_annot <- ComplexHeatmap::HeatmapAnnotation(
     df = data.frame(histologies),
-    col = list(summary_group = histologies_colors),
+    col = list(display_group = histologies_colors),
     which = "row",
     show_annotation_name = FALSE
   )
@@ -230,13 +230,13 @@ Make histology labeling `HeatmapAnnotation` object.
 histologies <-
   data.frame(Kids_First_Biospecimen_ID = common_samples) %>%
   dplyr::inner_join(metadata %>% 
-                      dplyr::select(Kids_First_Biospecimen_ID, summary_group, hex_codes)) %>%
-  dplyr::arrange(summary_group) %>% 
+                      dplyr::select(Kids_First_Biospecimen_ID, display_group, hex_codes)) %>%
+  dplyr::arrange(display_group) %>% 
   tibble::column_to_rownames("Kids_First_Biospecimen_ID")
 
 # Make color key specific to these samples
 histologies_color_key_filtered <- unique(histologies$hex_codes)
-names(histologies_color_key_filtered) <- unique(histologies$summary_group)
+names(histologies_color_key_filtered) <- unique(histologies$display_group)
 
 # Drop this column so ComplexHeatmap isn't tempted to plot it
 histologies <- dplyr::select(histologies, -hex_codes)
