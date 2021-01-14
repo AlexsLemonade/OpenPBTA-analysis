@@ -205,7 +205,7 @@ consensusMutationSubset %>%
 ```
 We have some synonymous variants (classified as Intron, 5`Flank and Silent) captured per gene of interest.    
  
-
+ 
 We will now remove synonymous variant calls from the list above. The Variant_Classification terms for synonymous SNV are selected as per [interaction-plots/scripts/02-process_mutations.R](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/interaction-plots/scripts/02-process_mutations.R).
 ```{r}
 # Variant Classification with Low/Modifier variant consequences 
