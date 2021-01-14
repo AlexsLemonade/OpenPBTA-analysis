@@ -208,7 +208,6 @@ We have some synonymous variants (classified as Intron, 5`Flank and Silent) capt
 
 We will now remove synonymous variant calls from the list above. The Variant_Classification terms for synonymous SNV are selected as per [interaction-plots/scripts/02-process_mutations.R](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/interaction-plots/scripts/02-process_mutations.R).
 ```{r}
-
 # Variant Classification with Low/Modifier variant consequences 
 #  from maftools http://asia.ensembl.org/Help/Glossary?id=535
 synonymous <- c(
@@ -220,9 +219,8 @@ synonymous <- c(
   "De_novo_Start_OutOfFrame"
 )
 
-consensusMutationSubset %>%
+consensusMutationSubset <- consensusMutationSubset %>%
   dplyr::filter(!Variant_Classification %in% synonymous)
-
 ```
 
 ### Review predicted impact of SNVs
@@ -290,7 +288,7 @@ consensusMutationSubset <- lgat_dna_df %>%
                   rowSums(dplyr::select(.,one_of(snvOI$RTK$gene)))>=1,"Yes","No"),
                 NF1_mut = if_else(
                   rowSums(dplyr::select(.,one_of(snvOI$NF1$gene)))>=1,"Yes","No") ) %>%
-  dplyr::select("Kids_First_Biospecimen_ID","sample_id",ends_with("mut"))%>%
+  dplyr::select("Kids_First_Biospecimen_ID","sample_id",ends_with("mut")) %>%
 dplyr::arrange(Kids_First_Biospecimen_ID, sample_id)
 consensusMutationSubset 
 ```
@@ -302,6 +300,7 @@ rm(consensusMutation)
 # save to subset folder
 write_tsv(consensusMutationSubset,file.path(subset_dir, "LGAT_snv_subset.tsv"))
 ```
+
 
 ```{r}
 sessionInfo()
