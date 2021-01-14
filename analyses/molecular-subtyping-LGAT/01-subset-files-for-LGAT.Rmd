@@ -69,7 +69,7 @@ path_dx_list <- jsonlite::fromJSON(
 # clinical file
 clinical <- read_tsv(file.path(root_dir, 
                                "data",
-                               "pbta-histologies.tsv"), 
+                               "pbta-histologies-base.tsv"), 
                      guess_max = 10000)
 
 # consensus mutation data
@@ -299,4 +299,9 @@ rm(consensusMutation)
 
 # save to subset folder
 write_tsv(consensusMutationSubset,file.path(subset_dir, "LGAT_snv_subset.tsv"))
+```
+
+
+```{r}
+sessionInfo()
 ```
