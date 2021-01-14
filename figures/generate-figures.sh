@@ -22,6 +22,10 @@ scratch_dir="$BASEDIR/scratch"
 # Make output folders for all figures
 mkdir -p pngs
 
+#### Make sure histology_label_color_table.tsv is up to date
+
+Rscript -e "rmarkdown::render('figures/mapping-histology-labels.Rmd', clean = TRUE)"
+
 ################ Sample distribution
 # Run sample distribution analysis
 bash ${analyses_dir}/sample-distribution-analysis/run-sample-distribution.sh
@@ -106,7 +110,7 @@ bash ${analyses_dir}/copy_number_consensus_call/run_consensus_call.sh
 Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.Rmd',
                               clean = TRUE, params = list(final_figure=TRUE))"
 
-							  
+
 ####### Telomerase Activities
 
 
@@ -118,4 +122,3 @@ Rscript --vanilla 01-run-EXTEND.R --input ${analyses_dir}/collapse-rnaseq/result
 
 # Build figures of telomerase activity
 Rscript --vanilla scripts/TelomeraseActivitites.R
-
