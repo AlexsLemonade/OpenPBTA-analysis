@@ -149,6 +149,8 @@ histology_table <- working_metadata %>%
       "other tumor" = other_tumor,
       "benign" = benign
     ),
+    # Put this as a character for later handling
+    display_group = as.character(display_group)
     )
 ```
 
@@ -168,18 +170,6 @@ Make this notebook stop if there are more than 16 histology groups + `Normal`.
 if (nrow(display_group_df) > 17) {
   stop("There's more than 16 histology `display_group` may want to re-evaluate the high-level histology groupings")
 }
-```
-
-## Restore capitalization
-
-Now that the string search steps and manipulations are done, let's restore better-looking capitalization. 
-
-```{r}
-display_group_df <- display_group_df %>% 
-  dplyr::mutate(display_group = stringr::str_to_sentence(display_group),
-                # Deal with CNS exception
-                display_group = stringr::str_replace(display_group, "cns", "CNS")
-                )
 ```
 
 # Add hex codes 
@@ -215,8 +205,8 @@ names(subset_colors) <- display_group_df$display_group
 We want `Other tumor` and the `Benign` group to both always be gray. 
 
 ```{r}
-subset_colors[names(subset_colors) == 'Other tumor'] <- "#D3D3D3"
-subset_colors[names(subset_colors) == 'Benign'] <- "#808080"
+subset_colors[names(subset_colors) == 'other tumor'] <- "#D3D3D3"
+subset_colors[names(subset_colors) == 'benign'] <- "#808080"
 ```
 
 Use `pie` function to preview what these look like.
@@ -224,14 +214,20 @@ Use `pie` function to preview what these look like.
 ```{r}
 pie(rep(1, n_colors), 
     col = subset_colors, 
-    labels = display_group_df$display_group)
+    labels = names(subset_colors))
 ```
 
 Add the hex codes to the `histology_table`. 
 
 ```{r}
 histology_table <- histology_table %>% 
-  dplyr::mutate(hex_codes = dplyr::recode(display_group, hex_codes = !!!subset_colors))
+  # Add the hex_codes
+  dplyr::mutate(hex_codes = dplyr::recode(display_group, !!!subset_colors)) %>% 
+  # Restore capitalization so its pretty for labeling
+  dplyr::mutate(display_group = stringr::str_to_sentence(display_group),
+                # Deal with CNS exception
+                display_group = stringr::str_replace(display_group, "cns", "CNS")
+                )
 ```
 
 ## Save to TSV 
