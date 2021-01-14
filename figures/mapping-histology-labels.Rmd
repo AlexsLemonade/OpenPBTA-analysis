@@ -198,23 +198,23 @@ Make a named list color key where histologies are the names.
 set.seed(2021)
 
 # Sample from the 18 colors
-subset_colors <- display_group_df$display_group
-names(subset_colors) <- sample(color_palette, n_colors)
+subset_colors <- sample(color_palette, n_colors)
+names(subset_colors) <- display_group_df$display_group
 ```
 
 We want `Other tumor` and the `Benign` group to both always be gray. 
 
 ```{r}
-names(subset_colors)[subset_colors == 'other tumor'] <- "#D3D3D3"
-names(subset_colors)[subset_colors == 'benign'] <- "#808080"
+subset_colors[names(subset_colors) == 'other tumor'] <- "#D3D3D3"
+subset_colors[names(subset_colors) == 'benign'] <- "#808080"
 ```
 
 Use `pie` function to preview what these look like.
 
 ```{r}
 pie(rep(1, n_colors), 
-    col = names(subset_colors), 
-    labels = subset_colors)
+    col = subset_colors, 
+    labels = names(subset_colors))
 ```
 
 Add the hex codes to the `histology_table`. 
