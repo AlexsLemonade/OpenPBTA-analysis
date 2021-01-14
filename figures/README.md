@@ -72,11 +72,14 @@ To see a summary of what colors are used for histology labeling, see [`mapping-h
 
 #### Example 1) Color coding by histologies
 
-**Step 1)** Read in color palette and format as a named list
+**Step 1)** Read in color palette and select the pertinent columns
+
+There's some extra columns in `histology_label_color_table.tsv` that you don't need for plotting per se but are more record-keeping purposes. 
 
 ```
-histology_col_palette <- readr::read_tsv(
-  file.path("figures", "palettes", "histology_color_palette.tsv")
+histology_label_mapping <- readr::read_tsv(
+  file.path("figures", "palettes", "histology_label_color_table.tsv")) %>% 
+  dplyr::select(Kids_First_Biospecimen_ID, display_group, hex_codes)
 ```
 
 **Step 2)** Use `dplyr::inner_join` using `Kids_First_Biospecimen_ID` to join by so you can add on the `hex_codes` and `display_group` for each biospecimen
