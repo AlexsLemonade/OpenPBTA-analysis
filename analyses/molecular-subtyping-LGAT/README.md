@@ -75,4 +75,3 @@ FGFR_DUP | contains FGFR1 duplication event from consensus cnv seg | "Yes" fusio
 CDKN2A_DEL | contains CDKN2A deletion | "Yes" fusion exists, "No" fusion is absent
 CDKN2B_DEL | contains CDKN2B deletion | "Yes" fusion exists, "No" fusion is absent
 
-

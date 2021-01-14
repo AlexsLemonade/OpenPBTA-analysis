@@ -13,5 +13,6 @@ if [ "$SUBSET" -gt "0" ]; then
   Rscript -e "rmarkdown::render('01-subset-files-for-LGAT.Rmd')"
   Rscript -e "rmarkdown::render('02-subset-fusion-files-LGAT.Rmd')"
   Rscript -e "rmarkdown::render('03-subset-cnv-files-LGAT.Rmd')"
+
 fi
 

@@ -4,8 +4,11 @@
 
 - [Purpose](#purpose)
 - [Usage](#usage)
-- [Limitations and Requirements](#limitations-and-requirements)
-- [Future Updates](#future-updates)
+  - [01 - Correlation Matrix](#01---correlation-matrix)
+  - [02 -  Thresholds and Outliers](#02----thresholds-and-outliers)
+- [Limitations and requirements](#limitations-and-requirements)
+  - [Software dependencies](#software-dependencies)
+- [Future updates](#future-updates)
 
 ## Purpose
 The comparative-RNAseq-analysis module implements the outlier analysis workflow published in [Vaske et al. Jama Open Network. 2019](https://jamanetwork.com/journals/jamanetworkopen/article-abstract/2753519), which highlights genes within each sample whose expression is an outlier compared to the expression distribution of the dataset as a whole. This workflow:
@@ -24,14 +27,13 @@ and qc manifest and results.
 Generates the correlation matrix and filtered gene list.
 
 ```
-./scripts/run_in_ci.sh \
-  python3 analyses/comparative-RNASeq-analysis/01-correlation-matrix.py \
-    ../../data/pbta-gene-expression-rsem-tpm.stranded.rds \
-    --clinical-path ../../data/pbta-histologies.tsv \
-    --qc-manifest-path ../../data/pbta-mend-qc-manifest.tsv \
-    --qc-results-path ../../data/pbta-mend-qc-results.tar.gz \
-    --prefix rsem-tpm-stranded- \
-    --verbose
+python3 01-correlation-matrix.py \
+  ../../data/pbta-gene-expression-rsem-tpm.stranded.rds \
+  --clinical-path ../../data/pbta-histologies.tsv \
+  --qc-manifest-path ../../data/pbta-mend-qc-manifest.tsv \
+  --qc-results-path ../../data/pbta-mend-qc-results.tar.gz \
+  --prefix rsem-tpm-stranded- \
+  --verbose
 ```
 
 Required flags:
@@ -67,16 +69,15 @@ scratch/rsem-tpm-stranded-filtered-log2-normalized.feather
 Generates outlier thresholds and matrix of outlier genes.
 
 ```
-./scripts/run_in_ci.sh \
-  python3 analyses/comparative-RNASeq-analysis/02-thresholds-and-outliers.py \
-    --prefix rsem-tpm-stranded- \
-    --results results \
-    --verbose
+python3 02-thresholds-and-outliers.py \
+  --prefix rsem-tpm-stranded- \
+  --results results \
+  --verbose
 ```
 
 Required flags:
-  - `--scratch ../../scratch` provides path to scratch dir where intermediate files shared between steps can be read and written.
- - `--results ./results` provides path to final results dir.
+ - `--scratch ../../scratch` provides path to scratch dir where intermediate files shared between steps can be read and written.
+ - `--results results` provides path to final results dir.
 
 Optional flags:
   - `--verbose` enables verbose output

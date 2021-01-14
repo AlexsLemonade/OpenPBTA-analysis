@@ -1,7 +1,7 @@
 {
-    "KIAA1549--BRAF": [
+    "canonical": [
         {
-            "canonical": "KIAA1549--BRAF"
+            "fusion": "KIAA1549--BRAF"
         }
     ],
     "MAPK": [
@@ -35,7 +35,7 @@
     "FGFR": [
         {
             "gene": "FGFR1",
-            "canonical": " FGFR1-TACC1"
+            "fusion": " FGFR1-TACC1"
         },
         {
             "gene": "FGFR2"
@@ -43,7 +43,7 @@
     ],
     "MYB": [
         {   
-            "canonical": "MYB-QKI",
+            "fusion": "MYB-QKI",
             "gene": "MYB" 
         }, 
         {
