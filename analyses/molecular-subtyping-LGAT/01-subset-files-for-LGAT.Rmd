@@ -128,7 +128,6 @@ IDH_hotspot<- paste(snvOI$IDH$hotspot[!is.na( snvOI$IDH$hotspot)],collapse = "|"
 ### Subset consensus maf and annotate per subtype based on SNV
 We will gather SNV calls that satisfy the conditions per subtype and save the subset along with the HGVSp_Short, DOMAINS and Variant_Classification 
 
-
 ```{r}
 # Filter consensus mutation files for LGAT subset
 consensusMutationSubset <- consensusMutation %>%
@@ -175,7 +174,7 @@ consensusMutationSubset <- consensusMutation %>%
       # hotspot mutations 
       grepl(FGFR_hotspot,HGVSp_Short) &
       Hugo_Symbol=="FGFR1" | # OR
-
+      
       # get IDH mutation status
       # hostspot mutations
       grepl(IDH_hotspot,HGVSp_Short) & 
@@ -192,23 +191,22 @@ consensusMutationSubset <- consensusMutation %>%
       HGVSp_Short %in% snvOI$HIST1H3C$canonical & Hugo_Symbol %in% "HIST1H3C" | # OR
       # HIST2H3C canonical mutations     
       HGVSp_Short %in% snvOI$HIST2H3C$canonical & Hugo_Symbol %in% "HIST2H3C" 
-
   ) 
 
 consensusMutationSubset
 ```
 
 What is the distribution of Variant_Classification of the SNVs captured per gene?
-
 ```{r}
 consensusMutationSubset %>% 
   group_by(Hugo_Symbol,Variant_Classification) %>%
   tally() 
 
 ```
-
+We have some synonymous variants (classified as Intron, 5`Flank and Silent) captured per gene of interest.    
  
-We will remove synonymous variant calls from the list above. The Variant_Classification terms for synonymous SNV are selected as per interaction-plots/scripts/02-process_mutations.R
+
+We will now remove synonymous variant calls from the list above. The Variant_Classification terms for synonymous SNV are selected as per [interaction-plots/scripts/02-process_mutations.R](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/interaction-plots/scripts/02-process_mutations.R).
 ```{r}
 
 # Variant Classification with Low/Modifier variant consequences 
@@ -269,7 +267,6 @@ H3.2_mut | harbors an HIST2H3C K28M
 H3.3_mut | harbors an H3F3A K28M or G35R/V mutation 
 
 ```{r}
-
 consensusMutationSubset <- lgat_dna_df %>%
   left_join(consensusMutationSubset,by=c("Kids_First_Biospecimen_ID"="Tumor_Sample_Barcode")) %>%
   reshape2::dcast(Kids_First_Biospecimen_ID + sample_id~ Hugo_Symbol) %>%
@@ -293,12 +290,10 @@ consensusMutationSubset <- lgat_dna_df %>%
                   rowSums(dplyr::select(.,one_of(snvOI$RTK$gene)))>=1,"Yes","No"),
                 NF1_mut = if_else(
                   rowSums(dplyr::select(.,one_of(snvOI$NF1$gene)))>=1,"Yes","No") ) %>%
-  dplyr::select("Kids_First_Biospecimen_ID","sample_id",ends_with("mut"))
-
+  dplyr::select("Kids_First_Biospecimen_ID","sample_id",ends_with("mut"))%>%
+dplyr::arrange(Kids_First_Biospecimen_ID, sample_id)
 consensusMutationSubset 
-
 ```
-
 
 ```{r}
 # remove consensusMutation
@@ -311,4 +306,3 @@ write_tsv(consensusMutationSubset,file.path(subset_dir, "LGAT_snv_subset.tsv"))
 ```{r}
 sessionInfo()
 ```
-
