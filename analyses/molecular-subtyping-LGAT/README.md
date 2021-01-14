@@ -43,7 +43,7 @@ This does not run the `00-LGAT-select-pathology-dx` notebook, as that is intende
 
 #### Order of scripts in subtyping
 
-`01-subset-files-for-LGAT.R`: generates subset of wgs LGAT sample annotated by subtypes snv mutation status as per following description:
+`01-subset-files-for-LGAT.Rmd`: generates subset of wgs LGAT sample annotated by subtypes snv mutation status as per following description:
 
 columnname  | description | values
  --- | --- | ---
@@ -56,5 +56,13 @@ IDH_mut | harbors an IDH R132 mutation | "Yes" mutation exists, "No" mutation is
 H3.3_mut | harbors an H3F3A K28M or G35R/V mutation | "Yes" mutation exists, "No" mutation is absent
 H3.1_mut | harbors an HIST1H3B K28M|or HIST1H3C  K28M | "Yes" mutation exists, "No" mutation is absent
 
+`02-subset-fusion-files-LGAT.Rmd`: generates subset of rna LGAT sample annotated by subtypes fusion status as per following description:
+columnname | description | values
+--- | --- | ---
+KIAA_BRAF_fus | contains KIAA1549-BRAF fusion | "Yes" fusion exists, "No" fusion is absent
+MAPK_fus | contains non-canonical BRAF fusion other than KIAA1549-BRAF; contains RAF1 fusion | "Yes" fusion exists, "No" fusion is absent
+RTK_fus | harbors a fusion in ALK, ROS1, NTRK1, NTRK2,NTRK3 or PDGFR | "Yes" fusion exists, "No" fusion is absent
+FGFR_fus | harbors FGFR1-TACC1 or other FGFR1 or FGFR2 fusion | "Yes" fusion exists, "No" fusion is absent
+MYB_fus | harbors either a MYB-QKI fusion or other MYB or MYBL1 fusion | "Yes" fusion exists, "No" fusion is absent
  
 
