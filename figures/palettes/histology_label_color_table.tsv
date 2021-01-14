@@ -90,7 +90,7 @@ BS_0YJF1F95	Normal	NA	NA	NA	NA	NA	normal	normal
 BS_0YV62XEX	Normal	NA	NA	NA	NA	NA	normal	normal
 BS_0YVR8Q4E	Tumor	low-grade glioma/astrocytoma, braf fusion	updated via openpbta subtyping	low-grade glioma/astrocytoma, braf fusion	low-grade astrocytic tumor	ganglioglioma	low-grade astrocytic tumor	low-grade astrocytic tumor
 BS_0ZA67BBC	Tumor	diffuse midline glioma, h3 k28-mutant	updated via openpbta subtyping	diffuse midline glioma, h3 k28-mutant	diffuse astrocytic and oligodendroglial tumor	hgat	diffuse astrocytic and oligodendroglial tumor	diffuse astrocytic and oligodendroglial tumor
-BS_0ZR4XA69	Tumor	NA	NA	primary cns lymphoma	lymphoma	cns lymphoma	other non-cns tumor	other non-cns tumor
+BS_0ZR4XA69	Tumor	NA	NA	primary cns lymphoma	lymphoma	cns lymphoma	other tumor	other tumor
 BS_1021ZGQT	Tumor	ewing sarcoma	updated via openpbta subtyping	ewing sarcoma	mesenchymal non-meningothelial tumor	ews	mesenchymal non-meningothelial tumor	mesenchymal non-meningothelial tumor
 BS_1034EC8V	Normal	NA	NA	NA	NA	NA	normal	normal
 BS_10AD3EFX	Tumor	low-grade glioma/astrocytoma, braf v600e	updated via openpbta subtyping	low-grade glioma/astrocytoma, braf v600e	low-grade astrocytic tumor	lgat	low-grade astrocytic tumor	low-grade astrocytic tumor
@@ -105,7 +105,7 @@ BS_14EZDZE6	Normal	NA	NA	NA	NA	NA	normal	normal
 BS_14G6WY88	Normal	NA	NA	NA	NA	NA	normal	normal
 BS_154FP4ZQ	Tumor	NA	NA	hemangioblastoma	mesenchymal non-meningothelial tumor	hemangioblastoma	mesenchymal non-meningothelial tumor	mesenchymal non-meningothelial tumor
 BS_15ETQ0E4	Tumor	NA	NA	atypical teratoid rhabdoid tumor (atrt)	embryonal tumor	atrt	embryonal tumor	embryonal tumor
-BS_1607397Q	Tumor	NA	NA	primary cns lymphoma	lymphoma	cns lymphoma	other non-cns tumor	other non-cns tumor
+BS_1607397Q	Tumor	NA	NA	primary cns lymphoma	lymphoma	cns lymphoma	other tumor	other tumor
 BS_164KRQJ0	Tumor	medulloblastoma, group 4	subtype based on prediction;updated via openpbta subtyping	medulloblastoma, group 4	embryonal tumor	medulloblastoma	embryonal tumor	embryonal tumor
 BS_16FT8V4B	Tumor	low-grade glioma/astrocytoma, braf wildtype	updated via openpbta subtyping	low-grade glioma/astrocytoma, braf wildtype	low-grade astrocytic tumor	lgat	low-grade astrocytic tumor	low-grade astrocytic tumor
 BS_16TBX6G5	Tumor	low-grade glioma/astrocytoma, braf fusion	updated via openpbta subtyping	low-grade glioma/astrocytoma, braf fusion	low-grade astrocytic tumor	lgat	low-grade astrocytic tumor	low-grade astrocytic tumor
@@ -164,7 +164,7 @@ BS_1QXEC43H	Tumor	medulloblastoma, shh-activated	subtype based on prediction;upd
 BS_1RA2RC8A	Normal	NA	NA	NA	NA	NA	normal	normal
 BS_1RF75MK2	Tumor	low-grade glioma/astrocytoma, braf wildtype	updated via openpbta subtyping	low-grade glioma/astrocytoma, braf wildtype	low-grade astrocytic tumor	ganglioglioma	low-grade astrocytic tumor	low-grade astrocytic tumor
 BS_1RFBH1SP	Tumor	NA	NA	neurofibroma/plexiform	tumor of cranial and paraspinal nerves	neurofibroma	tumor of cranial and paraspinal nerves	tumor of cranial and paraspinal nerves
-BS_1RT76ANT	Tumor	NA	NA	metastatic secondary tumors;neuroblastoma	metastatic tumors	metastases	other non-cns tumor	other non-cns tumor
+BS_1RT76ANT	Tumor	NA	NA	metastatic secondary tumors;neuroblastoma	metastatic tumors	metastases	other tumor	other tumor
 BS_1RTE2KEX	Tumor	diffuse midline glioma, h3 k28-mutant	updated via openpbta subtyping	diffuse midline glioma, h3 k28-mutant	diffuse astrocytic and oligodendroglial tumor	hgat	diffuse astrocytic and oligodendroglial tumor	diffuse astrocytic and oligodendroglial tumor
 BS_1RXZ3BP7	Tumor	low-grade glioma/astrocytoma, braf wildtype	updated via openpbta subtyping	low-grade glioma/astrocytoma, braf wildtype	low-grade astrocytic tumor	lgat	low-grade astrocytic tumor	low-grade astrocytic tumor
 BS_1S2BHJ8K	Tumor	medulloblastoma, shh-activated	subtype based on prediction;updated via openpbta subtyping	medulloblastoma, shh-activated	embryonal tumor	medulloblastoma	embryonal tumor	embryonal tumor
@@ -199,7 +199,7 @@ BS_24AHZ9ZW	Tumor	low-grade glioma/astrocytoma, braf v600e	updated via openpbta 
 BS_251Z13NC	Normal	NA	NA	NA	NA	NA	normal	normal
 BS_258RRGDM	Tumor	low-grade glioma/astrocytoma, braf wildtype	updated via openpbta subtyping	low-grade glioma/astrocytoma, braf wildtype	low-grade astrocytic tumor	lgat	low-grade astrocytic tumor	low-grade astrocytic tumor
 BS_25T139TX	Tumor	NA	NA	low-grade glioma/astrocytoma (who grade i/ii)	low-grade astrocytic tumor	lgat	low-grade astrocytic tumor	low-grade astrocytic tumor
-BS_25VZM81R	Tumor	NA	NA	metastatic secondary tumors	metastatic tumors	metastases	other non-cns tumor	other non-cns tumor
+BS_25VZM81R	Tumor	NA	NA	metastatic secondary tumors	metastatic tumors	metastases	other tumor	other tumor
 BS_264RCK7G	Tumor	NA	NA	dysembryoplastic neuroepithelial tumor (dnet)	neuronal and mixed neuronal-glial tumor	dnet	neuronal and mixed neuronal-glial tumor	neuronal and mixed neuronal-glial tumor
 BS_26CXGVJ0	Normal	NA	NA	NA	NA	NA	normal	normal
 BS_26J942GD	Normal	NA	NA	NA	NA	NA	normal	normal
@@ -882,7 +882,7 @@ BS_A4JP70KJ	Normal	NA	NA	NA	NA	NA	normal	normal
 BS_A4KYP5H0	Tumor	medulloblastoma, group 4	subtype based on prediction;updated via openpbta subtyping	medulloblastoma, group 4	embryonal tumor	medulloblastoma	embryonal tumor	embryonal tumor
 BS_A4QX5D2K	Normal	NA	NA	NA	NA	NA	normal	normal
 BS_A6YJ3WG2	Tumor	high-grade glioma/astrocytoma, h3 wildtype	updated via openpbta subtyping	high-grade glioma/astrocytoma, h3 wildtype	diffuse astrocytic and oligodendroglial tumor	hgat	diffuse astrocytic and oligodendroglial tumor	diffuse astrocytic and oligodendroglial tumor
-BS_A70G7S2W	Tumor	NA	NA	metastatic secondary tumors	metastatic tumors	metastases	other non-cns tumor	other non-cns tumor
+BS_A70G7S2W	Tumor	NA	NA	metastatic secondary tumors	metastatic tumors	metastases	other tumor	other tumor
 BS_A75SK7WA	Normal	NA	NA	NA	NA	NA	normal	normal
 BS_A7MC2KR2	Tumor	adamantimomatous craniopharyngioma	updated via openpbta subtyping	adamantimomatous craniopharyngioma	tumors of sellar region	craniopharyngioma	tumors of sellar region	tumors of sellar region
 BS_A7Q8G0Y1	Tumor	diffuse midline glioma, h3 k28-mutant	updated via openpbta subtyping	diffuse midline glioma, h3 k28-mutant	diffuse astrocytic and oligodendroglial tumor	hgat	diffuse astrocytic and oligodendroglial tumor	diffuse astrocytic and oligodendroglial tumor
@@ -990,7 +990,7 @@ BS_B9V8RGTA	Tumor	ewing sarcoma	updated via openpbta subtyping	ewing sarcoma	mes
 BS_BA0M71QZ	Tumor	NA	NA	meningioma	meningioma	meningioma	meningioma	meningioma
 BS_BA6AZWB3	Tumor	medulloblastoma, shh-activated	subtype based on prediction;updated via openpbta subtyping	medulloblastoma, shh-activated	embryonal tumor	medulloblastoma	embryonal tumor	embryonal tumor
 BS_BAVWP5JG	Tumor	NA	NA	meningioma	meningioma	meningioma	meningioma	meningioma
-BS_BB0YW800	Tumor	NA	NA	metastatic secondary tumors	metastatic tumors	metastases	other non-cns tumor	other non-cns tumor
+BS_BB0YW800	Tumor	NA	NA	metastatic secondary tumors	metastatic tumors	metastases	other tumor	other tumor
 BS_BBCM52QE	Tumor	supratentorial ependymoma, rela fusion positive	updated via openpbta subtyping	supratentorial ependymoma, rela fusion positive	ependymal tumor	ependymoma	ependymal tumor	ependymal tumor
 BS_BBHFKBE7	Tumor	NA	NA	ependymoma	ependymal tumor	ependymoma	ependymal tumor	ependymal tumor
 BS_BBTT7DH4	Tumor	NA	NA	meningioma	meningioma	meningioma	meningioma	meningioma
@@ -1697,7 +1697,7 @@ BS_KN5FPSJE	Normal	NA	NA	NA	NA	NA	normal	normal
 BS_KN92S7YQ	Tumor	medulloblastoma, group 4	subtype based on prediction;updated via openpbta subtyping	medulloblastoma, group 4	embryonal tumor	medulloblastoma	embryonal tumor	embryonal tumor
 BS_KND4B5CW	Tumor	adamantimomatous craniopharyngioma	updated via openpbta subtyping	adamantimomatous craniopharyngioma	tumors of sellar region	craniopharyngioma	tumors of sellar region	tumors of sellar region
 BS_KNJ64STQ	Normal	NA	NA	NA	NA	NA	normal	normal
-BS_KP0YNTAK	Tumor	NA	NA	metastatic secondary tumors;neuroblastoma	metastatic tumors	metastases	other non-cns tumor	other non-cns tumor
+BS_KP0YNTAK	Tumor	NA	NA	metastatic secondary tumors;neuroblastoma	metastatic tumors	metastases	other tumor	other tumor
 BS_KP735TJ6	Tumor	high-grade glioma/astrocytoma, h3 wildtype	updated via openpbta subtyping	high-grade glioma/astrocytoma, h3 wildtype	diffuse astrocytic and oligodendroglial tumor	hgat	diffuse astrocytic and oligodendroglial tumor	diffuse astrocytic and oligodendroglial tumor
 BS_KPG4WCHS	Tumor	diffuse midline glioma, h3 k28-mutant	updated via openpbta subtyping	diffuse midline glioma, h3 k28-mutant	diffuse astrocytic and oligodendroglial tumor	hgat	diffuse astrocytic and oligodendroglial tumor	diffuse astrocytic and oligodendroglial tumor
 BS_KPT2WPHW	Tumor	low-grade glioma/astrocytoma, braf wildtype	updated via openpbta subtyping	low-grade glioma/astrocytoma, braf wildtype	low-grade astrocytic tumor	ganglioglioma	low-grade astrocytic tumor	low-grade astrocytic tumor
@@ -1881,7 +1881,7 @@ BS_NHEDGJ66	Normal	NA	NA	NA	NA	NA	normal	normal
 BS_NHFB2YJR	Normal	NA	NA	NA	NA	NA	normal	normal
 BS_NHMPQ8Q1	Tumor	NA	NA	ganglioneuroblastoma	embryonal tumor	embryonal tumor	embryonal tumor	embryonal tumor
 BS_NHRNZRQV	Tumor	low-grade glioma/astrocytoma, braf v600e	updated via openpbta subtyping	low-grade glioma/astrocytoma, braf v600e	low-grade astrocytic tumor	lgat	low-grade astrocytic tumor	low-grade astrocytic tumor
-BS_NJ4WPQVK	Tumor	NA	NA	metastatic secondary tumors	metastatic tumors	metastases	other non-cns tumor	other non-cns tumor
+BS_NJ4WPQVK	Tumor	NA	NA	metastatic secondary tumors	metastatic tumors	metastases	other tumor	other tumor
 BS_NJFK43N3	Tumor	high-grade glioma/astrocytoma, h3 wildtype	updated via openpbta subtyping	high-grade glioma/astrocytoma, h3 wildtype	diffuse astrocytic and oligodendroglial tumor	hgat	diffuse astrocytic and oligodendroglial tumor	diffuse astrocytic and oligodendroglial tumor
 BS_NJV6A585	Tumor	NA	NA	neurofibroma/plexiform	tumor of cranial and paraspinal nerves	neurofibroma	tumor of cranial and paraspinal nerves	tumor of cranial and paraspinal nerves
 BS_NKEAAFMW	Tumor	NA	NA	medulloblastoma	embryonal tumor	medulloblastoma	embryonal tumor	embryonal tumor
@@ -2055,7 +2055,7 @@ BS_QMDRA3VT	Normal	NA	NA	NA	NA	NA	normal	normal
 BS_QMG7XNEW	Tumor	low-grade glioma/astrocytoma, braf v600e	updated via openpbta subtyping	low-grade glioma/astrocytoma, braf v600e	low-grade astrocytic tumor	lgat	low-grade astrocytic tumor	low-grade astrocytic tumor
 BS_QMHND3QK	Tumor	NA	NA	atypical teratoid rhabdoid tumor (atrt)	embryonal tumor	atrt	embryonal tumor	embryonal tumor
 BS_QMY84KF4	Tumor	NA	NA	ependymoma	ependymal tumor	ependymoma	ependymal tumor	ependymal tumor
-BS_QNAQGAV6	Tumor	NA	NA	metastatic secondary tumors	metastatic tumors	metastases	other non-cns tumor	other non-cns tumor
+BS_QNAQGAV6	Tumor	NA	NA	metastatic secondary tumors	metastatic tumors	metastases	other tumor	other tumor
 BS_QNNX91SM	Tumor	diffuse midline glioma, h3 k28-mutant	updated via openpbta subtyping	diffuse midline glioma, h3 k28-mutant	diffuse astrocytic and oligodendroglial tumor	hgat	diffuse astrocytic and oligodendroglial tumor	diffuse astrocytic and oligodendroglial tumor
 BS_QNYDD0TY	Normal	NA	NA	NA	NA	NA	normal	normal
 BS_QP6MSKRE	Tumor	supratentorial ependymoma, yap1 fusion positive	updated via openpbta subtyping	supratentorial ependymoma, yap1 fusion positive	ependymal tumor	ependymoma	ependymal tumor	ependymal tumor
@@ -2536,7 +2536,7 @@ BS_X9PJ715R	Tumor	low-grade glioma/astrocytoma, braf fusion	updated via openpbta
 BS_XAKR8MYK	Normal	NA	NA	NA	NA	NA	normal	normal
 BS_XBBBE8V2	Tumor	low-grade glioma/astrocytoma, braf fusion	updated via openpbta subtyping	low-grade glioma/astrocytoma, braf fusion	low-grade astrocytic tumor	lgat	low-grade astrocytic tumor	low-grade astrocytic tumor
 BS_XBE002WV	Tumor	NA	NA	ependymoma	ependymal tumor	ependymoma	ependymal tumor	ependymal tumor
-BS_XBQZYS8G	Tumor	NA	NA	metastatic secondary tumors	metastatic tumors	metastases	other non-cns tumor	other non-cns tumor
+BS_XBQZYS8G	Tumor	NA	NA	metastatic secondary tumors	metastatic tumors	metastases	other tumor	other tumor
 BS_XCA92FF3	Normal	NA	NA	NA	NA	NA	normal	normal
 BS_XCFNEZ8E	Tumor	NA	NA	dysplasia/gliosis	pre-cancerous lesion	dysplasia	pre-cancerous lesion	pre-cancerous lesion
 BS_XCKDRRYT	Normal	NA	NA	NA	NA	NA	normal	normal
@@ -2627,7 +2627,7 @@ BS_YEB88D32	Tumor	medulloblastoma, group 3	subtype based on prediction;updated v
 BS_YEEV8386	Normal	NA	NA	NA	NA	NA	normal	normal
 BS_YEQVW4ND	Tumor	low-grade glioma/astrocytoma, braf wildtype	updated via openpbta subtyping	low-grade glioma/astrocytoma, braf wildtype	low-grade astrocytic tumor	lgat	low-grade astrocytic tumor	low-grade astrocytic tumor
 BS_YETBN0RQ	Tumor	medulloblastoma, wnt-activated	subtype based on prediction;updated via openpbta subtyping	medulloblastoma, wnt-activated	embryonal tumor	medulloblastoma	embryonal tumor	embryonal tumor
-BS_YETTZ1NC	Tumor	NA	NA	metastatic secondary tumors	metastatic tumors	metastases	other non-cns tumor	other non-cns tumor
+BS_YETTZ1NC	Tumor	NA	NA	metastatic secondary tumors	metastatic tumors	metastases	other tumor	other tumor
 BS_YEW22W35	Tumor	NA	NA	high-grade glioma/astrocytoma (who grade iii/iv)	diffuse astrocytic and oligodendroglial tumor	hgat	diffuse astrocytic and oligodendroglial tumor	diffuse astrocytic and oligodendroglial tumor
 BS_YEWX69X4	Tumor	low-grade glioma/astrocytoma, braf v600e	updated via openpbta subtyping	low-grade glioma/astrocytoma, braf v600e	low-grade astrocytic tumor	lgat	low-grade astrocytic tumor	low-grade astrocytic tumor
 BS_YFKXF7K2	Normal	NA	NA	NA	NA	NA	normal	normal
@@ -2782,13 +2782,13 @@ BS_37GTVG4N	Tumor	embryonal tumor with multilayer rosettes, c19mc-altered	update
 BS_3ZASRA3A	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	benign tumor, epidermoid cyst	benign tumor	benign tumor	benign	benign
 BS_49F4RAA4	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	rosai-dorfman disease	histiocytic tumor	rosai-dorfman disease	histiocytic tumor	histiocytic tumor
 BS_4XPPZTGG	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	other	benign tumor	xanthogranuloma	benign	benign
-BS_4Z6F1HJZ	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	myxoid spindle cell tumor	non-cns tumor	other	other non-cns tumor	other non-cns tumor
+BS_4Z6F1HJZ	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	myxoid spindle cell tumor	non-cns tumor	other	other tumor	other tumor
 BS_5KK9P7XD	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	benign tumor, meningioangiomatosis	benign tumor	benign tumor	benign	benign
 BS_69VS8PS1	Tumor	embryonal tumor with multilayer rosettes, c19mc-altered	updated via openpbta subtyping	embryonal tumor with multilayer rosettes, c19mc-altered	embryonal tumor	etmr	embryonal tumor	embryonal tumor
-BS_6R7SFVV2	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	ganglioneuroma	other tumor	other	other non-cns tumor	other non-cns tumor
+BS_6R7SFVV2	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	ganglioneuroma	other tumor	other	other tumor	other tumor
 BS_7BW0YRPY	Tumor	cns embryonal tumor, nos	updated via openpbta subtyping	cns embryonal tumor, nos	embryonal tumor	embryonal tumor	embryonal tumor	embryonal tumor
 BS_886M7JMG	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	arteriovenous malformation	non-tumor	other	benign	benign
-BS_8D52JK1Q	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	melanocytic tumor	melanocytic tumor	melanocytic tumor	other non-cns tumor	other non-cns tumor
+BS_8D52JK1Q	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	melanocytic tumor	melanocytic tumor	melanocytic tumor	other tumor	other tumor
 BS_8Q8CAY84	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	benign tumor, hamartoma	benign tumor	benign tumor	benign	benign
 BS_8WPNFT03	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	other	histiocytic tumor	jxg	histiocytic tumor	histiocytic tumor
 BS_92MT680S	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	fibromyxoid lesion	mesenchymal non-meningothelial tumor	fibromyxoid lesion	mesenchymal non-meningothelial tumor	mesenchymal non-meningothelial tumor
@@ -2800,7 +2800,7 @@ BS_AA164D3A	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis
 BS_AHT9PKVE	Tumor	cns embryonal tumor, nos	updated via openpbta subtyping	cns embryonal tumor, nos	embryonal tumor	embryonal tumor	embryonal tumor	embryonal tumor
 BS_AQMKA8NC	Tumor	cns embryonal tumor, nos	updated via openpbta subtyping	cns embryonal tumor, nos	embryonal tumor	embryonal tumor	embryonal tumor	embryonal tumor
 BS_B24PKKQB	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	benign tumor, hamartoma	benign tumor	benign tumor	benign	benign
-BS_B61168DE	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	melanocytic tumor	melanocytic tumor	melanocytic tumor	other non-cns tumor	other non-cns tumor
+BS_B61168DE	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	melanocytic tumor	melanocytic tumor	melanocytic tumor	other tumor	other tumor
 BS_B8T7M0WV	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	arteriovenous malformation	non-tumor	other	benign	benign
 BS_BM95DGCQ	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	benign tumor, prolactinoma	benign tumor	benign tumor	benign	benign
 BS_BS5X4H0Y	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	benign tumor, dermoid inclusion cyst	benign tumor	benign tumor	benign	benign
@@ -2825,10 +2825,10 @@ BS_N9SMBR24	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis
 BS_NDFDQBCZ	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	myofibroblastoma	mesenchymal non-meningothelial tumor	myofibroblastoma	mesenchymal non-meningothelial tumor	mesenchymal non-meningothelial tumor
 BS_Q807ENGY	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	benign tumor, perineuroma	benign tumor	benign tumor	benign	benign
 BS_QB7YGKN1	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	glial-neuronal tumor nos	neuronal and mixed neuronal-glial tumor	glial-neuronal tumor nos	neuronal and mixed neuronal-glial tumor	neuronal and mixed neuronal-glial tumor
-BS_QBR4WCQ2	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	myxoid spindle cell tumor	non-cns tumor	other	other non-cns tumor	other non-cns tumor
+BS_QBR4WCQ2	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	myxoid spindle cell tumor	non-cns tumor	other	other tumor	other tumor
 BS_QWNBZ9RJ	Tumor	embryonal tumor with multilayer rosettes, c19mc-altered	updated via openpbta subtyping	embryonal tumor with multilayer rosettes, c19mc-altered	embryonal tumor	etmr	embryonal tumor	embryonal tumor
 BS_QZFEB94Q	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	benign tumor, fibroma	benign tumor	benign tumor	benign	benign
-BS_R1RMKH1B	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	ganglioneuroma	other tumor	other	other non-cns tumor	other non-cns tumor
+BS_R1RMKH1B	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	ganglioneuroma	other tumor	other	other tumor	other tumor
 BS_T1QMEH1N	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	other	benign tumor	xanthogranuloma	benign	benign
 BS_TPX7YY57	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	epilepsy, chronic rasmussen encephalitis	non-tumor	other	benign	benign
 BS_V2MDX7HG	Tumor	NA	updated by manual curation of pathology_free_text_diagnosis	benign tumor, inclusion cyst	benign tumor	benign tumor	benign	benign

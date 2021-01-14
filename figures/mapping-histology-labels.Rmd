@@ -5,7 +5,7 @@ output:
     toc: true
     toc_float: true
 author: Candace Savonen for ALSF - CCDL
-date: 2020
+date: 2021
 ---
 
 # Purpose: 
@@ -34,11 +34,11 @@ With this info, `histology_label_color_table.tsv` can be used by all plots and f
 
 Here's how `broad-histology` groups are [combined into the higher-level groupings of `display_group`](#declare-new-equivalent-groups).
 
-1) "Lymphoma", "Melanocytic tumor", "Other tumor", "Metastatic tumors", "Non-CNS tumor" are combined into a `Other non-CNS group` in `display_group`. 
+1) "Lymphoma", "Melanocytic tumor", "Other tumor", "Metastatic tumors", "Non-CNS tumor" are combined into a `Other tumor` in `display_group`. 
 
 2) `Benign tumor` and `Non-tumor` biospecimens are combined into a `Benign` group. 
 
-3) `Other astrocytic tumor` samples are combined into the existing `Low-grade astrocytic tumor`.
+3) `Other astrocytic tumor` biospecimens are combined into the existing `Low-grade astrocytic tumor`. These biospecimens  in `other astrocytic tumors` were low-grade SEGA tumors. 
 
 4) Anything not in the above categories gets its `broad_histology` label carried over. 
 
@@ -127,7 +127,7 @@ other_tumor <- c("lymphoma", "melanocytic tumor", "other tumor", "metastatic tum
 These groups we'll combine as a benign.
 
 ```{r}
-begnign <- c("benign tumor", "non-tumor")
+benign <- c("benign tumor", "non-tumor")
 ```
 
 Add in the `Other astrocytic tumor` in with the LGAT group. 
@@ -146,8 +146,8 @@ histology_table <- working_metadata %>%
     # Now do the group combining
     display_group = forcats::fct_collapse(display_group,
       "low-grade astrocytic tumor" = lgat,
-      "other non-cns tumor" = other_tumor,
-      "benign" = begnign
+      "other tumor" = other_tumor,
+      "benign" = benign
     ),
     )
 ```
@@ -210,6 +210,13 @@ set.seed(2021)
 # Sample from the 18 colors
 subset_colors <- sample(color_palette, n_colors)
 names(subset_colors) <- display_group_df$display_group
+```
+
+We want `Other tumor` and the `Benign` group to both always be gray. 
+
+```{r}
+subset_colors[names(subset_colors) == 'Other tumor'] <- "#D3D3D3"
+subset_colors[names(subset_colors) == 'Benign'] <- "#808080"
 ```
 
 Use `pie` function to preview what these look like.
