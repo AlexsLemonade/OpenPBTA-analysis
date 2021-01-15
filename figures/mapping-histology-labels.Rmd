@@ -209,10 +209,10 @@ subset_colors[names(subset_colors) == 'other tumor'] <- "#808080"
 subset_colors[names(subset_colors) == 'benign'] <-  "#D3D3D3"
 ```
 
-Normal biospecimen's never get plotted, so we will put their hex code as `NA`. 
+Normal biospecimen's should not get plotted, so we will put their hex code as black. 
 
 ```{r}
-subset_colors[names(subset_colors) == 'normal'] <- NA
+subset_colors[names(subset_colors) == 'normal'] <- "#000000"
 ```
 
 Use `pie` function to preview what these look like.
