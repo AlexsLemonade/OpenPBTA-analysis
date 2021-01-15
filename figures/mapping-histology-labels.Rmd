@@ -1,0 +1,251 @@
+---
+title: "Mapping histology labels for plots"
+output:   
+  html_notebook: 
+    toc: true
+    toc_float: true
+author: Candace Savonen for ALSF - CCDL
+date: 2021
+---
+
+# Purpose: 
+
+The histology label variables included in `pbta-histologies.tsv` from data releases are not always useful for visualizing the full set of biospecimens due to the large number of different values.
+Having too many different possible values makes the colors harder to distinguish.
+In addition, there are some groups that are represented by only a very few samples; giving such groups a distinct color may be counterproductive.
+
+The goal of this notebook is to use the currently existing `broad_histology` groups from `pbta-histologies.tsv`, to form 10-15 "high level histology" group labels that can used for plotting purposes.
+
+## The output table
+
+The output of this notebook is a TSV file: `palettes/histology_label_color_table.tsv` that contains the following fields:
+
+**Copied from `pbta-histologies.tsv`**:    
+- `Kids_First_Biospecimen_ID` (from `pbta-histologies.tsv`)  
+- All the original histology label variables (`broad_histology`, `short_histology`, etc.)  
+  
+**Created in this notebook**:  
+- `display_group` - the high-level histology labels that should be used for plotting   
+- `hex_codes` the direct colors that should be used for plotting  
+
+With this info, `histology_label_color_table.tsv` can be used by all plots and figures that summarize high level data  while displaying histology information. 
+
+# How `display_group` is made:
+
+Here's how `broad-histology` groups are [combined into the higher-level groupings of `display_group`](#declare-new-equivalent-groups).
+
+1) "Lymphoma", "Melanocytic tumor", "Other tumor", "Metastatic tumors", "Non-CNS tumor" are combined into a `Other tumor` in `display_group`. 
+
+2) `Benign tumor` and `Non-tumor` biospecimens are combined into a `Benign` group. 
+
+3) `Other astrocytic tumor` biospecimens are combined into the existing `Low-grade astrocytic tumor`. These biospecimens  in `other astrocytic tumors` were low-grade SEGA tumors. 
+
+4) Anything not in the above categories gets its `broad_histology` label carried over. 
+
+# Usage
+
+This notebook can be run via the command line from the top directory of the 
+repository as follows:
+
+```
+Rscript -e "rmarkdown::render('figures/mapping-histology-labels.Rmd', 
+                              clean = TRUE)"
+```
+
+## Set Up
+
+```{r}
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+### Directories and Files
+
+```{r}
+# Path to input directory
+input_dir <- file.path("..", "data")
+output_dir <- "palettes"
+```
+
+# Read in metadata 
+
+Which variables are we keeping for this table? 
+
+```{r}
+histology_variables <- 
+  c("integrated_diagnosis", 
+    "Notes", 
+    "harmonized_diagnosis",
+    "broad_histology", 
+    "short_histology")
+```
+
+Let's read in the current release's `pbta-histologies.tsv` file. 
+
+```{r}
+metadata <-
+  readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv"), guess_max = 10000)
+```
+
+Now we'll select histology variables we mentioned above and so capitalization differences don't get in the way with this process, we will change everything to lower case for now. 
+
+```{r}
+working_metadata <- metadata %>% 
+  dplyr::select(Kids_First_Biospecimen_ID, sample_type, histology_variables) %>% 
+  dplyr::mutate(broad_histology_lower = tolower(broad_histology))
+```
+
+# Take a look at how many biospecimens per `broad_histology` group
+
+Let's summarize `broad_histology`. 
+Because the `Normal` samples don't have histologies, we'll look at just the `Tumor` samples at for this summary. 
+
+```{r}
+broad_summary <- working_metadata %>% 
+  dplyr::filter(sample_type == "Tumor") %>%
+  dplyr::count(broad_histology_lower) %>% 
+  dplyr::arrange(n) 
+```
+
+Let's print out the summary. 
+
+```{r}
+broad_summary %>% 
+  knitr::kable()
+```
+
+There's handful of very small groups (many are n = 2). 
+
+## Declare new equivalent groups
+
+These groups we'll combine into a non-CNS/other tumor group.
+
+```{r}
+other_tumor <- c("lymphoma", "melanocytic tumor", "other tumor", "metastatic tumors", "non-cns tumor")
+```
+
+These groups we'll combine as a benign.
+
+```{r}
+benign <- c("benign tumor", "non-tumor")
+```
+
+Add in the `Other astrocytic tumor` in with the LGAT group. 
+
+```{r}
+lgat <- c("other astrocytic tumor", "low-grade astrocytic tumor")
+```
+
+# Make new `display_group`
+
+```{r}
+histology_table <- working_metadata %>% 
+  dplyr::mutate(
+    # NAs are really Normals
+    display_group = tidyr::replace_na(broad_histology_lower, "normal"),
+    # Now do the group combining
+    display_group = forcats::fct_collapse(display_group,
+      "low-grade astrocytic tumor" = lgat,
+      "other tumor" = other_tumor,
+      "benign" = benign
+    ),
+    # Put this as a character for later handling
+    display_group = as.character(display_group)
+    )
+```
+
+Print out the number of `display_group` (including `normal`)!
+
+```{r}
+display_group_df <- histology_table %>% 
+  dplyr::count(display_group) %>% 
+  dplyr::arrange(n)
+
+knitr::kable(display_group_df)
+```
+
+Make this notebook stop if there are more than 16 histology groups + `Normal`. 
+
+```{r}
+if (nrow(display_group_df) > 17) {
+  stop("There's more than 16 histology `display_group` may want to re-evaluate the high-level histology groupings")
+}
+```
+
+# Add hex codes 
+
+These hex codes were retrieved from http://phrogz.net/css/distinct-colors.html with the settings on default for 18 colors.
+
+```{r}
+color_palette <- 
+  c("#ff0000", "#cc0000", "#995200", "#bfb300", "#fffbbf", 
+    "#2e7300", "#00e65c", "#00ffee", "#103d40", "#0085a6", 
+    "#003380", "#4073ff", "#737899", "#70008c", "#f2b6ee", 
+    "#ff40bf", "#8c0038", "#330d12"
+)
+```
+
+Declare how many colors we need. 
+
+```{r}
+n_colors <- nrow(display_group_df)
+```
+
+Make a named list color key where histologies are the names. 
+
+```{r}
+# Set seed so the colors are consistent upon re-run
+set.seed(2021)
+
+# Sample from the 18 colors
+subset_colors <- sample(color_palette, n_colors)
+names(subset_colors) <- display_group_df$display_group
+```
+
+We want `Other tumor` and the `Benign` group to both always be gray. 
+
+```{r}
+subset_colors[names(subset_colors) == 'other tumor'] <- "#808080" 
+subset_colors[names(subset_colors) == 'benign'] <-  "#D3D3D3"
+```
+
+Normal biospecimens should not get plotted, so we will put their hex code as black. 
+
+```{r}
+subset_colors[names(subset_colors) == 'normal'] <- "#000000"
+```
+
+Use `pie` function to preview what these look like.
+
+```{r}
+pie(rep(1, n_colors), 
+    col = subset_colors, 
+    labels = names(subset_colors))
+```
+
+Add the hex codes to the `histology_table`. 
+
+```{r}
+histology_table <- histology_table %>%
+  # We don't need this anymore
+  dplyr::select(-broad_histology_lower) %>% 
+  # Add the hex_codes
+  dplyr::mutate(hex_codes = dplyr::recode(display_group, !!!subset_colors)) %>% 
+  # Restore capitalization so its pretty for labeling
+  dplyr::mutate(display_group = stringr::str_to_sentence(display_group),
+                # Deal with CNS exception
+                display_group = stringr::str_replace(display_group, "cns", "CNS")
+                )
+```
+
+## Save to TSV 
+
+```{r}
+readr::write_tsv(histology_table, file.path(output_dir, "histology_label_color_table.tsv"))
+```
+
+# Session Info
+
+```{r}
+sessionInfo()
+```
