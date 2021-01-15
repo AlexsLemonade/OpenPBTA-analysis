@@ -92,7 +92,7 @@ Now we'll select histology variables we mentioned above and so capitalization di
 ```{r}
 working_metadata <- metadata %>% 
   dplyr::select(Kids_First_Biospecimen_ID, sample_type, histology_variables) %>% 
-  dplyr::mutate_at(histology_variables, tolower)
+  dplyr::mutate(broad_histology_lower = tolower(broad_histology))
 ```
 
 # Take a look at how many biospecimens per `broad_histology` group
@@ -103,8 +103,8 @@ Because the `Normal` samples don't have histologies, we'll look at just the `Tum
 ```{r}
 broad_summary <- working_metadata %>% 
   dplyr::filter(sample_type == "Tumor") %>%
-  dplyr::count(broad_histology) %>% 
-  dplyr::arrange(n)
+  dplyr::count(broad_histology_lower) %>% 
+  dplyr::arrange(n) 
 ```
 
 Let's print out the summary. 
@@ -142,7 +142,7 @@ lgat <- c("other astrocytic tumor", "low-grade astrocytic tumor")
 histology_table <- working_metadata %>% 
   dplyr::mutate(
     # NAs are really Normals
-    display_group = tidyr::replace_na(broad_histology, "normal"),
+    display_group = tidyr::replace_na(broad_histology_lower, "normal"),
     # Now do the group combining
     display_group = forcats::fct_collapse(display_group,
       "low-grade astrocytic tumor" = lgat,
@@ -205,8 +205,8 @@ names(subset_colors) <- display_group_df$display_group
 We want `Other tumor` and the `Benign` group to both always be gray. 
 
 ```{r}
-subset_colors[names(subset_colors) == 'other tumor'] <- "#D3D3D3"
-subset_colors[names(subset_colors) == 'benign'] <- "#808080"
+subset_colors[names(subset_colors) == 'other tumor'] <- "#808080" 
+subset_colors[names(subset_colors) == 'benign'] <-  "#D3D3D3"
 ```
 
 Use `pie` function to preview what these look like.
@@ -220,7 +220,9 @@ pie(rep(1, n_colors),
 Add the hex codes to the `histology_table`. 
 
 ```{r}
-histology_table <- histology_table %>% 
+histology_table <- histology_table %>%
+  # We don't need this anymore
+  dplyr::select(-broad_histology_lower) %>% 
   # Add the hex_codes
   dplyr::mutate(hex_codes = dplyr::recode(display_group, !!!subset_colors)) %>% 
   # Restore capitalization so its pretty for labeling
