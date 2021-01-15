@@ -87,14 +87,12 @@ maf <- data.table::fread(consensus_file, data.table = FALSE)
 
 ### Read in color palettes
 
-Read in the histology color palette. 
+Read in the histology colors and labels. 
 
 ```{r}
-histology_col_palette <- readr::read_tsv(
-  file.path(figures_dir, "palettes", "histology_color_palette.tsv")
-  ) %>%
-  # We'll use deframe so we can use it as a recoding list
-  tibble::deframe()
+histology_label_mapping <- readr::read_tsv(
+  file.path("..", "..", "figures", "palettes", "histology_label_color_table.tsv")) %>% 
+  dplyr::select(Kids_First_Biospecimen_ID, display_group, hex_codes)
 ```
 
 Set up gradient color palette for the bubble matrix plots. 
@@ -113,13 +111,10 @@ Read in the metadata and set it up with the color palette.
 
 ```{r}
 metadata_df <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max = 10000) %>% 
-  dplyr::rename(Tumor_Sample_Barcode = "Kids_First_Biospecimen_ID") %>%
-  dplyr::select("Tumor_Sample_Barcode", "experimental_strategy", "short_histology") %>%
-  # Easier to deal with NA short histologies if they are labeled something different
-  dplyr::mutate(short_histology = as.character(tidyr::replace_na(short_histology, "none"))) %>%
-  # Tack on the sample color using the short_histology column and a recode
-  dplyr::mutate(sample_color = dplyr::recode(short_histology,
-                                             !!!histology_col_palette))
+  dplyr::select("Kids_First_Biospecimen_ID", "experimental_strategy") %>%
+  dplyr::inner_join(histology_label_mapping, by = "Kids_First_Biospecimen_ID") %>% 
+  dplyr::rename(Tumor_Sample_Barcode = "Kids_First_Biospecimen_ID") 
+
 ```
 
 Read in this list so we can make sure we keep only primary tumors for the 
@@ -274,7 +269,7 @@ cosmic_sigs_df <- calc_mut_per_sig(
 
 # Write this to a file but drop the color column
 cosmic_sigs_df %>% 
-  dplyr::select(-sample_color) %>% 
+  dplyr::select(-hex_codes) %>% 
   readr::write_tsv(file.path(results_dir, "cosmic_signatures_results.tsv"))
 
 # Print out a preview
@@ -295,7 +290,7 @@ nature_sigs_df <- calc_mut_per_sig(
 
 # Write this to a file but drop the color column
 nature_sigs_df %>% 
-  dplyr::select(-sample_color) %>% 
+  dplyr::select(-hex_codes) %>% 
   readr::write_tsv(file.path(results_dir, "nature_signatures_results.tsv"))
 
 # Print out a preview
@@ -340,7 +335,7 @@ cosmic_sigs_primary <- cosmic_sigs_df %>%
   dplyr::filter(Tumor_Sample_Barcode %in% ind_samples$Kids_First_Biospecimen_ID)
 
 # Make grouped bar plots
-lapply(unique(cosmic_sigs_primary$short_histology),
+lapply(unique(cosmic_sigs_primary$display_group),
   grouped_sig_barplot,
   sig_num_df = cosmic_sigs_primary,
   output_dir = file.path(cosmic_plots, "signature_grouped_barplots"), 
@@ -356,7 +351,7 @@ nature_sigs_primary <- nature_sigs_df %>%
   dplyr::filter(Tumor_Sample_Barcode %in% ind_samples$Kids_First_Biospecimen_ID)
 
 # Make grouped bar plots
-lapply(unique(nature_sigs_primary$short_histology),
+lapply(unique(nature_sigs_primary$display_group),
   grouped_sig_barplot,
   sig_num_df = nature_sigs_primary,
   output_dir = file.path(nature_plots, "signature_grouped_barplots"),
