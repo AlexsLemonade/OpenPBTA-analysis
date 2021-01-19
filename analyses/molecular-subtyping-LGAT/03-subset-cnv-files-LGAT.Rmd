@@ -79,7 +79,7 @@ lgat_wgs_biospecimen_ids <- lgat_specimens_df %>%
 
 # Filter CNV calls
 manta_lgat <- manta %>%
-  dplyr::filter(Kids.First.Biospecimen.ID.Tumor %in% lgat_wgs_df$Kids_First_Biospecimen_ID)
+  dplyr::filter(Kids.First.Biospecimen.ID.Tumor %in% lgat_wgs_biospecimen_ids)
 
 cnv_lgat <- cnv %>%
   dplyr::filter( ID %in% lgat_wgs_df$Kids_First_Biospecimen_ID)
