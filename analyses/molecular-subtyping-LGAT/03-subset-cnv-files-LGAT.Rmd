@@ -75,7 +75,7 @@ lgat_specimens_df<-read_tsv(file.path(subset_dir, "lgat_metadata.tsv"))
 # Filter to RNA-Seq samples
 lgat_wgs_df <- lgat_specimens_df %>%
   dplyr::filter(experimental_strategy == "WGS") %>%
-  dplyr::select(Kids_First_Biospecimen_ID)
+  dplyr::pull(Kids_First_Biospecimen_ID)
 
 # Filter CNV calls
 manta_lgat <- manta %>%
