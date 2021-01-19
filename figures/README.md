@@ -79,10 +79,13 @@ There's some extra columns in `histology_label_color_table.tsv` that you don't n
 ```
 histology_label_mapping <- readr::read_tsv(
   file.path("figures", "palettes", "histology_label_color_table.tsv")) %>% 
-  dplyr::select(Kids_First_Biospecimen_ID, display_group, hex_codes)
+  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>% 
+  # Reorder factor based on display_order
+  forcats::fct_reorder(display_group, display_order)
 ```
 
-**Step 2)** Use `dplyr::inner_join` using `Kids_First_Biospecimen_ID` to join by so you can add on the `hex_codes` and `display_group` for each biospecimen
+**Step 2)** Use `dplyr::inner_join` using `Kids_First_Biospecimen_ID` to join by so you can add on the `hex_codes` and `display_group` for each biospecimen. 
+`display_order` specifies what order the `display_group`s should be displayed.
 
 ```
 # Read in the metadata
