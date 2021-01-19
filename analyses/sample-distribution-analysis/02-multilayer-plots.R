@@ -43,13 +43,13 @@ final_df <- histologies_df %>%
   dplyr::filter(sample_type == "Tumor",
                 composition == "Solid Tissue") %>%
   dplyr::distinct(Kids_First_Participant_ID, broad_histology,
-                  short_histology, integrated_diagnosis) %>%
+                  short_histology, harmonized_diagnosis) %>%
   # Select our 3 columns of interest
-  dplyr::select(broad_histology, short_histology, integrated_diagnosis) %>%
+  dplyr::select(broad_histology, short_histology, harmonized_diagnosis) %>%
   # Remove any row that has an NA
   dplyr::filter(complete.cases(.)) %>%
   # Group by all 3 columns in order to count
-  dplyr::group_by(broad_histology, short_histology, integrated_diagnosis) %>%
+  dplyr::group_by(broad_histology, short_histology, harmonized_diagnosis) %>%
   # Add the count to a column named size
   dplyr::add_count(name = "size") %>%
   # Place the value 1 in a column named counter for treemap and sunburt plots
@@ -57,7 +57,7 @@ final_df <- histologies_df %>%
   # Change the column names
   dplyr::rename(level1 = broad_histology,
                 level2 = short_histology,
-                level3 = integrated_diagnosis) %>%
+                level3 = harmonized_diagnosis) %>%
   # Reorder the rows according to the 3 levels
   dplyr::arrange(level1, level2, level3) %>%
   # tbl_df -> data.frame
