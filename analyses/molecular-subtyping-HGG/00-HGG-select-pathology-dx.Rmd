@@ -34,8 +34,8 @@ library(tidyverse)
 We're going to tie this to a specific release.
 
 ```{r}
-data_dir <- file.path("..", "..", "data", "release-v18-20201123")
-histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
+data_dir <- file.path("..", "..", "data", "release-v17-20200908")
+histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
 ```
 
 We're going to save the pathology diagnosis information we'll use to generate the subset files in a directory `hgg-subset`.
