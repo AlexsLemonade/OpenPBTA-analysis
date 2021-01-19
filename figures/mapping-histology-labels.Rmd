@@ -181,26 +181,17 @@ We will always want the "normal", "benign", "other_tumor" groups to come last so
 control_like_groups <- c("normal", "benign", "other tumor")
 
 display_order_df <- display_group_df %>% 
-  dplyr::filter(!display_group %in% control_like_groups) %>%
-  dplyr::mutate(display_order = as.numeric(order(n, decreasing = TRUE))) %>% 
-  dplyr::select(-n)
+  mutate(display_group = forcats::fct_reorder(display_group, n, .desc = TRUE) %>%
+                         forcats::fct_relevel("benign", "other tumor", "normal", after = Inf),
+         display_order = as.numeric(display_group))
 ```
 
 Add on the `display_order` column using `inner_join`.
 
 ```{r}
-max_rank <- max(display_order_df$display_order)
-
 histology_table <- histology_table %>%
   # Join on the display orders
-  dplyr::left_join(display_order_df, by = "display_group") %>% 
-  # Add ranks for the control like groups
-  dplyr::mutate(display_order = dplyr::case_when(
-    display_group == "benign" ~ max_rank + 1, 
-    display_group == "other tumor" ~ max_rank + 2, 
-    display_group == "normal" ~ max_rank + 3, 
-    TRUE ~ display_order
-    ))
+  dplyr::inner_join(display_order_df, by = "display_group") 
 ```
 
 # Add hex codes 
