@@ -56,9 +56,12 @@ Import color palettes.
 ```{r}
 # Import standard color palettes for project
 histology_label_mapping <- readr::read_tsv(
-  file.path(figures_dir, "palettes", "histology_label_color_table.tsv")
+  file.path(figures_dir, "palettes", "histology_label_color_table.tsv"), 
+  # Read in each column as a specific type - skip extra columns
+  col_types = paste0(c("c", rep("-", 6), "f", "i", "c"), collapse = "")
   ) %>% 
-  dplyr::select(Kids_First_Biospecimen_ID, display_group, hex_codes)
+  # Reorder factor based on display_order
+  dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
 
 # We'll use this for numeric data on the heatmap 
 gradient_col_palette <- readr::read_tsv(
@@ -230,7 +233,8 @@ Make histology labeling `HeatmapAnnotation` object.
 histologies <-
   data.frame(Kids_First_Biospecimen_ID = common_samples) %>%
   dplyr::inner_join(metadata %>% 
-                      dplyr::select(Kids_First_Biospecimen_ID, display_group, hex_codes)) %>%
+                      dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes)) %>%
+  # Arrange by display group
   dplyr::arrange(display_group) %>% 
   tibble::column_to_rownames("Kids_First_Biospecimen_ID")
 
