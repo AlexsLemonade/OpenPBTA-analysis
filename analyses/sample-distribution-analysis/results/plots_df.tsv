@@ -3,9 +3,22 @@ Benign tumor	Adenoma	Adenoma	4	1
 Benign tumor	Adenoma	Adenoma	4	1
 Benign tumor	Adenoma	Adenoma	4	1
 Benign tumor	Adenoma	Adenoma	4	1
-Benign tumor	Central neurocytoma	Neurocytoma	3	1
-Benign tumor	Central neurocytoma	Neurocytoma	3	1
-Benign tumor	Central neurocytoma	Neurocytoma	3	1
+Benign tumor	Benign tumor-cyst	Benign tumor, dermoid inclusion cyst	1	1
+Benign tumor	Benign tumor-cyst	Benign tumor, epidermoid cyst	1	1
+Benign tumor	Benign tumor-cyst	Benign tumor, inclusion cyst	1	1
+Benign tumor	Benign tumor-other	Benign tumor, atypical lymphoid infiltrate	1	1
+Benign tumor	Benign tumor-other	Benign tumor, cortical tubers	1	1
+Benign tumor	Benign tumor-other	Benign tumor, fibroma	1	1
+Benign tumor	Benign tumor-other	Benign tumor, hamartoma	1	1
+Benign tumor	Benign tumor-other	Benign tumor, meningioangiomatosis	3	1
+Benign tumor	Benign tumor-other	Benign tumor, meningioangiomatosis	3	1
+Benign tumor	Benign tumor-other	Benign tumor, meningioangiomatosis	3	1
+Benign tumor	Benign tumor-other	Benign tumor, ossifying fibroma	1	1
+Benign tumor	Benign tumor-other	Benign tumor, osteoblastoma	2	1
+Benign tumor	Benign tumor-other	Benign tumor, osteoblastoma	2	1
+Benign tumor	Benign tumor-other	Benign tumor, perineuroma	1	1
+Benign tumor	Benign tumor-other	Benign tumor, prolactinoma	1	1
+Benign tumor	Benign tumor-other	Benign tumor, rathke cleft cyst	1	1
 Benign tumor	Choroid plexus tumor	Choroid plexus papilloma	16	1
 Benign tumor	Choroid plexus tumor	Choroid plexus papilloma	16	1
 Benign tumor	Choroid plexus tumor	Choroid plexus papilloma	16	1
@@ -22,451 +35,440 @@ Benign tumor	Choroid plexus tumor	Choroid plexus papilloma	16	1
 Benign tumor	Choroid plexus tumor	Choroid plexus papilloma	16	1
 Benign tumor	Choroid plexus tumor	Choroid plexus papilloma	16	1
 Benign tumor	Choroid plexus tumor	Choroid plexus papilloma	16	1
-Benign tumor	Other	Cortical Tubers	1	1
-Benign tumor	Other	Dermoid Cyst	3	1
-Benign tumor	Other	Dermoid Cyst	3	1
-Benign tumor	Other	Dermoid Cyst	3	1
-Benign tumor	Other	Fibroma	1	1
-Benign tumor	Other	Ganglioneuroma	1	1
-Benign tumor	Other	Hamartoma	1	1
-Benign tumor	Other	Intraneural perineurioma	1	1
-Benign tumor	Other	JXG- Non-Langerhans Histiocytosis	2	1
-Benign tumor	Other	JXG- Non-Langerhans Histiocytosis	2	1
-Benign tumor	Other	Meningioangiomatosis	3	1
-Benign tumor	Other	Meningioangiomatosis	3	1
-Benign tumor	Other	Meningioangiomatosis	3	1
-Benign tumor	Other	NeuroInflammatory systemic disease	1	1
-Benign tumor	Other	Ossifying Fibroma	1	1
-Benign tumor	Other	Osteoblastoma	2	1
-Benign tumor	Other	Osteoblastoma	2	1
-Benign tumor	Other	Prolactinoma	1	1
+Benign tumor	Xanthogranuloma	Other	1	1
+Benign tumor (or cyst)	Benign tumor-cyst	Benign tumor (or cyst), dermoid cyst	3	1
+Benign tumor (or cyst)	Benign tumor-cyst	Benign tumor (or cyst), dermoid cyst	3	1
+Benign tumor (or cyst)	Benign tumor-cyst	Benign tumor (or cyst), dermoid cyst	3	1
 Choroid plexus tumor	Chordoma	Chordoma	3	1
 Choroid plexus tumor	Chordoma	Chordoma	3	1
 Choroid plexus tumor	Chordoma	Chordoma	3	1
-Choroid plexus tumor	Chordoma	Choroid plexus carcinoma	4	1
-Choroid plexus tumor	Chordoma	Choroid plexus carcinoma	4	1
-Choroid plexus tumor	Chordoma	Choroid plexus carcinoma	4	1
-Choroid plexus tumor	Chordoma	Choroid plexus carcinoma	4	1
-Choroid plexus tumor	Choroid plexus tumor	Choroid plexus cyst	1	1
-CNS neuroblastoma	CNS neuroblastoma	CNS Neuroblastoma	1	1
-CNS neuroblastoma	CNS neuroblastoma	Neuroblastoma	4	1
-CNS neuroblastoma	CNS neuroblastoma	Neuroblastoma	4	1
-CNS neuroblastoma	CNS neuroblastoma	Neuroblastoma	4	1
-CNS neuroblastoma	CNS neuroblastoma	Neuroblastoma	4	1
-CNS neuroblastoma	CNS neuroblastoma	Neurocytoma	1	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	8	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	8	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	8	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	8	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	8	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	8	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	8	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	8	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma	55	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma	87	1
-Diffuse astrocytic and oligodendroglial tumor	Oligodendroglioma	Oligodendroglioma	2	1
-Diffuse astrocytic and oligodendroglial tumor	Oligodendroglioma	Oligodendroglioma	2	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor	28	1
-Embryonal tumor	Embryonal Tumor	CNS Embryonal Tumor	18	1
-Embryonal tumor	Embryonal Tumor	CNS Embryonal Tumor	18	1
-Embryonal tumor	Embryonal Tumor	CNS Embryonal Tumor	18	1
-Embryonal tumor	Embryonal Tumor	CNS Embryonal Tumor	18	1
-Embryonal tumor	Embryonal Tumor	CNS Embryonal Tumor	18	1
-Embryonal tumor	Embryonal Tumor	CNS Embryonal Tumor	18	1
-Embryonal tumor	Embryonal Tumor	CNS Embryonal Tumor	18	1
-Embryonal tumor	Embryonal Tumor	CNS Embryonal Tumor	18	1
-Embryonal tumor	Embryonal Tumor	CNS Embryonal Tumor	18	1
-Embryonal tumor	Embryonal Tumor	CNS Embryonal Tumor	18	1
-Embryonal tumor	Embryonal Tumor	CNS Embryonal Tumor	18	1
-Embryonal tumor	Embryonal Tumor	CNS Embryonal Tumor	18	1
-Embryonal tumor	Embryonal Tumor	CNS Embryonal Tumor	18	1
-Embryonal tumor	Embryonal Tumor	CNS Embryonal Tumor	18	1
-Embryonal tumor	Embryonal Tumor	CNS Embryonal Tumor	18	1
-Embryonal tumor	Embryonal Tumor	CNS Embryonal Tumor	18	1
-Embryonal tumor	Embryonal Tumor	CNS Embryonal Tumor	18	1
-Embryonal tumor	Embryonal Tumor	CNS Embryonal Tumor	18	1
-Embryonal tumor	ETMR	Embryonal tumor with multilayer rosettes	6	1
-Embryonal tumor	ETMR	Embryonal tumor with multilayer rosettes	6	1
-Embryonal tumor	ETMR	Embryonal tumor with multilayer rosettes	6	1
-Embryonal tumor	ETMR	Embryonal tumor with multilayer rosettes	6	1
-Embryonal tumor	ETMR	Embryonal tumor with multilayer rosettes	6	1
-Embryonal tumor	ETMR	Embryonal tumor with multilayer rosettes	6	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Embryonal tumor	Medulloblastoma	Medulloblastoma	118	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Ependymal tumor	Ependymoma	Ependymoma	85	1
-Germ cell tumor	Germinoma	Germinoma	5	1
-Germ cell tumor	Germinoma	Germinoma	5	1
-Germ cell tumor	Germinoma	Germinoma	5	1
-Germ cell tumor	Germinoma	Germinoma	5	1
-Germ cell tumor	Germinoma	Germinoma	5	1
-Germ cell tumor	Teratoma	Non-germinomatous germ cell tumor- Teratoma	1	1
+Choroid plexus tumor	Choroid plexus cyst	Choroid plexus cyst	1	1
+Choroid plexus tumor	Choroid plexus tumor	Choroid plexus carcinoma	4	1
+Choroid plexus tumor	Choroid plexus tumor	Choroid plexus carcinoma	4	1
+Choroid plexus tumor	Choroid plexus tumor	Choroid plexus carcinoma	4	1
+Choroid plexus tumor	Choroid plexus tumor	Choroid plexus carcinoma	4	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	9	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	9	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	9	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	9	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	9	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	9	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	9	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	9	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Brainstem glioma- Diffuse intrinsic pontine glioma	9	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant	52	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant, BRAF V600E	2	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Diffuse midline glioma, H3 K28-mutant, BRAF V600E	2	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma (WHO grade III/IV)	35	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, BRAF V600E	3	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, BRAF V600E	3	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, BRAF V600E	3	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 G35-mutant	4	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 G35-mutant	4	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 G35-mutant	4	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 G35-mutant	4	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, H3 wildtype	41	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, IDH-mutant	2	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	High-grade glioma/astrocytoma, IDH-mutant	2	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Oligodendroglioma	2	1
+Diffuse astrocytic and oligodendroglial tumor	HGAT	Oligodendroglioma	2	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	ATRT	Atypical Teratoid Rhabdoid Tumor (ATRT)	28	1
+Embryonal tumor	Embryonal Tumor	Ganglioneuroblastoma	2	1
+Embryonal tumor	Embryonal Tumor	Ganglioneuroblastoma	2	1
+Embryonal tumor	Medulloblastoma	Medulloblastoma	7	1
+Embryonal tumor	Medulloblastoma	Medulloblastoma	7	1
+Embryonal tumor	Medulloblastoma	Medulloblastoma	7	1
+Embryonal tumor	Medulloblastoma	Medulloblastoma	7	1
+Embryonal tumor	Medulloblastoma	Medulloblastoma	7	1
+Embryonal tumor	Medulloblastoma	Medulloblastoma	7	1
+Embryonal tumor	Medulloblastoma	Medulloblastoma	7	1
+Embryonal tumor	Neuroblastoma	Neuroblastoma	4	1
+Embryonal tumor	Neuroblastoma	Neuroblastoma	4	1
+Embryonal tumor	Neuroblastoma	Neuroblastoma	4	1
+Embryonal tumor	Neuroblastoma	Neuroblastoma	4	1
+Embryonal Tumor	Embryonal Tumor	CNS Embryonal Tumor, HGNET-MN1	1	1
+Embryonal Tumor	Embryonal Tumor	CNS Embryonal Tumor, NOS	14	1
+Embryonal Tumor	Embryonal Tumor	CNS Embryonal Tumor, NOS	14	1
+Embryonal Tumor	Embryonal Tumor	CNS Embryonal Tumor, NOS	14	1
+Embryonal Tumor	Embryonal Tumor	CNS Embryonal Tumor, NOS	14	1
+Embryonal Tumor	Embryonal Tumor	CNS Embryonal Tumor, NOS	14	1
+Embryonal Tumor	Embryonal Tumor	CNS Embryonal Tumor, NOS	14	1
+Embryonal Tumor	Embryonal Tumor	CNS Embryonal Tumor, NOS	14	1
+Embryonal Tumor	Embryonal Tumor	CNS Embryonal Tumor, NOS	14	1
+Embryonal Tumor	Embryonal Tumor	CNS Embryonal Tumor, NOS	14	1
+Embryonal Tumor	Embryonal Tumor	CNS Embryonal Tumor, NOS	14	1
+Embryonal Tumor	Embryonal Tumor	CNS Embryonal Tumor, NOS	14	1
+Embryonal Tumor	Embryonal Tumor	CNS Embryonal Tumor, NOS	14	1
+Embryonal Tumor	Embryonal Tumor	CNS Embryonal Tumor, NOS	14	1
+Embryonal Tumor	Embryonal Tumor	CNS Embryonal Tumor, NOS	14	1
+Embryonal Tumor	Embryonal Tumor	CNS neuroblastoma	2	1
+Embryonal Tumor	Embryonal Tumor	CNS neuroblastoma	2	1
+Embryonal Tumor	ETMR	Embryonal tumor with multilayer rosettes, C19MC-altered	5	1
+Embryonal Tumor	ETMR	Embryonal tumor with multilayer rosettes, C19MC-altered	5	1
+Embryonal Tumor	ETMR	Embryonal tumor with multilayer rosettes, C19MC-altered	5	1
+Embryonal Tumor	ETMR	Embryonal tumor with multilayer rosettes, C19MC-altered	5	1
+Embryonal Tumor	ETMR	Embryonal tumor with multilayer rosettes, C19MC-altered	5	1
+Embryonal Tumor	ETMR	Embryonal tumor with multilayer rosettes, NOS	1	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma	19	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma	19	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma	19	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma	19	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma	19	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma	19	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma	19	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma	19	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma	19	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma	19	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma	19	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma	19	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma	19	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma	19	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma	19	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma	19	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma	19	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma	19	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma	19	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 3	14	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 3	14	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 3	14	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 3	14	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 3	14	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 3	14	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 3	14	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 3	14	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 3	14	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 3	14	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 3	14	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 3	14	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 3	14	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 3	14	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, group 4	47	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, SHH-activated	24	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, WNT-activated	9	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, WNT-activated	9	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, WNT-activated	9	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, WNT-activated	9	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, WNT-activated	9	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, WNT-activated	9	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, WNT-activated	9	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, WNT-activated	9	1
+Embryonal Tumor	Medulloblastoma	Medulloblastoma, WNT-activated	9	1
+Ependymal tumor	Ependymoma	Ependymoma	1	1
+Ependymal tumor	EPN	Ependymoma	4	1
+Ependymal tumor	EPN	Ependymoma	4	1
+Ependymal tumor	EPN	Ependymoma	4	1
+Ependymal tumor	EPN	Ependymoma	4	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Ependymoma	52	1
+Ependymal Tumor	Ependymoma	Posterior Fossa Ependymoma, Type A	2	1
+Ependymal Tumor	Ependymoma	Posterior Fossa Ependymoma, Type A	2	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, RELA fusion positive	26	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, YAP1 fusion positive	4	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, YAP1 fusion positive	4	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, YAP1 fusion positive	4	1
+Ependymal Tumor	Ependymoma	Supratentorial Ependymoma, YAP1 fusion positive	4	1
+Germ cell tumor	Germ cell tumor	Germinoma;Teratoma	1	1
+Germ cell tumor	Germ cell tumor	Non-germinomatous germ cell tumor;Teratoma	1	1
+Germ cell tumor	Germinoma	Germinoma	4	1
+Germ cell tumor	Germinoma	Germinoma	4	1
+Germ cell tumor	Germinoma	Germinoma	4	1
+Germ cell tumor	Germinoma	Germinoma	4	1
 Germ cell tumor	Teratoma	Teratoma	8	1
 Germ cell tumor	Teratoma	Teratoma	8	1
 Germ cell tumor	Teratoma	Teratoma	8	1
@@ -475,255 +477,303 @@ Germ cell tumor	Teratoma	Teratoma	8	1
 Germ cell tumor	Teratoma	Teratoma	8	1
 Germ cell tumor	Teratoma	Teratoma	8	1
 Germ cell tumor	Teratoma	Teratoma	8	1
-Histiocytic tumor	Langerhans Cell histiocytosis	Langerhans Cell histiocytosis	4	1
-Histiocytic tumor	Langerhans Cell histiocytosis	Langerhans Cell histiocytosis	4	1
-Histiocytic tumor	Langerhans Cell histiocytosis	Langerhans Cell histiocytosis	4	1
-Histiocytic tumor	Langerhans Cell histiocytosis	Langerhans Cell histiocytosis	4	1
-Histiocytic tumor	Other	Rosai-Dorfman Disease	1	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	240	1
-Low-grade astrocytic tumor	LGAT	Subependymal Giant Cell Astrocytoma	3	1
-Low-grade astrocytic tumor	LGAT	Subependymal Giant Cell Astrocytoma	3	1
-Low-grade astrocytic tumor	LGAT	Subependymal Giant Cell Astrocytoma	3	1
-Lymphomas	CNS lymphoma	Primary CNS lymphoma	1	1
+Histiocytic tumor	JXG	Other	1	1
+Histiocytic tumor	Rosai-Dorfman disease	Rosai-Dorfman disease	1	1
+Histiocytic tumors	Langerhans Cell histiocytosis	Langerhans Cell histiocytosis	4	1
+Histiocytic tumors	Langerhans Cell histiocytosis	Langerhans Cell histiocytosis	4	1
+Histiocytic tumors	Langerhans Cell histiocytosis	Langerhans Cell histiocytosis	4	1
+Histiocytic tumors	Langerhans Cell histiocytosis	Langerhans Cell histiocytosis	4	1
+Low-grade astrocytic tumor	Ganglioglioma	Ganglioglioma	1	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF fusion	6	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF fusion	6	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF fusion	6	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF fusion	6	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF fusion	6	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF fusion	6	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF V600E	13	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF V600E	13	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF V600E	13	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF V600E	13	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF V600E	13	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF V600E	13	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF V600E	13	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF V600E	13	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF V600E	13	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF V600E	13	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF V600E	13	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF V600E	13	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF V600E	13	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma/astrocytoma, BRAF wildtype	27	1
+Low-grade astrocytic tumor	LGAT	Low-grade astrocytic tumor	1	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma (WHO grade I/II)	11	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma (WHO grade I/II)	11	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma (WHO grade I/II)	11	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma (WHO grade I/II)	11	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma (WHO grade I/II)	11	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma (WHO grade I/II)	11	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma (WHO grade I/II)	11	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma (WHO grade I/II)	11	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma (WHO grade I/II)	11	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma (WHO grade I/II)	11	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma (WHO grade I/II)	11	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF fusion	115	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF V600E	23	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Low-grade astrocytic tumor	LGAT	Low-grade glioma/astrocytoma, BRAF wildtype	92	1
+Lymphoma	CNS lymphoma	Primary CNS lymphoma	1	1
+Melanocytic tumor	Melanocytic tumor	Melanocytic tumor	1	1
 Meningioma	Meningioma	Meningioma	27	1
 Meningioma	Meningioma	Meningioma	27	1
 Meningioma	Meningioma	Meningioma	27	1
@@ -751,155 +801,115 @@ Meningioma	Meningioma	Meningioma	27	1
 Meningioma	Meningioma	Meningioma	27	1
 Meningioma	Meningioma	Meningioma	27	1
 Meningioma	Meningioma	Meningioma	27	1
-Mesenchymal non-meningothelial tumor	CNS Rhabdomyosarcoma	Rhabdomyosarcoma	2	1
-Mesenchymal non-meningothelial tumor	CNS Rhabdomyosarcoma	Rhabdomyosarcoma	2	1
-Mesenchymal non-meningothelial tumor	CNS sarcoma	Sarcoma	3	1
-Mesenchymal non-meningothelial tumor	CNS sarcoma	Sarcoma	3	1
-Mesenchymal non-meningothelial tumor	CNS sarcoma	Sarcoma	3	1
-Mesenchymal non-meningothelial tumor	EWS	Ewings Sarcoma	10	1
-Mesenchymal non-meningothelial tumor	EWS	Ewings Sarcoma	10	1
-Mesenchymal non-meningothelial tumor	EWS	Ewings Sarcoma	10	1
-Mesenchymal non-meningothelial tumor	EWS	Ewings Sarcoma	10	1
-Mesenchymal non-meningothelial tumor	EWS	Ewings Sarcoma	10	1
-Mesenchymal non-meningothelial tumor	EWS	Ewings Sarcoma	10	1
-Mesenchymal non-meningothelial tumor	EWS	Ewings Sarcoma	10	1
-Mesenchymal non-meningothelial tumor	EWS	Ewings Sarcoma	10	1
-Mesenchymal non-meningothelial tumor	EWS	Ewings Sarcoma	10	1
-Mesenchymal non-meningothelial tumor	EWS	Ewings Sarcoma	10	1
+Mesenchymal non-meningothelial tumor	Cavernoma	Cavernoma	2	1
+Mesenchymal non-meningothelial tumor	Cavernoma	Cavernoma	2	1
+Mesenchymal non-meningothelial tumor	CNS RMS	Rhabdomyosarcoma	2	1
+Mesenchymal non-meningothelial tumor	CNS RMS	Rhabdomyosarcoma	2	1
+Mesenchymal non-meningothelial tumor	EWS	Ewing sarcoma	9	1
+Mesenchymal non-meningothelial tumor	EWS	Ewing sarcoma	9	1
+Mesenchymal non-meningothelial tumor	EWS	Ewing sarcoma	9	1
+Mesenchymal non-meningothelial tumor	EWS	Ewing sarcoma	9	1
+Mesenchymal non-meningothelial tumor	EWS	Ewing sarcoma	9	1
+Mesenchymal non-meningothelial tumor	EWS	Ewing sarcoma	9	1
+Mesenchymal non-meningothelial tumor	EWS	Ewing sarcoma	9	1
+Mesenchymal non-meningothelial tumor	EWS	Ewing sarcoma	9	1
+Mesenchymal non-meningothelial tumor	EWS	Ewing sarcoma	9	1
+Mesenchymal non-meningothelial tumor	Fibromyxoid lesion	Fibromyxoid lesion	1	1
 Mesenchymal non-meningothelial tumor	Hemangioblastoma	Hemangioblastoma	2	1
 Mesenchymal non-meningothelial tumor	Hemangioblastoma	Hemangioblastoma	2	1
-Mesenchymal non-meningothelial tumor	Hemangioma	Cavernoma	1	1
-Mesenchymal non-meningothelial tumor	Other	Fibromyxoid Tumor	1	1
-Mesenchymal non-meningothelial tumor	Other	Myofibroblastoma	1	1
-Metastatic secondary tumors	Other	Metastatic secondary tumors	4	1
-Metastatic secondary tumors	Other	Metastatic secondary tumors	4	1
-Metastatic secondary tumors	Other	Metastatic secondary tumors	4	1
-Metastatic secondary tumors	Other	Metastatic secondary tumors	4	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor	27	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Ganglioglioma	Ganglioglioma	45	1
-Neuronal and mixed neuronal-glial tumor	Glial-neuronal tumor NOS	Glial-neuronal tumor NOS	4	1
-Neuronal and mixed neuronal-glial tumor	Glial-neuronal tumor NOS	Glial-neuronal tumor NOS	4	1
-Neuronal and mixed neuronal-glial tumor	Glial-neuronal tumor NOS	Glial-neuronal tumor NOS	4	1
-Neuronal and mixed neuronal-glial tumor	Glial-neuronal tumor NOS	Glial-neuronal tumor NOS	4	1
-Neuronal and mixed neuronal-glial tumor	LGMT	Low-grade mixed tumor	2	1
-Neuronal and mixed neuronal-glial tumor	LGMT	Low-grade mixed tumor	2	1
-Neuronal and mixed neuronal-glial tumor	Other	Papillary glioneuronal tumor	1	1
-Other tumor	Gliosis	Reactive Gliosis	1	1
-Other tumor	Other	Brain arteriovenous malformation	1	1
-Other tumor	Other	Cyst	4	1
-Other tumor	Other	Cyst	4	1
-Other tumor	Other	Cyst	4	1
-Other tumor	Other	Cyst	4	1
-Other tumor	Other	Malignant melanocytic neoplasm	1	1
-Other tumor	Other	Myxoid spindle cell tumor	1	1
-Other tumor	Other	Reactive Connective Tissue	1	1
-Pre-cancerous lesion	Dysplasia	Dysplasia	14	1
-Pre-cancerous lesion	Dysplasia	Dysplasia	14	1
-Pre-cancerous lesion	Dysplasia	Dysplasia	14	1
-Pre-cancerous lesion	Dysplasia	Dysplasia	14	1
-Pre-cancerous lesion	Dysplasia	Dysplasia	14	1
-Pre-cancerous lesion	Dysplasia	Dysplasia	14	1
-Pre-cancerous lesion	Dysplasia	Dysplasia	14	1
-Pre-cancerous lesion	Dysplasia	Dysplasia	14	1
-Pre-cancerous lesion	Dysplasia	Dysplasia	14	1
-Pre-cancerous lesion	Dysplasia	Dysplasia	14	1
-Pre-cancerous lesion	Dysplasia	Dysplasia	14	1
-Pre-cancerous lesion	Dysplasia	Dysplasia	14	1
-Pre-cancerous lesion	Dysplasia	Dysplasia	14	1
-Pre-cancerous lesion	Dysplasia	Dysplasia	14	1
-Tumor of cranial and paraspinal nerves	MPNST	Malignant peripheral nerve sheath tumor	4	1
-Tumor of cranial and paraspinal nerves	MPNST	Malignant peripheral nerve sheath tumor	4	1
-Tumor of cranial and paraspinal nerves	MPNST	Malignant peripheral nerve sheath tumor	4	1
-Tumor of cranial and paraspinal nerves	MPNST	Malignant peripheral nerve sheath tumor	4	1
-Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	19	1
-Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	19	1
-Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	19	1
-Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	19	1
-Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	19	1
-Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	19	1
-Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	19	1
-Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	19	1
-Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	19	1
-Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	19	1
-Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	19	1
-Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	19	1
-Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	19	1
-Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	19	1
-Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	19	1
-Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	19	1
-Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	19	1
-Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	19	1
-Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma	19	1
+Mesenchymal non-meningothelial tumor	Myofibroblastoma	Myofibroblastoma	1	1
+Mesenchymal non-meningothelial tumor	Sarcoma	Sarcoma	6	1
+Mesenchymal non-meningothelial tumor	Sarcoma	Sarcoma	6	1
+Mesenchymal non-meningothelial tumor	Sarcoma	Sarcoma	6	1
+Mesenchymal non-meningothelial tumor	Sarcoma	Sarcoma	6	1
+Mesenchymal non-meningothelial tumor	Sarcoma	Sarcoma	6	1
+Mesenchymal non-meningothelial tumor	Sarcoma	Sarcoma	6	1
+Metastatic tumors	Metastases	Metastatic secondary tumors	4	1
+Metastatic tumors	Metastases	Metastatic secondary tumors	4	1
+Metastatic tumors	Metastases	Metastatic secondary tumors	4	1
+Metastatic tumors	Metastases	Metastatic secondary tumors	4	1
+Metastatic tumors	Metastases	Metastatic secondary tumors;Neuroblastoma	1	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET)	24	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET);Dysplasia/Gliosis;Ganglioglioma	1	1
+Neuronal and mixed neuronal-glial tumor	DNET	Dysembryoplastic neuroepithelial tumor (DNET);Ganglioglioma	1	1
+Neuronal and mixed neuronal-glial tumor	Glial-neuronal tumor NOS	Dysplasia/Gliosis;Glial-neuronal tumor NOS	1	1
+Neuronal and mixed neuronal-glial tumor	Glial-neuronal tumor NOS	Glial-neuronal tumor NOS	6	1
+Neuronal and mixed neuronal-glial tumor	Glial-neuronal tumor NOS	Glial-neuronal tumor NOS	6	1
+Neuronal and mixed neuronal-glial tumor	Glial-neuronal tumor NOS	Glial-neuronal tumor NOS	6	1
+Neuronal and mixed neuronal-glial tumor	Glial-neuronal tumor NOS	Glial-neuronal tumor NOS	6	1
+Neuronal and mixed neuronal-glial tumor	Glial-neuronal tumor NOS	Glial-neuronal tumor NOS	6	1
+Neuronal and mixed neuronal-glial tumor	Glial-neuronal tumor NOS	Glial-neuronal tumor NOS	6	1
+Neuronal and mixed neuronal-glial tumor	Neurocytoma	Central Neurocytoma	2	1
+Neuronal and mixed neuronal-glial tumor	Neurocytoma	Central Neurocytoma	2	1
+Neuronal and mixed neuronal-glial tumor	Neurocytoma	Extraventricular Neurocytoma	1	1
+Non-CNS tumor	Other-non CNS tumor	Myxoid spindle cell tumor	1	1
+Non-tumor	Other-non-tumor	Arteriovenous malformation	1	1
+Non-tumor	Other-non-tumor	Epilepsy, chronic rasmussen encephalitis	1	1
+Non-tumor	Other-non-tumor	Reactive connective tissue	1	1
+Other astrocytic tumor	SEGA	Subependymal Giant Cell Astrocytoma (SEGA)	3	1
+Other astrocytic tumor	SEGA	Subependymal Giant Cell Astrocytoma (SEGA)	3	1
+Other astrocytic tumor	SEGA	Subependymal Giant Cell Astrocytoma (SEGA)	3	1
+Other tumor	Other-tumor	Ganglioneuroma	1	1
+Pre-cancerous lesion	Dysplasia	Dysplasia/Gliosis	14	1
+Pre-cancerous lesion	Dysplasia	Dysplasia/Gliosis	14	1
+Pre-cancerous lesion	Dysplasia	Dysplasia/Gliosis	14	1
+Pre-cancerous lesion	Dysplasia	Dysplasia/Gliosis	14	1
+Pre-cancerous lesion	Dysplasia	Dysplasia/Gliosis	14	1
+Pre-cancerous lesion	Dysplasia	Dysplasia/Gliosis	14	1
+Pre-cancerous lesion	Dysplasia	Dysplasia/Gliosis	14	1
+Pre-cancerous lesion	Dysplasia	Dysplasia/Gliosis	14	1
+Pre-cancerous lesion	Dysplasia	Dysplasia/Gliosis	14	1
+Pre-cancerous lesion	Dysplasia	Dysplasia/Gliosis	14	1
+Pre-cancerous lesion	Dysplasia	Dysplasia/Gliosis	14	1
+Pre-cancerous lesion	Dysplasia	Dysplasia/Gliosis	14	1
+Pre-cancerous lesion	Dysplasia	Dysplasia/Gliosis	14	1
+Pre-cancerous lesion	Dysplasia	Dysplasia/Gliosis	14	1
+Tumor of cranial and paraspinal nerves	MPNST	Malignant peripheral nerve sheath tumor (MPNST)	4	1
+Tumor of cranial and paraspinal nerves	MPNST	Malignant peripheral nerve sheath tumor (MPNST)	4	1
+Tumor of cranial and paraspinal nerves	MPNST	Malignant peripheral nerve sheath tumor (MPNST)	4	1
+Tumor of cranial and paraspinal nerves	MPNST	Malignant peripheral nerve sheath tumor (MPNST)	4	1
+Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma/Plexiform	18	1
+Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma/Plexiform	18	1
+Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma/Plexiform	18	1
+Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma/Plexiform	18	1
+Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma/Plexiform	18	1
+Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma/Plexiform	18	1
+Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma/Plexiform	18	1
+Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma/Plexiform	18	1
+Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma/Plexiform	18	1
+Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma/Plexiform	18	1
+Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma/Plexiform	18	1
+Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma/Plexiform	18	1
+Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma/Plexiform	18	1
+Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma/Plexiform	18	1
+Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma/Plexiform	18	1
+Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma/Plexiform	18	1
+Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma/Plexiform	18	1
+Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma/Plexiform	18	1
+Tumor of cranial and paraspinal nerves	Neurofibroma	Neurofibroma/Plexiform;Other	1	1
 Tumor of cranial and paraspinal nerves	Schwannoma	Schwannoma	16	1
 Tumor of cranial and paraspinal nerves	Schwannoma	Schwannoma	16	1
 Tumor of cranial and paraspinal nerves	Schwannoma	Schwannoma	16	1
@@ -916,44 +926,45 @@ Tumor of cranial and paraspinal nerves	Schwannoma	Schwannoma	16	1
 Tumor of cranial and paraspinal nerves	Schwannoma	Schwannoma	16	1
 Tumor of cranial and paraspinal nerves	Schwannoma	Schwannoma	16	1
 Tumor of cranial and paraspinal nerves	Schwannoma	Schwannoma	16	1
-Tumor of pineal region	Pineoblastoma	Pineoblastoma	3	1
-Tumor of pineal region	Pineoblastoma	Pineoblastoma	3	1
-Tumor of pineal region	Pineoblastoma	Pineoblastoma	3	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
-Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	38	1
+Tumor of pineal region	Pineoblastoma	Pineoblastoma	4	1
+Tumor of pineal region	Pineoblastoma	Pineoblastoma	4	1
+Tumor of pineal region	Pineoblastoma	Pineoblastoma	4	1
+Tumor of pineal region	Pineoblastoma	Pineoblastoma	4	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Adamantimomatous craniopharyngioma	22	1
+Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	16	1
+Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	16	1
+Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	16	1
+Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	16	1
+Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	16	1
+Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	16	1
+Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	16	1
+Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	16	1
+Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	16	1
+Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	16	1
+Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	16	1
+Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	16	1
+Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	16	1
+Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	16	1
+Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	16	1
+Tumors of sellar region	Craniopharyngioma	Craniopharyngioma	16	1
