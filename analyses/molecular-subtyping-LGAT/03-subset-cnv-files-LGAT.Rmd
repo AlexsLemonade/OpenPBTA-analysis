@@ -73,7 +73,7 @@ bioMartDataPfamFGFR1 <-
 lgat_specimens_df<-read_tsv(file.path(subset_dir, "lgat_metadata.tsv"))
 
 # Filter to RNA-Seq samples
-lgat_wgs_df <- lgat_specimens_df %>%
+lgat_wgs_biospecimen_ids <- lgat_specimens_df %>%
   dplyr::filter(experimental_strategy == "WGS") %>%
   dplyr::pull(Kids_First_Biospecimen_ID)
 
