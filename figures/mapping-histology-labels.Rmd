@@ -181,9 +181,9 @@ We will always want the "normal", "benign", "other_tumor" groups to come last so
 control_like_groups <- c("normal", "benign", "other tumor")
 
 display_order_df <- display_group_df %>% 
-  mutate(display_group = forcats::fct_reorder(display_group, n, .desc = TRUE) %>%
-                         forcats::fct_relevel("benign", "other tumor", "normal", after = Inf),
-         display_order = as.numeric(display_group))
+  dplyr::mutate(display_group = forcats::fct_reorder(display_group, n, .desc = TRUE) %>%
+                  forcats::fct_relevel("benign", "other tumor", "normal", after = Inf),
+                display_order = as.numeric(display_group))
 ```
 
 Add on the `display_order` column using `inner_join`.
