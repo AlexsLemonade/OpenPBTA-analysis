@@ -166,7 +166,7 @@ CNV that are within FGFR1 gene region only and overlap "Protein tyrosine kinase"
 ```{r}
 
 # gene region overlap
-fgfr_gene = GenomicRanges::GRanges(seqnames=paste0("chr",domain_gr$chromosome_name),
+fgfr_gene <- GenomicRanges::GRanges(seqnames=paste0("chr",domain_gr$chromosome_name),
           ranges=IRanges::IRanges(start = domain_gr$gene_start, end = domain_gr$gene_end))
 
 # subset cnv+domain grange to be within FGFR1 gene region
