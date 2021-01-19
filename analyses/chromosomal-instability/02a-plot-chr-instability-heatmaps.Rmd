@@ -61,7 +61,7 @@ histology_label_mapping <- readr::read_tsv(
   # Select just the columns we will need for plotting
   dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>% 
   # Reorder display_group based on display_order
-  dplyr::mutate(display_group = forcats::fct_reorder(as.factor(display_group), display_order))
+  dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
 
 # We'll use this for numeric data on the heatmap 
 gradient_col_palette <- readr::read_tsv(
@@ -233,7 +233,7 @@ Make histology labeling `HeatmapAnnotation` object.
 histologies <-
   data.frame(Kids_First_Biospecimen_ID = common_samples) %>%
   dplyr::inner_join(metadata %>% 
-                      dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes)) %>%
+                      dplyr::select(Kids_First_Biospecimen_ID, display_group, hex_codes)) %>%
   # Arrange by display group
   dplyr::arrange(display_group) %>% 
   tibble::column_to_rownames("Kids_First_Biospecimen_ID")

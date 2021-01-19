@@ -78,13 +78,14 @@ There's some extra columns in `histology_label_color_table.tsv` that you don't n
 With the code chunk below, we only import the four columns we need and then do a factor reorder to make sure the `display_group` is in the order declared by `display_order`. 
 
 ```
+# Import standard color palettes for project
 histology_label_mapping <- readr::read_tsv(
   file.path(figures_dir, "palettes", "histology_label_color_table.tsv")
   ) %>% 
   # Select just the columns we will need for plotting
   dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>% 
   # Reorder display_group based on display_order
-  dplyr::mutate(display_group = forcats::fct_reorder(as.factor(display_group), display_order))
+  dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
 ```
 
 **Step 2)** Use `dplyr::inner_join` using `Kids_First_Biospecimen_ID` to join by so you can add on the `hex_codes` and `display_group` for each biospecimen. 
