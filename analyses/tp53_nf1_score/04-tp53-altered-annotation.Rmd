@@ -259,7 +259,11 @@ tp53_alterations_score_wide <- tp53_alterations_score_wide %>%
               # and has Li-Fraumeni syndrome suggesting
               # germline TP53 mutant as cancer predisposition 
               (tp53_score > 0.5 & 
-                             grepl("Li-Fraumeni syndrome",cancer_predispositions))
+                             grepl("Li-Fraumeni syndrome",cancer_predispositions)) |
+              # check if tp53 inactivating score for RNA_Seq is greater that 0.5
+              # and has 1 or more SNV| CNV loss in TP53
+              (tp53_score > 0.5 & 
+                             (SNV_indel_counts >= 1 | CNV_loss_counts >=1))
           ) ~ "loss",
         # when activating == "Yes"
         activating == "Yes" ~ "activated",
@@ -294,11 +298,6 @@ Using stranded because there are more samples in stranded
 
 stranded <- readRDS(file.path(data_dir,"pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
 
-# using tp53 classifier coefficients 
-tp53_classifier_coef <- read_tsv("reference/tp53_classifier_coefficients.tsv") %>%
-  # with more than 0 abs_val
-  filter(abs_val>0)
-
 # subset to non 0 coef genes as well as TP53
 subset_stranded <- t(stranded)[,c(intersect(rownames(stranded),tp53_classifier_coef$feature),"TP53")]
 
@@ -308,66 +307,7 @@ stranded_tp53 <- as.data.frame(subset_stranded) %>%
   # remove polya from matched scores
   filter(tp53_altered %in% c("activated","loss"))
 
-stranded_tp53_loss <- stranded_tp53 %>%
-  filter(tp53_altered == "loss")
-
-stranded_tp53_activated <- stranded_tp53 %>%
-  filter(tp53_altered == "activated")
-
-# gather wilcox rank sum test for gene expression in loss and activated samples
-wilcoxtest_pvalue <- lapply(
-   colnames(stranded_tp53)[2:298],
-   function(x) {
-     tidy(wilcox.test(
-       stranded_tp53_activated[, x],
-       stranded_tp53_loss[, x],
-       paired = FALSE
-     )) %>% dplyr::mutate("gene" = x)
-   }
- )
-
-lapply(wilcoxtest_pvalue, function(x) {
-   as.data.frame(x)
- }) %>%
-   purrr::reduce(rbind) %>%
-   arrange(p.value) %>%
-   dplyr::mutate(p.value = round(p.value, 3))  %>%
-  filter(p.value<0.05)
-
 ```
-
-Seems a group of genes which have non zero coefficient from the classifier show significantly different expression distribution in loss and activated samples as per wilcox rank sum test. 
-
-Checking outlier expression values from these genes which have non zero coefficient in the classifier
-
-```{r}
-# gather 25% and 75% for each gene (non zero classifier coefficient) in loss and activated annotated samples
-quantile_per_gene <- lapply(
-  # genes with non zeero coef from classifier
-   colnames(stranded_tp53)[2:298],
-   function(x) {
-     c(quantile(stranded_tp53_loss[,x],probs = c(0.25,0.75)),
-       quantile(stranded_tp53_activated[,x],probs = c(0.25,0.75)),
-       "gene"=x)
-   }
- ) %>%
-   purrr::reduce(rbind) 
-
-colnames(quantile_per_gene) <- c("25%_loss","75%_loss","25%_activated","75%_activated","gene") 
-
-quantile_per_gene_df <- data.frame("25_loss"=as.numeric(unname(quantile_per_gene[,1])),
-                                      "75_loss"=as.numeric(unname(quantile_per_gene[,2])),
-                                      "25_activated"=as.numeric(unname(quantile_per_gene[,3])),
-                                      "75_activated"=as.numeric(unname(quantile_per_gene[,4])),
-                                      "gene"=unname(quantile_per_gene[,5]))
-
-quantile_per_gene_df
-
-
-```
-
-
-Interstingly 75% quantile in loss samples have TP53 expression is 29.46 in activated samples 75% quantile is 54.6875. Almost double.
 
 ### Plot distribution of TP53 gene
 
