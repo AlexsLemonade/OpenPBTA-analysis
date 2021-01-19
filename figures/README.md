@@ -79,12 +79,12 @@ With the code chunk below, we only import the four columns we need and then do a
 
 ```
 histology_label_mapping <- readr::read_tsv(
-  file.path(figures_dir, "palettes", "histology_label_color_table.tsv"), 
-  # Read in each column as a specific type - skip extra columns
-  col_types = paste0(c("c", rep("-", 6), "f", "i", "c"), collapse = "")
+  file.path(figures_dir, "palettes", "histology_label_color_table.tsv")
   ) %>% 
-  # Reorder factor based on display_order
-  dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
+  # Select just the columns we will need for plotting
+  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>% 
+  # Reorder display_group based on display_order
+  dplyr::mutate(display_group = forcats::fct_reorder(as.factor(display_group), display_order))
 ```
 
 **Step 2)** Use `dplyr::inner_join` using `Kids_First_Biospecimen_ID` to join by so you can add on the `hex_codes` and `display_group` for each biospecimen. 
