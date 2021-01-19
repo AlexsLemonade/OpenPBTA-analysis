@@ -111,7 +111,8 @@ domain_gr <- bioMartDataPfamFGFR1 %>%
   dplyr::rename(chr = domain_chr, start = domain_start, end = domain_end) %>%
   # make genomic ranges
   GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE,
-                                          starts.in.df.are.0based = FALSE,seqnames.field = "chr")
+                                          starts.in.df.are.0based = FALSE,
+                                          seqnames.field = "chr")
 
 ```
 
