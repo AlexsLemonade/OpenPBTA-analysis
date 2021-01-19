@@ -136,7 +136,7 @@ manta_gr <- manta_lgat %>%
                                           starts.in.df.are.0based = FALSE)
 
 # overlap manta and domain
-overlaps_manta <- IRanges::mergeByOverlaps(manta_gr, domain_gr)
+overlaps_manta <- IRanges::subsetByOverlaps(manta_gr, domain_gr)
 
 # filter for fgfr only overlap
 overlaps_manta_fgfr <- overlaps_manta[which(overlaps_manta$Gene.name=="FGFR1" &
@@ -146,13 +146,10 @@ overlaps_manta_fgfr <- overlaps_manta[which(overlaps_manta$Gene.name=="FGFR1" &
 overlaps_manta_fgfr_df <- data.frame(
   biospecimen_id = overlaps_manta_fgfr$Kids.First.Biospecimen.ID.Tumor,
   ALT = overlaps_manta_fgfr$ALT,
-  NAME = overlaps_manta_fgfr$NAME,
-  hgnc_symbol = overlaps_manta_fgfr$hgnc_symbol,
   # annnotation for dup tandem
   FGFR_DUP_TANDEM = "Yes",
   stringsAsFactors = FALSE
-) %>%
-  dplyr::distinct() 
+)
 
 overlaps_manta_fgfr_df 
 
@@ -173,10 +170,10 @@ fgfr_gene <- GenomicRanges::GRanges(seqnames=paste0("chr",domain_gr$chromosome_n
 cnv_fgfr_gr <- IRanges::subsetByOverlaps(cnv_gr, fgfr_gene,type="within")
 
 # overlap consensus seg with exon
-overlaps_fgfr_cnv <- IRanges::mergeByOverlaps(cnv_fgfr_gr,domain_gr) 
+overlaps_fgfr_cnv <- IRanges::subsetByOverlaps(cnv_fgfr_gr,domain_gr) 
 
 # filter for fgfr only overlap
-overlaps_fgfr_cnv <- overlaps_fgfr_cnv[which(overlaps_fgfr_cnv$hgnc_symbol=="FGFR1" &
+overlaps_fgfr_cnv <- overlaps_fgfr_cnv[which(
                # filter for duplication
                overlaps_fgfr_cnv$copy_number>2), ]
 
@@ -184,7 +181,6 @@ overlaps_fgfr_cnv <- overlaps_fgfr_cnv[which(overlaps_fgfr_cnv$hgnc_symbol=="FGF
 overlaps_cnv_df <- data.frame(
   biospecimen_id = overlaps_fgfr_cnv$ID,
   copy_number = overlaps_fgfr_cnv$copy_number,
-  NAME = overlaps_fgfr_cnv$NAME,
   stringsAsFactors = FALSE
 ) %>%
   dplyr::distinct() %>%
@@ -212,8 +208,8 @@ txdb <- GenomicFeatures::makeTxDbFromGFF(
                      "gencode.v27.primary_assembly.annotation.gtf.gz"),
     format = "gtf"
   )
-# get exons and exon_id
-tx_exons<-GenomicFeatures::exons(txdb, 
+# get exons and exon_id for FGFR1 canonical transcript
+fgfr1_exons<-GenomicFeatures::exons(txdb, 
                                  columns = list("exon_rank"),
                                  # genocode canonical transcript https://genome.ucsc.edu/cgi-bin/hgGene?db=hg38&hgg_gene=FGFR1
                                  filter=list(tx_name = "ENST00000447712.6"))
@@ -224,10 +220,10 @@ For manta SV calls that are within FGFR1 gene region
 
 ```{r}
 # overlap filtered manta with exons
-overlaps_manta_fgfr_exon <- IRanges::mergeByOverlaps(overlaps_manta_fgfr$manta_gr,tx_exons) 
+overlaps_manta_fgfr_exon <- IRanges::mergeByOverlaps(overlaps_manta_fgfr,fgfr1_exons) 
 
 # overlap filtered cnv with exons
-overlaps_cnv_fgfr_exon <- IRanges::mergeByOverlaps(overlaps_fgfr_cnv$cnv_fgfr_gr,tx_exons) 
+overlaps_cnv_fgfr_exon <- IRanges::mergeByOverlaps(overlaps_fgfr_cnv,fgfr1_exons) 
 
 # plot exon rank for manta and cnv
 ggplot(rbind(data.frame("exon_number"=unlist(overlaps_manta_fgfr_exon$exon_rank),
@@ -252,7 +248,7 @@ any CNV overlap which overlaps exons 10 through 18
 overlaps_cnv_fgfr_exon[all(overlaps_cnv_fgfr_exon$exon_rank>10 & overlaps_cnv_fgfr_exon$exon_rank<18)==TRUE,"ID"] %>% unique()
 ```
 
-All 4 biospecimens with tandem duplication in FGFR1 and 5 biospecimens with duplication in FGFR1 have atleast 1 SV/CNV overlap where all exons are between 10 and 18. 
+All 4 biospecimens with tandem duplication in FGFR1 and 5 biospecimens with duplication in FGFR1 have atleast 1 SV/CNV overlap a region comprised of exons between 10 and 18. 
 
 
 ### CDKN2A/B deletion 
