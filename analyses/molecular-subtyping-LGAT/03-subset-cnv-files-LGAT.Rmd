@@ -167,7 +167,7 @@ fgfr_gene <- GenomicRanges::GRanges(seqnames=paste0("chr",domain_gr$chromosome_n
           ranges=IRanges::IRanges(start = domain_gr$gene_start, end = domain_gr$gene_end))
 
 # subset cnv+domain grange to be within FGFR1 gene region
-cnv_fgfr_gr <- IRanges::subsetByOverlaps(cnv_gr, fgfr_gene,type="within")
+cnv_fgfr_gr <- IRanges::subsetByOverlaps(cnv_gr, fgfr_gene,type="within",maxgap = )
 
 # overlap consensus seg with exon
 overlaps_fgfr_cnv <- IRanges::subsetByOverlaps(cnv_fgfr_gr,domain_gr) 
@@ -237,15 +237,15 @@ Majority SV and CNV overlap exons downstream of exon 5
 
 any SV overlap which overlaps exons 10 through 18 
 ```{r}
-overlaps_manta_fgfr_exon[all(overlaps_manta_fgfr_exon$exon_rank>10  &
-                        overlaps_manta_fgfr_exon$exon_rank<18)==TRUE,"Kids.First.Biospecimen.ID.Tumor"] %>% unique()
+overlaps_manta_fgfr_exon[all(overlaps_manta_fgfr_exon$exon_rank>=10  &
+                        overlaps_manta_fgfr_exon$exon_rank<=18)==TRUE,"Kids.First.Biospecimen.ID.Tumor"] %>% unique()
 
 ```
 
 any CNV overlap which overlaps exons 10 through 18 
 ```{r}
 
-overlaps_cnv_fgfr_exon[all(overlaps_cnv_fgfr_exon$exon_rank>10 & overlaps_cnv_fgfr_exon$exon_rank<18)==TRUE,"ID"] %>% unique()
+overlaps_cnv_fgfr_exon[all(overlaps_cnv_fgfr_exon$exon_rank >= 10 & overlaps_cnv_fgfr_exon$exon_rank <= 18)==TRUE,"ID"] %>% unique()
 ```
 
 All 4 biospecimens with tandem duplication in FGFR1 and 5 biospecimens with duplication in FGFR1 have atleast 1 SV/CNV overlap a region comprised of exons between 10 and 18. 
