@@ -37,15 +37,14 @@ def get_qc_status(mend_results_path, mend_manifest_path):
     """Takes: mend results tgz containing bam_umend_qc.tsv files, and
     manifest containing mapping from filename to sample id.
     returns dictionary from sample id to mend status: PASS or FAIL"""
+    # Find sample file entries from manifest.
+    manifest = utils.read_tsv(mend_manifest_path)
+    manifest_files = [file for file in manifest.index.values if file.endswith("bam_umend_qc.tsv")]
+    # Open the tarfile and process the QC files
     mend_tgz = tarfile.open(mend_results_path)
-    qc_files = (i for i in mend_tgz.getmembers() if i.name.endswith("bam_umend_qc.tsv"))
+    qc_files = (i for i in mend_tgz.getmembers() if i.name in manifest_files)
     # Dictionary of filename (UUID.bam_umend_qc.tsv) to PASS or FAIL string
     filename_map = { i.name : extract_sample_qc_status(mend_tgz.extractfile(i), i.name) for i in qc_files }
-    # Find sample ID entries in manifest and map them via filename.
-    manifest = utils.read_tsv(mend_manifest_path)
-
-    # If a QC result file is not listed in the manifest, this throws KeyError
-    # This would indicate major failure in the QC script and should interrupt analysis.
     return { manifest.loc[k]["Kids.First.Biospecimen.ID"] : v for k, v in filename_map.items() }
 
 def filter_samples(input_matrix,
@@ -175,9 +174,6 @@ def calculate_correlation(expr_var_filtered_df, all_by_all_path, verbose=False):
 
 def main():
     """Creates correlation matrices for dataset."""
-    # This script should always run as if it were being called from
-    # the directory it lives in.
-    os.chdir(sys.path[0])
 
     p = argparse.ArgumentParser()
     p.add_argument("input_path", metavar="input-path", help="Path to input Rds file.")

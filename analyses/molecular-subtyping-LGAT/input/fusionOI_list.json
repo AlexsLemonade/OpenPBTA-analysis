@@ -1,0 +1,54 @@
+{
+    "canonical": [
+        {
+            "fusion": "KIAA1549--BRAF"
+        }
+    ],
+    "MAPK": [
+        {
+            "gene": "BRAF"
+        },
+        {
+            "gene": "RAF1"
+        }
+    ],
+    "RTK": [
+        {
+            "gene": "ALK"
+        },
+        {
+            "gene": "ROS1"
+        },
+        {
+            "gene": "NTRK2"
+        },
+        {
+            "gene": "NTRK1"
+        },
+        {
+            "gene": "NTRK3"
+        },
+        {
+            "gene": "PDGFRA"
+        }
+    ],
+    "FGFR": [
+        {
+            "gene": "FGFR1",
+            "fusion": " FGFR1-TACC1"
+        },
+        {
+            "gene": "FGFR2"
+        }
+    ],
+    "MYB": [
+        {   
+            "fusion": "MYB-QKI",
+            "gene": "MYB" 
+        }, 
+        {
+            "gene": "MYBL1"
+        }
+    ]
+}
+
