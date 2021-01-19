@@ -23,10 +23,12 @@ library("tidyverse")
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # get subset folder
-subset_dir <- file.path(root_dir, 
-                        "analyses",
-                        "molecular-subtyping-LGAT",
-                        "lgat-subset")
+subset_dir <- file.path(
+  root_dir,
+  "analyses",
+  "molecular-subtyping-LGAT",
+  "lgat-subset"
+)
 
 # create if doesn't exist
 if (!dir.exists(subset_dir)) {
@@ -34,35 +36,42 @@ if (!dir.exists(subset_dir)) {
 }
 
 # manta calls
-manta <- read_tsv(file.path(root_dir,
-                            "data",
-                            "pbta-sv-manta.tsv.gz")) 
+manta <- read_tsv(file.path(
+  root_dir,
+  "data",
+  "pbta-sv-manta.tsv.gz"
+))
 
 # consensus seg calls
-cnv <- read_tsv(file.path(root_dir,
-                          "data",
-                          "pbta-cnv-consensus.seg.gz"))
+cnv <- read_tsv(file.path(
+  root_dir,
+  "data",
+  "pbta-cnv-consensus.seg.gz"
+))
 
 # consensus seg annotated with gene
-cnv_anno <- read_tsv(file.path(root_dir,
-                          "data",
-                          "consensus_seg_annotated_cn_autosomes.tsv.gz"))
+cnv_anno <- read_tsv(file.path(
+  root_dir,
+  "data",
+  "consensus_seg_annotated_cn_autosomes.tsv.gz"
+))
 
-# Gene location and domain overlap file 
+# Gene location and domain overlap file
 # Input files used for pfam info (hg38)
 # http://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/pfamDesc.txt.gz
 # http://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/ucscGenePfam.txt.gz
-# biomaRt gene/pfam locations call (hg38) 
-# hsapiens_gene_ensembl == Human genes (GRCh38.p13) 10th Feb 2020 
+# biomaRt gene/pfam locations call (hg38)
+# hsapiens_gene_ensembl == Human genes (GRCh38.p13) 10th Feb 2020
 # ensembl <- biomaRt::useMart(biomart = "ENSEMBL_MART_ENSEMBL",dataset = "hsapiens_gene_ensembl",host="ensembl.org")
 # Code used to generate pfamDataBioMart.RDS in https://gist.github.com/kgaonkar6/02b3fbcfeeddfa282a1cdf4803704794
 
-bioMartDataPfamFGFR1 <- 
+bioMartDataPfamFGFR1 <-
   readRDS(system.file("extdata", "pfamDataBioMart.RDS", package = "annoFuse")) %>%
-  # to check if biospecimen harbors FGFR1 TKD (tyrosine kinase domain tandem duplication) 
-  dplyr::filter(hgnc_symbol == "FGFR1",
-                DESC == "Protein tyrosine kinase")
-
+  # to check if biospecimen harbors FGFR1 TKD (tyrosine kinase domain tandem duplication)
+  dplyr::filter(
+    hgnc_symbol == "FGFR1",
+    DESC == "Protein tyrosine kinase"
+  )
 ```
 
 ### Gather lgat subset
@@ -70,7 +79,7 @@ bioMartDataPfamFGFR1 <-
 ```{r}
 # File from 00-LGAT-select-pathology-dx that is used for the pathology diagnosis
 # was used to subset clinical file
-lgat_specimens_df<-read_tsv(file.path(subset_dir, "lgat_metadata.tsv"))
+lgat_specimens_df <- read_tsv(file.path(subset_dir, "lgat_metadata.tsv"))
 
 # Filter to RNA-Seq samples
 lgat_wgs_biospecimen_ids <- lgat_specimens_df %>%
@@ -82,8 +91,7 @@ manta_lgat <- manta %>%
   dplyr::filter(Kids.First.Biospecimen.ID.Tumor %in% lgat_wgs_biospecimen_ids)
 
 cnv_lgat <- cnv %>%
-  dplyr::filter( ID %in% lgat_wgs_biospecimen_ids)
-
+  dplyr::filter(ID %in% lgat_wgs_biospecimen_ids)
 ```
 
 ### Overlap tandem duplication in FGFR1 with exons 10-18 which make up the kinase domain, per [comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/790#issuecomment-729229244).
@@ -91,29 +99,36 @@ cnv_lgat <- cnv %>%
 First, create genomic ranges objects for CNV seg file and gene.
 
 ```{r}
-# Genomic range for cnv seg file 
+# Genomic range for cnv seg file
 cnv_gr <- cnv %>%
   # format
-  dplyr::rename(chr = chrom, start = loc.start, end = loc.end,
-                copy_number = copy.num) %>%
+  dplyr::rename(
+    chr = chrom, start = loc.start, end = loc.end,
+    copy_number = copy.num
+  ) %>%
   dplyr::select(-num.mark, -seg.mean) %>%
   # make genomic ranges
-  GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE,
-                                          starts.in.df.are.0based = FALSE)
+  GenomicRanges::makeGRangesFromDataFrame(
+    keep.extra.columns = TRUE,
+    starts.in.df.are.0based = FALSE
+  )
 
-# Genomic range for gene location and domain overlap file 
+# Genomic range for gene location and domain overlap file
 domain_gr <- bioMartDataPfamFGFR1 %>%
   # keep only domain info
-  dplyr::filter(!is.na(domain_start),!is.na(domain_end)) %>%
+  dplyr::filter(!is.na(domain_start), !is.na(domain_end)) %>%
   # format
-  dplyr::mutate(strand = if_else(strand=="-1","-","+"),
-                domain_chr = paste0("chr",domain_chr)) %>%
+  dplyr::mutate(
+    strand = if_else(strand == "-1", "-", "+"),
+    domain_chr = paste0("chr", domain_chr)
+  ) %>%
   dplyr::rename(chr = domain_chr, start = domain_start, end = domain_end) %>%
   # make genomic ranges
-  GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE,
-                                          starts.in.df.are.0based = FALSE,
-                                          seqnames.field = "chr")
-
+  GenomicRanges::makeGRangesFromDataFrame(
+    keep.extra.columns = TRUE,
+    starts.in.df.are.0based = FALSE,
+    seqnames.field = "chr"
+  )
 ```
 
 
@@ -124,24 +139,28 @@ SV should be annotated as tandem duplicate and overlap
 
 ```{r}
 
-# Genomic range for manta file 
+# Genomic range for manta file
 manta_gr <- manta_lgat %>%
   # format
-  dplyr::rename(chr = SV.chrom, start = SV.start, end = SV.end,
-                ALT = ALT) %>%
+  dplyr::rename(
+    chr = SV.chrom, start = SV.start, end = SV.end,
+    ALT = ALT
+  ) %>%
   # format with chr to match to cnv
-  dplyr::mutate(chr=paste0("chr",chr)) %>%
+  dplyr::mutate(chr = paste0("chr", chr)) %>%
   # make genomic ranges
-  GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE,
-                                          starts.in.df.are.0based = FALSE)
+  GenomicRanges::makeGRangesFromDataFrame(
+    keep.extra.columns = TRUE,
+    starts.in.df.are.0based = FALSE
+  )
 
 # overlap manta and domain
 overlaps_manta <- IRanges::subsetByOverlaps(manta_gr, domain_gr)
 
 # filter for fgfr only overlap
-overlaps_manta_fgfr <- overlaps_manta[which(overlaps_manta$Gene.name=="FGFR1" &
-                # filter for tandem duplication
-                overlaps_manta$ALT=="<DUP:TANDEM>"), ]
+overlaps_manta_fgfr <- overlaps_manta[which(overlaps_manta$Gene.name == "FGFR1" &
+  # filter for tandem duplication
+  overlaps_manta$ALT == "<DUP:TANDEM>"), ]
 
 overlaps_manta_fgfr_df <- data.frame(
   biospecimen_id = overlaps_manta_fgfr$Kids.First.Biospecimen.ID.Tumor,
@@ -151,8 +170,7 @@ overlaps_manta_fgfr_df <- data.frame(
   stringsAsFactors = FALSE
 )
 
-overlaps_manta_fgfr_df 
-
+overlaps_manta_fgfr_df
 ```
 4 biospecimens have tandem duplication that overlap tyrosine kinase domain in FGFR1
 
@@ -163,19 +181,22 @@ CNV that are within FGFR1 gene region only and overlap "Protein tyrosine kinase"
 ```{r}
 
 # gene region overlap
-fgfr_gene <- GenomicRanges::GRanges(seqnames=paste0("chr",domain_gr$chromosome_name),
-          ranges=IRanges::IRanges(start = domain_gr$gene_start, end = domain_gr$gene_end))
+fgfr_gene <- GenomicRanges::GRanges(
+  seqnames = paste0("chr", domain_gr$chromosome_name),
+  ranges = IRanges::IRanges(start = domain_gr$gene_start, end = domain_gr$gene_end)
+)
 
 # subset cnv+domain grange to be within FGFR1 gene region
-cnv_fgfr_gr <- IRanges::subsetByOverlaps(cnv_gr, fgfr_gene,type="within",maxgap = )
+cnv_fgfr_gr <- IRanges::subsetByOverlaps(cnv_gr, fgfr_gene, type = "within", maxgap = )
 
 # overlap consensus seg with exon
-overlaps_fgfr_cnv <- IRanges::subsetByOverlaps(cnv_fgfr_gr,domain_gr) 
+overlaps_fgfr_cnv <- IRanges::subsetByOverlaps(cnv_fgfr_gr, domain_gr)
 
 # filter for fgfr only overlap
 overlaps_fgfr_cnv <- overlaps_fgfr_cnv[which(
-               # filter for duplication
-               overlaps_fgfr_cnv$copy_number>2), ]
+  # filter for duplication
+  overlaps_fgfr_cnv$copy_number > 2
+), ]
 
 # dataframe
 overlaps_cnv_df <- data.frame(
@@ -185,17 +206,16 @@ overlaps_cnv_df <- data.frame(
 ) %>%
   dplyr::distinct() %>%
   # keep copy_number > 2
-  dplyr::mutate(FGFR_DUP = if_else(copy_number >2,"Yes","No")) 
+  dplyr::mutate(FGFR_DUP = if_else(copy_number > 2, "Yes", "No"))
 
-overlaps_cnv_df 
-
+overlaps_cnv_df
 ```
 5 samples have copy_number changes > 2 that overlap with tyrosine kinase domain
 
 Are there overlap in SV and CNV calls?
 
 ```{r}
-intersect(overlaps_manta_fgfr_df$biospecimen_id,overlaps_cnv_df$biospecimen_id)
+intersect(overlaps_manta_fgfr_df$biospecimen_id, overlaps_cnv_df$biospecimen_id)
 ```
 Only BS_MW6YMRBJ shows tandem duplication in manta and duplication in consensus seg file that overlaps tyrosine kinase domain in FGFR1
 
@@ -204,48 +224,57 @@ Only BS_MW6YMRBJ shows tandem duplication in manta and duplication in consensus 
 ```{r}
 # Define the annotations for the hg38 genome
 txdb <- GenomicFeatures::makeTxDbFromGFF(
-    file = file.path(root_dir,"data",
-                     "gencode.v27.primary_assembly.annotation.gtf.gz"),
-    format = "gtf"
-  )
+  file = file.path(
+    root_dir, "data",
+    "gencode.v27.primary_assembly.annotation.gtf.gz"
+  ),
+  format = "gtf"
+)
 # get exons and exon_id for FGFR1 canonical transcript
-fgfr1_exons<-GenomicFeatures::exons(txdb, 
-                                 columns = list("exon_rank"),
-                                 # genocode canonical transcript https://genome.ucsc.edu/cgi-bin/hgGene?db=hg38&hgg_gene=FGFR1
-                                 filter=list(tx_name = "ENST00000447712.6"))
-  
+fgfr1_exons <- GenomicFeatures::exons(txdb,
+  columns = list("exon_rank"),
+  # genocode canonical transcript https://genome.ucsc.edu/cgi-bin/hgGene?db=hg38&hgg_gene=FGFR1
+  filter = list(tx_name = "ENST00000447712.6")
+)
 ```
 
 For manta SV calls that are within FGFR1 gene region
 
 ```{r}
 # overlap filtered manta with exons
-overlaps_manta_fgfr_exon <- IRanges::mergeByOverlaps(overlaps_manta_fgfr,fgfr1_exons) 
+overlaps_manta_fgfr_exon <- IRanges::mergeByOverlaps(overlaps_manta_fgfr, fgfr1_exons)
 
 # overlap filtered cnv with exons
-overlaps_cnv_fgfr_exon <- IRanges::mergeByOverlaps(overlaps_fgfr_cnv,fgfr1_exons) 
+overlaps_cnv_fgfr_exon <- IRanges::mergeByOverlaps(overlaps_fgfr_cnv, fgfr1_exons)
 
 # plot exon rank for manta and cnv
-ggplot(rbind(data.frame("exon_number"=unlist(overlaps_manta_fgfr_exon$exon_rank),
-                  "type"="tandem_dup"),
-             data.frame("exon_number"=unlist(overlaps_cnv_fgfr_exon$exon_rank),
-                  "type"="cnv_dup"))
-       ,aes(x=exon_number,color=type))+geom_density()
-
+ggplot(
+  rbind(
+    data.frame(
+      "exon_number" = unlist(overlaps_manta_fgfr_exon$exon_rank),
+      "type" = "tandem_dup"
+    ),
+    data.frame(
+      "exon_number" = unlist(overlaps_cnv_fgfr_exon$exon_rank),
+      "type" = "cnv_dup"
+    )
+  ),
+  aes(x = exon_number, color = type)
+) +
+  geom_density()
 ```
 Majority SV and CNV overlap exons downstream of exon 5
 
 any SV overlap which overlaps exons 10 through 18 
 ```{r}
-overlaps_manta_fgfr_exon[all(overlaps_manta_fgfr_exon$exon_rank>=10  &
-                        overlaps_manta_fgfr_exon$exon_rank<=18)==TRUE,"Kids.First.Biospecimen.ID.Tumor"] %>% unique()
-
+overlaps_manta_fgfr_exon[all(overlaps_manta_fgfr_exon$exon_rank >= 10 &
+  overlaps_manta_fgfr_exon$exon_rank <= 18) == TRUE, "Kids.First.Biospecimen.ID.Tumor"] %>% unique()
 ```
 
 any CNV overlap which overlaps exons 10 through 18 
 ```{r}
 
-overlaps_cnv_fgfr_exon[all(overlaps_cnv_fgfr_exon$exon_rank >= 10 & overlaps_cnv_fgfr_exon$exon_rank <= 18)==TRUE,"ID"] %>% unique()
+overlaps_cnv_fgfr_exon[all(overlaps_cnv_fgfr_exon$exon_rank >= 10 & overlaps_cnv_fgfr_exon$exon_rank <= 18) == TRUE, "ID"] %>% unique()
 ```
 
 All 4 biospecimens with tandem duplication in FGFR1 and 5 biospecimens with duplication in FGFR1 have atleast 1 SV/CNV overlap a region comprised of exons between 10 and 18. 
@@ -256,16 +285,16 @@ All 4 biospecimens with tandem duplication in FGFR1 and 5 biospecimens with dupl
 ```{r}
 
 cnv_anno_cdkn2 <- cnv_anno %>%
-  dplyr::filter(gene_symbol %in% c("CDKN2A","CDKN2B")) %>%
-  reshape::cast(biospecimen_id+ploidy~gene_symbol,value = "copy_number") %>%
+  dplyr::filter(gene_symbol %in% c("CDKN2A", "CDKN2B")) %>%
+  reshape::cast(biospecimen_id + ploidy ~ gene_symbol, value = "copy_number") %>%
   # keep only if copy_number <=1
-  dplyr::mutate(CDKN2A_DEL= if_else(CDKN2A<=1,"Yes","No"),
-                CDKN2B_DEL= if_else(CDKN2B<=1,"Yes","No")) %>%
-  dplyr::distinct() 
+  dplyr::mutate(
+    CDKN2A_DEL = if_else(CDKN2A <= 1, "Yes", "No"),
+    CDKN2B_DEL = if_else(CDKN2B <= 1, "Yes", "No")
+  ) %>%
+  dplyr::distinct()
 
 cnv_anno_cdkn2
-  
-
 ```
 
 ### Gather CNV subsets
@@ -273,29 +302,28 @@ cnv_anno_cdkn2
 ```{r}
 
 # merge CNV subtype annotation
-merge_CNV_substype <-dplyr::select(overlaps_manta_fgfr_df,biospecimen_id,FGFR_DUP_TANDEM) %>%
-  full_join(dplyr::select(overlaps_cnv_df ,biospecimen_id,FGFR_DUP)) %>%
-  full_join(dplyr::select(cnv_anno_cdkn2, biospecimen_id,CDKN2A_DEL,CDKN2B_DEL)) 
+merge_CNV_substype <- dplyr::select(overlaps_manta_fgfr_df, biospecimen_id, FGFR_DUP_TANDEM) %>%
+  full_join(dplyr::select(overlaps_cnv_df, biospecimen_id, FGFR_DUP)) %>%
+  full_join(dplyr::select(cnv_anno_cdkn2, biospecimen_id, CDKN2A_DEL, CDKN2B_DEL))
 
 # merge all lgat WGS samples
 LGAT_cnv_subset <- lgat_wgs_df %>%
-  left_join(merge_CNV_substype,by=c("Kids_First_Biospecimen_ID"="biospecimen_id")) %>%
+  left_join(merge_CNV_substype, by = c("Kids_First_Biospecimen_ID" = "biospecimen_id")) %>%
   # change NA to value==No
-  replace_na(list(FGFR_DUP_TANDEM="No",
-                         FGFR_DUP="No",
-                         CDKN2A_DEL="No",
-                         CDKN2B_DEL ="No"
-                         ))
-#check frequency - does this align with the LGG paper of 9.6%? We get ~3.3%, however, the paper also states that this deletion most frequently co-occurs with BRAF V600E, so if we have a lower prevalence of that SNV, then this could make sense. Let's circle back when we put all of the data together.
+  replace_na(list(
+    FGFR_DUP_TANDEM = "No",
+    FGFR_DUP = "No",
+    CDKN2A_DEL = "No",
+    CDKN2B_DEL = "No"
+  ))
+# check frequency - does this align with the LGG paper of 9.6%? We get ~3.3%, however, the paper also states that this deletion most frequently co-occurs with BRAF V600E, so if we have a lower prevalence of that SNV, then this could make sense. Let's circle back when we put all of the data together.
 CNV_by_part <- LGAT_cnv_subset %>%
   left_join(lgat_specimens_df) %>%
   select(Kids_First_Participant_ID, CDKN2A_DEL) %>%
   distinct()
 
 CNV_by_part %>%
-  tally(CDKN2A_DEL == "Yes")/nrow(CNV_by_part)*100
- 
-  write_tsv(LGAT_cnv_subset, file.path(subset_dir,"LGAT_cnv_subset.tsv"))
+  tally(CDKN2A_DEL == "Yes") / nrow(CNV_by_part) * 100
 
-
+write_tsv(LGAT_cnv_subset, file.path(subset_dir, "LGAT_cnv_subset.tsv"))
 ```
