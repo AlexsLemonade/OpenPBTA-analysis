@@ -38,9 +38,9 @@ combined_plot=${plot_dir}/combined_top50
 # associative array of diseases to test; chosen by those that are most common
 # in the openPBTA dataset
 declare -A disease
-disease[LGAT]="Low-grade astrocytic tumor"
+disease[Diffuse-astrocytic-and-oligodendroglial-tumor]="Diffuse astrocytic and oligodendroglial tumor"
 if [ "$ALL" -gt "0" ]; then
-  disease[Diffuse-astrocytic-and-oligodendroglial-tumor]="Diffuse astrocytic and oligodendroglial tumor"
+  disease[LGAT]="Low-grade astrocytic tumor"
   disease[Tumors-of-sellar-region]="Tumors of sellar region"
   disease[Embryonal-tumor]="Embryonal tumor"
   disease[Ependymal-tumor]="Ependymal tumor"
