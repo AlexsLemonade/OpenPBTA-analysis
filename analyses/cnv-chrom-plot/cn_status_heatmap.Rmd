@@ -88,8 +88,10 @@ Import color palettes.
 ```{r}
 # Import standard color palettes for project
 histology_label_mapping <- readr::read_tsv(
-  file.path("..", "..", "figures", "palettes", "histology_label_color_table.tsv")) %>% 
-  dplyr::select(Kids_First_Biospecimen_ID, display_group, hex_codes)
+  file.path(figure_dir, "palettes", "histology_label_color_table.tsv")
+  ) %>% 
+  # Select just the columns we will need for plotting
+  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) 
 ```
 
 Read in the divergent color palette and set it up with three colors. 
@@ -373,23 +375,22 @@ This annotation object strategy was originally from [chromosomal-instability](ht
 histologies <-
   data.frame(Kids_First_Biospecimen_ID = bin_calls_df$biospecimen_id) %>%
   dplyr::inner_join(metadata %>%
-    dplyr::select(Kids_First_Biospecimen_ID, display_group, hex_codes)) %>%
+    dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes)) %>%
   # Count numbers of samples per histology group and make new variable with counts
   dplyr::group_by(display_group) %>% 
   dplyr::mutate(group_n = dplyr::n()) %>% 
   # Ungroup the data
   dplyr::ungroup() %>% 
-  # ReCount numbers after the Other switches
-  dplyr::group_by(display_group) %>% 
-  dplyr::mutate(group_n = dplyr::n()) %>% 
-  # Ungroup the data
-  dplyr::ungroup() %>% 
   # Add sample sizes
-  dplyr::mutate(display_group = factor(paste0(display_group, " (n = ", group_n, ")"))) %>%
-  # Put in alphabetical order
-  dplyr::arrange(display_group) %>%
-  # ComplexHeatmap wants this. 
-  tibble::column_to_rownames("Kids_First_Biospecimen_ID")
+  dplyr::mutate(display_group = factor(paste0(display_group, " (n = ", group_n, ")"))) %>% 
+  # Reorder display_group based on display_order
+  dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order)) %>%
+  # Make sure they are in display_order
+  dplyr::arrange(display_order) %>%
+  # Store as rownames
+  tibble::column_to_rownames("Kids_First_Biospecimen_ID") %>%
+  # We don't want this to actually be displayed on the heatmap though
+  dplyr::select(-display_order)
 ```
 
 Make a color key that's formatted for ComplexHeatmap. 
@@ -398,9 +399,6 @@ Make a color key that's formatted for ComplexHeatmap.
 # Make color key specific to these samples
 histologies_color_key_filtered <- unique(histologies$hex_codes)
 names(histologies_color_key_filtered) <- unique(histologies$display_group)
-
-# Drop this column so ComplexHeatmap isn't tempted to plot it
-histologies <- dplyr::select(histologies, -hex_codes, -group_n)
 
 # Get coordinate start positions
 hist_start <- match(names(histologies_color_key_filtered), histologies$display_group)
@@ -425,7 +423,7 @@ hist_text <- ComplexHeatmap::anno_mark(
 
 # Create the Heatmap annotation object
 hist_annot <- ComplexHeatmap::HeatmapAnnotation(
-  df = data.frame(histologies),
+  df = data.frame(histologies) %>% dplyr::select(-group_n, -hex_codes),
   col = list(display_group = histologies_color_key_filtered),
   which = "row",
   show_annotation_name = FALSE,
