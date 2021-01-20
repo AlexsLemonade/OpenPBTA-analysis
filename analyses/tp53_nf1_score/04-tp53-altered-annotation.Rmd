@@ -298,10 +298,11 @@ Using stranded because there are more samples in stranded
 
 stranded <- readRDS(file.path(data_dir,"pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
 
-# subset to non 0 coef genes as well as TP53
-subset_stranded <- t(stranded)[,c(intersect(rownames(stranded),tp53_classifier_coef$feature),"TP53")]
+# subset to TP53
+subset_stranded <- t(stranded)[,"TP53"]
 
 stranded_tp53 <- as.data.frame(subset_stranded) %>%
+  rename(TP53=subset_stranded) %>%
   rownames_to_column() %>%
   left_join(tp53_alterations_score_wide,by=c("rowname"="Kids_First_Biospecimen_ID_RNA")) %>%
   # remove polya from matched scores
