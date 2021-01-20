@@ -406,10 +406,10 @@ histologies_color_key <- unique(histologies_color_key_df$hex_codes)
 names(histologies_color_key) <- unique(histologies_color_key_df$display_group)
 
 # Get coordinate start positions
-hist_start <- match(names(histologies_color_key), histologies_color_key_df$display_group)
+hist_start <- match(names(histologies_color_key), histologies$display_group)
 
 # Get coordinate end positions for each histology group
-hist_end <- hist_start + summary(histologies_color_key_df$display_group)
+hist_end <- hist_start + summary(histologies$display_group)
 
 # Get mid points of 
 mid_points <- floor((hist_start + hist_end) /2)
