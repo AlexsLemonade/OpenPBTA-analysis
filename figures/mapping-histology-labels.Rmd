@@ -175,15 +175,13 @@ if (nrow(display_group_df) > 17) {
 # Make `display_order`
 
 Get ranks in order of big to small and make them into a new column in `display_group_df`. 
-We will always want the "normal", "benign", "other_tumor" groups to come last so we are gonna remove them from this ranking and then add back when we get to `histology_table`. 
+We will always want the "normal", "benign", "other_tumor" groups to come last so we will push then to the end of the factor order. 
 
 ```{r}
-control_like_groups <- c("normal", "benign", "other tumor")
-
 display_order_df <- display_group_df %>% 
   dplyr::mutate(display_group = forcats::fct_reorder(display_group, n, .desc = TRUE) %>%
                   forcats::fct_relevel("benign", "other tumor", "normal", after = Inf),
-                display_order = as.numeric(display_group))
+                display_order = as.numeric(display_group)) # save the factor order for text table export
 ```
 
 Add on the `display_order` column using `inner_join`.
