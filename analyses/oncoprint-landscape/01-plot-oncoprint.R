@@ -101,6 +101,13 @@ option_list <- list(
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
+
+opt$maf_file <- "../../scratch/oncoprint_files/all_participants_primary_only_maf.tsv"
+opt$cnv_file <- "../../scratch/oncoprint_files/all_participants_primary_only_cnv.tsv"
+opt$fusion_file <- "../../scratch/oncoprint_files/all_participants_primary_only_fusions.tsv"
+opt$metadata_file <- "../../data/pbta-histologies.tsv"
+opt$png_name <- "all_participants_primary_only_oncoprint.png"
+
 # Define cnv_file, fusion_file, and genes object here as they still need to
 # be defined for the `prepare_and_plot_oncoprint` custom function (the
 # cnv_file specifically for the `read.maf` function within the custom function),
@@ -162,13 +169,13 @@ if (!is.null(opt$focal_file)) {
 }
 
 # Read in histology standard color palette for project
-histology_col_palette <-
-  readr::read_tsv(file.path(
-    root_dir,
-    "figures",
-    "palettes",
-    "histology_color_palette.tsv"
-  ))
+histology_label_mapping <- readr::read_tsv(
+  file.path(figures_dir, "palettes", "histology_label_color_table.tsv")
+) %>% 
+  # Select just the columns we will need for plotting
+  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>% 
+  # Reorder display_group based on display_order
+  dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
 
 # Read in the oncoprint color palette
 oncoprint_col_palette <- readr::read_tsv(file.path(
@@ -182,20 +189,13 @@ oncoprint_col_palette <- readr::read_tsv(file.path(
 
 #### Set up oncoprint annotation objects --------------------------------------
 
-# Color coding for `short_histology` classification
+# Color coding for `display_group` classification
 # Get unique tumor descriptor categories
-short_histologies <- unique(metadata$short_histology) %>%
-  tidyr::replace_na("none") %>%
-  sort()
-
-# Save the vector of hex codes from the short histology palette
-short_histology_col_key <- histology_col_palette$hex_codes
-
-# Now assign the color names
-names(short_histology_col_key) <- short_histologies
+histologies_color_key <- unique(histology_label_mapping$hex_codes)
+names(histologies_color) <- unique(histology_label_mapping$display_group)
 
 # Now format the color key objet into a list
-annotation_colors <- list(short_histology = short_histology_col_key)
+annotation_colors <- list(display_group = histologies_color_key)
 
 #### Prepare MAF object for plotting ------------------------------------------
 
@@ -219,7 +219,7 @@ png(
 )
 oncoplot(
   maf_object,
-  clinicalFeatures = "short_histology",
+  clinicalFeatures = "display_group",
   genes = goi_list,
   logColBar = TRUE,
   sortByAnnotation = TRUE,
