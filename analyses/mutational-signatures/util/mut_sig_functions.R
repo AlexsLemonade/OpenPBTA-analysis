@@ -209,7 +209,7 @@ grouped_sig_barplot <- function(hist_groups, sig_num_df, output_dir = getwd(),
       output_dir,
       paste0(
         "barplot_",
-        hist_group,
+        gsub(" ", "-", hist_group),
         "_", label,
         "_mutation_sig.png"
       )
