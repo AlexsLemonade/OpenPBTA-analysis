@@ -91,8 +91,12 @@ Read in the histology colors and labels.
 
 ```{r}
 histology_label_mapping <- readr::read_tsv(
-  file.path("..", "..", "figures", "palettes", "histology_label_color_table.tsv")) %>% 
-  dplyr::select(Kids_First_Biospecimen_ID, display_group, hex_codes)
+  file.path(figures_dir, "palettes", "histology_label_color_table.tsv")
+  ) %>% 
+  # Select just the columns we will need for plotting
+  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>% 
+  # Reorder display_group based on display_order
+  dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
 ```
 
 Set up gradient color palette for the bubble matrix plots. 
