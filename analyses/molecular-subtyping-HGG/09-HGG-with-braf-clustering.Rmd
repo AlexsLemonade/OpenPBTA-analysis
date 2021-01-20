@@ -81,57 +81,105 @@ source(
 # regarding low grade glioma samples.
 stranded_tsne_aligned_scores <- read_tsv(
   file.path(data_dir,
-            "rsem_stranded_log_tsne_scores_aligned.tsv"),
-  col_types = cols(molecular_subtype = col_character())
-)
+            "rsem_stranded_log_tsne_scores_aligned.tsv")) %>%
+  # select only columns needed for plotting
+  dplyr::select(X1, X2, Kids_First_Biospecimen_ID, sample_id)
 
 stranded_umap_aligned_scores <- read_tsv(
   file.path(data_dir,
-            "rsem_stranded_log_umap_scores_aligned.tsv"),
-  col_types = cols(molecular_subtype = col_character())
+            "rsem_stranded_log_umap_scores_aligned.tsv")) %>%
+  # select only columns needed for plotting
+  dplyr::select(X1, X2, Kids_First_Biospecimen_ID, sample_id)
+
+mutation_file <- file.path("results", "HGG_cleaned_mutation.tsv")
+mutation_df <- read_tsv(mutation_file)
+
+# Get lgat subset folder from the module in master
+lgat_subset_dir <- file.path("..",
+                             "molecular-subtyping-LGAT",
+                             "lgat-subset")
+
+# Read in metadata
+metadata <-
+  readr::read_tsv(file.path("..","..","data", "pbta-histologies.tsv"), 
+                  guess_max = 10000) %>%
+  dplyr::filter(sample_type == "Tumor") 
+
+# File from 00-LGAT-select-pathology-dx that is used for inclusion/exclusion
+path_dx_list_lgat <- jsonlite::fromJSON(
+  file.path(lgat_subset_dir, 
+            "lgat_subtyping_path_dx_strings.json")
 )
 
-molecular_subtype_file <- file.path("results", "HGG_molecular_subtype.tsv")
-molecular_subtype_df <- read_tsv(molecular_subtype_file)
+# Get LGAT tumor samples on the basis of pathology diagnosis
+lgat_specimens <- metadata %>%
+  filter(str_detect(str_to_lower(pathology_diagnosis),  # Inclusion criteria
+                    paste0(path_dx_list_lgat$include_path_dx, collapse = "|")),
+         # Exclusion criteria
+         str_detect(str_to_lower(pathology_diagnosis),
+                    paste0(path_dx_list_lgat$exclude_path_dx, collapse = "|"),
+                    negate = TRUE),
+         # Tumors
+         sample_type == "Tumor",
+         composition == "Solid Tissue") %>%
+  pull(sample_id)
+
+
 ```
 
 ## Wrangle Data for Plotting
 
+- Get broad_histology from histology file
+- check BRAF V600E from HGG_cleaned_mutation.tsv and add to `subtype_class` column
+- `HGAT_NO_HISTONE_BRAF` column will have "yes" if sample is HGAT with no HIST variant but has BRAF V600E mutation 
+
+
 ```{r}
 # Add variables to aligned scores data.frames for plotting
 stranded_tsne_aligned_scores <- stranded_tsne_aligned_scores %>%
-  filter(broad_histology %in% c("Diffuse astrocytic and oligodendroglial tumor",
-                                "Low-grade astrocytic tumor")) %>%
+  dplyr::left_join(mutation_df) %>%
   mutate(subtype_class = case_when(
-    molecular_subtype == "BRAF V600E" &
-      broad_histology == "Diffuse astrocytic and oligodendroglial tumor" ~ "HGAT_NO_HISTONE_BRAF",
-    broad_histology == "Low-grade astrocytic tumor" ~ "LGAT",
-    TRUE ~ "OTHER_HGAT"
-  )) %>%
+    BRAF_V600E == "p.V600E" &
+      H3F3A.K28M == "No" & 
+      HIST1H3B.K28M == "No" &
+      HIST1H3C.K28M == "No" &
+      HIST2H3C.K28M == "No" &
+      H3F3A.G35R == "No" &
+      H3F3A.G35V == "No" ~ "HGAT_NO_HISTONE_BRAF",
+    sample_id %in% mutation_df$sample_id & BRAF_V600E != "p.V600E" ~ "OTHER_HGAT",
+    sample_id %in% lgat_specimens ~ "LGAT")
+  )  %>%
+  dplyr::filter(subtype_class %in% c("LGAT","OTHER_HGAT","HGAT_NO_HISTONE_BRAF")) %>%
   mutate(
     HGAT_NO_HISTONE_BRAF = if_else(
       subtype_class == "HGAT_NO_HISTONE_BRAF",
       "yes",
       "no"
     )
-  )
+  )  
+
 
 stranded_umap_aligned_scores <- stranded_umap_aligned_scores %>%
-  filter(broad_histology %in% c("Diffuse astrocytic and oligodendroglial tumor",
-                                "Low-grade astrocytic tumor")) %>%
+  dplyr::left_join(mutation_df) %>%
   mutate(subtype_class = case_when(
-    molecular_subtype == "BRAF V600E" &
-      broad_histology == "Diffuse astrocytic and oligodendroglial tumor" ~ "HGAT_NO_HISTONE_BRAF",
-    broad_histology == "Low-grade astrocytic tumor" ~ "LGAT",
-    TRUE ~ "OTHER_HGAT"
-  )) %>%
+    BRAF_V600E == "p.V600E" &
+      H3F3A.K28M == "No" & 
+      HIST1H3B.K28M == "No" &
+      HIST1H3C.K28M == "No" &
+      HIST2H3C.K28M == "No" &
+      H3F3A.G35R == "No" &
+      H3F3A.G35V == "No" ~ "HGAT_NO_HISTONE_BRAF",
+    sample_id %in% mutation_df$sample_id & BRAF_V600E != "p.V600E" ~ "OTHER_HGAT",
+    sample_id %in% lgat_specimens ~ "LGAT")
+  )  %>%
+  dplyr::filter(subtype_class %in% c("LGAT","OTHER_HGAT","HGAT_NO_HISTONE_BRAF")) %>%
   mutate(
     HGAT_NO_HISTONE_BRAF = if_else(
       subtype_class == "HGAT_NO_HISTONE_BRAF",
       "yes",
       "no"
     )
-  )
+  )  
 ```
 
 ## Dimension Reduction and Plotting
@@ -150,7 +198,7 @@ stranded_tsne_plot <-
   scale_color_manual(values = c("#0a7fb2", "#799d10", "#F3E500")) +
   geom_text(aes(X1, X2, label = Kids_First_Biospecimen_ID),
             data = filter(stranded_tsne_aligned_scores, 
-                   subtype_class == "HGAT_NO_HISTONE_BRAF"))
+                          subtype_class == "HGAT_NO_HISTONE_BRAF"))
 
 stranded_umap_plot <-
   plot_dimension_reduction(
@@ -164,7 +212,7 @@ stranded_umap_plot <-
   scale_color_manual(values = c("#0a7fb2", "#799d10", "#F3E500")) +
   geom_text(aes(X1, X2, label = Kids_First_Biospecimen_ID),
             data = filter(stranded_umap_aligned_scores, 
-                   subtype_class == "HGAT_NO_HISTONE_BRAF"))
+                          subtype_class == "HGAT_NO_HISTONE_BRAF"))
 
 # Put plots together in a list to satisfy function argument
 plot_list <- list(stranded_tsne_plot, stranded_umap_plot)

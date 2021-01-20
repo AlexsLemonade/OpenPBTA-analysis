@@ -355,7 +355,7 @@ In this section, we'll divide up the table based on the molecular subtypes descr
 
 > * These tumors contain H3F3A K28M or HIST1H3B K28M mutations
 > * Co-occurring lesions include: ACVR1, TP53, ATRX mutations; PDGFRA amplification; PTEN loss
-> * Mutually-exclusive lesions: FGFR1 mutations/fusions (thalamic); IDH1 mutations; BRAF V600E (low-grade gliomas)
+> * Mutually-exclusive lesions: FGFR1 mutations/fusions (thalamic); IDH1 mutations
 > * Average age of 9 years
 > * Majority should be midline localized
 
@@ -378,7 +378,6 @@ h3_k28_df <- all_data_df %>%
          relevant_coding_mutations,
          PTEN_focal_status,
          PDGFRA_focal_status,
-         BRAF_V600E,
          FGFR1_fusions) %>%
   distinct()
 
@@ -442,13 +441,9 @@ h3_k28_df_biospecimen <- all_data_df %>%
   select(Kids_First_Participant_ID,
          sample_id,
          Kids_First_Biospecimen_ID_DNA,
-         Kids_First_Biospecimen_ID_RNA,
-         BRAF_V600E) %>%
-  mutate(molecular_subtype = case_when(
-    BRAF_V600E == "p.V600E" ~ "DMG, H3 K28, BRAF V600E",
-    TRUE ~ "DMG, H3 K28"
-  )) %>%
-  select(-BRAF_V600E)
+         Kids_First_Biospecimen_ID_RNA) %>%
+  mutate(molecular_subtype = "DMG, H3 K28") 
+
 ```
 
 ### H3 G35 mutant
@@ -564,28 +559,6 @@ We don't see the _IDH1_ mutations we would expect and we do see an H3 K28M mutat
 
 > We expect very few, if any of these (maybe 1 when we looked by CNV), so I think maybe we can approach this cohort by starting to look for 1p/19q codeletions in all samples + IDH mutations, and if we see any, we may manually want to check the CNV plots just to confirm.
 
-### Samples without histone mutations that have _BRAF_ V600 mutations
-
-From [`AlexsLemonade/OpenPBTA-analysis#435 (comment)`](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/435#issuecomment-576889305):
-
-> A few patients ... initially had dx of HGG, have no histone mutations, but have only BRAF V600E mutations. These patients' biospecimens can possibly be LGGs. I think for these, we should note that they are exclusively `BRAF_V600E_mutant`
-
-```{r}
-braf_df_biospecimen <- all_data_df %>%
-  filter(H3F3A.K28M == "No",
-         HIST1H3B.K28M == "No",
-         HIST1H3C.K28M == "No",
-         HIST2H3C.K28M == "No",
-         H3F3A.G35R == "No",
-         H3F3A.G35V == "No",
-         BRAF_V600E == "p.V600E") %>%
-  select(Kids_First_Participant_ID,
-         sample_id,
-         Kids_First_Biospecimen_ID_DNA,
-         Kids_First_Biospecimen_ID_RNA) %>%
-  mutate(molecular_subtype = "BRAF V600E")
-```
-
 ## Biospecimen Table
 
 Join all the tables that contain the biospecimen ids and `molecular_subtype` column together.
@@ -593,8 +566,7 @@ Join all the tables that contain the biospecimen ids and `molecular_subtype` col
 ```{r}
 molecular_subtype_table <- bind_rows(h3_g35_df_biospecimen,
                                      h3_k28_df_biospecimen,
-                                     idh_df_biospecimen,
-                                     braf_df_biospecimen)
+                                     idh_df_biospecimen)
 
 # We'll add HGG, H3 wildtype values in cases that do not yet have labels
 molecular_subtype_table <- all_data_df %>%
