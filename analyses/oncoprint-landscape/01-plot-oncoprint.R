@@ -101,13 +101,6 @@ option_list <- list(
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
-
-opt$maf_file <- "../../scratch/oncoprint_files/all_participants_primary_only_maf.tsv"
-opt$cnv_file <- "../../scratch/oncoprint_files/all_participants_primary_only_cnv.tsv"
-opt$fusion_file <- "../../scratch/oncoprint_files/all_participants_primary_only_fusions.tsv"
-opt$metadata_file <- "../../data/pbta-histologies.tsv"
-opt$png_name <- "all_participants_primary_only_oncoprint.png"
-
 # Define cnv_file, fusion_file, and genes object here as they still need to
 # be defined for the `prepare_and_plot_oncoprint` custom function (the
 # cnv_file specifically for the `read.maf` function within the custom function),
@@ -168,12 +161,19 @@ if (!is.null(opt$focal_file)) {
   focal_df <- readr::read_tsv(file.path(opt$focal_file))
 }
 
+#### Set up oncoprint annotation objects --------------------------------------
 # Read in histology standard color palette for project
 histology_label_mapping <- readr::read_tsv(
-  file.path(figures_dir, "palettes", "histology_label_color_table.tsv")
-) %>% 
+  file.path(root_dir,
+            "figures",
+            "palettes", 
+            "histology_label_color_table.tsv")) %>% 
   # Select just the columns we will need for plotting
-  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>% 
+  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes)
+
+# Join on these columns to the metadata
+metadata <- metadata %>% 
+  dplyr::inner_join(histology_label_mapping, by = "Kids_First_Biospecimen_ID") %>% 
   # Reorder display_group based on display_order
   dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
 
@@ -187,12 +187,16 @@ oncoprint_col_palette <- readr::read_tsv(file.path(
   # Use deframe so we can use it as a recoding list
   tibble::deframe()
 
-#### Set up oncoprint annotation objects --------------------------------------
-
 # Color coding for `display_group` classification
 # Get unique tumor descriptor categories
-histologies_color_key <- unique(histology_label_mapping$hex_codes)
-names(histologies_color) <- unique(histology_label_mapping$display_group)
+histologies_color_key_df <- metadata %>%
+  dplyr::arrange(display_order) %>%
+  dplyr::select(display_group, hex_codes) %>%
+  dplyr::distinct()
+
+# Make color key specific to these samples
+histologies_color_key <- unique(histologies_color_key_df$hex_codes)
+names(histologies_color_key) <- unique(histologies_color_key_df$display_group)
 
 # Now format the color key objet into a list
 annotation_colors <- list(display_group = histologies_color_key)
