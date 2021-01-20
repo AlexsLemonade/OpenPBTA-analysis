@@ -38,14 +38,14 @@ combined_plot=${plot_dir}/combined_top50
 # associative array of diseases to test; chosen by those that are most common
 # in the openPBTA dataset
 declare -A disease
-disease[LGAT]="Low-grade astrocytic tumor"
+disease[Diffuse-astrocytic-and-oligodendroglial-tumor]="Diffuse astrocytic and oligodendroglial tumor"
 if [ "$ALL" -gt "0" ]; then
-  disease[Medulloblastoma]="Medulloblastoma"
-  disease[Ependymoma]="Ependymoma"
-  disease[HGAT]="High-grade glioma"
-  disease[DMG]="Diffuse midline glioma"
-  disease[Ganglioglioma]="Ganglioglioma"
-  disease[Craniopharyngioma]="Craniopharyngioma"
+  disease[LGAT]="Low-grade astrocytic tumor"
+  disease[Tumors-of-sellar-region]="Tumors of sellar region"
+  disease[Embryonal-tumor]="Embryonal tumor"
+  disease[Ependymal-tumor]="Ependymal tumor"
+  disease[Meningioma]="Meningioma"
+  disease[Neuronal-mixed-neuronal-glial-tumor]="Neuronal and mixed neuronal-glial tumor"
 fi
 
 
