@@ -31,8 +31,7 @@ The files in the `lgat-subset` were generated via `01-subset-files-for-LGAT.R` u
 ### Inputs from data download
 
 * `pbta-histologies.tsv`: is used to subset samples according to [the criteria above](#inclusion-exclusion-criteria)
-* `pbta-snv-consensus-mutation.maf.tsv.gz`: is used to find samples where `Hugo_Symbol == "BRAF" & HGVSp_Short == "p.V600E"`
-* `pbta-fusion-putative-oncogenic.tsv`: is used to find samples with _BRAF_ fusions
+* `pbta-snv-consensus-mutation.maf.tsv.gz`: 
 
 ### Run script
 
@@ -44,14 +43,26 @@ This does not run the `00-LGAT-select-pathology-dx` notebook, as that is intende
 
 #### Order of scripts in subtyping
 
-`01-subset-files-for-LGAT.R`: generates subset of wgs LGAT sample annotated with `BRAF_V600E` column denoting presence (`Yes`) or absence (`No`) of BRAF V600E mutations.
+`01-subset-files-for-LGAT.Rmd`: generates subset of wgs LGAT sample annotated by subtypes snv mutation status as per following description:
 
-`02-make-lgat-final-table.Rmd`: generates final table for LGAT subtyping from metadata, fusion, and consensus mutation data release files.
-The logic for subtyping LGAT samples (defined by the combination of `sample_id` and `Kids_First_Participant_ID`) is as follows:
+columnname  | description | values
+ --- | --- | ---
+NF1_mut | somatic loss of NF1 via either missense, nonsense mutation | "Yes" mutation exists, "No" mutation is absent 
+BRAF_V600E_mut | contains BRAF V600E or V599 SNV or non-canonical BRAF alterations such as p.V600ins or p.D594N | "Yes" mutation exists, "No" mutation is absent
+MAPK_mut | contains mutation in KRAS, NRAS, HRAS, MAP2K1, MAP2K2, MAP2K1, ARAF SNV or indel | "Yes" mutation exists, "No" mutation is absent
+RTK_mut | harbors a MET,KIT or PDGFRA SNV | "Yes" mutation exists, "No" mutation is absent
+FGFR_mut | harbors FGFR1 p.N546K, p.K656E, p.N577, or p. K687 hotspot mutations | "Yes" mutation exists, "No" mutation is absent
+IDH_mut | harbors an IDH R132 mutation | "Yes" mutation exists, "No" mutation is absent
+H3.3_mut | harbors an H3F3A K28M or G35R/V mutation | "Yes" mutation exists, "No" mutation is absent
+H3.1_mut | harbors an HIST1H3B K28M|or HIST1H3C  K28M | "Yes" mutation exists, "No" mutation is absent
 
-* If there is no fusion data and no mutation data available, a sample is labeled `LGG, To be classified`
-* If no _BRAF_ fusion is detected and there is no mutation data available, a sample is labeled `LGG, To be classified`
-* If there is no fusion data available or _BRAF_ fusion detected and a BRAF V600E mutation is present, a sample is labeled `LGG, BRAF V600E`
-* If there is no fusion data available or _BRAF_ fusion detected and a BRAF V600E mutation is absent, a sample is labeled `LGG, BRAF wildtype`
-* If there is a _BRAF_ fusion detected but no V600E mutation or no mutation data available, a sample is labeled `LGG, BRAF fusion`
-* If there is a _BRAF_ fusion detected and a BRAF V600E mutation is present, a sample is labeled `LGG, BRAF fusion/V600E`
+`02-subset-fusion-files-LGAT.Rmd`: generates subset of rna LGAT sample annotated by subtypes fusion status as per following description:
+columnname | description | values
+--- | --- | ---
+KIAA_BRAF_fus | contains KIAA1549-BRAF fusion | "Yes" fusion exists, "No" fusion is absent
+MAPK_fus | contains non-canonical BRAF fusion other than KIAA1549-BRAF; contains RAF1 fusion | "Yes" fusion exists, "No" fusion is absent
+RTK_fus | harbors a fusion in ALK, ROS1, NTRK1, NTRK2,NTRK3 or PDGFR | "Yes" fusion exists, "No" fusion is absent
+FGFR_fus | harbors FGFR1-TACC1 or other FGFR1 or FGFR2 fusion | "Yes" fusion exists, "No" fusion is absent
+MYB_fus | harbors either a MYB-QKI fusion or other MYB or MYBL1 fusion | "Yes" fusion exists, "No" fusion is absent
+ 
+

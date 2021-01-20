@@ -4,6 +4,11 @@ output:
   html_notebook:
     toc: true
     toc_float: true
+params:
+  base_run:
+    label: "1/0 to read pbta-histologies-base.tsv" 
+    value: 0
+    input: integer
 ---
 
 ## Purpose
@@ -26,7 +31,11 @@ set.seed(201910)
 
 ```{r load files}
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+if(params$base_run == 0) {
 sample_df <- readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"), guess_max = 10000)
+} else {
+sample_df <- readr::read_tsv(file.path(root_dir, "data", "pbta-histologies-base.tsv"), guess_max = 10000)
+}
 ```
 
 ## WGS and WXS samples
