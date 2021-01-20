@@ -75,14 +75,21 @@ To see a summary of what colors are used for histology labeling, see [`mapping-h
 **Step 1)** Read in color palette and select the pertinent columns
 
 There's some extra columns in `histology_label_color_table.tsv` that you don't need for plotting per se but are more record-keeping purposes. 
+With the code chunk below, we only import the four columns we need and then do a factor reorder to make sure the `display_group` is in the order declared by `display_order`. 
 
 ```
+# Import standard color palettes for project
 histology_label_mapping <- readr::read_tsv(
-  file.path("figures", "palettes", "histology_label_color_table.tsv")) %>% 
-  dplyr::select(Kids_First_Biospecimen_ID, display_group, hex_codes)
+  file.path(figures_dir, "palettes", "histology_label_color_table.tsv")
+  ) %>% 
+  # Select just the columns we will need for plotting
+  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>% 
+  # Reorder display_group based on display_order
+  dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
 ```
 
-**Step 2)** Use `dplyr::inner_join` using `Kids_First_Biospecimen_ID` to join by so you can add on the `hex_codes` and `display_group` for each biospecimen
+**Step 2)** Use `dplyr::inner_join` using `Kids_First_Biospecimen_ID` to join by so you can add on the `hex_codes` and `display_group` for each biospecimen. 
+`display_order` specifies what order the `display_group`s should be displayed.
 
 ```
 # Read in the metadata
