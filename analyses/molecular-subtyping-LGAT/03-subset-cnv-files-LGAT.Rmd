@@ -106,6 +106,8 @@ cnv_gr <- cnv %>%
     chr = chrom, start = loc.start, end = loc.end,
     copy_number = copy.num
   ) %>%
+  # we are looking for duplication events 
+  # so filtering for greater than 2 copy_number here
   filter(copy_number >2) %>%
   dplyr::select(-num.mark, -seg.mean) %>%
   # make genomic ranges
