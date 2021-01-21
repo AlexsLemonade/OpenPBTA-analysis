@@ -106,6 +106,7 @@ cnv_gr <- cnv %>%
     chr = chrom, start = loc.start, end = loc.end,
     copy_number = copy.num
   ) %>%
+  filter(copy_number >2) %>%
   dplyr::select(-num.mark, -seg.mean) %>%
   # make genomic ranges
   GenomicRanges::makeGRangesFromDataFrame(
@@ -146,6 +147,9 @@ manta_gr <- manta_lgat %>%
     chr = SV.chrom, start = SV.start, end = SV.end,
     ALT = ALT
   ) %>%
+  filter(Gene.name == "FGFR1" ,
+  # filter for tandem duplication
+  ALT == "<DUP:TANDEM>") %>%
   # format with chr to match to cnv
   dplyr::mutate(chr = paste0("chr", chr)) %>%
   # make genomic ranges
@@ -155,12 +159,7 @@ manta_gr <- manta_lgat %>%
   )
 
 # overlap manta and domain
-overlaps_manta <- IRanges::subsetByOverlaps(manta_gr, domain_gr)
-
-# filter for fgfr only overlap
-overlaps_manta_fgfr <- overlaps_manta[which(overlaps_manta$Gene.name == "FGFR1" &
-  # filter for tandem duplication
-  overlaps_manta$ALT == "<DUP:TANDEM>"), ]
+overlaps_manta_fgfr <- IRanges::subsetByOverlaps(manta_gr, domain_gr,minoverlap = width(ranges(domain_gr)))
 
 overlaps_manta_fgfr_df <- data.frame(
   biospecimen_id = overlaps_manta_fgfr$Kids.First.Biospecimen.ID.Tumor,
@@ -186,22 +185,19 @@ fgfr_gene <- GenomicRanges::GRanges(
   ranges = IRanges::IRanges(start = domain_gr$gene_start, end = domain_gr$gene_end)
 )
 
-# subset cnv+domain grange to be within FGFR1 gene region
-cnv_fgfr_gr <- IRanges::subsetByOverlaps(cnv_gr, fgfr_gene, type = "within", maxgap = )
-
-# overlap consensus seg with exon
-overlaps_fgfr_cnv <- IRanges::subsetByOverlaps(cnv_fgfr_gr, domain_gr)
-
-# filter for fgfr only overlap
-overlaps_fgfr_cnv <- overlaps_fgfr_cnv[which(
-  # filter for duplication
-  overlaps_fgfr_cnv$copy_number > 2
-), ]
+# subset cnv+domain grange to be within FGFR1 gene region 
+cnv_fgfr_gr <- IRanges::subsetByOverlaps(
+  cnv_gr,
+  fgfr_gene,
+  # within FGFR1 gene
+  type = "within",
+  # has atleast min overlap of domain region
+  minoverlap = width(ranges(domain_gr)))
 
 # dataframe
 overlaps_cnv_df <- data.frame(
-  biospecimen_id = overlaps_fgfr_cnv$ID,
-  copy_number = overlaps_fgfr_cnv$copy_number,
+  biospecimen_id = cnv_fgfr_gr$ID,
+  copy_number = cnv_fgfr_gr$copy_number,
   stringsAsFactors = FALSE
 ) %>%
   dplyr::distinct() %>%
@@ -212,7 +208,7 @@ overlaps_cnv_df
 ```
 5 samples have copy_number changes > 2 that overlap with tyrosine kinase domain
 
-Are there overlap in SV and CNV calls?
+### Are there overlap in SV and CNV calls?
 
 ```{r}
 intersect(overlaps_manta_fgfr_df$biospecimen_id, overlaps_cnv_df$biospecimen_id)
@@ -230,12 +226,19 @@ txdb <- GenomicFeatures::makeTxDbFromGFF(
   ),
   format = "gtf"
 )
-# get exons and exon_id for FGFR1 canonical transcript
-fgfr1_exons <- GenomicFeatures::exons(txdb,
-  columns = list("exon_rank"),
+
+# get flfr1 canonical transcrip tx_id 
+fgfr1_tx_id <- ensembldb::select(txdb, 
+                                 keys= keys(txdb, "TXID"),
+                                 columns="TXNAME", keytype="TXID") %>%
+  # FGFR1 canonical transcript
   # genocode canonical transcript https://genome.ucsc.edu/cgi-bin/hgGene?db=hg38&hgg_gene=FGFR1
-  filter = list(tx_name = "ENST00000447712.6")
-)
+  dplyr::filter(TXNAME == "ENST00000447712.6") %>%
+  pull(TXID)
+
+# GRList is ordered using tx_ids so using 
+# the filtered tx_id for FGFR1 canonical transcript
+fgfr1_exons <-unlist(GRList[fgfr1_tx_id])
 ```
 
 For manta SV calls that are within FGFR1 gene region
@@ -245,37 +248,27 @@ For manta SV calls that are within FGFR1 gene region
 overlaps_manta_fgfr_exon <- IRanges::mergeByOverlaps(overlaps_manta_fgfr, fgfr1_exons)
 
 # overlap filtered cnv with exons
-overlaps_cnv_fgfr_exon <- IRanges::mergeByOverlaps(overlaps_fgfr_cnv, fgfr1_exons)
+overlaps_cnv_fgfr_exon <- IRanges::mergeByOverlaps(cnv_fgfr_gr, fgfr1_exons)
 
 # plot exon rank for manta and cnv
 ggplot(
   rbind(
     data.frame(
       "exon_number" = unlist(overlaps_manta_fgfr_exon$exon_rank),
+      "ids" = overlaps_manta_fgfr_exon$Kids.First.Biospecimen.ID.Tumor,
       "type" = "tandem_dup"
     ),
     data.frame(
       "exon_number" = unlist(overlaps_cnv_fgfr_exon$exon_rank),
+      "ids" = overlaps_cnv_fgfr_exon$ID,
       "type" = "cnv_dup"
     )
   ),
-  aes(x = exon_number, color = type)
+  aes(x = exon_number, fill = type)
 ) +
-  geom_density()
+  geom_bar( width=.5, position = "dodge")
 ```
-Majority SV and CNV overlap exons downstream of exon 5
-
-any SV overlap which overlaps exons 10 through 18 
-```{r}
-overlaps_manta_fgfr_exon[all(overlaps_manta_fgfr_exon$exon_rank >= 10 &
-  overlaps_manta_fgfr_exon$exon_rank <= 18) == TRUE, "Kids.First.Biospecimen.ID.Tumor"] %>% unique()
-```
-
-any CNV overlap which overlaps exons 10 through 18 
-```{r}
-
-overlaps_cnv_fgfr_exon[all(overlaps_cnv_fgfr_exon$exon_rank >= 10 & overlaps_cnv_fgfr_exon$exon_rank <= 18) == TRUE, "ID"] %>% unique()
-```
+Majority SV and CNV overlap exons downstream of exon 9
 
 All 4 biospecimens with tandem duplication in FGFR1 and 5 biospecimens with duplication in FGFR1 have atleast 1 SV/CNV overlap a region comprised of exons between 10 and 18. 
 
@@ -307,19 +300,19 @@ merge_CNV_substype <- dplyr::select(overlaps_manta_fgfr_df, biospecimen_id, FGFR
   full_join(dplyr::select(cnv_anno_cdkn2, biospecimen_id, CDKN2A_DEL, CDKN2B_DEL))
 
 # merge all lgat WGS samples
-LGAT_cnv_subset <- lgat_wgs_df %>%
-  left_join(merge_CNV_substype, by = c("Kids_First_Biospecimen_ID" = "biospecimen_id")) %>%
+LGAT_cnv_subset <- as.data.frame(lgat_wgs_biospecimen_ids) %>%
+  left_join(merge_CNV_substype, by = c("lgat_wgs_biospecimen_ids" = "biospecimen_id")) %>%
   # change NA to value==No
   replace_na(list(
     FGFR_DUP_TANDEM = "No",
     FGFR_DUP = "No",
     CDKN2A_DEL = "No",
     CDKN2B_DEL = "No"
-  ))
+  )) 
 # check frequency - does this align with the LGG paper of 9.6%? We get ~3.3%, however, the paper also states that this deletion most frequently co-occurs with BRAF V600E, so if we have a lower prevalence of that SNV, then this could make sense. Let's circle back when we put all of the data together.
 CNV_by_part <- LGAT_cnv_subset %>%
-  left_join(lgat_specimens_df) %>%
-  select(Kids_First_Participant_ID, CDKN2A_DEL) %>%
+  left_join(lgat_specimens_df,by = c("lgat_wgs_biospecimen_ids" = "Kids_First_Biospecimen_ID")) %>%
+  dplyr::select(Kids_First_Participant_ID, CDKN2A_DEL) %>%
   distinct()
 
 CNV_by_part %>%
