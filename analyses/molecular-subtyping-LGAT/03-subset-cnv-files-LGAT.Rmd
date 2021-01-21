@@ -193,8 +193,8 @@ cnv_fgfr_gr <- IRanges::subsetByOverlaps(
   fgfr_gene,
   # within FGFR1 gene
   type = "within",
-  # has atleast min overlap of domain region
-  minoverlap = width(ranges(domain_gr)))
+  # max gap is should be width of gene minus width of domain 
+  maxgap = width(fgfr_gene) - width(ranges(domain_gr)))
 
 # dataframe
 overlaps_cnv_df <- data.frame(
