@@ -78,7 +78,7 @@ final_df <- histologies_df %>%
   # Reorder the rows according to the 3 levels
   dplyr::arrange(level1, level2, level3) %>%
   # tbl_df -> data.frame
-  as.data.frame()
+  as.data.frame() 
 
 # Save to tsv file
 readr::write_tsv(final_df, file.path(results_dir, "plots_df.tsv"))
@@ -113,7 +113,8 @@ treemap <-
     colour = "#FAFAFA",
     min.size = 0
   ) +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  scale_fill_identity()
 
 # Save treemap
 ggsave(
