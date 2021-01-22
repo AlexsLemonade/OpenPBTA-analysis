@@ -51,7 +51,7 @@ calc_mut_per_sig <- function(which_sig_list,
   #                    sample as calculated by deconstructSigs::mut.to.sigs.input 
   #   wgs_genome_size: size of the WGS genome in bp
   #   wxs_genome_size: size of the WXS exome in bp
-  #   metadata_df: a data.frame with `short_histology` and `experimental strategy`  
+  #   metadata_df: a data.frame with `display_group` and `experimental strategy`  
   #           information columns
   #
   # Returns:
@@ -72,7 +72,7 @@ calc_mut_per_sig <- function(which_sig_list,
   # Here the weight is multiplied by the total number of signature mutations. 
   dplyr::mutate_at(dplyr::vars(-Tumor_Sample_Barcode), ~ . * total_muts) %>%
     
-    # Join the short_histology and experimental stategy information
+    # Join the display_group and experimental stategy information
     dplyr::left_join(metadata_df %>% 
       dplyr::distinct(Tumor_Sample_Barcode,.keep_all = TRUE),
     by = "Tumor_Sample_Barcode"
@@ -125,7 +125,7 @@ bubble_matrix_plot <- function(sig_num_df,
   
   # Summarize the mut_per_mb column by histology
   grouped_sig_num <- sig_num_df %>%
-    dplyr::group_by(short_histology, signature) %>%
+    dplyr::group_by(display_group, signature) %>%
     dplyr::summarize(
       # Calculate the proportion of tumors with a non-zero weight for each signature
       prop_tumors = sum(num_mutations > 0) / length(num_mutations),
@@ -141,7 +141,7 @@ bubble_matrix_plot <- function(sig_num_df,
     color_palette <- RColorBrewer::brewer.pal(9, name = "YlGnBu")
   }
   # Make the bubble matrix plot
-  ggplot2::ggplot(grouped_sig_num, ggplot2::aes(x = short_histology, 
+  ggplot2::ggplot(grouped_sig_num, ggplot2::aes(x = display_group, 
                                                 y = forcats::fct_rev(signature), 
                                                 color = med_num)) +
     ggplot2::geom_point(ggplot2::aes(size = prop_tumors)) +
@@ -170,7 +170,7 @@ grouped_sig_barplot <- function(hist_groups, sig_num_df, output_dir = getwd(),
   # signatures.
   #
   # Args:
-  #   hist_groups: a vector of `short_histology` groups to each be plotted
+  #   hist_groups: a vector of `display_group` groups to each be plotted
   #                individually.
   #   sig_num_df: a data.frame with number of mutations per Mb that belong to
   #               each sample x signature combo
@@ -192,7 +192,7 @@ grouped_sig_barplot <- function(hist_groups, sig_num_df, output_dir = getwd(),
   for (hist_group in hist_groups) {
     # Narrow the df down to just this histology's group
     histology_df <- sig_num_df %>%
-      dplyr::filter(short_histology == hist_group, mut_per_mb > 0) 
+      dplyr::filter(display_group == hist_group, mut_per_mb > 0) 
 
     # Make the grouped bar plot
     histology_df %>%
@@ -209,7 +209,7 @@ grouped_sig_barplot <- function(hist_groups, sig_num_df, output_dir = getwd(),
       output_dir,
       paste0(
         "barplot_",
-        hist_group,
+        gsub(" ", "-", hist_group),
         "_", label,
         "_mutation_sig.png"
       )
