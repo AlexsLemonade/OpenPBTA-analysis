@@ -195,8 +195,8 @@ histologies_color_key_df <- metadata %>%
   dplyr::distinct()
 
 # Make color key specific to these samples
-histologies_color_key <- unique(histologies_color_key_df$hex_codes)
-names(histologies_color_key) <- unique(histologies_color_key_df$display_group)
+histologies_color_key <- histologies_color_key_df$hex_codes
+names(histologies_color_key) <- histologies_color_key_df$display_group
 
 # Now format the color key objet into a list
 annotation_colors <- list(display_group = histologies_color_key)
