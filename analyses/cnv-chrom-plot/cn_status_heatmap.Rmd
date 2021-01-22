@@ -396,12 +396,17 @@ histologies <-
 Make a color key that's formatted for ComplexHeatmap. 
 
 ```{r}
+# Get a distinct version of the color keys
+histologies_color_key_df <- histologies %>%
+  dplyr::select(display_group, hex_codes) %>%
+  dplyr::distinct()
+
 # Make color key specific to these samples
-histologies_color_key_filtered <- unique(histologies$hex_codes)
-names(histologies_color_key_filtered) <- unique(histologies$display_group)
+histologies_color_key <- histologies_color_key_df$hex_codes
+names(histologies_color_key) <- histologies_color_key_df$display_group
 
 # Get coordinate start positions
-hist_start <- match(names(histologies_color_key_filtered), histologies$display_group)
+hist_start <- match(names(histologies_color_key), histologies$display_group)
 
 # Get coordinate end positions for each histology group
 hist_end <- hist_start + summary(histologies$display_group)
@@ -424,7 +429,7 @@ hist_text <- ComplexHeatmap::anno_mark(
 # Create the Heatmap annotation object
 hist_annot <- ComplexHeatmap::HeatmapAnnotation(
   df = data.frame(histologies) %>% dplyr::select(-group_n, -hex_codes),
-  col = list(display_group = histologies_color_key_filtered),
+  col = list(display_group = histologies_color_key),
   which = "row",
   show_annotation_name = FALSE,
   show_legend = FALSE,
