@@ -292,7 +292,6 @@ TP53 mutants with gain-of-function (activating) mutants promote tumorigenesis ac
 "Other" annotated samples either don't have any high-confidence loss/gain TP53 SNVs nor CNV losses OR DNA sample is not available.
 
 ### (stranded) Expression profile for activating vs loss TP53 status
-Using stranded because there are more samples in stranded
 
 ```{r}
 
@@ -310,7 +309,7 @@ stranded_tp53 <- as.data.frame(subset_stranded) %>%
 
 ```
 
-### Plot distribution of TP53 gene
+Plot distribution of TP53 gene expression (stranded)
 
 ```{r}
 
@@ -325,7 +324,37 @@ ggplot(stranded_tp53, aes(x = factor(tp53_altered), y = TP53)) +
 
 ```
 
+### (poly-a) Expression profile for activating vs loss TP53 status
 
+```{r}
+
+polya <- readRDS(file.path(data_dir,"pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"))
+
+# subset to TP53
+subset_polya <- t(polya)[,"TP53"]
+
+polya_tp53<- as.data.frame(subset_polya) %>%
+  rename(TP53=subset_polya) %>%
+  rownames_to_column() %>%
+  left_join(tp53_alterations_score_wide,by=c("rowname"="Kids_First_Biospecimen_ID_RNA")) %>%
+  filter(tp53_altered %in% c("activated","loss"))
+
+```
+
+Plot distribution of TP53 gene expression (poly-a)
+
+```{r}
+
+ggplot(polya_tp53, aes(x = factor(tp53_altered), y = TP53)) +
+  geom_violin()+
+  geom_jitter(alpha = 0.5, width = 0.2) +
+  stat_compare_means() +
+  theme_bw() +
+  ggtitle("Distribution of TP53 expression across tp53 altered status") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  xlab("tp53 altered status") 
+
+```
 
 ### Check if other cancer predisposition have high TP53 inactivation scores  
 
@@ -341,7 +370,18 @@ ggplot(tp53_alterations_score_wide, aes(x = factor(tp53_altered), y = tp53_score
   facet_wrap(.~cancer_predispositions)
 
 ```
- Some NF-1 and/or Other inherited conditions NOS have high scoring TP53 mutants as well.
+Some NF-1 and/or Other inherited conditions NOS have high scoring TP53 mutants as well. 
+
+Interesting 2 bs ids annotated with Li-Fraumeni synfrome pre-disposition have very low tp53 classifier scores.
+
+```{r}
+
+tp53_alterations_score_wide %>%
+  filter(cancer_predispositions == "Li-Fraumeni syndrome",
+         tp53_score < 0.5) 
+  
+```
+
 
 ## Save file 
 
