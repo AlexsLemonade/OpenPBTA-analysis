@@ -132,7 +132,10 @@ consensus_tp53_snv_indel <- data.table::fread(
                                               "HGVSp_Short"),
                                    data.table = FALSE) %>%
   filter(Hugo_Symbol == "TP53") %>%
-  filter(!(Variant_Classification %in% c("Silent", "Intron")))
+  filter(!(Variant_Classification %in% c("Silent", "Intron",
+                                         # remove other non-amino acid SNVs
+                                         "3'Flank" ,"5'Flank",
+                                         "3'UTR", "5'UTR"  )))
 ```
 
 ###  Gather annotation for SNV 
