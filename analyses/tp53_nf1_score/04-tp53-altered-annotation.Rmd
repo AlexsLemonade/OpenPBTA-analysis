@@ -213,9 +213,11 @@ tp53_alterations_score_wide <- tp53_alterations_score %>%
   # sample_id as rows add SNV counts,CNV loss counts 
   # and hotspot/activating mutation annotation  
   summarise(
-    # summarize length of SNV and CNv alterations 
+    # summarize length of SNV and CNV alterations 
     SNV_indel_counts= length(unique(HGVSp_Short[!is.na(HGVSp_Short)])), 
     CNV_loss_counts = length(unique(copy_number[!is.na(copy_number)])),
+    HGVSp_Short = toString(unique(HGVSp_Short)),
+    copy_number = toString(unique(copy_number)),
     # summarize unique hotspot values per sample_id
     hotspot = toString(unique(hotspot[!is.na(hotspot) ])),
     activating = toString(unique(activating[!is.na(activating)]))) 
