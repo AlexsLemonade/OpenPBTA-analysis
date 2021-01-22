@@ -68,9 +68,11 @@ cp ${analyses_dir}/interaction-plots/plots/combined_top50.png pngs/mutation_cooc
 ######################
 ## Oncoprint plot(s)
 
-# Run the `focal-cn-file-preparation` module shell script to prepare the focal
-# CN file so that it can be represented on the oncoprint
-bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn.sh
+if [ "$RUN_LOCAL" -lt "1" ]; then
+  # Run the `focal-cn-file-preparation` module shell script to prepare the focal
+  # CN file so that it can be represented on the oncoprint
+  bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn.sh
+fi 
 
 # Run the `oncoprint-landscape` module shell script
 bash ${analyses_dir}/oncoprint-landscape/run-oncoprint.sh
