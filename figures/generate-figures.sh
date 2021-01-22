@@ -6,6 +6,11 @@
 set -e
 set -o pipefail
 
+# If RUN_LOCAL is used, the snv callers steps are skipped because they cannot
+# be run on a local computer -- the idea is that setting RUN_LOCAL=1 will allow for
+# local testing running/testing of all the other figures
+RUN_LOCAL=${RUN_LOCAL:-0}
+
 # Find current directory based on this script
 WORKDIR=$(dirname "${BASH_SOURCE[0]}")
 cd "$WORKDIR"
@@ -24,7 +29,7 @@ mkdir -p pngs
 
 #### Make sure histology_label_color_table.tsv is up to date
 
-Rscript -e "rmarkdown::render('figures/mapping-histology-labels.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('mapping-histology-labels.Rmd', clean = TRUE)"
 
 ################ Sample distribution
 # Run sample distribution analysis
@@ -34,20 +39,22 @@ bash ${analyses_dir}/sample-distribution-analysis/run-sample-distribution.sh
 Rscript --vanilla scripts/fig1-sample-distribution.R
 
 ################ Mutational landscape figure
-# Run both SNV caller consensus scripts
-# Note: This the PBTA consensus script requires at least 128 MB of RAM to run
-# These scripts are intended to run from the base directory,
-# so we will temporarily move there
-cd $BASEDIR
-bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh
-bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh
-cd $WORKDIR
+if [ "$RUN_LOCAL" -lt "1" ]; then
+  # Run both SNV caller consensus scripts
+  # Note: This the PBTA consensus script requires at least 128 MB of RAM to run
+  # These scripts are intended to run from the base directory,
+  # so we will temporarily move there
+  cd $BASEDIR
+  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh
+  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh
+  cd $WORKDIR
 
-# Run mutational signatures analysis
-Rscript --vanilla -e "rmarkdown::render('../analyses/mutational-signatures/mutational_signatures.Rmd', clean = TRUE)"
+  # Run mutational signatures analysis
+  Rscript --vanilla -e "rmarkdown::render('../analyses/mutational-signatures/mutational_signatures.Rmd', clean = TRUE)"
 
-# Run the figure assembly
-Rscript --vanilla scripts/fig2-mutational-landscape.R
+  # Run the figure assembly
+  Rscript --vanilla scripts/fig2-mutational-landscape.R
+fi
 
 ######################
 ## Interaction plots
