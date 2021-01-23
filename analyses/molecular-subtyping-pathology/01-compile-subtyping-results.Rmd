@@ -116,7 +116,7 @@ cranio_results_file <- file.path(cranio_dir, results_dir, "CRANIO_molecular_subt
 ews_results_file <- file.path(ews_dir, results_dir, "EWS_results.tsv")
 epn_results_file <- file.path(epn_dir, results_dir, "EPN_all_data_withsubgroup.tsv")
 hgg_results_file <- file.path(hgg_dir, results_dir, "HGG_molecular_subtype.tsv")
-lgat_results_file <- file.path(lgat_dir, results_dir, "lgat_subtyping.tsv")
+#lgat_results_file <- file.path(lgat_dir, results_dir, "lgat_subtyping.tsv")
 mb_results_file <- file.path(mb_dir, results_dir, "MB_molecular_subtype.tsv")
 embryonal_results_file <- file.path(embryonal_dir, results_dir,
                                     "embryonal_tumor_molecular_subtypes.tsv")
@@ -138,7 +138,7 @@ cranio_results_df <- read_tsv(cranio_results_file)
 ews_results_df <- read_tsv(ews_results_file)
 epn_results_df <- read_tsv(epn_results_file)
 hgg_results_df <- read_tsv(hgg_results_file)
-lgat_results_df <- read_tsv(lgat_results_file)
+#lgat_results_df <- read_tsv(lgat_results_file)
 mb_results_df <- read_tsv(mb_results_file)
 neurocytoma_results_df <- read_tsv(neurocytoma_results_file)
 embryonal_results_df <- read_tsv(embryonal_results_file)
@@ -219,21 +219,21 @@ hgg_results_df <- bind_exp_strategies(hgg_results_df) %>%
 
 
 ```{r}
-lgat_results_df <- bind_exp_strategies(lgat_results_df) %>%
-  inner_join(select(histologies_df,
-                    Kids_First_Biospecimen_ID,
-                    pathology_diagnosis,
-                    short_histology,
-                    broad_histology,
-                    Notes),
-             by = "Kids_First_Biospecimen_ID") %>%
-  mutate(integrated_diagnosis = case_when(molecular_subtype == "LGG, BRAF fusion"~ "Low-grade glioma/astrocytoma, BRAF fusion",
-                                          molecular_subtype == "LGG, BRAF V600E" ~ "Low-grade glioma/astrocytoma, BRAF V600E", 
-                                          molecular_subtype == "LGG, BRAF wildtype"~ "Low-grade glioma/astrocytoma, BRAF wildtype", 
-                                          TRUE ~NA_character_),
-                  broad_histology = "Low-grade astrocytic tumor",
-                  short_histology = if_else(pathology_diagnosis == "Ganglioglioma", "Ganglioglioma", "LGAT"),
-         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes))
+#lgat_results_df <- bind_exp_strategies(lgat_results_df) %>%
+ # inner_join(select(histologies_df,
+  #                  Kids_First_Biospecimen_ID,
+   #                 pathology_diagnosis,
+    #                short_histology,
+     #               broad_histology,
+      #              Notes),
+       #      by = "Kids_First_Biospecimen_ID") %>%
+  #mutate(integrated_diagnosis = case_when(molecular_subtype == "LGG, BRAF fusion"~ "Low-grade glioma/astrocytoma, BRAF fusion",
+   #                                       molecular_subtype == "LGG, BRAF V600E" ~ "Low-grade glioma/astrocytoma, BRAF V600E", 
+    #                                      molecular_subtype == "LGG, BRAF wildtype"~ "Low-grade glioma/astrocytoma, BRAF wildtype", 
+     #                                     TRUE ~NA_character_),
+      #            broad_histology = "Low-grade astrocytic tumor",
+       #           short_histology = if_else(pathology_diagnosis == "Ganglioglioma", "Ganglioglioma", "LGAT"),
+        # Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes))
 ```
 
 ### Handling EPN 
@@ -321,7 +321,7 @@ Compile results, sort, and write to file
 all_results_df <- bind_rows(embryonal_results_df,
                             ews_results_df,
                             hgg_results_df,
-                            lgat_results_df,
+                           # lgat_results_df,
                             epn_results_df,
                             cranio_results_df,
                             mb_results_df,
