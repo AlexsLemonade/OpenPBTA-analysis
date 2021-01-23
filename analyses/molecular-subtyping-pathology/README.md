@@ -17,7 +17,7 @@ The objective of this module is two-fold:
 Specifically, there are instances where the final `integrated_diagnosis` calls from pathology will deviate from the logic included in molecular subtyping modules based on additional information outside the scope of the repository (e.g., pathology reports, slides, etc.). 
 The goal is to make sure that the _final calls_ are recorded in an aggregated table (see point 1 above) and documented in this repository.
 
-For more background, see [#609](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/609).
+For more background, see [#609](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/609) and [#905](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/905).
  
 3. Incorporate clinical reviewed subtypes for PNOC003 samples:
 In the original [issue](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/751) added by @jharenza we have the clinically reviewed subtypes for PNOC003 samples. We check if any subtype is different between the results from `molecular-subtyping-HGG` and this file and update to the clinically reviewed subtype. Subtypes for 3 WXS samples and 3 RNA-Seq from PT_NK8A49X5, PT_QA9WJ679 and PT_WGVEF96B were updated.  
