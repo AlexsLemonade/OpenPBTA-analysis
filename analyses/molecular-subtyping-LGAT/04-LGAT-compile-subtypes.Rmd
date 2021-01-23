@@ -9,7 +9,7 @@ In this notebook, we will be compiling the subtype annotation for LGAT samples. 
 `02-subset-fusion-files-LGAT.Rmd` gathers subttype associated Fusion annotation
 `03-subset-cnv-files-LGAT.Rmd` gathers subtype associated CNV annotation
 
-along with the above molecular data based annotation in this notebook we will include NF-1 cancer_predispositions in histology file as a criteria for LGG, NF1
+along with the above molecular data based annotation in this notebook we will include NF-1 cancer_predispositions from histology file as a criteria for LGG, NF1 as well
 
 ### Setup
 ```{r}
@@ -21,6 +21,28 @@ library("tidyverse")
 # Look for git root folder
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
+# clinical file
+lgat_manifest <- read_tsv(file.path(root_dir, 
+                               "data",
+                               "pbta-histologies.tsv"), 
+                     guess_max = 10000) %>%
+  filter( short_histology == "LGAT") %>%
+  select(Kids_First_Biospecimen_ID,
+         Kids_First_Participant_ID,
+         sample_id,
+         experimental_strategy)
+
+lgat_wgs <- lgat_manifest %>%
+  filter(experimental_strategy != "RNA-Seq")
+lgat_rna <- lgat_manifest %>%
+  filter(experimental_strategy == "RNA-Seq")
+
+all_lgat_matched <- full_join(lgat_wgs, lgat_rna,
+                         by = c("Kids_First_Participant_ID",
+                                "sample_id"),
+                         suffix = c("_DNA", "_RNA")) %>%
+  select(starts_with("Kids_First"), sample_id)
+
 # get subset folder
 subset_dir <- file.path(
   root_dir,
@@ -29,12 +51,193 @@ subset_dir <- file.path(
   "lgat-subset"
 )
 
-# clinical file
-clinical <- read_tsv(file.path(root_dir, 
-                               "data",
-                               "pbta-histologies-base.tsv"), 
-                     guess_max = 10000)
+# SNV based annotation
+lgat_snv <- read_tsv(file.path(subset_dir,"LGAT_snv_subset.tsv")) 
+
+# CNV based annotation
+lgat_cnv <- read_tsv(file.path(subset_dir,"LGAT_cnv_subset.tsv")) %>%
+  # To-do add to CNV subset script
+  rename(Kids_First_Biospecimen_ID=lgat_wgs_biospecimen_ids)
+
+# Fusion base annotation
+lgat_fus <- read_tsv(file.path(subset_dir,"LGAT_fusion_subset.tsv")) 
+
+```
+
+
+### LGG, NF1
+This subtype is characterized by germline NF1 variants. We do not have germline data within OpenPBTA, but we do have information about cancer predispositions. This group can be annotated if NF-1 is present within the cancer_predispositions field of the pbta-histologies.tsv file. We should also annotate somatic loss of NF1 via either missense, nonsense mutation or copy loss.
+```{r}
+nf1_biospecimen <- lgat_snv %>%
+  filter(NF1_mut=="Yes") %>%
+  mutate(molecular_subtype = "LGG, NF1") %>%
+  select("Kids_First_Biospecimen_ID","molecular_subtype") 
 ```
 
 
 
+
+
+### LGG, KIAA1549-BRAF
+
+This subtype contains KIAA1549-BRAF fusion
+```{r}
+kiaabraf_biospecimen <- lgat_fusion %>%
+  filter(KIAA_BRAF_fus=="Yes") %>%
+  mutate(molecular_subtype = "LGG, KIAA1549-BRAF") %>%
+  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+
+```
+
+### LGG, BRAF V600E
+
+This subtype contains BRAF V600E or V599 SNV or non-canonical BRAF alterations such as p.V600ins or p.D594N
+```{r}
+
+brafV600_biospecimen <- lgat_snv %>%
+  filter(BRAF_V600E_mut=="Yes") %>%
+  mutate(molecular_subtype = "LGG, BRAF V600E") %>%
+  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+
+```
+
+### LGG, other MAPK
+
+This subtype contains non-canonical BRAF fusion other than KIAA1549-BRAF
+OR contains RAF1 fusion
+OR contains KRAS, NRAS, HRAS, MAP2K1, MAP2K2, MAP2K1, ARAF SNV or indel
+```{r}
+
+otherMAPK_fus_biospecimen <- lgat_fus %>%
+  filter(MAPK_fus=="Yes") %>%
+  mutate(molecular_subtype = "LGG, other MAPK") %>%
+  select("Kids_First_Biospecimen_ID","molecular_subtype")
+
+otherMAPK_snv_biospecimen <- lgat_snv %>%
+  filter(MAPK_mut=="Yes") %>%
+  mutate(molecular_subtype = "LGG, other MAPK") %>%
+  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+
+
+```
+
+### LGG, RTK
+
+This subtype harbors a fusion in ALK, ROS1, NTRK1, NTRK2, or NTRK3 or
+OR harbors a MET SNV **or
+OR harbors a KIT SNV or
+OR harbors a PDGFRA SNV or fusion
+```{r}
+
+rtk_fus_biospecimen <- lgat_fus %>%
+  filter(RTK_fus=="Yes") %>%
+  mutate(molecular_subtype = "LGG, RTK") %>%
+  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+
+rtk_snv_biospecimen <- lgat_snv %>%
+  filter(RTK_mut=="Yes") %>%
+  mutate(molecular_subtype = "LGG, RTK") %>%
+  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+
+
+
+```
+
+### LGG, FGFR
+
+This subtype harbors FGFR1 p.N546K, p.K656E, p.N577, or p. K687 hotspot mutations or
+OR harbors FGFR1 TKD (tyrosine kinase domain tandem duplication) or
+OR harbors FGFR1-TACC1 fusion **or
+OR harbors FGFR1 or FGFR2 fusions
+```{r}
+fgfr_fus_biospecimen <- lgat_fus %>%
+  filter(FGFR_fus=="Yes") %>%
+  mutate(molecular_subtype = "LGG, FGFR") %>%
+  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+
+fgfr_snv_biospecimen <- lgat_snv %>%
+  filter(FGFR_mut=="Yes") %>%
+  mutate(molecular_subtype = "LGG, FGFR") %>%
+  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+
+fgfr_cnv_biospecimen <- lgat_cnv %>%
+  filter(FGFR_DUP_TANDEM=="Yes") %>%
+  mutate(molecular_subtype = "LGG, FGFR") %>%
+  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+
+
+```
+
+### LGG, IDH
+
+This subtype harbors an IDH R132 mutation
+```{r}
+idh_biospecimen <- lgat_snv %>%
+  filter(IDH_mut=="Yes") %>%
+  mutate(molecular_subtype = "LGG, IDH") %>%
+  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+
+```
+
+### LGG, H3
+
+This subtype harbors an H3F3A K28M or G35R/V mutation
+```{r}
+h3_biospecimen <- lgat_snv %>%
+  filter(H3.1_mut =="Yes"| H3.2_mut =="Yes" |H3.3_mut =="Yes") %>%
+  mutate(molecular_subtype = "LGG, H3") %>%
+  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+
+```
+ 
+### LGG, MYB/MYBL1
+
+This subtype harbors either a MYB-QKI fusion or other MYB or MYBL1 fusion
+```{r}
+myb_biospecimen <- lgat_fus %>%
+  filter(MYB_fus=="Yes") %>%
+  mutate(molecular_subtype = "LGG, MYB/MYBL1") %>%
+  select("Kids_First_Biospecimen_ID","molecular_subtype")
+```
+
+### LGG, CDKN2A/B
+
+This subtype harbors focal CDKN2A and/or CDKN2B deletion
+This is a secondary co-occurring alteration with prognostic significance.
+```{r}
+
+cdkn_biospecimen <- lgat_cnv %>%
+  filter(CDKN2A_DEL=="Yes"| CDKN2B_DEL == "Yes") %>%
+  mutate(molecular_subtype = "LGG, CDKN2A/B") %>%
+  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+```
+
+### Compile
+```{r}
+
+all_dna_subtype <- bind_rows(nf1_biospecimen,
+                         brafV600_biospecimen,
+                         otherMAPK_snv_biospecimen,
+                         rtk_snv_biospecimen,
+                         fgfr_cnv_biospecimen,
+                         fgfr_snv_biospecimen,
+                         idh_biospecimen,
+                         h3_biospecimen,
+                         cdkn_biospecimen
+) %>%
+  rename(Kids_First_Biospecimen_ID_DNA=Kids_First_Biospecimen_ID) %>%
+  left_join(all_lgat_matched,by="Kids_First_Biospecimen_ID_DNA")
+
+all_rna_subtype <- bind_rows(kiaabraf_biospecimen,
+                             otherMAPK_fus_biospecimen,
+                             rtk_fus_biospecimen,
+                             fgfr_fus_biospecimen,
+                             myb_biospecimen) %>%
+  rename(Kids_First_Biospecimen_ID_RNA=Kids_First_Biospecimen_ID) %>%
+  left_join(all_lgat_matched,by="Kids_First_Biospecimen_ID_RNA")
+
+  
+all_rna_subtype <- bind_rows(all_rna_subtype,
+                             all_dna_subtype)
+
+```
