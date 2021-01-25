@@ -29,12 +29,14 @@ Histologies = file.path(root_dir, "data", "pbta-histologies.tsv")   ### Variable
 
 
 palette_dir <- file.path(root_dir, "figures", "palettes")
-histology_palette <- readr::read_tsv(file.path(palette_dir,"histology_color_palette.tsv"))				  ### reading in histologies color from the define file 
-colnames(histology_palette)[1]='short_histology'
-histology_palette = data.frame(histology_palette)
-hex_codes = histology_palette$hex_codes
-names(hex_codes)= histology_palette$short_histology
 
+# Import standard color palettes for project
+histology_label_mapping <- readr::read_tsv(
+  file.path(palette_dir, "histology_label_color_table.tsv")) %>%
+  # Select just the columns we will need for plotting
+  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>%
+  # Reorder display_group based on display_order
+  dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
 
 
 # Declare output directory
@@ -42,15 +44,26 @@ output_dir <- file.path(root_dir, "figures", "pngs")
 telomerase_png <- file.path(output_dir, "Telomerase_Activities.png")
 supplementary_telomerase_png <- file.path(output_dir, "SuppTelomerase_Activities.png")
 
+# Read in the histologies file and join on the histology color mappings and labels
+PBTA_Histology <- readr::read_tsv(Histologies) %>% 
+  dplyr::inner_join(histology_label_mapping, by = "Kids_First_Biospecimen_ID") %>% 
+  dplyr::rename('SampleID' = "Kids_First_Biospecimen_ID")   ## Renaming "Kids_First_Biospecimen_ID" as SampleID for comparison purpose
 
 
-PTBA_Histology = read.table(Histologies,sep='\t',head=T)    ## Reading the clinical data
-colnames(PTBA_Histology)[colnames(PTBA_Histology)=="Kids_First_Biospecimen_ID"]='SampleID'   ## Renaming "Kids_First_Biospecimen_ID" as SampleID for comparison purpose
+# Get a distinct version of the color keys
+histologies_color_key_df <- PBTA_Histology %>%
+  dplyr::select(display_group, hex_codes) %>%
+  dplyr::distinct()
+
+# Make color key specific to these samples
+annotation_colors <- histologies_color_key_df$hex_codes
+names(annotation_colors) <- histologies_color_key_df$display_group
+
 
 TMScores1 = read.table(Telomerase_StdFpkm,sep='\t',head=T)  ## Reading Stranded FPKM telomerase scores
 colnames(TMScores1)[colnames(TMScores1)=="NormEXTENDScores"]='NormEXTENDScores_Stranded_FPKM'
 
-PTBA_GE_Standard_Histology = merge(PTBA_Histology,TMScores1,by='SampleID')   ### Merging Clinical data with the Telomerase scores
+PTBA_GE_Standard_Histology = merge(PBTA_Histology,TMScores1,by='SampleID')   ### Merging Clinical data with the Telomerase scores
 
 
 TMScores2 = read.table(Telomerase_PolyaFpkm,sep='\t',head=T)
@@ -69,15 +82,11 @@ PBTA_Stranded_TMScores = merge(TMScores1,TMScores3,by='SampleID')
 ########################################## Figure A and B dataframe compilation #########################################################
 
 Stranded_Histology = PTBA_GE_Standard_Histology
-Stranded_Histology = Stranded_Histology[-which(Stranded_Histology$short_histology == "Other"),]   ### Removing the tumors with catagory labelled as "Others"
-Frequency = data.frame(table(Stranded_Histology$short_histology))  ### Counting the number of cases for all histologies to avoid less number further
+Stranded_Histology = Stranded_Histology[-which(Stranded_Histology$display_group == "Other"),]   ### Removing the tumors with catagory labelled as "Others"
+Frequency = data.frame(table(Stranded_Histology$display_group))  ### Counting the number of cases for all histologies to avoid less number further
 colnames(Frequency)=c('Variables','Freq')
 Frequency = Frequency[which(Frequency$Freq == 1),]
-Stranded_Histology = Stranded_Histology[-which(Stranded_Histology$short_histology %in% Frequency$Variables),]     ### Removing the tumors with only one case in histologies 
-
-Stranded_Histology$short_histology[Stranded_Histology$short_histology == "CNS ganglioneuroblastoma"]= "CNS neuroblastoma"    #### Short hist color data has missing CNS ganglioneuroblastoma therefore renaming it
-Stranded_Histology$short_histology[Stranded_Histology$short_histology == "CNS Embryonal tumor"] = "Embryonal Tumor"         #### Short hist color data has missing CNS Embryonal tumor therefore renaming it
-
+Stranded_Histology = Stranded_Histology[-which(Stranded_Histology$display_group %in% Frequency$Variables),]     ### Removing the tumors with only one case in histologies 
 
 ########################################## Figure C data compilation #########################################################
 
@@ -113,9 +122,9 @@ theme_set(theme_classic() +
 
 
 
-P1 = ggplot(Stranded_Histology, aes(x=fct_reorder(short_histology,NormEXTENDScores_Stranded_FPKM,.desc =TRUE),y=NormEXTENDScores_Stranded_FPKM))+geom_boxplot(size=0.2,notch=FALSE,outlier.size = 0,outlier.shape=NA,aes(color=short_histology,fill=short_histology),alpha=0.4)+ geom_jitter(shape=16, cex=0.1,aes(color=short_histology))
-P1 = P1+scale_fill_manual(values = hex_codes)
-P1 = P1+scale_color_manual(values = hex_codes)
+P1 = ggplot(Stranded_Histology, aes(x=fct_reorder(display_group,NormEXTENDScores_Stranded_FPKM,.desc =TRUE),y=NormEXTENDScores_Stranded_FPKM))+geom_boxplot(size=0.2,notch=FALSE,outlier.size = 0,outlier.shape=NA,aes(color=display_group,fill=display_group),alpha=0.4)+ geom_jitter(shape=16, cex=0.1,aes(color=display_group))
+P1 = P1+scale_fill_manual(values = annotation_colors)
+P1 = P1+scale_color_manual(values = annotation_colors)
 
 
 
@@ -138,7 +147,7 @@ define_region <- function(row, col){
 
 
 
-print(ggpar(P1,font.xtickslab =c(5,"black"),font.ytickslab =6,font.x = 6,font.y=6,ylab="EXTEND Scores",xlab = "Tumor Short Histology",title="A",font.title=7),vp = define_region(row = 1:3, col = 1:3))
+print(ggpar(P1,font.xtickslab =c(5,"black"),font.ytickslab =6,font.x = 6,font.y=6,ylab="EXTEND Scores",xlab = "Tumor Display Group",title="A",font.title=7),vp = define_region(row = 1:3, col = 1:3))
 print(ggpar(P2,font.xtickslab =c(5,"black"),font.ytickslab =6,font.x = 6,font.y=6,ylab="EXTEND Scores",xlab = "Tumor Broad Histology",title="B",font.title=7),vp = define_region(row = 4:6, col = 1:2))
 print(ggpar(P3,font.xtickslab =c(5,"black"),font.ytickslab =6,font.x = 6,font.y=6,font.legend=6,xlab="Medulloblastoma Subgroups",ylab="EXTEND Scores",title="C",font.title=7),vp = define_region(row = 4:5, col = 3))
 
