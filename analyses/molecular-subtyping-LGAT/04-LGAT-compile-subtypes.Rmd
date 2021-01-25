@@ -128,7 +128,7 @@ nf1_biospecimen <- bind_rows(nf1_snv,
 
 This subtype contains KIAA1549-BRAF fusion
 ```{r}
-kiaabraf_biospecimen <- lgat_fusion %>%
+kiaabraf_biospecimen <- lgat_fus %>%
   filter(KIAA_BRAF_fus=="Yes") %>%
   mutate(molecular_subtype = "KIAA1549-BRAF") %>%
   select("Kids_First_Biospecimen_ID","molecular_subtype") 
@@ -137,7 +137,7 @@ kiaabraf_biospecimen <- lgat_fusion %>%
 
 ### LGG, BRAF V600E
 
-This subtype contains BRAF V600E or V599 SNV or non-canonical BRAF alterations such as p.V600ins or p.D594N
+This subtype contains BRAF V600E or V599 SNV or non-canonical BRAF SNV/indel overlapping kinase domain
 ```{r}
 
 brafV600_biospecimen <- lgat_snv %>%
