@@ -100,7 +100,7 @@ This subtype is characterized by germline NF1 variants. We do not have germline 
 ```{r}
 nf1_snv <- lgat_snv %>%
   filter(NF1_mut=="Yes") %>%
-  mutate(molecular_subtype = "LGG, NF1") %>%
+  mutate(molecular_subtype = "NF1") %>%
   select("Kids_First_Biospecimen_ID","molecular_subtype") 
 
 nf1_germline <- lgat_manifest %>% 
