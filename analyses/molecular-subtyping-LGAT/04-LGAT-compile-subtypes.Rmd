@@ -150,7 +150,7 @@ otherMAPK_snv_biospecimen <- lgat_snv %>%
 ### LGG, RTK
 
 This subtype harbors a fusion in ALK, ROS1, NTRK1, NTRK2, or NTRK3 or
-OR harbors a MET SNV **or
+OR harbors a MET SNV
 OR harbors a KIT SNV or
 OR harbors a PDGFRA SNV or fusion
 ```{r}
