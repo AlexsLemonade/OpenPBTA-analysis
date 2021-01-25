@@ -265,7 +265,7 @@ all_rna_subtype <- bind_rows(kiaabraf_biospecimen,
 
   
 all_subtype <- bind_rows(all_rna_subtype,
-                             all_dna_subtype) %>%
+                         all_dna_subtype) %>%
   full_join(all_lgat_matched, by=c("Kids_First_Biospecimen_ID_RNA","Kids_First_Biospecimen_ID_DNA",
                                    "sample_id",
                                    "Kids_First_Participant_ID")) %>%
@@ -273,10 +273,18 @@ all_subtype <- bind_rows(all_rna_subtype,
   group_by(sample_id,Kids_First_Participant_ID,Kids_First_Biospecimen_ID_RNA,Kids_First_Biospecimen_ID_DNA) %>%
   # merging them here with summarise
   summarise(molecular_subtype= toString(molecular_subtype)) %>%
-  # remove redudant ",LGG," from instances 
-  # like molecular_subtype ==LGG, BRAF V600E, LGG, CDKN2A/B
-  mutate(molecular_subtype = gsub(", LGG,",",",molecular_subtype )) %>%
-  unique() %>%
+  # formatting molecular_subtype columns
+  mutate( molecular_subtype = case_when(
+    # multiple subtypes are summarised 
+    # with a redudant ",LGG," from instances 
+    # like molecular_subtype ==LGG, BRAF V600E, LGG, CDKN2A/B
+    grepl(", LGG,",molecular_subtype ) ~ 
+      gsub(", LGG,",",",molecular_subtype ),
+    # if NA keep as "To be classified"
+    molecular_subtype == "NA" ~ 
+      "LGG, To be classified",
+    TRUE ~ molecular_subtype)) %>%
+unique() %>%
   write_tsv(file.path(resultDir,"lgat_subtyping.tsv"))
 
 ```
