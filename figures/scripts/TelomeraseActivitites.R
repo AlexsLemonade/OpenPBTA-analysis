@@ -106,28 +106,42 @@ statistics = stat.test%>%
 png(telomerase_png,width = 5, height = 6, units = "in", res = 1200)
 
 theme_set(theme_classic() +
-          theme(plot.title = element_text(size=10, face="bold"),axis.text.x=element_text(angle=40,size=6,vjust=1,hjust=1),axis.text.y=element_text(size=7), axis.title.x = element_text(size=0), axis.title.y = element_text(size=8),
-          legend.position = "none",
-          legend.key.size= unit(0.3,"cm"),
-          legend.key.width = unit(0.3,"cm"),
-          legend.title = element_text(size=7),
-          legend.text =element_text(size=6)
+          theme(plot.title = element_text(size=10, face="bold"),
+                axis.text.x=element_text(angle=40,size=6,vjust=1,hjust=1),
+                axis.text.y=element_text(size=7), 
+                axis.title.x = element_text(size=0), 
+                axis.title.y = element_text(size=8),
+                legend.position = "none",
+                legend.key.size= unit(0.3,"cm"),
+                legend.key.width = unit(0.3,"cm"),
+                legend.title = element_text(size=7),
+                legend.text =element_text(size=6)
         )
 )
 
+P1 = ggplot(Stranded_Histology, aes(x=fct_reorder(display_group, NormEXTENDScores_Stranded_FPKM,.desc =TRUE) %>% 
+                                      forcats::fct_relevel("Benign", "Other tumor", "Normal", after = Inf),
+                                    y=NormEXTENDScores_Stranded_FPKM)) +
+  geom_boxplot(size=0.2,notch=FALSE,outlier.size = 0,outlier.shape=NA, 
+               aes(color=display_group,fill=display_group),alpha=0.4)+ 
+  geom_jitter(shape=16, cex=0.1,aes(color=display_group))+
+  scale_fill_manual(values = annotation_colors, aesthetics = c("colour", "fill"))
+
+P1
+
+P2 = ggplot(Stranded_Histology, 
+            aes(x=fct_reorder(broad_histology,NormEXTENDScores_Stranded_FPKM,.desc =TRUE),
+                y=NormEXTENDScores_Stranded_FPKM)) +
+  geom_boxplot(size=0.2,notch=FALSE,outlier.size = 0, outlier.shape=NA,color="black",fill="#808080",alpha=0.4) + 
+  geom_jitter(shape=16, cex=0.1,color="black")
 
 
-P1 = ggplot(Stranded_Histology, aes(x=fct_reorder(display_group,NormEXTENDScores_Stranded_FPKM,.desc =TRUE),y=NormEXTENDScores_Stranded_FPKM))+geom_boxplot(size=0.2,notch=FALSE,outlier.size = 0,outlier.shape=NA,aes(color=display_group,fill=display_group),alpha=0.4)+ geom_jitter(shape=16, cex=0.1,aes(color=display_group))
-P1 = P1+scale_fill_manual(values = annotation_colors)
-P1 = P1+scale_color_manual(values = annotation_colors)
-
-
-
-P2 = ggplot(Stranded_Histology, aes(x=fct_reorder(broad_histology,NormEXTENDScores_Stranded_FPKM,.desc =TRUE),y=NormEXTENDScores_Stranded_FPKM))+geom_boxplot(size=0.2,notch=FALSE,outlier.size = 0,outlier.shape=NA,color="black",fill="#808080",alpha=0.4)+ geom_jitter(shape=16, cex=0.1,color="black")
-
-
-P3 = ggplot(Medulloblastoma_His, aes(x=fct_reorder(molecular_subtype,NormEXTENDScores_Stranded_FPKM,.desc =TRUE),y=NormEXTENDScores_Stranded_FPKM))+geom_boxplot(size=0.2,notch=FALSE,outlier.size = 0,outlier.shape=NA,color="black",fill="#808080",alpha=0.4)+ geom_jitter(shape=16, width = 0.1,size=0.2,color="black")+stat_pvalue_manual(
-    data = statistics, label = "p.adj",size=1.7,
+P3 = ggplot(Medulloblastoma_His, aes(x=fct_reorder(molecular_subtype,NormEXTENDScores_Stranded_FPKM,.desc =TRUE),
+                                     y=NormEXTENDScores_Stranded_FPKM)) + 
+  geom_boxplot(size=0.2,notch=FALSE,outlier.size = 0,outlier.shape=NA,color="black",fill="#808080",alpha=0.4) + 
+  geom_jitter(shape=16, width = 0.1,size=0.2,color="black") + 
+  stat_pvalue_manual(
+    data = statistics, label = "{p.adj}",size=1.7,
     xmin = "group1", xmax = "group2",tip.length = 0.003,
     y.position = "y.position"
     )
