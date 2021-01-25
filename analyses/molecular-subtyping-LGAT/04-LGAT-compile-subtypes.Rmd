@@ -26,7 +26,7 @@ lgat_manifest <- read_tsv(file.path(root_dir,
                                "data",
                                "pbta-histologies.tsv"), 
                      guess_max = 10000) %>%
-  filter( short_histology == "LGAT") %>%
+  filter( broad_histology == "Low-grade astrocytic tumor") %>%
   select(Kids_First_Biospecimen_ID,
          Kids_First_Participant_ID,
          sample_id,
@@ -49,6 +49,14 @@ subset_dir <- file.path(
   "analyses",
   "molecular-subtyping-LGAT",
   "lgat-subset"
+)
+
+# result Dir
+resultDir <- file.path(
+  root_dir,
+  "analyses",
+  "molecular-subtyping-LGAT",
+  "results"
 )
 
 # SNV based annotation
@@ -161,10 +169,9 @@ fgfr_snv_biospecimen <- lgat_snv %>%
   select("Kids_First_Biospecimen_ID","molecular_subtype") 
 
 fgfr_cnv_biospecimen <- lgat_cnv %>%
-  filter(FGFR_DUP_TANDEM=="Yes") %>%
+  filter(FGFR_DUP_TANDEM=="Yes" |  FGFR_DUP == "Yes") %>%
   mutate(molecular_subtype = "LGG, FGFR") %>%
   select("Kids_First_Biospecimen_ID","molecular_subtype") 
-
 
 ```
 
@@ -226,7 +233,7 @@ all_dna_subtype <- bind_rows(nf1_biospecimen,
                          cdkn_biospecimen
 ) %>%
   rename(Kids_First_Biospecimen_ID_DNA=Kids_First_Biospecimen_ID) %>%
-  left_join(all_lgat_matched,by="Kids_First_Biospecimen_ID_DNA")
+  left_join(all_lgat_matched,by="Kids_First_Biospecimen_ID_DNA") 
 
 all_rna_subtype <- bind_rows(kiaabraf_biospecimen,
                              otherMAPK_fus_biospecimen,
@@ -237,7 +244,19 @@ all_rna_subtype <- bind_rows(kiaabraf_biospecimen,
   left_join(all_lgat_matched,by="Kids_First_Biospecimen_ID_RNA")
 
   
-all_rna_subtype <- bind_rows(all_rna_subtype,
-                             all_dna_subtype)
+all_subtype <- bind_rows(all_rna_subtype,
+                             all_dna_subtype) %>%
+  full_join(all_lgat_matched, by=c("Kids_First_Biospecimen_ID_RNA","Kids_First_Biospecimen_ID_DNA",
+                                   "sample_id",
+                                   "Kids_First_Participant_ID")) %>%
+  group_by(sample_id,Kids_First_Participant_ID,Kids_First_Biospecimen_ID_RNA,Kids_First_Biospecimen_ID_DNA) %>%
+  # there are some instances where LGAT DNA/RNA have multiple subtypes
+  # so merging them here with summarise
+  summarise(molecular_subtype= toString(molecular_subtype)) %>%
+  # remove redudant ",LGG," from instances 
+  # like molecular_subtype ==LGG, BRAF V600E, LGG, CDKN2A/B
+  mutate(molecular_subtype = gsub(", LGG,",",",molecular_subtype )) %>%
+  unique() %>%
+  write_tsv(file.path(resultDir,"lgat_subtyping.tsv"))
 
 ```
