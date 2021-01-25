@@ -30,12 +30,16 @@ lgat_manifest <- read_tsv(file.path(root_dir,
   select(Kids_First_Biospecimen_ID,
          Kids_First_Participant_ID,
          sample_id,
-         experimental_strategy)
+         experimental_strategy,
+         cancer_predispositions)
 
 lgat_wgs <- lgat_manifest %>%
-  filter(experimental_strategy != "RNA-Seq")
+  filter(experimental_strategy != "RNA-Seq") %>%
+  select( -experimental_strategy, -cancer_predispositions)
+
 lgat_rna <- lgat_manifest %>%
-  filter(experimental_strategy == "RNA-Seq")
+  filter(experimental_strategy == "RNA-Seq") %>%
+  select( -experimental_strategy, -cancer_predispositions)
 
 all_lgat_matched <- full_join(lgat_wgs, lgat_rna,
                          by = c("Kids_First_Participant_ID",
@@ -76,10 +80,24 @@ lgat_fus <- read_tsv(file.path(subset_dir,"LGAT_fusion_subset.tsv"))
 ### LGG, NF1
 This subtype is characterized by germline NF1 variants. We do not have germline data within OpenPBTA, but we do have information about cancer predispositions. This group can be annotated if NF-1 is present within the cancer_predispositions field of the pbta-histologies.tsv file. We should also annotate somatic loss of NF1 via either missense, nonsense mutation or copy loss.
 ```{r}
-nf1_biospecimen <- lgat_snv %>%
+nf1_snv <- lgat_snv %>%
   filter(NF1_mut=="Yes") %>%
   mutate(molecular_subtype = "LGG, NF1") %>%
   select("Kids_First_Biospecimen_ID","molecular_subtype") 
+
+nf1_germline <- lgat_manifest %>% 
+  # to keep non-RNA files only since we will match the RNA 
+  # as Kids_First_Biospecimen_ID_RNA column at a later step
+  filter(experimental_strategy != "RNA-Seq") %>%
+  # keeping "NF1 and NF2" in cancer_predisposition
+  filter(grepl("NF", cancer_predispositions)) %>%
+  mutate(molecular_subtype = "LGG, NF1") %>%
+  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+
+nf1_biospecimen <- bind_rows(nf1_snv,
+                             nf1_germline) %>%
+  unique()
+  
 ```
 
 
@@ -233,6 +251,7 @@ all_dna_subtype <- bind_rows(nf1_biospecimen,
                          cdkn_biospecimen
 ) %>%
   rename(Kids_First_Biospecimen_ID_DNA=Kids_First_Biospecimen_ID) %>%
+  # add Kids_First_Biospecimen_ID_RNA to dna subtypes dataframe
   left_join(all_lgat_matched,by="Kids_First_Biospecimen_ID_DNA") 
 
 all_rna_subtype <- bind_rows(kiaabraf_biospecimen,
@@ -241,6 +260,7 @@ all_rna_subtype <- bind_rows(kiaabraf_biospecimen,
                              fgfr_fus_biospecimen,
                              myb_biospecimen) %>%
   rename(Kids_First_Biospecimen_ID_RNA=Kids_First_Biospecimen_ID) %>%
+  # add Kids_First_Biospecimen_ID_DNA to rna subtypes dataframe
   left_join(all_lgat_matched,by="Kids_First_Biospecimen_ID_RNA")
 
   
@@ -249,9 +269,9 @@ all_subtype <- bind_rows(all_rna_subtype,
   full_join(all_lgat_matched, by=c("Kids_First_Biospecimen_ID_RNA","Kids_First_Biospecimen_ID_DNA",
                                    "sample_id",
                                    "Kids_First_Participant_ID")) %>%
+  # lets group because there are some instances where LGAT DNA/RNA have multiple subtypes
   group_by(sample_id,Kids_First_Participant_ID,Kids_First_Biospecimen_ID_RNA,Kids_First_Biospecimen_ID_DNA) %>%
-  # there are some instances where LGAT DNA/RNA have multiple subtypes
-  # so merging them here with summarise
+  # merging them here with summarise
   summarise(molecular_subtype= toString(molecular_subtype)) %>%
   # remove redudant ",LGG," from instances 
   # like molecular_subtype ==LGG, BRAF V600E, LGG, CDKN2A/B
