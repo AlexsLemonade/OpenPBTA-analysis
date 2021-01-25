@@ -81,12 +81,7 @@ PBTA_Stranded_TMScores = merge(TMScores1,TMScores3,by='SampleID')
 
 ########################################## Figure A and B dataframe compilation #########################################################
 
-Stranded_Histology = PTBA_GE_Standard_Histology
-Stranded_Histology = Stranded_Histology[-which(Stranded_Histology$display_group == "Other"),]   ### Removing the tumors with catagory labelled as "Others"
-Frequency = data.frame(table(Stranded_Histology$display_group))  ### Counting the number of cases for all histologies to avoid less number further
-colnames(Frequency)=c('Variables','Freq')
-Frequency = Frequency[which(Frequency$Freq == 1),]
-Stranded_Histology = Stranded_Histology[-which(Stranded_Histology$display_group %in% Frequency$Variables),]     ### Removing the tumors with only one case in histologies 
+Stranded_Histology <- PTBA_GE_Standard_Histology
 
 ########################################## Figure C data compilation #########################################################
 
