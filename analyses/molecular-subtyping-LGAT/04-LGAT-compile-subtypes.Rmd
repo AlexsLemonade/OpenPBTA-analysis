@@ -170,7 +170,7 @@ otherMAPK_snv_biospecimen <- lgat_snv %>%
 ### LGG, RTK
 
 This subtype harbors a fusion in ALK, ROS1, NTRK1, NTRK2, or NTRK3 or
-OR harbors a MET SNV
+OR harbors a MET SNV **or
 OR harbors a KIT SNV or
 OR harbors a PDGFRA SNV or fusion
 ```{r}
@@ -193,7 +193,7 @@ rtk_snv_biospecimen <- lgat_snv %>%
 
 This subtype harbors FGFR1 p.N546K, p.K656E, p.N577, or p. K687 hotspot mutations or
 OR harbors FGFR1 TKD (tyrosine kinase domain tandem duplication) or
-OR harbors FGFR1-TACC1 fusion
+OR harbors FGFR1-TACC1 fusion **or
 OR harbors FGFR1 or FGFR2 fusions
 ```{r}
 fgfr_fus_biospecimen <- lgat_fus %>%
