@@ -1,10 +1,11 @@
-library('ggpubr')
-stringsAsFactors=FALSE
+# Script for creating the Telomerase activities figure
+
 library(stringr)
 library(gridBase)
 library(gridGraphics)
 library(optparse)
-library(forcats) ### for fct_reorder()
+library(forcats) # for fct_reorder()
+library(ggpubr) # For pvalue_stat_manual
 
 ################################ File paths and reading data for making figure ###################################################################
 
@@ -98,7 +99,6 @@ combinations = nrow(stat.test)
 statistics = stat.test%>%
   mutate(y.position = seq(1,by=0.04,length.out=combinations))
 
-
 #########################################  Saving Figure in PNG format 
 
 
@@ -119,7 +119,7 @@ theme_set(theme_classic() +
         )
 )
 
-P1 = ggplot(Stranded_Histology, aes(x=fct_reorder(display_group, NormEXTENDScores_Stranded_FPKM,.desc =TRUE) %>% 
+P1 <- ggplot(Stranded_Histology, aes(x=fct_reorder(display_group, NormEXTENDScores_Stranded_FPKM,.desc =TRUE) %>% 
                                       forcats::fct_relevel("Benign", "Other tumor", "Normal", after = Inf),
                                     y=NormEXTENDScores_Stranded_FPKM)) +
   geom_boxplot(size=0.2,notch=FALSE,outlier.size = 0,outlier.shape=NA, 
@@ -127,24 +127,23 @@ P1 = ggplot(Stranded_Histology, aes(x=fct_reorder(display_group, NormEXTENDScore
   geom_jitter(shape=16, cex=0.1,aes(color=display_group))+
   scale_fill_manual(values = annotation_colors, aesthetics = c("colour", "fill"))
 
-P1
 
-P2 = ggplot(Stranded_Histology, 
+P2 <- ggplot(Stranded_Histology, 
             aes(x=fct_reorder(broad_histology,NormEXTENDScores_Stranded_FPKM,.desc =TRUE),
                 y=NormEXTENDScores_Stranded_FPKM)) +
   geom_boxplot(size=0.2,notch=FALSE,outlier.size = 0, outlier.shape=NA,color="black",fill="#808080",alpha=0.4) + 
   geom_jitter(shape=16, cex=0.1,color="black")
 
 
-P3 = ggplot(Medulloblastoma_His, aes(x=fct_reorder(molecular_subtype,NormEXTENDScores_Stranded_FPKM,.desc =TRUE),
-                                     y=NormEXTENDScores_Stranded_FPKM)) + 
+P3 <- ggplot(Medulloblastoma_His, aes(x=fct_reorder(molecular_subtype,NormEXTENDScores_Stranded_FPKM,.desc =TRUE),
+                                      y=NormEXTENDScores_Stranded_FPKM)) + 
   geom_boxplot(size=0.2,notch=FALSE,outlier.size = 0,outlier.shape=NA,color="black",fill="#808080",alpha=0.4) + 
   geom_jitter(shape=16, width = 0.1,size=0.2,color="black") + 
   stat_pvalue_manual(
-    data = statistics, label = "{p.adj}",size=1.7,
+    data = statistics, label = "p.adj",size=1.7,
     xmin = "group1", xmax = "group2",tip.length = 0.003,
     y.position = "y.position"
-    )
+  )
 
 grid.newpage()
 # Create layout : nrow = 2, ncol =2
@@ -156,9 +155,15 @@ define_region <- function(row, col){
 
 
 
-print(ggpar(P1,font.xtickslab =c(5,"black"),font.ytickslab =6,font.x = 6,font.y=6,ylab="EXTEND Scores",xlab = "Tumor Display Group",title="A",font.title=7),vp = define_region(row = 1:3, col = 1:3))
-print(ggpar(P2,font.xtickslab =c(5,"black"),font.ytickslab =6,font.x = 6,font.y=6,ylab="EXTEND Scores",xlab = "Tumor Broad Histology",title="B",font.title=7),vp = define_region(row = 4:6, col = 1:2))
-print(ggpar(P3,font.xtickslab =c(5,"black"),font.ytickslab =6,font.x = 6,font.y=6,font.legend=6,xlab="Medulloblastoma Subgroups",ylab="EXTEND Scores",title="C",font.title=7),vp = define_region(row = 4:5, col = 3))
+print(ggpar(P1,font.xtickslab =c(5,"black"),
+            font.ytickslab =6,font.x = 6,font.y=6,ylab="EXTEND Scores",
+            xlab = "Tumor Display Group",title="A",font.title=7),vp = define_region(row = 1:3, col = 1:3))
+print(ggpar(P2,font.xtickslab =c(5,"black"),
+            font.ytickslab =6,font.x = 6,font.y=6,ylab="EXTEND Scores",
+            xlab = "Tumor Broad Histology",title="B",font.title=7),vp = define_region(row = 4:6, col = 1:2))
+print(ggpar(P3,font.xtickslab =c(5,"black"),
+            font.ytickslab =6,font.x = 6,font.y=6,font.legend=6,
+            xlab="Medulloblastoma Subgroups",ylab="EXTEND Scores",title="C",font.title=7),vp = define_region(row = 4:5, col = 3))
 
 dev.off()
 
