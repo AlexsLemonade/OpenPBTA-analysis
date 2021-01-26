@@ -16,3 +16,5 @@ open_pbta_envs.txt
 # Result of running docker image locally. Should not be tracked
 .rstudio/
 
+# Ignore all .pyc files
+*.pyc

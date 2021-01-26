@@ -130,7 +130,7 @@ na_color <- divergent_palette %>%
   dplyr::filter(color_names == "na_color") %>%
   dplyr::pull(hex_codes)
 # not currently using "histologies_color_palette.tsv" as the current 
-# implementation uses `integrated_diagnosis``, which is not covered in that color scheme
+# implementation uses `broad_histology`, which is not covered in that color scheme
 # Since we are only showing the most common subset of diseases, we don't need all colors,
 # but this should probably be updated in the future
 
