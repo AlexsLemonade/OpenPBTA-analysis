@@ -67,7 +67,7 @@ lgat_manifest <- read_tsv(file.path(root_dir,
          experimental_strategy,
          cancer_predispositions)
 
-lgat_wgs <- lgat_manifest %>%
+lgat_dna <- lgat_manifest %>%
   filter(experimental_strategy != "RNA-Seq") %>%
   select( -experimental_strategy, -cancer_predispositions)
 
@@ -75,7 +75,7 @@ lgat_rna <- lgat_manifest %>%
   filter(experimental_strategy == "RNA-Seq") %>%
   select( -experimental_strategy, -cancer_predispositions)
 
-all_lgat_matched <- full_join(lgat_wgs, lgat_rna,
+all_lgat_matched <- full_join(lgat_dna, lgat_rna,
                          by = c("Kids_First_Participant_ID",
                                 "sample_id"),
                          suffix = c("_DNA", "_RNA")) %>%
@@ -109,7 +109,6 @@ nf1_germline <- lgat_manifest %>%
   filter(experimental_strategy != "RNA-Seq") %>%
   # keeping "NF1 and NF2" in cancer_predisposition
   filter(cancer_predispositions %in% c("NF-1",
-                                       "NF-2,Schwannomatosis",
                                        "NF-1,Other inherited conditions NOS")) %>%
   mutate(molecular_subtype = "NF1") %>%
   select("Kids_First_Biospecimen_ID","molecular_subtype") 
