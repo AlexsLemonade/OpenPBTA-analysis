@@ -122,7 +122,8 @@ umap_plot <- read_tsv(rsem_umap_file) %>%
                            x_label = "UMAP1",
                            y_label = "UMAP2",
                            color_palette = annotation_colors) +
-  theme(text = element_text(size = 10))
+  theme(text = element_text(size = 10), 
+        legend.position = "none")
 
 # Save temporary PNG
 ggsave(umap_png, plot = umap_plot, width = 4, height = 4)
