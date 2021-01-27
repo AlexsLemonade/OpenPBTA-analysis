@@ -65,12 +65,15 @@ if (!(is.logical(running_in_ci)))
 Next, define directories and load data files:
 ```{r, data-load, message=FALSE, warning=FALSE}
 ### Define directories
-data_dir    <- file.path("..", "..", "data") 
+# Establish base dir
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir    <- file.path(root_dir, "data") 
 results_dir <- "results"
 
 ######### Define input files
 ## Metadata file (histologies/clinical data)
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+histology_color_file <- file.path(root_dir, "figures", "palettes", "histology_label_color_table.tsv")
 
 ## GSEA scores
 scores_stranded_file <- file.path(results_dir, "gsva_scores_stranded.tsv")
@@ -113,8 +116,7 @@ all_scores      <- bind_rows(scores_stranded, scores_polya) %>%
                         hallmark_name = factor(hallmark_name))
 
 # Import standard groupings from the color palette
-histology_label_mapping <- readr::read_tsv(
-  file.path("..", "..", "figures", "palettes", "histology_label_color_table.tsv")) %>% 
+histology_label_mapping <- readr::read_tsv(histology_color_file) %>% 
   # Select just the columns we will need for plotting
   dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>% 
   # Reorder display_group based on display_order

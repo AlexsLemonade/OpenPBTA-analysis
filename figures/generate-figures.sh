@@ -48,13 +48,13 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
   bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh
   bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh
   cd $WORKDIR
-
+fi
   # Run mutational signatures analysis
   Rscript --vanilla -e "rmarkdown::render('../analyses/mutational-signatures/mutational_signatures.Rmd', clean = TRUE)"
 
   # Run the figure assembly
   Rscript --vanilla scripts/fig2-mutational-landscape.R
-fi
+
 
 ######################
 ## Interaction plots
@@ -72,7 +72,7 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
   # Run the `focal-cn-file-preparation` module shell script to prepare the focal
   # CN file so that it can be represented on the oncoprint
   bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn.sh
-fi 
+fi
 
 # Run the `oncoprint-landscape` module shell script
 bash ${analyses_dir}/oncoprint-landscape/run-oncoprint.sh
@@ -119,9 +119,7 @@ bash ${analyses_dir}/copy_number_consensus_call/run_consensus_call.sh
 Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.Rmd',
                               clean = TRUE, params = list(final_figure=TRUE))"
 
-
 ####### Telomerase Activities
-
 
 #generate telomerase activities using gene expression data from collapse RNA seq data files
 Rscript --vanilla 01-run-EXTEND.R --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt

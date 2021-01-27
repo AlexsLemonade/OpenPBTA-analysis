@@ -93,6 +93,10 @@ display_group_df <- histologies_df %>%
   annotation_colors <- unique(histologies_color_key_df$hex_codes)
   names(annotation_colors) <- unique(histologies_color_key_df$display_group)
 
+  # Drop the hex_code column so its not made into its own annotation bar
+  display_group_df <- display_group_df %>% 
+    dplyr::select(-hex_codes)
+  
 #### UMAP plot -----------------------------------------------------------------
 
 dim_red_dir <- file.path(
@@ -299,11 +303,11 @@ dev.off()
 
 # And now just the legend which will serve as the legend for the entire figure
 display_group_legend <- Legend(
-  labels = histology_palette$color_names,
-  legend_gp = gpar(fill = histology_palette$hex_codes)
+  labels = names(annotation_colors),
+  legend_gp = gpar(fill = annotation_colors)
 )
 
-png(legend_png, width = 2, height = 6, unit = "in", res = 600)
+png(legend_png, width = 4, height = 6, unit = "in", res = 600)
 draw(display_group_legend)
 dev.off()
 

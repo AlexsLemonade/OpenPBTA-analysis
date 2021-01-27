@@ -3,6 +3,9 @@
 # Function:
 # Script to perform immune characterization using xCell etc.
 
+# Find the root directory of this repository
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
 # load libraries
 suppressPackageStartupMessages(library(optparse))
 suppressPackageStartupMessages(library(tidyverse))
@@ -75,7 +78,7 @@ deconv <- function(expr.input, method) {
 
   # Import standard color palettes for project
   histology_label_mapping <- readr::read_tsv(
-    file.path("..", "..", "figures", "palettes", "histology_label_color_table.tsv")) %>%
+    file.path(root_dir, "figures", "palettes", "histology_label_color_table.tsv")) %>%
     # Select just the columns we will need for plotting
     dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>%
     # Reorder display_group based on display_order
