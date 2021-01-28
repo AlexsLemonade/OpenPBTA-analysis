@@ -95,11 +95,11 @@ PBTA_Stranded_TMScores <- merge(TMScores1, TMScores3, by = "SampleID")
 Stranded_Histology <- PTBA_GE_Standard_Histology
 
 
-# Make a short_histology version of this datas frame that removes the > 5 groups
-Stranded_Short_Histology <- Stranded_Histology %>% 
-  dplyr::count(short_histology) %>% 
+# Make a harmonized_diagnosis version of this datas frame that removes the > 5 groups
+Stranded_Harmonized_dx <- Stranded_Histology %>% 
+  dplyr::count(harmonized_diagnosis) %>% 
   dplyr::filter(n > 5) %>% 
-  dplyr::inner_join(Stranded_Histology, by = "short_histology")
+  dplyr::inner_join(Stranded_Histology, by = "harmonized_diagnosis")
 
 ########################################## Figure C data compilation #########################################################
 
@@ -153,15 +153,16 @@ P1 <- ggplot(Stranded_Histology , aes(
 
 
 P2 <- ggplot(
-  Stranded_Short_Histology,
+  Stranded_Harmonized_dx,
   aes(
-    x = fct_reorder(short_histology, NormEXTENDScores_Stranded_FPKM, .desc = TRUE),
-    y = NormEXTENDScores_Stranded_FPKM
+    x = fct_reorder(harmonized_diagnosis, NormEXTENDScores_Stranded_FPKM, .desc = TRUE),
+    y = NormEXTENDScores_Stranded_FPKM, 
   )
 ) +
-  geom_boxplot(size = 0.2, notch = FALSE, outlier.size = 0, outlier.shape = NA, color = "black", fill = "#808080", alpha = 0.4) +
-  geom_jitter(shape = 16, cex = 0.1, color = "black")
-
+  geom_boxplot(size = 0.2, notch = FALSE, outlier.size = 0, outlier.shape = NA, aes(color = hex_codes, fill = hex_codes), alpha = 0.4) +
+  geom_jitter(shape = 16, cex = 0.1, aes(color = hex_codes)) +
+  ggplot2::scale_fill_identity() + 
+  ggplot2::scale_color_identity()
 
 P3 <- ggplot(Medulloblastoma_His, aes(
   x = fct_reorder(molecular_subtype, NormEXTENDScores_Stranded_FPKM, .desc = TRUE),
@@ -193,7 +194,7 @@ print(ggpar(P1,
 print(ggpar(P2,
   font.xtickslab = c(5, "black"),
   font.ytickslab = 6, font.x = 6, font.y = 6, ylab = "EXTEND Scores",
-  xlab = "Tumor Short Histology (for groups n > 5)", title = "B", font.title = 7
+  xlab = "Tumor Harmonized Diagnosis (for groups n > 5)", title = "B", font.title = 7
 ), vp = define_region(row = 4:6, col = 1:2))
 print(ggpar(P3,
   font.xtickslab = c(5, "black"),
@@ -210,11 +211,8 @@ png(supplementary_telomerase_png, width = 4, height = 2, units = "in", res = 120
 
 theme_set(theme_classic() +
   theme(
-    plot.title = element_text(size = 10, face = "bold"), 
-    axis.text.x = element_text(angle = 25, size = 6, vjust = 1, hjust = 1), 
-    axis.text.y = element_text(size = 7), 
-    axis.title.x = element_text(size = 0), 
-    axis.title.y = element_text(size = 8),    legend.position = "none",
+    plot.title = element_text(size = 10, face = "bold"), axis.text.x = element_text(angle = 25, size = 6, vjust = 1, hjust = 1), axis.text.y = element_text(size = 7), axis.title.x = element_text(size = 0), axis.title.y = element_text(size = 8),
+    legend.position = "none",
     legend.key.size = unit(0.3, "cm"),
     legend.key.width = unit(0.3, "cm"),
     legend.title = element_text(size = 7),
