@@ -91,7 +91,15 @@ PBTA_Stranded_TMScores <- merge(TMScores1, TMScores3, by = "SampleID")
 
 ########################################## Figure A and B dataframe compilation #########################################################
 
+# This data frame will be used for most histology plots
 Stranded_Histology <- PTBA_GE_Standard_Histology
+
+
+# Make a short_histology version of this datas frame that removes the > 5 groups
+Stranded_Short_Histology <- Stranded_Histology %>% 
+  dplyr::count(short_histology) %>% 
+  dplyr::filter(n > 5) %>% 
+  dplyr::inner_join(Stranded_Histology, by = "short_histology")
 
 ########################################## Figure C data compilation #########################################################
 
@@ -131,7 +139,7 @@ theme_set(theme_classic() +
     legend.text = element_text(size = 6)
   ))
 
-P1 <- ggplot(Stranded_Histology, aes(
+P1 <- ggplot(Stranded_Histology , aes(
   x = fct_reorder(display_group, NormEXTENDScores_Stranded_FPKM, .desc = TRUE) %>%
     forcats::fct_relevel("Benign", "Other tumor", "Normal", after = Inf),
   y = NormEXTENDScores_Stranded_FPKM
@@ -145,9 +153,9 @@ P1 <- ggplot(Stranded_Histology, aes(
 
 
 P2 <- ggplot(
-  Stranded_Histology,
+  Stranded_Short_Histology,
   aes(
-    x = fct_reorder(broad_histology, NormEXTENDScores_Stranded_FPKM, .desc = TRUE),
+    x = fct_reorder(short_histology, NormEXTENDScores_Stranded_FPKM, .desc = TRUE),
     y = NormEXTENDScores_Stranded_FPKM
   )
 ) +
@@ -185,7 +193,7 @@ print(ggpar(P1,
 print(ggpar(P2,
   font.xtickslab = c(5, "black"),
   font.ytickslab = 6, font.x = 6, font.y = 6, ylab = "EXTEND Scores",
-  xlab = "Tumor Broad Histology", title = "B", font.title = 7
+  xlab = "Tumor Short Histology", title = "B", font.title = 7
 ), vp = define_region(row = 4:6, col = 1:2))
 print(ggpar(P3,
   font.xtickslab = c(5, "black"),
