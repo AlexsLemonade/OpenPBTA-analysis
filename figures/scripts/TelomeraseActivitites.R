@@ -193,7 +193,7 @@ print(ggpar(P1,
 print(ggpar(P2,
   font.xtickslab = c(5, "black"),
   font.ytickslab = 6, font.x = 6, font.y = 6, ylab = "EXTEND Scores",
-  xlab = "Tumor Short Histology", title = "B", font.title = 7
+  xlab = "Tumor Short Histology (for groups n > 5)", title = "B", font.title = 7
 ), vp = define_region(row = 4:6, col = 1:2))
 print(ggpar(P3,
   font.xtickslab = c(5, "black"),
