@@ -210,8 +210,11 @@ png(supplementary_telomerase_png, width = 4, height = 2, units = "in", res = 120
 
 theme_set(theme_classic() +
   theme(
-    plot.title = element_text(size = 10, face = "bold"), axis.text.x = element_text(angle = 25, size = 6, vjust = 1, hjust = 1), axis.text.y = element_text(size = 7), axis.title.x = element_text(size = 0), axis.title.y = element_text(size = 8),
-    legend.position = "none",
+    plot.title = element_text(size = 10, face = "bold"), 
+    axis.text.x = element_text(angle = 25, size = 6, vjust = 1, hjust = 1), 
+    axis.text.y = element_text(size = 7), 
+    axis.title.x = element_text(size = 0), 
+    axis.title.y = element_text(size = 8),    legend.position = "none",
     legend.key.size = unit(0.3, "cm"),
     legend.key.width = unit(0.3, "cm"),
     legend.title = element_text(size = 7),
