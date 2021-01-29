@@ -15,6 +15,8 @@ along with the above molecular data based annotation in this notebook we will in
 ```{r}
 library("tidyverse")
 
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
 # get subset folder
 subset_dir <- file.path(
   root_dir,
@@ -293,10 +295,19 @@ all_subtype <- bind_rows(all_rna_subtype,
   # merging them here with summarise
   summarise(molecular_subtype= toString(molecular_subtype)) %>%
   # formatting molecular_subtype columns
-  mutate( molecular_subtype = case_when(
-    molecular_subtype == "NA" ~ "LGG, To be classified",
-    TRUE ~ stringr::str_c("LGG, ", molecular_subtype)
-  )) %>%
+  dplyr::mutate(molecular_subtype = case_when(
+    # molecular_subtype is NA and we didn't find any canonical
+    # LGG variant in the DNA and no RNA abberations in RNA sample
+    # subtype should be WT
+    (is.na(molecular_subtype) & !is.na(Kids_First_Biospecimen_ID_DNA) &
+       !is.na(Kids_First_Biospecimen_ID_RNA)) ~ "LGG, H3 wildtype",
+    # molecular_subtype is NA and we do not have a DNA sample
+    # OR don't have RNA to check for LGG variant or fusion
+    # so status will be To be classified
+    is.na(molecular_subtype) & (!is.na(Kids_First_Biospecimen_ID_DNA) |
+                                  !is.na(Kids_First_Biospecimen_ID_RNA))  ~ "LGG, To be classified",
+    # when molecular_subtype is not NA (we know the H3 variant subtype from DNA )
+    TRUE ~ molecular_subtype)) %>%
   unique() %>%
   write_tsv(file.path(resultDir,"lgat_subtyping.tsv"))
 
