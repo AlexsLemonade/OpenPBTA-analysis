@@ -29,10 +29,6 @@ deconvout <- opt$input
 output <- opt$output
 load(deconvout) 
 
-# if short histology is Medulloblastoma or ATRT, use them as broad histology
-deconv.res$broad_histology <- ifelse(deconv.res$display_group %in% c("ATRT", "Medulloblastoma"),
-                                     deconv.res$display_group, deconv.res$broad_histology)
-
 # add molecular subtype info
 deconv.res$broad_histology <- ifelse(is.na(deconv.res$molecular_subtype),
                                      deconv.res$broad_histology,
