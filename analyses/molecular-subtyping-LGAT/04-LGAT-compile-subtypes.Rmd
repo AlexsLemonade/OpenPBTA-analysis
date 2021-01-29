@@ -102,7 +102,7 @@ This subtype is characterized by germline NF1 variants. We do not have germline 
 ```{r}
 nf1_snv <- lgat_snv %>%
   filter(NF1_mut=="Yes") %>%
-  mutate(molecular_subtype = "NF1") %>%
+  mutate(molecular_subtype = "NF1-somatic") %>%
   select("Kids_First_Biospecimen_ID","molecular_subtype") 
 
 nf1_germline <- lgat_manifest %>% 
@@ -112,7 +112,7 @@ nf1_germline <- lgat_manifest %>%
   # keeping "NF1 and NF2" in cancer_predisposition
   filter(cancer_predispositions %in% c("NF-1",
                                        "NF-1,Other inherited conditions NOS")) %>%
-  mutate(molecular_subtype = "NF1") %>%
+  mutate(molecular_subtype = "NF1-germline") %>%
   select("Kids_First_Biospecimen_ID","molecular_subtype") 
 
 nf1_biospecimen <- bind_rows(nf1_snv,
@@ -312,3 +312,8 @@ all_subtype <- bind_rows(all_rna_subtype,
   write_tsv(file.path(resultDir,"lgat_subtyping.tsv"))
 
 ```
+
+```{r}
+sessionInfo()
+```
+
