@@ -1665,10 +1665,10 @@ $(document).ready(function () {
 <h3>Purpose</h3>
 <p>The purpose of this analysis is to assess significant differences in GSVA scores for each hallmark pathways. Using ANOVA and subsequent Tukey tests, we ask:</p>
 <ul>
-<li><p>For each pathway, are GSVA scores significantly different across <code>short_histology</code>? If so, which histologies are significantly different?</p></li>
+<li><p>For each pathway, are GSVA scores significantly different across <code>display_group</code>? If so, which histologies are significantly different?</p></li>
 <li><p>For each pathway, are GSVA scores significantly different across <code>harmonized_diagnosis</code>? If so, which types are significantly different?</p></li>
 </ul>
-<p>We perform this using both GSVA scores calculated from the stranded and polyA RNA-seq libraries. Code is also flexible enough to test a different variable besides <code>short_histology</code>, etc.</p>
+<p>We perform this using both GSVA scores calculated from the stranded and polyA RNA-seq libraries. Code is also flexible enough to test a different variable besides <code>display_group</code>, etc.</p>
 </div>
 <div id="usage" class="section level3">
 <h3>Usage</h3>
@@ -1700,25 +1700,28 @@ if (!(is.logical(running_in_ci)))
 }</code></pre>
 <p><br> Next, define directories and load data files:</p>
 <pre class="r"><code>### Define directories
-data_dir    &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;data&quot;) 
+# Establish base dir
+root_dir &lt;- rprojroot::find_root(rprojroot::has_dir(&quot;.git&quot;))
+data_dir    &lt;- file.path(root_dir, &quot;data&quot;) 
 results_dir &lt;- &quot;results&quot;
 
 ######### Define input files
 ## Metadata file (histologies/clinical data)
 metadata_file &lt;- file.path(data_dir, &quot;pbta-histologies.tsv&quot;)
+histology_color_file &lt;- file.path(root_dir, &quot;figures&quot;, &quot;palettes&quot;, &quot;histology_label_color_table.tsv&quot;)
 
 ## GSEA scores
 scores_stranded_file &lt;- file.path(results_dir, &quot;gsva_scores_stranded.tsv&quot;)
 scores_polya_file    &lt;- file.path(results_dir, &quot;gsva_scores_polya.tsv&quot;)
 
 ######## Define output files
-file_anova_stranded_short_histology  &lt;- file.path(results_dir, &quot;gsva_anova_stranded_short_histology.tsv&quot;)
-file_anova_polya_short_histology     &lt;- file.path(results_dir, &quot;gsva_anova_polya_short_histology.tsv&quot;)
+file_anova_stranded_display_group  &lt;- file.path(results_dir, &quot;gsva_anova_stranded_display_group.tsv&quot;)
+file_anova_polya_display_group     &lt;- file.path(results_dir, &quot;gsva_anova_polya_display_group.tsv&quot;)
 file_anova_stranded_harmonized_diagnosis &lt;- file.path(results_dir, &quot;gsva_anova_stranded_harmonized_diagnosis.tsv&quot;)
 file_anova_polya_harmonized_diagnosis    &lt;- file.path(results_dir, &quot;gsva_anova_polya_harmonized_diagnosis.tsv&quot;)
 
-file_tukey_stranded_short_histology  &lt;- file.path(results_dir, &quot;gsva_tukey_stranded_short_histology.tsv&quot;)
-file_tukey_polya_short_histology     &lt;- file.path(results_dir, &quot;gsva_tukey_polya_short_histology.tsv&quot;)
+file_tukey_stranded_display_group  &lt;- file.path(results_dir, &quot;gsva_tukey_stranded_display_group.tsv&quot;)
+file_tukey_polya_display_group     &lt;- file.path(results_dir, &quot;gsva_tukey_polya_display_group.tsv&quot;)
 file_tukey_stranded_harmonized_diagnosis &lt;- file.path(results_dir, &quot;gsva_tukey_stranded_harmonized_diagnosis.tsv&quot;)
 file_tukey_polya_harmonized_diagnosis    &lt;- file.path(results_dir, &quot;gsva_tukey_polya_harmonized_diagnosis.tsv&quot;)
 
@@ -1730,7 +1733,7 @@ scores_polya    &lt;- readr::read_tsv(scores_polya_file)</code></pre>
 </div>
 <div id="anova-and-tukey-analysis-of-gsva-scores" class="section level3">
 <h3>ANOVA and Tukey analysis of GSVA scores</h3>
-<p>Here we perform a series of ANOVAs, for polyA and stranded libraries separately, to determine whether mean GSVA scores for a given grouping are significantly different across hallmarks (pathways). The given groupings examined here are <code>short_histology</code> and <code>harmonized_diagnosis</code>. In other words, we perform an ANOVA (and associated posthoc Tukey test) for each hallmark as, <code>hallmark ~ grouping</code>. Users can specify the grouping variable.</p>
+<p>Here we perform a series of ANOVAs, for polyA and stranded libraries separately, to determine whether mean GSVA scores for a given grouping are significantly different across hallmarks (pathways). The given groupings examined here are <code>display_group</code> and <code>harmonized_diagnosis</code>. In other words, we perform an ANOVA (and associated posthoc Tukey test) for each hallmark as, <code>hallmark ~ grouping</code>. Users can specify the grouping variable.</p>
 <p>First, prepare the data for modeling:</p>
 <pre class="r"><code>### Merge histology metadata with each set of gsea scores
 scores_stranded  &lt;- scores_stranded %&gt;% mutate(data_type = &quot;stranded&quot;)
@@ -1739,46 +1742,69 @@ all_scores      &lt;- bind_rows(scores_stranded, scores_polya) %&gt;%
                         mutate(data_type    = factor(data_type),
                         hallmark_name = factor(hallmark_name))
 
-metadata_with_gsva &lt;- metadata %&gt;%
-                        filter(experimental_strategy == &quot;RNA-Seq&quot;) %&gt;%
-                        inner_join(all_scores, by = &quot;Kids_First_Biospecimen_ID&quot; )</code></pre>
+# Import standard groupings from the color palette
+histology_label_mapping &lt;- readr::read_tsv(histology_color_file) %&gt;% 
+  # Select just the columns we will need for plotting
+  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %&gt;% 
+  # Reorder display_group based on display_order
+  dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   Kids_First_Biospecimen_ID = col_character(),
+##   sample_type = col_character(),
+##   integrated_diagnosis = col_character(),
+##   Notes = col_character(),
+##   harmonized_diagnosis = col_character(),
+##   broad_histology = col_character(),
+##   short_histology = col_character(),
+##   display_group = col_character(),
+##   n = col_double(),
+##   display_order = col_double(),
+##   hex_codes = col_character()
+## )</code></pre>
+<pre class="r"><code>metadata_with_gsva &lt;- metadata %&gt;%
+  filter(experimental_strategy == &quot;RNA-Seq&quot;) %&gt;%
+  inner_join(all_scores, by = &quot;Kids_First_Biospecimen_ID&quot;) %&gt;% 
+  # Join on color palette groupings 
+  inner_join(histology_label_mapping)</code></pre>
+<pre><code>## Joining, by = &quot;Kids_First_Biospecimen_ID&quot;</code></pre>
 <p>Now, model:</p>
-<pre class="r"><code>short_histology_stranded_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, short_histology, &quot;stranded&quot;, SIGNIFICANCE_THRESHOLD) </code></pre>
+<pre class="r"><code>display_group_stranded_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, display_group, &quot;stranded&quot;, SIGNIFICANCE_THRESHOLD) </code></pre>
 <pre><code>## [1] 50</code></pre>
 <pre class="r"><code>harmonized_diagnosis_stranded_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, harmonized_diagnosis, &quot;stranded&quot;, SIGNIFICANCE_THRESHOLD) </code></pre>
 <pre><code>## [1] 50</code></pre>
-<pre class="r"><code>head(short_histology_stranded_model_results)</code></pre>
+<pre class="r"><code>head(display_group_stranded_model_results)</code></pre>
 <pre><code>## $anova
 ## # A tibble: 50 x 5
 ##    hallmark_name anova_f_statist… anova_p_value anova_p_value_b…
 ##    &lt;fct&gt;                    &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI…             10.8     2.24e- 55        1.12e- 53
-##  2 HALLMARK_ALL…             18.5     4.62e- 95        2.31e- 93
-##  3 HALLMARK_AND…             14.3     1.72e- 74        8.61e- 73
-##  4 HALLMARK_ANG…             12.5     4.96e- 65        2.48e- 63
-##  5 HALLMARK_API…             18.3     2.72e- 94        1.36e- 92
-##  6 HALLMARK_API…             24.2     1.77e-120        8.86e-119
-##  7 HALLMARK_APO…             17.9     4.29e- 92        2.15e- 90
-##  8 HALLMARK_BIL…             24.0     1.34e-119        6.71e-118
-##  9 HALLMARK_CHO…             15.0     6.73e- 78        3.37e- 76
-## 10 HALLMARK_COA…             20.3     1.64e-103        8.21e-102
+##  1 HALLMARK_ADI…             22.6     2.83e- 53        1.41e- 51
+##  2 HALLMARK_ALL…             37.6     9.51e- 86        4.76e- 84
+##  3 HALLMARK_AND…             29.4     1.15e- 68        5.76e- 67
+##  4 HALLMARK_ANG…             24.2     4.82e- 57        2.41e- 55
+##  5 HALLMARK_API…             33.7     1.13e- 77        5.63e- 76
+##  6 HALLMARK_API…             48.1     9.56e-106        4.78e-104
+##  7 HALLMARK_APO…             35.8     4.45e- 82        2.22e- 80
+##  8 HALLMARK_BIL…             56.7     5.89e-121        2.95e-119
+##  9 HALLMARK_CHO…             29.0     1.09e- 67        5.43e- 66
+## 10 HALLMARK_COA…             42.3     6.92e- 95        3.46e- 93
 ## # … with 40 more rows, and 1 more variable: significant_anova &lt;lgl&gt;
 ## 
 ## $tukey
-## # A tibble: 45,150 x 7
+## # A tibble: 6,000 x 7
 ##    hallmark_name comparison pathway_score_d… tukey_p_value bonferroni_pval…
 ##    &lt;fct&gt;         &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;
-##  1 HALLMARK_ADI… ATRT-Aden…         -0.116           1                    1
-##  2 HALLMARK_ADI… Benign tu…         -0.0139          1                    1
-##  3 HALLMARK_ADI… Cavernoma…         -0.0525          1                    1
-##  4 HALLMARK_ADI… Chordoma-…         -0.00337         1                    1
-##  5 HALLMARK_ADI… Choroid p…         -0.0456          1                    1
-##  6 HALLMARK_ADI… CNS lymph…         -0.181           1                    1
-##  7 HALLMARK_ADI… CNS RMS-A…         -0.395           0.999                1
-##  8 HALLMARK_ADI… Craniopha…         -0.0155          1                    1
-##  9 HALLMARK_ADI… DNET-Aden…         -0.113           1                    1
-## 10 HALLMARK_ADI… Dysplasia…         -0.0742          1                    1
-## # … with 45,140 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
+##  1 HALLMARK_ADI… Diffuse a…          -0.172       8.42e-10     0.0000000421
+##  2 HALLMARK_ADI… Embryonal…          -0.398       0.           0           
+##  3 HALLMARK_ADI… Ependymal…          -0.151       1.97e- 5     0.000983    
+##  4 HALLMARK_ADI… Tumor of …          -0.185       2.80e- 4     0.0140      
+##  5 HALLMARK_ADI… Tumors of…          -0.132       1.48e- 1     1           
+##  6 HALLMARK_ADI… Neuronal …          -0.211       1.93e- 4     0.00967     
+##  7 HALLMARK_ADI… Meningiom…          -0.0214     10.00e- 1     1           
+##  8 HALLMARK_ADI… Mesenchym…          -0.285       2.39e- 6     0.000120    
+##  9 HALLMARK_ADI… Germ cell…          -0.313       6.34e- 4     0.0317      
+## 10 HALLMARK_ADI… Pre-cance…          -0.191       2.25e- 1     1           
+## # … with 5,990 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
 ## #   significant_tukey_bonf &lt;lgl&gt;</code></pre>
 <pre class="r"><code>head(harmonized_diagnosis_stranded_model_results)</code></pre>
 <pre><code>## $anova
@@ -1814,30 +1840,30 @@ metadata_with_gsva &lt;- metadata %&gt;%
 ## # … with 182,740 more rows, and 2 more variables: significant_tukey &lt;lgl&gt;,
 ## #   significant_tukey_bonf &lt;lgl&gt;</code></pre>
 <pre class="r"><code>## Save stranded library results
-write_tsv(short_histology_stranded_model_results[[&quot;anova&quot;]],  file_anova_stranded_short_histology)
+write_tsv(display_group_stranded_model_results[[&quot;anova&quot;]],  file_anova_stranded_display_group)
 write_tsv(harmonized_diagnosis_stranded_model_results[[&quot;anova&quot;]], file_anova_stranded_harmonized_diagnosis)
-write_tsv(short_histology_stranded_model_results[[&quot;tukey&quot;]],  file_tukey_stranded_short_histology)
+write_tsv(display_group_stranded_model_results[[&quot;tukey&quot;]],  file_tukey_stranded_display_group)
 write_tsv(harmonized_diagnosis_stranded_model_results[[&quot;tukey&quot;]], file_tukey_stranded_harmonized_diagnosis)
 
 
 ### Don't run polyA samples in CI due to data limitations, won't be enough levels for ANOVA
 if (!(running_in_ci)){
-  short_histology_polya_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, short_histology, &quot;polya&quot;, SIGNIFICANCE_THRESHOLD)
+  display_group_polya_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, display_group, &quot;polya&quot;, SIGNIFICANCE_THRESHOLD)
   harmonized_diagnosis_polya_model_results &lt;- gsva_anova_tukey(metadata_with_gsva, harmonized_diagnosis, &quot;polya&quot;, SIGNIFICANCE_THRESHOLD)
-  head(short_histology_polya_model_results)
+  head(display_group_polya_model_results)
   head(harmonized_diagnosis_polya_model_results)
 
   ### Save polya library results
-  write_tsv(short_histology_polya_model_results[[&quot;anova&quot;]],     file_anova_polya_short_histology)
+  write_tsv(display_group_polya_model_results[[&quot;anova&quot;]],     file_anova_polya_display_group)
   write_tsv(harmonized_diagnosis_polya_model_results[[&quot;anova&quot;]],    file_anova_polya_harmonized_diagnosis)
-  write_tsv(short_histology_polya_model_results[[&quot;tukey&quot;]],     file_tukey_polya_short_histology)
+  write_tsv(display_group_polya_model_results[[&quot;tukey&quot;]],     file_tukey_polya_display_group)
   write_tsv(harmonized_diagnosis_polya_model_results[[&quot;tukey&quot;]],    file_tukey_polya_harmonized_diagnosis)
 
 }</code></pre>
 <pre><code>## [1] 50
 ## [1] 50</code></pre>
-<p><strong>How many <code>short_histology</code> have significant ANOVAs across hallmark pathways, for each library?</strong></p>
-<pre class="r"><code>short_histology_stranded_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)</code></pre>
+<p><strong>How many <code>display_group</code> have significant ANOVAs across hallmark pathways, for each library?</strong></p>
+<pre class="r"><code>display_group_stranded_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["significant_anova"],"name":[1],"type":["lgl"],"align":["right"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"TRUE","2":"50"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
@@ -1845,7 +1871,7 @@ if (!(running_in_ci)){
 </div>
 <pre class="r"><code>if (!(running_in_ci))
 {
-  short_histology_polya_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)
+  display_group_polya_model_results[[&quot;anova&quot;]] %&gt;% count(significant_anova)
 }</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
