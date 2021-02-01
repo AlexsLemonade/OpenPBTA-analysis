@@ -74,7 +74,7 @@ create.heatmap <- function(deconv.method, title, fileout) {
     column_to_rownames('cell_type')
 
   # plot non-brain and brain tumors separately
-  pdf(file = fileout, width = 15, height = 10)
+  pdf(file = fileout, width = 15, height = 15)
   # non-brain tumors
   mat <- deconv.method %>%
     dplyr::select(grep(paste0(non.brain.tumors, collapse="|"), colnames(deconv.method), value = TRUE))
@@ -150,7 +150,7 @@ m2 <- gsub(" ","",method2.name)
 
 # create correlation plot for overlapping cell types between both methods
 pdf(file = file.path(output, paste0("corrplot_", m1, "_vs_", m2, ".pdf")),
-    width = 16, height = 8)
+    width = 16, height = 20)
 corrplot(t(total), method = "circle", type = 'full', win.asp = 0.5,
          addCoef.col = "#888888", number.cex = .7,
          tl.col = "black", number.font = 2,
