@@ -138,8 +138,10 @@ run_batchQC = function(df_polya, df_stranded, id_batch, report_name){
   
 }
 
-library(here) 
-path = here("data", "release-v13-20200116")
+library(here)
+library(rprojroot)
+path = here("data")
+print(path)
 setwd(path)
 
 # download covariate data

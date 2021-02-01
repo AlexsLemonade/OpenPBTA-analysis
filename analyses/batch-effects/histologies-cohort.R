@@ -138,7 +138,9 @@ run_batchQC = function(df, id_batch, gene_id, report_name, file_name, run_combat
 
 
 library(here)
-path = here("data", "release-v13-20200116")
+library(rprojroot)
+path = here("data")
+print(path)
 setwd(path)
 
 # download all covariate data which will be used to identify batches
