@@ -300,7 +300,7 @@ all_subtype <- bind_rows(all_rna_subtype,
     # LGG variant in the DNA and no RNA abberations in RNA sample
     # subtype should be WT
     (molecular_subtype=="NA" & !is.na(Kids_First_Biospecimen_ID_DNA) &
-       !is.na(Kids_First_Biospecimen_ID_RNA)) ~ "LGG, H3 wildtype",
+       !is.na(Kids_First_Biospecimen_ID_RNA)) ~ "LGG, wildtype",
     # molecular_subtype is NA and we do not have a DNA sample
     # OR don't have RNA to check for LGG variant or fusion
     # so status will be To be classified
@@ -316,4 +316,3 @@ all_subtype <- bind_rows(all_rna_subtype,
 ```{r}
 sessionInfo()
 ```
-
