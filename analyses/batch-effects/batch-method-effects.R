@@ -4,20 +4,6 @@ library(sva)
 library(stringr)
 
 
-getCurrentFileLocation <-  function()
-{
-  this_file <- commandArgs() %>% 
-    tibble::enframe(name = NULL) %>%
-    tidyr::separate(col=value, into=c("key", "value"), sep="=", fill='right') %>%
-    dplyr::filter(key == "--file") %>%
-    dplyr::pull(value)
-  if (length(this_file)==0)
-  {
-    this_file <- rstudioapi::getSourceEditorContext()$path
-  }
-  return(dirname(this_file))
-}
-
 
 
 grouper = function(df){
@@ -100,8 +86,10 @@ run_batchQC = function(df_polya, df_stranded, report_name, file_name){
 }
 
 # START READING CODE COMMENTS HERE
-library(here) 
-path = here("data", "release-v13-20200116")
+library(here)
+library(rprojroot)
+path = here("data")
+print(path)
 setwd(path)
 
 # download covariate data
