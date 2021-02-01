@@ -1,6 +1,6 @@
 library(tidyverse)
 library(BatchQC)
-
+library(sva)
 grouper = function(df){
   
   # df = df[1:100,]
@@ -68,7 +68,10 @@ run_batchQC = function(df_polya, df_stranded, id_batch, report_name){
   data_t = data_t %>% select(1, batch, everything())
   
   data_t = left_join(id_batch, data_t)
-  
+
+  # only include three most common histologies
+  short_histo = names(sort(table((data_t$histology)), decreasing = TRUE)[1:3])
+  data_t = filter(data_t, histology %in% short_histo)
   
   batch = as_factor(data_t$batch)
   levels(batch) <- 1:length(levels(batch))
@@ -135,20 +138,21 @@ run_batchQC = function(df_polya, df_stranded, id_batch, report_name){
   
 }
 
-
-library(here)
-library(rprojroot)
-path = here("data")
-print(path)
+library(here) 
+path = here("data", "release-v13-20200116")
 setwd(path)
 
+# download covariate data
 covariate = read_tsv("pbta-histologies.tsv",col_types = cols(molecular_subtype = "c"))
 
+# download gene expression data
 dat_rsem_polya = readRDS("pbta-gene-expression-rsem-tpm.polya.rds")
 dat_rsem_stranded = readRDS("pbta-gene-expression-rsem-tpm.stranded.rds")
 dat_kallisto_stranded <- readRDS("pbta-gene-expression-kallisto.stranded.rds")
 dat_kallisto_stranded = dat_kallisto_stranded[,2:ncol(dat_kallisto_stranded)]
 dat_kallisto_polya <- readRDS("pbta-gene-expression-kallisto.polya.rds")
+
+print("DOWNLOADED DATA")
 
 
 dat_rsem_polya = shorten(dat_rsem_polya)
@@ -158,18 +162,12 @@ dat_kallisto_polya = grouper(dat_kallisto_polya)
 dat_kallisto_stranded = grouper(dat_kallisto_stranded)
 
 
-
 covariate = filter(covariate, experimental_strategy == "RNA-Seq")
-short_histo = names(sort(table((covariate$short_histology)), decreasing = TRUE)[1:3])
-# long_histo = (names(sort(table((covariate$broad_histology)), decreasing = TRUE)[1:3]))
-
-covariate = filter(covariate, short_histology %in% short_histo)
-
 
 id_batch = cbind("Kids_First_Biospecimen_ID" = covariate$Kids_First_Biospecimen_ID, "histology" = covariate$short_histology)
 colnames(id_batch) <- c("Kids_First_Biospecimen_ID", "histology")
 id_batch = as_tibble(id_batch)
 
-
 run_batchQC(dat_rsem_polya, dat_rsem_stranded, id_batch, report_name = "rsem_method")
 run_batchQC(dat_kallisto_polya, dat_kallisto_stranded, id_batch, report_name = "kallisto_method")
+
