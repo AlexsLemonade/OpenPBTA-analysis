@@ -50,7 +50,7 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
   cd $WORKDIR
 fi
   # Run mutational signatures analysis
-  Rscript --vanilla -e "rmarkdown::render('../analyses/mutational-signatures/mutational_signatures.Rmd', clean = TRUE)"
+  Rscript --vanilla -e "rmarkdown::render('../analyses/mutational-signatures/01-known_signatures.Rmd', clean = TRUE)"
 
   # Run the figure assembly
   Rscript --vanilla scripts/fig2-mutational-landscape.R
