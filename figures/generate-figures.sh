@@ -48,13 +48,13 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
   bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh
   bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh
   cd $WORKDIR
-fi
+
   # Run mutational signatures analysis
   Rscript --vanilla -e "rmarkdown::render('../analyses/mutational-signatures/01-known_signatures.Rmd', clean = TRUE)"
 
   # Run the figure assembly
   Rscript --vanilla scripts/fig2-mutational-landscape.R
-
+fi
 
 ######################
 ## Interaction plots
