@@ -304,8 +304,8 @@ all_subtype <- bind_rows(all_rna_subtype,
     # molecular_subtype is NA and we do not have a DNA sample
     # OR don't have RNA to check for LGG variant or fusion
     # so status will be To be classified
-    molecular_subtype=="NA" & (!is.na(Kids_First_Biospecimen_ID_DNA) |
-                                  !is.na(Kids_First_Biospecimen_ID_RNA))  ~ "LGG, To be classified",
+    molecular_subtype=="NA" & (is.na(Kids_First_Biospecimen_ID_DNA) |
+                                  is.na(Kids_First_Biospecimen_ID_RNA))  ~ "LGG, To be classified",
     # when molecular_subtype is not NA 
     TRUE ~ stringr::str_c("LGG, ", molecular_subtype))) %>%
   unique() %>%
