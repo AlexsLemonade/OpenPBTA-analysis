@@ -183,7 +183,8 @@ tp53_alterations_dna <- histology %>%
   # join filtered cnv losses
   left_join(cnv_domain_overlap,by=c("Kids_First_Biospecimen_ID"="biospecimen_id",
                                     "sample_id")) %>%
-  rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID)
+  rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID) %>%
+  replace_na(list(hotspot = 0, activating = 0))
 
 tp53_alterations_score <- tp53_alterations_dna %>%
   # add classifier score
@@ -191,8 +192,7 @@ tp53_alterations_score <- tp53_alterations_dna %>%
                                   "cell_line_composition",
                                   "cancer_predispositions",
                                   "sample_type",
-                                  "Kids_First_Participant_ID",
-                                  "aliquot_id")) %>%
+                                  "Kids_First_Participant_ID")) %>%
   # select useful columns
   select(sample_id,Kids_First_Biospecimen_ID_RNA,Kids_First_Biospecimen_ID_DNA,
          tp53_score,cancer_predispositions,HGVSp_Short,copy_number,hotspot,activating) %>%
