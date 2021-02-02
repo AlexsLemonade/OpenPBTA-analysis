@@ -44,9 +44,9 @@ palette_dir <- file.path(root_dir, "figures", "palettes")
 
 # Import standard color palettes for project
 histology_label_mapping <- readr::read_tsv(
-  file.path(palette_dir, "histology_label_color_table.tsv")) %>% 
+  file.path(palette_dir, "histology_label_color_table.tsv")) %>%
   # Select just the columns we will need for plotting
-  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>% 
+  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>%
   # Reorder display_group based on display_order
   dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
 
@@ -74,29 +74,29 @@ display_group_df <- histologies_df %>%
   filter(experimental_strategy == "RNA-Seq",
          RNA_library == "stranded") %>%
   # Join on color palette info
-  dplyr::left_join(histology_label_mapping, 
+  dplyr::left_join(histology_label_mapping,
                     by = "Kids_First_Biospecimen_ID") %>%
   # Arrange by display_order
   arrange(display_order) %>%
   # Only keep the columns we need
   dplyr::select(Kids_First_Biospecimen_ID, display_group, hex_codes) %>%
   as.data.frame() %>%
-  tibble::column_to_rownames("Kids_First_Biospecimen_ID") 
+  tibble::column_to_rownames("Kids_First_Biospecimen_ID")
 
-  
+
   # Get a distinct version of the color keys
   histologies_color_key_df <- display_group_df %>%
     dplyr::select(display_group, hex_codes) %>%
     dplyr::distinct()
-  
+
   # Make color key specific to these samples
   annotation_colors <- unique(histologies_color_key_df$hex_codes)
   names(annotation_colors) <- unique(histologies_color_key_df$display_group)
 
   # Drop the hex_code column so its not made into its own annotation bar
-  display_group_df <- display_group_df %>% 
+  display_group_df <- display_group_df %>%
     dplyr::select(-hex_codes)
-  
+
 #### UMAP plot -----------------------------------------------------------------
 
 dim_red_dir <- file.path(
@@ -115,14 +115,14 @@ rsem_umap_file <- file.path(
 # Get the umap data set up with display_groups
 umap_plot <- read_tsv(rsem_umap_file) %>%
   # Join on color palette info
-  dplyr::inner_join(histology_label_mapping, 
+  dplyr::inner_join(histology_label_mapping,
                     by = "Kids_First_Biospecimen_ID") %>%
-  select(X1, X2, display_group) %>% 
+  select(X1, X2, display_group) %>%
   plot_dimension_reduction(point_color = "display_group",
                            x_label = "UMAP1",
                            y_label = "UMAP2",
                            color_palette = annotation_colors) +
-  theme(text = element_text(size = 10), 
+  theme(text = element_text(size = 10),
         legend.position = "none")
 
 # Save temporary PNG
@@ -247,7 +247,7 @@ deconv_col_fun <- circlize::colorRamp2(gradient_col_val,
 scores_deconv_mat <- deconv_mat[grep("score", rownames(deconv_mat)), ]
 cell_type_deconv_mat <- deconv_mat[-grep("score", rownames(deconv_mat)), ]
 
-# Order both xCell matrices by histology
+# Order both xCell matrices by display_group
 scores_deconv_mat <- scores_deconv_mat[, rownames(display_group_df)]
 cell_type_deconv_mat <- cell_type_deconv_mat[, rownames(display_group_df)]
 
