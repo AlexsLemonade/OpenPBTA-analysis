@@ -151,12 +151,14 @@ consensus_tp53_snv_indel <- consensus_tp53_snv_indel %>%
       # strip REF and Variant AA to get Amino_Acid_Position in consensus maf
       (gsub("[A-Z|a-z]|[.]","",HGVSp_Short) %in% 
          # if overlaps the hotspot Amino_Acid_Position 
-         hotspot_database_2017_tp53_snv$Amino_Acid_Position)  ~ "Yes"),
+         hotspot_database_2017_tp53_snv$Amino_Acid_Position)  ~ 1,
+      TRUE ~ 0),
     activating = case_when(
       # strip REF and Variant AA to get Amino_Acid_Position in consensus maf
       (gsub("[A-Z|a-z]|[.]","",HGVSp_Short) %in% 
          # if overlaps the activating  Amino_Acid_Position 
-         c("273","248"))  ~ "Yes"
+         c("273","248"))  ~ 1,
+      TRUE ~ 0
     )
   )
 
@@ -220,7 +222,7 @@ tp53_alterations_score_wide <- tp53_alterations_score %>%
     SNV_indel_counts= length(unique(HGVSp_Short[!is.na(HGVSp_Short)])), 
     CNV_loss_counts = length(unique(copy_number[!is.na(copy_number)])),
     HGVSp_Short = toString(unique(HGVSp_Short)),
-    copy_number = toString(unique(copy_number)),
+    CNV_loss_evidence = toString(unique(copy_number)),
     # summarize unique hotspot values per sample_id
     hotspot = toString(unique(hotspot[!is.na(hotspot) ])),
     activating = toString(unique(activating[!is.na(activating)]))) 
@@ -243,7 +245,7 @@ tp53_alterations_score_wide <- tp53_alterations_score_wide %>%
         # when activating == ""
         activating == "" &
           # check if mutated variant AA position overlaps hotspot database 
-          ( hotspot == "Yes"  |
+          ( hotspot == 1  |
               # check if sample_id has SNV+CNV mutation
               # suggesting both alleles are mutated
               (SNV_indel_counts >= 1 & CNV_loss_counts >=1) |
@@ -270,8 +272,8 @@ tp53_alterations_score_wide <- tp53_alterations_score_wide %>%
               (tp53_score > 0.5 & 
                              (SNV_indel_counts >= 1 | CNV_loss_counts >=1))
           ) ~ "loss",
-        # when activating == "Yes"
-        activating == "Yes" ~ "activated",
+        # when activating == 1
+        activating == 1 ~ "activated",
         # if no evidence supports TP53 inativation or activation 
         TRUE ~ "Other"
       )
