@@ -115,8 +115,8 @@ stat.test <- data.frame(compare_means(
 combinations <- nrow(stat.test)
 
 statistics <- stat.test %>%
-  filter(p.adj < 0.1) %>% # filter to more significant results
-  mutate(y.position = seq(1, by=0.04, length.out=n()))
+  dplyr::filter(p.adj < 0.1) %>% # filter to more significant results
+  mutate(y.position = seq(1, by = 0.04, length.out = dplyr::n()))
 
 
 #########################################  Saving Figure in PNG format
