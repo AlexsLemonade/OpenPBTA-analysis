@@ -123,7 +123,7 @@ Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.
 
 ####### Telomerase Activities
 
-#generate collapsed data for count files
+# Generate collapsed data for count files
 Rscript ${analyses_dir}/collapse-rnaseq/01-summarize_matrices.R \
   -i ${data_dir}/pbta-gene-counts-rsem-expected_count.stranded.rds \
   -g ${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz \
@@ -136,7 +136,7 @@ Rscript ${analyses_dir}/collapse-rnaseq/01-summarize_matrices.R \
   -m ${analyses_dir}/collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.polya.rds \
   -t ${analyses_dir}/collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed_table.polya.rds
 
-#generate telomerase activities using gene expression data from collapse RNA seq data files
+# Generate telomerase activities using gene expression data from collapse RNA seq data files
 Rscript --vanilla ${analyses_dir}/telomerase-activity-prediction/01-run-EXTEND.R --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt
 Rscript --vanilla ${analyses_dir}/telomerase-activity-prediction/01-run-EXTEND.R --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_FPKM.txt
 Rscript --vanilla ${analyses_dir}/telomerase-activity-prediction/01-run-EXTEND.R --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-counts-rsem-expected_count-collapsed.stranded.rds --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_counts.txt
