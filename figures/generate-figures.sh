@@ -112,8 +112,10 @@ Rscript --vanilla ${analyses_dir}/immune-deconv/01-immune-deconv.R \
 Rscript --vanilla scripts/transcriptomic-overview.R
 
 ####### CN Status Heatmap
+if [ "$RUN_LOCAL" -lt "1" ]; then
 # Run consensus CNV so we have a refreshed `pbta-cnv-consensus.seg.gz` file
 bash ${analyses_dir}/copy_number_consensus_call/run_consensus_call.sh
+fi
 
 # Run CN status heatmap but use parameter so file is saved to figures folder
 Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.Rmd',
