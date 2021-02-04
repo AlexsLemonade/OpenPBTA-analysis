@@ -26,7 +26,7 @@ Recurrence:
 - Count reoccurence per Hugo_Symbol+Protein_position+DOMAINS+type
 
 Hotspots:
-Protein_position overlaps MSKCC cancer hotspot database
+-Protein_position overlaps MSKCC cancer hotspot database
 
 
 
@@ -110,6 +110,7 @@ strelka_recurrence %>%
       ),
       caller = "strelka",
     ) %>%
+  filter(n>=2) %>%
   write_tsv(file.path(results_dir,"strelka_recurrence.tsv"))
 
 
