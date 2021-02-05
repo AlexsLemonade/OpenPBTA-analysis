@@ -202,7 +202,7 @@ There are no _BRAF_ fusions in `BS_H1XPVS9A`, so we are able to classify this sa
 compiled_df <- compiled_df %>%
   mutate(
     integrated_diagnosis = case_when(
-      sample_id == "7316-1106" ~ "Low-grade astrocytic tumor",
+      sample_id == "7316-1106" ~ "Low-grade glioma/astrocytoma",
       TRUE ~ integrated_diagnosis
     ),
     short_histology = case_when(
