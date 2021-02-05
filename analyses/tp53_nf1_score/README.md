@@ -37,6 +37,7 @@ _NF1_ positive examples are additionally filtered to remove missense mutations, 
 
 
 Columns | Description
+-- | --
 sample_id	| 7316-XXXX id used to match DNA and RNA Kids_First_Biospecimen_IDs
 Kids_First_Biospecimen_ID_DNA	| Associated DNA Kids_First_Biospecimen_IDs
 Kids_First_Biospecimen_ID_RNA	| Associated RNA Kids_First_Biospecimen_IDs
