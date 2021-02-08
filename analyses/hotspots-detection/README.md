@@ -1,6 +1,6 @@
 # SNV hotspots
 
-This analysis we evaluate snv and indels from strelka2,mutect2,vardict and lancet in [MAF format](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) to look for Oncogene and TumroSuppressorGenes recurrently mutated in 1 or more callers. This reference gene list used here was created from fusion_filtering module before and described [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/fusion_filtering#inputs-used-as-reference). 
+This analysis we evaluate snv and indels from strelka2,mutect2,vardict and lancet in [MAF format](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) to look for recurrently mutated Oncogene and TumroSuppressorGenes in 1 or more callers. This reference gene list used here was created from fusion_filtering module before and described [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/fusion_filtering#inputs-used-as-reference). 
 
 ### Steps of analysis
 
