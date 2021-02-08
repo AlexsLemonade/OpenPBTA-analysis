@@ -17,7 +17,7 @@ cd "$script_directory" || exit
 dbfile=../../scratch/snv_db.sqlite
 
 ################################ Set Up Database ################################
-##### Updated form snv-caller module to include Protein_positon columns for mutect and vardict
+##### Updated form snv-caller module to include IMPACT,Protein_positon columns for mutect and vardict
 
 python3 00-setup_db.py \
   --db-file $dbfile \
