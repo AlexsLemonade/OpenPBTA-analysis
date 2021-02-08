@@ -2,20 +2,7 @@ library(tidyverse)
 library(BatchQC)
 library(sva)
 
-#dat_rsem_stranded = shorten(dat_rsem_stranded)
-getCurrentFileLocation <-  function()
-{
-  this_file <- commandArgs() %>% 
-    tibble::enframe(name = NULL) %>%
-    tidyr::separate(col=value, into=c("key", "value"), sep="=", fill='right') %>%
-    dplyr::filter(key == "--file") %>%
-    dplyr::pull(value)
-  if (length(this_file)==0)
-  {
-    this_file <- rstudioapi::getSourceEditorContext()$path
-  }
-  return(dirname(this_file))
-}
+# dat_rsem_stranded = shorten(dat_rsem_stranded)
 
 # function used on kallisto data for summarizing transcripts at the gene level
 grouper = function(df){
@@ -43,9 +30,12 @@ clean = function(data, gene_id){
 }
 
 run_batchQC = function(df, id_batch, gene_id, report_name, file_name, run_combat){
-
-  # create output path
-  output_dir = here('analyses', 'batch-effects','results')
+  
+  # create output directory (if necessary)
+  dir.create(file.path(analysis_dir, "results"), showWarnings = FALSE)
+  
+  # create full base name of output file
+  report_name = file.path(analysis_dir, "results", report_name)
  
   # clean the data (see clean comments)
   data_t = clean(df, gene_id)
@@ -136,23 +126,43 @@ run_batchQC = function(df, id_batch, gene_id, report_name, file_name, run_combat
 
 # START HERE WHILE READING CODE COMMENTS
 
-
-library(here)
+# Get correct file paths to data
 library(rprojroot)
-path = here("data")
-print(path)
-setwd(path)
+root_dir = find_root(has_file("OpenPBTA-analysis.Rproj"))
+analysis_dir = file.path(root_dir, "analyses", "batch-effects")
+data_dir = file.path(root_dir, "data")
+functions = file.path(analysis_dir, "util", "functions.R")
+source(functions)
 
 # download all covariate data which will be used to identify batches
-covariate = read_tsv("pbta-histologies.tsv",col_types = cols(molecular_subtype = "c"))
+covariate_file = file.path(data_dir, "pbta-histologies.tsv")
+covariate = read_tsv(covariate_file, col_types = cols(molecular_subtype = "c"))
 
 # download gene expression data
-dat_rsem_polya = readRDS("pbta-gene-expression-rsem-tpm.polya.rds")
-dat_rsem_stranded = readRDS("pbta-gene-expression-rsem-tpm.stranded.rds")
-dat_kallisto_stranded <- readRDS("pbta-gene-expression-kallisto.stranded.rds")
-dat_kallisto_stranded = dat_kallisto_stranded[,2:ncol(dat_kallisto_stranded)]
-dat_kallisto_polya <- readRDS("pbta-gene-expression-kallisto.polya.rds")
+dat_rsem_polya_file = file.path(data_dir, "pbta-gene-expression-rsem-tpm.polya.rds")
+dat_rsem_polya = readRDS(dat_rsem_polya_file)
 
+dat_rsem_stranded_file = file.path(data_dir, "pbta-gene-expression-rsem-tpm.stranded.rds")
+dat_rsem_stranded = readRDS(dat_rsem_stranded_file)
+
+dat_kallisto_stranded_file = file.path(data_dir, "pbta-gene-expression-kallisto.stranded.rds")
+dat_kallisto_stranded <- readRDS(dat_kallisto_stranded_file)
+dat_kallisto_stranded = dat_kallisto_stranded[,2:ncol(dat_kallisto_stranded)]
+
+dat_kallisto_polya_file = file.path(data_dir, "pbta-gene-expression-kallisto.polya.rds")
+dat_kallisto_polya <- readRDS(dat_kallisto_polya_file)
+
+print("DOWNLOADED DATA")
+
+### coment out section below when running the full analysis ###
+
+dat_rsem_polya = shorten(dat_rsem_polya)
+dat_rsem_stranded = shorten(dat_rsem_stranded)
+dat_kallisto_stranded = shorten(dat_kallisto_stranded)
+dat_kallisto_polya = shorten(dat_kallisto_polya)
+print("DATA HAS BEEN SHORTENED")
+
+### coment out section above when running the full analysis ###
 
 # Summarize transcripts at the gene level by averageing all transcipts values per gene
 # This step only needs to be done with kallisto gene expression files
@@ -185,7 +195,11 @@ id_batch = as_tibble(id_batch)
 
 # Run batchQC and combat. This will run batchQC before and after running combat. It will also perform join operations between id_batch and our gene expression files 
 run_batchQC(dat_rsem_polya, id_batch, gene_id = dat_rsem_polya$gene_id, report_name = "rsem_poly_cohort","pbta-gene-expression-rsem-tpm-combat-seq-center.polya.rds")
+
+# commenting out because there's only 1 cohort in stranded data sets
 #run_batchQC(dat_rsem_stranded, id_batch, gene_id = dat_rsem_stranded$gene_id, report_name = "rsem_stranded_sequence", "pbta-gene-expression-rsem-tpm-combat-seq-center.stranded.rds")
 run_batchQC(dat_kallisto_polya, id_batch, gene_id = dat_kallisto_polya$gene_id, report_name = "kallisto_polya_cohort", "pbta-gene-expression-kallisto-combat-seq-center.polya.rds")
+
+# commenting out because there's only 1 cohort in stranded data sets
 #run_batchQC(dat_kallisto_stranded, id_batch, gene_id = dat_kallisto_stranded$gene_id, report_name = "kallisto_stranded_sequence", "pbta-gene-expression-kallisto-combat-seq-center.stranded.rds")
 

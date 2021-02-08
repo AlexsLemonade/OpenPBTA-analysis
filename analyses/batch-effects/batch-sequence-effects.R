@@ -63,40 +63,76 @@ run_batchQC = function(df, id_batch, gene_id, report_name, file_name, run_combat
   print("DATA IS READY") 
   
   # run batchQC and only generate the P-value distribution and PCA plot
-  batchQC(combat_matrix, batch=batch,
-          report_file=paste("combat", report_name, sep="_"), report_dir=output_dir,
+  batchQC(poly1matrix, batch=batch,
+          report_file=report_name, report_dir=output_dir,
           report_option_binary="100001000",
           view_report=FALSE, interactive=FALSE, batchqc_output=FALSE)
-
+  
+  # certain gene expression files didn't have batch effects. Therefore we 
+  # won't run combat for these. Otherwise we will run combat
+  if (run_combat == TRUE){
+    print("RUNNING COMBAT")
+    
+    combat_matrix = ComBat(dat=poly1matrix, batch=batch)
+    
+    # run batchQC to see if combat successfully removed batch effects
+    batchQC(combat_matrix, batch=batch,
+            report_file=paste("combat", report_name, sep="_"), report_dir=output_dir,
+            report_option_binary="100001000",
+            view_report=FALSE, interactive=FALSE, batchqc_output=FALSE)
+    
     # undo log transformation of the data
-  combat_matrix = 2^combat_matrix - 1
-
+    combat_matrix = 2^combat_matrix - 1
+    
     # add back in genes with zero variance
-  combat_matrix = rbind(combat_matrix,var_zero_genes)
-
-   # save batch corrected gene expression data
-  saveRDS(combat_matrix, file = file.path(output_dir,file_name))
-
+    combat_matrix = rbind(combat_matrix,var_zero_genes)
+    
+    # save batch corrected gene expression data
+    saveRDS(combat_matrix, file = file.path(output_dir,file_name))
+  }
 }
+
 
 # START HERE WHILE READING CODE COMMENTS
 
 
-library(here)
+# Get correct file paths to data
 library(rprojroot)
-path = here("data")
-print(path)
-setwd(path)
+root_dir = find_root(has_file("OpenPBTA-analysis.Rproj"))
+analysis_dir = file.path(root_dir, "analyses", "batch-effects")
+data_dir = file.path(root_dir, "data")
+functions = file.path(analysis_dir, "util", "functions.R")
+source(functions)
 
 # download all covariate data which will be used to identify batches
-covariate = read_tsv("pbta-histologies.tsv",col_types = cols(molecular_subtype = "c"))
+covariate_file = file.path(data_dir, "pbta-histologies.tsv")
+covariate = read_tsv(covariate_file, col_types = cols(molecular_subtype = "c"))
 
 # download gene expression data
-dat_rsem_polya = readRDS("pbta-gene-expression-rsem-tpm.polya.rds")
-dat_rsem_stranded = readRDS("pbta-gene-expression-rsem-tpm.stranded.rds")
-dat_kallisto_stranded <- readRDS("pbta-gene-expression-kallisto.stranded.rds")
+dat_rsem_polya_file = file.path(data_dir, "pbta-gene-expression-rsem-tpm.polya.rds")
+dat_rsem_polya = readRDS(dat_rsem_polya_file)
+
+dat_rsem_stranded_file = file.path(data_dir, "pbta-gene-expression-rsem-tpm.stranded.rds")
+dat_rsem_stranded = readRDS(dat_rsem_stranded_file)
+
+dat_kallisto_stranded_file = file.path(data_dir, "pbta-gene-expression-kallisto.stranded.rds")
+dat_kallisto_stranded <- readRDS(dat_kallisto_stranded_file)
 dat_kallisto_stranded = dat_kallisto_stranded[,2:ncol(dat_kallisto_stranded)]
-dat_kallisto_polya <- readRDS("pbta-gene-expression-kallisto.polya.rds")
+
+dat_kallisto_polya_file = file.path(data_dir, "pbta-gene-expression-kallisto.polya.rds")
+dat_kallisto_polya <- readRDS(dat_kallisto_polya_file)
+
+print("DOWNLOADED DATA")
+
+### coment out section below when running the full analysis ###
+
+dat_rsem_polya = shorten(dat_rsem_polya)
+dat_rsem_stranded = shorten(dat_rsem_stranded)
+dat_kallisto_stranded = shorten(dat_kallisto_stranded)
+dat_kallisto_polya = shorten(dat_kallisto_polya)
+print("DATA HAS BEEN SHORTENED")
+
+### coment out section above when running the full analysis ###
 
 
 # Summarize transcripts at the gene level by averageing all transcipts values per gene
@@ -128,8 +164,8 @@ colnames(id_batch) <- c("Kids_First_Biospecimen_ID", "batch")
 id_batch = as_tibble(id_batch)
 
 # Run batchQC and combat. This will run batchQC before and after running combat. It will also perform join operations between id_batch and our gene expression files 
-run_batchQC(dat_rsem_polya, id_batch, gene_id = dat_rsem_polya$gene_id, report_name = "rsem_polya_sequence_report.html","pbta-gene-expression-rsem-tpm-combat-seq-center.polya.rds")
-run_batchQC(dat_rsem_stranded, id_batch, gene_id = dat_rsem_stranded$gene_id, report_name = "rsem_stranded_sequence_report.html", "pbta-gene-expression-rsem-tpm-combat-seq-center.stranded.rds")
-run_batchQC(dat_kallisto_polya, id_batch, gene_id = dat_kallisto_polya$gene_id, report_name = "kallisto_polya_sequence_report.html", "pbta-gene-expression-kallisto-combat-seq-center.polya.rds")
-run_batchQC(dat_kallisto_stranded, id_batch, gene_id = dat_kallisto_stranded$gene_id, report_name = "kallisto_stranded_sequence_report.html", "pbta-gene-expression-kallisto-combat-seq-center.stranded.rds")
+run_batchQC(dat_rsem_polya, id_batch, gene_id = dat_rsem_polya$gene_id, report_name = "rsem_polya_sequence_report.html","pbta-gene-expression-rsem-tpm-combat-seq-center.polya.rds", TRUE)
+run_batchQC(dat_rsem_stranded, id_batch, gene_id = dat_rsem_stranded$gene_id, report_name = "rsem_stranded_sequence_report.html", "pbta-gene-expression-rsem-tpm-combat-seq-center.stranded.rds", TRUE)
+run_batchQC(dat_kallisto_polya, id_batch, gene_id = dat_kallisto_polya$gene_id, report_name = "kallisto_polya_sequence_report.html", "pbta-gene-expression-kallisto-combat-seq-center.polya.rds", TRUE)
+run_batchQC(dat_kallisto_stranded, id_batch, gene_id = dat_kallisto_stranded$gene_id, report_name = "kallisto_stranded_sequence_report.html", "pbta-gene-expression-kallisto-combat-seq-center.stranded.rds", TRUE)
 
