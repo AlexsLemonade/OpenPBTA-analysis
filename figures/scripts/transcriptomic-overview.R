@@ -41,8 +41,15 @@ legend_png <- file.path(output_dir, "temp_legend.png")
 #### Color palettes ------------------------------------------------------------
 
 palette_dir <- file.path(root_dir, "figures", "palettes")
-histology_palette <- read_tsv(file.path(palette_dir,
-                                        "histology_color_palette.tsv"))
+
+# Import standard color palettes for project
+histology_label_mapping <- readr::read_tsv(
+  file.path(palette_dir, "histology_label_color_table.tsv")) %>%
+  # Select just the columns we will need for plotting
+  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>%
+  # Reorder display_group based on display_order
+  dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
+
 divergent_palette <- read_tsv(file.path(palette_dir,
                                         "divergent_color_palette.tsv"))
 gradient_palette <- read_tsv(file.path(palette_dir,
@@ -58,23 +65,37 @@ gradient_palette  <- gradient_palette %>% filter(color_names != "na_color")
 
 #### Data prep for column heatmap annotation -----------------------------------
 
-# We will construct an annotation bar for short histology - this is used in the
+# We will construct an annotation bar for display_group - this is used in the
 # GSVA and immune deconvolution heatmaps. In this section, we prep the data
 # frame and color palette required for that.
 
-# First get a data frame for the annotation and order samples by short histology
-short_histology_df <- histologies_df %>%
+# First get a data frame for the annotation and order samples by display_group
+display_group_df <- histologies_df %>%
   filter(experimental_strategy == "RNA-Seq",
          RNA_library == "stranded") %>%
-  select(Kids_First_Biospecimen_ID,
-         "short histology" = short_histology) %>%
-  arrange(`short histology`) %>%
-  tibble::column_to_rownames("Kids_First_Biospecimen_ID") %>%
-  as.data.frame()
+  # Join on color palette info
+  dplyr::left_join(histology_label_mapping,
+                    by = "Kids_First_Biospecimen_ID") %>%
+  # Arrange by display_order
+  arrange(display_order) %>%
+  # Only keep the columns we need
+  dplyr::select(Kids_First_Biospecimen_ID, display_group, hex_codes) %>%
+  as.data.frame() %>%
+  tibble::column_to_rownames("Kids_First_Biospecimen_ID")
 
-# The colors supplied to HeatmapAnnotation need to be a named
-# list of named vectors
-annotation_colors <-  tibble::deframe(histology_palette)
+
+  # Get a distinct version of the color keys
+  histologies_color_key_df <- display_group_df %>%
+    dplyr::select(display_group, hex_codes) %>%
+    dplyr::distinct()
+
+  # Make color key specific to these samples
+  annotation_colors <- unique(histologies_color_key_df$hex_codes)
+  names(annotation_colors) <- unique(histologies_color_key_df$display_group)
+
+  # Drop the hex_code column so its not made into its own annotation bar
+  display_group_df <- display_group_df %>%
+    dplyr::select(-hex_codes)
 
 #### UMAP plot -----------------------------------------------------------------
 
@@ -91,14 +112,18 @@ rsem_umap_file <- file.path(
   "rsem_stranded_log_umap_scores_aligned.tsv"
 )
 
+# Get the umap data set up with display_groups
 umap_plot <- read_tsv(rsem_umap_file) %>%
-  select(X1, X2, short_histology) %>%
-  replace_na(list(short_histology = "none")) %>%
-  plot_dimension_reduction(point_color = "short_histology",
+  # Join on color palette info
+  dplyr::inner_join(histology_label_mapping,
+                    by = "Kids_First_Biospecimen_ID") %>%
+  select(X1, X2, display_group) %>%
+  plot_dimension_reduction(point_color = "display_group",
                            x_label = "UMAP1",
                            y_label = "UMAP2",
-                           color_palette = histology_palette) +
-  theme(text = element_text(size = 10))
+                           color_palette = annotation_colors) +
+  theme(text = element_text(size = 10),
+        legend.position = "none")
 
 # Save temporary PNG
 ggsave(umap_png, plot = umap_plot, width = 4, height = 4)
@@ -119,7 +144,7 @@ gsva_scores_file <- file.path(
 gsva_stats_file <- file.path(
   gsva_dir,
   "results",
-  "gsva_anova_stranded_short_histology.tsv"
+  "gsva_anova_stranded_display_group.tsv"
 )
 
 gsva_scores_df <- read_tsv(gsva_scores_file)
@@ -151,15 +176,15 @@ divergent_col_val <- seq(from = min(gsva_scores_mat),
 gsva_col_fun <- circlize::colorRamp2(divergent_col_val,
                                      divergent_palette$hex_codes)
 
-# Order by short histology - the biospecimens are the rownames and the data
-# frame used for the annotation is already ordered by short histology
-gsva_scores_mat <- gsva_scores_mat[, rownames(short_histology_df)]
+# Order by display_group - the biospecimens are the rownames and the data
+# frame used for the annotation is already ordered by display_group
+gsva_scores_mat <- gsva_scores_mat[, rownames(display_group_df)]
 
 # Annotation bar intended for the top of the heatmap
 column_heatmap_annotation <- HeatmapAnnotation(
-  df = short_histology_df,
-  name = "short histology",
-  col = list("short histology" = annotation_colors),
+  df = display_group_df,
+  name = "display_group",
+  col = list("display_group" = annotation_colors),
   na_col = na_color$hex_codes,
   annotation_name_side = "left",
   show_legend = FALSE
@@ -222,15 +247,15 @@ deconv_col_fun <- circlize::colorRamp2(gradient_col_val,
 scores_deconv_mat <- deconv_mat[grep("score", rownames(deconv_mat)), ]
 cell_type_deconv_mat <- deconv_mat[-grep("score", rownames(deconv_mat)), ]
 
-# Order both xCell matrices by histology
-scores_deconv_mat <- scores_deconv_mat[, rownames(short_histology_df)]
-cell_type_deconv_mat <- cell_type_deconv_mat[, rownames(short_histology_df)]
+# Order both xCell matrices by display_group
+scores_deconv_mat <- scores_deconv_mat[, rownames(display_group_df)]
+cell_type_deconv_mat <- cell_type_deconv_mat[, rownames(display_group_df)]
 
 # Annotation bar intended for the top of the heatmap
 column_heatmap_annotation <- HeatmapAnnotation(
-  df = short_histology_df,
-  name = "short histology",
-  col = list("short histology" = annotation_colors),
+  df = display_group_df,
+  name = "display_group",
+  col = list("display_group" = annotation_colors),
   na_col = na_color$hex_codes,
   show_annotation_name = FALSE,
   show_legend = FALSE
@@ -275,16 +300,16 @@ png(deconv_png, width = 5, height = 5, units = "in", res = 1200)
 draw(deconv_panel, heatmap_legend_side = "bottom")
 dev.off()
 
-#### Short histology legend ----------------------------------------------------
+#### display_group legend ----------------------------------------------------
 
 # And now just the legend which will serve as the legend for the entire figure
-short_histology_legend <- Legend(
-  labels = histology_palette$color_names,
-  legend_gp = gpar(fill = histology_palette$hex_codes)
+display_group_legend <- Legend(
+  labels = names(annotation_colors),
+  legend_gp = gpar(fill = annotation_colors)
 )
 
-png(legend_png, width = 2, height = 6, unit = "in", res = 600)
-draw(short_histology_legend)
+png(legend_png, width = 4, height = 6, unit = "in", res = 600)
+draw(display_group_legend)
 dev.off()
 
 #### Assemble multipanel figure ------------------------------------------------
