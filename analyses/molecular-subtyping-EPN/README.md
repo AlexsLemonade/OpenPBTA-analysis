@@ -54,7 +54,7 @@ This above  script is designed to change to this directory to run, so it should 
                     <td>Yes</td>
                 </tr>
                 <tr>
-                    <td>PEPN, PF A</td>
+                    <td>EPN, PF A</td>
                     <td>TKTL1_expr_zscore>3 and 1q_gain>0</td>
                     <td>Yes</td>
                 </tr>
