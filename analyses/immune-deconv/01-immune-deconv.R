@@ -3,6 +3,9 @@
 # Function:
 # Script to perform immune characterization using xCell etc.
 
+# Find the root directory of this repository
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
 # load libraries
 suppressPackageStartupMessages(library(optparse))
 suppressPackageStartupMessages(library(tidyverse))
@@ -73,10 +76,19 @@ deconv <- function(expr.input, method) {
   # get data
   expr.input <- get(expr.input)
 
+  # Import standard color palettes for project
+  histology_label_mapping <- readr::read_tsv(
+    file.path(root_dir, "figures", "palettes", "histology_label_color_table.tsv")) %>%
+    # Select just the columns we will need for plotting
+    dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>%
+    # Reorder display_group based on display_order
+    dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
+
   # subset clinical
   clin.sub  <- clin %>%
     filter(Kids_First_Biospecimen_ID %in% colnames(expr.input)) %>%
-    dplyr::select(Kids_First_Biospecimen_ID, broad_histology, short_histology, molecular_subtype)
+    dplyr::inner_join(histology_label_mapping, by = "Kids_First_Biospecimen_ID") %>%
+    dplyr::select(Kids_First_Biospecimen_ID, broad_histology, display_group, molecular_subtype)
 
   # deconvolute using specified method
   res <- deconvolute(gene_expression = as.matrix(expr.input), method = method)

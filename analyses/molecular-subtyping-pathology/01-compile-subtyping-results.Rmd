@@ -227,13 +227,15 @@ lgat_results_df <- bind_exp_strategies(lgat_results_df) %>%
                     broad_histology,
                     Notes),
              by = "Kids_First_Biospecimen_ID") %>%
-  mutate(integrated_diagnosis = case_when(molecular_subtype == "LGG, BRAF fusion"~ "Low-grade glioma/astrocytoma, BRAF fusion",
-                                          molecular_subtype == "LGG, BRAF V600E" ~ "Low-grade glioma/astrocytoma, BRAF V600E", 
-                                          molecular_subtype == "LGG, BRAF wildtype"~ "Low-grade glioma/astrocytoma, BRAF wildtype", 
-                                          TRUE ~NA_character_),
-                  broad_histology = "Low-grade astrocytic tumor",
-                  short_histology = if_else(pathology_diagnosis == "Ganglioglioma", "Ganglioglioma", "LGAT"),
-         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes))
+mutate(integrated_diagnosis = case_when(
+            str_detect(molecular_subtype, "To be classified") ~ NA_character_,
+            TRUE ~ str_replace(molecular_subtype, "LGG, ", "Low-grade glioma/astrocytoma, ")
+          ),
+         broad_histology = "Low-grade astrocytic tumor",
+         short_histology = if_else(pathology_diagnosis == "Ganglioglioma", "Ganglioglioma", "LGAT"),
+         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes)
+  )
+
 ```
 
 ### Handling EPN 
