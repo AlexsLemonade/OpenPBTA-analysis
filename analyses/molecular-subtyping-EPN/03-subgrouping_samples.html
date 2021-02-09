@@ -13190,13 +13190,13 @@ div#notebook {
     <span class="k">if</span><span class="p">((</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;CXorf67_expr_zscore&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">3</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;1q_gain&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span>
         <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;TKTL1_expr_zscore&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">3</span>  <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;1q_gain&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)):</span>
         <span class="n">sample_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;sample_id&quot;</span><span class="p">])</span>
-        <span class="k">return</span><span class="p">(</span><span class="s2">&quot;PT_EPN_A&quot;</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">(</span><span class="s2">&quot;EPN, PF A&quot;</span><span class="p">)</span>
     <span class="k">elif</span><span class="p">((</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;GPBP1_expr_zscore&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">3</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;6q_loss&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span>
           <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;GPBP1_expr_zscore&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">3</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;6p_loss&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> 
           <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;IFT46_expr_zscore&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">3</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;6q_loss&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span>
           <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;IFT46_expr_zscore&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">3</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;6p_loss&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)):</span>
         <span class="n">sample_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;sample_id&quot;</span><span class="p">])</span>
-        <span class="k">return</span><span class="p">(</span><span class="s2">&quot;PT_EPN_B&quot;</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">(</span><span class="s2">&quot;EPN, PF B&quot;</span><span class="p">)</span>
           
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">])</span>
@@ -13285,7 +13285,7 @@ div#notebook {
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">st_epn_rela_fusions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;C11orf95--RELA&quot;</span><span class="p">,</span> <span class="s2">&quot;LTBP3--RELA&quot;</span><span class="p">]</span>
 <span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">prioritized_fusion</span><span class="p">,</span>
                                         <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                                        <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;ST_EPN_RELA&quot;</span><span class="p">,</span>
+                                        <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;EPN, ST RELA&quot;</span><span class="p">,</span>
                                         <span class="n">fusionlist</span><span class="o">=</span><span class="n">st_epn_rela_fusions</span><span class="p">,</span>
                                         <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">))</span>
@@ -13407,7 +13407,7 @@ div#notebook {
       <td>-0.378184</td>
       <td>1.065878</td>
       <td>-0.128672</td>
-      <td>ST_EPN_RELA</td>
+      <td>EPN, ST RELA</td>
     </tr>
     <tr>
       <th>2</th>
@@ -13514,12 +13514,12 @@ div#notebook {
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">st_epn_yap1_fusions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;C11orf95--YAP1&quot;</span><span class="p">,</span> <span class="s2">&quot;YAP1--MAMLD1&quot;</span><span class="p">,</span> <span class="s2">&quot;YAP1--FAM118B&quot;</span><span class="p">]</span>
 <span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">prioritized_fusion</span><span class="p">,</span>
                                         <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                                        <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;ST_EPN_YAP1&quot;</span><span class="p">,</span>
+                                        <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;EPN, ST YAP1&quot;</span><span class="p">,</span>
                                         <span class="n">fusionlist</span><span class="o">=</span><span class="n">st_epn_yap1_fusions</span><span class="p">,</span>
                                         <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">))</span>
 <span class="c1"># This step assigned one sample to ST_EPN_YAP1</span>
-<span class="n">display</span><span class="p">(</span><span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;ST_EPN_YAP1&quot;</span><span class="p">])</span>
+<span class="n">display</span><span class="p">(</span><span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;EPN, ST YAP1&quot;</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -13612,7 +13612,7 @@ div#notebook {
       <td>-0.382289</td>
       <td>-0.723175</td>
       <td>-0.497899</td>
-      <td>ST_EPN_YAP1</td>
+      <td>EPN, ST YAP1</td>
     </tr>
   </tbody>
 </table>
@@ -13647,8 +13647,8 @@ div#notebook {
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">prioritizing_PT_EPN</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">))</span>
 
-<span class="n">display</span><span class="p">(</span><span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;PT_EPN_A&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
-<span class="n">display</span><span class="p">(</span><span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;PT_EPN_B&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="n">display</span><span class="p">(</span><span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;EPN, PF A&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="n">display</span><span class="p">(</span><span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;EPN, PF B&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </pre></div>
 
     </div>
@@ -13741,7 +13741,7 @@ div#notebook {
       <td>5.583640</td>
       <td>-1.035927</td>
       <td>-0.083991</td>
-      <td>PT_EPN_A</td>
+      <td>EPN, PF A</td>
     </tr>
     <tr>
       <th>95</th>
@@ -13765,7 +13765,7 @@ div#notebook {
       <td>3.901709</td>
       <td>-0.337657</td>
       <td>0.907115</td>
-      <td>PT_EPN_A</td>
+      <td>EPN, PF A</td>
     </tr>
   </tbody>
 </table>
@@ -13864,7 +13864,7 @@ div#notebook {
 <span class="c1"># Calling function subgroup_func to  set  the values for last column &quot;subgroup&quot;</span>
 <span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">subgroup_func</span><span class="p">,</span>
                                         <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                                        <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;ST_EPN_RELA&quot;</span><span class="p">,</span>
+                                        <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;EPN, ST RELA&quot;</span><span class="p">,</span>
                                         <span class="n">column_values</span><span class="o">=</span><span class="n">st_epn_rela_tests</span><span class="p">,</span>
                                         <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
 
@@ -13908,7 +13908,7 @@ div#notebook {
 
 <span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">subgroup_func</span><span class="p">,</span>
                                         <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                                        <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;ST_EPN_YAP1&quot;</span><span class="p">,</span>
+                                        <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;EPN, ST YAP1&quot;</span><span class="p">,</span>
                                         <span class="n">column_values</span><span class="o">=</span><span class="n">st_epn_yap1_tests</span><span class="p">,</span>
                                         <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">))</span>
@@ -14068,7 +14068,7 @@ div#notebook {
       <td>-0.378184</td>
       <td>1.065878</td>
       <td>-0.128672</td>
-      <td>ST_EPN_RELA</td>
+      <td>EPN, ST RELA</td>
     </tr>
     <tr>
       <th>2</th>
@@ -14243,7 +14243,7 @@ div#notebook {
       <td>-0.378184</td>
       <td>1.065878</td>
       <td>-0.128672</td>
-      <td>ST_EPN_RELA</td>
+      <td>EPN, ST RELA</td>
       <td>NaN</td>
       <td>NaN</td>
     </tr>
@@ -14360,11 +14360,11 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rela_samples</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;ST_EPN_RELA&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">yap1_samples</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;ST_EPN_YAP1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rela_samples</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;EPN, ST RELA&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">yap1_samples</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;EPN, ST YAP1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-<span class="n">epna_samples</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;PT_EPN_A&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">epnb_samples</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;PT_EPN_B&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">epna_samples</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;EPN, PF A&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">epnb_samples</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;EPN, PF B&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 <span class="n">no_assigned_samples</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -14372,9 +14372,9 @@ div#notebook {
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;There are a total of &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">total_samples</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; samples out of which &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span>
     <span class="n">no_assigned_samples</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; samples were not assigned any subgroup&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of samples under each subgroup</span><span class="se">\n</span><span class="s2">ST_EPN_RELA : &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span>
-    <span class="n">rela_samples</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">ST_EPN_YAP1 : &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">yap1_samples</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; </span><span class="se">\n</span><span class="s2">PT_EPN_A : &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span>
-    <span class="n">epna_samples</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">PT_EPN_B : &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">epnb_samples</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of samples under each subgroup</span><span class="se">\n</span><span class="s2">EPN, ST RELA : &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span>
+    <span class="n">rela_samples</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">EPN, ST YAP1 : &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">yap1_samples</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; </span><span class="se">\n</span><span class="s2">EPN, PF A : &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span>
+    <span class="n">epna_samples</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">EPN, PF B : &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">epnb_samples</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -14393,10 +14393,10 @@ div#notebook {
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>There are a total of 98 samples out of which 63 samples were not assigned any subgroup
 Number of samples under each subgroup
-ST_EPN_RELA : 29
-ST_EPN_YAP1 : 4 
-PT_EPN_A : 2
-PT_EPN_B : 0
+EPN, ST RELA : 29
+EPN, ST YAP1 : 4 
+EPN, PF A : 2
+EPN, PF B : 0
 </pre>
 </div>
 </div>
