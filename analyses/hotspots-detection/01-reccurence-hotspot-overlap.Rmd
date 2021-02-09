@@ -70,6 +70,12 @@ gene_table <- read_tsv("../fusion_filtering/references/genelistreference.txt")%>
   dplyr::rename(Hugo_Symbol=Gene_Symbol) %>%
   dplyr::select(Hugo_Symbol,type)
 
+brain_goi <- read_tsv("input/brain-goi-list-new.txt",col_names = "Hugo_Symbol") %>%
+	dplyr::mutate(type="brain-goi")
+
+gene_table <- bind_rows(gene_table,
+			brain_goi)
+
 ```
 
 ## Read database 
@@ -115,7 +121,7 @@ saveRDS(combined_maf_subsets, "results/combined_maf_subsets.RDS")
 	      
 ```
 
-## Recurrence in filtered snv calls
+## Recurrence in genes part of brain-goi from filtered snv calls
 ```{r}
 
 calls_recurrence <- combined_maf_subsets %>%
@@ -125,7 +131,7 @@ calls_recurrence <- combined_maf_subsets %>%
            Tumor_Sample_Barcode) %>%
   summarise(type=toString(unique(type))) %>%
     count(Chromosome,Start_Position,End_Position,Amino_Acid_Position,Hugo_Symbol,type,sort = TRUE) %>%
-  dplyr::filter( grepl("Oncogene|TumorSuppressorGene",type)) %>%
+  dplyr::filter( grepl("brain-goi",type)) %>%
   dplyr::filter(n>2)
 
 
