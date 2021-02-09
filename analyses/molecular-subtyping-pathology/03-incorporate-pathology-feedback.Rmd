@@ -53,6 +53,7 @@ And the notes:
 > 2. `PT_AQWDQW27` specimen was consistent with meningioma, even though it has a hallmark EPN fusion, so pathology would also call this a rare meningioma with a _YAP1_ fusion.
 > 3. Because 1 is a rare tumor (maybe first seen), the logic of searching for all H3 K28 mutations in [HGG subtyping](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249) would convert this sample by default.
 >  4. Pathology confirmed this HGG BRAF V600E mutant tumor, [`BS_H1XPVS9A`](https://cbethell.github.io/open-pbta-output/09-HGG-with-braf-clustering.nb.html#identify_sample_that_clusters_with_lgat), to be a LGAT (PXA). I updated `molecular_subtype` here based on what it would look like, but this should come through via the LGAT [subtyping](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/631) ticket. How should we add this info?
+> 5. Per [this issue](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/905), we are updating BS_YB99Q6TN (WGS) and BS_5965SFPZ (which is the matched RNAseq sample) belonging to sample_id== "7316-2557" as H3 K28M as per manual review of the pathology report, which lists the integrated diagnosis for this tumor as "DIFFUSE MIDLINE GLIOMA, H3-K27M MUTANT". The K28M mutation is also found in Mutect2 calls.
 
 ## Set up
 
@@ -202,7 +203,7 @@ There are no _BRAF_ fusions in `BS_H1XPVS9A`, so we are able to classify this sa
 compiled_df <- compiled_df %>%
   mutate(
     integrated_diagnosis = case_when(
-      sample_id == "7316-1106" ~ "Low-grade astrocytic tumor",
+      sample_id == "7316-1106" ~ "Low-grade glioma/astrocytoma",
       TRUE ~ integrated_diagnosis
     ),
     short_histology = case_when(
@@ -510,6 +511,39 @@ compiled_df <- compiled_df %>%
       TRUE ~ molecular_subtype
     ),
     Notes = case_when(sample_id == "7316-1105" ~ "Updated via OpenPBTA subtyping",
+      TRUE ~ Notes
+    )
+  )
+```
+
+### `PT_A325EYR2`
+This sample was reviewed by pathology and confirmed to be H3 mutant, as per note 5 above.
+
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_A325EYR2")
+```
+```{r}
+compiled_df <- compiled_df %>%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == "7316-2557" ~ "Diffuse midline glioma, H3 K28-mutant",
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == "7316-2557" ~ "HGAT",
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == "7316-2557" ~ "Diffuse astrocytic and oligodendroglial tumor",
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == "7316-2557" ~ "DMG, H3 K28",
+      TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(
+      sample_id == "7316-2557" ~ "Updated via OpenPBTA subtyping",
       TRUE ~ Notes
     )
   )
