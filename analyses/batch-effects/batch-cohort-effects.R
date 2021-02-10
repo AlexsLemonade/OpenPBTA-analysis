@@ -36,11 +36,11 @@ print("DOWNLOADED DATA")
 
 ### coment out section below when running the full analysis ###
 
-dat_rsem_polya = shorten(dat_rsem_polya)
-dat_rsem_stranded = shorten(dat_rsem_stranded)
-dat_kallisto_stranded = shorten(dat_kallisto_stranded)
-dat_kallisto_polya = shorten(dat_kallisto_polya)
-print("DATA HAS BEEN SHORTENED")
+# dat_rsem_polya = shorten(dat_rsem_polya)
+# dat_rsem_stranded = shorten(dat_rsem_stranded)
+# dat_kallisto_stranded = shorten(dat_kallisto_stranded)
+# dat_kallisto_polya = shorten(dat_kallisto_polya)
+# print("DATA HAS BEEN SHORTENED")
 
 ### coment out section above when running the full analysis ###
 
