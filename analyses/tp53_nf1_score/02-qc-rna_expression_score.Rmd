@@ -146,21 +146,28 @@ sample_id_multi_library
 
 ```
 
+7316-85 has multiple stranded let's look at the values
+```{r}
+ clinical %>%
+  left_join(score_stranded_df , by=c("Kids_First_Biospecimen_ID"="sample_id")) %>%
+  left_join(score_polya_df,by=c("Kids_First_Biospecimen_ID"="sample_id"),
+            suffix = c("_stranded","_polya")) %>%
+  filter(sample_id == "7316-85",experimental_strategy=="RNA-Seq") %>%
+  select(sample_id,tp53_score_stranded,tp53_score_polya)
+```
+
+
 ```{r}
 
 sample_id_multi_library_scores_df <- clinical %>%
   left_join(score_stranded_df , by=c("Kids_First_Biospecimen_ID"="sample_id")) %>%
   left_join(score_polya_df,by=c("Kids_First_Biospecimen_ID"="sample_id"),
             suffix = c("_stranded","_polya")) %>%
-  filter(sample_id %in% sample_id_multi_library$sample_id) %>%
-  group_by(sample_id,) %>%
+  # gather data for sample_ids which have multiple RNA_library
+  filter(sample_id %in% sample_id_multi_library$sample_id,
+         experimental_strategy=="RNA-Seq") %>%
+  group_by(sample_id) %>%
   # because 7316-85 has multiple stranded I'm taking a mean here 
-  # A tibble: 8 x 2
-  #   Kids_First_Biospecimen_ID tp53_score_stranded
-  #   <chr>                                   <dbl>
-  # 1 BS_59ZJWJTF                            0.299 
-  # 2 BS_QYPHA40N                            0.0665
-  # 3 BS_SB12W1XT                            0.229 
   summarise( tp53_score_stranded = mean(tp53_score_stranded[!is.na(tp53_score_stranded)]),
              tp53_score_polya = mean(tp53_score_polya[!is.na(tp53_score_polya)])) %>%
   reshape2::melt()
@@ -181,5 +188,5 @@ ggplot(sample_id_multi_library_scores_df,
   xlab("RNA_library") + ylab("tp53_score")
 ```
 
-On avearage matched polya samples have lower tp53 classifier scores, should we only keep stranded scores when we can ?
+On avearage matched polya samples have lower tp53 classifier scores, should we only keep stranded scores when we can ? 
 
