@@ -69,7 +69,7 @@ Below is a summary of biospecimens by sequencing strategy:
 | Experimental Strategy | Normal | Tumor |
 |-----------------------|--------|-------|
 | Targeted DNA Panel | 1 | 1 |
-| RNA-Seq | 0 | 1028 |
+| RNA-Seq | 0 | 1036 |
 | WGS | 801 | 940 |
 | WXS | 31 | 31 |
 
@@ -82,24 +82,27 @@ Below is a detailed table of [broad histologies](https://github.com/AlexsLemonad
 
 | Broad Histology | N |
 |-----------------------------------------------|-----|
-| Benign tumor | 38 |
+| Benign tumor | 34 |
 | Choroid plexus tumor | 11 |
-| CNS neuroblastoma | 5 |
-| Diffuse astrocytic and oligodendroglial tumor | 184 |
-| Embryonal tumor | 178 |
-| Ependymal tumor | 92 |
+| Diffuse astrocytic and oligodendroglial tumor | 191 |
+| Embryonal tumor | 184 |
+| Ependymal tumor | 93 |
 | Germ cell tumor | 13 |
-| Histiocytic tumor | 5 |
-| Low-grade astrocytic tumor | 257 |
-| Lymphomas | 1 |
+| Histiocytic tumor | 6 |
+| Low-grade astrocytic tumor | 303 |
+| Lymphoma | 1 |
+| Melanocytic tumor | 1 |
 | Meningioma | 29 |
-| Mesenchymal non-meningothelial tumor | 23 |
-| Metastatic secondary tumors | 4 |
-| Neuronal and mixed neuronal-glial tumor | 79 |
-| Other tumor | 6 |
+| Mesenchymal non-meningothelial tumor | 25 |
+| Metastatic secondary tumors | 5 |
+| Neuronal and mixed neuronal-glial tumor | 34 |
+| Non-CNS tumor | 1 |
+| Non-tumor | 3 |
+| Other astrocytic tumor | 3 |
+| Other tumor | 1 |
 | Pre-cancerous lesion | 14 |
 | Tumor of cranial and paraspinal nerves | 44 |
-| Tumor of pineal region | 4 |
+| Tumor of pineal region | 5 |
 | Tumors of sellar region | 35 |
 
 
@@ -108,10 +111,10 @@ Below is a table of number of tumor biospecimens by phase of therapy (DNA and RN
 
 | Phase of Therapy | N |
 |---------------------------------|------|
-| Initial CNS Tumor | 1514 |
+| Initial CNS Tumor | 1520 |
 | Progressive | 302 |
 | Progressive Disease Post-Mortem | 13 |
-| Recurrence | 134 |
+| Recurrence | 136 |
 | Second Malignancy | 35 |
 | Unavailable | 2 |
 
@@ -140,11 +143,11 @@ We will update the default release number whenever we produce a new release.
 
 ### Data Access via CAVATICA
 
-For any user registered on CAVATICA, the latest release of OpenPBTA data can be accessed from the CAVATICA public projects below:
-- [Pediatric Brain Tumor Atlas Open Access Data - CBTN](https://cavatica.sbgenomics.com/u/cavatica/pbta-cbttc/)
-- [Pediatric Brain Tumor Atlas Open Access Data - PNOC003](https://cavatica.sbgenomics.com/u/cavatica/pbta-pnoc003/)
+For any user registered on CAVATICA, the OpenPBTA data can be accessed from the CAVATICA public project below:
+- [OpenPBTA Open Access](https://cavatica.sbgenomics.com/u/cavatica/openpbta/)
 
-Users downloading via CAVATICA should place the data files within a `data/release` folder and then create symlinks to those files within `/data`.
+The release folder structure in CAVATICA mirrors that on AWS.
+Users downloading via CAVATICA should place the data files within the `data/release*` folder and then create symlinks to those files within `/data`.
 
 
 ## How to Participate
