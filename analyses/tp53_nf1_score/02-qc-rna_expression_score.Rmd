@@ -19,6 +19,8 @@ library("broom")
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 results_dir <- "results"
+
+clinical <- read_tsv(file.path(data_dir,"pbta-histologies.tsv"))
 ```
 
 ### Classifier scores
@@ -128,3 +130,62 @@ negative correlation estimate -0.139 at p value 0.297
 Overall distribution of expression and classifier score shows 
 negligible correlation so we cannot directly use the expression/classifier 
 score to infer functionality/phenotype of TP53 inactivation in samples
+
+### Sample_id matched polya and stranded
+
+```{r}
+
+sample_id_multi_library <- clinical %>%
+  filter(experimental_strategy=="RNA-Seq") %>%
+  group_by(sample_id) %>%
+  summarise(counts = length(unique(RNA_library)),
+            RNA_library = toString(RNA_library)) %>%
+  filter(counts > 1)
+
+sample_id_multi_library 
+
+```
+
+7316-85 has multiple stranded let's look at the values
+```{r}
+ clinical %>%
+  left_join(score_stranded_df , by=c("Kids_First_Biospecimen_ID"="sample_id")) %>%
+  left_join(score_polya_df,by=c("Kids_First_Biospecimen_ID"="sample_id"),
+            suffix = c("_stranded","_polya")) %>%
+  filter(sample_id == "7316-85",experimental_strategy=="RNA-Seq") %>%
+  select(sample_id,tp53_score_stranded,tp53_score_polya)
+```
+
+
+```{r}
+
+sample_id_multi_library_scores_df <- clinical %>%
+  left_join(score_stranded_df , by=c("Kids_First_Biospecimen_ID"="sample_id")) %>%
+  left_join(score_polya_df,by=c("Kids_First_Biospecimen_ID"="sample_id"),
+            suffix = c("_stranded","_polya")) %>%
+  # gather data for sample_ids which have multiple RNA_library
+  filter(sample_id %in% sample_id_multi_library$sample_id,
+         experimental_strategy=="RNA-Seq") %>%
+  group_by(sample_id) %>%
+  # because 7316-85 has multiple stranded I'm taking a mean here 
+  summarise( tp53_score_stranded = mean(tp53_score_stranded[!is.na(tp53_score_stranded)]),
+             tp53_score_polya = mean(tp53_score_polya[!is.na(tp53_score_polya)])) %>%
+  reshape2::melt()
+
+  
+```
+
+
+Plotting the scores
+```{r}
+
+ggplot(sample_id_multi_library_scores_df,
+       aes(y=value,x=as.numeric(factor(sample_id_multi_library_scores_df$variable)))) +
+  geom_point()+
+  geom_line(aes(color=sample_id)) +
+  xlim(c("stranded",
+         "polya")) + 
+  xlab("RNA_library") + ylab("tp53_score")
+```
+
+We could consider utilizing batch correction once completed via [#919](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/919) to rerun the classifier for this dataset. We can then check whether the scores would be more similar for polyA and stranded. Instead of choosing one over the other without some additional investigation, perhaps we take an average. For the most part, while there is a bias, the scores agree and for 7316-161, although the polyA score is just under 0.5, it is still considered a loss via evidence. Once we investigate all of the evidence, we might consider a re-thresholding of the scores for what determines inactivation/oncogenic TP53 (discussed earlier).
