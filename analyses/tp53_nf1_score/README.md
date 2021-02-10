@@ -33,7 +33,25 @@ _NF1_ positive examples are additionally filtered to remove missense mutations, 
 
 `03-tp53-cnv-loss-domain.Rmd` here copy_number of regions overlapping TP53 functional domains were compared to TP53 classifier score. We find tumors with TP53 copies <=1 have higher TP53 classifier scores, so we only retain biospecimens with <= 1 copy TP53 as high confidence TP53 loss. 
 
-`04-evaluate-classifier.py` evaluates classifier score with TP53 alterations (non-synonymous SNV and all status == "loss" in consensus CNV file from 00-tp53-nf1-alterations.R) 
+`04-tp53-altered-annotation.Rmd` here we take a deeper look into tp53 altered status with respect to number of SNVs/CNVs suggesting bi-allelic mutations or with respect to cancer_predisposition and tp53 classifier scores.
+
+
+Columns | Description
+-- | --
+sample_id	| 7316-XXXX id used to match DNA and RNA Kids_First_Biospecimen_IDs
+Kids_First_Biospecimen_ID_DNA	| Associated DNA Kids_First_Biospecimen_IDs
+Kids_First_Biospecimen_ID_RNA	| Associated RNA Kids_First_Biospecimen_IDs
+cancer_predispositions	| Germline cancer predisposition status
+tp53_score	| TP53 loss classifier score
+SNV_indel_counts	| Number of deleterious SNVs found in DNA sample
+CNV_loss_counts	| Number of CNV losses found in DNA sample
+HGVSp_Short	| Short format of protein level change used as SNV evidence 
+CNV_loss_evidence | copy_number of CNV overlapping functional domains of TP53 used as evidence 	
+hotspot	activating	| Hotspot status from MSKCC cancer hotspot [database](https://www.cancerhotspots.org/#/home) 
+tp53_altered | Combined evidence, cancer predisposition and score based tp53 status
+
+
+`05-evaluate-classifier.py` evaluates classifier score with TP53 alterations (non-synonymous SNV and all status == "loss" in consensus CNV file from 00-tp53-nf1-alterations.R) 
 
 Because some of the classifier genes are not present in the OpenPBTA dataset, the scores should be interpreted as continuous values representing relative gene alterations and not as probabilities.
 
