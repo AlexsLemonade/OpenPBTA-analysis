@@ -1,0 +1,120 @@
+# Graph Generator
+
+This script is makes all of the PCA plots showing the relationship between histologies and batch. 
+
+Import the necessary libararies 
+
+
+```{R}
+# remove warning messages
+knitr::opts_chunk$set(message = FALSE)
+
+library(tidyverse)
+library(BatchQC)
+library(sva)
+library(rprojroot)
+```
+
+configure files paths
+
+
+```{R}
+root_dir = find_root(has_file("OpenPBTA-analysis.Rproj"))
+analysis_dir = file.path(root_dir, "analyses", "batch-effects")
+data_dir = file.path(root_dir, "data")
+functions = file.path(analysis_dir, "util", "functions.R")
+```
+
+Load functions from /util/function.R
+
+
+```{R}
+source(functions)
+```
+
+Download all covariate data which will be used to identify batches
+
+
+```{R}
+covariate_file = file.path(data_dir, "pbta-histologies.tsv")
+covariate = read_tsv(covariate_file, col_types = cols(molecular_subtype = "c"))
+```
+
+Download gene expression data
+
+
+```{R}
+dat_rsem_polya_file = file.path(data_dir, "pbta-gene-expression-rsem-tpm.polya.rds")
+dat_rsem_polya = readRDS(dat_rsem_polya_file)
+
+dat_rsem_stranded_file = file.path(data_dir, "pbta-gene-expression-rsem-tpm.stranded.rds")
+dat_rsem_stranded = readRDS(dat_rsem_stranded_file)
+
+dat_kallisto_stranded_file = file.path(data_dir, "pbta-gene-expression-kallisto.stranded.rds")
+dat_kallisto_stranded <- readRDS(dat_kallisto_stranded_file)
+dat_kallisto_stranded = dat_kallisto_stranded[,2:ncol(dat_kallisto_stranded)]
+
+dat_kallisto_polya_file = file.path(data_dir, "pbta-gene-expression-kallisto.polya.rds")
+dat_kallisto_polya <- readRDS(dat_kallisto_polya_file)
+```
+
+Shorten the data files if you don't have a strong enough computer 
+
+***This should not be run for a full analysis!***
+
+
+```{R}
+dat_rsem_polya = shorten(dat_rsem_polya)
+dat_rsem_stranded = shorten(dat_rsem_stranded)
+dat_kallisto_stranded = shorten(dat_kallisto_stranded)
+dat_kallisto_polya = shorten(dat_kallisto_polya)
+```
+
+Summarize the kallisto data on the gene level in order to join with batch
+
+
+```{R}
+dat_kallisto_polya = grouper(dat_kallisto_polya)
+dat_kallisto_stranded = grouper(dat_kallisto_stranded)
+```
+
+## Sequence Center Batch effects
+
+
+```{R}
+id_batch_histology = make_id_batch_histology(covariate, "seq_center")
+```
+
+
+```{R}
+my_rsem_polya_plots = make_histology_pca_plots(dat_rsem_polya, 
+                                               id_batch_histology, 
+                                               gene_id = dat_rsem_polya$gene_id, 
+                                               report_name = "rsem_polya_sequence",
+                                               "pbta-gene-expression-rsem-tpm-combat-seq-center.polya.rds")
+```
+
+   
+
+### Make graph with rsem polya before adjusting for batch effects
+
+
+```{R}
+my_rsem_polya_plots[1]
+```
+
+- Batch = sequence center
+- Gene expression file = rsem_polya
+- Conclusion: There are batch effects. You can see that batch 1 groups around the top left corner while batch two groups in the bottom left corner
+
+Show batch effects after adjustment via [combat](https://rdrr.io/bioc/sva/man/ComBat.html)
+
+
+```{R}
+my_rsem_polya_plots[2]
+```
+
+
+
+- Batch Effects no longer present
+
