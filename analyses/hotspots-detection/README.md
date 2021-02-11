@@ -11,6 +11,7 @@ In this analysis we will evaluate snv and indels from strelka2,mutect2,vardict a
 
 `01-reccurence-hotspot-overlap.Rmd` filters and combines calls from all callers and summarises the data to save recurrent mutated hotspots and additionally annotates the site as seen in MSKCC cancer hotspot database (file in input folder)
 
+`02-domain-overlap.Rmd` subsets filtered snv/indels which overlap kinase domains as hotspots 
    
 ### Run
 

@@ -29,3 +29,6 @@ dbfile=../../scratch/snv_db.sqlite
 
 # find reccurence
 Rscript -e "rmarkdown::render('01-reccurence-hotspot-overlap.Rmd')"
+
+# find kinase domain overlapping sites
+Rscript -e "rmarkdown::render('02-domain-overlap.Rmd')"
