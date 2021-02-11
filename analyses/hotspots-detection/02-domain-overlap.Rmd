@@ -71,7 +71,7 @@ data.frame(Chromosome=seqnames(overlaps_kinase_snv),
             Protein_position = overlaps_kinase_snv$Protein_position,
             Amino_Acid_Position = overlaps_kinase_snv$Amino_Acid_Position) %>%
    unique() %>%
-   write_tsv("kinase_snv_sites.tsv")
+   write_tsv(file.path(results_dir,"kinase_snv_sites.tsv"))
 
 ```
 
