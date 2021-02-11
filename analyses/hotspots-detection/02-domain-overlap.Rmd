@@ -1,0 +1,77 @@
+---
+title: "Domain overlap hotspots"
+output: html_notebook
+
+---
+
+In this notebook we will look at sites that overlap domains of interest in filtered snv/indels from step 1.
+
+Domians of intests:
+- Protein kinase domain ; pfam ID == "PF00069"
+
+
+## Setup
+```{r}
+library("tidyverse")
+
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+
+results_dir <- file.path(root_dir,
+                         "analyses",
+                         "hotspots-detection",
+                         "results")
+
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+
+```
+
+### Format pfam locations as granges
+```{r}
+ensembl <- biomaRt::useMart(biomart = "ENSEMBL_MART_ENSEMBL",dataset = "hsapiens_gene_ensembl",host="ensembl.org")
+
+source ("utils/get_pfam_granges.R")
+
+# kinase domain 
+kinase_gr <-get_pfam_granges("PF00069",ensembl = ensembl)
+
+```
+
+### Read filtered snv calls
+```{r}
+filtered_calls <- readRDS(file.path(results_dir,"combined_maf_subsets.RDS")) %>%
+   dplyr::select(-caller) %>%
+   unique()
+ 
+ filtered_calls_gr <- makeGRangesFromDataFrame(df = filtered_calls,
+                                               keep.extra.columns = TRUE,
+                                               seqnames.field = "Chromosome",
+                                               start.field = "Start_Position",
+                                               end.field = "End_Position",
+                                               # To-do update
+                                               ignore.strand = TRUE)
+
+```
+
+
+### Overlap with domain granges 
+```{r}
+overlaps_kinase_snv <- IRanges::subsetByOverlaps(filtered_calls_gr,
+                                                 kinase_gr)
+
+# save as the base maf format
+data.frame(Chromosome=seqnames(overlaps_kinase_snv),
+            Start_Position=start(overlaps_kinase_snv),
+            End_Position=end(overlaps_kinase_snv),
+            Hugo_Symbol = overlaps_kinase_snv$Hugo_Symbol,
+            Variant_Classification = overlaps_kinase_snv$Variant_Classification,
+            IMPACT = overlaps_kinase_snv$IMPACT,
+            Protein_position = overlaps_kinase_snv$Protein_position,
+            Amino_Acid_Position = overlaps_kinase_snv$Amino_Acid_Position) %>%
+   unique() %>%
+   write_tsv("kinase_snv_sites.tsv")
+
+```
+
