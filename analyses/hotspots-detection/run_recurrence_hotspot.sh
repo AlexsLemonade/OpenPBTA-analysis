@@ -20,10 +20,8 @@ dbfile=../../scratch/snv_db.sqlite
 ##### Updated form snv-caller module to include IMPACT,Protein_positon columns for mutect and vardict
 
 #python3 00-setup_db.py \
-#  --db-file $dbfile \
-#  --strelka-file ../../data/pbta-snv-strelka2.vep.maf.gz \
+#  --db-file $dbfile --overwrite \
 #  --mutect-file ../../data/pbta-snv-mutect2.vep.maf.gz \
-#  --lancet-file ../../data/pbta-snv-lancet.vep.maf.gz \
 #  --vardict-file ../../data/pbta-snv-vardict.vep.maf.gz \
 
 

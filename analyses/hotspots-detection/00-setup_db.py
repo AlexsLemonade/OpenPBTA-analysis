@@ -242,6 +242,8 @@ needed_cols = [
     'flanking_bps',
     'Protein_position',
     'IMPACT',
+    'HGVSp_Short',
+    'gnomAD_AF',
     'VAF'
 ]
 
