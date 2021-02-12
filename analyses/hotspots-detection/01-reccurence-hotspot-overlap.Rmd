@@ -33,6 +33,7 @@ Hotspots:
 ## Setup
 ```{r}
 library("tidyverse")
+library("maftools")
 
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
@@ -161,8 +162,14 @@ summarise_sites <- combined_maf_subsets %>%
            Tumor_Sample_Barcode) %>%
   summarise(type=toString(unique(type)),
             gnomad_AF_common = any(gnomad_AF_common),
-            VAF = mean(VAF)) %>%
+            VAF = mean(VAF),
+            Variant_Classification=toString(unique(Variant_Classification))) %>%
 	left_join(hotspot_database,by=c("Amino_Acid_Position","Hugo_Symbol")) %>%
+  mutate(hotspot_database = case_when(
+    grepl("Cosmic",type) & !is.na(hotspot_database) ~ paste0(hotspot_database,",Cosmic"),
+    grepl("Cosmic",type) & is.na(hotspot_database) ~ "Cosmic",
+    TRUE ~ hotspot_database
+  )) %>%
   dplyr::filter( grepl("brain-goi",type))
   
 
@@ -171,7 +178,7 @@ summarise_sites <- combined_maf_subsets %>%
 ## Recurrence in genes part of brain-goi from filtered snv calls
 ```{r}
 calls_recurrence <- summarise_sites %>%
-    count(Chromosome,Start_Position,End_Position,Amino_Acid_Position,Hugo_Symbol,type,gnomad_AF_common,hotspot_database,sort = TRUE) %>%
+    count(Chromosome,Start_Position,End_Position,Amino_Acid_Position,Hugo_Symbol,type,gnomad_AF_common,hotspot_database,Variant_Classification,sort = TRUE) %>%
   dplyr::filter(n>2)
 		  
 ```
@@ -181,6 +188,30 @@ calls_recurrence <- summarise_sites %>%
 calls_recurrence %>% 
   left_join(summarise_sites) %>%
   ggplot(aes(x=hotspot_database,y=VAF))+ geom_violin()+theme_bw()
+```
+
+## Sites not part of MSKCC cancer hotspots/Cosmic
+```{r}
+# maftools needs a maf file to be read via read.maf
+calls_recurrence %>% 
+  left_join(combined_maf_subsets) %>% 
+  dplyr::filter(is.na(hotspot_database) ) %>%
+  write_tsv("results/uniqhits.maf")
+
+uniqhitsGenes<-calls_recurrence %>% 
+  left_join(combined_maf_subsets) %>% 
+  dplyr::filter(is.na(hotspot_database) ) %>%
+  pull(Hugo_Symbol) %>%
+  unique()
+
+```
+## Summary plots
+```{r}
+uniq.titv = titv(maf = uniqhitsmaf, plot = FALSE, useSyn = TRUE)
+#plot titv summary
+plotTiTv(res = uniq.titv)
+
+plotVaf(uniqhitsmaf,vafCol = "VAF",top = 16)
 ```
 
 ## Genes with multiple hits in recurrence
@@ -205,6 +236,13 @@ pdf("results/multihits.pdf",width = 15,height = 8)
 lapply(multihitsGenes,function(x){
 maftools::lollipopPlot(multihitsmaf,gene = x ,AACol = "HGVSp_Short")})
 dev.off()
+```
+```{r}
+multi.titv = titv(maf = multihitsmaf, plot = FALSE, useSyn = TRUE)
+#plot titv summary
+plotTiTv(res = multi.titv)
+
+plotVaf(multihitsmaf,vafCol = "VAF")
 ```
 
 
