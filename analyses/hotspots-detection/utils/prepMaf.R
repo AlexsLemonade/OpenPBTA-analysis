@@ -15,7 +15,7 @@ prepMaf <- function(table,
   # gene list to filter sql lite table
   gene_list <- gene_table$Hugo_Symbol
   # select columns to only use columns needed for a base maf
-  columns <-c("Chromosome","Start_Position","End_Position","Hugo_Symbol","Variant_Classification","IMPACT","Tumor_Sample_Barcode" ,"Protein_position","VAF","HGVSp_Short","gnomAD_AF")
+  columns <-c("Chromosome","Start_Position","End_Position","Reference_Allele","Hugo_Symbol","Variant_Classification","IMPACT","Tumor_Sample_Barcode" ,"Protein_position","VAF","HGVSp_Short","gnomAD_AF","Variant_Type","Tumor_Seq_Allele2")
   # Variant_Classification filtering values
   variant_classification_values <- unlist(str_split(variant_classification_values,pattern = "[|]"))
   # IMPACT filtering values
@@ -37,4 +37,5 @@ prepMaf <- function(table,
   return(calls_base)
   
 }
+
 
