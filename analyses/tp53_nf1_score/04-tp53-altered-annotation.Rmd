@@ -224,8 +224,8 @@ tp53_alterations_score_wide <- tp53_alterations_score %>%
     HGVSp_Short = toString(unique(HGVSp_Short)),
     CNV_loss_evidence = toString(unique(copy_number)),
     # summarize unique hotspot values per sample_id
-    hotspot = toString(unique(hotspot[!is.na(hotspot) ])),
-    activating = toString(unique(activating[!is.na(activating)]))) 
+    hotspot = max(unique(hotspot[!is.na(hotspot) ])),
+    activating = max(unique(activating[!is.na(activating)]))) 
 
 tp53_alterations_score_wide
 
