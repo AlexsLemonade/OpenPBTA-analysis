@@ -183,8 +183,7 @@ tp53_alterations_dna <- histology %>%
   # join filtered cnv losses
   left_join(cnv_domain_overlap,by=c("Kids_First_Biospecimen_ID"="biospecimen_id",
                                     "sample_id")) %>%
-  rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID) %>%
-  replace_na(list(hotspot = 0, activating = 0))
+  rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID) 
 
 tp53_alterations_score <- tp53_alterations_dna %>%
   # add classifier score
@@ -197,7 +196,8 @@ tp53_alterations_score <- tp53_alterations_dna %>%
   select(sample_id,Kids_First_Biospecimen_ID_RNA,Kids_First_Biospecimen_ID_DNA,
          tp53_score,cancer_predispositions,HGVSp_Short,copy_number,hotspot,activating) %>%
   arrange(sample_id) %>%
-  unique() 
+  unique() %>%
+  replace_na(list(hotspot = 0, activating = 0))
 
 tp53_alterations_score 
 
@@ -242,8 +242,8 @@ tp53_alterations_score_wide <- tp53_alterations_score_wide %>%
     # add tp53_altered annotation column
     tp53_altered = 
       case_when(
-        # when activating == ""
-        activating == "" &
+        # when activating == 0
+        activating == 0 &
           # check if mutated variant AA position overlaps hotspot database 
           ( hotspot == 1  |
               # check if sample_id has SNV+CNV mutation
@@ -251,7 +251,7 @@ tp53_alterations_score_wide <- tp53_alterations_score_wide %>%
               (SNV_indel_counts >= 1 & CNV_loss_counts >=1) |
               # check if more than 1 SNV is present
               # suggesting both alleles are mutated
-              SNV_indel_counts >= 1 |
+              SNV_indel_counts > 1 |
               # check if SNV mutant and has
               # Li-Fraumeni syndrome suggesting
               # germline TP53 mutant as cancer predisposition 
