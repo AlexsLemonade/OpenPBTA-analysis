@@ -78,32 +78,21 @@ clinical_df = clinical_df[
 status_df = status_df.merge(
     clinical_df,
     how="left",
-    left_on="Tumor_Sample_Barcode",
+    left_on="Kids_First_Biospecimen_ID_RNA",
     right_on="Kids_First_Biospecimen_ID",
 )
 
-# Value count of variant classification
-print(status_df.Variant_Classification.value_counts())
-
 
 # Obtain a binary status matrix
-full_status_df = pd.crosstab(
-    status_df["sample_id"], status_df.Hugo_Symbol, dropna=False
-)
-full_status_df.head(3)
-full_status_df[full_status_df > 1] = 1
-full_status_df = full_status_df.reset_index()
-full_status_df = full_status_df.drop(["No_TP53_NF1_alt"], axis=1)
-
-
-# add clinical info to TP53 and NF1 binary status df
-full_status_df = full_status_df.assign(
-    tp53_status=full_status_df.loc[:, "TP53"], nf1_status=full_status_df.loc[:, "NF1"]
-)
-
-full_status_df = full_status_df.merge(
-    clinical_df, how="left", left_on="sample_id", right_on="sample_id"
-)
+full_status_df['tp53_status']=(
+    # ~ 1 if both SNV/CNV counts are more than 1 so can be considered as a TP53 double hit
+    (full_status_df['SNV_indels_counts'] != 0 & full_status_df['CNV_loss_counts'] != 0 ) |
+    # ~ 1 if SNV == 1 and cancer_predisposition == Li-Fraumeni syndrome
+    (full_status_df['SNV_indels_counts'] == 1 & full_status_df['cancer_predispositions'] == "Li-Fraumeni syndrome" ) |
+    # ~ 1 if SNV == 1 and cancer_predisposition == Li-Fraumeni syndrome
+    (full_status_df['CNV_loss_counts'] == 1 & full_status_df['cancer_predispositions'] == "Li-Fraumeni syndrome" ) |
+    # ~ 1 if SNV count is more than 1 so consider it as a double hit
+    (full_status_df['SNV_indels_counts'] >1).as.type(int)
 
 
 # read in scores from 01
@@ -115,7 +104,7 @@ scores_df = scores_df.merge(
     full_status_df,
     how="left",
     left_on="SAMPLE_ID",
-    right_on="Kids_First_Biospecimen_ID",
+    right_on="Kids_First_Biospecimen_ID_RNA",
 )
 
 print("scores df shape")
@@ -125,20 +114,14 @@ scores_df.tp53_status.value_counts()
 scores_df = scores_df.assign(SAMPLE_ID=scores_df.loc[:, "sample_id"])
 
 
-gene_status = ["tp53_status", "nf1_status"]
-scores_df.loc[:, gene_status] = scores_df.loc[:, gene_status].fillna(0)
-
+gene_status = ["tp53_status"]
 scores_df.loc[scores_df["tp53_status"] != 0, "tp53_status"] = 1
-scores_df.loc[scores_df["nf1_status"] != 0, "nf1_status"] = 1
 
-scores_df["tp53_status"] = scores_df["tp53_status"].astype(int)
-scores_df["nf1_status"] = scores_df["nf1_status"].astype(int)
 
-# binary counts for tp53 and nf1 loss status
+# binary counts for tp53 loss status
 print("TP53 status")
 print(scores_df.tp53_status.value_counts())
-print("NF1 status")
-print(scores_df.nf1_status.value_counts())
+
 
 
 def get_roc_plot(scores_df, gene, outputfilename, color):
@@ -213,4 +196,3 @@ outputfilename = os.path.join("analyses", "tp53_nf1_score", "results", outputfil
 
 get_roc_plot(scores_df, gene="TP53", outputfilename=outputfilename, color="#7570b3")
 
-get_roc_plot(scores_df, gene="NF1", outputfilename=outputfilename, color="#d95f02")
