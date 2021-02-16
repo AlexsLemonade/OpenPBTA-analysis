@@ -38,7 +38,7 @@ metadata <-
 #### Filter metadata -----------------------------------------------------------
 # Select wanted columns in metadata for merging and assign to a new object
 chordoma_metadata <- metadata %>%
-  dplyr::filter(short_histology == "Chordoma") %>%
+  dplyr::filter(pathology_diagnosis == "Chordoma") %>%
   dplyr::select(
     sample_id,
     Kids_First_Participant_ID,
@@ -81,6 +81,7 @@ cn_metadata <- data.table::fread(file.path(
     sample_id,
     Kids_First_Participant_ID,
     biospecimen_id,
+    copy_number,
     status
   ) %>%
   dplyr::filter(sample_id %in% chordoma_metadata$sample_id) %>%
