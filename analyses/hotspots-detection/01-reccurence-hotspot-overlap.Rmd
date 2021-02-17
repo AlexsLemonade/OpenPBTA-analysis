@@ -125,11 +125,12 @@ saveRDS(combined_maf_subsets, "results/combined_maf_subsets.RDS")
 
 ## Get filtered numbers
 
-Count up how many callers call each mutation. 
+Count up how many callers call SNP mutation. 
 
 ```{r}
-# Add up how many callers identify each mutation
-caller_mat <- combined_maf_subsets %>% 
+# Add up how many callers identify each SNP mutation
+caller_mat_snp <- combined_maf_subsets %>% 
+ dplyr::filter(Variant_Type=="SNP") %>%  
  dplyr::select("Chromosome",
               "Start_Position",
               "Tumor_Sample_Barcode", 
@@ -138,13 +139,35 @@ caller_mat <- combined_maf_subsets %>%
   unique() %>%
   reshape2::dcast(Chromosome+Start_Position+Tumor_Sample_Barcode+Variant_Classification ~ caller,fun.aggregate = length)
 
+# Add up how many callers identify each INDEL mutation
+caller_mat_indel <- combined_maf_subsets %>% 
+ dplyr::filter(Variant_Type %in% c("INS","DEL")) %>%  
+ dplyr::select("Chromosome",
+              "Start_Position",
+              "Tumor_Sample_Barcode", 
+              "Variant_Classification",
+              "caller") %>%
+  unique() %>%
+  reshape2::dcast(Chromosome+Start_Position+Tumor_Sample_Barcode+Variant_Classification ~ caller,fun.aggregate = length)
+
+
 ```
 
-## Upset graphs
+## Upset graphs 
+
+SNP calls
 ```{r}
-UpSetR::upset(data = caller_mat[,c("lancet","mutect","strelka","vardict")] ,
+UpSetR::upset(data = caller_mat_snp[,c("lancet","mutect","strelka","vardict")] ,
               order.by = "freq",main.bar.color = "gray")
 ```
+
+INDEL calls
+```{r}
+UpSetR::upset(data = caller_mat_indel[,c("lancet","mutect","strelka","vardict")] ,
+              order.by = "freq",main.bar.color = "gray")
+```
+
+
 
 VAF plot
 ```{r}
@@ -163,6 +186,7 @@ summarise_sites <- combined_maf_subsets %>%
   summarise(type=toString(unique(type)),
             gnomad_AF_common = any(gnomad_AF_common),
             VAF = mean(VAF),
+            dbSNP_RS = toString(unique(dbSNP_RS)),
             Variant_Classification=toString(unique(Variant_Classification))) %>%
 	left_join(hotspot_database,by=c("Amino_Acid_Position","Hugo_Symbol")) %>%
   mutate(hotspot_database = case_when(
@@ -178,7 +202,7 @@ summarise_sites <- combined_maf_subsets %>%
 ## Recurrence in genes part of brain-goi from filtered snv calls
 ```{r}
 calls_recurrence <- summarise_sites %>%
-    count(Chromosome,Start_Position,End_Position,Amino_Acid_Position,Hugo_Symbol,type,gnomad_AF_common,hotspot_database,Variant_Classification,sort = TRUE) %>%
+    count(Chromosome,Start_Position,End_Position,Amino_Acid_Position,Hugo_Symbol,type,gnomad_AF_common,hotspot_database,Variant_Classification,dbSNP_RS,sort = TRUE) %>%
   dplyr::filter(n>2)
 		  
 ```
@@ -207,12 +231,15 @@ uniqhitsGenes<-calls_recurrence %>%
 ```
 ## Summary plots
 ```{r}
+uniqhitsmaf <- maftools::read.maf("results/uniqhits.maf")
 uniq.titv = titv(maf = uniqhitsmaf, plot = FALSE, useSyn = TRUE)
 #plot titv summary
 plotTiTv(res = uniq.titv)
 
 plotVaf(uniqhitsmaf,vafCol = "VAF",top = 16)
 ```
+Except KMT5B, all calls above which are in genes not in Cosmic Census and don't overlap sites of cancer hotspot database (MSKCC) have low VAF.
+
 
 ## Genes with multiple hits in recurrence
 ```{r}
@@ -244,7 +271,7 @@ plotTiTv(res = multi.titv)
 
 plotVaf(multihitsmaf,vafCol = "VAF")
 ```
-
+Only TP53 and CTNNB1 have high VAF which leans towards a true call. Majority of the substitution is C>T 
 
 
 ## Save
