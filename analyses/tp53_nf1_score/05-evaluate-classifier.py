@@ -65,7 +65,7 @@ outputfilename = options.outputfile
 np.random.seed(123)
 
 # read TP53/NF1 alterations
-status_df = pd.read_table(status_file, low_memory=False)
+full_status_df = pd.read_table(status_file, low_memory=False)
 # read in clinical file
 clinical_df = pd.read_table(clinical)
 # select only IDs
@@ -73,26 +73,25 @@ clinical_df = clinical_df[
     ["Kids_First_Biospecimen_ID", "sample_id", "Kids_First_Participant_ID"]
 ]
 
-
-# add clinical info to alterations dataframe
-status_df = status_df.merge(
-    clinical_df,
-    how="left",
-    left_on="Kids_First_Biospecimen_ID_RNA",
-    right_on="Kids_First_Biospecimen_ID",
-)
-
-
 # Obtain a binary status matrix
-full_status_df['tp53_status']=(
-    # ~ 1 if both SNV/CNV counts are more than 1 so can be considered as a TP53 double hit
-    (full_status_df['SNV_indels_counts'] != 0 & full_status_df['CNV_loss_counts'] != 0 ) |
-    # ~ 1 if SNV == 1 and cancer_predisposition == Li-Fraumeni syndrome
-    (full_status_df['SNV_indels_counts'] == 1 & full_status_df['cancer_predispositions'] == "Li-Fraumeni syndrome" ) |
-    # ~ 1 if SNV == 1 and cancer_predisposition == Li-Fraumeni syndrome
-    (full_status_df['CNV_loss_counts'] == 1 & full_status_df['cancer_predispositions'] == "Li-Fraumeni syndrome" ) |
-    # ~ 1 if SNV count is more than 1 so consider it as a double hit
-    (full_status_df['SNV_indels_counts'] >1).as.type(int)
+full_status_df['tp53_status']= full_status_df.apply(
+    lambda x: (1
+               # IF
+               # both SNV/CNV counts are more than 1 so can be considered as a TP53 double hit
+               if (x['SNV_indel_counts'] !=0 and x['CNV_loss_counts'] != 0 or
+                   # SNV == 1 and cancer_predisposition == Li-Fraumeni syndrome
+                   (x['SNV_indel_counts'] == 1 and (x['cancer_predispositions'] == "Li-Fraumeni syndrome")) or
+                   # SNV == 1 and cancer_predisposition == Li-Fraumeni syndrome
+                   (x['CNV_loss_counts'] == 1 and (x['cancer_predispositions'] == "Li-Fraumeni syndrome")) or
+                   # SNV count is more than 1 so consider it as a double hit  
+                   (x['SNV_indel_counts'] >1))
+               # ELSE
+               else 0), axis=1)
+
+
+print("drop tp53_score columns from tp53 annotation file")
+full_status_df = full_status_df.drop("tp53_score" , axis = "columns")
+
 
 
 # read in scores from 01
@@ -115,14 +114,11 @@ scores_df = scores_df.assign(SAMPLE_ID=scores_df.loc[:, "sample_id"])
 
 
 gene_status = ["tp53_status"]
-scores_df.loc[scores_df["tp53_status"] != 0, "tp53_status"] = 1
-
-
 # binary counts for tp53 loss status
 print("TP53 status")
 print(scores_df.tp53_status.value_counts())
 
-
+print(scores_df.head())
 
 def get_roc_plot(scores_df, gene, outputfilename, color):
     """
@@ -140,6 +136,8 @@ def get_roc_plot(scores_df, gene, outputfilename, color):
     sample_status = scores_df.loc[:, "{}_status".format(lower_gene)]
     sample_score = scores_df.loc[:, "{}_score".format(lower_gene)]
     shuffle_score = scores_df.loc[:, "{}_shuffle".format(lower_gene)]
+    print(sample_status.head())
+    print(sample_score.head())
     fpr_pbta, tpr_pbta, thresh_pbta = roc_curve(
         sample_status, sample_score, drop_intermediate=False
     )
