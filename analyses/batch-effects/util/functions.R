@@ -48,7 +48,7 @@ make_plot = function(tb, data_t, report_name, context_name){
     "#e66101"
   )
   
-  ggplot(tb, aes(x = PC1, y=PC2, color=data_t$histology, shape=data_t$batch)) +
+  p = ggplot(tb, aes(x = PC1, y=PC2, color=data_t$histology, shape=data_t$batch)) +
     geom_point() +
     scale_color_manual(values = colors) +
     scale_shape_manual(values = shapes) +
@@ -56,6 +56,8 @@ make_plot = function(tb, data_t, report_name, context_name){
     theme_bw() 
   
   ggsave(paste(report_name, context_name, sep = "_"))
+  
+  return(p)
   
   
 }
@@ -149,7 +151,7 @@ make_before_and_after_combat_plots = function(data_t, batch, report_name, run_co
   
   tb = as_tibble(pca$x)
   
-  make_plot(tb, data_t, report_name, "histology.png")
+  p1 = make_plot(tb, data_t, report_name, "histology.png")
   
   if (run_combat == FALSE){
     print("Combat set to not run on this data set")
@@ -170,7 +172,9 @@ make_before_and_after_combat_plots = function(data_t, batch, report_name, run_co
   
   tb = as_tibble(pca$x)
   
-  make_plot(tb, data_t, report_name, "batch-adjusted-histology.png")
+  p2 = make_plot(tb, data_t, report_name, "batch-adjusted-histology.png")
+  
+  return(list(p1, p2))
   
 }
 
@@ -203,7 +207,7 @@ make_histology_pca_plots = function(df, id_batch_histology, gene_id, report_name
   print("DATA IS READY") 
   
   #Make before and after PCA plots
-  make_before_and_after_combat_plots(data_t, batch, report_name, run_combat)
+  return(make_before_and_after_combat_plots(data_t, batch, report_name, run_combat))
 
 }
 
