@@ -82,6 +82,7 @@ cn_metadata <- data.table::fread(file.path(
     Kids_First_Participant_ID,
     biospecimen_id,
     copy_number,
+    ploidy,
     status
   ) %>%
   dplyr::filter(sample_id %in% chordoma_metadata$sample_id) %>%

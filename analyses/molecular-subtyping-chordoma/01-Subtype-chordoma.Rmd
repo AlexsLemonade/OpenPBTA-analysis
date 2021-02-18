@@ -33,8 +33,9 @@ subset_metadata <- histologies_df %>%
   dplyr::filter(short_histology == "Chordoma") %>%
   select(
     Kids_First_Biospecimen_ID, sample_id, Kids_First_Participant_ID,
-    experimental_strategy
-  )
+    experimental_strategy,tumor_ploidy
+  ) %>%
+  rename(ploidy=tumor_ploidy)
 ```
 
 ```{r}
@@ -97,10 +98,11 @@ copy_neutral_df <- subset_metadata %>%
     !(Kids_First_Biospecimen_ID %in% chordoma_loss$biospecimen_id)
   ) %>%
   # if there's no loss, let's assume status is copy neutral
-  mutate(status = "neutral") %>%
+  mutate(status = "neutral",
+         copy_number = ploidy) %>%
   # let's get the columns to match chordoma_loss
   dplyr::rename(biospecimen_id = Kids_First_Biospecimen_ID) %>%
-  select(biospecimen_id, status)
+  select(biospecimen_id, status, copy_number,ploidy)
 copy_neutral_df
 ```
 
@@ -108,7 +110,7 @@ Joining chordoma samples (both with chr 22 loss and no copy number change)
 ```{r}
 chordoma_copy <- chordoma_loss %>%
   # join the losses with the neutrals to get a new data frame
-  select(biospecimen_id, status) %>%
+  select(biospecimen_id, status,ploidy,copy_number) %>%
   bind_rows(copy_neutral_df)
 chordoma_copy
 ```
@@ -200,10 +202,13 @@ chordoma_smarcb1_df <- chordoma_smarcb1_df %>%
     Kids_First_Biospecimen_ID_RNA,
     sample_id,
     status,
+    ploidy,
+    copy_number,
     SMARCB1_expression
   ) %>%
   # 'status' is replaced a more descriptive name
-  dplyr::rename(focal_SMARCB1_status = status)
+  dplyr::rename(focal_SMARCB1_status = status,
+                SMARCB1_copy_number = copy_number)
 chordoma_smarcb1_df
 ```
 
