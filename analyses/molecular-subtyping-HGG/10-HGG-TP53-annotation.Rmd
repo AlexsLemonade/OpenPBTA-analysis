@@ -3,7 +3,7 @@ title: "TP53 annotation for HGG"
 output: html_notebook
 ---
 
-In this notebook we will annotate HGG samples with TP53 status we obtained from snv/cnv and tp53 loss classifier. We belive TP53 annotation will add useful information to the current known subtypes as we see Tp53 mutated co-occuring with H3 mutations
+In this notebook we will annotate HGG samples with TP53 status we obtained from snv/cnv and TP53 classifier. We believe TP53 annotation will add useful information to the current known subtypes as we see TP53 mutations co-occurring with H3 mutations.
 
 ## Set up
 ```{r}
@@ -57,4 +57,3 @@ hgg_subtypes <- hgg_subtypes %>%
   write_tsv(file.path(results_dir,"HGG_molecular_subtype.tsv"))
 
 ```
-
