@@ -283,7 +283,7 @@ tp53_alterations_score_wide <- tp53_alterations_score_wide %>%
 
 ## Explore distribution of tp53_altered status vs tp53 inactivation scores
 
-```{r}
+```{r, out.width="50%"}
 ggplot(tp53_alterations_score_wide, aes(x = factor(tp53_altered), y = tp53_score)) +
   geom_violin()+
   geom_jitter(alpha = 0.5, width = 0.2) +
@@ -318,7 +318,7 @@ stranded_tp53 <- as.data.frame(subset_stranded) %>%
 
 Plot distribution of TP53 gene expression (stranded)
 
-```{r}
+```{r, out.width="50%"}
 
 ggplot(stranded_tp53, aes(x = factor(tp53_altered), y = TP53)) +
   geom_violin()+
@@ -350,7 +350,7 @@ polya_tp53<- as.data.frame(subset_polya) %>%
 
 Plot distribution of TP53 gene expression (poly-a)
 
-```{r}
+```{r, out.width="50%" }
 
 ggplot(polya_tp53, aes(x = factor(tp53_altered), y = TP53)) +
   geom_violin()+
@@ -365,7 +365,7 @@ ggplot(polya_tp53, aes(x = factor(tp53_altered), y = TP53)) +
 
 ### Check if other cancer predisposition have high TP53 inactivation scores  
 
-```{r}
+```{r ,out.width="50%"}
 
 ggplot(tp53_alterations_score_wide, aes(x = factor(tp53_altered), y = tp53_score)) +
   geom_violin()+
