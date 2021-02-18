@@ -24,7 +24,7 @@
 #
 #
 # Example invocation:
-# python3 00-setup_db.py --db-file snv.sqlite --strelka-file strelka.maf --meta-file samples.tsv
+# python3 01-setup_db.py --db-file snv.sqlite --strelka-file strelka.maf --meta-file samples.tsv
 
 
 import os
