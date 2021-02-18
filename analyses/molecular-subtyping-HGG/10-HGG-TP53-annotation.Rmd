@@ -50,7 +50,7 @@ hgg_subtypes <- hgg_subtypes %>%
          "tp53_hotspot"="hotspot",
          "tp53_activating"="activating") %>%
   mutate(molecular_subtype= case_when(
-    tp53_altered=="activating" ~ stringr::str_c(molecular_subtype,", TP53 activated"),
+    tp53_altered=="activated" ~ stringr::str_c(molecular_subtype,", TP53 activated"),
     tp53_altered=="loss" ~ stringr::str_c(molecular_subtype,", TP53 loss"),
     TRUE ~ molecular_subtype
   )) %>%
