@@ -47,7 +47,8 @@ SNV_indel_counts	| Number of deleterious SNVs found in DNA sample
 CNV_loss_counts	| Number of CNV losses found in DNA sample
 HGVSp_Short	| Short format of protein level change used as SNV evidence 
 CNV_loss_evidence | copy_number of CNV overlapping functional domains of TP53 used as evidence 	
-hotspot	activating	| Hotspot status from MSKCC cancer hotspot [database](https://www.cancerhotspots.org/#/home) 
+hotspot	| Any 1 SNV shown in HGVSp_Short overlaps MSKCC cancer hotspot [database](https://www.cancerhotspots.org/#/home)
+activating	| Any 1 SNV shown in HGVSp_Short overlaps TP53_ activating mutations R273C and R248W. [Reference](https://pubmed.ncbi.nlm.nih.gov/17417627/) and [reference](https://pubmed.ncbi.nlm.nih.gov/24677579/). 
 tp53_altered | Combined evidence, cancer predisposition and score based tp53 status
 
 
