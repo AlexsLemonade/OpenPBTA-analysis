@@ -13,6 +13,8 @@ Domians of intests:
 ## Setup
 ```{r}
 library("tidyverse")
+library("biomaRt")
+library("GenomicRanges")
 
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
@@ -41,9 +43,7 @@ kinase_gr <-get_pfam_granges("PF00069",ensembl = ensembl)
 
 ### Read filtered snv calls
 ```{r}
-filtered_calls <- readRDS(file.path(results_dir,"combined_maf_subsets.RDS")) %>%
-   dplyr::select(-caller) %>%
-   unique()
+filtered_calls <- readRDS(file.path(results_dir,"combined_maf_subsets.RDS")) 
  
  filtered_calls_gr <- makeGRangesFromDataFrame(df = filtered_calls,
                                                keep.extra.columns = TRUE,
@@ -62,16 +62,87 @@ overlaps_kinase_snv <- IRanges::subsetByOverlaps(filtered_calls_gr,
                                                  kinase_gr)
 
 # save as the base maf format
-data.frame(Chromosome=seqnames(overlaps_kinase_snv),
-            Start_Position=start(overlaps_kinase_snv),
-            End_Position=end(overlaps_kinase_snv),
-            Hugo_Symbol = overlaps_kinase_snv$Hugo_Symbol,
-            Variant_Classification = overlaps_kinase_snv$Variant_Classification,
-            IMPACT = overlaps_kinase_snv$IMPACT,
-            Protein_position = overlaps_kinase_snv$Protein_position,
-            Amino_Acid_Position = overlaps_kinase_snv$Amino_Acid_Position) %>%
-   unique() %>%
-   write_tsv(file.path(results_dir,"kinase_snv_sites.tsv"))
+kinase_overlap <- data.frame(Chromosome=seqnames(overlaps_kinase_snv),
+           Start_Position=start(overlaps_kinase_snv),
+           End_Position=end(overlaps_kinase_snv),
+           Hugo_Symbol = overlaps_kinase_snv$Hugo_Symbol,
+           Variant_Classification = overlaps_kinase_snv$Variant_Classification,
+           IMPACT = overlaps_kinase_snv$IMPACT,
+           Protein_position = overlaps_kinase_snv$Protein_position,
+           Amino_Acid_Position = overlaps_kinase_snv$Amino_Acid_Position,
+           Reference_Allele= overlaps_kinase_snv$Reference_Allele,
+           Variant_Type = overlaps_kinase_snv$Variant_Type,
+           Tumor_Seq_Allele2 = overlaps_kinase_snv$Tumor_Seq_Allele2,
+           Tumor_Sample_Barcode = overlaps_kinase_snv$Tumor_Sample_Barcode,
+           HGVSp_Short = overlaps_kinase_snv$HGVSp_Short,
+           VAF = overlaps_kinase_snv$VAF,
+           caller = overlaps_kinase_snv$caller) %>%
+   unique() 
 
+
+kinase_overlap %>%
+   dplyr::select(-caller) %>%
+  group_by(Chromosome,Start_Position,End_Position,
+           Amino_Acid_Position,Hugo_Symbol,
+           Tumor_Sample_Barcode,
+           Variant_Type,
+           Reference_Allele,
+           Tumor_Seq_Allele2,
+           HGVSp_Short,
+           Variant_Classification) %>%
+  # doing a mean so that caller specific VAF 
+  # calculations doesn't unique rows
+  summarise(VAF = mean(VAF)) %>%
+   write_tsv(file.path(results_dir,"kinase_snv_sites.maf"))
+
+```
+
+```{r}
+# functions takes in a maf format dataframe and a variant_type to return an upset plot
+getUpset<-function(maf,variant_type="SNP"){
+  # Add up how many callers identify eac mutation
+caller_mat <- maf %>% 
+ dplyr::filter(Variant_Type %in% variant_type) %>%  
+ dplyr::select("Chromosome",
+              "Start_Position",
+              "Tumor_Sample_Barcode", 
+              "Variant_Classification",
+              "caller") %>%
+  unique() %>%
+  reshape2::dcast(Chromosome+Start_Position+Tumor_Sample_Barcode+Variant_Classification ~ caller,fun.aggregate = length) %>%
+  dplyr::select(-c("Chromosome","Start_Position", "Tumor_Sample_Barcode", "Variant_Classification"))
+
+UpSetR::upset(data = caller_mat ,
+              order.by = "freq",main.bar.color = "gray")
+}
+```
+
+```{r}
+getUpset(kinase_overlap,c("SNP","DNP","TNP","ONP"))
+```
+
+```{r}
+getUpset(kinase_overlap,c("INS","DEL"))
+```
+
+
+
+```{r}
+kinasedomainsmaf <- maftools::read.maf("results/kinase_snv_sites.maf")
+domain.titv = titv(maf = kinasedomainsmaf, plot = FALSE, useSyn = TRUE)
+#plot titv summary
+plotTiTv(res = domain.titv)
+
+```
+
+```{r}
+plotVaf(kinasedomainsmaf,vafCol = "VAF")
+
+```
+```{r}
+pdf("results/kinasehits.pdf",width = 15,height = 8)
+lapply(c("FLT4","BRAF","TYRO3","FGFR1","PIM3","GAK","GRK2","PKN1","CDKL4","RPS6KA4"),function(x){
+maftools::lollipopPlot(kinasedomainsmaf,gene = x ,AACol = "HGVSp_Short")})
+dev.off()
 ```
 
