@@ -220,6 +220,8 @@ calls_recurrence %>%
 ## Sites not part of MSKCC cancer hotspots/Cosmic
 ```{r}
 # maftools needs a maf file to be read via read.maf
+# so we are using the exact sites that don't overlap
+# MSKCC cancer database nor are Cosmic census gene lists
 uniqhits <- calls_recurrence %>% 
   left_join(combined_maf_subsets) %>% 
   dplyr::filter(is.na(hotspot_database) ) 
@@ -230,6 +232,18 @@ uniqhitsGenes<- uniqhits %>%
 
 # save as maf for maftools functions
 uniqhits %>%
+  select(-caller) %>%
+  group_by(Chromosome,Start_Position,End_Position,
+           Amino_Acid_Position,Hugo_Symbol,
+           Tumor_Sample_Barcode,
+           Variant_Type,
+           Reference_Allele,
+           Tumor_Seq_Allele2,
+           HGVSp_Short,
+           Variant_Classification) %>%
+  # doing a mean so that caller specific VAF 
+  # calculations doesn't unique rows
+  summarise(VAF = mean(VAF)) %>%
   write_tsv("results/uniqhits.maf")
 ```
 
@@ -295,11 +309,33 @@ multihitsGenes <- calls_recurrence %>%
   pull(Hugo_Symbol)
 
 # maftools needs a maf file to be read via read.maf
-multihits <- calls_recurrence %>% 
-  left_join(combined_maf_subsets) %>% 
-  dplyr::filter(Hugo_Symbol %in% multihitsGenes) 
+multihits <- combined_maf_subsets %>% 
+  # selecting sites in multiHits genes from filtered maf  
+  dplyr::filter(Hugo_Symbol %in% multihitsGenes) %>%
+  # doing an inner join with recurrent sites
+  # to visualize just the VAFs of these sites
+  inner_join(calls_recurrence,
+             by = c("Chromosome", 
+                    "Start_Position",
+                    "End_Position",
+                    "Hugo_Symbol",
+                    "Variant_Classification",
+                    "dbSNP_RS",
+                    "Amino_Acid_Position"))
   
 multihits %>%  
+  select(-caller) %>%
+  group_by(Chromosome,Start_Position,End_Position,
+           Amino_Acid_Position,Hugo_Symbol,
+           Tumor_Sample_Barcode,
+           Variant_Type,
+           Reference_Allele,
+           Tumor_Seq_Allele2,
+           HGVSp_Short,
+           Variant_Classification) %>%
+  # doing a mean so that caller specific VAF 
+  # calculations doesn't unique rows
+  summarise(VAF = mean(VAF)) %>%
   write_tsv("results/multihits.maf")
 
 ```
