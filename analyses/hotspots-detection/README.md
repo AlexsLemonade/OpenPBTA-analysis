@@ -7,7 +7,7 @@ In this analysis we will evaluate snv and indels from strelka2,mutect2,vardict a
 
 ### Steps of analysis
 
-`00-setup_db.py` sets up a database with 4 callers are tables , this script was modified from [snv-callers](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers) module to include IMPACT, Protein_position columns in all callers. 
+`../snv-callers/scripts/01-setup_db.py` sets up a database with 4 caller maf files as tables 
 
 `01-reccurence-hotspot-overlap.Rmd` filters and combines calls from all callers and summarises the data to save recurrent mutated hotspots and additionally annotates the site as seen in MSKCC cancer hotspot database (file in input folder)
 

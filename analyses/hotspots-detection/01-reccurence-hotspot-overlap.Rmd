@@ -33,6 +33,7 @@ Hotspots:
 ## Setup
 ```{r}
 library("tidyverse")
+library("maftools")
 
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
@@ -116,35 +117,251 @@ vardict_subset,
 lancet_subset)
 
 # save for future runs
-saveRDS(combined_maf_subsets, "results/combined_maf_subsets.RDS")
+saveRDS(combined_maf_subsets, file.path("results","combined_maf_subsets.RDS"))
 
 	      
 ```
 
-## Recurrence in genes part of brain-goi from filtered snv calls
+
+## Get filtered numbers
+
+Upset plots to visualize caller contributions
+
+```{r}
+# functions takes in a maf format dataframe and a variant_type to return an upset plot
+getUpset<-function(maf,variant_type="SNP"){
+  # Add up how many callers identify eac mutation
+caller_mat <- maf %>% 
+ dplyr::filter(Variant_Type %in% variant_type) %>%  
+ dplyr::select("Chromosome",
+              "Start_Position",
+              "Tumor_Sample_Barcode", 
+              "Variant_Classification",
+              "caller") %>%
+  unique() %>%
+  reshape2::dcast(Chromosome+Start_Position+Tumor_Sample_Barcode+Variant_Classification ~ caller,fun.aggregate = length) %>%
+  select(-c("Chromosome","Start_Position", "Tumor_Sample_Barcode", "Variant_Classification"))
+
+UpSetR::upset(data = caller_mat ,
+              order.by = "freq",main.bar.color = "gray")
+}
+
+
+
+
+```
+
+## Upset graphs 
+
+SNP: Single nucleotide polymorphism -- a substitution in one nucleotide
+DNP: Double nucleotide polymorphism -- a substitution in two consecutive nucleotides
+TNP: Triple nucleotide polymorphism -- a substitution in three consecutive nucleotides
+ONP: Oligo-nucleotide polymorphism -- a substitution in more than three consecutive nucleotides
+
+
+```{r}
+getUpset(combined_maf_subsets,c("SNP","DNP","TNP","ONP"))
+```
+Vardict uniquely support a lot of the filtered sites but interestingly majority of the subtitution mutations are supported by all callers
+
+INS: Insertion -- the addition of nucleotides
+DEL: Deletion -- the removal of nucleotides
+```{r}
+getUpset(combined_maf_subsets,c("INS","DEL"))
+```
+Vardict and Lancet uniquely support a lot of filtred indels
+
+
+VAF plot
 ```{r}
 
-calls_recurrence <- combined_maf_subsets %>%
+ggplot(combined_maf_subsets)+geom_violin(aes(x=caller,y=VAF,color=caller))+theme_bw()
+```
+
+## Summarise calls per site in Tumor_Sample_Barcode for brain GOI only 
+```{r}
+summarise_sites <- combined_maf_subsets %>%
     left_join(gene_table,by="Hugo_Symbol") %>%
+  mutate(gnomad_AF_common = gnomAD_AF>0.001 & !is.na(gnomAD_AF)) %>%
   group_by(Chromosome,Start_Position,End_Position,
            Amino_Acid_Position,Hugo_Symbol,
            Tumor_Sample_Barcode) %>%
-  summarise(type=toString(unique(type))) %>%
-    count(Chromosome,Start_Position,End_Position,Amino_Acid_Position,Hugo_Symbol,type,sort = TRUE) %>%
-  dplyr::filter( grepl("brain-goi",type)) %>%
-  dplyr::filter(n>2)
-
+  summarise(type=toString(unique(type)),
+            gnomad_AF_common = any(gnomad_AF_common),
+            VAF = mean(VAF),
+            dbSNP_RS = toString(unique(dbSNP_RS)),
+            Variant_Classification=toString(unique(Variant_Classification))) %>%
+	left_join(hotspot_database,by=c("Amino_Acid_Position","Hugo_Symbol")) %>%
+  mutate(hotspot_database = case_when(
+    grepl("Cosmic",type) & !is.na(hotspot_database) ~ paste0(hotspot_database,",Cosmic"),
+    grepl("Cosmic",type) & is.na(hotspot_database) ~ "Cosmic",
+    TRUE ~ hotspot_database
+  )) %>%
+  dplyr::filter( grepl("brain-goi",type))
+  
 
 ```
 
-
-## Merge hotspot annotation to recurrence table and save fot strelka
+## Recurrence in genes part of brain-goi from filtered snv calls
 ```{r}
-calls_recurrence <- calls_recurrence %>%
-	left_join(hotspot_database,by=c("Amino_Acid_Position","Hugo_Symbol"))%>%
-	write_tsv(file.path(results_dir,"snv_recurrence.tsv"))
+calls_recurrence <- summarise_sites %>%
+    count(Chromosome,Start_Position,End_Position,Amino_Acid_Position,Hugo_Symbol,type,gnomad_AF_common,hotspot_database,Variant_Classification,dbSNP_RS,sort = TRUE) %>%
+  dplyr::filter(n>2)
 		  
 ```
+
+## Plot VAF separating by present or absent in MSKCC database
+```{r}
+calls_recurrence %>% 
+  left_join(summarise_sites) %>%
+  ggplot(aes(x=hotspot_database,y=VAF))+ geom_violin()+theme_bw()
+```
+
+## Sites not part of MSKCC cancer hotspots/Cosmic
+```{r}
+# maftools needs a maf file to be read via read.maf
+# so we are using the exact sites that don't overlap
+# MSKCC cancer database nor are Cosmic census gene lists
+uniqhits <- calls_recurrence %>% 
+  left_join(combined_maf_subsets) %>% 
+  dplyr::filter(is.na(hotspot_database) ) 
+
+uniqhitsGenes<- uniqhits %>%
+  pull(Hugo_Symbol) %>%
+  unique()
+
+# save as maf for maftools functions
+uniqhits %>%
+  select(-caller) %>%
+  group_by(Chromosome,Start_Position,End_Position,
+           Amino_Acid_Position,Hugo_Symbol,
+           Tumor_Sample_Barcode,
+           Variant_Type,
+           Reference_Allele,
+           Tumor_Seq_Allele2,
+           HGVSp_Short,
+           Variant_Classification) %>%
+  # doing a mean so that caller specific VAF 
+  # calculations doesn't unique rows
+  summarise(VAF = mean(VAF)) %>%
+  write_tsv("results/uniqhits.maf")
+```
+
+
+### Upset plots for the uniq hits 
+
+SNP: Single nucleotide polymorphism -- a substitution in one nucleotide
+DNP: Double nucleotide polymorphism -- a substitution in two consecutive nucleotides
+TNP: Triple nucleotide polymorphism -- a substitution in three consecutive nucleotides
+ONP: Oligo-nucleotide polymorphism -- a substitution in more than three consecutive nucleotides
+
+
+```{r}
+getUpset(uniqhits,c("SNP","DNP","TNP","ONP"))
+```
+Interestingly a lot of the uniq hits are supported by strelka only, followed by vardict.
+
+
+INS: Insertion -- the addition of nucleotides
+DEL: Deletion -- the removal of nucleotides
+```{r}
+getUpset(uniqhits,c("INS","DEL"))
+```
+Vardict and Lancet again uniquely support a lot of novel indels.
+
+## Summary plots
+```{r}
+uniqhitsmaf <- maftools::read.maf("results/uniqhits.maf")
+uniq.titv = titv(maf = uniqhitsmaf, plot = FALSE, useSyn = TRUE)
+#plot titv summary
+plotTiTv(res = uniq.titv)
+
+plotVaf(uniqhitsmaf,vafCol = "VAF",top = 16)
+```
+Except KMT5B, all calls above which are in genes not in Cosmic Census and don't overlap sites of cancer hotspot database (MSKCC) have low VAF.
+
+### Upset plots for the uniq hits 
+
+SNP: Single nucleotide polymorphism -- a substitution in one nucleotide
+DNP: Double nucleotide polymorphism -- a substitution in two consecutive nucleotides
+TNP: Triple nucleotide polymorphism -- a substitution in three consecutive nucleotides
+ONP: Oligo-nucleotide polymorphism -- a substitution in more than three consecutive nucleotides
+
+
+```{r}
+getUpset(multihits,c("SNP","DNP","TNP","ONP"))
+```
+Vardict uniquely support a lot of the multihit sites but interestingly majority of the subtitution mutations are supported by all callers
+
+INS: Insertion -- the addition of nucleotides
+DEL: Deletion -- the removal of nucleotides
+```{r}
+getUpset(multihits,c("INS","DEL"))
+```
+Vardict and Lancet uniquely support a lot of the multihit sites 
+
+## Genes with multiple hits in recurrence
+```{r}
+multihitsGenes <- calls_recurrence %>% 
+  group_by(Hugo_Symbol) %>%
+  tally() %>%
+  filter(n>10) %>%
+  pull(Hugo_Symbol)
+
+# maftools needs a maf file to be read via read.maf
+multihits <- combined_maf_subsets %>% 
+  # selecting sites in multiHits genes from filtered maf  
+  dplyr::filter(Hugo_Symbol %in% multihitsGenes) %>%
+  # doing an inner join with recurrent sites
+  # to visualize just the VAFs of these sites
+  inner_join(calls_recurrence,
+             by = c("Chromosome", 
+                    "Start_Position",
+                    "End_Position",
+                    "Hugo_Symbol",
+                    "Variant_Classification",
+                    "dbSNP_RS",
+                    "Amino_Acid_Position"))
+  
+multihits %>%  
+  select(-caller) %>%
+  group_by(Chromosome,Start_Position,End_Position,
+           Amino_Acid_Position,Hugo_Symbol,
+           Tumor_Sample_Barcode,
+           Variant_Type,
+           Reference_Allele,
+           Tumor_Seq_Allele2,
+           HGVSp_Short,
+           Variant_Classification) %>%
+  # doing a mean so that caller specific VAF 
+  # calculations doesn't unique rows
+  summarise(VAF = mean(VAF)) %>%
+  write_tsv("results/multihits.maf")
+
+```
+# Plot lollipops
+```{r}
+multihitsmaf <- maftools::read.maf("results/multihits.maf")
+pdf("results/multihits.pdf",width = 15,height = 8)
+lapply(multihitsGenes,function(x){
+maftools::lollipopPlot(multihitsmaf,gene = x ,AACol = "HGVSp_Short")})
+dev.off()
+```
+```{r}
+multi.titv = titv(maf = multihitsmaf, plot = FALSE, useSyn = TRUE)
+#plot titv summary
+plotTiTv(res = multi.titv)
+
+plotVaf(multihitsmaf,vafCol = "VAF")
+```
+Only TP53 and CTNNB1 have high VAF which leans towards a true call. Majority of the substitution is C>T 
+
+
+## Save
+```{r}
+calls_recurrence %>% write_tsv(file.path(results_dir,"snv_recurrence.tsv"))
+```
+
 
 
 ```{r}
