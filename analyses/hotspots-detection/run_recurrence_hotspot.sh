@@ -17,12 +17,13 @@ cd "$script_directory" || exit
 dbfile=../../scratch/snv_db.sqlite
 
 ################################ Set Up Database ################################
-##### Updated form snv-caller module to include IMPACT,Protein_positon columns for mutect and vardict
+##### this script from snv-caller module is being used to set up a database with tables for each caller
 
-#python3 00-setup_db.py \
-#  --db-file $dbfile --overwrite \
-#  --mutect-file ../../data/pbta-snv-mutect2.vep.maf.gz \
-#  --vardict-file ../../data/pbta-snv-vardict.vep.maf.gz \
+python3 ../snv-callers/scripts/01-setup_db.py \
+  --db-file $dbfile --overwrite \
+  --mutect-file ../../data/pbta-snv-mutect2.vep.maf.gz \
+  --vardict-file ../../data/pbta-snv-vardict.vep.maf.gz \
+################################################################################
 
 
 # find reccurence
