@@ -138,7 +138,7 @@ getUpset(kinase_overlap,c("INS","DEL"))
 
 ```{r}
 
-kinase_overlap %>%
+kinase_overlap <-kinase_overlap %>%
   left_join(gene_table,by="Hugo_Symbol") %>%
   left_join(hotspot_database,by=c("Amino_Acid_Position","Hugo_Symbol")) %>%
   mutate(hotspot_database = case_when(
@@ -146,7 +146,6 @@ kinase_overlap %>%
     grepl("Cosmic",type) & is.na(hotspot_database) ~ "Cosmic",
     TRUE ~ hotspot_database
   )) %>%
-  dplyr::filter(is.na(hotspot_database)) %>%
    dplyr::select(-caller) %>%
   group_by(Chromosome,Start_Position,End_Position,
            Amino_Acid_Position,Hugo_Symbol,
@@ -155,10 +154,15 @@ kinase_overlap %>%
            Reference_Allele,
            Tumor_Seq_Allele2,
            HGVSp_Short,
-           Variant_Classification) %>%
+           Variant_Classification,
+           hotspot_database) %>%
   # doing a mean so that caller specific VAF 
   # calculations doesn't unique rows
-  summarise(VAF = mean(VAF)) %>%
+  summarise(VAF = mean(VAF)) 
+
+
+kinase_overlap %>%
+  dplyr::filter(is.na(hotspot_database)) %>%
    write_tsv(file.path(results_dir,"kinase_snv_novel_sites.maf"))
 
 kinasedomains_novel_sites <- maftools::read.maf("results/kinase_snv_novel_sites.maf")
@@ -172,8 +176,12 @@ plotTiTv(res = domain.titv)
 plotVaf(kinasedomains_novel_sites,vafCol = "VAF")
 
 ```
+
+
 ```{r}
 pdf("results/kinasenovelhits.pdf",width = 15,height = 8)
+
+# PRAG1 errored out because maftools didn't have it's gene structure
 lapply(c("TYRO3","PIM3","ACVRL1","GAK","GRK2","PKN1","CDKL4","ULK1","RPS6KA4"),function(x){
 maftools::lollipopPlot(kinasedomains_novel_sites,gene = x ,AACol = "HGVSp_Short")})
 dev.off()
