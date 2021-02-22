@@ -363,7 +363,7 @@ multi.titv = titv(maf = multihitsmaf, plot = FALSE, useSyn = TRUE)
 plotTiTv(res = multi.titv)
 
 # Here the VAF column is unique to each Tumor_Sample_Barcode 
-# which we didn't considere as a column to count recurrence on.
+# which we didn't consider as a column on which to count recurrence.
 # So the values here maybe difference compared to what we find
 # in calls_recurrence
 plotVaf(multihitsmaf,vafCol = "VAF")
