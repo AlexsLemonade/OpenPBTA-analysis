@@ -1,308 +1,193 @@
-Chromosome	Start_Position	End_Position	Amino_Acid_Position	Hugo_Symbol	type	gnomad_AF_common	hotspot_database	Variant_Classification	dbSNP_RS	n
-chr1	226064434	226064434	28	H3F3A	CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs1057519903	94
-chr7	140753336	140753336	600	BRAF	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs113488022	48
-chr21	34792308	34792308	424	RUNX1	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	41
-chr21	34792313	34792313	422	RUNX1	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	38
-chr7	152265180	152265180	348	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	rs201834857	33
-chr11	118436649	118436649	46	KMT2A	CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	32
-chr7	152265083	152265083	380	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs138908625	32
-chr8	38414583	38414608	698-706	FGFR1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	29
-chr16	3728397	3728398	2217	CREBBP	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Nonsense_Mutation	novel	22
-chr12	49051140	49051409	758-848	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Del	novel	18
-chr6	159969379	159969379	45	IGF2R	TumorSuppressorGene, Oncogene, brain-goi	FALSE	NA	Missense_Mutation	novel	18
-chr5	122311880	122312306	NA	SNCAIP	Oncogene, brain-goi	FALSE	NA	Splice_Site	novel	16
-chr16	3728407	3728408	2213-2214	CREBBP	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Nonsense_Mutation	novel	15
-chr2	29228933	29228936	921-922	ALK	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	15
-chr7	152265049	152265049	391	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Nonsense_Mutation	rs146238849	15
-chr6	160068376	160068675	1415-?	IGF2R	TumorSuppressorGene, Oncogene, brain-goi	FALSE	NA	Splice_Site	novel	14
-chr9	84670942	84670967	65-?	NTRK2	Oncogene, Kinase, brain-goi	FALSE	NA	Splice_Site	novel	14
-chr1	226071412	226071412	115	H3F3A	CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs749423281	13
-chr11	118436631	118436631	40	KMT2A	CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	13
-chr14	21455709	21456084	NA	CHD8	brain-goi	FALSE	NA	Splice_Site	novel	13
-chr11	118436691	118436691	60	KMT2A	CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	12
-chr19	50415679	50416127	932	POLD1	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	12
-chr7	152248249	152248249	729	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs4639425	12
-chr16	2084164	2084705	?-1495	TSC2	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	11
-chr17	7674220	7674220	248	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	TRUE	MSKCC,Cosmic	Missense_Mutation	rs11540652	11
-chr17	7674894	7674894	213	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	MSKCC,Cosmic	Nonsense_Mutation	rs397516436	11
-chr3	41224610	41224610	33	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs121913400	11
-chr2	208248388	208248388	132	IDH1	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs121913500	10
-chr7	152229936	152229936	988	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs28522267	10
-chr12	49041040	49041040	2244	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	9
-chr12	49041367	49041367	2135	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	9
-chr17	7675137	7675137	159	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs730882000	9
-chr19	54360069	54360069	123	LAIR1	brain-goi	FALSE	NA	Missense_Mutation	rs190462445	9
-chr3	179234297	179234297	1047	PIK3CA	CosmicCensus, Oncogene, Kinase, brain-goi	TRUE	MSKCC,Cosmic	Missense_Mutation	rs121913279	9
-chr7	152229931	152229931	990	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs79608986	9
-chr7	152238768	152238768	864	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs4024420	9
-chr1	207454181	207454767	-	CR2	Oncogene, brain-goi	FALSE	NA	Splice_Site	novel	8
-chr12	49051140	49051436	749-848	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Del	novel	8
-chr12	49051274	49051274	803	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	8
-chr14	104775208	104775651	NA	AKT1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	8
-chr16	3728430	3728431	2206	CREBBP	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Nonsense_Mutation	novel	8
-chr19	54360057	54360057	127	LAIR1	brain-goi	TRUE	NA	Missense_Mutation	rs35781676	8
-chr6	26031978	26031978	28	HIST1H3B	CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	"NA"	8
-chr7	152248140	152248140	765	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs202098135	8
-chr7	152265205	152265205	339	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs775803041	8
-chr7	152273774	152273774	315	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs149992209	8
-chr7	152273866	152273866	284	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs201009236	8
-chr8	38414790	38414790	687	FGFR1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs869320694	8
-chr10	102504189	102504192	13-14	SUFU	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	7
-chr12	6581389	6581648	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	7
-chr12	6598100	6598221	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	7
-chr12	6600012	6600215	?-415	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	7
-chr12	6601979	6601981	139-140	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	In_Frame_Del	rs768750510	7
-chr12	25250563	25250907	NA	KRAS	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	7
-chr15	90084907	90084998	?-394	IDH2	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	7
-chr15	90085098	90085273	?-361	IDH2	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	7
-chr17	7512921	7513017	NA	POLR2A	brain-goi	FALSE	NA	Splice_Site	novel	7
-chr17	7674238	7674238	242	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs121912655	7
-chr17	7676011	7676011	120	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs121912658	7
-chr20	32434639	32434639	643	ASXL1	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Frame_Shift_Del	rs781077343	7
-chr3	41225572	41225658	245-?	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	7
-chr3	41233443	41233526	395-?	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	7
-chr3	41233866	41234136	508-?	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	7
-chr3	41236499	41236586	652-?	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	7
-chr3	184380488	184380848	50	CHRD	brain-goi	FALSE	NA	Splice_Site	novel	7
-chr5	1294937	1294937	18	TERT	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	7
-chr5	112707576	112707941	-	APC	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	7
-chr6	160068374	160068733	1414-?	IGF2R	TumorSuppressorGene, Oncogene, brain-goi	FALSE	NA	Splice_Site	novel	7
-chr7	55018993	55019459	-	EGFR	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	7
-chr7	92833282	92833282	14	CDK6	Kinase, TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	7
-chrX	41341615	41342492	95-?	DDX3X	TumorSuppressorGene, CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	7
-chrX	41345322	41345400	390-?	DDX3X	TumorSuppressorGene, CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	7
-chr1	114716176	114716655	NA	NRAS	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	6
-chr11	118436558	118436558	16	KMT2A	CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	6
-chr12	6595430	6596004	?-675	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	6
-chr12	6601052	6601286	?-267	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	6
-chr12	6606452	6607299	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	6
-chr12	49051193	49051193	830	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	6
-chr14	104770421	104770744	NA	AKT1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	6
-chr14	104773090	104773247	?-320	AKT1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	6
-chr14	104773380	104773454	NA	AKT1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	6
-chr14	104773581	104773911	NA	AKT1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	6
-chr15	90088503	90088586	NA	IDH2	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	6
-chr17	7496611	7496760	179-?	POLR2A	brain-goi	FALSE	NA	Splice_Site	novel	6
-chr2	47414420	47414420	NA	MSH2	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	rs587779194	6
-chr2	157766004	157766004	328	ACVR1	CosmicCensus, Kinase, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	"NA"	6
-chr2	208253959	208254937	NA	IDH1	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	6
-chr3	41224080	41224523	4-?	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	6
-chr3	41224606	41224606	32	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs28931588	6
-chr3	41224753	41224952	81-?	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	6
-chr3	41225205	41225330	165-?	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	6
-chr3	41235842	41236346	601-?	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	6
-chr7	152247922	152247922	838	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs2479172	6
-chrX	77593804	77593804	2001	ATRX	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Nonsense_Mutation	novel	6
-chr11	118436678	118436678	56	KMT2A	CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Missense_Mutation	rs1192129413	5
-chr12	6581174	6581290	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr12	6591825	6591914	?-1031	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr12	6592057	6592391	?-983	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr12	6592567	6592695	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr12	6600670	6600925	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr12	25245350	25245350	12	KRAS	CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs121913529	5
-chr12	49027928	49028005	?-4840	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr12	49051575	49051763	640-703	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Del	novel	5
-chr12	49051788	49052264	473-632	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Del	novel	5
-chr12	49054141	49054306	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr14	104772452	104772876	?-391	AKT1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr14	104775003	104775074	?-190	AKT1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr14	104792342	104792882	-	AKT1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr16	2056768	2057102	258-?	TSC2	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr16	3728422	3728423	2208-2209	CREBBP	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Nonsense_Mutation	novel	5
-chr17	7497869	7498075	401-?	POLR2A	brain-goi	FALSE	NA	Splice_Site	novel	5
-chr17	7511588	7511809	NA	POLR2A	brain-goi	FALSE	NA	Splice_Site	novel	5
-chr17	7673609	7673700	NA	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr17	7673776	7673776	282	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	TRUE	MSKCC,Cosmic	Missense_Mutation	rs28934574	5
-chr17	7673802	7673802	273	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	TRUE	MSKCC,Cosmic	Missense_Mutation	rs28934576	5
-chr17	7673803	7673803	273	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	TRUE	MSKCC,Cosmic	Missense_Mutation	rs121913343	5
-chr17	7674221	7674221	248	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	TRUE	MSKCC,Cosmic	Missense_Mutation	rs121912651	5
-chr17	7675088	7675088	175	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	TRUE	MSKCC,Cosmic	Missense_Mutation	rs28934578	5
-chr17	31235639	31235642	1246-1247	NF1	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Frame_Shift_Del	"NA"	5
-chr17	31261733	31261733	1534	NF1	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Nonsense_Mutation	rs760703505	5
-chr19	10960763	10961203	NA	SMARCA4	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr19	10985404	10986186	118-?	SMARCA4	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr19	11003159	11003338	648-?	SMARCA4	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr19	42291744	42292083	962-?	CIC	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr19	42292205	42292296	1002-?	CIC	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr19	42294089	42294171	1399-?	CIC	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr3	12599809	12600151	NA	RAF1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr3	41224634	41224634	41	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs121913413	5
-chr3	179218303	179218303	545	PIK3CA	CosmicCensus, Oncogene, Kinase, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs104886003	5
-chr5	123090417	123090417	135	PRDM6	TranscriptionFactor, brain-goi	FALSE	NA	Missense_Mutation	novel	5
-chr7	55019171	55019457	-	EGFR	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr7	140753338	140753339	599	BRAF	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Ins	rs727502902	5
-chr7	152238825	152238825	845	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs4024419	5
-chr8	38417331	38417331	577	FGFR1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs779707422	5
-chrX	41344400	41345179	NA	DDX3X	TumorSuppressorGene, CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chrX	41345545	41346224	438-?	DDX3X	TumorSuppressorGene, CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chrX	41347450	41347637	636-?	DDX3X	TumorSuppressorGene, CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	5
-chr1	44827347	44827742	687	PTCH2	TumorSuppressorGene, Oncogene, brain-goi	FALSE	NA	Splice_Site	novel	4
-chr1	226064454	226064454	35	H3F3A	CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	"NA"	4
-chr12	4274203	4274203	55	CCND2	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	4
-chr12	6057073	6057848	NA	VWF	brain-goi	FALSE	NA	Splice_Site	novel	4
-chr12	6570690	6570864	?-1909	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr12	6577918	6578028	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr12	6578138	6578408	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr12	6578547	6578845	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr12	6581813	6582134	?-1506	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr12	6582937	6583026	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr12	6587559	6587710	?-1235	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr12	6593229	6593415	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr12	49021873	49022042	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr12	49028959	49029060	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr12	49030394	49030394	4629	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	4
-chr12	49032947	49032949	3919-3920	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Del	rs587783684	4
-chr12	49034300	49034409	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr12	49041536	49041654	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr12	49041991	49042088	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr12	49050791	49050885	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr12	49051546	49051896	596-713	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Del	novel	4
-chr12	49052039	49052326	453-548	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Del	novel	4
-chr12	49052710	49052914	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr12	49055027	49055275	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr12	112450394	112450394	72	PTPN11	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs121918453	4
-chr14	21385860	21385860	2500	CHD8	brain-goi	TRUE	NA	Missense_Mutation	rs745917082	4
-chr14	21385869	21385872	2496-2497	CHD8	brain-goi	FALSE	NA	Missense_Mutation	novel	4
-chr15	90087576	90088358	NA	IDH2	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr16	2076373	2076936	915	TSC2	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr16	2088242	2088260	1726-1732	TSC2	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	4
-chr16	3780879	3781203	NA	CREBBP	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr17	7496347	7496439	NA	POLR2A	brain-goi	FALSE	NA	Splice_Site	novel	4
-chr17	7512590	7512772	NA	POLR2A	brain-goi	FALSE	NA	Splice_Site	novel	4
-chr17	31327694	31327694	1822	NF1	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Nonsense_Mutation	"NA"	4
-chr17	47157001	47157001	252	CDC27	Oncogene, brain-goi	FALSE	NA	Missense_Mutation	rs200148949	4
-chr19	10987002	10987663	286-?	SMARCA4	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr19	11059886	11060044	NA	SMARCA4	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr19	42289406	42289846	454-?	CIC	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr19	42294733	42294820	1486-?	CIC	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr19	50415668	50416105	932	POLD1	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr19	50415679	50416128	932	POLD1	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr2	47783451	47783451	73	MSH6	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	"NA"	4
-chr2	157774114	157774114	206	ACVR1	CosmicCensus, Kinase, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs121912678	4
-chr22	38982334	38982741	-	APOBEC3B	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr3	12584658	12584846	NA	RAF1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr3	41224607	41224607	32	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs121913396	4
-chr3	179218294	179218294	542	PIK3CA	CosmicCensus, Oncogene, Kinase, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs121913273	4
-chr4	54270665	54270665	385	PDGFRA	CosmicCensus, Oncogene, Kinase, brain-goi	FALSE	Cosmic	Missense_Mutation	"NA"	4
-chr5	1294779	1294779	71	TERT	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	4
-chr6	26045493	26045493	28	HIST1H3C	brain-goi	FALSE	NA	Missense_Mutation	"NA"	4
-chr6	160060717	160061501	1088-?	IGF2R	TumorSuppressorGene, Oncogene, brain-goi	FALSE	NA	Splice_Site	novel	4
-chr7	55143387	55143387	108	EGFR	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs1057519828	4
-chr7	152185587	152185587	1685	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs145848316	4
-chr7	152187476	152187713	?-1598	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chr7	152248143	152248143	764	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs200184971	4
-chr7	152273771	152273771	316	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs10454320	4
-chr7	152273846	152273846	291	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs56850341	4
-chr8	60820009	60820034	872-881	CHD7	brain-goi	FALSE	NA	Missense_Mutation	novel	4
-chr8	127737982	127738457	?-80	MYC	CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chrX	40073089	40073090	752-753	BCOR	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Frame_Shift_Del	novel	4
-chrX	41342654	41342736	NA	DDX3X	TumorSuppressorGene, CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chrX	41343821	41344027	255-?	DDX3X	TumorSuppressorGene, CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chrX	41344129	41344238	NA	DDX3X	TumorSuppressorGene, CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chrX	41346411	41346504	NA	DDX3X	TumorSuppressorGene, CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chrX	41346622	41346857	539-?	DDX3X	TumorSuppressorGene, CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	4
-chrX	77557561	77557561	2197	ATRX	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	"NA"	4
-chr1	114713909	114713909	61	NRAS	CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs121913254	3
-chr11	65655001	65655687	NA	RELA	Oncogene, TranscriptionFactor, brain-goi	FALSE	NA	Splice_Site	novel	3
-chr11	65658500	65658717	NA	RELA	Oncogene, TranscriptionFactor, brain-goi	FALSE	NA	Splice_Site	novel	3
-chr11	65661836	65661936	NA	RELA	Oncogene, TranscriptionFactor, brain-goi	FALSE	NA	Splice_Site	novel	3
-chr11	65662089	65662178	NA	RELA	Oncogene, TranscriptionFactor, brain-goi	FALSE	NA	Splice_Site	novel	3
-chr11	68173804	68173804	218	KMT5B	brain-goi	FALSE	NA	Missense_Mutation	novel	3
-chr11	69643246	69643830	138-?	CCND1	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr12	6583114	6583197	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr12	6587949	6588296	?-1156	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr12	6592818	6593090	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr12	6594651	6595333	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr12	6601531	6601647	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr12	6601766	6601958	?-147	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr12	25227343	25227343	61	KRAS	CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs121913238	3
-chr12	25227343	25227344	60-61	KRAS	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	NA, novel	3
-chr12	49024709	49024809	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr12	49029081	49029081	4744	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	3
-chr12	49030440	49030600	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr12	49034667	49034811	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr12	49041706	49041916	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr12	49043999	49044199	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr12	49045968	49046064	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr12	49046423	49046606	?-1474	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr12	49051070	49051351	778-871	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Del	novel	3
-chr12	49051161	49051163	840-841	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	3
-chr12	49051202	49051202	827	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	3
-chr12	49051573	49051815	623-704	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Del	novel	3
-chr12	49051674	49052177	502-670	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Del	novel	3
-chr12	49053642	49053977	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr12	132676565	132676565	297	POLE	CosmicCensus, brain-goi	FALSE	Cosmic	Missense_Mutation	"NA"	3
-chr12	132687067	132687285	11-?	POLE	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr14	21391064	21391462	NA	CHD8	brain-goi	FALSE	NA	Splice_Site	novel	3
-chr14	21393255	21393475	NA	CHD8	brain-goi	FALSE	NA	Splice_Site	novel	3
-chr14	21400935	21400935	1437	CHD8	brain-goi	FALSE	NA	Missense_Mutation	rs1176349106	3
-chr14	104775799	104776657	?-96	AKT1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr15	90084354	90084815	NA	IDH2	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr15	90087263	90087437	?-272	IDH2	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr15	90090645	90091552	NA	IDH2	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr16	2056243	2056641	216-?	TSC2	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr16	2079195	2079273	1044-?	TSC2	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr16	2085025	2085227	1523-?	TSC2	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr16	2086378	2086729	1616-?	TSC2	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr16	2172375	2172464	NA	TRAF7	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr16	2175621	2175831	542-?	TRAF7	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr16	3736203	3736648	?-1521	CREBBP	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr16	3739723	3740396	?-1379	CREBBP	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr16	3757348	3757348	1213	CREBBP	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	3
-chr16	3773931	3774568	NA	CREBBP	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr17	7497518	7497649	NA	POLR2A	brain-goi	FALSE	NA	Splice_Site	novel	3
-chr17	7508474	7508941	NA	POLR2A	brain-goi	FALSE	NA	Splice_Site	novel	3
-chr17	7509190	7509530	NA	POLR2A	brain-goi	FALSE	NA	Splice_Site	novel	3
-chr17	7511318	7511403	NA	POLR2A	brain-goi	FALSE	NA	Splice_Site	novel	3
-chr17	7512345	7512476	NA	POLR2A	brain-goi	FALSE	NA	Splice_Site	novel	3
-chr17	7673534	7673534	NA	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	"NA"	3
-chr17	7673838	7674180	NA	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr17	7674230	7674230	245	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs28934575	3
-chr17	7674944	7674944	196	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs483352697	3
-chr17	7675237	7675993	NA	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr17	31258363	31258372	1398-1401	NF1	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Frame_Shift_Del	novel	3
-chr17	31337581	31337816	2214-?	NF1	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr17	31338734	31338737	2284-2285	NF1	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Frame_Shift_Del	rs864622307	3
-chr19	10984372	10985270	74-?	SMARCA4	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr19	11027873	11027873	1102	SMARCA4	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	3
-chr19	11058362	11058785	1511-?	SMARCA4	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr19	42287448	42287542	194-?	CIC	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr19	42287724	42287805	254-?	CIC	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr19	42292463	42292561	1058-?	CIC	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr19	42292857	42292955	1156-?	CIC	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr19	42295012	42295014	1550	CIC	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	3
-chr19	50401924	50401997	155-?	POLD1	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr19	50415679	50416121	932	POLD1	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr2	15942738	15942738	225	MYCN	CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	3
-chr2	29328457	29328457	436	ALK	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	"NA"	3
-chr2	157766005	157766005	328	ACVR1	CosmicCensus, Kinase, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs387906588	3
-chr2	208243487	208243487	213	IDH1	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Frame_Shift_Del	"NA"	3
-chr20	32358673	32359039	-	ASXL1	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr21	34792182	34792182	466	RUNX1	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Missense_Mutation	"NA"	3
-chr21	34792281	34792611	?-433	RUNX1	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr21	34792325	34792325	418	RUNX1	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	TRUE	Cosmic	Missense_Mutation	rs202068364	3
-chr22	23833702	23834138	382-?	SMARCB1	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr22	23834167	23834167	391	SMARCB1	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Frame_Shift_Del	"NA"	3
-chr3	41224613	41224613	34	CTNNB1	CosmicCensus, Oncogene, brain-goi	TRUE	MSKCC,Cosmic	Missense_Mutation	rs28931589	3
-chr3	41224622	41224622	37	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs121913403	3
-chr3	184386509	184386509	650	CHRD	brain-goi	FALSE	NA	Missense_Mutation	novel	3
-chr4	54273731	54274530	NA	PDGFRA	CosmicCensus, Oncogene, Kinase, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr5	123099825	123099825	255	PRDM6	TranscriptionFactor, brain-goi	FALSE	NA	Missense_Mutation	novel	3
-chr6	160072033	160072760	1523-?	IGF2R	TumorSuppressorGene, Oncogene, brain-goi	FALSE	NA	Splice_Site	novel	3
-chr6	160073469	160073755	1649-?	IGF2R	TumorSuppressorGene, Oncogene, brain-goi	FALSE	NA	Splice_Site	novel	3
-chr7	55154129	55154129	289	EGFR	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs149840192	3
-chr7	129189255	129189255	35	SMO	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	3
-chr7	152144881	152145151	?-4725	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr7	152156058	152156204	NA	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr7	152248264	152248264	724	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Nonsense_Mutation	rs201039690	3
-chr8	38414287	38414555	?-715	FGFR1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr8	38414788	38414788	687	FGFR1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs1057519897	3
-chr8	38417417	38417869	NA	FGFR1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr8	38417992	38418227	NA	FGFR1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr8	60822060	60822060	958	CHD7	brain-goi	FALSE	NA	Missense_Mutation	novel	3
-chr8	127737790	127738386	?-57	MYC	CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	3
-chr9	95485706	95485706	188	PTCH1	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Frame_Shift_Del	"NA"	3
-chrX	40052164	40052165	1738	BCOR	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Ins	novel	3
-chrX	77618820	77618820	1812	ATRX	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	3
-chrX	77663432	77663433	1357	ATRX	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Frame_Shift_Del	novel	3
-chrX	77683568	77683568	563	ATRX	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Nonsense_Mutation	novel	3
+Chromosome	Start_Position	End_Position	Amino_Acid_Position	Hugo_Symbol	type	gnomad_AF_common	hotspot_database	Variant_Classification	dbSNP_RS	Reference_Allele	Tumor_Seq_Allele2	HGVSp_Short	Variant_Type	n
+chr1	226064434	226064434	28	H3F3A	CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs1057519903	A	T	p.K28M	SNP	50
+chr7	140753336	140753336	600	BRAF	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs113488022	A	T	p.V600E	SNP	42
+chr21	34792308	34792308	424	RUNX1	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	A	C	p.S424A	SNP	38
+chr7	152265083	152265083	380	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs138908625	C	A	p.R380L	SNP	29
+chr7	152265180	152265180	348	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	rs201834857	C	T	p.D348N	SNP	28
+chr11	118436649	118436649	46	KMT2A	CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	T	G	p.V46G	SNP	26
+chr21	34792313	34792313	422	RUNX1	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	T	G	p.E422A	SNP	25
+chr8	38414583	38414608	698-706	FGFR1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	CGGTCAAATAATGCCTCGGGTGCCAT	TCGGTGGTCGCCGTATCATTAAAAAA	p.M698_R706delinsFFNDTATTE	ONP	23
+chr16	3728397	3728398	2217	CREBBP	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Nonsense_Mutation	novel	-	CTTGCTGCTGCTGCTGTTGCTGCTGTTGTTGCTTTTGTTATTGTTGCAGCTACTGTTGTTCCTGCTTTGTTGCTGTTGCTGATGCTTTTGCTGTGGGTGTTGTTTTGTTTGCTGCTGTTGCTGTTCACTTTTGTTATTGTTACAGCTACCGTTGTTGCTGCT	p.Q2216_G2217insEQQQR*L*Q*QK*TATAANKTTPTAKASATATKQEQQ*LQQ*QKQQQQQQQQQQ	INS	19
+chr5	122311880	122312306	NA	SNCAIP	Oncogene, brain-goi	FALSE	NA	Splice_Site	novel	CGCCGCGGGGAGGGTCGCTGTCAGTCAGGCCGAGCGGGGCTCGCTGGCCTGGGGGCGGCCGCAGGGGCGCAGCGCAGCCTGAGGGCGCGGCGGCCCCGGCAGCCTCCGCAGTGGCAGTGGTGGCCGCGCCCCCGTCCCCGGCCGGGCGCCCGCGCTGCGTTCCTTGTCCCCCAGCGCCGGCTTCGGGCCGCGGCCGCCCAGGCTGCCCCCGCCCGCGCGCGCCCGTTGGGGGGCCCGGGGAGCGGCGCCCGCGGCCGGGCCGCATTGTGACGTAGCGGGGCCGCGGCAGCGCCTCCACCGCCCGCCTACTTCGGCTGAGGCTGTTCTGCTCCTGCCGCTGCGGTCCGTCGGTCGGTCAGTCAGTCCCTTCGCGCTCCTGAGCCGCCGGCGCGCCGGGCGCCCCGGGTGAGTCCAGGTCCCAAGCGGA	-	"NA"	DEL	14
+chr6	159969379	159969379	45	IGF2R	TumorSuppressorGene, Oncogene, brain-goi	FALSE	NA	Missense_Mutation	novel	T	G	p.F45V	SNP	14
+chr11	118436631	118436631	40	KMT2A	CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	T	G	p.L40R	SNP	12
+chr12	49051140	49051409	758-848	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Del	novel	TCCTCAGGCCGGGGGGACAGGCATGGCTCCTCAGACTGGGGGGACAGGTGTGATTCCTCAGGTTGGGGGGACAAGCATGGCTCCTCAGGCACAGGAGACAGGTGCGGCTCCTCAGTCTGGGGGGACAGGTGCAATTCCTCAGGCTGAGGGGACAGATGTGGTCCCTCAGCCTGGGGGGACAAGTGTGGCTCCTCAGGCACAGCGCATAGGCATGGCTCCTCAGGCTGGGGGGACAGGTGTGGCTCCTCAGCCTGCGGAGATAGGTGTGGC	-	p.P759_E848del	DEL	12
+chr19	50415679	50416127	932	POLD1	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	GCCACCCACCTGCCCTCACCCACCCGCCACCCCATCTCCACGCAGGATGAGGAAGCGGGACCCCGGGAGTGCGCCCAGCCTGGGCGACCGCGTCCCCTACGTGATCATCAGTGCCGCCAAGGGTGTGGCCGCCTACATGAAGTCGGAGGTCAGGCCCACCTGGCTGCCTGCTCCCGCCCAGCCCCCTCGCTCTCACTTCTGCTTTCCGAGATGGGCGGGCCTGCGGGAAGGGTGGGGCCTCCCGTGCCCTGTGGGGCCCTGAGAACCGCCCCCCATGGCAGCCTGGGTGTGGCCTCGGCCCCCTCTGGAGGTCCCCCCTCTATTCTGACCCCTCCCTTGCTTCCCTATGGAAGGGGCCCCAGTCCCTCCCCTGTGCATACAGCTCCCCAGCCGGGGGTTCCCTTGGATTCATAATCCTCCAGCTCTACCCCCACCCCCAGTGACCCACA	CCCCCCCCCCC	p.X932_splice	DEL	12
+chr6	160068376	160068675	1415-?	IGF2R	TumorSuppressorGene, Oncogene, brain-goi	FALSE	NA	Splice_Site	novel	GCTGGCACTGGTGAGAGAGGGCCTCCTCGTGGGGTGGTGTTTGCAGTGAGTGTATCACAGGCCAGCACTGGTGAGAGGGGGCCTCCTCGTGGGGTGGTGGTTGTAGTGAGTGTATCACAGGCTGGCACTGGTGAGAGAGGGCCTCCTCGTGGGGTGGTGTTTGCTGTGAGTGTATCACAGGCCAGCACTGGTGAGAGAGGTCCTCCTCGTGGGGTGGTGGTTGTAGTGAGTGTATCGAAGGCTGGCACTGGTGAGAGAGGACCTCCTCATGGGGTGGTGGTTGCAATGAATGTATTGAAA	-	p.X1418_splice	DEL	12
+chr7	152265049	152265049	391	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Nonsense_Mutation	rs146238849	G	T	p.C391*	SNP	12
+chr2	29228933	29228936	921-922	ALK	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	TCCG	CCCC	p.F921L	ONP	11
+chr14	21455709	21456084	NA	CHD8	brain-goi	FALSE	NA	Splice_Site	novel	GAGAACAAGGCGCCGCCTCCAATCTACACTACGCCCAGTAATGCAATGACAAGCCCTGAAAACTCCACAGCGTCCCAAGCAGTCCCTCGCGGCTCGGCCCGGCTCGGACCCCGCGGCCCGGCAGCCACCCTCTCCCCCGGCCTCTCACAAAGGAGACTGGTTCAGTCCGGAGCATCACCCCGCACCTGATCCCTCACAACTGGGGGGCGAGCAGGGGGTGGAAGAGAGAGGAGAAGGAGTTACTTAAATCAAATCTCTGAGAGCCTCAGCTTTTGCTGACTCCTGGCCCAGCACTGAGGAGCGGGTGCGAGCGGGAAGCCTACCTGTGCAAGTCCTGGTACTTCCTTTCCAGGCAGCGTTTCAACTCACCCTCTCC	-	"NA"	DEL	10
+chr16	2084164	2084705	?-1495	TSC2	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	TCAACCCCAGGTGGGCTCGAGGGTGCCTGCTGACAGGGGTTCTCTTTGGGATGGTCCTTTCTAGTCGTCCTCAGTCTCCAGCCAGGAGGAGAAGTCGCTCCACGCGGAGGAGCTGGTTGGCAGGGGCATCCCCATCGAGCGAGTCGTCTCCTCGGAGGGTGGCCGGCCCTCTGTGGACCTCTCCTTCCAGCCCTCGCAGCCCCTGAGCAAGTCCAGCTCCTCTCCCGAGCTGCAGACTCTGCAGGACATCCTCGGGGACCCTGGGGACAAGGCCGACGTGGGCCGGCTGAGCCCTGAGGTTAAGGCCCGGTCACAGTCAGGGACCCTGGACGGGGAAAGTGCTGCCTGGTCGGCCTCGGGCGAAGACAGTCGGGGCCAGCCCGAGGGTCCCTTGCCTTCCAGCTCCCCCCGCTCGCCCAGTGGCCTCCGGCCCCGAGGTTACACCATCTCCGACTCGGCCCCATCACGCAGGGGCAAGAGAGTAGAGAGGGACGCCTTAAAGAGCAGAGCCACAGCCTCCAATGCAGAGAAAGTGCCAGGCA	-	p.X1336_splice	DEL	10
+chr7	152229936	152229936	988	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs28522267	C	A	p.C988F	SNP	10
+chr7	152248249	152248249	729	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs4639425	T	C	p.N729D	SNP	10
+chr11	118436691	118436691	60	KMT2A	CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	T	G	p.V60G	SNP	9
+chr19	54360069	54360069	123	LAIR1	brain-goi	FALSE	NA	Missense_Mutation	rs190462445	C	G	p.S123T	SNP	9
+chr3	41224610	41224610	33	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs121913400	C	T	p.S33F	SNP	9
+chr7	152229931	152229931	990	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs79608986	T	C	p.S990G	SNP	9
+chr12	49041040	49041040	2244	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	A	C	p.F2244V	SNP	8
+chr12	49041367	49041367	2135	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	A	C	p.L2135V	SNP	8
+chr2	208248388	208248388	132	IDH1	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs121913500	C	T	p.R132H	SNP	8
+chr7	152238768	152238768	864	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs4024420	T	C	p.E864G	SNP	8
+chr7	152273866	152273866	284	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs201009236	C	T	p.R284Q	SNP	8
+chr8	38414790	38414790	687	FGFR1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs869320694	T	C	p.K687E	SNP	8
+chr9	84670942	84670967	65-?	NTRK2	Oncogene, Kinase, brain-goi	FALSE	NA	Splice_Site	novel	CTGAGAACATCACCGAAATGTGAGTT	TCGGTGGTCGCCGTATCATTAAAAAA	p.X65_splice	ONP	8
+chr12	49051140	49051436	749-848	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Del	novel	TCCTCAGGCCGGGGGGACAGGCATGGCTCCTCAGACTGGGGGGACAGGTGTGATTCCTCAGGTTGGGGGGACAAGCATGGCTCCTCAGGCACAGGAGACAGGTGCGGCTCCTCAGTCTGGGGGGACAGGTGCAATTCCTCAGGCTGAGGGGACAGATGTGGTCCCTCAGCCTGGGGGGACAAGTGTGGCTCCTCAGGCACAGCGCATAGGCATGGCTCCTCAGGCTGGGGGGACAGGTGTGGCTCCTCAGCCTGCGGAGATAGGTGTGGCTCCTCAGGCCGGGGGGACAGGTGCGGC	-	p.P750_E848del	DEL	7
+chr16	3728430	3728431	2206	CREBBP	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Nonsense_Mutation	novel	-	TTTGTTATTGTTGCA	p.Q2206delinsLQQ*QK	INS	7
+chr3	179234297	179234297	1047	PIK3CA	CosmicCensus, Oncogene, Kinase, brain-goi	TRUE	MSKCC,Cosmic	Missense_Mutation	rs121913279	A	G	p.H1047R	SNP	7
+chr3	184380488	184380848	50	CHRD	brain-goi	FALSE	NA	Splice_Site	novel	GCGCGGGCGGGGAGTCGGGCTCGGGGCGAGTCAGCGCCAGCCCGGAGGGGGCGCGGGGCGCAGGTGGCTCGGCGCGGCGGGCGGCCCGGAGGGTGGGCGGGGGCAGAAGGGCGCGGTGCCTGGGACCCGGGACCCGCGGGCAGCCCCCGGGGCGGCACACGGCGCGAGCTGGGCAGCGGCCTCCAGCCAAGCCCGTCCCCGCAGGCTGCACCTTCGGCGGGAAGGTCTATGCCTTGGACGAGACGTGGCACCCGGACCTAGGGGAGCCATTCGGGGTGATGCGCTGCGTGCTGTGCGCCTGCGAGGCGGTGAGTGCACCCCGCGGCCGGCCCGGGCCCTGGCGGGTGGGGAGCGCCGGGTC	-	p.X50_splice	DEL	7
+chr5	112707576	112707941	-	APC	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	GCCGCTGCTCGGGGGGGACCTGCGGGCTCAGGCCCGGGAGCTGCGGACCGAGGTTGGCTCGATGCTGTTCCCAGGTACTGTTGTTGGCTGTTGGTGAGGAAGGTGAAGCACTCAGTTGCCTTCTCGGGCCTCGGCGCCCCCTATGTACGCCTCCCTGGGCTCGGGTCCGGTCGCCCCTTTGCCCGCTTCTGTACCACCCTCAGTTCTCGGGTCCTGGAGCACCGGCGGCAGCAGGAGCTGCGTCCGGCAGGAGACGAAGAGCCCGGGCGGCGCTCGTACTTCTGGCCACTGGGCGAGCGTCTGGCAGGTGAGTGAGGCTGCAGGCATTGACGTCTCCTCCCGGCAAAGCTTCCTCGGCTTTGCCCC	-	"NA"	DEL	7
+chr6	160068374	160068733	1414-?	IGF2R	TumorSuppressorGene, Oncogene, brain-goi	FALSE	NA	Splice_Site	novel	AGGCTGGCACTGGTGAGAGAGGGCCTCCTCGTGGGGTGGTGTTTGCAGTGAGTGTATCACAGGCCAGCACTGGTGAGAGGGGGCCTCCTCGTGGGGTGGTGGTTGTAGTGAGTGTATCACAGGCTGGCACTGGTGAGAGAGGGCCTCCTCGTGGGGTGGTGTTTGCTGTGAGTGTATCACAGGCCAGCACTGGTGAGAGAGGTCCTCCTCGTGGGGTGGTGGTTGTAGTGAGTGTATCGAAGGCTGGCACTGGTGAGAGAGGACCTCCTCATGGGGTGGTGGTTGCAATGAATGTATTGAAAGCTGGCACTGGTGAGAGAGGGCCTCCTCGTGGGATGGTGTTTGCAGTGAGTGTATTGA	-	p.X1418_splice	DEL	7
+chr7	55018993	55019459	-	EGFR	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CCCGCGCCTCGGCCCGCGCGAGCTAGACGTCCGGGCAGCCCCCGGCGCAGCGCGGCCGCAGCAGCCTCCGCCCCCCGCACGGTGTGAGCGCCCGACGCGGCCGAGGCGGCCGGAGTCCCGAGCTAGCCCCGGCGGCCGCCGCCGCCCAGACCGGACGACAGGCCACCTCGTCGGCGTCCGCCCGAGTCCCCGCCTCGCCGCCAACGCCACAACCACCGCGCACGGCCCCCTGACTCCGTCCAGTATTGATCGGGAGAGCCGGAGCGAGCTCTTCGGGGAGCAGCGATGCGACCCTCCGGGACGGCCGGGGCAGCGCTCCTGGCGCTGCTGGCTGCGCTCTGCCCGGCGAGTCGGGCTCTGGAGGAAAAGAAAGGTAAGGGCGTGTCTCGCCGGCTCCCGCGCCGCCCCCGGATCGCGCCCCGGACCCCGCAGCCCGCCCAACCGCGCACCGGCGCACCGGCTCGGCG	-	"NA"	DEL	7
+chr7	152248140	152248140	765	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs202098135	T	C	p.E765G	SNP	7
+chr1	207454181	207454767	-	CR2	Oncogene, brain-goi	FALSE	NA	Splice_Site	novel	GCTCCCCGCCCACCTCGTGCCGGGCCGTCCCTCCCGCTTGTCCCACCCTCACCGGCGCCGCGTCAGCCCCCAGGCCGCCTGCAGGTGTGCGCTCAGAACTAGCACGTGTGCCGGACACTATTTAAGGGCCCGCCTCTCCTGGCTCACAGCTGCTTGCTGCTCCAGCCTTGCCCTCCCAGAGCTGCCGGACGCTCGCGGGTCTCGGAACGCATCCCGCCGCGGGGGCTTCGGCCGTGGCATGGGCGCCGCGGGCCTGCTCGGGGTTTTCTTGGCTCTCGTCGCACCGGGGGTCCTCGGTGAGCTGGGAGGGGGAGCACGGAGGTGGGGACGCGTCCCGGGCAGGGAAAGTTTCTGTGCCGCGATGCAAAGCAGGGGGCCAAAAGCGAGACGGTGGGGGCAGTGCTCGACGCGTGTCCGCCTCCCGCTAGCTTTGAGGGACCACTGCAATAAACCGCCTGGTCCTGATTGTCCCCACTGGCCCCTCCGGGAGCTGGGACCTCCAGAATTGGAGGCTGCGCCACAGAGGGGCGCTGTCTGGTCGGCCCGGTGTGGCTGGCGGCGTGCGGGTGCTCGCGGTCTCCTGCCGG	-	"NA"	DEL	6
+chr1	226071412	226071412	115	H3F3A	CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs749423281	C	G	p.A115G	SNP	6
+chr11	118436558	118436558	16	KMT2A	CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	A	C	p.T16P	SNP	6
+chr12	6598100	6598221	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTTTGAGCGGAAAGAGAAAATCAGCCACCAAGAAGCTGTGTTCATTCCTTCTATCCACAAGGCTCTTTTGTCACTATCCTCTTCATCGTAGCCCCTACATCTCCAGACTATCCTAAACTTAC	-	p.X562_splice	DEL	6
+chr12	6601979	6601981	139-140	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	In_Frame_Del	rs768750510	TCC	-	p.E139del	DEL	6
+chr12	49051274	49051274	803	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	T	G	p.E803D	SNP	6
+chr14	104775208	104775651	NA	AKT1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTATGGGCAGGCACCAGGGTCAGCAAGCGGCGCTGCCAACAGTGCCCAGCTGGTCGGCATGCGTGGGGTGGCATGAGGGGCCCCAGAGTCGGAGGCAGAGCCAGGAGAGGCGTCCACTTCACACCTGGTGGCCTACTGGGCTCAGCGGGGAGTCCAGGCTTACAGGGAACACATGGCTGCGGCCCCAGCTCAGAGCATGGGGTTCAGGGAAGGGTGGGGTAACATTGCCCAAGCCTGGCAGGGCTCAGCAACCCCAGTTTTCCTCTGACATGGGGAAGAGGACCCACCTGGGAAGCAGCTGCGCCCTACATGGAAAACCGGCCTAGGTGGAGATGCCGTGGAGTGCTGAGTGTCTCCTGGGCCGAGCTGGGACCCCATGACCCACCCAGCCCTCCACAGTCCAAGGCAGCCCCAGGCACAGGCAGAAGTGGGGACAGGCCTCAC	-	p.X145_splice	DEL	6
+chr17	7674220	7674220	248	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	TRUE	MSKCC,Cosmic	Missense_Mutation	rs11540652	C	T	p.R248Q	SNP	6
+chr6	26031978	26031978	28	HIST1H3B	CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	"NA"	T	A	p.K28M	SNP	6
+chr7	152247922	152247922	838	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs2479172	C	T	p.G838S	SNP	6
+chr7	152265205	152265205	339	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs775803041	C	G	p.K339N	SNP	6
+chr7	152273774	152273774	315	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs149992209	C	T	p.G315S	SNP	6
+chr10	102504189	102504192	13-14	SUFU	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	ACCG	CCCC	p.T13_A14delinsPP	ONP	5
+chr12	6581389	6581648	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTGCAGAACAATAAAAGACAATCAATTAGGAAGAAGGTACTAGATCAGAGAGAAGGTCATTTCTTCCCAGTTTGTCTCATCTTAAATTGTCCTCTCGTGCCTTTAAGAGCCAGCCCTATTCTTAGGACGGCCCTCCTAAACTGAGAGGGAATTGCTGTGTGTCCTGCCAGACTACCCTGTTAGAACTGAGCACAGGGGAGCAGAAAAATAGGCCAGGACAAAAAGAGAGGGACAGAAAATGATAGGACAGGCAGACTTAC	-	p.X1561_splice	DEL	5
+chr12	6600012	6600215	?-415	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	CCTGCAGTAAAGGACCACAGATTCAGATTATTACCCCCACCCGCCCACCGCAGTCTGAAGCCAGTGCCCATCATTCCTTTGAATGCTTCCCAAAGCTCACAACCCGCAGCACCAGCATTTCCATTTCCATCCAGGCCCCGAAGAGCTTTACTGTCCCACCCTTCTTCTCATGGGTTCCAAGGGGCCACAATGGCCAGACACTCA	-	p.X414_splice	DEL	5
+chr12	6601052	6601286	?-267	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	ACCTAAAATCAGGATATATCCAAATATATACCACAAGACCAAAGATGGGGAAAATAAAATCTTCTCCACCTAAGCTTGCTTCCCCACATTCAGATTCCCAAATTTCCCTCCAAAATCCAAGACTCATTCCTCCCTCCTATCTCCTACCTTAGGGCTGACAGACCAGCATTCCCATGCTGTCTTTGACATCTTAAGCCCACACTAGACACCCCCACTCCCATTTGAACCCCATTTC	-	p.X267_splice	DEL	5
+chr12	25250563	25250907	NA	KRAS	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CGCCGCCGCGTCCGCGCGCCTCCCCCCTGCAGACCCCTCTCACCCAGCCCGCCCCGACCCCGCGCCCGCGCCCCCCACCCGCCCCTCCGGGGACCCCTAATTCATTCACTCGCCGCCGGCCCCGCCCGGCGCCGGCAAAGAGGGTCGGGACCCGGGCAGGGGCCCAGGAGGGGTGGTCCGCTCCGTACCTCTCTCCCGCACCTGGGAGCCGCTGAGCCTCTGGCCCCGCCGCCGCCTTCAGTGCCTGCGCCGCGCTCGCTCCCAGTCCGAAATGGCGGGGGCCGGGAGTACTGGCCGAGCCGCCGCCACCTTCGCCGCCGCCACTGCCGCCGCCGCTGCTGCCTC	-	"NA"	DEL	5
+chr12	49051193	49051193	830	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	T	G	p.E830D	SNP	5
+chr12	49051788	49052264	473-632	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Del	novel	TCCTCAGGTGGTGGGGACAGGCGTGATGCCTCAGGTGGTGGGGAAAGGGGAGACTCCTCAGGTGGAGGGGACAGAGGAGACTCTTCAAATGGTGGGAACAGACGAGATGCCTCCGGTGGTGGAGACATGGGTGACTCTTCAGGTGGAGGGGACATGGGTGACTCCTCAGGTGGTGGAGACAGGCGAGATGCTTCAGGTGGCGGGGAAGTGGGCAATTCCTCAGGTGGCGGGGACAAAGGAGATTCTTCAAATGGTGGGGACAGGGGCGATGCTTCAGGTGGTGGGGATAGAGGCGTCTCAAGTGCAGGAGATGGGGGTGACTCTTCCGGTGGAGACAAGGGCGACTCCTCCAGTGGAGAAAAAGGTGATGATTCAGGTGGGGGAGACAGAGGAGACTCCTCAGGCGGCGGAGAGAGGGGCGATTCCTCCAGCGGCCGGGACAGGTGCAATGCCTCAGGAAGTGGGGATGCGGGCAAT	-	p.E473_E631del	DEL	5
+chr14	104792342	104792882	-	AKT1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CCCGCCTGCCAGGGCCCACACCAGGAAGCCACTCAGATGGCCGGCCCTGCACAGGGCCTCATCCTCCTGGCCTCCCCGAGGCCGTGCCCTCCATGCCATGGGAAGACATGGGGCCCAGGACACTCACCCTAGGCCAGCCCAGGAGCCCCAGGGGAGGCAGCCCCTCCCACCCAGCAGGGCACAGGCACTCACAGACCCTGGGGCTACTACCCCCATCTCTCCCTCCCCAGGCCCAGCCCTGGCAGCGGGTACTAACCTCGTTTGTGCAGCCAACCCTCCTTCACAATAGCCACGTCGCTCATGGTGCCCGAGGCTCCCGCGACGCTCACGCGCTCCTCTCAGGCTGGCGCTCCCCGAGCCCAGCTGGCCTGGCCACAGCCTCTGGGAGAAGCAAAGGAAGCTGAATGTGAGGCCACGCCTGGCTAAGGGCAGCTCCTCGCCCTGGGTGAGCCAGAGACCCACTGCACGTGCCTGGGGGCTCCACCCGCACCTGCCTTCCCAGGTGGGCTGCCATCCCTCTAAGCTCTCTGACCCCCATCTG	-	"NA"	DEL	5
+chr15	90084907	90084998	?-394	IDH2	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	ACCTATGGGGATGGGGCAGAATGAGACCCCATCTGTGCAAGGGCAGGACCCAGAGCCTGTCCTGGGCAGCTCCGGCCTCTCCCTCCATGCTC	-	p.X393_splice	DEL	5
+chr15	90085098	90085273	?-361	IDH2	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CCTGGGGACGGGGGTTGCAGGGAGATCAAGAGCCGAGCCAGCTAGTGAGGAGGCTGCCCAGATACAGCTGCCCGCCCCTGGGCTGGTGGGTCAGGCTCGTCCTTCCAGCCCTCAGCCCAGTGGGCTTTAGGCCCCTGGGGTAGAGGGGCATTGTGAGGCCCCATGCCCTGCACTCA	-	p.X360_splice	DEL	5
+chr16	3728407	3728408	2213-2214	CREBBP	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Nonsense_Mutation	novel	-	TTGTTGCTACTACTGTTACTGTTACTGCTGCTGTTACTGTTGTTGCCGCTGTTAGTGTTGTGGCTGATGCTATTGCTGCTACTGTTACTGTTGCTGCTGTTACTATTGCTGTTGTTTTTGTCA	p.Q2213_Q2214ins*	INS	5
+chr17	7512921	7513017	NA	POLR2A	brain-goi	FALSE	NA	Splice_Site	novel	CAGGTGAGTTGTCGCCATCTGTCAGGCCAGGTTTGTTTCCTCCACAGTTCTGGGTGAGTCTGTCCATTGCTCATCTCCTTTGTTGGCTGCTTCCCCA	-	"NA"	DEL	5
+chr17	7674894	7674894	213	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	MSKCC,Cosmic	Nonsense_Mutation	rs397516436	G	A	p.R213*	SNP	5
+chr19	10960763	10961203	NA	SMARCA4	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	GGCGCGGGGCCATCGCGGCCCGAGTGGGGCGGTGCATCGGACGCGCGTGCTTCCTCCGGGCCACGCCCACCCCCGTCCGCCCAGGGACGGGCGCGCACGCGCGCCGGGAGCGGAAGGGCGGGCTGGCGCGCGCACGAGGCCGGGCAGGCGGCGGAAGCTGGAGAGGCCGCCGCGGTGCTGAGGGGGAGGGGAGCCGGCGAGCGCGCGCGCAGCGGGGGCGCGGGTGGCGCGCGTGTGTGTGAAGGGGGGGCGGTGGCCGAGGCGGGCGGGCGCGCGCGCGAGGCTTCCCCTCGTTTGGCGGCGGCGGCGGCTTCTTTGTTTCGTGAAGAGAAGCGAGACGCCCATTCTGCCCCCGGCCCCGCGCGGAGGGGCGGGGGAGGCGCCGGGAAGTCGACGGCGCCGGCGGCTCCTGGTAAGGAACGCGGGCCGCGGGGGCAGCGC	-	"NA"	DEL	5
+chr2	47414420	47414420	NA	MSH2	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	rs587779194	T	-	p.X314_splice	DEL	5
+chr3	41224634	41224634	41	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs121913413	C	T	p.T41I	SNP	5
+chr3	41225572	41225658	245-?	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	GGTAAGAAAACATGTCAGAATGCTTGAAGCTAAAAAGTAGAAGAGTATACTCACAATATTTCTGATGAGGCTTTTTTCTTCTTCCCA	-	p.X245_splice	DEL	5
+chr3	41233443	41233526	395-?	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	AGGTAAATTCTGAGTAAACTGGTGCCATGGGAATAGAGTCAAGATGAGTATGTGCTTGTACTGACCATCTGTTTTTATCTCCAT	-	p.X395_splice	DEL	5
+chr3	41233866	41234136	508-?	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	AGGTAAATTGTCAAAGTAGAATTTACCTTTGTTGCAGAATTGAAAATGAAGCATCTCTAGCTGTTGGATGGCTGTCTAAGCATAGTGATCAATAAGTAGGAATTGTATTCCTTAGTAAGTAGGAAGTATGGCTGCGATAGGGGTAAGATTCTGAAATGTTTGTGTAGTCAGAACTACTTTTAGTTGATACCAATAGATTTAGTGTGGTGGGAATTTTAGGGTAAGAAAATGATTTTGTTGAGTTGTATGCCAGTTCTTCCTTCTGTTTTTC	-	p.X508_splice	DEL	5
+chr3	41236499	41236586	652-?	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	GGTAAGTAAAAAGGAACCAAAGCCTTTAGCAGATGTGTACATTGAAGTCTCAGTTTTTCCTCAAGGGCCTTTTTCTCCTTGTCTCTTA	-	p.X652_splice	DEL	5
+chr3	179218303	179218303	545	PIK3CA	CosmicCensus, Oncogene, Kinase, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs104886003	G	A	p.E545K	SNP	5
+chr5	123090417	123090417	135	PRDM6	TranscriptionFactor, brain-goi	FALSE	NA	Missense_Mutation	novel	A	C	p.K135Q	SNP	5
+chr7	55019171	55019457	-	EGFR	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CGCCCGAGTCCCCGCCTCGCCGCCAACGCCACAACCACCGCGCACGGCCCCCTGACTCCGTCCAGTATTGATCGGGAGAGCCGGAGCGAGCTCTTCGGGGAGCAGCGATGCGACCCTCCGGGACGGCCGGGGCAGCGCTCCTGGCGCTGCTGGCTGCGCTCTGCCCGGCGAGTCGGGCTCTGGAGGAAAAGAAAGGTAAGGGCGTGTCTCGCCGGCTCCCGCGCCGCCCCCGGATCGCGCCCCGGACCCCGCAGCCCGCCCAACCGCGCACCGGCGCACCGGCTCGG	-	"NA"	DEL	5
+chr7	92833282	92833282	14	CDK6	Kinase, TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	T	G	p.E14D	SNP	5
+chrX	41341615	41342492	95-?	DDX3X	TumorSuppressorGene, CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	AGGTAAGTGATTTCTTAATCACCTTACGTGTATGTATAATAACAGTTTAATAAGTCGTTATCCTGACCACCTGTTTGGATGTTAAGCATTATGTCTGTTTGGTCATTGTATTTTCTTAGCCGTAAGAGGCTTTTACTAAATTGAACCTGTTACTTAGAAATTAGATGAAAATAGGAATATGCTCATTGGCATAATGAAATGAGTTATTCTATTTCTCGAGTTTTATATGTTCTACTTAAAAGAGTAAGTTCATCTAGTGAATGGCCTAATTTGGTTGGGATTTTTGTGGACTCTATAACAATTTCTAAACACCTTGTATTTTTGATTACACAAGTGTGGTGAACTGACCCCACGTGCCTAATAGCTGTGGTTAGTCCTGTGTCCTGATTTTTCGCAAACAGGCCTAAAACTCTTAAAAACATCTTAGTTCAGGTAAGGATTATTTTCTACCTTTTATCCAAAGTCTGTCACACAGGTGAATTGTCCTTTAAGTGACATCCTAGTATAACTAGGACGATTGATATTTGGTGTGCTATTTTCTTGTTTTCCCTACCATTAAATATATTTGGATGAGCACTTTAAATGAAGGTTGTGAGCTGTGTGCCGATTTCAAATAAAATCCTTATTCTTAATTTTGGCATCTGTGAGGCCTTTTAGGCTATACAACTTTATAGAAATGTAAAGATTACTGATTTTAGAAAACGAGGTTATGTAAATGATGCTGGTTAGAGAGCCTTATTTGTCAAGTAACTCAGAATTGGATTGTTGACATCCTTATGGTTAGCCATAACTTAAGTCTCCAGATACAGTTCTAGAGTAGGGATAAGAATCTGATAATGGTTAAATGATATGATTCTGATTAATTGCTTGTGCTGTTC	-	p.X95_splice	DEL	5
+chrX	41345322	41345400	390-?	DDX3X	TumorSuppressorGene, CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	CAGGTACTGTTTGATGTTGCAAATTTTATTTATTTAGAAATTTGTTTATCTCAGGTAATAATAAAAATTTTTTTTCTTT	-	p.X390_splice	DEL	5
+chr1	44827347	44827742	687	PTCH2	TumorSuppressorGene, Oncogene, brain-goi	FALSE	NA	Splice_Site	novel	CCCCAGGGCGTTTCTCCCTGCAGCACCCCTCCCTGCCCGTCTCCTCGCCTCTCACCCTGTAGCCAGTTGCGGTAATAGTGCAGCCAGGTGCGGGGTGCCTGGGTGGCCGGTGGGGGCAGCACCGCCTTGAGGGAACTGAAGCGCTGGTGCAGATCAAAGAGGGCGCGTTGGGAGTGGGCGTAGTCAAAGCCACCCTGGGTCACCAGGGCCACCTCGTACAGGGAGAAGTACCTGAGCTGGGCGCTCAGGAAGGCATGCTCCTTGGTGCCCCGAGGCACCACATCCGTCAGGGCCAGGCCGTCTTGCACCAAGGTGGCTCCGTAGAGGCTCAGGCCCAGAAGAGCACCAAAGAGCACCAGCACGATGGCCTGCGGGATGTAGCAACTAAGCTGGAGA	-	p.X687_splice	DEL	4
+chr1	114716176	114716655	NA	NRAS	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	ACCTGTTGGAAACCAGTAATCAGGGTTAATTGGCGAGCCACATCTACAGTACTTTAAAGCTTTCTATAATCAATGGAAATGAAAACCCTAGTGTGACCTTCCATTTGGTTCTTAAAGTGACTAGAGAACGCAAAAACACCGGATTAATATCGGCCTCACACTTCTGGAGTAGTTTTCTAGCAACCCCCATCCTTAGCTATTTTTCAACAGTCCTTGGGCCCCGCCCTCAGCCTAAGCAATGGAAATCCCCCTTCCTATTACTCCCCGAAGGCTTCTCAGCTCTAGCAGGAAGCCTCCAGGCCGCAACTCCTTCCCATTCTCCCTTCTGTCTCCAAAGATCTCCCCACGTAGGCACCAAATGGAAGGACCCCCGCCCAAGGCCTTTGTCTCCAGCTGATAGATTCTGCTCCATTTCTGGCATCAGTGAAACGCCTGAACATTCCACAGCCCAAAGCCGAACACTATGCATGAGATAAACTT	-	"NA"	DEL	4
+chr11	118436678	118436678	56	KMT2A	CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Missense_Mutation	rs1192129413	T	G	p.S56A	SNP	4
+chr12	6057073	6057848	NA	VWF	brain-goi	FALSE	NA	Splice_Site	novel	CTGTGGGGCGAGAGGAGCGAGCCTGGGATGTGGTGGGGAGGAGTGGGGGCCACGCCCTCCCGGTCAACACTCCCCTGGAAATAGCCCAGTGCTGCTAATAGAGGGCTGCAAGGTCACGCAGAGAAATCTGCAAATGCCACCCCCACCCCCAAGTCCATTTATCTTACAATCATCTAACGCTGAGTTTGTAAGCTGCTGCTGCAGTAGACTGGGAAGGTCGAAGGACGGGGACTATGGAATTTTTTTTTTTTTTTTTTGGAGAGACACGGTCTTGCTCTGTCGCCCGGGCTGGAGTGCAGAAATGCGATCTTGGCTCACTGCGGCCTTGCCTTCCTGGGTTCATGCAACCGTCCCACGTAGCTCCCAAGTAGTTGGGATTACAGGCGCGCCCCACCACGCCCGGCAAATTTATTATTATTATTATTATTATTATTATTATTATTATTATTATTATTTTAATAGAAATGGGGGCTCCCTACGTTGCCCAGACTGGTCTCGAACTCCTGCCCTCAAGCGATCCTCCCGCCTCGGTAGACTTTTTTTTTTTTTTTCTTTCCCGGGGGTTGGCCTGTGGCGGGCGCCCAATAAAGGGACTTTGAAGAGCAAATGGCCCAGTTCAGATGATCAAGTGCTGACGGTAAAAACAAAGCCCGACCCCTTTCCTCGCTCCCCGCCCCCGCCCTCCGCGGTGGGAGCACTGCCTCCGGAACGCACTGCACTAATGTGGAGACCTCGAGATTCTGCGAGGTCCCTGCCTTGCCCCCGGGTTCACATAC	-	p.X577_splice	DEL	4
+chr12	6581174	6581290	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTTCAAAGGAAAAAAAAACAAAAACAAAACAGATGAAGCAGACAGGCCAGCAACTAAAAGGAAGACTGGACTTACACATTTGTCTTTAGTATGGCATTCAGTCACCCCATCTCTTAC	-	p.X1593_splice	DEL	4
+chr12	6595430	6596004	?-675	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	CCTAAAGAAGAAAGACATCACACAGCTGCCCAAAATCCTTTTCTATAGAAGAAACAACTTGGCCAGGCACAGTGGCTCACACCTGTAATCCCAGCATTTTGGGAGGCCAGCACTTTGGGAGGCTGAGACGGGCGGATCACCTGAGGTCAGGAGATCGAGACCAGCCTGGTCAACATGGTGAAACCCCGTCTCTACTAAAAATACAAAAATTAGCTGGGCATGGTGGCAGACGCCTGTAATCTCAGCTACTCGGGAGACTGAGGCAGGAGAATTGCTTGAACCCAGGAGGCGGAGGCTGCAGCGAGCCAAGATCGCACCATTGCACTCCAGCCTGGGGGACAAGAGCAAGACTTCGTCTCAAAAAAAAAAAAAAAAAAAATCAGCTAGGTGTGGTGGCGTATGCAAATAATCCCAGCTACTCAGGAGGCTAAGGCAGGAGAATCGTTTGAACCAGGAAGTCGGAGGTTGCAGTGAGTCAAGATCACGCCACTGCACTACAGCTTGGTGACAGAGCAAGACTCCATCTCAAAAAAAAAAAAAAAGAAACAACTCTATGCCTCACCCAAAATCACTCA	-	p.X675_splice	DEL	4
+chr12	6606452	6607299	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTGTGCGGGGGAGGGGGGAGAAACACAGAACAGTCAGTGACGCGCACTGTCCCCCTCCCCCACACCCACCCGCTCTTTCCGCCCCCCACCCCAGCCACCCTAGCAGGGCACCCGAACCGCTCAGGCTGAACTTAGTTCCACACTCCTCGGGGGCAGCCCGGAAGCCGGCTCCCCGGCAGGCGCCCCCACGGAGCGAGGGAGCGACGCCTCCGAGGGCAGGCTGGTGCAAGCGCGGGGAGGGGAGACGCGGGGCTGGACCGAGCGGGGTGTGACGGGGGAGGGGGTCCGAGTGGCAGCGGCGCGGGGGGGCCAGGGGAGGCCGCAGGCGGCGAGGCGCTCGGGGACACAAGGTCACTTGGGGGTGGGGGGGCGCCTCCCTGCGCCCGGGGAGGGGCCAGTCCCCAGACAGGGCAGCTCTCCAAAGGCTGTCCTCTGGGACAACTCAGGTTCTCCTCAAGAGCTGCGGGGACGAGGGGGCGTGGAGGCTCGGGCGCTGCGGGGGGCCGGAGGCAGGGACGCGGGGGGCGAAAGCGTCCCACCGGGAAGGGGGCCGGGCCACGTGTCCCGGGGGGCAAGTGATCAAAGGGCGAGGGGGTGGGCGCCGGGCATTGTGGGAGACCAAGCCGGAGGCGGGGGGTCGCGGGGAGCAAGACTCCGGCAGGGTTAGGGCGGGGGCTGGGGAGGAGGCCGGGCGCCCTGCAGGGCCAGGAAAGGAAGGGTCGGCTCCTCTGGGCAAGGGGCGGTCCGCGGGTCCGGAGACGCCTGAGGAAGGGGCGGGTGACGGGATGACCCTCGGGGCTGGTAGGGCCGTGAGGGGCGTCTCTTTGGGAACCCCGCGCTCTCCTCAC	-	"NA"	DEL	4
+chr12	49051546	49051896	596-713	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Del	novel	CCTCCGGTGGTGGGGAAGCAGGTGAGTCCTCAGGTGGTGGGGATGTGGGGGAGTCCTCAGGTGGTGGGGAGAGGCGTGAAGCCTCAGGTGGAGGGGACGTGGGAGACTCCTCAGGCGGTGGGGACAAGGGAGATTCCTCAGGCGGTGGAGACAGGCGTGACACCACAGGCAGGGGGGATAGGCGCGATACCTCAGGTGGGGGGGACATAGGTGATTCTTCAGGTGGTGGGGACATAGGCGAGTCCTCAGGTGGTGGGGACAGGCGTGATGCCTCAGGTGGTGGGGAAAGGGGAGACTCCTCAGGTGGAGGGGACAGAGGAGACTCTTCAAATGGTGGGAACAGACGAGATG	-	p.A596_E712del	DEL	4
+chr12	49051575	49051763	640-703	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Del	novel	TCAGGTGGTGGGGATGTGGGGGAGTCCTCAGGTGGTGGGGAGAGGCGTGAAGCCTCAGGTGGAGGGGACGTGGGAGACTCCTCAGGCGGTGGGGACAAGGGAGATTCCTCAGGCGGTGGAGACAGGCGTGACACCACAGGCAGGGGGGATAGGCGCGATACCTCAGGTGGGGGGGACATAGGTGATTCT	-	p.E641_E703del	DEL	4
+chr12	49052039	49052326	453-548	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Del	novel	TGGTGGGGACAGGGGCGATGCTTCAGGTGGTGGGGATAGAGGCGTCTCAAGTGCAGGAGATGGGGGTGACTCTTCCGGTGGAGACAAGGGCGACTCCTCCAGTGGAGAAAAAGGTGATGATTCAGGTGGGGGAGACAGAGGAGACTCCTCAGGCGGCGGAGAGAGGGGCGATTCCTCCAGCGGCCGGGACAGGTGCAATGCCTCAGGAAGTGGGGATGCGGGCAATTCCTCAGGTGGTGGTGACAGGCGTGATGCCTCAGGTGGTGGGGACGTGGGTGATTCCTCAGG	-	p.P453_P548del	DEL	4
+chr14	21385860	21385860	2500	CHD8	brain-goi	TRUE	NA	Missense_Mutation	rs745917082	T	G	p.H2500P	SNP	4
+chr14	104770421	104770744	NA	AKT1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTGTGGGTGTAGACAGCTCAGACCCCGGTGCCCCACCTCCCTGCCACCTCCACCCACCCACAGCTCCAGTAGGAAGCCAACCTCTTAAAGCACGGCCAGCACGCTGCCATACTGCCAGGAAACTGAGACAGGGCCCCACAGATTGACACAGGGACCTGGGCCCTCAGAGCACTGCCTCCCACCCTGATCATTGGCACTCTCCAAAAGGAACCTTTTTAAATATTTAGATTTTAAAACATCTGAAGCCAAAAAAGCTGAACACTGCAGGCCTCTCTGAGTGTGGAGAGAAAAGGGAGTGGGCGGGGGCAGGCAGTGGCCCCTCAC	-	p.X455_splice	DEL	4
+chr14	104773090	104773247	?-320	AKT1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CACCTGCACGGGTGGCAGATGGGCAGGACTCGGCATCAAGGGGTGTCCGGGACACTGCCGGGGGAGGTGTGACGTGCTTGGGGCACAGAGAGGACACAGCATTGCGTGTGCTCAGGACGTGGGGACGCAGCAACGCGTATGCACGCAGGTGGGGCGCA	-	p.X319_splice	DEL	4
+chr14	104773380	104773454	NA	AKT1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTAGGGGAAAGGTGGCCTCAGGTCAGTGCCGCCAGGCCCCCAGGGCCCTGCCCCCCTGCCTGCCCGCCAGCGCAC	-	p.X276_splice	DEL	4
+chr14	104773581	104773911	NA	AKT1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTGCGGGAGGCGCAACCTGAGGCACAGCCGTGGCTCGGGCCTCTGCCCCCATGGCCTGCAGGGCTGGGGTTTCTCAGACCGGGTCTCGGCATTGCACAGGGAAGGGACCAGCCACCAGAGGGCACGGGGGCCTGGAAAGTCTCAGAAGCCCTAACTCAGCAGGAACAAGTCACCCCACAGCAGGCAGCTGCCTGGGCAGGCATCACACCACCCACCCAGCAGGGAGCACCGTCTGGTGCCATGGAGAGTAGCCGAGGCTCCGGGAAGGACCGGCCCCACCATGGGCGGCCCACAGGCCGCGAAGTCCATCCCCCGCAGCCCCAGCCCCTAC	-	p.X234_splice	DEL	4
+chr15	90088503	90088586	NA	IDH2	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTGCAGAGACAAGAGGATGGCTAGGCGAGGAGCTCCAGTCGGGGGGTGCCCAGGTCAGTGGATCCCCTCTCCACCCTGGCCTAC	-	p.X178_splice	DEL	4
+chr16	2076373	2076936	915	TSC2	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CCGCCGCCTTGCCCCTAGCCTGCAGCTTGTCCCTGGCCAGGGGGCACCCGGCAGGCCTGGTGAGGGCCTCCAGCCCCCATTGCCACCCCTCACTGTCTGGGTGTGCTCACTCTGCCAGGGCCTGCGGTCCAATGTCCTCTTGTCTTTTGATGACACCCCCGAGAAGGACAGCTTCAGGGCCCGGAGTACTAGTCTCAACGAGAGACCCAAGAGGTACGGCCTGCGGGGGTGTGCCTGGAGTCGGTGTGGGGTGGGGAAGGACATGGGGCTGTGGCCTGCCTGACGGTGCCTCCAAGTCAGTGAGTGGAAATGGGTCCTGTGTGCCCTGGAGTATGTGAGGCAGGGCAGGACCTGCAAGGGCCGCTAACACCCCTCAGCCCCTCAGCAGGTTGGCCGTGGTGGCCTGGGTCCGGGCTGCGTGTGCCACGGGCACCTACTTGTGGAATTGGGGGTTGGGGTGCAAGCTTTAGGCGCCTGAGCCCCTCGAAGGAGCCGGCCTTGTCTGGGGCTGCCCCCTCCTCTGCAGCCCCCAGCCTGCTGCTAGCCGGGGACTCTGCTTCATCA	-	p.X915_splice	DEL	4
+chr16	2088242	2088260	1726-1732	TSC2	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	CATCATAGCCGCTCCAACC	TTTTTTAATGATACGGCGA	p.H1726_P1732delinsFFNDTAT	ONP	4
+chr16	3728422	3728423	2208-2209	CREBBP	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Nonsense_Mutation	novel	GT	TCTGCTATTGC	p.Q2209_Q2210ins*	INS	4
+chr17	7496611	7496760	179-?	POLR2A	brain-goi	FALSE	NA	Splice_Site	novel	AAGGTGGCTGGGGCTGGCGGAGACTTTTGGGAAGGAGGGGTCAGAGGCCTGGAGGGAGGAAACTGGAAGGGAAGGAAACAGGAGGGGCTGGCCTGGTGTGGAGGGAAATGGCCCACCCTCTGGGCTCTGATGGCCCCTGTCTCTCCTTGG	-	p.X179_splice	DEL	4
+chr17	7497869	7498075	401-?	POLR2A	brain-goi	FALSE	NA	Splice_Site	novel	AGGTGTGCCTCCGTTGGAAAGCCCTTCCTGGAATGGCTAGGGAAGACATGGCCTCAGTGGCAAGGCTTCGAGAGTCTGCTCCTCCTACCTCGGGCGTGGGCTTGGAGCAAGGAGGAATTGAAGTTCTGAAGTTTAACTTCCACTCAGGGAGGGTGGCTGCAGGGGTATTTTAGGAAGCATTGAGTTCATTGCACCTCTTTCCTTCCT	-	p.X401_splice	DEL	4
+chr17	7673609	7673700	NA	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTAGGAAAGAGGCAAGGAAAGGTGATAAAAGTGAATCTGAGGCATAACTGCACCCTTGGTCTCCTCCACCGCTTCTTGTCCTGCTTGCTTAC	-	p.X307_splice	DEL	4
+chr17	7673803	7673803	273	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	TRUE	MSKCC,Cosmic	Missense_Mutation	rs121913343	G	A	p.R273C	SNP	4
+chr19	10985404	10986186	118-?	SMARCA4	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	AGGTACAGAACTGCGTTCCTTCCTGCCTTGTGTTTGTCATACTCCAGAGTCCTCAGATCATTTTCCTCCCCTGGGTTCCCACAGGATGGATTCAGGGAGTACCTAGGATGATGTAGCCGGGTGGGTGGCCCGCCACAGAGAGCTGTCTGGCATGGCGTGGCTGGTGCTCTGTTCTGGCCACCTCGTCTCGGAGCAGCCCTGGAAGGGGAAATGCTGGTTGGGGGGCAGACCATGTTCAGCATGGGTGATAGAGGAGGGCTGTGCAGGGCAGCAGCCCCGTGCCACCCAGGAACTTACTGGAAATACAGATTCCTGGGGCCTGGGACTCTGCTTTAATGAGCCCAGCAGGTGCCTTTTCTGTACGAGGACAATTGAGAAGTGATATGGTGGGTGACTTTCCAAGGCCTTGCTGTCATCAGGGGTGGGAAGCTCAGGGGCTGCACTGGGAATGGAAGTGTTGGGGGTGGGCCTGGCGAGCCCGAGGATGTGGACCCCGCCTGTGGACAGGCAGGCGGAAGCCGGGAGAGAGCCGTGATTTCATGCACAGGTTCTCAGCATTAACCAGAAGCACCTTACTGAGACGTGGGCCAAACCAAATCCACCAGGTCGGCTGCTGGGCTGAGGTGCCTTCAGCATGTGCCCTCCAGGTGCCCCTGGTTGACTCAAGAGAAGGATGCCATTTGGCTGTGCCCTGTCTCAGAGTAGGAGCTGGTGTAGGGGGAAGAGGCTGTAAAAATCACAGACATATGCTGCCGAGTGACCAGTGGGCTGACCTTTCTCTGC	-	p.X119_splice	DEL	4
+chr19	11003159	11003338	648-?	SMARCA4	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	GGTGAGTTGGGCCTTGCATTCCAGATGCAGTGGGGATCCAAGTCCTCGGTGGGCCTTGTTCCAGGGAGGTGGCAGCCAGGAGCAATTTTACTTCTGTTTGAATTCCCGGCAGGTTTGGTAGGGAAAGTGAATTCTGCTGGCTCTGAGCAGATTTGTATGAAAGCCCTTACATTTTTTCTA	-	p.X648_splice	DEL	4
+chr19	42292205	42292296	1002-?	CIC	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	CAGGTAATTGCAGCTGAGCCCATACTCAGAGGCCAGGGAAGGGGTGGGGCGGGGCCGGCTTACCTCACTCCTCCCCATTTCCTCTCCTGCGG	-	p.X1003_splice	DEL	4
+chr19	50415668	50416105	932	POLD1	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	CCCCCACCCCCGCCACCCACCTGCCCTCACCCACCCGCCACCCCATCTCCACGCAGGATGAGGAAGCGGGACCCCGGGAGTGCGCCCAGCCTGGGCGACCGCGTCCCCTACGTGATCATCAGTGCCGCCAAGGGTGTGGCCGCCTACATGAAGTCGGAGGTCAGGCCCACCTGGCTGCCTGCTCCCGCCCAGCCCCCTCGCTCTCACTTCTGCTTTCCGAGATGGGCGGGCCTGCGGGAAGGGTGGGGCCTCCCGTGCCCTGTGGGGCCCTGAGAACCGCCCCCCATGGCAGCCTGGGTGTGGCCTCGGCCCCCTCTGGAGGTCCCCCCTCTATTCTGACCCCTCCCTTGCTTCCCTATGGAAGGGGCCCCAGTCCCTCCCCTGTGCATACAGCTCCCCAGCCGGGGGTTCCCTTGGATTCATAATCCTCCAGCTCTA	-	p.X932_splice	DEL	4
+chr2	208253959	208254937	NA	IDH1	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CCTAAAACAAAACAAGGAATAAAAGTGTTAACATACAGAACACTCACAGGAGAATTTAGCTGTTTTTAGTACCTGCCAGACAGCCCAGTTTATCCGGTTTAAAGTACAGTGCTGAGTGTACTCGGTGGGACAAAGGCCAATTTTAGGCCCGCAGGCACTTTCCAAATAAAGGTCATGGGAGCACAATTTATCTCTGCGTGTGCGAGGGCGTGCCCCCGCTTCGCCGCCCGTTAGCAGGTCTTGGGGTTTGCATGTCCTTGCTCTTGGCCTGCACCCGTCCTTATGGCCGTTGTGCAAGAGGGCTGCAATCAAGGCTGGATCGGTACCTCCTTCCAGGTCTCCACGCCCGCCCCTCCCCTCCCCTCCCCTCGCTGGTGCTGGGACCTTTTAAACTCCAGGCACCCGGAACTGGCGGGGGTGTTTCCCCCAGCCCCCTCTCGCCCCGTGTGGCCTAGCGACCCCTCTGAAGGCCGCTGGAGCTCCGCCCCTCCACGCCCCCTGGCGGACGCGAGGGATCGGCTTCAAGGCTATTCCTCGCCGCCTGAGTTGCCTGCAGACGCCCGTCTGCGGCTTACAGCCTTCTTTGCATCCAGCCCCCAGCTGCTGCACGTTTTCTTCCTCCTACACTCCAGGCTTAGTCTTCTACATGCATTCTTGCAACTTCCACCCCTCGATTTTCCAACCCAAGTGCAGACCTGATTTTCCCCTTGTCGTTGCATCCAACTTCCTCACCGCCCAGTTTCTCCCTCCCAGGCCCAAAAGCAGACCTTCTGCATATCCAAGCATCCAGCATCCCCTCCTTCCCTTTTCTTTTCCCATTCTCAATACCTGGATTTGTTCCCTTCTTTGCACGCAGGCCTTGACTCCCTCCACACCCAAGATCTGCGCTTTTTTCCTTTACCCCATTCCTGCCTTCTGCGGAATTAGAGCCACCCCTCCACAGCCAGGGACCGGGGCCGCCCCTTGGAGCCTGAGGTTA	-	"NA"	DEL	4
+chr3	12599809	12600151	NA	RAF1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTGAAACAAGTAGAGATCATTATTATACTCCATGCAATGGTAATAATCTTTTGATAATGAGGGCATCAAAGGATCAACCCATGTCATCTGTTTCCATATCTTTTAAAGATAAACATATTAACCATACTTCCAATTTTTGTCTTTTGAGAAATACCATTTTAGTTATAGCACTGGCAAACTGTCTGATGCAAGTGTGCCAAAAATGACAGTAACATTTATAATCTCCTTCATTGAATGTATTTTATTAGAATCTTCTCCCAAAATAAGTTTAAGTATTCTAATTTCCAACGAGGTTTTTCTTACTGAACCCTAATTGGCAGGAGGTACTGTTGTCTATACTCAC	-	p.X330_splice	DEL	4
+chr3	41224080	41224523	4-?	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	AGGTTTGTGTCATTAAATCTTTAGTTACTGAATTGGGGCTCTGCTTCGTTGCCATTAAGCCAGTCTGGCTGAGATCCCCCTGCTTTCCTCTCTCCCTGCTTACTTGTCAGGCTACCTTTTGCTCCATTTTCTGCTCACTCCTCCTAATGGCTTGGTGAAATAGCAAACAAGCCACCAGCAGGAATCTAGTCTGGATGACTGCTTCTGGAGCCTGGATGCAGTACCATTCTTCCACTGATTCAGTGAGTAACTGTTAGGTGGTTCCCTAAGGGATTAGGTATTTCATCACTGAGCTAACCCTGGCTATCATTCTGCTTTTCTTGGCTGTCTTTCAGATTTGACTTTATTTCTAAAAATATTTCAATGGGTCATATCACAGATTCTTTTTTTTTAAATTAAAGTAACATTTCCAATCTACTAATGCTAATACTGTTTCGTATTTAT	-	p.X5_splice	DEL	4
+chr3	41224753	41224952	81-?	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	GGTAAGAGTATTATTTTTCATTGCCTTACTGAAAGTCAGAATGCAGTTTTGAGAACTAAAAAGTTAGTGTATAATAGTTTAAATAAAATGTTGTGGTGAAGAAAAGAGAGTAATAGCAATGTCACTTTTACCATTTAGGATAGCAAATACTTAGGTAAATGCTGAACTGTGGATAGTGAGTGTTGAATTAACCTTTTCCA	-	p.X81_splice	DEL	4
+chr3	41225205	41225330	165-?	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CAGGTAAGCAATGACATAGCTAGCTTTTTAGTCTGCTTTGAAGTAAATGCTCAAGGGGAGTAGTTTCAGAATGTCTACCCAATACCAGTACTTGAAAACTAACGATGTTTCTGAATTCCTGTATTA	-	p.X165_splice	DEL	4
+chr3	41235842	41236346	601-?	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	AGGTATGTTTTAAGTGAAGTGTTCTAGGTTTTATGTCCATAAAATTTCCAGATTGTAATGACTAATAACATTTCAGAAAATTAGGGACCATAATAGGGTTACCAACATTTAATTTTATGAAAATTCCCTACATTTTTTGGTCAGTAAGAGAAACATTGAGACTTGAGAAGAGGGAGGAGATTTCACATTTCACTTTTATGGGTGCCTAGAGGGGAGAGCTGACCTGGGCTGCCAGAGGCAGGGCATAGACCCCCAACCAATTCTGGGTTTTCCAAATCTTAGATCAGTTAGAGCTGCCTCTGAAGAAAGGGTTTATAGCTAAAAAATATTATGGAAATCCAGTGCTCCAGAGCATTAAACACCCCAAGACATAAAATTCAGAGAATATTATTTACTACAGTGTGAATGCCTCTTGCACTCTGAATTGGGAATGTTTGCACCACAGTGGGGGGCTTGCCATGTTTTAGCTTTAGATTTAATTAGGTTTTGTTTGTGTTTTCTCCTT	-	p.X601_splice	DEL	4
+chr5	1294779	1294779	71	TERT	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	A	C	p.F71V	SNP	4
+chr5	1294937	1294937	18	TERT	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	T	G	p.Y18S	SNP	4
+chr7	140753338	140753339	599	BRAF	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Ins	rs727502902	-	GTA	p.T599dup	INS	4
+chr7	152185587	152185587	1685	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs145848316	C	A	p.A1685S	SNP	4
+chr7	152238825	152238825	845	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs4024419	C	T	p.G845E	SNP	4
+chr7	152248143	152248143	764	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs200184971	G	A	p.S764F	SNP	4
+chr7	152273771	152273771	316	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs10454320	T	A	p.T316S	SNP	4
+chr7	152273846	152273846	291	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	TRUE	Cosmic	Missense_Mutation	rs56850341	G	A	p.L291F	SNP	4
+chr8	38417331	38417331	577	FGFR1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs779707422	G	T	p.N577K	SNP	4
+chr1	114713909	114713909	61	NRAS	CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs121913254	G	T	p.Q61K	SNP	3
+chr1	226064454	226064454	35	H3F3A	CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	"NA"	G	A	p.G35R	SNP	3
+chr11	65655001	65655687	NA	RELA	Oncogene, TranscriptionFactor, brain-goi	FALSE	NA	Splice_Site	novel	CTGGAGGAGAGAGACAGAGAGGCAGGGGTCAGAGAAAGCCCTAGAGATCCACCCCGTCCTCTGTACCCCAGCCCCTCTTCATGGTGCTCAGGCTCAATCCCTCTCTAGGGAGTCACTGCCAACACCCTATCTCCTTCCTCTTACCCCATCTGACCCAGCCTGTAGGGTCCAGTTCTAGCCACACCTCCACCTTGGAGTCCTCCCTGACTACTCAAGCCCACGAAACTCTTCCAGCCTTTTAGAGGAAGGGACACTTGGAGAGATAAGCTGGACTCCTCAGTTTACAGCTGAAAAACTAAGTCCTGAGAGGCAATGAGCCCATGGAGCACCAAGTGAGCAGCGGCCTGAAGTGCAGAGCTTGTCAGTTTTTGAGCCTCGCACAGGCACACACATCTTGCTAATTTAGAGGTGATTTTTGTTCCCCCAATTCAAGTGAGAGATGAGAGCAGAGATTCTGCATTTTTAACTTCTGATTCCCAAGATACCCAATATAGAATTTAAGTGGCACGGTGGTTCCCAGGCTTCAGTGTGCATTAGCATCCCAGGAAGTCGCTGGTTCCTGCGCCATCCTTTCAAAGCCTCTGATTCAGTAGGTCTGTAATGGGGCCCAGGAGTCTTCATCTCCACTGCTCCTCAGCTGAACAGAGCTGAACCTGTCGTTCCAGTGGGACAAAAGGAAATCCTTAC	-	p.X345_splice	DEL	3
+chr12	4274203	4274203	55	CCND2	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	A	C	p.M55L	SNP	3
+chr12	6578547	6578845	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTACAGAATATGGGGAAGAAAAATGTCAGCTCCAGCCAAAGCCCAGCACCATCGCCCTTACCCAGAACACTGTATGCTACAAGAATCCATCCACCTACACCCCTTCTCCACCTGGGTGTCTCTCAGACCCAGAAAATGGTGCCATTGGCCCACTGACAACTAAATGTGGGGACAGGTACAGTCTTTTATCTTGGGATAAAATGGCTAGATGAGTATGGACAGGGAGGCAGGGCAGATACAGTCCTTGCTTCTGGTTTTAGAGTTCTTCTGAACCACAATCAACTTCTCCAAACACCCAC	-	p.X1661_splice	DEL	3
+chr12	6583114	6583197	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTGGAGGGAGAGAGGGCAGATGAGCGGGGCCCACTGCTCTAGTGGAACGGCCCATGGGTGGGGGGCGGGGCCGGCCACACACAC	-	p.X1354_splice	DEL	3
+chr12	6591825	6591914	?-1031	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	CCTGAGAACAAATGCAAAGAAAAAAGTATTAAAAGAAAGCCCACATGGAGAAGACCCAACCCAGGGAGGAACAGGAGATGGCACTACATA	-	p.X1030_splice	DEL	3
+chr12	6592057	6592391	?-983	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	CCTACATGGGCAAGGTAGAAAGACAGGTTAGACTTGAGAGCCTTTCAATGACTAATAATGCAGTGCCAACAACTGAGATCTTTCTTCCAACACATCCCACTTTGGAACTAAGGACACCTAACGCACAAGCACTACCACCACCACCATTTTAAATAAGGAAAGGTATAACCTAAAATAAGTAAGAACTATGCGCTCCAGCGCCCTAGCATCAGGTTTCTTCAGGCCTTGCTTGCTCCTGTCACCAGATGCCTTGAAGCTGAGTGGGGGAGGAATAGGAAACACTCTGCAGACTGGCAGATGTCTAAATGGAGTCTGCTTCTGTCCCTCCCAACTCA	-	p.X983_splice	DEL	3
+chr12	6592567	6592695	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTTCAGAAAGAAAAAGGAAAAAAGTTATTGGAGAAGGAGAAAGGAAGAAAGAAAAGTGATACAGGAAATGGGCAACAGGAAGAATGAGAGGCACAATTATGAGCCGATTACAGATAAACACATACTTAC	-	p.X925_splice	DEL	3
+chr12	6593229	6593415	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTGCACATGAAGGCAACTTGGTCACTACTAGTCAGTTCCTCTGTGTAAGCACAACCAGGAGACTGATGGAATGTTTTCCTCCTCCCAGGGTTACCCTTTTGCCTCACCAGGGACCAGATCACAAGGAGGTAAACTAAGCCAGAAGCCACAACTCTTTCTCTAGGGTGGCTTCCCTCCCCTGAGATAC	-	p.X838_splice	DEL	3
+chr12	6594651	6595333	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTGAAGGATGAAACAGAGAAGTCAAGAGCTGGCAAGGAACTCCCCTCCTCCCCTAATAGAGCAGCTGCTTCCTCCTCACTAGTCTTCACGGATCCTCTTGGGGAAGAGCTCCGGAAAATTCGGAGGGAAGAGATCCCCTATGATTACTGCAATTTCATGTTCAGTTTAGGGTCCTCCAGGAAACAGGGCTTAACCAGACCTGATTTTGATCCTACAGATCACTGAGGAAAAGCACGTCACAGACTCCCTACCAATACAATAATTCTACTAGTCAGGATCCACCAGGTAAATAATCGTTATGTCCCTCTTAGATTCATCTTTTTAACTTTAATCACCCTCAAATTACACTGTACAAACAAAACCCAGAGGAACTGAGCCTGAATTAAGCCAGATTCCTATGTAAGTGCATAAAAGCTAGGCTATGTGGCCCCTCCCCCCAGACAACACTTCTTCAATCATTCAAAATATACCTCCTTTTTTTTTTTCTGATGACAAAAGAAGAAAGTAATCCTAGTGCTTTCTGATATATAGAGATGTGGAGAAGTGGGGAAGCCGACTTTGTGAAGTAATCTCAGCTACAAAGTTACTATCTGCATTTCATTACTTAAGAGTACCATCATTAGACTGCAGCAAAGATACATTGTCCTACCCAACAAACTACAGTCCCTTCCACCCCCACTCAC	-	p.X707_splice	DEL	3
+chr12	6600670	6600925	NA	CHD4	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTGGCAGGATGAAAAAGAATAAGGTTAGACGTTCAAGCCAAGGGGAAGGACAGAGTGGCAGAGAGGGGAGTACTCTCTCACTGGGGACACCAGAATCCCAGCAAGCACCGTTATACAGGGAGCCTAGTCTCATCTTGTTCTGTGGGAAACGCCCCACATTCTTACGTGCCTACTATGAAGGACAGGTTCTGATAGAAGGTCACATCCTTTCTATTAGACATGGCACCCTCCCTAAAGCGATGGGCTGGGCTCTCAC	-	p.X309_splice	DEL	3
+chr12	25245350	25245350	12	KRAS	CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs121913529	C	T	p.G12D	SNP	3
+chr12	49021873	49022042	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTGAAAAGAGAAGAGGGCAGAATCAATGCTAGTCCCCCACAGGAAGAGGGGAGGCCAGAGAAGATATGATCTGAGGTGCCCAGCCTAGGAATCCACATTTAGGGAATGGCAGAGAAGGGGTGAAAGGAGGAGGAGCTGCTTTGTCACTCAGTCAGGATACTTCCTCTCAC	-	p.X5507_splice	DEL	3
+chr12	49027928	49028005	?-4840	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CACCTGCAGAAAGGAGTGGATCAGAGCCTCCCACCAGAATCACTCCCCTCAAGTCCCAAAGGGCTTCCCTGCCACACT	-	p.X4839_splice	DEL	3
+chr12	49029081	49029081	4744	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	A	C	p.I4744S	SNP	3
+chr12	49030394	49030394	4629	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	T	G	p.T4629P	SNP	3
+chr12	49041536	49041654	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTACAGGGGGAGACCAGGCATAGGGCAGTCAGGCTGCTGCAGGCAGGCCCCATGGCCCTCCACCCTCAAGAGAGGCCACCCACTAGAGGACTGCTACACCCCAGCCCAGCCCCACTCAC	-	p.X2078_splice	DEL	3
+chr12	49041991	49042088	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTGGAGGGCAGAGAGAGTGAGTCAGAGAAGACTTGGCAGGCGACTCCTCCACCTGCCATGTTGCCAGGCTGTCTCCCTTGCCCTCATCCCACAGGTAC	-	p.X2037_splice	DEL	3
+chr12	49045968	49046064	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTATGGAGAGAAGGACAAACGGAGGTGGCTGAGGTCCTGTCCCAAAGCAAGGTACCCCTGCTCTGACTCCTCCCCCTACCCAGCAGCTGGTACTCAC	-	p.X1565_splice	DEL	3
+chr12	49051070	49051351	778-871	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Del	novel	TGGCTCCTCAGGGGGCTTTTCAGGCCGAGGGGACAGGGGTGGCTTCTCAAGCTCAGGGGACAGATGCGATTCCTCAGGCCGGGGGGACAGGCATGGCTCCTCAGACTGGGGGGACAGGTGTGATTCCTCAGGTTGGGGGGACAAGCATGGCTCCTCAGGCACAGGAGACAGGTGCGGCTCCTCAGTCTGGGGGGACAGGTGCAATTCCTCAGGCTGAGGGGACAGATGTGGTCCCTCAGCCTGGGGGGACAAGTGTGGCTCCTCAGGCACAGCGCATAGGCA	-	p.C778_P871del	DEL	3
+chr12	49051161	49051163	840-841	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	CAT	TGC	p.C841H	TNP	3
+chr12	49051573	49051815	623-704	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Del	novel	CCTCAGGTGGTGGGGATGTGGGGGAGTCCTCAGGTGGTGGGGAGAGGCGTGAAGCCTCAGGTGGAGGGGACGTGGGAGACTCCTCAGGCGGTGGGGACAAGGGAGATTCCTCAGGCGGTGGAGACAGGCGTGACACCACAGGCAGGGGGGATAGGCGCGATACCTCAGGTGGGGGGGACATAGGTGATTCTTCAGGTGGTGGGGACATAGGCGAGTCCTCAGGTGGTGGGGACAGGCGTGATG	-	p.A623_E703del	DEL	3
+chr12	49051674	49052177	502-670	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	In_Frame_Del	novel	GGAGATTCCTCAGGCGGTGGAGACAGGCGTGACACCACAGGCAGGGGGGATAGGCGCGATACCTCAGGTGGGGGGGACATAGGTGATTCTTCAGGTGGTGGGGACATAGGCGAGTCCTCAGGTGGTGGGGACAGGCGTGATGCCTCAGGTGGTGGGGAAAGGGGAGACTCCTCAGGTGGAGGGGACAGAGGAGACTCTTCAAATGGTGGGAACAGACGAGATGCCTCCGGTGGTGGAGACATGGGTGACTCTTCAGGTGGAGGGGACATGGGTGACTCCTCAGGTGGTGGAGACAGGCGAGATGCTTCAGGTGGCGGGGAAGTGGGCAATTCCTCAGGTGGCGGGGACAAAGGAGATTCTTCAAATGGTGGGGACAGGGGCGATGCTTCAGGTGGTGGGGATAGAGGCGTCTCAAGTGCAGGAGATGGGGGTGACTCTTCCGGTGGAGACAAGGGCGACTCCTCCAGTGGAGAAAAAGGTGATGATTCAGGTGGGGGAGACAGA	-	p.S509_E676del	DEL	3
+chr12	49054141	49054306	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTGCCAGGGTGAAAAAAGAGCCTCAGTGTCAGCCAGCTCTCCCCAGACAAACAGTTCAGGCACTAGCTCTGCCCCAGTATACCCATGGTCCTTCTCATTCCAACCTGACTCTCAGAAGCCCACCAGCCCTGCCCTTCACCTATGCAATCCCCTGGCCCAGCCCCAC	-	p.X170_splice	DEL	3
+chr12	49055027	49055275	NA	KMT2D	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTGAATAAACAGACAAACAGCATGTGTCAGCCATCATCCCTATTTAACACAAAGTCCACTCACCAGACGCATGAGATTATCCAAAACCTGAGTGGATCAGAGTGATGATATTTCAACTGTTGTCCCAAAGAACAAAGTTGTTCCATTACTTATCTGCTACATAGACTTAGCTCATGTCCTTGTGCCAGGACCAGAAATGTAAGGTTGCCAATGAAATCTAAAAGCAAACAAACAATTTGTCCTACTCAC	-	p.X17_splice	DEL	3
+chr12	132687067	132687285	11-?	POLE	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	GCGCCTCCGCCCGCCCCGAGCCCCTCCGTCGGCGGTCGGGGCGCGCCGCCCTACCCCAGTCAGGCGCGGCGAGTGCGGGCGGCTGCGGGAACCGGGCCTCCCTCCCGCCTCGGCGGCGCCAGCCGAGGACGGCCCCATGGCACCCTCCGGAGGGCCGGCCCGAGAGCCTCAGGAGGGCGCCCCTCACCTGCTGGCCTCGCCATCCGCGCCTGGGTCCGC	-	p.X11_splice	DEL	3
+chr14	104772452	104772876	?-391	AKT1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CCTGCAGGCAGGAAACAAGGCCACAGTGTCGGTACCGCCACCTGCCCAGGCCCTGGGTTCAGGCCCCTTCCTCCTGTGATGTAGGGCCCGCCAGACAGGACGTTCCGGGGCCAGGGAGGGGAGCCGGTGGTGCAGCGTCCCTGAGCAGCTGTGGGTAGCAAAGCACCACAGAGCTCACGGCAGGGCAGGGGCTTCCTGAGTGGGTGGGTGCAGGCTGCAGGGTTGGGGACAGAGGCCCAACTGACCCCGGCCTGCCCGCCACTCTGCTTGGGCCTGAGGCTTTGGAGATCAGCCCTGGCCAAGGACATCAAGCTTTGGCTATCAGTGTAGTCTGGGAGGTGCCAGGACCGCCTGGCGCAGGGGCAGGTGCAGCCTGGGGATGAGGGGATGGAGGTGTAGCCTGTAGCTGGGATGGGCGGCCCTCA	-	p.X391_splice	DEL	3
+chr14	104775003	104775074	?-190	AKT1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CCTGTAAAGCAGGGCTGGGTGAGCTGCCACCCCGCACCCTCATCTCCACCCTGCCCCACCGCCCCGGCCCCA	-	p.X189_splice	DEL	3
+chr15	90087263	90087437	?-272	IDH2	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CCTGGGAGTAAAAAGGTCTGTTATGGGGAGAGGGCAGAAGGCTGACAGGTTGGGGATCCCTCCCTGAGCCTCGGAGCTGAGCCAAATGCACTCTAATAGCGACCTTCCCAGGGTAGGATGGGAACAGCATGGGGGGAAGGGAAGAAAGGCCACAGAGTACATGGATGAGGCTTTA	-	p.X272_splice	DEL	3
+chr16	2056768	2057102	258-?	TSC2	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	AGGTGGGGTTTCTGAAACTGCTCTGGAAGGTTCCTGAGAGCACATGGATGGGACAAGGGCCATCCTGTCTCCCATGAATGGTTGTCTGATTCTTGGGGTGGCCAGACAATGGCCTGTTGAGGGACGGCCAGTGTCATTTTCCCAGGCAGTTGAGCTGAGGTCAGGGTTTTGGTGGCATTTTGAGAACCCTGCTGCCTCTGTCTTTGGGAGGAGATGGTGGCGAGCTGGCCGGACCTTGGGTGGCTATAGGGCAGCAGCCAGGCGGGGCCAGCAGCGGGACTGGGGCTGGGGGCAGGGCTTATGCCTGCCAGCCCCTGACACGCATTGTGTCTCGC	-	p.X258_splice	DEL	3
+chr16	2079195	2079273	1044-?	TSC2	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	AGGTCCAGGCGGCACTACAGGGCTGGGCGGGCCTGCGGGAGCTCCACGGGCAAGCTGGGTTTCACGCTCCCTGTCTTCT	-	p.X1044_splice	DEL	3
+chr16	3780879	3781203	NA	CREBBP	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CTAAGGAGGAAATAAAGACACTTCATCCATCTACTGAAGTGACTCAAACACACTTTGTCTAGTAAGGTTCTTCTGCCACCACATGTGACTTTTAAAAGTTTAAGTCAGGAGAGCCAAGTGATGTAAATAAATAAAACTTAAACTATGTTTTAATCTATTATCTGCTCTACATTTATAATTAAAGAAAAAAAGGAAAACAGCATTCACCCCTCACCACCCCATTTAAACTATTTTCTCTGCCACACATTTAGAAAGAATCAGTTTTGTGTGGTTCTCAGTCCATGCTCCTGTTGGACTGTCACTCAGATCTGAAACAGGGTCTTAC	-	p.X559_splice	DEL	3
+chr17	7496347	7496439	NA	POLR2A	brain-goi	FALSE	NA	Splice_Site	novel	GTGAGTGGGGAACAGGCTCTGGTCTGGGAGCGGGGGTGCTTGGTAGGGGGCAGGGGGACAGCTTCAACTGACCCTGCTCTGCCCTGTCCCCAG	-	p.X121_splice	DEL	3
+chr17	7511588	7511809	NA	POLR2A	brain-goi	FALSE	NA	Splice_Site	novel	GGTGAGCCCGTGTGTGCTGCCTAGCTGCCTTTCGTGGATCTCTGGCTCTCAGGCCCCTCATTCTGTGCTGTCCACTCAGGACTTTTTCTGCCTGATTCCATTTCTGAGTGTGGGATATCCTGGCTCCTGACACCCTCCCTGGATCTGGGTGGCGACAGAAGCAGGGAAGAGAGCAGAGTTGCTCAGTCCTGGCCCTCCCCTCCACTTCCCTCCCCTGTGCCA	-	"NA"	DEL	3
+chr17	7512590	7512772	NA	POLR2A	brain-goi	FALSE	NA	Splice_Site	novel	GGTGAGTAACCTGATCCAGGAAGAGGGCCCTCCAGGTGGTTCAGAGGTGGATAAGCTGGGATCGTGAACGGTAGCCATTGTTGGAACTCTGAAGGCCGCAGAGGGCTAGTGAAAGGTGGGGCAGGGAGAATTGGGGGCCTTTGGTCTCCCGCTCTGGCCTTAACTTGCTTCTCTCACTCTATA	-	"NA"	DEL	3
+chr17	7673802	7673802	273	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	TRUE	MSKCC,Cosmic	Missense_Mutation	rs28934576	C	T	p.R273H	SNP	3
+chr17	7674221	7674221	248	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	TRUE	MSKCC,Cosmic	Missense_Mutation	rs121912651	G	A	p.R248W	SNP	3
+chr17	7675088	7675088	175	TP53	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	TRUE	MSKCC,Cosmic	Missense_Mutation	rs28934578	C	T	p.R175H	SNP	3
+chr17	47157001	47157001	252	CDC27	Oncogene, brain-goi	FALSE	NA	Missense_Mutation	rs200148949	A	T	p.S252T	SNP	3
+chr19	10987002	10987663	286-?	SMARCA4	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	AGGTGAGCTCCCTCTTCTATGGTGGTGCACCCGTGCCCTTACTCCCCATCTCAAGCTTGGGTCCTTGAGATGAGCTTTGTCAGGGAGAAAGGGCCGAGGGTGGTCAGGCTGAACTGCAGCCTGTACTTTTCTTGTGGTGGTCCCCGGGTCTCCCCTGTAGCCAGTCAGTTCCCAAAGGCTGTCGTTCATCCCTCCTCTGACAGCTTGTGGCCTTCACCCAGTCCCTGAGCCCTGTATATGTAATTGCTCAGTAAGTGCTGCAGGCTCCCATCTGTTGGGCTCAAAGAGGCAGTGGGACTCATTACCCATCCTCTTGGAGCCTGAGGTTTAGCGATGGGCATTGAGGGGCAAATTGCTTCCACTGGATTTAGTTGGCACTAGGAGGAGATGACAGGAAATGCTGCCATAGAGCCACAGACAGAACAAAAAGGCCTTGGGAGCCTGGGGCTGGCCCCAGTGGAGGGTGTGAAGGACGAGGGTGAGGCTGAGATCTGGAGGAGGTTGGAGCCCAAGGCAGGTGTGAAGGACACCCCTGGGTGAAAGGTGGGAGATGGGCGGGGTCTGCCTGTCCCCAGTGCCTCAAGCAGCTCAGCAGCTTTCCATTTCCAGCCCGGGATGGGCCCCAGAGCTCAACATGACGCCCTGGCCCCTTGCCTTCTCCC	-	p.X287_splice	DEL	3
+chr19	11059886	11060044	NA	SMARCA4	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	GTGAGTCCCGGGGGGGTTCAGGACGCCGGGGTTCACGCTGGCCCGAGAGCCCCCAAGGCCCCAGCTTTTCACAGCCCTCCCGGCTCCCAGACGCCCCTTGCTGTGGGGGTGCTGCATTCCCAGAGCTCAAGGCTGTCTTTCCCTCCCGGTCCCCTCCAG	-	p.X1590_splice	DEL	3
+chr19	42289406	42289846	454-?	CIC	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	GGTGAGCATTGCAGGGCCCAGAATCTTGCCCAGGACCCAGCAGGCCAAGGCTCAGAGGGTGGGCAGAACTTGGATCCAGGCCCCTAGGCCCCTTTGTTTTCTTTTCCACTTGGTTTATGGTTGCATGTGGCCAGTTCAGGCCCTGCCGAGTAAATCCAGCCCTGCCCTCAGGAAGCCCCCAGCCCTGCAGGAAATCTGGAGGACAGGGGGCATGACCAGATCTTCAGGTGCAGTGTTAGGGGCTCTGTCCTGCAGGCTCATAGGCTCCTGCACTGGGCAGTGGGCACTGGGCATGTGGGCACAGCCCTGGGCTGAGGAGTAGCCTTCCTGGACAGCACTCCCTGCCGGTTTGGAGCAGAGCTGAGATCCAGGCTCCAGACTGTTTCTCCTGGGTCCCCCTGCATCTAGCCCCCTCCCCATACTGTTCCCTCCACTCCCTCA	-	p.X454_splice	DEL	3
+chr19	42291744	42292083	962-?	CIC	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	AGGTGAGGGCCTGCCTTTCTCTCTACCTGCTGGATGTTGGCCCCTGTACCCCATCATTTCTTTGTCTTTTTTTTCAGTCTTTTCTCCTTCTCCATGTATCTGGTTCTCTGTCTTGCCATCTTCCGTGATGTCTCTGTGCATCCTGACTCTCTCAAGTCCTCAGTGTCTGTACCCTCCTCCTTCTCTGTGTCCCCACCTCTCACTGTCATCTTGCCCATCCTGTTCTCACCCCAAGTTCTGTGTTCCTTGCTTTTGCTTAGAGTCCCACTTGAGGTCTTGGTCTTCCCCTGCCCCAGTCTGGGGCCACAGCTCACCCTGGCCTATGGGTGCCCTTCTCCAC	-	p.X962_splice	DEL	3
+chr19	42294089	42294171	1399-?	CIC	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	GGTAGGCGAGCATTGGGCACCCAGGGTCCTTAGGTGGAGGGCAGACTGGGGCCACCTGCACTGAGTCTGCTTCTGTTTGGCCA	-	p.X1399_splice	DEL	3
+chr19	42294733	42294820	1486-?	CIC	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	CAGGTGAGCCTGTCTCGGAGTCTTGGGGTCACTCGGGTGGGACTTATCTGTACATCTCATCCTGTGCTCCCCACCGTTTTTCTATCTC	-	p.X1487_splice	DEL	3
+chr19	42295012	42295014	1550	CIC	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	ACT	CCC	p.T1550P	TNP	3
+chr19	50415679	50416121	932	POLD1	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	GCCACCCACCTGCCCTCACCCACCCGCCACCCCATCTCCACGCAGGATGAGGAAGCGGGACCCCGGGAGTGCGCCCAGCCTGGGCGACCGCGTCCCCTACGTGATCATCAGTGCCGCCAAGGGTGTGGCCGCCTACATGAAGTCGGAGGTCAGGCCCACCTGGCTGCCTGCTCCCGCCCAGCCCCCTCGCTCTCACTTCTGCTTTCCGAGATGGGCGGGCCTGCGGGAAGGGTGGGGCCTCCCGTGCCCTGTGGGGCCCTGAGAACCGCCCCCCATGGCAGCCTGGGTGTGGCCTCGGCCCCCTCTGGAGGTCCCCCCTCTATTCTGACCCCTCCCTTGCTTCCCTATGGAAGGGGCCCCAGTCCCTCCCCTGTGCATACAGCTCCCCAGCCGGGGGTTCCCTTGGATTCATAATCCTCCAGCTCTACCCCCACCCCCAGTGA	CCCCC	p.X932_splice	DEL	3
+chr2	15942738	15942738	225	MYCN	CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	T	G	p.I225S	SNP	3
+chr2	47783451	47783451	73	MSH6	CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Missense_Mutation	"NA"	A	C	p.N73T	SNP	3
+chr20	32434639	32434639	643	ASXL1	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Frame_Shift_Del	rs781077343	G	-	p.G645Vfs*58	DEL	3
+chr21	34792281	34792611	?-433	RUNX1	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	TGCAGGGCGGCAGGATGCGCGGCGGCGAGCGCTCGCCGCCCACCATGGAGAACTGGTAGGAGCCGGCCGAGGCGCCGTAGTACAGGTGGTAGGAGGGCGAGCTGGCTTGGAACGGGCCTCCCTGCGCTTGCGACGAGCCGGGGTAGGGCGGCGGCAGGTAGGTGTGGTAGCGCGTGGCCGAGCCCATGGCCGACATGCCGATGCCGATGCCCGAGGTGACCGGCGTCGGGGAGTAGGTGAAGGCGCCTGGATAGTGCATGCGGGGGTCGGAGATGGAGGGCAGCGCGGGGAACTGGCGCGGGTCGCTGAACGCTGTCAGGTCGGGTGCCGC	-	p.X323_splice	DEL	3
+chr21	34792313	34792313	422	RUNX1	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Missense_Mutation	novel	T	C	p.E422G	SNP	3
+chr21	34792325	34792325	418	RUNX1	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	TRUE	Cosmic	Missense_Mutation	rs202068364	A	C	p.M418R	SNP	3
+chr22	23833702	23834138	382-?	SMARCB1	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	AGGTACCCCTGGCCCTGTGGTCCTGGGCTCTGCCCACAGGCACCTGGCTTTCCAGGCAGAGGCAGGGCCATTGCCTTTCCCAGTCTCCCATGGTCTCTGAGACAGAGTACCTCTAGTGCTGCTAGAGGCAGGCAGGCTTCTGGGTGATAAGGCCCCATCCAAACGCCAGGGTATGTTTCCCTGCATGGAACAAACATAATTCCTCAGGCTGAGGGTCTGACCACAGCCCAGATCCAGGTTTTGGGGTCCCTGGAGTGATGAGCAGGGCCTGAGTGGCAGACAGGCGAGGCTGAGAGAAGGCTGGGTCTGACCCTGCTGGGGGCCCACATCCTGCCTCTGTTCCCACCCCTACACTTGGCTGCCCTGTAGAGCCTTGGGAAGGGCAGCGCCCAGGCTGGGAGCTGGCCCCGACTCATTGCCCTCCCCACTCCTCTTCC	-	p.X382_splice	DEL	3
+chr22	38982334	38982741	-	APOBEC3B	CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	GCCCTGGGAGGTCACTTTAAGGAGGGCTGTCCAACTGCAAGGACGCTGTAAGCAGGAAGTGAAACCACAGAGCTTCAAAAAAAGAGCGGGACAGGGACAAGCGTATCTAAGAGGCTGAACATGAATCCACAGATCAGGTACCGCTGCCCACTCTGCCTGCTGGGCCCCTCCTGCCCCTTCCTGCCTGGTGGTCCTGCTGGGCCTCAACCCTGGCCTCCCCCCGCCCCTGCCCCAGCCCTGGGCTCCCTCCCCTCTGGCTCCCCTGCCACACGAATCCCAGTCAGGCTCTTTGTCCTGCTGTGTGGTCACCCCACTGCTGCTTCTGAATGGGCTGCCTCCCCTACCTGCACCAGCCCAGGCCCCGTGCTGAGACTCTCCCTTAAAGTCATGCCCGGACTGGTGCTCCCC	-	"NA"	DEL	3
+chr3	41224606	41224606	32	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs28931588	G	A	p.D32N	SNP	3
+chr3	41224607	41224607	32	CTNNB1	CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs121913396	A	G	p.D32G	SNP	3
+chr3	41224613	41224613	34	CTNNB1	CosmicCensus, Oncogene, brain-goi	TRUE	MSKCC,Cosmic	Missense_Mutation	rs28931589	G	A	p.G34E	SNP	3
+chr4	54270665	54270665	385	PDGFRA	CosmicCensus, Oncogene, Kinase, brain-goi	FALSE	Cosmic	Missense_Mutation	"NA"	A	T	p.K385M	SNP	3
+chr5	123099825	123099825	255	PRDM6	TranscriptionFactor, brain-goi	FALSE	NA	Missense_Mutation	novel	T	G	p.V255G	SNP	3
+chr7	55154129	55154129	289	EGFR	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs149840192	C	T	p.A289V	SNP	3
+chr7	152187476	152187713	?-1598	KMT2C	TumorSuppressorGene, CosmicCensus, Oncogene, brain-goi	FALSE	Cosmic	Splice_Site	novel	CCTGGGAAAAAATAAATATCTTTACTTTATGAACATAAAATAACTTCTTAATATATGTTCAAGTATAGCTTTCATTAAAACCTATTACAAAACAGTTAAAAGTAACATATTTATAGCAAAAGCCACAATAAACGCAACATACAATAATATCATACACAATCATTTAAGCAGACTAATTTATATATAAATCAAACAGAAATTAGTGCAATTTAAGTTTCCATAGAAAATAAGGCTTGTA	-	p.X1598_splice	DEL	3
+chr8	38414788	38414788	687	FGFR1	Kinase, CosmicCensus, Oncogene, brain-goi	FALSE	MSKCC,Cosmic	Missense_Mutation	rs1057519897	C	G	p.K687N	SNP	3
+chr8	127737790	127738386	?-57	MYC	CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	CCCCGGCGCGGAGCGGGGTTCACGCAGCCGCTAGCGCCCAGGCGCCTCTCGCCTTCTCCTTCAGGTGGCGCAAAACTTTGTGCCTTGGATTTTGGCAAATTGTTTTCCTCACCGCCACCTCCCGCGGCTTCTTAAGGGCGCCAGGGCCGATTTCGATTCCTCTGCCGCTGCGGGGCCGACTCCCGGGCTTTGCGCTCCGGGCTCCCGGGGGAGCGGGGGCTCGGCGGGCACCAAGCCGCTGGTTCACTAAGTGCGTCTCCGAGATAGCAGGGGACTGTCCAAAGGGGGTGAAAGGGTGCTCCCTTTATTCCCCCACCAAGACCACCCAGCCGCTTTAGGGGATAGCTCTGCAAGGGGAGAGGTTCGGGACTGTGGCGCGCACTGCGCGCTGCGCCAGGTTTCCGCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGTGTGCCCCGCTCCAGCAGCCTCCCGCGACGATGCCCCTCAACGTTAGCTTCACCAACAGGAACTATGACCTCGACTACGACTCGGTGCAGCCGTATTTCTACTGCGACGAGGAGGAGAACTTCTACCAGCAGCAGCAGCAGAGCGAGCTGCAGC	-	p.X11_splice	DEL	3
+chr8	127737982	127738457	?-80	MYC	CosmicCensus, Oncogene, TranscriptionFactor, brain-goi	FALSE	Cosmic	Splice_Site	novel	CGCTCCGGGCTCCCGGGGGAGCGGGGGCTCGGCGGGCACCAAGCCGCTGGTTCACTAAGTGCGTCTCCGAGATAGCAGGGGACTGTCCAAAGGGGGTGAAAGGGTGCTCCCTTTATTCCCCCACCAAGACCACCCAGCCGCTTTAGGGGATAGCTCTGCAAGGGGAGAGGTTCGGGACTGTGGCGCGCACTGCGCGCTGCGCCAGGTTTCCGCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGTGTGCCCCGCTCCAGCAGCCTCCCGCGACGATGCCCCTCAACGTTAGCTTCACCAACAGGAACTATGACCTCGACTACGACTCGGTGCAGCCGTATTTCTACTGCGACGAGGAGGAGAACTTCTACCAGCAGCAGCAGCAGAGCGAGCTGCAGCCCCCGGCGCCCAGCGAGGATATCTGGAAGAAATTCGAGCTGCTGCCCACCCCGCCCCTGTCCCCTAGCCGC	-	p.X11_splice	DEL	3
+chrX	41342654	41342736	NA	DDX3X	TumorSuppressorGene, CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	GTAAGTTTTTGAAGTGTATGTTACTTGTGATGAAGCCTTACTAGCTAGTATAACAAATGAACTTATCCATTTTTTGATTTGAG	-	p.X148_splice	DEL	3
+chrX	41343821	41344027	255-?	DDX3X	TumorSuppressorGene, CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	AGGTAGATGTTTCTTTATAAAATGGGAAATTGTAGAACTTTGTAGGTGGCCATTGAGAGGGCTTTCTAAATGATGCTAAGACTTAAGTAGAATGAAAACCAGTTTTCAAGTGTAATCTGTAATCTATAAATTACAAAAGGGAATTATGTTGTGATGAACTTTTCAAACAGGGTAGGTAGAGTTAACTTAAAAATTAACTTATTTCTT	-	p.X255_splice	DEL	3
+chrX	41344129	41344238	NA	DDX3X	TumorSuppressorGene, CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	GTAAGTATGAGTTCCAGTGATTATTAGCTTTTTCATTGATTCTAATTAAATGTTTTATGAACATGTAAAAATTTTGACCTTGAAGTTCATAACATTTTTTTTGCTTATAG	-	p.X288_splice	DEL	3
+chrX	41344400	41345179	NA	DDX3X	TumorSuppressorGene, CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	GTATGTTTTATTTTGTTTTTGTTTTTTTGTTTTGTTTTGTTTTGTTCTTTTGTTTTTGGCAGAGTTGCGCTCTTGTTGCCCAGGCTGGAGTGCCATGGCGCGATCTCGGCTCACCACAACCTCTGCCTCCCGGGTTCAAGCGATTCTCCTGCCTCAGCCTCCCAGGTAGCTGGGATTACAGGCATGTGCCACCACGCTGGGCTAATTTTTGTATTTTTAGTAGAGGCGGGGTTTCTCCATGTTGGTCAGGCTGGTCTCGAACTCCTGACCTCAGGTGATCCGCCTGCCTTGGCCTCCCAAAGTGCTGGGATTACAGGTGTGAGCCATCGCACCCGGCCAAGTATGTTAATTTTTAAATGTATGGGATGCAGTATTAAAGTTACTGCCCATTAGTTTTGTGGTGATGTTAACATTGTCTAAATGTTAAGGCTGAGAAGTGATGTATTTCAGACATCTAACTTTCACAAAAAGCTTGTTCATGGTAATTTTAATGTTGAAAAATCAGTAACATCTTGGTTGAGACTTACAACAATGATCAGCTCGTGGGACAGTCAACTAGGATGGGCTAATTTGACTGTGTAATCTTGAATGACTTATGTAGTGGCAAGAATCCTGTGCTGTGTCTGTAAAATTATGCAGTGTGAGGCACCATCTTAATGAATATATAATTGTAATAACCTATACAATTGTATTTGTAATTATACTAACAGCCATACTAAAACCATGTTGATTTCTCCTCAAATTCTAAACTCAGGCTTGTTTTTTTTCATGACATGACAG	-	p.X342_splice	DEL	3
+chrX	41345545	41346224	438-?	DDX3X	TumorSuppressorGene, CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	ACAGGTAACATTATGAATTTTTTATTTTATTAGACATGGGGGTTTCTCTTTGTTGCCCAGGCTGGAGTGCAGGGGTTATTCACAGGTGTGATCTCATTACTGATCAGCATGGGAGTATTTGACCTGCTCTGTTTCTGACCTGGGCCTGTTCACCCCTCCTTAGGCAACCTGGTGCTCCCTTGCTTCCGGGAGGTTACCATGTTGATGCCAAACTTAGTGTGGACACCTGATAGGCATAGTACACTACAGCCCAGAACTCCTAGACTTAGACAATCCTCCTGCCTCAGTCTCCAGAGTAGCTGGGACTACAGGCACTCACCACTGCACCCAGCTAAAATTATGAATAATTTAATTGCTCTGGTAATAACCCATTTGGGCTGGGTGCAGTGGTACAGTGCATGTAGTCCCAGCTACTTGGCAGGCTGAGGCTGTAGTATGCCATGATTGCACCTGCGAATGGCCAGTGCACTCTCAGCCTGGGCAATTTAGTGAGACCCCCATCTCTTAAATGTATTTGGATTACCTTTATTACTTTTCCTCCTCAATTCAAAACATGCTGTGTTGAAAGCCCGTTTTTAAGAAGATATATATGTATTTTAATTGACACATTAAAATTGTGCATACATAAGTGCAAAGAGAACTAAGCCATGTTAGTGACAAAAACCTATAATTTTTCAACG	-	p.X439_splice	DEL	3
+chrX	41347450	41347637	636-?	DDX3X	TumorSuppressorGene, CosmicCensus, brain-goi	FALSE	Cosmic	Splice_Site	novel	AGGTAGTGTTAATCTGTAACTTCATAGCTTTGGGAAGGGTTTTTTTCCTTTTAGTCATCTTTTTCAAAGCCTAATTAAACAATTTAAGTTCAGCACTATAGAAACTTGATGGCAAATTACGTAAGGGAAGGATTGTATTTAATGATGGATAACTTCATTAATTTCTCTCTCTTTTTAAATCTCTCATT	-	p.X637_splice	DEL	3
