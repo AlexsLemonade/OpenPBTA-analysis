@@ -1,6 +1,15 @@
 ---
 title: "Domain overlap hotspots"
 output: html_notebook
+params:
+  cancer_hotspot_file :
+    label: "MSKCC cancer hotspot file"
+    value: input/hotspots_v2.xls
+    input: file  
+  gene_list :
+    label: gene table with gene type annotation 
+    value: ../fusion_filtering/references/genelistreference.txt 
+    input: file  
 
 ---
 
@@ -18,6 +27,7 @@ library("GenomicRanges")
 
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
+mskcc_cancer_hotspot_file <- params$cancer_hotspot_file
 
 results_dir <- file.path(root_dir,
                          "analyses",
@@ -27,6 +37,36 @@ results_dir <- file.path(root_dir,
 if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
+
+```
+
+## Cancer hotspot files
+```{r}
+
+# Cancer database
+hotspot_database_2017_snv <- readxl::read_xls(mskcc_cancer_hotspot_file,sheet = 1) 
+hotspot_database_2017_indel <- readxl::read_xls(mskcc_cancer_hotspot_file,sheet = 2)
+
+hotspot_database <- bind_rows( hotspot_database_2017_snv, hotspot_database_2017_indel) %>%
+  dplyr::select("Amino_Acid_Position","Hugo_Symbol") %>%
+  dplyr::mutate(hotspot_database="MSKCC") %>%
+  unique()
+
+```
+
+## Gene table for reccurence checks
+```{r}
+gene_table <- read_tsv("../fusion_filtering/references/genelistreference.txt")%>%
+  dplyr::rename(Hugo_Symbol=Gene_Symbol) %>%
+  dplyr::select(Hugo_Symbol,type)
+
+brain_goi <- read_tsv("input/brain-goi-list-new.txt",col_names = "Hugo_Symbol") %>%
+	dplyr::mutate(type="brain-goi")
+
+gene_table <- bind_rows(gene_table,
+			brain_goi) %>%
+  group_by(Hugo_Symbol) %>%
+  summarise(type=toString(unique(type)))
 
 ```
 
@@ -79,8 +119,34 @@ kinase_overlap <- data.frame(Chromosome=seqnames(overlaps_kinase_snv),
            caller = overlaps_kinase_snv$caller) %>%
    unique() 
 
+```
+
+```{r}
+# functions takes in a maf format dataframe and a variant_type to return an upset plot
+source(file.path("utils","getUpset.R"))
+```
+
+```{r}
+getUpset(kinase_overlap_novel,c("SNP","DNP","TNP","ONP"))
+```
+
+```{r}
+getUpset(kinase_overlap,c("INS","DEL"))
+```
+
+### Gather maf for summary plots
+
+```{r}
 
 kinase_overlap %>%
+  left_join(gene_table,by="Hugo_Symbol") %>%
+  left_join(hotspot_database,by=c("Amino_Acid_Position","Hugo_Symbol")) %>%
+  mutate(hotspot_database = case_when(
+    grepl("Cosmic",type) & !is.na(hotspot_database) ~ paste0(hotspot_database,",Cosmic"),
+    grepl("Cosmic",type) & is.na(hotspot_database) ~ "Cosmic",
+    TRUE ~ hotspot_database
+  )) %>%
+  dplyr::filter(is.na(hotspot_database)) %>%
    dplyr::select(-caller) %>%
   group_by(Chromosome,Start_Position,End_Position,
            Amino_Acid_Position,Hugo_Symbol,
@@ -93,55 +159,22 @@ kinase_overlap %>%
   # doing a mean so that caller specific VAF 
   # calculations doesn't unique rows
   summarise(VAF = mean(VAF)) %>%
-   write_tsv(file.path(results_dir,"kinase_snv_sites.maf"))
+   write_tsv(file.path(results_dir,"kinase_snv_novel_sites.maf"))
 
-```
-
-```{r}
-# functions takes in a maf format dataframe and a variant_type to return an upset plot
-getUpset<-function(maf,variant_type="SNP"){
-  # Add up how many callers identify eac mutation
-caller_mat <- maf %>% 
- dplyr::filter(Variant_Type %in% variant_type) %>%  
- dplyr::select("Chromosome",
-              "Start_Position",
-              "Tumor_Sample_Barcode", 
-              "Variant_Classification",
-              "caller") %>%
-  unique() %>%
-  reshape2::dcast(Chromosome+Start_Position+Tumor_Sample_Barcode+Variant_Classification ~ caller,fun.aggregate = length) %>%
-  dplyr::select(-c("Chromosome","Start_Position", "Tumor_Sample_Barcode", "Variant_Classification"))
-
-UpSetR::upset(data = caller_mat ,
-              order.by = "freq",main.bar.color = "gray")
-}
-```
-
-```{r}
-getUpset(kinase_overlap,c("SNP","DNP","TNP","ONP"))
-```
-
-```{r}
-getUpset(kinase_overlap,c("INS","DEL"))
-```
-
-
-
-```{r}
-kinasedomainsmaf <- maftools::read.maf("results/kinase_snv_sites.maf")
-domain.titv = titv(maf = kinasedomainsmaf, plot = FALSE, useSyn = TRUE)
+kinasedomains_novel_sites <- maftools::read.maf("results/kinase_snv_novel_sites.maf")
+domain.titv = titv(maf = kinasedomains_novel_sites, plot = FALSE, useSyn = TRUE)
 #plot titv summary
 plotTiTv(res = domain.titv)
 
 ```
 
 ```{r}
-plotVaf(kinasedomainsmaf,vafCol = "VAF")
+plotVaf(kinasedomains_novel_sites,vafCol = "VAF")
 
 ```
 ```{r}
-pdf("results/kinasehits.pdf",width = 15,height = 8)
-lapply(c("FLT4","BRAF","TYRO3","FGFR1","PIM3","GAK","GRK2","PKN1","CDKL4","RPS6KA4"),function(x){
+pdf("results/kinasenovelhits.pdf",width = 15,height = 8)
+lapply(c("TYRO3","PIM3","ACVRL1","GAK","GRK2","PKN1","CDKL4","ULK1","RPS6KA4"),function(x){
 maftools::lollipopPlot(kinasedomainsmaf,gene = x ,AACol = "HGVSp_Short")})
 dev.off()
 ```
