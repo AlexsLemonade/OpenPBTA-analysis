@@ -21,10 +21,12 @@ dbfile=../../scratch/snv_db.sqlite
 
 python3 ../snv-callers/scripts/01-setup_db.py \
   --db-file $dbfile --overwrite \
+  --strelka_file ../../data/pbta-snv-strelka2.vep.maf.gz
+  --lancet_file ../../data/pbta-snv-lancet.vep.maf.gz
   --mutect-file ../../data/pbta-snv-mutect2.vep.maf.gz \
   --vardict-file ../../data/pbta-snv-vardict.vep.maf.gz \
 ################################################################################
 
 
 # find reccurence
-Rscript -e "rmarkdown::render('01-reccurence-hotspot-overlap.Rmd')"
+Rscript -e "rmarkdown::render('01-combine-snv.Rmd')"

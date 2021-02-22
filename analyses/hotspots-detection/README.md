@@ -9,7 +9,7 @@ In this analysis we will evaluate snv and indels from strelka2,mutect2,vardict a
 
 `../snv-callers/scripts/01-setup_db.py` sets up a database with 4 caller maf files as tables 
 
-`01-reccurence-hotspot-overlap.Rmd` filters and combines calls from all callers and summarises the data to save recurrent mutated hotspots and additionally annotates the site as seen in MSKCC cancer hotspot database (file in input folder)
+`01-combine-snv.Rmd` filters and combines calls from all callers anf filters for deleterious mutations in genes of interest for cancer and brain tumor specifically (curated by @jharenza)
 
    
 ### Run
