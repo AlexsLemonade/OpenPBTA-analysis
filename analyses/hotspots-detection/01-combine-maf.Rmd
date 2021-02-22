@@ -1,0 +1,147 @@
+---
+title: "Combine individual caller maf"
+output: html_notebook
+params:
+  db_file:
+    label: "all callers db"
+    value: scratch/snv_db.sqlite
+    input: file
+  gene_list :
+    label: gene table with gene type annotation 
+    value: ../fusion_filtering/references/genelistreference.txt 
+    input: file  
+---
+
+In this notebook we will combiine calls from each caller used in OpenPBTA snv
+
+Filtered by:
+
+- Variant_Classification == 'Missense_Mutation|Splice_Region|In_Frame_Del|Frame_Shift_Del|Splice_Site|Splice_Region|Nonsense_Mutation|Nonstop_Mutation|In_Frame_Ins|Frameshift_Ins',
+- IMPACT == 'HIGH|MODERATE'
+- Hugo_Symbol  == gene_list$Hugo_Symbol + brain_goi$Hugo_Symbol
+
+
+
+
+## Setup
+```{r}
+library("tidyverse")
+library("maftools")
+
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+
+results_dir <- file.path(root_dir,
+                         "analyses",
+                         "hotspots-detection",
+                         "results")
+
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+
+```
+
+## Gene table for filtering
+```{r}
+# generic cancer genes  of interest
+gene_table <- read_tsv(file.path("..",
+                                 "fusion_filtering",
+                                 "references",
+                                 "genelistreference.txt"))%>%
+  dplyr::rename(Hugo_Symbol=Gene_Symbol) %>%
+  dplyr::select(Hugo_Symbol,type)
+
+# genes of interest for brain tumors
+brain_goi <- read_tsv("input/brain-goi-list-new.txt",col_names = "Hugo_Symbol") %>%
+	dplyr::mutate(type="brain-goi")
+
+gene_table <- bind_rows(gene_table,
+			brain_goi)
+
+```
+
+## Read database 
+```{r}
+
+db_file <- file.path(root_dir, params$db_file)
+
+# Start up connection
+con <- DBI::dbConnect(RSQLite::SQLite(), db_file,path = ":memory:")
+
+```
+
+## Designate caller tables from SQL file
+```{r}
+strelka <- dplyr::tbl(con, "strelka")
+mutect <- dplyr::tbl(con, "mutect")
+vardict <- dplyr::tbl(con, "vardict")
+lancet <- dplyr::tbl(con, "lancet") 	
+
+```
+
+## Subset maf per caller
+```{r}
+source ("utils/prepMaf.R")
+strelka_subset<-prepMaf(strelka, gene_table = gene_table) %>%
+       mutate(caller="strelka")	
+mutect_subset<-prepMaf(mutect, gene_table = gene_table) %>%
+	mutate(caller="mutect")
+vardict_subset<-prepMaf(vardict, gene_table = gene_table) %>%
+	mutate(caller="vardict")
+lancet_subset<-prepMaf(lancet, gene_table = gene_table) %>%
+	mutate(caller="lancet")
+
+# combine
+combined_maf_subsets <-bind_rows(strelka_subset,
+mutect_subset,
+vardict_subset,
+lancet_subset) 
+
+
+# save for future runs
+saveRDS(combined_maf_subsets, file.path("results","combined_maf_subsets.RDS"))
+	      
+```
+
+
+### Get filtered numbers
+
+Upset plots to visualize caller contributions
+
+```{r}
+source(file.path("utils","getUpset.R"))
+
+```
+
+### Upset graphs 
+
+SNP: Single nucleotide polymorphism -- a substitution in one nucleotide
+DNP: Double nucleotide polymorphism -- a substitution in two consecutive nucleotides
+TNP: Triple nucleotide polymorphism -- a substitution in three consecutive nucleotides
+ONP: Oligo-nucleotide polymorphism -- a substitution in more than three consecutive nucleotides
+
+
+```{r}
+getUpset(combined_maf_subsets,c("SNP","DNP","TNP","ONP"))
+```
+Vardict uniquely support a lot of the filtered sites but interestingly majority of the subtitution mutations are supported by all callers
+
+INS: Insertion -- the addition of nucleotides
+DEL: Deletion -- the removal of nucleotides
+```{r}
+getUpset(combined_maf_subsets,c("INS","DEL"))
+```
+Vardict and Lancet uniquely support a lot of filtered indels
+
+
+### VAF plot
+```{r}
+
+ggplot(combined_maf_subsets)+geom_violin(aes(x=caller,y=VAF,color=caller))+theme_bw()
+```
+
+
+```{r}
+DBI::dbDisconnect(con)
+```

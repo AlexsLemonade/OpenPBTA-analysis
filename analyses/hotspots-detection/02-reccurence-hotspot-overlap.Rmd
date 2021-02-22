@@ -38,7 +38,6 @@ library("maftools")
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 mskcc_cancer_hotspot_file <- params$cancer_hotspot_file
-internal_hotspot_file <- params$internal_hotspot_file
 
 results_dir <- file.path(root_dir,
                          "analyses",
@@ -74,99 +73,12 @@ hotspot_database <- bind_rows( hotspot_database_2017_snv, hotspot_database_2017_
 
 ```
 
-## Gene table for reccurence checks
+## Get combined and filtered maf calls from strelka,mutect, vardict, lancet
 ```{r}
-gene_table <- read_tsv("../fusion_filtering/references/genelistreference.txt")%>%
-  dplyr::rename(Hugo_Symbol=Gene_Symbol) %>%
-  dplyr::select(Hugo_Symbol,type)
-
-brain_goi <- read_tsv("input/brain-goi-list-new.txt",col_names = "Hugo_Symbol") %>%
-	dplyr::mutate(type="brain-goi")
-
-gene_table <- bind_rows(gene_table,
-			brain_goi)
+combined_maf_subsets<- readRDS( file.path("results","combined_maf_subsets.RDS"))
 
 ```
 
-## Read database 
-```{r}
-
-db_file <- file.path(root_dir, params$db_file)
-
-# Start up connection
-con <- DBI::dbConnect(RSQLite::SQLite(), db_file,path = ":memory:")
-
-```
-
-## Designate caller tables from SQL file
-```{r}
-strelka <- dplyr::tbl(con, "strelka")
-mutect <- dplyr::tbl(con, "mutect")
-vardict <- dplyr::tbl(con, "vardict")
-lancet <- dplyr::tbl(con, "lancet") 	
-
-```
-
-## Subset maf per caller
-```{r}
-source ("utils/prepMaf.R")
-strelka_subset<-prepMaf(strelka, gene_table = gene_table) %>%
-       mutate(caller="strelka")	
-mutect_subset<-prepMaf(mutect, gene_table = gene_table) %>%
-	mutate(caller="mutect")
-vardict_subset<-prepMaf(vardict, gene_table = gene_table) %>%
-	mutate(caller="vardict")
-lancet_subset<-prepMaf(lancet, gene_table = gene_table) %>%
-	mutate(caller="lancet")
-
-# combine
-combined_maf_subsets <-bind_rows(strelka_subset,
-mutect_subset,
-vardict_subset,
-lancet_subset) 
-
-
-# save for future runs
-saveRDS(combined_maf_subsets, file.path("results","combined_maf_subsets.RDS"))
-	      
-```
-
-
-## Get filtered numbers
-
-Upset plots to visualize caller contributions
-
-```{r}
-source(file.path("utils","getUpset.R"))
-
-```
-
-## Upset graphs 
-
-SNP: Single nucleotide polymorphism -- a substitution in one nucleotide
-DNP: Double nucleotide polymorphism -- a substitution in two consecutive nucleotides
-TNP: Triple nucleotide polymorphism -- a substitution in three consecutive nucleotides
-ONP: Oligo-nucleotide polymorphism -- a substitution in more than three consecutive nucleotides
-
-
-```{r}
-getUpset(combined_maf_subsets,c("SNP","DNP","TNP","ONP"))
-```
-Vardict uniquely support a lot of the filtered sites but interestingly majority of the subtitution mutations are supported by all callers
-
-INS: Insertion -- the addition of nucleotides
-DEL: Deletion -- the removal of nucleotides
-```{r}
-getUpset(combined_maf_subsets,c("INS","DEL"))
-```
-Vardict and Lancet uniquely support a lot of filtered indels
-
-
-VAF plot
-```{r}
-
-ggplot(combined_maf_subsets)+geom_violin(aes(x=caller,y=VAF,color=caller))+theme_bw()
-```
 
 ## Summarise calls per site in Tumor_Sample_Barcode for brain GOI only 
 ```{r}
