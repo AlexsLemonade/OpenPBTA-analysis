@@ -159,7 +159,7 @@ DEL: Deletion -- the removal of nucleotides
 ```{r}
 getUpset(combined_maf_subsets,c("INS","DEL"))
 ```
-Vardict and Lancet uniquely support a lot of filtred indels
+Vardict and Lancet uniquely support a lot of filtered indels
 
 
 VAF plot
@@ -380,4 +380,3 @@ calls_recurrence %>% write_tsv(file.path(results_dir,"snv_recurrence.tsv"))
 ```{r}
 DBI::dbDisconnect(con)
 ```
-
