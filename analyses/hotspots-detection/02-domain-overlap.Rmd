@@ -175,7 +175,7 @@ plotVaf(kinasedomains_novel_sites,vafCol = "VAF")
 ```{r}
 pdf("results/kinasenovelhits.pdf",width = 15,height = 8)
 lapply(c("TYRO3","PIM3","ACVRL1","GAK","GRK2","PKN1","CDKL4","ULK1","RPS6KA4"),function(x){
-maftools::lollipopPlot(kinasedomainsmaf,gene = x ,AACol = "HGVSp_Short")})
+maftools::lollipopPlot(kinasedomains_novel_sites,gene = x ,AACol = "HGVSp_Short")})
 dev.off()
 ```
 
