@@ -145,7 +145,7 @@ So we will revise the `molecular_subtype`, `integrated_diagnosis`, `short_histol
 compiled_df <- compiled_df %>%
   mutate(
     integrated_diagnosis = case_when(
-      Kids_First_Participant_ID == "PT_7E3V3JFX" ~ "Ependymoma",
+      Kids_First_Participant_ID == "PT_7E3V3JFX" ~ "Ependymoma, H3 K28-mutant",
       TRUE ~ integrated_diagnosis
     ),
     short_histology = case_when(
@@ -203,7 +203,7 @@ There are no _BRAF_ fusions in `BS_H1XPVS9A`, so we are able to classify this sa
 compiled_df <- compiled_df %>%
   mutate(
     integrated_diagnosis = case_when(
-      sample_id == "7316-1106" ~ "Low-grade glioma/astrocytoma",
+      sample_id == "7316-1106" ~ "Low-grade glioma/astrocytoma, BRAF V600E",
       TRUE ~ integrated_diagnosis
     ),
     short_histology = case_when(
@@ -547,6 +547,17 @@ compiled_df <- compiled_df %>%
       TRUE ~ Notes
     )
   )
+```
+
+###Check list of subtypes look as expected at this point in time
+```{r}
+# sort first
+list_subtypes <- compiled_df %>%
+  filter(!grepl("To be classified", molecular_subtype)) %>%
+  select(integrated_diagnosis, molecular_subtype) %>%
+  distinct() %>%
+  arrange(integrated_diagnosis)
+list_subtypes
 ```
 
 ### Write revised table to file
