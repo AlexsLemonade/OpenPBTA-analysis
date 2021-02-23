@@ -79,6 +79,24 @@ combined_maf_subsets<- readRDS( file.path("results","combined_maf_subsets.RDS"))
 
 ```
 
+## Gene table for filtering
+```{r}
+# generic cancer genes  of interest
+gene_table <- read_tsv(file.path("..",
+                                 "fusion_filtering",
+                                 "references",
+                                 "genelistreference.txt"))%>%
+  dplyr::rename(Hugo_Symbol=Gene_Symbol) %>%
+  dplyr::select(Hugo_Symbol,type)
+
+# genes of interest for brain tumors
+brain_goi <- read_tsv("input/brain-goi-list-new.txt",col_names = "Hugo_Symbol") %>%
+	dplyr::mutate(type="brain-goi")
+
+gene_table <- bind_rows(gene_table,
+			brain_goi)
+
+```
 
 ## Summarise calls per site in Tumor_Sample_Barcode for brain GOI only 
 ```{r}
