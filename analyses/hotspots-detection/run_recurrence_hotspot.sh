@@ -28,5 +28,8 @@ python3 ../snv-callers/scripts/01-setup_db.py \
 ################################################################################
 
 
-# find reccurence
+# combine and filter calls
 Rscript -e "rmarkdown::render('01-combine-snv.Rmd')"
+
+# find recurrence
+Rscript -e "rmarkdown::render('02-reccurence-hotspot-overlap.Rmd')"

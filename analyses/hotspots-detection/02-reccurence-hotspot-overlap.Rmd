@@ -195,6 +195,7 @@ ONP: Oligo-nucleotide polymorphism -- a substitution in more than three consecut
 
 
 ```{r}
+source(file.path("utils","getUpset.R"))
 getUpset(uniqhits,c("SNP","DNP","TNP","ONP"))
 ```
 Interestingly a lot of the uniq hits are supported by strelka only, followed by vardict.
@@ -305,8 +306,3 @@ plotVaf(multihitsmaf,vafCol = "VAF")
 calls_recurrence %>% write_tsv(file.path(results_dir,"snv_recurrence.tsv"))
 ```
 
-
-
-```{r}
-DBI::dbDisconnect(con)
-```
