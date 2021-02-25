@@ -225,29 +225,6 @@ compiled_df <- compiled_df %>%
   )
 ```
 
-### HGG BRAF V600E
-
-We will be removing this from subtyping, so this can be left for now
-
-The follow point comes from another issue [#627 (comment)](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/627#issuecomment-598789232):
-
-> We have a standalone BRAF V600E subtype, but this is HGG only, and should be labeled as such (will create an update HGG analysis ticket).
-
-```{r}
-compiled_df %>%
-  filter(molecular_subtype == "BRAF V600E")
-```
-
-Now that we have addressed the one sample that should have been reclassified as LGG, we are able to update `molecular_subtype` to `HGG, BRAF V600E` for the remaining samples.
-
-```{r}
-compiled_df <- compiled_df %>%
-  mutate(molecular_subtype = case_when(
-    molecular_subtype == "BRAF V600E" ~ "HGG, BRAF V600E",
-    TRUE ~ molecular_subtype
-  ))
-```
-
 ### `PT_AQWDQW27`
 
 > 2. `PT_AQWDQW27` specimen was consistent with meningioma, even though it has a hallmark EPN fusion, so pathology would also call this a rare meningioma with a _YAP1_ fusion.
