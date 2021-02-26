@@ -48,6 +48,29 @@ if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
 
+
+clinical <- read_tsv(file.path(data_dir,"pbta-histologies.tsv"))
+
+# group by Kids_First_Participant_ID to check 
+# for multiple dna samples 
+clinical %>% 
+  dplyr::filter(experimental_strategy != "RNA-Seq",
+                sample_type=="Tumor") %>%
+  dplyr::filter(composition != "Derived Cell Line")%>%
+  group_by(Kids_First_Participant_ID) %>%
+  # collapse the tumor_descriptors per Kids_First_Participant_ID
+  summarise( 
+         descriptors = paste(sort(unique(tumor_descriptor)),  collapse = ", ")
+  ) %>% 
+  group_by(descriptors) %>% 
+  tally() %>%
+  flextable::regulartable()
+
+```
+We have instances of multiple samples per Kids_First_Participant_ID so will use the independent selected sample list from `independent-samples` module.
+
+## Select independent samples 
+```{r}
 # Select independent sample set
 # Include primary tumors when available, if not select other tumor_descriptor types
 independentsamples <- read_tsv(file.path(
@@ -94,19 +117,24 @@ brain_goi <- read_tsv("input/brain-goi-list-new.txt",col_names = "Hugo_Symbol") 
 	dplyr::mutate(type="brain-goi")
 
 gene_table <- bind_rows(gene_table,
-			brain_goi)
+			brain_goi) %>%
+  group_by(Hugo_Symbol) %>%
+  summarise(type=toString(unique(type)))
 
 ```
 
 ## Summarise calls per site in Tumor_Sample_Barcode for brain GOI only 
 ```{r}
 summarise_sites <- combined_maf_subsets %>%
+  # get gene annotation from gene reference
     left_join(gene_table,by="Hugo_Symbol") %>%
+  # check if gnomad_AF is > 0.001 
   mutate(gnomad_AF_common = gnomAD_AF>0.001 & !is.na(gnomAD_AF)) %>%
   group_by(Chromosome,Start_Position,End_Position,
            Amino_Acid_Position,Hugo_Symbol,
            Tumor_Sample_Barcode) %>%
-  summarise(type=toString(unique(type)),
+  # summarise the following columns per genomic site 
+  summarise( type = toString(type),
             gnomad_AF_common = any(gnomad_AF_common),
             VAF = mean(VAF),
             dbSNP_RS = toString(unique(dbSNP_RS)),
@@ -115,13 +143,17 @@ summarise_sites <- combined_maf_subsets %>%
             Tumor_Seq_Allele2=toString(unique(Tumor_Seq_Allele2)),
             HGVSp_Short=toString(unique(HGVSp_Short)),
             Variant_Type=toString(unique(Variant_Type))) %>%
+  # annotate if amino acid position is available in MSKCC hotspot
 	left_join(hotspot_database,by=c("Amino_Acid_Position","Hugo_Symbol")) %>%
+  # annotate if gene is in Cosmic Census gene
   mutate(hotspot_database = case_when(
     grepl("Cosmic",type) & !is.na(hotspot_database) ~ paste0(hotspot_database,",Cosmic"),
     grepl("Cosmic",type) & is.na(hotspot_database) ~ "Cosmic",
     TRUE ~ hotspot_database
   )) %>%
+  # filter only brain-goi
   dplyr::filter( grepl("brain-goi",type)) %>%
+  # select independent samples only 
   dplyr::filter(Tumor_Sample_Barcode %in% independentsamples)
   
 
@@ -219,7 +251,7 @@ plotTiTv(res = uniq.titv)
 # which we didn't considere as a column to count recurrence on.
 # So the values here maybe difference compared to what we find
 # in calls_recurrence
-plotVaf(uniqhitsmaf,vafCol = "VAF")
+plotVaf(uniqhitsmaf,vafCol = "VAF",genes = uniqhitsGenes)
 
 
 ```
