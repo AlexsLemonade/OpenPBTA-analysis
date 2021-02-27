@@ -64,6 +64,7 @@ make_plot = function(tb, data_t, report_name, context_name){
 
 # join batch information with gene expression and filter NA's
 tibble_combat_prep = function(df, gene_id, id_batch_histology){
+  
   # clean the data (see clean comments)
   data_t = clean(df, gene_id)
   
@@ -158,23 +159,30 @@ make_before_and_after_combat_plots = function(data_t, batch, report_name, run_co
     return()
   }
   
-  # filter out genes without variance
-  var_zero_genes = poly1matrix[which((apply(poly1matrix, 1, var)==0)),]
-  poly1matrix = poly1matrix[which((apply(poly1matrix, 1, var)>0)),]
-  print(sum(var_zero_genes))
+  plot_list = tryCatch({
+    # filter out genes without variance
+    var_zero_genes = poly1matrix[which((apply(poly1matrix, 1, var)==0)),]
+    poly1matrix = poly1matrix[which((apply(poly1matrix, 1, var)>0)),]
+    print(sum(var_zero_genes))
+    
+    poly2matrix <- log2(poly1matrix + 1)
+    
+    
+    combat_matrix = ComBat(dat=poly2matrix, batch=batch)
+    
+    pca = prcomp(t(combat_matrix))
+    
+    tb = as_tibble(pca$x)
+    
+    p2 = make_plot(tb, data_t, report_name, "batch-adjusted-histology.png")
+    return(list(p1, p2, data_t))
+  }, error=function(cond){
+    message("ComBat failed! It's likely that you are trying to adjust for batches with just 1 batch")
+    # message(cond)
+    return(list(p1, NULL, data_t))
+  })
   
-  poly2matrix <- log2(poly1matrix + 1)
-  
-  
-  combat_matrix = ComBat(dat=poly2matrix, batch=batch)
-  
-  pca = prcomp(t(combat_matrix))
-  
-  tb = as_tibble(pca$x)
-  
-  p2 = make_plot(tb, data_t, report_name, "batch-adjusted-histology.png")
-  
-  return(list(p1, p2))
+  return(plot_list)
   
 }
 
@@ -347,7 +355,7 @@ make_histology_pca_plots_methods = function(df_polya, df_stranded, id_histology,
   print("DATA IS READY") 
   
   #Make before and after PCA plots
-  make_before_and_after_combat_plots(data_t, batch, report_name, run_combat)
+  return(make_before_and_after_combat_plots(data_t, batch, report_name, run_combat))
   
 }
 

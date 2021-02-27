@@ -51,12 +51,12 @@ print("DATA IS GROUPED")
 id_batch_histology = make_id_batch_histology(covariate, "cohort")
 
 # Run batchQC and combat. This will run batchQC before and after running combat. It will also perform join operations between id_batch_histology and our gene expression files 
-make_histology_pca_plots(dat_rsem_polya, id_batch_histology, gene_id = dat_rsem_polya$gene_id, report_name = "rsem_poly_cohort","pbta-gene-expression-rsem-tpm-combat-seq-center.polya.rds")
+make_histology_pca_plots(dat_rsem_polya, id_batch_histology, gene_id = dat_rsem_polya$gene_id, report_name = "rsem_poly_cohort","pbta-gene-expression-rsem-tpm-combat-cohort.polya.rds")
 
 # commenting out because there's only 1 cohort in stranded data sets
-make_histology_pca_plots(dat_rsem_stranded, id_batch_histology, gene_id = dat_rsem_stranded$gene_id, report_name = "rsem_stranded_sequence", "pbta-gene-expression-rsem-tpm-combat-seq-center.stranded.rds", FALSE)
-make_histology_pca_plots(dat_kallisto_polya, id_batch_histology, gene_id = dat_kallisto_polya$gene_id, report_name = "kallisto_polya_cohort", "pbta-gene-expression-kallisto-combat-seq-center.polya.rds")
+make_histology_pca_plots(dat_rsem_stranded, id_batch_histology, gene_id = dat_rsem_stranded$gene_id, report_name = "rsem_stranded_sequence", "pbta-gene-expression-rsem-tpm-combat-cohort.stranded.rds", FALSE)
+make_histology_pca_plots(dat_kallisto_polya, id_batch_histology, gene_id = dat_kallisto_polya$gene_id, report_name = "kallisto_polya_cohort", "pbta-gene-expression-kallisto-combat-cohort.polya.rds")
 
 # commenting out because there's only 1 cohort in stranded data sets
-make_histology_pca_plots(dat_kallisto_stranded, id_batch_histology, gene_id = dat_kallisto_stranded$gene_id, report_name = "kallisto_stranded_sequence", "pbta-gene-expression-kallisto-combat-seq-center.stranded.rds", FALSE)
+make_histology_pca_plots(dat_kallisto_stranded, id_batch_histology, gene_id = dat_kallisto_stranded$gene_id, report_name = "kallisto_stranded_sequence", "pbta-gene-expression-kallisto-combat-cohort.stranded.rds", FALSE)
 
