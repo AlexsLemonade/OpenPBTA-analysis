@@ -36,6 +36,10 @@ RUN pip3 install "setuptools==46.3.0" "six==1.14.0" "wheel==0.34.2"
 RUN apt-get -y --no-install-recommends install \
    default-jdk
 
+# Install fftw which needed for batch effects analysis
+RUN apt-get -y --no-install-recommends install \
+   libfftw3-dev
+
 # Standalone tools and libraries
 ################################
 
@@ -90,6 +94,16 @@ RUN ./install_bioc.r \
     survival \
     viridis 
 
+# Packages required for batch effects analysis
+RUN ./install_bioc.r \
+    fftwtools \
+    heatmaps \
+    BatchQC \
+    tibble \
+    tidyr \
+    ggplot2 \
+    readr \
+    dplyr
 
 # Required for interactive sample distribution plots
 # map view is needed to create HTML outputs of the interactive plots
