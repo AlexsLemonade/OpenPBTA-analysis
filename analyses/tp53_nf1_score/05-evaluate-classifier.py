@@ -74,19 +74,16 @@ clinical_df = clinical_df[
 ]
 
 # Obtain a binary status matrix
-full_status_df['tp53_status']= full_status_df.apply(
-    lambda x: (1
-               # IF
-               # both SNV/CNV counts are more than 1 so can be considered as a TP53 double hit
-               if (x['SNV_indel_counts'] !=0 and x['CNV_loss_counts'] != 0 or
-                   # SNV == 1 and cancer_predisposition == Li-Fraumeni syndrome
-                   (x['SNV_indel_counts'] == 1 and (x['cancer_predispositions'] == "Li-Fraumeni syndrome")) or
-                   # SNV == 1 and cancer_predisposition == Li-Fraumeni syndrome
-                   (x['CNV_loss_counts'] == 1 and (x['cancer_predispositions'] == "Li-Fraumeni syndrome")) or
-                   # SNV count is more than 1 so consider it as a double hit  
-                   (x['SNV_indel_counts'] >1))
-               # ELSE
-               else 0), axis=1)
+# Obtain a binary status matrix
+for idx, val in enumerate(full_status_df.itertuples()):
+    # if both SNV/CNV counts are 1 or more than 1 this sample can be considered as a TP53 double hit
+    # if SNV or CNV has 1 hit with Li-Fraumeni syndrome cancer predisposition can be considered as double hit
+    # if SNV has more than 1 hit sample can be considered as double hit
+    if full_status_df.loc[idx, 'SNV_indel_counts'] >= 1 and full_status_df.loc[idx,'CNV_loss_counts'] >= 1 or full_status_df.loc[idx,'SNV_indel_counts'] == 1 and (full_status_df.loc[idx,'cancer_predispositions'] == "Li-Fraumeni syndrome") or full_status_df.loc[idx,'CNV_loss_counts'] == 1 and (full_status_df.loc[idx,'cancer_predispositions'] == "Li-Fraumeni syndrome") or full_status_df.loc[idx,'SNV_indel_counts'] >1:
+        full_status_df.loc[idx,'tp53_status']=1
+    else:
+        full_status_df.loc[idx,'tp53_status']=0
+
 
 
 print("drop tp53_score columns from tp53 annotation file")
