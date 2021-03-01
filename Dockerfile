@@ -103,7 +103,8 @@ RUN ./install_bioc.r \
     tidyr \
     ggplot2 \
     readr \
-    dplyr
+    dplyr \
+    forcats
 
 # Required for interactive sample distribution plots
 # map view is needed to create HTML outputs of the interactive plots
