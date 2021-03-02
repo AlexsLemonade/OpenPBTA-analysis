@@ -145,7 +145,7 @@ So we will revise the `molecular_subtype`, `integrated_diagnosis`, `short_histol
 compiled_df <- compiled_df %>%
   mutate(
     integrated_diagnosis = case_when(
-      Kids_First_Participant_ID == "PT_7E3V3JFX" ~ "Ependymoma",
+      Kids_First_Participant_ID == "PT_7E3V3JFX" ~ "Ependymoma, H3 K28-mutant",
       TRUE ~ integrated_diagnosis
     ),
     short_histology = case_when(
@@ -203,7 +203,7 @@ There are no _BRAF_ fusions in `BS_H1XPVS9A`, so we are able to classify this sa
 compiled_df <- compiled_df %>%
   mutate(
     integrated_diagnosis = case_when(
-      sample_id == "7316-1106" ~ "Low-grade glioma/astrocytoma",
+      sample_id == "7316-1106" ~ "Low-grade glioma/astrocytoma, BRAF V600E",
       TRUE ~ integrated_diagnosis
     ),
     short_histology = case_when(
@@ -223,29 +223,6 @@ compiled_df <- compiled_df %>%
       TRUE ~ Notes
     )
   )
-```
-
-### HGG BRAF V600E
-
-We will be removing this from subtyping, so this can be left for now
-
-The follow point comes from another issue [#627 (comment)](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/627#issuecomment-598789232):
-
-> We have a standalone BRAF V600E subtype, but this is HGG only, and should be labeled as such (will create an update HGG analysis ticket).
-
-```{r}
-compiled_df %>%
-  filter(molecular_subtype == "BRAF V600E")
-```
-
-Now that we have addressed the one sample that should have been reclassified as LGG, we are able to update `molecular_subtype` to `HGG, BRAF V600E` for the remaining samples.
-
-```{r}
-compiled_df <- compiled_df %>%
-  mutate(molecular_subtype = case_when(
-    molecular_subtype == "BRAF V600E" ~ "HGG, BRAF V600E",
-    TRUE ~ molecular_subtype
-  ))
 ```
 
 ### `PT_AQWDQW27`
@@ -547,6 +524,17 @@ compiled_df <- compiled_df %>%
       TRUE ~ Notes
     )
   )
+```
+
+###Check list of subtypes look as expected at this point in time
+```{r}
+# sort first
+list_subtypes <- compiled_df %>%
+  filter(!grepl("To be classified", molecular_subtype)) %>%
+  select(integrated_diagnosis, molecular_subtype) %>%
+  distinct() %>%
+  arrange(integrated_diagnosis)
+list_subtypes
 ```
 
 ### Write revised table to file
