@@ -47,6 +47,15 @@ if (!!window.navigator.userAgent.match("MSIE 8")) {
 !function(a){"use strict";a.matchMedia=a.matchMedia||function(a){var b,c=a.documentElement,d=c.firstElementChild||c.firstChild,e=a.createElement("body"),f=a.createElement("div");return f.id="mq-test-1",f.style.cssText="position:absolute;top:-100em",e.style.background="none",e.appendChild(f),function(a){return f.innerHTML='&shy;<style media="'+a+'"> #mq-test-1 { width: 42px; }</style>',c.insertBefore(e,d),b=42===f.offsetWidth,c.removeChild(e),{matches:b,media:a}}}(a.document)}(this),function(a){"use strict";function b(){u(!0)}var c={};a.respond=c,c.update=function(){};var d=[],e=function(){var b=!1;try{b=new a.XMLHttpRequest}catch(c){b=new a.ActiveXObject("Microsoft.XMLHTTP")}return function(){return b}}(),f=function(a,b){var c=e();c&&(c.open("GET",a,!0),c.onreadystatechange=function(){4!==c.readyState||200!==c.status&&304!==c.status||b(c.responseText)},4!==c.readyState&&c.send(null))};if(c.ajax=f,c.queue=d,c.regex={media:/@media[^\{]+\{([^\{\}]*\{[^\}\{]*\})+/gi,keyframes:/@(?:\-(?:o|moz|webkit)\-)?keyframes[^\{]+\{(?:[^\{\}]*\{[^\}\{]*\})+[^\}]*\}/gi,urls:/(url\()['"]?([^\/\)'"][^:\)'"]+)['"]?(\))/g,findStyles:/@media *([^\{]+)\{([\S\s]+?)$/,only:/(only\s+)?([a-zA-Z]+)\s?/,minw:/\([\s]*min\-width\s*:[\s]*([\s]*[0-9\.]+)(px|em)[\s]*\)/,maxw:/\([\s]*max\-width\s*:[\s]*([\s]*[0-9\.]+)(px|em)[\s]*\)/},c.mediaQueriesSupported=a.matchMedia&&null!==a.matchMedia("only all")&&a.matchMedia("only all").matches,!c.mediaQueriesSupported){var g,h,i,j=a.document,k=j.documentElement,l=[],m=[],n=[],o={},p=30,q=j.getElementsByTagName("head")[0]||k,r=j.getElementsByTagName("base")[0],s=q.getElementsByTagName("link"),t=function(){var a,b=j.createElement("div"),c=j.body,d=k.style.fontSize,e=c&&c.style.fontSize,f=!1;return b.style.cssText="position:absolute;font-size:1em;width:1em",c||(c=f=j.createElement("body"),c.style.background="none"),k.style.fontSize="100%",c.style.fontSize="100%",c.appendChild(b),f&&k.insertBefore(c,k.firstChild),a=b.offsetWidth,f?k.removeChild(c):c.removeChild(b),k.style.fontSize=d,e&&(c.style.fontSize=e),a=i=parseFloat(a)},u=function(b){var c="clientWidth",d=k[c],e="CSS1Compat"===j.compatMode&&d||j.body[c]||d,f={},o=s[s.length-1],r=(new Date).getTime();if(b&&g&&p>r-g)return a.clearTimeout(h),h=a.setTimeout(u,p),void 0;g=r;for(var v in l)if(l.hasOwnProperty(v)){var w=l[v],x=w.minw,y=w.maxw,z=null===x,A=null===y,B="em";x&&(x=parseFloat(x)*(x.indexOf(B)>-1?i||t():1)),y&&(y=parseFloat(y)*(y.indexOf(B)>-1?i||t():1)),w.hasquery&&(z&&A||!(z||e>=x)||!(A||y>=e))||(f[w.media]||(f[w.media]=[]),f[w.media].push(m[w.rules]))}for(var C in n)n.hasOwnProperty(C)&&n[C]&&n[C].parentNode===q&&q.removeChild(n[C]);n.length=0;for(var D in f)if(f.hasOwnProperty(D)){var E=j.createElement("style"),F=f[D].join("\n");E.type="text/css",E.media=D,q.insertBefore(E,o.nextSibling),E.styleSheet?E.styleSheet.cssText=F:E.appendChild(j.createTextNode(F)),n.push(E)}},v=function(a,b,d){var e=a.replace(c.regex.keyframes,"").match(c.regex.media),f=e&&e.length||0;b=b.substring(0,b.lastIndexOf("/"));var g=function(a){return a.replace(c.regex.urls,"$1"+b+"$2$3")},h=!f&&d;b.length&&(b+="/"),h&&(f=1);for(var i=0;f>i;i++){var j,k,n,o;h?(j=d,m.push(g(a))):(j=e[i].match(c.regex.findStyles)&&RegExp.$1,m.push(RegExp.$2&&g(RegExp.$2))),n=j.split(","),o=n.length;for(var p=0;o>p;p++)k=n[p],l.push({media:k.split("(")[0].match(c.regex.only)&&RegExp.$2||"all",rules:m.length-1,hasquery:k.indexOf("(")>-1,minw:k.match(c.regex.minw)&&parseFloat(RegExp.$1)+(RegExp.$2||""),maxw:k.match(c.regex.maxw)&&parseFloat(RegExp.$1)+(RegExp.$2||"")})}u()},w=function(){if(d.length){var b=d.shift();f(b.href,function(c){v(c,b.href,b.media),o[b.href]=!0,a.setTimeout(function(){w()},0)})}},x=function(){for(var b=0;b<s.length;b++){var c=s[b],e=c.href,f=c.media,g=c.rel&&"stylesheet"===c.rel.toLowerCase();e&&g&&!o[e]&&(c.styleSheet&&c.styleSheet.rawCssText?(v(c.styleSheet.rawCssText,e,f),o[e]=!0):(!/^([a-zA-Z:]*\/\/)/.test(e)&&!r||e.replace(RegExp.$1,"").split("/")[0]===a.location.host)&&("//"===e.substring(0,2)&&(e=a.location.protocol+e),d.push({href:e,media:f})))}w()};x(),c.update=x,c.getEmValue=t,a.addEventListener?a.addEventListener("resize",b,!1):a.attachEvent&&a.attachEvent("onresize",b)}}(this);
 };
 </script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <style type="text/css">.pagedtable {
 overflow: auto;
 padding-left: 8px;
@@ -1567,7 +1576,7 @@ float: none;
         self._setEventHandlers();
 
         // Binding to the Window load event to make sure the correct scrollTop is calculated
-        $(window).load(function() {
+        $(window).on("load", function() {
 
           // Sets the active TOC item
           self._setActiveElement(true);
@@ -2559,7 +2568,7 @@ window.initializeCodeFolding = function(show) {
     // create a collapsable div to wrap the code in
     var div = $('<div class="collapse r-code-collapse"></div>');
     var showThis = (show || $(this).hasClass('fold-show')) && !$(this).hasClass('fold-hide');
-    if (showThis) div.addClass('in');
+    if (showThis) div.collapse('show');
     var id = 'rcode-643E0F36' + currentIndex++;
     div.attr('id', id);
     $(this).before(div);
@@ -2567,7 +2576,7 @@ window.initializeCodeFolding = function(show) {
 
     // add a show code button right above
     var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Code') + '</span>');
-    var showCodeButton = $('<button type="button" class="btn btn-default btn-xs code-folding-btn pull-right"></button>');
+    var showCodeButton = $('<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm code-folding-btn pull-right float-right"></button>');
     showCodeButton.append(showCodeText);
     showCodeButton
         .attr('data-toggle', 'collapse')
@@ -2635,11 +2644,6 @@ color: rgb(3, 106, 7);
     </style>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -2653,30 +2657,6 @@ if (window.hljs) {
 
 
 <style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
 #rmd-source-code {
   display: none;
 }
@@ -2692,10 +2672,6 @@ h6 {
   margin-left: auto;
   margin-right: auto;
 }
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
 img {
   max-width:100%;
 }
@@ -2710,6 +2686,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+pre code {
+  padding: 0;
 }
 </style>
 
@@ -2747,7 +2726,6 @@ summary {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -2876,22 +2854,22 @@ div.tocify {
 
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row-fluid">
-<div class="col-xs-12 col-sm-4 col-md-3">
+<div class="row">
+<div class="col-sm-12 col-md-4 col-lg-3">
 <div id="TOC" class="tocify">
 </div>
 </div>
 
-<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+<div class="toc-content col-sm-12 col-md-8 col-lg-9">
 
 
 
 
-<div class="fluid-row" id="header">
+<div id="header">
 
-<div class="btn-group pull-right">
-<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu" style="min-width: 50px;">
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
 <li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
 <li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
 <li role="separator" class="divider"></li>
@@ -3123,9 +3101,9 @@ results_dir &lt;- &quot;results&quot;</code></pre>
 clinical &lt;- readr::read_tsv(file.path(data_dir,
                                 &quot;pbta-histologies-base.tsv&quot;)) </code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiXG7ilIDilIAgQ29sdW1uIHNwZWNpZmljYXRpb24g4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSAXG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBjb2xfbG9naWNhbCgpLFxuICBOb3RlcyA9IGNvbF9sb2dpY2FsKCksXG4gIE9TX2RheXMgPSBjb2xfZG91YmxlKCksXG4gIGFnZV9sYXN0X3VwZGF0ZV9kYXlzID0gY29sX2RvdWJsZSgpLFxuICBtb2xlY3VsYXJfc3VidHlwZSA9IGNvbF9sb2dpY2FsKCksXG4gIG5vcm1hbF9mcmFjdGlvbiA9IGNvbF9kb3VibGUoKSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBjb2xfZG91YmxlKCksXG4gIHR1bW9yX3Bsb2lkeSA9IGNvbF9kb3VibGUoKVxuKVxu4oS5IFVzZSBgc3BlYygpYCBmb3IgdGhlIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuIn0= -->
+<!-- rnb-message-begin eyJkYXRhIjoiXG7ilIDilIAgQ29sdW1uIHNwZWNpZmljYXRpb24g4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSAXG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBjb2xfbG9naWNhbCgpLFxuICBOb3RlcyA9IGNvbF9sb2dpY2FsKCksXG4gIE9TX2RheXMgPSBjb2xfZG91YmxlKCksXG4gIGFnZV9sYXN0X3VwZGF0ZV9kYXlzID0gY29sX2RvdWJsZSgpLFxuICBtb2xlY3VsYXJfc3VidHlwZSA9IGNvbF9sb2dpY2FsKCksXG4gIG5vcm1hbF9mcmFjdGlvbiA9IGNvbF9kb3VibGUoKSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBjb2xfZG91YmxlKCksXG4gIHR1bW9yX3Bsb2lkeSA9IGNvbF9kb3VibGUoKVxuKVxu4oS5IFVzZSBgc3BlYygpYCBmb3IgdGhlIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuIn0= -->
 <pre><code>
-── Column specification ───────────────────────────────────────────────────────────────────────────────────────────────
+── Column specification ────────────────────────────────────────────────────────
 cols(
   .default = col_character(),
   integrated_diagnosis = col_logical(),
@@ -3146,14 +3124,14 @@ cols(
 <!-- rnb-source-begin eyJkYXRhIjoibGlicmFyeShcInRpZHl2ZXJzZVwiKSJ9 -->
 <pre class="r"><code>library(&quot;tidyverse&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIEF0dGFjaGluZyBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDEuMy4wIOKUgOKUgFxuIn0= -->
-<pre><code>── Attaching packages ────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIEF0dGFjaGluZyBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDEuMy4wIOKUgOKUgFxuIn0= -->
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
 <!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoi4pyUIGdncGxvdDIgMy4zLjIgICAgIOKclCBwdXJyciAgIDAuMy40XG7inJQgdGliYmxlICAzLjAuNCAgICAg4pyUIGRwbHlyICAgMS4wLjJcbuKclCB0aWR5ciAgIDEuMS4yICAgICDinJQgc3RyaW5nciAxLjQuMFxu4pyUIHJlYWRyICAgMS40LjAgICAgIOKclCBmb3JjYXRzIDAuNS4wXG4ifQ== -->
-<pre><code>✔ ggplot2 3.3.2     ✔ purrr   0.3.4
-✔ tibble  3.0.4     ✔ dplyr   1.0.2
+<!-- rnb-message-begin eyJkYXRhIjoi4pyUIGdncGxvdDIgMy4zLjMgICAgIOKclCBwdXJyciAgIDAuMy40XG7inJQgdGliYmxlICAzLjAuNiAgICAg4pyUIGRwbHlyICAgMS4wLjRcbuKclCB0aWR5ciAgIDEuMS4yICAgICDinJQgc3RyaW5nciAxLjQuMFxu4pyUIHJlYWRyICAgMS40LjAgICAgIOKclCBmb3JjYXRzIDAuNS4xXG4ifQ== -->
+<pre><code>✔ ggplot2 3.3.3     ✔ purrr   0.3.4
+✔ tibble  3.0.6     ✔ dplyr   1.0.4
 ✔ tidyr   1.1.2     ✔ stringr 1.4.0
-✔ readr   1.4.0     ✔ forcats 0.5.0</code></pre>
+✔ readr   1.4.0     ✔ forcats 0.5.1</code></pre>
 <!-- rnb-message-end -->
 <!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZzogcGFja2FnZSAnZ2dwbG90Micgd2FzIGJ1aWx0IHVuZGVyIFIgdmVyc2lvbiAzLjYuMlxuIn0= -->
 <pre><code>Warning: package &#39;ggplot2&#39; was built under R version 3.6.2</code></pre>
@@ -3173,8 +3151,11 @@ cols(
 <!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZzogcGFja2FnZSAnZHBseXInIHdhcyBidWlsdCB1bmRlciBSIHZlcnNpb24gMy42LjJcbiJ9 -->
 <pre><code>Warning: package &#39;dplyr&#39; was built under R version 3.6.2</code></pre>
 <!-- rnb-warning-end -->
-<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIENvbmZsaWN0cyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlX2NvbmZsaWN0cygpIOKUgOKUgFxu4pyWIGRwbHlyOjpmaWx0ZXIoKSBtYXNrcyBzdGF0czo6ZmlsdGVyKClcbuKcliBkcGx5cjo6bGFnKCkgICAgbWFza3Mgc3RhdHM6OmxhZygpXG4ifQ== -->
-<pre><code>── Conflicts ───────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZzogcGFja2FnZSAnZm9yY2F0cycgd2FzIGJ1aWx0IHVuZGVyIFIgdmVyc2lvbiAzLjYuMlxuIn0= -->
+<pre><code>Warning: package &#39;forcats&#39; was built under R version 3.6.2</code></pre>
+<!-- rnb-warning-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIENvbmZsaWN0cyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlX2NvbmZsaWN0cygpIOKUgOKUgFxu4pyWIGRwbHlyOjpmaWx0ZXIoKSBtYXNrcyBzdGF0czo6ZmlsdGVyKClcbuKcliBkcGx5cjo6bGFnKCkgICAgbWFza3Mgc3RhdHM6OmxhZygpXG4ifQ== -->
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <!-- rnb-message-end -->
@@ -3186,9 +3167,9 @@ pnoc003_review &lt;- readr::read_tsv(file.path(&quot;input&quot;,&quot;pnoc003-c
   # to over write this
   dplyr::filter(`H3 Status` != &quot;no report&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiXG7ilIDilIAgQ29sdW1uIHNwZWNpZmljYXRpb24g4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSAXG5jb2xzKFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBgSDMgU3RhdHVzYCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgdHVtb3JfZGVzY3JpcHRvciA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuIn0= -->
+<!-- rnb-message-begin eyJkYXRhIjoiXG7ilIDilIAgQ29sdW1uIHNwZWNpZmljYXRpb24g4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSAXG5jb2xzKFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBgSDMgU3RhdHVzYCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgdHVtb3JfZGVzY3JpcHRvciA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuIn0= -->
 <pre><code>
-── Column specification ───────────────────────────────────────────────────────────────────────────────────────────────
+── Column specification ────────────────────────────────────────────────────────
 cols(
   Kids_First_Participant_ID = col_character(),
   `H3 Status` = col_character(),
@@ -3206,9 +3187,9 @@ subtype &lt;- readr::read_tsv(file.path(results_dir,
                         &quot;tumor_descriptor&quot;)],by=c(&quot;Kids_First_Biospecimen_ID&quot;,
                                        &quot;Kids_First_Participant_ID&quot;)) </code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiXG7ilIDilIAgQ29sdW1uIHNwZWNpZmljYXRpb24g4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSAXG5jb2xzKFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBzYW1wbGVfaWQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIG1vbGVjdWxhcl9zdWJ0eXBlID0gY29sX2NoYXJhY3RlcigpLFxuICBpbnRlZ3JhdGVkX2RpYWdub3NpcyA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgc2hvcnRfaGlzdG9sb2d5ID0gY29sX2NoYXJhY3RlcigpLFxuICBicm9hZF9oaXN0b2xvZ3kgPSBjb2xfY2hhcmFjdGVyKCksXG4gIE5vdGVzID0gY29sX2NoYXJhY3RlcigpXG4pXG4ifQ== -->
+<!-- rnb-message-begin eyJkYXRhIjoiXG7ilIDilIAgQ29sdW1uIHNwZWNpZmljYXRpb24g4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSAXG5jb2xzKFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBzYW1wbGVfaWQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIG1vbGVjdWxhcl9zdWJ0eXBlID0gY29sX2NoYXJhY3RlcigpLFxuICBpbnRlZ3JhdGVkX2RpYWdub3NpcyA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgc2hvcnRfaGlzdG9sb2d5ID0gY29sX2NoYXJhY3RlcigpLFxuICBicm9hZF9oaXN0b2xvZ3kgPSBjb2xfY2hhcmFjdGVyKCksXG4gIE5vdGVzID0gY29sX2NoYXJhY3RlcigpXG4pXG4ifQ== -->
 <pre><code>
-── Column specification ───────────────────────────────────────────────────────────────────────────────────────────────
+── Column specification ────────────────────────────────────────────────────────
 cols(
   Kids_First_Participant_ID = col_character(),
   sample_id = col_character(),
@@ -3260,7 +3241,7 @@ diff_subtype</code></pre>
 <!-- rnb-source-end -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["H3 Status"],"name":[3],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[4],"type":["chr"],"align":["left"]},{"label":["tumor_descriptor"],"name":[5],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_NK8A49X5","2":"A08692","3":"H3F3A K28M","4":"HGG, H3 wildtype","5":"Initial CNS Tumor"},{"1":"PT_QA9WJ679","2":"A08768","3":"H3F3A K28M","4":"HGG, H3 wildtype","5":"Initial CNS Tumor"},{"1":"PT_RYMG3M91","2":"7316-5812","3":"H3F3A K28M","4":"HGG, To be classified","5":"Initial CNS Tumor"},{"1":"PT_W5GP3F6B","2":"7316-5003","3":"H3F3A K28M","4":"HGG, To be classified","5":"Initial CNS Tumor"},{"1":"PT_WGVEF96B","2":"A08958","3":"H3F3A K28M","4":"HGG, H3 wildtype","5":"Initial CNS Tumor"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["H3 Status"],"name":[3],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[4],"type":["chr"],"align":["left"]},{"label":["tumor_descriptor"],"name":[5],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_NK8A49X5","2":"A08692","3":"H3F3A K28M","4":"HGG, H3 wildtype","5":"Initial CNS Tumor"},{"1":"PT_QA9WJ679","2":"A08768","3":"H3F3A K28M","4":"HGG, H3 wildtype, TP53 loss","5":"Initial CNS Tumor"},{"1":"PT_RYMG3M91","2":"7316-5812","3":"H3F3A K28M","4":"HGG, To be classified","5":"Initial CNS Tumor"},{"1":"PT_W5GP3F6B","2":"7316-5003","3":"H3F3A K28M","4":"HGG, To be classified","5":"Initial CNS Tumor"},{"1":"PT_WGVEF96B","2":"A08958","3":"H3F3A K28M","4":"HGG, H3 wildtype, TP53 activated","5":"Initial CNS Tumor"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <!-- rnb-chunk-end -->
@@ -3275,7 +3256,7 @@ diff_subtype</code></pre>
 <!-- rnb-source-end -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["H3 Status"],"name":[1],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[2],"type":["chr"],"align":["left"]},{"label":["n"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"H3F3A K28M","2":"HGG, H3 wildtype","3":"3"},{"1":"H3F3A K28M","2":"HGG, To be classified","3":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["H3 Status"],"name":[1],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[2],"type":["chr"],"align":["left"]},{"label":["n"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"H3F3A K28M","2":"HGG, H3 wildtype","3":"1"},{"1":"H3F3A K28M","2":"HGG, H3 wildtype, TP53 activated","3":"1"},{"1":"H3F3A K28M","2":"HGG, H3 wildtype, TP53 loss","3":"1"},{"1":"H3F3A K28M","2":"HGG, To be classified","3":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <!-- rnb-chunk-end -->
@@ -3391,7 +3372,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
+    $(this).parent().toggleClass('nav-tabs-open');
   });
 });
 </script>
