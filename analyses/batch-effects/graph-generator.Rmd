@@ -1,17 +1,19 @@
 # Batch Effects Graphs Description
 
 This markdown file also exists as a jupyter notebook file for a cleaner version.
-
-```jupyter nbconvert --template=collapsible_headings --to html_ch "graph-generator.ipynb"```
-
 # Library Import & Data Download
 
 #### Import the necessary libararies 
 
 
 ```{R}
-library(tidyverse)
+library(tibble)
+library(tidyr)
+library(ggplot2)
+library(readr)
+library(dplyr)
 library(BatchQC)
+library(forcats)
 library(sva)
 library(rprojroot)
 ```
@@ -133,7 +135,6 @@ my_rsem_polya_plots[2]
 my_rsem_stranded_plots = make_histology_pca_plots(dat_rsem_stranded, id_batch_histology, gene_id = dat_rsem_stranded$gene_id, report_name = "rsem_stranded_sequence", "pbta-gene-expression-rsem-tpm-combat-seq-center.stranded.rds")
 ```
 
-
 ##### Graph before adjusting for batch effects
 
 
@@ -151,7 +152,6 @@ my_rsem_stranded_plots[1]
 ```{R}
 my_rsem_stranded_plots[2]
 ```
-
 
 - No significant changes made to histologies, Batch one doesn't focus as much on the top right quadrant. This batch correction may not be necessary though.
 
@@ -172,7 +172,6 @@ my_kallisto_polya_plots = make_histology_pca_plots(dat_kallisto_polya, id_batch_
 ```{R}
 my_kallisto_polya_plots[1]
 ```
-
 
 - File = "pbta-gene-expression-kallisto.polya.rds"
 - Batch = sequence center
@@ -196,7 +195,6 @@ my_kallisto_polya_plots[2]
 my_kallisto_standed_plots = make_histology_pca_plots(dat_kallisto_stranded, id_batch_histology, gene_id = dat_kallisto_stranded$gene_id, report_name = "kallisto_stranded_sequence", "pbta-gene-expression-kallisto-combat-seq-center.stranded.rds")
 ```
 
- 
 ##### Graph before adjusting for batch effects
 
 
@@ -240,14 +238,12 @@ my_rsem_polya_plots = make_histology_pca_plots(dat_rsem_polya,
                                                "pbta-gene-expression-rsem-tpm-combat-cohort.polya.rds")
 ```
 
-
 ##### Graph before adjusting for batch effects
 
 
 ```{R}
 my_rsem_polya_plots[1]
 ```
-
 
 - File = "pbta-gene-expression-rsem-tpm.polya.rds"
 - Batch = sequence center
@@ -261,7 +257,6 @@ my_rsem_polya_plots[1]
 my_rsem_polya_plots[2]
 ```
 
-
 - Batch Effects no longer present
 
 
@@ -271,10 +266,9 @@ my_rsem_polya_plots[2]
 
 
 ```{R}
-my_rsem_stranded_plots_temp = make_histology_pca_plots(dat_rsem_stranded, id_batch_histology, gene_id = dat_rsem_stranded$gene_id, report_name = "rsem_stranded_sequence", "pbta-gene-expression-rsem-tpm-combat-seq-center.stranded.rds")
+my_rsem_stranded_plots_temp = make_histology_pca_plots(dat_rsem_stranded, id_batch_histology, gene_id = dat_rsem_stranded$gene_id, report_name = "rsem_stranded_cohort", "pbta-gene-expression-rsem-tpm-combat-cohort.stranded.rds")
 ```
 
- 
 ***NOTE***: because there is only one cohort batch in the file above, an error message should have popped up showing that ComBat failed to run
 
 ##### Graph before adjusting for batch effects
@@ -283,8 +277,6 @@ my_rsem_stranded_plots_temp = make_histology_pca_plots(dat_rsem_stranded, id_bat
 ```{R}
 my_rsem_stranded_plots_temp[1]
 ```
-
-
 
 - File = "pbta-gene-expression-rsem-tpm.stranded.rds"
 - Batch = Cohort
@@ -297,7 +289,6 @@ my_rsem_stranded_plots_temp[1]
 my_rsem_stranded_plots_temp[2]
 ```
 
-
 - No graph to show
 
 ### Part 2: ***Kallisto Files***
@@ -308,9 +299,8 @@ my_rsem_stranded_plots_temp[2]
 
 
 ```{R}
-my_kallisto_polya_plots = make_histology_pca_plots(dat_kallisto_polya, id_batch_histology, gene_id = dat_kallisto_polya$gene_id, report_name = "kallisto_polya_sequence", "pbta-gene-expression-kallisto-combat-seq-center.polya.rds")
+my_kallisto_polya_plots = make_histology_pca_plots(dat_kallisto_polya, id_batch_histology, gene_id = dat_kallisto_polya$gene_id, report_name = "kallisto_polya_cohort", "pbta-gene-expression-kallisto-combat-cohort.polya.rds")
 ```
-
 
 ##### Graph before adjusting for batch effects
 
@@ -318,8 +308,6 @@ my_kallisto_polya_plots = make_histology_pca_plots(dat_kallisto_polya, id_batch_
 ```{R}
 my_kallisto_polya_plots[1]
 ```
-
-
 
 - File = "pbta-gene-expression-kallisto.polya.rds"
 - Batch = cohort
@@ -333,7 +321,6 @@ my_kallisto_polya_plots[1]
 my_kallisto_polya_plots[2]
 ```
 
-
 - Batch correction seems unecessary for this file. The changes doesn't seem particularly useful.
 
 #### Part 2.2: Kallisto Stranded
@@ -342,10 +329,8 @@ my_kallisto_polya_plots[2]
 
 
 ```{R}
-my_kallisto_standed_plots = make_histology_pca_plots(dat_kallisto_stranded, id_batch_histology, gene_id = dat_kallisto_stranded$gene_id, report_name = "kallisto_stranded_sequence", "pbta-gene-expression-kallisto-combat-seq-center.stranded.rds")
+my_kallisto_standed_plots = make_histology_pca_plots(dat_kallisto_stranded, id_batch_histology, gene_id = dat_kallisto_stranded$gene_id, report_name = "kallisto_stranded_cohort", "pbta-gene-expression-kallisto-combat-cohort.stranded.rds")
 ```
-
-
 
 ##### Graph before adjusting for batch effects
 
@@ -363,7 +348,6 @@ my_kallisto_standed_plots[1]
 ```{R}
 my_kallisto_standed_plots[2]
 ```
-
 
 - There was only one batch so it doesn't make sense to adjust for batch effects
 
@@ -384,8 +368,6 @@ id_histology = as_tibble(id_histology)
 ```{R}
 my_rsem_plots = make_histology_pca_plots_methods(dat_rsem_polya, dat_rsem_stranded, id_histology, report_name = "rsem_method")
 ```
-
-
 
 ##### Graph before adjusting for batch effects
 
@@ -427,7 +409,6 @@ my_kallisto_plots = make_histology_pca_plots_methods(dat_kallisto_polya, dat_kal
 my_kallisto_plots[1]
 ```
 
-
 - Files = "pbta-gene-expression-kallisto-tpm.polya.rds", "pbta-gene-expression-kallisto-tpm.stranded.rds"
 - Batch = sequence center
 - Conclusion: There are batch effects. You can see that batch 1 groups around the top left corner while batch two groups in the bottom left corner
@@ -438,7 +419,6 @@ my_kallisto_plots[1]
 ```{R}
 my_kallisto_plots[2]
 ```
-
 
 - Batch Effects no longer present
 - You can still see the difference in histologies though. However, HGAT and LGAT show more overlap than they did previously
