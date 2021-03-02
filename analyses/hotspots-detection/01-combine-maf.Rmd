@@ -6,20 +6,24 @@ params:
     label: "all callers db"
     value: scratch/snv_db.sqlite
     input: file
-  gene_list :
-    label: gene table with gene type annotation 
-    value: ../fusion_filtering/references/genelistreference.txt 
+  cancer_hotspot_file:
+    label: "MSKCC cancer hotspot file"
+    value: input/hotspots_v2.xls
     input: file  
+  genomic_site_hotspot_file:
+    label: "Genomic locations to capture mutations as hotspots"
+    value: input/tert_promoter_hotspots.tsv
+    input: file
+    
 ---
 
 In this notebook we will combiine calls from each caller used in OpenPBTA snv
 
 Filtered by:
-
-- Variant_Classification == 'Missense_Mutation|Splice_Region|In_Frame_Del|Frame_Shift_Del|Splice_Site|Splice_Region|Nonsense_Mutation|Nonstop_Mutation|In_Frame_Ins|Frameshift_Ins',
-- IMPACT == 'HIGH|MODERATE'
-- Hugo_Symbol  == gene_list$Hugo_Symbol + brain_goi$Hugo_Symbol
-
+- IMPACT == 'HIGH|MODERATE|MODIFIER' to remove any LOW mutations in the given amino acid position in hotspot database
+- Hugo_Symbol  %in% c(hotspot_database_aa$Hugo_Symbol,hotspot_database_g$Hugo_Symbol)
+- Amino acid hotspot overlap ( using a dataframe of hotspots per gene and amino acid position)
+- TERT promoter region overlap (using a genomic region overlap filtering strategy )
 
 
 
@@ -30,6 +34,8 @@ library("maftools")
 
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
+mskcc_cancer_hotspot_file <- params$cancer_hotspot_file
+genomic_region_file <- params$genomic_site_hotspot_file
 
 results_dir <- file.path(root_dir,
                          "analyses",
@@ -42,26 +48,22 @@ if (!dir.exists(results_dir)) {
 
 ```
 
-## Gene table for filtering
+## Hotspot database for filtering
 ```{r}
-# generic cancer genes  of interest
-gene_table <- read_tsv(file.path("..",
-                                 "fusion_filtering",
-                                 "references",
-                                 "genelistreference.txt"))%>%
-  dplyr::rename(Hugo_Symbol=Gene_Symbol) %>%
-  dplyr::select(Hugo_Symbol,type)
+# Cancer database
+hotspot_database_2017_snv <- readxl::read_xls(mskcc_cancer_hotspot_file,sheet = 1) 
+hotspot_database_2017_indel <- readxl::read_xls(mskcc_cancer_hotspot_file,sheet = 2)
+hotspot_database_aa <- bind_rows( hotspot_database_2017_snv, hotspot_database_2017_indel) %>%
+  dplyr::select("Amino_Acid_Position","Hugo_Symbol") %>%
+  dplyr::mutate(hotspot_database="MSKCC") %>%
+  unique() %>%
+  as.data.frame()
 
-# genes of interest for brain tumors
-brain_goi <- read_tsv("input/brain-goi-list-new.txt",col_names = "Hugo_Symbol") %>%
-	dplyr::mutate(type="brain-goi")
-
-gene_table <- bind_rows(gene_table,
-			brain_goi)
+hotspot_database_g <- read_tsv(genomic_region_file)
 
 ```
 
-## Read database 
+## Read variant calls database 
 ```{r}
 
 db_file <- file.path(root_dir, params$db_file)
@@ -83,13 +85,27 @@ lancet <- dplyr::tbl(con, "lancet")
 ## Subset maf per caller
 ```{r}
 source ("utils/prepMaf.R")
-strelka_subset<-prepMaf(strelka, gene_table = gene_table) %>%
+
+gene_table <- data.frame("Hugo_Symbol"=c(hotspot_database_aa$Hugo_Symbol,hotspot_database_g$Hugo_Symbol))
+strelka_subset<-prepMaf(strelka, gene_table = gene_table,
+                        impact_values = "MODERATE|HIGH|MODIFIER",
+                        hotspot_amino_acid_position_df = hotspot_database_aa, 
+                        hotspot_genomic_site_df = hotspot_database_g) %>%
        mutate(caller="strelka")	
-mutect_subset<-prepMaf(mutect, gene_table = gene_table) %>%
+mutect_subset<-prepMaf(mutect, gene_table = gene_table,
+                       impact_values = "MODERATE|HIGH|MODIFIER",
+                       hotspot_amino_acid_position_df = hotspot_database_aa, 
+                       hotspot_genomic_site_df = hotspot_database_g) %>%
 	mutate(caller="mutect")
-vardict_subset<-prepMaf(vardict, gene_table = gene_table) %>%
+vardict_subset<-prepMaf(vardict, gene_table = gene_table,
+                        impact_values = "MODERATE|HIGH|MODIFIER",
+                        hotspot_amino_acid_position_df = hotspot_database_aa, 
+                        hotspot_genomic_site_df = hotspot_database_g) %>%
 	mutate(caller="vardict")
-lancet_subset<-prepMaf(lancet, gene_table = gene_table) %>%
+lancet_subset<-prepMaf(lancet, gene_table = gene_table,
+                       impact_values = "MODERATE|HIGH|MODIFIER",
+                       hotspot_amino_acid_position_df = hotspot_database_aa,
+                       hotspot_genomic_site_df = hotspot_database_g) %>%
 	mutate(caller="lancet")
 
 # combine
@@ -125,21 +141,15 @@ ONP: Oligo-nucleotide polymorphism -- a substitution in more than three consecut
 ```{r}
 getUpset(combined_maf_subsets,c("SNP","DNP","TNP","ONP"))
 ```
-Vardict uniquely support a lot of the filtered sites but interestingly majority of the subtitution mutations are supported by all callers
+Maority of hotspots is called by all 4 callers, mutect2 individually called maximum hotspots!
 
 INS: Insertion -- the addition of nucleotides
 DEL: Deletion -- the removal of nucleotides
 ```{r}
 getUpset(combined_maf_subsets,c("INS","DEL"))
 ```
-Vardict and Lancet uniquely support a lot of filtered indels
+Only 2 indels sites are captured with amino acids hotspot filtering which are called by all 4 callers.
 
-
-### VAF plot
-```{r}
-
-ggplot(combined_maf_subsets)+geom_violin(aes(x=caller,y=VAF,color=caller))+theme_bw()
-```
 
 
 ```{r}

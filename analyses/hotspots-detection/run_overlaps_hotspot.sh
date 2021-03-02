@@ -28,5 +28,5 @@ python3 ../snv-callers/scripts/01-setup_db.py \
 ################################################################################
 
 
-# find reccurence
+# find hotspot overlaps
 Rscript -e "rmarkdown::render('01-combine-snv.Rmd')"
