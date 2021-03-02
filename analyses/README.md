@@ -11,6 +11,7 @@ Note that _nearly all_ modules use the harmonized clinical data file (`pbta-hist
 
 | Module | Input Files | Brief Description | Output Files Consumed by Other Analyses |
 |--------|-------|-------------------|--------------|
+| [`batch-effects`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/batch-effects) | `pbta-histologies.tsv` <br> `pbta-gene-expression-rsem-tpm.polya.rds` <br> `pbta-gene-expression-rsem-tpm.stranded.rds` <br> `pbta-gene-expression-kallisto.stranded.rds` <br> `pbta-gene-expression-kallisto.polya.rds`  | Evaluates the relationship between batch and histology by creating PCA plots showing batch as the shape and histology as the color | N/A
 | [`chromosomal-instability`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/chromosomal-instability) | `pbta-histologies.tsv` <br> `pbta-sv-manta.tsv.gz` <br> `pbta-cnv-cnvkit.seg.gz` | Evaluates chromosomal instability by calculating chromosomal breakpoint densities and by creating circular plot visuals | N/A
 | [`cnv-chrom-plot`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/cnv-chrom) | `pbta-cnv-consensus-gistic.zip` <br> `analyses/copy_number_consensus_call/results/pbta-cnv-consensus.seg` | Plots genome wide visualizations relating to copy number results | N/A
 | [`cnv-comparison`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/cnv-comparison) | Earlier version of SEG files | *Deprecated*; compared earlier version of the CNV methods. | N/A
