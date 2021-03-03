@@ -20,6 +20,7 @@ The purpose of this notebook is to aggregate molecular subtyping results from th
 * [`molecular-subtyping-EPN`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-EPN\)
 * [`molecular-subtyping-MB`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-MB)
 * [`molecular-subtyping-neurocytoma`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-neurocytoma)
+* [`molecular-subtyping-chordoma`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-chordoma)
 
 
 ## Set up
@@ -87,6 +88,7 @@ lgat_dir <- file.path(analyses_dir, "molecular-subtyping-LGAT")
 mb_dir <- file.path(analyses_dir, "molecular-subtyping-MB")
 embryonal_dir <- file.path(analyses_dir, "molecular-subtyping-embryonal")
 neurocytoma_dir <- file.path(analyses_dir, "molecular-subtyping-neurocytoma")
+chordoma_dir <- file.path(analyses_dir, "molecular-subtyping-chordoma")
 
 # the folder that contains the tabular results is standardized across modules
 results_dir <- "results"
@@ -121,6 +123,9 @@ mb_results_file <- file.path(mb_dir, results_dir, "MB_molecular_subtype.tsv")
 embryonal_results_file <- file.path(embryonal_dir, results_dir,
                                     "embryonal_tumor_molecular_subtypes.tsv")
 neurocytoma_results_file <- file.path(neurocytoma_dir, results_dir, "neurocytoma_subtyping.tsv")
+# reading in smarcb1 status only, subtyping will come through pathology review in step 3
+chordoma_results_file <- file.path(chordoma_dir, results_dir, "chordoma_smarcb1_status.tsv")
+
 ```
 
 #### Output file
@@ -142,6 +147,7 @@ lgat_results_df <- read_tsv(lgat_results_file)
 mb_results_df <- read_tsv(mb_results_file)
 neurocytoma_results_df <- read_tsv(neurocytoma_results_file)
 embryonal_results_df <- read_tsv(embryonal_results_file)
+chordoma_results_df <- read_tsv(chordoma_results_file)
 ```
 
 ## Compile the subtyping resutls
@@ -320,6 +326,28 @@ neurocytoma_results_df <- neurocytoma_results_df %>%
          Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes))
 ```
 
+### Handling Chordoma
+```{r}
+
+chordoma_results_df <- bind_exp_strategies(chordoma_results_df) %>%
+  inner_join(select(histologies_df,
+                    Kids_First_Biospecimen_ID,
+                    short_histology,
+                    broad_histology,
+                    Notes),
+             by = "Kids_First_Biospecimen_ID") %>%
+  # will update subtype and integrated diagnosis in step 3
+  mutate(molecular_subtype = NA_character_,
+         integrated_diagnosis = NA_character_,
+         broad_histology = "Choroid plexus tumor",
+         short_histology = "Chordoma",
+         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes))
+
+```
+
+
+
+
 ### All results
 
 Compile results, sort, and write to file
@@ -332,7 +360,8 @@ all_results_df <- bind_rows(embryonal_results_df,
                             epn_results_df,
                             cranio_results_df,
                             mb_results_df,
-                            neurocytoma_results_df) %>%
+                            neurocytoma_results_df,
+                            chordoma_results_df) %>%
   select(Kids_First_Participant_ID, sample_id, Kids_First_Biospecimen_ID, molecular_subtype,
          integrated_diagnosis, short_histology, broad_histology, Notes) %>%
   # Cleanup a few Notes which have changed since last time
