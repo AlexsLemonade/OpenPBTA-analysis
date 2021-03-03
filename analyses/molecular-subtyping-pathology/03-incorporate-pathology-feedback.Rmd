@@ -563,6 +563,15 @@ compiled_df <- compiled_df %>%
                        "7316-3632") ~ "CHDM, conventional",
       TRUE ~ molecular_subtype
     ),
+    integrated_diagnosis = case_when(
+      sample_id %in% c("7316-1101",
+                       "7316-2935",
+                       "7316-3295",
+                       "7316-4062") ~ "Chordoma, poorly differentiated",
+      sample_id %in% c("7316-921",
+                       "7316-3632") ~ "Chordoma, conventional",
+      TRUE ~ integrated_diagnosis
+    ),
     Notes = case_when( sample_id %in% c("7316-1101",
                        "7316-2935",
                        "7316-3295",
