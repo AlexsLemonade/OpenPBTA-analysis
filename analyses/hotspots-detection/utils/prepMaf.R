@@ -1,9 +1,9 @@
 #' Takes a sqllite table from an individual caller in maf format
 #' and filters as per given user filtering options
 #' @param table prefered sqllite table with individual caller maf or a maf format dataframe
-#' @param variant_classification_values list of Variant_Classification values to filter
-#' @param impact_values list of IMPACT values to filter
-#' @param additional_cols character vector of maf columns to add other than c("Chromosome",
+#' @param variant_classification_values [optional] list of Variant_Classification values to filter
+#' @param impact_values list of IMPACT [optional] values to filter
+#' @param additional_cols [optional] character vector of maf columns to add other than c("Chromosome",
 #'                                                                            "Start_Position",
 #'                                                                            "End_Position",
 #'                                                                            "Reference_Allele",
@@ -12,14 +12,14 @@
 #'                                                                            "IMPACT",
 #'                                                                            "Tumor_Sample_Barcode" ,
 #'                                                                            "Protein_position)
-#' @param gene_table gene df with columns "Hugo_Symbol" and "type"
-#' @param hotspot_amino_acid_position_df  dataframe with Hugo_Sybol, Amino_Acid_Position and hotspot_database columns
-#' @param hotspot_genomic_site_df dataframe with Hugo_Symbol and Chromosome, Start_Position , 
+#' @param gene_table [optional] gene df with columns "Hugo_Symbol" and "type"
+#' @param hotspot_amino_acid_position_df  [optional] dataframe with Hugo_Sybol, Amino_Acid_Position and hotspot_database columns
+#' @param hotspot_genomic_site_df [optional] dataframe with Hugo_Symbol and Chromosome, Start_Position , 
 #' End_Position and hotspot_database columns 
-#' @return dataframe with base columns from maf filtered as per user input for Variant_Classification 
-#' column with variant_classification OR IMPACT column with impact_values OR Hugo_Symbol using gene_table.
-#' Additional filtering can be done per amino acid position hotspots using hotspot_amino_acid_site_df 
-#' OR per genomic site hotspots using hotspot_genomic_site_df
+#' @return A dataframe with base columns from maf filtered as per user input for Variant_Classification 
+#' column with "variant_classification" OR IMPACT column with "impact_values" OR Hugo_Symbol using "gene_table".
+#' Additional filtering can be done per amino acid position hotspots using "hotspot_amino_acid_site_df" 
+#' OR per genomic site hotspots using "hotspot_genomic_site_df"
 #'
 
 prepMaf <- function(table,

@@ -1,5 +1,6 @@
 ---
 title: "Combine individual caller maf"
+author: Krutika Gaonkar for D3b
 output: html_notebook
 params:
   db_file:
@@ -17,15 +18,14 @@ params:
     
 ---
 
-In this notebook we will combiine calls from each caller used in OpenPBTA snv
 
-Filtered by:
-- IMPACT == 'HIGH|MODERATE|MODIFIER' to remove any LOW mutations in the given amino acid position in hotspot database
-- Hugo_Symbol  %in% c(hotspot_database_aa$Hugo_Symbol,hotspot_database_g$Hugo_Symbol)
-- Amino acid hotspot overlap ( using a dataframe of hotspots per gene and amino acid position)
-- TERT promoter region overlap (using a genomic region overlap filtering strategy )
+For consensus calling we used gathered calls that were called by all 3 callers: strelka2,mutect2 and lancet. These consensus calls are high confidence but a few known hotspots were missed because of being called only by 1 or 2 out of the 3 callers because of caller specific limitations. 
 
+We expect that we will be able to gather all known cancer hotspots by scavenging calls by
+- checking for overlap with amino acid positions in a curated and published cancer hotspot [database](https://www.cancerhotspots.org/files/hotspots_v2.xls)
+- checking for overlap with non-coding region hotspots mutations , here we are using the in TERT promoter region
 
+In this notebook, we will filter mafs from each caller into a resulting file that has all calls that overlap hotspots sites.
 
 ## Setup
 ```{r}
@@ -49,21 +49,46 @@ if (!dir.exists(results_dir)) {
 ```
 
 ## Hotspot database for filtering
+- [hotspots_v2.xls](https://www.cancerhotspots.org/files/hotspots_v2.xls) is divided into snv and indels in 2 tabs in the excel file provided in their [database](https://www.cancerhotspots.org/#/download) we will combine the 2 sheets to create a `hotspot_database_amino_acid` dataframe 
+
+AND
+
+- A genomic region hotspots will be in `hotspot_database_genomic` to check of TERT promoter overlaps:
+TERT promoter region were gathered from  [this paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4852159/).
+>In 2013, two hotspot point mutations were found in the TERT promoter in 71% of melanomas (32,33). The mutations were located 124bp and 146bp upstream of the translation start site and referred to as C228T and C250T, respectively, based on their hg19 genomic coordinates.
+
+However, since we don't have the `C228T and C250T` annotation for the upstream mutations for TERT mutations, we idenitified the genomic locations in literature for hg38 genome in [this paper](https://www.mdpi.com/1422-0067/21/17/6034/htm) :
+> These mutations occur at two positions upstream of the transcription starting site, at −124 bp (nucleotide polymorphism G > A, g.1295228 (chr5, 1, 295, 228 assembly GRCh37) or g.1295113 (chr5, 1, 295, 113 assembly GRCh38)) and −146 bp (nucleotide polymorphism G > A, g.1295250 (chr5, 1, 295, 250, assembly GRCh37) or g.1295135 (chr5, 1, 295, 135 assembly GRCh38)) 
+
+chr5 | 1295113 | 1295113 annotated as existing_variant rs1242535815,COSM1716563,COSM1716558 is 66bp away from TSS and corresponding to C228T
+AND
+chr5 | 1295135 | 1295135 | annotated as existing_variant COSM1716559 is 88 bp away from TSS and corresponds to C250T promoter variant.
+
+
 ```{r}
-# Cancer database
+# MSKCC cancer database
 hotspot_database_2017_snv <- readxl::read_xls(mskcc_cancer_hotspot_file,sheet = 1) 
 hotspot_database_2017_indel <- readxl::read_xls(mskcc_cancer_hotspot_file,sheet = 2)
-hotspot_database_aa <- bind_rows( hotspot_database_2017_snv, hotspot_database_2017_indel) %>%
+hotspot_database_amino_acid <- bind_rows( hotspot_database_2017_snv, hotspot_database_2017_indel) %>%
   dplyr::select("Amino_Acid_Position","Hugo_Symbol") %>%
   dplyr::mutate(hotspot_database="MSKCC") %>%
   unique() %>%
   as.data.frame()
 
-hotspot_database_g <- read_tsv(genomic_region_file)
+# TERT promoter region
+hotspot_database_genomic <- read_tsv(genomic_region_file)
 
 ```
 
 ## Read variant calls database 
+The SQl database file `scratch/snv_db.sqlite` was created using [01-setup_dbpy](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers#01-setup_dbpy). 
+
+There is a table for each caller 
+- "strelka" which has strelka2 calls with all [maf fields](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/2c1f5faf1f5687fa40b9b30fa6442798bd38557d/analyses/snv-callers/scripts/01-setup_db.py#L83-L219)
+- "mutect" which has all mutect2 calls with [base maf fields](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/2c1f5faf1f5687fa40b9b30fa6442798bd38557d/analyses/snv-callers/scripts/01-setup_db.py#L221-L248) 
+- "vardict" which has all vardict calls in maf format [base maf fields](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/2c1f5faf1f5687fa40b9b30fa6442798bd38557d/analyses/snv-callers/scripts/01-setup_db.py#L221-L248) 
+- "lancet" which has all lancet calls in maf format [maf fields](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/2c1f5faf1f5687fa40b9b30fa6442798bd38557d/analyses/snv-callers/scripts/01-setup_db.py#L83-L219)
+
 ```{r}
 
 db_file <- file.path(root_dir, params$db_file)
@@ -74,6 +99,8 @@ con <- DBI::dbConnect(RSQLite::SQLite(), db_file,path = ":memory:")
 ```
 
 ## Designate caller tables from SQL file
+Extract tables from each caller to be used in subsequent code to filter hotspots
+
 ```{r}
 strelka <- dplyr::tbl(con, "strelka")
 mutect <- dplyr::tbl(con, "mutect")
@@ -82,30 +109,42 @@ lancet <- dplyr::tbl(con, "lancet")
 
 ```
 
-## Subset maf per caller
-```{r}
+## Filter calls that overlap hotspots
+
+Each caller maf is filtered by:
+- `IMPACT == 'HIGH|MODERATE|MODIFIER'` to remove any LOW mutations in the given amino acid position in hotspot database
+- `Hugo_Symbol  %in% c(hotspot_database_amino_acid$Hugo_Symbol,hotspot_database_genomic$Hugo_Symbol)`
+- Amino acid position overlap ( using a dataframe of hotspots with Hugo_Symbol and Amino_Acid_Position)
+- TERT promoter region overlap (using a genomic region overlap filtering strategy )
+
+Note: If a hotspot amino acid position has a silent mutation, such that the change in nucleotide creates the same amino acid in protein as Reference it is filtered out. Since these are hotspots we expect the amino acid sites to be canonical protein sequence for the gene since the annotation picks a canonical transcript first for annotation if available. 
+
+```{r warning=FALSE}
 source ("utils/prepMaf.R")
 
-gene_table <- data.frame("Hugo_Symbol"=c(hotspot_database_aa$Hugo_Symbol,hotspot_database_g$Hugo_Symbol))
+gene_table <- data.frame("Hugo_Symbol"=c(hotspot_database_amino_acid$Hugo_Symbol,hotspot_database_genomic$Hugo_Symbol))
 strelka_subset<-prepMaf(strelka, gene_table = gene_table,
                         impact_values = "MODERATE|HIGH|MODIFIER",
-                        hotspot_amino_acid_position_df = hotspot_database_aa, 
-                        hotspot_genomic_site_df = hotspot_database_g) %>%
+                        hotspot_amino_acid_position_df = hotspot_database_amino_acid, 
+                        hotspot_genomic_site_df = hotspot_database_genomic) %>%
        mutate(caller="strelka")	
+
 mutect_subset<-prepMaf(mutect, gene_table = gene_table,
                        impact_values = "MODERATE|HIGH|MODIFIER",
-                       hotspot_amino_acid_position_df = hotspot_database_aa, 
-                       hotspot_genomic_site_df = hotspot_database_g) %>%
+                       hotspot_amino_acid_position_df = hotspot_database_amino_acid, 
+                       hotspot_genomic_site_df = hotspot_database_genomic) %>%
 	mutate(caller="mutect")
+
 vardict_subset<-prepMaf(vardict, gene_table = gene_table,
                         impact_values = "MODERATE|HIGH|MODIFIER",
-                        hotspot_amino_acid_position_df = hotspot_database_aa, 
-                        hotspot_genomic_site_df = hotspot_database_g) %>%
+                        hotspot_amino_acid_position_df = hotspot_database_amino_acid, 
+                        hotspot_genomic_site_df = hotspot_database_genomic) %>%
 	mutate(caller="vardict")
+
 lancet_subset<-prepMaf(lancet, gene_table = gene_table,
                        impact_values = "MODERATE|HIGH|MODIFIER",
-                       hotspot_amino_acid_position_df = hotspot_database_aa,
-                       hotspot_genomic_site_df = hotspot_database_g) %>%
+                       hotspot_amino_acid_position_df = hotspot_database_amino_acid,
+                       hotspot_genomic_site_df = hotspot_database_genomic) %>%
 	mutate(caller="lancet")
 
 # combine
@@ -115,41 +154,10 @@ vardict_subset,
 lancet_subset) 
 
 
-# save for future runs
-saveRDS(combined_maf_subsets, file.path("results","combined_maf_subsets.RDS"))
+# save 
+saveRDS(combined_maf_subsets, file.path("results","combined_maf_hotspots.RDS"))
 	      
 ```
-
-
-### Get filtered numbers
-
-Upset plots to visualize caller contributions
-
-```{r}
-source(file.path("utils","getUpset.R"))
-
-```
-
-### Upset graphs 
-
-SNP: Single nucleotide polymorphism -- a substitution in one nucleotide
-DNP: Double nucleotide polymorphism -- a substitution in two consecutive nucleotides
-TNP: Triple nucleotide polymorphism -- a substitution in three consecutive nucleotides
-ONP: Oligo-nucleotide polymorphism -- a substitution in more than three consecutive nucleotides
-
-
-```{r}
-getUpset(combined_maf_subsets,c("SNP","DNP","TNP","ONP"))
-```
-Maority of hotspots is called by all 4 callers, mutect2 individually called maximum hotspots!
-
-INS: Insertion -- the addition of nucleotides
-DEL: Deletion -- the removal of nucleotides
-```{r}
-getUpset(combined_maf_subsets,c("INS","DEL"))
-```
-Only 2 indels sites are captured with amino acids hotspot filtering which are called by all 4 callers.
-
 
 
 ```{r}
