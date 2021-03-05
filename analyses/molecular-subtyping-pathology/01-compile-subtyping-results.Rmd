@@ -109,6 +109,12 @@ if (running_in_ci) {
   histologies_file <- file.path(data_dir, "release-v18-20201123",
                                 "pbta-histologies-base.tsv")
 }
+
+join_cols <- c("Kids_First_Biospecimen_ID",
+               "short_histology",
+               "broad_histology",
+               "Notes")
+
 ```
 
 Results files from individual modules.
@@ -158,11 +164,7 @@ The molecular subtyping information from these tumors will go into the v18 relea
 
 ```{r}
 embryonal_results_df <- bind_exp_strategies(embryonal_results_df) %>%
-  inner_join(select(histologies_df,
-                    Kids_First_Biospecimen_ID,
-                    short_histology,
-                    broad_histology,
-                    Notes),
+  inner_join(select(histologies_df,join_cols),
              by = "Kids_First_Biospecimen_ID") %>%
   mutate(integrated_diagnosis = case_when(molecular_subtype == "CNS Embryonal, NOS"~ "CNS Embryonal tumor, NOS",
                                           molecular_subtype == "CNS HGNET-MN1"~ "CNS Embryonal tumor, HGNET-MN1",
@@ -185,11 +187,7 @@ The EWS results were updated in V18. Adding integrated dx, broad hist, short his
 ```{r}
 # Add EWS integrated diagnosis, broad histology, short histology
 ews_results_df <- bind_exp_strategies(ews_results_df) %>%
-  inner_join(select(histologies_df,
-                    Kids_First_Biospecimen_ID,
-                    short_histology,
-                    broad_histology,
-                    Notes),
+  inner_join(select(histologies_df,join_cols),
              by = "Kids_First_Biospecimen_ID") %>%
   mutate(integrated_diagnosis = "Ewing sarcoma",
          broad_histology = "Mesenchymal non-meningothelial tumor",
@@ -203,11 +201,7 @@ HGG subtyping was updated with V18.
 
 ```{r}
 hgg_results_df <- bind_exp_strategies(hgg_results_df) %>%
-  inner_join(select(histologies_df,
-                    Kids_First_Biospecimen_ID,
-                    short_histology,
-                    broad_histology,
-                    Notes),
+  inner_join(select(histologies_df,join_cols),
              by = "Kids_First_Biospecimen_ID") %>%
   mutate(integrated_diagnosis = case_when(molecular_subtype == "DMG, H3 K28"~ "Diffuse midline glioma, H3 K28-mutant",
                                           molecular_subtype == "DMG, H3 K28, TP53 activated"~ "Diffuse midline glioma, H3 K28-mutant",
@@ -231,12 +225,8 @@ hgg_results_df <- bind_exp_strategies(hgg_results_df) %>%
 
 ```{r}
 lgat_results_df <- bind_exp_strategies(lgat_results_df) %>%
-  inner_join(select(histologies_df,
-                    Kids_First_Biospecimen_ID,
-                    pathology_diagnosis,
-                    short_histology,
-                    broad_histology,
-                    Notes),
+  inner_join(select(histologies_df,c(join_cols,
+                    pathology_diagnosis)),
              by = "Kids_First_Biospecimen_ID") %>%
 mutate(integrated_diagnosis = case_when(
             str_detect(molecular_subtype, "To be classified") ~ NA_character_,
@@ -253,11 +243,7 @@ mutate(integrated_diagnosis = case_when(
 
 ```{r}
 epn_results_df <- bind_exp_strategies(epn_results_df) %>%
-  inner_join(select(histologies_df,
-                    Kids_First_Biospecimen_ID,
-                    short_histology,
-                    broad_histology,
-                    Notes),
+  inner_join(select(histologies_df,join_cols),
            by = "Kids_First_Biospecimen_ID") %>%
   mutate(molecular_subtype = subgroup) %>%
   mutate(molecular_subtype = if_else(is.na(molecular_subtype), "EPN, To be classified", molecular_subtype), 
@@ -274,11 +260,7 @@ epn_results_df <- bind_exp_strategies(epn_results_df) %>%
 
 ```{r}
 mb_results_df <- bind_exp_strategies(mb_results_df) %>%
-  inner_join(select(histologies_df,
-                    Kids_First_Biospecimen_ID,
-                    short_histology,
-                    broad_histology,
-                    Notes),
+  inner_join(select(histologies_df,join_cols),
             by = "Kids_First_Biospecimen_ID") %>%
   mutate(integrated_diagnosis = case_when(molecular_subtype == "MB, SHH"~"Medulloblastoma, SHH-activated",
                                           molecular_subtype == "MB, WNT"~"Medulloblastoma, WNT-activated",
@@ -295,11 +277,7 @@ mb_results_df <- bind_exp_strategies(mb_results_df) %>%
 
 ```{r}
 cranio_results_df <- bind_exp_strategies(cranio_results_df) %>%
-  inner_join(select(histologies_df,
-                    Kids_First_Biospecimen_ID,
-                    short_histology,
-                    broad_histology,
-                    Notes),
+  inner_join(select(histologies_df,join_cols),
              by = "Kids_First_Biospecimen_ID") %>%
   mutate(integrated_diagnosis = case_when(molecular_subtype == "CRANIO, ADAM" ~"Adamantimomatous craniopharyngioma",
                                           molecular_subtype == "CRANIO, PAP" ~"Papillary craniopharyngioma", 
@@ -312,11 +290,7 @@ cranio_results_df <- bind_exp_strategies(cranio_results_df) %>%
 ### Handling Neurocytoma
 ```{r}
 neurocytoma_results_df <- neurocytoma_results_df %>%
-  inner_join(select(histologies_df,
-                    Kids_First_Biospecimen_ID,
-                    short_histology,
-                    broad_histology,
-                    Notes),
+  inner_join(select(histologies_df,join_cols),
             by = "Kids_First_Biospecimen_ID") %>%
   mutate(integrated_diagnosis = case_when(molecular_subtype == "CNC"~ "Central Neurocytoma",
                                           molecular_subtype == "EVN" ~"Extraventricular Neurocytoma", 
@@ -330,11 +304,7 @@ neurocytoma_results_df <- neurocytoma_results_df %>%
 ```{r}
 
 chordoma_results_df <- bind_exp_strategies(chordoma_results_df) %>%
-  inner_join(select(histologies_df,
-                    Kids_First_Biospecimen_ID,
-                    short_histology,
-                    broad_histology,
-                    Notes),
+  inner_join(select(histologies_df,join_cols),
              by = "Kids_First_Biospecimen_ID") %>%
   # will update subtype and integrated diagnosis in step 3
   mutate(molecular_subtype = NA_character_,

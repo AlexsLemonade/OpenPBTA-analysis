@@ -540,13 +540,15 @@ As discussed in [ticket](https://github.com/AlexsLemonade/OpenPBTA-analysis/issu
 7316-3632	| CHDM, conventional
 
 ```{r}
+chdm_poorly_diff_sample_ids <- c("7316-1101",
+                                 "7316-2935",
+                                 "7316-3295",
+                                 "7316-4062")
+chdm_conventional_sample_ids <- c("7316-921",
+                                  "7316-3632")
+  
 compiled_df %>%
-  filter(sample_id %in% c("7316-1101",
-                       "7316-2935",
-                       "7316-3295",
-                       "7316-4062",
-                       "7316-921",
-                       "7316-3632")) 
+  filter(sample_id %in% c(chdm_conventional_sample_ids,chdm_poorly_diff_sample_ids)) 
 
 ```
 
@@ -555,29 +557,17 @@ compiled_df %>%
 
 compiled_df <- compiled_df %>%
     mutate(molecular_subtype = case_when(
-      sample_id %in% c("7316-1101",
-                       "7316-2935",
-                       "7316-3295",
-                       "7316-4062") ~ "CHDM, poorly differentiated",
-      sample_id %in% c("7316-921",
-                       "7316-3632") ~ "CHDM, conventional",
+      sample_id %in% chdm_poorly_diff_sample_ids ~ "CHDM, poorly differentiated",
+      sample_id %in% chdm_conventional_sample_ids ~ "CHDM, conventional",
       TRUE ~ molecular_subtype
     ),
     integrated_diagnosis = case_when(
-      sample_id %in% c("7316-1101",
-                       "7316-2935",
-                       "7316-3295",
-                       "7316-4062") ~ "Chordoma, poorly differentiated",
-      sample_id %in% c("7316-921",
-                       "7316-3632") ~ "Chordoma, conventional",
+      sample_id %in% chdm_poorly_diff_sample_ids ~ "Chordoma, poorly differentiated",
+      sample_id %in% chdm_conventional_sample_ids ~ "Chordoma, conventional",
       TRUE ~ integrated_diagnosis
     ),
-    Notes = case_when( sample_id %in% c("7316-1101",
-                       "7316-2935",
-                       "7316-3295",
-                       "7316-4062",
-                       "7316-921",
-                       "7316-3632") ~ "Updated via pathology review",
+    Notes = case_when( sample_id %in% c(chdm_conventional_sample_ids,
+                                        chdm_poorly_diff_sample_ids) ~ "Updated via pathology review",
       TRUE ~ Notes
     )
   )
