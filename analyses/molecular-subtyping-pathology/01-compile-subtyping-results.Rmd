@@ -339,7 +339,7 @@ chordoma_results_df <- bind_exp_strategies(chordoma_results_df) %>%
   # will update subtype and integrated diagnosis in step 3
   mutate(molecular_subtype = NA_character_,
          integrated_diagnosis = NA_character_,
-         broad_histology = "Choroid plexus tumor",
+         broad_histology = "Chordoma",
          short_histology = "Chordoma",
          Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes))
 
