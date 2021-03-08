@@ -4,7 +4,7 @@ shorten = function(df) {
 }
 
 # function used on kallisto data for summarizing transcripts at the gene level
-grouper = function(df){
+collapse_to_gene_mean = function(df){
   df = df %>%
     group_by(gene_id) %>%
     summarise_at(colnames(df)[3:ncol(df)], mean, na.rm = TRUE)
@@ -358,4 +358,3 @@ make_histology_pca_plots_methods = function(df_polya, df_stranded, id_histology,
   return(make_before_and_after_combat_plots(data_t, batch, report_name, run_combat))
   
 }
-
