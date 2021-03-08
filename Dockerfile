@@ -98,13 +98,7 @@ RUN ./install_bioc.r \
 RUN ./install_bioc.r \
     fftwtools \
     heatmaps \
-    BatchQC \
-    tibble \
-    tidyr \
-    ggplot2 \
-    readr \
-    dplyr \
-    forcats
+    BatchQC
 
 # Required for interactive sample distribution plots
 # map view is needed to create HTML outputs of the interactive plots
