@@ -561,11 +561,7 @@ compiled_df <- compiled_df %>%
       sample_id %in% chdm_conventional_sample_ids ~ "CHDM, conventional",
       TRUE ~ molecular_subtype
     ),
-    integrated_diagnosis = case_when(
-      sample_id %in% chdm_poorly_diff_sample_ids ~ "Chordoma, poorly differentiated",
-      sample_id %in% chdm_conventional_sample_ids ~ "Chordoma, conventional",
-      TRUE ~ integrated_diagnosis
-    ),
+    integrated_diagnosis = str_replace(molecular_subtype, "CHDM, ", "Chordoma, "),
     Notes = case_when( sample_id %in% c(chdm_conventional_sample_ids,
                                         chdm_poorly_diff_sample_ids) ~ "Updated via pathology review",
       TRUE ~ Notes
