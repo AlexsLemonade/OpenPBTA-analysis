@@ -286,7 +286,7 @@ for table_name, maf_file in callers:
     if table_name in ('strelka', 'lancet', 'consensus'):
         table_types = maf_types
     else:
-        table_types = needed_types
+        table_types = maf_types
     if args.overwrite:
         con.execute("DROP TABLE IF EXISTS {}".format(table_name))
     maf_table_def = ", ".join([" ".join(col) for col in table_types])
