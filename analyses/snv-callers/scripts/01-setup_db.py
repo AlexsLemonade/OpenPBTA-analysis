@@ -283,10 +283,10 @@ for table_name, maf_file in callers:
         continue
     print("Reading file {} to table '{}'.".format(maf_file, table_name, ))
     # we need 2 full tables for consensus with one missing
-    if table_name in ('strelka', 'lancet', 'consensus'):
+    if table_name in ('strelka', 'lancet', 'consensus', 'mutect', 'vardict'):
         table_types = maf_types
     else:
-        table_types = maf_types
+        table_types = needed_types
     if args.overwrite:
         con.execute("DROP TABLE IF EXISTS {}".format(table_name))
     maf_table_def = ", ".join([" ".join(col) for col in table_types])
@@ -304,7 +304,7 @@ for table_name, maf_file in callers:
         # process the chunk
         chunk['VAF'] = (chunk['t_alt_count'] /
                         (chunk['t_ref_count'] + chunk['t_alt_count']))
-        if table_name not in ('strelka', 'lancet', 'consensus'):
+        if table_name not in ('strelka', 'lancet', 'consensus', 'mutect', 'vardict'):
             chunk = chunk[needed_cols]
         chunk.to_sql(table_name, con, if_exists='append')
     # create indexes
