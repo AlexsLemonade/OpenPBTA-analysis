@@ -29,4 +29,4 @@ python3 ../snv-callers/scripts/01-setup_db.py \
 
 
 # find hotspot overlaps
-Rscript -e "rmarkdown::render('01-combine-snv.Rmd')"
+Rscript -e "rmarkdown::render('01-combine-maf.Rmd')"
