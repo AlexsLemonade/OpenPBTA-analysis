@@ -1,5 +1,5 @@
 ---
-title: "Combine individual caller maf"
+title: "Filter individual caller for hotspot and combine"
 author: Krutika Gaonkar for D3b
 output: html_notebook
 params:
@@ -85,8 +85,8 @@ The SQl database file `scratch/snv_db.sqlite` was created using [01-setup_dbpy](
 
 There is a table for each caller 
 - "strelka" which has strelka2 calls with all [maf fields](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/2c1f5faf1f5687fa40b9b30fa6442798bd38557d/analyses/snv-callers/scripts/01-setup_db.py#L83-L219)
-- "mutect" which has all mutect2 calls with [base maf fields](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/2c1f5faf1f5687fa40b9b30fa6442798bd38557d/analyses/snv-callers/scripts/01-setup_db.py#L221-L248) 
-- "vardict" which has all vardict calls in maf format [base maf fields](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/2c1f5faf1f5687fa40b9b30fa6442798bd38557d/analyses/snv-callers/scripts/01-setup_db.py#L221-L248) 
+- "mutect" which has all mutect2 calls with [maf fields](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/2c1f5faf1f5687fa40b9b30fa6442798bd38557d/analyses/snv-callers/scripts/01-setup_db.py#L83-L219) 
+- "vardict" which has all vardict calls in maf format [maf fields](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/2c1f5faf1f5687fa40b9b30fa6442798bd38557d/analyses/snv-callers/scripts/01-setup_db.py#L83-L219)
 - "lancet" which has all lancet calls in maf format [maf fields](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/2c1f5faf1f5687fa40b9b30fa6442798bd38557d/analyses/snv-callers/scripts/01-setup_db.py#L83-L219)
 
 ```{r}
@@ -123,24 +123,28 @@ Note: If a hotspot amino acid position has a silent mutation, such that the chan
 source ("utils/prepMaf.R")
 
 gene_table <- data.frame("Hugo_Symbol"=c(hotspot_database_amino_acid$Hugo_Symbol,hotspot_database_genomic$Hugo_Symbol))
+print("Subsetting strelka2 calls for hotspots")
 strelka_subset<-prepMaf(strelka, gene_table = gene_table,
                         impact_values = "MODERATE|HIGH|MODIFIER",
                         hotspot_amino_acid_position_df = hotspot_database_amino_acid, 
                         hotspot_genomic_site_df = hotspot_database_genomic) %>%
        mutate(caller="strelka")	
 
+print("Subsetting mutect2 calls for hotspots")
 mutect_subset<-prepMaf(mutect, gene_table = gene_table,
                        impact_values = "MODERATE|HIGH|MODIFIER",
                        hotspot_amino_acid_position_df = hotspot_database_amino_acid, 
                        hotspot_genomic_site_df = hotspot_database_genomic) %>%
 	mutate(caller="mutect")
 
+print("Subsetting vardict calls for hotspots")
 vardict_subset<-prepMaf(vardict, gene_table = gene_table,
                         impact_values = "MODERATE|HIGH|MODIFIER",
                         hotspot_amino_acid_position_df = hotspot_database_amino_acid, 
                         hotspot_genomic_site_df = hotspot_database_genomic) %>%
 	mutate(caller="vardict")
 
+print("Subsetting lancet calls for hotspots")
 lancet_subset<-prepMaf(lancet, gene_table = gene_table,
                        impact_values = "MODERATE|HIGH|MODIFIER",
                        hotspot_amino_acid_position_df = hotspot_database_amino_acid,
