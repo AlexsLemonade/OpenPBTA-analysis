@@ -240,6 +240,10 @@ needed_cols = [
     'n_alt_count',
     'Allele',
     'flanking_bps',
+    'Protein_position',
+    'IMPACT',
+    'HGVSp_Short',
+    'gnomAD_AF',
     'VAF'
 ]
 
