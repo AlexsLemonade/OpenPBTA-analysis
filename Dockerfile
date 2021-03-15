@@ -88,7 +88,8 @@ RUN ./install_bioc.r \
     rpart \
     rprojroot \
     survival \
-    viridis 
+    units \
+    viridis
 
 
 # Required for interactive sample distribution plots
@@ -122,11 +123,11 @@ RUN ./install_bioc.r \
     treemap \
     umap  \
     UpSetR \
-    VennDiagram 
+    VennDiagram
 
 # Install rjava
 RUN ./install_bioc.r \
-    rJava 
+    rJava
 
 # Need for survminer for doing survival analysis
 RUN ./install_bioc.r \
@@ -169,7 +170,7 @@ RUN ./install_bioc.r \
     glmnet \
     glmnetUtils \
     caret \
-    e1071 
+    e1071
 
 
 # bedr package & check to make sure binaries are available by loading
@@ -181,7 +182,7 @@ RUN ./install_bioc.r \
 # qdapRegex is for the fusion analysis
 RUN ./install_bioc.r \
     deconstructSigs \
-    qdapRegex 
+    qdapRegex
 
 # packages required for collapsing RNA-seq data by removing duplicated gene symbols
 RUN ./install_bioc.r \
@@ -226,7 +227,7 @@ RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remote
 # Packages required for rna-seq-composition
 RUN ./install_bioc.r \
     EnvStats \
-    janitor 
+    janitor
 
 # Patchwork for plot compositions
 RUN R -e "remotes::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd46899f17197f9858bc5672e9f4')"
