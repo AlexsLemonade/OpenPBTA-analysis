@@ -55,8 +55,8 @@ prepMaf <- function(table,
   if (!missing(hotspot_amino_acid_position_df)){
     # filter by amino acid hotspot_database
     calls_base_aa_filt <- calls_base %>%
-    left_join(hotspot_amino_acid_position_df,by=c("Amino_Acid_Position","Hugo_Symbol")) %>%
-      dplyr::filter(!is.na(hotspot_database)) %>%
+      dplyr::inner_join(hotspot_amino_acid_position_df,
+                        by=c("Amino_Acid_Position","Hugo_Symbol")) %>%
       dplyr::select(-hotspot_database)
   } 
   
@@ -110,4 +110,3 @@ prepMaf <- function(table,
   
   
 }
-
