@@ -41,7 +41,7 @@ mkdir -p $tmpdir
 gunzip -c ../../data/release-v18-20201123/pbta-snv-vardict.vep.maf.gz | split -l 10000000 - ${tmpdir}/pbta-snv-vardict.vep.maf.
 
 n=1
-for file in $(ls ../../scratch/pbta-snv-vardict.vep.mafa*); do
+for file in $(ls ${tmpdir}/pbta-snv-vardict.vep.maf.*); do
  gzip $file ; 
  Rscript 00-subset-maf.R --maffile ${file}.gz\
         --caller vardict0${n} \
@@ -49,4 +49,3 @@ for file in $(ls ../../scratch/pbta-snv-vardict.vep.mafa*); do
         --genomic_site_hotspot_file $genomic_site_hotspot_file ;
  n=$(( $n + 1 ));
 done
-
