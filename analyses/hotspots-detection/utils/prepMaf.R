@@ -97,7 +97,7 @@ prepMaf <- function(table,
     calls_base_combined <- bind_rows(calls_base_aa_filt ,
                                      calls_base_g_filt)
     return(calls_base_combined)
-  } else if(!missing(hotspot_genomic_site_df) & missing(hotspot_amino_acid_position_df)){
+  } else if(!missing(hotspot_genomic_site_df) {
     # if only genomic region hotspot is provided
     return(calls_base_g_filt)
   } else if(missing(hotspot_genomic_site_df) & !missing(hotspot_amino_acid_position_df)){
