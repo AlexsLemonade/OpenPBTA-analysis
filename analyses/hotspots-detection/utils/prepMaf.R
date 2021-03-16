@@ -62,7 +62,8 @@ prepMaf <- function(table,
   
   if(!missing(hotspot_genomic_site_df)){
     # calls_base genomic ranges
-    calls_base_gr <- GenomicRanges::makeGRangesFromDataFrame(calls_base,keep.extra.columns = TRUE,
+    calls_base_gr <- GenomicRanges::makeGRangesFromDataFrame(calls_base,
+                                                             keep.extra.columns = TRUE,
                                                              seqnames.field = "Chromosome",
                                                              start.field = "Start_position",
                                                              end.field = "End_position",
@@ -109,5 +110,4 @@ prepMaf <- function(table,
   
   
 }
-
 
