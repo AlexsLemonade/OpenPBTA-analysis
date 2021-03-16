@@ -216,7 +216,7 @@ source ("utils/prepMaf.R")
 # - gene_table to filter Hugo_Symbol in maf file
 
 maf_subset<-prepMaf(maffile, gene_table = gene_table,
-                        impact_values = "MODERATE|HIGH|MODIFIER",
+                        impact_values = c('HIGH', 'MODERATE', 'MODIFIER'),
                         hotspot_amino_acid_position_df = hotspot_database_amino_acid, 
                         hotspot_genomic_site_df = hotspot_database_genomic) %>%
   mutate(caller=caller)	
