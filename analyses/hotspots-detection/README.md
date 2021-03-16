@@ -14,9 +14,8 @@ TERT promoter region were gathered from  [this paper](https://www.ncbi.nlm.nih.g
 However, since we don't have the `C228T and C250T` annotation for the upstream mutations for TERT mutations, we idenitified the genomic locations in literature for hg38 genome in [this paper](https://www.mdpi.com/1422-0067/21/17/6034/htm) :
 > These mutations occur at two positions upstream of the transcription starting site, at −124 bp (nucleotide polymorphism G > A, g.1295228 (chr5, 1, 295, 228 assembly GRCh37) or g.1295113 (chr5, 1, 295, 113 assembly GRCh38)) and −146 bp (nucleotide polymorphism G > A, g.1295250 (chr5, 1, 295, 250, assembly GRCh37) or g.1295135 (chr5, 1, 295, 135 assembly GRCh38)) 
 
-chr5 | 1295113 | 1295113 annotated as existing_variant rs1242535815,COSM1716563,COSM1716558 is 66bp away from TSS and corresponding to C228T
-AND
-chr5 | 1295135 | 1295135 | annotated as existing_variant COSM1716559 is 88 bp away from TSS and corresponds to C250T promoter variant.
+- chr5 position 1295113, annotated as existing variant `rs1242535815`,`COSM1716563`,`COSM1716558`,  is 66bp away from TSS and corresponds to C228T
+- chr5 position 1295135, annotated as existing variant `COSM1716559` is 88 bp away from TSS and corresponds to C250T promoter variant.
 
 
 ## Filtering calls that overlap hotspots
@@ -41,4 +40,3 @@ Note: If a hotspot amino acid position has a silent mutation, such that the chan
 bash run_overlaps_hotspot.sh 
 
 ```
-
