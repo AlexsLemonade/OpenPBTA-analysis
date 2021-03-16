@@ -55,14 +55,15 @@ prepMaf <- function(table,
   if (!missing(hotspot_amino_acid_position_df)){
     # filter by amino acid hotspot_database
     calls_base_aa_filt <- calls_base %>%
-    left_join(hotspot_amino_acid_position_df,by=c("Amino_Acid_Position","Hugo_Symbol")) %>%
-      dplyr::filter(!is.na(hotspot_database)) %>%
+      dplyr::inner_join(hotspot_amino_acid_position_df,
+                        by=c("Amino_Acid_Position","Hugo_Symbol")) %>%
       dplyr::select(-hotspot_database)
   } 
   
   if(!missing(hotspot_genomic_site_df)){
     # calls_base genomic ranges
-    calls_base_gr <- GenomicRanges::makeGRangesFromDataFrame(calls_base,keep.extra.columns = TRUE,
+    calls_base_gr <- GenomicRanges::makeGRangesFromDataFrame(calls_base,
+                                                             keep.extra.columns = TRUE,
                                                              seqnames.field = "Chromosome",
                                                              start.field = "Start_position",
                                                              end.field = "End_position",
@@ -96,10 +97,10 @@ prepMaf <- function(table,
     calls_base_combined <- bind_rows(calls_base_aa_filt ,
                                      calls_base_g_filt)
     return(calls_base_combined)
-  } else if(!missing(hotspot_genomic_site_df) & missing(hotspot_amino_acid_position_df)){
+  } else if(!missing(hotspot_genomic_site_df) {
     # if only genomic region hotspot is provided
     return(calls_base_g_filt)
-  } else if(missing(hotspot_genomic_site_df) & !missing(hotspot_amino_acid_position_df)){
+  } else if(!missing(hotspot_amino_acid_position_df)){
     # if only amino acid hotspot is provided
     return(calls_base_aa_filt)
   } else {
@@ -109,5 +110,3 @@ prepMaf <- function(table,
   
   
 }
-
-

@@ -8,10 +8,8 @@ set -o pipefail
 
 # This script should always run as if it were being called from
 # the directory it lives in.
-script_directory="$(perl -e 'use File::Basename;
-  use Cwd "abs_path";
-  print dirname(abs_path(@ARGV[0]));' -- "$0")"
-cd "$script_directory" || exit
+# Set the working directory to the directory of this file
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
 cancer_hotspot_file=input/hotspots_v2.xls
 genomic_site_hotspot_file=input/tert_promoter_hotspots.tsv
@@ -36,10 +34,12 @@ Rscript 00-subset-maf.R --maffile ../../data/pbta-snv-lancet.vep.maf.gz \
 
 
 # find hotspot overlaps in vardict
-gunzip -c ../../data/release-v18-20201123/pbta-snv-vardict.vep.maf.gz | split -l 10000000 - ../../scratch/pbta-snv-vardict.vep.maf
+tmpdir=../../scratch/hotspots-detection
+mkdir -p $tmpdir
+gunzip -c ../../data/release-v18-20201123/pbta-snv-vardict.vep.maf.gz | split -l 10000000 - ${tmpdir}/pbta-snv-vardict.vep.maf.
 
 n=1
-for file in $(ls ../../scratch/pbta-snv-vardict.vep.mafa*); do
+for file in $(ls ${tmpdir}/pbta-snv-vardict.vep.maf.*); do
  gzip $file ; 
  Rscript 00-subset-maf.R --maffile ${file}.gz\
         --caller vardict0${n} \
@@ -47,5 +47,3 @@ for file in $(ls ../../scratch/pbta-snv-vardict.vep.mafa*); do
         --genomic_site_hotspot_file $genomic_site_hotspot_file ;
  n=$(( $n + 1 ));
 done
-
-
