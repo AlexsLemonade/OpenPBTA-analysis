@@ -21,7 +21,7 @@ However, since we don't have the `C228T and C250T` annotation for the upstream m
 ## Filtering calls that overlap hotspots
 
 Each caller maf is filtered by:
-- `IMPACT == 'HIGH|MODERATE|MODIFIER'` to remove any LOW mutations in the given amino acid position in hotspot database
+- `IMPACT %in% c('HIGH', 'MODERATE', 'MODIFIER')` to remove any LOW mutations in the given amino acid position in hotspot database
 - `Hugo_Symbol  %in% c(hotspot_database_amino_acid$Hugo_Symbol,hotspot_database_genomic$Hugo_Symbol)`
 - Amino acid position overlap ( using a dataframe of hotspots with Hugo_Symbol and Amino_Acid_Position)
 - TERT promoter region overlap (using a genomic region overlap filtering strategy )
