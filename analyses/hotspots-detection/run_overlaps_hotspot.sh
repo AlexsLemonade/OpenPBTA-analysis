@@ -11,39 +11,12 @@ set -o pipefail
 # Set the working directory to the directory of this file
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-cancer_hotspot_file=input/hotspots_v2.xls
+cancer_hotspot_folder=input/hotspots_database
 genomic_site_hotspot_file=input/tert_promoter_hotspots.tsv
 
 # find hotspot overlaps in strelka2
 Rscript 00-subset-maf.R --maffile ../../data/pbta-snv-strelka2.vep.maf.gz \
         --caller strelka2 \
-        --cancer_hotspot_file $cancer_hotspot_file \
+        --cancer_hotspot_folder $cancer_hotspot_folder \
         --genomic_site_hotspot_file $genomic_site_hotspot_file 
 
-# find hotspot overlaps in mutect2
-Rscript 00-subset-maf.R --maffile ../../data/pbta-snv-mutect2.vep.maf.gz \
-        --caller mutect2 \
-        --cancer_hotspot_file $cancer_hotspot_file \
-        --genomic_site_hotspot_file $genomic_site_hotspot_file
-
-# find hotspot overlaps in lancet
-Rscript 00-subset-maf.R --maffile ../../data/pbta-snv-lancet.vep.maf.gz \
-        --caller lancet \
-        --cancer_hotspot_file $cancer_hotspot_file \
-        --genomic_site_hotspot_file $genomic_site_hotspot_file
-
-
-# find hotspot overlaps in vardict
-tmpdir=../../scratch/hotspots-detection
-mkdir -p $tmpdir
-gunzip -c ../../data/release-v18-20201123/pbta-snv-vardict.vep.maf.gz | split -l 10000000 - ${tmpdir}/pbta-snv-vardict.vep.maf.
-
-n=1
-for file in $(ls ${tmpdir}/pbta-snv-vardict.vep.maf.*); do
- gzip $file ; 
- Rscript 00-subset-maf.R --maffile ${file}.gz\
-        --caller vardict0${n} \
-        --cancer_hotspot_file $cancer_hotspot_file \
-        --genomic_site_hotspot_file $genomic_site_hotspot_file ;
- n=$(( $n + 1 ));
-done
