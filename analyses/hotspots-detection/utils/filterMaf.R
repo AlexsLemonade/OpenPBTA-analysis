@@ -14,7 +14,6 @@
 
 filterMaf <- function(table,
                       impact_values,
-                      genes,
                       hotspot_amino_acid_position_df,
                       hotspot_genomic_site_df) {
   if (!missing(impact_values)) {
