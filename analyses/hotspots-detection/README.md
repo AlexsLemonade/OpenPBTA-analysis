@@ -32,7 +32,7 @@ Note: If a hotspot amino acid position has a silent mutation, such that the chan
 ### Steps of analysis
 
 `00-subset-maf.R` filters and combines calls from all callers with filters for non-silent mutations in hotspot sites.
-
+`01-create-hotspot-maf.Rmd` all calls that are not part of the consensus maf but overlap hotspots are scavenged back to a maf file along with consensus(3/3)calls. 
    
 ### Run
 
