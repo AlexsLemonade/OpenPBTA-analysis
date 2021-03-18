@@ -526,6 +526,54 @@ compiled_df <- compiled_df %>%
   )
 ```
 
+
+### Chordoma samples pathology review 
+As discussed in [ticket](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/608) we will assign subtypes to chordoma samples through pathology review only since molecular subtypes were not sufficient.
+	
+ sample_id | molecular_subtype
+-- | --
+7316-1101 |	CHDM, poorly differentiated
+7316-2935 |	CHDM, poorly differentiated
+7316-3295 |	CHDM, poorly differentiated
+7316-4062 |	CHDM, poorly differentiated
+7316-921 |	CHDM, conventional
+7316-3632	| CHDM, conventional
+
+```{r}
+chdm_poorly_diff_sample_ids <- c("7316-1101",
+                                 "7316-2935",
+                                 "7316-3295",
+                                 "7316-4062")
+chdm_conventional_sample_ids <- c("7316-921",
+                                  "7316-3632")
+  
+compiled_df %>%
+  filter(sample_id %in% c(chdm_conventional_sample_ids,chdm_poorly_diff_sample_ids)) 
+
+```
+
+
+```{r}
+
+compiled_df <- compiled_df %>%
+    mutate(molecular_subtype = case_when(
+      sample_id %in% chdm_poorly_diff_sample_ids ~ "CHDM, poorly differentiated",
+      sample_id %in% chdm_conventional_sample_ids ~ "CHDM, conventional",
+      TRUE ~ molecular_subtype),
+   integrated_diagnosis = case_when(str_detect(molecular_subtype, "CHDM") ~
+                                    str_replace(molecular_subtype, "CHDM, ", "Chordoma, "), 
+                                    TRUE ~ integrated_diagnosis),
+    Notes = case_when(sample_id %in% c(chdm_conventional_sample_ids,
+                                        chdm_poorly_diff_sample_ids) ~ "Updated via pathology review",
+      TRUE ~ Notes
+    )
+)
+
+```
+
+
+
+
 ###Check list of subtypes look as expected at this point in time
 ```{r}
 # sort first
