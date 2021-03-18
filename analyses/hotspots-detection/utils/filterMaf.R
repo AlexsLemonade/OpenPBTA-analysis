@@ -1,9 +1,7 @@
 #' Takes a sqllite table from an individual caller in maf format
 #' and filters as per given user filtering options
-#' @param table prefered sqllite table with individual caller maf or a maf format dataframe
-#' @param variant_classification_values [optional] list of Variant_Classification values to filter
+#' @param table a maf format dataframe
 #' @param impact_values list of IMPACT [optional] values to filter
-#' @param gene_table [optional] gene df with columns "Hugo_Symbol" and "type"
 #' @param hotspot_amino_acid_position_df  [optional] dataframe with Hugo_Sybol, Amino_Acid_Position 
 #' and hotspot_database columns
 #' @param hotspot_genomic_site_df [optional] dataframe with Hugo_Symbol and Chromosome, Start_Position , 
@@ -14,31 +12,14 @@
 #' OR per genomic site hotspots using "hotspot_genomic_site_df"
 #'
 
-prepMaf <- function(table,
-                    variant_classification_values,
+filterMaf <- function(table,
                     impact_values,
-                    gene_table,
+                    genes,
                     hotspot_amino_acid_position_df, 
                     hotspot_genomic_site_df  ) {
-  if (!missing(gene_table)){
-  # gene list to filter sql lite table
-  gene_list <- gene_table$Hugo_Symbol
-  table <- table %>%
-    dplyr::filter(Hugo_Symbol %in% gene_list)
-  }
-
-  
-  
-  if (!missing(variant_classification_values)){
-  # Variant_Classification filtering values
-  variant_classification_values <- unlist(str_split(variant_classification_values,pattern = "[|]"))
-  table <- table %>%
-    dplyr::filter(Variant_Classification %in% variant_classification_values)
-  }
   
   if (!missing(impact_values)){
   # IMPACT filtering values
-  impact_values <- unlist(str_split(impact_values,pattern = "[|]"))
   table <- table %>%
     dplyr::filter(IMPACT %in% impact_values)
   }
@@ -48,9 +29,13 @@ prepMaf <- function(table,
     as.data.frame() %>%
     dplyr::mutate(
       Amino_Acid_Position =
-        # strip protein length
+        # format of Protein_position is 594/766
+        # [Amino_Acid_Position/ Protein_length]
+        # stripping protein length here to get Amino_Acid_Position 
         gsub("/.*","",Protein_position)
-    )
+    ) %>%
+    mutate(Start_Position=as.numeric(Start_Position),
+           End_Position=as.numeric(End_Position))
   
   if (!missing(hotspot_amino_acid_position_df)){
     # filter by amino acid hotspot_database
@@ -62,8 +47,7 @@ prepMaf <- function(table,
   
   if(!missing(hotspot_genomic_site_df)){
     # calls_base genomic ranges
-    calls_base_gr <- GenomicRanges::makeGRangesFromDataFrame(calls_base,
-                                                             keep.extra.columns = TRUE,
+    calls_base_gr <- GenomicRanges::makeGRangesFromDataFrame(calls_base,keep.extra.columns = TRUE,
                                                              seqnames.field = "Chromosome",
                                                              start.field = "Start_position",
                                                              end.field = "End_position",
@@ -97,7 +81,7 @@ prepMaf <- function(table,
     calls_base_combined <- bind_rows(calls_base_aa_filt ,
                                      calls_base_g_filt)
     return(calls_base_combined)
-  } else if(!missing(hotspot_genomic_site_df) {
+  } else if(!missing(hotspot_genomic_site_df)) {
     # if only genomic region hotspot is provided
     return(calls_base_g_filt)
   } else if(!missing(hotspot_amino_acid_position_df)){
@@ -110,3 +94,5 @@ prepMaf <- function(table,
   
   
 }
+
+
