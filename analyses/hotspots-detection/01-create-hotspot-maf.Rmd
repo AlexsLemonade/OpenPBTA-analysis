@@ -133,13 +133,21 @@ ggplot(unique_1caller_hotspots[,c("caller","t_alt_count")],
 
 Strelka has majority of the unique calls with a wide distribution of t_alt_count. Some calls from lancet,mutect2 are below the red line which denotes t_alt_count==5.
 
-## Save maf format
+## Merge the combined hotspots with consensus 
+
+We will first filter `combined_hotspot_calls` to keep only rows that are not found in `consensus_maf_file`
 ```{r}
 
+check_with_consensus<- consensus_maf_file %>%
+  mutate("consensus"="Yes") %>%
+  select(-one_of(unique_cols),-VAF,-vcf_pos)
+
 combined_hotspot_calls %>%
-  select(-caller_count,-caller,-Amino_Acid_Position) %>%
-  bind_rows(consensus_maf_file) %>%
-  write_tsv(gzfile(output_file), na = ".")
+  select(-caller_count,-caller,-Amino_Acid_Position,-unique_cols,-VAF,-vcf_pos) %>%
+  mutate(hotspot="Yes") %>%
+  left_join(check_with_consensus) %>%
+  filter(is.na(consensus))
+
 
 ```
 
