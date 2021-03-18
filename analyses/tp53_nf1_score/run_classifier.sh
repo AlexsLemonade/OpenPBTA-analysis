@@ -56,14 +56,17 @@ Rscript -e "rmarkdown::render('${analysis_dir}/02-qc-rna_expression_score.Rmd')"
 # subset cnv where tp53 is lost
 Rscript -e "rmarkdown::render('${analysis_dir}/03-tp53-cnv-loss-domain.Rmd')"
 
-# gather TP53 altered status
+# subset SV where tp53 is lost
 Rscript -e "rmarkdown::render('${analysis_dir}/04-tp53-altered-annotation.Rmd')"
 
+# gather TP53 altered status
+Rscript -e "rmarkdown::render('${analysis_dir}/05-tp53-altered-annotation.Rmd')"
+
 # evaluate classifer scores for stranded data
-python3 ${analysis_dir}/05-evaluate-classifier.py -s ${analysis_dir}/results/TP53_NF1_snv_alteration.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv -c ${data_dir}/pbta-histologies.tsv -o stranded
+python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/TP53_NF1_snv_alteration.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv -c ${data_dir}/pbta-histologies.tsv -o stranded
 
 # Skip poly-A steps in CI
 if [ "$POLYA" -gt "0" ]; then
-  python3 ${analysis_dir}/05-evaluate-classifier.py -s ${analysis_dir}/results/TP53_NF1_snv_alteration.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv -c ${data_dir}/pbta-histologies.tsv -o polya
+  python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/TP53_NF1_snv_alteration.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv -c ${data_dir}/pbta-histologies.tsv -o polya
 fi
 
