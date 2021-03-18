@@ -280,7 +280,7 @@ jobs:
           command: ./scripts/run_in_ci.sh bash analyses/survival-analysis/run_survival.sh
 
       - run:
-         name: hotspots
+         name: Scavenge back hotspots
          command: ./scripts/run_in_ci.sh bash analyses/hotspots-detection/run_overlaps_hotspot.sh
 
   deploy:
