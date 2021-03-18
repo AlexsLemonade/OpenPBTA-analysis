@@ -279,6 +279,10 @@ jobs:
           name: Run survival plots
           command: ./scripts/run_in_ci.sh bash analyses/survival-analysis/run_survival.sh
 
+      - run:
+         name: hotspots
+         command: ./scripts/run_in_ci.sh bash analyses/hotspots-detection/run_overlaps_hotspot.sh
+
   deploy:
     machine:
       docker_layer_caching: true
