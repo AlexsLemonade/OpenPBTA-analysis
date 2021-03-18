@@ -65,22 +65,13 @@ filterMaf <- function(table,
     )
 
     # subset by genomic region hotspot_database
-    calls_base_g <- IRanges::mergeByOverlaps(calls_base_gr, genomic_hotspot_gr)
+    calls_base_g <- IRanges::subsetByOverlaps(calls_base_gr, genomic_hotspot_gr)
 
-    calls_base_g_filt <- data.frame(
-      Chromosome = as.character(GenomicRanges::seqnames(calls_base_g$calls_base_gr)),
-      Start_Position = as.integer(GenomicRanges::start(calls_base_g$calls_base_gr)),
-      End_Position = as.integer(GenomicRanges::end(calls_base_g$calls_base_gr))
-    ) %>%
-      bind_cols(as.data.frame(calls_base_g[, -which(colnames(calls_base_g) %in% c(
-        "Chromosome",
-        "Start_Position",
-        "End_Position",
-        "calls_base_gr",
-        "genomic_hotspot_gr",
-        "hotspot_database"
-      ))])) %>%
-      dplyr::select(-"Hugo_Symbol.1") %>%
+    calls_base_g_filt <- as.data.frame(calls_base_g) %>%
+      rename(Chromosome=seqnames,
+             Start_Position=start,
+             End_Position=end) %>%
+      select(-width,-strand) %>%
       unique()
   }
 
