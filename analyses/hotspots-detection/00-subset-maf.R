@@ -41,10 +41,8 @@ maf_coltypes <- readRDS(file.path("input", "maf_coltypes.RDS"))
 # More description about maf format is available
 # [here](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/)
 
-maf_df <- data.table::fread(opt$maffile,
-  stringsAsFactors = FALSE,
-  colClasses = maf_coltypes,
-  col.names = names(maf_coltypes)
+maf_df <- read_tsv(opt$maffile,
+  col_names = names(maf_coltypes)
 )
 
 mskcc_cancer_hotspot_folder <- opt$cancer_hotspot_folder
