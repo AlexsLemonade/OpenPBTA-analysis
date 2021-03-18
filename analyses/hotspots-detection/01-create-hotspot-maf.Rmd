@@ -1,0 +1,146 @@
+---
+title: "Create consensus hotspot maf"
+author: Krutika Gaonkar for D3b
+output: html_notebook
+
+---
+
+In the previous step we gather all known cancer hotspots by scavenging calls by
+- checking for overlap with amino acid positions in a curated and published cancer hotspot [database](https://www.cancerhotspots.org/files/hotspots_v2.xls)
+- checking for overlap with non-coding region hotspots mutations , here we are using the in TERT promoter region
+
+In this notebook, we will create consensus mafs from the filtered call `scratch/hotspot-detection/*RDS`. Since there are slight differences in read support from each caller, we will take a mean value to provide the information per site in the consensus maf file. All other vcf2maf columns will be added from strelka/mutect2  
+
+## Setup
+```{r}
+library("tidyverse")
+library("maftools")
+
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+
+results_dir <- file.path(root_dir,
+                         "analyses",
+                         "hotspots-detection",
+                         "results")
+# Make output folder
+if (!dir.exists(results_dir )) {
+  dir.create(results_dir , recursive = TRUE)
+}
+
+scratch_dir <- file.path(
+  root_dir,
+  "scratch",
+  "hotspot-detection"
+)
+
+# combined hotspot calls
+combined_hotspot_calls <- list.files(path = scratch_dir,pattern = ".RDS",full.names = TRUE) %>%
+  map(readRDS) %>% 
+  bind_rows()
+
+# hotspot mutation maf file output
+output_file <- file.path(results_dir,"pbta-snv-hotspots-mutation.maf.tsv.gz")
+
+
+# PBTA consensus maf 
+maf_coltypes <- readRDS(file.path("input","maf_coltypes.RDS"))
+consensus_maf_file <- read_tsv(file.path(data_dir,"pbta-snv-consensus-mutation.maf.tsv.gz"),
+                               col_types = readr::cols(Entrez_Gene_Id = readr::col_character(),
+                                                       ALLELE_NUM = readr::col_character(),
+                                                       vcf_pos = readr::col_character(),
+                                                       vcf_qual = readr::col_number()))
+
+```
+
+## Gather consensus maf file for hotspots
+
+The main tasks are:
+ - calculate a mean of read supports for REF and ALT from multiple callers which can be slightly different for the consenus maf file
+ - create a maf format output to be appended on to the 3/3 consensus maf file
+
+```{r warning=FALSE }
+
+unique_cols <- c("t_depth",
+                 "n_depth",
+                 "t_ref_count",
+                 "n_ref_count",
+                 "t_alt_count",
+                 "n_alt_count",
+                 "caller",
+                 "vcf_qual")
+
+
+combined_hotspot_calls <- combined_hotspot_calls %>%
+  unique() %>%
+  group_by_at(setdiff(names(combined_hotspot_calls), unique_cols)) %>%
+  summarise(
+            t_depth= mean(as.numeric(t_depth)),
+            n_depth = mean(as.numeric(n_depth)),
+            t_ref_count = mean(as.numeric(t_ref_count)),
+            n_ref_count = mean(as.numeric(n_ref_count)),
+            t_alt_count = mean(as.numeric(t_alt_count)),
+            n_alt_count = mean(as.numeric(n_alt_count)),
+            caller_count = n(),
+            caller = toString(caller),
+            vcf_qual = mean(as.numeric(vcf_qual))) %>% 
+  ungroup() %>%
+  mutate(VAF=t_alt_count/(t_ref_count+t_alt_count))
+
+```
+
+## Mean read support for combination of callers
+
+We will try to identify the read support for each combination of callers to visualize if any callers call hostspot sites with low read support calls which
+```{r}
+
+ggplot(combined_hotspot_calls[,c("caller","caller_count","t_alt_count")],
+       aes(x=as.factor(caller_count),y=t_alt_count))+
+  geom_violin()+ 
+  ggpubr::stat_compare_means()
+
+```
+Hotspot sites called by just 1 caller seem to have majority low read support. Lets look at these calls that are unique to 1 caller.
+
+```{r}
+
+unique_1caller_hotspots<- combined_hotspot_calls %>%
+  filter(caller_count==1)
+
+unique_1caller_hotspots
+```
+
+What's the distrbution of the t_alt_count
+```{r}
+
+summary.caller <- unique_1caller_hotspots %>%  
+  group_by(caller) %>%
+  tally()
+
+
+ggplot(unique_1caller_hotspots[,c("caller","t_alt_count")],
+       aes(x=as.factor(caller),y=t_alt_count))+
+  geom_violin()+ 
+  geom_jitter(height = 0, width = 0.1) +
+  # add number of calls at the top
+  geom_text(data=summary.caller ,aes(x = caller, y = 350, label=n), fontface =2, size = 4)+
+  # draw a line where t_alt_count==5
+  geom_hline(aes(yintercept=5,color="red"))+
+  theme(legend.position="none")
+
+
+```
+
+Strelka has majority of the unique calls with a wide distribution of t_alt_count. Some calls from lancet,mutect2 are below the red line which denotes t_alt_count==5.
+
+## Save maf format
+```{r}
+
+combined_hotspot_calls %>%
+  select(-caller_count,-caller,-Amino_Acid_Position) %>%
+  bind_rows(consensus_maf_file) %>%
+  write_tsv(gzfile(output_file), na = ".")
+
+```
+
+
