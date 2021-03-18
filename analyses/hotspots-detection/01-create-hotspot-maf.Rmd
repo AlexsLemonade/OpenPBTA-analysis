@@ -56,11 +56,43 @@ consensus_maf_file <- read_tsv(file.path(data_dir,"pbta-snv-consensus-mutation.m
 ## Gather consensus maf file for hotspots
 
 The main tasks are:
+ - filter `combined_hotspot_calls` to calls that are not found in consensus calls
  - calculate a mean of read supports for REF and ALT from multiple callers which can be slightly different for the consenus maf file
- - create a maf format output to be appended on to the 3/3 consensus maf file
-
+ 
 ```{r warning=FALSE }
 
+# These columns provide unique values 
+# to check for exact in the 2 dataframes
+join_cols <- c("Hugo_Symbol",
+               "Entrez_Gene_Id",
+               "NCBI_Build",
+               "Chromosome",
+               "Start_Position",
+               "End_Position",
+               "Strand",
+               "Variant_Classification",
+               "Variant_Type",
+               "Reference_Allele",
+               "Tumor_Seq_Allele1",
+               "Tumor_Seq_Allele2",
+               "Tumor_Sample_Barcode")
+
+# Select or add columns required 
+consensus_site_check <- select(consensus_maf_file,join_cols) %>%
+  mutate(consensus = "Yes")
+
+# Filter combined_hotspot_calls to calls that are only
+# found form the hotspot scavenging analysis
+combined_maf_hotspots_filt <- combined_hotspot_calls %>%
+  mutate(hotspot = "Yes") %>%
+  left_join(consensus_site_check,
+          by = join_cols) %>% 
+  unique() %>% 
+  filter(is.na(consensus)) 
+
+# These columns are unique to each caller maf file.
+# Read support and quality are intrinsic values gathered
+# from the tools calling the variant so can vary in values.
 unique_cols <- c("t_depth",
                  "n_depth",
                  "t_ref_count",
@@ -70,9 +102,9 @@ unique_cols <- c("t_depth",
                  "caller",
                  "vcf_qual")
 
-
-combined_hotspot_calls <- combined_hotspot_calls %>%
-  unique() %>%
+# Gather mean values in `unique_cols` such that 
+# calls from multiple callers are summarised as 1 unique row
+combined_maf_hotspots_filt <- combined_maf_hotspots_filt %>%
   group_by_at(setdiff(names(combined_hotspot_calls), unique_cols)) %>%
   summarise(
             t_depth= mean(as.numeric(t_depth)),
@@ -85,7 +117,8 @@ combined_hotspot_calls <- combined_hotspot_calls %>%
             caller = toString(caller),
             vcf_qual = mean(as.numeric(vcf_qual))) %>% 
   ungroup() %>%
-  mutate(VAF=t_alt_count/(t_ref_count+t_alt_count))
+  # calculate VAF
+  mutate(VAF = t_alt_count/(t_alt_count+t_ref_count))
 
 ```
 
@@ -94,23 +127,26 @@ combined_hotspot_calls <- combined_hotspot_calls %>%
 We will try to identify the read support for each combination of callers to visualize if any callers call hostspot sites with low read support calls which
 ```{r}
 
-ggplot(combined_hotspot_calls[,c("caller","caller_count","t_alt_count")],
+ggplot(combined_maf_hotspots_filt[,c("caller","caller_count","t_alt_count")],
        aes(x=as.factor(caller_count),y=t_alt_count))+
   geom_violin()+ 
   ggpubr::stat_compare_means()
 
 ```
-Hotspot sites called by just 1 caller seem to have majority low read support. Lets look at these calls that are unique to 1 caller.
+Hotspot sites called by just 1 caller seem to have majority low read support and a few are found in 3 caller ( now captured in 3 callers because of the variant being present in vardict)
+
+Lets look at these calls that are unique to 1 caller.
 
 ```{r}
 
-unique_1caller_hotspots<- combined_hotspot_calls %>%
+unique_1caller_hotspots <- combined_maf_hotspots_filt %>%
   filter(caller_count==1)
 
 unique_1caller_hotspots
 ```
+There are 33 calls that are only called by 1 caller.
 
-What's the distrbution of the t_alt_count
+What's the distrbution of the t_alt_count in calls only supported by 1 caller?
 ```{r}
 
 summary.caller <- unique_1caller_hotspots %>%  
@@ -131,22 +167,17 @@ ggplot(unique_1caller_hotspots[,c("caller","t_alt_count")],
 
 ```
 
-Strelka has majority of the unique calls with a wide distribution of t_alt_count. Some calls from lancet,mutect2 are below the red line which denotes t_alt_count==5.
+mutect2 has majority of the unique calls with a wide distribution of t_alt_count. Some calls from lancet,mutect2 are below the red line which denotes t_alt_count==5.
 
 ## Merge the combined hotspots with consensus 
 
-We will first filter `combined_hotspot_calls` to keep only rows that are not found in `consensus_maf_file`
+We will now create a maf file with hotspots called uniquely from `combined_hotspot_calls` to `consensus_maf_file`
 ```{r}
 
-check_with_consensus<- consensus_maf_file %>%
-  mutate("consensus"="Yes") %>%
-  select(-one_of(unique_cols),-VAF,-vcf_pos)
+combined_maf_hotspots_filt %>%
+  bind_rows(consensus_maf_file) %>%
+  write_tsv(gzfile(output_file),na = ".")
 
-combined_hotspot_calls %>%
-  select(-caller_count,-caller,-Amino_Acid_Position,-unique_cols,-VAF,-vcf_pos) %>%
-  mutate(hotspot="Yes") %>%
-  left_join(check_with_consensus) %>%
-  filter(is.na(consensus))
 
 
 ```
