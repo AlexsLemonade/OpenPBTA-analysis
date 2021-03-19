@@ -116,9 +116,24 @@ No sample_ids with a SV within or overlapping TP53 have low expression of TP53!
 
 ## Save high confidence SV associated with TP53 loss
 ```{r}
-
-# only saving sv_with_loss_cnv here
-# because sv_with_lowexpr is empty
-sv_with_loss_cnv %>% write_tsv(file.path(results_dir, "sv_overlap_tp53.tsv"))
+if (nrow(sv_with_lowexpr) == 0) {
+  # only saving sv_with_loss_cnv here
+  # because sv_with_lowexpr is empty
+  sv_with_loss_cnv %>% 
+    write_tsv(file.path(results_dir, "sv_overlap_tp53.tsv"))
+} else if (nrow(sv_with_loss_cnv) == 0) {
+  # only saving sv_with_lowexpr here
+  # because sv_with_loss_cnv is empty
+  sv_with_lowexpr %>% 
+    write_tsv(file.path(results_dir, "sv_overlap_tp53.tsv"))
+} else {
+  # bind rows of both sv_with_lowexpr
+  # and sv_with_loss_cnv and save
+  bind_rows(
+    sv_with_loss_cnv,
+    sv_with_lowexpr
+  ) %>%
+    write_tsv(file.path(results_dir, "sv_overlap_tp53.tsv"))
+}
 ```
 
