@@ -57,7 +57,7 @@ Rscript -e "rmarkdown::render('${analysis_dir}/02-qc-rna_expression_score.Rmd')"
 Rscript -e "rmarkdown::render('${analysis_dir}/03-tp53-cnv-loss-domain.Rmd')"
 
 # subset SV where tp53 is lost
-Rscript -e "rmarkdown::render('${analysis_dir}/04-tp53-altered-annotation.Rmd')"
+Rscript -e "rmarkdown::render('${analysis_dir}/04-tp53-sv-loss.Rmd')"
 
 # gather TP53 altered status
 Rscript -e "rmarkdown::render('${analysis_dir}/05-tp53-altered-annotation.Rmd')"
