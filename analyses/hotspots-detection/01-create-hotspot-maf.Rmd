@@ -167,7 +167,7 @@ ggplot(unique_1caller_hotspots[,c("caller","t_alt_count")],
 
 ```
 
-mutect2 has majority of the unique calls with a wide distribution of t_alt_count. Some calls from lancet,mutect2 are below the red line which denotes t_alt_count==5.
+mutect2 has majority of the unique calls. However, some calls from lancet,mutect2 are below the red line which denotes t_alt_count==5.
 
 ## Merge the combined hotspots with consensus 
 
