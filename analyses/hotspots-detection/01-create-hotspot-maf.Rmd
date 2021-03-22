@@ -40,7 +40,7 @@ combined_hotspot_calls <- list.files(path = scratch_dir,pattern = ".RDS",full.na
   bind_rows()
 
 # hotspot mutation maf file output
-output_file <- file.path(results_dir,"pbta-snv-hotspots-mutation.maf.tsv.gz")
+output_file <- file.path(results_dir,"pbta-snv-hotspots-plus-consensus.maf.tsv.gz")
 
 
 # PBTA consensus maf 
@@ -167,7 +167,7 @@ ggplot(unique_1caller_hotspots[,c("caller","t_alt_count")],
 
 ```
 
-mutect2 has majority of the unique calls. However, some calls from lancet,mutect2 are below the red line which denotes t_alt_count==5.
+lancet and vardict have majority of the unique calls. However, some calls from lancet,mutect2 and vardict seem to be below the red line which denotes t_alt_count==5.
 
 ## Merge the combined hotspots with consensus 
 
