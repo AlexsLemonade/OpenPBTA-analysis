@@ -27,10 +27,16 @@ filterMaf <- function(table,
     as.data.frame() %>%
     dplyr::mutate(
       Amino_Acid_Position =
-        # format of Protein_position is 594/766
-      # [Amino_Acid_Position/ Protein_length]
-      # stripping protein length here to get Amino_Acid_Position
-      gsub("/.*", "", Protein_position)
+        case_when(
+          !grepl("splice",HGVSp_Short) ~
+            # format of Protein_position is 594/766
+            # [Amino_Acid_Position/ Protein_length]
+            # stripping protein length here to get Amino_Acid_Position
+            gsub("/.*", "", Protein_position),
+          grepl("splice",HGVSp_Short) ~
+            # since these sites are intronic sites adding
+            # HGSVp_Short instead of Protein_position
+            gsub("p[.]","",HGVSp_Short))
     ) %>%
     mutate(
       Start_Position = as.numeric(Start_Position),
