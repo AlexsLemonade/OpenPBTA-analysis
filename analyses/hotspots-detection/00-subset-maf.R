@@ -70,45 +70,18 @@ if (!dir.exists(results_dir)) {
 
 # MSKCC cancer hotspot file is divided into snv and indels
 # in 2 tabs in the excel file provided in their [database](https://www.cancerhotspots.org/#/download)
-# We will combine the 2 sheets to create a `hotspot_database_amino_acid` dataframe
-
-# MSKCC cancer database
+# we have subsetted the files to contain only Hugo_Symbol + Amino_Acid_Position
+# AND
+# for indels we divide into Amino_Acid_Start and Amino_Acid_End 
+# encompassing the total region where indels were identified as 
+# hotspots
+#
+# Read in MSKCC cancer database 
 hotspot_database_2017_snv <- read_tsv(file.path(mskcc_cancer_hotspot_folder, "hotspot_database_2017_snv.tsv"))
-hotspot_database_2017_indel <- read_tsv(file.path(mskcc_cancer_hotspot_folder, "hotspot_database_2017_indel.tsv")) %>%
-  # gathering exact Variant_Amino_Acid changes to overlap from their cohort
-  # since multiple variants are associated with a large combined indel region 
-  # in hotspot_database_2017_indel.tsv
-  # For example 27-42 is associated with V28_E33del,N39_N42del,A36_N39delinsD
-  dplyr::mutate(Amino_Acid_Position=
-                  # extracting the first and second amino acid site
-                  unlist(
-                    lapply(str_match_all(Variant_Amino_Acid,"\\d+"), 
-                           function(x) 
-                             if (length(x)==1){
-                               x[1]
-                             } else {
-                               paste(c(x[1],x[2]),collapse = "-")  
-                             }
-                    )
-                  )
-  )
-
-hotspot_database_amino_acid <- bind_rows(hotspot_database_2017_snv, hotspot_database_2017_indel) %>%
-  dplyr::select("Amino_Acid_Position", "Hugo_Symbol") %>%
-  dplyr::mutate(hotspot_database = "MSKCC") %>%
-  unique() %>%
-  as.data.frame()
+hotspot_database_2017_indel <- read_tsv(file.path(mskcc_cancer_hotspot_folder, "hotspot_database_2017_indel.tsv")) 
 
 # TERT promoter region
 hotspot_database_genomic <- read_tsv(genomic_region_file)
-
-# Gather Hugo_Symnol from both cancer hotspot and genomic regions to filter maf files
-# This way we can directly filter large mafs into smaller manageable sizes to
-# check for overlaps
-gene_table <- data.frame("Hugo_Symbol" = c(
-  hotspot_database_amino_acid$Hugo_Symbol,
-  hotspot_database_genomic$Hugo_Symbol
-))
 
 print(paste("Subsetting", caller, "maf for hotspots"))
 
@@ -123,7 +96,8 @@ source("utils/filterMaf.R")
 
 maf_subset <- filterMaf(maf_df,
   impact_values = c("HIGH", "MODERATE", "MODIFIER"),
-  hotspot_amino_acid_position_df = hotspot_database_amino_acid,
+  hotspot_database_2017_snv_df = hotspot_database_2017_snv,
+  hotspot_database_2017_indel_df = hotspot_database_2017_indel,
   hotspot_genomic_site_df = hotspot_database_genomic
 ) %>%
   mutate(caller = caller)
