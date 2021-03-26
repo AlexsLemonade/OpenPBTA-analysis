@@ -2,8 +2,11 @@
 #' and filters as per given user filtering options
 #' @param table a maf format dataframe
 #' @param impact_values list of IMPACT [optional] values to filter
-#' @param hotspot_amino_acid_position_df  [optional] dataframe with Hugo_Sybol, Amino_Acid_Position
-#' and hotspot_database columns
+#' @param hotspot_database_2017_snv_df [optional] dataframe with Hugo_Sybol, Amino_Acid_Position
+#' from tab `SNV_hotspot` of https://www.cancerhotspots.org/files/hotspots_v2.xls
+#' @param hhotspot_database_2017_indel_df [optional] dataframe with Hugo_Sybol, Amino_Acid_Start and
+#' Amino_Acid_End columns symbolizing the start and end of the hotspot region in tab `INDEL_hotspot` 
+#' of https://www.cancerhotspots.org/files/hotspots_v2.xls
 #' @param hotspot_genomic_site_df [optional] dataframe with Hugo_Symbol and Chromosome, Start_Position ,
 #' End_Position, Hugo_Symbol and hotspot_database columns
 #' @return A dataframe with base columns from maf filtered as per user input for Variant_Classification
