@@ -22,6 +22,7 @@ mkdir -p $tmp_dir
 # given a list of callers 
 for caller in strelka2 mutect2 lancet vardict; do
     # create a new file to store gene filtered maf 
+    rm -f $tmp_dir/pbta-snv-${caller}.vep.genefiltered.maf
     touch $tmp_dir/pbta-snv-${caller}.vep.genefiltered.maf
     # filter maf for genes in mskcc hotspot tsv files
     awk 'FNR==NR {arr[$1];next} $1 in arr' ${cancer_hotspot_folder}/hotspot_database_2017_snv.tsv  <(gunzip -c ../../data/pbta-snv-${caller}.vep.maf.gz)  >> $tmp_dir/pbta-snv-${caller}.vep.genefiltered.maf
