@@ -42,7 +42,7 @@ maf_coltypes <- readRDS(file.path("input", "maf_coltypes.RDS"))
 # [here](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/)
 
 maf_df <- read_tsv(opt$maffile,
-  col_names = names(maf_coltypes)
+  col_types = maf_coltypes
 )
 
 mskcc_cancer_hotspot_folder <- opt$cancer_hotspot_folder
@@ -77,8 +77,11 @@ if (!dir.exists(results_dir)) {
 # hotspots
 #
 # Read in MSKCC cancer database 
-hotspot_database_2017_snv <- read_tsv(file.path(mskcc_cancer_hotspot_folder, "hotspot_database_2017_snv.tsv"))
-hotspot_database_2017_indel <- read_tsv(file.path(mskcc_cancer_hotspot_folder, "hotspot_database_2017_indel.tsv")) 
+hotspot_database_2017_snv <- read_tsv(file.path(mskcc_cancer_hotspot_folder, "hotspot_database_2017_snv.tsv"),
+                                      col_types = readr::cols(Amino_Acid_Position = readr::col_character()))
+hotspot_database_2017_indel <- read_tsv(file.path(mskcc_cancer_hotspot_folder, "hotspot_database_2017_indel.tsv"),
+                                        col_types = readr::cols(Amino_Acid_Start = readr::col_double(),
+                                                                Amino_Acid_End = readr::col_double())) 
 
 # TERT promoter region
 hotspot_database_genomic <- read_tsv(genomic_region_file)
