@@ -1,7 +1,7 @@
 #' Takes a table from an individual caller in maf format
 #' and filters as per given user filtering options
 #' @param table a maf format dataframe
-#' @param impact_values list of IMPACT [optional] values to filter
+#' @param impact_values vector of IMPACT [optional] values to filter
 #' @param hotspot_amino_acid_position_df  [optional] dataframe with Hugo_Sybol, Amino_Acid_Position
 #' and hotspot_database columns
 #' @param hotspot_genomic_site_df [optional] dataframe with Hugo_Symbol and Chromosome, Start_Position ,
@@ -132,4 +132,3 @@ filterMaf <- function(table,
     return(calls_base)
   }
 }
-
