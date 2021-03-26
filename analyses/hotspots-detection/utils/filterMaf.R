@@ -74,10 +74,9 @@ filterMaf <- function(table,
       # calls$start >= hotspot_indel$start and
       # calls$end <= hotspot_indel$stop
       # start and end could be “?” (question mark) which is used to indicate unknown positions as well
-      filter( (Amino_Acid_Start.calls_base >= Amino_Acid_Start.hotspot_indel_df | Amino_Acid_Start.calls_base=="?")
-              &
-               (Amino_Acid_End.calls_base <= Amino_Acid_End.hotspot_indel_df | Amino_Acid_End.calls_base == "?")
-              ) %>%
+      filter(Amino_Acid_Start.calls_base <= Amino_Acid_End.hotspot_indel_df | Amino_Acid_Start.calls_base=="?",
+             Amino_Acid_End.calls_base >= Amino_Acid_Start.hotspot_indel_df | Amino_Acid_End.calls_base == "?"
+             ) %>%
       select(-starts_with("Amino_Acid_"))
     
     calls_base_aa_filt <- bind_rows( calls_base_aa_filt_match,
@@ -133,6 +132,5 @@ filterMaf <- function(table,
     return(calls_base)
   }
 }
-
 
 
