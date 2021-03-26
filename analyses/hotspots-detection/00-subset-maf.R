@@ -86,7 +86,7 @@ hotspot_database_genomic <- read_tsv(genomic_region_file)
 print(paste("Subsetting", caller, "maf for hotspots"))
 
 source("utils/filterMaf.R")
-# prepMaf will filter the input given maf file, given a
+# filterMaf will filter the input given maf file, given a
 # - dataframe of hotspot_amino_acid_position_df to
 # check for Amino_Acid_Position overlaps per Hugo_Symbol
 # - dataframe of hotspot_genomic_site_df to check for
