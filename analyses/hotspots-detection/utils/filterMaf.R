@@ -1,4 +1,4 @@
-#' Takes a sqllite table from an individual caller in maf format
+#' Takes a table from an individual caller in maf format
 #' and filters as per given user filtering options
 #' @param table a maf format dataframe
 #' @param impact_values list of IMPACT [optional] values to filter
@@ -132,5 +132,4 @@ filterMaf <- function(table,
     return(calls_base)
   }
 }
-
 
