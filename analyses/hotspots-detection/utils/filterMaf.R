@@ -46,15 +46,22 @@ filterMaf <- function(table,
           grepl("Splice_Site",Variant_Classification) ~
             # since these sites are intronic sites adding
             # HGSVp_Short instead of Protein_position
+            # in the format of `X000_splice`
             gsub("p[.]","",HGVSp_Short))
-    ) %>%
-    mutate(
-      Start_Position = as.numeric(Start_Position),
-      End_Position = as.numeric(End_Position)
-    )
+    ) 
 
+  # stop if both SNV+splice and INDEL hotspot is not provided as MSKCC hotspot database
+  if (!missing(hotspot_database_2017_snv_df) & missing(hotspot_database_2017_indel_df)){
+    stop("Provide complete mskcc hotspot; Indel hotspot is missing ")
+  } else if (missing(hotspot_database_2017_snv_df) & !missing(hotspot_database_2017_indel_df)){
+    stop("Provide complete mskcc hotspot; SNV+ splice hotspot is missing ")
+  }
+  
+  
   if (!missing(hotspot_database_2017_snv_df) & !missing(hotspot_database_2017_indel_df)) {
-    # filter by amino acid hotspot_database
+    # filter by amino acid or HGSVp_Short values
+    # for splice sites by matching Amino_Acid_Position in
+    # hotspot_database_2017_snv_df
     calls_base_aa_filt_match <- calls_base %>%
       dplyr::inner_join(hotspot_database_2017_snv_df,
         by = c("Amino_Acid_Position", "Hugo_Symbol")
@@ -81,11 +88,6 @@ filterMaf <- function(table,
              Amino_Acid_End.calls_base >= Amino_Acid_Start.hotspot_indel_df | Amino_Acid_End.calls_base == "?"
              ) %>%
       select(-starts_with("Amino_Acid_"))
-    
-    calls_base_aa_filt <- bind_rows( calls_base_aa_filt_match,
-                                     calls_base_aa_filt_indel)
-    
-    
   }
 
   if (!missing(hotspot_genomic_site_df)) {
@@ -110,26 +112,28 @@ filterMaf <- function(table,
     calls_base_g <- IRanges::subsetByOverlaps(calls_base_gr, genomic_hotspot_gr)
 
     calls_base_g_filt <- as.data.frame(calls_base_g) %>%
-      rename(Chromosome=seqnames,
+      dplyr::rename(Chromosome=seqnames,
              Start_Position=start,
              End_Position=end) %>%
-      select(-width,-strand,-Amino_Acid_Position) %>%
+      dplyr::select(-width,-strand,-Amino_Acid_Position) %>%
       unique()
   }
 
-  if (!missing(hotspot_genomic_site_df) & !missing(hotspot_database_2017_snv_df) & !missing(hotspot_database_2017_indel_df)) {
+  if (!missing(hotspot_database_2017_snv_df) & !missing(hotspot_database_2017_indel_df)) {
+    # merge snv and indel hotspot filtered df
+    calls_base_combined <- bind_rows( calls_base_aa_filt_match,
+                                     calls_base_aa_filt_indel)
+    if (!missing(hotspot_genomic_site_df)) {
     # if both amino acid and genomic region hotspot are provided
     calls_base_combined <- bind_rows(
-      calls_base_aa_filt,
+      calls_base_combined,
       calls_base_g_filt
     )
+    }
     return(calls_base_combined)
-  } else if (!missing(hotspot_genomic_site_df)) {
+  } else if (!missing(hotspot_genomic_site_df))  {
     # if only genomic region hotspot is provided
     return(calls_base_g_filt)
-  } else if (!missing(hotspot_database_2017_snv_df) & !missing(hotspot_database_2017_indel_df)) {
-    # if only amino acid hotspot is provided
-    return(calls_base_aa_filt)
   } else {
     # if no hotspot list/region is provided return base filtered calls
     return(calls_base)
