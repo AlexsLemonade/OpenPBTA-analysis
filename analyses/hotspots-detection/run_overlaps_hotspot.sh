@@ -25,7 +25,8 @@ for caller in strelka2 mutect2 lancet vardict; do
     rm -f $tmp_dir/pbta-snv-${caller}.vep.genefiltered.maf
     touch $tmp_dir/pbta-snv-${caller}.vep.genefiltered.maf
     # create unique list of genes in hotspot files to filter
-    cat ${cancer_hotspot_folder}/hotspot_database_2017_snv.tsv ${cancer_hotspot_folder}/hotspot_database_2017_indel.tsv|cut -f 1 > $tmp_dir/hotspot_genes.txt
+    echo "Hugo_Symbol" > $tmp_dir/hotspot_genes.txt
+    cat ${cancer_hotspot_folder}/hotspot_database_2017_snv.tsv ${cancer_hotspot_folder}/hotspot_database_2017_indel.tsv|cut -f 1| grep -v "Hugo_Symbol"|sort|uniq >> $tmp_dir/hotspot_genes.txt
     # filter maf for genes in mskcc hotspot tsv files
     # if FNR==NR which will only be the case while reading $tmp_dir/hotspot_genes.txt
     # make an array `arr` with the gene names
