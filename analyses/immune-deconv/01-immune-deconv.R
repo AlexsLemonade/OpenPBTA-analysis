@@ -1,6 +1,6 @@
 # Author: Komal S. Rathi
 # Function:
-# Script to perform immune characterization using xCell.
+# Script to perform immune characterization using immunedeconv, uses xCell by default.
 
 # Find the root directory of this repository
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -39,6 +39,13 @@ stranded <- opt$strandedexprs
 clin_file <- opt$clin
 deconv_method <- opt$method
 output_file <- opt$outputfile
+
+#### Check model parameter - must be in deconvolution_methods (immunedeconv accepted options)
+if (!is.null(deconv_method)){
+  if (!(deconv_method %in% deconvolution_methods)) {
+    stop( paste(c("Specified method not available. Must be one of the following: ", deconvolution_methods), collapse=" ") )
+  }
+}
 
 # merge expression from polya and stranded data on common genes
 polya <- readRDS(polya)
