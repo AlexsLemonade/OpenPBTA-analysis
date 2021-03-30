@@ -104,45 +104,21 @@ sigs_input <- deconstructSigs::mut.to.sigs.input(
   bsg = BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
 )
 
+# Extract signatures
+extracted_signatures <- sigfit::extract_signatures(
+  counts = sigs_input,
+  nsignatures = num_signatures,
+  iter = opt$num_iterations,
+  seed = opt$seed
+)
 
-full_extraction <- list()
-
-# Check with small iter
-for (run_seed in 1:10)
-{
-  cat("RUNNING SEED", run_seed, "===================================")
-  # Extract signatures
-  extracted_signatures <- sigfit::extract_signatures(
-    counts = sigs_input,
-    nsignatures = 2:30, #num_signatures,
-    iter = 10000, #opt$num_iterations,
-    seed = 1 #opt$seed
-  )
-  
-  pdf(paste0("gof_seed_",run_seed, ".pdf"), width = 7, height = 7)
-  sigfit::plot_gof(extracted_signatures)
-  dev.off()
-  full_extraction[[run_seed]] <- extracted_signatures
-  readr::write_rds(extracted_signatures, path = paste0("gof_seed_",run_seed, "_output"), compress = "gz")
-}
-
-# model	
-#Name of the model to sample from. Admits character values 
-# "multinomial" (default), 
-# "poisson", 
-# "negbin", # helpful for overdispersion where some samples are weakly mutated. *a more noise robust version of poisson*
-# "normal", #nah 
-# "nmf" (an alias for "multinomial"),    <- WHAT
-# and "emu" (an alias for "poisson").
-
-# Why are all the plots broken? Bad pdf?
 # If user specifies a plot output, save the goodness-of-fit plot at that 
 # location
-#if (!is.null(opt$plot_output)) {
-#  pdf(opt$plot_output, width = 7, height = 7)
-#  sigfit::plot_gof(extracted_signatures)
-#  dev.off()
-#}
+if (!is.null(opt$plot_output)) {
+  pdf(opt$plot_output, width = 7, height = 7)
+  sigfit::plot_gof(extracted_signatures)
+  dev.off()
+}
 
 # Write the extracted signatures list to (compressed) RDS file
-#readr::write_rds(extracted_signatures, path = opt$output_file, compress = "gz")
+readr::write_rds(extracted_signatures, path = opt$output_file, compress = "gz")
