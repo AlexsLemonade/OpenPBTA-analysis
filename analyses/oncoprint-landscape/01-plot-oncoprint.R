@@ -234,6 +234,7 @@ oncoplot(
   fontSize = 0.7,
   colors = oncoprint_col_palette,
   annotationColor = annotation_colors,
-  bgCol = "#F5F5F5"
+  bgCol = "#F5F5F5",
+  top = 25
 )
 dev.off()
