@@ -172,6 +172,26 @@ if (nrow(display_group_df) > 17) {
 }
 ```
 
+# Make `display_order`
+
+Get ranks in order of big to small and make them into a new column in `display_group_df`. 
+We will always want the "normal", "benign", "other_tumor" groups to come last so we will push then to the end of the factor order. 
+
+```{r}
+display_order_df <- display_group_df %>% 
+  dplyr::mutate(display_group = forcats::fct_reorder(display_group, n, .desc = TRUE) %>%
+                  forcats::fct_relevel("benign", "other tumor", "normal", after = Inf),
+                display_order = as.numeric(display_group)) # save the factor order for text table export
+```
+
+Add on the `display_order` column using `inner_join`.
+
+```{r}
+histology_table <- histology_table %>%
+  # Join on the display orders
+  dplyr::inner_join(display_order_df, by = "display_group") 
+```
+
 # Add hex codes 
 
 These hex codes were retrieved from http://phrogz.net/css/distinct-colors.html with the settings on default for 18 colors.
