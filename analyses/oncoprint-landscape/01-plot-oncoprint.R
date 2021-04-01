@@ -90,6 +90,12 @@ option_list <- list(
             genes to include on oncoprint"
   ),
   optparse::make_option(
+    c("-b", "--broad_histology"),
+    type = "character",
+    default = NULL,
+    help = "optional name of `broad_histology` value to plot associated oncoprint"
+  ),
+  optparse::make_option(
     c("-p", "--png_name"),
     type = "character",
     default = NULL,
@@ -177,6 +183,12 @@ metadata <- metadata %>%
   # Reorder display_group based on display_order
   dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
 
+# Filter to the metadata associated with the broad histology value, if provided
+if (!is.null(opt$broad_histology)) {
+  metadata <- metadata %>%
+    dplyr::filter(broad_histology == opt$broad_histology)
+}
+
 # Read in the oncoprint color palette
 oncoprint_col_palette <- readr::read_tsv(file.path(
   root_dir,
@@ -215,7 +227,7 @@ maf_object <- prepare_maf_object(
 # Given a maf object, plot an oncoprint of the variants in the
 # dataset and save as a png file.
 png(
-  file.path(plots_dir, opt$png_name),
+  file.path(plots_dir, tolower(opt$png_name)),
   width = 65,
   height = 30,
   units = "cm",
