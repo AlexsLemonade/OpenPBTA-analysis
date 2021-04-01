@@ -107,8 +107,7 @@ For the CBTTC samples, the `pathology_diagnosis` fields are harmonized, so we ca
 ```{r}
 exact_path_dx<- c(
   "High-grade glioma/astrocytoma (WHO grade III/IV)",
-  "Brainstem glioma- Diffuse intrinsic pontine glioma",
-  "Gliomatosis Cerebri"
+  "Brainstem glioma- Diffuse intrinsic pontine glioma"
 )
 ```
 
@@ -136,12 +135,6 @@ filtered_on_dx_df
 Let's tally the values in `pathology_diagnosis` in this data frame.
 
 
-## Pathology free text inclusion criteria
-```{r}
-
-```
-
-
 ```{r}
 filtered_on_dx_df %>%
   count(pathology_diagnosis) %>%
@@ -150,14 +143,14 @@ filtered_on_dx_df %>%
 
 We are not including any samples with pathology diagnoses outside of what we should include for subtyping.
 
-### Save the strings we'll use downstream
+## Pathology free text diagnosis inclusion criteria
 Gliomatosis Cerebri can be high grade glioma or low grade glioma so we will add an inclusion criteria for v18 release to only keep `Gliomatosis Cerebri` samples if pathology_free_text_diagnosis as `anaplastic gliomatosis cerebri (who grade 4)`
 ```{r}
 gliomatosis_path_free_text_exact = "anaplastic gliomatosis cerebri (who grade 4)"
 ```
 
 
-
+### Save the strings we'll use downstream
 Create a list with the strings we'll use for inclusion.
 
 ```{r}
