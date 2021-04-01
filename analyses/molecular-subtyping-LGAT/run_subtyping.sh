@@ -16,3 +16,4 @@ if [ "$SUBSET" -gt "0" ]; then
 
 fi
 
+Rscript -e "rmarkdown::render('04-LGAT-compile-subtypes.Rmd')"
