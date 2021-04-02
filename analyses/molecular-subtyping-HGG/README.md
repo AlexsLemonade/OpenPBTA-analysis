@@ -31,6 +31,7 @@ This notebook looks at what `pathology_diagnosis` and `pathology_free_text_diagn
 
 [`00-HGG-select-pathology-dx.R`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/00-HGG-select-pathology-dx.R) gathers the exact matches for inclusion in the `pathology_diagnosis` and `pathology_free_text_diagnosis` which are saved in [`hgg-subset/hgg_subtyping_path_dx_strings.json`](hgg-subset/hgg_subtyping_path_dx_strings.json), which is used downstream in `02-HGG-molecular-subtyping-subset-files` to generate subset files.
 
+
 [`01-HGG-molecular-subtyping-defining-lesions.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/01-HGG-molecular-subtyping-defining-lesions.nb.html) is a notebook written to look at the high-grade glioma defining lesions (_H3F3A_ K28M, _H3F3A_ G35R/V, _HIST1H3B_ K28M, _HIST1H3C_ K28M, _HIST2H3C_ K28M) for all tumor samples except LGAT in the PBTA dataset. This notebook produces a results table found at `results/HGG_defining_lesions.tsv`.
 
 `02-HGG-molecular-subtyping-subset-files.R` is a script written to subset the copy number, gene expression, fusion, mutation, SNV and GISTIC's broad values files to include only samples that meet one of the following criteria: 1) with defining lesions 2) have `pathology_diagnosis` values that match those in [`hgg-subset/hgg_subtyping_path_dx_strings.json`](hgg-subset/hgg_subtyping_path_dx_strings.json) 3) are in the PNOC003 cohort.

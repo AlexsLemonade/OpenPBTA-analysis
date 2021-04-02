@@ -138,7 +138,11 @@ tumor_metadata_df <- metadata %>%
 # Samples included on the basis of the pathology diagnosis fields
 path_dx_df <- tumor_metadata_df %>%
   # Inclusion on the basis of CBTTC harmonized pathology diagnoses
-  filter(pathology_diagnosis %in% path_dx_list$exact_path_dx)
+  filter(pathology_diagnosis %in% path_dx_list$exact_path_dx |
+         # Inclusion based on pathology free text diagnosis
+         pathology_free_text_diagnosis ==path_dx_list$gliomatosis_path_free_text_exact)
+  
+
 
 # PNOC003 trial samples - the pathology diagnoses are not harmonized so we need
 # to go by the cohort field
