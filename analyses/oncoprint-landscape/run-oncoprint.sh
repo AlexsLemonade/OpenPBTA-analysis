@@ -7,7 +7,7 @@ set -e
 set -o pipefail
 
 # Print oncoprints by broad histology - will not by default
-RUN_BROAD_HISTOLOGY=${RUN_BROAD_HISTOLOGY:-0}
+HISTOLOGY=${RUN_BROAD_HISTOLOGY:-0}
 
 # This script should always run as if it were being called from
 # the directory it lives in.
@@ -30,7 +30,6 @@ primary_filename="all_participants_primary_only"
 primaryplus_filename="all_participants_primary-plus"
 focal_directory=../focal-cn-file-preparation/results
 focal_cnv_file=${focal_directory}/consensus_seg_most_focal_cn_status.tsv.gz
-broadHistologies=("Lymphoma" "Meningioma")
 
 # each element of the array is a file that contains genes of interest
 genes_list=("../interaction-plots/results/gene_disease_top50.tsv" \
@@ -38,7 +37,7 @@ genes_list=("../interaction-plots/results/gene_disease_top50.tsv" \
 # join into a string, where file paths are separated by commas
 genes_list=$(join_by , "${genes_list[@]}")
 
-#### Primary only oncoprint
+### Primary only oncoprint
 
 Rscript --vanilla 00-map-to-sample_id.R \
   --maf_file ${maf_consensus} \
@@ -50,7 +49,7 @@ Rscript --vanilla 00-map-to-sample_id.R \
   --independent_specimens ../../data/independent-specimens.wgs.primary.tsv
 
 # If we don't want to print oncoprints by broad histology
-if [[ RUN_BROAD_HISTOLOGY == "0" ]]
+if [ $HISTOLOGY == "0" ];
 then
 
   Rscript --vanilla 01-plot-oncoprint.R \
@@ -68,20 +67,24 @@ then
     --metadata_file ${histologies_file} \
     --goi_list ${genes_list} \
     --png_name ${primary_filename}_goi_oncoprint.png
-  
+
 else
- 
-  # If we want to print oncoprints by broad histology
-  for histology in ${broadHistologies[@]}; do
- 
+
+  for histology in "Low-grade astrocytic tumor" \
+  "Embryonal tumor" \
+  "Diffuse astrocytic and oligodendroglial tumor" \
+  "Ependymal tumor" \
+  "Other CNS"
+  do
+  
     Rscript --vanilla 01-plot-oncoprint.R \
       --maf_file ${intermediate_directory}/${primary_filename}_maf.tsv \
       --cnv_file ${intermediate_directory}/${primary_filename}_cnv.tsv \
       --fusion_file ${intermediate_directory}/${primary_filename}_fusions.tsv \
       --metadata_file ${histologies_file} \
-      --png_name ${primary_filename}_${histology}_oncoprint.png \
-      --broad_histology ${histology}
-
+      --png_name ${primary_filename}_"$histology"_oncoprint.png \
+      --broad_histology "$histology"
+      
     # Genes of interest only version of oncoprint
     Rscript --vanilla 01-plot-oncoprint.R \
       --maf_file ${intermediate_directory}/${primary_filename}_maf.tsv \
@@ -89,11 +92,11 @@ else
       --fusion_file ${intermediate_directory}/${primary_filename}_fusions.tsv \
       --metadata_file ${histologies_file} \
       --goi_list ${genes_list} \
-      --png_name ${primary_filename}_${histology}_goi_oncoprint.png \
-      --broad_histology ${histology}
-      
+      --png_name ${primary_filename}_"${histology}"_goi_oncoprint.png \
+      --broad_histology "${histology}"
+    
   done
-  
+
 fi
 
 #### Primary plus samples oncoprint
@@ -108,7 +111,7 @@ Rscript --vanilla 00-map-to-sample_id.R \
   --independent_specimens ../../data/independent-specimens.wgs.primary-plus.tsv
 
 # If we don't want to print oncoprints by broad histology
-if [[ RUN_BROAD_HISTOLOGY == "0" ]]
+if [ $HISTOLOGY == "0" ];
 then
 
   Rscript --vanilla 01-plot-oncoprint.R \
@@ -130,25 +133,30 @@ then
 else
 
   # If we want to print oncoprints by broad histology
-  for histology in ${broadHistologies[@]}; do
+  for histology in "Low-grade astrocytic tumor" \
+  "Embryonal tumor" \
+  "Diffuse astrocytic and oligodendroglial tumor" \
+  "Ependymal tumor" \
+  "Other CNS"
+  do
 
     Rscript --vanilla 01-plot-oncoprint.R \
-      --maf_file ${intermediate_directory}/${primary_filename}_maf.tsv \
-      --cnv_file ${intermediate_directory}/${primary_filename}_cnv.tsv \
-      --fusion_file ${intermediate_directory}/${primary_filename}_fusions.tsv \
+      --maf_file ${intermediate_directory}/${primaryplus_filename}_maf.tsv \
+      --cnv_file ${intermediate_directory}/${primaryplus_filename}_cnv.tsv \
+      --fusion_file ${intermediate_directory}/${primaryplus_filename}_fusions.tsv \
       --metadata_file ${histologies_file} \
-      --png_name ${primary_filename}_${histology}_oncoprint.png \
-      --broad_histology ${histology}
+      --png_name ${primaryplus_filename}_"$histology"_oncoprint.png \
+      --broad_histology "$histology"
 
     # Genes of interest only version of oncoprint
     Rscript --vanilla 01-plot-oncoprint.R \
-      --maf_file ${intermediate_directory}/${primary_filename}_maf.tsv \
-      --cnv_file ${intermediate_directory}/${primary_filename}_cnv.tsv \
-      --fusion_file ${intermediate_directory}/${primary_filename}_fusions.tsv \
+      --maf_file ${intermediate_directory}/${primaryplus_filename}_maf.tsv \
+      --cnv_file ${intermediate_directory}/${primaryplus_filename}_cnv.tsv \
+      --fusion_file ${intermediate_directory}/${primaryplus_filename}_fusions.tsv \
       --metadata_file ${histologies_file} \
       --goi_list ${genes_list} \
-      --png_name ${primary_filename}_${histology}_goi_oncoprint.png \
-      --broad_histology ${histology}
+      --png_name ${primaryplus_filename}_"$histology"_goi_oncoprint.png \
+      --broad_histology "$histology"
   done
 
 fi

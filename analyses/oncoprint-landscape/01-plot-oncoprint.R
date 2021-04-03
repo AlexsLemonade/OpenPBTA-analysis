@@ -162,18 +162,13 @@ if (!is.null(opt$goi_list)) {
   goi_list <- unique(unlist(goi_list))
 }
 
-# Read in recurrent focal CNVs file
-if (!is.null(opt$focal_file)) {
-  focal_df <- readr::read_tsv(file.path(opt$focal_file))
-}
-
 #### Set up oncoprint annotation objects --------------------------------------
 # Read in histology standard color palette for project
 histology_label_mapping <- readr::read_tsv(
   file.path(root_dir,
             "figures",
             "palettes", 
-            "histology_label_color_table.tsv")) %>% 
+            "histology_label_color_table.tsv")) %>%
   # Select just the columns we will need for plotting
   dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes)
 
@@ -185,8 +180,46 @@ metadata <- metadata %>%
 
 # Filter to the metadata associated with the broad histology value, if provided
 if (!is.null(opt$broad_histology)) {
-  metadata <- metadata %>%
-    dplyr::filter(broad_histology == opt$broad_histology)
+  
+  if (!opt$broad_histology == "Other CNS") {
+    metadata <- metadata %>%
+      dplyr::filter(broad_histology == opt$broad_histology)
+  } else {
+    metadata <- metadata %>%
+      dplyr::filter(
+        broad_histology %in% c(
+          "Tumors of sellar region",
+          "Neuronal and mixed neuronal-glial tumor",
+          "Tumor of cranial and paraspinal nerves	",
+          "Meningioma",
+          "Mesenchymal non-meningothelial tumor	",
+          "Germ cell tumor",
+          "Choroid plexus tumor	",
+          "Histiocytic tumor",
+          "Tumor of pineal region",
+          "Metastatic tumors",
+          "Other astrocytic tumor",
+          "Lymphoma",
+          "Melanocytic tumor",
+          "Other tumor"
+        )
+      )
+  }
+  
+  # There's a duplicated `Tumor_Sample_Barcode` column that we will want to
+  # remove before filtering `maf_df`
+  maf_df <- maf_df[, -16]
+  
+  # Now filter the remaining data files
+  maf_df <- maf_df %>%
+    dplyr::filter(Tumor_Sample_Barcode %in% metadata$Tumor_Sample_Barcode)
+  
+  cnv_df <- cnv_df %>%
+    dplyr::filter(Tumor_Sample_Barcode %in% metadata$Tumor_Sample_Barcode)
+  
+  fusion_df <- fusion_df %>%
+    dplyr::filter(Tumor_Sample_Barcode %in% metadata$Tumor_Sample_Barcode)
+  
 }
 
 # Read in the oncoprint color palette
@@ -227,7 +260,7 @@ maf_object <- prepare_maf_object(
 # Given a maf object, plot an oncoprint of the variants in the
 # dataset and save as a png file.
 png(
-  file.path(plots_dir, tolower(opt$png_name)),
+  file.path(plots_dir, tolower(gsub(" ", "-", opt$png_name))),
   width = 65,
   height = 30,
   units = "cm",
