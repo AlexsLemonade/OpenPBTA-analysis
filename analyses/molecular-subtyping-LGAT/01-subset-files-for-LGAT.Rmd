@@ -267,27 +267,35 @@ H3.3_mut | harbors an H3F3A K28M or G35R/V mutation
 ```{r}
 consensusMutationSubset <- lgat_dna_df %>%
   left_join(consensusMutationSubset,by=c("Kids_First_Biospecimen_ID"="Tumor_Sample_Barcode")) %>%
-  reshape2::dcast(Kids_First_Biospecimen_ID + sample_id~ Hugo_Symbol) %>%
-  dplyr::mutate(BRAF_V600E_mut = if_else(BRAF>=1,"Yes","No"),
-                FGFR_mut = if_else(rowSums(
-                  dplyr::select(.,snvOI$FGFR$gene)) >=1,"Yes","No"),
-                IDH_mut  = if_else(any(colnames(.) %in% snvOI$IDH$gene) & 
-                                     rowSums(dplyr::select(.,one_of(snvOI$IDH$gene))) >=1,
+  reshape2::dcast(Kids_First_Biospecimen_ID + sample_id~ Hugo_Symbol,
+                  fun.aggregate = length) %>%
+  dplyr::mutate(BRAF_V600E_mut = if_else(any(colnames(.) %in% snvOI$BRAF_V600E$gene) & 
+                                     rowSums(dplyr::select(.,one_of(snvOI$BRAF_V600E$gene))) >=1,
+                                     "Yes","No"),
+                FGFR_mut = if_else(any(colnames(.) %in% snvOI$FGFR$gene) & 
+                                     rowSums(dplyr::select(.,one_of(snvOI$FGFR$gene))) >=1
+                                     ,"Yes","No"),
+                IDH_mut  = if_else(any(colnames(.) %in% snvOI$IDH1$gene) & 
+                                     rowSums(dplyr::select(.,one_of(snvOI$IDH1$gene))) >=1,
                                    "Yes","No"),
-                H3.1_mut = if_else(rowSums(
-                  dplyr::select(.,one_of(c("HIST1H3B","HIST1H3C")))) >=1 ,"Yes","No"), 
+                H3.1_mut = if_else(any(colnames(.) %in% c("HIST1H3B","HIST1H3C")) & 
+                                     rowSums(dplyr::select(.,one_of(c("HIST1H3B","HIST1H3C")))) >=1,
+                                   "Yes","No"), 
                 # No HIST1H3C, HIST2H3C, or H3F3A mutations found
                 H3.2_mut = if_else(any(colnames(.) %in% snvOI$HIST2H3C$gene) & 
                                      rowSums(dplyr::select(.,one_of(snvOI$HIST2H3C$gene))) >=1,
                                    "Yes","No"), 
                 H3.3_mut = if_else(any(colnames(.) %in% c("H3F3A","H3F3B")) & 
                                      rowSums(dplyr::select(.,one_of(c("H3F3A","H3F3B")))) >= 1 ,"Yes","No"),
-                MAPK_mut  = if_else(
-                  rowSums(dplyr::select(.,one_of(snvOI$MAPK$gene)))>=1,"Yes","No"),
-                RTK_mut  = if_else(
-                  rowSums(dplyr::select(.,one_of(snvOI$RTK$gene)))>=1,"Yes","No"),
-                NF1_mut = if_else(
-                  rowSums(dplyr::select(.,one_of(snvOI$NF1$gene)))>=1,"Yes","No") ) %>%
+                MAPK_mut  = if_else(any(colnames(.) %in% snvOI$MAPK$gene) & 
+                                     rowSums(dplyr::select(.,one_of(snvOI$MAPK$gene))) >=1,
+                                             "Yes","No"),
+                RTK_mut  = if_else(any(colnames(.) %in% snvOI$RTK$gene) & 
+                                     rowSums(dplyr::select(.,one_of(snvOI$RTK$gene))) >=1,
+                                   "Yes","No"),
+                NF1_mut = if_else(any(colnames(.) %in% snvOI$NF1$gene) & 
+                                     rowSums(dplyr::select(.,one_of(snvOI$NF1$gene))) >=1,
+                                  "Yes","No") ) %>%
   dplyr::select("Kids_First_Biospecimen_ID","sample_id",ends_with("mut")) %>%
   dplyr::arrange(Kids_First_Biospecimen_ID, sample_id)
 consensusMutationSubset 
