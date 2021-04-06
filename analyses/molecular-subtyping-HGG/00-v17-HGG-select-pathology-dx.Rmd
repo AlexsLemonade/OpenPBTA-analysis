@@ -110,11 +110,11 @@ Let's take a look at a first attempt using these terms as described above.
 
 ```{r}
 filtered_on_dx_df <- histologies_df %>%
-  dplyr::filter(pathology_diagnosis %in% exact_path_dx | 
+  filter(pathology_diagnosis %in% exact_path_dx | 
             cohort == "PNOC003",
          # Exclude normal samples when filtering on cohort
          sample_type != "Normal") %>%
-  dplyr::select(Kids_First_Biospecimen_ID, 
+  select(Kids_First_Biospecimen_ID, 
          sample_id, 
          Kids_First_Participant_ID,
          pathology_diagnosis,
