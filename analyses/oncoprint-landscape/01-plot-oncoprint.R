@@ -190,11 +190,11 @@ if (!is.null(opt$broad_histology)) {
         broad_histology %in% c(
           "Tumors of sellar region",
           "Neuronal and mixed neuronal-glial tumor",
-          "Tumor of cranial and paraspinal nerves	",
+          "Tumor of cranial and paraspinal nerves",
           "Meningioma",
-          "Mesenchymal non-meningothelial tumor	",
+          "Mesenchymal non-meningothelial tumor",
           "Germ cell tumor",
-          "Choroid plexus tumor	",
+          "Choroid plexus tumor",
           "Histiocytic tumor",
           "Tumor of pineal region",
           "Metastatic tumors",
@@ -205,10 +205,6 @@ if (!is.null(opt$broad_histology)) {
         )
       )
   }
-  
-  # There's a duplicated `Tumor_Sample_Barcode` column that we will want to
-  # remove before filtering `maf_df`
-  maf_df <- maf_df[, -16]
   
   # Now filter the remaining data files
   maf_df <- maf_df %>%
