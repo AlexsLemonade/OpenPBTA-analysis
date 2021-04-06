@@ -18,7 +18,7 @@ exact_path_dx<- c(
 # glioma so we will add an inclusion criteria for v18 release 
 # to only keep `Gliomatosis Cerebri` samples if pathology_free_text_diagnosis
 # as `anaplastic gliomatosis cerebri (who grade 4)`
-gliomatosis_path_free_text_exact = "anaplastic gliomatosis cerebri (who grade 4)"
+gliomatosis_path_free_text_exact <- "anaplastic gliomatosis cerebri (who grade 4)"
 
 # Create a list with the strings we'll use for inclusion.
 terms_list <- list(exact_path_dx = exact_path_dx,
