@@ -17,7 +17,7 @@ Rscript -e "rmarkdown::render('02-subset-fusion-files-LGAT.Rmd')"
 
 if [ "$SUBSET" -gt "0" ]; then
 # subset by CNV
-Rscript -e "rmarkdown::render('03-subset-cnv-files-LGAT.Rmd')"
+  Rscript -e "rmarkdown::render('03-subset-cnv-files-LGAT.Rmd')"
 fi
 
 
