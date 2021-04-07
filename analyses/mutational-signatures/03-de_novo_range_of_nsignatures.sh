@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# J. Taroni for ALSF CCDL
+# JN Taroni for ALSF CCDL & SJ Spielman
 # 2020
 
 set -e
@@ -13,31 +13,45 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 QUICK_MUTSIGS=${QUICK_MUTSIGS:-0}
 
 scratch_dir=../../scratch/mutational-signatures
-denovo_plot_dir=plots/denovo
-
-# if abbreviated mutsigs is "true", we'll run only one number of signatures and
-# for an unacceptably low number of iterations to do any analysis with
-if [ "$QUICK_MUTSIGS" -gt "0" ]
-then
-  FLOOR=10
-  CEILING=10
-  NUM_ITER=10
-else
-  FLOOR=5
-  CEILING=15
-  NUM_ITER=1000
-fi
+denovo_plot_dir=plots/denovo/gof
 
 # Directory to hold the goodness-of-fit plot
 mkdir -p $denovo_plot_dir
 
-# De novo signatures extraction
-Rscript --vanilla \
-  scripts/de_novo_signature_extraction.R \
-  --maf_file "${scratch_dir}/pbta-snv-consensus-wgs.tsv.gz" \
-  --nsignatures_floor $FLOOR \
-  --nsignatures_ceiling $CEILING \
-  --num_iterations $NUM_ITER \
-  --seed 42 \
-  --output_file "results/denovo_sigfit_signatures.RDS" \
-  --plot_output "${denovo_plot_dir}/denovo_sigfit_${FLOOR}_to_${CEILING}_gof.pdf"
+# The MAF file we'll use is going to WGS samples only
+maf_file=${scratch_dir}/pbta-snv-consensus-wgs.tsv.gz
+
+# If abbreviated mutsigs is "true", we'll extract 3 signatures using
+# an unacceptably low number of iterations to do any analysis with
+if [ "$QUICK_MUTSIGS" -gt "0" ]
+then
+  # De novo signatures extraction
+  Rscript --vanilla \
+    scripts/de_novo_signature_extraction.R \
+    --maf_file ${maf_file} \
+    --nsignatures_floor 3 \
+    --nsignatures_ceiling 3 \
+    --num_iterations 10 \
+    --seed 42 
+else
+  for model in multinomial poisson; do
+    for seed in {1..5}; do
+      for nsignatures in {2..8}; do
+
+         # De novo signatures extraction
+         Rscript --vanilla \
+           scripts/de_novo_signature_extraction.R \
+           --maf_file ${maf_file} \
+           --nsignatures_floor ${nsignatures} \
+           --nsignatures_ceiling ${nsignatures} \
+           --num_iterations 1000 \
+           --model ${model}
+           --seed ${seed} \
+           --plot_output "${denovo_plot_dir}/gof_seed_${seed}_model_${model}.pdf"
+      
+      done
+    done
+  done
+
+fi
+
