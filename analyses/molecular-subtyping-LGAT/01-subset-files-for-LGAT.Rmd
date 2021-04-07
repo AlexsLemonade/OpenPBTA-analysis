@@ -121,7 +121,7 @@ snvOI <- jsonlite::fromJSON(file.path(root_dir,
 # Collapse multiple hotspots in genes with "|" so easy grep calls
 BRAF_hotspot <-paste(snvOI$BRAF_V600E$hotspot[!is.na( snvOI$BRAF_V600E$hotspot)],collapse = "|")
 FGFR_hotspot <-paste(snvOI$FGFR$hotspot[!is.na( snvOI$FGFR$hotspot)],collapse = "|")
-IDH_hotspot<- paste(snvOI$IDH$hotspot[!is.na( snvOI$IDH$hotspot)],collapse = "|")
+IDH1_hotspot<- paste(snvOI$IDH1$hotspot[!is.na( snvOI$IDH1$hotspot)],collapse = "|")
 ```
 
 
@@ -177,8 +177,8 @@ consensusMutationSubset <- consensusMutation %>%
       
       # get IDH mutation status
       # hostspot mutations
-      grepl(IDH_hotspot,HGVSp_Short) & 
-      Hugo_Symbol %in% snvOI$IDH$gene | # OR
+      grepl(IDH1_hotspot,HGVSp_Short) & 
+      Hugo_Symbol %in% snvOI$IDH1$gene | # OR
       
       # get histone mutation status
       # H3F3A canonical mutations
@@ -271,12 +271,12 @@ consensusMutationSubset <- lgat_dna_df %>%
   dplyr::mutate(BRAF_V600E_mut = if_else(BRAF>=1,"Yes","No"),
                 FGFR_mut = if_else(rowSums(
                   dplyr::select(.,snvOI$FGFR$gene)) >=1,"Yes","No"),
-                # No IDH HIST1H3C, HIST2H3C, or H3F3A mutations found
                 IDH_mut  = if_else(any(colnames(.) %in% snvOI$IDH$gene) & 
                                      rowSums(dplyr::select(.,one_of(snvOI$IDH$gene))) >=1,
                                    "Yes","No"),
                 H3.1_mut = if_else(rowSums(
                   dplyr::select(.,one_of(c("HIST1H3B","HIST1H3C")))) >=1 ,"Yes","No"), 
+                # No HIST1H3C, HIST2H3C, or H3F3A mutations found
                 H3.2_mut = if_else(any(colnames(.) %in% snvOI$HIST2H3C$gene) & 
                                      rowSums(dplyr::select(.,one_of(snvOI$HIST2H3C$gene))) >=1,
                                    "Yes","No"), 
@@ -289,7 +289,7 @@ consensusMutationSubset <- lgat_dna_df %>%
                 NF1_mut = if_else(
                   rowSums(dplyr::select(.,one_of(snvOI$NF1$gene)))>=1,"Yes","No") ) %>%
   dplyr::select("Kids_First_Biospecimen_ID","sample_id",ends_with("mut")) %>%
-dplyr::arrange(Kids_First_Biospecimen_ID, sample_id)
+  dplyr::arrange(Kids_First_Biospecimen_ID, sample_id)
 consensusMutationSubset 
 ```
 
