@@ -1,11 +1,31 @@
 # SNV caller comparison analysis
 
-This analysis evaluates [MAF files](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from different SNV callers, compares their output, and creates a [consensus mutation file](./results/consensus/consensus_mutation.maf.tsv.zip).
+This analysis evaluates [MAF files](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from different SNV callers, compares their output, and creates a consensus mutation file.
 This consensus mutation file is [MAF-like](#consensus-mutation-call) meaning it is TSV file that contains the fields of a [MAF file](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) but adds [VAF](#variant-allele-fraction-calculation), but does not contain a starting comment line with a version number.
 
 The resulting MAF and TMB files from this analysis are saved to `snv-callers/results/consensus/` folder and used by downstream analyses.
 
-See the comparison results plots [here](https://cansavvy.github.io/openpbta-notebook-concept/snv-callers/compare_snv_callers_plots.nb.html).
+Consensus mutations saved to `pbta-snv-consensus-mutation.maf.tsv.gz` are decided from agreement of [3 out of 3 of the snv callers used](#02-merge_callersr).
+Four callers were originally run but VarDict was dropped from downstream analysis because it called a large number (~39 million) of very low VAF mutations that were unique to it, suggesting that most of these were likely to be false positive calls.
+~1.2 million mutations were called by all three of Mutect2, Strelka2, and Lancet and ended up in the consensus file.
+~5 million calls would be in the consensus set if we loosened the inclusion criteria to be identified by 2 out of 3 of these callers.
+
+These three callers' performances (Mutect2, Strelka2, and Lancet) were compared in [Narzisi et al](https://www.nature.com/articles/s42003-018-0023-9.pdf).
+The overlap of all three was used for the consensus calls since their [data](https://static-content.springer.com/esm/art%3A10.1038%2Fs42003-018-0023-9/MediaObjects/42003_2018_23_MOESM1_ESM.pdf) suggested that overlapping more callers would reduce the number of false positives (Supplementary Figure 13, panel d):
+
+![Narzisi et. al, 2018](figure/Narzisi-et-al-2018-false-positive-venn.png)
+
+> d) Venn diagrams of the number of false positive indels within STRs for Lancet, MuTect2, Strelka2, and LoFreq. Short tandem repeats are defined as sequences composed of at least 7bp (total length), where the repeat sequence is between 1bp and 4bp, and is repeated at least 3 times. Homopolymers are reported separately for each base pair (A,C,G,T), while other STRs whose motif is composed of more than one single base are	grouped together.
+
+(Narzisi, G., et al. 2018, _Commun Biol_)
+
+Their use of medulloblastoma in their investigation further led us to believe this would be generalizable to this use case.
+This diagram here shows Short Tandem Repeats (STRs) which according to Narzisi et al, were the regions with the worst false positive rates for each of the callers.
+We expect that the reduction in false positive rates with the combinations of more callers might also hold true in non-STR regions.
+
+Tumor Mutation Burden calculations only used Mutect2 and Strelka2 agreement due to [Lancet's calling particularly low VAF mutations for WXS sample data](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers/lancet-wxs-tests) and [its apparent coding region bias](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/snv-callers/compare_snv_callers_plots.nb.html#mutation_region_barplot) compared to the other callers.
+
+See comparison of the performances of all four original callers used [here for PBTA data](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/snv-callers/compare_snv_callers_plots.nb.html) and [here for TCGA data](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/snv-callers/compare_snv_callers_plots-tcga.nb.html).
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -39,11 +59,11 @@ The TCGA data is processed by its own script to run the same methods:
 bash run_caller_consensus_analysis-tcga.sh
 ```
 
-**Note** All file paths set in these bash scripts are based on finding the root directory of this Git repository and therefore are given relative to `OpenPBTA-analysis`. 
+**Note** All file paths set in these bash scripts are based on finding the root directory of this Git repository and therefore are given relative to `OpenPBTA-analysis`.
 
 This bash script will return:
 
-- Comparison plots in a notebook: [`compare_snv_callers_plots.nb.html`](https://cansavvy.github.io/openpbta-notebook-concept/snv-callers/compare_snv_callers_plots.nb.html).
+- Comparison plots in a notebook: [`compare_snv_callers_plots.nb.html`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/snv-callers/compare_snv_callers_plots.nb.html) and [`compare_snv_callers_plots-tcga.nb.html`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/snv-callers/compare_snv_callers_plots-tcga.nb.html).
 - A zip file containing:
 - `(pbta|tcga)-snv-consensus-mutation.maf.tsv` - [MAF-like files](#consensus-mutation-call) that contain the snvs that were called by all callers described below for a given sample.
   These files combine the [MAF file data](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) from 3 different SNV callers: [Mutect2](https://software.broadinstitute.org/cancer/cga/mutect), [Strelka2](https://github.com/Illumina/strelka), and [Lancet](https://github.com/nygenome/lancet).
@@ -107,7 +127,7 @@ intersection_wxs_strelka_mutect_CDS_genome_size
 ## General usage of scripts
 
 **Overall notes about these scripts:**
-- All file paths are based on finding the root directory of this Git repository and therefore are given relative to `OpenPBTA-analysis`. 
+- All file paths are based on finding the root directory of this Git repository and therefore are given relative to `OpenPBTA-analysis`.
 - The scripts are sequential as noted by their number.
 - By default, the scripts will not overwrite existing files of the same name. However,
 this can be overridden with `--overwrite` option.
@@ -170,5 +190,10 @@ Two TMB files are created, one including *all snv* and a *coding snvs only*, the
  --coding_bed_wxs : File path that specifies the BED regions file to be used for the
                  denominator for coding only TMB for WXS samples.
  --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
- --tcga: If used will skip PBTA metadata specific steps and do TCGA metdata steps.
+ --tcga: If used will skip PBTA metadata specific steps and do TCGA metadata steps.
+ --nonsynfilter_maf: If used will filter out synonymous mutations, keep
+                     non-synonymous mutations, according to maftools definition.
+ --nonsynfilter_focr: If used will filter out synonymous mutations, keep
+                      non-synonymous mutations, according to Friends of Cancer
+                       Research definition.
 ```

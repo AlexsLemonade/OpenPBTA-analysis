@@ -10,5 +10,11 @@
 # If someone tests running things in CI locally, we don't want this tracked
 open_pbta_envs.txt
 
+# Ignore jupyter checkpoint folders
+.ipynb_checkpoints
+
 # Result of running docker image locally. Should not be tracked
 .rstudio/
+
+# Ignore all .pyc files
+*.pyc

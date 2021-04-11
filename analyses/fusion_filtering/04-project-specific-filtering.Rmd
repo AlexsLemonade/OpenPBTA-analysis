@@ -39,6 +39,14 @@ params:
     label: "results folder for *tsv files"
     value: results
     input: string
+  base_run:
+    label: "1/0 to run with base histology"
+    value: 0
+    input: integer
+  base_histology:
+    label: "Base histology file"
+    value: data/pbta-histologies-base.tsv
+    input: file
 ---
 
 
@@ -88,8 +96,13 @@ fusion_calls<-QCGeneFiltered_filtFusion %>% mutate(FusionName=rm_between(.data$F
 group<-params$group
 
 # get histology file
+if ( params$base_run ==0 ){
 clinical<-read.delim(file.path(root_dir, params$histology), stringsAsFactors = FALSE)
 clinical<-clinical[,c("Kids_First_Biospecimen_ID","Kids_First_Participant_ID",group)]
+} else {
+clinical<-read.delim(file.path(root_dir, params$base_histology), stringsAsFactors = FALSE)
+clinical<-clinical[,c("Kids_First_Biospecimen_ID","Kids_First_Participant_ID",group)]
+}
 
 # Least number of callers
 numCaller<-params$numCaller
@@ -107,6 +120,10 @@ print("Raw calls from STARfusion and Arriba for PBTA")
 table(fusion_calls$Caller)
 ```
 
+### Aggregate 
+
+If FusionName is called by multiple callers we will have a column 'CalledBy'
+to specify that multiple callers "Caller1,Caller2" have called it
 
 ```{r}
 
@@ -121,8 +138,65 @@ fusion_caller.summary <- fusion_calls %>%
 #to add aggregated caller from fusion_caller.summary
 fusion_calls<-fusion_calls %>% 
   left_join(fusion_caller.summary,by=(c("Sample","FusionName","Fusion_Type"))) %>%
-  dplyr::select(-JunctionReadCount,-SpanningFragCount,-Confidence,-LeftBreakpoint,-RightBreakpoint) %>% unique()
+  unique()
+```
 
+### Idenitify kinase domain retention status
+
+Kinase domainIDs are obtained pfam by a simple grep "kinase" in their Name
+
+```{r}
+# identify kinase domain from bioMartPfam dataframe provided with annoFuse
+bioMartDataPfam <- readRDS(system.file("extdata", "pfamDataBioMart.RDS", package = "annoFuse"))
+
+# look for domains with "kinase" in their domain Name
+kinaseid<-unique(bioMartDataPfam[grep("kinase",bioMartDataPfam$NAME),
+                                 c("pfam_id","NAME")] ) 
+
+kinaseid
+```
+
+Through annoFuse::fusion_driver domain retention status for given kinase pfamID is being added per Gene1A (5' Gene) and Gene1B (3' Gene)
+```{r}
+fusion_calls <- annoFuse::fusion_driver(fusion_calls,
+                                  annotated = TRUE,
+                                  checkDomainStatus=TRUE,
+                                  # check status for given pfamID
+                                  domainsToCheck=kinaseid$pfam_id,
+                                  # we don't want to filter for putative driver fusion yet
+                                  filterPutativeDriver = FALSE
+                                  )
+```
+
+### Adding check to see if reciprocal fusion exists
+
+```{r}
+
+# check for fusions have reciprocal fusions in the same Sample
+# works only for GeneY -- GeneX ; GeneX -- GeneY matches
+reciprocal_fusion <- function(FusionName,Sample,standardFusioncalls ){
+  Gene1A <- strsplit(FusionName,"--")[[1]][1]
+  Gene1B <- strsplit(FusionName,"--")[[1]][2]
+  reciprocal <- paste0(Gene1B,"--",Gene1A)
+  check <- any(standardFusioncalls$FusionName[standardFusioncalls$Sample==Sample] == reciprocal)
+  df <- data.frame("FusionName"=FusionName,"Sample"=Sample,"reciprocal_exists"=check)
+}
+
+# run reciprocal_fusion function to get status of fusion if reciprocal
+is_reciprocal <- apply(fusion_calls,1,function(x) reciprocal_fusion(x["FusionName"],x["Sample"],fusion_calls))
+
+# convert list to dataframe
+is_reciprocal<-data.frame(Reduce(rbind, is_reciprocal))
+
+# merge to reciprocal status to fusion calls
+fusion_calls <- fusion_calls %>%
+  dplyr::left_join(is_reciprocal,by=c("Sample","FusionName"))
+
+```
+
+### Filter Putative Oncogene fusions
+
+``` {r}
 #merge with histology file
 fusion_calls<-merge(fusion_calls,clinical,by.x="Sample",by.y="Kids_First_Biospecimen_ID")
 
@@ -136,6 +210,7 @@ putative_driver_annotated_fusions <- fusion_calls %>%
 
 ```
 
+### Other non-Oncogenic fusions filtering
 
 ```{r}
 # remove local rearrangements
@@ -174,7 +249,7 @@ sample.count <- fusion_calls %>%
 
 ```
 
-
+#### Keep recurrent non-oncogenic fusions specific to a broad_histology
 
 ```{r}
 #filter QCGeneFiltered_filtFusion to keep recurrent fusions from above sample.count and fusion_calls.summary
@@ -185,8 +260,7 @@ QCGeneFiltered_recFusion<-fusion_calls %>%
 ```
 
 
-
-
+### Remove non-oncogenic fusions found in multiple histologies
 
 ```{r}
 # remove fusions that are in > numGroup
@@ -253,6 +327,3 @@ putative_driver_fusions<-rbind(QCGeneFiltered_recFusionUniq,putative_driver_anno
 write.table(putative_driver_fusions,file.path(root_dir,"scratch","pbta-fusion-putative-oncogenic-preQC.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
 
 ```
-
-
-

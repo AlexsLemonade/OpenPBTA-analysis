@@ -20,39 +20,6 @@
 
 #### Set Up --------------------------------------------------------------------
 
-# We require bioconductor
-if (!("BiocManager" %in% installed.packages())) {
-  install.packages("BiocManager")
-}
-
-# Install GenomicRanges
-if (!("GenomicRanges" %in% installed.packages())) {
-  BiocManager::install("GenomicRanges", update = FALSE)
-}
-
-# Install IRanges
-if (!("IRanges" %in% installed.packages())) {
-  BiocManager::install("IRanges", update = FALSE)
-}
-
-# Install annotatr
-if (!("annotatr" %in% installed.packages())) {
-  BiocManager::install("annotatr", update = FALSE)
-}
-
-# hg38 genome annotations
-if (!("TxDb.Hsapiens.UCSC.hg38.knownGene" %in% installed.packages())) {
-  BiocManager::install("TxDb.Hsapiens.UCSC.hg38.knownGene", update = FALSE)
-}
-
-if (!("org.Hs.eg.db" %in% installed.packages())) {
-  BiocManager::install("org.Hs.eg.db", update = FALSE)
-}
-
-if (!("AnnotationDbi" %in% installed.packages())) {
-  BiocManager::install("AnnotationDbi", update = FALSE)
-}
-
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
@@ -231,7 +198,7 @@ if (opt$controlfreec) {
 
 #### Read in metadata file -----------------------------------------------------
 
-histologies_df <- readr::read_tsv(opt$metadata)
+histologies_df <- readr::read_tsv(opt$metadata, guess_max = 10000)
 
 #### Annotation file -----------------------------------------------------------
 

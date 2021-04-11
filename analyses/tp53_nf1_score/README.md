@@ -21,13 +21,40 @@ The analysis can be run with the following (assuming you are in the root reposit
 bash analyses/tp53_nf1_score/run_classifier.sh
 ```
 
-#### Output
+### Order of analysis
 
 `00-tp53-nf1-alterations.R` produces `TP53_NF1_snv_alteration.tsv`, which contains information about the presence or absence of coding SNVs in _TP53_ and _NF1_ for the purpose of evaluating the classifier results.
 For evaluation purposes, a coding SNV 1) is found in a CDS region and 2) is not a silent mutation or in an intron as indicated by the `Variant_Classification` column of the consensus mutation file.
 _NF1_ positive examples are additionally filtered to remove missense mutations, as these are not annotated with OncoKB ([#381 (comment)](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/381#issuecomment-570748578)).
 
 `01-apply-classifier.py` produces  `results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv`  and `results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv`, which contains all 3 classifier scores for the stranded data and for shuffled stranded (e.g., random) data.
+
+`02-qc-rna_expression_score.Rmd` here expression of TP53 gene was compared to TP53 classifier score. We didn't find a strong correlation between TP53 expression and TP53 inactivation score, thus, expression and classifier score together cannot predict function.
+
+`03-tp53-cnv-loss-domain.Rmd` here copy_number of regions overlapping TP53 functional domains were compared to TP53 classifier score. We find tumors with TP53 copies <=1 have higher TP53 classifier scores, so we only retain biospecimens with <= 1 copy TP53 as high confidence TP53 loss. 
+
+`04-tp53-sv-loss.Rmd` here structural variant breakpoints overlapping TP53 are investigated for CNV loss or low expression to gather high confidence TP53 loss via Structural Variants. 
+
+`05-tp53-altered-annotation.Rmd` here we take a deeper look into tp53 altered status with respect to number of SNVs/CNVs suggesting bi-allelic mutations or with respect to cancer_predisposition and tp53 classifier scores.
+
+
+Columns | Description
+-- | --
+sample_id	| 7316-XXXX id used to match DNA and RNA Kids_First_Biospecimen_IDs
+Kids_First_Biospecimen_ID_DNA	| Associated DNA Kids_First_Biospecimen_IDs
+Kids_First_Biospecimen_ID_RNA	| Associated RNA Kids_First_Biospecimen_IDs
+cancer_predispositions	| Germline cancer predisposition status
+tp53_score	| TP53 loss classifier score
+SNV_indel_counts	| Number of deleterious SNVs found in DNA sample
+CNV_loss_counts	| Number of CNV losses found in DNA sample
+HGVSp_Short	| Short format of protein level change used as SNV evidence 
+CNV_loss_evidence | copy_number of CNV overlapping functional domains of TP53 used as evidence 	
+hotspot	| Any 1 SNV shown in HGVSp_Short overlaps MSKCC cancer hotspot [database](https://www.cancerhotspots.org/#/home)
+activating	| Any 1 SNV shown in HGVSp_Short overlaps TP53_ activating mutations R273C and R248W. [Reference](https://pubmed.ncbi.nlm.nih.gov/17417627/) and [reference](https://pubmed.ncbi.nlm.nih.gov/24677579/). 
+tp53_altered | Combined evidence, cancer predisposition and score based tp53 status
+
+
+`05-evaluate-classifier.py` evaluates classifier score with TP53 alterations (non-synonymous SNV and all status == "loss" in consensus CNV file from 00-tp53-nf1-alterations.R) 
 
 Because some of the classifier genes are not present in the OpenPBTA dataset, the scores should be interpreted as continuous values representing relative gene alterations and not as probabilities.
 
@@ -42,4 +69,3 @@ ROC curve for NF1 classifier scores for stranded RNAseq data
 
 ROC curve for NF1 classifier scores for polya RNASeq data
 ![polya RNASeq NF1 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/polya_NF1.png)
-

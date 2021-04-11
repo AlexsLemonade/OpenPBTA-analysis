@@ -34,16 +34,6 @@ library(optparse)
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
-if (!("msigdbr" %in% installed.packages())) {
-  install.packages("msigdbr")
-}
-if (!("BiocManager" %in% installed.packages())) {
-  install.packages("BiocManager")
-}
-library(BiocManager, quietly = TRUE)
-if (!("GSVA" %in% installed.packages())) {
-  BiocManager::install("GSVA")
-}
 library(msigdbr) ## Contains the hallmark data sets
 library(GSVA)    ## Performs GSEA analysis
 
@@ -69,6 +59,8 @@ option_list <- list(
 ## Read in arguments
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
+
+
 if (is.na(opt$input_file)) stop("\n\nERROR: You must provide an input file with expression data with the flag --input, assumed to be in the `data/` directory of the OpenPBTA repository..")
 if (is.na(opt$output_file)) stop("\n\nERROR: You must provide an output file for saving GSVA scores with the flag --output, assumed to be placed in the `results/` directory of this analysis.")
 
@@ -107,7 +99,8 @@ human_hallmark_list    <- base::split(human_hallmark_twocols$human_gene_symbol, 
 gsea_scores <- GSVA::gsva(expression_data_log2_matrix,
                           human_hallmark_list,
                           method = "gsva",
-                          min.sz=1, max.sz=1500, ## Arguments from K. Rathi
+                          min.sz=1, max.sz=1500,## Arguments from K. Rathi
+                          parallel.sz = 4, # For the bigger dataset, this ensures this won't crash due to memory problems
                           mx.diff = TRUE)        ## Setting this argument to TRUE computes Gaussian-distributed scores (bimodal score distribution if FALSE)
 
 ### Clean scoring into tidy format

@@ -29,7 +29,7 @@ location_fn <- function(location) {
   disease_type_vector <- brain_location %>%
     dplyr::arrange(dplyr::desc(n)) %>%
     dplyr::filter(stringr::str_detect(primary_site, location)) %>%
-    dplyr::pull(integrated_diagnosis)
+    dplyr::pull(harmonized_diagnosis)
   unique(disease_type_vector)
 }
 
@@ -53,9 +53,9 @@ if (!dir.exists(plots_dir)) {
 
 # Read in dataset and remove NAs
 histologies_df <-
-  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv")) %>%
+  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"), guess_max = 10000) %>%
   as.data.frame() %>%
-  dplyr::filter(!is.na(integrated_diagnosis))
+  dplyr::filter(!is.na(harmonized_diagnosis))
 
 # Filter the histologies file to account for multiple samples from the same
 # individual and the fact that multiple experimental strategies are in this
@@ -68,9 +68,9 @@ histologies_df <- histologies_df %>%
 
 # data.frame with the count of each unique cancer type expression
 disease_expression <- histologies_df %>%
-  # some recurrences can have different integrated_diagnosis values
-  dplyr::distinct(Kids_First_Participant_ID, integrated_diagnosis) %>%
-  dplyr::group_by(integrated_diagnosis) %>%
+  # some recurrences can have different harmonized_diagnosis values
+  dplyr::distinct(Kids_First_Participant_ID, harmonized_diagnosis) %>%
+  dplyr::group_by(harmonized_diagnosis) %>%
   dplyr::count(name = "count") %>%
   dplyr::arrange(dplyr::desc(count))
 
@@ -83,8 +83,8 @@ disease_expression <- disease_expression %>%
   dplyr::mutate(percent = paste0((round(count / sum_count, 4) * 100), "%"))
 
 # Reorder the columns to be displayed in descending order by count on the plot
-disease_expression$integrated_diagnosis <- with(disease_expression,
-                                            reorder(integrated_diagnosis, -count))
+disease_expression$harmonized_diagnosis <- with(disease_expression,
+                                            reorder(harmonized_diagnosis, -count))
 
 # Write to tsv file
 readr::write_tsv(disease_expression,
@@ -93,7 +93,7 @@ readr::write_tsv(disease_expression,
 
 # Create a bar plot of sample distribution across cancer types
 gg_types <- disease_expression %>%
-  ggplot2::ggplot(ggplot2::aes(x = integrated_diagnosis, y = count, fill = count)) +
+  ggplot2::ggplot(ggplot2::aes(x = harmonized_diagnosis, y = count, fill = count)) +
   ggplot2::geom_col() +
   ggplot2::theme_bw() +
   ggplot2::labs(x = "Cancer Types", y = "Count",
@@ -122,10 +122,10 @@ ggplot2::ggsave(
 # data.frame with the location where each cancer type in the dataset is
 # expressed, sorted to show highest expression
 brain_location <- histologies_df %>%
-  dplyr::distinct(Kids_First_Participant_ID, integrated_diagnosis,
+  dplyr::distinct(Kids_First_Participant_ID, harmonized_diagnosis,
                   primary_site) %>%
-  dplyr::select(integrated_diagnosis, primary_site) %>%
-  dplyr::group_by(integrated_diagnosis, primary_site) %>%
+  dplyr::select(harmonized_diagnosis, primary_site) %>%
+  dplyr::group_by(harmonized_diagnosis, primary_site) %>%
   dplyr::tally() %>%
   dplyr::arrange(dplyr::desc(n))
 

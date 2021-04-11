@@ -12,9 +12,17 @@ Primary goals include:
 
 Note that running this analyis on the full dataset requires > 16GB of memory. 
 Run the bash script of this analysis module:
+
+using OPENPBTA_BASE_SUBTYPING=1 to run this module using the pbta-histologies-base.tsv from data folder while running molecular-subtyping modules for release.
+```sh
+OPENPBTA_BASE_SUBTYPING=1 analyses/gene-set-enrichment-analysis/run-gsea.sh
 ```
+
+OR by default uses pbta-histologies.tsv from data folder
+```sh
 bash analyses/gene-set-enrichment-analysis/run-gsea.sh
 ```
+
 *This command above assumes you are in the top directory, OpenPBTA-analysis*
 
 ## Folder Content
@@ -29,7 +37,7 @@ bash analyses/gene-set-enrichment-analysis/run-gsea.sh
 
 + `results/gsva_scores_polya.tsv` represents GSVA scores calculated from `pbta-gene-expression-rsem-fpkm-collapsed.polya.rds` with with `Rscript --vanilla 01-conduct-gsea-analysis.R`
 
-+ **Eight** files named as `results/gsva_<tukey/anova>_<stranded/polya>_<integrated_diagnosis/short_histology>.tsv` represent results from modeling
++ **Eight** files named as `results/gsva_<tukey/anova>_<stranded/polya>_<harmonized_diagnosis/short_histology>.tsv` represent results from modeling
 	+ Files created with: `Rscript --vanilla 02-model-gsea.R`
 	+ Assumes `results/gsva_scores_stranded.tsv` and `results/gsva_scores_polya.tsv` exist
  

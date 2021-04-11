@@ -22,14 +22,6 @@ of the repository as follows:
 ```{r}
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
-
-# Install `DT` and `htmlwidgets` packages for displaying tables
-if (!("DT" %in% installed.packages())) {
-  install.packages("DT")
-}
-if (!("htmlwidgets" %in% installed.packages())) {
-  install.packages("htmlwidgets")
-}
 ```
 
 ## Directories and Files
@@ -53,7 +45,7 @@ if (!dir.exists(results_dir)) {
 }
 
 # Read in non-subsetted metadata
-metadata <- readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"))
+metadata <- readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"), guess_max = 10000)
 
 # Read in ATRT subset metadata
 subset_metadata <- metadata %>%
@@ -407,7 +399,8 @@ final_df <- final_df %>%
     HALLMARK_MYC_TARGETS_V2,
     !!! rlang::syms(myc_genes),
     dplyr::everything()
-  )
+  ) %>%
+  dplyr::arrange(Kids_First_Participant_ID, sample_id)
 
 # Write final table to file
 readr::write_tsv(final_df,

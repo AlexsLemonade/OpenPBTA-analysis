@@ -42,33 +42,35 @@ disease_expression <-
 
 # Read in plots data.frame file from `02-multilayer-plots.R`
 plots_df <-
-  readr::read_tsv(file.path(sample_distribution_dir, "results", "plots_df.tsv"))
+  readr::read_tsv(file.path(sample_distribution_dir, "results", "plots_df.tsv")) %>% 
+  dplyr::select(-hex_codes)
 
 # Reorder the columns to be displayed in descending order by count on the plot
-disease_expression$integrated_diagnosis <- with(disease_expression,
-                                                reorder(integrated_diagnosis, -count))
+disease_expression$harmonized_diagnosis <- with(disease_expression,
+                                                reorder(harmonized_diagnosis, -count))
 
 # Read in the histology color palette
-color_palette <-
-  readr::read_tsv(file.path(
-    root_dir,
-    "figures",
-    "palettes",
-    "histology_color_palette.tsv"
-  ))
+histology_label_mapping <- readr::read_tsv(
+  file.path(root_dir,
+            "figures",
+            "palettes",
+            "histology_label_color_table.tsv")) %>%
+  # Select just the columns we will need for making sure the hex_codes are up to date
+  dplyr::select(display_group, display_order, hex_codes) %>% 
+  dplyr::distinct()
 
 #### Re-run the individual plots ----------------------------------------------
 
-# Create a treemap of broad histology, short histology, and integrated diagnosis
+# Create a treemap of broad histology, short histology, and harmonized diagnosis
 
 # Join the color palette for the colors for each short histology value --
 # palette is generated in `figures/scripts/color_palettes.R`
 plots_df2 <- plots_df %>%
-  left_join(color_palette, by = c("level2" = "color_names")) %>%
+  left_join(histology_label_mapping, by = c("level2" = "display_group")) %>%
   distinct() # Remove the redundant rows from prep for the `treemap` function
 
 # Plot the treemap where level1 is `broad_histology`,
-# level2 is `short_histology`, and level3 is `integrated_diagnosis`
+# level2 is `display_group`, and level3 is `harmonized_diagnosis`
 treemap <-
   ggplot(
     plots_df2,

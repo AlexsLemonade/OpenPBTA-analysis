@@ -33,21 +33,22 @@ if (!dir.exists(results_dir)) {
 
 # Read in metadata
 metadata <-
-  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"))
+  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"), guess_max = 10000)
 
 #### Filter metadata -----------------------------------------------------------
 # Select wanted columns in metadata for merging and assign to a new object
 chordoma_metadata <- metadata %>%
+  dplyr::filter(pathology_diagnosis == "Chordoma") %>%
   dplyr::select(
     sample_id,
     Kids_First_Participant_ID,
     Kids_First_Biospecimen_ID
-  ) %>%
-  dplyr::filter(short_histology == "Chordoma")
+  )
 
 #### Filter expression data ----------------------------------------------------
 # Read in the stranded expression data file
-expression_data <- read_rds(file.path(
+expression_data <- readr::read_rds(file.path(
+  root_dir,
   "data",
   "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
 ))
@@ -68,6 +69,7 @@ expression_data <- expression_data %>%
 
 # Filter focal CN to Chordoma samples only
 cn_metadata <- data.table::fread(file.path(
+  root_dir,
   "data",
   "consensus_seg_annotated_cn_autosomes.tsv.gz"
 )) %>%
@@ -79,6 +81,8 @@ cn_metadata <- data.table::fread(file.path(
     sample_id,
     Kids_First_Participant_ID,
     biospecimen_id,
+    copy_number,
+    ploidy,
     status
   ) %>%
   dplyr::filter(sample_id %in% chordoma_metadata$sample_id) %>%

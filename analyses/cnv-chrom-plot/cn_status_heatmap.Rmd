@@ -6,8 +6,9 @@ output:
     toc_float: true
 author: Candace Savonen for ALSF - CCDL
 date: 2020
+params:
+  final_figure: FALSE
 ---
-
 ## Purpose: 
 
 Create a summary heatmap of copy number status from the consensus CNV call data. 
@@ -40,6 +41,9 @@ frac_uncallable <- 0.75
 
 # Absolute fraction needed for a bin to be called a particular status
 frac_threshold <- 0.75
+
+# Any groups smaller than this will be added into the `Other` group for the resulting heatmap
+min_group_size <- 2
 ```
 
 ### Set Up
@@ -56,13 +60,20 @@ frac_threshold <- 0.75
 input_dir <- file.path("..", "..", "data")
 figure_dir <- file.path("..", "..", "figures")
 scratch_dir <- file.path("..", "..", "scratch")
+cnv_dir <- file.path("..", "copy_number_consensus_call", "results")
 
-# Path to output directory
-plots_dir <- "plots"
+# Path to output directory based on whether this is called by the generate-figures.sh script or not
+plots_dir <- ifelse(params$final_figure, file.path(figure_dir, "pngs"),  "plots")
+results_dir <- "results"
 
 # Create the plots_dir if it does not exist
 if (!dir.exists(plots_dir)) {
   dir.create(plots_dir, recursive = TRUE)
+}
+
+# Create the results_dir if it does not exist
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir, recursive = TRUE)
 }
 ```
 
@@ -76,11 +87,11 @@ Import color palettes.
 
 ```{r}
 # Import standard color palettes for project
-histology_col_palette <- readr::read_tsv(
-  file.path(figure_dir, "palettes", "histology_color_palette.tsv")
-) %>%
-  # We'll use deframe so we can use it as a recoding list
-  tibble::deframe()
+histology_label_mapping <- readr::read_tsv(
+  file.path(figure_dir, "palettes", "histology_label_color_table.tsv")
+  ) %>% 
+  # Select just the columns we will need for plotting
+  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) 
 ```
 
 Read in the divergent color palette and set it up with three colors. 
@@ -102,14 +113,9 @@ divergent_col_palette <- readr::read_tsv(
 ```{r}
 # Read in metadata
 metadata <-
-  readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv")) %>%
-  # Easier to deal with NA short histologies if they are labeled something different
-  dplyr::mutate(short_histology = as.character(tidyr::replace_na(short_histology, "none"))) %>%
-  # Tack on the sample color using the short_histology column and a recode
-  dplyr::mutate(sample_color = dplyr::recode(
-    short_histology,
-    !!!histology_col_palette
-  ))
+  readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv"), guess_max = 10000) %>%
+  # Join on the colors 
+  dplyr::left_join(histology_label_mapping, by = "Kids_First_Biospecimen_ID")
 ```
 
 ### Set up consensus copy number data
@@ -118,7 +124,7 @@ metadata <-
 # Read in the segment copy number data
 seg_data <- data.table::fread(
   file.path(
-    input_dir,
+    cnv_dir,
     "pbta-cnv-consensus.seg.gz"
   ),
   data.table = FALSE
@@ -134,7 +140,7 @@ seg_data <- seg_data %>%
     dplyr::select(
       metadata,
       "Kids_First_Biospecimen_ID",
-      "short_histology",
+      "display_group",
       "tumor_ploidy"
     ),
     by = c("ID" = "Kids_First_Biospecimen_ID")
@@ -168,7 +174,7 @@ seg_ranges <- GenomicRanges::GRanges(
     end = seg_data$loc.end
   ),
   status = seg_data$status,
-  histology = seg_data$short_histology,
+  histology = seg_data$display_group,
   biospecimen = seg_data$ID
 )
 ```
@@ -271,23 +277,31 @@ Run the bin status calling on each sample.
 # Get a vector of the biospecimen IDs
 sample_ids <- unique(seg_data$ID)
 
-# Run call_bin_status for each biospecimen's segments.
-bin_calls_list <- lapply(sample_ids,
-  call_bin_status,
-  bin_ranges = bins,
-  seg_ranges = filtered_seg_ranges,
-  uncallable_ranges = uncallable_ranges,
-  frac_threshold_val = frac_threshold,
-  frac_uncallable_val = frac_uncallable
-)
+# Read in the calculation file if it was already made and this isn't the final figure
+if (file.exists(file.path(results_dir, "cn_status_bp_per_bin.tsv")) & !params$final_figure) {
+  # Read in file
+  bin_calls_df <- readr::read_tsv(file.path(results_dir, "cn_status_bp_per_bin.tsv"))
+} else {
+  # Run call_bin_status for each biospecimen's segments.
+  bin_calls_list <- lapply(sample_ids,
+    call_bin_status,
+    bin_ranges = bins,
+    seg_ranges = filtered_seg_ranges,
+    uncallable_ranges = uncallable_ranges,
+    frac_threshold_val = frac_threshold,
+    frac_uncallable_val = frac_uncallable
+  )
 
-# Bring along sample IDs
-names(bin_calls_list) <- sample_ids
+  # Bring along sample IDs
+  names(bin_calls_list) <- sample_ids
 
-# Format into data.frame
-bin_calls_df <- dplyr::bind_rows(bin_calls_list,
-  .id = "biospecimen_id"
-)
+  # Format into data.frame
+  bin_calls_df <- dplyr::bind_rows(bin_calls_list,
+   .id = "biospecimen_id"
+  )
+  # Write calculations to file
+  readr::write_tsv(bin_calls_df, file.path(results_dir, "cn_status_bp_per_bin.tsv"))
+}
 ```
 
 ## Set up heatmap annotation objects
@@ -295,7 +309,7 @@ bin_calls_df <- dplyr::bind_rows(bin_calls_list,
 Make color key. 
 
 ```{r}
-color_key <- structure(c(divergent_col_palette, "#9932CC", "#cccccc"),
+color_key <- structure(c(divergent_col_palette, "#9932CC", "#fed8b1"),
   names = c("loss", "neutral", "gain", "unstable", "uncallable")
 )
 ```
@@ -311,16 +325,19 @@ chrs <- paste0("chr", S4Vectors::decode(bins@seqnames))
 chrs <- factor(chrs, levels = paste0("chr", 1:22))
 
 # Make a key for assigning alternating colors to the chromosomes
-chr_colors <- rep(c("gray", "lightblue"),
+chr_colors <- rep(c("white", "black"),
   length.out = length(unique(chrs))
 )
 names(chr_colors) <- unique(chrs)
 
 # Get coordinate start positions
-chr_pos <- match(unique(chrs), chrs)
+chr_start <- match(unique(chrs), chrs)
+
+# Get coordinate end positions
+chr_end <- chr_start + summary(chrs)
 
 # Get mid points of chromosome labels
-mid_points <- ceiling((c(chr_pos[2:length(chr_pos)], length(chrs)) + chr_pos[1:length(chr_pos)]) / 2)
+mid_points <- floor((chr_start + chr_end) / 2)
 ```
 
 Make chromosomal labeling `HeatmapAnnotation` object.
@@ -343,7 +360,8 @@ chr_annot <- ComplexHeatmap::HeatmapAnnotation(
   name = "",
   show_legend = FALSE,
   show_annotation_name = FALSE,
-  mark = chr_text # Put the text in
+  mark = chr_text, # Put the text in
+  border = TRUE
 )
 ```
 
@@ -357,30 +375,51 @@ This annotation object strategy was originally from [chromosomal-instability](ht
 histologies <-
   data.frame(Kids_First_Biospecimen_ID = bin_calls_df$biospecimen_id) %>%
   dplyr::inner_join(metadata %>%
-    dplyr::select(Kids_First_Biospecimen_ID, short_histology, sample_color)) %>%
-  dplyr::mutate(short_histology = factor(short_histology)) %>%
-  dplyr::arrange(short_histology) %>%
-  tibble::column_to_rownames("Kids_First_Biospecimen_ID")
+    dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes)) %>%
+  # Count numbers of samples per histology group and make new variable with counts
+  dplyr::group_by(display_group) %>% 
+  dplyr::mutate(group_n = dplyr::n()) %>% 
+  # Ungroup the data
+  dplyr::ungroup() %>% 
+  # Add sample sizes
+  dplyr::mutate(display_group = factor(paste0(display_group, " (n = ", group_n, ")"))) %>% 
+  # Reorder display_group based on display_order
+  dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order)) %>%
+  # Make sure they are in display_order
+  dplyr::arrange(display_order) %>%
+  # Store as rownames
+  tibble::column_to_rownames("Kids_First_Biospecimen_ID") %>%
+  # We don't want this to actually be displayed on the heatmap though
+  dplyr::select(-display_order)
+```
+
+Make a color key that's formatted for ComplexHeatmap. 
+
+```{r}
+# Get a distinct version of the color keys
+histologies_color_key_df <- histologies %>%
+  dplyr::select(display_group, hex_codes) %>%
+  dplyr::distinct()
 
 # Make color key specific to these samples
-histologies_color_key_filtered <- unique(histologies$sample_color)
-names(histologies_color_key_filtered) <- unique(histologies$short_histology)
-
-# Drop this column so ComplexHeatmap isn't tempted to plot it
-histologies <- dplyr::select(histologies, -sample_color)
+histologies_color_key <- histologies_color_key_df$hex_codes
+names(histologies_color_key) <- histologies_color_key_df$display_group
 
 # Get coordinate start positions
-hist_pos <- match(names(histologies_color_key_filtered), histologies$short_histology)
+hist_start <- match(names(histologies_color_key), histologies$display_group)
 
-# Get mid points of chromosome labels
-mid_points <- ceiling((c(hist_pos[2:length(hist_pos)], length(histologies$short_histology)) + hist_pos[1:length(hist_pos)]) / 2)
+# Get coordinate end positions for each histology group
+hist_end <- hist_start + summary(histologies$display_group)
+
+# Get mid points of 
+mid_points <- floor((hist_start + hist_end) /2)
 ```
 
 ```{r}
 # Make text labels for chromosome text
 hist_text <- ComplexHeatmap::anno_mark(
   at = mid_points,
-  labels = levels(histologies$short_histology),
+  labels = levels(histologies$display_group),
   which = "row",
   side = "right",
   labels_gp = grid::gpar(cex = 0.65),
@@ -389,13 +428,14 @@ hist_text <- ComplexHeatmap::anno_mark(
 
 # Create the Heatmap annotation object
 hist_annot <- ComplexHeatmap::HeatmapAnnotation(
-  df = data.frame(histologies),
-  col = list(short_histology = histologies_color_key_filtered),
+  df = data.frame(histologies) %>% dplyr::select(-group_n, -hex_codes),
+  col = list(display_group = histologies_color_key),
   which = "row",
   show_annotation_name = FALSE,
   show_legend = FALSE,
-  mark = hist_text # Put the text in
-)
+  mark = hist_text, # Put the text in
+  border = TRUE
+  )
 ```
 
 Format `bin_calls_df` as a matrix with rownames for `ComplexHeatmap` to use. 
@@ -420,14 +460,19 @@ heatmap <- ComplexHeatmap::Heatmap(
   bin_calls_mat,
   name = "CN status",
   col = color_key,
+  row_split = histologies$display_group,
   cluster_columns = FALSE,
   cluster_rows = FALSE,
+  rect_gp = grid::gpar(col = "black", lwd = .0005),
   show_column_names = FALSE,
   show_row_names = FALSE,
+  row_labels = FALSE,
   bottom_annotation = chr_annot,
   right_annotation = hist_annot,
-  heatmap_legend_param = list(nrow = 1),
-  raster_quality = 8
+  heatmap_legend_param = list(nrow = 1, border = "black"),
+  raster_quality = 8, 
+  border = "black", 
+  row_title = NULL
 )
 ```
 
@@ -437,11 +482,12 @@ Print out heatmap.
 ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
 ```
 
-Save to PDF. 
+Save to PNG. 
 
 ```{r}
-# Save plot as PDF
-pdf(file.path(plots_dir, "cn_status_heatmap.pdf"))
+# Save plot as PNG
+png(file.path(plots_dir, "cn_status_heatmap.png"), 
+    res = 800, width = 8.5, height = 11.5, units = "in")
 ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
 dev.off()
 ```

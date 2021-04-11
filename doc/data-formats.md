@@ -1,7 +1,7 @@
 # Data Formats in Data Download
 
 The release notes for each release are provided in the `release-notes.md` file that accompanies the data files.
-A table with brief descriptions for each data file is provided in the `data-description.md` file included in the download.
+A table with brief descriptions for each data file is provided in the `data-files-description.md` file included in the download.
 
 ## PBTA Data Files
 

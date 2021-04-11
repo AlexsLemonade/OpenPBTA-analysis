@@ -3,6 +3,8 @@
 # Chante Bethell for CCDL 2020
 #
 # Run the HGG molecular subtyping pipeline.
+# Note: A local install of BEDOPS is required and can be installed using
+# conda install -c bioconda bedops
 # When OPENPBTA_SUBSET=1 (default), new HGG subset files will be generated.
 
 set -e
@@ -22,6 +24,9 @@ script_directory="$(perl -e 'use File::Basename;
   use Cwd "abs_path";
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
+
+# Gather pathology diagnosis and pathology free text diagnosis for HGG sample selection
+Rscript 00-HGG-select-pathology-dx.R
 
 # Run the first script in this module that reclassifies high-grade gliomas
 Rscript -e "rmarkdown::render('01-HGG-molecular-subtyping-defining-lesions.Rmd', clean = TRUE)"

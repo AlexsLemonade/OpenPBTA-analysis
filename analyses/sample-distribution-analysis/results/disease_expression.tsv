@@ -1,67 +1,92 @@
-integrated_diagnosis	count	percent
-Low-grade astrocytic tumor	239	24.59%
-Medulloblastoma	118	12.14%
-High-grade glioma	90	9.26%
-Ependymoma	84	8.64%
-Diffuse midline glioma	56	5.76%
-Ganglioglioma	45	4.63%
-Craniopharyngioma	39	4.01%
-Atypical Teratoid Rhabdoid Tumor	28	2.88%
-Dysembryoplastic neuroepithelial tumor	27	2.78%
-Meningioma	27	2.78%
-CNS Embryonal Tumor	20	2.06%
-Neurofibroma	19	1.95%
+harmonized_diagnosis	count	percent
+Low-grade glioma/astrocytoma, BRAF fusion	121	12.49%
+Low-grade glioma/astrocytoma, BRAF wildtype	119	12.28%
+Ependymoma	57	5.88%
+Diffuse midline glioma, H3 K28-mutant	52	5.37%
+Medulloblastoma, group 4	47	4.85%
+High-grade glioma/astrocytoma, H3 wildtype	41	4.23%
+Low-grade glioma/astrocytoma, BRAF V600E	36	3.72%
+High-grade glioma/astrocytoma (WHO grade III/IV)	35	3.61%
+Atypical Teratoid Rhabdoid Tumor (ATRT)	28	2.89%
+Meningioma	27	2.79%
+Medulloblastoma	26	2.68%
+Supratentorial Ependymoma, RELA fusion positive	26	2.68%
+Dysembryoplastic neuroepithelial tumor (DNET)	24	2.48%
+Medulloblastoma, SHH-activated	24	2.48%
+Adamantimomatous craniopharyngioma	22	2.27%
+Neurofibroma/Plexiform	18	1.86%
 Choroid plexus papilloma	16	1.65%
+Craniopharyngioma	16	1.65%
 Schwannoma	16	1.65%
-Brainstem glioma- Diffuse intrinsic pontine glioma	14	1.44%
-Dysplasia	14	1.44%
-Teratoma	8	0.82%
-Ewings Sarcoma	7	0.72%
-Embryonal tumor with multilayer rosettes	6	0.62%
-Germinoma	5	0.51%
-Metastatic secondary tumors	5	0.51%
+CNS Embryonal tumor, NOS	14	1.44%
+Dysplasia/Gliosis	14	1.44%
+Medulloblastoma, group 3	14	1.44%
+Low-grade glioma/astrocytoma (WHO grade I/II)	11	1.14%
+Brainstem glioma- Diffuse intrinsic pontine glioma	9	0.93%
+Ewing sarcoma	9	0.93%
+Medulloblastoma, WNT-activated	9	0.93%
+Teratoma	8	0.83%
+Glial-neuronal tumor NOS	6	0.62%
+Sarcoma	6	0.62%
+Embryonal tumor with multilayer rosettes, C19MC-altered	5	0.52%
 Adenoma	4	0.41%
 Choroid plexus carcinoma	4	0.41%
-Cyst	4	0.41%
-Glial-neuronal tumor NOS	4	0.41%
+Germinoma	4	0.41%
+High-grade glioma/astrocytoma, H3 G35-mutant	4	0.41%
 Langerhans Cell histiocytosis	4	0.41%
-Malignant peripheral nerve sheath tumor	4	0.41%
+Malignant peripheral nerve sheath tumor (MPNST)	4	0.41%
+Metastatic secondary tumors	4	0.41%
 Neuroblastoma	4	0.41%
-Sarcoma	4	0.41%
+Pineoblastoma	4	0.41%
+Supratentorial Ependymoma, YAP1 fusion positive	4	0.41%
+Benign tumor, dermoid cyst	3	0.31%
+Benign tumor, meningioangiomatosis	3	0.31%
 Chordoma	3	0.31%
-Dermoid Cyst	3	0.31%
-Meningioangiomatosis	3	0.31%
-Neurocytoma	3	0.31%
-Pineoblastoma	3	0.31%
-Subependymal Giant Cell Astrocytoma	3	0.31%
+High-grade glioma/astrocytoma, BRAF V600E	3	0.31%
+Subependymal Giant Cell Astrocytoma (SEGA)	3	0.31%
+Benign tumor, osteoblastoma	2	0.21%
 Cavernoma	2	0.21%
-Gliomatosis Cerebri	2	0.21%
+Central Neurocytoma	2	0.21%
+CNS neuroblastoma	2	0.21%
+Diffuse midline glioma, H3 K28-mutant, BRAF V600E	2	0.21%
+Ganglioneuroblastoma	2	0.21%
 Hemangioblastoma	2	0.21%
-JXG- Non-Langerhans Histiocytosis	2	0.21%
-Low-grade mixed tumor	2	0.21%
+High-grade glioma/astrocytoma, IDH-mutant	2	0.21%
 Oligodendroglioma	2	0.21%
-Osteoblastoma	2	0.21%
+Other	2	0.21%
+Posterior Fossa Ependymoma, Type A	2	0.21%
 Rhabdomyosarcoma	2	0.21%
-Brain arteriovenous malformation	1	0.1%
-Chondrosarcoma	1	0.1%
+Arteriovenous malformation	1	0.1%
+Benign tumor, atypical lymphoid infiltrate	1	0.1%
+Benign tumor, cortical tubers	1	0.1%
+Benign tumor, dermoid inclusion cyst	1	0.1%
+Benign tumor, epidermoid cyst	1	0.1%
+Benign tumor, fibroma	1	0.1%
+Benign tumor, hamartoma	1	0.1%
+Benign tumor, inclusion cyst	1	0.1%
+Benign tumor, ossifying fibroma	1	0.1%
+Benign tumor, perineuroma	1	0.1%
+Benign tumor, prolactinoma	1	0.1%
+Benign tumor, rathke cleft cyst	1	0.1%
 Choroid plexus cyst	1	0.1%
-CNS Neuroblastoma	1	0.1%
-Cortical Tubers	1	0.1%
-Fibroma	1	0.1%
-Fibromyxoid Tumor	1	0.1%
+CNS Embryonal tumor, HGNET-MN1	1	0.1%
+Dysembryoplastic neuroepithelial tumor (DNET);Dysplasia/Gliosis;Ganglioglioma	1	0.1%
+Dysembryoplastic neuroepithelial tumor (DNET);Ganglioglioma	1	0.1%
+Dysplasia/Gliosis;Glial-neuronal tumor NOS	1	0.1%
+Embryonal tumor with multilayer rosettes, NOS	1	0.1%
+Epilepsy, chronic rasmussen encephalitis	1	0.1%
+Extraventricular Neurocytoma	1	0.1%
+Fibromyxoid lesion	1	0.1%
+Ganglioglioma	1	0.1%
 Ganglioneuroma	1	0.1%
-Hamartoma	1	0.1%
-Intraneural perineurioma	1	0.1%
-Malignant melanocytic neoplasm	1	0.1%
-Myeloid Sarcoma	1	0.1%
+Germinoma;Teratoma	1	0.1%
+Low-grade astrocytic tumor	1	0.1%
+Melanocytic tumor	1	0.1%
+Metastatic secondary tumors;Neuroblastoma	1	0.1%
 Myofibroblastoma	1	0.1%
 Myxoid spindle cell tumor	1	0.1%
-NeuroInflammatory systemic disease	1	0.1%
-Non-germinomatous germ cell tumor- Teratoma	1	0.1%
-Ossifying Fibroma	1	0.1%
-Papillary glioneuronal tumor	1	0.1%
+Neurofibroma/Plexiform;Other	1	0.1%
+Non-germinomatous germ cell tumor;Teratoma	1	0.1%
 Primary CNS lymphoma	1	0.1%
-Prolactinoma	1	0.1%
-Reactive Connective Tissue	1	0.1%
-Reactive Gliosis	1	0.1%
-Rosai-Dorfman Disease	1	0.1%
+Reactive connective tissue	1	0.1%
+Rosai-Dorfman disease	1	0.1%

@@ -11,7 +11,7 @@ set -o pipefail
 # The sqlite database made from the callers will be called:
 dbfile=scratch/tcga_snv_db.sqlite
 
-# Designate output file 
+# Designate output file
 consensus_file=analyses/snv-callers/results/consensus/tcga-snv-consensus-snv.maf.tsv
 
 # BED and GTF file paths
@@ -61,8 +61,9 @@ Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --metadata data/pbta-tcga-manifest.tsv \
   --coding_regions $cds_file \
   --overwrite \
-  --tcga
- 
+  --tcga \
+  --nonsynfilter_maf
+
 ########################## Compress consensus file #############################
 gzip $consensus_file
 

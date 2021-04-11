@@ -40,18 +40,11 @@ def group_disease(primary_site):
 
 
 # Filtering for ependymoma samples 
-EP = pbta_histologies[pbta_histologies["integrated_diagnosis"]=="Ependymoma"]
-EP_rnaseq_samples = EP[EP["experimental_strategy"] == "RNA-Seq"][["Kids_First_Biospecimen_ID", "primary_site", 
-	"Kids_First_Participant_ID", "sample_id", "experimental_strategy"]]
-EP_rnaseq_samples["disease_group"] = [group_disease(primary) for primary in EP_rnaseq_samples["primary_site"]]
-
-# List with only RNA samples
-EP_rnasamplenames_PTIDs = list(EP_rnaseq_samples["Kids_First_Participant_ID"]) 
+EP = pbta_histologies[pbta_histologies["pathology_diagnosis"]=="Ependymoma"]
+EP_rnaseq_samples = EP[EP["experimental_strategy"] == "RNA-Seq"][["Kids_First_Biospecimen_ID","Kids_First_Participant_ID", "sample_id","primary_site"]]
 
 # Filtering for DNA samples 
-all_WGS = EP[EP["experimental_strategy"]=="WGS"]
-WGSPT = all_WGS[all_WGS["Kids_First_Participant_ID"].isin(EP_rnasamplenames_PTIDs)]
-WGS_dnaseqsamples = WGSPT[["Kids_First_Biospecimen_ID", "Kids_First_Participant_ID", "sample_id"]]
+WGS_dnaseqsamples = EP[EP["experimental_strategy"] == "WGS"][["Kids_First_Biospecimen_ID", "Kids_First_Participant_ID", "sample_id","primary_site"]]
 
 
 # Renaming the column name so they don't conflict in merge step 
@@ -60,17 +53,25 @@ WGS_dnaseqsamples = WGS_dnaseqsamples.rename(columns={"Kids_First_Biospecimen_ID
 
 
 # sample_id is common between both  datafarmes and also unique between RNA and DNA. 
-# Some DNA BSID's are missing for the corresponding RNA samples 
+# Some DNA BSID's are missing for the corresponding RNA samples
 EP_rnaseq_WGS = EP_rnaseq_samples.merge(WGS_dnaseqsamples, 
-                                        on = ["sample_id", "Kids_First_Participant_ID"], 
+                                        on = ["sample_id", "Kids_First_Participant_ID","primary_site"], 
                                         how = "outer")
 EP_rnaseq_WGS.fillna('NA', inplace=True)
 
-EP_rnaseq_WGS[["Kids_First_Participant_ID", 
-		"sample_id", 
-		"Kids_First_Biospecimen_ID_DNA", 
-		"Kids_First_Biospecimen_ID_RNA", 
-		"disease_group"
-		]].to_csv(outnotebook, sep="\t", index=False)
+# add disease group infered from primary_site
+EP_rnaseq_WGS["disease_group"] = [group_disease(primary) for primary in EP_rnaseq_WGS["primary_site"]]
+
+# Sort for consistency
+EP_rnaseq_WGS = EP_rnaseq_WGS.sort_values(by = ["Kids_First_Participant_ID", "sample_id"])
+
+# Write out
+EP_rnaseq_WGS[[
+    "Kids_First_Participant_ID",
+	"sample_id",
+	"Kids_First_Biospecimen_ID_DNA",
+	"Kids_First_Biospecimen_ID_RNA",
+	"disease_group"
+	]].to_csv(outnotebook, sep="\t", index=False)
 outnotebook.close()
     

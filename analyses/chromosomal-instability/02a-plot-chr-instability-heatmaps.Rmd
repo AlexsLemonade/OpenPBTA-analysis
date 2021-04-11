@@ -55,11 +55,13 @@ Import color palettes.
 
 ```{r}
 # Import standard color palettes for project
-histology_col_palette <- readr::read_tsv(
-  file.path(figures_dir, "palettes", "histology_color_palette.tsv")
+histology_label_mapping <- readr::read_tsv(
+  file.path(figures_dir, "palettes", "histology_label_color_table.tsv")
   ) %>% 
-  # We'll use deframe so we can use it as a recoding list
-  tibble::deframe()
+  # Select just the columns we will need for plotting
+  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>% 
+  # Reorder display_group based on display_order
+  dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
 
 # We'll use this for numeric data on the heatmap 
 gradient_col_palette <- readr::read_tsv(
@@ -150,7 +152,7 @@ breaks_heatmap <- function(binned_counts_df,
   # Create the Heatmap annotation object
   hist_annot <- ComplexHeatmap::HeatmapAnnotation(
     df = data.frame(histologies),
-    col = list(short_histology = histologies_colors),
+    col = list(display_group = histologies_colors),
     which = "row",
     show_annotation_name = FALSE
   )
@@ -177,12 +179,8 @@ Set up metadata
 
 ```{r}
 # Read in the metadata
-metadata <- readr::read_tsv(metadata_file) %>%
-  # Easier to deal with NA short histologies if they are labeled something different
-  dplyr::mutate(short_histology = as.character(tidyr::replace_na(short_histology, "none"))) %>% 
-  # Tack on the sample color using the short_histology column and a recode
-  dplyr::mutate(sample_color = dplyr::recode(short_histology, 
-                                             !!!histology_col_palette))
+metadata <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
+  dplyr::inner_join(histology_label_mapping, by = "Kids_First_Biospecimen_ID")
 ```
 
 Load in the previously localized breakpoint data. 
@@ -235,16 +233,17 @@ Make histology labeling `HeatmapAnnotation` object.
 histologies <-
   data.frame(Kids_First_Biospecimen_ID = common_samples) %>%
   dplyr::inner_join(metadata %>% 
-                      dplyr::select(Kids_First_Biospecimen_ID, short_histology, sample_color)) %>%
-  dplyr::arrange(short_histology) %>% 
+                      dplyr::select(Kids_First_Biospecimen_ID, display_group, hex_codes)) %>%
+  # Arrange by display group
+  dplyr::arrange(display_group) %>% 
   tibble::column_to_rownames("Kids_First_Biospecimen_ID")
 
 # Make color key specific to these samples
-histologies_color_key_filtered <- unique(histologies$sample_color)
-names(histologies_color_key_filtered) <- unique(histologies$short_histology)
+histologies_color_key_filtered <- unique(histologies$hex_codes)
+names(histologies_color_key_filtered) <- unique(histologies$display_group)
 
 # Drop this column so ComplexHeatmap isn't tempted to plot it
-histologies <- dplyr::select(histologies, -sample_color)
+histologies <- dplyr::select(histologies, -hex_codes)
 ```
 
 Make a color function. 

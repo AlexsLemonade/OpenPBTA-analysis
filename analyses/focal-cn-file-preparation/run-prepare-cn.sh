@@ -50,6 +50,9 @@ Rscript --vanilla 04-prepare-cn-file.R \
 # Define most focal units of recurrent CNVs
 Rscript --vanilla -e "rmarkdown::render('05-define-most-focal-cn-units.Rmd', clean = TRUE)"
 
+# Define the recurrent calls
+Rscript --vanilla -e "rmarkdown::render('06-find-recurrent-calls.Rmd', clean = TRUE)"
+
 libraryStrategies=("polya" "stranded")
 chromosomesType=("autosomes" "x_and_y")
 for strategy in ${libraryStrategies[@]}; do
