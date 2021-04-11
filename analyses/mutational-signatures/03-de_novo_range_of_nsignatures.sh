@@ -45,9 +45,9 @@ else
          --nsignatures_floor 2 \
          --nsignatures_ceiling 8 \
          --num_iterations 1000 \
-         --model ${model}
+         --model ${model} \
          --seed ${seed} \
-         --plot_output "${denovo_plot_dir}/gof_seed_${seed}_model_${model}.pdf"
+         --plot_output "${denovo_plot_dir}/gof_seed_${seed}_model_${model}.pdf" \
          --output_file "${denovo_results_dir}/gof_seed_${seed}_model_${model}.RDS"
       
 
