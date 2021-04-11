@@ -48,6 +48,7 @@ else
          --model ${model}
          --seed ${seed} \
          --plot_output "${denovo_plot_dir}/gof_seed_${seed}_model_${model}.pdf"
+         --output_file "${denovo_results_dir}/gof_seed_${seed}_model_${model}.RDS"
       
 
     done
