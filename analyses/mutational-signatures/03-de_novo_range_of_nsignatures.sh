@@ -14,6 +14,7 @@ QUICK_MUTSIGS=${QUICK_MUTSIGS:-0}
 
 scratch_dir=../../scratch/mutational-signatures
 denovo_plot_dir=plots/denovo/gof
+denovo_results_dir=${scratch_dir}/gof
 
 # Directory to hold the goodness-of-fit plot
 mkdir -p $denovo_plot_dir
@@ -30,28 +31,26 @@ then
     scripts/de_novo_signature_extraction.R \
     --maf_file ${maf_file} \
     --nsignatures_floor 3 \
-    --nsignatures_ceiling 3 \
+    --nsignatures_ceiling 4 \
     --num_iterations 10 \
     --seed 42 
 else
   for model in multinomial poisson; do
     for seed in {1..5}; do
-      for nsignatures in {2..8}; do
 
-         # De novo signatures extraction
-         Rscript --vanilla \
-           scripts/de_novo_signature_extraction.R \
-           --maf_file ${maf_file} \
-           --nsignatures_floor ${nsignatures} \
-           --nsignatures_ceiling ${nsignatures} \
-           --num_iterations 1000 \
-           --model ${model}
-           --seed ${seed} \
-           --plot_output "${denovo_plot_dir}/gof_seed_${seed}_model_${model}.pdf"
+       # De novo signatures extraction
+       Rscript --vanilla \
+         scripts/de_novo_signature_extraction.R \
+         --maf_file ${maf_file} \
+         --nsignatures_floor 2 \
+         --nsignatures_ceiling 8 \
+         --num_iterations 1000 \
+         --model ${model}
+         --seed ${seed} \
+         --plot_output "${denovo_plot_dir}/gof_seed_${seed}_model_${model}.pdf"
       
-      done
+
     done
   done
 
 fi
-
