@@ -173,6 +173,9 @@ maf_df <- maf_df %>%
                     Kids_First_Biospecimen_ID,
                     sample_id),
              by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
+  # now let's remove this `Tumor_Sample_Barcode` column with biospecimen IDs in
+  # preparation for our next step -- renaming `sample_id`
+  select(-Tumor_Sample_Barcode) %>%
   rename(Tumor_Sample_Barcode = sample_id)
 
 # Write MAF to file
