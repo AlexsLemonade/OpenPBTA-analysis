@@ -18,7 +18,7 @@ denovo_results_dir=${scratch_dir}/gof
 
 # Directories to hold the goodness-of-fit plots and results
 mkdir -p $denovo_plot_dir
-mkdir -p $denono_results_dir
+mkdir -p $denovo_results_dir
 
 # The MAF file we'll use is going to WGS samples only
 maf_file=${scratch_dir}/pbta-snv-consensus-wgs.tsv.gz
