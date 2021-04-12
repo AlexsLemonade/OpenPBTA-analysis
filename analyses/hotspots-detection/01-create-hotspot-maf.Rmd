@@ -36,8 +36,7 @@ scratch_dir <- file.path(
 
 # combined hotspot calls
 combined_hotspot_calls <- list.files(path = scratch_dir,pattern = ".RDS",full.names = TRUE) %>%
-  map(readRDS) %>% 
-  bind_rows()
+  map_dfr(readRDS) 
 
 # hotspot mutation maf file output
 output_file <- file.path(results_dir,"pbta-snv-hotspots-plus-consensus.maf.tsv.gz")
@@ -181,5 +180,4 @@ combined_maf_hotspots_filt %>%
 
 
 ```
-
 
