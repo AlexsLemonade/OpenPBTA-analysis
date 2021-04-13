@@ -34,21 +34,34 @@ scratch_dir <- file.path(
   "hotspot-detection"
 )
 
+# Import function to split MNV to SNV
+source(file.path(root_dir, "analyses", "snv-callers", "util", "split_mnv.R"))
+
+maf_coltypes <- readRDS(file.path("input", "maf_coltypes.RDS"))
+# maf_coltypes is a named vector with column types information for each column in a maf file
+# More description about maf format is available
+# [here](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/)
+
 # combined hotspot calls
 combined_hotspot_calls <- list.files(path = scratch_dir,pattern = ".RDS",full.names = TRUE) %>%
   map_dfr(readRDS) 
+
+# MNVs are split into SNVs
+combined_hotspot_calls_mnv_split <- split_mnv(combined_hotspot_calls)
+
+combined_hotspot_calls <- combined_hotspot_calls %>%
+  # removing MNVs here
+  filter(!Variant_Type %in% c("DNP", "TNP", "ONP")) %>%
+  # adding the MNV split SNV alleles here 
+  union_all(combined_hotspot_calls_mnv_split)
 
 # hotspot mutation maf file output
 output_file <- file.path(results_dir,"pbta-snv-hotspots-plus-consensus.maf.tsv.gz")
 
 
 # PBTA consensus maf 
-maf_coltypes <- readRDS(file.path("input","maf_coltypes.RDS"))
 consensus_maf_file <- read_tsv(file.path(data_dir,"pbta-snv-consensus-mutation.maf.tsv.gz"),
-                               col_types = readr::cols(Entrez_Gene_Id = readr::col_character(),
-                                                       ALLELE_NUM = readr::col_character(),
-                                                       vcf_pos = readr::col_character(),
-                                                       vcf_qual = readr::col_number()))
+                                col_types = maf_coltypes)
 
 ```
 
@@ -76,18 +89,12 @@ join_cols <- c("Hugo_Symbol",
                "Tumor_Seq_Allele2",
                "Tumor_Sample_Barcode")
 
-# Select or add columns required 
-consensus_site_check <- select(consensus_maf_file,join_cols) %>%
-  mutate(consensus = "Yes")
-
 # Filter combined_hotspot_calls to calls that are only
-# found form the hotspot scavenging analysis
+# found from the hotspot scavenging analysis
 combined_maf_hotspots_filt <- combined_hotspot_calls %>%
-  mutate(hotspot = "Yes") %>%
-  left_join(consensus_site_check,
-          by = join_cols) %>% 
-  unique() %>% 
-  filter(is.na(consensus)) 
+  anti_join(consensus_maf_file,
+          by = join_cols) %>%
+  unique()
 
 # These columns are unique to each caller maf file.
 # Read support and quality are intrinsic values gathered
@@ -113,7 +120,7 @@ combined_maf_hotspots_filt <- combined_maf_hotspots_filt %>%
             t_alt_count = mean(as.numeric(t_alt_count)),
             n_alt_count = mean(as.numeric(n_alt_count)),
             caller_count = n(),
-            caller = toString(caller),
+            caller = toString(unique(caller)),
             vcf_qual = mean(as.numeric(vcf_qual))) %>% 
   ungroup() %>%
   # calculate VAF
@@ -143,30 +150,30 @@ unique_1caller_hotspots <- combined_maf_hotspots_filt %>%
 
 unique_1caller_hotspots
 ```
-There are 33 calls that are only called by 1 caller.
+There are 109 SNV or indel calls are only called by 1 caller.
 
 What's the distrbution of the t_alt_count in calls only supported by 1 caller?
 ```{r}
 
-summary.caller <- unique_1caller_hotspots %>%  
-  group_by(caller) %>%
+summary.type <- unique_1caller_hotspots %>%  
+  group_by(Variant_Type) %>%
   tally()
 
 
-ggplot(unique_1caller_hotspots[,c("caller","t_alt_count")],
-       aes(x=as.factor(caller),y=t_alt_count))+
+ggplot(unique_1caller_hotspots[,c("caller","t_alt_count","Variant_Type")],
+       aes(x=as.factor(Variant_Type),y=t_alt_count))+
   geom_violin()+ 
-  geom_jitter(height = 0, width = 0.1) +
+  geom_jitter(height = 0, width = 0.1, aes(color=caller)) +
   # add number of calls at the top
-  geom_text(data=summary.caller ,aes(x = caller, y = 350, label=n), fontface =2, size = 4)+
+  geom_text(data=summary.type ,aes(x = Variant_Type, y = 350, label=n), fontface =2, size = 4)+
   # draw a line where t_alt_count==5
-  geom_hline(aes(yintercept=5,color="red"))+
-  theme(legend.position="none")
+  geom_hline(aes(yintercept=5),color="red")
 
 
 ```
 
-lancet and vardict have majority of the unique calls. However, some calls from lancet,mutect2 and vardict seem to be below the red line which denotes t_alt_count==5.
+Majority of the unique calls are deletions and dinucleotude mutations (these are 2 base polyphormism split into 2 SNVs in consensus maf df) followed by SNPs. Some of the unique per caller calls from lancet,mutect2 and vardict seem to be below the red line which denotes t_alt_count==5.
+
 
 ## Merge the combined hotspots with consensus 
 
