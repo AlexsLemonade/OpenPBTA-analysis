@@ -69,10 +69,10 @@ consensus_maf_file <- read_tsv(file.path(data_dir,"pbta-snv-consensus-mutation.m
 
 The main tasks are:
  - filter `combined_hotspot_calls` to calls that are not found in consensus calls
- - calculate a mean of read supports for REF and ALT from multiple callers which can be slightly different for the consenus maf file
+ - gather read supports for REF and ALT from multiple callers adding values from any 1 caller in the order strelka2 > mutect2 > lancet > vardict
  
+### Filter hotspots not found in consensus calls
 ```{r warning=FALSE }
-
 # These columns provide unique values 
 # to check for exact in the 2 dataframes
 join_cols <- c("Hugo_Symbol",
@@ -96,6 +96,35 @@ combined_maf_hotspots_filt <- combined_hotspot_calls %>%
           by = join_cols) %>%
   unique()
 
+# gather and add caller info
+caller_counts <- combined_maf_hotspots_filt %>%
+  select(join_cols,caller) %>%
+  unique() %>% 
+  group_by_at(join_cols) %>%
+  summarise(caller_count = n(),
+            caller = toString(unique(caller))
+  ) %>%
+  ungroup()
+
+```
+
+
+### Gather count and qual values 
+For the following columns which are unique to each caller:
+```
+unique_cols <- c("t_depth",
+                 "n_depth",
+                 "t_ref_count",
+                 "n_ref_count",
+                 "t_alt_count",
+                 "n_alt_count",
+                 "vcf_qual",
+                 "caller")
+```                 
+
+We will prefer the call from strelka, then mutect2, then lancet and then last vardict at this step.
+
+```{r warning=FALSE }
 # These columns are unique to each caller maf file.
 # Read support and quality are intrinsic values gathered
 # from the tools calling the variant so can vary in values.
@@ -105,33 +134,61 @@ unique_cols <- c("t_depth",
                  "n_ref_count",
                  "t_alt_count",
                  "n_alt_count",
-                 "caller",
-                 "vcf_qual")
+                 "vcf_qual",
+                 "caller")
 
-# Gather mean values in `unique_cols` such that 
-# calls from multiple callers are summarised as 1 unique row
+# We will create a union of calls where each caller specific 
+# values in the unique columns described above are renamed 
+# with a tag specifying caller name
+combined_maf_hotspots_filt <- filter(combined_maf_hotspots_filt,caller=="strelka2") %>%
+  rename_at(vars(unique_cols), ~str_c("strelka2_", .)) %>% 
+  
+  # join mutect2 calls
+  full_join(
+    filter(combined_maf_hotspots_filt,caller=="mutect2"),
+    by=setdiff(names(combined_maf_hotspots_filt ), unique_cols)) %>%
+  # rename *_count columns to mutect2_*count
+  rename_at(vars(unique_cols), ~str_c("mutect2_", .)) %>% 
+  
+  # join lancet calls
+  full_join(
+    filter( combined_maf_hotspots_filt,caller=="lancet"),
+    by=setdiff(names(combined_maf_hotspots_filt ), unique_cols)) %>%
+  # rename *_count columns to lancet_*count
+  rename_at(vars(unique_cols), ~str_c("lancet_", .)) %>% 
+  
+  # join vardict
+  full_join(
+    filter(combined_maf_hotspots_filt,caller=="vardict"),
+    by=setdiff(names(combined_maf_hotspots_filt ), unique_cols)) %>%
+  # rename *_count columns to vardict_*count
+  rename_at(vars(unique_cols), ~str_c("vardict_", .))
+
+
+# We will select unique cols for each variant call in the order 
+# strelka2 > mutect2 > lancet > vardict
 combined_maf_hotspots_filt <- combined_maf_hotspots_filt %>%
-  group_by_at(setdiff(names(combined_hotspot_calls), unique_cols)) %>%
-  summarise(
-            t_depth= mean(as.numeric(t_depth)),
-            n_depth = mean(as.numeric(n_depth)),
-            t_ref_count = mean(as.numeric(t_ref_count)),
-            n_ref_count = mean(as.numeric(n_ref_count)),
-            t_alt_count = mean(as.numeric(t_alt_count)),
-            n_alt_count = mean(as.numeric(n_alt_count)),
-            caller_count = n(),
-            caller = toString(unique(caller)),
-            vcf_qual = mean(as.numeric(vcf_qual))) %>% 
-  ungroup() %>%
-  # calculate VAF
-  mutate(VAF = t_alt_count/(t_alt_count+t_ref_count))
+  # Given a set of vectors, coalesce() finds the first non-missing value at each position. 
+  mutate( "t_depth" = coalesce(strelka2_t_depth,mutect2_t_depth,lancet_t_depth,vardict_t_depth),
+          "n_depth" = coalesce(strelka2_n_depth,mutect2_n_depth,lancet_n_depth,vardict_n_depth),
+          "t_ref_count" = coalesce(strelka2_t_ref_count,mutect2_t_ref_count,lancet_t_ref_count,vardict_t_ref_count),
+          "n_ref_count" = coalesce(strelka2_n_ref_count,mutect2_n_ref_count,lancet_n_ref_count,vardict_n_ref_count),
+          "t_alt_count" = coalesce(strelka2_t_alt_count,mutect2_t_alt_count,lancet_t_alt_count,vardict_t_alt_count),
+          "n_alt_count" = coalesce(strelka2_n_alt_count,mutect2_n_alt_count,lancet_n_alt_count,vardict_n_alt_count),
+          "vcf_qual" = coalesce(strelka2_vcf_qual,mutect2_vcf_qual,lancet_vcf_qual,vardict_vcf_qual)) 
 
 ```
 
-## Mean read support for combination of callers
+## Identify combination of callers
 
 We will try to identify the read support for each combination of callers to visualize if any callers call hostspot sites with low read support calls which
 ```{r}
+
+## adding in caller info to plot caller information
+combined_maf_hotspots_filt <- combined_maf_hotspots_filt %>%
+  left_join(caller_counts,by=join_cols) %>%
+  select(colnames(combined_hotspot_calls),caller_count)
+
 
 ggplot(combined_maf_hotspots_filt[,c("caller","caller_count","t_alt_count")],
        aes(x=as.factor(caller_count),y=t_alt_count))+
@@ -150,7 +207,7 @@ unique_1caller_hotspots <- combined_maf_hotspots_filt %>%
 
 unique_1caller_hotspots
 ```
-There are 109 SNV or indel calls are only called by 1 caller.
+There are 79 SNV or indel calls are only called by 1 caller.
 
 What's the distrbution of the t_alt_count in calls only supported by 1 caller?
 ```{r}
@@ -172,7 +229,7 @@ ggplot(unique_1caller_hotspots[,c("caller","t_alt_count","Variant_Type")],
 
 ```
 
-Majority of the unique calls are deletions and dinucleotude mutations (these are 2 base polyphormism split into 2 SNVs in consensus maf df) followed by SNPs. Some of the unique per caller calls from lancet,mutect2 and vardict seem to be below the red line which denotes t_alt_count==5.
+Majority of the unique calls are deletions , followed by SNPs and dinucleotude mutations (these are 2 base polyphormism split into 2 SNVs in consensus maf df) . Some of the unique per caller calls from lancet,mutect2 and vardict seem to be below the red line which denotes t_alt_count==5.
 
 
 ## Merge the combined hotspots with consensus 
@@ -180,9 +237,9 @@ Majority of the unique calls are deletions and dinucleotude mutations (these are
 We will now create a maf file with hotspots called uniquely from `combined_hotspot_calls` to `consensus_maf_file`
 ```{r}
 
-combined_maf_hotspots_filt %>%
-  bind_rows(consensus_maf_file) %>%
-  write_tsv(gzfile(output_file),na = ".")
+consensus_maf_file %>%
+  bind_rows(combined_maf_hotspots_filt) %>%
+  write_tsv(output_file,na = ".")
 
 
 
