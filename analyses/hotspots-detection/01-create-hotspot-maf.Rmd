@@ -2,7 +2,11 @@
 title: "Create consensus hotspot maf"
 author: Krutika Gaonkar for D3b
 output: html_notebook
-
+params:
+  vaf_filter:
+    label: VAF filter for hotspots variant calls
+    value: 0
+    input:   
 ---
 
 In the previous step we gather all known cancer hotspots by scavenging calls by
@@ -47,7 +51,11 @@ combined_hotspot_calls <- list.files(path = scratch_dir,pattern = ".RDS",full.na
   map_dfr(readRDS) 
 
 # MNVs are split into SNVs
-combined_hotspot_calls_mnv_split <- split_mnv(combined_hotspot_calls)
+combined_hotspot_calls_mnv_split <- split_mnv(combined_hotspot_calls) %>%
+  # removing mvv_id and mnv_pos column
+  # since they uniquely numbered per caller variant calls
+  # in the merged combined_hotspot_calls
+  select(-mnv_id, -mnv_pos)
 
 combined_hotspot_calls <- combined_hotspot_calls %>%
   # removing MNVs here
@@ -175,7 +183,9 @@ combined_maf_hotspots_filt <- combined_maf_hotspots_filt %>%
           "n_ref_count" = coalesce(strelka2_n_ref_count,mutect2_n_ref_count,lancet_n_ref_count,vardict_n_ref_count),
           "t_alt_count" = coalesce(strelka2_t_alt_count,mutect2_t_alt_count,lancet_t_alt_count,vardict_t_alt_count),
           "n_alt_count" = coalesce(strelka2_n_alt_count,mutect2_n_alt_count,lancet_n_alt_count,vardict_n_alt_count),
-          "vcf_qual" = coalesce(strelka2_vcf_qual,mutect2_vcf_qual,lancet_vcf_qual,vardict_vcf_qual)) 
+          "vcf_qual" = coalesce(strelka2_vcf_qual,mutect2_vcf_qual,lancet_vcf_qual,vardict_vcf_qual),
+          # calculate VAF
+          VAF = t_alt_count/(t_alt_count+t_ref_count))
 
 ```
 
@@ -186,9 +196,7 @@ We will try to identify the read support for each combination of callers to visu
 
 ## adding in caller info to plot caller information
 combined_maf_hotspots_filt <- combined_maf_hotspots_filt %>%
-  left_join(caller_counts,by=join_cols) %>%
-  select(colnames(combined_hotspot_calls),caller_count)
-
+  left_join(caller_counts,by=join_cols) 
 
 ggplot(combined_maf_hotspots_filt[,c("caller","caller_count","t_alt_count")],
        aes(x=as.factor(caller_count),y=t_alt_count))+
@@ -239,6 +247,15 @@ We will now create a maf file with hotspots called uniquely from `combined_hotsp
 
 consensus_maf_file %>%
   bind_rows(combined_maf_hotspots_filt) %>%
+  # only keep columns in consensus file
+  select(colnames(consensus_maf_file)) %>%
+  unique() %>%
+  dplyr::arrange("Chromosome", "Start_Position") %>%
+  # Filter with --vaf_filter option
+  dplyr::filter(VAF >= vaf_filter) %>%
+  as.data.frame() %>%
+  # Write to a TSV file, change NAs back to "."
+  readr::write_tsv(opt$output_file, na = ".")
   write_tsv(output_file,na = ".")
 
 
