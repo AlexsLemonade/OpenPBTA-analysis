@@ -18,6 +18,10 @@ Rscript -e "rmarkdown::render('01-known_signatures.Rmd', clean = TRUE)"
 # Split up the consensus MAF files by experimental strategy (writes to scratch)
 Rscript --vanilla 02-split_experimental_strategy.R
 
-# Run the shell script that is for determining the number of signatures to use
-# with a low number of iterations
+# Run the shell script for determining the number of signatures to use
+# with a low number of iterations if run in CI
 QUICK_MUTSIGS=$ABBREVIATED_MUTSIGS bash 03-de_novo_range_of_nsignatures.sh
+
+# Run the shell script to perform de novo extraction 
+# with a low number of iterations if run in CI
+QUICK_MUTSIGS=$ABBREVIATED_MUTSIGS bash 04-de_novo_signature_extraction.sh
