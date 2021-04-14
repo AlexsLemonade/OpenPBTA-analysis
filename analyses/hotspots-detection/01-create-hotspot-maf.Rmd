@@ -6,7 +6,7 @@ params:
   vaf_filter:
     label: VAF filter for hotspots variant calls
     value: 0
-    input:   
+    input: integer  
 ---
 
 In the previous step we gather all known cancer hotspots by scavenging calls by
