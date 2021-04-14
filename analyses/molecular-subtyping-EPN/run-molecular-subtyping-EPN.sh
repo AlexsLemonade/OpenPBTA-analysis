@@ -61,7 +61,7 @@ python3 02_ependymoma_generate_all_data.py \
 # Workaround for kernel issue noted in https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/991
 # We convert this to a script -- using --ExecutePreprocessor.kernel_name=python3 means the table doesn't
 # get updated
-jupyter nbconvert 03-subgrouping_samples.ipynb --to=script --ExecutePreprocessor.kernel_name=python3
+jupyter nbconvert --to=script 03-subgrouping_samples.ipynb
 # This converted script will use display(), which causes problems without importing display
 sed -i '1s/^/from IPython.display import display\n /' 03-subgrouping_samples.py
 
