@@ -18,7 +18,7 @@ jobs:
 
       - run:
           name: Check python packages
-          command: ./scripts/run_in_ci.sh pip3 freeze
+          command: ./scripts/run_in_ci.sh bash scripts/check-python.sh
 
       - run:
           name: High level histology grouping for plot labels
