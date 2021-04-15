@@ -71,7 +71,6 @@ prepare_maf_object <- function(maf_df,
         "Multi_Hit_Fusion",
         "Hom_Deletion",
         "Hem_Deletion",
-        "amplification",
         "Amp",
         "Del"
       )
