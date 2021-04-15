@@ -17,6 +17,10 @@ jobs:
           command: ./scripts/run_in_ci.sh ls data/testing
 
       - run:
+          name: Check python packages
+          command: ./scripts/run_in_ci.sh pip3 freeze
+
+      - run:
           name: High level histology grouping for plot labels
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('figures/mapping-histology-labels.Rmd', clean = TRUE)"
 
