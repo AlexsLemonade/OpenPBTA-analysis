@@ -56,9 +56,9 @@ jobs:
           name: Molecular subtyping Chordoma
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-chordoma/run-molecular-subtyping-chordoma.sh
 
-      # - run:
-      #     name: Molecular subtyping - Ependymoma
-      #     command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
+      - run:
+          name: Molecular subtyping - Ependymoma
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
 
       - run:
           name: Molecular Subtyping - LGAT
