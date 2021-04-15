@@ -257,9 +257,9 @@ RUN pip3 install \
     "CrossMap==0.3.9" \
     "cycler==0.10.0" \
     "datrie==0.8.2" \
-    "decorator==5.0.6" \
+    "decorator==4.4.2" \
     "defusedxml==0.7.1" \
-    "docutils==0.17" \
+    "docutils==0.16" \
     "entrypoints==0.3" \
     "gitdb==4.0.7" \
     "GitPython==3.1.14" \
@@ -271,7 +271,7 @@ RUN pip3 install \
     "jedi==0.17.2" \
     "Jinja2==2.11.3" \
     "jsonschema==3.2.0" \
-    "jupyter-client==6.1.13" \
+    "jupyter-client==6.1.12" \
     "jupyter-core==4.6.3" \
     "kiwisolver==1.1.0" \
     "MarkupSafe==1.1.1" \
@@ -279,8 +279,7 @@ RUN pip3 install \
     "mistune==0.8.4" \
     "mizani==0.5.4" \
     "nbconvert==5.6.1" \
-    "nbformat==5.1.3" \
-    "nest-asyncio==1.5.1" \
+    "nbformat==5.1.2" \
     "notebook==6.0.0" \
     "numpy==1.17.3" \
     "packaging==20.9" \
@@ -292,7 +291,7 @@ RUN pip3 install \
     "pexpect==4.8.0" \
     "pickleshare==0.7.5" \
     "plotnine==0.3.0" \
-    "prometheus-client==0.10.1" \
+    "prometheus-client==0.9.0" \
     "prompt-toolkit==2.0.10" \
     "psutil==5.8.0" \
     "ptyprocess==0.7.0" \
