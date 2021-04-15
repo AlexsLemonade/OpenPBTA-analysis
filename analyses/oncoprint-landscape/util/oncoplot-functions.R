@@ -72,8 +72,8 @@ prepare_maf_object <- function(maf_df,
         "Hom_Deletion",
         "Hem_Deletion",
         "amplification",
-        "gain",
-        "loss"
+        "Amp",
+        "Del"
       )
     )
 
