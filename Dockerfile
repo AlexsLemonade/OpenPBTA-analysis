@@ -27,10 +27,14 @@ RUN apt-get -y --no-install-recommends install \
 RUN apt-get -y --no-install-recommends install \
     libpoppler-cpp-dev
 
-# Install pip3 and installation tools
+# Install pip3 and low-level python installation reqs
 RUN apt-get -y --no-install-recommends install \
     python3-pip  python3-dev
-RUN pip3 install "setuptools==46.3.0" "six==1.14.0" "wheel==0.34.2"
+RUN pip3 install \
+  "Cython==0.29.15" \
+  "setuptools==46.3.0" \
+  "six==1.14.0" \
+  "wheel==0.34.2" 
 
 # Install java
 RUN apt-get -y --no-install-recommends install \
@@ -237,7 +241,7 @@ RUN R -e "remotes::install_github('wilkox/treemapify', ref = 'e70adf727f4d13223d
 # Need this specific version of circlize so it has hg38
 RUN R -e "remotes::install_github('jokergoo/circlize', ref = 'b7d86409d7f893e881980b705ba1dbc758df847d', dependencies = TRUE)"
 
-# Install python libraries
+# Install python packages
 ##########################
 
 # Install python3 tools and ALL dependencies
@@ -252,7 +256,6 @@ RUN pip3 install \
     "ConfigArgParse==1.4" \
     "CrossMap==0.3.9" \
     "cycler==0.10.0" \
-    "Cython==0.29.15" \
     "datrie==0.8.2" \
     "decorator==5.0.6" \
     "defusedxml==0.7.1" \
