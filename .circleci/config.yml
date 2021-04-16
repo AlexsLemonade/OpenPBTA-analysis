@@ -17,6 +17,10 @@ jobs:
           command: ./scripts/run_in_ci.sh ls data/testing
 
       - run:
+          name: Check python packages
+          command: ./scripts/run_in_ci.sh bash scripts/check-python.sh
+
+      - run:
           name: High level histology grouping for plot labels
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('figures/mapping-histology-labels.Rmd', clean = TRUE)"
 
@@ -105,8 +109,8 @@ jobs:
          command: ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
 
       - run:
-          name: Immune deconvolution using xCell and MCP-Counter
-          command: OPENPBTA_DECONV_METHOD="mcp_counter" ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
+          name: Immune deconvolution using immunedeconv, uses xCell by default
+          command: ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
 
       - run:
           name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded data and creates recurrent fusion list

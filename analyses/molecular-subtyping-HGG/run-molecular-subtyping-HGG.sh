@@ -25,6 +25,9 @@ script_directory="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
+# Gather pathology diagnosis and pathology free text diagnosis for HGG sample selection
+Rscript 00-HGG-select-pathology-dx.R
+
 # Run the first script in this module that reclassifies high-grade gliomas
 Rscript -e "rmarkdown::render('01-HGG-molecular-subtyping-defining-lesions.Rmd', clean = TRUE)"
 
