@@ -33,18 +33,21 @@ then
       --num_iterations 10 \
       --seed 42 
 else 
-    # De novo signatures extraction with \k in 3:5 for each of two models
-    for model in multinomial poisson; do
-        for K in {3..5}; do
+    # De novo signatures extraction with \k in 3:4 for each of two models
+    # We actually run k \in 2-5 in order to get GOF plot for these inferences (4 k's needed to make that plot)
+    for model in poisson multinomial; do
+        for seed in {3..5}; do
             Rscript --vanilla \
               scripts/de_novo_signature_extraction.R \
               --maf_file ${maf_file} \
-              --nsignatures_floor ${K} \
-              --nsignatures_ceiling ${K} \
+              --nsignatures_floor 2 \
+              --nsignatures_ceiling 5 \
               --num_iterations 3000 \
               --model ${model} \
-              --seed 42 \
-              --output_file "${denovo_results_dir}/denovo_k_${K}_model_${model}.RDS"
+              --seed ${seed} \
+              --output_file "${denovo_results_dir}/denovo_seed_${seed}_model_${model}-2-5.RDS" \
+              --plot_output "${denovo_results_dir}/denovo-gof_seed_${seed}_model_${model}-2-5.pdf"
     done
   done
 fi
+
