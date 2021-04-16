@@ -292,7 +292,8 @@ To add dependencies that are required for your analysis to the project Docker im
   * Installing most packages, from CRAN or Bioconductor, should be done  with our `install_bioc.R` script, which will ensure that the proper MRAN snapshot is used. `BiocManager::install()` should *not* be used, as it will not install from MRAN.
   * R packages that are not available in the MRAN snapshot can be installed via github with the `remotes::install_github()` function, with the commit specified by the `ref` argument.
 * Python packages should be installed with `pip3 install` with version numbers for all packages and dependencies specified.
-  * As a secondary check, we maintain a `requirements.txt` file to check versions of all python packages and dependencies. 
+  * As a secondary check, we maintain a `requirements.txt` file to check versions of all python packages and dependencies.
+  * When adding a new package, make sure that all dependencies are also added; every package should appear with a specified version **both** in the `Dockerfile` and `requirements.txt`.
 * Other software can be installed with `apt-get`, but this should *never* be used for R packages.
 
 If you need assistance adding a dependency to the Dockerfile, [file a new issue on this repository](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/new) to request help.
