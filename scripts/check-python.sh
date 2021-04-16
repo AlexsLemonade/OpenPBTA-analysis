@@ -9,7 +9,8 @@ set -o pipefail
 # run from this file location but move up to root
 cd "$(dirname "${BASH_SOURCE[0]}")"
 cd ..
-## diff will exit 1 with differences, so we need to pass true
+
+## diff will exit code 1 with differences, so we need to pass true
 pip3 freeze | diff requirements.txt - > req_diff.txt || true
 
 # check if there are any differences in the file
@@ -19,5 +20,9 @@ then
   echo "Python packages do not match requirements.txt, please check."
   exit 1
 fi 
-  
 
+# if the diffs file was not produced for some reason, we should be sure to fail the same way
+if [ ! -e req_diffs.txt ]
+then 
+  pip3 freeze | diff requirements.txt -
+fi
