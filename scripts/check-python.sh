@@ -22,7 +22,7 @@ then
 fi 
 
 # if the diffs file was not produced for some reason, we should be sure to fail the same way
-if [ ! -e req_diffs.txt ]
+if [ ! -e req_diff.txt ]
 then 
   pip3 freeze | diff requirements.txt -
 fi
