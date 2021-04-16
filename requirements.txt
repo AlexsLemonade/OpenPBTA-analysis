@@ -58,7 +58,7 @@ pyrsistent==0.17.3
 pysam==0.15.4
 python-dateutil==2.8.1
 pytz==2019.3
-PyYAML==5.3.1
+PyYAML==5.4
 pyzmq==20.0.0
 ratelimiter==1.2.0.post0
 requests==2.25.1
