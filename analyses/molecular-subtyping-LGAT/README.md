@@ -19,14 +19,21 @@ Samples are _excluded_ if we detect the following strings in the `pathology_diag
 dysembryoplastic neuroepithelial tumor
 ```
 
-These strings are stored in `lgat-subset/lgat_subtyping_path_dx_strings.json`, which is the output of the `00-LGAT-select-pathology-dx` notebook. 
+When `pathology_diagnosis == "Low-grade glioma/astrocytoma (WHO grade I/II)"`, we _exclude_ samples if we detect the following strings in `pathology_free_text_diagnosis`:
+
+```
+desmoplastic infantile astrocytoma
+glioneuronal
+```
+
+These strings are stored in `lgat-subset/lgat_subtyping_path_dx_strings.json`, which is the output of the `00-LGAT-select-pathology-dx.R`. 
 
 Prior to `release-v17-20200908`, we used `short_histology == "LGAT"` as our inclusion criteria.
 
 
 ### Preprocessing
 
-The files in the `lgat-subset` were generated via `01-subset-files-for-LGAT.R` using files from the `release-v17-20200908`. If running locally using [the instructions below](#run-script), new `lgat-subset` files will be generated using the files symlinked in `data/`.
+The files in the `lgat-subset` were generated via `01-subset-files-for-LGAT.R` using files from the `release-v18-20201123`. If running locally using [the instructions below](#run-script), new `lgat-subset` files will be generated using the files symlinked in `data/`.
 
 ### Inputs from data download
 
