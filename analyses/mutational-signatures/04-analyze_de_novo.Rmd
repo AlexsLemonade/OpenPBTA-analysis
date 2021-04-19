@@ -1,0 +1,162 @@
+---
+title: "De novo mutational signature extraction from WGS data"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: S. Spielman
+date: 2021
+editor_options: 
+  chunk_output_type: inline
+---
+
+
+
+#### Packages and paths
+
+
+```{r}
+# Load libraries
+library(sigfit)
+`%>%` <- dplyr::`%>%`
+
+# Path to input data
+path_to_rds <- file.path("..", "..", "scratch", "mutational-signatures", "extraction")
+
+# Result path
+path_to_results <- "results/"
+if (!dir.exists(path_to_results)) {
+  dir.create(path_to_results, recursive = TRUE)
+}
+
+# De novo signatures list (condensed from sigfit output) file
+de_novo_file <- file.path(path_to_results, "de_novo_signatures.RDS")
+
+# Load cosmic data from sigfit
+data("cosmic_signatures_v3")
+cosmic_names <- row.names(cosmic_signatures_v3)
+```
+
+First, we need to extract the signatures from the *de novo* extraction RDS files. We save this into a list `de_novo_signatures`, and write that list to file. If the file already exists, we can simply read it in.
+
+```{r parse_signatures}
+
+if (file.exists(de_novo_file))
+{
+  de_novo_signatures <- readr::read_rds(de_novo_file)
+} else {
+    
+  # Collect the de novo extracted signatures into a single list
+  de_novo_signatures <- list()
+  for (this_model in c("poisson" , "multinomial"))
+  {
+    for (this_seed in 1:5){
+  
+      this_name <- glue::glue("seed_{this_seed}_model_{this_model}")
+      filename <- file.path(denovo_results_dir, 
+                            glue::glue("denovo_{this_name}.RDS"))
+      if (file.exists(filename)) {
+        fit <- readr::read_rds(filename)
+        for (k in 2:5){
+          sig_name <- glue::glue("{k}_{this_name}")
+          de_novo_signatures[[ sig_name ]] <- sigfit::retrieve_pars(fit[[k]], par = "signatures") 
+        }
+      }
+    }
+    
+  }
+  # We save this list to a result file that is a manageable size for repo.
+  readr::write_rds(de_novo_signatures, "de_novo_signatures.RDS")
+}
+```
+
+Based on goodness of fit analyses, we expect these *k* to be optimal for the given seed and inference model (noting that we do see strong sensitivity to this starting condition).
+
+```{r gof_k}
+gof <- tibble::tribble(
+  ~model,     ~seed,      ~best_k,
+  #-----------------
+  "poisson",1,3,
+  "multinomial",1,3,
+  "poisson",2,4,
+  "multinomial",2,4,
+  "poisson",3,3,
+  "multinomial",3,3,
+  "poisson",4,3,
+  "multinomial",4,3,  
+  "poisson",5,3,
+  "multinomial",5,3  
+)
+```
+
+
+Now, we can determine which signatures were extracted and map back to COSMIC names using cosine similarity to determine matching signatures:
+
+```{r determine_sigs}
+
+# Will find the COSMIC equivalent using cosine similarity
+map_match <- function(x) {
+  sort( # Can sort since we just want to see cosmic matches
+    as.numeric( # none of this "optimal assigment ==> 1" business
+      match_signatures(de_novo_signatures, cosmic_signatures_v3)
+    )
+  )
+}
+
+purrr::map(all_signatures, map_match) -> cosmic_matches
+```
+
+<br><br>
+**Now, we create a table of results for which COSMIC SBS signatures were extraxted**:
+```{r gt_sigs}
+tibble::tibble(
+  name = names(cosmic_matches), 
+  cosmic_sig_index = unname(cosmic_matches[1:length(cosmic_matches)])
+  ) %>%
+  unnest(cols=cosmic_sig_index) %>%
+  dplyr::mutate(cosmic_sig = cosmic_names[cosmic_sig_index]) %>% 
+  dplyr::group_by(name) %>%
+  dplyr::summarize(cosmic_sigs = toString(cosmic_sig)) %>%
+  dplyr::mutate(cosmic_sigs = stringr::str_replace_all(cosmic_sigs, "SBS", "")) %>%
+  dplyr::mutate(seed  = stringr::str_extract(name, "_\\d_"),
+                seed  = stringr::stringr::str_replace_all(seed, "_", ""),
+                k     = stringr::str_extract(name, "^\\d"), 
+                model = stringr::str_extract(name, "[a-z]+$")) %>%
+  dplyr::select(-name) %>%
+  tidyr::spread(seed, cosmic_sigs)
+  gt::gt() %>%
+    gt::tab_header(
+      title = md("De novo mutational signature extraction from WGS data using `sigfit`")
+      ) %>%
+    gt::tab_spanner(
+      label = "Matched COSMIC SBS signatures under given random seed",
+      columns=c(3:last_col())
+    ) %>%
+    gt::tab_style(
+      style = cell_text(size = "small"),
+      locations = cells_column_spanners(spanners = everything())
+    ) %>%
+    gt::tab_style(
+      style = list(
+        cell_fill(color = "#00cc66"),
+        cell_text(weight = 600)
+      ),
+      locations = 
+        list(
+          cells_body(
+            columns = c("1", "3", "4", "5"),
+            rows = k == 3
+          ), 
+          cells_body(
+            columns = "2",
+            rows = k == 4
+          )
+        )
+    ) %>%
+   gt::tab_source_note(
+    source_note = md("*Highlighted rows were selected in goodness-of-fit among* k in [2:5] *cosine similarity for the given random seed, using 3000 iterations.*")
+  ) 
+```
+
+
+
