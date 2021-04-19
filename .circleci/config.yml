@@ -17,6 +17,10 @@ jobs:
           command: ./scripts/run_in_ci.sh ls data/testing
 
       - run:
+          name: Check python packages
+          command: ./scripts/run_in_ci.sh bash scripts/check-python.sh
+
+      - run:
           name: High level histology grouping for plot labels
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('figures/mapping-histology-labels.Rmd', clean = TRUE)"
 
@@ -56,9 +60,9 @@ jobs:
           name: Molecular subtyping Chordoma
           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-chordoma/run-molecular-subtyping-chordoma.sh
 
-      # - run:
-      #     name: Molecular subtyping - Ependymoma
-      #     command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
+      - run:
+          name: Molecular subtyping - Ependymoma
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
 
       - run:
           name: Molecular Subtyping - LGAT
