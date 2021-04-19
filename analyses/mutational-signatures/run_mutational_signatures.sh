@@ -20,8 +20,10 @@ Rscript --vanilla 02-split_experimental_strategy.R
 
 # Run the shell script for determining the number of signatures to use
 # with a low number of iterations if run in CI
-QUICK_MUTSIGS=$ABBREVIATED_MUTSIGS bash 03-de_novo_range_of_nsignatures.sh
+# argument 0 --> run denovo goodness of fit
+QUICK_MUTSIGS=$ABBREVIATED_MUTSIGS bash 03-de_novo_range_of_nsignatures.sh 0
 
 # Run the shell script to perform de novo extraction 
 # with a low number of iterations if run in CI
-QUICK_MUTSIGS=$ABBREVIATED_MUTSIGS bash 04-de_novo_signature_extraction.sh
+# argument 1 --> run more robust denovo extraction
+QUICK_MUTSIGS=$ABBREVIATED_MUTSIGS bash 03-de_novo_signature_extraction.sh 1
