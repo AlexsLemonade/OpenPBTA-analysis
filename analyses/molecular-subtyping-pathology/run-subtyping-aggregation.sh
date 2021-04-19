@@ -24,3 +24,6 @@ Rscript -e "rmarkdown::render('02-incorporate-clinical-feedback.Rmd', clean = TR
 
 # Run the third notebook that incorporates pathology feedback into final labels
 Rscript -e "rmarkdown::render('03-incorporate-pathology-feedback.Rmd', params=list(is_ci = ${IS_CI}), clean = TRUE)"
+
+# Recoding ACP samples
+Rscript -e "rmarkdown::render('clinical-subtyping-craniopharyngioma.Rmd', clean = TRUE)"
