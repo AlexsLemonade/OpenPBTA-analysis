@@ -3024,8 +3024,9 @@ See spec(...) for full column specifications.</code></pre>
 <p>Here’s the same filtering steps that are performed on the issue itself that we’ll save in a new data frame.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWNwX2RmIDwtIGhpc3RvbG9naWVzX2RmICU+JVxuICBmaWx0ZXIocGF0aG9sb2d5X2RpYWdub3NpcyA9PSBcIkNyYW5pb3BoYXJ5bmdpb21hXCIsXG4gICAgICAgICBtb2xlY3VsYXJfc3VidHlwZSA9PSBcIkNSQU5JTywgVG8gYmUgY2xhc3NpZmllZFwiLFxuICAgICAgICAgc3RyX2RldGVjdChzdHJfdG9fbG93ZXIocGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXMpLCBcbiAgICAgICAgICAgICAgICAgICAgXCJhZGFtYW50aW5vbWF0b3VzXCIpKSAlPiVcbiAgc2VsZWN0KHNhbXBsZV9pZCxcbiAgICAgICAgIHBhdGhvbG9neV9mcmVlX3RleHRfZGlhZ25vc2lzLFxuICAgICAgICAgbW9sZWN1bGFyX3N1YnR5cGUpICU+JVxuICBkaXN0aW5jdCgpXG5cbmFjcF9kZlxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWNwX2RmIDwtIGhpc3RvbG9naWVzX2RmICU+JVxuICAjIFNhbWUgbG9naWMgYXMgb24gdGhlIGlzc3VlIVxuICBmaWx0ZXIocGF0aG9sb2d5X2RpYWdub3NpcyA9PSBcIkNyYW5pb3BoYXJ5bmdpb21hXCIsXG4gICAgICAgICBtb2xlY3VsYXJfc3VidHlwZSA9PSBcIkNSQU5JTywgVG8gYmUgY2xhc3NpZmllZFwiLFxuICAgICAgICAgc3RyX2RldGVjdChzdHJfdG9fbG93ZXIocGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXMpLCBcbiAgICAgICAgICAgICAgICAgICAgXCJhZGFtYW50aW5vbWF0b3VzXCIpKSAlPiVcbiAgc2VsZWN0KHNhbXBsZV9pZCxcbiAgICAgICAgIHBhdGhvbG9neV9mcmVlX3RleHRfZGlhZ25vc2lzLFxuICAgICAgICAgbW9sZWN1bGFyX3N1YnR5cGUpICU+JVxuICBkaXN0aW5jdCgpXG5cbmFjcF9kZlxuYGBgIn0= -->
 <pre class="r"><code>acp_df &lt;- histologies_df %&gt;%
+  # Same logic as on the issue!
   filter(pathology_diagnosis == &quot;Craniopharyngioma&quot;,
          molecular_subtype == &quot;CRANIO, To be classified&quot;,
          str_detect(str_to_lower(pathology_free_text_diagnosis), 
@@ -3086,9 +3087,10 @@ acp_df</code></pre>
 </table>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY3JhbmlvX2FkYW1fZGYgPC0gaGlzdG9sb2dpZXNfZGYgJT4lIFxuICBmaWx0ZXIoc2FtcGxlX2lkICVpbiUgc2FtcGxlX2lkc19yZWNsYXNzaWZpY2F0aW9uKSAlPiVcbiAgc2VsZWN0KEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQsXG4gICAgICAgICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELFxuICAgICAgICAgc2FtcGxlX2lkLFxuICAgICAgICAgYnJvYWRfaGlzdG9sb2d5LFxuICAgICAgICAgc2hvcnRfaGlzdG9sb2d5LFxuICAgICAgICAgaGFybW9uaXplZF9kaWFnbm9zaXMsXG4gICAgICAgICBtb2xlY3VsYXJfc3VidHlwZSkgJT4lXG4gIG11dGF0ZShcbiAgICBicm9hZF9oaXN0b2xvZ3kgPSBcIlR1bW9ycyBvZiBzZWxsYXIgcmVnaW9uXCIsXG4gICAgc2hvcnRfaGlzdG9sb2d5ID0gXCJDcmFuaW9waGFyeW5naW9tYVwiLFxuICAgIGhhcm1vbml6ZWRfZGlhZ25vc2lzID0gXCJBZGFtYW50aW5vbWF0b3VzIGNyYW5pb3BoYXJ5bmdpb21hXCIsXG4gICAgbW9sZWN1bGFyX3N1YnR5cGUgPSBcIkNSQU5JTywgQURBTVwiXG4gIClcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY3JhbmlvX2FkYW1fZGYgPC0gaGlzdG9sb2dpZXNfZGYgJT4lIFxuICBmaWx0ZXIoc2FtcGxlX2lkICVpbiUgc2FtcGxlX2lkc19yZWNsYXNzaWZpY2F0aW9uKSAlPiVcbiAgIyBGaWx0ZXIgdG8gcmVsZXZhbnQgSUQgYW5kIGRpc2Vhc2UgdHlwZSBsYWJlbCBjb2x1bW5zXG4gIHNlbGVjdChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lELFxuICAgICAgICAgS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCxcbiAgICAgICAgIHNhbXBsZV9pZCxcbiAgICAgICAgIGJyb2FkX2hpc3RvbG9neSxcbiAgICAgICAgIHNob3J0X2hpc3RvbG9neSxcbiAgICAgICAgIGhhcm1vbml6ZWRfZGlhZ25vc2lzLFxuICAgICAgICAgbW9sZWN1bGFyX3N1YnR5cGUpICU+JVxuICAjIENvZGUgdGhlIHZhbHVlcyB0aGF0IGFyZSBpbiB0aGUgdGFibGUgYWJvdmVcbiAgbXV0YXRlKFxuICAgIGJyb2FkX2hpc3RvbG9neSA9IFwiVHVtb3JzIG9mIHNlbGxhciByZWdpb25cIixcbiAgICBzaG9ydF9oaXN0b2xvZ3kgPSBcIkNyYW5pb3BoYXJ5bmdpb21hXCIsXG4gICAgaGFybW9uaXplZF9kaWFnbm9zaXMgPSBcIkFkYW1hbnRpbm9tYXRvdXMgY3JhbmlvcGhhcnluZ2lvbWFcIixcbiAgICBtb2xlY3VsYXJfc3VidHlwZSA9IFwiQ1JBTklPLCBBREFNXCJcbiAgKVxuYGBgIn0= -->
 <pre class="r"><code>cranio_adam_df &lt;- histologies_df %&gt;% 
   filter(sample_id %in% sample_ids_reclassification) %&gt;%
+  # Filter to relevant ID and disease type label columns
   select(Kids_First_Biospecimen_ID,
          Kids_First_Participant_ID,
          sample_id,
@@ -3096,6 +3098,7 @@ acp_df</code></pre>
          short_histology,
          harmonized_diagnosis,
          molecular_subtype) %&gt;%
+  # Code the values that are in the table above
   mutate(
     broad_histology = &quot;Tumors of sellar region&quot;,
     short_histology = &quot;Craniopharyngioma&quot;,
