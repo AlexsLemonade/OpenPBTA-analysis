@@ -1,16 +1,20 @@
 ---
 title: "De novo mutational signature extraction from WGS data"
-output: 
+author: "S. Spielman"
+date: "2021"
+output:
   html_notebook:
-    toc: TRUE
-    toc_float: TRUE
-author: S. Spielman
-date: 2021
-editor_options: 
+    toc: yes
+    toc_float: yes
+  html_document:
+    toc: yes
+    df_print: paged
+editor_options:
   chunk_output_type: inline
 ---
 
 
+<br><br><br><br>
 
 #### Packages and paths
 
@@ -21,7 +25,7 @@ library(sigfit)
 `%>%` <- dplyr::`%>%`
 
 # Path to input data
-path_to_rds <- file.path("..", "..", "scratch", "mutational-signatures", "extraction")
+path_to_input_rds <- file.path("..", "..", "scratch", "mutational-signatures", "extraction")
 
 # Result path
 path_to_results <- "results/"
@@ -37,23 +41,24 @@ data("cosmic_signatures_v3")
 cosmic_names <- row.names(cosmic_signatures_v3)
 ```
 
+<br><br>
 First, we need to extract the signatures from the *de novo* extraction RDS files. We save this into a list `de_novo_signatures`, and write that list to file. If the file already exists, we can simply read it in.
 
 ```{r parse_signatures}
-
 if (file.exists(de_novo_file))
 {
   de_novo_signatures <- readr::read_rds(de_novo_file)
 } else {
     
   # Collect the de novo extracted signatures into a single list
+  # This takes quite a few minutes to parse.
   de_novo_signatures <- list()
   for (this_model in c("poisson" , "multinomial"))
   {
     for (this_seed in 1:5){
   
       this_name <- glue::glue("seed_{this_seed}_model_{this_model}")
-      filename <- file.path(denovo_results_dir, 
+      filename <- file.path(path_to_input_rds, 
                             glue::glue("denovo_{this_name}.RDS"))
       if (file.exists(filename)) {
         fit <- readr::read_rds(filename)
@@ -65,11 +70,12 @@ if (file.exists(de_novo_file))
     }
     
   }
-  # We save this list to a result file that is a manageable size for repo.
-  readr::write_rds(de_novo_signatures, "de_novo_signatures.RDS")
+  # We save this list to a result file
+  readr::write_rds(de_novo_signatures, de_novo_file)
 }
 ```
 
+<br><br>
 Based on goodness of fit analyses, we expect these *k* to be optimal for the given seed and inference model (noting that we do see strong sensitivity to this starting condition).
 
 ```{r gof_k}
@@ -90,6 +96,7 @@ gof <- tibble::tribble(
 ```
 
 
+<br><br>
 Now, we can determine which signatures were extracted and map back to COSMIC names using cosine similarity to determine matching signatures:
 
 ```{r determine_sigs}
@@ -98,32 +105,34 @@ Now, we can determine which signatures were extracted and map back to COSMIC nam
 map_match <- function(x) {
   sort( # Can sort since we just want to see cosmic matches
     as.numeric( # none of this "optimal assigment ==> 1" business
-      match_signatures(de_novo_signatures, cosmic_signatures_v3)
+      match_signatures(x, cosmic_signatures_v3)
     )
   )
 }
 
-purrr::map(all_signatures, map_match) -> cosmic_matches
+purrr::map(de_novo_signatures, map_match) -> cosmic_matches
 ```
 
 <br><br>
-**Now, we create a table of results for which COSMIC SBS signatures were extraxted**:
+**Now, we create a table of results for which COSMIC SBS signatures were extracted**:
 ```{r gt_sigs}
 tibble::tibble(
   name = names(cosmic_matches), 
   cosmic_sig_index = unname(cosmic_matches[1:length(cosmic_matches)])
   ) %>%
-  unnest(cols=cosmic_sig_index) %>%
-  dplyr::mutate(cosmic_sig = cosmic_names[cosmic_sig_index]) %>% 
+  tidyr::unnest(cols=cosmic_sig_index) %>%
+  dplyr::mutate(cosmic_sig = cosmic_names[cosmic_sig_index]) -> unnested_sigs
+
+unnested_sigs %>%
   dplyr::group_by(name) %>%
   dplyr::summarize(cosmic_sigs = toString(cosmic_sig)) %>%
   dplyr::mutate(cosmic_sigs = stringr::str_replace_all(cosmic_sigs, "SBS", "")) %>%
   dplyr::mutate(seed  = stringr::str_extract(name, "_\\d_"),
-                seed  = stringr::stringr::str_replace_all(seed, "_", ""),
+                seed  = stringr::str_replace_all(seed, "_", ""),
                 k     = stringr::str_extract(name, "^\\d"), 
                 model = stringr::str_extract(name, "[a-z]+$")) %>%
   dplyr::select(-name) %>%
-  tidyr::spread(seed, cosmic_sigs)
+  tidyr::spread(seed, cosmic_sigs) %>%
   gt::gt() %>%
     gt::tab_header(
       title = md("De novo mutational signature extraction from WGS data using `sigfit`")
@@ -158,5 +167,26 @@ tibble::tibble(
   ) 
 ```
 
+<br><br><br><br>
 
+Clearly, this analysis is extremely sensitive to starting conditions. Even so, we see a few repeated SBS signatures coming up
 
+```{r count_sigs}
+
+unnested_sigs %>%
+  dplyr::count(cosmic_sig) %>%
+  dplyr::arrange(-n) %>%
+  dplyr::slice(1:10) %>%
+  dplyr::rename(Signature = cosmic_sig, count = n) %>%
+  gt::gt()
+```
+
++ **[SBS15](https://cancer.sanger.ac.uk/signatures/sbs/sbs15/)** "is one of seven mutational signatures associated with defective DNA mismatch repair and microsatellite instability (MSI) and is often found in the same samples as other MSI associated signatures: SBS6, SBS14, SBS20, SBS21, SBS26 and SBS44."
++ [SBS40](https://cancer.sanger.ac.uk/signatures/sbs/sbs40/) is correlated with age (not of clear relevance to pediatric tumors).
++ **[SBS14](https://cancer.sanger.ac.uk/signatures/sbs/sbs14/)** "is one of seven mutational signatures associated with defective DNA mismatch repair and microsatellite instability (MSI) and is often found in the same samples as other MSI associated signatures: SBS6, SBS15, SBS20, SBS21, SBS26 and SBS44."
++ [SBS5](https://cancer.sanger.ac.uk/signatures/sbs/sbs5/) is age and clock-like, and "SBS5 may be contaminated by SBS16."
++ [SBS23](https://cancer.sanger.ac.uk/signatures/sbs/sbs23/) has unknown aetiology.
++ **[SBS26](https://cancer.sanger.ac.uk/signatures/sbs/sbs26/)** "is one of seven mutational signatures associated with defective DNA mismatch repair and microsatellite instability (MSI) and is often found in the same samples as other MSI associated signatures: SBS6, SBS14, SBS15, SBS20, SBS21, and SBS44."
++ [SBS11](https://cancer.sanger.ac.uk/signatures/sbs/sbs11/) "exhibits a mutational pattern resembling that of alkylating agents. Patient histories indicate an association between previous treatment with the alkylating agent temozolomide and SBS11 mutations."
+
+**The three bolded** signatures are commonly associated with one another due to putative shared mechanisms of "defective DNA mismatch repair and microsatellite instability (MSI)."
