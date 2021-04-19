@@ -39,7 +39,7 @@ The files in the `lgat-subset` were generated via `01-subset-files-for-LGAT.R` u
 bash run_subtyping.sh
 ```
 
-This does not run the `00-LGAT-select-pathology-dx` notebook, as that is intended to be run once and tied to a specific release (`release-v17-20200908`).
+This does not run the `00-v17-LGAT-select-pathology-dx` notebook, as that is intended to be run once and tied to a specific release (`release-v17-20200908`).
 
 #### Order of scripts in subtyping
 
