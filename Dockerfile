@@ -395,6 +395,8 @@ RUN ./install_bioc.r \
 RUN R -e "remotes::install_github('d3b-center/annoFuse',ref = 'c6a2111b5949ca2aae3853f7f34de3d0db4ffa33', dependencies = TRUE)"
 
 # Display tabular results for de novo mutational signature extraction
+RUN apt-get -y --no-install-recommends install \
+    libglu1-mesa-dev
 RUN R -e "remotes::install_github('rstudio/gt@v0.2.2', dependencies = TRUE)"
 
 
