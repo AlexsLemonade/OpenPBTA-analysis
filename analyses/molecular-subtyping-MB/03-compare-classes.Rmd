@@ -5,7 +5,7 @@ output:
     df_print: paged
 params:
   expected_input:
-    value: input/expected_class_v17.rds
+    value: input/openPBTA-mb-pathology-subtypes.rds
   observed_input:
     value: results/mb-classified.rds
 ---
@@ -161,17 +161,17 @@ calc.consensus <- function(mm2s, medullo.classifier, clin){
   mm2s <- mm2s %>%
     dplyr::rename(MM2S_best_fit = best.fit) %>%
     dplyr::select(Kids_First_Biospecimen_ID, sample_id, 
-                  pathology_subtype, other_molecular_findings, MM2S_best_fit)
+                  pathology_subtype, MM2S_best_fit)
   medullo.classifier <- medullo.classifier %>%
     dplyr::rename(medulloPackage_best_fit = best.fit) %>%
     dplyr::select(Kids_First_Biospecimen_ID, sample_id, 
-                  pathology_subtype, other_molecular_findings, medulloPackage_best_fit)
+                  pathology_subtype, medulloPackage_best_fit)
   
   # join both
   consensus.mat <- mm2s %>%
     inner_join(medullo.classifier, 
                by = c('Kids_First_Biospecimen_ID', 'sample_id',
-                      'pathology_subtype', 'other_molecular_findings'))
+                      'pathology_subtype'))
   
   # create consensus molecular subtype if both classifiers agree 
   # match consensus molecular subtype to the pathology report
@@ -195,7 +195,7 @@ calc.consensus <- function(mm2s, medullo.classifier, clin){
   # subset columns for html output
   consensus.mat <- consensus.mat.out %>%
     mutate(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA) %>%
-    dplyr::select(Kids_First_Biospecimen_ID, sample_id, pathology_subtype, other_molecular_findings, 
+    dplyr::select(Kids_First_Biospecimen_ID, sample_id, pathology_subtype, 
                   MM2S_best_fit, medulloPackage_best_fit, molecular_subtype, match) %>%
     arrange(Kids_First_Biospecimen_ID)
   
