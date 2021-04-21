@@ -4,7 +4,7 @@
 #' @param impact_values list of IMPACT [optional] values to filter
 #' @param hotspot_database_2017_snv_df [optional] dataframe with Hugo_Sybol, Amino_Acid_Position
 #' from tab `SNV_hotspot` of https://www.cancerhotspots.org/files/hotspots_v2.xls
-#' @param hhotspot_database_2017_indel_df [optional] dataframe with Hugo_Sybol, Amino_Acid_Start and
+#' @param hotspot_database_2017_indel_df [optional] dataframe with Hugo_Sybol, Amino_Acid_Start and
 #' Amino_Acid_End columns symbolizing the start and end of the hotspot region in tab `INDEL_hotspot` 
 #' of https://www.cancerhotspots.org/files/hotspots_v2.xls
 #' @param hotspot_genomic_site_df [optional] dataframe with Hugo_Symbol and Chromosome, Start_Position ,
@@ -80,9 +80,9 @@ filterMaf <- function(table,
                         by = c( "Hugo_Symbol"),
                         suffix = c(".calls_base",".hotspot_indel_df")  
       ) %>% 
-      # keep only sites that where 
-      # calls$start >= hotspot_indel$start and
-      # calls$end <= hotspot_indel$stop
+      # keep only sites that overlap hotspot indels with  
+      # calls$start <= hotspot_indel$stop and
+      # calls$end >= hotspot_indel$start
       # start and end could be “?” (question mark) which is used to indicate unknown positions as well
       filter(Amino_Acid_Start.calls_base <= Amino_Acid_End.hotspot_indel_df | Amino_Acid_Start.calls_base=="?",
              Amino_Acid_End.calls_base >= Amino_Acid_Start.hotspot_indel_df | Amino_Acid_End.calls_base == "?"

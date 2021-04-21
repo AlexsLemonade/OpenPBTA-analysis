@@ -36,6 +36,7 @@ However, since we don't have the `C228T and C250T` annotation for the upstream m
 
 `00-subset-maf.R` filters and combines calls from all callers with filters for non-silent mutations in hotspot sites.
 `01-create-hotspot-maf.Rmd` all calls that are not part of the consensus maf but overlap hotspots are scavenged back to a maf file along with consensus(3/3)calls. 
+
    
 ### Run
 
