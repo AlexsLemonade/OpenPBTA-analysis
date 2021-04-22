@@ -237,7 +237,6 @@ consensus_maf_file %>%
   bind_rows(combined_maf_hotspots_filt) %>%
   # only keep columns in consensus file
   select(colnames(consensus_maf_file)) %>%
-  unique() %>%
   as.data.frame() %>%
   # Write to a TSV file, change NAs back to "."
   readr::write_tsv(gzfile(output_file), na = ".")
