@@ -34,7 +34,7 @@ genes_list=("../interaction-plots/results/gene_disease_top50.tsv" \
 # join into a string, where file paths are separated by commas
 genes_list=$(join_by , "${genes_list[@]}")
 
-#### Primary only oncoprint
+### Primary only samples mapping for oncoprint
 
 Rscript --vanilla 00-map-to-sample_id.R \
   --maf_file ${maf_consensus} \
@@ -45,23 +45,7 @@ Rscript --vanilla 00-map-to-sample_id.R \
   --filename_lead ${primary_filename} \
   --independent_specimens ../../data/independent-specimens.wgs.primary.tsv
 
-Rscript --vanilla 01-plot-oncoprint.R \
-  --maf_file ${intermediate_directory}/${primary_filename}_maf.tsv \
-  --cnv_file ${intermediate_directory}/${primary_filename}_cnv.tsv \
-  --fusion_file ${intermediate_directory}/${primary_filename}_fusions.tsv \
-  --metadata_file ${histologies_file} \
-  --png_name ${primary_filename}_oncoprint.png
-
-# Genes of interest only version of oncoprint
-Rscript --vanilla 01-plot-oncoprint.R \
-  --maf_file ${intermediate_directory}/${primary_filename}_maf.tsv \
-  --cnv_file ${intermediate_directory}/${primary_filename}_cnv.tsv \
-  --fusion_file ${intermediate_directory}/${primary_filename}_fusions.tsv \
-  --metadata_file ${histologies_file} \
-  --goi_list ${genes_list} \
-  --png_name ${primary_filename}_goi_oncoprint.png
-
-#### Primary plus samples oncoprint
+#### Primary plus samples mapping for oncoprint
 
 Rscript --vanilla 00-map-to-sample_id.R \
   --maf_file ${maf_consensus} \
@@ -72,18 +56,51 @@ Rscript --vanilla 00-map-to-sample_id.R \
   --filename_lead ${primaryplus_filename} \
   --independent_specimens ../../data/independent-specimens.wgs.primary-plus.tsv
 
-Rscript --vanilla 01-plot-oncoprint.R \
-  --maf_file ${intermediate_directory}/${primaryplus_filename}_maf.tsv \
-  --cnv_file ${intermediate_directory}/${primaryplus_filename}_cnv.tsv \
-  --fusion_file ${intermediate_directory}/${primaryplus_filename}_fusions.tsv \
-  --metadata_file ${histologies_file} \
-  --png_name ${primaryplus_filename}_oncoprint.png
+# Print oncoprints by broad histology
+for histology in "Low-grade astrocytic tumor" \
+"Embryonal tumor" \
+"Diffuse astrocytic and oligodendroglial tumor" \
+"Ependymal tumor" \
+"Other CNS"
+do
+  
+  # Print primary only oncoprints by broad histology
+  Rscript --vanilla 01-plot-oncoprint.R \
+    --maf_file ${intermediate_directory}/${primary_filename}_maf.tsv \
+    --cnv_file ${intermediate_directory}/${primary_filename}_cnv.tsv \
+    --fusion_file ${intermediate_directory}/${primary_filename}_fusions.tsv \
+    --metadata_file ${histologies_file} \
+    --png_name ${primary_filename}_"$histology"_oncoprint.png \
+    --broad_histology "$histology"
+      
+  # Genes of interest only version of oncoprint
+  Rscript --vanilla 01-plot-oncoprint.R \
+    --maf_file ${intermediate_directory}/${primary_filename}_maf.tsv \
+    --cnv_file ${intermediate_directory}/${primary_filename}_cnv.tsv \
+    --fusion_file ${intermediate_directory}/${primary_filename}_fusions.tsv \
+    --metadata_file ${histologies_file} \
+    --goi_list ${genes_list} \
+    --png_name ${primary_filename}_"${histology}"_goi_oncoprint.png \
+    --broad_histology "${histology}"
 
-# Genes of interest only version of oncoprint
-Rscript --vanilla 01-plot-oncoprint.R \
-  --maf_file ${intermediate_directory}/${primaryplus_filename}_maf.tsv \
-  --cnv_file ${intermediate_directory}/${primaryplus_filename}_cnv.tsv \
-  --fusion_file ${intermediate_directory}/${primaryplus_filename}_fusions.tsv \
-  --metadata_file ${histologies_file} \
-  --goi_list ${genes_list} \
-  --png_name ${primaryplus_filename}_goi_oncoprint.png
+
+  # Print primary plus oncoprints by broad histology
+  Rscript --vanilla 01-plot-oncoprint.R \
+    --maf_file ${intermediate_directory}/${primaryplus_filename}_maf.tsv \
+    --cnv_file ${intermediate_directory}/${primaryplus_filename}_cnv.tsv \
+    --fusion_file ${intermediate_directory}/${primaryplus_filename}_fusions.tsv \
+    --metadata_file ${histologies_file} \
+    --png_name ${primaryplus_filename}_"$histology"_oncoprint.png \
+    --broad_histology "$histology"
+
+  # Genes of interest only version of oncoprint
+  Rscript --vanilla 01-plot-oncoprint.R \
+    --maf_file ${intermediate_directory}/${primaryplus_filename}_maf.tsv \
+    --cnv_file ${intermediate_directory}/${primaryplus_filename}_cnv.tsv \
+    --fusion_file ${intermediate_directory}/${primaryplus_filename}_fusions.tsv \
+    --metadata_file ${histologies_file} \
+    --goi_list ${genes_list} \
+    --png_name ${primaryplus_filename}_"$histology"_goi_oncoprint.png \
+    --broad_histology "$histology"
+    
+done
