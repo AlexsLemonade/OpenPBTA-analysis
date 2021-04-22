@@ -155,7 +155,7 @@ out_neutral <- neutral %>%
                 loc.end = end) %>%
   dplyr::mutate(num.mark = NA,
                 seg.mean = NA,
-                copy.num = 2)
+                copy.num = NA)
 # unset X and Y copy numbers
 out_neutral$copy.num[out_neutral$chrom %in% c("chrX", "chrY")] <- NA
     
