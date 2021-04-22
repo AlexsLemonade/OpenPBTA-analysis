@@ -185,13 +185,16 @@ combined_maf_hotspots_filt <- combined_maf_hotspots_filt %>%
           "n_alt_count" = coalesce(strelka2_n_alt_count,mutect2_n_alt_count,lancet_n_alt_count,vardict_n_alt_count),
           "vcf_qual" = coalesce(strelka2_vcf_qual,mutect2_vcf_qual,lancet_vcf_qual,vardict_vcf_qual),
           # calculate VAF
-          VAF = t_alt_count/(t_alt_count+t_ref_count))
+          VAF = t_alt_count/(t_alt_count+t_ref_count))%>%
+  # Filter with vaf_filter parm in this notebook
+  dplyr::filter(VAF >= params$vaf_filter) 
+
 
 ```
 
-## Identify combination of callers
+## Identify read support for variant type per caller
 
-We will try to identify the read support for each combination of callers to visualize if any callers call hostspot sites with low read support calls which
+We will try to identify the read support for each variant type from each callers to visualize if any callers call hostspot sites in specific variant types with low read support calls 
 ```{r}
 
 ## adding in caller info to plot caller information
@@ -206,6 +209,7 @@ ggplot(combined_maf_hotspots_filt[,c("caller","caller_count","t_alt_count")],
 ```
 Hotspot sites called by just 1 caller seem to have majority low read support and a few are found in 3 caller ( now captured in 3 callers because of the variant being present in vardict)
 
+## Identify calls unique to a caller
 Lets look at these calls that are unique to 1 caller.
 
 ```{r}
@@ -217,28 +221,12 @@ unique_1caller_hotspots
 ```
 There are 79 SNV or indel calls are only called by 1 caller.
 
-What's the distrbution of the t_alt_count in calls only supported by 1 caller?
+Vardict calls a lot of variants summarized [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/README.md)
+In snv-callers consensus calling method we didn't consider vardict calls so we will need to filter out vardict only calls from the hotspots to
+be consistent 
 ```{r}
-
-summary.type <- unique_1caller_hotspots %>%  
-  group_by(Variant_Type) %>%
-  tally()
-
-
-ggplot(unique_1caller_hotspots[,c("caller","t_alt_count","Variant_Type")],
-       aes(x=as.factor(Variant_Type),y=t_alt_count))+
-  geom_violin()+ 
-  geom_jitter(height = 0, width = 0.1, aes(color=caller)) +
-  # add number of calls at the top
-  geom_text(data=summary.type ,aes(x = Variant_Type, y = 350, label=n), fontface =2, size = 4)+
-  # draw a line where t_alt_count==5
-  geom_hline(aes(yintercept=5),color="red")
-
-
+ combined_maf_hotspots_filt <- combined_maf_hotspots_filt %>% filter(caller !="vardict")
 ```
-
-Majority of the unique calls are deletions , followed by SNPs and dinucleotude mutations (these are 2 base polyphormism split into 2 SNVs in consensus maf df) . Some of the unique per caller calls from lancet,mutect2 and vardict seem to be below the red line which denotes t_alt_count==5.
-
 
 ## Merge the combined hotspots with consensus 
 
@@ -250,13 +238,9 @@ consensus_maf_file %>%
   # only keep columns in consensus file
   select(colnames(consensus_maf_file)) %>%
   unique() %>%
-  dplyr::arrange("Chromosome", "Start_Position") %>%
-  # Filter with --vaf_filter option
-  dplyr::filter(VAF >= vaf_filter) %>%
   as.data.frame() %>%
   # Write to a TSV file, change NAs back to "."
-  readr::write_tsv(opt$output_file, na = ".")
-  write_tsv(output_file,na = ".")
+  readr::write_tsv(gzfile(output_file), na = ".")
 
 
 
