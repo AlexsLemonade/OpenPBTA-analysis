@@ -64,7 +64,7 @@ combined_hotspot_calls <- combined_hotspot_calls %>%
   union_all(combined_hotspot_calls_mnv_split)
 
 # hotspot mutation maf file output
-output_file <- file.path(results_dir,"pbta-snv-hotspots-plus-consensus.maf.tsv.gz")
+output_file <- file.path(results_dir,"pbta-snv-scavenged-hotspots.maf.tsv.gz")
 
 
 # PBTA consensus maf 
@@ -233,13 +233,12 @@ be consistent
 We will now create a maf file with hotspots called uniquely from `combined_hotspot_calls` to `consensus_maf_file`
 ```{r}
 
-consensus_maf_file %>%
-  bind_rows(combined_maf_hotspots_filt) %>%
+combined_maf_hotspots_filt %>%
   # only keep columns in consensus file
   select(colnames(consensus_maf_file)) %>%
   as.data.frame() %>%
   # Write to a TSV file, change NAs back to "."
-  readr::write_tsv(gzfile(output_file), na = ".")
+  readr::write_tsv(output_file, na = ".")
 
 
 
