@@ -37,7 +37,6 @@
       - pbta-tcga-snv-strelka2.vep.maf.gz    
       - pbta-tcga-snv-mutect2.vep.maf.gz       
       - pbta-tcga-snv-lancet.vep.maf.gz 
-  - Add MAF containing hotspots missed during consensus but back per [#819](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/819) and [#961](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/961): `pbta-snv-scavenged-hotspots.maf.tsv.gz`
   - Update pbta-histologies.tsv:
     - Add `PFS_days` to `pbta-histologies.tsv` file per [#963](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/963) 
     - Pull latest clinical data
