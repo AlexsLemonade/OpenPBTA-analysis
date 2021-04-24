@@ -46,6 +46,9 @@ bash ../analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
 echo "Run Embryonal subtyping"
 bash ../analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
 
+echo "Run chordoma subtyping"
+bash ../analyses/molecular-subtyping-chordoma/run-molecular-subtyping-chordoma.sh
+
 echo "Run EWS subtyping"
 bash ../analyses/molecular-subtyping-EWS/run_subtyping.sh
 
