@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/bin/env python3
 
 # 01-setup_db.py
 #
