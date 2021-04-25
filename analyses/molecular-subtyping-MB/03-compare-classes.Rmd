@@ -52,8 +52,9 @@ obs.class <- readRDS(params$observed_input)
 
 # format ambiguous expected classes 
 exp.class <- exp.class %>%
-  mutate(pathology_subtype = replace(pathology_subtype, 
-                                     pathology_subtype == "Group 3 or 4", "Group3, Group4")) %>%
+  mutate(pathology_subtype = recode(pathology_subtype, 
+                                    "non-WNT" = "SHH, Group3, Group4", 
+                                    "Group 3 or 4" = "Group3, Group4")) %>%
   mutate(pathology_subtype = gsub(" ", "", pathology_subtype))
 
 # format subset clinical file
@@ -110,10 +111,10 @@ compute.accuracy <- function(expected.input, observed.input){
     filter(!is.na(pathology_subtype)) %>%
     group_by(match) %>%
     dplyr::summarise(n = n()) %>%
-    mutate(Accuracy = paste0(n/sum(n)*100, '%')) %>%
+    mutate(Accuracy = paste0(round(n/sum(n)*100, 2), '%')) %>%
     filter(match) %>%
     .$Accuracy
-  
+
   # return both as list
   output <- list(merged.table = merged.table, accuracy = accuracy)
   return(output)
@@ -179,6 +180,15 @@ calc.consensus <- function(mm2s, medullo.classifier, clin){
     mutate(molecular_subtype = ifelse(MM2S_best_fit == medulloPackage_best_fit, MM2S_best_fit, NA)) %>%
     mutate(match = str_detect(pathology_subtype, molecular_subtype))
   
+  # compute % accuracy
+  consensus.accuracy <- consensus.mat %>%
+    filter(!is.na(pathology_subtype)) %>%
+    group_by(match) %>%
+    dplyr::summarise(n = n()) %>%
+    mutate(Accuracy = paste0(round(n/sum(n)*100, 2), '%')) %>%
+    filter(match) %>%
+    .$Accuracy
+  
   # merge with clinical data
   consensus.mat.out <- clin.merged %>%
     inner_join(consensus.mat %>% 
@@ -192,30 +202,25 @@ calc.consensus <- function(mm2s, medullo.classifier, clin){
                                    .fun = function(x) prop.mb.subtype(mat = x))
   consensus.mat.out$sample_id <- as.factor(consensus.mat.out$sample_id)
   
+  # add molecular subtype back reported from pathology report where there is no consensus
+  consensus.mat.out = consensus.mat.out %>%
+    mutate(molecular_subtype = ifelse(MM2S_best_fit == medulloPackage_best_fit, MM2S_best_fit, pathology_subtype))
+  
   # subset columns for html output
-  consensus.mat <- consensus.mat.out %>%
+  consensus.mat.html <- consensus.mat.out %>%
     mutate(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA) %>%
     dplyr::select(Kids_First_Biospecimen_ID, sample_id, pathology_subtype, 
                   MM2S_best_fit, medulloPackage_best_fit, molecular_subtype, match) %>%
     arrange(Kids_First_Biospecimen_ID)
   
   # subset columns for tsv output
-  consensus.mat.out <- consensus.mat.out %>%
+  consensus.mat.tsv <- consensus.mat.out %>%
     dplyr::select(Kids_First_Participant_ID, sample_id, Kids_First_Biospecimen_ID_DNA,
                   Kids_First_Biospecimen_ID_RNA, molecular_subtype)
   
-  # % accuracy
-  consensus.accuracy <- consensus.mat %>%
-    filter(!is.na(pathology_subtype)) %>%
-    group_by(match) %>%
-    dplyr::summarise(n = n()) %>%
-    mutate(Accuracy = paste0(n/sum(n)*100, '%')) %>%
-    filter(match) %>%
-    .$Accuracy
-  
   # return as list
-  output <- list(consensus.mat = consensus.mat, 
-                 consensus.mat.out = consensus.mat.out, 
+  output <- list(consensus.mat = consensus.mat.html, 
+                 consensus.mat.out = consensus.mat.tsv, 
                  consensus.accuracy = consensus.accuracy)
   return(output)
 }
@@ -226,7 +231,8 @@ calc.consensus <- function(mm2s, medullo.classifier, clin){
 
 * % Accuracy is currently being calculated by matching observed and expected subtypes where expected subtype info is available. In case of ambiguous subtypes, we treat it as a match if the observed subtype matches with any one of the expected subtypes.
 
-* Consensus tabs: Molecular subtype labels are assigned only when the two classifiers agree, leaving all other samples as unclassified. 
+* Consensus tabs: For cases in which both classifiers agree, molecular subtype reflects the consensus prediction. For cases in which there is no consensus prediction, but we have a pathology_subtype, the molecular subtype reflects the pathology subtype.
+
 
 * Propagation of molecular subtypes: 
 
