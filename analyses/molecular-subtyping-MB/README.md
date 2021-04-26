@@ -135,7 +135,7 @@ The pathology report has subtype information on 43/122 (35.2%) samples. Followin
 | SHH               | 10   |
 | WNT               | 5    |
 
-For each input expression matrix (i.e. uncorrected and batch-corrected), the molecular subtype is determined by taking a consensus of the two classifiers. If the classifiers do not agree, the sample is treated as unclassified.
+For each input expression matrix (i.e. uncorrected and batch-corrected), the molecular subtype is determined by taking a consensus of the two classifiers. For cases in which the classifiers do not agree, non-ambiguous subtypes from `pathology_subtype` field is taken and the remaining samples are treated as unclassified.
 
 For each sample_id with multiple RNA samples, the following logic is implemented:
 - IF there are two RNA specimens from the same event (`sample_id`) with the same `tumor_descriptor`, and
@@ -143,7 +143,7 @@ For each sample_id with multiple RNA samples, the following logic is implemented
 - IF the RNA specimen with mismatched classifications includes a match to the subtype of the consensus of the other RNA specimen,
 - THEN propagate the subtype to the second RNA specimen.
 
-For the consensus corrected output, 29/43 (67.44%) and for the consensus uncorrected output, 30/43 (69.76%) match with the reported subtype. The following table shows the difference between the two outputs:
+For the consensus corrected output, 37/43 (86.05%) and for the consensus uncorrected output, 38/43 (88.37%) match with the reported subtype. The following table shows the difference between the two outputs:
 
 BS_V96WVE3Z is correctly predicted by consensus uncorrected output but not by batch-corrected output:
 

@@ -202,9 +202,10 @@ calc.consensus <- function(mm2s, medullo.classifier, clin){
                                    .fun = function(x) prop.mb.subtype(mat = x))
   consensus.mat.out$sample_id <- as.factor(consensus.mat.out$sample_id)
   
-  # add molecular subtype back reported from pathology report where there is no consensus
+  # add non-ambiguous molecular subtype reported from pathology report where there is no consensus 
   consensus.mat.out = consensus.mat.out %>%
-    mutate(molecular_subtype = ifelse(MM2S_best_fit == medulloPackage_best_fit, MM2S_best_fit, pathology_subtype))
+    mutate(molecular_subtype = ifelse(MM2S_best_fit == medulloPackage_best_fit, MM2S_best_fit,
+                                      ifelse(pathology_subtype %in% c("SHH", "Group3", "Group4", "WNT"), pathology_subtype, NA)))
   
   # subset columns for html output
   consensus.mat.html <- consensus.mat.out %>%
@@ -231,7 +232,7 @@ calc.consensus <- function(mm2s, medullo.classifier, clin){
 
 * % Accuracy is currently being calculated by matching observed and expected subtypes where expected subtype info is available. In case of ambiguous subtypes, we treat it as a match if the observed subtype matches with any one of the expected subtypes.
 
-* Consensus tabs: For cases in which both classifiers agree, molecular subtype reflects the consensus prediction. For cases in which there is no consensus prediction, but we have a pathology_subtype, the molecular subtype reflects the pathology subtype.
+* Consensus tabs: For cases in which both classifiers agree, molecular subtype reflects the consensus prediction. For cases in which there is no consensus prediction, but we have a non-ambiguous pathology subtype, the molecular subtype reflects the pathology subtype.
 
 
 * Propagation of molecular subtypes: 
@@ -241,7 +242,7 @@ calc.consensus <- function(mm2s, medullo.classifier, clin){
   * IF the RNA specimen with mismatched classifications includes a match to the subtype of the consensus of the other RNA specimen, 
   * THEN propagate the subtype to the second RNA specimen.
 
-* Pathology report has subtype information on 32/122 (26.2%) samples. Following is the breakdown of pathology identified subtypes: 
+* Pathology report has subtype information on 43/122 (35.2%) samples. Following is the breakdown of pathology identified subtypes: 
 
 ```{r, echo=FALSE}
 exp.count <- exp.class %>% 
@@ -277,7 +278,7 @@ out <- compute.accuracy(expected.input = exp.class,
 
 # accuracy
 mm2s.uncorrected.acc <- out$accuracy
-print(paste0("Accuracy: ", mm2s.corrected.acc))
+print(paste0("Accuracy: ", mm2s.uncorrected.acc))
 
 # output table
 mm2s.uncorrected <- out$merged.table
