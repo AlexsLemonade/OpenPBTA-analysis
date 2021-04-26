@@ -188,7 +188,6 @@ common_cols = [col for col, type in maf_types]
 
 needed_cols = [
     'Hugo_Symbol',
-    'Entrez_Gene_Id',
     'Chromosome',
     'Start_Position',
     'End_Position',
