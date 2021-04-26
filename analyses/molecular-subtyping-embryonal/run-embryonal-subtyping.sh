@@ -8,9 +8,16 @@
 set -e
 set -o pipefail
 
+# Set the working directory to the directory of this file
+cd "$(dirname "${BASH_SOURCE[0]}")"
+
 # This option controls whether on not the step that generates the subset
 # files gets run -- it will be turned off in CI
 SUBSET=${OPENPBTA_SUBSET:-1}
+
+# Generate JSON file with strings for inclusion/exclusion criteria 
+Rscript --vanilla 00-embryonal-select-pathology-dx.R
+ pwd
 
 # This script should always run as if it were being called from
 # the directory it lives in.
