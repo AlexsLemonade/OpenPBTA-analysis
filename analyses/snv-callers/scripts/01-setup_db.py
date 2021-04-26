@@ -183,7 +183,7 @@ maf_types = [
     ('MS', 'TEXT'),
     ('FETS', 'REAL'),
     ('HotSpotAllele', 'INTEGER'),
-    ('VAF' 'REAL')
+    ('VAF', 'REAL')
 ]
 
 needed_cols = [
