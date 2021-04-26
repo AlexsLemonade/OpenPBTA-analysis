@@ -18,8 +18,9 @@
 #   --fusion_file ../../scratch/arriba.tsv \
 #   --metadata_file ../../data/pbta-histologies.tsv \
 #   --output_directory ../../scratch/oncoprint_files \
-#   --filename_lead "all_participants_primary_only" \
+#   --filename_lead "primary_only" \
 #   --independent_specimens ../../data/independent-specimens.wgswxs.primary.tsv
+#   --broad_histology "Low-grade astrocytic tumor"
 
 library(dplyr)
 
@@ -185,70 +186,49 @@ readr::write_tsv(maf_df, maf_output)
 
 message("Preparing fusion file...")
 
-# Sort fusions first in alphabetical order
-fus_sort <- fusion_df %>%
-  tibble::rowid_to_column("Fusion_ID") %>%
-  group_by(Sample, FusionName, Fusion_ID) %>%
-  mutate(SortedFusionName = paste(sort(unlist(strsplit(FusionName, "--"))), collapse = "--")) %>%
-  ungroup()
-
-# Now let's perform some filtering on our sorted data frame
-fus_filter <- fus_sort %>%
-  group_by(Sample, SortedFusionName) %>%
-  count() %>%
-  # Filter out redundant instances that are not true multi hit fusions
-  filter(n <= 1)
-
-# Let's tidy our sorted data frame for future use when labeling single fusions
-fus_sep <- fus_sort %>%
-  # Separate the 5' and 3' genes
-  tidyr::separate(SortedFusionName, c("Gene1", "Gene2"), sep = "--") %>%
-  # We already have `Fusion_ID` numbers to mark unique fusions so we can
-  # select this column along with the others we will need to help us melt below
-  select(Fusion_ID, Sample, Gene1, Gene2) %>%
-  reshape2::melt(id.vars = c("Fusion_ID", "Sample"),
-                 variable.name = "Partner",
-                 value.name = "Hugo_Symbol") %>%
-  arrange(Fusion_ID)
-
-# Now let's tidy our filtered data frame and separate fusion gene partners
-fus_sep_filter <- fus_filter %>%
-  # Separate the 5' and 3' genes
-  tidyr::separate(SortedFusionName, c("Gene1", "Gene2"), sep = "--") %>%
-  # Use row numbers to mark unique fusions - this will help us when
-  # we melt and remove selfie fusions below
-  tibble::rowid_to_column("Fusion_ID") %>%
-  select(Fusion_ID, Sample, Gene1, Gene2) %>%
-  reshape2::melt(id.vars = c("Fusion_ID", "Sample"),
-                 variable.name = "Partner",
-                 value.name = "Hugo_Symbol") %>%
-  arrange(Fusion_ID)
-
-multihit_fusions <- fus_sep_filter %>%
-  # For looking at true multi-hit fusions, we want to isolate the fusions that
-  # include genes that fuse to multiple genes
-  # First we can remove the `Fusion_ID` column that we will no longer need
-  select(-Fusion_ID) %>%
-  group_by(Sample, Hugo_Symbol, Partner) %>%
-  mutate(Variant_Classification = dplyr::case_when(any(duplicated(Hugo_Symbol)) ~ "Multi_Hit_Fusion", 
-                                                   TRUE ~ "Fusion")) %>%
+# Isolate the instances where any of the gene partners occur more than once
+fus_dup <- fusion_df %>%
+  group_by(Sample, FusionName) %>%
+  filter(any(duplicated(stringr::word(FusionName)))) %>%
+  select(Sample, FusionName) %>%
+  # To handle redundant instances
+  distinct() %>%
+  # To handle reciprocal instances, sort fusions in alphabetical order
+  mutate(SortedFusionName = paste(sort((unlist(strsplit(FusionName, "--")))), collapse = "--")) %>%
   ungroup() %>%
-  select(-"Partner") %>%
+  # Now we can remove the unsorted `FusionName` column and use `distinct()`
+  # once again to ensure we do not have any duplicates
+  select(-FusionName) %>%
   distinct()
 
-# Filter out multi-hit fusions from the other fusions that we will
-# label based on whether they are the 5' or 3' gene
-single_fusion <- fus_sep %>%
-  anti_join(multihit_fusions,
-            by = c("Sample", "Hugo_Symbol")) %>%
-  select(Sample, Hugo_Symbol) %>%
-  distinct() %>%
-  mutate(Variant_Classification = "Fusion")
+# Let's separate the gene partners and tidy our data frame
+fus_sep <- fus_dup %>%
+  # Use row numbers to mark unique fusions - this will help us when
+  # we melt and remove selfie fusions below
+  #tibble::rowid_to_column("Fusion_ID") %>%
+  # Separate the 5' and 3' genes
+  tidyr::separate(SortedFusionName, c("Gene1", "Gene2"), sep = "--") %>%
+  # Select the columns we will need to help us melt below
+  select(Sample, Gene1, Gene2) %>%
+  reshape2::melt(id.vars = c("Sample"),
+                 variable.name = "Partner",
+                 value.name = "Hugo_Symbol") %>%
+  arrange(Sample) %>%
+  # We can now remove the `Partner` column -- here it is useful to cross check
+  # that the gene pairs were appropriately separated but will no longer need it
+  select(-Partner) %>%
+  # Filter to only unique rows
+  distinct()
 
-# Combine multi-hit and single fusions into one data frame
+
+# Define multi-hit and single fusions
 # And add the other identifiers!
-reformat_fusion <- multihit_fusions %>%
-  bind_rows(single_fusion) %>%
+reformat_fusion <- fus_sep %>%
+  # For looking at true multi-hit fusions, we want to isolate the fusions that
+  # include genes that fuse to multiple genes
+  group_by(Sample, Hugo_Symbol) %>%
+  mutate(Variant_Classification = dplyr::case_when(any(duplicated(Hugo_Symbol)) ~ "Multi_Hit_Fusion", 
+                                                   TRUE ~ "Fusion")) %>%
   mutate(Variant_Type = "OTHER") %>%
   inner_join(select(histologies_df,
                     Kids_First_Biospecimen_ID,
