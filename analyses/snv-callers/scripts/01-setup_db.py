@@ -83,6 +83,7 @@ args = parser.parse_args()
 # types for all expected MAF fields.
 maf_types = [
     ('Hugo_Symbol', 'TEXT'),
+    ('Entrez_Gene_Id', 'INTEGER'),
     ('Center', 'TEXT'),
     ('NCBI_Build', 'TEXT'),
     ('Chromosome', 'TEXT'),
@@ -188,6 +189,7 @@ common_cols = [col for col, type in maf_types]
 
 needed_cols = [
     'Hugo_Symbol',
+    'Entrez_Gene_Id',
     'Chromosome',
     'Start_Position',
     'End_Position',
