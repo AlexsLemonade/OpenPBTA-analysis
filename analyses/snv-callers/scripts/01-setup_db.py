@@ -180,11 +180,11 @@ maf_types = [
     ('gnomAD_OTH_AF', 'TEXT'),
     ('gnomAD_SAS_AF', 'TEXT'),
     ('vcf_pos', 'INTEGER'),
-    ('MS', 'TEXT'),
-    ('FETS', 'REAL'),
     ('HotSpotAllele', 'INTEGER'),
     ('VAF', 'REAL')
 ]
+
+common_cols = [col for col, type in maf_types]
 
 needed_cols = [
     'Hugo_Symbol',
@@ -272,7 +272,9 @@ for table_name, maf_file in callers:
         # process the chunk
         chunk['VAF'] = (chunk['t_alt_count'] /
                         (chunk['t_ref_count'] + chunk['t_alt_count']))
-        if table_name not in ('strelka', 'lancet', 'consensus'):
+        if table_name in ('strelka', 'lancet', 'consensus'):
+            chunk = chunk[common_cols]
+        else:
             chunk = chunk[needed_cols]
         chunk.to_sql(table_name, con, if_exists='append')
     # create indexes
