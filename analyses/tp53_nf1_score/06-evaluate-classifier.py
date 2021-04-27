@@ -191,6 +191,6 @@ def get_roc_plot(scores_df, gene, outputfilename, color):
     plt.savefig(outputfilename + "_" + gene + ".png")
 
 
-outputfilename = os.path.join("analyses", "tp53_nf1_score", "results", outputfilename)
+outputfilename = os.path.join("results", outputfilename)
 
 get_roc_plot(scores_df, gene="TP53", outputfilename=outputfilename, color="#7570b3")
