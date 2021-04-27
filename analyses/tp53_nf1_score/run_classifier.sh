@@ -57,8 +57,8 @@ Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
   --gencode ${cds_file}
 
 # expression files for prediction
-collapsed_stranded="pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
-collapsed_polya="pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
+collapsed_stranded="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+collapsed_polya="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
 
 
 # Skip poly-A steps in CI
@@ -70,16 +70,16 @@ fi
 python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_stranded}
 
 # check correlation expression and scores
-Rscript -e "rmarkdown::render('${analysis_dir}/02-qc-rna_expression_score.Rmd')"
+Rscript -e "rmarkdown::render('${analysis_dir}/02-qc-rna_expression_score.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
 # subset cnv where tp53 is lost
-Rscript -e "rmarkdown::render('${analysis_dir}/03-tp53-cnv-loss-domain.Rmd')"
+Rscript -e "rmarkdown::render('${analysis_dir}/03-tp53-cnv-loss-domain.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
 # subset SV where tp53 is lost
-Rscript -e "rmarkdown::render('${analysis_dir}/04-tp53-sv-loss.Rmd')"
+Rscript -e "rmarkdown::render('${analysis_dir}/04-tp53-sv-loss.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
 # gather TP53 altered status
-Rscript -e "rmarkdown::render('${analysis_dir}/05-tp53-altered-annotation.Rmd')"
+Rscript -e "rmarkdown::render('${analysis_dir}/05-tp53-altered-annotation.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
 # evaluate classifer scores for stranded data
 python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv -c ${histology_file} -o stranded

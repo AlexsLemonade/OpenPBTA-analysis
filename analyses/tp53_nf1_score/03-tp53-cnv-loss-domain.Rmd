@@ -2,7 +2,11 @@
 title: "Find CNV losses that overlap with TP53 domains"
 author: "K S Gaonkar (D3B)"
 output: html_notebook
-
+params:
+  base_run:
+    label: "1/0 to run with base histology"
+    value: 0
+    input: integer
 ---
     
 In this script we will find CNV losses that overlap with TP53 domains:
@@ -58,8 +62,13 @@ bioMartDataPfamTp53 <-
   dplyr::filter(hgnc_symbol=="TP53")
 
 # histology file
-histologies_df <- read_tsv(file.path(data_dir,
-                                     "pbta-histologies.tsv")) %>%
+if ( params$base_run ==0 ){
+  clinical<-read.delim(file.path(data_dir,"pbta-histologies.tsv"), stringsAsFactors = FALSE)
+} else{
+  clinical<-read.delim(file.path(data_dir,"pbta-histologies-base.tsv"), stringsAsFactors = FALSE)  
+}
+
+histologies_df <- clinical %>%
   dplyr::select("Kids_First_Biospecimen_ID",
                 "sample_id")
 
