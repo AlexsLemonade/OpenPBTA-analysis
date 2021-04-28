@@ -3004,21 +3004,18 @@ metadata &lt;-
   read_tsv(file.path(root_dir, &quot;data&quot;, &quot;pbta-histologies-base.tsv&quot;)) %&gt;%
   filter(pathology_diagnosis == &quot;Craniopharyngioma&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBjb2xfbG9naWNhbCgpLFxuICBicm9hZF9jb21wb3NpdGlvbiA9IGNvbF9sb2dpY2FsKCksXG4gIE5vdGVzID0gY29sX2xvZ2ljYWwoKSxcbiAgT1NfZGF5cyA9IGNvbF9kb3VibGUoKSxcbiAgYWdlX2xhc3RfdXBkYXRlX2RheXMgPSBjb2xfZG91YmxlKCksXG4gIG1vbGVjdWxhcl9zdWJ0eXBlID0gY29sX2xvZ2ljYWwoKSxcbiAga2ZfdmlzaWJpbGl0eSA9IGNvbF9sb2dpY2FsKCksXG4gIG5vcm1hbF9mcmFjdGlvbiA9IGNvbF9kb3VibGUoKSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBjb2xfZG91YmxlKCksXG4gIHR1bW9yX3Bsb2lkeSA9IGNvbF9kb3VibGUoKSxcbiAgcGFyZW50X2FsaXF1b3RfaWQgPSBjb2xfbG9naWNhbCgpXG4pXG4ifQ== -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBjb2xfbG9naWNhbCgpLFxuICBOb3RlcyA9IGNvbF9sb2dpY2FsKCksXG4gIE9TX2RheXMgPSBjb2xfZG91YmxlKCksXG4gIGFnZV9sYXN0X3VwZGF0ZV9kYXlzID0gY29sX2RvdWJsZSgpLFxuICBtb2xlY3VsYXJfc3VidHlwZSA9IGNvbF9sb2dpY2FsKCksXG4gIG5vcm1hbF9mcmFjdGlvbiA9IGNvbF9kb3VibGUoKSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBjb2xfZG91YmxlKCksXG4gIHR1bW9yX3Bsb2lkeSA9IGNvbF9kb3VibGUoKVxuKVxuIn0= -->
 <pre><code>Parsed with column specification:
 cols(
   .default = col_character(),
   integrated_diagnosis = col_logical(),
-  broad_composition = col_logical(),
   Notes = col_logical(),
   OS_days = col_double(),
   age_last_update_days = col_double(),
   molecular_subtype = col_logical(),
-  kf_visibility = col_logical(),
   normal_fraction = col_double(),
   tumor_fraction = col_double(),
-  tumor_ploidy = col_double(),
-  parent_aliquot_id = col_logical()
+  tumor_ploidy = col_double()
 )</code></pre>
 <!-- rnb-message-end -->
 <!-- rnb-message-begin eyJkYXRhIjoiU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
@@ -3029,7 +3026,7 @@ cols(
 snv_df &lt;-
   read_tsv(file.path(root_dir, &quot;data&quot;, &quot;pbta-snv-consensus-mutation.maf.tsv.gz&quot;))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgRW50cmV6X0dlbmVfSWQgPSBjb2xfZG91YmxlKCksXG4gIFN0YXJ0X1Bvc2l0aW9uID0gY29sX2RvdWJsZSgpLFxuICBFbmRfUG9zaXRpb24gPSBjb2xfZG91YmxlKCksXG4gIHRfZGVwdGggPSBjb2xfZG91YmxlKCksXG4gIHRfcmVmX2NvdW50ID0gY29sX2RvdWJsZSgpLFxuICB0X2FsdF9jb3VudCA9IGNvbF9kb3VibGUoKSxcbiAgbl9kZXB0aCA9IGNvbF9kb3VibGUoKSxcbiAgbl9yZWZfY291bnQgPSBjb2xfZG91YmxlKCksXG4gIG5fYWx0X2NvdW50ID0gY29sX2RvdWJsZSgpLFxuICBBTExFTEVfTlVNID0gY29sX2RvdWJsZSgpLFxuICB2Y2ZfcG9zID0gY29sX2RvdWJsZSgpLFxuICBWQUYgPSBjb2xfZG91YmxlKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuIn0= -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgRW50cmV6X0dlbmVfSWQgPSBjb2xfZG91YmxlKCksXG4gIFN0YXJ0X1Bvc2l0aW9uID0gY29sX2RvdWJsZSgpLFxuICBFbmRfUG9zaXRpb24gPSBjb2xfZG91YmxlKCksXG4gIHRfZGVwdGggPSBjb2xfZG91YmxlKCksXG4gIHRfcmVmX2NvdW50ID0gY29sX2RvdWJsZSgpLFxuICB0X2FsdF9jb3VudCA9IGNvbF9kb3VibGUoKSxcbiAgbl9kZXB0aCA9IGNvbF9kb3VibGUoKSxcbiAgbl9yZWZfY291bnQgPSBjb2xfZG91YmxlKCksXG4gIG5fYWx0X2NvdW50ID0gY29sX2RvdWJsZSgpLFxuICBBTExFTEVfTlVNID0gY29sX2RvdWJsZSgpLFxuICB2Y2ZfcG9zID0gY29sX2RvdWJsZSgpLFxuICBIb3RTcG90QWxsZWxlID0gY29sX2RvdWJsZSgpLFxuICBWQUYgPSBjb2xfZG91YmxlKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuIn0= -->
 <pre><code>Parsed with column specification:
 cols(
   .default = col_character(),
@@ -3044,6 +3041,7 @@ cols(
   n_alt_count = col_double(),
   ALLELE_NUM = col_double(),
   vcf_pos = col_double(),
+  HotSpotAllele = col_double(),
   VAF = col_double()
 )
 See spec(...) for full column specifications.</code></pre>
