@@ -78,3 +78,6 @@ Rscript -e "rmarkdown::render('08-1p19q-codeleted-oligodendrogliomas.Rmd', clean
 
 # Run notebook that looks at how HGAT samples with `BRAF V600E` mutations cluster
 Rscript -e "rmarkdown::render('09-HGG-with-braf-clustering.Rmd', clean = TRUE)"
+
+# Add TP53 annotation
+Rscript -e "rmarkdown::render('10-HGG-TP53-annotation.Rmd',clean=TRUE)"
