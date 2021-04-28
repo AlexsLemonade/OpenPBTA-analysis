@@ -208,7 +208,8 @@ We can assume these fusions to be potential false calls because it is highly unl
 putative_driver_fusions<-fusion_calls %>% dplyr::filter(!FusionName %in% FusionInNhist$FusionName) %>%
   # we want to remove annots column since there is difference in arriba annotation (uniquely has duplication/translocation/deletion values) and StarFusion annotation which will be counted twice since they are not unique
   dplyr::select(-annots,-broad_histology) %>% 
-  unique() 
+  unique() %>%
+  arrange(Sample, FusionName) 
 
 write.table(putative_driver_fusions,file.path(outputfolder,"pbta-fusion-putative-oncogenic.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
 
