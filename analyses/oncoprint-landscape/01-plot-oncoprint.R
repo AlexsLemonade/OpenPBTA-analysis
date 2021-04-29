@@ -115,22 +115,6 @@ cnv_df <- opt$cnv_file
 fusion_df <- opt$fusion_file
 goi_list <- opt$goi_list
 
-#### Functions ----------------------------------------------------------------
-
-read_genes <- function(gene_list) {
-  # This function takes in the file path to a gene list and pulls out
-  # the gene information from that list
-  #
-  # Args:
-  #   gene_list: file path to genes of interest file
-  #
-  # Return:
-  #   genes: a vector of genes from the genes of interest file
-
-  genes <- readr::read_tsv(gene_list) %>%
-    dplyr::pull("gene")
-}
-
 #### Read in data --------------------------------------------------------------
 
 # Read in metadata
@@ -154,12 +138,10 @@ if (!is.null(opt$fusion_file)) {
 
 # Read in gene information from the list of genes of interest files
 if (!is.null(opt$goi_list)) {
-  goi_files <- unlist(stringr::str_split(goi_list, ",| "))
-  # Read in using the `read_genes` custom function and unlist the gene column
-  # data from the genes of interest file paths given
-  goi_list <- lapply(goi_files, read_genes)
-    # Include only the unique genes of interest
-  goi_list <- unique(unlist(goi_list))
+  # Read in using the `read_tsv()` function
+  goi_list <- readr::read_tsv(tolower(gsub(" ", "-",opt$goi_list))) %>%
+    as.matrix()
+  
 }
 
 #### Set up oncoprint annotation objects --------------------------------------

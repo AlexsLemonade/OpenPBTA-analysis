@@ -23,16 +23,11 @@ maf_consensus=../../data/pbta-snv-consensus-mutation.maf.tsv.gz
 fusion_file=../../data/pbta-fusion-putative-oncogenic.tsv
 histologies_file=../../data/pbta-histologies.tsv
 intermediate_directory=../../scratch/oncoprint_files
-primary_filename="all_participants_primary_only"
-primaryplus_filename="all_participants_primary-plus"
+primary_filename="primary_only"
+primaryplus_filename="primary-plus"
 focal_directory=../focal-cn-file-preparation/results
 focal_cnv_file=${focal_directory}/consensus_seg_most_focal_cn_status.tsv.gz
-
-# each element of the array is a file that contains genes of interest
-genes_list=("../interaction-plots/results/gene_disease_top50.tsv" \
-            "../focal-cn-file-preparation/results/consensus_seg_focal_cn_recurrent_genes.tsv")
-# join into a string, where file paths are separated by commas
-genes_list=$(join_by , "${genes_list[@]}")
+oncoprint_data_directory=data
 
 ### Primary only samples mapping for oncoprint
 
@@ -63,6 +58,11 @@ for histology in "Low-grade astrocytic tumor" \
 "Ependymal tumor" \
 "Other CNS"
 do
+
+  # Prepare broad histology specific goi lists
+  Rscript --vanilla util/prepare-goi-lists.R \
+    --goi_file ${oncoprint_data_directory}/oncoprint-goi-lists-OpenPBTA.csv \
+    --broad_histology "$histology"
   
   # Print primary only oncoprints by broad histology
   Rscript --vanilla 01-plot-oncoprint.R \
@@ -79,7 +79,7 @@ do
     --cnv_file ${intermediate_directory}/${primary_filename}_cnv.tsv \
     --fusion_file ${intermediate_directory}/${primary_filename}_fusions.tsv \
     --metadata_file ${histologies_file} \
-    --goi_list ${genes_list} \
+    --goi_list ${oncoprint_data_directory}/"${histology}"_goi_list.tsv \
     --png_name ${primary_filename}_"${histology}"_goi_oncoprint.png \
     --broad_histology "${histology}"
 
@@ -99,7 +99,7 @@ do
     --cnv_file ${intermediate_directory}/${primaryplus_filename}_cnv.tsv \
     --fusion_file ${intermediate_directory}/${primaryplus_filename}_fusions.tsv \
     --metadata_file ${histologies_file} \
-    --goi_list ${genes_list} \
+    --goi_list ${oncoprint_data_directory}/"${histology}"_goi_list.tsv \
     --png_name ${primaryplus_filename}_"$histology"_goi_oncoprint.png \
     --broad_histology "$histology"
     
