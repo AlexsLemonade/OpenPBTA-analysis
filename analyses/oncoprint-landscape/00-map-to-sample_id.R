@@ -196,7 +196,6 @@ fus_sort_reciprocals <- fusion_df %>%
   ))), collapse = "--")) %>%
   ungroup()
 
-
 # Let's tidy our sorted data frame for future use when labeling single fusions
 fus_sep_reciprocals <- fus_sort_reciprocals %>%
   # Separate the 5' and 3' genes
@@ -209,7 +208,6 @@ fus_sep_reciprocals <- fus_sort_reciprocals %>%
                  value.name = "Hugo_Symbol") %>%
   arrange(Fusion_ID)
 
-
 ##  To handle multi-hit fusions
 # Now let's tidy our filtered data frame and separate fusion gene partners
 fus_sort_multi <- fusion_df %>%
@@ -218,19 +216,11 @@ fus_sort_multi <- fusion_df %>%
   filter(any(duplicated(stringr::word(FusionName)))) %>%
   select(Sample, FusionName) %>%
   # To handle redundant instances
-  distinct() %>%
-  group_by(Sample, FusionName) %>%
-  # To handle reciprocal instances, sort fusions in alphabetical order
-  mutate(SortedFusionName = paste(sort((unlist(strsplit(FusionName, "--")))), collapse = "--")) %>%
-  ungroup() %>%
-  # Now we can remove the unsorted `FusionName` column and use `distinct()`
-  # once again to ensure we do not have any duplicates
-  select(-FusionName) %>%
   distinct()
   
 fus_sep_multi <- fus_sort_multi %>% 
   # Separate the 5' and 3' genes
-  tidyr::separate(SortedFusionName, c("Gene1", "Gene2"), sep = "--") %>%
+  tidyr::separate(FusionName, c("Gene1", "Gene2"), sep = "--") %>%
   # Select the columns we will need to help us melt below
   select(Sample, Gene1, Gene2) %>%
   reshape2::melt(id.vars = c("Sample"),
