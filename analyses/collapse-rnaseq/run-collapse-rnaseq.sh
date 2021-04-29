@@ -20,16 +20,17 @@ cd "$script_directory" || exit
 mkdir -p results
 
 # generate collapsed matrices for poly-A and stranded datasets
-libraryStrategies=("polya" "stranded")
+#libraryStrategies=("polya" "stranded")
+libraryStrategies=("stranded")
 for strategy in ${libraryStrategies[@]}; do
 
   Rscript --vanilla 01-summarize_matrices.R \
-    -i ../../data/pbta-gene-expression-rsem-fpkm.${strategy}.rds \
+    -i ../../data/kfnbl-gene-expression-rsem-fpkm.${strategy}.rds \
     -g ../../data/gencode.v27.primary_assembly.annotation.gtf.gz \
-    -m results/pbta-gene-expression-rsem-fpkm-collapsed.${strategy}.rds \
-    -t results/pbta-gene-expression-rsem-fpkm-collapsed_table.${strategy}.rds
+    -m results/kfnbl-gene-expression-rsem-fpkm-collapsed.${strategy}.rds \
+    -t results/kfnbl-gene-expression-rsem-fpkm-collapsed_table.${strategy}.rds
 
 done
 
 # run the notebook for analysis of dropped genes
-Rscript -e "rmarkdown::render(input = '02-analyze-drops.Rmd', params = list(polya.annot.table = 'results/pbta-gene-expression-rsem-fpkm-collapsed_table.polya.rds', stranded.annot.table = 'results/pbta-gene-expression-rsem-fpkm-collapsed_table.stranded.rds'), clean = TRUE)"
+#Rscript -e "rmarkdown::render(input = '02-analyze-drops.Rmd', params = list(polya.annot.table = 'results/kfnbl-gene-expression-rsem-fpkm-collapsed_table.polya.rds', stranded.annot.table = 'results/kfnbl-gene-expression-rsem-fpkm-collapsed_table.stranded.rds'), clean = TRUE)"
