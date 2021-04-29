@@ -30,7 +30,7 @@ OPENPBTA_BASE_SUBTYPING=1 ../analyses/transcriptomic-dimension-reduction/dimensi
 echo "Run gsea"
 OPENPBTA_BASE_SUBTYPING=1 ../analyses/gene-set-enrichment-analysis/run-gsea.sh
 
-echo "TP53 alterred score"
+echo "TP53 altered score"
 OPENPBTA_BASE_SUBTYPING=1 ../analyses/tp53_nf1_score/run_classifier.sh
 
 ## Step 2. Run subtyping modules
