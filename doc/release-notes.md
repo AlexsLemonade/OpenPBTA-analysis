@@ -43,6 +43,7 @@
     - Rerun molecular subtyping modules to date
     - Update PNOC003 `cohort` to "PNOC" for inclusion of later PNOC trial samples
     - Update `CNS_region` from manual review per [#1025](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1025)
+  - Add `pbta-mb-pathology-subtypes.tsv` containing pathology report molecular subtypes for medulloblastoma to be used as a "truth" set for medulloblastoma classifier testing per [#746](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/746)
 - folder structure:
 ```
 data
