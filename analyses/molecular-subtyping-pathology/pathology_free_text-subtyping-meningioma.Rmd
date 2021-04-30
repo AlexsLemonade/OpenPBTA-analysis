@@ -105,7 +105,9 @@ meningioma_df <- histologies_df %>%
     )
   ) %>%
   # Drop the column we added for convenience of string detection
-  dplyr::select(-pathology_free_text_dx_lower)
+  # and to format to match compiled_mol_subtypes_pathology_clinical_df
+  dplyr::select(-pathology_free_text_dx_lower,
+                -pathology_free_text_diagnosis)
 ```
 
 Write to file!
