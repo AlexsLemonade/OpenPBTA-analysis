@@ -113,8 +113,8 @@ Since Meningioma was not subtyped as part of OpenPBTA molecular subtying we can 
 
 ```{r}
 
-compiled_mol_subtypes_pathology_clinical_df %>%
-  bind_rows(meningioma_df) %>%
+meningioma_df %>%
+  bind_rows(compiled_mol_subtypes_pathology_clinical_df) %>%
   readr::write_tsv(output_file)
 
 ```
