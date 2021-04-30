@@ -49,11 +49,11 @@ base_histology <- read_tsv(file.path(data_dir,"pbta-histologies-base.tsv"),
 
 ### Read molecular-subtyping-pathology results
 
-Reading molecular_subtype, integrated_diagnosis, short_histology, broad_histology and Notes from `compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` 
+Reading molecular_subtype, integrated_diagnosis, short_histology, broad_histology and Notes from `compiled_molecular_subtypes_with_clinical_pathology_feedback_and_report_info.tsv` 
 
 ```{r}
 
-compiled_subtyping<-read_tsv(file.path("..", "molecular-subtyping-pathology", "results", "compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv"))
+compiled_subtyping<-read_tsv(file.path("..", "molecular-subtyping-pathology", "results", "compiled_molecular_subtypes_with_clinical_pathology_feedback_and_report_info.tsv"))
 
 ```
 
