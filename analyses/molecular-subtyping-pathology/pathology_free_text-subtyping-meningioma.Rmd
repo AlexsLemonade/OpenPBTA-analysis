@@ -81,6 +81,7 @@ meningioma_df <- histologies_df %>%
   dplyr::select(Kids_First_Biospecimen_ID,
                 Kids_First_Participant_ID,
                 sample_id,
+                tumor_descriptor,
                 pathology_free_text_diagnosis,
                 broad_histology,
                 short_histology) %>%
@@ -102,7 +103,8 @@ meningioma_df <- histologies_df %>%
       # This will be true when none of the conditions (e.g., strings are 
       # detected) above
       TRUE ~ "Meningioma"
-    )
+    ),
+    Notes = "Updated via OpenPBTA subtyping from pathology_free_text_diagnosis"
   ) %>%
   # Drop the column we added for convenience of string detection
   # and to format to match compiled_mol_subtypes_pathology_clinical_df

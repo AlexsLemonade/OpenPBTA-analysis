@@ -116,7 +116,7 @@ short_histology and broad_histology will be added from base histology for sample
 
 histology <- base_histology %>% 
   select(-Notes,-molecular_subtype,-integrated_diagnosis) %>%
-  left_join(compiled_subtyping,by=c("Kids_First_Biospecimen_ID","sample_id","Kids_First_Participant_ID"),suffix=c(".base",".subtyped")) %>%
+  left_join(compiled_subtyping,by=c("Kids_First_Biospecimen_ID","sample_id","Kids_First_Participant_ID","tumor_descriptor"),suffix=c(".base",".subtyped")) %>%
   unique() %>%
   mutate(
     broad_histology = if_else(!is.na(broad_histology.subtyped),
