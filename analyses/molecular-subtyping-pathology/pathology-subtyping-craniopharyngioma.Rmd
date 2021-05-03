@@ -87,7 +87,9 @@ We can use the following table from [#994](https://github.com/AlexsLemonade/Open
 
 ```{r}
 cranio_adam_df <- histologies_df %>% 
-  filter(sample_id %in% sample_ids_reclassification) %>%
+  filter(sample_id %in% sample_ids_reclassification,
+         # Exclude normal samples
+         sample_type != "Normal") %>%
   # Filter to relevant ID and disease type label columns
   select(Kids_First_Biospecimen_ID,
          Kids_First_Participant_ID,
