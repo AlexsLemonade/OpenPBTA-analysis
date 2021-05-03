@@ -29,7 +29,7 @@ library(tidyverse)
 
 ```{r}
 data_dir <- file.path("..", "..", "data")
-histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
+histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
 ```
 
 ### Output
