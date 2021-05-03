@@ -119,6 +119,7 @@ Since Meningioma was not subtyped as part of OpenPBTA molecular subtying we can 
 
 meningioma_df %>%
   bind_rows(compiled_mol_subtypes_pathology_clinical_df) %>%
+  arrange(Kids_First_Biospecimen_ID)
   readr::write_tsv(output_file)
 
 ```
@@ -128,4 +129,3 @@ meningioma_df %>%
 ```{r}
 sessionInfo()
 ```
-
