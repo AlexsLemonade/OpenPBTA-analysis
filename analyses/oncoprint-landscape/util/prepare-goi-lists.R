@@ -42,7 +42,7 @@ option_list <- list(
     c("-g", "--goi_file"),
     type = "character",
     default = NULL,
-    help = "file path to comma-separatedGOI file that contains genes of interest per broad histology",
+    help = "file path to comma-separated GOI file that contains genes of interest per broad histology",
   ),
   optparse::make_option(
     c("-b", "--broad_histology"),
