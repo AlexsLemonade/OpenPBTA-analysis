@@ -27,3 +27,6 @@ Rscript -e "rmarkdown::render('03-incorporate-pathology-feedback.Rmd', params=li
 
 # Recoding ACP samples
 Rscript -e "rmarkdown::render('clinical-subtyping-craniopharyngioma.Rmd', clean = TRUE)"
+
+# Run the meningioma clinical subtyping step
+Rscript -e "rmarkdown::render('clinical-subtyping-meningioma.Rmd', clean = TRUE)"
