@@ -2805,7 +2805,7 @@ $(document).ready(function () {
 </style>
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("clinical-subtyping-glialneuronal-tumors.Rmd");
+  window.initializeSourceEmbed("pathology-harmonized-diagnosis-glialneuronal-tumors.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>
@@ -2949,16 +2949,13 @@ div.tocify {
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
 <pre class="r"><code>library(tidyverse)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RwbHlyJzpcbiAgbWV0aG9kICAgICAgICAgICBmcm9tXG4gIHByaW50LnJvd3dpc2VfZGYgICAgIFxuXHUwMDFiWzMwbeKUgOKUgCBcdTAwMWJbMW1BdHRhY2hpbmcgcGFja2FnZXNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2UgMS4yLjEg4pSA4pSAXHUwMDFiWzM5bVxuXHUwMDFiWzMwbVx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1nZ3Bsb3QyXHUwMDFiWzMwbSAzLjIuMCAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bXB1cnJyICBcdTAwMWJbMzBtIDAuMy4yXG5cdTAwMWJbMzJt4pyUXHUwMDFiWzMwbSBcdTAwMWJbMzRtdGliYmxlIFx1MDAxYlszMG0gMi4xLjMgICAgIFx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1kcGx5ciAgXHUwMDFiWzMwbSAwLjguM1xuXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bXRpZHlyICBcdTAwMWJbMzBtIDAuOC4zICAgICBcdTAwMWJbMzJt4pyUXHUwMDFiWzMwbSBcdTAwMWJbMzRtc3RyaW5nclx1MDAxYlszMG0gMS40LjBcblx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1yZWFkciAgXHUwMDFiWzMwbSAxLjMuMSAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bWZvcmNhdHNcdTAwMWJbMzBtIDAuNC4wXHUwMDFiWzM5bVxuXHUwMDFiWzMwbeKUgOKUgCBcdTAwMWJbMW1Db25mbGljdHNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2VfY29uZmxpY3RzKCkg4pSA4pSAXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzMwbSBcdTAwMWJbMzRtZHBseXJcdTAwMWJbMzBtOjpcdTAwMWJbMzJtZmlsdGVyKClcdTAwMWJbMzBtIG1hc2tzIFx1MDAxYlszNG1zdGF0c1x1MDAxYlszMG06OmZpbHRlcigpXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzMwbSBcdTAwMWJbMzRtZHBseXJcdTAwMWJbMzBtOjpcdTAwMWJbMzJtbGFnKClcdTAwMWJbMzBtICAgIG1hc2tzIFx1MDAxYlszNG1zdGF0c1x1MDAxYlszMG06OmxhZygpXHUwMDFiWzM5bVxuIn0= -->
-<pre><code>Registered S3 method overwritten by 'dplyr':
-  method           from
-  print.rowwise_df     
-[30m── [1mAttaching packages[22m ────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──[39m
+<!-- rnb-output-begin eyJkYXRhIjoiXHUwMDFiWzMwbeKUgOKUgCBcdTAwMWJbMW1BdHRhY2hpbmcgcGFja2FnZXNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2UgMS4yLjEg4pSA4pSAXHUwMDFiWzM5bVxuXHUwMDFiWzMwbVx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1nZ3Bsb3QyXHUwMDFiWzMwbSAzLjIuMCAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bXB1cnJyICBcdTAwMWJbMzBtIDAuMy4yXG5cdTAwMWJbMzJt4pyUXHUwMDFiWzMwbSBcdTAwMWJbMzRtdGliYmxlIFx1MDAxYlszMG0gMi4xLjMgICAgIFx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1kcGx5ciAgXHUwMDFiWzMwbSAwLjguM1xuXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bXRpZHlyICBcdTAwMWJbMzBtIDAuOC4zICAgICBcdTAwMWJbMzJt4pyUXHUwMDFiWzMwbSBcdTAwMWJbMzRtc3RyaW5nclx1MDAxYlszMG0gMS40LjBcblx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1yZWFkciAgXHUwMDFiWzMwbSAxLjMuMSAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bWZvcmNhdHNcdTAwMWJbMzBtIDAuNC4wXHUwMDFiWzM5bVxuXHUwMDFiWzMwbeKUgOKUgCBcdTAwMWJbMW1Db25mbGljdHNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2VfY29uZmxpY3RzKCkg4pSA4pSAXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzMwbSBcdTAwMWJbMzRtZHBseXJcdTAwMWJbMzBtOjpcdTAwMWJbMzJtZmlsdGVyKClcdTAwMWJbMzBtIG1hc2tzIFx1MDAxYlszNG1zdGF0c1x1MDAxYlszMG06OmZpbHRlcigpXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzMwbSBcdTAwMWJbMzRtZHBseXJcdTAwMWJbMzBtOjpcdTAwMWJbMzJtbGFnKClcdTAwMWJbMzBtICAgIG1hc2tzIFx1MDAxYlszNG1zdGF0c1x1MDAxYlszMG06OmxhZygpXHUwMDFiWzM5bVxuIn0= -->
+<pre><code>[30m── [1mAttaching packages[22m ──────────────────────────────────────────────────── tidyverse 1.2.1 ──[39m
 [30m[32m✔[30m [34mggplot2[30m 3.2.0     [32m✔[30m [34mpurrr  [30m 0.3.2
 [32m✔[30m [34mtibble [30m 2.1.3     [32m✔[30m [34mdplyr  [30m 0.8.3
 [32m✔[30m [34mtidyr  [30m 0.8.3     [32m✔[30m [34mstringr[30m 1.4.0
 [32m✔[30m [34mreadr  [30m 1.3.1     [32m✔[30m [34mforcats[30m 0.4.0[39m
-[30m── [1mConflicts[22m ───────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+[30m── [1mConflicts[22m ─────────────────────────────────────────────────────── tidyverse_conflicts() ──
 [31m✖[30m [34mdplyr[30m::[32mfilter()[30m masks [34mstats[30m::filter()
 [31m✖[30m [34mdplyr[30m::[32mlag()[30m    masks [34mstats[30m::lag()[39m</code></pre>
 <!-- rnb-output-end -->
@@ -3183,7 +3180,7 @@ See spec(...) for full column specifications.</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgICBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgIFxuIFs0XSBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgICBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgICBMQ19BRERSRVNTPUMgICAgICAgICAgICAgIFxuWzEwXSBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgICBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBmb3JjYXRzXzAuNC4wICAgc3RyaW5ncl8xLjQuMCAgIGRwbHlyXzAuOC4zICAgICBwdXJycl8wLjMuMiAgICAgcmVhZHJfMS4zLjEgICAgIHRpZHlyXzAuOC4zICAgIFxuWzddIHRpYmJsZV8yLjEuMyAgICBnZ3Bsb3QyXzMuMi4wICAgdGlkeXZlcnNlXzEuMi4xXG5cbmxvYWRlZCB2aWEgYSBuYW1lc3BhY2UgKGFuZCBub3QgYXR0YWNoZWQpOlxuIFsxXSBSY3BwXzEuMC4xICAgICAgIGNlbGxyYW5nZXJfMS4xLjAgcGlsbGFyXzEuNC4yICAgICBjb21waWxlcl8zLjYuMCAgIHRvb2xzXzMuNi4wICAgICAganNvbmxpdGVfMS42ICAgIFxuIFs3XSBsdWJyaWRhdGVfMS43LjQgIG5sbWVfMy4xLTE0MCAgICAgZ3RhYmxlXzAuMy4wICAgICBsYXR0aWNlXzAuMjAtMzggIHBrZ2NvbmZpZ18yLjAuMiAgcmxhbmdfMC40LjAgICAgIFxuWzEzXSBjbGlfMS4xLjAgICAgICAgIHJzdHVkaW9hcGlfMC4xMCAgaGF2ZW5fMi4xLjEgICAgICB4ZnVuXzAuOCAgICAgICAgIHdpdGhyXzIuMS4yICAgICAgeG1sMl8xLjIuMCAgICAgIFxuWzE5XSBodHRyXzEuNC4wICAgICAgIGtuaXRyXzEuMjMgICAgICAgZ2VuZXJpY3NfMC4wLjIgICBobXNfMC40LjIgICAgICAgIGdyaWRfMy42LjAgICAgICAgdGlkeXNlbGVjdF8wLjIuNVxuWzI1XSBnbHVlXzEuMy4xICAgICAgIFI2XzIuNC4wICAgICAgICAgcmVhZHhsXzEuMy4xICAgICBtb2RlbHJfMC4xLjQgICAgIG1hZ3JpdHRyXzEuNSAgICAgYmFja3BvcnRzXzEuMS40IFxuWzMxXSBzY2FsZXNfMS4wLjAgICAgIHJ2ZXN0XzAuMy40ICAgICAgYXNzZXJ0dGhhdF8wLjIuMSBjb2xvcnNwYWNlXzEuNC0xIHN0cmluZ2lfMS40LjMgICAgbGF6eWV2YWxfMC4yLjIgIFxuWzM3XSBtdW5zZWxsXzAuNS4wICAgIGJyb29tXzAuNS4yICAgICAgY3JheW9uXzEuMy40ICAgIFxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgICBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgIFxuIFs0XSBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgICBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgICBMQ19BRERSRVNTPUMgICAgICAgICAgICAgIFxuWzEwXSBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgICBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBmb3JjYXRzXzAuNC4wICAgc3RyaW5ncl8xLjQuMCAgIGRwbHlyXzAuOC4zICAgICBwdXJycl8wLjMuMiAgICAgcmVhZHJfMS4zLjEgICAgXG5bNl0gdGlkeXJfMC44LjMgICAgIHRpYmJsZV8yLjEuMyAgICBnZ3Bsb3QyXzMuMi4wICAgdGlkeXZlcnNlXzEuMi4xXG5cbmxvYWRlZCB2aWEgYSBuYW1lc3BhY2UgKGFuZCBub3QgYXR0YWNoZWQpOlxuIFsxXSBSY3BwXzEuMC4xICAgICAgIGNlbGxyYW5nZXJfMS4xLjAgcGlsbGFyXzEuNC4yICAgICBjb21waWxlcl8zLjYuMCAgIGJhc2U2NGVuY18wLjEtMyBcbiBbNl0gdG9vbHNfMy42LjAgICAgICBkaWdlc3RfMC42LjIwICAgIGx1YnJpZGF0ZV8xLjcuNCAganNvbmxpdGVfMS42ICAgICBldmFsdWF0ZV8wLjE0ICAgXG5bMTFdIG5sbWVfMy4xLTE0MCAgICAgZ3RhYmxlXzAuMy4wICAgICBsYXR0aWNlXzAuMjAtMzggIHBrZ2NvbmZpZ18yLjAuMiAgcmxhbmdfMC40LjAgICAgIFxuWzE2XSBjbGlfMS4xLjAgICAgICAgIHJzdHVkaW9hcGlfMC4xMCAgeWFtbF8yLjIuMCAgICAgICBoYXZlbl8yLjEuMSAgICAgIHhmdW5fMC44ICAgICAgICBcblsyMV0gd2l0aHJfMi4xLjIgICAgICB4bWwyXzEuMi4wICAgICAgIGh0dHJfMS40LjAgICAgICAga25pdHJfMS4yMyAgICAgICBobXNfMC40LjIgICAgICAgXG5bMjZdIGdlbmVyaWNzXzAuMC4yICAgZ3JpZF8zLjYuMCAgICAgICB0aWR5c2VsZWN0XzAuMi41IGdsdWVfMS4zLjEgICAgICAgUjZfMi40LjAgICAgICAgIFxuWzMxXSByZWFkeGxfMS4zLjEgICAgIHJtYXJrZG93bl8xLjEzICAgbW9kZWxyXzAuMS40ICAgICBtYWdyaXR0cl8xLjUgICAgIGJhY2twb3J0c18xLjEuNCBcblszNl0gc2NhbGVzXzEuMC4wICAgICBodG1sdG9vbHNfMC4zLjYgIHJ2ZXN0XzAuMy40ICAgICAgYXNzZXJ0dGhhdF8wLjIuMSBjb2xvcnNwYWNlXzEuNC0xXG5bNDFdIHN0cmluZ2lfMS40LjMgICAgbGF6eWV2YWxfMC4yLjIgICBtdW5zZWxsXzAuNS4wICAgIGJyb29tXzAuNS4yICAgICAgY3JheW9uXzEuMy40ICAgIFxuIn0= -->
 <pre><code>R version 3.6.0 (2019-04-26)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Debian GNU/Linux 9 (stretch)
@@ -3201,17 +3198,19 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] forcats_0.4.0   stringr_1.4.0   dplyr_0.8.3     purrr_0.3.2     readr_1.3.1     tidyr_0.8.3    
-[7] tibble_2.1.3    ggplot2_3.2.0   tidyverse_1.2.1
+[1] forcats_0.4.0   stringr_1.4.0   dplyr_0.8.3     purrr_0.3.2     readr_1.3.1    
+[6] tidyr_0.8.3     tibble_2.1.3    ggplot2_3.2.0   tidyverse_1.2.1
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.1       cellranger_1.1.0 pillar_1.4.2     compiler_3.6.0   tools_3.6.0      jsonlite_1.6    
- [7] lubridate_1.7.4  nlme_3.1-140     gtable_0.3.0     lattice_0.20-38  pkgconfig_2.0.2  rlang_0.4.0     
-[13] cli_1.1.0        rstudioapi_0.10  haven_2.1.1      xfun_0.8         withr_2.1.2      xml2_1.2.0      
-[19] httr_1.4.0       knitr_1.23       generics_0.0.2   hms_0.4.2        grid_3.6.0       tidyselect_0.2.5
-[25] glue_1.3.1       R6_2.4.0         readxl_1.3.1     modelr_0.1.4     magrittr_1.5     backports_1.1.4 
-[31] scales_1.0.0     rvest_0.3.4      assertthat_0.2.1 colorspace_1.4-1 stringi_1.4.3    lazyeval_0.2.2  
-[37] munsell_0.5.0    broom_0.5.2      crayon_1.3.4    </code></pre>
+ [1] Rcpp_1.0.1       cellranger_1.1.0 pillar_1.4.2     compiler_3.6.0   base64enc_0.1-3 
+ [6] tools_3.6.0      digest_0.6.20    lubridate_1.7.4  jsonlite_1.6     evaluate_0.14   
+[11] nlme_3.1-140     gtable_0.3.0     lattice_0.20-38  pkgconfig_2.0.2  rlang_0.4.0     
+[16] cli_1.1.0        rstudioapi_0.10  yaml_2.2.0       haven_2.1.1      xfun_0.8        
+[21] withr_2.1.2      xml2_1.2.0       httr_1.4.0       knitr_1.23       hms_0.4.2       
+[26] generics_0.0.2   grid_3.6.0       tidyselect_0.2.5 glue_1.3.1       R6_2.4.0        
+[31] readxl_1.3.1     rmarkdown_1.13   modelr_0.1.4     magrittr_1.5     backports_1.1.4 
+[36] scales_1.0.0     htmltools_0.3.6  rvest_0.3.4      assertthat_0.2.1 colorspace_1.4-1
+[41] stringi_1.4.3    lazyeval_0.2.2   munsell_0.5.0    broom_0.5.2      crayon_1.3.4    </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
