@@ -27,3 +27,6 @@ Rscript -e "rmarkdown::render('03-incorporate-pathology-feedback.Rmd', params=li
 
 # Glialneuronal tumors
 Rscript -e "rmarkdown::render('clinical-subtyping-glialneuronal-tumors.Rmd', clean = TRUE)"
+
+# Run the meningioma clinical subtyping step
+Rscript -e "rmarkdown::render('clinical-subtyping-meningioma.Rmd', clean = TRUE)"

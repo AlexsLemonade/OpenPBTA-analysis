@@ -31,13 +31,14 @@ bash run-embryonal-subtyping.sh
 
 ## Folder Content
 
-[`00-embryonal-select-pathology-dx.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-embryonal/00-embryonal-select-pathology-dx.nb.html) is a notebook used to explore the `pathology_diagnosis` and `pathology_free_text_diagnosis` fields in the `release-v17-20200908` version of `pbta-histologies.tsv`. 
+[`00-v17-embryonal-select-pathology-dx.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-embryonal/00-embryonal-select-pathology-dx.nb.html) is a notebook used to explore the `pathology_diagnosis` and `pathology_free_text_diagnosis` fields in the `release-v17-20200908` version of `pbta-histologies.tsv`. 
 Prior to `release-v17-20200908`, this module used `broad_histology == "Embryonal tumor"` to identify samples to be included for subtyping.
 ATRT and Medulloblastoma samples were also filtered out with this method of identifying samples.
 In future releases, the `broad_histology` values will be derived from the `pathology_diagnosis` and `molecular_subtype` values (see [#748](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/748)); this module generates the latter.
 Thus, this notebook looks to identify the samples to be included for subtyping based on the `pathology_diagnosis` and `pathology_free_text_diagnosis` values.
 
-The relevant strings from this notebook are saved in [`subset-files/embryonal_subtyping_path_dx_strings.json`](subset-files/embryonal_subtyping_path_dx_strings.json), which is used downstream in `01-samples-to-subset.Rmd` to identify the samples to include in the subset files.
+[`00-embryonal-select-pathology-dx.R`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-embryonal/00-embryonal-select-pathology-dx.R)
+in this script we gather relevant strings from the summarized results above and histology updates review and save in [`subset-files/embryonal_subtyping_path_dx_strings.json`](subset-files/embryonal_subtyping_path_dx_strings.json), which is used downstream in `01-samples-to-subset.Rmd` to identify the samples to include in the subset files.
 
 [`01-samples-to-subset.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-embryonal/01-samples-to-subset.nb.html) is a notebook written to identify samples to include in subset files for the purpose of molecularly subtyping non-MB and non-ATRT embryonal tumors.
 The samples are identified using the following criteria:
@@ -45,7 +46,7 @@ The samples are identified using the following criteria:
 1. An RNA-seq biospecimen sample includes a _TTYH1_ fusion (5' partner) [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/401#issuecomment-573669727).
 2. An RNA-seq biospecimen sample includes a _MN1_ fusion (5' partner) [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/785#issuecomment-695015488).
 Note that the `MN1--PATZ1` fusion is excluded as it is an entity separate of CNS HGNET-MN1 tumors [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/788#discussion_r495302880).
-3. Any sample with "Supratentorial or Spinal Cord PNET" in the `pathology_diagnosis` column of the metadata `pbta-histologies.tsv` [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/752#issuecomment-697000066).
+3. Any sample with "Supratentorial or Spinal Cord PNET" or "Embryonal Tumor with Multilayered Rosettes" in the `pathology_diagnosis` column of the metadata `pbta-histologies.tsv` [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/752#issuecomment-697000066) and [#1030](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1030).
 4. Any sample with "Neuroblastoma" in the `pathology_diagnosis` column, where `primary_site` does not contain "Other locations NOS", `pathology_free_text_diagnosis` does not contain "peripheral" or "metastatic" [per the same comment as above](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/752#issuecomment-697000066) and [this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/788#discussion_r499948141).
 5. Any sample with "Other" in the `pathology_diagnosis` column of the metadata, and with "embryonal tumor with multilayer rosettes, ros (who grade iv)", "embryonal tumor, nos, congenital type", "ependymoblastoma" or "medulloepithelioma" in the `pathology_free_text_diagnosis` column [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/752#issuecomment-697000066).
 The output of this notebook is a TSV file, named `biospecimen_ids_embryonal_subtyping.tsv`, containing the biospeciemen IDs identified based on the above criteria (stored in the `results` directory of this module.
