@@ -25,7 +25,7 @@ library(tidyverse)
 
 ```{r}
 data_dir <- file.path("..", "..", "data")
-histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
+histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
 
 # The inclusion criteria for this notebook are the same as the exclusion
 # criteria for the LGAT subtyping -- these tumors were original included in that
@@ -82,8 +82,7 @@ subtype_df <- histologies_df %>%
          pathology_diagnosis,
          pathology_free_text_diagnosis,
          broad_histology,
-         short_histology,
-         harmonized_diagnosis) %>%
+         short_histology) %>%
   # For convenience, let's add a column where pathology_free_text_diagnosis
   # is all lower case out of an abundance of caution
   mutate(pathology_free_text_dx_lower = str_to_lower(pathology_free_text_diagnosis))
