@@ -60,11 +60,10 @@ readRDS = robjects.r["readRDS"]
 rownamesRDS = robjects.r["rownames"]
 
 # Load gene expression data in rds format
-file = os.path.join("data", inputfile)
+name = os.path.basename(inputfile)
+name = re.sub("\.rds$", "", name)
 
-name = re.sub("\.rds$", "", inputfile)
-
-exprs_rds = readRDS(file)
+exprs_rds = readRDS(inputfile)
 exprs_df = pandas2ri.ri2py(exprs_rds)
 exprs_df.index = rownamesRDS(exprs_rds)
 
@@ -84,7 +83,7 @@ exprs_shuffled_df = exprs_scaled_df.apply(shuffle_columns, axis=0)
 
 # Load RAS Classifier
 file = os.path.join(
-    "analyses", "tp53_nf1_score", "reference", "ras_classifier_coefficients.tsv"
+    "reference", "ras_classifier_coefficients.tsv"
 )
 ras_coef_df = pd.read_table(file, index_col=0)
 ras_coef_df = ras_coef_df.query("abs_val > 0")
@@ -119,7 +118,7 @@ print(ras_missing_genes_df)
 
 # Load TP53 Classifier
 file = os.path.join(
-    "analyses", "tp53_nf1_score", "reference", "tp53_classifier_coefficients.tsv"
+    "reference", "tp53_classifier_coefficients.tsv"
 )
 tp53_coef_df = pd.read_table(file, index_col=0)
 tp53_coef_df = tp53_coef_df.query("abs_val > 0")
@@ -154,7 +153,7 @@ print(tp53_missing_genes_df)
 
 # Load NF1 Classifier
 file = os.path.join(
-    "analyses", "tp53_nf1_score", "reference", "nf1_classifier_coefficients.tsv"
+    "reference", "nf1_classifier_coefficients.tsv"
 )
 nf1_coef_df = pd.read_table(file, index_col=0)
 nf1_coef_df = nf1_coef_df.query("abs_val > 0")
@@ -210,5 +209,5 @@ all_results.columns = [
 filename = pd.Series([name, "classifier_scores.tsv"])
 filename = filename.str.cat(sep="_")
 print(filename)
-file = os.path.join("analyses", "tp53_nf1_score", "results", filename)
+file = os.path.join("results", filename)
 all_results.to_csv(file, sep="\t", index=False)

@@ -3026,7 +3026,7 @@ cols(
 snv_df &lt;-
   read_tsv(file.path(root_dir, &quot;data&quot;, &quot;pbta-snv-consensus-mutation.maf.tsv.gz&quot;))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgRW50cmV6X0dlbmVfSWQgPSBjb2xfZG91YmxlKCksXG4gIFN0YXJ0X1Bvc2l0aW9uID0gY29sX2RvdWJsZSgpLFxuICBFbmRfUG9zaXRpb24gPSBjb2xfZG91YmxlKCksXG4gIHRfZGVwdGggPSBjb2xfZG91YmxlKCksXG4gIHRfcmVmX2NvdW50ID0gY29sX2RvdWJsZSgpLFxuICB0X2FsdF9jb3VudCA9IGNvbF9kb3VibGUoKSxcbiAgbl9kZXB0aCA9IGNvbF9kb3VibGUoKSxcbiAgbl9yZWZfY291bnQgPSBjb2xfZG91YmxlKCksXG4gIG5fYWx0X2NvdW50ID0gY29sX2RvdWJsZSgpLFxuICBBTExFTEVfTlVNID0gY29sX2RvdWJsZSgpLFxuICB2Y2ZfcG9zID0gY29sX2RvdWJsZSgpLFxuICBWQUYgPSBjb2xfZG91YmxlKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuIn0= -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgRW50cmV6X0dlbmVfSWQgPSBjb2xfZG91YmxlKCksXG4gIFN0YXJ0X1Bvc2l0aW9uID0gY29sX2RvdWJsZSgpLFxuICBFbmRfUG9zaXRpb24gPSBjb2xfZG91YmxlKCksXG4gIHRfZGVwdGggPSBjb2xfZG91YmxlKCksXG4gIHRfcmVmX2NvdW50ID0gY29sX2RvdWJsZSgpLFxuICB0X2FsdF9jb3VudCA9IGNvbF9kb3VibGUoKSxcbiAgbl9kZXB0aCA9IGNvbF9kb3VibGUoKSxcbiAgbl9yZWZfY291bnQgPSBjb2xfZG91YmxlKCksXG4gIG5fYWx0X2NvdW50ID0gY29sX2RvdWJsZSgpLFxuICBBTExFTEVfTlVNID0gY29sX2RvdWJsZSgpLFxuICB2Y2ZfcG9zID0gY29sX2RvdWJsZSgpLFxuICBIb3RTcG90QWxsZWxlID0gY29sX2RvdWJsZSgpLFxuICBWQUYgPSBjb2xfZG91YmxlKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuIn0= -->
 <pre><code>Parsed with column specification:
 cols(
   .default = col_character(),
@@ -3041,6 +3041,7 @@ cols(
   n_alt_count = col_double(),
   ALLELE_NUM = col_double(),
   vcf_pos = col_double(),
+  HotSpotAllele = col_double(),
   VAF = col_double()
 )
 See spec(...) for full column specifications.</code></pre>

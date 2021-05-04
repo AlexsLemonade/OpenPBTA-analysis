@@ -2,7 +2,11 @@
 title: "Find CNV losses that overlap with TP53 domains"
 author: "K S Gaonkar (D3B)"
 output: html_notebook
-
+params:
+  base_run:
+    label: "1/0 to run with base histology"
+    value: 0
+    input: integer
 ---
     
 In this script we will find if there are a Structural Variant breakpoints within TP53 or covering the gene locus such that it is deleted and concurrently, there are either one or both of:
@@ -38,7 +42,13 @@ if (!dir.exists(results_dir)) {
 manta_sv <- read_tsv(file.path(data_dir, "pbta-sv-manta.tsv.gz"))
 stranded_expr <- readRDS(file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
 polya_expr <- readRDS(file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"))
-histology <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
+if ( params$base_run ==0 ){
+  clinical<-read.delim(file.path(data_dir,"pbta-histologies.tsv"), stringsAsFactors = FALSE)
+} else{
+  clinical<-read.delim(file.path(data_dir,"pbta-histologies-base.tsv"), stringsAsFactors = FALSE)  
+}
+
+histology <- select(clinical,c("Kids_First_Biospecimen_ID", "sample_id"))
 
 # high confidence cnv losses from `03-tp53-cnv-loss-domain.Rmd`
 cnv_tp53_loss <- read_tsv(file.path(results_dir, "loss_overlap_domains_tp53.tsv"))
@@ -58,7 +68,7 @@ manta_sv_tp53 <- manta_sv %>%
       grepl("/TP53/", Gene.name),
     SV.type %in% c("BND", "INV", "DEL")
   ) %>%
-  left_join(select(histology, c("Kids_First_Biospecimen_ID", "sample_id")),
+  left_join(histology,
     by = c("Kids.First.Biospecimen.ID.Tumor" = "Kids_First_Biospecimen_ID")
   )
 
@@ -99,7 +109,7 @@ polya_expr_tp53 <- polya_expr["TP53", ] %>%
 
 lowexpr_tp53_with_sv <- bind_rows(stranded_expr_tp53, polya_expr_tp53) %>%
   # add sample_id to expression df
-  left_join(select(histology, c("Kids_First_Biospecimen_ID", "sample_id")),
+  left_join(histology,
     by = c("Kids_First_Biospecimen_ID")
   ) %>%
   # filter to keep only low expressed TP53 sample_ids
