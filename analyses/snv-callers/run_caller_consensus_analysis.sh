@@ -2,17 +2,44 @@
 # C. Savonen
 # CCDL for ALSF 2019
 
-# Purpose: Run a consensus analysis for KFNBL of SNV callers
+# Purpose: Run a consensus analysis for PBTA of SNV callers
 
 # Set this so the whole loop stops if there is an error
 set -e
 set -o pipefail
 
+# Usage: project acronym to use as prefix for input out files 
+usage(){ echo "Usage: $0 [-h] [-p <project acronyn]" 1>&2; exit 1; }
+
+while getopts ":hp:" opt; do
+    case "${opt}" in
+	h)
+	    usage
+	    ;;
+	p)
+	    project_acronym=$OPTARG
+	    ;;
+	:)
+	    printf "missing argument for -%s\n" "$OPTARG" 1>&2
+	    usage
+	    ;;
+	\?)
+	    printf "illegal option: -%s\n" "$OPTARG" 1>&2
+	    usage
+	    ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [ -z "${project_acronym}" ]; then
+    usage
+fi
+
 # The sqlite database made from the callers will be called:
 dbfile=scratch/snv_db.sqlite
 
 # Designate output file
-consensus_file=analyses/snv-callers/results/consensus/kfnbl-snv-consensus-mutation.maf.tsv
+consensus_file=analyses/snv-callers/results/consensus/${project_acronym}-consensus-mutation.maf.tsv
 
 # BED and GTF file paths
 cds_file=scratch/gencode.v27.primary_assembly.annotation.bed
@@ -28,11 +55,11 @@ run_plots_nb=${OPENPBTA_PLOTS:-0}
 ################################ Set Up Database ################################
 python3 analyses/snv-callers/scripts/01-setup_db.py \
   --db-file $dbfile \
-  --strelka-file data/kfnbl-snv-strelka2.vep.maf.gz \
-  --mutect-file data/kfnbl-snv-mutect2.vep.maf.gz \
-  --lancet-file data/kfnbl-snv-lancet.vep.maf.gz \
-  --vardict-file data/kfnbl-snv-vardict.vep.maf.gz \
-  --meta-file data/kfnbl-histologies.tsv
+  --strelka-file data/${project_acronym}-snv-strelka2.vep.maf.gz \
+  --mutect-file data/${project_acronym}-snv-mutect2.vep.maf.gz \
+  --lancet-file data/${project_acronym}-snv-lancet.vep.maf.gz \
+  --vardict-file data/${project_acronym}-snv-vardict.vep.maf.gz \
+  --meta-file data/${project_acronym}-histologies.tsv
 
 ##################### Merge callers' files into total files ####################
 Rscript analyses/snv-callers/scripts/02-merge_callers.R \
@@ -64,13 +91,14 @@ gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
   > $cds_file
 
 ######################### Calculate consensus TMB ##############################
-Rscript analyses/snv-callers/scripts/03-kfnbl-calculate_tmb.R \
+Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --db_file $dbfile \
   --output analyses/snv-callers/results/consensus \
-  --metadata data/kfnbl-histologies.tsv \
+  --metadata data/${project_acronym}-histologies.tsv \
   --coding_regions $cds_file \
   --overwrite \
-  --nonsynfilter_maf
+  --nonsynfilter_maf \
+  --project_acronym ${project_acronym}
 
 ########################## Compress consensus file #############################
 
@@ -81,3 +109,4 @@ if [ "$run_plots_nb" -gt "0" ]
 then
  Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots.Rmd', clean = TRUE)"
 fi
+
