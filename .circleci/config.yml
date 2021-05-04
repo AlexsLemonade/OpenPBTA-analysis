@@ -225,21 +225,21 @@ jobs:
 #          name: RNA-Seq composition
 #          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/rna-seq-composition/rna-seq-composition.Rmd', clean = TRUE)"
 
-    #   - run:
-    #       name: TCGA SNV Caller Analysis
-    #       command: ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-tcga.sh
+      - run:
+          name: TCGA SNV Caller Analysis
+          command: ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-tcga.sh
 
-    #   - run:
-    #       name: SNV Caller Analysis
-    #       command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-pbta.sh
+      - run:
+          name: SNV Caller Analysis
+          command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-pbta.sh
 
-    #  - run:
-    #      name: Tumor mutation burden with TCGA
-    #      command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tcga-pbta.Rmd', clean = TRUE)"
+     - run:
+         name: Tumor mutation burden with TCGA
+         command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tcga-pbta.Rmd', clean = TRUE)"
 
-    #  - run:
-    #      name: Exploration of nonsynonymous filter
-    #      command: ./scripts/run_in_ci.sh bash analyses/snv-callers/explore_variant_classifications/run_explorations.sh
+     - run:
+         name: Exploration of nonsynonymous filter
+         command: ./scripts/run_in_ci.sh bash analyses/snv-callers/explore_variant_classifications/run_explorations.sh
 
       # This analysis was used to explore the TCGA PBTA data when the BED files used to calculate TCGA
       # were incorrect https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/568
@@ -275,9 +275,9 @@ jobs:
     #     name: d3b TMB code
     #     command: ./scripts/run_in_ci.sh bash analyses/tmb-compare/TMB_d3b_code/run_tmb_d3b.sh
 
-    #  - run:
-    #      name: Compare TMB calculations
-    #      command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tmb-calculations.Rmd', clean = TRUE)"
+     - run:
+         name: Compare TMB calculations
+         command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tmb-calculations.Rmd', clean = TRUE)"
 
       - run:
           name: Run survival plots
