@@ -63,7 +63,7 @@ do
   Rscript --vanilla util/prepare-goi-lists.R \
     --goi_file ${oncoprint_data_directory}/oncoprint-goi-lists-OpenPBTA.csv \
     --broad_histology "$histology"
-  
+
   # Print primary only oncoprints by broad histology
   Rscript --vanilla 01-plot-oncoprint.R \
     --maf_file ${intermediate_directory}/${primary_filename}_maf.tsv \
@@ -80,6 +80,7 @@ do
     --fusion_file ${intermediate_directory}/${primary_filename}_fusions.tsv \
     --metadata_file ${histologies_file} \
     --goi_list ${oncoprint_data_directory}/"${histology}"_goi_list.tsv \
+    --top_n 20 \
     --png_name ${primary_filename}_"${histology}"_goi_oncoprint.png \
     --broad_histology "${histology}"
 
@@ -100,6 +101,7 @@ do
     --fusion_file ${intermediate_directory}/${primaryplus_filename}_fusions.tsv \
     --metadata_file ${histologies_file} \
     --goi_list ${oncoprint_data_directory}/"${histology}"_goi_list.tsv \
+    --top_n 20 \
     --png_name ${primaryplus_filename}_"$histology"_goi_oncoprint.png \
     --broad_histology "$histology"
     

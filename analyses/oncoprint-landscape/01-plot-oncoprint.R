@@ -96,6 +96,12 @@ option_list <- list(
     help = "optional name of `broad_histology` value to plot associated oncoprint"
   ),
   optparse::make_option(
+    c("-n", "--top_n"),
+    type = "integer",
+    default = NULL,
+    help = "optional `n` to display top n genes based on count of mutations"
+  ),
+  optparse::make_option(
     c("-p", "--png_name"),
     type = "character",
     default = NULL,
@@ -233,6 +239,37 @@ maf_object <- prepare_maf_object(
   fusion_df = fusion_df
 )
 
+#### Subset MAF Object (Optional)----------------------------------------------
+
+# Code here is specifically adapted from:
+# https://github.com/marislab/create-pptc-pdx-oncoprints/blob/master/R/create-complexheat-oncoprint-revision.R
+
+# Subset `maf_object` for histology-specific goi list
+if (!is.null(opt$goi_list)) {
+  maf_object = subsetMaf(
+    maf = maf_object,
+    tsb = metadata$Tumor_Sample_Barcode,
+    genes = goi_list,
+    mafObj = TRUE
+  )
+  
+  # Get top mutated genes per this subset object
+  gene_sum <- mafSummary(maf_object)$gene.summary
+  
+  # Sort to get top altered genes rather than mutated only genes
+  goi_ordered <-
+    gene_sum[order(gene_sum$AlteredSamples, decreasing = T),]
+  
+  if (!is.null(opt$top_n)) {
+    
+    # Select top `n` genes if the argument is provided
+    top_n <- ifelse(nrow(gene_sum) < opt$top_n, nrow(gene_sum), opt$top_n)
+    
+    goi_list <- goi_ordered[1:top_n,]
+    
+  }
+  
+}
 #### Plot and Save Oncoprint --------------------------------------------------
 
 # Given a maf object, plot an oncoprint of the variants in the
@@ -247,7 +284,7 @@ png(
 oncoplot(
   maf_object,
   clinicalFeatures = "display_group",
-  genes = goi_list,
+  genes = goi_list$Hugo_Symbol,
   logColBar = TRUE,
   sortByAnnotation = TRUE,
   showTumorSampleBarcodes = TRUE,
@@ -261,3 +298,4 @@ oncoplot(
   top = 25
 )
 dev.off()
+
