@@ -227,7 +227,7 @@ fusion_df <- fusion_df %>%
   left_join(select_metadata,
             by = c("Sample" = "Kids_First_Biospecimen_ID")) %>%
   filter(Sample %in% hgg_metadata_df$Kids_First_Biospecimen_ID) %>%
-  arrange(Kids_First_Participant_ID, sample_id)
+  arrange(Sample, FusionName)
 
 # Write to file
 write_tsv(fusion_df, file.path(subset_dir, "hgg_fusion.tsv"))
