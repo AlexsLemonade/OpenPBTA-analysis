@@ -51,6 +51,7 @@ for (col_iter in 1:ncol(all_goi_df)) {
   # Write the current column to file, removing any NA values
   all_goi_df[, col_iter] %>%
     tidyr::drop_na() %>%
+    distinct() %>%
     readr::write_tsv(output_file)
 
 }
