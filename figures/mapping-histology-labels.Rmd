@@ -167,8 +167,8 @@ knitr::kable(display_group_df)
 Make this notebook stop if there are more than 16 histology groups + `Normal`. 
 
 ```{r}
-if (nrow(display_group_df) > 17) {
-  stop("There's more than 16 histology `display_group` may want to re-evaluate the high-level histology groupings")
+if (nrow(display_group_df) > 18) {
+  stop("There are more than 18 categories in `display_group`. We may want to re-evaluate the high-level histology groupings")
 }
 ```
 
