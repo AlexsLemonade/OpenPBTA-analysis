@@ -101,19 +101,6 @@ maf_types = [
     ('Matched_Norm_Sample_Barcode', 'TEXT'),
     ('Match_Norm_Seq_Allele1', 'TEXT'),
     ('Match_Norm_Seq_Allele2', 'TEXT'),
-    ('Tumor_Validation_Allele1', 'TEXT'),
-    ('Tumor_Validation_Allele2', 'TEXT'),
-    ('Match_Norm_Validation_Allele1', 'TEXT'),
-    ('Match_Norm_Validation_Allele2', 'TEXT'),
-    ('Verification_Status', 'TEXT'),
-    ('Validation_Status', 'TEXT'),
-    ('Mutation_Status', 'TEXT'),
-    ('Sequencing_Phase', 'TEXT'),
-    ('Sequence_Source', 'TEXT'),
-    ('Validation_Method', 'TEXT'),
-    ('Score', 'TEXT'),
-    ('BAM_File', 'TEXT'),
-    ('Sequencer', 'TEXT'),
     ('Tumor_Sample_UUID', 'TEXT'),
     ('Matched_Norm_Sample_UUID', 'TEXT'),
     ('HGVSc', 'TEXT'),
@@ -161,7 +148,6 @@ maf_types = [
     ('AF', 'TEXT'),
     ('AFR_AF', 'TEXT'),
     ('AMR_AF', 'TEXT'),
-    ('ASN_AF', 'TEXT'),
     ('EAS_AF', 'TEXT'),
     ('EUR_AF', 'TEXT'),
     ('SAS_AF', 'TEXT'),
@@ -180,31 +166,11 @@ maf_types = [
     ('TSL', 'TEXT'),
     ('HGVS_OFFSET', 'TEXT'),
     ('PHENO', 'TEXT'),
-    ('MINIMISED', 'TEXT'),
-    ('ExAC_AF', 'TEXT'),
-    ('ExAC_AF_AFR', 'TEXT'),
-    ('ExAC_AF_AMR', 'TEXT'),
-    ('ExAC_AF_EAS', 'TEXT'),
-    ('ExAC_AF_FIN', 'TEXT'),
-    ('ExAC_AF_NFE', 'TEXT'),
-    ('ExAC_AF_OTH', 'TEXT'),
-    ('ExAC_AF_SAS', 'TEXT'),
     ('GENE_PHENO', 'TEXT'),
     ('FILTER', 'TEXT'),
     ('flanking_bps', 'TEXT'),
     ('vcf_id', 'TEXT'),
     ('vcf_qual', 'REAL'),
-    ('ExAC_AF_Adj', 'TEXT'),
-    ('ExAC_AC_AN_Adj', 'TEXT'),
-    ('ExAC_AC_AN', 'TEXT'),
-    ('ExAC_AC_AN_AFR', 'TEXT'),
-    ('ExAC_AC_AN_AMR', 'TEXT'),
-    ('ExAC_AC_AN_EAS', 'TEXT'),
-    ('ExAC_AC_AN_FIN', 'TEXT'),
-    ('ExAC_AC_AN_NFE', 'TEXT'),
-    ('ExAC_AC_AN_OTH', 'TEXT'),
-    ('ExAC_AC_AN_SAS', 'TEXT'),
-    ('ExAC_FILTER', 'TEXT'),
     ('gnomAD_AF', 'TEXT'),
     ('gnomAD_AFR_AF', 'TEXT'),
     ('gnomAD_AMR_AF', 'TEXT'),
@@ -215,8 +181,11 @@ maf_types = [
     ('gnomAD_OTH_AF', 'TEXT'),
     ('gnomAD_SAS_AF', 'TEXT'),
     ('vcf_pos', 'INTEGER'),
+    ('HotSpotAllele', 'INTEGER'),
     ('VAF', 'REAL')
 ]
+
+common_cols = [col for col, type in maf_types]
 
 needed_cols = [
     'Hugo_Symbol',
@@ -304,7 +273,9 @@ for table_name, maf_file in callers:
         # process the chunk
         chunk['VAF'] = (chunk['t_alt_count'] /
                         (chunk['t_ref_count'] + chunk['t_alt_count']))
-        if table_name not in ('strelka', 'lancet', 'consensus'):
+        if table_name in ('strelka', 'lancet', 'consensus'):
+            chunk = chunk[common_cols]
+        else:
             chunk = chunk[needed_cols]
         chunk.to_sql(table_name, con, if_exists='append')
     # create indexes
