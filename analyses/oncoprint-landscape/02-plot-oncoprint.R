@@ -145,7 +145,7 @@ if (!is.null(opt$fusion_file)) {
 # Read in gene information from the list of genes of interest files
 if (!is.null(opt$goi_list)) {
   # Read in using the `read_tsv()` function
-  goi_list <- readr::read_tsv(tolower(gsub(" ", "-",opt$goi_list))) %>%
+  goi_list <- readr::read_tsv(opt$goi_list) %>%
     as.matrix()
   
 }
