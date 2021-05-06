@@ -32,8 +32,8 @@ data_dir <- file.path(root_dir, "data")
 # Analysis directory
 analyses_dir <- file.path(root_dir, "analyses")
 
-# Oncoprint scratch files
-scratch_dir <- file.path(root_dir, "scratch", "oncoprint_files")
+# GOI list directory
+goi_dir <- file.path(analyses_dir, "oncoprint-landscape", "data")
 
 # Source the custom functions script
 source(
@@ -113,22 +113,14 @@ plot_oncoprint <- function (broad_histology,
                             cnv_df,
                             fusion_df,
                             maf_df,
-                            png_name) {
+                            png_name,
+                            goi_list) {
   # This function takes in the approprate data for plotting oncoprints, as well
   # as a specific broad histology string, to prepare and plot an oncoprint
   
   # Read in the histology specific genes of interest list
   goi_list <-
-    readr::read_tsv(tolower(gsub(
-      " ",
-      "-",
-      file.path(
-        analyses_dir,
-        "oncoprint-landscape",
-        "data",
-        paste0(broad_histology, "_goi_list.tsv")
-      )
-    ))) %>%
+    readr::read_tsv(goi_list) %>%
     as.matrix()
   
   # Filter to the metadata associated with the broad histology value
@@ -279,35 +271,40 @@ lgat_onco <- plot_oncoprint("Low-grade astrocytic tumor",
                             cnv_df,
                             fusion_df,
                             maf_df,
-                            lgat_png)
+                            lgat_png,
+                            file.path(goi_dir, "lgat_goi_list.tsv"))
 
 embryonal_onco <- plot_oncoprint("Embryonal tumor",
                             metadata,
                             cnv_df,
                             fusion_df,
                             maf_df,
-                            embryonal_png)
+                            embryonal_png,
+                            file.path(goi_dir, "embryonal-tumor_goi_list.tsv"))
 
 hgat_onco <- plot_oncoprint("Diffuse astrocytic and oligodendroglial tumor",
                             metadata,
                             cnv_df,
                             fusion_df,
                             maf_df,
-                            hgat_png)
+                            hgat_png,
+                            file.path(goi_dir, "hgat_goi_list.tsv"))
 
 ependymal_onco <- plot_oncoprint("Ependymal tumor",
                             metadata,
                             cnv_df,
                             fusion_df,
                             maf_df,
-                            ependymal_png)
+                            ependymal_png,
+                            file.path(goi_dir, "ependymal-tumor_goi_list.tsv"))
 
 other_cns_onco <- plot_oncoprint("Other CNS",
                             metadata,
                             cnv_df,
                             fusion_df,
                             maf_df,
-                            other_cns_png)
+                            other_cns_png,
+                            file.path(goi_dir, "other_goi_list.tsv"))
 
 
 #### Assemble multipanel figure ------------------------------------------------
