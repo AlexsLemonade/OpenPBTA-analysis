@@ -26,9 +26,6 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 # Declare output directory
 output_dir <- file.path(root_dir, "figures", "pngs")
 
-# Final figure filename
-output_png <- file.path(output_dir, "oncoprint-landscape.png")
-
 # Data directory
 data_dir <- file.path(root_dir, "data")
 
@@ -48,14 +45,54 @@ source(
   )
 )
 
+#### Command line options ------------------------------------------------------
+
+# Declare command line options
+option_list <- list(
+  optparse::make_option(
+    c("-m", "--maf_file"),
+    type = "character",
+    default = NULL,
+    help = "file path to MAF file that contains SNV information",
+  ),
+  optparse::make_option(
+    c("-c", "--cnv_file"),
+    type = "character",
+    default = NULL,
+    help = "file path to file that contains CNV information"
+  ),
+  optparse::make_option(
+    c("-f", "--fusion_file"),
+    type = "character",
+    default = NULL,
+    help = "file path to file that contains fusion information"
+  ),
+  optparse::make_option(
+    c("-s", "--metadata_file"),
+    type = "character",
+    default = NULL,
+    help = "file path to the histologies file"
+  ),
+  optparse::make_option(
+    c("-p", "--png_name"),
+    type = "character",
+    default = NULL,
+    help = "oncoprint output png file name"
+  )
+)
+
+# Read the arguments passed
+opt_parser <- optparse::OptionParser(option_list = option_list)
+opt <- optparse::parse_args(opt_parser)
+
 # Define cnv_file, fusion_file, and genes object here as they still need to
 # be defined for the `prepare_and_plot_oncoprint` custom function (the
 # cnv_file specifically for the `read.maf` function within the custom function),
 # even if they are NULL
-cnv_df <- file.path(scratch_dir, "primary_only_cnv.tsv")
-fusion_df <- file.path(scratch_dir, "primary_only_fusions.tsv")
-maf_file <- file.path(scratch_dir, "primary_only_maf.tsv")
-metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+cnv_df <- opt$cnv_file
+fusion_df <- opt$fusion_file
+maf_file <- opt$maf_file
+metadata_file <- opt$metadata_file
 
 #### Temporary PNG names -------------------------------------------------------
 # Because we are mixing Heatmaps and ggplots in this figure, one of the best
@@ -275,43 +312,48 @@ other_cns_onco <- plot_oncoprint("Other CNS",
 
 #### Assemble multipanel figure ------------------------------------------------
 
-transcriptomic_figure <- multi_panel_figure(columns = 6,
+transcriptomic_figure <- multi_panel_figure(columns = 8,
                                             rows = 2,
                                             width = 1200,
                                             height = 300,
-                                            panel_label_type = "none")
+                                            panel_label_type = "upper-alpha")
 
 transcriptomic_figure <- fill_panel(transcriptomic_figure,
                                     lgat_png,
-                                    col = 1:2,
+                                    col = 2:3,
                                     row = 1,
-                                    scaling = "fit")
+                                    scaling = "stretch",
+                                    label = "Low-grade astrocytic tumor")
 
 transcriptomic_figure <- fill_panel(transcriptomic_figure,
                                     embryonal_png,
-                                    col = 3:4,
-                                    row =1,
-                                    scaling = "fit")
+                                    col = 4:5,
+                                    row = 1,
+                                    scaling = "stretch",
+                                    label = "Embryonal tumor")
 
 transcriptomic_figure <- fill_panel(transcriptomic_figure,
                                     hgat_png,
-                                    col = 5:6,
+                                    col = 6:7,
                                     row = 1,
-                                    scaling = "fit")
+                                    scaling = "stretch",
+                                    label = "Diffuse astrocytic and oligodendroglial tumor")
 
 transcriptomic_figure <- fill_panel(transcriptomic_figure,
                                     ependymal_png,
-                                    col = 1:2,
+                                    col = 2:3,
                                     row = 2,
-                                    scaling = "fit")
+                                    scaling = "stretch",
+                                    label = "Ependymal tumor")
 
 transcriptomic_figure <- fill_panel(transcriptomic_figure,
                                     other_cns_png,
-                                    col = 3:4,
+                                    col = 4:5,
                                     row = 2,
-                                    scaling = "fit")
+                                    scaling = "stretch",
+                                    label = "Other CNS")
 
-save_multi_panel_figure(transcriptomic_figure, output_png)
+save_multi_panel_figure(transcriptomic_figure, opt$png_name)
 
 #### Remove temporary PNGs -----------------------------------------------------
 
@@ -322,4 +364,3 @@ file.remove(c(lgat_png,
               hgat_png,
               ependymal_png,
               other_cns_png))
-
