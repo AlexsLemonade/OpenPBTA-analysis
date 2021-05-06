@@ -26,6 +26,7 @@ vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}
 run_plots_nb=${OPENPBTA_PLOTS:-0}
 
 ################################ Set Up Database ################################
+echo "Setting up Database"
 python3 analyses/snv-callers/scripts/01-setup_db.py \
   --db-file $dbfile \
   --strelka-file data/pbta-snv-strelka2.vep.maf.gz \
@@ -35,6 +36,7 @@ python3 analyses/snv-callers/scripts/01-setup_db.py \
   --meta-file data/pbta-histologies.tsv
 
 ##################### Merge callers' files into total files ####################
+echo "Merging callers"
 Rscript analyses/snv-callers/scripts/02-merge_callers.R \
   --db_file $dbfile \
   --output_file $consensus_file \
@@ -42,12 +44,14 @@ Rscript analyses/snv-callers/scripts/02-merge_callers.R \
   --overwrite
 
 ########################## Add consensus to db ################################
+echo "Adding consensus to database"
 python3 analyses/snv-callers/scripts/01-setup_db.py \
   --db-file $dbfile \
   --consensus-file $consensus_file
 
 ############# Create intersection BED files for TMB calculations ###############
 # Make All mutations BED files
+echo "Making intersection bed files"
 bedtools intersect \
   -a data/WGS.hg38.strelka2.unpadded.bed \
   -b data/WGS.hg38.mutect2.vardict.unpadded.bed \
@@ -56,6 +60,7 @@ bedtools intersect \
 #################### Make coding regions file
 # Convert GTF to BED file for use in bedtools
 # Here we are only extracting lines with as a CDS i.e. are coded in protein
+echo "Making CDS bed file"
 gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
   | awk '$3 ~ /CDS/' \
   | convert2bed --do-not-sort --input=gtf - \
@@ -64,6 +69,7 @@ gunzip -c data/gencode.v27.primary_assembly.annotation.gtf.gz \
   > $cds_file
 
 ######################### Calculate consensus TMB ##############################
+echo "Calculating TMB"
 Rscript analyses/snv-callers/scripts/03-calculate_tmb.R \
   --db_file $dbfile \
   --output analyses/snv-callers/results/consensus \
@@ -79,5 +85,6 @@ gzip $consensus_file
 ############################# Comparison Plots #################################
 if [ "$run_plots_nb" -gt "0" ]
 then
+ echo "Making comparison plots"
  Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots.Rmd', clean = TRUE)"
 fi
