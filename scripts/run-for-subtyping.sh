@@ -30,7 +30,8 @@ OPENPBTA_BASE_SUBTYPING=1 ../analyses/transcriptomic-dimension-reduction/dimensi
 echo "Run gsea"
 OPENPBTA_BASE_SUBTYPING=1 ../analyses/gene-set-enrichment-analysis/run-gsea.sh
 
-
+echo "TP53 altered score"
+OPENPBTA_BASE_SUBTYPING=1 ../analyses/tp53_nf1_score/run_classifier.sh
 
 ## Step 2. Run subtyping modules
 
@@ -45,6 +46,9 @@ bash ../analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
 
 echo "Run Embryonal subtyping"
 bash ../analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
+
+echo "Run chordoma subtyping"
+bash ../analyses/molecular-subtyping-chordoma/run-molecular-subtyping-chordoma.sh
 
 echo "Run EWS subtyping"
 bash ../analyses/molecular-subtyping-EWS/run_subtyping.sh
