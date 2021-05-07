@@ -9,7 +9,7 @@ set -e
 set -o pipefail
 
 # Usage: project acronym to use as prefix for input out files 
-usage(){ echo "Usage: $0 [-h] [-p <project acronyn]" 1>&2; exit 1; }
+usage(){ echo "Usage: $0 [-h] [-p <project acronyn>]" 1>&2; exit 1; }
 
 while getopts ":hp:" opt; do
     case "${opt}" in
@@ -107,6 +107,5 @@ gzip $consensus_file
 ############################# Comparison Plots #################################
 if [ "$run_plots_nb" -gt "0" ]
 then
- Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots.Rmd', clean = TRUE)"
+    Rscript -e "rmarkdown::render('analyses/snv-callers/compare_snv_callers_plots.Rmd', output_file = paste0('compare_snv_callers_plots-', '${project_acronym}'), params = list(project_acronym = '${project_acronym}'), clean = TRUE)"
 fi
-
