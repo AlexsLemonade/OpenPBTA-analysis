@@ -62,7 +62,8 @@ joined_df <- histologies_df %>%
          sample_id,
          sample_type,  # required to filter out normal samples
          pathology_diagnosis,
-         pathology_free_text_diagnosis) %>%
+         pathology_free_text_diagnosis,
+         tumor_descriptor) %>%
   inner_join(subtypes_df,
              by = c("Kids_First_Biospecimen_ID", 
                     "Kids_First_Participant_ID",
@@ -112,7 +113,8 @@ cranio_adam_df <- joined_df %>%
          sample_id,
          broad_histology,
          short_histology,
-         molecular_subtype) %>%
+         molecular_subtype,
+         tumor_descriptor) %>%
   # Code the values that are in the table above
   mutate(
     broad_histology = "Tumors of sellar region",
