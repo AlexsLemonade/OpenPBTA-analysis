@@ -28,8 +28,8 @@ extraction_results_dir=${scratch_dir}/extraction
 
 
 # Directories to hold all plots and results
-mkdir -p $denovo_plot_dir
-mkdir -p $denovo_results_dir
+mkdir -p $gof_plot_dir
+mkdir -p $gof_results_dir
 mkdir -p $extraction_plot_dir
 mkdir -p $extraction_results_dir
 
