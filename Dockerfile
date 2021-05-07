@@ -398,9 +398,6 @@ RUN R -e "remotes::install_github('d3b-center/annoFuse',ref = 'c6a2111b5949ca2aa
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
 
-# Display tabular results for de novo mutational signature extraction
-RUN ./install_bioc.r \
-    gt
 
 
 WORKDIR /rocker-build/
