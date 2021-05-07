@@ -99,7 +99,7 @@ option_list <- list(
     c("-n", "--top_n"),
     type = "integer",
     default = 25,
-    help = "optional `n` to display top n genes based on count of mutations"
+    help = "`n` to display top n genes based on count of mutations, default is 25"
   ),
   optparse::make_option(
     c("-p", "--png_name"),
@@ -244,8 +244,9 @@ maf_object <- prepare_maf_object(
 # Code here is specifically adapted from:
 # https://github.com/marislab/create-pptc-pdx-oncoprints/blob/master/R/create-complexheat-oncoprint-revision.R
 
+# We only need to subset the GOI list if there are more GOI than the top n argument
 # Subset `maf_object` for histology-specific goi list
-if (all(!is.null(opt$goi_list), !is.null(opt$top_n))) {
+if (opt$top_n < length(goi_list)) {
   
   maf_object <- subsetMaf(
     maf = maf_object,
@@ -261,10 +262,7 @@ if (all(!is.null(opt$goi_list), !is.null(opt$top_n))) {
   goi_ordered <-
     gene_sum[order(gene_sum$AlteredSamples, decreasing = T),]
   
-  # Select top `n` genes if the argument is provided
-  top_n <- ifelse(nrow(gene_sum) < opt$top_n, nrow(gene_sum), opt$top_n)
-  
-  goi_list <- goi_ordered[1:top_n, Hugo_Symbol]
+  goi_list <- goi_ordered[1:opt$top_n, Hugo_Symbol]
   
 }
 
