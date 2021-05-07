@@ -40,20 +40,20 @@ Rscript --vanilla scripts/fig1-sample-distribution.R
 
 ################ Mutational landscape figure
 if [ "$RUN_LOCAL" -lt "1" ]; then
- # Run both SNV caller consensus scripts
- # Note: This the PBTA consensus script requires at least 128 MB of RAM to run
- # These scripts are intended to run from the base directory,
- # so we will temporarily move there
- cd $BASEDIR
- bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh
- bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh
- cd $WORKDIR
+  # Run both SNV caller consensus scripts
+  # Note: This the PBTA consensus script requires at least 128 MB of RAM to run
+  # These scripts are intended to run from the base directory,
+  # so we will temporarily move there
+  cd $BASEDIR
+  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh
+  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh
+  cd $WORKDIR
 
- # Run mutational signatures analysis
- Rscript --vanilla -e "rmarkdown::render('../analyses/mutational-signatures/01-known_signatures.Rmd', clean = TRUE)"
+  # Run mutational signatures analysis
+  Rscript --vanilla -e "rmarkdown::render('../analyses/mutational-signatures/01-known_signatures.Rmd', clean = TRUE)"
 
- # Run the figure assembly
- Rscript --vanilla scripts/fig2-mutational-landscape.R
+  # Run the figure assembly
+  Rscript --vanilla scripts/fig2-mutational-landscape.R
 fi
 
 ######################
@@ -69,9 +69,9 @@ cp ${analyses_dir}/interaction-plots/plots/combined_top50.png pngs/mutation_cooc
 ## Oncoprint plot(s)
 
 if [ "$RUN_LOCAL" -lt "1" ]; then
- # Run the `focal-cn-file-preparation` module shell script to prepare the focal
- # CN file so that it can be represented on the oncoprint
- bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn.sh
+  # Run the `focal-cn-file-preparation` module shell script to prepare the focal
+  # CN file so that it can be represented on the oncoprint
+  bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn.sh
 fi
 
 # Run the `oncoprint-landscape` module shell script
@@ -82,10 +82,10 @@ filenames=(primary_only primary-plus)
 
 for filename in "${filenames[@]}"; do
 
- ## Run the `oncoprint-landscape` figure assembly script
- Rscript --vanilla scripts/oncoprint-landscape.R \
-   --lead_filename ${filename} \
-   --png_name pngs/${filename}_oncoprint_landscape.png
+  ## Run the `oncoprint-landscape` figure assembly script
+  Rscript --vanilla scripts/oncoprint-landscape.R \
+    --lead_filename ${filename} \
+    --png_name pngs/${filename}_oncoprint_landscape.png
 
 done
 
@@ -101,8 +101,8 @@ bash ${analyses_dir}/collapse-rnaseq/run-collapse-rnaseq.sh
 
 # Generate GSVA scores
 Rscript --vanilla ${analyses_dir}/gene-set-enrichment-analysis/01-conduct-gsea-analysis.R \
- --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
- --output ${analyses_dir}/gene-set-enrichment-analysis/results/gsva_scores_stranded.tsv
+  --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
+  --output ${analyses_dir}/gene-set-enrichment-analysis/results/gsva_scores_stranded.tsv
 
 # This notebook tests for differences between `short_histology`
 # and `integrated_diagnosis` - we can use this to filter what pathways are
@@ -112,10 +112,10 @@ Rscript --vanilla -e "rmarkdown::render('${analyses_dir}/gene-set-enrichment-ana
 # Immune deconvolution - we can't use CIBERSORT because we don't have access to it
 # By not supplying an argument to --method, we are electing only to use xCell
 Rscript --vanilla ${analyses_dir}/immune-deconv/01-immune-deconv.R \
- --polyaexprs ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
- --strandedexprs ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
- --clin ${data_dir}/pbta-histologies.tsv \
- --output ${analyses_dir}/immune-deconv/results/deconv-output-for-figures.RData
+  --polyaexprs ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
+  --strandedexprs ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
+  --clin ${data_dir}/pbta-histologies.tsv \
+  --output ${analyses_dir}/immune-deconv/results/deconv-output-for-figures.RData
 
 # Step that generates the transcriptomic overview figure itself
 Rscript --vanilla scripts/transcriptomic-overview.R
@@ -128,22 +128,22 @@ fi
 
 # Run CN status heatmap but use parameter so file is saved to figures folder
 Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.Rmd',
-                             clean = TRUE, params = list(final_figure=TRUE))"
+                              clean = TRUE, params = list(final_figure=TRUE))"
 
 ####### Telomerase Activities
 
 # Generate collapsed data for count files
 Rscript ${analyses_dir}/collapse-rnaseq/01-summarize_matrices.R \
- -i ${data_dir}/pbta-gene-counts-rsem-expected_count.stranded.rds \
- -g ${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz \
- -m ${analyses_dir}/collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.stranded.rds \
- -t ${analyses_dir}/collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed_table.stranded.rds
+  -i ${data_dir}/pbta-gene-counts-rsem-expected_count.stranded.rds \
+  -g ${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz \
+  -m ${analyses_dir}/collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.stranded.rds \
+  -t ${analyses_dir}/collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed_table.stranded.rds
 
 Rscript ${analyses_dir}/collapse-rnaseq/01-summarize_matrices.R \
- -i ${data_dir}/pbta-gene-counts-rsem-expected_count.polya.rds \
- -g ${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz \
- -m ${analyses_dir}/collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.polya.rds \
- -t ${analyses_dir}/collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed_table.polya.rds
+  -i ${data_dir}/pbta-gene-counts-rsem-expected_count.polya.rds \
+  -g ${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz \
+  -m ${analyses_dir}/collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.polya.rds \
+  -t ${analyses_dir}/collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed_table.polya.rds
 
 # Generate telomerase activities using gene expression data from collapse RNA seq data files
 Rscript --vanilla ${analyses_dir}/telomerase-activity-prediction/01-run-EXTEND.R --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt
