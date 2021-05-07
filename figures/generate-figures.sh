@@ -84,10 +84,7 @@ Rscript -e "rmarkdown::render('mapping-histology-labels.Rmd', clean = TRUE)"
   
    ## Run the `oncoprint-landscape` figure assembly script
    Rscript --vanilla scripts/oncoprint-landscape.R \
-     --maf_file ${scratch_dir}/oncoprint_files/${filename}_maf.tsv \
-     --cnv_file ${scratch_dir}/oncoprint_files/${filename}_cnv.tsv \
-     --fusion_file ${scratch_dir}/oncoprint_files/${filename}_fusions.tsv \
-     --metadata_file ${data_dir}/pbta-histologies.tsv \
+     --lead_filename ${filename} \
      --png_name pngs/${filename}_oncoprint_landscape.png
   
  done
