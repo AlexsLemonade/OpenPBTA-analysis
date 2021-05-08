@@ -120,7 +120,7 @@ tibble::tibble(
   name = names(cosmic_matches), 
   cosmic_sig_index = unname(cosmic_matches[1:length(cosmic_matches)])
   ) %>%
-  tidyr::unnest(cols=cosmic_sig_index) %>%
+  tidyr::unnest(cosmic_sig_index) %>%
   dplyr::mutate(cosmic_sig = cosmic_names[cosmic_sig_index]) -> unnested_sigs
 
 unnested_sigs %>%
