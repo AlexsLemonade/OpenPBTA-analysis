@@ -26,7 +26,7 @@ QUICK_MUTSIGS=$ABBREVIATED_MUTSIGS bash 03-de_novo_range_of_nsignatures.sh 0
 # Run the shell script to perform de novo extraction 
 # with a low number of iterations if run in CI
 # argument 1 --> run more robust denovo extraction
-QUICK_MUTSIGS=$ABBREVIATED_MUTSIGS bash 03-de_novo_signature_extraction.sh 1
+QUICK_MUTSIGS=$ABBREVIATED_MUTSIGS bash 03-de_novo_range_of_nsignatures.sh 1
 
 # Process results from de novo extraction 
 Rscript -e "rmarkdown::render('04-analyze_de_novo.Rmd', clean = TRUE)"
