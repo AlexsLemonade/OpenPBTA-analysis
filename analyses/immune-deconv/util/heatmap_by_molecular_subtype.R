@@ -2,12 +2,12 @@
 heatmap_by_molecular_subtype <- function(deconv_output){
 
   # plot title
-  display_group <- unique(deconv_output$display_group)
-  plot_title <- paste0("Average immune scores normalized by rows: ", display_group)
+  broad_histology <- unique(deconv_output$broad_histology)
+  plot_title <- paste0("Average immune scores normalized by rows: ", broad_histology)
   
   # create labels: count of samples per molecular subtype
   deconv_output <- deconv_output %>%
-    group_by(display_group, molecular_subtype, cell_type) %>%
+    group_by(broad_histology, molecular_subtype, cell_type) %>%
     unique() %>%
     mutate(label = n()) %>%
     mutate(label = paste0(molecular_subtype,' (',label,')'))
