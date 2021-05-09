@@ -284,8 +284,8 @@ strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
     ),
   by = "Tumor_Sample_Barcode"
   ) %>%
-  # Remove samples if they are labeled "Panel"
-  dplyr::filter(experimental_strategy != "Panel")
+  # Remove samples if they are not WGS or WXS
+  dplyr::filter(experimental_strategy %in% c("WGS", "WXS"))
 
 ############################# Set Up BED Files #################################
 # Make a data.frame of the unique BED file paths and their names

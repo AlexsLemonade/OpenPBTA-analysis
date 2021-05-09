@@ -38,14 +38,6 @@ data_dir <- file.path("..", "..", "data", "release-v17-20200908")
 histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
 ```
 
-We're going to save the pathology diagnosis information we'll use to generate the subset files in a directory `hgg-subset`.
-
-```{r}
-output_dir <- "hgg-subset"
-output_file <- file.path(output_dir, 
-                         "hgg_subtyping_path_dx_strings.json")
-```
-
 ## Read in data
 
 ```{r}
@@ -135,6 +127,7 @@ filtered_on_dx_df
 
 Let's tally the values in `pathology_diagnosis` in this data frame.
 
+
 ```{r}
 filtered_on_dx_df %>%
   count(pathology_diagnosis) %>%
@@ -142,20 +135,6 @@ filtered_on_dx_df %>%
 ```
 
 We are not including any samples with pathology diagnoses outside of what we should include for subtyping.
-
-### Save the strings we'll use downstream
-
-Create a list with the strings we'll use for inclusion.
-
-```{r}
-terms_list <- list(exact_path_dx = exact_path_dx)
-```
-
-Save this list as JSON.
-
-```{r}
-writeLines(jsonlite::prettify(jsonlite::toJSON(terms_list)), output_file)
-```
 
 ## Session Info
 
