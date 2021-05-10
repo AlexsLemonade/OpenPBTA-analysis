@@ -1,0 +1,139 @@
+---
+title: "Recoding adamantinomatous craniopharyngiomas"
+output: 
+  html_notebook:
+    toc: true
+    toc_float: true
+author: JN Taroni for ALSF CCDL (code)
+date: 2021
+---
+
+_Background adapted from [#994](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/994)_
+
+There are Craniopharyngioma samples which may have been annotated as "To be classified" in `molecular-subtyping-CRANIO` because they lack canonical mutations.
+However, for adamantinomatous craniopharyngioma, the b-catenin SNV is not present in all samples ([ref](https://doi.org/10.1093/jnen/nlw116)):
+
+> In our cohort of [adamantinomatous craniopharyngiomas] specimens from 117 patients we found _CTNNB1_ mutations in 89 cases (76.1%).
+
+There are samples described as `Adamantinomatous` in pathology reports, so we can update the `harmonized_diagnosis` and `molecular_subtype` information accordingly.
+
+## Set up
+
+### Libraries
+
+```{r}
+library(tidyverse)
+```
+
+### Input
+
+```{r}
+data_dir <- file.path("..", "..", "data")
+results_dir <- "results"
+histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
+compiled_subtypes_file <- file.path(results_dir, "compiled_molecular_subtypes.tsv")
+```
+
+### Output
+
+```{r}
+output_file <- file.path(results_dir, "cranio_adam_subtypes.tsv")
+```
+
+## Read in data
+
+```{r}
+histologies_df <- read_tsv(histologies_file)
+```
+
+```{r}
+subtypes_df <- read_tsv(compiled_subtypes_file,
+                        guess_max = 10000)
+```
+
+### Samples to be reclassified
+
+The instructions on [#994](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/994) are to use specific sample identifiers to do the reclassification because it is on the basis of pathology report review.
+
+```{r}
+joined_df <- histologies_df %>%
+  select(Kids_First_Biospecimen_ID,
+         Kids_First_Participant_ID,
+         sample_id,
+         sample_type,  # required to filter out normal samples
+         pathology_diagnosis,
+         pathology_free_text_diagnosis,
+         tumor_descriptor) %>%
+  inner_join(subtypes_df,
+             by = c("Kids_First_Biospecimen_ID", 
+                    "Kids_First_Participant_ID",
+                    "sample_id"))
+```
+
+Here's the same filtering steps that are performed on the issue itself that we'll save in a new data frame.
+
+```{r}
+acp_df <- joined_df %>%
+  # Same logic as on the issue!
+  filter(pathology_diagnosis == "Craniopharyngioma",
+         molecular_subtype == "CRANIO, To be classified",
+         str_detect(str_to_lower(pathology_free_text_diagnosis), 
+                    "adamantinomatous")) %>%
+  select(sample_id,
+         pathology_free_text_diagnosis,
+         molecular_subtype) %>%
+  distinct()
+
+acp_df
+```
+
+We can pull the `sample_id` values out and use that in our next steps.
+
+```{r}
+sample_ids_reclassification <- acp_df %>%
+  pull(sample_id)
+```
+
+## Recode adamantinomatous craniopharyngiomas
+
+We can use the following table from [#994](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/994) to guide how we recode the labels for these samples.
+
+| broad_histology         | short_histology   | harmonized_diagnosis               | molecular_subtype |
+|-------------------------|-------------------|------------------------------------|-------------------|
+| Tumors of sellar region | Craniopharyngioma | Adamantinomatous craniopharyngioma | CRANIO, ADAM      |
+
+```{r}
+cranio_adam_df <- joined_df %>% 
+  filter(sample_id %in% sample_ids_reclassification,
+         # Exclude normal samples
+         sample_type != "Normal") %>%
+  # Filter to relevant ID and disease type label columns
+  select(Kids_First_Biospecimen_ID,
+         Kids_First_Participant_ID,
+         sample_id,
+         broad_histology,
+         short_histology,
+         molecular_subtype,
+         tumor_descriptor) %>%
+  # Code the values that are in the table above
+  mutate(
+    broad_histology = "Tumors of sellar region",
+    short_histology = "Craniopharyngioma",
+    harmonized_diagnosis = "Adamantinomatous craniopharyngioma",
+    molecular_subtype = "CRANIO, ADAM",
+    Notes = "Updated via OpenPBTA subtyping from pathology_free_text_diagnosis"
+  )
+```
+
+Write to file!
+
+```{r}
+write_tsv(cranio_adam_df, output_file)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+

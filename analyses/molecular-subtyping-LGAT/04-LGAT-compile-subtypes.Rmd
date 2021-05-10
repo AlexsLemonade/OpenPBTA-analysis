@@ -297,6 +297,7 @@ all_subtype <- bind_rows(all_rna_subtype,
     # when molecular_subtype is not NA 
     TRUE ~ stringr::str_c("LGG, ", molecular_subtype))) %>%
   unique() %>%
+  dplyr::arrange(sample_id) %>%
   write_tsv(file.path(resultDir,"lgat_subtyping.tsv"))
 
 ```
