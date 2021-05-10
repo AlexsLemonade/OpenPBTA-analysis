@@ -5,6 +5,11 @@ heatmap_by_molecular_subtype <- function(deconv_output){
   broad_histology <- unique(deconv_output$broad_histology)
   plot_title <- paste0("Average immune scores normalized by rows: ", broad_histology)
   
+  # remove NA and to be classified
+  deconv_output <- deconv_output %>%
+    filter(!is.na(molecular_subtype),
+           !grepl("To be classified", molecular_subtype))
+  
   # create labels: count of samples per molecular subtype
   deconv_output <- deconv_output %>%
     group_by(broad_histology, molecular_subtype, cell_type) %>%
