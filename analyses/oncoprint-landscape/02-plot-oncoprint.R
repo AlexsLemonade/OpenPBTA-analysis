@@ -106,6 +106,12 @@ option_list <- list(
     type = "character",
     default = NULL,
     help = "oncoprint output png file name"
+  ),
+  optparse::make_option(
+    c("--include_introns"),
+    action = "store_true",
+    default = FALSE,
+    help = "logical statement on whether to include intronic variants in oncoprint plot"
   )
 )
 
@@ -132,6 +138,11 @@ maf_df <- data.table::fread(opt$maf_file,
                             stringsAsFactors = FALSE,
                             data.table = FALSE)
 
+if (!opt$include_introns) {
+  maf_df <- maf_df %>%
+    dplyr::filter(Variant_Classification != "Intron")
+}
+
 # Read in cnv file
 if (!is.null(opt$cnv_file)) {
   cnv_df <- readr::read_tsv(opt$cnv_file)
@@ -140,14 +151,6 @@ if (!is.null(opt$cnv_file)) {
 # Read in fusion file and join
 if (!is.null(opt$fusion_file)) {
   fusion_df <- readr::read_tsv(opt$fusion_file)
-}
-
-# Read in gene information from the list of genes of interest files
-if (!is.null(opt$goi_list)) {
-  # Read in using the `read_tsv()` function
-  goi_list <- readr::read_tsv(opt$goi_list) %>%
-    as.matrix()
-  
 }
 
 #### Set up oncoprint annotation objects --------------------------------------
@@ -246,7 +249,11 @@ maf_object <- prepare_maf_object(
 
 # We only need to subset the GOI list if there are more GOI than the top n argument
 # Subset `maf_object` for histology-specific goi list
-if (opt$top_n < length(goi_list)) {
+if (!is.null(opt$goi_list)){
+  
+  # Read in genes of interest information using the `read_tsv()` function
+  goi_list <- readr::read_tsv(opt$goi_list) %>%
+    as.matrix()
   
   maf_object <- subsetMaf(
     maf = maf_object,
@@ -259,11 +266,17 @@ if (opt$top_n < length(goi_list)) {
   gene_sum <- mafSummary(maf_object)$gene.summary
   
   # Sort to get top altered genes rather than mutated only genes
-  goi_ordered <-
-    gene_sum[order(gene_sum$AlteredSamples, decreasing = T),]
+  goi_list <- gene_sum %>%
+    dplyr::arrange(dplyr::desc(AlteredSamples)) %>%
+    # Filter to genes where multiple samples have an alteration
+    dplyr::filter(AlteredSamples > 1) %>%
+    dplyr::pull(Hugo_Symbol)
   
-  # Now let's filter to the `top_n` genes
-  goi_list <- goi_ordered[1:opt$top_n, Hugo_Symbol]
+  if (opt$top_n < length(goi_list)) {
+    # Now let's filter to the `top_n` genes
+    goi_list <- goi_list[1:opt$top_n]
+    
+  }
   
 }
 
