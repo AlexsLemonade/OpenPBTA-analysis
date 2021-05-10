@@ -151,7 +151,7 @@ lgat_gliomatosis_cerebri_df
 ```{r}
 lgat_pilocytic_df <- recode_integrated_diagnosis(histologies_df = compiled_subtypes_df,
                                    pathology_diagnosis = "Low-grade glioma/astrocytoma (WHO grade I/II)",
-                                   include_path_free_text_dx_terms = "jpa|juvenile astrocytoma|pilocytic|pilocystic|pilomyxoid",
+                                   include_path_free_text_dx_terms = "jpa|juvenile astrocytoma|juvenile astocytoma|pilocytic|pilocystic|pilocytioc|pilomyxoid|piloxymoid",
                                    exclude_path_free_text_dx_term = "fibrillary",
                                    old_integrated_diagnosis_term = "Low-grade glioma/astrocytoma",
                                    replace_integrated_diagnosis_term = "Pilocytic astrocytoma")
@@ -175,7 +175,7 @@ lgat_oligodendroglioma_df
 ```{r}
 lgat_pleomorphic_xanthoastrocytoma_df <- recode_integrated_diagnosis(histologies_df = compiled_subtypes_df,
                                    pathology_diagnosis = "Low-grade glioma/astrocytoma (WHO grade I/II)",
-                                   include_path_free_text_dx_terms = "pxa|pleomorphic xanthoastrocytoma",
+                                   include_path_free_text_dx_terms = "pleomorphic xanthroastrocytoma|pleomorphic xantoastrocytoma|pleomorphic xanthoastrocytoma|pxa",
                                    old_integrated_diagnosis_term = "Low-grade glioma/astrocytoma",
                                    replace_integrated_diagnosis_term = "Pleomorphic xanthoastrocytoma")
 
