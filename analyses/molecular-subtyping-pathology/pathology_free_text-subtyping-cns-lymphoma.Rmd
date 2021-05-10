@@ -68,7 +68,7 @@ Primary CNS lymphoma | NA | burkitt's lymphoma | Lymphoma | CNS lymphoma | CNS B
 
 
 ```{r}
-jxg_df <- histologies_df %>%
+lymphoma_df <- histologies_df %>%
   # We are only concerned with samples where the pathology_free_text_diagnosis
   # contains Primary CNS lymphoma
   dplyr::filter(pathology_diagnosis == "Primary CNS lymphoma") %>%
@@ -111,7 +111,7 @@ jxg_df <- histologies_df %>%
 Write to file!
 
 ```{r}
-jxg_df %>%
+lymphoma_df %>%
   arrange(Kids_First_Biospecimen_ID) %>%
   readr::write_tsv(output_file)
 ```
