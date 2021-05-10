@@ -262,6 +262,7 @@ if (opt$top_n < length(goi_list)) {
   goi_ordered <-
     gene_sum[order(gene_sum$AlteredSamples, decreasing = T),]
   
+  # Now let's filter to the `top_n` genes
   goi_list <- goi_ordered[1:opt$top_n, Hugo_Symbol]
   
 }
