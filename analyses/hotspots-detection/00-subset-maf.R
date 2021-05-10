@@ -42,8 +42,9 @@ maf_coltypes <- readRDS(file.path("input", "maf_coltypes.RDS"))
 # [here](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/)
 
 maf_df <- read_tsv(opt$maffile,
-  col_types = maf_coltypes
-)
+                   col_types = maf_coltypes
+) %>% select(names(maf_coltypes$cols))
+
 
 mskcc_cancer_hotspot_folder <- opt$cancer_hotspot_folder
 genomic_region_file <- opt$genomic_site_hotspot_file
