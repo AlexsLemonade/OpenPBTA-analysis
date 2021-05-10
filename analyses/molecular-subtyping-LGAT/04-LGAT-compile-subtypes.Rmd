@@ -36,32 +36,20 @@ resultDir <- file.path(
 ```
 
 ### Input
-```{r}
-# Look for git root folder
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
-# File from 00-LGAT-select-pathology-dx that is used for the pathology diagnosis
-# inclusion/exclusion criteria
-path_dx_list <- jsonlite::fromJSON(
-  file.path(subset_dir, 
-            "lgat_subtyping_path_dx_strings.json")
-)
+```{r}
+# These will only be samples that have gone through the inclusion/exclusion
+# criteria that are enforced in 01-subset-files-for-LGAT.Rmd
+lgat_metadata_file <- file.path("lgat-subset", "lgat_metadata.tsv")
+bsid_to_include <- read_tsv(lgat_metadata_file) %>%
+  pull(Kids_First_Biospecimen_ID)
 
 # clinical file
 lgat_manifest <- read_tsv(file.path(root_dir, 
                                     "data",
                                     "pbta-histologies-base.tsv"), 
                           guess_max = 10000) %>%
-  # use inclusion/exclusion criteria from pathology_diagnosis
-  dplyr::filter(str_detect(str_to_lower(pathology_diagnosis),  # Inclusion criteria
-                           paste(path_dx_list$include_path_dx, collapse = "|")),
-                # Exclusion criteria
-                str_detect(str_to_lower(pathology_diagnosis),
-                           paste(path_dx_list$exclude_path_dx, collapse = "|"),
-                           negate = TRUE),
-                # Tumors
-                sample_type == "Tumor",
-                composition == "Solid Tissue") %>%
+  filter(Kids_First_Biospecimen_ID %in% bsid_to_include) %>%
   # select columns for interest
   select(Kids_First_Biospecimen_ID,
          Kids_First_Participant_ID,
@@ -309,6 +297,7 @@ all_subtype <- bind_rows(all_rna_subtype,
     # when molecular_subtype is not NA 
     TRUE ~ stringr::str_c("LGG, ", molecular_subtype))) %>%
   unique() %>%
+  dplyr::arrange(sample_id) %>%
   write_tsv(file.path(resultDir,"lgat_subtyping.tsv"))
 
 ```
