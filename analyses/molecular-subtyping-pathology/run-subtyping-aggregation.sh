@@ -19,6 +19,9 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 # a single table
 Rscript -e "rmarkdown::render('01-compile-subtyping-results.Rmd', params=list(is_ci = ${IS_CI}), clean = TRUE)"
 
+# Recoding ACP samples
+Rscript -e "rmarkdown::render('pathology-subtyping-craniopharyngioma.Rmd', clean = TRUE)"
+
 # Run the second notebook to incorporate clinical review to the compiled subtyping
 Rscript -e "rmarkdown::render('02-incorporate-clinical-feedback.Rmd', clean = TRUE)"
 
