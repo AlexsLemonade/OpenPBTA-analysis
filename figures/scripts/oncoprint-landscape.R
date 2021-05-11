@@ -63,44 +63,44 @@ other_cns_png <- file.path(onco_dir, paste0(opt$lead_filename, "_other_goi_oncop
 
 #### Assemble multipanel figure ------------------------------------------------
 
-transcriptomic_figure <- multi_panel_figure(columns = 8,
+oncoprint_figure <- multi_panel_figure(columns = 8,
                                             rows = 2,
                                             width = 1200,
                                             height = 300)
 
-transcriptomic_figure <- fill_panel(transcriptomic_figure,
+oncoprint_figure <- fill_panel(oncoprint_figure,
                                     lgat_png,
                                     col = 2:3,
                                     row = 1,
                                     scaling = "stretch",
                                     label = "Low-grade astrocytic tumor")
 
-transcriptomic_figure <- fill_panel(transcriptomic_figure,
+oncoprint_figure <- fill_panel(oncoprint_figure,
                                     embryonal_png,
                                     col = 4:5,
                                     row = 1,
                                     scaling = "stretch",
                                     label = "Embryonal tumor")
 
-transcriptomic_figure <- fill_panel(transcriptomic_figure,
+oncoprint_figure <- fill_panel(oncoprint_figure,
                                     hgat_png,
                                     col = 6:7,
                                     row = 1,
                                     scaling = "stretch",
                                     label = "Diffuse astrocytic and oligodendroglial tumor")
 
-transcriptomic_figure <- fill_panel(transcriptomic_figure,
+oncoprint_figure <- fill_panel(oncoprint_figure,
                                     ependymal_png,
                                     col = 2:3,
                                     row = 2,
                                     scaling = "stretch",
                                     label = "Ependymal tumor")
 
-transcriptomic_figure <- fill_panel(transcriptomic_figure,
+oncoprint_figure <- fill_panel(oncoprint_figure,
                                     other_cns_png,
                                     col = 4:5,
                                     row = 2,
                                     scaling = "stretch",
                                     label = "Other CNS")
 
-save_multi_panel_figure(transcriptomic_figure, opt$png_name)
+save_multi_panel_figure(oncoprint_figure, opt$png_name)
