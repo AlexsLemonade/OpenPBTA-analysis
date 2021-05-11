@@ -29,9 +29,9 @@ output_dir <- opt$output_dir
 load(deconvout) 
 
 # add molecular subtype info
-deconv_output$broad_histology <- ifelse(test = is.na(deconv_output$molecular_subtype),
-                                        yes = deconv_output$broad_histology,
-                                        no = paste0(deconv_output$broad_histology, '-', deconv_output$molecular_subtype))
+# deconv_output$broad_histology <- ifelse(test = is.na(deconv_output$molecular_subtype),
+#                                         yes = deconv_output$broad_histology,
+#                                         no = paste0(deconv_output$broad_histology, '-', deconv_output$molecular_subtype))
 
 # deconvolution method
 deconv_method <- unique(deconv_output$method)
@@ -41,11 +41,11 @@ output_file <- file.path(output_dir, paste0("heatmap_", deconv_method, "_by_hist
 heatmap_by_histology(deconv_output = deconv_output, output_file = output_file)
 
 # load input file again to reset broad histology column
-load(deconvout) 
+# load(deconvout) 
 
 # create heatmap of average immune scores per cell type per molecular subtype per histology 
 output_file <- file.path(output_dir, paste0("heatmap_", deconv_method, "_by_molecular_subtype.pdf"))
-pdf(output_file, width = 15, height = 15)
+pdf(output_file, width = 15, height = 8)
 plyr::d_ply(deconv_output, 
             .variables = "broad_histology", 
             .fun = function(x) heatmap_by_molecular_subtype(deconv_output = x))
