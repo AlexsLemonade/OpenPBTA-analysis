@@ -17,6 +17,10 @@ jobs:
           command: ./scripts/run_in_ci.sh ls data/testing
 
       - run:
+          name: Check python packages
+          command: ./scripts/run_in_ci.sh bash scripts/check-python.sh
+
+      - run:
           name: High level histology grouping for plot labels
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('figures/mapping-histology-labels.Rmd', clean = TRUE)"
 
@@ -278,6 +282,10 @@ jobs:
       - run:
           name: Run survival plots
           command: ./scripts/run_in_ci.sh bash analyses/survival-analysis/run_survival.sh
+
+      - run:
+         name: Scavenge back hotspots
+         command: ./scripts/run_in_ci.sh bash analyses/hotspots-detection/run_overlaps_hotspot.sh
 
   deploy:
     machine:

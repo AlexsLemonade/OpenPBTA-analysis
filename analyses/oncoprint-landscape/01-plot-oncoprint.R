@@ -90,6 +90,12 @@ option_list <- list(
             genes to include on oncoprint"
   ),
   optparse::make_option(
+    c("-b", "--broad_histology"),
+    type = "character",
+    default = NULL,
+    help = "optional name of `broad_histology` value to plot associated oncoprint"
+  ),
+  optparse::make_option(
     c("-p", "--png_name"),
     type = "character",
     default = NULL,
@@ -138,7 +144,10 @@ maf_df <- data.table::fread(opt$maf_file,
 
 # Read in cnv file
 if (!is.null(opt$cnv_file)) {
-  cnv_df <- readr::read_tsv(opt$cnv_file)
+  cnv_df <- readr::read_tsv(opt$cnv_file) %>%
+    dplyr::mutate(Variant_Classification = dplyr::case_when(Variant_Classification == "loss" ~ "Del",
+                                                            Variant_Classification %in% c("gain", "amplification") ~ "Amp",
+                                                            TRUE ~ as.character(Variant_Classification)))
 }
 
 # Read in fusion file and join
@@ -156,18 +165,13 @@ if (!is.null(opt$goi_list)) {
   goi_list <- unique(unlist(goi_list))
 }
 
-# Read in recurrent focal CNVs file
-if (!is.null(opt$focal_file)) {
-  focal_df <- readr::read_tsv(file.path(opt$focal_file))
-}
-
 #### Set up oncoprint annotation objects --------------------------------------
 # Read in histology standard color palette for project
 histology_label_mapping <- readr::read_tsv(
   file.path(root_dir,
             "figures",
             "palettes", 
-            "histology_label_color_table.tsv")) %>% 
+            "histology_label_color_table.tsv")) %>%
   # Select just the columns we will need for plotting
   dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes)
 
@@ -176,6 +180,46 @@ metadata <- metadata %>%
   dplyr::inner_join(histology_label_mapping, by = "Kids_First_Biospecimen_ID") %>% 
   # Reorder display_group based on display_order
   dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
+
+# Filter to the metadata associated with the broad histology value, if provided
+if (!is.null(opt$broad_histology)) {
+  
+  if (!opt$broad_histology == "Other CNS") {
+    metadata <- metadata %>%
+      dplyr::filter(broad_histology == opt$broad_histology)
+  } else {
+    metadata <- metadata %>%
+      dplyr::filter(
+        broad_histology %in% c(
+          "Tumors of sellar region",
+          "Neuronal and mixed neuronal-glial tumor",
+          "Tumor of cranial and paraspinal nerves",
+          "Meningioma",
+          "Mesenchymal non-meningothelial tumor",
+          "Germ cell tumor",
+          "Choroid plexus tumor",
+          "Histiocytic tumor",
+          "Tumor of pineal region",
+          "Metastatic tumors",
+          "Other astrocytic tumor",
+          "Lymphoma",
+          "Melanocytic tumor",
+          "Other tumor"
+        )
+      )
+  }
+  
+  # Now filter the remaining data files
+  maf_df <- maf_df %>%
+    dplyr::filter(Tumor_Sample_Barcode %in% metadata$Tumor_Sample_Barcode)
+  
+  cnv_df <- cnv_df %>%
+    dplyr::filter(Tumor_Sample_Barcode %in% metadata$Tumor_Sample_Barcode)
+  
+  fusion_df <- fusion_df %>%
+    dplyr::filter(Tumor_Sample_Barcode %in% metadata$Tumor_Sample_Barcode)
+  
+}
 
 # Read in the oncoprint color palette
 oncoprint_col_palette <- readr::read_tsv(file.path(
@@ -215,7 +259,7 @@ maf_object <- prepare_maf_object(
 # Given a maf object, plot an oncoprint of the variants in the
 # dataset and save as a png file.
 png(
-  file.path(plots_dir, opt$png_name),
+  file.path(plots_dir, tolower(gsub(" ", "-", opt$png_name))),
   width = 65,
   height = 30,
   units = "cm",

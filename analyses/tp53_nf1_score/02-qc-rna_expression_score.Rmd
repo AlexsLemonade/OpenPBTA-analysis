@@ -2,7 +2,11 @@
 title: "QC correlation of classifier score with RNA-Seq expression"
 author: "K S Gaonkar (D3B)"
 output: html_notebook
-
+params:
+  base_run:
+    label: "1/0 to run with base histology"
+    value: 0
+    input: integer
 ---
     
 In this notebook we will find correlation between RNA-Seq and classifier score
@@ -20,7 +24,11 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 results_dir <- "results"
 
-clinical <- read_tsv(file.path(data_dir,"pbta-histologies.tsv"))
+if ( params$base_run ==0 ){
+  clinical<-read.delim(file.path(data_dir,"pbta-histologies.tsv"), stringsAsFactors = FALSE)
+} else{
+  clinical<-read.delim(file.path(data_dir,"pbta-histologies-base.tsv"), stringsAsFactors = FALSE)  
+}
 ```
 
 ### Classifier scores
