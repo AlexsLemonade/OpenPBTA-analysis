@@ -22,6 +22,7 @@
 #   --independent_specimens ../../data/independent-specimens.wgswxs.primary.tsv
 
 library(dplyr)
+library(stringr)
 
 #### Command line options ------------------------------------------------------
 
@@ -185,70 +186,78 @@ readr::write_tsv(maf_df, maf_output)
 
 message("Preparing fusion file...")
 
-## To handle reciprocals
-# Sort fusions first in alphabetical order
-fus_sort_reciprocals <- fusion_df %>%
-  tibble::rowid_to_column("Fusion_ID") %>%
-  group_by(Sample, FusionName, Fusion_ID) %>%
-  # To handle reciprocal instances, sort fusions in alphabetical order
-  mutate(SortedFusionName = paste(sort((unlist(
-    strsplit(FusionName, "--")
-  ))), collapse = "--")) %>%
-  ungroup()
+# We'll handle fusions where reciprocal fusions exist (e.g., 
+# reciprocal_exists == TRUE) separately from other fusions
+fusion_reciprocal_df <- fusion_df %>%
+  # Reciprocal fusions only
+  filter(reciprocal_exists) %>%
+  # BSID + Gene1--Gene2
+  select(Sample, FusionName) %>%
+  # Because we're only looking at presence or absence here, we can filter to 
+  # distinct identifier-fusion pairs
+  distinct() %>%
+  group_by(Sample, FusionName) %>%
+  # Put genes in the fusions in alphabetical order to collapse
+  mutate(SortedFusionName = str_c(
+    sort(str_split(FusionName,
+                   "--",
+                   simplify = TRUE),
+    ), 
+    collapse = "--")
+  ) %>%
+  ungroup() %>%
+  select(Sample,
+         FusionName = SortedFusionName) %>%
+  # When fusions are in alphabetical order, this ensures each reciprocal
+  # fusion is only counted once
+  distinct()
 
-# Let's tidy our sorted data frame for future use when labeling single fusions
-fus_sep_reciprocals <- fus_sort_reciprocals %>%
+# No need to put fusions where no reciprocal exists in alphabetical order,
+# so we handle these separately
+fusion_no_reciprocal_df <- fusion_df %>%
+  filter(!reciprocal_exists) %>%
+  select(Sample, FusionName) %>%
+  # But we can remove duplicates to avoid them being counted as multihit
+  distinct()
+
+# Bind reciprocal and no reciprocal together
+fusion_filtered_df <- bind_rows(fusion_reciprocal_df, fusion_no_reciprocal_df)
+rm(fusion_reciprocal_df, fusion_no_reciprocal_df)
+
+# Separate fusion gene partners
+fus_sep <- fusion_filtered_df %>%
   # Separate the 5' and 3' genes
-  tidyr::separate(SortedFusionName, c("Gene1", "Gene2"), sep = "--") %>%
-  # We already have `Fusion_ID` numbers to mark unique fusions so we can
-  # select this column along with the others we will need to help us melt below
+  tidyr::separate(FusionName, c("Gene1", "Gene2"), sep = "--") %>%
+  # Use row numbers to mark unique fusions - this will help us when
+  # we melt and remove selfie fusions below
+  tibble::rowid_to_column("Fusion_ID") %>%
   select(Fusion_ID, Sample, Gene1, Gene2) %>%
   reshape2::melt(id.vars = c("Fusion_ID", "Sample"),
                  variable.name = "Partner",
                  value.name = "Hugo_Symbol") %>%
   arrange(Fusion_ID)
 
-##  To handle multi-hit fusions
-# Now let's tidy our filtered data frame and separate fusion gene partners
-fus_sort_multi <- fusion_df %>%
-  group_by(Sample) %>%
-  # Isolate the rows that contain duplicated gene partners
-  filter(any(duplicated(stringr::word(FusionName)))) %>%
-  select(Sample, FusionName) %>%
-  # To handle redundant instances
-  distinct()
-  
-fus_sep_multi <- fus_sort_multi %>% 
-  # Separate the 5' and 3' genes
-  tidyr::separate(FusionName, c("Gene1", "Gene2"), sep = "--") %>%
-  # Select the columns we will need to help us melt below
-  select(Sample, Gene1, Gene2) %>%
-  reshape2::melt(id.vars = c("Sample"),
-                 variable.name = "Partner",
-                 value.name = "Hugo_Symbol") %>%
-  arrange(Sample)
-
-multihit_fusions <- fus_sep_multi %>%
-  # For looking at true multi-hit fusions, we want to isolate the fusions that
-  # include genes that fuse to multiple genes
-  group_by(Sample, Hugo_Symbol, Partner) %>%
-  mutate(Variant_Classification = dplyr::case_when(any(duplicated(Hugo_Symbol)) ~ "Multi_Hit_Fusion", 
-                                                   TRUE ~ "Fusion")) %>%
-  ungroup() %>%
-  # Now we can remove the column that we no longer need and do some filtering
-  select(-"Partner") %>%
+multihit_fusions <- fus_sep %>%
+  # For looking at multi-hit fusions, we want to remove selfie fusions
+  # If we drop the 5', 3' information in Partner, we can use distinct
+  # to remove the selfie fusions because Fusion_ID marks what fusion
+  # it came from
+  select(-Partner) %>%
   distinct() %>%
-  dplyr::filter(Variant_Classification == "Multi_Hit_Fusion")
+  # Now we want to count how many times a gene is fused within a sample
+  # Anything with more than one count is considered multi-hit
+  group_by(Sample, Hugo_Symbol) %>%
+  count() %>%
+  filter(n > 1) %>%
+  select(-n) %>%
+  mutate(Variant_Classification = "Multi_Hit_Fusion")
 
 # Filter out multi-hit fusions from the other fusions that we will
 # label based on whether they are the 5' or 3' gene
-single_fusion <- fus_sep_reciprocals %>%
+single_fusion <- fus_sep %>%
   anti_join(multihit_fusions,
             by = c("Sample", "Hugo_Symbol")) %>%
-  group_by(Sample, Hugo_Symbol, Partner) %>%
-  distinct() %>%
-  ungroup()%>%
-  select(-c("Fusion_ID", "Partner")) %>%
+  select(Sample, Hugo_Symbol) %>%
   distinct() %>%
   mutate(Variant_Classification = "Fusion")
 
