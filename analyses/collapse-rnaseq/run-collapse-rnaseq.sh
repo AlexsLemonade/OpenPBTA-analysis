@@ -19,18 +19,45 @@ cd "$script_directory" || exit
 # create results directory if it doesn't already exist
 mkdir -p results
 
+# Usage: project acronym to use as prefix for input out files 
+usage(){ echo "Usage: $0 [-h] [-p <project acronyn>]" 1>&2; exit 1; }
+
+while getopts ":hp:" opt; do
+    case "${opt}" in
+	h)
+	    usage
+	    ;;
+	p)
+	    project_acronym=$OPTARG
+	    ;;
+	:)
+	    printf "missing argument for -%s\n" "$OPTARG" 1>&2
+	    usage
+	    ;;
+	\?)
+	    printf "illegal option: -%s\n" "$OPTARG" 1>&2
+	    usage
+	    ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [ -z "${project_acronym}" ]; then
+    usage
+fi
+
 # generate collapsed matrices for poly-A and stranded datasets
 #libraryStrategies=("polya" "stranded")
 libraryStrategies=("stranded")
 for strategy in ${libraryStrategies[@]}; do
 
   Rscript --vanilla 01-summarize_matrices.R \
-    -i ../../data/kfnbl-gene-expression-rsem-fpkm.${strategy}.rds \
+    -i ../../data/${project_acronym}-gene-expression-rsem-fpkm.${strategy}.rds \
     -g ../../data/gencode.v27.primary_assembly.annotation.gtf.gz \
-    -m results/kfnbl-gene-expression-rsem-fpkm-collapsed.${strategy}.rds \
-    -t results/kfnbl-gene-expression-rsem-fpkm-collapsed_table.${strategy}.rds
+    -m results/${project_acronym}-gene-expression-rsem-fpkm-collapsed.${strategy}.rds \
+    -t results/k${project_acronym}fnbl-gene-expression-rsem-fpkm-collapsed_table.${strategy}.rds
 
 done
 
 # run the notebook for analysis of dropped genes
-#Rscript -e "rmarkdown::render(input = '02-analyze-drops.Rmd', params = list(polya.annot.table = 'results/kfnbl-gene-expression-rsem-fpkm-collapsed_table.polya.rds', stranded.annot.table = 'results/kfnbl-gene-expression-rsem-fpkm-collapsed_table.stranded.rds'), clean = TRUE)"
+#Rscript -e "rmarkdown::render(input = '02-analyze-drops.Rmd', params = list(polya.annot.table = 'results/${project_acronym}-gene-expression-rsem-fpkm-collapsed_table.polya.rds', stranded.annot.table = 'results/${project_acronym}-gene-expression-rsem-fpkm-collapsed_table.stranded.rds'), clean = TRUE)"
