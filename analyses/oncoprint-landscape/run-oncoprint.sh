@@ -23,8 +23,8 @@ maf_consensus=../../data/pbta-snv-consensus-mutation.maf.tsv.gz
 fusion_file=../../data/pbta-fusion-putative-oncogenic.tsv
 histologies_file=../../data/pbta-histologies.tsv
 intermediate_directory=../../scratch/oncoprint_files
-primary_filename="all_participants_primary_only"
-primaryplus_filename="all_participants_primary-plus"
+primary_filename="primary_only"
+primaryplus_filename="primary-plus"
 focal_directory=../focal-cn-file-preparation/results
 focal_cnv_file=${focal_directory}/consensus_seg_most_focal_cn_status.tsv.gz
 
