@@ -35,7 +35,7 @@ Rscript -e "rmarkdown::render('analyses/molecular-subtyping-MB/00-mb-select-path
 ```
 
 This Rmd checks the alignment of `Medulloblastoma` labels across fields:  `pathology_diagnosis`, `integrated_diagnosis`, and `short_histology`.
-It is tied to a specific release (`release-v17-20200908`).
+It is tied to a specific release (`release-v18-20201123`).
 This creates a terms JSON which is used in the other scripts for subsetting.
 
 3. Output:
@@ -111,13 +111,13 @@ The .rds object contains a list of dataframes with outputs corresponding to the 
 input/subset-mb-clinical.tsv
 
 # expected output from pathology reports
-input/expected_class_v17.rds
+input/openPBTA-mb-pathology-subtypes.rds
 
 # observed output from 01-classify-mb.R
 results/mb-classified.rds
 ```
 
-TODO: `input/expected_class_v17.rds` doesn't have much information surrounding it, but [this is issue has been tracked](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/746) and this README can be updated once that has been addressed.
+TODO: `input/openPBTA-mb-pathology-subtypes.rds` doesn't have much information surrounding it, but [this is issue has been tracked](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/746) and this README can be updated once that has been addressed.
 
 2. Function:
 
@@ -125,17 +125,17 @@ This notebook summarizes the performance of the two classifiers on batch correct
 
 The observed subtypes obtained from each classifier are compared to the expected subtypes in the pathology report in order to determine the classifier accuracy. % Accuracy is calculated by matching observed and expected subtypes only where expected subtype information is available. In case of ambiguous subtypes, a match is determined only if the observed subtype matches with any one of the expected subtypes.
 
-The pathology report has subtype information on 32/122 (26.2%) samples. Following is the breakdown of pathology identified subtypes:
+The pathology report has subtype information on 43/122 (35.2%) samples. Following is the breakdown of pathology identified subtypes:
 
 | pathology_subtype | freq |
 |-------------------|------|
-| Group 3 or 4      | 11   |
-| Group 4           | 2    |
-| non-WNT           | 1    |
-| SHH               | 12   |
-| WNT               | 6    |
+| Group 3 or 4      | 14   |
+| Group 4           | 5    |
+| non-WNT           | 9    |
+| SHH               | 10   |
+| WNT               | 5    |
 
-For each input expression matrix (i.e. uncorrected and batch-corrected), the molecular subtype is determined by taking a consensus of the two classifiers. If the classifiers do not agree, the sample is treated as unclassified.
+For each input expression matrix (i.e. uncorrected and batch-corrected), the molecular subtype is determined by taking a consensus of the two classifiers. For cases in which the classifiers do not agree, non-ambiguous subtypes from `pathology_subtype` field is taken and the remaining samples are treated as unclassified.
 
 For each sample_id with multiple RNA samples, the following logic is implemented:
 - IF there are two RNA specimens from the same event (`sample_id`) with the same `tumor_descriptor`, and
@@ -143,14 +143,7 @@ For each sample_id with multiple RNA samples, the following logic is implemented
 - IF the RNA specimen with mismatched classifications includes a match to the subtype of the consensus of the other RNA specimen,
 - THEN propagate the subtype to the second RNA specimen.
 
-For both the consensus corrected output and consensus uncorrected output, 25/32 match with the reported subtype so the % accuracy is the same i.e. 78.125%. Between the two consensus outputs, there is an overlap of 24/25 matched subtypes. The following samples are mismatched between the two consensus outputs:
-
-BS_HB03GSHF is correctly predicted by consensus batch-corrected output but not by uncorrected output:
-
-| Consensus Output | Kids_First_Biospecimen_ID | pathology_subtype | MM2S_best_fit | medulloPackage_best_fit | molecular_subtype | match |
-|------------------|---------------------------|-------------------|---------------|-------------------------|-------------------|-------|
-| Corrected        | BS_HB03GSHF               | WNT               | WNT           | WNT                     | WNT               | TRUE  |
-| Uncorrected      | BS_HB03GSHF               | WNT               | SHH           | WNT                     | NA                | NA    |
+For the consensus corrected output, 37/43 (86.05%) and for the consensus uncorrected output, 38/43 (88.37%) match with the reported subtype. The following table shows the difference between the two outputs:
 
 BS_V96WVE3Z is correctly predicted by consensus uncorrected output but not by batch-corrected output:
 
