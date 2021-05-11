@@ -63,7 +63,7 @@ else
   then
     FLOOR=2
     CEIL=5
-    ITER=1000
+    ITER=3000
     plot_dir=${extraction_plot_dir}
     result_dir=${extraction_result_dir}
   fi  
