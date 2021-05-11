@@ -5,7 +5,7 @@ output:
     toc: TRUE
     toc_float: TRUE
 author: Candace Savonen for ALSF CCDL
-date: 2020
+date: 2021
 ---
 
 ## Background
@@ -15,7 +15,7 @@ Thus, molecular subtyping modules need to be upstream of `short_histology` and u
 
 This change for this module is tracked in [#756](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/756).
  
-_As of v17 release, this is pretty straightforward for Medulloblastoma samples:_  
+_As of v18 release, this is pretty straightforward for Medulloblastoma samples:_  
 
 - `short_histology`, `integrated_diagnosis` and `pathology_diagnosis` are fairly in agreement as far as which samples are `Medulloblastoma`  
 - Most but not all of these samples have `medulloblastoma` some place in `pathology_free_text_diagnosis`, but a couple have `PNET`.   
@@ -31,7 +31,7 @@ library(tidyverse)
 This is tied to a specific release. 
 
 ```{r}
-data_dir <- file.path("..", "..", "data", "release-v17-20200908")
+data_dir <- file.path("..", "..", "data", "release-v18-20201123")
 histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
 ```
 
