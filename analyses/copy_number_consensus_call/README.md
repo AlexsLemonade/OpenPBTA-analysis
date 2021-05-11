@@ -69,7 +69,7 @@ If no CNVkit variant was included, the value for this column is NA.
 The `copy.num` column is the weighted median of Control-FREEC segment values where they exist, or CNVkit values in the absence of Control-FREEC data.
 Because some software (notably GISTIC) requires all samples to have the same regions called, the copy number variants from `cnv_consensus.tsv` are supplementented with "neutral" segments where no call was made.
 These include all non-variant regions present in `ref/cnv_callable.bed`
-The neutral regions are assigned copy.num 2, except on chrX and chrY, where the copy number is left NA.
+The neutral regions are assigned copy.num NA.
 
 ## Example Output File
 
