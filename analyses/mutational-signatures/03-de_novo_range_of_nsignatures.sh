@@ -69,7 +69,7 @@ else
   fi  
 
   # Run sigfit with params
-  for model in multinomial poisson; do
+  for model in poisson multinomial; do
     for seed in {1..5}; do
        # De novo signatures extraction
        Rscript --vanilla \
@@ -82,7 +82,6 @@ else
          --seed ${seed} \
          --plot_output "${plot_dir}/seed_${seed}_model_${model}.pdf" \
          --output_file "${result_dir}/seed_${seed}_model_${model}.RDS"   
-        exit
     done
   done
 fi  
