@@ -146,7 +146,7 @@ maf_df <- data.table::fread(opt$maf_file,
 if (!is.null(opt$cnv_file)) {
   cnv_df <- readr::read_tsv(opt$cnv_file) %>%
     dplyr::mutate(Variant_Classification = dplyr::case_when(Variant_Classification == "loss" ~ "Del",
-                                                            Variant_Classification == "gain" ~ "Amp",
+                                                            Variant_Classification %in% c("gain", "amplification") ~ "Amp",
                                                             TRUE ~ as.character(Variant_Classification)))
 }
 
