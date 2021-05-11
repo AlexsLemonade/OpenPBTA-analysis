@@ -20,18 +20,18 @@ scratch_dir=../../scratch/mutational-signatures
 
 # For initial GOF analysis to figure out how many k
 gof_plot_dir=plots/denovo/gof
-gof_results_dir=${scratch_dir}/gof
+gof_result_dir=${scratch_dir}/gof
 
 # For extraction once a limited range of k is assessed with GOF
 extraction_plot_dir=plots/denovo/extraction
-extraction_results_dir=${scratch_dir}/extraction
+extraction_result_dir=${scratch_dir}/extraction
 
 
 # Directories to hold all plots and results
 mkdir -p $gof_plot_dir
-mkdir -p $gof_results_dir
+mkdir -p $gof_result_dir
 mkdir -p $extraction_plot_dir
-mkdir -p $extraction_results_dir
+mkdir -p $extraction_result_dir
 
 # The MAF file we'll use is going to WGS samples only
 maf_file=${scratch_dir}/pbta-snv-consensus-wgs.tsv.gz
@@ -55,15 +55,15 @@ else
     FLOOR=2
     CEIL=8
     ITER=1000
-    plot_dir=${denovo_plot_dir}
-    result_dir=${denovo_result_dir}
+    plot_dir=${gof_plot_dir}
+    result_dir=${gof_result_dir}
   fi
   # Extraction
   if [[ $ANALYSIS -eq "1" ]] 
   then
     FLOOR=2
     CEIL=5
-    ITER=3000
+    ITER=1000
     plot_dir=${extraction_plot_dir}
     result_dir=${extraction_result_dir}
   fi  
@@ -81,8 +81,8 @@ else
          --model ${model} \
          --seed ${seed} \
          --plot_output "${plot_dir}/seed_${seed}_model_${model}.pdf" \
-         --output_file "${results_dir}/seed_${seed}_model_${model}.RDS"   
-
+         --output_file "${result_dir}/seed_${seed}_model_${model}.RDS"   
+        exit
     done
   done
 fi  
