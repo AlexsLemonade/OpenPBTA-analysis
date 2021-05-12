@@ -199,7 +199,12 @@ Hotspot sites called by just 1 caller seem to have majority low read support and
 Lets look at these calls that are unique to 1 caller.
 
 ```{r}
+combined_maf_hotspots_filt %>%
+  filter(caller_count==1)
+```
 
+```{r}
+# gather distribution of callers in the unique_1caller_hotspots 
 unique_1caller_hotspots <- combined_maf_hotspots_filt %>%
   filter(caller_count==1) %>%
   group_by(caller) %>%
