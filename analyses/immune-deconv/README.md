@@ -53,6 +53,7 @@ This script creates heatmaps from predicted immune scores.
 3. Output
 
 * `plots/heatmap_xCell_by_histology.pdf`: heatmap of average immune scores per cell type per histology stratified by brain and non-brain tumors.
+* `plots/heatmap_xCell_by_molecular_subtype.pdf`: heatmap of average immune scores per cell type per molecular subtype per histology.
 
 ### Running the analysis
 
