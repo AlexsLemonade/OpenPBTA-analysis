@@ -66,13 +66,11 @@ combined_maf_hotspots_filt <- combined_maf_hotspots_filt %>%
 # hotspot mutation maf file output
 output_file <- file.path(results_dir,"pbta-snv-scavenged-hotspots.maf.tsv.gz")
 
-
 ```
 
 ## Gather consensus maf file for hotspots
 
 The main tasks are:
- - filter `combined_maf_hotspots_filt` to calls that are not found in consensus calls
  - gather read supports for REF and ALT from multiple callers adding values from any 1 caller in the order strelka2 > mutect2 > lancet > vardict
  
 ### Filter hotspots not found in consensus calls
@@ -92,6 +90,16 @@ join_cols <- c("Hugo_Symbol",
                "Tumor_Seq_Allele1",
                "Tumor_Seq_Allele2",
                "Tumor_Sample_Barcode")
+
+
+caller_counts <- combined_maf_hotspots_filt %>%
+  select(join_cols,caller) %>%
+  unique() %>%
+  group_by_at(join_cols) %>%
+  summarise(caller_count = n(),
+            caller = toString(unique(caller))
+  ) %>%
+  ungroup()
 
 ```
 
@@ -176,20 +184,9 @@ We will try to identify the read support for each variant type from each callers
 ```{r}
 
 ## adding in caller info to plot caller information
-# gather and add caller info
-caller_counts <- combined_maf_hotspots_filt %>%
-  select(join_cols,caller) %>%
-  unique() %>%
-  group_by_at(join_cols) %>%
-  summarise(caller_count = n(),
-            caller = paste(unique(caller), collapse=';'))%>%
-  ungroup()
-
 
 combined_maf_hotspots_filt <- combined_maf_hotspots_filt %>%
   left_join(caller_counts,by=join_cols) 
-
-saveRDS(combined_maf_hotspots_filt,file.path(root_dir,"scratch","combined_hotspots.RDS"))
 
 ggplot(combined_maf_hotspots_filt[,c("caller","caller_count","t_alt_count")],
        aes(x=as.factor(caller_count),y=t_alt_count))+
@@ -224,6 +221,8 @@ be consistent
 ```{r}
 
 combined_maf_hotspots_filt %>%
+  # remove caller unique columns
+  select(-starts_with("strelka2_"),-starts_with("mutect2_"),-starts_with("lancet_"),-starts_with("vardict_")) %>%	
   as.data.frame() %>%
   # Write to a TSV file, change NAs back to "."
   readr::write_tsv(gzfile(output_file), na = ".")
