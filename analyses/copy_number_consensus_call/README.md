@@ -66,10 +66,10 @@ Since there are 3 callers, there were 3 comparisons: `manta-cnvkit`, `manta-free
 14) The `results/cnv_consensus.tsv` is translated into a `results/pbta-cnv-consensus.seg` file in the same format as `pbta-cnv-cnvkit.seg.gz`, including all samples where at least two callers passed quality filtering.
 When a consensus segment is derived from multiple source segments, we take the mean of the CNVkit `seg.mean` values from the source segments, weighted by segment length.
 If no CNVkit variant was included, the value for this column is NA.
-The `copy.num` column is the weighted median of CNVkit segment values where they exist, or Control-FREEC values in the absence of CNVkit data.
+The `copy.num` column is the weighted median of Control-FREEC segment values where they exist, or CNVkit values in the absence of Control-FREEC data.
 Because some software (notably GISTIC) requires all samples to have the same regions called, the copy number variants from `cnv_consensus.tsv` are supplementented with "neutral" segments where no call was made.
 These include all non-variant regions present in `ref/cnv_callable.bed`
-The neutral regions are assigned copy.num 2, except on chrX and chrY, where the copy number is left NA.
+The neutral regions are assigned NA.
 
 ## Example Output File
 
