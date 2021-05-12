@@ -47,36 +47,32 @@ maf_coltypes <- readRDS(file.path("input", "maf_coltypes.RDS"))
 # [here](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/)
 
 # combined hotspot calls
-combined_hotspot_calls <- list.files(path = scratch_dir,pattern = ".RDS",full.names = TRUE) %>%
+combined_maf_hotspots_filt <- list.files(path = scratch_dir,pattern = ".RDS",full.names = TRUE) %>%
   map_dfr(readRDS) 
 
 # MNVs are split into SNVs
-combined_hotspot_calls_mnv_split <- split_mnv(combined_hotspot_calls) %>%
+combined_maf_hotspots_filt_mnv_split <- split_mnv(combined_maf_hotspots_filt) %>%
   # removing mvv_id and mnv_pos column
   # since they uniquely numbered per caller variant calls
-  # in the merged combined_hotspot_calls
+  # in the merged combined_maf_hotspots_filt
   select(-mnv_id, -mnv_pos)
 
-combined_hotspot_calls <- combined_hotspot_calls %>%
+combined_maf_hotspots_filt <- combined_maf_hotspots_filt %>%
   # removing MNVs here
   filter(!Variant_Type %in% c("DNP", "TNP", "ONP")) %>%
   # adding the MNV split SNV alleles here 
-  union_all(combined_hotspot_calls_mnv_split)
+  union_all(combined_maf_hotspots_filt_mnv_split)
 
 # hotspot mutation maf file output
 output_file <- file.path(results_dir,"pbta-snv-scavenged-hotspots.maf.tsv.gz")
 
-
-# PBTA consensus maf 
-consensus_maf_file <- read_tsv(file.path(data_dir,"pbta-snv-consensus-mutation.maf.tsv.gz"),
-                                col_types = maf_coltypes)
 
 ```
 
 ## Gather consensus maf file for hotspots
 
 The main tasks are:
- - filter `combined_hotspot_calls` to calls that are not found in consensus calls
+ - filter `combined_maf_hotspots_filt` to calls that are not found in consensus calls
  - gather read supports for REF and ALT from multiple callers adding values from any 1 caller in the order strelka2 > mutect2 > lancet > vardict
  
 ### Filter hotspots not found in consensus calls
@@ -96,13 +92,6 @@ join_cols <- c("Hugo_Symbol",
                "Tumor_Seq_Allele1",
                "Tumor_Seq_Allele2",
                "Tumor_Sample_Barcode")
-
-# Filter combined_hotspot_calls to calls that are only
-# found from the hotspot scavenging analysis
-combined_maf_hotspots_filt <- combined_hotspot_calls %>%
-  anti_join(consensus_maf_file,
-          by = join_cols) %>%
-  unique()
 
 # gather and add caller info
 caller_counts <- combined_maf_hotspots_filt %>%
@@ -189,7 +178,6 @@ combined_maf_hotspots_filt <- combined_maf_hotspots_filt %>%
   # Filter with vaf_filter parm in this notebook
   dplyr::filter(VAF >= params$vaf_filter) 
 
-
 ```
 
 ## Identify read support for variant type per caller
@@ -200,6 +188,8 @@ We will try to identify the read support for each variant type from each callers
 ## adding in caller info to plot caller information
 combined_maf_hotspots_filt <- combined_maf_hotspots_filt %>%
   left_join(caller_counts,by=join_cols) 
+
+saveRDS(combined_maf_hotspots_filt,file.path(root_dir,"scratch","combined_hotspots.RDS"))
 
 ggplot(combined_maf_hotspots_filt[,c("caller","caller_count","t_alt_count")],
        aes(x=as.factor(caller_count),y=t_alt_count))+
@@ -215,11 +205,12 @@ Lets look at these calls that are unique to 1 caller.
 ```{r}
 
 unique_1caller_hotspots <- combined_maf_hotspots_filt %>%
-  filter(caller_count==1)
-
+  filter(caller_count==1) %>%
+  group_by(caller) %>%
+  tally()
+  
 unique_1caller_hotspots
 ```
-There are 79 SNV or indel calls are only called by 1 caller.
 
 Vardict calls a lot of variants summarized [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/README.md)
 In snv-callers consensus calling method we didn't consider vardict calls so we will need to filter out vardict only calls from the hotspots to
@@ -228,17 +219,14 @@ be consistent
  combined_maf_hotspots_filt <- combined_maf_hotspots_filt %>% filter(caller !="vardict")
 ```
 
-## Merge the combined hotspots with consensus 
+## Save hotspots 
 
-We will now create a maf file with hotspots called uniquely from `combined_hotspot_calls` to `consensus_maf_file`
 ```{r}
 
 combined_maf_hotspots_filt %>%
-  # only keep columns in consensus file
-  select(colnames(consensus_maf_file)) %>%
   as.data.frame() %>%
   # Write to a TSV file, change NAs back to "."
-  readr::write_tsv(output_file, na = ".")
+  readr::write_tsv(gzfile(output_file), na = ".")
 
 
 
