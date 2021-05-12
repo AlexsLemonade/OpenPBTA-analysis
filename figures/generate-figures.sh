@@ -77,8 +77,17 @@ fi
 # Run the `oncoprint-landscape` module shell script
 bash ${analyses_dir}/oncoprint-landscape/run-oncoprint.sh
 
-# Copy the primary plus samples oncoprint figure to final directory
-cp ${analyses_dir}/oncoprint-landscape/plots/all_participants_primary-plus_goi_oncoprint.png pngs/fig3-oncoprint-landscape.png
+# Will create two plots - primary only and "primary plus" samples
+filenames=(primary_only primary-plus)
+
+for filename in "${filenames[@]}"; do
+
+  ## Run the `oncoprint-landscape` figure assembly script
+  Rscript --vanilla scripts/oncoprint-landscape.R \
+    --lead_filename ${filename} \
+    --png_name pngs/${filename}_oncoprint_landscape.png
+
+done
 
 ## Copy number status heatmap
 
