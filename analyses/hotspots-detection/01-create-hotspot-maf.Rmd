@@ -225,7 +225,7 @@ combined_maf_hotspots_filt %>%
   select(-starts_with("strelka2_"),-starts_with("mutect2_"),-starts_with("lancet_"),-starts_with("vardict_")) %>%	
   as.data.frame() %>%
   # Write to a TSV file, change NAs back to "."
-  readr::write_tsv(gzfile(output_file), na = ".")
+  readr::write_tsv(output_file, na = ".")
 
 
 
