@@ -97,8 +97,7 @@ caller_counts <- combined_maf_hotspots_filt %>%
   unique() %>%
   group_by_at(join_cols) %>%
   summarise(caller_count = n(),
-            caller = toString(unique(caller))
-  ) %>%
+            caller = paste(unique(caller), collapse=';')) %>%
   ungroup()
 
 ```
