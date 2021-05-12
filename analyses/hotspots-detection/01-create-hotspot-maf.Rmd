@@ -93,16 +93,6 @@ join_cols <- c("Hugo_Symbol",
                "Tumor_Seq_Allele2",
                "Tumor_Sample_Barcode")
 
-# gather and add caller info
-caller_counts <- combined_maf_hotspots_filt %>%
-  select(join_cols,caller) %>%
-  unique() %>% 
-  group_by_at(join_cols) %>%
-  summarise(caller_count = n(),
-            caller = toString(unique(caller))
-  ) %>%
-  ungroup()
-
 ```
 
 
@@ -186,6 +176,16 @@ We will try to identify the read support for each variant type from each callers
 ```{r}
 
 ## adding in caller info to plot caller information
+# gather and add caller info
+caller_counts <- combined_maf_hotspots_filt %>%
+  select(join_cols,caller) %>%
+  unique() %>%
+  group_by_at(join_cols) %>%
+  summarise(caller_count = n(),
+            caller = paste(unique(caller), collapse=';'))%>%
+  ungroup()
+
+
 combined_maf_hotspots_filt <- combined_maf_hotspots_filt %>%
   left_join(caller_counts,by=join_cols) 
 
