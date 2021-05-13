@@ -87,7 +87,8 @@ filterMaf <- function(table,
       filter(Amino_Acid_Start.calls_base <= Amino_Acid_End.hotspot_indel_df | Amino_Acid_Start.calls_base=="?",
              Amino_Acid_End.calls_base >= Amino_Acid_Start.hotspot_indel_df | Amino_Acid_End.calls_base == "?"
              ) %>%
-      select(-starts_with("Amino_Acid_"))
+      select(-starts_with("Amino_Acid_")) %>%
+      unique()
   }
 
   if (!missing(hotspot_genomic_site_df)) {
@@ -122,13 +123,15 @@ filterMaf <- function(table,
   if (!missing(hotspot_database_2017_snv_df) & !missing(hotspot_database_2017_indel_df)) {
     # merge snv and indel hotspot filtered df
     calls_base_combined <- bind_rows( calls_base_aa_filt_match,
-                                     calls_base_aa_filt_indel)
+                                     calls_base_aa_filt_indel) %>%
+                           unique()
     if (!missing(hotspot_genomic_site_df)) {
     # if both amino acid and genomic region hotspot are provided
     calls_base_combined <- bind_rows(
       calls_base_combined,
       calls_base_g_filt
-    )
+    ) %>%
+      unique()
     }
     return(calls_base_combined)
   } else if (!missing(hotspot_genomic_site_df))  {

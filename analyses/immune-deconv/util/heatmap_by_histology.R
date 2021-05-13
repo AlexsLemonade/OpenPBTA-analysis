@@ -18,7 +18,7 @@ heatmap_by_histology <- function(deconv_output, output_file) {
     column_to_rownames('cell_type')
   
   # plot non-brain and brain tumors separately
-  pdf(file = output_file, width = 15, height = 15)
+  pdf(file = output_file, width = 15, height = 8)
   
   # non brain tumors
   non_brain_tumors <- c("Histiocytic tumor", "Lymphoma")
