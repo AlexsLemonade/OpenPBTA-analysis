@@ -94,8 +94,7 @@ gistic_df <- data.table::fread(file.path(root_dir,
 # Read in snv consensus mutation data
 snv_maf_df <-
   data.table::fread(file.path(root_dir,
-                              "data",
-                              "pbta-snv-consensus-mutation.maf.tsv.gz"),
+                              "analyses" , "hotspots-detection" , "results" , "pbta-snv-scavenged-hotspots.maf.tsv.gz"),
                     select = c("Chromosome",
                                "Start_Position",
                                "End_Position",
