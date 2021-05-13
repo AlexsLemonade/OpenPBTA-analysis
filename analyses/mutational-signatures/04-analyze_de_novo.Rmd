@@ -33,8 +33,9 @@ if (!dir.exists(path_to_results)) {
   dir.create(path_to_results, recursive = TRUE)
 }
 
-# De novo signatures list (condensed from sigfit output) file
-de_novo_file <- file.path(path_to_results, "de_novo_signatures.RDS")
+# De novo signatures and exposures list (condensed from sigfit output) file
+de_novo_signatures_file <- file.path(path_to_results, "de_novo_signatures.RDS")
+de_novo_exposures_file <- file.path(path_to_results, "de_novo_exposures.RDS")
 
 # Load cosmic data from sigfit
 data("cosmic_signatures_v3")
@@ -42,36 +43,42 @@ cosmic_names <- row.names(cosmic_signatures_v3)
 ```
 
 <br><br>
-First, we need to extract the signatures from the *de novo* extraction RDS files. We save this into a list `de_novo_signatures`, and write that list to file. If the file already exists, we can simply read it in.
+First, we need to extract the signatures and exposures from the *de novo* extraction RDS files. We save each into a list `de_novo_signatures` and `de_novo_extractions` separately, and write each list to file. If _both_ files already exist, we can simply read it in the lists.
 
 ```{r parse_signatures}
-if (file.exists(de_novo_file))
+if (file.exists(de_novo_signatures_file) & file.exists(de_novo_exposures_file))
 {
-  de_novo_signatures <- readr::read_rds(de_novo_file)
+  de_novo_signatures <- readr::read_rds(de_novo_signatures_file)
+  de_novo_exposures <- readr::read_rds(de_novo_exposures_file)
+
 } else {
     
   # Collect the de novo extracted signatures into a single list
-  # This takes quite a few minutes to parse.
+  # This takes a few minutes to parse.
   de_novo_signatures <- list()
+  de_novo_exposures <- list()
   for (this_model in c("poisson" , "multinomial"))
   {
     for (this_seed in 1:5){
   
       this_name <- glue::glue("seed_{this_seed}_model_{this_model}")
       filename <- file.path(path_to_input_rds, 
-                            glue::glue("denovo_{this_name}.RDS"))
+                            glue::glue("{this_name}.RDS"))
+      #cat(filename)
       if (file.exists(filename)) {
         fit <- readr::read_rds(filename)
         for (k in 2:5){
           sig_name <- glue::glue("{k}_{this_name}")
           de_novo_signatures[[ sig_name ]] <- sigfit::retrieve_pars(fit[[k]], par = "signatures") 
+          de_novo_exposures[[ sig_name ]] <- sigfit::retrieve_pars(fit[[k]], par = "exposures") 
         }
       }
     }
     
   }
   # We save this list to a result file
-  readr::write_rds(de_novo_signatures, de_novo_file)
+  readr::write_rds(de_novo_signatures, de_novo_signatures_file)
+  readr::write_rds(de_novo_exposures, de_novo_exposures_file)
 }
 ```
 
@@ -134,37 +141,38 @@ unnested_sigs %>%
   dplyr::select(-name) -> full_sigs
 
 full_sigs %>%
-  tidyr::spread(seed, cosmic_sigs)
+  tidyr::spread(seed, cosmic_sigs) %>%
+  knitr::kable() %>%
+  kableExtra::kable_classic() %>%
+  kableExtra::add_header_above(c(" " = 1, " " = 1, "Random seed" = 5))
 ```
 
-**Now specifically for the results whose k was selected by cosine similarity goodness-of-fit**, among *k in [2:5]* for each the given random seed, using 3000 iterations:
+<br><br> 
+Although not very robust to starting conditions, the results are robust to the inference model, so we will just look at `poisson` going forward. **Now, here's the table specifically for the results whose k was selected by cosine similarity goodness-of-fit**, among *k in [2:5]* for each the given random seed, using 3000 iterations:
 
 ```{r sigs_selected}
 gof %>%
   dplyr::rename(k = best_k) %>%
   dplyr::mutate(k = as.character(k), seed = as.character(seed)) %>%
-  dplyr::left_join(full_sigs)
+  dplyr::left_join(full_sigs) %>%
+  dplyr::filter(model == "poisson") %>%
+  dplyr::select(-model) %>% 
+  dplyr::distinct() %>%
+  knitr::kable() %>%
+  kableExtra::kable_classic()
 ```
 <br><br><br>
 
-The above table shows matched COSMIC SBS signatures under a given random seed and inference model. Highlighted rows were selected using cosine similarity goodness-of-fit 
+Clearly, this analysis is extremely sensitive to starting conditions. Even so, we see a few repeated SBS signatures coming up:
 
-Clearly, this analysis is extremely sensitive to starting conditions. Even so, we see a few repeated SBS signatures coming up
 
-```{r count_sigs}
-unnested_sigs %>%
-  dplyr::count(cosmic_sig) %>%
-  dplyr::arrange(-n) %>%
-  dplyr::slice(1:10) %>%
-  dplyr::rename(Signature = cosmic_sig, count = n)
-```
-
-+ **[SBS15](https://cancer.sanger.ac.uk/signatures/sbs/sbs15/)** "is one of seven mutational signatures associated with defective DNA mismatch repair and microsatellite instability (MSI) and is often found in the same samples as other MSI associated signatures: SBS6, SBS14, SBS20, SBS21, SBS26 and SBS44."
-+ [SBS40](https://cancer.sanger.ac.uk/signatures/sbs/sbs40/) is correlated with age (not of clear relevance to pediatric tumors).
-+ **[SBS14](https://cancer.sanger.ac.uk/signatures/sbs/sbs14/)** "is one of seven mutational signatures associated with defective DNA mismatch repair and microsatellite instability (MSI) and is often found in the same samples as other MSI associated signatures: SBS6, SBS15, SBS20, SBS21, SBS26 and SBS44."
 + [SBS5](https://cancer.sanger.ac.uk/signatures/sbs/sbs5/) is age and clock-like, and "SBS5 may be contaminated by SBS16."
-+ [SBS23](https://cancer.sanger.ac.uk/signatures/sbs/sbs23/) has unknown aetiology.
-+ **[SBS26](https://cancer.sanger.ac.uk/signatures/sbs/sbs26/)** "is one of seven mutational signatures associated with defective DNA mismatch repair and microsatellite instability (MSI) and is often found in the same samples as other MSI associated signatures: SBS6, SBS14, SBS15, SBS20, SBS21, and SBS44."
 + [SBS11](https://cancer.sanger.ac.uk/signatures/sbs/sbs11/) "exhibits a mutational pattern resembling that of alkylating agents. Patient histories indicate an association between previous treatment with the alkylating agent temozolomide and SBS11 mutations."
++ **[SBS14](https://cancer.sanger.ac.uk/signatures/sbs/sbs14/)** "is one of seven mutational signatures associated with defective DNA mismatch repair and microsatellite instability (MSI) and is often found in the same samples as other MSI associated signatures: SBS6, SBS15, SBS20, SBS21, SBS26 and SBS44."
++ **[SBS15](https://cancer.sanger.ac.uk/signatures/sbs/sbs15/)** "is one of seven mutational signatures associated with defective DNA mismatch repair and microsatellite instability (MSI) and is often found in the same samples as other MSI associated signatures: SBS6, SBS14, SBS20, SBS21, SBS26 and SBS44."
++ [SBS23](https://cancer.sanger.ac.uk/signatures/sbs/sbs23/) has unknown aetiology.
++ [SBS40](https://cancer.sanger.ac.uk/signatures/sbs/sbs40/) is correlated with age (not of clear relevance to pediatric tumors).
++ [SBS42](https://cancer.sanger.ac.uk/signatures/sbs/sbs42/) is correlated with occupational exposure to haloalkanes (seems unlikely to be relevant for pediatric tumors?).
 
-**The three bolded** signatures are commonly associated with one another due to putative shared mechanisms of "defective DNA mismatch repair and microsatellite instability (MSI)."
+
+**The two bolded** signatures are commonly associated with one another due to putative shared mechanisms of "defective DNA mismatch repair and microsatellite instability (MSI)."

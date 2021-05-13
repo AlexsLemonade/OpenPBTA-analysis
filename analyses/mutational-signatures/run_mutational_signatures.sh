@@ -13,7 +13,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 ABBREVIATED_MUTSIGS=${OPENPBTA_QUICK_MUTSIGS:-0}
 
 # Run the mutational signatures analysis using existing signatures
-Rscript -e "rmarkdown::render('01-known_signatures.Rmd', clean = TRUE)"
+#Rscript -e "rmarkdown::render('01-known_signatures.Rmd', clean = TRUE)"
 
 # Split up the consensus MAF files by experimental strategy (writes to scratch)
 Rscript --vanilla 02-split_experimental_strategy.R
@@ -30,3 +30,5 @@ QUICK_MUTSIGS=$ABBREVIATED_MUTSIGS bash 03-de_novo_range_of_nsignatures.sh 1
 
 # Process results from de novo extraction 
 Rscript -e "rmarkdown::render('04-analyze_de_novo.Rmd', clean = TRUE)"
+
+# Next steps: Fitting the 8 known CNS signatures

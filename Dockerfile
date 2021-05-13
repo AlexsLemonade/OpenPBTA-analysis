@@ -398,6 +398,8 @@ RUN R -e "remotes::install_github('d3b-center/annoFuse',ref = 'c6a2111b5949ca2aa
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
 
-
+# Package for kable table styling used in mutational signatures
+RUN ./install_bioc.r \
+     kableExtra
 
 WORKDIR /rocker-build/
