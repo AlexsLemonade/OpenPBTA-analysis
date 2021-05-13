@@ -258,7 +258,7 @@ if (!is.null(opt$goi_list)){
   goi_list <- readr::read_tsv(opt$goi_list) %>%
     as.matrix()
   
-  maf_object <- subsetMaf(
+  filtered_maf_object <- subsetMaf(
     maf = maf_object,
     tsb = metadata$Tumor_Sample_Barcode,
     genes = goi_list,
@@ -266,7 +266,7 @@ if (!is.null(opt$goi_list)){
   )
   
   # Get top mutated genes per this subset object
-  gene_sum <- mafSummary(maf_object)$gene.summary
+  gene_sum <- mafSummary(filtered_maf_object)$gene.summary
   
   # Sort to get top altered genes rather than mutated only genes
   goi_list <- gene_sum %>%
