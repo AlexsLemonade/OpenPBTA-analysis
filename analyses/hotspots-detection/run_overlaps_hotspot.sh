@@ -44,3 +44,7 @@ for caller in strelka2 mutect2 lancet vardict; do
         --genomic_site_hotspot_file $genomic_site_hotspot_file \
         --output_file  ${tmp_dir}/${caller}_hotspots.RDS
 done
+
+# combine hotspots with consensus 
+Rscript -e "rmarkdown::render('01-create-hotspot-maf.Rmd')"
+
