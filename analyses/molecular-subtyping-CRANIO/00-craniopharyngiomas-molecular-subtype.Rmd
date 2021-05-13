@@ -66,7 +66,7 @@ metadata <-
   filter(pathology_diagnosis == "Craniopharyngioma")
 ## Read in snv consensus mutation data
 snv_df <-
-  read_tsv(file.path(root_dir, "data", "pbta-snv-consensus-mutation.maf.tsv.gz"))
+  read_tsv(file.path(root_dir, "analyses" , "hotspots-detection" , "results" , "pbta-snv-scavenged-hotspots.maf.tsv.gz"))
 ```
 
 # Process Data
