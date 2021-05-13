@@ -74,9 +74,7 @@ clinical <- read_tsv(file.path(root_dir,
 
 # consensus mutation data
 consensusMutation <- read_tsv(file.path(root_dir,
-                                        "data",
-                                        "pbta-snv-consensus-mutation.maf.tsv.gz"))
-
+                                        "analyses" , "hotspots-detection" , "results" , "pbta-snv-scavenged-hotspots.maf.tsv.gz"))  
 ```
 
 Filter to tumor samples that should be included on the basis of pathology diagnosis
