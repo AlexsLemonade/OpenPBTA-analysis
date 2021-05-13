@@ -85,8 +85,7 @@ lgat_specimens <- metadata %>%
 ```{r}
 snv_df <-
   data.table::fread(file.path(root_dir,
-                              "data",
-                              "pbta-snv-consensus-mutation.maf.tsv.gz")) %>%
+                              "analyses" , "hotspots-detection" , "results" , "pbta-snv-scavenged-hotspots.maf.tsv.gz")) %>%
   filter(!Tumor_Sample_Barcode %in% lgat_specimens) 
 ```
 
