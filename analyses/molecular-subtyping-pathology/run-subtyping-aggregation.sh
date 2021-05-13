@@ -30,3 +30,10 @@ Rscript -e "rmarkdown::render('03-incorporate-pathology-feedback.Rmd', params=li
 
 # Run the meningioma pathology-free-text based subtyping step
 Rscript -e "rmarkdown::render('pathology_free_text-subtyping-meningioma.Rmd', clean = TRUE)"
+
+# Glialneuronal tumors
+Rscript -e "rmarkdown::render('pathology-harmonized-diagnosis-glialneuronal-tumors.Rmd', clean = TRUE)"
+
+# Choroid plexus papilloma
+Rscript -e "rmarkdown::render('pathology-subtyping-choroid-plexus-papilloma.Rmd', clean = TRUE)"
+

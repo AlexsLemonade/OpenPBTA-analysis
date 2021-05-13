@@ -1,0 +1,89 @@
+---
+title: "Atypical choroid plexus papilloma"
+output: 
+  html_notebook:
+    toc: true
+    toc_float: true
+author: JN Taroni for ALSF CCDL (code)
+date: 2021
+---
+
+_Background adapted from [#997](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/997)_
+
+Atypical choroid plexus papilloma is in the WHO 2016 CNS subtypes, but is not yet reflected in the `harmonized_diagnosis` in this project. 
+We will use the `pathology_free_text_diagnosis` field to identify atypical choroid plexus papillomas.
+
+## Set up
+
+### Libraries
+
+```{r}
+library(tidyverse)
+```
+
+### Input
+
+```{r}
+data_dir <- file.path("..", "..", "data")
+results_dir <- "results"
+histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
+```
+
+### Output
+
+```{r}
+output_file <- file.path(results_dir, "choroid_plexus_papilloma_subtypes.tsv")
+```
+
+## Read in data
+
+```{r}
+histologies_df <- read_tsv(histologies_file)
+```
+
+## Subtype choroid plexus papillomas
+
+From [#997](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/997):
+
+> If `pathology_diagnosis == Choroid plexus papilloma` and `pathology_free_text_diagnosis` contains "atypical", then annotate as below:
+
+pathology_diagnosis | subtyping module | pathology_free_text_diagnosis | broad_histology | short_histology | harmonized_diagnosis
+-- | -- | -- | -- | -- | --
+Choroid plexus papilloma | NA | if contains "atypical" | Choroid plexus tumor | Choroid plexus tumor | Atypical choroid plexus papilloma
+
+```{r}
+cpp_df <- histologies_df %>%
+  filter(pathology_diagnosis == "Choroid plexus papilloma") %>%
+  # Subset to relevant ID and disease labels column
+  select(Kids_First_Biospecimen_ID,
+         Kids_First_Participant_ID,
+         sample_id,
+         pathology_diagnosis,
+         pathology_free_text_diagnosis,
+         broad_histology,
+         short_histology,
+         tumor_descriptor) %>%
+  # For convenience, let's add a column where pathology_free_text_diagnosis
+  # is all lower case out of an abundance of caution
+  mutate(pathology_free_text_dx_lower = str_to_lower(pathology_free_text_diagnosis)) %>%
+  # When we detect "atypical" in the free text, set harmonized diagnosis to 
+  # Atypical choroid plexus papilloma
+  mutate(harmonized_diagnosis = case_when(
+    str_detect(pathology_free_text_dx_lower, "atypical") ~ "Atypical choroid plexus papilloma",
+    TRUE ~ "Choroid plexus papilloma"
+  )) %>%
+  select(-pathology_free_text_dx_lower)
+```
+
+Write to file.
+
+```{r}
+write_tsv(cpp_df, output_file)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+

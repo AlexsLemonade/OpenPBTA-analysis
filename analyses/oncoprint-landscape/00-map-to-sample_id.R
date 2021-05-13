@@ -18,10 +18,11 @@
 #   --fusion_file ../../scratch/arriba.tsv \
 #   --metadata_file ../../data/pbta-histologies.tsv \
 #   --output_directory ../../scratch/oncoprint_files \
-#   --filename_lead "all_participants_primary_only" \
+#   --filename_lead "primary_only" \
 #   --independent_specimens ../../data/independent-specimens.wgswxs.primary.tsv
 
 library(dplyr)
+library(stringr)
 
 #### Command line options ------------------------------------------------------
 
@@ -185,8 +186,46 @@ readr::write_tsv(maf_df, maf_output)
 
 message("Preparing fusion file...")
 
+# We'll handle fusions where reciprocal fusions exist (e.g., 
+# reciprocal_exists == TRUE) separately from other fusions
+fusion_reciprocal_df <- fusion_df %>%
+  # Reciprocal fusions only
+  filter(reciprocal_exists) %>%
+  # BSID + Gene1--Gene2
+  select(Sample, FusionName) %>%
+  # Because we're only looking at presence or absence here, we can filter to 
+  # distinct identifier-fusion pairs
+  distinct() %>%
+  group_by(Sample, FusionName) %>%
+  # Put genes in the fusions in alphabetical order to collapse
+  mutate(SortedFusionName = str_c(
+    sort(str_split(FusionName,
+                   "--",
+                   simplify = TRUE),
+    ), 
+    collapse = "--")
+  ) %>%
+  ungroup() %>%
+  select(Sample,
+         FusionName = SortedFusionName) %>%
+  # When fusions are in alphabetical order, this ensures each reciprocal
+  # fusion is only counted once
+  distinct()
+
+# No need to put fusions where no reciprocal exists in alphabetical order,
+# so we handle these separately
+fusion_no_reciprocal_df <- fusion_df %>%
+  filter(!reciprocal_exists) %>%
+  select(Sample, FusionName) %>%
+  # But we can remove duplicates to avoid them being counted as multihit
+  distinct()
+
+# Bind reciprocal and no reciprocal together
+fusion_filtered_df <- bind_rows(fusion_reciprocal_df, fusion_no_reciprocal_df)
+rm(fusion_reciprocal_df, fusion_no_reciprocal_df)
+
 # Separate fusion gene partners
-fus_sep <- fusion_df %>%
+fus_sep <- fusion_filtered_df %>%
   # Separate the 5' and 3' genes
   tidyr::separate(FusionName, c("Gene1", "Gene2"), sep = "--") %>%
   # Use row numbers to mark unique fusions - this will help us when
