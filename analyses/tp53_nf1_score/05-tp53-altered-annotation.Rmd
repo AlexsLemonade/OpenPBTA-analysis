@@ -138,7 +138,22 @@ functional_sites_tp53 %>%
 Removing Silent or Intron classified variants to capture only putative damaging mutations
 
 ```{r}
-consensus_tp53_snv_indel <- data.table::fread(
+
+
+consensus_tp53_consensus_snv_indel <- data.table::fread(
+  file.path(root_dir, "data" , "pbta-snv-consensus-mutation.maf.tsv.gz"),
+                                   select = c("Chromosome",
+                                              "Start_Position",
+                                              "End_Position",
+                                              "Strand",
+                                              "Variant_Classification",
+                                              "Tumor_Sample_Barcode",
+                                              "Hugo_Symbol",
+                                              "HGVSp_Short"),
+                                   data.table = FALSE) %>%
+  filter(Hugo_Symbol == "TP53")
+
+consensus_tp53_hotspots_snv_indel <- data.table::fread(
   file.path(root_dir, "analyses" , "hotspots-detection" , "results" , "pbta-snv-scavenged-hotspots.maf.tsv.gz"),
                                    select = c("Chromosome",
                                               "Start_Position",
@@ -150,10 +165,16 @@ consensus_tp53_snv_indel <- data.table::fread(
                                               "HGVSp_Short"),
                                    data.table = FALSE) %>%
   filter(Hugo_Symbol == "TP53") %>%
+  select(colnames(consensus_tp53_consensus_snv_indel))
+
+
+consensus_tp53_snv_indel <- consensus_tp53_consensus_snv_indel %>%
+  bind_rows(consensus_tp53_hotspots_snv_indel) %>%
   filter(!(Variant_Classification %in% c("Silent", "Intron",
                                          # remove other non-amino acid SNVs
                                          "3'Flank" ,"5'Flank",
-                                         "3'UTR", "5'UTR"  )))
+                                         "3'UTR", "5'UTR"  ))) %>%
+  unique()
 ```
 
 ###  Gather annotation for SNV 
