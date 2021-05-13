@@ -139,7 +139,7 @@ Removing Silent or Intron classified variants to capture only putative damaging 
 
 ```{r}
 consensus_tp53_snv_indel <- data.table::fread(
-  file.path(data_dir,"pbta-snv-consensus-mutation.maf.tsv.gz"),
+  file.path(root_dir, "analyses" , "hotspots-detection" , "results" , "pbta-snv-scavenged-hotspots.maf.tsv.gz"),
                                    select = c("Chromosome",
                                               "Start_Position",
                                               "End_Position",
