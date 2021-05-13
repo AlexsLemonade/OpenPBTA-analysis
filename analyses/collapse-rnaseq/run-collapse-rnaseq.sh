@@ -20,15 +20,18 @@ cd "$script_directory" || exit
 mkdir -p results
 
 # Usage: project acronym to use as prefix for input out files 
-usage(){ echo "Usage: $0 [-h] [-p <project acronyn>]" 1>&2; exit 1; }
+usage(){ echo "Usage: $0 [-h] [-p <project acronym>] [-l <library strategy>]" 1>&2; exit 1; }
 
-while getopts ":hp:" opt; do
+while getopts ":hl:p:" opt; do
     case "${opt}" in
 	h)
 	    usage
 	    ;;
 	p)
 	    project_acronym=$OPTARG
+	    ;;
+	l)
+	    libraryStrategies=$OPTARG
 	    ;;
 	:)
 	    printf "missing argument for -%s\n" "$OPTARG" 1>&2
@@ -46,9 +49,15 @@ if [ -z "${project_acronym}" ]; then
     usage
 fi
 
+if [ -z "${libraryStrategies}" ]; then
+    usage
+fi
+
+
 # generate collapsed matrices for poly-A and stranded datasets
 #libraryStrategies=("polya" "stranded")
-libraryStrategies=("stranded")
+#libraryStrategies=("stranded")
+
 for strategy in ${libraryStrategies[@]}; do
 
   Rscript --vanilla 01-summarize_matrices.R \
