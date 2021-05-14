@@ -142,9 +142,7 @@ unnested_sigs %>%
 
 full_sigs %>%
   tidyr::spread(seed, cosmic_sigs) %>%
-  knitr::kable() %>%
-  kableExtra::kable_classic() %>%
-  kableExtra::add_header_above(c(" " = 1, " " = 1, "Random seed" = 5))
+  knitr::kable() 
 ```
 
 <br><br> 
@@ -158,8 +156,7 @@ gof %>%
   dplyr::filter(model == "poisson") %>%
   dplyr::select(-model) %>% 
   dplyr::distinct() %>%
-  knitr::kable() %>%
-  kableExtra::kable_classic()
+  knitr::kable()
 ```
 <br><br><br>
 
