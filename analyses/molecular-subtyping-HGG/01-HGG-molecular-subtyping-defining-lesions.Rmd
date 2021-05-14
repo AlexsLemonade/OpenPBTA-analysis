@@ -116,7 +116,8 @@ snv_hotspot_maf <- data.table::fread(
 
 snv_consensus_hotspot_maf <- snv_consensus_maf %>%
   bind_rows(snv_hotspot_maf) %>%
-  unique()
+  unique() %>%
+  filter(!Tumor_Sample_Barcode %in% lgat_specimens) 
 
 ```
 
