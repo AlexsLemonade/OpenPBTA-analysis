@@ -120,10 +120,6 @@ lgat_specimens_df <- clinical %>%
                 str_detect(str_to_lower(pathology_diagnosis),
                            paste(path_dx_list$exclude_path_dx, collapse = "|"),
                            negate = TRUE),
-                # Exclusion criteria for pathology free text
-                str_detect(str_to_lower(pathology_free_text_diagnosis),
-                           paste(path_dx_list$exclude_path_free_text, collapse = "|"),
-                           negate = TRUE),
                 # Tumors
                 sample_type == "Tumor",
                 composition == "Solid Tissue")
@@ -199,14 +195,7 @@ snv_consensus_hotspot_maf <- snv_consensus_hotspot_maf %>%
   dplyr::filter(!Variant_Classification %in% synonymous)
 ```
 
-### Review predicted impact of SNVs
-
-```{r}
-snv_consensus_hotspot_maf
-```
- We have some Modifier mutations in the filtered snv subset.
- 
- We are removing the LOW/MODIFIER IMPACT annotated by [VEP](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/#impact-categories)
+ We will also remove the LOW/MODIFIER IMPACT annotated by [VEP](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/#impact-categories)
  
  - LOW (L): Assumed to be mostly harmless or unlikely to change protein behavior
  - MODIFIER (MO): Usually non-coding variants or variants affecting non-coding genes, where predictions are difficult or there is no evidence of impact
