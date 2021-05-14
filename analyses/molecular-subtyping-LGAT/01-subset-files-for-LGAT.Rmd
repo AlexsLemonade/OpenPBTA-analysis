@@ -120,6 +120,10 @@ lgat_specimens_df <- clinical %>%
                 str_detect(str_to_lower(pathology_diagnosis),
                            paste(path_dx_list$exclude_path_dx, collapse = "|"),
                            negate = TRUE),
+                # Exclusion criteria for pathology free text
+                str_detect(str_to_lower(pathology_free_text_diagnosis),
+                           paste(path_dx_list$exclude_path_free_text, collapse = "|"),
+                           negate = TRUE),
                 # Tumors
                 sample_type == "Tumor",
                 composition == "Solid Tissue")
@@ -217,7 +221,7 @@ snv_consensus_hotspot_maf <- snv_consensus_hotspot_maf %>%
 We will gather SNV calls that satisfy the conditions per subtype and save the subset along with the HGVSp_Short, DOMAINS and Variant_Classification 
 and recode them as subtypes
 ```{r}
-
+# Filter consensus mutation files for LGAT subset
 snv_consensus_hotspot_maf <- snv_consensus_hotspot_maf %>%
   # find lgat samples
   dplyr::filter(Tumor_Sample_Barcode %in% lgat_dna_df$Kids_First_Biospecimen_ID)
