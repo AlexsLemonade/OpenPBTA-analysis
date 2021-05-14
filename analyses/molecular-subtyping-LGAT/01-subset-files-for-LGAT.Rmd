@@ -71,7 +71,6 @@ clinical <- read_tsv(file.path(root_dir,
                                "data",
                                "pbta-histologies-base.tsv"), 
                      guess_max = 10000)
-
 ```
 
 ### SNV for subtyping 
@@ -109,6 +108,7 @@ snv_hotspot_maf <- data.table::fread(
 snv_consensus_hotspot_maf <- snv_consensus_maf %>%
   bind_rows(snv_hotspot_maf) %>%
   unique()
+
 ```
 
 Filter to tumor samples that should be included on the basis of pathology diagnosis
