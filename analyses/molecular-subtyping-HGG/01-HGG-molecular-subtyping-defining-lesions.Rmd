@@ -86,6 +86,7 @@ lgat_specimens <- metadata %>%
  - In addition, we will also use `pbta-snv-scavenged-hotspots.maf.tsv.gz` from `hotspot-detection` module to gather calls that overlap MSKCC hotspots found in any caller (except if only vardict calls the site as variant, we remove these calls since we have a lot of calls unique to vardict which we consider as false positive as discussed [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers#snv-caller-comparison-analysis))
 
 ```{r}
+
 snv_consensus_maf <- data.table::fread(
   file.path(root_dir, "data" , "pbta-snv-consensus-mutation.maf.tsv.gz"),
                                    select = c("Chromosome",
@@ -116,6 +117,7 @@ snv_hotspot_maf <- data.table::fread(
 snv_consensus_hotspot_maf <- snv_consensus_maf %>%
   bind_rows(snv_hotspot_maf) %>%
   unique()
+
 ```
 
 
