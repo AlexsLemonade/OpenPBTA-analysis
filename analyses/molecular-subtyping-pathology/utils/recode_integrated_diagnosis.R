@@ -51,7 +51,7 @@ recode_integrated_diagnosis <- function(histologies_df,
         stringr::str_detect(pathology_free_text_dx_lower,
                             include_path_free_text_dx_terms) ~ str_replace(integrated_diagnosis,old_integrated_diagnosis_term,replace_integrated_diagnosis_term),
       ),
-      Notes = "Updated via OpenPBTA subtyping from pathology_free_text_diagnosis"
+      Notes = "Updated via OpenPBTA subtyping and pathology_free_text_diagnosis"
     ) 
   
   if(!is.null(exclude_path_free_text_dx_terms)){
