@@ -68,7 +68,7 @@ output_subtype <- file.path(results_dir, "CRANIO_molecular_subtype.tsv")
 metadata <-
   read_tsv(file.path(root_dir, "data", "pbta-histologies-base.tsv")) %>%
   filter(pathology_diagnosis == "Craniopharyngioma")
-## Read in snv consensus mutation data
+
 snv_consensus_maf <- data.table::fread(
   file.path(root_dir, "data" , "pbta-snv-consensus-mutation.maf.tsv.gz"),
                                    select = c("Chromosome",
@@ -100,7 +100,6 @@ snv_hotspot_maf <- data.table::fread(
 snv_consensus_hotspot_maf <- snv_consensus_maf %>%
   bind_rows(snv_hotspot_maf) %>%
   unique()
-
 
 ```
 
