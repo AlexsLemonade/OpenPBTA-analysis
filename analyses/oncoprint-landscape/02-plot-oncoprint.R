@@ -96,10 +96,22 @@ option_list <- list(
     help = "optional name of `broad_histology` value to plot associated oncoprint"
   ),
   optparse::make_option(
+    c("-n", "--top_n"),
+    type = "integer",
+    default = 25,
+    help = "`n` to display top n genes based on count of mutations, default is 25"
+  ),
+  optparse::make_option(
     c("-p", "--png_name"),
     type = "character",
     default = NULL,
     help = "oncoprint output png file name"
+  ),
+  optparse::make_option(
+    c("--include_introns"),
+    action = "store_true",
+    default = FALSE,
+    help = "logical statement on whether to include intronic variants in oncoprint plot"
   )
 )
 
@@ -115,22 +127,6 @@ cnv_df <- opt$cnv_file
 fusion_df <- opt$fusion_file
 goi_list <- opt$goi_list
 
-#### Functions ----------------------------------------------------------------
-
-read_genes <- function(gene_list) {
-  # This function takes in the file path to a gene list and pulls out
-  # the gene information from that list
-  #
-  # Args:
-  #   gene_list: file path to genes of interest file
-  #
-  # Return:
-  #   genes: a vector of genes from the genes of interest file
-
-  genes <- readr::read_tsv(gene_list) %>%
-    dplyr::pull("gene")
-}
-
 #### Read in data --------------------------------------------------------------
 
 # Read in metadata
@@ -141,6 +137,11 @@ metadata <- readr::read_tsv(opt$metadata_file, guess_max = 10000) %>%
 maf_df <- data.table::fread(opt$maf_file,
                             stringsAsFactors = FALSE,
                             data.table = FALSE)
+
+if (!opt$include_introns) {
+  maf_df <- maf_df %>%
+    dplyr::filter(Variant_Classification != "Intron")
+}
 
 # Read in cnv file
 if (!is.null(opt$cnv_file)) {
@@ -153,16 +154,6 @@ if (!is.null(opt$cnv_file)) {
 # Read in fusion file and join
 if (!is.null(opt$fusion_file)) {
   fusion_df <- readr::read_tsv(opt$fusion_file)
-}
-
-# Read in gene information from the list of genes of interest files
-if (!is.null(opt$goi_list)) {
-  goi_files <- unlist(stringr::str_split(goi_list, ",| "))
-  # Read in using the `read_genes` custom function and unlist the gene column
-  # data from the genes of interest file paths given
-  goi_list <- lapply(goi_files, read_genes)
-    # Include only the unique genes of interest
-  goi_list <- unique(unlist(goi_list))
 }
 
 #### Set up oncoprint annotation objects --------------------------------------
@@ -254,6 +245,44 @@ maf_object <- prepare_maf_object(
   fusion_df = fusion_df
 )
 
+#### Subset MAF Object (Optional)----------------------------------------------
+
+# Code here is specifically adapted from:
+# https://github.com/marislab/create-pptc-pdx-oncoprints/blob/master/R/create-complexheat-oncoprint-revision.R
+
+# We only need to subset the GOI list if there are more GOI than the top n argument
+# Subset `maf_object` for histology-specific goi list
+if (!is.null(opt$goi_list)){
+  
+  # Read in genes of interest information using the `read_tsv()` function
+  goi_list <- readr::read_tsv(opt$goi_list) %>%
+    as.matrix()
+  
+  filtered_maf_object <- subsetMaf(
+    maf = maf_object,
+    tsb = metadata$Tumor_Sample_Barcode,
+    genes = goi_list,
+    mafObj = TRUE
+  )
+  
+  # Get top mutated genes per this subset object
+  gene_sum <- mafSummary(filtered_maf_object)$gene.summary
+  
+  # Sort to get top altered genes rather than mutated only genes
+  goi_list <- gene_sum %>%
+    dplyr::arrange(dplyr::desc(AlteredSamples)) %>%
+    # Filter to genes where multiple samples have an alteration
+    dplyr::filter(AlteredSamples > 1) %>%
+    dplyr::pull(Hugo_Symbol)
+  
+  if (opt$top_n < length(goi_list)) {
+    # Now let's filter to the `top_n` genes
+    goi_list <- goi_list[1:opt$top_n]
+    
+  }
+  
+}
+
 #### Plot and Save Oncoprint --------------------------------------------------
 
 # Given a maf object, plot an oncoprint of the variants in the
@@ -265,6 +294,7 @@ png(
   units = "cm",
   res = 300
 )
+
 oncoplot(
   maf_object,
   clinicalFeatures = "display_group",
@@ -279,6 +309,8 @@ oncoplot(
   colors = oncoprint_col_palette,
   annotationColor = annotation_colors,
   bgCol = "#F5F5F5",
-  top = 25
+  top = opt$top_n
 )
+
 dev.off()
+

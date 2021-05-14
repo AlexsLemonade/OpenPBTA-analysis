@@ -2,7 +2,51 @@
 
 **Module authors:** Krutika Gaonkar ([@kgaonkar6](https://github.com/kgaonkar6)), Jaclyn Taroni ([@jaclyn-taroni](https://github.com/jaclyn-taroni))
 
-In this analysis we subtype LGAT samples according to the presence/absence of _BRAF_ fusions and BRAF V600E point mutations. 
+In this analysis we subtype LGAT samples according to the presence/absence of molecular alterations decribed below and originally discussed in #790(https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/790):
+
+- **LGG, NF1-somatic**
+  - This subtype is characterized by somatic _NF1_ variants.
+
+- **LGG, NF1-germline**
+  - We do not have germline data within OpenPBTA, but we do have information about cancer predispositions. This group can be annotated by checking for `NF-1` within `cancer_predispositions` field of the `pbta-histologies.tsv` file. 
+
+- **LGG, KIAA1549-BRAF**
+  - contains _KIAA1549-BRAF_ fusion
+
+- **LGG, BRAF V600E**
+  - contains BRAF V600E or V599 SNV or non-canonical _BRAF_ alterations such as p.V600ins or p.D594N within the kiinase (PK_Tyr_Ser-Thr) domain.
+
+- **LGG, other MAPK**
+  - contains non-canonical _BRAF_ fusion other than _KIAA1549-BRAF_
+  - contains _RAF1_ fusion
+  - contains _KRAS_, _NRAS_, _HRAS_, _MAP2K1_, _MAP2K2_, _MAP2K1_, _ARAF_, _RAF1_ and BRAF (other than V600E or V599 SNV and other mutations in kinase domain) SNV or indel
+
+- **LGG, RTK**
+  - harbors a fusion in _ALK_, _ROS1_, _NTRK1_, _NTRK2_, or _NTRK3_ **or**
+  - harbors a _MET_ SNV **or 
+  - harbors a _KIT_ SNV **or**
+  - harbors a _PDGFRA_ SNV or fusion
+
+- **LGG, FGFR**
+  - harbors _FGFR1_ p.N546K, p.K656E, p.N577, or p. K687 hotspot mutations **or** 
+  - harbors _FGFR1_ TKD (tyrosine kinase domain tandem duplication) **or**
+  - harbors _FGFR1-TACC1_ fusion **or 
+  - harbors _FGFR1_ or _FGFR2_ fusions
+
+- **LGG, IDH**
+  - harbors an _IDH_ R132 mutation
+
+- **LGG, H3**
+  - harbors an _H3F3A_ K28M or G35R/V mutation **or**
+  - harbors an _H3F3B_,_HIST1H3B_,_HIST1H3C_,_HIST2H3C_ K28M mutation
+
+- **LGG, MYB/MYBL1**
+  - harbors either a _MYB-QKI_ fusion or other _MYB_ or _MYBL1_ fusion
+
+- **LGG, CDKN2A/B** 
+  - harbors focal CDKN2A and/or CDKN2B  deletion
+  - This is a secondary co-occurring alteration with prognostic significance. 
+
 
 ### Inclusion/exclusion criteria
 
@@ -56,7 +100,7 @@ columnname  | description | values
  --- | --- | ---
 NF1_mut | somatic loss of NF1 via either missense, nonsense mutation | "Yes" mutation exists, "No" mutation is absent 
 BRAF_V600E_mut | contains BRAF V600E or V599 SNV or non-canonical BRAF alterations such as p.V600ins or p.D594N | "Yes" mutation exists, "No" mutation is absent
-MAPK_mut | contains mutation in KRAS, NRAS, HRAS, MAP2K1, MAP2K2, MAP2K1, ARAF SNV or indel | "Yes" mutation exists, "No" mutation is absent
+MAPK_mut | contains mutation in KRAS, NRAS, HRAS, MAP2K1, MAP2K2, MAP2K1, ARAF, RAF1, BRAF (other than BRAF_V600E_mut) SNV or indel | "Yes" mutation exists, "No" mutation is absent
 RTK_mut | harbors a MET,KIT or PDGFRA SNV | "Yes" mutation exists, "No" mutation is absent
 FGFR_mut | harbors FGFR1 p.N546K, p.K656E, p.N577, or p. K687 hotspot mutations | "Yes" mutation exists, "No" mutation is absent
 IDH_mut | harbors an IDH R132 mutation | "Yes" mutation exists, "No" mutation is absent
