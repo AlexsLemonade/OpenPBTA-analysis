@@ -168,8 +168,8 @@ consensus_tp53_hotspots_snv_indel <- data.table::fread(
   select(colnames(consensus_tp53_consensus_snv_indel))
 
 
-consensus_tp53_snv_indel <- consensus_tp53_consensus_snv_indel %>%
-  bind_rows(consensus_tp53_hotspots_snv_indel) %>%
+tp53_consensus_hotspot_maf <- tp53_consensus_maf %>%
+  bind_rows(tp53_hotspot_maf) %>%
   filter(!(Variant_Classification %in% c("Silent", "Intron",
                                          # remove other non-amino acid SNVs
                                          "3'Flank" ,"5'Flank",
