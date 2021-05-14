@@ -169,7 +169,7 @@ ggplot(annotated_cn, aes(x = factor(copy_number), y = tp53_score)) +
 
 ```
 
-Majority of TP53 losses have high tp53 scores, let's save to file.
+Majority of TP53 losses have high tp53 inactivation classifier, let's save to file.
 
 ### Save high confidence TP53 loss in file
 
