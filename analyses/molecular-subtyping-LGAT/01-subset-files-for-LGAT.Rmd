@@ -178,7 +178,7 @@ IDH1_hotspot<- paste(snvOI$IDH1$hotspot[!is.na( snvOI$IDH1$hotspot)],collapse = 
 
 ### Subset consensus maf and annotate per subtype based on SNV
 
-We will now remove synonymous variant calls from the list above. The Variant_Classification terms for synonymous SNV are selected as per [interaction-plots/scripts/02-process_mutations.R](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/interaction-plots/scripts/02-process_mutations.R).
+We will remove synonymous variant calls from the list above. The Variant_Classification terms for synonymous SNV are selected as per [interaction-plots/scripts/02-process_mutations.R](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/interaction-plots/scripts/02-process_mutations.R).
 ```{r}
 # Variant Classification with Low/Modifier variant consequences 
 #  from maftools http://asia.ensembl.org/Help/Glossary?id=535
@@ -212,11 +212,16 @@ snv_consensus_hotspot_maf <- snv_consensus_hotspot_maf %>%
   dplyr::filter(!IMPACT %in% c("MODIFIER","LOW"))
 ```
 
-### Gather status of all SNVs per biospecimen
+### Gather status of all SNVs per LGAT biospecimen
 
 We will gather SNV calls that satisfy the conditions per subtype and save the subset along with the HGVSp_Short, DOMAINS and Variant_Classification 
 and recode them as subtypes
 ```{r}
+
+snv_consensus_hotspot_maf <- snv_consensus_hotspot_maf %>%
+  # find lgat samples
+  dplyr::filter(Tumor_Sample_Barcode %in% lgat_dna_df$Kids_First_Biospecimen_ID)
+
 
 # Get BRAF mutation status
 # canonical mutations V600E
