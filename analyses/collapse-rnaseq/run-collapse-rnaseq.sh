@@ -64,9 +64,9 @@ for strategy in ${libraryStrategies[@]}; do
     -i ../../data/${project_acronym}-gene-expression-rsem-fpkm.${strategy}.rds \
     -g ../../data/gencode.v27.primary_assembly.annotation.gtf.gz \
     -m results/${project_acronym}-gene-expression-rsem-fpkm-collapsed.${strategy}.rds \
-    -t results/k${project_acronym}fnbl-gene-expression-rsem-fpkm-collapsed_table.${strategy}.rds
+    -t results/${project_acronym}-gene-expression-rsem-fpkm-collapsed_table.${strategy}.rds
 
 done
 
 # run the notebook for analysis of dropped genes
-#Rscript -e "rmarkdown::render(input = '02-analyze-drops.Rmd', params = list(polya.annot.table = 'results/${project_acronym}-gene-expression-rsem-fpkm-collapsed_table.polya.rds', stranded.annot.table = 'results/${project_acronym}-gene-expression-rsem-fpkm-collapsed_table.stranded.rds'), clean = TRUE)"
+Rscript -e "rmarkdown::render(input = '02-analyze-drops.Rmd', params = list(polya.annot.table = 'results/${project_acronym}-gene-expression-rsem-fpkm-collapsed_table.polya.rds', stranded.annot.table = 'results/${project_acronym}-gene-expression-rsem-fpkm-collapsed_table.stranded.rds'), clean = TRUE)"
