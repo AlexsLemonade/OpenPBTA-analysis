@@ -55,8 +55,6 @@ fi
 
 
 # generate collapsed matrices for poly-A and stranded datasets
-#libraryStrategies=("polya" "stranded")
-#libraryStrategies=("stranded")
 
 for strategy in ${libraryStrategies[@]}; do
 
