@@ -7,7 +7,7 @@
   - Added files below: 
 ```
 open-targets
-└── v1
+└── v2
     ├── gtex-gene-expression-rsem-tpm-collapsed.polya.rds
     ├── gtex-histologies.tsv
     ├── intersect_cds_lancet_strelka_mutect_WGS.bed
