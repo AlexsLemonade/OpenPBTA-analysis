@@ -92,30 +92,26 @@ gistic_df <- data.table::fread(file.path(root_dir,
 
 
 # Read in snv consensus mutation data
+# select tumor sample barcode, gene, short protein annotation and variant classification
+keep_cols <- c("Chromosome",
+               "Start_Position",
+               "End_Position",
+               "Strand",
+               "Variant_Classification",
+               "IMPACT",
+               "Tumor_Sample_Barcode",
+               "Hugo_Symbol",
+               "HGVSp_Short",
+               "Exon_Number")
+
 snv_consensus_maf <- data.table::fread(
   file.path(root_dir, "data" , "pbta-snv-consensus-mutation.maf.tsv.gz"),
-  select = c("Chromosome",
-             "Start_Position",
-             "End_Position",
-             "Strand",
-             "Variant_Classification",
-             "Tumor_Sample_Barcode",
-             "Hugo_Symbol",
-             "HGVSp_Short",
-             "Exon_Number"),
+  select = keep_cols,
   data.table = FALSE) 
 ## Read in snv hotspot mutation data
 snv_hotspot_maf <- data.table::fread(
   file.path(root_dir, "analyses" , "hotspots-detection" , "results" , "pbta-snv-scavenged-hotspots.maf.tsv.gz"),
-  select = c("Chromosome",
-             "Start_Position",
-             "End_Position",
-             "Strand",
-             "Variant_Classification",
-             "Tumor_Sample_Barcode",
-             "Hugo_Symbol",
-             "HGVSp_Short",
-             "Exon_Number"),
+  select = keep_cols,
   data.table = FALSE) %>%
   select(colnames(snv_consensus_maf))
 
