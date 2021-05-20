@@ -54,7 +54,7 @@ activating	| Any 1 SNV shown in HGVSp_Short overlaps TP53_ activating mutations 
 tp53_altered | Combined evidence, cancer predisposition and score based tp53 status
 
 
-`05-evaluate-classifier.py` evaluates classifier score with TP53 alterations (non-synonymous SNV and all status == "loss" in consensus CNV file from 00-tp53-nf1-alterations.R) 
+`06-evaluate-classifier.py` evaluates classifier score with TP53 alterations (non-synonymous SNV and all status == "loss" in consensus CNV file from 00-tp53-nf1-alterations.R) 
 
 Because some of the classifier genes are not present in the OpenPBTA dataset, the scores should be interpreted as continuous values representing relative gene alterations and not as probabilities.
 
