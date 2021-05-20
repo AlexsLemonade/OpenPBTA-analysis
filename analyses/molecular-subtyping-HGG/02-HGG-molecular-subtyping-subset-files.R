@@ -143,12 +143,6 @@ path_dx_df <- tumor_metadata_df %>%
          pathology_free_text_diagnosis ==path_dx_list$gliomatosis_path_free_text_exact)
   
 
-
-# PNOC003 trial samples - the pathology diagnoses are not harmonized so we need
-# to go by the cohort field
-pnoc_df <- tumor_metadata_df %>%
-  filter(cohort == "PNOC003")
-
 # Now samples on the basis of the defining lesions
 hgg_sample_ids <- hgg_lesions_df %>%
   filter(defining_lesion) %>%
@@ -159,7 +153,6 @@ lesions_df <- tumor_metadata_df %>%
 # Putting it all together now
 hgg_metadata_df <- bind_rows(
   path_dx_df,
-  pnoc_df,
   lesions_df
 ) %>%
   # Remove duplicates
@@ -234,7 +227,7 @@ fusion_df <- fusion_df %>%
   left_join(select_metadata,
             by = c("Sample" = "Kids_First_Biospecimen_ID")) %>%
   filter(Sample %in% hgg_metadata_df$Kids_First_Biospecimen_ID) %>%
-  arrange(Kids_First_Participant_ID, sample_id)
+  arrange(Sample, FusionName)
 
 # Write to file
 write_tsv(fusion_df, file.path(subset_dir, "hgg_fusion.tsv"))

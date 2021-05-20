@@ -7,7 +7,7 @@ set -o pipefail
 
 # Set defaults for release and biospecimen file name
 BIOSPECIMEN_FILE=${BIOSPECIMEN_FILE:-biospecimen_ids_for_subset.RDS}
-RELEASE=${RELEASE:-release-v18-20201123}
+RELEASE=${RELEASE:-release-v19-20210423}
 NUM_MATCHED=${NUM_MATCHED:-15}
 
 # This option controls whether or not the two larger MAF files are skipped as
