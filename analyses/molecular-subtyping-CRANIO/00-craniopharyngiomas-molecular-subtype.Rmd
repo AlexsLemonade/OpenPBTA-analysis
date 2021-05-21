@@ -58,15 +58,49 @@ output_lesions <- file.path(results_dir, "CRANIO_defining_lesions.tsv")
 output_subtype <- file.path(results_dir, "CRANIO_molecular_subtype.tsv")
 ```
 
+## SNV for subtyping 
+ - We will use the `pbta-snv-consensus-mutation.maf.tsv.gz` from `snv-callers` module which gathers calls that are present in all 3 callers (strelka2,mutect2 and lancet)
+ - In addition, we will also use `pbta-snv-scavenged-hotspots.maf.tsv.gz` from `hotspot-detection` module to gather calls that overlap MSKCC hotspots found in any caller (except if only vardict calls the site as variant, we remove these calls since we have a lot of calls unique to vardict which we consider as false positive as discussed [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers#snv-caller-comparison-analysis))
+
 ```{r load-inputs-please-wait}
 # Inputs
 ## Read in metadata
 metadata <-
   read_tsv(file.path(root_dir, "data", "pbta-histologies-base.tsv")) %>%
   filter(pathology_diagnosis == "Craniopharyngioma")
-## Read in snv consensus mutation data
-snv_df <-
-  read_tsv(file.path(root_dir, "data", "pbta-snv-consensus-mutation.maf.tsv.gz"))
+
+snv_consensus_maf <- data.table::fread(
+  file.path(root_dir, "data" , "pbta-snv-consensus-mutation.maf.tsv.gz"),
+                                   select = c("Chromosome",
+                                              "Start_Position",
+                                              "End_Position",
+                                              "Strand",
+                                              "Variant_Classification",
+                                              "Tumor_Sample_Barcode",
+                                              "Hugo_Symbol",
+                                              "HGVSp_Short",
+                                              "Exon_Number"),
+                                   data.table = FALSE) 
+
+## Read in snv hotspot mutation data
+snv_hotspot_maf <- data.table::fread(
+  file.path(root_dir, "analyses" , "hotspots-detection" , "results" , "pbta-snv-scavenged-hotspots.maf.tsv.gz"),
+                                   select = c("Chromosome",
+                                              "Start_Position",
+                                              "End_Position",
+                                              "Strand",
+                                              "Variant_Classification",
+                                              "Tumor_Sample_Barcode",
+                                              "Hugo_Symbol",
+                                              "HGVSp_Short",
+                                              "Exon_Number"),
+                                   data.table = FALSE) %>%
+  select(colnames(snv_consensus_maf))
+
+snv_consensus_hotspot_maf <- snv_consensus_maf %>%
+  bind_rows(snv_hotspot_maf) %>%
+  unique()
+
 ```
 
 # Process Data
@@ -77,7 +111,7 @@ Collect Tumor_Sample_Barcodes with BRAF V600E mutations.
 
 ```{r braf-tsb}
 braf_v600e_tsb <-
-  snv_df %>%
+  snv_consensus_hotspot_maf %>%
   filter(Hugo_Symbol == "BRAF" & HGVSp_Short == "p.V600E") %>%
   pull(Tumor_Sample_Barcode)
 ```
@@ -86,7 +120,7 @@ Collect Tumor_Sample_Barcodes with CTNNB1 mutation on exon 3.
 
 ```{r ctnnb1-tsb}
 ctnnb1_e3_tsb <-
-  snv_df %>%
+  snv_consensus_hotspot_maf %>%
   filter(Hugo_Symbol == "CTNNB1" & Exon_Number == "3/15") %>%
   pull(Tumor_Sample_Barcode)
 ```
