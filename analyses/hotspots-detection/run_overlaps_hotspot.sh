@@ -13,6 +13,9 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 cancer_hotspot_folder=input/hotspots_database
 genomic_site_hotspot_file=input/tert_promoter_hotspots.tsv
 
+# Create the maf_coltypes.RDS 
+# this will help in reading maf files correctly in following scripts
+Rscript maf_coltypes.R
 
 # tmp directory in scratch folder to save intermediate filtered maf files
 tmp_dir="../../scratch/hotspot-detection"
@@ -41,3 +44,7 @@ for caller in strelka2 mutect2 lancet vardict; do
         --genomic_site_hotspot_file $genomic_site_hotspot_file \
         --output_file  ${tmp_dir}/${caller}_hotspots.RDS
 done
+
+# combine hotspots with consensus 
+Rscript -e "rmarkdown::render('01-create-hotspot-maf.Rmd')"
+

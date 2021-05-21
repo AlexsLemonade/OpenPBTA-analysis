@@ -2,7 +2,11 @@
 title: "Tp53 SNV hotspots"
 author: "K S Gaonkar (D3B)"
 output: html_notebook
-
+params:
+  base_run:
+    label: "1/0 to run with base histology"
+    value: 0
+    input: integer
 ---
 
 In this notebook we will add TP53 alteration status as discussed in [#837](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/837):
@@ -49,7 +53,13 @@ cell_line_composition <- read_tsv(file.path("..",
                                     readr::cols( aliquot_id  = readr::col_character())) 
 
 # histology
- histology <- read_tsv(file.path(data_dir,"pbta-histologies.tsv")) %>%
+if ( params$base_run ==0 ){
+  clinical<-read.delim(file.path(data_dir,"pbta-histologies.tsv"), stringsAsFactors = FALSE)
+} else{
+  clinical<-read.delim(file.path(data_dir,"pbta-histologies-base.tsv"), stringsAsFactors = FALSE)  
+}
+
+histology <- clinical %>%
    select("Kids_First_Biospecimen_ID",
           "sample_id",
           "cancer_predispositions",

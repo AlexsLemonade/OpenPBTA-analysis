@@ -35,6 +35,7 @@ However, since we don't have the `C228T and C250T` annotation for the upstream m
 ### Steps of analysis
 
 `00-subset-maf.R` filters and combines calls from all callers with filters for non-silent mutations in hotspot sites.
+`01-create-hotspot-maf.Rmd` all calls that overlap hotspots are scavenged back to a maf file excluding Vardict-only calls because Vardict uniquely calls a large number (~39 million) of very low VAF mutations as discussed [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/README.md) suggesting these could be false calls. 
 
    
 ### Run

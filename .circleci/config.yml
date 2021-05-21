@@ -182,7 +182,7 @@ jobs:
 
       - run:
           name: Process SV file
-          command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/01-process-sv-file.R
+          command: ./scripts/run_in_ci.sh Rscript analyses/chromothripsis/01-process-sv-file.R
 
 #      - run:
 #          name: Oncoprint plotting
@@ -206,7 +206,7 @@ jobs:
 
       - run:
           name: Add Shatterseek
-          command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/02-shatterseek.R
+          command: ./scripts/run_in_ci.sh Rscript analyses/chromothripsis/02-shatterseek.R
 
       - run:
           name: Telomerase activity

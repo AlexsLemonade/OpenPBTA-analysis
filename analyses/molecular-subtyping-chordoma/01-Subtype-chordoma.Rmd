@@ -26,7 +26,7 @@ Set up metadata
 
 ```{r}
 # Read in non-subsetted metadata
-histologies_df <- readr::read_tsv(file.path("..", "..", "data", "pbta-histologies.tsv"), guess_max = 10000)
+histologies_df <- readr::read_tsv(file.path("..", "..", "data", "pbta-histologies-base.tsv"), guess_max = 10000)
 
 # Subset metadata
 subset_metadata <- histologies_df %>%
@@ -44,7 +44,7 @@ subset_focal_cn_df <-
 ```
 
 ```{r}
-# we need to include the sample_id field from pbta-histologies.tsv in the final
+# we need to include the sample_id field from pbta-histologies-base.tsv in the final
 # table (field will allow #us to map between RNA-seq (e.g., SMARCB1 expression
 # values) and WGS data (e.g., SMARCB1 focal copy number status) from the same
 # event for a given individual). To get the SMARCB1 jitter plot in the photo
