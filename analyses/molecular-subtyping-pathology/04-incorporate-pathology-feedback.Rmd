@@ -100,7 +100,7 @@ if (running_in_ci) {
 
 ```{r}
 compiled_results_file <- file.path(results_dir,
-                                   "compiled_molecular_subtypes_with_clinical_feedback.tsv")
+                                   "compiled_molecular_subtypes_with_clinical_feedback_and_report_info.tsv")
 fusions_file <- file.path(root_dir,
   "analyses",
   "fusion_filtering",
@@ -112,7 +112,7 @@ fusions_file <- file.path(root_dir,
 
 ```{r}
 output_file <- file.path(results_dir,
-                         "compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv")
+                         "compiled_molecular_subtypes_with_clinical_pathology_feedback_and_report_info.tsv")
 ```
 
 ## Read in data
