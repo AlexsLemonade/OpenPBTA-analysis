@@ -5,7 +5,7 @@ output:
     df_print: paged
 params:
   expected_input:
-    value: input/expected_class_v17.rds
+    value: input/openPBTA-mb-pathology-subtypes.rds
   observed_input:
     value: results/mb-classified.rds
 ---
@@ -52,8 +52,9 @@ obs.class <- readRDS(params$observed_input)
 
 # format ambiguous expected classes 
 exp.class <- exp.class %>%
-  mutate(pathology_subtype = replace(pathology_subtype, 
-                                     pathology_subtype == "Group 3 or 4", "Group3, Group4")) %>%
+  mutate(pathology_subtype = recode(pathology_subtype, 
+                                    "non-WNT" = "SHH, Group3, Group4", 
+                                    "Group 3 or 4" = "Group3, Group4")) %>%
   mutate(pathology_subtype = gsub(" ", "", pathology_subtype))
 
 # format subset clinical file
@@ -110,10 +111,10 @@ compute.accuracy <- function(expected.input, observed.input){
     filter(!is.na(pathology_subtype)) %>%
     group_by(match) %>%
     dplyr::summarise(n = n()) %>%
-    mutate(Accuracy = paste0(n/sum(n)*100, '%')) %>%
+    mutate(Accuracy = paste0(round(n/sum(n)*100, 2), '%')) %>%
     filter(match) %>%
     .$Accuracy
-  
+
   # return both as list
   output <- list(merged.table = merged.table, accuracy = accuracy)
   return(output)
@@ -161,23 +162,32 @@ calc.consensus <- function(mm2s, medullo.classifier, clin){
   mm2s <- mm2s %>%
     dplyr::rename(MM2S_best_fit = best.fit) %>%
     dplyr::select(Kids_First_Biospecimen_ID, sample_id, 
-                  pathology_subtype, other_molecular_findings, MM2S_best_fit)
+                  pathology_subtype, MM2S_best_fit)
   medullo.classifier <- medullo.classifier %>%
     dplyr::rename(medulloPackage_best_fit = best.fit) %>%
     dplyr::select(Kids_First_Biospecimen_ID, sample_id, 
-                  pathology_subtype, other_molecular_findings, medulloPackage_best_fit)
+                  pathology_subtype, medulloPackage_best_fit)
   
   # join both
   consensus.mat <- mm2s %>%
     inner_join(medullo.classifier, 
                by = c('Kids_First_Biospecimen_ID', 'sample_id',
-                      'pathology_subtype', 'other_molecular_findings'))
+                      'pathology_subtype'))
   
   # create consensus molecular subtype if both classifiers agree 
   # match consensus molecular subtype to the pathology report
   consensus.mat  <- consensus.mat %>%
     mutate(molecular_subtype = ifelse(MM2S_best_fit == medulloPackage_best_fit, MM2S_best_fit, NA)) %>%
     mutate(match = str_detect(pathology_subtype, molecular_subtype))
+  
+  # compute % accuracy
+  consensus.accuracy <- consensus.mat %>%
+    filter(!is.na(pathology_subtype)) %>%
+    group_by(match) %>%
+    dplyr::summarise(n = n()) %>%
+    mutate(Accuracy = paste0(round(n/sum(n)*100, 2), '%')) %>%
+    filter(match) %>%
+    .$Accuracy
   
   # merge with clinical data
   consensus.mat.out <- clin.merged %>%
@@ -192,30 +202,26 @@ calc.consensus <- function(mm2s, medullo.classifier, clin){
                                    .fun = function(x) prop.mb.subtype(mat = x))
   consensus.mat.out$sample_id <- as.factor(consensus.mat.out$sample_id)
   
+  # add non-ambiguous molecular subtype reported from pathology report where there is no consensus 
+  consensus.mat.out = consensus.mat.out %>%
+    mutate(molecular_subtype = ifelse(MM2S_best_fit == medulloPackage_best_fit, MM2S_best_fit,
+                                      ifelse(pathology_subtype %in% c("SHH", "Group3", "Group4", "WNT"), pathology_subtype, NA)))
+  
   # subset columns for html output
-  consensus.mat <- consensus.mat.out %>%
+  consensus.mat.html <- consensus.mat.out %>%
     mutate(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA) %>%
-    dplyr::select(Kids_First_Biospecimen_ID, sample_id, pathology_subtype, other_molecular_findings, 
+    dplyr::select(Kids_First_Biospecimen_ID, sample_id, pathology_subtype, 
                   MM2S_best_fit, medulloPackage_best_fit, molecular_subtype, match) %>%
     arrange(Kids_First_Biospecimen_ID)
   
   # subset columns for tsv output
-  consensus.mat.out <- consensus.mat.out %>%
+  consensus.mat.tsv <- consensus.mat.out %>%
     dplyr::select(Kids_First_Participant_ID, sample_id, Kids_First_Biospecimen_ID_DNA,
                   Kids_First_Biospecimen_ID_RNA, molecular_subtype)
   
-  # % accuracy
-  consensus.accuracy <- consensus.mat %>%
-    filter(!is.na(pathology_subtype)) %>%
-    group_by(match) %>%
-    dplyr::summarise(n = n()) %>%
-    mutate(Accuracy = paste0(n/sum(n)*100, '%')) %>%
-    filter(match) %>%
-    .$Accuracy
-  
   # return as list
-  output <- list(consensus.mat = consensus.mat, 
-                 consensus.mat.out = consensus.mat.out, 
+  output <- list(consensus.mat = consensus.mat.html, 
+                 consensus.mat.out = consensus.mat.tsv, 
                  consensus.accuracy = consensus.accuracy)
   return(output)
 }
@@ -226,7 +232,8 @@ calc.consensus <- function(mm2s, medullo.classifier, clin){
 
 * % Accuracy is currently being calculated by matching observed and expected subtypes where expected subtype info is available. In case of ambiguous subtypes, we treat it as a match if the observed subtype matches with any one of the expected subtypes.
 
-* Consensus tabs: Molecular subtype labels are assigned only when the two classifiers agree, leaving all other samples as unclassified. 
+* Consensus tabs: For cases in which both classifiers agree, molecular subtype reflects the consensus prediction. For cases in which there is no consensus prediction, but we have a non-ambiguous pathology subtype, the molecular subtype reflects the pathology subtype.
+
 
 * Propagation of molecular subtypes: 
 
@@ -235,7 +242,7 @@ calc.consensus <- function(mm2s, medullo.classifier, clin){
   * IF the RNA specimen with mismatched classifications includes a match to the subtype of the consensus of the other RNA specimen, 
   * THEN propagate the subtype to the second RNA specimen.
 
-* Pathology report has subtype information on 32/122 (26.2%) samples. Following is the breakdown of pathology identified subtypes: 
+* Pathology report has subtype information on 43/122 (35.2%) samples. Following is the breakdown of pathology identified subtypes: 
 
 ```{r, echo=FALSE}
 exp.count <- exp.class %>% 
@@ -271,7 +278,7 @@ out <- compute.accuracy(expected.input = exp.class,
 
 # accuracy
 mm2s.uncorrected.acc <- out$accuracy
-print(paste0("Accuracy: ", mm2s.corrected.acc))
+print(paste0("Accuracy: ", mm2s.uncorrected.acc))
 
 # output table
 mm2s.uncorrected <- out$merged.table
