@@ -23,9 +23,9 @@ bash run-collapse-rnaseq.sh -p <project_name> -l <library_strategy> -q <quatific
 
 Acceptable values for the options are below:
 
-<library_strategy> : 'polya', 'stranded'
-<quatification_type> : 'fpkm', 'tpm', 'expected_count'
-<type_of_data> : 'expression', 'counts'
+<library_strategy> : 'polya', 'stranded' <br>
+<quatification_type> : 'fpkm', 'tpm', 'expected_count' <br>
+<type_of_data> : 'expression', 'counts' <br>
 
 
 ### R scripts and notebook
