@@ -23,11 +23,11 @@ More scripts will be added for visualization.
 `results/shatterseek_results_per_chromosome.txt` : Each row includes ShatterSeek output for one chromosome from one sample. Note that ShatterSeek only reports one candidate chromothripsis region per chromosome, and it reports a row for each chromosome even if that chromosome doesn't have a chromothripsis region.
 
 Each row is also annotated with three columns indicating how this module classified the chromothripsis region:
+- `call_any_conf` : Chromothripsis call of any confidence (0=no, 1=yes)
 - `call_high_conf` : High-confidence chromothripsis call (0=no, 1=yes)
 - `call_low_conf` : Low-confidence chromothripsis call (0=no, 1=yes)
-- `call_any_conf` : Chromothripsis call of any confidence (0=no, 1=yes)
 
-`results/chromothripsis_summary_per_sample.txt` : Each row represents the summary of chromothripsis calls for one sample (mostly for internal plotting purposes).
+`results/chromothripsis_summary_per_sample.txt` : Each row reports the number of chromothripsis calls for one sample.
 - `count_regions_any_conf` : Number of chromothripsis calls of any confidence
 - `count_regions_high_conf` : Number of high-confidence chromothripsis calls
 - `count_regions_low_conf` : Number of low-confidence chromothripsis calls
