@@ -30,3 +30,8 @@ for strategy in ${libraryStrategies[@]}; do
     -t results/pbta-gene-counts-rsem-expected_count-collapsed_table.${strategy}.rds
 
 done
+
+# run the notebook for analysis of dropped genes
+Rscript -e "rmarkdown::render(input = '02-analyze-drops.Rmd', params = list(polya.annot.table = 'results/pbta-gene-counts-rsem-expected_count-collapsed_table.polya.rds', stranded.annot.table = 'results/pbta-gene-counts-rsem-expected_count-collapsed_table.stranded.rds'), clean = TRUE)"
+
+mv '02-analyze-drops.nb.html' 'results/expected_count-collapse-gene-drops.nb.html'

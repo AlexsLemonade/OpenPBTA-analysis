@@ -59,3 +59,18 @@ Output:
 - `results/pbta-gene-counts-rsem-expected_count-collapsed.stranded.rds`: collapsed stranded read count matrix
 - `results/pbta-gene-counts-rsem-expected_count-collapsed_table.polya.rds`
 - `results/pbta-gene-counts-rsem-expected_count-collapsed_table.stranded.rds`
+
+#### 02-analyze-drops.Rmd
+
+> this is used to display tables from 01-summarize_matrices.R
+
+Obtained from the OpenPBTA-analysis/analyses/collapse-rnaseq module.
+
+Input:
+
+- `results/pbta-gene-counts-rsem-expected_count-collapsed_table.polya.rds`
+- `results/pbta-gene-counts-rsem-expected_count-collapsed_table.stranded.rds`
+
+Output:
+
+- `results/expected_count-collapse-gene-drops.nb.html`: dropped gene report
