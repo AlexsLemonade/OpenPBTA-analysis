@@ -64,7 +64,8 @@ cnvconsensus <- cnvconsensus[!is.na(cnvconsensus$copy.num),]
 # Because the consensus CNV results include gaps, this threw off the ShatterSeek results. Samples with 
 # no CN changes (CN=2 for every segment) were called as having copy number oscillations.
 
-# To avoid this problem, this function merges consecutive CN segments that share the same CN value.
+# To avoid this problem, this function takes CNV data from a single sample and merges consecutive CN segments 
+# that share the same CN value.
 # There can be gaps of any length in between the segments - they just need to be consecutive (not adjacent) 
 # on the same chromosome and have the same copy number value.
 
@@ -126,7 +127,7 @@ mergeCNsegments <- function(cnv_df) {
   cnv_df_merged <- cnv_df[-rows_to_remove,]
   
   # Add merged rows to CNV df (first subset to the necessary columns)
-  cnv_df_merged <- cnv_df_merged[,c(2:4,7)]
+  cnv_df_merged <- cnv_df_merged[,c("chrom", "loc.start", "loc.end", "copy.num")]
   cnv_df_merged <- rbind(cnv_df_merged, merged_rows)
   
   # Reorder rows by chromosome and start position 
@@ -258,17 +259,16 @@ chromoth_combined$call_low_conf <- 0
 chromoth_combined[which(LC_cutoff & !(HC_cutoff1 | HC_cutoff2)), "call_low_conf"] <- 1
 
 ### Create new dataframe with sample-level summary
-# Count the number of chromothripsis regions per sample (high, low, or any confidence)
-# Create a summary variable indicating whether or not each sample has >=1 chromothripsis region of low or high confidence
 
+# Count the number of chromothripsis regions per sample (high, low, or any confidence)
 chromoth_per_sample <- chromoth_combined %>% 
   dplyr::group_by(Kids_First_Biospecimen_ID) %>%
   dplyr::summarize_at(c("call_any_conf", "call_high_conf", "call_low_conf"), sum)
-
 names(chromoth_per_sample) <- c("Kids_First_Biospecimen_ID", 
                                 "count_regions_any_conf", "count_regions_high_conf", "count_regions_low_conf")
 
-# Summary variable
+# Create a summary variable indicating whether a sample has no calls, >=1 low-confidence call, 
+# or >=1 high-confidence call
 chromoth_per_sample$any_regions <- "No Calls"
 chromoth_per_sample[chromoth_per_sample$count_regions_low_conf>0, "any_regions"] <- "Low Confidence"
 chromoth_per_sample[chromoth_per_sample$count_regions_high_conf>0, "any_regions"] <- "High Confidence"
