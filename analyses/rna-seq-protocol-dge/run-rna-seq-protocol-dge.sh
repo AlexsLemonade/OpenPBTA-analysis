@@ -35,3 +35,5 @@ done
 Rscript -e "rmarkdown::render(input = '02-analyze-drops.Rmd', params = list(polya.annot.table = 'results/pbta-gene-counts-rsem-expected_count-collapsed_table.polya.rds', stranded.annot.table = 'results/pbta-gene-counts-rsem-expected_count-collapsed_table.stranded.rds'), clean = TRUE)"
 
 mv '02-analyze-drops.nb.html' 'results/expected_count-collapse-gene-drops.nb.html'
+
+Rscript --vanilla 03-edger-protocol-dge.R
