@@ -72,7 +72,10 @@ prepare_maf_object <- function(maf_df,
         "Hom_Deletion",
         "Hem_Deletion",
         "Amp",
-        "Del"
+        "Del",
+        "Intron",
+        "5'Flank",
+        "3'Flank"
       )
     )
 

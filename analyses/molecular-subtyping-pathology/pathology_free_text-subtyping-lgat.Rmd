@@ -1,0 +1,203 @@
+---
+title: "Using WHO 2016 CNS subtypes to improve LGAT harmonized diagnosis"
+output: 
+  html_notebook:
+    toc: true
+    toc_float: true
+author: JN Taroni for ALSF CCDL (code) ; K Gaonkar updated for LGAT
+date: 2021
+---
+
+CNS lgat have subtypes per the [WHO 2016 CNS subtypes](https://link.springer.com/content/pdf/10.1007/s00401-016-1545-1.pdf). 
+However, these are not captured in our molecular data.
+Instead, we can use the pathology free text information in the histologies file to further classify the CNS lgat harmonized diagnosis information.
+We will use this notebook to do so; see [#1000](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1000) for more information.
+
+## Set Up
+
+### Libraries
+
+```{r}
+# Pipes
+library(magrittr)
+library(tidyverse)
+```
+
+### Input
+
+```{r}
+data_dir <- file.path("..", "..", "data")
+results_dir <- file.path("results")
+histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
+compiled_subtypes_file <- file.path(results_dir, "compiled_molecular_subtypes.tsv")
+```
+
+### Output
+
+```{r}
+results_dir <- "results"
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+output_file <- file.path(results_dir, "lgat-pathology-free-text-subtypes.tsv")
+```
+
+## Read in data
+
+```{r}
+histologies_df <- readr::read_tsv(histologies_file, guess_max = 10000,
+                                  col_types = readr::cols(
+                                    molecular_subtype = readr::col_character(),
+                                    integrated_diagnosis = readr::col_character(),
+                                    Notes = readr::col_character())) %>%
+  filter(sample_type != "Normal") %>%
+    select(Kids_First_Biospecimen_ID,
+         Kids_First_Participant_ID,
+         sample_id, 
+         pathology_diagnosis,
+         pathology_free_text_diagnosis,
+         tumor_descriptor) 
+  
+compiled_subtypes_df <- readr::read_tsv(compiled_subtypes_file)
+```
+
+### Display `pathology_free_text_diagnosis` values
+
+```{r}
+compiled_subtypes_df <- compiled_subtypes_df %>%
+  left_join(histologies_df) %>%
+  dplyr::filter(pathology_diagnosis == "Low-grade glioma/astrocytoma (WHO grade I/II)") 
+
+compiled_subtypes_df %>%
+  dplyr::select(pathology_free_text_diagnosis,integrated_diagnosis) %>%
+  dplyr::distinct()
+```
+
+## Recoding `integrated_diagnosis` 
+
+We use the following table from [#1000](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1000) to recode the `harmonized_diagnosis` values for samples with a `pathology_diagnosis` of LGAT:
+
+pathology_diagnosis | subtyping module | pathology_free_text_diagnosis | broad_histology | short_histology | integrated_diagnosis
+-- | -- | -- | -- | -- | --
+Low-grade glioma/astrocytoma (WHO grade I/II) | LGAT | contains "sega or subependymal giant cell astrocytoma" | Low grade astrocytic tumor | LGAT | Subependymal Giant Cell Astrocytoma, `molecular_subtype`
+Low-grade glioma/astrocytoma (WHO grade I/II) | LGAT | contains "fibrillary" | Low grade astrocytic tumor | LGAT | Diffuse fibrillary astrocytoma, `molecular_subtype`
+Low-grade glioma/astrocytoma (WHO grade I/II) | LGAT | gliomatosis cerebri, type 1, ia | Low grade astrocytic tumor | LGAT | Gliomatosis cerebri, `molecular_subtype`
+Low-grade glioma/astrocytoma (WHO grade I/II) | LGAT | if contains "jpa" or "juvenile astrocytoma" or "pilocytic" or "pilocystic" (typo) or "pilomyxoid" but does not contain "fibrillary" | Low grade astrocytic tumor | LGAT | Pilocytic astrocytoma, `molecular_subtype`
+Low-grade glioma/astrocytoma (WHO grade I/II) | LGAT | oligodendroglioma who ii | Diffuse astrocytic and oligodendroglial tumor | Oligodendroglioma | Oligodendroglioma, `molecular_subtype`
+Low-grade glioma/astrocytoma (WHO grade I/II) | LGAT | if contains "pxa" or "pleomorphic xanthoastrocytoma" | Low grade astrocytic tumor | LGAT | Pleomorphic xanthoastrocytoma, `molecular_subtype`
+
+```{r}
+
+#' @description CNS tumors have subtypes as per the [WHO 2016 CNS subtypes](https://link.springer.com/content/pdf/10.1007/s00401-016-1545-1.pdf). 
+#' However, these are not captured in our molecular data so would need to be updated by
+#' searching for terms in the reported pathology_free_text_diagnosis column in OpenPBTA histology file.
+#' recode_integrated_diagnosis() can be used to recode a integreated_diagnosis based on the
+#' pathology_free_text_diagnosis in addition to molecular subtypes.
+#' @param histologies_df : Dataframe with Kids_First_Biospecimen_ID,Kids_First_Participant_ID,
+#' sample_id,tumor_descriptor,pathology_free_text_diagnosis,broad_histology,short_histology,
+#' molecular_subtype,integrated_diagnosis
+#' @param pathology_diagnois : A term to filter histologies_df to samples that will be recoded
+#' @param include_path_free_text_dx_terms : Regex term to match with values 
+#' in pathology_free_text_diagnosis in histologies_df to be included in the recoding analysis
+#' @param exclude_path_free_text_dx_terms : Default = NULL; Regex term to match with values in 
+#' pathology_free_text_diagnosis in histologies_df to be excluded from the recoding analysis
+#' @param old_integrated_diagnosis_term : Old term in integrated_diagnosis that should be replaced 
+#' by replace_integrated_diagnosis_term.
+#' @param replace_integrated_diagnosis_term : New term for integrated_diagnosis that will replace 
+#' an old integrated_term, if value in integrated_diagnosis in input histologies_df is NA then 
+#' replace_integrated_diagnosis_term will replace NA.
+
+
+source(file.path("utils","recode_integrated_diagnosis.R"))
+
+```
+
+### Recoding sample with "sega|subependymal giant cell astrocytoma" in pathology_free_text_diagnosis
+
+```{r}
+
+lgat_sega_df <- recode_integrated_diagnosis(histologies_df = compiled_subtypes_df,
+                                   pathology_diagnosis = "Low-grade glioma/astrocytoma (WHO grade I/II)",
+                                   include_path_free_text_dx_terms = "sega|subependymal giant cell astrocytoma",
+                                   old_integrated_diagnosis_term = "Low-grade glioma/astrocytoma",
+                                   replace_integrated_diagnosis_term = "Subependymal Giant Cell Astrocytoma")
+lgat_sega_df
+```
+
+### Recoding samples with "fibrillary" in pathology_free_text_diagnosis
+
+```{r}
+lgat_fibrillary_df <- recode_integrated_diagnosis(histologies_df = compiled_subtypes_df,
+                                   pathology_diagnosis = "Low-grade glioma/astrocytoma (WHO grade I/II)",
+                                   include_path_free_text_dx_terms = "fibrillary",
+                                   old_integrated_diagnosis_term = "Low-grade glioma/astrocytoma",
+                                   replace_integrated_diagnosis_term = "Diffuse fibrillary astrocytoma")
+lgat_fibrillary_df
+```
+
+
+### Recoding samples with "gliomatosis cerebri, type 1, ia" in pathology_free_text_diagnosis
+```{r}
+lgat_gliomatosis_cerebri_df <- recode_integrated_diagnosis(histologies_df = compiled_subtypes_df,
+                                   pathology_diagnosis = "Low-grade glioma/astrocytoma (WHO grade I/II)",
+                                   include_path_free_text_dx_terms = "gliomatosis cerebri, type 1, ia",
+                                   old_integrated_diagnosis_term = "Low-grade glioma/astrocytoma",
+                                   replace_integrated_diagnosis_term = "Gliomatosis cerebri")
+
+lgat_gliomatosis_cerebri_df
+```
+
+### Recoding samples with ""jpa" or "juvenile astrocytoma" or "pilocytic" or "pilocystic" (typo) or "pilomyxoid" but does not contain "fibrillary"" in pathology_free_text_diagnosis
+```{r}
+lgat_pilocytic_df <- recode_integrated_diagnosis(histologies_df = compiled_subtypes_df,
+                                   pathology_diagnosis = "Low-grade glioma/astrocytoma (WHO grade I/II)",
+                                   include_path_free_text_dx_terms = "jpa|juvenile astrocytoma|juvenile astocytoma|pilocytic|pilocystic|pilocytioc|pilomyxoid|piloxymoid",
+                                   exclude_path_free_text_dx_term = "fibrillary",
+                                   old_integrated_diagnosis_term = "Low-grade glioma/astrocytoma",
+                                   replace_integrated_diagnosis_term = "Pilocytic astrocytoma")
+
+lgat_pilocytic_df
+```
+
+
+### Recoding samples with "oligodendroglioma who ii" in pathology_free_text_diagnosis
+```{r}
+lgat_oligodendroglioma_df <- recode_integrated_diagnosis(histologies_df = compiled_subtypes_df,
+                                   pathology_diagnosis = "Low-grade glioma/astrocytoma (WHO grade I/II)",
+                                   include_path_free_text_dx_terms = "oligodendroglioma who ii",
+                                   old_integrated_diagnosis_term = "Low-grade glioma/astrocytoma",
+                                   replace_integrated_diagnosis_term = "Oligodendroglioma")
+
+lgat_oligodendroglioma_df
+```
+
+### Recoding samples with "pxa" or "pleomorphic xanthoastrocytoma" in pathology_free_text_diagnosis
+```{r}
+lgat_pleomorphic_xanthoastrocytoma_df <- recode_integrated_diagnosis(histologies_df = compiled_subtypes_df,
+                                   pathology_diagnosis = "Low-grade glioma/astrocytoma (WHO grade I/II)",
+                                   include_path_free_text_dx_terms = "pleomorphic xanthroastrocytoma|pleomorphic xantoastrocytoma|pleomorphic xanthoastrocytoma|pxa",
+                                   old_integrated_diagnosis_term = "Low-grade glioma/astrocytoma",
+                                   replace_integrated_diagnosis_term = "Pleomorphic xanthoastrocytoma")
+
+lgat_pleomorphic_xanthoastrocytoma_df
+```
+
+
+Add recoded LGAT to a new file
+
+```{r}
+bind_rows(lgat_sega_df,
+          lgat_fibrillary_df,
+          lgat_gliomatosis_cerebri_df,
+          lgat_pilocytic_df,
+          lgat_oligodendroglioma_df,
+          lgat_pleomorphic_xanthoastrocytoma_df) %>%
+  arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_tsv(output_file)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
