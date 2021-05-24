@@ -33,6 +33,12 @@ counts <- cbind(
 )
 group <- factor(c(rep("stranded", 6), rep("polya", 6)))
 
+# sample_prot is used to select stably expressed genes
+sample_prot <- c('s1_stranded', 's2_stranded', 's3_stranded',
+                 's4_stranded', 's5_stranded', 's6_stranded',
+                 's1_polya', 's2_polya', 's3_polya',
+                 's4_polya', 's5_polya', 's6_polya')
+
 ### build uq.pgQ2 normalized DGEList
 counts_object = DGEList(counts = counts, group = group)
 counts_object <- counts_object[
@@ -200,4 +206,139 @@ p <- ggplot(qlft_top_tags$table, aes(x=PValue)) +
 ggsave('plots/stranded_vs_polya_dge_ql_ftest_pvals_histogram.png', dpi = 300,
        plot = p, width = 8, height = 7)
 
+#------------ Select stably expressed genes --------------------
+print('Select stably expressed genes in stranded and poly-A libraries...')
+# merge exact test result, LRT result, QL F-test result, and read counts into
+# a single data_frame
+
+# exact test data frame
+et_m_df <- et_out_df[, c('stranded_over_polya_logFC',
+                         'average_logCPM', 'PValue')]
+colnames(et_m_df) <- c('stranded_over_polya_logFC',
+                       'average_logCPM', 'exact_test_pval')
+et_m_df <- rownames_to_column(et_m_df, 'gene')
+# LRT data frame
+lrt_m_df <- lrt_out_df[, c('PValue'), drop=FALSE]
+colnames(lrt_m_df) <- c('lrt_pval')
+lrt_m_df <- rownames_to_column(lrt_m_df, 'gene')
+# QL F-test data frame
+qlft_m_df <- qlft_out_df[, c('PValue'), drop=FALSE]
+colnames(qlft_m_df) <- c('qlft_pval')
+qlft_m_df <- rownames_to_column(qlft_m_df, 'gene')
+
+# normalized read count data frame
+norm_cnt_df <- data.frame(counts_object$counts)
+cnt_m_df <- norm_cnt_df[lrt_m_df$gene, ]
+# assert samples in cnt_m_df are in the same order as sample_prot
+stopifnot(identical(colnames(cnt_m_df),
+                    c("BS_HE0WJRW6", "BS_SHJA4MR0", "BS_FN07P04C",
+                      "BS_8QB4S4VA", "BS_KABQQA0T", "BS_D7XRFE0R",
+                      "BS_HWGWYCY7", "BS_X0XXN9BK", "BS_W4H1D4Y6",
+                      "BS_QKT3TJVK", "BS_7WM3MNZ0", "BS_68KX6A42")))
+# sample_prot defined at top when reading data
+colnames(cnt_m_df) <- paste(sample_prot, colnames(norm_cnt_df),
+                            sep='_')
+# coefficient of variation data frame
+coeff_var <- function(x, na.rm = FALSE)  {
+    return(sd(x, na.rm = na.rm) / mean(x, na.rm = na.rm))
+}
+coeff_var_df <- data.frame(normalized_count_cv = apply(cnt_m_df, 1, coeff_var))
+coeff_var_df <- rownames_to_column(coeff_var_df, 'gene')
+
+cnt_m_df <- rownames_to_column(cnt_m_df, 'gene')
+# merge
+seg_df <- Reduce(function(x, y) merge(x, y, by = 'gene'),
+                 list(et_m_df, lrt_m_df, qlft_m_df, coeff_var_df, cnt_m_df))
+
+# plot and save CV histogram
+p <- ggplot(seg_df, aes(x=normalized_count_cv)) +
+    geom_histogram(binwidth = 0.1, center = 0.05) +
+    theme_classic() +
+    scale_x_continuous(expand = expand_scale(mult = c(0, 0.02)),
+                       breaks = seq(0, 3, 0.5)) +
+    scale_y_continuous(expand = expand_scale(mult = c(0, 0.05))) +
+    xlab('Normalized count coefficient of variation\nof each gene') +
+    ylab('Gene count') +
+    ggtitle(paste0('Histogram of normalized count coefficient\n',
+                   'of variation of each gene')) +
+    theme(text = element_text(size=15))
+ggsave('plots/normalized_count_gene_cv_histogram.png', dpi = 300,
+       plot = p, width = 8, height = 5)
+
+# plot and save logFC histogram
+p <- ggplot(seg_df, aes(x=stranded_over_polya_logFC)) +
+    geom_histogram(binwidth = 0.2, center = 0.1) +
+    theme_classic() +
+    scale_x_continuous(expand = expand_scale(mult = c(0, 0.02)),
+                       limits = c(-8, 8)) +
+    scale_y_continuous(expand = expand_scale(mult = c(0, 0.05))) +
+    xlab('edgeR DGE logFC of each gene') +
+    ylab('Gene count') +
+    ggtitle('Histogram of edgeR DGE logFC ') +
+    theme(text = element_text(size=15))
+suppressWarnings(ggsave('plots/edger_logfc_histogram.png', dpi = 300,
+                        plot = p, width = 8, height = 5))
+
+# select CV < 0.5
+seg_df <- seg_df[seg_df$normalized_count_cv < 0.5, ]
+# select pval > 0.05
+seg_df <- seg_df[seg_df$lrt_pval > 0.05 & seg_df$exact_test_pval > 0.05 &
+                     seg_df$qlft_pval > 0.05, ]
+# select abs(logFC) < 0.5
+seg_df <- seg_df[abs(seg_df$stranded_over_polya_logFC) < 0.5, ]
+# select average_logCPM > 0.75
+seg_df <- seg_df[seg_df$average_logCPM > 0.8, ]
+# order by CV
+seg_df <- seg_df[order(seg_df$normalized_count_cv), ]
+rownames(seg_df) <- NULL
+
+write.csv(seg_df, file = 'results/stranded_vs_polya_stably_exp_genes.csv')
+
+get_ge_boxplot <- function(df_row) {
+    stopifnot(identical(nrow(df_row), as.integer(1)))
+    gid <- df_row[, 'gene']
+    plot_df <- df_row[, c("s1_stranded_BS_HE0WJRW6",
+                         "s2_stranded_BS_SHJA4MR0", "s3_stranded_BS_FN07P04C",
+                         "s4_stranded_BS_8QB4S4VA",
+                         "s5_stranded_BS_KABQQA0T", "s6_stranded_BS_D7XRFE0R",
+                         "s1_polya_BS_HWGWYCY7",
+                         "s2_polya_BS_X0XXN9BK", "s3_polya_BS_W4H1D4Y6",
+                         "s4_polya_BS_QKT3TJVK",
+                         "s5_polya_BS_7WM3MNZ0", "s6_polya_BS_68KX6A42")]
+    # wide to long
+    plot_df <- gather(plot_df)
+    sid_match_res <- str_match(plot_df$key, '^(s[0-9])_([a-z]+)_(.+)$')
+    plot_df$sample_id <- sid_match_res[, 2]
+    plot_df$protocol <- sid_match_res[, 3]
+    plot_df$bio_id <- sid_match_res[, 4]
+
+    p <- plot_df %>%
+        ggplot(aes(protocol, value, label = bio_id)) +
+        geom_boxplot() +
+        geom_point() +
+        geom_line(aes(group=sample_id)) +
+        geom_text(check_overlap = FALSE, angle = 0, hjust = 0,
+                  nudge_x = 0.03, size=3) +
+        theme(legend.position = "none") +
+        xlab('RNA-seq library protocol') +
+        ylab('Normalized read count') +
+        ggtitle(paste0(gid, '\nLines connect biospecimens\n',
+                       'with the same sample IDs')) +
+        theme_classic() +
+        theme(text = element_text(size=15))
+    return(p)
+}
+
+seg_plot_outdir <- file.path('plots', 'stably_exp_gene_protocol_diff_boxplot')
+dir.create(seg_plot_outdir, showWarnings = FALSE)
+
+res <- sapply(1:30, function(i) {
+    gid <- seg_df[i, 'gene']
+    p <- get_ge_boxplot(seg_df[i, ])
+    ggsave(file.path(seg_plot_outdir,
+                     paste0(gid,
+                            '_normalized_count_protocol_diff_boxplot.png')),
+           dpi = 300, plot = p, width = 5, height = 5)
+    return(TRUE)
+})
 print('Done.')
