@@ -3,7 +3,7 @@
 - release date: 2021-05-21
 - status: available
 - changes:
-  - Added files below:
+  - Released files below:
 open-targets
 ```
 └── v3
