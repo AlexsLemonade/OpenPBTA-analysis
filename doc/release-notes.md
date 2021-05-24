@@ -3,6 +3,8 @@
 - release date: 2021-05-21
 - status: available
 - changes:
+  - Update files due to addition of `SSF` column name 
+    -  kfnbl-snv-vardict.vep.maf.gz
   - Released files below:
 open-targets
 ```
