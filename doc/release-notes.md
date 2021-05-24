@@ -1,5 +1,16 @@
 # release notes
 ## current release
+- release date: 2021-05-21
+- status: available
+- changes:
+  - Added files below:
+open-targets
+```
+└── v3
+   └── kfnbl-gene-counts-rsem-expected_count-collapsed.stranded.rds
+```
+
+## archived release
 ### release-v2
 - release date: 2021-05-18
 - status: available
