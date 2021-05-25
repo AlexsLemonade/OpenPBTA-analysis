@@ -140,7 +140,8 @@ compiled_subtypes_df <- compiled_subtypes_df %>%
 
 compiled_subtypes_df <- compiled_subtypes_df %>% 
   # append
-  bind_rows(choroid_plexus_papilloma_subtypes_df) 
+  bind_rows(choroid_plexus_papilloma_subtypes_df) %>%
+  select(-pathology_diagnosis,-pathology_free_text_diagnosis)
 
 ```
 
