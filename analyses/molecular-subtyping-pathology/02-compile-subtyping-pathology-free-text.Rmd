@@ -98,7 +98,8 @@ compiled_subtypes_df <- compiled_subtypes_df %>%
   # remove old data
   dplyr::filter(!Kids_First_Biospecimen_ID %in% glialnueronal_recode_df$Kids_First_Biospecimen_ID) %>%
   # replace 
-  bind_rows(glialnueronal_recode_df) 
+  bind_rows(glialnueronal_recode_df)  %>%
+  select(-pathology_diagnosis,-pathology_free_text_diagnosis)
 
 ```
 
