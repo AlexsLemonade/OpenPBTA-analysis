@@ -11,7 +11,7 @@ analyses/molecular-subtyping-pathology/results/lgat-pathology-free-text-subtypes
 analyses/molecular-subtyping-pathology/results/cranio_adam_subtypes.tsv #823  | Update existing values | CRANIO | #994
 analyses/molecular-subtyping-pathology/results/glialneuronal_tumor_subtypes.tsv  | Update existing values | LGAT | #1017 
 
-The following subtypes can be directly added to 'analyses/molecular-subtyping-pathology/results/compiled_molecular_subtypes.tsv` as well since these subtypes don't have molecular-subtyping results
+The following subtypes can be directly added to `analyses/molecular-subtyping-pathology/results/compiled_molecular_subtypes.tsv` as well since these subtypes don't have molecular-subtyping results
  
 File | Logic to include as results |  Description ticket 
  -- | -- | -- 
