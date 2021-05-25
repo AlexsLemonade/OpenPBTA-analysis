@@ -119,8 +119,8 @@ output_file <- file.path(results_dir,
 
 ```{r message=FALSE}
 histologies_df <- read_tsv(histologies_file, guess_max = 10000)
-compiled_df <- read_tsv(compiled_results_file)
-fusions_df <- read_tsv(fusions_file)
+compiled_df <- read_tsv(compiled_results_file, guess_max = 10000)
+fusions_df <- read_tsv(fusions_file, guess_max = 10000)
 ```
 
 ## Revise subtyping calls based on pathology feedback

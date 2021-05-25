@@ -69,7 +69,7 @@ results_dir <- "results"
 ```{r}
 # clinical pbta histology
 clinical <- readr::read_tsv(file.path(data_dir,
-                                "pbta-histologies-base.tsv")) 
+                                "pbta-histologies-base.tsv"), guess_max = 10000) 
 
 ```
 
@@ -86,7 +86,7 @@ pnoc003_review <- readr::read_tsv(file.path("input","pnoc003-clinical-review.tsv
   
 # subtyping from molecular-subtype-HGG
 subtype <- readr::read_tsv(file.path(results_dir,
-                         "compiled_molecular_subtypes_and_report_info.tsv")) 
+                         "compiled_molecular_subtypes_and_report_info.tsv"),guess_max = 10000) 
 
 ```
 
