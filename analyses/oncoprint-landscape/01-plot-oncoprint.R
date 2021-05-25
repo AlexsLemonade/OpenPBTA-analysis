@@ -144,7 +144,10 @@ maf_df <- data.table::fread(opt$maf_file,
 
 # Read in cnv file
 if (!is.null(opt$cnv_file)) {
-  cnv_df <- readr::read_tsv(opt$cnv_file)
+  cnv_df <- readr::read_tsv(opt$cnv_file) %>%
+    dplyr::mutate(Variant_Classification = dplyr::case_when(Variant_Classification == "loss" ~ "Del",
+                                                            Variant_Classification %in% c("gain", "amplification") ~ "Amp",
+                                                            TRUE ~ as.character(Variant_Classification)))
 }
 
 # Read in fusion file and join
