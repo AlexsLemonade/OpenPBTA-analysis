@@ -52,6 +52,7 @@ Rscript --vanilla 01-map-to-sample_id.R \
 
 Rscript --vanilla 01-map-to-sample_id.R \
   --maf_file ${maf_consensus} \
+  --hotspots_maf_file ${hotspots_maf} \
   --cnv_autosomes_file ${consensus_seg_autosomes_cnv_file} \
   --cnv_xy_file ${consensus_seg_cnv_xy_cnv_file} \
   --fusion_file ${fusion_file} \
