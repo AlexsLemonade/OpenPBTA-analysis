@@ -13187,7 +13187,8 @@ div#notebook {
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">prioritizing_PT_EPN</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">sample_list</span><span class="p">):</span>
-    <span class="k">if</span><span class="p">((</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;CXorf67_expr_zscore&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">3</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;1q_gain&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span>
+    <span class="k">if</span><span class="p">(</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;CXorf67_expr_zscore&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">3</span> <span class="ow">or</span>
+        <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;CXorf67_expr_zscore&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">3</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;1q_gain&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span>
         <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;TKTL1_expr_zscore&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">3</span>  <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;1q_gain&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)):</span>
         <span class="n">sample_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;sample_id&quot;</span><span class="p">])</span>
         <span class="k">return</span><span class="p">(</span><span class="s2">&quot;EPN, PF A&quot;</span><span class="p">)</span>
@@ -13665,7 +13666,7 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>31
+<pre>32
 </pre>
 </div>
 </div>
@@ -13720,6 +13721,30 @@ div#notebook {
   </thead>
   <tbody>
     <tr>
+      <th>9</th>
+      <td>PT_2CJ31SBX</td>
+      <td>7316-3624</td>
+      <td>BS_JC2187NA</td>
+      <td>BS_KDSTG5YY</td>
+      <td>infratentorial</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>-0.627743</td>
+      <td>-0.537545</td>
+      <td>-0.167499</td>
+      <td>-0.245109</td>
+      <td>3.660424</td>
+      <td>0.451639</td>
+      <td>0.499846</td>
+      <td>-0.181477</td>
+      <td>EPN, PF A</td>
+    </tr>
+    <tr>
       <th>91</th>
       <td>PT_ZA95JQEB</td>
       <td>7316-384</td>
@@ -13769,7 +13794,7 @@ div#notebook {
     </tr>
   </tbody>
 </table>
-<p>2 rows × 34 columns</p>
+<p>3 rows × 34 columns</p>
 </div>
 </div>
 
@@ -13885,7 +13910,7 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>31
+<pre>32
 </pre>
 </div>
 </div>
@@ -13928,7 +13953,7 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>31
+<pre>32
 </pre>
 </div>
 </div>
@@ -14391,11 +14416,11 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>There are a total of 98 samples out of which 63 samples were not assigned any subgroup
+<pre>There are a total of 98 samples out of which 62 samples were not assigned any subgroup
 Number of samples under each subgroup
 EPN, ST RELA : 29
 EPN, ST YAP1 : 4 
-EPN, PF A : 2
+EPN, PF A : 3
 EPN, PF B : 0
 </pre>
 </div>
