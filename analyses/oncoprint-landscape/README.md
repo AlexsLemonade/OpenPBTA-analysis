@@ -34,10 +34,10 @@ bash run-oncoprint.sh
 │   ├── brain-goi-list-long.txt
 │   └── brain-goi-list-short.txt
 ├── plots
-│   ├── all_participants_primary-plus_goi_oncoprint.png
-│   ├── all_participants_primary-plus_oncoprint.png
-│   ├── all_participants_primary_only_goi_oncoprint.png
-│   └── all_participants_primary_only_oncoprint.png
+│   ├── primary-plus_goi_oncoprint.png
+│   ├── primary-plus_oncoprint.png
+│   ├── primary_only_goi_oncoprint.png
+│   └── primary_only_oncoprint.png
 ├── run-oncoprint.sh
 └── util
     └── oncoplot-functions.R
