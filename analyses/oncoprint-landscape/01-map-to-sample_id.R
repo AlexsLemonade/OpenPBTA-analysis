@@ -34,6 +34,12 @@ option_list <- list(
     help = "file path to MAF file that contains SNV information",
   ),
   optparse::make_option(
+    c("--hotspots_maf_file"),
+    type = "character",
+    default = NULL,
+    help = "file path to an optional hotspots MAF file that contains only SNV hotspots calls",
+  ),
+  optparse::make_option(
     c("--cnv_autosomes_file"),
     type = "character",
     default = NULL,
@@ -98,7 +104,31 @@ cnv_output <- file.path(output_dir, paste0(opt$filename_lead, "_cnv.tsv"))
 #### Read in data --------------------------------------------------------------
 histologies_df <- readr::read_tsv(opt$metadata_file, guess_max = 10000)
 
-maf_df <- readr::read_tsv(opt$maf_file)
+# Only keep required maf columns 
+keep_cols <-c("Hugo_Symbol", 
+              "Chromosome",
+              "Start_Position",
+              "End_Position",
+              "Reference_Allele",
+              "Tumor_Seq_Allele2",
+              "Variant_Classification",
+              "Variant_Type",
+              "Tumor_Sample_Barcode",
+              "HGVSp_Short")
+
+maf_df <- readr::read_tsv(opt$maf_file) %>%
+  select(keep_cols)
+
+if(!is.null(opt$hotspots_maf_file)){
+  hotspots_maf_df <- readr::read_tsv(opt$hotspots_maf_file) %>%
+    select(keep_cols)
+  
+  # merge hotspots maf to input maf
+  maf_df <- maf_df %>%
+    bind_rows(hotspots_maf_df) %>%
+    unique()
+}
+
 opt$cnv_autosomes_file
 cnv_autosomes_df <- readr::read_tsv(opt$cnv_autosomes_file) %>%
   left_join(select(histologies_df,c("Kids_First_Biospecimen_ID","germline_sex_estimate")),
