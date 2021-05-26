@@ -99,6 +99,7 @@ cnv_output <- file.path(output_dir, paste0(opt$filename_lead, "_cnv.tsv"))
 histologies_df <- readr::read_tsv(opt$metadata_file, guess_max = 10000)
 
 maf_df <- readr::read_tsv(opt$maf_file)
+opt$cnv_autosomes_file
 cnv_autosomes_df <- readr::read_tsv(opt$cnv_autosomes_file) %>%
   left_join(select(histologies_df,c("Kids_First_Biospecimen_ID","germline_sex_estimate")),
                    by=c("biospecimen_id"="Kids_First_Biospecimen_ID")
@@ -295,7 +296,7 @@ cnv_df <- cnv_df %>%
                     Kids_First_Biospecimen_ID,
                     sample_id),
              by = c("biospecimen_id"="Kids_First_Biospecimen_ID")) %>%
-  mutate(Tumor_Sample_Barcode =  biospecimen_id) %>%
+  mutate(Tumor_Sample_Barcode =  sample_id) %>%
   rename(Variant_Classification = status,
          Hugo_Symbol = gene_symbol) %>%
   select(Hugo_Symbol, Tumor_Sample_Barcode, Variant_Classification)

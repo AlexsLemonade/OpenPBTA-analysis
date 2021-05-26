@@ -245,6 +245,7 @@ maf_object <- prepare_maf_object(
   fusion_df = fusion_df
 )
 
+
 #### Subset MAF Object (Optional)----------------------------------------------
 
 # Code here is specifically adapted from:
