@@ -7,7 +7,7 @@ name: CI
 # master when the Dockerfile or renv.lock file changes.
 on:
   pull_request:
-    branches: [ master ]
+    branches: [ dev ]
     paths: [ Dockerfile, renv.lock ]
 
   # Allows you to run this workflow manually from the Actions tab
