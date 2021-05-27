@@ -50,6 +50,11 @@ This above  script is designed to change to this directory to run, so it should 
                 </tr>
                 <tr>
                     <td>EPN, PF A</td>
+                    <td>CXorf67_expr_zscore>3</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>EPN, PF A</td>
                     <td>CXorf67_expr_zscore>3 and 1q_gain>0</td>
                     <td>Yes</td>
                 </tr>
