@@ -81,9 +81,9 @@ if (!file.exists(annotation_file)) {
 }
 
 # exon regions
-exon <- exonicParts(txdb, linked.to.single.gene.only=FALSE)
+exon <- GenomicFeatures::exonicParts(txdb, linked.to.single.gene.only=FALSE)
 # intron regions
-intron <- intronicParts(txdb, linked.to.single.gene.only=FALSE)
+intron <- GenomicFeatures::intronicParts(txdb, linked.to.single.gene.only=FALSE)
 
 ```
 
