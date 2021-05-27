@@ -206,7 +206,7 @@ jobs:
 
       - run:
           name: Add Shatterseek
-          command: ./scripts/run_in_ci.sh Rscript analyses/chromothripsis/02-shatterseek.R
+          command: ./scripts/run_in_ci.sh Rscript analyses/chromothripsis/02-run-shatterseek-and-classify-confidence.R
 
       - run:
           name: Telomerase activity
