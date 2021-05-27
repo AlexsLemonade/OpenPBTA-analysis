@@ -44,8 +44,8 @@ PT_0WMP712K	7316-922	BS_KAZENYZE	MB, SHH	Medulloblastoma, SHH-activated	Medullob
 PT_0XN6EYXZ	7316-3512	BS_9F2J6VS1	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_12JTZFC2	7316-3504	BS_42DY6WS7	LGG, KIAA1549-BRAF	Pilocytic astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
 PT_12JTZFC2	7316-3504	BS_P0KQFXNC	LGG, KIAA1549-BRAF	Pilocytic astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
-PT_13MKXR8G	7316-2251	BS_CXCKHP3Z	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_13MKXR8G	7316-2251	BS_FEYMKEK8	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
+PT_13MKXR8G	7316-2251	BS_CXCKHP3Z	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_13MKXR8G	7316-2251	BS_FEYMKEK8	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
 PT_164RNWTT	7316-1078	BS_0BXY0F9N	EPN, To be classified	NA	Ependymoma	Ependymal tumor	NA	Initial CNS Tumor	NA
 PT_164RNWTT	7316-1078	BS_5D24XV4T	EPN, To be classified	NA	Ependymoma	Ependymal tumor	NA	Initial CNS Tumor	NA
 PT_17NG0KW3	7316-1945	BS_YETBN0RQ	MB, WNT	Medulloblastoma, WNT-activated	Medulloblastoma	Embryonal tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
@@ -96,8 +96,8 @@ PT_1ZAWNGWT	7316-319	BS_4GTESTSE	LGG, IDH	Low-grade glioma/astrocytoma, IDH	Gang
 PT_1ZAWNGWT	7316-319	BS_6X2BQQGE	LGG, IDH	Low-grade glioma/astrocytoma, IDH	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive	NA
 PT_1ZAWNGWT	7316-3345	BS_23W9EPFE	LGG, IDH	Low-grade glioma/astrocytoma, IDH	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_1ZAWNGWT	7316-3345	BS_4DTX295Z	LGG, IDH	Low-grade glioma/astrocytoma, IDH	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
-PT_20ZM6THA	7316-3629	BS_9X9E86DY	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Recurrence	Glial-neuronal tumor NOS
-PT_20ZM6THA	7316-3629	BS_E94QRJDW	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Recurrence	Glial-neuronal tumor NOS
+PT_20ZM6THA	7316-3629	BS_9X9E86DY	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	Updated via pathology_free_text_diagnosis	Recurrence	Glial-neuronal tumor NOS
+PT_20ZM6THA	7316-3629	BS_E94QRJDW	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	Updated via pathology_free_text_diagnosis	Recurrence	Glial-neuronal tumor NOS
 PT_218SX3G4	7316-529	BS_6T4JGBGY	CNS Embryonal, NOS	CNS Embryonal tumor, NOS	Embryonal tumor	Embryonal tumor	Updated via OpenPBTA subtyping	Progressive	NA
 PT_23K3YS1P	7316-189	BS_G23JJAZY	EPN, ST RELA	Ependymoma, Supratentorial, RELA fusion positive	Ependymoma	Ependymal tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_23K3YS1P	7316-189	BS_BBCM52QE	EPN, ST RELA	Ependymoma, Supratentorial, RELA fusion positive	Ependymoma	Ependymal tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
@@ -337,7 +337,7 @@ PT_6N1QWCXE	7316-3169	BS_4HQ3T2NC	LGG, KIAA1549-BRAF	Pilocytic astrocytoma, KIAA
 PT_6N1QWCXE	7316-3169	BS_D2BZ25FW	LGG, KIAA1549-BRAF	Pilocytic astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
 PT_6PP78VNE	7316-1893	BS_M85CXHDV	HGG, To be classified	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Recurrence	NA
 PT_6PP78VNE	7316-1893	BS_6VPKXXMR	HGG, To be classified	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Recurrence	NA
-PT_6PYNBA9C	7316-853	BS_NQFH3GZH	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
+PT_6PYNBA9C	7316-853	BS_NQFH3GZH	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
 PT_6Q0NPVP3	7316-2255	BS_5JM573JC	LGG, H3	Low-grade glioma/astrocytoma, H3	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_6Q0NPVP3	7316-2255	BS_E5H6CFYT	LGG, H3	Low-grade glioma/astrocytoma, H3	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_6R95FQT2	7316-459	BS_8VAZSJEN	LGG, KIAA1549-BRAF	Pilocytic astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
@@ -439,8 +439,8 @@ PT_8VRZRZ7R	7316-536	BS_8QB4S4VA	CNS Embryonal, NOS	CNS Embryonal tumor, NOS	Emb
 PT_8VRZRZ7R	7316-536	BS_QKT3TJVK	CNS Embryonal, NOS	CNS Embryonal tumor, NOS	Embryonal tumor	Embryonal tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_8XZY6MM1	7316-957	BS_T4JFN54G	LGG, wildtype	Low-grade glioma/astrocytoma, wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_8XZY6MM1	7316-957	BS_WB8P21ED	LGG, wildtype	Low-grade glioma/astrocytoma, wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
-PT_90W4HCNR	7316-2672	BS_JX449BF5	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_90W4HCNR	7316-2672	BS_M1TDS9CT	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
+PT_90W4HCNR	7316-2672	BS_JX449BF5	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_90W4HCNR	7316-2672	BS_M1TDS9CT	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
 PT_94EHCMXA	7316-217	BS_V7BJM89K	LGG, NF1-germline	Low-grade glioma/astrocytoma, NF1-germline	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive	NA
 PT_94EHCMXA	7316-217	BS_S88G7BXH	LGG, NF1-germline	Low-grade glioma/astrocytoma, NF1-germline	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive	NA
 PT_95S99RWE	7316-323	BS_HYGK88B0	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Recurrence	NA
@@ -508,7 +508,7 @@ PT_A594A46X	7316-91	BS_6Y7FX7QJ	LGG, other MAPK	Low-grade glioma/astrocytoma, ot
 PT_A9F8Y6MA	7316-476	BS_4C4MZ4NT	LGG, KIAA1549-BRAF	Pilocytic astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
 PT_A9F8Y6MA	7316-476	BS_ZKZACPVV	LGG, KIAA1549-BRAF	Pilocytic astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
 PT_ABMAQYY2	7316-842	BS_Y8D1F5WW	MB, Group4	Medulloblastoma, group 4	Medulloblastoma	Embryonal tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Recurrence	NA
-PT_ABV3RS3T	7316-471	BS_0GDJQANN	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
+PT_ABV3RS3T	7316-471	BS_0GDJQANN	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
 PT_AC5SD9AC	7316-2291	BS_66HQ3E4Z	LGG, KIAA1549-BRAF	Pilocytic astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
 PT_AC5SD9AC	7316-2291	BS_VPJ9CARN	LGG, KIAA1549-BRAF	Pilocytic astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
 PT_ADTP7EHN	7316-1664	BS_K7MVS0Z7	LGG, KIAA1549-BRAF	Pilocytic astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
@@ -526,8 +526,8 @@ PT_AWMZ12NP	7316-2203	BS_N8WXTFN4	LGG, wildtype	Low-grade glioma/astrocytoma, wi
 PT_AWMZ12NP	7316-2216	BS_S9929Z8B	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive	NA
 PT_AWMZ12NP	7316-2216	BS_FJEBFQHG	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive	NA
 PT_AYVKQZRB	7316-612	BS_T0RKFEKR	LGG, KIAA1549-BRAF	Pilocytic astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
-PT_AYZA2WCW	7316-197	BS_0Q8G4N8H	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_AYZA2WCW	7316-197	BS_ZN8136D9	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
+PT_AYZA2WCW	7316-197	BS_0Q8G4N8H	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_AYZA2WCW	7316-197	BS_ZN8136D9	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
 PT_AZQ230WT	7316-443	BS_XQYHPBFS	EPN, To be classified	NA	Ependymoma	Ependymal tumor	NA	Initial CNS Tumor	NA
 PT_B0JFCN5W	7316-1773	BS_JX7S9MY7	CRANIO, To be classified	NA	Craniopharyngioma	Tumors of sellar region	NA	Initial CNS Tumor	NA
 PT_B0JFCN5W	7316-1773	BS_BZ4GKDP4	CRANIO, To be classified	NA	Craniopharyngioma	Tumors of sellar region	NA	Initial CNS Tumor	NA
@@ -783,8 +783,8 @@ PT_GH6HM5QF	7316-3202	BS_K81DR8XG	MB, SHH	Medulloblastoma, SHH-activated	Medullo
 PT_GH6HM5QF	7316-3202	BS_70FKSKM9	MB, SHH	Medulloblastoma, SHH-activated	Medulloblastoma	Embryonal tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_GHHY5AAE	7316-741	BS_EHVYJAVA	LGG, FGFR	Pilocytic astrocytoma, FGFR	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
 PT_GHHY5AAE	7316-741	BS_VA07453Z	LGG, FGFR	Pilocytic astrocytoma, FGFR	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
-PT_GKSABESN	7316-3485	BS_GRECE8Q9	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_GKSABESN	7316-3485	BS_SES41DAX	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
+PT_GKSABESN	7316-3485	BS_GRECE8Q9	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_GKSABESN	7316-3485	BS_SES41DAX	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
 PT_GKWWWJ0X	7316-1071	BS_W97QQYKQ	LGG, KIAA1549-BRAF	Low-grade glioma/astrocytoma, KIAA1549-BRAF	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Recurrence	NA
 PT_GKWWWJ0X	7316-1071	BS_XKE77TR4	LGG, KIAA1549-BRAF	Low-grade glioma/astrocytoma, KIAA1549-BRAF	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Recurrence	NA
 PT_GQDHZFJP	7316-265	BS_CS170P7T	LGG, To be classified	Pilocytic astrocytoma	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Progressive	NA
@@ -798,8 +798,8 @@ PT_GVDMG7KC	7316-152	BS_WCRKYV0T	LGG, wildtype	Oligodendroglioma, wildtype	LGAT	
 PT_GWX2XSM0	7316-2752	BS_41SWNWAG	LGG, To be classified	NA	LGAT	Low-grade astrocytic tumor	NA	Progressive	NA
 PT_GY0QSY4H	7316-1075	BS_JCPKYHKY	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_GY0QSY4H	7316-1075	BS_FWCKP4X1	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
-PT_GY99ZJHV	7316-1654	BS_17FVWMNV	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Atypical choroid plexus papilloma
-PT_GY99ZJHV	7316-1654	BS_WE3Q8A73	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Atypical choroid plexus papilloma
+PT_GY99ZJHV	7316-1654	BS_17FVWMNV	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Atypical choroid plexus papilloma
+PT_GY99ZJHV	7316-1654	BS_WE3Q8A73	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Atypical choroid plexus papilloma
 PT_H0HWHRPB	7316-1679	BS_N6NE6B3W	LGG, wildtype	Pilocytic astrocytoma, wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
 PT_H0HWHRPB	7316-1679	BS_QE5B0T7R	LGG, wildtype	Pilocytic astrocytoma, wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
 PT_H2HT2WQX	7316-619	BS_SNVM7CZT	HGG, To be classified	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Initial CNS Tumor	NA
@@ -841,8 +841,8 @@ PT_HMF8J4EG	7316-644	BS_51RA1PGE	DMG, H3 K28, TP53 loss	Diffuse midline glioma, 
 PT_HMF8J4EG	7316-644	BS_GKPVZXYP	DMG, H3 K28, TP53 loss	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_HMY997GX	7316-3554	BS_2JDVY4F7	LGG, RTK, CDKN2A/B	Subependymal Giant Cell Astrocytoma, RTK, CDKN2A/B	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
 PT_HMY997GX	7316-3554	BS_3W07B2TG	LGG, RTK, CDKN2A/B	Subependymal Giant Cell Astrocytoma, RTK, CDKN2A/B	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
-PT_HN0AXSZ0	7316-1103	BS_AGS1HHGF	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_HN0AXSZ0	7316-1103	BS_Z34PQDYT	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
+PT_HN0AXSZ0	7316-1103	BS_AGS1HHGF	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_HN0AXSZ0	7316-1103	BS_Z34PQDYT	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
 PT_HNZNZ635	7316-2151	BS_49BQS7Z6	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive	NA
 PT_HNZNZ635	7316-2151	BS_GXTFW99H	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive	NA
 PT_HNZNZ635	7316-2151	BS_SKRY0BJ4	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive	NA
@@ -868,8 +868,8 @@ PT_JMW6Q6NH	7316-1648	BS_5BNV7MCF	LGG, KIAA1549-BRAF	Pilocytic astrocytoma, KIAA
 PT_JMW6Q6NH	7316-1648	BS_CB6VK7PB	LGG, KIAA1549-BRAF	Pilocytic astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
 PT_JN3EN2HR	7316-2267	BS_RHD7XPNP	EPN, To be classified	NA	Ependymoma	Ependymal tumor	NA	Initial CNS Tumor	NA
 PT_JN3EN2HR	7316-2267	BS_MAVSJH2Y	EPN, To be classified	NA	Ependymoma	Ependymal tumor	NA	Initial CNS Tumor	NA
-PT_JN3S17B3	7316-1693	BS_1EYKDS0Z	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_JN3S17B3	7316-1693	BS_F6Z5HFWH	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
+PT_JN3S17B3	7316-1693	BS_1EYKDS0Z	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_JN3S17B3	7316-1693	BS_F6Z5HFWH	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
 PT_JNEV57VK	7316-2594	BS_VF5XWFXD	DMG, H3 K28, TP53 loss	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_JNEV57VK	7316-2594	BS_85Q5P8GF	DMG, H3 K28, TP53 loss	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_JNEV57VK	7316-3058	BS_2A162JH9	DMG, H3 K28, TP53 loss	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive	NA
@@ -1059,8 +1059,8 @@ PT_NK8A49X5	A08692	BS_YDEVMD24	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant
 PT_NK8A49X5	A08692	BS_6DT506HY	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping,Updated to DMG, H3 K28 from clinical review	Initial CNS Tumor	NA
 PT_NK8A49X5	A14449	BS_1N7MQZGR	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive	NA
 PT_NK8A49X5	A14449	BS_GKXD33YH	DMG, H3 K28	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive	NA
-PT_NNZQ09SH	7316-1109	BS_2SG8JNMB	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Recurrence	Rosette-forming glioneuronal tumor
-PT_NNZQ09SH	7316-1109	BS_WVS02TZK	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Recurrence	Rosette-forming glioneuronal tumor
+PT_NNZQ09SH	7316-1109	BS_2SG8JNMB	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	Updated via pathology_free_text_diagnosis	Recurrence	Rosette-forming glioneuronal tumor
+PT_NNZQ09SH	7316-1109	BS_WVS02TZK	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	Updated via pathology_free_text_diagnosis	Recurrence	Rosette-forming glioneuronal tumor
 PT_NPETR8RY	7316-160	BS_4FZS7TX4	EPN, To be classified	NA	Ependymoma	Ependymal tumor	NA	Initial CNS Tumor	NA
 PT_NPETR8RY	7316-160	BS_W5P7SPDH	EPN, To be classified	NA	Ependymoma	Ependymal tumor	NA	Initial CNS Tumor	NA
 PT_NPETR8RY	7316-1784	BS_53M8PP88	EPN, To be classified	NA	Ependymoma	Ependymal tumor	NA	Recurrence	NA
@@ -1102,8 +1102,8 @@ PT_PFP1ZVHD	7316-2310	BS_DEHJF4C7	LGG, BRAF V600E	Pleomorphic xanthoastrocytoma,
 PT_PFP1ZVHD	7316-2310	BS_Z9PKZ4RT	LGG, BRAF V600E	Pleomorphic xanthoastrocytoma, BRAF V600E	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
 PT_PGVQ4XRZ	7316-946	BS_AP0SZ364	LGG, other MAPK	Low-grade glioma/astrocytoma, other MAPK	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_PGVQ4XRZ	7316-946	BS_VXNT1TDB	LGG, other MAPK	Low-grade glioma/astrocytoma, other MAPK	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
-PT_PHKSYE6Q	7316-220	BS_PKK3BZRG	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_PHKSYE6Q	7316-220	BS_Y9GHDZKS	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
+PT_PHKSYE6Q	7316-220	BS_PKK3BZRG	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_PHKSYE6Q	7316-220	BS_Y9GHDZKS	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
 PT_PJFTMJ6H	7316-2150	BS_WJGFDRWK	EWS	Ewing sarcoma	EWS	Mesenchymal non-meningothelial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_PJFTMJ6H	7316-2150	BS_SSYNTXDC	EWS	Ewing sarcoma	EWS	Mesenchymal non-meningothelial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_PJSV0X4X	7316-843	BS_GCQFGDTX	MB, Group3	Medulloblastoma, group 3	Medulloblastoma	Embryonal tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Recurrence	NA
@@ -1135,8 +1135,8 @@ PT_QDGVJKE0	7316-2140	BS_A0DYVX9J	HGG, H3 wildtype, TP53 loss	High-grade glioma/
 PT_QDGVJKE0	7316-2140	BS_EP25TTAG	HGG, H3 wildtype, TP53 loss	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive	NA
 PT_QEP13FH4	7316-3025	BS_K3ER45RV	MB, WNT	Medulloblastoma, WNT-activated	Medulloblastoma	Embryonal tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_QEP13FH4	7316-3025	BS_Y5DA59M3	MB, WNT	Medulloblastoma, WNT-activated	Medulloblastoma	Embryonal tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
-PT_QJ3144WH	7316-3204	BS_8BS10XE2	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_QJ3144WH	7316-3204	BS_Z85M2R3N	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
+PT_QJ3144WH	7316-3204	BS_8BS10XE2	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_QJ3144WH	7316-3204	BS_Z85M2R3N	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
 PT_QJDY4Y9P	7316-562	BS_4A45GGSW	LGG, KIAA1549-BRAF	Pilocytic astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
 PT_QK4XB83F	7316-663	BS_01Y5F4PN	LGG, wildtype	Subependymal Giant Cell Astrocytoma, wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
 PT_QK4XB83F	7316-663	BS_JG9JZTA9	LGG, wildtype	Subependymal Giant Cell Astrocytoma, wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
@@ -1367,7 +1367,7 @@ PT_W6CW60K9	7316-380	BS_ZX1YPQ88	CRANIO, ADAM	Adamantimomatous craniopharyngioma
 PT_WE1CHTWK	7316-87	BS_1HQ76V6D	CNS Embryonal, NOS	CNS Embryonal tumor, NOS	Embryonal tumor	Embryonal tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_WE1CHTWK	7316-87	BS_JGA9BP3A	CNS Embryonal, NOS	CNS Embryonal tumor, NOS	Embryonal tumor	Embryonal tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_WE1CHTWK	7316-87	BS_4DY83R02	CNS Embryonal, NOS	CNS Embryonal tumor, NOS	Embryonal tumor	Embryonal tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
-PT_WE7HQN0C	7316-1795	BS_T8C13KNH	CRANIO, ADAM	NA	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Initial CNS Tumor	Adamantinomatous craniopharyngioma
+PT_WE7HQN0C	7316-1795	BS_T8C13KNH	CRANIO, ADAM	Adamantinomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Initial CNS Tumor	Adamantinomatous craniopharyngioma
 PT_WGVEF96B	7316-3219	BS_TQ0J7WJQ	DMG, H3 K28, TP53 activated	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_WGVEF96B	7316-4446	BS_4DQAQFQH	DMG, H3 K28, TP53 activated	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_WGVEF96B	A08958	BS_NB9XXBW6	DMG, H3 K28, TP53 activated	Diffuse midline glioma, H3 K28-mutant	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping,Updated to DMG, H3 K28 from clinical review	Initial CNS Tumor	NA
@@ -1376,14 +1376,14 @@ PT_WGWMA5AZ	7316-148	BS_13CGKADW	LGG, wildtype	Pilocytic astrocytoma, wildtype	L
 PT_WGWMA5AZ	7316-148	BS_NEX92KQH	LGG, wildtype	Pilocytic astrocytoma, wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Recurrence	NA
 PT_WKNKNYHH	7316-1107	BS_WFD0GE5X	EPN, To be classified	NA	Ependymoma	Ependymal tumor	NA	Initial CNS Tumor	NA
 PT_WKNKNYHH	7316-1107	BS_5ZRZC3ZM	EPN, To be classified	NA	Ependymoma	Ependymal tumor	NA	Initial CNS Tumor	NA
-PT_WPYCXMDA	7316-3891	BS_QSDKJM8T	CRANIO, ADAM	NA	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Progressive	Adamantinomatous craniopharyngioma
-PT_WPYCXMDA	7316-3891	BS_VPMKHW9X	CRANIO, ADAM	NA	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Progressive	Adamantinomatous craniopharyngioma
+PT_WPYCXMDA	7316-3891	BS_QSDKJM8T	CRANIO, ADAM	Adamantinomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Progressive	Adamantinomatous craniopharyngioma
+PT_WPYCXMDA	7316-3891	BS_VPMKHW9X	CRANIO, ADAM	Adamantinomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Progressive	Adamantinomatous craniopharyngioma
 PT_WTMSD2WB	7316-3632	BS_67PX06P3	CHDM, conventional	Chordoma, conventional	Chordoma	Chordoma	Updated via pathology review	Initial CNS Tumor	NA
 PT_WTMSD2WB	7316-3632	BS_JTBM5TSE	CHDM, conventional	Chordoma, conventional	Chordoma	Chordoma	Updated via pathology review	Initial CNS Tumor	NA
 PT_WVC247PK	7316-1090	BS_0J9SHHSC	LGG, KIAA1549-BRAF	Low-grade glioma/astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_WVC247PK	7316-1090	BS_QK61ST4T	LGG, KIAA1549-BRAF	Low-grade glioma/astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
-PT_WWME595X	7316-245	BS_KK5C8VCK	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_WWME595X	7316-245	BS_VVD8TJNE	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
+PT_WWME595X	7316-245	BS_KK5C8VCK	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_WWME595X	7316-245	BS_VVD8TJNE	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
 PT_WWZ2Q14R	7316-3138	BS_RCC8BXVE	MB, SHH	Medulloblastoma, SHH-activated	Medulloblastoma	Embryonal tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_WWZ2Q14R	7316-3138	BS_DVQYQSVW	MB, SHH	Medulloblastoma, SHH-activated	Medulloblastoma	Embryonal tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_WY8REZ3P	7316-1783	BS_VMMJYN8Z	LGG, BRAF V600E	Low-grade glioma/astrocytoma, BRAF V600E	Ganglioglioma	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
@@ -1392,8 +1392,8 @@ PT_WYF217NZ	7316-345	BS_52DAPP1Y	LGG, KIAA1549-BRAF	Low-grade glioma/astrocytoma
 PT_WYF217NZ	7316-345	BS_RZNNEX1Y	LGG, KIAA1549-BRAF	Low-grade glioma/astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_WYR1DVHX	7316-1950	BS_VNK9XYV9	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_WYR1DVHX	7316-1950	BS_ACTR13BQ	CRANIO, ADAM	Adamantimomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
-PT_WYVMWYVA	7316-257	BS_FAVRBEW7	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_WYVMWYVA	7316-257	BS_HC4T1EEP	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
+PT_WYVMWYVA	7316-257	BS_FAVRBEW7	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_WYVMWYVA	7316-257	BS_HC4T1EEP	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
 PT_X0FPPTMT	7316-280	BS_BMHYK93N	CNC	Central Neurocytoma	Neurocytoma	Neuronal and mixed neuronal-glial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_X0FPPTMT	7316-280	BS_TGW6HC4X	CNC	Central Neurocytoma	Neurocytoma	Neuronal and mixed neuronal-glial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_X1PRY0FC	7316-1779	BS_FJWZ3M7V	LGG, KIAA1549-BRAF	Low-grade glioma/astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
@@ -1461,14 +1461,14 @@ PT_Y8HSH496	7316-196	BS_06GPPDHZ	LGG, wildtype	Pilocytic astrocytoma, wildtype	L
 PT_Y8HSH496	7316-196	BS_X0F9AYEC	LGG, wildtype	Pilocytic astrocytoma, wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
 PT_Y8RNS9JE	7316-1656	BS_X23724NJ	HGG, H3 wildtype, TP53 activated	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Recurrence	NA
 PT_Y8RNS9JE	7316-1656	BS_3BMGF6GN	HGG, H3 wildtype, TP53 activated	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Recurrence	NA
-PT_YBJYA2CD	7316-2244	BS_8Q77HZ4R	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_YBJYA2CD	7316-2244	BS_KFRBXXV7	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
+PT_YBJYA2CD	7316-2244	BS_8Q77HZ4R	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_YBJYA2CD	7316-2244	BS_KFRBXXV7	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
 PT_YFS3AWC0	7316-153	BS_FKDQJJB5	MB, To be classified	NA	Medulloblastoma	Embryonal tumor	NA	Initial CNS Tumor	NA
 PT_YFS3AWC0	7316-153	BS_10V9SAG8	MB, To be classified	NA	Medulloblastoma	Embryonal tumor	NA	Initial CNS Tumor	NA
-PT_YGN06RPZ	7316-2204	BS_3C4YAMKJ	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor	Glial-neuronal tumor NOS
-PT_YGN06RPZ	7316-2204	BS_X9EGD530	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor	Glial-neuronal tumor NOS
-PT_YGN06RPZ	7316-2208	BS_060QB7XB	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Progressive	Diffuse leptomeningeal glioneuronal tumor
-PT_YGN06RPZ	7316-2208	BS_1KYGSMA7	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Progressive	Diffuse leptomeningeal glioneuronal tumor
+PT_YGN06RPZ	7316-2204	BS_3C4YAMKJ	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Glial-neuronal tumor NOS
+PT_YGN06RPZ	7316-2204	BS_X9EGD530	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Glial-neuronal tumor NOS
+PT_YGN06RPZ	7316-2208	BS_060QB7XB	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	Updated via pathology_free_text_diagnosis	Progressive	Diffuse leptomeningeal glioneuronal tumor
+PT_YGN06RPZ	7316-2208	BS_1KYGSMA7	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	Updated via pathology_free_text_diagnosis	Progressive	Diffuse leptomeningeal glioneuronal tumor
 PT_YHTK536P	7316-1714	BS_09Z7TC35	MB, Group3	Medulloblastoma, group 3	Medulloblastoma	Embryonal tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Recurrence	NA
 PT_YJBPEF4V	7316-938	BS_S1KK7XRH	LGG, KIAA1549-BRAF	Low-grade glioma/astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_YJBPEF4V	7316-938	BS_PC2YQ4F6	LGG, KIAA1549-BRAF	Low-grade glioma/astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
@@ -1520,15 +1520,15 @@ PT_ZR8MQRVG	7316-346	BS_NB5XWMJT	LGG, KIAA1549-BRAF	Low-grade glioma/astrocytoma
 PT_ZR8MQRVG	7316-346	BS_MT5ZSRG4	LGG, KIAA1549-BRAF	Low-grade glioma/astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_ZRQQC2S9	7316-3139	BS_4EN8D8Y4	LGG, NF1-germline	Pilocytic astrocytoma, NF1-germline	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
 PT_ZRQQC2S9	7316-3139	BS_PEFRDKDZ	LGG, NF1-germline	Pilocytic astrocytoma, NF1-germline	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
-PT_ZS2YDFBE	7316-2860	BS_B741RZY9	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_ZS2YDFBE	7316-2860	BS_P6NWC51S	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
+PT_ZS2YDFBE	7316-2860	BS_B741RZY9	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_ZS2YDFBE	7316-2860	BS_P6NWC51S	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
 PT_ZVV78QP5	7316-117	BS_2RJN5Z4W	LGG, KIAA1549-BRAF	Pilocytic astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
 PT_ZVV78QP5	7316-117	BS_DPF1CX0G	LGG, KIAA1549-BRAF	Pilocytic astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
 PT_ZVYRFGEN	7316-1068	BS_ZV1P6W9C	HGG, To be classified	NA	HGAT	Diffuse astrocytic and oligodendroglial tumor	NA	Progressive	NA
 PT_ZWY04DCR	7316-2666	BS_C05FKR8X	EPN, ST RELA	Ependymoma, Supratentorial, RELA fusion positive	Ependymoma	Ependymal tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_ZWY04DCR	7316-2666	BS_6T87HSPX	EPN, ST RELA	Ependymoma, Supratentorial, RELA fusion positive	Ependymoma	Ependymal tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
-PT_ZZ8SBJJ5	7316-725	BS_CPZZR2R7	NA	NA	Choroid plexus tumor	Benign tumor	NA	Progressive	Atypical choroid plexus papilloma
-PT_ZZ8SBJJ5	7316-725	BS_CW9QV8AG	NA	NA	Choroid plexus tumor	Benign tumor	NA	Progressive	Atypical choroid plexus papilloma
+PT_ZZ8SBJJ5	7316-725	BS_CPZZR2R7	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Progressive	Atypical choroid plexus papilloma
+PT_ZZ8SBJJ5	7316-725	BS_CW9QV8AG	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Progressive	Atypical choroid plexus papilloma
 PT_ZZRBX5JT	7316-2661	BS_HZ707C55	EPN, To be classified	NA	Ependymoma	Ependymal tumor	NA	Recurrence	NA
 PT_ZZRBX5JT	7316-2661	BS_JE1DF581	EPN, To be classified	NA	Ependymoma	Ependymal tumor	NA	Recurrence	NA
 PT_ZZRBX5JT	7316-3319	BS_YE1MAQYJ	EPN, PF A	Ependymoma, Posterior Fossa, Type A	Ependymoma	Ependymal tumor	Updated via OpenPBTA subtyping	Recurrence	NA

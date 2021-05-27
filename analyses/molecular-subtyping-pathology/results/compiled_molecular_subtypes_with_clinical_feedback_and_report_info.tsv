@@ -1504,54 +1504,54 @@ PT_TEBD1SES	7316-3054	BS_ZTWGFWTX	LGG, KIAA1549-BRAF	Pilocytic astrocytoma, KIAA
 PT_S3FJSBJT	7316-1794	BS_ZV9Z3SY6	LGG, KIAA1549-BRAF	Pilocytic astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Recurrence	NA
 PT_E3ADF4ZB	7316-2664	BS_ZVZDDW2G	LGG, wildtype	Pleomorphic xanthoastrocytoma, wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
 PT_5M8A47WW	7316-436	BS_ZZMYDZJW	LGG, KIAA1549-BRAF	Pilocytic astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	Initial CNS Tumor	NA
-PT_NNZQ09SH	7316-1109	BS_2SG8JNMB	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Recurrence	Rosette-forming glioneuronal tumor
-PT_NNZQ09SH	7316-1109	BS_WVS02TZK	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Recurrence	Rosette-forming glioneuronal tumor
+PT_NNZQ09SH	7316-1109	BS_2SG8JNMB	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	Updated via pathology_free_text_diagnosis	Recurrence	Rosette-forming glioneuronal tumor
+PT_NNZQ09SH	7316-1109	BS_WVS02TZK	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	Updated via pathology_free_text_diagnosis	Recurrence	Rosette-forming glioneuronal tumor
 PT_2WVW55DA	7316-1890	BS_NYVVN7SD	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Progressive	Desmoplastic infantile astrocytoma
 PT_2WVW55DA	7316-1890	BS_QAG1RDXN	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Progressive	Desmoplastic infantile astrocytoma
-PT_YGN06RPZ	7316-2204	BS_3C4YAMKJ	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor	Glial-neuronal tumor NOS
-PT_YGN06RPZ	7316-2204	BS_X9EGD530	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor	Glial-neuronal tumor NOS
-PT_YGN06RPZ	7316-2208	BS_060QB7XB	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Progressive	Diffuse leptomeningeal glioneuronal tumor
-PT_YGN06RPZ	7316-2208	BS_1KYGSMA7	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Progressive	Diffuse leptomeningeal glioneuronal tumor
-PT_20ZM6THA	7316-3629	BS_9X9E86DY	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Recurrence	Glial-neuronal tumor NOS
-PT_20ZM6THA	7316-3629	BS_E94QRJDW	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Recurrence	Glial-neuronal tumor NOS
+PT_YGN06RPZ	7316-2204	BS_3C4YAMKJ	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Glial-neuronal tumor NOS
+PT_YGN06RPZ	7316-2204	BS_X9EGD530	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Glial-neuronal tumor NOS
+PT_YGN06RPZ	7316-2208	BS_060QB7XB	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	Updated via pathology_free_text_diagnosis	Progressive	Diffuse leptomeningeal glioneuronal tumor
+PT_YGN06RPZ	7316-2208	BS_1KYGSMA7	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	Updated via pathology_free_text_diagnosis	Progressive	Diffuse leptomeningeal glioneuronal tumor
+PT_20ZM6THA	7316-3629	BS_9X9E86DY	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	Updated via pathology_free_text_diagnosis	Recurrence	Glial-neuronal tumor NOS
+PT_20ZM6THA	7316-3629	BS_E94QRJDW	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	Updated via pathology_free_text_diagnosis	Recurrence	Glial-neuronal tumor NOS
 PT_T1FV709B	7316-681	BS_EXGBH3TD	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor	Desmoplastic infantile astrocytoma
 PT_T1FV709B	7316-681	BS_XH5JP8DB	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor	Desmoplastic infantile astrocytoma
-PT_WPYCXMDA	7316-3891	BS_QSDKJM8T	CRANIO, ADAM	NA	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Progressive	Adamantinomatous craniopharyngioma
-PT_WE7HQN0C	7316-1795	BS_T8C13KNH	CRANIO, ADAM	NA	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Initial CNS Tumor	Adamantinomatous craniopharyngioma
-PT_WPYCXMDA	7316-3891	BS_VPMKHW9X	CRANIO, ADAM	NA	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Progressive	Adamantinomatous craniopharyngioma
+PT_WPYCXMDA	7316-3891	BS_QSDKJM8T	CRANIO, ADAM	Adamantinomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Progressive	Adamantinomatous craniopharyngioma
+PT_WE7HQN0C	7316-1795	BS_T8C13KNH	CRANIO, ADAM	Adamantinomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Initial CNS Tumor	Adamantinomatous craniopharyngioma
+PT_WPYCXMDA	7316-3891	BS_VPMKHW9X	CRANIO, ADAM	Adamantinomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Progressive	Adamantinomatous craniopharyngioma
 PT_7VSY72EK	7316-1855	BS_0ZR4XA69	NA	NA	CNS lymphoma	Lymphoma	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Initial CNS Tumor	CNS Burkitt's lymphoma
 PT_7VSY72EK	7316-1855	BS_1607397Q	NA	NA	CNS lymphoma	Lymphoma	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Initial CNS Tumor	CNS Burkitt's lymphoma
 PT_CAYBADQC	7316-2641	BS_2Z9JQDPV	NA	NA	JXG	Histiocytic tumor	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Initial CNS Tumor	Juvenile xanthogranuloma
 PT_EXJAEW1M	7316-188	BS_4XPPZTGG	NA	NA	JXG	Histiocytic tumor	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Initial CNS Tumor	Juvenile xanthogranuloma
 PT_CAYBADQC	7316-2641	BS_8WPNFT03	NA	NA	JXG	Histiocytic tumor	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Initial CNS Tumor	Juvenile xanthogranuloma
 PT_EXJAEW1M	7316-188	BS_T1QMEH1N	NA	NA	JXG	Histiocytic tumor	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Initial CNS Tumor	Juvenile xanthogranuloma
-PT_ABV3RS3T	7316-471	BS_0GDJQANN	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_AYZA2WCW	7316-197	BS_0Q8G4N8H	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_GY99ZJHV	7316-1654	BS_17FVWMNV	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Atypical choroid plexus papilloma
-PT_JN3S17B3	7316-1693	BS_1EYKDS0Z	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_QJ3144WH	7316-3204	BS_8BS10XE2	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_YBJYA2CD	7316-2244	BS_8Q77HZ4R	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_HN0AXSZ0	7316-1103	BS_AGS1HHGF	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_ZS2YDFBE	7316-2860	BS_B741RZY9	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_ZZ8SBJJ5	7316-725	BS_CPZZR2R7	NA	NA	Choroid plexus tumor	Benign tumor	NA	Progressive	Atypical choroid plexus papilloma
-PT_ZZ8SBJJ5	7316-725	BS_CW9QV8AG	NA	NA	Choroid plexus tumor	Benign tumor	NA	Progressive	Atypical choroid plexus papilloma
-PT_13MKXR8G	7316-2251	BS_CXCKHP3Z	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_JN3S17B3	7316-1693	BS_F6Z5HFWH	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_WYVMWYVA	7316-257	BS_FAVRBEW7	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_13MKXR8G	7316-2251	BS_FEYMKEK8	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_GKSABESN	7316-3485	BS_GRECE8Q9	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_WYVMWYVA	7316-257	BS_HC4T1EEP	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_90W4HCNR	7316-2672	BS_JX449BF5	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_YBJYA2CD	7316-2244	BS_KFRBXXV7	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_WWME595X	7316-245	BS_KK5C8VCK	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_90W4HCNR	7316-2672	BS_M1TDS9CT	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_6PYNBA9C	7316-853	BS_NQFH3GZH	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_ZS2YDFBE	7316-2860	BS_P6NWC51S	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_PHKSYE6Q	7316-220	BS_PKK3BZRG	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_GKSABESN	7316-3485	BS_SES41DAX	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_WWME595X	7316-245	BS_VVD8TJNE	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_GY99ZJHV	7316-1654	BS_WE3Q8A73	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Atypical choroid plexus papilloma
-PT_PHKSYE6Q	7316-220	BS_Y9GHDZKS	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_HN0AXSZ0	7316-1103	BS_Z34PQDYT	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_QJ3144WH	7316-3204	BS_Z85M2R3N	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
-PT_AYZA2WCW	7316-197	BS_ZN8136D9	NA	NA	Choroid plexus tumor	Benign tumor	NA	Initial CNS Tumor	Choroid plexus papilloma
+PT_ABV3RS3T	7316-471	BS_0GDJQANN	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_AYZA2WCW	7316-197	BS_0Q8G4N8H	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_GY99ZJHV	7316-1654	BS_17FVWMNV	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Atypical choroid plexus papilloma
+PT_JN3S17B3	7316-1693	BS_1EYKDS0Z	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_QJ3144WH	7316-3204	BS_8BS10XE2	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_YBJYA2CD	7316-2244	BS_8Q77HZ4R	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_HN0AXSZ0	7316-1103	BS_AGS1HHGF	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_ZS2YDFBE	7316-2860	BS_B741RZY9	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_ZZ8SBJJ5	7316-725	BS_CPZZR2R7	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Progressive	Atypical choroid plexus papilloma
+PT_ZZ8SBJJ5	7316-725	BS_CW9QV8AG	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Progressive	Atypical choroid plexus papilloma
+PT_13MKXR8G	7316-2251	BS_CXCKHP3Z	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_JN3S17B3	7316-1693	BS_F6Z5HFWH	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_WYVMWYVA	7316-257	BS_FAVRBEW7	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_13MKXR8G	7316-2251	BS_FEYMKEK8	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_GKSABESN	7316-3485	BS_GRECE8Q9	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_WYVMWYVA	7316-257	BS_HC4T1EEP	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_90W4HCNR	7316-2672	BS_JX449BF5	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_YBJYA2CD	7316-2244	BS_KFRBXXV7	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_WWME595X	7316-245	BS_KK5C8VCK	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_90W4HCNR	7316-2672	BS_M1TDS9CT	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_6PYNBA9C	7316-853	BS_NQFH3GZH	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_ZS2YDFBE	7316-2860	BS_P6NWC51S	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_PHKSYE6Q	7316-220	BS_PKK3BZRG	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_GKSABESN	7316-3485	BS_SES41DAX	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_WWME595X	7316-245	BS_VVD8TJNE	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_GY99ZJHV	7316-1654	BS_WE3Q8A73	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Atypical choroid plexus papilloma
+PT_PHKSYE6Q	7316-220	BS_Y9GHDZKS	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_HN0AXSZ0	7316-1103	BS_Z34PQDYT	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_QJ3144WH	7316-3204	BS_Z85M2R3N	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma
+PT_AYZA2WCW	7316-197	BS_ZN8136D9	NA	NA	Choroid plexus tumor	Benign tumor	Updated via pathology_free_text_diagnosis	Initial CNS Tumor	Choroid plexus papilloma

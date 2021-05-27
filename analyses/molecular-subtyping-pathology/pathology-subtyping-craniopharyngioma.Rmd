@@ -119,6 +119,7 @@ cranio_adam_df <- joined_df %>%
   mutate(
     broad_histology = "Tumors of sellar region",
     short_histology = "Craniopharyngioma",
+    integrated_diagnosis = "Adamantinomatous craniopharyngioma",
     harmonized_diagnosis = "Adamantinomatous craniopharyngioma",
     molecular_subtype = "CRANIO, ADAM",
     Notes = "Updated via OpenPBTA subtyping from pathology_free_text_diagnosis"
