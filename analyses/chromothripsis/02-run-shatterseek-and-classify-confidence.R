@@ -20,10 +20,16 @@ options(dplyr.summarise.inform = FALSE)
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses", "chromothripsis")
 results_dir <- file.path(analysis_dir, "results")
+cnv_scratch_dir <- file.path(root_dir, "scratch", "cnv-merged")
 
 # Create results directory if it doesn't exist
 if (!dir.exists(results_dir)) {
   dir.create(results_dir, recursive = TRUE)
+}
+
+# Create scratch/cnv-merged/ directory if it doesn't exist
+if (!dir.exists(cnv_scratch_dir)) {
+  dir.create(cnv_scratch_dir, recursive = TRUE)
 }
 
 
@@ -101,11 +107,10 @@ mergeCNsegments <- function(cnv_df) {
     # Set index to 0 if row 1 doesn't match row 2
   
   # Merge rows by selecting minimum loc.start and maximum loc.end for each index value
-  # Remove index column and reorder rows by chromosome and start position
+  # Reorder rows by chromosome and start position
   cnv_df_merged <- cnv_df %>%
     dplyr::group_by(chrom, copy.num, index) %>% 
     dplyr::summarise(loc.start=min(loc.start), loc.end=max(loc.end)) %>% 
-    dplyr::select(-index) %>%
     dplyr::arrange(chrom, loc.start)
   
 }
@@ -125,7 +130,7 @@ for (b in bioid) {
   print(paste0("Running: ", b, " (", count, " of ", total, ")"))
   
   # Read SV file for current sample
-  sv_current <- readr::read_tsv(file.path(root_dir, "scratch","sv-vcf",paste(b,"_withoutYandM.tsv",sep="")), 
+  sv_current <- readr::read_tsv(file.path(root_dir, "scratch", "sv-vcf", paste0(b, "_withoutYandM.tsv")), 
                                 col_types = readr::cols(chrom1 = readr::col_character(), # Specify type for problematic columns
                                                         chrom2 = readr::col_character(),
                                                         alt2 = readr::col_character())) 
@@ -141,7 +146,10 @@ for (b in bioid) {
 
   # Merge consecutive CN segments that share the same CN value (see function description)
   cnv_current_merged <- mergeCNsegments(cnv_current)
-
+  
+  # Write out merged CNV file (for debugging)
+  readr::write_tsv(cnv_current_merged, file.path(cnv_scratch_dir, paste0(b, "_merged_cnv.tsv")))
+  
   # Build SV and CNV objects
   SV_data <-
     SVs(
