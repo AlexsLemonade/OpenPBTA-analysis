@@ -1516,9 +1516,9 @@ PT_20ZM6THA	7316-3629	BS_9X9E86DY	NA	NA	GNT	Neuronal and mixed neuronal-glial tu
 PT_20ZM6THA	7316-3629	BS_E94QRJDW	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	Updated via pathology_free_text_diagnosis	Recurrence	Glial-neuronal tumor NOS
 PT_T1FV709B	7316-681	BS_EXGBH3TD	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor	Desmoplastic infantile astrocytoma
 PT_T1FV709B	7316-681	BS_XH5JP8DB	NA	NA	GNT	Neuronal and mixed neuronal-glial tumor	NA	Initial CNS Tumor	Desmoplastic infantile astrocytoma
-PT_WPYCXMDA	7316-3891	BS_QSDKJM8T	CRANIO, ADAM	Adamantinomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Progressive	Adamantinomatous craniopharyngioma
-PT_WE7HQN0C	7316-1795	BS_T8C13KNH	CRANIO, ADAM	Adamantinomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Initial CNS Tumor	Adamantinomatous craniopharyngioma
-PT_WPYCXMDA	7316-3891	BS_VPMKHW9X	CRANIO, ADAM	Adamantinomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Progressive	Adamantinomatous craniopharyngioma
+PT_WPYCXMDA	7316-3891	BS_QSDKJM8T	CRANIO, ADAM	NA	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Progressive	Adamantinomatous craniopharyngioma
+PT_WE7HQN0C	7316-1795	BS_T8C13KNH	CRANIO, ADAM	NA	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Initial CNS Tumor	Adamantinomatous craniopharyngioma
+PT_WPYCXMDA	7316-3891	BS_VPMKHW9X	CRANIO, ADAM	NA	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Progressive	Adamantinomatous craniopharyngioma
 PT_7VSY72EK	7316-1855	BS_0ZR4XA69	NA	NA	CNS lymphoma	Lymphoma	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Initial CNS Tumor	CNS Burkitt's lymphoma
 PT_7VSY72EK	7316-1855	BS_1607397Q	NA	NA	CNS lymphoma	Lymphoma	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Initial CNS Tumor	CNS Burkitt's lymphoma
 PT_CAYBADQC	7316-2641	BS_2Z9JQDPV	NA	NA	JXG	Histiocytic tumor	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Initial CNS Tumor	Juvenile xanthogranuloma
