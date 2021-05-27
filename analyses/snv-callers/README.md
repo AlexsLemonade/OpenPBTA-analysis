@@ -59,6 +59,12 @@ The TCGA data is processed by its own script to run the same methods:
 bash run_caller_consensus_analysis-tcga.sh
 ```
 
+To process data for any other project, call this alternative bash script with the parameter option to provide the project acronym to prefix input and output files:
+
+```
+bash run_caller_consensus_analysis.sh  -p <project acronym>
+```
+
 **Note** All file paths set in these bash scripts are based on finding the root directory of this Git repository and therefore are given relative to `OpenPBTA-analysis`.
 
 This bash script will return:
