@@ -36,4 +36,11 @@ Rscript -e "rmarkdown::render(input = '02-analyze-drops.Rmd', params = list(poly
 
 mv '02-analyze-drops.nb.html' 'results/expected_count-collapse-gene-drops.nb.html'
 
-Rscript --vanilla 03-edger-protocol-dge.R
+echo 'Run TMM normalized differential gene expression and stably expressed gene analysis...'
+Rscript --vanilla '03-protocol-dge-seg.R' -n 'tmm'
+
+echo 'Run UQ-pgQ2 normalized differential gene expression and stably expressed gene analysis...'
+Rscript --vanilla '03-protocol-dge-seg.R' -n 'uqpgq2'
+
+echo 'Run DESeq2 standard differential gene expression analysis...'
+Rscript --vanilla '04-deseq2-protocol-dge.R'
