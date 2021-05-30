@@ -13,7 +13,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 QUICK_MUTSIGS=${QUICK_MUTSIGS:-0}
 
 # Which analysis are we running?
-ANALYSIS=$1  # Expect 0 for GOF and 1 for Extraction
+ANALYSIS=${ANALYSIS:-1}  # Expect 0 for GOF and 1 for Extraction
 
 
 scratch_dir=../../scratch/mutational-signatures
