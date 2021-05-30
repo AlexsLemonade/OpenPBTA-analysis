@@ -28,7 +28,7 @@ library(sigfit)
 path_to_input_rds <- file.path("..", "..", "scratch", "mutational-signatures", "extraction")
 
 # Result path
-path_to_results <- "results/"
+path_to_results <- "results"
 if (!dir.exists(path_to_results)) {
   dir.create(path_to_results, recursive = TRUE)
 }
