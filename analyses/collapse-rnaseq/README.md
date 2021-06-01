@@ -6,24 +6,23 @@ This module contains the script used to create RSEM matrices with duplicate gene
 It produces the files with below naming patterns included in the data download:
 
 ```
-[project_name]-gene-[expression/counts]-rsem-[fpkm/tpm/expected_count]-collapsed.[library_strategy].rds
+gene-[expression/counts]-rsem-[fpkm/tpm/expected_count]-collapsed.rds
 ```
 
 This script also runs the notebook for analysis of the dropped genes, and produces a markdown report.
 
 ```
-[project_name]-gene-[expression/counts]-rsem-[fpkm/tpm/expected_count]-collapsed_table.[library_strategy].rds
+gene-[expression/counts]-rsem-[fpkm/tpm/expected_count]-collapsed_table.rds
 ```
 
 To run the steps that generate the matrices and display the results of a correlation analysis, use the following command (assuming you are in this directory):
 
 ```sh
-bash run-collapse-rnaseq.sh -p <project_name> -l <library_strategy> -q <quatification_type> -x <'type_of_data'>
+bash run-collapse-rnaseq.sh -q <quatification_type> -x <'type_of_data'>
 ```
 
 Acceptable values for the options are below:
 
-<library_strategy> : 'polya', 'stranded' <br>
 <quatification_type> : 'fpkm', 'tpm', 'expected_count' <br>
 <type_of_data> : 'expression', 'counts' <br>
 
