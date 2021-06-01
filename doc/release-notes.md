@@ -3,12 +3,14 @@
 - release date: 2021-06-01
 - status: available
 - changes:
-  - Update rnseq file names to be generic
-    - gene-counts-rsem-expected_count*
-    - gene-expression-rsem-tpm*
+  - Update rnseq file names to be generic (currently includes PBTA and KFNBL)
+    - `gene-counts-rsem-expected_count*`
+    - `gene-expression-rsem-tpm*`
+    - `fusion*`
   - Added mereged gtex_target_tcga expected_count file
-    - gtex_target_tcga-gene-counts-rsem-expected_count-collapsed.rds 
-  - Released files belowL
+    - `gtex_target_tcga-gene-counts-rsem-expected_count-collapsed.rds`
+  - Combined PBTA, KFNBL, TARGET, TCGA, GTEX histologies into `histologies.tsv`  
+  - Released files below
 
 ```
 v4
@@ -24,6 +26,7 @@ v4
 ├── gene-expression-rsem-tpm-collapsed.rds
 ├── gene-expression-rsem-tpm.rds
 ├── gtex_target_tcga-gene-counts-rsem-expected_count-collapsed.rds
+├── histologies.tsv
 ├── intersect_cds_lancet_strelka_mutect_WGS.bed
 ├── intersect_strelka_mutect_WGS.bed
 ├── kfnbl-snv-lancet.vep.maf.gz
