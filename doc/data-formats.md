@@ -44,7 +44,7 @@ These files are denoted with the prefix `pbta-fusion`.
 
 [Harmonized clinical data](https://alexslemonade.github.io/OpenPBTA-manuscript/#clinical-data-harmonization) are released as tab separated values in the following file:
 
-* `kfnbl-histologies.tsv`
+* `histologies.tsv`
 
 ## Analysis Files
 
@@ -58,4 +58,3 @@ In cases where more than one Ensembl gene identifier maps to the same gene symbo
 
 * `gene-counts-rsem-expected_count-collapsed.rds`  
 * `gene-counts-rsem-expected_count-collapsed.rds`
-
