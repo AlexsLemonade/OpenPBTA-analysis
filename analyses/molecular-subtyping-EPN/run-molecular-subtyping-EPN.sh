@@ -36,7 +36,7 @@ mkdir -p epn-subset
 mkdir -p results
 
 if [ "$SUBSET" -gt "0" ]; then
-  echo "Subsetting  for CI"
+  echo "Subsetting"
   Rscript 00-subset-for-EPN.R -i $HISTOLOGIES -e $FULL_EXPRESSION -o $SUBSET_EXPRESSION
 fi
 
