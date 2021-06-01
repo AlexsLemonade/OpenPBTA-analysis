@@ -1,5 +1,4 @@
 # release notes
-# release notes
 ## current release
 - release date: 2021-06-01
 - status: available
