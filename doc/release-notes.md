@@ -1,5 +1,43 @@
 # release notes
+# release notes
 ## current release
+- release date: 2021-06-01
+- status: available
+- changes:
+  - Update rnseq file names to be generic
+    - gene-counts-rsem-expected_count*
+    - gene-expression-rsem-tpm*
+  - Added mereged gtex_target_tcga expected_count file
+    - gtex_target_tcga-gene-counts-rsem-expected_count-collapsed.rds 
+  - Released files belowL
+
+```
+v4
+├── WGS.hg38.lancet.300bp_padded.bed
+├── WGS.hg38.lancet.unpadded.bed
+├── WGS.hg38.mutect2.vardict.unpadded.bed
+├── WGS.hg38.strelka2.unpadded.bed
+├── WGS.hg38.vardict.100bp_padded.bed
+├── fusion-arriba.tsv.gz
+├── fusion-starfusion.tsv.gz
+├── gene-counts-rsem-expected_count-collapsed.rds
+├── gene-counts-rsem-expected_count.rds
+├── gene-expression-rsem-tpm-collapsed.rds
+├── gene-expression-rsem-tpm.rds
+├── gtex_target_tcga-gene-counts-rsem-expected_count-collapsed.rds
+├── intersect_cds_lancet_strelka_mutect_WGS.bed
+├── intersect_strelka_mutect_WGS.bed
+├── kfnbl-snv-lancet.vep.maf.gz
+├── kfnbl-snv-mutect2.vep.maf.gz
+├── kfnbl-snv-strelka2.vep.maf.gz
+├── kfnbl-snv-vardict.vep.maf.gz
+└── release-notes.md
+
+```
+
+
+
+## archived release
 - release date: 2021-05-21
 - status: available
 - changes:
@@ -123,3 +161,4 @@ open-targets
     ├── WGS.hg38.strelka2.unpadded.bed
     └── WGS.hg38.vardict.100bp_padded.bed
 ```
+
