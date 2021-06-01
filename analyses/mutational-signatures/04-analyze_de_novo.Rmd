@@ -3,14 +3,9 @@ title: "De novo mutational signature extraction from WGS data"
 author: "S. Spielman"
 date: "2021"
 output:
-  html_notebook:
-    toc: yes
-    toc_float: yes
   html_document:
     toc: yes
     df_print: paged
-editor_options:
-  chunk_output_type: inline
 ---
 
 
@@ -22,6 +17,7 @@ editor_options:
 ```{r}
 # Load libraries
 library(sigfit)
+library(cowplot)
 `%>%` <- dplyr::`%>%`
 
 # Path to input data
@@ -43,47 +39,56 @@ cosmic_names <- row.names(cosmic_signatures_v3)
 ```
 
 <br><br>
-First, we need to extract the signatures and exposures from the *de novo* extraction RDS files. We save each into a list `de_novo_signatures` and `de_novo_extractions` separately, and write each list to file. If _both_ files already exist, we can simply read it in the lists.
+First, we need to extract the signatures and exposures from the *de novo* extraction RDS files. We save each into a list `de_novo_signatures` and `de_novo_extractions` separately, and write each list to file. 
 
 ```{r parse_signatures}
-if (file.exists(de_novo_signatures_file) & file.exists(de_novo_exposures_file))
+# Collect the de novo extracted signatures and exposures into a single list each
+# This takes _a few minutes_ to parse.
+de_novo_signatures <- list()
+de_novo_exposures <- list()
+for (this_model in c("poisson" , "multinomial"))
 {
-  de_novo_signatures <- readr::read_rds(de_novo_signatures_file)
-  de_novo_exposures <- readr::read_rds(de_novo_exposures_file)
+  for (this_seed in 1:5){
 
-} else {
-    
-  # Collect the de novo extracted signatures into a single list
-  # This takes a few minutes to parse.
-  de_novo_signatures <- list()
-  de_novo_exposures <- list()
-  for (this_model in c("poisson" , "multinomial"))
-  {
-    for (this_seed in 1:5){
-  
-      this_name <- glue::glue("seed_{this_seed}_model_{this_model}")
-      filename <- file.path(path_to_input_rds, 
-                            glue::glue("{this_name}.RDS"))
-      #cat(filename)
-      if (file.exists(filename)) {
-        fit <- readr::read_rds(filename)
-        for (k in 2:5){
-          sig_name <- glue::glue("{k}_{this_name}")
-          de_novo_signatures[[ sig_name ]] <- sigfit::retrieve_pars(fit[[k]], par = "signatures") 
-          de_novo_exposures[[ sig_name ]] <- sigfit::retrieve_pars(fit[[k]], par = "exposures") 
-        }
+    this_name <- glue::glue("seed_{this_seed}_model_{this_model}")
+    filename <- file.path(path_to_input_rds, 
+                          glue::glue("{this_name}.RDS"))
+    #cat(filename)
+    if (file.exists(filename)) {
+      fit <- readr::read_rds(filename)
+      for (k in 2:5){
+        sig_name <- glue::glue("{k}_{this_name}")
+        de_novo_signatures[[ sig_name ]] <- sigfit::retrieve_pars(fit[[k]], par = "signatures") 
+        de_novo_exposures[[ sig_name ]] <- sigfit::retrieve_pars(fit[[k]], par = "exposures") 
       }
     }
-    
   }
-  # We save this list to a result file
-  readr::write_rds(de_novo_signatures, de_novo_signatures_file)
-  readr::write_rds(de_novo_exposures, de_novo_exposures_file)
+  
 }
+# We save these lists to result files
+readr::write_rds(de_novo_signatures, de_novo_signatures_file)
+readr::write_rds(de_novo_exposures, de_novo_exposures_file)
 ```
 
 <br><br>
-Based on goodness of fit analyses, we expect these *k* to be optimal for the given seed and inference model (noting that we do see strong sensitivity to this starting condition).
+
+Goodness-of-fit analysis was implicitly performed by `sigfit` during inference using cosine similarity. Associated elbow plots are in `plots/extraction/`, names for the model and seed. The red-colored dot in these plots represented the selected *k* for the given seed and inference model. Notably, there substantial sensitivity to starting conditions, both seed and model. **Plots below are shown with `poisson` on left, `multinomial` on right.**
+
+```{r gof_plots, fig.width = 8, fig.height = 6}
+for (this_seed in 1:5){
+    seed_plots <- list(
+      ggdraw() + draw_image(glue::glue("plots/denovo/extraction/seed_{this_seed}_model_poisson.pdf")),
+      ggdraw() + draw_image(glue::glue("plots/denovo/extraction/seed_{this_seed}_model_multinomial.pdf"))
+    )                        
+    print(glue::glue("Random seed: {this_seed}"))
+    print(cowplot::plot_grid(plotlist = seed_plots, nrow=1))
+}
+
+
+
+```
+
+This tibble collects info from the above images:
 
 ```{r gof_k}
 gof <- tibble::tribble(
@@ -92,8 +97,8 @@ gof <- tibble::tribble(
   "poisson",1,3,
   "multinomial",1,3,
   "poisson",2,4,
-  "multinomial",2,4,
-  "poisson",3,3,
+  "multinomial",2,3,
+  "poisson",3,4,
   "multinomial",3,3,
   "poisson",4,3,
   "multinomial",4,3,  
@@ -103,15 +108,17 @@ gof <- tibble::tribble(
 ```
 
 
-<br><br>
-Now, we can determine which signatures were extracted and map back to COSMIC names using cosine similarity to determine matching signatures:
 
+<br><br>
+  Now, we can determine which signatures were extracted and map back to COSMIC names using cosine similarity to determine matching signatures:
+  
 ```{r determine_sigs}
 
 # Will find the COSMIC equivalent using cosine similarity
 map_match <- function(x) {
   sort( # Can sort since we just want to see cosmic matches
     as.numeric( # none of this "optimal assigment ==> 1" business
+      # match_signatures is a sigfit function for cosine similarity
       match_signatures(x, cosmic_signatures_v3)
     )
   )
@@ -121,12 +128,12 @@ purrr::map(de_novo_signatures, map_match) -> cosmic_matches
 ```
 
 <br><br>
-Now, we create a table of results for which COSMIC SBS signatures were extracted. **Full results for each combination of k, model, and random seed:**
+  Now, we create a table of results for which COSMIC SBS signatures were extracted. **Full results for each combination of k, model, and random seed:**
 ```{r sigs_full}
 tibble::tibble(
   name = names(cosmic_matches), 
   cosmic_sig_index = unname(cosmic_matches[1:length(cosmic_matches)])
-  ) %>%
+) %>%
   tidyr::unnest(cosmic_sig_index) %>%
   dplyr::mutate(cosmic_sig = cosmic_names[cosmic_sig_index]) -> unnested_sigs
 
@@ -146,7 +153,7 @@ full_sigs %>%
 ```
 
 <br><br> 
-Although not very robust to starting conditions, the results are robust to the inference model, so we will just look at `poisson` going forward. **Now, here's the table specifically for the results whose k was selected by cosine similarity goodness-of-fit**, among *k in [2:5]* for each the given random seed, using 3000 iterations:
+  Although not very robust to starting conditions, the results are robust to the inference model, so we will just look at `poisson` going forward. **Now, here's the table specifically for the results whose k was selected by cosine similarity goodness-of-fit**, among *k in [2:5]* for each the given random seed, using 3000 iterations:
 
 ```{r sigs_selected}
 gof %>%
@@ -163,8 +170,6 @@ gof %>%
 Clearly, this analysis is extremely sensitive to starting conditions. Even so, we see a few repeated SBS signatures coming up:
 
 
-+ [SBS5](https://cancer.sanger.ac.uk/signatures/sbs/sbs5/) is age and clock-like, and "SBS5 may be contaminated by SBS16."
-+ [SBS11](https://cancer.sanger.ac.uk/signatures/sbs/sbs11/) "exhibits a mutational pattern resembling that of alkylating agents. Patient histories indicate an association between previous treatment with the alkylating agent temozolomide and SBS11 mutations."
 + **[SBS14](https://cancer.sanger.ac.uk/signatures/sbs/sbs14/)** "is one of seven mutational signatures associated with defective DNA mismatch repair and microsatellite instability (MSI) and is often found in the same samples as other MSI associated signatures: SBS6, SBS15, SBS20, SBS21, SBS26 and SBS44."
 + **[SBS15](https://cancer.sanger.ac.uk/signatures/sbs/sbs15/)** "is one of seven mutational signatures associated with defective DNA mismatch repair and microsatellite instability (MSI) and is often found in the same samples as other MSI associated signatures: SBS6, SBS14, SBS20, SBS21, SBS26 and SBS44."
 + [SBS23](https://cancer.sanger.ac.uk/signatures/sbs/sbs23/) has unknown aetiology.

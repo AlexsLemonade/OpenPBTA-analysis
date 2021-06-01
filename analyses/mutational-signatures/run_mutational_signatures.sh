@@ -13,7 +13,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 ABBREVIATED_MUTSIGS=${OPENPBTA_QUICK_MUTSIGS:-0}
 
 # Run the mutational signatures analysis using existing signatures
-#Rscript -e "rmarkdown::render('01-known_signatures.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('01-known_signatures.Rmd', clean = TRUE)"
 
 # Split up the consensus MAF files by experimental strategy (writes to scratch)
 Rscript --vanilla 02-split_experimental_strategy.R
