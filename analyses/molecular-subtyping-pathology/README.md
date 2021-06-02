@@ -8,7 +8,7 @@ In some cases, our analyses have resulted in an update of the `integrated_diagno
 The objective of this module is three-fold:
 
 1. Aggregate the molecular subtyping calls from the following modules that produced results:
-   * [`molecular-subtyping-EPN`](https://github.com/jaclyn-taroni/OpenPBTA-analysis/tree/645-pathology-feedback/analyses/molecular-subtyping-EPN) (in progress, see [#555](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/555))
+   * [`molecular-subtyping-EPN`](https://github.com/jaclyn-taroni/OpenPBTA-analysis/tree/645-pathology-feedback/analyses/molecular-subtyping-EPN)
    * [`molecular-subtyping-EWS`](https://github.com/jaclyn-taroni/OpenPBTA-analysis/tree/645-pathology-feedback/analyses/molecular-subtyping-EWS)
    * [`molecular-subtyping-HGG`](https://github.com/jaclyn-taroni/OpenPBTA-analysis/tree/645-pathology-feedback/analyses/molecular-subtyping-HGG)
    * [`molecular-subtyping-LGAT`](https://github.com/jaclyn-taroni/OpenPBTA-analysis/tree/645-pathology-feedback/analyses/molecular-subtyping-LGAT)

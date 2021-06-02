@@ -58,14 +58,14 @@ bind_exp_strategies <- function(results_df) {
   # Returns:
   #   A data.frame where each biospecimen is a row
   rna_df <- results_df %>%
-    select(-Kids_First_Biospecimen_ID_DNA) %>%
-    filter(!is.na(Kids_First_Biospecimen_ID_RNA)) %>%
-    rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA)
+    dplyr::select(-Kids_First_Biospecimen_ID_DNA) %>%
+    dplyr::filter(!is.na(Kids_First_Biospecimen_ID_RNA)) %>%
+    dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA)
   
   dna_df <- results_df %>%
-    select(-Kids_First_Biospecimen_ID_RNA) %>%
-    filter(!is.na(Kids_First_Biospecimen_ID_DNA)) %>%
-    rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_DNA)
+    dplyr::select(-Kids_First_Biospecimen_ID_RNA) %>%
+    dplyr::filter(!is.na(Kids_First_Biospecimen_ID_DNA)) %>%
+    dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_DNA)
   
   # sometimes there will be multiple RNA-seq assays per single DNA-seq assay
   # or vice versa, which is why this distinct is necessary
@@ -230,6 +230,7 @@ lgat_results_df <- bind_exp_strategies(lgat_results_df) %>%
              by = "Kids_First_Biospecimen_ID") %>%
 mutate(integrated_diagnosis = case_when(
             str_detect(molecular_subtype, "To be classified") ~ NA_character_,
+            pathology_diagnosis == "Ganglioglioma" ~ str_replace(molecular_subtype, "LGG, ", "Ganglioglioma, "),
             TRUE ~ str_replace(molecular_subtype, "LGG, ", "Low-grade glioma/astrocytoma, ")
           ),
          broad_histology = "Low-grade astrocytic tumor",

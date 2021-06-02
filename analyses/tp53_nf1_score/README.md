@@ -10,9 +10,6 @@ The classifiers were trained on TCGA PanCan data ([Way et al. _Cell Reports._ 20
 See [`01-apply-classifier.py`](01-apply-classifier.py) for more information about the procedure.
 To evaluate the classifier scores, we use [`02-evaluate-classifier.py`](02-evaluate-classifier.py) and input SNV data to identify true TP53/NF1 loss samples and compare scores of shuffled data to true calls and plot ROC curves. 
 
-**This module is in progress.** 
-Copy number aberrations are not currently considered when evaluating the classifiers.
-
 #### Running the analysis
 
 The analysis can be run with the following (assuming you are in the root repository of the project):
@@ -20,6 +17,16 @@ The analysis can be run with the following (assuming you are in the root reposit
 ```
 bash analyses/tp53_nf1_score/run_classifier.sh
 ```
+
+### Inputs from data download
+
+* `pbta-snv-consensus-mutation.maf.tsv.gz`: from `snv-callers` module which gathers calls that are present in all 3 callers (strelka2,mutect2 and lancet) 
+* `pbta-snv-scavenged-hotspots.maf.tsv.gz`: from `hotspot-detection` module to gather calls that overlap MSKCC hotspots found in any caller (except if only vardict calls the site as variant, we remove these calls since we have a lot of calls unique to vardict which we consider as false positive as discussed [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers#snv-caller-comparison-analysis))
+* pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds : stranded FPKM values per gene in biospecimen_id
+* pbta-gene-expression-rsem-fpkm-collapsed.polya.rds : polya FPKM values per gene in biospecimen_id
+* consensus_seg_with_status.tsv : created by analyses/focal-cn-file-preparation/02-add-ploidy-consensus.Rmd
+* pbta-sv-manta.tsv.gz : Structural Variants called by manta
+
 
 ### Order of analysis
 
@@ -31,7 +38,7 @@ _NF1_ positive examples are additionally filtered to remove missense mutations, 
 
 `02-qc-rna_expression_score.Rmd` here expression of TP53 gene was compared to TP53 classifier score. We didn't find a strong correlation between TP53 expression and TP53 inactivation score, thus, expression and classifier score together cannot predict function.
 
-`03-tp53-cnv-loss-domain.Rmd` here copy_number of regions overlapping TP53 functional domains were compared to TP53 classifier score. We find tumors with TP53 copies <=1 have higher TP53 classifier scores, so we only retain biospecimens with <= 1 copy TP53 as high confidence TP53 loss. 
+`03-tp53-cnv-loss-domain.Rmd` here copy_number of regions overlapping TP53 functional domains were compared to TP53 classifier score to visualize the distribution of scores. We also save the TP53 loss calls which will be input for downstream altered status script.
 
 `04-tp53-sv-loss.Rmd` here structural variant breakpoints overlapping TP53 are investigated for CNV loss or low expression to gather high confidence TP53 loss via Structural Variants. 
 
@@ -54,7 +61,7 @@ activating	| Any 1 SNV shown in HGVSp_Short overlaps TP53_ activating mutations 
 tp53_altered | Combined evidence, cancer predisposition and score based tp53 status
 
 
-`05-evaluate-classifier.py` evaluates classifier score with TP53 alterations (non-synonymous SNV and all status == "loss" in consensus CNV file from 00-tp53-nf1-alterations.R) 
+`06-evaluate-classifier.py` evaluates classifier score with TP53 alterations (non-synonymous SNV and all status == "loss" in consensus CNV file from 00-tp53-nf1-alterations.R) 
 
 Because some of the classifier genes are not present in the OpenPBTA dataset, the scores should be interpreted as continuous values representing relative gene alterations and not as probabilities.
 
