@@ -131,46 +131,51 @@ putative_onco_tp53_fusion <- putative_onco_fusion %>%
 ```{r}
 
 if(nrow(putative_onco_tp53_fusion) > 0) {
-putative_onco_tp53_fusion_gr <- putative_onco_tp53_fusion %>%
-  mutate(
-    BreakpointChr = paste0("chr",gsub(":.*$", "", value)),
-    Breakpoint = gsub("^.*:", "", value)) %>%
-  GenomicRanges::makeGRangesFromDataFrame(seqnames.field = "BreakpointChr",
-                                          start.field = "Breakpoint",
-                                          end.field = "Breakpoint",
-                                          
-                                          keep.extra.columns = TRUE,
-                                          starts.in.df.are.0based = FALSE)
-
-bk_overlaps_exon <- IRanges::mergeByOverlaps(putative_onco_tp53_fusion_gr,exon) %>%
-  as.data.frame() %>%
-  mutate(exon_rank = unlist(exon_rank)) %>%
-  dplyr::filter(grepl("ENSG00000141510",gene_id,
-                      exon_rank==1)) %>%
-  dplyr::select(starts_with("putative_onco")) %>%
-  dplyr::rename_at(vars(starts_with("putative_onco")),~str_remove(.,"putative_onco_tp53_fusion_gr."))
-
-bk_overlaps_intron <- IRanges::mergeByOverlaps(putative_onco_tp53_fusion_gr,intron) %>%
-  as.data.frame() %>%
-  dplyr::filter(grepl("ENSG00000141510",gene_id)) %>%
-  dplyr::select(starts_with("putative_onco")) %>%
-  dplyr::rename_at(vars(starts_with("putative_onco")),~str_remove(.,"putative_onco_tp53_fusion_gr.")) 
-
+  putative_onco_tp53_fusion_gr <- putative_onco_tp53_fusion %>%
+    mutate(
+      BreakpointChr = paste0("chr",gsub(":.*$", "", value)),
+      Breakpoint = gsub("^.*:", "", value)) %>%
+    GenomicRanges::makeGRangesFromDataFrame(seqnames.field = "BreakpointChr",
+                                            start.field = "Breakpoint",
+                                            end.field = "Breakpoint",
+                                            
+                                            keep.extra.columns = TRUE,
+                                            starts.in.df.are.0based = FALSE)
+  
+  # Check for exon overlap
+  bk_overlaps_exon <- IRanges::mergeByOverlaps(putative_onco_tp53_fusion_gr,exon) %>%
+    as.data.frame() %>%
+    mutate(exon_rank = unlist(exon_rank)) %>%
+    dplyr::filter(grepl("ENSG00000141510",gene_id,
+                        exon_rank==1)) %>%
+    dplyr::select(starts_with("putative_onco")) %>%
+    dplyr::rename_at(vars(starts_with("putative_onco")),~str_remove(.,"putative_onco_tp53_fusion_gr."))
+  
+  # Check for intron overlap
+  bk_overlaps_intron <- IRanges::mergeByOverlaps(putative_onco_tp53_fusion_gr,intron) %>%
+    as.data.frame() %>%
+    dplyr::filter(grepl("ENSG00000141510",gene_id)) %>%
+    dplyr::select(starts_with("putative_onco")) %>%
+    dplyr::rename_at(vars(starts_with("putative_onco")),~str_remove(.,"putative_onco_tp53_fusion_gr.")) 
+  
+  # Save
+  if (nrow(bk_overlaps_intron) == 0) {
+    # only saving fusion calls overlapping exon 1
+    bk_overlaps_exon %>% 
+      write_tsv(file.path(results_dir, "fusion_bk_tp53_loss.tsv"))
+  }else if (nrow(bk_overlaps_exon) == 0) {
+    # only saving fusion calls overlapping intron 1
+    bk_overlaps_intron %>% 
+      write_tsv(file.path(results_dir, "fusion_bk_tp53_loss.tsv"))
+  } else {
+    # bind calls overlapping exon1 or intron1
+    bind_rows(bk_overlaps_exon,
+              bk_overlaps_intron) %>%
+      write_tsv(file.path(results_dir, "fusion_bk_tp53_loss.tsv"))
+  }
+  
 }
 ```
-
-### Exon overlaps
-```{r}
-bk_overlaps_exon
-```
-
-The breakpoint in BS_NJ4WPQVK overlaps the 1st exon of TP53
-
-### Intron overlaps
-```{r}
-bk_overlaps_intron
-```
-No breakpoints overlap TP53 introns
 
 
 ## Filter SV calls that are associated with sample with TP53 CNV loss
@@ -242,24 +247,4 @@ if (nrow(sv_with_lowexpr) == 0) {
     write_tsv(file.path(results_dir, "sv_overlap_tp53.tsv"))
 }
 ```
-
-## Save fusion calls with TP53 loss
-```{r}
-if (nrow(bk_overlaps_intron) == 0) {
-  # only saving fusion calls overlapping exon 1
-  bk_overlaps_exon %>% 
-    write_tsv(file.path(results_dir, "fusion_bk_tp53_loss.tsv"))
-}else if (nrow(bk_overlaps_exon) == 0) {
-  # only saving fusion calls overlapping intron 1
-  bk_overlaps_intron %>% 
-    write_tsv(file.path(results_dir, "fusion_bk_tp53_loss.tsv"))
-} else {
-  # bind calls overlapping exon1 or intron1
-  bind_rows(bk_overlaps_exon,
-            bk_overlaps_intron) %>%
-    write_tsv(file.path(results_dir, "fusion_bk_tp53_loss.tsv"))
-}
-
-```
-
 
