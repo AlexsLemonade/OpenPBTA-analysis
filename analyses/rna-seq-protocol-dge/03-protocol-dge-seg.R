@@ -105,18 +105,30 @@ sample_prot <- c('s1_stranded', 's2_stranded', 's3_stranded',
 counts_object <- DGEList(counts = counts, group = group)
 counts_object <- counts_object[
     filterByExpr(counts_object), , keep.lib.sizes=FALSE]
+# read housekeeping genes
+hkgenes <- read.csv(file.path('input', 'Housekeeping_GenesHuman.csv'),
+                    sep = ";", stringsAsFactors = FALSE)
+hkgenes <- unique(hkgenes$Gene.name)
+hkgenes <- intersect(rownames(counts_object), hkgenes)
 
 if (identical(norm_method, 'tmm')) {
     counts_object <- calcNormFactors(counts_object, method="TMM")
     norm_cnt_mat <- cpm(counts_object)
+
+    counts_object <- counts_object[hkgenes, ]
+    norm_cnt_mat <- norm_cnt_mat[hkgenes, ]
     round_norm_cnt_mat <- round(norm_cnt_mat)
+
     plot_nm_str <- 'TMM'
 } else if (identical(norm_method, 'uqpgq2')) {
     counts_object <- DGEList(counts = uq.pgQ2(X = counts_object$counts),
-                            group = group)
+                             group = group)
+    counts_object <- counts_object[hkgenes, ]
+
     norm_cnt_mat <- counts_object$counts
     round_norm_cnt_mat <- round(norm_cnt_mat)
     counts_object <- calcNormFactors(counts_object, method="none")
+
     plot_nm_str <- 'UQ-pgQ2'
 }
 ### Estimate dispersion

@@ -52,14 +52,22 @@ suppressMessages(
     colData = data.frame(group),
     design = ~ group)
 )
+# Read housekeeping genes
+hkgenes <- read.csv(file.path('input', 'Housekeeping_GenesHuman.csv'),
+                    sep = ";", stringsAsFactors = FALSE)
+hkgenes <- unique(hkgenes$Gene.name)
+hkgenes <- intersect(rownames(counts_object), hkgenes)
 # From DESeq2 documentation:
 # DESeq2 performs a default analysis through the steps:
 # - estimation of size factors: estimateSizeFactors
 # - estimation of dispersion: estimateDispersions
 # - Negative Binomial GLM fitting and Wald statistics: nbinomWaldTest
+dds <- DESeq2::estimateSizeFactors(dds)
+dds <- dds[hkgenes, ]
 suppressMessages(
-  dds <- DESeq2::DESeq(dds)
+  dds <- DESeq2::estimateDispersions(dds)
 )
+dds <- DESeq2::nbinomWaldTest(dds)
 # DESeq2::counts(dds, normalized=TRUE)[1:5, 1:5]
 deseq2_res <- DESeq2::results(dds, cooksCutoff = FALSE, pAdjustMethod = 'BH')
 deseq2_res_df <- data.frame(deseq2_res)
