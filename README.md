@@ -1,22 +1,22 @@
 # OpenPBTA-analysis
 
 Pediatric brain tumors are the most common solid tumors and the leading cause of cancer-related death in children.
-Our ability to understand and successfully treat these diseases is hindered by small sample sizes due to the overall rarity of unique molecular subtypes and tainted grouped analyses resulting from misclassification. 
-In September of 2018, the [Children's Brain Tumor Tissue Consortium](https://cbttc.org/) released the [Pediatric Brain Tumor Atlas (PBTA)](https://cbttc.org/pediatric-brain-tumor-atlas/), a genomic dataset (whole genome sequencing, whole exome sequencing, RNA sequencing, proteomic, and clinical data) for nearly 1,000 tumors, available from the [Gabriella Miller Kids First Portal](https://kidsfirstdrc.org/). 
+Our ability to understand and successfully treat these diseases is hindered by small sample sizes due to the overall rarity of unique molecular subtypes and tainted grouped analyses resulting from misclassification.
+In September of 2018, the [Children's Brain Tumor Network (CBTN)](https://cbtn.org/) released the [Pediatric Brain Tumor Atlas (PBTA)](https://cbtn.org/pediatric-brain-tumor-atlas/), a genomic dataset (whole genome sequencing, whole exome sequencing, RNA sequencing, proteomic, and clinical data) for nearly 1,000 tumors, available from the [Gabriella Miller Kids First Portal](https://kidsfirstdrc.org/).
 
-The Open Pediatric Brain Tumor Atlas (OpenPBTA) Project is a global open science initiative to comprehensively define the molecular landscape of tumors of 944 patients from the CBTTC and the PNOC003 DIPG clinical trial from the [Pediatric Pacific Neuro-oncology Consortium](http://www.pnoc.us/) through real-time, collaborative analyses and [collaborative manuscript writing](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) on GitHub. 
+The Open Pediatric Brain Tumor Atlas (OpenPBTA) Project is a global open science initiative to comprehensively define the molecular landscape of tumors of 943 patients from the CBTN and the PNOC003 DIPG clinical trial from the [Pediatric Pacific Neuro-oncology Consortium](http://www.pnoc.us/) through real-time, collaborative analyses and [collaborative manuscript writing](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) on GitHub.
 
 The OpenPBTA operates on a pull request model to accept contributions from community participants.
 The maintainers have set up continuous integration software to confirm the reproducibility of analyses within the project’s Docker container.
-The collaborative manuscript is authored using [Manubot](https://manubot.org) software to provide an up-to-date public version of the manuscript. 
+The collaborative manuscript is authored using [Manubot](https://manubot.org) software to provide an up-to-date public version of the manuscript.
 The project maintainers include scientists from [Alex's Lemonade Stand Foundation's Childhood Cancer Data Lab](https://www.ccdatalab.org/) and the [Center for Data-Driven Discovery in Biomedicine at the Children's Hospital of Philadelphia](https://d3b.center/).
-We invite researchers to join OpenPBTA to help rigorously characterize the genomic landscape of these diseases to enable more rapid discovery of additional mechanisms contributing to the pathogenesis of pediatric brain and spinal cord tumors and overall accelerate clinical translation on behalf of patients. 
+We invite researchers to join OpenPBTA to help rigorously characterize the genomic landscape of these diseases to enable more rapid discovery of additional mechanisms contributing to the pathogenesis of pediatric brain and spinal cord tumors and overall accelerate clinical translation on behalf of patients.
 
 **New to the project? Please be sure to read the following documentation before contributing:**
 
 1. Learn about the fundamental data used for this project in [**`doc/data-formats.md`**](./doc/data-formats.md) and [**`doc/data-files-description.md`**](./doc/data-files-description.md)
 	+ A history of data releases can be found in [**`doc/release-notes.md`**](./doc/release-notes.md)
-2. See what analyses are being performed in [**`analyses/README.md`**](./analyses/README.md) 
+2. See what analyses are being performed in [**`analyses/README.md`**](./analyses/README.md)
 3. Read the remainder of this README document in full.
 4. Read our contributing guidelines in [**`CONTRIBUTING.md`**](./CONTRIBUTING.md) in full.
 
@@ -54,6 +54,8 @@ We invite researchers to join OpenPBTA to help rigorously characterize the genom
       - [2. File and merge a pull request for adding `02-cluster-heatmap.R` to the repository.](#2-file-and-merge-a-pull-request-for-adding-02-cluster-heatmapr-to-the-repository)
       - [3. File and merge a pull request for the shell script that runs the entirety of `gene-expression-clustering`.](#3-file-and-merge-a-pull-request-for-the-shell-script-that-runs-the-entirety-of-gene-expression-clustering)
     - [Passing variables only in CI](#passing-variables-only-in-ci)
+  - [Molecular-subtyping](#molecular-subtyping)
+    - [Adding summary analyses to run-for-subtyping.sh](#adding-summary-analyses-to-run-for-subtypingsh)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -67,7 +69,7 @@ Below is a summary of biospecimens by sequencing strategy:
 | Experimental Strategy | Normal | Tumor |
 |-----------------------|--------|-------|
 | Targeted DNA Panel | 1 | 1 |
-| RNA-Seq | 0 | 1072 |
+| RNA-Seq | 0 | 1036 |
 | WGS | 801 | 940 |
 | WXS | 31 | 31 |
 
@@ -75,32 +77,33 @@ Below is a summary of biospecimens by sequencing strategy:
 All sequencing was performed on nucleic acids extracted from fresh-frozen tissues using paired-end strategies.
 The [manuscript methods section](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#data-generation) has additional details.
 
-Below is a detailed table of [broad histologies](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#who-classification-of-disease-types) for the 1072 RNA-Seq biospecimens:
+Below is a detailed table of [broad histologies](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/03.methods.md#who-classification-of-disease-types) for the 1028 RNA-Seq biospecimens:
 
 
 | Broad Histology | N |
 |-----------------------------------------------|-----|
-| Benign tumor | 38 |
+| Benign tumor | 34 |
 | Choroid plexus tumor | 11 |
-| CNS Embryonal tumor | 5 |
-| CNS neuroblastoma | 5 |
-| Diffuse astrocytic and oligodendroglial tumor | 225 |
-| Embryonal tumor | 161 |
+| Diffuse astrocytic and oligodendroglial tumor | 191 |
+| Embryonal tumor | 184 |
 | Ependymal tumor | 93 |
 | Germ cell tumor | 13 |
-| Histiocytic tumor | 5 |
-| Low-grade astrocytic tumor | 256 |
-| Lymphomas | 1 |
+| Histiocytic tumor | 6 |
+| Low-grade astrocytic tumor | 303 |
+| Lymphoma | 1 |
+| Melanocytic tumor | 1 |
 | Meningioma | 29 |
-| Mesenchymal non-meningothelial tumor | 21 |
-| Metastatic secondary tumors | 7 |
-| Neuronal and mixed neuronal-glial tumor | 80 |
-| NOS Embryonal tumor | 17 |
-| Other tumor | 6 |
+| Mesenchymal non-meningothelial tumor | 25 |
+| Metastatic secondary tumors | 5 |
+| Neuronal and mixed neuronal-glial tumor | 34 |
+| Non-CNS tumor | 1 |
+| Non-tumor | 3 |
+| Other astrocytic tumor | 3 |
+| Other tumor | 1 |
 | Pre-cancerous lesion | 14 |
 | Tumor of cranial and paraspinal nerves | 44 |
 | Tumor of pineal region | 5 |
-| Tumors of sellar region | 36 |
+| Tumors of sellar region | 35 |
 
 
 Below is a table of number of tumor biospecimens by phase of therapy (DNA and RNA):
@@ -108,12 +111,12 @@ Below is a table of number of tumor biospecimens by phase of therapy (DNA and RN
 
 | Phase of Therapy | N |
 |---------------------------------|------|
-| Diagnosis/Initial CNS Tumor | 1507 |
-| Progressive | 291 |
-| Progressive Disease Post-Mortem | 11 |
-| Recurrence | 128 |
+| Initial CNS Tumor | 1520 |
+| Progressive | 302 |
+| Progressive Disease Post-Mortem | 13 |
+| Recurrence | 136 |
 | Second Malignancy | 35 |
-| Unavailable | 72 |
+| Unavailable | 2 |
 
 
 ## How to Obtain OpenPBTA Data
@@ -129,7 +132,7 @@ Use the [data issue template](https://github.com/AlexsLemonade/OpenPBTA-analysis
 ### Data Access via Download Script
 
 We have created a shell script that will download the latest release from AWS S3.
-macOS users must install `md5sum` before running the download script the first time. 
+macOS users must install `md5sum` before running the download script the first time.
 This can be installed with [homebrew](https://brew.sh/) via the command `brew install coreutils` or [conda/miniconda](https://docs.conda.io/projects/conda/en/latest/) via the command `conda install -c conda-forge coreutils`.
 _Note: the `download-data.sh` script now has the ability to skip downloads of unchanged files, but if you previously installed md5sum via brew you'll need to run `brew unlink md5sha1sum && brew install coreutils` first to take advantage of this new feature._
 
@@ -140,11 +143,11 @@ We will update the default release number whenever we produce a new release.
 
 ### Data Access via CAVATICA
 
-For any user registered on CAVATICA, the latest release of OpenPBTA data can be accessed from the CAVATICA public projects below:
-- [Pediatric Brain Tumor Atlas Open Access Data - CBTTC](https://cavatica.sbgenomics.com/u/cavatica/pbta-cbttc/)
-- [Pediatric Brain Tumor Atlas Open Access Data - PNOC003](https://cavatica.sbgenomics.com/u/cavatica/pbta-pnoc003/)
+For any user registered on CAVATICA, the OpenPBTA data can be accessed from the CAVATICA public project below:
+- [OpenPBTA Open Access](https://cavatica.sbgenomics.com/u/cavatica/openpbta/)
 
-Users downloading via CAVATICA should place the data files within a `data/release` folder and then create symlinks to those files within `/data`.
+The release folder structure in CAVATICA mirrors that on AWS.
+Users downloading via CAVATICA should place the data files within the `data/release*` folder and then create symlinks to those files within `/data`.
 
 
 ## How to Participate
@@ -211,7 +214,7 @@ Choose a name that is unique from other analyses and somewhat detailed.
 For example, instead of `gene-expression`, choose `gene-expression-clustering` if you are clustering samples by their gene expression values.
 You should assume that any data files are in the `../../data` directory and that their file names match what the `download-data.sh` script produces.
 These files should be read in at their relative path, so that we can re-run analyses if the underlying data change.
-Files that are primarily graphic should be placed in a `plots` subdirectory.
+Files that are primarily graphic should be placed in a `plots` subdirectory and should adhere to the [color palette guide](./figures/README.md#color-palette-usage).
 Files that are primarily tabular results files should be placed in a `results` subdirectory.
 Intermediate files that are useful within the processing steps but that do not represent final results should be placed in `../../scratch/`.
 It is safe to assume that files placed in `../../scratch` will be available to all analyses within the same folder.
@@ -256,7 +259,7 @@ As such, documenting your analytical code via comments and including information
 
 When you file the first pull request creating a new analysis module, add your module to the [Modules At A Glance table](analyses#modules-at-a-glance).
 This table contains fields for the directory name, what input files are required, a short description, and any files that you expect other analyses will rely on.
-As your analysis develops and input or output files change, please check this table remains up to date. 
+As your analysis develops and input or output files change, please check this table remains up to date.
 This step is included in the pull request reproducibility checklist.
 
 When an analysis module contains multiple steps or is nearing completion, add a `README.md` file that summarizes the purpose of the module, any known limitations or required updates, and includes examples for how to run the analyses to the folder.
@@ -273,6 +276,8 @@ See the [continuous integration instructions for adding analyses with multiple s
 The CI system that we use will generate, as artifacts, the contents of the `analyses` directory applied over a small test dataset.
 Our goal is to capture all of the outputs that will be used for the [OpenPBTA-manuscript](https://github.com/AlexsLemonade/OpenPBTA-manuscript/) as artifacts.
 Files that are primarily graphic should be placed in a `plots` subdirectory of the analysis's folder.
+Plots should use the specified color palettes for this project.
+See more [specific instructions on how to use the color palette here](./figures/README.md#color-palette-usage).
 Files that are primarily tabular results files should be placed in a `results` subdirectory of the analysis's folder.
 Files that are intermediate, which means that they are useful within an analysis but do not provide outputs intended for tables, figures, or supplementary tables or figures of the [OpenPBTA-manuscript](https://github.com/AlexsLemonade/OpenPBTA-manuscript/), should be placed in `../../scratch`.
 
@@ -281,7 +286,13 @@ Files that are intermediate, which means that they are useful within an analysis
 We build our project Docker image from a versioned [`tidyverse`](https://hub.docker.com/r/rocker/tidyverse) image from the [Rocker Project](https://www.rocker-project.org/) (v3.6.0).
 
 To add dependencies that are required for your analysis to the project Docker image, you must alter the project [`Dockerfile`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/Dockerfile).
-Note: R packages installed on this image will be installed from an [MRAN snapshot](https://mran.microsoft.com/documents/rro/reproducibility#reproducibility) corresponding to the last day that R 3.6.0 was the most recent release ([ref](https://hub.docker.com/r/rocker/tidyverse)).
+
+
+* R packages installed on this image will be installed from an [MRAN snapshot](https://mran.microsoft.com/documents/rro/reproducibility#reproducibility) corresponding to the last day that R 3.6.0 was the most recent release ([ref](https://hub.docker.com/r/rocker/tidyverse)).
+  * Installing most packages, from CRAN or Bioconductor, should be done  with our `install_bioc.R` script, which will ensure that the proper MRAN snapshot is used. `BiocManager::install()` should *not* be used, as it will not install from MRAN.
+  * R packages that are not available in the MRAN snapshot can be installed via github with the `remotes::install_github()` function, with the commit specified by the `ref` argument.
+* Python packages should be installed with `pip3 install` with version numbers for all packages and dependencies specified.
+* Other software can be installed with `apt-get`, but this should *never* be used for R packages.
 
 If you need assistance adding a dependency to the Dockerfile, [file a new issue on this repository](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/new) to request help.
 
@@ -472,5 +483,42 @@ The run command in the `.circleci/config.yml` is used to specify these parameter
 In this example `OPENPBTA_PATHSIG=0.75` species an environment variable `OPENPBTA_PATHSIG` that is set to 0.75.
 Any environment variables prefixed with `OPENPBTA_` are passed to the specified shell script.
 Environment variables without this prefix are not passed.
+
+### Molecular-subtyping 
+
+If you would like to identify molecular subtype membership for new RNA-seq PBTA samples belonging to the following broad_histologies, run the bash script below.
+ * [`molecular-subtyping-EWS`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-EWS)
+ * [`molecular-subtyping-HGG`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-HGG)
+ * [`molecular-subtyping-LGAT`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-LGAT)
+ * [`molecular-subtyping-embryonal`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-embryonal)
+ * [`molecular-subtyping-CRANIO`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-CRANIO)
+ * [`molecular-subtyping-EPN`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-EPN)
+ * [`molecular-subtyping-MB`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-MB)
+ * [`molecular-subtyping-neurocytoma`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-neurocytoma)
+
+<!--TODO: Add WGS/WXS summarization modules.-->   
+
+```
+bash scripts/run-for-subtyping.sh
+```
+
+Running this will re-run RNA-seq specific summary file generation modules as well as molecular-subtyping-* modules to generate the `compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` file containing the `molecular_subtype` column.
+
+
+#### Adding summary analyses to run-for-subtyping.sh
+
+For an analysis to be run for subyping, it must use `pbta-histologies-base.tsv` as input and shouldn't depend on `molecular_subtype` or `integrated_diagnosis` columns for molecular-subtyping-* modules. 
+Please set BASE_SUBTYPING=1 as a condition to run code with `pbta-histologies-base.tsv`.   
+
+Here is an example:
+
+```
+BASE_SUBTYPING=1 analyses/gene-set-enrichment-analysis/run-gsea.sh
+
+```
+
+This would run the `analyses/gene-set-enrichment-analysis/run-gsea.sh` with `pbta-histologies-base.tsv` to generate gsva scores that are used in multiple molecular-subtyping-* modules.
+
+
 
 <!--TODO: Add instructions for running scripts from anywhere in the project?-->

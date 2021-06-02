@@ -1,3 +1,7 @@
+# CIBERSORT related files
 LM22.txt
 CIBERSORT.R
 CIBERSORT-Results.txt
+
+# output data specifically for making figures
+results/deconv-output-for-figures.RData

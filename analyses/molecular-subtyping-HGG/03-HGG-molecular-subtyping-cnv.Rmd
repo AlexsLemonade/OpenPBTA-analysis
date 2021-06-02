@@ -43,45 +43,23 @@ if (!dir.exists(results_dir)) {
 
 ### Read in Files
 
-We will need the clinical/histologies file and the defining lesions file to distinguish between missing samples or samples that had only neutral copy number calls.
+We will need the clinical/histologies file for included samples to distinguish between missing samples or samples that had only neutral copy number calls.
 
 ```{r message=FALSE}
-histologies_df <- read_tsv(file.path(root_dir, "data",
-                                     "pbta-histologies.tsv"))
-defining_lesions_df <- read_tsv(file.path(results_dir, 
-                                          "HGG_defining_lesions.tsv"))
+hgg_metadata_df <- read_tsv(file.path(input_dir,
+                                     "hgg_metadata.tsv"), 
+                           guess_max = 10000)
 ```
 
 #### Inclusion Criteria
 
-Here, we'll use the same logic as `02-HGG-molecular-subtyping-subset-files.R` to identify samples to include and also check for experimental strategy.
+Here, we'll use the metadata output from  `02-HGG-molecular-subtyping-subset-files.R` to identify the samples we will include.
+Only WGS biospecimens have CNV and SV data, so we'll filter based on `experimental_strategy`.
 
 ```{r}
-hgg_lesions_df <- defining_lesions_df %>%
-  dplyr::filter(
-    short_histology == "HGAT" |
-      grepl("H3 G35 mutant|H3 K28 mutant", disease_type_reclassified)
-  )
-
-# Filter metadata for HGAT and samples that should be classified
-# as High-grade glioma based on defining lesions
-hgg_metadata_df <- histologies_df %>%
-  dplyr::filter(
-    short_histology == "HGAT" |
-      sample_id %in% hgg_lesions_df$sample_id,
-    sample_type == "Tumor",
-    composition == "Solid Tissue"
-  )
-```
-
-Only WGS samples have CNV and SV data, so we'll filter based on `experimental_strategy`.
-
-```{r}
-included_wgs_samples <- intersect(hgg_lesions_df %>% 
-                                    pull(Kids_First_Biospecimen_ID),
-                                  hgg_metadata_df %>% 
-                                    filter(experimental_strategy == "WGS") %>%
-                                    pull(Kids_First_Biospecimen_ID))
+included_wgs_specimens <- hgg_metadata_df %>%
+  dplyr::filter(experimental_strategy == "WGS") %>%
+  dplyr::pull(Kids_First_Biospecimen_ID)
 ```
 
 Are all the WGS samples that pass the inclusion criteria in the consensus SEG file committed to the repository?
@@ -97,17 +75,17 @@ consensus_seg_ids <- unique(consensus_seg_ids)
 ```
 
 ```{r}
-all(included_wgs_samples %in% consensus_seg_ids)
+all(included_wgs_specimens %in% consensus_seg_ids)
 ```
 
 No, they're not.
 How many are missing?
 
 ```{r}
-sum(!(included_wgs_samples %in% consensus_seg_ids))
+sum(!(included_wgs_specimens %in% consensus_seg_ids))
 ```
 
-We'd then expect `r sum(included_wgs_samples %in% consensus_seg_ids)` samples to have non-NA values in the cleaned CNV files.
+We'd then expect `r sum(included_wgs_specimens %in% consensus_seg_ids)` samples to have non-NA values in the cleaned CNV files.
 
 #### Read in CN Data
 
@@ -132,7 +110,7 @@ Note that a gene may have evidence for two kinds of copy number alteration (e.g.
 ```{r}
 # Select only the ID information, for use in joining below
 cn_df_ids <- cn_df %>%  
-  select(sample_id, 
+  select(sample_id,
          Kids_First_Biospecimen_ID = biospecimen_id,
          Kids_First_Participant_ID)
 
@@ -157,7 +135,7 @@ cn_df_genes_status <- cn_df_genes %>%
          PDGFRA_focal_status = PDGFRA,
          PTEN_focal_status   = PTEN) %>%
   # Arrange order of columns
-  dplyr::select(sample_id, 
+  dplyr::select(sample_id,
                 Kids_First_Biospecimen_ID, 
                 Kids_First_Participant_ID, 
                 everything())
@@ -213,7 +191,8 @@ We can fill any "missing values" with neutral calls as a result.
 
 ```{r}
 final_hgg_cn_df <- final_hgg_cn_df %>%
-  replace(is.na(.), "neutral")
+  replace(is.na(.), "neutral") %>%
+  dplyr::arrange(Kids_First_Participant_ID, sample_id)
 ```
 
 Write this to file.

@@ -62,9 +62,9 @@ This script creates summary correlation plots and heatmaps from predicted immune
 
 3. Output
 
-* `plots/corrplot_xCell_vs_CIBERSORT(abs.).png`: a correlation plot of predicted immune scores across 13 common cell types from xCell and CIBERSORT (abs.) 
-* `plots/heatmap_xCell.png`: heatmap of average immune scores per cell type per histology for xCell.
-* `plots/heatmap_CIBERSORT(abs.).png`: heatmap of average immune scores per cell type per histology for the second method, CIBERSORT in our case.
+* `plots/corrplot_xCell_vs_CIBERSORT(abs.).pdf`: a correlation plot of predicted immune scores across 13 common cell types from xCell and CIBERSORT (abs.) 
+* `plots/heatmap_xCell.pdf`: heatmap of average immune scores per cell type per histology for xCell stratified by brain and Non-brain tumors.
+* `plots/heatmap_CIBERSORT(abs.).pdf`: heatmap of average immune scores per cell type per histology stratified by brain and Non-brain tumors for the second method, CIBERSORT in our case.
 
 ### Running the analysis
 

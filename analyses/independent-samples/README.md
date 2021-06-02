@@ -15,20 +15,34 @@ As different analyses may require different sets of data, we actually generate a
 `independent-specimens.wgswxs.primary.tsv`
 * Primary and secondary specimens with WGS or WXS:  
 `independent-specimens.wgswxs.primary-plus.tsv`
+* Primary and secondary specimens matching WGS and WXS independent sample_ids plus only-RNA-Seq for polya samples
+independent-specimens.rnaseq.primary-plus-polya.tsv
+* Primary and secondary specimens matching WGS and WXS independent sample_ids plus only-RNA-Seq for stranded samples
+independent-specimens.rnaseq.primary-plus-stranded.tsv
+
 
 ## Generating sample lists
 
 To generate the independent sample lists and associated analysis of redundancies in the overall data set, run the following script from the project root directory:
 
+use OPENPBTA_BASE_SUBTYPING=1 to run this module using the pbta-histologies-base.tsv from data folder while running molecular-subtyping modules for release.
+```sh
+OPENPBTA_BASE_SUBTYPING=1 ../analyses/independent-samples/run-independent-samples.sh 
+```
+
+OR by default uses pbta-histologies.tsv from data folder
 ```sh
 bash analyses/independent-samples/run-independent-samples.sh
 ```
+
 
 
 ## Methods
 
 When presented with more than one specimen from a given individual, the script randomly selects one specimen to include, with preference for primary tumors and whole genome sequences where available.
 There is also a preference for the earliest collected samples, but as this data is not currently available, that code is not currently relevant.
+
+When multiple RNA-Seq samples exist per participant, the script matches the independent whole genome or whole exome sample_ids to gather matched RNA-Seq sample. If participant has onle RNA-Seq sample then a primary (and secondary if applicable) sample is randomly selected per participant  
 
 ## Relevant links
 The methods are described in the manuscript here:

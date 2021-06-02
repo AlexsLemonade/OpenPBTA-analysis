@@ -43,7 +43,7 @@ percKeep <- opt$perc_keep
 
 
 #Read in clinical data and pathway level data generated from 01-run-ssgsea.R
-clinData <- read.delim("../../data/pbta-histologies.tsv", stringsAsFactors=F)
+clinData <- readr::read_tsv("../../data/pbta-histologies.tsv", guess_max = 10000)
 geneSetExpMat <- readRDS("../../scratch/GeneSetExpressionMatrix.RDS")
 
 #Choose Clinical Samples corresponding to samples in Gene Set Matrix

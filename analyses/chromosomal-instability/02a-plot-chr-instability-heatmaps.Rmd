@@ -1,0 +1,326 @@
+---
+title: "Chromosomal Instability: Heatmaps"
+output:   
+  html_notebook: 
+    toc: true
+    toc_float: true
+author: Candace Savonen for ALSF - CCDL
+date: 2020
+---
+
+This analysis evaluates chromosomal instability by using binned breakpoint counts 
+for SV and CNVdata that was formatted co-localized by individual samples in 
+`01-localization-of-breakpoints.Rmd`. 
+This notebook returns chromosomal break heatmaps in the `plots` directory.
+
+### Usage
+
+This notebook can be run via the command line from the top directory of the 
+repository as follows:
+
+```
+Rscript -e "rmarkdown::render('analyses/chromosomal-instability/02a-plot-chr-instability-heatmap.Rmd', 
+                              clean = TRUE)"
+```
+
+### Set Up
+
+```{r}
+# Set seed so heatmaps turn out the same
+set.seed(2020)
+
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+### Directories and Files
+
+```{r}
+# Path to data directory
+base_dir <- file.path("..", "..")
+data_dir <- file.path(base_dir, "data")
+scratch_dir <- file.path(base_dir, "scratch")
+figures_dir <- file.path(base_dir, "figures")
+
+# Path to output directory
+plots_dir <- "plots"
+
+# Create the hist_plots_dir  if it does not exist
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir, recursive = TRUE)
+}
+```
+
+Import color palettes. 
+
+```{r}
+# Import standard color palettes for project
+histology_label_mapping <- readr::read_tsv(
+  file.path(figures_dir, "palettes", "histology_label_color_table.tsv")
+  ) %>% 
+  # Select just the columns we will need for plotting
+  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>% 
+  # Reorder display_group based on display_order
+  dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
+
+# We'll use this for numeric data on the heatmap 
+gradient_col_palette <- readr::read_tsv(
+  file.path(figures_dir, "palettes", "gradient_color_palette.tsv")
+  ) %>% 
+  # We won't need NA color in this instance, ComplexHeatmap has a separate argument for that
+  dplyr::filter(color_names != "na_color")
+
+# We'll use this for chromosome labeling
+binary_col_palette <- readr::read_tsv(
+  file.path(figures_dir, "palettes", "binary_color_palette.tsv")
+  )
+```
+
+Store na color separately because in this instance, ComplexHeatmap has a 
+separate argument for that. 
+
+```{r}
+# Store na color separately because in this instance, ComplexHeatmap has a 
+# separate argument for that
+na_color <- binary_col_palette %>% 
+  dplyr::filter(color_names == "na_color") %>% 
+  dplyr::pull("hex_codes")
+
+# Drop na color from this color palette
+binary_col_palette <- binary_col_palette %>% 
+  dplyr::filter(color_names != "na_color")
+```
+
+Here's all the input files we will need: 
+
+```{r}
+metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+binned_counts_files <- list.files("breakpoint-data",
+  pattern = "_binned_counts.tsv",
+  full.names = TRUE
+)
+```
+
+Output files:
+
+```{r}
+intersection_heatmap_file <- file.path(plots_dir, "intersection_breaks_heatmap.pdf")
+cnv_heatmap_file <- file.path(plots_dir, "cnv_breaks_heatmap.pdf")
+sv_heatmap_file <- file.path(plots_dir, "sv_breaks_heatmap.pdf")
+```
+
+Make a special function for making the heatmaps. 
+
+```{r}
+breaks_heatmap <- function(binned_counts_df,
+                           chrs,
+                           histologies,
+                           chr_colors,
+                           histologies_colors,
+                           col_fun, 
+                           na_color) {
+  # A wrapper function for making a heatmap from the samples GenomicRanges list.
+  #
+  # Args:
+  # binned_counts_df: a data.frame with the binned counts for each sample must 
+  #                   have sample IDs in the row_ids and that the name of the 
+  #                   histology column must match the histologies_colors vector
+  #                   name
+  # chrs: The chromosomes for each bin key.
+  # histologies: The histologies to biospecimen's key.
+  # chr_colors: A named vector to be used for coloring chromosomes.
+  # histologies_colors: A named vector to be used for coloring histologies.
+  # col_fun: a color key for the heatmap itself. Provided as a function.
+  # na_color: what color should na regions be?
+  #
+  # Returns:
+  # A heatmap of the chromosomal breaks
+    
+  # Drop chr bin names
+  binned_counts_mat <- binned_counts_df %>%
+    dplyr::select(rownames(histologies)) %>%
+    t()
+
+  # Create the Heatmap annotation object
+  chr_annot <- ComplexHeatmap::HeatmapAnnotation(
+    df = data.frame(chrs),
+    col = list(chrs = chr_colors),
+    name = "",
+    show_legend = FALSE,
+    show_annotation_name = FALSE
+  )
+  # Create the Heatmap annotation object
+  hist_annot <- ComplexHeatmap::HeatmapAnnotation(
+    df = data.frame(histologies),
+    col = list(display_group = histologies_colors),
+    which = "row",
+    show_annotation_name = FALSE
+  )
+  # Plot on a heatmap
+  heatmap <- ComplexHeatmap::Heatmap(binned_counts_mat,
+    col = col_fun,
+    heatmap_legend_param = list(title = "Count of chr breaks"),
+    cluster_columns = FALSE,
+    cluster_rows = FALSE,
+    show_column_names = FALSE,
+    show_row_names = FALSE,
+    bottom_annotation = chr_annot,
+    left_annotation = hist_annot,
+    na_col = na_color
+  )
+  # Return plot
+  return(heatmap)
+}
+```
+
+### Read in data 
+
+Set up metadata
+
+```{r}
+# Read in the metadata
+metadata <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
+  dplyr::inner_join(histology_label_mapping, by = "Kids_First_Biospecimen_ID")
+```
+
+Load in the previously localized breakpoint data. 
+
+```{r}
+# Read in each dataset
+binned_counts <- lapply(binned_counts_files, readr::read_tsv)
+
+# Name them
+names(binned_counts) <- gsub(
+  "breakpoint-data/|_binned_counts.tsv",
+  "",
+  binned_counts_files
+)
+```
+
+Extract chromosome labels and make an alternating color key for them. 
+
+```{r}
+# Extract chromosome labels
+chrs <- paste0("chr", binned_counts[[1]]$chr_bin_names)
+
+# Make chromosome labeling `HeatmapAnnotation` object.
+chrs <- as.factor(chrs)
+
+# Make a key for assigning alternating colors to the chromosomes
+chr_colors <- rep(binary_col_palette$hex_codes, length.out = length(unique(chrs)))
+names(chr_colors) <- unique(chrs)
+```
+
+Get sample names. 
+
+```{r}
+common_samples <- grep("chr_bin_names",
+  colnames(binned_counts[[1]]),
+  invert = TRUE,
+  value = TRUE
+)
+```
+
+### Set up for making heatmaps of the breakpoints
+
+Given the `GenomicRanges` objects for each sample, create a combined plot for 
+each. 
+
+Make histology labeling `HeatmapAnnotation` object.
+
+```{r}
+# Get the histologies for the samples in this set and order them by histology
+histologies <-
+  data.frame(Kids_First_Biospecimen_ID = common_samples) %>%
+  dplyr::inner_join(metadata %>% 
+                      dplyr::select(Kids_First_Biospecimen_ID, display_group, hex_codes)) %>%
+  # Arrange by display group
+  dplyr::arrange(display_group) %>% 
+  tibble::column_to_rownames("Kids_First_Biospecimen_ID")
+
+# Make color key specific to these samples
+histologies_color_key_filtered <- unique(histologies$hex_codes)
+names(histologies_color_key_filtered) <- unique(histologies$display_group)
+
+# Drop this column so ComplexHeatmap isn't tempted to plot it
+histologies <- dplyr::select(histologies, -hex_codes)
+```
+
+Make a color function. 
+
+```{r}
+col_fun <- circlize::colorRamp2(
+  c(0, .125, .25, .3, .5, 1, 1.5, 2, 2.5, 3),
+  gradient_col_palette$hex_codes
+)
+```
+
+## Intersection of breaks heatmap
+
+```{r}
+intersection_of_heatmap <- breaks_heatmap(
+  binned_counts_df = binned_counts$intersection_of_breaks,
+  chrs,
+  histologies,
+  chr_colors,
+  histologies_color_key_filtered,
+  col_fun, 
+  na_color
+)
+# Print out here
+intersection_of_heatmap
+
+# Save plot as PNG
+pdf(intersection_heatmap_file)
+intersection_of_heatmap
+dev.off()
+```
+
+## CNV breaks heatmap
+
+```{r}
+cnv_heatmap <- breaks_heatmap(
+  binned_counts_df = binned_counts$cnv_breaks,
+  chrs,
+  histologies,
+  chr_colors,
+  histologies_color_key_filtered,
+  col_fun, 
+  na_color
+)
+# Print out here
+cnv_heatmap
+
+# Save plot as PDF
+pdf(cnv_heatmap_file)
+cnv_heatmap
+dev.off()
+```
+
+## SV breaks heatmap
+
+```{r}
+sv_heatmap <- breaks_heatmap(
+  binned_counts_df = binned_counts$sv_breaks,
+  chrs,
+  histologies,
+  chr_colors,
+  histologies_color_key_filtered,
+  col_fun, 
+  na_color
+)
+# Print out here
+sv_heatmap
+
+# Save plot as PDF
+pdf(sv_heatmap_file)
+sv_heatmap
+dev.off()
+```
+
+### Session Info
+
+```{r}
+sessionInfo()
+```
+

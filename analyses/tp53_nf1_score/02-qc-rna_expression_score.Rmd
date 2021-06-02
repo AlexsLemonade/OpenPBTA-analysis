@@ -1,0 +1,191 @@
+---
+title: "QC correlation of classifier score with RNA-Seq expression"
+author: "K S Gaonkar (D3B)"
+output: html_notebook
+
+---
+    
+In this notebook we will find correlation between RNA-Seq and classifier score
+We will check if the values are inversely correlated as we would expect?
+
+### Setup
+```{r}
+library("ggpubr")
+library("ggthemes")
+library("tidyverse")
+library("broom")
+
+# rootdir
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+results_dir <- "results"
+
+clinical <- read_tsv(file.path(data_dir,"pbta-histologies.tsv"))
+```
+
+### Classifier scores
+
+ 1) Read in scores from tp53-nf1-classifier for stranded
+```{r}
+
+score_stranded_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv")) %>%
+  dplyr::select(
+    "tp53_score",
+    "sample_id"
+  ) %>%
+  as.data.frame()
+
+```
+
+ 2) Read in scores from tp53-nf1-classifier for polya
+```{r}
+score_polya_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv")) %>%
+  dplyr::select(
+    "tp53_score",
+    "sample_id"
+  ) %>%
+  as.data.frame()
+
+```
+
+### Expression matrices
+
+```{r}
+
+stranded_exp_file <- file.path(data_dir,"pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
+polya_exp_file <- file.path(data_dir,"pbta-gene-expression-rsem-fpkm-collapsed.polya.rds")
+
+```
+
+Format expression matrices to long format
+
+```{r}
+
+expression_mat_to_long <- function(expressionFile,score_df,gene){
+# load expressionMatrix RDS for expression based filtering for less than given threshold
+expressionMatrix<-readRDS(expressionFile) %>% 
+  rownames_to_column()
+
+# Taking snippet from @jaclyn-taroni idea used in expression based fusion call filtering
+
+expression_long_df <- expressionMatrix %>%
+  # rename rowname to GeneSymbol
+  dplyr::rename(GeneSymbol=rowname) %>%
+  # Get the data into long format
+  reshape2::melt(variable.name = "Kids_First_Biospecimen_ID",
+                 value.name = "expression_value") %>%
+  dplyr::mutate(Kids_First_Biospecimen_ID= as.character(Kids_First_Biospecimen_ID)) %>%
+  dplyr::filter(GeneSymbol %in% gene) 
+
+# merge score and expression file
+merge_score_exp <- expression_long_df %>%
+  left_join(score_df, by=c("Kids_First_Biospecimen_ID"="sample_id"))
+
+return(merge_score_exp)
+}
+
+stranded_exp_score <- expression_mat_to_long(stranded_exp_file,score_stranded_df,"TP53")
+polya_exp_score <- expression_mat_to_long(polya_exp_file,score_polya_df,"TP53")
+
+```
+
+
+### Correlation between RNA-expression and classifier sccore
+Stranded 
+
+```{r}
+
+ggplot(stranded_exp_score,aes(expression_value,tp53_score))+
+  geom_point() +
+  geom_smooth(method='lm') +
+  ggtitle("Stranded RNA-Seq expression v/s score correlation")
+
+```
+ 
+ Polya
+
+```{r}
+ggplot(polya_exp_score,aes(expression_value,tp53_score))+
+  geom_point() +
+  geom_smooth(method='lm') +
+  ggtitle("Polya RNA-Seq expression v/s score correlation")
+
+```
+
+### Corr.test 
+
+```{r}
+tidy(cor.test(stranded_exp_score$expression_value,stranded_exp_score$tp53_score))
+tidy(cor.test(polya_exp_score$expression_value,polya_exp_score$tp53_score))
+
+```
+
+
+stranded TP53 expression to classifier_score has a negligible 
+negative correlation estimate -0.05 at p value 0.067
+
+polya TP53 expression to classifier_score has a negligible 
+negative correlation estimate -0.139 at p value 0.297
+
+Overall distribution of expression and classifier score shows 
+negligible correlation so we cannot directly use the expression/classifier 
+score to infer functionality/phenotype of TP53 inactivation in samples
+
+### Sample_id matched polya and stranded
+
+```{r}
+
+sample_id_multi_library <- clinical %>%
+  filter(experimental_strategy=="RNA-Seq") %>%
+  group_by(sample_id) %>%
+  summarise(counts = length(unique(RNA_library)),
+            RNA_library = toString(RNA_library)) %>%
+  filter(counts > 1)
+
+sample_id_multi_library 
+
+```
+
+7316-85 has multiple stranded let's look at the values
+```{r}
+ clinical %>%
+  left_join(score_stranded_df , by=c("Kids_First_Biospecimen_ID"="sample_id")) %>%
+  left_join(score_polya_df,by=c("Kids_First_Biospecimen_ID"="sample_id"),
+            suffix = c("_stranded","_polya")) %>%
+  filter(sample_id == "7316-85",experimental_strategy=="RNA-Seq") %>%
+  select(sample_id,tp53_score_stranded,tp53_score_polya)
+```
+
+
+```{r}
+
+sample_id_multi_library_scores_df <- clinical %>%
+  left_join(score_stranded_df , by=c("Kids_First_Biospecimen_ID"="sample_id")) %>%
+  left_join(score_polya_df,by=c("Kids_First_Biospecimen_ID"="sample_id"),
+            suffix = c("_stranded","_polya")) %>%
+  # gather data for sample_ids which have multiple RNA_library
+  filter(sample_id %in% sample_id_multi_library$sample_id,
+         experimental_strategy=="RNA-Seq") %>%
+  group_by(sample_id) %>%
+  # because 7316-85 has multiple stranded I'm taking a mean here 
+  summarise( tp53_score_stranded = mean(tp53_score_stranded[!is.na(tp53_score_stranded)]),
+             tp53_score_polya = mean(tp53_score_polya[!is.na(tp53_score_polya)])) %>%
+  reshape2::melt()
+
+  
+```
+
+
+Plotting the scores
+```{r}
+
+ggplot(sample_id_multi_library_scores_df,
+       aes(y=value,x=as.numeric(factor(sample_id_multi_library_scores_df$variable)))) +
+  geom_point()+
+  geom_line(aes(color=sample_id)) +
+  xlim(c("stranded",
+         "polya")) + 
+  xlab("RNA_library") + ylab("tp53_score")
+```
+
+We could consider utilizing batch correction once completed via [#919](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/919) to rerun the classifier for this dataset. We can then check whether the scores would be more similar for polyA and stranded. Instead of choosing one over the other without some additional investigation, perhaps we take an average. For the most part, while there is a bias, the scores agree and for 7316-161, although the polyA score is just under 0.5, it is still considered a loss via evidence. Once we investigate all of the evidence, we might consider a re-thresholding of the scores for what determines inactivation/oncogenic TP53 (discussed earlier).

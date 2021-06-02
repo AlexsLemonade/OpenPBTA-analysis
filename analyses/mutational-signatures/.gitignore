@@ -1,2 +1,8 @@
 # ignore folders with plots for individual biospecimens
 individual_mutation_sig
+
+# Ignore large file from de novo signature extraction
+results/denovo_sigfit_signatures.RDS
+
+# Extraneous plot output
+Rplots.pdf

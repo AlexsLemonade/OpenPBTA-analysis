@@ -2,7 +2,7 @@
 
 **Module authors:** Chante Bethell ([@cbethell](https://github.com/cbethell)), Stephanie J. Spielman([@sjspielman](https://github.com/sjspielman)), and Jaclyn Taroni ([@jaclyn-taroni](https://github.com/jaclyn-taroni))
 
-**Note: The files in the `hgg-subset` directory were generated via `02-HGG-molecular-subtyping-subset-files.R` using the the files in the [version 13 data release](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/444).
+**Note: The files in the `hgg-subset` directory were generated via `02-HGG-molecular-subtyping-subset-files.R` using the the files in the version 17 data release.
 When re-running this module, you may want to regenerate the HGG subset files using the most recent data release.**
 
 ## Usage
@@ -17,13 +17,22 @@ When run in this manner, `02-HGG-molecular-subtyping-subset-files.R` will genera
 
 `run-molecular-subtyping-HGG.sh` is designed to be run as if it was called from this module directory even when called from outside of this directory.
 
+`00-HGG-select-pathology-dx.Rmd` is not run via this shell script, as it should be run locally, tied to `release-v17-20200908`, and should not be re-rendered when there are changes to the underlying `pbta-histologies.tsv` file in future releases (see [Folder content](#folder-content) and [#748](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/748)).
+
 ## Folder content
 
 This folder contains scripts tasked to molecularly subtype High-grade Glioma samples in the PBTA dataset.
 
-[`01-HGG-molecular-subtyping-defining-lesions.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/01-HGG-molecular-subtyping-defining-lesions.nb.html) is a notebook written to look at the high-grade glioma defining lesions (_H3F3A_ K28M, _H3F3A_ G35R/V, _HIST1H3B_ K28M, _HIST1H3C_ K28M, _HIST2H3C_ K28M) for all tumor samples in the PBTA dataset. This notebook produces a results table found at `results/HGG_defining_lesions.tsv`.
+[`00-HGG-select-pathology-dx.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/00-HGG-select-pathology-dx.nb.html) is a notebook used to explore the `pathology_diagnosis` and `pathology_free_text_diagnosis` fields in the `release-v17-20200908` version of `pbta-histologies.tsv`. 
+Prior to `release-v17-20200908`, this module used `short_histology == "HGAT"` to identify samples to be included for subtyping. 
+In future releases, the `short_histology` values will be derived from the `pathology_diagnosis` and `molecular_subtype` values (see [#748](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/748)); this module generates the latter.
+Thus, we needed to identify the samples to included for subtyping on the basis of the `pathology_diagnosis` and `pathology_free_text_diagnosis` values.
+This notebook looks at what `pathology_diagnosis` and `pathology_free_text_diagnosis` values are associated with samples where `short_histology == "HGAT"` in `release-v17-20200908`.
+The exact matches for inclusion in the `pathology_diagnosis` are saved in [`hgg-subset/hgg_subtyping_path_dx_strings.json`](hgg-subset/hgg_subtyping_path_dx_strings.json), which is used downstream in `02-HGG-molecular-subtyping-subset-files` to generate subset files.
 
-`02-HGG-molecular-subtyping-subset-files.R` is a script written to subset the copy number, gene expression, fusion, mutation, SNV and GISTIC's broad values files to include only samples: 1) with defining lesions or 2) labeled as high-grade astrocytic tumors (`HGAT` in `short_histology`).
+[`01-HGG-molecular-subtyping-defining-lesions.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/01-HGG-molecular-subtyping-defining-lesions.nb.html) is a notebook written to look at the high-grade glioma defining lesions (_H3F3A_ K28M, _H3F3A_ G35R/V, _HIST1H3B_ K28M, _HIST1H3C_ K28M, _HIST2H3C_ K28M) for all tumor samples except LGAT in the PBTA dataset. This notebook produces a results table found at `results/HGG_defining_lesions.tsv`.
+
+`02-HGG-molecular-subtyping-subset-files.R` is a script written to subset the copy number, gene expression, fusion, mutation, SNV and GISTIC's broad values files to include only samples that meet one of the following criteria: 1) with defining lesions 2) have `pathology_diagnosis` values that match those in [`hgg-subset/hgg_subtyping_path_dx_strings.json`](hgg-subset/hgg_subtyping_path_dx_strings.json) 3) are in the PNOC003 cohort.
 This script produces the relevant subset files that can be found in the `hgg-subset` directory.
 
 [`03-HGG-molecular-subtyping-cnv.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/03-HGG-molecular-subtyping-cnv.nb.html) is a notebook written to prepare the copy number data relevant to HGG molecular subtyping.
@@ -40,7 +49,6 @@ Genes with a mutation that met these criteria are stored as comma-separated valu
 * Any _TERT_ mutation was included. 
 The `Variant_Classification` values for any _TERT_ mutation in a biospecimen are included in the `TERT_variant_classification` column of the cleaned table.
 * The `IDH1_mutation` column of the cleaned table includes the contents of `HGVSp_Short` when it contains `R132` or `R172` or `No R132 or R172` when no _IDH1_ mutation that met that criterion was present.
-* The `BRAF_V600E` column contains the values of `HGVSp_Short` when `V600E` is present, or is `No V600E` otherwise.
 
 The cleaned table is found at `results/HGG_cleaned_mutation.tsv`.
 
@@ -58,22 +66,28 @@ This notebook produces two expression results table (one for each selection stra
 This notebook produces one table with the cleaned data found at `results/HGG_cleaned_all_table.tsv`.
 A table with the molecular subtype information for each HGG sample at `results/HGG_molecular_subtype.tsv` is also produced, where the subtype values in the `molecular_subtype` column are determined as follows:
 
-1. If there was an _H3F3A_ K28M, _HIST1H3B_ K28M, _HIST1H3C_ K28M, or _HIST2H3C_ K28M mutation and no _BRAF_ V600E mutation -> `DMG, H3K28`
-2. If there was an _HIST1H3B_ K28M, _HIST1H3C_ K28M, or _HIST2H3C_ K28M mutation and a _BRAF_ V600E mutation -> `DMG, H3 K28, BRAF V600E"`
-3. If there was an _H3F3A_ G35V or G35R mutation -> `HGG, H3 G35`
-4. If there was an _IDH1_ R132 mutation -> `HGG, IDH`
-5. If a sample was initially classified as HGAT, had no defining histone mutations, and a _BRAF_ V600E mutation -> `BRAF V600E`
-6. All other samples that did not meet any of these criteria were marked as `HGG, H3 wildtype`
+1. If there was an _H3F3A_ K28M, _HIST1H3B_ K28M, _HIST1H3C_ K28M, or _HIST2H3C_ K28M mutation -> `DMG, H3K28`
+2. If there was an _H3F3A_ G35V or G35R mutation -> `HGG, H3 G35`
+3. If there was an _IDH1_ R132 mutation -> `HGG, IDH`
+4. All other samples that did not meet any of these criteria were marked as `HGG, H3 wildtype`
 
 [`08-1p19q-codeleted-oligodendrogliomas.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/08-1p19q-codeleted-oligodendrogliomas.nb.html) is a notebook written to identify samples in the OpenPBTA dataset that should be classified as 1p/19q co-deleted oligodendrogliomas.
 The GISTIC `broad_values_by_arm.txt` file is used to identify samples with `1p` and `19q` loss, then the consensus mutation file is filtered to the identified samples in order to check for _IDH1_ mutations.
 **Note:** Per [this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/435#issuecomment-576898275), very few samples in the OpenPBTA dataset, if any, are expected to fit into the `1p/19q co-deleted oligodendrogliomas` subtype.
+
+[`09-HGG-with-braf-clustering.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/09-HGG-with-braf-clustering.nb.html) is a notebook written to identify high grade glioma samples without histone mutations that have `BRAF V600E` mutations and observe how they cluster alongside low grade gliomas and high grade gliomas without the `BRAF V600E` mutation in the stranded RNA-seq data (which contains both histologies) in RNA-seq data.
+We plotted the t-SNE and UMAP results from the `transcriptomic-dimension-reduction`, highlighting samples without histone mutations and with a _BRAF_ V600E mutation. 
+The results, shown below, suggest that one sample may be a candidate for reclassification (also saved in the `plots` directory of this module).
+
+![09_umap_tsne](plots/HGG_stranded.png)
 
 ## Folder structure
 
 The structure of this folder is as follows:
 
 ```
+├── 00-HGG-select-pathology-dx.Rmd
+├── 00-HGG-select-pathology-dx.nb.html
 ├── 01-HGG-molecular-subtyping-defining-lesions.Rmd
 ├── 01-HGG-molecular-subtyping-defining-lesions.nb.html
 ├── 02-HGG-molecular-subtyping-subset-files.R
@@ -89,14 +103,21 @@ The structure of this folder is as follows:
 ├── 07-HGG-molecular-subtyping-combine-table.nb.html
 ├── 08-1p19q-codeleted-oligodendrogliomas.Rmd
 ├── 08-1p19q-codeleted-oligodendrogliomas.nb.html
+├── 09-HGG-with-braf-clustering.Rmd
+├── 09-HGG-with-braf-clustering.nb.html
 ├── README.md
 ├── hgg-subset
 │   ├── hgg_focal_cn.tsv.gz
 │   ├── hgg_fusion.tsv
 │   ├── hgg_gistic_broad_values.tsv
+│   ├── hgg_metadata.tsv
 │   ├── hgg_snv_maf.tsv.gz
+│   ├── hgg_subtyping_path_dx_strings.json
 │   ├── hgg_zscored_expression.polya.RDS
 │   └── hgg_zscored_expression.stranded.RDS
+├── plots
+│   ├── HGG_stranded.pdf
+│   └── HGG_stranded.png
 ├── results
 │   ├── HGG_cleaned_all_table.tsv
 │   ├── HGG_cleaned_cnv.tsv

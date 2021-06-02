@@ -21,11 +21,6 @@ Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd',
 ### Set Up
 
 ```{r}
-if (!("ggbio" %in% installed.packages())) {
-  install.packages("BiocManager")
-  BiocManager::install("ggbio")
-}
-
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 ```
@@ -49,16 +44,14 @@ if (!dir.exists(plots_dir)) {
 Unzip and set up GISTIC results folder. 
 
 ```{r}
-# TODO: update once the consensus GISTIC results are in the data release
-gistic_dir <- file.path(scratch_dir, "2019-01-28-consensus-cnv")
-download.file(url = "https://github.com/AlexsLemonade/OpenPBTA-analysis/files/4123481/2019-01-28-consensus-cnv.zip",
-              destfile = paste0(gistic_dir, ".zip"),
-              quiet = TRUE)
+gistic_zip <- file.path(input_dir, "pbta-cnv-consensus-gistic.zip")
+gistic_dir <- file.path(input_dir, "pbta-cnv-consensus-gistic")
 
-unzip(paste0(gistic_dir, ".zip"), 
-      exdir = scratch_dir,
-      files = file.path( "2019-01-28-consensus-cnv", "scores.gistic"))
-
+if (!dir.exists(gistic_dir)) {
+  unzip(gistic_zip, 
+        exdir = input_dir,
+        files = file.path("pbta-cnv-consensus-gistic", "scores.gistic"))
+}
 ```
 
 ### Read in data 
@@ -66,7 +59,7 @@ unzip(paste0(gistic_dir, ".zip"),
 ```{r}
 # Read in metadata
 metadata <-
-  readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv"))
+  readr::read_tsv(file.path(input_dir, "pbta-histologies.tsv"), guess_max = 10000)
 ```
 
 Read in the GISTIC scores file and format the data.

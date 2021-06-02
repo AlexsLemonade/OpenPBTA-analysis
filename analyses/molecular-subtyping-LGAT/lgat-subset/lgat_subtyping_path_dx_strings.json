@@ -1,0 +1,10 @@
+{
+    "include_path_dx": [
+        "low-grade glioma/astrocytoma",
+        "ganglioglioma"
+    ],
+    "exclude_path_dx": [
+        "dysembryoplastic neuroepithelial tumor"
+    ]
+}
+

@@ -25,23 +25,6 @@
 #   --low_count_threshold 100 \
 #   --skip_tsne
 
-#### Install packages ----------------------------------------------------------
-
-# This is needed for running the t-SNE analysis
-if (!("Rtsne" %in% installed.packages())) {
-  install.packages("Rtsne")
-}
-
-# This is needed for running the umap analysis
-if (!("umap" %in% installed.packages())) {
-  install.packages("umap")
-}
-
-# This is needed for taking arguments from the command line
-if (!("optparse" %in% installed.packages())) {
-  install.packages("optparse")
-}
-
 #### Functions -----------------------------------------------------------------
 
 # magrittr pipe
@@ -160,7 +143,8 @@ gene_count_threshold <- opt$low_count_threshold
 #### Read in data --------------------------------------------------------------
 
 # Read in metadata
-metadata_df <- data.frame(readr::read_tsv(metadata_file))
+metadata_df <- data.frame(readr::read_tsv(metadata_file,
+                                          col_types = readr::cols(molecular_subtype = readr::col_character())))
 
 # Read in expression data
 expression_data <- readr::read_rds(expression_file) %>%

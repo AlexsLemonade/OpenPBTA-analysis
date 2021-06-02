@@ -1,0 +1,75 @@
+
+
+# Set up
+scratch_dir = "../../scratch"
+cytoband_dir = scratch_dir + "/cytoband_status"
+
+# Get the lists of samples to analyze
+samples, = glob_wildcards(cytoband_dir + "/segments/consensus_callable.{sample}.bed")
+gain_samples, = glob_wildcards(cytoband_dir + "/segments/consensus_gain.{sample}.bed")
+loss_samples, = glob_wildcards(cytoband_dir + "/segments/consensus_loss.{sample}.bed")
+
+wildcard_constraints:
+  set = "callable|gain|loss",
+
+# Set output files
+rule targets:
+    input:
+        scratch_dir + "/intersect_with_cytoband_callable.bed",
+        scratch_dir + "/intersect_with_cytoband_gain.bed",
+        scratch_dir + "/intersect_with_cytoband_loss.bed"
+
+#####
+# Join each set of coverage stats separately
+rule cat_coverage:
+    input:
+        expand(cytoband_dir + "/coverage/consensus_callable.{sample}.coverage.bed", sample = samples)
+    output:
+        scratch_dir + "/intersect_with_cytoband_callable.bed"
+    shell:
+        "cat {input} > {output}"
+
+rule cat_gains:
+    input:
+        expand(cytoband_dir + "/coverage/consensus_gain.{sample}.coverage.bed", sample = gain_samples)
+    output:
+        scratch_dir + "/intersect_with_cytoband_gain.bed"
+    shell:
+        "cat {input} > {output}"
+
+rule cat_losses:
+    input:
+        expand(cytoband_dir + "/coverage/consensus_loss.{sample}.coverage.bed", sample = loss_samples)
+    output:
+        scratch_dir + "/intersect_with_cytoband_loss.bed"
+    shell:
+        "cat {input} > {output}"
+
+####
+# Calculate coverage for each sample
+rule bed_coverage:
+    input:
+        bed = cytoband_dir + "/segments/consensus_{set}.{sample}.bed",
+        bands = scratch_dir + "/ucsc_cytoband.bed"
+    output:
+        cytoband_dir + "/coverage/consensus_{set}.{sample}.coverage.bed"
+    shell:
+        "bedtools coverage "
+        " -a {input.bands}"
+        " -b {input.bed}"
+        " -sorted"
+        " | sed 's/$/\t{wildcards.sample}/' " # add a column to label the sample.
+        " > {output}"
+
+
+
+rule get_cytobands:
+    output:
+        scratch_dir + "/ucsc_cytoband.bed"
+    params:
+        url = "http://hgdownload.cse.ucsc.edu/goldenpath/hg38/database/cytoBand.txt.gz"
+    shell:
+        "wget -O - {params.url}"
+        " | gunzip -c"
+        " | grep '^chr[0-9XY]\+\s' " # filter to only canonical autosomes
+        " > {output}"

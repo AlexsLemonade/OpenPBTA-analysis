@@ -1,0 +1,133 @@
+---
+title: "Add molecular subtype for samples that have hallmark Ewings Sarcoma fusions"
+output: html_notebook
+author: K S Gaonkar for D3b
+date: January 2020
+---
+
+Identify sample IDs with hallmark _EWSR1_ fusions and subtype as `EWS` 
+
+```{r}
+library("tidyverse")
+```
+
+### Read in data
+
+```{r}
+# to get root directory
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+# data directory
+dataDir <- file.path(root_dir, "data")
+
+# histology file
+clinical <- readr::read_tsv(file.path(dataDir, "pbta-histologies-base.tsv"),
+                            guess_max = 10000) %>%
+  select(Kids_First_Biospecimen_ID,
+         Kids_First_Participant_ID, 
+         experimental_strategy, 
+         pathology_diagnosis,
+         sample_id,
+         sample_type)
+
+# get ewings fusion calls from fusion-summary results file
+ewings_foi_bsids <- readr::read_tsv(
+  file.path(root_dir, 
+            "analyses",
+            "fusion-summary",
+            "results",
+            "fusion_summary_ewings_foi.tsv")
+  ) 
+
+# get subset folder
+results_dir <- "results"
+
+# create if doesn't exist
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+```
+
+### Get sample_id from RNA-Seq samples that have ewings sarcoma EWSR1 fusion
+
+```{r}
+# get a vector of biospecimen IDs for those biospecimens that should be subtyped
+has_ews_fusion <- rowSums(ewings_foi_bsids[, -1]) > 0
+
+# get rna sample_id which have hallmark fusion 
+has_ews_fusion_sampleid <- ewings_foi_bsids %>%
+  filter(has_ews_fusion) %>%
+  left_join(clinical) %>%
+  pull(sample_id)
+
+```
+
+### Get RNA-Seq where pathology_diagnosis is Ewings Sarcoma OR has Ewings Sarcoma _EWSR1_ fusion
+
+```{r}
+
+ews_rnaseq <- clinical %>%
+  # pathology_diagnosis is Ewings Sarcoma
+  filter(str_detect(pathology_diagnosis,"Ewings Sarcoma")|
+           # OR sample_id associated with the RNA sample with hallmark fusion
+         sample_id %in% has_ews_fusion_sampleid,
+         experimental_strategy == "RNA-Seq") %>%
+  select(Kids_First_Biospecimen_ID, 
+         Kids_First_Participant_ID, 
+         sample_id) 
+```
+
+### Get WGS samples where pathology_diagnosis is Ewings Sarcoma OR has sample_id associated with rna-seq sample with Ewings Sarcoma _EWSR1_ fusion
+
+```{r}
+
+ews_wgs <- clinical %>%
+  # pathology_diagnosis is Ewings Sarcoma
+  filter(str_detect(pathology_diagnosis,"Ewings Sarcoma")|
+         # OR sample_id associated with the RNA sample with hallmark fusion
+         sample_id %in% has_ews_fusion_sampleid,
+         # filter to Tumor since we have Normal WGS as well
+         sample_type == "Tumor",
+         experimental_strategy == "WGS") %>%
+  select(Kids_First_Biospecimen_ID, 
+         Kids_First_Participant_ID, 
+         sample_id) 
+
+```
+
+
+### Join DNA and RNA sample together to have molecular subtyping per "Kids_First_Participant_ID", and "sample_id"
+
+```{r}
+
+ews_subtype <- ews_rnaseq %>% 
+  # merge DNA and RNA samples by sample_id
+  full_join(ews_wgs,
+             by = c("Kids_First_Participant_ID",
+                    "sample_id"),
+             suffix = c("_RNA", "_DNA")) %>%
+  select(Kids_First_Participant_ID,
+         Kids_First_Biospecimen_ID_RNA,
+         Kids_First_Biospecimen_ID_DNA,
+         sample_id,
+         everything()) %>%
+  dplyr::mutate(molecular_subtype="EWS")
+```
+
+### List which samples are molecular_subtype == "EWS" or "EWS, To be classified"
+
+```{r}
+ews_subtype 
+```
+
+#### Save to file
+
+```{r}
+ews_subtype %>%
+  readr::write_tsv(file.path(results_dir, "EWS_results.tsv"))
+```
+
+
+
+
+

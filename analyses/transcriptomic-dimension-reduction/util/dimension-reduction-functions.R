@@ -150,7 +150,7 @@ dimension_reduction_wrapper <- function(transposed_expression_matrix,
       output_directory,
       perplexity_parameter,
       neighbors_parameter,
-      seed
+      seed = seed
     )
 
   # Run `align_metadata` function
@@ -167,10 +167,13 @@ dimension_reduction_wrapper <- function(transposed_expression_matrix,
 # Function to plot
 plot_dimension_reduction <- function(aligned_scores_df,
                                      point_color,
+                                     point_shape = NULL,
+                                     point_size = NULL,
                                      x_label,
                                      y_label,
                                      score1 = 1,
-                                     score2 = 2) {
+                                     score2 = 2,
+                                     color_palette = NULL) {
     # Given a data.frame that contains the scores of a dimension reduction
     # analysis and the information we want from the metadata, make a scatterplot.
     #
@@ -179,12 +182,19 @@ plot_dimension_reduction <- function(aligned_scores_df,
     #                           and relative information from the metadata
     #   point_color: the variable whose information will be used to color
     #                the points on the plot
+    #   point_shape: the variable whose information will be used to shape
+    #                the points on the plot, this is NULL by default
+    #   point_size: the variable whose information will be used to size the
+    #               points on the plot, this is NULL by default
     #   x_label: the x-axis label, character
     #   y_label: the y-axis label, character
     #   score1: the column number of the first dimension reduction score that we
     #           want to plot, 1 by default
     #   score2: the column number of the second dimension reduction score that
     #           we want to plot, 2 by default
+    #   color_palette: color palette to be used for the point color - one column
+    #                  should contain the same values as what is in point_color
+    #                  and the second column should contain hex codes
     #
     # Returns:
     #   dimension_reduction_plot: the plot representing the dimension reduction
@@ -196,18 +206,53 @@ plot_dimension_reduction <- function(aligned_scores_df,
       stop(paste(point_color, "is not column in aligned_scores_df"))
     }
 
-    # transform the strings in `point_color` into symbols for plotting
+    if (!(is.null(point_shape)) && !(point_shape %in% colnames(aligned_scores_df))) {
+      stop(paste(point_shape, "is not column in aligned_scores_df"))
+    }
+
+    if (!(is.null(point_size)) && !(point_size %in% colnames(aligned_scores_df))) {
+      stop(paste(point_size, "is not column in aligned_scores_df"))
+    }
+
+    # transform the strings `point_color` into symbols for plotting
     color_sym <- rlang::sym(point_color)
 
-    dimension_reduction_plot <- ggplot2::ggplot(
-      aligned_scores_df,
-      ggplot2::aes(
-        x = dplyr::pull(aligned_scores_df, score1),
-        y = dplyr::pull(aligned_scores_df, score2),
-        color = !!color_sym
-      )
-    ) +
-      ggplot2::geom_point(alpha = 0.3) +
+    # transform the strings `point_size` and `point_shape` into symbols for
+    # plotting when they are not NULL
+    if (!(is.null(point_size))) {
+      point_size <- rlang::sym(point_size)
+    }
+
+    if (!is.null(point_shape)) {
+      point_shape <- rlang::sym(point_shape)
+    }
+
+    `%>%` <- dplyr::`%>%`
+
+    if (!is.null(color_palette)) {
+
+      dimension_reduction_plot <- ggplot2::ggplot(
+        aligned_scores_df,
+        ggplot2::aes(
+          x = dplyr::pull(aligned_scores_df, score1),
+          y = dplyr::pull(aligned_scores_df, score2),
+          color = !!color_sym,
+          size = !!point_size,
+          shape = !!point_shape
+        )
+      ) +
+      ggplot2::scale_color_manual(values = color_palette)
+    } else {
+      dimension_reduction_plot <- ggplot2::ggplot(
+        aligned_scores_df,
+        ggplot2::aes(
+          x = dplyr::pull(aligned_scores_df, score1),
+          y = dplyr::pull(aligned_scores_df, score2),
+          color = !!color_sym,
+          size = !!point_size,
+          shape = !!point_shape
+        )
+      ) +
       ggplot2::scale_color_manual(values = (c(
         "#2b3fff", "#ec102f", "#235e31",
         "#1a6587", "#11e38c", "#a22f80",
@@ -215,8 +260,14 @@ plot_dimension_reduction <- function(aligned_scores_df,
         "#8b20d3", "#799d10", "#881c23",
         "#3fc6f8", "#fe5cde", "#0a7fb2",
         "#f2945a", "#6b4472", "#f4d403",
-        "#76480d", "#a6b6f9", "#000000"
-      ))) +
+        "#76480d", "#a6b6f9", "#0d76ff",
+        "#f3e500", "#a72a1b", "#319106",
+        "#0051bc", "#000000"
+      )))
+    }
+
+    dimension_reduction_plot <- dimension_reduction_plot +
+      ggplot2::geom_point(alpha = 0.3) +
       ggplot2::labs(x = x_label, y = y_label) +
       ggplot2::theme_bw()
 

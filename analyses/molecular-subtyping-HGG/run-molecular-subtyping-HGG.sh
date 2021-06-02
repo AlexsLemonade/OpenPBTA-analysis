@@ -3,6 +3,8 @@
 # Chante Bethell for CCDL 2020
 #
 # Run the HGG molecular subtyping pipeline.
+# Note: A local install of BEDOPS is required and can be installed using
+# conda install -c bioconda bedops
 # When OPENPBTA_SUBSET=1 (default), new HGG subset files will be generated.
 
 set -e
@@ -68,3 +70,8 @@ Rscript -e "rmarkdown::render('07-HGG-molecular-subtyping-combine-table.Rmd', cl
 #### 1p/19q co-deleted oligodendrogliomas notebook -----------------------------
 
 Rscript -e "rmarkdown::render('08-1p19q-codeleted-oligodendrogliomas.Rmd', clean = TRUE)"
+
+#### HGAT with `BRAF V600E` mutations clustering ------------------------------
+
+# Run notebook that looks at how HGAT samples with `BRAF V600E` mutations cluster
+Rscript -e "rmarkdown::render('09-HGG-with-braf-clustering.Rmd', clean = TRUE)"

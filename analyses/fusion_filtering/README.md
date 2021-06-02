@@ -20,9 +20,27 @@ We also gather counts for recurrent fusions and fused genes found in more than 3
 * pbta-gene-expression-rsem-fpkm.stranded.rds : aggregated stranded fpm data
 
 #### Inputs used as reference
-* genelistreference.txt : known kinases, oncogenes, tumor suppressors, curated transcription factors [@doi:10.1016/j.cell.2018.01.029], COSMIC Cancer Gene Census list[https://cancer.sanger.ac.uk/census] . MYBL1 [@doi:10.1073/pnas.1300252110], SNCAIP [@doi:10.1038/nature11327], FOXR2 [@doi:10.1016/j.cell.2016.01.015], TTYH1 [@doi:10.1038/ng.2849], and TERT [@doi:10.1038/ng.3438; @doi:10.1002/gcc.22110; @doi:10.1016/j.canlet.2014.11.057; @doi:10.1007/s11910-017-0722-5] were added to the oncogene list and BCOR [@doi:10.1016/j.cell.2016.01.015] and QKI [@doi:10.1038/ng.3500] were added to the tumor suppressor gene list based on pediatric cancer literature review
-* fusionreference.txt :  known TCGA fusions
+* genelistreference.txt and fusionreference.txt formatted in code [here](https://gist.github.com/kgaonkar6/02b3fbcfeeddfa282a1cdf4803704794): 
+
+Annotation | File | Source  
+------ | ---------- | --------- 
+| pfamID                        | http://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/pfamDesc.txt.gz     | UCSC pfamID Description database |
+| Domain Location               | http://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/ucscGenePfam.txt.gz | UCSC pfamID Description database |
+| TCGA fusions                  | https://tumorfusions.org/PanCanFusV2/downloads/pancanfus.txt.gz             | TumorFusions: an integrative   resource for cancer-associated transcript fusions PMID: 29099951  |
+| Transcription Factors | Table S1 https://ars.els-cdn.com/content/image/1-s2.0-S0092867418301065-mmc2.xlsx | @doi:10.1016/j.cell.2018.01.029
+| Oncogenes                     | http://www.bushmanlab.org/assets/doc/allOnco_Feb2017.tsv                    | www.bushmanlab.org |
+| Tumor suppressor genes (TSGs) | https://bioinfo.uth.edu/TSGene/Human_TSGs.txt?csrt=5027697123997809089      | Tumor Suppressor Gene Database   2.0 PMIDs: 23066107, 26590405 |
+| Kinases                       | http://kinase.com/human/kinome/tables/Kincat_Hsap.08.02.xls |      The protein kinase complement of the human genome PMID: 12471243 |
+| COSMIC genes                  | https://cancer.sanger.ac.uk/census | Catalogue of Somatic Mutations   in Cancer |
+| Pediatric-specific oncogenes  | _MYBL1, SNCAIP, FOXR2, TTYH1, TERT_ | doi:10.1073/pnas.1300252110,   doi:10.1038/nature11327, doi:10.1016/j.cell.2016.01.015, doi:10.1038/ng.2849,   doi:10.1038/ng.3438, doi:10.1002/gcc.22110, doi:10.1016/j.canlet.2014.11.057,   doi:10.1007/s11910-017-0722-5 |
+| Pediatric-specific TSGs | _BCOR_, _QKI_  | doi:10.1016/j.cell.2016.01.015, doi:10.1038/ng.3500 |
+
+IGH-@,IGH@ , IGL-@ and IGL@ were also added to reference list as oncogenic genes because StarFusion output contains these gene symbols instead of IGL/IGH as per public databases.
+
+
 * Brain_FPKM_hg38_matrix.txt.zip : GTex brain samples FPKM data
+The code to generate genelistreference.txt and fusionreference.txt is available here: https://gist.github.com/kgaonkar6/02b3fbcfeeddfa282a1cdf4803704794#file-format_reference_gene_list-r
+
 
 #### Outputs saved to data download
 * pbta-fusion-putative-oncogenic.tsv
@@ -30,16 +48,30 @@ We also gather counts for recurrent fusions and fused genes found in more than 3
 * pbta-fusion-recurrently-fused-genes-bysample.tsv
 
 ### Run script
-`bash run_fusion_merged.sh` 
+use OPENPBTA_BASE_SUBTYPING=1 to run this module using the pbta-histologies-base.tsv from data folder while running molecular-subtyping modules for release.
+```sh
+OPENPBTA_BASE_SUBTYPING=1 run_fusion_merged.sh 
+```
+
+OR by default uses pbta-histologies.tsv from data folder
+```sh
+bash run_fusion_merged.sh
+```
+
 
 #### Order of scripts in analysis
 `01-fusion-standardization.R` : Standardizes fusion calls from STARFusion and Arriba
 
-`02-fusion-filtering.R` : Filters artifacts by removing readthroughs and NEIGHBORS from annots column; annots column also contains red flag databases that are used to further filter common/normal occuring fusions; filters all fusions where both genes are expressed FPKM < 1 are removed as non-expressed; requires fusions to have at least 1 JunctionSpanningRead and SpanningFragCount-JunctionReadCount to be <10
+`02-fusion-filtering.R` : Filters artifacts by removing readthroughs and NEIGHBORS from annots column; annots column also contains red flag databases that are used to further filter common/normal occuring fusions; filters all fusions where both genes are expressed FPKM < 1 are removed as non-expressed; requires fusions to have at least 1 JunctionSpanningRead and SpanningFragCount-JunctionReadCount to be <100
 
 `03-Calc-zscore-annotate.R` : Calculates z-score for gene fused gene's expression compared to GTeX brain samples and annotates differential expression status
 
-`04-project-specific-filtering.Rmd` : Performs project specific filtering. We removed fusions with genes fused more than 5 times in a samples as potential artifact. We kept fusions that were called by both callers and if >2 samples per histology called the fusion. We then prioritize the fusions as putative-oncogenic fusions if any fused gene in the fusion is annotated as kinases, oncogenes, tumor suppressors, curated transcription factors or present in COSMIC Cancer Gene Census list. We also annotated fusions if they are present in TCGA fusions list. 
-Annotated fusions do not need to be in both callers to be retained.
+`04-project-specific-filtering.Rmd` : Performs project specific filtering. We prioritize the fusions as putative-oncogenic fusions if any fused gene in the fusion is annotated as kinases, oncogenes, tumor suppressors, curated transcription factors or present in COSMIC Cancer Gene Census list. We also annotated fusions if they are present in TCGA fusions list.
+All fusion calls are additionally have columns `reciprocal_exists` to specify if within the Sample a fusion GeneX--GeneY has a reciprocal GeneY--GeneX . `DomainRetainedGene1A` and `DomainRetainedGene1B` are added to identify kinase domain retention for Gene1A (5` Gene) and Gene1B (3` Gene).
+Oncogene annotated fusions do not need to be in both callers to be retained however if these fusions are found in more than 4 histologies we treat them as false calls and remove them.
+To scavenge back non-oncogenic fusions that are recurrently found uniquely in a broad_histology we kept fusions that were called by both callers and if >2 samples per histology called the fusion.
+We removed the non-oncogenic fusions with genes fused more than 5 times in a samples or found in more than 1 histology as potential artifact. 
 
-`05-recurrent-fusions-per-histology.R` : Identifies recurrent fusions and genes that are recurrently observed in fusions. We identified RNA-seq samples that can be used independently for each patient. After the selection of samples we identify which fusions and genes are recurrent (found in >3 participants per histology) in our `pbta-fusion-putative-oncogenic.tsv` dataset.
+`05-QC_putative_onco_fusion_dustribution.Rmd` : Plots fusions found in multiple (more than 4) histologies in scratch/pbta-fusion-putative-oncogenic-preQC.tsv from 04-project-specific-filtering.Rmd and removes fusion calls found in more than 4 histologies as QC filtering.
+
+`06-recurrent-fusions-per-histology.R` : Identifies recurrent fusions and genes that are recurrently observed in fusions. We identified RNA-seq samples that can be used independently for each patient. After the selection of samples we identify which fusions and genes are recurrent (found in >3 participants per histology) in our `pbta-fusion-putative-oncogenic.tsv` dataset.
