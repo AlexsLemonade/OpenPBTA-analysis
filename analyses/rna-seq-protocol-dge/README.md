@@ -4,7 +4,7 @@
 
 ### Purpose
 
-Perform differential gene expression (DGE) analysis to compare RNA-seq libraries that are prepared using poly-A or ribodeplete-stranded protocols from the same samples.
+Perform a first-pass differential gene expression (DGE) analysis (as described in the [RUVSeq vignette](https://bioconductor.riken.jp/packages/3.0/bioc/vignettes/RUVSeq/inst/doc/RUVSeq.pdf)) among samples prepared using both poly-A and ribodeplete-stranded protocols. Using housekeeping genes identified as part of the Housekeeping Transcript Atlas, the goal of first-pass DGE is to identify empirical negative control genes in a paired poly-A vs ribo-deplete comparison to identify stably expressed genes that would be suitable to inform batch corrections for other DGE comparisons whose samples vary by RNA-seq library enrichment method. 
 
 Check whether the p-values from DGE analysis follow a uniform distribution.
 
