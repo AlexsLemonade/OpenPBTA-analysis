@@ -20,17 +20,13 @@ We will use this notebook to do so; see [#993](https://github.com/AlexsLemonade/
 ```{r}
 # Pipes
 library(magrittr)
-library(tidyverse)
 ```
 
 ### Input
 
 ```{r}
 data_dir <- file.path("..", "..", "data")
-results_dir <- file.path("results")
 histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
-compiled_mol_subtypes_pathology_clinical_file <- file.path(results_dir,
-                         "compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv")
 ```
 
 ### Output
@@ -41,14 +37,13 @@ if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
 
-output_file <- file.path(results_dir, "compiled_molecular_subtypes_with_clinical_pathology_feedback_and_report_info.tsv")
+output_file <- file.path(results_dir, "meningioma_subtypes.tsv")
 ```
 
 ## Read in data
 
 ```{r}
 histologies_df <- readr::read_tsv(histologies_file, guess_max = 10000)
-compiled_mol_subtypes_pathology_clinical_df <- read_tsv(compiled_mol_subtypes_pathology_clinical_file, guess = 10000)
 ```
 
 ### Display `pathology_free_text_diagnosis` values
@@ -114,15 +109,9 @@ meningioma_df <- histologies_df %>%
 ```
 
 Write to file!
-Since Meningioma was not subtyped as part of OpenPBTA molecular subtying we can append the meningioma results to `compiled_mol_subtypes_pathology_clinical_df`.
 
 ```{r}
-
-meningioma_df %>%
-  bind_rows(compiled_mol_subtypes_pathology_clinical_df) %>%
-  arrange(Kids_First_Biospecimen_ID) %>%
-  readr::write_tsv(output_file)
-
+readr::write_tsv(meningioma_df, output_file)
 ```
 
 ## Session Info
@@ -130,3 +119,4 @@ meningioma_df %>%
 ```{r}
 sessionInfo()
 ```
+

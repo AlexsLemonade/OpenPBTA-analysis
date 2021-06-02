@@ -175,6 +175,7 @@ tp53_hotspot_maf <- data.table::fread(
   dplyr::select(colnames(tp53_consensus_maf))
 
 
+
 tp53_consensus_hotspot_maf <- tp53_consensus_maf %>%
   bind_rows(tp53_hotspot_maf) %>%
   filter(!(Variant_Classification %in% c("Silent", "Intron",
