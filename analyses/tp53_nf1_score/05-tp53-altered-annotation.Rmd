@@ -134,12 +134,28 @@ functional_sites_tp53 %>%
 2 functional sites are missing in hotspots database.
 
 ## SNV for TP53
-
-Removing Silent or Intron classified variants to capture only putative damaging mutations
+ - We will use the `pbta-snv-consensus-mutation.maf.tsv.gz` from `snv-callers` module which gathers calls that are present in all 3 callers (strelka2,mutect2 and lancet)
+ - In addition, we will also use `pbta-snv-scavenged-hotspots.maf.tsv.gz` from `hotspot-detection` module to gather calls that overlap MSKCC hotspots found in any caller (except if only vardict calls the site as variant, we remove these calls since we have a lot of calls unique to vardict which we consider as false positive as discussed [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers#snv-caller-comparison-analysis))
+ - We will also removing `Silent` or `Intron` classified variants to capture only putative damaging mutations
 
 ```{r}
-consensus_tp53_snv_indel <- data.table::fread(
-  file.path(data_dir,"pbta-snv-consensus-mutation.maf.tsv.gz"),
+
+
+tp53_consensus_maf <- data.table::fread(
+  file.path(root_dir, "data" , "pbta-snv-consensus-mutation.maf.tsv.gz"),
+                                   select = c("Chromosome",
+                                              "Start_Position",
+                                              "End_Position",
+                                              "Strand",
+                                              "Variant_Classification",
+                                              "Tumor_Sample_Barcode",
+                                              "Hugo_Symbol",
+                                              "HGVSp_Short"),
+                                   data.table = FALSE) %>%
+  filter(Hugo_Symbol == "TP53")
+
+tp53_hotspot_maf <- data.table::fread(
+  file.path(root_dir, "analyses" , "hotspots-detection" , "results" , "pbta-snv-scavenged-hotspots.maf.tsv.gz"),
                                    select = c("Chromosome",
                                               "Start_Position",
                                               "End_Position",
@@ -150,10 +166,16 @@ consensus_tp53_snv_indel <- data.table::fread(
                                               "HGVSp_Short"),
                                    data.table = FALSE) %>%
   filter(Hugo_Symbol == "TP53") %>%
+  select(colnames(tp53_consensus_maf))
+
+
+tp53_consensus_hotspot_maf <- tp53_consensus_maf %>%
+  bind_rows(tp53_hotspot_maf) %>%
   filter(!(Variant_Classification %in% c("Silent", "Intron",
                                          # remove other non-amino acid SNVs
                                          "3'Flank" ,"5'Flank",
-                                         "3'UTR", "5'UTR"  )))
+                                         "3'UTR", "5'UTR"  ))) %>%
+  unique()
 ```
 
 ###  Gather annotation for SNV 
@@ -163,7 +185,7 @@ activating : overlaps AA position which are found to act as gain-of-function acc
 
 ```{r}
 
-consensus_tp53_snv_indel <- consensus_tp53_snv_indel %>%
+tp53_consensus_hotspot_maf  <- tp53_consensus_hotspot_maf  %>%
   mutate(
     hotspot = case_when(
       # strip REF and Variant AA to get Amino_Acid_Position in consensus maf
@@ -196,7 +218,7 @@ tp53_alterations_dna <- histology %>%
   # filter for Tumors
   filter(sample_type=="Tumor") %>%
   # join consensus calls overlapping hotspots
-  left_join(consensus_tp53_snv_indel, 
+  left_join(tp53_consensus_hotspot_maf , 
             by=c("Kids_First_Biospecimen_ID"="Tumor_Sample_Barcode")) %>%
   # join filtered cnv losses
   left_join(cnv_domain_overlap,by=c("Kids_First_Biospecimen_ID"="biospecimen_id",
