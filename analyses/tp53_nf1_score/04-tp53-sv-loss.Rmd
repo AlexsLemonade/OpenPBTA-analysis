@@ -113,7 +113,7 @@ manta_sv_tp53 %>%
 We will also add exon and intron information to this fusion call.
 
 ```{r}
-putative_onco_tp53_fusion_gr <- putative_onco_fusion %>%
+putative_onco_tp53_fusion <- putative_onco_fusion %>%
   filter(str_detect(FusionName,"^TP53--|--TP53$")) %>%
   left_join(histology,
             by = c("Sample" = "Kids_First_Biospecimen_ID")
@@ -123,7 +123,15 @@ putative_onco_tp53_fusion_gr <- putative_onco_fusion %>%
                 "FusionName",
                 "RightBreakpoint",
                 "LeftBreakpoint") %>%
-  reshape2::melt(c("Sample","sample_id","FusionName")) %>%
+  reshape2::melt(c("Sample","sample_id","FusionName"))
+
+```
+
+### Generate Granges and overlaps
+```{r}
+
+if(nrow(putative_onco_tp53_fusion) > 0) {
+putative_onco_tp53_fusion_gr <- putative_onco_tp53_fusion %>%
   mutate(
     BreakpointChr = paste0("chr",gsub(":.*$", "", value)),
     Breakpoint = gsub("^.*:", "", value)) %>%
@@ -134,10 +142,6 @@ putative_onco_tp53_fusion_gr <- putative_onco_fusion %>%
                                           keep.extra.columns = TRUE,
                                           starts.in.df.are.0based = FALSE)
 
-```
-
-### Exon overlaps
-```{r}
 bk_overlaps_exon <- IRanges::mergeByOverlaps(putative_onco_tp53_fusion_gr,exon) %>%
   as.data.frame() %>%
   mutate(exon_rank = unlist(exon_rank)) %>%
@@ -146,18 +150,24 @@ bk_overlaps_exon <- IRanges::mergeByOverlaps(putative_onco_tp53_fusion_gr,exon) 
   dplyr::select(starts_with("putative_onco")) %>%
   dplyr::rename_at(vars(starts_with("putative_onco")),~str_remove(.,"putative_onco_tp53_fusion_gr."))
 
-bk_overlaps_exon
-```
-The breakpoint in BS_NJ4WPQVK overlaps the 1st exon of TP53
-
-### Intron overlaps
-To-do find the canonical intron start stop to check for overlap of intron 1
-```{r}
 bk_overlaps_intron <- IRanges::mergeByOverlaps(putative_onco_tp53_fusion_gr,intron) %>%
   as.data.frame() %>%
   dplyr::filter(grepl("ENSG00000141510",gene_id)) %>%
   dplyr::select(starts_with("putative_onco")) %>%
   dplyr::rename_at(vars(starts_with("putative_onco")),~str_remove(.,"putative_onco_tp53_fusion_gr.")) 
+
+}
+```
+
+### Exon overlaps
+```{r}
+bk_overlaps_exon
+```
+
+The breakpoint in BS_NJ4WPQVK overlaps the 1st exon of TP53
+
+### Intron overlaps
+```{r}
 bk_overlaps_intron
 ```
 No breakpoints overlap TP53 introns
