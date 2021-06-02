@@ -299,7 +299,13 @@ cnv_df <- cnv_df %>%
   mutate(Tumor_Sample_Barcode =  sample_id) %>%
   rename(Variant_Classification = status,
          Hugo_Symbol = gene_symbol) %>%
-  select(Hugo_Symbol, Tumor_Sample_Barcode, Variant_Classification)
+  select(Hugo_Symbol, Tumor_Sample_Barcode, Variant_Classification) %>%
+  # mutate loss and Amp to Del and Amp to fit Maftools format
+  dplyr::mutate(Variant_Classification = dplyr::case_when(Variant_Classification == "loss" ~ "Del",
+                                                          Variant_Classification %in% "amplification" ~ "Amp",
+                                                          TRUE ~ as.character(Variant_Classification))) %>%
+  # only keep Del and Amp calls
+  filter(Variant_Classification %in% c("Del", "Amp"))
 
 # Write to file
 readr::write_tsv(cnv_df, cnv_output)
