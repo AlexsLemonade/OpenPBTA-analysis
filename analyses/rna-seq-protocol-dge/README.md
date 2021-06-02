@@ -1,14 +1,14 @@
 ## Differential gene expression analysis comparing poly-A and ribodeplete-stranded RNA-seq protocols
 
-**Module authors:** Yuanchao Zhang ([@logstar](https://github.com/logstar))
+**Module authors:** Yuanchao Zhang ([@logstar](https://github.com/logstar)) and Adam Kraya ([@aadamk](https://github.com/aadamk))
 
 ### Purpose
 
-Perform differential gene expression (DGE) analysis to compare RNA-seq libraries that are prepared using poly-A or ribodeplete-stranded protocols from the same samples.
+Perform a first-pass differential gene expression (DGE) analysis (as described in the [RUVSeq vignette](https://bioconductor.riken.jp/packages/3.0/bioc/vignettes/RUVSeq/inst/doc/RUVSeq.pdf)) among samples prepared using both poly-A and ribodeplete-stranded protocols. Using housekeeping genes identified as part of the Housekeeping Transcript Atlas, the goal of first-pass DGE is to identify empirical negative control genes in a paired poly-A vs ribo-deplete comparison to identify stably expressed genes that would be suitable to inform batch corrections for other DGE comparisons whose samples vary by RNA-seq library enrichment method. Housekeeping gene list (HRT Atlas v1.0 database; PMID: 32663312) - <https://housekeeping.unicamp.br/?download> .
 
-Check whether the p-values from DGE analysis follow a uniform distribution.
+Evaluate the p-value distribution from first-pass DGE analysis, which will likely exhibit rightward skew.
 
-Select genes that are stably expressed in poly-A and stranded RNA-seq libraries.
+Select genes that are stably expressed in poly-A and stranded RNA-seq libraries as empirical negative control genes for use in other DGE analyses varying by library enrichment method.
 
 ### Methods
 
@@ -126,133 +126,24 @@ Histograms used for choosing stably expressed genes:
 ### Usage
 
 1. Change working directory to local `OpenPBTA-analysis`.
-2. Download data using `bash download-data.sh`. Make sure `data/pbta-gene-counts-rsem-expected_count.polya.rds` and `data/pbta-gene-counts-rsem-expected_count.stranded.rds` are downloaded.
+2. Download data using `bash download-data.sh`. Make sure `data/gene-counts-rsem-expected_count-collapsed.rds` is downloaded.
 3. Run this analysis module in the continuous integration (CI) docker image using `./scripts/run_in_ci.sh bash analyses/rna-seq-protocol-dge/run-rna-seq-protocol-dge.sh`.
-
-Note on downloading data:
-
-The presented results were generated using [AlexsLemonade/OpenPBTA-analysis](https://github.com/AlexsLemonade/OpenPBTA-analysis) release-v19-20210423. The release data can be downloaded by changing the `URL`, `RELEASE` and `PREVIOUS` variables in `download-data.sh` to:
-
-```bash
-URL=${OPENPBTA_URL:-https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data}
-RELEASE=${OPENPBTA_RELEASE:-release-v19-20210423}
-PREVIOUS=${OPENPBTA_RELEASE:-release-v18-20201123}
-```
-
-The [PediatricOpenTargets/OpenPBTA-analysis](https://github.com/PediatricOpenTargets/OpenPBTA-analysis) project has a separate data release, so the `download-data.sh` currently has the following variables:
-
-```bash
-URL=${OPENPBTA_URL:-https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/open-targets}
-RELEASE=${OPENPBTA_RELEASE:-v2}
-PREVIOUS=${OPENPBTA_RELEASE:-v1}
-```
-
-The `data/pbta-gene-counts-rsem-expected_count.polya.rds` and `data/pbta-gene-counts-rsem-expected_count.stranded.rds` will be added to PediatricOpenTargets/OpenPBTA-analysis in future releases.
-
-### Module structure
-
-```text
-.
-├── 01-summarize_matrices.R
-├── 02-analyze-drops.Rmd
-├── 03-protocol-dge-seg.R
-├── 04-deseq2-protocol-dge.R
-├── README.md
-├── plots
-│   ├── deseq2_rle_normalized
-│   │   └── stranded_vs_polya_dge_deseq2_nbinom_wald_test_pvals_histogram.png
-│   ├── tmm_normalized
-│   │   ├── edger_logfc_histogram.png
-│   │   ├── estimated_dispersions.png
-│   │   ├── glm_ql_fit_deviances.png
-│   │   ├── normalized_count_gene_cv_histogram.png
-│   │   ├── stably_exp_gene_protocol_diff_boxplot/*.png
-│   │   ├── stranded_vs_polya_dge_deseq2_nbinom_wald_test_pvals_histogram.png
-│   │   ├── stranded_vs_polya_dge_exact_test_pvals_histogram.png
-│   │   ├── stranded_vs_polya_dge_lrt_pvals_histogram.png
-│   │   └── stranded_vs_polya_dge_ql_ftest_pvals_histogram.png
-│   └── uqpgq2_normalized
-│       ├── edger_logfc_histogram.png
-│       ├── estimated_dispersions.png
-│       ├── glm_ql_fit_deviances.png
-│       ├── normalized_count_gene_cv_histogram.png
-│       ├── stably_exp_gene_protocol_diff_boxplot/*.png
-│       ├── stranded_vs_polya_dge_deseq2_nbinom_wald_test_pvals_histogram.png
-│       ├── stranded_vs_polya_dge_exact_test_pvals_histogram.png
-│       ├── stranded_vs_polya_dge_lrt_pvals_histogram.png
-│       └── stranded_vs_polya_dge_ql_ftest_pvals_histogram.png
-├── results
-│   ├── deseq2_rle_normalized
-│   │   └── stranded_vs_polya_dge_deseq2_nbinom_wald_test_res.csv
-│   ├── expected_count-collapse-gene-drops.nb.html
-│   ├── pbta-gene-counts-rsem-expected_count-collapsed.polya.rds
-│   ├── pbta-gene-counts-rsem-expected_count-collapsed.stranded.rds
-│   ├── pbta-gene-counts-rsem-expected_count-collapsed_table.polya.rds
-│   ├── pbta-gene-counts-rsem-expected_count-collapsed_table.stranded.rds
-│   ├── tmm_normalized
-│   │   ├── stranded_vs_polya_dge_deseq2_nbinom_wald_test_res.csv
-│   │   ├── stranded_vs_polya_dge_exact_test_res.csv
-│   │   ├── stranded_vs_polya_dge_lrt_res.csv
-│   │   ├── stranded_vs_polya_dge_ql_ftest_res.csv
-│   │   └── stranded_vs_polya_stably_exp_genes.csv
-│   └── uqpgq2_normalized
-│       ├── stranded_vs_polya_dge_deseq2_nbinom_wald_test_res.csv
-│       ├── stranded_vs_polya_dge_exact_test_res.csv
-│       ├── stranded_vs_polya_dge_lrt_res.csv
-│       ├── stranded_vs_polya_dge_ql_ftest_res.csv
-│       └── stranded_vs_polya_stably_exp_genes.csv
-└── run-rna-seq-protocol-dge.sh
-```
 
 ### Analysis scripts
 
-#### 01-summarize_matrices.R
-
-> this script generates the collapsed matrices as described above. In addition, this script calculates the average Pearson correlation between the values of the gene symbol that is kept and those duplicates that are discarded.
-
-Obtained from the OpenPBTA-analysis/analyses/collapse-rnaseq module.
-
-Input:
-
-- `../../data/pbta-gene-counts-rsem-expected_count.polya.rds`
-- `../../data/pbta-gene-counts-rsem-expected_count.stranded.rds`
-
-Output:
-
-- `results/pbta-gene-counts-rsem-expected_count-collapsed.polya.rds`: collapsed poly-A read count matrix
-- `results/pbta-gene-counts-rsem-expected_count-collapsed.stranded.rds`: collapsed stranded read count matrix
-- `results/pbta-gene-counts-rsem-expected_count-collapsed_table.polya.rds`
-- `results/pbta-gene-counts-rsem-expected_count-collapsed_table.stranded.rds`
-
-#### 02-analyze-drops.Rmd
-
-> this is used to display tables from 01-summarize_matrices.R
-
-Obtained from the OpenPBTA-analysis/analyses/collapse-rnaseq module.
-
-Input:
-
-- `results/pbta-gene-counts-rsem-expected_count-collapsed_table.polya.rds`
-- `results/pbta-gene-counts-rsem-expected_count-collapsed_table.stranded.rds`
-
-Output:
-
-- `results/expected_count-collapse-gene-drops.nb.html`: dropped gene report
-
-#### 03-protocol-dge-seg.R
+#### 01-protocol-dge-seg.R
 
 This script performs edgeR DGE analysis to compare RNA-seq libraries that are prepared using poly-A or ribodeplete-stranded protocols from the same samples. This script also selects genes that are stably expressed in poly-A and ribodeplete-stranded RNA-seq libraries. The analysis code is adapted from the [OMPARE project](https://github.com/d3b-center/OMPARE/blob/master/code/patient_level_analyses/utils/rnaseq_edger_normalizations.R#L37-L41).
 
 Example usage:
 
 ```bash
-Rscript --vanilla '03-protocol-dge-seg.R' -n 'uqpgq2'
+Rscript --vanilla '01-protocol-dge-seg.R' -n 'uqpgq2'
 ```
 
 Input:
 
-- `results/pbta-gene-counts-rsem-expected_count-collapsed.polya.rds`: collapsed RSEM expected count matrix of poly-A RNA-seq libraries generated by `01-summarize_matrices.R`.
-- `results/pbta-gene-counts-rsem-expected_count-collapsed.stranded.rds`: collapsed RSEM expected count matrix of stranded RNA-seq libraries generated by `01-summarize_matrices.R`.
+- `../../data/gene-counts-rsem-expected_count-collapsed.rds`: collapsed RSEM expected count matrix of poly-A RNA-seq libraries.
 
 Parameters:
 
@@ -273,20 +164,19 @@ Output:
 - `plots/NORMALIZATION_METHOD/normalized_count_gene_cv_histogram.png`: histogram of coefficient of variations of normalized read counts
 - `plots/NORMALIZATION_METHOD/stably_exp_gene_protocol_diff_boxplot/*.png`: normalized read count boxplots
 
-#### 04-edger-protocol-dge.R
+#### 02-deseq2-protocol-dge.R
 
 This script performs DESeq2 standard DGE analysis to compare RNA-seq libraries that are prepared using poly-A or ribodeplete-stranded protocols from the same samples.
 
 Usage:
 
 ```bash
-Rscript --vanilla '04-deseq2-protocol-dge.R'
+Rscript --vanilla '02-deseq2-protocol-dge.R'
 ```
 
 Input:
 
-- `results/pbta-gene-counts-rsem-expected_count-collapsed.polya.rds`: collapsed RSEM expected count matrix of poly-A RNA-seq libraries generated by `01-summarize_matrices.R`.
-- `results/pbta-gene-counts-rsem-expected_count-collapsed.stranded.rds`: collapsed RSEM expected count matrix of stranded RNA-seq libraries generated by `01-summarize_matrices.R`.
+- `../../data/gene-counts-rsem-expected_count-collapsed.rds`: collapsed RSEM expected count matrix of poly-A RNA-seq libraries.
 
 Output:
 
