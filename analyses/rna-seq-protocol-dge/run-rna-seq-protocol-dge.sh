@@ -19,28 +19,11 @@ cd "$script_directory" || exit
 mkdir -p results
 mkdir -p plots
 
-# generate collapsed matrices for poly-A and stranded datasets
-libraryStrategies=("polya" "stranded")
-for strategy in ${libraryStrategies[@]}; do
-
-  Rscript --vanilla 01-summarize_matrices.R \
-    -i ../../data/pbta-gene-counts-rsem-expected_count.${strategy}.rds \
-    -g ../../data/gencode.v27.primary_assembly.annotation.gtf.gz \
-    -m results/pbta-gene-counts-rsem-expected_count-collapsed.${strategy}.rds \
-    -t results/pbta-gene-counts-rsem-expected_count-collapsed_table.${strategy}.rds
-
-done
-
-# run the notebook for analysis of dropped genes
-Rscript -e "rmarkdown::render(input = '02-analyze-drops.Rmd', params = list(polya.annot.table = 'results/pbta-gene-counts-rsem-expected_count-collapsed_table.polya.rds', stranded.annot.table = 'results/pbta-gene-counts-rsem-expected_count-collapsed_table.stranded.rds'), clean = TRUE)"
-
-mv '02-analyze-drops.nb.html' 'results/expected_count-collapse-gene-drops.nb.html'
-
 echo 'Run TMM normalized differential gene expression and stably expressed gene analysis...'
-Rscript --vanilla '03-protocol-dge-seg.R' -n 'tmm'
+Rscript --vanilla '01-protocol-dge-seg.R' -n 'tmm'
 
 echo 'Run UQ-pgQ2 normalized differential gene expression and stably expressed gene analysis...'
-Rscript --vanilla '03-protocol-dge-seg.R' -n 'uqpgq2'
+Rscript --vanilla '01-protocol-dge-seg.R' -n 'uqpgq2'
 
 echo 'Run DESeq2 standard differential gene expression analysis...'
-Rscript --vanilla '04-deseq2-protocol-dge.R'
+Rscript --vanilla '02-deseq2-protocol-dge.R'

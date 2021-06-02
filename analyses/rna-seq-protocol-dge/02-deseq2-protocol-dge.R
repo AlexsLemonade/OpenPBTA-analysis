@@ -8,12 +8,8 @@ plot_outdir <- file.path('plots', paste0('deseq2_rle', '_normalized'))
 dir.create(plot_outdir, showWarnings = FALSE)
 #------------ Read and pre-process data --------------------
 print('Read count matrices...')
-polya <- readRDS(
-  "results/pbta-gene-counts-rsem-expected_count-collapsed.polya.rds")
-stranded <- readRDS(
-  "results/pbta-gene-counts-rsem-expected_count-collapsed.stranded.rds")
+cnt_mat <- readRDS('../../data/gene-counts-rsem-expected_count-collapsed.rds')
 
-common_gene_id <- intersect(rownames(stranded), rownames(polya))
 # 6 samples have both poly-A and stranded RNA-seq libraries
 # Index | Kids_First_Biospecimen_ID | sample_id | experimental_strategy | 
 #   RNA_library | cohort
@@ -31,10 +27,10 @@ common_gene_id <- intersect(rownames(stranded), rownames(polya))
 # 11 | BS_68KX6A42 | A18777 | RNA-Seq | poly-A | PNOC003
 # 12 | BS_D7XRFE0R | A18777 | RNA-Seq | stranded | PNOC003
 counts <- cbind(
-  stranded[common_gene_id, c("BS_HE0WJRW6", "BS_SHJA4MR0", "BS_FN07P04C",
-                             "BS_8QB4S4VA", "BS_KABQQA0T", "BS_D7XRFE0R")],
-  polya[common_gene_id, c("BS_HWGWYCY7", "BS_X0XXN9BK", "BS_W4H1D4Y6",
-                          "BS_QKT3TJVK", "BS_7WM3MNZ0", "BS_68KX6A42")]
+  cnt_mat[, c("BS_HE0WJRW6", "BS_SHJA4MR0", "BS_FN07P04C",
+              "BS_8QB4S4VA", "BS_KABQQA0T", "BS_D7XRFE0R")],
+  cnt_mat[, c("BS_HWGWYCY7", "BS_X0XXN9BK", "BS_W4H1D4Y6",
+              "BS_QKT3TJVK", "BS_7WM3MNZ0", "BS_68KX6A42")]
 )
 group <- factor(c(rep("stranded", 6), rep("polya", 6)))
 
