@@ -61,20 +61,18 @@ exp.class <- exp.class %>%
 # RNA MB samples
 clin.rna <- subset.clin  %>%
   filter(experimental_strategy == "RNA-Seq")  %>%
-  mutate(parent_aliquot_id = gsub('[.].*', '', parent_aliquot_id)) %>%
   dplyr::rename(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID) %>%
-  dplyr::select(Kids_First_Participant_ID, sample_id, parent_aliquot_id, tumor_descriptor, Kids_First_Biospecimen_ID_RNA)
+  dplyr::select(Kids_First_Participant_ID, sample_id, tumor_descriptor, Kids_First_Biospecimen_ID_RNA)
 
 # DNA MB samples
 clin.wgs <- subset.clin  %>%
   filter(experimental_strategy == "WGS")  %>%
-  mutate(parent_aliquot_id = gsub('[.].*', '', parent_aliquot_id)) %>%
   dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID) %>%
-  dplyr::select(Kids_First_Participant_ID, sample_id, parent_aliquot_id, tumor_descriptor, Kids_First_Biospecimen_ID_DNA)
+  dplyr::select(Kids_First_Participant_ID, sample_id, tumor_descriptor, Kids_First_Biospecimen_ID_DNA)
 
 # combine both
 clin.merged <- clin.wgs %>%
-  right_join(clin.rna, by = c('sample_id', 'Kids_First_Participant_ID','tumor_descriptor', 'parent_aliquot_id'))
+  right_join(clin.rna, by = c('sample_id', 'Kids_First_Participant_ID','tumor_descriptor'))
 ```
 </details>
 
@@ -205,7 +203,7 @@ calc.consensus <- function(mm2s, medullo.classifier, clin){
   
   # add non-ambiguous molecular subtype reported from pathology report where there is no consensus 
   consensus.mat.out = consensus.mat.out %>%
-    mutate(molecular_subtype = ifelse(MM2S_best_fit == medulloPackage_best_fit, MM2S_best_fit,
+    mutate(molecular_subtype = ifelse(!is.na(molecular_subtype), molecular_subtype,
                                       ifelse(pathology_subtype %in% c("SHH", "Group3", "Group4", "WNT"), pathology_subtype, NA)))
   
   # subset columns for html output
