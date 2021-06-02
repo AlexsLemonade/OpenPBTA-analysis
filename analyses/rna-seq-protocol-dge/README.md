@@ -8,7 +8,7 @@ Perform a first-pass differential gene expression (DGE) analysis (as described i
 
 Evaluate the p-value distribution from first-pass DGE analysis, which will likely exhibit rightward skew.
 
-Select genes that are stably expressed in poly-A and stranded RNA-seq libraries.
+Select genes that are stably expressed in poly-A and stranded RNA-seq libraries as empirical negative control genes for use in other DGE analyses varying by library enrichment method.
 
 ### Methods
 
