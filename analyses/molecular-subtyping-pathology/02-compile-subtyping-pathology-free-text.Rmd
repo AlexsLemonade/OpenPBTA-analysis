@@ -148,7 +148,9 @@ compiled_subtypes_df <- compiled_subtypes_df %>%
 
 ## Save to file
 ```{r}
-compiled_subtypes_df %>% write_tsv(output_file)
+compiled_subtypes_df %>% 
+  arrange(Kids_First_Biospecimen_ID)%>%
+  write_tsv(output_file)
 
 ```
 

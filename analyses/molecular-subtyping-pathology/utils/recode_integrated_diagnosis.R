@@ -46,7 +46,7 @@ recode_integrated_diagnosis <- function(histologies_df,
     dplyr::mutate(
       integrated_diagnosis = dplyr::case_when(
         # if NA add the new integrated diagnosis
-        is.na(integrated_diagnosis) ~ replace_integrated_diagnosis_term,
+        is.na(integrated_diagnosis) ~ paste(replace_integrated_diagnosis_term,"NA",sep=","),
         # if there is an existing integrated_diagnosis then replace with new integrated_diagnosis
         stringr::str_detect(pathology_free_text_dx_lower,
                             include_path_free_text_dx_terms) ~ str_replace(integrated_diagnosis,old_integrated_diagnosis_term,replace_integrated_diagnosis_term),
