@@ -301,6 +301,7 @@ all_subtype <- bind_rows(all_rna_subtype,
            pathology_diagnosis) %>%
   # merging them here with summarise
   summarise(molecular_subtype= toString(molecular_subtype)) %>%
+  ungroup() %>% 
   # formatting molecular_subtype columns
   dplyr::mutate(molecular_subtype = case_when(
     # molecular_subtype is NA and we didn't find any canonical
