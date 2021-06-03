@@ -63,6 +63,7 @@ lgat_manifest <- read_tsv(file.path(root_dir,
          sample_id,
          experimental_strategy,
          cancer_predispositions,
+         pathology_diagnosis,
          pathology_free_text_diagnosis)
 
 lgat_dna <- lgat_manifest %>%
@@ -76,9 +77,12 @@ lgat_rna <- lgat_manifest %>%
 all_lgat_matched <- full_join(lgat_dna, lgat_rna,
                          by = c("Kids_First_Participant_ID",
                                 "sample_id",
-                                "pathology_free_text_diagnosis"),
+                                "pathology_free_text_diagnosis",
+                                "pathology_diagnosis"),
                          suffix = c("_DNA", "_RNA")) %>%
-  dplyr::select(starts_with("Kids_First"), sample_id,pathology_free_text_diagnosis)
+  dplyr::select(starts_with("Kids_First"), sample_id,
+                pathology_free_text_diagnosis,
+                pathology_diagnosis)
 
 # SNV based annotation
 lgat_snv <- read_tsv(file.path(subset_dir,"LGAT_snv_subset.tsv")) 
@@ -287,12 +291,14 @@ all_subtype <- bind_rows(all_rna_subtype,
   full_join(all_lgat_matched, by=c("Kids_First_Biospecimen_ID_RNA","Kids_First_Biospecimen_ID_DNA",
                                    "sample_id",
                                    "pathology_free_text_diagnosis",
+                                   "pathology_diagnosis",
                                    "Kids_First_Participant_ID")) %>%
   # lets group because there are some instances where LGAT DNA/RNA have multiple subtypes
   group_by(sample_id,Kids_First_Participant_ID,
            Kids_First_Biospecimen_ID_RNA,
            Kids_First_Biospecimen_ID_DNA,
-           pathology_free_text_diagnosis) %>%
+           pathology_free_text_diagnosis,
+           pathology_diagnosis) %>%
   # merging them here with summarise
   summarise(molecular_subtype= toString(molecular_subtype)) %>%
   # formatting molecular_subtype columns
@@ -311,7 +317,8 @@ all_subtype <- bind_rows(all_rna_subtype,
     TRUE ~ stringr::str_c("LGG, ", molecular_subtype))) %>%
   # recode if glialneuronal tumors
   dplyr::mutate(molecular_subtype = case_when(str_detect(pathology_free_text_diagnosis,
-                                                       paste(path_dx_list$recode_path_free_text,collapse = "|")) ~ 
+                                                       paste(path_dx_list$recode_path_free_text,collapse = "|")) &
+                                                str_detect(pathology_diagnosis, "Low-grade glioma/astrocytoma (WHO grade I/II)" )~ 
                                                gsub("LGG,","GNT,",molecular_subtype),
                                              TRUE ~ molecular_subtype)) %>%
   dplyr::select(-pathology_free_text_diagnosis) %>%
