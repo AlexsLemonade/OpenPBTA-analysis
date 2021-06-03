@@ -65,6 +65,6 @@ Rscript --vanilla 01-summarize_matrices.R \
 
 
   # run the notebook for analysis of dropped genes
-Rscript -e "rmarkdown::render(input = '02-analyze-drops.Rmd', output_file = paste0('02-analyze-drops-','-${quantificationType}'),params = list(annot.table = 'results/gene-${expr_count}-rsem-${quantificationType}-collapsed_table.rds'), clean = TRUE)"
+Rscript -e "rmarkdown::render(input = '02-analyze-drops.Rmd', output_file = paste0('02-analyze-drops','-${quantificationType}'),params = list(annot.table = 'results/gene-${expr_count}-rsem-${quantificationType}-collapsed_table.rds'), clean = TRUE)"
 
 
