@@ -321,7 +321,8 @@ all_subtype <- bind_rows(all_rna_subtype,
                                                 str_detect(pathology_diagnosis, "Low-grade glioma/astrocytoma (WHO grade I/II)" )~ 
                                                gsub("LGG,","GNT,",molecular_subtype),
                                              TRUE ~ molecular_subtype)) %>%
-  dplyr::select(-pathology_free_text_diagnosis) %>%
+  dplyr::select(-pathology_free_text_diagnosis,
+                -pathology_diagnosis) %>%
   unique() %>%
   dplyr::arrange(sample_id) %>%
   write_tsv(file.path(resultDir,"lgat_subtyping.tsv"))
