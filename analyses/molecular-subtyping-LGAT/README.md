@@ -63,7 +63,7 @@ Samples are _excluded_ if we detect the following strings in the `pathology_diag
 dysembryoplastic neuroepithelial tumor
 ```
 
-When `pathology_diagnosis == "Low-grade glioma/astrocytoma (WHO grade I/II)"`, we _exclude_ samples if we detect the following strings in `pathology_free_text_diagnosis`:
+When `pathology_diagnosis == "Low-grade glioma/astrocytoma (WHO grade I/II)"`, we will _recode_ samples if we detect the following strings in `pathology_free_text_diagnosis` as "GNT, <subtype>" :
 
 ```
 desmoplastic infantile astrocytoma
