@@ -387,39 +387,6 @@ compiled_df %>%
   filter(Kids_First_Participant_ID == "PT_C2D4JXS1")
 ```
 
-### `PT_EHE800JJ`
-
-This sample has a hallmark EWSR1-FLI1 fusion, so could be re-classified as EWS once it goes through pathology review. For now, we will change it here to EWS.
-```{r}
-compiled_df %>%
-  filter(Kids_First_Participant_ID == "PT_EHE800JJ")
-```
-```{r}
-compiled_df <- compiled_df %>%
-  mutate(
-    integrated_diagnosis = case_when(
-      sample_id == "7316-229" ~ "Ewing sarcoma",
-      TRUE ~ integrated_diagnosis
-    ),
-    short_histology = case_when(
-      sample_id == "7316-229" ~ "EWS",
-      TRUE ~ short_histology
-    ),
-    broad_histology = case_when(
-      sample_id == "7316-229" ~ "Mesenchymal non-meningothelial tumor",
-      TRUE ~ broad_histology
-    ),
-    molecular_subtype = case_when(
-      sample_id == "7316-229" ~ "EWS",
-      TRUE ~ molecular_subtype
-    ),
-    Notes = case_when(
-      sample_id == "7316-229" ~ "Updated via OpenPBTA subtyping",
-      TRUE ~ Notes
-    )
-  )
-```
-
 ### `PT_KTRJ8TFY`
 
 This sample has one biospecimen which did not have the H3 variant captured in consensus calls. It has the variant present only in VarDict calls and in IGV, and expect this will be fixed with [#819](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/854).
@@ -560,9 +527,9 @@ compiled_df <- compiled_df %>%
       sample_id %in% chdm_poorly_diff_sample_ids ~ "CHDM, poorly differentiated",
       sample_id %in% chdm_conventional_sample_ids ~ "CHDM, conventional",
       TRUE ~ molecular_subtype),
-   integrated_diagnosis = case_when(str_detect(molecular_subtype, "CHDM") ~
+   harmonized_diagnosis = case_when(str_detect(molecular_subtype, "CHDM") ~
                                     str_replace(molecular_subtype, "CHDM, ", "Chordoma, "), 
-                                    TRUE ~ integrated_diagnosis),
+                                    TRUE ~ harmonized_diagnosis),
     Notes = case_when(sample_id %in% c(chdm_conventional_sample_ids,
                                         chdm_poorly_diff_sample_ids) ~ "Updated via pathology review",
       TRUE ~ Notes
