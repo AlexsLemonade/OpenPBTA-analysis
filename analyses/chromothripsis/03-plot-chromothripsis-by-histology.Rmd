@@ -1,0 +1,158 @@
+---
+title: 'Chromothripsis Plots by Histology'
+author: "Laura Egolf"
+date: "2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This notebook plots the proportion of tumors with chromothripsis across histology groups, with a breakdown by confidence level (high or low confidence chromothripsis) and by the number of chromothripsis regions observed. 
+
+### Define directory paths and load packages
+
+```{r}
+# Set directory paths
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+analysis_dir <- file.path(root_dir, "analyses", "chromothripsis")
+plots_dir <- file.path(analysis_dir, "plots", "03-histology")
+
+# Create plots_dir if it doesn't exist
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir, recursive = TRUE)
+}
+
+# Load packages
+library(ggplot2)
+library(RColorBrewer)
+library(readr)
+library(dplyr)
+```
+
+
+### Load chromothripsis data and histology display groups
+
+```{r}
+# Read in summary of chromothripsis regions per sample (number of regions for each confidence level)
+chromoth_per_sample <- read_tsv(file.path(analysis_dir, "results", "chromothripsis_summary_per_sample.txt"))
+
+# Import standard color palettes & histology display groups for project
+histology_label_mapping <- read_tsv(
+  file.path(root_dir, "figures", "palettes", "histology_label_color_table.tsv")) %>% 
+  # Select just the columns we will need for plotting
+  select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes)  
+  # # Reorder display_group based on display_order --- skip for now because I'm ordering based on chromothripsis data
+  # dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
+
+# Merge chromothripsis data and histology display groups
+chromoth_histology <- inner_join(chromoth_per_sample, histology_label_mapping, by="Kids_First_Biospecimen_ID")
+```
+
+
+### Summarize chromothripsis data by histology and reorder histologies
+```{r}
+## For each histology, calculate proportion of tumors with at least one chromothripsis region (`prop`)
+# Will be used in first plot and to order the histologies in all plots
+chromoth_histology_summary <- chromoth_histology %>%
+  count(any_regions_logical, display_group, hex_codes) %>%
+  tidyr::pivot_wider(names_from = any_regions_logical, values_from = n, values_fill=0) %>%
+  group_by(display_group, hex_codes) %>%
+  mutate(group_size = sum(`TRUE`, `FALSE`)) %>%
+  mutate(prop = `TRUE` / group_size) %>%
+  mutate(labels = paste0(`TRUE`, " / ", group_size)) 
+
+## Reorder histologies by proportion of tumors with chromothripsis:
+
+# Reorder factor levels of `display_group` by `prop` in chromoth_histology_summary
+chromoth_histology_summary$display_group <- forcats::fct_reorder(
+    chromoth_histology_summary$display_group,
+    chromoth_histology_summary$prop,
+    min, .desc=TRUE)
+# Alternate code (I like this better but it didn't work)
+# chromoth_histology_summary <- chromoth_histology_summary %>%
+#   mutate(display_group = forcats::fct_reorder(
+#     display_group,
+#     prop,
+#     min, .desc=TRUE))  
+
+# Assign the same ordering of factor levels to chromoth_histology 
+chromoth_histology$display_group <- factor(chromoth_histology$display_group, levels=levels(chromoth_histology_summary$display_group))
+```
+
+### Define shared plot parameters
+```{r}
+# Define ylim for plots based on the max value of `prop` 
+prop_max <- max(chromoth_histology_summary$prop)
+prop_ylim <- ceiling(prop_max * 10) / 10  # Round up to nearest 0.1
+
+# Set ggplot2 theme
+theme_set(theme_light())
+
+# Save ggplot2 options
+plot_options <- list(
+  ylim(c(0, prop_ylim)),
+  xlab(NULL),
+  ylab("Proportion of Tumors"),
+  theme(axis.text.x = element_text(angle = 90, hjust=0.95))
+)
+```
+
+### Plot proportion of tumors that have at least one chromothripsis region of any confidence level
+
+Annotate with sample sizes for each group (number of tumors with chromothripsis / total number of tumors)
+
+```{r}
+p <- ggplot(chromoth_histology_summary, aes(x = display_group, y = prop, fill = hex_codes)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=labels), vjust=-0.2, size=2.5) + 
+  scale_fill_identity() +
+  plot_options
+p
+ggsave(file.path(plots_dir, "chromothripsis_proportion_by_histology.pdf"), p, width=7, height=7)
+```
+
+
+### Plot proportion of tumors stacked by low- or high-confidence chromothripsis 
+
+Proportion of tumors with at least one low- or high-confidence chromothripsis region (if a tumor has both low- and high-confidence regions, it will be grouped with high-confidence)
+
+Note ggplot will output warning for 16 rows missing - these are the bars for "No Calls" which don't display anyway, so it doesn't matter
+
+```{r}
+# Scale alpha with confidence level - set "No Calls" as alpha=0 so the bar doesn't show
+p <- ggplot(chromoth_histology, aes(x = display_group, 
+                                   fill = hex_codes, 
+                                   alpha = factor(any_regions, 
+                                                  levels=c("No Calls", "Low Confidence", "High Confidence")))) +
+  geom_bar(position = "fill") +
+  scale_fill_identity() +
+  scale_alpha_manual(values=c(0, 0.5, 1), name="Chromothripsis\nConfidence Level") +
+  plot_options
+p
+ggsave(file.path(plots_dir, "chromothripsis_proportion_by_histology_withConfidence.pdf"), p, width=7, height=7)
+```
+
+
+### Plot proportion of tumors stacked by number of chromothripsis regions 
+
+Keep in mind that ShatterSeek only reports one chromothripsis region per chromosome, which is why the number of events per sample may seem low.
+
+Note ggplot will output warning for 16 rows missing - these are the bars for "0" which don't display anyway, so it doesn't matter
+
+```{r}
+# Define color scale for # chromothripsis regions, but set "0" as transparent so the bar doesn't show
+# Pick number of colors based on max number of chromothripsis regions observed
+max_regions <- max(chromoth_per_sample$count_regions_any_conf)
+colors <- brewer.pal(max_regions+1, "YlOrRd")
+colors[1] <- "#1C00ff00"
+
+p <- ggplot(chromoth_histology, aes(x = display_group, fill = as.factor(count_regions_any_conf))) +
+  geom_bar(position = "fill") +
+  scale_fill_manual(values=colors, name="# Chromothripsis\nRegions") +
+  plot_options
+p
+ggsave(file.path(plots_dir, "chromothripsis_proportion_by_histology_withCount.pdf"), p, width=7, height=7)
+```
+

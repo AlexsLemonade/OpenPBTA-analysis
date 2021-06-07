@@ -216,6 +216,11 @@ jobs:
           name: GISTIC Results Comparison
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/compare-gistic/run-compare-gistic.sh
 
+      - run:
+          name: Visualize chromothripsis by histology
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/chromothripsis/03-plot-chromothripsis-by-histology.Rmd', 
+clean = TRUE)"
+
 
          ################################
          #### Add your analysis here ####
