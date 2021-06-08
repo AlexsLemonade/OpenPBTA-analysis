@@ -269,7 +269,7 @@ chromoth_histology &lt;- inner_join(chromoth_per_sample, histology_label_mapping
 # Will be used in first plot and to order the histologies in all plots
 chromoth_histology_summary &lt;- chromoth_histology %&gt;%
   count(any_regions_logical, display_group, hex_codes) %&gt;%
-  tidyr::pivot_wider(names_from = any_regions_logical, values_from = n, values_fill=0) %&gt;%
+  tidyr::spread(key = any_regions_logical, value = n, fill=0) %&gt;%
   group_by(display_group, hex_codes) %&gt;%
   mutate(group_size = sum(`TRUE`, `FALSE`)) %&gt;%
   mutate(prop = `TRUE` / group_size) %&gt;%
