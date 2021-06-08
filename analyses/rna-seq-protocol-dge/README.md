@@ -93,11 +93,11 @@ The table of stably expressed genes are saved at `results/uqpgq2_normalized/stra
 
 Top 30 stably expressed gene boxplots are at `plots/uqpgq2_normalized/stably_exp_gene_protocol_diff_boxplot`. Top 3 stably expressed gene boxplots:
 
-![up_seg_bp1](plots/uqpgq2_normalized/stably_exp_gene_protocol_diff_boxplot/RAB5B_normalized_count_protocol_diff_boxplot.png)
+![up_seg_bp1](plots/uqpgq2_normalized/stably_exp_gene_protocol_diff_boxplot/SENP2_normalized_count_protocol_diff_boxplot.png)
 
-![up_seg_bp2](plots/uqpgq2_normalized/stably_exp_gene_protocol_diff_boxplot/GORASP1_normalized_count_protocol_diff_boxplot.png)
+![up_seg_bp2](plots/uqpgq2_normalized/stably_exp_gene_protocol_diff_boxplot/NUP58_normalized_count_protocol_diff_boxplot.png)
 
-![up_seg_bp3](plots/uqpgq2_normalized/stably_exp_gene_protocol_diff_boxplot/SENP2_normalized_count_protocol_diff_boxplot.png)
+![up_seg_bp3](plots/uqpgq2_normalized/stably_exp_gene_protocol_diff_boxplot/LSG1_normalized_count_protocol_diff_boxplot.png)
 
 Histograms used for choosing stably expressed genes:
 
@@ -111,11 +111,11 @@ The table of stably expressed genes are saved at `results/tmm_normalized/strande
 
 Top 30 stably expressed gene boxplots are at `plots/tmm_normalized/stably_exp_gene_protocol_diff_boxplot`. Top 3 stably expressed gene boxplots:
 
-![tmm_seg_bp1](plots/tmm_normalized/stably_exp_gene_protocol_diff_boxplot/GORASP1_normalized_count_protocol_diff_boxplot.png)
+![tmm_seg_bp1](plots/tmm_normalized/stably_exp_gene_protocol_diff_boxplot/NUP58_normalized_count_protocol_diff_boxplot.png)
 
-![tmm_seg_bp2](plots/tmm_normalized/stably_exp_gene_protocol_diff_boxplot/RPUSD1_normalized_count_protocol_diff_boxplot.png)
+![tmm_seg_bp2](plots/tmm_normalized/stably_exp_gene_protocol_diff_boxplot/SENP2_normalized_count_protocol_diff_boxplot.png)
 
-![tmm_seg_bp3](plots/tmm_normalized/stably_exp_gene_protocol_diff_boxplot/NUP58_normalized_count_protocol_diff_boxplot.png)
+![tmm_seg_bp3](plots/tmm_normalized/stably_exp_gene_protocol_diff_boxplot/ZER1_normalized_count_protocol_diff_boxplot.png)
 
 Histograms used for choosing stably expressed genes:
 
