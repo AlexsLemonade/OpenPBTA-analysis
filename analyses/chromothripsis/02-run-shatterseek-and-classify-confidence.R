@@ -254,7 +254,8 @@ names(chromoth_per_sample) <- c("Kids_First_Biospecimen_ID",
                                 "count_regions_any_conf", "count_regions_high_conf", "count_regions_low_conf")
 
 # Create a summary variable indicating whether a sample has no calls, >=1 low-confidence call, 
-# or >=1 high-confidence call (the same sample can also have low confidence calls)
+# or >=1 high-confidence call (if a sample has both low- and high-confidence calls it will be 
+# grouped with high-confidence)
 chromoth_per_sample <- chromoth_per_sample %>%
   dplyr::mutate(
     any_regions = dplyr::case_when(
