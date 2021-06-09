@@ -72,7 +72,7 @@ clin.wgs <- subset.clin  %>%
 
 # combine both
 clin.merged <- clin.wgs %>%
-  right_join(clin.rna, by = c('sample_id','Kids_First_Participant_ID','tumor_descriptor'))
+  right_join(clin.rna, by = c('sample_id', 'Kids_First_Participant_ID','tumor_descriptor'))
 ```
 </details>
 
@@ -171,8 +171,7 @@ calc.consensus <- function(mm2s, medullo.classifier, clin){
   # join both
   consensus.mat <- mm2s %>%
     inner_join(medullo.classifier, 
-               by = c('Kids_First_Biospecimen_ID', 'sample_id',
-                      'pathology_subtype'))
+               by = c('Kids_First_Biospecimen_ID', 'sample_id', 'pathology_subtype'))
   
   # create consensus molecular subtype if both classifiers agree 
   # match consensus molecular subtype to the pathology report
@@ -204,7 +203,7 @@ calc.consensus <- function(mm2s, medullo.classifier, clin){
   
   # add non-ambiguous molecular subtype reported from pathology report where there is no consensus 
   consensus.mat.out = consensus.mat.out %>%
-    mutate(molecular_subtype = ifelse(MM2S_best_fit == medulloPackage_best_fit, MM2S_best_fit,
+    mutate(molecular_subtype = ifelse(!is.na(molecular_subtype), molecular_subtype,
                                       ifelse(pathology_subtype %in% c("SHH", "Group3", "Group4", "WNT"), pathology_subtype, NA)))
   
   # subset columns for html output
