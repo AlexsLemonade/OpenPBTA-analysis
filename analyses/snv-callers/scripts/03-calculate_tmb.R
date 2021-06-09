@@ -14,7 +14,7 @@
 # --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
 # --nonsynfilter_maf: If TRUE, filter out synonymous mutations, keep non-synonymous mutations, based on maftools definition.
 # --nonsynfilter_focr: If TRUE, filter out synonymous mutations, keep non-synonymous mutations, based on Friends of Cancer Research Definition.
-# --tcga: If TRUE, will skip PBTA metadata specific steps
+# --project_acronym : Project acronym for output file prefix, example: tcga, pbta, and kfnbl
 #
 # Command line example:
 #
@@ -25,6 +25,7 @@
 # --coding_regions scratch/gencode.v27.primary_assembly.annotation.bed \
 # --nonsynfilter_maf
 # --overwrite
+# --project_acronym kfnbl
 
 ################################ Initial Set Up ################################
 # Establish base dir
@@ -85,8 +86,8 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
-    opt_str = "--tcga", action = "store_true",
-    default = FALSE, help = "If TRUE, will skip PBTA metadata specific steps",
+    opt_str = "--project_acronym", type = "character", default = "none",
+    help = "Project acronym for output file prefix, example: tcga, pbta, and kfnbl",
     metavar = "character"
   )
 )
@@ -126,7 +127,8 @@ if (!dir.exists(opt$output)) {
 }
 
 # Get data name
-data_name <- ifelse(opt$tcga, "tcga", "pbta")
+data_name <- opt$project_acronym
+
 
 # Declare output file based on data_name
 tmb_coding_file <- file.path(
@@ -205,7 +207,7 @@ strelka_mutect_mnv <- strelka %>%
   ) %>%
   as.data.frame()
 
-if (opt$tcga) {
+if (opt$project_acronym == "tcga") {
   strelka_mutect_mnv <- strelka_mutect_mnv %>%
     # In the TCGA MAF files, the Tumor_Sample_Barcode has the biospecimen
     # information but only the first 12 characters are needed to match the metadata
@@ -235,7 +237,7 @@ if (opt$nonsynfilter_focr) {
 message("Setting up metadata...")
 
 # Have to handle TCGA and PBTA metadata differently
-if (opt$tcga) {
+if (opt$project_acronym == "tcga") {
   # Format two fields of metadata for use with functions
   metadata <- readr::read_tsv(opt$metadata, guess_max = 10000) %>%
     dplyr::mutate(
@@ -251,7 +253,7 @@ if (opt$tcga) {
   # Manifest files only have first 12 letters of the barcode so we gotta chop the end off
   strelka_mutect_maf_df <- strelka_mutect_maf_df %>%
     dplyr::mutate(Tumor_Sample_Barcode = substr(Tumor_Sample_Barcode, 0, 12))
-} else { # pbta data
+} else { # pbta, kfnbl, or any other project data
   # Isolate metadata to only the samples that are in the datasets
   metadata <- readr::read_tsv(opt$metadata, guess_max = 10000) %>%
     dplyr::filter(Kids_First_Biospecimen_ID %in% strelka_mutect_maf_df$Tumor_Sample_Barcode) %>%
