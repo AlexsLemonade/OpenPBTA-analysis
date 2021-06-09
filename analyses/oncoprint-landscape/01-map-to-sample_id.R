@@ -129,7 +129,6 @@ if(!is.null(opt$hotspots_maf_file)){
     unique()
 }
 
-opt$cnv_autosomes_file
 cnv_autosomes_df <- readr::read_tsv(opt$cnv_autosomes_file) %>%
   left_join(select(histologies_df,c("Kids_First_Biospecimen_ID","germline_sex_estimate")),
                    by=c("biospecimen_id"="Kids_First_Biospecimen_ID")
