@@ -34,10 +34,22 @@ option_list <- list(
     help = "file path to MAF file that contains SNV information",
   ),
   optparse::make_option(
-    c("--cnv_file"),
+    c("--hotspots_maf_file"),
     type = "character",
     default = NULL,
-    help = "file path to file that contains CNV information"
+    help = "file path to an optional hotspots MAF file that contains only SNV hotspots calls",
+  ),
+  optparse::make_option(
+    c("--cnv_autosomes_file"),
+    type = "character",
+    default = NULL,
+    help = "file path to file that contains autosome chromosome CNV information"
+  ),
+  optparse::make_option(
+    c("--cnv_xy_file"),
+    type = "character",
+    default = NULL,
+    help = "file path to file that contains X and Y chromosome CNV information"
   ),
   optparse::make_option(
     c("--fusion_file"),
@@ -92,8 +104,37 @@ cnv_output <- file.path(output_dir, paste0(opt$filename_lead, "_cnv.tsv"))
 #### Read in data --------------------------------------------------------------
 histologies_df <- readr::read_tsv(opt$metadata_file, guess_max = 10000)
 
-maf_df <- readr::read_tsv(opt$maf_file)
-cnv_df <- readr::read_tsv(opt$cnv_file)
+# Only keep required maf columns 
+keep_cols <-c("Hugo_Symbol", 
+              "Chromosome",
+              "Start_Position",
+              "End_Position",
+              "Reference_Allele",
+              "Tumor_Seq_Allele2",
+              "Variant_Classification",
+              "Variant_Type",
+              "Tumor_Sample_Barcode",
+              "HGVSp_Short")
+
+maf_df <- readr::read_tsv(opt$maf_file) %>%
+  select(keep_cols)
+
+if(!is.null(opt$hotspots_maf_file)){
+  hotspots_maf_df <- readr::read_tsv(opt$hotspots_maf_file) %>%
+    select(keep_cols)
+  
+  # merge hotspots maf to input maf
+  maf_df <- maf_df %>%
+    bind_rows(hotspots_maf_df) %>%
+    unique()
+}
+
+cnv_autosomes_df <- readr::read_tsv(opt$cnv_autosomes_file) %>%
+  left_join(select(histologies_df,c("Kids_First_Biospecimen_ID","germline_sex_estimate")),
+                   by=c("biospecimen_id"="Kids_First_Biospecimen_ID")
+            )
+cnv_xy_df <- readr::read_tsv(opt$cnv_xy_file) 
+cnv_df <- rbind(cnv_autosomes_df,cnv_xy_df)
 fusion_df <- readr::read_tsv(opt$fusion_file)
 
 #### Get rid of ambiguous and non-tumor samples --------------------------------
@@ -127,7 +168,7 @@ biospecimens_to_remove <- unique(c(ambiguous_biospecimens,
 maf_df <- maf_df %>%
   dplyr::filter(!(Tumor_Sample_Barcode %in% biospecimens_to_remove))
 cnv_df <- cnv_df %>%
-  dplyr::filter(!(Kids_First_Biospecimen_ID %in% biospecimens_to_remove))
+  dplyr::filter(!(biospecimen_id %in% biospecimens_to_remove))
 fusion_df <- fusion_df %>%
   dplyr::filter(!(Sample %in% biospecimens_to_remove))
 
@@ -143,7 +184,7 @@ if (!is.null(opt$independent_specimens)) {
   maf_df <- maf_df %>%
     filter(Tumor_Sample_Barcode %in% ind_biospecimen)
   cnv_df <- cnv_df %>%
-    filter(Kids_First_Biospecimen_ID %in% ind_biospecimen)
+    filter(biospecimen_id %in% ind_biospecimen)
 
   # for the RNA-seq samples, we need to map from the sample identifier
   # associated with the independent specimen and back to a biospecimen ID
@@ -283,11 +324,10 @@ cnv_df <- cnv_df %>%
   inner_join(select(histologies_df,
                     Kids_First_Biospecimen_ID,
                     sample_id),
-             by = "Kids_First_Biospecimen_ID") %>%
-  filter(status != "uncallable") %>%
+             by = c("biospecimen_id"="Kids_First_Biospecimen_ID")) %>%
   mutate(Tumor_Sample_Barcode =  sample_id) %>%
   rename(Variant_Classification = status,
-         Hugo_Symbol = region) %>%
+         Hugo_Symbol = gene_symbol) %>%
   select(Hugo_Symbol, Tumor_Sample_Barcode, Variant_Classification)
 
 # Write to file
