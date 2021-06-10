@@ -80,7 +80,7 @@ else
          --num_iterations ${ITER} \
          --model ${model} \
          --seed ${seed} \
-         --plot_output "${plot_dir}/seed_${seed}_model_${model}.pdf" \
+         --plot_output "${plot_dir}/seed_${seed}_model_${model}.png" \
          --output_file "${result_dir}/seed_${seed}_model_${model}.RDS"   
     done
   done

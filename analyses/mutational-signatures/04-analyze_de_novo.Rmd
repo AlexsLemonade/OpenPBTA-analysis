@@ -23,6 +23,9 @@ library(cowplot)
 # Path to input data
 path_to_input_rds <- file.path("..", "..", "scratch", "mutational-signatures", "extraction")
 
+# Path to consine similarity GOF plots
+path_to_cosine <- file.path("plots", "denovo", "extraction")
+
 # Result path
 path_to_results <- "results"
 if (!dir.exists(path_to_results)) {
@@ -72,24 +75,45 @@ readr::write_rds(de_novo_exposures, de_novo_exposures_file)
 
 <br><br>
 
-Goodness-of-fit analysis was implicitly performed by `sigfit` during inference using cosine similarity. Associated elbow plots are in `plots/extraction/`, names for the model and seed. The red-colored dot in these plots represented the selected *k* for the given seed and inference model. Notably, there substantial sensitivity to starting conditions, both seed and model. **Plots below are shown with `poisson` on left, `multinomial` on right.**
+Goodness-of-fit analysis was implicitly performed by `sigfit` during inference using cosine similarity. Associated elbow plots are in `plots/extraction/`, names for the model and seed. The red-colored dot in these plots represented the selected *k* for the given seed and inference model. Notably, there substantial sensitivity to starting conditions, both seed and model. **Plots below are shown with `poisson` on top, `multinomial` on bottom**
 
-```{r gof_plots, fig.width = 8, fig.height = 6}
-for (this_seed in 1:5){
-    seed_plots <- list(
-      ggdraw() + draw_image(glue::glue("plots/denovo/extraction/seed_{this_seed}_model_poisson.pdf")),
-      ggdraw() + draw_image(glue::glue("plots/denovo/extraction/seed_{this_seed}_model_multinomial.pdf"))
-    )                        
-    print(glue::glue("Random seed: {this_seed}"))
-    print(cowplot::plot_grid(plotlist = seed_plots, nrow=1))
+```{r gof_plots_function}
+show_gof_plots <- function(seed)
+{
+    seed_plots <- c( file.path(path_to_cosine, glue::glue("seed_{seed}_model_poisson.png")),
+                     file.path(path_to_cosine, glue::glue("seed_{seed}_model_multinomial.png"))
+                   )
+    knitr::include_graphics(seed_plots)  
 }
-
-
-
 ```
 
-This tibble collects info from the above images:
+**Seed 1**
+```{r gof_seed1, out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+show_gof_plots(1)
+```
+<br><br>
+**Seed 2**
+```{r gof_seed2, out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+show_gof_plots(2)
+```
+**Seed 3**
+```{r gof_seed3, out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+show_gof_plots(3)
+```
+**Seed 4**
+```{r gof_seed4, out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+show_gof_plots(4)
+```
+**Seed 5**
+```{r gof_seed5, out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+show_gof_plots(5)
+```
 
+
+
+<br><br><br>
+  This tibble collects info from the above images:
+  
 ```{r gof_k}
 gof <- tibble::tribble(
   ~model,     ~seed,      ~best_k,
