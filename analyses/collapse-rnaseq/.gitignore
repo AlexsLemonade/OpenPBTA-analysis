@@ -1,7 +1,3 @@
 # the collapsed matrices are included in the data download
-results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds
-results/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds
+results/*collapsed.rds
 
-# expected count results - these actually come up not in this module but in 
-# analyses/telomerase-activity-prediction
-pbta-gene-counts-rsem-expected_count-collapsed*

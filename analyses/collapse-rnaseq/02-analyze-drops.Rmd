@@ -42,7 +42,7 @@ viewDataTable <- function(dat){
 ```{r example_run, echo = FALSE}
 # Example Run:
 # Rscript -e "rmarkdown::render(input = 'analyses/collapse-rnaseq/02-analyze-drops.Rmd',
-#                   params = list(annot.table = 'pbta-gene-expression-rsem-fpkm-collapsed_table.stranded.rds', strategy='stranded'), clean = TRUE)"
+#                   params = list(annot.table = 'pbta-gene-expression-rsem-fpkm-collapsed_table.stranded.rds'`), clean = TRUE)"
 ```
 
 ## {.tabset .tabset-fade}
@@ -93,7 +93,6 @@ _Note: Where `ensembl_id == "Unique"`, correlation values are not calculated._
 
 ```{r}
 data.frame(
-  strategy = params$strategy,
   number_of_NA = c(nrow(annot.table %>%
                           filter(ensembl_id == "Multiple",
                                  is.na(avg.cor))))
