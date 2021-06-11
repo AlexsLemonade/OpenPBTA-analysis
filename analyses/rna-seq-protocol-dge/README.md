@@ -29,7 +29,12 @@ Select genes that are stably expressed in poly-A and stranded RNA-seq libraries 
     11    | BS_68KX6A42               | A18777    | RNA-Seq               | poly-A      | PNOC003
     12    | BS_D7XRFE0R               | A18777    | RNA-Seq               | stranded    | PNOC003
 3. Run edgeR `exactTest`, edgeR `glmLRT`, edgeR `glmQLFTest`, and DESeq2 `nbinomWaldTest` comparing stranded and poly-A RNA-seq `rsem-expected_count`s, using an adapted workflow from the [OMPARE project](https://github.com/d3b-center/OMPARE/blob/master/code/patient_level_analyses/utils/rnaseq_edger_normalizations.R#L37-L41). RSEM expected read counts are normalized using either UQ-pgQ2 or TMM. The UQ-pgQ2 normalization method has lower false positive rate in DGE testing (<https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-020-6502-7>).
-4. Run DESeq2 standard DGE analysis on RSEM expected read counts comparing stranded and poly-A RNA-seq `rsem-expected_count`s.
+4. Select genes that are stably expressed in poly-A and stranded RNA-seq libraries by the following criteria, and the filtered output `results/NORMALIZATION_METHOD/stranded_vs_polya_stably_exp_genes.csv` is ordered by the coefficient of variations. 
+   - `coefficient of variation < quantile(coefficient of variation, 0.25)`
+   - `exactTest`, `glmLRT`, `glmQLFTest`, and `nbinomWaldTest` p-values all > 0.05
+   - `abs(logFC) < median(abs(logFC)`
+   - `quantile(average_logCPM, 0.25) < average_logCPM < quantile(average_logCPM, 0.75)`
+5. Run DESeq2 standard DGE analysis on RSEM expected read counts comparing stranded and poly-A RNA-seq `rsem-expected_count`s.
 
 ### Results
 
@@ -80,6 +85,44 @@ DGE exactTest result tables:
 - TMM normalized: `results/tmm_normalized/stranded_vs_polya_dge_deseq2_nbinom_wald_test_res.csv`
 - DESeq2 standard DGE analysis: `results/deseq2_rle_normalized/stranded_vs_polya_dge_deseq2_nbinom_wald_test_res.csv`
 
+#### Stably expressed genes
+
+##### UQ-pgQ2 normalization
+
+The table of stably expressed genes are saved at `results/uqpgq2_normalized/stranded_vs_polya_stably_exp_genes.csv`. The biospecimen ID columns are normalized counts.
+
+Top 30 stably expressed gene boxplots are at `plots/uqpgq2_normalized/stably_exp_gene_protocol_diff_boxplot`. Top 3 stably expressed gene boxplots:
+
+![up_seg_bp1](plots/uqpgq2_normalized/stably_exp_gene_protocol_diff_boxplot/SENP2_normalized_count_protocol_diff_boxplot.png)
+
+![up_seg_bp2](plots/uqpgq2_normalized/stably_exp_gene_protocol_diff_boxplot/NUP58_normalized_count_protocol_diff_boxplot.png)
+
+![up_seg_bp3](plots/uqpgq2_normalized/stably_exp_gene_protocol_diff_boxplot/LSG1_normalized_count_protocol_diff_boxplot.png)
+
+Histograms used for choosing stably expressed genes:
+
+![up_norm_cnt_cv_hist](plots/uqpgq2_normalized/normalized_count_gene_cv_histogram.png)
+
+![up_logfc_hist](plots/uqpgq2_normalized/edger_logfc_histogram.png)
+
+##### TMM normalization
+
+The table of stably expressed genes are saved at `results/tmm_normalized/stranded_vs_polya_stably_exp_genes.csv`. The biospecimen ID columns are normalized counts.
+
+Top 30 stably expressed gene boxplots are at `plots/tmm_normalized/stably_exp_gene_protocol_diff_boxplot`. Top 3 stably expressed gene boxplots:
+
+![tmm_seg_bp1](plots/tmm_normalized/stably_exp_gene_protocol_diff_boxplot/NUP58_normalized_count_protocol_diff_boxplot.png)
+
+![tmm_seg_bp2](plots/tmm_normalized/stably_exp_gene_protocol_diff_boxplot/SENP2_normalized_count_protocol_diff_boxplot.png)
+
+![tmm_seg_bp3](plots/tmm_normalized/stably_exp_gene_protocol_diff_boxplot/ZER1_normalized_count_protocol_diff_boxplot.png)
+
+Histograms used for choosing stably expressed genes:
+
+![tmm_norm_cnt_cv_hist](plots/tmm_normalized/normalized_count_gene_cv_histogram.png)
+
+![tmm_logfc_hist](plots/tmm_normalized/edger_logfc_histogram.png)
+
 ### Usage
 
 1. Change working directory to local `OpenPBTA-analysis`.
@@ -112,10 +155,14 @@ Output:
 - `results/NORMALIZATION_METHOD/stranded_vs_polya_dge_lrt_res.csv`: edgeR LRT result table
 - `results/NORMALIZATION_METHOD/stranded_vs_polya_dge_ql_ftest_res.csv`: edgeR QL F-test result table
 - `results/NORMALIZATION_METHOD/stranded_vs_polya_dge_deseq2_nbinom_wald_test_res.csv`: DESeq2 nbinomWaldTest result table
+- `results/NORMALIZATION_METHOD/stranded_vs_polya_stably_exp_genes.csv`: stably expressed gene table
 - `plots/NORMALIZATION_METHOD/stranded_vs_polya_dge_exact_test_pvals_histogram.png`: histogram of edgeR exactTest p-values
 - `plots/NORMALIZATION_METHOD/stranded_vs_polya_dge_lrt_pvals_histogram.png`: histogram of edgeR LRT p-values
 - `plots/NORMALIZATION_METHOD/stranded_vs_polya_dge_ql_ftest_pvals_histogram.png`: histogram of edgeR QL F-test p-values
 - `plots/NORMALIZATION_METHOD/stranded_vs_polya_dge_deseq2_nbinom_wald_test_pvals_histogram.png`: histogram of DESeq2 nbinomWaldTest p-values
+- `plots/NORMALIZATION_METHOD/edger_logfc_histogram.png`: histogram of edgeR computed log fold changes
+- `plots/NORMALIZATION_METHOD/normalized_count_gene_cv_histogram.png`: histogram of coefficient of variations of normalized read counts
+- `plots/NORMALIZATION_METHOD/stably_exp_gene_protocol_diff_boxplot/*.png`: normalized read count boxplots
 
 #### 02-deseq2-protocol-dge.R
 
