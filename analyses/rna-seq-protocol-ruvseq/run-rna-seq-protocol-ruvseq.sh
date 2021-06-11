@@ -16,4 +16,8 @@ cd "$script_directory" || exit
 mkdir -p results
 mkdir -p plots
 
-Rscript --vanilla '01-protocol-ruvseq.R'
+echo 'Prepare data...'
+Rscript --vanilla '00-prepare-data.R'
+
+echo 'Run RUVSeq DESeq2 differential gene expression analysis on RNA-seq libraries with matched sample IDs...'
+Rscript --vanilla '01-protocol-ruvseq.R' -d 'match'

@@ -35,46 +35,118 @@ deseq2_pvals_histogram <- function(res_df, xlab, ylab, title) {
 }
 
 
+#------------ Parse parameters -----------------------------
+option_list <- list(
+    optparse::make_option(
+        c("-d", "--dataset"), type = "character",
+        help = paste0("Dataset for running differential gene ",
+                      "expression analysis: match, dipg, and nbl. "))
+)
+
+# parse the parameters
+option_parser <- optparse::OptionParser(option_list = option_list)
+parsed_opts <- optparse::parse_args(option_parser)
+dge_dataset <- parsed_opts$dataset
+
+if (is.null(dge_dataset)) {
+    print("Required dataset parameter not found.")
+    optparse::print_help(option_parser)
+    stop()
+}
+
+if (!dge_dataset %in% c('match', 'dipg', 'nbl')) {
+    print(paste('Unknown dataset', dge_dataset))
+    optparse::print_help(option_parser)
+    stop()
+}
+
+#------------ Read and pre-process data ----------------------------------------
+print('Read count matrices...')
+
+# merged histology df
+m_kfbid_sid_htl_df <- readRDS(
+    '../../scratch/pbta_kf_gtex_target_tcga_histology_df.rds')
+
+# Kids_First_Biospecimen_ID to read count column ID mapping
+kfbid_cid_df <- m_kfbid_sid_htl_df[, c('sample_barcode', 'sample_id')]
+colnames(kfbid_cid_df) <- c('Kids_First_Biospecimen_ID', 'col_id')
+stopifnot(identical(sum(is.na(kfbid_cid_df)),
+                    as.integer(0)))
+
+# load read count matrix and
+# select RNA-seq libraries according to @jharenza's comment at
+# <https://github.com/PediatricOpenTargets/ticket-tracker/issues/39
+#      issuecomment-859751927>
+htl_df <- read.delim('../../data/histologies.tsv',
+                     stringsAsFactors = FALSE, sep = '\t',
+                     header=TRUE)
+
+if (identical(dge_dataset, 'dipg')) {
+    cnt_df <- readRDS(
+        '../../data/gene-counts-rsem-expected_count-collapsed.rds')
+    selected_htl_df <- htl_df %>%
+        filter(
+            (pathology_diagnosis ==
+                 "Brainstem glioma- Diffuse intrinsic pontine glioma") &
+                (experimental_strategy == "RNA-Seq") &
+                (!sample_id %in% c("7316-1455", "7316-161", "7316-255",
+                                   "7316-536", "A16915", "A18777"))
+        )
+    
+    plot_dataset_str <- 'DIPG RNA-seq libraries without matched sample IDs'
+    output_dataset_str <- 'dipg_rm_matched_sample_ids'
+} else if (identical(dge_dataset, 'match')) {
+    cnt_df <- readRDS(
+        '../../data/gene-counts-rsem-expected_count-collapsed.rds')
+    selected_htl_df <- htl_df %>%
+        filter(
+            (experimental_strategy == "RNA-Seq") &
+                (sample_id %in% c("7316-1455", "7316-161", "7316-255",
+                                  "7316-536", "A16915", "A18777"))
+        )
+    
+    plot_dataset_str <- 'RNA-seq libraries with matched sample IDs'
+    output_dataset_str <- 'matched_sample_ids'
+}
+
+selected_htl_df <- data.frame(
+    selected_htl_df[, c('Kids_First_Biospecimen_ID', 'sample_id',
+                        'RNA_library')])
+selected_htl_df <- merge(selected_htl_df, kfbid_cid_df,
+                         by = 'Kids_First_Biospecimen_ID',
+                         all.x = TRUE)
+stopifnot(identical(sum(is.na(selected_htl_df)),
+                    as.integer(0)))
+selected_htl_df <- selected_htl_df[order(selected_htl_df$sample_id), ]
+# assert
+# - there are >= 1 samples in polya or standed
+# - RNA_library has only stranded and poly-A values
+stopifnot(identical(sort(unique(selected_htl_df$RNA_library)),
+                    c("poly-A", "stranded")))
+
+stranded_col_ids <- selected_htl_df[
+    selected_htl_df$RNA_library == 'stranded', 'col_id']
+polya_col_ids <- selected_htl_df[
+    selected_htl_df$RNA_library == 'poly-A', 'col_id']
+
+counts <- cbind(
+    cnt_df[, stranded_col_ids],
+    cnt_df[, polya_col_ids])
+
+group <- factor(c(rep("stranded", length(stranded_col_ids)),
+                  rep("polya", length(polya_col_ids))))
+
+counts_object <- edgeR::DGEList(counts = counts, group = group)
+counts_object <- counts_object[
+    edgeR::filterByExpr(counts_object), , keep.lib.sizes=FALSE]
+
+
 #------------ Create output directories ----------------------------------------
 table_outdir <- 'results'
 dir.create(table_outdir, showWarnings = FALSE)
 
 plot_outdir <- 'plots'
 dir.create(plot_outdir, showWarnings = FALSE)
-
-
-#------------ Read and pre-process data ----------------------------------------
-print('Read count matrices...')
-cnt_mat <- readRDS('../../data/gene-counts-rsem-expected_count-collapsed.rds')
-
-# 6 samples have both poly-A and stranded RNA-seq libraries
-# Index | Kids_First_Biospecimen_ID | sample_id | experimental_strategy | 
-#   RNA_library | cohort
-# -- | -- | -- | -- | -- | --
-# 1 | BS_HE0WJRW6 | 7316-1455 | RNA-Seq | stranded | CBTN
-# 2 | BS_HWGWYCY7 | 7316-1455 | RNA-Seq | poly-A | CBTN 
-# 3 | BS_SHJA4MR0 | 7316-161 | RNA-Seq | stranded | CBTN 
-# 4 | BS_X0XXN9BK | 7316-161 | RNA-Seq | poly-A | CBTN 
-# 5 | BS_FN07P04C | 7316-255 | RNA-Seq | stranded | CBTN 
-# 6 | BS_W4H1D4Y6 | 7316-255 | RNA-Seq | poly-A | CBTN
-# 7 | BS_8QB4S4VA | 7316-536 | RNA-Seq | stranded | CBTN
-# 8 | BS_QKT3TJVK | 7316-536 | RNA-Seq | poly-A | CBTN
-# 9 | BS_7WM3MNZ0 | A16915 | RNA-Seq | poly-A | PNOC003
-# 10 | BS_KABQQA0T | A16915 | RNA-Seq | stranded | PNOC003
-# 11 | BS_68KX6A42 | A18777 | RNA-Seq | poly-A | PNOC003
-# 12 | BS_D7XRFE0R | A18777 | RNA-Seq | stranded | PNOC003
-counts <- cbind(
-    cnt_mat[, c("BS_HE0WJRW6", "BS_SHJA4MR0", "BS_FN07P04C",
-                "BS_8QB4S4VA", "BS_KABQQA0T", "BS_D7XRFE0R")],
-    cnt_mat[, c("BS_HWGWYCY7", "BS_X0XXN9BK", "BS_W4H1D4Y6",
-                "BS_QKT3TJVK", "BS_7WM3MNZ0", "BS_68KX6A42")]
-)
-group <- factor(c(rep("stranded", 6), rep("polya", 6)))
-
-counts_object <- edgeR::DGEList(counts = counts, group = group)
-counts_object <- counts_object[
-    edgeR::filterByExpr(counts_object), , keep.lib.sizes=FALSE]
-
 
 #------------ Run DESeq2 nbinomWaldTest ----------------------------------------
 print(paste0('Run differential gene expression DESeq2 nbinomWaldTest on',

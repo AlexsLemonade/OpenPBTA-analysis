@@ -6,21 +6,24 @@ Evaluate the effectiveness of using empirically defined negative control houseke
 
 ### Methods
 
-1. Select `Kids_First_Biospecimen`s with the same `sample_id`s and both ribo-deplete-stranded and poly-A `RNA_library`s.
-    Index | Kids_First_Biospecimen_ID | sample_id | experimental_strategy | RNA_library | cohort
-    ------|---------------------------|-----------|-----------------------|-------------|--------
-    1     | BS_HE0WJRW6               | 7316-1455 | RNA-Seq               | stranded    | CBTN
-    2     | BS_HWGWYCY7               | 7316-1455 | RNA-Seq               | poly-A      | CBTN
-    3     | BS_SHJA4MR0               | 7316-161  | RNA-Seq               | stranded    | CBTN
-    4     | BS_X0XXN9BK               | 7316-161  | RNA-Seq               | poly-A      | CBTN
-    5     | BS_FN07P04C               | 7316-255  | RNA-Seq               | stranded    | CBTN
-    6     | BS_W4H1D4Y6               | 7316-255  | RNA-Seq               | poly-A      | CBTN
-    7     | BS_8QB4S4VA               | 7316-536  | RNA-Seq               | stranded    | CBTN
-    8     | BS_QKT3TJVK               | 7316-536  | RNA-Seq               | poly-A      | CBTN
-    9     | BS_7WM3MNZ0               | A16915    | RNA-Seq               | poly-A      | PNOC003
-    10    | BS_KABQQA0T               | A16915    | RNA-Seq               | stranded    | PNOC003
-    11    | BS_68KX6A42               | A18777    | RNA-Seq               | poly-A      | PNOC003
-    12    | BS_D7XRFE0R               | A18777    | RNA-Seq               | stranded    | PNOC003
+1. Select ribo-deplete-stranded and poly-A RNA-seq libraries that are expected to have no significant differences in gene expression profiles.
+    1. RNA-seq libraries with matching `sample_id`s:
+        | Kids_First_Biospecimen_ID | sample_id | experimental_strategy | RNA_library | cohort|
+        |---------------------------|-----------|-----------------------|-------------|--------|
+        | BS_HE0WJRW6               | 7316-1455 | RNA-Seq               | stranded    | CBTN|
+        | BS_HWGWYCY7               | 7316-1455 | RNA-Seq               | poly-A      | CBTN|
+        | BS_SHJA4MR0               | 7316-161  | RNA-Seq               | stranded    | CBTN|
+        | BS_X0XXN9BK               | 7316-161  | RNA-Seq               | poly-A      | CBTN|
+        | BS_FN07P04C               | 7316-255  | RNA-Seq               | stranded    | CBTN|
+        | BS_W4H1D4Y6               | 7316-255  | RNA-Seq               | poly-A      | CBTN|
+        | BS_8QB4S4VA               | 7316-536  | RNA-Seq               | stranded    | CBTN|
+        | BS_QKT3TJVK               | 7316-536  | RNA-Seq               | poly-A      | CBTN|
+        | BS_7WM3MNZ0               | A16915    | RNA-Seq               | poly-A      | PNOC003|
+        | BS_KABQQA0T               | A16915    | RNA-Seq               | stranded    | PNOC003|
+        | BS_68KX6A42               | A18777    | RNA-Seq               | poly-A      | PNOC003|
+        | BS_D7XRFE0R               | A18777    | RNA-Seq               | stranded    | PNOC003|
+    2. Diffuse intrinsic pontine glioma (DIPG) libraries without matching `sample_id`s, as suggested by [@jharenza](https://github.com/jharenza) at <https://github.com/PediatricOpenTargets/ticket-tracker/issues/39#issuecomment-859751927>.
+    3. Neuroblastoma (NBL) libraries, as suggested by [@jharenza](https://github.com/jharenza) at <https://github.com/PediatricOpenTargets/ticket-tracker/issues/39#issuecomment-859751927>.
 2. Run DESeq2 default differential gene expression (DGE) analysis to compare ribo-deplete-stranded and poly-A RNA-seq `rsem-expected_count`s.
 3. Run DESeq2 DGE analysis with RUVSeq estimated batch effect in the design to compare ribo-deplete-stranded and poly-A RNA-seq `rsem-expected_count`s. The batch effect is estimated using [empirically defined negative control housekeeping genes](https://github.com/logstar/OpenPedCan-analysis/blob/rna-seq-protocol-dge-fourth/analyses/rna-seq-protocol-dge/results/uqpgq2_normalized/stranded_vs_polya_stably_exp_genes.csv) selected in the [PR 11](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/11), using the RUVg workflow demonstrated in the section "2.4 Empirical control genes" in the [RUVSeq vignette](https://bioconductor.riken.jp/packages/3.0/bioc/vignettes/RUVSeq/inst/doc/RUVSeq.pdf).
 4. Plot the distributions of DGE p-values computed from step 2 and 3.
@@ -42,7 +45,10 @@ The DGE result table is at `results/stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_
 ### Usage
 
 1. Change working directory to local `OpenPBTA-analysis`.
-2. Download data using `bash download-data.sh`. Make sure `data/gene-counts-rsem-expected_count-collapsed.rds` is downloaded.
+2. Download data using `bash download-data.sh`. Make sure the following files are downloaded:
+   - `histologies.tsv`
+   - `gene-counts-rsem-expected_count-collapsed.rds`
+   - `gtex_target_tcga-gene-counts-rsem-expected_count-collapsed.rds`
 3. Run this analysis module in the continuous integration (CI) docker image using `./scripts/run_in_ci.sh bash analyses/rna-seq-protocol-ruvseq/run-rna-seq-protocol-ruvseq.sh`.
 
 ### Module structure
