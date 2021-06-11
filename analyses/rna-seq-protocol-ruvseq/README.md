@@ -30,13 +30,15 @@ Evaluate the effectiveness of using empirically defined negative control houseke
 
 ### Results
 
-#### DGE without RUVSeq estimated batch effect
+#### RNA-seq libraries with matching `sample_id`s
+
+##### DGE without RUVSeq estimated batch effect
 
 ![dge](plots/stranded_vs_polya_dge_deseq2_nbinom_wald_test_pvals_histogram.png)
 
 The DGE result table is at `results/stranded_vs_polya_dge_deseq2_nbinom_wald_test_res.csv`.
 
-#### DGE with RUVSeq estimated batch effect
+##### DGE with RUVSeq estimated batch effect
 
 ![ruvg_dge](plots/stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_pvals_histogram.png)
 
@@ -54,39 +56,57 @@ The DGE result table is at `results/stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_
 ### Module structure
 
 ```text
-.
-├── 01-protocol-ruvseq.R
-├── README.md
-├── input
-│   └── uqpgq2_normalized_stranded_vs_polya_stably_exp_genes.csv
-├── plots
-│   ├── stranded_vs_polya_dge_deseq2_nbinom_wald_test_pvals_histogram.png
-│   └── stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_pvals_histogram.png
-├── results
-│   ├── stranded_vs_polya_dge_deseq2_nbinom_wald_test_res.csv
-│   └── stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_res.csv
-└── run-rna-seq-protocol-ruvseq.sh
+
 ```
 
 ### Analysis scripts
+
+#### 00-prepare-data.R
+
+This script cleans up data for RUVSeq DGE analysis.
+
+Usage:
+
+```bash
+Rscript --vanilla '00-prepare-data.R'
+```
+
+Input:
+
+- `../../data/histologies.tsv`
+- `../../data/gene-counts-rsem-expected_count-collapsed.rds`
+- `../../data/gtex_target_tcga-gene-counts-rsem-expected_count-collapsed.rds`
+- Mapping files shared by [@komalsrathi](https://github.com/komalsrathi) at <https://github.com/PediatricOpenTargets/ticket-tracker/issues/22#issuecomment-854901528>:
+  - `input/gtex_mapping.txt`
+  - `input/target_mapping.txt`
+  - `input/tcga_mapping.txt`
+
+Output:
+
+- `../../scratch/pbta_kf_gtex_target_tcga_histology_df.rds`
 
 #### 01-protocol-ruvseq.R
 
 This analysis script runs DESeq2 DGE analysis, with or without RUVSeq estimated batch effect in the design, to compare RNA-seq libraries that are prepared using poly-A or ribodeplete-stranded protocols from the same samples.
 
-Usage:
+Example usage:
 
 ```bash
-Rscript --vanilla '01-protocol-ruvseq.R'
+Rscript --vanilla '01-protocol-ruvseq.R' -d 'match'
 ```
+
+Parameters:
+
+- `-d` or `--dataset`: Dataset for running differential gene expression analysis: match, dipg, and nbl.
 
 Input:
 
 - `../../data/gene-counts-rsem-expected_count-collapsed.rds`: collapsed RSEM expected count matrix of poly-A RNA-seq libraries.
+- `input/uqpgq2_normalized_stranded_vs_polya_stably_exp_genes.csv`: the empirically defined negative control housekeeping genes show stable expression levels in poly-A and ribo-deplete-stranded RNA-seq libraries prepared from the same biological samples, which are selected in the [PR 11](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/11).
 
 Output:
 
-- `plots/stranded_vs_polya_dge_deseq2_nbinom_wald_test_pvals_histogram.png`: DESeq2 DGE p-value histogram without RUVSeq estimated batch effect in the design.
-- `plots/plots/stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_pvals_histogram.png`: DESeq2 DGE p-value histogram with RUVSeq estimated batch effect in the design.
-- `results/stranded_vs_polya_dge_deseq2_nbinom_wald_test_res.csv`: DESeq2 DGE result table without RUVSeq estimated batch effect in the design.
-- `results/stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_res.csv`: DESeq2 DGE result table with RUVSeq estimated batch effect in the design.
+- `plots/DATASET/stranded_vs_polya_dge_deseq2_nbinom_wald_test_pvals_histogram.png`: DESeq2 DGE p-value histogram without RUVSeq estimated batch effect in the design.
+- `plots/DATASET/stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_pvals_histogram.png`: DESeq2 DGE p-value histogram with RUVSeq estimated batch effect in the design.
+- `results/DATASET/stranded_vs_polya_dge_deseq2_nbinom_wald_test_res.csv`: DESeq2 DGE result table without RUVSeq estimated batch effect in the design.
+- `results/DATASET/stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_res.csv`: DESeq2 DGE result table with RUVSeq estimated batch effect in the design.

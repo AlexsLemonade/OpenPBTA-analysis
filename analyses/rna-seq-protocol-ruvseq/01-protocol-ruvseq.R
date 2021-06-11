@@ -93,7 +93,7 @@ if (identical(dge_dataset, 'dipg')) {
                                    "7316-536", "A16915", "A18777"))
         )
     
-    plot_dataset_str <- 'DIPG RNA-seq libraries without matched sample IDs'
+    # plot_dataset_str <- 'DIPG RNA-seq libraries without matched sample IDs'
     output_dataset_str <- 'dipg_rm_matched_sample_ids'
 } else if (identical(dge_dataset, 'match')) {
     cnt_df <- readRDS(
@@ -105,7 +105,7 @@ if (identical(dge_dataset, 'dipg')) {
                                   "7316-536", "A16915", "A18777"))
         )
     
-    plot_dataset_str <- 'RNA-seq libraries with matched sample IDs'
+    # plot_dataset_str <- 'RNA-seq libraries with matched sample IDs'
     output_dataset_str <- 'matched_sample_ids'
 }
 
@@ -142,10 +142,10 @@ counts_object <- counts_object[
 
 
 #------------ Create output directories ----------------------------------------
-table_outdir <- 'results'
+table_outdir <- file.path('results', output_dataset_str)
 dir.create(table_outdir, showWarnings = FALSE)
 
-plot_outdir <- 'plots'
+plot_outdir <- file.path('plots', output_dataset_str)
 dir.create(plot_outdir, showWarnings = FALSE)
 
 #------------ Run DESeq2 nbinomWaldTest ----------------------------------------
