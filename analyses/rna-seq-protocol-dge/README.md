@@ -29,7 +29,7 @@ Select genes that are stably expressed in poly-A and stranded RNA-seq libraries 
     11    | BS_68KX6A42               | A18777    | RNA-Seq               | poly-A      | PNOC003
     12    | BS_D7XRFE0R               | A18777    | RNA-Seq               | stranded    | PNOC003
 3. Run edgeR `exactTest`, edgeR `glmLRT`, edgeR `glmQLFTest`, and DESeq2 `nbinomWaldTest` comparing stranded and poly-A RNA-seq `rsem-expected_count`s, using an adapted workflow from the [OMPARE project](https://github.com/d3b-center/OMPARE/blob/master/code/patient_level_analyses/utils/rnaseq_edger_normalizations.R#L37-L41). RSEM expected read counts are normalized using either UQ-pgQ2 or TMM. The UQ-pgQ2 normalization method has lower false positive rate in DGE testing (<https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-020-6502-7>).
-4. Select genes that are stably expressed in poly-A and stranded RNA-seq libraries by the following criteria, and the filtered output `results/stranded_vs_polya_stably_exp_genes.csv` is ordered by the coefficient of variations.
+4. Select genes that are stably expressed in poly-A and stranded RNA-seq libraries by the following criteria, and the filtered output `results/NORMALIZATION_METHOD/stranded_vs_polya_stably_exp_genes.csv` is ordered by the coefficient of variations. 
    - `coefficient of variation < quantile(coefficient of variation, 0.25)`
    - `exactTest`, `glmLRT`, `glmQLFTest`, and `nbinomWaldTest` p-values all > 0.05
    - `abs(logFC) < median(abs(logFC)`
