@@ -32,17 +32,45 @@ Evaluate the effectiveness of using empirically defined negative control houseke
 
 #### RNA-seq libraries with matching `sample_id`s
 
-##### DGE without RUVSeq estimated batch effect
+**DGE without RUVSeq estimated batch effect:**
 
-![dge](plots/stranded_vs_polya_dge_deseq2_nbinom_wald_test_pvals_histogram.png)
+![m_dge](plots/matched_sample_ids/stranded_vs_polya_dge_deseq2_nbinom_wald_test_pvals_histogram.png)
 
-The DGE result table is at `results/stranded_vs_polya_dge_deseq2_nbinom_wald_test_res.csv`.
+The DGE result table is at `results/matched_sample_ids/stranded_vs_polya_dge_deseq2_nbinom_wald_test_res.csv`.
 
-##### DGE with RUVSeq estimated batch effect
+**DGE with RUVSeq estimated batch effect:**
 
-![ruvg_dge](plots/stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_pvals_histogram.png)
+![m_ruvg_dge](plots/matched_sample_ids/stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_pvals_histogram.png)
 
-The DGE result table is at `results/stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_res.csv`.
+The DGE result table is at `results/matched_sample_ids/stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_res.csv`.
+
+#### DIPG RNA-seq libraries without matching `sample_id`s
+
+**DGE without RUVSeq estimated batch effect:**
+
+![d_dge](plots/dipg_rm_matched_sample_ids/stranded_vs_polya_dge_deseq2_nbinom_wald_test_pvals_histogram.png)
+
+The DGE result table is at `results/dipg_rm_matched_sample_ids/stranded_vs_polya_dge_deseq2_nbinom_wald_test_res.csv`.
+
+**DGE with RUVSeq estimated batch effect:**
+
+![d_ruvg_dge](plots/dipg_rm_matched_sample_ids/stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_pvals_histogram.png)
+
+The DGE result table is at `results/dipg_rm_matched_sample_ids/stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_res.csv`.
+
+#### NBL RNA-seq libraries
+
+**DGE without RUVSeq estimated batch effect:**
+
+![n_dge](plots/nbl/stranded_vs_polya_dge_deseq2_nbinom_wald_test_pvals_histogram.png)
+
+The DGE result table is at `results/nbl/stranded_vs_polya_dge_deseq2_nbinom_wald_test_res.csv`.
+
+**DGE with RUVSeq estimated batch effect:**
+
+![n_ruvg_dge](plots/nbl/stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_pvals_histogram.png)
+
+The DGE result table is at `results/nbl/stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_res.csv`.
 
 ### Usage
 
@@ -56,7 +84,36 @@ The DGE result table is at `results/stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_
 ### Module structure
 
 ```text
-
+.
+├── 00-prepare-data.R
+├── 01-protocol-ruvseq.R
+├── README.md
+├── input
+│   ├── gtex_mapping.txt
+│   ├── target_mapping.txt
+│   ├── tcga_mapping.txt
+│   └── uqpgq2_normalized_stranded_vs_polya_stably_exp_genes.csv
+├── plots
+│   ├── dipg_rm_matched_sample_ids
+│   │   ├── stranded_vs_polya_dge_deseq2_nbinom_wald_test_pvals_histogram.png
+│   │   └── stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_pvals_histogram.png
+│   ├── matched_sample_ids
+│   │   ├── stranded_vs_polya_dge_deseq2_nbinom_wald_test_pvals_histogram.png
+│   │   └── stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_pvals_histogram.png
+│   └── nbl
+│       ├── stranded_vs_polya_dge_deseq2_nbinom_wald_test_pvals_histogram.png
+│       └── stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_pvals_histogram.png
+├── results
+│   ├── dipg_rm_matched_sample_ids
+│   │   ├── stranded_vs_polya_dge_deseq2_nbinom_wald_test_res.csv
+│   │   └── stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_res.csv
+│   ├── matched_sample_ids
+│   │   ├── stranded_vs_polya_dge_deseq2_nbinom_wald_test_res.csv
+│   │   └── stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_res.csv
+│   └── nbl
+│       ├── stranded_vs_polya_dge_deseq2_nbinom_wald_test_res.csv
+│       └── stranded_vs_polya_dge_ruvg_k1_deseq2_nbinom_wald_test_res.csv
+└── run-rna-seq-protocol-ruvseq.sh
 ```
 
 ### Analysis scripts
@@ -84,6 +141,7 @@ Input:
 Output:
 
 - `../../scratch/pbta_kf_gtex_target_tcga_histology_df.rds`
+- `../../scratch/pbta_kf_gtex_target_tcga_rsem_expected_cnt_df.rds`
 
 #### 01-protocol-ruvseq.R
 

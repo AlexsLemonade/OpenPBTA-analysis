@@ -14,6 +14,7 @@
 #    with the `Kids_First_Biospecimen_ID`s in `histologies.tsv`.
 
 
+
 # load histology df and count df ------------------------------------------
 htl_df <- read.delim('../../data/histologies.tsv',
                      stringsAsFactors = FALSE, sep = '\t',
@@ -75,6 +76,7 @@ dup_bids <- htl_df$Kids_First_Biospecimen_ID[
 dup_bid_df <- htl_df[htl_df$Kids_First_Biospecimen_ID %in% dup_bids, ]
 dup_bid_df <- dup_bid_df[order(dup_bid_df$Kids_First_Biospecimen_ID), ]
 
+
 # col subset
 htl_subset_colnames <- c('Kids_First_Biospecimen_ID', 'experimental_strategy',
                          'sample_type', 'cohort', 'broad_histology',
@@ -89,6 +91,7 @@ cs_htl_df <- cs_htl_df[!duplicated(cs_htl_df$sample_barcode), ]
 stopifnot(identical(
     nrow(cs_htl_df),
     length(unique(htl_df$Kids_First_Biospecimen_ID))))
+
 
 # add pbta kf sample in mapping df
 stopifnot(all(!(colnames(pb_kf_cnt_df) %in%
@@ -123,6 +126,25 @@ stopifnot(identical(sort(m_kfbid_sid_htl_df$sample_id),
 # gtex sample ids do not match biospecimen ids
 
 
-# save output and load in another R session, in order to reduce memory usage
+# subset and merge count df -----------------------------------------------
+stopifnot(all(colnames(pb_kf_cnt_df) %in% m_kfbid_sid_htl_df$sample_id))
+stopifnot(all(colnames(gt_ta_tc_cnt_df) %in%
+                  c(dup_rm_sample_ids, m_kfbid_sid_htl_df$sample_id)))
+
+cmn_genes <- intersect(rownames(pb_kf_cnt_df), rownames(gt_ta_tc_cnt_df))
+
+m_cnt_df <- cbind(
+    pb_kf_cnt_df[cmn_genes, ],
+    gt_ta_tc_cnt_df[
+        cmn_genes,
+        colnames(gt_ta_tc_cnt_df) %in% m_kfbid_sid_htl_df$sample_id]
+)
+
+
+# save data ---------------------------------------------------------------
+# save and load in another R session, in order to reduce memory usage
+saveRDS(m_cnt_df,
+        '../../scratch/pbta_kf_gtex_target_tcga_rsem_expected_cnt_df.rds')
+
 saveRDS(m_kfbid_sid_htl_df,
         '../../scratch/pbta_kf_gtex_target_tcga_histology_df.rds')

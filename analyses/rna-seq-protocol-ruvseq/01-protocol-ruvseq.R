@@ -93,7 +93,6 @@ if (identical(dge_dataset, 'dipg')) {
                                    "7316-536", "A16915", "A18777"))
         )
     
-    # plot_dataset_str <- 'DIPG RNA-seq libraries without matched sample IDs'
     output_dataset_str <- 'dipg_rm_matched_sample_ids'
 } else if (identical(dge_dataset, 'match')) {
     cnt_df <- readRDS(
@@ -105,8 +104,17 @@ if (identical(dge_dataset, 'dipg')) {
                                   "7316-536", "A16915", "A18777"))
         )
     
-    # plot_dataset_str <- 'RNA-seq libraries with matched sample IDs'
     output_dataset_str <- 'matched_sample_ids'
+} else if (identical(dge_dataset, 'nbl')) {
+    cnt_df <- readRDS(
+        '../../scratch/pbta_kf_gtex_target_tcga_rsem_expected_cnt_df.rds')
+    selected_htl_df <- htl_df %>%
+        filter(broad_histology == "Neuroblastoma" &
+                   experimental_strategy == "RNA-Seq")
+    
+    output_dataset_str <- 'nbl'
+} else {
+    stop(paste0('unknown dataset', dge_dataset))
 }
 
 selected_htl_df <- data.frame(
@@ -118,6 +126,7 @@ selected_htl_df <- merge(selected_htl_df, kfbid_cid_df,
 stopifnot(identical(sum(is.na(selected_htl_df)),
                     as.integer(0)))
 selected_htl_df <- selected_htl_df[order(selected_htl_df$sample_id), ]
+rownames(selected_htl_df) <- NULL
 # assert
 # - there are >= 1 samples in polya or standed
 # - RNA_library has only stranded and poly-A values
@@ -214,7 +223,9 @@ seg_df <- read.csv(
     'input/uqpgq2_normalized_stranded_vs_polya_stably_exp_genes.csv',
     stringsAsFactors = FALSE, row.names = 1)
 
-ruvg_res <- RUVg(seq_expr_set, seg_df$gene, k=1)
+emp_neg_ctrl_genes <- seg_df$gene[seg_df$gene %in% rownames(round_cnt_mat)]
+
+ruvg_res <- RUVg(seq_expr_set, emp_neg_ctrl_genes, k=1)
 
 suppressMessages(
     ruv_dds <- DESeq2::DESeqDataSetFromMatrix(

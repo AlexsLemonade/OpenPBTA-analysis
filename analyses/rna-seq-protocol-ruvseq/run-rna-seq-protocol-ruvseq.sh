@@ -21,3 +21,9 @@ Rscript --vanilla '00-prepare-data.R'
 
 echo 'Run RUVSeq DESeq2 differential gene expression analysis on RNA-seq libraries with matched sample IDs...'
 Rscript --vanilla '01-protocol-ruvseq.R' -d 'match'
+
+echo 'Run RUVSeq DESeq2 differential gene expression analysis on DIPG RNA-seq libraries without matching sample IDs...'
+Rscript --vanilla '01-protocol-ruvseq.R' -d 'dipg'
+
+echo 'Run RUVSeq DESeq2 differential gene expression analysis on NBL RNA-seq libraries...'
+Rscript --vanilla '01-protocol-ruvseq.R' -d 'nbl'
