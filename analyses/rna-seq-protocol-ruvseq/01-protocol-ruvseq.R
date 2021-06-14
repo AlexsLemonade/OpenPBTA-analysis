@@ -116,7 +116,8 @@ if (identical(dge_dataset, 'dipg')) {
 } else {
     stop(paste0('unknown dataset', dge_dataset))
 }
-
+# Find corresponding read count matrix columns of the selected
+# RNA-seq libraries
 selected_htl_df <- data.frame(
     selected_htl_df[, c('Kids_First_Biospecimen_ID', 'sample_id',
                         'RNA_library')])
@@ -132,7 +133,7 @@ rownames(selected_htl_df) <- NULL
 # - RNA_library has only stranded and poly-A values
 stopifnot(identical(sort(unique(selected_htl_df$RNA_library)),
                     c("poly-A", "stranded")))
-
+# Subset read count matrix for polya vs stranded DGE analysis
 stranded_col_ids <- selected_htl_df[
     selected_htl_df$RNA_library == 'stranded', 'col_id']
 polya_col_ids <- selected_htl_df[
