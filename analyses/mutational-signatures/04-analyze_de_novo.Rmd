@@ -6,6 +6,8 @@ output:
   html_document:
     toc: yes
     df_print: paged
+params:
+  is_ci: 0
 ---
 
 
@@ -17,7 +19,6 @@ output:
 ```{r}
 # Load libraries
 library(sigfit)
-library(cowplot)
 `%>%` <- dplyr::`%>%`
 
 # Path to input data
@@ -45,32 +46,39 @@ cosmic_names <- row.names(cosmic_signatures_v3)
 First, we need to extract the signatures and exposures from the *de novo* extraction RDS files. We save each into a list `de_novo_signatures` and `de_novo_extractions` separately, and write each list to file. 
 
 ```{r parse_signatures}
-# Collect the de novo extracted signatures and exposures into a single list each
-# This takes _a few minutes_ to parse.
-de_novo_signatures <- list()
-de_novo_exposures <- list()
-for (this_model in c("poisson" , "multinomial"))
-{
-  for (this_seed in 1:5){
+# Collect the de novo extracted signatures and exposures into a single list each. This takes _a few minutes_ to parse.
+# If running in CI, read in lists directly from RDS files. Otherwise, parse to create and save lists.
 
-    this_name <- glue::glue("seed_{this_seed}_model_{this_model}")
-    filename <- file.path(path_to_input_rds, 
-                          glue::glue("{this_name}.RDS"))
-    #cat(filename)
-    if (file.exists(filename)) {
-      fit <- readr::read_rds(filename)
-      for (k in 2:5){
-        sig_name <- glue::glue("{k}_{this_name}")
-        de_novo_signatures[[ sig_name ]] <- sigfit::retrieve_pars(fit[[k]], par = "signatures") 
-        de_novo_exposures[[ sig_name ]] <- sigfit::retrieve_pars(fit[[k]], par = "exposures") 
+if (params$is_ci == 0) {
+  de_novo_signatures <- readr::read_rds(de_novo_signatures_file)
+  de_novo_exposures <- readr::read_rds(de_novo_exposures_file)
+} else {
+ 
+  de_novo_signatures <- list()
+  de_novo_exposures <- list()
+  for (this_model in c("poisson" , "multinomial"))
+  {
+    for (this_seed in 1:5){
+  
+      this_name <- glue::glue("seed_{this_seed}_model_{this_model}")
+      filename <- file.path(path_to_input_rds, 
+                            glue::glue("{this_name}.RDS"))
+      #cat(filename)
+      if (file.exists(filename)) {
+        fit <- readr::read_rds(filename)
+        for (k in 2:5){
+          sig_name <- glue::glue("{k}_{this_name}")
+          de_novo_signatures[[ sig_name ]] <- sigfit::retrieve_pars(fit[[k]], par = "signatures") 
+          de_novo_exposures[[ sig_name ]] <- sigfit::retrieve_pars(fit[[k]], par = "exposures") 
+        }
       }
     }
+    
   }
-  
+  # We save these lists to result files
+  readr::write_rds(de_novo_signatures, de_novo_signatures_file)
+  readr::write_rds(de_novo_exposures, de_novo_exposures_file)
 }
-# We save these lists to result files
-readr::write_rds(de_novo_signatures, de_novo_signatures_file)
-readr::write_rds(de_novo_exposures, de_novo_exposures_file)
 ```
 
 <br><br>

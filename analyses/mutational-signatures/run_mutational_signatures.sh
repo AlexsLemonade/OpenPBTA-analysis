@@ -29,6 +29,7 @@ QUICK_MUTSIGS=$ABBREVIATED_MUTSIGS ANALYSIS=0 bash 03-de_novo_range_of_nsignatur
 QUICK_MUTSIGS=$ABBREVIATED_MUTSIGS ANALYSIS=1 bash 03-de_novo_range_of_nsignatures.sh
 
 # Process results from de novo extraction 
-Rscript -e "rmarkdown::render('04-analyze_de_novo.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('04-analyze_de_novo.Rmd', clean = TRUE, params = list(is_ci = ${ABBREVIATED_MUTSIGS}))"
+
 
 # Next steps: Fitting the 8 known CNS signatures
