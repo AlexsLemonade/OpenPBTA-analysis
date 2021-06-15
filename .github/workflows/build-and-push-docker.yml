@@ -28,6 +28,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: kfdrc/open-pedcan:latest
+          tags: d3b-bixu/open-pedcan:latest
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
