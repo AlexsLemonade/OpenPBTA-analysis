@@ -168,7 +168,9 @@ tibble::tibble(
 ) %>%
   tidyr::unnest(cosmic_sig_index) %>%
   dplyr::mutate(cosmic_sig = cosmic_names[cosmic_sig_index]) -> unnested_sigs
+```
 
+```{r sigs_full2}
 unnested_sigs %>%
   dplyr::group_by(name) %>%
   dplyr::summarize(cosmic_sigs = toString(cosmic_sig)) %>%
