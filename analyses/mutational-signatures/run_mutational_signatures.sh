@@ -12,6 +12,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 # In CI we'll run an abbreviated version of the de novo signatures extraction
 ABBREVIATED_MUTSIGS=${OPENPBTA_QUICK_MUTSIGS:-0}
 
+
 # Run the mutational signatures analysis using existing signatures
 Rscript -e "rmarkdown::render('01-known_signatures.Rmd', clean = TRUE)"
 

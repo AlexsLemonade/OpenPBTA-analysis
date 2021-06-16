@@ -49,7 +49,7 @@ First, we need to extract the signatures and exposures from the *de novo* extrac
 # Collect the de novo extracted signatures and exposures into a single list each. This takes _a few minutes_ to parse.
 # If running in CI, read in lists directly from RDS files. Otherwise, parse to create and save lists.
 
-if (params$is_ci == 0) {
+if (params$is_ci == 1) {
   de_novo_signatures <- readr::read_rds(de_novo_signatures_file)
   de_novo_exposures <- readr::read_rds(de_novo_exposures_file)
 } else {
@@ -168,9 +168,7 @@ tibble::tibble(
 ) %>%
   tidyr::unnest(cosmic_sig_index) %>%
   dplyr::mutate(cosmic_sig = cosmic_names[cosmic_sig_index]) -> unnested_sigs
-```
 
-```{r sigs_full2}
 unnested_sigs %>%
   dplyr::group_by(name) %>%
   dplyr::summarize(cosmic_sigs = toString(cosmic_sig)) %>%
@@ -199,6 +197,7 @@ gof %>%
   dplyr::distinct() %>%
   knitr::kable()
 ```
+
 <br><br><br>
 
 Clearly, this analysis is extremely sensitive to starting conditions. Even so, we see a few repeated SBS signatures coming up:
