@@ -299,11 +299,12 @@ To add dependencies that are required for your analysis to the project Docker im
 If you need assistance adding a dependency to the Dockerfile, [file a new issue on this repository](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/new) to request help.
 
 #### Development in the Project Docker Container
+If you are new user download Docker from [here](https://docs.docker.com/get-docker/)
 
 The most recent version of the project Docker image, which is pushed to Docker Hub after a pull request gets merged into the master branch, can be obtained via the command line with:
 
 ```
-docker pull ccdlopenpbta/open-pbta:latest
+docker pull pgc-images.sbgenomics.com/d3b-bixu/open-pedcan:latest
 ```
 
 **If you are a Mac or Windows user, the default limit for memory available to Docker is 2 GB.
@@ -316,15 +317,24 @@ Using `rocker/tidyverse:3.6.0` as our base image allows for development via RStu
 If you'd like to develop in this manner, you may do so by running the following and changing `<password>` to a password of you choosing at the command line:
 
 ```
-docker run -e PASSWORD=<password> -p 8787:8787 ccdlopenpbta/open-pbta:latest
+docker run -e PASSWORD=<password> -p 8787:8787 pgc-images.sbgenomics.com/d3b-bixu/open-pedcan:latest
 ```
 
 You can change the volume that the Docker container points to either via the [Kitematic GUI](https://docs.docker.com/kitematic/userguide/) or the [`--volume` flag](https://docs.docker.com/storage/volumes/) to `docker run`.
 
+```
+docker run --name <CONTAINER_NAME> -d -e PASSWORD=pass -p 8787:8787 -v “$PWD”:/home/rstudio/OpenTARGET pgc-images.sbgenomics.com/d3b-bixu/open-pedcan:latest
+```
+
 Once you've set the volume, you can navigate to `localhost:8787` in your browser if you are a Linux or Mac OS X user.
 The username will for login will be `rstudio` and the password will be whatever password you set with the `docker run` command above.
 
-If you are a new user, you may find [these instructions](https://github.com/AlexsLemonade/RNA-Seq-Exercises/blob/master/docker-pull.md) for a setting up a different Docker container or [this guide](https://www.andrewheiss.com/blog/2017/04/27/super-basic-practical-guide-to-docker-and-rstudio/) from Andrew Heiss helpful.
+If you are a new user, you may find [these instructions](https://github.com/AlexsLemonade/RNA-Seq-Exercises/blob/master/docker-pull.md) for a setting up a different Docker [container](https://www.andrewheiss.com/blog/2017/04/27/super-basic-practical-guide-to-docker-and-rstudio/) or [this guide](https://www.andrewheiss.com/blog/2017/04/27/super-basic-practical-guide-to-docker-and-rstudio/) from Andrew Heiss helpful.
+
+You can also run the analysis on the terminal once you have a docker container running locally by running `docker exec` helpful information [here](https://buildvirtual.net/docker-exec-what-does-it-do/) 
+```
+docker exec -ti <CONTAINER_NAME> bash -c "echo a && echo b"
+```
 
 ### Local Development
 
