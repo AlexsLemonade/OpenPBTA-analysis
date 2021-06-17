@@ -3,7 +3,7 @@
 - release date: 2021-06-17
 - status: available
 - changes:
-  - Update mereged gtex_target_tcga expected_count and tpm file 
+  - Update mereged gtex_target_tcga expected_count and tpm file [TOIL workflow] originally obtained from @komalrathi 
      - by renaming the colname names as Kids_First_Biospecimen_ID
      - by removing sample_ids that don't have matches in histology
   - Update `histologies.tsv`
@@ -29,7 +29,7 @@ v5
 ├── histologies.tsv
 ├── intersect_cds_lancet_strelka_mutect_WGS.bed
 ├── intersect_strelka_mutect_WGS.bed
-├──  snv-consensus-plus-hotspots.maf.tsv.gz
+├── snv-consensus-plus-hotspots.maf.tsv.gz
 └── release-notes.md
 
 ```
