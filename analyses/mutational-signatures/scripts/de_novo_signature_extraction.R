@@ -63,12 +63,17 @@ option_list <- list(
               type = "integer",
               default = 1000,
               help = "Number of iterations for sampling"),
+  make_option("--model",
+              type = "character",
+              default = "multinomial",
+              help = "The inference model for signature extraction, one of multinomial or poisson"),
   make_option(c("--seed"),
               type = "integer",
               default = 42,
               help = "Seed"),
   make_option(c("--output_file"),
               type = "character",
+              default = NULL,
               help = "Full path to output file (.RDS)"),
   make_option(c("--plot_output"),
               type = "character",
@@ -78,6 +83,12 @@ option_list <- list(
 
 # Parse command line options
 opt <- parse_args(OptionParser(option_list = option_list))
+
+# Check maf_file
+if (!(file.exists(opt$maf_file))) stop("MAF file does not exist at given path.")
+
+# Check model
+if (!(opt$model %in% c("poisson", "multinomial"))) stop("Model must be one of: multinomial poisson")
 
 # Warn if the ceiling for the number of signatures is less than the floor
 if (opt$nsignatures_ceiling < opt$nsignatures_floor) {
@@ -108,6 +119,7 @@ sigs_input <- deconstructSigs::mut.to.sigs.input(
 extracted_signatures <- sigfit::extract_signatures(
   counts = sigs_input,
   nsignatures = num_signatures,
+  model = opt$model,
   iter = opt$num_iterations,
   seed = opt$seed
 )
@@ -115,10 +127,13 @@ extracted_signatures <- sigfit::extract_signatures(
 # If user specifies a plot output, save the goodness-of-fit plot at that 
 # location
 if (!is.null(opt$plot_output)) {
-  pdf(opt$plot_output, width = 7, height = 7)
+  png(opt$plot_output, 640, 480)
   sigfit::plot_gof(extracted_signatures)
   dev.off()
 }
 
-# Write the extracted signatures list to (compressed) RDS file
-readr::write_rds(extracted_signatures, path = opt$output_file, compress = "gz")
+# If user specifies a file output, save the extracted signatures list
+if (!is.null(opt$output_file)) {
+  # Write the extracted signatures list to (compressed) RDS file
+  readr::write_rds(extracted_signatures, path = opt$output_file, compress = "gz")
+}

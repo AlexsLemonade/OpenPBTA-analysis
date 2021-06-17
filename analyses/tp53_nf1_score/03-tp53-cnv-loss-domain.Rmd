@@ -2,7 +2,11 @@
 title: "Find CNV losses that overlap with TP53 domains"
 author: "K S Gaonkar (D3B)"
 output: html_notebook
-
+params:
+  base_run:
+    label: "1/0 to run with base histology"
+    value: 0
+    input: integer
 ---
     
 In this script we will find CNV losses that overlap with TP53 domains:
@@ -58,8 +62,13 @@ bioMartDataPfamTp53 <-
   dplyr::filter(hgnc_symbol=="TP53")
 
 # histology file
-histologies_df <- read_tsv(file.path(data_dir,
-                                     "pbta-histologies.tsv")) %>%
+if ( params$base_run ==0 ){
+  clinical<-read.delim(file.path(data_dir,"pbta-histologies.tsv"), stringsAsFactors = FALSE)
+} else{
+  clinical<-read.delim(file.path(data_dir,"pbta-histologies-base.tsv"), stringsAsFactors = FALSE)  
+}
+
+histologies_df <- clinical %>%
   dplyr::select("Kids_First_Biospecimen_ID",
                 "sample_id")
 
@@ -160,17 +169,13 @@ ggplot(annotated_cn, aes(x = factor(copy_number), y = tp53_score)) +
 
 ```
 
-
-TP53 with copy_number <=1 show higher tp53 inactivation classifier scores, we will save copy_number <=1 calls for TP53 as high confidence losses.
+Majority of TP53 losses have high tp53 inactivation classifier, let's save to file.
 
 ### Save high confidence TP53 loss in file
 
 ```{r}
 annotated_cn %>%
-  # high confidence CNV losses
-  # with high TP53 inactivation score
-  dplyr::filter(copy_number<=1) %>%
-  # remove columns 
+  # remove columns not required in output  
   dplyr::select(-tp53_score,-Kids_First_Biospecimen_ID) %>%
   unique() %>%
   write_tsv( file.path(results_dir,"loss_overlap_domains_tp53.tsv"))

@@ -1,0 +1,148 @@
+---
+title: "Using WHO 2016 CNS subtypes to improve neuronal and mixed neuronal-glial tumors harmonized diagnosis"
+output: 
+  html_notebook:
+    toc: true
+    toc_float: true
+author: JN Taroni for ALSF CCDL (code)
+date: 2021
+---
+
+Neuronal and mixed neuronal-glial tumors have subtypes per the [WHO 2016 CNS subtypes](https://link.springer.com/content/pdf/10.1007/s00401-016-1545-1.pdf). 
+However, these are not captured in our molecular data.
+Instead, we can use the pathology free text information in the histologies file to further classify neuronal and mixed neuronal-glial tumors.
+We will use this notebook to do so; see [#996](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/996) for more information.
+
+## Set Up
+
+### Libraries
+
+```{r}
+library(tidyverse)
+```
+
+### Input
+
+```{r}
+data_dir <- file.path("..", "..", "data")
+histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
+
+# The inclusion criteria for this notebook are the same as the exclusion
+# criteria for the LGAT subtyping -- these tumors were original included in that
+# module
+lgat_terms_file <- file.path("..", 
+                             "molecular-subtyping-LGAT", 
+                             "lgat-subset",
+                             "lgat_subtyping_path_dx_strings.json")
+```
+
+### Output
+
+```{r}
+results_dir <- "results"
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+output_file <- file.path(results_dir, "glialneuronal_tumor_subtypes.tsv")
+```
+
+## Read in data
+
+```{r}
+histologies_df <- readr::read_tsv(histologies_file, guess_max = 10000)
+lgat_path_dx_list <- jsonlite::fromJSON(lgat_terms_file)
+```
+
+## Recode `harmonized_diagnosis`, `broad_histology`, and `short_histology`
+
+We can use the table from [#996](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/996) (copied below) to guide us in recoding the `harmonized_diagnosis`, `broad_histology` and `short_histology` fields.
+
+pathology_diagnosis | subtyping module | pathology_free_text_diagnosis | broad_histology | short_histology | harmonized_diagnosis
+-- | -- | -- | -- | -- | --
+Low-grade glioma/astrocytoma (WHO grade I/II) | NA, remove from LGAT module | contains "desmoplastic infantile astrocytoma" | Neuronal and mixed neuronal-glial tumor | GNT | Desmoplastic infantile astrocytoma
+Low-grade glioma/astrocytoma (WHO grade I/II) | NA, remove from LGAT module | diffuse leptomeningeal glioneuronal tumor | Neuronal and mixed neuronal-glial tumor | GNT | Diffuse leptomeningeal glioneuronal tumor
+Low-grade glioma/astrocytoma (WHO grade I/II) | NA, remove from LGAT module | contains "glioneuronal" | Neuronal and mixed neuronal-glial tumor | GNT | Glial-neuronal tumor NOS
+Low-grade glioma/astrocytoma (WHO grade I/II) | NA, remove from LGAT module | rosette forming glioneuronal tumor | Neuronal and mixed neuronal-glial tumor | GNT | Rosette-forming glioneuronal tumor
+
+```{r}
+subtype_df <- histologies_df %>%
+  filter(
+    # Specifying this avoids including a ganglioglioma sample that includes
+    # "glioneuronal" in the pathology free text
+    pathology_diagnosis == "Low-grade glioma/astrocytoma (WHO grade I/II)",
+    # Use the exclusion criteria from LGAT as inclusion criteria here
+    str_detect(str_to_lower(pathology_free_text_diagnosis),
+               paste(lgat_path_dx_list$exclude_path_free_text,
+                     collapse = "|"))
+  ) %>%
+  # Subset to relevant ID and disease labels column
+  select(Kids_First_Biospecimen_ID,
+         Kids_First_Participant_ID,
+         sample_id,
+         pathology_diagnosis,
+         pathology_free_text_diagnosis,
+         broad_histology,
+         short_histology,
+         tumor_descriptor) %>%
+  # For convenience, let's add a column where pathology_free_text_diagnosis
+  # is all lower case out of an abundance of caution
+  mutate(pathology_free_text_dx_lower = str_to_lower(pathology_free_text_diagnosis))
+```
+
+### Desmoplastic infantile astrocytoma
+
+```{r}
+dia_df <- subtype_df %>%
+  # Filter to samples with "desmoplastic infantile astrocytoma" in pathology
+  # free text
+  filter(str_detect(pathology_free_text_dx_lower,
+                    lgat_path_dx_list$exclude_path_free_text[1])) %>%
+  # Set harmonized diagnosis
+  mutate(harmonized_diagnosis = "Desmoplastic infantile astrocytoma")
+```
+
+### Diffuse leptomeningeal glioneuronal tumor, Rosette-forming glioneuronal tumor, Glial-neuronal tumor NOS
+
+```{r}
+glioneuronal_df <- subtype_df %>%
+  # Filter to samples with "glioneuronal" in pathology free text
+  filter(str_detect(pathology_free_text_dx_lower,
+                    lgat_path_dx_list$exclude_path_free_text[2])) %>%
+  mutate(
+    harmonized_diagnosis = case_when(
+      str_detect(pathology_free_text_dx_lower, 
+                 "diffuse leptomeningeal glioneuronal tumor") ~ 
+        "Diffuse leptomeningeal glioneuronal tumor",
+      str_detect(pathology_free_text_dx_lower,
+                 "rosette forming glioneuronal tumor") ~ 
+        "Rosette-forming glioneuronal tumor",
+      TRUE ~ "Glial-neuronal tumor NOS"  # All others
+    )
+  )
+```
+
+### Recode `broad_histology` and `short_histology` for all
+
+```{r}
+subtype_df <- bind_rows(dia_df, glioneuronal_df) %>%
+  # Drop column we added for convenience
+  select(-pathology_free_text_dx_lower) %>%
+  mutate(
+    broad_histology = "Neuronal and mixed neuronal-glial tumor",
+    short_histology = "GNT"
+  ) %>%
+  arrange(sample_id)
+```
+
+### Write to file
+
+```{r}
+write_tsv(subtype_df, output_file)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
