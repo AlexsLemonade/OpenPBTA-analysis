@@ -1,5 +1,41 @@
 # release notes
-## current release
+## curremt release
+- release date: 2021-06-17
+- status: available
+- changes:
+  - Update mereged gtex_target_tcga expected_count and tpm file 
+     - by renaming the colname names as Kids_First_Biospecimen_ID
+     - by removing sample_ids that don't have matches in histology
+  - Update `histologies.tsv`
+     - GTEx manifest are now v8
+     - TCGA manifest are from GDC
+     - TARGET manifest from Diskin Lab and @afarrel
+  - Released files below
+
+```
+v5
+├── WGS.hg38.lancet.300bp_padded.bed
+├── WGS.hg38.lancet.unpadded.bed
+├── WGS.hg38.mutect2.vardict.unpadded.bed
+├── WGS.hg38.strelka2.unpadded.bed
+├── WGS.hg38.vardict.100bp_padded.bed
+├── fusion-arriba.tsv.gz
+├── fusion-starfusion.tsv.gz
+├── gene-counts-rsem-expected_count-collapsed.rds
+├── gene-counts-rsem-expected_count.rds
+├── gene-expression-rsem-tpm-collapsed.rds
+├── gene-expression-rsem-tpm.rds
+├── gtex_target_tcga-gene-counts-rsem-expected_count-collapsed.rds
+├── histologies.tsv
+├── intersect_cds_lancet_strelka_mutect_WGS.bed
+├── intersect_strelka_mutect_WGS.bed
+├──  snv-consensus-plus-hotspots.maf.tsv.gz
+└── release-notes.md
+
+```
+
+
+## archived release
 - release date: 2021-06-01
 - status: available
 - changes:
