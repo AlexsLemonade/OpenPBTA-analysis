@@ -17,6 +17,13 @@ Somatic Single Nucleotide Variant (SNV) data are provided in [Annotated MAF form
 * `kfnbl-snv-strelka2.vep.maf.gz`
 * `kfnbl-snv-vardict.vep.maf.gz`
 
+### Consensus Somatic Variant Data
+Somatic calls that are retained if  
+- supported by atleast 2 callers 
+OR 
+-  marked as `HotSpotAllele` because they overlap SNV/INDELs considered as [Cancer Hotspots](https://www.cancerhotspots.org/#/download) OR are TERT promoter SNVs 
+[Additional information](https://github.com/kids-first/kf-somatic-workflow/blob/master/docs/kfdrc-consensus-calling.md) 
+
 ### Gene Expression Data
 
 Gene expression estimates from the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#gene-expression-abundance-estimation) are provided as a feature (e.g., gene or transcript) by sample matrix.
