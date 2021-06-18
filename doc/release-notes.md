@@ -3,6 +3,9 @@
 - release date: 2021-06-17
 - status: available
 - changes:
+  - Removed
+     - gtex_target_tcga-gene-expression-rsem-tpm-collapsed.polya.rds
+     - gtex_target_tcga-gene-counts-rsem-expected_count-collapsed.rds 
   - Update RSEM files to include GTEXv8 files
      - gene-expression-rsem-tpm-collapsed.rds
      - gene-counts-rsem-expected_count-collapsed.rds
