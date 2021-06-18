@@ -3,13 +3,13 @@
 - release date: 2021-06-17
 - status: available
 - changes:
-  - Update mereged gtex_target_tcga expected_count and tpm file [TOIL workflow] originally obtained from @komalrathi 
-     - by renaming the colname names as Kids_First_Biospecimen_ID
-     - by removing sample_ids that don't have matches in histology
-  - Update `histologies.tsv`
-     - GTEx manifest are now v8
-     - TCGA manifest are from GDC
-     - TARGET manifest from Diskin Lab and @afarrel
+  - Update RSEM files to include GTEXv8 files
+     - gene-expression-rsem-tpm-collapsed.rds
+     - gene-counts-rsem-expected_count-collapsed.rds
+  - Update manifest to include GTEx manifest are now v8, TCGA manifest are from GDC and TARGET manifest from Diskin Lab and @afarrel
+     - histologies.tsv
+  - Added snv PBTA+GMKF maf file
+     - snv-consensus-plus-hotspots.maf.tsv.gz 
   - Released files below
 
 ```
@@ -25,7 +25,6 @@ v5
 ├── gene-counts-rsem-expected_count.rds
 ├── gene-expression-rsem-tpm-collapsed.rds
 ├── gene-expression-rsem-tpm.rds
-├── gtex_target_tcga-gene-counts-rsem-expected_count-collapsed.rds
 ├── histologies.tsv
 ├── intersect_cds_lancet_strelka_mutect_WGS.bed
 ├── intersect_strelka_mutect_WGS.bed
