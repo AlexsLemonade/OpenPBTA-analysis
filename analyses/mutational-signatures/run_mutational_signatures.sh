@@ -37,6 +37,6 @@ Rscript --vanilla 05-fit_cns_signatures.R  \
   --abbreviated $ABBREVIATED_MUTSIGS
   
 # Process, visualize the 8 known CNS signature exposures
-Rscript -e "rmarkdown::render('06-anlyze_cns_fit.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('06-analyze_cns_fit.Rmd', clean = TRUE)"
 
   
