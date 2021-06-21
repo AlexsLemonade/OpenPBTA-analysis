@@ -1,5 +1,43 @@
 # release notes
-## current release
+## curremt release
+- release date: 2021-06-17
+- status: available
+- changes:
+  - Removed
+     - gtex_target_tcga-gene-expression-rsem-tpm-collapsed.polya.rds
+     - gtex_target_tcga-gene-counts-rsem-expected_count-collapsed.rds 
+  - Update RSEM files to include GTEXv8 files
+     - gene-expression-rsem-tpm-collapsed.rds
+     - gene-counts-rsem-expected_count-collapsed.rds
+  - Update manifest to include GTEx manifest are now v8, TCGA manifest are from GDC and TARGET manifest from Diskin Lab and @afarrel
+     - histologies.tsv
+  - Added snv PBTA+GMKF maf file
+     - snv-consensus-plus-hotspots.maf.tsv.gz 
+  - Released files below
+
+```
+v5
+├── WGS.hg38.lancet.300bp_padded.bed
+├── WGS.hg38.lancet.unpadded.bed
+├── WGS.hg38.mutect2.vardict.unpadded.bed
+├── WGS.hg38.strelka2.unpadded.bed
+├── WGS.hg38.vardict.100bp_padded.bed
+├── fusion-arriba.tsv.gz
+├── fusion-starfusion.tsv.gz
+├── gene-counts-rsem-expected_count-collapsed.rds
+├── gene-counts-rsem-expected_count.rds
+├── gene-expression-rsem-tpm-collapsed.rds
+├── gene-expression-rsem-tpm.rds
+├── histologies.tsv
+├── intersect_cds_lancet_strelka_mutect_WGS.bed
+├── intersect_strelka_mutect_WGS.bed
+├── snv-consensus-plus-hotspots.maf.tsv.gz
+└── release-notes.md
+
+```
+
+
+## archived release
 - release date: 2021-06-01
 - status: available
 - changes:
