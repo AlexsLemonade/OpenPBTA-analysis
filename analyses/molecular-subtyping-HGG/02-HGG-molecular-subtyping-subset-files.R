@@ -92,19 +92,32 @@ gistic_df <- data.table::fread(file.path(root_dir,
 
 
 # Read in snv consensus mutation data
-snv_maf_df <-
-  data.table::fread(file.path(root_dir,
-                              "data",
-                              "pbta-snv-consensus-mutation.maf.tsv.gz"),
-                    select = c("Chromosome",
-                               "Start_Position",
-                               "End_Position",
-                               "Strand",
-                               "Variant_Classification",
-                               "Tumor_Sample_Barcode",
-                               "Hugo_Symbol",
-                               "HGVSp_Short"),
-                    data.table = FALSE)
+# select tumor sample barcode, gene, short protein annotation and variant classification
+keep_cols <- c("Chromosome",
+               "Start_Position",
+               "End_Position",
+               "Strand",
+               "Variant_Classification",
+               "IMPACT",
+               "Tumor_Sample_Barcode",
+               "Hugo_Symbol",
+               "HGVSp_Short",
+               "Exon_Number")
+
+snv_consensus_maf <- data.table::fread(
+  file.path(root_dir, "data" , "pbta-snv-consensus-mutation.maf.tsv.gz"),
+  select = keep_cols,
+  data.table = FALSE) 
+## Read in snv hotspot mutation data
+snv_hotspot_maf <- data.table::fread(
+  file.path(root_dir, "analyses" , "hotspots-detection" , "results" , "pbta-snv-scavenged-hotspots.maf.tsv.gz"),
+  select = keep_cols,
+  data.table = FALSE) %>%
+  select(colnames(snv_consensus_maf))
+
+snv_consensus_hotspot_maf <- snv_consensus_maf %>%
+  bind_rows(snv_hotspot_maf) %>%
+  unique()
 
 # Read in output file from `01-HGG-molecular-subtyping-defining-lesions.Rmd`
 hgg_lesions_df <- read_tsv(
@@ -257,12 +270,12 @@ write_tsv(gistic_df,
 
 #### Filter SNV consensus maf data ---------------------------------------------
 
-snv_maf_df <- snv_maf_df %>%
+snv_consensus_hotspot_maf <- snv_consensus_hotspot_maf %>%
   left_join(select_metadata,
             by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")) %>%
   filter(Tumor_Sample_Barcode %in% hgg_metadata_df$Kids_First_Biospecimen_ID) %>%
   arrange(Kids_First_Participant_ID, sample_id)
 
 # Write to file
-write_tsv(snv_maf_df,
+write_tsv(snv_consensus_hotspot_maf,
           file.path(subset_dir, "hgg_snv_maf.tsv.gz"))

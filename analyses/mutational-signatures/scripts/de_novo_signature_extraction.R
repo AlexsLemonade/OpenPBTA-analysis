@@ -127,7 +127,7 @@ extracted_signatures <- sigfit::extract_signatures(
 # If user specifies a plot output, save the goodness-of-fit plot at that 
 # location
 if (!is.null(opt$plot_output)) {
-  pdf(opt$plot_output, width = 7, height = 7)
+  png(opt$plot_output, 640, 480)
   sigfit::plot_gof(extracted_signatures)
   dev.off()
 }
