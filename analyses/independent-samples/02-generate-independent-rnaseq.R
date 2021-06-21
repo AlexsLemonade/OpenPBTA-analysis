@@ -83,7 +83,7 @@ independent_rna_primary_plus_polya <- sample_df %>%
                           histology_df = .,
                           match_type = "independent_dna_plus_only_rna",
                           tumor_description_rna_only = "primary_plus",seed = 2020) %>%
-  write_tsv(rnaseq_primplus_polya_file)
+  readr::write_tsv(rnaseq_primplus_polya_file)
 
 
 # Filter to only samples from tumors, where composition is known to be Solid Tissue
@@ -97,4 +97,4 @@ independent_rna_primary_plus_stranded <- sample_df %>%
                           histology_df = .,
                           match_type = "independent_dna_plus_only_rna",
                           tumor_description_rna_only = "primary_plus",seed = 2020) %>%
-  write_tsv(rnaseq_primplus_stranded_file)
+  readr::write_tsv(rnaseq_primplus_stranded_file)

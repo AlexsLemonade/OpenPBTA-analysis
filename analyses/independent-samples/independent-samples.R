@@ -19,14 +19,14 @@
 #' 
 #' @return a data frame of Participant and Specimen IDs, each present only once.
 independent_samples <- function(sample_df, 
-                                tumor_types = c("primary", "prefer_primary", "any"), 
+                                tumor_types = c("primary", "secondary", "prefer_primary", "any"), 
                                 seed){
   tumor_types <- match.arg(tumor_types)
   if(!missing(seed)){set.seed(seed)}
   
-  primary_descs <- c("Initial CNS Tumor", "Diagnosis")
+  primary_descs <- c("Initial CNS Tumor", "Diagnosis", "Primary tumor")
   
-  if(tumor_types == "prefer_primary"){
+  if(tumor_types %in% c("prefer_primary","secondary")){
     # find cases where non-primary is the only option
     no_primary <- sample_df %>% 
       dplyr::group_by(Kids_First_Participant_ID) %>%
@@ -44,6 +44,11 @@ independent_samples <- function(sample_df,
       dplyr::filter(Kids_First_Participant_ID %in% no_primary)
     sample_df <- dplyr::bind_rows(primary_df, noprimary_df)
   } 
+  
+  if(tumor_types == "secondary"){
+    sample_df <- sample_df %>%
+      dplyr::filter(Kids_First_Participant_ID %in% no_primary)
+  } 
 
   # get the samples from the earliest timepoints for each Participant
   # age_at_diagnosis_days is no longer relevant,
@@ -54,11 +59,13 @@ independent_samples <- function(sample_df,
    dplyr::summarize(age_at_diagnosis_days = min(age_at_diagnosis_days)) %>%
    dplyr::left_join(sample_df, by = c("Kids_First_Participant_ID",
                                       "age_at_diagnosis_days"))
-
-  # Choose randomly among specimens from the same participant
-  early_ind <- early_samples %>%
-    dplyr::group_by(Kids_First_Participant_ID) %>%
-    dplyr::summarize(Kids_First_Biospecimen_ID = sample(Kids_First_Biospecimen_ID, 1)) 
-  
+  if(nrow(early_samples) == 0){
+    early_ind <- data.frame(Kids_First_Participant_ID = character(), Kids_First_Biospecimen_ID = character(), stringsAsFactors = FALSE)
+  }else{
+    # Choose randomly among specimens from the same participant
+    early_ind <- early_samples %>%
+      dplyr::group_by(Kids_First_Participant_ID) %>%
+      dplyr::summarize(Kids_First_Biospecimen_ID = sample(Kids_First_Biospecimen_ID, 1)) 
+  }
   return(early_ind)
 }
