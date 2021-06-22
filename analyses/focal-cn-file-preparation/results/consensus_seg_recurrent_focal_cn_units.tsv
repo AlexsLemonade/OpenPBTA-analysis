@@ -3708,20 +3708,20 @@ CDK5RAP3	gain	All	8	gene
 CDK5RAP3	gain	Medulloblastoma	6	gene
 CDK7	gain	All	7	gene
 CDK9	loss	All	5	gene
-CDKN2A	deep loss	All	4	gene
+CDKN2A	deep deletion	All	4	gene
 CDKN2A	gain	All	4	gene
 CDKN2A	loss	All	18	gene
-CDKN2A	deep loss	HGAT	4	gene
+CDKN2A	deep deletion	HGAT	4	gene
 CDKN2A	loss	HGAT	9	gene
-CDKN2B	deep loss	All	4	gene
+CDKN2B	deep deletion	All	4	gene
 CDKN2B	gain	All	4	gene
 CDKN2B	loss	All	18	gene
-CDKN2B	deep loss	HGAT	4	gene
+CDKN2B	deep deletion	HGAT	4	gene
 CDKN2B	loss	HGAT	9	gene
-CDKN2B-AS1	deep loss	All	4	gene
+CDKN2B-AS1	deep deletion	All	4	gene
 CDKN2B-AS1	gain	All	5	gene
 CDKN2B-AS1	loss	All	19	gene
-CDKN2B-AS1	deep loss	HGAT	4	gene
+CDKN2B-AS1	deep deletion	HGAT	4	gene
 CDKN2B-AS1	loss	HGAT	9	gene
 CDKN2B-AS1	loss	LGAT	4	gene
 CDKN2C	loss	All	7	gene
@@ -5727,10 +5727,10 @@ H3C13	gain	All	8	gene
 H3C14	gain	All	10	gene
 H3C15	gain	All	10	gene
 H3P28	loss	All	5	gene
-H3P30	deep loss	All	4	gene
+H3P30	deep deletion	All	4	gene
 H3P30	gain	All	4	gene
 H3P30	loss	All	12	gene
-H3P30	deep loss	HGAT	4	gene
+H3P30	deep deletion	HGAT	4	gene
 H3P30	loss	HGAT	7	gene
 H3P42	gain	All	9	gene
 H3P42	gain	HGAT	4	gene
@@ -5998,18 +5998,18 @@ IFITM10	loss	HGAT	4	gene
 IFITM2	gain	All	5	gene
 IFITM3	gain	All	5	gene
 IFITM5	gain	All	4	gene
-IFNA1	deep loss	All	4	gene
+IFNA1	deep deletion	All	4	gene
 IFNA1	gain	All	4	gene
 IFNA1	loss	All	12	gene
-IFNA1	deep loss	HGAT	4	gene
+IFNA1	deep deletion	HGAT	4	gene
 IFNA1	loss	HGAT	7	gene
 IFNA10	gain	All	4	gene
 IFNA10	loss	All	11	gene
 IFNA10	loss	HGAT	7	gene
-IFNA13	deep loss	All	4	gene
+IFNA13	deep deletion	All	4	gene
 IFNA13	gain	All	4	gene
 IFNA13	loss	All	12	gene
-IFNA13	deep loss	HGAT	4	gene
+IFNA13	deep deletion	HGAT	4	gene
 IFNA13	loss	HGAT	7	gene
 IFNA14	gain	All	4	gene
 IFNA14	loss	All	11	gene
@@ -6020,10 +6020,10 @@ IFNA16	loss	HGAT	7	gene
 IFNA17	gain	All	4	gene
 IFNA17	loss	All	11	gene
 IFNA17	loss	HGAT	7	gene
-IFNA2	deep loss	All	4	gene
+IFNA2	deep deletion	All	4	gene
 IFNA2	gain	All	4	gene
 IFNA2	loss	All	12	gene
-IFNA2	deep loss	HGAT	4	gene
+IFNA2	deep deletion	HGAT	4	gene
 IFNA2	loss	HGAT	7	gene
 IFNA21	gain	All	4	gene
 IFNA21	loss	All	11	gene
@@ -6031,31 +6031,31 @@ IFNA21	loss	HGAT	7	gene
 IFNA4	gain	All	4	gene
 IFNA4	loss	All	11	gene
 IFNA4	loss	HGAT	7	gene
-IFNA5	deep loss	All	4	gene
+IFNA5	deep deletion	All	4	gene
 IFNA5	gain	All	4	gene
 IFNA5	loss	All	12	gene
-IFNA5	deep loss	HGAT	4	gene
+IFNA5	deep deletion	HGAT	4	gene
 IFNA5	loss	HGAT	7	gene
-IFNA6	deep loss	All	4	gene
+IFNA6	deep deletion	All	4	gene
 IFNA6	gain	All	4	gene
 IFNA6	loss	All	12	gene
-IFNA6	deep loss	HGAT	4	gene
+IFNA6	deep deletion	HGAT	4	gene
 IFNA6	loss	HGAT	7	gene
 IFNA7	gain	All	4	gene
 IFNA7	loss	All	11	gene
 IFNA7	loss	HGAT	7	gene
-IFNA8	deep loss	All	4	gene
+IFNA8	deep deletion	All	4	gene
 IFNA8	gain	All	4	gene
 IFNA8	loss	All	12	gene
-IFNA8	deep loss	HGAT	4	gene
+IFNA8	deep deletion	HGAT	4	gene
 IFNA8	loss	HGAT	7	gene
 IFNB1	gain	All	4	gene
 IFNB1	loss	All	11	gene
 IFNB1	loss	HGAT	7	gene
-IFNE	deep loss	All	4	gene
+IFNE	deep deletion	All	4	gene
 IFNE	gain	All	4	gene
 IFNE	loss	All	12	gene
-IFNE	deep loss	HGAT	4	gene
+IFNE	deep deletion	HGAT	4	gene
 IFNE	loss	HGAT	7	gene
 IFNK	loss	All	5	gene
 IFNW1	gain	All	4	gene
@@ -6398,10 +6398,10 @@ KLHL22	loss	Meningioma	5	gene
 KLHL25	gain	All	4	gene
 KLHL33	gain	All	5	gene
 KLHL7	gain	All	4	gene
-KLHL9	deep loss	All	4	gene
+KLHL9	deep deletion	All	4	gene
 KLHL9	gain	All	4	gene
 KLHL9	loss	All	12	gene
-KLHL9	deep loss	HGAT	4	gene
+KLHL9	deep deletion	HGAT	4	gene
 KLHL9	loss	HGAT	7	gene
 KLRB1	gain	All	5	gene
 KLRF1	gain	All	5	gene
@@ -8247,10 +8247,10 @@ MIR302E	loss	Ependymoma	4	gene
 MIR302E	loss	HGAT	4	gene
 MIR3065	gain	All	17	gene
 MIR3065	gain	Medulloblastoma	9	gene
-MIR31	deep loss	All	4	gene
+MIR31	deep deletion	All	4	gene
 MIR31	gain	All	4	gene
 MIR31	loss	All	12	gene
-MIR31	deep loss	HGAT	4	gene
+MIR31	deep deletion	HGAT	4	gene
 MIR31	loss	HGAT	7	gene
 MIR3121	loss	All	5	gene
 MIR3137	gain	All	9	gene
@@ -8287,10 +8287,10 @@ MIR3195	gain	HGAT	7	gene
 MIR3196	gain	All	15	gene
 MIR3196	gain	HGAT	7	gene
 MIR3198-1	loss	All	8	gene
-MIR31HG	deep loss	All	4	gene
+MIR31HG	deep deletion	All	4	gene
 MIR31HG	gain	All	4	gene
 MIR31HG	loss	All	12	gene
-MIR31HG	deep loss	HGAT	4	gene
+MIR31HG	deep deletion	HGAT	4	gene
 MIR31HG	loss	HGAT	7	gene
 MIR324	loss	All	4	gene
 MIR328	gain	All	6	gene
@@ -9200,10 +9200,10 @@ MSX2	loss	HGAT	4	gene
 MTA1	gain	All	5	gene
 MTA1	loss	All	8	gene
 MTA1	loss	HGAT	5	gene
-MTAP	deep loss	All	4	gene
+MTAP	deep deletion	All	4	gene
 MTAP	gain	All	4	gene
 MTAP	loss	All	18	gene
-MTAP	deep loss	HGAT	4	gene
+MTAP	deep deletion	HGAT	4	gene
 MTAP	loss	HGAT	9	gene
 MTCH2	gain	All	4	gene
 MTCH2	loss	All	8	gene
