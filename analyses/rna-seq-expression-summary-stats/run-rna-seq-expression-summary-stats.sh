@@ -16,5 +16,3 @@ cd "$script_directory" || exit
 mkdir -p results
 
 Rscript --vanilla '01-tpm-summary-stats.R'
-
-gzip results/*.tsv

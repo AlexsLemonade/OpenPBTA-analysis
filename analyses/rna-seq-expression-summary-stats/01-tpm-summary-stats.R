@@ -1,6 +1,64 @@
 suppressPackageStartupMessages(library(tidyverse))
 
 
+# Generate sample metadata data frame.
+# Args:
+#   - htl_df: histology data frame. Must contain group_var and
+#     Kids_First_Biospecimen_ID
+#   - group_var: character of the grouping variable, which is a column in the
+#     htl_df
+#
+# Returns a dataframe of the number of samples and sample IDs of each group.
+get_sample_meta_df <- function(htl_df, group_var) {
+  mdf <- data.frame(table(htl_df[, group_var]),
+                    stringsAsFactors = FALSE)
+  colnames(mdf) <- c(group_var, 'n_samples')
+  mdf <- mdf[order(mdf[, group_var]), ]
+  mdf$Kids_First_Biospecimen_IDs <- sapply(
+    1:nrow(mdf),
+    function(i) {
+      x <- mdf[i, group_var]
+      n <- mdf[i, 'n_samples']
+      x_df <- htl_df[htl_df[, group_var, drop = TRUE] == x, ]
+      stopifnot(identical(nrow(x_df), n))
+      return(paste(x_df$Kids_First_Biospecimen_ID, collapse = ','))
+    }
+  )
+  return(mdf)
+}
+
+# Get summary statistics dataframe for output.
+#
+# Args:
+# - ss_df: (n_genes, n_groups) summary statistics tibble. Rownames must be
+#   gene symbols.
+# - gsb_gids_df: gene symbol and ENSG ID data frame. Two columns must be
+#   gene_symbol and gene_id.
+#
+# Returns a (n_genes, n_groups) summary statistics tibble with first two
+# columns as gene_id and gene_symbol.
+get_output_ss_df <- function(ss_df, gsb_gid_df) {
+  gsb_gids_conv_df <- gsb_gid_df
+  # assert all symbols are unique
+  stopifnot(identical(length(unique(gsb_gids_conv_df$gene_symbol)),
+                      nrow(gsb_gids_conv_df)))
+  rownames(gsb_gids_conv_df) <- gsb_gids_conv_df$gene_symbol
+  # assert rownames are not changed automatically
+  stopifnot(identical(rownames(gsb_gids_conv_df),
+                      gsb_gids_conv_df$gene_symbol))
+  
+  stopifnot(all(rownames(ss_df) %in% rownames(gsb_gids_conv_df)))
+  ss_gsb_gid_df <- gsb_gids_conv_df[rownames(ss_df), ]
+  stopifnot(identical(rownames(ss_df),
+                      rownames(ss_gsb_gid_df)))
+
+  ss_out_df <- cbind(ss_gsb_gid_df, ss_df)
+  stopifnot(identical(rownames(ss_out_df), ss_out_df$gene_symbol))
+  ss_out_df <- remove_rownames(ss_out_df)
+  return(ss_out_df)
+}
+
+
 # Generate means, standard deviations, z-scores, and ranks within each group.
 #
 # Args:
@@ -208,12 +266,35 @@ stopifnot(identical(
   length(unique(htl_df$Kids_First_Biospecimen_ID))
 ))
 
+# combine CBTN and PNOC into one cohort, PBTA for this analysis
+# as suggested by @jharenza at
+# <https://github.com/PediatricOpenTargets/ticket-tracker/issues/51
+#      #issuecomment-866376252>
+htl_df$orig_cohort <- htl_df$cohort
+htl_df$cohort <- vapply(htl_df$orig_cohort, function(x) {
+  if (x %in% c('CBTN', 'PNOC')) {
+    return('PBTA')
+  } else {
+    return(x)
+  }
+}, character(1))
+
 # subset histology data frame to have the same samples as the TPM matrix
 rna_htl_df <- htl_df[htl_df$Kids_First_Biospecimen_ID %in% colnames(tpm_df), ]
 stopifnot(identical(
   sort(rna_htl_df$Kids_First_Biospecimen_ID),
   sort(colnames(tpm_df))
 ))
+
+# gene symbol to ENSG id table
+suppressMessages(gid_gsb_tbl <- read_tsv('input/ens_symbol.tsv'))
+gid_gsb_tbl <- unique(gid_gsb_tbl)
+gsb_gids_tbl <- gid_gsb_tbl %>%
+  group_by(gene_symbol) %>%
+  summarise(gene_id = paste(gene_id, collapse = ','))
+stopifnot(identical(length(unique(gsb_gids_tbl$gene_symbol)),
+                    nrow(gsb_gids_tbl)))
+gsb_gids_df <- data.frame(gsb_gids_tbl, stringsAsFactors = FALSE)
 
 
 # summary statistics of all cohorts --------------------------------------------
@@ -226,6 +307,11 @@ nge5_cg_cnts <- cg_cnts[cg_cnts >= 5]
 nge5_cgs <- names(nge5_cg_cnts)
 
 c_rna_htl_df <- ac_rna_htl_df[ac_rna_htl_df$cancer_group %in% nge5_cgs, ]
+
+c_sample_meta_df <- get_sample_meta_df(c_rna_htl_df, 'cancer_group')
+write_tsv(c_sample_meta_df,
+          'results/cancer_group_all_cohort_sample_metadata.tsv')
+
 c_tpm_df <- tpm_df[, c_rna_htl_df$Kids_First_Biospecimen_ID]
 # assert gene symbols are the same
 stopifnot(identical(rownames(c_tpm_df), rownames(tpm_df)))
@@ -239,15 +325,15 @@ stopifnot(identical(
 ot_tpm_ss_dfs <- get_expression_summary_stats(
   c_tpm_df, c_rna_htl_df$cancer_group)
 
-write_tsv(rownames_to_column(ot_tpm_ss_dfs$mean_df, 'gene'),
+write_tsv(get_output_ss_df(ot_tpm_ss_dfs$mean_df, gsb_gids_df),
           'results/cancer_group_all_cohort_mean_tpm.tsv')
-write_tsv(rownames_to_column(ot_tpm_ss_dfs$sd_df, 'gene'),
+write_tsv(get_output_ss_df(ot_tpm_ss_dfs$sd_df, gsb_gids_df),
           'results/cancer_group_all_cohort_standard_deviation_tpm.tsv')
 write_tsv(
-  rownames_to_column(ot_tpm_ss_dfs$zscore_df, 'gene'),
+  get_output_ss_df(ot_tpm_ss_dfs$zscore_df, gsb_gids_df),
   'results/cancer_group_all_cohort_cancer_group_wise_mean_tpm_z_scores.tsv')
 write_tsv(
-  rownames_to_column(ot_tpm_ss_dfs$quant_df, 'gene'),
+  get_output_ss_df(ot_tpm_ss_dfs$quant_df, gsb_gids_df),
   'results/cancer_group_all_cohort_cancer_group_wise_mean_tpm_quantiles.tsv')
 
 
@@ -266,6 +352,12 @@ nge5_cgcs <- names(nge5_cgc_cnts)
 
 cc_rna_htl_df <- acc_rna_htl_df[
   acc_rna_htl_df$cancer_group_cohort %in% nge5_cgcs, ]
+
+cc_sample_meta_df <- get_sample_meta_df(cc_rna_htl_df, 'cancer_group_cohort')
+write_tsv(cc_sample_meta_df,
+          'results/cancer_group_individual_cohort_sample_metadata.tsv')
+
+
 cc_tpm_df <- tpm_df[, cc_rna_htl_df$Kids_First_Biospecimen_ID]
 # assert gene symbols are the same
 stopifnot(identical(rownames(cc_tpm_df), rownames(tpm_df)))
@@ -279,17 +371,17 @@ stopifnot(identical(
 cc_tpm_ss_dfs <- get_expression_summary_stats(
   cc_tpm_df, cc_rna_htl_df$cancer_group_cohort)
 
-write_tsv(rownames_to_column(cc_tpm_ss_dfs$mean_df, 'gene'),
+write_tsv(get_output_ss_df(cc_tpm_ss_dfs$mean_df, gsb_gids_df),
           'results/cancer_group_individual_cohort_mean_tpm.tsv')
-write_tsv(rownames_to_column(cc_tpm_ss_dfs$sd_df, 'gene'),
+write_tsv(get_output_ss_df(cc_tpm_ss_dfs$sd_df, gsb_gids_df),
           'results/cancer_group_individual_cohort_standard_deviation_tpm.tsv')
 write_tsv(
-  rownames_to_column(cc_tpm_ss_dfs$zscore_df, 'gene'),
+  get_output_ss_df(cc_tpm_ss_dfs$zscore_df, gsb_gids_df),
   file.path('results',
             paste0('cancer_group_individual_cohort',
                    '_cancer_group_wise_mean_tpm_z_scores.tsv')))
 write_tsv(
-  rownames_to_column(cc_tpm_ss_dfs$quant_df, 'gene'),
+  get_output_ss_df(cc_tpm_ss_dfs$quant_df, gsb_gids_df),
   file.path('results',
             paste0('cancer_group_individual_cohort',
                    '_cancer_group_wise_mean_tpm_quantiles.tsv')))
