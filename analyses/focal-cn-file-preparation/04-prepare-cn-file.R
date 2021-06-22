@@ -243,7 +243,7 @@ autosome_annotated_cn <- process_annotate_overlaps(cnv_df = cnv_no_xy,
   # mark possible amplifications and deep loss in autosomes
   dplyr::mutate(status = dplyr::case_when(
     copy_number > (2 * ploidy) ~ "amplification",
-    copy_number == 0 ~ "deep loss",
+    copy_number == 0 ~ "deep deletion",
     TRUE ~ status
   ))
 
