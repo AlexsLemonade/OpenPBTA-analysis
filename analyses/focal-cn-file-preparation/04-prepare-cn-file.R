@@ -268,7 +268,7 @@ if (xy_flag) {
                                                       txdb_exons = tx_exons) %>%
   # mark possible deep loss in sex chromosome
   dplyr::mutate(status = dplyr::case_when(
-    copy_number == 0  ~ "deep loss",
+    copy_number == 0  ~ "deep deletion",
     TRUE ~ status
   )) 
   
