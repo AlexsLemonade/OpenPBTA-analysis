@@ -1,0 +1,108 @@
+# plot/table of each cohort + cancer_group vs GTEx subgroups
+suppressPackageStartupMessages(library(tidyr))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(ids))
+
+tumor_vs_normal_plot <- function(expr_mat_gene, hist_file, 
+                                 analysis_type = c("cohort_cancer_group_level", "cancer_group_level"), 
+                                 plots_dir, results_dir, plot_width, plot_height, mapping_file){
+  
+  # standardize groups:
+  # create a single group variable for both cancer_group and gtex_subgroup 
+  hist_file <- hist_file %>%
+    mutate(group = ifelse(sample_type == "Normal", gtex_subgroup, cancer_group)) %>%
+    dplyr::select(Kids_First_Biospecimen_ID, cohort, sample_type, gtex_subgroup, cancer_group, group)
+  
+  # expression matrix to long format
+  expr_mat_gene <- expr_mat_gene %>%
+    tidyr::gather("Kids_First_Biospecimen_ID", "tpm", -c("gene"))
+  
+  # combine with histology file
+  expr_mat_gene <- expr_mat_gene %>%
+    inner_join(hist_file, by = "Kids_First_Biospecimen_ID")
+  
+  # format x-axis labels and filter to n >= 5
+  if(analysis_type == "cohort_cancer_group_level"){
+    expr_mat_gene <- expr_mat_gene %>%
+      group_by(cohort, group) %>%
+      mutate(n_samples = n()) %>%
+      filter(n_samples >= 5) %>%
+      mutate(x_labels = paste(cohort, group, n_samples, sep = "_"))
+  } else if(analysis_type == "cancer_group_level") {
+    expr_mat_gene <- expr_mat_gene %>%
+      group_by(group) %>%
+      mutate(n_samples = n()) %>%
+      filter(n_samples >= 5) %>%
+      mutate(x_labels = paste(group, n_samples, sep = "_"))
+  }
+  
+  # get a vector of all tumor groups
+  cohort_cancer_groups <- expr_mat_gene %>%
+    filter(sample_type == "Tumor") %>%
+    .$x_labels %>%
+    unique()
+  
+  # loop through cancer + cohort groups
+  for(i in 1:length(cohort_cancer_groups)){
+    
+    # subset to specific cohort_cancer_group and all gtex  
+    expr_mat_gene_subset <- expr_mat_gene %>%
+      filter(x_labels %in% cohort_cancer_groups[i] | cohort == "GTEx")
+    
+    # reorder by median tpm
+    fcts <- expr_mat_gene_subset %>%
+      group_by(x_labels) %>%
+      summarise(median = median(tpm)) %>%
+      arrange(median) %>%
+      .$x_labels
+    expr_mat_gene_subset$x_labels <- factor(expr_mat_gene_subset$x_labels, levels = fcts)
+    
+    # create unique title and filenames
+    gene_name <- unique(expr_mat_gene_subset$gene)
+    cohort_name <- paste0(unique(expr_mat_gene_subset$cohort), collapse = "_")
+    uuid <- ids::uuid(n = 1, use_time = T, drop_hyphens = T)
+    title <- paste(gene_name, cohort_name, analysis_type, sep = "_")
+    fname <- paste(gene_name, cohort_name, analysis_type, uuid, sep = "_")
+    plot_fname <- file.path(plots_dir, paste0(fname, '.png'))
+    table_fname <- file.path(results_dir, paste0(fname, '.tsv'))
+    
+    # data-frame for mapping output filenames with info
+    mapping_df <- data.frame(gene = gene_name, 
+                             plot_type = c("tumor_vs_normal"), 
+                             cohort = cohort_name,
+                             analysis_type, 
+                             uuid,
+                             plot_fname = paste0(fname, '.png'),
+                             table_fname = paste0(fname, '.tsv'))
+    mapping_file <- file.path(results_dir, 'metadata.tsv')
+    if(!file.exists(mapping_file)){
+      write.table(x = mapping_df, file = mapping_file, sep = "\t", row.names = F, quote = F)
+    } else {
+      write.table(x = mapping_df, file = mapping_file, sep = "\t", row.names = F, col.names = F, quote = F, append = TRUE)
+    }
+    
+    # boxplot
+    cols <- c("Normal" = "grey80", "Tumor" = "red3")
+    output_plot <- ggplot(expr_mat_gene_subset, aes(x = x_labels, y = log2(tpm + 1), fill = sample_type)) +
+      stat_boxplot(geom ='errorbar', width = 0.2) +
+      geom_boxplot(lwd = 0.5, fatten = 0.7, outlier.shape = 1, width = 0.5, outlier.size = 1) +
+      ylab("log2 TPM") + xlab("") +
+      theme_Publication2(base_size = 12) + 
+      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+      ggtitle(title) +
+      scale_fill_manual(values = cols) + guides(fill = FALSE)
+    ggsave(plot = output_plot, filename = plot_fname, device = "png", width = plot_width, height = plot_height)
+    
+    # output table of gene, median and sd
+    output_table <- expr_mat_gene_subset %>%
+      group_by(gene, x_labels) %>%
+      summarise(mean = mean(tpm),
+                median = median(tpm),
+                sd = sqrt(var(tpm))) %>%
+      mutate(mean = round(mean, digits = 2),
+             median = round(median, digits = 2),
+             sd = round(sd, digits = 2))
+    write.table(x = output_table, file = table_fname, sep = "\t", row.names = F, quote = F)
+  }
+}
