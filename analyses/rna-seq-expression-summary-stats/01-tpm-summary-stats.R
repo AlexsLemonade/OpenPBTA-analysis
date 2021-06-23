@@ -303,7 +303,8 @@ htl_df$cohort <- vapply(htl_df$orig_cohort, function(x) {
 # independent sample table
 suppressMessages(
   rna_idps_df <- read_tsv(
-    'input/independent-specimens.rnaseq.primary-plus.tsv')
+    file.path('..', 'independent-samples', 'results',
+              'independent-specimens.rnaseq.primary-plus.tsv'))
 )
 rna_idps_kfbids <- rna_idps_df$Kids_First_Biospecimen_ID
 # subset histology data frame to have the same samples as the TPM matrix
