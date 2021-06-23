@@ -404,9 +404,9 @@ RUN ./install_bioc.r \
 
 # Packages for RNA-seq expression boxplots (tumor-gtex-plots)
 RUN ./install_bioc.r \
-    tidyr
-    dplyr
-    ggplot2
+    tidyr \
+    dplyr \
+    ggplot2 \
     ids
 
 #### Please install your dependencies immediately above this comment.
