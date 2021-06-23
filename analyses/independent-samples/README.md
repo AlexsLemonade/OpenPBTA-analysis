@@ -20,10 +20,9 @@ As different analyses may require different sets of data, we actually generate a
 * Primary and secondary specimens with WGS or WXS or Panel:  
 `independent-specimens.wgswxspanel.primary-plus.tsv`
 
-* Primary and secondary specimens matching WGS and WXS independent sample_ids plus only-RNA-Seq for polya samples
-independent-specimens.rnaseq.primary-plus-polya.tsv
-* Primary and secondary specimens matching WGS and WXS independent sample_ids plus only-RNA-Seq for stranded samples
-independent-specimens.rnaseq.primary-plus-stranded.tsv
+* Primary and secondary RNA-Seq specimens matching WGS/WXS/Panel independent sample_ids plus only-RNA-Seq 
+`independent-specimens.rnaseq.primary-plus.tsv`
+
 
 ## Generating sample lists
 
