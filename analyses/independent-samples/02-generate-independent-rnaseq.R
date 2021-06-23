@@ -8,7 +8,7 @@
 # -o,--output_directory : Output directory
 # example invocation:
 # Rscript analyses/independent-samples/02-generate-independent-rnaseq.R \
-#   -f data/pbta-histologies.tsv \
+#   -f data/histologies.tsv \
 #   -o analyses/independent-samples/results
 
 # Load the libraries
@@ -54,15 +54,13 @@ if (!dir.exists(out_dir)){
   dir.create(out_dir, recursive = TRUE)
 }
 
-rnaseq_primplus_polya_file <- file.path(out_dir, 
-                                  "independent-specimens.rnaseq.primary-plus-polya.tsv")
+rnaseq_primplus_file <- file.path(out_dir, 
+                                  "independent-specimens.rnaseq.primary-plus.tsv")
 
-rnaseq_primplus_stranded_file <- file.path(out_dir, 
-                                        "independent-specimens.rnaseq.primary-plus-stranded.tsv")
 
 # Read histology file
 sample_df <- readr::read_tsv(opts$histology_file, 
-                             guess_max = 10000,
+                             guess_max = 100000,
                              col_types = readr::cols()) # suppress parse message
 
 # Read in dna independent sample list to match to rna samples
@@ -73,9 +71,9 @@ independent_dna_sample_df <- read_tsv(opts$independent_dna_sample_df)
 # we have polya and stranded samples per Kids_First_Participant_ID
 
 # Filter to only samples from tumors, where composition is known to be Solid Tissue
-# only polya samples
-independent_rna_primary_plus_polya <- sample_df %>%
-  filter(sample_type == "Tumor", RNA_library=="poly-A",
+# for all RNA samples
+independent_rna_primary_plus <- sample_df %>%
+  filter(sample_type == "Tumor", 
          composition == "Solid Tissue"
   ) %>%
   independent_rna_samples(independent_dna_sample_df = 
@@ -83,18 +81,5 @@ independent_rna_primary_plus_polya <- sample_df %>%
                           histology_df = .,
                           match_type = "independent_dna_plus_only_rna",
                           tumor_description_rna_only = "primary_plus",seed = 2020) %>%
-  write_tsv(rnaseq_primplus_polya_file)
+  readr::write_tsv(rnaseq_primplus_file)
 
-
-# Filter to only samples from tumors, where composition is known to be Solid Tissue
-# only stranded samples
-independent_rna_primary_plus_stranded <- sample_df %>%
-  filter(sample_type == "Tumor", RNA_library=="stranded",
-         composition == "Solid Tissue"
-  ) %>%
-  independent_rna_samples(independent_dna_sample_df = 
-                            independent_dna_sample_df,
-                          histology_df = .,
-                          match_type = "independent_dna_plus_only_rna",
-                          tumor_description_rna_only = "primary_plus",seed = 2020) %>%
-  write_tsv(rnaseq_primplus_stranded_file)

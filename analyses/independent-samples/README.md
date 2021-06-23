@@ -9,16 +9,19 @@ This analysis creates lists of samples such that there are no cases where more t
 As different analyses may require different sets of data, we actually generate a few different sets, stored in the `results` subdirectory:
 * Primary specimens only with whole genome sequence (WGS):  
 `independent-specimens.wgs.primary.tsv`
+* Secondary specimens with WGS:  
+`independent-specimens.wgs.secondary.tsv`
 * Primary and secondary specimens with WGS:  
 `independent-specimens.wgs.primary-plus.tsv`
-* Primary specimens only with either WGS or whole exome sequence (WXS):  
-`independent-specimens.wgswxs.primary.tsv`
-* Primary and secondary specimens with WGS or WXS:  
-`independent-specimens.wgswxs.primary-plus.tsv`
-* Primary and secondary specimens matching WGS and WXS independent sample_ids plus only-RNA-Seq for polya samples
-independent-specimens.rnaseq.primary-plus-polya.tsv
-* Primary and secondary specimens matching WGS and WXS independent sample_ids plus only-RNA-Seq for stranded samples
-independent-specimens.rnaseq.primary-plus-stranded.tsv
+* Primary specimens only with either WGS or whole exome sequence (WXS) or Panel:  
+`independent-specimens.wgswxspanel.primary.tsv`
+* Secondary specimens only with either WGS or whole exome sequence (WXS) or Panel:  
+`independent-specimens.wgswxspanel.secondary.tsv`
+* Primary and secondary specimens with WGS or WXS or Panel:  
+`independent-specimens.wgswxspanel.primary-plus.tsv`
+
+* Primary and secondary RNA-Seq specimens matching WGS/WXS/Panel independent sample_ids plus only-RNA-Seq 
+`independent-specimens.rnaseq.primary-plus.tsv`
 
 
 ## Generating sample lists
@@ -34,8 +37,6 @@ OR by default uses pbta-histologies.tsv from data folder
 ```sh
 bash analyses/independent-samples/run-independent-samples.sh
 ```
-
-
 
 ## Methods
 
