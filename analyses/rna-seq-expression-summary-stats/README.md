@@ -34,7 +34,7 @@ Generate z-scores across all `cancer_groups`/`cancer_group_cohorts` as `z_score_
 
 #### All cohort summary statistics tables
 
-The following tables are generated using the methods described above. Rows are genes. Columns are `cancer_group`s, except that the first two columns are gene symbol and gene Ensembl ID.
+The following tables are generated using the methods described above. Rows are genes. Columns are `cancer_group`s, except that the first two columns are gene symbol and gene Ensembl ID. If one gene symbol matches to multiple Ensembl IDs, the value of the Ensembl ID column is a comma separated list of all Ensembl IDs, e.g. `ENSG00000206952.3,ENSG00000281910.1`. In `inpiut/ens_symbol.tsv`, `SNORA50A` is mapped to both `ENSG00000206952.3` and `ENSG00000281910.1`.
 
 - `results/cancer_group_all_cohort_mean_tpm.tsv`
 - `results/cancer_group_all_cohort_standard_deviation_tpm.tsv`
@@ -46,7 +46,7 @@ The samples used in each `cancer_group` are listed in `results/cancer_group_all_
 
 #### Individual cohort summary statistics tables
 
-The following tables are generated using the methods described above. Rows are genes. Columns are `cancer_group_cohort`s, except that the first two columns are gene symbol and gene Ensembl ID. A `cancer_group_cohort` is a string that concatenates a `cancer_group` and a `cohort` by `___`, e.g. `Meningioma___PBTA`, `Neuroblastoma___GMKF`, and `Diffuse midline glioma___PBTA`.
+The following tables are generated using the methods described above. Rows are genes. Columns are `cancer_group_cohort`s, except that the first two columns are gene symbol and gene Ensembl ID. A `cancer_group_cohort` is a string that concatenates a `cancer_group` and a `cohort` by `___`, e.g. `Meningioma___PBTA`, `Neuroblastoma___GMKF`, and `Diffuse midline glioma___PBTA`. If one gene symbol matches to multiple Ensembl IDs, the value of the Ensembl ID column is a comma separated list of all Ensembl IDs, e.g. `ENSG00000206952.3,ENSG00000281910.1`. In `inpiut/ens_symbol.tsv`, `SNORA50A` is mapped to both `ENSG00000206952.3` and `ENSG00000281910.1`.
 
 - `results/cancer_group_individual_cohort_mean_tpm.tsv`
 - `results/cancer_group_individual_cohort_standard_deviation_tpm.tsv`
