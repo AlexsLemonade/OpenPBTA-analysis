@@ -56,16 +56,20 @@ if (!dir.exists(out_dir)){
 
 wgs_primary_file <- file.path(out_dir, 
                               "independent-specimens.wgs.primary.tsv")
+wgs_secondary_file <- file.path(out_dir, 
+                              "independent-specimens.wgs.secondary.tsv")
 wgs_primplus_file <- file.path(out_dir, 
-                               "independent-specimens.wgs.primary-plus.tsv")
-wgswxs_primary_file <- file.path(out_dir, 
-                                 "independent-specimens.wgswxs.primary.tsv")
-wgswxs_primplus_file <- file.path(out_dir, 
-                                  "independent-specimens.wgswxs.primary-plus.tsv")
+                              "independent-specimens.wgs.primary-plus.tsv")
+wgswxspanel_primary_file <- file.path(out_dir, 
+                              "independent-specimens.wgswxspanel.primary.tsv")
+wgswxspanel_secondary_file <- file.path(out_dir, 
+                              "independent-specimens.wgswxspanel.secondary.tsv")
+wgswxspanel_primplus_file <- file.path(out_dir, 
+                              "independent-specimens.wgswxspanel.primary-plus.tsv")
 
 # Read histology file
 sample_df <- readr::read_tsv(opts$histology_file, 
-                             guess_max = 10000,
+                             guess_max = 100000,
                              col_types = readr::cols()) # suppress parse message
 
 
@@ -74,35 +78,44 @@ sample_df <- readr::read_tsv(opts$histology_file,
 tumor_samples <- sample_df %>%
   dplyr::filter(sample_type == "Tumor", 
                 composition == "Solid Tissue", 
-                experimental_strategy %in% c("WGS", "WXS"))
+                experimental_strategy %in% c("WGS", "WXS", "Targeted Sequencing", "Targeted-Capture"))
 
 # Generate WGS independent samples
 wgs_samples <- tumor_samples %>%
   dplyr::filter(experimental_strategy == "WGS")
 
-wgs_primary <- independent_samples(wgs_samples, tumor_types = "primary")
-wgs_primary_plus <- independent_samples(wgs_samples, tumor_types = "prefer_primary")
+wgs_primary <- independent_samples(wgs_samples, tumor_types = "primary", seed = 2020)
+wgs_secondary <- independent_samples(wgs_samples, tumor_types = "secondary", seed = 2020)
+wgs_primary_plus <- independent_samples(wgs_samples, tumor_types = "prefer_primary", seed = 2020)
 
-# Generate lists for WXS only samples 
+# Generate lists for WXS and Panel samples 
 # WGS is generally preferred, so we will only include those where WGS is not available
-wxs_only_samples <-  tumor_samples %>% 
+wxs_panel_samples <-  tumor_samples %>% 
   dplyr::filter(!(Kids_First_Participant_ID %in% 
                   wgs_samples$Kids_First_Participant_ID))
 
-wxs_primary <- independent_samples(wxs_only_samples, tumor_types = "primary")
-wxs_primary_plus <- independent_samples(wxs_only_samples, tumor_types = "prefer_primary")
+wxs_panel_primary <- independent_samples(wxs_panel_samples, tumor_types = "primary", seed = 2020)
+wxs_panel_secondary <- independent_samples(wxs_panel_samples, tumor_types = "secondary", seed = 2020)
+wxs_panel_primary_plus <- independent_samples(wxs_panel_samples, tumor_types = "prefer_primary", seed = 2020)
 
 # write files
 message(paste(nrow(wgs_primary), "WGS primary specimens"))
 readr::write_tsv(wgs_primary, wgs_primary_file)
 
+message(paste(nrow(wgs_secondary), "WGS secondary specimens"))
+readr::write_tsv(wgs_secondary, wgs_secondary_file)
+
 message(paste(nrow(wgs_primary_plus), "WGS specimens (including non-primary)"))
 readr::write_tsv(wgs_primary_plus, wgs_primplus_file)
 
-message(paste(nrow(wgs_primary) + nrow(wxs_primary), "WGS+WXS primary specimens"))
-readr::write_tsv(dplyr::bind_rows(wgs_primary, wxs_primary),
-                 wgswxs_primary_file)
+message(paste(nrow(wgs_primary) + nrow(wxs_panel_primary), "WGS+WXS+Panel primary specimens"))
+readr::write_tsv(dplyr::bind_rows(wgs_primary, wxs_panel_primary),
+                 wgswxspanel_primary_file)
 
-message(paste(nrow(wgs_primary_plus) + nrow(wxs_primary_plus), "WGS+WXS specimens (including non-primary)"))
-readr::write_tsv(dplyr::bind_rows(wgs_primary_plus, wxs_primary_plus),
-                 wgswxs_primplus_file)
+message(paste(nrow(wgs_secondary) + nrow(wxs_panel_secondary), "WGS+WXS+Panel secondary specimens"))
+readr::write_tsv(dplyr::bind_rows(wgs_secondary, wxs_panel_secondary),
+                 wgswxspanel_secondary_file)
+
+message(paste(nrow(wgs_primary_plus) + nrow(wxs_panel_primary_plus), "WGS+WXS+Panel specimens (including non-primary)"))
+readr::write_tsv(dplyr::bind_rows(wgs_primary_plus, wxs_panel_primary_plus),
+                 wgswxspanel_primplus_file)
