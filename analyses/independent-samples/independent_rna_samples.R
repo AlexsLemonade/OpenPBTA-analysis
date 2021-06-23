@@ -21,7 +21,7 @@
 #' set plus include samples where only rna samples exists
 #' @param tumor_description_rna_only Tumor descriptors to select samples where
 #' only RNA samples are available and will have no matching id in independent_dna_sample_df
-#' Opetions are "primary" to select only primary/initial tumors. Primary tumors are defined as those designated "Initial CNS Tumor"+ "Primary Tumor" + "Diagnosis".
+#' Opetions are "primary" to select only primary/initial tumors. Primary tumors are defined as those designated "Initial CNS Tumor"+ "Primary Tumor".
 #' "primary_plus" if you would like to select other non-initial tumor RNA-Seq sample if no 
 #' initial tumor RNA-Seq sample exists
 #' or "Diagnosis" in the `tumor_descriptor` field.
@@ -36,7 +36,7 @@ independent_rna_samples <- function(independent_dna_sample_df,
   match_type <- match.arg(match_type)
   tumor_description_rna_only <- match.arg(tumor_description_rna_only)
   if(!missing(seed)){set.seed(seed)}
-  primary_descs <- c("Initial CNS Tumor", "Diagnosis", "Primary tumor")
+  primary_descs <- c("Initial CNS Tumor", "Primary tumor")
   
   # Find sample set for the dna independent samples 
   # This will always be the included since in both the following
@@ -57,7 +57,7 @@ independent_rna_samples <- function(independent_dna_sample_df,
   # has rna samples which match the independent samples provided
   sample_df <- matched_rna
 
-  
+
   # Here we are adding only initial only-RNA-Seq samples
   # since this will always to part of independent_dna_plus_only_rna
   # regardless tumor_description_rna_only is "primary" OR "primary_plus"
@@ -75,7 +75,6 @@ independent_rna_samples <- function(independent_dna_sample_df,
     # has rna samples which match the independent samples provided plus rna only sample which are primary tumors
     sample_df <- bind_rows(sample_df,only_rna_initial)
   }
-  
   
   # Here we are adding only-RNA-Seq samples which are not initial
   # if tumor_description_rna_only == "primary_plus"

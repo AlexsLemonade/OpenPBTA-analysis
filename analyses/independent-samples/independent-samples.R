@@ -13,7 +13,7 @@
 #'   are "primary" to include only primary tumors, "prefer_primary" to include
 #'   primary tumors when available, but fall back to other types, or "any" to
 #'   randomly select among all available specimens. As of v5, primary tumors
-#'   are defined as those designated "Initial CNS Tumor" or "Diagnosis" in the
+#'   are defined as those designated "Initial CNS Tumor" in the
 #'   `tumor_descriptor` field.
 #' @param seed An optional random number seed. 
 #' 
@@ -24,7 +24,7 @@ independent_samples <- function(sample_df,
   tumor_types <- match.arg(tumor_types)
   if(!missing(seed)){set.seed(seed)}
   
-  primary_descs <- c("Initial CNS Tumor", "Diagnosis", "Primary tumor")
+  primary_descs <- c("Initial CNS Tumor", "Primary tumor")
   
   if(tumor_types %in% c("prefer_primary")){
     # find cases where non-primary is the only option
