@@ -45,7 +45,7 @@ independent_samples <- function(sample_df,
     sample_df <- dplyr::bind_rows(primary_df, noprimary_df)
   } 
   
-  if(tumor_types == "secondary"){
+if(tumor_types == "secondary"){
     sample_df <- sample_df %>%
       dplyr::filter(!tumor_descriptor %in% primary_descs)
   } 
