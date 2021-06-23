@@ -84,9 +84,9 @@ tumor_samples <- sample_df %>%
 wgs_samples <- tumor_samples %>%
   dplyr::filter(experimental_strategy == "WGS")
 
-wgs_primary <- independent_samples(wgs_samples, tumor_types = "primary")
-wgs_secondary <- independent_samples(wgs_samples, tumor_types = "secondary")
-wgs_primary_plus <- independent_samples(wgs_samples, tumor_types = "prefer_primary")
+wgs_primary <- independent_samples(wgs_samples, tumor_types = "primary", seed = 2020)
+wgs_secondary <- independent_samples(wgs_samples, tumor_types = "secondary", seed = 2020)
+wgs_primary_plus <- independent_samples(wgs_samples, tumor_types = "prefer_primary", seed = 2020)
 
 # Generate lists for WXS and Panel samples 
 # WGS is generally preferred, so we will only include those where WGS is not available
@@ -94,9 +94,9 @@ wxs_panel_samples <-  tumor_samples %>%
   dplyr::filter(!(Kids_First_Participant_ID %in% 
                   wgs_samples$Kids_First_Participant_ID))
 
-wxs_panel_primary <- independent_samples(wxs_panel_samples, tumor_types = "primary")
-wxs_panel_secondary <- independent_samples(wxs_panel_samples, tumor_types = "secondary")
-wxs_panel_primary_plus <- independent_samples(wxs_panel_samples, tumor_types = "prefer_primary")
+wxs_panel_primary <- independent_samples(wxs_panel_samples, tumor_types = "primary", seed = 2020)
+wxs_panel_secondary <- independent_samples(wxs_panel_samples, tumor_types = "secondary", seed = 2020)
+wxs_panel_primary_plus <- independent_samples(wxs_panel_samples, tumor_types = "prefer_primary", seed = 2020)
 
 # write files
 message(paste(nrow(wgs_primary), "WGS primary specimens"))

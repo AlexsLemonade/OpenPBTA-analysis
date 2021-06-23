@@ -8,7 +8,7 @@
 # -o,--output_directory : Output directory
 # example invocation:
 # Rscript analyses/independent-samples/02-generate-independent-rnaseq.R \
-#   -f data/pbta-histologies.tsv \
+#   -f data/histologies.tsv \
 #   -o analyses/independent-samples/results
 
 # Load the libraries
