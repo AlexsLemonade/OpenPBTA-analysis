@@ -8,7 +8,7 @@
 #' 
 #' 
 #' @param sample_df A data frame of samples, with columns corresponding to those
-#'   in `pbta-histologies.tsv`
+#'   in `histologies.tsv`
 #' @param tumor_types Designates which types of tumors will be included. Options
 #'   are "primary" to include only primary tumors, "prefer_primary" to include
 #'   primary tumors when available, but fall back to other types, or "any" to
@@ -26,7 +26,7 @@ independent_samples <- function(sample_df,
   
   primary_descs <- c("Initial CNS Tumor", "Diagnosis", "Primary tumor")
   
-  if(tumor_types %in% c("prefer_primary","secondary")){
+  if(tumor_types %in% c("prefer_primary")){
     # find cases where non-primary is the only option
     no_primary <- sample_df %>% 
       dplyr::group_by(Kids_First_Participant_ID) %>%
@@ -47,7 +47,7 @@ independent_samples <- function(sample_df,
   
   if(tumor_types == "secondary"){
     sample_df <- sample_df %>%
-      dplyr::filter(Kids_First_Participant_ID %in% no_primary)
+      dplyr::filter(!tumor_descriptor %in% primary_descs)
   } 
 
   # get the samples from the earliest timepoints for each Participant

@@ -16,12 +16,12 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 
 Rscript -e "rmarkdown::render('00-repeated-samples.Rmd',params=list(base_run = ${RUN_FOR_SUBTYPING}), clean = TRUE)"
 
-if [[ RUN_FOR_SUBTYPING == "0" ]]
-then
+#if [[ RUN_FOR_SUBTYPING == "0" ]]
+#then
    HISTOLOGY_FILE="../../data/histologies.tsv" 
-else 
-   HISTOLOGY_FILE="../../data/histologies-base.tsv"  
-fi
+#else 
+#   HISTOLOGY_FILE="../../data/histologies-base.tsv"  
+#fi
 
 Rscript 01-generate-independent-specimens.R \
   -f $HISTOLOGY_FILE \
