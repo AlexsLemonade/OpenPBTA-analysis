@@ -352,13 +352,13 @@ write_tsv(get_output_ss_df(ot_tpm_ss_dfs$sd_df, gsb_gids_df),
           'results/cancer_group_all_cohort_standard_deviation_tpm.tsv')
 write_tsv(
   get_output_ss_df(ot_tpm_ss_dfs$group_wise_zscore_df, gsb_gids_df),
-  'results/cancer_group_all_cohort_cancer_group_wise_mean_tpm_z_scores.tsv')
+  'results/cancer_group_all_cohort_mean_tpm_cancer_group_wise_z_scores.tsv')
 write_tsv(
   get_output_ss_df(ot_tpm_ss_dfs$quant_df, gsb_gids_df),
-  'results/cancer_group_all_cohort_cancer_group_wise_mean_tpm_quantiles.tsv')
+  'results/cancer_group_all_cohort_mean_tpm_cancer_group_wise_quantiles.tsv')
 write_tsv(
   get_output_ss_df(ot_tpm_ss_dfs$gene_wise_zscore_df, gsb_gids_df),
-  'results/cancer_group_all_cohort_gene_wise_mean_tpm_z_scores.tsv')
+  'results/cancer_group_all_cohort_mean_tpm_gene_wise_z_scores.tsv')
 
 
 
@@ -403,14 +403,14 @@ write_tsv(
   get_output_ss_df(cc_tpm_ss_dfs$group_wise_zscore_df, gsb_gids_df),
   file.path('results',
             paste0('cancer_group_individual_cohort',
-                   '_cancer_group_wise_mean_tpm_z_scores.tsv')))
+                   '_mean_tpm_cancer_group_wise_z_scores.tsv')))
 write_tsv(
   get_output_ss_df(cc_tpm_ss_dfs$quant_df, gsb_gids_df),
   file.path('results',
             paste0('cancer_group_individual_cohort',
-                   '_cancer_group_wise_mean_tpm_quantiles.tsv')))
+                   '_mean_tpm_cancer_group_wise_quantiles.tsv')))
 write_tsv(
   get_output_ss_df(cc_tpm_ss_dfs$gene_wise_zscore_df, gsb_gids_df),
   file.path('results',
             paste0('cancer_group_individual_cohort',
-                   '_gene_wise_mean_tpm_z_scores.tsv')))
+                   '_mean_tpm_gene_wise_z_scores.tsv')))
