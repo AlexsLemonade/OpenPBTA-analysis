@@ -44,8 +44,8 @@ independent_rna_samples <- function(independent_dna_sample_df,
   # 
   independent_dna <- histology_df %>%
     # include matched independent_dna samples
-    dplyr::filter(Kids_First_Biospecimen_ID %in%
-                    independent_dna_sample_df$Kids_First_Biospecimen_ID)
+    dplyr::filter(Kids_First_Participant_ID %in%
+                    independent_dna_sample_df$Kids_First_Participant_ID)
   matched_rna <- histology_df %>%
     # keep rna from histology_df
     dplyr::filter(experimental_strategy == "RNA-Seq",
