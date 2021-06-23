@@ -302,24 +302,14 @@ htl_df$cohort <- vapply(htl_df$orig_cohort, function(x) {
 
 # independent sample table
 suppressMessages(
-  polya_idps_df <- read_tsv(
-    'input/independent-specimens.rnaseq.primary-plus-polya.tsv')
+  rna_idps_df <- read_tsv(
+    'input/independent-specimens.rnaseq.primary-plus.tsv')
 )
-suppressMessages(
-  stranded_idps_df <- read_tsv(
-    'input/independent-specimens.rnaseq.primary-plus-stranded.tsv')
-)
-# assert no overlap between polya and standed
-stopifnot(identical(
-  length(intersect(polya_idps_df$Kids_First_Biospecimen_ID,
-                   stranded_idps_df$Kids_First_Biospecimen_ID)),
-  as.integer(0)))
-rna_idps <- c(polya_idps_df$Kids_First_Biospecimen_ID,
-              stranded_idps_df$Kids_First_Biospecimen_ID)
-
+rna_idps_kfbids <- rna_idps_df$Kids_First_Biospecimen_ID
 # subset histology data frame to have the same samples as the TPM matrix
-rna_htl_df <- htl_df[htl_df$Kids_First_Biospecimen_ID %in% colnames(tpm_df) &
-                       htl_df$Kids_First_Biospecimen_ID %in% rna_idps, ]
+rna_htl_df <- htl_df[
+  htl_df$Kids_First_Biospecimen_ID %in% colnames(tpm_df) &
+    htl_df$Kids_First_Biospecimen_ID %in% rna_idps_kfbids, ]
 stopifnot(all(rna_htl_df$Kids_First_Biospecimen_ID %in% colnames(tpm_df)))
 
 # gene symbol to ENSG id table
