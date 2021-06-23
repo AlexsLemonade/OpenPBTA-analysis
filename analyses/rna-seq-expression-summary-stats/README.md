@@ -17,10 +17,14 @@ If >= 5 samples are selected, generate the following summary statistics:
 
 - TPM means of each gene across all selected samples, and denote this vector as `mean_TPM_vector`.
 - TPM standard deviations of each gene across all selected samples.
-- z-scores of each gene across all genes, computed as `z_score_vector = (mean_TPM_vector - mean(mean_TPM_vector)) / sd(mean_TPM_vector)`.
+- z-scores of each gene across all genes, computed as `z_score_vector = (mean_TPM_vector - mean(mean_TPM_vector)) / sd(mean_TPM_vector)`. Call these z-scores as `cancer_group_wise_mean_tpm_z_scores` in the filenames.
 - Ranks of mean TPM of each gene across all selected samples, which takes one of the following four values: `Highest expressed 25%`, `Expression between upper quartile and median`, `Expression between median and lower quartile`, and `Lowest expressed 25%`. If multiple genes have the same mean TPM value, their tied rank is the lowest rank, in order to be conservative on the description of their expression levels.
 
 Combine each type of the summary statistics vectors into a table, with rows as genes, and columns as `cancer_group_cohort`.
+
+Denote the (`n_genes`, `n_cancer_groups`/`n_cancer_group_cohorts`) `mean_TPM_vector` combined matrix as `mean_TPM_matrix`.
+
+Generate z-scores across all `cancer_groups`/`cancer_group_cohorts` as `z_score_matrix = (mean_TPM_matrix - rowMeans(mean_TPM_matrix)) / rowSD(mean_TPM_matrix)`. Call these z-scores as `gene_wise_mean_tpm_z_scores` in the filenames.
 
 ### Results
 
@@ -32,6 +36,7 @@ The following tables are generated using the methods described above. Rows are g
 - `results/cancer_group_all_cohort_standard_deviation_tpm.tsv`
 - `results/cancer_group_all_cohort_cancer_group_wise_mean_tpm_z_scores.tsv`
 - `results/cancer_group_all_cohort_cancer_group_wise_mean_tpm_quantiles.tsv`
+- `results/cancer_group_all_cohort_gene_wise_mean_tpm_z_scores.tsv`
 
 The samples used in each `cancer_group` are listed in `results/cancer_group_all_cohort_sample_metadata.tsv`. The columns are 1) `cancer_group`, 2) the number of samples in the `cancer_group`, and 3) the comma separated list of `Kids_First_Biospecimen_ID`s of the samples in the `cancer_group`.
 
@@ -43,6 +48,7 @@ The following tables are generated using the methods described above. Rows are g
 - `results/cancer_group_individual_cohort_standard_deviation_tpm.tsv`
 - `results/cancer_group_individual_cohort_cancer_group_wise_mean_tpm_z_scores.tsv`
 - `results/cancer_group_individual_cohort_cancer_group_wise_mean_tpm_quantiles.tsv`
+- `results/cancer_group_individual_cohort_gene_wise_mean_tpm_z_scores.tsv`
 
 The samples used in each `cancer_group_cohort` are listed in `results/cancer_group_individual_cohort_sample_metadata.tsv`. The columns are 1) `cancer_group_cohort`, 2) the number of samples in the `cancer_group_cohort`, and 3) the comma separated list of `Kids_First_Biospecimen_ID`s of the samples in the `cancer_group_cohort`.
 
@@ -63,11 +69,13 @@ The samples used in each `cancer_group_cohort` are listed in `results/cancer_gro
 ├── results
 │   ├── cancer_group_all_cohort_cancer_group_wise_mean_tpm_quantiles.tsv
 │   ├── cancer_group_all_cohort_cancer_group_wise_mean_tpm_z_scores.tsv
+│   ├── cancer_group_all_cohort_gene_wise_mean_tpm_z_scores.tsv
 │   ├── cancer_group_all_cohort_mean_tpm.tsv
 │   ├── cancer_group_all_cohort_sample_metadata.tsv
 │   ├── cancer_group_all_cohort_standard_deviation_tpm.tsv
 │   ├── cancer_group_individual_cohort_cancer_group_wise_mean_tpm_quantiles.tsv
 │   ├── cancer_group_individual_cohort_cancer_group_wise_mean_tpm_z_scores.tsv
+│   ├── cancer_group_individual_cohort_gene_wise_mean_tpm_z_scores.tsv
 │   ├── cancer_group_individual_cohort_mean_tpm.tsv
 │   ├── cancer_group_individual_cohort_sample_metadata.tsv
 │   └── cancer_group_individual_cohort_standard_deviation_tpm.tsv
@@ -97,9 +105,11 @@ Output:
 - `results/cancer_group_all_cohort_standard_deviation_tpm.tsv`
 - `results/cancer_group_all_cohort_cancer_group_wise_mean_tpm_z_scores.tsv`
 - `results/cancer_group_all_cohort_cancer_group_wise_mean_tpm_quantiles.tsv`
+- `results/cancer_group_all_cohort_gene_wise_mean_tpm_z_scores.tsv`
 
 - `results/cancer_group_individual_cohort_sample_metadata.tsv`
 - `results/cancer_group_individual_cohort_mean_tpm.tsv`
 - `results/cancer_group_individual_cohort_standard_deviation_tpm.tsv`
 - `results/cancer_group_individual_cohort_cancer_group_wise_mean_tpm_z_scores.tsv`
 - `results/cancer_group_individual_cohort_cancer_group_wise_mean_tpm_quantiles.tsv`
+- `results/cancer_group_individual_cohort_gene_wise_mean_tpm_z_scores.tsv`

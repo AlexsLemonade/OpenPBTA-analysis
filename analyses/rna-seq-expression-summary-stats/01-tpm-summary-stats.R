@@ -27,6 +27,7 @@ get_sample_meta_df <- function(htl_df, group_var) {
   return(mdf)
 }
 
+
 # Get summary statistics dataframe for output.
 #
 # Args:
@@ -94,8 +95,7 @@ get_expression_summary_stats <- function(exp_df, groups) {
   # assert gene symbols are the same
   stopifnot(identical(rownames(cg_mean_exp_out_df), check_gids))
   # assert groups are the same. assumes the first column is gene
-  stopifnot(identical(sort(colnames(cg_mean_exp_out_df)),
-                      check_groups))
+  stopifnot(identical(sort(colnames(cg_mean_exp_out_df)), check_groups))
   res_list$mean_df <- cg_mean_exp_out_df
 
 
@@ -111,29 +111,30 @@ get_expression_summary_stats <- function(exp_df, groups) {
   # assert gene symbols are the same
   stopifnot(identical(rownames(cg_sd_exp_out_df), check_gids))
   # assert groups are the same. assumes the first column is gene
-  stopifnot(identical(sort(colnames(cg_sd_exp_out_df)),
-                      check_groups))
+  stopifnot(identical(sort(colnames(cg_sd_exp_out_df)), check_groups))
   res_list$sd_df <- cg_sd_exp_out_df
 
+  # input is a numeric matrix
+  row_wise_zscores <- function(num_mat) {
+    row_means <- rowMeans(num_mat)
+    row_sds <- apply(num_mat, 1, sd)
+    # row-wise z-score
+    row_wise_zscore_mat <- sweep(num_mat, 1, row_means, FUN = '-')
+    row_wise_zscore_mat <- sweep(row_wise_zscore_mat, 1, row_sds, FUN = '/')
+
+    return(row_wise_zscore_mat)
+  }
 
   # compute z-scores
-  print('Compute z-scores...')
+  print('Compute group-wise z-scores...')
   # cg_mean_exp_df is (n_groups, n_genes)
   cg_mean_exp_mat <- as.matrix(cg_mean_exp_df)
   # assert gene symbols are the same
   stopifnot(identical(colnames(cg_mean_exp_mat), check_gids))
   # assert cancer groups are the same
-  stopifnot(identical(sort(rownames(cg_mean_exp_mat)),
-                      check_groups))
-  # group wise means
-  cg_mean_cgw_means <- rowMeans(cg_mean_exp_mat)
-  # group wise sds
-  cg_mean_cgw_sds <- apply(cg_mean_exp_mat, 1, sd)
-  # group wise z-score
-  cg_mean_cgw_zscore_mat <- sweep(cg_mean_exp_mat, 1, cg_mean_cgw_means,
-                                  FUN = '-')
-  cg_mean_cgw_zscore_mat <- sweep(cg_mean_cgw_zscore_mat, 1, cg_mean_cgw_sds,
-                                  FUN = '/')
+  stopifnot(identical(sort(rownames(cg_mean_exp_mat)), check_groups))
+  # group wise z-scores
+  cg_mean_cgw_zscore_mat <- row_wise_zscores(cg_mean_exp_mat)
 
   cg_mean_cgw_zscore_df <- data.frame(
     t(cg_mean_cgw_zscore_mat), check.names = FALSE, check.rows = FALSE)
@@ -141,7 +142,29 @@ get_expression_summary_stats <- function(exp_df, groups) {
   stopifnot(identical(rownames(cg_mean_cgw_zscore_df), check_gids))
   # assert cancer groups are the same
   stopifnot(identical(sort(colnames(cg_mean_cgw_zscore_df)), check_groups))
-  res_list$zscore_df <- cg_mean_cgw_zscore_df
+  res_list$group_wise_zscore_df <- cg_mean_cgw_zscore_df
+
+
+  # compute z-scores
+  print('Compute gene-wise z-scores...')
+  # cg_mean_exp_df is (n_groups, n_genes)
+  # so gr_cg_mean_exp_mat is (n_genes, n_groups)
+  # gr = gene rows
+  gr_cg_mean_exp_mat <- t(cg_mean_exp_df)
+  # assert gene symbols are the same
+  stopifnot(identical(rownames(gr_cg_mean_exp_mat), check_gids))
+  # assert cancer groups are the same
+  stopifnot(identical(sort(colnames(gr_cg_mean_exp_mat)), check_groups))
+  cg_mean_gene_wise_zscore_mat <- row_wise_zscores(gr_cg_mean_exp_mat)
+
+  cg_mean_gene_wise_zscore_df <- data.frame(
+    cg_mean_gene_wise_zscore_mat, check.names = FALSE, check.rows = FALSE)
+  # assert gene symbols are the same
+  stopifnot(identical(rownames(cg_mean_gene_wise_zscore_df), check_gids))
+  # assert cancer groups are the same
+  stopifnot(identical(
+    sort(colnames(cg_mean_gene_wise_zscore_df)), check_groups))
+  res_list$gene_wise_zscore_df <- cg_mean_gene_wise_zscore_df
 
 
   # compute ranks
@@ -151,8 +174,7 @@ get_expression_summary_stats <- function(exp_df, groups) {
   # assert gene symbols are the same
   stopifnot(identical(colnames(cg_mean_exp_mat), check_gids))
   # assert cancer groups are the same
-  stopifnot(identical(sort(rownames(cg_mean_exp_mat)),
-                      check_groups))
+  stopifnot(identical(sort(rownames(cg_mean_exp_mat)), check_groups))
   # group wise ranks
   cg_mean_cgw_rank_mat <- apply(cg_mean_exp_mat, 1,
                                 function(x) rank(x, ties.method='min'))
@@ -187,8 +209,7 @@ get_expression_summary_stats <- function(exp_df, groups) {
   # assert gene symbols are the same
   stopifnot(identical(rownames(cg_mean_cgw_quant_out_df), check_gids))
   # assert cancer groups are the same
-  stopifnot(identical(sort(colnames(cg_mean_cgw_quant_out_df)),
-                      check_groups))
+  stopifnot(identical(sort(colnames(cg_mean_cgw_quant_out_df)), check_groups))
   res_list$quant_df <- cg_mean_cgw_quant_out_df
 
 
@@ -330,11 +351,14 @@ write_tsv(get_output_ss_df(ot_tpm_ss_dfs$mean_df, gsb_gids_df),
 write_tsv(get_output_ss_df(ot_tpm_ss_dfs$sd_df, gsb_gids_df),
           'results/cancer_group_all_cohort_standard_deviation_tpm.tsv')
 write_tsv(
-  get_output_ss_df(ot_tpm_ss_dfs$zscore_df, gsb_gids_df),
+  get_output_ss_df(ot_tpm_ss_dfs$group_wise_zscore_df, gsb_gids_df),
   'results/cancer_group_all_cohort_cancer_group_wise_mean_tpm_z_scores.tsv')
 write_tsv(
   get_output_ss_df(ot_tpm_ss_dfs$quant_df, gsb_gids_df),
   'results/cancer_group_all_cohort_cancer_group_wise_mean_tpm_quantiles.tsv')
+write_tsv(
+  get_output_ss_df(ot_tpm_ss_dfs$gene_wise_zscore_df, gsb_gids_df),
+  'results/cancer_group_all_cohort_gene_wise_mean_tpm_z_scores.tsv')
 
 
 
@@ -376,7 +400,7 @@ write_tsv(get_output_ss_df(cc_tpm_ss_dfs$mean_df, gsb_gids_df),
 write_tsv(get_output_ss_df(cc_tpm_ss_dfs$sd_df, gsb_gids_df),
           'results/cancer_group_individual_cohort_standard_deviation_tpm.tsv')
 write_tsv(
-  get_output_ss_df(cc_tpm_ss_dfs$zscore_df, gsb_gids_df),
+  get_output_ss_df(cc_tpm_ss_dfs$group_wise_zscore_df, gsb_gids_df),
   file.path('results',
             paste0('cancer_group_individual_cohort',
                    '_cancer_group_wise_mean_tpm_z_scores.tsv')))
@@ -385,3 +409,8 @@ write_tsv(
   file.path('results',
             paste0('cancer_group_individual_cohort',
                    '_cancer_group_wise_mean_tpm_quantiles.tsv')))
+write_tsv(
+  get_output_ss_df(cc_tpm_ss_dfs$gene_wise_zscore_df, gsb_gids_df),
+  file.path('results',
+            paste0('cancer_group_individual_cohort',
+                   '_gene_wise_mean_tpm_z_scores.tsv')))
