@@ -45,9 +45,9 @@ independent_samples <- function(sample_df,
     sample_df <- dplyr::bind_rows(primary_df, noprimary_df)
   } 
   
-  if(tumor_types == "secondary"){
+if(tumor_types == "secondary"){
     sample_df <- sample_df %>%
-      dplyr::filter(Kids_First_Participant_ID %in% no_primary)
+      dplyr::filter(!tumor_descriptor %in% primary_descs)
   } 
 
   # get the samples from the earliest timepoints for each Participant
