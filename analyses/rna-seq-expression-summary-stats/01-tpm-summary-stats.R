@@ -31,7 +31,7 @@ get_sample_meta_df <- function(htl_df, group_var) {
 # Get summary statistics dataframe for output.
 #
 # Args:
-# - ss_df: (n_genes, n_groups) summary statistics tibble. Rownames must be
+# - ss_df: (n_genes, n_groups) summary statistics data frame. Rownames must be
 #   gene symbols.
 # - gsb_gids_df: gene symbol and ENSG ID data frame. Two columns must be
 #   gene_symbol and gene_id.
@@ -47,13 +47,14 @@ get_output_ss_df <- function(ss_df, gsb_gid_df) {
   # assert rownames are not changed automatically
   stopifnot(identical(rownames(gsb_gids_conv_df),
                       gsb_gids_conv_df$gene_symbol))
-  
+
   stopifnot(all(rownames(ss_df) %in% rownames(gsb_gids_conv_df)))
   ss_gsb_gid_df <- gsb_gids_conv_df[rownames(ss_df), ]
-  stopifnot(identical(rownames(ss_df),
-                      rownames(ss_gsb_gid_df)))
 
+  # assert rownames(ss_df) are the same as rownames(ss_gsb_gid_df)
+  stopifnot(identical(rownames(ss_df), rownames(ss_gsb_gid_df)))
   ss_out_df <- cbind(ss_gsb_gid_df, ss_df)
+
   stopifnot(identical(rownames(ss_out_df), ss_out_df$gene_symbol))
   ss_out_df <- remove_rownames(ss_out_df)
   return(ss_out_df)
@@ -63,8 +64,9 @@ get_output_ss_df <- function(ss_df, gsb_gid_df) {
 # Generate means, standard deviations, z-scores, and ranks within each group.
 #
 # Args:
-# - exp_df: (n_genes, n_samples) expression level data frame
-# - groups: character vector of character vector of length n_samples
+# - exp_df: (n_genes, n_samples) expression level numeric data frame
+# - groups: character vector of length n_samples, which is used for grouping
+#   the samples.
 #
 # Returns a list of (n_genes, n_groups) summary statistics tables.
 get_expression_summary_stats <- function(exp_df, groups) {
@@ -74,10 +76,9 @@ get_expression_summary_stats <- function(exp_df, groups) {
   # the rownames of the exp_df.
   check_gids <- rownames(exp_df)
 
-  # set check.names = FALSE and check.rows = FALSE to avoid R
-  # changes the rownames or colnames implicitly
-  c_exp_df <- data.frame(t(exp_df), check.names = FALSE,
-                         check.rows = FALSE)
+  # set check.names = FALSE and check.rows = FALSE to avoid R from
+  # changing the rownames or colnames implicitly
+  c_exp_df <- data.frame(t(exp_df), check.names = FALSE, check.rows = FALSE)
   c_exp_df$sample_group <- groups
 
   res_list <- list()
@@ -92,9 +93,9 @@ get_expression_summary_stats <- function(exp_df, groups) {
 
   cg_mean_exp_out_df <- data.frame(
     t(cg_mean_exp_df), check.names = FALSE, check.rows = FALSE)
-  # assert gene symbols are the same
+  # assert gene symbols are the same as input data frame
   stopifnot(identical(rownames(cg_mean_exp_out_df), check_gids))
-  # assert groups are the same. assumes the first column is gene
+  # assert groups are the same as input data frame
   stopifnot(identical(sort(colnames(cg_mean_exp_out_df)), check_groups))
   res_list$mean_df <- cg_mean_exp_out_df
 
@@ -108,13 +109,17 @@ get_expression_summary_stats <- function(exp_df, groups) {
 
   cg_sd_exp_out_df <- data.frame(
     t(cg_sd_exp_df), check.names = FALSE, check.rows = FALSE)
-  # assert gene symbols are the same
+  # assert gene symbols are the same as input data frame
   stopifnot(identical(rownames(cg_sd_exp_out_df), check_gids))
-  # assert groups are the same. assumes the first column is gene
+  # assert groups are the same as input data frame
   stopifnot(identical(sort(colnames(cg_sd_exp_out_df)), check_groups))
   res_list$sd_df <- cg_sd_exp_out_df
 
   # input is a numeric matrix
+  # procedure adapted from @kgaonkar6's code at
+  # <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/
+  #     0a85a711709b5adc1e56a26a397d238cb3ebbb58/analyses/
+  #     fusion_filtering/03-Calc-zscore-annotate.R#L115-L121>
   row_wise_zscores <- function(num_mat) {
     row_means <- rowMeans(num_mat)
     row_sds <- apply(num_mat, 1, sd)
@@ -129,18 +134,18 @@ get_expression_summary_stats <- function(exp_df, groups) {
   print('Compute group-wise z-scores...')
   # cg_mean_exp_df is (n_groups, n_genes)
   cg_mean_exp_mat <- as.matrix(cg_mean_exp_df)
-  # assert gene symbols are the same
+  # assert gene symbols are the same as input data frame
   stopifnot(identical(colnames(cg_mean_exp_mat), check_gids))
-  # assert cancer groups are the same
+  # assert groups are the same as input data frame
   stopifnot(identical(sort(rownames(cg_mean_exp_mat)), check_groups))
   # group wise z-scores
   cg_mean_cgw_zscore_mat <- row_wise_zscores(cg_mean_exp_mat)
 
   cg_mean_cgw_zscore_df <- data.frame(
     t(cg_mean_cgw_zscore_mat), check.names = FALSE, check.rows = FALSE)
-  # assert gene symbols are the same
+  # assert gene symbols are the same as input data frame
   stopifnot(identical(rownames(cg_mean_cgw_zscore_df), check_gids))
-  # assert cancer groups are the same
+  # assert groups are the same as input data frame
   stopifnot(identical(sort(colnames(cg_mean_cgw_zscore_df)), check_groups))
   res_list$group_wise_zscore_df <- cg_mean_cgw_zscore_df
 
@@ -151,17 +156,17 @@ get_expression_summary_stats <- function(exp_df, groups) {
   # so gr_cg_mean_exp_mat is (n_genes, n_groups)
   # gr = gene rows
   gr_cg_mean_exp_mat <- t(cg_mean_exp_df)
-  # assert gene symbols are the same
+  # assert gene symbols are the same as input data frame
   stopifnot(identical(rownames(gr_cg_mean_exp_mat), check_gids))
-  # assert cancer groups are the same
+  # assert groups are the same as input data frame
   stopifnot(identical(sort(colnames(gr_cg_mean_exp_mat)), check_groups))
   cg_mean_gene_wise_zscore_mat <- row_wise_zscores(gr_cg_mean_exp_mat)
 
   cg_mean_gene_wise_zscore_df <- data.frame(
     cg_mean_gene_wise_zscore_mat, check.names = FALSE, check.rows = FALSE)
-  # assert gene symbols are the same
+  # assert gene symbols are the same as input data frame
   stopifnot(identical(rownames(cg_mean_gene_wise_zscore_df), check_gids))
-  # assert cancer groups are the same
+  # assert groups are the same as input data frame
   stopifnot(identical(
     sort(colnames(cg_mean_gene_wise_zscore_df)), check_groups))
   res_list$gene_wise_zscore_df <- cg_mean_gene_wise_zscore_df
@@ -171,9 +176,9 @@ get_expression_summary_stats <- function(exp_df, groups) {
   print('Compute quantiles...')
   # cg_mean_exp_df is (n_groups, n_genes)
   cg_mean_exp_mat <- as.matrix(cg_mean_exp_df)
-  # assert gene symbols are the same
+  # assert gene symbols are the same as input data frame
   stopifnot(identical(colnames(cg_mean_exp_mat), check_gids))
-  # assert cancer groups are the same
+  # assert groups are the same as input data frame
   stopifnot(identical(sort(rownames(cg_mean_exp_mat)), check_groups))
   # group wise ranks
   cg_mean_cgw_rank_mat <- apply(cg_mean_exp_mat, 1,
@@ -197,6 +202,7 @@ get_expression_summary_stats <- function(exp_df, groups) {
 
   p75p100_idc <- cg_mean_cgw_rank_mat <= (nrow(cg_mean_cgw_rank_mat) * 0.25)
   cg_mean_cgw_d_mat[p75p100_idc] <- 'Lowest expressed 25%'
+  # assert all entries have description values
   stopifnot(identical(
     sort(unique(as.vector(cg_mean_cgw_d_mat))),
     c("Expression between median and lower quartile",
@@ -206,9 +212,9 @@ get_expression_summary_stats <- function(exp_df, groups) {
 
   cg_mean_cgw_quant_out_df <- data.frame(
     cg_mean_cgw_d_mat, check.names = FALSE, check.rows = FALSE)
-  # assert gene symbols are the same
+  # assert gene symbols are the same as input data frame
   stopifnot(identical(rownames(cg_mean_cgw_quant_out_df), check_gids))
-  # assert cancer groups are the same
+  # assert groups are the same as input data frame
   stopifnot(identical(sort(colnames(cg_mean_cgw_quant_out_df)), check_groups))
   res_list$quant_df <- cg_mean_cgw_quant_out_df
 
@@ -217,7 +223,7 @@ get_expression_summary_stats <- function(exp_df, groups) {
 }
 
 # load tpm matrix and sample metadata -------------------------------------
-# NOTE: TPM matrices will be replaced by batch effect removed TPM matrix
+# NOTE: TPM matrices may be replaced by batch effect removed TPM matrix
 # in the future
 # gtex target tcga gmkf pbta
 tpm_df <- readRDS('../../data/gene-expression-rsem-tpm-collapsed.rds')
@@ -315,7 +321,12 @@ stopifnot(all(rna_htl_df$Kids_First_Biospecimen_ID %in% colnames(tpm_df)))
 
 # gene symbol to ENSG id table
 suppressMessages(gid_gsb_tbl <- read_tsv('input/ens_symbol.tsv'))
+# remove duplicated row(s)
 gid_gsb_tbl <- unique(gid_gsb_tbl)
+# Collapse gid_gsb_tbl by gene_symbol.
+# If one gene_symbol is mapped to multiple gene_ids (ENSG IDs), the value of
+# the gene_id column in the collapsed gsb_gids_tbl is a comma separated list of
+# all Ensembl ENSG IDs.
 gsb_gids_tbl <- gid_gsb_tbl %>%
   group_by(gene_symbol) %>%
   summarise(gene_id = paste(gene_id, collapse = ','))
@@ -329,11 +340,11 @@ print('Compute TPM summary statistics for all cohorts...')
 # select cancer samples
 ac_rna_htl_df <- rna_htl_df[!is.na(rna_htl_df$cancer_group), ]
 # select cancer_groups with >= 5 samples
-cg_cnts <- table(ac_rna_htl_df$cancer_group)
-nge5_cg_cnts <- cg_cnts[cg_cnts >= 5]
-nge5_cgs <- names(nge5_cg_cnts)
-
-c_rna_htl_df <- ac_rna_htl_df[ac_rna_htl_df$cancer_group %in% nge5_cgs, ]
+# adapted from https://stackoverflow.com/a/40091131/4638182
+c_rna_htl_df <- ac_rna_htl_df %>%
+  group_by(cancer_group) %>%
+  filter(n() >= 5) %>%
+  ungroup()
 
 c_sample_meta_df <- get_sample_meta_df(c_rna_htl_df, 'cancer_group')
 write_tsv(c_sample_meta_df,
@@ -342,7 +353,7 @@ write_tsv(c_sample_meta_df,
 c_tpm_df <- tpm_df[, c_rna_htl_df$Kids_First_Biospecimen_ID]
 # assert gene symbols are the same
 stopifnot(identical(rownames(c_tpm_df), rownames(tpm_df)))
-# assert c_tpm_df rows match c_rna_htl_df$Kids_First_Biospecimen_ID
+# assert c_tpm_df columns match c_rna_htl_df$Kids_First_Biospecimen_ID
 stopifnot(identical(
   c_rna_htl_df$Kids_First_Biospecimen_ID,
   colnames(c_tpm_df)
@@ -376,12 +387,11 @@ acc_rna_htl_df <- rna_htl_df[!(is.na(rna_htl_df$cancer_group) |
 acc_rna_htl_df$cancer_group_cohort <- paste(
   acc_rna_htl_df$cancer_group, acc_rna_htl_df$cohort, sep = '___')
 # select cancer_group_cohorts with >= 5 samples
-cgc_cnts <- table(acc_rna_htl_df$cancer_group_cohort)
-nge5_cgc_cnts <- cgc_cnts[cgc_cnts >= 5]
-nge5_cgcs <- names(nge5_cgc_cnts)
-
-cc_rna_htl_df <- acc_rna_htl_df[
-  acc_rna_htl_df$cancer_group_cohort %in% nge5_cgcs, ]
+# adapted from https://stackoverflow.com/a/40091131/4638182
+cc_rna_htl_df <- acc_rna_htl_df %>%
+  group_by(cancer_group_cohort) %>%
+  filter(n() >= 5) %>%
+  ungroup()
 
 cc_sample_meta_df <- get_sample_meta_df(cc_rna_htl_df, 'cancer_group_cohort')
 write_tsv(cc_sample_meta_df,
@@ -391,7 +401,7 @@ write_tsv(cc_sample_meta_df,
 cc_tpm_df <- tpm_df[, cc_rna_htl_df$Kids_First_Biospecimen_ID]
 # assert gene symbols are the same
 stopifnot(identical(rownames(cc_tpm_df), rownames(tpm_df)))
-# assert c_tpm_df rows match c_rna_htl_df$Kids_First_Biospecimen_ID
+# assert cc_tpm_df columns match cc_rna_htl_df$Kids_First_Biospecimen_ID
 stopifnot(identical(
   cc_rna_htl_df$Kids_First_Biospecimen_ID,
   colnames(cc_tpm_df)
