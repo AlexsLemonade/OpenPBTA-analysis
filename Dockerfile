@@ -402,6 +402,13 @@ RUN ./install_bioc.r \
 RUN ./install_bioc.r \
     RUVSeq
 
+# Packages for RNA-seq expression boxplots (tumor-gtex-plots)
+RUN ./install_bioc.r \
+    tidyr
+    dplyr
+    ggplot2
+    ids
+
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
 
