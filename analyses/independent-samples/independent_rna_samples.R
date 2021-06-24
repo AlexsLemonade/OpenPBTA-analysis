@@ -98,7 +98,7 @@ independent_rna_samples <- function(independent_dna_sample_df,
                     !Kids_First_Participant_ID %in% independent_dna$Kids_First_Participant_ID)
     
     # has rna samples which match the independent samples provided plus rna only sample which are primary tumors
-    sample_df <- bind_rows(matched_rna_primary,only_rna_relapse)
+    sample_df <- bind_rows(matched_rna_relapse,only_rna_relapse)
   }
   
   # Here we are adding only-RNA-Seq samples which are not initial
