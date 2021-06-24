@@ -123,7 +123,7 @@ independent_rna_samples <- function(independent_dna_sample_df,
                     !Kids_First_Participant_ID %in% only_rna_initial$Kids_First_Participant_ID
                     )
     # has rna samples which match the independent samples provided plus rna only sample which are primary tumors plus rna samples where no primary primaries exists
-    sample_df <- bind_rows(matched_rna,only_rna_plus)
+    sample_df <- bind_rows(matched_rna,only_rna_initial, only_rna_plus)
   } 
   
   # get the samples from the earliest timepoints for each Participant
