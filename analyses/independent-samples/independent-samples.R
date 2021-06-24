@@ -19,12 +19,13 @@
 #' 
 #' @return a data frame of Participant and Specimen IDs, each present only once.
 independent_samples <- function(sample_df, 
-                                tumor_types = c("primary", "secondary", "prefer_primary", "any"), 
+                                tumor_types = c("primary", "relapse", "prefer_primary", "any"), 
                                 seed){
   tumor_types <- match.arg(tumor_types)
   if(!missing(seed)){set.seed(seed)}
   
   primary_descs <- c("Initial CNS Tumor", "Primary tumor")
+  relapse_descs <- c("Recurrence", "Recurrent Tumor","Recurrent tumor","Progressive","Progressive Disease Post-Mortem")
   
   if(tumor_types %in% c("prefer_primary")){
     # find cases where non-primary is the only option
@@ -45,9 +46,9 @@ independent_samples <- function(sample_df,
     sample_df <- dplyr::bind_rows(primary_df, noprimary_df)
   } 
   
-if(tumor_types == "secondary"){
+if(tumor_types == "relapse"){
     sample_df <- sample_df %>%
-      dplyr::filter(!tumor_descriptor %in% primary_descs)
+      dplyr::filter(tumor_descriptor %in% relapse_descs)
   } 
 
   # get the samples from the earliest timepoints for each Participant

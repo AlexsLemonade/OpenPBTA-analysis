@@ -54,9 +54,12 @@ if (!dir.exists(out_dir)){
   dir.create(out_dir, recursive = TRUE)
 }
 
+rnaseq_primary_file <- file.path(out_dir, 
+                                  "independent-specimens.rnaseq.primary.tsv")
+rnaseq_relapse_file <- file.path(out_dir, 
+                                  "independent-specimens.rnaseq.relapse.tsv")
 rnaseq_primplus_file <- file.path(out_dir, 
                                   "independent-specimens.rnaseq.primary-plus.tsv")
-
 
 # Read histology file
 sample_df <- readr::read_tsv(opts$histology_file, 
@@ -72,6 +75,29 @@ independent_dna_sample_df <- read_tsv(opts$independent_dna_sample_df)
 
 # Filter to only samples from tumors, where composition is known to be Solid Tissue
 # for all RNA samples
+
+independent_rna_primary <- sample_df %>%
+  filter(sample_type == "Tumor", 
+         composition == "Solid Tissue"
+  ) %>%
+  independent_rna_samples(independent_dna_sample_df = 
+                            independent_dna_sample_df,
+                          histology_df = .,
+                          match_type = "independent_dna_plus_only_rna",
+                          tumor_description_rna_only = "primary",seed = 2020) %>%
+  readr::write_tsv(rnaseq_primary_file)
+
+independent_rna_relapse <- sample_df %>%
+  filter(sample_type == "Tumor", 
+         composition == "Solid Tissue"
+  ) %>%
+  independent_rna_samples(independent_dna_sample_df = 
+                            independent_dna_sample_df,
+                          histology_df = .,
+                          match_type = "independent_dna_plus_only_rna",
+                          tumor_description_rna_only = "relapse",seed = 2020) %>%
+  readr::write_tsv(rnaseq_relapse_file)
+
 independent_rna_primary_plus <- sample_df %>%
   filter(sample_type == "Tumor", 
          composition == "Solid Tissue"

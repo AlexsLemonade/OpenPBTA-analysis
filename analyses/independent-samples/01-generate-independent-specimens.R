@@ -56,14 +56,14 @@ if (!dir.exists(out_dir)){
 
 wgs_primary_file <- file.path(out_dir, 
                               "independent-specimens.wgs.primary.tsv")
-wgs_secondary_file <- file.path(out_dir, 
-                              "independent-specimens.wgs.secondary.tsv")
+wgs_relapse_file <- file.path(out_dir, 
+                              "independent-specimens.wgs.relapse.tsv")
 wgs_primplus_file <- file.path(out_dir, 
                               "independent-specimens.wgs.primary-plus.tsv")
 wgswxspanel_primary_file <- file.path(out_dir, 
                               "independent-specimens.wgswxspanel.primary.tsv")
-wgswxspanel_secondary_file <- file.path(out_dir, 
-                              "independent-specimens.wgswxspanel.secondary.tsv")
+wgswxspanel_relapse_file <- file.path(out_dir, 
+                              "independent-specimens.wgswxspanel.relapse.tsv")
 wgswxspanel_primplus_file <- file.path(out_dir, 
                               "independent-specimens.wgswxspanel.primary-plus.tsv")
 
@@ -85,7 +85,7 @@ wgs_samples <- tumor_samples %>%
   dplyr::filter(experimental_strategy == "WGS")
 
 wgs_primary <- independent_samples(wgs_samples, tumor_types = "primary", seed = 2020)
-wgs_secondary <- independent_samples(wgs_samples, tumor_types = "secondary", seed = 2020)
+wgs_relapse <- independent_samples(wgs_samples, tumor_types = "relapse", seed = 2020)
 wgs_primary_plus <- independent_samples(wgs_samples, tumor_types = "prefer_primary", seed = 2020)
 
 # Generate lists for WXS and Panel samples 
@@ -95,15 +95,15 @@ wxs_panel_samples <-  tumor_samples %>%
                   wgs_samples$Kids_First_Participant_ID))
 
 wxs_panel_primary <- independent_samples(wxs_panel_samples, tumor_types = "primary", seed = 2020)
-wxs_panel_secondary <- independent_samples(wxs_panel_samples, tumor_types = "secondary", seed = 2020)
+wxs_panel_relapse <- independent_samples(wxs_panel_samples, tumor_types = "relapse", seed = 2020)
 wxs_panel_primary_plus <- independent_samples(wxs_panel_samples, tumor_types = "prefer_primary", seed = 2020)
 
 # write files
 message(paste(nrow(wgs_primary), "WGS primary specimens"))
 readr::write_tsv(wgs_primary, wgs_primary_file)
 
-message(paste(nrow(wgs_secondary), "WGS secondary specimens"))
-readr::write_tsv(wgs_secondary, wgs_secondary_file)
+message(paste(nrow(wgs_relapse), "WGS relapse specimens"))
+readr::write_tsv(wgs_relapse, wgs_relapse_file)
 
 message(paste(nrow(wgs_primary_plus), "WGS specimens (including non-primary)"))
 readr::write_tsv(wgs_primary_plus, wgs_primplus_file)
@@ -112,9 +112,9 @@ message(paste(nrow(wgs_primary) + nrow(wxs_panel_primary), "WGS+WXS+Panel primar
 readr::write_tsv(dplyr::bind_rows(wgs_primary, wxs_panel_primary),
                  wgswxspanel_primary_file)
 
-message(paste(nrow(wgs_secondary) + nrow(wxs_panel_secondary), "WGS+WXS+Panel secondary specimens"))
-readr::write_tsv(dplyr::bind_rows(wgs_secondary, wxs_panel_secondary),
-                 wgswxspanel_secondary_file)
+message(paste(nrow(wgs_relapse) + nrow(wxs_panel_relapse), "WGS+WXS+Panel relapse specimens"))
+readr::write_tsv(dplyr::bind_rows(wgs_relapse, wxs_panel_relapse),
+                 wgswxspanel_relapse_file)
 
 message(paste(nrow(wgs_primary_plus) + nrow(wxs_panel_primary_plus), "WGS+WXS+Panel specimens (including non-primary)"))
 readr::write_tsv(dplyr::bind_rows(wgs_primary_plus, wxs_panel_primary_plus),
