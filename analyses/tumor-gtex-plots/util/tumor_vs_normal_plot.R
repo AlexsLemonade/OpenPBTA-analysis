@@ -2,7 +2,6 @@
 suppressPackageStartupMessages(library(tidyr))
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(ggplot2))
-suppressPackageStartupMessages(library(ids))
 
 tumor_vs_normal_plot <- function(expr_mat_gene, hist_file, 
                                  analysis_type = c("cohort_cancer_group_level", "cancer_group_level"), 
@@ -61,20 +60,22 @@ tumor_vs_normal_plot <- function(expr_mat_gene, hist_file,
     # create unique title and filenames
     gene_name <- unique(expr_mat_gene_subset$gene)
     cohort_name <- paste0(unique(expr_mat_gene_subset$cohort), collapse = "_")
-    uuid <- ids::uuid(n = 1, use_time = T, drop_hyphens = T)
-    title <- paste(gene_name, cohort_name, analysis_type, sep = "_")
-    fname <- paste(gene_name, cohort_name, analysis_type, uuid, sep = "_")
-    plot_fname <- file.path(plots_dir, paste0(fname, '.png'))
-    table_fname <- file.path(results_dir, paste0(fname, '.tsv'))
+    cancer_group_name <- cohort_cancer_groups[i]
+    title <- paste(gene_name, cohort_name, cancer_group_name, analysis_type, sep = "_")
+    # replace semi-colon, forward slash and spaces with hyphen in filenames
+    cancer_group_name_fname <- gsub('/| |;', '-', cancer_group_name) 
+    fname <- paste(gene_name, cohort_name, cancer_group_name_fname, analysis_type, sep = "_")
+    plot_fname <- paste0(fname, '.png')
+    table_fname <- paste0(fname, '.tsv')
     
     # data-frame for mapping output filenames with info
     mapping_df <- data.frame(gene = gene_name, 
-                             plot_type = c("tumor_vs_normal"), 
+                             plot_type = "tumor_vs_normal", 
                              cohort = cohort_name,
-                             analysis_type, 
-                             uuid,
-                             plot_fname = paste0(fname, '.png'),
-                             table_fname = paste0(fname, '.tsv'))
+                             cancer_group = cohort_cancer_groups[i],
+                             analysis_type = analysis_type, 
+                             plot_fname = plot_fname,
+                             table_fname = table_fname)
     mapping_file <- file.path(results_dir, 'metadata.tsv')
     if(!file.exists(mapping_file)){
       write.table(x = mapping_df, file = mapping_file, sep = "\t", row.names = F, quote = F)
@@ -92,7 +93,7 @@ tumor_vs_normal_plot <- function(expr_mat_gene, hist_file,
       theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
       ggtitle(title) +
       scale_fill_manual(values = cols) + guides(fill = FALSE)
-    ggsave(plot = output_plot, filename = plot_fname, device = "png", width = plot_width, height = plot_height)
+    ggsave(plot = output_plot, filename = file.path(plots_dir, plot_fname), device = "png", width = plot_width, height = plot_height)
     
     # output table of gene, median and sd
     output_table <- expr_mat_gene_subset %>%
@@ -103,6 +104,6 @@ tumor_vs_normal_plot <- function(expr_mat_gene, hist_file,
       mutate(mean = round(mean, digits = 2),
              median = round(median, digits = 2),
              sd = round(sd, digits = 2))
-    write.table(x = output_table, file = table_fname, sep = "\t", row.names = F, quote = F)
+    write.table(x = output_table, file = file.path(results_dir, table_fname), sep = "\t", row.names = F, quote = F)
   }
 }
