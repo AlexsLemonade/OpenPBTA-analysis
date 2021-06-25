@@ -406,8 +406,7 @@ RUN ./install_bioc.r \
 RUN ./install_bioc.r \
     tidyr \
     dplyr \
-    ggplot2 \
-    ids
+    ggplot2
 
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
