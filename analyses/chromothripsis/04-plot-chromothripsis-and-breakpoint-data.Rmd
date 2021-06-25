@@ -1,0 +1,117 @@
+---
+title: 'Chromothripsis Plots with Breakpoint Data'
+author: "Laura Egolf"
+date: "2021"
+output: html_document
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This notebook plots the number of chromothripsis regions per sample along with breakpoint data from `analyses/chromosomal-instability/`. As expected, the number of chromothripsis calls roughly correlates with the breakpoint counts calculated from both SV and CNV data. 
+
+### Define directory paths and load packages
+
+```{r}
+# Set directory paths
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+analysis_dir <- file.path(root_dir, "analyses", "chromothripsis")
+plots_dir <- file.path(analysis_dir, "plots", "04-breakpoint-data")
+breakpoint_data_dir <- file.path(root_dir, "analyses", "chromosomal-instability", "breakpoint-data")
+
+# Create plots_dir if it doesn't exist
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir, recursive = TRUE)
+}
+
+# Load packages
+library(ggplot2)
+library(RColorBrewer)
+library(readr)
+library(dplyr)
+```
+
+
+### Prepare chromothripsis data and breakpoint data
+
+```{r}
+# Read in summary of chromothripsis regions per sample (number of regions for each confidence level)
+chromoth_per_sample <- read_tsv(file.path(analysis_dir, "results", "chromothripsis_summary_per_sample.txt"))
+
+# Read in CNV and SV breakpoint data
+cnv_densities <- read_tsv(file.path(breakpoint_data_dir, "cnv_breaks_densities.tsv"))
+sv_densities <- read_tsv(file.path(breakpoint_data_dir, "sv_breaks_densities.tsv"))
+
+# Rename columns before merging
+cnv_densities <- cnv_densities %>%
+  rename(Kids_First_Biospecimen_ID = samples) %>%
+  rename(cnv_breaks_count = breaks_count)
+sv_densities <- sv_densities %>%
+  rename(Kids_First_Biospecimen_ID = samples) %>%
+  rename(sv_breaks_count = breaks_count)
+
+# Merge chromothripsis data and breakpoint data
+merge <- chromoth_per_sample %>% 
+  inner_join(cnv_densities, by = "Kids_First_Biospecimen_ID") %>%
+  inner_join(sv_densities, by = "Kids_First_Biospecimen_ID") 
+```
+
+
+### Plot the number of chromothripsis regions per sample along with CNV and/or SV break counts
+
+Define plot theme:
+```{r}
+theme_set(theme_light())
+```
+
+
+#### Scatterplot: CNV breaks vs. SV breaks, colored by # chromothripsis regions
+
+```{r}
+p <- merge %>%
+  arrange(count_regions_any_conf) %>%
+    # Sort by number of chromothripsis calls so that the samples with chromothripsis are more visible
+  ggplot(aes(x = cnv_breaks_count, y = sv_breaks_count, fill = as.factor(count_regions_any_conf))) +
+  geom_point(shape=21, size=2, color="black") + 
+  scale_fill_brewer(palette="YlOrRd", name="# Chromothripsis\nRegions") +
+  xlab("# CNV Breaks") + 
+  ylab("# SV Breaks") +
+  ylim(c(0, 5000)) 
+
+p
+ggsave(file.path(plots_dir, "count_chromothripsis_cnv_and_sv_breaks_scatterplot.pdf"), p)
+```
+
+#### Stripchart: Chromothripsis regions vs. CNV breaks
+
+```{r}
+p <- merge %>%
+  ggplot(aes(x = as.factor(count_regions_any_conf), 
+                               y = cnv_breaks_count, fill = as.factor(count_regions_any_conf))) +
+  geom_jitter(shape=21, size=2, color="black") +
+  scale_fill_brewer(palette="YlOrRd") +
+  theme(legend.position = "none") +
+  geom_boxplot(fill=NA, outlier.shape=NA) +
+  xlab("# Chromothripsis Regions") + 
+  ylab("# CNV Breaks") 
+p
+ggsave(file.path(plots_dir, "count_chromothripsis_cnv_breaks_stripchart.pdf"), p)
+```
+
+#### Stripchart: Chromothripsis regions vs. SV breaks
+
+```{r}
+p <- merge %>%
+  ggplot(aes(x = as.factor(count_regions_any_conf), 
+                               y = sv_breaks_count, fill = as.factor(count_regions_any_conf))) +
+  geom_jitter(shape=21, size=2, color="black") +
+  scale_fill_brewer(palette="YlOrRd") +
+  theme(legend.position = "none") +
+  geom_boxplot(fill=NA, outlier.shape=NA) +
+  xlab("# Chromothripsis Regions") + 
+  ylab("# SV Breaks") +
+  ylim(c(0, 5000)) 
+p
+ggsave(file.path(plots_dir, "count_chromothripsis_sv_breaks_stripchart.pdf"), p)
+``` 
