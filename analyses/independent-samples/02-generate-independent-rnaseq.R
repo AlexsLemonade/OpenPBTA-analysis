@@ -73,12 +73,12 @@ independent_dna_sample_df <- read_tsv(opts$independent_dna_sample_df)
 # Separating polya and stranded samples since we might have cases where
 # we have polya and stranded samples per Kids_First_Participant_ID
 
-# Filter to only samples from tumors, where composition is known to be Solid Tissue
+# Filter to only samples from tumors, where composition is known to be Solid Tissue or Bone Marrow
 # for all RNA samples
 
 independent_rna_primary <- sample_df %>%
   filter(sample_type == "Tumor", 
-         composition == "Solid Tissue"
+         composition == "Solid Tissue" | composition == "Bone Marrow", 
   ) %>%
   independent_rna_samples(independent_dna_sample_df = 
                             independent_dna_sample_df,

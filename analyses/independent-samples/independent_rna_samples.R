@@ -24,7 +24,7 @@
 #' Opetions are "primary" to select only primary/initial tumors. Primary tumors are defined as those designated "Initial CNS Tumor"+ "Primary Tumor".
 #' "primary_plus" if you would like to select other non-initial tumor RNA-Seq sample if no 
 #' initial tumor RNA-Seq sample exists
-#' or "relapse" in select only relapse tumors.
+#' or "relapse" in select only relapse tumors. Relapse tumors are defined as those designated by "Recurrence", "Recurrent Tumor","Recurrent tumor","Progressive","Progressive Disease Post-Mortem" in `tumor_descriptor` field
 #' @param seed An optional random number seed. 
 #' 
 #' @return a data frame of Participant and Specimen IDs, each present only once.

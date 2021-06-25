@@ -73,11 +73,11 @@ sample_df <- readr::read_tsv(opts$histology_file,
                              col_types = readr::cols()) # suppress parse message
 
 
-# Filter to only samples from tumors, where composition is known to be Solid Tissue
+# Filter to only samples from tumors, where composition is known to be Solid Tissue or Bone Marrow
 # Note that there are some samples with unknown composition, but these will be ignored for now.
 tumor_samples <- sample_df %>%
   dplyr::filter(sample_type == "Tumor", 
-                composition == "Solid Tissue", 
+                composition == "Solid Tissue" | composition == "Bone Marrow", 
                 experimental_strategy %in% c("WGS", "WXS", "Targeted Sequencing", "Targeted-Capture"))
 
 # Generate WGS independent samples
