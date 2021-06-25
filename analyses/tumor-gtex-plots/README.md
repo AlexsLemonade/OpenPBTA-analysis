@@ -12,7 +12,7 @@
 
 2. Export tables (.tsv) of the data per plot with the following fields: `gene`, `mean`, `median`, `sd` and `x-axis-labels`.
 
-3. Export metadata files to use in JSON files with the following fields: `gene` (gene name), `plot_type` (either `tumors_only` or `tumor_vs_normal`), `cohort` (`_` separated cohort name), `analysis_type` (either `cohort_cancer_group_level` or `cancer_group_level`), `uuid`, `plot_fname` (plot filename) and `table_fname` (table filename)
+3. Export metadata files to use in JSON files with the following fields: `gene` (gene name), `plot_type` (either `tumors_only` or `tumor_vs_normal`), `cohort` (`_` separated cohort name), `cancer_group` (only applicable for tumor vs normal plots and `NA` for tumors only plot), `analysis_type` (either `cohort_cancer_group_level` or `cancer_group_level`), `plot_fname` (plot filename) and `table_fname` (table filename)
 
 ### Methods 
 
@@ -86,10 +86,12 @@ Histologies file: `histologies.tsv`
 ##### Outputs: 
 
 1. `plots/*.png`: expression boxplots with `log2(tpm + 1)` as y-axis
-Filename format: `{gene_name}_{cohort_name}_{analysis_type}_{uuid}.png` 
+Tumors only filename format: `{gene_name}_{cohort_name}_{analysis_type}.png` 
+Tumors vs GTEx filename format: `{gene_name}_{cohort_name}_{cancer_group_name}__{analysis_type}.png` 
 
 2. `results/*.tsv`: corresponding data for expression boxplots
-Filename format: `{gene_name}_{cohort_name}_{analysis_type}_{uuid}.tsv`
+Tumors only filename format: `{gene_name}_{cohort_name}_{analysis_type}.tsv` 
+Tumors vs GTEx filename format: `{gene_name}_{cohort_name}_{cancer_group_name}__{analysis_type}.tsv` 
 
 3. `results/metadata.tsv`: mapping of filename and metadata for all comparisons 
 
