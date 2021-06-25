@@ -67,7 +67,7 @@ hist_file <- hist_file %>%
 expr_mat <- expr_mat %>%
   select(hist_file$Kids_First_Biospecimen_ID)
 
-# just do top 10 genes as a test, we can remove this later
+# just do 1 gene as a test, we can remove this later
 n_genes <- 1
 expr_mat <- expr_mat %>%
   head(n = n_genes)
