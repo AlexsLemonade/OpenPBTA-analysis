@@ -1,6 +1,6 @@
 # Load libraries -------------------------------------------
 library(optparse)
-
+library(signature.tools.lib) # for getting the CNS signatures
 
 # Set up command line options -------------------------------
 option_list <- list(
@@ -17,24 +17,16 @@ opt <- parse_args(OptionParser(option_list = option_list))
 # Full or abbreviated?
 if (opt$abbreviated == 1) {
   n_iter <- 10 # CI time-saver
-  #save_output <- FALSE
 } else {
   n_iter <- 3000 # Full analysis
-  #save_output <- TRUE
 }
-
-
-
 
 # Set up maf file and output file
 maf_file <- file.path("..", "..", "scratch", "mutational-signatures", "pbta-snv-consensus-wgs.tsv.gz")
 fitted_exposures_file <- file.path("results", "fitted_cns_signature_exposures.RDS")
 
-
-# CNS signatures matrix
-path_to_refsig <- file.path("util", "refsig_cns_data", "refsig_cns_matrix.RDS")
-refsig_cns_matrix <- readr::read_rds(path_to_refsig)
-
+# CNS signatures 
+refsig_cns_matrix <- t( getOrganSignatures("CNS") )
 
 # Perform extraction -------------------------------
 # Read in the MAF file
