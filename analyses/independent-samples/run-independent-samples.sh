@@ -16,7 +16,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 
 Rscript -e "rmarkdown::render('00-repeated-samples.Rmd',params=list(base_run = ${RUN_FOR_SUBTYPING}), clean = TRUE)"
 
-if [[ RUN_FOR_SUBTYPING == "0" ]]
+if [[ RUN_FOR_SUBTYPING -eq "0" ]]
 then
    HISTOLOGY_FILE="../../data/histologies.tsv" 
 else 
