@@ -3,10 +3,10 @@ suppressPackageStartupMessages(library(tidyverse))
 
 # Generate sample metadata data frame.
 # Args:
-#   - htl_df: histology data frame. Must contain group_var and
-#     Kids_First_Biospecimen_ID
+#   - htl_df: histology data frame. Columns must contain group_var and
+#     Kids_First_Biospecimen_ID.
 #   - group_var: character of the grouping variable, which is a column in the
-#     htl_df
+#     htl_df.
 #
 # Returns a tibble of the number of samples and sample IDs of each group.
 get_sample_meta_df <- function(htl_df, group_var) {
@@ -263,7 +263,7 @@ htl_df$cohort <- vapply(htl_df$orig_cohort, function(x) {
 suppressMessages(
   rna_idps_df <- read_tsv(
     file.path('..', 'independent-samples', 'results',
-              'independent-specimens.rnaseq.primary-plus.tsv'))
+              'independent-specimens.rnaseq.primary.tsv'))
 )
 rna_idps_kfbids <- rna_idps_df$Kids_First_Biospecimen_ID
 # subset histology data frame to have the same samples as the TPM matrix
