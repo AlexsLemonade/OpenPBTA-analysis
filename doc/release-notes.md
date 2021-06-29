@@ -1,5 +1,21 @@
 # release notes
 ## curremt release
+- release date: 2021-06-29
+- status: available
+- changes:
+   - Updated cancer_group, adding CBTN+PNOC as PBTA, harmonized tumor_descriptor, updated clinical info for NBL samples which were missing in source files
+      - histologies.tsv  
+   - Add cnv files with PBTA+GMKF samples
+      - cnv-cnvkit.seg.gz
+      - cnv-controlfreec.tsv.gz
+      - cnv-consensus.seg.gz 
+      - consensus_seg_annotated_cn_autosomes.tsv.gz
+      - consensus_seg_annotated_cn_autosomes_xy.tsv.gz
+      - cnvkit_annotated_cn_autosomes.tsv.gz
+      - cnvkit_annotated_cn_x_and_y.tsv.gz
+
+
+## archived release
 - release date: 2021-06-17
 - status: available
 - changes:
